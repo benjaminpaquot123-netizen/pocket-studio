@@ -26,9 +26,9 @@ class TabletScreenshotTest : ScreenshotTest() {
     companion object {
         val SCREENS = setOf(
             "rhythm", "acid", "synth", "mixer", "piano_roll", "wizard_style", "wizard_style_open", "wizard_acid", "wizard_summary", "projects", "welcome",
-            "session", "top_bar", "next_steps", "audio_tracks", "remix",
+            "session", "top_bar", "audio_tracks", "remix",
             "settings", "timeline", "generate_result", "remix_project", "library", "tracks", "instruments", "tuner", "harmony_panel",
-            "real_instruments", "song_ready_bar",
+            "real_instruments",
         )
     }
 }

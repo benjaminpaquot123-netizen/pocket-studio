@@ -20,8 +20,16 @@ import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.learn.SoundGlossary
 import com.pocketstudio.ui.LocalHelpListen
 
-/** Opens the glossary from anywhere (Aide, Réglages, a « ? »): [open] with the word to look for ("" for all). */
-class LearnHost(val open: (String) -> Unit = {})
+/**
+ * Opens the glossary from anywhere (Aide, Réglages, a « ? »): [open] with the word to look for ("" for all).
+ * G5: [toggle] plays (or stops) the example of the word of key [String] where it is (a Guide's card, before
+ * its decision), [playing] what plays.
+ */
+class LearnHost(
+    val open: (String) -> Unit = {},
+    val toggle: (String) -> Unit = {},
+    val playing: kotlinx.coroutines.flow.StateFlow<GlossaryPlay?> = kotlinx.coroutines.flow.MutableStateFlow(null),
+)
 
 /** The glossary's door for the screens; does nothing outside [LearnLayer] (tests, previews). */
 val LocalLearn = staticCompositionLocalOf { LearnHost() }
@@ -43,7 +51,13 @@ fun LearnLayer(content: @Composable () -> Unit) {
     }
     // null: closed; else the search typed.
     var query by rememberSaveable { mutableStateOf<String?>(null) }
-    val host = remember { LearnHost(open = { query = it }) }
+    val host = remember {
+        LearnHost(
+            open = { query = it },
+            toggle = { key -> SoundGlossary.ALL.firstOrNull { it.key == key }?.let(learnVm::toggle) },
+            playing = learnVm.playing,
+        )
+    }
     val listen: (com.pocketstudio.ui.Help) -> (() -> Unit)? = remember {
         { help ->
             SoundGlossary.forHelp(I18n.frenchOf(help.term))?.let { word ->

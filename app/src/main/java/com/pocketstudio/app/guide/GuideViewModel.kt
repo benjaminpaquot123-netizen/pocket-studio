@@ -218,6 +218,8 @@ class GuideViewModel(
                 return
             }
             com.pocketstudio.model.guide.GuideAction.LISTEN -> return
+            // G5: « Écouter » (« Ton morceau est prêt »): the song plays, and the card is decided.
+            com.pocketstudio.model.guide.GuideAction.PLAY -> _opens.tryEmit(GuideOpen(PLAY, option.action.name))
         }
         if (option.action.needsMeasure && measurer != null) {
             if (!canMeasure()) {
@@ -313,6 +315,30 @@ class GuideViewModel(
     /** A free note, on the song or on track [track]. */
     fun note(text: String, track: String = "") = edit("", "note") { GuideOutcome(GuideActions.note(it, text, clock(), track)) }
 
+    /**
+     * G5: « Mon premier morceau » on the open song (the old Missions, now its first cards), quietly
+     * (not an undo step); a song already on it stays where it was.
+     */
+    fun beginFirstSong() {
+        session.editQuietly { com.pocketstudio.model.guide.GuideStart.begin(it, com.pocketstudio.model.guide.GuideStart.FIRST) }
+    }
+
+    /** G5: a user mid-mission (the old settings): the open song becomes a first song, on the step reached. */
+    fun fromMissions(step: Int, skipped: Set<Int>) {
+        session.editQuietly { com.pocketstudio.model.guide.GuideStart.fromMissions(it, step, skipped, clock()) }
+    }
+
+    /**
+     * G5: card [cardId] decided by what the app saw (the song shared: « Prêt à partager ? »), quietly;
+     * a card already settled stays as it is.
+     */
+    fun markDone(cardId: String, optionId: String = "") {
+        session.editQuietly { p ->
+            if (p.guide.statusOf(cardId).settled) p
+            else p.copy(guide = p.guide.withStatus(cardId, GuideStatus.DONE, clock(), optionId))
+        }
+    }
+
     /** Stops following the project (the screen that owns it is gone). */
     fun close() {
         job?.cancel()
@@ -358,13 +384,17 @@ class GuideViewModel(
         val effects = effectsOf(r, p)
         // The first track of each role (« Voir le réglage » › its sheet).
         val byRole = p.guideTracks().groupBy { it.role }.mapValues { it.value.first() }
+        // G5: « Ton morceau est prêt »: « Depuis le début » only when « Écouter » starts later; its guide when the assistant wrote one.
+        val later = com.pocketstudio.model.FirstListen.startsLater(p)
+        fun shown(card: GuideCard, o: GuideOptionUi): Boolean = card.id != READY ||
+            (o.id != "start" || later) && (o.id != "guide" || p.guide.songGuide.isNotEmpty())
         fun cardUi(s: GuideCardStatus): GuideCardUi {
             val track = byRole[s.card.target]?.takeIf { it.channel != com.pocketstudio.model.Mixer.MASTER }
             return GuideCardUi(
                 s.card.id, s.card.stage, s.card.target, s.card.kind, s.card.titleFor(r.simple), s.card.whyFor(r.simple),
-                s.card.proposals.map { option(s.card, it) }.filter { !it.refused }, s.card.elsewhere.map { option(s.card, it) }, s.card.lexicon,
+                s.card.proposals.map { option(s.card, it) }.filter { !it.refused && shown(s.card, it) }, s.card.elsewhere.map { option(s.card, it) }, s.card.lexicon,
                 s.status, s.alert, s.card.id in undoable, track?.key, track?.name?.let(com.pocketstudio.model.DefaultNames::shown).orEmpty(),
-                heard = FACTS[s.card.id].orEmpty().mapNotNull { id -> r.fact(id)?.text },
+                heard = if (s.card.id == READY) listOf(readyLine(p)) else FACTS[s.card.id].orEmpty().mapNotNull { id -> r.fact(id)?.text },
                 effects = if (s.card.stage == 3 && s.card.id !in NO_EFFECTS) effects.filter { fx -> s.card.target == com.pocketstudio.model.guide.GuideRoles.SONG || fx.role in rolesOf(s.card.target) }.map { it.ui } else emptyList(),
             )
         }
@@ -420,7 +450,19 @@ class GuideViewModel(
         return out
     }
 
+    /** « House du soir · 2:40 · 6 parties »: the song just made, in a line (as « Ton morceau est prêt » said it). */
+    private fun readyLine(p: Project): String = listOf(
+        com.pocketstudio.model.DefaultNames.shown(p.name), GuideAnalyzer.duration(p),
+        if (p.song.size == 1) tr("1 partie") else tr("%d parties", p.song.size),
+    ).filter { it.isNotBlank() }.joinToString(" · ")
+
     companion object {
+        /** « Ton morceau est prêt » (G5): the first card of a song just made. */
+        const val READY = com.pocketstudio.model.guide.GuideStart.READY
+
+        /** The screen [GuideOpen.spot] of a [com.pocketstudio.model.guide.GuideAction.PLAY]: the song plays ([GuideOpen.target] "drop" or "start"). */
+        const val PLAY = "play"
+
         /** A burst of edits (a slider drag) is analysed once, this long after the last one. */
         const val DEBOUNCE_MS = 300L
 

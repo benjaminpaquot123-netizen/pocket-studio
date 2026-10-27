@@ -30,7 +30,7 @@ data class GuideParcours(
     fun why(role: String, effect: com.pocketstudio.model.EffectType): String =
         whys[role]?.get(effect.name) ?: whys["*"]?.get(effect.name) ?: ""
 
-    /** The cards of the Mode simple (stages 1, 4, 6 and 7), or all of them. */
+    /** The cards of the Mode simple (« Pour commencer » and stages 1, 4, 6 and 7), or all of them. */
     fun cardsFor(simple: Boolean): List<GuideCard> = if (simple) cards.filter { it.simple } else cards
 
     companion object {
@@ -123,6 +123,9 @@ data class GuideProposal(
  * - [BALANCE]: each measured track's fader moved toward its role's place ([GuideLevels]);
  * - [MONO]: the lows in mono up to 150 Hz and no widener past 100 %;
  * - [LISTEN]: the app plays a check ([name] "mono", "phone", "reference"; no change here).
+ * G5 (« Ton morceau est prêt »):
+ * - [PLAY]: the app plays the song ([name] "drop": from about 8 bars before its first Drop, "start": from
+ *   its first bar); nothing changes, the card is decided.
  * [target]: a role, empty for the card's own; [track]: one track's key instead ([GuideTrack.key]).
  */
 @Serializable
@@ -145,7 +148,7 @@ data class GuideAction(
     val track: String = "",
 ) {
     /** It changes the project (not [KEEP] nor [OPEN]). */
-    val edits: Boolean get() = type != KEEP && type != OPEN && type != REFUSE && type != LATER && type != LISTEN
+    val edits: Boolean get() = type != KEEP && type != OPEN && type != REFUSE && type != LATER && type != LISTEN && type != PLAY
 
     /**
      * Its change can be heard in the « Sans / Avec » (the first peak, 8 bars, at the same loudness): not the
@@ -183,16 +186,25 @@ data class GuideAction(
         const val BALANCE = "balance"
         const val MONO = "mono"
         const val LISTEN = "listen"
+        const val PLAY = "play"
         val TYPES = setOf(
             KEEP, OPEN, INSERT, NUDGE, CHAIN, BYPASS, SEND, VOLUME, PAN, TARGET, DUCK, LOW_CUT, PANS, RETURNS, MUTE, COPY_CHAIN, UNSOLO, REFUSE, LATER,
-            SUBTRACT, CURVE, FILL, BALANCE, MONO, LISTEN,
+            SUBTRACT, CURVE, FILL, BALANCE, MONO, LISTEN, PLAY,
         )
     }
 }
 
-/** The seven stages of a parcours (plus the frame, 0), their names in the plan and the summary. */
+/**
+ * The seven stages of a parcours (plus the frame, 0), their names in the plan and the summary; G5:
+ * « Pour commencer » ([START]) before them, the common cards of a new song ([GuideLibrary.COMMON]).
+ */
 object GuideStages {
     const val COUNT = 8
+
+    /** « Pour commencer »: « Ton morceau est prêt », « Mon premier morceau », the first steps of a song made by hand. */
+    const val START = -1
+    const val START_TITLE = "Pour commencer"
+    const val START_SHORT = "le départ"
 
     /** Each stage's title in the plan (French, shown through [guideText]). */
     val TITLES = listOf(
@@ -204,10 +216,10 @@ object GuideStages {
     val SHORT = listOf("le cadre", "les sons", "les couches", "les effets", "l'arrangement", "le mouvement", "les niveaux", "l'export")
 
     /** The stages of the Mode simple; the others are under « Aller plus loin ». */
-    val SIMPLE = setOf(1, 4, 6, 7)
+    val SIMPLE = setOf(START, 1, 4, 6, 7)
 
-    fun title(stage: Int): String = guideText(TITLES.getOrElse(stage) { TITLES.last() })
-    fun short(stage: Int): String = guideText(SHORT.getOrElse(stage) { SHORT.last() })
+    fun title(stage: Int): String = guideText(if (stage == START) START_TITLE else TITLES.getOrElse(stage) { TITLES.last() })
+    fun short(stage: Int): String = guideText(if (stage == START) START_SHORT else SHORT.getOrElse(stage) { SHORT.last() })
 }
 
 /** The parcours on disk, read once each. */
@@ -229,14 +241,27 @@ object GuideLibrary {
     /** The card of serious fact [factId] ("alert.<id>" in `guides/alerts.json`), or null. */
     fun alert(factId: String): GuideCard? = forStyle(ALERTS)?.card("alert.$factId")
 
-    /** The parcours of [project]: its style's, the generic one for a song made by hand. */
-    fun forProject(project: Project): GuideParcours =
-        project.style?.takeIf { it != ALERTS }?.let(::forStyle) ?: forStyle(GuideParcours.GENERIC) ?: GuideParcours(style = GuideParcours.GENERIC)
+    /**
+     * The parcours of [project]: its style's, the generic one for a song made by hand, with the common
+     * cards ([COMMON], G5) in their stages (« Pour commencer » first, the Remix at the end); each one
+     * applies only when its detectors hold.
+     */
+    fun forProject(project: Project): GuideParcours {
+        val base = project.style?.takeIf { it != ALERTS && it != COMMON }?.let(::forStyle) ?: forStyle(GuideParcours.GENERIC) ?: GuideParcours(style = GuideParcours.GENERIC)
+        val common = forStyle(COMMON)?.cards.orEmpty()
+        if (common.isEmpty()) return base
+        return merged.getOrPut(base.style) { base.copy(cards = (base.cards + common.filter { c -> base.card(c.id) == null }).sortedBy { it.stage }) }
+    }
+
+    private val merged = ConcurrentHashMap<String, GuideParcours>()
 
     private val SAFE = Regex("[a-z0-9_]{1,40}")
 
     /** The file of the alerts' cards (a parcours of its own, never followed). */
     const val ALERTS = "alerts"
+
+    /** G5: the common cards of every parcours (`guides/common.json`), merged by [forProject]. */
+    const val COMMON = "common"
 }
 
 /** A text of the Guide's data (a card, a stage) in the interface's language. */

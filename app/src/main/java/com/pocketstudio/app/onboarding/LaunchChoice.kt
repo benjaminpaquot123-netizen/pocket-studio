@@ -188,7 +188,7 @@ private fun clock(seconds: Int) = "%d:%02d".format(seconds / 60, seconds % 60)
 @Composable
 internal fun LaunchChooser(
     gate: LaunchGate, vm: com.pocketstudio.app.rhythm.RhythmViewModel, projectsVm: com.pocketstudio.app.projects.ProjectsViewModel,
-    missions: com.pocketstudio.app.learn.MissionPrefs, show: Boolean, simple: Boolean, actions: LaunchActions,
+    show: Boolean, simple: Boolean, actions: LaunchActions,
     hasProject: Boolean = true,
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
@@ -204,7 +204,7 @@ internal fun LaunchChooser(
     // Its last save, for « modifié il y a 2 h ».
     androidx.compose.runtime.LaunchedEffect(Unit) { projectsVm.refresh() }
     val now = androidx.compose.runtime.remember { System.currentTimeMillis() }
-    LaunchChoice(true, launchUi(project, list.projects.firstOrNull { it.id == vm.projectId }, now, simple, missions.active).copy(hasProject = hasProject), actions)
+    LaunchChoice(true, launchUi(project, list.projects.firstOrNull { it.id == vm.projectId }, now, simple, project.guide.start == com.pocketstudio.model.guide.GuideStart.FIRST).copy(hasProject = hasProject), actions)
 }
 
 /** The choices; nothing in the project changes nor plays until one is made. */
@@ -277,7 +277,7 @@ fun LaunchScreen(ui: LaunchUi, actions: LaunchActions) {
                 ) {
                     TextButton(onClick = actions.missions, modifier = Modifier.heightIn(min = 48.dp).align(Alignment.CenterVertically).testTag("launch_missions")) {
                         Icon(Icons.Filled.Flag, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.padding(end = 6.dp).size(20.dp))
-                        Text(if (ui.missionsActive) tr("Reprendre les missions") else tr("Missions : Mon premier morceau"), color = Neon.TextPrimary)
+                        Text(if (ui.missionsActive) tr("Reprendre Mon premier morceau") else tr("Mon premier morceau, avec le Guide"), color = Neon.TextPrimary)
                     }
                     ModeSwitch(ui.simple, actions.chooseMode, Modifier.align(Alignment.CenterVertically))
                 }

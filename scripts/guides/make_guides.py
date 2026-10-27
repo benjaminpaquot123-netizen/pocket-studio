@@ -1132,6 +1132,102 @@ CODE_TEXTS = [
 ]
 
 
+
+# --- The common cards (G5): the start of every song, then the Remix -----------------------------------
+# guides/common.json, merged into every parcours by GuideLibrary.forProject: « Pour commencer » (stage -1)
+# takes over « Ton morceau est prêt », the Missions « Mon premier morceau » and the « Prochaine étape » of a
+# song made by hand; the Remix closes stage 7. Each card applies only when its detectors say (« start:first »
+# a first song, « start:any » a song the assistant just made, « by_hand » a song made by hand).
+
+START = -1
+
+
+def play(pid, label, why, name):
+    return prop(pid, label, why, {"type": "play", "name": name})
+
+
+def later_prop():
+    return prop("later", T("Plus tard", "Later", "Later"), T("Je te le reproposerai à la fin.", "I'll offer it again at the end.", "Ik stel het aan het eind opnieuw voor."), {"type": "later"})
+
+
+COMMON = [
+    card("start.style", START, T("Choisis un style", "Choose a style", "Kies een stijl"),
+         T("L'appli écrit tout le morceau pour toi : rythme, basse, accords et mélodie. Ensuite, tu le fais tien.",
+           "The app writes the whole song for you: beat, bass, chords and melody. Then you make it yours.",
+           "De app schrijft het hele nummer voor je: ritme, bas, akkoorden en melodie. Daarna maak je het van jou."),
+         simple=True, applicable=["start:first", "!style"], done=["song2"], lexicon="part",
+         proposals=[open_spot("style", T("Choisir un style", "Choose a style", "Een stijl kiezen"),
+                              T("Un style, une ambiance : le morceau est prêt en une minute.", "A style, a mood: the song is ready in a minute.", "Een stijl, een sfeer: het nummer is in een minuut klaar."), "new.style"),
+                    keep(T("Je pars de zéro", "I'll start from scratch", "Ik begin vanaf nul"),
+                         T("Tu poses toi-même le rythme, la basse et la mélodie.", "You lay down the beat, the bass and the melody yourself.", "Je zet zelf het ritme, de bas en de melodie neer."))]),
+    card("start.ready", START, T("Ton morceau est prêt !", "Your song is ready!", "Je nummer is klaar!"),
+         T("Écoute-le, puis fais-le tien : un son, la structure, et partage-le.",
+           "Listen to it, then make it yours: a sound, the structure, and share it.",
+           "Luister ernaar en maak het van jou: een geluid, de structuur, en deel het."),
+         simple=True, applicable=["start:any", "style"], lexicon="drop",
+         proposals=[play("drop", T("Écouter", "Listen", "Luisteren"),
+                         T("Juste avant le premier Drop : le meilleur moment, tout de suite.", "Just before the first Drop: the best moment, right away.", "Vlak voor de eerste Drop: meteen het beste moment."), "drop"),
+                    play("start", T("Depuis le début", "From the start", "Vanaf het begin"),
+                         T("Tout le morceau, de la première mesure.", "The whole song, from the first bar.", "Het hele nummer, vanaf de eerste maat."), "start"),
+                    open_spot("guide", T("Le guide de ton morceau", "Your song's guide", "De gids van je nummer"),
+                              T("Ses parties, ce que chacune ajoute, et quoi essayer.", "Its parts, what each one adds, and what to try.", "Zijn delen, wat elk toevoegt, en wat je kunt proberen."), "song.guide")],
+         elsewhere=[open_spot("sound", T("Changer un son", "Change a sound", "Een geluid wisselen"), T("Le son de la mélodie, en un toucher.", "The melody's sound, in one touch.", "De klank van de melodie, met één tik."), "sounds.main"),
+                    open_spot("structure", T("Modifier le morceau", "Edit the song", "Nummer aanpassen"), T("Ses parties, dans l'ordre.", "Its parts, in order.", "Zijn delen, op volgorde."), "song.parts"),
+                    open_spot("share", T("Partager", "Share", "Delen"), T("Les vérifications, puis le fichier.", "The checks, then the file.", "De controles, dan het bestand."), "share.check")]),
+    card("start.sound", START, T("Change un son", "Change a sound", "Verander een geluid"),
+         T("Fais-le tien : un autre son pour la mélodie ou pour la batterie.", "Make it yours: another sound for the melody or the drums.", "Maak het van jou: een andere klank voor de melodie of de drums."),
+         simple=True, applicable=["start:first", "style"], done=["start_changed:sound"], lexicon="lead",
+         proposals=[open_spot("melody", T("Le son de la mélodie", "The melody's sound", "De klank van de melodie"), T("Touche-en un : tu l'entends tout de suite.", "Touch one: you hear it at once.", "Tik er een aan: je hoort het meteen."), "sounds.main"),
+                    open_spot("kit", T("Une autre batterie", "Another drum kit", "Een ander drumstel"), T("Les mêmes coups, un autre son.", "The same hits, another sound.", "Dezelfde slagen, een andere klank."), "rhythm.kit")]),
+    card("start.melody", START, T("Enregistre une mélodie", "Record a melody", "Neem een melodie op"),
+         T("Touche « ● Enregistrer ma mélodie » et joue quelques notes : le clavier reste dans la gamme, aucune fausse note.",
+           "Touch « ● Record my melody » and play a few notes: the keyboard stays in the scale, no wrong note.",
+           "Tik op « ● Mijn melodie opnemen » en speel een paar noten: het klavier blijft in de toonladder, geen valse noot."),
+         simple=True, applicable=["start:first", "style"], done=["start_changed:notes"], lexicon="scale",
+         proposals=[open_spot("keys", T("Ouvrir le clavier", "Open the keyboard", "Het klavier openen"), T("Le bouton d'enregistrement s'allume.", "The record button lights up.", "De opnameknop licht op."), "record.melody"),
+                    open_spot("notes", T("Voir les notes", "See the notes", "De noten bekijken"), T("Celles de la mélodie, à toucher une par une.", "The melody's, to touch one by one.", "Die van de melodie, één voor één aan te tikken."), "notes.track", target="lead")]),
+    card("start.arrange", START, T("Arrange les parties", "Arrange the parts", "Schik de delen"),
+         T("Appui long sur une partie : ajoute un Fill, un Break ou une Montée.", "Long press on a part: add a Fill, a Break or a Build-up.", "Lang drukken op een deel: voeg een Fill, een Break of een Opbouw toe."),
+         simple=True, applicable=["start:first", "style"], done=["start_changed:arrange"], lexicon="fill",
+         proposals=[open_spot("parts", T("Voir les parties", "See the parts", "De delen bekijken"), T("Le morceau, partie par partie.", "The song, part by part.", "Het nummer, deel per deel."), "song.parts"),
+                    later_prop()]),
+    card("start.beat", START, T("Pose un rythme", "Lay down a beat", "Zet een ritme neer"),
+         T("Touche les cases de la grille : le kick sur chaque temps, pour commencer.", "Touch the grid's cells: the kick on every beat, to start with.", "Tik op de vakjes van het raster: de kick op elke tel, om te beginnen."),
+         simple=True, applicable=["by_hand"], done=["beat"], lexicon="kick",
+         proposals=[open_spot("grid", T("Aller à la grille", "Go to the grid", "Naar het raster"), T("Seize cases par mesure.", "Sixteen cells a bar.", "Zestien vakjes per maat."), "rhythm.pattern"),
+                    open_spot("kit", T("Choisir une batterie", "Choose a drum kit", "Een drumstel kiezen"), T("Le son des coups.", "The hits' sound.", "De klank van de slagen."), "rhythm.kit")]),
+    card("start.bassline", START, T("Ajoute une basse", "Add a bass", "Voeg een bas toe"),
+         T("Une ligne grave : génère une basse acide, ou joue des notes graves au clavier d'une piste.", "A low line: generate an acid bass, or play low notes on a track's keyboard.", "Een lage lijn: genereer een acid-bas, of speel lage noten op het klavier van een spoor."),
+         simple=True, applicable=["by_hand"], done=["bassline"], lexicon="bass",
+         proposals=[open_spot("acid", T("Générer une basse acide", "Generate an acid bass", "Een acid-bas genereren"), T("Une ligne 303, en un toucher.", "A 303 line, in one touch.", "Een 303-lijn, met één tik."), "acid"),
+                    open_spot("notes", T("Jouer la basse au clavier", "Play the bass on the keyboard", "De bas op het klavier spelen"), T("Les notes du bas du clavier.", "The keyboard's low notes.", "De lage noten van het klavier."), "notes.track", target="bass")]),
+    card("start.tune", START, T("Ajoute une mélodie", "Add a melody", "Voeg een melodie toe"),
+         T("Joue quelques notes au clavier d'une piste : il reste dans la gamme.", "Play a few notes on a track's keyboard: it stays in the scale.", "Speel een paar noten op het klavier van een spoor: het blijft in de toonladder."),
+         simple=True, applicable=["by_hand"], done=["tune"], lexicon="lead",
+         proposals=[open_spot("keys", T("Ouvrir le clavier", "Open the keyboard", "Het klavier openen"), T("Le bouton d'enregistrement s'allume.", "The record button lights up.", "De opnameknop licht op."), "record.melody"),
+                    open_spot("notes", T("Écrire les notes", "Write the notes", "De noten schrijven"), T("Une note par toucher, sur la grille.", "One note a touch, on the grid.", "Eén noot per tik, op het raster."), "notes.track", target="lead")]),
+    card("start.parts", START, T("Fais une deuxième partie", "Make a second part", "Maak een tweede deel"),
+         T("Duplique ta partie et change-la : un couplet, un refrain. Donne-leur un nom pour t'y retrouver.",
+           "Duplicate your part and change it: a verse, a chorus. Give them a name to find your way.",
+           "Dupliceer je deel en verander het: een couplet, een refrein. Geef ze een naam om je weg te vinden."),
+         simple=True, applicable=["by_hand"], done=["parts2"], lexicon="part",
+         proposals=[open_spot("parts", T("Voir les parties", "See the parts", "De delen bekijken"), T("Dupliquer, renommer.", "Duplicate, rename.", "Dupliceren, hernoemen."), "song.parts"), later_prop()]),
+    card("start.song", START, T("Enchaîne tes parties", "Chain your parts", "Zet je delen achter elkaar"),
+         T("Au moins trois parties dans le morceau, avec un début et une fin.", "At least three parts in the song, with a start and an end.", "Minstens drie delen in het nummer, met een begin en een einde."),
+         simple=True, applicable=["by_hand"], done=["song3"], lexicon="chorus",
+         proposals=[open_spot("parts", T("Voir les parties", "See the parts", "De delen bekijken"), T("Ajoute-les dans l'ordre.", "Add them in order.", "Voeg ze op volgorde toe."), "song.parts"), later_prop()]),
+    card("share.remix", 7, T("Remixer un morceau", "Remix a song", "Een nummer remixen"),
+         T("L'appli sépare une chanson en batterie, basse, voix et le reste : rejoue-la à ta façon.",
+           "The app splits a song into drums, bass, vocals and the rest: play it again your way.",
+           "De app splitst een nummer in drums, bas, zang en de rest: speel het op jouw manier."),
+         kind="check", simple=True, applicable=["start:any"], lexicon="",
+         proposals=[open_spot("remix", T("Remixer une chanson", "Remix a song", "Een nummer remixen"), T("Choisis un fichier de ton téléphone.", "Pick a file from your phone.", "Kies een bestand van je telefoon."), "remix"),
+                    keep(T("Pas maintenant", "Not now", "Niet nu"), T("Il t'attend dans Sons › Remix, quand tu veux.", "It waits for you in Sounds › Remix, whenever you like.", "Het wacht op je in Klanken › Remix, wanneer je wilt."))]),
+]
+
+# The stage of « Pour commencer » (GuideStages.START_TITLE, START_SHORT), shown by the app.
+CODE_TEXTS_G5 = [T("Pour commencer", "Getting started", "Om te beginnen"), T("le départ", "the start", "het begin")]
+
 # --- Writing ----------------------------------------------------------------------------------------
 
 class Texts:
@@ -1220,7 +1316,10 @@ def main(out_dir=RES):
     write_json(os.path.join(out_dir, "guides", "alerts.json"), {
         "format": FORMAT, "style": "alerts", "version": PARCOURS_VERSION, "cards": [render(c, texts) for c in ALERTS],
     })
-    for t in CODE_TEXTS:
+    write_json(os.path.join(out_dir, "guides", "common.json"), {
+        "format": FORMAT, "style": "common", "version": PARCOURS_VERSION, "cards": [render(c, texts) for c in COMMON],
+    })
+    for t in CODE_TEXTS + CODE_TEXTS_G5:
         texts.put(t)
     for lang, table in (("en", texts.en), ("nl", texts.nl)):
         write_json(os.path.join(out_dir, "i18n", lang, "guide.json"), dict(sorted(table.items())))

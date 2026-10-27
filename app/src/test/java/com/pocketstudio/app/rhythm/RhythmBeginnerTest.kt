@@ -43,34 +43,28 @@ class RhythmBeginnerTest {
     }
 
     /**
-     * The Rythme tab right after the assistant: the "Prochaine étape" card on top (the volumes are
-     * next), the song's Play choice. [room]: the height between the top bar and the tabs (status
-     * bar 24, top bar 56, tabs 80, gesture bar 24 dp).
+     * The Rythme tab right after the assistant (G5: the Guide's bar, 48 dp, under it instead of the
+     * « Prochaine étape » card on top), the song's Play choice. [room]: the height between the top
+     * bar and the Guide's bar (status bar 24, top bar 56, the Guide's bar 48, tabs 80, gesture bar 24 dp).
      */
     private fun firstRowBottomAfterTheAssistant(room: androidx.compose.ui.unit.Dp) {
         val project = RhythmViewModel.starterProject()
-        val steps = com.pocketstudio.app.onboarding.nextSteps(project)
-            .map { it.copy(done = it.goal < com.pocketstudio.app.onboarding.StepGoal.Volumes) }
         compose.setContent {
             PocketStudioTheme {
-                RhythmScreen(
-                    project, TransportUi(), LiveUi(), canUndo = false, canRedo = false, actions = RhythmActions(),
-                    header = { com.pocketstudio.app.onboarding.NextStepCard(steps) },
-                )
+                RhythmScreen(project, TransportUi(), LiveUi(), canUndo = false, canRedo = false, actions = RhythmActions())
             }
         }
-        compose.onNodeWithTag("next_steps_compact").assertIsDisplayed()
         val first = compose.onNodeWithTag("step_0").getBoundsInRoot()
         assertTrue("first step row ends at ${first.bottom}, the screen shows $room", first.bottom <= room)
         compose.onNodeWithTag("pads_hint").assertIsDisplayed()
     }
 
     @Test
-    fun theFirstRowOfStepsIsOnAPhoneScreenWithoutScrolling() = firstRowBottomAfterTheAssistant(890.dp - 184.dp)
+    fun theFirstRowOfStepsIsOnAPhoneScreenWithoutScrolling() = firstRowBottomAfterTheAssistant(890.dp - 232.dp)
 
     @Test
     @Config(qualifiers = "w360dp-h800dp-xxhdpi")
-    fun theFirstRowOfStepsIsOnASmallPhoneScreenToo() = firstRowBottomAfterTheAssistant(800.dp - 184.dp)
+    fun theFirstRowOfStepsIsOnASmallPhoneScreenToo() = firstRowBottomAfterTheAssistant(800.dp - 232.dp)
 
     /** One transport for the whole app (the top bar and the strip under it): Rythme has no ▶, no tempo, no ↶ of its own. */
     @Test

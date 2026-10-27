@@ -39,6 +39,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -294,7 +295,8 @@ fun GuideCard(
     NeonCard(modifier.testTag("guide_card_${card.id}"), accent = if (card.alert) Neon.Amber else Neon.Cyan) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                (if (card.alert) tr("À corriger") else tr("Étape %1\$d · %2\$s", card.stage, GuideStages.title(card.stage))).uppercase(),
+                (if (card.alert) tr("À corriger") else if (card.stage == GuideStages.START) GuideStages.title(card.stage)
+                else tr("Étape %1\$d · %2\$s", card.stage, GuideStages.title(card.stage))).uppercase(),
                 style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = if (card.alert) Neon.Amber else Neon.Cyan,
                 modifier = Modifier.weight(1f),
             )
@@ -366,6 +368,8 @@ fun GuideCard(
             }
         }
         val word = SoundGlossary.ALL.firstOrNull { it.key == card.lexicon }
+        // G5: the card's word, heard and said in a line before the decision (« pré-entraînement »); the glossary one touch further.
+        if (word != null) WordLine(word, learn)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.padding(top = 4.dp)) {
             // A card picked in the plan: the way back to the one in progress.
             if (picked) SmallAction("← " + tr("Revenir à l'étape en cours"), "guide_back_to_next") { actions.select(null) }
@@ -374,6 +378,41 @@ fun GuideCard(
             if (word != null) SmallAction(tr("En savoir plus"), "guide_learn") { learn.open(word.term) }
             if (card.undoable) SmallAction(tr("Annuler mon choix"), "guide_undo") { actions.undo(card.id) }
             if (card.status != GuideStatus.SKIPPED) SmallAction(tr("Ne plus proposer"), "guide_refuse") { actions.refuse(card.id) }
+        }
+    }
+}
+
+/**
+ * The word a card is about (« Sidechain (pompe) »), what it means in a line, and ▶ its example (the
+ * glossary's): heard before deciding, not after. A touch on the line opens the glossary on it.
+ */
+@Composable
+private fun WordLine(word: com.pocketstudio.model.learn.SoundWord, learn: com.pocketstudio.app.learn.LearnHost) {
+    val playing by learn.playing.collectAsStateWithLifecycle()
+    val mine = playing?.takeIf { it.key == word.key }
+    Row(
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(Neon.SurfaceHigh.copy(alpha = 0.6f)).testTag("guide_word"),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            Modifier.size(48.dp).clip(CircleShape)
+                .clickable(role = Role.Button, onClickLabel = if (mine != null) tr("Arrêter") else tr("Écouter un exemple")) { learn.toggle(word.key) }
+                .semantics { contentDescription = tr("Écouter un exemple : %s", word.term) }
+                .testTag("guide_word_listen"),
+            contentAlignment = Alignment.Center,
+        ) {
+            when {
+                mine?.preparing == true -> CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp, color = Neon.Cyan)
+                mine != null -> Icon(Icons.Filled.Stop, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(20.dp))
+                else -> Icon(Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(22.dp))
+            }
+        }
+        Column(
+            Modifier.weight(1f).clickable(role = Role.Button, onClickLabel = tr("En savoir plus")) { learn.open(word.term) }
+                .padding(end = 10.dp, top = 6.dp, bottom = 6.dp),
+        ) {
+            Text(tr("Le mot : %s", word.term), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Cyan, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(word.text, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 2, overflow = TextOverflow.Ellipsis)
         }
     }
 }

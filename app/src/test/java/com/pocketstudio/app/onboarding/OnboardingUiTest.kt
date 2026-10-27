@@ -67,41 +67,6 @@ class OnboardingUiTest {
     }
 
     @Test
-    fun theNextStepCardGoesToTheRightTabAndCloses() {
-        val tabs = mutableListOf<AppTab>()
-        var closed = false
-        // The starter beat: the melody is next, in Synthé.
-        val steps = nextSteps(RhythmViewModel.starterProject())
-        compose.setContent { PocketStudioTheme { NextStepCard(steps, go = { tabs += it }, close = { closed = true }, compact = false) } }
-        compose.onNodeWithTag("next_step_title").assertExists()
-        compose.onNodeWithText("3. Mélodie").assertExists()
-        compose.onNodeWithTag("next_step_go").performClick()
-        assertEquals(listOf(AppTab.Synthe), tabs)
-        // Another step chosen: its hint and its button.
-        compose.onNodeWithTag("next_step_Song").performClick()
-        compose.onNodeWithText("5. Morceau").assertExists()
-        compose.onNodeWithTag("next_step_go").performClick()
-        assertEquals(AppTab.Morceau, tabs.last())
-        compose.onNodeWithTag("next_steps_close").performClick()
-        assertEquals(true, closed)
-    }
-
-    @Test
-    fun aStepOnTheRhythmTabHasNoButtonAndAManualOneCanBeTicked() {
-        val marked = mutableListOf<StepGoal>()
-        compose.setContent {
-            PocketStudioTheme {
-                NextStepCard(nextSteps(com.pocketstudio.model.Project()), mark = { marked += it }, compact = false)
-            }
-        }
-        compose.onNodeWithText("1. Rythme").assertExists()
-        compose.onNodeWithTag("next_step_go").assertDoesNotExist()
-        compose.onNodeWithTag("next_step_Share").performClick()
-        compose.onNodeWithTag("next_step_done").performClick()
-        assertEquals(listOf(StepGoal.Share), marked)
-    }
-
-    @Test
     fun newProjectChoicesAreGroupedUnderHeadings() {
         var wizard = 0
         val created = mutableListOf<Int>()
@@ -237,63 +202,6 @@ class OnboardingUiTest {
         // House is club music: the kick plays everywhere but in the Break.
         compose.onNodeWithText("Joue dans Intro, Groove et Drop").assertExists()
     }
-    @Test
-    fun theShareStepIsTickedOnlyOnceTheSongIsShared() {
-        val marked = mutableListOf<StepGoal>()
-        var shared = 0
-        // Everything done but the sharing: the card shows it, with its one-touch button.
-        val steps = nextSteps(com.pocketstudio.model.Project()).map { it.copy(done = it.goal != StepGoal.Share) }
-        compose.setContent { PocketStudioTheme { NextStepCard(steps, mark = { marked += it }, share = { shared++ }, compact = false) } }
-        compose.onNodeWithText("8. Partager").assertExists()
-        compose.onNodeWithTag("next_step_go").performClick()
-        // The export and the share sheet tick it (ShareSongProgress), not the touch: cancelling leaves it to do.
-        assertEquals(1, shared)
-        assertEquals(emptyList<StepGoal>(), marked)
-    }
-
-    @Test
-    fun onAPhoneTheCardIsOneLineThatOpens() {
-        val tabs = mutableListOf<AppTab>()
-        // Right after the assistant: rhythm, bass, melody, sections and song done, the volumes next.
-        val steps = nextSteps(com.pocketstudio.model.Project()).map { it.copy(done = it.goal < StepGoal.Volumes) }
-        compose.setContent { PocketStudioTheme { NextStepCard(steps, go = { tabs += it }) } }
-        // A phone's width: one line, the step's name, no hint or button yet.
-        compose.onNodeWithTag("next_steps_compact").assertExists()
-        compose.onNodeWithText("Volumes").assertExists()
-        compose.onNodeWithTag("next_step_go").assertDoesNotExist()
-        compose.onNodeWithTag("next_steps_compact").performClick()
-        compose.onNodeWithText("6. Volumes").assertExists()
-        compose.onNodeWithTag("next_step_go").performClick()
-        assertEquals(listOf(AppTab.Mixeur), tabs)
-        // And it folds back to its line.
-        compose.onNodeWithTag("next_steps_shrink").performClick()
-        compose.onNodeWithTag("next_steps_compact").assertExists()
-    }
-
-    @Test
-    fun theRhythmStepBringsTheGridIntoView() {
-        var shown = 0
-        compose.setContent { PocketStudioTheme { NextStepCard(nextSteps(com.pocketstudio.model.Project()), showHere = { shown++ }, compact = false) } }
-        compose.onNodeWithText("1. Rythme").assertExists()
-        compose.onNodeWithTag("next_step_here").assertTextEquals("Voir la grille").performClick()
-        assertEquals(1, shown)
-    }
-
-    @Test
-    fun aClosedCardCanBeShownAgain() {
-        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<android.content.Context>()
-        val prefs = NextStepPrefs(context, "p-reopen")
-        val before = NextStepPrefs.changes
-        prefs.close()
-        assertEquals(true, NextStepPrefs(context, "p-reopen").closed)
-        prefs.reopen()
-        assertEquals(false, NextStepPrefs(context, "p-reopen").closed)
-        // A card already on screen reads its prefs again.
-        assertEquals(true, NextStepPrefs.changes > before)
-        prefs.mark(StepGoal.Share)
-        assertEquals(setOf(StepGoal.Share), NextStepPrefs(context, "p-reopen").marks)
-    }
-
     private fun houseUi(step: Int): WizardUi {
         val style = StarterWizard.style("house")!!
         val rows = style.lines.associate { l ->

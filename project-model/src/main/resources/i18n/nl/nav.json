@@ -378,5 +378,15 @@
   "La référence": "De referentie",
   "Avec l'effet": "Met het effect",
   "Sans l'effet": "Zonder het effect",
-  "Le Guide écoutera le morceau après la prise.": "De Gids luistert naar het nummer na de opname."
+  "Le Guide écoutera le morceau après la prise.": "De Gids luistert naar het nummer na de opname.",
+  "Écouter un exemple": "Een voorbeeld beluisteren",
+  "Écouter un exemple : %s": "Een voorbeeld beluisteren: %s",
+  "Le mot : %s": "Het woord: %s",
+  "Reprendre Mon premier morceau": "Mijn eerste nummer hervatten",
+  "Mon premier morceau, avec le Guide": "Mijn eerste nummer, met de Gids",
+  "Ses premières cartes, du style au partage": "De eerste kaarten, van de stijl tot het delen",
+  "Ouvrir le Guide de mon morceau": "De Gids van mijn nummer openen",
+  "Les premiers pas, le Guide, le lexique": "De eerste stappen, de Gids, de woordenlijst",
+  "Aide et premiers pas": "Hulp en eerste stappen",
+  "Plus : tes projets, l'aide, les réglages, le clavier MIDI.": "Meer: je projecten, de hulp, de instellingen, het MIDI-klavier."
 }

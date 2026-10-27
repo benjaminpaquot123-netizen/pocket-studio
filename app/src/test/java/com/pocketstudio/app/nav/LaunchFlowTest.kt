@@ -12,7 +12,6 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.lifecycle.Lifecycle
-import com.pocketstudio.app.learn.MissionPrefs
 import com.pocketstudio.app.onboarding.LaunchPrefs
 import com.pocketstudio.app.onboarding.LaunchRule
 import com.pocketstudio.app.settings.SettingsStore
@@ -161,15 +160,6 @@ class LaunchFlowTest {
         assertFalse(exists("projects"))
         assertFalse(exists("launch"))
         compose.onNodeWithTag("timeline_screen").assertIsDisplayed()
-    }
-
-    @Test
-    fun missionsStartTheGuide() {
-        h.start(launchChoice = true)
-        tap("launch_missions")
-        assertFalse(exists("launch"))
-        assertTrue(MissionPrefs(h.app).active)
-        compose.onNodeWithTag("mission_overlay").assertExists()
     }
 
     @Test

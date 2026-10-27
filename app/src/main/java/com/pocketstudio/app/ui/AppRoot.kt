@@ -137,6 +137,8 @@ import com.pocketstudio.app.studio.StudioScreen
 import com.pocketstudio.app.synth.SynthActions
 import com.pocketstudio.app.synth.SynthScreen
 import com.pocketstudio.app.remix.RemixActions
+import com.pocketstudio.app.library.toGuidePages
+import com.pocketstudio.app.library.toSongGuide
 import com.pocketstudio.app.session.SessionActions
 import com.pocketstudio.app.session.SessionScreen
 import com.pocketstudio.app.settings.GuideDialog
@@ -309,11 +311,31 @@ fun AppRoot() {
         if (simple && SimpleTab.of(tab) == null && tab != AppTab.Live && tab != AppTab.Outils && tab != AppTab.Acide && tab != AppTab.Audio) tab = AppTab.Morceau
         if (!simple && tab == AppTab.Envoyer) tab = AppTab.Morceau
     }
-    // « ? qui étiquette l'écran », and where each main control is for it and for the missions.
+    // « ? qui étiquette l'écran », and where each main control is for it and for the Guide.
     var helpLabels by rememberSaveable { mutableStateOf(false) }
     val spots = remember { com.pocketstudio.app.learn.SpotRegistry() }
-    val missions = remember { com.pocketstudio.app.learn.MissionPrefs(context) }
-    com.pocketstudio.app.learn.MissionWatcher(rhythmVm, missions)
+    // Le Guide's panel (G2), opened by itself on a song just made (G5: « Ton morceau est prêt » is its first card).
+    var guideOpen by rememberSaveable(key = "guide_open") { mutableStateOf(false) }
+    // G5: the next song the assistant makes is « Mon premier morceau » (the welcome's guided song).
+    var firstSongNext by rememberSaveable(key = "first_song_next") { mutableStateOf(false) }
+    // G5: a song just made (or « Mon premier morceau ») opens the Guide on its first card by itself,
+    // once per project and visit (« Ton morceau est prêt » was a card over the screen before).
+    // Followed apart from the screen (an edit does not recompose the whole app for it).
+    var welcomedFor by rememberSaveable(key = "guide_welcomed_for") { mutableStateOf<String?>(null) }
+    LaunchedEffect(rhythmVm) {
+        rhythmVm.project.collect { p ->
+            if (welcomedFor != rhythmVm.projectId && com.pocketstudio.model.guide.GuideStart.welcomes(p)) {
+                welcomedFor = rhythmVm.projectId
+                guideOpen = true
+            }
+        }
+    }
+    // G5: a user mid-mission (the old « missions » settings) lands on the Guide's card of the step reached.
+    LaunchedEffect(rhythmVm.projectId) {
+        com.pocketstudio.app.guide.GuideMigration.missions(context)?.let { (step, skipped) ->
+            if (!CurrentProject.isNone(rhythmVm.projectId)) { rhythmVm.guide.fromMissions(step, skipped); guideOpen = true }
+        }
+    }
     // « Ce qui joue »: -2 closed, -1 the whole song, else a scene; [overviewCh]: one track's (-1: all).
     var overviewScene by rememberSaveable { mutableStateOf(-2) }
     var overviewCh by rememberSaveable { mutableStateOf(-1) }
@@ -507,20 +529,19 @@ fun AppRoot() {
             dismiss = { overviewScene = -2 },
         )
     }
-    // The assistant made a song: « Ton morceau est prêt » for that project (songReadyFor), then a
-    // short guide to its scenes, opened from the card. Kept through the rebuild that opening the
-    // new project does (the activity is recreated).
-    var songGuide by com.pocketstudio.app.library.rememberSongGuide()
-    var songReadyFor by rememberSaveable(key = "song_ready_for") { mutableStateOf<String?>(null) }
-    // The card folded into its bar above the bottom bar while the song plays (see SongReady).
-    var songReadyFolded by rememberSaveable(key = "song_ready_folded") { mutableStateOf(false) }
+    // G5: the assistant made a song: it starts in the Guide (« Ton morceau est prêt » is its first
+    // card, the panel opens on it), its guide kept with it and read from that card.
     var songGuideOpen by rememberSaveable(key = "song_guide_open") { mutableStateOf(false) }
-    if (songGuideOpen) songGuide?.let { pages ->
+    val songMade: (Project, List<com.pocketstudio.app.settings.GuidePage>) -> Project = { project, guide ->
+        val mode = if (firstSongNext) com.pocketstudio.model.guide.GuideStart.FIRST else com.pocketstudio.model.guide.GuideStart.SONG
+        firstSongNext = false
+        com.pocketstudio.model.guide.GuideStart.begin(project, mode, guide.toSongGuide())
+    }
+    if (songGuideOpen) rhythmVm.project.collectAsStateWithLifecycle().value.guide.songGuide.takeIf { it.isNotEmpty() }?.let { saved ->
         com.pocketstudio.app.settings.GuideDialog(
-            onClose = { songGuide = null; songGuideOpen = false }, pages = pages, tag = "song_guide", done = tr("▶ Écouter mon morceau"),
+            onClose = { songGuideOpen = false }, pages = saved.toGuidePages(), tag = "song_guide", done = tr("▶ Écouter mon morceau"),
             // The guide ends on the song itself, from its first part.
             onDone = {
-                songGuide = null
                 songGuideOpen = false
                 if (!rhythmVm.transport.value.playing) {
                     if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.toggleSong() else rhythmVm.togglePlay()
@@ -568,10 +589,8 @@ fun AppRoot() {
                         deletePack = libraryVm::deletePack,
                         create = {
                             libraryVm.create { project, sounds, guide ->
-                                projectsVm.create(project, sounds, failed = libraryVm::createFailed) { id ->
-                                    songGuide = guide
-                                    songReadyFor = id
-                                    songReadyFolded = false
+                                projectsVm.create(songMade(project, guide), sounds, failed = libraryVm::createFailed) { id ->
+                                    guideOpen = true
                                     libraryVm.closeWizard()
                                     tab = AppTab.Morceau  // the song is ready to hear: land on it (kept across the rebuild)
                                     openProject(id)
@@ -633,10 +652,8 @@ fun AppRoot() {
                         quickStyle = { id ->
                             rhythmVm.stop()
                             libraryVm.quickCreate(id) { project, sounds, guide ->
-                                projectsVm.create(project, sounds, failed = libraryVm::quickFailed) { newId ->
-                                    songGuide = guide
-                                    songReadyFor = newId
-                                    songReadyFolded = false
+                                projectsVm.create(songMade(project, guide), sounds, failed = libraryVm::quickFailed) { newId ->
+                                    guideOpen = true
                                     libraryVm.quickDone()
                                     tab = AppTab.Morceau  // the song is ready to hear: land on it (kept across the rebuild)
                                     openProject(newId)
@@ -713,8 +730,8 @@ fun AppRoot() {
         simple = settings.simpleMode,
         actions = com.pocketstudio.app.onboarding.WelcomeActions(
             chooseMode = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
-            // The guided song is also where the missions « Mon premier morceau » start.
-            guided = { firstLaunchSeen(); missions.begin(); rhythmVm.stop(); libraryVm.openWizard() },
+            // The guided song is « Mon premier morceau »: its song starts on the Guide's first cards (G5).
+            guided = { firstLaunchSeen(); firstSongNext = true; rhythmVm.stop(); libraryVm.openWizard() },
             demo = { firstLaunchSeen(); projectsVm.create(com.pocketstudio.model.Demos.ALL.first().third()) { id -> openProject(id) } },
             empty = { firstLaunchSeen(); projectsVm.create(Project(name = "")) { id -> openProject(id) } },
             later = firstLaunchSeen,
@@ -910,9 +927,6 @@ fun AppRoot() {
     }
 
     val landscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
-    // Lying down, the « Prochaine étape » strip shows only once Outils › Aide asked for it, on Rythme.
-    var stepsAsked by rememberSaveable { mutableStateOf(false) }
-    LaunchedEffect(tab) { if (tab != AppTab.Rythme) stepsAsked = false }
     // Phase 36: the Live page is a space of its own (the bottom bar stays; its own bar replaces the
     // app's). It goes back to where it was opened from.
     val showLive = tab == AppTab.Live
@@ -1043,12 +1057,15 @@ fun AppRoot() {
         changeSound = trackSound, setVolume = rhythmVm::setChannelVolume, toggleMute = rhythmVm::toggleMute, toggleSolo = rhythmVm::toggleSolo,
     )
     val learn = com.pocketstudio.app.learn.LocalLearn.current
+    // G5: « Mon premier morceau » (the old Missions) on the open song: its first cards, in the Guide.
     val startMissions: () -> Unit = {
-        missions.begin()
+        rhythmVm.guide.beginFirstSong()
         helpLabels = false
+        toolPage = null
         go(AppTab.Morceau)
+        guideOpen = true
     }
-    com.pocketstudio.app.onboarding.LaunchChooser(launch, rhythmVm, projectsVm, missions, show = launch.open && settings.guideSeen, simple = simple,
+    com.pocketstudio.app.onboarding.LaunchChooser(launch, rhythmVm, projectsVm, show = launch.open && settings.guideSeen, simple = simple,
         hasProject = !noProject,
         actions = com.pocketstudio.app.onboarding.LaunchActions(
             // No project to continue: Retour leaves the app (« Mes projets » would only lead back here).
@@ -1059,9 +1076,11 @@ fun AppRoot() {
             missions = {
                 launch.choose()
                 when {
-                    // No project (lot 1): the missions start on a new one (the blank stand-in is never saved).
-                    noProject -> projectsVm.create(Project(name = "")) { id -> if (!missions.active) missions.begin(); openProject(id) }
-                    missions.active -> { helpLabels = false; go(AppTab.Morceau) }
+                    // No project (lot 1): « Mon premier morceau » starts on a new one (the blank stand-in is never saved).
+                    noProject -> projectsVm.create(com.pocketstudio.model.guide.GuideStart.begin(Project(name = ""), com.pocketstudio.model.guide.GuideStart.FIRST)) { id ->
+                        guideOpen = true
+                        openProject(id)
+                    }
                     else -> startMissions()
                 }
             },
@@ -1100,46 +1119,6 @@ fun AppRoot() {
     }
     // « Vidéo pour les réseaux » (from « Prêt à partager ? »): 30 s of the song in 9:16.
     if (showVideo) com.pocketstudio.app.export.video.VideoExportRoute(rhythmVm, close = { showVideo = false })
-    // Once, after the assistant or a style made the song (we land on Morceau): four big choices.
-    // The card's words and choices, for the card and for its bar (folded while the song plays).
-    val songReadyShown = songReadyFor == rhythmVm.projectId && !songGuideOpen
-    val readyDone = { songReadyFor = null; songGuide = null; songReadyFolded = false }
-    @Composable
-    fun songReadyUi(): com.pocketstudio.app.onboarding.SongReadyUi {
-        val readyProject by rhythmVm.project.collectAsStateWithLifecycle()
-        val readyTransport by rhythmVm.transport.collectAsStateWithLifecycle()
-        return com.pocketstudio.app.onboarding.SongReadyUi(
-            com.pocketstudio.model.DefaultNames.shown(readyProject.name),
-            com.pocketstudio.app.export.shareSeconds(readyProject, com.pocketstudio.app.export.ShareSong.MIN_LOOP_BARS),
-            readyProject.song.size, readyTransport.playing,
-            startsLater = com.pocketstudio.model.FirstListen.startsLater(readyProject),
-        )
-    }
-    val songReadyActions = com.pocketstudio.app.onboarding.SongReadyActions(
-        // Decision 2A (S6): about 8 bars before the first Drop; « Depuis le début » next to it.
-        listen = { if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.listenFromDrop() else rhythmVm.togglePlay() },
-        fromStart = { if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.listenFromStart() else rhythmVm.togglePlay() },
-        changeSound = {
-            readyDone()
-            // The tune's track, and the sounds of its kind to pick from (one touch): the Synthé tab shows it behind.
-            val track = com.pocketstudio.app.onboarding.mainTrackOf(rhythmVm.project.value) ?: 0
-            rhythmVm.selectTrack(track)
-            tab = AppTab.Synthe
-            soundChooserTrack = track
-        },
-        // The Morceau tab's list of parts (the timeline stays one touch away from it).
-        structure = { readyDone(); tab = AppTab.Morceau },
-        share = { readyDone(); showShare = true },
-        guide = if (songGuide == null) null else ({ songReadyFor = null; songReadyFolded = false; songGuideOpen = true }),
-        close = readyDone,
-    )
-    // Once, after the assistant or a style made the song (we land on Morceau): four big choices.
-    if (songReadyShown) {
-        com.pocketstudio.app.onboarding.SongReady(
-            pending = true, projectId = rhythmVm.projectId, ui = songReadyUi(), actions = songReadyActions,
-            folded = songReadyFolded, fold = { songReadyFolded = true },
-        )
-    }
     // The timeline (in Structure or on the whole screen): two touches on a clip open its editor on
     // that part (the track's scene there, in Sons); a curve opens in Mix.
     val openFromTimeline: (Int, String) -> Unit = { i, key ->
@@ -1197,7 +1176,6 @@ fun AppRoot() {
     // over what is edited: it takes its own room), « Voir le réglage » lighting the control.
     val guideVm = rhythmVm.guide
     LaunchedEffect(guideVm, simple) { guideVm.setSimple(simple) }
-    var guideOpen by rememberSaveable { mutableStateOf(false) }
     var guideSelected by rememberSaveable { mutableStateOf<String?>(null) }
     var guideNotice by remember { mutableStateOf<String?>(null) }
     // The controls « Voir le réglage » lights, the first one on the screen (null: none).
@@ -1266,6 +1244,26 @@ fun AppRoot() {
             com.pocketstudio.app.guide.GuideGo.WhatPlays -> { overviewCh = -1; overviewScene = -1 }
             com.pocketstudio.app.guide.GuideGo.Share -> showShare = true
             com.pocketstudio.app.guide.GuideGo.Video -> showVideo = true
+            // G5: « Ton morceau est prêt »'s « Écouter » (about 8 bars before the first Drop) and « Depuis le début ».
+            is com.pocketstudio.app.guide.GuideGo.Play -> when {
+                rhythmVm.project.value.song.isEmpty() -> if (!rhythmVm.transport.value.playing) rhythmVm.togglePlay()
+                g.fromDrop -> rhythmVm.listenFromDrop()
+                else -> rhythmVm.listenFromStart()
+            }
+            com.pocketstudio.app.guide.GuideGo.SongGuide -> songGuideOpen = true
+            com.pocketstudio.app.guide.GuideGo.NewStyle -> {
+                // « Mon premier morceau »: the song the assistant makes now goes on with its first cards.
+                firstSongNext = rhythmVm.project.value.guide.start == com.pocketstudio.model.guide.GuideStart.FIRST
+                rhythmVm.stop()
+                libraryVm.openWizard()
+            }
+            com.pocketstudio.app.guide.GuideGo.Remix -> { guideOpen = false; openRemix() }
+            is com.pocketstudio.app.guide.GuideGo.Record -> {
+                rhythmVm.selectTrack(g.track)
+                go(AppTab.Synthe)
+                guideOpen = false
+                guideSpot = listOf("record_start")
+            }
         }
     }
     LaunchedEffect(guideVm) {
@@ -1359,7 +1357,7 @@ fun AppRoot() {
                         TopMenuItem(tr("Remixer une chanson"), "more_remix", openRemix),
                         TopMenuItem(tr("Mes projets"), "more_projects") { showProjects = true },
                         TopMenuItem(tr("Réglages"), "more_settings") { toolPage = ToolPage.Reglages; go(AppTab.Outils) },
-                        TopMenuItem(tr("Aide et missions"), "more_help") { toolPage = ToolPage.Aide; go(AppTab.Outils) },
+                        TopMenuItem(tr("Aide et premiers pas"), "more_help") { toolPage = ToolPage.Aide; go(AppTab.Outils) },
                         TopMenuItem(tr("Passer en mode complet"), "more_full") { SettingsStore.update(context) { it.copy(simpleMode = false) } },
                         TopMenuItem(tr("Signaler un bug"), "more_bug") { reportBug("menu ⋯") },
                     ),
@@ -1435,11 +1433,6 @@ fun AppRoot() {
                     compact = true,
                 )
             }
-            // « 3/8 · Ajoute une mélodie → » under the bar, on every tab where the song is made. Not
-            // lying down (the bar, the play strip and this one would take half a phone's height):
-            // there it shows once asked for in Outils › Aide, until the tab changes.
-            // Not in the Mode simple (its steps name the full app's screens), nor while the missions guide.
-            if ((!landscape || stepsAsked) && !simple && !missions.active) com.pocketstudio.app.onboarding.ProjectNextStepStrip(topProject, rhythmVm.projectId, tab, share = shareSong) { go(it) }
             }
         } },
         // « Fait : … Annuler » after an intention (the part sheet, a kit).
@@ -1449,18 +1442,6 @@ fun AppRoot() {
         },
         bottomBar = {
             Column {
-                // « Ton morceau est prêt » folded while the song plays: one line over the spaces.
-                if (songReadyShown && songReadyFolded && !liveImmersive && !showLivePads) {
-                    // The project's undo depth: the first edit makes the bar go (the song is being made theirs).
-                    val barProject by rhythmVm.project.collectAsStateWithLifecycle()
-                    val edits = remember(barProject) { rhythmVm.session.undoDepth }
-                    com.pocketstudio.app.onboarding.SongReadyBar(
-                        pending = true, projectId = rhythmVm.projectId, ui = songReadyUi(), actions = songReadyActions, edits = edits,
-                        open = { songReadyFolded = false },
-                        modifier = Modifier.windowInsetsPadding(SIDE_INSETS).padding(horizontal = 8.dp, vertical = 4.dp)
-                            .then(if (landscape || showTimeline) Modifier.navigationBarsPadding() else Modifier),
-                    )
-                }
                 // Le Guide: its bar, or its panel (a third of a phone's height, half a tablet's). It
                 // keeps quiet during a take, on the Live page and on the keyboard lying down, where
                 // every dp of height is a key's (§3.1: it is quiet while the keys are played).
@@ -2366,13 +2347,8 @@ WithPartHeader(rhythmVm) { partModifier ->
                                 ToolPage.Aide -> com.pocketstudio.app.settings.HelpPage(
                                     com.pocketstudio.app.settings.HelpActions(
                                         openGuide = { showGuide = true },
-                                        showSteps = {
-                                            com.pocketstudio.app.onboarding.NextStepPrefs(context, rhythmVm.projectId).reopen()
-                                            if (simple) SettingsStore.update(context) { it.copy(simpleMode = false) }
-                                            missions.stop()
-                                            tab = AppTab.Rythme
-                                            stepsAsked = true
-                                        },
+                                        // G5: the Guide took over « Prochaine étape »: its panel, on the song.
+                                        showSteps = { toolPage = null; go(AppTab.Morceau); guideOpen = true },
                                         missions = startMissions,
                                     ),
                                 )
@@ -2478,21 +2454,13 @@ WithPartHeader(rhythmVm) { partModifier ->
             }
         }
     }
-    // Phase 36: « ? qui étiquette l'écran » over the screen, and the missions pointing at a control.
+    // Phase 36: « ? qui étiquette l'écran » over the screen, and « Voir le réglage » pointing at a control.
     if (helpLabels && !showProjects) {
         com.pocketstudio.app.learn.HelpLabelsOverlay(spots, hide = { helpLabels = false }, reportBug = { reportBug("étiquettes « ? »") })
     } else if (guideSpot != null && !showProjects) {
         // « Voir le réglage »: the control lit, a word of what it is for, gone at a touch.
         com.pocketstudio.app.learn.SpotlightOverlay(spots, guideSpot.orEmpty()) { modifier, _ ->
             com.pocketstudio.app.guide.GuideSpotCard(close = { guideSpot = null }, modifier = modifier)
-        }
-    } else if (missions.active && !showProjects && !wizardUi.open) {
-        val m = missions.current
-        com.pocketstudio.app.learn.SpotlightOverlay(spots, m?.targets(simple).orEmpty()) { modifier, _ ->
-            com.pocketstudio.app.learn.MissionCard(
-                m, missions.step, simple, skip = { missions.next(skip = true) }, stop = missions::stop, modifier = modifier,
-                remix = { missions.stop(); openRemix() },
-            )
         }
     }
     }

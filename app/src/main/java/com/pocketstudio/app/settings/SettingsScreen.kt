@@ -166,9 +166,9 @@ private fun Toggle(title: String, hint: String, checked: Boolean, tag: String, o
 
 class HelpActions(
     val openGuide: () -> Unit = {},
-    /** Shows the open project's "Prochaine étape" card again and goes to it. */
+    /** G5: opens the Guide's panel on the song (it took over the « Prochaine étape » card). */
     val showSteps: () -> Unit = {},
-    /** Phase 36: the missions « Mon premier morceau » from their first step (null: not offered). */
+    /** « Mon premier morceau » (the old Missions, now the Guide's first cards; null: not offered). */
     val missions: (() -> Unit)? = null,
 )
 
@@ -184,11 +184,11 @@ fun HelpPage(actions: HelpActions) {
                 SectionLabel(tr("Aide"))
                 actions.missions?.let { start ->
                     androidx.compose.material3.Button(onClick = start, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("help_missions")) {
-                        Text(tr("Missions : Mon premier morceau, pas à pas"))
+                        Text(tr("Mon premier morceau, avec le Guide"))
                     }
                 }
                 OutlinedButton(onClick = actions.openGuide, modifier = Modifier.fillMaxWidth().testTag("help_guide")) { Text(tr("Revoir le guide des premiers pas")) }
-                OutlinedButton(onClick = actions.showSteps, modifier = Modifier.fillMaxWidth().testTag("help_steps")) { Text(tr("Revoir la carte « Prochaine étape »")) }
+                OutlinedButton(onClick = actions.showSteps, modifier = Modifier.fillMaxWidth().testTag("help_steps")) { Text(tr("Ouvrir le Guide de mon morceau")) }
                 GlossaryButton("help_glossary")
                 Text(tr("Le « ? » au bout du bandeau sous la barre du haut étiquette l'écran : un toucher pour voir, un autre pour cacher."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)

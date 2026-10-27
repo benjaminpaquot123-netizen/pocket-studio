@@ -42,6 +42,16 @@ data class GuideState(
     @EncodeDefault(EncodeDefault.Mode.NEVER) val lastUsed: Long = 0L,
     /** The number the next group of changes takes ([GuideChange.id] "c<n>"): ids are never reused. */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val nextChange: Int = 0,
+    /**
+     * G5: how this song started ([GuideStart]): [GuideStart.SONG] the assistant just made it (« Ton
+     * morceau est prêt » is its first card), [GuideStart.FIRST] « Mon premier morceau » (the old
+     * Missions as cards); empty: neither (a song from before G5, or made by hand).
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val start: String = "",
+    /** G5: the song's sounds, notes and parts when it started ([GuideStart.signature]): « Change un son » is done once they differ. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val startMarks: Map<String, Int> = emptyMap(),
+    /** G5: the guide the assistant wrote for this song (its parts, what each adds), read from the Guide's first card. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val songGuide: List<GuidePageText> = emptyList(),
 ) {
     /** Nothing to keep: the project file leaves the field out. */
     val isEmpty: Boolean get() = this == EMPTY
@@ -94,6 +104,9 @@ data class GuideState(
             measures = measures?.sanitized(),
             lastUsed = lastUsed.coerceAtLeast(0L),
             nextChange = nextChange.coerceAtLeast(0),
+            start = start.take(MAX_ID),
+            startMarks = startMarks.filterKeys { it.isNotBlank() && it.length <= MAX_ID }.entries.take(8).associate { it.key to it.value },
+            songGuide = songGuide.take(MAX_PAGES).map { it.sanitized() },
         )
     }
 
@@ -103,7 +116,9 @@ data class GuideState(
         history.size <= MAX_HISTORY && history.all { it.isClean() } && history.sumOf { it.chars } <= MAX_HISTORY_CHARS &&
         notes.size <= MAX_NOTES && notes.all { it.text.isNotEmpty() && it.sanitized() == it } &&
         seen.size <= MAX_CARDS && seen.keys.all { it.isNotBlank() && it.length <= MAX_ID } &&
-        (measures == null || measures.sanitized() == measures) && lastUsed >= 0L && nextChange >= 0
+        (measures == null || measures.sanitized() == measures) && lastUsed >= 0L && nextChange >= 0 &&
+        start.length <= MAX_ID && startMarks.size <= 8 && startMarks.keys.all { it.isNotBlank() && it.length <= MAX_ID } &&
+        songGuide.size <= MAX_PAGES && songGuide.all { it.sanitized() == it }
 
     companion object {
         const val VERSION = 1
@@ -132,6 +147,18 @@ data class GuideState(
         }
         const val MAX_NOTES = 100
         const val MAX_NOTE = 500
+        const val MAX_PAGES = 8
+    }
+}
+
+/** G5: a page of a song's guide (« Ton morceau House est prêt », then its lines), kept with the song. */
+@Serializable
+data class GuidePageText(val title: String = "", val lines: List<String> = emptyList()) {
+    fun sanitized(): GuidePageText = copy(title = title.take(MAX_LINE), lines = lines.take(MAX_LINES).map { it.take(MAX_LINE) })
+
+    companion object {
+        const val MAX_LINES = 12
+        const val MAX_LINE = 600
     }
 }
 

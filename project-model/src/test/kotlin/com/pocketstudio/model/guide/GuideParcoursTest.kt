@@ -18,6 +18,7 @@ class GuideParcoursTest {
     private val all: List<GuideParcours> = StarterWizard.STYLES.map { s -> GuideLibrary.forStyle(s.id) ?: error("no parcours for ${s.id}") }
     private val generic = GuideLibrary.forStyle(GuideParcours.GENERIC)!!
     private val alerts = GuideLibrary.forStyle(GuideLibrary.ALERTS)!!
+    private val common = GuideLibrary.forStyle(GuideLibrary.COMMON)!!
 
     @Test
     fun everyStyleHasItsParcoursOfThirtyToFortyCardsInStageOrder() {
@@ -40,7 +41,7 @@ class GuideParcoursTest {
     @Test
     fun everyCardHasTwoOrThreeOptionsWithKnownActionsAndDetectors() {
         val spots = mutableSetOf<String>()
-        for (p in all + generic + alerts) for (c in p.cards) {
+        for (p in all + generic + alerts + common) for (c in p.cards) {
             assertTrue("${p.style}/${c.id}: ${c.proposals.size} options", c.proposals.size in 2..3)
             assertTrue("${p.style}/${c.id}", c.kind in setOf(GuideCard.DECIDE, GuideCard.REVIEW, GuideCard.CHECK))
             assertTrue("${p.style}/${c.id}", c.target == GuideRoles.SONG || c.target in GuideRoles.ORDER)
@@ -69,12 +70,12 @@ class GuideParcoursTest {
 
     @Test
     fun everyTextOfTheParcoursHasItsEnglishAndDutch() {
-        val texts = (all + generic + alerts).flatMap { p ->
+        val texts = (all + generic + alerts + common).flatMap { p ->
             p.cards.flatMap { c ->
                 listOfNotNull(c.title, c.why, c.simpleTitle, c.simpleWhy, c.whenText, c.howMuch, c.howOften) +
                     (c.proposals + c.elsewhere).flatMap { listOfNotNull(it.label, it.why, it.value) }
             } + p.whys.values.flatMap { it.values }
-        }.filter { it.isNotBlank() }.toSet() + GuideStages.TITLES + GuideStages.SHORT
+        }.filter { it.isNotBlank() }.toSet() + GuideStages.TITLES + GuideStages.SHORT + GuideStages.START_TITLE + GuideStages.START_SHORT
         for (lang in listOf(Lang.EN, Lang.NL)) {
             val table = I18n.table(lang)
             val missing = texts.filter { table[it].isNullOrBlank() }

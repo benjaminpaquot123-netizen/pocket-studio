@@ -194,6 +194,9 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
             "changed" -> changed(role)
             "layered" -> layered(role)
             "peaks" -> song.sectionsOf(GuideSection.Kind.PEAK).size >= (role.toIntOrNull() ?: 1)
+            // G5: how the song started (« start:first », « start:any »), and what changed since.
+            "start" -> project.guide.start.let { if (role == "any") it.isNotEmpty() else it == role }
+            "start_changed" -> GuideStart.changed(project, role)
             else -> predicates[name] ?: false
         }
     }
@@ -273,6 +276,13 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
         predicates["target"] = p.mixer.target != LoudnessTarget.OFF
         predicates["build"] = song.sectionsOf(GuideSection.Kind.BUILD).isNotEmpty()
         predicates["break"] = song.sectionsOf(GuideSection.Kind.BREAK).isNotEmpty()
+        // G5: the first steps of a song made by hand (the old « Prochaine étape »).
+        predicates["beat"] = GuideStart.beat(p)
+        predicates["bassline"] = GuideStart.bassline(p)
+        predicates["tune"] = GuideStart.tune(p)
+        predicates["parts2"] = GuideStart.parts(p) >= 2
+        predicates["song2"] = p.song.size >= 2
+        predicates["song3"] = p.song.size >= 3
 
         // Alerts first: what is wrong, not just unfinished.
         val songBars = p.songBars
@@ -546,9 +556,9 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
         val DETECTORS = setOf(
             "style", "by_hand", "key", "form", "target", "build", "break", "lowcut", "pans", "faders", "returns", "sidechain", "peaks_differ",
             "bass_varies", "pad_room", "subtractive", "cut", "build_moves", "send_moves", "sections_move", "pad_moves", "master", "measured", "contrast",
-            "fills", "balanced", "mono_ok", "phone_ok",
+            "fills", "balanced", "mono_ok", "phone_ok", "beat", "bassline", "tune", "parts2", "song2", "song3",
         )
-        val ROLE_DETECTORS = setOf("has", "fx", "colour", "changed", "layered", "peaks")
+        val ROLE_DETECTORS = setOf("has", "fx", "colour", "changed", "layered", "peaks", "start", "start_changed")
 
         fun of(project: Project): GuideFacts = GuideFacts(project, GuideSong(project)).also { it.build() }
 

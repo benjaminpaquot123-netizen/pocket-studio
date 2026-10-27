@@ -5,10 +5,11 @@
 - `main` = PR #52 (Guide G2 + S7 son), APK 222 compilé par l'agent et envoyé à Benjamin (consigne : compiler soi-même dès qu'un bloc est prêt, sans attendre GitHub).
 - En cours : PR Guide G3 (fiche de piste, éditeur de couches, historique), relue à neuf.
 - Fait (branche `g4`, pas encore relue à neuf) : Guide G4, les étapes 3 à 6 en vraies cartes (effets un par un, Break tiré du Drop, courbes et fills, niveaux mesurés, mono, téléphone, référence).
+- Fait (branche `g5`, sur `g4`) : relecture neuve de G4 et ses corrections mineures ; Guide G5, une seule surface pour guider : « Ton morceau est prêt » est la première carte du Guide d'un morceau tout juste fait (le panneau s'ouvre dessus), les Missions sont les cartes « Pour commencer » de « Mon premier morceau », la « Prochaine étape » d'un morceau fait à la main aussi ; le bandeau, la fenêtre et la carte des Missions sont retirés ; le mot de chaque carte s'écoute avant de décider ; carte « Remixer un morceau ». Pas encore relue à neuf.
 
 ## Prochaine étape exacte
 1. CI verte de la PR G3, fusion ; APK compilé ici et envoyé à Benjamin.
-2. Relecture neuve de G4 et fusion ; puis G5 (fusion des anciennes surfaces), G6 (vérification, dont la durée des mesures sur le téléphone).
+2. Relecture neuve de G5, fusion de G4 + G5 ; puis G6 (vérification : parcours complet sur émulateur avec les cartes « Pour commencer », reprise à 3 jours, durée des mesures sur le téléphone).
 3. Restes son : largeur de deep house, dubstep, neurofunk, phonk ; intros en direct de riddim et jersey club ; restes de relecture S6/S7 (REVIEW.md).
 4. Leads lots B à D, puis le chantier Play Store en dernier.
 

@@ -6,6 +6,8 @@ import com.pocketstudio.model.Project
 import com.pocketstudio.model.guide.GuideRoles
 import com.pocketstudio.model.guide.GuideTrack
 import com.pocketstudio.model.guide.guideTracks
+import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.instrumentTracks
 
 /**
  * Where « Voir le réglage » goes (an option of a card that opens a screen,
@@ -50,6 +52,21 @@ sealed class GuideGo {
     data object Share : GuideGo()
 
     data object Video : GuideGo()
+
+    /** G5: the song plays, from about 8 bars before its first Drop ([fromDrop]) or from its start. */
+    data class Play(val fromDrop: Boolean) : GuideGo()
+
+    /** G5: the guide the assistant wrote for this song (its pages). */
+    data object SongGuide : GuideGo()
+
+    /** G5: the assistant, to choose a style (« Mon premier morceau »'s first step). */
+    data object NewStyle : GuideGo()
+
+    /** G5: the Remix (Sons › Remix). */
+    data object Remix : GuideGo()
+
+    /** G5: instrument track [track] on the keyboard, « ● Enregistrer ma mélodie » lit ([simple]: the Mode simple's Clavier). */
+    data class Record(val track: Int) : GuideGo()
 }
 
 object GuideNav {
@@ -57,6 +74,8 @@ object GuideNav {
     val SPOTS = setOf(
         "tempo", "key", "song.parts", "sounds.track", "sounds.favorite", "sounds.layers", "rhythm.kit", "rhythm.pattern", "song.automation",
         "record.voice", "mixer.master", "mixer.whatplays", "notes.track", "mixer.strip", "share.check", "share.export", "share.video", "acid",
+        // G5: the common cards (« Pour commencer », the Remix) and « Écouter ».
+        "new.style", "song.guide", "sounds.main", "record.melody", "remix", GuideViewModel.PLAY,
     )
 
     /**
@@ -85,8 +104,40 @@ object GuideNav {
             "share.check", "share.export" -> if (simple) GuideGo.Tab(AppTab.Envoyer, listOf("share_go")) else GuideGo.Share
             "share.video" -> GuideGo.Video
             "acid" -> if (simple) GuideGo.AcidSound else GuideGo.Tab(AppTab.Acide, listOf("acid_generate"))
+            GuideViewModel.PLAY -> GuideGo.Play(fromDrop = open.target == "drop")
+            "song.guide" -> GuideGo.SongGuide
+            "new.style" -> GuideGo.NewStyle
+            "remix" -> GuideGo.Remix
+            "sounds.main" -> mainTrackOf(p)?.let { GuideGo.Sound(it) } ?: structure
+            "record.melody" -> GuideGo.Record(mainTrackOf(p) ?: p.instrumentTracks.firstOrNull()?.id ?: 0)
             else -> structure
         }
+    }
+
+    /** Notes below this pitch (C3) make a track a bass line. */
+    private const val BASS_BELOW = 48
+
+    /** The default names of the tracks that carry the tune (the assistant's lead, its counter-melody). */
+    private val TUNE_NAMES = setOf("Lead", "Mélodie", "Contre-chant")
+
+    /**
+     * The track « Changer un son » opens (from « Ton morceau est prêt », now a card): the instrument
+     * track that carries the tune. The one named for it (« Lead », « Mélodie »…) first; else, among
+     * the tracks that are not a bass line, the one playing highest; a bass line only if nothing else
+     * plays; null when no track has notes.
+     */
+    fun mainTrackOf(project: Project): Int? {
+        val scenes = project.allScenes
+        val tracks = project.instrumentTracks.map { t ->
+            val notes = scenes.flatMap { s -> (if (t.id == 0) s.synthNotes else s.trackNotes[t.id])?.notes.orEmpty() }
+            Triple(t.id, t.name, notes)
+        }.filter { it.third.isNotEmpty() }
+        if (tracks.isEmpty()) return null
+        tracks.firstOrNull { (_, name, _) -> (com.pocketstudio.model.DefaultNames.french(name) ?: name) in TUNE_NAMES }?.let { return it.first }
+        fun median(notes: List<com.pocketstudio.model.Note>) = notes.map { it.pitch }.sorted()[notes.size / 2]
+        val tunes = tracks.filter { (_, _, notes) -> median(notes) >= BASS_BELOW }
+        if (tunes.isEmpty()) return tracks.maxByOrNull { it.third.size }?.first
+        return tunes.maxByOrNull { (_, _, notes) -> median(notes) }?.first
     }
 
     /** The track [role] is about ([GuideRoles]): the first one of that role, null for the whole song or none. */

@@ -378,5 +378,15 @@
   "La référence": "The reference",
   "Avec l'effet": "With the effect",
   "Sans l'effet": "Without the effect",
-  "Le Guide écoutera le morceau après la prise.": "The Guide will listen to the song after the take."
+  "Le Guide écoutera le morceau après la prise.": "The Guide will listen to the song after the take.",
+  "Écouter un exemple": "Hear an example",
+  "Écouter un exemple : %s": "Hear an example: %s",
+  "Le mot : %s": "The word: %s",
+  "Reprendre Mon premier morceau": "Resume My first song",
+  "Mon premier morceau, avec le Guide": "My first song, with the Guide",
+  "Ses premières cartes, du style au partage": "Its first cards, from the style to sharing",
+  "Ouvrir le Guide de mon morceau": "Open my song's Guide",
+  "Les premiers pas, le Guide, le lexique": "First steps, the Guide, the glossary",
+  "Aide et premiers pas": "Help and first steps",
+  "Plus : tes projets, l'aide, les réglages, le clavier MIDI.": "More: your projects, help, settings, the MIDI keyboard."
 }

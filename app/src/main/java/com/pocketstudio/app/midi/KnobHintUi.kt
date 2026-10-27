@@ -77,7 +77,7 @@ fun KnobHintBar(hint: KnobHint, open: () -> Unit, modifier: Modifier = Modifier)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Filled.Tune, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(16.dp))
             Text(
-                "  " + tr("Potards · %s", hint.screen.label), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold,
+                "  " + if (hint.faders) tr("Faders · volumes") else tr("Potards · %s", hint.screen.label), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis,
             )
             Text(tr("Tout voir"), style = MaterialTheme.typography.labelMedium, color = Neon.Cyan)

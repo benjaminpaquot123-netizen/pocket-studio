@@ -62,7 +62,14 @@ class LearnUi(
 
 /** MIDI keyboards and controllers: connect, see what arrives, follow another machine's clock. */
 @Composable
-fun MidiScreen(ui: MidiUi, actions: MidiActions, learn: LearnUi = LearnUi(), autoKnobs: (@Composable () -> Unit)? = null) {
+fun MidiScreen(
+    ui: MidiUi,
+    actions: MidiActions,
+    learn: LearnUi = LearnUi(),
+    autoKnobs: (@Composable () -> Unit)? = null,
+    /** « Contrôleur MIDI »: the controller found, its profile, its legend, « Apprendre », the monitor. */
+    controller: (@Composable () -> Unit)? = null,
+) {
     // A page to read: centred at a comfortable width on a tablet.
     com.pocketstudio.ui.ReadingWidth {
         Column(
@@ -102,6 +109,7 @@ fun MidiScreen(ui: MidiUi, actions: MidiActions, learn: LearnUi = LearnUi(), aut
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                 )
             }
+            controller?.invoke()
             NeonCard {
                 SectionLabel(tr("Horloge"))
                 Row(verticalAlignment = Alignment.CenterVertically) {

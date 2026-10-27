@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -145,11 +146,48 @@ open class LearnScreenshotTest {
         }
     }
 
+    /** MiniLab lot: « Contrôleur MIDI » with a MiniLab 3 connected, its Live legend and the monitor. */
+    @Test
+    fun midiController() = shoot("midi_controller") {
+        val p = Project()
+        val strips = com.pocketstudio.app.ui.mixerStrips(p)
+        val profile = com.pocketstudio.model.midi.Controllers.MINILAB3
+        val rows = com.pocketstudio.app.midi.ControllerLegend.rows(KnobScreen.Live, KnobPages.slots(KnobScreen.Live, p, 0, strips), KnobPages.faders(strips).take(4), profile, p)
+        androidx.compose.foundation.layout.Column(Modifier.verticalScrollForTest().padding(12.dp)) {
+            com.pocketstudio.app.midi.ControllerCard(
+                com.pocketstudio.app.midi.ControllerCardUi(
+                    controller = com.pocketstudio.app.midi.ControllerInfo("Minilab3 MIDI", "USB", profile),
+                    monitor = listOf("CC 74 = 63 · canal 1", "Pad 2 · note C#1 · canal 10", "Note C3 · force 96 · canal 1"),
+                    screen = KnobScreen.Live, legend = rows,
+                ),
+                com.pocketstudio.app.midi.ControllerCardActions(),
+            )
+        }
+    }
+
+    /** MiniLab lot: the small legend on screen, open on the Live page's 303, and folded. */
+    @Test
+    fun midiLegend() = shoot("midi_legend") {
+        val p = Project()
+        val strips = com.pocketstudio.app.ui.mixerStrips(p)
+        val rows = com.pocketstudio.app.midi.ControllerLegend.rows(
+            KnobScreen.LiveAcide, KnobPages.slots(KnobScreen.LiveAcide, p, 0, strips), KnobPages.faders(strips).take(4), com.pocketstudio.model.midi.Controllers.MINILAB3, p,
+        )
+        Column(Modifier.fillMaxSize().padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Bottom)) {
+            com.pocketstudio.app.midi.LegendPanel("MiniLab 3", KnobScreen.LiveAcide, rows) {}
+            com.pocketstudio.app.midi.LegendPill("MiniLab 3") {}
+            Box(Modifier.padding(bottom = 80.dp))
+        }
+    }
+
     @Test
     fun midiPanel() = shoot("midi_panel") {
         KnobPanel(hint(touched = -1, turn = 0, learning = 2), emptyList(), enabled = true, KnobPanelActions(), Modifier.background(Neon.Surface))
     }
 }
+
+@Composable
+private fun Modifier.verticalScrollForTest(): Modifier = this.then(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()))
 
 /** At 130 % on a 411 dp phone (like a 316 dp one). */
 @RunWith(RobolectricTestRunner::class)

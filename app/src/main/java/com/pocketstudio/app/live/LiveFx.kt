@@ -7,6 +7,7 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -80,22 +81,37 @@ fun LiveFx(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveActions, mo
     // The clock, read only when the waiting rings are drawn.
     val clockNow by rememberUpdatedState(ui.clockOf)
     val clock: () -> Int = remember { { clockNow() } }
-    Column(modifier.testTag("live_fx"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        LiveFxSafety(ui, actions, state)
-        PageRow(columns, state)
-        Box(Modifier.fillMaxWidth().weight(1f)) {
-            when {
-                column != null -> Scrolled { TrackFx(ui, column, actions, state, clock) }
-                state.page == LivePage.HOLDS -> HoldsPage(ui, actions, state, clock)
-                state.page == LivePage.ROLLS -> RollsPage(ui, actions, state)
-                state.page == LivePage.DUB -> DubPage(ui, actions, state, clock)
-                state.page == LivePage.BUILD -> BuildPage(ui, actions, clock)
-                state.page == LivePage.SETTINGS -> Scrolled { SettingsPage(ui.project.liveFx, actions.setFxSettings) }
-                else -> Scrolled { PadPage(ui, actions, state) }
+    BoxWithConstraints(modifier) {
+        // A short panel (a big text size, a small phone): the safety row shares its line with the
+        // pages, icons only, so that the pad keeps its room.
+        val short = maxHeight < SHORT_PANEL
+        Column(Modifier.fillMaxSize().testTag("live_fx"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            if (short) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    LiveFxSafety(ui, actions, state, Modifier, iconsOnly = true)
+                    PageRow(columns, state, Modifier.weight(1f))
+                }
+            } else {
+                LiveFxSafety(ui, actions, state)
+                PageRow(columns, state)
+            }
+            Box(Modifier.fillMaxWidth().weight(1f)) {
+                when {
+                    column != null -> Scrolled { TrackFx(ui, column, actions, state, clock) }
+                    state.page == LivePage.HOLDS -> HoldsPage(ui, actions, state, clock)
+                    state.page == LivePage.ROLLS -> RollsPage(ui, actions, state)
+                    state.page == LivePage.DUB -> DubPage(ui, actions, state, clock)
+                    state.page == LivePage.BUILD -> BuildPage(ui, actions, clock)
+                    state.page == LivePage.SETTINGS -> Scrolled { SettingsPage(ui.project.liveFx, actions.setFxSettings) }
+                    else -> Scrolled { PadPage(ui, actions, state) }
+                }
             }
         }
     }
 }
+
+/** Below this height the effects' safety row shares its line with the pages. */
+private val SHORT_PANEL = 300.dp
 
 @Composable
 private fun Scrolled(content: @Composable () -> Unit) {
@@ -105,8 +121,8 @@ private fun Scrolled(content: @Composable () -> Unit) {
 
 /** The whole mix's pages, then « Pistes : » and a chip per track (its own page). */
 @Composable
-private fun PageRow(columns: List<LiveColumn>, state: LiveFxState) {
-    Row(Modifier.fillMaxWidth().fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+private fun PageRow(columns: List<LiveColumn>, state: LiveFxState, modifier: Modifier = Modifier.fillMaxWidth()) {
+    Row(modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
         listOf(
             LivePage.PAD to tr("Pad"), LivePage.HOLDS to tr("Tenus"), LivePage.ROLLS to tr("Répéter"),
             LivePage.DUB to tr("Dub"), LivePage.BUILD to tr("Montée"),

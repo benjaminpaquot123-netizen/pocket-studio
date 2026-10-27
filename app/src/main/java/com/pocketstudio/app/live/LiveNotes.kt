@@ -1,5 +1,6 @@
 package com.pocketstudio.app.live
 
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,7 +55,7 @@ internal fun LiveNotes(ui: LiveScreenUi, actions: LiveActions, modifier: Modifie
         var octave by rememberSaveable { mutableIntStateOf(4) }
         var inKey by rememberSaveable { mutableStateOf(true) }
         val chip = pillColors()
-        Row(Modifier.fillMaxWidth().fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(Modifier.fillMaxWidth().systemGestureExclusion().fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             tracks.forEach { t ->
                 FilterChip(
                     selected = t.id == id, onClick = { chosen = t.id }, label = { Text(DefaultNames.shown(t.name), maxLines = 1) }, colors = chip,
@@ -72,15 +73,18 @@ internal fun LiveNotes(ui: LiveScreenUi, actions: LiveActions, modifier: Modifie
             IconButton(onClick = { octave = (octave + 1).coerceAtMost(7) }, enabled = octave < 7) { Icon(Icons.Filled.Add, contentDescription = tr("Octave plus aiguë")) }
         }
         Text(
-            if (ui.take is TakeUi.Recording) tr("Tes notes vont dans la prise, chacune sur sa double croche.")
+            if (ui.take is TakeUi.Recording) tr("Tes notes s'ajoutent à la boucle de la partie que joue la piste, comme un looper, chacune sur sa double croche.")
             else tr("Joue en direct. Avec ●, tes notes vont dans la prise."),
             style = MaterialTheme.typography.bodySmall, color = if (ui.take is TakeUi.Recording) Neon.Red else Neon.TextSecondary,
             modifier = Modifier.padding(horizontal = 2.dp),
         )
-        PlayKeys(
-            if (inKey) KeyLayout.Scale else KeyLayout.TwoOctaves, octave, 2, ui.project.harmony, settings.englishNotes,
-            onNoteOn = { pitch, velocity -> actions.noteOn(id, pitch, velocity) }, onNoteOff = { pitch -> actions.noteOff(id, pitch) },
-            height = 150.dp, tag = "live_notes_keys", keyTag = "live_note",
-        )
+        // A glissando from the screen's edge plays, it does not go back.
+        Box(Modifier.systemGestureExclusion()) {
+            PlayKeys(
+                if (inKey) KeyLayout.Scale else KeyLayout.TwoOctaves, octave, 2, ui.project.harmony, settings.englishNotes,
+                onNoteOn = { pitch, velocity -> actions.noteOn(id, pitch, velocity) }, onNoteOff = { pitch -> actions.noteOff(id, pitch) },
+                height = 150.dp, tag = "live_notes_keys", keyTag = "live_note",
+            )
+        }
     }
 }

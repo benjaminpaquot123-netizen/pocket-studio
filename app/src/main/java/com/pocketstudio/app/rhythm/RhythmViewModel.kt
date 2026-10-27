@@ -34,6 +34,7 @@ import com.pocketstudio.app.live.LiveFxUi
 import com.pocketstudio.model.liveColumnsMask
 import com.pocketstudio.model.writeJournal
 import com.pocketstudio.model.keepingVersion
+import com.pocketstudio.model.takeUndoTarget
 import com.pocketstudio.model.restoreVersion
 import com.pocketstudio.model.dropVersion
 import com.pocketstudio.model.liveQuantumSteps
@@ -716,8 +717,47 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun toggleLive(pad: Int) {
         if (project.value.live.clips.getOrNull(pad) == null) return
+        // Started with the transport stopped (their clock runs on its own): the music plays all the same.
+        val starts = !_transport.value.playing && pad !in padsSoundingNow()
         if (NativeEngine.isAvailable) NativeEngine.toggleClip(pad)
         livePadTapped(pad)
+        if (starts) watchPadsAlone()
+    }
+
+    private val _padsAlone = MutableStateFlow(false)
+    /**
+     * Live pads sound with the transport stopped: the music plays as with ▶ (in the background,
+     * screen off, the headphones out or a call stopping it, the screen kept on).
+     */
+    val padsAlone: StateFlow<Boolean> = _padsAlone.asStateFlow()
+    private var padsWatch: kotlinx.coroutines.Job? = null
+
+    /** The live pads sounding or waiting now, as the engine says. */
+    private fun padsSoundingNow(): Set<Int> {
+        livePadsSoundingForTest?.let { return it }
+        if (!NativeEngine.isAvailable) return emptySet()
+        val buf = IntArray(NativeEngine.LIVE_PADS)
+        NativeEngine.clipStates(buf)
+        return buf.indices.filterTo(HashSet()) { buf[it] != 0 }
+    }
+
+    /** A pad started with the transport stopped: [padsAlone] until they are all off (or ▶ takes over). */
+    private fun watchPadsAlone() {
+        setPadsAlone(true)
+        if (padsWatch?.isActive == true) return
+        padsWatch = viewModelScope.launch {
+            do { kotlinx.coroutines.delay(250) } while (!_transport.value.playing && padsSoundingNow().isNotEmpty())
+            setPadsAlone(false)
+        }
+    }
+
+    private fun setPadsAlone(on: Boolean) {
+        if (_padsAlone.value == on) return
+        _padsAlone.value = on
+        AppLog.add(if (on) "Pads live sans lecture : le son reste ouvert" else "Pads live arrêtés")
+        // The service holds the headphones' and the calls' stops (they call stopLive) and the background.
+        val app = getApplication<Application>()
+        if (on) PlaybackService.start(app) else if (!_transport.value.playing) PlaybackService.stopAfterTakes(app)
     }
 
     fun stopLive() {
@@ -3398,7 +3438,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (param !in _liveAcid.value) return
         takeGesture(AutoTarget.acid(param), project.value.acid.sound.values()[param], _liveAcid.value[param] ?: 0f)
         _liveAcid.value = _liveAcid.value - param
-        if (NativeEngine.isAvailable) NativeEngine.setAcidParam(param, project.value.acid.sound.values()[param])
+        val saved = project.value.acid.sound.values()[param]
+        liveCommandsForTest?.add("acid $param $saved")
+        if (NativeEngine.isAvailable) NativeEngine.setAcidParam(param, saved)
     }
 
     /** The reverb (0) or echo (1) return on the Live page: 0..1, 0.5 = as mixed. */
@@ -3771,6 +3813,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         for (bus in 0..1) if (_liveReturns.value[bus] != 0.5f) setLiveReturn(bus, 0.5f)
         _liveFx.value.trackKills.forEach { (ch, bands) -> bands.forEach { liveKill(it, false, ch) } }
         _liveChops.value.toList().forEach { liveTrackChop(it, false) }
+        // The 303 as the page's sliders left it: back to the sound saved (Sons › Basse acide shows it).
+        _liveAcid.value.keys.toList().forEach(::resetLiveAcid)
     }
 
     /**
@@ -3920,7 +3964,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 else for (k in 0 until LiveSlots.COUNT) if (mask and (1 shl k) != 0) pushSlot(p, k, scene)
                 NativeEngine.setStaging(false)
             }
-            NativeEngine.armLaunch(mask, launchSteps(), scene)
+            NativeEngine.armLaunch(mask, launchSteps(), scene, launchGraceSteps())
         }
         for (k in 0 until LiveSlots.COUNT) if (mask and (1 shl k) != 0) stagedFrom[k] = p.takeIf { scene >= 0 }
         _liveGrid.value = liveNow().armed(mask, scene, launchSteps())
@@ -4116,6 +4160,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** No room after song [p] for a take « à la suite » (its parts all used). */
     private fun songFullForTake(p: Project): Boolean = p.song.isNotEmpty() && p.song.size >= SongPart.MAX_PARTS
 
+    /**
+     * How late after a launch line a tap still launches on it (in steps): what is heard lags what
+     * is rendered by the output latency, and a finger on the « one » lands a little after it.
+     * At most half the quantum (a tap late in the bar always waits for the next line).
+     */
+    private fun launchGraceSteps(): Double {
+        val latencyMs = Metrics.streamInfo.value.outputLatencyMs.takeIf { it > 0 } ?: 0.0
+        return ((latencyMs + LAUNCH_GRACE_MS) / 1000.0 * project.value.tempoBpm / 15.0).coerceAtMost(launchSteps() / 2.0)
+    }
+
     /** The steps a launch waits for now: « Lancer à », whole bars during a take (it writes whole-bar parts). */
     private fun launchSteps(): Int = project.value.liveLaunchSteps(_take.value.running)
 
@@ -4151,7 +4205,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun togglePerformance() {
         when (_take.value) {
             is com.pocketstudio.app.live.TakeUi.Armed -> cancelPerformance()
-            is com.pocketstudio.app.live.TakeUi.Recording -> finishPerformance(performanceEnd(takeClock()))
+            is com.pocketstudio.app.live.TakeUi.Recording -> finishPerformance(performanceEndHeard(takePosition()))
             is com.pocketstudio.app.live.TakeUi.Writing -> Unit
             else -> armPerformance()
         }
@@ -4327,6 +4381,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         return (step.coerceAtLeast(0) / bar + 1) * bar
     }
 
+    /**
+     * The bar line ■ Fin ends the take on, pressed where [heard] is heard: in a bar's first beat,
+     * that bar's line (a ■ on the « one » ends there, it does not add the bar just begun); later
+     * in the bar, the bar being played is kept.
+     */
+    private fun performanceEndHeard(heard: Double): Int {
+        val bar = project.value.stepsPerBar
+        val at = heard.coerceAtLeast(0.0)
+        val line = (at / bar).toInt() * bar
+        // Never before the take's first bar is over (a ■ right after it began keeps that bar). 4: a beat.
+        val first = performance?.start ?: 0
+        return if (line > first && at - line < 4) line else performanceEnd(at.toInt())
+    }
+
     /** The take ends on [end]: written into the song in one undo step. */
     private fun finishPerformance(end: Int) {
         // A Drop's bar line passed before the watch saw it: what it cleared is written first.
@@ -4357,14 +4425,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _notice.value = if (written.cut) tr("Le morceau est plein : choisis « Nouvelle version » pour enregistrer.") else tr("Prise trop courte : rien n'a été écrit.")
             return
         }
-        session.commitQuietEdits(before, performanceDepth)
+        // Its undo step takes the take back, not the tempo, mixer or effects changed meanwhile.
+        val undoTo = project.value.takeUndoTarget(before, t.gestureTargets)
+        session.commitQuietEdits(undoTo, performanceDepth)
         performanceDoneDepth = session.undoDepth
         dropTakeJournalOnceSaved(t.id)
         // The live pads it played: one more audio track, written in the background.
         val padSpans = com.pocketstudio.model.LivePadTake.spans(project.value.live.clips, performancePadsAtStart, performancePadTaps, t.start, end, project.value.beatsPerBar)
         performancePadTaps = ArrayList()
         padSpansForTest = padSpans
-        bouncePerformancePads(padSpans, t.start, end, if (performanceAppend) before.song.sumOf { before.partSteps(it) } else 0, before)
+        bouncePerformancePads(padSpans, t.start, end, if (performanceAppend) before.song.sumOf { before.partSteps(it) } else 0, undoTo)
         // Never silently: the song full (128 parts) or no lane left for a setting moved.
         val lost = listOfNotNull(
             tr("Le morceau est plein (%d parties) : la fin de la prise n'a pas été écrite.", SongPart.MAX_PARTS).takeIf { written.cut },
@@ -4501,6 +4571,23 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         playSongFrom(done.firstPart.coerceIn(0, (project.value.song.size - 1).coerceAtLeast(0)))
     }
 
+    /**
+     * Leaving the Live page, or the full-screen live pads opened from Morceau: a take never goes on
+     * unseen behind another page. Armed, it is cancelled; recording, it ends and is written (the
+     * song before it kept as a version), and said, since its « Morceau écrit » line goes with the
+     * page. Nothing the page set stays on ([leaveLive]).
+     */
+    fun leaveLiveEndingTake() {
+        if (performanceTaking) {
+            togglePerformance()
+            if (_take.value is com.pocketstudio.app.live.TakeUi.Done && _notice.value == null) {
+                _notice.value = tr("Prise terminée : le morceau est écrit (↶ pour l'annuler).")
+            }
+        }
+        leaveLive()
+        dismissPerformance()
+    }
+
     /** The « Morceau écrit » line goes. */
     fun dismissPerformance() {
         if (_take.value is com.pocketstudio.app.live.TakeUi.Done) _take.value = com.pocketstudio.app.live.TakeUi.Ready
@@ -4535,7 +4622,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun endPerformanceOnStop() {
         when (_take.value) {
             is com.pocketstudio.app.live.TakeUi.Armed -> cancelPerformance()
-            is com.pocketstudio.app.live.TakeUi.Recording -> finishPerformance(performanceEnd(takeClock()))
+            is com.pocketstudio.app.live.TakeUi.Recording -> finishPerformance(performanceEndHeard(takePosition()))
             else -> Unit
         }
     }
@@ -7436,8 +7523,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** True while the activity is on screen; set by the UI. */
     var visible = true
 
-    /** The engine must keep running in the background only while the transport plays. */
-    val keepsRunningInBackground: Boolean get() = _transport.value.playing
+    /** The engine must keep running in the background only while the music plays (▶, or live pads on their own). */
+    val keepsRunningInBackground: Boolean get() = _transport.value.playing || _padsAlone.value
 
     init {
         viewModelScope.launch { project.collect { restageIfEditingUpcoming(); loopOnEdit(it) } }
@@ -8959,6 +9046,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         const val MAX_MIDI_BYTES = 4 * 1024 * 1024
         /** The REC line warns when this many song parts are left, or bars before the effects' end. */
         const val TAKE_PARTS_WARNING = 8
+        /** A launch tapped this long (ms) after its line, beyond the output latency, still goes on it. */
+        const val LAUNCH_GRACE_MS = 60.0
         const val TAKE_BARS_WARNING = 16
         /** Stems export: one render per mixer channel. */
         /** A song automation lane spans at least this many bars (the song can be shorter or empty). */

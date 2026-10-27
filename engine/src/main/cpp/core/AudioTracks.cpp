@@ -7,9 +7,18 @@ namespace ps {
 AudioTracks::~AudioTracks() {
     for (auto& t : tracks_) {
         if (t.sample && t.sample->release()) delete t.sample;
-        t.sample = nullptr;
+        if (t.held && t.held->release()) delete t.held;
+        t.sample = t.held = nullptr;
     }
     collectGarbage();
+}
+
+void AudioTracks::releaseHeld(Track& t) {
+    if (!t.held) return;
+    if (t.voice.sample == t.held) t.voice = Voice{};
+    if (t.tail.sample == t.held) t.tail = Voice{};
+    retire(t.held);
+    t.held = nullptr;
 }
 
 void AudioTracks::retire(Sample* s) {
@@ -33,10 +42,21 @@ void AudioTracks::install(int track, Sample* sample) {
         retire(sample);
         return;
     }
-    // Voices may still point at the old clip: silence them before it can be freed.
+    // A clip replaced before (still fading): cut now, it is let go.
+    releaseHeld(t);
+    // The sounding pass fades out over the declick (audit 13: it was cut, a click), the old clip
+    // held until it is done; render() lets it go then.
+    if (t.voice.sample) {
+        t.tail = t.voice;
+        if (t.tail.fade == 0) t.tail.fade = declick_;
+    }
     t.voice = Voice{};
-    t.tail = Voice{};
-    retire(t.sample);
+    if (t.tail.sample && t.tail.sample == t.sample) {
+        t.held = t.sample;
+    } else {
+        t.tail = Voice{};
+        retire(t.sample);
+    }
     t.sample = sample;
     t.resync = true;  // a song clip replaced while the song plays picks up where the song is
 }
@@ -190,6 +210,7 @@ void AudioTracks::render(float* const* lefts, float* const* rights, int numFrame
             L[i] += l;
             R[i] += r;
         }
+        if (t.held && t.voice.sample != t.held && t.tail.sample != t.held) releaseHeld(t);
     }
 }
 

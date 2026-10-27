@@ -67,6 +67,19 @@ object MidiFile {
         fun swung(notes: List<MidiNote>) = if (late == 0) notes else notes.map { n ->
             if ((n.start / NoteClip.TICKS_PER_STEP) % 2 == 1) n.copy(start = n.start + late) else n
         }
+        // Notes between the sixteenths (triplets, 1/32), as the engine plays them (NoteTrack): an
+        // odd sixteenth starts late and is that much shorter, time inside it squeezed, so a note
+        // never passes the next sixteenth (audit 06). On the grid, the same as swung().
+        fun warp(t: Int): Int {
+            val step = Math.floorDiv(t, NoteClip.TICKS_PER_STEP)
+            val into = Math.floorMod(t, NoteClip.TICKS_PER_STEP)
+            if (step % 2 == 0) return t
+            return step * NoteClip.TICKS_PER_STEP + late + (into * (NoteClip.TICKS_PER_STEP - late) / NoteClip.TICKS_PER_STEP.toDouble()).roundToInt()
+        }
+        fun warped(notes: List<MidiNote>) = if (late == 0) notes else notes.map { n ->
+            val start = warp(n.start)
+            n.copy(start = start, length = (warp(n.start + n.length) - start).coerceAtLeast(1))
+        }
         val tempo = (60_000_000.0 / project.tempoBpm).roundToInt()
         val conductor = Track().apply {
             name(project.name)
@@ -76,11 +89,11 @@ object MidiFile {
         val program = project.instrument?.takeIf { it.bank < 128 }?.program ?: 81  // GM "Lead 2 (sawtooth)"
         val tracks = listOf(
             conductor,
-            noteTrack(project.synthTrackName, 0, program, swung(synth)),
-            noteTrack(tr("Basse acide"), 1, 38, swung(acid)),  // GM "Synth Bass 1"
+            noteTrack(project.synthTrackName, 0, program, warped(synth)),
+            noteTrack(tr("Basse acide"), 1, 38, warped(acid)),  // GM "Synth Bass 1"
         ) + project.tracks.map { t ->
             // Channels 3..9 (index 2..8): never the drums' channel 10.
-            noteTrack(t.name, 1 + t.id, t.instrument?.takeIf { it.bank < 128 }?.program ?: 81, swung(added.getValue(t.id)))
+            noteTrack(t.name, 1 + t.id, t.instrument?.takeIf { it.bank < 128 }?.program ?: 81, warped(added.getValue(t.id)))
         } + noteTrack(tr("Batterie"), DRUM_CHANNEL, null, swung(drums))
         val out = ByteArrayOutputStream()
         out.write("MThd".toByteArray())

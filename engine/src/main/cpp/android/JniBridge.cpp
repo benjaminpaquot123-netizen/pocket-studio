@@ -42,6 +42,12 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_stop(JNIEnv*, j
     host().stop();
 }
 
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeRetryOutput(JNIEnv*, jobject) {
+    // Never creates the host (the device callback fires once at the app's start, before any sound).
+    std::lock_guard<std::mutex> guard(g_lock);
+    if (g_host) g_host->retryOutput();
+}
+
 JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativePost(JNIEnv*, jobject, jint type,
                                                                           jfloat value, jint a, jint b) {
     return host().post({static_cast<ps::CommandType>(type), value, a, b}) ? JNI_TRUE : JNI_FALSE;
@@ -415,7 +421,14 @@ JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_recordStart(JN
     if (seconds <= 0 || seconds > 600) return 0;
     freeReleasedTakes();
     if (!host().startRecordingInput(ps::AudioHost::MicRecording)) return 0;
-    auto* buffer = new ps::RecordBuffer(static_cast<int64_t>(seconds) * 48000);
+    ps::RecordBuffer* buffer = nullptr;
+    try {
+        buffer = new ps::RecordBuffer(static_cast<int64_t>(seconds) * 48000);
+    } catch (const std::bad_alloc&) {
+        // Out of memory (big instruments loaded): no take, as with no microphone, never a crash.
+        host().stopRecordingInput(ps::AudioHost::MicRecording);
+        return 0;
+    }
     ps::Command command{ps::CommandType::RecordArm, 0.0f, onStart ? 1 : 0, 0};
     command.record = buffer;
     if (!host().post(command)) {
@@ -446,7 +459,7 @@ static jfloatArray takeOut(JNIEnv* env, ps::RecordBuffer* b) {
 // Ends the recording and returns what was recorded (mono, 48 kHz), freeing the buffer. When the
 // stream is closed (the app was closed in the middle of a take), the engine cannot let go of it:
 // what was recorded is copied out all the same (the audio thread cannot run meanwhile) and the
-// buffer is kept until the engine lets go. Null only when the stream runs but never answered.
+// buffer is kept until the engine lets go. The same when the engine has not answered yet.
 JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordFinish(JNIEnv* env, jobject, jlong handle) {
     auto* b = reinterpret_cast<ps::RecordBuffer*>(handle);
     host().post({ps::CommandType::RecordStop, 0.0f});
@@ -456,8 +469,10 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordFi
     }
     host().stopRecordingInput(ps::AudioHost::MicRecording);
     if (b->state.load(std::memory_order_acquire) != 2) {
-        jfloatArray out = nullptr;
-        host().runWhileStopped([&] { out = takeOut(env, b); });
+        // Frames [0, written) never change once published (written is stored with release after
+        // them): copied out even while the engine still holds the buffer (a queue full of a resync,
+        // Bluetooth callbacks far apart), never a take lost (audit 13).
+        jfloatArray out = takeOut(env, b);
         // The engine may still apply the queued commands when the stream comes back: keep the
         // buffer until it says it let go.
         std::lock_guard<std::mutex> guard(zombieLock);

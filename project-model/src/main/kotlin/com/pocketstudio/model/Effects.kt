@@ -28,6 +28,9 @@ data class Insert(
     /** The type the engine plays: none while bypassed. */
     val heardType: Int get() = if (bypass) 0 else EffectType.of(type).ordinal
 
+    /** A Pompe on « Le son du kick » (its 4th setting): it needs the mixer's sidechain key. */
+    val reactsToTheKick: Boolean get() = !bypass && effect == EffectType.PUMP && (params.getOrNull(3) ?: 0f) >= 0.5f
+
     /** It plays while scene [scene] plays (always without a choice of scenes). */
     fun playsIn(scene: Int): Boolean = scenes == null || scene in scenes
 

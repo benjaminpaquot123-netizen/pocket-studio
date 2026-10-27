@@ -1966,6 +1966,8 @@ WithPartHeader(rhythmVm) { partModifier ->
                                     playSongStep = { if (playing) live.value.songStep else -1 },
                                     preferredCh = workChannel,
                                     parts = project.partMarks(),
+                                    partSteps = project.sceneSteps(project.scene),
+                                    playPartStep = { if (playing) live.value.absoluteStep else -1 },
                                 ),
                                 overview = { ch -> overviewCh = ch ?: -1; overviewScene = -1 },
                                 focus = mixerFocus,
@@ -1981,6 +1983,7 @@ WithPartHeader(rhythmVm) { partModifier ->
                                     edit = rhythmVm::editAutomationLane,
                                     addFilter = rhythmVm::addFilterAutomation,
                                     setResolution = rhythmVm::setLaneResolution,
+                                    setLoopSteps = rhythmVm::setAutomationLoopSteps,
                                     // « Voir le potard »: the 303 knob on the Acide tab, an effect in its track's box.
                                     showControl = { t ->
                                         when {

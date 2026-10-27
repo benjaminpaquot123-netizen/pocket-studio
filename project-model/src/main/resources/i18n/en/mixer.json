@@ -354,5 +354,7 @@
   "Transposée de %s demi-tons.": "Transposed by %s semitones.",
   "Coupée pour l'instant.": "Muted for now.",
   "Ses effets : %s.": "Its effects: %s.",
-  "Basse+": "Bass+"
+  "Basse+": "Bass+",
+  "Sur la batterie · %s": "Over the drums · %s",
+  "Sur toute la partie · %s": "Over the whole part · %s"
 }

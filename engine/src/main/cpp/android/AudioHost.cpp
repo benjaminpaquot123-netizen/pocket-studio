@@ -1,5 +1,7 @@
 #include "AudioHost.h"
 
+#include "ReopenBackoff.h"
+
 #include <android/log.h>
 
 #include <algorithm>
@@ -46,7 +48,15 @@ AudioHost::AudioHost()
     engine_.setCommandBudget(Engine::kLiveCommandBudget);
 }
 
-AudioHost::~AudioHost() { stop(); }
+AudioHost::~AudioHost() {
+    stop();
+    {
+        std::lock_guard<std::mutex> guard(lock_);
+        quitting_ = true;
+    }
+    reviveCv_.notify_all();
+    if (reviver_.joinable()) reviver_.join();
+}
 
 bool AudioHost::openOutputLocked(oboe::SharingMode sharing) {
     oboe::AudioStreamBuilder builder;
@@ -124,7 +134,11 @@ void AudioHost::closeLocked() {
 }
 
 void AudioHost::restoreOutputLocked() {
-    if (!wantRunning_ || !openOutputLocked()) return;
+    if (!wantRunning_) return;
+    if (!openOutputLocked()) {
+        scheduleReviveLocked();
+        return;
+    }
     engine_.prepare(output_->getSampleRate());
     output_->requestStart();
 }
@@ -134,18 +148,81 @@ bool AudioHost::start() {
     wantRunning_ = true;
     if (output_ && output_->getState() == oboe::StreamState::Started) return true;
     closeLocked();
+    if (!openOutputLocked()) {
+        // The device is not ready yet (a headset connecting while the app came back): keep trying.
+        scheduleReviveLocked();
+        return false;
+    }
+    engine_.prepare(output_->getSampleRate());
+    if (output_->requestStart() != oboe::Result::OK) {
+        closeLocked();
+        scheduleReviveLocked();
+        return false;
+    }
+    reviveWanted_ = false;
+    return true;
+}
+
+void AudioHost::retryOutput() {
+    // Never takes lock_ (the main thread's device callback): a wake-up missed meanwhile only means
+    // the revival tries at its next delay.
+    reviveNow_.store(true, std::memory_order_release);
+    reviveCv_.notify_all();
+}
+
+void AudioHost::scheduleReviveLocked() {
+    if (quitting_) return;
+    reviveWanted_ = true;
+    if (!reviver_.joinable()) reviver_ = std::thread([this] { reviveLoop(); });
+    reviveCv_.notify_all();
+}
+
+bool AudioHost::reopenOutputLocked() {
     if (!openOutputLocked()) return false;
+    // No audio thread runs here (the stream is not started yet): the engine may be prepared.
     engine_.prepare(output_->getSampleRate());
     if (output_->requestStart() != oboe::Result::OK) {
         closeLocked();
         return false;
     }
+    // Opening the microphone rerouted the audio (some phones): a take keeps its microphone.
+    if (recordingInput_) reopenRecordingInputLocked();
     return true;
+}
+
+void AudioHost::reviveLoop() {
+    std::unique_lock<std::mutex> guard(lock_);
+    int attempt = 0;
+    while (!quitting_) {
+        if (!reviveWanted_ || !wantRunning_ || output_) {
+            // Nothing to revive (running again, or the app went away): wait for the next need.
+            reviveWanted_ = false;
+            attempt = 0;
+            reviveNow_.store(false, std::memory_order_relaxed);
+            reviveCv_.wait(guard, [this] { return quitting_ || reviveWanted_; });
+            continue;
+        }
+        reviveCv_.wait_for(guard, std::chrono::milliseconds(ReopenBackoff::delayMs(attempt)), [this] {
+            return quitting_ || !reviveWanted_ || reviveNow_.load(std::memory_order_acquire);
+        });
+        reviveNow_.store(false, std::memory_order_relaxed);
+        if (quitting_ || !reviveWanted_ || !wantRunning_ || output_) continue;
+        ++attempt;
+        // Oboe still closing the old stream: its own error callback reopens it, or the next attempt.
+        if (closingOutput_) continue;
+        if (reopenOutputLocked()) {
+            ++restarts_;
+            reviveWanted_ = false;
+            LOGI("output revived after %d attempt(s)", attempt);
+        }
+    }
 }
 
 void AudioHost::stop() {
     std::lock_guard<std::mutex> guard(lock_);
     wantRunning_ = false;
+    reviveWanted_ = false;
+    reviveCv_.notify_all();
     // Everything closes: nobody listens any more, and a later start must not reopen the microphone.
     micUsers_ = 0;
     recordingInput_ = false;
@@ -159,16 +236,20 @@ void AudioHost::setBufferBursts(int bursts) {
 }
 
 bool AudioHost::post(const Command& command) {
-    std::lock_guard<std::mutex> guard(postLock_);
+    std::unique_lock<std::mutex> guard(postLock_);
     if (engine_.post(command)) return true;
     // Full: a big resync posts thousands of commands at once, and the audio thread empties the
     // queue at every callback. Wait for it (100 ms at most: Bluetooth callbacks can be 40 ms
     // apart) rather than drop a note. A stopped stream does not drain: after one wait without any
-    // callback, give up at once until it runs.
+    // callback, give up at once until it runs. The lock is let go while waiting: a MIDI note
+    // played meanwhile takes the next free place instead of queueing behind the whole resync
+    // (audit 13 M1); each producer's own commands keep their order.
     const uint64_t seen = engine_.callbackCount();
     if (seen == stalledAt_) return false;
     for (int i = 0; i < 200; ++i) {
+        guard.unlock();
         std::this_thread::sleep_for(std::chrono::microseconds(500));
+        guard.lock();
         if (engine_.post(command)) return true;
     }
     if (engine_.callbackCount() == seen) stalledAt_ = seen;
@@ -314,6 +395,22 @@ void AudioHost::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result error)
         // A latency test was running: report it instead of failing silently.
         testInterrupted_.store(true, std::memory_order_release);
     }
+    // The old output closed while start() (or the revival) already opened a new one: nothing to
+    // reopen (closing the new one would cut the sound a second time).
+    if (wasOutput && !(output_ && stream == output_.get()) && output_) {
+        closingOutput_.reset();
+        return;
+    }
+    // Only the microphone went (another app took it, a headset unplugged) while the output plays
+    // on: the music, its voices and its tails keep going; a take gets its microphone back (a
+    // latency test reports the cut and finishLatencyTest restores the usual output).
+    if (wasInput && !wasOutput && output_ && output_->getState() == oboe::StreamState::Started) {
+        if (input_ && stream == input_.get()) input_.reset();
+        closingInput_.reset();
+        inputLive_.store(false, std::memory_order_release);
+        if (recordingInput_) reopenRecordingInputLocked();
+        return;
+    }
     // Already closed by Oboe: dropped without another call into it.
     if (wasOutput) {
         if (output_ && stream == output_.get()) {
@@ -328,18 +425,16 @@ void AudioHost::onErrorAfterClose(oboe::AudioStream* stream, oboe::Result error)
     closeLocked();
     engine_.latencyMeter().cancel();
     // A freshly (un)plugged device is often not ready yet: retry a few times.
-    for (int attempt = 0; attempt < 5 && wantRunning_; ++attempt) {
-        if (attempt > 0) std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        if (!openOutputLocked()) continue;
-        engine_.prepare(output_->getSampleRate());
-        if (output_->requestStart() == oboe::Result::OK) {
+    for (int attempt = 0; attempt < ReopenBackoff::kQuickAttempts && wantRunning_; ++attempt) {
+        if (attempt > 0) std::this_thread::sleep_for(std::chrono::milliseconds(ReopenBackoff::kQuickDelayMs));
+        if (reopenOutputLocked()) {
             ++restarts_;
-            // Opening the microphone rerouted the audio (some phones): a take keeps its microphone.
-            if (recordingInput_) reopenRecordingInputLocked();
             return;
         }
-        closeLocked();
     }
+    // Still nothing (a Bluetooth headset connecting can take seconds): never silent for good, the
+    // revival thread keeps trying (audit 13 M3).
+    if (wantRunning_) scheduleReviveLocked();
 }
 
 bool AudioHost::reopenRecordingInputLocked() {
@@ -414,11 +509,15 @@ std::string AudioHost::inputDescription() {
 StreamInfo AudioHost::info() {
     // Called from the UI thread: never wait for a stream being opened or closed.
     std::unique_lock<std::mutex> guard(lock_, std::try_to_lock);
-    if (!guard.owns_lock()) return lastInfo_;
+    if (!guard.owns_lock()) {
+        std::lock_guard<std::mutex> last(infoLock_);
+        return lastInfo_;
+    }
     StreamInfo info;
     info.restarts = restarts_;
     if (!output_) {
         info.xruns = lastXruns_;
+        std::lock_guard<std::mutex> last(infoLock_);
         lastInfo_ = info;
         return info;
     }
@@ -436,6 +535,7 @@ StreamInfo AudioHost::info() {
     info.xruns = lastXruns_;
     auto latency = output_->calculateLatencyMillis();
     info.outputLatencyMs = latency ? latency.value() : -1.0;
+    std::lock_guard<std::mutex> last(infoLock_);
     lastInfo_ = info;
     return info;
 }

@@ -40,10 +40,17 @@ Sample* Sample::create(const float* interleaved, int64_t frames, int channels, i
 Sample* Sample::createCompact(const float* interleaved, int64_t frames, int channels, int sourceRate, int targetRate) {
     Sample* s = create(interleaved, frames, channels, sourceRate, targetRate);
     if (!s) return nullptr;
-    // Rounded to the nearest step: a 16-bit recording comes back exactly as it was.
+    // Rounded to the nearest step: a 16-bit recording comes back exactly as it was. A zone over
+    // full scale (a decoded MP3 or OGG, the resampler's peaks between samples) is stored scaled
+    // down with its scale, never clipped (audit 13: the loud notes crackled).
+    float peak = 0.0f;
+    for (float v : s->data_) peak = std::max(peak, std::fabs(v));
+    constexpr float kFull = 32767.0f / 32768.0f;
+    const float down = peak > kFull ? kFull / peak : 1.0f;
+    if (down < 1.0f) s->pcmScale_ = 1.0f / (32768.0f * down);
     s->pcm16_.resize(s->data_.size());
     for (size_t i = 0; i < s->data_.size(); ++i) {
-        const float v = std::clamp(s->data_[i], -1.0f, 32767.0f / 32768.0f) * 32768.0f;
+        const float v = std::clamp(s->data_[i] * down, -1.0f, kFull) * 32768.0f;
         s->pcm16_[i] = static_cast<int16_t>(std::lrint(v));
     }
     std::vector<float>().swap(s->data_);

@@ -7,9 +7,18 @@ namespace ps {
 ClipLauncher::~ClipLauncher() {
     for (auto& s : slots_) {
         if (s.sample && s.sample->release()) delete s.sample;
-        s.sample = nullptr;
+        if (s.held && s.held->release()) delete s.held;
+        s.sample = s.held = nullptr;
     }
     collectGarbage();
+}
+
+void ClipLauncher::releaseHeld(Slot& s) {
+    if (!s.held) return;
+    if (s.voice.sample == s.held) s.voice = Voice{};
+    if (s.tail.sample == s.held) s.tail = Voice{};
+    retire(s.held);
+    s.held = nullptr;
 }
 
 void ClipLauncher::retire(Sample* s) {
@@ -34,10 +43,21 @@ void ClipLauncher::install(int slot, Sample* sample) {
         retire(sample);
         return;
     }
-    // Voices may still point at the old sample: silence them before it can be freed.
+    // A sound replaced before (still fading): cut now, it is let go.
+    releaseHeld(s);
+    // The sounding pass fades out (audit 13: it was cut, a click), the old sound held until it is
+    // done; render() lets it go then.
+    if (s.voice.sample) {
+        s.tail = s.voice;
+        if (s.tail.fade == 0) s.tail.fade = fadeFrames_;
+    }
     s.voice = Voice{};
-    s.tail = Voice{};
-    retire(s.sample);
+    if (s.tail.sample && s.tail.sample == s.sample) {
+        s.held = s.sample;
+    } else {
+        s.tail = Voice{};
+        retire(s.sample);
+    }
     s.sample = sample;
     if (!sample) s.state = Off;
     states_[static_cast<size_t>(slot)].store(s.state, std::memory_order_relaxed);
@@ -153,7 +173,11 @@ void ClipLauncher::render(float* left, float* right, int numFrames) {
         float l = 0.0f, r = 0.0f;
         for (size_t k = 0; k < slots_.size(); ++k) {
             Slot& s = slots_[k];
-            if (!s.sample) continue;
+            if (!s.sample) {
+                // Emptied while it played: its last pass fades out.
+                play(s.tail, s.gain, l, r);
+                continue;
+            }
             if (s.state == Waiting && beat_ >= s.startBeat) {
                 s.state = Playing;
                 restart(s);
@@ -174,6 +198,9 @@ void ClipLauncher::render(float* left, float* right, int numFrames) {
         left[i] += l;
         right[i] += r;
         beat_ += perFrame;
+    }
+    for (Slot& s : slots_) {
+        if (s.held && s.voice.sample != s.held && s.tail.sample != s.held) releaseHeld(s);
     }
     syncAt_ = -1;
 }

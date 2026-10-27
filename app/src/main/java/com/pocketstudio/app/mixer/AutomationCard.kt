@@ -132,6 +132,10 @@ data class AutomationUi(
     val preferredCh: Int = -1,
     /** Phase 37: where each part of the song starts (bar) and its name, drawn along the song's curves. */
     val parts: List<Pair<Int, String>> = emptyList(),
+    /** Audit 06: steps of the part shown (its longest loop, at most a curve's 64); 0: the drums' [steps]. */
+    val partSteps: Int = 0,
+    /** The step from the part's start, -1 when stopped (curves over the whole part): read when drawn. */
+    val playPartStep: (() -> Int)? = null,
 )
 
 data class AutomationActions(
@@ -152,6 +156,8 @@ data class AutomationActions(
     val showControl: ((AutoTarget) -> Unit)? = null,
     /** Phase 37: a song lane's points, one a bar (false) or one a beat, a quarter of a bar (true). */
     val setResolution: ((lane: Int, perBeat: Boolean) -> Unit)? = null,
+    /** Audit 06: a loop lane over the whole part (its steps) or over the drum loop (0). */
+    val setLoopSteps: ((lane: Int, steps: Int) -> Unit)? = null,
 )
 
 /** The lane modes and their names (read when drawn, in the interface's language). */
@@ -453,13 +459,18 @@ internal fun LaneBlock(
     val song = lane.mode == AutomationLane.SONG
     val perBar = lane.pointsPerBar(ui.stepsPerBar / 4)
     val bars = maxOf(ui.songBars, 8)
-    val count = if (song) bars * perBar else ui.steps.coerceIn(1, AutomationLane.STEPS)
+    // A loop over the whole part (audit 06) counts its own steps, from the part's start.
+    val own = !song && lane.loopSteps > 0
+    val count = if (song) bars * perBar else (if (own) lane.loopSteps else ui.steps).coerceIn(1, AutomationLane.STEPS)
     val values = if (song) lane.songValues else lane.valuesFor(ui.scene)
     val curve = if (song) remember(lane, count) { lane.songCurve(count) } else emptyList()
     // Where the playhead is, in points of this curve (bars, beats or steps); read when drawn.
     val unitSteps = if (song) (if (lane.songPerBeat) 4 else ui.stepsPerBar.coerceAtLeast(1)) else 1
-    val playhead: () -> Float = remember(ui.playStep, ui.playSongStep, ui.currentStep, ui.songBar, song, unitSteps, ui.stepsPerBar) {
-        if (song) {
+    val playhead: () -> Float = remember(ui.playStep, ui.playSongStep, ui.playPartStep, ui.currentStep, ui.songBar, song, own, count, unitSteps, ui.stepsPerBar) {
+        if (own) {
+            val f = ui.playPartStep
+            if (f != null) { { f().let { s -> if (s < 0) -1f else Math.floorMod(s, count).toFloat() } } } else { { -1f } }
+        } else if (song) {
             val f = ui.playSongStep
             if (f != null) { { f().let { s -> if (s < 0) -1f else s.toFloat() / unitSteps } } }
             else { { if (ui.songBar < 0) -1f else ui.songBar * ui.stepsPerBar.toFloat() / unitSteps } }
@@ -507,6 +518,18 @@ internal fun LaneBlock(
                     selected = lane.mode == mode, onClick = { actions.setMode(i, mode) }, label = { Text(label) },
                     modifier = Modifier.testTag("auto_mode_${i}_$mode"),
                 )
+            }
+        }
+        // Audit 06: a loop curve over the drum loop or over the whole part, when the part is longer.
+        val loopSteps = actions.setLoopSteps
+        val part = ui.partSteps.coerceAtMost(AutomationLane.STEPS)
+        if (!song && loopSteps != null && (part > ui.steps || own)) {
+            fun length(steps: Int) = if (ui.stepsPerBar > 0 && steps % ui.stepsPerBar == 0) com.pocketstudio.app.ui.barsShort(steps / ui.stepsPerBar) else tr("%d pas", steps)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                FilterChip(selected = !own, onClick = { loopSteps(i, 0) }, label = { Text(tr("Sur la batterie · %s", length(ui.steps))) },
+                    modifier = Modifier.testTag("auto_len_drums_$i"))
+                FilterChip(selected = own, onClick = { loopSteps(i, maxOf(part, ui.steps)) }, label = { Text(tr("Sur toute la partie · %s", length(if (own) lane.loopSteps else maxOf(part, ui.steps)))) },
+                    modifier = Modifier.testTag("auto_len_part_$i"))
             }
         }
         // Phase 37: along the song, a point a bar or a point a beat (a quarter of a bar in 4/4).

@@ -583,6 +583,17 @@ data class Mixer(
     /** [masterDb] as a linear gain, for the engine. */
     val masterGain: Float get() = Math.pow(10.0, masterDb / 20.0).toFloat()
 
+    /**
+     * The sidechain's key the engine hears: [sidechainKey], or, when there is none and a Pompe
+     * reacts to « Le son du kick », the first pad's (the kick's, as the pump's « Grosse caisse »
+     * grid mode): a pump made by hand was silent (audit 06). Nothing saved changes.
+     */
+    val heardSidechainKey: Int get() = when {
+        sidechainKey >= 0 -> sidechainKey
+        (channels.flatMap { it.inserts } + master).any { it.reactsToTheKick } -> padChannel(KICK_LANE)
+        else -> -1
+    }
+
     fun sanitized(): Mixer = copy(
         masterDb = masterDb.takeIf { it.isFinite() }?.coerceIn(MASTER_MIN_DB, MASTER_MAX_DB) ?: 0f,
         channels = (channels + List((CHANNELS - channels.size).coerceAtLeast(0)) { Channel() })
@@ -626,6 +637,9 @@ data class Mixer(
 
         /** The strip of drum pad [lane] (its own effects, before the drums' strip). */
         fun padChannel(lane: Int) = FIRST_PAD + lane
+
+        /** The kick's pad (the starter's Kick role, the pump's « Grosse caisse »). */
+        const val KICK_LANE = 0
 
         fun sanitizeInserts(inserts: List<Insert>): List<Insert> =
             (inserts + List((INSERTS - inserts.size).coerceAtLeast(0)) { Insert() }).take(INSERTS).map { it.sanitized() }

@@ -53,6 +53,8 @@ data class MidiUi(
 /** What a MIDI device asks of the project (the tempo and the transport are the project's). */
 sealed interface MidiCommand {
     data object Start : MidiCommand
+    /** MIDI Continue: the other machine carries on where it stopped (not from the top). */
+    data object Continue : MidiCommand
     data object Stop : MidiCommand
     data class Tempo(val bpm: Double) : MidiCommand
     /** A note received (it already sounds): for live recording. Channel 10 (9) = pads. */
@@ -386,8 +388,6 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
                     held.clear()
                     playedAs.fill(-1)
                     keysOn.fill(0)
-            playedAs.fill(-1)
-            keysOn.fill(0)
                 }
             }
         }
@@ -410,7 +410,11 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             show(tr("Départ"))
         }
 
-        override fun continuePlayback() = start()
+        override fun continuePlayback() {
+            tempo.reset()
+            if (_state.value.followClock) _commands.tryEmit(MidiCommand.Continue)
+            show(tr("Continuer"))
+        }
 
         override fun stop() {
             if (_state.value.followClock) _commands.tryEmit(MidiCommand.Stop)

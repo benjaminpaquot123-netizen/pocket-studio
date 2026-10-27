@@ -882,9 +882,11 @@ fun AppRoot() {
     LaunchedEffect(Unit) {
         midiVm.commands.collect { c ->
             when (c) {
-                MidiCommand.Start -> if (!rhythmVm.transport.value.playing) rhythmVm.togglePlay()
+                // Following another machine's clock: no count-in, Start from the top (lined up again), Continue from where it stopped.
+                MidiCommand.Start -> rhythmVm.midiStart(fromTop = true)
+                MidiCommand.Continue -> rhythmVm.midiStart(fromTop = false)
                 MidiCommand.Stop -> if (rhythmVm.transport.value.playing) rhythmVm.togglePlay()
-                is MidiCommand.Tempo -> rhythmVm.setTempo(c.bpm)
+                is MidiCommand.Tempo -> rhythmVm.followClockTempo(c.bpm)
                 is MidiCommand.Note -> rhythmVm.midiNote(c.channel, c.pitch, c.velocity, c.on)
                 is MidiCommand.Control -> if (!rhythmVm.midiControl(c.channel, c.controller, c.value)) {
                     val m = midiVm.state.value

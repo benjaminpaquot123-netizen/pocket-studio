@@ -257,18 +257,23 @@ data class DrumPattern(
     }
 
     /**
-     * The loop at [newSteps] (whole bars, 16 to 64): a longer loop repeats the current bars so the
-     * groove keeps going; a shorter one drops the hits past its end (undo brings them back).
+     * The loop at [newSteps] (whole bars, 8 to 64). A shorter one keeps the hits past its end, unheard
+     * (as [sanitized] does): grown again, they are back. A longer one repeats the current loop, so the
+     * groove keeps going, only over stretches of it (each the old loop's length) that hold no hit yet
+     * on any pad: what was kept there comes back as it was, never overwritten nor doubled.
      */
     fun withSteps(newSteps: Int): DrumPattern {
         val n = (newSteps.coerceIn(MIN_STEPS, MAX_STEPS) / 4) * 4
         if (n == steps) return this
+        if (n < steps) return copy(steps = n)
+        val old = steps.coerceAtLeast(1)
+        // The stretches past the old end with a hit kept there: left as they are.
+        val kept = lanes.flatMapTo(HashSet()) { lane -> lane.hits.keys.filter { it in old until n }.map { it / old } }
         return copy(
             steps = n,
             lanes = lanes.map { lane ->
-                val hits = if (n > steps) (0 until n).mapNotNull { st -> lane.hits[st % steps]?.let { st to it } }.toMap()
-                else lane.hits.filterKeys { it < n }
-                lane.copy(hits = hits)
+                val repeated = (old until n).filter { it / old !in kept }.mapNotNull { st -> lane.hits[st % old]?.let { st to it } }
+                lane.copy(hits = lane.hits + repeated)
             },
         )
     }

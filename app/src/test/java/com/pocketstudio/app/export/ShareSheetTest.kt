@@ -223,7 +223,7 @@ class ShareSheetTest {
         }
         compose.onNodeWithTag("share_fix_master").assertDoesNotExist()
         compose.onNodeWithTag("share_fix_mixer").assertExists()
-        compose.onNodeWithTag("share_go").performScrollTo().assertIsNotEnabled()
+        compose.onNodeWithTag("share_go").assertIsNotEnabled()  // in the footer: always in sight
     }
 
     @Test
@@ -243,7 +243,7 @@ class ShareSheetTest {
         compose.onNodeWithTag("share_format_Wav").performScrollTo().performClick()
         assertEquals(ExportFormat.Wav, format)
         compose.onNodeWithTag("share_format_Wav").assertIsSelected()
-        compose.onNodeWithTag("share_go").performScrollTo().assertIsEnabled()
+        compose.onNodeWithTag("share_go").assertIsEnabled()
     }
 
     /**

@@ -249,6 +249,9 @@ class GuideJourneyTest {
         await("the sounds") { !ui().loading && ui().next != null && ui().next!!.id != "start.arrange" }
         while (ui().next?.stage == 1) {
             val id = ui().next!!.id
+            // The analysis may settle meanwhile and move on (a sound card no longer next): take the new one.
+            await("the card $id or the next one") { !ui().loading && (ui().next?.id != id || shown("guide_card_$id")) }
+            if (ui().next?.id != id) continue
             onCard(id)
             tap("guide_option_keep")
             await("$id kept") { status(id) == GuideStatus.DONE }

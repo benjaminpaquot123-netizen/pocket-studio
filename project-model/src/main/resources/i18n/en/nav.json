@@ -190,7 +190,6 @@
   "Voir le réglage : %s": "See the setting: %s",
   "au même volume": "at the same volume",
   "fait": "done",
-  "fait ailleurs": "done elsewhere",
   "replié": "folded",
   "sauté": "skipped",
   "À corriger": "To fix",
@@ -198,7 +197,6 @@
   "Écoute impossible ici : applique, écoute, et « Annuler mon choix » si ça ne va pas.": "Can't listen here: apply, listen, and “Undo my choice” if it doesn't fit.",
   "Écouter sans puis avec": "Listen without, then with",
   "Écouter « %s » : sans, puis avec": "Listen to “%s”: without, then with",
-  "Étape %1$d · %2$s": "Step %1$d · %2$s",
   "Étape %1$d/%2$d : %3$s": "Step %1$d/%2$d: %3$s",
   "à revoir": "to review",
   "%d à décider": "%d to decide",
@@ -330,8 +328,6 @@
   "1 étape de plus": "1 more step",
   "Place (pan)": "Placement (pan)",
   "Courbes (automation)": "Curves (automation)",
-  "Acide : ta ligne 303 joue dans %s. Dans Sons › Acide (mode complet), touche un pas pour la changer et tourne « Coupure » pour la faire crier.": "Acid: your 303 line plays in %s. In Sounds › Acid (full mode), tap a step to change it and turn “Cutoff” to make it scream.",
-  "Acide : ta ligne 303 joue dans %s. Dans Sons › Acide (mode complet), touche un pas pour la changer. La coupure s'ouvre toute seule le long du morceau : pour la tourner toi-même, garde le doigt sur « Coupure ».": "Acid: your 303 line plays in %s. In Sounds › Acid (full mode), tap a step to change it. The cutoff opens on its own along the song: to turn it yourself, keep your finger on “Cutoff”.",
   "déjà en place": "already in place",
   "Chapitre %1$d · %2$s": "Chapter %1$d · %2$s"
 }

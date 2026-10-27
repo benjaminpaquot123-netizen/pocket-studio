@@ -190,7 +190,6 @@
   "Voir le réglage : %s": "Instelling bekijken: %s",
   "au même volume": "even luid",
   "fait": "klaar",
-  "fait ailleurs": "elders gedaan",
   "replié": "ingeklapt",
   "sauté": "overgeslagen",
   "À corriger": "Te verbeteren",
@@ -198,7 +197,6 @@
   "Écoute impossible ici : applique, écoute, et « Annuler mon choix » si ça ne va pas.": "Luisteren kan hier niet: pas toe, luister, en ‘Mijn keuze ongedaan maken’ als het niet past.",
   "Écouter sans puis avec": "Luister zonder, dan met",
   "Écouter « %s » : sans, puis avec": "Luister naar ‘%s’: zonder, dan met",
-  "Étape %1$d · %2$s": "Stap %1$d · %2$s",
   "Étape %1$d/%2$d : %3$s": "Stap %1$d/%2$d: %3$s",
   "à revoir": "opnieuw bekijken",
   "%d à décider": "%d te beslissen",
@@ -330,8 +328,6 @@
   "1 étape de plus": "1 stap meer",
   "Place (pan)": "Plek (pan)",
   "Courbes (automation)": "Curven (automation)",
-  "Acide : ta ligne 303 joue dans %s. Dans Sons › Acide (mode complet), touche un pas pour la changer et tourne « Coupure » pour la faire crier.": "Acid: je 303-lijn speelt in %s. Tik in Klanken › Acid (volledige modus) op een stap om hem te veranderen en draai aan ‘Cutoff’ om hem te laten gillen.",
-  "Acide : ta ligne 303 joue dans %s. Dans Sons › Acide (mode complet), touche un pas pour la changer. La coupure s'ouvre toute seule le long du morceau : pour la tourner toi-même, garde le doigt sur « Coupure ».": "Acid: je 303-lijn speelt in %s. Tik in Klanken › Acid (volledige modus) op een stap om hem te veranderen. De cutoff gaat vanzelf open in de loop van het nummer: om hem zelf te draaien, houd je vinger op ‘Cutoff’.",
   "déjà en place": "al op zijn plaats",
   "Chapitre %1$d · %2$s": "Hoofdstuk %1$d · %2$s"
 }

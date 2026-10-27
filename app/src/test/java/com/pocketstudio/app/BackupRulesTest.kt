@@ -23,7 +23,9 @@ class BackupRulesTest {
     /** Moved whole from phone to phone (no cap), never in the cloud: the projects' folders and their sounds. */
     private val transferOnly = setOf("projects")
     /** Re-downloadable, rebuilt, huge or tied to this phone: never in the cloud backup. */
-    private val leftOut = setOf("models", "packs", "sounds", "stems", "stems-pinned.txt", "basic-pitch.onnx", "projects-trash", "last_crash.txt", "applog.txt", "applog-previous.txt")
+    private val leftOut = setOf("models", "packs", "sounds", "stems", "stems-pinned.txt", "basic-pitch.onnx", "projects-trash", "last_crash.txt", "applog.txt", "applog-previous.txt",
+        // A separation running (its marker, for this phone's next launch only).
+        "separation")
     /** Left out too, by name prefix: a Live take in progress (one file per project), only for this phone's next launch. */
     private val leftOutPrefixes = listOf("live-take-")
 

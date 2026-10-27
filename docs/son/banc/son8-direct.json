@@ -1,0 +1,261 @@
+{
+ "method": {
+  "same_span": "comme S7-direct.json : niveau du direct (ps_live) moins la sonie de la même section exportée (ps_measure) : première Intro, premier Drop (ou Refrain) d au moins 6 s",
+  "avant": "S7 (S7-direct.json, apres) : même son que main + Guide G4 (vérifié sur le banc : mêmes mesures)",
+  "apres": "son 8 : scripts/live-bench.sh 150 s, contre leur export (apres-son8.json) ; dubstep, liquid_dnb, synthwave et reggaeton enregistrés à nouveau après leurs derniers réglages"
+ },
+ "summary": {
+  "avant_intro": {
+   "median": 0.01,
+   "min": -1.56,
+   "max": 0.75,
+   "n": 37,
+   "within_1": 35
+  },
+  "apres_intro": {
+   "median": -0.01,
+   "min": -1.56,
+   "max": 0.83,
+   "n": 37,
+   "within_1": 35
+  },
+  "avant_drop": {
+   "median": 0.02,
+   "min": -0.64,
+   "max": 0.44,
+   "n": 37,
+   "within_1": 37
+  },
+  "apres_drop": {
+   "median": 0.03,
+   "min": -0.64,
+   "max": 0.33,
+   "n": 37,
+   "within_1": 37
+  }
+ },
+ "styles": {
+  "acid_house": {
+   "avant_intro": 0.26,
+   "avant_drop": 0.06,
+   "apres_intro": 0.26,
+   "apres_drop": 0.06
+  },
+  "acid_techno": {
+   "avant_intro": -0.59,
+   "avant_drop": -0.09,
+   "apres_intro": -0.59,
+   "apres_drop": -0.09
+  },
+  "acidcore": {
+   "avant_intro": -0.02,
+   "avant_drop": 0.01,
+   "apres_intro": -0.02,
+   "apres_drop": 0.01
+  },
+  "afro_house": {
+   "avant_intro": 0.4,
+   "avant_drop": 0.08,
+   "apres_intro": 0.35,
+   "apres_drop": 0.08
+  },
+  "afrobeats": {
+   "avant_intro": 0.75,
+   "avant_drop": 0.29,
+   "apres_intro": 0.83,
+   "apres_drop": 0.28
+  },
+  "amapiano": {
+   "avant_intro": -0.4,
+   "avant_drop": 0.03,
+   "apres_intro": -0.42,
+   "apres_drop": 0.02
+  },
+  "boom_bap": {
+   "avant_intro": 0.55,
+   "avant_drop": 0.22,
+   "apres_intro": 0.52,
+   "apres_drop": 0.21
+  },
+  "deep_house": {
+   "avant_intro": 0.35,
+   "avant_drop": 0.09,
+   "apres_intro": 0.41,
+   "apres_drop": 0.11
+  },
+  "detroit": {
+   "avant_intro": -0.17,
+   "avant_drop": -0.14,
+   "apres_intro": -0.16,
+   "apres_drop": -0.13
+  },
+  "disco": {
+   "avant_intro": -0.07,
+   "avant_drop": 0.02,
+   "apres_intro": -0.04,
+   "apres_drop": 0.03
+  },
+  "dnb": {
+   "avant_intro": -0.84,
+   "avant_drop": 0.08,
+   "apres_intro": -0.79,
+   "apres_drop": 0.1
+  },
+  "drill": {
+   "avant_intro": -0.11,
+   "avant_drop": 0.12,
+   "apres_intro": -0.09,
+   "apres_drop": 0.15
+  },
+  "dubstep": {
+   "avant_intro": -0.92,
+   "avant_drop": 0.16,
+   "apres_intro": -0.94,
+   "apres_drop": 0.16
+  },
+  "gabber": {
+   "avant_intro": 0.11,
+   "avant_drop": 0.09,
+   "apres_intro": 0.23,
+   "apres_drop": 0.08
+  },
+  "grime": {
+   "avant_intro": -0.98,
+   "avant_drop": -0.64,
+   "apres_intro": -0.99,
+   "apres_drop": -0.64
+  },
+  "hard_techno": {
+   "avant_intro": 0.3,
+   "avant_drop": -0.09,
+   "apres_intro": 0.24,
+   "apres_drop": -0.09
+  },
+  "house": {
+   "avant_intro": 0.22,
+   "avant_drop": -0.05,
+   "apres_intro": 0.24,
+   "apres_drop": -0.05
+  },
+  "industrial_techno": {
+   "avant_intro": -0.08,
+   "avant_drop": -0.03,
+   "apres_intro": -0.08,
+   "apres_drop": -0.03
+  },
+  "jersey_club": {
+   "avant_intro": -1.3,
+   "avant_drop": -0.32,
+   "apres_intro": -1.27,
+   "apres_drop": -0.28
+  },
+  "jump_up": {
+   "avant_intro": -0.62,
+   "avant_drop": -0.02,
+   "apres_intro": -0.6,
+   "apres_drop": -0.01
+  },
+  "jungle": {
+   "avant_intro": -0.33,
+   "avant_drop": -0.04,
+   "apres_intro": -0.31,
+   "apres_drop": -0.04
+  },
+  "liquid_dnb": {
+   "avant_intro": -0.72,
+   "avant_drop": -0.03,
+   "apres_intro": -0.67,
+   "apres_drop": 0.03
+  },
+  "lofi": {
+   "avant_intro": 0.31,
+   "avant_drop": 0.44,
+   "apres_intro": 0.2,
+   "apres_drop": 0.33
+  },
+  "minimal": {
+   "avant_intro": 0.09,
+   "avant_drop": -0.02,
+   "apres_intro": 0.04,
+   "apres_drop": -0.04
+  },
+  "neurofunk": {
+   "avant_intro": -0.38,
+   "avant_drop": 0.2,
+   "apres_intro": -0.39,
+   "apres_drop": 0.19
+  },
+  "phonk": {
+   "avant_intro": 0.01,
+   "avant_drop": 0.04,
+   "apres_intro": 0.05,
+   "apres_drop": 0.06
+  },
+  "pop": {
+   "avant_intro": 0.5,
+   "avant_drop": 0.17,
+   "apres_intro": 0.36,
+   "apres_drop": 0.13
+  },
+  "reggaeton": {
+   "avant_intro": 0.01,
+   "avant_drop": -0.02,
+   "apres_intro": -0.01,
+   "apres_drop": -0.07
+  },
+  "retro_techno": {
+   "avant_intro": 0.28,
+   "avant_drop": 0.07,
+   "apres_intro": 0.32,
+   "apres_drop": 0.11
+  },
+  "riddim": {
+   "avant_intro": -1.56,
+   "avant_drop": -0.59,
+   "apres_intro": -1.56,
+   "apres_drop": -0.59
+  },
+  "speed_garage": {
+   "avant_intro": 0.13,
+   "avant_drop": 0.01,
+   "apres_intro": 0.13,
+   "apres_drop": 0.02
+  },
+  "synthwave": {
+   "avant_intro": 0.63,
+   "avant_drop": 0.2,
+   "apres_intro": 0.53,
+   "apres_drop": 0.11
+  },
+  "tech_house": {
+   "avant_intro": 0.36,
+   "avant_drop": -0.13,
+   "apres_intro": 0.36,
+   "apres_drop": -0.13
+  },
+  "techno": {
+   "avant_intro": 0.12,
+   "avant_drop": -0.09,
+   "apres_intro": 0.06,
+   "apres_drop": -0.06
+  },
+  "trance": {
+   "avant_intro": 0.33,
+   "avant_drop": 0.06,
+   "apres_intro": 0.74,
+   "apres_drop": 0.08
+  },
+  "trap": {
+   "avant_intro": -0.31,
+   "avant_drop": 0.2,
+   "apres_intro": -0.24,
+   "apres_drop": 0.21
+  },
+  "uk_garage": {
+   "avant_intro": -0.93,
+   "avant_drop": -0.07,
+   "apres_intro": -0.89,
+   "apres_drop": -0.04
+  }
+ }
+}

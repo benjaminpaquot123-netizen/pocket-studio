@@ -408,6 +408,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     val projectId: String = com.pocketstudio.app.projects.CurrentProject.get(app)
     // S6 (G5), see estimateLiveDrive: declared before the init blocks that start it.
     private var liveDriveJob: kotlinx.coroutines.Job? = null
+    /** The wait before estimating again after a change of sound or mix (watchSoundForLiveDrive). */
+    private var liveDriveSettle: kotlinx.coroutines.Job? = null
     /** What the drive was estimated for ([liveDriveKeyOf]); null: not yet. */
     private var liveDriveKey: Int? = null
     /** What an estimate was last tried for, found or not: a failed one is not tried again at each ▶. */
@@ -7365,6 +7367,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (NativeEngine.isAvailable) NativeEngine.resetLoudnessEstimate()
         // S6 (G5): the live gain this song's export will use, found before ▶ (in the background).
         estimateLiveDrive()
+        watchSoundForLiveDrive()
         // The engine outlives a project: the keyboard's sustain, wheel and arpeggio of the last
         // one must not hold or arpeggiate this one's notes while its buttons show them off.
         for (id in 0 until InstrumentTrack.MAX) {
@@ -8293,8 +8296,42 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun liveDriveWanted(p: Project) = p.mixVersion >= Project.MIX_V2 && p.song.isNotEmpty() && p.style != null
 
-    /** The song's shape as the estimate heard it: another song made here estimates again. */
-    private fun liveDriveKeyOf(p: Project): Int = java.util.Objects.hash(p.song, p.style, p.tempoBpm, p.mixVersion, p.allScenes.size)
+    /**
+     * The song's shape and sound as the estimate heard it: another song made here, or (REVIEW S6)
+     * another sound or mix on its tracks, estimates again.
+     */
+    private fun liveDriveKeyOf(p: Project): Int = java.util.Objects.hash(p.song, p.style, p.tempoBpm, p.mixVersion, p.allScenes.size, liveSoundKeyOf(p))
+
+    /** What the tracks sound like and how they are mixed: their sounds and layers, the mixer, the 303's sound. */
+    private fun liveSoundKeyOf(p: Project): Int = java.util.Objects.hash(
+        p.instrumentTracks.map { listOf(it.engine, it.synth, it.plaits, it.instrument, it.sampled, it.multi, it.voice808, it.layers) },
+        p.mixer, p.acid.sound,
+    )
+
+    /**
+     * REVIEW S6: a change of sound or mix (a track's sound, an effect, a fader) makes the live gain
+     * found before it stale (a softer sound kept a gain set for a louder one): once the edits have
+     * stopped for [LIVE_DRIVE_SETTLE_MS], it is estimated again (an export's own gain, found on the
+     * sound before, gives way to it too).
+     */
+    private fun watchSoundForLiveDrive() {
+        viewModelScope.launch {
+            var last: Int? = null
+            project.map { liveSoundKeyOf(it) }.distinctUntilChanged().collect { key ->
+                val before = last
+                last = key
+                if (before == null) return@collect
+                liveDriveSettle?.cancel()
+                liveDriveSettle = viewModelScope.launch {
+                    kotlinx.coroutines.delay(LIVE_DRIVE_SETTLE_MS)
+                    if (liveDriveKey == null && liveDriveTriedKey == null) return@launch  // never estimated: ▶ will
+                    liveDriveJob?.join()  // one estimated for the sound before: this one after it
+                    liveDriveFromExport = false
+                    estimateLiveDrive()
+                }
+            }
+        }
+    }
 
     /** Starts the estimate when this song has none yet (worker side; posted when found). */
     private fun estimateLiveDrive() {
@@ -8826,6 +8863,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         const val MAX_TAIL_FRAMES = 10L * OfflineExport.SAMPLE_RATE
         /** The master limiter's ceiling of a WAV (dBTP, the engine's MasterChain::kDefaultCeilingDb): an M4A searches its drive there (S6). */
         const val MASTER_CEILING_DBTP = -1f
+
+        /** How long the sound and mix stay unchanged before the live gain is estimated again (watchSoundForLiveDrive). */
+        const val LIVE_DRIVE_SETTLE_MS = 1500L
         internal val STEM_LABELS = listOf("Batterie", "Basse", "Autres", "Voix")
 
         /** An export file's label ("batterie", "piste2-basse"…) as the progress line shows it. */

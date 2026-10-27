@@ -109,8 +109,12 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
     ),
     CHORUS(
         "Chorus",
-        listOf(Param("Vitesse") { num("%.2f Hz", expMap(it, 0.05f, 5f)) }, Param("Profondeur", ::percentOf), Param("Retard", ::percentOf), Param("Mélange", ::percentOf)),
-        listOf(0.3f, 0.5f, 0.4f, 0.5f),
+        listOf(
+            Param("Vitesse") { num("%.2f Hz", expMap(it, 0.05f, 5f)) }, Param("Profondeur", ::percentOf), Param("Retard", ::percentOf), Param("Mélange", ::percentOf),
+            // Leads chantier, lot C: each side through its own line (a wide sound stays wide); before, summed to mono.
+            Param("Entrée") { if (it >= 0.5f) tr("Stéréo") else tr("Mono") },
+        ),
+        listOf(0.3f, 0.5f, 0.4f, 0.5f, 1f),
         group = EffectGroup.MOTION,
     ),
     FILTER(
@@ -369,6 +373,7 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
 
     /**
      * A saved insert's settings brought to today's: those it lacks take their defaults, except on a
+     * chorus saved before the leads chantier (4 settings: its input stays mono), and on a
      * compressor or a saturation saved before phase 33 (4 settings), which keep their sound: the
      * compressor's fixed make-up (half the reduction of a full-scale sound) becomes its [COMP_GAIN],
      * nothing auto, peaks, no filter; the saturation keeps its level (no [SAT_COMPENSATION]) and
@@ -380,6 +385,8 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
             SATURATION -> LEGACY_SATURATION
             else -> null
         }
+        // A chorus saved with its 4 settings sums its input to mono, as it always did (its export unchanged).
+        if (this == CHORUS && saved.size <= LEGACY_PARAMS) return (saved + defaults.drop(saved.size)).take(LEGACY_PARAMS) + CHORUS_MONO
         if (legacy == null || saved.size > LEGACY_PARAMS) return saved + defaults.drop(saved.size)
         val old = (saved + legacy.drop(saved.size)).take(LEGACY_PARAMS)
         return if (this == COMPRESSOR) {
@@ -414,6 +421,9 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
         const val PUMP_AUDIO_KEY = 3
         /** A tone saved at its top before phase 33 (an 18 kHz low-pass): just under the open top. */
         const val LEGACY_TOP_TONE = 0.99999f
+        /** [CHORUS]'s input of a chorus saved before the leads chantier's lot C: summed to mono. */
+        const val CHORUS_MONO = 0f
+        const val CHORUS_INPUT = 4
         private val LEGACY_COMPRESSOR = listOf(0.6f, 0.2f, 0.2f, 0.3f)
         private val LEGACY_SATURATION = listOf(0.3f, 0.7f, 1f, 0.7f)
         private fun Float.clean(fallback: Float) = takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: fallback

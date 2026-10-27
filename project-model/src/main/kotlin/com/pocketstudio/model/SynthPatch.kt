@@ -82,7 +82,43 @@ data class SynthPatch(val values: List<Float> = DEFAULTS) {
         /** The mid layer's high-pass, 156..400 Hz (0.5: 250 Hz, as before), and its drive (0.5: x3, as before). */
         const val MID_LAYER_HZ = 46
         const val MID_LAYER_DRIVE = 47
-        const val PARAM_COUNT = 48
+
+        // The leads chantier, lots B to D (docs/hits/leads-pros.md § 6; engine Synth.h), appended: at their
+        // defaults the sound is as before them (a project saved earlier takes these defaults).
+        /** The cut-off follows the note: 0..1 octave per octave around C4. */
+        const val KEY_TRACK = 48
+        /** The velocity scales the filter envelope: ×(1 ± this) at velocity 1 / 0.4, as is at 0.7. */
+        const val VELOCITY_ENV = 49
+        /** A noise click of about 4 ms, high-passed at 2 kHz, on each attack (over the filter). */
+        const val CLICK = 50
+        /** Each note's vibrato waits 0..1 s, then fades in over as long. */
+        const val VIBRATO_DELAY = 51
+        /** The engine's [CYCLE_BARS] cycle shifted by this part of a cycle (0.5: open at its start). */
+        const val CYCLE_OFFSET = 52
+        /** Above 0.5: the unison as a JP-8000 supersaw (Szabo's ratios, free phases, drift, centre/side mix, high-pass at f0). */
+        const val SUPERSAW = 53
+        /** Above 0.5: the ladder filter linear (no inner saturation: clean on dense stacks). */
+        const val CLEAN_LADDER = 54
+        /** Saturation before the filter, on each voice. */
+        const val PRE_DRIVE = 55
+        /** The square waves' pulse width swept by a 0.7 Hz triangle (the hoover). */
+        const val PWM = 56
+        /** A 2-operator FM pair taking over oscillator 1 (its index falling with the filter envelope), and its ratio ([fmRatioValue]). */
+        const val FM = 57
+        const val FM_RATIO = 58
+        const val PARAM_COUNT = 59
+
+        /** The leads chantier's lots B to D ([KEY_TRACK]..[FM_RATIO]). */
+        val LEAD_PARAMS: IntRange = KEY_TRACK..FM_RATIO
+
+        /** [FM_RATIO]'s choices (engine Synth::fmRatioOf). */
+        val FM_RATIOS = listOf(0.5f, 1f, 1.41f, 2f, 2.76f, 3f, 3.5f, 4f, 7f)
+
+        /** The [FM_RATIO] value of the ratio nearest [ratio]. */
+        fun fmRatioValue(ratio: Float): Float = FM_RATIOS.indices.minByOrNull { kotlin.math.abs(FM_RATIOS[it] - ratio) }!! / (FM_RATIOS.size - 1f)
+
+        /** [VIBRATO_DELAY] for a delay of [ms] (0..1000). */
+        fun vibratoDelayValue(ms: Float): Float = (ms / 1000f).coerceIn(0f, 1f)
 
         /** The parameters « des basses qui tapent » appended ([PITCH_ENV]..[MID_LAYER_DRIVE]). */
         val BASS_PARAMS: IntRange = PITCH_ENV..MID_LAYER_DRIVE
@@ -91,8 +127,14 @@ data class SynthPatch(val values: List<Float> = DEFAULTS) {
          * [patch] as it was written before [BASS_PARAMS] when they are all at their defaults (its first
          * [PITCH_ENV] values): what a frozen track's signature reads, so that it stays up to date.
          */
-        fun beforeBassParams(patch: SynthPatch): SynthPatch =
-            if (patch.values.size > PITCH_ENV && BASS_PARAMS.all { patch.get(it) == DEFAULTS[it] }) SynthPatch(patch.values.take(PITCH_ENV)) else patch
+        fun beforeBassParams(patch: SynthPatch): SynthPatch {
+            val p = beforeLeadParams(patch)
+            return if (p.values.size > PITCH_ENV && BASS_PARAMS.all { p.get(it) == DEFAULTS[it] }) SynthPatch(p.values.take(PITCH_ENV)) else p
+        }
+
+        /** [patch] as written before [LEAD_PARAMS] when they are all at their defaults (its first [KEY_TRACK] values). */
+        fun beforeLeadParams(patch: SynthPatch): SynthPatch =
+            if (patch.values.size > KEY_TRACK && LEAD_PARAMS.all { patch.get(it) == DEFAULTS[it] }) SynthPatch(patch.values.take(KEY_TRACK)) else patch
 
         /** [PITCH_DECAY] for a fall of [ms] milliseconds (1..500). */
         fun pitchDecayValue(ms: Float): Float = (kotlin.math.ln(ms.coerceIn(1f, 500f)) / kotlin.math.ln(500f))
@@ -152,6 +194,10 @@ data class SynthPatch(val values: List<Float> = DEFAULTS) {
             // « Des basses qui tapent »: no pitch envelope (its fall 22 ms), no phase reset, no velocity on
             // the cutoff, the square sub without a floor, the mid layer at 250 Hz driven x3: as before.
             0f, 0.5f, 0f, 0f, 0f, 0f, 0.5f, 0.5f,
+            // The leads chantier, lots B to D: no key tracking, no velocity on the envelope, no click, the
+            // vibrato at once, the cycle from its start, the linear unison, the ladder as before, no drive
+            // before the filter, no pulse sweep, no FM (its ratio 1): as before.
+            0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0.125f,
         )
 
         /** Ready-made sounds: name -> patch. Waves: 0 = saw, 0.5 = square, 1 = triangle. */

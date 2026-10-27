@@ -74,6 +74,66 @@ object ProVoices {
         return sound.copy(sound = patch.with(SynthPatch.GAIN, SynthPatch.gainValue(db)))
     }
 
+    /**
+     * The leads chantier, lots B to D (docs/hits/leads-pros.md § 6 and § 8): what the engine gained,
+     * set on each sound by its name. The cut-off follows the note in the engine ([SynthPatch.KEY_TRACK]:
+     * the recipe's once-a-part [keyTracked] is then left out) and opens with the velocity; plucks and
+     * keys « bark » when struck hard ([SynthPatch.VELOCITY_ENV]) and start with a 4 ms click and a
+     * 12-semitone tick; the vibratos wait 250 ms; the supersaws are JP-8000s (free phases, drift,
+     * Szabo's ratios, the high-pass at f0); the hoover's square breathes (PWM) and its note dives
+     * 3 semitones; the ladder sounds are linear (no intermodulation). At C4 and velocity 0.7 each
+     * sound keeps its loudness (none of these moves it there by more than a fraction of a dB).
+     */
+    val TOUCH_EDITS: Map<String, List<Pair<Int, Float>>> = with(SynthPatch) {
+        val vibratoLate = VIBRATO_DELAY to vibratoDelayValue(250f)
+        val tick = listOf(PITCH_ENV to pitchEnvValue(12f), PITCH_DECAY to pitchDecayValue(4f))
+        mapOf(
+            "Lead" to listOf(KEY_TRACK to 0.5f, VELOCITY_CUTOFF to 0.45f, VELOCITY_ENV to 0.6f, vibratoLate, CLICK to 0.12f),
+            "Lead carré" to listOf(KEY_TRACK to 0.5f, VELOCITY_CUTOFF to 0.45f, VELOCITY_ENV to 0.6f, vibratoLate, CLICK to 0.12f),
+            "Supersaw" to listOf(SUPERSAW to 1f, KEY_TRACK to 0.5f, VELOCITY_CUTOFF to 0.4f, VELOCITY_ENV to 1f, CLICK to 0.15f),
+            "Lead trance" to listOf(SUPERSAW to 1f, KEY_TRACK to 0.5f, VELOCITY_CUTOFF to 0.45f, VELOCITY_ENV to 0.6f, CLICK to 0.1f),
+            "Hoover" to listOf(SUPERSAW to 1f, PWM to 0.6f, PITCH_ENV to pitchEnvValue(3f), PITCH_DECAY to pitchDecayValue(150f), KEY_TRACK to 0.3f),
+            "Nappe" to listOf(SUPERSAW to 1f, KEY_TRACK to 0.3f),
+            "Nappe chaude" to listOf(SUPERSAW to 1f, KEY_TRACK to 0.3f),
+            "Accords future bass" to listOf(SUPERSAW to 1f, KEY_TRACK to 0.3f, VELOCITY_CUTOFF to 0.3f),
+            "Cordes" to listOf(SUPERSAW to 1f, KEY_TRACK to 0.3f, vibratoLate),
+            "Pluck" to listOf(KEY_TRACK to 1f, VELOCITY_CUTOFF to 0.25f, VELOCITY_ENV to 0.5f, CLICK to 0.3f) + tick,
+            "Pluck future" to listOf(KEY_TRACK to 1f, VELOCITY_CUTOFF to 0.25f, VELOCITY_ENV to 0.5f, CLICK to 0.3f) + tick,
+            "Arpège" to listOf(KEY_TRACK to 0.8f, VELOCITY_CUTOFF to 0.2f, CLICK to 0.2f, CLEAN_LADDER to 1f),
+            "Cloche" to listOf(KEY_TRACK to 0.5f, VELOCITY_CUTOFF to 0.25f, CLEAN_LADDER to 1f),
+            "Orgue" to listOf(CLEAN_LADDER to 1f),
+            "Piano électrique" to listOf(KEY_TRACK to 0.5f, VELOCITY_CUTOFF to 0.2f, VELOCITY_ENV to 0.7f, CLEAN_LADDER to 1f),
+        )
+    }
+
+    /**
+     * The loudness the JP-8000 unison takes off (its high-pass at the note, its centre and copies
+     * mixed), given back (dB, the loudest 3 s of a held chord by the engine's synth alone, before and
+     * after: scratchpad son8/sp/chord.cpp); the other sounds move by under 0.5 dB.
+     */
+    val TOUCH_GAIN_DB: Map<String, Float> = mapOf("Supersaw" to 1.4f, "Lead trance" to 1.3f, "Hoover" to 2.1f, "Accords future bass" to 1.3f)
+
+    /** [sound] (lot 1 applied) with [TOUCH_EDITS]: the library's sound since the lots B to D. */
+    fun touch(sound: NamedSound<SynthPatch>): NamedSound<SynthPatch> {
+        val edits = TOUCH_EDITS[sound.name] ?: return sound
+        val patch = edits.fold(sound.sound) { p, (i, v) -> p.with(i, v) }
+        val db = SynthPatch.gainDb(patch.get(SynthPatch.GAIN)) + (TOUCH_GAIN_DB[sound.name] ?: 0f)
+        return sound.copy(sound = patch.with(SynthPatch.GAIN, SynthPatch.gainValue(db)))
+    }
+
+    /**
+     * [patch], the library's [name] since [touch], as it was before it ([TOUCH_EDITS] taken back to the
+     * lot 1 values, its gain too): a lead's sound playing a bass (the grime square) keeps the low end
+     * it had; its cut-off following the note around C4 would darken a line two octaves down.
+     */
+    fun untouched(patch: SynthPatch, name: String): SynthPatch {
+        val edits = TOUCH_EDITS[name] ?: return patch
+        val lot1 = SoundLibrary.SYNTH_V2.firstOrNull { it.name == name }?.let { synth(it).sound } ?: return patch
+        val p = edits.fold(patch) { q, (i, _) -> q.with(i, lot1.get(i)) }
+        val db = SynthPatch.gainDb(p.get(SynthPatch.GAIN)) - (TOUCH_GAIN_DB[name] ?: 0f)
+        return p.with(SynthPatch.GAIN, SynthPatch.gainValue(db))
+    }
+
     /** Octaves of [SynthPatch.CUTOFF] per unit (20 x 900^v Hz). */
     private val OCTAVES_PER_UNIT = (ln(900.0) / ln(2.0)).toFloat()
 

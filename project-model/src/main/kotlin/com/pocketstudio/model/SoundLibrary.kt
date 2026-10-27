@@ -111,9 +111,13 @@ object SoundLibrary {
 
     /**
      * The synth's sounds: [SYNTH_V2] with its leads, pads, plucks and keys set as producers set them
-     * (the leads chantier, lot 1: [ProVoices]), the basses and effects unchanged.
+     * (the leads chantier, lot 1: [ProVoices.synth]; lots B to D, the touch, the attack and the unison:
+     * [ProVoices.touch]), the basses and effects unchanged.
      */
-    val SYNTH: List<NamedSound<SynthPatch>> = SYNTH_V2.map(ProVoices::synth)
+    val SYNTH: List<NamedSound<SynthPatch>> = SYNTH_V2.map(ProVoices::synth).map(ProVoices::touch)
+
+    /** The library between the leads chantier's lot 1 and its lots B to D: projects saved then keep their names. */
+    private val SYNTH_V3: List<NamedSound<SynthPatch>> = SYNTH_V2.map(ProVoices::synth)
 
     /** [PlaitsPatch.harmonics] of patch [index] (0..31) of a six-operator FM bank (Plaits' own mapping). */
     fun dx(index: Int): Float = (index.coerceIn(0, 31) + 0.5f) / 32f / 1.02f
@@ -171,8 +175,9 @@ object SoundLibrary {
      */
     fun synthNameOf(patch: SynthPatch, among: List<NamedSound<SynthPatch>> = SYNTH): String? {
         // The assistant's width and movement (S4: [SynthPatch.S4_PARAMS]) are its production, not the sound.
-        // The sub's 30 Hz floor too (a sound chosen before it had none).
-        fun SynthPatch.identity() = (SynthPatch.S4_PARAMS + SynthPatch.SUB_FLOOR).fold(sanitized().with(SynthPatch.GAIN, 0.5f).with(SynthPatch.GLIDE, 0f)) { p, i ->
+        // The sub's 30 Hz floor too (a sound chosen before it had none), and the touch and attack of the
+        // leads chantier's lots B to D ([SynthPatch.LEAD_PARAMS]: a sound chosen before them is the same sound).
+        fun SynthPatch.identity() = (SynthPatch.S4_PARAMS + SynthPatch.SUB_FLOOR + SynthPatch.LEAD_PARAMS).fold(sanitized().with(SynthPatch.GAIN, 0.5f).with(SynthPatch.GLIDE, 0f)) { p, i ->
             p.with(i, SynthPatch.DEFAULTS[i])
         }
         val wanted = patch.identity()
@@ -181,6 +186,7 @@ object SoundLibrary {
         // (key tracking) and along the song: the same sound at another cut-off is still that sound.
         fun SynthPatch.toneless() = with(SynthPatch.CUTOFF, 0f)
         return among.firstOrNull { it.sound.identity() == wanted }?.name
+            ?: SYNTH_V3.firstOrNull { it.sound.identity() == wanted }?.name?.takeIf { name -> among.any { it.name == name } }
             ?: SYNTH_V2.firstOrNull { it.sound.identity() == wanted }?.name?.takeIf { name -> among.any { it.name == name } }
             ?: among.firstOrNull { it.sound.identity().toneless() == wanted.toneless() }?.name
     }

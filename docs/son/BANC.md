@@ -66,7 +66,8 @@ Côté moteur, `live_playback_keeps_its_level` et `drop_drive_stays_in_range` (`
 - [Après S5 : mixage et master honnêtes](banc/apres-S5.md) (`banc/apres-S5.json`) : cible sur le Drop, perte plafonnée à 3 LU, vrai sidechain et bus « Musique », écrêteurs doux au mixage, sections à leur niveau, M4A décodé.
 - [Après S5b : le Drop tombe plus fort que la fin de sa Montée](banc/apres-S5b.md) (`banc/apres-S5b.json`) : Montée sous le Drop (souffle, roulement, volume général) et qui remonte (kick et basse sortis de sa seconde moitié), Intro des morceaux de rap sur leur boucle. C'est la référence de la CI depuis S5b.
 - [Après le chantier leads, lot 1 : recettes et vraies voix FM](banc/apres-leads-1.md) (`banc/apres-leads-1.json`) : chaque lead, nappe et contre-chant rendu seul (centroïde, brillance, boue, présence au téléphone, mouvement sur 8 mesures), les sons seuls à la sonde (non-harmoniques, vélocité), le mix au banc, au haut-parleur de téléphone et en direct ; depuis ce lot les enregistrements nomment aussi la voie de la nappe et du contre-chant (`META pad`, `META counter`).
-- [S6 son : direct = export, M4A, contrastes, largeur, téléphone](banc/S6.md) (`banc/apres-S6.json`, `banc/S6-direct.json`, `banc/S6-telephone.json`). C'est la référence de la CI depuis S6.
+- [S6 son : direct = export, M4A, contrastes, largeur, téléphone](banc/S6.md) (`banc/apres-S6.json`, `banc/S6-direct.json`, `banc/S6-telephone.json`).
+- [Son 8 : leads lots B à D (toucher, supersaw JP-8000, ladder propre, chorus stéréo, couches), restes de S7 et des relectures](banc/apres-son8.md) (`banc/apres-son8.json`, `banc/son8-voix.json`, `banc/son8-direct.json`). C'est la référence de la CI depuis son 8.
 
 ## Critères bloquants
 

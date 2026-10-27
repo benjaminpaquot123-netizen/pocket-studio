@@ -53,9 +53,9 @@ object WideMix {
     const val LEAD_SEND_V3 = 0.2f
     const val OCTAVE_DOWN_V3 = 0.15f
 
-    /** The filter's 8-bar curve open on each phrase's first bar: +-0.5 octave on a lead, +-0.4 on a pad. */
+    /** The filter's 8-bar curve open on each phrase's first bar: +-0.5 octave on a lead, +-0.6 on a pad (+-0.4 until son 8: the pads moved 2.1 dB over 8 bars, under the 2.5 aimed at). */
     const val LEAD_PHRASE_OCTAVES = 0.5f
-    const val PAD_PHRASE_OCTAVES = 0.4f
+    const val PAD_PHRASE_OCTAVES = 0.6f
 
     /** Library families with no octave-down double, ever: plucks, keys and bells (the « Pluck » and « Claviers » sounds). */
     private val NO_OCTAVE_CATEGORIES = setOf("Pluck", "Claviers")
@@ -149,15 +149,19 @@ object WideMix {
             val synth = t.engine == 0 && t.instrument == null
             val category = if (synth) SoundLibrary.synthCategoryOf(t.synth) else null
             // The cut-off following the part's notes (key tracking, once, here): a pluck two octaves up as bright as at C4.
-            val tracked = if (synth && (t.id in leads || t.id in pads)) {
+            // (Lots B to D: a library sound whose cut-off follows each note in the engine, KEY_TRACK, is left as it is.)
+            val tracked = if (synth && (t.id in leads || t.id in pads) && t.synth.get(SynthPatch.KEY_TRACK) == 0f) {
                 ProVoices.keyTracked(t.synth, p.medianPitch(t), ProVoices.keyTracking(category))
             } else t.synth
             val edited = when {
                 t.id in leads -> if (synth) t.copy(synth = lead(tracked, style, v3 = true, hasSub = hasSub, category = category)) else t
                 t.id in pads -> if (synth) t.copy(synth = pad(tracked, v3 = true)) else t
-                // A lead's sound playing a bass (the grime square) keeps the square sub under it.
-                t.id in basses && synth && category in BASS_WITHOUT_SUB && t.synth.get(SynthPatch.SUB) == 0f ->
-                    t.copy(synth = t.synth.with(SynthPatch.SUB, SynthPatch.DEFAULTS[SynthPatch.SUB]))
+                // A lead's sound playing a bass (the grime square) keeps the square sub under it, and (son 8)
+                // the low end it had: none of the leads' touch (a cut-off following the note around C4).
+                t.id in basses && synth && category in BASS_WITHOUT_SUB -> {
+                    val plain = SoundLibrary.synthNameOf(t.synth)?.let { ProVoices.untouched(t.synth, it) } ?: t.synth
+                    t.copy(synth = if (plain.get(SynthPatch.SUB) == 0f) plain.with(SynthPatch.SUB, SynthPatch.DEFAULTS[SynthPatch.SUB]) else plain)
+                }
                 t.id in basses && bassMusic && synth -> t.copy(synth = when {
                     style.id == "neurofunk" -> neuro(t.synth)
                     style.id == "riddim" -> riddim(t.synth)
@@ -219,7 +223,55 @@ object WideMix {
             if (t.engine != 0 || t.instrument != null) continue
             val lane = if (p.automation.size < AutomationLane.MAX_LANES) phraseLane(p, id, sections, octaves) else null
             p = if (lane != null) withLanes(p, listOf(lane))
-            else p.withTrack(t.copy(synth = t.synth.with(SynthPatch.CYCLE_BARS, SynthPatch.cycleValue(8)).with(SynthPatch.CYCLE_DEPTH, octaves / 2f)))
+            else p.withTrack(t.copy(synth = t.synth.with(SynthPatch.CYCLE_BARS, SynthPatch.cycleValue(8)).with(SynthPatch.CYCLE_DEPTH, octaves / 2f)
+                // Lot B: the engine's cycle half a turn on, open on each 8 bars' first one as the curve is.
+                .with(SynthPatch.CYCLE_OFFSET, 0.5f)))
+        }
+        // Lot D: the voices' layers (a supersaw's bite an octave up, a pluck's pad, a piano's air).
+        p = withVoiceLayers(p, partOfTrack.entries.firstOrNull { it.value == Part.Lead }?.key, pads)
+        return p
+    }
+
+    // --- The leads chantier, lot D: layers (docs/hits/leads-pros.md § 4.1, 4.6, 4.8) -----------
+
+    /** The supersaw's bite: a square an octave up, 12 dB under it (§ 4.1). */
+    const val BITE_DB = -12f
+    /** A pluck's pad: the same notes held softly, 14 dB under (§ 4.8). */
+    const val PLUCK_PAD_DB = -14f
+    /** A piano's air: the « Nappe » an octave up (its partials at 2-6 kHz), 18 dB under (§ 4.6: « une nappe d'air »). */
+    const val AIR_DB = -18f
+
+    /**
+     * [lead] (the song's lead) and [pads] with their lot D layer, each on a track that has a free layer:
+     * a Supersaw lead gets [BITE_DB] of « Lead carré » an octave up (its envelope); a Pluck lead
+     * [PLUCK_PAD_DB] of « Nappe »; a Plaits FM piano or keys on the pads [AIR_DB] of « Nappe » an octave up.
+     * One layer a track (the CPU of a layer's six voices), none on a sampled instrument.
+     */
+    internal fun withVoiceLayers(project: Project, lead: Int?, pads: Collection<Int>): Project {
+        var p = project
+        fun named(name: String) = SoundLibrary.SYNTH.first { it.name == name }.sound
+        fun add(id: Int, layer: TrackLayer) {
+            val t = p.track(id)
+            if (t.instrument != null || t.layers.size >= Layers.MAX) return
+            p = p.withTrack(t.copy(layers = Layers.sanitize(t.layers + layer)))
+        }
+        if (lead != null && p.instrumentTracks.any { it.id == lead }) {
+            val t = p.track(lead)
+            when (if (t.engine == 0 && t.instrument == null) SoundLibrary.synthNameOf(t.synth) else null) {
+                "Supersaw" -> {
+                    // The square takes the lead's envelope: it bites with each note, lets go with it.
+                    val env = listOf(SynthPatch.A_ATTACK, SynthPatch.A_DECAY, SynthPatch.A_SUSTAIN, SynthPatch.A_RELEASE)
+                    val square = env.fold(named("Lead carré").with(SynthPatch.CLICK, 0f)) { s, i -> s.with(i, t.synth.get(i)) }
+                    add(lead, TrackLayer(LayerSound.synth(square), label = "Lead carré", role = LayerRole.ATTACK, transpose = 12, gainDb = BITE_DB))
+                }
+                "Pluck", "Pluck future" -> add(lead, TrackLayer(LayerSound.synth(named("Nappe")), label = "Nappe", role = LayerRole.BODY, gainDb = PLUCK_PAD_DB))
+                else -> {}
+            }
+        }
+        for (id in pads) {
+            val t = p.instrumentTracks.firstOrNull { it.id == id } ?: continue
+            val fmKeys = t.engine == 1 && t.instrument == null && t.plaits.model in 2..4
+            if (fmKeys) add(id, TrackLayer(LayerSound.synth(named("Nappe")), label = "Air", role = LayerRole.AIR, transpose = 12, gainDb = AIR_DB))
         }
         return p
     }
@@ -244,7 +296,7 @@ object WideMix {
     }
 
     /** A light chorus, then a dotted-eighth ping-pong echo, in the lead's free slots (unless it has its own). */
-    val LEAD_CHORUS = Insert(EffectType.CHORUS.ordinal, listOf(0.3f, 0.4f, 0.4f, 0.4f))
+    val LEAD_CHORUS = Insert(EffectType.CHORUS.ordinal, listOf(0.3f, 0.4f, 0.4f, 0.4f, 1f))
     val LEAD_PING_PONG = Insert(EffectType.PING_PONG.ordinal, listOf(0.42f, 0.35f, 0.5f, 0.25f))
 
     private fun withLeadEffects(project: Project, track: Int, v3: Boolean = false): Project {
@@ -321,12 +373,23 @@ object WideMix {
     const val CLAP_SPREAD = 0.4f
 
     /**
+     * Son 8 (the S7 leftovers): the styles whose Drop stayed under the side/centre target (S7 bench: deep
+     * house −15.5, dubstep −16.0, neurofunk −16.8, phonk −16.9 dB, their Drop mostly kick, bass and 808,
+     * kept in the centre): their leads, pads and clap or snare spread wider ([NARROW_LEAD_SPREAD],
+     * [PAD_SPREAD] even in bass music, [NARROW_CLAP_SPREAD]).
+     */
+    private val NARROW_DROP_STYLES = setOf("deep_house", "dubstep", "neurofunk", "phonk")
+    const val NARROW_LEAD_SPREAD = 1f
+    const val NARROW_CLAP_SPREAD = 0.8f
+
+    /**
      * The styles wide already (S6 bench: side/centre of the Drop −9.8 to −13.6 dB, the target −15 to
      * −9): their spread scaled down, or none (trance and hard techno, in range without it; at full
      * spread they went to −6.6 and −7.4 dB, and lost 1.2 to 1.5 LU in mono). Detroit (−18.6) went to
      * −7.1 at full spread (its pads and 303 are its Drop).
+     * Son 8: reggaeton none (0.55 before; with its pluck lead's pad layer it went to −8.1, at 0.3 to −8.8).
      */
-    private val SPREAD_SCALE = mapOf("trance" to 0f, "hard_techno" to 0f, "reggaeton" to 0.55f, "jump_up" to 0.5f, "minimal" to 0.7f, "detroit" to 0.5f)
+    private val SPREAD_SCALE = mapOf("trance" to 0f, "hard_techno" to 0f, "reggaeton" to 0f, "jump_up" to 0.5f, "minimal" to 0.7f, "detroit" to 0.5f)
 
     fun spreadScale(style: Style): Float = SPREAD_SCALE[style.id] ?: 1f
 
@@ -354,12 +417,13 @@ object WideMix {
             p = p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.toMutableList().also { it[ch] = c.copy(inserts = inserts).sanitized() }))
         }
         val scale = spreadScale(style)
-        val padSpread = scale * if (style.family == "Bass music") BASS_MUSIC_PAD_SPREAD else PAD_SPREAD
+        val narrow = style.id in NARROW_DROP_STYLES
+        val padSpread = scale * if (style.family == "Bass music" && !narrow) BASS_MUSIC_PAD_SPREAD else PAD_SPREAD
         for (id in pads) if (p.instrumentTracks.any { it.id == id }) spread(InstrumentTrack.mixerChannel(id), padSpread)
-        for (id in leads) if (p.instrumentTracks.any { it.id == id }) spread(InstrumentTrack.mixerChannel(id), scale * LEAD_SPREAD)
+        for (id in leads) if (p.instrumentTracks.any { it.id == id }) spread(InstrumentTrack.mixerChannel(id), scale * if (narrow) NARROW_LEAD_SPREAD else LEAD_SPREAD)
         if (p.allScenes.any { sc -> sc.acid.steps.take(sc.acid.length.coerceAtLeast(0)).any { it.gate } }) spread(ACID_CHANNEL, scale * ACID_SPREAD)
         for (role in listOf(StarterWizard.Role.Clap, StarterWizard.Role.Snare)) {
-            if (p.allScenes.any { sc -> sc.drums.lanes.getOrNull(role.lane)?.hits?.isNotEmpty() == true }) spread(Mixer.padChannel(role.lane), scale * CLAP_SPREAD)
+            if (p.allScenes.any { sc -> sc.drums.lanes.getOrNull(role.lane)?.hits?.isNotEmpty() == true }) spread(Mixer.padChannel(role.lane), scale * if (narrow) NARROW_CLAP_SPREAD else CLAP_SPREAD)
         }
         return p
     }

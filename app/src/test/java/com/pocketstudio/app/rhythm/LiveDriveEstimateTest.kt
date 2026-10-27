@@ -147,6 +147,26 @@ class LiveDriveEstimateTest {
         assertEquals(-11f, vm.liveDriveLevel, 1e-4f)
     }
 
+    /**
+     * REVIEW S6: a sound changed after the estimate (here the synth's cut-off) is estimated again once
+     * the edits stop for a moment, not before; a second change meanwhile makes one estimate, not two.
+     */
+    @Test
+    fun aChangeOfSoundIsEstimatedAgainOnceSettled() {
+        val vm = open(song(Project.MIX_V4))
+        estimate(vm)
+        waitUntil("no drive estimated") { vm.liveDriveDb != null }
+        val first = sink.reportOnly + sink.arrays
+        vm.setSynthParam(com.pocketstudio.model.SynthPatch.CUTOFF, 0.3f)
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(500))
+        vm.setSynthParam(com.pocketstudio.model.SynthPatch.CUTOFF, 0.35f)
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(500))
+        assertEquals("estimated again while the sound was still being edited", first, sink.reportOnly + sink.arrays)
+        waitUntil("the new sound was never estimated") { sink.reportOnly + sink.arrays > first }
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(3000))
+        assertEquals("one estimate for the two edits", first + 1, sink.reportOnly + sink.arrays)
+    }
+
     private companion object {
         /** NativeEngine's CMD_MASTER (setKnownDrive: its a = 8). */
         const val CMD_MASTER = 67

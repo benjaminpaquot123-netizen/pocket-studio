@@ -134,7 +134,7 @@ class BassesTest {
     @Test
     fun theSynthsBassSettingsAreAppendedAndOffByDefault() {
         assertEquals(SynthPatch.PARAM_COUNT, SynthPatch.DEFAULTS.size)
-        assertEquals(48, SynthPatch.PARAM_COUNT)
+        assertEquals(59, SynthPatch.PARAM_COUNT)  // 48 after them, then the leads chantier's lots B to D
         // A patch saved before them (40 values) plays them at their defaults: as before.
         val old = SynthPatch(SynthPatch.DEFAULTS.take(40))
         assertEquals(SynthPatch.DEFAULTS, old.sanitized().values)
@@ -142,7 +142,8 @@ class BassesTest {
         // A frozen track's signature reads the patch as it was written before them.
         assertEquals(old.toString(), SynthPatch.beforeBassParams(old.sanitized()).toString())
         val pitched = SynthPatch().with(SynthPatch.PITCH_ENV, 0.5f)
-        assertEquals(pitched, SynthPatch.beforeBassParams(pitched))
+        // (Its leads settings, at their defaults, are left out as well: a patch written before them.)
+        assertEquals(SynthPatch(pitched.values.take(SynthPatch.KEY_TRACK)), SynthPatch.beforeBassParams(pitched))
         assertEquals(0.5f, SynthPatch.pitchEnvValue(24f))
         assertEquals(0.5f, SynthPatch.pitchDecayValue(22.36f), 1e-3f)
     }

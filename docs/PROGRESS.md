@@ -13,6 +13,13 @@
 2. Relecture neuve de G5, fusion de G4 + G5 ; puis G6 (vérification : parcours complet sur émulateur avec les cartes « Pour commencer », reprise à 3 jours, durée des mesures sur le téléphone).
 3. Restes son : largeur de deep house, dubstep, neurofunk, phonk ; intros en direct de riddim et jersey club ; restes de relecture S6/S7 (REVIEW.md).
 4. Leads lots B à D, puis le chantier Play Store en dernier.
+- Fait (branche `son8`, sur `g4`, pas encore relue à neuf) : son 8, leads lots B à D (moteur : suivi de clavier, clic, vibrato retardé, supersaw JP-8000, ladder propre, drive avant filtre, chorus stéréo, PWM, FM ; bibliothèque et couches de l'assistant), largeur des 4 styles étroits, restes de relecture S6/S7. Banc : `docs/son/banc/apres-son8.md`.
+
+## Prochaine étape exacte
+1. CI verte de la PR G3, fusion ; APK compilé ici et envoyé à Benjamin.
+2. Relecture neuve de G4 et fusion ; puis G5 (fusion des anciennes surfaces), G6 (vérification, dont la durée des mesures sur le téléphone).
+3. Relecture neuve de son 8 (branche `son8`), écoute des extraits `scratchpad/final/<style>-final.m4a` par Benjamin, fusion.
+4. Restes son : intros en direct de riddim et jersey club (estimer le gain sur plus d'une partie) ; puis le chantier Play Store en dernier.
 
 **Phase 0 fusionnée le 2026-10-18, phase 1 fusionnée le 2026-10-19 (feu vert de Benjamin).** Phase en cours : 2 (sampler et notes).
 

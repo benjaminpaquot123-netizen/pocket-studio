@@ -91,13 +91,13 @@ class SongGuideTest {
         assertTrue(all.contains("la renommer") && all.contains("Pont ou une Fin"))
         assertTrue(all.contains("aucune fausse note possible"))
         // The next thing to try: a voice on top, with headphones; no 303 here.
-        assertTrue(all.contains("Audio : enregistre ta voix") && all.contains("écouteurs"))
+        assertTrue(all.contains("Ta voix : enregistre-la") && all.contains("écouteurs"))
         assertTrue(!all.contains("ligne 303"))
         // Club music: four sections with the Break, and the 303 when the style has one.
         val club = ui(StarterWizard.Mood.Happy, setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad)).plan
         val clubPages = songGuide("House", club, inKey = true, song = songSummary(house, club), acid = true)
         assertTrue(clubPages.first().lines.any { it.startsWith("D · Break") })
-        assertTrue(clubPages.first().lines.first().contains("quatre parties"))
+        assertTrue(clubPages.first().lines.first().contains("quatre briques"))
         // The 303 is named only when the plan plays it, with the sections it plays in.
         assertTrue(clubPages.flatMap { it.lines }.none { it.contains("ligne 303") })
         val withAcid = StarterWizard.planFor(house, house.lines.map { it.role }.toSet(), setOf(StarterWizard.Part.Bass, StarterWizard.Part.Pad), true)

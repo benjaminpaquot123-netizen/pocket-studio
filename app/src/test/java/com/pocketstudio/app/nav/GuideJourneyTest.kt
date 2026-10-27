@@ -242,6 +242,14 @@ class GuideJourneyTest {
         tap("guide_later")
         await("arrange later") { status("start.arrange") == GuideStatus.LATER }
 
+        // Audit final: the style's lesson, its sounds one by one (« Garder ce son »).
+        await("the sounds") { !ui().loading && ui().next != null }
+        while (ui().next?.stage == 1) {
+            val id = ui().next!!.id
+            onCard(id)
+            tap("guide_option_keep")
+            await("$id kept") { status(id) == GuideStatus.DONE }
+        }
         // The stages: « Voilà ce que j'ai mis » first (the assistant's chains, effect by effect).
         onCard("fx.review")
         compose.onNodeWithTag("guide_effects").assertExists()

@@ -9,7 +9,7 @@
    "target": "song",
    "kind": "decide",
    "title": "Le style, le tempo et la tonalité",
-   "why": "Ton morceau à 120 BPM : le style fixe les sons, la forme et la vitesse. Toutes les notes suivent la même gamme, rien ne sonne faux.",
+   "why": "Ton morceau à {bpm} BPM : le tempo fixe l'énergie. Verrouille une gamme et toutes les notes la suivent, rien ne sonne faux.",
    "done": [
     "style",
     "key"
@@ -17,7 +17,7 @@
    "proposals": [
     {
      "id": "keep",
-     "label": "Garder 120 BPM",
+     "label": "Garder {bpm} BPM",
      "why": "Ce qui est là sonne déjà juste : on n'y touche pas.",
      "action": {
       "type": "keep"
@@ -81,7 +81,7 @@
    "target": "song",
    "kind": "decide",
    "title": "Pour où : téléphone, streaming ou club ?",
-   "why": "Le volume visé change : vers −14 LUFS en streaming, −8 en club ; ce style vise −9 LUFS au refrain. Le moteur s'en charge.",
+   "why": "Le volume visé change : vers −14 LUFS en streaming, −8 en club. Choisis où ton morceau sera écouté.",
    "done": [
     "target"
    ],
@@ -133,7 +133,8 @@
     "has:kick"
    ],
    "done": [
-    "has:kick"
+    "has:kick",
+    "by_hand|changed:kick"
    ],
    "proposals": [
     {
@@ -194,7 +195,8 @@
     "has:snare"
    ],
    "done": [
-    "has:snare"
+    "has:snare",
+    "by_hand|changed:snare"
    ],
    "proposals": [
     {
@@ -255,7 +257,8 @@
     "has:hats"
    ],
    "done": [
-    "has:hats"
+    "has:hats",
+    "by_hand|changed:hats"
    ],
    "proposals": [
     {
@@ -316,7 +319,8 @@
     "has:bass"
    ],
    "done": [
-    "has:bass"
+    "has:bass",
+    "by_hand|changed:bass"
    ],
    "proposals": [
     {
@@ -377,7 +381,8 @@
     "has:acid"
    ],
    "done": [
-    "has:acid"
+    "has:acid",
+    "by_hand|changed:acid"
    ],
    "proposals": [
     {
@@ -438,7 +443,8 @@
     "has:pad"
    ],
    "done": [
-    "has:pad"
+    "has:pad",
+    "by_hand|changed:pad"
    ],
    "proposals": [
     {
@@ -499,7 +505,8 @@
     "has:lead"
    ],
    "done": [
-    "has:lead"
+    "has:lead",
+    "by_hand|changed:lead"
    ],
    "proposals": [
     {
@@ -586,7 +593,7 @@
    "target": "song",
    "kind": "review",
    "title": "Voilà ce que j'ai mis",
-   "why": "J'ai posé une chaîne d'effets sur chaque piste, sans rien dire. Les voici une par une, chacune avec son pourquoi : écoute sans puis avec, à volume égal, puis garde ou retire.",
+   "why": "Les effets de tes pistes, un par un, chacun avec son pourquoi : écoute sans puis avec, à volume égal, puis garde ou retire.",
    "applicable": [
     "fx:any"
    ],
@@ -687,7 +694,8 @@
    "howMuch": "Point de départ, puis écoute : la basse au même volume avec et sans.",
    "howOften": "Une chaîne pour tout le morceau.",
    "applicable": [
-    "has:bass"
+    "has:bass",
+    "fx:bass"
    ],
    "done": [
     "changed:bass"
@@ -748,7 +756,8 @@
     "has:kick"
    ],
    "done": [
-    "sidechain|changed:sidechain"
+    "sidechain",
+    "by_hand|changed:sidechain"
    ],
    "proposals": [
     {
@@ -791,7 +800,8 @@
    "howMuch": "Envoi écho −18 dB environ.",
    "howOften": "Une chaîne pour tout le morceau.",
    "applicable": [
-    "has:acid"
+    "has:acid",
+    "fx:acid"
    ],
    "done": [
     "changed:acid"
@@ -839,7 +849,8 @@
    "howMuch": "Envoi réverbe −6 à −12 dB.",
    "howOften": "Une chaîne pour tout le morceau.",
    "applicable": [
-    "has:pad"
+    "has:pad",
+    "fx:pad"
    ],
    "done": [
     "changed:pad"
@@ -894,12 +905,13 @@
    "target": "lead",
    "kind": "review",
    "title": "Le lead : écho et réverbe",
-   "why": "Un écho à la croche et une réverbe moyenne : il chante devant sans prendre toute la place.",
+   "why": "Un écho en rythme et une réverbe moyenne : il chante devant sans prendre toute la place.",
    "when": "Une fois le son et le motif posés.",
-   "howMuch": "Envoi écho −9 dB, réverbe −12 dB.",
+   "howMuch": "L'écho s'entend entre les notes sans les couvrir ; la réverbe reste en retrait.",
    "howOften": "Une chaîne pour tout le morceau.",
    "applicable": [
-    "has:lead"
+    "has:lead",
+    "fx:lead"
    ],
    "done": [
     "changed:lead"
@@ -1238,6 +1250,14 @@
       "type": "open",
       "spot": "sounds.favorite"
      }
+    },
+    {
+     "id": "done",
+     "label": "C'est fait",
+     "why": "Tu l'as fait de ton côté : on passe à la suite.",
+     "action": {
+      "type": "keep"
+     }
     }
    ],
    "lexicon": "fill"
@@ -1382,7 +1402,7 @@
    "simpleTitle": "Le volume de chaque piste",
    "simpleWhy": "Le kick et la basse d'abord, le reste autour.",
    "done": [
-    "balanced|faders"
+    "balanced"
    ],
    "proposals": [
     {

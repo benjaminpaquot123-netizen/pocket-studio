@@ -133,7 +133,8 @@
     "has:kick"
    ],
    "done": [
-    "has:kick"
+    "has:kick",
+    "by_hand|changed:kick"
    ],
    "proposals": [
     {
@@ -194,7 +195,8 @@
     "has:snare"
    ],
    "done": [
-    "has:snare"
+    "has:snare",
+    "by_hand|changed:snare"
    ],
    "proposals": [
     {
@@ -255,7 +257,8 @@
     "has:hats"
    ],
    "done": [
-    "has:hats"
+    "has:hats",
+    "by_hand|changed:hats"
    ],
    "proposals": [
     {
@@ -316,7 +319,8 @@
     "has:bass"
    ],
    "done": [
-    "has:bass"
+    "has:bass",
+    "by_hand|changed:bass"
    ],
    "proposals": [
     {
@@ -377,7 +381,8 @@
     "has:pad"
    ],
    "done": [
-    "has:pad"
+    "has:pad",
+    "by_hand|changed:pad"
    ],
    "proposals": [
     {
@@ -438,7 +443,8 @@
     "has:lead"
    ],
    "done": [
-    "has:lead"
+    "has:lead",
+    "by_hand|changed:lead"
    ],
    "proposals": [
     {
@@ -499,7 +505,8 @@
     "has:counter"
    ],
    "done": [
-    "has:counter"
+    "has:counter",
+    "by_hand|changed:counter"
    ],
    "proposals": [
     {
@@ -560,7 +567,8 @@
     "has:vocal"
    ],
    "done": [
-    "has:vocal"
+    "has:vocal",
+    "by_hand|changed:vocal"
    ],
    "proposals": [
     {
@@ -577,14 +585,14 @@
      "why": "Un autre son du même rôle, écouté avec le reste.",
      "action": {
       "type": "open",
-      "spot": "record.voice",
+      "spot": "sounds.track",
       "target": "vocal"
      }
     },
     {
      "id": "mine",
      "label": "Poser ma voix",
-     "why": "Ta voix à la place du robot, sur les mêmes mesures.",
+     "why": "Enregistre ta voix, puis coupe la piste du robot là où tu chantes.",
      "action": {
       "type": "open",
       "spot": "record.voice",
@@ -620,7 +628,8 @@
     "has:riser"
    ],
    "done": [
-    "has:riser"
+    "has:riser",
+    "by_hand|changed:riser"
    ],
    "proposals": [
     {
@@ -870,7 +879,8 @@
     "has:kick"
    ],
    "done": [
-    "sidechain|changed:sidechain"
+    "sidechain",
+    "by_hand|changed:sidechain"
    ],
    "proposals": [
     {
@@ -970,7 +980,7 @@
    "title": "Le lead : Pluck ping-pong",
    "why": "Chaque note rebondit à gauche et à droite dans une petite réverbe.",
    "when": "Une fois le son et le motif posés.",
-   "howMuch": "Envoi écho −9 dB, réverbe −12 dB.",
+   "howMuch": "L'écho s'entend entre les notes sans les couvrir ; la réverbe reste en retrait.",
    "howOften": "Une chaîne pour tout le morceau.",
    "applicable": [
     "has:lead"
@@ -1397,6 +1407,14 @@
       "type": "open",
       "spot": "sounds.favorite"
      }
+    },
+    {
+     "id": "done",
+     "label": "C'est fait",
+     "why": "Tu l'as fait de ton côté : on passe à la suite.",
+     "action": {
+      "type": "keep"
+     }
     }
    ],
    "lexicon": "fill"
@@ -1541,7 +1559,7 @@
    "simpleTitle": "Le volume de chaque piste",
    "simpleWhy": "Le kick et la basse d'abord, le reste autour.",
    "done": [
-    "balanced|faders"
+    "balanced"
    ],
    "proposals": [
     {

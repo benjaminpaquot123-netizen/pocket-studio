@@ -18,6 +18,13 @@ import org.junit.Test
 
 /** The Guide's brain (docs/PLAN-GUIDE.md §4.2, §4.5): what it reads in the assistant's songs and in Benjamin's. */
 class GuideAnalyzerTest {
+    private companion object {
+        // Audit final: the sounds and the ducking are to hear now: fewer cards done by themselves.
+        val PERCENTS = 18..40
+        val TO_DECIDE = 16..32
+        val MEAN = 20.0..35.0
+    }
+
     private fun build(id: String, mood: Mood? = null): Project {
         val style = StarterWizard.style(id)!!
         return StarterWizard.build(style, style.lines.associate { it.role to null as PadSample? }, mood ?: style.melody.mood,
@@ -29,9 +36,9 @@ class GuideAnalyzerTest {
     }
 
     /**
-     * Every style in every mood, untouched as the assistant makes it: about half done since G0 (the
-     * frame, the sounds and the layers, most of the arrangement and the movement; its mix choices stay
-     * to hear), 12 to 20 cards to decide,
+     * Every style in every mood, untouched as the assistant makes it: about a quarter done (the frame and
+     * the layers, most of the arrangement and the movement; since the final audit its sounds, its ducking
+     * and its mix choices stay to hear), 16 to 32 cards to decide,
      * no alert, and the first card « voilà ce que j'ai mis » of stage 3. The same song twice: the same report.
      */
     @Test
@@ -43,19 +50,20 @@ class GuideAnalyzerTest {
             val what = "${style.id}/${mood.id}"
             assertEquals(what, style.id, r.parcours.style)
             assertTrue("$what: alerts ${r.alerts.map { it.card.id }} ${r.facts.filter { it.severity == GuideSeverity.ALERT }.map { it.text }}", r.alerts.isEmpty())
-            assertEquals("$what: ${r.cards.filter { it.applicable && !it.settled }.map { it.card.id }}", "fx.review", r.next?.card?.id)
-            assertTrue("$what: ${r.percent} %", r.percent in 35..60)
-            assertTrue("$what: ${r.toDecide} to decide", r.toDecide in 12..20)
-            // Stages 0 to 2 are done by the assistant; nothing of stage 7 is.
-            assertTrue(what, r.cards.filter { it.applicable && it.card.stage <= 2 }.all { it.status == GuideStatus.DONE_ELSEWHERE })
+            // Audit final: the style's lesson (its sounds) comes first, after the frame.
+            assertEquals("$what: ${r.cards.filter { it.applicable && !it.settled }.map { it.card.id }}", "sound.kick", r.next?.card?.id)
+            assertTrue("$what: ${r.percent} %", r.percent in PERCENTS)
+            assertTrue("$what: ${r.toDecide} to decide", r.toDecide in TO_DECIDE)
+            // The frame and the layers are done by the assistant, its sounds are shown; nothing of stage 7 is.
+            assertTrue(what, r.cards.filter { it.applicable && it.card.stage in setOf(0, 2) }.all { it.status == GuideStatus.DONE_ELSEWHERE })
+            assertTrue(what, r.cards.filter { it.applicable && it.card.stage == 1 }.none { it.settled })
             assertTrue(what, r.cards.filter { it.card.stage == 7 }.none { it.settled })
             percents += r.percent
             if (mood == Mood.Dark) assertEquals(what, r, GuideAnalyzer.analyze(p))
         }
         val mean = percents.average()
-        // About half since G0 (its Drops differ, the chords leave room, every track has its low cut and its place):
-        // what the assistant now does well is done; its mix choices stay « à écouter ».
-        assertTrue("mean $mean", mean in 40.0..55.0)
+        // About a quarter: what the assistant does well is done; its sounds and its mix choices stay « à écouter ».
+        assertTrue("mean $mean", mean in MEAN)
     }
 
     @Test
@@ -63,8 +71,8 @@ class GuideAnalyzerTest {
         val p = build("jump_up")
         val r = GuideAnalyzer.analyze(p, simple = true)
         assertTrue(r.cards.all { it.card.stage in GuideStages.SIMPLE })
-        // Its stage 1 is the assistant's: the first card to decide is in the arrangement.
-        assertEquals(4, r.next!!.card.stage)
+        // Audit final: its stage 1 (the style's sounds) is shown, not ticked by itself.
+        assertEquals(1, r.next!!.card.stage)
         assertEquals("Le kick (le « boum »)", r.cards.first { it.applicable }.card.titleFor(true))
     }
 
@@ -112,10 +120,54 @@ class GuideAnalyzerTest {
         assertTrue(r.header.contains("À la main"))
     }
 
+    /** Audit final (23 #1, #4, #14): what the assistant put is shown (to hear, to keep), never ticked by itself. */
+    @Test
+    fun theAssistantsSoundsDuckingAndFadersAreToHearNotDoneElsewhere() {
+        val p = GuideActions.withBaseline(build("jump_up"))
+        val r = GuideAnalyzer.analyze(p)
+        for (id in listOf("sound.kick", "sound.bass", "sound.lead", "fx.sidechain", "mix.balance")) {
+            assertEquals(id, GuideStatus.TODO, r.status(id)!!.status)
+        }
+        // The style's lesson comes first: the kick, after the frame.
+        assertEquals("sound.kick", r.next!!.card.id)
+        assertEquals("sound.kick", GuideAnalyzer.analyze(p, simple = true).next!!.card.id)
+        // The kick's chain changed by hand in the mixer: its card is done elsewhere.
+        val kick = r.sheets.first { it.track.role == GuideRoles.KICK }.track
+        val moved = p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.mapIndexed { i, c -> if (i == kick.channel) c.copy(sends = listOf(0.3f, 0f)) else c }))
+        assertEquals(GuideStatus.DONE_ELSEWHERE, GuideAnalyzer.analyze(moved).status("sound.kick")!!.status)
+    }
+
+    /** Audit final (23 #14): one fader or one pan moved is not a balance nor a stereo picture. */
+    @Test
+    fun oneFaderOrOnePanMovedDoesNotTickTheMix() {
+        val base = build("house").copy(style = null)
+        fun flat(p: Project) = p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.map { it.copy(volume = 0.8f, pan = 0f) }))
+        val flat = flat(base)
+        val lead = InstrumentTrack.mixerChannel(flat.instrumentTracks.last().id)
+        val one = flat.copy(mixer = flat.mixer.copy(channels = flat.mixer.channels.mapIndexed { i, c -> if (i == lead) c.copy(volume = 0.5f, pan = 0.4f) else c }))
+        val r = GuideAnalyzer.analyze(one)
+        assertFalse(GuideFacts.of(one).holds("faders", GuideRoles.SONG))
+        assertFalse(GuideFacts.of(one).holds("pans", GuideRoles.SONG))
+        assertFalse(r.status("mix.balance")!!.settled)
+    }
+
+    /** Audit final (23 #3): « Étape n/N » and the % count the same thing (the cards settled). */
+    @Test
+    fun theStepAndThePercentAgree() {
+        val r = GuideAnalyzer.analyze(GuideActions.withBaseline(build("jump_up")))
+        val settled = r.cards.count { it.applicable && it.settled }
+        assertEquals(r.applicable - r.toDecide, settled)
+        assertEquals(Math.round(100f * settled / r.applicable), r.percent)
+        assertTrue(r.header, r.header.contains("étape ${settled + 1}/${r.applicable}"))
+    }
+
     @Test
     fun decisionsTickTheCardsAndThePlanMovesOn() {
         var p = GuideActions.withBaseline(build("jump_up"))
+        // The style's sounds first (audit final): each one kept.
+        GuideAnalyzer.analyze(p).cards.filter { it.applicable && it.card.stage == 1 && !it.settled }.forEach { p = GuideActions.apply(p, it.card.id, "keep", 500L) }
         val first = GuideAnalyzer.analyze(p)
+        assertEquals("fx.review", first.next!!.card.id)
         p = GuideActions.apply(p, "fx.review", "keep", 1000L)
         val second = GuideAnalyzer.analyze(p)
         assertEquals(GuideStatus.DONE, second.status("fx.review")!!.status)

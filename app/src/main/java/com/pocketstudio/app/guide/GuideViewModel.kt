@@ -389,8 +389,11 @@ class GuideViewModel(
     /** [levels]: the tracks' levels were measured on the song as it is (G4 review: the balance is heard only then). */
     private fun uiOf(r: GuideReport, p: Project, full: GuideReport? = null, now: Long = 0L, levels: Boolean = false): GuideUi {
         val undoable = p.guide.history.filter { !it.reverted }.map { it.card }.toSet()
+        // Audit final: the generic parcours says the song's own tempo (« {bpm} » in its texts).
+        val bpm = if (p.tempoBpm % 1.0 == 0.0) p.tempoBpm.toInt().toString() else com.pocketstudio.model.LoudnessTargets.format(p.tempoBpm)
+        fun said(text: String) = if ("{bpm}" in text) text.replace("{bpm}", bpm) else text
         fun option(card: GuideCard, o: GuideProposal) = GuideOptionUi(
-            o.id, guideText(o.label), guideText(o.why), o.value?.let(::guideText),
+            o.id, said(guideText(o.label)), said(guideText(o.why)), o.value?.let { said(guideText(it)) },
             o.action.spot.takeIf { o.action.type == com.pocketstudio.model.guide.GuideAction.OPEN }, p.guide.refusals.any { it.card == card.id && it.option == o.id },
             edits = o.action.edits, heard = o.action.heard && (o.action.type != com.pocketstudio.model.guide.GuideAction.BALANCE || levels),
             listen = o.action.name.takeIf { o.action.type == com.pocketstudio.model.guide.GuideAction.LISTEN },
@@ -405,7 +408,7 @@ class GuideViewModel(
         fun cardUi(s: GuideCardStatus): GuideCardUi {
             val track = byRole[s.card.target]?.takeIf { it.channel != com.pocketstudio.model.Mixer.MASTER }
             return GuideCardUi(
-                s.card.id, s.card.stage, s.card.target, s.card.kind, s.card.titleFor(r.simple), s.card.whyFor(r.simple),
+                s.card.id, s.card.stage, s.card.target, s.card.kind, said(s.card.titleFor(r.simple)), said(s.card.whyFor(r.simple)),
                 s.card.proposals.map { option(s.card, it) }.filter { !it.refused && shown(s.card, it) }, s.card.elsewhere.map { option(s.card, it) }, s.card.lexicon,
                 s.status, s.alert, s.card.id in undoable, track?.key, track?.name?.let(com.pocketstudio.model.DefaultNames::shown).orEmpty(),
                 heard = if (s.card.id == READY) listOf(readyLine(p)) else FACTS[s.card.id].orEmpty().mapNotNull { id -> r.fact(id)?.text },
@@ -413,13 +416,14 @@ class GuideViewModel(
             )
         }
         fun planOf(cards: List<GuideCardStatus>, simple: Boolean) = cards.groupBy { it.card.stage }.toSortedMap().map { (stage, cs) ->
-            GuideStageUi(stage, GuideStages.title(stage), cs.map { GuidePlanItem(it.card.id, it.card.titleFor(simple), it.status, it.auto) })
+            GuideStageUi(stage, GuideStages.title(stage), cs.map { GuidePlanItem(it.card.id, said(it.card.titleFor(simple)), it.status, it.auto) })
         }
         val applicable = r.cards.filter { it.applicable }
         val plan = planOf(applicable, r.simple)
         // The Mode simple's « Aller plus loin »: the stages it leaves out, as the full app has them.
         val furtherCards = full?.cards?.filter { it.applicable && it.card.stage !in GuideStages.SIMPLE }.orEmpty()
-        val step = r.next?.let { n -> applicable.indexOfFirst { it.card.id == n.card.id } + 1 } ?: 0
+        // Audit final: « Étape n/N » counts the cards settled (the same count as the % and « à décider »), not the card's place in the plan.
+        val step = r.next?.takeIf { n -> applicable.any { it.card.id == n.card.id } }?.let { applicable.count { it.settled } + 1 } ?: 0
         val back = p.guide.lastUsed > 0 && now - p.guide.lastUsed >= GuideAnalyzer.DAY_MS
         return GuideUi(
             loading = false, header = r.header, summary = r.summary, percent = r.percent, done = r.done, total = r.applicable, toDecide = r.toDecide,
@@ -491,6 +495,10 @@ class GuideViewModel(
         /** The facts each card shows (« ce que le Guide entend »). */
         private val FACTS = mapOf(
             "fx.lowcut" to listOf("track.no_lowcut"),
+            // Audit final: the melody rules the analysis checks, shown on the card of the line they are about.
+            "sound.lead" to listOf("melody.lead"),
+            "sound.bass" to listOf("melody.bass"),
+            "sound.counter" to listOf("melody.counter"),
             "arr.differ" to listOf("peaks.identical"),
             "arr.bass" to listOf("bass.repeats"),
             "arr.pad" to listOf("pad.everywhere"),

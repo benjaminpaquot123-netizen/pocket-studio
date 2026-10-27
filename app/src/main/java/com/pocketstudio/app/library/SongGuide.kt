@@ -69,19 +69,19 @@ fun songGuide(
             listOfNotNull(
                 tr("▶ joue tout le morceau, de l'Intro à la fin, sur tous les écrans. Pour écouter en boucle la partie affichée, touche « ⟳ Partie », juste sous ▶."),
                 song.takeIf { it.isNotBlank() },
-                tr("Onglet Morceau : touche une partie (Intro, Couplet ou Refrain) pour l'afficher, la renommer ou la dupliquer pour en faire un Pont ou une Fin."),
+                tr("Structure (Mon morceau en Mode simple) : touche une partie (Intro, Couplet ou Refrain) pour l'afficher, la renommer ou la dupliquer pour en faire un Pont ou une Fin."),
             ),
         ),
         GuidePage(
             tr("Changer les sons"),
             listOfNotNull(
                 tr("Rythme : touche les cases pour ajouter ou enlever des coups."),
-                if (inKey) tr("Synthé : joue au clavier, il reste dans la gamme du morceau : aucune fausse note possible.")
-                else tr("Synthé : joue au clavier pour essayer des notes par-dessus le rythme."),
+                if (inKey) tr("Clavier (Sons › Synthé en mode complet) : joue au clavier, il reste dans la gamme du morceau : aucune fausse note possible.")
+                else tr("Clavier (Sons › Synthé en mode complet) : joue au clavier pour essayer des notes par-dessus le rythme."),
                 // The 303 line made on its step: where it plays, and where to change it.
                 if (!acid || plan.acid.isEmpty()) null
-                else if (acidMoves) tr("Acide : ta ligne 303 joue dans %s. Dans Sons › Basse acide, touche un pas pour la changer. La coupure s'ouvre toute seule le long du morceau : pour la tourner toi-même, garde le doigt sur « Coupure ».", plan.sections(plan.acid))
-                else tr("Acide : ta ligne 303 joue dans %s. Dans Sons › Basse acide, touche un pas pour la changer et tourne « Coupure » pour la faire crier.", plan.sections(plan.acid)),
+                else if (acidMoves) tr("Acide : ta ligne 303 joue dans %s. Dans Sons › Acide (mode complet), touche un pas pour la changer. La coupure s'ouvre toute seule le long du morceau : pour la tourner toi-même, garde le doigt sur « Coupure ».", plan.sections(plan.acid))
+                else tr("Acide : ta ligne 303 joue dans %s. Dans Sons › Acide (mode complet), touche un pas pour la changer et tourne « Coupure » pour la faire crier.", plan.sections(plan.acid)),
             ),
         ),
         GuidePage(
@@ -100,8 +100,8 @@ fun songGuide(
         GuidePage(
             tr("Pour aller plus loin"),
             listOfNotNull(
-                tr("Filtres : certains sons s'ouvrent et se ferment tout seuls le long du morceau (Mixeur, Automation).").takeIf { sweeps },
-                tr("Audio : enregistre ta voix par-dessus le morceau (mets des écouteurs, sinon le micro entend la musique)."),
+                tr("Filtres : certains sons s'ouvrent et se ferment tout seuls le long du morceau (Mix › Courbes, en mode complet).").takeIf { sweeps },
+                tr("Ta voix : enregistre-la par-dessus le morceau (Sons › Audio en mode complet ; mets des écouteurs, sinon le micro entend la musique)."),
             ),
         ),
     // A page left empty by this song (no roll, riser or counter-melody) is dropped.

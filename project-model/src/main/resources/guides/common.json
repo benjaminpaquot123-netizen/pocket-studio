@@ -279,7 +279,7 @@
      "why": "Une ligne 303, en un toucher.",
      "action": {
       "type": "open",
-      "spot": "acid"
+      "spot": "acid.generate"
      }
     },
     {

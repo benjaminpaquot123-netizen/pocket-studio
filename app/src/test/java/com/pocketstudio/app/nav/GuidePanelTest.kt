@@ -50,8 +50,11 @@ class GuidePanelTest {
 
     private fun jumpUp(): Project {
         val style = StarterWizard.style("jump_up")!!
-        return StarterWizard.build(style, style.lines.associate { it.role to null as PadSample? }, style.melody.mood,
+        val p = StarterWizard.build(style, style.lines.associate { it.role to null as PadSample? }, style.melody.mood,
             StarterWizard.defaultParts(style).associateWith { StarterWizard.soundsFor(it, style).first() })
+        // Audit final: the style's sound cards (shown first now) already decided: the song goes on to its effects.
+        val ids = com.pocketstudio.model.guide.GuideLibrary.forProject(p).cards.filter { it.stage == 1 }.map { it.id }
+        return p.copy(guide = ids.fold(p.guide) { g, id -> g.withStatus(id, GuideStatus.DONE, System.currentTimeMillis(), "keep") })
     }
 
     private fun startOn(p: Project = jumpUp(), simple: Boolean = false) {

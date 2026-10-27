@@ -50,6 +50,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -1072,13 +1073,14 @@ fun AppRoot() {
         changeSound = trackSound, setVolume = rhythmVm::setChannelVolume, toggleMute = rhythmVm::toggleMute, toggleSolo = rhythmVm::toggleSolo,
     )
     val learn = com.pocketstudio.app.learn.LocalLearn.current
-    // G5: « Mon premier morceau » (the old Missions) on the open song: its first cards, in the Guide.
+    // G5: « Mon premier morceau » (the old Missions): its first cards, in the Guide. Audit final: on a new song,
+    // from the assistant (the open one stays as it is); the song made opens with the Guide on its first cards.
     val startMissions: () -> Unit = {
-        rhythmVm.guide.beginFirstSong()
         helpLabels = false
         toolPage = null
-        go(AppTab.Morceau)
-        guideOpen = true
+        firstSongNext = true
+        rhythmVm.stop()
+        libraryVm.openWizard()
     }
     com.pocketstudio.app.onboarding.LaunchChooser(launch, rhythmVm, projectsVm, show = launch.open && settings.guideSeen, simple = simple,
         hasProject = !noProject,
@@ -1195,6 +1197,8 @@ fun AppRoot() {
     var guideNotice by remember { mutableStateOf<String?>(null) }
     // The controls « Voir le réglage » lights, the first one on the screen (null: none).
     var guideSpot by remember { mutableStateOf<List<String>?>(null) }
+    // Audit final: a pad's sheet the Guide asks for (the Rythme tab opens it, then forgets the request).
+    var guidePad by remember { mutableStateOf<Int?>(null) }
     val guideScope = rememberCoroutineScope()
     val guideListen = remember(rhythmVm) {
         com.pocketstudio.app.guide.GuideListen(
@@ -1235,6 +1239,10 @@ fun AppRoot() {
     val guideQuietRec by rhythmVm.recording.collectAsStateWithLifecycle()
     val guideQuietTake by rhythmVm.audioRecording.collectAsStateWithLifecycle()
     val guideQuietPlaying = rhythmVm.transport.collectAsStateWithLifecycle().value.playing
+    // Le Guide keeps quiet during a take, on the Live page and on the keyboard lying down, where every dp is a key's
+    // (§3.1); lying down, its panel opens on the side ([guideSide]).
+    val guideShown = !showLive && !liveImmersive && !showTimeline && !showLivePads && !guideQuietRec && guideQuietTake == null && !(landscape && tab == AppTab.Synthe)
+    val guideSide = guideShown && guideOpen && landscape
     LaunchedEffect(guideQuietRec, guideQuietTake != null, showLive, guideQuietPlaying) {
         if (guideQuietRec || guideQuietTake != null || showLive || guideQuietPlaying) {
             guideListen.stop()
@@ -1260,11 +1268,19 @@ fun AppRoot() {
             }
             com.pocketstudio.app.guide.GuideGo.Tempo -> tempoSheetOpen = true
             com.pocketstudio.app.guide.GuideGo.Chords -> songChordsOpen = true
-            is com.pocketstudio.app.guide.GuideGo.Sound -> { rhythmVm.selectTrack(g.track); soundChooserTrack = g.track }
-            is com.pocketstudio.app.guide.GuideGo.Layers -> { rhythmVm.selectTrack(g.track); layersTrack = g.track }
+            // Audit final: the track the Guide picks stays picked (the Clavier's first visit no longer swaps it for the melody's).
+            is com.pocketstudio.app.guide.GuideGo.Sound -> { melodyShownFor = rhythmVm.projectId; rhythmVm.selectTrack(g.track); soundChooserTrack = g.track }
+            is com.pocketstudio.app.guide.GuideGo.Layers -> { melodyShownFor = rhythmVm.projectId; rhythmVm.selectTrack(g.track); layersTrack = g.track }
             com.pocketstudio.app.guide.GuideGo.Kit -> kitSheetOpen = true
+            // Audit final: one pad's sound (the kick's « Autre idée de son »), on the Rythme tab.
+            is com.pocketstudio.app.guide.GuideGo.Pad -> { go(AppTab.Rythme); guidePad = g.lane }
             com.pocketstudio.app.guide.GuideGo.AcidSound -> acidSheetOpen = true
-            is com.pocketstudio.app.guide.GuideGo.Notes -> { rhythmVm.selectTrack(g.track); notesRequest++; go(AppTab.Synthe); guideOpen = false }
+            // Audit final: « Générer une basse acide » makes the line (a song without one), then offers its sounds.
+            com.pocketstudio.app.guide.GuideGo.AcidGenerate -> {
+                if (!com.pocketstudio.model.guide.GuideStart.bassline(rhythmVm.project.value)) rhythmVm.generateAcid()
+                acidSheetOpen = true
+            }
+            is com.pocketstudio.app.guide.GuideGo.Notes -> { melodyShownFor = rhythmVm.projectId; rhythmVm.selectTrack(g.track); notesRequest++; go(AppTab.Synthe); guideOpen = false }
             com.pocketstudio.app.guide.GuideGo.WhatPlays -> { overviewCh = -1; overviewScene = -1 }
             com.pocketstudio.app.guide.GuideGo.Share -> showShare = true
             com.pocketstudio.app.guide.GuideGo.Video -> showVideo = true
@@ -1283,6 +1299,7 @@ fun AppRoot() {
             }
             com.pocketstudio.app.guide.GuideGo.Remix -> { guideOpen = false; openRemix() }
             is com.pocketstudio.app.guide.GuideGo.Record -> {
+                melodyShownFor = rhythmVm.projectId
                 rhythmVm.selectTrack(g.track)
                 go(AppTab.Synthe)
                 guideOpen = false
@@ -1296,6 +1313,14 @@ fun AppRoot() {
     LaunchedEffect(guideVm) { guideVm.notices.collect { guideNotice = it } }
     // A lit control goes dark by itself after a while, or as soon as the space changes.
     LaunchedEffect(guideSpot) { if (guideSpot != null) { kotlinx.coroutines.delay(GUIDE_SPOT_MS); guideSpot = null } }
+    // Audit final: Retour closes what is over the screen (the « ? » labels, the lit control, the Guide's panel), it no
+    // longer leaves the app (the Live page and the timeline keep their own, registered before: these come first).
+    // A sheet or a dialog over the screen takes Retour first (its own window on the phone): never the Guide behind it.
+    val sheetOver = tempoSheetOpen || songChordsOpen || songGuideOpen || showShare || showVideo || kitSheetOpen || acidSheetOpen ||
+        soundChooserTrack != null || layersTrack != null || trackSheetKey != null
+    androidx.activity.compose.BackHandler(enabled = guideOpen && guideShown && !sheetOver) { guideOpen = false }
+    androidx.activity.compose.BackHandler(enabled = guideSpot != null && !sheetOver) { guideSpot = null }
+    androidx.activity.compose.BackHandler(enabled = helpLabels && !sheetOver) { helpLabels = false }
     val guideActions = com.pocketstudio.app.guide.GuidePanelActions(
         toggle = {
             guideOpen = !guideOpen
@@ -1475,14 +1500,12 @@ fun AppRoot() {
                 // Le Guide: its bar, or its panel (a third of a phone's height, half a tablet's). It
                 // keeps quiet during a take, on the Live page and on the keyboard lying down, where
                 // every dp of height is a key's (§3.1: it is quiet while the keys are played).
-                val guideRecording by rhythmVm.recording.collectAsStateWithLifecycle()
-                val guideTake by rhythmVm.audioRecording.collectAsStateWithLifecycle()
-                if (!showLive && !liveImmersive && !showTimeline && !showLivePads && !guideRecording && guideTake == null && !(landscape && tab == AppTab.Synthe)) {
+                if (guideShown && !guideSide) {
                     val guideUi by guideVm.ui.collectAsStateWithLifecycle()
                     if (guideOpen) {
                         val listening by guideListen.state.collectAsStateWithLifecycle()
                         val config = LocalConfiguration.current
-                        val share = if (config.smallestScreenWidthDp >= 600 || landscape) 0.5f else 0.4f
+                        val share = if (config.smallestScreenWidthDp >= 600) 0.5f else 0.4f
                         com.pocketstudio.app.guide.GuidePanel(
                             guideUi, guideSelected, listening, guideNotice, guideActions,
                             height = (config.screenHeightDp * share).dp.coerceAtLeast(200.dp),
@@ -1633,6 +1656,8 @@ WithPartHeader(rhythmVm) { partModifier ->
                                         com.pocketstudio.app.record.RecordBar(bar, com.pocketstudio.app.record.recordBarActions(rhythmVm, com.pocketstudio.app.record.TakeSource.PADS), compact = true)
                                     }
                                 },
+                                openPad = guidePad,
+                                padOpened = { guidePad = null },
                                 project = project,
                                 transport = transport,
                                 live = live,
@@ -2482,6 +2507,16 @@ WithPartHeader(rhythmVm) { partModifier ->
                 }
                 }
             }
+            // Audit final: lying down, the Guide's panel on the side (the screen keeps its height), not half of it under.
+            if (guideSide) {
+                val sideUi by guideVm.ui.collectAsStateWithLifecycle()
+                val sideListening by guideListen.state.collectAsStateWithLifecycle()
+                com.pocketstudio.app.guide.GuidePanel(
+                    sideUi, guideSelected, sideListening, guideNotice, guideActions, height = null,
+                    modifier = Modifier.width((LocalConfiguration.current.screenWidthDp * GUIDE_SIDE_SHARE).dp.coerceIn(280.dp, 440.dp)).fillMaxHeight().navigationBarsPadding(),
+                    reference = guideReference?.name,
+                )
+            }
         }
     }
     // Phase 36: « ? qui étiquette l'écran » over the screen, and « Voir le réglage » pointing at a control.
@@ -3130,3 +3165,6 @@ internal fun simpleTracks(p: Project): List<SimpleTrack> {
 
 /** How long « Voir le réglage » keeps a control lit (it also goes at a touch on « Compris »). */
 private const val GUIDE_SPOT_MS = 8000L
+
+/** Lying down, the Guide's panel takes this share of the width, on the side (audit final). */
+private const val GUIDE_SIDE_SHARE = 0.38f

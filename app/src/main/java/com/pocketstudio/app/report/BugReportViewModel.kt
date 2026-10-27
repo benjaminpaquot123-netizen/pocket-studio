@@ -232,7 +232,7 @@ class BugReportViewModel(private val app: Application) : AndroidViewModel(app) {
                     BugReportZip.write(File(dir, BugReportZip.fileName(input.createdAtMs)), md, journal, shots, projectJson, extraFiles)
                 }.onFailure { Journal.error("rapport", it) }.getOrNull()
             }
-            val shared = zip != null && WavExporter.share(app, listOf(zip), tr("Envoyer le rapport"), subject = "Pocket Studio : rapport de bug ${input.versionName}", text = md.take(SHARE_TEXT))
+            val shared = zip != null && WavExporter.share(app, listOf(zip), tr("Envoyer le rapport"), subject = "BenStudio : rapport de bug ${input.versionName}", text = md.take(SHARE_TEXT))
             if (shared) {
                 Journal.action("Rapport partagé")
                 // Sent: the next report starts afresh.

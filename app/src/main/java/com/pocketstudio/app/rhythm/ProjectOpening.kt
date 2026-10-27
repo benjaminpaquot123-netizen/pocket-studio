@@ -137,7 +137,7 @@ object ProjectOpening {
                     ?.let { com.pocketstudio.model.DefaultNames.shown(it) } ?: id
                 OpenedProject(
                     CurrentProject.NONE, RhythmViewModel.starterProject(),
-                    tr("Pocket Studio s'est fermé deux fois en ouvrant « %s ». Le projet est gardé tel quel : rouvre-le depuis Mes projets, ou commence un projet vide.", name),
+                    tr("BenStudio s'est fermé deux fois en ouvrant « %s ». Le projet est gardé tel quel : rouvre-le depuis Mes projets, ou commence un projet vide.", name),
                     rescued = true,
                 )
             } else {

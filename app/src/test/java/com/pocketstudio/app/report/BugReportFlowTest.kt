@@ -147,7 +147,7 @@ class BugReportFlowTest {
         assertFalse(exists("bug_preview_text"))
         tap("bug_preview_toggle")
         val shown = compose.onNodeWithTag("bug_preview_text").fetchSemanticsNode().config[SemanticsProperties.Text].joinToString { it.text }
-        listOf("# Rapport de bug : Pocket Studio", "Pas de son au casque", "- Sortie du son :", "## Journal", "screenshot-1.png").forEach {
+        listOf("# Rapport de bug : BenStudio", "Pas de son au casque", "- Sortie du son :", "## Journal", "screenshot-1.png").forEach {
             assertTrue("missing « $it »:\n$shown", shown.contains(it))
         }
         tap("bug_preview_toggle")

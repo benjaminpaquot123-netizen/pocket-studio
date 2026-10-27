@@ -54,7 +54,7 @@ internal fun PlayKeys(
     height: Dp,
     tag: String = "keyboard",
     keyTag: String = "key",
-) {
+) = com.pocketstudio.ui.LeftToRight {
     val first = 12 * (octave + 1)
     when (layout) {
         // The Do keys are named, to find one's way on the keyboard.

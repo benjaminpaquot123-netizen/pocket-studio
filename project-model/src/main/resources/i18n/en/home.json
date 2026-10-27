@@ -32,7 +32,6 @@
   "Battre la mesure en Live": "Feel the beat in Live",
   "Bibliothèque de sons": "Sound library",
   "Bienvenue ! Fais ta musique sur ton appareil. Par quoi on commence ?": "Welcome! Make your music on your device. Where shall we start?",
-  "Bienvenue dans Pocket Studio": "Welcome to Pocket Studio",
   "C'est l'ambiance conseillée pour %s.": "This is the recommended mood for %s.",
   "C'est le son qui fait le style : il joue dans toutes les parties.": "This is the sound that makes the style: it plays in every part.",
   "C'est le son qui fait le style.": "This is the sound that makes the style.",
@@ -288,7 +287,7 @@
   "La recette": "The recipe",
   "Conseillés pour ce style : %s.": "Advised for this style: %s.",
   "Des lignes de basse « roulantes » : des notes courtes entre les coups de kick, qui galopent. Touche un motif pour l'entendre.": "Rolling basslines: short notes between the kicks that gallop along. Tap a pattern to hear it.",
-  "Pocket Studio s'est fermé deux fois en ouvrant « %s ». Le projet est gardé tel quel : rouvre-le depuis Mes projets, ou commence un projet vide.": "Pocket Studio closed twice while opening “%s”. The project is kept as it is: open it again from My projects, or start an empty project.",
+  "BenStudio s'est fermé deux fois en ouvrant « %s ». Le projet est gardé tel quel : rouvre-le depuis Mes projets, ou commence un projet vide.": "BenStudio closed twice while opening “%s”. The project is kept as it is: open it again from My projects, or start an empty project.",
   "Ouverture du projet…": "Opening the project…",
   "une sauvegarde est encore en cours, réessaie dans un instant": "a save is still running, try again in a moment",
   "Copie faite : « %s ». Touche-la pour l'ouvrir.": "Copy made: “%s”. Tap it to open it.",
@@ -344,5 +343,6 @@
   "Filtres : certains sons s'ouvrent et se ferment tout seuls le long du morceau (Mix › Courbes, en mode complet).": "Filters: some sounds open and close by themselves along the song (Mix › Curves, in full mode).",
   "Structure (Mon morceau en Mode simple) : touche une partie (Intro, Couplet ou Refrain) pour l'afficher, la renommer ou la dupliquer pour en faire un Pont ou une Fin.": "Structure (My song in simple mode): tap a part (Intro, Verse or Chorus) to show it, rename it or duplicate it to make a Bridge or an Ending.",
   "Clavier (Sons › Synthé en mode complet) : joue au clavier pour essayer des notes par-dessus le rythme.": "Keyboard (Sounds › Synth in full mode): play the keyboard to try notes over the beat.",
-  "Clavier (Sons › Synthé en mode complet) : joue au clavier, il reste dans la gamme du morceau : aucune fausse note possible.": "Keyboard (Sounds › Synth in full mode): play the keyboard, it stays in the song's scale: no wrong notes possible."
+  "Clavier (Sons › Synthé en mode complet) : joue au clavier, il reste dans la gamme du morceau : aucune fausse note possible.": "Keyboard (Sounds › Synth in full mode): play the keyboard, it stays in the song's scale: no wrong notes possible.",
+  "Bienvenue dans BenStudio": "Welcome to BenStudio"
 }

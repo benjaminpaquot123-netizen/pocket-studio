@@ -158,7 +158,7 @@ fun PianoRoll(
     stepsPerBar: Int = 16,
     /** The play position read where it is drawn (audit 16: the grid is not redrawn at each step); null: [playStep]. */
     playStepOf: (() -> Int)? = null,
-) {
+) = com.pocketstudio.ui.LeftToRight {
     val barSteps = stepsPerBar.coerceIn(1, NoteClip.MAX_STEPS)
     val givenStep by androidx.compose.runtime.rememberUpdatedState(playStep)
     val stepOf: () -> Int = remember(playStepOf) { playStepOf ?: { givenStep } }

@@ -484,7 +484,7 @@ private fun StepGrid(
     project: Project, lane: Int, currentStep: Int, playing: Boolean, actions: RhythmActions, absoluteStep: Int = -1, simple: Boolean = false,
     /** A cell's height at most. */
     cellMax: androidx.compose.ui.unit.Dp = 110.dp,
-) {
+) = com.pocketstudio.ui.LeftToRight {
     val haptics = LocalHapticFeedback.current
     val hits = project.drums.lanes[lane].hits
     // Phase 37: the pad's own loop (a polyrhythm); the cells past it are kept but not played.
@@ -1192,7 +1192,7 @@ private fun SlicerPanel(s: SlicerUi, info: SampleInfo, lane: Int, color: Color, 
 
 /** Every pad's steps for one bar: rows of pads, tap a cell to add or remove a hit. */
 @Composable
-internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: RhythmActions) {
+internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: RhythmActions) = com.pocketstudio.ui.LeftToRight {
     Column(verticalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.testTag("all_pads_grid")) {
         project.drums.lanes.forEachIndexed { lane, l ->
             val color = DrumKitInfo.colors[lane]

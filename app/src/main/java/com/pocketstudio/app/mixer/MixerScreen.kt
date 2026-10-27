@@ -615,7 +615,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
         if (export.files.isNotEmpty()) {
             Text(
                 export.files.joinToString(", ") { it.name }.let { names ->
-                    if (export.savedInMusic) tr("Sauvegardé dans Musique › Pocket Studio : %s", names) else tr("Prêt : %s", names)
+                    if (export.savedInMusic) tr("Sauvegardé dans Musique › BenStudio : %s", names) else tr("Prêt : %s", names)
                 },
                 style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary,

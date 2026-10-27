@@ -79,6 +79,8 @@ class GuideJourneyTest {
         for (dir in listOf("projects", "projects-trash", "stems")) File(app.filesDir, dir).deleteRecursively()
         val names = File(app.filesDir, "../shared_prefs").listFiles()?.map { it.name.removeSuffix(".xml") }.orEmpty() + PREFS
         names.distinct().forEach { app.getSharedPreferences(it, 0).edit().clear().commit() }
+        // A French phone (Robolectric's is American: the first start would take English).
+        app.getSharedPreferences("settings", 0).edit().putString("language", "fr").commit()
         SettingsStore.forgetForTests()
         LaunchRule.askAtStartForTest = true
         shadowOf(app).grantPermissions(android.Manifest.permission.RECORD_AUDIO)

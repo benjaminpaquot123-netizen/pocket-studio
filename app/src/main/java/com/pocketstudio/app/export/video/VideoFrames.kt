@@ -37,7 +37,7 @@ data class VideoColors(
  * Draws the images of the « vidéo 9:16 » (720 × 1280): the app's name and the song's title on
  * top, a waveform that scrolls under a playhead with a glow that breathes with the level, the
  * part playing in big letters (« Drop »), the parts of the 30 seconds as a strip with the
- * playhead, the time, and « Fait avec Pocket Studio ». The still parts are drawn once. What
+ * playhead, the time, and « Fait avec BenStudio ». The still parts are drawn once. What
  * matters stays clear of what TikTok, Reels and Shorts lay over the picture (03 M10): above the
  * bottom quarter (caption, name, music) and left of their buttons' column ([SIDE] on each side).
  * [bold] and [regular]: Inter when the app's fonts load, the system's otherwise.
@@ -113,7 +113,7 @@ class VideoFrameRenderer(
         text.typeface = regular
         text.textSize = 26f * k
         text.color = colors.textSecondary
-        val foot = tr("Fait avec Pocket Studio")
+        val foot = tr("Fait avec BenStudio")
         c.drawText(foot, (width - text.measureText(foot)) / 2f, height - 64f * k, text)
         return bmp
     }

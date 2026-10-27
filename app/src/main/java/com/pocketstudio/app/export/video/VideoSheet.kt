@@ -147,7 +147,7 @@ fun VideoSheetContent(ui: VideoSheetUi, actions: VideoSheetActions, modifier: Mo
                     tr("En vertical (9:16) pour les stories, TikTok ou Reels : la forme d'onde, le nom des parties, ton titre."),
                     style = MaterialTheme.typography.bodyMedium,
                 )
-                Text(tr("Une copie va dans Films › Pocket Studio."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                Text(tr("Une copie va dans Films › BenStudio."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
         }
         // Which part, and how long (before it is made).

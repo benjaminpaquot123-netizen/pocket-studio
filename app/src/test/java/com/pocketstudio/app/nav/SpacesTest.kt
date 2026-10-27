@@ -9,6 +9,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import com.pocketstudio.app.settings.SettingsStore
 import com.pocketstudio.app.ui.withinGestures
 import com.pocketstudio.model.SongPart
@@ -194,7 +195,7 @@ class SpacesTest {
         tap("welcome_mode_full")
         compose.onNodeWithTag("welcome_mode_full").assertIsSelected()
         assertFalse(SettingsStore.state.value.simpleMode)
-        compose.onNodeWithTag("welcome_later").performClick()
+        compose.onNodeWithTag("welcome_later").performScrollTo().performClick()
         compose.waitForIdle()
         compose.onNodeWithTag("tab_Sons").assertIsDisplayed()
         assertTrue(SettingsStore.state.value.guideSeen)

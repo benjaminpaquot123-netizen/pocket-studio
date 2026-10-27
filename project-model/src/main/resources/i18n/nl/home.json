@@ -32,7 +32,6 @@
   "Battre la mesure en Live": "De maat voelen in Live",
   "Bibliothèque de sons": "Geluidenbibliotheek",
   "Bienvenue ! Fais ta musique sur ton appareil. Par quoi on commence ?": "Welkom! Maak je eigen muziek op je apparaat. Waar beginnen we mee?",
-  "Bienvenue dans Pocket Studio": "Welkom bij Pocket Studio",
   "C'est l'ambiance conseillée pour %s.": "Dit is de aangeraden sfeer voor %s.",
   "C'est le son qui fait le style : il joue dans toutes les parties.": "Dit is het geluid dat de stijl maakt: het speelt in alle delen.",
   "C'est le son qui fait le style.": "Dit is het geluid dat de stijl maakt.",
@@ -288,7 +287,7 @@
   "La recette": "Het recept",
   "Conseillés pour ce style : %s.": "Aangeraden voor deze stijl: %s.",
   "Des lignes de basse « roulantes » : des notes courtes entre les coups de kick, qui galopent. Touche un motif pour l'entendre.": "Rollende baslijnen: korte noten tussen de kicks die galopperen. Tik op een patroon om het te horen.",
-  "Pocket Studio s'est fermé deux fois en ouvrant « %s ». Le projet est gardé tel quel : rouvre-le depuis Mes projets, ou commence un projet vide.": "Pocket Studio sloot twee keer af bij het openen van ‘%s’. Het project blijft zoals het is: open het opnieuw via Mijn projecten, of begin een leeg project.",
+  "BenStudio s'est fermé deux fois en ouvrant « %s ». Le projet est gardé tel quel : rouvre-le depuis Mes projets, ou commence un projet vide.": "BenStudio sloot twee keer af bij het openen van ‘%s’. Het project blijft zoals het is: open het opnieuw via Mijn projecten, of begin een leeg project.",
   "Ouverture du projet…": "Project openen…",
   "une sauvegarde est encore en cours, réessaie dans un instant": "er wordt nog opgeslagen, probeer het zo opnieuw",
   "Copie faite : « %s ». Touche-la pour l'ouvrir.": "Kopie gemaakt: ‘%s’. Tik erop om hem te openen.",
@@ -344,5 +343,6 @@
   "Filtres : certains sons s'ouvrent et se ferment tout seuls le long du morceau (Mix › Courbes, en mode complet).": "Filters: sommige klanken gaan vanzelf open en dicht in de loop van het nummer (Mix › Curven, in de volledige modus).",
   "Structure (Mon morceau en Mode simple) : touche une partie (Intro, Couplet ou Refrain) pour l'afficher, la renommer ou la dupliquer pour en faire un Pont ou une Fin.": "Structuur (Mijn nummer in de eenvoudige modus): tik op een deel (Intro, Couplet of Refrein) om het te tonen, een andere naam te geven of te dupliceren voor een Brug of een Einde.",
   "Clavier (Sons › Synthé en mode complet) : joue au clavier pour essayer des notes par-dessus le rythme.": "Klavier (Klanken › Synth in de volledige modus): speel op het klavier om noten uit te proberen boven het ritme.",
-  "Clavier (Sons › Synthé en mode complet) : joue au clavier, il reste dans la gamme du morceau : aucune fausse note possible.": "Klavier (Klanken › Synth in de volledige modus): speel op het klavier, het blijft in de toonladder van het nummer: geen valse noten mogelijk."
+  "Clavier (Sons › Synthé en mode complet) : joue au clavier, il reste dans la gamme du morceau : aucune fausse note possible.": "Klavier (Klanken › Synth in de volledige modus): speel op het klavier, het blijft in de toonladder van het nummer: geen valse noten mogelijk.",
+  "Bienvenue dans BenStudio": "Welkom bij BenStudio"
 }

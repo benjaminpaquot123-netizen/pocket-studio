@@ -12,7 +12,7 @@ import com.pocketstudio.model.i18n.tr
 
 /** Where exported files go and how they leave the app. */
 object WavExporter {
-    const val MUSIC_FOLDER = "Music/Pocket Studio"
+    const val MUSIC_FOLDER = "Music/BenStudio"
 
     /**
      * A fresh file in the private export folder; exports older than an hour are removed (they live

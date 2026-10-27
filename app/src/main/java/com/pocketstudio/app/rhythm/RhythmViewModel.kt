@@ -8796,7 +8796,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /**
      * Renders the project offline (never the live engine): the loop, the whole song or each track,
-     * into WAV (or M4A), then copies the files to Music › Pocket Studio.
+     * into WAV (or M4A), then copies the files to Music › BenStudio.
      */
     fun exportWav() {
         val p = project.value

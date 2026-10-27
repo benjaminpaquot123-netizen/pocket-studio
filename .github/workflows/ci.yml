@@ -408,5 +408,5 @@ jobs:
         run: |
           VERSION_NAME=$(sed -n 's/^val phase = \([0-9]*\)/0.\1/p' app/build.gradle.kts).${VERSION_CODE}
           gh release create "v${VERSION_NAME}" dist/pocket-studio.apk \
-            --latest --title "Pocket Studio ${VERSION_NAME}" \
+            --latest --title "BenStudio ${VERSION_NAME}" \
             --notes-file app/src/main/assets/changelog.txt --target "${{ github.sha }}"

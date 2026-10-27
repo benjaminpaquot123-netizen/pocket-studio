@@ -141,7 +141,7 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
                 }
             }
             TextButton(onClick = actions.reset, modifier = Modifier.fillMaxWidth().testTag("settings_reset")) { Text(tr("Remettre les réglages par défaut")) }
-            Text("Pocket Studio $version", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            Text("BenStudio $version", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
     })
 }

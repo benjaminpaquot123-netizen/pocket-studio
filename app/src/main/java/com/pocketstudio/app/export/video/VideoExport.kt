@@ -249,9 +249,9 @@ class VideoExportViewModel(app: Application) : AndroidViewModel(app) {
     companion object {
         /** The part of the progress bar the sound's render takes. */
         const val SOUND_SHARE = 0.4f
-        const val MOVIES_FOLDER = "Movies/Pocket Studio"
+        const val MOVIES_FOLDER = "Movies/BenStudio"
 
-        /** A copy in Movies › Pocket Studio, as the songs go to Music (no permission needed). Blocking. */
+        /** A copy in Movies › BenStudio, as the songs go to Music (no permission needed). Blocking. */
         fun copyToMovies(context: Context, file: File): Boolean = runCatching {
             val resolver = context.contentResolver
             val values = ContentValues().apply {

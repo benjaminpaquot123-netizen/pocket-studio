@@ -25,6 +25,8 @@ public:
     const float* data() const { return compact() ? nullptr : data_.data(); }
     bool compact() const { return !pcm16_.empty(); }
     const int16_t* pcm16() const { return pcm16_.empty() ? nullptr : pcm16_.data(); }
+    // A pcm16() value times this is the sound (1/32768, more for a zone over full scale).
+    float pcmScale() const { return pcmScale_; }
     // Bytes of audio held (the instruments' memory budget).
     int64_t bytes() const { return static_cast<int64_t>(data_.size() * sizeof(float) + pcm16_.size() * sizeof(int16_t)); }
 
@@ -38,6 +40,7 @@ private:
     Sample() = default;
     std::vector<float> data_;
     std::vector<int16_t> pcm16_;
+    float pcmScale_ = 1.0f / 32768.0f;
     int64_t frames_ = 0;
     int channels_ = 1;
     std::atomic<int> refs_{1};

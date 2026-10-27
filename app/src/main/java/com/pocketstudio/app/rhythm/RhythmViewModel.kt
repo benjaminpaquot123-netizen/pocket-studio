@@ -4567,7 +4567,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun pushSongCurve(p: Project, i: Int, lane: AutomationLane) {
         val points = maxOf(SONG_LANE_MIN_BARS, p.songBars) * lane.pointsPerBar(p.beatsPerBar)
         val curve = if (lane.mode == AutomationLane.SONG) lane.songCurve(points) else emptyList()
-        NativeEngine.setAutomationMode(i, lane.mode, curve.size, lane.songPerBeat, lane.hold)
+        NativeEngine.setAutomationMode(i, lane.mode, curve.size, lane.songPerBeat, lane.hold, if (lane.mode == AutomationLane.SONG) 0 else lane.loopSteps)
         // Runs of equal values and straight slides in one command each: the curves of a whole song
         // fit in the engine's queue (a full queue waits for the audio thread; see sendAgainIfDropped).
         for (c in songCurveCommands(curve)) when (c) {
@@ -4592,6 +4592,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         if (start >= 0) out += start..last
         return out
+    }
+
+    /**
+     * Audit 06: loop lane [index] over [steps] from the part's start (the whole part), or over the
+     * drum loop (0). Points past the new length stay (a longer one later finds them).
+     */
+    fun setAutomationLoopSteps(index: Int, steps: Int) {
+        val lane = project.value.automation.getOrNull(index) ?: return
+        val want = steps.takeIf { it in 1..AutomationLane.STEPS } ?: 0
+        if (lane.loopSteps == want) return
+        session.edit { p -> p.copy(automation = p.automation.mapIndexed { i, l -> if (i == index) l.copy(loopSteps = want) else l }) }
+        pushAutomation()
+        pushMixer()
     }
 
     /** Clip kind of lane [index]: loop, per scene or the whole song. */
@@ -4705,7 +4718,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 if (_notice.value != refused) _notice.value = refused
             }
         } else {
-            setAutomationPoint(index, step, value)
+            // A curve over the whole part: on its step from the part's start (audit 06).
+            val own = project.value.automation[index].loopSteps
+            setAutomationPoint(index, if (own > 0) Math.floorMod(NativeEngine.absoluteStep(), own) else step, value)
         }
     }
 
@@ -6222,11 +6237,25 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * none, its depth 0: the engine mixes as before.
      */
     private fun pushSidechain(p: Project) {
-        NativeEngine.setSidechainKey(p.mixer.sidechainKey)
+        // A pump on « Le son du kick » without a key of its own follows the kick's pad (audit 06).
+        val key = p.mixer.heardSidechainKey
+        if (!NativeEngine.isCapturing) liveSidechainKey = key
+        NativeEngine.setSidechainKey(key)
         val bus = p.mixer.musicBus
         NativeEngine.setMusicBusDuck(bus?.depth ?: 0f, bus?.lowDepth ?: 0f, bus?.release ?: 0.35f)
         for (ch in Mixer.TRACK_STRIPS) if (ch != MASTER) NativeEngine.setMusicBusMember(ch, bus != null && ch in bus.members)
         for (b in 0 until com.pocketstudio.model.Buses.COUNT) NativeEngine.setMusicBusReturn(b, bus?.returns == true)
+    }
+
+    /** The sidechain key the live engine was last given (pushSidechain). */
+    private var liveSidechainKey = Int.MIN_VALUE
+
+    /** An effect changed: a pump switched to « Le son du kick » (or away) changes the key at once. */
+    private fun pushSidechainKeyIfChanged() {
+        val key = project.value.mixer.heardSidechainKey
+        if (key == liveSidechainKey || NativeEngine.isCapturing) return
+        liveSidechainKey = key
+        NativeEngine.setSidechainKey(key)
     }
 
     /** After a change to a pad's strip: it plays through it only while something there changes the sound. */
@@ -6434,6 +6463,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (push && NativeEngine.isAvailable) {
             pushInserts(ch, if (ch == MASTER) project.value.mixer.master else project.value.mixer.channels[ch].inserts)
         }
+        if (NativeEngine.isAvailable) pushSidechainKeyIfChanged()
         if (ch != MASTER) routePad(ch)
     }
 

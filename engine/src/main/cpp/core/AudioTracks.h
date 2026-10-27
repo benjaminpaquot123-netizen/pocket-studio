@@ -4,6 +4,7 @@
 #include <array>
 #include <atomic>
 #include <cstdint>
+#include <memory>
 
 #include "Sample.h"
 #include "SpscQueue.h"
@@ -80,8 +81,11 @@ private:
         bool resync = true;  // song clip: pick up mid-clip at the next step
         float level = 1.0f;  // song clip: 0..1 towards `on` (a part's mute without stopping it)
         Voice voice, tail;
+        // The clip replaced while it sounded: kept until its fading voice is done (no click).
+        Sample* held = nullptr;
     };
     void retire(Sample* s);
+    void releaseHeld(Track& t);
     void play(const Track& t, Voice& v, float& l, float& r);
     void startVoice(Track& t, int offset, int64_t pos);
 
@@ -93,8 +97,20 @@ private:
 // Records the microphone into a buffer the app hands over, starting exactly on the step where the
 // transport starts (or right away), until the buffer is full or recording stops.
 struct RecordBuffer {
-    explicit RecordBuffer(int64_t capacity) : data(static_cast<size_t>(capacity), 0.0f) {}
-    std::vector<float> data;               // mono
+    // Reserved, not filled (audit 13: a 300 s buffer is 57 MB): only the pages a take writes cost
+    // memory. Only [0, written) is ever read. May throw std::bad_alloc (the caller catches it).
+    struct Frames {
+        explicit Frames(int64_t n) : p(new float[static_cast<size_t>(std::max<int64_t>(n, 0))]), n(static_cast<size_t>(std::max<int64_t>(n, 0))) {}
+        size_t size() const { return n; }
+        float* data() { return p.get(); }
+        const float* data() const { return p.get(); }
+        float& operator[](size_t i) { return p[i]; }
+        const float& operator[](size_t i) const { return p[i]; }
+        std::unique_ptr<float[]> p;
+        size_t n;
+    };
+    explicit RecordBuffer(int64_t capacity) : data(capacity) {}
+    Frames data;                           // mono
     std::atomic<int64_t> written{0};
     // 0 armed (waiting for the start), 1 recording, 2 finished (the engine no longer touches it).
     std::atomic<int> state{0};

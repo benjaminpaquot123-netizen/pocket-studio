@@ -54,7 +54,13 @@ void MasterChain::LowCutSection::set(double rate, double hz, double q) {
 }
 
 void MasterChain::prepare(int rate) {
+    // The same rate again (Android reopened the stream: headphones, Bluetooth, a reroute): the
+    // music heard so far and the export's known drive stay, so the live level keeps matching the
+    // export instead of estimating afresh for half a minute (audit 13 M4). Another project still
+    // forgets it (resetEstimate, SetMaster a=6).
+    const bool sameRate = preparedRate_ > 0 && (rate > 0 ? rate : 48000) == preparedRate_;
     rate_ = rate > 0 ? rate : 48000;
+    preparedRate_ = rate_;
     const float fs = static_cast<float>(rate_);
     lookAhead_ = lookAheadFor(rate_);
     latency_ = latencyFor(rate_);
@@ -86,7 +92,7 @@ void MasterChain::prepare(int rate) {
     estIn_.prepare(rate_);
     estOut_.prepare(rate_);
     meter_.prepare(rate_);
-    resetEstimate();
+    if (!sameRate) resetEstimate();
     setCeilingDb(ceilingDb_);
 
     clipL_.reset();

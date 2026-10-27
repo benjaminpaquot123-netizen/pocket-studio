@@ -579,6 +579,7 @@ void Engine::applyCommand(const Command& command) {
                 lane.mode = std::clamp(command.b & 0xF, 0, 2);
                 lane.perBeat = (command.b & Automation::kPerBeat) != 0;
                 lane.held = (command.b & Automation::kHeld) != 0;
+                lane.loopSteps = std::clamp((command.b >> 8) & 0xFF, 0, Automation::kSteps);
                 const int most = lane.perBeat ? Automation::kSongPoints : Automation::kSongBars;
                 lane.songPoints = std::isfinite(command.value) ? static_cast<int>(std::clamp(command.value, 0.0f, static_cast<float>(most))) : 0;
                 lane.flat.fill(0);  // the curve's jumps follow it (SetAutomationSongFlat)
@@ -820,7 +821,7 @@ void Engine::onStep(int offset, int step) {
     songStep_.store(songStep, std::memory_order_relaxed);
     // Loop and per-scene curves run with the drum loop (they carry on with it in a song part that
     // carries on, as during the live take it was written from).
-    applyAutomation(patternStep, songStep, offset);
+    applyAutomation(patternStep, songStep, offset, local);
     // Sidechain pumps follow the kick lane (pad 1) or every quarter note.
     // (the kick lane on its own loop when it has one, and only a hit that plays this pass).
     const int kickStep = laneStepOf(laneSteps_, 0, drumsLocal, patternSteps_);
@@ -1223,10 +1224,12 @@ void Engine::leaveSongNow() {
     mixer_.setVolume(Mixer::kMaster, 0.8f);
 }
 
-void Engine::applyAutomation(int patternStep, int songStep, int offset) {
-    if (patternStep < 0 || patternStep >= Automation::kSteps) return;
+void Engine::applyAutomation(int patternStep, int songStep, int offset, int local) {
+    const bool patternOk = patternStep >= 0 && patternStep < Automation::kSteps;
     const int bar = sequencer_.stepsPerBar();
     for (const auto& lane : automation_.lanes) {
+        // Past the curves' 64 steps of a longer drum loop: the lanes on the drum loop wait (as ever).
+        if (!patternOk && lane.loopSteps == 0) continue;
         float v = -1.0f;
         if (lane.mode == Automation::Song) {
             // From the transport start: bar by bar (or beat by beat), sliding from one point's value
@@ -1239,6 +1242,9 @@ void Engine::applyAutomation(int patternStep, int songStep, int offset) {
             const bool flat = lane.held || lane.flat[static_cast<size_t>(b)] != 0 || songStep / unit >= lane.songPoints - 1;
             const float t = flat ? 0.0f : static_cast<float>(songStep % unit) / static_cast<float>(unit);
             v = a + t * (c - a);
+        } else if (lane.loopSteps > 0) {
+            // A loop of its own (the part's length): from the scene's start.
+            v = local >= 0 ? lane.values[static_cast<size_t>(local % lane.loopSteps)] : -1.0f;
         } else {
             v = lane.values[static_cast<size_t>(patternStep)];
         }
@@ -1546,7 +1552,11 @@ void Engine::recordInput(const float* input, int numInputFrames, int inputChanne
         const int from = recordSkip_ > 0 ? std::min(recordSkip_, numFrames) : 0;
         for (int i = from; i < numFrames && at < capacity; ++i) record_->data[static_cast<size_t>(at++)] = 0.0f;
     }
-    recordSkip_ = 0;
+    // The skip is in frames from the start of the callback where the take started; the
+    // microphone's batch need not cover it (an empty batch, or a shorter one, when the microphone
+    // delivers in bigger bursts than the output): what is left is skipped from the next batches
+    // instead of being lost, so the take starts on the same sound whatever the bursts (audit 13 M5).
+    recordSkip_ = recordSkip_ > 0 ? recordSkip_ - (input && inputChannels > 0 ? std::min(recordSkip_, numInputFrames) : std::min(recordSkip_, numFrames)) : 0;
     record_->peak.store(peak, std::memory_order_relaxed);
     record_->written.store(at, std::memory_order_release);
     if (at >= capacity) finishRecording();

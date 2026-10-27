@@ -156,6 +156,7 @@ private:
     void rampDrive(float db, int frames);
 
     int rate_ = 48000;
+    int preparedRate_ = 0;  // the rate of the last prepare (0: never prepared)
     int latency_ = latencyFor(48000);
     float ceilingDb_ = kDefaultCeilingDb;
     float ceiling_ = 0.891251f;  // linear

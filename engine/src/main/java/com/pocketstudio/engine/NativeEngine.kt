@@ -589,6 +589,14 @@ object NativeEngine {
 
     external fun start(): Boolean
     external fun stop()
+    /**
+     * An output device appeared or went (headphones, Bluetooth): when the sound was cut and could
+     * not come back yet, the engine tries again at once instead of at its next delay. Never blocks.
+     */
+    fun retryOutput() {
+        if (isNative) nativeRetryOutput()
+    }
+    private external fun nativeRetryOutput()
     /** Microphone configuration used by the last latency test, in French, for reports. */
     external fun inputDescription(): String
     private external fun nativeStartLatencyTest(): Int
@@ -712,8 +720,9 @@ object NativeEngine {
      * [setAutomationSong]: a point per bar, or per beat with [perBeat]; [held]: each point holds
      * until the next instead of sliding).
      */
-    fun setAutomationMode(lane: Int, mode: Int, songPoints: Int, perBeat: Boolean = false, held: Boolean = false) =
-        post(CMD_AUTOMATION_MODE, songPoints.toFloat(), lane, mode or (if (perBeat) 16 else 0) or (if (held) 32 else 0))
+    /** [loopSteps]: a loop or per-scene lane's own loop from the scene's start (0: the drum loop's). */
+    fun setAutomationMode(lane: Int, mode: Int, songPoints: Int, perBeat: Boolean = false, held: Boolean = false, loopSteps: Int = 0) =
+        post(CMD_AUTOMATION_MODE, songPoints.toFloat(), lane, mode or (if (perBeat) 16 else 0) or (if (held) 32 else 0) or (loopSteps.coerceIn(0, 64) shl 8))
     fun setAutomationSong(lane: Int, point: Int, value: Float) = post(CMD_AUTOMATION_SONG, value, lane, point)
     /** [count] song points of lane [lane] from [first] at [value] (a run of equal values, one command). */
     /**

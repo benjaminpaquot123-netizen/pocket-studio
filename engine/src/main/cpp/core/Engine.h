@@ -101,7 +101,8 @@ enum class CommandType : uint8_t {
     SetAudioOn,           // a: audio track, value 1 = plays (follows SetStaging: a song part's mutes)
     SetBeatsPerBar,       // a: 2..7 (time signature a/4): metronome accent, bar lines, live pads grid
     SetAutomationMode,    // a: lane, b: 0 loop / 1 per scene / 2 song, | 16: a song point per beat, | 32: song points held (no
-                          // slide: on/off controls); value: song points sent
+                          // slide: on/off controls), | steps << 8: a loop or per-scene lane's own loop from the scene's
+                          // start (0: the drum loop's); value: song points sent
     SetAutomationSong,    // a: lane, b: point (a bar 0..255, or a beat 0..4095), value 0..1: the song-long curve
     SetExpression,        // a: InstrumentTrack::Expression | track << 16, value (bend in semitones, mod 0..1, sustain 0/1, arpeggiator settings)
     SetPadPan,            // a: pad, value -1..1 (synthesized and sampled sounds alike)
@@ -291,6 +292,9 @@ struct Automation {
         int songPoints = 0;
         bool perBeat = false;  // a point per beat instead of per bar
         bool held = false;     // each point holds until the next (on/off controls)
+        // Loop and per-scene lanes: steps of their own loop from the scene's start (the part's
+        // length, audit 06), 0: the drum loop's (as ever).
+        int loopSteps = 0;
         std::array<uint8_t, kSongPoints> flat{};  // 1: this point holds (the next one is a jump)
     };
     // On the heap (about 340 kB), allocated once with the engine.
@@ -536,7 +540,8 @@ private:
     // No input (nullptr) while recording writes `numFrames` of silence: the take stays in time.
     void recordInput(const float* input, int numInputFrames, int inputChannels, int numFrames);
     Automation automation_;
-    void applyAutomation(int patternStep, int songStep, int offset);
+    // `local`: the step from the scene's start (loop curves with a length of their own).
+    void applyAutomation(int patternStep, int songStep, int offset, int local);
     std::array<std::atomic<float>, kScopeFrames> outScope_{}, micScope_{};
     std::atomic<uint32_t> outScopeAt_{0}, micScopeAt_{0};
     static void scopeWrite(std::array<std::atomic<float>, kScopeFrames>& ring, std::atomic<uint32_t>& at, float v) {

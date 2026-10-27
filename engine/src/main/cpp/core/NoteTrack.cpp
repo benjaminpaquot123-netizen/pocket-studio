@@ -28,17 +28,24 @@ void NoteTrack::onStep(int offset, int step, double samplesPerStep, double swing
     if (step < 0 || count_ == 0) return;
     const int first = (step % steps_) * kTicksPerStep;
     const double perTick = samplesPerStep / kTicksPerStep;
-    // Odd steps are late by the swing, as the sequencer plays them: a note ends on the same swung
-    // grid its successor starts on, so notes that only touch never overlap (no glide between them).
-    const double swingFrames = std::isfinite(swing) ? std::clamp(swing, 0.0, 1.0) * samplesPerStep : 0.0;
+    // Odd steps are late by the swing, as the sequencer plays them, and the swing warps time inside
+    // the steps as the drums' rolls do: an even step keeps its length, an odd one starts `swing` late
+    // and is that much shorter. A note between two sixteenths (a triplet, a 1/32) keeps its place
+    // between them, never past the next one (audit 06: flams). A note ends on the same warped grid
+    // its successor starts on, so notes that only touch never overlap (no glide between them).
+    const double s = std::isfinite(swing) ? std::clamp(swing, 0.0, 1.0) : 0.0;
+    const double swingFrames = s * samplesPerStep;
     const double unswung = offset - ((step & 1) != 0 ? swingFrames : 0.0);
     for (int i = 0; i < count_; ++i) {
         const Note& n = notes_[static_cast<size_t>(i)];
         if (n.velocity <= 0.0f || n.start < first || n.start >= first + kTicksPerStep) continue;
-        const int64_t on = offset + std::llround((n.start - first) * perTick);
+        // Inside an odd step a tick is (1 - swing) of its length (nothing changes on the step's start).
+        const int into = n.start - first;
+        const int64_t on = offset + std::llround((step & 1) != 0 ? into * perTick * (1.0 - s) : into * perTick);
         const int end = n.start - first + n.length;  // ticks from this step's start
         const bool endSwung = ((step + end / kTicksPerStep) & 1) != 0;
-        const int64_t off = std::max<int64_t>(on + 1, std::llround(unswung + end * perTick + (endSwung ? swingFrames : 0.0)));
+        const double endLate = endSwung ? swingFrames - (end % kTicksPerStep) * perTick * s : 0.0;
+        const int64_t off = std::max<int64_t>(on + 1, std::llround(unswung + end * perTick + endLate));
         for (int k = 0; k < pendingCount_; ++k) {
             Pending& p = pending_[static_cast<size_t>(k)];
             if (p.velocity != 0.0f || p.at <= on) continue;

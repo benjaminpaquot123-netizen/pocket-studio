@@ -72,8 +72,11 @@ private:
         State state = Off;
         double startBeat = 0.0;  // waiting: when it starts; playing: when the current pass began
         Voice voice, tail;
+        // The sound replaced while it played: kept until its fading voice is done (no click).
+        Sample* held = nullptr;
     };
     void retire(Sample* s);
+    void releaseHeld(Slot& s);
     void restart(Slot& s);
     void align();
     void play(Voice& v, float gain, float& l, float& r);

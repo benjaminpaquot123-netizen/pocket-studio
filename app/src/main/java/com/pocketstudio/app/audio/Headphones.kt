@@ -41,9 +41,17 @@ object Headphones {
         fun update() {
             _state.value = classify(audio.getDevices(AudioManager.GET_DEVICES_OUTPUTS).map { it.type })
         }
+        // A device change also wakes the engine's revival when the sound was cut and could not
+        // come back yet (audit 13 M3): a headset that took seconds to connect is heard at once.
         audio.registerAudioDeviceCallback(object : AudioDeviceCallback() {
-            override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>?) = update()
-            override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>?) = update()
+            override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>?) {
+                update()
+                com.pocketstudio.engine.NativeEngine.retryOutput()
+            }
+            override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>?) {
+                update()
+                com.pocketstudio.engine.NativeEngine.retryOutput()
+            }
         }, null)
         update()
     }

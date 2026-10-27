@@ -354,5 +354,7 @@
   "Transposée de %s demi-tons.": "Getransponeerd met %s halve tonen.",
   "Coupée pour l'instant.": "Voorlopig gedempt.",
   "Ses effets : %s.": "Zijn effecten: %s.",
-  "Basse+": "Bas+"
+  "Basse+": "Bas+",
+  "Sur la batterie · %s": "Over de drums · %s",
+  "Sur toute la partie · %s": "Over het hele deel · %s"
 }

@@ -135,8 +135,10 @@ void SoundFontPlayer::render(float* out, float* right, int numFrames) {
     while (pos < numFrames) {
         while (next < eventCount_ && events_[next].offset <= pos) {
             const Event& e = events_[next++];
-            if (e.velocity > 0.0f) tsf_note_on(instance_, preset_, e.note, e.velocity);
-            else tsf_note_off(instance_, preset_, e.note);
+            if (e.velocity > 0.0f) {
+                makeRoom(e.note, e.velocity);
+                tsf_note_on(instance_, preset_, e.note, e.velocity);
+            } else tsf_note_off(instance_, preset_, e.note);
         }
         const int until = next < eventCount_ ? std::min(numFrames, events_[next].offset) : numFrames;
         renderSpan(out + pos, right ? right + pos : nullptr, until - pos);
@@ -150,6 +152,41 @@ void SoundFontPlayer::render(float* out, float* right, int numFrames) {
         events_[kept++] = ev;
     }
     eventCount_ = kept;
+}
+
+void SoundFontPlayer::makeRoom(int note, float velocity) {
+    // TinySoundFont's preallocated voices only steal one already releasing: past kMaxVoices held
+    // notes (a sustain pedal, a long arpeggio) a new note would be dropped, silent (audit 13 M6).
+    // Kept: kReserve voices free or fading for the new note's regions. The oldest notes held make
+    // room first, all their regions at once, over TinySoundFont's quick release (10 ms, no click);
+    // the voices already releasing count as room (tsf_note_on takes the one furthest in first).
+    tsf* f = instance_;
+    if (f->presetNum <= preset_) return;
+    const short midiVelocity = static_cast<short>(velocity * 127);
+    int needed = 0;
+    const tsf_preset& preset = f->presets[preset_];
+    for (int i = 0; i < preset.regionNum; ++i) {
+        const tsf_region& r = preset.regions[i];
+        if (note >= r.lokey && note <= r.hikey && midiVelocity >= r.lovel && midiVelocity <= r.hivel) ++needed;
+    }
+    if (needed == 0) return;
+    const int want = std::min(f->voiceNum, needed + kReserve);
+    for (int guard = 0; guard < f->voiceNum; ++guard) {
+        int room = 0;
+        tsf_voice* oldest = nullptr;
+        for (int i = 0; i < f->voiceNum; ++i) {
+            tsf_voice& v = f->voices[i];
+            if (v.playingPreset == -1 || v.ampenv.segment >= TSF_SEGMENT_RELEASE) ++room;
+            else if (!oldest || v.playIndex < oldest->playIndex) oldest = &v;
+        }
+        if (room >= want || !oldest) return;
+        // Every region of that note (they share its play index).
+        const unsigned int index = oldest->playIndex;
+        for (int i = 0; i < f->voiceNum; ++i) {
+            tsf_voice& v = f->voices[i];
+            if (v.playingPreset != -1 && v.ampenv.segment < TSF_SEGMENT_RELEASE && v.playIndex == index) tsf_voice_endquick(f, &v);
+        }
+    }
 }
 
 void SoundFontPlayer::collectGarbage() {

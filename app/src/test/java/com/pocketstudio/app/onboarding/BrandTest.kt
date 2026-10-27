@@ -102,13 +102,13 @@ class BrandTest {
         shot("intro_1_beat")
         compose.mainClock.advanceTimeBy(160)  // 710 ms: the second, softer
         shot("intro_2_beat")
-        compose.mainClock.advanceTimeBy(690)  // 1.4 s: « BenStudio » under the mark
+        compose.mainClock.advanceTimeBy(1790)  // 2.5 s: « BenStudio » under the mark
         assertTrue(shown("intro"))
         compose.onNodeWithTag("intro_name", useUnmergedTree = true).assertTextContains("BenStudio")
         shot("intro_3_name")
         assertEquals(0, ended)
-        // 1.8 s in all, from the splash's start.
-        compose.mainClock.advanceTimeBy((IntroTimeline.TOTAL - 1400 + 100).toLong())
+        // 3.8 s in all, from the splash's start.
+        compose.mainClock.advanceTimeBy((IntroTimeline.TOTAL - 2500 + 100).toLong())
         compose.waitForIdle()
         assertFalse(shown("intro"))
         assertEquals(1, ended)

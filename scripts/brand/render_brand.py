@@ -101,9 +101,9 @@ BEAT_UP, BEAT_DOWN = 70, 160
 RING_MS = 360
 FLASH_STAGGER, FLASH_UP, FLASH_DOWN = 35, 40, 220
 RISE = (900, 1250)
-NAME = (1000, 1400)
-LINE = (1150, 1450)
-FADE = (1500, 1800)
+NAME = (1000, 2200)
+LINE = (1900, 2500)
+FADE = (3500, 3800)
 LIFT, NAME_TOP = 0.13, 0.19  # of the 288 dp box: the mark goes up, the name sits under it
 SPLASH_MS = 1000
 

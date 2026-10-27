@@ -252,11 +252,11 @@ object IntroTimeline {
     const val RISE_START = 900f
     const val RISE_END = 1250f
     const val NAME_START = 1000f
-    const val NAME_END = 1400f
-    const val LINE_START = 1150f
-    const val LINE_END = 1450f
-    const val FADE_START = 1500f
-    const val TOTAL = 1800f
+    const val NAME_END = 2200f
+    const val LINE_START = 1900f
+    const val LINE_END = 2500f
+    const val FADE_START = 3500f
+    const val TOTAL = 3800f
 
     /** Of the 288 dp box: how far the mark goes up, where the name's top sits under the centre. */
     const val LIFT = 0.13f

@@ -6,6 +6,7 @@ Des tests qui font ce que fait un utilisateur, avec la vraie appli et le vrai mo
 |---|---|---|---|
 | `JourneyTest` (2 parcours) | émulateur (androidTest) | chaque PR (job « Emulator smoke test ») et la nuit | ~10 min |
 | `JourneyPathsTest` (les mêmes touches, sans moteur) | Robolectric (`:app:testDebugUnitTest`) | chaque PR, en local | ~1 min |
+| `GuideJourneyTest` (le Guide de bout en bout, `MainActivity` recréée, reprise 3 jours plus tard) | Robolectric | chaque PR, en local | ~2 min |
 | `EnduranceTest` | émulateur | PR : 2 min ; nuit : 10 min ; à la main : 30 min | |
 | `scripts/soak.sh` (endurance sur Linux) | Linux, `ps_live` | PR : morceau de 2 min bouclé 10 min ; nuit : 6 min bouclé 30 min | 3 à 8 min |
 | `scripts/cpu-bench.sh` (petit téléphone) | Linux, `ps_live` | la nuit (37 styles) ; en local | ~25 min |

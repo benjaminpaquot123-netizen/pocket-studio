@@ -6,6 +6,7 @@
 - En cours : PR Guide G3 (fiche de piste, éditeur de couches, historique), relue à neuf.
 - Fait (branche `g4`, pas encore relue à neuf) : Guide G4, les étapes 3 à 6 en vraies cartes (effets un par un, Break tiré du Drop, courbes et fills, niveaux mesurés, mono, téléphone, référence).
 - Fait (branche `g5`, sur `g4`) : relecture neuve de G4 et ses corrections mineures ; Guide G5, une seule surface pour guider : « Ton morceau est prêt » est la première carte du Guide d'un morceau tout juste fait (le panneau s'ouvre dessus), les Missions sont les cartes « Pour commencer » de « Mon premier morceau », la « Prochaine étape » d'un morceau fait à la main aussi ; le bandeau, la fenêtre et la carte des Missions sont retirés ; le mot de chaque carte s'écoute avant de décider ; carte « Remixer un morceau ». Pas encore relue à neuf.
+- Fait (branche `g6`, sur `g5`) : Guide G6, vérification : parcours complet dans Robolectric (création par l'assistant, activité recréée, cartes, fiche, couches, export, reprise 3 jours plus tard), Mode simple, 15 actions clés avec le Guide ouvert, banc des 37 morceaux suivis jusqu'au bout ; bilan critère par critère dans `docs/guide/G6-verification.md` ; le Guide dit « Te revoilà » tout seul après un jour d'absence.
 
 ## Prochaine étape exacte
 1. CI verte de la PR G3, fusion ; APK compilé ici et envoyé à Benjamin.

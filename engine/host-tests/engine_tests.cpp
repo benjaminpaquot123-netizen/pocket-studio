@@ -6047,6 +6047,14 @@ void testStemPreviewPlaysWithoutTheTransport() {
     engine.post({ps::CommandType::SetPreviewParam, 0.0f, 3, ps::StemPlayer::Mute});
     out = render(engine, 9600, 256);
     CHECK(std::fabs(out[out.size() - 2] - 0.4f) < 2e-3f);
+    // Audit 02 M7: apart from the project's strips: a track left in solo, or the remix's strip
+    // muted, never silences what is listened to.
+    engine.post({ps::CommandType::SetChannelSolo, 1.0f, 0});
+    engine.post({ps::CommandType::SetChannelMute, 1.0f, 3});
+    out = render(engine, 9600, 256);
+    CHECK(std::fabs(out[out.size() - 2] - 0.4f) < 2e-3f);
+    engine.post({ps::CommandType::SetChannelSolo, 0.0f, 0});
+    engine.post({ps::CommandType::SetChannelMute, 0.0f, 3});
     // The transport stopping does not stop it; its own stop does.
     engine.post({ps::CommandType::SetTransport, 0.0f});
     render(engine, 4800, 256);

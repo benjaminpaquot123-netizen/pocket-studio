@@ -392,5 +392,6 @@
   "aucune version d'avant": "no earlier version",
   "%s (avant la séance)": "%s (before the session)",
   "Sauvegarde impossible (%s). Tes dernières modifications ne sont pas encore sauvegardées : l'appli réessaie à la prochaine modification.": "Couldn't save (%s). Your latest changes aren't saved yet: the app tries again at your next change.",
-  "Le projet n'a pas pu être sauvegardé (%s) : il reste ouvert, réessaie dans un instant.": "The project couldn't be saved (%s): it stays open, try again in a moment."
+  "Le projet n'a pas pu être sauvegardé (%s) : il reste ouvert, réessaie dans un instant.": "The project couldn't be saved (%s): it stays open, try again in a moment.",
+  "connexion coupée": "connection lost"
 }

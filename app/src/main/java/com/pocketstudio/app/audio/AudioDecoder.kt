@@ -181,6 +181,9 @@ object AudioDecoder {
         var encoding = if (input.containsKey(MediaFormat.KEY_PCM_ENCODING)) input.getInteger(MediaFormat.KEY_PCM_ENCODING)
         else AudioFormat.ENCODING_PCM_16BIT
         var shown = -1
+        // Too long by the file's own length: refused before minutes of decoding for nothing, with
+        // its true length (half a second of slack for the encoder's padding).
+        if (!cut && durationUs > 0 && durationUs / 1e6 > maxSeconds + 0.5) throw TooLongException(durationUs / 1e6)
         try {
             CodecPump.run(
                 codec,

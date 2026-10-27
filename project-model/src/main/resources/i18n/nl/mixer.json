@@ -129,7 +129,6 @@
   "Mon morceau": "Mijn nummer",
   "Monter l'effet": "Effect omhoog",
   "Morceau": "Nummer",
-  "Morceau trop long (%d min) : %d minutes au maximum.": "Nummer te lang (%d min): maximaal %d minuten.",
   "Morceau utilisé": "Nummer in gebruik",
   "Morceau vide : la courbe suit les mesures depuis le début de la lecture.": "Leeg nummer: de curve volgt de maten vanaf het begin van het afspelen.",
   "Muet": "Mute",
@@ -356,5 +355,9 @@
   "Ses effets : %s.": "Zijn effecten: %s.",
   "Basse+": "Bas+",
   "Sur la batterie · %s": "Over de drums · %s",
-  "Sur toute la partie · %s": "Over het hele deel · %s"
+  "Sur toute la partie · %s": "Over het hele deel · %s",
+  "Morceau trop long (%s) : %d minutes au maximum.": "Nummer te lang (%s): maximaal %d minuten.",
+  "La séparation de « %s » a été interrompue : Android a fermé l'appli (souvent par manque de mémoire).": "Het splitsen van ‘%s’ is onderbroken: Android heeft de app gesloten (vaak door te weinig geheugen).",
+  "Relancer « %s »": "‘%s’ opnieuw starten",
+  "Mémoire insuffisante pendant la séparation : ferme des applis ou prends un morceau plus court.": "Te weinig geheugen tijdens het splitsen: sluit wat apps of kies een korter nummer."
 }

@@ -392,5 +392,6 @@
   "aucune version d'avant": "geen eerdere versie",
   "%s (avant la séance)": "%s (vóór de sessie)",
   "Sauvegarde impossible (%s). Tes dernières modifications ne sont pas encore sauvegardées : l'appli réessaie à la prochaine modification.": "Opslaan mislukt (%s). Je laatste wijzigingen zijn nog niet opgeslagen: de app probeert het opnieuw bij je volgende wijziging.",
-  "Le projet n'a pas pu être sauvegardé (%s) : il reste ouvert, réessaie dans un instant.": "Het project kon niet worden opgeslagen (%s): het blijft open, probeer het zo opnieuw."
+  "Le projet n'a pas pu être sauvegardé (%s) : il reste ouvert, réessaie dans un instant.": "Het project kon niet worden opgeslagen (%s): het blijft open, probeer het zo opnieuw.",
+  "connexion coupée": "verbinding verbroken"
 }

@@ -1425,7 +1425,14 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     }
     renderLayers(channels, rights, numFrames);
     stems_.render(stemsL, stemsR, numFrames);
-    preview_.render(stemsL, stemsR, numFrames);
+    // The stems listened to on the Remix page play apart from the project: added after the mixer,
+    // so a strip left in solo (or the remix's strip muted) never silences them.
+    float* previewL = previewL_.data();
+    float* previewR = previewR_.data();
+    std::fill(previewL, previewL + numFrames, 0.0f);
+    std::fill(previewR, previewR + numFrames, 0.0f);
+    const bool previewHeard = preview_.active();
+    preview_.render(previewL, previewR, numFrames);
     clips_.setBeatFrames(sequencer_.samplesPerStep() * Sequencer::kStepsPerBeat);
     clips_.render(stemsL, stemsR, numFrames);
 
@@ -1456,6 +1463,17 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
         audio_.render(lefts, rs, numFrames);
     }
     mixer_.process(channels, rights, direct, output, numFrames, outputChannels);
+    // Only while it plays: an export without the limiter keeps its peaks over full scale.
+    if (previewHeard || preview_.active()) {
+        for (int i = 0; i < numFrames; ++i) {
+            if (outputChannels == 1) {
+                output[i] = std::clamp(output[i] + 0.5f * (previewL[i] + previewR[i]), -1.0f, 1.0f);
+            } else {
+                output[i * outputChannels] = std::clamp(output[i * outputChannels] + previewL[i], -1.0f, 1.0f);
+                output[i * outputChannels + 1] = std::clamp(output[i * outputChannels + 1] + previewR[i], -1.0f, 1.0f);
+            }
+        }
+    }
 }
 
 void Engine::process(const float* input, int numInputFrames, int inputChannels,

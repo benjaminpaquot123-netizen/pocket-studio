@@ -640,6 +640,9 @@ private:
     Mixer mixer_;
     std::array<float, kMaxBlock> stemsL_{};
     std::array<float, kMaxBlock> stemsR_{};
+    // « Écouter » on the Remix page: apart from the project's strips (no solo or mute mutes it).
+    std::array<float, kMaxBlock> previewL_{};
+    std::array<float, kMaxBlock> previewR_{};
     std::array<float, kMaxBlock> drumsBuf_{};
     std::array<float, kMaxBlock> drumsRBuf_{};
     std::array<float, kMaxBlock> acidBuf_{};

@@ -110,7 +110,7 @@ SeparationResult runModel(const char* modelPath, Eigen::MatrixXf& audio, const c
     } catch (const Ort::Exception& e) {
         return {SeparationResult::ModelError, e.what()};
     } catch (const std::bad_alloc&) {
-        return {SeparationResult::IoError, "mémoire insuffisante"};
+        return {SeparationResult::OutOfMemory, "mémoire insuffisante"};
     } catch (const std::exception& e) {
         return {SeparationResult::ModelError, e.what()};
     }
@@ -131,7 +131,7 @@ SeparationResult separate(const char* modelPath, const float* interleaved, int64
         }
         return runModel(modelPath, audio, outDir, progress, threads);
     } catch (const std::bad_alloc&) {
-        return {SeparationResult::IoError, "mémoire insuffisante"};
+        return {SeparationResult::OutOfMemory, "mémoire insuffisante"};
     }
 }
 
@@ -207,7 +207,7 @@ SeparationResult separateFile(const char* modelPath, const char* rawPath, int ch
         }  // the interleaved copy is gone before the model loads
         return runModel(modelPath, matrix, outDir, progress, threads);
     } catch (const std::bad_alloc&) {
-        return {SeparationResult::IoError, "mémoire insuffisante"};
+        return {SeparationResult::OutOfMemory, "mémoire insuffisante"};
     }
 }
 

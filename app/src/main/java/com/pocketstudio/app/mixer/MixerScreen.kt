@@ -560,7 +560,9 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
             if (export.what == ExportWhat.Loop || (export.what == ExportWhat.Stems && !hasSong)) {
                 Text(tr("Longueur de la boucle"), style = MaterialTheme.typography.bodyMedium)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    (EXPORT_BARS + export.sceneBars).distinct().sorted().forEach { bars ->
+                    // Up to where the voice or the remix's song ends, when that is longer than the scene.
+                    val toTheEnd = export.audioBars.coerceAtMost(com.pocketstudio.app.rhythm.RhythmViewModel.MAX_LONG_EXPORT_BARS).takeIf { it > export.sceneBars }
+                    (EXPORT_BARS + export.sceneBars + listOfNotNull(toTheEnd)).distinct().sorted().forEach { bars ->
                         FilterChip(
                             selected = export.bars == bars,
                             onClick = { actions.setExportBars(bars) },

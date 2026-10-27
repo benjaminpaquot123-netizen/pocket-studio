@@ -1,25 +1,13 @@
 # Avancement
 
-## Où on en est (2026-10-25)
-- `main` = PR #51 (basses + leads lot 1 + S6) ; APK 220 envoyé à Benjamin avec les extraits avant / après (« C'est parfait »).
-- `main` = PR #52 (Guide G2 + S7 son), APK 222 compilé par l'agent et envoyé à Benjamin (consigne : compiler soi-même dès qu'un bloc est prêt, sans attendre GitHub).
-- En cours : PR Guide G3 (fiche de piste, éditeur de couches, historique), relue à neuf.
-- Fait (branche `g4`, pas encore relue à neuf) : Guide G4, les étapes 3 à 6 en vraies cartes (effets un par un, Break tiré du Drop, courbes et fills, niveaux mesurés, mono, téléphone, référence).
-- Fait (branche `g5`, sur `g4`) : relecture neuve de G4 et ses corrections mineures ; Guide G5, une seule surface pour guider : « Ton morceau est prêt » est la première carte du Guide d'un morceau tout juste fait (le panneau s'ouvre dessus), les Missions sont les cartes « Pour commencer » de « Mon premier morceau », la « Prochaine étape » d'un morceau fait à la main aussi ; le bandeau, la fenêtre et la carte des Missions sont retirés ; le mot de chaque carte s'écoute avant de décider ; carte « Remixer un morceau ». Pas encore relue à neuf.
-- Fait (branche `g6`, sur `g5`) : Guide G6, vérification : parcours complet dans Robolectric (création par l'assistant, activité recréée, cartes, fiche, couches, export, reprise 3 jours plus tard), Mode simple, 15 actions clés avec le Guide ouvert, banc des 37 morceaux suivis jusqu'au bout ; bilan critère par critère dans `docs/guide/G6-verification.md` ; le Guide dit « Te revoilà » tout seul après un jour d'absence.
+## Où on en est (2026-10-27)
+- `main` = Guide G4, G5 et G6 + son 8 (leads lots B à D, largeur des 37 styles, restes S6/S7), chacun relu à neuf et corrigé ; fusion sans CI de GitHub (« [skip ci] », en pause sur demande de Benjamin), tests faits ici.
+- Consignes de Benjamin (2026-10-27) : un seul APK quand tout est fini ; des nouvelles à chaque fin d'étape ; le Play Store seulement quand il le demande.
 
 ## Prochaine étape exacte
-1. CI verte de la PR G3, fusion ; APK compilé ici et envoyé à Benjamin.
-2. Relecture neuve de G5, fusion de G4 + G5 ; puis G6 (vérification : parcours complet sur émulateur avec les cartes « Pour commencer », reprise à 3 jours, durée des mesures sur le téléphone).
-3. Restes son : largeur de deep house, dubstep, neurofunk, phonk ; intros en direct de riddim et jersey club ; restes de relecture S6/S7 (REVIEW.md).
-4. Leads lots B à D, puis le chantier Play Store en dernier.
-- Fait (branche `son8`, sur `g4`, pas encore relue à neuf) : son 8, leads lots B à D (moteur : suivi de clavier, clic, vibrato retardé, supersaw JP-8000, ladder propre, drive avant filtre, chorus stéréo, PWM, FM ; bibliothèque et couches de l'assistant), largeur des 4 styles étroits, restes de relecture S6/S7. Banc : `docs/son/banc/apres-son8.md`.
-
-## Prochaine étape exacte
-1. CI verte de la PR G3, fusion ; APK compilé ici et envoyé à Benjamin.
-2. Relecture neuve de G4 et fusion ; puis G5 (fusion des anciennes surfaces), G6 (vérification, dont la durée des mesures sur le téléphone).
-3. Relecture neuve de son 8 (branche `son8`), écoute des extraits `scratchpad/final/<style>-final.m4a` par Benjamin, fusion.
-4. Restes son : intros en direct de riddim et jersey club (estimer le gain sur plus d'une partie) ; puis le chantier Play Store en dernier.
+1. Le grand audit final (`docs/PLAN-AUDIT-FINAL.md`) : une vingtaine d'auditeurs en même temps (utilisateurs, pros du son, experts techniques, forme), synthèse par gravité, correction de tout le grave et le moyen, seconde passe de vérification.
+2. Puis l'APK unique compilé ici, avec les extraits audio, et le résumé pour Benjamin.
+3. Plus tard, sur demande de Benjamin : le chantier Play Store.
 
 **Phase 0 fusionnée le 2026-10-18, phase 1 fusionnée le 2026-10-19 (feu vert de Benjamin).** Phase en cours : 2 (sampler et notes).
 

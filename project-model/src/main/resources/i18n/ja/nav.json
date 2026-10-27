@@ -329,5 +329,7 @@
   "Place (pan)": "定位（パン）",
   "Courbes (automation)": "カーブ（オートメーション）",
   "déjà en place": "設定済み",
-  "Chapitre %1$d · %2$s": "チャプター %1$d · %2$s"
+  "Chapitre %1$d · %2$s": "チャプター %1$d · %2$s",
+  "Langue du téléphone": "スマホの言語",
+  "Toutes les langues": "すべての言語"
 }

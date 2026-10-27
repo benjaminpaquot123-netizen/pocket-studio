@@ -329,5 +329,7 @@
   "Place (pan)": "위치 (팬)",
   "Courbes (automation)": "곡선 (오토메이션)",
   "déjà en place": "이미 있음",
-  "Chapitre %1$d · %2$s": "%1$d장 · %2$s"
+  "Chapitre %1$d · %2$s": "%1$d장 · %2$s",
+  "Langue du téléphone": "휴대폰 언어",
+  "Toutes les langues": "모든 언어"
 }

@@ -329,5 +329,7 @@
   "Place (pan)": "Konum (pan)",
   "Courbes (automation)": "Eğriler (otomasyon)",
   "déjà en place": "zaten yerinde",
-  "Chapitre %1$d · %2$s": "Aşama %1$d · %2$s"
+  "Chapitre %1$d · %2$s": "Aşama %1$d · %2$s",
+  "Langue du téléphone": "Telefonun dili",
+  "Toutes les langues": "Tüm diller"
 }

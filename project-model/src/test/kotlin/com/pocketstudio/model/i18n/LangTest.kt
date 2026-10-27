@@ -89,4 +89,19 @@ class LangTest {
             I18n.lang = before
         }
     }
+
+    @Test
+    fun everyLanguageHasItsOwnFlagAndANameInEveryOther() {
+        Lang.entries.forEach { l ->
+            val cps = l.flag.codePoints().toArray()
+            assertEquals(l.name, 2, cps.size)
+            assertTrue(l.name, cps.all { it in 0x1F1E6..0x1F1FF })
+            Lang.entries.forEach { ui -> assertTrue("${l.name} in ${ui.name}", l.nameIn(ui).isNotBlank()) }
+        }
+        assertEquals(Lang.entries.size, Lang.entries.map { it.flag }.toSet().size)
+        assertEquals("🇩🇪", Lang.DE.flag)
+        assertEquals("Allemand", Lang.DE.nameIn(Lang.FR))
+        assertEquals("French", Lang.FR.nameIn(Lang.EN))
+        assertEquals("Japans", Lang.JA.nameIn(Lang.NL))
+    }
 }

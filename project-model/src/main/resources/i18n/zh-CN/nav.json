@@ -329,5 +329,7 @@
   "Place (pan)": "位置（声像）",
   "Courbes (automation)": "曲线（自动化）",
   "déjà en place": "已就位",
-  "Chapitre %1$d · %2$s": "第 %1$d 章 · %2$s"
+  "Chapitre %1$d · %2$s": "第 %1$d 章 · %2$s",
+  "Langue du téléphone": "手机语言",
+  "Toutes les langues": "所有语言"
 }

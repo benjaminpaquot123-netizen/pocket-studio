@@ -329,5 +329,7 @@
   "Place (pan)": "Placement (pan)",
   "Courbes (automation)": "Curves (automation)",
   "déjà en place": "already in place",
-  "Chapitre %1$d · %2$s": "Chapter %1$d · %2$s"
+  "Chapitre %1$d · %2$s": "Chapter %1$d · %2$s",
+  "Langue du téléphone": "Phone language",
+  "Toutes les langues": "All languages"
 }

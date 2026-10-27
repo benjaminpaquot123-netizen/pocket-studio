@@ -327,13 +327,27 @@ void StereoChorus::prepare(float rate) {
     update();
 }
 
+namespace {
+// Zeroed (static storage): DaisySP's Init keeps its LFOs' direction of travel (the sign of their
+// step), so a chorus started again from this one runs exactly as a new one.
+const daisysp::Chorus kNewChorus;
+}  // namespace
+
+void StereoChorus::restartLfo() {
+    if (p_[4] < 0.5f) return;
+    // DaisySP keeps its LFOs private: all of it again (its lines hold under 50 ms of what played before).
+    chorus_ = kNewChorus;
+    prepare(rate_);
+}
+
 void StereoChorus::setParam(int p, float v) {
-    if (p < 0 || p >= 4 || !clampSetting(p_[static_cast<size_t>(p)], v, 0.0f, 1.0f)) return;
+    if (p < 0 || p >= static_cast<int>(p_.size()) || !clampSetting(p_[static_cast<size_t>(p)], v, 0.0f, 1.0f)) return;
     update();
 }
 
 void StereoChorus::update() {
-    chorus_.SetLfoFreq(expMap(p_[0], 0.05f, 5.0f), expMap(p_[0], 0.05f, 5.0f) * 1.13f);
+    const float hz = expMap(p_[0], 0.05f, 5.0f);
+    chorus_.SetLfoFreq(hz, hz * 1.13f);
     chorus_.SetLfoDepth(p_[1]);
     chorus_.SetDelay(0.1f + 0.8f * p_[2]);
     chorus_.SetFeedback(0.15f);
@@ -341,6 +355,16 @@ void StereoChorus::update() {
 }
 
 void StereoChorus::process(float* l, float* r, int n) {
+    if (p_[4] >= 0.5f) {
+        // The centre through the chorus as the mono input does; the side passes untouched.
+        for (int i = 0; i < n; ++i) {
+            const float m = 0.5f * (l[i] + r[i]);
+            chorus_.Process(m);
+            l[i] += mix_ * (chorus_.GetLeft() - m);
+            r[i] += mix_ * (chorus_.GetRight() - m);
+        }
+        return;
+    }
     for (int i = 0; i < n; ++i) {
         chorus_.Process(0.5f * (l[i] + r[i]));
         l[i] += mix_ * (chorus_.GetLeft() - l[i]);
@@ -826,6 +850,8 @@ void Tremolo::process(float* l, float* r, int n) {
 void Widener::setParam(int p, float v) { setClamped(p_, p, v); }
 
 void Widener::reset() {
+    spreading_ = false;
+    spreadNow_ = 0.0f;
     lowS_ = 0.0f;
     line_.fill(0.0f);
     write_ = 0;
@@ -839,8 +865,9 @@ void Widener::process(float* l, float* r, int n) {
     const bool monoBass = p_[1] > 0.01f;
     const float coef = monoBass ? onePoleCoef(rate_, expMap(p_[1], 40.0f, 300.0f)) : 0.0f;
     const float spread = std::clamp(p_[2], 0.0f, 1.0f);
-    if (spread < 0.005f) {
+    if (spread < 0.005f && (!spreading_ || spreadNow_ < 0.005f)) {
         spreading_ = false;
+        spreadNow_ = 0.0f;
         for (int i = 0; i < n; ++i) {
             const float m = 0.5f * (l[i] + r[i]);
             float s = 0.5f * (l[i] - r[i]);
@@ -862,7 +889,12 @@ void Widener::process(float* l, float* r, int n) {
         write_ = 0;
         hp1_ = hp2_ = 0.0f;
         spreading_ = true;
+        spreadNow_ = spread;  // from silence: its copies come in as the line fills (7 ms and more)
     }
+    // (REVIEW S7) A turned knob or an automation glides over the block (no zipper); a still one is
+    // exactly the setting, as before. Turned off, it fades out over a block, then rests.
+    const float spreadFrom = spreadNow_, spreadTo = spread < 0.005f ? 0.0f : spread;
+    spreadNow_ = spreadTo;
     const float ms = rate_ / 1000.0f;
     const float hpCoef = onePoleCoef(rate_, 250.0f);
     const double inc1 = 0.23 * n / rate_, inc2 = 0.31 * n / rate_;
@@ -877,7 +909,7 @@ void Widener::process(float* l, float* r, int n) {
     const float d1b = tapAt(lfo1_, 10.0f, 3.0f), d2b = tapAt(lfo2_, 16.0f, 3.0f);
     const float step = n > 0 ? 1.0f / static_cast<float>(n) : 0.0f;
     // 0.75 x the difference of two (nearly) uncorrelated taps: about as much side as centre at 1.
-    const float gain = 0.75f * spread;
+    const float gainStep = spreadTo - spreadFrom;
     auto read = [&](float delay) {
         const float pos = static_cast<float>(write_) - delay;
         const float wrapped = pos < 0.0f ? pos + static_cast<float>(kSpreadLen) : pos;
@@ -899,6 +931,7 @@ void Widener::process(float* l, float* r, int n) {
         line_[static_cast<size_t>(write_)] = h1 - hp2_;
         const float t = static_cast<float>(i) * step;
         const float made = read(d1a + t * (d1b - d1a)) - read(d2a + t * (d2b - d2a));
+        const float gain = 0.75f * (spreadFrom + t * gainStep);
         if (++write_ >= kSpreadLen) write_ = 0;
         s = width * (s + gain * made);
         l[i] = m + s;
@@ -1242,6 +1275,8 @@ void InsertSlot::setType(int type) {
     }
     // A widener pushed with its two first params only does not inherit the spread of the last one here.
     if (type_ == WidenerFx) widener_.setParam(2, 0.0f);
+    // Nor a chorus the stereo input of the last one (a project saved before it sends four params).
+    if (type_ == Chorus) chorus_.setParam(4, 0.0f);
     resetState();
 }
 
@@ -1253,6 +1288,9 @@ void InsertSlot::restartLfo() {
         case RobotFx: robot_.restartLfo(); break;
         case VinylFx: vinyl_.restartLfo(); break;
         case FreqShiftFx: shifter_.restartLfo(); break;
+        // (REVIEW S7) The stereo-input chorus (the assistant's songs since the leads chantier) from its
+        // start too; the mono-input one runs on as always (every project saved before exports the same).
+        case Chorus: chorus_.restartLfo(); break;
         default: break;
     }
 }

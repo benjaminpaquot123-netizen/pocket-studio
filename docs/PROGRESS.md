@@ -1,15 +1,13 @@
 # Avancement
 
-## Où on en est (2026-10-25)
-- `main` = PR #51 (basses + leads lot 1 + S6) ; APK 220 envoyé à Benjamin avec les extraits avant / après (« C'est parfait »).
-- `main` = PR #52 (Guide G2 + S7 son), APK 222 compilé par l'agent et envoyé à Benjamin (consigne : compiler soi-même dès qu'un bloc est prêt, sans attendre GitHub).
-- En cours : PR Guide G3 (fiche de piste, éditeur de couches, historique), relue à neuf.
+## Où on en est (2026-10-27)
+- `main` = Guide G4, G5 et G6 + son 8 (leads lots B à D, largeur des 37 styles, restes S6/S7), chacun relu à neuf et corrigé ; fusion sans CI de GitHub (« [skip ci] », en pause sur demande de Benjamin), tests faits ici.
+- Consignes de Benjamin (2026-10-27) : un seul APK quand tout est fini ; des nouvelles à chaque fin d'étape ; le Play Store seulement quand il le demande.
 
 ## Prochaine étape exacte
-1. CI verte de la PR G3, fusion ; APK compilé ici et envoyé à Benjamin.
-2. Guide G4 (étapes 3 à 6 en cartes), G5 (fusion des anciennes surfaces), G6 (vérification).
-3. Restes son : largeur de deep house, dubstep, neurofunk, phonk ; intros en direct de riddim et jersey club ; restes de relecture S6/S7 (REVIEW.md).
-4. Leads lots B à D, puis le chantier Play Store en dernier.
+1. Le grand audit final (`docs/PLAN-AUDIT-FINAL.md`) : une vingtaine d'auditeurs en même temps (utilisateurs, pros du son, experts techniques, forme), synthèse par gravité, correction de tout le grave et le moyen, seconde passe de vérification.
+2. Puis l'APK unique compilé ici, avec les extraits audio, et le résumé pour Benjamin.
+3. Plus tard, sur demande de Benjamin : le chantier Play Store.
 
 **Phase 0 fusionnée le 2026-10-18, phase 1 fusionnée le 2026-10-19 (feu vert de Benjamin).** Phase en cours : 2 (sampler et notes).
 

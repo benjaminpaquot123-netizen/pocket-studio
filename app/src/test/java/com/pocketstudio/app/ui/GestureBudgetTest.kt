@@ -214,7 +214,7 @@ class GestureBudgetTest {
         compose.onNodeWithTag("top_position").assertTextContains("mes. 3/3", substring = true)
     }
 
-    /** From « Ton morceau est prêt »: « Changer un son » opens the tune's sounds, a tile changes it (2), one undo step. */
+    /** From « Ton morceau est prêt » (G5: the Guide's first card): « Changer un son » opens the tune's sounds, a tile changes it (2), one undo step. */
     @Test
     fun changingASoundFromTheReadyCardIsTwoTouches() {
         val vm = vmWithSong()
@@ -228,16 +228,20 @@ class GestureBudgetTest {
             PocketStudioTheme {
                 var chooser by remember { mutableStateOf<Int?>(null) }
                 Column {
-                    com.pocketstudio.app.onboarding.SongReadyCard(
-                        com.pocketstudio.app.onboarding.SongReadyUi("Mon tube", 160, 3),
-                        com.pocketstudio.app.onboarding.SongReadyActions(changeSound = { vm.selectTrack(0); chooser = 0 }),
+                    val sound = com.pocketstudio.app.guide.GuideOptionUi("sound", "Changer un son", "", null, opens = "sounds.main", refused = false)
+                    com.pocketstudio.app.guide.GuideCard(
+                        com.pocketstudio.app.guide.GuideCardUi(
+                            "start.ready", com.pocketstudio.model.guide.GuideStages.START, "song", "decide", "Ton morceau est prêt !", "", options = emptyList(),
+                            elsewhere = listOf(sound), lexicon = "", status = com.pocketstudio.model.guide.GuideStatus.TODO, alert = false, undoable = false,
+                        ),
+                        listen = null, actions = com.pocketstudio.app.guide.GuidePanelActions(open = { _, _ -> vm.selectTrack(0); chooser = 0 }),
                     )
                     chooser?.let { SoundChooserSheet(vm, it, close = { chooser = null }) }
                 }
             }
         }
         compose.withinGestures("Changer un son", 2) {
-            tap("song_ready_sound")
+            tap("guide_open_sound")
             tap("synth_sounds_$pick")
         }
         assertEquals(lib[pick].name, com.pocketstudio.model.SoundLibrary.synthNameOf(vm.project.value.synth, lib))

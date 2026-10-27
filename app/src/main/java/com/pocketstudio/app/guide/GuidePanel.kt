@@ -39,6 +39,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -88,6 +89,12 @@ class GuidePanelActions(
     val dismissNotice: () -> Unit = {},
     /** G3: « La fiche de la piste » of track (its Guide key). */
     val sheet: (track: String) -> Unit = {},
+    /** G4: a card of the levels shows: the song is measured (when the music is stopped). */
+    val measure: () -> Unit = {},
+    /** G4: another reference to compare with (« À côté d'un morceau que tu aimes »). */
+    val pickReference: () -> Unit = {},
+    /** G5 review: the « Sans / Avec » stops (a word's example starts: one sound at a time). */
+    val stopListen: () -> Unit = {},
 )
 
 /** The symbol of a card's status in the plan (« faite ✓, sautée ⟶, à revoir ↺ »). */
@@ -166,6 +173,8 @@ fun GuidePanel(
     actions: GuidePanelActions,
     height: Dp,
     modifier: Modifier = Modifier,
+    /** G4: the reference's file name, when one is picked. */
+    reference: String? = null,
 ) {
     Column(modifier.fillMaxWidth().height(height).background(Neon.Background).testTag("guide_panel")) {
         GuideBar(ui, open = true, toggle = actions.toggle)
@@ -184,7 +193,7 @@ fun GuidePanel(
                 if (ui.loading) {
                     Text(tr("Le Guide lit ton morceau…"), color = Neon.TextSecondary, modifier = Modifier.testTag("guide_loading"))
                 } else {
-                    PanelBody(ui, selected, listen, actions)
+                    PanelBody(ui, selected, listen, actions, reference)
                 }
                 Spacer(Modifier.height(8.dp))
             }
@@ -193,14 +202,16 @@ fun GuidePanel(
 }
 
 @Composable
-private fun PanelBody(ui: GuideUi, selected: String?, listen: GuideListenUi?, actions: GuidePanelActions) {
+private fun PanelBody(ui: GuideUi, selected: String?, listen: GuideListenUi?, actions: GuidePanelActions, reference: String?) {
                 // The bar says the step and how far; « Où on en est » in full comes first only to welcome a
                 // return after days, else under the card (the decision stays in sight on a phone).
                 if (ui.back) WhereWeAre(ui)
                 val shown = selected?.let { ui.cards[it] } ?: ui.alerts.firstOrNull() ?: ui.next
                 if (shown != null) {
                     val picked = selected != null && shown.id != (ui.alerts.firstOrNull() ?: ui.next)?.id
-                    GuideCard(shown, listen, actions, picked = picked)
+                    // G4: a card of the levels needs the song's measures (each track alone, mono, phone).
+                    androidx.compose.runtime.LaunchedEffect(shown.id, ui.measured) { if (shown.stage == 6 && !ui.measured) actions.measure() }
+                    GuideCard(shown, listen, actions, picked = picked, measuring = ui.measuring, reference = reference)
                 } else {
                     Text(ui.summary.firstOrNull() ?: tr("Tout est fait"), style = MaterialTheme.typography.titleMedium, modifier = Modifier.testTag("guide_all_done"))
                 }
@@ -278,12 +289,16 @@ private fun Progress(percent: Int) {
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun GuideCard(card: GuideCardUi, listen: GuideListenUi?, actions: GuidePanelActions, modifier: Modifier = Modifier, picked: Boolean = false) {
+fun GuideCard(
+    card: GuideCardUi, listen: GuideListenUi?, actions: GuidePanelActions, modifier: Modifier = Modifier, picked: Boolean = false,
+    measuring: Boolean = false, reference: String? = null,
+) {
     val learn = LocalLearn.current
     NeonCard(modifier.testTag("guide_card_${card.id}"), accent = if (card.alert) Neon.Amber else Neon.Cyan) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                (if (card.alert) tr("À corriger") else tr("Étape %1\$d · %2\$s", card.stage, GuideStages.title(card.stage))).uppercase(),
+                (if (card.alert) tr("À corriger") else if (card.stage == GuideStages.START) GuideStages.title(card.stage)
+                else tr("Étape %1\$d · %2\$s", card.stage, GuideStages.title(card.stage))).uppercase(),
                 style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = if (card.alert) Neon.Amber else Neon.Cyan,
                 modifier = Modifier.weight(1f),
             )
@@ -296,9 +311,30 @@ fun GuideCard(card: GuideCardUi, listen: GuideListenUi?, actions: GuidePanelActi
         }
         Text(card.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
         if (card.why.isNotBlank()) Text(card.why, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
+        // G4: what the Guide hears in the song about this card (its measures, its analysis).
+        if (measuring && card.stage == 6) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("guide_measuring")) {
+                CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = Neon.Cyan)
+                Text(tr("Le Guide écoute chaque piste…"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.padding(start = 8.dp))
+            }
+        }
+        card.heard.forEach { line ->
+            Row(Modifier.testTag("guide_heard"), verticalAlignment = Alignment.Top) {
+                Text("•", color = Neon.Cyan, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.width(14.dp))
+                Text(line, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary)
+            }
+        }
         val choices = card.options.filter { it.opens == null }
         val opens = (card.options + card.elsewhere).filter { it.opens != null }
         choices.forEachIndexed { i, o -> OptionRow(card.id, o, primary = i == 0, listen, actions) }
+        // Under the decision (it stays two gestures away), effect by effect.
+        if (card.effects.isNotEmpty()) EffectsList(card.id, card.effects, listen, actions)
+        if (reference != null && card.options.any { it.listen == "reference" }) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                Text(tr("Morceau : %s", reference), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+                SmallAction(tr("Changer"), "guide_reference_change") { actions.pickReference() }
+            }
+        }
         val elsewhere = card.elsewhere.filter { it.opens == null && !it.refused }
         if (elsewhere.isNotEmpty()) {
             Text(tr("Ailleurs ?").uppercase(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.TextSecondary, modifier = Modifier.padding(top = 4.dp))
@@ -334,6 +370,8 @@ fun GuideCard(card: GuideCardUi, listen: GuideListenUi?, actions: GuidePanelActi
             }
         }
         val word = SoundGlossary.ALL.firstOrNull { it.key == card.lexicon }
+        // G5: the card's word, heard and said in a line before the decision (« pré-entraînement »); the glossary one touch further.
+        if (word != null) WordLine(word, learn, actions.stopListen)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.padding(top = 4.dp)) {
             // A card picked in the plan: the way back to the one in progress.
             if (picked) SmallAction("← " + tr("Revenir à l'étape en cours"), "guide_back_to_next") { actions.select(null) }
@@ -342,6 +380,41 @@ fun GuideCard(card: GuideCardUi, listen: GuideListenUi?, actions: GuidePanelActi
             if (word != null) SmallAction(tr("En savoir plus"), "guide_learn") { learn.open(word.term) }
             if (card.undoable) SmallAction(tr("Annuler mon choix"), "guide_undo") { actions.undo(card.id) }
             if (card.status != GuideStatus.SKIPPED) SmallAction(tr("Ne plus proposer"), "guide_refuse") { actions.refuse(card.id) }
+        }
+    }
+}
+
+/**
+ * The word a card is about (« Sidechain (pompe) »), what it means in a line, and ▶ its example (the
+ * glossary's): heard before deciding, not after. A touch on the line opens the glossary on it.
+ */
+@Composable
+private fun WordLine(word: com.pocketstudio.model.learn.SoundWord, learn: com.pocketstudio.app.learn.LearnHost, stopListen: () -> Unit) {
+    val playing by learn.playing.collectAsStateWithLifecycle()
+    val mine = playing?.takeIf { it.key == word.key }
+    Row(
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(Neon.SurfaceHigh.copy(alpha = 0.6f)).testTag("guide_word"),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            Modifier.size(48.dp).clip(CircleShape)
+                .clickable(role = Role.Button, onClickLabel = if (mine != null) tr("Arrêter") else tr("Écouter un exemple")) { stopListen(); learn.toggle(word.key) }
+                .semantics { contentDescription = tr("Écouter un exemple : %s", word.term) }
+                .testTag("guide_word_listen"),
+            contentAlignment = Alignment.Center,
+        ) {
+            when {
+                mine?.preparing == true -> CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp, color = Neon.Cyan)
+                mine != null -> Icon(Icons.Filled.Stop, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(20.dp))
+                else -> Icon(Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(22.dp))
+            }
+        }
+        Column(
+            Modifier.weight(1f).clickable(role = Role.Button, onClickLabel = tr("En savoir plus")) { learn.open(word.term) }
+                .padding(end = 10.dp, top = 6.dp, bottom = 6.dp),
+        ) {
+            Text(tr("Le mot : %s", word.term), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Cyan, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(word.text, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 2, overflow = TextOverflow.Ellipsis)
         }
     }
 }
@@ -360,7 +433,7 @@ private fun OptionRow(card: String, o: GuideOptionUi, primary: Boolean, listen: 
     val mine = listen?.takeIf { it.card == card && it.option == o.id }
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (o.edits) {
+            if (o.heard || o.listen != null) {
                 Box(
                     Modifier.size(48.dp).clip(CircleShape)
                         .clickable(role = Role.Button, onClickLabel = if (mine != null) tr("Arrêter") else tr("Écouter sans puis avec")) { actions.listen(card, o.id) }
@@ -386,7 +459,8 @@ private fun OptionRow(card: String, o: GuideOptionUi, primary: Boolean, listen: 
                 Modifier.weight(1f).heightIn(min = 48.dp).clip(shape)
                     .background(if (primary) Neon.Cyan else Color.Transparent)
                     .border(1.dp, if (primary) Neon.Cyan else Neon.Outline, shape)
-                    .clickable(role = Role.Button) { actions.apply(card, o.id) }
+                    // A check is heard, not applied: the option itself plays it.
+                    .clickable(role = Role.Button) { if (o.listen != null) actions.listen(card, o.id) else actions.apply(card, o.id) }
                     .padding(horizontal = 12.dp, vertical = 8.dp)
                     .testTag("guide_option_${o.id}"),
                 contentAlignment = Alignment.CenterStart,
@@ -402,13 +476,69 @@ private fun OptionRow(card: String, o: GuideOptionUi, primary: Boolean, listen: 
                 tr("Écoute impossible ici : applique, écoute, et « Annuler mon choix » si ça ne va pas."),
                 style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("guide_listen_failed"),
             )
-            mine != null && !mine.preparing -> Row(Modifier.testTag("guide_listen_takes"), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text(tr("Sans"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = if (mine.take == 0) Neon.Acid else Neon.TextSecondary)
-                Text("▸", color = Neon.TextSecondary)
-                Text(tr("Avec"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = if (mine.take == 1) Neon.Acid else Neon.TextSecondary)
-                Text(tr("au même volume"), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
+            mine != null && !mine.preparing -> Takes(mine)
+            o.why.isNotBlank() -> Text(o.why, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.padding(start = if (o.heard || o.listen != null) 54.dp else 4.dp))
+        }
+    }
+}
+
+/** The two takes as they play (« Sans ▸ Avec », « Stéréo ▸ Mono »…), the one heard lit, and what the Guide says of them. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun Takes(mine: GuideListenUi) {
+    Column(Modifier.testTag("guide_listen_takes"), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text(mine.labels[0], style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = if (mine.take == 0) Neon.Acid else Neon.TextSecondary)
+            Text("▸", color = Neon.TextSecondary)
+            Text(mine.labels[1], style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = if (mine.take == 1) Neon.Acid else Neon.TextSecondary)
+            Text(if (mine.matched) tr("au même volume") else tr("tel quel"), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
+        }
+        mine.note?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("guide_listen_note")) }
+    }
+}
+
+/**
+ * G4: « Voilà ce que j'ai mis », effect by effect (docs/PLAN-GUIDE.md §3.5, stage 3): each track's
+ * effects under its name, each with its why, ▶ to hear it without (or with, when set aside) at the
+ * same loudness, and « Retirer » / « Le remettre » (its settings kept, « Annuler mon choix » too).
+ */
+@Composable
+private fun EffectsList(card: String, effects: List<GuideFxUi>, listen: GuideListenUi?, actions: GuidePanelActions) {
+    Column(Modifier.fillMaxWidth().padding(top = 2.dp).testTag("guide_effects"), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        effects.groupBy { it.track }.forEach { (_, list) ->
+            Text(list.first().trackName.uppercase(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.padding(top = 4.dp))
+            list.forEach { fx ->
+                val mine = listen?.takeIf { it.card == card && it.option == fx.option }
+                Row(Modifier.fillMaxWidth().testTag("guide_fx_${fx.option}"), verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier.size(48.dp).clip(CircleShape)
+                            .clickable(role = Role.Button, onClickLabel = if (mine != null) tr("Arrêter") else tr("Écouter sans puis avec")) { actions.listen(card, fx.option) }
+                            .semantics { contentDescription = tr("Écouter « %s » : sans, puis avec", fx.name) }
+                            .testTag("guide_fx_listen_${fx.option}"),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Box(Modifier.size(32.dp).clip(CircleShape).background(if (mine != null && !mine.failed) Neon.Acid else Neon.SurfaceHigh), contentAlignment = Alignment.Center) {
+                            when {
+                                mine?.preparing == true -> CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = Neon.TextPrimary)
+                                mine != null && !mine.failed -> Icon(Icons.Filled.Stop, contentDescription = null, tint = Color.Black, modifier = Modifier.size(18.dp))
+                                else -> Icon(Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.TextPrimary, modifier = Modifier.size(20.dp))
+                            }
+                        }
+                    }
+                    Column(Modifier.weight(1f).padding(horizontal = 4.dp)) {
+                        Text(
+                            fx.name + if (fx.off) " · " + tr("retiré") else "", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold,
+                            color = if (fx.off) Neon.TextSecondary else Neon.TextPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                        )
+                        when {
+                            mine?.failed == true -> Text(tr("Écoute impossible ici."), style = MaterialTheme.typography.bodySmall, color = Neon.Amber)
+                            mine != null && !mine.preparing -> Takes(mine)
+                            fx.why.isNotBlank() -> Text(fx.why, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                        }
+                    }
+                    SmallAction(if (fx.off) tr("Le remettre") else tr("Retirer"), "guide_fx_toggle_${fx.option}") { actions.apply(card, fx.option) }
+                }
             }
-            o.why.isNotBlank() -> Text(o.why, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.padding(start = if (o.edits) 54.dp else 4.dp))
         }
     }
 }

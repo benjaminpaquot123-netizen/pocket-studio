@@ -400,7 +400,7 @@ internal object WizardMix {
         p = withRisingMontees(p)
         p = withSectionLevels(
             p, build = style.form == SongForm.Build, monteeTop = monteeTopDb(style), monteeFloor = monteeFloorDb(style),
-            groove = grooveDb(style), intro = introDb(style), breakTrim = BREAK_SPREAD_TRIM_DB,
+            groove = grooveDb(style), intro = introDb(style), breakTrim = BREAK_SPREAD_TRIM_DB + (BREAK_LAYER_TRIM_DB[style.id] ?: 0f),
         )
         p = p.copy(
             drums = p.drums.copy(lanes = lanes),
@@ -615,6 +615,13 @@ internal object WizardMix {
     const val BREAK_SPREAD_TRIM_DB = 0.6f
 
     /**
+     * Son 8 (the leads chantier's lots B to D): a Break further down where its pads came out louder (the
+     * dubstep pads spread wider, the liquid keys' « air » layer): Drop − Break had fallen to +3.96 and
+     * +3.95 LU on the bench.
+     */
+    private val BREAK_LAYER_TRIM_DB: Map<String, Float> = mapOf("dubstep" to 0.4f, "liquid_dnb" to 0.3f)
+
+    /**
      * S5b: the top of a Montée (a Pré-refrain) on the master fader, and the floor a club Montée eases
      * down to before it climbs over its last 4 bars. A Montée's end has no kick nor bass for the
      * limiter to hold: at 0 dB it came out louder than the Drop it leads into (Benjamin's A/B test,
@@ -666,13 +673,14 @@ internal object WizardMix {
      * its Intro with it (dB): the Drop only 0.5 to 1.5 LU over its Groove after the master chain
      * (median +1.8, 15 styles of 37 at +2), because the chain holds the Drop and leaves the Groove whole.
      * Measured on the S6 bench so that the Drop lands about +2.5 LU over its Groove, exported. S7
-     * (the spread, [Project.MIX_V4]): synthwave 1.0 → 1.5 (its wide Couplet read louder: +2.1 → +1.75 LU).
+     * (the spread, [Project.MIX_V4]): synthwave 1.0 → 1.5 (its wide Couplet read louder: +2.1 → +1.75 LU);
+     * son 8: synthwave 1.8 (its leads' touch: +2.14 → +1.95 LU).
      */
     private val GROOVE_TRIM_DB: Map<String, Float> = mapOf(
         "acid_house" to 2.0f, "acid_techno" to 2.5f, "acidcore" to 2.5f, "afro_house" to 0.5f, "afrobeats" to 1.0f,
         "boom_bap" to 0.5f, "deep_house" to 0.5f, "detroit" to 1.5f, "disco" to 0.5f, "drill" to 0.5f, "grime" to 0.5f,
         "house" to 2.5f, "industrial_techno" to 0.5f, "jersey_club" to 1.5f, "jungle" to 1.0f, "minimal" to 1.0f,
-        "phonk" to 1.0f, "pop" to 0.5f, "reggaeton" to 1.0f, "retro_techno" to 1.0f, "synthwave" to 1.5f, "tech_house" to 2.0f,
+        "phonk" to 1.0f, "pop" to 0.5f, "reggaeton" to 1.0f, "retro_techno" to 1.0f, "synthwave" to 1.8f, "tech_house" to 2.0f,
         "techno" to 1.0f, "trance" to 0.5f, "trap" to 1.0f, "uk_garage" to 1.5f,
     )
 

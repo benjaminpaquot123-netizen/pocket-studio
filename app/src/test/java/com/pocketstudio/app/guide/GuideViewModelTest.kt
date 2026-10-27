@@ -11,6 +11,8 @@ import com.pocketstudio.model.Project
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.guide.GuideStatus
 import com.pocketstudio.model.instrumentTracks
+import com.pocketstudio.model.guide.guideTracks
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -162,6 +164,97 @@ class GuideViewModelTest {
         await("burst") { guide.analyses > count }
         shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(1000))
         assertTrue("${guide.analyses - count} analyses", guide.analyses - count <= 2)
+    }
+
+    /**
+     * G4: « Voilà ce que j'ai mis » lists every effect with its why, one is retired without deciding
+     * the card; « Placer chaque piste pour moi » measures the song first (the app's renders), then
+     * moves the faders; a measure taken on another sound is left aside.
+     */
+    @Test
+    fun theEffectsAreListedAndTheBalanceIsMeasuredFirst() {
+        val vm = vmWith(jumpUp())
+        await("first analysis") { !vm.guide.ui.value.loading }
+        val measured = ArrayList<Project>()
+        val scope = kotlinx.coroutines.MainScope()
+        val guide = GuideViewModel(vm.session, scope, measurer = { p ->
+            measured += p
+            val kick = p.guideTracks().first { it.role == com.pocketstudio.model.guide.GuideRoles.KICK }.key
+            val pad = "inst:" + p.instrumentTracks.first { it.name == "Nappe" }.id
+            com.pocketstudio.model.guide.GuideMeasures(at = 1L, tracks = mapOf(kick to -10f, pad to -12f), monoLossDb = 1f, phoneDb = -9f,
+                signature = com.pocketstudio.model.guide.GuideSignatures.sound(p))
+        })
+        await("analysis") { !guide.ui.value.loading && guide.ui.value.cards.isNotEmpty() }
+        val review = guide.ui.value.cards.getValue("fx.review")
+        assertTrue(review.effects.size >= 10)
+        val bass = review.effects.first { it.trackName == "Basse" }
+        assertTrue(bass.why, bass.why.isNotBlank())
+        assertFalse(bass.off)
+        // The bass's own card lists the bass's effects only.
+        assertTrue(guide.ui.value.cards.getValue("fx.bass").effects.all { it.track == bass.track })
+        guide.apply("fx.review", bass.option)
+        await("retired") { guide.ui.value.cards.getValue("fx.review").effects.first { it.option.endsWith(bass.option.substringAfter("off")) }.off }
+        assertEquals(GuideStatus.TODO, vm.project.value.guide.statusOf("fx.review"))
+        // The balance: measured, then the pad brought back 6 dB.
+        val pad = InstrumentTrack.mixerChannel(vm.project.value.instrumentTracks.first { it.name == "Nappe" }.id)
+        val fader = vm.project.value.mixer.channels[pad].volume
+        assertFalse(guide.ui.value.measured)
+        guide.apply("mix.balance", "balance")
+        await("balanced") { vm.project.value.mixer.channels[pad].volume < fader }
+        // G4 review: the faders moved, the song's loudness is measured again (never read stale).
+        await("measured after the balance") { measured.size == 2 && guide.measureCount == 2 }
+        await("measured") { guide.ui.value.measured && guide.ui.value.cards["mix.balance"]?.status == GuideStatus.DONE }
+        // The checks: what the Guide hears, said on their cards.
+        assertTrue(guide.ui.value.cards.getValue("mix.mono").heard.single().contains("1"))
+        assertEquals(GuideStatus.DONE_ELSEWHERE, guide.ui.value.cards.getValue("mix.phone").status)
+        // Measured again only once the sound changed.
+        guide.measure()
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(500))
+        assertEquals(2, measured.size)
+        vm.session.edit { p -> p.copy(tempoBpm = p.tempoBpm + 1) }
+        assertFalse(com.pocketstudio.model.guide.GuideFacts.of(vm.project.value).holds("measured", "song"))
+        guide.measure()
+        await("measured again") { measured.size == 3 }
+        scope.cancel()
+    }
+
+    /**
+     * G4 review: « Placer chaque piste pour moi » touched while a measure runs waits for it (it did
+     * nothing before); a measure stopped (the music starts, the panel closes) leaves the song as it was.
+     */
+    @Test
+    fun aBalanceAskedDuringAMeasureWaitsForItAndAMeasureCanBeStopped() {
+        val vm = vmWith(jumpUp())
+        await("first analysis") { !vm.guide.ui.value.loading }
+        val scope = kotlinx.coroutines.MainScope()
+        var gate = kotlinx.coroutines.CompletableDeferred<Unit>()
+        var calls = 0
+        val guide = GuideViewModel(vm.session, scope, measurer = { p ->
+            calls++
+            gate.await()
+            val kick = p.guideTracks().first { it.role == com.pocketstudio.model.guide.GuideRoles.KICK }.key
+            val pad = "inst:" + p.instrumentTracks.first { it.name == "Nappe" }.id
+            com.pocketstudio.model.guide.GuideMeasures(at = 1L, tracks = mapOf(kick to -10f, pad to -12f), signature = com.pocketstudio.model.guide.GuideSignatures.sound(p))
+        })
+        await("analysis") { !guide.ui.value.loading && guide.ui.value.cards.isNotEmpty() }
+        // Stopped halfway: nothing written.
+        guide.measure()
+        await("measuring") { calls == 1 && guide.ui.value.measuring }
+        guide.cancelMeasure()
+        await("stopped") { !guide.ui.value.measuring }
+        assertEquals(null, vm.project.value.guide.measures)
+        // A measure runs, the balance is asked for meanwhile: it waits, then moves the pad's fader.
+        val ch = InstrumentTrack.mixerChannel(vm.project.value.instrumentTracks.first { it.name == "Nappe" }.id)
+        val fader = vm.project.value.mixer.channels[ch].volume
+        guide.measure()
+        await("measuring again") { calls == 2 && guide.ui.value.measuring }
+        guide.apply("mix.balance", "balance")
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(300))
+        assertEquals(fader, vm.project.value.mixer.channels[ch].volume)
+        gate.complete(Unit)
+        await("balanced after the measure") { vm.project.value.mixer.channels[ch].volume < fader }
+        assertTrue(guide.measureCount >= 1)
+        scope.cancel()
     }
 }
 

@@ -154,6 +154,9 @@ class I18nCatalogTest {
             "WhatPlays.kt: side",  // a macro's end (Macros.ENDS, checked by ModelTextsTest)
             // The Guide's cards and stages (guides/*.json, GuideStages: checked by GuideParcoursTest).
             "GuideParcours.kt: fr",
+            // G4: « Voilà ce que j'ai mis »: an effect's name and a send's bus (EffectType, Buses: checked by ModelTextsTest).
+            "GuideViewModel.kt: t.label",
+            "GuideViewModel.kt: Buses.NAMES.getOrElse(bus) { \"Réverbe\" }",
             "DefaultNames.kt: COPY",
             "DefaultNames.kt: first",  // a stem label (DefaultNames.TEXTS) or a kit's preset name (shown as it is when unknown)
             "DefaultNames.kt: fr",

@@ -121,17 +121,24 @@ private:
 };
 
 // DaisySP stereo chorus. Params: rate, depth, delay, mix.
+// Params: rate, depth, delay, mix and (leads chantier, lot C) the input: below 0.5 the whole sound
+// summed to mono into the chorus (as always: a wide sound comes out narrower); above, only its centre
+// goes through the chorus and its side passes untouched (a wide sound keeps its width, a mono one
+// sounds as with the mono input), and the chorus starts again with the transport (export = live).
 class StereoChorus {
 public:
     void prepare(float rate);
     void setParam(int p, float v);
     void reset() { prepare(rate_); }  // DaisySP's Init clears the delay lines, no allocation
+    // The transport starts: the stereo-input chorus from its start. The mono-input one runs on (its
+    // exports, made with it running on, stay the same).
+    void restartLfo();
     void process(float* l, float* r, int n);
 
 private:
     void update();
     float rate_ = 48000;
-    std::array<float, 4> p_{0.3f, 0.5f, 0.4f, 0.5f};
+    std::array<float, 5> p_{0.3f, 0.5f, 0.4f, 0.5f, 0.0f};
     daisysp::Chorus chorus_;
     float mix_ = 0.5f;
 };
@@ -368,6 +375,7 @@ private:
     float hp1_ = 0.0f, hp2_ = 0.0f;  // the spread's high-pass (two one-pole low-passes taken off)
     double lfo1_ = 0.0, lfo2_ = 0.25;
     bool spreading_ = false;  // the spread ran last block: else its line and filters start from silence
+    float spreadNow_ = 0.0f;  // the spread as played at the end of the last block (it glides to the setting)
 };
 
 // Bitcrusher: fewer bits and a lower sample rate. Params: bits (16..2), downsample (1..32x), mix, volume.

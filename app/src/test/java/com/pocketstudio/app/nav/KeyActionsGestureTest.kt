@@ -5,6 +5,8 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.ui.withinGestures
 import com.pocketstudio.model.AutoTarget
@@ -28,11 +30,23 @@ import org.robolectric.annotation.Config
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(qualifiers = "w360dp-h780dp")
-class KeyActionsGestureTest {
+open class KeyActionsGestureTest {
     @get:Rule
     val compose = createAndroidComposeRule<ComponentActivity>()
 
-    private val h = AppHarness(compose)
+    internal val h = AppHarness(compose)
+
+    /** G6 (docs/PLAN-GUIDE.md §4.5 « Jamais bloquant »): the same actions with the Guide's panel open. */
+    protected open val guideOpen = false
+
+    /** The app on its song; its Guide opened first when [guideOpen] (not counted: it stays open). */
+    private fun start() {
+        h.start()
+        if (!guideOpen) return
+        compose.onNodeWithTag("guide_bar").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithTag("guide_panel").assertIsDisplayed()
+    }
 
     @org.junit.After
     fun settingsBack() = h.finish()
@@ -71,7 +85,7 @@ class KeyActionsGestureTest {
 
     @Test
     fun theAppOpensOnTheSongsStructure() {
-        h.start()
+        start()
         compose.onNodeWithTag("tab_Structure").assertIsDisplayed()
         compose.onNodeWithTag("timeline_screen").assertIsDisplayed()
         compose.onNodeWithTag("structure_timeline").assertIsDisplayed()
@@ -81,7 +95,7 @@ class KeyActionsGestureTest {
 
     @Test
     fun listeningToTheWholeSong() {
-        h.start()
+        start()
         h.vm.playStartsForTest = mutableListOf()
         compose.withinGestures("Écouter tout le morceau", budget("Écouter tout le morceau")) { tap("top_play") }
         assertEquals(listOf("song 0"), h.vm.playStartsForTest)
@@ -90,7 +104,7 @@ class KeyActionsGestureTest {
 
     @Test
     fun playingFromAPart() {
-        h.start()
+        start()
         compose.withinGestures("Jouer depuis une partie", budget("Jouer depuis une partie")) {
             val ruler = compose.onNodeWithTag("timeline_ruler").fetchSemanticsNode().boundsInRoot
             tapAt("timeline_ruler", androidx.compose.ui.geometry.Offset(ruler.left + h.partX(2), ruler.top + with(compose.density) { 40.dp.toPx() }), compose)
@@ -100,7 +114,7 @@ class KeyActionsGestureTest {
 
     @Test
     fun changingTheBassSound() {
-        h.start()
+        start()
         val bass = h.trackId("Basse")
         val before = h.vm.project.value.tracks.first { it.id == bass }.synth
         val lib = com.pocketstudio.model.SoundLibrary.SYNTH
@@ -119,7 +133,7 @@ class KeyActionsGestureTest {
 
     @Test
     fun changingTheKit() {
-        h.start()
+        start()
         val before = h.vm.project.value.kitVersion
         val other = if (before == Project.KIT_V1) Project.KIT_V3 else Project.KIT_V1
         compose.withinGestures("Changer le kit", budget("Changer le kit")) {
@@ -131,7 +145,7 @@ class KeyActionsGestureTest {
 
     @Test
     fun openingTheChorusDrums() {
-        h.start()
+        start()
         compose.withinGestures("Ouvrir la batterie du refrain", budget("Ouvrir la batterie du refrain")) {
             doubleTapAt("timeline_grid", h.clip(1, SongPart.DRUMS), compose)
         }
@@ -144,7 +158,7 @@ class KeyActionsGestureTest {
 
     @Test
     fun cuttingATrackInOnePart() {
-        h.start()
+        start()
         val bass = h.inst("Basse")
         compose.withinGestures("Couper une piste dans une partie", budget("Couper une piste dans une partie")) {
             tapAt("timeline_grid", h.clip(2, bass), compose)
@@ -155,7 +169,7 @@ class KeyActionsGestureTest {
 
     @Test
     fun movingAPart() {
-        h.start()
+        start()
         val order = h.vm.project.value.song.map { it.scene }
         assertEquals(h.vm.project.value.song.toString(), 3, order.size)
         compose.withinGestures("Déplacer une partie", budget("Déplacer une partie")) {
@@ -166,7 +180,7 @@ class KeyActionsGestureTest {
 
     @Test
     fun aTracksVolumeOnTheConsole() {
-        h.start()
+        start()
         val ch = com.pocketstudio.model.InstrumentTrack.mixerChannel(h.trackId("Basse"))
         val before = h.vm.project.value.mixer.channels[ch].volume
         compose.withinGestures("Volume d'une piste", budget("Volume d'une piste")) {
@@ -178,9 +192,15 @@ class KeyActionsGestureTest {
 
     @Test
     fun recordingAMelodyInThePartChosen() {
-        h.start()
+        start()
         val lead = h.inst("Lead")
-        compose.withinGestures("Enregistrer une mélodie", budget("Enregistrer une mélodie")) {
+        // G6: with the Guide open on this small phone, the timeline shows four tracks: the Lead is a scroll away (one gesture more).
+        compose.withinGestures("Enregistrer une mélodie", budget("Enregistrer une mélodie") + if (guideOpen) 1 else 0) {
+            if (guideOpen) {
+                compose.onNodeWithTag("timeline_header_$lead").performScrollTo()
+                count("scroll to the Lead")
+                compose.waitForIdle()
+            }
             doubleTapAt("timeline_grid", h.clip(1, lead), compose)
             tap("record_start")
         }
@@ -191,7 +211,7 @@ class KeyActionsGestureTest {
 
     @Test
     fun recordingTheVoice() {
-        h.start()
+        start()
         compose.withinGestures("Enregistrer la voix", budget("Enregistrer la voix")) {
             tap("tab_Sons")
             tap("sons_Audio")
@@ -203,7 +223,7 @@ class KeyActionsGestureTest {
 
     @Test
     fun aFilterRiseBeforeTheDrop() {
-        h.start()
+        start()
         compose.withinGestures("Montée de filtre avant le drop", budget("Montée de filtre avant le drop")) {
             longPressOn("timeline_ruler", h.flag(2), compose)
             tap("part_buildup_4")
@@ -213,7 +233,7 @@ class KeyActionsGestureTest {
 
     @Test
     fun aFillAtTheEndOfAPart() {
-        h.start()
+        start()
         compose.withinGestures("Fill en fin de partie", budget("Fill en fin de partie")) {
             assertEquals(3, h.vm.project.value.song.size)
             longPressOn("timeline_ruler", h.flag(1), compose)
@@ -226,7 +246,7 @@ class KeyActionsGestureTest {
 
     @Test
     fun sharing() {
-        h.start()
+        start()
         compose.withinGestures("Partager", budget("Partager")) {
             tap("top_share")
             tap("share_go")
@@ -238,7 +258,7 @@ class KeyActionsGestureTest {
 
     @Test
     fun exportingAWav() {
-        h.start()
+        start()
         compose.withinGestures("Exporter en WAV", budget("Exporter en WAV")) {
             tap("top_share")
             tap("share_format_Wav")
@@ -250,11 +270,17 @@ class KeyActionsGestureTest {
 
     @Test
     fun openingTheLive() {
-        h.start()
+        start()
         compose.withinGestures("Ouvrir le Live", budget("Ouvrir le Live")) { tap("tab_Live") }
         compose.onNodeWithTag("live_screen").assertIsDisplayed()
         // Out of the creation path, one touch back: the bottom bar stays.
         compose.onNodeWithTag("tab_Structure").assertIsDisplayed()
         assertNotEquals(null, compose.onNodeWithTag("live_top_bar").fetchSemanticsNode())
     }
+}
+
+/** G6 (§4.5 « Jamais bloquant »): the 15 key actions within the same budgets with the Guide's panel open (a third of the phone). */
+@Config(qualifiers = "w360dp-h780dp")
+class KeyActionsGuideOpenTest : KeyActionsGestureTest() {
+    override val guideOpen = true
 }

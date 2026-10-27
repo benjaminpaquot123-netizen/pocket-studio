@@ -1,7 +1,7 @@
 {
  "format": 1,
  "style": "alerts",
- "version": 1,
+ "version": 2,
  "cards": [
   {
    "id": "alert.curves.too_long",

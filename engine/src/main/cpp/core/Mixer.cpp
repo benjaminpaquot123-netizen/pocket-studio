@@ -831,7 +831,8 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         float l = mL_[static_cast<size_t>(i)], r = mR_[static_cast<size_t>(i)];
         if (!std::isfinite(l)) l = 0.0f;
         if (!std::isfinite(r)) r = 0.0f;
-        const float master = masterGain_.next() * (preFader && !faderAtUnity ? masterFader_.next() : 1.0f);
+        const float fader = preFader && !faderAtUnity ? masterFader_.next() : 1.0f;
+        const float master = masterGain_.next() * fader;
         outL_[static_cast<size_t>(i)] = l * master;
         outR_[static_cast<size_t>(i)] = r * master;
         if (direct) {
@@ -840,7 +841,9 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
                 d = 0.0f;
                 directBlewUp = true;
             }
-            click_[static_cast<size_t>(i)] = d;
+            // (REVIEW S7) The fader before the chain (mix version 4) still turns the click down, as
+            // it did after the chain.
+            click_[static_cast<size_t>(i)] = d * fader;
         }
     }
     MasterChain::Stats stats;

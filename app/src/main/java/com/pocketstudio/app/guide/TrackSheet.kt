@@ -402,6 +402,9 @@ internal fun TrackSheetRoute(
     val project by vm.project.collectAsStateWithLifecycle()
     val guide by vm.guide.ui.collectAsStateWithLifecycle()
     val notice by vm.notice.collectAsStateWithLifecycle()
+    // G3 review: a « Ramener » refused from the sheet is said in the sheet, not only in the Guide's panel.
+    var guideNotice by remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
+    androidx.compose.runtime.LaunchedEffect(vm.guide) { vm.guide.notices.collect { guideNotice = it } }
     val tracks = remember(project) { project.guideTracks() }
     val track = tracks.firstOrNull { it.key == key }
     // The track went away (an undo, another song): the sheet goes with it.
@@ -422,7 +425,7 @@ internal fun TrackSheetRoute(
         sheet = guide.sheets.firstOrNull { it.track.key == key },
         partNames = partNames,
         targets = targets,
-        notice = notice,
+        notice = guideNotice ?: notice,
         loading = guide.loading,
         actions = TrackSheetActions(
             close = close,
@@ -434,7 +437,7 @@ internal fun TrackSheetRoute(
             reuse = if (project.song.isNotEmpty() && partKey != null) reuse else null,
             copyTo = { to -> vm.copyChain(key, to) },
             revert = { id -> vm.guide.revert(id) },
-            dismissNotice = vm::dismissNotice,
+            dismissNotice = { guideNotice = null; vm.dismissNotice() },
         ),
     )
 }

@@ -40,7 +40,8 @@ fun ShareSongProgress(rhythmVm: RhythmViewModel, wav: Boolean = false) {
             // The song is exported and the share sheet is open: the last step of the card is done
             // (not before: a cancelled export, or a sheet that could not open, leaves it to do).
             if (WavExporter.share(context, files, tr("Partager mon morceau"))) {
-                com.pocketstudio.app.onboarding.NextStepPrefs(context, rhythmVm.projectId).mark(com.pocketstudio.app.onboarding.StepGoal.Share)
+                // G5: the Guide's « Prêt à partager ? » is decided (« C'est partagé »).
+                rhythmVm.guide.markDone("share.ready", "keep")
             }
         }
     }

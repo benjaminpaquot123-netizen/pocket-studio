@@ -8,6 +8,9 @@ import com.pocketstudio.model.guide.GuideAction
 import com.pocketstudio.model.guide.GuideLibrary
 import com.pocketstudio.model.guide.GuideParcours
 import com.pocketstudio.model.instrumentTracks
+import com.pocketstudio.model.addTrack
+import com.pocketstudio.model.track
+import com.pocketstudio.model.withTrack
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -57,5 +60,21 @@ class GuideNavTest {
         assertEquals(AppTab.Envoyer, (GuideNav.go(GuideOpen("mixer.master", "master"), p, simple = true) as GuideGo.Tab).tab)
         // A role the song does not have: its tracks, on Structure.
         assertEquals(AppTab.Morceau, (GuideNav.go(GuideOpen("sounds.track", "vocal"), Project(), simple = false) as GuideGo.Tab).tab)
+    }
+
+    /** G5 (from « Ton morceau est prêt »): « Changer un son » opens the Lead (named for it), never the chords' track with its many notes. */
+    @Test
+    fun changerUnSonOpensTheTrackThatCarriesTheTune() {
+        val song = song("house")
+        val lead = song.tracks.first { it.name == "Lead" }
+        assertEquals(lead.id, GuideNav.mainTrackOf(song))
+        assertEquals(GuideGo.Sound(lead.id), GuideNav.go(GuideOpen("sounds.main", "song"), song, simple = true))
+        assertEquals(null, GuideNav.mainTrackOf(Project()))
+        val bass = Project(synthNotes = com.pocketstudio.model.NoteClip(notes = listOf(com.pocketstudio.model.Note(0, 4, 36), com.pocketstudio.model.Note(4, 4, 38), com.pocketstudio.model.Note(8, 4, 41))))
+        assertEquals(0, GuideNav.mainTrackOf(bass))
+        val withLead = bass.addTrack("Mélodie")!!.let { p ->
+            p.withTrack(p.track(1).copy(notes = com.pocketstudio.model.NoteClip(notes = listOf(com.pocketstudio.model.Note(0, 2, 72), com.pocketstudio.model.Note(2, 2, 74)))))
+        }
+        assertEquals(1, GuideNav.mainTrackOf(withLead))
     }
 }

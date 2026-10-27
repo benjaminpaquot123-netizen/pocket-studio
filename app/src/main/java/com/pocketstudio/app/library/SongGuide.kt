@@ -1,24 +1,14 @@
 package com.pocketstudio.app.library
 
 import com.pocketstudio.model.i18n.tr
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.rememberSaveable
 import com.pocketstudio.app.settings.GuidePage
 import com.pocketstudio.model.StarterWizard
 
-/** The guide waiting to be read, kept through the activity's rebuild (opening a project recreates it). */
-@Composable
-fun rememberSongGuide(): MutableState<List<GuidePage>?> =
-    rememberSaveable(key = "song_guide", stateSaver = GuidePagesSaver) { mutableStateOf(null) }
+/** G5: the song's guide kept with the song ([com.pocketstudio.model.guide.GuideState.songGuide]), read from the Guide's first card. */
+fun List<GuidePage>.toSongGuide(): List<com.pocketstudio.model.guide.GuidePageText> = map { com.pocketstudio.model.guide.GuidePageText(it.title, it.lines) }
 
-/** Pages as title, lines, title, lines… (a line never holds a line break). */
-private val GuidePagesSaver = Saver<List<GuidePage>?, ArrayList<String>>(
-    save = { pages -> ArrayList(pages.orEmpty().flatMap { listOf(it.title, it.lines.joinToString("\n")) }) },
-    restore = { saved -> saved.chunked(2).filter { it.size == 2 }.map { (title, lines) -> GuidePage(title, lines.split("\n")) }.ifEmpty { null } },
-)
+/** The pages as the guide's dialog shows them. */
+fun List<com.pocketstudio.model.guide.GuidePageText>.toGuidePages(): List<GuidePage> = map { GuidePage(it.title, it.lines) }
 
 /** "Intro → Couplet → Pré-refrain → Refrain → … → Intro pour finir : environ 3 min 10." (a variant of a section counts as it). */
 fun songSummary(style: StarterWizard.Style, plan: StarterWizard.ScenePlan): String {

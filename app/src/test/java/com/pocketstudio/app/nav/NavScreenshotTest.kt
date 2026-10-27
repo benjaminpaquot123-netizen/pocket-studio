@@ -2,6 +2,7 @@ package com.pocketstudio.app.nav
 
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
@@ -11,6 +12,7 @@ import androidx.compose.ui.test.isDisplayed
 import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import com.github.takahirom.roborazzi.captureScreenRoboImage
 import com.pocketstudio.model.i18n.Lang
+import kotlinx.coroutines.launch
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
@@ -21,7 +23,7 @@ import org.robolectric.annotation.GraphicsMode
 
 /**
  * Phase 36: the whole app as it shows, each space, the Mode simple's tabs, the first launch's
- * choice, a mission and the « ? » labels, on a song of three parts (images in
+ * choice, the Guide's first cards (G5) and the « ? » labels, on a song of three parts (images in
  * app/screenshots/nav/; the subclasses below: 130 % in French and Dutch, tablet upright and lying
  * down, a phone lying down).
  */
@@ -41,6 +43,24 @@ open class NavScreenshotTest {
     @After
     fun back() = h.finish()
 
+    /** The assistant's House song (a fixed one: the same capture every time). */
+    internal fun houseSong(): com.pocketstudio.model.Project {
+        val style = com.pocketstudio.model.StarterWizard.style("house")!!
+        return com.pocketstudio.model.StarterWizard.build(style, style.lines.associate { it.role to null as com.pocketstudio.model.PadSample? }, style.melody.mood,
+            com.pocketstudio.model.StarterWizard.defaultParts(style).associateWith { com.pocketstudio.model.StarterWizard.soundsFor(it, style).first() })
+            .copy(name = "House du soir")
+    }
+
+    /** Waits for the Guide to have read the song and shown [tag] (the capture never depends on when the analysis ends). */
+    internal fun awaitGuide(tag: String) {
+        val end = System.currentTimeMillis() + 60_000
+        while (h.vm.guide.ui.value.loading || compose.onAllNodesWithTag(tag).fetchSemanticsNodes().isEmpty()) {
+            org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(100))
+            compose.waitForIdle()
+            check(System.currentTimeMillis() < end) { "no $tag" }
+        }
+    }
+
     private fun tap(tag: String) {
         val node = compose.onNodeWithTag(tag)
         if (!node.isDisplayed()) node.performScrollTo()
@@ -55,6 +75,23 @@ open class NavScreenshotTest {
         // « Que veux-tu faire ? » once it has read the project's last save (« modifié à l'instant »).
         if (launchChoice) h.awaitTag("launch_edited")
         prepare()
+        // G5: the Guide's bar says the step once it has read the song: waited for, so that a capture never
+        // depends on when the analysis ends (G3 review: `mission_sound` was unstable).
+        val end = System.currentTimeMillis() + 60_000
+        while (h.vm.guide.ui.value.loading && System.currentTimeMillis() < end) {
+            org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(100))
+            compose.waitForIdle()
+        }
+        // Saved before the capture: « Sauvegardé » always shows (the wait above let the autosave run or not).
+        // Not with runBlocking: the save may need the main thread, which this test runs on.
+        var saved = false
+        @OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
+        kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.Main) { h.vm.flushNow(); saved = true }
+        val until = System.currentTimeMillis() + 30_000
+        while (!saved && System.currentTimeMillis() < until) {
+            org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(50))
+            compose.waitForIdle()
+        }
         compose.mainClock.advanceTimeBy(800)
         compose.waitForIdle()
         captureScreenRoboImage("screenshots/$prefix$name.png")
@@ -78,9 +115,15 @@ open class NavScreenshotTest {
     @Test fun welcomeMode() = shot("welcome_mode", firstLaunch = true)
     @Test fun launch() = shot("launch", launchChoice = true)
     @Test fun launchSimple() = shot("launch_simple", simple = true, launchChoice = true)
-    @Test fun missionListen() = shot("mission_listen") { tap("tab_Plus"); compose.onNodeWithTag("plus_missions").performScrollTo(); tap("plus_missions") }
-    @Test fun missionSound() = shot("mission_sound") {
-        tap("tab_Plus"); compose.onNodeWithTag("plus_missions").performScrollTo(); tap("plus_missions"); tap("top_play"); h.vm.togglePlay()
+    /** G5: « Mon premier morceau » (Plus): the Guide's first cards, where the Missions were. */
+    @Test fun guideFirst() = shot("guide_first") {
+        tap("tab_Plus"); compose.onNodeWithTag("plus_missions").performScrollTo(); tap("plus_missions")
+        awaitGuide("guide_panel")
+    }
+    /** G5: a song just made: the Guide opens on « Ton morceau est prêt ». */
+    @Test fun guideReady() = shot("guide_ready") {
+        h.vm.session.edit { com.pocketstudio.model.guide.GuideStart.begin(houseSong(), com.pocketstudio.model.guide.GuideStart.SONG) }
+        awaitGuide("guide_card_start.ready")
     }
     @Test fun helpLabels() = shot("help_labels") { tap("help_labels_button") }
     @Test fun helpLabelsSons() = shot("help_labels_sons") { tap("tab_Sons"); tap("help_labels_button") }
@@ -125,7 +168,7 @@ open class NavScale130ScreenshotTest : NavScreenshotTest() {
     companion object {
         val SCALED = setOf(
             "structure", "structure_parts", "sons", "sons_synth", "mix", "live", "plus", "simple_song", "simple_rhythm", "simple_keys",
-            "simple_send", "welcome_mode", "mission_listen", "help_labels", "help_labels_simple", "launch", "launch_simple",
+            "simple_send", "welcome_mode", "guide_first", "guide_ready", "help_labels", "help_labels_simple", "launch", "launch_simple",
             "sheet_pad", "sheet_share",
         )
     }
@@ -146,7 +189,7 @@ open class NavTabletScreenshotTest : NavScreenshotTest() {
     companion object {
         val TABLET = setOf(
             "structure", "structure_parts", "sons", "sons_synth", "mix", "live", "plus", "plus_settings", "simple_song", "simple_keys",
-            "simple_send", "welcome_mode", "mission_listen", "help_labels", "launch",
+            "simple_send", "welcome_mode", "guide_first", "guide_ready", "help_labels", "launch",
         )
     }
 }

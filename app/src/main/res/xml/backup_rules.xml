@@ -8,6 +8,5 @@
     <include domain="sharedpref" path="ui.xml" />
     <include domain="sharedpref" path="folds.xml" />
     <include domain="sharedpref" path="tools.xml" />
-    <include domain="sharedpref" path="next_steps.xml" />
     <include domain="sharedpref" path="recette.xml" />
 </full-backup-content>

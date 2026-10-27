@@ -1,0 +1,437 @@
+{
+ "format": 1,
+ "style": "common",
+ "version": 2,
+ "cards": [
+  {
+   "id": "start.style",
+   "stage": -1,
+   "target": "song",
+   "kind": "decide",
+   "simple": true,
+   "title": "Choisis un style",
+   "why": "L'appli écrit tout le morceau pour toi : rythme, basse, accords et mélodie. Ensuite, tu le fais tien.",
+   "applicable": [
+    "start:first",
+    "!style"
+   ],
+   "done": [
+    "song2"
+   ],
+   "proposals": [
+    {
+     "id": "style",
+     "label": "Choisir un style",
+     "why": "Un style, une ambiance : le morceau est prêt en une minute.",
+     "action": {
+      "type": "open",
+      "spot": "new.style"
+     }
+    },
+    {
+     "id": "keep",
+     "label": "Je pars de zéro",
+     "why": "Tu poses toi-même le rythme, la basse et la mélodie.",
+     "action": {
+      "type": "keep"
+     }
+    }
+   ],
+   "lexicon": "part"
+  },
+  {
+   "id": "start.ready",
+   "stage": -1,
+   "target": "song",
+   "kind": "decide",
+   "simple": true,
+   "title": "Ton morceau est prêt !",
+   "why": "Écoute-le, puis fais-le tien : un son, la structure, et partage-le.",
+   "applicable": [
+    "start:any",
+    "style"
+   ],
+   "proposals": [
+    {
+     "id": "drop",
+     "label": "Écouter",
+     "why": "Juste avant le premier Drop : le meilleur moment, tout de suite.",
+     "action": {
+      "type": "play",
+      "name": "drop"
+     }
+    },
+    {
+     "id": "start",
+     "label": "Depuis le début",
+     "why": "Tout le morceau, de la première mesure.",
+     "action": {
+      "type": "play",
+      "name": "start"
+     }
+    },
+    {
+     "id": "guide",
+     "label": "Le guide de ton morceau",
+     "why": "Ses parties, ce que chacune ajoute, et quoi essayer.",
+     "action": {
+      "type": "open",
+      "spot": "song.guide"
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "sound",
+     "label": "Changer un son",
+     "why": "Le son de la mélodie, en un toucher.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.main"
+     }
+    },
+    {
+     "id": "structure",
+     "label": "Modifier le morceau",
+     "why": "Ses parties, dans l'ordre.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts"
+     }
+    },
+    {
+     "id": "share",
+     "label": "Partager",
+     "why": "Les vérifications, puis le fichier.",
+     "action": {
+      "type": "open",
+      "spot": "share.check"
+     }
+    }
+   ],
+   "lexicon": "drop"
+  },
+  {
+   "id": "start.sound",
+   "stage": -1,
+   "target": "song",
+   "kind": "decide",
+   "simple": true,
+   "title": "Change un son",
+   "why": "Fais-le tien : un autre son pour la mélodie ou pour la batterie.",
+   "applicable": [
+    "start:first",
+    "style"
+   ],
+   "done": [
+    "start_changed:sound"
+   ],
+   "proposals": [
+    {
+     "id": "melody",
+     "label": "Le son de la mélodie",
+     "why": "Touche-en un : tu l'entends tout de suite.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.main"
+     }
+    },
+    {
+     "id": "kit",
+     "label": "Une autre batterie",
+     "why": "Les mêmes coups, un autre son.",
+     "action": {
+      "type": "open",
+      "spot": "rhythm.kit"
+     }
+    }
+   ],
+   "lexicon": "lead"
+  },
+  {
+   "id": "start.melody",
+   "stage": -1,
+   "target": "song",
+   "kind": "decide",
+   "simple": true,
+   "title": "Enregistre une mélodie",
+   "why": "Touche « ● Enregistrer ma mélodie » et joue quelques notes : le clavier reste dans la gamme, aucune fausse note.",
+   "applicable": [
+    "start:first",
+    "style"
+   ],
+   "done": [
+    "start_changed:notes"
+   ],
+   "proposals": [
+    {
+     "id": "keys",
+     "label": "Ouvrir le clavier",
+     "why": "Le bouton d'enregistrement s'allume.",
+     "action": {
+      "type": "open",
+      "spot": "record.melody"
+     }
+    },
+    {
+     "id": "notes",
+     "label": "Voir les notes",
+     "why": "Celles de la mélodie, à toucher une par une.",
+     "action": {
+      "type": "open",
+      "spot": "notes.track",
+      "target": "lead"
+     }
+    }
+   ],
+   "lexicon": "scale"
+  },
+  {
+   "id": "start.arrange",
+   "stage": -1,
+   "target": "song",
+   "kind": "decide",
+   "simple": true,
+   "title": "Arrange les parties",
+   "why": "Appui long sur une partie : ajoute un Fill, un Break ou une Montée.",
+   "applicable": [
+    "start:first",
+    "style"
+   ],
+   "done": [
+    "start_changed:arrange"
+   ],
+   "proposals": [
+    {
+     "id": "parts",
+     "label": "Voir les parties",
+     "why": "Le morceau, partie par partie.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts"
+     }
+    },
+    {
+     "id": "later",
+     "label": "Plus tard",
+     "why": "Je te le reproposerai à la fin.",
+     "action": {
+      "type": "later"
+     }
+    }
+   ],
+   "lexicon": "fill"
+  },
+  {
+   "id": "start.beat",
+   "stage": -1,
+   "target": "song",
+   "kind": "decide",
+   "simple": true,
+   "title": "Pose un rythme",
+   "why": "Touche les cases de la grille : le kick sur chaque temps, pour commencer.",
+   "applicable": [
+    "by_hand"
+   ],
+   "done": [
+    "beat"
+   ],
+   "proposals": [
+    {
+     "id": "grid",
+     "label": "Aller à la grille",
+     "why": "Seize cases par mesure.",
+     "action": {
+      "type": "open",
+      "spot": "rhythm.pattern"
+     }
+    },
+    {
+     "id": "kit",
+     "label": "Choisir une batterie",
+     "why": "Le son des coups.",
+     "action": {
+      "type": "open",
+      "spot": "rhythm.kit"
+     }
+    }
+   ],
+   "lexicon": "kick"
+  },
+  {
+   "id": "start.bassline",
+   "stage": -1,
+   "target": "song",
+   "kind": "decide",
+   "simple": true,
+   "title": "Ajoute une basse",
+   "why": "Une ligne grave : génère une basse acide, ou joue des notes graves au clavier d'une piste.",
+   "applicable": [
+    "by_hand"
+   ],
+   "done": [
+    "bassline"
+   ],
+   "proposals": [
+    {
+     "id": "acid",
+     "label": "Générer une basse acide",
+     "why": "Une ligne 303, en un toucher.",
+     "action": {
+      "type": "open",
+      "spot": "acid"
+     }
+    },
+    {
+     "id": "notes",
+     "label": "Jouer la basse au clavier",
+     "why": "Les notes du bas du clavier.",
+     "action": {
+      "type": "open",
+      "spot": "notes.track",
+      "target": "bass"
+     }
+    }
+   ],
+   "lexicon": "bass"
+  },
+  {
+   "id": "start.tune",
+   "stage": -1,
+   "target": "song",
+   "kind": "decide",
+   "simple": true,
+   "title": "Ajoute une mélodie",
+   "why": "Joue quelques notes au clavier d'une piste : il reste dans la gamme.",
+   "applicable": [
+    "by_hand"
+   ],
+   "done": [
+    "tune"
+   ],
+   "proposals": [
+    {
+     "id": "keys",
+     "label": "Ouvrir le clavier",
+     "why": "Le bouton d'enregistrement s'allume.",
+     "action": {
+      "type": "open",
+      "spot": "record.melody"
+     }
+    },
+    {
+     "id": "notes",
+     "label": "Écrire les notes",
+     "why": "Une note par toucher, sur la grille.",
+     "action": {
+      "type": "open",
+      "spot": "notes.track",
+      "target": "lead"
+     }
+    }
+   ],
+   "lexicon": "lead"
+  },
+  {
+   "id": "start.parts",
+   "stage": -1,
+   "target": "song",
+   "kind": "decide",
+   "simple": true,
+   "title": "Fais une deuxième partie",
+   "why": "Duplique ta partie et change-la : un couplet, un refrain. Donne-leur un nom pour t'y retrouver.",
+   "applicable": [
+    "by_hand"
+   ],
+   "done": [
+    "parts2"
+   ],
+   "proposals": [
+    {
+     "id": "parts",
+     "label": "Voir les parties",
+     "why": "Dupliquer, renommer.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts"
+     }
+    },
+    {
+     "id": "later",
+     "label": "Plus tard",
+     "why": "Je te le reproposerai à la fin.",
+     "action": {
+      "type": "later"
+     }
+    }
+   ],
+   "lexicon": "part"
+  },
+  {
+   "id": "start.song",
+   "stage": -1,
+   "target": "song",
+   "kind": "decide",
+   "simple": true,
+   "title": "Enchaîne tes parties",
+   "why": "Au moins trois parties dans le morceau, avec un début et une fin.",
+   "applicable": [
+    "by_hand"
+   ],
+   "done": [
+    "song3"
+   ],
+   "proposals": [
+    {
+     "id": "parts",
+     "label": "Voir les parties",
+     "why": "Ajoute-les dans l'ordre.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts"
+     }
+    },
+    {
+     "id": "later",
+     "label": "Plus tard",
+     "why": "Je te le reproposerai à la fin.",
+     "action": {
+      "type": "later"
+     }
+    }
+   ],
+   "lexicon": "chorus"
+  },
+  {
+   "id": "share.remix",
+   "stage": 7,
+   "target": "song",
+   "kind": "check",
+   "simple": true,
+   "title": "Remixer un morceau",
+   "why": "L'appli sépare une chanson en batterie, basse, voix et le reste : rejoue-la à ta façon.",
+   "applicable": [
+    "start:any"
+   ],
+   "proposals": [
+    {
+     "id": "remix",
+     "label": "Remixer une chanson",
+     "why": "Choisis un fichier de ton téléphone.",
+     "action": {
+      "type": "open",
+      "spot": "remix"
+     }
+    },
+    {
+     "id": "keep",
+     "label": "Pas maintenant",
+     "why": "Il t'attend dans Sons › Remix, quand tu veux.",
+     "action": {
+      "type": "keep"
+     }
+    }
+   ]
+  }
+ ]
+}

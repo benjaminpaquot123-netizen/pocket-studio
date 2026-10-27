@@ -65,7 +65,7 @@ class GuideAnalyzerTest {
         assertTrue(r.cards.all { it.card.stage in GuideStages.SIMPLE })
         // Its stage 1 is the assistant's: the first card to decide is in the arrangement.
         assertEquals(4, r.next!!.card.stage)
-        assertEquals("Le kick (le « boum »)", r.cards.first().card.titleFor(true))
+        assertEquals("Le kick (le « boum »)", r.cards.first { it.applicable }.card.titleFor(true))
     }
 
     /** docs/guide/diagnostic-jump-up.md §1.4: what the analysis must see in Benjamin's song. */

@@ -4,6 +4,7 @@ import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -87,11 +88,20 @@ open class GuideScreenshotTest {
         tap("guide_bar"); tap("guide_stage_3")
         compose.onNodeWithTag("guide_item_fx.sidechain").performScrollTo()
     }
+    /** Back after days: the panel opens by itself on « Te revoilà » (G6). */
     @Test fun back() = shot("back", project = jumpUp().let { p -> p.copy(guide = p.guide.copy(step = "fx.sub", lastUsed = System.currentTimeMillis() - 3 * 24 * 3600 * 1000L)) }) {
-        tap("guide_bar")
+        await { compose.onAllNodesWithTag("guide_panel").fetchSemanticsNodes().isNotEmpty() }
     }
     @Test fun simple() = shot("simple", simple = true) {
         tap("guide_bar"); tap("guide_further_toggle")
+    }
+    /** G4: « Voilà ce que j'ai mis », effect by effect. */
+    @Test fun review() = shot("review") {
+        tap("guide_bar"); compose.onNodeWithTag("guide_effects").performScrollTo()
+    }
+    /** G4: a check of stage 6, the phone's speaker. */
+    @Test fun check() = shot("check") {
+        tap("guide_bar"); tap("guide_stage_6"); tap("guide_item_mix.phone")
     }
     @Test fun spot() = shot("spot") {
         tap("guide_bar"); tap("guide_stage_0"); tap("guide_item_frame.form"); tap("guide_open_parts")

@@ -9,8 +9,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import com.pocketstudio.app.learn.Mission
-import com.pocketstudio.app.learn.MissionPrefs
 import com.pocketstudio.app.settings.SettingsStore
 import com.pocketstudio.app.ui.withinGestures
 import com.pocketstudio.model.SongPart
@@ -26,7 +24,7 @@ import org.robolectric.annotation.Config
 /**
  * Phase 36 in the whole app: every space opens what it holds, nothing the seven tabs had is
  * lost, the Mode simple shows the same project in four tabs and everyday words (switching never
- * changes it), the missions point at the real controls and move on by themselves, and « ? »
+ * changes it), « Mon premier morceau » is in the Guide (G5), and « ? »
  * labels the screen.
  */
 @RunWith(RobolectricTestRunner::class)
@@ -200,37 +198,6 @@ class SpacesTest {
         compose.waitForIdle()
         compose.onNodeWithTag("tab_Sons").assertIsDisplayed()
         assertTrue(SettingsStore.state.value.guideSeen)
-    }
-
-    @Test
-    fun theMissionsPointAtTheControlsAndMoveOnByThemselves() {
-        h.start()
-        tap("tab_Plus")
-        tap("plus_missions")
-        val prefs = MissionPrefs(h.app)
-        // A song is already there: « Choisis un style » is done, « Écoute » is next, ▶ pointed at.
-        compose.onNodeWithTag("mission_overlay").assertExists()
-        compose.onNodeWithTag("mission_title").assertTextContains("2/6", substring = true)
-        assertEquals(Mission.Listen.ordinal, prefs.step)
-        tap("top_play")
-        compose.onNodeWithTag("mission_title").assertTextContains("3/6", substring = true)
-        // « Change un son »: done once a sound changed, not by an « OK ».
-        h.vm.togglePlay()
-        tap("timeline_name_${SongPart.ACID}")
-        val acid = com.pocketstudio.model.SoundLibrary.ACID
-        val now = h.vm.project.value.acid.sound
-        val shown = acid.firstOrNull { it.sound.copy(tuning = now.tuning, level = now.level) == now }?.category ?: acid.first().category
-        val other = acid.indexOfFirst { it.category == shown && it.sound.copy(tuning = now.tuning, level = now.level) != now }
-        compose.onNodeWithTag("acid_sounds_$other").performClick()
-        compose.waitForIdle()
-        compose.onNodeWithTag("mission_title").assertTextContains("4/6", substring = true)
-        // Skipped, then stopped: the step is kept on the phone.
-        tap("mission_skip")
-        assertEquals(Mission.Arrange.ordinal, MissionPrefs(h.app).step)
-        assertTrue(Mission.Melody.ordinal in MissionPrefs(h.app).skipped)
-        tap("mission_stop")
-        compose.onNodeWithTag("mission_overlay").assertDoesNotExist()
-        assertFalse(MissionPrefs(h.app).active)
     }
 
     @Test

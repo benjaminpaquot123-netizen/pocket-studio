@@ -186,8 +186,8 @@ internal fun plusEntries(
     bugReport: (() -> Unit)? = null,
 ): List<PlusEntry> = listOfNotNull(
     PlusEntry("projects", Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir, créer, dupliquer, envoyer un projet"), open = projects),
-    PlusEntry("Aide", Icons.AutoMirrored.Filled.HelpOutline, tr("Aide"), tr("Le guide, la carte « Prochaine étape », le lexique"), page = ToolPage.Aide),
-    PlusEntry("missions", Icons.Filled.Flag, tr("Missions : Mon premier morceau"), tr("Six petites étapes guidées, du style au partage"), open = missions),
+    PlusEntry("Aide", Icons.AutoMirrored.Filled.HelpOutline, tr("Aide"), tr("Les premiers pas, le Guide, le lexique"), page = ToolPage.Aide),
+    PlusEntry("missions", Icons.Filled.Flag, tr("Mon premier morceau, avec le Guide"), tr("Ses premières cartes, du style au partage"), open = missions),
     PlusEntry("glossary", Icons.AutoMirrored.Filled.MenuBook, tr("Les mots de la musique, à écouter"), tr("Chaque mot avec un exemple sonore"), open = glossary),
     PlusEntry("Reglages", Icons.Filled.Settings, tr("Réglages"), tr("Langue, thème, taille, son, mode simple"), page = ToolPage.Reglages),
     PlusEntry(

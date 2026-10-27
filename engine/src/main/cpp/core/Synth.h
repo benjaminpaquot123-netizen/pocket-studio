@@ -62,6 +62,19 @@ public:
         SubFloor,      // > 0.5: the sub, the octave-down copy and oscillator 2 an octave down never under 30 Hz: an octave up there
         MidLayerHz,    // the mid layer's high-pass: 250 x 1.6^(2v - 1) Hz (0.5: 250 Hz, as before; 156..400)
         MidLayerDrive, // the mid layer's drive: 3 x 3^(2v - 1) (0.5: 3, as before; 1..9)
+        // Leads chantier, lots B to D (docs/hits/leads-pros.md § 6 and § 8), appended: each one at its
+        // default leaves the sound exactly as it was (plain() then holds: the same path as before).
+        KeyTrack,      // 0..1: the cutoff follows the note, 0..1 octave per octave around C4 (60)
+        VelocityEnv,   // 0..1: the velocity scales the filter envelope, x(1 +- this) at velocity 1 / 0.4, as is at 0.7
+        Click,         // 0..1: a noise click of about 4 ms high-passed at 2 kHz on each attack (over the filter)
+        VibratoDelay,  // 0..1: each voice's vibrato waits 0..1 s after its attack, then fades in over as long
+        CycleOffset,   // 0..1: CycleBars' phase shifted by this part of a cycle (0.5: open at the cycle's start)
+        Supersaw,      // > 0.5: the unison as a JP-8000: Szabo's ratios, free phases on each note, drift, centre/side mix, high-pass at f0
+        CleanLadder,   // > 0.5: the ladder linear (zero-delay feedback, no inner saturation): no intermodulation on dense stacks
+        PreDrive,      // 0..1: saturation before the filter, on each voice (antiderivative anti-aliased)
+        Pwm,           // 0..1: the square waves' pulse width swept by a 0.7 Hz triangle, 50 % +- 40 % x this (the hoover)
+        Fm,            // 0..1: a 2-operator FM pair (sine carrier on the note, sine modulator) taking over oscillator 1, its index falling with the filter envelope
+        FmRatio,       // the modulator's ratio to the note: 0.5, 1, 1.41, 2, 2.76, 3, 3.5, 4, 7 (index / 8)
         ParamCount
     };
     // The MonoBelow value of 120 Hz (its default) and its frequency.
@@ -73,6 +86,16 @@ public:
     static float midLayerDrive(float v) { return 3.0f * std::pow(3.0f, 2.0f * v - 1.0f); }
     static constexpr float kSubFloorHz = 30.0f;
     static constexpr float kPitchEnvSemitones = 48.0f;
+    // FmRatio's choices; the click's high-pass and length; Pwm's sweep rate; Supersaw's drift.
+    static constexpr int kFmRatios = 9;
+    static float fmRatioOf(float v);
+    static constexpr float kClickHz = 2000.0f;
+    static constexpr float kClickSeconds = 0.0015f;  // its time constant: about 4 ms to -24 dB
+    static constexpr float kPwmHz = 0.7f;
+    static constexpr float kDriftCents = 4.0f;  // a copy's drift never goes past this
+    // Szabo's JP-8000 detune offsets (« How to Emulate the Super Saw », 2010) over the outer one: the
+    // copies' places in Supersaw mode, in pairs from the outside in.
+    static constexpr float kJpOffsets[6] = {-1.0f, 0.977f, -0.573f, 0.565f, -0.177f, 0.181f};
     // CycleBars' cycle lengths in bars (index 0: off).
     static constexpr int kCycleChoices = 6;
     static int cycleBarsOf(float v);
@@ -108,6 +131,9 @@ public:
     bool wideWanted() const { return param(Width) > 0.0f || param(MidLayer) > 0.0f; }
     // Every S4 setting at its default: the sound as before them (tests).
     bool plain() const;
+    // Every setting of the leads chantier's lots B to D at its default: the voices render through the
+    // code from before them (renderVoices), sample for sample.
+    bool leadsAtRest() const;
     // A setting from an automation lane, `offset` frames into the next render() (on its step's frame).
     void automate(Param param, float value, int offset);
     // The song's position for CycleBars: sequencer step `step` (in sixteenths, from the song's start)
@@ -119,12 +145,26 @@ public:
         lfo1_.Reset(0.0f);
         lfo2_.Reset(0.0f);
         noiseState_ = kNoiseSeed;
+        // Lots B to D: the click's noise, the supersaw's phases and drift, the pulse sweep from their start.
+        clickState_ = kClickSeed;
+        clickHigh_.reset();
+        phaseState_ = kPhaseSeed;
+        pwmPhase_ = 0.0f;
     }
 
     int activeVoices() const;
+    // Supersaw: voice `voice`'s copy `copy` (0: oscillator 1) drift in cents now (tests).
+    float driftOf(int voice, int copy) const { return voices_[static_cast<size_t>(voice)].drift[static_cast<size_t>(copy)]; }
 
 private:
     using Down2x = hiir::Downsampler2xFpu<hiir::coef::C2x094::X2::_nbr_coef>;
+    struct Bandpass {  // Zavalishin's state-variable filter (TPT), band output normalised to 1 at its centre
+        float g = 0.0f, k = 0.1f, s1 = 0.0f, s2 = 0.0f;
+        void set(float hz, float q, float rate);
+        float band(float x);
+        float high(float x);
+        void reset() { s1 = s2 = 0.0f; }
+    };
     struct Voice {
         daisysp::Oscillator osc1, osc2, sub, low;  // low: oscillator 1's wave an octave down (OctaveDown)
         std::array<daisysp::Oscillator, 6> unison;  // detuned copies of oscillator 1
@@ -144,6 +184,22 @@ private:
         bool fresh = false;      // a new note: its pitch and cutoff are set on its first frame (not the next tick)
         float cycle = 0.0f;      // CycleBars' octaves at the last control tick
         float pitchEnv = 0.0f;   // PitchEnv: 1 at the attack, falling to 0
+        // Lots B to D.
+        float click = 0.0f;      // Click's envelope: 1 at the attack, falling
+        uint32_t frames = 0;     // since the attack (VibratoDelay)
+        std::array<float, 7> drift{};   // Supersaw: each copy's drift (cents), oscillator 1 first
+        std::array<float, 7> driftTo{}; // and where it heads
+        Bandpass hpMid{}, hpSide{};     // Supersaw: the high-pass at f0
+        struct Ladder4 {                // CleanLadder: Zavalishin's linear 4-pole ladder (TPT)
+            float s[4] = {0, 0, 0, 0};
+            float process(float x, float G, float k);
+        } cleanL{}, cleanR{};
+        float ladderG = 0.0f;           // CleanLadder's one-pole gain g / (1 + g), at the last tick
+        float preU[2] = {0, 0}, preF[2] = {1, 1};  // PreDrive's antiderivative states (u, F(u)), left and right
+        float fmCar = 0.0f, fmMod = 0.0f;          // Fm: the carrier's and the modulator's phases (cycles)
+        float fmInc = 0.0f, fmModInc = 0.0f;       // and their steps per (oversampled) frame
+        float vibrato = 1.0f;                      // VibratoDelay: the share of the vibrato heard now
+        float fmIndexMax = 0.0f;                   // Fm: the most index (radians) the band holds at this pitch
     };
 
     struct Event {
@@ -158,18 +214,15 @@ private:
     // Frames [from, to) of render()'s call (the events' frames) into tmpL_ / tmpR_ (index i - from).
     template <bool Wide, bool Over>
     void renderVoices(int from, int to);
+    // The same with the leads chantier's lots B to D, while one of their settings is on (else
+    // renderVoices, the code from before them: the same sound, sample for sample).
+    template <bool Wide, bool Over>
+    void renderLeads(int from, int to);
     void renderLegacy(float* mono, int numFrames);
     void setOversampled(bool on);
     void updateShape();
     // The track-wide stages after the voices (S4): formant, drive, mid layer, mono lows.
     void postProcess(float* l, float* r, int n, bool wide);
-    struct Bandpass {  // Zavalishin's state-variable filter (TPT), band output normalised to 1 at its centre
-        float g = 0.0f, k = 0.1f, s1 = 0.0f, s2 = 0.0f;
-        void set(float hz, float q, float rate);
-        float band(float x);
-        float high(float x);
-        void reset() { s1 = s2 = 0.0f; }
-    };
     struct SoftTanh {
         double f(double x) const { return std::tanh(x); }
         double F(double x) const {
@@ -230,6 +283,14 @@ private:
     std::array<float, 1024> midDelay_{};  // the mid layer's side: itself 11 ms later (mono-compatible width)
     int midDelayPos_ = 0;
     bool postActive_ = false;  // the post stages ran last block (their state is warm)
+    // --- Lots B to D state (deterministic: from their seeds again when the transport starts).
+    static constexpr uint32_t kClickSeed = 0x2545F491u, kPhaseSeed = 0x9E3779B9u;
+    uint32_t clickState_ = kClickSeed, phaseState_ = kPhaseSeed;
+    float random(uint32_t& state);  // -1..1
+    Bandpass clickHigh_{};
+    float pwmPhase_ = 0.0f;  // Pwm's triangle, 0..1
+    bool pwmWas_ = false;    // Pwm moved the pulse widths: back to 50 % once when it goes to 0
+    float preComp_ = 1.0f;   // PreDrive's level compensation
 };
 
 }  // namespace ps

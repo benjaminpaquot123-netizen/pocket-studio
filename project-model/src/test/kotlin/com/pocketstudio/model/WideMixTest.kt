@@ -243,10 +243,11 @@ class WideMixTest {
                 val values = lane.songValues.map { it!! }
                 for (sec in sections.filter { it.bars >= 8 }) {
                     val phrase = values.subList(sec.start, sec.start + 8)
-                    // Its most open bar is the first, its darkest the fifth, at most about an octave apart.
+                    // Its most open bar is the first, its darkest the fifth, at most 1.2 octaves apart (a pad's
+                    // +-0.6 since son 8, a lead's +-0.5).
                     assertEquals("${style.id} ${sec.start}", phrase.max(), phrase[0], 1e-6f)
                     assertEquals("${style.id} ${sec.start}", phrase.min(), phrase[4], 1e-6f)
-                    assertTrue(style.id, ProVoices.cutoffUnits(1.05f) >= phrase[0] - phrase[4])
+                    assertTrue(style.id, ProVoices.cutoffUnits(1.25f) >= phrase[0] - phrase[4])
                 }
                 checked++
             }

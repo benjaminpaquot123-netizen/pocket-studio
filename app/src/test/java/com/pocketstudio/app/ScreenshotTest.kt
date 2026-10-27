@@ -431,9 +431,8 @@ open class ScreenshotTest {
             com.pocketstudio.app.ui.SoloBanner(listOf("Batterie", "Basse acide"), {})
             com.pocketstudio.app.ui.SoloBanner(listOf("Batterie", "Basse acide", "Lead", "Voix"), {})
             com.pocketstudio.app.ui.RenameProjectBar("Da Funk (remix)", {}, {})
-            // The « Prochaine étape » line (24 dp) and the editors' header: stopped, the song
-            // playing and followed, « ⟳ Partie » gone on by itself after a touch on the grid.
-            com.pocketstudio.app.onboarding.NextStepStrip(com.pocketstudio.app.onboarding.nextSteps(project), com.pocketstudio.app.ui.AppTab.Rythme)
+            // The editors' header: stopped, the song playing and followed, « ⟳ Partie » gone on by
+            // itself after a touch on the grid.
             com.pocketstudio.app.ui.PartHeader(com.pocketstudio.app.ui.partHeader(project, playing = false, songPlaying = false, loopPart = false, armedBySelf = false))
             com.pocketstudio.app.ui.PartHeader(com.pocketstudio.app.ui.partHeader(project, playing = true, songPlaying = true, loopPart = false, armedBySelf = false))
             com.pocketstudio.app.ui.PartHeader(com.pocketstudio.app.ui.partHeader(project, playing = true, songPlaying = false, loopPart = true, armedBySelf = true))
@@ -1562,36 +1561,19 @@ open class ScreenshotTest {
         com.pocketstudio.app.onboarding.WelcomeScreen(com.pocketstudio.app.onboarding.WelcomeActions())
     }
 
-    @Test
-    fun nextSteps() = shoot("next_steps") {
-        val project = com.pocketstudio.app.rhythm.RhythmViewModel.starterProject()
-        RhythmScreen(
-            project = project,
-            transport = TransportUi(selectedPad = 0),
-            live = LiveUi(),
-            canUndo = false,
-            canRedo = false,
-            actions = RhythmActions(),
-            header = { com.pocketstudio.app.onboarding.NextStepCard(com.pocketstudio.app.onboarding.nextSteps(project)) },
-        )
-    }
-
     /**
-     * Right after the assistant on a small phone (360 x 800 dp): the top bar with ⤴, the next step
-     * on one thin line under it (as on every creation tab), the first cells on screen.
+     * Right after the assistant on a small phone (360 x 800 dp): the top bar with ⤴, the first cells
+     * on screen (G5: the next step is the Guide's, in its bar at the bottom).
      */
     @Test
     @Config(qualifiers = "w360dp-h616dp-xxhdpi")
     fun rhythmAfterWizard() = shoot("rhythm_after_wizard") {
         val project = com.pocketstudio.app.rhythm.RhythmViewModel.starterProject()
-        val steps = com.pocketstudio.app.onboarding.nextSteps(project)
-            .map { it.copy(done = it.goal < com.pocketstudio.app.onboarding.StepGoal.Volumes) }
         androidx.compose.foundation.layout.Column {
             com.pocketstudio.app.ui.TopBar(
                 com.pocketstudio.app.ui.TopBarUi("House du soir", playing = false, canUndo = true, canRedo = false, scene = com.pocketstudio.app.ui.sceneChip(project), saved = true),
                 com.pocketstudio.app.ui.TopBarActions(),
             )
-            com.pocketstudio.app.onboarding.NextStepStrip(steps, com.pocketstudio.app.ui.AppTab.Rythme)
             Box(Modifier.weight(1f)) {
                 RhythmScreen(
                     project = project,
@@ -1631,42 +1613,6 @@ open class ScreenshotTest {
             com.pocketstudio.app.export.ShareSheetActions(),
             Modifier.background(Neon.Surface).padding(top = 16.dp),
         )
-    }
-
-    /**
-     * « Ton morceau est prêt », once after the assistant: four big choices over the Morceau tab;
-     * « Écouter » starts just before the first Drop, « Depuis le début » under it (decision 2A, S6).
-     */
-    @Test
-    fun songReady() = shoot("song_ready") {
-        Box(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.55f)).padding(12.dp), contentAlignment = androidx.compose.ui.Alignment.Center) {
-            com.pocketstudio.app.onboarding.SongReadyCard(
-                com.pocketstudio.app.onboarding.SongReadyUi("House du soir", seconds = 160, parts = 6, startsLater = true),
-                com.pocketstudio.app.onboarding.SongReadyActions(guide = {}),
-            )
-        }
-    }
-
-    /**
-     * The card folded while the song plays (Benjamin's report: it stayed over the screen): one line
-     * over the bottom bar, « Ton morceau est prêt » (a touch opens the card again), ■ Arrêter,
-     * Partager, ✕.
-     */
-    @Test
-    fun songReadyBar() = shoot("song_ready_bar") {
-        androidx.compose.foundation.layout.Column(Modifier.fillMaxSize()) {
-            Box(Modifier.weight(1f))
-            com.pocketstudio.app.onboarding.SongReadyBar(
-                pending = true, projectId = "shot", ui = com.pocketstudio.app.onboarding.SongReadyUi("Jump up DnB", seconds = 298, parts = 46, playing = true),
-                actions = com.pocketstudio.app.onboarding.SongReadyActions(), edits = 0, open = {},
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-            )
-            com.pocketstudio.app.ui.SpaceBar(
-                com.pocketstudio.app.ui.Space.entries.map { sp ->
-                    com.pocketstudio.app.ui.NavEntry(sp.name, sp.label, sp.hint, sp.icon, sp == com.pocketstudio.app.ui.Space.Structure) {}
-                },
-            )
-        }
     }
 
     @Test

@@ -14,6 +14,7 @@ import com.pocketstudio.engine.OfflineExport
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.DropVariation
 import com.pocketstudio.model.StarterWizard
+import com.pocketstudio.model.guide.GuideFollow
 import com.pocketstudio.model.bassChannels
 import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.partSteps
@@ -36,7 +37,9 @@ import java.io.File
  * commands of that export, which `ps_render` replays on Linux.
  *
  * Off by default; `-Pbench.out=<dir>` turns it on (`-Pbench.render=<ps_render>` renders the kit
- * voices the assistant turns into sounds; `-Pbench.styles=a,b` keeps a few styles).
+ * voices the assistant turns into sounds; `-Pbench.styles=a,b` keeps a few styles). G6:
+ * `-Pbench.guide=accept` (or `first`) records each song once followed to the end of its Guide's
+ * parcours ([GuideFollow]: docs/PLAN-GUIDE.md §4.5 « Son »).
  */
 @RunWith(RobolectricTestRunner::class)
 class SongBenchExport {
@@ -59,6 +62,8 @@ class SongBenchExport {
         val renderer = System.getProperty("ps.bench.render")?.takeIf { it.isNotBlank() }?.let(::File)
         val only = System.getProperty("ps.bench.styles")?.split(',')?.map { it.trim() }?.filter { it.isNotEmpty() }?.toSet().orEmpty()
         val styles = StarterWizard.STYLES.filter { only.isEmpty() || it.id in only }
+        val follow = System.getProperty("ps.bench.guide")?.takeIf { it.isNotBlank() }
+            ?.let { v -> GuideFollow.Policy.entries.firstOrNull { it.name.equals(v, ignoreCase = true) } ?: error("bench.guide: accept or first, not $v") }
         assumeTrue("no style matches ${only.joinToString()}", styles.isNotEmpty())
 
         val sink = RecordingSink(File(out, "samples"), renderer)
@@ -71,8 +76,10 @@ class SongBenchExport {
                 var made: Pair<Project, Map<String, Pcm>>? = null
                 library.quickCreate(style.id) { project, sounds, _ -> made = project to sounds }
                 waitFor("the song of ${style.id}", 120) { made != null || library.quick.value.error != null }
-                val (song, sounds) = checkNotNull(made) { "${style.id}: ${library.quick.value.error}" }
+                val (made0, sounds) = checkNotNull(made) { "${style.id}: ${library.quick.value.error}" }
                 library.quickDone()
+                // G6: the song as it is once its Guide's parcours is followed to the end.
+                val song = follow?.let { policy -> GuideFollow.follow(made0, policy).also { println("bench: ${style.id} followed (${it.decisions.size} cards)") }.project } ?: made0
                 // Its live pads are not prepared: they never play in a song's export.
                 var id: String? = null
                 projects.create(song.copy(livePadsPending = false), sounds) { id = it }

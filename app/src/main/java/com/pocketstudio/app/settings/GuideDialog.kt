@@ -63,7 +63,7 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
             tr("Sons : la batterie, la basse acide, la voix et chaque piste d'instrument, en puces en haut."),
             tr("Mix : la console (les volumes côte à côte), les effets, l'automation et l'export."),
             tr("Live : jouer les parties en direct, avec les pads et les effets."),
-            tr("Plus : tes projets, l'aide, les missions, les réglages, le clavier MIDI."),
+            tr("Plus : tes projets, l'aide, les réglages, le clavier MIDI."),
             tr("Le Mode simple (Réglages) n'en garde que quatre : Mon morceau, Rythme, Clavier, Envoyer."),
         ),
     ),

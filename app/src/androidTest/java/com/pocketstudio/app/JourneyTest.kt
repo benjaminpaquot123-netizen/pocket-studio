@@ -92,7 +92,8 @@ class JourneyTest {
             j.chooseStyle("jump_up", "Bass music")
             j.createNow()
             // Made (its kit voices rendered on the phone), saved, then opened: the screen is rebuilt.
-            j.await("song_ready", timeoutMs = 300_000)
+            // G5: the Guide opens by itself on « Ton morceau est prêt ! ».
+            j.await("guide_card_start.ready", timeoutMs = 300_000)
             // Fetched at each use: the app clears the ViewModel store and rebuilds the activity when it opens the song.
             fun rhythm() = rhythmOf(scenario)
             waitFor("the song opened", 30) { rhythm().project.value.song.isNotEmpty() }
@@ -100,9 +101,9 @@ class JourneyTest {
             log("song: ${song.name}, ${song.song.size} parts, ${"%.0f".format(songSeconds(song))} s at ${song.tempoBpm} BPM")
             runBlocking { rhythm().awaitSoundsLoadedForTest() }  // its sounds in, as when the card shows
 
-            listen(rhythm(), "song_ready_listen", seconds = 60)
-            if (j.exists("song_ready_close")) j.tap("song_ready_close")
-            if (j.exists("song_ready_bar_close")) j.tap("song_ready_bar_close")
+            listen(rhythm(), "guide_option_drop", seconds = 60)
+            // The Guide's panel folded into its bar: the screen whole again.
+            if (j.exists("guide_panel")) j.tap("guide_bar")
 
             // Structure › Parties › ⋮: « Fill à la fin » on a part, « Montée avant » on another.
             j.tap("tab_Structure")
@@ -185,17 +186,14 @@ class JourneyTest {
             assertTrue(SettingsStore.state.value.simpleMode)
             j.chooseStyle("lofi", "calm")
             j.createNow()
-            // « Ton morceau est prêt ! » (the missions' card may show under it: stopped).
-            j.await("song_ready", timeoutMs = 300_000)
-            j.stopMissionsIfShown()
+            // « Ton morceau est prêt ! », the Guide's first card (G5: « Mon premier morceau » is its first cards).
+            j.await("guide_card_start.ready", timeoutMs = 300_000)
             // Fetched at each use: the app clears the ViewModel store and rebuilds the activity when it opens the song.
             fun rhythm() = rhythmOf(scenario)
             waitFor("the song opened", 30) { rhythm().project.value.song.isNotEmpty() }
             runBlocking { rhythm().awaitSoundsLoadedForTest() }
-            listen(rhythm(), "song_ready_listen", seconds = 20)
-            j.stopMissionsIfShown()
-            if (j.exists("song_ready_close")) j.tap("song_ready_close")
-            if (j.exists("song_ready_bar_close")) j.tap("song_ready_bar_close")
+            listen(rhythm(), "guide_option_drop", seconds = 20)
+            if (j.exists("guide_panel")) j.tap("guide_bar")
 
             j.tap("tab_simple_Clavier")
             recordATakeInTime(rhythm())

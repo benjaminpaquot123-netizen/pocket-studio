@@ -167,11 +167,6 @@ class Journey(private val compose: ComposeTestRule, private val log: (String) ->
         awaitGone("part_sheet")
     }
 
-    /** The missions' card over the screen (the guided song starts them): « Arrêter les missions ». */
-    fun stopMissionsIfShown() {
-        if (exists("mission_stop")) tap("mission_stop")
-    }
-
     companion object {
         /** The family header of the assistant's style list for [family] (StyleFamilies' tags). */
         fun familyTag(family: String) = "wizard_family_$family"

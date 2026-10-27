@@ -523,6 +523,8 @@ A/B n° 1.
 
 ### Lot B · Moteur, le toucher et l'attaque (C++, effort M)
 
+> **Fait (son 8, 2026-10-27)** : `docs/son/banc/apres-son8.md`. Tests hôtes `engine/host-tests/leads2_tests.inc`.
+
 Contenu : suivi de clavier, vélocité → coupure et enveloppe, enveloppe de hauteur, couche de clic, vibrato
 par voix retardé, cycle déphasable, vélocité → volume pour les voix FM de Plaits.
 
@@ -547,6 +549,9 @@ A/B n° 2.
 
 ### Lot C · Moteur, l'unisson pro et un filtre propre (C++, effort M)
 
+> **Fait (son 8)** : supersaw JP-8000, ladder linéaire (au lieu du suréchantillonnage hiir), drive avant le
+> filtre, chorus à entrée stéréo (5ᵉ réglage du chorus). Voir `apres-son8.md`.
+
 Contenu : supersaw JP (rapports, phases aléatoires à graine, dérive, mélange, passe-haut sur f0), ladder
 suréchantillonné ×2 avec hiir (ou SVF par défaut), drive avant le filtre, chorus stéréo de type Juno.
 
@@ -562,6 +567,11 @@ Host-tests :
 A/B n° 3.
 
 ### Lot D · Couches et nouvelles voix (Track.layers + FM, effort L)
+
+> **Fait en partie (son 8)** : couches de l'assistant (supersaw + carré à l'octave, pluck + nappe, piano FM +
+> nappe d'air), PWM, paire FM 2 opérateurs dans le synthé. Pas fait : la couche médium sous un stab reese ou
+> wobble (la réponse jump up est un hoover en octave 4 depuis le lot A), la paire FM dans les recettes (le
+> stab neuro reste celui de Plaits), le piano VCSL. Voir `apres-son8.md` et `docs/REVIEW.md`.
 
 Contenu :
 - recettes à couches : supersaw + carré oct. +1 + clic ; pluck + nappe ; piano FM + air ; stab reese ou

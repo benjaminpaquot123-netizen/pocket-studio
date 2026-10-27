@@ -18,6 +18,7 @@ import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.songBars
+import com.pocketstudio.model.syncScenes
 import com.pocketstudio.model.track
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -188,9 +189,14 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
         return when (name) {
             "has" -> playing(role).isNotEmpty()
             "fx" -> if (role == "any") anyFx else playing(role).let { ts -> ts.isNotEmpty() && ts.all { hasFx(it) } }
+            // G4: an effect that colours the sound, not only a low cut nor « Basse audible » (review G1a: fx.sub, fx.vocal).
+            "colour" -> playing(role).let { ts -> ts.isNotEmpty() && ts.all { t -> live(t).any { !isLowCut(it) && it.effect != EffectType.BASS_EXCITER } } }
             "changed" -> changed(role)
             "layered" -> layered(role)
             "peaks" -> song.sectionsOf(GuideSection.Kind.PEAK).size >= (role.toIntOrNull() ?: 1)
+            // G5: how the song started (« start:first », « start:any »), and what changed since.
+            "start" -> project.guide.start.let { if (role == "any") it.isNotEmpty() else it == role }
+            "start_changed" -> GuideStart.changed(project, role)
             else -> predicates[name] ?: false
         }
     }
@@ -252,6 +258,9 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
 
     private fun names(ts: List<GuideTrack>): String = ts.joinToString(", ") { com.pocketstudio.model.DefaultNames.shown(it.name) }
 
+    /** The app's measures when they were taken on the song as it is now ([GuideSignatures.sound]), else null. */
+    val fresh: GuideMeasures? by lazy { project.guide.measures?.takeIf { it.signature != 0 && it.signature == GuideSignatures.sound(project) } }
+
     private fun build() {
         val p = project
         val peaks = song.sectionsOf(GuideSection.Kind.PEAK)
@@ -267,6 +276,13 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
         predicates["target"] = p.mixer.target != LoudnessTarget.OFF
         predicates["build"] = song.sectionsOf(GuideSection.Kind.BUILD).isNotEmpty()
         predicates["break"] = song.sectionsOf(GuideSection.Kind.BREAK).isNotEmpty()
+        // G5: the first steps of a song made by hand (the old « Prochaine étape »).
+        predicates["beat"] = GuideStart.beat(p)
+        predicates["bassline"] = GuideStart.bassline(p)
+        predicates["tune"] = GuideStart.tune(p)
+        predicates["parts2"] = GuideStart.parts(p) >= 2
+        predicates["song2"] = p.song.size >= 2
+        predicates["song3"] = p.song.size >= 3
 
         // Alerts first: what is wrong, not just unfinished.
         val songBars = p.songBars
@@ -284,7 +300,7 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
         }
         val solos = song.tracks.filter { p.mixer.channels.getOrNull(it.channel)?.solo == true }
         if (solos.isNotEmpty()) fact("mix.solo", GuideSeverity.ALERT, tr("Un solo est resté allumé : %s. Les autres pistes ne s'entendent plus.", names(solos)), solos.map { it.key })
-        p.guide.measures?.truePeakDb?.let { tp ->
+        fresh?.truePeakDb?.let { tp ->
             if (tp > -0.1f) fact("loudness.peak", GuideSeverity.ALERT, tr("Le morceau sature : crête à %s dBTP.", LoudnessTargets.format(tp.toDouble())), values = listOf(tp))
         }
 
@@ -333,7 +349,7 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
             else tr("Master à %s dB, sans cible de volume.", LoudnessTargets.format(p.mixer.masterDb.toDouble())),
             listOf(GuideTrack.MASTER), listOfNotNull(p.mixer.masterDb, lufs),
         )
-        val m = p.guide.measures
+        val m = fresh
         predicates["measured"] = m != null
         val peakLufs = m?.sections?.get(GuideSection.Kind.PEAK.name)
         val breakLufs = m?.sections?.get(GuideSection.Kind.BREAK.name)
@@ -344,8 +360,41 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
                 tr("%1\$s − Break : %2\$s dB (4 au moins).", peakWord, LoudnessTargets.format(d.toDouble())), values = listOf(d))
         }
 
+        // G4: each track's place, the mono and the phone, from the app's measures.
+        levels(m)
+
         // The melody and the chords, in the first Drop (or Refrain).
         melody(peaks)
+    }
+
+    /** G4: the facts and detectors of the measures [m] (null: not measured, or out of date). */
+    private fun levels(m: GuideMeasures?) {
+        val off = if (m == null) emptyMap() else GuideLevels.offsets(this, m)
+        predicates["balanced"] = m != null && off.isNotEmpty() && off.values.all { kotlin.math.abs(it) <= GuideLevels.TOLERANCE_DB }
+        val wrong = off.filter { kotlin.math.abs(it.value) > GuideLevels.TOLERANCE_DB }
+        if (wrong.isNotEmpty()) {
+            val ts = wrong.keys.mapNotNull(::trackOf)
+            fact("mix.levels", GuideSeverity.WARN,
+                tr("Pas à leur place : %s.", ts.joinToString(", ") { t -> "${com.pocketstudio.model.DefaultNames.shown(t.name)} ${LoudnessTargets.format(wrong.getValue(t.key).toDouble())} dB" }),
+                ts.map { it.key }, ts.map { wrong.getValue(it.key) })
+        }
+        val mono = m?.monoLossDb
+        predicates["mono_ok"] = mono != null && mono <= GuideLevels.MONO_MAX_DB
+        if (mono != null) {
+            fact("mono.loss", if (mono > GuideLevels.MONO_MAX_DB) GuideSeverity.WARN else GuideSeverity.INFO,
+                if (mono > GuideLevels.MONO_MAX_DB) tr("En mono, le morceau perd %s dB : des sons s'effacent.", LoudnessTargets.format(mono.toDouble()))
+                else tr("En mono, le morceau ne perd que %s dB : rien ne disparaît.", LoudnessTargets.format(mono.toDouble())),
+                values = listOf(mono))
+        }
+        val phone = m?.phoneDb
+        val lows = (playing(GuideRoles.BASS) + playing(GuideRoles.SUB) + playing(GuideRoles.BASS2))
+        predicates["phone_ok"] = phone != null && phone >= GuideLevels.PHONE_MIN_DB
+        if (phone != null && lows.isNotEmpty()) {
+            fact("phone.low", if (phone < GuideLevels.PHONE_MIN_DB) GuideSeverity.WARN else GuideSeverity.INFO,
+                if (phone < GuideLevels.PHONE_MIN_DB) tr("Sur un haut-parleur de téléphone, la basse disparaît (%s dB).", LoudnessTargets.format(phone.toDouble()))
+                else tr("Sur un haut-parleur de téléphone, la basse se devine encore (%s dB).", LoudnessTargets.format(phone.toDouble())),
+                lows.map { it.key }, listOf(phone))
+        }
     }
 
     private fun notesOf(s: com.pocketstudio.model.Scene, t: GuideTrack): NoteClip? {
@@ -426,6 +475,8 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
             }
         }
         predicates["cut"] = peaks.isNotEmpty() && peaks.filter { it.start > 0 }.all(::cutBefore)
+        // G4: a drum fill (or a crash) on the bar before each peak.
+        predicates["fills"] = peaks.isNotEmpty() && peaks.filter { it.start > 0 }.all { song.fillBars[it.start - 1] }
     }
 
     /** The lanes of strip [ch] that move over the song (a song curve, a loop, a scene's own). */
@@ -505,8 +556,9 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
         val DETECTORS = setOf(
             "style", "by_hand", "key", "form", "target", "build", "break", "lowcut", "pans", "faders", "returns", "sidechain", "peaks_differ",
             "bass_varies", "pad_room", "subtractive", "cut", "build_moves", "send_moves", "sections_move", "pad_moves", "master", "measured", "contrast",
+            "fills", "balanced", "mono_ok", "phone_ok", "beat", "bassline", "tune", "parts2", "song2", "song3",
         )
-        val ROLE_DETECTORS = setOf("has", "fx", "changed", "layered", "peaks")
+        val ROLE_DETECTORS = setOf("has", "fx", "colour", "changed", "layered", "peaks", "start", "start_changed")
 
         fun of(project: Project): GuideFacts = GuideFacts(project, GuideSong(project)).also { it.build() }
 
@@ -532,6 +584,25 @@ object GuideSignatures {
     fun master(p: Project): Int = 31 * (31 * p.mixer.master.hashCode() + p.mixer.target.ordinal) + p.mixer.masterDb.hashCode()
 
     fun lanes(p: Project): Int = p.automation.hashCode()
+
+    private val soundJson = kotlinx.serialization.json.Json { encodeDefaults = false }
+
+    /**
+     * G4: what the song sounds like, as a number (the same in every run: its JSON's hash): its scenes,
+     * mixer, curves, parts, sounds and tempo, not the scene shown nor the Guide's own state. Measures
+     * ([GuideMeasures.signature]) taken on another one are out of date.
+     */
+    fun sound(p: Project): Int {
+        val q = p.syncScenes()
+        val stripped = q.copy(
+            guide = GuideState.EMPTY, name = "", scene = 0, midiMap = emptyList(), liveTake = "",
+            drums = q.drums.copy(lanes = q.drums.lanes.map { it.copy(hits = emptyMap()) }),
+            acid = q.acid.copy(steps = emptyList(), length = 0, locked = emptySet()),
+            synthNotes = com.pocketstudio.model.NoteClip(),
+            tracks = q.tracks.map { it.copy(notes = com.pocketstudio.model.NoteClip()) },
+        )
+        return soundJson.encodeToString(Project.serializer(), stripped).hashCode()
+    }
 
     /** Where every track sits in the stereo: the strips' pans, the pads' own (the project's [com.pocketstudio.model.DrumPattern], not a scene's copy). */
     fun pans(p: Project): Int = 31 * p.mixer.channels.map { it.pan }.hashCode() + p.drums.lanes.map { it.pan }.hashCode()

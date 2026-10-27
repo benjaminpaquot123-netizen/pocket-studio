@@ -249,12 +249,25 @@ class GuideJourneyTest {
         await("the sounds") { !ui().loading && ui().next != null && ui().next!!.id != "start.arrange" }
         while (ui().next?.stage == 1) {
             val id = ui().next!!.id
-            // The analysis may settle meanwhile and move on (a sound card no longer next): take the new one.
-            await("the card $id or the next one") { !ui().loading && (ui().next?.id != id || shown("guide_card_$id")) }
-            if (ui().next?.id != id) continue
-            onCard(id)
-            tap("guide_option_keep")
-            await("$id kept") { status(id) == GuideStatus.DONE }
+            // The analysis may settle meanwhile and move on (this card no longer next): take the new one.
+            if (runCatching { onCard(id) }.isFailure) {
+                if (ui().next?.id != id) continue
+                onCard(id)
+            }
+            // « Garder ce son » of this very card (the next one may already be up in its place); the
+            // panel may be redrawn under the finger: tried again then.
+            val keep = androidx.compose.ui.test.hasTestTag("guide_option_keep") and androidx.compose.ui.test.hasAnyAncestor(androidx.compose.ui.test.hasTestTag("guide_card_$id"))
+            var kept = false
+            repeat(5) {
+                if (!kept && ui().next?.id == id && status(id) != GuideStatus.DONE) {
+                    kept = runCatching {
+                        compose.onNode(keep).apply { if (!isDisplayed()) performScrollTo() }.performClick()
+                        compose.waitForIdle()
+                    }.isSuccess
+                    if (!kept) await("the card $id again", seconds = 10) { !ui().loading && (ui().next?.id != id || matches("guide_card_$id") > 0) }
+                }
+            }
+            await("$id kept") { status(id) == GuideStatus.DONE || ui().next?.id != id }
         }
         // The stages: « Voilà ce que j'ai mis » first (the assistant's chains, effect by effect).
         onCard("fx.review")

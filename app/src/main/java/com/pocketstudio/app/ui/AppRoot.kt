@@ -755,10 +755,12 @@ fun AppRoot() {
     )
     // Réglages › Écran toujours allumé: only while the music plays.
     val screenTransport by rhythmVm.transport.collectAsStateWithLifecycle()
-    LaunchedEffect(screenTransport.playing, settings.keepScreenOn) {
+    val screenPads by rhythmVm.padsAlone.collectAsStateWithLifecycle()
+    val musicPlays = screenTransport.playing || screenPads  // live pads play without ▶ too
+    LaunchedEffect(musicPlays, settings.keepScreenOn) {
         val window = context.findActivity()?.window ?: return@LaunchedEffect
         val flag = android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-        if (screenTransport.playing && settings.keepScreenOn) window.addFlags(flag) else window.clearFlags(flag)
+        if (musicPlays && settings.keepScreenOn) window.addFlags(flag) else window.clearFlags(flag)
     }
     // Engine-side settings follow the Réglages screen at once.
     LaunchedEffect(settings.metronomeLevel) {
@@ -958,11 +960,7 @@ fun AppRoot() {
     // A space chosen in the bottom bar. Leaving the Live page that way ends its take first (a take
     // never goes on unseen behind another page; it is kept as a new version of the song).
     val go: (AppTab) -> Unit = { t ->
-        if (tab == AppTab.Live && t != AppTab.Live) {
-            if (rhythmVm.performanceTaking) rhythmVm.togglePerformance()
-            rhythmVm.leaveLive()
-            rhythmVm.dismissPerformance()
-        }
+        if (tab == AppTab.Live && t != AppTab.Live) rhythmVm.leaveLiveEndingTake()
         tab = t
     }
     var toolPage by rememberSaveable { mutableStateOf<ToolPage?>(null) }
@@ -1001,11 +999,12 @@ fun AppRoot() {
     }
     androidx.activity.compose.BackHandler(enabled = showLive) { closeLive() }
     // The live pads on the whole screen (from Morceau or the Live page), above everything. Leaving
-    // them from Morceau, nothing set in their effects stays on unseen; above the Live page, its
-    // effects stay as that page shows them.
+    // them from Morceau, nothing set in their effects stays on unseen, and a take started there
+    // ends with them (written, as leaving the Live page does); above the Live page, its effects
+    // and its take stay as that page shows them.
     var showLivePads by rememberSaveable { mutableStateOf(false) }
     val closeLivePads = {
-        if (!showLive) rhythmVm.leaveLive()
+        if (!showLive) rhythmVm.leaveLiveEndingTake()
         showLivePads = false
     }
     // The « Ligne du temps » (opened from Morceau) takes the whole screen too.

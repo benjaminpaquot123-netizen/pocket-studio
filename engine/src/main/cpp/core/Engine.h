@@ -125,11 +125,14 @@ enum class CommandType : uint8_t {
     SetAutomationHold,    // a: Automation::pack(kind, channel, slot, param) of a setting, value 1: a finger holds it (touch
                           // take-over: no lane writes it until let go), 0: let go (lanes drive it again from the next step)
     // Live grid (one slot per track, see Slot below):
-    ArmLaunch,            // a: mask of slots (1 << slot), b: quantum in steps (>= 1 bar), value: scene tag >= 0 (its
+    ArmLaunch,            // a: mask of slots (1 << slot), b: quantum in steps (>= 1 bar) | grace << 17, value: scene tag >= 0 (its
                           // content was staged with SetStaging before) or -1 = stop. On the first transport step that is a
                           // multiple of b, before anything of that step sounds, each slot takes over its staged part (or is
                           // emptied: stop) and counts from there. The whole mask = a row: also master/bus curves and effects,
                           // the scene start and sceneSwaps(). The last command for a slot wins; ArmSceneSwap cancels.
+                          // grace (0..16383, 1/64 of a step): a command that comes less than that after a line (a tap on
+                          // the « one » heard, the output's latency later) launches on that line: from the next step, its
+                          // content counted from the line (as if launched there; its launch event says the line).
     CancelLaunch,         // a: mask of slots whose armed launch is dropped
     SetSlotOffset,        // a: slot, b: steps the slot's content has already played when it takes over. Follows
                           // SetStaging: while staging, used by the next launch or scene swap of that slot (then back to
@@ -615,6 +618,7 @@ private:
         int quantum = 16;        // steps: it fires on a multiple of this
         int stagedOffset = 0;    // SetSlotOffset while staging: steps already played when its next launch or swap takes over
         int transportOffset = 0; // SetSlotOffset otherwise: the same for the transport's next start (SetTransport)
+        int late = -1;           // ArmLaunch within its grace: the line just passed it launches on (from the next step)
         int tag = kRowTag;
     };
     std::array<SlotPlay, kSlots> slots_{};

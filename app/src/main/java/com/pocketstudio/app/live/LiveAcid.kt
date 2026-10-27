@@ -1,9 +1,11 @@
 package com.pocketstudio.app.live
 
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.awaitTouchSlopOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -43,6 +45,7 @@ import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.LiveSlots
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.fadingVerticalEdges
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 /** The 303's parameters played on the Live page (AcidTrack::Param). */
@@ -156,7 +159,7 @@ private fun BigSlider(label: String, param: Int, value: Float, actions: LiveActi
     val accent = Neon.Acid
     val rail = Neon.SurfaceHigh
     Box(
-        modifier.height(56.dp).clip(RoundedCornerShape(14.dp)).testTag("live_acid_$param")
+        modifier.height(56.dp).clip(RoundedCornerShape(14.dp)).systemGestureExclusion().testTag("live_acid_$param")
             // TalkBack: a slider it can read and move (like the knobs).
             .semantics {
                 contentDescription = label
@@ -171,9 +174,24 @@ private fun BigSlider(label: String, param: Int, value: Float, actions: LiveActi
                         lastUp[0] = 0L
                         return@awaitEachGesture
                     }
+                    // A finger that first goes up or down scrolls the panel; across (or a tap), it plays.
+                    var across = false
+                    val slop = awaitTouchSlopOrCancellation(down.id) { change, over ->
+                        if (abs(over.x) >= abs(over.y)) {
+                            across = true
+                            change.consume()
+                        }
+                    }
+                    val tapped = slop == null && currentEvent.changes.firstOrNull { it.id == down.id }?.let { !it.pressed && !it.isConsumed } == true
+                    if (!across && !tapped) return@awaitEachGesture
                     act.holdAcid(param, true)
                     try {
-                        act.setAcid(param, (down.position.x / size.width).coerceIn(0f, 1f))
+                        act.setAcid(param, ((slop?.position ?: down.position).x / size.width).coerceIn(0f, 1f))
+                        if (tapped) {
+                            lastUp[0] = currentEvent.changes.first().uptimeMillis
+                            lastAt[0] = down.position
+                            return@awaitEachGesture
+                        }
                         while (true) {
                             val event = awaitPointerEvent()
                             val change = event.changes.firstOrNull { it.id == down.id } ?: break

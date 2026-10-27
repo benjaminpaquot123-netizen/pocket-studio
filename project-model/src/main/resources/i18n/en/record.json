@@ -52,11 +52,11 @@
   "Les pistes audio sont toutes prises : les pads live de cette prise n'ont pas été gardés.": "Every audio track is taken: the live pads of this take were not kept.",
   "Écriture des pads live…": "Writing the live pads…",
   "Les pads live de ta prise sont sur la piste audio « %s ».": "The live pads of your take are on the audio track “%s”.",
-  "Les pads sont enregistrés, pas M.": "The pads are recorded, M is not.",
+  "Les pads sont enregistrés, pas M : pour un break, arrête la colonne avec ■.": "The pads are recorded, M is not: for a break, stop the column with ■.",
   "Pas de piste à jouer : ajoute une piste dans Synthé.": "No track to play: add one in Synth.",
   "Octave plus grave": "Octave down",
   "Octave plus aiguë": "Octave up",
-  "Tes notes vont dans la prise, chacune sur sa double croche.": "Your notes go into the take, each on its sixteenth.",
+  "Tes notes s'ajoutent à la boucle de la partie que joue la piste, comme un looper, chacune sur sa double croche.": "Your notes are added to the loop of the part the track plays, like a looper, each on its sixteenth.",
   "Joue en direct. Avec ●, tes notes vont dans la prise.": "Play live. With ●, your notes go into the take.",
   "de la mesure": "from bar",
   "à la mesure": "to bar"

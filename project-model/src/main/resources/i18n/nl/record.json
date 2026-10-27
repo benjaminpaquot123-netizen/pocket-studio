@@ -52,11 +52,11 @@
   "Les pistes audio sont toutes prises : les pads live de cette prise n'ont pas été gardés.": "Alle audiosporen zijn bezet: de live pads van deze opname zijn niet bewaard.",
   "Écriture des pads live…": "Live pads schrijven…",
   "Les pads live de ta prise sont sur la piste audio « %s ».": "De live pads van je opname staan op het audiospoor „%s”.",
-  "Les pads sont enregistrés, pas M.": "De pads worden opgenomen, M niet.",
+  "Les pads sont enregistrés, pas M : pour un break, arrête la colonne avec ■.": "De pads worden opgenomen, M niet: stop voor een break de kolom met ■.",
   "Pas de piste à jouer : ajoute une piste dans Synthé.": "Geen spoor om te spelen: voeg er een toe in Synth.",
   "Octave plus grave": "Octaaf lager",
   "Octave plus aiguë": "Octaaf hoger",
-  "Tes notes vont dans la prise, chacune sur sa double croche.": "Je noten gaan in de opname, elk op zijn zestiende.",
+  "Tes notes s'ajoutent à la boucle de la partie que joue la piste, comme un looper, chacune sur sa double croche.": "Je noten komen in de loop van het deel dat de track speelt, zoals een looper, elk op zijn zestiende.",
   "Joue en direct. Avec ●, tes notes vont dans la prise.": "Speel live. Met ● gaan je noten in de opname.",
   "de la mesure": "vanaf maat",
   "à la mesure": "tot maat"

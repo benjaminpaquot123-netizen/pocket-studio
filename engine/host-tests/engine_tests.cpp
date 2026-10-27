@@ -6115,6 +6115,51 @@ void testLiveSlotLaunchesOnTheBar() {
     std::printf("  live launch: pad3 %u, pad6 %u, drums from step %d\n", engine.laneTriggerCount(2), engine.laneTriggerCount(5), engine.slotStart(ps::kSlotDrums));
 }
 
+// A launch that comes just after its line (a tap on the « one » heard, the output's latency later)
+// launches on that line: counted from it, from the next step on. Past the grace it waits as before.
+void testLiveLaunchGraceTakesTheLineJustPassed() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});  // the scene: pad 1 on step 0
+    stageDrums(engine, {{2, 0}, {2, 8}}, 16);                // waiting: pad 3 on 0 and 8
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    int64_t now = 0;
+    renderToStep(engine, now, 16, kLiveStep / 2);  // half a step past the bar line (step 16.5)
+    const int grace = 2 * 64;                       // two steps
+    engine.post({ps::CommandType::ArmLaunch, 1.0f, 1 << ps::kSlotDrums, 16 | grace << 17});
+    renderToStep(engine, now, 17, 10);
+    ps::LaunchEvent e;
+    CHECK(engine.slotTag(ps::kSlotDrums) == 1 && engine.slotStart(ps::kSlotDrums) == 16);
+    CHECK(engine.slotPending(ps::kSlotDrums) == ps::Engine::kNoLaunch);
+    CHECK(engine.popLaunchEvent(e) && e.slot == ps::kSlotDrums && e.tag == 1 && e.step == 16);
+    CHECK(engine.laneTriggerCount(2) == 0);  // its step 0 already passed: not played late
+    renderToStep(engine, now, 24, 10);
+    CHECK(engine.laneTriggerCount(2) == 1);  // its step 8 on transport step 24: in phase with the line
+    // Past the grace (three steps after the line): the next line, as always.
+    stageDrums(engine, {{5, 0}}, 16);
+    renderToStep(engine, now, 35, 10);
+    engine.post({ps::CommandType::ArmLaunch, 2.0f, 1 << ps::kSlotDrums, 16 | grace << 17});
+    renderToStep(engine, now, 47, 10);
+    CHECK(engine.slotTag(ps::kSlotDrums) == 1 && engine.slotPending(ps::kSlotDrums) == 2);
+    renderToStep(engine, now, 48, 10);
+    CHECK(engine.slotTag(ps::kSlotDrums) == 2 && engine.slotStart(ps::kSlotDrums) == 48 && engine.laneTriggerCount(5) == 1);
+    CHECK(engine.popLaunchEvent(e) && e.step == 48);
+    // No grace (0): just past the line still waits for the next one.
+    stageDrums(engine, {{6, 0}}, 16);
+    renderToStep(engine, now, 64, kLiveStep / 2);
+    engine.post({ps::CommandType::ArmLaunch, 3.0f, 1 << ps::kSlotDrums, 16});
+    renderToStep(engine, now, 79, 10);
+    CHECK(engine.slotTag(ps::kSlotDrums) == 2);
+    renderToStep(engine, now, 80, 10);
+    CHECK(engine.slotTag(ps::kSlotDrums) == 3 && engine.slotStart(ps::kSlotDrums) == 80);
+    // A whole row within its grace: the scene starts on the line too.
+    stageDrums(engine, {{7, 0}}, 16);
+    renderToStep(engine, now, 96, kLiveStep / 4);
+    engine.post({ps::CommandType::ArmLaunch, 4.0f, ps::kAllSlots, 16 | grace << 17});
+    renderToStep(engine, now, 98, 10);
+    CHECK(engine.slotTag(ps::kSlotDrums) == 4 && engine.slotStart(ps::kSlotAcid) == 96 && engine.sceneSwaps() == 1);
+    std::printf("  launch grace: drums from %d, row from %d\n", engine.slotStart(ps::kSlotDrums), engine.slotStart(ps::kSlotAcid));
+}
+
 // Each slot counts from its own launch: patterns of different lengths launched at different bars
 // play their steps from there (not from the scene's start).
 void testLiveSlotsKeepTheirOwnLoops() {
@@ -8147,6 +8192,7 @@ int main(int argc, char** argv) {
         {"nan_settings_are_ignored", testNanSettingsAreIgnored},
         {"render_is_block_size_independent", testRenderIsBlockSizeIndependent},
         {"lfos_restart_with_the_transport", testLfosRestartWithTheTransport},
+        {"live_launch_grace", testLiveLaunchGraceTakesTheLineJustPassed},
         {"synth_note_has_its_pitch_from_its_first_frame", testSynthNoteHasItsPitchFromItsFirstFrame},
         {"command_budget_per_callback", testCommandBudgetPerCallback},
         {"glue_chains_flat_under_threshold", gain_staging::testGlueChainsAreFlatUnderTheThreshold},

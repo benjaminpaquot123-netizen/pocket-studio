@@ -167,6 +167,27 @@ class LiveDriveEstimateTest {
         assertEquals("one estimate for the two edits", first + 1, sink.reportOnly + sink.arrays)
     }
 
+    /**
+     * Son 8 review: soloing, muting or moving a fader is not a change of sound: no estimate on the
+     * soloed mix (its drive would push the whole mix into the limiter once un-soloed).
+     */
+    @Test
+    fun aSoloMuteOrFaderIsNotEstimatedAgain() {
+        val vm = open(song(Project.MIX_V4))
+        estimate(vm)
+        waitUntil("no drive estimated") { vm.liveDriveDb != null }
+        val first = sink.reportOnly + sink.arrays
+        val p0 = vm.project.value
+        vm.toggleSolo(3)
+        vm.toggleMute(4)
+        vm.setChannelVolume(2, 0.3f)
+        assertEquals("a solo, a mute or a fader changed the sound's key", vm.liveSoundKeyOf(p0), vm.liveSoundKeyOf(vm.project.value))
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(3000))
+        Thread.sleep(200)
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(500))
+        assertEquals("estimated again after a solo, a mute or a fader", first, sink.reportOnly + sink.arrays)
+    }
+
     private companion object {
         /** NativeEngine's CMD_MASTER (setKnownDrive: its a = 8). */
         const val CMD_MASTER = 67

@@ -131,6 +131,9 @@ public:
     bool wideWanted() const { return param(Width) > 0.0f || param(MidLayer) > 0.0f; }
     // Every S4 setting at its default: the sound as before them (tests).
     bool plain() const;
+    // Every setting of the leads chantier's lots B to D at its default: the voices render through the
+    // code from before them (renderVoices), sample for sample.
+    bool leadsAtRest() const;
     // A setting from an automation lane, `offset` frames into the next render() (on its step's frame).
     void automate(Param param, float value, int offset);
     // The song's position for CycleBars: sequencer step `step` (in sixteenths, from the song's start)
@@ -144,6 +147,7 @@ public:
         noiseState_ = kNoiseSeed;
         // Lots B to D: the click's noise, the supersaw's phases and drift, the pulse sweep from their start.
         clickState_ = kClickSeed;
+        clickHigh_.reset();
         phaseState_ = kPhaseSeed;
         pwmPhase_ = 0.0f;
     }
@@ -195,6 +199,7 @@ private:
         float fmCar = 0.0f, fmMod = 0.0f;          // Fm: the carrier's and the modulator's phases (cycles)
         float fmInc = 0.0f, fmModInc = 0.0f;       // and their steps per (oversampled) frame
         float vibrato = 1.0f;                      // VibratoDelay: the share of the vibrato heard now
+        float fmIndexMax = 0.0f;                   // Fm: the most index (radians) the band holds at this pitch
     };
 
     struct Event {
@@ -213,7 +218,6 @@ private:
     // renderVoices, the code from before them: the same sound, sample for sample).
     template <bool Wide, bool Over>
     void renderLeads(int from, int to);
-    bool leadsAtRest() const;
     void renderLegacy(float* mono, int numFrames);
     void setOversampled(bool on);
     void updateShape();

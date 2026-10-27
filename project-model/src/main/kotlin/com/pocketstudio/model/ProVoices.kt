@@ -77,7 +77,8 @@ object ProVoices {
     /**
      * The leads chantier, lots B to D (docs/hits/leads-pros.md § 6 and § 8): what the engine gained,
      * set on each sound by its name. The cut-off follows the note in the engine ([SynthPatch.KEY_TRACK]:
-     * the recipe's once-a-part [keyTracked] is then left out) and opens with the velocity; plucks and
+     * the recipe's once-a-part [keyTracked] is then left out; plucks 0.7: at 1 their state-variable
+     * filter opened so high on C6 that it aliased, −56 → −50 dB) and opens with the velocity; plucks and
      * keys « bark » when struck hard ([SynthPatch.VELOCITY_ENV]) and start with a 4 ms click and a
      * 12-semitone tick; the vibratos wait 250 ms; the supersaws are JP-8000s (free phases, drift,
      * Szabo's ratios, the high-pass at f0); the hoover's square breathes (PWM) and its note dives
@@ -97,8 +98,8 @@ object ProVoices {
             "Nappe chaude" to listOf(SUPERSAW to 1f, KEY_TRACK to 0.3f),
             "Accords future bass" to listOf(SUPERSAW to 1f, KEY_TRACK to 0.3f, VELOCITY_CUTOFF to 0.3f),
             "Cordes" to listOf(SUPERSAW to 1f, KEY_TRACK to 0.3f, vibratoLate),
-            "Pluck" to listOf(KEY_TRACK to 1f, VELOCITY_CUTOFF to 0.25f, VELOCITY_ENV to 0.5f, CLICK to 0.3f) + tick,
-            "Pluck future" to listOf(KEY_TRACK to 1f, VELOCITY_CUTOFF to 0.25f, VELOCITY_ENV to 0.5f, CLICK to 0.3f) + tick,
+            "Pluck" to listOf(KEY_TRACK to 0.7f, VELOCITY_CUTOFF to 0.25f, VELOCITY_ENV to 0.5f, CLICK to 0.3f) + tick,
+            "Pluck future" to listOf(KEY_TRACK to 0.7f, VELOCITY_CUTOFF to 0.25f, VELOCITY_ENV to 0.5f, CLICK to 0.3f) + tick,
             "Arpège" to listOf(KEY_TRACK to 0.8f, VELOCITY_CUTOFF to 0.2f, CLICK to 0.2f, CLEAN_LADDER to 1f),
             "Cloche" to listOf(KEY_TRACK to 0.5f, VELOCITY_CUTOFF to 0.25f, CLEAN_LADDER to 1f),
             "Orgue" to listOf(CLEAN_LADDER to 1f),

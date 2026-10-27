@@ -410,6 +410,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private var liveDriveJob: kotlinx.coroutines.Job? = null
     /** The wait before estimating again after a change of sound or mix (watchSoundForLiveDrive). */
     private var liveDriveSettle: kotlinx.coroutines.Job? = null
+    /** The drive last given to the live engine (giveKnownDrive); null: none yet. */
+    private var liveDriveGiven: Float? = null
     /** What the drive was estimated for ([liveDriveKeyOf]); null: not yet. */
     private var liveDriveKey: Int? = null
     /** What an estimate was last tried for, found or not: a failed one is not tried again at each ▶. */
@@ -8302,10 +8304,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     private fun liveDriveKeyOf(p: Project): Int = java.util.Objects.hash(p.song, p.style, p.tempoBpm, p.mixVersion, p.allScenes.size, liveSoundKeyOf(p))
 
-    /** What the tracks sound like and how they are mixed: their sounds and layers, the mixer, the 303's sound. */
-    private fun liveSoundKeyOf(p: Project): Int = java.util.Objects.hash(
+    /**
+     * What the tracks sound like: their sounds and layers, each strip's effects, sends and quick
+     * controls, the master's effects and buses, the 303's sound. Not the faders, pans, mutes nor
+     * solos (son 8 review: soloing the hi-hat while playing must not estimate the drive on it).
+     */
+    internal fun liveSoundKeyOf(p: Project): Int = java.util.Objects.hash(
         p.instrumentTracks.map { listOf(it.engine, it.synth, it.plaits, it.instrument, it.sampled, it.multi, it.voice808, it.layers) },
-        p.mixer, p.acid.sound,
+        p.mixer.channels.map { listOf(it.inserts, it.sends, it.macros) }, p.mixer.master, p.mixer.buses, p.mixer.masterDb, p.mixer.target,
+        p.acid.sound,
     )
 
     /**
@@ -8326,6 +8333,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     kotlinx.coroutines.delay(LIVE_DRIVE_SETTLE_MS)
                     if (liveDriveKey == null && liveDriveTriedKey == null) return@launch  // never estimated: ▶ will
                     liveDriveJob?.join()  // one estimated for the sound before: this one after it
+                    // An export's gain gives way only when an estimate really starts for the new sound.
+                    val p = project.value
+                    val now = liveDriveKeyOf(p)
+                    if (!NativeEngine.isAvailable || !liveDriveWanted(p) || now == liveDriveKey || now == liveDriveTriedKey) return@launch
                     liveDriveFromExport = false
                     estimateLiveDrive()
                 }
@@ -8380,6 +8391,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             liveDriveLevel = knownLevelOf(p, found)
             liveDriveKey = key
             // Taken at once while the song plays; before ▶ the engine keeps it until the target comes on.
+            // Son 8 review: a new estimate (the sound changed) that would push the drive up while the
+            // song plays or a take records waits for the next ▶; one that brings it down is taken.
+            val busy = _transport.value.playing || _recording.value
+            val given = liveDriveGiven
+            if (busy && given != null && drive > given) return@launch
             giveKnownDrive(p, drive, liveDriveLevel)
             if (_transport.value.playing) liveDrivePlayedKey = key
             AppLog.add("Gain du direct : ${"%+.1f".format(drive)} dB (estimé sur « ${com.pocketstudio.model.video.VideoPlanner.partLabel(p, part.scene)} »)")
@@ -8401,6 +8417,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * projects made before send the drive alone, as in S6.
      */
     private fun giveKnownDrive(p: Project, drive: Float, level: Float) {
+        liveDriveGiven = drive
         if (p.mixVersion >= Project.MIX_V4) NativeEngine.setKnownLevel(level)
         NativeEngine.setKnownDrive(drive)
     }

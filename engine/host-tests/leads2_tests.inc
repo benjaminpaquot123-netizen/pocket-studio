@@ -229,6 +229,40 @@ void testDefaultsArePlain() {
         t.setParam(p, v);
         CHECK(!t.plain());
     }
+    CHECK(s.leadsAtRest());
+    // Golden: a plain synth and a wide, oversampled one with copies render exactly what the code from
+    // before the lots rendered (FNV-1a of the samples' bits, taken from the engine at 8d29296).
+    uint64_t h = 1469598103934665603ull;
+    for (int variant = 0; variant < 2; ++variant) {
+        ps::Synth g;
+        g.prepare(kRate);
+        if (variant == 1) {
+            g.setParam(P::Width, 0.6f);
+            g.setParam(P::Oversample, 1.0f);
+            g.setParam(P::Unison, 0.5f);
+        }
+        CHECK(g.leadsAtRest());
+        std::vector<float> l(24000, 0.0f), r(24000, 0.0f);
+        for (int f = 0; f < 24000; f += 192) {
+            if (f == 0) {
+                g.noteOn(48, 0.9f, 7);
+                g.noteOn(55, 0.6f, 100);
+            }
+            if (f == 12096) g.noteOff(48, 3);
+            g.render(l.data() + f, r.data() + f, 192);
+        }
+        for (int i = 0; i < 24000; ++i) {
+            for (float x : {l[size_t(i)], r[size_t(i)]}) {
+                uint32_t b;
+                std::memcpy(&b, &x, 4);
+                h = (h ^ b) * 1099511628211ull;
+            }
+        }
+    }
+    std::printf("  golden render of the synth at rest: %llu\n", static_cast<unsigned long long>(h));
+#if !defined(__SANITIZE_ADDRESS__)
+    CHECK(h == 10214537652659317471ull);
+#endif
     // FmRatio and CycleOffset alone change nothing that plays (no FM, no cycle).
     ps::Synth t;
     t.prepare(kRate);

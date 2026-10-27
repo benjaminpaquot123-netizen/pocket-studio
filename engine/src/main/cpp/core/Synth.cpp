@@ -1008,6 +1008,10 @@ void Synth::renderLeads(int from, int to) {
                 if (fmAmount > 0.0f) {
                     v.fmInc = hz * osc1Ratio / overRate;
                     v.fmModInc = v.fmInc * fmRatio;
+                    // (Review) The index kept under what the band holds: the sidebands to about
+                    // fc + (I + 1) fm stay under 0.45 of the rate (none at all once the modulator is past it).
+                    const float carrier = hz * osc1Ratio, modulator = carrier * fmRatio;
+                    v.fmIndexMax = modulator > 0.0f ? std::max(0.0f, (0.45f * overRate - carrier) / modulator - 1.0f) : 0.0f;
                 }
                 // SubFloor: oscillator 2 an octave down never under 30 Hz either (an octave up there).
                 const float osc2Ratio = subFloor && octaveRatio < 1.0f && v.baseHz * octaveRatio < kSubFloorHz ? 2.0f * octaveRatio : octaveRatio;
@@ -1041,12 +1045,12 @@ void Synth::renderLeads(int from, int to) {
                 if (fmAmount > 0.0f) {
                     // The FM pair: a sine carrier on oscillator 1's pitch, its phase moved by a sine at
                     // the ratio, the index (up to 6 radians) falling with the filter envelope.
-                    const float index = 6.0f * fmAmount * (0.2f + 0.8f * fenv) * (1.0f / 6.2831853f);
+                    const float index = std::min(6.0f * fmAmount * (0.2f + 0.8f * fenv), v.fmIndexMax) * (1.0f / 6.2831853f);
                     const float fm = sine(v.fmCar + index * sine(v.fmMod));
                     v.fmCar += v.fmInc;
                     v.fmMod += v.fmModInc;
-                    if (v.fmCar >= 1.0f) v.fmCar -= 1.0f;
-                    if (v.fmMod >= 1.0f) v.fmMod -= 1.0f;
+                    v.fmCar -= std::floor(v.fmCar);
+                    v.fmMod -= std::floor(v.fmMod);
                     osc1 += fmMix * (fm - osc1);
                 }
                 if (jp) osc1 *= centreGain;
@@ -1094,7 +1098,7 @@ void Synth::renderLeads(int from, int to) {
                 const float F = std::sqrt(1.0f + u * u);
                 const float d = u - v.preU[ch];
                 const float mid = 0.5f * (u + v.preU[ch]);
-                const float y = std::fabs(d) > 1.0e-4f ? (F - v.preF[ch]) / d : mid / std::sqrt(1.0f + mid * mid);
+                const float y = std::fabs(d) > 1.0e-3f * std::max(1.0f, std::fabs(u)) ? (F - v.preF[ch]) / d : mid / std::sqrt(1.0f + mid * mid);
                 v.preU[ch] = u;
                 v.preF[ch] = F;
                 return y * preComp_;

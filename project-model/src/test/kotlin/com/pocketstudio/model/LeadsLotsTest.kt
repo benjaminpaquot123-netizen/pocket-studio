@@ -24,7 +24,7 @@ class LeadsLotsTest {
     fun theLibrarysVoicesHaveTheirTouch() {
         with(SynthPatch) {
             for (name in listOf("Supersaw", "Lead trance", "Nappe", "Nappe chaude", "Cordes")) assertEquals(name, 1f, lib(name).get(SUPERSAW))
-            assertEquals(1f, lib("Pluck").get(KEY_TRACK))
+            assertEquals(0.7f, lib("Pluck").get(KEY_TRACK))
             assertTrue(lib("Pluck").get(CLICK) > 0f && lib("Pluck").get(VELOCITY_ENV) > 0f && lib("Pluck").get(PITCH_ENV) > 0f)
             assertTrue(lib("Lead").get(VIBRATO_DELAY) > 0f && lib("Lead").get(VIBRATO) > 0f)
             assertTrue(lib("Hoover").get(PWM) > 0f)

@@ -288,6 +288,6 @@ Non-harmoniques et repliement d'une note tenue (suréchantillonnée) ; vélocit�
 - Vélocité des leads : 1,07 à 1,13 (cible 1,15) ; le Supersaw, ouvert à 10 kHz, ne s'éclaircit pas (0,96 : seuls le niveau et le clic changent).
 - Mouvement des nappes sur 8 mesures : médiane 2,12 → 2,27 dB (12/30 au-dessus de 2,5) avec une courbe à ±0,6 octave.
 - Centroïde des leads entre 1,5 et 3 kHz : 10/34 (8 avant) ; l'attaque des leads dans les morceaux ne bouge pas (beaucoup sont des voix Plaits ; à la sonde le Supersaw passe de 1,3 à 10,9 dB).
-- Le Pluck suivi à 100 % ouvre son SVF très haut sur ses notes aiguës : non-harmoniques à Do6 −56 → −50 dB.
+- Le Pluck suivi à 100 % ouvrait son SVF très haut sur ses notes aiguës (non-harmoniques à Do6 −56 → −50 dB) : après la relecture, suivi à 70 % : −64 dB (centroïde / f0 1,96 / 2,47 / 1,78). Les mesures de mix et de voix ci-dessus ont été prises avec 100 %.
 - Lot D : pas de couche médium sous un stab reese ou wobble, la paire FM n'est dans aucune recette (le stab neuro reste celui de Plaits), pas de piano VCSL.
 - Direct : riddim (−1,56) et jersey club (−1,27) gardent leur Intro à plus de 1 LU de l'export (gain estimé sur le Refrain seul : jersey 5,17 dB contre 6,22 à l'export).

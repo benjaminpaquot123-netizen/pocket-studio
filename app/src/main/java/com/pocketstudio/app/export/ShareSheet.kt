@@ -405,7 +405,7 @@ private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetAct
             val names = check.names.joinToString(", ")
             CheckLine(
                 icon, color,
-                if (simple) tr("Coupé dans Mes pistes, donc absent du fichier : %s.", names) else tr("Coupé dans le mixeur, donc absent du fichier : %s.", names),
+                if (simple) tr("Coupé dans Mes pistes, donc absent du fichier : %s.", names) else tr("Coupé (muet), donc absent du fichier : %s.", names),
                 "share_check_muted",
             )
             if (check.chs.isNotEmpty()) Fixes { FixButton(tr("Tout réentendre"), "share_fix_muted", onClick = { actions.unmute(check.chs) }) }

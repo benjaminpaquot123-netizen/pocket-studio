@@ -82,7 +82,11 @@ data class GuideCard(
     }
 }
 
-/** An option of a card: what it is called, why, its starting value, and what it does ([action]). */
+/**
+ * An option of a card: what it is called, why, its starting value, and what it does ([action]).
+ * [simpleLabel] / [simpleWhy]: its everyday words in the Mode simple (no Hz, dB, LUFS, master…);
+ * an option that has them shows no [value] there (a figure of the full mode).
+ */
 @Serializable
 data class GuideProposal(
     val id: String,
@@ -90,7 +94,17 @@ data class GuideProposal(
     val why: String = "",
     val value: String? = null,
     val action: GuideAction = GuideAction(),
-)
+    val simpleLabel: String? = null,
+    val simpleWhy: String? = null,
+) {
+    /** Its label in the interface's language, in everyday words in the Mode simple when it has some. */
+    fun labelFor(simple: Boolean): String = guideText(if (simple) simpleLabel ?: label else label)
+
+    fun whyFor(simple: Boolean): String = guideText(if (simple) simpleWhy ?: why else why)
+
+    fun valueFor(simple: Boolean): String? =
+        if (simple && (simpleLabel != null || simpleWhy != null)) null else value?.let(::guideText)
+}
 
 /**
  * What applying an option does (see [GuideActions.apply]). [type]:
@@ -218,7 +232,12 @@ object GuideStages {
     /** The stages of the Mode simple; the others are under « Aller plus loin ». */
     val SIMPLE = setOf(START, 1, 4, 6, 7)
 
-    fun title(stage: Int): String = guideText(if (stage == START) START_TITLE else TITLES.getOrElse(stage) { TITLES.last() })
+    /** The titles the Mode simple says in everyday words (no « master »). */
+    val SIMPLE_TITLES = mapOf(6 to "Les volumes")
+
+    fun title(stage: Int, simple: Boolean = false): String = guideText(
+        if (stage == START) START_TITLE else SIMPLE_TITLES[stage]?.takeIf { simple } ?: TITLES.getOrElse(stage) { TITLES.last() },
+    )
     fun short(stage: Int): String = guideText(if (stage == START) START_SHORT else SHORT.getOrElse(stage) { SHORT.last() })
 }
 

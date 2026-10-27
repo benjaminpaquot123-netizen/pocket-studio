@@ -169,7 +169,7 @@ class OnboardingUiTest {
         compose.onNodeWithText("Intro · le début, en douceur").assertExists()
         compose.onNodeWithText("Couplet · le groove, avec la basse").assertExists()
         compose.onNodeWithText("Refrain · tout le monde joue").assertExists()
-        compose.onNodeWithText("Intro → Couplet → Pré-refrain → Refrain → Post-refrain → Couplet → Pré-refrain → Refrain → Pont → Refrain → Intro pour finir", substring = true).assertExists()
+        compose.onNodeWithText("Intro → Couplet → Pré-refrain → Refrain → Post-refrain → Couplet → Pré-refrain → Refrain → Pont → Refrain → Fin", substring = true).assertExists()
     }
 
     @Test
@@ -184,10 +184,10 @@ class OnboardingUiTest {
         compose.setContent {
             PocketStudioTheme { WizardScreen(ui.copy(step = ui.lastStep), PacksUi(IndexState.Unavailable), null, WizardActions()) }
         }
-        compose.onNodeWithText("Quatre parties", substring = true, ignoreCase = true).assertExists()
+        compose.onNodeWithText("Quatre briques", substring = true, ignoreCase = true).assertExists()
         compose.onNodeWithText("Intro · la batterie pour démarrer").assertExists()
         compose.onNodeWithText("Break · une pause sans kick ni basse").assertExists()
-        compose.onNodeWithText("Intro → Groove → Montée → Drop → Break → Montée → Drop → Intro pour finir", substring = true).assertExists()
+        compose.onNodeWithText("Intro → Groove → Montée → Drop → Break → Montée → Drop → Fin", substring = true).assertExists()
     }
 
     @Test

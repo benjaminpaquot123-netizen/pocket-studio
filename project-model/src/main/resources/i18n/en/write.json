@@ -1,5 +1,4 @@
 {
-  "Dessine la courbe du réglage au doigt (ou une ligne en deux touches) : il bouge tout seul pendant le morceau. Toutes les courbes sont aussi dans le Mixeur.": "Draw the setting's curve with your finger (or a line in two taps): it moves by itself during the song. Every curve is also in the Mixer.",
   "1 point par mesure": "1 point per bar",
   "1 point par temps (¼ de mesure)": "1 point per beat (¼ bar)",
   "Une valeur par temps (¼ de mesure) sur tout le morceau (%d mesures) ; elle glisse d'un point à l'autre.": "One value per beat (¼ bar) over the whole song (%d bars); it glides from point to point.",
@@ -8,13 +7,11 @@
   "Arrête d'abord l'enregistrement pour changer les accords.": "Stop recording first to change the chords.",
   "Fait : accords du morceau %s": "Done: song chords %s",
   "Fait : accords du morceau changés": "Done: song chords changed",
-  "Pour geler une piste, il faut un morceau : ajoute tes parties dans l'onglet Morceau.": "To freeze a track you need a song: add your parts in the Song tab.",
   "Les huit pistes audio sont prises : libères-en une pour geler cette piste.": "All eight audio tracks are in use: free one to freeze this track.",
   "Morceau trop long pour geler une piste (%d minutes au plus).": "Song too long to freeze a track (%d minutes at most).",
   "Gel de la piste…": "Freezing the track…",
   "Fait : piste gelée (%s)": "Done: track frozen (%s)",
   "Fait : piste dégelée (%s)": "Done: track unfrozen (%s)",
-  "%d réglages bougent déjà : retires-en un dans le Mixeur pour en automatiser un autre.": "%d settings already move: remove one in the Mixer to automate another.",
   "Autre tirage des coups au hasard": "Draw the chance hits again",
   "Ce pad boucle sur": "This pad loops over",
   "%d pas": "%d steps",
@@ -31,7 +28,6 @@
   "Pistes qui suivent les accords": "Tracks that follow the chords",
   "Les pistes de l'assistant suivent ; les notes que tu as écrites restent, sauf si tu le demandes ici.": "The assistant's tracks follow; notes you wrote stay as they are unless you ask here.",
   "%s (gelée)": "%s (frozen)",
-  "lus dans les notes": "read from the notes",
   "… et %d autres parties": "… and %d more parts",
   "Touche pour changer les accords de tout le morceau.": "Tap to change the chords of the whole song.",
   "Accords du morceau (toutes les parties)": "Song chords (every part)",
@@ -45,5 +41,6 @@
   "Gelée": "Frozen",
   "Dégeler (le morceau a changé depuis le gel)": "Unfreeze (the song changed since)",
   "Dégeler": "Unfreeze",
-  "Geler la piste (rendu audio, moins de calcul)": "Freeze track (audio render, less CPU)"
+  "Geler la piste (rendu audio, moins de calcul)": "Freeze track (audio render, less CPU)",
+  "… et 1 autre partie": "… and 1 more part"
 }

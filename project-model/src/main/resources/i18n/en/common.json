@@ -46,7 +46,8 @@
   "en boucle": "looping",
   "mes. %1$d/%2$d": "bar %1$d/%2$d",
   "Partie : %s": "Part: %s",
-  "Elle tourne en boucle pendant que tu la modifies. ⟳ Partie, en haut, pour reprendre le morceau.": "It loops while you edit it. ⟳ Part, at the top, to get the song back.",
-  "En boucle (⟳ Partie). ▶ joue cette partie seule.": "Looping (⟳ Part). ▶ plays this part alone.",
-  "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "The song is playing: touch the grid and this part stays under your fingers, looping."
+  "Elle tourne en boucle pendant que tu la modifies. ⟳ Boucler, en haut, pour reprendre le morceau.": "It loops while you edit it. ⟳ Loop, at the top, to get the song back.",
+  "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "Looping (⟳ Loop). ▶ plays this part alone.",
+  "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "The song is playing: tap the grid and this part stays under your fingers, looping.",
+  "Boucler": "Loop"
 }

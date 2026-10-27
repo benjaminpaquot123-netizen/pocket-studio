@@ -46,7 +46,8 @@
   "en boucle": "in een lus",
   "mes. %1$d/%2$d": "maat %1$d/%2$d",
   "Partie : %s": "Deel: %s",
-  "Elle tourne en boucle pendant que tu la modifies. ⟳ Partie, en haut, pour reprendre le morceau.": "Het speelt in een lus terwijl je het aanpast. ⟳ Deel, bovenaan, om het nummer te hervatten.",
-  "En boucle (⟳ Partie). ▶ joue cette partie seule.": "In een lus (⟳ Deel). ▶ speelt alleen dit deel.",
-  "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "Het nummer speelt: raak het raster aan en dit deel blijft onder je vingers, in een lus."
+  "Elle tourne en boucle pendant que tu la modifies. ⟳ Boucler, en haut, pour reprendre le morceau.": "Het speelt in een lus terwijl je het aanpast. ⟳ Lus, bovenaan, om het nummer te hervatten.",
+  "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "In een lus (⟳ Lus). ▶ speelt alleen dit deel.",
+  "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "Het nummer speelt: raak het raster aan en dit deel blijft onder je vingers, in een lus.",
+  "Boucler": "Lus"
 }

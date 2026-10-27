@@ -40,7 +40,6 @@
   "Capturer tout le morceau :": "Capture the whole song:",
   "Capturer tout le morceau ?": "Capture the whole song?",
   "Centre": "Centre",
-  "Changer ce que Jouer fait entendre": "Change what Play plays",
   "Charley": "Hi-hat",
   "Charley ouvert": "Open hi-hat",
   "Clap": "Clap",
@@ -85,7 +84,6 @@
   "Hauteur du coup %d": "Pitch of hit %d",
   "Kick": "Kick",
   "Kick 2": "Kick 2",
-  "Lance la lecture et tourne un bouton : son mouvement s'enregistre (Mixeur › Automation).": "Start playback and turn a knob: its movement is recorded (Mixer › Automation).",
   "Le son du pad « %s » sera remplacé par l'enregistrement de tout ce qui joue sur %d mesures : la batterie, la basse acide, les synthés.": "The sound of pad “%s” will be replaced by a recording of everything playing for %d bars: drums, acid bass, synths.",
   "Le son du pad « %s » sera remplacé par l'enregistrement de tout ce qui joue sur une mesure : la batterie, la basse acide, les synthés.": "The sound of pad “%s” will be replaced by a recording of everything playing for one bar: drums, acid bass, synths.",
   "Les pads sonnent, les cases gardent les coups.": "Pads only sound; the squares keep the hits.",
@@ -108,7 +106,6 @@
   "Pack sur les pads suivants :": "Pack onto the next pads:",
   "Pan": "Pan",
   "Pan : touche un coup, puis glisse pour l'envoyer à gauche ou à droite (en plus du pan du pad).": "Pan: tap a hit, then slide to send it left or right (on top of the pad's pan).",
-  "Pan du coup %d": "Pan of hit %d",
   "Pan du pad": "Pad pan",
   "Panneau": "Panel",
   "Pas %d": "Step %d",
@@ -148,7 +145,6 @@
   "Tom médium": "Mid tom",
   "Touche la forme d'onde pour ajouter ou retirer une coupe. Pince pour zoomer.": "Tap the waveform to add or remove a cut. Pinch to zoom.",
   "Touche un pas pour le modifier. Couleur pleine = accent, ⌒ = slide, ↑ = octave au-dessus (Up), ↓ = en dessous (Down), – = silence, 🔒 = gardé par le générateur.": "Tap a step to edit it. Solid colour = accent, ⌒ = slide, ↑ = octave up (Up), ↓ = octave down (Down), – = rest, 🔒 = kept by the generator.",
-  "Touche une case pour ajouter un coup. Appui long sur un coup : fort → moyen → doux (la case se vide à moitié).": "Tap a square to add a hit. Long-press a hit: loud → medium → soft (the square half empties).",
   "Tous les pads": "All pads",
   "Toute la batterie": "Whole kit",
   "Une seule tranche : ajoute des coupes.": "Just one slice: add some cuts.",
@@ -166,5 +162,7 @@
   "À l'envers": "Reverse",
   "Kick studio": "Studio kick",
   "Kick dur": "Hard kick",
-  "Rumble": "Rumble"
+  "Rumble": "Rumble",
+  "Place du coup %d": "Pan of hit %d",
+  "Place du pad": "Pad pan"
 }

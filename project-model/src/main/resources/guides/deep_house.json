@@ -81,7 +81,7 @@
    "target": "song",
    "kind": "decide",
    "title": "Pour où : téléphone, streaming ou club ?",
-   "why": "Le volume visé change : vers −14 LUFS en streaming, −8 en club ; ce style vise −9 LUFS au Drop. Le moteur s'en charge.",
+   "why": "Le volume visé change : vers −14 LUFS en streaming, −8 en club ; ce style vise −9 LUFS au Drop. Le master s'en approche sans écraser le son.",
    "done": [
     "target"
    ],
@@ -116,7 +116,7 @@
      }
     }
    ],
-   "lexicon": "master"
+   "lexicon": "loudness"
   },
   {
    "id": "sound.kick",
@@ -1096,6 +1096,7 @@
      "id": "parts",
      "label": "Je le fais moi-même",
      "why": "Une couche, une variation, un contre-chant au 2e.",
+     "simpleWhy": "Un son en plus, une variation, une petite réponse au 2e.",
      "action": {
       "type": "open",
       "spot": "song.parts"
@@ -1414,7 +1415,7 @@
    "kind": "decide",
    "simple": true,
    "title": "La balance : kick, basse, batterie, lead, le reste",
-   "why": "On règle dans cet ordre, avec les faders seuls : le mix doit déjà marcher avant les effets. Tous les faders sont encore à 0 dB.",
+   "why": "On règle dans cet ordre, avec les faders seuls, effets compris : le kick en référence, chaque piste à sa place autour de lui.",
    "simpleTitle": "Le volume de chaque piste",
    "simpleWhy": "Le kick et la basse d'abord, le reste autour.",
    "done": [
@@ -1426,6 +1427,7 @@
      "label": "Placer chaque piste pour moi",
      "why": "J'écoute chaque piste seule au Drop, le kick en référence, et je remets à sa place celle qui s'en écarte de plus de 3 dB.",
      "value": "± 3 dB",
+     "simpleWhy": "J'écoute chaque piste au Drop, le kick en référence, et je remets à sa place celle qui est trop forte ou trop faible.",
      "action": {
       "type": "balance"
      }
@@ -1482,7 +1484,7 @@
      }
     }
    ],
-   "lexicon": "mix"
+   "lexicon": "pan"
   },
   {
    "id": "mix.master",
@@ -1511,6 +1513,8 @@
      "id": "master",
      "label": "Voir le master",
      "why": "La cible, la marge et ce que fait la chaîne.",
+     "simpleLabel": "Voir le volume final",
+     "simpleWhy": "Le volume visé et ce qui l'ajuste.",
      "action": {
       "type": "open",
       "spot": "mixer.master"
@@ -1527,6 +1531,8 @@
    "simple": true,
    "title": "Le Drop plus fort que le Break",
    "why": "Au moins 4 dB d'écart entre le Break et le Drop : sinon le Drop ne tombe pas.",
+   "simpleTitle": "Le Drop plus fort que le Break",
+   "simpleWhy": "Le Break un peu plus calme, pour que le Drop frappe quand il revient.",
    "applicable": [
     "measured",
     "break"
@@ -1573,6 +1579,7 @@
      "id": "listen",
      "label": "Écouter en mono",
      "why": "Le Drop en stéréo, puis replié en mono : ce qui s'efface s'entend.",
+     "simpleWhy": "Le Drop normal, puis comme sur une seule enceinte : ce qui s'efface s'entend.",
      "action": {
       "type": "listen",
       "name": "mono"
@@ -1583,6 +1590,8 @@
      "label": "Resserrer la stéréo",
      "why": "Les graves en mono jusqu'à 150 Hz, aucun élargisseur au-delà de 100 %.",
      "value": "150 Hz",
+     "simpleLabel": "Resserrer le son",
+     "simpleWhy": "Les graves au milieu, rien de trop large : tout reste là sur une seule enceinte.",
      "action": {
       "type": "mono"
      }
@@ -1616,6 +1625,7 @@
      "id": "listen",
      "label": "Écouter comme un téléphone",
      "why": "Le Drop tel quel, puis sans rien sous 300 Hz, au même volume.",
+     "simpleWhy": "Le Drop tel quel, puis comme sur un petit haut-parleur, au même volume.",
      "action": {
       "type": "listen",
       "name": "phone"
@@ -1711,6 +1721,7 @@
      "id": "export",
      "label": "Exporter le M4A",
      "why": "Le morceau entier, au volume du style.",
+     "simpleLabel": "Faire le fichier audio",
      "action": {
       "type": "open",
       "spot": "share.export"
@@ -1779,7 +1790,7 @@
    "FILTER": "Le filtre qui s'ouvre dans la Montée."
   },
   "riser": {
-   "FILTER": "Le souffle s'ouvre jusqu'au Drop."
+   "FILTER": "Le souffle s'ouvre jusqu'au grand moment."
   },
   "drums": {
    "COMPRESSOR": "Colle la batterie : un seul instrument plutôt que des coups séparés."

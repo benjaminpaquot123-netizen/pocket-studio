@@ -40,7 +40,6 @@
   "Capturer tout le morceau :": "Hele nummer vastleggen:",
   "Capturer tout le morceau ?": "Hele nummer vastleggen?",
   "Centre": "Midden",
-  "Changer ce que Jouer fait entendre": "Wijzigen wat Spelen laat horen",
   "Charley": "Hi-hat",
   "Charley ouvert": "Open hi-hat",
   "Clap": "Clap",
@@ -85,7 +84,6 @@
   "Hauteur du coup %d": "Toonhoogte van slag %d",
   "Kick": "Kick",
   "Kick 2": "Kick 2",
-  "Lance la lecture et tourne un bouton : son mouvement s'enregistre (Mixeur › Automation).": "Start het afspelen en draai aan een knop: de beweging wordt opgenomen (Mixer › Automation).",
   "Le son du pad « %s » sera remplacé par l'enregistrement de tout ce qui joue sur %d mesures : la batterie, la basse acide, les synthés.": "Het geluid van pad ‘%s’ wordt vervangen door een opname van alles wat %d maten lang speelt: drums, acid-bas, synths.",
   "Le son du pad « %s » sera remplacé par l'enregistrement de tout ce qui joue sur une mesure : la batterie, la basse acide, les synthés.": "Het geluid van pad ‘%s’ wordt vervangen door een opname van alles wat één maat lang speelt: drums, acid-bas, synths.",
   "Les pads sonnent, les cases gardent les coups.": "Pads klinken alleen, de vakjes bewaren de slagen.",
@@ -108,7 +106,6 @@
   "Pack sur les pads suivants :": "Pack op de volgende pads:",
   "Pan": "Pan",
   "Pan : touche un coup, puis glisse pour l'envoyer à gauche ou à droite (en plus du pan du pad).": "Pan: tik op een slag en schuif om hem naar links of rechts te sturen (bovenop de pan van de pad).",
-  "Pan du coup %d": "Pan van slag %d",
   "Pan du pad": "Pan van de pad",
   "Panneau": "Paneel",
   "Pas %d": "Stap %d",
@@ -148,7 +145,6 @@
   "Tom médium": "Midtom",
   "Touche la forme d'onde pour ajouter ou retirer une coupe. Pince pour zoomer.": "Tik op de golfvorm om een knip toe te voegen of weg te halen. Knijp om te zoomen.",
   "Touche un pas pour le modifier. Couleur pleine = accent, ⌒ = slide, ↑ = octave au-dessus (Up), ↓ = en dessous (Down), – = silence, 🔒 = gardé par le générateur.": "Tik op een stap om hem aan te passen. Volle kleur = accent, ⌒ = slide, ↑ = octaaf hoger (Up), ↓ = octaaf lager (Down), – = rust, 🔒 = blijft staan bij genereren.",
-  "Touche une case pour ajouter un coup. Appui long sur un coup : fort → moyen → doux (la case se vide à moitié).": "Tik op een vakje om een slag toe te voegen. Lang drukken op een slag: hard → middel → zacht (het vakje loopt half leeg).",
   "Tous les pads": "Alle pads",
   "Toute la batterie": "Hele drumkit",
   "Une seule tranche : ajoute des coupes.": "Maar één stukje: voeg knippen toe.",
@@ -166,5 +162,7 @@
   "À l'envers": "Achterstevoren",
   "Kick studio": "Studiokick",
   "Kick dur": "Harde kick",
-  "Rumble": "Rumble"
+  "Rumble": "Rumble",
+  "Place du coup %d": "Pan van slag %d",
+  "Place du pad": "Pan van de pad"
 }

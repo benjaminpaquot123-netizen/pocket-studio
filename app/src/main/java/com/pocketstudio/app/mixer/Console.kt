@@ -307,7 +307,7 @@ private fun StripSheet(
             }
             ProSlider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.testTag("sheet_volume_$index"))
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text(tr("Panoramique"))
+                Text(tr("Place"))
                 HelpDot(Glossary.PAN)
                 androidx.compose.foundation.layout.Spacer(Modifier.weight(1f))
                 Text(consolePanLabel(c.pan), style = MonoStyle, color = Neon.Cyan)
@@ -315,7 +315,7 @@ private fun StripSheet(
             // Safe at the edge (a back swipe closes the sheet, it never pans), centre caught, two touches = centre.
             com.pocketstudio.ui.PanSlider(
                 c.pan, { v -> actions.setPan(index, v) }, step = 0.01f, modifier = Modifier.testTag("sheet_pan_$index"),
-                label = tr("Panoramique"), stateLabel = ::consolePanLabel,
+                label = tr("Place"), stateLabel = ::consolePanLabel,
             )
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(onClick = openMoves, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("strip_moves_$index")) {

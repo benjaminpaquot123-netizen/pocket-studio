@@ -88,7 +88,7 @@ fun shapeText(s: CurveShape): String {
         CurveShape.Kind.DOWN_UP -> tr("Descend jusqu'à %d %% puis remonte.", pct(s.min))
         CurveShape.Kind.MOVES -> tr("Bouge entre %1\$d %% et %2\$d %%.", pct(s.min), pct(s.max))
     }
-    return if (s.bars > 0) what + " " + tr("Sur %d mesures.", s.bars) else what
+    return if (s.bars > 0) what + " " + (if (s.bars == 1) tr("Sur 1 mesure.") else tr("Sur %d mesures.", s.bars)) else what
 }
 
 /** How a lane plays: each loop, each scene its own, or over the whole song (and who wrote it). */

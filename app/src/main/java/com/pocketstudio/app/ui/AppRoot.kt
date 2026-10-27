@@ -754,7 +754,7 @@ fun AppRoot() {
         GuideDialog(onClose = {
             showGuide = false
             SettingsStore.update(context) { it.copy(guideSeen = true) }
-        })
+        }, pages = com.pocketstudio.app.settings.guidePages(settings.simpleMode))
     }
     // The first launch: three big choices (guided song, demo, empty project), not pages of text.
     val firstLaunchSeen = { SettingsStore.update(context) { it.copy(guideSeen = true) } }

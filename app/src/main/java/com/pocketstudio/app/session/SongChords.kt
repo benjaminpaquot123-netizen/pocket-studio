@@ -245,7 +245,7 @@ internal fun SongChordsStrip(parts: List<Pair<String, List<String>>>, open: () -
                 Text(chords.joinToString("  "), style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
-        if (parts.size > 6) Text(tr("… et %d autres parties", parts.size - 6), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        if (parts.size > 6) Text(if (parts.size == 7) tr("… et 1 autre partie") else tr("… et %d autres parties", parts.size - 6), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         Text(tr("Touche pour changer les accords de tout le morceau."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
 }

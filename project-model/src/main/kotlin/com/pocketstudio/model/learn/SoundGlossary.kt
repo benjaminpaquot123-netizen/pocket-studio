@@ -124,14 +124,24 @@ object SoundGlossary {
             listOf("Filtre")) { before(groove().withInsert(Mixer.MASTER, filter(0.3f)), groove(), first = tr("Fermé"), second = tr("Ouvert")) },
         SoundWord("compressor", tr("Compresseur"), tr("Rapproche les passages forts et faibles : la batterie devient plus serrée et plus présente. D'abord sans, puis avec."),
             listOf("Compresseur")) { before(groove(), groove().withInsert(0, compressor())) },
+        // Audit: the Guide's full mode says « OTT », « LUFS » and « pan »: each has its word.
+        SoundWord("ott", tr("OTT (compresseur trois bandes)"), tr("Un compresseur qui travaille sur le grave, le médium et l'aigu à la fois : le son devient plus dense et plus gros. D'abord sans, puis avec."),
+            listOf("OTT", "OTT multibande")) { before(withBass(groove(), "Basse ronde"), withBass(groove(), "Basse ronde").withInsert(2, Insert.of(EffectType.OTT))) },
         SoundWord("saturation", tr("Saturation"), tr("Fait chauffer le son jusqu'à le salir un peu : plus de grain, plus d'énergie. D'abord propre, puis saturé."),
             listOf("Saturation")) { before(withBass(groove(), "Basse ronde"), withBass(groove(), "Basse ronde").withInsert(2, saturation())) },
         SoundWord("automation", tr("Automation (courbe)"), tr("Un réglage qui bouge tout seul pendant la lecture, en suivant une courbe qu'on a dessinée. Ici le filtre s'ouvre peu à peu."),
-            listOf("Automation")) { one(automated()) },
+            listOf("Automation", "Courbes (automation)", "Courbes")) { one(automated()) },
         SoundWord("mix", tr("Mixage"), tr("Régler le volume et la place de chaque piste pour que tout s'entende bien. D'abord tout au même volume, puis mixé."),
             listOf("Mixeur", "Mixage")) { before(unmixed(), chorus(), first = tr("Pas mixé"), second = tr("Mixé")) },
+        SoundWord("pan", tr("Place (panoramique)"), tr("Où un son se trouve entre la gauche et la droite (on dit aussi « pan »). D'abord tout au centre, puis le clap à gauche et la mélodie à droite."),
+            listOf("Place", "Place (pan)", "Pan", "Panoramique")) { before(clapLead(), clapLead().panned(0, -0.6f).panned(2, 0.6f), first = tr("Au centre"), second = tr("Placés")) },
         SoundWord("master", tr("Master"), tr("La dernière étape, sur tout le morceau : on le rend plus fort et plus uni, prêt à partager. D'abord sans, puis masterisé."),
             listOf("Sortie générale", "Limiteur", "Master")) { before(chorus(), chorus().let { it.copy(mixer = it.mixer.copy(target = LoudnessTarget.CLUB)) }) },
+        SoundWord("loudness", tr("Volume final (LUFS)"), tr("Le volume moyen du morceau entier, mesuré en LUFS : vers −14 pour le streaming, vers −8 en club. Plus le chiffre est proche de 0, plus c'est fort."),
+            listOf("LUFS", "Volume final", "Cible de volume")) {
+            fun at(t: LoudnessTarget) = chorus().let { it.copy(mixer = it.mixer.copy(target = t)) }
+            before(at(LoudnessTarget.STREAMING), at(LoudnessTarget.CLUB), first = tr("Streaming"), second = tr("Club"))
+        },
     )
 
     /** The headings the list is shown under, each with the keys of its words (in [ALL]'s order). */
@@ -140,11 +150,16 @@ object SoundGlossary {
         tr("Les instruments") to listOf("bass", "acid", "pad", "lead", "arp"),
         tr("Les notes et le temps") to listOf("chord", "scale", "tonic", "tempo", "swing", "quantize", "bar"),
         tr("Les parties d'un morceau") to listOf("part", "intro", "verse", "chorus", "buildup", "drop", "break", "fill"),
-        tr("Les effets et le mix") to listOf("sidechain", "reverb", "echo", "filter", "compressor", "saturation", "automation", "mix", "master"),
+        tr("Les effets et le mix") to listOf("sidechain", "reverb", "echo", "filter", "compressor", "ott", "saturation", "automation", "mix", "pan", "master", "loudness"),
     )
 
-    /** The word whose example a « ? » help named [frenchTerm] (its French term) can play, if any. */
-    fun forHelp(frenchTerm: String): SoundWord? = ALL.firstOrNull { w -> w.aliases.any { it.equals(frenchTerm, ignoreCase = true) } }
+    /**
+     * The word whose example a « ? » help named [term] can play, if any: [term] is its French term or
+     * the term as shown (a shown word can translate several French ones: Dutch « Grondtoon » is
+     * « Note d'origine » and « Note tonique », so [I18n.frenchOf] alone may give the other one).
+     */
+    fun forHelp(term: String): SoundWord? =
+        ALL.firstOrNull { w -> w.aliases.any { it.equals(term, ignoreCase = true) || tr(it).equals(term, ignoreCase = true) } }
 
     /**
      * The words matching [query] in their term or explanation, accents and case aside (all of them
@@ -380,6 +395,10 @@ object SoundGlossary {
             if (k != ch) c else c.copy(sends = c.sends.mapIndexed { b, s -> if (b == bus) amount else s })
         }))
     }
+
+    /** Strip [ch] placed at [pan] (−1 left .. 1 right). */
+    private fun Project.panned(ch: Int, pan: Float): Project =
+        copy(mixer = mixer.copy(channels = mixer.channels.mapIndexed { k, c -> if (k == ch) c.copy(pan = pan) else c }))
 
     /** A loop lane on [target]: [values] over the steps of the drum loop (one value a sixteenth). */
     private fun Project.automate(target: AutoTarget, values: List<Float>): Project =

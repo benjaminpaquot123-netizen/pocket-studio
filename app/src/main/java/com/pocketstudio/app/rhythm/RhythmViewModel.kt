@@ -4497,7 +4497,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // Never silently: the song full (128 parts) or no lane left for a setting moved.
         val lost = listOfNotNull(
             tr("Le morceau est plein (%d parties) : la fin de la prise n'a pas été écrite.", SongPart.MAX_PARTS).takeIf { written.cut },
-            tr("Plus de place pour d'autres réglages (16 au plus) : %d n'ont pas été écrits.", written.skipped).takeIf { written.skipped > 0 },
+            (if (written.skipped == 1) tr("Plus de place pour d'autres réglages (16 au plus) : 1 n'a pas été écrit.")
+            else tr("Plus de place pour d'autres réglages (16 au plus) : %d n'ont pas été écrits.", written.skipped)).takeIf { written.skipped > 0 },
             tr("Les effets joués après la mesure %d n'ont pas été écrits (les lancements, si).", effectsEndBar(project.value)).takeIf { written.late > 0 },
         )
         if (lost.isNotEmpty()) _notice.value = lost.joinToString(" ")
@@ -4574,7 +4575,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val partsLeft = SongPart.MAX_PARTS - performancePartsUsed
         val effectsEnd = effectsEndBar(p)
         return when {
-            partsLeft <= TAKE_PARTS_WARNING -> tr("Plus que %d parties possibles : la prise s'arrêtera ensuite.", partsLeft.coerceAtLeast(0))
+            partsLeft <= 0 -> tr("Plus aucune partie possible : la prise va s'arrêter.")
+            partsLeft == 1 -> tr("Plus qu'une partie possible : la prise s'arrêtera ensuite.")
+            partsLeft <= TAKE_PARTS_WARNING -> tr("Plus que %d parties possibles : la prise s'arrêtera ensuite.", partsLeft)
             bar > effectsEnd -> tr("Après la mesure %d, les effets ne sont plus enregistrés (les lancements, si).", effectsEnd)
             bar > effectsEnd - TAKE_BARS_WARNING -> tr("Les effets sont enregistrés jusqu'à la mesure %d.", effectsEnd)
             else -> null

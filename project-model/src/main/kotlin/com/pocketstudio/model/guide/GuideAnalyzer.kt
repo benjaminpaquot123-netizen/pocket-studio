@@ -267,6 +267,8 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
         val chorus = peaks.firstOrNull()?.label == "Refrain"
         val peakWord = if (chorus) tr("refrain") else tr("Drop")
         val peakWords = if (chorus) tr("refrains") else tr("Drops")
+        // With its article: Dutch says « het refrein » but « de Drop ».
+        val thePeak = if (chorus) tr("le refrain") else tr("le Drop")
 
         // The frame.
         predicates["style"] = p.style != null
@@ -335,7 +337,7 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
             bassStrips.any { ch -> p.mixer.channels.getOrNull(ch)?.inserts?.any { it.effect == EffectType.PUMP && !it.bypass } == true }
 
         // The arrangement.
-        arrangement(peaks, peakWord, peakWords)
+        arrangement(peaks, thePeak, peakWords)
 
         // The movement.
         movement(peaks)
@@ -404,7 +406,7 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
 
     private val instruments: List<GuideTrack> get() = song.tracks.filter { it.key.startsWith("inst:") }
 
-    private fun arrangement(peaks: List<GuideSection>, peakWord: String, peakWords: String) {
+    private fun arrangement(peaks: List<GuideSection>, thePeak: String, peakWords: String) {
         val p = project
         // Peaks compared bar by bar as written, whatever track plays the notes (a bass switched to another
         // sound plays the same music), the drums left out where either plays a fill or a crash.
@@ -443,7 +445,7 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
                 if (repeats > worst.second) worst = period to repeats
             }
             predicates["bass_varies"] = varies
-            if (!varies) fact("bass.repeats", GuideSeverity.WARN, tr("La basse rejoue la même boucle de %1\$d mesures %2\$d fois de suite dans le %3\$s.", worst.first, worst.second, peakWord),
+            if (!varies) fact("bass.repeats", GuideSeverity.WARN, tr("La basse rejoue la même boucle de %1\$d mesures %2\$d fois de suite dans %3\$s.", worst.first, worst.second, thePeak),
                 basses, listOf(worst.first.toFloat(), worst.second.toFloat()))
         } else predicates["bass_varies"] = true
 
@@ -452,7 +454,7 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
         if (pads.isNotEmpty() && peaks.isNotEmpty()) {
             val shares = peaks.map { s -> (s.start until s.end).count { bar -> pads.any { song.sounds(it, bar) } }.toFloat() / s.bars.coerceAtLeast(1) }
             predicates["pad_room"] = shares.any { it <= 0.75f }
-            if (shares.all { it >= 0.99f }) fact("pad.everywhere", GuideSeverity.WARN, tr("Les accords jouent pendant tout le %1\$s (%2\$d sur %2\$d).", peakWord, peaks.size), pads, shares)
+            if (shares.all { it >= 0.99f }) fact("pad.everywhere", GuideSeverity.WARN, tr("Les accords jouent pendant tout %1\$s (%2\$d sur %2\$d).", thePeak, peaks.size), pads, shares)
         } else predicates["pad_room"] = pads.isEmpty()
 
         // Subtraction: the other sections play fewer tracks than the peak.
@@ -524,7 +526,7 @@ class GuideFacts private constructor(val project: Project, val song: GuideSong) 
         val scene = peaks.firstOrNull()?.scene ?: if (p.song.isEmpty()) p.scene else return
         val s = p.allScenes.getOrNull(scene) ?: return
         val degrees = ChordTrack.guess(p, scene)
-        fact("chords.guess", GuideSeverity.INFO, tr("Accords du %1\$s : %2\$s.", if (peaks.firstOrNull()?.label == "Refrain") tr("refrain") else tr("Drop"),
+        fact("chords.guess", GuideSeverity.INFO, tr("Les accords dans %1\$s : %2\$s.", if (peaks.firstOrNull()?.label == "Refrain") tr("le refrain") else tr("le Drop"),
             degrees.joinToString(" – ") { ChordTrack.roman(p, it) }), values = degrees.map { it.toFloat() })
         val style = p.style?.let(StarterWizard::style)
         val ctx = MelodyMetrics.Context(p.harmony, ChordTrack.chordsOf(p, scene).ifEmpty { listOf(0) })

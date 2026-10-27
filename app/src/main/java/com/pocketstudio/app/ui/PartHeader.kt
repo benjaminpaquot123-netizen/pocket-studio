@@ -45,8 +45,8 @@ fun partHeader(p: Project, playing: Boolean, songPlaying: Boolean, loopPart: Boo
     val title = tr("Partie : %s", p.sceneTitle(p.scene))
     val hasSong = p.song.isNotEmpty()
     return when {
-        armedBySelf && playing -> PartHeaderUi(title, tr("Elle tourne en boucle pendant que tu la modifies. ⟳ Partie, en haut, pour reprendre le morceau."), loop = true)
-        loopPart && hasSong -> PartHeaderUi(title, tr("En boucle (⟳ Partie). ▶ joue cette partie seule."), loop = true)
+        armedBySelf && playing -> PartHeaderUi(title, tr("Elle tourne en boucle pendant que tu la modifies. ⟳ Boucler, en haut, pour reprendre le morceau."), loop = true)
+        loopPart && hasSong -> PartHeaderUi(title, tr("En boucle (⟳ Boucler). ▶ joue cette partie seule."), loop = true)
         songPlaying -> PartHeaderUi(title, tr("Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle."))
         else -> PartHeaderUi(title)
     }

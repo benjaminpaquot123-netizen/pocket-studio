@@ -237,7 +237,8 @@ fun ProjectsScreen(
             title = { Text(if (all) tr("Vider la corbeille ?") else tr("Supprimer définitivement ?")) },
             text = {
                 Text(
-                    if (all) tr("Les %d projets de la corbeille et leurs sons seront effacés pour de bon. Impossible de revenir en arrière.", ui.trash.size)
+                    if (all && ui.trash.size == 1) tr("Le projet de la corbeille et ses sons seront effacés pour de bon. Impossible de revenir en arrière.")
+                    else if (all) tr("Les %d projets de la corbeille et leurs sons seront effacés pour de bon. Impossible de revenir en arrière.", ui.trash.size)
                     else tr("« %s » et ses sons seront effacés pour de bon. Impossible de revenir en arrière.", com.pocketstudio.model.DefaultNames.shown(item!!.name)),
                 )
             },

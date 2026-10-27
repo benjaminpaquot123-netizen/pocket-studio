@@ -44,7 +44,11 @@ data class NoteTakeUi(
 
     /** What it wrote, said in a few words. */
     fun summary(): String = when {
-        notes > 0 && hits > 0 -> tr("Ta prise : %1\$d notes et %2\$d coups", notes, hits)
+        notes > 0 && hits > 0 -> tr(
+            "Ta prise : %1\$s et %2\$s",
+            if (notes == 1) tr("1 note") else tr("%d notes", notes),
+            if (hits == 1) tr("1 coup") else tr("%d coups", hits),
+        )
         notes > 1 -> tr("Ta prise : %d notes", notes)
         notes == 1 -> tr("Ta prise : 1 note")
         hits > 1 -> tr("Ta prise : %d coups", hits)

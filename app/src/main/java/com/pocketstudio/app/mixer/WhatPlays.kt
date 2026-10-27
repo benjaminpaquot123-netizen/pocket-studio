@@ -196,6 +196,8 @@ fun movesOn(p: Project, ch: Int): Int = p.automation.count { it.target.ch == ch 
 fun WhatPlaysDialog(
     p: Project, strips: List<StripInfo>, scene: Int?, onlyCh: Int?, scenes: List<Pair<Int, String>>,
     setScene: (Int?) -> Unit, showAll: () -> Unit, go: (Where) -> Unit, dismiss: () -> Unit,
+    /** Where « Modifier » is offered (the Mode simple: a track's effects and the master's level only). */
+    canGo: (Where) -> Boolean = { true },
 ) {
     val groups = androidx.compose.runtime.remember(p, strips, scene, onlyCh) { whatPlaysGroups(p, scene, strips, onlyCh) }
     val trackName = onlyCh?.let { ch -> strips.firstOrNull { it.ch == ch }?.name?.let { com.pocketstudio.model.DefaultNames.shown(it) } }
@@ -205,14 +207,14 @@ fun WhatPlaysDialog(
         modifier = Modifier.widthIn(max = 640.dp).fillMaxWidth().padding(horizontal = 10.dp).testTag("what_plays"),
         title = { Text(if (trackName != null) tr("Ce qui bouge sur %s", trackName) else tr("Ce qui joue")) },
         text = {
-            Column(Modifier.verticalScroll(rememberScrollState())) { WhatPlaysContent(groups, scene, onlyCh, scenes, setScene, showAll, go) }
+            Column(Modifier.verticalScroll(rememberScrollState())) { WhatPlaysContent(groups, scene, onlyCh, scenes, setScene, showAll, go, canGo) }
         },
         confirmButton = { TextButton(onClick = dismiss, modifier = Modifier.testTag("what_plays_close")) { Text(tr("Fermer")) } },
     )
 }
 
 @Composable
-private fun GroupBlock(g: ActGroup, go: (Where) -> Unit) {
+private fun GroupBlock(g: ActGroup, go: (Where) -> Unit, canGo: (Where) -> Boolean = { true }) {
     Column(Modifier.fillMaxWidth().testTag("what_plays_group_${g.ch}"), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(Modifier.size(width = 4.dp, height = 20.dp).background(g.color ?: Neon.Cyan, RoundedCornerShape(2.dp)))
@@ -233,7 +235,9 @@ private fun GroupBlock(g: ActGroup, go: (Where) -> Unit) {
                     Text(r.title, style = MaterialTheme.typography.bodyLarge)
                     if (r.detail.isNotBlank()) Text(r.detail, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
-                if (r.moves) {
+                if (!canGo(r.where)) {
+                    // Nothing to open from here (the Mode simple has no Mix): said, not offered.
+                } else if (r.moves) {
                     FilledTonalButton(
                         onClick = { go(r.where) }, modifier = Modifier.heightIn(min = 48.dp).testTag("${r.tag}_go"),
                         colors = androidx.compose.material3.ButtonDefaults.filledTonalButtonColors(containerColor = Neon.Amber, contentColor = Neon.OnAccent),
@@ -251,6 +255,7 @@ private fun GroupBlock(g: ActGroup, go: (Where) -> Unit) {
 fun WhatPlaysContent(
     groups: List<ActGroup>, scene: Int?, onlyCh: Int?, scenes: List<Pair<Int, String>>,
     setScene: (Int?) -> Unit, showAll: () -> Unit, go: (Where) -> Unit,
+    canGo: (Where) -> Boolean = { true },
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text(
@@ -269,6 +274,6 @@ fun WhatPlaysContent(
         if (groups.isEmpty()) {
             Text(tr("Rien n'agit sur le son ici : pas d'effet, pas d'envoi, rien qui bouge."), style = MaterialTheme.typography.bodyMedium)
         }
-        groups.forEach { g -> GroupBlock(g, go) }
+        groups.forEach { g -> GroupBlock(g, go, canGo) }
     }
 }

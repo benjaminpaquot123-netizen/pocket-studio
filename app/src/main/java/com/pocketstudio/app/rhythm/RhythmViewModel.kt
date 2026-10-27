@@ -773,7 +773,42 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * named « Lead » or « Mélodie » (the assistant's lead, « + Piste › Mélodie »), the last such
      * one; null when the song has none (the track shown stays).
      */
-    fun melodyTrackId(): Int? = project.value.tracks.lastOrNull { isMelodyName(it.name) }?.id
+    fun melodyTrackId(): Int? =
+        com.pocketstudio.model.SimpleMelody.trackOf(project.value) ?: project.value.tracks.lastOrNull { isMelodyName(it.name) }?.id
+
+    /**
+     * Audit final (01 M3, 05 #5): the Mode simple's melody goes on « Ma mélodie », made at its first
+     * take with the sound of the song's melody track (a melody sound of the style without one), and
+     * selected. Never the assistant's riff, never the bass. Null when the eight tracks are taken.
+     */
+    fun simpleMelodyTrack(): Int? {
+        val p = project.value
+        com.pocketstudio.model.SimpleMelody.trackOf(p)?.let { selectTrack(it); return it }
+        val like = p.tracks.lastOrNull { isMelodyName(it.name) }?.id
+        val style = com.pocketstudio.app.library.styleOfProject(p.name)?.let(com.pocketstudio.model.StarterWizard::style)
+        val next = com.pocketstudio.model.SimpleMelody.add(p, like, style) ?: run {
+            _notice.value = tr("Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre.")
+            return null
+        }
+        val id = next.tracks.first { t -> p.tracks.none { it.id == t.id } }.id
+        session.edit { next }
+        pushTracks()
+        pushMixer()
+        selectTrack(id)
+        AppLog.add("Piste ajoutée : ${com.pocketstudio.model.SimpleMelody.NAME}")
+        return id
+    }
+
+    /** The Mode simple's « ● Enregistrer ma mélodie »: a take of the keys on « Ma mélodie » (or the take recording ends). */
+    fun recordMelodyTake() {
+        if (_recording.value) {
+            recordTake(com.pocketstudio.app.record.TakeSource.KEYS)
+            return
+        }
+        if (_audioRecording.value != null || performanceTaking) return
+        simpleMelodyTrack() ?: return
+        recordTake(com.pocketstudio.app.record.TakeSource.KEYS, melody = true)
+    }
 
     fun selectTrack(id: Int) {
         if (id == track) return
@@ -1620,8 +1655,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private class TakePlan(val track: Int, val anchor: TakeAnchor, val start: Int, val bpm: Double, val stepsPerBar: Int, val replaces: String? = null, val scene: Int? = null, val punch: Punch? = null)
 
     /**
-     * « Refaire mes. [fromBar]-[toBar] » on audio track [id]: the song (or the clip's part) starts a
-     * bar before, after the count-in, the take records and stops by itself after bar [toBar]; only
+     * « Refaire mes. [fromBar]-[toBar] » on audio track [id]: the song starts from the part holding
+     * the bar before (a clip's part: from its start), after the count-in, the take records and stops by itself after bar [toBar]; only
      * those bars of the take replace the clip's (crossfaded), the whole take before is kept in the
      * take picker. Bars of the song for a song clip, of the part otherwise (from 1).
      */
@@ -6315,6 +6350,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** « Tout réentendre » (Prêt à partager ?): strips [chs] no longer muted, in one undo step. */
+    fun unmuteChannels(chs: List<Int>) {
+        val before = project.value.mixer.channels
+        val muted = chs.filter { before.getOrNull(it)?.mute == true }.toSet()
+        if (muted.isEmpty()) return
+        session.edit { p -> p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.mapIndexed { i, c -> if (i in muted) c.copy(mute = false) else c })) }
+        muted.forEach { pushStrip(it, before[it]) }
+    }
+
     private fun editChannel(ch: Int, key: String?, transform: (com.pocketstudio.model.Channel) -> com.pocketstudio.model.Channel) {
         val before = project.value.mixer.channels.getOrNull(ch)
         session.edit(key?.let { "mix-$ch-$it" }) { p ->
@@ -6733,12 +6777,25 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // Keys still down when the take ends keep the length they have so far.
         sustained.clear()
         heldNotes.keys.toList().forEach { writeNoteOff(it) }
+        if (takeSpreads) spreadMelody()
         _recording.value = false
         val before = recordBefore
         before?.let { followTakeNotes(it) }
         before?.let { session.commitQuietEdits(it, recordDepth) }
         recordBefore = null
         takeEnded(before)
+    }
+
+    /** The take is the Mode simple's melody (« Ma mélodie »): it is heard through the song once written. */
+    private var takeSpreads = false
+
+    /** « Ma mélodie »'s take written: every part where it has nothing plays it (with the take, one undo step). */
+    private fun spreadMelody() {
+        val id = com.pocketstudio.model.SimpleMelody.trackOf(project.value) ?: return
+        val scenes = takeNotes.filter { (k, v) -> k.second == id && v.isNotEmpty() }.keys.map { it.first }.distinct()
+        if (scenes.isEmpty()) return
+        scenes.forEach { scene -> session.editQuietly { com.pocketstudio.model.SimpleMelody.spread(it, id, scene) } }
+        if (!NativeEngine.isCapturing) playingPart()?.let { pushPart(project.value, it.scene, it) }
     }
 
     /** Tests (no engine): the place a gesture is heard at, in sixteenths of the playing scene (see [recordPosition]). */
@@ -7008,13 +7065,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * Réglages says) or the one recording ends and says what it wrote. A take done and not yet
      * kept is kept first.
      */
-    fun recordTake(source: com.pocketstudio.app.record.TakeSource) {
+    fun recordTake(source: com.pocketstudio.app.record.TakeSource, melody: Boolean = false) {
         if (_recording.value) {
             stopRecordingTake()
             return
         }
         if (_audioRecording.value != null || performanceTaking) return
         keepNoteTake()
+        takeSpreads = melody
         _takeEmpty.value = false
         takeNotes = HashMap()
         takeHits = ArrayList()
@@ -7145,7 +7203,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val ui = _noteTake.value?.takeIf { it.phase == com.pocketstudio.app.record.TakePhase.DONE } ?: return
         removeTake()
         _noteTake.value = null
-        if (ui.source != com.pocketstudio.app.record.TakeSource.CAPTURE) recordTake(ui.source)
+        if (ui.source != com.pocketstudio.app.record.TakeSource.CAPTURE) recordTake(ui.source, takeSpreads)
     }
 
     private fun removeTake() {

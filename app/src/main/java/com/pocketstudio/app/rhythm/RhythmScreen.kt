@@ -232,6 +232,11 @@ fun RhythmScreen(
      * jouer » once pads were played (the record bar, given by the app; it shows nothing otherwise).
      */
     record: (@Composable () -> Unit)? = null,
+    /**
+     * Audit final (08): the Mode simple's Rythme: pads, cells, length, swing; no rolls, pan, pitch,
+     * polyrhythm, sample editing (envelope, choke group, slices), import or capture, no effects.
+     */
+    simple: Boolean = false,
 ) {
     // A pad held (its sheet) and the kit list.
     var padSheet by rememberSaveable { mutableStateOf<Int?>(null) }
@@ -267,7 +272,7 @@ fun RhythmScreen(
     val showGrid: () -> Unit = { scope.launch { gridRequester.bringIntoView() } }
     val steps: @Composable (cellMax: androidx.compose.ui.unit.Dp) -> Unit = { cellMax ->
         Box(Modifier.bringIntoViewRequester(gridRequester)) {
-            StepGrid(project, transport.selectedPad, live.currentStep, transport.playing, actions, live.absoluteStep, cellMax = cellMax)
+            StepGrid(project, transport.selectedPad, live.currentStep, transport.playing, actions, live.absoluteStep, simple, cellMax = cellMax)
         }
     }
     // On a tablet the pads stay on the left and the steps of the chosen pad on the right.
@@ -295,11 +300,11 @@ fun RhythmScreen(
             header(showGrid)
             PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad, onHold = hold, kitBar = kitBar, fitHeight = fitPad)
             record?.invoke()
-            GrooveCard(project, transport, actions)
+            GrooveCard(project, transport, actions, simple)
         },
         second = {
             steps(cellMax)
-            PadSoundCard(project, transport.selectedPad, padSound, actions)
+            PadSoundCard(project, transport.selectedPad, padSound, actions, simple)
         },
         // The phone keeps its order: the steps right under lower pads, the first row of cells on screen.
         phone = {
@@ -307,8 +312,8 @@ fun RhythmScreen(
             PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad, compact = true, onHold = hold, kitBar = kitBar, fitHeight = fitPad ?: uprightPad)
             record?.invoke()
             steps(cellMax)
-            PadSoundCard(project, transport.selectedPad, padSound, actions)
-            GrooveCard(project, transport, actions)
+            PadSoundCard(project, transport.selectedPad, padSound, actions, simple)
+            GrooveCard(project, transport, actions, simple)
         },
     )
     }
@@ -469,7 +474,7 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun StepGrid(
-    project: Project, lane: Int, currentStep: Int, playing: Boolean, actions: RhythmActions, absoluteStep: Int = -1,
+    project: Project, lane: Int, currentStep: Int, playing: Boolean, actions: RhythmActions, absoluteStep: Int = -1, simple: Boolean = false,
     /** A cell's height at most. */
     cellMax: androidx.compose.ui.unit.Dp = 110.dp,
 ) {
@@ -527,7 +532,7 @@ private fun StepGrid(
                     FilterChip(selected = follow, onClick = { follow = !follow; chosenBar = bar }, label = { Text(tr("Suivre")) }, colors = chipColors)
                 }
             }
-            if (!allPads) PadLoopRow(padLoop, project.drums.steps, ownLoop, actions.setPadLength)
+            if (!allPads && (!simple || ownLoop)) PadLoopRow(padLoop, project.drums.steps, ownLoop, actions.setPadLength)
             if (project.drums.lanes.any { l -> l.hits.values.any { it.chance < 100 } }) {
                 TextButton(onClick = actions.rerollChances, modifier = Modifier.heightIn(min = 48.dp).testTag("chance_reroll")) {
                     Text(tr("Autre tirage des coups au hasard"))
@@ -704,7 +709,7 @@ private fun StepGrid(
             }
         }
         }
-        Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        if (!simple) Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             FilterChip(selected = tool == 0, onClick = { tool = 0 }, label = { Text(tr("Coups")) }, colors = chipColors)
             FilterChip(selected = tool == 1, onClick = { tool = 1 }, label = { Text(tr("Roulements")) }, colors = chipColors,
                 modifier = Modifier.testTag("roll_tool"))
@@ -779,7 +784,7 @@ private fun PadLoopRow(padLoop: Int, patternSteps: Int, ownLoop: Boolean, set: (
 }
 
 @Composable
-private fun GrooveCard(project: Project, transport: TransportUi, actions: RhythmActions) {
+private fun GrooveCard(project: Project, transport: TransportUi, actions: RhythmActions, simple: Boolean = false) {
     NeonCard {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             val chipColors = pillColors()
@@ -787,7 +792,7 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
             FilterChip(selected = transport.countIn, onClick = actions.toggleCountIn, label = { Text(tr("Décompte")) }, colors = chipColors)
             HelpDot(Glossary.METRONOME, Modifier.align(Alignment.CenterVertically))
             Box(Modifier.weight(1f))
-            OutlinedButton(
+            if (!simple) OutlinedButton(
                 onClick = actions.openEffects, modifier = Modifier.testTag("drum_effects"),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 14.dp),
             ) { Text(tr("Effets"), maxLines = 1, softWrap = false) }
@@ -851,7 +856,7 @@ private fun RollMenu(
 }
 
 @Composable
-internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: RhythmActions) {
+internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: RhythmActions, simple: Boolean = false) {
     val color = DrumKitInfo.colors[lane]
     val sample = project.drums.lanes[lane].sample
     NeonCard(modifier = Modifier.testTag("pad_sound")) {
@@ -876,6 +881,15 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
             Icon(Icons.Filled.LibraryMusic, contentDescription = null)
             Text(tr(" Changer le son"))
         }
+        val volume = project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(lane))?.volume ?: 0.8f
+        if (simple) {
+            // The Mode simple: another sound and its volume (its own sound can go back to the kit's).
+            LabeledSlider(tr("Volume du pad"), percent((volume / 0.8f * 100).roundToInt()), volume, 0f..1f) { actions.setPadVolume(lane, it) }
+            if (sample != null && !busy) {
+                TextButton(onClick = actions.removeSample, modifier = Modifier.testTag("remove_sample")) { Text(tr("Revenir au son %s", DrumKitInfo.names[lane])) }
+            }
+            return@NeonCard
+        }
         // The effect box on this pad alone, or on the whole drum kit.
         val narrow = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -887,7 +901,6 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                 com.pocketstudio.ui.WholeWordsText(tr("Toute la batterie"), textAlign = TextAlign.Center)
             }
         }
-        val volume = project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(lane))?.volume ?: 0.8f
         LabeledSlider(tr("Volume du pad"), percent((volume / 0.8f * 100).roundToInt()), volume, 0f..1f) { actions.setPadVolume(lane, it) }
         val pan = project.drums.lanes[lane].pan
         PanRow(tr("Pan du pad"), pan, onChange = { actions.setPadPanOf(lane, it) }, onEnd = { actions.padPanDone(lane) }, tag = "pad_sound_pan")

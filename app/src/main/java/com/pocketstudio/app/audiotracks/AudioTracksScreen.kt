@@ -553,7 +553,7 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
 
 /**
  * « Refaire un passage »: the bars to sing again (of the song for a song clip, of the part
- * otherwise), then « ● Refaire mes. 5-8 »: the take starts a bar before and stops by itself.
+ * otherwise), then « ● Refaire mes. 5-8 »: the music starts from the part holding the bar before (or the part's start), the take stops by itself.
  */
 @Composable
 private fun PunchRow(id: Int, clip: AudioClip, ui: AudioTracksUi, actions: AudioTracksActions) {
@@ -578,7 +578,7 @@ private fun PunchRow(id: Int, clip: AudioClip, ui: AudioTracksUi, actions: Audio
     }
     Text(
         if (clip.tempoDiffers(ui.tempoBpm)) tr("Recale d'abord la prise sur le tempo pour refaire un passage.")
-        else tr("La musique part une mesure avant ; seul ce passage est remplacé, la prise entière reste dans les prises."),
+        else tr("La musique repart du début de la partie ; seul ce passage est remplacé, la prise entière reste dans les prises."),
         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
     )
 }

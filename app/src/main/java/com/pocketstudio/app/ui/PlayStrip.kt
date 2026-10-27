@@ -123,6 +123,8 @@ class PlayStripUi(
     val soloed: List<String> = emptyList(),
     /** Phase 36: the « ? » that labels the screen, lit while the labels show (null: no « ? » here). */
     val helpOn: Boolean? = null,
+    /** « ⟳ Partie » shown (with a song); false: the Mode simple's lighter strip. */
+    val loopChip: Boolean = true,
 )
 
 class PlayStripActions(
@@ -157,7 +159,8 @@ fun PlayStrip(ui: PlayStripUi, actions: PlayStripActions) = BoxWithConstraints(
     // A narrow strip (a small phone, a big text size): the chips keep their icon alone, so the
     // position keeps its words (never « … / me »). The Solo chip gives way first.
     // The « ? » (phase 36) takes a chip's room too.
-    val chips = (if (ui.soloed.isNotEmpty()) 1 else 0) + (if (ui.hasSong) 1 else 0) + (if (ui.helpOn != null) 1 else 0)
+    val loop = ui.hasSong && ui.loopChip
+    val chips = (if (ui.soloed.isNotEmpty()) 1 else 0) + (if (loop) 1 else 0) + (if (ui.helpOn != null) 1 else 0)
     val soloIconOnly = ui.soloed.isNotEmpty() && maxWidth < COMPACT_BELOW
     val loopIconOnly = ui.hasSong && (maxWidth < (if (chips >= 2) COMPACT_BELOW else 300.dp))
     Row(
@@ -168,7 +171,7 @@ fun PlayStrip(ui: PlayStripUi, actions: PlayStripActions) = BoxWithConstraints(
         TempoButton(ui.tempoBpm, actions.openTempo)
         PositionLabel(ui, actions, Modifier.weight(1f))
         if (ui.soloed.isNotEmpty()) SoloChip(ui.soloed, actions.clearSolos, iconOnly = soloIconOnly)
-        if (ui.hasSong) LoopPartChip(ui.loopPart, actions.setLoopPart, iconOnly = loopIconOnly)
+        if (loop) LoopPartChip(ui.loopPart, actions.setLoopPart, iconOnly = loopIconOnly)
         ui.helpOn?.let { on -> HelpLabelsButton(on, actions.toggleHelp, actions.reportBug) }
     }
 }

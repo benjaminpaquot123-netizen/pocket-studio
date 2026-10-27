@@ -20,7 +20,7 @@ object DefaultNames {
             listOf(
                 "Nouveau projet", "Mon premier rythme", "Mon projet", "Mon morceau", "Mon son",
                 "Synthé", "Basse", "Nappe", "Lead", "Batterie", "Basse acide", "Remix", "Piste", "Sample",
-                "Son importé", "Morceau 1 mesure", "Voix", StarterWizard.RISER_TRACK, StarterWizard.OLD_RISER_TRACK, StarterWizard.SUB_TRACK, StarterWizard.SUB_DROP_TRACK,
+                "Son importé", "Morceau 1 mesure", "Voix", SimpleMelody.NAME, StarterWizard.RISER_TRACK, StarterWizard.OLD_RISER_TRACK, StarterWizard.SUB_TRACK, StarterWizard.SUB_DROP_TRACK,
             ) + TrackKind.entries.map { it.trackName } + StarterWizard.CHORD_TRACK_NAMES + Demos.ALL.map { it.first } + StarterWizard.STYLES.map { it.name }
             ).toSet()
     }

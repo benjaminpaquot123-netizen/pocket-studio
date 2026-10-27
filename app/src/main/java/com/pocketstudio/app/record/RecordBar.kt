@@ -253,7 +253,11 @@ fun recordBarUi(vm: com.pocketstudio.app.rhythm.RhythmViewModel, label: String, 
     )
 }
 
-fun recordBarActions(vm: com.pocketstudio.app.rhythm.RhythmViewModel, source: TakeSource) = RecordBarActions(
-    record = { vm.recordTake(source) }, keep = vm::keepNoteTake, inTime = vm::takeInTime, asPlayed = vm::takeAsPlayed,
+fun recordBarActions(
+    vm: com.pocketstudio.app.rhythm.RhythmViewModel, source: TakeSource,
+    /** The Mode simple's « Enregistrer ma mélodie »: on « Ma mélodie » (see [com.pocketstudio.app.rhythm.RhythmViewModel.recordMelodyTake]). */
+    melody: Boolean = false,
+) = RecordBarActions(
+    record = { if (melody) vm.recordMelodyTake() else vm.recordTake(source) }, keep = vm::keepNoteTake, inTime = vm::takeInTime, asPlayed = vm::takeAsPlayed,
     redo = vm::redoTake, keepPlayed = vm::keepPlayed,
 )

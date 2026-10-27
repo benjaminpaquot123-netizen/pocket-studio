@@ -23,6 +23,7 @@ hold, "!" negates: see GuideAnalyzer), proposals and elsewhere (id, label, why, 
 import importlib.util
 import json
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -81,7 +82,18 @@ class T:
         for lang in LANGS:
             vals = {k: (v.v[lang] if isinstance(v, T) else v) for k, v in kw.items()}
             out.v[lang] = self.v[lang].format(**vals)
+        out.v["nl"] = nl_articles(out.v["nl"])
         return out
+
+
+# Dutch: « refrein » is a het-word, « Drop » a de-word. The Dutch texts are written for « de Drop »;
+# once {peak} is the chorus their article and determiners agree: het refrein, dit refrein, elk refrein.
+NL_NEUTER = {"de": "het", "De": "Het", "deze": "dit", "Deze": "Dit", "elke": "elk", "Elke": "Elk"}
+NL_REFREIN = re.compile(r"\b(de|De|deze|Deze|elke|Elke)((?: (?:\d+e|eerste|tweede|derde|laatste|hele|volle))?) ([Rr]efrein)\b")
+
+
+def nl_articles(text):
+    return NL_REFREIN.sub(lambda m: NL_NEUTER[m.group(1)] + m.group(2) + " " + m.group(3), text)
 
 
 def known(fr):
@@ -115,15 +127,16 @@ def keep(label=K, why=K_WHY, value=None):
     return {"id": "keep", "label": label, "why": why, "value": value, "action": {"type": "keep"}}
 
 
-def prop(pid, label, why, action, value=None):
-    return {"id": pid, "label": label, "why": why, "value": value, "action": action}
+def prop(pid, label, why, action, value=None, simple_label=None, simple_why=None):
+    """An option; [simple_label] / [simple_why]: its everyday words in the Mode simple (its [value] is not shown there then)."""
+    return {"id": pid, "label": label, "why": why, "value": value, "action": action, "simpleLabel": simple_label, "simpleWhy": simple_why}
 
 
-def open_spot(pid, label, why, spot, target=""):
+def open_spot(pid, label, why, spot, target="", simple_label=None, simple_why=None):
     a = {"type": "open", "spot": spot}
     if target:
         a["target"] = target
-    return prop(pid, label, why, a)
+    return prop(pid, label, why, a, simple_label=simple_label, simple_why=simple_why)
 
 
 def card(cid, stage, title, why, target="song", kind="decide", simple=False, simple_title=None, simple_why=None,
@@ -258,10 +271,10 @@ def stage0(s):
         card(
             "frame.destination", 0,
             T("Pour où : téléphone, streaming ou club ?", "Where for: phone, streaming or club?", "Waarvoor: telefoon, streaming of club?"),
-            T("Le volume visé change : vers −14 LUFS en streaming, −8 en club ; ce style vise {lufs} LUFS au {peak}. Le moteur s'en charge.",
-              "The target loudness changes: about -14 LUFS for streaming, -8 in a club; this style aims at {lufs} LUFS in the {peak}. The engine takes care of it.",
-              "Het beoogde volume verandert: rond -14 LUFS voor streaming, -8 in een club; deze stijl mikt op {lufs} LUFS in de {peak}. De engine regelt het.").fill(lufs=lufs(s.lufs), peak=peak),
-            done=["target"], lexicon="master",
+            T("Le volume visé change : vers −14 LUFS en streaming, −8 en club ; ce style vise {lufs} LUFS au {peak}. Le master s'en approche sans écraser le son.",
+              "The target loudness changes: about -14 LUFS for streaming, -8 in a club; this style aims at {lufs} LUFS in the {peak}. The master gets close to it without squashing the sound.",
+              "Het beoogde volume verandert: rond -14 LUFS voor streaming, -8 in een club; deze stijl mikt op {lufs} LUFS in de {peak}. De master komt er dicht bij zonder de klank te pletten.").fill(lufs=lufs(s.lufs), peak=peak),
+            done=["target"], lexicon="loudness",
             proposals=[prop("auto", T("Le style (auto)", "The style (auto)", "De stijl (auto)"),
                             T("La cible du style, mesurée sur son {peak}.", "The style's target, measured on its {peak}.", "Het doel van de stijl, gemeten op zijn {peak}.").fill(peak=peak),
                             {"type": "target", "name": "AUTO"}),
@@ -308,7 +321,7 @@ def stage1(s):
         "sound.kick", "kick",
         T("Le kick : son, motif, où il joue", "The kick: sound, pattern, where it plays", "De kick: klank, patroon, waar hij speelt"),
         tip(s, "kick", T("La fondation : le battement que tout le monde suit.", "The foundation: the beat everyone follows.", "Het fundament: de slag die iedereen volgt.")),
-        T("Le kick (le « boum »)", "The kick (the « boom »)", "De kick (de « boem »)"),
+        T("Le kick (le « boum »)", "The kick (the “boom”)", "De kick (de ‘boem’)"),
         T("Le battement grave que tout le monde suit en tapant du pied.", "The low beat everyone taps their foot to.", "De lage slag waarop iedereen met de voet meetikt."),
         "kick", "rhythm.kit")]
     if s.has_drum("snare", "clap"):
@@ -317,7 +330,7 @@ def stage1(s):
             "sound.snare", "snare",
             T("La caisse claire et le clap", "The snare and the clap", "De snaredrum en de clap"),
             tip(s, role, T("Elle répond au kick sur 2 et 4 : c'est elle qui donne l'élan.", "It answers the kick on 2 and 4: it gives the drive.", "Hij antwoordt de kick op 2 en 4: hij geeft de vaart.")),
-            T("Le « tchak » qui répond au kick", "The « tchak » answering the kick", "De « tsjak » die de kick antwoordt"),
+            T("Le « tchak » qui répond au kick", "The “tchak” answering the kick", "De ‘tsjak’ die de kick antwoordt"),
             T("Sur les temps 2 et 4 : c'est lui qui fait avancer.", "On beats 2 and 4: it moves things forward.", "Op tel 2 en 4: hij duwt alles vooruit."),
             "snare", "rhythm.kit"))
     if s.has_drum("hat", "open_hat", "ride", "perc", "perc2", "tom"):
@@ -325,8 +338,8 @@ def stage1(s):
         out.append(sound_card(
             "sound.hats", "hats",
             T("Les charleys et les percussions", "The hats and the percussion", "De hi-hats en de percussie"),
-            tip(s, role, T("Le « tic-tic » qui donne la vitesse et le groove.", "The « tick-tick » that gives speed and groove.", "Het « tik-tik » dat snelheid en groove geeft.")),
-            T("Les petits « tss » qui donnent la vitesse", "The little « tss » that give the speed", "De kleine « tss » die de snelheid geven"),
+            tip(s, role, T("Le « tic-tic » qui donne la vitesse et le groove.", "The “tick-tick” that gives speed and groove.", "Het ‘tik-tik’ dat snelheid en groove geeft.")),
+            T("Les petits « tss » qui donnent la vitesse", "The little “tss” that give the speed", "De kleine ‘tss’ die de snelheid geven"),
             T("Ils remplissent entre les coups ; plus doux une fois sur deux, ils respirent.", "They fill between the hits; softer every other one, they breathe.", "Ze vullen tussen de slagen; om de andere zachter, dan ademen ze."),
             "hat", "rhythm.kit"))
     if s.has_drum("rumble"):
@@ -356,7 +369,7 @@ def stage1(s):
               "The bass that squeals as its filter opens: the style's signature, it moves the whole song.",
               "De bas die piept als zijn filter opengaat: het handelsmerk van de stijl, hij beweegt het hele nummer."),
             T("La basse acide", "The acid bass", "De acid-bas"),
-            T("Elle « parle » quand son filtre s'ouvre.", "It « talks » as its filter opens.", "Hij « praat » als zijn filter opengaat."),
+            T("Elle « parle » quand son filtre s'ouvre.", "It “talks” as its filter opens.", "Hij ‘praat’ als zijn filter opengaat."),
             "acid", "acid"))
     if s.chords != "none":
         title = {
@@ -461,8 +474,8 @@ def stage2(s):
             "layers.snare", 2,
             T("La caisse claire doublée d'un clap", "The snare doubled by a clap", "De snaredrum verdubbeld met een clap"),
             T("Ensemble, un « clac » plus épais et plus large. Jamais deux sons pour le même rôle dans la même bande.",
-              "Together, a thicker and wider « clack ». Never two sounds for the same role in the same band.",
-              "Samen een dikkere en bredere « klak ». Nooit twee klanken voor dezelfde rol in dezelfde band."),
+              "Together, a thicker and wider “clack”. Never two sounds for the same role in the same band.",
+              "Samen een dikkere en bredere ‘klak’. Nooit twee klanken voor dezelfde rol in dezelfde band."),
             target="snare", applicable=["has:snare"], done=["layered:snare"], lexicon="clap",
             proposals=[keep(), open_spot("kit", T("Voir le clap", "See the clap", "De clap bekijken"),
                                          T("Le clap pile sur la caisse claire, un peu plus bas.", "The clap right on the snare, a little lower.", "De clap precies op de snare, iets zachter."), "rhythm.kit", "snare")],
@@ -472,6 +485,8 @@ def stage2(s):
 
 # --- Stage 3: the effect chain of each role ---------------------------------------------------------
 
+# The styles whose bass stays round and clean: no « grain » offered.
+ROUND_BASS = {"lofi", "boom_bap", "liquid_dnb"}
 WHEN_FX = T("Une fois le son et le motif posés.", "Once the sound and the pattern are set.", "Zodra de klank en het patroon staan.")
 ONCE = T("Une chaîne pour tout le morceau.", "One chain for the whole song.", "Eén keten voor het hele nummer.")
 LESS = T("Moins", "Less", "Minder")
@@ -518,14 +533,19 @@ def stage3(s):
             title = T("La basse : {p}", "The bass: {p}", "De bas: {p}").fill(p=known(name))
             why = known(desc)
         else:
-            title = T("La basse : un écrêteur doux", "The bass: a soft clipper", "De bas: een zachte clipper")
-            why = known("Arrondit les crêtes qui dépassent le niveau du son : plus dense, sans pomper. Parfait sur une basse, avant l'OTT.")
+            # No ready-made chain: say nothing of effects the assistant may not have put.
+            title = T("La basse : ses effets", "The bass: its effects", "De bas: zijn effecten")
+            why = T("Écoute la basse avec et sans ses effets, au même volume : garde ce qui la rend plus présente.",
+                    "Hear the bass with and without its effects, at the same loudness: keep what makes it more present.",
+                    "Luister naar de bas met en zonder zijn effecten, even luid: hou wat hem aanweziger maakt.")
         dirty = preset in ("growl", "fat_bass", "wob_dubstep", "reese_dnb")  # a distortion insert to turn
         if dirty:
             props = [keep(), prop("cleaner", T("Moins sale", "Less dirty", "Minder vuil"), T("Plus de rondeur, moins de grain.", "Rounder, less grit.", "Ronder, minder korrel."),
                                   {"type": "nudge", "effect": "DISTORTION", "param": 0, "delta": -0.15}),
                      prop("dirtier", T("Plus sale", "Dirtier", "Vuiler"), T("Plus de grain : elle perce sur un téléphone.", "More grit: it cuts through on a phone.", "Meer korrel: hij komt door op een telefoon."),
                           {"type": "nudge", "effect": "DISTORTION", "param": 0, "delta": 0.1, "params": [0.3, 0.5, 0.3, 0.6]})]
+        elif s.id in ROUND_BASS:
+            props = [keep(), prop("later", LATER_EAR, LATER_EAR_WHY, {"type": "later"})]
         else:
             props = [keep(), prop("grain", T("Un peu de grain", "A little grit", "Een beetje korrel"),
                                   T("Une saturation légère : on l'entend aussi sur un téléphone.", "A light saturation: heard on a phone too.", "Een lichte saturatie: ook op een telefoon te horen."),
@@ -542,12 +562,12 @@ def stage3(s):
         out.append(fx_card(
             "fx.sub", "sub",
             T("Le sub : propre, au centre, un peu saturé", "The sub: clean, centred, a little saturated", "De sub: zuiver, in het midden, licht verzadigd"),
-            T("Le sub n'a que « Basse audible » (ses harmoniques pour un téléphone) : une saturation légère entre 60 et 250 Hz le rend plus présent, sans le salir.",
-              "The sub only has « Audible bass » (its harmonics for a phone): a light saturation between 60 and 250 Hz brings it forward without dirtying it.",
-              "De sub heeft alleen « Hoorbare bas » (zijn boventonen voor een telefoon): een lichte saturatie tussen 60 en 250 Hz brengt hem naar voren, zonder hem vuil te maken."),
+            T("Aucun effet ne colore encore le sub : une saturation légère entre 60 et 250 Hz le rend plus présent, sans le salir.",
+              "No effect colours the sub yet: a light saturation between 60 and 250 Hz brings it forward without dirtying it.",
+              "Nog geen effect kleurt de sub: een lichte saturatie tussen 60 en 250 Hz brengt hem naar voren, zonder hem vuil te maken."),
             [prop("light", T("Saturation légère", "Light saturation", "Lichte saturatie"), T("Juste assez pour qu'un petit haut-parleur le devine.", "Just enough for a small speaker to hint at it.", "Net genoeg zodat een kleine luidspreker hem laat vermoeden."),
                   {"type": "insert", "effect": "SATURATION", "params": [0.2, 1.0, 1.0, 0.7, 1.0]}, T("Drive 20 %", "Drive 20%", "Drive 20%")),
-             keep(T("Le laisser pur", "Leave it pure", "Puur laten"), T("Un sinus pur, senti plus qu'entendu.", "A pure sine, felt more than heard.", "Een zuivere sinus, meer gevoeld dan gehoord."))],
+             keep(T("Le laisser tel quel", "Leave it as it is", "Laten zoals hij is"), T("Un grave rond, senti plus qu'entendu.", "A round low end, felt more than heard.", "Een rond laag, meer gevoeld dan gehoord."))],
             T("Saturation 15 à 25 %, mono strict.", "Saturation 15 to 25%, strictly mono.", "Saturatie 15 tot 25%, strikt mono."),
             "saturation", applicable=["has:sub"], done=["colour:sub", "by_hand|changed:sub"], kind="decide"))
     if s.bass and s.has_drum("kick"):
@@ -559,7 +579,7 @@ def stage3(s):
               "Anders vechten ze in het laag, vooral op een telefoon. Alle muziek zakt even bij elke kick, het laag iets meer."),
             [keep(T("Garder", "Keep", "Houden"), T("Si la musique s'écarte déjà sous le kick, c'est réglé : écoute-la.", "If the music already ducks under the kick, it is set: listen to it.", "Als de muziek al wijkt onder de kick, is het geregeld: luister ernaar.")),
              prop("light", T("Léger", "Light", "Licht"), T("On le sent, on ne l'entend pas.", "Felt, not heard.", "Je voelt het, je hoort het niet."), {"type": "duck", "value": 0.35}),
-             prop("pump", T("Qui pompe", "Pumping", "Pompend"), T("On l'entend respirer : l'effet « house ».", "You hear it breathe: the « house » effect.", "Je hoort het ademen: het « house »-effect."), {"type": "duck", "value": 0.8})],
+             prop("pump", T("Qui pompe", "Pumping", "Pompend"), T("On l'entend respirer : l'effet « house ».", "You hear it breathe: the “house” effect.", "Je hoort het ademen: het ‘house’-effect."), {"type": "duck", "value": 0.8})],
             T("Ratio 3:1 à 6:1, attaque 0 à 10 ms, relâche 60 à 120 ms.", "Ratio 3:1 to 6:1, attack 0 to 10 ms, release 60 to 120 ms.", "Ratio 3:1 tot 6:1, attack 0 tot 10 ms, release 60 tot 120 ms."),
             "sidechain", applicable=["has:bass", "has:kick"], done=["sidechain|changed:sidechain"]))
     if s.acid:
@@ -693,7 +713,8 @@ def stage4(s):
                         T("Le grave et la batterie seuls d'abord : le {peak} frappe plus.", "The low end and the drums alone first: the {peak} hits harder.", "Eerst alleen het laag en de drums: de {peak} slaat harder.").fill(peak=peak),
                         {"type": "mute", "target": "pad", "section": "peak", "occurrence": 0, "half": "first"}),
                    open_spot("parts", T("Je le fais moi-même", "I'll do it myself", "Ik doe het zelf"),
-                             T("Une couche, une variation, un contre-chant au 2e.", "A layer, a variation, a counter-melody in the 2nd.", "Een laag, een variatie, een tegenmelodie in de 2e."), "song.parts")],
+                             T("Une couche, une variation, un contre-chant au 2e.", "A layer, a variation, a counter-melody in the 2nd.", "Een laag, een variatie, een tegenmelodie in de 2e."), "song.parts",
+                             simple_why=T("Un son en plus, une variation, une petite réponse au 2e.", "One more sound, a variation, a little answer in the 2nd.", "Een klank erbij, een variatie, een klein antwoord in de 2e."))],
     )]
     if s.bass:
         out.append(card(
@@ -836,9 +857,9 @@ def stage6(s):
     out = [card(
         "mix.balance", 6,
         T("La balance : kick, basse, batterie, lead, le reste", "The balance: kick, bass, drums, lead, the rest", "De balans: kick, bas, drums, lead, de rest"),
-        T("On règle dans cet ordre, avec les faders seuls : le mix doit déjà marcher avant les effets. Tous les faders sont encore à 0 dB.",
-          "Set them in this order, with the faders only: the mix must already work before the effects. Every fader is still at 0 dB.",
-          "Stel ze in deze volgorde in, alleen met de faders: de mix moet al werken vóór de effecten. Alle faders staan nog op 0 dB."),
+        T("On règle dans cet ordre, avec les faders seuls, effets compris : le kick en référence, chaque piste à sa place autour de lui.",
+          "Set them in this order, with the faders only, effects included: the kick as the reference, each track in its place around it.",
+          "Stel ze in deze volgorde in, alleen met de faders, effecten inbegrepen: de kick als referentie, elk spoor op zijn plek eromheen."),
         simple=True, simple_title=T("Le volume de chaque piste", "Each track's volume", "Het volume van elk spoor"),
         simple_why=T("Le kick et la basse d'abord, le reste autour.", "The kick and the bass first, the rest around them.", "Eerst de kick en de bas, de rest eromheen."),
         done=["balanced|faders"], lexicon="mix",
@@ -846,7 +867,10 @@ def stage6(s):
                         T("J'écoute chaque piste seule au {peak}, le kick en référence, et je remets à sa place celle qui s'en écarte de plus de 3 dB.",
                           "I listen to each track alone in the {peak}, the kick as the reference, and put back in its place any that strays more than 3 dB.",
                           "Ik beluister elk spoor apart in de {peak}, met de kick als referentie, en zet elk spoor dat meer dan 3 dB afwijkt terug op zijn plek.").fill(peak=peak),
-                        {"type": "balance"}, T("± 3 dB", "± 3 dB", "± 3 dB")),
+                        {"type": "balance"}, T("± 3 dB", "± 3 dB", "± 3 dB"),
+                        simple_why=T("J'écoute chaque piste au {peak}, le kick en référence, et je remets à sa place celle qui est trop forte ou trop faible.",
+                                     "I listen to each track in the {peak}, the kick as the reference, and put back in its place any that is too loud or too soft.",
+                                     "Ik beluister elk spoor in de {peak}, met de kick als referentie, en zet elk spoor dat te luid of te zacht is terug op zijn plek.").fill(peak=peak)),
                    open_spot("mixer", T("Régler les volumes", "Set the volumes", "De volumes instellen"), T("Le kick en référence, chaque piste à sa place.", "The kick as the reference, each track in its place.", "De kick als referentie, elk spoor op zijn plek."), "mixer.strip"),
                    keep(T("Ça sonne déjà juste", "It already sounds right", "Het klinkt al goed"), T("Le mix de départ te convient.", "The starting mix suits you.", "De startmix bevalt je."))],
     ), card(
@@ -857,7 +881,7 @@ def stage6(s):
           "De kick, de bas en de stem in het midden; de hi-hats, de percussie, de akkoorden en de leads een beetje opzij."),
         simple=True, simple_title=T("Gauche, droite, centre", "Left, right, centre", "Links, rechts, midden"),
         simple_why=T("Chaque son à sa place : tout s'entend mieux.", "Every sound in its place: everything is heard better.", "Elke klank op zijn plek: alles is beter te horen."),
-        done=["pans", "by_hand|changed:pans"], lexicon="mix",
+        done=["pans", "by_hand|changed:pans"], lexicon="pan",
         proposals=[keep(T("Garder ces places", "Keep these places", "Deze plekken houden"), T("Si les pistes sont déjà placées, écoute-les au casque : c'est réglé.", "If the tracks are placed already, listen on headphones: it is set.", "Als de sporen al geplaatst zijn, luister met een koptelefoon: het is geregeld.")),
                    prop("place", T("Placer pour moi", "Place them for me", "Plaats ze voor mij"), T("Le grave au centre, le reste un peu écarté.", "The low end in the centre, the rest spread a little.", "Het laag in het midden, de rest een beetje uit elkaar."), {"type": "pans"})],
     ), card(
@@ -869,13 +893,18 @@ def stage6(s):
         simple=True, simple_title=T("Le volume final", "The final loudness", "Het eindvolume"),
         simple_why=T("Fort comme les autres morceaux du style, sans écraser.", "As loud as the style's other songs, without squashing.", "Even luid als de andere nummers van de stijl, zonder te pletten."),
         target="master", kind="review", done=["master", "by_hand|changed:master"], lexicon="master",
-        proposals=[keep(), open_spot("master", T("Voir le master", "See the master", "De master bekijken"), T("La cible, la marge et ce que fait la chaîne.", "The target, the headroom and what the chain does.", "Het doel, de headroom en wat de keten doet."), "mixer.master")],
+        proposals=[keep(), open_spot("master", T("Voir le master", "See the master", "De master bekijken"), T("La cible, la marge et ce que fait la chaîne.", "The target, the headroom and what the chain does.", "Het doel, de headroom en wat de keten doet."), "mixer.master",
+                                               simple_label=T("Voir le volume final", "See the final loudness", "Het eindvolume bekijken"),
+                                               simple_why=T("Le volume visé et ce qui l'ajuste.", "The loudness aimed at and what adjusts it.", "Het beoogde volume en wat het bijstelt."))],
     ), card(
         "mix.contrast", 6,
         T("Le {peak} plus fort que le {brk}", "The {peak} louder than the {brk}", "De {peak} luider dan de {brk}").fill(peak=peak, brk=brk),
         T("Au moins 4 dB d'écart entre le {brk} et le {peak} : sinon le {peak} ne tombe pas.", "At least 4 dB between the {brk} and the {peak}: otherwise the {peak} does not land.",
           "Minstens 4 dB verschil tussen de {brk} en de {peak}: anders landt de {peak} niet.").fill(peak=peak, brk=brk),
-        simple=True, applicable=["measured", "break"], done=["contrast"], lexicon="break",
+        simple=True, simple_title=T("Le {peak} plus fort que le {brk}", "The {peak} louder than the {brk}", "De {peak} luider dan de {brk}").fill(peak=peak, brk=brk),
+        simple_why=T("Le {brk} un peu plus calme, pour que le {peak} frappe quand il revient.", "The {brk} a little calmer, so the {peak} hits when it comes back.",
+                     "De {brk} iets rustiger, zodat de {peak} harder aankomt.").fill(peak=peak, brk=brk),
+        applicable=["measured", "break"], done=["contrast"], lexicon="break",
         proposals=[open_spot("parts", T("Alléger le {brk}", "Lighten the {brk}", "De {brk} lichter maken").fill(brk=brk), T("Une piste de moins, ou son volume un peu plus bas.", "One track fewer, or its volume a little lower.", "Eén spoor minder, of het volume iets lager."), "song.parts"),
                    prop("later", LATER_EAR, LATER_EAR_WHY, {"type": "later"})],
     ), card(
@@ -890,10 +919,15 @@ def stage6(s):
         proposals=[prop("listen", T("Écouter en mono", "Listen in mono", "In mono luisteren"),
                         T("Le {peak} en stéréo, puis replié en mono : ce qui s'efface s'entend.", "The {peak} in stereo, then folded to mono: what fades away is heard.",
                           "De {peak} in stereo, dan samengevouwen tot mono: wat verdwijnt, hoor je.").fill(peak=peak),
-                        {"type": "listen", "name": "mono"}),
+                        {"type": "listen", "name": "mono"},
+                        simple_why=T("Le {peak} normal, puis comme sur une seule enceinte : ce qui s'efface s'entend.", "The {peak} as usual, then as on a single speaker: what fades away is heard.",
+                                     "De {peak} gewoon, dan zoals op één box: wat verdwijnt, hoor je.").fill(peak=peak)),
                    prop("narrow", T("Resserrer la stéréo", "Narrow the stereo", "De stereo smaller maken"),
                         T("Les graves en mono jusqu'à 150 Hz, aucun élargisseur au-delà de 100 %.", "The lows in mono up to 150 Hz, no widener past 100%.", "Het laag in mono tot 150 Hz, geen verbreder boven 100%."),
-                        {"type": "mono"}, T("150 Hz", "150 Hz", "150 Hz")),
+                        {"type": "mono"}, T("150 Hz", "150 Hz", "150 Hz"),
+                        simple_label=T("Resserrer le son", "Narrow the sound", "De klank smaller maken"),
+                        simple_why=T("Les graves au milieu, rien de trop large : tout reste là sur une seule enceinte.", "The lows in the middle, nothing too wide: everything stays there on a single speaker.",
+                                     "Het laag in het midden, niets te breed: alles blijft er op één box.")),
                    keep(T("C'est vérifié", "Checked", "Gecontroleerd"), T("Rien ne disparaît en mono.", "Nothing vanishes in mono.", "Niets verdwijnt in mono."))],
     ), card(
         "mix.phone", 6,
@@ -907,11 +941,13 @@ def stage6(s):
         proposals=[prop("listen", T("Écouter comme un téléphone", "Listen as a phone", "Luisteren als een telefoon"),
                         T("Le {peak} tel quel, puis sans rien sous 300 Hz, au même volume.", "The {peak} as it is, then with nothing under 300 Hz, at the same loudness.",
                           "De {peak} zoals hij is, dan zonder iets onder 300 Hz, even luid.").fill(peak=peak),
-                        {"type": "listen", "name": "phone"}),
+                        {"type": "listen", "name": "phone"},
+                        simple_why=T("Le {peak} tel quel, puis comme sur un petit haut-parleur, au même volume.", "The {peak} as it is, then as on a small speaker, at the same loudness.",
+                                     "De {peak} zoals hij is, dan zoals op een kleine luidspreker, even luid.").fill(peak=peak)),
                    prop("audible", T("Une basse plus audible", "A more audible bass", "Een beter hoorbare bas"),
                         T("« Basse audible » sur la basse, un peu plus fort : ses harmoniques passent sur un petit haut-parleur.",
-                          "« Audible bass » on the bass, a little stronger: its harmonics come through a small speaker.",
-                          "« Hoorbare bas » op de bas, iets sterker: zijn boventonen komen door een kleine luidspreker."),
+                          "“Audible bass” on the bass, a little stronger: its harmonics come through a small speaker.",
+                          "‘Hoorbare bas’ op de bas, iets sterker: zijn boventonen komen door een kleine luidspreker."),
                         {"type": "nudge", "target": "bass", "effect": "BASS_EXCITER", "param": 0, "delta": 0.15, "params": [0.4]}, T("+15 %", "+15%", "+15%")),
                    keep(T("C'est vérifié", "Checked", "Gecontroleerd"), T("La basse se devine sur un téléphone.", "The bass can be guessed on a phone.", "De bas is te raden op een telefoon."))],
     ), card(
@@ -949,7 +985,8 @@ def stage7(s):
         simple_why=T("Un dernier coup d'œil, puis en fichier ou en vidéo.", "A last look, then as a file or a video.", "Een laatste blik, dan als bestand of als video."),
         lexicon="master",
         proposals=[open_spot("check", T("Lancer les vérifications", "Run the checks", "De controles uitvoeren"), T("Six points, chacun avec sa solution.", "Six points, each with its fix.", "Zes punten, elk met zijn oplossing."), "share.check"),
-                   open_spot("export", T("Exporter le M4A", "Export the M4A", "De M4A exporteren"), T("Le morceau entier, au volume du style.", "The whole song, at the style's loudness.", "Het hele nummer, op het volume van de stijl."), "share.export"),
+                   open_spot("export", T("Exporter le M4A", "Export the M4A", "De M4A exporteren"), T("Le morceau entier, au volume du style.", "The whole song, at the style's loudness.", "Het hele nummer, op het volume van de stijl."), "share.export",
+                             simple_label=T("Faire le fichier audio", "Make the audio file", "Het audiobestand maken")),
                    open_spot("video", T("Faire la vidéo", "Make the video", "De video maken"), T("Les pistes qui s'allument en rythme.", "The tracks lighting up in time.", "De sporen die in de maat oplichten."), "share.video")],
         elsewhere=[keep(T("C'est partagé", "Shared", "Gedeeld"), T("Le morceau est parti : bravo.", "The song is out: well done.", "Het nummer is weg: goed gedaan."))],
     )]
@@ -988,7 +1025,7 @@ WHYS = {
         "BITCRUSHER": T("Un son numérique, granuleux.", "A grainy, digital sound.", "Een korrelige, digitale klank."),
         "PARAM_EQ": T("Une bande précise : creuser, monter, ou couper le bas.", "One precise band: cut, boost, or remove the lows.", "Eén precieze band: uitdiepen, versterken of het laag wegsnijden."),
         "ROBOT": T("Une voix de robot, métallique.", "A metallic robot voice.", "Een metalen robotstem."),
-        "WAH": T("Le « wah » qui parle.", "The talking « wah ».", "De pratende « wah »."),
+        "WAH": T("Le « wah » qui parle.", "The talking “wah”.", "De pratende ‘wah’."),
         "VINYL": T("Le grain d'un vieux disque.", "An old record's grain.", "De korrel van een oude plaat."),
         "RADIO": T("Fin et nasillard, comme une vieille radio.", "Thin and nasal, like an old radio.", "Dun en nasaal, als een oude radio."),
         "CHOPPER": T("Le son coupé en tranches, en rythme.", "The sound sliced in time.", "De klank in de maat in plakjes gesneden."),
@@ -1000,7 +1037,7 @@ WHYS = {
         "OTT": T("Compresse en trois bandes : dense, gros, présent.", "Compresses in three bands: dense, big, present.", "Comprimeert in drie banden: dicht, groot, aanwezig."),
         "FREQ_SHIFT": T("Décale toutes les fréquences : un son étrange, métallique.", "Shifts every frequency: a strange, metallic sound.", "Verschuift alle frequenties: een vreemde, metalen klank."),
         "TAPE_STOP": T("Le disque qui ralentit jusqu'à l'arrêt.", "The record slowing down to a stop.", "De plaat die vertraagt tot stilstand."),
-        "WOBBLE": T("Un filtre qui s'ouvre et se ferme en rythme : le « wob ».", "A filter opening and closing in time: the « wob ».", "Een filter dat in de maat open- en dichtgaat: de « wob »."),
+        "WOBBLE": T("Un filtre qui s'ouvre et se ferme en rythme : le « wob ».", "A filter opening and closing in time: the “wob”.", "Een filter dat in de maat open- en dichtgaat: de ‘wob’."),
         "BASS_EXCITER": T("Ajoute les harmoniques du grave : la basse s'entend aussi sur un téléphone, qui ne joue pas sous 150 Hz.",
                           "Adds the low end's harmonics: the bass is heard on a phone too, which plays nothing under 150 Hz.",
                           "Voegt de boventonen van het laag toe: de bas is ook op een telefoon te horen, die niets onder 150 Hz speelt."),
@@ -1014,7 +1051,7 @@ WHYS = {
         "FILTER": T("Le filtre qui s'ouvre dans la Montée.", "The filter that opens in the build-up.", "Het filter dat in de opbouw opengaat."),
     },
     "riser": {
-        "FILTER": T("Le souffle s'ouvre jusqu'au Drop.", "The noise opens up to the Drop.", "De ruis gaat open tot aan de Drop."),
+        "FILTER": T("Le souffle s'ouvre jusqu'au grand moment.", "The noise opens up to the big moment.", "De ruis gaat open tot aan het grote moment."),
     },
     "drums": {
         "COMPRESSOR": T("Colle la batterie : un seul instrument plutôt que des coups séparés.", "Glues the drums: one instrument rather than separate hits.", "Lijmt de drums: één instrument in plaats van losse slagen."),
@@ -1042,9 +1079,9 @@ def refuse():
 ALERTS = [
     card("alert.curves.too_long", 6,
          T("Des courbes dépassent la fin du morceau", "Some curves run past the end of the song", "Sommige curves lopen voorbij het einde van het nummer"),
-         T("Le morceau a été raccourci et ses courbes n'ont pas suivi : un changement prévu au Drop tombe ailleurs.",
-           "The song was shortened and its curves did not follow: a change meant for the Drop lands elsewhere.",
-           "Het nummer is ingekort en de curves zijn niet gevolgd: een verandering voor de Drop valt ergens anders."),
+         T("Le morceau a été raccourci et ses courbes n'ont pas suivi : un changement prévu pour le grand moment tombe ailleurs.",
+           "The song was shortened and its curves did not follow: a change meant for the big moment lands elsewhere.",
+           "Het nummer is ingekort en de curves zijn niet gevolgd: een verandering voor het grote moment valt ergens anders."),
          lexicon="automation",
          proposals=[open_spot("curves", T("Voir les courbes", "See the curves", "De curves bekijken"), T("Chaque courbe partie par partie.", "Each curve part by part.", "Elke curve deel per deel."), "song.automation"), refuse()]),
     card("alert.low.off_center", 6,
@@ -1088,6 +1125,7 @@ CODE_TEXTS = [
     T("Reste : rien, bravo.", "Left: nothing, well done.", "Over: niets, goed gedaan."),
     T("Reste : %s. On reprend ?", "Left: %s. Shall we go on?", "Over: %s. Gaan we verder?"),
     T("refrain", "chorus", "refrein"), T("refrains", "choruses", "refreinen"), T("Drops", "Drops", "Drops"),
+    T("le refrain", "the chorus", "het refrein"), T("le Drop", "the Drop", "de Drop"),
     T("Des courbes durent %1$d mesures pour un morceau de %2$d : elles sont sans doute décalées.",
       "Some curves last %1$d bars for a song of %2$d: they are probably shifted.", "Sommige curves duren %1$d maten voor een nummer van %2$d: ze zijn waarschijnlijk verschoven."),
     T("Pas au centre : %s. Le grave doit rester au milieu.", "Not centred: %s. The low end must stay in the middle.", "Niet in het midden: %s. Het laag moet in het midden blijven."),
@@ -1106,11 +1144,11 @@ CODE_TEXTS = [
     T("Les %1$d %2$s jouent les mêmes notes : seuls un son ou un volume changent.", "The %1$d %2$s play the same notes: only a sound or a volume changes.", "De %1$d %2$s spelen dezelfde noten: alleen een klank of een volume verandert."),
     T("Les %1$d %2$s sont identiques.", "The %1$d %2$s are identical.", "De %1$d %2$s zijn identiek."),
     T("%1$d %2$s sur %3$d sont identiques.", "%1$d %2$s out of %3$d are identical.", "%1$d %2$s van de %3$d zijn identiek."),
-    T("La basse rejoue la même boucle de %1$d mesures %2$d fois de suite dans le %3$s.",
-      "The bass plays the same %1$d-bar loop %2$d times in a row in the %3$s.", "De bas speelt dezelfde lus van %1$d maten %2$d keer na elkaar in de %3$s."),
-    T("Les accords jouent pendant tout le %1$s (%2$d sur %2$d).", "The chords play through the whole %1$s (%2$d out of %2$d).", "De akkoorden spelen de hele %1$s door (%2$d van de %2$d)."),
+    T("La basse rejoue la même boucle de %1$d mesures %2$d fois de suite dans %3$s.",
+      "The bass plays the same %1$d-bar loop %2$d times in a row in %3$s.", "De bas speelt dezelfde lus van %1$d maten %2$d keer na elkaar in %3$s."),
+    T("Les accords jouent pendant tout %1$s (%2$d sur %2$d).", "The chords play throughout %1$s (%2$d out of %2$d).", "De akkoorden spelen door tijdens %1$s (%2$d van de %2$d)."),
     T("Rien ne bouge dans : %s.", "Nothing moves in: %s.", "Niets beweegt in: %s."),
-    T("Accords du %1$s : %2$s.", "Chords of the %1$s: %2$s.", "Akkoorden van de %1$s: %2$s."),
+    T("Les accords dans %1$s : %2$s.", "The chords in %1$s: %2$s.", "De akkoorden in %1$s: %2$s."),
     T("%s : la ligne passe les 20 règles de mélodie.", "%s: the line passes the 20 melody rules.", "%s: de lijn haalt de 20 melodieregels."),
     T("%1$s : %2$d règle(s) de mélodie sur 20 à revoir (%3$s).", "%1$s: %2$d of the 20 melody rules to check (%3$s).", "%1$s: %2$d van de 20 melodieregels na te kijken (%3$s)."),
     T("Volume", "Volume", "Volume"), T("Pan", "Pan", "Pan"), T("Effet", "Effect", "Effect"), T("Son", "Sound", "Klank"),
@@ -1166,46 +1204,46 @@ COMMON = [
            "Luister ernaar en maak het van jou: een geluid, de structuur, en deel het."),
          simple=True, applicable=["start:any", "style"], lexicon="drop",
          proposals=[play("drop", T("Écouter", "Listen", "Luisteren"),
-                         T("Juste avant le premier Drop : le meilleur moment, tout de suite.", "Just before the first Drop: the best moment, right away.", "Vlak voor de eerste Drop: meteen het beste moment."), "drop"),
+                         T("Juste avant le premier grand moment : le meilleur passage, tout de suite.", "Just before the first big moment: the best part, right away.", "Vlak voor het eerste grote moment: meteen het beste stuk."), "drop"),
                     play("start", T("Depuis le début", "From the start", "Vanaf het begin"),
                          T("Tout le morceau, de la première mesure.", "The whole song, from the first bar.", "Het hele nummer, vanaf de eerste maat."), "start"),
                     open_spot("guide", T("Le guide de ton morceau", "Your song's guide", "De gids van je nummer"),
                               T("Ses parties, ce que chacune ajoute, et quoi essayer.", "Its parts, what each one adds, and what to try.", "Zijn delen, wat elk toevoegt, en wat je kunt proberen."), "song.guide")],
-         elsewhere=[open_spot("sound", T("Changer un son", "Change a sound", "Een geluid wisselen"), T("Le son de la mélodie, en un toucher.", "The melody's sound, in one touch.", "De klank van de melodie, met één tik."), "sounds.main"),
+         elsewhere=[open_spot("sound", T("Changer un son", "Change a sound", "Een geluid wisselen"), T("Le son de la mélodie, en un toucher.", "The melody's sound, in one tap.", "De klank van de melodie, met één tik."), "sounds.main"),
                     open_spot("structure", T("Modifier le morceau", "Edit the song", "Nummer aanpassen"), T("Ses parties, dans l'ordre.", "Its parts, in order.", "Zijn delen, op volgorde."), "song.parts"),
                     open_spot("share", T("Partager", "Share", "Delen"), T("Les vérifications, puis le fichier.", "The checks, then the file.", "De controles, dan het bestand."), "share.check")]),
     card("start.sound", START, T("Change un son", "Change a sound", "Verander een geluid"),
          T("Fais-le tien : un autre son pour la mélodie ou pour la batterie.", "Make it yours: another sound for the melody or the drums.", "Maak het van jou: een andere klank voor de melodie of de drums."),
          simple=True, applicable=["start:first", "style"], done=["start_changed:sound"], lexicon="lead",
-         proposals=[open_spot("melody", T("Le son de la mélodie", "The melody's sound", "De klank van de melodie"), T("Touche-en un : tu l'entends tout de suite.", "Touch one: you hear it at once.", "Tik er een aan: je hoort het meteen."), "sounds.main"),
+         proposals=[open_spot("melody", T("Le son de la mélodie", "The melody's sound", "De klank van de melodie"), T("Touche-en un : tu l'entends tout de suite.", "Tap one: you hear it at once.", "Tik er een aan: je hoort het meteen."), "sounds.main"),
                     open_spot("kit", T("Une autre batterie", "Another drum kit", "Een ander drumstel"), T("Les mêmes coups, un autre son.", "The same hits, another sound.", "Dezelfde slagen, een andere klank."), "rhythm.kit")]),
     card("start.melody", START, T("Enregistre une mélodie", "Record a melody", "Neem een melodie op"),
          T("Touche « ● Enregistrer ma mélodie » et joue quelques notes : le clavier reste dans la gamme, aucune fausse note.",
-           "Touch « ● Record my melody » and play a few notes: the keyboard stays in the scale, no wrong note.",
-           "Tik op « ● Mijn melodie opnemen » en speel een paar noten: het klavier blijft in de toonladder, geen valse noot."),
+           "Tap “● Record my melody” and play a few notes: the keyboard stays in the scale, no wrong note.",
+           "Tik op ‘● Mijn melodie opnemen’ en speel een paar noten: het klavier blijft in de toonladder, geen valse noot."),
          simple=True, applicable=["start:first", "style"], done=["start_changed:notes"], lexicon="scale",
          proposals=[open_spot("keys", T("Ouvrir le clavier", "Open the keyboard", "Het klavier openen"), T("Le bouton d'enregistrement s'allume.", "The record button lights up.", "De opnameknop licht op."), "record.melody"),
-                    open_spot("notes", T("Voir les notes", "See the notes", "De noten bekijken"), T("Celles de la mélodie, à toucher une par une.", "The melody's, to touch one by one.", "Die van de melodie, één voor één aan te tikken."), "notes.track", target="lead")]),
+                    open_spot("notes", T("Voir les notes", "See the notes", "De noten bekijken"), T("Celles de la mélodie, à toucher une par une.", "The melody's, to tap one by one.", "Die van de melodie, één voor één aan te tikken."), "notes.track", target="lead")]),
     card("start.arrange", START, T("Arrange les parties", "Arrange the parts", "Schik de delen"),
          T("Appui long sur une partie : ajoute un Fill, un Break ou une Montée.", "Long press on a part: add a Fill, a Break or a Build-up.", "Lang drukken op een deel: voeg een Fill, een Break of een Opbouw toe."),
          simple=True, applicable=["start:first", "style"], done=["start_changed:arrange"], lexicon="fill",
          proposals=[open_spot("parts", T("Voir les parties", "See the parts", "De delen bekijken"), T("Le morceau, partie par partie.", "The song, part by part.", "Het nummer, deel per deel."), "song.parts"),
                     later_prop()]),
     card("start.beat", START, T("Pose un rythme", "Lay down a beat", "Zet een ritme neer"),
-         T("Touche les cases de la grille : le kick sur chaque temps, pour commencer.", "Touch the grid's cells: the kick on every beat, to start with.", "Tik op de vakjes van het raster: de kick op elke tel, om te beginnen."),
+         T("Touche les cases de la grille : le kick sur chaque temps, pour commencer.", "Tap the grid's cells: the kick on every beat, to start with.", "Tik op de vakjes van het raster: de kick op elke tel, om te beginnen."),
          simple=True, applicable=["by_hand"], done=["beat"], lexicon="kick",
          proposals=[open_spot("grid", T("Aller à la grille", "Go to the grid", "Naar het raster"), T("Seize cases par mesure.", "Sixteen cells a bar.", "Zestien vakjes per maat."), "rhythm.pattern"),
                     open_spot("kit", T("Choisir une batterie", "Choose a drum kit", "Een drumstel kiezen"), T("Le son des coups.", "The hits' sound.", "De klank van de slagen."), "rhythm.kit")]),
     card("start.bassline", START, T("Ajoute une basse", "Add a bass", "Voeg een bas toe"),
          T("Une ligne grave : génère une basse acide, ou joue des notes graves au clavier d'une piste.", "A low line: generate an acid bass, or play low notes on a track's keyboard.", "Een lage lijn: genereer een acid-bas, of speel lage noten op het klavier van een spoor."),
          simple=True, applicable=["by_hand"], done=["bassline"], lexicon="bass",
-         proposals=[open_spot("acid", T("Générer une basse acide", "Generate an acid bass", "Een acid-bas genereren"), T("Une ligne 303, en un toucher.", "A 303 line, in one touch.", "Een 303-lijn, met één tik."), "acid"),
+         proposals=[open_spot("acid", T("Générer une basse acide", "Generate an acid bass", "Een acid-bas genereren"), T("Une ligne 303, en un toucher.", "A 303 line, in one tap.", "Een 303-lijn, met één tik."), "acid"),
                     open_spot("notes", T("Jouer la basse au clavier", "Play the bass on the keyboard", "De bas op het klavier spelen"), T("Les notes du bas du clavier.", "The keyboard's low notes.", "De lage noten van het klavier."), "notes.track", target="bass")]),
     card("start.tune", START, T("Ajoute une mélodie", "Add a melody", "Voeg een melodie toe"),
          T("Joue quelques notes au clavier d'une piste : il reste dans la gamme.", "Play a few notes on a track's keyboard: it stays in the scale.", "Speel een paar noten op het klavier van een spoor: het blijft in de toonladder."),
          simple=True, applicable=["by_hand"], done=["tune"], lexicon="lead",
          proposals=[open_spot("keys", T("Ouvrir le clavier", "Open the keyboard", "Het klavier openen"), T("Le bouton d'enregistrement s'allume.", "The record button lights up.", "De opnameknop licht op."), "record.melody"),
-                    open_spot("notes", T("Écrire les notes", "Write the notes", "De noten schrijven"), T("Une note par toucher, sur la grille.", "One note a touch, on the grid.", "Eén noot per tik, op het raster."), "notes.track", target="lead")]),
+                    open_spot("notes", T("Écrire les notes", "Write the notes", "De noten schrijven"), T("Une note par toucher, sur la grille.", "One note per tap, on the grid.", "Eén noot per tik, op het raster."), "notes.track", target="lead")]),
     card("start.parts", START, T("Fais une deuxième partie", "Make a second part", "Maak een tweede deel"),
          T("Duplique ta partie et change-la : un couplet, un refrain. Donne-leur un nom pour t'y retrouver.",
            "Duplicate your part and change it: a verse, a chorus. Give them a name to find your way.",
@@ -1222,11 +1260,13 @@ COMMON = [
            "De app splitst een nummer in drums, bas, zang en de rest: speel het op jouw manier."),
          kind="check", simple=True, applicable=["start:any"], lexicon="",
          proposals=[open_spot("remix", T("Remixer une chanson", "Remix a song", "Een nummer remixen"), T("Choisis un fichier de ton téléphone.", "Pick a file from your phone.", "Kies een bestand van je telefoon."), "remix"),
-                    keep(T("Pas maintenant", "Not now", "Niet nu"), T("Il t'attend dans Sons › Remix, quand tu veux.", "It waits for you in Sounds › Remix, whenever you like.", "Het wacht op je in Klanken › Remix, wanneer je wilt."))]),
+                    dict(keep(T("Pas maintenant", "Not now", "Niet nu"), T("Il t'attend dans Sons › Remix, quand tu veux.", "It waits for you in Sounds › Remix, whenever you like.", "Het wacht op je in Klanken › Remix, wanneer je wilt.")),
+                         simpleWhy=T("Il t'attend dans ⋮ › Remixer une chanson, quand tu veux.", "It waits for you in ⋮ › Remix a song, whenever you like.", "Het wacht op je in ⋮ › Een nummer remixen, wanneer je wilt."))]),
 ]
 
 # The stage of « Pour commencer » (GuideStages.START_TITLE, START_SHORT), shown by the app.
-CODE_TEXTS_G5 = [T("Pour commencer", "Getting started", "Om te beginnen"), T("le départ", "the start", "het begin")]
+CODE_TEXTS_G5 = [T("Pour commencer", "Getting started", "Om te beginnen"), T("le départ", "the start", "het begin"),
+                 T("Les volumes", "The volumes", "De volumes")]  # GuideStages.SIMPLE_TITLES
 
 # --- Writing ----------------------------------------------------------------------------------------
 
@@ -1259,6 +1299,9 @@ def render(c, texts):
             out["why"] = text(p["why"])
         if p.get("value") is not None:
             out["value"] = text(p["value"])
+        for key in ("simpleLabel", "simpleWhy"):
+            if p.get(key) is not None:
+                out[key] = text(p[key])
         out["action"] = p["action"]
         return out
 

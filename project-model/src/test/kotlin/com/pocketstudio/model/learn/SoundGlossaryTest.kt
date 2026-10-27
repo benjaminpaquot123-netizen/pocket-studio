@@ -84,6 +84,21 @@ class SoundGlossaryTest {
         assertTrue(SoundGlossary.search("zzzz").isEmpty())
     }
 
+    /** Audit (textes): Dutch « Grondtoon » translates several French words; the « ? » of « Note d'origine » still plays its word. */
+    @Test
+    fun aHelpShownInAnyLanguageFindsItsWord() {
+        listOf(Lang.FR, Lang.EN, Lang.NL).forEach { lang ->
+            I18n.lang = lang
+            SoundGlossary.ALL.forEach { w ->
+                w.aliases.forEach { alias ->
+                    assertNotNull("${lang.code}: $alias", SoundGlossary.forHelp(com.pocketstudio.model.i18n.tr(alias)))
+                }
+            }
+        }
+        I18n.lang = Lang.NL
+        assertEquals("tonic", SoundGlossary.forHelp(com.pocketstudio.model.i18n.tr("Note d'origine"))?.key)
+    }
+
     @Test
     fun aHelpOfTheAppFindsItsWord() {
         assertEquals("reverb", SoundGlossary.forHelp("Réverbe")?.key)

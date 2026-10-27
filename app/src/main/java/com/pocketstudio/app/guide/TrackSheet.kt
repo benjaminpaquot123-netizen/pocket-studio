@@ -219,7 +219,7 @@ private fun WhenColumn(sheet: GuideSheet, partNames: List<String>, actions: Trac
             Text(tr("Pas encore de morceau : la piste joue dans la boucle."), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
         } else {
             Text(
-                tr("Joue dans %1\$d parties sur %2\$d.", sheet.parts.count { it }, sheet.parts.size), style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary,
+                playsIn(sheet.parts.count { it }, sheet.parts.size), style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary,
                 modifier = Modifier.testTag("track_sheet_plays"),
             )
             // One box per part, in the song's order, on a line that scrolls (a long song has 40 or 50).
@@ -379,9 +379,14 @@ internal fun ago(ms: Long): String {
         min < 1 -> tr("à l'instant")
         min < 60 -> tr("il y a %d min", min.toInt())
         min < 24 * 60 -> tr("il y a %d h", (min / 60).toInt())
+        min < 48 * 60 -> tr("il y a 1 jour")
         else -> tr("il y a %d jours", (min / (24 * 60)).toInt())
     }
 }
+
+/** « Joue dans 3 parties sur 8 », singular for one. */
+internal fun playsIn(parts: Int, of: Int): String =
+    if (parts == 1) tr("Joue dans 1 partie sur %d.", of) else tr("Joue dans %1\$d parties sur %2\$d.", parts, of)
 
 private const val MAX_LINES = 30
 
@@ -677,7 +682,9 @@ private fun SoundPicker(p: Picking, favorites: Favorites, back: () -> Unit, pick
 private const val GAIN_MIN = -30f
 private const val GAIN_MAX = 6f
 
-private fun formatDb(db: Float): String = if (db <= Layers.MIN_GAIN_DB) tr("muet") else (if (db > 0f) "+" else if (db < 0f) "−" else "") + "%.1f dB".format(kotlin.math.abs(db))
+/** « −6,0 dB » in French whatever the phone's language: the interface's own decimal separator (as the mixer). */
+internal fun formatDb(db: Float): String = if (db <= Layers.MIN_GAIN_DB) tr("muet") else
+    (if (db > 0f) "+" else if (db < 0f) "−" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", kotlin.math.abs(db))
 
 private fun formatPan(pan: Float): String = when {
     kotlin.math.abs(pan) < 0.005f -> tr("au centre")

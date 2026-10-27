@@ -95,7 +95,10 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, si
             onDismissRequest = { demoReady = false },
             title = { Text(tr("Ta démo est prête")) },
             text = {
-                Text(tr("Écoute-la en entier, puis va voir dans Structure comment elle est construite : tu peux tout changer."))
+                Text(
+                    if (simple) tr("Écoute-la en entier, puis va voir dans Mon morceau comment elle est construite : tu peux tout changer.")
+                    else tr("Écoute-la en entier, puis va voir dans Structure comment elle est construite : tu peux tout changer."),
+                )
             },
             confirmButton = {
                 Button(onClick = { demoReady = false; playDemo() }, modifier = Modifier.testTag("demo_play")) {
@@ -126,7 +129,7 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
             Text(tr("Bienvenue ! Fais ta musique sur ton appareil. Par quoi on commence ?"), style = MaterialTheme.typography.bodyLarge)
             Choice(
                 Icons.Filled.AutoAwesome, tr("Créer mon premier morceau (guidé)"),
-                tr("Choisis un style, je t'aide pas à pas : intro, couplet, refrain."),
+                tr("Choisis un style, je t'aide pas à pas, du début à la fin du morceau."),
                 Neon.Cyan, primary = true, onClick = actions.guided, tag = "welcome_guided",
             )
             Choice(
@@ -144,7 +147,7 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
                     Text(tr("Plus tard : voir le rythme de départ"), color = Neon.TextSecondary)
                 }
             }
-            Text(tr("Le guide des premiers pas reste dans Plus › Aide."), style = MaterialTheme.typography.bodySmall,
+            Text(if (simple) tr("Le guide des premiers pas reste dans ⋮ › Aide et premiers pas.") else tr("Le guide des premiers pas reste dans Plus › Aide."), style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary, modifier = Modifier.align(Alignment.CenterHorizontally))
         }
     }

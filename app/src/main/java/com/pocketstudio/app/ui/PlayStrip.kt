@@ -311,7 +311,7 @@ private fun LoopPartChip(on: Boolean, set: (Boolean) -> Unit, iconOnly: Boolean 
         ) {
             Icon(Icons.Filled.Repeat, contentDescription = null, tint = content, modifier = Modifier.size(18.dp))
             if (!iconOnly) {
-                Text(tr("Partie"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = content, maxLines = 1, modifier = Modifier.padding(start = 4.dp))
+                Text(tr("Boucler"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = content, maxLines = 1, modifier = Modifier.padding(start = 4.dp))
             }
         }
     }

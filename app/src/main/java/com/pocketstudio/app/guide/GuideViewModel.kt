@@ -75,6 +75,8 @@ data class GuideCardUi(
     val effects: List<GuideFxUi> = emptyList(),
     /** G4: what the analysis reads in the song about it (« En mono, le morceau ne perd que 0,8 dB »), in the interface's language. */
     val heard: List<String> = emptyList(),
+    /** Its stage's title, in everyday words in the Mode simple. */
+    val stageTitle: String = GuideStages.title(stage),
 )
 
 /** A line of the plan: a card, its status (faite ✓, sautée ⟶, à revoir ↺), ticked by the analysis or decided. */
@@ -390,7 +392,7 @@ class GuideViewModel(
     private fun uiOf(r: GuideReport, p: Project, full: GuideReport? = null, now: Long = 0L, levels: Boolean = false): GuideUi {
         val undoable = p.guide.history.filter { !it.reverted }.map { it.card }.toSet()
         fun option(card: GuideCard, o: GuideProposal) = GuideOptionUi(
-            o.id, guideText(o.label), guideText(o.why), o.value?.let(::guideText),
+            o.id, o.labelFor(r.simple), o.whyFor(r.simple), o.valueFor(r.simple),
             o.action.spot.takeIf { o.action.type == com.pocketstudio.model.guide.GuideAction.OPEN }, p.guide.refusals.any { it.card == card.id && it.option == o.id },
             edits = o.action.edits, heard = o.action.heard && (o.action.type != com.pocketstudio.model.guide.GuideAction.BALANCE || levels),
             listen = o.action.name.takeIf { o.action.type == com.pocketstudio.model.guide.GuideAction.LISTEN },
@@ -410,10 +412,11 @@ class GuideViewModel(
                 s.status, s.alert, s.card.id in undoable, track?.key, track?.name?.let(com.pocketstudio.model.DefaultNames::shown).orEmpty(),
                 heard = if (s.card.id == READY) listOf(readyLine(p)) else FACTS[s.card.id].orEmpty().mapNotNull { id -> r.fact(id)?.text },
                 effects = if (s.card.stage == 3 && s.card.id !in NO_EFFECTS) effects.filter { fx -> s.card.target == com.pocketstudio.model.guide.GuideRoles.SONG || fx.role in rolesOf(s.card.target) }.map { it.ui } else emptyList(),
+                stageTitle = GuideStages.title(s.card.stage, r.simple),
             )
         }
         fun planOf(cards: List<GuideCardStatus>, simple: Boolean) = cards.groupBy { it.card.stage }.toSortedMap().map { (stage, cs) ->
-            GuideStageUi(stage, GuideStages.title(stage), cs.map { GuidePlanItem(it.card.id, it.card.titleFor(simple), it.status, it.auto) })
+            GuideStageUi(stage, GuideStages.title(stage, simple), cs.map { GuidePlanItem(it.card.id, it.card.titleFor(simple), it.status, it.auto) })
         }
         val applicable = r.cards.filter { it.applicable }
         val plan = planOf(applicable, r.simple)

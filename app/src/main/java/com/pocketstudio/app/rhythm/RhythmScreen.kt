@@ -678,7 +678,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
             FilterChip(selected = tool == 0, onClick = { tool = 0 }, label = { Text(tr("Coups")) }, colors = chipColors)
             FilterChip(selected = tool == 1, onClick = { tool = 1 }, label = { Text(tr("Roulements")) }, colors = chipColors,
                 modifier = Modifier.testTag("roll_tool"))
-            FilterChip(selected = tool == 2, onClick = { tool = 2 }, label = { Text(tr("Pan")) }, colors = chipColors,
+            FilterChip(selected = tool == 2, onClick = { tool = 2 }, label = { Text(tr("Place")) }, colors = chipColors,
                 modifier = Modifier.testTag("pan_tool"))
             FilterChip(selected = tool == 3, onClick = { tool = 3 }, label = { Text(tr("Hauteur")) }, colors = chipColors,
                 modifier = Modifier.testTag("pitch_tool"))
@@ -699,7 +699,7 @@ private fun StepGrid(project: Project, lane: Int, currentStep: Int, playing: Boo
         }
         val pickedHit = hits[picked]?.takeIf { tool >= 2 }
         if (pickedHit != null && tool == 2) {
-            PanRow(tr("Pan du coup %d", picked % per + 1), pickedHit.pan, onChange = { actions.setHitPan(picked, it) }, tag = "hit_pan")
+            PanRow(tr("Place du coup %d", picked % per + 1), pickedHit.pan, onChange = { actions.setHitPan(picked, it) }, tag = "hit_pan")
         }
         if (pickedHit != null && tool == 4) {
             LabeledSlider(tr("Force du coup %d", picked % per + 1), percent((pickedHit.velocity * 100).roundToInt()), pickedHit.velocity,
@@ -860,7 +860,7 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
         val volume = project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(lane))?.volume ?: 0.8f
         LabeledSlider(tr("Volume du pad"), percent((volume / 0.8f * 100).roundToInt()), volume, 0f..1f) { actions.setPadVolume(lane, it) }
         val pan = project.drums.lanes[lane].pan
-        PanRow(tr("Pan du pad"), pan, onChange = { actions.setPadPanOf(lane, it) }, onEnd = { actions.padPanDone(lane) }, tag = "pad_sound_pan")
+        PanRow(tr("Place du pad"), pan, onChange = { actions.setPadPanOf(lane, it) }, onEnd = { actions.padPanDone(lane) }, tag = "pad_sound_pan")
         val info = sample?.let { ui.info[it.file] }
         val slicer = ui.slicer?.takeIf { sample != null && it.file == sample.file }
         if (sample != null && info != null && slicer != null) {

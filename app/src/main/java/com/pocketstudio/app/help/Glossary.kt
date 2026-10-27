@@ -11,12 +11,12 @@ object Glossary {
     // --- Building a song ---
     val SCENE: Help get() = Help(
         tr("Partie"),
-        tr("Un petit bout de morceau (souvent 4 mesures) : la batterie, la basse et les notes que tu as écrites. Le morceau enchaîne les parties ; on passe de l'une à l'autre en touchant son carré, la suivante démarre à la fin de la mesure en cours."),
+        tr("Un moment du morceau (Intro, Couplet, Drop…) : il joue une brique pendant quelques mesures. Le morceau enchaîne les parties, du début à la fin."),
     )
     /** Lot 2: the grid of A to H, apart from the song's parts. */
     val BRICK: Help get() = Help(
         tr("Brique"),
-        tr("Une des cases A à H de Structure › Parties : une boucle de batterie, de basse et de notes. Chaque partie du morceau joue une brique (le refrain peut rejouer la brique du couplet) ; changer une brique change toutes les parties qui la jouent."),
+        tr("Une des cases A, B, C… de Structure › Parties : une boucle de batterie, de basse et de notes. Chaque partie du morceau joue une brique (le refrain peut rejouer la brique du couplet) ; changer une brique change toutes les parties qui la jouent. Touche son carré : elle prend le relais à la fin de la mesure."),
     )
     val SONG: Help get() = Help(
         tr("Morceau"),
@@ -40,7 +40,7 @@ object Glossary {
     )
     val STEP: Help get() = Help(
         tr("Pas"),
-        tr("Une case de la grille : un seizième de mesure. Allumer un pas fait sonner le son à ce moment-là. Coups : allumer ou éteindre. Roulements : plusieurs coups rapides dans la case. Pan : à gauche ou à droite. Hauteur : plus aigu ou plus grave."),
+        tr("Une case de la grille : un seizième de mesure. Allumer un pas fait sonner le son à ce moment-là. Coups : allumer ou éteindre. Roulements : plusieurs coups rapides dans la case. Place : à gauche ou à droite. Hauteur : plus aigu ou plus grave."),
     )
     val SWING: Help get() = Help(
         tr("Swing"),
@@ -73,7 +73,7 @@ object Glossary {
         tr("La force d'un coup ou d'une note : plus c'est fort, plus ça tape. Dans Rythme, outil « Force » ou appui long sur une case."),
     )
     val PAN: Help get() = Help(
-        tr("Pan"),
+        tr("Place (pan)"),
         tr("Place le son à gauche ou à droite dans le casque. Au centre, il est des deux côtés."),
     )
     val PITCH: Help get() = Help(
@@ -257,7 +257,7 @@ object Glossary {
         tr("Un réglage tout prêt (Sous l'eau, Lo-Fi Tape, Grande cathédrale…) qui pose plusieurs effets d'un coup."),
     )
     val AUTOMATION: Help get() = Help(
-        tr("Automation"),
+        tr("Courbes (automation)"),
         tr("Un réglage qui bouge tout seul pendant la lecture : le volume qui monte, le filtre qui s'ouvre… On le dessine point par point."),
     )
     val PERFORMANCE: Help get() = Help(

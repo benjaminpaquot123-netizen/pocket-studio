@@ -13,7 +13,6 @@
   "Cette prise n'a pas pu être recalée (trop courte ou trop longue).": "Deze opname kon niet op het tempo worden gezet (te kort of te lang).",
   "Le morceau est plein : choisis « Nouvelle version » pour enregistrer.": "Het nummer is vol: kies „Nieuwe versie” om op te nemen.",
   "Fait : version remise. L'autre est gardée dans les versions.": "Klaar: versie teruggezet. De andere blijft bij de versies.",
-  "Rien n'a été enregistré : joue pendant que la prise tourne (après le décompte).": "Er is niets opgenomen: speel terwijl de opname loopt (na het aftellen).",
   "Rien à garder : joue quelques notes d'abord.": "Niets te bewaren: speel eerst een paar noten.",
   "Métronome pendant les prises": "Metronoom tijdens opnames",
   "Versions du morceau (%d)": "Versies van het nummer (%d)",
@@ -36,7 +35,6 @@
   "Enlever": "Weghalen",
   "Refaire": "Opnieuw",
   "Comme joué": "Zoals gespeeld",
-  "Ta prise : %1$d notes et %2$d coups": "Je opname: %1$d noten en %2$d slagen",
   "Ta prise : %d notes": "Je opname: %d noten",
   "Ta prise : 1 note": "Je opname: 1 noot",
   "Ta prise : %d coups": "Je opname: %d slagen",
@@ -59,5 +57,9 @@
   "Tes notes vont dans la prise, chacune sur sa double croche.": "Je noten gaan in de opname, elk op zijn zestiende.",
   "Joue en direct. Avec ●, tes notes vont dans la prise.": "Speel live. Met ● gaan je noten in de opname.",
   "de la mesure": "vanaf maat",
-  "à la mesure": "tot maat"
+  "à la mesure": "tot maat",
+  "Ta prise : %1$s et %2$s": "Je opname: %1$s en %2$s",
+  "1 note": "1 noot",
+  "1 coup": "1 slag",
+  "%d coups": "%d slagen"
 }

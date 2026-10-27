@@ -615,7 +615,7 @@ private fun AcidSoundCard(line: com.pocketstudio.model.AcidPattern, ui: WizardUi
                 )
             }
         }
-        Text(tr("Tourne « Coupure » vers le haut pour la faire crier ; « Résonance » la fait siffler. Le reste se règle dans Sons › Basse acide."),
+        Text(tr("Tourne « Coupure » vers le haut pour la faire crier ; « Résonance » la fait siffler. Le reste se règle plus tard, sur sa piste."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
 }
@@ -672,7 +672,7 @@ private fun SummaryStep(ui: WizardUi, style: StarterWizard.Style) {
 @Composable
 private fun ScenesCard(plan: StarterWizard.ScenePlan, style: StarterWizard.Style) {
     NeonCard(accent = Neon.Magenta, modifier = Modifier.testTag("wizard_scenes")) {
-        SectionLabel(if (plan.count == 4) tr("Quatre parties") else tr("Trois parties"), color = Neon.Magenta, help = Glossary.SCENE)
+        SectionLabel(if (plan.count == 4) tr("Quatre briques") else tr("Trois briques"), color = Neon.Magenta, help = Glossary.BRICK)
         Text(sectionsIntro(plan), style = MaterialTheme.typography.bodyMedium)
         (0 until plan.count).forEach { index ->
             Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -901,8 +901,8 @@ internal fun partNotes(style: StarterWizard.Style, part: StarterWizard.Part, pla
     val general = when {
         own != null -> own
         part == StarterWizard.Part.Lead && style.melody.leadPattern.isBlank() ->
-            tr("Ici, c'est l'arpégiateur qui joue les notes des accords une par une : tu pourras changer sa vitesse ou l'arrêter dans Synthé.")
-        part == StarterWizard.Part.Lead -> tr("Un petit riff écrit pour ce style : tu pourras changer ses notes dans Synthé.")
+            tr("Ici, c'est l'arpégiateur qui joue les notes des accords une par une : tu pourras changer sa vitesse ou l'arrêter plus tard, sur sa piste.")
+        part == StarterWizard.Part.Lead -> tr("Un petit riff écrit pour ce style : tu pourras changer ses notes plus tard, sur sa piste.")
         else -> null
     }
     // « Every section » only when the song's plan really says so (a signature bass waits for the Groove, or the Drop).

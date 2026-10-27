@@ -63,7 +63,7 @@ class PlayStripLogicTest {
         // « ⟳ Partie » on by hand, stopped: the part loops, ▶ plays it alone.
         val loop = partHeader(song, playing = false, songPlaying = false, loopPart = true, armedBySelf = false)
         assertTrue(loop.loop)
-        assertTrue(loop.note!!.contains("⟳ Partie"))
+        assertTrue(loop.note!!.contains("⟳ Boucler"))
         // Without a song, « ⟳ Partie » means nothing: nothing said.
         assertEquals(PartHeaderUi("Partie : A"), partHeader(Project(), playing = false, songPlaying = false, loopPart = true, armedBySelf = false))
     }

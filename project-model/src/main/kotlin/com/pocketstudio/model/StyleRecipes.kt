@@ -973,7 +973,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
             bassOctave = 2, leadPattern = "............O-7-............................5---................", arpRate = 24, leadOctave = 4,
             packSounds = mapOf(),
             parts = setOf(Part.Bass, Part.Pad, Part.Lead),
-            tips = mapOf(Part.Bass to "La vedette : une basse grasse qui grogne, comme en dubstep. Elle frappe avec le kick, se tait avant la caisse claire pour laisser répondre la deuxième basse, puis glisse vers l'aigu. Une piste « Sub » la double une octave plus bas : le grave qu'on sent dans le ventre.", Part.Pad to "Une nappe sombre pour l'intro et la pause ; dans la montée, son filtre s'ouvre petit à petit jusqu'au Drop.", Part.Lead to "Ici, pas de mélodie : le lead est une deuxième basse qui fait « wob wob » et répond à la première dans ses silences. C'est le jeu « question, réponse » du jump up."),
+            tips = mapOf(Part.Bass to "La vedette : une basse grasse qui grogne, comme en dubstep. Elle frappe avec le kick, se tait avant la caisse claire pour laisser répondre le hoover, puis glisse vers l'aigu. Une piste « Sub » la double une octave plus bas : le grave qu'on sent dans le ventre.", Part.Pad to "Une nappe sombre pour l'intro et la pause ; dans la montée, son filtre s'ouvre petit à petit jusqu'au Drop.", Part.Lead to "Ici, la mélodie est un « hoover » : un son de rave qui gronde et plonge, il répond à la basse dans ses silences. C'est le jeu « question, réponse » du jump up."),
             bassGlide = true,
             subBass = true,
             leadKind = LeadKind.Riff,

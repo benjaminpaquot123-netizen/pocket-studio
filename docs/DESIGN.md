@@ -12,6 +12,7 @@ Décision de Benjamin (2026-10-18) : **moderne, mais pas trop, et facile à pren
 7. **Animations courtes et utiles** (150 à 250 ms), jamais décoratives ; fluides à 120 Hz.
 8. **Cohérence** : tous les écrans utilisent les composants de `ui-components` (cartes, boutons, potards), jamais de style ad hoc.
 9. **Repliable** : chaque carte à titre se replie en touchant son titre ; la flèche est petite et pâle, pour ne pas gêner.
+10. **Un mot par idée** (audit final) : « Partie » = un moment du morceau (Intro, Couplet, Drop…), « Brique » = une case A, B, C… qui en donne le contenu, « Place » (pas « Panoramique »), « Courbes » (le verbe reste « Automatiser »). Anglais : part, block, pan, curves ; la case de la ligne du temps = cell (néerlandais : deel, blok, pan, curven, vakje). Le Mode simple ne cite que ses onglets (Mon morceau, Rythme, Clavier, Envoyer, ⋮) et aucun chiffre technique (Hz, dB, LUFS).
 
 ## Composants
 - `NeonCard` (panneau en relief, repliable par son premier `SectionLabel`), `SectionLabel` (barre de couleur + petites capitales), `ProSlider` (piste fine en dégradé, pouce lumineux), `pillColors` (puce choisie remplie d'accent), `LevelMeter` (LED vert → ambre → rouge).

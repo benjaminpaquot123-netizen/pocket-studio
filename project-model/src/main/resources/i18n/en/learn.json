@@ -31,7 +31,6 @@
   "Fait chauffer le son jusqu'à le salir un peu : plus de grain, plus d'énergie. D'abord propre, puis saturé.": "Heats the sound up until it gets a little dirty: more grit, more energy. First clean, then saturated.",
   "Fermé": "Closed",
   "Gauche / droite": "Left / right",
-  "Ils suivent l'écran affiché : la 303 sur Acide, le son sur Synthé, les volumes au Mixeur, les effets en Live.": "They follow the screen shown: the 303 on Acid, the sound on Synth, the volumes in the Mixer, the effects in Live.",
   "Images et compression…": "Pictures and compression…",
   "Joué à la main": "Played by hand",
   "L'instrument le plus grave après le kick : il joue les notes de base des accords et fait bouger le corps.": "The deepest instrument after the kick: it plays the root notes of the chords and gets the body moving.",
@@ -52,7 +51,6 @@
   "Le son de la Roland TB-303 : une basse qui couine et qui « parle » quand son filtre s'ouvre. Né avec l'acid house.": "The sound of the Roland TB-303: a bass that squeals and “talks” as its filter opens. Born with acid house.",
   "Le son se répète en rythme, de plus en plus doucement. D'abord sans, puis avec l'écho.": "The sound repeats in time, softer and softer. First without, then with the echo.",
   "Le « tchak » sec sur les temps 2 et 4. Avec le kick, c'est le squelette du rythme.": "The dry “crack” on beats 2 and 4. With the kick, it is the backbone of the rhythm.",
-  "Les 8 premiers potards de ton contrôleur règlent tout seuls l'écran affiché : la 303 sur Acide, le son sur Synthé, les volumes au Mixeur, les effets en Live.": "The first 8 knobs of your controller set the screen shown by themselves: the 303 on Acid, the sound on Synth, the volumes in the Mixer, the effects in Live.",
   "Les accords baissent à chaque coup de kick puis remontent : le son « respire » et pompe. D'abord sans, puis avec.": "The chords dip on every kick and come back up: the sound “breathes” and pumps. First without, then with.",
   "Les effets et le mix": "Effects and the mix",
   "Les instruments": "The instruments",
@@ -116,5 +114,13 @@
   "▶ Écouter un exemple": "▶ Hear an example",
   "Vidéo de « %s »": "Video of “%s”",
   "Vidéo prête : touche pour la partager.": "Video ready: tap to share it.",
-  "Une vidéo est en cours : attends qu'elle finisse.": "A video is being made: wait for it to finish."
+  "Une vidéo est en cours : attends qu'elle finisse.": "A video is being made: wait for it to finish.",
+  "OTT (compresseur trois bandes)": "OTT (three-band compressor)",
+  "Un compresseur qui travaille sur le grave, le médium et l'aigu à la fois : le son devient plus dense et plus gros. D'abord sans, puis avec.": "A compressor working on the lows, the mids and the highs at once: the sound gets denser and bigger. First without, then with.",
+  "Place (panoramique)": "Placement (pan)",
+  "Où un son se trouve entre la gauche et la droite (on dit aussi « pan »). D'abord tout au centre, puis le clap à gauche et la mélodie à droite.": "Where a sound sits between left and right (also called “pan”). First everything in the centre, then the clap on the left and the melody on the right.",
+  "Au centre": "In the centre",
+  "Placés": "Placed",
+  "Volume final (LUFS)": "Final loudness (LUFS)",
+  "Le volume moyen du morceau entier, mesuré en LUFS : vers −14 pour le streaming, vers −8 en club. Plus le chiffre est proche de 0, plus c'est fort.": "The average loudness of the whole song, measured in LUFS: about -14 for streaming, about -8 in a club. The closer the number is to 0, the louder."
 }

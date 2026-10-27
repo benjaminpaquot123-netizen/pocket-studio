@@ -52,7 +52,7 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
             tr("↶ ↷ Annuler et rétablir : on peut toujours revenir en arrière."),
             tr("● Enregistrer : ce que tu joues (clavier, pads, clavier MIDI) s'écrit en rythme."),
             tr("▶ Jouer et arrêter, sur tous les écrans."),
-            tr("▶ joue tout le morceau ; « ⟳ Partie », juste dessous, boucle la partie affichée. Touche le tempo pour le changer, garde le doigt sur le nom pour le renommer."),
+            tr("▶ joue tout le morceau ; « ⟳ Boucler », juste dessous, boucle la partie affichée. Touche le tempo pour le changer, garde le doigt sur le nom pour le renommer."),
         ),
     ),
     GuidePage(
@@ -84,6 +84,39 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
         ),
     ),
 )
+
+/**
+ * Audit (textes): the first steps of the Mode simple, which has neither Structure, Sons, Mix nor
+ * Plus: the same pages with its four tabs and its ⋮ menu.
+ */
+val GUIDE_PAGES_SIMPLE: List<GuidePage> get() = GUIDE_PAGES.let { full ->
+    listOf(
+        full[0], full[1],
+        GuidePage(
+            tr("Les espaces"),
+            listOf(
+                tr("En bas de l'écran, ou à gauche quand l'écran est couché :"),
+                tr("Mon morceau : les parties du morceau, dans l'ordre ; touche-en une pour l'ouvrir."),
+                tr("Rythme : la batterie, case par case."),
+                tr("Clavier : joue et enregistre ta mélodie, toujours dans la gamme."),
+                tr("Envoyer : vérifier le morceau, puis le partager en fichier ou en vidéo."),
+                tr("⋮ en haut : tes projets, le Live, le Remix, les réglages et l'aide."),
+            ),
+        ),
+        full[3],
+        GuidePage(
+            tr("Et ensuite ?"),
+            listOf(
+                tr("Pour commencer : touche ▶, puis les cases dans Rythme."),
+                tr("Pour partager : l'onglet Envoyer."),
+                tr("Ce guide se retrouve dans ⋮ › Aide et premiers pas."),
+            ),
+        ),
+    )
+}
+
+/** The first steps of the Mode simple ([simple]) or of the full app. */
+fun guidePages(simple: Boolean): List<GuidePage> = if (simple) GUIDE_PAGES_SIMPLE else GUIDE_PAGES
 
 /** A guide of a few [pages] (the first steps by default), "Passer" at any time, [done] on the last page ([onDone], closing by default). */
 @Composable

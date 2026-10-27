@@ -164,7 +164,7 @@ fun automationLabel(t: AutoTarget, channels: List<Channel>, master: List<Insert>
     fun channelName(ch: Int) = strips.nameOf(ch)
     return when (t.kind) {
     AutoTarget.VOLUME -> tr("Volume · %s", if (t.isMasterVolume) tr("Sortie générale") else channelName(t.ch))
-    AutoTarget.PAN -> tr("Panoramique · %s", channelName(t.ch))
+    AutoTarget.PAN -> tr("Place · %s", channelName(t.ch))
     AutoTarget.SEND -> tr("Envoi %s · %s", tr(Buses.NAMES.getOrElse(t.slot) { "?" }).lowercase(), channelName(t.ch))
     AutoTarget.INSERT_PARAM -> {
         val inserts = if (t.ch == MASTER_CHANNEL) master else channels.getOrNull(t.ch)?.inserts.orEmpty()
@@ -391,7 +391,7 @@ fun AutomationCard(
     var picking by rememberSaveable { mutableStateOf(false) }
     NeonCard(accent = Neon.Amber, modifier = modifier.testTag("automation")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel(tr("Automation"), Modifier.weight(1f), color = Neon.Amber, help = Glossary.AUTOMATION)
+            SectionLabel(tr("Courbes"), Modifier.weight(1f), color = Neon.Amber, help = Glossary.AUTOMATION)
             FilterChip(
                 selected = ui.recording, onClick = actions.toggleRecord,
                 label = { Text(tr("Enregistrer")) },

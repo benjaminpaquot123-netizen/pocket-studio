@@ -297,8 +297,8 @@ fun GuideCard(
     NeonCard(modifier.testTag("guide_card_${card.id}"), accent = if (card.alert) Neon.Amber else Neon.Cyan) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                (if (card.alert) tr("À corriger") else if (card.stage == GuideStages.START) GuideStages.title(card.stage)
-                else tr("Étape %1\$d · %2\$s", card.stage, GuideStages.title(card.stage))).uppercase(),
+                (if (card.alert) tr("À corriger") else if (card.stage == GuideStages.START) card.stageTitle
+                else tr("Étape %1\$d · %2\$s", card.stage, card.stageTitle)).uppercase(),
                 style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = if (card.alert) Neon.Amber else Neon.Cyan,
                 modifier = Modifier.weight(1f),
             )
@@ -618,7 +618,7 @@ private fun FurtherPlan(stages: List<GuideStageUi>, current: String?, select: (S
         ) {
             Text(tr("Aller plus loin"), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold, color = Neon.TextPrimary, modifier = Modifier.weight(1f))
             Text(
-                tr("%d étapes de plus", stages.sumOf { it.items.size }), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary,
+                stages.sumOf { it.items.size }.let { n -> if (n == 1) tr("1 étape de plus") else tr("%d étapes de plus", n) }, style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary,
                 modifier = Modifier.padding(horizontal = 6.dp),
             )
             Icon(if (open) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))

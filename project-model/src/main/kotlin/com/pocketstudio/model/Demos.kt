@@ -7,7 +7,7 @@ import kotlin.random.Random
 object Demos {
     /** Title, one-line description, and how to build it. */
     val ALL: List<Triple<String, String, () -> Project>> = listOf(
-        Triple("Démo · Acid house", "126 BPM, deux scènes et un morceau : batterie 4/4 et ligne acide qui monte.", ::acidHouse),
+        Triple("Démo · Acid house", "126 BPM, deux briques et un morceau : batterie 4/4 et ligne acide qui monte.", ::acidHouse),
         Triple("Démo · Funk en Sol mineur", "111 BPM, groove funky, accords au synthé et basse acide douce.", ::funk),
         Triple("Démo · Chill", "88 BPM, rythme posé et piano électrique sur une progression mélancolique.", ::chill),
     )

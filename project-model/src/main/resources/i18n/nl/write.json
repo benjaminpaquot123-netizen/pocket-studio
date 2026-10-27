@@ -1,5 +1,4 @@
 {
-  "Dessine la courbe du réglage au doigt (ou une ligne en deux touches) : il bouge tout seul pendant le morceau. Toutes les courbes sont aussi dans le Mixeur.": "Teken de curve van de instelling met je vinger (of een lijn met twee tikken): die beweegt vanzelf tijdens het nummer. Alle curves staan ook in de Mixer.",
   "1 point par mesure": "1 punt per maat",
   "1 point par temps (¼ de mesure)": "1 punt per tel (¼ maat)",
   "Une valeur par temps (¼ de mesure) sur tout le morceau (%d mesures) ; elle glisse d'un point à l'autre.": "Eén waarde per tel (¼ maat) over het hele nummer (%d maten); die glijdt van punt naar punt.",
@@ -8,13 +7,11 @@
   "Arrête d'abord l'enregistrement pour changer les accords.": "Stop eerst met opnemen om de akkoorden te wijzigen.",
   "Fait : accords du morceau %s": "Klaar: akkoorden van het nummer %s",
   "Fait : accords du morceau changés": "Klaar: akkoorden van het nummer gewijzigd",
-  "Pour geler une piste, il faut un morceau : ajoute tes parties dans l'onglet Morceau.": "Om een spoor te bevriezen heb je een nummer nodig: voeg je delen toe in het tabblad Nummer.",
   "Les huit pistes audio sont prises : libères-en une pour geler cette piste.": "Alle acht audiosporen zijn bezet: maak er een vrij om dit spoor te bevriezen.",
   "Morceau trop long pour geler une piste (%d minutes au plus).": "Nummer te lang om een spoor te bevriezen (hoogstens %d minuten).",
   "Gel de la piste…": "Spoor bevriezen…",
   "Fait : piste gelée (%s)": "Klaar: spoor bevroren (%s)",
   "Fait : piste dégelée (%s)": "Klaar: spoor ontdooid (%s)",
-  "%d réglages bougent déjà : retires-en un dans le Mixeur pour en automatiser un autre.": "%d instellingen bewegen al: verwijder er een in de Mixer om een andere te automatiseren.",
   "Autre tirage des coups au hasard": "Kanstreffers opnieuw trekken",
   "Ce pad boucle sur": "Deze pad herhaalt over",
   "%d pas": "%d stappen",
@@ -31,7 +28,6 @@
   "Pistes qui suivent les accords": "Sporen die de akkoorden volgen",
   "Les pistes de l'assistant suivent ; les notes que tu as écrites restent, sauf si tu le demandes ici.": "De sporen van de assistent volgen; noten die jij schreef blijven, tenzij je het hier vraagt.",
   "%s (gelée)": "%s (bevroren)",
-  "lus dans les notes": "gelezen uit de noten",
   "… et %d autres parties": "… en nog %d delen",
   "Touche pour changer les accords de tout le morceau.": "Tik om de akkoorden van het hele nummer te wijzigen.",
   "Accords du morceau (toutes les parties)": "Akkoorden van het nummer (alle delen)",
@@ -45,5 +41,6 @@
   "Gelée": "Bevroren",
   "Dégeler (le morceau a changé depuis le gel)": "Ontdooien (het nummer is sindsdien veranderd)",
   "Dégeler": "Ontdooien",
-  "Geler la piste (rendu audio, moins de calcul)": "Spoor bevriezen (audio-render, minder rekenwerk)"
+  "Geler la piste (rendu audio, moins de calcul)": "Spoor bevriezen (audio-render, minder rekenwerk)",
+  "… et 1 autre partie": "… en nog 1 deel"
 }

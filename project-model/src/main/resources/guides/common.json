@@ -55,7 +55,7 @@
     {
      "id": "drop",
      "label": "Écouter",
-     "why": "Juste avant le premier Drop : le meilleur moment, tout de suite.",
+     "why": "Juste avant le premier grand moment : le meilleur passage, tout de suite.",
      "action": {
       "type": "play",
       "name": "drop"
@@ -427,6 +427,7 @@
      "id": "keep",
      "label": "Pas maintenant",
      "why": "Il t'attend dans Sons › Remix, quand tu veux.",
+     "simpleWhy": "Il t'attend dans ⋮ › Remixer une chanson, quand tu veux.",
      "action": {
       "type": "keep"
      }

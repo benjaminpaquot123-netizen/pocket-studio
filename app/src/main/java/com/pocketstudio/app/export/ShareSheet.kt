@@ -386,7 +386,7 @@ private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetAct
             Fixes { FixButton(tr("Tout réactiver"), "share_fix_solo", actions.unsolo) }
         }
         is ShareCheck.Muted ->
-            CheckLine(icon, color, tr("Coupé dans le mixeur, donc absent du fichier : %s.", check.names.joinToString(", ")), "share_check_muted")
+            CheckLine(icon, color, tr("Coupé (muet), donc absent du fichier : %s.", check.names.joinToString(", ")), "share_check_muted")
         ShareCheck.Empty ->
             CheckLine(icon, color, tr("Rien à entendre pour l'instant : pose un rythme ou quelques notes d'abord."), "share_check_empty")
         is ShareCheck.NoSong -> {

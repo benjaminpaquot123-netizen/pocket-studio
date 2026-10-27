@@ -242,7 +242,7 @@ private fun AutomationEntry(lanes: Int, show: () -> Unit, overview: () -> Unit) 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.AutoMirrored.Filled.ShowChart, contentDescription = null, tint = Neon.Amber)
             Column(Modifier.weight(1f).padding(start = 10.dp)) {
-                Text(tr("Automation et effets"), style = MaterialTheme.typography.titleMedium)
+                Text(tr("Courbes et effets"), style = MaterialTheme.typography.titleMedium)
                 Text(
                     when (lanes) {
                         0 -> tr("Rien ne bouge encore : fais s'ouvrir un filtre, monter un volume…")

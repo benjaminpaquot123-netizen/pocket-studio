@@ -25,6 +25,20 @@ class DefaultNamesTest {
         assertEquals(style.name, StarterWizard.build(style, emptyMap()).name)
     }
 
+    /** Audit (textes): every track the assistant names itself shows in the interface's language, « Contre-chant » too. */
+    @Test
+    fun theAssistantsTrackNamesAreDefaultNames() {
+        val names = listOf(
+            StarterWizard.VOCAL_TRACK, StarterWizard.RISER_TRACK, StarterWizard.OLD_RISER_TRACK, StarterWizard.SUB_DROP_TRACK,
+            StarterWizard.SUB_TRACK, StarterWizard.PAD_LAYER_TRACK, StarterWizard.COUNTER_TRACK,
+        )
+        names.forEach { assertEquals(it, true, DefaultNames.isDefault(it)) }
+        I18n.lang = Lang.EN
+        assertEquals("Counter-melody", DefaultNames.shown(StarterWizard.COUNTER_TRACK))
+        I18n.lang = Lang.NL
+        assertEquals("Tegenmelodie", DefaultNames.shown(StarterWizard.COUNTER_TRACK))
+    }
+
     @Test
     fun defaultNamesShowInTheInterfaceLanguage() {
         I18n.lang = Lang.EN

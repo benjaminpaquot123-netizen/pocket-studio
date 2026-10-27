@@ -138,7 +138,63 @@ class I18nCatalogTest {
         }
     }
 
+    /**
+     * Audit (textes): no translation is left that nothing shows. Each French key must be written
+     * somewhere in the app's code or data (Kotlin, the Guide's parcours, the assets, the packs'
+     * scripts), as it is or escaped; an old text (the Missions, a tab renamed) is removed with its
+     * screen. [KEPT_UNUSED]: keys kept on purpose.
+     */
+    @Test
+    fun noTranslationIsLeftUnused() {
+        val sources = (roots + listOf("../engine/src/main/java", "../separation/src/main", "../scripts").map(::File).filter { it.isDirectory })
+            .flatMap { root ->
+                root.walkTopDown().filter { f ->
+                    f.isFile && f.extension in setOf("kt", "json", "java", "py") && !f.invariantSeparatorsPath.contains("/resources/i18n/")
+                }.toList()
+            }.map { it.readText() }
+        assertTrue("no source found", sources.size > 100)
+        // Each word (3 letters or more) → the sources holding it: a key is looked for only where its rarest word is.
+        val word = Regex("""\p{L}{3,}""")
+        val where = HashMap<String, MutableSet<Int>>()
+        sources.forEachIndexed { i, text -> word.findAll(text).forEach { where.getOrPut(it.value) { HashSet() }.add(i) } }
+        fun written(key: String): Boolean {
+            val forms = setOf(key, key.replace("$", "\\$"), key.replace("\"", "\\\"").replace("\n", "\\n"))
+            val words = word.findAll(key).map { it.value }.toList()
+            val candidates = if (words.isEmpty()) sources.indices.toSet()
+            else words.map { where[it].orEmpty() }.minByOrNull { it.size }.orEmpty()
+            // The index finds whole words only (« Decay » inside « DecayKnob » is not one): a miss looks everywhere.
+            return candidates.any { i -> forms.any { sources[i].contains(it) } } || sources.any { src -> forms.any { src.contains(it) } }
+        }
+        val unused = listOf(Lang.EN, Lang.NL).flatMap { lang ->
+            I18n.AREAS.flatMap { area -> I18n.area(lang, area).keys.map { "${lang.code}/$area.json: $it" to it } }
+        }.filter { (_, key) -> key !in KEPT_UNUSED && !written(key) }.map { it.first }
+        assertTrue("${unused.size} translations nothing shows (remove them):\n" + unused.take(60).joinToString("\n"), unused.isEmpty())
+    }
+
+    /** Audit (textes): no text sends to a tab that no longer exists (Morceau, Acide, Outils, Mixeur, Synthé › became Structure, Sons, Mix, Plus). */
+    @Test
+    fun noTextNamesAnOldTab() {
+        val old = listOf("nglet Morceau", "onglet Acide", "Outils ›", "dans le Mixeur", "Synthé ›", "Mixeur, Automation")
+        val found = keys().filter { (key, _) -> old.any { it in key } }.map { (key, where) -> "$where: $key" }
+        assertTrue("old tabs named:\n" + found.joinToString("\n"), found.isEmpty())
+    }
+
+    /** Audit (textes): Dutch « refrein » is a het-word; English and Dutch use their own quotes, not « ». */
+    @Test
+    fun dutchAndEnglishWording() {
+        val deRefrein = Regex("""\b(de|De|deze|Deze|elke|Elke|die|Die)( \p{L}+)? [Rr]efrein\b""")
+        val nl = I18n.table(Lang.NL).filterValues { deRefrein.containsMatchIn(it) }
+        assertTrue("« het refrein »:\n" + nl.values.joinToString("\n"), nl.isEmpty())
+        listOf(Lang.EN, Lang.NL).forEach { lang ->
+            val quoted = I18n.table(lang).filterValues { '«' in it || '»' in it }
+            assertTrue("${lang.code}: « » in\n" + quoted.values.joinToString("\n"), quoted.isEmpty())
+        }
+    }
+
     companion object {
+        /** Kept although no code writes them: names an older version may have saved in English or Dutch. */
+        private val KEPT_UNUSED = setOf("Charleston", "Cloche (Plaits)")
+
         /** Calls of tr() with a variable, each one's texts checked elsewhere (see the test above). */
         private val CHECKED_SOURCES = setOf(
             "AppRoot.kt: com.pocketstudio.model.PlaitsPatch.PARAMS.getOrElse(target.param - 1) { \"réglage\" }",
@@ -154,6 +210,8 @@ class I18nCatalogTest {
             "WhatPlays.kt: side",  // a macro's end (Macros.ENDS, checked by ModelTextsTest)
             // The Guide's cards and stages (guides/*.json, GuideStages: checked by GuideParcoursTest).
             "GuideParcours.kt: fr",
+            // A word's alias in the « ? » helps (SoundGlossary.forHelp): compared with the shown term, never shown itself.
+            "SoundGlossary.kt: it",
             // G4: « Voilà ce que j'ai mis »: an effect's name and a send's bus (EffectType, Buses: checked by ModelTextsTest).
             "GuideViewModel.kt: t.label",
             "GuideViewModel.kt: Buses.NAMES.getOrElse(bus) { \"Réverbe\" }",

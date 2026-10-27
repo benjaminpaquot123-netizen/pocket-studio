@@ -212,7 +212,7 @@ fun PadSheetContent(ui: PadSheetUi, actions: PadSheetActions, close: () -> Unit)
         }
         ProSlider(value = ui.volume, onValueChange = actions.setVolume, modifier = Modifier.testTag("pad_volume"))
         // Safe at the edge: a back swipe from the side closes the sheet, it never pans the pad.
-        PanRow(tr("Pan du pad"), ui.pan, onChange = actions.setPan, onEnd = actions.panDone, tag = "pad_pan")
+        PanRow(tr("Place du pad"), ui.pan, onChange = actions.setPan, onEnd = actions.panDone, tag = "pad_pan")
         FilterChip(
             selected = ui.muted, onClick = actions.toggleMute, colors = pillColors(),
             label = { Text(if (ui.muted) tr("Pad coupé : touche pour l'entendre") else tr("Couper ce pad")) },

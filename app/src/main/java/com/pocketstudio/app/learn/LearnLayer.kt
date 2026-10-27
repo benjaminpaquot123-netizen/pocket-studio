@@ -63,7 +63,7 @@ fun LearnLayer(content: @Composable () -> Unit) {
     }
     val listen: (com.pocketstudio.ui.Help) -> (() -> Unit)? = remember {
         { help ->
-            SoundGlossary.forHelp(I18n.frenchOf(help.term))?.let { word ->
+            (SoundGlossary.forHelp(help.term) ?: SoundGlossary.forHelp(I18n.frenchOf(help.term)))?.let { word ->
                 { query = word.term; learnVm.play(word) }
             }
         }

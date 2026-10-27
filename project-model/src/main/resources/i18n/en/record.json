@@ -13,7 +13,6 @@
   "Cette prise n'a pas pu être recalée (trop courte ou trop longue).": "This take could not be fitted (too short or too long).",
   "Le morceau est plein : choisis « Nouvelle version » pour enregistrer.": "The song is full: choose “New version” to record.",
   "Fait : version remise. L'autre est gardée dans les versions.": "Done: version brought back. The other one is kept in the versions.",
-  "Rien n'a été enregistré : joue pendant que la prise tourne (après le décompte).": "Nothing was recorded: play while the take runs (after the count-in).",
   "Rien à garder : joue quelques notes d'abord.": "Nothing to keep: play a few notes first.",
   "Métronome pendant les prises": "Metronome during takes",
   "Versions du morceau (%d)": "Song versions (%d)",
@@ -36,7 +35,6 @@
   "Enlever": "Remove",
   "Refaire": "Redo",
   "Comme joué": "As played",
-  "Ta prise : %1$d notes et %2$d coups": "Your take: %1$d notes and %2$d hits",
   "Ta prise : %d notes": "Your take: %d notes",
   "Ta prise : 1 note": "Your take: 1 note",
   "Ta prise : %d coups": "Your take: %d hits",
@@ -59,5 +57,9 @@
   "Tes notes vont dans la prise, chacune sur sa double croche.": "Your notes go into the take, each on its sixteenth.",
   "Joue en direct. Avec ●, tes notes vont dans la prise.": "Play live. With ●, your notes go into the take.",
   "de la mesure": "from bar",
-  "à la mesure": "to bar"
+  "à la mesure": "to bar",
+  "Ta prise : %1$s et %2$s": "Your take: %1$s and %2$s",
+  "1 note": "1 note",
+  "1 coup": "1 hit",
+  "%d coups": "%d hits"
 }

@@ -108,6 +108,16 @@ private val ZOOMS = listOf(18.dp, 30.dp, 46.dp)
 /** Grid for placing and moving notes, in ticks: 1/8, 1/16, 1/16 triplet, 1/32. */
 private val GRIDS = listOf(48 to "1/8", 24 to "1/16", 16 to "1/16 t", 12 to "1/32")
 
+/**
+ * The loop one bar longer ([by] 1) or shorter (-1) in bars of [barSteps]: a loop that is not whole
+ * bars yet (made in another time signature) first goes to its nearest whole bars.
+ */
+fun loopBars(steps: Int, barSteps: Int, by: Int): Int {
+    val bar = barSteps.coerceAtLeast(1)
+    val bars = if (by > 0) steps / bar + by else (steps + bar - 1) / bar + by
+    return (bars.coerceAtLeast(1) * bar).coerceIn(bar.coerceAtMost(NoteClip.MAX_STEPS), NoteClip.MAX_STEPS)
+}
+
 /** Velocity steps a long press cycles through (same as the drum grid). */
 fun nextVelocity(v: Float) = when {
     v > 0.75f -> 0.5f
@@ -197,13 +207,13 @@ fun PianoRoll(
                 }
             }
             val loop: @Composable () -> Unit = {
-                // Phase 37: any number of whole bars, 1 to 16.
+                // Phase 37: any number of whole bars, 1 to 16. Audit final: bars of the time signature (12 steps in 3/4).
                 Text(tr("Boucle"), style = MaterialTheme.typography.bodySmall)
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    TextButton(onClick = { actions.setSteps(clip.steps - 16) }, enabled = clip.steps > NoteClip.MIN_STEPS, modifier = Modifier.testTag("loop_minus")) { Text("−") }
-                    Text(com.pocketstudio.app.ui.barsShort(clip.steps / 16), style = MaterialTheme.typography.labelLarge, color = Neon.Cyan, maxLines = 1, softWrap = false,
+                    TextButton(onClick = { actions.setSteps(loopBars(clip.steps, barSteps, -1)) }, enabled = clip.steps > barSteps, modifier = Modifier.testTag("loop_minus")) { Text("−") }
+                    Text(com.pocketstudio.app.ui.barsShort(((clip.steps + barSteps - 1) / barSteps).coerceAtLeast(1)), style = MaterialTheme.typography.labelLarge, color = Neon.Cyan, maxLines = 1, softWrap = false,
                         modifier = Modifier.testTag("loop_bars"))
-                    TextButton(onClick = { actions.setSteps(clip.steps + 16) }, enabled = clip.steps < NoteClip.MAX_STEPS, modifier = Modifier.testTag("loop_plus")) { Text("+") }
+                    TextButton(onClick = { actions.setSteps(loopBars(clip.steps, barSteps, 1)) }, enabled = clip.steps + barSteps <= NoteClip.MAX_STEPS, modifier = Modifier.testTag("loop_plus")) { Text("+") }
                 }
             }
             val noteLengths: @Composable () -> Unit = {
@@ -269,7 +279,7 @@ fun PianoRoll(
                 clip, if (showGhosts) ghosts else emptyList(), stepOf, newSteps * TICK, actions, gridHeight, harmony, chordMode,
                 hScroll, stepWidth, grid, selectMode, selection, select = { selection = it }, apply = apply,
                 rowHeight = if (tablet) TABLET_ROW else ROW, keysWidth = keysWidth, allNames = tablet, keyOn = keyOn, keyOff = keyOff,
-                locked = frozen,
+                locked = frozen, barSteps = barSteps,
             )
             VelocityLane(clip, selection, hScroll, stepWidth, apply, keysWidth)
             Text(
@@ -487,6 +497,7 @@ private fun Grid(
     keyOn: ((Int, Float) -> Unit)?,
     keyOff: ((Int) -> Unit)?,
     locked: Boolean = false,
+    barSteps: Int = 16,
 ) {
     val vScroll = rememberScrollState()
     val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
@@ -495,9 +506,12 @@ private fun Grid(
     val rowPx = with(density) { rowHeight.toPx() }
     val stepPx = with(density) { stepWidth.toPx() }
     val slop = LocalViewConfiguration.current.touchSlop
-    val rows = HIGH - LOW + 1
+    // Do1 to Do8, wider when notes lie past it (an import, a transposed track): every note can be seen and touched.
+    val low = minOf(LOW, clip.notes.minOfOrNull { it.pitch } ?: LOW)
+    val high = maxOf(HIGH, clip.notes.maxOfOrNull { it.pitch } ?: HIGH)
+    val rows = high - low + 1
     // Start around C4-C5.
-    LaunchedEffect(Unit) { vScroll.scrollTo(((HIGH - 76) * rowPx).roundToInt()) }
+    LaunchedEffect(Unit) { vScroll.scrollTo(((high - 76) * rowPx).roundToInt()) }
     var drag by remember { mutableStateOf<Pair<Note, Note>?>(null) }
     var box by remember { mutableStateOf<Pair<Offset, Offset>?>(null) }
     var groupMove by remember { mutableStateOf<Pair<Int, Int>?>(null) }  // (ticks, semitones) while dragging a selection
@@ -511,7 +525,7 @@ private fun Grid(
     val selColor = Neon.Acid
     Row(Modifier.fillMaxWidth().height(height)) {
         Column(Modifier.width(keysWidth).verticalScroll(vScroll).testTag("roll_keys")) {
-            for (p in HIGH downTo LOW) RollKey(p, rowHeight, keysWidth, english, named = allNames || p % 12 == 0, keyOn, keyOff)
+            for (p in high downTo low) RollKey(p, rowHeight, keysWidth, english, named = allNames || p % 12 == 0, keyOn, keyOff)
         }
         Box(Modifier.weight(1f).verticalScroll(vScroll).horizontalScroll(hScroll)) {
             Canvas(
@@ -519,7 +533,7 @@ private fun Grid(
                     .size(stepWidth * clip.steps, rowHeight * rows)
                     .testTag("piano_roll")
                     .pointerInput(clip, newLength, harmony, chordMode, selectMode, selection, grid, stepPx, locked) {
-                        fun pitchAt(y: Float) = (HIGH - (y / rowPx).toInt()).coerceIn(LOW, HIGH)
+                        fun pitchAt(y: Float) = (high - (y / rowPx).toInt()).coerceIn(low, high)
                         fun tickAt(x: Float) = (x / stepPx * TICK).toInt().coerceIn(0, clip.ticks - 1)
                         awaitEachGesture {
                             val down = awaitFirstDown(requireUnconsumed = false)
@@ -556,6 +570,10 @@ private fun Grid(
                                 down.consume()
                                 var moved = false
                                 var delta = 0 to 0
+                                // The block stops at the loop's ends and the keyboard's: its notes keep their gaps.
+                                val moving = if (found in selection) selection else setOf(found)
+                                val across = NoteEdits.shiftRange(clip, moving)
+                                val upDown = NoteEdits.transposeRange(moving)
                                 while (true) {
                                     val event = awaitPointerEvent()
                                     val change = event.changes.firstOrNull { it.id == down.id } ?: break
@@ -564,7 +582,7 @@ private fun Grid(
                                     val dy = change.position.y - down.position.y
                                     if (!moved && (abs(dx) > slop || abs(dy) > slop)) moved = true
                                     if (moved) {
-                                        delta = snap((dx / stepPx * TICK).roundToInt()) to -(dy / rowPx).roundToInt()
+                                        delta = snap((dx / stepPx * TICK).roundToInt()).coerceIn(across) to (-(dy / rowPx).roundToInt()).coerceIn(upDown)
                                         groupMove = delta
                                     }
                                     change.consume()
@@ -581,7 +599,6 @@ private fun Grid(
                                         select(if (found in selection) selection - found else selection + found)
                                     }
                                 } else {
-                                    val moving = if (found in selection) selection else setOf(found)
                                     val shifted = NoteEdits.shift(clip, moving, delta.first)
                                     apply(NoteEdits.transpose(shifted.clip, shifted.selection, delta.second), null)
                                 }
@@ -613,13 +630,14 @@ private fun Grid(
                                 if (!moved && (abs(dx) > slop || abs(dy) > slop)) moved = true
                                 if (moved) {
                                     result = if (nearEnd) {
-                                        val len = ((note.length + dx / stepPx * TICK) / 6f).roundToInt() * 6
-                                        note.copy(length = len.coerceIn(6, NoteClip.MAX_TICKS))
+                                        // The end goes onto the grid chosen (« Grille »), a grid step at the shortest.
+                                        val len = snap((note.end + dx / stepPx * TICK).roundToInt()) - note.start
+                                        note.copy(length = len.coerceIn(minOf(grid, note.length), NoteClip.MAX_TICKS))
                                     } else {
                                         val start = snap((note.start + dx / stepPx * TICK).roundToInt())
                                         note.copy(
                                             start = start.coerceIn(0, clip.ticks - grid),
-                                            pitch = harmony.snap((note.pitch - (dy / rowPx).roundToInt()).coerceIn(LOW, HIGH)),
+                                            pitch = harmony.snap((note.pitch - (dy / rowPx).roundToInt()).coerceIn(low, high)),
                                         )
                                     }
                                     drag = note to result
@@ -646,8 +664,8 @@ private fun Grid(
             ) {
                 val w = size.width
                 // Rows: black keys darker.
-                for (p in LOW..HIGH) {
-                    val y = (HIGH - p) * rowPx
+                for (p in low..high) {
+                    val y = (high - p) * rowPx
                     drawRect(if (p % 12 in BLACK) colors.black else colors.bg, Offset(0f, y), Size(w, rowPx))
                     // Locked scale: notes outside it are darkened, the root row is tinted.
                     if (harmony.scale != Scale.Off) {
@@ -661,16 +679,16 @@ private fun Grid(
                 while (t <= clip.ticks) {
                     val x = t / TICK.toFloat() * stepPx
                     val c = when {
-                        t % (16 * TICK) == 0 -> colors.bar
+                        t % (barSteps * TICK) == 0 -> colors.bar
                         t % (4 * TICK) == 0 -> colors.beat
                         else -> colors.line
                     }
                     drawLine(c, Offset(x, 0f), Offset(x, size.height), if (t % (4 * TICK) == 0) 2f else 1f)
                     t += grid
                 }
-                fun noteRect(n: Note) = Offset(n.start / TICK.toFloat() * stepPx, (HIGH - n.pitch) * rowPx + 1f) to
+                fun noteRect(n: Note) = Offset(n.start / TICK.toFloat() * stepPx, (high - n.pitch) * rowPx + 1f) to
                     Size((n.length / TICK.toFloat() * stepPx).coerceAtLeast(4f), rowPx - 2f)
-                ghosts.filter { it.pitch in LOW..HIGH }.forEach { g ->
+                ghosts.filter { it.pitch in low..high }.forEach { g ->
                     val (o, sz) = noteRect(g)
                     drawRoundRect(colors.ghost, o, sz, CornerRadius(4f))
                 }
@@ -680,7 +698,7 @@ private fun Grid(
                     val selected = n in selection
                     val shown = when {
                         dragging != null && dragging.first == n -> dragging.second
-                        group != null && selected -> n.copy(start = (n.start + group.first).coerceIn(0, clip.ticks - 1), pitch = n.pitch + group.second)
+                        group != null && selected -> n.copy(start = (n.start + group.first).coerceIn(0, clip.ticks - 1), pitch = (n.pitch + group.second).coerceIn(0, 127))
                         else -> n
                     }
                     val (o, sz) = noteRect(shown)

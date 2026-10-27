@@ -736,6 +736,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun selectTrack(id: Int) {
         if (id == track) return
         heldNotes.clear()
+        sustained.clear()
         val from = track
         _selectedTrack.value = id
         NativeEngine.liveTrack = id
@@ -1938,6 +1939,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun midiControl(channel: Int, controller: Int, value: Int): Boolean {
         if (controller == com.pocketstudio.app.midi.MidiViewModel.CC_MOD_WHEEL || controller == com.pocketstudio.app.midi.MidiViewModel.CC_SUSTAIN) {
+            // The pedal holds the notes of a take too (the engine already holds the sound).
+            if (controller == com.pocketstudio.app.midi.MidiViewModel.CC_SUSTAIN && channel != 9) recordSustain(value >= 64)
             if (_learning.value == null) return true  // played by the engine already
         }
         _learning.value?.let { target ->
@@ -5472,8 +5475,36 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _notice.value = tr("Piste gelée : « Dégeler » pour modifier ses notes.")
             return
         }
-        editTrack(key, id) { it.copy(notes = transform(it.notes)) }
+        editTrackNotes(key, id, transform)
+    }
+
+    /**
+     * Track [id]'s notes [transform]ed (one undo step); the assistant's Sub and Basse 2 that double it
+     * follow ([com.pocketstudio.model.LinkedNotes]), in the engine too.
+     */
+    private fun editTrackNotes(key: String?, id: Int, transform: (NoteClip) -> NoteClip) {
+        session.edit(key) { p ->
+            if (p.instrumentTracks.none { it.id == id }) p
+            else com.pocketstudio.model.LinkedNotes.sync(p, p.withTrack(p.track(id).let { it.copy(notes = transform(it.notes)) }.sanitized()), id)
+        }
         pushNotes(project.value.track(id).notes, id)
+        com.pocketstudio.model.LinkedNotes.followers(project.value, id).forEach { pushNotes(project.value.track(it.id).notes, it.id) }
+    }
+
+    /**
+     * After a take (quiet edits since [before]): the Sub and Basse 2 doubling a track it wrote in
+     * follow its new notes, in the same undo step; heard at once where their scene plays.
+     */
+    private fun followTakeNotes(before: Project) {
+        val led = project.value.instrumentTracks.map { it.id }.filter { com.pocketstudio.model.LinkedNotes.followers(before, it).isNotEmpty() }
+        if (led.isEmpty()) return
+        val now = project.value
+        session.editQuietly { p -> led.fold(p) { acc, id -> com.pocketstudio.model.LinkedNotes.sync(before, acc, id) } }
+        if (project.value === now) return
+        val scenes = takeNotes.keys.map { it.first }.toSet() + project.value.scene
+        for (id in led) for (f in com.pocketstudio.model.LinkedNotes.followers(before, id)) for (scene in scenes) {
+            if (scene in project.value.allScenes.indices && playsNow(LiveSlots.INST + f.id, scene)) pushNotesNow(project.value.sceneView(scene).track(f.id).notes, f.id)
+        }
     }
 
     /** A whole-clip edit from the piano roll's selection tools. */
@@ -5501,8 +5532,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Empties track [id]'s notes in the scene shown (one undo step), whichever track is open. */
     fun clearTrackNotes(id: Int) {
         if (project.value.instrumentTracks.none { it.id == id }) return
-        editTrack(id = id) { it.copy(notes = it.notes.cleared()) }
-        pushNotes(project.value.track(id).notes, id)
+        editTrackNotes(null, id) { it.cleared() }
     }
 
     /** A short note so the user hears what they placed. */
@@ -6520,7 +6550,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         _takeLoopSong.value = false
         if (notes) {
             // Its own undo step, before the take's: « Annuler » after the take gives the bar back.
-            com.pocketstudio.app.synth.TakeLoop.grown(currentTrack.notes)?.let { grown ->
+            com.pocketstudio.app.synth.TakeLoop.grown(currentTrack.notes, project.value.stepsPerBar)?.let { grown ->
                 val before = project.value
                 editNotes { grown }
                 _takeLoopGrown.value = true
@@ -6558,9 +6588,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun stopRecordingTake() {
         // Keys still down when the take ends keep the length they have so far.
-        heldNotes.keys.toList().forEach { recordNoteOff(it) }
+        sustained.clear()
+        heldNotes.keys.toList().forEach { writeNoteOff(it) }
         _recording.value = false
         val before = recordBefore
+        before?.let { followTakeNotes(it) }
         before?.let { session.commitQuietEdits(it, recordDepth) }
         recordBefore = null
         takeEnded(before)
@@ -6638,7 +6670,26 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             takeDropped { "key $pitch: ${whyNotRecorded()}" }
             return
         }
+        // The same key again while the pedal held the one before: that one ends here.
+        if (sustained.remove(pitch)) writeNoteOff(pitch)
         heldNotes[pitch] = HeldNote(at.second, velocity, id, at.first)
+    }
+
+    /** The sustain pedal is down: keys released meanwhile are written when it comes up. */
+    private var sustainDown = false
+    /** Keys released while the pedal is down, still sounding (by pitch). */
+    private val sustained = HashSet<Int>()
+
+    /**
+     * The sustain pedal (MIDI CC 64) down or up: while it is down, a key released keeps its note
+     * going, written in the take with the length heard (up to the pedal's release).
+     */
+    fun recordSustain(down: Boolean) {
+        sustainDown = down
+        if (down) return
+        val released = sustained.toList()
+        sustained.clear()
+        released.forEach { writeNoteOff(it) }
     }
 
     /** Why a gesture is not recorded now (the take's journal line). */
@@ -6655,6 +6706,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun recordNoteOff(pitch: Int) {
+        if (sustainDown && pitch in heldNotes) {
+            sustained += pitch
+            return
+        }
+        writeNoteOff(pitch)
+    }
+
+    private fun writeNoteOff(pitch: Int) {
         // Written on the track and in the scene it started on, even if another one came meanwhile.
         val (start, velocity, id, scene) = heldNotes.remove(pitch) ?: return
         if (project.value.instrumentTracks.none { it.id == id } || scene !in project.value.allScenes.indices) {
@@ -6703,7 +6762,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         session.editQuietly { p ->
             inScene(p, scene) { q ->
                 val l = q.drums.lanes[lane]
-                q.copy(drums = q.drums.copy(lanes = q.drums.lanes.toMutableList().also { it[lane] = l.copy(hits = l.hits + (step to Hit(velocity))) }))
+                // A hit already there keeps its roll, pitch, glide…: only its strength is played again.
+                val hit = l.hits[step]?.copy(velocity = velocity) ?: Hit(velocity)
+                q.copy(drums = q.drums.copy(lanes = q.drums.lanes.toMutableList().also { it[lane] = l.copy(hits = l.hits + (step to hit)) }))
             }
         }
         if (fresh) hitTaken(scene, lane, step)
@@ -7304,21 +7365,41 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * « ⟳ Partie » loops the scene shown ([listensToSong]); without a song, the scene shown.
      */
     fun togglePlay() {
-        if (!_transport.value.playing && listensToSong) {
+        if (_transport.value.playing) toggleTransport(songStep = aloneSongStep()) else startPlaying(null)
+    }
+
+    /** ▶ from where it starts: the song from its part ([playFromNow]), else the scene on its own; [countInBars] null: the switch. */
+    private fun startPlaying(countInBars: Int?) {
+        if (listensToSong) {
             val from = playFromNow()
             playStartsForTest?.add("song $from")
             if (NativeEngine.isAvailable) {
-                playSongFrom(from)
+                playSongFrom(from, countInBars)
                 return
             }
         }
-        if (!_transport.value.playing) {
-            if (!listensToSong) playStartsForTest?.add("part ${project.value.scene}")
-            heardScene = project.value.scene
-            // The scene on its own: song curves hold the value they have where it first plays.
-            if (NativeEngine.isAvailable) applySongCurves(project.value, project.value.scene)
+        if (!listensToSong) playStartsForTest?.add("part ${project.value.scene}")
+        heardScene = project.value.scene
+        // The scene on its own: song curves hold the value they have where it first plays.
+        if (NativeEngine.isAvailable) applySongCurves(project.value, project.value.scene)
+        toggleTransport(countInBars, songStep = aloneSongStep())
+    }
+
+    /** Tests: the count-in (bars) the last start played, engine or not. */
+    internal var countInForTest: Int = -1
+
+    /**
+     * A MIDI Start ([fromTop]) or Continue from the machine whose clock is followed: never a count-in
+     * (it is already on its first beat). Start plays from the top, the song's first part (while
+     * playing too: both machines line up again on the 1); Continue carries on from the part it stopped in.
+     */
+    fun midiStart(fromTop: Boolean) {
+        if (_transport.value.playing) {
+            if (!fromTop) return
+            toggleTransport(songStep = aloneSongStep())
         }
-        toggleTransport(songStep = aloneSongStep())
+        if (fromTop) _playFrom.value = 0
+        startPlaying(countInBars = 0)
     }
 
     /**
@@ -7354,6 +7435,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (playing) {
             val part = _sessionUi.value.songIndex.takeIf { it >= 0 }?.let { project.value.song.getOrNull(it) }
             _liveGrid.value = gridOfPart(part, heardScene ?: project.value.scene, 0, null)
+            countInForTest = countInBars ?: if (t.countIn) 1 else 0
         } else {
             endLiveGestures()
         }
@@ -7584,6 +7666,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** An exact tempo from outside (MIDI clock): one undo step while it keeps moving. */
     fun setTempo(bpm: Double) {
         session.edit("tempo") { it.copy(tempoBpm = bpm) }
+        pushTempo()
+    }
+
+    /**
+     * The tempo of the MIDI clock followed: not an undo step of its own (« Annuler » never steps
+     * through the clock's small moves), saved with the project.
+     */
+    fun followClockTempo(bpm: Double) {
+        if (bpm == project.value.tempoBpm) return
+        session.editQuietly { it.copy(tempoBpm = bpm) }
         pushTempo()
     }
 

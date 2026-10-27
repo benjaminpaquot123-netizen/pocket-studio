@@ -111,6 +111,17 @@ open class WriteScreenshotTest : ScreenshotTest() {
         )
     }
 
+    /** Audit final (lot notes): a waltz in 3/4, two bars of 12 steps: « 2 mes. », the bar lines on the ruler's bars. */
+    @Test
+    fun pianoRollWaltz() = shoot("piano_roll_waltz") {
+        val w = 12 * t
+        val clip = NoteClip(steps = 24, notes = listOf(Note(0, 4 * t, 72), Note(4 * t, 4 * t, 76), Note(8 * t, 4 * t, 79), Note(w, 4 * t, 74), Note(w + 4 * t, 8 * t, 77)))
+        com.pocketstudio.app.synth.PianoRoll(
+            clip, emptyList(), -1, com.pocketstudio.app.synth.PianoRollActions(),
+            gridHeight = 300.dp, harmony = Harmony(0, Scale.Major), stepsPerBar = 12,
+        )
+    }
+
     /** Rythme: the hi-hat on a loop of its own (6 steps against 16), two hits at 50 %, « Autre tirage ». */
     @Test
     fun drumPolyChance() = shoot("drum_poly_chance") {
@@ -160,7 +171,7 @@ open class WriteScreenshotTest : ScreenshotTest() {
     }
 
     companion object {
-        val SHOTS = setOf("song_chords_strip", "song_chords_sheet", "piano_roll_clipboard", "drum_poly_chance", "automate_lane", "track_frozen")
+        val SHOTS = setOf("song_chords_strip", "song_chords_sheet", "piano_roll_clipboard", "piano_roll_waltz", "drum_poly_chance", "automate_lane", "track_frozen")
     }
 }
 

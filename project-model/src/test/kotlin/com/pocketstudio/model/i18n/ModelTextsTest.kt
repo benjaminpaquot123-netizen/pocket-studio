@@ -112,7 +112,7 @@ class ModelTextsTest {
         val texts = modelTexts()
         assertTrue("no model text found", texts.size > 300)
         val problems = mutableListOf<String>()
-        listOf(Lang.EN, Lang.NL).forEach { lang ->
+        (Lang.entries - Lang.FR).forEach { lang ->
             val table = I18n.table(lang)
             texts.forEach { if (table[it].isNullOrBlank()) problems += "no ${lang.code} for \"$it\"" }
         }

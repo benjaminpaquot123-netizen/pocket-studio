@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.mixer
 
+import com.pocketstudio.model.i18n.inSentence
 import com.pocketstudio.ui.ScaledAlertDialog
 
 import androidx.compose.foundation.Canvas
@@ -171,7 +172,7 @@ fun automationLabel(t: AutoTarget, channels: List<Channel>, master: List<Insert>
     return when (t.kind) {
     AutoTarget.VOLUME -> tr("Volume · %s", if (t.isMasterVolume) tr("Sortie générale") else channelName(t.ch))
     AutoTarget.PAN -> tr("Place · %s", channelName(t.ch))
-    AutoTarget.SEND -> tr("Envoi %s · %s", tr(Buses.NAMES.getOrElse(t.slot) { "?" }).lowercase(), channelName(t.ch))
+    AutoTarget.SEND -> tr("Envoi %s · %s", tr(Buses.NAMES.getOrElse(t.slot) { "?" }).inSentence(), channelName(t.ch))
     AutoTarget.INSERT_PARAM -> {
         val inserts = if (t.ch == MASTER_CHANNEL) master else channels.getOrNull(t.ch)?.inserts.orEmpty()
         val effect = inserts.getOrNull(t.slot)?.effect ?: EffectType.NONE

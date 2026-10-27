@@ -305,9 +305,10 @@ internal fun XyPad(
 /**
  * A pad XY with its ends written around it, never on it: the dot (at rest or at an end) never
  * hides a word. [top] above it, [left] [bottom] [right] under it; [topEnd]: a hint above, at the right.
+ * Left to right in every language: the pad's axes are the screen's (low-pass on the left in Arabic too).
  */
 @Composable
-internal fun XyLabelled(top: String, left: String, bottom: String, right: String, topEnd: String? = null, pad: @Composable () -> Unit) {
+internal fun XyLabelled(top: String, left: String, bottom: String, right: String, topEnd: String? = null, pad: @Composable () -> Unit) = com.pocketstudio.ui.LeftToRight {
     val style = MaterialTheme.typography.labelSmall
     val color = Neon.TextSecondary
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {

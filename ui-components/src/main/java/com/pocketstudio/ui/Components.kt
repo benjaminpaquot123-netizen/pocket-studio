@@ -1,5 +1,6 @@
 package com.pocketstudio.ui
 
+import com.pocketstudio.model.i18n.upperShown
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.animation.AnimatedVisibility
@@ -242,7 +243,7 @@ private fun SectionTitle(text: String, color: Color, folded: Boolean?, subtle: B
         if (subtle) Box(Modifier.size(8.dp).clip(CircleShape).background(color))
         else Box(Modifier.width(3.dp).height(12.dp).clip(RoundedCornerShape(2.dp)).background(color))
         // Audit final (22): a title TalkBack can jump to.
-        Text(text.uppercase(), style = MaterialTheme.typography.labelSmall, color = if (subtle) Neon.TextSecondary else lerp(color, Neon.TextPrimary, 0.25f),
+        Text(text.upperShown(), style = MaterialTheme.typography.labelSmall, color = if (subtle) Neon.TextSecondary else lerp(color, Neon.TextPrimary, 0.25f),
             modifier = Modifier.semantics { heading() })
         if (folded != null) {
             // A small open "v", turned to ">" when folded: there, not shouting.

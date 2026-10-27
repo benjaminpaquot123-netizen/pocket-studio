@@ -90,15 +90,20 @@ open class ScreenshotTest {
     /** Réglages › Taille de l'interface, applied as the app does (density and the width screens see). */
     protected open val uiScale = 1f
 
+    /** The interface's direction (right to left for an Arabic subclass, as MainActivity does). */
+    protected open val rtl = false
+
     /** [prepare]: touches made before the image (a switch that only the screen itself holds). */
     protected fun shoot(
         name: String, palette: Palette = Palettes.Studio, prepare: () -> Unit = {}, fullScreen: Boolean = false, content: @Composable () -> Unit,
     ) {
         org.junit.Assume.assumeTrue(wanted(name))
         compose.setContent {
-            com.pocketstudio.app.ui.UiScaled(uiScale) {
-                PocketStudioTheme(palette) {
-                    Box(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color.Black).padding(if (fullScreen) fullScreenChrome else chrome).background(Neon.Background)) { content() }
+            androidx.compose.runtime.CompositionLocalProvider(androidx.compose.ui.platform.LocalLayoutDirection provides com.pocketstudio.ui.layoutDirectionOf(rtl)) {
+                com.pocketstudio.app.ui.UiScaled(uiScale) {
+                    PocketStudioTheme(palette) {
+                        Box(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color.Black).padding(if (fullScreen) fullScreenChrome else chrome).background(Neon.Background)) { content() }
+                    }
                 }
             }
         }
@@ -1556,6 +1561,12 @@ open class ScreenshotTest {
             "0.5.70 (preview)",
             com.pocketstudio.app.settings.SettingsActions(),
         )
+    }
+
+    /** Réglages › Langue: every language named in itself, the one in use ticked and in view. */
+    @Test
+    fun languageList() = shoot("language_list") {
+        com.pocketstudio.app.settings.LanguageList(com.pocketstudio.model.i18n.I18n.lang, {}, {})
     }
 
     @Test

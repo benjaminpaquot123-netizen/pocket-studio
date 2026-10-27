@@ -1,5 +1,6 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.model.i18n.inSentence
 import com.pocketstudio.model.i18n.tr
 
 import androidx.compose.foundation.background
@@ -65,7 +66,7 @@ fun ChordPads(
     Column(Modifier.fillMaxWidth().testTag("chord_pads"), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         // The chords of the scale the pads play: the minor's for the minor pentatonic and the blues, the major's for « Libre ».
         val key = harmony.chordKey
-        Text(tr("Accords de %s %s", key.keyName(english), tr(key.scale.label).lowercase()), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+        Text(tr("Accords de %s %s", key.keyName(english), tr(key.scale.label).inSentence()), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
             modifier = Modifier.testTag("chord_pads_title"))
         for (row in 0 until 2) {
             Row(Modifier.fillMaxWidth().height((height - 24.dp) / 2), horizontalArrangement = Arrangement.spacedBy(6.dp)) {

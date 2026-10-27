@@ -1,5 +1,6 @@
 package com.pocketstudio.app.guide
 
+import com.pocketstudio.model.i18n.upperShown
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -66,6 +67,7 @@ import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.guide.GuideStages
 import com.pocketstudio.model.guide.GuideStatus
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.learn.SoundGlossary
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.Neon
@@ -305,7 +307,7 @@ fun GuideCard(
             Text(
                 (if (card.alert) tr("À corriger") else if (card.stage == GuideStages.START) card.stageTitle
                 // Audit final: a stage of the plan is a « chapitre » (« Étape n/N » counts the cards).
-                else tr("Chapitre %1\$d · %2\$s", card.stage, card.stageTitle)).uppercase(),
+                else tr("Chapitre %1\$d · %2\$s", card.stage, card.stageTitle)).upperShown(),
                 style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = if (card.alert) Neon.Amber else Neon.Cyan,
                 modifier = Modifier.weight(1f),
             )
@@ -344,11 +346,11 @@ fun GuideCard(
         }
         val elsewhere = card.elsewhere.filter { it.opens == null && !it.refused }
         if (elsewhere.isNotEmpty()) {
-            Text(tr("Ailleurs ?").uppercase(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.TextSecondary, modifier = Modifier.padding(top = 4.dp))
+            Text(tr("Ailleurs ?").upperShown(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.TextSecondary, modifier = Modifier.padding(top = 4.dp))
             elsewhere.forEach { o -> OptionRow(card.id, o, primary = false, listen, actions) }
         }
         if (opens.isNotEmpty() || card.sheet != null) {
-            Text(tr("Voir le réglage").uppercase(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.TextSecondary, modifier = Modifier.padding(top = 4.dp))
+            Text(tr("Voir le réglage").upperShown(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.TextSecondary, modifier = Modifier.padding(top = 4.dp))
             // G3: the track's whole sheet (its sound and layers, when, effects, history), one touch away.
             card.sheet?.let { key ->
                 Row(
@@ -527,7 +529,7 @@ private fun EffectsList(card: String, effects: List<GuideFxUi>, listen: GuideLis
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Column(Modifier.weight(1f)) {
-                        Text(list.first().trackName.uppercase(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan)
+                        Text(list.first().trackName.upperShown(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan)
                         Text(
                             list.joinToString(", ") { it.name }, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                             maxLines = 1, overflow = TextOverflow.Ellipsis,
@@ -537,7 +539,7 @@ private fun EffectsList(card: String, effects: List<GuideFxUi>, listen: GuideLis
                 }
                 if (!open) return@forEach
             } else {
-                Text(list.first().trackName.uppercase(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.padding(top = 4.dp))
+                Text(list.first().trackName.upperShown(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.padding(top = 4.dp))
             }
             list.forEach { fx ->
                 val mine = listen?.takeIf { it.card == card && it.option == fx.option }
@@ -595,7 +597,7 @@ private fun GuidePlan(stages: List<GuideStageUi>, current: String?, select: (Str
     val currentStage = stages.firstOrNull { s -> s.items.any { it.id == current } }?.stage
     Column(Modifier.fillMaxWidth().testTag(tag), verticalArrangement = Arrangement.spacedBy(2.dp)) {
         if (tag == "guide_plan") {
-            Text(tr("Le plan").uppercase(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.padding(top = 4.dp, bottom = 2.dp))
+            Text(tr("Le plan").upperShown(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.padding(top = 4.dp, bottom = 2.dp))
         }
         stages.forEach { s ->
             val open = openStage == s.stage
@@ -650,7 +652,7 @@ private fun FurtherPlan(stages: List<GuideStageUi>, current: String?, select: (S
         ) {
             Text(tr("Aller plus loin"), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold, color = Neon.TextPrimary, modifier = Modifier.weight(1f))
             Text(
-                stages.sumOf { it.items.size }.let { n -> if (n == 1) tr("1 étape de plus") else tr("%d étapes de plus", n) }, style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary,
+                stages.sumOf { it.items.size }.let { n -> trCount(n, "1 étape de plus", "%d étapes de plus") }, style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary,
                 modifier = Modifier.padding(horizontal = 6.dp),
             )
             Icon(if (open) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))

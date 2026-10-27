@@ -72,6 +72,7 @@ import com.pocketstudio.ui.trackColor
 import kotlin.math.roundToInt
 import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.i18n.percent
 
 class AudioTracksUi(
@@ -513,7 +514,7 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
             FilterChip(selected = clip.once, onClick = { actions.setOnce(id, true) }, label = { Text(tr("une fois par partie")) }, colors = chip, modifier = Modifier.testTag("audio_once_$id"))
             LOOP_BARS.forEach { bars ->
                 FilterChip(selected = !clip.once && clip.loopSteps == bars * per, onClick = { actions.setLoopBars(id, bars) },
-                    label = { Text(if (bars == 1) tr("à chaque mesure") else tr("toutes les %d mesures", bars)) }, colors = chip)
+                    label = { Text(trCount(bars, "à chaque mesure", "toutes les %d mesures")) }, colors = chip)
             }
         }
     }

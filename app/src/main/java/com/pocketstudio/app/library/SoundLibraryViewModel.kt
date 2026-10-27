@@ -2,6 +2,7 @@ package com.pocketstudio.app.library
 
 import com.pocketstudio.app.audio.finishOrRelease
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.app.report.forUser
 import android.app.Application
 import android.net.Uri
@@ -327,7 +328,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                             val failed = result.failed.keys.joinToString(", ") { id -> names[id] ?: id }
                             tr(
                                 "%1\$s ; %2\$s (%3\$s) : touche « Tout compléter » pour réessayer.", packsInstalled(result.installed.size),
-                                if (result.failed.size == 1) tr("1 n'a pas pu venir") else tr("%d n'ont pas pu venir", result.failed.size), failed,
+                                trCount(result.failed.size, "1 n'a pas pu venir", "%d n'ont pas pu venir"), failed,
                             )
                                 .also { m -> AppLog.add(m) }
                         }
@@ -1218,4 +1219,4 @@ internal fun restartsOnEdit(playing: SoundRef?, preparing: SoundRef?): Boolean =
     playing == SoundRef.AcidDemo || preparing == SoundRef.AcidDemo
 
 /** « 3 packs installés », singular for one. */
-internal fun packsInstalled(n: Int): String = if (n == 1) tr("1 pack installé") else tr("%d packs installés", n)
+internal fun packsInstalled(n: Int): String = trCount(n, "1 pack installé", "%d packs installés")

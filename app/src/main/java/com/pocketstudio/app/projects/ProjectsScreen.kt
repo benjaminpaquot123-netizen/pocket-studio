@@ -1,5 +1,6 @@
 package com.pocketstudio.app.projects
 
+import com.pocketstudio.model.i18n.upperShown
 import com.pocketstudio.ui.ScaledAlertDialog
 import com.pocketstudio.ui.ScaledDropdownMenu
 
@@ -280,7 +281,7 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                         overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
                     // A plain badge: a section heading's accent bar drew a stray « ▌ » after the name (APK 181).
                     if (open) {
-                        Text(tr("ouvert").uppercase(), style = MaterialTheme.typography.labelSmall, color = Neon.Acid, maxLines = 1,
+                        Text(tr("ouvert").upperShown(), style = MaterialTheme.typography.labelSmall, color = Neon.Acid, maxLines = 1,
                             modifier = Modifier.padding(start = 10.dp).testTag("project_open_badge"))
                     }
                 }

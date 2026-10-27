@@ -1,0 +1,14 @@
+{
+  "Poser ou retirer": "添加或删除",
+  "Réglages du coup": "打击设置",
+  "coup, force %d %%": "打击，力度 %d%%",
+  "%d répétitions": "%d 次重复",
+  "Jouer depuis la partie %d": "从段落 %d 开始播放",
+  "%1$s, partie %2$d : allumer ou éteindre": "%1$s，段落 %2$d：打开或关闭",
+  "%1$s, partie %2$d : ouvrir": "%1$s，段落 %2$d：打开",
+  "Grille des notes : %d notes": "音符网格：%d 个音符",
+  "%1$s au pas %2$d": "%1$s 在第 %2$d 步",
+  "Supprimer %s": "删除 %s",
+  "%s : un demi-ton plus haut": "%s：升一个半音",
+  "%s : un demi-ton plus bas": "%s：降一个半音"
+}

@@ -1,0 +1,14 @@
+{
+  "Poser ou retirer": "लगाओ या हटाओ",
+  "Réglages du coup": "हिट की सेटिंग्स",
+  "coup, force %d %%": "हिट, ज़ोर %d %%",
+  "%d répétitions": "%d दोहराव",
+  "Jouer depuis la partie %d": "पार्ट %d से बजाओ",
+  "%1$s, partie %2$d : allumer ou éteindre": "%1$s, पार्ट %2$d: ऑन या ऑफ़ करो",
+  "%1$s, partie %2$d : ouvrir": "%1$s, पार्ट %2$d: खोलो",
+  "Grille des notes : %d notes": "नोट ग्रिड: %d नोट्स",
+  "%1$s au pas %2$d": "%1$s स्टेप %2$d पर",
+  "Supprimer %s": "%s डिलीट करो",
+  "%s : un demi-ton plus haut": "%s: एक सेमीटोन ऊपर",
+  "%s : un demi-ton plus bas": "%s: एक सेमीटोन नीचे"
+}

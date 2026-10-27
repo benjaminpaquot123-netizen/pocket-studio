@@ -1,5 +1,6 @@
 package com.pocketstudio.ui
 
+import com.pocketstudio.model.i18n.upperShown
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -161,7 +162,7 @@ fun ChipRow(count: Int, selected: Int, modifier: Modifier = Modifier, item: @Com
 fun TileSection(title: String, accent: Color, modifier: Modifier = Modifier) {
     Row(modifier.padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Box(Modifier.size(8.dp).clip(CircleShape).background(accent))
-        Text(title.uppercase(), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
+        Text(title.upperShown(), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
     }
 }
 

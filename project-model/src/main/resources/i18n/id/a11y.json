@@ -1,0 +1,14 @@
+{
+  "Poser ou retirer": "Tambah atau hapus",
+  "Réglages du coup": "Pengaturan pukulan",
+  "coup, force %d %%": "pukulan, kekuatan %d %%",
+  "%d répétitions": "%d pengulangan",
+  "Jouer depuis la partie %d": "Putar dari bagian %d",
+  "%1$s, partie %2$d : allumer ou éteindre": "%1$s, bagian %2$d: nyalakan atau matikan",
+  "%1$s, partie %2$d : ouvrir": "%1$s, bagian %2$d: buka",
+  "Grille des notes : %d notes": "Grid not: %d not",
+  "%1$s au pas %2$d": "%1$s di step %2$d",
+  "Supprimer %s": "Hapus %s",
+  "%s : un demi-ton plus haut": "%s: naik setengah nada",
+  "%s : un demi-ton plus bas": "%s: turun setengah nada"
+}

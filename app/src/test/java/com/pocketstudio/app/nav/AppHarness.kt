@@ -74,7 +74,10 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
         if (launchChoice) kotlinx.coroutines.runBlocking { vm.flushNow() }
 
         val content: @androidx.compose.runtime.Composable () -> Unit = {
-            com.pocketstudio.app.ui.UiScaled(scale) { PocketStudioTheme { com.pocketstudio.app.learn.LearnLayer { AppRoot() } } }
+            // The interface language's direction, as MainActivity gives it (right to left in Arabic).
+            androidx.compose.runtime.CompositionLocalProvider(androidx.compose.ui.platform.LocalLayoutDirection provides com.pocketstudio.ui.layoutDirectionOf(lang.rtl)) {
+                com.pocketstudio.app.ui.UiScaled(scale) { PocketStudioTheme { com.pocketstudio.app.learn.LearnLayer { AppRoot() } } }
+            }
         }
         if (restore != null) restore.setContent(content) else compose.setContent(content)
         compose.waitForIdle()

@@ -405,7 +405,7 @@ private fun ReductionMeter(ch: Int, slot: Int, actions: MixerActions) {
 @Composable
 private fun ReductionValue(db: () -> Float) {
     val v = db()
-    Text(if (v > -0.05f) "0 dB" else String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "−%.1f dB", -v),
+    Text(if (v > -0.05f) "0 dB" else com.pocketstudio.model.i18n.ltrNumber(String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "−%.1f dB", -v)),
         style = com.pocketstudio.ui.MonoStyle, color = Neon.Cyan)
 }
 

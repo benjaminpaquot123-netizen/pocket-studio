@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.session
 
+import com.pocketstudio.model.i18n.inSentence
 import com.pocketstudio.ui.ScaledBottomSheet
 import com.pocketstudio.ui.ScaledDropdownMenu
 
@@ -94,7 +95,7 @@ fun songChordsUi(p: Project, tried: RhythmViewModel.ChordTry?, english: Boolean)
     fun names(degrees: List<Int>) = degrees.map { ChordTrack.name(base, it, english) }
     val frozen = Freeze.frozenIds(base)
     return SongChordsUi(
-        key = "${base.harmony.keyName(english)} ${tr(base.harmony.chordKey.scale.label).lowercase()}",
+        key = "${base.harmony.keyName(english)} ${tr(base.harmony.chordKey.scale.label).inSentence()}",
         progressions = Progression.entries.map { pr -> pr to "${pr.labelIn(base.harmony)}  ·  ${names(ChordTrack.degreesOf(base, pr)).joinToString(" ")}" },
         chosen = tried?.progression,
         parts = ChordTrack.songScenes(base).map { s ->

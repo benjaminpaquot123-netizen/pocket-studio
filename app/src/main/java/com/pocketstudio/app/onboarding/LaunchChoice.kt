@@ -64,6 +64,7 @@ import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectInfo
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.ui.Neon
 
 /**
@@ -164,7 +165,7 @@ data class LaunchUi(
 fun launchUi(p: Project, info: ProjectInfo?, now: Long, simple: Boolean, missionsActive: Boolean): LaunchUi {
     val style = (p.style ?: com.pocketstudio.app.library.styleOfProject(p.name))?.let(StarterWizard::style)
     val length = when {
-        p.song.isNotEmpty() -> clock(shareSeconds(p, 1)) + " · " + if (p.song.size == 1) tr("1 partie") else tr("%d parties", p.song.size)
+        p.song.isNotEmpty() -> clock(shareSeconds(p, 1)) + " · " + trCount(p.song.size, "1 partie", "%d parties")
         info != null && info.bars > 0 -> tr("Boucle de %s", barsShort(info.bars))
         else -> null
     }

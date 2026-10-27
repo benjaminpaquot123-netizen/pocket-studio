@@ -1,5 +1,6 @@
 package com.pocketstudio.app.mixer
 
+import com.pocketstudio.model.i18n.inSentence
 import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.horizontalScroll
@@ -76,7 +77,7 @@ fun effectsSummary(inserts: List<Insert>, sends: List<Float> = emptyList()): Str
 @Composable
 fun SendSliders(ch: Int, sends: List<Float>, actions: MixerActions) {
     sends.forEachIndexed { bus, level ->
-        LabeledSlider(tr("Envoi %s", tr(Buses.NAMES[bus]).lowercase()), com.pocketstudio.model.i18n.percent((level * 100).toInt()), level, "send_${ch}_$bus") {
+        LabeledSlider(tr("Envoi %s", tr(Buses.NAMES[bus]).inSentence()), com.pocketstudio.model.i18n.percent((level * 100).toInt()), level, "send_${ch}_$bus") {
             actions.setSend(ch, bus, it)
         }
     }

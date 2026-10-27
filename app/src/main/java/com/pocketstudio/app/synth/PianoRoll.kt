@@ -1,8 +1,10 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.model.i18n.inSentence
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.graphicsLayer
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 
 import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.ui.WithHelp
@@ -883,7 +885,7 @@ fun HarmonyPanel(harmony: Harmony, clip: NoteClip, actions: PianoRollActions, to
         ChipRow(tr("Deviner")) {
             guesses.forEach { g ->
                 TextButton(onClick = { actions.setHarmony(g.copy(lock = harmony.lock)) }, modifier = Modifier.testTag("guess_${g.root}_${g.scale.name}")) {
-                    Text("${g.keyName(english)} ${tr(g.scale.label).lowercase()}")
+                    Text("${g.keyName(english)} ${tr(g.scale.label).inSentence()}")
                 }
             }
         }
@@ -915,7 +917,7 @@ fun HarmonyPanel(harmony: Harmony, clip: NoteClip, actions: PianoRollActions, to
         val outside = NoteEdits.outOfScale(notes, harmony)
         if (outside > 0) {
             TextButton(onClick = { actions.replaceClip(NoteEdits.fitToScale(clip, harmony), null) }, modifier = Modifier.testTag("fit_to_scale")) {
-                Text(if (outside == 1) tr("Mettre la note hors gamme dans la gamme") else tr("Mettre les %d notes hors gamme dans la gamme", outside))
+                Text(trCount(outside, "Mettre la note hors gamme dans la gamme", "Mettre les %d notes hors gamme dans la gamme"))
             }
         }
     }

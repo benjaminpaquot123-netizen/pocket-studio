@@ -1,6 +1,7 @@
 package com.pocketstudio.app.synth
 
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 
 import com.pocketstudio.ui.fadingHorizontalScroll
 import androidx.compose.foundation.horizontalScroll
@@ -90,7 +91,7 @@ fun PlayPanel(
                 }
                 (1..4).forEach { o ->
                     FilterChip(selected = play.arp.octaves == o, onClick = { actions.setArp(play.arp.copy(octaves = o)) },
-                        label = { Text(if (o == 1) tr("1 octave") else tr("%d oct.", o)) })
+                        label = { Text(trCount(o, "1 octave", "%d oct.")) })
                 }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {

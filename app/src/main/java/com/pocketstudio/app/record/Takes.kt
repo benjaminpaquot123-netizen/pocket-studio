@@ -3,6 +3,7 @@ package com.pocketstudio.app.record
 import com.pocketstudio.app.ui.partName
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.partSteps
 import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.songStepOf
@@ -46,8 +47,8 @@ data class NoteTakeUi(
     fun summary(): String = when {
         notes > 0 && hits > 0 -> tr(
             "Ta prise : %1\$s et %2\$s",
-            if (notes == 1) tr("1 note") else tr("%d notes", notes),
-            if (hits == 1) tr("1 coup") else tr("%d coups", hits),
+            trCount(notes, "1 note", "%d notes"),
+            trCount(hits, "1 coup", "%d coups"),
         )
         notes > 1 -> tr("Ta prise : %d notes", notes)
         notes == 1 -> tr("Ta prise : 1 note")

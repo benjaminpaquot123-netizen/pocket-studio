@@ -59,6 +59,7 @@ import com.pocketstudio.model.Macros
 import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.i18n.percent
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.ProSlider
 import com.pocketstudio.ui.fadingHorizontalScroll
@@ -546,7 +547,7 @@ private fun SettingsPage(s: LiveFxSettings, set: (LiveFxSettings) -> Unit) {
         Choices(tr("Demi-tempo"), "half", if (s.halfTimeBar) 1 else 0, listOf(tr("Par temps"), tr("Par mesure"))) { set(s.copy(halfTimeBar = it == 1)) }
         Choices(
             tr("Bruit qui monte ou descend"), "riser", LiveFxSettings.RISER_BARS.indexOf(s.riserBars),
-            LiveFxSettings.RISER_BARS.map { if (it == 1) tr("1 mesure") else tr("%d mesures", it) },
+            LiveFxSettings.RISER_BARS.map { trCount(it, "1 mesure", "%d mesures") },
         ) { set(s.copy(riserBars = LiveFxSettings.RISER_BARS[it])) }
     }
 }

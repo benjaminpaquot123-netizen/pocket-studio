@@ -82,7 +82,7 @@ class GuideParcoursTest {
             } + p.whys.values.flatMap { it.values }
         }.filter { it.isNotBlank() }.toSet() + GuideStages.TITLES + GuideStages.SHORT + GuideStages.START_TITLE + GuideStages.START_SHORT +
             GuideStages.SIMPLE_TITLES.values
-        for (lang in listOf(Lang.EN, Lang.NL)) {
+        for (lang in (Lang.entries - Lang.FR)) {
             val table = I18n.table(lang)
             val missing = texts.filter { table[it].isNullOrBlank() }
             assertTrue("${missing.size} without ${lang.code}: ${missing.take(10)}", missing.isEmpty())

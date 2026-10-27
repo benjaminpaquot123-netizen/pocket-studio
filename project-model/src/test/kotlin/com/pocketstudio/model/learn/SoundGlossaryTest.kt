@@ -62,7 +62,7 @@ class SoundGlossaryTest {
     fun everyWordHasItsEnglishAndDutchText() {
         I18n.lang = Lang.FR
         val french = SoundGlossary.ALL.flatMap { w -> listOf(w.term, w.text) + w.example().labels }.toSet()
-        listOf(Lang.EN, Lang.NL).forEach { lang ->
+        (Lang.entries - Lang.FR).forEach { lang ->
             val table = I18n.table(lang)
             val missing = french.filter { table[it].isNullOrBlank() }
             assertTrue("${lang.code}: $missing", missing.isEmpty())

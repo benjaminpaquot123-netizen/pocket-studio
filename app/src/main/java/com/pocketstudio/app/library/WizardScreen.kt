@@ -1,9 +1,11 @@
 package com.pocketstudio.app.library
 
+import com.pocketstudio.model.i18n.inSentence
 import androidx.compose.foundation.layout.heightIn
 import com.pocketstudio.ui.ScaledAlertDialog
 
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -493,7 +495,7 @@ private fun PatternPreview(pattern: String, color: androidx.compose.ui.graphics.
 /** "En House : un coup…": the style's own word on a line or a part (its first letter in lower case after the colon). */
 private fun styleTip(style: StarterWizard.Style, tip: String): String {
     val text = tr(tip)
-    val lower = if (text.length > 1 && text[1].isLowerCase()) text.replaceFirstChar { it.lowercase() } else text
+    val lower = if (text.length > 1 && text[1].isLowerCase()) text.take(1).inSentence() + text.drop(1) else text
     return tr("En %s : %s", tr(style.name), lower)
 }
 
@@ -544,7 +546,7 @@ private fun AcidLineCard(line: com.pocketstudio.model.AcidPattern, ui: WizardUi,
                 androidx.compose.material3.FilterChip(
                     selected = line.length == bars * com.pocketstudio.model.AcidPattern.STEPS_PER_PAGE,
                     onClick = { actions.setAcidBars(bars) },
-                    label = { Text(if (bars == 1) tr("1 mesure") else tr("%d mesures", bars)) },
+                    label = { Text(trCount(bars, "1 mesure", "%d mesures")) },
                     colors = chipColors,
                     modifier = Modifier.testTag("wizard_acid_bars_$bars"),
                 )
@@ -696,7 +698,7 @@ internal fun acidSummary(ui: WizardUi): String {
     return listOfNotNull(
         "TB-303",
         ui.acidSoundName?.let { tr(it) },
-        if (bars == 1) tr("1 mesure") else tr("%d mesures", bars),
+        trCount(bars, "1 mesure", "%d mesures"),
         tr("ta ligne").takeIf { ui.acidNotes != null },
     ).joinToString(" · ")
 }
@@ -770,7 +772,7 @@ private fun MoodStep(style: StarterWizard.Style, mood: StarterWizard.Mood?, pack
                     Text(tr(m.description), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                     // Lot 2: the scale and the chords' numerals only for whoever asks (« Gamme Fa phrygienne · accords i–i–i–II » scared beginners).
                     if (selected && details) {
-                        Text(tr("Gamme %s %s · accords %s", keyName(style.melody.root), tr(StarterWizard.progressionOf(style, m).first.label).lowercase(), StarterWizard.chordsLabel(style, m)),
+                        Text(tr("Gamme %s %s · accords %s", keyName(style.melody.root), tr(StarterWizard.progressionOf(style, m).first.label).inSentence(), StarterWizard.chordsLabel(style, m)),
                             style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("wizard_mood_theory"))
                     }
                 }

@@ -141,7 +141,7 @@ fun faderDb(v: Float): String {
     if (v <= 0.001f) return "−∞ dB"
     val gain = (v / 0.8f) * (v / 0.8f)
     val db = 20 * log10(gain)
-    return (if (db >= 0) "+" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", db)
+    return com.pocketstudio.model.i18n.ltrNumber((if (db >= 0) "+" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", db))
 }
 
 @Composable
@@ -441,7 +441,7 @@ private fun MasterGain(db: Float, setDb: (Float) -> Unit) {
 
 /** The master's gain as the screen shows it ("+1.5 dB", "0.0 dB", "−6.0 dB"). */
 fun masterDbLabel(db: Float): String =
-    (if (db > 0f) "+" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", db).replace('-', '−')
+    com.pocketstudio.model.i18n.ltrNumber((if (db > 0f) "+" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", db).replace('-', '−'))
 
 @Composable
 private fun EffectsToggle(summary: String, open: Boolean, modifier: Modifier = Modifier, toggle: () -> Unit) {

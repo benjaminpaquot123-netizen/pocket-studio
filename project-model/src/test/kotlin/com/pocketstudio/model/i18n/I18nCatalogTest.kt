@@ -7,8 +7,8 @@ import org.junit.Test
 import java.io.File
 
 /**
- * Every text the code passes to [tr] has an English and a Dutch translation with the same
- * placeholders, and no text is built with a Kotlin template inside [tr] (its key would never match).
+ * Every text the code passes to [tr] (or [trCount]) has a translation in every language with the
+ * same placeholders, and no text is built with a Kotlin template inside [tr] (its key would never match).
  */
 class I18nCatalogTest {
     @After
@@ -19,14 +19,19 @@ class I18nCatalogTest {
     private val roots = listOf("src/main", "../app/src/main", "../ui-components/src/main").map(::File).filter { it.isDirectory }
     private val call = Regex("""(?<![A-Za-z0-9_.])tr\(\s*"((?:[^"\\]|\\.)*)"""")
 
+    /** trCount(n, "1 mesure", "%d mesures"…): both keys. */
+    private val countCall = Regex("""(?<![A-Za-z0-9_.])trCount\([^,"]+,\s*"((?:[^"\\]|\\.)*)"\s*,\s*"((?:[^"\\]|\\.)*)"""")
+
+    /** Every language but French (the keys). */
+    private val translated = Lang.entries - Lang.FR
+
     /** The French keys used by the code, with where they are. */
     private fun keys(): Map<String, String> {
         val found = linkedMapOf<String, String>()
         roots.forEach { root ->
             root.walkTopDown().filter { it.extension == "kt" }.forEach { f ->
                 f.readLines().forEachIndexed { i, line ->
-                    call.findAll(line).forEach { m ->
-                        val raw = m.groupValues[1]
+                    (call.findAll(line).map { it.groupValues[1] } + countCall.findAll(line).flatMap { it.groupValues.drop(1) }).forEach { raw ->
                         // An unescaped $ in the source is a Kotlin template (%1\$s is a placeholder, not one).
                         val where = "${f.name}:${i + 1}" + if (Regex("""(?<!\\)\$[A-Za-z{]""").containsMatchIn(raw)) " TEMPLATE" else ""
                         found.putIfAbsent(unescape(raw), where)
@@ -65,7 +70,7 @@ class I18nCatalogTest {
         keys.forEach { (key, where) ->
             if (where.endsWith(" TEMPLATE")) problems += "$where: template inside tr(\"$key\"): use %s"
         }
-        listOf(Lang.EN, Lang.NL).forEach { lang ->
+        translated.forEach { lang ->
             val table = I18n.table(lang)
             keys.forEach { (key, where) ->
                 val t = table[key]
@@ -130,7 +135,7 @@ class I18nCatalogTest {
         )
         // A fallback written inside such a call ("Piste", "réglage") is a key too.
         val literal = Regex(""""((?:[^"\\]|\\.)*)"""")
-        listOf(Lang.EN, Lang.NL).forEach { lang ->
+        translated.forEach { lang ->
             val table = I18n.table(lang)
             calls.values.flatMap { arg -> literal.findAll(arg).map { it.groupValues[1] } }
                 .filter { it.any(Char::isLetter) }
@@ -165,9 +170,10 @@ class I18nCatalogTest {
             // The index finds whole words only (« Decay » inside « DecayKnob » is not one): a miss looks everywhere.
             return candidates.any { i -> forms.any { sources[i].contains(it) } } || sources.any { src -> forms.any { src.contains(it) } }
         }
-        val unused = listOf(Lang.EN, Lang.NL).flatMap { lang ->
-            I18n.AREAS.flatMap { area -> I18n.area(lang, area).keys.map { "${lang.code}/$area.json: $it" to it } }
-        }.filter { (_, key) -> key !in KEPT_UNUSED && !written(key) }.map { it.first }
+        // A plural form ("%d mesures|few") is its count's key.
+        val unused = translated.flatMap { lang ->
+            I18n.AREAS.flatMap { area -> I18n.area(lang, area).keys.map { "${lang.code}/$area.json: $it" to it.substringBeforeLast('|') } }
+        }.distinctBy { it.second }.filter { (_, key) -> key !in KEPT_UNUSED && !written(key) }.map { it.first }
         assertTrue("${unused.size} translations nothing shows (remove them):\n" + unused.take(60).joinToString("\n"), unused.isEmpty())
     }
 
@@ -179,13 +185,13 @@ class I18nCatalogTest {
         assertTrue("old tabs named:\n" + found.joinToString("\n"), found.isEmpty())
     }
 
-    /** Audit (textes): Dutch « refrein » is a het-word; English and Dutch use their own quotes, not « ». */
+    /** Audit (textes): Dutch « refrein » is a het-word; the languages use their own quotes, not « » (Arabic's are « »). */
     @Test
     fun dutchAndEnglishWording() {
         val deRefrein = Regex("""\b(de|De|deze|Deze|elke|Elke|die|Die)( \p{L}+)? [Rr]efrein\b""")
         val nl = I18n.table(Lang.NL).filterValues { deRefrein.containsMatchIn(it) }
         assertTrue("« het refrein »:\n" + nl.values.joinToString("\n"), nl.isEmpty())
-        listOf(Lang.EN, Lang.NL).forEach { lang ->
+        (translated - Lang.AR).forEach { lang ->
             val quoted = I18n.table(lang).filterValues { '«' in it || '»' in it }
             assertTrue("${lang.code}: « » in\n" + quoted.values.joinToString("\n"), quoted.isEmpty())
         }
@@ -332,7 +338,10 @@ class I18nCatalogTest {
             "WizardScreen.kt: s.name",
             "WizardScreen.kt: sound.name",
             "WizardScreen.kt: style.name",
-            "LaunchChoice.kt: it.name",  // « Que veux-tu faire ? »: the project's style (StarterWizard.STYLES, checked by ModelTextsTest)
+            "LaunchChoice.kt: it.name",
+            // trCount's two keys: literals at each call, checked by everyTextHasItsTranslations (countCall).
+            "I18n.kt: one",
+            "I18n.kt: other",  // « Que veux-tu faire ? »: the project's style (StarterWizard.STYLES, checked by ModelTextsTest)
         )
     }
 
@@ -350,7 +359,7 @@ class I18nCatalogTest {
     @Test
     fun aFrenchTextHasOneTranslationAcrossAreas() {
         // The areas are merged: the same key with two meanings would show the wrong one somewhere.
-        listOf(Lang.EN, Lang.NL).forEach { lang ->
+        translated.forEach { lang ->
             val seen = mutableMapOf<String, MutableSet<String>>()
             I18n.AREAS.forEach { area -> I18n.area(lang, area).forEach { (k, v) -> seen.getOrPut(k) { mutableSetOf() } += v } }
             val clashes = seen.filterValues { it.size > 1 }
@@ -369,10 +378,42 @@ class I18nCatalogTest {
 
     @Test
     fun catalogsAreValidAndHaveTheSameKeysInEveryLanguage() {
-        I18n.AREAS.forEach { area ->
+        (I18n.AREAS - "plurals").forEach { area ->
             val en = I18n.area(Lang.EN, area).keys
-            val nl = I18n.area(Lang.NL, area).keys
-            assertEquals("area $area: en and nl differ: ${(en - nl) + (nl - en)}", en, nl)
+            translated.forEach { lang ->
+                val keys = I18n.area(lang, area).keys
+                assertEquals("area $area: en and ${lang.code} differ: ${(en - keys) + (keys - en)}", en, keys)
+                assertTrue("${lang.code}/$area.json: an empty text", I18n.area(lang, area).values.none { it.isBlank() })
+            }
         }
+    }
+
+    /**
+     * A language's extra plural forms ("%d mesures|few") are those of a count the code shows with
+     * [trCount], in a category the language has, with no placeholder the count's key has not (the
+     * Arabic dual may say the number in words).
+     */
+    @Test
+    fun pluralFormsBelongToACountAndALanguagesCategory() {
+        val counts = roots.flatMap { root ->
+            root.walkTopDown().filter { it.extension == "kt" }.flatMap { f -> countCall.findAll(f.readText()).map { unescape(it.groupValues[2]) } }.toList()
+        }.toSet()
+        assertTrue("no trCount() found", counts.size > 10)
+        val problems = mutableListOf<String>()
+        Lang.entries.forEach { lang ->
+            val categories = (0L..300L).map { pluralOf(lang.code, it).key }.toSet() - "one" - "other"
+            I18n.area(lang, "plurals").forEach { (key, form) ->
+                val count = key.substringBeforeLast('|')
+                val category = key.substringAfterLast('|', "")
+                if (count !in counts) problems += "${lang.code}: \"$key\": no trCount shows \"$count\""
+                if (category !in categories) problems += "${lang.code}: \"$key\": ${lang.code} has no « $category » (only $categories)"
+                if (!placeholders(count).containsAll(placeholders(form))) problems += "${lang.code}: \"$key\" -> \"$form\": placeholders"
+                if (form.isBlank()) problems += "${lang.code}: \"$key\" empty"
+            }
+        }
+        assertTrue(problems.joinToString("\n"), problems.isEmpty())
+        // Polish and Arabic have their forms for the bars (« 2 takty », « 5 taktów »; « مازورتان »).
+        assertTrue(I18n.area(Lang.PL, "plurals").keys.containsAll(listOf("%d mesures|few", "%d mesures|many")))
+        assertTrue(I18n.area(Lang.AR, "plurals").keys.containsAll(listOf("%d mesures|two", "%d mesures|few", "%d mesures|many")))
     }
 }

@@ -6,6 +6,7 @@ import com.pocketstudio.ui.ScaledAlertDialog
 
 import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -463,7 +464,7 @@ private fun SongClock(ui: SessionScreenUi, totalBars: Int) {
     Row(Modifier.fillMaxWidth().testTag("song_clock"), verticalAlignment = Alignment.CenterVertically) {
         Text(
             if (playing) clock((beat * beatSeconds).toInt()) + " / " + clock(total)
-            else (if (totalBars == 1) tr("1 mesure") else tr("%d mesures", totalBars)) + " · " + clock(total),
+            else trCount(totalBars, "1 mesure", "%d mesures") + " · " + clock(total),
             style = MonoStyle, fontSize = if (playing) 18.sp else MonoStyle.fontSize,
             color = if (playing) Neon.TextPrimary else Neon.TextSecondary, modifier = Modifier.weight(1f),
         )
@@ -762,8 +763,10 @@ private fun SceneAction(
         verticalArrangement = Arrangement.Center,
     ) {
         Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp))
-        Text(short, style = MaterialTheme.typography.labelMedium, color = tint, maxLines = 1, softWrap = false,
-            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+        // A long word (German « Umbenennen ») a little smaller rather than cut.
+        val style = MaterialTheme.typography.labelMedium
+        Text(short, style = style, color = tint, maxLines = 1, softWrap = false, modifier = Modifier.padding(horizontal = 2.dp),
+            autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp))
     }
 }
 

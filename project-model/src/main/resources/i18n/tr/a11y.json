@@ -1,0 +1,14 @@
+{
+  "Poser ou retirer": "Ekle veya kaldır",
+  "Réglages du coup": "Vuruş ayarları",
+  "coup, force %d %%": "vuruş, güç %%%d",
+  "%d répétitions": "%d tekrar",
+  "Jouer depuis la partie %d": "%d. bölümden çal",
+  "%1$s, partie %2$d : allumer ou éteindre": "%1$s, %2$d. bölüm: aç veya kapat",
+  "%1$s, partie %2$d : ouvrir": "%1$s, %2$d. bölüm: aç",
+  "Grille des notes : %d notes": "Nota ızgarası: %d nota",
+  "%1$s au pas %2$d": "%2$d. adımda %1$s",
+  "Supprimer %s": "%s sil",
+  "%s : un demi-ton plus haut": "%s: yarım ton yukarı",
+  "%s : un demi-ton plus bas": "%s: yarım ton aşağı"
+}

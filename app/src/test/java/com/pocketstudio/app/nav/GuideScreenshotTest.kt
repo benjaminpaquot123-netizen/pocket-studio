@@ -42,6 +42,9 @@ open class GuideScreenshotTest {
     protected open val uiScale = 1f
     protected open val lang = Lang.FR
 
+    /** The images a subclass takes (null: all). */
+    protected open val only: Set<String>? = null
+
     @After
     fun done() = h.finish()
 
@@ -70,6 +73,7 @@ open class GuideScreenshotTest {
 
     @OptIn(ExperimentalRoborazziApi::class)
     private fun shot(name: String, simple: Boolean = false, project: Project = jumpUp(), prepare: () -> Unit = {}) {
+        org.junit.Assume.assumeTrue(only?.contains(name) ?: true)
         h.start(simple = simple, scale = uiScale, lang = lang) { session.edit { project } }
         await { !h.vm.guide.ui.value.loading && h.vm.guide.ui.value.next != null && h.vm.guide.ui.value.simple == simple && (!simple || h.vm.guide.ui.value.further.isNotEmpty()) }
         prepare()
@@ -129,4 +133,23 @@ class GuideTabletScreenshotTest : GuideScreenshotTest() {
 @Config(qualifiers = "w860dp-h400dp-land-xxhdpi")
 class GuidePhoneLandscapeScreenshotTest : GuideScreenshotTest() {
     override val prefix = "nav/land_"
+}
+
+/** The Guide's panel in four of the new languages (screenshots/i18n/<code>_guide_panel.png): long German, Arabic right to left, CJK, Devanagari. */
+open class GuideGermanScreenshotTest : GuideScreenshotTest() {
+    override val lang = Lang.DE
+    override val prefix get() = "i18n/${lang.code}_"
+    override val only: Set<String>? = setOf("panel", "card")
+}
+
+class GuideArabicScreenshotTest : GuideGermanScreenshotTest() {
+    override val lang = Lang.AR
+}
+
+class GuideJapaneseScreenshotTest : GuideGermanScreenshotTest() {
+    override val lang = Lang.JA
+}
+
+class GuideHindiScreenshotTest : GuideGermanScreenshotTest() {
+    override val lang = Lang.HI
 }

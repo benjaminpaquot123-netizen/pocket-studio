@@ -1,0 +1,14 @@
+{
+  "Poser ou retirer": "Setzen oder entfernen",
+  "Réglages du coup": "Schlag-Einstellungen",
+  "coup, force %d %%": "Schlag, Stärke %d %%",
+  "%d répétitions": "%d Wiederholungen",
+  "Jouer depuis la partie %d": "Ab Teil %d spielen",
+  "%1$s, partie %2$d : allumer ou éteindre": "%1$s, Teil %2$d: ein- oder ausschalten",
+  "%1$s, partie %2$d : ouvrir": "%1$s, Teil %2$d: öffnen",
+  "Grille des notes : %d notes": "Notenraster: %d Noten",
+  "%1$s au pas %2$d": "%1$s auf Step %2$d",
+  "Supprimer %s": "%s löschen",
+  "%s : un demi-ton plus haut": "%s: einen Halbton höher",
+  "%s : un demi-ton plus bas": "%s: einen Halbton tiefer"
+}

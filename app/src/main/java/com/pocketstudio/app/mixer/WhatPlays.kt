@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.mixer
 
+import com.pocketstudio.model.i18n.inSentence
 import com.pocketstudio.ui.ScaledAlertDialog
 
 import androidx.compose.foundation.background
@@ -45,6 +46,7 @@ import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.whatActs
 import com.pocketstudio.ui.Neon
 import kotlin.math.abs
@@ -88,7 +90,7 @@ fun shapeText(s: CurveShape): String {
         CurveShape.Kind.DOWN_UP -> tr("Descend jusqu'à %d %% puis remonte.", pct(s.min))
         CurveShape.Kind.MOVES -> tr("Bouge entre %1\$d %% et %2\$d %%.", pct(s.min), pct(s.max))
     }
-    return if (s.bars > 0) what + " " + (if (s.bars == 1) tr("Sur 1 mesure.") else tr("Sur %d mesures.", s.bars)) else what
+    return if (s.bars > 0) what + " " + trCount(s.bars, "Sur 1 mesure.", "Sur %d mesures.") else what
 }
 
 /** How a lane plays: each loop, each scene its own, or over the whole song (and who wrote it). */
@@ -159,7 +161,7 @@ private fun describe(a: Acting, channels: List<com.pocketstudio.model.Channel>, 
         val centred = Macros.DEFAULTS[a.macro] > 0f
         val amount = if (centred) pct(abs(a.value - 0.5f) * 2f) else pct(a.value)
         val side = if (centred && a.value < 0.5f) low else high
-        ActRow(tr(Macros.NAMES[a.macro]), tr("Réglage rapide : %1\$s à %2\$d %%.", tr(side).lowercase(), amount), Where.Effects(a.ch), false, "act_macro_${a.ch}_${a.macro}", short = tr(Macros.NAMES[a.macro]).lowercase() + " " + amount + " %")
+        ActRow(tr(Macros.NAMES[a.macro]), tr("Réglage rapide : %1\$s à %2\$d %%.", tr(side).inSentence(), amount), Where.Effects(a.ch), false, "act_macro_${a.ch}_${a.macro}", short = tr(Macros.NAMES[a.macro]).inSentence() + " " + amount + " %")
     }
     is Acting.Layered -> {
         val l = a.layer
@@ -173,9 +175,9 @@ private fun describe(a: Acting, channels: List<com.pocketstudio.model.Channel>, 
     }
     is Acting.MasterTrim -> ActRow(
         tr("Volume général"),
-        tr("%s dB sur la sortie générale.", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%+.1f", a.db)),
+        tr("%s dB sur la sortie générale.", com.pocketstudio.model.i18n.ltrNumber(String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%+.1f", a.db))),
         Where.Master, false, "act_trim",
-        short = tr("volume %s dB", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%+.1f", a.db)),
+        short = tr("volume %s dB", com.pocketstudio.model.i18n.ltrNumber(String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%+.1f", a.db))),
     )
     is Acting.Moves -> ActRow(
         tr("Bouge : %s", targetShortName(a.automation.target, channels, master, strips)),
@@ -220,7 +222,7 @@ private fun GroupBlock(g: ActGroup, go: (Where) -> Unit, canGo: (Where) -> Boole
             Box(Modifier.size(width = 4.dp, height = 20.dp).background(g.color ?: Neon.Cyan, RoundedCornerShape(2.dp)))
             Text(g.name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(start = 8.dp).weight(1f))
             val moving = g.rows.count { it.moves }
-            if (moving > 0) Text(if (moving == 1) tr("1 courbe") else tr("%d courbes", moving), style = MaterialTheme.typography.labelMedium, color = Neon.Amber)
+            if (moving > 0) Text(trCount(moving, "1 courbe", "%d courbes"), style = MaterialTheme.typography.labelMedium, color = Neon.Amber)
         }
         g.rows.forEach { r ->
             Row(

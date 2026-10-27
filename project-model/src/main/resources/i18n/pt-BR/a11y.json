@@ -1,0 +1,14 @@
+{
+  "Poser ou retirer": "Colocar ou tirar",
+  "Réglages du coup": "Ajustes da batida",
+  "coup, force %d %%": "batida, intensidade %d%%",
+  "%d répétitions": "%d repetições",
+  "Jouer depuis la partie %d": "Tocar a partir da parte %d",
+  "%1$s, partie %2$d : allumer ou éteindre": "%1$s, parte %2$d: ligar ou desligar",
+  "%1$s, partie %2$d : ouvrir": "%1$s, parte %2$d: abrir",
+  "Grille des notes : %d notes": "Grade de notas: %d notas",
+  "%1$s au pas %2$d": "%1$s no passo %2$d",
+  "Supprimer %s": "Excluir %s",
+  "%s : un demi-ton plus haut": "%s: um semitom acima",
+  "%s : un demi-ton plus bas": "%s: um semitom abaixo"
+}

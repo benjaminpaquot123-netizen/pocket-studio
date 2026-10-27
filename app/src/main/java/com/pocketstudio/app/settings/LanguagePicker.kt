@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -68,15 +69,17 @@ fun LanguagePicker(modifier: Modifier = Modifier) {
     }
 }
 
-/** Every language of [Lang], scrolling when there are many, the one in use ticked. */
+/** Every language of [Lang] in the picker's order ([Lang.PICKER]), scrolling, the one in use ticked and in view. */
 @Composable
 fun LanguageList(current: Lang, pick: (Lang) -> Unit, close: () -> Unit) {
     ScaledAlertDialog(
         onDismissRequest = close,
         title = { Text(tr("Choisis ta langue")) },
         text = {
-            LazyColumn(Modifier.fillMaxWidth().heightIn(max = 420.dp).testTag("lang_list")) {
-                items(Lang.entries, key = { it.code }) { lang ->
+            // Opened on the language in use (15 do not fit at once).
+            val list = rememberLazyListState(initialFirstVisibleItemIndex = (Lang.PICKER.indexOf(current) - 2).coerceAtLeast(0))
+            LazyColumn(Modifier.fillMaxWidth().heightIn(max = 420.dp).testTag("lang_list"), state = list) {
+                items(Lang.PICKER, key = { it.code }) { lang ->
                     val chosen = lang == current
                     Row(
                         Modifier.fillMaxWidth().heightIn(min = 52.dp).clip(RoundedCornerShape(12.dp))

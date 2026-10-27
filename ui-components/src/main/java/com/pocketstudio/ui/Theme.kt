@@ -1,5 +1,8 @@
 package com.pocketstudio.ui
 
+import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -150,6 +153,22 @@ private val typography = Typography().run {
     )
 }
 
+/**
+ * The same, every paragraph right to left: an Arabic interface keeps its sentences in their order
+ * inside the left-to-right music areas ([LeftToRight] turns the layout only), where Compose would
+ * otherwise lay them out left to right (« هذا الـPad يتكرر على » scrambled).
+ */
+private val rtlTypography = typography.run {
+    fun TextStyle.rtl() = copy(textDirection = TextDirection.Rtl)
+    copy(
+        displayLarge = displayLarge.rtl(), displayMedium = displayMedium.rtl(), displaySmall = displaySmall.rtl(),
+        headlineLarge = headlineLarge.rtl(), headlineMedium = headlineMedium.rtl(), headlineSmall = headlineSmall.rtl(),
+        titleLarge = titleLarge.rtl(), titleMedium = titleMedium.rtl(), titleSmall = titleSmall.rtl(),
+        bodyLarge = bodyLarge.rtl(), bodyMedium = bodyMedium.rtl(), bodySmall = bodySmall.rtl(),
+        labelLarge = labelLarge.rtl(), labelMedium = labelMedium.rtl(), labelSmall = labelSmall.rtl(),
+    )
+}
+
 /** Chips are pills; cards and sheets have soft corners. */
 private val shapes = Shapes(
     extraSmall = RoundedCornerShape(6.dp),
@@ -165,7 +184,9 @@ val MonoStyle = TextStyle(fontFamily = Inter, fontWeight = FontWeight.SemiBold, 
 @Composable
 fun PocketStudioTheme(palette: Palette = Palettes.Studio, content: @Composable () -> Unit) {
     CompositionLocalProvider(LocalPalette provides palette) {
-        MaterialTheme(colorScheme = colorScheme(palette), typography = typography, shapes = shapes) {
+        // The interface's direction, given above the theme (MainActivity): right to left for Arabic.
+        val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+        MaterialTheme(colorScheme = colorScheme(palette), typography = if (rtl) rtlTypography else typography, shapes = shapes) {
             CompositionLocalProvider(LocalContentColor provides palette.textPrimary, content = content)
         }
     }

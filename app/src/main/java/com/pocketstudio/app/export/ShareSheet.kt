@@ -72,6 +72,7 @@ import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectCatalog
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.partSteps
 import androidx.compose.foundation.clickable
@@ -321,7 +322,7 @@ fun ShareSheetContent(
                     Text(shareClock(ui.seconds), style = MonoStyle.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold), color = Neon.Cyan,
                         modifier = Modifier.testTag("share_duration"))
                     Text(
-                        "  " + if (ui.parts == 0) tr("une partie en boucle") else if (ui.parts == 1) tr("1 partie") else tr("%d parties", ui.parts),
+                        "  " + if (ui.parts == 0) tr("une partie en boucle") else trCount(ui.parts, "1 partie", "%d parties"),
                         style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
                     )
                 }

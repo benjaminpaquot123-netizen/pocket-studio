@@ -147,6 +147,7 @@ import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.channelOfKey
 import com.pocketstudio.model.clipPreview
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.partAtStep
 import com.pocketstudio.model.partSpans
 import com.pocketstudio.model.sceneTitle
@@ -617,9 +618,10 @@ fun TimelineScreen(
             Box(Modifier.fillMaxWidth().weight(1f)) {
                 TimelineBody(ui, actions, view, scroller, showLanes, tallRows, headerW, minPx, maxPx, Modifier.fillMaxSize())
                 if (!landscape) {
-                    // Narrow: the zoom floats over the grid's corner, always in reach.
+                    // Narrow: the zoom floats over the grid's corner, always in reach (on its right in
+                    // Arabic too: the grid stays left to right, its track names on the left).
                     Column(
-                        Modifier.align(Alignment.BottomEnd).padding(12.dp).clip(RoundedCornerShape(24.dp))
+                        Modifier.align(androidx.compose.ui.AbsoluteAlignment.BottomRight).padding(12.dp).clip(RoundedCornerShape(24.dp))
                             .background(Neon.Surface.copy(alpha = 0.92f)).padding(vertical = 2.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) { zoom() }
@@ -695,7 +697,7 @@ private fun TimelineClock(ui: TimelineUi, modifier: Modifier) {
         )
         Text(
             if (beat >= 0) tr("mes. %1\$d.%2\$d", beat / beatsPerBar + 1, beat % beatsPerBar + 1) + " / " + p.songBars
-            else (if (p.songBars == 1) tr("1 mesure") else tr("%d mesures", p.songBars)),
+            else trCount(p.songBars, "1 mesure", "%d mesures"),
             style = MonoStyle, color = if (beat >= 0) Neon.Magenta else Neon.TextSecondary, maxLines = 1,
         )
     }

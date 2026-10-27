@@ -72,7 +72,7 @@ class GuideChecksTest {
         val french = all()
         assertEquals(listOf("Avec l'effet", "Sans l'effet"), GuideListen.takesOf("off@inst:1@0"))
         assertEquals(listOf("Stéréo", "Mono"), GuideListen.checkTakes("mono"))
-        for (lang in listOf(Lang.EN, Lang.NL)) {
+        for (lang in (Lang.entries - Lang.FR)) {
             I18n.lang = lang
             val shown = all()
             // Every name translated (« Mono » is the same word everywhere).

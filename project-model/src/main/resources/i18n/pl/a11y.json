@@ -1,0 +1,14 @@
+{
+  "Poser ou retirer": "Dodaj lub usuń",
+  "Réglages du coup": "Ustawienia uderzenia",
+  "coup, force %d %%": "uderzenie, siła %d %%",
+  "%d répétitions": "Powtórzenia: %d",
+  "Jouer depuis la partie %d": "Graj od części %d",
+  "%1$s, partie %2$d : allumer ou éteindre": "%1$s, część %2$d: włącz lub wyłącz",
+  "%1$s, partie %2$d : ouvrir": "%1$s, część %2$d: otwórz",
+  "Grille des notes : %d notes": "Siatka nut (nuty: %d)",
+  "%1$s au pas %2$d": "%1$s na kroku %2$d",
+  "Supprimer %s": "Usuń %s",
+  "%s : un demi-ton plus haut": "%s: o półton wyżej",
+  "%s : un demi-ton plus bas": "%s: o półton niżej"
+}

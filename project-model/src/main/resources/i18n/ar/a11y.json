@@ -1,0 +1,14 @@
+{
+  "Poser ou retirer": "إضافة أو حذف",
+  "Réglages du coup": "إعدادات الضربة",
+  "coup, force %d %%": "ضربة، القوة %d %%",
+  "%d répétitions": "التكرارات: %d",
+  "Jouer depuis la partie %d": "التشغيل من الجزء %d",
+  "%1$s, partie %2$d : allumer ou éteindre": "%1$s، الجزء %2$d: تشغيل أو إيقاف",
+  "%1$s, partie %2$d : ouvrir": "%1$s، الجزء %2$d: فتح",
+  "Grille des notes : %d notes": "شبكة النوتات: %d نوتة",
+  "%1$s au pas %2$d": "%1$s عند الخطوة %2$d",
+  "Supprimer %s": "حذف %s",
+  "%s : un demi-ton plus haut": "%s: نصف درجة للأعلى",
+  "%s : un demi-ton plus bas": "%s: نصف درجة للأسفل"
+}

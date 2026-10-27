@@ -7,6 +7,7 @@ import com.pocketstudio.ui.ScaledDropdownMenu
 
 import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.i18n.percent
 
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -256,7 +257,9 @@ fun RhythmScreen(
             // A pad only sounds: what stays in the beat is in the cells (beginners tap pads and wait).
             Text(
                 tr("Les pads sonnent, les cases gardent les coups. Appui long : son, volume."),
-                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 2,
+                // Three lines at most: the longer languages (German, Spanish) say it all on a phone.
+                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 3,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f).testTag("pads_hint"),
             )
         }
@@ -987,7 +990,7 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                     Text(tr("Capturer tout le morceau :"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                     listOf(1, 2, 4).forEach { bars ->
                         TextButton(onClick = { capture = bars }, modifier = Modifier.testTag("resample_$bars")) {
-                            Text(if (bars == 1) tr("1 mesure") else tr("%d mes.", bars), maxLines = 1, softWrap = false)
+                            Text(trCount(bars, "1 mesure", "%d mes."), maxLines = 1, softWrap = false)
                         }
                     }
                 }

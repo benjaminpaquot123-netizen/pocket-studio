@@ -73,6 +73,7 @@ import com.pocketstudio.model.guide.GuideTrack
 import com.pocketstudio.model.guide.guideText
 import com.pocketstudio.model.guide.guideTracks
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.layersOf
 import com.pocketstudio.model.sceneLabel
 import com.pocketstudio.model.sceneTitle
@@ -386,7 +387,7 @@ internal fun ago(ms: Long): String {
 
 /** « Joue dans 3 parties sur 8 », singular for one. */
 internal fun playsIn(parts: Int, of: Int): String =
-    if (parts == 1) tr("Joue dans 1 partie sur %d.", of) else tr("Joue dans %1\$d parties sur %2\$d.", parts, of)
+    trCount(parts, "Joue dans 1 partie sur %d.", "Joue dans %1\$d parties sur %2\$d.", *(if (parts == 1) arrayOf<Any?>(of) else arrayOf<Any?>(parts, of)))
 
 private const val MAX_LINES = 30
 
@@ -684,7 +685,7 @@ private const val GAIN_MAX = 6f
 
 /** « −6,0 dB » in French whatever the phone's language: the interface's own decimal separator (as the mixer). */
 internal fun formatDb(db: Float): String = if (db <= Layers.MIN_GAIN_DB) tr("muet") else
-    (if (db > 0f) "+" else if (db < 0f) "−" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", kotlin.math.abs(db))
+    com.pocketstudio.model.i18n.ltrNumber((if (db > 0f) "+" else if (db < 0f) "−" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", kotlin.math.abs(db)))
 
 private fun formatPan(pan: Float): String = when {
     kotlin.math.abs(pan) < 0.005f -> tr("au centre")

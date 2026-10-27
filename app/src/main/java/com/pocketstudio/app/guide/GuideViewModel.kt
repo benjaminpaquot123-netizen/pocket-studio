@@ -16,6 +16,7 @@ import com.pocketstudio.model.guide.GuideStatus
 import com.pocketstudio.model.guide.guideText
 import com.pocketstudio.model.guide.guideTracks
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.Buses
 import com.pocketstudio.model.EffectType
 import kotlinx.coroutines.CoroutineDispatcher
@@ -474,7 +475,7 @@ class GuideViewModel(
     /** « House du soir · 2:40 · 6 parties »: the song just made, in a line (as « Ton morceau est prêt » said it). */
     private fun readyLine(p: Project): String = listOf(
         com.pocketstudio.model.DefaultNames.shown(p.name), GuideAnalyzer.duration(p),
-        if (p.song.size == 1) tr("1 partie") else tr("%d parties", p.song.size),
+        trCount(p.song.size, "1 partie", "%d parties"),
     ).filter { it.isNotBlank() }.joinToString(" · ")
 
     companion object {

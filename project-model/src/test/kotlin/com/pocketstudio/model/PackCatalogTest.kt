@@ -135,7 +135,7 @@ class PackCatalogTest {
                 assertTrue(file, PackManifest.safeName(file))
             }
             val name = p["name"]!!.jsonPrimitive.content
-            for (lang in listOf(Lang.EN, Lang.NL)) assertTrue("$name ($lang)", I18n.table(lang)[name].orEmpty().isNotEmpty())
+            for (lang in (Lang.entries - Lang.FR)) assertTrue("$name ($lang)", I18n.table(lang)[name].orEmpty().isNotEmpty())
         }
         // Every kind the generated packs give their sounds is one the app keeps too.
         val styles = Json.parseToJsonElement(File("../scripts/packs/styles.json").readText()).jsonObject

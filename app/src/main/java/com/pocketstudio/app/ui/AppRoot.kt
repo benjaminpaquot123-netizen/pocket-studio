@@ -2178,7 +2178,8 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                             )
                             }
                         }
-                        AppTab.Mixeur -> androidx.compose.runtime.key(mixerVisit) {
+                        // The Mode simple's « Mix »: the same mixer, in big faders and words.
+                        AppTab.Mixeur -> if (simple) SimpleMixTab(rhythmVm) else androidx.compose.runtime.key(mixerVisit) {
                             val project by rhythmVm.project.collectAsStateWithLifecycle()
                             val sessionUi by rhythmVm.sessionUi.collectAsStateWithLifecycle()
                             val spectrum by rhythmVm.spectrum.collectAsStateWithLifecycle()
@@ -3485,6 +3486,58 @@ internal fun simpleTracks(p: Project): List<SimpleTrack> {
     } + p.audioTracks.map { t ->
         track(com.pocketstudio.model.SongPart.audio(t.id), com.pocketstudio.model.AudioTrack.mixerChannel(t.id), com.pocketstudio.model.DefaultNames.shown(t.name), com.pocketstudio.ui.trackColor(t.color))
     }
+}
+
+/**
+ * The Mode simple's « Mix » tab on the project's own mixer (the console's state: one source of
+ * truth, every change undoable): the meters polled while it shows, the tip worked out a moment
+ * after the faders stop.
+ */
+@Composable
+private fun SimpleMixTab(vm: RhythmViewModel) {
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    val project by vm.project.collectAsStateWithLifecycle()
+    val transport by vm.transport.collectAsStateWithLifecycle()
+    val loopPart by vm.loopPart.collectAsStateWithLifecycle()
+    val alone by vm.alone.collectAsStateWithLifecycle()
+    // Read only by the meters when they draw (and the « Sortie »'s words when they change).
+    val meters = vm.meters.collectAsStateWithLifecycle()
+    val loudness = vm.loudness.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) { lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { vm.pollMeters() } }
+    val clipping by remember { androidx.compose.runtime.derivedStateOf { com.pocketstudio.app.mixer.outputWords(loudness.value, meters.value) == com.pocketstudio.app.mixer.OutputWords.CLIP } }
+    val tip by androidx.compose.runtime.produceState<com.pocketstudio.model.guide.MixTip?>(null, project.mixer, project.guide.measures, clipping) {
+        kotlinx.coroutines.delay(150)
+        value = com.pocketstudio.model.guide.MixTips.of(vm.project.value, clipping).firstOrNull()
+    }
+    val tracks = simpleTracks(project)
+    val ui = com.pocketstudio.app.mixer.SimpleMixUi(
+        projectName = com.pocketstudio.model.DefaultNames.shown(project.name),
+        tracks = tracks,
+        padVolumes = tracks.flatMap { it.pads }.associate { it.lane to (project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(it.lane))?.volume ?: com.pocketstudio.model.Mixer.DEFAULT_VOLUME) },
+        masterDb = project.mixer.masterDb,
+        looping = transport.playing && loopPart && alone == null,
+        listening = alone,
+        tip = tip,
+    )
+    val from = com.pocketstudio.app.mixer.SimpleMixActions.FROM
+    val actions = remember(vm) {
+        com.pocketstudio.app.mixer.SimpleMixActions(
+            setVolume = vm::setChannelVolume, resetVolume = vm::resetChannelVolume, toggleMute = vm::toggleMute, setMasterDb = vm::setMasterDb,
+            listenAlone = { key -> vm.toggleAlone(com.pocketstudio.app.rhythm.AloneTarget.ofSongKey(key), from = from) },
+            listenPadAlone = { lane -> vm.toggleAlone(com.pocketstudio.app.rhythm.AloneTarget.ofKey(com.pocketstudio.model.guide.GuideTrack.pad(lane)), from = from) },
+            holdAlone = vm::holdAlone,
+            loop = {
+                if (vm.transport.value.playing && vm.loopPart.value && vm.alone.value == null) vm.togglePlay()
+                else {
+                    vm.stopAlone()
+                    vm.setLoopPart(true)
+                    if (!vm.transport.value.playing) vm.togglePlay()
+                }
+            },
+            resetAll = vm::resetMixLevels, applyTip = vm::applyMixTip, meterPads = vm::meterPads,
+        )
+    }
+    com.pocketstudio.app.mixer.SimpleMixScreen(ui, { meters.value }, { loudness.value }, actions)
 }
 
 /** How long « Voir le réglage » keeps a control lit (it also goes at a touch on « Compris »). */

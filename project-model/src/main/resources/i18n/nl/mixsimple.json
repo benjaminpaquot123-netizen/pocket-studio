@@ -1,0 +1,23 @@
+{
+  "Lance ▶": "Druk op ▶",
+  "Trop faible": "Te zacht",
+  "Bien": "Goed",
+  "Fort et propre": "Luid en schoon",
+  "Ça sature": "Het vervormt",
+  "Partie en boucle": "Deel in een lus",
+  "Tout à zéro": "Alles terug",
+  "À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule.": "Jouw beurt: zet harder wat je moet horen, zachter wat stoort. Tik op ▶ om een spoor alleen te horen.",
+  "Voir ses sons": "Toon zijn klanken",
+  "Volume de sortie": "Uitgangsvolume",
+  "Aucun conseil pour l'instant : règle à l'oreille.": "Nu geen tip: vertrouw op je oren.",
+  "Remettre à 0 dB": "Terug naar 0 dB",
+  "Ça sature : le son grésille.": "Het vervormt: het geluid kraakt.",
+  "Baisser la sortie de %s dB": "Uitgang %s dB zachter",
+  "Un solo est resté allumé : on n'entend plus que %s.": "Er staat nog een solo aan: je hoort alleen %s.",
+  "La basse et le kick se gênent.": "De bas en de kick zitten elkaar in de weg.",
+  "Baisser la basse de %s dB": "Bas %s dB zachter",
+  "« %s » couvre les autres.": "‘%s’ overstemt de rest.",
+  "Le baisser de %s dB": "%s dB zachter",
+  "« %s » se perd dans le mix.": "‘%s’ verdwijnt in de mix.",
+  "Le monter de %s dB": "%s dB harder"
+}

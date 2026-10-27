@@ -1,0 +1,23 @@
+{
+  "Lance ▶": "按 ▶",
+  "Trop faible": "太小声",
+  "Bien": "不错",
+  "Fort et propre": "响亮又干净",
+  "Ça sature": "爆音了",
+  "Partie en boucle": "循环当前段落",
+  "Tout à zéro": "全部复原",
+  "À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule.": "轮到你了：把该听清的调大，把碍事的调小。点 ▶ 单独听一条音轨。",
+  "Voir ses sons": "显示它的声音",
+  "Volume de sortie": "输出音量",
+  "Aucun conseil pour l'instant : règle à l'oreille.": "暂时没有建议：相信你的耳朵。",
+  "Remettre à 0 dB": "回到 0 dB",
+  "Ça sature : le son grésille.": "爆音了：声音有噼啪声。",
+  "Baisser la sortie de %s dB": "输出调小 %s dB",
+  "Un solo est resté allumé : on n'entend plus que %s.": "有个独奏还开着：只能听到 %s。",
+  "La basse et le kick se gênent.": "贝斯和底鼓互相打架。",
+  "Baisser la basse de %s dB": "贝斯调小 %s dB",
+  "« %s » couvre les autres.": "“%s”盖住了其他声音。",
+  "Le baisser de %s dB": "调小 %s dB",
+  "« %s » se perd dans le mix.": "“%s”被淹没在混音里。",
+  "Le monter de %s dB": "调大 %s dB"
+}

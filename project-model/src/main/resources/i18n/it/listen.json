@@ -1,10 +1,10 @@
 {
   "Écouter seul": "Ascolta da solo",
   "Joue en boucle, tout seul : change le son pour comparer.": "Suona in loop, da solo: cambia il suono per confrontare.",
-  "Écouter « %s » seul, en boucle": "Ascolta «%s» da solo, in loop",
+  "Écouter « %s » seul, en boucle": "Ascolta “%s” da solo, in loop",
   "À toi : écoute ce son tout seul, puis décide.": "Tocca a te: ascolta questo suono da solo, poi decidi.",
-  "À toi : il te plaît ? Touche « %s ».": "Tocca a te: ti piace? Tocca «%s».",
-  "À toi : touche « %s ».": "Tocca a te: tocca «%s».",
+  "À toi : il te plaît ? Touche « %s ».": "Tocca a te: ti piace? Tocca “%s”.",
+  "À toi : touche « %s ».": "Tocca a te: tocca “%s”.",
   "Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule.": "Tocca il nome di una traccia per cambiarne il suono; ▶ per ascoltarla da sola.",
   "Ses sons, un par un": "I suoi suoni, uno alla volta"
 }

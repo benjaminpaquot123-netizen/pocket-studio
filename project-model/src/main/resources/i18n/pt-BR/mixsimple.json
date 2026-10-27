@@ -1,0 +1,23 @@
+{
+  "Lance ▶": "Toque ▶",
+  "Trop faible": "Baixo demais",
+  "Bien": "Bom",
+  "Fort et propre": "Alto e limpo",
+  "Ça sature": "Está saturando",
+  "Partie en boucle": "Parte em loop",
+  "Tout à zéro": "Tudo a zero",
+  "À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule.": "Sua vez: aumente o que precisa ser ouvido, abaixe o que atrapalha. Toque ▶ para ouvir uma faixa sozinha.",
+  "Voir ses sons": "Ver seus sons",
+  "Volume de sortie": "Volume de saída",
+  "Aucun conseil pour l'instant : règle à l'oreille.": "Nenhuma dica por enquanto: confie no seu ouvido.",
+  "Remettre à 0 dB": "Voltar a 0 dB",
+  "Ça sature : le son grésille.": "Está saturando: o som chia.",
+  "Baisser la sortie de %s dB": "Abaixar a saída em %s dB",
+  "Un solo est resté allumé : on n'entend plus que %s.": "Um solo ficou ligado: só se ouve %s.",
+  "La basse et le kick se gênent.": "O baixo e o bumbo se atrapalham.",
+  "Baisser la basse de %s dB": "Abaixar o baixo em %s dB",
+  "« %s » couvre les autres.": "“%s” cobre os outros.",
+  "Le baisser de %s dB": "Abaixar %s dB",
+  "« %s » se perd dans le mix.": "“%s” se perde na mixagem.",
+  "Le monter de %s dB": "Aumentar %s dB"
+}

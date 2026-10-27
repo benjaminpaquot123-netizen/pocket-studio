@@ -112,9 +112,9 @@ class SpacesTest {
     }
 
     @Test
-    fun theSimpleModeHasFourTabsInEverydayWords() {
+    fun theSimpleModeHasFiveTabsInEverydayWords() {
         h.start(simple = true)
-        listOf("Morceau", "Rythme", "Clavier", "Envoyer").forEach { compose.onNodeWithTag("tab_simple_$it").assertIsDisplayed() }
+        listOf("Morceau", "Rythme", "Clavier", "Mix", "Envoyer").forEach { compose.onNodeWithTag("tab_simple_$it").assertIsDisplayed() }
         compose.onNodeWithTag("tab_Structure").assertDoesNotExist()
         // Mon morceau: the parts and « Mes pistes », the « Lead » named « Mélodie ».
         compose.onNodeWithTag("simple_tracks").assertExists()
@@ -122,7 +122,7 @@ class SpacesTest {
         // No ⤴ twice: « Envoyer » is a tab, the rest is in « ⋯ ».
         compose.onNodeWithTag("top_share").assertDoesNotExist()
         compose.onNodeWithTag("top_more").assertIsDisplayed()
-        for (t in listOf("Morceau", "Rythme", "Clavier", "Envoyer")) {
+        for (t in listOf("Morceau", "Rythme", "Clavier", "Mix", "Envoyer")) {
             tap("tab_simple_$t")
             for (jargon in listOf("Lead", "303", "Quantifier")) {
                 val found = compose.onAllNodes(hasText(jargon, substring = true), useUnmergedTree = true).fetchSemanticsNodes()

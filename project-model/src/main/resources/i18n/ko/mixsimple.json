@@ -1,0 +1,23 @@
+{
+  "Lance ▶": "▶ 누르기",
+  "Trop faible": "너무 작음",
+  "Bien": "좋음",
+  "Fort et propre": "크고 깨끗함",
+  "Ça sature": "소리가 찌그러짐",
+  "Partie en boucle": "파트 반복",
+  "Tout à zéro": "모두 처음대로",
+  "À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule.": "네 차례: 들려야 할 소리는 올리고, 방해되는 소리는 내려. ▶ 를 눌러 트랙을 혼자 들어봐.",
+  "Voir ses sons": "소리 보기",
+  "Volume de sortie": "출력 볼륨",
+  "Aucun conseil pour l'instant : règle à l'oreille.": "지금은 조언이 없어요: 귀를 믿으세요.",
+  "Remettre à 0 dB": "0 dB로 되돌리기",
+  "Ça sature : le son grésille.": "소리가 찌그러짐: 지직거려요.",
+  "Baisser la sortie de %s dB": "출력을 %s dB 낮추기",
+  "Un solo est resté allumé : on n'entend plus que %s.": "솔로가 켜져 있어요: %s만 들려요.",
+  "La basse et le kick se gênent.": "베이스와 킥이 부딪쳐요.",
+  "Baisser la basse de %s dB": "베이스를 %s dB 낮추기",
+  "« %s » couvre les autres.": "“%s”이(가) 다른 소리를 덮어요.",
+  "Le baisser de %s dB": "%s dB 낮추기",
+  "« %s » se perd dans le mix.": "“%s”이(가) 믹스에 묻혀요.",
+  "Le monter de %s dB": "%s dB 올리기"
+}

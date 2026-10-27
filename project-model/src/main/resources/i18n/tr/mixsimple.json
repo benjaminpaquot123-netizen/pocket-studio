@@ -1,0 +1,23 @@
+{
+  "Lance ▶": "▶'ye bas",
+  "Trop faible": "Çok kısık",
+  "Bien": "İyi",
+  "Fort et propre": "Güçlü ve temiz",
+  "Ça sature": "Bozuluyor",
+  "Partie en boucle": "Bölüm döngüde",
+  "Tout à zéro": "Hepsini sıfırla",
+  "À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule.": "Sıra sende: duyulması gerekeni aç, rahatsız edeni kıs. Bir parçayı tek başına dinlemek için ▶'ye dokun.",
+  "Voir ses sons": "Seslerini göster",
+  "Volume de sortie": "Çıkış sesi",
+  "Aucun conseil pour l'instant : règle à l'oreille.": "Şimdilik öneri yok: kulağına güven.",
+  "Remettre à 0 dB": "0 dB'ye dön",
+  "Ça sature : le son grésille.": "Bozuluyor: ses cızırdıyor.",
+  "Baisser la sortie de %s dB": "Çıkışı %s dB kıs",
+  "Un solo est resté allumé : on n'entend plus que %s.": "Bir solo açık kaldı: yalnızca %s duyuluyor.",
+  "La basse et le kick se gênent.": "Bas ve kick birbirini bastırıyor.",
+  "Baisser la basse de %s dB": "Bası %s dB kıs",
+  "« %s » couvre les autres.": "“%s” diğerlerini örtüyor.",
+  "Le baisser de %s dB": "%s dB kıs",
+  "« %s » se perd dans le mix.": "“%s” miksin içinde kayboluyor.",
+  "Le monter de %s dB": "%s dB aç"
+}

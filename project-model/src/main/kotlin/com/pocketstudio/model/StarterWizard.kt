@@ -637,7 +637,7 @@ object StarterWizard {
      * effects go on what is used.
      */
     fun build(style: Style, sounds: Map<Role, PadSample?>, mood: Mood? = null, parts: Map<Part, PartSound> = emptyMap(), acid: Boolean = true, chosenAcid: AcidPattern? = null): Project =
-        build(style, sounds, mood, parts, acid, chosenAcid, audibleBass = true)
+        build(style, sounds, mood, parts, acid, chosenAcid, audibleBass = true).let { it.copy(mixer = it.mixer.withStartVolumes()) }
 
     /** [build], with [audibleBass] false: the song as it is before [WizardMix.withAudibleBass] (BassesTest compares the two). */
     internal fun build(style: Style, sounds: Map<Role, PadSample?>, mood: Mood?, parts: Map<Part, PartSound>, acid: Boolean, chosenAcid: AcidPattern?, audibleBass: Boolean): Project {

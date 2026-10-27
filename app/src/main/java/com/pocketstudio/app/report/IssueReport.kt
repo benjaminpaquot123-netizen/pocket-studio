@@ -83,7 +83,7 @@ object IssueReport {
     }
 
     fun crashIssue(crash: String, c: Context): Uri {
-        val firstLine = crash.lineSequence().drop(1).firstOrNull()?.take(70) ?: "plantage"
+        val firstLine = crash.lineSequence().drop(1).firstOrNull()?.let { LogTail.forPublicIssue(it) }?.take(70) ?: "plantage"
         val head = buildString {
             appendLine("## Plantage")
             appendLine("L'appli s'est fermée brutalement lors de la session précédente.")
@@ -95,10 +95,11 @@ object IssueReport {
     /**
      * The new issue's link, under GitHub's length limit: the log is shortened first (its most
      * recent part kept), then, for very long comments or descriptions, [head] itself is cut with
-     * « … (suite coupée) ». The environment ([env]) always stays.
+     * « … (suite coupée) ». The environment ([env]) always stays. The repository is public: the
+     * log loses the names between « » and JSON excerpts first ([LogTail.forPublicIssue]).
      */
     private fun issueUri(title: String, head: String, env: String, log: String, label: String): Uri {
-        var tail = log
+        var tail = LogTail.forPublicIssue(log)
         var text = head
         while (true) {
             val body = text + env + "\n<details><summary>Journal</summary>\n\n```\n" + tail + "\n```\n</details>\n"

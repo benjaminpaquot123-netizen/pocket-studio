@@ -5,11 +5,18 @@ plugins {
 }
 
 // CI passes the workflow run number so every build installs over the previous one.
-val ciVersionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
+val envVersionCode = System.getenv("VERSION_CODE")?.toIntOrNull()
+val ciVersionCode = envVersionCode ?: 1
 val phase = 22
 val releaseChannel = System.getenv("RELEASE_CHANNEL") ?: "dev"
 val signingPassword: String? = System.getenv("SIGNING_PASSWORD")?.takeIf { it.isNotBlank() }
 val signingStore = rootProject.file("signing/release.p12")
+// A release APK must install over the published one: same key, higher versionCode. Without the
+// secret and VERSION_CODE, a release build fails (checkReleaseSigning) unless it is asked for:
+// -PunsignedRelease (CI: signed by apksigner in the publish job, the only one with the secret) or
+// -PallowDebugSigning (a local check that the release builds; that APK must never reach the phone).
+val unsignedRelease = providers.gradleProperty("unsignedRelease").isPresent
+val allowDebugSigning = providers.gradleProperty("allowDebugSigning").isPresent
 // The phone is arm64-v8a; x86_64 is only added for CI emulator smoke tests (-PemulatorAbi).
 val abis = listOf("arm64-v8a") + if (providers.gradleProperty("emulatorAbi").isPresent) listOf("x86_64") else emptyList()
 
@@ -49,7 +56,10 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
+            signingConfig = when {
+                unsignedRelease -> null
+                else -> signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
+            }
         }
     }
 
@@ -97,6 +107,25 @@ android {
         jniLibs.useLegacyPackaging = false
     }
 }
+
+val checkReleaseSigning = tasks.register("checkReleaseSigning") {
+    val signed = signingPassword != null && signingStore.exists()
+    val hasVersionCode = envVersionCode != null
+    val unsigned = unsignedRelease
+    val debugAllowed = allowDebugSigning
+    doLast {
+        val problems = buildList {
+            if (!signed && !unsigned && !debugAllowed) add("no SIGNING_PASSWORD: the APK would be signed with the debug key and refuse to install over the published app")
+            if (!hasVersionCode && !debugAllowed) add("no VERSION_CODE: versionCode would be 1, lower than every published version")
+        }
+        if (problems.isNotEmpty()) throw GradleException(
+            "Release build refused: " + problems.joinToString("; ") +
+                ". Set SIGNING_PASSWORD and VERSION_CODE (scripts/local-release.sh), or pass -PunsignedRelease (CI, signed later)" +
+                " or -PallowDebugSigning (local check only, never install that APK).",
+        )
+    }
+}
+tasks.matching { it.name == "preReleaseBuild" }.configureEach { dependsOn(checkReleaseSigning) }
 
 roborazzi {
     outputDir.set(file("screenshots"))

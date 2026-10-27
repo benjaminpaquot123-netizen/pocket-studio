@@ -127,7 +127,7 @@ class ShellFixesTest {
         val adapter = app.getSystemService(BluetoothManager::class.java).adapter
         shadowOf(adapter).setState(android.bluetooth.BluetoothAdapter.STATE_ON)
         val store = ViewModelStore()
-        val vm = androidx.lifecycle.ViewModelProvider.create(store, androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.getInstance(app))[MidiViewModel::class.java]
+        val vm = androidx.lifecycle.ViewModelProvider.create(store, androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory(app))[MidiViewModel::class.java]
         vm.scanBluetooth()
         val scanner = shadowOf(adapter.bluetoothLeScanner)
         assertEquals(1, scanner.scanCallbacks.size)

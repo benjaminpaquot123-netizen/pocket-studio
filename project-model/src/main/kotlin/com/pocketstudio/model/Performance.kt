@@ -124,6 +124,8 @@ class PerformanceTake(
 
     val launchCount: Int get() = launches.size
     val gestureCount: Int get() = gestures.size
+    /** The settings the take's gestures moved. */
+    val gestureTargets: Set<AutoTarget> get() = gestures.mapTo(HashSet()) { it.target }
 
     /**
      * The take so far as a journal ([TakeJournal]) of project [projectId]: kept on disk while it
@@ -296,6 +298,22 @@ fun Project.takeParts(take: PerformanceTake, end: Int): List<Pair<SongPart, Int>
         }
         part to s.from
     }
+}
+
+/**
+ * Where « Annuler » of a take written into this project goes back to, [before] being the project
+ * as the take began: its song, curves, scenes and song versions, without the take; but what was
+ * set during the take and is no part of it (tempo, swing, the mixer and its effects, the
+ * pads, the Live settings) stays as it is now. The settings the take's gestures moved
+ * ([gestured]) go back to where they were: the take moved them, the take takes them back.
+ */
+fun Project.takeUndoTarget(before: Project, gestured: Set<AutoTarget>): Project {
+    var back = before.copy(
+        name = name, tempoBpm = tempoBpm, swing = swing, mixer = mixer,
+        live = live, midiMap = midiMap, songLoops = songLoops, loopPart = loopPart, liveQuantum = liveQuantum, liveFx = liveFx,
+    )
+    for (t in gestured) back = back.withSetting(t, before.settingOf(t))
+    return back
 }
 
 /**

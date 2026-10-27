@@ -243,6 +243,7 @@
   "Pose du son…": "Placing the sound…",
   "Prise %s": "Take %s",
   "Prise trop courte : rien n'a été écrit.": "Take too short: nothing was written.",
+  "Prise terminée : le morceau est écrit (↶ pour l'annuler).": "Take finished: the song is written (↶ to undo it).",
   "Projet calé : %s": "Project matched: %s",
   "Projet vide": "Empty project",
   "Pré-refrain": "Pre-chorus",

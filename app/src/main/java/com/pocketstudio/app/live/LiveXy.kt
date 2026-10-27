@@ -1,6 +1,7 @@
 package com.pocketstudio.app.live
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -253,28 +254,30 @@ internal fun releaseTrackLatch(actions: LiveActions, ch: Int, band: Int) {
 
 /**
  * The row that never scrolls away: « Tout remettre » (all back to the saved sound), the lock and
- * the effects' settings (⚙). On a narrow panel the lock shows its padlock alone.
+ * the effects' settings (⚙). On a narrow panel the lock shows its padlock alone; [iconsOnly] (a
+ * short panel: the row shares its line with the pages) « Tout remettre » too.
  */
 @Composable
-internal fun LiveFxSafety(ui: LiveScreenUi, actions: LiveActions, state: LiveFxState) {
-    BoxWithConstraints(Modifier.fillMaxWidth()) {
-        val narrow = maxWidth < 340.dp
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+internal fun LiveFxSafety(ui: LiveScreenUi, actions: LiveActions, state: LiveFxState, modifier: Modifier = Modifier.fillMaxWidth(), iconsOnly: Boolean = false) {
+    BoxWithConstraints(modifier) {
+        val narrow = iconsOnly || maxWidth < 340.dp
+        Row(if (iconsOnly) Modifier else Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             val red = Neon.Red
             Row(
-                Modifier.weight(1f).height(48.dp).clip(RoundedCornerShape(24.dp)).background(red.copy(alpha = 0.2f))
+                (if (iconsOnly) Modifier.width(48.dp) else Modifier.weight(1f)).height(48.dp).clip(RoundedCornerShape(24.dp)).background(red.copy(alpha = 0.2f))
                     .border(1.5.dp, red, RoundedCornerShape(24.dp))
                     .clickable {
                         state.forget()
                         val reset = actions.resetAll
                         if (reset != null) reset() else resetLiveEffects(ui, actions)
                     }
-                    .padding(horizontal = 10.dp).testTag("live_reset"),
+                    .padding(horizontal = if (iconsOnly) 0.dp else 10.dp).testTag("live_reset")
+                    .semantics { if (iconsOnly) contentDescription = tr("Tout remettre") },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
             ) {
                 Icon(Icons.Filled.RestartAlt, contentDescription = null, tint = Neon.TextPrimary, modifier = Modifier.size(20.dp))
-                Text(tr("Tout remettre"), Modifier.padding(start = 6.dp), style = MaterialTheme.typography.labelLarge, color = Neon.TextPrimary, maxLines = 1)
+                if (!iconsOnly) Text(tr("Tout remettre"), Modifier.padding(start = 6.dp), style = MaterialTheme.typography.labelLarge, color = Neon.TextPrimary, maxLines = 1)
             }
             val on = state.locked
             val lockText = if (on) tr("Verrouillé") else tr("Verrouiller")
@@ -317,7 +320,7 @@ internal fun LiveFxSafety(ui: LiveScreenUi, actions: LiveActions, state: LiveFxS
 /** The pad's mode chips (48 dp each), above it. */
 @Composable
 internal fun XyModeRow(modes: List<XyMode>, chosen: XyMode, choose: (XyMode) -> Unit) {
-    Row(Modifier.fillMaxWidth().fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+    Row(Modifier.fillMaxWidth().systemGestureExclusion().fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         modes.forEach { m ->
             val selected = m == chosen
             Box(
@@ -382,6 +385,8 @@ internal fun LiveXyPad(
         Box(
             Modifier.fillMaxWidth().height(height).clip(RoundedCornerShape(14.dp)).background(Neon.Background)
                 .border(1.dp, Color.White.copy(alpha = 0.08f), RoundedCornerShape(14.dp))
+                // A sweep from (or to) the screen's edge moves the pad, not Android's « back ».
+                .systemGestureExclusion()
                 .testTag(tag)
                 .semantics {
                     contentDescription = description

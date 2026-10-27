@@ -509,12 +509,21 @@ void Engine::applyCommand(const Command& command) {
             const int32_t mask = command.a & kAllSlots;
             if (mask == 0) break;
             const int tag = std::isfinite(command.value) && command.value >= 0.0f ? std::min(32767, static_cast<int>(std::lround(command.value))) : -1;
-            const int quantum = std::clamp(command.b, 1, 1 << 16);
+            const int quantum = std::clamp(command.b & 0x1FFFF, 1, 1 << 16);
+            // Just past a line (what is heard lags what is rendered, a finger lags the beat): that line.
+            const double grace = static_cast<double>((command.b >> 17) & 0x3FFF) / 64.0;
+            int late = -1;
+            if (grace > 0.0 && sequencer_.running() && lastTransport_ >= 0) {
+                const int line = lastTransport_ - lastTransport_ % quantum;
+                const double since = transportPosition_.load(std::memory_order_relaxed) - line;
+                if (since >= 0.0 && since < grace) late = line;
+            }
             for (int k = 0; k < kSlots; ++k) {
                 if ((mask & (1 << k)) == 0) continue;
                 auto& sl = slots_[static_cast<size_t>(k)];
                 sl.pending = tag;
                 sl.quantum = quantum;
+                sl.late = late;
                 publishSlot(k);
             }
             anyPending_ = true;
@@ -1123,7 +1132,7 @@ void Engine::launchSlots(int step, int offset) {
     for (int k = 0; k < kSlots; ++k) {
         const auto& sl = slots_[static_cast<size_t>(k)];
         if (sl.pending == kNoLaunch) continue;
-        if (step % sl.quantum == 0) fired |= 1 << k;
+        if (step % sl.quantum == 0 || sl.late >= 0) fired |= 1 << k;
         else waiting = true;
     }
     anyPending_ = waiting;
@@ -1132,16 +1141,21 @@ void Engine::launchSlots(int step, int offset) {
     const int rowTag = slots_[0].pending;
     bool row = fired == kAllSlots && rowTag >= 0;
     for (int k = 1; row && k < kSlots; ++k) row = slots_[static_cast<size_t>(k)].pending == rowTag;
+    int rowAt = step;
     for (int k = 0; k < kSlots; ++k) {
         if ((fired & (1 << k)) == 0) continue;
-        const int tag = slots_[static_cast<size_t>(k)].pending;
-        swapSlot(k, step, offset, tag < 0);
         auto& sl = slots_[static_cast<size_t>(k)];
+        const int tag = sl.pending;
+        // Launched within its grace: counted from the line just passed (its steps since, skipped).
+        const int at = step % sl.quantum == 0 || sl.late < 0 ? step : sl.late;
+        if (k == 0) rowAt = at;
+        swapSlot(k, at, offset, tag < 0);
         sl.tag = tag < 0 ? -1 : tag;
         sl.pending = kNoLaunch;
+        sl.late = -1;
         publishSlot(k);
         // A full queue (the app not reading): the app finds the state in slotTag() anyway.
-        launchEvents_.push(LaunchEvent{static_cast<int16_t>(k), static_cast<int16_t>(sl.tag), step});
+        launchEvents_.push(LaunchEvent{static_cast<int16_t>(k), static_cast<int16_t>(sl.tag), at});
     }
     if (row) {
         for (auto& lane : automation_.lanes) {
@@ -1154,7 +1168,7 @@ void Engine::launchSlots(int step, int offset) {
             if (on >= 0) mixer_.scheduleInsertOn(Mixer::kMaster, i, on == 1, offset);
             on = -1;
         }
-        sceneStart_ = step;
+        sceneStart_ = rowAt;
         sceneSwaps_.fetch_add(1, std::memory_order_relaxed);
     }
 }

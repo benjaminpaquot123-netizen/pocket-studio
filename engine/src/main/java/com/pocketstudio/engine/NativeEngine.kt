@@ -875,8 +875,14 @@ object NativeEngine {
      * The live grid: the slots of [mask] (1 shl slot) take over their part of [scene] (staged with
      * [setStaging] just before) or stop ([scene] < 0) on the first transport step that is a
      * multiple of [quantumSteps]. The whole mask is a row (the scene changes, [sceneSwaps]).
+     * [graceSteps]: a command that comes less than that after a line launches on that line (from
+     * the next step, counted from the line): a tap on the « one » heard is not a quantum late.
      */
-    fun armLaunch(mask: Int, quantumSteps: Int, scene: Int) = post(CMD_ARM_LAUNCH, scene.toFloat(), mask and ALL_SLOTS, quantumSteps.coerceAtLeast(1))
+    fun armLaunch(mask: Int, quantumSteps: Int, scene: Int, graceSteps: Double = 0.0): Boolean {
+        val q = quantumSteps.coerceIn(1, 1 shl 16)
+        val grace = (graceSteps * 64).toInt().coerceIn(0, 0x3FFF)
+        return post(CMD_ARM_LAUNCH, scene.toFloat(), mask and ALL_SLOTS, q or (grace shl 17))
+    }
     fun cancelLaunch(mask: Int) = post(CMD_CANCEL_LAUNCH, 0f, mask and ALL_SLOTS)
     /** Slot [slot]'s next launch (or scene swap) starts [steps] into its part. */
     fun setSlotOffset(slot: Int, steps: Int) = post(CMD_SLOT_OFFSET, 0f, slot, steps.coerceAtLeast(0))

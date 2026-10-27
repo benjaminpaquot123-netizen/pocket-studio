@@ -5,7 +5,7 @@
   "Refaire la mes. %d": "Redo bar %d",
   "Refaire mes. %1$d-%2$d": "Redo bars %1$d-%2$d",
   "Recale d'abord la prise sur le tempo pour refaire un passage.": "Fit the take to the tempo first to redo a passage.",
-  "La musique part une mesure avant ; seul ce passage est remplacé, la prise entière reste dans les prises.": "The music starts a bar before; only this passage is replaced, the whole take stays in the takes.",
+  "La musique repart du début de la partie ; seul ce passage est remplacé, la prise entière reste dans les prises.": "The music starts again from the start of the part; only this passage is replaced, the whole take stays in the takes.",
   "Enregistrer mes pads": "Record my pads",
   "Enregistrer les boutons": "Record the knobs",
   "Enregistrer ma mélodie": "Record my melody",

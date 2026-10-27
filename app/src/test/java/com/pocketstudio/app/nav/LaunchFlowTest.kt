@@ -179,6 +179,20 @@ class LaunchFlowTest {
         assertSame(before, h.vm.project.value)
     }
 
+    /** Audit final (02 M9): with no project, « Remixer une chanson » makes one (it led nowhere: « Mes projets » stayed over it). */
+    @Test
+    fun withNoProjectTheRemixGetsAProjectOfItsOwn() {
+        h.start(launchChoice = true, noProject = true, build = {})
+        h.awaitTag("launch_remix")
+        compose.onNodeWithTag("launch_remix").performScrollTo().performClick()
+        val end = System.currentTimeMillis() + 10_000
+        while (com.pocketstudio.app.projects.CurrentProject.isNone(com.pocketstudio.app.projects.CurrentProject.get(h.app))) {
+            check(System.currentTimeMillis() < end) { "no project made for the Remix" }
+            Thread.sleep(50)
+            org.robolectric.shadows.ShadowLooper.idleMainLooper()
+        }
+    }
+
     /**
      * Lot 1: no project at all (the last one deleted). « Que veux-tu faire ? » has no « Continuer »,
      * « Mes projets » shows its empty state, and its Retour comes back here, never to a studio

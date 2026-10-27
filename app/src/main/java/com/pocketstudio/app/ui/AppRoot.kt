@@ -534,11 +534,15 @@ fun AppRoot() {
             showAll = { overviewCh = -1 },
             go = { w ->
                 overviewScene = -2
-                when (w) {
-                    is com.pocketstudio.app.mixer.Where.Effects -> fxChannel = w.ch
+                when {
+                    w is com.pocketstudio.app.mixer.Where.Effects -> fxChannel = w.ch
+                    // Audit final (05 #12, 08): the Mode simple stays in its four tabs: the master's
+                    // level is on « Envoyer » (« Baisser le volume général »), the rest has no « Modifier ».
+                    simple -> tab = AppTab.Envoyer
                     else -> { tab = AppTab.Mixeur; mixerFocus = w }
                 }
             },
+            canGo = { w -> !simple || w is com.pocketstudio.app.mixer.Where.Effects || w == com.pocketstudio.app.mixer.Where.Master },
             dismiss = { overviewScene = -2 },
         )
     }
@@ -874,6 +878,17 @@ fun AppRoot() {
             notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
+    // Audit final (02 M4): a Remix runs in the background (« tu peux éteindre l'écran »): its progress
+    // and its end are notifications, asked for once per launch when a separation or the model's
+    // download starts (a user who only remixes never records).
+    val askNotifications: () -> Unit = {
+        if (!notificationsAsked && android.os.Build.VERSION.SDK_INT >= 33) {
+            notificationsAsked = true
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
     val bluetoothPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { granted ->
         if (granted.values.all { it }) midiVm.scanBluetooth()
         else permissionHelp = tr("Le Bluetooth (appareils à proximité) est refusé : autorise-le dans les réglages de l'appareil pour trouver un clavier MIDI.")
@@ -921,9 +936,17 @@ fun AppRoot() {
     var audioPage by rememberSaveable { mutableIntStateOf(0) }
     var analyserOn by rememberSaveable { mutableStateOf(false) }
     var audioRecordTrack by rememberSaveable { mutableIntStateOf(0) }
+    // Audit final (03 M5, 15): « Refaire mes. X-Y » asked for the microphone first ("track,from,to"), then redone.
+    var audioPunch by rememberSaveable { mutableStateOf<String?>(null) }
     var audioImportTrack by rememberSaveable { mutableIntStateOf(0) }
     val audioMicPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) rhythmVm.recordAudio(audioRecordTrack) else permissionHelp = MIC_REFUSED
+        val punch = audioPunch?.split(',')?.mapNotNull { it.toIntOrNull() }?.takeIf { it.size == 3 }
+        audioPunch = null
+        when {
+            !granted -> permissionHelp = MIC_REFUSED
+            punch != null -> rhythmVm.recordPunch(punch[0], punch[1], punch[2])
+            else -> rhythmVm.recordAudio(audioRecordTrack)
+        }
     }
     val pickTrackAudio = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) rhythmVm.importAudio(audioImportTrack, uri)
@@ -932,7 +955,10 @@ fun AppRoot() {
         if (uri != null) rhythmVm.importLive(liveImportPad, uri)
     }
     val pickSong = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri != null) remixVm.separate(uri)
+        if (uri != null) {
+            remixVm.separate(uri)
+            askNotifications()
+        }
     }
     val pickZip = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) rhythmVm.importZip(uri)
@@ -969,6 +995,12 @@ fun AppRoot() {
     // Lot 2: the Remix (Sons › Voix, its second page), « mis en avant »: one touch from « Que veux-tu
     // faire ? », a chip in Sons, a line of the Mode simple's « ⋯ ».
     val openRemix: () -> Unit = { audioPage = 1; go(AppTab.Audio) }
+    // Audit final (03 G4): « Ma voix », the audio tracks' page (a first track made when there is none).
+    val openVoice: () -> Unit = {
+        if (rhythmVm.project.value.audioTracks.isEmpty()) rhythmVm.addAudioTrack()
+        audioPage = 0
+        go(AppTab.Audio)
+    }
     // Lot 2: the Mode simple's Clavier records « ma mélodie » into the song's melody track (the
     // first track, « Synthé », was shown before), once per visit: a track chosen there stays.
     // Once per project (kept through a rotation): a track chosen there afterwards stays.
@@ -1087,7 +1119,19 @@ fun AppRoot() {
             resume = { if (noProject) leaveApp() else launch.choose() },
             newSong = { launch.choose(comeBack = true); projectsNewOnly = true; showProjects = true },
             projects = { launch.choose(comeBack = true); projectsNewOnly = false; showProjects = true },
-            remix = { launch.choose(); openRemix() },
+            remix = {
+                launch.choose()
+                // Audit final (02 M9): with no project, « Mes projets » stays over everything; the Remix
+                // gets a project of its own first (as « Mon premier morceau » does), then opens on it.
+                if (noProject) {
+                    projectsVm.create(Project(name = "Remix")) { id ->
+                        openRemix()  // kept across the rebuild the new project brings
+                        openProject(id)
+                    }
+                } else {
+                    openRemix()
+                }
+            },
             missions = {
                 launch.choose()
                 when {
@@ -1126,10 +1170,17 @@ fun AppRoot() {
     if (showShare) {
         com.pocketstudio.app.export.ShareSheetRoute(
             rhythmVm, sharePrefs, close = { showShare = false },
-            toStructure = { tab = AppTab.Morceau },
-            toMixer = { tab = AppTab.Mixeur; mixerFocus = com.pocketstudio.app.mixer.Where.Master },
-            otherExports = { tab = AppTab.Mixeur; mixerFocus = com.pocketstudio.app.mixer.Where.Export },
+            toStructure = { go(AppTab.Morceau) },
+            // Audit final (01 M6, 05, 08): the Mode simple has no Mix: no « Voir dans Mix »; « Autres
+            // exports » says it goes to the full mode, and does.
+            toMixer = if (simple) null else ({ tab = AppTab.Mixeur; mixerFocus = com.pocketstudio.app.mixer.Where.Master }),
+            otherExports = {
+                if (simple) SettingsStore.update(context) { it.copy(simpleMode = false) }
+                go(AppTab.Mixeur)
+                mixerFocus = com.pocketstudio.app.mixer.Where.Export
+            },
             video = { showVideo = true },
+            simple = simple,
         )
     }
     // « Vidéo pour les réseaux » (from « Prêt à partager ? »): 30 s of the song in 9:16.
@@ -1167,12 +1218,14 @@ fun AppRoot() {
             setColor = rhythmVm::setTrackColor,
             duplicate = rhythmVm::duplicateTrack,
             remove = rhythmVm::removeTrack,
-            effects = { id -> fxChannel = com.pocketstudio.model.InstrumentTrack.mixerChannel(id) },
+            // Audit final (08, 01 M10): the Mode simple's tracks change their sound, name, colour;
+            // effects, the track's sheet and freezing are the full mode's.
+            effects = if (simple) null else ({ id -> fxChannel = com.pocketstudio.model.InstrumentTrack.mixerChannel(id) }),
             clear = rhythmVm::clearTrackNotes,
             scene = fp.sceneTitle(fp.scene),
             changeSound = { id -> rhythmVm.selectTrack(id); soundChooserTrack = id },
-            sheet = { id -> trackSheetKey = com.pocketstudio.app.guide.sheetKeyOf(id) },
-            freeze = rhythmVm::freezeTrack,
+            sheet = if (simple) null else ({ id -> trackSheetKey = com.pocketstudio.app.guide.sheetKeyOf(id) }),
+            freeze = if (simple) null else rhythmVm::freezeTrack,
             unfreeze = rhythmVm::unfreezeTrack,
             frozen = frozen,
             freezing = freezing,
@@ -1354,7 +1407,11 @@ fun AppRoot() {
                     com.pocketstudio.model.DefaultNames.shown(topProject.name), topTransport.playing, topUndo && undoable, topRedo && undoable, topRecording || topTake != null,
                     micTake = micMode,
                     // The Audio tracks screen records on the scene shown: it can be changed from there.
-                    scene = if (tab in SCENE_TABS || (tab == AppTab.Audio && audioPage == 0)) sceneChip(topProject) else null,
+                    // Audit final (20 M16): the Mode simple's bar is lighter: no part chip (the editors'
+                    // header picks the part), no redo (↶ stays).
+                    // Lying down the editors' header gives its line to the editor: the chip stays there.
+                    scene = if ((!simple || landscape) && (tab in SCENE_TABS || (tab == AppTab.Audio && audioPage == 0))) sceneChip(topProject) else null,
+                    redo = !simple,
                     saved = saveError == null && !topUnsaved,
                     recordInto = topRecordInto?.let { topProject.sceneTitle(it) },
                 ),
@@ -1367,6 +1424,9 @@ fun AppRoot() {
                         when {
                             // From the synth the take is a played phrase (a one-bar loop grows to four first);
                             // from the 303, its knobs; elsewhere what is played (pads, keys, MIDI).
+                            // Audit final (05 #11): the Mode simple's ● where nothing is played (Mon morceau,
+                            // Envoyer, the Remix…) records « ma mélodie » on the Clavier, not an empty take of pads.
+                            !micMode && simple && tab !in RECORD_BAR_TABS && !topRecording -> { go(AppTab.Synthe); rhythmVm.recordMelodyTake() }
                             !micMode -> rhythmVm.recordTake(takeSourceOf(tab))
                             topTake != null -> rhythmVm.stopAudioRecording()
                             !topSaving -> rhythmVm.micTakeTrack()?.let { id ->
@@ -1374,6 +1434,7 @@ fun AppRoot() {
                                     rhythmVm.recordAudio(id)
                                 } else {
                                     audioRecordTrack = id
+                                    audioPunch = null
                                     audioMicPermission.launch(Manifest.permission.RECORD_AUDIO)
                                 }
                             }
@@ -1384,7 +1445,11 @@ fun AppRoot() {
                     // Mode simple: « Envoyer » is a tab; the rest of the app in « ⋯ ».
                     more = if (!simple) null else listOf(
                         TopMenuItem(tr("Live : jouer en direct"), "more_live", openLive),
+                        // Audit final (03 G4): the voice has its own way in the Mode simple.
+                        TopMenuItem(tr("Enregistrer ma voix"), "more_voice", openVoice),
                         TopMenuItem(tr("Remixer une chanson"), "more_remix", openRemix),
+                        // Audit final (05): the long press on the name was the only way to rename the song.
+                        TopMenuItem(tr("Renommer le morceau"), "more_rename") { renamingProject = true },
                         TopMenuItem(tr("Mes projets"), "more_projects") { showProjects = true },
                         TopMenuItem(tr("Réglages"), "more_settings") { toolPage = ToolPage.Reglages; go(AppTab.Outils) },
                         TopMenuItem(tr("Aide et premiers pas"), "more_help") { toolPage = ToolPage.Aide; go(AppTab.Outils) },
@@ -1400,6 +1465,7 @@ fun AppRoot() {
                 rename = { name -> openScope.launch { rhythmVm.renameProject(name); rhythmVm.flushNow(); projectsVm.refresh() } },
                 helpOn = helpLabels, toggleHelp = { helpLabels = !helpLabels },
                 reportBug = { reportBug("appui long sur « ? »") },
+                loopChip = !simple,
             )
             // After a crash, a discreet line rather than a window: the report opens with the crash in it.
             val crashText = pendingCrash
@@ -1588,7 +1654,8 @@ fun AppRoot() {
                 Column(Modifier.fillMaxSize()) {
                 // Phase 36: the Sons space's tracks as chips above every editor (the Mode simple's
                 // Clavier: its instrument tracks alone; its Rythme: none).
-                // The Mode simple's Remix (from « ⋯ » or the opening): the page alone, a way back to the song.
+                // The Mode simple's Audio pages (Ma voix, Remix, Générer, from « ⋯ », the Guide, a track,
+                // the Live page): the page its caller chose, alone, with a way back to the song.
                 val simpleRemix = simple && tab == AppTab.Audio
                 if (tab in SONS_TABS && !(simple && tab == AppTab.Rythme) && !simpleRemix) {
                     val hp by rhythmVm.project.collectAsStateWithLifecycle()
@@ -1623,9 +1690,10 @@ fun AppRoot() {
                                 rhythmVm.refreshPacks()
                                 lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { rhythmVm.pollLive() }
                             }
-WithPartHeader(rhythmVm) { partModifier ->
+WithPartHeader(rhythmVm, simple) { partModifier ->
                                                         RhythmScreen(
                                 modifier = partModifier,
+                                simple = simple,
                                 record = {
                                     val bar = com.pocketstudio.app.record.recordBarUi(rhythmVm, tr("Enregistrer mes pads"), com.pocketstudio.app.record.TakeSource.PADS)
                                     // The pads' take and « Garder ce que je viens de jouer » only when they have something to say.
@@ -1727,7 +1795,7 @@ WithPartHeader(rhythmVm) { partModifier ->
                             }
                             val favorites by rhythmVm.favorites.collectAsStateWithLifecycle()
                             val automationRecording by rhythmVm.automationRecord.collectAsStateWithLifecycle()
-WithPartHeader(rhythmVm) { partModifier ->
+WithPartHeader(rhythmVm, simple) { partModifier ->
                                                         AcidScreen(
                                 modifier = partModifier,
                                 record = {
@@ -1787,13 +1855,14 @@ WithPartHeader(rhythmVm) { partModifier ->
                             val noteClipboard by rhythmVm.noteClipboard.collectAsStateWithLifecycle()
                             val freezing by rhythmVm.freezing.collectAsStateWithLifecycle()
                             val frozenTracks = remember(fullProject) { com.pocketstudio.model.Freeze.frozenIds(fullProject) }
-WithPartHeader(rhythmVm) { partModifier ->
+WithPartHeader(rhythmVm, simple) { partModifier ->
                                                         SynthScreen(
                                 modifier = partModifier,
                                 record = { compact ->
                                     com.pocketstudio.app.record.RecordBar(
                                         com.pocketstudio.app.record.recordBarUi(rhythmVm, tr("Enregistrer ma mélodie"), com.pocketstudio.app.record.TakeSource.KEYS),
-                                        com.pocketstudio.app.record.recordBarActions(rhythmVm, com.pocketstudio.app.record.TakeSource.KEYS),
+                                        // Audit final (01 M3, 05 #5): the Mode simple's melody on « Ma mélodie », heard through the song.
+                                        com.pocketstudio.app.record.recordBarActions(rhythmVm, com.pocketstudio.app.record.TakeSource.KEYS, melody = simple),
                                         compact = compact,
                                     )
                                 },
@@ -1884,6 +1953,7 @@ WithPartHeader(rhythmVm) { partModifier ->
                                 // Phase 36: the tracks are the Sons space's chips, above (none here).
                                 tracks = tracksUiOf(fullProject, shownTrack, freezing, bar = false),
                                 browser = trackSoundBrowser(rhythmVm, project, favorites),
+                                simple = simple,
                             )
                             }
                         }
@@ -2123,15 +2193,18 @@ WithPartHeader(rhythmVm) { partModifier ->
                         }
                         AppTab.Audio -> Column {
                             if (simpleRemix) {
-                                // The Mode simple has no Voix: the Remix alone, and back to the song.
-                                LaunchedEffect(Unit) { audioPage = 1 }
+                                // Audit final (03 G4, 05, 08): the page asked for (« Ma voix » too, it used to be
+                                // forced to the Remix), alone, and back to the song.
                                 androidx.activity.compose.BackHandler { go(AppTab.Morceau) }
                                 Row(Modifier.fillMaxWidth().background(Neon.Surface).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                                     TextButton(onClick = { go(AppTab.Morceau) }, modifier = Modifier.heightIn(min = 48.dp).testTag("remix_back")) {
                                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, modifier = Modifier.size(18.dp))
                                         Text(" " + tr("Mon morceau"))
                                     }
-                                    Text(tr("Remix"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Neon.Cyan)
+                                    Text(
+                                        simpleAudioTitle(audioPage), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Neon.Cyan,
+                                        modifier = Modifier.testTag("simple_audio_title"),
+                                    )
                                 }
                             } else {
                             // Scrollable: whole words on a small phone or with big text (never "Remi/x").
@@ -2221,7 +2294,7 @@ WithPartHeader(rhythmVm) { partModifier ->
                                 val listening by com.pocketstudio.app.audio.Headphones.state.collectAsStateWithLifecycle()
                                 val recordTarget by rhythmVm.recordTarget.collectAsStateWithLifecycle()
                                 val takeSaving by rhythmVm.takeSaving.collectAsStateWithLifecycle()
-WithPartHeader(rhythmVm) { partModifier ->
+WithPartHeader(rhythmVm, simple) { partModifier ->
                                                                 AudioTracksScreen(
                                     AudioTracksUi(
                                         project.audioTracks, recording, info,
@@ -2254,6 +2327,7 @@ WithPartHeader(rhythmVm) { partModifier ->
                                                 rhythmVm.recordAudio(id)
                                             } else {
                                                 audioRecordTrack = id
+                                                audioPunch = null
                                                 audioMicPermission.launch(Manifest.permission.RECORD_AUDIO)
                                             }
                                         },
@@ -2279,7 +2353,12 @@ WithPartHeader(rhythmVm) { partModifier ->
                                         chooseTake = rhythmVm::chooseTake,
                                         realign = rhythmVm::realignTake,
                                         punch = { id, from, to ->
-                                            if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) rhythmVm.recordPunch(id, from, to)
+                                            if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                                                rhythmVm.recordPunch(id, from, to)
+                                            } else {
+                                                audioPunch = "$id,$from,$to"
+                                                audioMicPermission.launch(Manifest.permission.RECORD_AUDIO)
+                                            }
                                         },
                                     ),
                                     modifier = partModifier,
@@ -2327,7 +2406,7 @@ WithPartHeader(rhythmVm) { partModifier ->
                                 ),
                                 RemixActions(
                                     effects = { fxChannel = 3 },
-                                    downloadModel = remixVm::downloadModel,
+                                    downloadModel = { remixVm.downloadModel(); askNotifications() },
                                     checkMemory = remixVm::checkMemory,
                                     pickSong = { pickSong.launch(arrayOf("audio/*")) },
                                     cancel = remixVm::cancel,
@@ -2471,7 +2550,8 @@ WithPartHeader(rhythmVm) { partModifier ->
                             com.pocketstudio.app.export.ShareSheetRoute(
                                 rhythmVm, sharePrefs, close = {},
                                 toStructure = { go(AppTab.Morceau) },
-                                toMixer = { SettingsStore.update(context) { it.copy(simpleMode = false) }; go(AppTab.Mixeur); mixerFocus = com.pocketstudio.app.mixer.Where.Master },
+                                // Audit final (01 M6, 05, 08): no « Voir dans Mix » (it left the Mode simple without a word).
+                                toMixer = null,
                                 otherExports = { SettingsStore.update(context) { it.copy(simpleMode = false) }; go(AppTab.Mixeur); mixerFocus = com.pocketstudio.app.mixer.Where.Export },
                                 video = { showVideo = true },
                                 page = true,
@@ -2957,7 +3037,7 @@ internal fun TimelineRoute(
  * what part is edited, and whether it loops or the song plays (see [partHeader]).
  */
 @Composable
-private fun WithPartHeader(vm: RhythmViewModel, content: @Composable (Modifier) -> Unit) {
+private fun WithPartHeader(vm: RhythmViewModel, simple: Boolean, content: @Composable (Modifier) -> Unit) {
     val project by vm.project.collectAsStateWithLifecycle()
     val transport by vm.transport.collectAsStateWithLifecycle()
     val sessionUi by vm.sessionUi.collectAsStateWithLifecycle()
@@ -2968,7 +3048,11 @@ private fun WithPartHeader(vm: RhythmViewModel, content: @Composable (Modifier) 
     // shown only when it has something more to say, and the editor keeps its height.
     val lying = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     Column(Modifier.fillMaxSize()) {
-        if (!lying || header.note != null) PartHeader(header)
+        // Audit final (20 M16): the Mode simple's top bar has no part chip; the part is chosen here.
+        if (!lying || header.note != null) {
+            if (simple && !lying) PartHeader(header, parts = project.allScenes.indices.map { project.sceneTitle(it) }, current = project.scene, pick = vm::selectScene)
+            else PartHeader(header)
+        }
         content(Modifier.weight(1f))
     }
 }
@@ -3130,3 +3214,11 @@ internal fun simpleTracks(p: Project): List<SimpleTrack> {
 
 /** How long « Voir le réglage » keeps a control lit (it also goes at a touch on « Compris »). */
 private const val GUIDE_SPOT_MS = 8000L
+
+/** The Mode simple's title of Audio page [page] (shown alone there): Ma voix, Remix, Accordeur, Générer. */
+internal fun simpleAudioTitle(page: Int): String = when (page) {
+    0 -> tr("Ma voix")
+    2 -> tr("Accordeur")
+    3 -> tr("Générer")
+    else -> tr("Remix")
+}

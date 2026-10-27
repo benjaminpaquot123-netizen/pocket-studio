@@ -166,8 +166,11 @@ sealed class ShareCheck {
         override val warning get() = true
     }
 
-    /** Tracks muted in the mixer although they play in the song ([names]): said, not changed (it may be wanted). */
-    data class Muted(val names: List<String>) : ShareCheck()
+    /**
+     * Tracks muted in the mixer although they play in the song ([names], their strips [chs]): said,
+     * not changed by itself (it may be wanted); « Tout réentendre » brings them back.
+     */
+    data class Muted(val names: List<String>, val chs: List<Int> = emptyList()) : ShareCheck()
 
     /** Nothing to hear at all. */
     data object Empty : ShareCheck() {
@@ -209,7 +212,7 @@ fun shareChecks(p: Project, strips: List<StripInfo>, levels: ShareLevels, loopBa
     if (soloed.isNotEmpty()) add(ShareCheck.Solo(soloed.map(::name)))
     val sounding = stripSounds(p, song = p.song.isNotEmpty()).filter { it.second }.map { it.first.second }.toSet()
     val muted = strips.filter { it.ch in sounding && channels.getOrNull(it.ch)?.mute == true }
-    if (muted.isNotEmpty()) add(ShareCheck.Muted(muted.map(::name)))
+    if (muted.isNotEmpty()) add(ShareCheck.Muted(muted.map(::name), muted.map { it.ch }))
     when {
         sounding.isEmpty() -> add(ShareCheck.Empty)
         p.song.isEmpty() -> add(ShareCheck.NoSong(loopBars))
@@ -254,7 +257,10 @@ class ShareSheetActions(
     val unsolo: () -> Unit = {},
     /** « Baisser le volume général »: the master 6 dB lower. */
     val lowerMaster: () -> Unit = {},
-    val toMixer: () -> Unit = {},
+    /** « Voir dans Mix » (null: not offered, the Mode simple has no Mix). */
+    val toMixer: (() -> Unit)? = {},
+    /** « Tout réentendre »: the muted strips given heard again. */
+    val unmute: (List<Int>) -> Unit = {},
     /** « Modifier le morceau »: the song's parts (the Morceau tab, which the button is named after). */
     val toStructure: () -> Unit = {},
     /** « Autres exports »: separate tracks, MIDI, FLAC… (Mixeur › Exporter). */
@@ -267,11 +273,11 @@ class ShareSheetActions(
 /** « Prêt à partager ? » as a bottom sheet above the tab it was opened from. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShareSheet(ui: ShareSheetUi, actions: ShareSheetActions) {
+fun ShareSheet(ui: ShareSheetUi, actions: ShareSheetActions, simple: Boolean = false) {
     // Opened whole: the « Partager » button is never below the fold.
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ScaledBottomSheet(onDismissRequest = actions.close, sheetState = state, containerColor = Neon.Surface) {
-        ShareSheetContent(ui, actions)
+        ShareSheetContent(ui, actions, simple = simple)
     }
 }
 
@@ -280,7 +286,11 @@ fun ShareSheet(ui: ShareSheetUi, actions: ShareSheetActions) {
  * their one-touch fixes, M4A or WAV, and one big « Partager ». The rarer exports are a link away.
  */
 @Composable
-fun ShareSheetContent(ui: ShareSheetUi, actions: ShareSheetActions, modifier: Modifier = Modifier, page: Boolean = false) {
+fun ShareSheetContent(
+    ui: ShareSheetUi, actions: ShareSheetActions, modifier: Modifier = Modifier, page: Boolean = false,
+    /** The Mode simple's words (its tracks are in « Mes pistes », it has no Mix). */
+    simple: Boolean = page,
+) {
     Column(
         modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).padding(top = if (page) 12.dp else 0.dp, bottom = 12.dp)
             .then(if (page) Modifier else Modifier.navigationBarsPadding()).testTag("share_sheet"),
@@ -341,7 +351,7 @@ fun ShareSheetContent(ui: ShareSheetUi, actions: ShareSheetActions, modifier: Mo
             if (ui.checks.isEmpty()) {
                 CheckLine(Icons.Filled.CheckCircle, Neon.Acid, tr("Tout est prêt : aucun solo oublié, aucune piste coupée."), "share_check_ok")
             }
-            ui.checks.forEach { check -> CheckRow(check, ui, actions) }
+            ui.checks.forEach { check -> CheckRow(check, ui, actions, simple) }
         }
         Text(tr("Format"), style = MaterialTheme.typography.bodyMedium)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -367,7 +377,7 @@ fun ShareSheetContent(ui: ShareSheetUi, actions: ShareSheetActions, modifier: Mo
             Column(Modifier.weight(1f)) {
                 Text(tr("Autres exports"), color = Neon.Cyan)
                 // Lot 2: the Mode simple has no Mix (the button takes it to the full mode).
-                Text(if (page) tr("Piste par piste, MIDI, FLAC… (passe en mode complet)") else tr("Piste par piste, MIDI, FLAC… dans Mix"),
+                Text(if (simple) tr("Piste par piste, MIDI, FLAC… (passe en mode complet)") else tr("Piste par piste, MIDI, FLAC… dans Mix"),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("share_other_where"))
             }
             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan)
@@ -377,7 +387,7 @@ fun ShareSheetContent(ui: ShareSheetUi, actions: ShareSheetActions, modifier: Mo
 
 /** One check: what is wrong in plain words, then its one-touch fix. */
 @Composable
-private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetActions) {
+private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetActions, simple: Boolean) {
     val icon = if (check.warning) Icons.Filled.Warning else Icons.Filled.Info
     val color = if (check.warning) Neon.Amber else Neon.TextSecondary
     when (check) {
@@ -385,8 +395,15 @@ private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetAct
             CheckLine(icon, color, tr("Solo actif sur %s : les autres pistes ne s'entendront pas.", check.names.joinToString(", ")), "share_check_solo")
             Fixes { FixButton(tr("Tout réactiver"), "share_fix_solo", actions.unsolo) }
         }
-        is ShareCheck.Muted ->
-            CheckLine(icon, color, tr("Coupé dans le mixeur, donc absent du fichier : %s.", check.names.joinToString(", ")), "share_check_muted")
+        is ShareCheck.Muted -> {
+            val names = check.names.joinToString(", ")
+            CheckLine(
+                icon, color,
+                if (simple) tr("Coupé dans Mes pistes, donc absent du fichier : %s.", names) else tr("Coupé dans le mixeur, donc absent du fichier : %s.", names),
+                "share_check_muted",
+            )
+            if (check.chs.isNotEmpty()) Fixes { FixButton(tr("Tout réentendre"), "share_fix_muted", onClick = { actions.unmute(check.chs) }) }
+        }
         ShareCheck.Empty ->
             CheckLine(icon, color, tr("Rien à entendre pour l'instant : pose un rythme ou quelques notes d'abord."), "share_check_empty")
         is ShareCheck.NoSong -> {
@@ -401,7 +418,7 @@ private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetAct
             CheckLine(icon, color, tr("Le son risque de saturer : il est trop fort pour le fichier."), "share_check_saturation")
             Fixes {
                 if (ui.canLower) FixButton(tr("Baisser le volume général"), "share_fix_master", actions.lowerMaster)
-                FixButton(tr("Voir dans Mix"), "share_fix_mixer", actions.toMixer, outlined = true)
+                actions.toMixer?.let { FixButton(tr("Voir dans Mix"), "share_fix_mixer", it, outlined = true) }
             }
         }
     }
@@ -444,11 +461,14 @@ fun ShareSheetRoute(
     prefs: SharePrefs,
     close: () -> Unit,
     toStructure: () -> Unit,
-    toMixer: () -> Unit,
+    /** « Voir dans Mix » (null: not offered, the Mode simple has no Mix). */
+    toMixer: (() -> Unit)?,
     otherExports: () -> Unit,
     video: () -> Unit = {},
     /** Phase 36: the Mode simple's « Envoyer » tab, a page rather than a sheet ([close] is not called). */
     page: Boolean = false,
+    /** The Mode simple's words and fixes (the « Envoyer » page always is). */
+    simple: Boolean = page,
 ) {
     val context = LocalContext.current
     val project by rhythmVm.project.collectAsStateWithLifecycle()
@@ -469,7 +489,10 @@ fun ShareSheetRoute(
             now += HardLimiting.READ_MS
         }
     }
-    var name by rememberSaveable { mutableStateOf(initialShareName(project.name)) }
+    // Audit final: only a name typed here is kept (per project); otherwise the field follows the
+    // project's own name (another project opened, a rename elsewhere), never a stale one.
+    var edited by rememberSaveable(rhythmVm.projectId) { mutableStateOf<String?>(null) }
+    val name = edited ?: initialShareName(project.name)
     val loopBars = ShareSong.loopBars(export.sceneBars, export.audioBars)
     val levels = shareLevels(project, loudness, hard)
     val checks = remember(project, levels, loopBars) { shareChecks(project, com.pocketstudio.app.ui.mixerStrips(project), levels, loopBars) }
@@ -482,7 +505,7 @@ fun ShareSheetRoute(
     )
     val actions = (
         ShareSheetActions(
-            setName = { name = it.take(ProjectCatalog.MAX_NAME) },
+            setName = { edited = it.take(ProjectCatalog.MAX_NAME) },
             setFormat = prefs::choose,
             share = {
                 if (export.running) {
@@ -490,6 +513,7 @@ fun ShareSheetRoute(
                 } else {
                     val clean = name.trim()
                     if (clean != project.name.trim()) rhythmVm.renameProject(clean)
+                    edited = null
                     if (!page) close()
                     rhythmVm.shareSong(prefs.format)
                 }
@@ -501,17 +525,19 @@ fun ShareSheetRoute(
                 watch.reset()
                 hard = false
             },
-            toMixer = { if (!page) close(); toMixer() },
+            toMixer = toMixer?.let { go -> { if (!page) close(); go() } },
+            unmute = rhythmVm::unmuteChannels,
             toStructure = { if (!page) close(); toStructure() },
             otherExports = { if (!page) close(); otherExports() },
             video = {
                 val clean = name.trim()
                 if (clean.isNotEmpty() && clean != project.name.trim()) rhythmVm.renameProject(clean)
+                edited = null
                 if (!page) close()
                 video()
             },
             close = close,
         )
     )
-    if (page) ShareSheetContent(ui, actions, page = true) else ShareSheet(ui, actions)
+    if (page) ShareSheetContent(ui, actions, page = true, simple = simple) else ShareSheet(ui, actions, simple)
 }

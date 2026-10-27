@@ -46,5 +46,7 @@
   "Fais-le tien : dans Synthé, touche un son sous « Sons prêts à jouer », ou change un pad dans Rythme.": "Make it yours: in Synth, tap a sound under “Ready-to-play sounds”, or change a pad in Rhythm.",
   "détails": "details",
   "masquer": "hide",
-  "%s LUFS · crête %s dBTP": "%s LUFS · peak %s dBTP"
+  "%s LUFS · crête %s dBTP": "%s LUFS · peak %s dBTP",
+  "Tout réentendre": "Hear them all again",
+  "Coupé dans Mes pistes, donc absent du fichier : %s.": "Muted in My tracks, so missing from the file: %s."
 }

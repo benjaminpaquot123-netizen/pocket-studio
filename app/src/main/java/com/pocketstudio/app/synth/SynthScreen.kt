@@ -184,6 +184,12 @@ fun SynthScreen(
      * its argument is true lying down, where a line counts.
      */
     record: (@Composable (compact: Boolean) -> Unit)? = null,
+    /**
+     * Audit final (08, 01 M10): the Mode simple's Clavier: the keys right under « Enregistrer ma
+     * mélodie », no bend nor modulation, and the sound changed from one button (« Changer le son »)
+     * rather than the synth's, the instrument's and the effects' settings.
+     */
+    simple: Boolean = false,
 ) {
     var advanced by rememberSaveable { mutableStateOf(false) }
     var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
@@ -282,7 +288,7 @@ fun SynthScreen(
                 }
                 // The same sound sections, in the same order, as in Clavier mode.
                 SoundArea(trackSounds.bringIntoViewRequester(soundRequester)) {
-                    SoundSections(patch, actions, instrument, browser, advanced, effects) { advanced = it }
+                    SoundSections(patch, actions, instrument, browser, advanced, effects, simpleSound = tracks?.takeIf { simple }) { advanced = it }
                 }
                 Spacer(Modifier.height(floatRoom))
             }
@@ -312,8 +318,8 @@ fun SynthScreen(
                     OctaveControl(octave, actions)
                 }
                 Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(if (tall) 10.dp else 8.dp)) {
-                    play?.let { PlayPanel(it, playActions) }
-                    SoundArea(Modifier) { SoundSections(patch, actions, instrument, browser, advanced, effects) { advanced = it } }
+                    if (!simple) play?.let { PlayPanel(it, playActions) }
+                    SoundArea(Modifier) { SoundSections(patch, actions, instrument, browser, advanced, effects, simpleSound = tracks?.takeIf { simple }) { advanced = it } }
                 }
                 val keys: @Composable () -> Unit = {
                     if (chordPads) {
@@ -346,10 +352,10 @@ fun SynthScreen(
                 KeyboardCard(octave, octaves = uprightOctaves, height = if (tabletUpright) 190.dp else 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
                     onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff, play = play, playActions = playActions,
                     chordPads = chordPads, onChordPads = { chordPads = it }, modifier = trackKeyboard,
-                    keyLayout = keyLayout, onKeyLayout = setKeyLayout, english = english)
+                    keyLayout = keyLayout, onKeyLayout = setKeyLayout, english = english, simple = simple)
                 // The same sound sections, in the same order, as in Notes mode.
                 SoundArea(trackSounds) {
-                    SoundSections(patch, actions, instrument, browser, advanced, effects) { advanced = it }
+                    SoundSections(patch, actions, instrument, browser, advanced, effects, simpleSound = tracks?.takeIf { simple }) { advanced = it }
                 }
                 Spacer(Modifier.height(floatRoom))
             }
@@ -397,8 +403,14 @@ private fun SoundSections(
     browser: SoundBrowserUi?,
     advanced: Boolean,
     effects: com.pocketstudio.app.mixer.EffectsUi?,
+    /** The Mode simple: the track's sound and « Changer le son » alone (null: every section). */
+    simpleSound: TracksUi? = null,
     setAdvanced: (Boolean) -> Unit,
 ) {
+    if (simpleSound != null) {
+        SimpleSoundCard(simpleSound)
+        return
+    }
     instrument?.let { InstrumentPanel(it) }
     if (instrument?.current == null) {
         PresetsCard(patch, actions, browser)
@@ -427,12 +439,18 @@ private fun KeyboardCard(
     keyLayout: KeyLayout = KeyLayout.TwoOctaves,
     onKeyLayout: (KeyLayout) -> Unit = {},
     english: Boolean = false,
+    /** The Mode simple: the keys first (on a phone at 130 % they sat under the Guide's bar), the ways to play after them, no bend. */
+    simple: Boolean = false,
 ) {
     NeonCard(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             SectionLabel(if (chordPads) tr("Pads d'accords") else tr("Clavier"), help = if (chordPads) Glossary.CHORD else null, foldKey = "Clavier")
             Box(Modifier.weight(1f))
             OctaveControl(octave, actions)
+        }
+        if (simple) {
+            if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = height)
+            else PlayKeys(keyLayout, octave, octaves, harmony, english, keyOn, keyOff, height)
         }
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             if (!chordPads) ChordChip(chordKeys, onChordKeys)
@@ -444,9 +462,25 @@ private fun KeyboardCard(
                 KeyLayoutChips(keyLayout, onKeyLayout, octaves)
             }
         }
+        if (simple) return@NeonCard
         if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = height)
         else PlayKeys(keyLayout, octave, octaves, harmony, english, keyOn, keyOff, height)
         play?.let { PlayPanel(it, playActions) }
+    }
+}
+
+/** The Mode simple's sound of the track: its name and one « Changer le son » (the same sheet as « Mes pistes »). */
+@Composable
+private fun SimpleSoundCard(tracks: TracksUi) {
+    val t = tracks.tracks.firstOrNull { it.id == tracks.selected } ?: return
+    NeonCard(modifier = Modifier.testTag("simple_sound")) {
+        SectionLabel(tr("Le son"), foldKey = "Le son (mode simple)")
+        Text(tr(t.soundLabel), style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+        tracks.changeSound?.let { change ->
+            androidx.compose.material3.Button(onClick = { change(t.id) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("simple_change_sound")) {
+                Text(tr("Changer le son"))
+            }
+        }
     }
 }
 

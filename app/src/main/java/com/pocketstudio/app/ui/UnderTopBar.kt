@@ -36,6 +36,8 @@ fun UnderTopBar(
     toggleHelp: () -> Unit = {},
     /** A long press on the « ? »: « Signaler un bug » (null: no shortcut). */
     reportBug: (() -> Unit)? = null,
+    /** « ⟳ Partie » offered (false: the Mode simple, where it shows only while a part loops, to stop it). */
+    loopChip: Boolean = true,
 ) {
     val project by vm.project.collectAsStateWithLifecycle()
     val transport by vm.transport.collectAsStateWithLifecycle()
@@ -71,6 +73,7 @@ fun UnderTopBar(
             PlayStripUi(
                 project.tempoBpm, hasSong = controls && project.song.isNotEmpty(), loopPart = loopPart, playing = playing, position = position, parts = parts,
                 soloed = if (landscape || !controls) soloed else emptyList(), helpOn = helpOn,
+                loopChip = loopChip || loopPart,
             ),
             PlayStripActions(openTempo = { setTempoOpen(true) }, setLoopPart = vm::setLoopPart, playFrom = vm::playSongPart, clearSolos = vm::clearSolos, toggleHelp = toggleHelp, reportBug = reportBug),
         )

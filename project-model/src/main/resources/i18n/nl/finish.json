@@ -46,5 +46,7 @@
   "Fais-le tien : dans Synthé, touche un son sous « Sons prêts à jouer », ou change un pad dans Rythme.": "Maak het van jou: tik in Synth op een geluid onder ‘Kant-en-klare geluiden’, of verander een pad in Ritme.",
   "détails": "details",
   "masquer": "verbergen",
-  "%s LUFS · crête %s dBTP": "%s LUFS · piek %s dBTP"
+  "%s LUFS · crête %s dBTP": "%s LUFS · piek %s dBTP",
+  "Tout réentendre": "Alles weer horen",
+  "Coupé dans Mes pistes, donc absent du fichier : %s.": "Gedempt in Mijn sporen, dus niet in het bestand: %s."
 }

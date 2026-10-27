@@ -99,6 +99,8 @@ class TopBarUi(
     val saved: Boolean = false,
     /** Recording into a scene that is not the one shown (staying on a scene during the song): its name, said under the project's. */
     val recordInto: String? = null,
+    /** Redo offered when there is room (false: the Mode simple's lighter bar, ↶ alone). */
+    val redo: Boolean = true,
 )
 
 class TopBarActions(
@@ -198,7 +200,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
     // Narrow (a small phone, a big text size): redo, then the scene's name give their room to the
     // project name; the projects button, the scene's letter and play never go.
     val layout = topBarLayout(maxWidth, ui.scene != null)
-    val showRedo = layout.showRedo
+    val showRedo = layout.showRedo && ui.redo
     androidx.compose.foundation.layout.Column {
     // Squeezed (a small phone with a big text size): the project's name gets a line of its own
     // above the buttons (never gone), the folder alone stays in the row.

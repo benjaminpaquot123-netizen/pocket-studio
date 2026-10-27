@@ -54,8 +54,43 @@ class SimpleMelodyTest {
         h.vm.synthNoteOff(64)
         tap("record_stop")
         val p = h.vm.project.value
-        assertEquals("one note on « Mélodie »", 1, p.tracks.first { it.name == "Lead" }.notes.notes.size)
+        // Audit final (01 M3): on « Ma mélodie », sounding as « Lead », never over its riff.
+        val mine = p.tracks.first { it.name == com.pocketstudio.model.SimpleMelody.NAME }
+        assertEquals("one note on « Ma mélodie »", 1, mine.notes.notes.size)
+        assertEquals(p.tracks.first { it.name == "Lead" }.synth, mine.synth)
+        assertTrue("nothing on « Lead »", p.tracks.first { it.name == "Lead" }.notes.notes.isEmpty())
         assertTrue("nothing on « Synthé »", p.track(0).notes.notes.isEmpty())
+        // Heard through the song (01 M3): every part plays it.
+        val key = com.pocketstudio.model.SongPart.inst(mine.id)
+        p.song.forEach { part -> assertEquals(p.scene, part.sceneFor(key)) }
+        // A second take goes on the same track.
+        tap("take_keep")
+        tap("record_start")
+        tap("record_stop")
+        assertEquals(1, h.vm.project.value.tracks.count { it.name == com.pocketstudio.model.SimpleMelody.NAME })
+    }
+
+    /** Audit final (05 #5): a song without a lead (Basse first): the melody never goes into the bass. */
+    @Test
+    fun withoutALeadTheMelodyIsNotInTheBass() {
+        h.start(simple = true) {
+            songWithTracks()
+            removeTrack(project.value.tracks.first { it.name == "Lead" }.id)
+            selectTrack(project.value.tracks.first { it.name == "Basse" }.id)
+        }
+        tap("tab_simple_Clavier")
+        h.vm.playingForTest = true
+        tap("record_start")
+        h.vm.recordPositionForTest = 1.0
+        h.vm.playedClockForTest = 1.0
+        h.vm.synthNoteOn(64, 0.8f)
+        h.vm.recordPositionForTest = 2.0
+        h.vm.playedClockForTest = 2.0
+        h.vm.synthNoteOff(64)
+        tap("record_stop")
+        val p = h.vm.project.value
+        assertTrue("nothing in the bass", p.tracks.first { it.name == "Basse" }.notes.notes.isEmpty())
+        assertEquals(1, p.tracks.first { it.name == com.pocketstudio.model.SimpleMelody.NAME }.notes.notes.size)
     }
 
     @Test

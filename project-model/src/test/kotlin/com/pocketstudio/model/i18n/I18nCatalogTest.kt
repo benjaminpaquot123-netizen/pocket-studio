@@ -233,6 +233,7 @@ class I18nCatalogTest {
             "StarterWizard.kt: it.title",
             "SynthScreen.kt: name",
             "TrackBar.kt: t.soundLabel",
+            "SynthScreen.kt: t.soundLabel",
             // G3: a layer's name, a library sound's (SoundLibrary, checked by ModelTextsTest); an effect's name (EffectType, same).
             "Layers.kt: name",
             "GuideSheets.kt: libraryName",

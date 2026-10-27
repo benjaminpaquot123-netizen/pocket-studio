@@ -5,7 +5,7 @@
   "Refaire la mes. %d": "Maat %d opnieuw",
   "Refaire mes. %1$d-%2$d": "Maten %1$d-%2$d opnieuw",
   "Recale d'abord la prise sur le tempo pour refaire un passage.": "Zet de opname eerst op het tempo om een stuk opnieuw te doen.",
-  "La musique part une mesure avant ; seul ce passage est remplacé, la prise entière reste dans les prises.": "De muziek start een maat ervoor; alleen dit stuk wordt vervangen, de hele opname blijft bij de opnames.",
+  "La musique repart du début de la partie ; seul ce passage est remplacé, la prise entière reste dans les prises.": "De muziek begint opnieuw bij het begin van het deel; alleen dit stuk wordt vervangen, de hele opname blijft bij de opnames.",
   "Enregistrer mes pads": "Mijn pads opnemen",
   "Enregistrer les boutons": "De knoppen opnemen",
   "Enregistrer ma mélodie": "Mijn melodie opnemen",

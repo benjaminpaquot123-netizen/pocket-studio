@@ -281,9 +281,12 @@ fun LiveScreen(
     under: (@Composable () -> Unit)? = null,
     /** Phase 36: « Plein écran » on or off (the app hides its bottom bar with the phone's). */
     onImmersive: (Boolean) -> Unit = {},
+    /** The panel's page shown (a MIDI controller's knobs and pads follow it). */
+    onTab: (LivePanelTab) -> Unit = {},
 ) {
     val columns = liveColumnsOf(ui.project)
     var tab by rememberSaveable { mutableStateOf(initialTab) }
+    LaunchedEffect(tab) { onTab(tab) }
     var panelOpen by rememberSaveable { mutableStateOf(true) }
     var immersive by rememberSaveable { mutableStateOf(false) }
     val toggleFull: () -> Unit = {

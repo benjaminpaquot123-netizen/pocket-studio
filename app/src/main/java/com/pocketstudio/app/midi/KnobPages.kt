@@ -10,9 +10,14 @@ import com.pocketstudio.model.SynthPatch
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.track
 
-/** The screens a controller's knobs follow (phase 39): each has its own eight settings. */
+/**
+ * The screens a controller follows (phase 39, then the MiniLab lot): each has its own eight knobs
+ * and its own pads. [Live]: the Live page with its effects (or its notes); [LiveAcide]: with its
+ * 303; [LivePads]: with its live pads (or the pads on the whole screen); [Piste]: the other tabs,
+ * the selected track's strip.
+ */
 enum class KnobScreen {
-    Rythme, Acide, Synthe, Mixeur, Live;
+    Rythme, Acide, Synthe, Mixeur, Live, LiveAcide, LivePads, Piste;
 
     val label: String get() = when (this) {
         Rythme -> tr("Rythme")
@@ -20,16 +25,30 @@ enum class KnobScreen {
         Synthe -> tr("Synthé")
         Mixeur -> tr("Mixeur")
         Live -> tr("Live")
+        LiveAcide -> tr("Live · 303")
+        LivePads -> tr("Live · pads")
+        Piste -> tr("Piste choisie")
     }
 
+    /** The Live page in any of its panels: the pads launch there instead of playing the drums. */
+    val isLive: Boolean get() = this == Live || this == LiveAcide || this == LivePads
+
     companion object {
-        /** The screen shown: the Live page over everything, else the tab ([tab] is its name); the other tabs get the mixer's knobs. */
-        fun of(tab: String, live: Boolean): KnobScreen = when {
+        /**
+         * The screen shown: the Live page over everything ([liveTab]: its panel's name, Effets,
+         * Acide, Pads or Notes; [livePads]: the pads on the whole screen), else the tab ([tab] is its
+         * name); the Mixeur its own; the other tabs the selected track's.
+         */
+        fun of(tab: String, live: Boolean, liveTab: String? = null, livePads: Boolean = false): KnobScreen = when {
+            livePads -> LivePads
+            live && liveTab == "Acide" -> LiveAcide
+            live && liveTab == "Pads" -> LivePads
             live -> Live
             tab == "Rythme" -> Rythme
             tab == "Acide" -> Acide
             tab == "Synthe" -> Synthe
-            else -> Mixeur
+            tab == "Mixeur" -> Mixeur
+            else -> Piste
         }
     }
 }
@@ -104,12 +123,26 @@ object KnobPages {
         acid(2, tr("303 : enveloppe"), live = true),
     )
 
-    /** The app's eight for [screen] ([track]: the selected instrument track; [strips]: the mixer's, in order). */
-    fun slots(screen: KnobScreen, p: Project, track: Int, strips: List<StripInfo>): List<KnobSlot> = when (screen) {
+    /** The Live page's 303 (its six live knobs, as its big sliders), then the two returns. */
+    private val LIVE_ACID: List<KnobSlot> get() = listOf(
+        acid(0, tr("Coupure"), live = true), acid(1, tr("Résonance"), live = true), acid(2, tr("Enveloppe"), live = true),
+        acid(3, tr("Durée"), live = true), acid(4, tr("Accent"), live = true), acid(7, tr("Saturation"), live = true),
+        KnobSlot(KnobTarget(AutoTarget.live(AutoTarget.LIVE_REVERB_RETURN)), tr("Réverbe")),
+        KnobSlot(KnobTarget(AutoTarget.live(AutoTarget.LIVE_ECHO_RETURN)), tr("Écho")),
+    )
+
+    /**
+     * The app's eight for [screen] ([track]: the selected instrument track; [strips]: the mixer's,
+     * in order; [faders]: how many faders the controller has: with some, they set the volumes, so
+     * the Mixeur's knobs set the pans and the reverb sends of the same tracks).
+     */
+    fun slots(screen: KnobScreen, p: Project, track: Int, strips: List<StripInfo>, faders: Int = 0): List<KnobSlot> = when (screen) {
         KnobScreen.Acide -> ACID
-        KnobScreen.Live -> LIVE
+        KnobScreen.Live, KnobScreen.LivePads -> LIVE
+        KnobScreen.LiveAcide -> LIVE_ACID
         KnobScreen.Rythme -> strip(0)
-        KnobScreen.Mixeur -> faders(strips)
+        KnobScreen.Piste -> strip(InstrumentTrack.mixerChannel(track))
+        KnobScreen.Mixeur -> if (faders >= 4) pansAndSends(strips) else faders(strips)
         KnobScreen.Synthe -> when (p.track(track).engine) {
             0 -> if (p.track(track).instrument == null) SYNTH_FIRST.map { synth(track, it) } else strip(InstrumentTrack.mixerChannel(track))
             1 -> plaits(track) + KnobSlot(KnobTarget(AutoTarget(AutoTarget.VOLUME, InstrumentTrack.mixerChannel(track))), tr("Volume de la piste"))
@@ -117,16 +150,25 @@ object KnobPages {
         }
     }.take(SLOTS)
 
-    /** The first eight strips' faders, named after their tracks. */
-    private fun faders(strips: List<StripInfo>): List<KnobSlot> =
+    /** The first eight strips' faders, named after their tracks (also what the controller's faders move). */
+    fun faders(strips: List<StripInfo>): List<KnobSlot> =
         strips.filter { it.ch != Mixer_MASTER && !com.pocketstudio.model.Mixer.isPad(it.ch) }.take(SLOTS)
             .map { KnobSlot(KnobTarget(AutoTarget(AutoTarget.VOLUME, it.ch)), com.pocketstudio.model.DefaultNames.shown(it.name)) }
+
+    /** With faders on the volumes: the first four tracks' pans, then their reverb sends. */
+    private fun pansAndSends(strips: List<StripInfo>): List<KnobSlot> {
+        val four = strips.filter { it.ch != Mixer_MASTER && !com.pocketstudio.model.Mixer.isPad(it.ch) }.take(4)
+        return four.map { KnobSlot(KnobTarget(AutoTarget(AutoTarget.PAN, it.ch)), tr("%s : gauche / droite", com.pocketstudio.model.DefaultNames.shown(it.name))) } +
+            four.map { KnobSlot(KnobTarget(AutoTarget(AutoTarget.SEND, it.ch, 0)), tr("%s : envoi réverbe", com.pocketstudio.model.DefaultNames.shown(it.name))) }
+    }
 
     private const val Mixer_MASTER = com.pocketstudio.model.Mixer.MASTER
 
     /** Everything « Changer » offers on [screen]: its eight first, then the rest of what the screen shows. */
-    fun candidates(screen: KnobScreen, p: Project, track: Int, strips: List<StripInfo>): List<KnobSlot> {
+    fun candidates(screen: KnobScreen, p: Project, track: Int, strips: List<StripInfo>, faders: Int = 0): List<KnobSlot> {
         val extra = when (screen) {
+            KnobScreen.LiveAcide, KnobScreen.LivePads -> LIVE + LIVE_ACID
+            KnobScreen.Piste -> faders(strips)
             KnobScreen.Acide -> strip(AutoTarget.ACID_CHANNEL)
             KnobScreen.Synthe -> if (p.track(track).engine == 0 && p.track(track).instrument == null) {
                 (com.pocketstudio.app.synth.SYNTH_LABELS.map { it.first } + com.pocketstudio.app.synth.S4_LABELS.map { it.first }).map { synth(track, it) } +
@@ -134,7 +176,7 @@ object KnobPages {
             } else strip(InstrumentTrack.mixerChannel(track))
             KnobScreen.Live -> ACID.take(5).map { it.copy(target = it.target.copy(live = true), label = tr("303 : %s", it.label)) }
             KnobScreen.Rythme -> faders(strips)
-            KnobScreen.Mixeur -> strips.filter { it.ch != Mixer_MASTER && !com.pocketstudio.model.Mixer.isPad(it.ch) }.flatMap { s ->
+            KnobScreen.Mixeur -> faders(strips) + strips.filter { it.ch != Mixer_MASTER && !com.pocketstudio.model.Mixer.isPad(it.ch) }.flatMap { s ->
                 val n = com.pocketstudio.model.DefaultNames.shown(s.name)
                 listOf(
                     KnobSlot(KnobTarget(AutoTarget(AutoTarget.PAN, s.ch)), tr("%s : gauche / droite", n)),
@@ -142,17 +184,17 @@ object KnobPages {
                 )
             }
         }
-        return (slots(screen, p, track, strips) + extra).distinctBy { it.target }
+        return (slots(screen, p, track, strips, faders) + extra).distinctBy { it.target }
     }
 
     /**
      * The knobs as they play on [screen]: the app's eight, each one replaced by the setting the
      * user chose for it ([overrides]: knob → [KnobTarget.key]), named from [candidates].
      */
-    fun resolved(screen: KnobScreen, p: Project, track: Int, strips: List<StripInfo>, overrides: Map<Int, Long>): List<KnobSlot> {
-        val base = slots(screen, p, track, strips)
+    fun resolved(screen: KnobScreen, p: Project, track: Int, strips: List<StripInfo>, overrides: Map<Int, Long>, faders: Int = 0): List<KnobSlot> {
+        val base = slots(screen, p, track, strips, faders)
         if (overrides.isEmpty()) return base
-        val all = candidates(screen, p, track, strips)
+        val all = candidates(screen, p, track, strips, faders)
         return List(maxOf(base.size, (overrides.keys.maxOrNull() ?: -1) + 1).coerceAtMost(SLOTS)) { i ->
             overrides[i]?.let { key -> all.firstOrNull { it.target.key == key } } ?: base.getOrNull(i) ?: KnobSlot(KnobTarget(AutoTarget(AutoTarget.VOLUME, 0)), tr("Volume"))
         }

@@ -48,7 +48,16 @@ data class MidiUi(
     val scanning: Boolean = false,
     /** Send our tempo, start and stop to the connected device. */
     val sendClock: Boolean = false,
+    /** The controller connected: its name and the profile the app found for it (null: none connected). */
+    val controller: ControllerInfo? = null,
+    /** The last messages received, newest first (« Contrôleur MIDI »'s monitor). */
+    val monitor: List<String> = emptyList(),
+    /** « Apprendre mes pads »: the pads heard so far (null: not learning). */
+    val learningPads: Int? = null,
 )
+
+/** The controller connected: [name] (the settings know it by it), its [kind] and the app's [profile] for it (null: generic). */
+data class ControllerInfo(val name: String, val kind: String, val profile: com.pocketstudio.model.midi.ControllerProfile?)
 
 /** What a MIDI device asks of the project (the tempo and the transport are the project's). */
 sealed interface MidiCommand {
@@ -61,6 +70,13 @@ sealed interface MidiCommand {
     data class Note(val channel: Int, val pitch: Int, val velocity: Float, val on: Boolean) : MidiCommand
     /** A knob or fader moved (MIDI learn, mapped controls). */
     data class Control(val channel: Int, val controller: Int, val value: Int) : MidiCommand
+    /**
+     * A pad of the controller (0..15, bank B from 8) hit while the pads do not play the drums (the
+     * Live page: launches, mutes, live pads). The drums are played from the MIDI thread instead.
+     */
+    data class Pad(val index: Int, val velocity: Float) : MidiCommand
+    /** « Apprendre mes pads »: a note heard (it plays nothing meanwhile). */
+    data class PadLearnt(val packed: Int) : MidiCommand
 }
 
 /**
@@ -94,6 +110,15 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     // The track each sounding note started on: its release goes there even if another track was
     // selected meanwhile (else the note would hang on the old one). Under held's lock.
     private val trackOf = IntArray(128)
+
+    /**
+     * Which notes are pads, and whether pads play the drums at once from the MIDI thread (every
+     * screen but the Live page, which takes them as launches). Set from the main thread, read on the
+     * MIDI thread: immutable snapshots behind @Volatile.
+     */
+    @Volatile var pads: PadMap = PadMap()
+    @Volatile var padsToDrums: Boolean = true
+    @Volatile private var padLearning: Boolean = false
 
     /** The project's key: when locked, keys out of the scale play the nearest note of it. */
     @Volatile var harmony: com.pocketstudio.model.Harmony = com.pocketstudio.model.Harmony()
@@ -198,7 +223,13 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             else -> "autre"
         }
         AppLog.add("MIDI connecté : appareil $kind")
-        _state.update { it.copy(connected = id, last = null, clockBpm = null) }
+        val info = deviceIdOf(d.info)
+        val profile = com.pocketstudio.model.midi.Controllers.detect(info)
+        if (profile != null) AppLog.add("MIDI : profil ${profile.id}")
+        val name = nameOf(d.info)
+        pads = PadMap(profile)  // the user's own pads come from the settings (the app sets them)
+        _state.update { it.copy(connected = id, last = null, clockBpm = null, controller = ControllerInfo(name, kindOf(d.info), profile), monitor = emptyList()) }
+        greet(profile)
         refresh(autoConnect = false)
     }
 
@@ -217,7 +248,43 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             playedAs.fill(-1)
             keysOn.fill(0)
         }
-        _state.update { it.copy(connected = null, clockBpm = null) }
+        padLearning = false
+        _state.update { it.copy(connected = null, clockBpm = null, controller = null, learningPads = null) }
+    }
+
+    /** « MiniLab 3 connecté — prêt à jouer »: a short toast once a controller is ready. */
+    private fun greet(profile: com.pocketstudio.model.midi.ControllerProfile?) {
+        val text = if (profile != null) tr("%s connecté — prêt à jouer", profile.name.removePrefix("Arturia ")) else tr("Clavier MIDI connecté — prêt à jouer")
+        _state.update { it.copy(last = text) }
+        runCatching { android.widget.Toast.makeText(getApplication(), text, android.widget.Toast.LENGTH_SHORT).show() }
+    }
+
+    private fun deviceIdOf(info: MidiDeviceInfo): com.pocketstudio.model.midi.DeviceId {
+        val p = info.properties
+        val usb = runCatching {
+            @Suppress("DEPRECATION")
+            p.getParcelable<android.hardware.usb.UsbDevice>(MidiDeviceInfo.PROPERTY_USB_DEVICE)
+        }.getOrNull()
+        return com.pocketstudio.model.midi.DeviceId(
+            name = nameOf(info), manufacturer = p.getString(MidiDeviceInfo.PROPERTY_MANUFACTURER), product = p.getString(MidiDeviceInfo.PROPERTY_PRODUCT),
+            vendorId = usb?.vendorId ?: -1, productId = usb?.productId ?: -1,
+        )
+    }
+
+    /** « Apprendre mes pads »: the notes heard next become pads 1, 2… (they play nothing meanwhile). */
+    fun learnPads(on: Boolean) {
+        padLearning = on
+        _state.update { it.copy(learningPads = if (on) 0 else null) }
+    }
+
+    /** One more pad learnt (from the main thread): [count] so far. */
+    fun padsLearnt(count: Int) {
+        _state.update { it.copy(learningPads = if (padLearning) count else null) }
+    }
+
+    /** A message for the monitor, newest first, the last [MONITOR] kept. */
+    private fun monitor(text: String) {
+        _state.update { it.copy(monitor = (listOf(text) + it.monitor).take(MONITOR)) }
     }
 
     fun setFollowClock(on: Boolean) {
@@ -334,12 +401,33 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
 
     private val listener = object : MidiListener {
         override fun noteOn(channel: Int, note: Int, velocity: Int) {
-            if (!NativeEngine.isAvailable) return
+            if (padLearning) {
+                _commands.tryEmit(MidiCommand.PadLearnt(com.pocketstudio.model.midi.Controllers.packPad(channel, note)))
+                monitor(tr("Note %1\$s · canal %2\$d", noteLabel(note), channel + 1))
+                return
+            }
             val v = velocity / 127f
+            val pad = pads.padOf(channel, note)
+            monitor(
+                if (pad != null) tr("Pad %1\$d · note %2\$s · canal %3\$d", pad + 1, noteLabel(note), channel + 1)
+                else tr("Note %1\$s · force %2\$d · canal %3\$d", noteLabel(note), velocity, channel + 1),
+            )
+            if (pad != null) {
+                if (!padsToDrums) {
+                    _commands.tryEmit(MidiCommand.Pad(pad, v))
+                } else {
+                    if (NativeEngine.isAvailable && pad < NativeEngine.LANES) NativeEngine.liveTriggerPad(pad, v)
+                    _commands.tryEmit(MidiCommand.Note(DRUM_CHANNEL, FIRST_PAD_NOTE + pad, v, true))
+                }
+                show(tr("Note %s (pads)", noteLabel(note)))
+                return
+            }
             if (channel == DRUM_CHANNEL) {
-                if (note in FIRST_PAD_NOTE until FIRST_PAD_NOTE + NativeEngine.LANES) NativeEngine.liveTriggerPad(note - FIRST_PAD_NOTE, v)
-                _commands.tryEmit(MidiCommand.Note(channel, note, v, true))
-            } else {
+                show(tr("Note %s (pads)", noteLabel(note)))
+                return
+            }
+            if (!NativeEngine.isAvailable) return
+            run {
                 val h = harmony
                 val played = if (h.lock) h.snap(note).coerceIn(0, 127) else note
                 synchronized(held) {
@@ -350,11 +438,11 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 _commands.tryEmit(MidiCommand.Note(channel, played, v, true))
             }
-            show(if (channel == DRUM_CHANNEL) tr("Note %s (pads)", noteLabel(note)) else tr("Note %s", noteLabel(note)))
+            show(tr("Note %s", noteLabel(note)))
         }
 
         override fun noteOff(channel: Int, note: Int) {
-            if (!NativeEngine.isAvailable || channel == DRUM_CHANNEL) return
+            if (!NativeEngine.isAvailable || padLearning || channel == DRUM_CHANNEL || pads.padOf(channel, note) != null) return
             val played = synchronized(held) {
                 val p = playedAs.getOrNull(note)?.takeIf { it >= 0 } ?: note
                 if (note in playedAs.indices) playedAs[note] = -1
@@ -370,11 +458,13 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         }
 
         override fun pitchBend(channel: Int, value: Int) {
+            monitor(tr("Pitch bend %1\$d · canal %2\$d", value, channel + 1))
             if (NativeEngine.isAvailable && channel != DRUM_CHANNEL) NativeEngine.liveExpression(NativeEngine.EXPR_BEND, value / 8192f * BEND_RANGE)
         }
 
         override fun controlChange(channel: Int, controller: Int, value: Int) {
             show(tr("Bouton %d : %d", controller, value))
+            monitor(tr("CC %1\$d = %2\$d · canal %3\$d", controller, value, channel + 1))
             if (NativeEngine.isAvailable && channel != DRUM_CHANNEL) {
                 when (controller) {
                     CC_MOD_WHEEL -> NativeEngine.liveExpression(NativeEngine.EXPR_MOD, value / 127f)
@@ -422,6 +512,19 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Tests: MIDI bytes as if the connected controller had sent them (named [name]). */
+    @androidx.annotation.VisibleForTesting
+    internal fun receiveForTest(bytes: ByteArray, name: String = "Arturia MiniLab 3") {
+        if (_state.value.controller?.name != name) {
+            val profile = com.pocketstudio.model.midi.Controllers.detect(name)
+            pads = PadMap(profile, pads.learnt)
+            _state.update { it.copy(controller = ControllerInfo(name, "USB", profile)) }
+        }
+        testParser.feed(bytes)
+    }
+
+    private val testParser by lazy { MidiParser(listener) }
+
     private fun show(text: String) {
         _state.update { it.copy(last = text) }
     }
@@ -436,6 +539,8 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
 
     companion object {
         const val DRUM_CHANNEL = 9
+        /** Lines kept in the monitor. */
+        const val MONITOR = 10
         const val FIRST_PAD_NOTE = 36  // General MIDI kick: pad 1
         const val CC_ALL_SOUND_OFF = 120
         const val CC_ALL_NOTES_OFF = 123
@@ -447,4 +552,9 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         fun noteLabel(note: Int): String =
             com.pocketstudio.model.NoteNames.withOctave(note, com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes)
     }
+}
+
+/** Which notes of the connected controller are pads: its profile's, or those « Apprendre mes pads » heard. */
+class PadMap(val profile: com.pocketstudio.model.midi.ControllerProfile? = null, val learnt: List<Int>? = null) {
+    fun padOf(channel: Int, note: Int): Int? = com.pocketstudio.model.midi.Controllers.padOf(channel, note, profile, learnt)
 }

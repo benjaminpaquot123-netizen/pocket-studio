@@ -914,6 +914,14 @@ fun AppRoot() {
         if (granted.values.all { it }) midiVm.scanBluetooth()
         else permissionHelp = tr("Le Bluetooth (appareils à proximité) est refusé : autorise-le dans les réglages de l'appareil pour trouver un clavier MIDI.")
     }
+    // « Apprendre mes pads »: the notes heard so far, kept for the device once done.
+    val padsHeard = remember { mutableListOf<Int>() }
+    val finishPads: () -> Unit = {
+        val name = midiVm.state.value.controller?.name
+        if (name != null && padsHeard.isNotEmpty()) knobsVm.setPads(name, padsHeard.toList())
+        padsHeard.clear()
+        midiVm.learnPads(false)
+    }
     // MIDI clock, start and stop drive the project's tempo and transport (main thread).
     LaunchedEffect(Unit) {
         midiVm.commands.collect { c ->
@@ -926,10 +934,25 @@ fun AppRoot() {
                 is MidiCommand.Note -> rhythmVm.midiNote(c.channel, c.pitch, c.velocity, c.on)
                 is MidiCommand.Control -> if (!rhythmVm.midiControl(c.channel, c.controller, c.value)) {
                     val m = midiVm.state.value
-                    knobsVm.control(c.controller, c.value, m.sources.firstOrNull { it.id == m.connected }?.name)
+                    knobsVm.control(c.controller, c.value, m.controller?.name ?: m.sources.firstOrNull { it.id == m.connected }?.name, c.channel)
+                }
+                // The Live page's pads: launches, mutes, live pads (the drums are played on the MIDI thread).
+                is MidiCommand.Pad -> knobsVm.pad(c.index)
+                is MidiCommand.PadLearnt -> {
+                    if (c.packed !in padsHeard) padsHeard += c.packed
+                    midiVm.padsLearnt(padsHeard.size)
+                    if (padsHeard.size >= com.pocketstudio.model.midi.Controllers.PADS) finishPads()
                 }
             }
         }
+    }
+    // The controller connected: its profile and its own pads (as « Apprendre mes pads » kept them).
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.flow.combine(midiVm.state, knobsVm.settings) { m, s -> m.controller to s }
+            .collect { (c, s) ->
+                knobsVm.setController(c?.name, c?.profile)
+                midiVm.pads = com.pocketstudio.app.midi.PadMap(c?.profile, c?.name?.let { s.pads[it] })
+            }
     }
     // Scale lock reaches the MIDI keyboard too.
     LaunchedEffect(Unit) {
@@ -996,6 +1019,8 @@ fun AppRoot() {
     val showLive = tab == AppTab.Live
     var liveFrom by rememberSaveable { mutableStateOf(AppTab.Morceau) }
     var liveImmersive by remember { mutableStateOf(false) }
+    // The Live page's panel shown (Effets, Acide, Pads, Notes): a MIDI controller follows it.
+    var liveTab by rememberSaveable { mutableStateOf("Effets") }
     LaunchedEffect(showLive) { if (!showLive) liveImmersive = false }
     val openLive: () -> Unit = { if (tab != AppTab.Live) liveFrom = tab; tab = AppTab.Live }
     // The live pad being set up (Morceau and the Live page's Pads share it).
@@ -1053,17 +1078,33 @@ fun AppRoot() {
     } else {
         Space.entries.map { sp -> NavEntry(sp.name, sp.label, sp.hint, sp.icon, selected = tab.space == sp && tab != AppTab.Envoyer) { goSpace(sp) } }
     }
-    com.pocketstudio.app.midi.KnobScreenFollower(knobsVm, com.pocketstudio.app.midi.KnobScreen.of(tab.name, showLive))
-    run {
-        val m by midiVm.state.collectAsStateWithLifecycle()
-        com.pocketstudio.app.midi.KnobOverlay(knobsVm, m.sources.firstOrNull { it.id == m.connected }?.name)
-    }
     androidx.activity.compose.BackHandler(enabled = showLive) { closeLive() }
     // The live pads on the whole screen (from Morceau or the Live page), above everything. Leaving
     // them from Morceau, nothing set in their effects stays on unseen, and a take started there
     // ends with them (written, as leaving the Live page does); above the Live page, its effects
     // and its take stay as that page shows them.
     var showLivePads by rememberSaveable { mutableStateOf(false) }
+    // The controller follows the screen shown (the Live page's panel too): knobs, pads, faders, encoder.
+    val controllerScreen = com.pocketstudio.app.midi.KnobScreen.of(tab.name, showLive, liveTab, showLivePads)
+    com.pocketstudio.app.midi.KnobScreenFollower(knobsVm, controllerScreen)
+    LaunchedEffect(controllerScreen) { midiVm.padsToDrums = !controllerScreen.isLive }
+    run {
+        val m by midiVm.state.collectAsStateWithLifecycle()
+        val name = m.controller?.name ?: m.sources.firstOrNull { it.id == m.connected }?.name
+        com.pocketstudio.app.midi.KnobOverlay(knobsVm, name)
+        val knobSettings by knobsVm.settings.collectAsStateWithLifecycle()
+        val flash by knobsVm.flash.collectAsStateWithLifecycle()
+        var legendOpen by rememberSaveable { mutableStateOf(false) }
+        // The small legend: while a controller is connected, outside its own settings page.
+        if (m.controller != null && knobSettings.legend && !(tab == AppTab.Outils && toolPage == ToolPage.Midi)) {
+            val project by rhythmVm.project.collectAsStateWithLifecycle()
+            val rows = remember(controllerScreen, project, knobSettings, m.controller) { knobsVm.legend(controllerScreen) }
+            com.pocketstudio.app.midi.ControllerLegendOverlay(
+                m.controller?.profile?.name?.removePrefix("Arturia ") ?: m.controller?.name.orEmpty(), controllerScreen, rows, legendOpen,
+            ) { legendOpen = !legendOpen }
+        }
+        flash?.let { com.pocketstudio.app.midi.ControllerFlash(it) }
+    }
     val closeLivePads = {
         if (!showLive) rhythmVm.leaveLiveEndingTake()
         showLivePads = false
@@ -1642,7 +1683,7 @@ fun AppRoot() {
             if (landscape && !liveImmersive) SpaceRail(navEntries)
             Box(Modifier.weight(1f).fillMaxHeight()) {
                 LiveRoute(
-                    rhythmVm, lifecycleOwner, close = closeLive,
+                    rhythmVm, lifecycleOwner, close = closeLive, onTab = { liveTab = it.name },
                     under = {
                         // Lot 2: the « ? » on the Live page too (its bar replaces the one that carries it elsewhere).
                         PositionStrip(
@@ -2588,6 +2629,28 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                                 knobsVm.open(midi.sources.firstOrNull { it.id == midi.connected }?.name)
                                             }
                                         },
+                                        controller = {
+                                            val knobSettings by knobsVm.settings.collectAsStateWithLifecycle()
+                                            val learningControl by knobsVm.learningControl.collectAsStateWithLifecycle()
+                                            var legendScreen by rememberSaveable { mutableStateOf(com.pocketstudio.app.midi.KnobScreen.Rythme) }
+                                            val name = midi.controller?.name
+                                            val rows = remember(legendScreen, project, knobSettings, midi.controller) { knobsVm.legend(legendScreen) }
+                                            com.pocketstudio.app.midi.ControllerCard(
+                                                com.pocketstudio.app.midi.ControllerCardUi(
+                                                    controller = midi.controller, monitor = midi.monitor, screen = legendScreen, legend = rows,
+                                                    legendOn = knobSettings.legend, customized = name != null && knobSettings.customized(name),
+                                                    learningPads = midi.learningPads, learningControl = learningControl,
+                                                ),
+                                                com.pocketstudio.app.midi.ControllerCardActions(
+                                                    pickScreen = { legendScreen = it },
+                                                    setLegend = knobsVm::setLegend,
+                                                    learnPads = { on -> if (on) { padsHeard.clear(); midiVm.learnPads(true) } else finishPads() },
+                                                    learnControl = knobsVm::learnControl,
+                                                    forget = { name?.let(knobsVm::forget) },
+                                                    openKnobs = { knobsVm.open(name) },
+                                                ),
+                                            )
+                                        },
                                     )
                                 }
                                 ToolPage.Fond -> BackgroundPage()
@@ -2903,6 +2966,7 @@ internal fun LiveRoute(
     /** Under the page's own bar: the position strip (tempo, « mes. x/y »). */
     under: (@Composable () -> Unit)? = null,
     onImmersive: (Boolean) -> Unit = {},
+    onTab: (com.pocketstudio.app.live.LivePanelTab) -> Unit = {},
 ) = LiveStateHost(vm, lifecycleOwner, liveEditing) { ui, pads ->
     com.pocketstudio.app.live.LiveScreen(
         ui,
@@ -2917,6 +2981,7 @@ internal fun LiveRoute(
         padsActions = padsActions,
         under = under,
         onImmersive = onImmersive,
+        onTab = onTab,
     )
 }
 

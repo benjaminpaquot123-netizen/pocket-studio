@@ -1,6 +1,7 @@
 package com.pocketstudio.model.video
 
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.audioPlays
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SongPart
 import com.pocketstudio.model.instrumentTracks
@@ -71,6 +72,8 @@ data class VideoPlan(
         const val SAMPLE_RATE = 48_000
         const val FPS = 30
         const val SECONDS = 30.0
+        /** The lengths offered (seconds): a story, a usual clip, a long one. */
+        val LENGTHS = listOf(15, 30, 60)
         const val FADE_IN_S = 0.05
         const val FADE_OUT_S = 1.5
         const val WIDTH = 720
@@ -102,6 +105,28 @@ object VideoPlanner {
         return scores.indexOf(best)
     }
 
+    /**
+     * The first song part where a voice (a recorded or imported clip, not a frozen track) is
+     * heard, -1 without any: the video then shows the voice first (03 M9).
+     */
+    fun voicePart(p: Project): Int {
+        var step = 0L
+        p.song.forEachIndexed { i, part ->
+            val length = p.partSteps(part).toLong()
+            val heard = p.audioTracks.any { t ->
+                val c = t.clip
+                c != null && t.frozenFrom == null && c.gain > 0f && p.audioPlays(t.id, part) &&
+                    (!c.song || (c.start < step + length && c.start + c.steps(p.tempoBpm) > step))
+            }
+            if (heard) return i
+            step += length
+        }
+        return -1
+    }
+
+    /** The part a new video is about: where the voice is, else [pickPart]. */
+    fun defaultPart(p: Project): Int = voicePart(p).takeIf { it >= 0 } ?: pickPart(p)
+
     /** How full a part sounds: drum lanes playing, the 303 (counted twice) and each instrument track with notes (twice). */
     fun energy(p: Project, part: SongPart): Int {
         val v = p.partView(part)
@@ -121,11 +146,12 @@ object VideoPlanner {
     }
 
     /**
-     * The video of [p]: [length] seconds (the whole song when shorter) from the start of the part
-     * [pickPart] chose, moved earlier when the song ends before, on a bar line. Without a song,
-     * the scene looped for [length] seconds. [title]: the name shown (the project's).
+     * The video of [p]: [length] seconds (the whole song when shorter) from the start of song part
+     * [part] (null or out of the song: [defaultPart]), moved earlier when the song ends before, on
+     * a bar line. Without a song, the scene looped for [length] seconds. [title]: the name shown
+     * (the project's).
      */
-    fun plan(p: Project, title: String, length: Double = VideoPlan.SECONDS, sampleRate: Int = VideoPlan.SAMPLE_RATE): VideoPlan {
+    fun plan(p: Project, title: String, length: Double = VideoPlan.SECONDS, sampleRate: Int = VideoPlan.SAMPLE_RATE, part: Int? = null): VideoPlan {
         if (p.song.isEmpty()) {
             val frames = (length * sampleRate).roundToLong()
             return VideoPlan(title, 0, frames, listOf(VideoSection(partLabel(p, p.scene), 0.0, length)), sampleRate, part = -1, songSeconds = length)
@@ -140,7 +166,7 @@ object VideoPlanner {
         }
         val total = seconds(p, steps)
         val duration = minOf(length, total)
-        val index = pickPart(p)
+        val index = part?.takeIf { it in p.song.indices } ?: defaultPart(p)
         var start = bounds[index].first
         if (start + duration > total) {
             // Too close to the end: earlier, on a bar line, so the window still fits in the song.

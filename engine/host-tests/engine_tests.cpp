@@ -8029,6 +8029,7 @@ void testCommandBudgetPerCallback() {
 #include "s7_tests.inc"
 #include "leads2_tests.inc"
 #include "audit_moteur_tests.inc"
+#include "voice_tests.inc"
 
 int main(int argc, char** argv) {
     const char* only = nullptr;  // a test's name: run that one alone
@@ -8228,6 +8229,7 @@ int main(int argc, char** argv) {
         PS_PHASE37_TESTS
         PS_MULTIZONE_TESTS
         PS_RESTES_TESTS
+        PS_VOICE_TESTS
         PS_REVIEW3539_TESTS
         PS_LEADS_TESTS
         PS_LIVEFADE_TESTS

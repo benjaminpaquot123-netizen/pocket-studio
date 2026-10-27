@@ -96,21 +96,32 @@ private:
 
 // Records the microphone into a buffer the app hands over, starting exactly on the step where the
 // transport starts (or right away), until the buffer is full or recording stops.
+// With a pre-roll, data[0, preroll) is a ring that keeps what came in just before the start (the
+// count-in: a word sung ahead of the "1"); `prerollHead` is its oldest frame once the take starts
+// (rotate before reading), and `written` counts the pre-roll too (0 until the take starts).
 struct RecordBuffer {
     // Reserved, not filled (audit 13: a 300 s buffer is 57 MB): only the pages a take writes cost
-    // memory. Only [0, written) is ever read. May throw std::bad_alloc (the caller catches it).
+    // memory. Only [0, written) is ever read, and the pre-roll ring is zeroed (a short count-in
+    // leaves part of it unwritten). May throw std::bad_alloc (the caller catches it).
     struct Frames {
         explicit Frames(int64_t n) : p(new float[static_cast<size_t>(std::max<int64_t>(n, 0))]), n(static_cast<size_t>(std::max<int64_t>(n, 0))) {}
         size_t size() const { return n; }
         float* data() { return p.get(); }
         const float* data() const { return p.get(); }
+        float* begin() { return p.get(); }
+        float* end() { return p.get() + n; }
         float& operator[](size_t i) { return p[i]; }
         const float& operator[](size_t i) const { return p[i]; }
         std::unique_ptr<float[]> p;
         size_t n;
     };
-    explicit RecordBuffer(int64_t capacity) : data(capacity) {}
+    explicit RecordBuffer(int64_t capacity, int64_t prerollFrames = 0)
+        : data(capacity + std::max<int64_t>(0, prerollFrames)), preroll(std::max<int64_t>(0, prerollFrames)) {
+        std::fill(data.begin(), data.begin() + preroll, 0.0f);
+    }
     Frames data;                           // mono
+    const int64_t preroll;
+    std::atomic<int64_t> prerollHead{0};
     std::atomic<int64_t> written{0};
     // 0 armed (waiting for the start), 1 recording, 2 finished (the engine no longer touches it).
     std::atomic<int> state{0};

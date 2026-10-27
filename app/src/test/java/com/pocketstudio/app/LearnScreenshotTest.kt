@@ -109,7 +109,10 @@ open class LearnScreenshotTest {
     @Test
     fun videoSheet() = shoot("video_sheet") {
         val preview = previewFrame(plan).asImageBitmap()
-        VideoSheetContent(VideoSheetUi(part = "Drop", seconds = 30.0, preview = preview), VideoSheetActions(), Modifier.background(Neon.Surface))
+        VideoSheetContent(
+            VideoSheetUi(part = "Couplet", seconds = 30.0, preview = preview, parts = listOf("1. Intro", "2. Couplet", "3. Drop", "4. Couplet"), chosen = 1, voicePart = 1),
+            VideoSheetActions(), Modifier.background(Neon.Surface),
+        )
     }
 
     @Test

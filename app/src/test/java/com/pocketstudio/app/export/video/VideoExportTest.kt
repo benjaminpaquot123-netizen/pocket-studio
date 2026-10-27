@@ -131,8 +131,16 @@ class VideoExportTest {
         val x = 360
         assertEquals(colors.playing, bmp.getPixel(x, VideoFrameRenderer.WAVE_Y.toInt()))
         // Something is written where the part's name goes.
-        val rows = (950..1000).flatMap { y -> (0 until 720).map { bmp.getPixel(it, y) } }
+        val part = VideoFrameRenderer.PART_Y.toInt()
+        val rows = (part - 60..part).flatMap { y -> (0 until 720).map { bmp.getPixel(it, y) } }
         assertTrue(rows.count { Yuv420.lumaOf(it) > 200 } > 500)
+        // Nothing but the background under the strip's clock (TikTok, Reels and Shorts put their
+        // caption there, 03 M10), down to « Fait avec Pocket Studio »…
+        val bottom = (VideoFrameRenderer.SAFE_BOTTOM.toInt() + 2 until 1180).flatMap { y -> (0 until 720).map { bmp.getPixel(it, y) } }
+        assertEquals(0, bottom.count { Yuv420.lumaOf(it) > 120 })
+        // …nor along the right edge, where their buttons are.
+        val side = (300 until 960).flatMap { y -> (720 - VideoFrameRenderer.SIDE.toInt() + 4 until 720).map { bmp.getPixel(it, y) } }
+        assertEquals(0, side.count { Yuv420.lumaOf(it) > 120 })
     }
 
     @Test

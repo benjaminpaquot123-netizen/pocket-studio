@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -58,6 +59,7 @@ import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.video.VideoLevels
 import com.pocketstudio.model.video.VideoPlan
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.fadingHorizontalScroll
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.sin
@@ -69,6 +71,13 @@ data class VideoSheetUi(
     val seconds: Double,
     val run: VideoExportUi = VideoExportUi(),
     val preview: ImageBitmap? = null,
+    /** The song's parts as chips (« 2. Couplet »), empty for a loop; [chosen] is the one shown. */
+    val parts: List<String> = emptyList(),
+    val chosen: Int = -1,
+    /** The part where the voice is first heard (-1: none), marked « ta voix ». */
+    val voicePart: Int = -1,
+    /** The length chosen, in seconds (the video is shorter when the song is). */
+    val length: Int = VideoPlan.SECONDS.toInt(),
 )
 
 class VideoSheetActions(
@@ -77,6 +86,8 @@ class VideoSheetActions(
     val share: () -> Unit = {},
     val again: () -> Unit = {},
     val close: () -> Unit = {},
+    val choosePart: (Int) -> Unit = {},
+    val chooseSeconds: (Int) -> Unit = {},
 )
 
 /**
@@ -139,6 +150,27 @@ fun VideoSheetContent(ui: VideoSheetUi, actions: VideoSheetActions, modifier: Mo
                 Text(tr("Une copie va dans Films › Pocket Studio."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
         }
+        // Which part, and how long (before it is made).
+        if (!run.running && run.file == null) {
+            val chip = com.pocketstudio.ui.pillColors()
+            if (ui.parts.isNotEmpty()) {
+                Text(tr("Quelle partie ?"), style = MaterialTheme.typography.bodyMedium)
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fadingHorizontalScroll().testTag("video_parts")) {
+                    ui.parts.forEachIndexed { i, label ->
+                        FilterChip(
+                            selected = i == ui.chosen, onClick = { actions.choosePart(i) },
+                            label = { Text(if (i == ui.voicePart) tr("%s · ta voix", label) else label) }, colors = chip,
+                        )
+                    }
+                }
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("video_lengths")) {
+                VideoPlan.LENGTHS.forEach { sec ->
+                    FilterChip(selected = sec == ui.length, onClick = { actions.chooseSeconds(sec) },
+                        label = { Text(tr("%d s", sec)) }, colors = chip)
+                }
+            }
+        }
         when {
             run.running -> {
                 Text(
@@ -180,7 +212,8 @@ fun VideoExportRoute(rhythmVm: RhythmViewModel, close: () -> Unit) {
     val context = LocalContext.current
     val vm: VideoExportViewModel = viewModel()
     val run by vm.state.collectAsStateWithLifecycle()
-    val plan = remember { vm.plan(rhythmVm) }
+    val choice by vm.choice.collectAsStateWithLifecycle()
+    val plan = remember(choice) { vm.plan(rhythmVm) }
     var preview by remember { mutableStateOf<ImageBitmap?>(null) }
     LaunchedEffect(plan) {
         preview = withContext(Dispatchers.Default) {
@@ -198,14 +231,18 @@ fun VideoExportRoute(rhythmVm: RhythmViewModel, close: () -> Unit) {
     }
     val project = rhythmVm.project.value
     val part = plan.part.takeIf { it in project.song.indices }?.let { com.pocketstudio.model.video.VideoPlanner.partLabel(project, project.song[it].scene) }
+    val parts = remember(project) { project.song.mapIndexed { i, sp -> "${i + 1}. " + com.pocketstudio.model.video.VideoPlanner.partLabel(project, sp.scene) } }
+    val voice = remember(project) { com.pocketstudio.model.video.VideoPlanner.voicePart(project) }
     VideoSheet(
-        VideoSheetUi(part = part, seconds = plan.seconds, run = run, preview = preview),
+        VideoSheetUi(part = part, seconds = plan.seconds, run = run, preview = preview, parts = parts, chosen = plan.part, voicePart = voice, length = choice.seconds),
         VideoSheetActions(
             create = { vm.start(rhythmVm) },
             cancel = vm::cancel,
             share = share,
             again = vm::reset,
             close = { vm.reset(); close() },
+            choosePart = vm::choosePart,
+            chooseSeconds = vm::chooseSeconds,
         ),
     )
 }

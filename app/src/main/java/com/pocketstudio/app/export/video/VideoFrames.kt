@@ -37,7 +37,9 @@ data class VideoColors(
  * Draws the images of the « vidéo 9:16 » (720 × 1280): the app's name and the song's title on
  * top, a waveform that scrolls under a playhead with a glow that breathes with the level, the
  * part playing in big letters (« Drop »), the parts of the 30 seconds as a strip with the
- * playhead, the time, and « Fait avec Pocket Studio ». The still parts are drawn once.
+ * playhead, the time, and « Fait avec Pocket Studio ». The still parts are drawn once. What
+ * matters stays clear of what TikTok, Reels and Shorts lay over the picture (03 M10): above the
+ * bottom quarter (caption, name, music) and left of their buttons' column ([SIDE] on each side).
  * [bold] and [regular]: Inter when the app's fonts load, the system's otherwise.
  */
 class VideoFrameRenderer(
@@ -91,20 +93,20 @@ class VideoFrameRenderer(
         p.color = colors.accent
         listOf(0.55f, 1f, 0.75f).forEachIndexed { j, h ->
             val bx = x0 + j * 12f * k
-            rect.set(bx, 128f * k - 34f * k * h, bx + 8f * k, 128f * k)
+            rect.set(bx, NAME_Y * k - 34f * k * h, bx + 8f * k, NAME_Y * k)
             c.drawRoundRect(rect, 3f * k, 3f * k, p)
         }
-        c.drawText(name, x0 + markWidth + 14f * k, 128f * k, text)
+        c.drawText(name, x0 + markWidth + 14f * k, NAME_Y * k, text)
         text.letterSpacing = 0f
         // The title, on two lines at most.
         text.typeface = bold
         text.color = colors.text
         text.textSize = 64f * k
         val title = plan.title.ifBlank { tr("Mon morceau") }
-        val layout = StaticLayout.Builder.obtain(title, 0, title.length, text, (width - 96f * k).toInt())
+        val layout = StaticLayout.Builder.obtain(title, 0, title.length, text, (width - 2 * SIDE * k).toInt())
             .setAlignment(Layout.Alignment.ALIGN_CENTER).setMaxLines(2).setEllipsize(TextUtils.TruncateAt.END).build()
         c.save()
-        c.translate(48f * k, 190f * k)
+        c.translate(SIDE * k, (NAME_Y + 50f) * k)
         layout.draw(c)
         c.restore()
         // The foot.
@@ -161,8 +163,8 @@ class VideoFrameRenderer(
         text.textSize = 96f * k
         text.color = colors.text
         text.alpha = (255 * inT).toInt()
-        val label = TextUtils.ellipsize(section.label, text, width - 80f * k, TextUtils.TruncateAt.END).toString()
-        canvas.drawText(label, (width - text.measureText(label)) / 2f, (1010f + 24f * (1f - inT)) * k, text)
+        val label = TextUtils.ellipsize(section.label, text, width - 2 * SIDE * k, TextUtils.TruncateAt.END).toString()
+        canvas.drawText(label, (width - text.measureText(label)) / 2f, (PART_Y + 24f * (1f - inT)) * k, text)
         text.alpha = 255
         // The next part, in its last three seconds.
         val next = plan.sections.getOrNull(s + 1)
@@ -171,14 +173,14 @@ class VideoFrameRenderer(
             text.textSize = 30f * k
             text.color = colors.textSecondary
             val then = tr("Ensuite : %s", next.label)
-            canvas.drawText(then, (width - text.measureText(then)) / 2f, 1062f * k, text)
+            canvas.drawText(then, (width - text.measureText(then)) / 2f, (PART_Y + 48f) * k, text)
         }
     }
 
     private fun strip(canvas: Canvas, t: Double) {
-        val left = 60f * k
-        val right = width - 60f * k
-        val top = 1110f * k
+        val left = SIDE * k
+        val right = width - SIDE * k
+        val top = STRIP_Y * k
         val h = 34f * k
         val seconds = plan.seconds.coerceAtLeast(1e-6)
         val current = plan.sectionAt(t)
@@ -205,15 +207,23 @@ class VideoFrameRenderer(
         text.typeface = regular
         text.textSize = 24f * k
         text.color = colors.textSecondary
-        canvas.drawText(clock(t), left, top + h + 40f * k, text)
+        canvas.drawText(clock(t), left, top + h + 34f * k, text)
         val end = clock(plan.seconds)
-        canvas.drawText(end, right - text.measureText(end), top + h + 40f * k, text)
+        canvas.drawText(end, right - text.measureText(end), top + h + 34f * k, text)
     }
 
     companion object {
         // Odd: the playhead bar sits in the middle of the picture.
-        const val BARS = 47
-        const val WAVE_Y = 640f
+        const val BARS = 41
+        const val WAVE_Y = 560f
+        /** Baselines of the app's name and of the part's name, the strip's top (720 × 1280 layout). */
+        const val NAME_Y = 150f
+        const val PART_Y = 815f
+        const val STRIP_Y = 890f
+        /** Room on each side: the apps' buttons sit along the right edge. */
+        const val SIDE = 90f
+        /** The bottom of what must stay seen: the strip's clock ends above 75 % of the height. */
+        const val SAFE_BOTTOM = 960f
 
         fun clock(seconds: Double): String {
             val s = seconds.toInt().coerceAtLeast(0)

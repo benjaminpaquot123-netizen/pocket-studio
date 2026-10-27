@@ -416,14 +416,16 @@ static void freeReleasedTakes() {
 }
 
 // Opens the microphone and arms a recording of up to `seconds`; 0 when the microphone is unavailable.
-// `onStart`: the recording begins exactly when the transport reaches its first step.
-JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_recordStart(JNIEnv*, jobject, jboolean onStart, jint seconds) {
+// `onStart`: the recording begins exactly when the transport reaches its first step; the last
+// `prerollFrames` before it (the count-in) are kept in front of it.
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_recordStart(JNIEnv*, jobject, jboolean onStart, jint seconds, jint prerollFrames) {
     if (seconds <= 0 || seconds > 600) return 0;
     freeReleasedTakes();
     if (!host().startRecordingInput(ps::AudioHost::MicRecording)) return 0;
+    const int64_t preroll = onStart ? std::clamp<int64_t>(prerollFrames, 0, 48000 * 4) : 0;
     ps::RecordBuffer* buffer = nullptr;
     try {
-        buffer = new ps::RecordBuffer(static_cast<int64_t>(seconds) * 48000);
+        buffer = new ps::RecordBuffer(static_cast<int64_t>(seconds) * 48000, preroll);
     } catch (const std::bad_alloc&) {
         // Out of memory (big instruments loaded): no take, as with no microphone, never a crash.
         host().stopRecordingInput(ps::AudioHost::MicRecording);
@@ -439,18 +441,26 @@ JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_recordStart(JN
     return reinterpret_cast<jlong>(buffer);
 }
 
-// [state (0 waiting, 1 recording, 2 finished), frames written, input peak].
+// [state (0 waiting, 1 recording, 2 finished), frames written (after the pre-roll), input peak].
 JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordStatus(JNIEnv* env, jobject, jlong handle) {
     auto* b = reinterpret_cast<ps::RecordBuffer*>(handle);
+    const int64_t written = std::max<int64_t>(0, b->written.load(std::memory_order_acquire) - b->preroll);
     const jfloat values[3] = {static_cast<jfloat>(b->state.load(std::memory_order_acquire)),
-                              static_cast<jfloat>(b->written.load(std::memory_order_acquire)), b->peak.load(std::memory_order_relaxed)};
+                              static_cast<jfloat>(written), b->peak.load(std::memory_order_relaxed)};
     jfloatArray out = env->NewFloatArray(3);
     if (out) env->SetFloatArrayRegion(out, 0, 3, values);
     return out;
 }
 
+// The engine no longer writes into it: the pre-roll ring is put in order, then copied out (the
+// pre-roll first, then the take).
 static jfloatArray takeOut(JNIEnv* env, ps::RecordBuffer* b) {
     const auto frames = static_cast<jsize>(std::min<int64_t>(b->written.load(std::memory_order_acquire), static_cast<int64_t>(b->data.size())));
+    if (b->preroll > 0 && frames >= b->preroll) {
+        const int64_t head = std::clamp<int64_t>(b->prerollHead.load(std::memory_order_acquire), 0, b->preroll);
+        std::rotate(b->data.begin(), b->data.begin() + head, b->data.begin() + b->preroll);
+        b->prerollHead.store(0, std::memory_order_relaxed);
+    }
     jfloatArray out = env->NewFloatArray(frames);
     if (out && frames > 0) env->SetFloatArrayRegion(out, 0, frames, b->data.data());
     return out;

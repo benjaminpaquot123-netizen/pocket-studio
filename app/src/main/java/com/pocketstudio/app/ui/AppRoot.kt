@@ -2283,6 +2283,7 @@ WithPartHeader(rhythmVm) { partModifier ->
                                         scene = project.scene,
                                         sceneTitles = project.allScenes.indices.map { project.sceneTitle(it) },
                                         partStarts = project.song.indices.map { project.songStepOf(it) },
+                                        monitor = settings.monitorVoice,
                                     ),
                                     AudioTracksActions(
                                         add = rhythmVm::addAudioTrack,
@@ -2322,6 +2323,7 @@ WithPartHeader(rhythmVm) { partModifier ->
                                         punch = { id, from, to ->
                                             if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) rhythmVm.recordPunch(id, from, to)
                                         },
+                                        setMonitor = { on -> com.pocketstudio.app.settings.SettingsStore.update(context) { it.copy(monitorVoice = on) } },
                                     ),
                                     modifier = partModifier,
                                 )

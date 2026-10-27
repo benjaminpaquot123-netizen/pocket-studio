@@ -393,5 +393,6 @@
   "%s (avant la séance)": "%s (vóór de sessie)",
   "Sauvegarde impossible (%s). Tes dernières modifications ne sont pas encore sauvegardées : l'appli réessaie à la prochaine modification.": "Opslaan mislukt (%s). Je laatste wijzigingen zijn nog niet opgeslagen: de app probeert het opnieuw bij je volgende wijziging.",
   "Le projet n'a pas pu être sauvegardé (%s) : il reste ouvert, réessaie dans un instant.": "Het project kon niet worden opgeslagen (%s): het blijft open, probeer het zo opnieuw.",
-  "connexion coupée": "verbinding verbroken"
+  "connexion coupée": "verbinding verbroken",
+  "Pour le micro, le décompte dure quand même 1 mesure : ta prise commence pile sur le temps.": "Voor de microfoon duurt het aftellen toch 1 maat, zodat je opname precies op de tel begint."
 }

@@ -97,6 +97,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.app.mixer.QuickFxActions
 import com.pocketstudio.app.session.LivePadsActions
 import com.pocketstudio.app.session.LivePadsCard
@@ -622,7 +623,7 @@ internal fun TakeBanner(ui: LiveScreenUi, actions: LiveActions, showReady: Boole
                     )
                     // A limit coming is said before it bites; else what the take leaves out.
                     Text(
-                        take.warning ?: tr("Les pads sont enregistrés, pas M : pour un break, arrête la colonne avec ■."),
+                        take.warning ?: tr("Pads enregistrés, pas M : pour un break, utilise ■."),
                         Modifier.testTag("live_take_note"), style = MaterialTheme.typography.labelSmall,
                         color = if (take.warning != null) Neon.Amber else Neon.TextSecondary, maxLines = 2,
                     )
@@ -1024,20 +1025,23 @@ private fun LivePanel(
         Row(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             val tabs = if (sideBySide) listOf(LivePanelTab.Effets to tr("Effets et 303"), LivePanelTab.Pads to tr("Pads"), LivePanelTab.Notes to tr("Notes"))
             else listOf(LivePanelTab.Effets to tr("Effets"), LivePanelTab.Acide to "303", LivePanelTab.Pads to tr("Pads"), LivePanelTab.Notes to tr("Notes"))
-            // The tabs share the row (a bigger text shortens them, never hides one under ⛶).
-            Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            // The tabs share the row by the length of their names (a bigger text makes them
+            // smaller, never hides one under ⛶).
+            Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 tabs.forEach { (t, label) ->
                     val selected = open && shown == t
                     // No 303 line in the project: its tab stays (it says how to get one) but greyed.
                     val idle = t == LivePanelTab.Acide && !ui.hasAcid
                     Box(
-                        Modifier.weight(1f).height(48.dp).clip(RoundedCornerShape(24.dp)).background(if (selected) Neon.Cyan else Neon.SurfaceHigh)
-                            .clickable { onTab(t) }.padding(horizontal = 6.dp).testTag("live_tab_${t.name}"),
+                        Modifier.weight(label.length + 3f).height(48.dp).clip(RoundedCornerShape(24.dp)).background(if (selected) Neon.Cyan else Neon.SurfaceHigh)
+                            .clickable { onTab(t) }.padding(horizontal = 4.dp).testTag("live_tab_${t.name}"),
                         contentAlignment = Alignment.Center,
                     ) {
+                        val style = MaterialTheme.typography.labelLarge
                         Text(
                             label, color = if (selected) Neon.OnAccent else if (idle) Neon.TextSecondary.copy(alpha = 0.6f) else Neon.TextPrimary,
-                            style = MaterialTheme.typography.labelLarge, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis,
+                            style = style, maxLines = 1, softWrap = false,
+                            autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 10.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
                         )
                     }
                 }

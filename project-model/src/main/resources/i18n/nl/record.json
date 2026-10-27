@@ -52,7 +52,7 @@
   "Les pistes audio sont toutes prises : les pads live de cette prise n'ont pas été gardés.": "Alle audiosporen zijn bezet: de live pads van deze opname zijn niet bewaard.",
   "Écriture des pads live…": "Live pads schrijven…",
   "Les pads live de ta prise sont sur la piste audio « %s ».": "De live pads van je opname staan op het audiospoor „%s”.",
-  "Les pads sont enregistrés, pas M : pour un break, arrête la colonne avec ■.": "De pads worden opgenomen, M niet: stop voor een break de kolom met ■.",
+  "Pads enregistrés, pas M : pour un break, utilise ■.": "Pads opgenomen, M niet: gebruik ■ voor een break.",
   "Pas de piste à jouer : ajoute une piste dans Synthé.": "Geen spoor om te spelen: voeg er een toe in Synth.",
   "Octave plus grave": "Octaaf lager",
   "Octave plus aiguë": "Octaaf hoger",

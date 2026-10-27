@@ -1,0 +1,23 @@
+{
+  "Lance ▶": "▶ を押す",
+  "Trop faible": "小さすぎ",
+  "Bien": "良い",
+  "Fort et propre": "大きくてクリア",
+  "Ça sature": "音割れ",
+  "Partie en boucle": "パートをループ",
+  "Tout à zéro": "すべて元に戻す",
+  "À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule.": "あなたの番：聞かせたい音を上げ、邪魔な音を下げよう。▶ でトラックを単独で聴けます。",
+  "Voir ses sons": "音を表示",
+  "Volume de sortie": "出力音量",
+  "Aucun conseil pour l'instant : règle à l'oreille.": "今のところアドバイスはありません：耳を信じて。",
+  "Remettre à 0 dB": "0 dB に戻す",
+  "Ça sature : le son grésille.": "音割れ：音がバリバリしています。",
+  "Baisser la sortie de %s dB": "出力を %s dB 下げる",
+  "Un solo est resté allumé : on n'entend plus que %s.": "ソロがオンのまま：%s しか聞こえません。",
+  "La basse et le kick se gênent.": "ベースとキックがぶつかっています。",
+  "Baisser la basse de %s dB": "ベースを %s dB 下げる",
+  "« %s » couvre les autres.": "「%s」が他を覆っています。",
+  "Le baisser de %s dB": "%s dB 下げる",
+  "« %s » se perd dans le mix.": "「%s」がミックスに埋もれています。",
+  "Le monter de %s dB": "%s dB 上げる"
+}

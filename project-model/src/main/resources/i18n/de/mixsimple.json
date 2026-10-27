@@ -1,0 +1,23 @@
+{
+  "Lance ▶": "Drück ▶",
+  "Trop faible": "Zu leise",
+  "Bien": "Gut",
+  "Fort et propre": "Laut und sauber",
+  "Ça sature": "Es übersteuert",
+  "Partie en boucle": "Teil in Schleife",
+  "Tout à zéro": "Alles zurück",
+  "À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule.": "Du bist dran: lauter, was man hören soll, leiser, was stört. Tippe ▶, um eine Spur allein zu hören.",
+  "Voir ses sons": "Ihre Klänge zeigen",
+  "Volume de sortie": "Ausgangslautstärke",
+  "Aucun conseil pour l'instant : règle à l'oreille.": "Gerade kein Tipp: vertrau deinen Ohren.",
+  "Remettre à 0 dB": "Zurück auf 0 dB",
+  "Ça sature : le son grésille.": "Es übersteuert: der Klang knistert.",
+  "Baisser la sortie de %s dB": "Ausgang um %s dB leiser",
+  "Un solo est resté allumé : on n'entend plus que %s.": "Ein Solo ist noch an: man hört nur %s.",
+  "La basse et le kick se gênent.": "Bass und Kick stören sich.",
+  "Baisser la basse de %s dB": "Bass um %s dB leiser",
+  "« %s » couvre les autres.": "„%s“ überdeckt die anderen.",
+  "Le baisser de %s dB": "Um %s dB leiser",
+  "« %s » se perd dans le mix.": "„%s“ geht im Mix unter.",
+  "Le monter de %s dB": "Um %s dB lauter"
+}

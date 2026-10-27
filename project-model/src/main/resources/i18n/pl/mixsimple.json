@@ -1,0 +1,23 @@
+{
+  "Lance ▶": "Naciśnij ▶",
+  "Trop faible": "Za cicho",
+  "Bien": "Dobrze",
+  "Fort et propre": "Głośno i czysto",
+  "Ça sature": "Przesterowuje",
+  "Partie en boucle": "Część w pętli",
+  "Tout à zéro": "Wszystko od nowa",
+  "À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule.": "Twoja kolej: podgłośnij to, co ma być słychać, przycisz to, co przeszkadza. Dotknij ▶, by posłuchać ścieżki osobno.",
+  "Voir ses sons": "Pokaż jej dźwięki",
+  "Volume de sortie": "Głośność wyjścia",
+  "Aucun conseil pour l'instant : règle à l'oreille.": "Na razie brak porad: zaufaj uszom.",
+  "Remettre à 0 dB": "Z powrotem na 0 dB",
+  "Ça sature : le son grésille.": "Przesterowuje: dźwięk trzeszczy.",
+  "Baisser la sortie de %s dB": "Przycisz wyjście o %s dB",
+  "Un solo est resté allumé : on n'entend plus que %s.": "Solo zostało włączone: słychać tylko %s.",
+  "La basse et le kick se gênent.": "Bas i stopa sobie przeszkadzają.",
+  "Baisser la basse de %s dB": "Przycisz bas o %s dB",
+  "« %s » couvre les autres.": "„%s” zagłusza resztę.",
+  "Le baisser de %s dB": "Przycisz o %s dB",
+  "« %s » se perd dans le mix.": "„%s” ginie w miksie.",
+  "Le monter de %s dB": "Podgłośnij o %s dB"
+}

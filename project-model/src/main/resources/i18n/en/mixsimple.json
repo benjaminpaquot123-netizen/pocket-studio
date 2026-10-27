@@ -1,0 +1,23 @@
+{
+  "Lance ▶": "Press ▶",
+  "Trop faible": "Too quiet",
+  "Bien": "Good",
+  "Fort et propre": "Loud and clean",
+  "Ça sature": "Clipping",
+  "Partie en boucle": "Loop the part",
+  "Tout à zéro": "Reset all",
+  "À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule.": "Your turn: raise what should be heard, lower what gets in the way. Tap ▶ to hear a track on its own.",
+  "Voir ses sons": "Show its sounds",
+  "Volume de sortie": "Output volume",
+  "Aucun conseil pour l'instant : règle à l'oreille.": "No tip for now: trust your ears.",
+  "Remettre à 0 dB": "Back to 0 dB",
+  "Ça sature : le son grésille.": "Clipping: the sound crackles.",
+  "Baisser la sortie de %s dB": "Lower the output by %s dB",
+  "Un solo est resté allumé : on n'entend plus que %s.": "A solo was left on: only %s can be heard.",
+  "La basse et le kick se gênent.": "The bass and the kick clash.",
+  "Baisser la basse de %s dB": "Lower the bass by %s dB",
+  "« %s » couvre les autres.": "“%s” covers the others.",
+  "Le baisser de %s dB": "Lower it by %s dB",
+  "« %s » se perd dans le mix.": "“%s” gets lost in the mix.",
+  "Le monter de %s dB": "Raise it by %s dB"
+}

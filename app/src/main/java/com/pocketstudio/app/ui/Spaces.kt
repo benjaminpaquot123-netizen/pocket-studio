@@ -83,19 +83,21 @@ val AppTab.space: Space get() = when (this) {
 }
 
 /**
- * The four tabs of the Mode simple, in everyday words: the song first (where one lands), the
- * drums, the keyboard, and « Envoyer » (the « Fini ? » page: checks, Partager, WAV).
+ * The five tabs of the Mode simple, in everyday words: the song first (where one lands), the
+ * drums, the keyboard, « Mix » (big faders and meters) and « Envoyer » (the « Fini ? » page).
  */
 enum class SimpleTab(val icon: ImageVector, val tab: AppTab) {
     Morceau(Icons.AutoMirrored.Filled.QueueMusic, AppTab.Morceau),
     Rythme(Icons.Filled.GridView, AppTab.Rythme),
     Clavier(Icons.Filled.Piano, AppTab.Synthe),
+    Mix(Icons.Filled.Tune, AppTab.Mixeur),
     Envoyer(Icons.AutoMirrored.Filled.Send, AppTab.Envoyer);
 
     val label: String get() = when (this) {
         Morceau -> tr("Mon morceau")
         Rythme -> tr("Rythme")
         Clavier -> tr("Clavier")
+        Mix -> tr("Mix")
         Envoyer -> tr("Envoyer")
     }
 
@@ -103,6 +105,7 @@ enum class SimpleTab(val icon: ImageVector, val tab: AppTab) {
         Morceau -> tr("Parties et pistes")
         Rythme -> tr("Batterie")
         Clavier -> tr("Jouer, enregistrer")
+        Mix -> tr("Volumes")
         Envoyer -> tr("Partager")
     }
 

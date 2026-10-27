@@ -584,7 +584,21 @@ data class Mixer(
     @EncodeDefault(EncodeDefault.Mode.NEVER) val sidechainKey: Int = -1,
     /** Phase 34 (S5): the « Musique » bus (null: none, every strip straight into the mix, as before). */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val musicBus: MusicBus? = null,
+    /**
+     * Mode simple « ↺ Tout à zéro »: each strip's volume as the assistant left the song (empty: a
+     * song made by hand, every strip at 0 dB). Left out of the file when empty.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val startVolumes: List<Float> = emptyList(),
 ) {
+    /** Strip [ch]'s volume as the assistant left it (0 dB without one). */
+    fun startVolume(ch: Int): Float = startVolumes.getOrNull(ch) ?: DEFAULT_VOLUME
+
+    /** The volumes as they are now kept as the assistant's ([startVolume]). */
+    fun withStartVolumes(): Mixer = copy(startVolumes = channels.map { it.volume })
+
+    /** Every strip's volume back to the assistant's (the master's index left alone). */
+    fun atStartVolumes(): Mixer = copy(channels = channels.mapIndexed { i, c -> if (i == MASTER) c else c.copy(volume = startVolume(i)) })
+
     /** [masterDb] as a linear gain, for the engine. */
     val masterGain: Float get() = Math.pow(10.0, masterDb / 20.0).toFloat()
 
@@ -609,6 +623,7 @@ data class Mixer(
         monoBassHz = monoBassHz.takeIf { it.isFinite() && it >= 20f }?.coerceAtMost(400f) ?: 0f,
         sidechainKey = sidechainKey.takeIf { it in 0 until CHANNELS && it != MASTER } ?: -1,
         musicBus = musicBus?.sanitized(),
+        startVolumes = startVolumes.take(CHANNELS).map { v -> v.takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: DEFAULT_VOLUME },
     )
 
     companion object {
@@ -617,6 +632,8 @@ data class Mixer(
          * audio tracks 5..8 (after the pads: the numbers saved before stay).
          */
         const val CHANNELS = 36
+        /** A strip's fader at 0 dB (the engine's (v / 0.8)² law). */
+        const val DEFAULT_VOLUME = 0.8f
         const val FIRST_PAD = 16
         const val PADS = 16
         /** The strip of audio track 5 (the 5th to 8th come after the pads'). */

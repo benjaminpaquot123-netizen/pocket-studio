@@ -6374,6 +6374,54 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         muted.forEach { pushStrip(it, before[it]) }
     }
 
+    // --- Mode simple « Mix » ------------------------------------------------------------------
+
+    /** « ↺ Tout à zéro »: every strip back to the assistant's level (0 dB in a song made by hand), one undo step. */
+    fun resetMixLevels() {
+        val p = project.value
+        if (p.mixer.atStartVolumes().channels == p.mixer.channels) return
+        session.edit { it.copy(mixer = it.mixer.atStartVolumes()) }
+        pushMixer()
+    }
+
+    /** A fader touched twice: back to 0 dB, an undo step of its own. */
+    fun resetChannelVolume(ch: Int) {
+        val now = project.value.mixer.channels.getOrNull(ch)?.volume ?: return
+        if (now == Mixer.DEFAULT_VOLUME) return
+        editChannel(ch, null) { it.copy(volume = Mixer.DEFAULT_VOLUME) }
+    }
+
+    /** A mix tip's one-tap fix ([com.pocketstudio.model.guide.MixTips]), one undo step. */
+    fun applyMixTip(tip: com.pocketstudio.model.guide.MixTip) {
+        val p = project.value
+        val next = com.pocketstudio.model.guide.MixTips.apply(p, tip)
+        if (next == p) return
+        session.edit { com.pocketstudio.model.guide.MixTips.apply(it, tip) }
+        pushMixer()
+    }
+
+    /**
+     * The drum sounds the Mix tab shows with a meter each: while shown they play through their
+     * own strip (left neutral when the project gives it nothing: the sound is the same), whose
+     * meter the engine reads. Empty when the tab goes.
+     */
+    private var meteredPads: Set<Int> = emptySet()
+
+    fun meterPads(lanes: Set<Int>) {
+        if (lanes == meteredPads) return
+        meteredPads = lanes
+        if (NativeEngine.isAvailable) pushMixer()
+    }
+
+    /** Pad [lane] goes through its own strip for its meter alone (never in an export). */
+    private fun metered(lane: Int): Boolean = lane in meteredPads && !NativeEngine.isCapturing
+
+    /** Tests: the meters and the loudness as the engine would give them (Robolectric has no engine). */
+    internal fun showMetersForTest(meters: FloatArray, loudness: FloatArray? = null) {
+        _meters.value = meters.copyOf()
+        loudness?.let { _loudness.value = it.copyOf() }
+    }
+
     private fun editChannel(ch: Int, key: String?, transform: (com.pocketstudio.model.Channel) -> com.pocketstudio.model.Channel) {
         val before = project.value.mixer.channels.getOrNull(ch)
         session.edit(key?.let { "mix-$ch-$it" }) { p ->
@@ -6446,8 +6494,22 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         NativeEngine.setMonoBass(p.mixer.monoBassHz)
         pushSidechain(p)
         p.mixer.buses.forEachIndexed { bus, params -> params.forEachIndexed { k, v -> NativeEngine.setBusParam(bus, k, v) } }
+        // The Mix tab's drum sounds with their meter: their strip as the project has it (neutral).
+        pads.let { routed ->
+            for (lane in meteredPads) {
+                val ch = Mixer.padChannel(lane)
+                if (lane in routed || !metered(lane) || ch >= NativeEngine.MIXER_CHANNELS) continue
+                val c = p.mixer.channels.getOrNull(ch) ?: com.pocketstudio.model.Channel()
+                NativeEngine.setChannelVolume(ch, c.volume)
+                NativeEngine.setChannelPan(ch, c.pan)
+                NativeEngine.setChannelMute(ch, c.mute)
+                NativeEngine.setChannelSolo(ch, c.solo)
+                c.sends.forEachIndexed { bus, level -> NativeEngine.setSend(ch, bus, level) }
+                c.macros.forEachIndexed { m, v -> NativeEngine.setMacro(ch, m, v) }
+            }
+        }
         // Pads with effects of their own go through their strip, the others straight into the drums.
-        (0 until DrumPattern.PAD_COUNT).forEach { NativeEngine.setPadStrip(it, it in pads) }
+        (0 until DrumPattern.PAD_COUNT).forEach { NativeEngine.setPadStrip(it, it in pads || metered(it)) }
         // « Écouter seul » playing: its solos again over the project's.
         applyAlone()
     }
@@ -6492,7 +6554,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             c.sends.forEachIndexed { bus, level -> NativeEngine.setSend(ch, bus, level) }
             c.macros.forEachIndexed { m, v -> NativeEngine.setMacro(ch, m, v) }
         }
-        NativeEngine.setPadStrip(ch - Mixer.FIRST_PAD, c.routesPad())
+        NativeEngine.setPadStrip(ch - Mixer.FIRST_PAD, c.routesPad() || metered(ch - Mixer.FIRST_PAD))
         applyAlone()
     }
 
@@ -7753,7 +7815,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         a.target.channels.forEach { if (it < NativeEngine.MIXER_CHANNELS) NativeEngine.setChannelSolo(it, false) }
         a.target.pads.forEach { lane ->
             NativeEngine.setChannelSolo(Mixer.padChannel(lane), false)
-            NativeEngine.setPadStrip(lane, false)
+            NativeEngine.setPadStrip(lane, metered(lane))
         }
     }
 

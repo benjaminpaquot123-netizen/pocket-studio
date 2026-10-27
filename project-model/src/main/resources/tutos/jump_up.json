@@ -1,0 +1,160 @@
+{
+  "format": 1,
+  "style": "jump_up",
+  "chapters": [
+    {
+      "id": "bases", "title": "Le tempo et la tonalité",
+      "why": "Chaque style a sa vitesse et sa couleur. Le jump up court à 174 BPM, dans une gamme sombre.",
+      "steps": [
+        {"id": "ref", "text": "Écoute un extrait de jump up fini : c'est ce que tu vas construire, brique par brique.", "check": "listen", "listen": "song"},
+        {"id": "tempo", "text": "À toi : règle le tempo sur 174 BPM.", "check": "tempo", "spot": "tempo", "listen": "drums:kick,snare,hat"},
+        {"id": "key", "text": "À toi : choisis la tonalité Fa, gamme sombre.", "textPro": "À toi : choisis la tonalité Fa phrygien (le mode le plus sombre).", "check": "key", "spot": "key", "listen": "parts:pad"}
+      ]
+    },
+    {
+      "id": "kick", "title": "Le kick",
+      "why": "Le kick, c'est le battement de cœur. En drum & bass il frappe sur le 1 et juste après le 3 : le two-step.",
+      "steps": [
+        {"id": "kick_hear", "text": "Écoute le kick du jump up, seul.", "check": "listen", "listen": "drums:kick"},
+        {"id": "kick_do", "text": "À toi : sur le pad Kick, allume les cases en pointillé.", "check": "lane:kick", "spot": "rhythm.pattern", "target": "kick", "listen": "drums:kick"},
+        {"id": "kick_sound", "levels": "p", "text": "Choisis un kick court et sec : la basse prend la place autour.", "check": "changed:kit", "spot": "rhythm.kit", "target": "kick", "listen": "drums:kick"}
+      ]
+    },
+    {
+      "id": "snare", "title": "Caisse claire et clap",
+      "why": "La caisse claire répond au kick sur les temps 2 et 4 : c'est elle qui fait sauter la salle.",
+      "steps": [
+        {"id": "snare_do", "text": "À toi : sur le pad Caisse claire, allume les cases en pointillé (2 mesures).", "check": "lane:snare", "spot": "rhythm.pattern", "target": "snare", "listen": "drums:kick,snare"},
+        {"id": "clap_do", "text": "À toi : ajoute le clap pile sur la caisse claire.", "check": "lane:clap", "spot": "rhythm.pattern", "target": "clap", "listen": "drums:kick,snare,clap"}
+      ]
+    },
+    {
+      "id": "hats", "title": "Charleys et percussions",
+      "why": "Le charley donne la vitesse. Les petites percussions font rouler le rythme entre les coups.",
+      "steps": [
+        {"id": "hat_do", "text": "À toi : sur le pad Charley, allume les cases en pointillé.", "check": "lane:hat", "spot": "rhythm.pattern", "target": "hat", "listen": "drums:kick,snare,clap,hat"},
+        {"id": "perc_do", "levels": "p", "text": "À toi : ajoute quelques coups de percussion entre les temps.", "check": "lane:perc", "spot": "rhythm.pattern", "target": "perc", "listen": "drums:kick,snare,clap,hat,perc"},
+        {"id": "hat_vel", "levels": "p", "text": "Joue sur la force : les charleys plus forts entre les temps, plus doux sur les temps.", "check": "velocity:hat", "spot": "rhythm.pattern", "target": "hat", "listen": "drums:hat"},
+        {"id": "drums_hear", "text": "Écoute toute ta batterie ensemble.", "check": "listen", "listen": "drums:kick,snare,clap,hat,perc"}
+      ]
+    },
+    {
+      "id": "bass", "title": "La basse",
+      "why": "La vedette du jump up : une basse grasse qui frappe avec le kick et se tait pour laisser répondre la mélodie.",
+      "steps": [
+        {"id": "bass_hear", "text": "Écoute la basse avec la batterie.", "check": "listen", "listen": "parts:kick,snare,hat,bass"},
+        {"id": "bass_do", "text": "À toi : ajoute une piste Basse et joue des notes graves qui tombent avec le kick.", "textPro": "À toi : ajoute une piste Basse et écris la ligne dans le piano roll, gamme verrouillée.", "check": "notes:bass", "spot": "notes.track", "target": "bass", "listen": "parts:bass"}
+      ]
+    },
+    {
+      "id": "bass_design", "levels": "p", "title": "Le son de la basse",
+      "why": "Le grognement vient du filtre, de la distorsion et d'un sub en dessous. Le pump laisse passer le kick.",
+      "steps": [
+        {"id": "bass_knobs", "text": "Ouvre le filtre (cutoff), monte la résonance et la distorsion : la basse se met à grogner.", "check": "changed:synth:bass", "spot": "sounds.track", "target": "bass", "listen": "parts:bass"},
+        {"id": "bass_sub", "text": "Ajoute une piste Sub qui double la basse une octave plus bas.", "check": "track:sub", "spot": "notes.track", "target": "bass", "listen": "parts:bass"},
+        {"id": "bass_pump", "text": "Mets un Pump sur la basse : elle se baisse à chaque kick (sidechain).", "check": "insert:PUMP", "spot": "mixer.strip", "target": "bass", "listen": "parts:kick,bass"}
+      ]
+    },
+    {
+      "id": "chords", "title": "Les accords",
+      "why": "Une nappe d'accords tenus pose l'ambiance sombre, surtout dans l'intro et la pause.",
+      "steps": [
+        {"id": "pad_do", "text": "À toi : ajoute une piste Accords et pose un accord par mesure.", "textPro": "À toi : ajoute une nappe et écris les accords dans le piano roll (un par mesure).", "check": "notes:pad", "spot": "notes.track", "target": "pad", "listen": "parts:pad"}
+      ]
+    },
+    {
+      "id": "lead", "title": "La mélodie",
+      "why": "Le hoover, un son de rave qui gronde, répond à la basse dans ses silences : question, réponse.",
+      "steps": [
+        {"id": "lead_hear", "text": "Écoute la mélodie avec la basse.", "check": "listen", "listen": "parts:bass,lead"},
+        {"id": "lead_do", "text": "À toi : ajoute une piste Mélodie et joue quelques notes aiguës dans les trous de la basse.", "textPro": "À toi : ajoute un lead hoover et écris un riff court dans les silences de la basse.", "check": "notes:lead", "spot": "notes.track", "target": "lead", "listen": "parts:lead"},
+        {"id": "lead_knobs", "levels": "p", "text": "Règle le synthé du lead : attaque courte, glide et un peu de désaccord pour qu'il gronde.", "check": "changed:synth:lead", "spot": "sounds.track", "target": "lead", "listen": "parts:lead"}
+      ]
+    },
+    {
+      "id": "groove", "title": "Ta première partie : le Groove",
+      "why": "Tout ce que tu as fait joue ensemble : c'est ta brique de départ. Les autres parties naîtront d'elle.",
+      "steps": [
+        {"id": "groove_hear", "text": "Écoute ta boucle en entier, puis l'exemple.", "check": "listen", "listen": "parts:kick,snare,clap,hat,perc,bass,pad,lead"},
+        {"id": "groove_name", "text": "À toi : nomme cette partie Groove.", "check": "label:Groove", "spot": "song.parts", "listen": "parts:kick,snare,clap,hat,perc,bass,pad,lead"}
+      ]
+    },
+    {
+      "id": "structure", "title": "Comprendre les parties", "map": true,
+      "why": "Une partie, c'est un ensemble de boucles qui jouent ensemble. Un morceau, c'est une suite de parties qui montent et descendent en énergie.",
+      "steps": [
+        {"id": "brick", "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la basse). Une partie, ce sont plusieurs briques qui jouent ensemble.", "check": "manual", "why": "Tu changes une partie en ajoutant ou en enlevant des briques : c'est comme ça qu'on fait monter ou descendre l'énergie."},
+        {"id": "map_intro", "text": "Écoute l'Intro : batterie et ambiance, sans la basse.", "check": "listen", "listen": "part:Intro", "why": "Elle dure 32 mesures : le DJ a le temps de la mélanger avec le morceau d'avant."},
+        {"id": "map_montee", "text": "Écoute la Montée : plus de kick, la caisse claire roule de plus en plus vite.", "check": "listen", "listen": "part:Montée", "why": "On retire le kick pour créer un manque : tout le monde attend qu'il revienne."},
+        {"id": "map_drop", "text": "Écoute le Drop : le kick et la basse tombent d'un coup.", "check": "listen", "listen": "part:Drop", "why": "C'est le cœur du morceau, l'énergie au maximum."},
+        {"id": "map_break", "text": "Écoute le Break : le kick et la basse se taisent, on respire.", "check": "listen", "listen": "part:Break", "why": "Sans pause, le Drop suivant ne ferait plus d'effet."},
+        {"id": "map_drop2", "text": "Écoute le 2e Drop : la même énergie, mais la basse change.", "check": "listen", "listen": "part:Drop 2", "why": "Une surprise garde le public en éveil : en jump up, la 2e basse est un classique."},
+        {"id": "map_phrases", "text": "Regarde la carte : chaque partie dure 8, 16 ou 32 mesures, et la courbe montre l'énergie.", "check": "manual", "why": "Les DJ comptent en phrases de 8 mesures : un changement tombe toujours au début d'une phrase."}
+      ]
+    },
+    {
+      "id": "parts", "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Groove : tu enlèves ou tu changes des briques.",
+      "steps": [
+        {"id": "make_intro", "text": "À toi : copie le Groove dans une nouvelle partie, nomme-la Intro et enlève la basse, la caisse claire et la mélodie.", "check": "part:Intro:less", "spot": "song.parts", "keep": "kick,hat,perc,pad", "listen": "vs:Drop:Intro", "why": "Moins de briques, moins d'énergie : l'Intro donne envie sans tout montrer."},
+        {"id": "make_montee", "text": "À toi : nouvelle partie Montée, sans kick ni basse, avec une caisse claire qui roule.", "check": "part:Montée:nokick", "spot": "song.parts", "keep": "snare,hat,pad", "lanesFrom": "Montée", "listen": "vs:Intro:Montée", "why": "La tension monte parce qu'il manque le kick et que tout s'accélère."},
+        {"id": "make_drop", "text": "À toi : nouvelle partie Drop, avec toutes les briques du Groove.", "check": "part:Drop:full", "spot": "song.parts", "keep": "*", "listen": "vs:Montée:Drop", "why": "Tout arrive en même temps : c'est le moment le plus fort."},
+        {"id": "make_break", "text": "À toi : nouvelle partie Break : garde la nappe et les charleys, enlève le reste.", "check": "part:Break:nokick", "spot": "song.parts", "keep": "hat,pad", "listen": "vs:Drop:Break", "why": "Le vide après le plein : l'oreille se repose."},
+        {"id": "make_drop2", "text": "À toi : nouvelle partie Drop 2 : copie le Drop et change les notes de la basse.", "check": "part:Drop 2:differs", "spot": "song.parts", "keep": "*", "lanesFrom": "Drop 2", "transpose": 5, "listen": "vs:Drop:Drop 2", "why": "Même énergie, autre basse : le public est surpris."},
+        {"id": "make_fin", "text": "À toi : nouvelle partie Fin, légère comme l'Intro.", "check": "part:Fin:less", "spot": "song.parts", "keep": "kick,hat,perc", "listen": "vs:Drop:Intro", "why": "La Fin laisse au DJ de quoi passer au morceau suivant."}
+      ]
+    },
+    {
+      "id": "arrange", "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {"id": "song_order", "text": "À toi : pose tes parties dans l'ordre : Intro, Montée, Drop, Break, Montée, Drop 2, Fin.", "check": "song:order", "spot": "song.parts", "song": "Intro:32,Montée:8,Drop:32,Break:16,Montée:8,Drop 2:32,Fin:16", "listen": "song"},
+        {"id": "song_phrases", "text": "À toi : donne à chaque partie 8, 16 ou 32 mesures.", "check": "song:phrases", "spot": "song.parts", "song": "Intro:32,Montée:8,Drop:32,Break:16,Montée:8,Drop 2:32,Fin:16", "why": "Des phrases de 8 mesures : les changements tombent là où l'oreille les attend."}
+      ]
+    },
+    {
+      "id": "transitions", "title": "Les transitions",
+      "why": "Entre deux parties, un petit événement prévient l'oreille : un roulement, une cymbale, un silence.",
+      "steps": [
+        {"id": "fill", "text": "À toi : fais rouler la caisse claire à la fin de la Montée.", "check": "fill", "spot": "rhythm.pattern", "target": "snare", "listen": "part:Montée"},
+        {"id": "crash", "levels": "p", "text": "À toi : pose une cymbale sur le premier temps du Drop.", "check": "crash", "spot": "rhythm.pattern", "listen": "part:Drop"},
+        {"id": "gap", "text": "À toi : laisse un petit silence juste avant le Drop.", "check": "gap", "spot": "rhythm.pattern", "listen": "vs:Montée:Drop", "why": "Un demi-temps de rien, et le Drop paraît deux fois plus fort."},
+        {"id": "variation", "levels": "p", "text": "Toutes les 8 ou 16 mesures, change un détail : un coup de percussion, un charley ouvert.", "check": "manual", "spot": "rhythm.pattern", "listen": "vs:Drop:Drop 2"}
+      ]
+    },
+    {
+      "id": "fx", "title": "Les effets",
+      "why": "La réverbe donne de l'espace, l'écho répète, et un filtre qui s'ouvre fait monter la tension.",
+      "steps": [
+        {"id": "reverb", "text": "À toi : envoie la nappe et la caisse claire dans la réverbe.", "check": "send:0", "spot": "mixer.strip", "target": "pad", "listen": "parts:snare,pad"},
+        {"id": "delay", "levels": "p", "text": "À toi : envoie la mélodie dans l'écho (delay).", "check": "send:1", "spot": "mixer.strip", "target": "lead", "listen": "parts:lead"},
+        {"id": "riser", "text": "À toi : dessine une courbe : le filtre de la nappe s'ouvre pendant la Montée.", "textPro": "À toi : automatise le cutoff du filtre de la nappe sur toute la Montée.", "check": "automation", "spot": "song.automation", "target": "pad", "listen": "part:Montée"}
+      ]
+    },
+    {
+      "id": "mix", "title": "Le mix",
+      "why": "Le kick et la basse devant, la nappe derrière : chaque son trouve sa place.",
+      "steps": [
+        {"id": "levels", "text": "À toi : baisse un peu la nappe et la mélodie.", "check": "changed:volumes", "spot": "mixer.strip", "target": "pad", "listen": "parts:kick,snare,bass,pad,lead"},
+        {"id": "meters", "levels": "p", "text": "Regarde les vu-mètres pendant le Drop : rien ne doit rester dans le rouge.", "check": "manual", "spot": "mixer.strip"},
+        {"id": "buses", "levels": "p", "text": "Équilibre les groupes : batterie, basse, musique. Compare au morceau d'exemple.", "check": "manual", "spot": "mixer.whatplays", "listen": "song"}
+      ]
+    },
+    {
+      "id": "master", "levels": "p", "title": "Le mastering",
+      "why": "Le master colle le tout et donne le volume des clubs, sans écraser le kick.",
+      "steps": [
+        {"id": "master_fx", "text": "À toi : mets un compresseur multibande (OTT) et un limiteur sur le master.", "check": "master", "spot": "mixer.master", "listen": "song"},
+        {"id": "loudness", "text": "Vérifie le volume (loudness) avant d'exporter : vise celui des clubs.", "check": "manual", "spot": "share.check"}
+      ]
+    },
+    {
+      "id": "export", "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter !",
+      "steps": [
+        {"id": "formats", "levels": "p", "text": "WAV pour un DJ, M4A pour tes amis, pistes séparées pour un remix.", "check": "manual", "spot": "share.export"},
+        {"id": "share", "text": "À toi : exporte ton morceau et partage-le.", "check": "manual", "spot": "share.export"}
+      ]
+    }
+  ]
+}

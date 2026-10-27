@@ -216,6 +216,8 @@ class I18nCatalogTest {
             "WhatPlays.kt: side",  // a macro's end (Macros.ENDS, checked by ModelTextsTest)
             // The Guide's cards and stages (guides/*.json, GuideStages: checked by GuideParcoursTest).
             "GuideParcours.kt: fr",
+            // « Tuto de A à Z »: the course's texts (tutos/*.json, checked by TutoCourseTest) and the styles' names (ModelTextsTest).
+            "TutoPanel.kt: fr",
             // A word's alias in the « ? » helps (SoundGlossary.forHelp): compared with the shown term, never shown itself.
             "SoundGlossary.kt: it",
             // G4: « Voilà ce que j'ai mis »: an effect's name and a send's bus (EffectType, Buses: checked by ModelTextsTest).

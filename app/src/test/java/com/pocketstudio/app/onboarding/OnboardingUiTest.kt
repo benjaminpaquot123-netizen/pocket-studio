@@ -90,7 +90,11 @@ class OnboardingUiTest {
         compose.onNodeWithTag("project_wizard").performClick()
         assertEquals(1, wizard)
         compose.onNodeWithTag("project_new").performClick()
-        for (heading in listOf("PARTIR D'UN STYLE", "ÉCOUTER UNE DÉMO", "VIDE")) compose.onNodeWithText(heading).assertExists()
+        // Three big choices; the rest waits folded under « Autres façons de commencer ».
+        listOf("start_learn", "starter_wizard", "start_empty").forEach { compose.onNodeWithTag(it).assertExists() }
+        compose.onNodeWithText("PARTIR D'UN STYLE").assertDoesNotExist()
+        compose.onNodeWithTag("start_others").performClick()
+        for (heading in listOf("PARTIR D'UN STYLE", "ÉCOUTER UNE DÉMO")) compose.onNodeWithText(heading).assertExists()
         // Every family is folded at first (no style on screen); one touch opens one.
         StarterWizard.STYLES.forEach { compose.onNodeWithTag("quick_style_${it.id}").assertDoesNotExist() }
         StarterWizard.FAMILIES.forEach { compose.onNodeWithTag("quick_family_$it").assertExists() }
@@ -120,8 +124,8 @@ class OnboardingUiTest {
         compose.onNodeWithTag("demo_play_0").performScrollTo().performClick()
         assertEquals(listOf(0), previewed)
         assertTrue(created.isEmpty())
-        // Empty project and starting beat still create.
-        compose.onNodeWithTag("starter_empty").performScrollTo().performClick()
+        // « Je pars de zéro » makes the empty project.
+        compose.onNodeWithTag("start_empty").performScrollTo().performClick()
         assertEquals(listOf(2), created)
     }
 

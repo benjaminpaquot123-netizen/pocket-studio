@@ -481,6 +481,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         )
     }
 
+    /** « Tuto de A à Z »'s « Montre-moi »: [transform] as one undo step, what plays following as after a Guide's edit. */
+    fun tutoEdit(transform: Project.() -> Project) {
+        val before = project.value
+        session.edit(tag = "tuto") { it.transform() }
+        afterGuideEdit(before)
+    }
+
     /** Engine updates the Guide's edits asked for (tests). */
     internal var guideSyncs = 0
         private set
@@ -1178,6 +1185,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val a = renderGuidePeak(with, maxBars) ?: return null
         val b = renderGuidePeak(without, maxBars) ?: return null
         return matchLoudness(a, b)
+    }
+
+    /**
+     * « Tuto de A à Z »'s « Écouter l'exemple »: [p] (a sandbox made from the course's target, never
+     * the open project) as the Guide's listenings hear it, up to [maxBars] bars, rendered offline.
+     */
+    suspend fun renderExample(p: Project, maxBars: Int = 8): FloatArray? {
+        guideRenderForTest?.let { return it(p, p)?.first }
+        if (!NativeEngine.isAvailable) return null
+        awaitSoundsLoaded()
+        return renderGuidePeak(p, maxBars)
     }
 
     /** Tests (G6): the Guide's « Sans / Avec » rendered here in place of the engine (Robolectric has none). */

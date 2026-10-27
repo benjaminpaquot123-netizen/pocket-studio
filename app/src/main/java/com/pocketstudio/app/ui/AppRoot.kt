@@ -119,6 +119,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pocketstudio.app.Metrics
@@ -638,6 +639,30 @@ fun AppRoot() {
             }
         }
     }
+    // « Tuto de A à Z »: an empty project whose tutorial starts at once (its level sets the Mode simple or not).
+    val startTuto: (String, com.pocketstudio.model.tuto.TutoLevel) -> Unit = { style, level ->
+        rhythmVm.stop()
+        SettingsStore.update(context) { it.copy(simpleMode = level == com.pocketstudio.model.tuto.TutoLevel.Facile) }
+        projectsVm.create(Project(name = "")) { id ->
+            com.pocketstudio.app.tuto.PrefsTutoStore(context).save(id, com.pocketstudio.model.tuto.TutoProgress(style, level))
+            showProjects = false
+            projectsNewOnly = false
+            openProject(id)
+        }
+    }
+    // « J'apprends » from the welcome: its chooser over the screen.
+    var tutoChooserOpen by rememberSaveable { mutableStateOf(false) }
+    if (tutoChooserOpen) {
+        ScaledDialog(onDismissRequest = { tutoChooserOpen = false }, properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)) {
+            androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
+                com.pocketstudio.app.tuto.TutoChooser(
+                    start = { style, level -> tutoChooserOpen = false; startTuto(style, level) },
+                    close = { tutoChooserOpen = false },
+                    simple = SettingsStore.state.value.simpleMode,
+                )
+            }
+        }
+    }
     // Lot 1: no project open (the last one deleted): « Mes projets » and its empty state stay on screen.
     val noProject = CurrentProject.isNone(rhythmVm.projectId)
     // Leaving the app's screens with no project: back to the phone (nothing to go back to here).
@@ -683,6 +708,13 @@ fun AppRoot() {
                             rhythmVm.stop()
                             libraryVm.openWizard()
                         },
+                        learn = { style, level -> startTuto(style, level) },
+                        remix = if (noProject) null else ({
+                            showProjects = false
+                            projectsNewOnly = false
+                            launch.settled()
+                            com.pocketstudio.app.remix.SeparationJob.requestOpen()
+                        }),
                         // A style's whole song in one touch: the assistant's own song, its guide after.
                         quickStyle = { id ->
                             rhythmVm.stop()
@@ -772,6 +804,7 @@ fun AppRoot() {
             chooseMode = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
             // The guided song is « Mon premier morceau »: its song starts on the Guide's first cards (G5).
             guided = { firstLaunchSeen(); firstSongNext = true; rhythmVm.stop(); libraryVm.openWizard() },
+            learn = { firstLaunchSeen(); tutoChooserOpen = true },
             demo = { firstLaunchSeen(); projectsVm.create(com.pocketstudio.model.Demos.ALL.first().third()) { id -> openProject(id) } },
             empty = { firstLaunchSeen(); projectsVm.create(Project(name = "")) { id -> openProject(id) } },
             later = firstLaunchSeen,
@@ -1351,6 +1384,38 @@ fun AppRoot() {
         }
     }
     DisposableEffect(guideListen) { onDispose { guideListen.stop() } }
+    // « Tuto de A à Z » in this project (its progress kept per project); its examples rendered from the course, never the project.
+    val tuto = remember(rhythmVm) {
+        com.pocketstudio.app.tuto.TutoController(
+            rhythmVm.viewModelScope, rhythmVm.projectId, rhythmVm.project, rhythmVm::tutoEdit,
+            com.pocketstudio.app.tuto.PrefsTutoStore(context),
+            render = { ex ->
+                rhythmVm.renderExample(ex.after)?.let { after -> com.pocketstudio.app.tuto.TutoController.joined(ex.before?.let { rhythmVm.renderExample(it) }, after) }
+            },
+            player = com.pocketstudio.app.guide.PcmListenPlayer(),
+            pauseMusic = { if (rhythmVm.transport.value.playing) rhythmVm.togglePlay() },
+        )
+    }
+    DisposableEffect(tuto) { onDispose { tuto.stopListening() } }
+    val tutoUi by tuto.ui.collectAsStateWithLifecycle()
+    var tutoChapters by rememberSaveable { mutableStateOf(false) }
+    // The dotted cells of a drum step, on the Rythme tab.
+    val tutoSteps = rhythmVm.project.collectAsStateWithLifecycle().value.drums.steps
+    LaunchedEffect(tutoUi?.current?.id, tutoSteps) { com.pocketstudio.app.tuto.TutoHints.cells = tuto.hint(tutoSteps) }
+    if (tutoChapters) tutoUi?.let { u ->
+        ScaledDialog(onDismissRequest = { tutoChapters = false }, properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)) {
+            androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
+                com.pocketstudio.app.tuto.TutoChapterList(
+                    u, goTo = { tuto.goTo(it); tutoChapters = false },
+                    setLevel = { level ->
+                        SettingsStore.update(context) { it.copy(simpleMode = level == com.pocketstudio.model.tuto.TutoLevel.Facile) }
+                        tuto.setLevel(level)
+                    },
+                    quit = { tuto.quit(); tutoChapters = false }, close = { tutoChapters = false },
+                )
+            }
+        }
+    }
     // G4 review: a measure running stops with the panel (and when the music starts, below).
     LaunchedEffect(guideOpen) { if (!guideOpen) { guideListen.stop(); learn.stop(); guideVm.cancelMeasure() } }
     // G2 review: the « Sans / Avec » never plays under a take, the Live page or the song started (the
@@ -1434,6 +1499,12 @@ fun AppRoot() {
         guideVm.opens.collect { o -> guideGo(com.pocketstudio.app.guide.GuideNav.go(o, rhythmVm.project.value, SettingsStore.state.value.simpleMode)) }
     }
     LaunchedEffect(guideVm) { guideVm.notices.collect { guideNotice = it } }
+    LaunchedEffect(tuto) {
+        tuto.goes.collect { g ->
+            g.pad?.let(rhythmVm::selectPad)
+            guideGo(com.pocketstudio.app.guide.GuideNav.go(g.open, rhythmVm.project.value, SettingsStore.state.value.simpleMode))
+        }
+    }
     // A lit control goes dark by itself after a while, or as soon as the space changes.
     LaunchedEffect(guideSpot) { if (guideSpot != null) { kotlinx.coroutines.delay(GUIDE_SPOT_MS); guideSpot = null } }
     // Audit final: Retour closes what is over the screen (the « ? » labels, the lit control, the Guide's panel), it no
@@ -1659,7 +1730,25 @@ fun AppRoot() {
                 // Le Guide: its bar, or its panel (a third of a phone's height, half a tablet's). It
                 // keeps quiet during a take, on the Live page and on the keyboard lying down, where
                 // every dp of height is a key's (§3.1: it is quiet while the keys are played).
-                if (guideShown && !guideSide) {
+                // « Tuto de A à Z »: its panel takes the Guide's place while it runs.
+                val tutoNow = tutoUi
+                if (tutoNow != null && !showLive && !showLivePads && !showTimeline) {
+                    com.pocketstudio.app.tuto.TutoPanel(
+                        tutoNow, tuto.canShow(),
+                        com.pocketstudio.app.tuto.TutoActions(
+                            listen = tuto::listen, doIt = tuto::doIt, showMe = { tuto.showMe() }, markDone = tuto::markDone,
+                            toggle = tuto::toggleOpen, next = tuto::next, previous = tuto::previous,
+                            chapters = { tutoChapters = true }, quit = tuto::quit,
+                        ),
+                        modifier = if (landscape) Modifier.navigationBarsPadding() else Modifier,
+                        map = remember(tutoNow.progress.style) { com.pocketstudio.app.tuto.tutoMap(tutoNow.progress.style) },
+                    )
+                } else if (tuto.resumable && !showLive && !showLivePads && !showTimeline) {
+                    TextButton(onClick = tuto::resume, modifier = Modifier.fillMaxWidth().heightIn(min = 40.dp).testTag("tuto_resume")) {
+                        Text(tr("Reprendre le tuto"), color = Neon.Cyan)
+                    }
+                }
+                if (guideShown && !guideSide && tutoNow == null) {
                     val guideUi by guideVm.ui.collectAsStateWithLifecycle()
                     if (guideOpen) {
                         val listening by guideListen.state.collectAsStateWithLifecycle()

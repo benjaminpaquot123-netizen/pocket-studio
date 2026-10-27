@@ -84,6 +84,10 @@ class ProjectsActions(
     val create: (Int) -> Unit = {},
     /** The beginner's step-by-step assistant. */
     val wizard: () -> Unit = {},
+    /** « J'apprends »: an empty project with the tutorial of that style and level. */
+    val learn: (style: String, level: com.pocketstudio.model.tuto.TutoLevel) -> Unit = { _, _ -> },
+    /** « Remixer une chanson » among the other ways to start (null: not offered). */
+    val remix: (() -> Unit)? = null,
     /** A style's whole song in one touch, with the assistant's advised choices (its id). */
     val quickStyle: (String) -> Unit = {},
     /** The assistant opened on that style (« Personnaliser pas à pas »). */

@@ -27,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Headphones
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -57,6 +58,8 @@ import com.pocketstudio.ui.Neon
 /** The three ways to start offered at the first launch, and "later" (stay on the first project). */
 class WelcomeActions(
     val guided: () -> Unit = {},
+    /** « J'apprends »: the tutorial's chooser (Facile or Pro, then the style). */
+    val learn: () -> Unit = {},
     val demo: () -> Unit = {},
     val empty: () -> Unit = {},
     val later: () -> Unit = {},
@@ -81,6 +84,7 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, si
                 WelcomeScreen(
                     WelcomeActions(
                         guided = actions.guided,
+                        learn = actions.learn,
                         // A second quick touch while the first project opens makes no second one.
                         demo = { if (!leaving) { demoReady = true; leaving = true; actions.demo() } },
                         empty = { if (!leaving) { leaving = true; actions.empty() } },
@@ -140,6 +144,11 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
                 Icons.Filled.AutoAwesome, tr("Créer mon premier morceau (guidé)"),
                 tr("Choisis un style, je t'aide pas à pas, du début à la fin du morceau."),
                 Neon.Cyan, primary = true, onClick = actions.guided, tag = "welcome_guided",
+            )
+            Choice(
+                Icons.Filled.School, tr("J'apprends"),
+                tr("Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie."),
+                Neon.Acid, onClick = actions.learn, tag = "welcome_learn",
             )
             Choice(
                 Icons.Filled.Headphones, tr("Écouter une démo"),

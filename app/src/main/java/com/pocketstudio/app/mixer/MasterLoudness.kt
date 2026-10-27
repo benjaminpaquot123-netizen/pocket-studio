@@ -76,6 +76,13 @@ internal fun LoudnessChip(values: () -> FloatArray, modifier: Modifier = Modifie
     Text(text, style = MonoStyle, color = if (hot) Neon.Amber else Neon.Cyan, modifier = modifier.testTag("loudness_chip"))
 }
 
+/** What [target] aims at in a project whose « Auto » is [styleLufs] (« Club »: never under it). */
+internal fun shownLufs(target: LoudnessTarget, styleLufs: Float): Float? = when (target) {
+    LoudnessTarget.AUTO -> styleLufs
+    LoudnessTarget.CLUB -> LoudnessTargets.clubLufs(styleLufs)
+    else -> LoudnessTargets.lufs(target, null)
+}
+
 /**
  * The master's loudness in full (now, over 3 s, since ▶) and its « Cible »: the style's loudness,
  * a club's, streaming's, or none. [styleLufs]: what « Auto » aims at for this project.
@@ -117,7 +124,7 @@ internal fun MasterLoudnessPanel(values: () -> FloatArray, target: LoudnessTarge
     val colors = pillColors(Neon.Cyan)
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         listOf(LoudnessTarget.AUTO, LoudnessTarget.CLUB, LoudnessTarget.STREAMING, LoudnessTarget.OFF).forEach { t ->
-            val lufs = if (t == LoudnessTarget.AUTO) styleLufs else LoudnessTargets.lufs(t, null)
+            val lufs = shownLufs(t, styleLufs)
             FilterChip(
                 selected = target == t, onClick = { setTarget(t) },
                 label = { Text(if (lufs == null) t.label else "${t.label} · ${LoudnessTargets.formatTarget(lufs)}") },
@@ -125,7 +132,7 @@ internal fun MasterLoudnessPanel(values: () -> FloatArray, target: LoudnessTarge
             )
         }
     }
-    val lufs = LoudnessTargets.formatTarget(if (target == LoudnessTarget.AUTO) styleLufs else LoudnessTargets.lufs(target, null) ?: 0f)
+    val lufs = LoudnessTargets.formatTarget(shownLufs(target, styleLufs) ?: 0f)
     Text(
         when (target) {
             LoudnessTarget.AUTO -> tr("Le volume des morceaux de ce style (%s). La sortie monte ou baisse doucement pour y arriver ; l'export y est exactement.", lufs)

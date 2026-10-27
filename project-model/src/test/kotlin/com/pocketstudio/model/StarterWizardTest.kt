@@ -128,7 +128,7 @@ class StarterWizardTest {
                             StarterWizard.RISER_TRACK.takeIf { riser },
                             // The vocal (all parts on: the chops have a hook to answer), then the sub drop under club music's Drops.
                             StarterWizard.VOCAL_TRACK.takeIf { style.vocal != null },
-                            StarterWizard.SUB_DROP_TRACK.takeIf { !style.form.sung },
+                            StarterWizard.SUB_DROP_TRACK.takeIf { !style.form.sung && !style.lightBuild },
                         ).let { extra -> extra.take(InstrumentTrack.MAX - partTracks) },
                     p.instrumentTracks.map { it.name },
                 )

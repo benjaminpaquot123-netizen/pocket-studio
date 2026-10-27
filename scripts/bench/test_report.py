@@ -108,6 +108,13 @@ def main():
     check("a Drop only 0.4 LU over its Montée's end fails", code == 1 and "fin de sa Montée" in err and "techno" in err and "+0,4" in md)
     code, err, md = run([measure("jump_up", drop_minus_montee_end=[-2.5])])
     check("a Montée louder than its Drop fails", code == 1 and "jump_up" in err)
+    # Audit final (lot son): the landing through a phone (300 Hz high-pass): blocking in bass music, listed elsewhere.
+    code, err, md = run([measure("dubstep", drop_minus_montee_end=[2.8], drop_minus_montee_end_phone=[-1.0])])
+    check("a bass music Drop under its Montée's end on a phone fails", code == 1 and "téléphone" in err and "dubstep" in err)
+    code, err, md = run([measure("dubstep", drop_minus_montee_end=[2.8], drop_minus_montee_end_phone=[1.8, 2.4])])
+    check("a bass music Drop that falls on a phone passes", code == 0 and "+1,8 / +2,4" in md)
+    code, err, md = run([measure("techno", drop_minus_montee_end=[2.0], drop_minus_montee_end_phone=[0.5])])
+    check("a techno Drop under +1.5 dB on a phone is listed, not blocking", code == 0 and "techno (+0,5)" in md)
     code, err, md = run([measure("trap", intro_minus_main=-10.2)])
     check("an Intro 10 LU under the Refrain is listed, not blocking", code == 0 and "trap (−10,2)" in md)
     code, err, md = run([measure("pop", intro_minus_main=-5.0)])

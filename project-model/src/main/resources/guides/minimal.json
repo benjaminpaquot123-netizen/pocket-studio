@@ -546,67 +546,6 @@
    "lexicon": "lead"
   },
   {
-   "id": "sound.riser",
-   "stage": 1,
-   "target": "riser",
-   "kind": "decide",
-   "simple": true,
-   "title": "Le souffle qui monte",
-   "why": "Un souffle qui monte pendant la Montée et frappe au 1 du Drop : l'oreille sait que ça arrive.",
-   "simpleTitle": "Le souffle avant le grand moment",
-   "simpleWhy": "Il annonce le grand moment.",
-   "when": "Au début, piste par piste : le kick d'abord.",
-   "applicable": [
-    "has:riser"
-   ],
-   "done": [
-    "has:riser"
-   ],
-   "proposals": [
-    {
-     "id": "keep",
-     "label": "Garder ce son",
-     "why": "Il tient son rôle : on passe au suivant.",
-     "action": {
-      "type": "keep"
-     }
-    },
-    {
-     "id": "other",
-     "label": "Autre idée de son",
-     "why": "Un autre son du même rôle, écouté avec le reste.",
-     "action": {
-      "type": "open",
-      "spot": "sounds.track",
-      "target": "riser"
-     }
-    },
-    {
-     "id": "where",
-     "label": "Où il joue",
-     "why": "Les parties où la piste joue : une case par partie.",
-     "action": {
-      "type": "open",
-      "spot": "song.parts",
-      "target": "riser"
-     }
-    }
-   ],
-   "elsewhere": [
-    {
-     "id": "favorite",
-     "label": "Garder ce son dans mes favoris",
-     "why": "Pour le retrouver dans un autre morceau.",
-     "action": {
-      "type": "open",
-      "spot": "sounds.favorite",
-      "target": "riser"
-     }
-    }
-   ],
-   "lexicon": "buildup"
-  },
-  {
    "id": "fx.review",
    "stage": 3,
    "target": "song",

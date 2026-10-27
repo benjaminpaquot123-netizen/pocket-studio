@@ -485,6 +485,41 @@
    "lexicon": "lead"
   },
   {
+   "id": "layers.bass",
+   "stage": 2,
+   "target": "bass",
+   "kind": "decide",
+   "title": "La basse en deux couches : le sub et le médium",
+   "why": "Sous 120 Hz une seule source, propre et au centre (le sub) ; au-dessus, la couche qui grogne et bouge.",
+   "applicable": [
+    "has:bass"
+   ],
+   "done": [
+    "layered:bass"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder",
+     "why": "Ce qui est là sonne déjà juste : on n'y touche pas.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "layers",
+     "label": "Voir les couches",
+     "why": "Chaque couche s'écoute seule, avec les autres, ou sans.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.layers",
+      "target": "bass"
+     }
+    }
+   ],
+   "lexicon": "bass"
+  },
+  {
    "id": "fx.review",
    "stage": 3,
    "target": "song",
@@ -632,6 +667,52 @@
       "type": "open",
       "spot": "sounds.favorite",
       "target": "bass"
+     }
+    }
+   ],
+   "lexicon": "saturation"
+  },
+  {
+   "id": "fx.sub",
+   "stage": 3,
+   "target": "sub",
+   "kind": "decide",
+   "title": "Le sub : propre, au centre, un peu saturé",
+   "why": "Le sub n'a que « Basse audible » (ses harmoniques pour un téléphone) : une saturation légère entre 60 et 250 Hz le rend plus présent, sans le salir.",
+   "when": "Une fois le son et le motif posés.",
+   "howMuch": "Saturation 15 à 25 %, mono strict.",
+   "howOften": "Une chaîne pour tout le morceau.",
+   "applicable": [
+    "has:sub"
+   ],
+   "done": [
+    "colour:sub",
+    "by_hand|changed:sub"
+   ],
+   "proposals": [
+    {
+     "id": "light",
+     "label": "Saturation légère",
+     "why": "Juste assez pour qu'un petit haut-parleur le devine.",
+     "value": "Drive 20 %",
+     "action": {
+      "type": "insert",
+      "effect": "SATURATION",
+      "params": [
+       0.2,
+       1.0,
+       1.0,
+       0.7,
+       1.0
+      ]
+     }
+    },
+    {
+     "id": "keep",
+     "label": "Le laisser pur",
+     "why": "Un sinus pur, senti plus qu'entendu.",
+     "action": {
+      "type": "keep"
      }
     }
    ],

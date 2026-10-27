@@ -191,6 +191,12 @@ object StarterWizard {
         val rewind: Boolean = false,
         /** A vocal layer of the built-in voice ([VOCAL_SOUND]): chops that answer the hook, stabs, shouts, a crushed hit. */
         val vocal: Vocal? = null,
+        /**
+         * Club music that does not build like EDM (deep house, minimal, Detroit, disco; final audit, report 11): its
+         * Montée has no riser, no sub drop and no silent beat, the kick leaves for its last bar only under a one-bar
+         * drum fill, and the whole mix's low-pass closes over it, open again on the Drop ([SongShape], [LIGHT_SWEEP_LOW]).
+         */
+        val lightBuild: Boolean = false,
     ) {
         /** Packs that make this style sound right: its machines, its melodic sources, its own pack. */
         val packs: List<String> get() =
@@ -771,11 +777,13 @@ object StarterWizard {
         val dropKeys = sections.map { it.scene }.filter { it == 2 || (own(it) && shape.scenes.getOrNull(it)?.base == 2 && shape.scenes[it].bass) }.toSet()
         val rewind = if (style.rewind) withRewind(project, shape, project.beatsPerBar).also { project = it.first }.second else null
         // The song's curves: the 303's knobs first, then the riser, then the bass, then the filters that sweep.
-        val curves = (if (withAcid) acidLanes(sections, style.melody.acid?.moves.orEmpty()) else emptyList()) +
+        val curves = (if (withAcid) acidLanes(sections, style.melody.acid?.moves.orEmpty()) { own(it) && project.allScenes.getOrNull(it)?.label == SongShape.MONTEE } else emptyList()) +
             listOfNotNull(riserTrack?.let { riserLane(shape, it, project.beatsPerBar) }, dropTwoTrack(plan, partOfTrack, counterTrack)?.let { dropTwoLane(sections, it, project) }, rewind, silenceLane(shape, project.beatsPerBar)) +
             bassLanes(sections, dropKeys, listOfNotNull(mainBass, subTrack, switchTrack), mainBass, switchTrack, project) +
             sweeps.second.mapNotNull { (target, sweep) -> sectionLane(target, sections) { if (own(it)) null else sweep.sections[it] ?: (OPEN to OPEN) } }
         project = withSongLanes(project, curves)
+        // A light Montée (Style.lightBuild): the whole mix's low-pass closing over it, open again on the Drop.
+        if (style.lightBuild && plan.form != SongForm.Build) project = withLightSweep(project)
         // The drummer's fills at the 8 and the 16, the crash on the 1 of each 16 (S3): one-bar drum parts.
         project = DrumArrangement.withFillsAndCrashes(project, shape, style, feel, DrumHumanizer.seed(style, mood), crash.second)
         // S5: an honest mix and master (WizardMix.honest).
@@ -811,7 +819,14 @@ object StarterWizard {
         }
         if (bass808) {
             voices[StudioDrums.LANE_808] = StudioDrums.voice808(style, harmony)
-            strip(StudioDrums.LANE_808) { c -> c.copy(volume = WizardMix.fader(StudioDrums.level808Db(style))) }
+            strip(StudioDrums.LANE_808) { c ->
+                // Ducked under the kick (WizardMix.honest keys the pump to the kick's sound), in a free slot.
+                val free = c.inserts.indexOfFirst { it.type == 0 }
+                val inserts = if (free >= 0 && Role.Kick in sounds && c.inserts.none { it.type == EffectType.PUMP.ordinal }) {
+                    c.inserts.toMutableList().also { it[free] = StudioDrums.PUMP_808 }
+                } else c.inserts
+                c.copy(volume = WizardMix.fader(StudioDrums.level808Db(style)), inserts = inserts)
+            }
         }
         return project.copy(padVoices = voices, mixer = project.mixer.copy(channels = channels))
     }
@@ -868,9 +883,60 @@ object StarterWizard {
         return lane.takeIf { it.songValues.isNotEmpty() }
     }
 
-    private fun acidLanes(sections: List<Section>, moves: List<AcidMove>): List<AutomationLane> =
+    /**
+     * The 303's knobs along the song ([moves]): each section from its start value to its end value
+     * ([sectionLane]'s way), and since the final audit (lot son, report 11) a 303 that plays: in the
+     * Groove and the Drop each 8-bar phrase is a gesture ([ACID_PHRASE_SWING] over the section's line,
+     * back down on the next phrase's first beat); a Montée ([montee], a stretch of its own the moves do
+     * not name) opens from where the section before it ended to over the next Drop's start
+     * ([ACID_MONTEE_LIFT]), and the Drop lands back on its own value at once.
+     */
+    private fun acidLanes(sections: List<Section>, moves: List<AcidMove>, montee: (Int) -> Boolean = { false }): List<AutomationLane> =
         moves.filter { it.param in AutoTarget.ACID_PARAMS }.distinctBy { it.param }
-            .mapNotNull { move -> sectionLane(AutoTarget.acid(move.param), sections) { move.sections[it] } }
+            .mapNotNull { move -> acidLane(AutoTarget.acid(move.param), sections, move, montee) }
+
+    private fun acidLane(target: AutoTarget, sections: List<Section>, move: AcidMove, montee: (Int) -> Boolean): AutomationLane? {
+        var lane = AutomationLane(target, mode = AutomationLane.SONG)
+        var last: Float? = null
+        var jumpNext = false
+        sections.forEachIndexed { i, sec ->
+            val end = sec.start + sec.bars - 1
+            if (montee(sec.scene) && move.sections[sec.scene] == null) {
+                val from = last ?: return@forEachIndexed
+                val next = sections.getOrNull(i + 1)?.let { move.sections[it.scene] }?.first ?: from
+                val top = (maxOf(from, next) + ACID_MONTEE_LIFT).coerceAtMost(ACID_MONTEE_TOP).coerceAtLeast(from)
+                lane = lane.withSongPoint(sec.start, from).withSongPoint(end, top)
+                last = top
+                jumpNext = true
+                return@forEachIndexed
+            }
+            val (from, to) = move.sections[sec.scene] ?: run { jumpNext = false; return@forEachIndexed }
+            val outro = i > 0 && i == sections.lastIndex && sec.scene == sections.first().scene
+            val (a, b) = if (outro) to to from else from to to
+            lane = lane.withSongPoint(sec.start, a)
+            if (jumpNext) lane = lane.withSongJump(sec.start, true)
+            jumpNext = false
+            // The gestures: each phrase climbs a swing over the line, the next one starts a swing under it.
+            if (sec.scene == 1 || sec.scene == 2) {
+                fun line(bar: Int) = a + (b - a) * (bar - sec.start) / (sec.bars - 1).coerceAtLeast(1).toFloat()
+                for (q in sec.start + ACID_PHRASE_BARS until end step ACID_PHRASE_BARS) {
+                    lane = lane.withSongPoint(q - 1, (line(q - 1) + ACID_PHRASE_SWING).coerceIn(0f, 1f))
+                        .withSongPoint(q, (line(q) - ACID_PHRASE_SWING).coerceIn(0f, 1f)).withSongJump(q, true)
+                }
+            }
+            lane = lane.withSongPoint(end, b)
+            last = b
+        }
+        return lane.takeIf { it.songValues.isNotEmpty() }
+    }
+
+    /** The 303's phrase (bars) and how far over (then under) the section's line each phrase's gesture goes. */
+    const val ACID_PHRASE_BARS = 8
+    const val ACID_PHRASE_SWING = 0.08f
+
+    /** A Montée opens the 303 this much over the next Drop's start value (and never past [ACID_MONTEE_TOP]). */
+    const val ACID_MONTEE_LIFT = 0.12f
+    const val ACID_MONTEE_TOP = 0.85f
 
     /**
      * [moves] as song automation curves of the 303's knobs: each section of the song from its start
@@ -879,11 +945,35 @@ object StarterWizard {
      */
     internal fun withAcidMoves(project: Project, moves: List<AcidMove>): Project {
         if (moves.isEmpty() || project.song.isEmpty()) return project
-        return withSongLanes(project, acidLanes(songSections(project), moves))
+        return withSongLanes(project, acidLanes(songSections(project), moves) { project.allScenes.getOrNull(it)?.label == SongShape.MONTEE })
     }
 
     /** A filter knob wide open: the sound as it is. */
     private const val OPEN = 1f
+
+    /** Where a light Montée's low-pass on the whole mix closes to on its last bar (about 1.5 kHz: the kick and the bass stay). */
+    const val LIGHT_SWEEP_LOW = 0.6f
+
+    /**
+     * Final audit (report 11): the house and techno that do not build like EDM ([Style.lightBuild]) take
+     * the Montée in a filter sweep, the way a DJ turns the mixer's filter: a low-pass on the master (a
+     * free slot, open: the sound as it is), closing over each Montée down to [LIGHT_SWEEP_LOW] on its last
+     * bar, wide open again on the Drop's first beat. A song curve (whole song only). Unchanged without a
+     * Montée or a free slot.
+     */
+    internal fun withLightSweep(project: Project): Project {
+        val runs = WizardMix.monteeRuns(project)
+        if (runs.isEmpty() || project.automation.size >= AutomationLane.MAX_LANES) return project
+        val slot = project.mixer.master.indexOfFirst { it.type == 0 }.takeIf { it >= 0 } ?: return project
+        val master = project.mixer.master.toMutableList().also { it[slot] = Insert(EffectType.FILTER.ordinal, listOf(OPEN, 0.2f, 0f, 1f)).sanitized() }
+        var lane = AutomationLane(AutoTarget(AutoTarget.INSERT_PARAM, Mixer.MASTER, slot, 0), mode = AutomationLane.SONG, songOnly = true)
+            .withSongPoint(0, OPEN)
+        for ((first, end) in runs) {
+            if (end - first < 2) continue
+            lane = lane.withSongPoint(first, OPEN).withSongPoint(end - 1, LIGHT_SWEEP_LOW).withSongPoint(end, OPEN).withSongJump(end, true)
+        }
+        return project.copy(mixer = project.mixer.copy(master = master), automation = project.automation + lane)
+    }
 
     /**
      * The low-pass filters of [sweeps] on their strips (a part's track, the acid line, the master),

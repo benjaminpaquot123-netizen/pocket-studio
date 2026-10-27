@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 /**
  * The master's « Cible »: the loudness the engine brings the mix to, with a gain before its
  * clipper and its true-peak limiter (ceiling −1 dBTP). [OFF] keeps the master as it is (projects
- * saved before phase 33); [AUTO] follows the project's style (son.md §2.4); [CLUB] −8 LUFS;
+ * saved before phase 33); [AUTO] follows the project's style (son.md §2.4); [CLUB] −8 LUFS (or the style's own when louder);
  * [STREAMING] −14 LUFS, where the platforms turn songs down to.
  */
 @Serializable
@@ -68,9 +68,13 @@ object LoudnessTargets {
     fun lufs(target: LoudnessTarget, style: String?, mixVersion: Int = Project.MIX_V1): Float? = when (target) {
         LoudnessTarget.OFF -> null
         LoudnessTarget.AUTO -> forStyle(style, mixVersion)
-        LoudnessTarget.CLUB -> CLUB_LUFS
+        // Final audit (report 04): « Club » never quieter than the style's own (drum & bass at −7.5, hard techno at −6).
+        LoudnessTarget.CLUB -> clubLufs(forStyle(style, mixVersion))
         LoudnessTarget.STREAMING -> STREAMING_LUFS
     }
+
+    /** « Club » for a project whose « Auto » aims at [styleLufs]: [CLUB_LUFS], or the style's own when louder. */
+    fun clubLufs(styleLufs: Float): Float = maxOf(CLUB_LUFS, styleLufs)
 
     /** "−8,1" (one decimal, a true minus sign, the language's decimal mark). */
     fun format(value: Double): String =

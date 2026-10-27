@@ -76,6 +76,12 @@ LOSS_SLACK = 0.2
 # S5b: each Drop lands over the end of the Montée before it (its first 4 bars against the Montée's
 # last 2, after the master): the A/B test heard Montées that ended louder than their Drop.
 DROP_OVER_MONTEE_MIN = 1.0
+# Audit final (lot son): the same landing through an average phone's speaker (ps_measure's
+# drop_minus_montee_end_phone: a 4th-order high-pass at 300 Hz, then the K-weighting). A bass music
+# Drop gained all its lift under 120 Hz, where a phone plays nothing: on the phone it did not fall
+# (dubstep -1.0 dB, jump up +0.4). Blocking for the styles whose Drop is the point, listed for the rest.
+DROP_OVER_MONTEE_PHONE_MIN = 1.5
+DROP_PHONE_STYLES = {"dnb", "liquid_dnb", "neurofunk", "jungle", "jump_up", "dubstep", "riddim"}
 # S5b: an Intro may be sparse, not far under the Drop (or the Refrain): listed, not blocking.
 INTRO_UNDER_MAIN_MAX = 8.0
 # S5b: a Montée rises at least this much over its last 4 bars (+3 in S2/S5): listed, not blocking (the
@@ -132,6 +138,7 @@ METRICS = [
     ("montee_rise", "Montée : sa montée sur ses 4 dernières mesures (LU)", lambda m: median(m.get("montee_rise") or []), "≥ +2", 1),
     ("pre_montee_rise", "Montée avant master (LU)", lambda m: median(m.get("pre_montee_rise") or []), "≥ +2", 1),
     ("drop_minus_montee_end", "Drop − fin de Montée (LU, le plus petit du morceau)", lambda m: lowest(m.get("drop_minus_montee_end")), "≥ +1 (+1,5 visé)", 1),
+    ("drop_minus_montee_end_phone", "Drop − fin de Montée au téléphone (passe-haut 300 Hz, pondéré K ; dB, le plus petit)", lambda m: lowest(m.get("drop_minus_montee_end_phone")), "≥ +1,5 (bloquant en bass music)", 1),
     ("pre_drop_minus_montee_end", "Drop − fin de Montée avant master (LU)", lambda m: lowest(m.get("pre_drop_minus_montee_end")), "–", 1),
     ("intro_minus_main", "Intro − Drop / Refrain (LU)", lambda m: m.get("intro_minus_main"), "≥ −8", 1),
     # G0: how much the Drops (Refrains) differ, read from the model (META drop_variation of the .pscmd).
@@ -244,6 +251,10 @@ def criteria(styles):
     # S5b: the Drop lands louder than the Montée's end (its first 4 bars against the Montée's last 2).
     add(f"Chaque Drop au-dessus de la fin de sa Montée : Drop − fin de Montée ≥ +{fr(DROP_OVER_MONTEE_MIN, 0)} LU (exporté ; sans Montée : –)",
         lambda s, m: all(d >= DROP_OVER_MONTEE_MIN for d in (m.get("drop_minus_montee_end") or [])), hard=True)
+    add(f"Au téléphone, chaque Drop de bass music au-dessus de la fin de sa Montée : ≥ +{fr(DROP_OVER_MONTEE_PHONE_MIN)} dB après passe-haut 300 Hz (pondéré K)",
+        lambda s, m: s not in DROP_PHONE_STYLES or all(d >= DROP_OVER_MONTEE_PHONE_MIN for d in (m.get("drop_minus_montee_end_phone") or [])), hard=True)
+    add(f"Au téléphone, chaque Drop au-dessus de la fin de sa Montée : ≥ +{fr(DROP_OVER_MONTEE_PHONE_MIN)} dB (tous les styles, listé)",
+        lambda s, m: all(d >= DROP_OVER_MONTEE_PHONE_MIN for d in (m.get("drop_minus_montee_end_phone") or [])))
     add(f"Intro à moins de {fr(INTRO_UNDER_MAIN_MAX, 0)} LU sous le Drop ou le Refrain (exporté)",
         lambda s, m: m.get("intro_minus_main") is None or m["intro_minus_main"] >= -INTRO_UNDER_MAIN_MAX)
     # G0: no two Drops alike (listed, not blocking; measured on the song's model, not on its sound).
@@ -402,6 +413,8 @@ def main():
                 detail = ", ".join(f"{s} ({' / '.join(fr(r, 1, True) for r in styles[s].get('montee_rise') or [])})" for s in failed)
             elif label.startswith("Chaque Drop"):
                 detail = ", ".join(f"{s} ({' / '.join(fr(r, 1, True) for r in styles[s].get('drop_minus_montee_end') or [])})" for s in failed)
+            elif label.startswith("Au téléphone"):
+                detail = ", ".join(f"{s} ({' / '.join(fr(r, 1, True) for r in styles[s].get('drop_minus_montee_end_phone') or [])})" for s in failed)
             elif label.startswith("Variation entre Drops"):
                 detail = ", ".join(f"{s} ({fr(styles[s].get('drop_variation'), 2)})" for s in failed)
             elif label.startswith("Intro"):
@@ -452,8 +465,9 @@ def main():
               "Fin de Montée : la sonie de ses 2 dernières mesures (sans son temps de silence) ; Drop : celle de ses 4 premières "
               "mesures (un faux drop entre les deux est sauté) ; une valeur par Drop, exporté (avant master entre parenthèses). "
               f"Bloquant : Drop − fin de Montée ≥ +{fr(DROP_OVER_MONTEE_MIN, 0)} LU. Intro − Drop : l'Intro du début entière contre "
-              "les sections Drop (ou Refrain), à titre indicatif.", "",
-              "| Style | Fin de Montée (LUFS) | Début du Drop (LUFS) | Drop − fin de Montée | Intro − Drop |", "|---|---|---|---|---|"]
+              "les sections Drop (ou Refrain), à titre indicatif. Au téléphone : le même écart après un passe-haut de 300 Hz "
+              f"(4e ordre) et la pondération K (dB), bloquant en bass music à +{fr(DROP_OVER_MONTEE_PHONE_MIN)}.", "",
+              "| Style | Fin de Montée (LUFS) | Début du Drop (LUFS) | Drop − fin de Montée | Au téléphone | Intro − Drop |", "|---|---|---|---|---|---|"]
     for s, m in sorted(styles.items()):
         def seq(key, d=1, sign=False):
             v = m.get(key) or []
@@ -465,7 +479,7 @@ def main():
         if before and s in before and intro is not None and before[s].get("intro_minus_main") is not None:
             delta = intro - before[s]["intro_minus_main"]
             was = f" ({fr(delta, 1, True)})" if abs(delta) >= 0.05 else ""
-        lines.append(f"| {s} | {seq('montee_end_lufs')} | {seq('drop_start_lufs')} | {landing} | {fr(intro, 1, True)}{was} |")
+        lines.append(f"| {s} | {seq('montee_end_lufs')} | {seq('drop_start_lufs')} | {landing} | {seq('drop_minus_montee_end_phone', 1, True)} | {fr(intro, 1, True)}{was} |")
 
     lines += ["", "## Bandes du Drop (dB relatifs à l'énergie totale)", "",
               "| Style | " + " | ".join(label for _, label in BANDS) + " |", "|---|" + "---|" * len(BANDS)]

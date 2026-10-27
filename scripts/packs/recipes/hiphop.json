@@ -87,7 +87,7 @@
   "chords": {
    "type": "keys",
    "rhythm": "X------.X---.X-.X--.X---..X---..",
-   "voicing": "seventh",
+   "voicing": "rootless7",
    "octave": 3,
    "sound": "Piano électrique"
   },
@@ -124,6 +124,16 @@
    {
     "on": "chords",
     "preset": "warm_vinyl"
+   },
+   {
+    "on": "chords",
+    "insert": "PARAM_EQ",
+    "params": [
+     0.392,
+     0.4167,
+     0.2416,
+     0.0
+    ]
    },
    {
     "on": "chords",
@@ -225,7 +235,7 @@
    "sound": "Cordes"
   },
   "bass": {
-   "pattern": "R-----------/O--R-----..R---/5--",
+   "pattern": "R------R-/O-----R------R-/5---..",
    "octave": 1,
    "sound": "pack:trap:808",
    "glide": true
@@ -397,7 +407,7 @@
    "lead": true
   },
   "signature": "lead",
-  "bass_tip": "C'est la 808 : elle tape avec le kick et glisse vers une note plus aiguë, une fois par mesure.",
+  "bass_tip": "C'est la 808 : elle tape avec chaque coup de kick, puis glisse d'une note à l'autre, plusieurs fois sur deux mesures.",
   "pad_tip": "Des cordes froides en fond : elles arrivent au refrain pour rendre le tout plus dramatique.",
   "lead_tip": "Une mélodie de piano froide et lente, avec beaucoup de vide : elle joue du début à la fin.",
   "fx": [
@@ -938,7 +948,7 @@
    "type": "chops",
    "pattern": "..R...R..R..O.....R.r.R..5..O.3.",
    "arp_rate": 24,
-   "octave": 4,
+   "octave": 5,
    "sound": "pack:vocal_chops:vocal"
   },
   "acid": {

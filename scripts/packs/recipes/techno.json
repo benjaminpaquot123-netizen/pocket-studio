@@ -133,6 +133,16 @@
    },
    {
     "on": "chords",
+    "insert": "PARAM_EQ",
+    "params": [
+     0.5,
+     0.5,
+     0.4,
+     0.785
+    ]
+   },
+   {
+    "on": "chords",
     "preset": "dub_echo"
    },
    {
@@ -661,10 +671,10 @@
     ]
    }
   ],
-  "riser": true,
   "counter": {
    "sound": "Piano FM",
    "rhythm": "..x..x....x...x."
-  }
+  },
+  "transition": "light"
  }
 ]

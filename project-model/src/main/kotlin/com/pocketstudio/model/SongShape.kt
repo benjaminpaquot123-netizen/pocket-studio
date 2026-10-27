@@ -211,6 +211,9 @@ object SongShape {
      * build (its filter opening), and it stopping 2 bars before the Drop made their Montée fall.
      */
     const val CLUB_CUT_BARS = 4
+
+    /** A song's Montée (its Pré-refrain) and a light club one ([StarterWizard.Style.lightBuild]): the kick out of its last bar only. */
+    const val LIGHT_CUT_BARS = 1
     const val ACID_CUT_BARS = 0
 
     /** Bars of a Montée scene (a half of the 8-bar phrase), of a Post-refrain, of a fake drop. */
@@ -268,6 +271,8 @@ object SongShape {
             plan.lines.filterValues { i in it }.keys, plan.parts.filterValues { i in it }.keys, i in plan.acid,
         )
         val club = form == SongForm.Club || form == SongForm.Rave || form == SongForm.Build
+        // Final audit (report 11): club music that does not build like EDM (Style.lightBuild).
+        val light = club && form != SongForm.Build && style?.lightBuild == true
         val vocalIn = style?.vocal?.let { vocalScenes(it) }.orEmpty()
         val scenes = ArrayList<SceneSpec>()
         for (i in 0 until plan.count) {
@@ -276,7 +281,7 @@ object SongShape {
                 version = when (i) { 0 -> Version.Intro; 1 -> Version.Verse; else -> Version.Chorus },
                 roll = if (form == SongForm.Build && i == 1) 1 else 0,
                 capped = form == SongForm.Build && i == 1,
-                accent = i == 2, counter = i == 2,
+                accent = i == 2, subDrop = i == 2 && !light, counter = i == 2,
                 riser = when (i) { 2 -> Riser.Hit; 1, 3 -> Riser.Held; else -> Riser.None },
                 vocal = i in vocalIn,
             )
@@ -315,7 +320,7 @@ object SongShape {
             if (form == SongForm.Build) 1
             else sceneOf(SceneSpec(
                 base = 1, label = if (form == SongForm.Rap) numbered(verseLabel) else leadALabel,
-                content = leadContent, version = Version.Verse, half = 0, roll = if (club) 1 else 0, capped = club,
+                content = leadContent, version = Version.Verse, half = 0, roll = if (club && !light) 1 else 0, capped = club,
                 riser = Riser.Held, vocal = 1 in vocalIn,
             ))
         }
@@ -324,12 +329,12 @@ object SongShape {
                 base = 1, label = if (form == SongForm.Rap) numbered(verseLabel) else if (halves) "$leadALabel 2" else leadALabel,
                 content = if (form == SongForm.Build) content(1) else leadContent, version = Version.Verse, half = 1,
                 cutBars = when {
-                    form == SongForm.Song -> 1
+                    form == SongForm.Song || light -> LIGHT_CUT_BARS
                     // Something else plays there (a beat without kick, a part, the 303): else the kick stays its first 2 bars.
                     club && (leadContent.lines.any { it !in BASS_LINES } || leadContent.parts.any { it != Part.Bass } || leadContent.acid) -> CLUB_CUT_BARS
                     else -> 2
                 },
-                silence = true, roll = if (club) 2 else 3, capped = club,
+                silence = !light, roll = if (club && !light) 2 else 3, capped = club,
                 riser = Riser.Held, vocal = 1 in vocalIn,
             ))
         }

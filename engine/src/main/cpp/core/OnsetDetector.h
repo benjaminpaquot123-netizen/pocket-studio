@@ -5,7 +5,7 @@
 
 namespace ps {
 
-// Finds the attacks (drum hits, notes) in a sound, with aubio's onset detector.
+// Finds the attacks (drum hits, notes) in a sound (spectral flux + adaptive median threshold).
 // Not real-time safe: run on a worker thread.
 struct OnsetOptions {
     float sensitivity = 0.5f;     // 0 (only big hits) .. 1 (every small attack)

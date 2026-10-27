@@ -29,7 +29,8 @@ bool readWavMono(const std::string& path, int& sampleRate,
 bool readWavStereo(const std::string& path, int& sampleRate,
                    const std::function<void(const float*, int)>& sink);
 
-// Beat tracking with aubio (GPL-3.0); the tempo is the median beat interval, folded into 70..180.
+// Beat tracking by dynamic programming (Ellis 2007, written in-house); the tempo is a line fit
+// through the beat times, folded into 70..180.
 TempoResult detectTempo(const std::string& wavPath);
 TempoResult detectTempo(const float* mono, int64_t frames, int sampleRate);
 

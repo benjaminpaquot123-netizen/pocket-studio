@@ -134,7 +134,7 @@ class GuideViewModel(
     private val session: ProjectSession,
     private val scope: CoroutineScope,
     private val worker: CoroutineDispatcher = Dispatchers.Default,
-    private val clock: () -> Long = System::currentTimeMillis,
+    private val clock: () -> Long = { clockForTest?.invoke() ?: System.currentTimeMillis() },
     private val debounceMs: Long = DEBOUNCE_MS,
     private val onEdited: (Project) -> Unit = {},
     /** G4: measures the song (the app's offline renders), null when it cannot. */
@@ -471,6 +471,14 @@ class GuideViewModel(
     ).filter { it.isNotBlank() }.joinToString(" · ")
 
     companion object {
+        /**
+         * Tests (G6): the Guide's clock, moved days ahead without waiting (« Te revoilà »); null: the
+         * phone's. Read at each use, by every Guide made with the default clock.
+         */
+        @androidx.annotation.VisibleForTesting
+        @Volatile
+        var clockForTest: (() -> Long)? = null
+
         /** « Ton morceau est prêt » (G5): the first card of a song just made. */
         const val READY = com.pocketstudio.model.guide.GuideStart.READY
 

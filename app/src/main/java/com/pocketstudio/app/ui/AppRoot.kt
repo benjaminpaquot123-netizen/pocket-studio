@@ -330,6 +330,16 @@ fun AppRoot() {
             }
         }
     }
+    // G6 (§3.6): back a day or more after the Guide was last used, it opens by itself on « Te revoilà »
+    // (where the song was, what is done, what is left), once per project and visit, as the welcome above.
+    LaunchedEffect(rhythmVm) {
+        rhythmVm.guide.ui.collect { ui ->
+            if (!ui.loading && ui.back && welcomedFor != rhythmVm.projectId) {
+                welcomedFor = rhythmVm.projectId
+                guideOpen = true
+            }
+        }
+    }
     // G5: a user mid-mission (the old « missions » settings) lands on the Guide's card of the step reached.
     // Only once a project is open (G5 review: with none, the progress would be dropped).
     LaunchedEffect(rhythmVm.projectId) {

@@ -1140,12 +1140,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * when it cannot (no engine). Main thread (the descriptions), the renders on a worker.
      */
     suspend fun renderGuideAB(with: Project, without: Project, maxBars: Int = 8): Pair<FloatArray, FloatArray>? {
+        guideRenderForTest?.let { return it(with, without) }
         if (!NativeEngine.isAvailable) return null
         awaitSoundsLoaded()
         val a = renderGuidePeak(with, maxBars) ?: return null
         val b = renderGuidePeak(without, maxBars) ?: return null
         return matchLoudness(a, b)
     }
+
+    /** Tests (G6): the Guide's « Sans / Avec » rendered here in place of the engine (Robolectric has none). */
+    @androidx.annotation.VisibleForTesting
+    internal var guideRenderForTest: (suspend (with: Project, without: Project) -> Pair<FloatArray, FloatArray>?)? = null
 
     /** The song's first Drop (else Refrain, else its first part, else the scene shown), up to [maxBars] bars, as the Guide's listenings hear it. */
     private suspend fun renderGuidePeak(p: Project, maxBars: Int = 8): FloatArray? {

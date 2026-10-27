@@ -152,10 +152,17 @@ class GuidePanelTest {
         val p = jumpUp()
         val days = 3 * 24 * 3600 * 1000L
         startOn(p.copy(guide = p.guide.copy(step = "fx.sub", lastUsed = System.currentTimeMillis() - days)))
-        tap("guide_bar")
+        // G6: the panel opens by itself on « où on en est » (§3.6), once.
+        await("welcome back") { shown("guide_panel") }
         compose.onNodeWithTag("guide_summary").assertIsDisplayed()
         compose.onNodeWithText("Te revoilà", substring = true).assertIsDisplayed()
         compose.onNodeWithText("Reste", substring = true).assertIsDisplayed()
+        // Folded, it stays folded for the rest of the visit.
+        tap("guide_bar")
+        await("folded") { !shown("guide_panel") }
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(500))
+        compose.waitForIdle()
+        assertFalse(shown("guide_panel"))
     }
 
     @Test

@@ -3,7 +3,7 @@
 # replayed through the engine core on Linux, measured, and summed up in a Markdown report.
 #
 #   scripts/song-bench.sh [--styles a,b,c] [--out DIR] [--ffmpeg] [--before FILE.json] [--no-record] [--jobs N]
-#                         [--premaster] [--m4a] [--keep-wav] [--kit3] [--no-bass]
+#                         [--premaster] [--m4a] [--keep-wav] [--kit3] [--no-bass] [--guide accept|first]
 #
 #   --styles   only these styles (ids of scripts/packs/recipes); default: all of them
 #   --out      work folder (default build/bench): cmds/ (.pscmd + samples), wav/, json/, render/ (ps_render's
@@ -22,6 +22,8 @@
 #   --keep-wav keeps the WAVs (by default each is deleted once measured: 37 long songs take about 4 GB;
 #              --ffmpeg keeps them for its cross-check)
 #   --kit3     renders the recordings with kit v3 (the line C 100 3.0 appended to a copy of each .pscmd)
+#   --guide    records each song once followed to the end of its Guide's parcours (G6, GuideFollow): « accept »
+#              takes each card's first option that changes the song, « first » each card's first option
 #   --no-bass  skips the bass pass. By default each song that names its basses (META bass) also renders
 #              them alone before the master chain (ps_render --no-limiter --solo), the whole song before it,
 #              the kick alone (META kick) and, when it has a bass exciter (« Basse audible »), the song before
@@ -42,6 +44,7 @@ M4A=0
 KEEP=0
 KIT3=0
 BASS=1
+GUIDE=""
 JOBS="${JOBS:-$(nproc 2>/dev/null || echo 2)}"
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -57,6 +60,7 @@ while [ $# -gt 0 ]; do
         --keep-wav) KEEP=1; shift ;;
         --kit3) KIT3=1; shift ;;
         --no-bass) BASS=0; shift ;;
+        --guide) GUIDE="$2"; shift 2 ;;
         *) echo "unknown option $1" >&2; exit 1 ;;
     esac
 done
@@ -72,7 +76,7 @@ if [ "$RECORD" = 1 ]; then
     rm -rf "$OUT/cmds"
     (cd "$ROOT" && ./gradlew ${GRADLE_ARGS:---max-workers=1} :app:testDebugUnitTest \
         --tests 'com.pocketstudio.app.bench.SongBenchExport' --rerun \
-        -Pbench.out="$OUT/cmds" -Pbench.render="$TOOLS/ps_render" ${STYLES:+-Pbench.styles="$STYLES"}) > "$OUT/gradle.log" 2>&1 \
+        -Pbench.out="$OUT/cmds" -Pbench.render="$TOOLS/ps_render" ${STYLES:+-Pbench.styles="$STYLES"} ${GUIDE:+-Pbench.guide="$GUIDE"}) > "$OUT/gradle.log" 2>&1 \
         || { tail -60 "$OUT/gradle.log"; exit 1; }
 fi
 ls "$OUT"/cmds/*.pscmd > /dev/null 2>&1 || { echo "no .pscmd recorded in $OUT/cmds" >&2; exit 1; }

@@ -15,8 +15,13 @@ import javax.xml.parsers.DocumentBuilderFactory
 class BackupRulesTest {
     private val main = File("src/main")
 
-    /** The user's own work: backed up. */
-    private val ownWork = setOf("projects", "favorites.json")
+    /**
+     * The user's own work: backed up. In the cloud, the projects' compressed copies alone (their
+     * sounds would pass the 25 MB cap, and then nothing at all is backed up: audit 14/19).
+     */
+    private val ownWork = setOf("projects-backup", "favorites.json")
+    /** Moved whole from phone to phone (no cap), never in the cloud: the projects' folders and their sounds. */
+    private val transferOnly = setOf("projects")
     /** Re-downloadable, rebuilt, huge or tied to this phone: never in the cloud backup. */
     private val leftOut = setOf("models", "packs", "sounds", "stems", "stems-pinned.txt", "basic-pitch.onnx", "projects-trash", "last_crash.txt", "applog.txt", "applog-previous.txt")
     /** Left out too, by name prefix: a Live take in progress (one file per project), only for this phone's next launch. */
@@ -48,7 +53,8 @@ class BackupRulesTest {
         assertEquals(cloud.toSet(), includes("backup_rules.xml").toSet())
         // A phone-to-phone transfer has no cap: the separated songs and the trash go too, models and packs not.
         val transfer = includes("data_extraction_rules.xml", "device-transfer").filter { it.first == "file" }.map { it.second }.toSet()
-        assertTrue(transfer.containsAll(ownWork + setOf("stems", "projects-trash")))
+        assertTrue(transfer.containsAll(ownWork + transferOnly + setOf("stems", "projects-trash")))
+        assertTrue("the sounds never go to the cloud", cloud.none { it.second == "projects" })
         assertTrue(transfer.none { it in setOf("models", "packs", "sounds", "basic-pitch.onnx") })
     }
 
@@ -58,7 +64,7 @@ class BackupRulesTest {
         val used = File(main, "java").walkTopDown().filter { it.extension == "kt" }
             .flatMap { f -> name.findAll(f.readText()).map { it.groupValues[1] } }.toSet()
         assertTrue("found the app's folders", "projects" in used && "models" in used)
-        val unknown = (used - ownWork - leftOut).filterNot { u -> leftOutPrefixes.any { u.startsWith(it) } }
+        val unknown = (used - ownWork - transferOnly - leftOut).filterNot { u -> leftOutPrefixes.any { u.startsWith(it) } }
         assertTrue("classify in BackupRulesTest and the backup rules: $unknown", unknown.isEmpty())
     }
 }

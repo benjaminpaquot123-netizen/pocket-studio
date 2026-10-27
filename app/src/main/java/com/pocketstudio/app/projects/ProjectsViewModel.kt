@@ -138,8 +138,10 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     fun delete(info: ProjectInfo) = io(tr("Suppression")) {
         // The last saves of the screen just closed on it (another project opened) first: a save
         // after the move would bring its folder back, in the list and in the trash at once.
-        com.pocketstudio.app.rhythm.ClosingSaves.awaitIdle(CLOSING_WAIT_MS)
-        com.pocketstudio.app.rhythm.TakeVault.app.awaitIdle(CLOSING_WAIT_MS)
+        // Still writing after that (a stuck write): nothing moves, the user tries again.
+        if (!com.pocketstudio.app.rhythm.ClosingSaves.awaitIdle(CLOSING_WAIT_MS) || !com.pocketstudio.app.rhythm.TakeVault.app.awaitIdle(CLOSING_WAIT_MS)) {
+            throw java.io.IOException(tr("une sauvegarde est encore en cours, réessaie dans un instant"))
+        }
         // A blank project nobody touched is deleted outright: no trash entry, no « Annuler » for nothing.
         if (untouched(info.id)) {
             val entry = catalog.delete(info.id)
@@ -181,6 +183,31 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         AppLog.add("Projet exporté : ${file.length() / 1024} Ko, sons absents : $missing")
         if (missing > 0) _state.value = _state.value.copy(message = tr("%d son(s) du projet ne sont plus sur l'appareil : le .zip part sans eux.", missing), messageOk = false)
         withContext(Dispatchers.Main) { then(file) }
+    }
+
+    /**
+     * A project the app cannot read, its folder as it is (files and sounds, nothing decoded) as a
+     * .zip in the export folder; [then] gets the file (to send it, to have it repaired).
+     */
+    fun exportRaw(info: ProjectInfo, then: (File) -> Unit) = io(tr("Export du projet")) {
+        val app = getApplication<Application>()
+        val file = com.pocketstudio.app.export.WavExporter.newFile(app, "projet-illisible")
+            .let { File(it.parentFile, it.name.removeSuffix(".wav") + ".zip") }
+        file.outputStream().use { catalog.exportRawZip(info.id, it) }
+        AppLog.add("Projet illisible envoyé tel quel : ${file.length() / 1024} Ko")
+        withContext(Dispatchers.Main) { then(file) }
+    }
+
+    /**
+     * « La version d'avant la séance » of [info] as a new project in the list (« … (avant la
+     * séance) »), its sounds copied: the project itself is not touched.
+     */
+    fun restoreOpening(info: ProjectInfo) = io(tr("Copie du projet")) {
+        val name = ProjectCatalog.beforeSessionName(info.name)
+        catalog.restoreOpening(info.id, name)
+        AppLog.add("Version d'avant la séance copiée")
+        _state.value = _state.value.copy(message = tr("Copie faite : « %s ». Touche-la pour l'ouvrir.", com.pocketstudio.model.DefaultNames.shown(name)), messageOk = true)
+        refreshNow()
     }
 
     /** A project .zip (from this app) becomes a new project in the list. */

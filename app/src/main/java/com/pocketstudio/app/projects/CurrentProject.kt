@@ -10,7 +10,13 @@ import java.io.File
  * Blocking file work: call it off the main thread.
  */
 fun projectCatalog(context: Context) =
-    ProjectCatalog(File(context.filesDir, "projects"), File(context.filesDir, "projects-trash"), File(context.filesDir, "stems"))
+    ProjectCatalog(File(context.filesDir, "projects"), File(context.filesDir, "projects-trash"), File(context.filesDir, "stems"), backupMirrors(context))
+
+/**
+ * The projects' compact copies for Android's cloud backup (ProjectStore): capped at 25 MB, it
+ * holds these and not the projects' folders with their sounds (audit 14/19).
+ */
+fun backupMirrors(context: Context) = File(context.filesDir, "projects-backup")
 
 /** Which project the app opens: the last one used (the first project's id on a new install). */
 object CurrentProject {

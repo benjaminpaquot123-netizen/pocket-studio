@@ -44,16 +44,24 @@ object AppLog {
         synchronized(lines) {
             if (lines.size == CAPACITY) lines.removeFirst()
             lines.addLast(line)
-            // Small appends, a few per minute at most; never from the audio thread.
+            // Small appends, a few per minute at most; on a thread of their own (audit 14: not on
+            // the main thread), in order. Never from the audio thread.
             file?.let { f ->
-                runCatching {
-                    // Keep the newest lines: halve the file when it grows past 256 KB.
-                    if (f.length() > 256_000) f.writeText(f.readText().takeLast(128_000).substringAfter('\n'))
-                    f.appendText(line + "\n")
+                writer.execute {
+                    runCatching {
+                        // Keep the newest lines: halve the file when it grows past 256 KB.
+                        if (f.length() > 256_000) f.writeText(f.readText().takeLast(128_000).substringAfter('\n'))
+                        f.appendText(line + "\n")
+                    }
                 }
             }
         }
     }
+
+    /** One thread at most, gone when idle; its queue keeps the lines in order. */
+    private val writer = java.util.concurrent.ThreadPoolExecutor(1, 1, 10, java.util.concurrent.TimeUnit.SECONDS, java.util.concurrent.LinkedBlockingQueue()) { r ->
+        Thread(r, "applog").apply { isDaemon = true }
+    }.apply { allowCoreThreadTimeOut(true) }
 
     fun dump(maxLines: Int = 80): String = synchronized(lines) { lines.takeLast(maxLines).joinToString("\n") }
 

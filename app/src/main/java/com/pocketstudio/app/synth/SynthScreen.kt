@@ -159,6 +159,8 @@ class NotesUi(
     val songChords: (() -> Unit)? = null,
     /** Sixteenths in a bar of the time signature: the bars a copy, a paste and the ruler count in. */
     val stepsPerBar: Int = 16,
+    /** The play position read where it is drawn (audit 16: not the whole roll redrawn at each step); null: [playStep]. */
+    val playStepOf: (() -> Int)? = null,
 )
 
 @Composable
@@ -255,6 +257,7 @@ fun SynthScreen(
                         keyOn = keyOn, keyOff = keyOff,
                         clipboard = notes.clipboard, frozen = notes.frozen,
                         stepsPerBar = notes.stepsPerBar,
+                        playStepOf = notes.playStepOf,
                     )
                 }
                 if (tabletUpright) {

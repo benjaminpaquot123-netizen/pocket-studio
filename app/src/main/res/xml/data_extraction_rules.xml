@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   What Android backs up (Android 12 and later). The cloud backup is capped at 25 MB per app and
-  saves NOTHING once over it, so it holds only the user's own work: the projects (and their
-  sounds), the favourites and the preferences. Re-downloadable or huge files stay out: models,
+  saves NOTHING once over it, so it holds only the user's own work, compact: a compressed copy of
+  each project's file (projects-backup/, written at each save; the sounds, float WAVs of about
+  23 MB a minute, cannot fit), the favourites and the preferences. A phone set up again gets the
+  projects back without their sounds (ProjectOpening). Re-downloadable or huge files stay out: models,
   sound packs, instrument banks, separated songs (stems), caches, latency measured on this phone.
-  A phone-to-phone transfer has no such cap: it also carries the separated songs and the trash.
+  A phone-to-phone transfer has no such cap: it carries the projects with their sounds, the
+  separated songs and the trash.
   Keep in step with backup_rules.xml (older Android) and BackupRulesTest.
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <include domain="file" path="projects/" />
+        <include domain="file" path="projects-backup/" />
         <include domain="file" path="favorites.json" />
         <include domain="sharedpref" path="settings.xml" />
         <include domain="sharedpref" path="projects.xml" />
@@ -20,6 +23,7 @@
     </cloud-backup>
     <device-transfer>
         <include domain="file" path="projects/" />
+        <include domain="file" path="projects-backup/" />
         <include domain="file" path="projects-trash/" />
         <include domain="file" path="favorites.json" />
         <include domain="file" path="stems/" />

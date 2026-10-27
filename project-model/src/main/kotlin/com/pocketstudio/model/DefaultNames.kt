@@ -48,8 +48,11 @@ object DefaultNames {
 
     private const val COPY = "%s (copie)"
 
+    /** A copy of the version before the last session (ProjectCatalog.restoreOpening). */
+    const val BEFORE_SESSION = "%s (avant la séance)"
+
     /** Every French text these names are made of (each one needs its translations). */
-    val TEXTS: List<String> get() = EXACT.toList() + NUMBERED + TIMED + STEMS + KIT_PADS + COPY + com.pocketstudio.model.i18n.I18n.EVERYDAY.values
+    val TEXTS: List<String> get() = EXACT.toList() + NUMBERED + TIMED + STEMS + KIT_PADS + COPY + BEFORE_SESSION + com.pocketstudio.model.i18n.I18n.EVERYDAY.values
 
     /** The pad's sound cut from the [stem] part (one of "Batterie", "Basse", "Autres", "Voix") of the separated song [song]. */
     fun stemPad(stem: String, song: String): String = "$stem$JOIN$song".take(40)
@@ -71,7 +74,7 @@ object DefaultNames {
     // At most 6 digits: a longer number typed by the user is not one of ours (and would not fit an Int).
     private val numbered: List<Pair<Regex, String>> by lazy { patterns(NUMBERED, """(\d{1,6})""") }
     private val timed: List<Pair<Regex, String>> by lazy { patterns(TIMED, """(\d{1,2}:\d{2}(?::\d{2})?)""") }
-    private val copies: List<Regex> by lazy { patterns(listOf(COPY), "(.+)").map { it.first } }
+    private val copies: List<Pair<Regex, String>> by lazy { patterns(listOf(COPY, BEFORE_SESSION), "(.+)") }
 
     private fun patterns(templates: List<String>, arg: String): List<Pair<Regex, String>> =
         templates.flatMap { fr ->
@@ -88,7 +91,7 @@ object DefaultNames {
         fromTranslation[name]?.let { return tr(it) }
         numbered.forEach { (re, fr) -> re.matchEntire(name)?.groupValues?.get(1)?.toIntOrNull()?.let { return tr(fr, it) } }
         timed.forEach { (re, fr) -> re.matchEntire(name)?.let { return tr(fr, it.groupValues[1]) } }
-        copies.forEach { re -> re.matchEntire(name)?.let { return tr(COPY, shown(it.groupValues[1])) } }
+        copies.forEach { (re, fr) -> re.matchEntire(name)?.let { return tr(fr, shown(it.groupValues[1])) } }
         // A copy of a default name ("Basse 2"), or "Mon projet 3".
         trailingNumber.matchEntire(name)?.let { m ->
             val (base, n) = m.destructured

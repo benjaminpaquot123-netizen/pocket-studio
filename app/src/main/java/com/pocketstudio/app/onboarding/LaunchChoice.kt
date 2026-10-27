@@ -204,7 +204,13 @@ internal fun LaunchChooser(
     // Its last save, for « modifié il y a 2 h ».
     androidx.compose.runtime.LaunchedEffect(Unit) { projectsVm.refresh() }
     val now = androidx.compose.runtime.remember { System.currentTimeMillis() }
-    LaunchChoice(true, launchUi(project, list.projects.firstOrNull { it.id == vm.projectId }, now, simple, project.guide.start == com.pocketstudio.model.guide.GuideStart.FIRST).copy(hasProject = hasProject), actions)
+    // « Reprendre Mon premier morceau » while its cards are not all decided (the Guide's reading of them, G5 review).
+    val guideUi by vm.guide.ui.collectAsStateWithLifecycle()
+    val firstSong = com.pocketstudio.model.guide.GuideStart.firstSongUnderWay(project) { id ->
+        // A card that does not apply to this song (no style: no « Change un son ») counts as settled.
+        if (guideUi.loading) project.guide.statusOf(id).settled else guideUi.cards[id]?.status?.settled ?: true
+    }
+    LaunchChoice(true, launchUi(project, list.projects.firstOrNull { it.id == vm.projectId }, now, simple, firstSong).copy(hasProject = hasProject), actions)
 }
 
 /** The choices; nothing in the project changes nor plays until one is made. */

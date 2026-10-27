@@ -93,6 +93,8 @@ class GuidePanelActions(
     val measure: () -> Unit = {},
     /** G4: another reference to compare with (« À côté d'un morceau que tu aimes »). */
     val pickReference: () -> Unit = {},
+    /** G5 review: the « Sans / Avec » stops (a word's example starts: one sound at a time). */
+    val stopListen: () -> Unit = {},
 )
 
 /** The symbol of a card's status in the plan (« faite ✓, sautée ⟶, à revoir ↺ »). */
@@ -369,7 +371,7 @@ fun GuideCard(
         }
         val word = SoundGlossary.ALL.firstOrNull { it.key == card.lexicon }
         // G5: the card's word, heard and said in a line before the decision (« pré-entraînement »); the glossary one touch further.
-        if (word != null) WordLine(word, learn)
+        if (word != null) WordLine(word, learn, actions.stopListen)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.padding(top = 4.dp)) {
             // A card picked in the plan: the way back to the one in progress.
             if (picked) SmallAction("← " + tr("Revenir à l'étape en cours"), "guide_back_to_next") { actions.select(null) }
@@ -387,7 +389,7 @@ fun GuideCard(
  * glossary's): heard before deciding, not after. A touch on the line opens the glossary on it.
  */
 @Composable
-private fun WordLine(word: com.pocketstudio.model.learn.SoundWord, learn: com.pocketstudio.app.learn.LearnHost) {
+private fun WordLine(word: com.pocketstudio.model.learn.SoundWord, learn: com.pocketstudio.app.learn.LearnHost, stopListen: () -> Unit) {
     val playing by learn.playing.collectAsStateWithLifecycle()
     val mine = playing?.takeIf { it.key == word.key }
     Row(
@@ -396,7 +398,7 @@ private fun WordLine(word: com.pocketstudio.model.learn.SoundWord, learn: com.po
     ) {
         Box(
             Modifier.size(48.dp).clip(CircleShape)
-                .clickable(role = Role.Button, onClickLabel = if (mine != null) tr("Arrêter") else tr("Écouter un exemple")) { learn.toggle(word.key) }
+                .clickable(role = Role.Button, onClickLabel = if (mine != null) tr("Arrêter") else tr("Écouter un exemple")) { stopListen(); learn.toggle(word.key) }
                 .semantics { contentDescription = tr("Écouter un exemple : %s", word.term) }
                 .testTag("guide_word_listen"),
             contentAlignment = Alignment.Center,

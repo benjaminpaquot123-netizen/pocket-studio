@@ -143,6 +143,8 @@ class GuideViewModel(
     private val pauseMusic: () -> Unit = {},
     /** False while a take records: no measure then (G4 review: the phone is busy, the take comes first). */
     private val canMeasure: () -> Boolean = { true },
+    /** The song is playing: no measure starts by itself then (G5 review). */
+    private val playing: () -> Boolean = { false },
 ) {
     private val _ui = MutableStateFlow(GuideUi())
     val ui: StateFlow<GuideUi> = _ui.asStateFlow()
@@ -160,8 +162,11 @@ class GuideViewModel(
     private val measuring = MutableStateFlow(false)
     /** One measure at a time: a balance asked for while one runs waits for it (G4 review). */
     private val measureLock = kotlinx.coroutines.sync.Mutex()
-    /** The measure running (or the balance waiting for one), cancelled when the music starts or the panel closes. */
-    @Volatile private var measureJob: Job? = null
+    /**
+     * Every measure (and a balance waiting for one) runs under this parent: [cancelMeasure] stops them
+     * all at once when the music starts or the panel closes (G5 review: one job overwritten by another survived).
+     */
+    private val measures = kotlinx.coroutines.SupervisorJob(scope.coroutineContext[Job])
 
     /** The last report, for the actions (null before the first analysis). */
     @Volatile private var report: GuideReport? = null
@@ -189,8 +194,12 @@ class GuideViewModel(
                 val r = withContext(worker) { GuideAnalyzer.analyze(p, s, now) }
                 // The Mode simple folds the other stages under « Aller plus loin »: they come from the whole parcours.
                 val full = if (s) withContext(worker) { GuideAnalyzer.analyze(p, false, now) } else null
-                val fresh = withContext(worker) { isFresh(p) }
-                val levels = withContext(worker) { p.guide.measures?.let { it.signature != 0 && it.signature == com.pocketstudio.model.guide.GuideSignatures.sound(p) } == true }
+                // The song's sound signature once (a JSON of the whole song, G5 review): both checks read it.
+                val (fresh, levels) = withContext(worker) {
+                    val m = p.guide.measures
+                    val same = m != null && m.signature != 0 && m.signature == com.pocketstudio.model.guide.GuideSignatures.sound(p)
+                    (same && !m!!.partial) to same
+                }
                 analyses++
                 report = r
                 fullReport = full
@@ -226,16 +235,14 @@ class GuideViewModel(
                 _notices.tryEmit(tr("Le Guide écoutera le morceau après la prise."))
                 return
             }
-            measureJob = scope.launch {
+            scope.launch(measures) {
                 if (!measured()) {
                     pauseMusic()
                     // A measure already running is waited for (not given up silently).
                     if (!measureNow()) return@launch
                 }
-                edit(cardId, "apply:$optionId", after = {
-                    // The faders moved: the song's loudness, its sections and mono are measured again.
-                    if (!measured()) measureNow(say = false)
-                }) { GuideActions.tryApply(it, cardId, optionId, clock()) }
+                // The faders moved: the song's loudness, its sections and mono are measured again, as any measure.
+                edit(cardId, "apply:$optionId", after = { measure() }) { GuideActions.tryApply(it, cardId, optionId, clock()) }
             }
             return
         }
@@ -254,14 +261,13 @@ class GuideViewModel(
      * The panel asks for it when a card of the levels shows, the music stopped.
      */
     fun measure() {
-        if (measurer == null || measuring.value || !canMeasure()) return
-        measureJob = scope.launch { if (!measured()) measureNow(say = false) }
+        if (measurer == null || measuring.value || !canMeasure() || playing()) return
+        scope.launch(measures) { if (!measured()) measureNow(say = false) }
     }
 
-    /** G4 review: the measure running (about 15 renders) stops: the music starts, the panel closes. */
+    /** G4 review: every measure running (about 15 renders each) stops: the music starts, the panel closes. */
     fun cancelMeasure() {
-        measureJob?.cancel()
-        measureJob = null
+        measures.children.forEach { it.cancel() }
     }
 
     /**
@@ -336,6 +342,14 @@ class GuideViewModel(
         session.editQuietly { p ->
             if (p.guide.statusOf(cardId).settled) p
             else p.copy(guide = p.guide.withStatus(cardId, GuideStatus.DONE, clock(), optionId))
+        }
+    }
+
+    /** G5 review: card [cardId] put off quietly (its panel folded on it), unless already decided or put off. */
+    fun markLater(cardId: String) {
+        session.editQuietly { p ->
+            if (p.guide.statusOf(cardId) != GuideStatus.TODO) p
+            else p.copy(guide = p.guide.withStatus(cardId, GuideStatus.LATER, clock()))
         }
     }
 

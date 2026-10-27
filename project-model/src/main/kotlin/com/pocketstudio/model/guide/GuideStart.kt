@@ -42,7 +42,8 @@ object GuideStart {
             p.tracks.map { listOf(it.synth, it.plaits, it.engine, it.instrument, it.multi, it.sampled, it.layers) },
             p.acid.sound, p.kitVersion, p.drums.lanes.map { it.sample },
         ).hashCode()
-        NOTES -> p.tracks.sumOf { t -> t.notes.notes.size } + p.allScenes.sumOf { s -> s.synthNotes.notes.size + s.trackNotes.values.sumOf { it.notes.size } }
+        // Every part's notes (not the part shown on top of them: following the song changes it, G5 review).
+        NOTES -> p.allScenes.sumOf { s -> s.synthNotes.notes.size + s.trackNotes.values.sumOf { it.notes.size } }
         ARRANGE -> listOf(p.song, p.automation.size).hashCode()
         else -> 0
     }
@@ -70,12 +71,22 @@ object GuideStart {
      * The song's start waits in the Guide: « Ton morceau est prêt » not decided yet (or, a first song
      * with no style, « Choisis un style »): the app opens the Guide's panel on it by itself.
      */
-    fun welcomes(p: Project): Boolean {
+    fun welcomes(p: Project): Boolean = welcomeCard(p) != null
+
+    /** The card [welcomes] opens the Guide on, while it is still to decide (null: none). */
+    fun welcomeCard(p: Project): String? {
         val g = p.guide
-        if (g.start.isEmpty()) return false
-        val card = if (p.style != null) READY else if (g.start == FIRST) "start.style" else return false
-        return g.statusOf(card) == GuideStatus.TODO && !g.refused(card)
+        if (g.start.isEmpty()) return null
+        val card = if (p.style != null) READY else if (g.start == FIRST) "start.style" else return null
+        return card.takeIf { g.statusOf(it) == GuideStatus.TODO && !g.refused(it) }
     }
+
+    /**
+     * « Mon premier morceau » still under way on [p], its cards as the analysis reads them ([settled]: a
+     * card is decided, skipped or done elsewhere): « Reprendre » on the launch screen until they all are.
+     */
+    fun firstSongUnderWay(p: Project, settled: (String) -> Boolean): Boolean =
+        p.guide.start == FIRST && MISSION_CARDS.any { !settled(it) }
 
     /** « Ton morceau est prêt »: the first card of a song just made. */
     const val READY = "start.ready"

@@ -4,6 +4,8 @@ import com.pocketstudio.model.PadSample
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectJson
 import com.pocketstudio.model.StarterWizard
+import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.switchScene
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -61,6 +63,27 @@ class GuideStartTest {
         val r = GuideAnalyzer.analyze(sound)
         assertEquals(GuideStatus.DONE_ELSEWHERE, r.status("start.sound")!!.status)
         assertEquals(GuideStatus.TODO, r.status("start.melody")!!.status)
+    }
+
+    /** G5 review: the part shown changes as the song plays (following it): « Enregistre une mélodie » is not ticked by that. */
+    @Test
+    fun showingAnotherPartDoesNotTickTheMelody() {
+        val p = GuideStart.begin(house(), GuideStart.FIRST)
+        assertTrue(p.allScenes.size >= 2)
+        for (i in p.allScenes.indices) {
+            val shown = p.switchScene(i)
+            assertFalse("scene $i", GuideStart.changed(shown, GuideStart.NOTES))
+            assertEquals("scene $i", GuideStatus.TODO, GuideAnalyzer.analyze(shown).status("start.melody")!!.status)
+        }
+    }
+
+    /** G5 review: « Reprendre Mon premier morceau » only while its cards are not all settled. */
+    @Test
+    fun aFirstSongIsUnderWayUntilItsCardsAreSettled() {
+        val p = GuideStart.begin(house(), GuideStart.FIRST)
+        assertTrue(GuideStart.firstSongUnderWay(p) { false })
+        assertFalse(GuideStart.firstSongUnderWay(p) { true })
+        assertFalse(GuideStart.firstSongUnderWay(GuideStart.begin(house(), GuideStart.SONG)) { false })
     }
 
     @Test

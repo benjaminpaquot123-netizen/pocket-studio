@@ -444,6 +444,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             session, viewModelScope, onEdited = ::afterGuideEdit, measurer = ::measureGuide,
             pauseMusic = { if (transport.value.playing) togglePlay() },
             canMeasure = { !recording.value && audioRecording.value == null },
+            playing = { transport.value.playing },
         )
     }
 

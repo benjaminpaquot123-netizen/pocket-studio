@@ -29,6 +29,8 @@ class LearnHost(
     val open: (String) -> Unit = {},
     val toggle: (String) -> Unit = {},
     val playing: kotlinx.coroutines.flow.StateFlow<GlossaryPlay?> = kotlinx.coroutines.flow.MutableStateFlow(null),
+    /** G5 review: the example playing stops (the song starts, a take, the Guide's « Sans / Avec », its panel folded). */
+    val stop: () -> Unit = {},
 )
 
 /** The glossary's door for the screens; does nothing outside [LearnLayer] (tests, previews). */
@@ -56,6 +58,7 @@ fun LearnLayer(content: @Composable () -> Unit) {
             open = { query = it },
             toggle = { key -> SoundGlossary.ALL.firstOrNull { it.key == key }?.let(learnVm::toggle) },
             playing = learnVm.playing,
+            stop = learnVm::stop,
         )
     }
     val listen: (com.pocketstudio.ui.Help) -> (() -> Unit)? = remember {

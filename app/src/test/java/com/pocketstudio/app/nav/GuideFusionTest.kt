@@ -188,8 +188,20 @@ class GuideFusionTest {
         val ui = h.vm.guide.ui.value
         assertTrue(ui.plan.all { it.stage in com.pocketstudio.model.guide.GuideStages.SIMPLE })
         assertTrue(ui.further.isNotEmpty())
-        // Folded in one touch.
+        // Folded in one touch: the card waits « plus tard », the Guide does not open on it by itself again (G5 review).
         tap("guide_bar")
         assertFalse(shown("guide_panel"))
+        await("put off") { status("start.ready") == GuideStatus.LATER }
+        assertFalse(GuideStart.welcomes(h.vm.project.value))
+    }
+
+    /** G5 review: the song heard with the top ▶ decides « Ton morceau est prêt » (no popping open at every start). */
+    @Test
+    fun theTopPlayButtonDecidesTheReadyCard() {
+        h.start { session.edit { made() } }
+        await("ready card") { shown("guide_card_start.ready") }
+        tap("top_play")
+        await("heard") { status("start.ready") == GuideStatus.DONE }
+        assertFalse(GuideStart.welcomes(h.vm.project.value))
     }
 }

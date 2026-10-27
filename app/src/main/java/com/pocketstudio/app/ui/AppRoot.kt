@@ -331,9 +331,12 @@ fun AppRoot() {
         }
     }
     // G5: a user mid-mission (the old « missions » settings) lands on the Guide's card of the step reached.
+    // Only once a project is open (G5 review: with none, the progress would be dropped).
     LaunchedEffect(rhythmVm.projectId) {
+        if (CurrentProject.isNone(rhythmVm.projectId)) return@LaunchedEffect
         com.pocketstudio.app.guide.GuideMigration.missions(context)?.let { (step, skipped) ->
-            if (!CurrentProject.isNone(rhythmVm.projectId)) { rhythmVm.guide.fromMissions(step, skipped); guideOpen = true }
+            rhythmVm.guide.fromMissions(step, skipped)
+            guideOpen = true
         }
     }
     // « Ce qui joue »: -2 closed, -1 the whole song, else a scene; [overviewCh]: one track's (-1: all).
@@ -550,20 +553,22 @@ fun AppRoot() {
         )
     }
     val wizardUi by libraryVm.wizard.collectAsStateWithLifecycle()
+    // Closed without a song (G5 review): the next song is not « Mon premier morceau » by mistake.
+    val closeWizard: () -> Unit = { firstSongNext = false; libraryVm.closeWizard() }
     if (wizardUi.open) {
         val packsUi by libraryVm.packs.collectAsStateWithLifecycle()
         val previewing by libraryVm.playing.collectAsStateWithLifecycle()
         val preparing by libraryVm.preparing.collectAsStateWithLifecycle()
         ScaledDialog(
-            onDismissRequest = libraryVm::closeWizard,
+            onDismissRequest = closeWizard,
             properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
         ) {
-            androidx.activity.compose.BackHandler { if (wizardUi.step > 0) libraryVm.back() else libraryVm.closeWizard() }
+            androidx.activity.compose.BackHandler { if (wizardUi.step > 0) libraryVm.back() else closeWizard() }
             androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
                 com.pocketstudio.app.library.WizardScreen(
                     wizardUi, packsUi, previewing,
                     com.pocketstudio.app.library.WizardActions(
-                        close = libraryVm::closeWizard,
+                        close = closeWizard,
                         chooseStyle = libraryVm::chooseStyle,
                         next = libraryVm::next,
                         back = libraryVm::back,
@@ -1207,11 +1212,14 @@ fun AppRoot() {
             guideListen.stop()
             guideReferenceFor = card to option
             runCatching { pickGuideReference.launch(arrayOf("audio/*")) }
-        } else guideListen.toggle(card, option)
+        } else {
+            learn.stop()  // G5 review: one sound at a time (the word's example, or « Sans / Avec »)
+            guideListen.toggle(card, option)
+        }
     }
     DisposableEffect(guideListen) { onDispose { guideListen.stop() } }
     // G4 review: a measure running stops with the panel (and when the music starts, below).
-    LaunchedEffect(guideOpen) { if (!guideOpen) { guideListen.stop(); guideVm.cancelMeasure() } }
+    LaunchedEffect(guideOpen) { if (!guideOpen) { guideListen.stop(); learn.stop(); guideVm.cancelMeasure() } }
     // G2 review: the « Sans / Avec » never plays under a take, the Live page or the song started (the
     // panel only hides there, it stays open).
     val guideQuietRec by rhythmVm.recording.collectAsStateWithLifecycle()
@@ -1220,7 +1228,13 @@ fun AppRoot() {
     LaunchedEffect(guideQuietRec, guideQuietTake != null, showLive, guideQuietPlaying) {
         if (guideQuietRec || guideQuietTake != null || showLive || guideQuietPlaying) {
             guideListen.stop()
+            learn.stop()
             guideVm.cancelMeasure()
+        }
+        // G5 review: the song just made has been heard (the top ▶ too): « Ton morceau est prêt » is decided,
+        // the Guide no longer opens on it by itself.
+        if (guideQuietPlaying && com.pocketstudio.model.guide.GuideStart.welcomeCard(rhythmVm.project.value) == com.pocketstudio.model.guide.GuideStart.READY) {
+            guideVm.markDone(com.pocketstudio.model.guide.GuideStart.READY, "drop")
         }
     }
     val guideGo: (com.pocketstudio.app.guide.GuideGo) -> Unit = { g ->
@@ -1273,7 +1287,13 @@ fun AppRoot() {
     // A lit control goes dark by itself after a while, or as soon as the space changes.
     LaunchedEffect(guideSpot) { if (guideSpot != null) { kotlinx.coroutines.delay(GUIDE_SPOT_MS); guideSpot = null } }
     val guideActions = com.pocketstudio.app.guide.GuidePanelActions(
-        toggle = { guideOpen = !guideOpen; com.pocketstudio.app.report.Journal.action(if (guideOpen) "Guide ouvert" else "Guide replié") },
+        toggle = {
+            guideOpen = !guideOpen
+            // G5 review: folded on its welcome card, the card waits « plus tard » (it does not open by itself again).
+            if (!guideOpen) com.pocketstudio.model.guide.GuideStart.welcomeCard(rhythmVm.project.value)?.let(guideVm::markLater)
+            com.pocketstudio.app.report.Journal.action(if (guideOpen) "Guide ouvert" else "Guide replié")
+        },
+        stopListen = { guideListen.stop() },
         apply = { card, option -> guideListen.stop(); guideNotice = null; guideVm.apply(card, option); if (guideSelected == card) guideSelected = null },
         open = { card, option -> guideListen.stop(); guideVm.apply(card, option) },
         listen = guideListenOrPick,

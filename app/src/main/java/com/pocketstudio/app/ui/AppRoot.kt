@@ -188,6 +188,7 @@ import com.pocketstudio.app.mixer.AutomationUi
 import com.pocketstudio.app.remix.RemixScreen
 import com.pocketstudio.app.remix.RemixUi
 import com.pocketstudio.app.remix.RemixViewModel
+import com.pocketstudio.app.remix.beforePlay
 import com.pocketstudio.app.studio.StudioViewModel
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.ui.Neon
@@ -2780,6 +2781,9 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                             val project by rhythmVm.project.collectAsStateWithLifecycle()
                             val transport by rhythmVm.transport.collectAsStateWithLifecycle()
                             val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
+                            // The stem board's actions (B3, the board itself is B1's): a stretch heard alone
+                            // and the Remix's « Écouter » share the preview player, never sound together.
+                            val stemBoard = remember(rhythmVm, remixVm) { rhythmVm.stemBoard.beforePlay(remixVm::stop) }
                             RemixScreen(
                                 RemixUi(
                                     modelInstalled, remixState, sets, preview,
@@ -2805,8 +2809,8 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     pickSong = { pickSong.launch(arrayOf("audio/*")) },
                                     cancel = remixVm::cancel,
                                     dismiss = remixVm::dismiss,
-                                    playAll = remixVm::playAll,
-                                    toggleStem = remixVm::toggleStem,
+                                    playAll = { stemBoard.stop(); remixVm.playAll(it) },
+                                    toggleStem = { set, stem -> stemBoard.stop(); remixVm.toggleStem(set, stem) },
                                     pause = remixVm::pause,
                                     stemToLive = rhythmVm::stemToLive,
                                     setFollowTempo = rhythmVm::setRemixFollowTempo,
@@ -2820,7 +2824,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     },
                                     clearRemix = rhythmVm::clearRemix,
                                     // The project's ▶ and « Écouter » never sound together.
-                                    togglePlay = { remixVm.pause(); rhythmVm.togglePlay() },
+                                    togglePlay = { remixVm.pause(); stemBoard.stop(); rhythmVm.togglePlay() },
                                     retry = remixVm::retry,
                                     setStartBar = rhythmVm::setRemixStartBar,
                                     setStemVolume = rhythmVm::setStemVolume,

@@ -5227,11 +5227,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /**
      * The stem board's actions: a stretch onto a free pad, a new instrument or audio track, a live
-     * pad; a voice cut into its phrases. MERGE: B2's `StemEditor` replaces [ProvisionalStemEdits].
+     * pad; a voice cut into its phrases. The cuts and the phrases are B2's [com.pocketstudio.app.remix.StemEditor].
      */
     val stemBoard: com.pocketstudio.app.remix.StemBoardRouter
         get() = stemBoardMade ?: com.pocketstudio.app.remix.StemBoardRouter(
-            viewModelScope, stemBoardHost, com.pocketstudio.app.remix.ProvisionalStemEdits,
+            viewModelScope, stemBoardHost, com.pocketstudio.app.remix.StemEditor,
             com.pocketstudio.app.guide.EnginePcmPlayer(viewModelScope),
         ).also { stemBoardMade = it }
 

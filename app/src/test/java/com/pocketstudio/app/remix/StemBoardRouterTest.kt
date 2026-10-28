@@ -289,7 +289,7 @@ class StemBoardRouterTest {
         assertEquals(((3 * 1_000_000 + 240_000) * 1e-7).toFloat(), cuts[1].pcm.data[0], 1e-6f)
         assertEquals("3 phrases sur les pads 2, 5 et 7.", r.state.value.message)
         // The energy: mono at 6 kHz, the whole song; the beat grid in its frames (120 BPM, first beat at frame 4000).
-        assertEquals(listOf(6_000, 1, 48_000 * 30 / 8, 3_000L, 8, 500L), edits.asked)
+        assertEquals("[6000, 1, 180000, 3000, 8, 500]", edits.asked.toString())
     }
 
     @Test

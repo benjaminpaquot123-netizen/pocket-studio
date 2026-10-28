@@ -50,12 +50,17 @@ class PianoRollZoomTest {
     private val wide = NoteClip(steps = 128, notes = (0 until 16).map { i -> Note(i * 8 * t, 4 * t, if (i % 2 == 0) 29 + i else 72 - i) })
 
     private fun idle() = repeat(6) { shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(50)); compose.waitForIdle() }
-    private fun bounds(tag: String): Rect = compose.onNodeWithTag(tag, useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+    /** Where [tag] is, whole (not cut by the scrolls it is in): its place in the window and its size. */
+    private fun bounds(tag: String): Rect = compose.onNodeWithTag(tag, useUnmergedTree = true).fetchSemanticsNode().let { n ->
+        Rect(n.positionInRoot, androidx.compose.ui.geometry.Size(n.size.width.toFloat(), n.size.height.toFloat()))
+    }
     private fun has(tag: String) = compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
 
     @Test
     fun toutVoirFramesEveryNote() {
-        compose.setContent { PocketStudioTheme { PianoRoll(wide, emptyList(), -1, PianoRollActions()) } }
+        compose.setContent {
+            PocketStudioTheme { androidx.compose.material3.Surface(color = com.pocketstudio.ui.Neon.Background) { PianoRoll(wide, emptyList(), -1, PianoRollActions()) } }
+        }
         idle()
         val view = bounds("roll_view")
         // Before: a bar or so across, a few octaves up and down.
@@ -144,10 +149,9 @@ class PianoRollZoomTest {
         idle()
         compose.onNodeWithTag("chord_mode").performClick()
         idle()
-        // The lowest note's row, a little into the bar.
-        val grid = bounds("piano_roll")
-        val key = bounds("roll_key_53")
-        compose.onNodeWithTag("piano_roll").performTouchInput { click(Offset(20f, key.center.y - grid.top)) }
+        // The lowest note's row, a little into the bar (a touch is placed from what is seen of the grid).
+        fun seen(tag: String) = compose.onNodeWithTag(tag, useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        compose.onNodeWithTag("piano_roll").performTouchInput { click(Offset(20f, seen("roll_key_53").center.y - seen("piano_roll").top)) }
         idle()
         assertEquals(chord.map { it.pitch }.toSet(), clip.notes.map { it.pitch }.toSet())
     }

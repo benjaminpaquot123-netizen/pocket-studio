@@ -2297,7 +2297,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     frozen = shownTrack in frozenTracks,
                                     songChords = { songChordsOpen = true },
                                     hints = com.pocketstudio.app.tuto.TutoHints.notes?.takeIf { it.first == shownTrack }?.second.orEmpty(),
-                                    trackName = fullProject.tracks.firstOrNull { it.id == shownTrack }?.name,
+                                    trackName = runCatching { com.pocketstudio.model.DefaultNames.shown(fullProject.track(shownTrack).name) }.getOrNull(),
                                     copyMotif = com.pocketstudio.app.tuto.TutoHints.copy.takeIf { !com.pocketstudio.app.tuto.TutoHints.copyOnGrid && com.pocketstudio.app.tuto.TutoHints.notes?.first == shownTrack },
                                 ),
                                 instrument = InstrumentUi(

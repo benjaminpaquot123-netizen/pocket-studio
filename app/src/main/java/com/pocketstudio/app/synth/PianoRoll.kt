@@ -231,10 +231,17 @@ fun PianoRoll(
         // a short loop filling a tablet's width.
         val defaultStep = (viewWidth / barSteps).coerceIn(ZOOMS[0].value, ZOOMS[1].value)
         val stepWidth = maxOf(if (stepDp > 0f) stepDp else defaultStep, viewWidth / clip.steps).coerceAtMost(MAX_STEP).dp
-        val rowHeight = (if (rowDp > 0f) rowDp else (if (tablet) TABLET_ROW else ROW).value).dp
+        // A whole number of pixels a row: the keys (one box a row) and the grid's rows (drawn) stay in line at any zoom.
+        val rowHeight = with(LocalDensity.current) {
+            (if (rowDp > 0f) rowDp else (if (tablet) TABLET_ROW else ROW).value).dp.toPx().roundToInt().coerceAtLeast(1).toDp()
+        }
+        val baseRow = (if (tablet) TABLET_ROW else ROW).value
         val zoomBy: (Float, Float) -> Unit = { fx, fy ->
-            stepDp = (stepWidth.value * fx).coerceIn(minOf(MIN_STEP, viewWidth / clip.steps), MAX_STEP)
-            rowDp = (rowHeight.value * fy).coerceIn(MIN_ROW, MAX_ROW)
+            // From the zoom as it is now (the states, read at each call: a pinch calls this many times between two frames).
+            val step = maxOf(if (stepDp > 0f) stepDp else defaultStep, viewWidth / clip.steps)
+            val row = if (rowDp > 0f) rowDp else baseRow
+            stepDp = (step * fx).coerceIn(minOf(MIN_STEP, viewWidth / clip.steps), MAX_STEP)
+            rowDp = (row * fy).coerceIn(MIN_ROW, MAX_ROW)
         }
         Column(Modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
             ToolRow(tablet) {
@@ -630,17 +637,24 @@ private fun Grid(
         if (x(next) < hScroll.value || x(next) + stepPx > hScroll.value + view.width) hScroll.animateScrollTo((x(next) - 2 * stepPx).roundToInt().coerceIn(0, hScroll.maxValue))
         if (y(next) < vScroll.value || y(next) + rowPx > vScroll.value + view.height) vScroll.animateScrollTo((y(next) - view.height / 2f + rowPx / 2).roundToInt().coerceIn(0, vScroll.maxValue))
     }
+    // The gesture lives across zooms: it reads the latest sizes and zoom (each step multiplies the size it has now).
+    val latestZoom = rememberUpdatedState(zoomBy)
+    val latestSizes = rememberUpdatedState(stepPx to rowPx)
     // A pinch keeps what is under the fingers where it is: the place (in steps and rows) put back once the new size is laid out.
     var anchor by remember { mutableStateOf<FloatArray?>(null) }
     LaunchedEffect(stepPx, rowPx) {
         val a = anchor ?: return@LaunchedEffect
+        anchor = null
         androidx.compose.runtime.withFrameNanos { }
         hScroll.scrollTo((a[0] * stepPx - a[1]).roundToInt().coerceAtLeast(0))
         vScroll.scrollTo((a[2] * rowPx - a[3]).roundToInt().coerceAtLeast(0))
     }
     // « Tout voir »: the first bar on the left, the highest note (a row above it) at the top.
+    // Only a new touch frames (the roll shown again keeps the user's place).
+    val fitSeen = remember { intArrayOf(fitAll) }
     LaunchedEffect(fitAll) {
-        if (fitAll == 0) return@LaunchedEffect
+        if (fitAll == fitSeen[0]) return@LaunchedEffect
+        fitSeen[0] = fitAll
         androidx.compose.runtime.withFrameNanos { }
         hScroll.scrollTo(0)
         val top = (clip.notes + hints).maxOfOrNull { it.pitch }
@@ -691,8 +705,9 @@ private fun Grid(
                             val fx = if (before.x > min && spread.x > min) spread.x / before.x else 1f
                             val fy = if (before.y > min && spread.y > min) spread.y / before.y else 1f
                             if (fx != 1f || fy != 1f) {
-                                anchor = floatArrayOf((hScroll.value + center.x) / stepPx, center.x, (vScroll.value + center.y) / rowPx, center.y)
-                                zoomBy(fx, fy)
+                                val (sp, rp) = latestSizes.value
+                                anchor = floatArrayOf((hScroll.value + center.x) / sp, center.x, (vScroll.value + center.y) / rp, center.y)
+                                latestZoom.value(fx, fy)
                             }
                         }
                         last = spread

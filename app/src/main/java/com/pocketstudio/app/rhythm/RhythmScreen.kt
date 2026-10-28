@@ -550,7 +550,14 @@ private fun StepGrid(
     }
     // « Je le fais » (a touch of the user's): the page it names.
     val tutoPage = com.pocketstudio.app.tuto.TutoHints.page
-    LaunchedEffect(tutoPage) { tutoPage?.takeIf { it.first == lane }?.let { chosenBar = it.second.coerceIn(0, bars - 1); follow = false } }
+    LaunchedEffect(tutoPage) {
+        tutoPage?.takeIf { it.first == lane }?.let {
+            chosenBar = it.second.coerceIn(0, bars - 1)
+            follow = false
+            // Once: the grid shown again later stays where the user left it.
+            com.pocketstudio.app.tuto.TutoHints.page = null
+        }
+    }
     LaunchedEffect(tutoLeft) { if (tutoDemo && tutoLeft.isNotEmpty() && tutoLeft.none { it / per == chosenBar }) chosenBar = tutoLeft.first() / per }
     // Playing and following: the page turns with the playhead.
     val bar = (if (playing && follow && currentStep >= 0 && tutoLeft.isEmpty()) currentStep / per else chosenBar).coerceIn(0, bars - 1)
@@ -1296,4 +1303,3 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
     }
 }
 
-/** The tutorial's last dotted cell of a bar touched: this long before its next bar is shown. */

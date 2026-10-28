@@ -295,10 +295,17 @@ internal fun Channel.alsoSet(): Boolean = alsoSetKeys().isNotEmpty()
 @Composable
 private fun AlsoSet(ch: Int, channel: Channel, actions: MixerActions) {
     val vibe = channel.matchingFx()?.takeIf { it.id != FxPresets.NONE.id }
-    // Another ambience chosen: only what it sets.
-    var kept by remember(ch, vibe?.id) { mutableStateOf(emptySet<String>()) }
-    val keys = channel.alsoSetKeys().toSet() + kept
-    androidx.compose.runtime.SideEffect { if (keys != kept) kept = keys }
+    // Testers (lot « tuto 4 »): a send or a knob moved in this box made its line appear here, above, and the
+    // whole box slid down under the finger. The lines are those set when the box opened, or by the ambience
+    // chosen since (only what it sets); a slider moved by hand is already in sight below.
+    val now = channel.alsoSetKeys().toSet()
+    var kept by remember(ch) { mutableStateOf(now) }
+    var vibeSeen by remember(ch) { mutableStateOf(vibe?.id) }
+    androidx.compose.runtime.SideEffect {
+        if (vibe != null && vibe.id != vibeSeen) kept = now
+        vibeSeen = vibe?.id
+    }
+    val keys = kept
     if (keys.isEmpty()) return
     Column(Modifier.fillMaxWidth().testTag("fx_also_$ch"), verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Text(

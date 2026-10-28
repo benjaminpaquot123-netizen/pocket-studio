@@ -32,5 +32,6 @@
   "masquer": "छिपाओ",
   "%s LUFS · crête %s dBTP": "%s LUFS · पीक %s dBTP",
   "Tout réentendre": "सबको फिर से सुनो",
-  "Coupé dans Mes pistes, donc absent du fichier : %s.": "मेरे ट्रैक्स में म्यूट है, इसलिए फ़ाइल में नहीं होगा: %s।"
+  "Coupé dans Mes pistes, donc absent du fichier : %s.": "मेरे ट्रैक्स में म्यूट है, इसलिए फ़ाइल में नहीं होगा: %s।",
+  "« Partager » renomme aussi le projet « %s ».": "« शेयर करें » प्रोजेक्ट « %s » का नाम भी बदल देता है।"
 }

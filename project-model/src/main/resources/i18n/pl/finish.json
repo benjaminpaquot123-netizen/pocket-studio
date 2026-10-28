@@ -32,5 +32,6 @@
   "masquer": "ukryj",
   "%s LUFS · crête %s dBTP": "%s LUFS · szczyt %s dBTP",
   "Tout réentendre": "Słuchaj znowu wszystkich",
-  "Coupé dans Mes pistes, donc absent du fichier : %s.": "Wyciszone w Moich ścieżkach, więc nie trafią do pliku: %s."
+  "Coupé dans Mes pistes, donc absent du fichier : %s.": "Wyciszone w Moich ścieżkach, więc nie trafią do pliku: %s.",
+  "« Partager » renomme aussi le projet « %s ».": "« Udostępnij » zmienia też nazwę projektu « %s »."
 }

@@ -384,7 +384,9 @@ fun SynthScreen(
                 Spacer(Modifier.height(floatRoom))
             }
         }
-        if (follows) {
+        // Testers (lot « tuto 4 »): it opened by itself over the settings the tutorial rings; while the tutorial
+        // runs, its panel has the bottom of the screen (the keyboard stays in « Clavier »).
+        if (follows && !com.pocketstudio.app.tuto.TutoHints.active) {
             // In Notes mode on an upright tablet the keyboard under the roll is there already.
             val wanted = soundsInView && (showNotes && notes != null && !tabletUpright || !keyboardInView)
             // Folding holds until the real keyboard is back: the next time it is out of reach, the floating one returns.
@@ -553,6 +555,9 @@ private fun PresetsCard(patch: SynthPatch, actions: SynthActions, browser: Sound
 
 @Composable
 internal fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boolean, setAdvanced: (Boolean) -> Unit) {
+    // A knob the tutorial names among the advanced ones (« Glissé entre les notes »): they unfold.
+    val asked = com.pocketstudio.app.tuto.TutoHints.knobs
+    androidx.compose.runtime.LaunchedEffect(asked) { if (ADVANCED.any { it.first in asked }) setAdvanced(true) }
     // The tutorial's « Je le fais » on a sound's settings (« Coupure »…) rings this card.
     NeonCard(modifier = Modifier.spot(com.pocketstudio.app.ui.SYNTH_SETTINGS_SPOT)) {
         SectionLabel(tr("Réglages du son"), foldKey = "Réglages du son")
@@ -565,9 +570,9 @@ internal fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boole
         com.pocketstudio.ui.AdaptiveColumns(EASY.map { (index, label) ->
             @Composable {
                 if (index == SynthPatch.UNISON) {
-                    ParamSlider(label, patch.get(index), Glossary.UNISON, com.pocketstudio.app.ui.voicesLabel(1 + (patch.get(index) * 6).roundToInt()), knob(actions, index)) { actions.setParam(index, it) }
+                    ParamSlider(label, patch.get(index), Glossary.UNISON, com.pocketstudio.app.ui.voicesLabel(1 + (patch.get(index) * 6).roundToInt()), knob(actions, index), index) { actions.setParam(index, it) }
                 } else {
-                    ParamSlider(label, patch.get(index), automate = knob(actions, index)) { actions.setParam(index, it) }
+                    ParamSlider(label, patch.get(index), automate = knob(actions, index), index = index) { actions.setParam(index, it) }
                 }
             }
         }, minCellWidth = 260.dp, maxColumns = 3)
@@ -585,7 +590,7 @@ internal fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boole
                 Text(tr("Type de filtre"), style = MaterialTheme.typography.bodyMedium)
                 ChoiceRow(FILTERS, patch.get(SynthPatch.FILTER_TYPE)) { actions.setParam(SynthPatch.FILTER_TYPE, it) }
                 com.pocketstudio.ui.AdaptiveColumns(
-                    ADVANCED.map { (index, label) -> @Composable { ParamSlider(label, patch.get(index), automate = knob(actions, index)) { actions.setParam(index, it) } } },
+                    ADVANCED.map { (index, label) -> @Composable { ParamSlider(label, patch.get(index), automate = knob(actions, index), index = index) { actions.setParam(index, it) } } },
                     minCellWidth = 260.dp, maxColumns = 3, spacing = 4.dp,
                 )
             }
@@ -673,7 +678,21 @@ private fun knob(actions: SynthActions, index: Int): Pair<Int, () -> Unit>? =
     actions.automate?.takeIf { index in com.pocketstudio.model.AutoTarget.SYNTH_PARAMS }?.let { a -> index to { a(index) } }
 
 @Composable
-private fun ParamSlider(label: String, value: Float, help: Help? = null, shown: String? = null, automate: Pair<Int, () -> Unit>? = null, onChange: (Float) -> Unit) {
+private fun ParamSlider(
+    label: String, value: Float, help: Help? = null, shown: String? = null, automate: Pair<Int, () -> Unit>? = null,
+    /** The synth parameter (the tutorial's ring); -1: none. */
+    index: Int = -1, onChange: (Float) -> Unit,
+) {
+    // Testers (lot « tuto 4 »): the knob the tutorial's step names, dashed and ringed by « Je le fais ».
+    if (index >= 0 && index in com.pocketstudio.app.tuto.TutoHints.knobs) {
+        Column(Modifier.fillMaxWidth().spot("synth_knob_$index").then(com.pocketstudio.app.tuto.tutoDashed()).padding(6.dp).testTag("tuto_knob_$index")) {
+            ParamSliderBody(label, value, help, shown, automate, onChange)
+        }
+    } else ParamSliderBody(label, value, help, shown, automate, onChange)
+}
+
+@Composable
+private fun ParamSliderBody(label: String, value: Float, help: Help?, shown: String?, automate: Pair<Int, () -> Unit>?, onChange: (Float) -> Unit) {
     // A long press on the name: « Automatiser » (phase 37).
     AutomatableKnob(automate?.second, "knob_${automate?.first ?: label}", Modifier.fillMaxWidth()) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {

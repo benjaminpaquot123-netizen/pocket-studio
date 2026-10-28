@@ -32,5 +32,6 @@
   "masquer": "隐藏",
   "%s LUFS · crête %s dBTP": "%s LUFS · 峰值 %s dBTP",
   "Tout réentendre": "全部重新听到",
-  "Coupé dans Mes pistes, donc absent du fichier : %s.": "在 我的音轨 中被静音，所以文件里不会有：%s。"
+  "Coupé dans Mes pistes, donc absent du fichier : %s.": "在 我的音轨 中被静音，所以文件里不会有：%s。",
+  "« Partager » renomme aussi le projet « %s ».": "“分享”也会重命名项目“%s”。"
 }

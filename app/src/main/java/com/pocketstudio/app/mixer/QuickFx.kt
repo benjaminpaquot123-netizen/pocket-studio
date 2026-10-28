@@ -150,8 +150,9 @@ fun QuickFxPanel(ch: Int, channel: Channel, actions: QuickFxActions, kind: Sound
                 style = MaterialTheme.typography.bodySmall, color = Neon.Magenta, modifier = Modifier.testTag("fx_auditioning"))
         } else {
             Row(verticalAlignment = Alignment.CenterVertically) {
+                // Two lines whatever it says (testers, lot « tuto 4 »: a knob moved changed it, the box slid under the finger).
                 Text(current?.description?.let { tr(it) } ?: tr("Touche une ambiance pour l'essayer : tu peux toujours revenir avec Annuler."),
-                    Modifier.weight(1f), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    Modifier.weight(1f), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, minLines = 2)
                 if (current != null && current.id != FxPresets.NONE.id) {
                     val starred = current.id in favourites
                     IconButton(onClick = { actions.toggleFavourite(current.id) }, modifier = Modifier.testTag("fx_favourite")) {

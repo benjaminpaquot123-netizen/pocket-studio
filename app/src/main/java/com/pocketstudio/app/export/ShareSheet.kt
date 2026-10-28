@@ -243,6 +243,8 @@ data class ShareSheetUi(
     val lufs: Double? = null,
     /** Its true peak, in dBTP (under « détails »). */
     val truePeakDb: Double? = null,
+    /** The project's own name now (« Mon projet 1 »): said when « Partager » will rename it ([name] differs). */
+    val projectName: String? = null,
     /** S5: how much the loudest moments are tassés for the volume ([ShareLevels.lossDb]). */
     val lossDb: Double? = null,
 )
@@ -315,6 +317,11 @@ fun ShareSheetContent(
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
             modifier = Modifier.fillMaxWidth().testTag("share_name"),
         )
+        // Testers (lot « tuto 4 »): « Mon projet 1 » became « Mon morceau » without a word.
+        ui.projectName?.let { DefaultNames.shown(it).trim() }?.takeIf { it.isNotEmpty() && it != ui.name.trim() }?.let { old ->
+            Text(tr("« Partager » renomme aussi le projet « %s ».", old), style = MaterialTheme.typography.bodySmall,
+                color = Neon.TextSecondary, modifier = Modifier.testTag("share_renames"))
+        }
         // How long it lasts, and one last listen (the saturation is checked while it plays).
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Column(Modifier.weight(1f)) {
@@ -359,15 +366,6 @@ fun ShareSheetContent(
             }
             ui.checks.forEach { check -> CheckRow(check, ui, actions, simple) }
         }
-        Text(tr("Format"), style = MaterialTheme.typography.bodyMedium)
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            listOf(ExportFormat.M4a to tr("M4A · pour partager"), ExportFormat.Wav to tr("WAV · qualité max")).forEach { (format, label) ->
-                FilterChip(
-                    selected = ui.format == format, onClick = { actions.setFormat(format) }, label = { Text(label) },
-                    colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("share_format_${format.name}"),
-                )
-            }
-        }
         OutlinedButton(onClick = actions.video, enabled = !ui.running, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("share_video")) {
             Icon(Icons.Filled.Movie, contentDescription = null, modifier = Modifier.size(18.dp))
             Text("  " + tr("Vidéo pour les réseaux · 30 s"), maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
@@ -382,6 +380,20 @@ fun ShareSheetContent(
             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan)
         }
     }
+        // Testers (lot « tuto 4 »): M4A or WAV stays in sight with « Partager » (a short page, the tutorial's
+        // panel under it, cut the chips in half at the scroll's edge).
+        FlowRow(
+            Modifier.padding(horizontal = 20.dp), itemVerticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            Text(tr("Format"), style = MaterialTheme.typography.bodyMedium)
+            listOf(ExportFormat.M4a to tr("M4A · pour partager"), ExportFormat.Wav to tr("WAV · qualité max")).forEach { (format, label) ->
+                FilterChip(
+                    selected = ui.format == format, onClick = { actions.setFormat(format) }, label = { Text(label) },
+                    colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("share_format_${format.name}"),
+                )
+            }
+        }
         Button(
             onClick = actions.share, enabled = ui.name.isNotBlank() && !ui.running,
             modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth().heightIn(min = 56.dp).spot("share_go", tr("Partager")).testTag("share_go"),
@@ -505,7 +517,7 @@ fun ShareSheetRoute(
     val checks = remember(project, levels, loopBars) { shareChecks(project, com.pocketstudio.app.ui.mixerStrips(project), levels, loopBars) }
     val ui = (
         ShareSheetUi(
-            name = name, seconds = shareSeconds(project, loopBars), parts = project.song.size, checks = checks,
+            name = name, seconds = shareSeconds(project, loopBars), parts = project.song.size, checks = checks, projectName = project.name,
             format = prefs.format, playing = transport.playing, running = export.running, canLower = levels.canLower, lufs = levels.lufs,
             truePeakDb = levels.truePeakDb, lossDb = levels.lossDb,
         )

@@ -32,5 +32,6 @@
   "masquer": "sembunyikan",
   "%s LUFS · crête %s dBTP": "%s LUFS · puncak %s dBTP",
   "Tout réentendre": "Dengar semua lagi",
-  "Coupé dans Mes pistes, donc absent du fichier : %s.": "Di-mute di Trekku, jadi tidak ada di file: %s."
+  "Coupé dans Mes pistes, donc absent du fichier : %s.": "Di-mute di Trekku, jadi tidak ada di file: %s.",
+  "« Partager » renomme aussi le projet « %s ».": "« Bagikan » juga mengganti nama proyek « %s »."
 }

@@ -32,5 +32,6 @@
   "masquer": "إخفاء",
   "%s LUFS · crête %s dBTP": "%s LUFS · ذروة %s dBTP",
   "Tout réentendre": "اسمعها كلها من جديد",
-  "Coupé dans Mes pistes, donc absent du fichier : %s.": "مكتوم في «مساراتي»، لذا غائب عن الملف: %s."
+  "Coupé dans Mes pistes, donc absent du fichier : %s.": "مكتوم في «مساراتي»، لذا غائب عن الملف: %s.",
+  "« Partager » renomme aussi le projet « %s ».": "« مشاركة » تعيد أيضًا تسمية المشروع « %s »."
 }

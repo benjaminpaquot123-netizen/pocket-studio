@@ -1447,10 +1447,27 @@ fun AppRoot() {
     // The dotted cells of a drum step (Rythme), the dotted notes of a melodic one (its notes), shown the whole step.
     val tutoProject = rhythmVm.project.collectAsStateWithLifecycle().value
     val tutoSteps = tutoProject.drums.steps
-    LaunchedEffect(tutoUi?.current?.id, tutoSteps, tutoUi == null) { com.pocketstudio.app.tuto.TutoHints.cells = tuto.hint(tutoSteps) }
-    LaunchedEffect(tutoUi?.current?.id, tutoProject, tutoUi == null) {
+    LaunchedEffect(tutoUi?.current?.id, tutoSteps, tutoUi == null, tutoUi?.need, tutoUi?.progress?.done) { com.pocketstudio.app.tuto.TutoHints.cells = tuto.hint(tutoSteps) }
+    LaunchedEffect(tutoUi?.current?.id, tutoProject, tutoUi == null, tutoUi?.need) {
         com.pocketstudio.app.tuto.TutoHints.notes = tuto.ghostNotes(tutoProject)
         com.pocketstudio.app.tuto.TutoHints.erase = tuto.toErase(tutoProject)
+        com.pocketstudio.app.tuto.TutoHints.sendNote = tuto.sendNote(tutoProject)
+    }
+    // Testers (lot « tuto 4 »): the tutorial's panel has the bottom of the screen (no floating keyboard over its
+    // rings), a step ticked closes a hit's menu (its first touch on « Étape suivante » was lost closing it).
+    LaunchedEffect(tutoUi == null) { com.pocketstudio.app.tuto.TutoHints.active = tutoUi != null }
+    LaunchedEffect(tutoUi?.progress?.done?.size) { com.pocketstudio.app.tuto.TutoHints.ticked++ }
+    LaunchedEffect(tutoUi?.current?.id) { com.pocketstudio.app.tuto.TutoHints.knobs = tuto.place()?.knobs.orEmpty().toSet() }
+    // The hits to take away left on another pad only (« Caisse » done, « Charley » next): that pad shown, said.
+    val tutoErase = com.pocketstudio.app.tuto.TutoHints.erase
+    val tutoPad by remember(rhythmVm) { rhythmVm.transport.map { it.selectedPad }.distinctUntilChanged() }.collectAsStateWithLifecycle(rhythmVm.transport.value.selectedPad)
+    LaunchedEffect(tutoErase, tutoPad) {
+        val left = tutoErase?.filterValues { it.isNotEmpty() }?.keys ?: return@LaunchedEffect
+        if (left.isEmpty() || tutoPad in left) return@LaunchedEffect
+        kotlinx.coroutines.delay(com.pocketstudio.app.tuto.TUTO_TURN_MS)
+        val next = left.min()
+        rhythmVm.selectPad(next)
+        com.pocketstudio.app.tuto.TutoHints.banner = "→ " + com.pocketstudio.app.rhythm.padName(rhythmVm.project.value, next)
     }
     LaunchedEffect(tutoUi?.demoCells, tutoUi?.fade) {
         com.pocketstudio.app.tuto.TutoHints.fading = tutoUi?.demoCells?.let { (lane, cells) -> Triple(lane, cells, tutoUi?.fade ?: 0f) }
@@ -1597,17 +1614,21 @@ fun AppRoot() {
                     com.pocketstudio.app.tuto.TutoHints.send = g.send?.let { g.effects to it }
                     fxChannel = g.effects
                 }
-                // The sound's settings (« Coupure »…) of that track, not its ready-made sounds.
+                // The sound's settings (« Coupure »…) of that track, not its ready-made sounds; the knobs the step
+                // names ringed (testers, lot « tuto 4 »: « Glissé » was five scrolls down, behind « Réglages avancés »).
                 g.settings != null -> {
                     melodyShownFor = rhythmVm.projectId
                     rhythmVm.selectTrack(g.settings)
+                    com.pocketstudio.app.tuto.TutoHints.knobs = g.knobs.toSet()
                     go(AppTab.Synthe)
-                    if (g.spot) tutoSpot = listOf(SYNTH_SETTINGS_SPOT) else tutoReveal = listOf(SYNTH_SETTINGS_SPOT)
+                    val ids = g.knobs.map { "synth_knob_$it" } + SYNTH_SETTINGS_SPOT
+                    if (g.spot) tutoSpot = ids else tutoReveal = ids
                 }
-                // The Mode simple's « Mix »: the fader of the track the step names.
-                g.strip != null && simpleNow -> {
+                // The fader of the track the step names: the Mode simple's « Mix », else the console's strip with its
+                // name (testers, lot « tuto 4 »: the first strip, the drums', was ringed for the « Accords »).
+                g.strip != null -> {
                     go(AppTab.Mixeur)
-                    val ids = listOf("mix_strip_${g.strip}")
+                    val ids = listOf(if (simpleNow) "mix_strip_${g.strip}" else "console_strip_${g.strip}")
                     if (g.spot) tutoSpot = ids else tutoReveal = ids
                 }
                 g.open != null -> {
@@ -1865,6 +1886,7 @@ fun AppRoot() {
                                 tuto.stopListening()
                                 if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.toggleSong() else rhythmVm.togglePlay()
                             },
+                            goTo = { c, i -> tuto.goTo(c, i) }, leaveEnd = tuto::leaveEnd,
                         ),
                         modifier = if (landscape) Modifier.navigationBarsPadding() else Modifier,
                         map = remember(tutoNow.progress.style) { com.pocketstudio.app.tuto.tutoMap(tutoNow.progress.style) },

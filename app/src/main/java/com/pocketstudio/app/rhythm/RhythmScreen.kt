@@ -28,6 +28,7 @@ import com.pocketstudio.ui.HelpDot
 import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.material.icons.filled.ContentCut
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -395,6 +396,9 @@ private fun PadGrid(
     }
 }
 
+/** The room a pad's name leaves above it for its « FX » and pan badges. */
+private val BADGE_ROOM = 12.dp
+
 /** A phone pad's height (wide pads, a little lower than on a tablet). */
 private val PHONE_PAD_HEIGHT = 56.dp
 
@@ -449,6 +453,10 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
             .then(if (muted) Modifier.alpha(0.4f) else Modifier),
         contentAlignment = Alignment.Center,
     ) {
+        val panned = kotlin.math.abs(pan) > 0.05f
+        // Testers (lot « tuto 4 »): « FX », « D 30 » covered the names (« Charley ouvert », « Tom médium »):
+        // with badges, the name starts under them.
+        val badged = hasFx || panned
         // A phone's pads are narrow (75 dp at a big interface size): « Cymbale » shrinks a little
         // rather than break mid-word.
         com.pocketstudio.ui.WholeWordsText(
@@ -458,7 +466,8 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
             style = if (ratio) MaterialTheme.typography.labelLarge else MaterialTheme.typography.labelLarge.copy(lineHeight = 16.sp),
             color = lerp(Neon.TextPrimary, Color(0xFF1E2023), glow),
             maxLines = 2,
-            modifier = Modifier.padding(horizontal = if (ratio) 4.dp else 8.dp, vertical = 2.dp).padding(bottom = if (ratio) 0.dp else 4.dp),
+            modifier = Modifier.padding(horizontal = if (ratio) 4.dp else 8.dp, vertical = 2.dp).padding(bottom = if (ratio) 0.dp else 4.dp)
+                .padding(top = if (badged) BADGE_ROOM else 0.dp),
         )
         // A small LED when the pad has hits in the loop.
         if (hasHits) {
@@ -470,15 +479,15 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
         }
         // Effects of its own, and a pan off the centre (« G 100 »): small badges in the corner, so
         // a pad sent to one side is seen without opening it.
-        val panned = kotlin.math.abs(pan) > 0.05f
-        if (hasFx || panned) {
-            Row(Modifier.align(Alignment.TopStart).padding(6.dp), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+        if (badged) {
+            val small = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp, lineHeight = 11.sp)
+            Row(Modifier.align(Alignment.TopStart).padding(start = 5.dp, top = 3.dp), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
                 if (hasFx) Text(
-                    "FX", style = MaterialTheme.typography.labelSmall, color = Neon.OnAccent,
-                    modifier = Modifier.clip(RoundedCornerShape(4.dp)).background(Neon.Cyan).padding(horizontal = 4.dp),
+                    "FX", style = small, color = Neon.OnAccent,
+                    modifier = Modifier.clip(RoundedCornerShape(4.dp)).background(Neon.Cyan).padding(horizontal = 3.dp),
                 )
                 if (panned) Text(
-                    panLabel(pan), style = MaterialTheme.typography.labelSmall, color = Neon.TextPrimary, maxLines = 1, softWrap = false,
+                    panLabel(pan), style = small, color = Neon.TextPrimary, maxLines = 1, softWrap = false,
                     modifier = Modifier.clip(RoundedCornerShape(4.dp)).background(Color.Black.copy(alpha = 0.45f)).padding(horizontal = 4.dp).testTag("pad_pan_badge"),
                 )
             }
@@ -512,6 +521,9 @@ private fun StepGrid(
     var picked by rememberSaveable { mutableIntStateOf(-1) }
     // A hit held: its force and roll menu.
     var rollStep by rememberSaveable { mutableIntStateOf(-1) }
+    // Testers (lot « tuto 4 »): a step ticked closes a hit's menu (its first touch on « Étape suivante » only closed it).
+    val tutoTicked = com.pocketstudio.app.tuto.TutoHints.ticked
+    LaunchedEffect(tutoTicked) { rollStep = -1 }
     val ownSound = project.drums.lanes[lane].sample != null
     var allPads by rememberSaveable { mutableStateOf(false) }
     // « Tuto de A à Z »: its dotted cells on this pad still to touch. Testers (lot « tuto 3 »): the bar holding
@@ -525,7 +537,10 @@ private fun StepGrid(
         if (tutoLeft.isEmpty() || tutoLeft.any { it / per == chosenBar }) return@LaunchedEffect
         // The last touch seen a moment first (a demonstration goes on at once).
         if (!tutoDemo) kotlinx.coroutines.delay(TUTO_PAGE_DELAY_MS)
-        chosenBar = tutoLeft.first() / per
+        val to = tutoLeft.first() / per
+        // Testers (lot « tuto 4 »): the page turned without a word, the hits seemed gone: « Mesure 2 → ».
+        if (!tutoDemo && bars > 1) com.pocketstudio.app.tuto.TutoHints.banner = com.pocketstudio.app.tuto.tutoBarBanner(to, to > chosenBar)
+        chosenBar = to
     }
     // Playing and following: the page turns with the playhead.
     val bar = (if (playing && follow && currentStep >= 0 && tutoLeft.isEmpty()) currentStep / per else chosenBar).coerceIn(0, bars - 1)
@@ -582,7 +597,7 @@ private fun StepGrid(
         val latestHits by rememberUpdatedState(hits)
         val latestActions by rememberUpdatedState(actions)
         val loopSteps = project.drums.steps
-        Column(
+        Box { Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier.spot("step_cells", tr("Glisse pour poser")).testTag("step_cells").then(
                 if (tool != 0) Modifier
@@ -754,6 +769,9 @@ private fun StepGrid(
             }
         }
         }
+        // Testers (lot « tuto 4 »): the page the tutorial turned to, said a moment over the cells.
+        com.pocketstudio.app.tuto.TutoBanner(Modifier.align(Alignment.Center))
+        }
         if (!simple) Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             FilterChip(selected = tool == 0, onClick = { tool = 0 }, label = { Text(tr("Coups")) }, colors = chipColors)
             FilterChip(selected = tool == 1, onClick = { tool = 1 }, label = { Text(tr("Roulements")) }, colors = chipColors,
@@ -867,7 +885,11 @@ private fun RollMenu(
     val chips = pillColors()
     ScaledDropdownMenu(expanded = true, onDismissRequest = close, modifier = Modifier.testTag("roll_menu")) {
         Column(Modifier.padding(horizontal = 12.dp, vertical = 4.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(tr("Coup %d", beatStep), style = MaterialTheme.typography.titleSmall)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(tr("Coup %d", beatStep), style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
+                // A way out in sight (testers: no « Fermer », the next touch went to closing the menu).
+                IconButton(onClick = close, modifier = Modifier.testTag("roll_close")) { Icon(Icons.Filled.Close, contentDescription = tr("Fermer")) }
+            }
             Text(tr("Force"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 listOf(1f to tr("Fort"), 0.5f to tr("Moyen"), 0.2f to tr("Doux")).forEach { (v, label) ->

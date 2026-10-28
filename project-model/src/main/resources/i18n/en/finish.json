@@ -32,5 +32,6 @@
   "masquer": "hide",
   "%s LUFS · crête %s dBTP": "%s LUFS · peak %s dBTP",
   "Tout réentendre": "Hear them all again",
-  "Coupé dans Mes pistes, donc absent du fichier : %s.": "Muted in My tracks, so missing from the file: %s."
+  "Coupé dans Mes pistes, donc absent du fichier : %s.": "Muted in My tracks, so missing from the file: %s.",
+  "« Partager » renomme aussi le projet « %s ».": "« Share » also renames the project « %s »."
 }

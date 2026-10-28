@@ -110,6 +110,41 @@ object TutoHints {
     var demo by mutableStateOf(false)
     /** The hits a step asks to take away, by pad ([TutoChecks.toErase]): drawn crossed out. */
     var erase by mutableStateOf<Map<Int, Set<Int>>?>(null)
+    /** The synth knobs a step names ([TutoGo.knobs]): dashed, the advanced ones unfolded. */
+    var knobs by mutableStateOf<Set<Int>>(emptySet())
+    /** A send step's halves (« Accords ✓ · Caisse : à régler ici »), over its dashed send. */
+    var sendNote by mutableStateOf<String?>(null)
+    /** The tutorial runs (its panel has the bottom of the screen). */
+    var active by mutableStateOf(false)
+    /** Goes up each time a step is ticked (a hit's menu closes). */
+    var ticked by mutableIntStateOf(0)
+    /**
+     * What the screen just changed by itself for the tutorial (« Mesure 2 → », « → Charley »), said a
+     * moment over the grid (testers, lot « tuto 4 »: the page turned without a word, the hits seemed gone).
+     */
+    var banner by mutableStateOf<String?>(null)
+}
+
+/** How long a screen waits before turning by itself for the tutorial (the last touch seen first). */
+const val TUTO_TURN_MS = 450L
+
+/** How long [TutoHints.banner] stays. */
+const val TUTO_BANNER_MS = 1800L
+
+/** « Mesure 2 → »: the grid turned to bar [bar] (from 0) by itself. */
+fun tutoBarBanner(bar: Int, forward: Boolean): String = if (forward) tr("Mesure %d →", bar + 1) else tr("← Mesure %d", bar + 1)
+
+/** A short banner over the grid, a moment after the tutorial turned the screen ([TutoHints.banner]); touches go through. */
+@Composable
+fun TutoBanner(modifier: Modifier = Modifier) {
+    val text = TutoHints.banner ?: return
+    androidx.compose.runtime.LaunchedEffect(text) { kotlinx.coroutines.delay(TUTO_BANNER_MS); if (TutoHints.banner == text) TutoHints.banner = null }
+    Box(modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Text(
+            text, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Neon.OnAccent,
+            modifier = Modifier.clip(RoundedCornerShape(20.dp)).background(Neon.Amber).padding(horizontal = 16.dp, vertical = 8.dp).testTag("tuto_banner"),
+        )
+    }
 }
 
 /** « Encore 3 notes en pointillé » over the piano roll ([ahead]: some of them out of sight, that way). */
@@ -137,6 +172,10 @@ class TutoActions(
     val restart: () -> Unit = {},
     /** « ▶ Écouter ton résultat » on a step done: the project's own music (again: it stops). */
     val playMine: () -> Unit = {},
+    /** The end's list of what is left: that step, in one touch (chapter, step). */
+    val goTo: (Int, Int) -> Unit = { _, _ -> },
+    /** « Il te reste… » closed: back to the step it was on. */
+    val leaveEnd: () -> Unit = {},
 )
 
 /** « Recommencer le tuto ». */
@@ -188,15 +227,18 @@ fun TutoPanel(
     val beat = com.pocketstudio.app.guide.rememberGuideBeat(animated = !reducedMotion)
     val density = LocalDensity.current
     // The unfolded panel's height, taken once for its step and then held (0: not taken yet).
-    var held by remember(step.id, ui.open, ui.progress.level, ui.finished) { mutableIntStateOf(0) }
-    val holding = ui.open && held > 0
+    val end = ui.atEnd || ui.finished
+    var held by remember(step.id, ui.open, ui.progress.level, end) { mutableIntStateOf(0) }
+    // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's
+    // words once it ended; the end's card takes the room it needs.
+    val holding = ui.open && held > 0 && !end
     Surface(
         color = panelColor(), shape = shape,
         modifier = modifier.fillMaxWidth().border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel"),
     ) {
         Column(
             Modifier.then(if (holding) Modifier.height(with(density) { held.toDp() }) else Modifier)
-                .onSizeChanged { if (ui.open && held == 0 && it.height > 0) held = it.height }
+                .onSizeChanged { if (ui.open && held == 0 && it.height > 0 && ui.demo == null && !end) held = it.height }
                 .padding(horizontal = 14.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
@@ -229,24 +271,24 @@ fun TutoPanel(
                 FoldedLine(ui, done, actions)
                 return@Column
             }
-            if (ui.finished) {
-                Text(tr("Bravo, ton morceau est fini ! Tu peux tout réécouter et continuer à le changer."), color = Neon.Acid,
-                    style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("tuto_finished"))
-                OutlinedButton(onClick = actions.restart, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_restart_finished")) {
-                    Icon(Icons.Filled.Replay, contentDescription = null, modifier = Modifier.size(18.dp))
-                    Text(" " + restartTutoLabel(), maxLines = 1)
-                }
+            // Testers (lot « tuto 4 »): the end said nothing (or sent back to chapter 5): « Bravo » when all is
+            // done, else the steps left, each one touch away; never « Je le fais » after the end.
+            if (end) {
+                EndCard(ui, actions)
+                return@Column
             }
             // The step's words, or in their place « Bravo » or « Montre-moi »'s caption: never one more block.
+            // At least a line and a half of room (the « Bravo » banner fits where a one-line step was).
+            val most = if (chapter.map && map.isNotEmpty()) 290.dp else 240.dp
             Column(
-                (if (holding) Modifier.weight(1f) else Modifier.heightIn(max = 240.dp)).verticalScroll(rememberScrollState()),
+                (if (holding) Modifier.weight(1f) else Modifier.heightIn(min = 52.dp, max = most)).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 when {
-                    ui.finished -> Unit
                     ui.demo != null -> DemoCaption(ui.demo)
-                    ui.bravo -> BravoBanner(mine)
+                    ui.bravo -> BravoBanner(mine, ui.made)
                     else -> {
+                        ui.made?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.Acid, modifier = Modifier.testTag("tuto_made")) }
                         Row(verticalAlignment = Alignment.Top) {
                             if (done) Icon(Icons.Filled.CheckCircle, contentDescription = tr("Fait"), tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp).size(20.dp).testTag("tuto_step_done"))
                             Text(tutoText(step.textFor(ui.progress.level)), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.testTag("tuto_text"))
@@ -264,9 +306,9 @@ fun TutoPanel(
     }
 }
 
-/** « Bravo, c'est réussi ! » in the step's text's place. */
+/** « Bravo, c'est réussi ! » in the step's text's place ([made]: what the step's button made, said instead of the hint). */
 @Composable
-private fun BravoBanner(mine: Boolean) {
+private fun BravoBanner(mine: Boolean, made: String? = null) {
     Row(
         Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Neon.Acid.copy(alpha = 0.14f)).border(1.dp, Neon.Acid, RoundedCornerShape(12.dp))
             .padding(horizontal = 12.dp, vertical = 8.dp).testTag("tuto_bravo"),
@@ -276,8 +318,8 @@ private fun BravoBanner(mine: Boolean) {
         Column(Modifier.padding(start = 10.dp)) {
             Text(tr("Bravo, c'est réussi !"), color = Neon.Acid, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             Text(
-                if (mine) tr("Écoute ton résultat, puis touche « Étape suivante » quand tu veux.") else tr("Touche « Étape suivante » quand tu veux."),
-                style = MaterialTheme.typography.bodySmall, color = Neon.TextPrimary,
+                made ?: if (mine) tr("Écoute ton résultat, puis touche « Étape suivante » quand tu veux.") else tr("Touche « Étape suivante » quand tu veux."),
+                style = MaterialTheme.typography.bodySmall, color = Neon.TextPrimary, modifier = if (made != null) Modifier.testTag("tuto_made") else Modifier,
             )
         }
     }
@@ -298,8 +340,9 @@ private fun DemoCaption(phase: TutoDemoPhase) {
     }
 }
 
+// Testers (lot « tuto 4 »): « Voilà ce qu'il fallait faire — à toi ma… » was cut on the folded line.
 private fun demoWords(phase: TutoDemoPhase): String =
-    if (phase == TutoDemoPhase.SHOWING) tr("Regarde, je le fais pour toi…") else tr("Voilà ce qu'il fallait faire — à toi maintenant !")
+    if (phase == TutoDemoPhase.SHOWING) tr("Regarde, je le fais…") else tr("Voilà ! À toi maintenant.")
 
 /**
  * The folded panel's line, always [FOLDED_LINE] high: « Montre-moi »'s caption (« Arrêter » beside
@@ -320,7 +363,17 @@ private fun FoldedLine(ui: TutoUi, done: Boolean, actions: TutoActions) {
                 modifier = Modifier.weight(1f).padding(start = 8.dp))
             TextButton(onClick = actions.stopDemo, modifier = Modifier.testTag("tuto_show")) { Text(tr("Arrêter"), maxLines = 1) }
         }
-        done && !ui.finished -> Box(line.background(Neon.Acid.copy(alpha = 0.14f)).border(1.dp, Neon.Acid, shape).testTag("tuto_bravo")) {
+        ui.atEnd || ui.finished -> Row(
+            line.background(Neon.Acid.copy(alpha = 0.14f)).border(1.dp, Neon.Acid, shape).clickable(onClick = actions.toggle).padding(horizontal = 10.dp).testTag("tuto_end_folded"),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(Icons.Filled.EmojiEvents, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(20.dp))
+            Text(
+                if (ui.finished) tr("Tuto fini : bravo !") else trCount(ui.left.size, "Il te reste %d étape", "Il te reste %d étapes"),
+                style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(start = 6.dp),
+            )
+        }
+        done -> Box(line.background(Neon.Acid.copy(alpha = 0.14f)).border(1.dp, Neon.Acid, shape).testTag("tuto_bravo")) {
             Row(
                 Modifier.fillMaxSize().clickable(onClick = actions.next).padding(horizontal = 10.dp).testTag("tuto_next_folded"),
                 verticalAlignment = Alignment.CenterVertically,
@@ -437,11 +490,23 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
             }
         }
     }
-    if (secondaries.isNotEmpty()) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+    // Testers (lot « tuto 4 »): a step done had one more row of buttons than when it began, in the same held
+    // height: its words went under the green button. Done, its other buttons share « Précédent »'s row.
+    val beside = primary == Primary.NEXT
+    if (secondaries.isNotEmpty() && !beside) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
         secondaries.forEach { it() }
     }
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        TextButton(onClick = actions.previous, enabled = ui.chapter > 0 || ui.step > 0, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_prev")) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(if (beside) 6.dp else 0.dp), verticalAlignment = Alignment.CenterVertically) {
+        val back = ui.chapter > 0 || ui.step > 0
+        if (beside && secondaries.isNotEmpty()) {
+            // Only the arrow (its words for TalkBack): the row is the other buttons'.
+            IconButton(onClick = actions.previous, enabled = back, modifier = Modifier.testTag("tuto_prev")) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Précédent"), modifier = Modifier.size(20.dp))
+            }
+            secondaries.forEach { it() }
+            return@Row
+        }
+        TextButton(onClick = actions.previous, enabled = back, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_prev")) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, modifier = Modifier.size(18.dp))
             Text(" " + tr("Précédent"), maxLines = 1)
         }
@@ -453,6 +518,58 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
         }
     }
 }
+
+/**
+ * The end of the tutorial, in the step's place: « Bravo » and what to do now when every step is
+ * done; else the steps left (in Pro an example not listened to is not one), each one touch away.
+ */
+@Composable
+private fun EndCard(ui: TutoUi, actions: TutoActions) {
+    val left = ui.left
+    Column(Modifier.fillMaxWidth().heightIn(max = 360.dp).verticalScroll(rememberScrollState()).testTag("tuto_end"), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        if (left.isEmpty()) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Filled.EmojiEvents, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(28.dp))
+                Text(tr("Bravo, ton morceau est fini !"), color = Neon.Acid, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 8.dp).testTag("tuto_finished"))
+            }
+            Text(tr("Tu as fait tout le tuto. Tu peux tout réécouter, continuer à le changer, ou le partager avec « Envoyer »."), style = MaterialTheme.typography.bodyMedium)
+            OutlinedButton(onClick = actions.restart, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_restart_finished")) {
+                Icon(Icons.Filled.Replay, contentDescription = null, modifier = Modifier.size(18.dp))
+                Text(" " + restartTutoLabel(), maxLines = 1)
+            }
+            TextButton(onClick = actions.quit, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_end_close")) {
+                Text(tr("Fermer le tuto"), color = Neon.TextSecondary)
+            }
+            return@Column
+        }
+        Text(tr("Presque fini !"), color = Neon.Amber, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Text(trCount(left.size, "Il te reste %d étape. Touche-la pour y aller :", "Il te reste %d étapes. Touche-en une pour y aller :"), style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.testTag("tuto_left_count"))
+        left.take(END_LIST).forEach { s ->
+            val (c, i) = ui.placeOf(s)
+            Row(
+                Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(10.dp)).background(Neon.SurfaceHigh)
+                    .clickable { actions.goTo(c, i) }.padding(horizontal = 10.dp, vertical = 6.dp).testTag("tuto_left_${s.id}"),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Text(tr("Chapitre %1\$d · %2\$s", c + 1, tutoText(ui.chapters[c].title)), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(tutoText(s.textFor(ui.progress.level)), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
+            }
+        }
+        if (left.size > END_LIST) Text(trCount(left.size - END_LIST, "… et %d autre (liste ≡)", "… et %d autres (liste ≡)"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        if (ui.atEnd) TextButton(onClick = actions.leaveEnd, modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_end_back")) {
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, modifier = Modifier.size(18.dp))
+            Text(" " + tr("Revenir à l'étape"), maxLines = 1)
+        }
+    }
+}
+
+/** The steps the end lists by name (the others: the chapters' list). */
+private const val END_LIST = 4
 
 /** The secondary buttons' inner room: their words on one line on a phone, two at 130 %. */
 private val SECONDARY_PADDING = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 6.dp)

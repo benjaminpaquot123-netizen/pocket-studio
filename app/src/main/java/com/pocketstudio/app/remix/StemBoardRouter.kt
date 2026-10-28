@@ -162,7 +162,7 @@ class StemBoardRouter(
         if (sel.frames <= 0) return say(tr("Choisis d'abord un morceau de la piste : glisse le doigt sur sa courbe."))
         val p = host.project()
         val french = StemRouting.stemFrench(sel.stem)
-        val label = tr(french)
+        val label = StemRouting.stemLabel(sel.stem)
         val seconds = sel.frames / StemSelection.SAMPLE_RATE.toDouble()
         val short = dest !is StemDestination.Track
         if (short && seconds > PAD_MAX_SECONDS) {
@@ -328,6 +328,15 @@ object StemRouting {
     val STEMS = listOf("Batterie", "Basse", "Autres", "Voix")
 
     fun stemFrench(stem: Int): String = STEMS.getOrElse(stem) { "Piste" }
+
+    /** [stemFrench] in the interface's language. */
+    fun stemLabel(stem: Int): String = when (stem) {
+        0 -> tr("Batterie")
+        1 -> tr("Basse")
+        2 -> tr("Autres")
+        3 -> tr("Voix")
+        else -> tr("Piste")
+    }
 
     /**
      * Pad [lane] is free for a cut: no sound of its own, no studio voice, no hit in any scene. A

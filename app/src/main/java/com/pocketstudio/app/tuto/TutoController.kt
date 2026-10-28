@@ -149,6 +149,9 @@ class TutoController(
 
     private var target: TutoTarget? = null
 
+    /** What a listening step with [TutoStep.hearMine] has heard so far ("mine", "example"), by step id. */
+    private var heard: Pair<String, Set<String>>? = null
+
     /** The "changed:…" step's signature when it began (kept in memory: a restart takes it afresh). */
     private var baseline: Pair<String, Any?>? = null
     private var listenJob: Job? = null
@@ -232,8 +235,9 @@ class TutoController(
             }
             // Testers (lot « tuto 3 »): the filter's « Coupure » is in the sound's settings, not in its ready-made sounds.
             c.startsWith("changed:synth:") -> TutoChecks.trackFor(p, c.removePrefix("changed:synth:").substringBefore(':'))?.let { TutoGo(settings = it, spot = spot) } ?: plain
-            // A send or an effect: the effects box of the track the step names (the reverb's send there, dotted).
-            c.startsWith("send:") || c.startsWith("insert:") -> channelOf(p, s.target.ifEmpty { "bass" })
+            // A send or an effect: the effects box of the first strip the step still has to do (lot « tuto 4 »: the
+            // « Accords » done, the snare's next; the Sub's pump, then the Basse's), the reverb's send there, dotted.
+            c.startsWith("send:") || c.startsWith("insert:") -> (TutoChecks.channelsToDo(s, p).firstOrNull() ?: channelOf(p, s.target.substringBefore(',').ifEmpty { "bass" }))
                 ?.let { TutoGo(effects = it, send = if (c.startsWith("send:")) arg.toIntOrNull() else null, spot = spot) } ?: plain
             // The volumes: the fader of the track the step names first.
             c == "changed:volumes" || c.startsWith("changed:volumes:") -> channelOf(p, s.target.ifEmpty { "pad" })?.let { TutoGo(open = GuideOpen(s.spot, s.target), strip = it, spot = spot) } ?: plain
@@ -241,6 +245,8 @@ class TutoController(
             c == "song:order" -> TutoGo(GuideOpen(SONG_ADD_SPOT, ""), spot = spot)
             // The hits to take away: the first pad that still has some (« Caisse », then « Charley »).
             c == "gap" -> TutoGo(GuideOpen(s.spot, s.target), TutoChecks.toErase(s, p)?.keys?.minOrNull() ?: pad, spot = spot)
+            // A part whose notes the user writes (the Drop 2's bass): its dotted notes, once the part is shown.
+            c.startsWith("part:") -> target?.let { TutoChecks.ghostNotes(s, p, it) }?.let { TutoGo(notes = it.first, spot = spot) } ?: plain
             else -> plain
         }
     }
@@ -400,7 +406,7 @@ class TutoController(
             while (true) {
                 val heard = player.heard()
                 if (heard >= enough) {
-                    if (step.listening) tick(setOf(step.id), advance = false, bravo = false)
+                    if (step.listening) heardPart(step, EXAMPLE)
                     break
                 }
                 if (heard <= 0 && waited >= SILENT_MS) {
@@ -431,7 +437,19 @@ class TutoController(
     /** The user's own music played long enough while a listening step is shown ([mineToHear]): it is ticked. */
     fun heardMine() {
         val u = _ui.value ?: return
-        if (u.current.listening && mineFor(u.current, project.value)) tick(setOf(u.current.id), advance = false, bravo = false)
+        if (u.current.listening && mineFor(u.current, project.value)) heardPart(u.current, MINE)
+    }
+
+    /**
+     * [part] of listening step [step] heard ([MINE] or [EXAMPLE]): ticked, but a step that says « ta
+     * boucle, puis l'exemple » ([TutoStep.hearMine]) only once both were (testers, lot « tuto 4 »: it
+     * was ticked on the user's loop alone); its example alone when the user has nothing to hear yet.
+     */
+    private fun heardPart(step: TutoStep, part: String) {
+        val now = (heard?.takeIf { it.first == step.id }?.second.orEmpty()) + part
+        heard = step.id to now
+        val both = !step.hearMine || !mineFor(step, project.value) || (MINE in now && EXAMPLE in now)
+        if (both) tick(setOf(step.id), advance = false, bravo = false)
     }
 
     // ---- inside ----
@@ -536,6 +554,9 @@ class TutoController(
             val melodicHeard = melodic.all { role -> TutoChecks.trackFor(p, role)?.let { id -> p.allScenes.any { sc -> (if (id == 0) sc.synthNotes else sc.trackNotes[id])?.notes?.isNotEmpty() == true } || p.track(id).notes.notes.isNotEmpty() } == true }
             return melodicHeard && (drums.isEmpty() && melodic.isNotEmpty() || drums.isNotEmpty() && drumsHeard * 2 >= drums.size && drumsHeard > 0)
         }
+
+        private const val MINE = "mine"
+        private const val EXAMPLE = "example"
 
         const val FRAME_MS = 200L
         const val HOLD_MS = 2600L

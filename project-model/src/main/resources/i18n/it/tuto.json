@@ -1,5 +1,4 @@
 {
-  "Chapitre %1$d/%2$d · %3$s": "Capitolo %1$d/%2$d · %3$s",
   "Étape %1$d/%2$d": "Passo %1$d/%2$d",
   "Pro": "Pro",
   "Facile": "Facile",
@@ -63,16 +62,10 @@
   "Les transitions": "Le transizioni",
   "Entre deux parties, un petit événement prévient l'oreille : un roulement, une cymbale, un silence.": "Tra due parti, un piccolo evento avvisa l'orecchio: un rullo, un piatto, un silenzio.",
   "Un demi-temps de rien, et le Drop paraît deux fois plus fort.": "Mezzo tempo di niente, e il Drop sembra due volte più forte.",
-  "Toutes les 8 ou 16 mesures, change un détail : un coup de percussion, un charley ouvert.": "Ogni 8 o 16 battute, cambia un dettaglio: un colpo di percussione, un hi-hat aperto.",
   "Les effets": "Gli effetti",
   "Le mix": "Il mix",
-  "Regarde les vu-mètres pendant le Drop : rien ne doit rester dans le rouge.": "Guarda i misuratori durante il Drop: niente deve restare nel rosso.",
-  "Équilibre les groupes : batterie, basse, musique. Compare au morceau d'exemple.": "Bilancia i gruppi: batteria, basso, musica. Confronta col brano d'esempio.",
   "Le mastering": "Il mastering",
   "Le master colle le tout et donne le volume des clubs, sans écraser le kick.": "Il master incolla tutto e dà il volume dei club, senza schiacciare il kick.",
-  "À toi : mets un compresseur multibande (OTT) et un limiteur sur le master.": "Tocca a te: metti un compressore multibanda (OTT) e un limiter sul master.",
-  "Vérifie le volume (loudness) avant d'exporter : vise celui des clubs.": "Controlla il volume (loudness) prima di esportare: punta a quello dei club.",
   "Exporte ton morceau": "Esporta il tuo brano",
-  "Ton morceau est fini : fais-le écouter !": "Il tuo brano è finito: fallo ascoltare!",
-  "WAV pour un DJ, M4A pour tes amis, pistes séparées pour un remix.": "WAV per un DJ, M4A per i tuoi amici, tracce separate per un remix."
+  "Ton morceau est fini : fais-le écouter !": "Il tuo brano è finito: fallo ascoltare!"
 }

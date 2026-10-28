@@ -149,12 +149,14 @@ fun needLabel(need: TutoNeed): String = when (need) {
         "bass" -> tr("Créer la piste Basse")
         "pad" -> tr("Créer la piste Accords")
         "lead" -> tr("Créer la piste Mélodie")
-        else -> tr("Créer la piste Sub")
+        // Lot « tuto 4 »: the Sub is the bass an octave down, written by the same touch.
+        else -> tr("Copier la basse une octave plus bas")
     }
     is TutoNeed.Part -> tr("Créer la partie « %s »", Scene.shownLabel(need.label))
     is TutoNeed.Name -> tr("Nommer la partie « %s »", need.label)
     TutoNeed.Lengths -> tr("Donner les durées conseillées")
     is TutoNeed.Scene -> tr("Aller dans la partie « %s »", Scene.shownLabel(need.label))
+    is TutoNeed.Copy -> tr("Copier sur les mesures suivantes")
 }
 
 /** The panel's background: the screen's, tinted with the tutorial's colour (never a page card's grey). */
@@ -508,7 +510,8 @@ fun SongMap(blocks: List<TutoMapBlock>, modifier: Modifier = Modifier, focus: St
                 val w = size.width * b.bars / total
                 val y = size.height * (1f - b.energy.coerceIn(0f, 1f) * 0.9f)
                 if (i == 0) path.moveTo(0f, y) else path.lineTo(x, y)
-                path.lineTo(x + w, y)
+                // The Montée climbs over its bars (lot « tuto 4 »).
+                path.lineTo(x + w, size.height * (1f - b.energyEnd.coerceIn(0f, 1f) * 0.9f))
                 x += w
             }
             drawPath(path, curve, style = Stroke(width = 3.dp.toPx()))

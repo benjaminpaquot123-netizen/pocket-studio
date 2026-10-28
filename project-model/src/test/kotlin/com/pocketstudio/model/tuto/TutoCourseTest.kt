@@ -19,7 +19,7 @@ class TutoCourseTest {
     private val course = TutoCourse.of("jump_up")!!
     private val target = TutoTarget.of("jump_up")!!
 
-    private val known = Regex("""^(listen|manual|tempo|key|lane:(kick|snare|clap|hat|perc)|velocity:hat|notes:(bass|pad|lead)|track:sub|insert:[A-Z_]+|send:[01]|automation|master|changed:(volumes(:[a-z,]+)?|kit|synth:\w+(:[A-Z_0-9+]+)?)|label:\w+|part:[^:]+:(less|nokick|full|differs)|song:(order|phrases)|fill|crash|gap)$""")
+    private val known = Regex("""^(listen|manual|tempo|key|lane:(kick|snare|clap|hat|perc)|velocity:hat|notes:(bass|pad|lead)|track:sub|insert:[A-Z_]+|send:[01]|automation|master|loudness:[A-Z]+|shared|changed:(volumes(:[a-z,]+)?|kit|synth:\w+(:[A-Z_0-9+]+)?|drums:[^:]+)|label:\w+|part:[^:]+:(less|nokick|full|drop|differs)|song:(order|phrases)|fill|crash|gap)$""")
 
     @Test
     fun theCourseHasItsChaptersAndStepsInBothLevels() {
@@ -49,7 +49,8 @@ class TutoCourseTest {
         steps.forEach { assertFalse("${it.id} is done in an empty project", TutoChecks.done(it, empty, target, TutoChecks.signature(it.check.substringAfter(':'), empty))) }
         var p = empty
         for (step in steps) {
-            if (step.manual || step.listening || step.check.startsWith("changed:")) continue
+            // The share: only the app sees the song go out (no « Montre-moi » can share it).
+            if (step.manual || step.listening || step.check.startsWith("changed:") || step.check == "shared") continue
             // A step an earlier Montre-moi already did (the hats' strengths come with the hats) is ticked as it is.
             if (TutoChecks.done(step, p, target)) continue
             p = TutoChecks.show(step, p, target) ?: error("${step.id}: no Montre-moi")
@@ -175,8 +176,11 @@ class TutoCourseTest {
         val ghosts = TutoChecks.ghostNotes(bass, q, target)!!
         assertEquals(0, ghosts.first)
         assertTrue(ghosts.second.size >= 4)
-        // The user taps the dotted notes: done.
-        val written = q.withTrack(q.track(0).copy(notes = q.track(0).notes.copy(notes = ghosts.second)))
+        // The user taps the dotted notes (the first 4 bars), then « Copier sur les mesures suivantes »: done.
+        val motif = q.withTrack(q.track(0).copy(notes = q.track(0).notes.copy(notes = ghosts.second)))
+        assertFalse(TutoChecks.done(bass, motif, target))
+        assertEquals(TutoNeed.Copy("bass"), TutoChecks.need(bass, motif, target))
+        val written = TutoChecks.fulfil(TutoNeed.Copy("bass"), bass, motif, target)!!.first
         assertTrue(TutoChecks.done(bass, written, target))
         // The pad's track is a new one (the first is the bass now).
         val pad = steps.getValue("pad_do")

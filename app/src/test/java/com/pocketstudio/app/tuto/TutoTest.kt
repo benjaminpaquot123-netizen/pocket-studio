@@ -293,6 +293,10 @@ class TutoTest {
         c.goTo(ch, chapters[ch].steps.indexOfFirst { it.id == "drums_hear" })
         assertTrue(c.mineToHear())
         c.heardMine()
+        // Lot « tuto 4 »: « ta batterie, puis celle de l'exemple »: the example too.
+        idle(300)
+        assertFalse("the user's drums alone", "drums_hear" in c.ui.value!!.progress.done)
+        c.listen()
         await("ticked") { "drums_hear" in c.ui.value!!.progress.done }
         assertEquals("never on by itself", "drums_hear", c.ui.value!!.current.id)
     }

@@ -127,7 +127,8 @@ class TutoScreenTest {
         compose.waitForIdle()
         assertEquals(1, next)
         val title = compose.onNodeWithTag("tuto_chapter_title", useUnmergedTree = true).fetchSemanticsNode().config[SemanticsProperties.Text].joinToString()
-        assertEquals("Le tempo et la tonalité", title)
+        // Lot « tuto 4 »: the Facile title in everyday words (« Le tempo et la tonalité » in Pro).
+        assertEquals("La vitesse et la couleur du morceau", title)
     }
 
     @Test

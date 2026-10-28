@@ -1,5 +1,4 @@
 {
-  "Chapitre %1$d/%2$d · %3$s": "チャプター %1$d/%2$d · %3$s",
   "Étape %1$d/%2$d": "ステップ %1$d/%2$d",
   "Pro": "プロ",
   "Facile": "かんたん",
@@ -63,16 +62,10 @@
   "Les transitions": "トランジション",
   "Entre deux parties, un petit événement prévient l'oreille : un roulement, une cymbale, un silence.": "2つのパートのあいだで、小さな出来事が耳に知らせる：ロール、シンバル、沈黙。",
   "Un demi-temps de rien, et le Drop paraît deux fois plus fort.": "半拍の空白で、ドロップが2倍強く感じる。",
-  "Toutes les 8 ou 16 mesures, change un détail : un coup de percussion, un charley ouvert.": "8か16小節ごとに細部を変えよう：パーカッション1発、オープンハイハット。",
   "Les effets": "エフェクト",
   "Le mix": "ミックス",
-  "Regarde les vu-mètres pendant le Drop : rien ne doit rester dans le rouge.": "ドロップのあいだメーターを見よう：赤いままのものがあってはだめ。",
-  "Équilibre les groupes : batterie, basse, musique. Compare au morceau d'exemple.": "グループのバランスをとろう：ドラム、ベース、音楽。例の曲と比べよう。",
   "Le mastering": "マスタリング",
   "Le master colle le tout et donne le volume des clubs, sans écraser le kick.": "マスターは全体をまとめ、キックをつぶさずにクラブの音量にする。",
-  "À toi : mets un compresseur multibande (OTT) et un limiteur sur le master.": "あなたの番：マスターにマルチバンドコンプ（OTT）とリミッターを入れよう。",
-  "Vérifie le volume (loudness) avant d'exporter : vise celui des clubs.": "書き出す前にラウドネスを確認：クラブのレベルをめざそう。",
   "Exporte ton morceau": "曲を書き出そう",
-  "Ton morceau est fini : fais-le écouter !": "曲が完成：みんなに聴かせよう！",
-  "WAV pour un DJ, M4A pour tes amis, pistes séparées pour un remix.": "DJにはWAV、友だちにはM4A、リミックスには別々のトラック。"
+  "Ton morceau est fini : fais-le écouter !": "曲が完成：みんなに聴かせよう！"
 }

@@ -1,5 +1,4 @@
 {
-  "Chapitre %1$d/%2$d · %3$s": "Bab %1$d/%2$d · %3$s",
   "Étape %1$d/%2$d": "Langkah %1$d/%2$d",
   "Pro": "Pro",
   "Facile": "Mudah",
@@ -63,16 +62,10 @@
   "Les transitions": "Transisi",
   "Entre deux parties, un petit événement prévient l'oreille : un roulement, une cymbale, un silence.": "Di antara dua bagian, peristiwa kecil memberi tanda pada telinga: gulungan, simbal, keheningan.",
   "Un demi-temps de rien, et le Drop paraît deux fois plus fort.": "Setengah ketukan kosong, dan Drop terasa dua kali lebih kuat.",
-  "Toutes les 8 ou 16 mesures, change un détail : un coup de percussion, un charley ouvert.": "Setiap 8 atau 16 bar, ubah satu detail: pukulan perkusi, hi-hat terbuka.",
   "Les effets": "Efek",
   "Le mix": "Mix",
-  "Regarde les vu-mètres pendant le Drop : rien ne doit rester dans le rouge.": "Lihat meter selama Drop: tidak boleh ada yang tetap merah.",
-  "Équilibre les groupes : batterie, basse, musique. Compare au morceau d'exemple.": "Seimbangkan grup: drum, bass, musik. Bandingkan dengan lagu contoh.",
   "Le mastering": "Mastering",
   "Le master colle le tout et donne le volume des clubs, sans écraser le kick.": "Master merekatkan semuanya dan memberi volume klub, tanpa menghancurkan kick.",
-  "À toi : mets un compresseur multibande (OTT) et un limiteur sur le master.": "Giliranmu: pasang kompresor multiband (OTT) dan limiter di master.",
-  "Vérifie le volume (loudness) avant d'exporter : vise celui des clubs.": "Periksa kekerasan suara (loudness) sebelum ekspor: incar level klub.",
   "Exporte ton morceau": "Ekspor lagumu",
-  "Ton morceau est fini : fais-le écouter !": "Lagumu sudah jadi: perdengarkan!",
-  "WAV pour un DJ, M4A pour tes amis, pistes séparées pour un remix.": "WAV untuk DJ, M4A untuk teman-temanmu, trek terpisah untuk remix."
+  "Ton morceau est fini : fais-le écouter !": "Lagumu sudah jadi: perdengarkan!"
 }

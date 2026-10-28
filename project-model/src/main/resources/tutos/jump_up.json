@@ -4,7 +4,8 @@
   "chapters": [
     {
       "id": "bases",
-      "title": "Le tempo et la tonalité",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
       "why": "Chaque style a sa vitesse et sa couleur. Le jump up va vite et sonne sombre.",
       "steps": [
         {
@@ -24,7 +25,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau. Dans la fiche Tonalité, touche « Phrygienne » (les notes qui sonnent bien ensemble, ici une couleur sombre), puis « Fa » (la note de départ). « Je le fais » ouvre la fiche.",
-          "textPro": "À toi : règle la tonalité sur Fa phrygien : gamme « Phrygienne », tonique « Fa ». Avec sa seconde mineure, le phrygien est l'un des modes les plus sombres.",
+          "textPro": "À toi : règle la tonalité sur Fa phrygien : gamme « Phrygienne », tonique « Fa ». Avec sa seconde mineure, le phrygien est l'un des modes les plus sombres. Dans l'appli, elle se règle aussi sous le piano roll, dans « Gamme et accords ».",
           "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
           "check": "key",
           "spot": "tuto.key",
@@ -39,7 +40,8 @@
       "steps": [
         {
           "id": "kick_hear",
-          "text": "Écoute le kick du jump up, seul : court et sec, il claque.",
+          "text": "Écoute le kick (la grosse caisse, le gros « boum » de la batterie) du jump up, seul : court et sec, il claque.",
+          "textPro": "Écoute le kick du jump up, seul : court et sec, il claque.",
           "check": "listen",
           "listen": "drums:kick"
         },
@@ -70,7 +72,7 @@
       "steps": [
         {
           "id": "snare_do",
-          "text": "À toi : la caisse claire joue sur 2 mesures (une mesure = un tour de la boucle). Touche « Passer à 2 mesures », puis sur le pad « Caisse », touche toutes les cases en pointillé : celles de la mesure 1, puis celles de la mesure 2.",
+          "text": "À toi : la caisse claire (le « clac » de la batterie) joue sur 2 mesures (une mesure = un tour de la boucle). Touche « Passer à 2 mesures », puis sur le pad « Caisse », touche les cases en pointillé de la mesure 1, puis de la mesure 2.",
           "textPro": "À toi : la caisse claire tient sur 2 mesures, avec un coup en plus à la fin de la 2e. « Passer à 2 mesures », puis sur le pad « Caisse », touche les cases en pointillé des deux mesures.",
           "check": "lane:snare",
           "spot": "rhythm.pattern",
@@ -79,7 +81,7 @@
         },
         {
           "id": "clap_do",
-          "text": "À toi : sur le pad « Clap » (un claquement de mains), touche les cases en pointillé des 2 mesures, pile sur la caisse claire.",
+          "text": "À toi : sur le pad « Clap » (un claquement de mains), touche les cases en pointillé des 2 mesures, pile sur la caisse claire. En haut, « mes. 1/2 » dit quelle mesure joue ; « Suivre », sous la grille, fait suivre la musique à la grille.",
           "textPro": "À toi : sur le pad « Clap », touche les cases en pointillé des 2 mesures, pile sur la caisse claire.",
           "check": "lane:clap",
           "spot": "rhythm.pattern",
@@ -95,7 +97,7 @@
       "steps": [
         {
           "id": "hat_do",
-          "text": "À toi : sur le pad « Charley », touche toutes les cases en pointillé des 2 mesures. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste ; il reste alors la dernière case de chaque mesure.",
+          "text": "À toi : sur le pad « Charley » (le « tss » de la batterie), touche toutes les cases en pointillé des 2 mesures. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste ; il reste la dernière case de chaque mesure.",
           "textPro": "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures. « Remplir 1/2 » pose les croches d'un geste ; ajoute la dernière case de chaque mesure.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
@@ -114,7 +116,7 @@
         {
           "id": "hat_vel",
           "levels": "p",
-          "text": "À toi : sur le pad « Charley », mets en « Doux » les 4 coups sur les temps (les cases numérotées 1, 2, 3, 4) : appui long sur le coup, puis « Doux ». Ceux entre les temps restent « Fort » : le charley se balance.",
+          "text": "À toi : sur le pad « Charley », mesure 1, mets en « Doux » les 4 coups sur les temps (les cases numérotées 1, 2, 3, 4) : appui long sur le coup, puis « Doux ». Puis « Copier sur les mesures suivantes » : la mesure 2 se balance pareil. Ceux entre les temps restent « Fort ».",
           "check": "velocity:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -124,7 +126,8 @@
           "id": "drums_hear",
           "text": "Écoute toute ta batterie ensemble, puis celle de l'exemple.",
           "check": "listen",
-          "listen": "drums:kick,snare,clap,hat,perc"
+          "listen": "drums:kick,snare,clap,hat,perc",
+          "hearMine": true
         }
       ]
     },
@@ -141,8 +144,8 @@
         },
         {
           "id": "bass_do",
-          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis touche toutes les notes en pointillé : elles tombent avec le kick. La ligne dure 4 mesures : la grille défile vers la droite.",
-          "textPro": "À toi : crée la piste Basse, puis écris la ligne dans le piano roll (les notes en pointillé, sur 4 mesures), gamme verrouillée.",
+          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis touche les notes en pointillé des 4 premières mesures : elles tombent avec le kick. Puis « Copier sur les mesures suivantes » : la ligne se répète, 8 mesures en tout.",
+          "textPro": "À toi : crée la piste Basse, écris ses 4 premières mesures dans le piano roll (les notes en pointillé, gamme verrouillée), puis « Copier sur les mesures suivantes » : 8 mesures.",
           "check": "notes:bass",
           "spot": "notes.track",
           "target": "bass",
@@ -158,7 +161,7 @@
       "steps": [
         {
           "id": "bass_knobs",
-          "text": "À toi : sous le piano roll, touche « Régler le son de la piste », puis monte la « Coupure » et la « Résonance » : la basse s'ouvre et grogne. Sa distorsion (« Disto ») est déjà sur sa tranche, au Mixeur.",
+          "text": "À toi : sous le piano roll, touche « Régler le son de la piste », puis monte la « Coupure » et la « Résonance » : la basse s'ouvre et grogne. Sa distorsion (« Disto ») et un OTT (« OTT multibande », un compresseur qui fait ressortir le grain) sont déjà sur sa tranche, au Mixeur : c'est l'effet « Growl », posé avec la piste.",
           "check": "changed:synth:bass:CUTOFF+RESONANCE",
           "spot": "sounds.track",
           "target": "bass",
@@ -166,7 +169,7 @@
         },
         {
           "id": "bass_sub",
-          "text": "À toi : touche « Créer la piste Sub », puis touche les notes en pointillé : la basse, une octave plus bas, le grave qu'on sent dans le ventre.",
+          "text": "À toi : touche « Copier la basse une octave plus bas » : une piste « Sub » joue ta basse une octave plus bas, le grave qu'on sent dans le ventre.",
           "check": "track:sub",
           "spot": "notes.track",
           "target": "bass",
@@ -174,10 +177,10 @@
         },
         {
           "id": "bass_pump",
-          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste Basse : elle se baisse à chaque kick (sidechain).",
+          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste Sub, puis sur la piste Basse : elles se baissent à chaque kick (sidechain). C'est surtout la Sub qui se bat avec le kick dans le grave.",
           "check": "insert:PUMP",
           "spot": "mixer.strip",
-          "target": "bass",
+          "target": "sub,bass",
           "listen": "parts:kick,bass"
         }
       ]
@@ -189,8 +192,8 @@
       "steps": [
         {
           "id": "pad_do",
-          "text": "À toi : touche « Créer la piste Accords », puis touche toutes les notes en pointillé : un accord par mesure, sur 4 mesures.",
-          "textPro": "À toi : crée la piste Accords (une nappe), puis écris les accords dans le piano roll (les notes en pointillé, un par mesure sur 4 mesures).",
+          "text": "À toi : touche « Créer la piste Accords », puis touche les notes en pointillé des 4 premières mesures : un accord (3 notes jouées ensemble) par mesure. Astuce : allume « Accords », au-dessus de la grille ; toucher la note du bas pose les 3. Puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Accords (une nappe), écris les accords des 4 premières mesures (les notes en pointillé ; « Accords », au-dessus de la grille, pose la triade d'un toucher), puis « Copier sur les mesures suivantes ».",
           "check": "notes:pad",
           "spot": "notes.track",
           "target": "pad",
@@ -211,8 +214,8 @@
         },
         {
           "id": "lead_do",
-          "text": "À toi : touche « Créer la piste Mélodie », puis touche toutes les notes en pointillé : elles répondent à la basse dans ses trous, sur 4 mesures.",
-          "textPro": "À toi : crée la piste Mélodie (un lead hoover), puis écris le riff dans le piano roll (les notes en pointillé, sur 4 mesures).",
+          "text": "À toi : touche « Créer la piste Mélodie », puis touche les notes en pointillé des 4 premières mesures : elles répondent à la basse dans ses trous. Puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Mélodie (un lead hoover), écris le riff des 4 premières mesures dans le piano roll (les notes en pointillé), puis « Copier sur les mesures suivantes ».",
           "check": "notes:lead",
           "spot": "notes.track",
           "target": "lead",
@@ -226,6 +229,15 @@
           "spot": "sounds.track",
           "target": "lead",
           "listen": "parts:lead"
+        },
+        {
+          "id": "lead_ott",
+          "levels": "p",
+          "text": "À toi : au Mixeur, mets l'effet « OTT multibande » sur la piste « Mélodie » : il fait ressortir le grain du hoover. On le met sur ces sons-là (la basse en a déjà un), pas sur le master : il y écraserait l'attaque du kick.",
+          "check": "insert:OTT",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:lead"
         }
       ]
     },
@@ -236,9 +248,11 @@
       "steps": [
         {
           "id": "groove_hear",
-          "text": "Écoute ta boucle en entier (tout ce que tu as fait), puis l'exemple.",
+          "text": "Écoute ta boucle en entier (tout ce que tu as fait), puis l'exemple. Ce rythme qui donne envie de bouger, c'est le groove.",
+          "textPro": "Écoute ta boucle en entier, puis l'exemple.",
           "check": "listen",
-          "listen": "parts:kick,snare,clap,hat,perc,bass,pad,lead"
+          "listen": "parts:kick,snare,clap,hat,perc,bass,pad,lead",
+          "hearMine": true
         },
         {
           "id": "groove_name",
@@ -330,10 +344,10 @@
         },
         {
           "id": "make_drop",
-          "text": "À toi : crée le Drop à partir du Groove : toutes les briques jouent.",
-          "check": "part:Drop:full",
+          "text": "À toi : crée le Drop à partir du Groove : tout joue, sauf la piste « Accords ». On vide le haut pour laisser parler la basse.",
+          "check": "part:Drop:drop",
           "spot": "song.parts",
-          "keep": "*",
+          "keep": "kick,snare,clap,hat,perc,bass,lead",
           "listen": "vs:Montée:Drop",
           "why": "Tout arrive en même temps : c'est le moment le plus fort."
         },
@@ -348,10 +362,11 @@
         },
         {
           "id": "make_drop2",
-          "text": "À toi : crée le Drop 2 : la même énergie que le Drop, mais la basse change de notes.",
+          "text": "À toi : crée le Drop 2, la même énergie que le Drop avec une autre basse, que tu écris : touche les notes en pointillé des 4 premières mesures, puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée le Drop 2 (sans la piste « Accords »), puis écris sa nouvelle basse : les notes en pointillé des 4 premières mesures, « Copier sur les mesures suivantes », puis « Copier la basse une octave plus bas » pour sa Sub.",
           "check": "part:Drop 2:differs",
           "spot": "song.parts",
-          "keep": "*",
+          "keep": "kick,snare,clap,hat,perc,lead",
           "lanesFrom": "Drop 2",
           "transpose": 5,
           "listen": "vs:Drop:Drop 2",
@@ -375,7 +390,7 @@
       "steps": [
         {
           "id": "song_order",
-          "text": "À toi : sur « Mon morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »).",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
           "check": "song:order",
           "spot": "song.parts",
           "song": "Intro:32,Montée:8,Drop:32,Break:16,Montée:8,Drop 2:32,Fin:16",
@@ -398,7 +413,8 @@
       "steps": [
         {
           "id": "fill",
-          "text": "À toi : dans la partie « Montée », va à sa dernière mesure (la 4e), sur le pad « Caisse ». Appui long sur un des derniers coups, puis sous « Roulement », touche « ×2 » ou « ×3 » : le coup se répète très vite.",
+          "text": "À toi : une transition (le passage d'une partie à l'autre) prévient l'oreille. Dans la partie « Montée », touche « Mesure 4 », la dernière de sa boucle, sur le pad « Caisse ». Appui long sur l'avant-dernier coup, puis sous « Roulement », touche « ×2 » ou « ×3 » : le coup se répète très vite.",
+          "textPro": "À toi : dans la partie « Montée », « Mesure 4 » (la dernière de sa boucle de 4 mesures, que la Montée joue deux fois), pad « Caisse » : appui long sur l'avant-dernier coup, puis « Roulement » ×2, ×3 ou ×4. Les 2 dernières cases restent pour le silence de l'étape suivante.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "snare",
@@ -414,7 +430,7 @@
         },
         {
           "id": "gap",
-          "text": "À toi : dans la partie « Montée », va à sa dernière mesure (la 4e) et efface les coups des 2 dernières cases, sur le pad « Caisse » puis sur le pad « Charley » (touche un coup pour l'effacer). Ça fait un petit silence juste avant le Drop.",
+          "text": "À toi : dans la partie « Montée », « Mesure 4 », efface les coups des 2 dernières cases (les croix rouges), sur le pad « Caisse » puis sur le pad « Charley » (touche un coup pour l'effacer). Un petit silence juste avant le Drop ; ton roulement, juste avant, reste.",
           "check": "gap",
           "spot": "rhythm.pattern",
           "listen": "vs:Montée:Drop",
@@ -423,8 +439,8 @@
         {
           "id": "variation",
           "levels": "p",
-          "text": "Toutes les 8 ou 16 mesures, change un détail : un coup de percussion, un charley ouvert.",
-          "check": "manual",
+          "text": "Toutes les 8 ou 16 mesures, un détail change : l'oreille reste en éveil. À toi : dans la partie « Drop 2 », ajoute un coup de percussion ou de charley ouvert.",
+          "check": "changed:drums:Drop 2",
           "spot": "rhythm.pattern",
           "listen": "vs:Drop:Drop 2"
         }
@@ -470,7 +486,7 @@
         {
           "id": "riser",
           "levels": "p",
-          "text": "À toi : automatise la « Coupure » du filtre de la piste « Accords » sur toute la Montée : la courbe monte du début à la fin.",
+          "text": "À toi : automatise la « Coupure » du filtre de la piste « Accords » sur la Montée : « Automatiser un réglage », « Accords », « Filtre (balayage) », puis « Par partie », et dessine une courbe qui monte du début à la fin.",
           "check": "automation",
           "spot": "song.automation",
           "target": "pad",
@@ -480,12 +496,13 @@
     },
     {
       "id": "mix",
-      "title": "Le mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
       "why": "Le mix, c'est le volume de chaque piste : le kick et la basse devant, les accords derrière. Chaque son trouve sa place.",
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : baisse un peu le volume de la piste « Accords », puis celui de la piste « Mélodie » : le bouton à droite de chaque piste, puis le curseur « Volume ».",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
           "textPro": "À toi : au Mixeur, baisse un peu le fader de la piste « Accords » et celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
@@ -495,16 +512,14 @@
         {
           "id": "meters",
           "levels": "p",
-          "text": "Regarde les vu-mètres pendant le Drop : rien ne doit rester dans le rouge.",
-          "check": "manual",
-          "spot": "mixer.strip"
+          "text": "Pendant le Drop, regarde les vu-mètres du Mixeur : rien ne doit rester dans le rouge. Si une piste rougit, baisse son fader.",
+          "check": "manual"
         },
         {
           "id": "buses",
           "levels": "p",
-          "text": "Équilibre les groupes : batterie, basse, musique. Compare au morceau d'exemple.",
+          "text": "Repères pour équilibrer : le kick et la Sub devant, la basse juste dessous, la caisse claire bien présente, les accords et la mélodie quelques dB derrière. Compare au morceau d'exemple.",
           "check": "manual",
-          "spot": "mixer.whatplays",
           "listen": "song"
         }
       ]
@@ -516,17 +531,11 @@
       "why": "Le master colle le tout et donne le volume des clubs, sans écraser le kick.",
       "steps": [
         {
-          "id": "master_fx",
-          "text": "À toi : mets un compresseur multibande (OTT) et un limiteur sur le master.",
-          "check": "master",
+          "id": "loudness",
+          "text": "Ton master a déjà son limiteur : toujours le dernier de la chaîne, il empêche le son de dépasser. Pas d'OTT ici : il écraserait l'attaque du kick. À toi : dans « Sortie générale », règle « Volume visé » sur « Club » : ton morceau sonne aussi fort qu'en club.",
+          "check": "loudness:CLUB",
           "spot": "mixer.master",
           "listen": "song"
-        },
-        {
-          "id": "loudness",
-          "text": "Vérifie le volume (loudness) avant d'exporter : vise celui des clubs.",
-          "check": "manual",
-          "spot": "share.check"
         }
       ]
     },
@@ -538,14 +547,14 @@
         {
           "id": "formats",
           "levels": "p",
-          "text": "WAV pour un DJ, M4A pour tes amis, pistes séparées pour un remix.",
-          "check": "manual",
-          "spot": "share.export"
+          "text": "WAV pour un DJ (la qualité studio), M4A pour tes amis (un fichier léger), pistes séparées pour un remix.",
+          "check": "manual"
         },
         {
           "id": "share",
-          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le.",
-          "check": "manual",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
           "spot": "share.export"
         }
       ]

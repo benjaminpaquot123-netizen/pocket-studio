@@ -964,7 +964,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
             Line(Role.Snare, "....X.......X.......X.......X.2.", "Une caisse claire énorme sur 2 et 4 : c'est elle qui fait sauter la salle. Un petit roulement à la fin de la 2e mesure relance la boucle."),
             Line(Role.Clap, "....X.......X...", "Un clap pile sur la caisse claire : les deux ensemble font un « clac » plus épais et plus large."),
             Line(Role.Hat, "o.x.o.x.o.x.o.xo", "Un charley deux fois par temps, plus fort entre les temps : il donne la vitesse sans gêner la basse."),
-            Line(Role.Perc, "......o.......o.......o.....o.o.", "Quelques petits coups discrets entre les temps : ils font rouler le rythme."),
+            Line(Role.Perc, "......o.......o.......o....o..o.", "Quelques petits coups discrets entre les temps : ils font rouler le rythme."),
         ),
         swing = 0.0,
         melody = Melody(

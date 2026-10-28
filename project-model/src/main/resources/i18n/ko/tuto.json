@@ -1,5 +1,4 @@
 {
-  "Chapitre %1$d/%2$d · %3$s": "챕터 %1$d/%2$d · %3$s",
   "Étape %1$d/%2$d": "단계 %1$d/%2$d",
   "Pro": "프로",
   "Facile": "쉬움",
@@ -63,16 +62,10 @@
   "Les transitions": "트랜지션",
   "Entre deux parties, un petit événement prévient l'oreille : un roulement, une cymbale, un silence.": "두 파트 사이에서 작은 사건이 귀에 알려 줘: 롤, 심벌, 침묵.",
   "Un demi-temps de rien, et le Drop paraît deux fois plus fort.": "반 박의 빈자리만으로 드롭이 두 배는 강하게 느껴져.",
-  "Toutes les 8 ou 16 mesures, change un détail : un coup de percussion, un charley ouvert.": "8마디나 16마디마다 디테일 하나를 바꿔: 퍼커션 한 번, 오픈 하이햇.",
   "Les effets": "이펙트",
   "Le mix": "믹스",
-  "Regarde les vu-mètres pendant le Drop : rien ne doit rester dans le rouge.": "드롭 동안 미터를 봐: 빨간색에 머무는 게 있으면 안 돼.",
-  "Équilibre les groupes : batterie, basse, musique. Compare au morceau d'exemple.": "그룹의 균형을 맞춰: 드럼, 베이스, 음악. 예시 곡과 비교해 봐.",
   "Le mastering": "마스터링",
   "Le master colle le tout et donne le volume des clubs, sans écraser le kick.": "마스터는 전체를 붙여 주고, 킥을 뭉개지 않고 클럽 음량을 만들어.",
-  "À toi : mets un compresseur multibande (OTT) et un limiteur sur le master.": "네 차례: 마스터에 멀티밴드 컴프레서(OTT)와 리미터를 걸어.",
-  "Vérifie le volume (loudness) avant d'exporter : vise celui des clubs.": "내보내기 전에 라우드니스를 확인해: 클럽 수준을 목표로.",
   "Exporte ton morceau": "곡을 내보내",
-  "Ton morceau est fini : fais-le écouter !": "곡이 완성됐어: 들려줘!",
-  "WAV pour un DJ, M4A pour tes amis, pistes séparées pour un remix.": "DJ에게는 WAV, 친구에게는 M4A, 리믹스에는 따로 나눈 트랙."
+  "Ton morceau est fini : fais-le écouter !": "곡이 완성됐어: 들려줘!"
 }

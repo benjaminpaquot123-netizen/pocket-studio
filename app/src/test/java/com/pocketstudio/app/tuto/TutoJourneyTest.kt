@@ -135,7 +135,8 @@ class TutoJourneyTest {
             val start = p()
             val depth = h.vm.session.undoDepth
             // « Montre-moi »: shown, then taken back; never ticks, never in « Annuler ».
-            if (!has("tuto_show") && !s.manual && !s.listening && !s.check.startsWith("changed:synth")) noDemo += s.id
+            // The share: only the app sees the song go out (no « Montre-moi » can share it).
+            if (!has("tuto_show") && !s.manual && !s.listening && !s.check.startsWith("changed:synth") && s.check != "shared") noDemo += s.id
             if (has("tuto_show")) {
                 click("tuto_show")
                 await("${s.id}: demo shown") { has("tuto_demo_caption") }
@@ -148,6 +149,14 @@ class TutoJourneyTest {
                 assertEquals("${s.id}: Montre-moi in Annuler", depth, h.vm.session.undoDepth)
                 assertFalse("${s.id}: ticked by Montre-moi", s.id in progress().done)
                 demos++
+            }
+            // « Écoute ta boucle, puis l'exemple » (lot « tuto 4 »): the user's own music first, the example then ticks it.
+            if (s.hearMine && TutoController.mineFor(s, p())) {
+                click("tuto_play_mine")
+                compose.mainClock.advanceTimeBy(5_000)
+                idle(400)
+                assertFalse("${s.id}: ticked before the example", s.id in progress().done)
+                if (has("tuto_play_mine")) click("tuto_play_mine")
             }
             // « Écouter l'exemple »: something to hear, the project untouched.
             if (s.listen.isNotEmpty()) {
@@ -238,17 +247,28 @@ class TutoJourneyTest {
                 click("tuto_do")
                 val lane = TutoChecks.laneOf("hat")
                 h.vm.selectPad(lane)
-                // Long presses › « Doux »: the 4 hats on the beats of the first bar.
+                // Long presses › « Doux »: the 4 hats on the beats of the first bar, then « Copier sur les mesures suivantes ».
                 listOf(0, 4, 8, 12).forEach { h.vm.setHitVelocity(it, 0.2f) }
+                copy(s)
             }
-            c.startsWith("notes:") || c == "track:sub" -> {
+            // « Copier la basse une octave plus bas »: the Sub in one touch (lot « tuto 4 »).
+            c == "track:sub" -> {
+                assertTrue("${s.id}: its button", has("tuto_need"))
+                click("tuto_need")
+            }
+            // The first 4 bars' dotted notes touched, then « Copier sur les mesures suivantes »; the Drop 2's bass in its part.
+            c.startsWith("notes:") || (c.startsWith("part:") && s.transpose != 0) -> {
                 assertTrue("${s.id}: « Créer la piste … » offered", has("tuto_need"))
                 click("tuto_need")
                 await("${s.id}: its notes, dotted") { has("piano_roll") && TutoHints.notes?.second?.isNotEmpty() == true }
                 val (track, notes) = TutoHints.notes!!
                 assertEquals(track, h.vm.selectedTrack.value)
                 assertTrue("${s.id}: nothing written by the button", p().track(track).notes.notes.isEmpty())
+                assertTrue("${s.id}: the first 4 bars dotted", notes.all { it.start < 4 * 384 })
                 notes.forEach { h.vm.addNote(it) }
+                copy(s)
+                // Pro, the Drop 2: its Sub, the bass an octave down.
+                if (s.id !in progress().done) copy(s)
             }
             c.startsWith("changed:synth:") -> {
                 click("tuto_do")
@@ -263,6 +283,11 @@ class TutoJourneyTest {
             c.startsWith("part:") || c.startsWith("label:") || c == "song:phrases" -> {
                 assertTrue("${s.id}: its button", has("tuto_need"))
                 click("tuto_need")
+            }
+            // The song exported and its share sheet opened: the app marks it (as ShareSongProgress does).
+            c == "shared" -> {
+                click("tuto_do")
+                h.vm.guide.markDone(TutoChecks.SHARED_CARD, "keep")
             }
             c == "song:order" -> {
                 click("tuto_do")
@@ -289,6 +314,15 @@ class TutoJourneyTest {
                 h.vm.session.edit { done!! }
             }
         }
+    }
+
+    /** The step's main button once the user's part is done (« Copier sur les mesures suivantes », « Copier la basse… »). */
+    private fun copy(s: TutoStep) {
+        await("${s.id}: its copy button") { s.id in progress().done || h.vm.project.value.let { TutoChecks.need(s, it, target) } != null }
+        if (s.id in progress().done) return
+        unfold()
+        await("${s.id}: the button") { has("tuto_need") }
+        click("tuto_need")
     }
 
     private fun closeSheetIfAny() {

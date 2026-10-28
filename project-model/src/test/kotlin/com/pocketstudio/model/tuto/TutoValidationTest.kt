@@ -101,8 +101,13 @@ class TutoValidationTest {
             fun with(n: Int) = q.withTrack(q.track(track!!).copy(notes = q.track(track).notes.copy(notes = ghosts.take(n))))
             assertFalse("$id: the first three", TutoChecks.done(s, with(3), target))
             assertFalse("$id: all but one", TutoChecks.done(s, with(ghosts.size - 1), target))
-            assertTrue(id, TutoChecks.done(s, with(ghosts.size), target))
-            p = with(ghosts.size)
+            assertNull("$id: no copy before the first 4 bars are written", TutoChecks.need(s, with(ghosts.size - 1), target))
+            // Lot « tuto 4 »: the dotted notes are the first 4 bars; the copy button writes the next 4.
+            assertFalse("$id: the first 4 bars only", TutoChecks.done(s, with(ghosts.size), target))
+            val need = TutoChecks.need(s, with(ghosts.size), target)
+            assertTrue("$id: $need", need is TutoNeed.Copy)
+            p = TutoChecks.fulfil(need!!, s, with(ghosts.size), target)!!.first
+            assertTrue(id, TutoChecks.done(s, p, target))
         }
     }
 

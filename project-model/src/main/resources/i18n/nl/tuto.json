@@ -1,5 +1,4 @@
 {
-  "Chapitre %1$d/%2$d · %3$s": "Hoofdstuk %1$d/%2$d · %3$s",
   "Étape %1$d/%2$d": "Stap %1$d/%2$d",
   "Pro": "Pro",
   "Facile": "Makkelijk",
@@ -63,16 +62,10 @@
   "Les transitions": "De overgangen",
   "Entre deux parties, un petit événement prévient l'oreille : un roulement, une cymbale, un silence.": "Tussen twee delen waarschuwt een kleine gebeurtenis het oor: een roffel, een bekken, een stilte.",
   "Un demi-temps de rien, et le Drop paraît deux fois plus fort.": "Een halve tel niets, en de Drop klinkt twee keer zo sterk.",
-  "Toutes les 8 ou 16 mesures, change un détail : un coup de percussion, un charley ouvert.": "Verander elke 8 of 16 maten een detail: een percussieslag, een open hi-hat.",
   "Les effets": "De effecten",
   "Le mix": "De mix",
-  "Regarde les vu-mètres pendant le Drop : rien ne doit rester dans le rouge.": "Kijk naar de meters tijdens de Drop: niets mag in het rood blijven.",
-  "Équilibre les groupes : batterie, basse, musique. Compare au morceau d'exemple.": "Breng de groepen in balans: drums, bas, muziek. Vergelijk met het voorbeeldnummer.",
   "Le mastering": "De mastering",
   "Le master colle le tout et donne le volume des clubs, sans écraser le kick.": "De master lijmt alles samen en geeft clubvolume, zonder de kick te pletten.",
-  "À toi : mets un compresseur multibande (OTT) et un limiteur sur le master.": "Jouw beurt: zet een multibandcompressor (OTT) en een limiter op de master.",
-  "Vérifie le volume (loudness) avant d'exporter : vise celui des clubs.": "Controleer de luidheid voor het exporteren: mik op clubniveau.",
   "Exporte ton morceau": "Exporteer je nummer",
-  "Ton morceau est fini : fais-le écouter !": "Je nummer is klaar: laat het horen!",
-  "WAV pour un DJ, M4A pour tes amis, pistes séparées pour un remix.": "WAV voor een dj, M4A voor je vrienden, losse sporen voor een remix."
+  "Ton morceau est fini : fais-le écouter !": "Je nummer is klaar: laat het horen!"
 }

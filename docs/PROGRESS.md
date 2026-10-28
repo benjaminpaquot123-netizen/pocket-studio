@@ -1,13 +1,13 @@
 # Avancement
 
-## Où on en est (2026-10-27)
-- `main` = Guide G4, G5 et G6 + son 8 (leads lots B à D, largeur des 37 styles, restes S6/S7), chacun relu à neuf et corrigé ; fusion sans CI de GitHub (« [skip ci] », en pause sur demande de Benjamin), tests faits ici.
-- Consignes de Benjamin (2026-10-27) : un seul APK quand tout est fini ; des nouvelles à chaque fin d'étape ; le Play Store seulement quand il le demande.
+## Où on en est (2026-10-28)
+- Branche `ccr-80af1a1b-mn0wec` (intégration fx-int) : le grand audit final (23 auditeurs, vérifications adverses, 16 lots de correction, relecture neuve et ses 7 MOYEN corrigés), BenStudio (nom, logo, ouverture « double battement » validée), MiniLab 3 et claviers génériques, 15 langues (drapeaux, pluriels CLDR, arabe RTL), « ▶ Écouter seul » (piste, pad, Guide), Guide plus clair avec lueur au rythme d'un cœur, onglet Mix du Mode simple (maquette validée, vumètres en dégradé de pixels), tuto de A à Z jump up (Facile 15 ch. / Pro 17 ch.) et nouvel écran « Nouveau projet » à 3 choix. Tests locaux verts (project-model, app, captures, compilation androidTest). APK 224 envoyé (avant langues/Mix/tuto).
+- Consignes de Benjamin : pas d'APK tant qu'il ne le demande pas ; Play Store seulement à sa demande (branche fx-play gardée de côté, non fusionnée ; prix prévu 4,99 € avec promo 2,99 €) ; démo automatique « trop tôt » (branche fx-demo abandonnée) ; économiser le quota ; des nouvelles à chaque étape.
 
 ## Prochaine étape exacte
-1. Le grand audit final (`docs/PLAN-AUDIT-FINAL.md`) : une vingtaine d'auditeurs en même temps (utilisateurs, pros du son, experts techniques, forme), synthèse par gravité, correction de tout le grave et le moyen, seconde passe de vérification.
-2. Puis l'APK unique compilé ici, avec les extraits audio, et le résumé pour Benjamin.
-3. Plus tard, sur demande de Benjamin : le chantier Play Store.
+1. Attendre les retours de Benjamin sur le tuto, le Mix et les langues ; APK quand il le demande (versionCode > 224, `scripts/local-release.sh`).
+2. PR de la branche vers main (CI de GitHub relancée), fusion après CI verte.
+3. Plus tard : tuto des autres styles, démo automatique, chantier Play Store (sur demande).
 
 **Phase 0 fusionnée le 2026-10-18, phase 1 fusionnée le 2026-10-19 (feu vert de Benjamin).** Phase en cours : 2 (sampler et notes).
 

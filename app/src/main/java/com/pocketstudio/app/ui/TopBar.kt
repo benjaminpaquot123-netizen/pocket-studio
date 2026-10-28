@@ -74,6 +74,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import com.pocketstudio.model.Scene
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.liveGlow
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.app.learn.spot
 import androidx.compose.material.icons.filled.MoreVert
@@ -307,7 +308,8 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
         val playColor = if (ui.playing) Neon.Acid else Neon.Cyan
         // A 42 dp disc inside a 48 dp touch target.
         Box(
-            Modifier.requiredSize(48.dp).clip(CircleShape)
+            // While it plays, a soft green glow around the disc, breathing on the beat.
+            Modifier.requiredSize(48.dp).liveGlow(ui.playing, Neon.Acid, inset = 3.dp).clip(CircleShape)
                 .clickable(role = Role.Button, onClickLabel = if (ui.playing) tr("Arrêter") else tr("Jouer"), onClick = actions.togglePlay)
                 .spot("top_play", tr("Écouter"))
                 .testTag("top_play"),
@@ -315,7 +317,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
         ) {
             Box(
                 Modifier.requiredSize(42.dp)
-                    .shadow(if (ui.playing) 14.dp else 6.dp, CircleShape, ambientColor = playColor, spotColor = playColor)
+                    .shadow(if (ui.playing) 2.dp else 6.dp, CircleShape, ambientColor = playColor, spotColor = playColor)
                     .clip(CircleShape)
                     .background(Brush.verticalGradient(listOf(lerp(playColor, Color.White, 0.2f), playColor))),
                 contentAlignment = Alignment.Center,

@@ -229,9 +229,8 @@ internal fun VerticalFader(
     }
     val off = Neon.SurfaceHigh
     val accent = Neon.Cyan
-    val low = Neon.Acid
-    val mid = Neon.Amber
-    val high = Neon.Red
+    val bar = com.pocketstudio.ui.rememberLevelBar(dissolve = 22.dp)
+    val peak = com.pocketstudio.ui.rememberPeakHold { (meter() / 0.89f).coerceIn(0f, 1f) }
     val dim = Neon.TextSecondary
     val cap = Neon.TextPrimary
     Canvas(
@@ -254,20 +253,12 @@ internal fun VerticalFader(
         // 0 dB marked on the travel.
         val unity = (1f - 0.8f) * size.height
         drawLine(dim.copy(alpha = 0.6f), Offset(trackX - 10.dp.toPx(), unity), Offset(trackX + 10.dp.toPx(), unity), 1.dp.toPx())
-        // The meter: a thin column to the right, green, amber, red from the bottom.
+        // The meter: a thin column to the right, green, amber, red from the bottom (the app's LevelBar:
+        // a gradient, its top in fine pixels, its peak held).
         val mx = size.width * 0.80f
         val mw = 5.dp.toPx()
-        val lit = (meter() / 0.89f).coerceIn(0f, 1f)
         drawRoundRect(off, Offset(mx, 0f), Size(mw, size.height), CornerRadius(2.dp.toPx()))
-        if (lit > 0f) {
-            val h = lit * size.height
-            val color = when {
-                lit < 0.65f -> low
-                lit < 0.85f -> mid
-                else -> high
-            }
-            drawRoundRect(color, Offset(mx, size.height - h), Size(mw, h), CornerRadius(2.dp.toPx()))
-        }
+        bar.draw(this, (meter() / 0.89f).coerceIn(0f, 1f), Offset(mx, 0f), Size(mw, size.height), vertical = true, peak = peak.floatValue)
         // The cap, wide enough for a thumb to see where it is.
         val capH = 14.dp.toPx()
         val capW = 30.dp.toPx()

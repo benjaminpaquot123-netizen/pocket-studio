@@ -3,6 +3,11 @@ package com.pocketstudio.ui
 import com.pocketstudio.model.i18n.upperShown
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -76,6 +81,7 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.i18n.tr
 
 /**
@@ -150,23 +156,16 @@ fun NeonCard(
     val store = LocalFoldStore.current
     val folded = fold.key?.let(store::isFolded) == true && fold.headerBottom > 0f
     val highlighted = accent != Neon.Outline
-    val edge = if (highlighted) {
-        Brush.verticalGradient(listOf(accent, accent.copy(alpha = 0.55f)))
-    } else {
-        Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.16f), Color.White.copy(alpha = 0.04f)))
-    }
     val headerHeight = with(LocalDensity.current) { fold.headerBottom.toDp() } + 16.dp
     Box(
         modifier
             .fillMaxWidth()
-            .shadow(
-                if (highlighted) 10.dp else 6.dp, shape,
-                ambientColor = if (highlighted) accent else Color.Black,
-                spotColor = if (highlighted) accent else Color.Black,
-            )
+            // Two shadows, as under a real panel: a wide soft one, a tight one where it touches.
+            // An important card glows faintly in its colour instead of the wide one.
+            .dropShadow(shape, if (highlighted) Shadow(14.dp, accent, alpha = 0.26f) else PanelShadowWide)
+            .dropShadow(shape, PanelShadowContact)
             .clip(shape)
-            .background(Brush.verticalGradient(listOf(lerp(surface, Color.White, 0.05f), surface, lerp(surface, Color.Black, 0.07f))))
-            .border(if (highlighted) 1.5.dp else 1.dp, edge, shape)
+            .then(remember(surface, accent, highlighted) { Modifier.panelFinish(surface, accent.takeIf { highlighted }) })
             .then(if (fold.animate) Modifier.animateContentSize(spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow)) else Modifier)
             .then(if (folded) Modifier.height(headerHeight).clipToBounds() else Modifier)
             .onGloballyPositioned {
@@ -185,6 +184,50 @@ fun NeonCard(
                 content = content,
             )
         }
+    }
+}
+
+/** Under every panel: wide and soft, then tight where it touches (made once). */
+private val PanelShadowWide = Shadow(radius = 14.dp, color = Color.Black, offset = DpOffset(0.dp, 5.dp), alpha = 0.34f)
+private val PanelShadowContact = Shadow(radius = 2.dp, color = Color.Black, offset = DpOffset(0.dp, 1.dp), alpha = 0.30f)
+
+/**
+ * A panel's material, lit from above: a micro-gradient (lighter at the top, a shade darker at
+ * the foot), a grain too fine to see but that keeps it from looking flat, and over the content a
+ * hairline edge, bright along the top and fading down the sides, darker at the foot (a bevel).
+ * [accent]: a coloured edge instead (an important card). Its brushes are made when the size
+ * changes, not on each frame. Put it after the clip.
+ */
+fun Modifier.panelFinish(surface: Color, accent: Color? = null, corner: Dp = 16.dp): Modifier = drawWithCache {
+    val h = size.height.coerceAtLeast(1f)
+    val body = Brush.verticalGradient(
+        0f to lerp(surface, Color.White, 0.055f),
+        (48.dp.toPx() / h).coerceIn(0.05f, 0.5f) to lerp(surface, Color.White, 0.015f),
+        1f to lerp(surface, Color.Black, 0.075f),
+        startY = 0f, endY = h,
+    )
+    val edgeWidth = if (accent != null) 1.5.dp.toPx() else 1.dp.toPx() * 0.75f
+    val edge = if (accent != null) {
+        Brush.verticalGradient(listOf(accent, accent.copy(alpha = 0.55f)), startY = 0f, endY = h)
+    } else {
+        Brush.verticalGradient(
+            0f to Color.White.copy(alpha = 0.24f),
+            (28.dp.toPx() / h).coerceIn(0.02f, 0.4f) to Color.White.copy(alpha = 0.06f),
+            0.7f to Color.White.copy(alpha = 0.03f),
+            1f to Color.Black.copy(alpha = 0.22f),
+            startY = 0f, endY = h,
+        )
+    }
+    val stroke = Stroke(edgeWidth)
+    val r = corner.toPx()
+    val inset = Offset(edgeWidth / 2, edgeWidth / 2)
+    val edgeSize = Size(size.width - edgeWidth, size.height - edgeWidth)
+    val edgeRadius = CornerRadius((r - edgeWidth / 2).coerceAtLeast(0f))
+    onDrawWithContent {
+        drawRect(body)
+        if (PanelGrain.enabled) drawRect(PanelGrain.brush)
+        drawContent()
+        drawRoundRect(edge, inset, edgeSize, edgeRadius, style = stroke)
     }
 }
 
@@ -243,7 +286,7 @@ private fun SectionTitle(text: String, color: Color, folded: Boolean?, subtle: B
         if (subtle) Box(Modifier.size(8.dp).clip(CircleShape).background(color))
         else Box(Modifier.width(3.dp).height(12.dp).clip(RoundedCornerShape(2.dp)).background(color))
         // Audit final (22): a title TalkBack can jump to.
-        Text(text.upperShown(), style = MaterialTheme.typography.labelSmall, color = if (subtle) Neon.TextSecondary else lerp(color, Neon.TextPrimary, 0.25f),
+        Text(text.upperShown(), style = if (subtle) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelSmall.merge(SectionCaps), color = if (subtle) Neon.TextSecondary else lerp(color, Neon.TextPrimary, 0.25f),
             modifier = Modifier.semantics { heading() })
         if (folded != null) {
             // A small open "v", turned to ">" when folded: there, not shouting.
@@ -256,6 +299,12 @@ private fun SectionTitle(text: String, color: Color, folded: Boolean?, subtle: B
         }
     }
 }
+
+/**
+ * Section titles in small capitals: semi-bold and spaced a little wider, as engraved on a console
+ * (about the same width as the bold ones before them).
+ */
+private val SectionCaps = androidx.compose.ui.text.TextStyle(fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold, letterSpacing = 1.1.sp)
 
 /** A title that folds: a touch folds or opens what it heads, remembered under [key]. */
 @Composable
@@ -312,41 +361,6 @@ fun StatRow(label: String, value: String, valueColor: Color = Neon.TextPrimary) 
             color = valueColor,
             textAlign = TextAlign.End,
         )
-    }
-}
-
-/** Horizontal level meter as a row of LEDs, green to amber to red. [level] is linear 0..1. */
-@Composable
-fun LevelMeter(level: Float, modifier: Modifier = Modifier) = LevelMeter({ level }, modifier)
-
-/**
- * The same, [level] read only when drawn: a meter fed 20 times a second redraws itself alone,
- * nothing around it is composed again.
- */
-@Composable
-fun LevelMeter(level: () -> Float, modifier: Modifier = Modifier) {
-    val off = Neon.SurfaceHigh
-    val low = Neon.Acid
-    val mid = Neon.Amber
-    val high = Neon.Red
-    Canvas(modifier = modifier.fillMaxWidth().height(10.dp)) {
-        val segments = 32
-        val gap = 2.dp.toPx()
-        val w = (size.width - gap * (segments - 1)) / segments
-        val lit = level().coerceIn(0f, 1f) * segments
-        val radius = CornerRadius(2.dp.toPx())
-        for (i in 0 until segments) {
-            val x = i * (w + gap)
-            val position = i / (segments - 1f)
-            val color = when {
-                position < 0.65f -> low
-                position < 0.85f -> mid
-                else -> high
-            }
-            val on = (lit - i).coerceIn(0f, 1f)
-            drawRoundRect(color = off, topLeft = Offset(x, 0f), size = Size(w, size.height), cornerRadius = radius)
-            if (on > 0f) drawRoundRect(color = color.copy(alpha = 0.35f + 0.65f * on), topLeft = Offset(x, 0f), size = Size(w, size.height), cornerRadius = radius)
-        }
     }
 }
 

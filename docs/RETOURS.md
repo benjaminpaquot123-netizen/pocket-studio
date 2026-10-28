@@ -148,3 +148,5 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - Précision : les retours de Sarah et Mehdi (testeurs Remix) et leurs corrections doivent être dans l'APK 228. Ordre : lot tuto 5 + rapports Remix → corrections Remix → tests → APK.
 - Corrections du Remix : les diviser en 2 ou 3 équipes si possible pour aller plus vite (accord de Benjamin).
 - « Ajoute 3 agents maintenant pour améliorer le design : il est déjà magnifique, mais l'améliorer subtilement, avec des effets hyper pro. » (design délégué : décider sans demander, montrer les captures).
+- Le lot design (D1, D2, D3) doit aussi être dans l'APK 228 envoyé à Benjamin.
+- Remix, « tableau des pistes » (demande de Benjamin) : voir la courbe du son de chaque piste (« les petites montagnes russes »), sélectionner de gauche à droite pour rogner, copier où on veut (pad, instrument, nouvelle piste, Live), zoom, découpe de la voix en phrases ; extraction facile. 3 équipes dédiées, en raccord avec le nouveau design. Consigne : l'APK 228 est le SEUL APK compilé, et il contient tout (tuto, Remix, design, tableau des pistes).

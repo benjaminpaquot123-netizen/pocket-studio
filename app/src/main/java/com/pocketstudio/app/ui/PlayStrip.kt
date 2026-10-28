@@ -30,6 +30,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Headphones
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -133,6 +134,8 @@ class PlayStripActions(
     val setLoopPart: (Boolean) -> Unit = {},
     /** « Jouer depuis… »: the song from that part. */
     val playFrom: (Int) -> Unit = {},
+    /** « Jouer depuis… › Tout le morceau, du début »: the whole song from its first bar, « ⟳ Boucler » off. */
+    val playWholeSong: () -> Unit = {},
     /** The « Solo » chip: every solo off. */
     val clearSolos: () -> Unit = {},
     /** « ? »: the screen's labels shown, or hidden again. */
@@ -162,7 +165,12 @@ fun PlayStrip(ui: PlayStripUi, actions: PlayStripActions) = BoxWithConstraints(
     val loop = ui.hasSong && ui.loopChip
     val chips = (if (ui.soloed.isNotEmpty()) 1 else 0) + (if (loop) 1 else 0) + (if (ui.helpOn != null) 1 else 0)
     val soloIconOnly = ui.soloed.isNotEmpty() && maxWidth < COMPACT_BELOW
-    val loopIconOnly = ui.hasSong && (maxWidth < (if (chips >= 2) COMPACT_BELOW else 300.dp))
+    // On, « ⟳ Boucler » keeps its word where it fits beside the « ? » (remix lot 1: an orange ⟳ alone did
+    // not say that ▶ loops one part instead of playing the song); off, its icon is enough.
+    val loopIconOnly = ui.hasSong && (
+        if (ui.loopPart) maxWidth < (if (chips >= 3) COMPACT_BELOW else LOOP_WORD_BELOW)
+        else maxWidth < (if (chips >= 2) COMPACT_BELOW else 300.dp)
+        )
     Row(
         Modifier.fillMaxWidth().height(height).padding(horizontal = 6.dp).testTag("play_strip"),
         verticalAlignment = Alignment.CenterVertically,
@@ -188,6 +196,9 @@ val TOUCH_HEIGHT = 48.dp
 
 /** Under this width, the strip's chips show their icon alone. */
 private val COMPACT_BELOW = 400.dp
+
+/** Under this width « ⟳ Boucler », on, shows its icon alone (with the « ? » beside it: the position keeps its 96 dp). */
+private val LOOP_WORD_BELOW = 340.dp
 
 /** The height of a chip's drawn pill, inside its 48 dp touch target. */
 private val CHIP_HEIGHT = 32.dp
@@ -272,6 +283,16 @@ private fun PositionLabel(ui: PlayStripUi, actions: PlayStripActions, modifier: 
             Text(
                 tr("Jouer depuis…"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+            )
+            // Remix lot 1: the plain way to hear the whole song, first, whatever ▶ was set to loop.
+            DropdownMenuItem(
+                text = { Text(tr("Tout le morceau, du début"), fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                leadingIcon = { Icon(Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.Acid) },
+                onClick = {
+                    open = false
+                    actions.playWholeSong()
+                },
+                modifier = Modifier.testTag("play_from_whole"),
             )
             ui.parts.forEachIndexed { i, name ->
                 DropdownMenuItem(

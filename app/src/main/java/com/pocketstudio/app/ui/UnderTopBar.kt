@@ -75,7 +75,7 @@ fun UnderTopBar(
                 soloed = if (landscape || !controls) soloed else emptyList(), helpOn = helpOn,
                 loopChip = loopChip || loopPart,
             ),
-            PlayStripActions(openTempo = { setTempoOpen(true) }, setLoopPart = vm::setLoopPart, playFrom = vm::playSongPart, clearSolos = vm::clearSolos, toggleHelp = toggleHelp, reportBug = reportBug),
+            PlayStripActions(openTempo = { setTempoOpen(true) }, setLoopPart = vm::setLoopPart, playFrom = vm::playSongPart, playWholeSong = vm::listenFromStart, clearSolos = vm::clearSolos, toggleHelp = toggleHelp, reportBug = reportBug),
         )
         if (!landscape && controls) SoloBanner(soloed, vm::clearSolos)
     }

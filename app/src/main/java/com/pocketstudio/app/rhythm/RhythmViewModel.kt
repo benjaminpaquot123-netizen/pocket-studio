@@ -5230,6 +5230,164 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    // --- Stem board (Remix « tableau des pistes », B3): where a stretch of a stem goes ------------
+
+    private var stemBoardMade: com.pocketstudio.app.remix.StemBoardRouter? = null
+
+    /**
+     * The stem board's actions: a stretch onto a free pad, a new instrument or audio track, a live
+     * pad; a voice cut into its phrases. The cuts and the phrases are B2's [com.pocketstudio.app.remix.StemEditor].
+     */
+    val stemBoard: com.pocketstudio.app.remix.StemBoardRouter
+        get() = stemBoardMade ?: com.pocketstudio.app.remix.StemBoardRouter(
+            viewModelScope, stemBoardHost, com.pocketstudio.app.remix.StemEditor,
+            com.pocketstudio.app.guide.EnginePcmPlayer(viewModelScope),
+        ).also { stemBoardMade = it }
+
+    /** What the stem board does to the project (tests drive it with their own edits and player). */
+    internal val stemBoardHost: com.pocketstudio.app.remix.StemBoardHost = object : com.pocketstudio.app.remix.StemBoardHost {
+        override fun project(): Project = project.value
+
+        override suspend fun <T> withSong(setId: String, block: (com.pocketstudio.app.remix.StemSource) -> T): T? {
+            val p = project.value
+            val own = stems?.takeIf { stemsId == setId }
+            if (own != null) {
+                // The project's song: its copy fitted to the project's tempo, once ready, gives the fitted stretches.
+                val ratio = p.remix.stretchFor(p.tempoBpm)
+                val fit = stretched?.takeIf { ratio != 1.0 && stretchedFor == (setId to ratio) }
+                val source = StemReading(own, fit, if (fit != null) ratio else 1.0, p.remix.songBpm, p.remix.firstBeat, if (fit != null) p.tempoBpm else p.remix.songBpm)
+                return withContext(Dispatchers.Default) { block(source) }
+            }
+            // Another song of the phone: read for this once, then freed.
+            val app = getApplication<Application>()
+            return withContext(Dispatchers.IO) {
+                val set = StemStore.read(StemStore.dirFor(app, setId)) ?: return@withContext null
+                val loaded = NativeStems.load(set.stem("drums").path, set.stem("bass").path, set.stem("other").path, set.stem("vocals").path)
+                    ?: return@withContext null
+                try {
+                    block(StemReading(loaded, null, 1.0, set.info.bpm, set.info.firstBeat, set.info.bpm))
+                } finally {
+                    loaded.close()
+                }
+            }
+        }
+
+        override fun busy(): Boolean =
+            _sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording ||
+                _audioRecording.value != null || _trackSoundBusy.value == BUSY_TRACK_SOUND
+
+        override suspend fun putOnPads(cuts: List<com.pocketstudio.app.remix.PadCut>) {
+            if (cuts.isEmpty()) return
+            val made = withContext(Dispatchers.IO) { cuts.map { c -> c.lane to padSamples.add(c.pcm, c.name) } }
+            made.forEach { (_, s) -> padSamples.register(s.second) }
+            // One undo step for every pad.
+            session.edit { p -> p.copy(drums = made.fold(p.drums) { d, (lane, s) -> d.withSample(lane, s.first) }) }
+            pushPads()
+            selectPad(cuts.first().lane)
+            AppLog.add("Tableau des pistes : ${cuts.size} son(s) sur les pads ${cuts.map { it.lane + 1 }}")
+        }
+
+        override suspend fun putOnNewInstrument(pcm: Pcm, name: String): Int? {
+            if (project.value.addTrack() == null) return null
+            val root = withContext(Dispatchers.Default) {
+                val ch = pcm.channels
+                RootNote.detect(FloatArray(pcm.frames) { i -> (0 until ch).sumOf { c -> pcm.data[i * ch + c].toDouble() }.toFloat() / ch }, pcm.sampleRate)
+            }
+            val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, name) }
+            padSamples.register(prepared)
+            var id: Int? = null
+            // One undo step: the track and its sound together.
+            session.edit { p ->
+                val next = p.addTrack(name) ?: return@edit p
+                val added = next.tracks.first { t -> p.tracks.none { it.id == t.id } }
+                id = added.id
+                userTrack(next, added.id).let { q ->
+                    q.withTrack(q.track(added.id).copy(
+                        engine = 2, instrument = null,
+                        sampled = SampledPatch(file = sample.file, name = name, root = SampledPatch.fitRoot(root, emptyList()), release = 0.2f),
+                    ).sanitized())
+                }
+            }
+            val made = id ?: return null
+            pushTracks()
+            pushMixer()
+            pushInstrument()
+            pushSampled(id = made)
+            pushPlaits(id = made)
+            selectTrack(made)
+            AppLog.add("Tableau des pistes : « $name » au clavier sur la piste ${made + 1}, note d'origine ${root?.let { "%.2f".format(it) } ?: "inconnue"}")
+            return made
+        }
+
+        override suspend fun putOnNewAudioTrack(pcm: Pcm, name: String, atStep: Int, bpm: Double): Int? {
+            if (project.value.addAudioTrack(name) == null) return null
+            val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, name) }
+            padSamples.register(prepared)
+            var id: Int? = null
+            // One undo step: the track and its clip together. With a song, it plays once from that
+            // step of the song; without, once per pass of the scene shown, from that step of it.
+            session.edit { p ->
+                val next = p.addAudioTrack(name) ?: return@edit p
+                val added = next.audioTracks.first { t -> p.audioTracks.none { it.id == t.id } }
+                id = added.id
+                val song = p.song.isNotEmpty()
+                val bars = AudioClip.barsFor(pcm.seconds, p.tempoBpm, p.beatsPerBar)
+                val clip = AudioClip(
+                    sample.file, sample.name, seconds = pcm.seconds, start = atStep, loopSteps = bars * p.stepsPerBar,
+                    song = song, once = !song, bpm = bpm, scene = if (song) null else p.scene,
+                )
+                next.withAudioTrack(added.copy(clip = clip))
+            }
+            val made = id ?: return null
+            pushMixer()
+            pushAudio()
+            AppLog.add("Tableau des pistes : « $name » sur la piste audio ${made + 1}, pas $atStep")
+            return made
+        }
+
+        override suspend fun putOnLivePad(pcm: Pcm, name: String, pad: Int) {
+            val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, name) }
+            padSamples.register(prepared)
+            // One undo step: the grid grown to show the pad, and its sound.
+            session.edit { p ->
+                val size = if (p.live.size <= pad) LivePads.SIZES.first { it > pad } else p.live.size
+                val clip = LiveClip(sample.file, sample.name, LivePads.beatsFor(prepared.info.seconds, p.tempoBpm))
+                p.copy(live = p.live.copy(size = size).with(pad, clip))
+            }
+            pushLive()
+            AppLog.add("Tableau des pistes : « $name » sur le pad live ${pad + 1}")
+        }
+
+        override fun songStepNow(): Int =
+            if (_transport.value.playing && NativeEngine.isAvailable) NativeEngine.songStep() else -1
+
+        override fun pauseMusic() {
+            if (_transport.value.playing) togglePlay()
+        }
+    }
+
+    /** A song's stems as the stem board reads them: [fit] the copy at the project's tempo ([ratio] times as long), if any. */
+    private class StemReading(
+        private val stems: NativeStems,
+        private val fit: NativeStems?,
+        private val ratio: Double,
+        override val songBpm: Double,
+        firstBeat: Double,
+        override val fittedBpm: Double,
+    ) : com.pocketstudio.app.remix.StemSource {
+        override val frames: Long = stems.frames
+        override val firstBeatFrame: Long = Math.round(firstBeat * OfflineExport.SAMPLE_RATE)
+
+        override fun read(stem: Int, start: Long, count: Long, fitted: Boolean): FloatArray {
+            val copy = fit
+            if (fitted && copy != null) {
+                // The copy went meanwhile (another tempo): the song as it is.
+                runCatching { return copy.extract(stem, Math.round(start * ratio), Math.round(count * ratio)) }
+            }
+            return stems.extract(stem, start, count)
+        }
+    }
+
     // --- Instrument library (General MIDI banks) -------------------------------------------
 
     private val _library = MutableStateFlow<LibraryState>(LibraryState.Missing)
@@ -9426,6 +9584,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     override fun onCleared() {
+        stemBoardMade?.stop()  // the stretch heard alone goes with the screen
         exportCancelled = true  // a conversion in progress stops and leaves no file behind
         resampleCancelled = true
         resampling?.cancel()

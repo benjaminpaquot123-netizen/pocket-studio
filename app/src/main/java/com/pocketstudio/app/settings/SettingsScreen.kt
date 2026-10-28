@@ -174,6 +174,10 @@ class HelpActions(
     val showSteps: () -> Unit = {},
     /** « Mon premier morceau » (the old Missions, now the Guide's first cards; null: not offered). */
     val missions: (() -> Unit)? = null,
+    /** Testers (lot « tuto 5 »): « J'apprends », the tutorial step by step, from any project (null: not offered). */
+    val tuto: (() -> Unit)? = null,
+    /** « Reprendre le tuto » of this project (null: none to resume). */
+    val resumeTuto: (() -> Unit)? = null,
 )
 
 /** Outils › Aide, the first page of Outils: the guide, the song's steps, and every word explained. */
@@ -186,6 +190,19 @@ fun HelpPage(actions: HelpActions) {
         ) {
             NeonCard {
                 SectionLabel(tr("Aide"))
+                actions.resumeTuto?.let { resume ->
+                    androidx.compose.material3.Button(onClick = resume, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("help_tuto_resume")) {
+                        Text(tr("Reprendre le tuto"))
+                    }
+                }
+                actions.tuto?.let { open ->
+                    OutlinedButton(onClick = open, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("help_tuto")) {
+                        Column(Modifier.fillMaxWidth()) {
+                            Text(tr("J'apprends"), style = MaterialTheme.typography.titleSmall)
+                            Text(tr("Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                        }
+                    }
+                }
                 actions.missions?.let { start ->
                     androidx.compose.material3.Button(onClick = start, modifier = Modifier.pressScale().fillMaxWidth().heightIn(min = 48.dp).testTag("help_missions")) {
                         Text(tr("Mon premier morceau, avec le Guide"))

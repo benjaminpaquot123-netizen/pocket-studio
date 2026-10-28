@@ -40,6 +40,12 @@ interface CommandSink {
     fun exportRenderReportOnly(target: Long, frames: Long, tailFrames: Long): Boolean = exportRenderFloat(target, frames, tailFrames).isNotEmpty()
     fun exportDestroy(target: Long)
 
+    /** [OfflineExport.progress] of [target]'s render under way, 0 to 1 (a sink that renders at once: done). */
+    fun exportProgress(target: Long): Float = 1f
+
+    /** [OfflineExport.cancel]: [target]'s render stops and returns [ExportResult.Cancelled] (a sink that renders at once: nothing to stop). */
+    fun exportCancel(target: Long) = Unit
+
     /** [OfflineExport.report] of [target]'s last render, as the JNI lays it out (null: none). */
     fun exportReport(target: Long): FloatArray? = null
 

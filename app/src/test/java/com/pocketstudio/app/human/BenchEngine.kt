@@ -58,15 +58,31 @@ internal class BenchEngine : CommandSink {
     @Synchronized override fun exportCreate(): Long = next++
     override fun exportDestroy(target: Long) = Unit
 
+    /** Each render's progress (lot « tuto 5 »: the bar moves as on a phone) and its « Annuler ». */
+    private val progress = java.util.concurrent.ConcurrentHashMap<Long, Float>()
+    private val cancelled: MutableSet<Long> = java.util.concurrent.ConcurrentHashMap.newKeySet()
+
+    override fun exportProgress(target: Long): Float = progress[target] ?: 0f
+    override fun exportCancel(target: Long) { cancelled += target }
+
     override fun exportRender(
         target: Long, path: String, frames: Long, tailFrames: Long, fadeOutFrames: Long, autoTail: Boolean, floatWav: Boolean,
         sampleRate: Int, bits: Int,
     ): ExportResult {
         renders++
+        // A phone renders a 3-minute song in a few seconds: the bench takes [RENDER_MS], its progress moving.
+        for (k in 1..STEPS) {
+            if (target in cancelled) return ExportResult.Cancelled
+            Thread.sleep(renderMs / STEPS)
+            progress[target] = k / STEPS.toFloat()
+        }
         val n = SECONDS * sampleRate
         FloatWav.write(File(path), tone(n, sampleRate), 0, n, 2, sampleRate)
         return ExportResult.Ok
     }
+
+    /** How long a render takes here (real time), [RENDER_MS] unless a test wants it longer. */
+    @Volatile var renderMs = RENDER_MS
 
     override fun exportRenderFloat(target: Long, frames: Long, tailFrames: Long): FloatArray =
         tone(minOf(frames + tailFrames, (SECONDS * OfflineExport.SAMPLE_RATE).toLong()).toInt().coerceAtLeast(1), OfflineExport.SAMPLE_RATE)
@@ -240,6 +256,8 @@ internal class BenchEngine : CommandSink {
 
     companion object {
         const val SECONDS = 3
+        const val RENDER_MS = 1_200L
+        private const val STEPS = 24
         private const val RATE = OfflineExport.SAMPLE_RATE
         // NativeEngine's own command numbers (its private CMD_… constants).
         private const val CMD_SET_TRANSPORT = 5

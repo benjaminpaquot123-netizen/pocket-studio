@@ -1422,7 +1422,11 @@ fun AppRoot() {
             rhythmVm.viewModelScope, rhythmVm.projectId, rhythmVm.project, rhythmVm::tutoEdit,
             com.pocketstudio.app.tuto.PrefsTutoStore(context),
             render = { ex ->
-                rhythmVm.renderExample(ex.after)?.let { after -> com.pocketstudio.app.tuto.TutoController.joined(ex.before?.let { rhythmVm.renderExample(it) }, after) }
+                // Testers (lot « tuto 5 »): 8 bars each (11 s at 174), long enough to compare with a loop of 8 (a 2-bar loop goes round 4 times).
+                val bars = com.pocketstudio.app.tuto.TutoController.EXAMPLE_BARS
+                rhythmVm.renderExample(ex.after, maxBars = bars, minBars = bars)?.let { after ->
+                    com.pocketstudio.app.tuto.TutoController.joined(ex.before?.let { rhythmVm.renderExample(it, maxBars = bars, minBars = bars) }, after)
+                }
             },
             player = com.pocketstudio.app.tuto.TutoTestHooks.player ?: com.pocketstudio.app.guide.EnginePcmPlayer(rhythmVm.viewModelScope),
             pauseMusic = { if (rhythmVm.transport.value.playing) rhythmVm.togglePlay() },
@@ -1475,8 +1479,17 @@ fun AppRoot() {
     // Testers (lot « tuto 4 »): the tutorial's panel has the bottom of the screen (no floating keyboard over its
     // rings), a step ticked closes a hit's menu (its first touch on « Étape suivante » was lost closing it).
     LaunchedEffect(tutoUi == null) { com.pocketstudio.app.tuto.TutoHints.active = tutoUi != null }
+    // Its screens gone, the tutorial no longer runs for them (the drum grid follows the music again).
+    DisposableEffect(Unit) { onDispose { com.pocketstudio.app.tuto.TutoHints.active = false } }
     LaunchedEffect(tutoUi?.progress?.done?.size) { com.pocketstudio.app.tuto.TutoHints.ticked++ }
     LaunchedEffect(tutoUi?.current?.id) { com.pocketstudio.app.tuto.TutoHints.knobs = tuto.place()?.knobs.orEmpty().toSet() }
+    LaunchedEffect(tutoUi?.current?.id) { com.pocketstudio.app.tuto.TutoHints.step = tutoUi?.current?.id }
+    // Testers (lot « tuto 5 »): « Copier sur les mesures suivantes » next: offered over the grid too, where the eyes are.
+    val tutoCopy = (tutoUi?.need as? com.pocketstudio.model.tuto.TutoNeed.Copy)?.role
+    LaunchedEffect(tutoCopy) {
+        com.pocketstudio.app.tuto.TutoHints.copy = if (tutoCopy != null) tuto::fulfilNeed else null
+        com.pocketstudio.app.tuto.TutoHints.copyOnGrid = tutoCopy == "hat"
+    }
     // The hits to take away left on another pad only (« Caisse » done, « Charley » next): that pad shown, said.
     val tutoErase = com.pocketstudio.app.tuto.TutoHints.erase
     val tutoPad by remember(rhythmVm) { rhythmVm.transport.map { it.selectedPad }.distinctUntilChanged() }.collectAsStateWithLifecycle(rhythmVm.transport.value.selectedPad)
@@ -1617,6 +1630,7 @@ fun AppRoot() {
     LaunchedEffect(tuto) {
         tuto.goes.collect { g ->
             g.pad?.let(rhythmVm::selectPad)
+            g.bar?.let { b -> com.pocketstudio.app.tuto.TutoHints.page = Triple(g.pad ?: rhythmVm.transport.value.selectedPad, b, System.nanoTime()) }
             val simpleNow = SettingsStore.state.value.simpleMode
             when {
                 g.keySheet -> tutoKeySheet = true
@@ -2313,6 +2327,8 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     frozen = shownTrack in frozenTracks,
                                     songChords = { songChordsOpen = true },
                                     hints = com.pocketstudio.app.tuto.TutoHints.notes?.takeIf { it.first == shownTrack }?.second.orEmpty(),
+                                    trackName = runCatching { com.pocketstudio.model.DefaultNames.shown(fullProject.track(shownTrack).name) }.getOrNull(),
+                                    copyMotif = com.pocketstudio.app.tuto.TutoHints.copy.takeIf { !com.pocketstudio.app.tuto.TutoHints.copyOnGrid && com.pocketstudio.app.tuto.TutoHints.notes?.first == shownTrack },
                                 ),
                                 instrument = InstrumentUi(
                                     library = library,
@@ -2940,6 +2956,9 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                         // G5: the Guide took over « Prochaine étape »: its panel, on the song.
                                         showSteps = { toolPage = null; go(AppTab.Morceau); guideOpen = true },
                                         missions = startMissions,
+                                        // Testers (lot « tuto 5 »): the tutorial found again from a project (proposal in fix5-ecran.md).
+                                        tuto = { toolPage = null; tutoChooserOpen = true },
+                                        resumeTuto = if (tuto.resumable) ({ toolPage = null; tuto.resume() }) else null,
                                     ),
                                 )
                                 ToolPage.Recette -> {

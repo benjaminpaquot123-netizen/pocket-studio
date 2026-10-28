@@ -47,6 +47,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +59,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -121,8 +123,16 @@ private val TABLET_KEYS = 56.dp
 private val TICK = NoteClip.TICKS_PER_STEP
 private val NEW_LENGTHS = listOf(1 to "1/16", 2 to "1/8", 4 to "1/4", 8 to "1/2")
 private val BLACK = setOf(1, 3, 6, 8, 10)
-/** Width of a sixteenth for each zoom level. */
+/** Width of a sixteenth for each zoom level of « − » and « + » (a pinch goes anywhere between [MIN_STEP] and [MAX_STEP]). */
 private val ZOOMS = listOf(18.dp, 30.dp, 46.dp)
+/** A sixteenth at its widest (zoomed in), and at its narrowest a few dp: 16 bars still fit on a phone (« Tout voir »). */
+private const val MAX_STEP = 64f
+private const val MIN_STEP = 1.2f
+/** A row (a semitone) at its tallest and at its smallest (« Tout voir »: a whole bass and lead fit; still seen, still touched). */
+private const val MAX_ROW = 40f
+private const val MIN_ROW = 5f
+/** Below this row height the keys are not named (their text would not fit): the C's lines stay. */
+private const val NAMED_ROW = 12f
 /** Grid for placing and moving notes, in ticks: 1/8, 1/16, 1/16 triplet, 1/32. */
 private val GRIDS = listOf(48 to "1/8", 24 to "1/16", 16 to "1/16 t", 12 to "1/32")
 
@@ -177,6 +187,13 @@ fun PianoRoll(
     gridModifier: Modifier = Modifier,
     /** The play position read where it is drawn (audit 16: the grid is not redrawn at each step); null: [playStep]. */
     playStepOf: (() -> Int)? = null,
+    /** The track's name, said on the tutorial's line with the bar in sight (testers, lot « tuto 5 »). */
+    trackName: String? = null,
+    /**
+     * « Tuto de A à Z » (testers, lot « tuto 5 »): the notes to write by hand are all written, « Copier sur
+     * les mesures suivantes » does the rest: offered right on the tutorial's line over the grid (null: not now).
+     */
+    copyMotif: (() -> Unit)? = null,
 ) = com.pocketstudio.ui.LeftToRight {
     val barSteps = stepsPerBar.coerceIn(1, NoteClip.MAX_STEPS)
     val givenStep by androidx.compose.runtime.rememberUpdatedState(playStep)
@@ -190,7 +207,12 @@ fun PianoRoll(
     var chordMode by rememberSaveable { mutableStateOf(false) }
     var showGhosts by rememberSaveable { mutableStateOf(true) }
     var selectMode by rememberSaveable { mutableStateOf(initialSelection.isNotEmpty()) }
-    var zoom by rememberSaveable { mutableIntStateOf(1) }
+    // Owner (lot « tuto 5 », É8): a pinch zooms the time and the notes, « Tout voir » frames every note; the zoom
+    // stays the user's (0: not chosen yet, a bar fits the width). Nothing scrolls nor zooms by itself.
+    var stepDp by rememberSaveable { mutableFloatStateOf(0f) }
+    var rowDp by rememberSaveable { mutableFloatStateOf(0f) }
+    /** « Tout voir » touched (each touch frames again). */
+    var fitAll by rememberSaveable { mutableIntStateOf(0) }
     var grid by rememberSaveable { mutableIntStateOf(TICK) }
     var selection by remember { mutableStateOf(initialSelection) }
     // The bar a paste goes on (« Coller sur la mes. N »): the one chosen above the grid, or the one after a copy.
@@ -213,19 +235,50 @@ fun PianoRoll(
     val keysWidth = if (tablet) TABLET_KEYS else KEYS
     // Short loops fill the width on a big screen (tablet) instead of leaving the right half empty.
     androidx.compose.foundation.layout.BoxWithConstraints(modifier) {
-        val stepWidth = maxOf(ZOOMS[zoom], (maxWidth - keysWidth) / clip.steps)
+        val viewWidth = (maxWidth - keysWidth).value.coerceAtLeast(1f)
+        // Not chosen yet: a whole bar in sight on a phone (testers, lot « tuto 5 »: half a bar was shown, no bar number in it),
+        // a short loop filling a tablet's width.
+        val defaultStep = (viewWidth / barSteps).coerceIn(ZOOMS[0].value, ZOOMS[1].value)
+        val stepWidth = maxOf(if (stepDp > 0f) stepDp else defaultStep, viewWidth / clip.steps).coerceAtMost(MAX_STEP).dp
+        // A whole number of pixels a row: the keys (one box a row) and the grid's rows (drawn) stay in line at any zoom.
+        val rowHeight = with(LocalDensity.current) {
+            (if (rowDp > 0f) rowDp else (if (tablet) TABLET_ROW else ROW).value).dp.toPx().roundToInt().coerceAtLeast(1).toDp()
+        }
+        val baseRow = (if (tablet) TABLET_ROW else ROW).value
+        val zoomBy: (Float, Float) -> Unit = { fx, fy ->
+            // From the zoom as it is now (the states, read at each call: a pinch calls this many times between two frames).
+            val step = maxOf(if (stepDp > 0f) stepDp else defaultStep, viewWidth / clip.steps)
+            val row = if (rowDp > 0f) rowDp else baseRow
+            stepDp = (step * fx).coerceIn(minOf(MIN_STEP, viewWidth / clip.steps), MAX_STEP)
+            rowDp = (row * fy).coerceIn(MIN_ROW, MAX_ROW)
+        }
         Column(Modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
             ToolRow(tablet) {
                 FilterChip(selected = !selectMode, onClick = { selectMode = false; selection = emptySet() }, label = { Text(tr("✏ Dessiner")) }, colors = chipColors,
                     modifier = Modifier.testTag("mode_draw"))
                 FilterChip(selected = selectMode, onClick = { selectMode = true }, label = { Text(tr("⬚ Sélectionner")) }, colors = chipColors,
                     modifier = Modifier.testTag("mode_select"))
-                Text(tr("  Zoom"), style = MaterialTheme.typography.bodySmall)
+                // « Tout voir » (owner, lot « tuto 5 »): every bar, from the lowest note to the highest, in one touch.
+                FilterChip(
+                    selected = false,
+                    onClick = {
+                        val pitches = (clip.notes + hints).map { it.pitch }
+                        stepDp = (viewWidth / clip.steps).coerceAtMost(MAX_STEP)
+                        val span = if (pitches.isEmpty()) 24 else pitches.max() - pitches.min() + 3
+                        rowDp = (gridHeight.value / span).coerceIn(MIN_ROW, MAX_ROW)
+                        fitAll++
+                    },
+                    label = { Text(tr("Tout voir"), maxLines = 1, softWrap = false) }, colors = chipColors,
+                    modifier = Modifier.testTag("roll_fit"),
+                )
+                // The word with its buttons (a tablet's row wraps them together).
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    TextButton(onClick = { zoom = (zoom - 1).coerceAtLeast(0) }, enabled = zoom > 0, modifier = Modifier.testTag("zoom_out")) { Text("−") }
+                    Text(tr("  Zoom"), style = MaterialTheme.typography.bodySmall)
+                    TextButton(onClick = { zoomBy(1 / 1.5f, 1f) }, enabled = stepWidth.value > minOf(MIN_STEP, viewWidth / clip.steps) + 0.01f, modifier = Modifier.testTag("zoom_out")) { Text("−") }
                     // The level between − and +, so the gap between them means something.
-                    if (tablet) Text("${zoom + 1}×", style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary, modifier = Modifier.testTag("zoom_level"))
-                    TextButton(onClick = { zoom = (zoom + 1).coerceAtMost(ZOOMS.lastIndex) }, enabled = zoom < ZOOMS.lastIndex, modifier = Modifier.testTag("zoom_in")) { Text("+") }
+                    if (tablet) Text(com.pocketstudio.model.i18n.percent((stepWidth.value / ZOOMS[1].value * 100).roundToInt()), style = MaterialTheme.typography.labelLarge,
+                        color = Neon.TextSecondary, modifier = Modifier.testTag("zoom_level"))
+                    TextButton(onClick = { zoomBy(1.5f, 1f) }, enabled = stepWidth.value < MAX_STEP - 0.01f, modifier = Modifier.testTag("zoom_in")) { Text("+") }
                 }
             }
             val loop: @Composable () -> Unit = {
@@ -280,6 +333,9 @@ fun PianoRoll(
             } else {
                 if (board != null) PasteRow(board, pasteBar, paste)
                 ToolRow(tablet, spacing = 2.dp) {
+                    // Testers (lot « tuto 5 »): « Accords » first, in sight (it was the last of a row cut at the edge).
+                    FilterChip(selected = chordMode, onClick = { chordMode = !chordMode }, label = { Text(tr("Accords")) }, colors = chipColors,
+                        modifier = Modifier.testTag("chord_mode"))
                     // « Remettre en rythme » from where the notes were played: « Comme joué » undoes it any time.
                     TextButton(onClick = { actions.quantize(grid, 0.5f) }, modifier = Modifier.testTag("quantize_50")) { Text(tr("En rythme 50 %")) }
                     TextButton(onClick = { actions.quantize(grid, 1f) }, modifier = Modifier.testTag("quantize_100")) { Text(com.pocketstudio.model.i18n.percent(100)) }
@@ -287,25 +343,30 @@ fun PianoRoll(
                         TextButton(onClick = actions.asPlayed, modifier = Modifier.testTag("notes_as_played")) { Text(tr("Comme joué")) }
                     }
                     FilterChip(selected = showGhosts, onClick = { showGhosts = !showGhosts }, label = { Text(tr("Basse en fantôme")) }, colors = chipColors)
-                    FilterChip(selected = chordMode, onClick = { chordMode = !chordMode }, label = { Text(tr("Accords")) }, colors = chipColors,
-                        modifier = Modifier.testTag("chord_mode"))
                     TextButton(onClick = actions.clear, enabled = clip.notes.isNotEmpty()) { Text(tr("Effacer")) }
                 }
             }
             // « Tuto de A à Z » (testers, lot « tuto 3 »): how many dotted notes are left, and which way when none is in sight;
             // one line the whole step (the grid never moves under a finger), a touch shows the next one.
-            if (hints.isNotEmpty()) TutoNotesLeft(hints.filter { h -> clip.notes.none { n -> n.pitch == h.pitch && n.start == h.start } }, hScroll, stepWidth)
-            BarRuler(clip, hScroll, stepWidth, keysWidth, if (selection.isNotEmpty() || selectMode) targetBar else -1, barSteps) { bar ->
-                // A bar touched: its notes chosen (Copier, Supprimer…), and the bar a paste goes on.
-                targetBar = bar
-                selection = NoteEdits.inBar(clip, bar, barTicks)
-            }
-            Box(gridModifier) {
+            // Testers (lot « tuto 5 »): the tutorial's line, the bar numbers and the grid brought into view together
+            // (the line and the bar number were left above the screen).
+            Column(gridModifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                if (hints.isNotEmpty()) {
+                    TutoNotesLeft(
+                        hints.filter { h -> clip.notes.none { n -> n.pitch == h.pitch && n.start == h.start } }, hScroll, stepWidth, barSteps,
+                        bars = ((clip.steps + barSteps - 1) / barSteps).coerceAtLeast(1), trackName = trackName, copy = copyMotif,
+                    )
+                }
+                BarRuler(clip, hScroll, stepWidth, keysWidth, if (selection.isNotEmpty() || selectMode) targetBar else -1, barSteps) { bar ->
+                    // A bar touched: its notes chosen (Copier, Supprimer…), and the bar a paste goes on.
+                    targetBar = bar
+                    selection = NoteEdits.inBar(clip, bar, barTicks)
+                }
                 Grid(
                     clip, if (showGhosts) ghosts else emptyList(), stepOf, newSteps * TICK, actions, gridHeight, harmony, chordMode,
                     hScroll, stepWidth, grid, selectMode, selection, select = { selection = it }, apply = apply,
-                    rowHeight = if (tablet) TABLET_ROW else ROW, keysWidth = keysWidth, allNames = tablet, keyOn = keyOn, keyOff = keyOff,
-                    locked = frozen, barSteps = barSteps, hints = hints,
+                    rowHeight = rowHeight, keysWidth = keysWidth, allNames = tablet, keyOn = keyOn, keyOff = keyOff,
+                    locked = frozen, barSteps = barSteps, hints = hints, zoomBy = zoomBy, fitAll = fitAll,
                 )
             }
             VelocityLane(clip, selection, hScroll, stepWidth, apply, keysWidth)
@@ -424,8 +485,12 @@ private fun BarRuler(
         Box(Modifier.weight(1f).horizontalScroll(hScroll)) {
             Row {
                 // The time signature's bars (the last one cut where the loop ends in 3/4).
+                val density = LocalDensity.current
+                val stepPx = with(density) { stepWidth.toPx() }
+                val labelPx = with(density) { 30.dp.toPx() }
                 for (b in 0 until ((clip.steps + barSteps - 1) / barSteps).coerceAtLeast(1)) {
                     val on = b == chosen
+                    val barPx = stepPx * minOf(barSteps, clip.steps - b * barSteps).coerceAtLeast(1)
                     Box(
                         Modifier.width(stepWidth * minOf(barSteps, clip.steps - b * barSteps).coerceAtLeast(1)).height(32.dp).padding(horizontal = 1.dp)
                             .background(if (on) Neon.Acid.copy(alpha = 0.25f) else Neon.SurfaceHigh, androidx.compose.foundation.shape.RoundedCornerShape(6.dp))
@@ -433,8 +498,12 @@ private fun BarRuler(
                             .testTag("roll_bar_$b"),
                         contentAlignment = Alignment.CenterStart,
                     ) {
-                        Text("${b + 1}", style = MaterialTheme.typography.labelLarge, color = if (on) Neon.Acid else Neon.TextSecondary,
-                            modifier = Modifier.padding(start = 6.dp))
+                        // Testers (lot « tuto 5 »): the number stays in sight while its bar is (it was at the bar's start,
+                        // out of the screen with half a bar shown). Read at layout: a scroll does not recompose.
+                        Text("${b + 1}", style = MaterialTheme.typography.labelLarge, color = if (on) Neon.Acid else Neon.TextSecondary, maxLines = 1, softWrap = false,
+                            modifier = Modifier.offset {
+                                androidx.compose.ui.unit.IntOffset((hScroll.value - b * barSteps * stepPx).coerceIn(0f, (barPx - labelPx).coerceAtLeast(0f)).roundToInt(), 0)
+                            }.padding(start = 6.dp))
                     }
                 }
             }
@@ -526,6 +595,10 @@ private fun Grid(
     locked: Boolean = false,
     barSteps: Int = 16,
     hints: List<Note> = emptyList(),
+    /** A pinch: the time (x) and the notes (y) zoomed by these factors. */
+    zoomBy: (Float, Float) -> Unit = { _, _ -> },
+    /** « Tout voir » touched: the lowest to the highest note framed, from the first bar. */
+    fitAll: Int = 0,
 ) {
     val vScroll = rememberScrollState()
     val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
@@ -541,36 +614,61 @@ private fun Grid(
     // Start around C4-C5; the tutorial's dotted notes in view when it shows some (a bass is low).
     // (around the line's middle: a few high notes of a bass must not take the low ones out of sight)
     val hintTop = hints.map { it.pitch }.sorted().takeIf { it.isNotEmpty() }?.let { p -> (p[p.size / 2] + 7).coerceIn(low, high) }
-    // Testers (lot « tuto 3 »): the step's dotted notes gone (the next step), the view stays where the user's notes are.
+    // Testers (lot « tuto 5 »): placed once when the roll opens and once when a step begins (the user's own
+    // « Étape suivante »), never again by itself: the notes written by hand turning into the whole line (the
+    // copy) moved the view and its « Do3 » became « Do2 » under the finger.
+    val step = com.pocketstudio.app.tuto.TutoHints.step
+    var placedFor by rememberSaveable { mutableStateOf<String?>(null) }
     var placed by remember { mutableStateOf(false) }
-    LaunchedEffect(hintTop) {
-        if (hintTop != null || !placed) vScroll.scrollTo(((high - (hintTop ?: 76)) * rowPx).roundToInt())
+    LaunchedEffect(step, hintTop != null) {
+        val key = if (hintTop != null) step ?: "" else null
+        if (!placed || (key != null && key != placedFor)) vScroll.scrollTo(((high - (hintTop ?: 76)) * rowPx).roundToInt())
+        if (key != null) placedFor = key
         placed = true
     }
     val tutoHint = Neon.Amber
-    // « Tuto de A à Z » (testers, lot « tuto 3 »): the dotted notes still to touch. None in sight (the line goes on
-    // past the screen, a demonstration writes them) or « Je le fais » asking: the roll goes to the first, lit a moment.
+    // « Tuto de A à Z » (testers, lot « tuto 3 »): the dotted notes still to touch. Lot « tuto 5 »: the roll goes to the
+    // next one only when asked (a touch on « Encore 3 notes… » or « Je le fais »), lit a moment; never after a note.
     val left = remember(hints, clip.notes) {
         hints.filter { h -> h.pitch in low..high && clip.notes.none { n -> n.pitch == h.pitch && n.start == h.start } }.sortedWith(compareBy({ it.start }, { -it.pitch }))
     }
     var view by remember { mutableStateOf(androidx.compose.ui.unit.IntSize.Zero) }
     var lit by remember { mutableStateOf<Note?>(null) }
     val focus = com.pocketstudio.app.tuto.TutoHints.focus
-    LaunchedEffect(left, focus, view) {
+    LaunchedEffect(focus, view) {
         if (view.width <= 0 || view.height <= 0) return@LaunchedEffect
         val asked = focus != com.pocketstudio.app.tuto.TutoHints.focusSeen
         com.pocketstudio.app.tuto.TutoHints.focusSeen = focus
+        if (!asked) return@LaunchedEffect
         val next = left.firstOrNull() ?: return@LaunchedEffect
         fun x(n: Note) = n.start / TICK.toFloat() * stepPx
         fun y(n: Note) = (high - n.pitch) * rowPx
-        fun across(n: Note) = x(n) >= hScroll.value - 1 && x(n) + stepPx <= hScroll.value + view.width + 1
-        fun upDown(n: Note) = y(n) >= vScroll.value - 1 && y(n) + rowPx <= vScroll.value + view.height + 1
-        if (!asked && left.any { across(it) && upDown(it) }) return@LaunchedEffect
-        // The last note touched seen a moment first (a demonstration goes on at once).
-        if (!asked && !com.pocketstudio.app.tuto.TutoHints.demo) kotlinx.coroutines.delay(300)
-        if (asked) lit = next
-        if (!across(next)) hScroll.animateScrollTo((x(next) - 2 * stepPx).roundToInt().coerceIn(0, hScroll.maxValue))
-        if (!upDown(next)) vScroll.animateScrollTo((y(next) - view.height / 2f + rowPx / 2).roundToInt().coerceIn(0, vScroll.maxValue))
+        lit = next
+        if (x(next) < hScroll.value || x(next) + stepPx > hScroll.value + view.width) hScroll.animateScrollTo((x(next) - 2 * stepPx).roundToInt().coerceIn(0, hScroll.maxValue))
+        if (y(next) < vScroll.value || y(next) + rowPx > vScroll.value + view.height) vScroll.animateScrollTo((y(next) - view.height / 2f + rowPx / 2).roundToInt().coerceIn(0, vScroll.maxValue))
+    }
+    // The gesture lives across zooms: it reads the latest sizes and zoom (each step multiplies the size it has now).
+    val latestZoom = rememberUpdatedState(zoomBy)
+    val latestSizes = rememberUpdatedState(stepPx to rowPx)
+    // A pinch keeps what is under the fingers where it is: the place (in steps and rows) put back once the new size is laid out.
+    var anchor by remember { mutableStateOf<FloatArray?>(null) }
+    LaunchedEffect(stepPx, rowPx) {
+        val a = anchor ?: return@LaunchedEffect
+        anchor = null
+        androidx.compose.runtime.withFrameNanos { }
+        hScroll.scrollTo((a[0] * stepPx - a[1]).roundToInt().coerceAtLeast(0))
+        vScroll.scrollTo((a[2] * rowPx - a[3]).roundToInt().coerceAtLeast(0))
+    }
+    // « Tout voir »: the first bar on the left, the highest note (a row above it) at the top.
+    // Only a new touch frames (the roll shown again keeps the user's place).
+    val fitSeen = remember { intArrayOf(fitAll) }
+    LaunchedEffect(fitAll) {
+        if (fitAll == fitSeen[0]) return@LaunchedEffect
+        fitSeen[0] = fitAll
+        androidx.compose.runtime.withFrameNanos { }
+        hScroll.scrollTo(0)
+        val top = (clip.notes + hints).maxOfOrNull { it.pitch }
+        vScroll.scrollTo(if (top == null) ((high - 76) * rowPx).roundToInt() else ((high - top - 1).coerceAtLeast(0) * rowPx).roundToInt())
     }
     LaunchedEffect(lit) { if (lit != null) { kotlinx.coroutines.delay(2600); lit = null } }
     val litPulse = if (lit != null) {
@@ -595,10 +693,43 @@ private fun Grid(
     Row(
         Modifier.fillMaxWidth().height(height)
             .onSizeChanged { view = androidx.compose.ui.unit.IntSize((it.width - keysPx).coerceAtLeast(0), it.height) }
+            .testTag("roll_view")
+            // Two fingers (owner, lot « tuto 5 », É8): spread or pinch, across for the time, up and down for the notes.
+            // Taken before the grid and the scrolls see them: a note never lands under a pinch.
+            .pointerInput(Unit) {
+                awaitEachGesture {
+                    awaitFirstDown(requireUnconsumed = false, pass = androidx.compose.ui.input.pointer.PointerEventPass.Initial)
+                    var last: Offset? = null
+                    while (true) {
+                        val event = awaitPointerEvent(androidx.compose.ui.input.pointer.PointerEventPass.Initial)
+                        val fingers = event.changes.filter { it.pressed }
+                        if (fingers.isEmpty()) break
+                        if (fingers.size < 2) { last = null; continue }
+                        val a = fingers[0].position
+                        val b = fingers[1].position
+                        val spread = Offset(abs(a.x - b.x), abs(a.y - b.y))
+                        val center = Offset((a.x + b.x) / 2 - keysPx, (a.y + b.y) / 2)
+                        last?.let { before ->
+                            // An axis counts once the fingers are apart along it (a pinch along the time leaves the rows as they are).
+                            val min = 24.dp.toPx()
+                            val fx = if (before.x > min && spread.x > min) spread.x / before.x else 1f
+                            val fy = if (before.y > min && spread.y > min) spread.y / before.y else 1f
+                            if (fx != 1f || fy != 1f) {
+                                val (sp, rp) = latestSizes.value
+                                anchor = floatArrayOf((hScroll.value + center.x) / sp, center.x, (vScroll.value + center.y) / rp, center.y)
+                                latestZoom.value(fx, fy)
+                            }
+                        }
+                        last = spread
+                        event.changes.forEach { it.consume() }
+                    }
+                }
+            }
             .verticalScroll(vScroll),
     ) {
         Column(Modifier.width(keysWidth).testTag("roll_keys")) {
-            for (p in high downTo low) RollKey(p, rowHeight, keysWidth, english, named = allNames || p % 12 == 0, keyOn, keyOff)
+            // Zoomed far out the rows are too small to carry a name: the C's lines stay.
+            for (p in high downTo low) RollKey(p, rowHeight, keysWidth, english, named = rowHeight.value >= NAMED_ROW && (allNames || p % 12 == 0), keyOn, keyOff)
         }
         Box(Modifier.weight(1f).horizontalScroll(hScroll)) {
             Canvas(
@@ -654,6 +785,8 @@ private fun Grid(
                                 val upDown = NoteEdits.transposeRange(moving)
                                 while (true) {
                                     val event = awaitPointerEvent()
+                                    // A second finger: a pinch (É8), the selection stays where it was.
+                                    if (event.changes.count { it.pressed } > 1) { groupMove = null; return@awaitEachGesture }
                                     val change = event.changes.firstOrNull { it.id == down.id } ?: break
                                     if (!change.pressed) break
                                     val dx = change.position.x - down.position.x
@@ -708,6 +841,8 @@ private fun Grid(
                             var result = note
                             while (true) {
                                 val event = awaitPointerEvent()
+                                // A second finger: a pinch (É8), the note stays where it was.
+                                if (event.changes.count { it.pressed } > 1) { drag = null; return@awaitEachGesture }
                                 val change = event.changes.firstOrNull { it.id == down.id } ?: break
                                 if (!change.pressed) break
                                 val dx = change.position.x - down.position.x
@@ -1083,11 +1218,17 @@ internal fun rollAccessibleActions(notes: List<Note>, english: Boolean, actions:
     }
 
 /**
- * « Encore 3 notes en pointillé » (the tutorial's notes [left] to touch), « plus loin → » or
- * « ← plus tôt » when none of them is in sight; a touch brings the next one into view.
+ * The tutorial's line over the grid (testers, lot « tuto 5 »): the track and the bar in sight
+ * (« Basse · mesure 2/8 »), then « Encore 3 notes en pointillé » (the tutorial's notes [left] to
+ * touch), « plus loin → » or « ← plus tôt » when none of them is in sight; a touch brings the next
+ * one into view. The notes to write by hand all written ([copy]): « Motif posé ! » and the
+ * « Copier » button right here. One line the whole step: the grid never moves under a finger.
  */
 @Composable
-private fun TutoNotesLeft(left: List<Note>, hScroll: androidx.compose.foundation.ScrollState, stepWidth: androidx.compose.ui.unit.Dp) {
+private fun TutoNotesLeft(
+    left: List<Note>, hScroll: androidx.compose.foundation.ScrollState, stepWidth: androidx.compose.ui.unit.Dp, barSteps: Int, bars: Int,
+    trackName: String?, copy: (() -> Unit)?,
+) {
     val stepPx = with(LocalDensity.current) { stepWidth.toPx() }
     // Read where it is drawn: a scroll recomposes this line only.
     val ahead by remember(left, stepPx) {
@@ -1103,12 +1244,35 @@ private fun TutoNotesLeft(left: List<Note>, hScroll: androidx.compose.foundation
             }
         }
     }
+    // The bar at the middle of the screen (the one the eye is on).
+    val bar by remember(stepPx, barSteps, bars) {
+        androidx.compose.runtime.derivedStateOf {
+            ((hScroll.value + hScroll.viewportSize / 2f) / (stepPx * barSteps)).toInt().coerceIn(0, bars - 1) + 1
+        }
+    }
+    val where = com.pocketstudio.app.tuto.tutoRollWhere(trackName, bar, bars)
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 40.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp)).background(Neon.Amber.copy(alpha = 0.12f))
-            .clickable { com.pocketstudio.app.tuto.TutoHints.focus++ }.padding(horizontal = 10.dp).testTag("tuto_notes_left"),
+        Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
+            .background((if (copy != null) Neon.Acid else Neon.Amber).copy(alpha = 0.12f))
+            .then(if (copy == null) Modifier.clickable { com.pocketstudio.app.tuto.TutoHints.focus++ } else Modifier)
+            .padding(horizontal = 10.dp).testTag("tuto_notes_left"),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(com.pocketstudio.app.tuto.tutoNotesLeft(left.size, ahead), style = MaterialTheme.typography.labelLarge,
-            color = if (left.isEmpty()) Neon.Acid else Neon.Amber, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+        Column(Modifier.weight(1f)) {
+            Text(where, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.testTag("tuto_roll_where"))
+            Text(
+                if (copy != null) com.pocketstudio.app.tuto.tutoMotifDone() else com.pocketstudio.app.tuto.tutoNotesLeft(left.size, ahead),
+                style = MaterialTheme.typography.labelLarge,
+                color = if (left.isEmpty() || copy != null) Neon.Acid else Neon.Amber, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                modifier = Modifier.testTag("tuto_notes_left_text"),
+            )
+        }
+        if (copy != null) {
+            androidx.compose.material3.Button(
+                onClick = copy, modifier = Modifier.heightIn(min = 40.dp).testTag("tuto_roll_copy"),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp),
+            ) { Text(tr("Copier"), maxLines = 1, softWrap = false) }
+        }
     }
 }

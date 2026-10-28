@@ -92,7 +92,7 @@ class TutoJourneyTest {
 
     /** The panel unfolded (« Je le fais », a step's button, « Montre-moi » fold it out of the way). */
     private fun unfold() {
-        if (has("tuto_folded_text") || has("tuto_next_folded")) click("tuto_fold")
+        if (has("tuto_folded_text") || has("tuto_next_folded") || has("tuto_need_folded")) click("tuto_fold")
         await("unfolded") { has("tuto_prev") }
     }
 

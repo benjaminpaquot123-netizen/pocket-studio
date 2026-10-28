@@ -516,6 +516,10 @@ private fun StepGrid(
     val bars = (project.drums.steps / per).coerceAtLeast(1)
     var chosenBar by rememberSaveable { mutableIntStateOf(0) }
     var follow by rememberSaveable { mutableStateOf(true) }
+    // Testers (lot « tuto 5 »): while the tutorial asks for cells, the page does not follow the music by itself
+    // (it went 1, 2, 1, 2 under the finger); « Suivre » turns it back on.
+    val tutoActive = com.pocketstudio.app.tuto.TutoHints.active
+    LaunchedEffect(tutoActive) { if (tutoActive) follow = false }
     // 0 hits, 1 rolls, 2 pan, 3 pitch.
     var tool by rememberSaveable { mutableIntStateOf(0) }
     var picked by rememberSaveable { mutableIntStateOf(-1) }
@@ -533,15 +537,28 @@ private fun StepGrid(
             // ... or the hits it asks to take away (crossed out), on their bar too.
             .ifEmpty { com.pocketstudio.app.tuto.TutoHints.erase?.get(lane)?.filter { it in hits }?.sorted().orEmpty() }
     val tutoDemo = com.pocketstudio.app.tuto.TutoHints.demo
-    LaunchedEffect(tutoLeft) {
+    // Testers (lot « tuto 5 »): the page never turns by itself after a touch (it turned under the finger, a
+    // banner over the cells): the tutorial's line over the grid says where the cells left are, a touch goes
+    // there. It is placed once when a step begins (the user's « Étape suivante »), and follows « Montre-moi ».
+    val tutoStep = com.pocketstudio.app.tuto.TutoHints.step
+    var tutoPlacedFor by rememberSaveable { mutableStateOf<String?>(null) }
+    LaunchedEffect(tutoStep, tutoLeft.isNotEmpty(), tutoDemo) {
         if (tutoLeft.isEmpty() || tutoLeft.any { it / per == chosenBar }) return@LaunchedEffect
-        // The last touch seen a moment first (a demonstration goes on at once).
-        if (!tutoDemo) kotlinx.coroutines.delay(TUTO_PAGE_DELAY_MS)
-        val to = tutoLeft.first() / per
-        // Testers (lot « tuto 4 »): the page turned without a word, the hits seemed gone: « Mesure 2 → ».
-        if (!tutoDemo && bars > 1) com.pocketstudio.app.tuto.TutoHints.banner = com.pocketstudio.app.tuto.tutoBarBanner(to, to > chosenBar)
-        chosenBar = to
+        if (!tutoDemo && tutoPlacedFor == tutoStep) return@LaunchedEffect
+        tutoPlacedFor = tutoStep
+        chosenBar = tutoLeft.first() / per
     }
+    // « Je le fais » (a touch of the user's): the page it names.
+    val tutoPage = com.pocketstudio.app.tuto.TutoHints.page
+    LaunchedEffect(tutoPage) {
+        tutoPage?.takeIf { it.first == lane }?.let {
+            chosenBar = it.second.coerceIn(0, bars - 1)
+            follow = false
+            // Once: the grid shown again later stays where the user left it.
+            com.pocketstudio.app.tuto.TutoHints.page = null
+        }
+    }
+    LaunchedEffect(tutoLeft) { if (tutoDemo && tutoLeft.isNotEmpty() && tutoLeft.none { it / per == chosenBar }) chosenBar = tutoLeft.first() / per }
     // Playing and following: the page turns with the playhead.
     val bar = (if (playing && follow && currentStep >= 0 && tutoLeft.isEmpty()) currentStep / per else chosenBar).coerceIn(0, bars - 1)
     val chipColors = pillColors()
@@ -587,6 +604,15 @@ private fun StepGrid(
                 }
                 FilterChip(selected = follow, onClick = { follow = !follow; chosenBar = bar }, label = { Text(tr("Suivre")) }, colors = chipColors)
             }
+        }
+        if (tutoActive && !allPads) {
+            com.pocketstudio.app.tuto.TutoGridLine(
+                bar = bar, bars = bars, pad = padName(project, lane),
+                here = tutoLeft.count { it / per == bar },
+                elsewhere = tutoLeft.firstOrNull { it / per != bar }?.let { it / per to tutoLeft.count { s -> s / per == it / per } },
+                go = { b -> chosenBar = b; follow = false },
+                copy = com.pocketstudio.app.tuto.TutoHints.copy.takeIf { com.pocketstudio.app.tuto.TutoHints.copyOnGrid },
+            )
         }
         if (allPads) {
             AllPadsGrid(project, bar, currentStep, actions)
@@ -769,8 +795,6 @@ private fun StepGrid(
             }
         }
         }
-        // Testers (lot « tuto 4 »): the page the tutorial turned to, said a moment over the cells.
-        com.pocketstudio.app.tuto.TutoBanner(Modifier.align(Alignment.Center))
         }
         if (!simple) Row(Modifier.fadingHorizontalScroll(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             FilterChip(selected = tool == 0, onClick = { tool = 0 }, label = { Text(tr("Coups")) }, colors = chipColors)
@@ -1283,5 +1307,3 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
     }
 }
 
-/** The tutorial's last dotted cell of a bar touched: this long before its next bar is shown. */
-private const val TUTO_PAGE_DELAY_MS = 450L

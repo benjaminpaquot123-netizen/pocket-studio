@@ -71,6 +71,8 @@ data class TutoGo(
     val effects: Int? = null, val send: Int? = null, val settings: Int? = null, val strip: Int? = null,
     /** The synth knobs ([com.pocketstudio.model.SynthPatch] indices) a "changed:synth:…" step names: each ringed in the settings. */
     val knobs: List<Int> = emptyList(),
+    /** The drum grid's page (bar, from 0) to show with [pad] (« Je le fais » of the Montée's roll: its last bar). */
+    val bar: Int? = null,
 )
 
 /** « Montre-moi » under way: the target appears ([SHOWING]), stays with its caption ([HOLDING]), then fades and is undone ([FADING]). */
@@ -272,7 +274,10 @@ class TutoController(
             }
             // Testers (lot « tuto 3 »): the filter's « Coupure » is in the sound's settings, not in its ready-made sounds.
             // Testers (lot « tuto 4 »): the very knob it names, the advanced ones unfolded (« Glissé » was 5 scrolls down).
-            c.startsWith("changed:synth:") -> TutoChecks.trackFor(p, c.removePrefix("changed:synth:").substringBefore(':'))?.let { TutoGo(settings = it, spot = spot, knobs = knobsOf(c)) } ?: plain
+            // Testers (lot « tuto 5 »): only the knobs still to turn (a second « Je le fais » showed « Épaisseur », done, not « Glissé »).
+            c.startsWith("changed:synth:") -> TutoChecks.trackFor(p, c.removePrefix("changed:synth:").substringBefore(':'))?.let { TutoGo(settings = it, spot = spot, knobs = knobsLeft(c, p, it)) } ?: plain
+            // Testers (lot « tuto 5 »): the roll goes on the snare, in the Montée's last bar: that pad and that page.
+            c == "fill" -> TutoGo(GuideOpen(s.spot, s.target), TutoChecks.laneOf("snare"), spot = spot, bar = (p.drums.steps / p.stepsPerBar.coerceAtLeast(1) - 1).coerceAtLeast(0))
             // A send or an effect: the effects box of the first strip the step still has to do (lot « tuto 4 »: the
             // « Accords » done, the snare's next; the Sub's pump, then the Basse's), the reverb's send there, dotted.
             c.startsWith("send:") || c.startsWith("insert:") -> (TutoChecks.channelsToDo(s, p).firstOrNull() ?: channelOf(p, s.target.substringBefore(',').ifEmpty { "bass" }))
@@ -288,6 +293,14 @@ class TutoController(
             c.startsWith("part:") -> target?.let { TutoChecks.ghostNotes(s, p, it) }?.let { TutoGo(notes = it.first, spot = spot) } ?: plain
             else -> plain
         }
+    }
+
+    /** The knobs of a "changed:synth:…" step not turned up yet since it began (all of them when none is, or no baseline). */
+    private fun knobsLeft(c: String, p: Project, track: Int): List<Int> {
+        val all = knobsOf(c)
+        val before = (base() as? List<*>)?.firstOrNull() as? com.pocketstudio.model.SynthPatch ?: return all
+        val now = p.track(track).synth
+        return all.filter { k -> now.get(k) < before.get(k) + KNOB_TURNED && now.get(k) < 0.95f }.ifEmpty { all }
     }
 
     /** The strips a "send:<bus>" step sends (as [TutoChecks.done] reads them): the reverb's « Accords » and the snare's pad, the echo's lead. */
@@ -409,7 +422,9 @@ class TutoController(
         val go = made?.let { TutoGo(notes = it, spot = false) } ?: goFor(step, p, spot = false)
         go?.let { _goes.tryEmit(it) }
         // Still to do there (the notes to touch, the cells of the second bar): the panel folds out of the way.
-        if (!TutoChecks.done(step, p, t, base())) _ui.value = _ui.value?.copy(open = false)
+        // Testers (lot « tuto 5 »): not when its next button is the next thing to do (« Copier », then « Copier une
+        // octave plus bas »): it stays open, the button in sight (it folded after each one, a touch lost each time).
+        if (!TutoChecks.done(step, p, t, base()) && TutoChecks.need(step, p, t, base()) == null) _ui.value = _ui.value?.copy(open = false)
         scope.launch { check(project.value) }
     }
 
@@ -697,6 +712,12 @@ class TutoController(
 
         internal fun knobsOf(check: String): List<Int> =
             check.removePrefix("changed:synth:").substringAfter(':', "").split('+').mapNotNull { KNOBS[it.trim()] }
+
+        /** The bars of a tutorial example (each half of a before / after). */
+        const val EXAMPLE_BARS = 8
+
+        /** How much a knob goes up to count as turned (as [TutoChecks.done] counts it). */
+        private const val KNOB_TURNED = 0.05f
 
         /** The key step's own sheet (« Gamme » and « Tonique »). */
         const val KEY_SPOT = "tuto.key"

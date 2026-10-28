@@ -5047,9 +5047,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * The stem board's peaks: read from the song loaded for the remix, a few seconds at a time
      * (worker thread). Frames at 48 kHz, of the song as separated (never the stretched copy).
      */
-    val boardPeaks: com.pocketstudio.app.remix.StemPeaks = com.pocketstudio.app.remix.StemPeaks { stem, framesPerBucket ->
-        val loaded = stems ?: return@StemPeaks FloatArray(0)
-        com.pocketstudio.app.remix.stemPeaksFrom(loaded.frames) { s, start, count -> loaded.extract(s, start, count) }.peaks(stem, framesPerBucket)
+    val boardPeaks: com.pocketstudio.app.remix.StemPeakSource = com.pocketstudio.app.remix.StemPeakSource { stem ->
+        val loaded = stems ?: error("no stems loaded")
+        com.pocketstudio.app.remix.StemPeaks.of(loaded.frames, 2) { start, count -> loaded.extract(stem, start, count.toLong()) }
     }
 
     /** Polls the playhead about 30 times a second while the Remix screen is visible. */

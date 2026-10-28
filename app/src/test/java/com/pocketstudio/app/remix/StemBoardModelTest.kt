@@ -1,7 +1,6 @@
 package com.pocketstudio.app.remix
 
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -12,104 +11,45 @@ import kotlin.coroutines.EmptyCoroutineContext
 class StemBoardModelTest {
     private val rate = BOARD_RATE
 
-    // --- Peaks read from the audio ---
+    // --- Peaks ---
+
+    /** A stem of [frames] frames, mono, whose sample i is [value] (i). */
+    private fun peaksOf(frames: Long, value: (Long) -> Float) =
+        StemPeaks.of(frames, 1) { start, count -> FloatArray(count) { value(start + it) } }
 
     @Test
-    fun peaksAreTheLoudestSampleOfEachSliceAcrossReads() {
-        // 3 s of stereo silence with three clicks: one per slice they fall in, in either channel.
-        val frames = 3L * rate
-        val audio = FloatArray((frames * 2).toInt())
-        audio[(1000 * 2)] = 0.5f                // slice 0 (left)
-        audio[(70_000 * 2) + 1] = -0.8f         // slice 1 (right, negative)
-        audio[(140_000 * 2)] = 1.7f             // slice 2, clipped to 1
-        val reads = mutableListOf<Pair<Long, Long>>()
-        val source = stemPeaksFrom(frames) { stem, start, count ->
-            assertEquals(2, stem)
-            reads += start to count
-            audio.copyOfRange((start * 2).toInt(), ((start + count) * 2).toInt())
+    fun peaksAreReadOnceAStemOffTheCallerAndScaledToTheirLoudest() = runBlocking {
+        val asked = mutableListOf<Int>()
+        val peaks = BoardPeaks()
+        // Stem s peaks at 0.1 * (s + 1); the voice (3) is all silence but for a whisper.
+        val source = StemPeakSource { stem ->
+            asked += stem
+            if (stem == 3) peaksOf(10_000) { 0.01f } else peaksOf(48_000) { i -> if (i == 20_000L) 0.1f * (stem + 1) else 0.05f }
         }
-        val peaks = source.peaks(2, 65_536)
-        assertEquals(3, peaks.size)  // 144 000 frames in slices of 65 536: the last one shorter
-        assertEquals(0.5f, peaks[0], 0f)
-        assertEquals(0.8f, peaks[1], 0f)
-        assertEquals(1f, peaks[2], 0f)
-        // Read a few seconds at a time, never the whole stem, and every frame exactly once.
-        assertTrue(reads.size > 1)
-        assertTrue(reads.all { it.second <= 1L shl 17 })
-        assertEquals(frames, reads.sumOf { it.second })
-        assertEquals(0L, reads.first().first)
-    }
-
-    @Test
-    fun peaksStopAtTheEndOfWhatCanBeRead() {
-        val source = stemPeaksFrom(10_000) { _, _, _ -> FloatArray(0) }
-        assertArrayEquals(FloatArray(2), source.peaks(0, 5_000), 0f)
-    }
-
-    // --- Zoom levels ---
-
-    @Test
-    fun levelsHalveFromTheFinestAndScaleTheLoudestPeakToOne() {
-        val fine = floatArrayOf(0.1f, 0.4f, 0.2f, 0.05f, 0.3f)
-        val levels = PeakLevels.build(fine, 3)
-        assertArrayEquals(floatArrayOf(0.25f, 1f, 0.5f, 0.125f, 0.75f), levels[0], 1e-6f)
-        assertArrayEquals(floatArrayOf(1f, 0.5f, 0.75f), levels[1], 1e-6f)
-        assertArrayEquals(floatArrayOf(1f, 0.75f), levels[2], 1e-6f)
+        assertNull(peaks.of(0))
+        peaks.load(source, EmptyCoroutineContext)
+        peaks.load(source, EmptyCoroutineContext)  // again: nothing read twice
+        assertEquals(listOf(0, 1, 2, 3), asked)
+        assertEquals(4, peaks.ready)
+        for (stem in 0..2) {
+            assertEquals(1f / (0.1f * (stem + 1)), peaks.scale(stem), 1e-4f)
+            val out = FloatArray(4)
+            peaks.of(stem)!!.fill(0, 48_000, out)
+            // The slot with the peak reaches 1 once scaled; the others stay low.
+            assertEquals(1f, out[1] * peaks.scale(stem), 1e-4f)
+            assertTrue(out[3] * peaks.scale(stem) < 0.6f)
+        }
         // Silence is not blown up into noise.
-        assertArrayEquals(floatArrayOf(0.01f, 0f), PeakLevels.build(floatArrayOf(0.01f, 0f), 1)[0], 0f)
-    }
-
-    @Test
-    fun aThreeMinuteSongHasFewBucketsAndManyLevels() {
-        val levels = PeakLevels(3L * 60 * rate)
-        assertEquals(128, levels.base)  // 8 640 000 / 64 would be over 131 072 buckets
-        assertTrue(levels.count >= 10)
-        assertTrue(3L * 60 * rate / levels.framesPerBucket(levels.count - 1) > PeakLevels.MIN_COARSE / 2)
-        // The coarsest level no wider than a column: each column reads a bucket or two.
-        assertEquals(0, levels.levelFor(100.0))
-        assertEquals(0, levels.levelFor(255.0))
-        assertEquals(1, levels.levelFor(256.0))
-        assertEquals(3, levels.levelFor(1500.0))
-        assertEquals(levels.count - 1, levels.levelFor(1e12))
-    }
-
-    @Test
-    fun peaksAreComputedOnceAStemOffTheCallerThenOnlyRead() = runBlocking {
-        val frames = 60L * rate
-        val asked = mutableListOf<Pair<Int, Int>>()
-        val levels = PeakLevels(frames)
-        val source = StemPeaks { stem, fpb ->
-            asked += stem to fpb
-            // Stem s: loud in its s-th quarter of the song only.
-            FloatArray(((frames + fpb - 1) / fpb).toInt()) { i -> if ((i * 4L) / ((frames + fpb - 1) / fpb) == stem.toLong()) 0.5f else 0.05f }
-        }
-        assertFalse(levels.has(0))
-        assertEquals(0f, levels.columnPeak(0, 0, 0, frames), 0f)
-        levels.load(source, EmptyCoroutineContext)
-        levels.load(source, EmptyCoroutineContext)  // again: nothing read twice
-        assertEquals((0 until 4).map { it to levels.base }, asked)
-        assertEquals(4, levels.ready)
-        val quarter = frames / 4
-        for (stem in 0 until 4) {
-            for (l in 0 until levels.count) {
-                // The loud quarter reads 1 (scaled), the others 0.1, at every zoom level.
-                assertEquals(1f, levels.columnPeak(stem, l, stem * quarter + 1000, stem * quarter + 2000), 1e-6f)
-                val other = (stem + 2) % 4
-                assertEquals(0.1f, levels.columnPeak(stem, l, other * quarter + quarter / 2, other * quarter + quarter / 2 + 10), 1e-6f)
-            }
-        }
-        // Out of the song: nothing.
-        assertEquals(0f, levels.columnPeak(0, 0, frames, frames + 5000), 0f)
-        assertEquals(0f, levels.columnPeak(0, 0, -5000, 0), 0f)
+        assertEquals(1f, peaks.scale(3), 0f)
     }
 
     @Test
     fun aStemThatCannotBeReadStaysFlatAndTheOthersShow() = runBlocking {
-        val levels = PeakLevels(10L * rate)
-        levels.load(StemPeaks { stem, fpb -> if (stem == 1) error("closed") else FloatArray((10 * rate / fpb) + 1) { 0.5f } }, EmptyCoroutineContext)
-        assertEquals(4, levels.ready)
-        assertEquals(0f, levels.columnPeak(1, 0, 0, 10_000), 0f)
-        assertEquals(1f, levels.columnPeak(2, 0, 0, 10_000), 0f)
+        val peaks = BoardPeaks()
+        peaks.load(StemPeakSource { stem -> if (stem == 1) error("closed") else peaksOf(1_000) { 0.5f } }, EmptyCoroutineContext)
+        assertEquals(4, peaks.ready)
+        assertNull(peaks.of(1))
+        assertEquals(2f, peaks.scale(2), 1e-6f)
     }
 
     // --- Beats ---
@@ -139,7 +79,7 @@ class StemBoardModelTest {
     @Test
     fun theFirstLayoutShowsTheWholeSongAndPinchZoomsAroundTheFingers() {
         val frames = 200L * rate
-        val s = StemBoardState(frames)
+        val s = StemBoardView(frames)
         s.layout(1000f)
         assertEquals(frames / 1000.0, s.framesPerPx, 1e-9)
         assertEquals(0.0, s.start, 0.0)
@@ -152,7 +92,7 @@ class StemBoardModelTest {
         assertTrue(s.zoomedIn)
         // Never deeper than the deepest zoom, never further out than the whole song.
         s.zoomBy(1e6f, 0f)
-        assertEquals(StemBoardState.MIN_FRAMES_PER_PX, s.framesPerPx, 0.0)
+        assertEquals(StemBoardView.MIN_FRAMES_PER_PX, s.framesPerPx, 0.0)
         s.zoomBy(1e-6f, 500f)
         assertEquals(frames / 1000.0, s.framesPerPx, 1e-9)
         assertEquals(0.0, s.start, 0.0)
@@ -161,7 +101,7 @@ class StemBoardModelTest {
     @Test
     fun scrollingFollowsTheFingerAndStopsAtBothEnds() {
         val frames = 100L * rate
-        val s = StemBoardState(frames)
+        val s = StemBoardView(frames)
         s.layout(1000f)
         s.zoomBy(10f, 0f)  // a tenth of the song on screen
         s.scrollBy(-300f)  // finger to the left: later frames come in
@@ -181,7 +121,7 @@ class StemBoardModelTest {
 
     @Test
     fun turningThePhoneKeepsTheSamePartOfTheSong() {
-        val s = StemBoardState(100L * rate)
+        val s = StemBoardView(100L * rate)
         s.layout(1000f)
         s.zoomBy(5f, 0f)
         s.scrollBy(-400f)
@@ -231,7 +171,7 @@ class StemBoardModelTest {
 
     @Test
     fun theSelectionCarriesTheFadesChosenAndHandlesAreFoundUnderTheFinger() {
-        val s = StemBoardState(60L * rate)
+        val s = StemBoardView(60L * rate)
         s.layout(1000f)
         assertNull(s.selection("song"))
         s.select(3, 288_000, 96_000)

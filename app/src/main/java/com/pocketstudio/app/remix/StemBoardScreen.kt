@@ -46,7 +46,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -99,16 +101,7 @@ class StemBoardUi(
     val frames: Long,
     val bpm: Double,
     val firstBeat: Double,
-    val peaks: StemPeaks,
-    /** The stretch being listened to (null: silence): its « Écouter » becomes « Arrêter ». */
-    val playing: StemSelection? = null,
-    /**
-     * The song frame being heard, -1 when none. Read while drawing: give the value of a Compose
-     * state, so that the play head moves without recomposing the board.
-     */
-    val position: () -> Long = { -1L },
-    /** What the last action did, or why not (« Voix → pad 9 »). */
-    val notice: String? = null,
+    val peaks: StemPeakSource,
     /** Where the peaks are computed (never the main thread in the app; tests may compute them inline). */
     val peaksContext: CoroutineContext = Dispatchers.Default,
 )
@@ -128,7 +121,7 @@ val VOCALS_STEM: Int = Demucs.STEMS.indexOf("vocals")
 const val CHOP_MAX = 8
 
 @Composable
-fun rememberStemBoardState(ui: StemBoardUi): StemBoardState = remember(ui.setId, ui.frames) { StemBoardState(ui.frames) }
+fun rememberStemBoardView(ui: StemBoardUi): StemBoardView = remember(ui.setId, ui.frames) { StemBoardView(ui.frames) }
 
 /**
  * « Tableau des pistes »: the four stems one under the other, each with its big curve, a ruler of
@@ -142,14 +135,15 @@ fun StemBoard(
     actions: StemBoardActions,
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
-    state: StemBoardState = rememberStemBoardState(ui),
+    view: StemBoardView = rememberStemBoardView(ui),
 ) {
+    val state = view
     androidx.activity.compose.BackHandler(onBack = onClose)
-    val levels = remember(ui.setId, ui.frames, ui.peaks) { PeakLevels(ui.frames, Demucs.STEMS.size) }
+    val levels = remember(ui.setId, ui.frames, ui.peaks) { BoardPeaks(Demucs.STEMS.size) }
     LaunchedEffect(levels) { levels.load(ui.peaks, ui.peaksContext) }
     val grid = remember(ui.bpm, ui.firstBeat) { BeatGrid.of(ui.bpm, ui.firstBeat, BOARD_RATE) }
-    val playing = rememberUpdatedState(ui.playing)
-    val position = rememberUpdatedState(ui.position)
+    // What plays and what the actions said: read while drawing (the play head) or in the bar only.
+    val work = actions.state.collectAsState()
     // Cards stay open here: the board's panels have no title to fold.
     CompositionLocalProvider(LocalFolding provides false) {
         BoxWithConstraints(modifier.fillMaxSize().padding(12.dp).testTag("board")) {
@@ -157,7 +151,7 @@ fun StemBoard(
                 NeonCard(m) {
                     LeftToRight {
                         Column(Modifier.fillMaxWidth().weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            BoardRuler(state, grid, playing, position, Modifier.fillMaxWidth().height(28.dp))
+                            BoardRuler(state, grid, work, Modifier.fillMaxWidth().height(28.dp))
                             Demucs.STEMS.forEachIndexed { i, stem ->
                                 BoardTrack(
                                     stem = i,
@@ -166,8 +160,7 @@ fun StemBoard(
                                     state = state,
                                     levels = levels,
                                     grid = grid,
-                                    playing = playing,
-                                    position = position,
+                                    work = work,
                                     modifier = Modifier.fillMaxWidth().weight(1f).heightIn(min = 48.dp),
                                 )
                             }
@@ -183,14 +176,14 @@ fun StemBoard(
                         board(Modifier.weight(1f))
                     }
                     Column(Modifier.width(320.dp).fillMaxHeight().verticalScroll(rememberScrollState())) {
-                        BoardActionsBar(ui, state, actions)
+                        BoardActionsBar(ui, state, actions, work)
                     }
                 }
             } else {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     BoardHeader(ui, state, grid, onClose)
                     board(Modifier.weight(1f))
-                    BoardActionsBar(ui, state, actions)
+                    BoardActionsBar(ui, state, actions, work)
                 }
             }
         }
@@ -206,7 +199,7 @@ private fun stemColor(stem: String): Color = when (stem) {
 }
 
 @Composable
-private fun BoardHeader(ui: StemBoardUi, state: StemBoardState, grid: BeatGrid?, onClose: () -> Unit) {
+private fun BoardHeader(ui: StemBoardUi, state: StemBoardView, grid: BeatGrid?, onClose: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         IconButton(onClick = onClose, modifier = Modifier.testTag("board_close")) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Retour"))
@@ -231,10 +224,9 @@ private fun BoardHeader(ui: StemBoardUi, state: StemBoardState, grid: BeatGrid?,
 /** Bar numbers and beat ticks (seconds when the tempo is unknown); sliding it scrolls, pinching it zooms. */
 @Composable
 private fun BoardRuler(
-    state: StemBoardState,
+    state: StemBoardView,
     grid: BeatGrid?,
-    playing: State<StemSelection?>,
-    position: State<() -> Long>,
+    work: State<StemBoardState>,
     modifier: Modifier,
 ) {
     val measurer = rememberTextMeasurer()
@@ -310,7 +302,7 @@ private fun BoardRuler(
                         val x1 = state.x(state.selEnd).coerceAtMost(size.width)
                         if (x1 > x0) drawRect(accent.copy(alpha = 0.55f), Offset(x0, h - 4.dp.toPx()), Size(x1 - x0, 4.dp.toPx()))
                     }
-                    drawPlayHead(playing.value, position.value(), state, play)
+                    drawPlayHead(work.value.playFrame, state, play)
                 }
             },
     )
@@ -326,8 +318,8 @@ private fun stepFor(unitPx: Float, minPx: Float): Int {
 }
 
 /** The green line of what plays, with a soft glow, while a stretch is listened to. */
-private fun DrawScope.drawPlayHead(playing: StemSelection?, frame: Long, state: StemBoardState, color: Color) {
-    if (playing == null || frame < 0) return
+private fun DrawScope.drawPlayHead(frame: Long, state: StemBoardView, color: Color) {
+    if (frame < 0) return
     val x = state.x(frame)
     if (x < 0f || x > size.width) return
     drawLine(color.copy(alpha = 0.25f), Offset(x, 0f), Offset(x, size.height), strokeWidth = 6.dp.toPx())
@@ -350,11 +342,10 @@ private fun BoardTrack(
     stem: Int,
     label: String,
     color: Color,
-    state: StemBoardState,
-    levels: PeakLevels,
+    state: StemBoardView,
+    levels: BoardPeaks,
     grid: BeatGrid?,
-    playing: State<StemSelection?>,
-    position: State<() -> Long>,
+    work: State<StemBoardState>,
     modifier: Modifier,
 ) {
     val lane = Neon.SurfaceHigh.copy(alpha = 0.55f)
@@ -426,19 +417,18 @@ private fun BoardTrack(
                             drawRect(veil, Offset(max(0f, x0), 0f), Size(min(size.width, x1) - max(0f, x0), size.height))
                         }
                         // The mountains: the top edge from left to right, the bottom one back.
-                        if (levels.ready > stem) {
-                            val amp = mid - margin
-                            val level = levels.levelFor(fpp * column)
+                        val peaks = if (levels.ready > stem) levels.of(stem) else null
+                        if (peaks != null) {
+                            val amp = (mid - margin) * levels.scale(stem)
+                            val from = state.start.toLong()
+                            peaks.fill(from, from + (columns * column * fpp).toLong(), heights)
                             path.rewind()
                             path.moveTo(0f, mid)
                             var c = 0
                             while (c < columns) {
-                                val x = c * column
-                                val from = (state.start + x * fpp).toLong()
-                                val to = (state.start + (x + column) * fpp).toLong()
-                                val h = max(0.5f, levels.columnPeak(stem, level, from, to) * amp)
+                                val h = min(mid - margin, max(0.5f, heights[c] * amp))
                                 heights[c] = h
-                                path.lineTo(x, mid - h)
+                                path.lineTo(c * column, mid - h)
                                 c++
                             }
                             c = columns - 1
@@ -456,7 +446,7 @@ private fun BoardTrack(
                             drawHandle(x0, accent, edgeWidth, knobW, knobH)
                             drawHandle(x1, accent, edgeWidth, knobW, knobH)
                         }
-                        drawPlayHead(playing.value, position.value(), state, play)
+                        drawPlayHead(work.value.playFrame, state, play)
                         drawRoundRect(line.copy(alpha = 0.35f), cornerRadius = corner, style = border)
                     }
                 },
@@ -489,7 +479,7 @@ private enum class Gesture { Tap, Slide, TwoFingers, LongPress }
  * under the finger), a touch clears it, a long press then a slide scrolls. On the ruler ([stem]
  * -1): sliding scrolls. Two fingers anywhere: pinch to zoom, move to scroll.
  */
-private fun Modifier.boardGestures(state: StemBoardState, stem: Int, snap: () -> BeatGrid?, onLongPress: () -> Unit): Modifier =
+private fun Modifier.boardGestures(state: StemBoardView, stem: Int, snap: () -> BeatGrid?, onLongPress: () -> Unit): Modifier =
     pointerInput(state, stem) {
         awaitEachGesture {
             val down = awaitFirstDown(requireUnconsumed = false)
@@ -543,7 +533,7 @@ private fun Modifier.boardGestures(state: StemBoardState, stem: Int, snap: () ->
     }
 
 /** Calls [move] with each position of pointer [id] (first with [x]) until it lifts (true) or a second finger comes (false, then pinches). */
-private suspend fun AwaitPointerEventScope.follow(state: StemBoardState, id: PointerId, x: Float, move: (Float) -> Unit): Boolean {
+private suspend fun AwaitPointerEventScope.follow(state: StemBoardView, id: PointerId, x: Float, move: (Float) -> Unit): Boolean {
     move(x)
     while (true) {
         val e = awaitPointerEvent()
@@ -559,7 +549,7 @@ private suspend fun AwaitPointerEventScope.follow(state: StemBoardState, id: Poi
 }
 
 /** One finger scrolls the song until it lifts. */
-private suspend fun AwaitPointerEventScope.pan(state: StemBoardState, id: PointerId) {
+private suspend fun AwaitPointerEventScope.pan(state: StemBoardView, id: PointerId) {
     while (true) {
         val e = awaitPointerEvent()
         if (e.changes.count { it.pressed } > 1) return transform(state)
@@ -572,7 +562,7 @@ private suspend fun AwaitPointerEventScope.pan(state: StemBoardState, id: Pointe
 }
 
 /** Two fingers: pinch zooms around them, moving them scrolls; until every finger lifts. */
-private suspend fun AwaitPointerEventScope.transform(state: StemBoardState) {
+private suspend fun AwaitPointerEventScope.transform(state: StemBoardView) {
     while (true) {
         val e = awaitPointerEvent()
         if (e.changes.none { it.pressed }) return
@@ -587,8 +577,11 @@ private suspend fun AwaitPointerEventScope.transform(state: StemBoardState) {
 
 /** Under the board: what to do with the chosen stretch, or how to choose one. */
 @Composable
-private fun BoardActionsBar(ui: StemBoardUi, state: StemBoardState, actions: StemBoardActions) {
+private fun BoardActionsBar(ui: StemBoardUi, state: StemBoardView, actions: StemBoardActions, work: State<StemBoardState>) {
     val sel = state.selection(ui.setId)
+    val playing by remember(work) { derivedStateOf { work.value.playing } }
+    val busy by remember(work) { derivedStateOf { work.value.busy } }
+    val message by remember(work) { derivedStateOf { work.value.message } }
     NeonCard(accent = if (sel != null) Neon.Cyan else Neon.Outline, modifier = Modifier.testTag("board_actions")) {
         if (sel == null) {
             Text(
@@ -596,10 +589,10 @@ private fun BoardActionsBar(ui: StemBoardUi, state: StemBoardState, actions: Ste
                 style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
             )
         } else {
-            val listening = ui.playing?.let { it.stem == sel.stem && it.startFrame == sel.startFrame && it.endFrame == sel.endFrame } == true
+            val listening = playing?.let { it.stem == sel.stem && it.startFrame == sel.startFrame && it.endFrame == sel.endFrame } == true
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    "${StemStore.label(Demucs.STEMS[sel.stem])} · ${boardClock(sel.startFrame)} · ${boardClock(sel.frames)}",
+                    "${StemStore.label(Demucs.STEMS[sel.stem])} · ${boardClock(sel.startFrame)} → ${boardClock(sel.endFrame)}",
                     style = MonoStyle, color = Neon.TextPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f).testTag("board_selection"),
                 )
@@ -643,6 +636,13 @@ private fun BoardActionsBar(ui: StemBoardUi, state: StemBoardState, actions: Ste
                 Text(" " + tr("Découper la voix en phrases"))
             }
         }
-        ui.notice?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.Amber, modifier = Modifier.testTag("board_notice")) }
+        // What is being prepared, then what was done (or why not), until « OK ».
+        busy?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("board_busy")) }
+        message?.let { said ->
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(said, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, modifier = Modifier.weight(1f).testTag("board_message"))
+                TextButton(onClick = actions::dismissMessage, modifier = Modifier.testTag("board_message_ok")) { Text("OK") }
+            }
+        }
     }
 }

@@ -12,7 +12,6 @@ import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 import kotlin.math.ceil
-import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToLong
@@ -23,56 +22,11 @@ import kotlin.math.roundToLong
  * stretch the finger chose.
  */
 
-/** Where the board reads the stems' peaks. */
-fun interface StemPeaks {
-    /**
-     * The peak (0..1) of each slice of [framesPerBucket] frames of stem [stem], slice i covering
-     * frames [i * framesPerBucket, (i + 1) * framesPerBucket) (the last one may be shorter).
-     * Blocking: called on a worker thread, never on the main one.
-     */
-    fun peaks(stem: Int, framesPerBucket: Int): FloatArray
+/** Where the board gets each stem's peaks at every zoom ([StemEditor]'s [StemPeaks], built once). */
+fun interface StemPeakSource {
+    /** The peaks of stem [stem], read from its audio. Blocking: called on a worker thread, never on the main one. */
+    fun peaks(stem: Int): StemPeaks
 }
-
-/**
- * Peaks read from [read] (interleaved audio of [channels] channels, frames [start] until
- * [start] + count) a few seconds at a time: minutes of a stem never sit whole in memory.
- */
-fun stemPeaksFrom(frames: Long, channels: Int = 2, read: (stem: Int, start: Long, count: Long) -> FloatArray): StemPeaks =
-    StemPeaks { stem, framesPerBucket ->
-        val fpb = framesPerBucket.coerceAtLeast(1).toLong()
-        val out = FloatArray(((frames + fpb - 1) / fpb).toInt())
-        // Whole buckets per read, about 2.7 s (1 MB of floats).
-        val chunk = max(1L, READ_FRAMES / fpb) * fpb
-        var at = 0L
-        while (at < frames) {
-            val want = min(chunk, frames - at)
-            val data = read(stem, at, want)
-            val got = data.size / channels
-            if (got <= 0) break
-            var i = 0
-            while (i < got) {
-                val b = ((at + i) / fpb).toInt()
-                if (b >= out.size) break
-                val bucketEnd = min(got.toLong(), (b + 1) * fpb - at).toInt()
-                var peak = out[b]
-                var s = i * channels
-                val end = bucketEnd * channels
-                while (s < end) {
-                    val a = abs(data[s])
-                    if (a > peak) peak = a
-                    s++
-                }
-                out[b] = peak
-                i = bucketEnd
-            }
-            at += got
-            if (got < want) break
-        }
-        for (k in out.indices) if (out[k] > 1f) out[k] = 1f
-        out
-    }
-
-private const val READ_FRAMES = 1L shl 17
 
 /**
  * A song's beats: one every [beat] frames from frame [origin] (its first beat), [BEATS_PER_BAR]
@@ -104,100 +58,48 @@ class BeatGrid(bpm: Double, firstBeatSeconds: Double, rate: Int) {
 }
 
 /**
- * The peaks of every stem at every zoom level, computed once when the board opens, off the main
- * thread: the finest level is read from the audio, each coarser one (twice as many frames a
- * bucket) is the previous one halved. Drawing then only reads arrays.
+ * The four stems' peaks, read once when the board opens, off the main thread, one stem after the
+ * other (each shows as soon as it is ready). Each stem is scaled so that its loudest peak reaches
+ * the top: a quiet voice reads as well as the drums. Drawing then only reads arrays.
  */
 @Stable
-class PeakLevels(val frames: Long, val stems: Int = 4) {
-    /** Frames a bucket of the finest level: a power of 2, at least [MIN_BUCKET], at most [MAX_BUCKETS] buckets a stem. */
-    val base: Int = run {
-        var b = MIN_BUCKET
-        while (frames / b > MAX_BUCKETS) b *= 2
-        b
-    }
+class BoardPeaks(val stems: Int = 4) {
+    private val peaks = arrayOfNulls<StemPeaks>(stems)
+    private val scales = FloatArray(stems) { 1f }
 
-    /** Number of levels: the coarsest still has more than [MIN_COARSE] buckets. */
-    val count: Int = run {
-        var n = 1
-        while (n < 24 && frames / (base.toLong() shl n) > MIN_COARSE) n++
-        n
-    }
-
-    private val levels = arrayOfNulls<Array<FloatArray>>(stems)
-
-    /** How many stems are ready to draw (read while drawing: they appear one after the other). */
+    /** How many stems are done (read while drawing: they appear one after the other). */
     var ready by mutableIntStateOf(0)
         private set
 
-    fun framesPerBucket(level: Int): Long = base.toLong() shl level
+    /** The peaks of [stem], null until read (or when they could not be). */
+    fun of(stem: Int): StemPeaks? = peaks.getOrNull(stem)
 
-    fun has(stem: Int): Boolean = levels.getOrNull(stem) != null
+    /** What [stem]'s peaks are multiplied by to fill the height. */
+    fun scale(stem: Int): Float = scales.getOrElse(stem) { 1f }
 
-    /** Peaks of [stem] at [level] (null until computed). */
-    fun level(stem: Int, level: Int): FloatArray? = levels.getOrNull(stem)?.getOrNull(level)
-
-    /** The coarsest level whose buckets are no wider than [framesPerColumn]: each column reads one or two buckets. */
-    fun levelFor(framesPerColumn: Double): Int {
-        var l = 0
-        while (l + 1 < count && framesPerBucket(l + 1) <= framesPerColumn) l++
-        return l
-    }
-
-    /** The highest peak of [stem] at [level] between frames [from] and [to] (0 out of the song or not ready). */
-    fun columnPeak(stem: Int, level: Int, from: Long, to: Long): Float {
-        val data = level(stem, level) ?: return 0f
-        if (to <= 0 || from >= frames || data.isEmpty()) return 0f
-        val fpb = framesPerBucket(level)
-        val b0 = (max(0L, from) / fpb).toInt()
-        val b1 = min(data.size - 1L, (max(from + 1, to) - 1) / fpb).toInt()
-        var p = 0f
-        var b = b0
-        while (b <= b1) {
-            if (data[b] > p) p = data[b]
-            b++
-        }
-        return p
-    }
-
-    /** Reads every stem's peaks from [source] (on [context]), one stem after the other. A stem that cannot be read stays flat. */
-    suspend fun load(source: StemPeaks, context: CoroutineContext) {
-        for (stem in 0 until stems) {
-            if (levels[stem] != null) continue
-            val built = withContext(context) {
-                runCatching { build(source.peaks(stem, base), count) }.getOrNull()
-            } ?: Array(count) { FloatArray(0) }
-            levels[stem] = built
-            ready++
+    /** Reads every stem's peaks from [source] on [context]. A stem that cannot be read stays flat. */
+    suspend fun load(source: StemPeakSource, context: CoroutineContext) {
+        while (ready < stems) {
+            val stem = ready
+            val read = withContext(context) {
+                runCatching {
+                    val p = source.peaks(stem)
+                    val top = FloatArray(1)
+                    p.fill(0L, p.frames, top)
+                    p to top[0]
+                }.getOrNull()
+            }
+            if (read != null) {
+                peaks[stem] = read.first
+                scales[stem] = scaleFor(read.second)
+            }
+            ready = stem + 1
         }
     }
 
     companion object {
-        const val MIN_BUCKET = 64
-        const val MAX_BUCKETS = 1L shl 17
-        const val MIN_COARSE = 64L
-
-        /**
-         * [fine] and its [count] - 1 halvings, scaled so that the stem's loudest peak reaches 1: a
-         * quiet voice reads as well as the drums. Silence stays flat.
-         */
-        fun build(fine: FloatArray, count: Int): Array<FloatArray> {
-            var top = 0f
-            for (v in fine) if (v > top) top = v
-            val scale = if (top > 0.02f) 1f / top else 1f
-            val out = arrayOfNulls<FloatArray>(count)
-            out[0] = FloatArray(fine.size) { min(1f, fine[it] * scale) }
-            for (l in 1 until count) {
-                val prev = out[l - 1]!!
-                out[l] = FloatArray((prev.size + 1) / 2) { i ->
-                    val a = prev[2 * i]
-                    val b = if (2 * i + 1 < prev.size) prev[2 * i + 1] else 0f
-                    max(a, b)
-                }
-            }
-            @Suppress("UNCHECKED_CAST")
-            return out as Array<FloatArray>
-        }
+        /** Scales [top] to 1; silence (or nearly) is not blown up into noise. */
+        fun scaleFor(top: Float): Float = if (top > 0.02f) 1f / top else 1f
     }
 }
 
@@ -214,7 +116,7 @@ enum class BoardFade(val inMs: Int, val outMs: Int) {
  * none). Moves only on a gesture: nothing scrolls or zooms by itself.
  */
 @Stable
-class StemBoardState(val frames: Long) {
+class StemBoardView(val frames: Long) {
     var width by mutableFloatStateOf(0f)
         private set
     var framesPerPx by mutableDoubleStateOf(0.0)
@@ -321,13 +223,13 @@ class StemBoardState(val frames: Long) {
 
 /** How a gesture turns into a stretch: snapped to the beats when [grid] is given (magnet on). */
 object BoardSelect {
-    /** The finger went from [anchor] to [current]: the stretch between them, at least a beat (or [StemBoardState.MIN_FRAMES]). */
+    /** The finger went from [anchor] to [current]: the stretch between them, at least a beat (or [StemBoardView.MIN_FRAMES]). */
     fun drag(anchor: Long, current: Long, grid: BeatGrid?, frames: Long): LongRange {
         if (grid == null) {
             var lo = min(anchor, current).coerceIn(0L, frames)
             var hi = max(anchor, current).coerceIn(0L, frames)
-            if (hi - lo < StemBoardState.MIN_FRAMES) {
-                if (current >= anchor) hi = min(frames, lo + StemBoardState.MIN_FRAMES) else lo = max(0L, hi - StemBoardState.MIN_FRAMES)
+            if (hi - lo < StemBoardView.MIN_FRAMES) {
+                if (current >= anchor) hi = min(frames, lo + StemBoardView.MIN_FRAMES) else lo = max(0L, hi - StemBoardView.MIN_FRAMES)
             }
             return lo until hi
         }
@@ -348,11 +250,11 @@ object BoardSelect {
 
     /**
      * Moves one edge ([edge] -1 start, 1 end) of [from] until [to] to [frame], snapped when [grid]
-     * is given; the stretch keeps at least a beat (or [StemBoardState.MIN_FRAMES]).
+     * is given; the stretch keeps at least a beat (or [StemBoardView.MIN_FRAMES]).
      */
     fun moveEdge(from: Long, to: Long, edge: Int, frame: Long, grid: BeatGrid?, frames: Long): LongRange {
         val f = (if (grid != null) grid.snap(frame) else frame).coerceIn(0L, frames)
-        val least = if (grid != null) grid.beat.roundToLong().coerceAtLeast(1L) else StemBoardState.MIN_FRAMES
+        val least = if (grid != null) grid.beat.roundToLong().coerceAtLeast(1L) else StemBoardView.MIN_FRAMES
         return if (edge < 0) {
             val s = min(f, to - least).coerceAtLeast(0L)
             s until to
@@ -371,7 +273,4 @@ fun boardClock(frames: Long, rate: Int = BOARD_RATE): String {
 }
 
 /** The stems on the board are the engine's: 48 kHz frames, the unstretched song. */
-const val BOARD_RATE = 48_000
-
-/** Floor of a Double as Long, for grid indices. */
-internal fun floorLong(v: Double): Long = floor(v).toLong()
+const val BOARD_RATE = StemSelection.SAMPLE_RATE

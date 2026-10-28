@@ -2830,6 +2830,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     clearRemix = rhythmVm::clearRemix,
                                     // The project's ▶ and « Écouter » never sound together.
                                     togglePlay = { remixVm.pause(); stemBoard.stop(); rhythmVm.togglePlay() },
+                                    board = stemBoard,
                                     retry = remixVm::retry,
                                     setStartBar = rhythmVm::setRemixStartBar,
                                     setStemVolume = rhythmVm::setStemVolume,

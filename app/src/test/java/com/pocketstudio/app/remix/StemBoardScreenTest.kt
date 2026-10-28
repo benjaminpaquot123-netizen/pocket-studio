@@ -10,6 +10,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.pinch
+import androidx.compose.ui.test.click
 import com.pocketstudio.model.Remix
 import com.pocketstudio.ui.PocketStudioTheme
 import org.junit.Assert.assertEquals
@@ -35,7 +36,10 @@ class StemBoardScreenTest {
     private val frames = 60L * BOARD_RATE
     private val beat = 24_000L
 
-    private class FakeActions : StemBoardActions {
+    private class FakeActions(start: StemBoardState = StemBoardState()) : StemBoardActions {
+        override val state = kotlinx.coroutines.flow.MutableStateFlow(start)
+        var dismissed = 0
+        override fun dismissMessage() { dismissed++; state.value = state.value.copy(message = null) }
         val played = mutableListOf<StemSelection>()
         var stops = 0
         val sent = mutableListOf<Pair<StemSelection, StemDestination>>()
@@ -46,19 +50,19 @@ class StemBoardScreenTest {
         override fun chop(setId: String, stem: Int, max: Int) { chopped += Triple(setId, stem, max) }
     }
 
-    private val peaks = StemPeaks { stem, fpb -> FloatArray(((frames + fpb - 1) / fpb).toInt()) { i -> 0.2f + 0.1f * ((i + stem) % 7) } }
+    private val peaks = StemPeakSource { stem -> StemPeaks.of(frames, 1) { start, count -> FloatArray(count) { i -> 0.2f + 0.1f * (((start + i) / 5000 + stem) % 7) } } }
 
-    private fun ui(playing: StemSelection? = null, bpm: Double = 120.0) =
-        StemBoardUi("song", "Ma chanson", frames, bpm, 0.0, peaks, playing = playing, peaksContext = EmptyCoroutineContext)
+    private fun ui(bpm: Double = 120.0) =
+        StemBoardUi("song", "Ma chanson", frames, bpm, 0.0, peaks, peaksContext = EmptyCoroutineContext)
 
-    private fun show(state: StemBoardState, actions: StemBoardActions, ui: StemBoardUi = ui(), onClose: () -> Unit = {}) {
-        compose.setContent { PocketStudioTheme { StemBoard(ui, actions, onClose, state = state) } }
+    private fun show(state: StemBoardView, actions: StemBoardActions, ui: StemBoardUi = ui(), onClose: () -> Unit = {}) {
+        compose.setContent { PocketStudioTheme { StemBoard(ui, actions, onClose, view = state) } }
         compose.waitForIdle()
     }
 
     @Test
     fun slidingAlongTheVoiceChoosesWholeBeatsThenListensAndSendsToAFreePad() {
-        val state = StemBoardState(frames)
+        val state = StemBoardView(frames)
         val actions = FakeActions()
         show(state, actions)
         assertTrue(state.width > 0f)
@@ -85,15 +89,15 @@ class StemBoardScreenTest {
 
     @Test
     fun aLongPressThenASlideScrollsAndSelectsNothing() {
-        val state = StemBoardState(frames)
+        val state = StemBoardView(frames)
         show(state, FakeActions())
         compose.runOnIdle { state.zoomBy(4f, 0f) }
         assertEquals(0.0, state.start, 0.0)
         compose.onNodeWithTag("board_track_1").performTouchInput {
             down(center)
             advanceEventTime(1_000)
-            moveBy(Offset(-width / 4, 0f))
-            moveBy(Offset(-width / 4, 0f))
+            moveBy(Offset(-width / 4f, 0f))
+            moveBy(Offset(-width / 4f, 0f))
             up()
         }
         assertFalse(state.hasSelection)
@@ -103,7 +107,7 @@ class StemBoardScreenTest {
 
     @Test
     fun slidingTheRulerScrollsAndATouchOnACurveClearsTheSelection() {
-        val state = StemBoardState(frames)
+        val state = StemBoardView(frames)
         show(state, FakeActions())
         compose.runOnIdle {
             state.zoomBy(4f, 0f)
@@ -117,13 +121,13 @@ class StemBoardScreenTest {
         }
         assertTrue(state.start > 0.0)
         assertTrue(state.hasSelection)  // scrolling never touches the selection
-        compose.onNodeWithTag("board_track_2").performTouchInput { click(center) }
+        compose.onNodeWithTag("board_track_2").performTouchInput { click() }
         assertFalse(state.hasSelection)
     }
 
     @Test
     fun aHandleMovesItsEdgeToTheBeatUnderTheFinger() {
-        val state = StemBoardState(frames)
+        val state = StemBoardView(frames)
         show(state, FakeActions())
         compose.runOnIdle { state.select(3, 8 * beat, 16 * beat) }
         val from = state.x(16 * beat)
@@ -140,7 +144,7 @@ class StemBoardScreenTest {
 
     @Test
     fun withoutTheMagnetTheStretchStartsExactlyUnderTheFinger() {
-        val state = StemBoardState(frames)
+        val state = StemBoardView(frames)
         show(state, FakeActions())
         compose.onNodeWithTag("board_magnet").performClick()
         assertFalse(state.magnet)
@@ -158,7 +162,7 @@ class StemBoardScreenTest {
 
     @Test
     fun theFadeChosenGoesWithTheStretchToEachDestination() {
-        val state = StemBoardState(frames)
+        val state = StemBoardView(frames)
         val actions = FakeActions()
         show(state, actions)
         compose.runOnIdle { state.select(1, 4 * beat, 12 * beat) }
@@ -181,7 +185,7 @@ class StemBoardScreenTest {
 
     @Test
     fun theVoiceIsCutIntoPhrasesInOneTouchAndTheButtonHidesOnOtherStems() {
-        val state = StemBoardState(frames)
+        val state = StemBoardView(frames)
         val actions = FakeActions()
         show(state, actions)
         compose.onNodeWithTag("board_chop").performClick()
@@ -194,7 +198,7 @@ class StemBoardScreenTest {
 
     @Test
     fun pinchingZoomsInAndToutVoirShowsTheWholeSongAgain() {
-        val state = StemBoardState(frames)
+        val state = StemBoardView(frames)
         show(state, FakeActions())
         val whole = state.framesPerPx
         compose.onNodeWithTag("board_fit").assertIsNotEnabled()
@@ -213,10 +217,10 @@ class StemBoardScreenTest {
 
     @Test
     fun whileTheStretchPlaysItsButtonStopsIt() {
-        val state = StemBoardState(frames)
-        val actions = FakeActions()
+        val state = StemBoardView(frames)
+        val actions = FakeActions(StemBoardState(playing = StemSelection("song", 2, 4 * beat, 12 * beat), playFrame = 6 * beat))
         state.select(2, 4 * beat, 12 * beat)
-        show(state, actions, ui(playing = StemSelection("song", 2, 4 * beat, 12 * beat)))
+        show(state, actions)
         compose.onNodeWithText(com.pocketstudio.model.i18n.tr("Arrêter"), substring = true).assertExists()
         compose.onNodeWithTag("board_play").performClick()
         assertEquals(1, actions.stops)
@@ -225,7 +229,7 @@ class StemBoardScreenTest {
 
     @Test
     fun withoutATempoTheMagnetIsOffAndTheRulerCountsSeconds() {
-        val state = StemBoardState(frames)
+        val state = StemBoardView(frames)
         show(state, FakeActions(), ui(bpm = 0.0))
         compose.onNodeWithTag("board_magnet").assertIsNotEnabled()
         compose.onNodeWithTag("board_track_0").performTouchInput {
@@ -235,6 +239,20 @@ class StemBoardScreenTest {
             up()
         }
         assertTrue(state.hasSelection)
+    }
+
+    @Test
+    fun whatTheActionsSayShowsUntilOk() {
+        val state = StemBoardView(frames)
+        val actions = FakeActions(StemBoardState(message = "6 phrases sur les pads 9 à 14."))
+        show(state, actions)
+        compose.onNodeWithTag("board_message").assertExists()
+        compose.onNodeWithText("6 phrases sur les pads 9 à 14.").assertExists()
+        compose.onNodeWithTag("board_message_ok").performClick()
+        assertEquals(1, actions.dismissed)
+        compose.onNodeWithTag("board_message").assertDoesNotExist()
+        compose.runOnIdle { actions.state.value = StemBoardState(busy = "Voix vers le pad…") }
+        compose.onNodeWithText("Voix vers le pad…").assertExists()
     }
 
     @Test

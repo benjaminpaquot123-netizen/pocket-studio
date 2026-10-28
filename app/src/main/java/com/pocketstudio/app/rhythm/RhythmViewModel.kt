@@ -5048,7 +5048,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (!NativeEngine.isAvailable) return
         while (true) {
             // Back to song frames when a stretched copy plays.
-            _stemPosition.value = NativeEngine.stemPosition().let { if (it < 0) it else Math.round(it / playRatio) }
+            _stemPosition.value = NativeEngine.stemPositionNow().let { if (it < 0) it else Math.round(it / playRatio) }
             kotlinx.coroutines.delay(33)
         }
     }

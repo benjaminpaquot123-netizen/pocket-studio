@@ -64,5 +64,20 @@ interface CommandSink {
     }
     fun drainLaunchEvents(out: IntArray): Int = 0
 
+    // A separated song's stems ([NativeStems]), for the « testeur humain » bench. A null answer
+    // means « not mine »: the native library is asked, as before these existed.
+    /** [NativeStems.load]: the sink's handle for the four WAVs (0: unreadable), or null. */
+    fun stemsLoad(paths: Array<String>): Long? = null
+    fun stemsFromPcm(data: FloatArray): Long? = null
+    fun stemsFrames(handle: Long): Long? = null
+    fun stemsExtract(handle: Long, stem: Int, start: Long, count: Long): FloatArray? = null
+    fun stemsPeaks(handle: Long, stem: Int, buckets: Int): FloatArray? = null
+    fun stemsStretched(handle: Long, ratio: Double): Long? = null
+    /** True when the sink let go of its bundle (else the native library is asked). */
+    fun stemsRelease(handle: Long): Boolean = false
+    /** [NativeEngine.stemPositionNow] / [NativeEngine.previewPositionNow], or null. */
+    fun stemPosition(): Long? = null
+    fun previewPosition(): Long? = null
+
     enum class Install { PadSample, TrackSample, AudioClip, Stems, Instrument, LiveClip, PreviewStems }
 }

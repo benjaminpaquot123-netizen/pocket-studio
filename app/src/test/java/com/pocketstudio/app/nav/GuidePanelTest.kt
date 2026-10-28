@@ -2,6 +2,7 @@ package com.pocketstudio.app.nav
 
 import android.os.Looper
 import androidx.activity.ComponentActivity
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.isDisplayed
@@ -89,7 +90,10 @@ class GuidePanelTest {
     fun theBarSaysWhereTheSongIsAndACardIsDecidedInTwoGestures() {
         startOn()
         compose.onNodeWithTag("guide_bar").assertIsDisplayed()
-        compose.onNodeWithTag("guide_bar_step", useUnmergedTree = true).assertTextContains("Étape", substring = true)
+        // Remix testers: the card to do, no « Étape n/N » (it moved when a card got settled elsewhere).
+        val next = h.vm.guide.ui.value.next!!.title
+        compose.onNodeWithTag("guide_bar_step", useUnmergedTree = true).assertTextContains(next, substring = true)
+        compose.onNodeWithTag("guide_bar_step", useUnmergedTree = true).assert(androidx.compose.ui.test.hasText("Étape", substring = true).not())
         compose.onNodeWithTag("guide_panel").assertDoesNotExist()
         // Open, then « Écouter piste par piste »: the card is decided, the next one comes.
         compose.withinGestures("décider une carte du Guide", 2) {

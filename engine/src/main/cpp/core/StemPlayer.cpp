@@ -190,8 +190,9 @@ void StemPlayer::install(StemBundle* bundle) {
     int64_t pos = pos_;
     if (old && bundle && old->song() == bundle->song() && old->frames() > 0) {
         const double ratio = static_cast<double>(bundle->frames()) / static_cast<double>(old->frames());
-        startFrame_ = static_cast<int64_t>(std::llround(static_cast<double>(startFrame_) * ratio));
-        pos = static_cast<int64_t>(std::llround(static_cast<double>(pos_) * ratio));
+        // A silence before the song (negative) is the project's time, not the song's: it stays.
+        if (startFrame_ > 0) startFrame_ = static_cast<int64_t>(std::llround(static_cast<double>(startFrame_) * ratio));
+        if (pos_ > 0) pos = static_cast<int64_t>(std::llround(static_cast<double>(pos_) * ratio));
     }
     if (playing_ && old) {
         const bool stopping = fadeLeft_ > 0;
@@ -308,7 +309,7 @@ void StemPlayer::render(float* left, float* right, int numFrames) {
         fadeIn_ = fadeInLength_ = fadeLength_;
         renderFrames(left, right, at, numFrames, wait);
     }
-    position_.store(playing_ ? pos_ : -1, std::memory_order_relaxed);
+    position_.store(playing_ && pos_ >= 0 ? pos_ : -1, std::memory_order_relaxed);
 }
 
 void StemPlayer::renderFrames(float* left, float* right, int from, int to, int wait) {
@@ -325,7 +326,10 @@ void StemPlayer::renderFrames(float* left, float* right, int from, int to, int w
         for (int s = 0; s < StemBundle::kStems; ++s) g[s] = smooth_[static_cast<size_t>(s)].next() * kScale;
         float l = 0.0f, r = 0.0f;
         if (playing_ && pos_ >= bundle_->frames()) playing_ = false;
-        if (playing_) {
+        if (playing_ && pos_ < 0 && fadeLeft_ == 0) {
+            // The song comes in later: silence up to its first frame (the fade in waits for it).
+            ++pos_;
+        } else if (playing_) {
             float fade = 1.0f;
             bool last = false;
             if (fadeLeft_ > 0) {
@@ -339,18 +343,20 @@ void StemPlayer::renderFrames(float* left, float* right, int from, int to, int w
             if (last) {
                 playing_ = false;
             } else {
-                const auto at = static_cast<size_t>(pos_) * 2;
-                for (int s = 0; s < StemBundle::kStems; ++s) {
-                    const int16_t* d = bundle_->stem(s);
-                    l += d[at] * g[s] * fade;
-                    r += d[at + 1] * g[s] * fade;
+                if (pos_ >= 0) {
+                    const auto at = static_cast<size_t>(pos_) * 2;
+                    for (int s = 0; s < StemBundle::kStems; ++s) {
+                        const int16_t* d = bundle_->stem(s);
+                        l += d[at] * g[s] * fade;
+                        r += d[at + 1] * g[s] * fade;
+                    }
                 }
                 ++pos_;
             }
         }
         if (out_.bundle) {
             const float fade = static_cast<float>(out_.left) / static_cast<float>(out_.length);
-            if (out_.pos < out_.bundle->frames()) {
+            if (out_.pos >= 0 && out_.pos < out_.bundle->frames()) {
                 const auto at = static_cast<size_t>(out_.pos) * 2;
                 for (int s = 0; s < StemBundle::kStems; ++s) {
                     const int16_t* d = out_.bundle->stem(s);

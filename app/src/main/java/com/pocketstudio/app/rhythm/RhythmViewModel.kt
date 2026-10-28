@@ -1,6 +1,8 @@
 package com.pocketstudio.app.rhythm
 
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.trCount
+import com.pocketstudio.model.RemixVoice
 import com.pocketstudio.app.report.forUser
 import com.pocketstudio.app.report.AppLog
 import android.app.Application
@@ -164,6 +166,8 @@ import com.pocketstudio.model.takeForgets
 import com.pocketstudio.model.withTakes
 import com.pocketstudio.model.addAudioTrack
 import com.pocketstudio.model.exportEndBars
+import com.pocketstudio.model.remixFromStepAlone
+import com.pocketstudio.model.remixStemStart
 import com.pocketstudio.model.audioPlays
 import com.pocketstudio.model.removeAudioTrack
 import com.pocketstudio.model.withAudioTrack
@@ -1803,7 +1807,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 _transport.value = _transport.value.copy(playing = true)
                 heardScene = project.value.scene
                 // The scene on its own: song curves and song clips wait for the song.
-                NativeEngine.play(countIn, aloneSongStep())
+                enginePlay(countIn, aloneSongStep())
                 PlaybackService.start(getApplication())
             }
             AppLog.add("Prise audio sur la piste ${id + 1}" + if (songPart >= 0) " (morceau, partie ${songPart + 1})" else "")
@@ -5073,7 +5077,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val fitted = stretched?.takeIf { loaded != null && stretchedFor == (p.remix.setId to ratio) }
         NativeEngine.setStems(if (playRatioNow != 1.0) stretched else loaded)
         playRatio = playRatioNow
-        NativeEngine.setStemStart(Math.round(p.remix.startFrame(OfflineExport.SAMPLE_RATE) * playRatio))
+        pushRemixStart(p)
         if (loaded != null && ratio != 1.0 && fitted == null) stretchStems(loaded, p.remix.setId!!, ratio)
         if (ratio == 1.0 && (stretched != null || remixStretchJob?.isActive == true)) dropStretched()
         p.remix.stems.forEachIndexed { i, m ->
@@ -5092,6 +5096,43 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         if (loaded == null && wanted != null && stemsJob?.isActive != true) loadStems(wanted)
     }
+
+    /** Song step the live playback started on, as the remix places its song ([remixFrom]). */
+    private var remixFromLive = 0
+    /** The song step an export engine starts on ([describe] sets it; else a scene on its own). */
+    private var captureSongStep = NativeEngine.OUTSIDE_SONG
+
+    /**
+     * The song step a playback starting on song step [songStep] stands for, as the remix places its
+     * song: that step in the song; a scene on its own ([NativeEngine.OUTSIDE_SONG]) where [scene]
+     * first plays in the song; without a song, the song comes in right away.
+     */
+    private fun remixFrom(p: Project, songStep: Int, scene: Int): Int = when {
+        p.song.isEmpty() -> p.remix.atStep
+        songStep >= 0 -> songStep
+        else -> p.remixFromStepAlone(scene)
+    }
+
+    /** Where the stems start on the transport's first step: the song comes in on its step ([Remix.atStep]). */
+    private fun pushRemixStart(p: Project = project.value) {
+        if (!NativeEngine.isAvailable) return
+        val from = if (NativeEngine.isCapturing) remixFrom(p, captureSongStep, p.scene) else remixFromLive
+        NativeEngine.setStemStart(p.remixStemStart(OfflineExport.SAMPLE_RATE, playRatio, from))
+    }
+
+    /** Starts the transport on song step [songStep], the remix's song placed for it first. */
+    private fun enginePlay(countInBars: Int, songStep: Int) {
+        val p = project.value
+        remixFromLive = remixFrom(p, songStep, heardScene ?: p.scene)
+        pushRemixStart(p)
+        NativeEngine.play(countInBars, songStep)
+    }
+
+    /**
+     * Where the song comes in, in the project's song (a sixteenth from its start): its voice on
+     * the drop. Heard there from the next ▶. One undo step for a drag.
+     */
+    fun setRemixAt(step: Int) = editRemix("remix-at") { it.copy(atStep = step.coerceIn(0, Remix.MAX_AT_STEP)) }
 
     /** Reads the stems into the engine's memory (seconds, worker thread), then plays them along. */
     private fun loadStems(id: String) {
@@ -5139,14 +5180,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** The project plays a separated song along, at the song's tempo and in its key. One undo step. */
-    fun useSong(set: StemSet) {
+    /**
+     * The project plays a separated song along, at the song's tempo and in its key. One undo step.
+     * [heard]: the parts the user kept on while listening (« Voix » alone): the others come in muted.
+     */
+    fun useSong(set: StemSet, heard: List<Boolean>? = null) {
         val info = set.info
         session.edit("remix") { p ->
             p.copy(
                 tempoBpm = if (info.bpm > 0) info.bpm else p.tempoBpm,
                 harmony = info.root?.let { Harmony(it, if (info.minor) Scale.Minor else Scale.Major) } ?: p.harmony,
-                remix = Remix(set.id, set.name, info.bpm, info.firstBeat, seconds = set.seconds),
+                remix = Remix(set.id, set.name, info.bpm, info.firstBeat, seconds = set.seconds, stems = Remix.stemsHeard(heard)),
             )
         }
         StemStore.pin(getApplication(), set.id)
@@ -5177,8 +5221,47 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushRemix()
     }
 
-    /** [bars] bars of one stem, from the remix start, onto the selected pad. */
+    /** Bars « → Pad » and « → Live » copy (1, 2 or 4): kept while the user goes to the drums and back. */
+    private val _remixPadBars = MutableStateFlow(1)
+    val remixPadBars: StateFlow<Int> = _remixPadBars.asStateFlow()
+    fun setRemixPadBars(bars: Int) { if (bars in listOf(1, 2, 4)) _remixPadBars.value = bars }
+
+    /** A cut waiting for the user's word: every pad is used, the selected one would be covered. */
+    data class StemPadAsk(val stem: Int, val bars: Int, val lane: Int)
+    private val _stemPadAsk = MutableStateFlow<StemPadAsk?>(null)
+    val stemPadAsk: StateFlow<StemPadAsk?> = _stemPadAsk.asStateFlow()
+
+    /** The last cut of the song put on a pad (its pad), and what the screen says of it. */
+    data class RemixCut(val lane: Int, val message: String)
+    private val _remixCut = MutableStateFlow<RemixCut?>(null)
+    val remixCut: StateFlow<RemixCut?> = _remixCut.asStateFlow()
+
+    /**
+     * [bars] bars of one stem, from the remix start, onto a free pad: the selected one when it is
+     * free, else the first one no beat uses ([RemixVoice.padFor]). Every pad used: the screen asks
+     * before covering the selected one ([stemPadAsk]). Never a kick silently replaced.
+     */
     fun stemToPad(stem: Int, bars: Int) {
+        val lane = RemixVoice.padFor(project.value, _transport.value.selectedPad)
+        if (lane == null) {
+            _stemPadAsk.value = StemPadAsk(stem, bars, _transport.value.selectedPad)
+            return
+        }
+        cutToPad(stem, bars, lane)
+    }
+
+    /** « Remplacer » in the question: the cut goes on the selected pad after all. */
+    fun confirmStemPad() {
+        val ask = _stemPadAsk.value ?: return
+        _stemPadAsk.value = null
+        cutToPad(ask.stem, ask.bars, ask.lane)
+    }
+
+    fun dismissStemPadAsk() {
+        _stemPadAsk.value = null
+    }
+
+    private fun cutToPad(stem: Int, bars: Int, lane: Int) {
         val source = stems ?: return
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
         val r = project.value.remix
@@ -5188,12 +5271,101 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _sampleTask.value = SampleTask.Failed(tr("Trop long pour un pad : choisis moins de mesures."))
             return
         }
-        val label = tr(STEM_LABELS.getOrElse(stem) { "Piste" })
-        sampleJob(tr("%s vers le pad…", label)) {
+        val french = STEM_LABELS.getOrElse(stem) { "Piste" }
+        val name = RemixVoice.cutName(project.value, french)
+        _remixCut.value = null
+        sampleJob(tr("%s vers le pad…", tr(STEM_LABELS.getOrElse(stem) { "Piste" })), lane = lane, done = { cutDone(lane) }) {
             val audio = source.extract(stem, r.startFrame(OfflineExport.SAMPLE_RATE), count)
             if (audio.isEmpty()) throw UserMessage(tr("Ce passage est après la fin du morceau."))
-            padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), com.pocketstudio.model.DefaultNames.stemPad(STEM_LABELS.getOrElse(stem) { "Piste" }, r.name))  // French, shown translated
+            val (sample, prepared) = padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), name)  // French, shown translated
+            sample.copy(attack = RemixVoice.CUT_ATTACK, release = RemixVoice.CUT_RELEASE) to prepared
         }
+    }
+
+    /** The cut is on pad [lane]: selected (the drums open on it), and said on the Remix page. */
+    private fun cutDone(lane: Int) {
+        selectPad(lane)
+        val name = project.value.drums.lanes.getOrNull(lane)?.sample?.name ?: return
+        _remixCut.value = RemixCut(lane, tr("« %1\$s » est sur le pad %2\$d. Pose-le dans Batterie, sur la partie de ton choix.", com.pocketstudio.model.DefaultNames.shownSample(name), lane + 1))
+    }
+
+    /**
+     * « Découper la voix en phrases »: each sung phrase from the remix start (the voice's silences
+     * part them) on a free pad, up to 8, with a short fade on each end. One undo step. The kick
+     * and the pads the beat plays are never covered.
+     */
+    fun splitVoice() {
+        val source = stems ?: return
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
+        val p = project.value
+        val free = RemixVoice.freePads(p)
+        if (free.isEmpty()) {
+            _sampleTask.value = SampleTask.Failed(tr("Tous les pads servent déjà : vide un pad dans Batterie, puis recommence."))
+            return
+        }
+        val from = p.remix.startFrame(OfflineExport.SAMPLE_RATE).coerceAtLeast(0L)
+        val left = source.frames - from
+        if (left <= 0) {
+            _sampleTask.value = SampleTask.Failed(tr("Ce passage est après la fin du morceau."))
+            return
+        }
+        _remixCut.value = null
+        _sampleTask.value = SampleTask.Busy(tr("Découpe de la voix en phrases…"))
+        val first = RemixVoice.cutName(p, VOICE_LABEL).substringAfterLast(' ').toIntOrNull() ?: 1
+        viewModelScope.launch {
+            try {
+                val made = withContext(Dispatchers.IO) {
+                    // The voice's loudness every 10 ms, from the remix start.
+                    val slice = OfflineExport.SAMPLE_RATE / 100
+                    val all = source.peaks(VOICE_STEM, (source.frames / slice).toInt().coerceIn(1, 200_000))
+                    val perSlice = source.frames.toDouble() / all.size
+                    val skip = (from / perSlice).toInt().coerceIn(0, all.size)
+                    val peaks = all.copyOfRange(skip, all.size)
+                    val found = RemixVoice.phrases(
+                        peaks, minGapSlices = 35, minSlices = 30, padBefore = 3, padAfter = 12, max = minOf(8, free.size),
+                    )
+                    found.mapIndexed { k, (a, b) ->
+                        val start = Math.round((skip + a) * perSlice)
+                        val count = minOf(Math.round((b - a) * perSlice), AudioDecoder.MAX_SECONDS.toLong() * OfflineExport.SAMPLE_RATE)
+                        val audio = source.extract(VOICE_STEM, start, count)
+                        val (sample, prepared) = padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), "$VOICE_LABEL ${first + k}")
+                        Triple(free[k], sample.copy(attack = RemixVoice.CUT_ATTACK, release = RemixVoice.CUT_RELEASE), prepared)
+                    }
+                }
+                if (made.isEmpty()) {
+                    _sampleTask.value = SampleTask.Failed(tr("Aucune phrase chantée trouvée après le trait vert."))
+                    return@launch
+                }
+                made.forEach { padSamples.register(it.third) }
+                session.edit { q -> q.copy(drums = made.fold(q.drums) { d, (lane, sample, _) -> d.withSample(lane, sample) }) }
+                pushPads()
+                _sampleTask.value = SampleTask.Idle
+                selectPad(made.first().first)
+                val pads = made.map { it.first + 1 }
+                AppLog.add("Remix : ${made.size} phrases de la voix sur les pads $pads")
+                _remixCut.value = RemixCut(
+                    made.first().first,
+                    trCount(made.size, "1 phrase sur le pad %2\$s. Pose-la dans Batterie, sur la partie de ton choix.", "%1\$d phrases sur les pads %2\$s. Pose-les dans Batterie, sur la partie de ton choix.", made.size, pads.joinToString(", ")),
+                )
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                AppLog.add("Remix : découpe en phrases impossible (${e.message})")
+                _sampleTask.value = SampleTask.Failed(tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName))
+            }
+        }
+    }
+
+    /** The last cut's start, end and fades ([remixCut]'s pad), one undo step per drag. */
+    fun editCut(key: String?, transform: (PadSample) -> PadSample) {
+        val lane = _remixCut.value?.lane ?: return
+        editPadSampleOf(lane, key, transform)
+    }
+
+    /** Plays the last cut once, as its pad does. */
+    fun playCut() {
+        val lane = _remixCut.value?.lane ?: return
+        if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, 0.9f)
     }
 
     /** [bars] bars of one stem onto the first empty live pad: switch the parts on and off in time. */
@@ -6136,8 +6308,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** Changes the selected pad's sound settings; the same [key] in a quick burst is one undo step. */
-    fun editPadSample(key: String?, transform: (PadSample) -> PadSample) {
-        val lane = _transport.value.selectedPad
+    fun editPadSample(key: String?, transform: (PadSample) -> PadSample) = editPadSampleOf(_transport.value.selectedPad, key, transform)
+
+    /** As [editPadSample], for pad [lane]. */
+    fun editPadSampleOf(lane: Int, key: String?, transform: (PadSample) -> PadSample) {
+        if (lane !in 0 until DrumPattern.PAD_COUNT) return
         val current = project.value.drums.lanes[lane].sample ?: return
         session.edit(key?.let { "pad-$lane-$it" }) { p -> p.copy(drums = p.drums.withSample(lane, transform(current))) }
         val updated = project.value.drums.lanes[lane].sample ?: return
@@ -6224,9 +6399,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     private fun sampleJob(
         busy: String?, live: Int? = null, beats: Int? = null, cancellable: Boolean = false,
+        lane: Int = _transport.value.selectedPad, done: () -> Unit = {},
         work: suspend () -> Pair<PadSample, PadSamples.Prepared>,
     ) {
-        val lane = _transport.value.selectedPad
         if (busy != null) _sampleTask.value = SampleTask.Busy(busy, cancellable)
         // The one that can be cancelled is the song recorded onto the pad ([cancelResample]).
         val job = viewModelScope.launch {
@@ -6244,6 +6419,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 pushPads()
                 _sampleTask.value = SampleTask.Idle
                 if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, 0.9f)
+                done()
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
             } catch (e: OutOfMemoryError) {
@@ -6907,7 +7083,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _transport.value = _transport.value.copy(playing = true)
             if (NativeEngine.isAvailable) {
                 applySongCurves(project.value, project.value.scene)
-                NativeEngine.play(com.pocketstudio.app.settings.SettingsStore.state.value.recordCountIn, aloneSongStep())
+                enginePlay(com.pocketstudio.app.settings.SettingsStore.state.value.recordCountIn, aloneSongStep())
             }
             PlaybackService.start(getApplication())
         }
@@ -7801,7 +7977,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (!playing && _recording.value) stopRecordingTake()
         if (playing) {
             drainLaunches(apply = false)  // what an earlier run left
-            NativeEngine.play(countInBars ?: if (t.countIn) 1 else 0, songStep)
+            enginePlay(countInBars ?: if (t.countIn) 1 else 0, songStep)
         } else {
             NativeEngine.stopTransport()
             NativeEngine.toggleClip(-1)  // live pads too: Stop means silence
@@ -8813,6 +8989,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * and each next scene is staged half a step into the part before it, swapping on its last bar line.
      */
     private fun describe(job: OfflineExport, p: Project, song: Boolean, soloChannel: Int?, limited: Boolean = true, masterFx: Boolean = true) {
+        // The remix's song comes in where the song has it (the song plays from its first step).
+        captureSongStep = if (song) 0 else NativeEngine.OUTSIDE_SONG
+        try {
+            describeInto(job, p, song, soloChannel, limited, masterFx)
+        } finally {
+            captureSongStep = NativeEngine.OUTSIDE_SONG
+        }
+    }
+
+    private fun describeInto(job: OfflineExport, p: Project, song: Boolean, soloChannel: Int?, limited: Boolean, masterFx: Boolean) {
         NativeEngine.captureInto(job) {
             val first = if (song) p.sceneView(p.song[0].scene) else p
             syncEngine(first)
@@ -9517,6 +9703,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         /** « Écouter seul »: how long it waits for another screen to hold it (a card folds, a sheet opens). */
         const val ALONE_GRACE_MS = 700L
         internal val STEM_LABELS = listOf("Batterie", "Basse", "Autres", "Voix")
+        /** The voice: its stem and its label (French, as names are saved). */
+        private const val VOICE_STEM = 3
+        private const val VOICE_LABEL = "Voix"
 
         /** An export file's label ("batterie", "piste2-basse"…) as the progress line shows it. */
         private fun stageName(label: String): String = when (label) {

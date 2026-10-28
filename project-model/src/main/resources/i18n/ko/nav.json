@@ -87,7 +87,6 @@
   "Volume de %s": "%s 볼륨",
   "coupée": "뮤트됨",
   "« Générer » fabrique une boucle à partir d'une phrase (Sons › Voix › Générer), puis la pose sur un pad live libre.": "“생성”은 문장으로 루프를 만들어 (사운드 › 보컬 › 생성) 빈 라이브 패드에 넣어요.",
-  "« → Pad » copie les mesures choisies sur le pad sélectionné, « → Live » sur un pad live libre (Live › Pads) pour lancer et couper chaque partie en rythme.": "“→ 패드”는 고른 마디를 선택한 패드에, “→ Live”는 빈 라이브 패드 (Live › 패드)에 복사해서 파트마다 박자에 맞춰 켜고 끌 수 있어요.",
   "Écoute-la en entier, puis va voir dans Structure comment elle est construite : tu peux tout changer.": "끝까지 들어 보고, 구성에서 어떻게 만들어졌는지 보세요. 전부 바꿀 수 있어요.",
   "Écouter seule": "이것만 듣기",
   "Étiqueter l'écran": "화면 이름표",

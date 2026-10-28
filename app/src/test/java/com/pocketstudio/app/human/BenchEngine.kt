@@ -158,7 +158,7 @@ internal class BenchEngine : CommandSink {
         val s = stems[playedStems] ?: return -1L
         if (since < 0) return -1L
         val pos = stemStart + (SystemClock.uptimeMillis() - since) * RATE / 1000
-        return if (pos < s.frames) pos else -1L
+        return if (pos in 0 until s.frames) pos else -1L  // before the song comes in (R2): not heard yet
     }
 
     /** « Écouter » on the Remix page: from the top, until its end. */

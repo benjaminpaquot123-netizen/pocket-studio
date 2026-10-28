@@ -24,6 +24,7 @@ import com.pocketstudio.app.audiotracks.AudioTracksUi
 import com.pocketstudio.model.viewOfTrack
 import com.pocketstudio.model.songBars
 import com.pocketstudio.model.partSteps
+import com.pocketstudio.model.remixSteps
 import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.sceneTitle
 import com.pocketstudio.model.audioSpans
@@ -2780,6 +2781,20 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                             val project by rhythmVm.project.collectAsStateWithLifecycle()
                             val transport by rhythmVm.transport.collectAsStateWithLifecycle()
                             val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
+                            val remixPadBars by rhythmVm.remixPadBars.collectAsStateWithLifecycle()
+                            val stemPadAsk by rhythmVm.stemPadAsk.collectAsStateWithLifecycle()
+                            val remixCut by rhythmVm.remixCut.collectAsStateWithLifecycle()
+                            val remixSampleInfo by rhythmVm.sampleInfo.collectAsStateWithLifecycle()
+                            // R2: the project's song, where the song's voice can come in.
+                            val remixPlan = remember(project.song, project.scenes, project.stepsPerBar) {
+                                project.song.takeIf { it.isNotEmpty() }?.let { song ->
+                                    com.pocketstudio.app.remix.SongPlan(
+                                        song.map { partName(project, it.scene) to project.partSteps(it) },
+                                        project.stepsPerBar,
+                                        com.pocketstudio.model.RemixVoice.places(project) { partName(project, it) },
+                                    )
+                                }
+                            }
                             RemixScreen(
                                 RemixUi(
                                     modelInstalled, remixState, sets, preview,
@@ -2797,6 +2812,15 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     position = stemPosition,
                                     memoryProblem = remixMemory,
                                     memoryNever = remixMemoryNever,
+                                    plan = remixPlan,
+                                    songSteps = project.remixSteps(),
+                                    padBars = remixPadBars,
+                                    cut = remixCut?.let { c ->
+                                        val sample = project.drums.lanes.getOrNull(c.lane)?.sample
+                                        val info = sample?.let { remixSampleInfo[it.file] }
+                                        com.pocketstudio.app.remix.RemixCutUi(c.lane, c.message, sample, info?.seconds ?: 0.0, info?.peaks ?: FloatArray(0))
+                                    },
+                                    padAsk = stemPadAsk?.let { com.pocketstudio.app.remix.PadAsk(it.lane, com.pocketstudio.app.rhythm.padName(project, it.lane)) },
                                 ),
                                 RemixActions(
                                     effects = { fxChannel = 3 },
@@ -2812,7 +2836,8 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     setFollowTempo = rhythmVm::setRemixFollowTempo,
                                     delete = remixVm::delete,
                                     useSong = { set ->
-                                        rhythmVm.useSong(set)
+                                        // R2: the parts switched off while listening (« Voix » alone) come in muted.
+                                        rhythmVm.useSong(set, preview?.takeIf { it.setId == set.id }?.on)
                                         val what = listOfNotNull(set.info.bpm.takeIf { it > 0 }?.let { "%.0f BPM".format(it) }, set.info.keyLabel)
                                         if (what.isNotEmpty()) {
                                             android.widget.Toast.makeText(context, tr("Projet calé : %s", what.joinToString(", ")), android.widget.Toast.LENGTH_SHORT).show()
@@ -2828,6 +2853,13 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     toggleStemSolo = rhythmVm::toggleStemSolo,
                                     stemToPad = rhythmVm::stemToPad,
                                     setStartAt = rhythmVm::setRemixStartAt,
+                                    setAt = rhythmVm::setRemixAt,
+                                    setPadBars = rhythmVm::setRemixPadBars,
+                                    splitVoice = rhythmVm::splitVoice,
+                                    confirmPad = rhythmVm::confirmStemPad,
+                                    dismissPadAsk = rhythmVm::dismissStemPadAsk,
+                                    editCut = rhythmVm::editCut,
+                                    playCut = rhythmVm::playCut,
                                 ),
                             )
                             }

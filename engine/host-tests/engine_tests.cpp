@@ -6027,6 +6027,62 @@ void testStemsKeepTheirPlaceAcrossATempoChange() {
     }
 }
 
+void testStemsComeInLaterInTheSong() {
+    // R2 (remix lot 1): the song placed later in the project (its voice on the drop) comes in on
+    // its own frame: a negative start frame is that much silence after step 0, then the song from
+    // its first frame with the 5 ms fade in starting there (not spent in the silence).
+    constexpr int songFrames = kRate * 2;
+    std::vector<float> ramp(static_cast<size_t>(songFrames) * 2, 0.0f);
+    for (int i = 0; i < songFrames; ++i) {
+        ramp[static_cast<size_t>(i) * 2] = 0.2f;  // left: constant
+        ramp[static_cast<size_t>(i) * 2 + 1] = 0.2f * static_cast<float>(i) / songFrames;  // right: the position
+    }
+    auto* song = ps::StemBundle::fromFloat(std::vector<std::vector<float>>(4, ramp));
+    ps::StemPlayer player;
+    player.prepare(kRate);
+    song->retain();
+    player.install(song);
+    const int lead = kRate / 2;  // the song comes in 0.5 s after step 0
+    player.setStartFrame(-lead);
+    player.start(100);
+    std::vector<float> l(kRate * 2, 0.0f), r(kRate * 2, 0.0f);
+    int64_t positionInLead = -1;
+    for (int at = 0; at < kRate * 2; at += 256) {
+        player.render(l.data() + at, r.data() + at, std::min(256, kRate * 2 - at));
+        if (at + 256 < 100 + lead && player.position() != -1) positionInLead = player.position();
+    }
+    const int in = 100 + lead;  // the song's first frame
+    float before = 0.0f;
+    for (int i = 0; i < in; ++i) before = std::max(before, std::fabs(l[static_cast<size_t>(i)]));
+    std::printf("  stems placed later: peak before %.6f, at +2.5 ms %.4f, at +10 ms %.4f, position in the lead %lld\n",
+                before, l[static_cast<size_t>(in + 120)], l[static_cast<size_t>(in + 480)], static_cast<long long>(positionInLead));
+    CHECK(before == 0.0f);                 // silence until the song comes in
+    CHECK(positionInLead == -1);           // nothing to show yet
+    CHECK(l[static_cast<size_t>(in)] == 0.0f);  // the fade in starts on its first frame (no click)
+    CHECK(l[static_cast<size_t>(in + 120)] > 0.1f * l[static_cast<size_t>(in + 480)]);
+    CHECK(l[static_cast<size_t>(in + 120)] < 0.9f * l[static_cast<size_t>(in + 480)]);
+    CHECK(largestStep(l, in - 10, in + 2000) < 0.01f);
+    // The right side reads the song's own position: frame 0 at the entry, so ~1 s later 1 s in.
+    const float heard = r[static_cast<size_t>(in + kRate - 1)] / l[static_cast<size_t>(in + kRate - 1)];
+    CHECK(std::fabs(heard - static_cast<float>(kRate - 1) / songFrames) < 2e-3f);
+    CHECK(player.position() == kRate * 2 - in);
+    // A start frame inside the song still starts there (nothing changed for 0 and up).
+    player.stop();
+    player.setStartFrame(kRate / 4);
+    player.start(0);
+    std::fill(l.begin(), l.end(), 0.0f);
+    std::fill(r.begin(), r.end(), 0.0f);
+    player.render(l.data(), r.data(), 256);
+    player.render(l.data() + 256, r.data() + 256, 256);
+    CHECK(player.position() == kRate / 4 + 512);
+    player.install(nullptr);
+    player.render(l.data(), r.data(), 2048);  // its fade out, then it is let go
+    player.collectGarbage();
+    CHECK(song->refCount() == 1);
+    CHECK(song->release());
+    delete song;
+}
+
 void testStemPreviewPlaysWithoutTheTransport() {
     const float levels[4] = {0.05f, 0.1f, 0.15f, 0.2f};
     std::vector<std::vector<float>> stems(4);
@@ -8190,6 +8246,7 @@ int main(int argc, char** argv) {
         {"stem_preview", testStemPreviewPlaysWithoutTheTransport},
         {"stems_stretch", testStemsStretchToTheProjectTempo},
         {"stems_keep_place_across_tempo", testStemsKeepTheirPlaceAcrossATempoChange},
+        {"stems_come_in_later", testStemsComeInLaterInTheSong},
         {"play_position", testPlayPositionForLiveRecording},
         {"song_export", testSongExportSwapsScenesOnTime},
         {"drum_rolls", testDrumRollsSplitTheStep},

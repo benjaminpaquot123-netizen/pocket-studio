@@ -51,7 +51,9 @@ private:
 };
 
 // Plays a StemBundle in step with the transport: starts on step 0, from `startFrame` of the
-// song, each stem with its own gain / mute / solo, summed to stereo. Real-time safe.
+// song, each stem with its own gain / mute / solo, summed to stereo. A negative `startFrame` is a
+// silence first: the song comes in that many frames after step 0 (placed later in the song).
+// Real-time safe.
 class StemPlayer {
 public:
     enum Param { Gain = 0, Mute = 1, Solo = 2 };
@@ -64,7 +66,8 @@ public:
     // and the start frame scaled by the ratio of their lengths).
     void install(StemBundle* bundle);
     void setParam(int stem, int param, float value);
-    void setStartFrame(int64_t frame) { startFrame_ = frame < 0 ? 0 : frame; }
+    // Negative: that many frames of silence before the song's first frame.
+    void setStartFrame(int64_t frame) { startFrame_ = frame; }
 
     // Starts `offset` frames into the next render() call, with a 5 ms fade in (what was playing
     // fades out under it).
@@ -81,7 +84,7 @@ public:
     bool playing() const { return playing_; }
     // Something may sound in the next render(): playing, about to start, or a bundle fading out.
     bool active() const { return playing_ || pendingStart_ >= 0 || out_.bundle != nullptr; }
-    // Song position in frames (UI). -1 when stopped.
+    // Song position in frames (UI). -1 when stopped, or while the song has not come in yet.
     int64_t position() const { return position_.load(std::memory_order_relaxed); }
 
     // Frees retired bundles. Not on the audio thread.

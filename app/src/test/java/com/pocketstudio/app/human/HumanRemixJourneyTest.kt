@@ -123,8 +123,8 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         val padded = tap(reach("stem_pad_3"), "→ Pad of Voix")
         act("attends 1")
         val lane = project()!!.drums.lanes[0]
-        assertTrue("${project()!!.drums.lanes.map { it.sample?.name }} ${rhythm()?.sampleTask?.value} ${project()!!.live.clips.map { it?.name }} sel=${rhythm()?.transport?.value?.selectedPad}", lane.sample?.name == "Voix · Ma chanson préférée")
-        assertTrue(padded, padded.contains("Le pad 1 reçoit « Voix · Ma chanson préférée »"))
+        assertTrue("${project()!!.drums.lanes.map { it.sample?.name }} ${rhythm()?.sampleTask?.value} ${project()!!.live.clips.map { it?.name }} sel=${rhythm()?.transport?.value?.selectedPad}", lane.sample?.name == "Voix 1")
+        assertTrue(padded, padded.contains("Le pad 1 reçoit « Voix 1 »"))
         // Two bars from bar 3: the first phrase, sung (4 s at 120 BPM).
         val file = app.filesDir.walk().first { it.name == lane.sample!!.file }
         val pad = FloatWav.read(file)
@@ -137,7 +137,7 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         assertTrue("no hits on pad 1", project()!!.drums.lanes[0].hits.size == 2)
         tap(centerOfText("Remix"), "the Remix chip")
         val loop = tap(reach("remix_play"), "Jouer")
-        assertTrue(loop, loop.contains("le pad 1 (« Voix · Ma chanson préférée ») sonne dans la boucle"))
+        assertTrue(loop, loop.contains("le pad 1 (« Voix 1 ») sonne dans la boucle"))
         assertTrue(loop, loop.contains("avec la voix seule de « Ma chanson préférée », depuis sa mesure 3 (solo)"))
         // Leaving the page while it plays: the loop goes on, the screen still follows.
         val away = tap(centerOfText("16 pads", substring = true), "the Batterie chip")

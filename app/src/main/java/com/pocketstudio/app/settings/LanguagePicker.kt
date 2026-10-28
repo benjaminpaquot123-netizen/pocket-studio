@@ -4,6 +4,9 @@ import android.content.res.Resources
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -144,7 +147,11 @@ private fun LanguageRow(lang: Lang, chosen: Boolean, tag: String, onPick: () -> 
     val translated = lang.nameIn(I18n.lang)
     Row(
         Modifier.fillMaxWidth().heightIn(min = 60.dp).clip(shape)
-            .background(if (chosen) Neon.Cyan.copy(alpha = 0.12f) else Neon.SurfaceHigh.copy(alpha = 0.5f))
+            // Lit from above, as every panel (lot « design pro »).
+            .background(
+                if (chosen) Brush.verticalGradient(listOf(Neon.Cyan.copy(alpha = 0.17f), Neon.Cyan.copy(alpha = 0.08f)))
+                else Brush.verticalGradient(listOf(Neon.SurfaceHigh.copy(alpha = 0.62f), Neon.SurfaceHigh.copy(alpha = 0.4f))),
+            )
             .border(if (chosen) 1.5.dp else 1.dp, if (chosen) Neon.Cyan else Neon.Outline.copy(alpha = 0.4f), shape)
             .selectable(selected = chosen, role = Role.RadioButton, onClick = onPick)
             .padding(horizontal = 10.dp, vertical = 8.dp)
@@ -153,7 +160,10 @@ private fun LanguageRow(lang: Lang, chosen: Boolean, tag: String, onPick: () -> 
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Box(
-            Modifier.size(42.dp).clip(RoundedCornerShape(12.dp)).background(Neon.Surface),
+            // The flag in a slight hollow: darker at the top, a faint light edge.
+            Modifier.size(42.dp).clip(RoundedCornerShape(12.dp))
+                .background(Brush.verticalGradient(listOf(lerp(Neon.Surface, Color.Black, 0.14f), Neon.Surface)))
+                .border(1.dp, Brush.verticalGradient(listOf(Color.Transparent, Color.White.copy(alpha = 0.08f))), RoundedCornerShape(12.dp)),
             contentAlignment = Alignment.Center,
         ) { Text(lang.flag, fontSize = 24.sp) }
         Column(Modifier.weight(1f)) {

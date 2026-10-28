@@ -3,7 +3,6 @@ package com.pocketstudio.app.mixer
 import com.pocketstudio.app.learn.spot
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -48,6 +47,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.PointerEventPass
@@ -255,7 +255,8 @@ private val MINI_FADER_H = 120.dp
 @Composable
 private fun StripHead(name: String, color: Color, modifier: Modifier = Modifier) {
     Box(
-        modifier.fillMaxWidth().clip(RoundedCornerShape(6.dp)).background(color.copy(alpha = 0.35f))
+        modifier.fillMaxWidth().clip(RoundedCornerShape(6.dp))
+            .background(Brush.verticalGradient(listOf(color.copy(alpha = 0.44f), color.copy(alpha = 0.28f))))
             .drawBehind { drawRect(color, Offset.Zero, Size(size.width, 3.dp.toPx())) }.padding(horizontal = 2.dp, vertical = 4.dp),
         contentAlignment = Alignment.Center,
     ) {
@@ -267,7 +268,7 @@ private fun StripHead(name: String, color: Color, modifier: Modifier = Modifier)
 @Composable
 private fun MixStrip(t: SimpleTrack, alone: Boolean, meters: () -> FloatArray, actions: SimpleMixActions, head: Boolean = true) {
     Column(
-        Modifier.width(STRIP_W).clip(RoundedCornerShape(12.dp)).background(Neon.SurfaceHigh.copy(alpha = 0.45f)).padding(6.dp)
+        Modifier.width(STRIP_W).consoleStrip(RoundedCornerShape(12.dp), 0.45f).padding(6.dp)
             .spot("mix_strip_${t.ch}").testTag("mix_strip_${t.ch}"),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
@@ -296,7 +297,7 @@ private fun DrumsGroup(
     meters: () -> FloatArray, actions: SimpleMixActions,
 ) {
     Column(
-        Modifier.clip(RoundedCornerShape(12.dp)).background(Neon.SurfaceHigh.copy(alpha = 0.45f)).padding(6.dp).testTag("mix_strip_${t.ch}"),
+        Modifier.consoleStrip(RoundedCornerShape(12.dp), 0.45f).padding(6.dp).testTag("mix_strip_${t.ch}"),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Box(
@@ -338,8 +339,7 @@ private fun DrumsGroup(
 private fun OutputStrip(masterDb: Float, meters: () -> FloatArray, loudness: () -> FloatArray, setDb: (Float) -> Unit) {
     val words by remember { derivedStateOf { outputWords(loudness(), meters()) } }
     Column(
-        Modifier.width(STRIP_W + 8.dp).clip(RoundedCornerShape(12.dp)).background(Neon.SurfaceHigh.copy(alpha = 0.7f))
-            .border(1.dp, Neon.Outline, RoundedCornerShape(12.dp)).padding(6.dp).testTag("mix_out"),
+        Modifier.width(STRIP_W + 8.dp).consoleStrip(RoundedCornerShape(12.dp), 0.7f, outline = true).padding(6.dp).testTag("mix_out"),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         StripHead(tr("Sortie"), Neon.TextSecondary)
@@ -493,7 +493,7 @@ private fun MixFader(
         }
         val trackW = 4.dp.toPx()
         val trackX = labelW + (size.width - labelW) * 0.42f
-        drawRoundRect(Color.Black.copy(alpha = 0.55f), Offset(x(trackX) - trackW / 2f, pad), Size(trackW, h), CornerRadius(trackW / 2f))
+        drawFaderSlot(x(trackX), pad, trackW, h, GROOVE)
         // 0 dB across the travel.
         drawLine(MARK, Offset(x(trackX - 9.dp.toPx()), y(0.8f)), Offset(x(trackX + 9.dp.toPx()), y(0.8f)), 1.dp.toPx())
         // The meter beside the travel.
@@ -505,13 +505,12 @@ private fun MixFader(
         val cy = y(value)
         val capW = (if (mini) 24.dp else 30.dp).toPx()
         val capH = 14.dp.toPx()
-        drawRoundRect(Color.Black.copy(alpha = 0.45f), Offset(x(trackX) - capW / 2f, cy - capH / 2f + 2.dp.toPx()), Size(capW, capH), CornerRadius(4.dp.toPx()))
-        drawRoundRect(cap, Offset(x(trackX) - capW / 2f, cy - capH / 2f), Size(capW, capH), CornerRadius(4.dp.toPx()))
-        drawLine(accent, Offset(x(trackX) - capW / 2f + 4.dp.toPx(), cy), Offset(x(trackX) + capW / 2f - 4.dp.toPx(), cy), 2.dp.toPx())
+        drawFaderCap(x(trackX), cy, capW, capH, cap, accent, 2.dp.toPx())
     }
 }
 
 private val MARK = Color(0x99A0A8B4)
+private val GROOVE = Color.Black.copy(alpha = 0.55f)
 
 /** Where the meter's colour changes (heights 0..1): green, yellow, red. */
 private val BANDS = floatArrayOf(0f, 0.6f, 0.785f, 1f)

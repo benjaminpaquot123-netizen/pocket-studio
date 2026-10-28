@@ -51,7 +51,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
@@ -64,6 +63,7 @@ import com.pocketstudio.app.library.familyLook
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.app.ui.showcasePanel
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.roundToInt
 
@@ -129,16 +129,13 @@ internal fun NewProjectPage(
 private fun BigChoice(icon: ImageVector, title: String, line: String, accent: androidx.compose.ui.graphics.Color, enabled: Boolean, tag: String, onClick: () -> Unit) {
     val shape = RoundedCornerShape(18.dp)
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 96.dp).clip(shape)
-            .background(Brush.horizontalGradient(listOf(accent.copy(alpha = 0.26f), accent.copy(alpha = 0.08f))))
-            .border(1.5.dp, accent.copy(alpha = 0.8f), shape)
+        Modifier.fillMaxWidth().heightIn(min = 96.dp)
+            .showcasePanel(shape, accent = accent.copy(alpha = 0.8f), edge = 1.5.dp, wash = 0.17f)
             .clickable(enabled = enabled, onClick = onClick)
             .padding(16.dp).testTag(tag),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(Modifier.size(52.dp).clip(CircleShape).background(accent), contentAlignment = Alignment.Center) {
-            Icon(icon, contentDescription = null, tint = Neon.OnAccent, modifier = Modifier.size(30.dp))
-        }
+        com.pocketstudio.app.ui.IconMedallion(icon, accent, 52.dp, 30.dp, filled = true)
         Column(Modifier.weight(1f).padding(horizontal = 14.dp)) {
             Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
             Text(line, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary.copy(alpha = 0.8f))

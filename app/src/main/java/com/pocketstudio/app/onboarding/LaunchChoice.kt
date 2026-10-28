@@ -66,6 +66,8 @@ import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.app.ui.IconMedallion
+import com.pocketstudio.app.ui.showcasePanel
 
 /**
  * When « Que veux-tu faire ? » opens again once a choice was made (docs/DECISIONS.md, 2026-10-24):
@@ -302,9 +304,7 @@ private fun ContinueCard(ui: LaunchUi, onClick: () -> Unit, modifier: Modifier) 
     val shape = RoundedCornerShape(18.dp)
     val color = Neon.Cyan
     Row(
-        modifier.heightIn(min = 120.dp).clip(shape)
-            .background(color.copy(alpha = 0.2f))
-            .border(2.dp, color, shape)
+        modifier.heightIn(min = 120.dp).showcasePanel(shape, accent = color, edge = 2.dp)
             .clickable(role = Role.Button, onClick = onClick)
             .padding(18.dp)
             .testTag("launch_continue"),
@@ -322,9 +322,7 @@ private fun ContinueCard(ui: LaunchUi, onClick: () -> Unit, modifier: Modifier) 
             }
             ui.edited?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("launch_edited")) }
         }
-        Box(Modifier.size(56.dp).clip(RoundedCornerShape(28.dp)).background(color), contentAlignment = Alignment.Center) {
-            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.OnAccent, modifier = Modifier.size(30.dp))
-        }
+        IconMedallion(Icons.AutoMirrored.Filled.ArrowForward, color, 56.dp, 30.dp, filled = true)
     }
 }
 
@@ -350,18 +348,14 @@ private fun OtherChoices(actions: LaunchActions) {
 private fun Choice(icon: ImageVector, title: String, line: String, color: Color, onClick: () -> Unit, tag: String) {
     val shape = RoundedCornerShape(18.dp)
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 80.dp).clip(shape)
-            .background(Neon.Surface)
-            .border(1.dp, Neon.Outline, shape)
+        Modifier.fillMaxWidth().heightIn(min = 80.dp).showcasePanel(shape)
             .clickable(role = Role.Button, onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 12.dp)
             .testTag(tag),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Box(Modifier.size(48.dp).clip(RoundedCornerShape(24.dp)).background(color.copy(alpha = 0.18f)), contentAlignment = Alignment.Center) {
-            Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(26.dp))
-        }
+        IconMedallion(icon, color, 48.dp, 26.dp)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
             Text(line, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)

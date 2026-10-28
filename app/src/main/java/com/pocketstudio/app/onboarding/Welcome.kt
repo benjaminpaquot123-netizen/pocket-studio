@@ -4,8 +4,6 @@ import com.pocketstudio.ui.ScaledAlertDialog
 import com.pocketstudio.ui.ScaledDialog
 
 import com.pocketstudio.model.i18n.tr
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,7 +42,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
@@ -54,6 +51,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.app.ui.IconMedallion
+import com.pocketstudio.app.ui.showcasePanel
 
 /** The three ways to start offered at the first launch, and "later" (stay on the first project). */
 class WelcomeActions(
@@ -176,18 +175,15 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
 private fun Choice(icon: ImageVector, title: String, line: String, color: Color, primary: Boolean = false, onClick: () -> Unit, tag: String) {
     val shape = RoundedCornerShape(18.dp)
     Row(
-        Modifier.fillMaxWidth().heightIn(min = if (primary) 104.dp else 84.dp).clip(shape)
-            .background(if (primary) color.copy(alpha = 0.2f) else Neon.Surface)
-            .border(if (primary) 2.dp else 1.dp, if (primary) color else Neon.Outline, shape)
+        Modifier.fillMaxWidth().heightIn(min = if (primary) 104.dp else 84.dp)
+            .showcasePanel(shape, accent = color.takeIf { primary }, edge = if (primary) 2.dp else 1.dp)
             .clickable(role = Role.Button, onClick = onClick)
             .padding(16.dp)
             .testTag(tag),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Box(Modifier.size(52.dp).clip(RoundedCornerShape(26.dp)).background(color.copy(alpha = if (primary) 1f else 0.18f)), contentAlignment = Alignment.Center) {
-            Icon(icon, contentDescription = null, tint = if (primary) Neon.OnAccent else color, modifier = Modifier.size(28.dp))
-        }
+        IconMedallion(icon, color, 52.dp, 28.dp, filled = primary)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = if (primary) color else Neon.TextPrimary)
             Text(line, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
@@ -214,9 +210,8 @@ private fun ModeChoice(simple: Boolean, choose: (Boolean) -> Unit) {
 private fun ModeCard(title: String, line: String, chosen: Boolean, tag: String, modifier: Modifier, onClick: () -> Unit) {
     val shape = RoundedCornerShape(14.dp)
     Column(
-        modifier.fillMaxHeight().clip(shape)
-            .background(if (chosen) Neon.Cyan.copy(alpha = 0.18f) else Neon.Surface)
-            .border(if (chosen) 2.dp else 1.dp, if (chosen) Neon.Cyan else Neon.Outline, shape)
+        modifier.fillMaxHeight()
+            .showcasePanel(shape, accent = Neon.Cyan.takeIf { chosen }, edge = if (chosen) 2.dp else 1.dp, wash = 0.2f)
             .selectable(selected = chosen, role = Role.RadioButton, onClick = onClick)
             .padding(12.dp)
             .testTag(tag),

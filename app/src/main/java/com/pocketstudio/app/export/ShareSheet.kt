@@ -386,7 +386,7 @@ fun ShareSheetContent(
             Modifier.padding(horizontal = 20.dp), itemVerticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            Text(tr("Format"), style = MaterialTheme.typography.bodyMedium)
+            // The chips say what they are (« M4A · pour partager »): on one line on a phone, no « Format » before them.
             listOf(ExportFormat.M4a to tr("M4A · pour partager"), ExportFormat.Wav to tr("WAV · qualité max")).forEach { (format, label) ->
                 FilterChip(
                     selected = ui.format == format, onClick = { actions.setFormat(format) }, label = { Text(label) },

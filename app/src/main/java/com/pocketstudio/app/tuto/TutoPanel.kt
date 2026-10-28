@@ -530,10 +530,9 @@ private fun EndCard(ui: TutoUi, actions: TutoActions) {
         if (left.isEmpty()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.EmojiEvents, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(28.dp))
-                Text(tr("Bravo, ton morceau est fini !"), color = Neon.Acid, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 8.dp).testTag("tuto_finished"))
+                Text(tr("Bravo, ton morceau est fini ! Tu peux tout réécouter et continuer à le changer."), color = Neon.Acid, style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 8.dp).testTag("tuto_finished"))
             }
-            Text(tr("Tu as fait tout le tuto. Tu peux tout réécouter, continuer à le changer, ou le partager avec « Envoyer »."), style = MaterialTheme.typography.bodyMedium)
             OutlinedButton(onClick = actions.restart, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_restart_finished")) {
                 Icon(Icons.Filled.Replay, contentDescription = null, modifier = Modifier.size(18.dp))
                 Text(" " + restartTutoLabel(), maxLines = 1)
@@ -554,7 +553,7 @@ private fun EndCard(ui: TutoUi, actions: TutoActions) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(Modifier.weight(1f)) {
-                    Text(tr("Chapitre %1\$d · %2\$s", c + 1, tutoText(ui.chapters[c].title)), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(tr("Chapitre %1\$d/%2\$d · %3\$s", c + 1, ui.chapters.size, tutoText(ui.chapters[c].title)), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text(tutoText(s.textFor(ui.progress.level)), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
                 Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))

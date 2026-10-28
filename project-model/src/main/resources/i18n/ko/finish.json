@@ -33,5 +33,5 @@
   "%s LUFS · crête %s dBTP": "%s LUFS · 피크 %s dBTP",
   "Tout réentendre": "모두 다시 듣기",
   "Coupé dans Mes pistes, donc absent du fichier : %s.": "내 트랙에서 뮤트되어 파일에서 빠져요: %s.",
-  "« Partager » renomme aussi le projet « %s ».": "« 공유 »하면 프로젝트 « %s »의 이름도 바뀝니다."
+  "« Partager » renomme aussi le projet « %s ».": "“공유”하면 프로젝트 “%s”의 이름도 바뀝니다."
 }

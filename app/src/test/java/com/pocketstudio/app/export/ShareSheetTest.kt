@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -261,7 +262,8 @@ class ShareSheetTest {
         }
         compose.onNodeWithTag("share_check_ok").assertExists()
         compose.onNodeWithTag("share_format_M4a").assertIsSelected()
-        compose.onNodeWithTag("share_format_Wav").performScrollTo().performClick()
+        // Lot « tuto 4 »: beside « Partager », out of the part that scrolls (never cut at its edge).
+        compose.onNodeWithTag("share_format_Wav").assertIsDisplayed().performClick()
         assertEquals(ExportFormat.Wav, format)
         compose.onNodeWithTag("share_format_Wav").assertIsSelected()
         compose.onNodeWithTag("share_go").assertIsEnabled()

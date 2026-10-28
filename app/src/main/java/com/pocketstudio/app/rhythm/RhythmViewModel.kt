@@ -5043,6 +5043,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private val _stemPosition = MutableStateFlow(-1L)
     val stemPosition: StateFlow<Long> = _stemPosition.asStateFlow()
 
+    /**
+     * The stem board's peaks: read from the song loaded for the remix, a few seconds at a time
+     * (worker thread). Frames at 48 kHz, of the song as separated (never the stretched copy).
+     */
+    val boardPeaks: com.pocketstudio.app.remix.StemPeaks = com.pocketstudio.app.remix.StemPeaks { stem, framesPerBucket ->
+        val loaded = stems ?: return@StemPeaks FloatArray(0)
+        com.pocketstudio.app.remix.stemPeaksFrom(loaded.frames) { s, start, count -> loaded.extract(s, start, count) }.peaks(stem, framesPerBucket)
+    }
+
     /** Polls the playhead about 30 times a second while the Remix screen is visible. */
     suspend fun pollStemPosition() {
         if (!NativeEngine.isAvailable) return

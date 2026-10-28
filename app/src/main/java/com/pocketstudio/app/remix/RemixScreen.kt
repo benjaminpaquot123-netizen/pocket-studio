@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
@@ -84,6 +85,8 @@ class RemixUi(
     val memoryProblem: String? = null,
     /** [memoryProblem] is the device's size: checking again would change nothing. */
     val memoryNever: Boolean = false,
+    /** The stem board of the song in the project (null: its stems are not loaded yet). */
+    val board: StemBoardUi? = null,
 )
 
 class RemixActions(
@@ -118,11 +121,20 @@ class RemixActions(
     val checkMemory: () -> Unit = {},
     /** The effects box of the remix's strip (the live pads play there too); null: no button. */
     val effects: (() -> Unit)? = null,
+    /** What the stem board's buttons do (« Écouter », « → Pad »…). */
+    val board: StemBoardActions = NoStemBoardActions,
 )
 
 /** Remix: split a song into drums, bass, other and vocals, then listen to each part. */
 @Composable
 fun RemixScreen(ui: RemixUi, actions: RemixActions) {
+    // The stem board takes the whole page while it is open (« ← » or Back closes it).
+    var boardOpen by rememberSaveable { mutableStateOf(false) }
+    if (boardOpen && ui.board != null) {
+        StemBoard(ui.board, actions.board, onClose = { boardOpen = false })
+        return
+    }
+    val openBoard = { boardOpen = true }
     // On a tablet: the remix in the project and a new separation on the left, the separated songs on the right.
     // Nothing separated yet: one column at a reading width.
     if (ui.sets.isEmpty()) {
@@ -130,20 +142,20 @@ fun RemixScreen(ui: RemixUi, actions: RemixActions) {
             Column(
                 Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) { RemixStart(ui, actions) }
+            ) { RemixStart(ui, actions, openBoard) }
         }
     } else {
         com.pocketstudio.ui.AdaptivePanes(
             spacing = 12.dp,
-            first = { RemixStart(ui, actions) },
+            first = { RemixStart(ui, actions, openBoard) },
             second = { ui.sets.forEach { set -> StemCard(set, ui.preview?.takeIf { it.setId == set.id }, ui.remix.setId == set.id, actions) } },
         )
     }
 }
 
 @Composable
-private fun RemixStart(ui: RemixUi, actions: RemixActions) {
-    if (ui.remix.setId != null) InProject(ui, actions)
+private fun RemixStart(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit) {
+    if (ui.remix.setId != null) InProject(ui, actions, openBoard)
     NeonCard(modifier = Modifier.testTag("remix_start")) {
         SectionLabel(tr("Séparer une chanson"), help = Glossary.REMIX)
         Text(
@@ -212,7 +224,7 @@ private fun Progress(text: String, fraction: Float?, cancel: () -> Unit) {
 }
 
 @Composable
-private fun InProject(ui: RemixUi, actions: RemixActions) {
+private fun InProject(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit) {
     val r = ui.remix
     var padBars by rememberSaveable { mutableIntStateOf(1) }
     NeonCard(modifier = Modifier.testTag("remix_project")) {
@@ -239,6 +251,13 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
                 "${clock(now)} / ${clock(ov.frames)}" + if (ui.position < 0) " · " + tr("départ") else "",
                 style = MonoStyle, color = Neon.TextSecondary,
             )
+        }
+        if (ui.board != null) {
+            // The big curves of each stem, to choose a stretch and send it anywhere.
+            Button(onClick = openBoard, modifier = Modifier.fillMaxWidth().testTag("remix_open_board")) {
+                Icon(Icons.Filled.GraphicEq, contentDescription = null)
+                Text(" " + tr("Ouvrir le tableau des pistes"))
+            }
         }
         if (ui.remixLoading) {
             Text(tr("Chargement des pistes…"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)

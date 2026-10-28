@@ -2797,6 +2797,11 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     position = stemPosition,
                                     memoryProblem = remixMemory,
                                     memoryNever = remixMemoryNever,
+                                    board = overview?.let { ov ->
+                                        project.remix.setId?.let { id ->
+                                            com.pocketstudio.app.remix.StemBoardUi(id, project.remix.name, ov.frames, project.remix.songBpm, project.remix.firstBeat, rhythmVm.boardPeaks)
+                                        }
+                                    },
                                 ),
                                 RemixActions(
                                     effects = { fxChannel = 3 },

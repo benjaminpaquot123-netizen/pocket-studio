@@ -7,8 +7,9 @@
 
 ## Prochaine étape exacte
 1. Lot « tuto 3 » en cours (brief : scratchpad `humain/FIX-BRIEF-T3.md`) : équipe Écran (branche fx-t3e) et équipe Contenu (branche fx-t3c) corrigent ce qu'ont trouvé les testeurs humains (docs/testeur-humain/). Ensuite : fusion dans fx-int, tests complets, 2e passage des deux testeurs (`scripts/human-tester.sh`), puis résultat + APK 228 envoyés ensemble à Benjamin (versionCode > 227, `scripts/local-release.sh`).
-2. Plus tard (réponse 1A) : ajouts musicaux de Karim au tuto (basse question-réponse et wobble, préparation du drop, 2e drop qui change la basse) ; tuto des autres styles ; traductions du tuto et du Mode retours ; Mode retours désactivé par défaut avant toute version publique.
-3. PR de la branche vers main (CI de GitHub), Play Store et démo seulement à la demande de Benjamin.
+2. Juste après la boucle du tuto (réponses 1A 2A 3B) : proposer de télécharger tous les packs à la première ouverture (après la langue, « Oui / Plus tard », Wi-Fi seulement par défaut, en arrière-plan).
+3. Plus tard (réponse 1A) : ajouts musicaux de Karim au tuto (basse question-réponse et wobble, préparation du drop, 2e drop qui change la basse) ; tuto des autres styles (chacun avec le kit et les sons de son style) ; traductions du tuto et du Mode retours ; Mode retours désactivé par défaut avant toute version publique.
+4. PR de la branche vers main (CI de GitHub), Play Store et démo seulement à la demande de Benjamin.
 
 **Phase 0 fusionnée le 2026-10-18, phase 1 fusionnée le 2026-10-19 (feu vert de Benjamin).** Phase en cours : 2 (sampler et notes).
 

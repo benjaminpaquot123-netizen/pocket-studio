@@ -1303,7 +1303,7 @@ COMMON = [
          kind="check", simple=True, applicable=["start:any"], lexicon="",
          proposals=[open_spot("remix", T("Remixer une chanson", "Remix a song", "Een nummer remixen"), T("Choisis un fichier de ton téléphone.", "Pick a file from your phone.", "Kies een bestand van je telefoon."), "remix"),
                     dict(keep(T("Pas maintenant", "Not now", "Niet nu"), T("Il t'attend dans Sons › Remix, quand tu veux.", "It waits for you in Sounds › Remix, whenever you like.", "Het wacht op je in Klanken › Remix, wanneer je wilt.")),
-                         simpleWhy=T("Il t'attend dans ⋮ › Remixer une chanson, quand tu veux.", "It waits for you in ⋮ › Remix a song, whenever you like.", "Het wacht op je in ⋮ › Een nummer remixen, wanneer je wilt."))]),
+                         simpleWhy=T("Il t'attend dans ⋮ › Extraire la voix d'une chanson, quand tu veux.", "It waits for you in ⋮ › Extract the vocals from a song, whenever you like.", "Het wacht op je in ⋮ › De zang uit een nummer halen, wanneer je wilt."))]),
 ]
 
 # The stage of « Pour commencer » (GuideStages.START_TITLE, START_SHORT), shown by the app.

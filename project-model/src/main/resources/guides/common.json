@@ -427,7 +427,7 @@
      "id": "keep",
      "label": "Pas maintenant",
      "why": "Il t'attend dans Sons › Remix, quand tu veux.",
-     "simpleWhy": "Il t'attend dans ⋮ › Remixer une chanson, quand tu veux.",
+     "simpleWhy": "Il t'attend dans ⋮ › Extraire la voix d'une chanson, quand tu veux.",
      "action": {
       "type": "keep"
      }

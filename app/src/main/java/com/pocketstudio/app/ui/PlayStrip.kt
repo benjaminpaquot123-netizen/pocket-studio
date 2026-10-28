@@ -47,6 +47,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
+import kotlinx.coroutines.flow.update
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalDensity
@@ -314,9 +317,15 @@ private fun LoopPartChip(on: Boolean, set: (Boolean) -> Unit, iconOnly: Boolean 
     val shape = RoundedCornerShape(16.dp)
     val state = if (on) tr("activé") else tr("désactivé")
     val content = if (on) Neon.OnAccent else Neon.TextSecondary
+    // Remix testers (Mehdi): the Mode retours' bubble started right over it; it now starts clear of it.
+    androidx.compose.runtime.DisposableEffect(Unit) {
+        onDispose { com.pocketstudio.app.retours.Retours.keepClear.update { it - "top_loop_part" } }
+    }
     // A plain Row, not a Material component: its touch target is made 48 dp here.
     Box(
-        Modifier.control().clip(shape)
+        Modifier.control()
+            .onGloballyPositioned { c -> com.pocketstudio.app.retours.Retours.keepClear.update { it + ("top_loop_part" to c.boundsInWindow()) } }
+            .clip(shape)
             .toggleable(value = on, role = Role.Switch, onValueChange = set)
             .semantics {
                 contentDescription = tr("Boucler la partie au lieu de jouer le morceau")

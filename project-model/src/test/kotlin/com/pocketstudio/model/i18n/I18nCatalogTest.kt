@@ -224,6 +224,7 @@ class I18nCatalogTest {
             "AutomationCard.kt: it",
             "ChordPads.kt: key.scale.label",
             "SongChords.kt: base.harmony.chordKey.scale.label",  // a scale name (Scale, checked by ModelTextsTest)
+            "RemixScreen.kt: h.scale.label",  // a scale name (Scale, checked by ModelTextsTest)
             "WhatPlays.kt: it",  // an effect's blurb (EffectType, checked by ModelTextsTest)
             "WhatPlays.kt: e.label",
             "WhatPlays.kt: Macros.NAMES[a.macro]",

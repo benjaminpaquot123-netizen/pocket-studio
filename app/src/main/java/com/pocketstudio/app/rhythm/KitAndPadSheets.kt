@@ -216,7 +216,8 @@ fun PadSheetContent(ui: PadSheetUi, actions: PadSheetActions, close: () -> Unit)
             OutlinedButton(onClick = actions.more, modifier = Modifier.weight(1f).heightIn(min = 56.dp).testTag("pad_sound_more")) {
                 Icon(Icons.Filled.LibraryMusic, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(6.dp))
-                Text(tr("Tous les sons…"), maxLines = 1)
+                // Remix testers (Mehdi): « Tous les » cut at one line next to the icon; whole, on two if it must.
+                Text(tr("Tous les sons…"), maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
             }
         }
         // Volume: 0.8 is the kit's own level (100 %).

@@ -183,7 +183,7 @@ private fun OtherStarts(starters: List<ProjectStarter>, quick: QuickUi, actions:
         }
     }
     actions.remix?.let { remix ->
-        StarterRow(tr("Remixer une chanson"), tr("L'appli sépare une chanson en batterie, basse, voix et le reste : rejoue-la à ta façon."), "remix",
+        StarterRow(tr("Extraire la voix d'une chanson"), tr("L'appli sépare une chanson en batterie, basse, voix et le reste : rejoue-la à ta façon."), "remix",
             Icons.Filled.Album, !busy) { leave(); remix() }
     }
     StarterRow(tr("Importer un projet (.zip)"), tr("Un projet envoyé depuis un autre téléphone."), "import", Icons.Filled.FolderOpen, !busy) { actions.importZip() }

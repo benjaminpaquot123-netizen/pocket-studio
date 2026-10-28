@@ -84,6 +84,8 @@ data class PacksUi(
     /** Pack id → download progress 0..1. */
     val downloading: Map<String, Float> = emptyMap(),
     val message: String? = null,
+    /** Remix testers: « C'est prêt » once a pack asked for is on the phone (a download used to end in silence). */
+    val readyNote: String? = null,
     /** Ids of the index the user has already been offered (« Tout compléter » brings the others). */
     val seen: Set<String> = emptySet(),
     /** « Tout télécharger » / « Tout compléter » running, if any. */
@@ -352,7 +354,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         if (_packs.value.queue != null) return
         val stop = AtomicBoolean(false).also { cancelled[id] = it }
         markSeen(listOf(id))
-        _packs.update { it.copy(downloading = it.downloading + (id to 0f), message = null) }
+        _packs.update { it.copy(downloading = it.downloading + (id to 0f), message = null, readyNote = null) }
         viewModelScope.launch {
             val app = getApplication<Application>()
             val error = withContext(Dispatchers.IO + NonCancellable) {
@@ -371,6 +373,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                         is VerifiedDownload.CancelledException -> null
                         else -> tr("Le pack « %s » n'a pas pu être téléchargé : %s.", entry.name, error.forUser()).also { m -> AppLog.add(m) }
                     },
+                    readyNote = if (error == null) tr("C'est prêt : le pack « %s » est sur ton téléphone.", entry.name) else it.readyNote,
                 )
             }
             if (error == null) {
@@ -403,7 +406,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun dismissMessage() = _packs.update { it.copy(message = null) }
+    fun dismissMessage() = _packs.update { it.copy(message = null, readyNote = null) }
 
     /** A line for the library's notice spot (shown at the top of the library). */
     fun notice(text: String) = _packs.update { it.copy(message = text) }
@@ -449,6 +452,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             }
             if (pcm == null) {
                 AppLog.add("Écoute impossible : $ref")
+                // Remix testers (Sarah, style ▶ twice): a preview that cannot be made says so, not nothing at all.
+                _packs.update { it.copy(message = tr("Cette écoute n'a pas pu être préparée : réessaie dans un instant.")) }
                 return@launch
             }
             // A line tried with the beat (a drum line, the 303) goes round until stopped, to compare in time.

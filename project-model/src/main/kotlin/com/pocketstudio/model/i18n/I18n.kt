@@ -84,6 +84,8 @@ object I18n {
         "write", "instruments", "learn", "nav", "bugreport", "guide", "a11y", "brand", "plurals", "listen", "tuto", "mixsimple", "retours",
         "remixvoix",
         "remixroute",
+        // Remix testers (lot « remix 1 »): finding and understanding the Remix.
+        "extract",
     )
 
     @Volatile

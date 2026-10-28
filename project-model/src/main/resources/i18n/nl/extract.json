@@ -1,0 +1,21 @@
+{
+  "Extraire la voix d'une chanson": "De zang uit een nummer halen",
+  "Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste.": "Kies een nummer op je telefoon: de app scheidt zang, drums, bas en de rest.",
+  "Il t'attend dans ⋮ › Extraire la voix d'une chanson, quand tu veux.": "Het wacht op je in ⋮ › De zang uit een nummer halen, wanneer je wilt.",
+  "C'est prêt : le pack « %s » est sur ton téléphone.": "Klaar: het pack ‘%s’ staat op je telefoon.",
+  "Cette écoute n'a pas pu être préparée : réessaie dans un instant.": "Dit fragment kon niet worden voorbereid: probeer het zo nog eens.",
+  "C'est prêt : le modèle est sur ton téléphone. Choisis une chanson.": "Klaar: het model staat op je telefoon. Kies een nummer.",
+  "Départ dans la chanson : mesure %d": "Start in het nummer: maat %d",
+  "Caler au tempo": "Op tempo zetten",
+  "Tonalité : projet en %1$s, chanson en %2$s": "Toonsoort: project in %1$s, nummer in %2$s",
+  "Ton projet : %s": "Je project: %s",
+  "C'est prêt : %s, une copie est aussi dans Musique › BenStudio.": "Klaar: %s, er staat ook een kopie in Muziek › BenStudio.",
+  "C'est prêt : %s. Choisis l'appli pour l'envoyer.": "Klaar: %s. Kies de app om het te versturen.",
+  "BPM : la vitesse du morceau, en battements par minute.": "BPM: de snelheid van het nummer, in tellen per minuut.",
+  "Two-step : le nom de ce rythme de batterie, deux coups par mesure.": "Two-step: de naam van dit drumritme, twee kicks per maat.",
+  "Hoover : un gros synthé qui hurle, le son des raves.": "Hoover: een dikke gillende synth, het geluid van raves.",
+  "Sub : la basse la plus grave, celle qu'on sent dans le ventre.": "Sub: de laagste bas, die je in je buik voelt.",
+  "Octave : la même note, plus grave ou plus aiguë.": "Octaaf: dezelfde noot, lager of hoger.",
+  "Creux": "Hol",
+  "épais": "dik"
+}

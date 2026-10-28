@@ -1,0 +1,21 @@
+{
+  "Extraire la voix d'une chanson": "Ambil vokal dari lagu",
+  "Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste.": "Pilih lagu di ponselmu: aplikasi memisahkan vokal, drum, bass, dan sisanya.",
+  "Il t'attend dans ⋮ › Extraire la voix d'une chanson, quand tu veux.": "Menunggumu di ⋮ › Ambil vokal dari lagu, kapan saja.",
+  "C'est prêt : le pack « %s » est sur ton téléphone.": "Siap: pack “%s” sudah ada di ponselmu.",
+  "Cette écoute n'a pas pu être préparée : réessaie dans un instant.": "Pratinjau ini tidak bisa disiapkan: coba lagi sebentar lagi.",
+  "C'est prêt : le modèle est sur ton téléphone. Choisis une chanson.": "Siap: model sudah ada di ponselmu. Pilih lagu.",
+  "Départ dans la chanson : mesure %d": "Mulai di lagu: bar %d",
+  "Caler au tempo": "Sesuaikan tempo",
+  "Tonalité : projet en %1$s, chanson en %2$s": "Kunci nada: proyek di %1$s, lagu di %2$s",
+  "Ton projet : %s": "Proyekmu: %s",
+  "C'est prêt : %s, une copie est aussi dans Musique › BenStudio.": "Siap: %s, salinannya juga ada di Music › BenStudio.",
+  "C'est prêt : %s. Choisis l'appli pour l'envoyer.": "Siap: %s. Pilih aplikasi untuk mengirimnya.",
+  "BPM : la vitesse du morceau, en battements par minute.": "BPM: kecepatan lagu, dalam ketukan per menit.",
+  "Two-step : le nom de ce rythme de batterie, deux coups par mesure.": "Two-step: nama ritme drum ini, dua pukulan per bar.",
+  "Hoover : un gros synthé qui hurle, le son des raves.": "Hoover: synth besar yang menjerit, suara khas rave.",
+  "Sub : la basse la plus grave, celle qu'on sent dans le ventre.": "Sub: bass paling rendah, yang terasa di perut.",
+  "Octave : la même note, plus grave ou plus aiguë.": "Oktaf: nada yang sama, lebih rendah atau lebih tinggi.",
+  "Creux": "Hampa",
+  "épais": "tebal"
+}

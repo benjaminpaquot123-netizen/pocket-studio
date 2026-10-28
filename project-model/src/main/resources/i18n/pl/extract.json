@@ -1,0 +1,21 @@
+{
+  "Extraire la voix d'une chanson": "Wyodrębnij wokal z piosenki",
+  "Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste.": "Wybierz piosenkę z telefonu: aplikacja oddzieli wokal, perkusję, bas i resztę.",
+  "Il t'attend dans ⋮ › Extraire la voix d'une chanson, quand tu veux.": "Czeka na ciebie w ⋮ › Wyodrębnij wokal z piosenki, kiedy zechcesz.",
+  "C'est prêt : le pack « %s » est sur ton téléphone.": "Gotowe: paczka „%s” jest w twoim telefonie.",
+  "Cette écoute n'a pas pu être préparée : réessaie dans un instant.": "Nie udało się przygotować odsłuchu: spróbuj za chwilę.",
+  "C'est prêt : le modèle est sur ton téléphone. Choisis une chanson.": "Gotowe: model jest w twoim telefonie. Wybierz piosenkę.",
+  "Départ dans la chanson : mesure %d": "Start w piosence: takt %d",
+  "Caler au tempo": "Dopasuj do tempa",
+  "Tonalité : projet en %1$s, chanson en %2$s": "Tonacja: projekt w %1$s, piosenka w %2$s",
+  "Ton projet : %s": "Twój projekt: %s",
+  "C'est prêt : %s, une copie est aussi dans Musique › BenStudio.": "Gotowe: %s, kopia jest też w Muzyka › BenStudio.",
+  "C'est prêt : %s. Choisis l'appli pour l'envoyer.": "Gotowe: %s. Wybierz aplikację, żeby wysłać.",
+  "BPM : la vitesse du morceau, en battements par minute.": "BPM: szybkość utworu, w uderzeniach na minutę.",
+  "Two-step : le nom de ce rythme de batterie, deux coups par mesure.": "Two-step: nazwa tego rytmu perkusji, dwa uderzenia na takt.",
+  "Hoover : un gros synthé qui hurle, le son des raves.": "Hoover: duży, wyjący syntezator, brzmienie rave'ów.",
+  "Sub : la basse la plus grave, celle qu'on sent dans le ventre.": "Sub: najniższy bas, ten, który czujesz w brzuchu.",
+  "Octave : la même note, plus grave ou plus aiguë.": "Oktawa: ta sama nuta, niżej albo wyżej.",
+  "Creux": "Pusty",
+  "épais": "gęsty"
+}

@@ -1,0 +1,21 @@
+{
+  "Extraire la voix d'une chanson": "从歌曲中提取人声",
+  "Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste.": "从手机里选一首歌：应用会分离出人声、鼓、贝斯和其余部分。",
+  "Il t'attend dans ⋮ › Extraire la voix d'une chanson, quand tu veux.": "它在 ⋮ › 从歌曲中提取人声 里等你，随时都行。",
+  "C'est prêt : le pack « %s » est sur ton téléphone.": "好了：音色包“%s”已在你的手机上。",
+  "Cette écoute n'a pas pu être préparée : réessaie dans un instant.": "这段试听没能准备好：稍后再试一次。",
+  "C'est prêt : le modèle est sur ton téléphone. Choisis une chanson.": "好了：模型已在你的手机上。选一首歌吧。",
+  "Départ dans la chanson : mesure %d": "歌曲起点：第 %d 小节",
+  "Caler au tempo": "对齐速度",
+  "Tonalité : projet en %1$s, chanson en %2$s": "调性：项目为 %1$s，歌曲为 %2$s",
+  "Ton projet : %s": "你的项目：%s",
+  "C'est prêt : %s, une copie est aussi dans Musique › BenStudio.": "好了：%s，副本也在 音乐 › BenStudio 里。",
+  "C'est prêt : %s. Choisis l'appli pour l'envoyer.": "好了：%s。选择用来发送的应用。",
+  "BPM : la vitesse du morceau, en battements par minute.": "BPM：歌曲的速度，即每分钟的拍数。",
+  "Two-step : le nom de ce rythme de batterie, deux coups par mesure.": "Two-step：这种鼓点节奏的名字，每小节两下。",
+  "Hoover : un gros synthé qui hurle, le son des raves.": "Hoover：一种嘶吼般的粗厚合成器音色，锐舞派对的声音。",
+  "Sub : la basse la plus grave, celle qu'on sent dans le ventre.": "Sub：最低沉的贝斯，能在肚子里感觉到的那种。",
+  "Octave : la même note, plus grave ou plus aiguë.": "八度：同一个音，更低或更高。",
+  "Creux": "空洞",
+  "épais": "厚实"
+}

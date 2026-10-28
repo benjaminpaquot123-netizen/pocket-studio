@@ -282,7 +282,7 @@ abstract class HumanTester(private val seat: String) {
     }.getOrDefault(false)
 
     /** The Remix page's buttons that use the engine, by their tags' start. */
-    private val remixControls = listOf("use_", "listen_", "stem_", "remix_play", "remix_bar_next", "waveform_", "remix_follow_tempo", "remix_clear")
+    private val remixControls = listOf("use_", "listen_", "stem_", "remix_play", "remix_bar_next", "remix_bar_prev", "waveform_", "remix_follow_tempo", "remix_clear")
 
     private fun touchesRemixControl(x: Float, y: Float): Boolean = runCatching {
         compose.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsProperties.TestTag)).fetchSemanticsNodes().any { n ->
@@ -476,7 +476,18 @@ abstract class HumanTester(private val seat: String) {
         services()
         engineDone()
         shareMenu()
+        toasts()
     }
+
+    /** A Toast is on the phone's screen for a few seconds but in no screenshot: the bench says what it reads (lot « remix 1 »). */
+    private fun toasts() {
+        val shown = org.robolectric.shadows.ShadowToast.shownToastCount()
+        if (shown <= toastsSeen) return
+        org.robolectric.shadows.ShadowToast.getTextOfLatestToast()?.let { say("Un petit message s'affiche quelques secondes en bas de l'écran : « $it ».") }
+        toastsSeen = shown
+    }
+
+    private var toastsSeen = 0
 
     private fun show(dir: File, n: Int) {
         val shot = File(dir, "screen-$n.png")

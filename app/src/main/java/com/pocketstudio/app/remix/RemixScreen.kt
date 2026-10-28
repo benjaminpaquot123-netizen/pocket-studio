@@ -22,6 +22,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.runtime.remember
 import androidx.compose.ui.text.drawText
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.PlayArrow
@@ -67,6 +68,7 @@ import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.roundToInt
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.i18n.inSentence
 
 class RemixUi(
     val modelInstalled: Boolean,
@@ -100,6 +102,8 @@ class RemixUi(
     val cut: RemixCutUi? = null,
     /** Every pad is used: « → Pad » asks before covering pad [PadAsk.lane]. */
     val padAsk: PadAsk? = null,
+    /** Remix testers (Mehdi): the project's key (« Fa mineur »), shown next to the song's; null: none. */
+    val projectKey: String? = null,
 )
 
 /**
@@ -190,7 +194,7 @@ fun RemixScreen(ui: RemixUi, actions: RemixActions) {
         com.pocketstudio.ui.AdaptivePanes(
             spacing = 12.dp,
             first = { RemixStart(ui, actions) },
-            second = { ui.sets.forEach { set -> StemCard(set, ui.preview?.takeIf { it.setId == set.id }, ui.remix.setId == set.id, actions) } },
+            second = { ui.sets.forEach { set -> StemCard(set, ui.preview?.takeIf { it.setId == set.id }, ui.remix.setId == set.id, actions, projectLine(ui)) } },
         )
     }
 }
@@ -205,6 +209,9 @@ private fun RemixStart(ui: RemixUi, actions: RemixActions) {
                 tr("Compte quelques minutes ; tu peux éteindre l'écran."),
             style = MaterialTheme.typography.bodyMedium,
         )
+        // Remix testers: the model's download ended in silence (its button just went away): « C'est prêt » once it is here.
+        var modelDownloaded by rememberSaveable { mutableStateOf(false) }
+        if (ui.state is SeparationState.DownloadingModel) modelDownloaded = true
         when (val s = ui.state) {
             is SeparationState.DownloadingModel -> Progress(tr("Téléchargement du modèle… %d %%", (s.progress * 100).roundToInt()), s.progress, actions.cancel)
             is SeparationState.Decoding -> Progress(tr("Lecture de « %s »…", s.name), null, actions.cancel)
@@ -242,6 +249,12 @@ private fun RemixStart(ui: RemixUi, actions: RemixActions) {
                         Text(tr("Télécharger le modèle (%s)", SeparationModel.SPEC.sizeLabel))
                     }
                 }
+                if (modelDownloaded && ui.modelInstalled && ui.sets.isEmpty()) {
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("remix_model_ready")) {
+                        Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp))
+                        Text(tr("C'est prêt : le modèle est sur ton téléphone. Choisis une chanson."), color = Neon.Acid, style = MaterialTheme.typography.bodyMedium)
+                    }
+                }
                 Button(onClick = actions.pickSong, modifier = Modifier.fillMaxWidth().testTag("remix_pick")) {
                     Text(tr("Choisir une chanson"))
                 }
@@ -257,10 +270,11 @@ private fun RemixStart(ui: RemixUi, actions: RemixActions) {
 @Composable
 private fun Progress(text: String, fraction: Float?, cancel: () -> Unit) {
     Text(text, modifier = Modifier.testTag("remix_progress"))
+    // Remix testers: the part still to go in a plain grey (it was the accent too: 0 % looked full).
     if (fraction == null) {
-        LinearProgressIndicator(Modifier.fillMaxWidth().padding(vertical = 4.dp), color = Neon.Cyan)
+        LinearProgressIndicator(Modifier.fillMaxWidth().padding(vertical = 4.dp), color = Neon.Cyan, trackColor = Neon.SurfaceHigh)
     } else {
-        LinearProgressIndicator(progress = { fraction }, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), color = Neon.Cyan)
+        LinearProgressIndicator(progress = { fraction }, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), color = Neon.Cyan, trackColor = Neon.SurfaceHigh)
     }
     OutlinedButton(onClick = cancel, modifier = Modifier.fillMaxWidth().testTag("remix_cancel")) { Text(tr("Annuler")) }
 }
@@ -278,7 +292,7 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
             ui.overview?.let { ov ->
                 val now = if (ui.position >= 0) ui.position else r.startFrame(SAMPLE_RATE)
                 Text(
-                    "${clock(now)} / ${clock(ov.frames)}",
+                    "${clock(now)} / ${clock(ov.frames)}" + if (ui.position < 0) " · " + tr("départ") else "",
                     style = MonoStyle, color = Neon.TextSecondary, maxLines = 1, modifier = Modifier.weight(1f),
                 )
             } ?: Spacer(Modifier.weight(1f))
@@ -286,9 +300,15 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
                 TextButton(onClick = open, modifier = Modifier.testTag("remix_effects")) { Text(tr("Effets")) }
             }
         }
+        // Remix testers (Mehdi): the project's key was hidden in Structure › Parties; both keys where the voice is worked.
+        val songKey = ui.sets.firstOrNull { it.id == r.setId }?.info?.keyLabel
+        if (ui.projectKey != null && songKey != null) {
+            Text(tr("Tonalité : projet en %1\$s, chanson en %2\$s", ui.projectKey, songKey), style = MaterialTheme.typography.bodySmall,
+                color = Neon.TextSecondary, modifier = Modifier.testTag("remix_keys"))
+        }
         if (ui.remixLoading) {
             Text(tr("Chargement des pistes…"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-            LinearProgressIndicator(Modifier.fillMaxWidth(), color = Neon.Magenta)
+            LinearProgressIndicator(Modifier.fillMaxWidth(), color = Neon.Magenta, trackColor = Neon.SurfaceHigh)
         }
         if (r.songBpm > 0 && kotlin.math.abs(ui.projectBpm - r.songBpm) > 0.05) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -298,11 +318,15 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
                     style = MaterialTheme.typography.bodySmall, color = if (r.followTempo) Neon.TextSecondary else Neon.Amber,
                     modifier = Modifier.weight(1f),
                 )
-                Switch(checked = r.followTempo, onCheckedChange = actions.setFollowTempo, modifier = Modifier.testTag("remix_follow_tempo"))
+                // Remix testers (Mehdi): the switch had no name until it was on.
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(start = 8.dp)) {
+                    Switch(checked = r.followTempo, onCheckedChange = actions.setFollowTempo, modifier = Modifier.testTag("remix_follow_tempo"))
+                    Text(tr("Caler au tempo"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, modifier = Modifier.testTag("remix_follow_tempo_label"))
+                }
             }
             if (ui.stretching) {
                 Text(tr("Calage du morceau au tempo…"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-                LinearProgressIndicator(Modifier.fillMaxWidth(), color = Neon.Magenta)
+                LinearProgressIndicator(Modifier.fillMaxWidth(), color = Neon.Magenta, trackColor = Neon.SurfaceHigh)
             }
         }
         ui.plan?.takeIf { it.parts.isNotEmpty() }?.let { plan -> Placement(plan, r.atStep, ui.songSteps, actions.setAt) }
@@ -553,8 +577,21 @@ private fun DeleteStemsDialog(set: StemSet, inProject: Boolean, onDelete: () -> 
     }
 }
 
+/** « Fa mineur »: the project's key; null when its scale is « Libre ». */
+fun keyLabel(h: com.pocketstudio.model.Harmony, english: Boolean): String? = when (h.scale) {
+    com.pocketstudio.model.Scale.Off -> null
+    // Worded as the song's (« La mineur », [SongInfo.keyLabel]), to compare at a glance.
+    com.pocketstudio.model.Scale.Major -> tr("%s majeur", h.keyName(english))
+    com.pocketstudio.model.Scale.Minor -> tr("%s mineur", h.keyName(english))
+    else -> "${h.keyName(english)} ${tr(h.scale.label).inSentence()}"
+}
+
+/** « Ton projet : 174 BPM · Fa mineur », to compare with the song before playing it along. */
+private fun projectLine(ui: RemixUi): String =
+    tr("Ton projet : %s", listOfNotNull("%.0f BPM".format(ui.projectBpm), ui.projectKey).joinToString(" · "))
+
 @Composable
-private fun StemCard(set: StemSet, preview: StemPreview?, inProject: Boolean, actions: RemixActions) {
+private fun StemCard(set: StemSet, preview: StemPreview?, inProject: Boolean, actions: RemixActions, project: String? = null) {
     var confirmDelete by rememberSaveable(set.id) { mutableStateOf(false) }
     NeonCard(modifier = Modifier.testTag("stems_${set.id}")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -573,6 +610,9 @@ private fun StemCard(set: StemSet, preview: StemPreview?, inProject: Boolean, ac
             }
         }
         if (confirmDelete) DeleteStemsDialog(set, inProject, onDelete = { actions.delete(set) }, onDismiss = { confirmDelete = false })
+        if (!inProject && project != null) {
+            Text(project, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("song_project_${set.id}"))
+        }
         if (!inProject) {
             Button(onClick = { actions.useSong(set) }, modifier = Modifier.fillMaxWidth().testTag("use_${set.id}")) {
                 Text(tr("Jouer avec le projet"))
@@ -598,7 +638,7 @@ private fun StemCard(set: StemSet, preview: StemPreview?, inProject: Boolean, ac
         if (playing && preview.frames > 0) {
             LinearProgressIndicator(
                 progress = { (preview.position.coerceAtLeast(0).toFloat() / preview.frames).coerceIn(0f, 1f) },
-                modifier = Modifier.fillMaxWidth(), color = Neon.Acid,
+                modifier = Modifier.fillMaxWidth(), color = Neon.Acid, trackColor = Neon.SurfaceHigh,
             )
         }
         // One big switch per part: lit = heard. Switching never stops the others.

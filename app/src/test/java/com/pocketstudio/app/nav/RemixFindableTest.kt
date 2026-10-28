@@ -7,6 +7,9 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.assertTextContains
+import org.junit.Assert.assertTrue
 import com.pocketstudio.app.ui.withinGestures
 import org.junit.After
 import org.junit.Rule
@@ -48,6 +51,29 @@ class RemixFindableTest {
         assertRemix()
     }
 
+    /**
+     * Remix testers (Sarah installed the app to extract a voice): the welcome has a way in, with the
+     * word « voix »: a project of its own (« Remix »), opened on the Remix page (as « Que veux-tu faire ? » does).
+     */
+    @Test
+    fun fromTheWelcomeItIsOneTouch() {
+        h.start(simple = true, firstLaunch = true)
+        h.awaitTag("welcome_remix")
+        val before = com.pocketstudio.app.projects.CurrentProject.get(h.app)
+        compose.onNodeWithText("Extraire la voix d'une chanson").assertExists()
+        // The last card of the welcome (its order kept, Benjamin's): one scroll on a small phone, then one touch.
+        compose.withinGestures("Extraire la voix (accueil)", FROM_A_SPACE) { tap("welcome_remix") }
+        val end = System.currentTimeMillis() + 10_000
+        while (com.pocketstudio.app.projects.CurrentProject.get(h.app) == before) {
+            check(System.currentTimeMillis() < end) { "no project made for the Remix" }
+            Thread.sleep(50)
+            org.robolectric.shadows.ShadowLooper.idleMainLooper()
+        }
+        // The project opens (the activity is rebuilt on it) with the Remix page asked for.
+        assertTrue(com.pocketstudio.app.remix.SeparationJob.openRemix.value)
+        com.pocketstudio.app.remix.SeparationJob.openHandled()
+    }
+
     @Test
     fun fromStructureItIsTwoTouches() {
         h.start()
@@ -65,6 +91,7 @@ class RemixFindableTest {
         h.start(simple = true)
         compose.withinGestures("Remixer une chanson (Mode simple)", FROM_A_SPACE) {
             tap("top_more")
+            compose.onNodeWithTag("more_remix").assertTextContains("Extraire la voix d'une chanson")
             tap("more_remix")
         }
         assertRemix()

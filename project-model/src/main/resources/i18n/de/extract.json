@@ -1,0 +1,21 @@
+{
+  "Extraire la voix d'une chanson": "Die Stimme aus einem Song holen",
+  "Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste.": "Wähle einen Song auf dem Handy: Die App trennt Stimme, Schlagzeug, Bass und den Rest.",
+  "Il t'attend dans ⋮ › Extraire la voix d'une chanson, quand tu veux.": "Er wartet unter ⋮ › Die Stimme aus einem Song holen auf dich, wann immer du willst.",
+  "C'est prêt : le pack « %s » est sur ton téléphone.": "Fertig: Das Pack „%s“ ist auf deinem Handy.",
+  "Cette écoute n'a pas pu être préparée : réessaie dans un instant.": "Diese Hörprobe konnte nicht vorbereitet werden: Versuch es gleich noch einmal.",
+  "C'est prêt : le modèle est sur ton téléphone. Choisis une chanson.": "Fertig: Das Modell ist auf deinem Handy. Wähle einen Song.",
+  "Départ dans la chanson : mesure %d": "Start im Song: Takt %d",
+  "Caler au tempo": "Ans Tempo anpassen",
+  "Tonalité : projet en %1$s, chanson en %2$s": "Tonart: Projekt in %1$s, Song in %2$s",
+  "Ton projet : %s": "Dein Projekt: %s",
+  "C'est prêt : %s, une copie est aussi dans Musique › BenStudio.": "Fertig: %s, eine Kopie liegt auch in Musik › BenStudio.",
+  "C'est prêt : %s. Choisis l'appli pour l'envoyer.": "Fertig: %s. Wähle die App zum Senden.",
+  "BPM : la vitesse du morceau, en battements par minute.": "BPM: das Tempo des Songs, in Schlägen pro Minute.",
+  "Two-step : le nom de ce rythme de batterie, deux coups par mesure.": "Two-Step: der Name dieses Schlagzeugrhythmus, zwei Kicks pro Takt.",
+  "Hoover : un gros synthé qui hurle, le son des raves.": "Hoover: ein großer, heulender Synth, der Sound der Raves.",
+  "Sub : la basse la plus grave, celle qu'on sent dans le ventre.": "Sub: der tiefste Bass, den man im Bauch spürt.",
+  "Octave : la même note, plus grave ou plus aiguë.": "Oktave: derselbe Ton, tiefer oder höher.",
+  "Creux": "Hohl",
+  "épais": "dick"
+}

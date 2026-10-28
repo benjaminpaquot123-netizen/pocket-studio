@@ -7,6 +7,8 @@ import com.pocketstudio.app.guide.GuideOpen
 import com.pocketstudio.app.learn.LearnViewModel
 import com.pocketstudio.engine.OfflineExport
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.track
 import com.pocketstudio.model.tuto.TutoChapter
 import com.pocketstudio.model.tuto.TutoChecks
 import com.pocketstudio.model.tuto.TutoCourse
@@ -56,10 +58,16 @@ object TutoTestHooks {
 
 /**
  * Where the tutorial sends the screen: the Guide's screen ([open], with its control lit by a short
- * pulsing ring when [spot]), the drum pad to show ([pad]), the notes of track [notes], the
- * tutorial's own key sheet ([keySheet]).
+ * pulsing ring when [spot], brought into view either way), the drum pad to show ([pad]), the notes
+ * of track [notes] (its next dotted note brought into view), the tutorial's own key sheet
+ * ([keySheet]), the effects box of mixer channel [effects] (its send [send] drawn dotted), the
+ * sound settings of instrument track [settings] (not its ready-made sounds), the fader of mixer
+ * channel [strip] (the Mode simple's « Mix » tab).
  */
-data class TutoGo(val open: GuideOpen? = null, val pad: Int? = null, val notes: Int? = null, val keySheet: Boolean = false, val spot: Boolean = true)
+data class TutoGo(
+    val open: GuideOpen? = null, val pad: Int? = null, val notes: Int? = null, val keySheet: Boolean = false, val spot: Boolean = true,
+    val effects: Int? = null, val send: Int? = null, val settings: Int? = null, val strip: Int? = null,
+)
 
 /** « Montre-moi » under way: the target appears ([SHOWING]), stays with its caption ([HOLDING]), then fades and is undone ([FADING]). */
 enum class TutoDemoPhase { SHOWING, HOLDING, FADING }
@@ -208,11 +216,13 @@ class TutoController(
         tick(setOf(u.current.id), advance = true, bravo = false)
     }
 
-    /** Where « Je le fais » goes for [s] (null: nowhere). */
+    /** Where « Je le fais » goes for [s] (null: nowhere): the very control the step asks for, on the track it is about. */
     private fun goFor(s: TutoStep, p: Project, spot: Boolean): TutoGo? {
         if (s.spot.isEmpty()) return null
         val pad = _ui.value?.pad
         val c = s.check
+        val arg = c.substringAfter(':', "")
+        val plain = TutoGo(GuideOpen(s.spot, s.target), pad, spot = spot)
         return when {
             s.spot == KEY_SPOT -> TutoGo(keySheet = true, spot = spot)
             c.startsWith("notes:") || c == "track:sub" -> {
@@ -220,15 +230,35 @@ class TutoController(
                 (TutoChecks.ghostNotes(s, p, t)?.first ?: TutoChecks.trackFor(p, if (c == "track:sub") "sub" else c.substringAfter(':')))
                     ?.let { TutoGo(notes = it, spot = spot) } ?: TutoGo(GuideOpen(s.spot, s.target), spot = spot)
             }
-            else -> TutoGo(GuideOpen(s.spot, s.target), pad, spot = spot)
+            // Testers (lot « tuto 3 »): the filter's « Coupure » is in the sound's settings, not in its ready-made sounds.
+            c.startsWith("changed:synth:") -> TutoChecks.trackFor(p, c.removePrefix("changed:synth:"))?.let { TutoGo(settings = it, spot = spot) } ?: plain
+            // A send or an effect: the effects box of the track the step names (the reverb's send there, dotted).
+            c.startsWith("send:") || c.startsWith("insert:") -> channelOf(p, s.target.ifEmpty { "bass" })
+                ?.let { TutoGo(effects = it, send = if (c.startsWith("send:")) arg.toIntOrNull() else null, spot = spot) } ?: plain
+            // The volumes: the fader of the track the step names first.
+            c == "changed:volumes" -> channelOf(p, s.target.ifEmpty { "pad" })?.let { TutoGo(open = GuideOpen(s.spot, s.target), strip = it, spot = spot) } ?: plain
+            // « Ajouter : » and its buttons, not the parts' list above them.
+            c == "song:order" -> TutoGo(GuideOpen(SONG_ADD_SPOT, ""), spot = spot)
+            else -> plain
         }
     }
 
-    /** « Je le fais »: the screen of the step, its control lit a moment; the panel stays as it is. */
+    /** The mixer channel of [role]'s track ("bass", "pad"…) or pad ("snare"…), null when the project has none. */
+    private fun channelOf(p: Project, role: String): Int? =
+        TutoChecks.trackFor(p, role)?.let(com.pocketstudio.model.InstrumentTrack::mixerChannel)
+            ?: role.takeIf { it in DRUM_ROLES }?.let { com.pocketstudio.model.Mixer.padChannel(TutoChecks.laneOf(it)) }
+
+    /** Where the current step's control is, to bring it into view when the step begins (no ring, the panel as it is). */
+    fun place(): TutoGo? = _ui.value?.let { u -> goFor(u.current, project.value, spot = false) }
+
+    /**
+     * « Je le fais »: the screen of the step, its control lit a moment; the panel folds (testers, lot
+     * « tuto 3 »: the place to touch is never under it, and it no longer grows under the finger).
+     */
     fun doIt() {
         val u = _ui.value ?: return
         goFor(u.current, project.value, spot = true)?.let { _goes.tryEmit(it) }
-        _ui.value = u.copy(bravo = false)
+        _ui.value = u.copy(bravo = false, open = false)
     }
 
     /** The step's main button ([TutoUi.need]): what it needs, made in one undo step, then its screen. */
@@ -246,6 +276,8 @@ class TutoController(
         val p = project.value
         val go = made?.let { TutoGo(notes = it, spot = false) } ?: goFor(step, p, spot = false)
         go?.let { _goes.tryEmit(it) }
+        // Still to do there (the notes to touch, the cells of the second bar): the panel folds out of the way.
+        if (!TutoChecks.done(step, p, t, base())) _ui.value = _ui.value?.copy(open = false)
         scope.launch { check(project.value) }
     }
 
@@ -264,7 +296,8 @@ class TutoController(
         val demo = TutoChecks.demo(step, before, t) ?: return false
         stopListening()
         pauseMusic()
-        _ui.value = u.copy(demo = TutoDemoPhase.SHOWING, bravo = false, demoCells = null, fade = 0f)
+        // Folded: the demonstration is seen where it happens (its caption on the folded line).
+        _ui.value = u.copy(demo = TutoDemoPhase.SHOWING, bravo = false, demoCells = null, fade = 0f, open = false)
         demoJob = scope.launch {
             var restored = false
             try {
@@ -382,6 +415,18 @@ class TutoController(
         _ui.value = _ui.value?.copy(preparing = false, playing = false)
     }
 
+    /**
+     * Whether the current listening step can play the user's own music (« Écoute toute ta batterie »,
+     * « Écoute ta boucle en entier »): the project already holds what its example plays.
+     */
+    fun mineToHear(p: Project = project.value): Boolean = _ui.value?.current?.let { mineFor(it, p) } == true
+
+    /** The user's own music played long enough while a listening step is shown ([mineToHear]): it is ticked. */
+    fun heardMine() {
+        val u = _ui.value ?: return
+        if (u.current.listening && mineFor(u.current, project.value)) tick(setOf(u.current.id), advance = false, bravo = false)
+    }
+
     // ---- inside ----
 
     private fun base(): Any? = baseline?.takeIf { it.first == _ui.value?.current?.id }?.second
@@ -463,6 +508,28 @@ class TutoController(
     companion object {
         /** The key step's own sheet (« Gamme » and « Tonique »). */
         const val KEY_SPOT = "tuto.key"
+        /** The song's « Ajouter : » buttons ([com.pocketstudio.app.guide.GuideNav]). */
+        const val SONG_ADD_SPOT = "song.add"
+        private val DRUM_ROLES = setOf("kick", "snare", "clap", "hat", "perc")
+
+        /**
+         * Whether listening step [s] can play the user's own music: every instrument its example
+         * plays has notes in [p] and at least half its drum sounds have hits (« ta batterie »
+         * after the drums, « ta boucle » after the Groove; never the examples of what comes next).
+         */
+        fun mineFor(s: TutoStep, p: Project): Boolean {
+            if (!s.listening) return false
+            val (kind, list) = s.listen.split(':', limit = 2).takeIf { it.size == 2 }?.let { it[0] to it[1].split(',').map(String::trim) } ?: return false
+            if (kind != "drums" && kind != "parts") return false
+            val (drums, melodic) = list.partition { it in DRUM_ROLES }
+            // The hats count with the open one; « perc » is any other pad of the kit but the crash.
+            val known = setOf(0, 1, 2, 3, 4, 5, 6, TutoChecks.CRASH_LANE)
+            fun hit(lanes: (Int) -> Boolean) = (p.allScenes.map { it.drums } + p.drums).any { d -> d.lanes.withIndex().any { (i, l) -> lanes(i) && l.hits.isNotEmpty() } }
+            val drumsHeard = drums.count { role -> if (role == "perc") hit { it !in known } else TutoChecks.laneOf(role).let { lane -> hit { it == lane } } }
+            val melodicHeard = melodic.all { role -> TutoChecks.trackFor(p, role)?.let { id -> p.allScenes.any { sc -> (if (id == 0) sc.synthNotes else sc.trackNotes[id])?.notes?.isNotEmpty() == true } || p.track(id).notes.notes.isNotEmpty() } == true }
+            return melodicHeard && (drums.isEmpty() && melodic.isNotEmpty() || drums.isNotEmpty() && drumsHeard * 2 >= drums.size && drumsHeard > 0)
+        }
+
         const val FRAME_MS = 200L
         const val HOLD_MS = 2600L
         const val FADE_MS = 700L

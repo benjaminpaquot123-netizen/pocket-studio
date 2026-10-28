@@ -1,5 +1,6 @@
 package com.pocketstudio.app.mixer
 
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import com.pocketstudio.model.i18n.inSentence
 import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.app.help.Glossary
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
@@ -76,10 +78,21 @@ fun effectsSummary(inserts: List<Insert>, sends: List<Float> = emptyList()): Str
 
 @Composable
 fun SendSliders(ch: Int, sends: List<Float>, actions: MixerActions) {
+    // « Tuto de A à Z »: the send its step asks for, dotted and brought into view (« Je le fais » opened this box).
+    val asked = com.pocketstudio.app.tuto.TutoHints.send?.takeIf { it.first == ch }?.second
     sends.forEachIndexed { bus, level ->
-        LabeledSlider(tr("Envoi %s", tr(Buses.NAMES[bus]).inSentence()), com.pocketstudio.model.i18n.percent((level * 100).toInt()), level, "send_${ch}_$bus") {
-            actions.setSend(ch, bus, it)
+        val wanted = bus == asked
+        val bring = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+        if (wanted) androidx.compose.runtime.LaunchedEffect(ch, bus) { kotlinx.coroutines.delay(300); runCatching { bring.bringIntoView() } }
+        val slider: @Composable () -> Unit = {
+            LabeledSlider(tr("Envoi %s", tr(Buses.NAMES[bus]).inSentence()), com.pocketstudio.model.i18n.percent((level * 100).toInt()), level, "send_${ch}_$bus") {
+                actions.setSend(ch, bus, it)
+            }
         }
+        // Only the asked one in a frame of its own: the others laid out as everywhere else.
+        if (wanted) androidx.compose.foundation.layout.Column(
+            Modifier.fillMaxWidth().bringIntoViewRequester(bring).then(com.pocketstudio.app.tuto.tutoDashed()).padding(6.dp).testTag("tuto_send_$bus"),
+        ) { slider() } else slider()
     }
 }
 

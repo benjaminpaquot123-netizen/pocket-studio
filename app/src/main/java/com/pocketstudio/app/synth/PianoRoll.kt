@@ -1,7 +1,10 @@
 package com.pocketstudio.app.synth
 
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.ui.layout.onSizeChanged
 import com.pocketstudio.model.i18n.inSentence
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.i18n.trCount
@@ -29,6 +32,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -279,6 +283,9 @@ fun PianoRoll(
                     TextButton(onClick = actions.clear, enabled = clip.notes.isNotEmpty()) { Text(tr("Effacer")) }
                 }
             }
+            // « Tuto de A à Z » (testers, lot « tuto 3 »): how many dotted notes are left, and which way when none is in sight;
+            // one line the whole step (the grid never moves under a finger), a touch shows the next one.
+            if (hints.isNotEmpty()) TutoNotesLeft(hints.filter { h -> clip.notes.none { n -> n.pitch == h.pitch && n.start == h.start } }, hScroll, stepWidth)
             BarRuler(clip, hScroll, stepWidth, keysWidth, if (selection.isNotEmpty() || selectMode) targetBar else -1, barSteps) { bar ->
                 // A bar touched: its notes chosen (Copier, Supprimer…), and the bar a paste goes on.
                 targetBar = bar
@@ -525,8 +532,43 @@ private fun Grid(
     // Start around C4-C5; the tutorial's dotted notes in view when it shows some (a bass is low).
     // (around the line's middle: a few high notes of a bass must not take the low ones out of sight)
     val hintTop = hints.map { it.pitch }.sorted().takeIf { it.isNotEmpty() }?.let { p -> (p[p.size / 2] + 7).coerceIn(low, high) }
-    LaunchedEffect(hintTop) { vScroll.scrollTo(((high - (hintTop ?: 76)) * rowPx).roundToInt()) }
+    // Testers (lot « tuto 3 »): the step's dotted notes gone (the next step), the view stays where the user's notes are.
+    var placed by remember { mutableStateOf(false) }
+    LaunchedEffect(hintTop) {
+        if (hintTop != null || !placed) vScroll.scrollTo(((high - (hintTop ?: 76)) * rowPx).roundToInt())
+        placed = true
+    }
     val tutoHint = Neon.Amber
+    // « Tuto de A à Z » (testers, lot « tuto 3 »): the dotted notes still to touch. None in sight (the line goes on
+    // past the screen, a demonstration writes them) or « Je le fais » asking: the roll goes to the first, lit a moment.
+    val left = remember(hints, clip.notes) {
+        hints.filter { h -> h.pitch in low..high && clip.notes.none { n -> n.pitch == h.pitch && n.start == h.start } }.sortedWith(compareBy({ it.start }, { -it.pitch }))
+    }
+    var view by remember { mutableStateOf(androidx.compose.ui.unit.IntSize.Zero) }
+    var lit by remember { mutableStateOf<Note?>(null) }
+    val focus = com.pocketstudio.app.tuto.TutoHints.focus
+    LaunchedEffect(left, focus, view) {
+        if (view.width <= 0 || view.height <= 0) return@LaunchedEffect
+        val asked = focus != com.pocketstudio.app.tuto.TutoHints.focusSeen
+        com.pocketstudio.app.tuto.TutoHints.focusSeen = focus
+        val next = left.firstOrNull() ?: return@LaunchedEffect
+        fun x(n: Note) = n.start / TICK.toFloat() * stepPx
+        fun y(n: Note) = (high - n.pitch) * rowPx
+        fun across(n: Note) = x(n) >= hScroll.value - 1 && x(n) + stepPx <= hScroll.value + view.width + 1
+        fun upDown(n: Note) = y(n) >= vScroll.value - 1 && y(n) + rowPx <= vScroll.value + view.height + 1
+        if (!asked && left.any { across(it) && upDown(it) }) return@LaunchedEffect
+        // The last note touched seen a moment first (a demonstration goes on at once).
+        if (!asked && !com.pocketstudio.app.tuto.TutoHints.demo) kotlinx.coroutines.delay(300)
+        if (asked) lit = next
+        if (!across(next)) hScroll.animateScrollTo((x(next) - 2 * stepPx).roundToInt().coerceIn(0, hScroll.maxValue))
+        if (!upDown(next)) vScroll.animateScrollTo((y(next) - view.height / 2f + rowPx / 2).roundToInt().coerceIn(0, vScroll.maxValue))
+    }
+    LaunchedEffect(lit) { if (lit != null) { kotlinx.coroutines.delay(2600); lit = null } }
+    val litPulse = if (lit != null) {
+        androidx.compose.animation.core.rememberInfiniteTransition(label = "tuto_note").animateFloat(
+            0f, 1f, androidx.compose.animation.core.infiniteRepeatable(androidx.compose.animation.core.tween(450), androidx.compose.animation.core.RepeatMode.Reverse), label = "tuto_note_pulse",
+        )
+    } else null
     var drag by remember { mutableStateOf<Pair<Note, Note>?>(null) }
     var box by remember { mutableStateOf<Pair<Offset, Offset>?>(null) }
     var groupMove by remember { mutableStateOf<Pair<Int, Int>?>(null) }  // (ticks, semitones) while dragging a selection
@@ -542,7 +584,7 @@ private fun Grid(
         Column(Modifier.width(keysWidth).verticalScroll(vScroll).testTag("roll_keys")) {
             for (p in high downTo low) RollKey(p, rowHeight, keysWidth, english, named = allNames || p % 12 == 0, keyOn, keyOff)
         }
-        Box(Modifier.weight(1f).verticalScroll(vScroll).horizontalScroll(hScroll)) {
+        Box(Modifier.weight(1f).onSizeChanged { view = it }.verticalScroll(vScroll).horizontalScroll(hScroll)) {
             Canvas(
                 Modifier
                     .size(stepWidth * clip.steps, rowHeight * rows)
@@ -722,6 +764,13 @@ private fun Grid(
                     val (o, sz) = noteRect(h)
                     drawRoundRect(tutoHint.copy(alpha = 0.22f), o, sz, CornerRadius(4f))
                     drawRoundRect(tutoHint, o, sz, CornerRadius(4f), style = Stroke(2.dp.toPx(), pathEffect = dash))
+                }
+                // « Je le fais »: the next one to touch, lit (a ring that beats).
+                lit?.let { h ->
+                    val (o, sz) = noteRect(h)
+                    val grow = 3.dp.toPx() + 3.dp.toPx() * (litPulse?.value ?: 0f)
+                    drawRoundRect(tutoHint.copy(alpha = 0.95f - 0.4f * (litPulse?.value ?: 0f)), Offset(o.x - grow, o.y - grow), Size(sz.width + 2 * grow, sz.height + 2 * grow),
+                        CornerRadius(6.dp.toPx()), style = Stroke(3.dp.toPx()))
                 }
                 val dragging = drag
                 val group = groupMove
@@ -1013,3 +1062,34 @@ internal fun rollAccessibleActions(notes: List<Note>, english: Boolean, actions:
             },
         )
     }
+
+/**
+ * « Encore 3 notes en pointillé » (the tutorial's notes [left] to touch), « plus loin → » or
+ * « ← plus tôt » when none of them is in sight; a touch brings the next one into view.
+ */
+@Composable
+private fun TutoNotesLeft(left: List<Note>, hScroll: androidx.compose.foundation.ScrollState, stepWidth: androidx.compose.ui.unit.Dp) {
+    val stepPx = with(LocalDensity.current) { stepWidth.toPx() }
+    // Read where it is drawn: a scroll recomposes this line only.
+    val ahead by remember(left, stepPx) {
+        androidx.compose.runtime.derivedStateOf {
+            val from = hScroll.value.toFloat()
+            val to = from + hScroll.viewportSize
+            fun x(n: Note) = n.start / TICK.toFloat() * stepPx
+            when {
+                left.isEmpty() || hScroll.viewportSize == 0 || left.any { x(it) in from..to } -> null
+                left.all { x(it) > to } -> true
+                left.all { x(it) < from } -> false
+                else -> null
+            }
+        }
+    }
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = 40.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp)).background(Neon.Amber.copy(alpha = 0.12f))
+            .clickable { com.pocketstudio.app.tuto.TutoHints.focus++ }.padding(horizontal = 10.dp).testTag("tuto_notes_left"),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(com.pocketstudio.app.tuto.tutoNotesLeft(left.size, ahead), style = MaterialTheme.typography.labelLarge,
+            color = if (left.isEmpty()) Neon.Acid else Neon.Amber, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+    }
+}

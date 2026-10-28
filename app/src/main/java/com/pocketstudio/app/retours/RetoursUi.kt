@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -196,7 +197,11 @@ object RetoursTaps {
     }
 }
 
-/** The floating bubble: draggable, it snaps to the nearest side (left or right, whatever the language's direction). */
+/**
+ * The floating bubble: a small pill (● REC, ✎ Noter, ⋯) dragged anywhere with a finger. Testers (lot
+ * « tuto 3 »): on the right side it hid the tutorial's fold arrow, the grid's last column and notes;
+ * it now starts in the top bar's second line, between the tempo and « ? », where nothing is touched.
+ */
 @Composable
 private fun RetoursBubble(record: () -> Unit, stop: () -> Unit, note: () -> Unit, hide: () -> Unit) {
     val rec by Retours.rec.collectAsState()
@@ -204,44 +209,42 @@ private fun RetoursBubble(record: () -> Unit, stop: () -> Unit, note: () -> Unit
     BoxWithConstraints(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
         val maxW = with(density) { maxWidth.toPx() }
         val maxH = with(density) { maxHeight.toPx() }
-        val bw = with(density) { BUBBLE_WIDTH.toPx() }
-        val bh = with(density) { 132.dp.toPx() }
+        val bw = with(density) { (BUTTON_WIDTH * 3 + 8.dp).toPx() }
+        val bh = with(density) { BUBBLE_HEIGHT.toPx() }
         val margin = with(density) { 4.dp.toPx() }
-        // Physical place (px from the top left); first on the right, a third down: off the transport and the tabs.
+        // Physical place (px from the top left): first left of « ? », on the tempo's line.
         var x by rememberSaveable { mutableStateOf(Float.NaN) }
         var y by rememberSaveable { mutableStateOf(Float.NaN) }
-        if (x.isNaN()) { x = maxW - bw - margin; y = maxH * 0.3f }
+        if (x.isNaN()) { x = maxW - bw - with(density) { START_FROM_RIGHT.toPx() }; y = with(density) { START_FROM_TOP.toPx() } }
         x = x.coerceIn(margin, (maxW - bw - margin).coerceAtLeast(margin))
         y = y.coerceIn(margin, (maxH - bh - margin).coerceAtLeast(margin))
         var menu by remember { mutableStateOf(false) }
         val active = rec !is RecState.Idle
-        Column(
+        Row(
             Modifier.align(AbsoluteAlignment.TopLeft)
                 .absoluteOffset { IntOffset(x.roundToInt(), y.roundToInt()) }
-                .width(BUBBLE_WIDTH)
+                .height(BUBBLE_HEIGHT)
                 .alpha(if (active) 0.92f else 0.78f)
-                .background(Neon.Surface, RoundedCornerShape(BUBBLE_WIDTH / 2))
-                .border(1.dp, if (rec is RecState.Recording) Neon.Red else Neon.Outline, RoundedCornerShape(BUBBLE_WIDTH / 2))
+                .background(Neon.Surface, RoundedCornerShape(BUBBLE_HEIGHT / 2))
+                .border(1.dp, if (rec is RecState.Recording) Neon.Red else Neon.Outline, RoundedCornerShape(BUBBLE_HEIGHT / 2))
                 .pointerInput(maxW, maxH) {
-                    detectDragGestures(
-                        onDragEnd = { x = if (x + bw / 2 < maxW / 2) margin else maxW - bw - margin },
-                    ) { change, drag ->
+                    detectDragGestures { change, drag ->
                         change.consume()
                         x = (x + drag.x).coerceIn(margin, maxW - bw - margin)
                         y = (y + drag.y).coerceIn(margin, maxH - bh - margin)
                     }
                 }
-                .padding(vertical = 4.dp)
+                .padding(horizontal = 4.dp)
                 .testTag("retours_bubble"),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             when (val r = rec) {
                 is RecState.Recording -> {
                     var now by remember { mutableLongStateOf(System.nanoTime()) }
                     val since = remember { System.nanoTime() }
                     LaunchedEffect(Unit) { while (true) { delay(1000); now = System.nanoTime() } }
-                    BubbleButton("■", Retours.clock((now - since) / 1_000_000).substringBefore('.'), tr("Arrêter l'enregistrement"), "retours_stop", Neon.Red, stop)
-                    if (r.segment > 1) Text("${r.segment}", fontSize = 9.sp, color = Neon.TextSecondary)
+                    BubbleButton("■", Retours.clock((now - since) / 1_000_000).substringBefore('.') + if (r.segment > 1) " · ${r.segment}" else "",
+                        tr("Arrêter l'enregistrement"), "retours_stop", Neon.Red, stop)
                 }
                 RecState.Idle -> BubbleButton("●", "REC", tr("Filmer l'écran avec le son"), "retours_rec", Neon.Red, record)
                 else -> BubbleButton("…", "", tr("Patiente…"), "retours_wait", Neon.TextSecondary) {}
@@ -260,18 +263,22 @@ private fun RetoursBubble(record: () -> Unit, stop: () -> Unit, note: () -> Unit
     }
 }
 
-private val BUBBLE_WIDTH = 48.dp
+private val BUTTON_WIDTH = 46.dp
+private val BUBBLE_HEIGHT = 36.dp
+/** Where the bubble first sits: left of the top bar's « ? », on the tempo's line. */
+private val START_FROM_RIGHT = 60.dp
+private val START_FROM_TOP = 60.dp
 
 @Composable
 private fun BubbleButton(symbol: String, label: String, description: String, tag: String, tint: Color, onClick: () -> Unit) {
-    Column(
-        Modifier.size(width = BUBBLE_WIDTH, height = 40.dp).clickable(onClick = onClick)
-            .semantics { contentDescription = description }.testTag(tag),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+    Row(
+        Modifier.height(BUBBLE_HEIGHT).widthIn(min = BUTTON_WIDTH).clickable(onClick = onClick)
+            .semantics { contentDescription = description }.padding(horizontal = 3.dp).testTag(tag),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
     ) {
-        Text(symbol, color = tint, fontSize = if (label.isEmpty()) 18.sp else 14.sp, fontWeight = FontWeight.Bold, lineHeight = 14.sp)
-        if (label.isNotEmpty()) Text(label, fontSize = 9.sp, lineHeight = 10.sp, maxLines = 1, color = Neon.TextPrimary, textAlign = TextAlign.Center)
+        Text(symbol, color = tint, fontSize = if (label.isEmpty()) 16.sp else 13.sp, fontWeight = FontWeight.Bold, lineHeight = 14.sp)
+        if (label.isNotEmpty()) Text(" $label", fontSize = 10.sp, lineHeight = 11.sp, maxLines = 1, color = Neon.TextPrimary)
     }
 }
 

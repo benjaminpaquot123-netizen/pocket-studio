@@ -82,6 +82,8 @@ object GuideNav {
         "record.voice", "mixer.master", "mixer.whatplays", "notes.track", "mixer.strip", "share.check", "share.export", "share.video", "acid", "acid.generate",
         // G5: the common cards (« Pour commencer », the Remix) and « Écouter ».
         "new.style", "song.guide", "sounds.main", "record.melody", "remix", GuideViewModel.PLAY,
+        // The tutorial: the song's « Ajouter : » buttons.
+        "song.add",
     )
 
     /**
@@ -95,6 +97,7 @@ object GuideNav {
             "tempo" -> GuideGo.Tempo
             "key" -> GuideGo.Chords
             "song.parts" -> GuideGo.Tab(AppTab.Morceau, listOf("part_play_0", "structure_switch"), partsView = !simple)
+            "song.add" -> GuideGo.Tab(AppTab.Morceau, listOf("song_add"), partsView = !simple)
             "sounds.track", "sounds.favorite" -> soundOf(track) ?: structure
             // G3: an instrument track's layers in their editor; another track's sound as before.
             "sounds.layers" -> track?.key?.takeIf { it.startsWith("inst:") }?.removePrefix("inst:")?.toIntOrNull()?.let { GuideGo.Layers(it) } ?: soundOf(track) ?: structure

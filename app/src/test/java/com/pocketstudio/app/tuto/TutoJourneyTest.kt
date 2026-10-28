@@ -90,6 +90,12 @@ class TutoJourneyTest {
     /** What the user sees of the project (content only; the shown part may change with a step's button). */
     private fun content(q: Project) = q.copy(guide = Project().guide).sanitized()
 
+    /** The panel unfolded (« Je le fais », a step's button, « Montre-moi » fold it out of the way). */
+    private fun unfold() {
+        if (has("tuto_folded_text") || has("tuto_next_folded")) click("tuto_fold")
+        await("unfolded") { has("tuto_prev") }
+    }
+
     private fun closeSheet() {
         androidx.test.espresso.Espresso.pressBack()
         compose.waitForIdle()
@@ -133,8 +139,11 @@ class TutoJourneyTest {
             if (has("tuto_show")) {
                 click("tuto_show")
                 await("${s.id}: demo shown") { has("tuto_demo_caption") }
+                // Testers (lot « tuto 3 »): the demonstration is seen where it happens, the panel folded.
+                assertFalse("${s.id}: panel open during the demo", has("tuto_text"))
                 await("${s.id}: demo over", 60_000) { !has("tuto_demo_caption") }
                 idle(400)
+                unfold()
                 assertEquals("${s.id}: Montre-moi left something", content(start), content(p()))
                 assertEquals("${s.id}: Montre-moi in Annuler", depth, h.vm.session.undoDepth)
                 assertFalse("${s.id}: ticked by Montre-moi", s.id in progress().done)
@@ -166,6 +175,7 @@ class TutoJourneyTest {
             assertEquals("${s.id}: went on by itself", s.id, progress().current)
             if (steps.all { it.id in progress().done }) break
             await("${s.id}: « Bravo »") { has("tuto_bravo") }
+            unfold()
             if (s.check.startsWith("lane:")) assertTrue("${s.id}: « Écouter ton résultat »", has("tuto_play_mine"))
             click("tuto_next_big")
         }
@@ -205,11 +215,12 @@ class TutoJourneyTest {
             c.startsWith("lane:") -> {
                 if (has("tuto_need")) click("tuto_need")
                 await("need met") { !has("tuto_need") }
+                if (!has("tuto_do")) unfold()
                 click("tuto_do")
                 await("${s.id}: the grid on its pad, cells dotted") { has("rhythm") && has("tuto_hint") }
-                // « Je le fais »: a ring that goes by itself, no card to close, the panel still open.
+                // « Je le fais »: a ring that goes by itself, no card to close; the panel folds out of the way (lot « tuto 3 »).
                 assertFalse(has("guide_spot"))
-                assertTrue(has("tuto_text"))
+                assertTrue(has("tuto_folded_text"))
                 if (s.id == "kick_do") {
                     await("the ring") { has("tuto_spot_ring") }
                     compose.mainClock.advanceTimeBy(3_000)
@@ -280,5 +291,6 @@ class TutoJourneyTest {
     private fun closeSheetIfAny() {
         compose.waitForIdle()
         if (has("sound_chooser") || has("kit_sheet") || has("tempo_sheet")) closeSheet()
+        if (has("fx_close")) click("fx_close")
     }
 }

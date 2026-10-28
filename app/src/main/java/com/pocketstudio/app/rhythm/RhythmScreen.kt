@@ -17,6 +17,7 @@ import androidx.compose.foundation.gestures.awaitHorizontalTouchSlopOrCancellati
 import androidx.compose.foundation.gestures.horizontalDrag
 import androidx.compose.ui.draw.alpha
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -513,8 +514,19 @@ private fun StepGrid(
     var rollStep by rememberSaveable { mutableIntStateOf(-1) }
     val ownSound = project.drums.lanes[lane].sample != null
     var allPads by rememberSaveable { mutableStateOf(false) }
+    // « Tuto de A à Z »: its dotted cells on this pad still to touch. Testers (lot « tuto 3 »): the bar holding
+    // them is the one shown (the second bar was out of sight), and the page does not turn with the music meanwhile.
+    val tutoLeft = com.pocketstudio.app.tuto.TutoHints.cells?.takeIf { it.first == lane }?.second
+        ?.filter { it < project.drums.steps && it !in hits }?.sorted().orEmpty()
+    val tutoDemo = com.pocketstudio.app.tuto.TutoHints.demo
+    LaunchedEffect(tutoLeft) {
+        if (tutoLeft.isEmpty() || tutoLeft.any { it / per == chosenBar }) return@LaunchedEffect
+        // The last touch seen a moment first (a demonstration goes on at once).
+        if (!tutoDemo) kotlinx.coroutines.delay(TUTO_PAGE_DELAY_MS)
+        chosenBar = tutoLeft.first() / per
+    }
     // Playing and following: the page turns with the playhead.
-    val bar = (if (playing && follow && currentStep >= 0) currentStep / per else chosenBar).coerceIn(0, bars - 1)
+    val bar = (if (playing && follow && currentStep >= 0 && tutoLeft.isEmpty()) currentStep / per else chosenBar).coerceIn(0, bars - 1)
     val chipColors = pillColors()
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -538,21 +550,25 @@ private fun StepGrid(
                         colors = chipColors, modifier = Modifier.testTag("drum_bars_$b"))
                 }
             }
-            if (bars > 1) {
-                FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(tr("Mesure"), style = MaterialTheme.typography.bodyMedium)
-                    (0 until bars).forEach { b ->
-                        FilterChip(selected = bar == b, onClick = { chosenBar = b; follow = false }, label = { Text("${b + 1}") },
-                            colors = chipColors, modifier = Modifier.testTag("drum_page_$b"))
-                    }
-                    FilterChip(selected = follow, onClick = { follow = !follow; chosenBar = bar }, label = { Text(tr("Suivre")) }, colors = chipColors)
-                }
-            }
             if (!allPads && (!simple || ownLoop)) PadLoopRow(padLoop, project.drums.steps, ownLoop, actions.setPadLength)
             if (project.drums.lanes.any { l -> l.hits.values.any { it.chance < 100 } }) {
                 TextButton(onClick = actions.rerollChances, modifier = Modifier.heightIn(min = 48.dp).testTag("chance_reroll")) {
                     Text(tr("Autre tirage des coups au hasard"))
                 }
+            }
+        }
+        // The bar pages right above the cells they turn (testers: under them, the second bar went unseen).
+        if (bars > 1) {
+            FlowRow(
+                itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier.testTag("drum_pages"),
+            ) {
+                Text(tr("Mesure"), style = MaterialTheme.typography.bodyMedium)
+                (0 until bars).forEach { b ->
+                    FilterChip(selected = bar == b, onClick = { chosenBar = b; follow = false }, label = { Text("${b + 1}") },
+                        colors = chipColors, modifier = Modifier.testTag("drum_page_$b"))
+                }
+                FilterChip(selected = follow, onClick = { follow = !follow; chosenBar = bar }, label = { Text(tr("Suivre")) }, colors = chipColors)
             }
         }
         if (allPads) {
@@ -1232,3 +1248,6 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
         }
     }
 }
+
+/** The tutorial's last dotted cell of a bar touched: this long before its next bar is shown. */
+private const val TUTO_PAGE_DELAY_MS = 450L

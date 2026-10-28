@@ -1,5 +1,6 @@
 package com.pocketstudio.app.mixer
 
+import com.pocketstudio.app.learn.spot
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -266,7 +267,8 @@ private fun StripHead(name: String, color: Color, modifier: Modifier = Modifier)
 @Composable
 private fun MixStrip(t: SimpleTrack, alone: Boolean, meters: () -> FloatArray, actions: SimpleMixActions, head: Boolean = true) {
     Column(
-        Modifier.width(STRIP_W).clip(RoundedCornerShape(12.dp)).background(Neon.SurfaceHigh.copy(alpha = 0.45f)).padding(6.dp).testTag("mix_strip_${t.ch}"),
+        Modifier.width(STRIP_W).clip(RoundedCornerShape(12.dp)).background(Neon.SurfaceHigh.copy(alpha = 0.45f)).padding(6.dp)
+            .spot("mix_strip_${t.ch}").testTag("mix_strip_${t.ch}"),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         if (head) StripHead(t.name, t.color)

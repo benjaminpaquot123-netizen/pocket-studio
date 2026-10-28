@@ -413,6 +413,10 @@ fun AppRoot() {
     // Another project: save this one, remember the choice, then rebuild every screen on it.
     // [deleteAfter]: the project left goes to the trash once the next one is open (the open
     // project itself deleted from « Mes projets », which then stays on screen).
+    // Testers (lot « tuto 3 »): while another project opens (the activity is rebuilt on it), a plain background
+    // rather than the project left behind (« Guide · Étape 7/18 », 120 BPM, a moment before the tutorial's own).
+    var switching by remember { mutableStateOf(false) }
+    LaunchedEffect(switching) { if (switching) { kotlinx.coroutines.delay(SWITCH_COVER_MS); switching = false } }
     val switchProject: (String, String?) -> Unit = { id, deleteAfter ->
         openScope.launch {
             rhythmVm.keepTake()  // a microphone take in progress lands on its track first
@@ -423,8 +427,10 @@ fun AppRoot() {
                 val text = if (failed.isStorageFull()) tr("Le projet n'a pas pu être sauvegardé (appareil plein ?) : libère de la place avant d'en ouvrir un autre.")
                     else tr("Le projet n'a pas pu être sauvegardé (%s) : il reste ouvert, réessaie dans un instant.", failed.forUser())
                 Toast.makeText(context, text, Toast.LENGTH_LONG).show()
+                switching = false
                 return@launch
             }
+            switching = true
             showProjects = deleteAfter != null  // remembered across the rebuild
             projectsNewOnly = false
             launch.settled()  // the project opened is the choice: its screens never go back to « Que veux-tu faire ? »
@@ -641,6 +647,8 @@ fun AppRoot() {
     }
     // « Tuto de A à Z »: an empty project whose tutorial starts at once (its level sets the Mode simple or not).
     val startTuto: (String, com.pocketstudio.model.tuto.TutoLevel) -> Unit = { style, level ->
+        // Only the tutorial's project is seen: from now on, a plain background until it opens.
+        switching = true
         rhythmVm.stop()
         SettingsStore.update(context) { it.copy(simpleMode = level == com.pocketstudio.model.tuto.TutoLevel.Facile) }
         // Owner (2026-10-28): truly empty, the style's drum sounds already on the pads, opened on the first steps' screen.
@@ -1409,6 +1417,16 @@ fun AppRoot() {
     var tutoKeySheet by rememberSaveable { mutableStateOf(false) }
     var tutoSpot by remember { mutableStateOf<List<String>?>(null) }
     LaunchedEffect(tutoSpot) { if (tutoSpot != null) { kotlinx.coroutines.delay(TUTO_SPOT_MS); tutoSpot = null } }
+    // Testers (lot « tuto 3 »): the step's control brought into view, ringed or not (its screen may take a few frames).
+    var tutoReveal by remember { mutableStateOf<List<String>?>(null) }
+    LaunchedEffect(tutoReveal) {
+        val ids = tutoReveal ?: return@LaunchedEffect
+        for (i in 0 until 10) {
+            kotlinx.coroutines.delay(100)
+            if (ids.any { spots.reveal(it) }) break
+        }
+        tutoReveal = null
+    }
     if (tutoKeySheet) {
         val keyProject by rhythmVm.project.collectAsStateWithLifecycle()
         val wanted = tuto.ui.value?.progress?.style?.let { com.pocketstudio.model.tuto.TutoTarget.of(it)?.harmony }
@@ -1436,6 +1454,27 @@ fun AppRoot() {
     }
     // A drum step shows its pad on the grid (its dotted cells in sight), without leaving the screen shown.
     LaunchedEffect(tutoUi?.current?.id) { tutoUi?.pad?.let(rhythmVm::selectPad) }
+    // Testers (lot « tuto 3 »): a new step's control brought into view when it is on the screen shown (the
+    // grid was all under the panel), without a ring nor another screen.
+    LaunchedEffect(tutoUi?.current?.id) {
+        val open = tuto.place()?.open ?: return@LaunchedEffect
+        val g = com.pocketstudio.app.guide.GuideNav.go(open, rhythmVm.project.value, SettingsStore.state.value.simpleMode)
+        if (g is com.pocketstudio.app.guide.GuideGo.Tab && g.tab == tab && g.spots.isNotEmpty()) tutoReveal = g.spots
+    }
+    LaunchedEffect(tutoUi?.demo != null) { com.pocketstudio.app.tuto.TutoHints.demo = tutoUi?.demo != null }
+    // The send a step asks for, dotted in the effects box (« Je le fais » opens the right one).
+    LaunchedEffect(tutoUi?.current?.id, tutoUi == null) {
+        com.pocketstudio.app.tuto.TutoHints.send = tuto.place()?.let { g -> g.effects?.let { ch -> g.send?.let { ch to it } } }
+    }
+    // « Écoute toute ta batterie »: the user's own music heard a little while (whatever started it) ticks it.
+    val tutoMusicPlaying by remember(rhythmVm) { rhythmVm.transport.map { it.playing }.distinctUntilChanged() }
+        .collectAsStateWithLifecycle(rhythmVm.transport.value.playing)
+    LaunchedEffect(tutoMusicPlaying, tutoUi?.current?.id) {
+        if (tutoMusicPlaying && tutoUi?.current?.listening == true && tuto.mineToHear()) {
+            kotlinx.coroutines.delay(TUTO_MINE_HEARD_MS)
+            if (rhythmVm.transport.value.playing) tuto.heardMine()
+        }
+    }
     // The tutorial hides the first track while it is still blank: the project starts truly empty.
     LaunchedEffect(tutoUi == null, tutoProject) { tutoHidesFirst = tutoUi != null && com.pocketstudio.model.tuto.TutoChecks.blankFirst(tutoProject) }
     if (tutoChapters) tutoUi?.let { u ->
@@ -1539,6 +1578,7 @@ fun AppRoot() {
     LaunchedEffect(tuto) {
         tuto.goes.collect { g ->
             g.pad?.let(rhythmVm::selectPad)
+            val simpleNow = SettingsStore.state.value.simpleMode
             when {
                 g.keySheet -> tutoKeySheet = true
                 g.notes != null -> {
@@ -1546,13 +1586,33 @@ fun AppRoot() {
                     rhythmVm.selectTrack(g.notes)
                     notesRequest++
                     go(AppTab.Synthe)
+                    // The next dotted note brought into view (and lit), wherever the roll was.
+                    com.pocketstudio.app.tuto.TutoHints.focus++
+                }
+                // An effect or a send: that track's effects box, the send it asks for dotted in it.
+                g.effects != null -> {
+                    com.pocketstudio.app.tuto.TutoHints.send = g.send?.let { g.effects to it }
+                    fxChannel = g.effects
+                }
+                // The sound's settings (« Coupure »…) of that track, not its ready-made sounds.
+                g.settings != null -> {
+                    melodyShownFor = rhythmVm.projectId
+                    rhythmVm.selectTrack(g.settings)
+                    go(AppTab.Synthe)
+                    if (g.spot) tutoSpot = listOf(SYNTH_SETTINGS_SPOT) else tutoReveal = listOf(SYNTH_SETTINGS_SPOT)
+                }
+                // The Mode simple's « Mix »: the fader of the track the step names.
+                g.strip != null && simpleNow -> {
+                    go(AppTab.Mixeur)
+                    val ids = listOf("mix_strip_${g.strip}")
+                    if (g.spot) tutoSpot = ids else tutoReveal = ids
                 }
                 g.open != null -> {
-                    guideGo(com.pocketstudio.app.guide.GuideNav.go(g.open, rhythmVm.project.value, SettingsStore.state.value.simpleMode))
+                    guideGo(com.pocketstudio.app.guide.GuideNav.go(g.open, rhythmVm.project.value, simpleNow))
                     // No card to close (owner: « Le Guide t'attend… » + « Compris » each time): a ring that goes by itself.
                     val lit = guideSpot
                     guideSpot = null
-                    if (g.spot) tutoSpot = lit
+                    if (g.spot) tutoSpot = lit else tutoReveal = lit
                 }
             }
         }
@@ -1616,7 +1676,7 @@ fun AppRoot() {
     Scaffold(
         // « Mes projets » is a dialog above: behind it, a plain background, so the studio never flashes
         // through while the screens are rebuilt on another project.
-        modifier = if (showProjects) Modifier.drawWithContent { drawRect(studioBackground) } else Modifier,
+        modifier = if (showProjects || switching) Modifier.drawWithContent { drawRect(studioBackground) } else Modifier,
         containerColor = Neon.Background,
         // One under the other (the slot alone would draw them on top of each other).
         topBar = { Column {
@@ -1790,6 +1850,7 @@ fun AppRoot() {
                     // « Écouter ton résultat »: only once there is something of the user's to hear.
                     val mine = tutoProject.drums.lanes.any { it.hits.isNotEmpty() } || tutoProject.track(0).notes.notes.isNotEmpty() ||
                         tutoProject.tracks.any { it.notes.notes.isNotEmpty() }
+                    val mineFirst = tutoNow.current.listening && com.pocketstudio.app.tuto.TutoController.mineFor(tutoNow.current, tutoProject)
                     com.pocketstudio.app.tuto.TutoPanel(
                         tutoNow, tuto.canShow(),
                         com.pocketstudio.app.tuto.TutoActions(
@@ -1804,7 +1865,7 @@ fun AppRoot() {
                         ),
                         modifier = if (landscape) Modifier.navigationBarsPadding() else Modifier,
                         map = remember(tutoNow.progress.style) { com.pocketstudio.app.tuto.tutoMap(tutoNow.progress.style) },
-                        mine = mine, minePlaying = tutoTransport.playing,
+                        mine = mine, minePlaying = tutoTransport.playing, mineFirst = mineFirst,
                     )
                 } else if (tuto.resumable && !showLive && !showLivePads && !showTimeline) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -3613,8 +3674,14 @@ private fun SimpleMixTab(vm: RhythmViewModel) {
 
 /** How long « Voir le réglage » keeps a control lit (it also goes at a touch on « Compris »). */
 private const val GUIDE_SPOT_MS = 8000L
+/** At most this long a plain background stands in for the project while another one opens. */
+private const val SWITCH_COVER_MS = 5000L
 /** « Je le fais »'s ring stays this long, then goes by itself. */
 private const val TUTO_SPOT_MS = 2600L
+/** The user's own music heard this long ticks a listening step about it (« Écoute toute ta batterie »). */
+private const val TUTO_MINE_HEARD_MS = 2500L
+/** The synth's « Réglages du son » card ([com.pocketstudio.app.synth.SoundCard]). */
+internal const val SYNTH_SETTINGS_SPOT = "synth_settings"
 
 /**
  * [content] with the engine's position ([RhythmViewModel.live], new about 30 times a second) read

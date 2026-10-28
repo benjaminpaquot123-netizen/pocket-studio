@@ -27,6 +27,7 @@ import com.pocketstudio.ui.PocketStudioTheme
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -215,6 +216,85 @@ class TutoTest {
         assertFalse("folded within the step", c.ui.value!!.open)
         c.next()
         assertTrue("a new step opens it", c.ui.value!!.open)
+    }
+
+    /**
+     * Testers (lot « tuto 3 »): « Je le fais » and « Montre-moi » fold the panel out of the way, and
+     * « Je le fais » goes to the very control: the song's « Ajouter : », the reverb's send of the
+     * Accords' track (not the Mélodie's volume), the bass's sound settings (not its ready-made sounds).
+     */
+    @Test
+    fun jeLeFaisFoldsThePanelAndGoesToTheControlTheStepAsksFor() {
+        val target = com.pocketstudio.model.tuto.TutoTarget.of("jump_up")!!
+        val blank = target.blank()
+        val (withPad, pad) = com.pocketstudio.model.tuto.TutoChecks.partTrack(blank, "pad", target)!!
+        val (song, bass) = com.pocketstudio.model.tuto.TutoChecks.partTrack(withPad, "bass", target)!!
+        val flow = MutableStateFlow(song)
+        val c = controller(flow, History(song), MemoryStore())
+        val goes = ArrayList<TutoGo>()
+        val job = scope.launch { c.goes.collect { goes += it } }
+        idle(100)
+        c.start("jump_up", TutoLevel.Pro)
+        fun at(id: String) {
+            val chapters = c.ui.value!!.chapters
+            val ch = chapters.indexOfFirst { x -> x.steps.any { it.id == id } }
+            c.goTo(ch, chapters[ch].steps.indexOfFirst { it.id == id })
+            assertEquals(id, c.ui.value!!.current.id)
+        }
+        fun doIt(): TutoGo {
+            val before = goes.size
+            assertTrue(c.ui.value!!.open)
+            c.doIt()
+            await("gone") { goes.size > before }
+            assertFalse("« Je le fais » folds the panel", c.ui.value!!.open)
+            return goes.last()
+        }
+        at("reverb")
+        val reverb = doIt()
+        assertEquals(com.pocketstudio.model.InstrumentTrack.mixerChannel(pad), reverb.effects)
+        assertEquals(0, reverb.send)
+        at("bass_knobs")
+        assertEquals(bass, doIt().settings)
+        at("song_order")
+        assertEquals(TutoController.SONG_ADD_SPOT, doIt().open?.spot)
+        at("levels")
+        assertEquals(com.pocketstudio.model.InstrumentTrack.mixerChannel(pad), doIt().strip)
+        // « Montre-moi »: folded while it shows, and after (« à toi maintenant »).
+        at("hat_do")
+        assertTrue(c.ui.value!!.open)
+        assertTrue(c.showMe())
+        assertFalse(c.ui.value!!.open)
+        await("demo ends") { c.ui.value!!.demo == null }
+        assertFalse(c.ui.value!!.open)
+        job.cancel()
+    }
+
+    /**
+     * Testers (lot « tuto 3 »): « Écoute toute ta batterie » plays the user's own drums (and ticks
+     * once they were heard); the examples of what comes next stay examples only.
+     */
+    @Test
+    fun aListeningStepAboutTheUsersMusicIsTickedByHearingIt() {
+        val course = com.pocketstudio.model.tuto.TutoCourse.of("jump_up")!!.chaptersFor(TutoLevel.Facile).flatMap { it.steps }
+        fun step(id: String) = course.first { it.id == id }
+        val empty = com.pocketstudio.model.tuto.TutoTarget.of("jump_up")!!.blank()
+        fun hits(p: Project, vararg lanes: Int) = p.copy(drums = p.drums.copy(lanes = p.drums.lanes.mapIndexed { i, l -> if (i in lanes) l.copy(hits = mapOf(0 to com.pocketstudio.model.Hit(0.9f))) else l }))
+        val drums = hits(empty, 0, 2, 4, 5)
+        assertFalse(TutoController.mineFor(step("drums_hear"), empty))
+        assertTrue("kick, snare, clap, hats: « ta batterie »", TutoController.mineFor(step("drums_hear"), drums))
+        assertFalse("the kick's example comes before the kick", TutoController.mineFor(step("kick_hear"), empty))
+        assertFalse("no bass yet: the bass's example", TutoController.mineFor(step("bass_hear"), drums))
+        assertFalse("not a listening step", TutoController.mineFor(step("hat_do"), drums))
+        val flow = MutableStateFlow(drums)
+        val c = controller(flow, History(drums), MemoryStore())
+        c.start("jump_up", TutoLevel.Facile)
+        val chapters = c.ui.value!!.chapters
+        val ch = chapters.indexOfFirst { x -> x.steps.any { it.id == "drums_hear" } }
+        c.goTo(ch, chapters[ch].steps.indexOfFirst { it.id == "drums_hear" })
+        assertTrue(c.mineToHear())
+        c.heardMine()
+        await("ticked") { "drums_hear" in c.ui.value!!.progress.done }
+        assertEquals("never on by itself", "drums_hear", c.ui.value!!.current.id)
     }
 
     @Test

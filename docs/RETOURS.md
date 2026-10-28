@@ -147,3 +147,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - « Une fois que tout le travail en cours est réalisé, compile l'APK pour moi » : APK 228 dès que le lot « tuto 5 » (Écran + Contenu + zoom du piano roll) est réuni et que les tests passent, sans attendre un audit parfait ; la boucle d'audit continue ensuite.
 - Précision : les retours de Sarah et Mehdi (testeurs Remix) et leurs corrections doivent être dans l'APK 228. Ordre : lot tuto 5 + rapports Remix → corrections Remix → tests → APK.
 - Corrections du Remix : les diviser en 2 ou 3 équipes si possible pour aller plus vite (accord de Benjamin).
+- « Ajoute 3 agents maintenant pour améliorer le design : il est déjà magnifique, mais l'améliorer subtilement, avec des effets hyper pro. » (design délégué : décider sans demander, montrer les captures).

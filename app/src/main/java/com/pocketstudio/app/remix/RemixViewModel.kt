@@ -170,7 +170,7 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
         while (true) {
             val p = _preview.value
             if (p != null && p.playing) {
-                val pos = NativeEngine.previewPosition()
+                val pos = NativeEngine.previewPositionNow()
                 // Past the end, or stopped: the stems stay loaded, ready to play again.
                 _preview.value = if (pos < 0 && p.position >= 0) p.copy(playing = false, position = -1) else p.copy(position = pos)
             }

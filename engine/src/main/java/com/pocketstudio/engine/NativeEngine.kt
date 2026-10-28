@@ -690,6 +690,9 @@ object NativeEngine {
     /** Song position in frames while the stems play, else -1. */
     external fun stemPosition(): Long
 
+    /** [stemPosition], from a test's [sink] when it plays the stems (-1 with no engine at all). */
+    fun stemPositionNow(): Long = sink?.stemPosition() ?: if (loaded) stemPosition() else -1L
+
     /** The remix screen's own listening: [stems] play apart from the transport (null: none). Main thread. */
     fun setPreviewStems(stems: NativeStems?): Boolean {
         sink?.let { it.install(0L, CommandSink.Install.PreviewStems, 0, stems?.handle ?: 0L); return true }
@@ -700,6 +703,9 @@ object NativeEngine {
     fun setPreviewParam(stem: Int, param: Int, value: Float) = post(CMD_PREVIEW_PARAM, value, stem, param)
     /** Preview position in frames while it plays, else -1. */
     external fun previewPosition(): Long
+
+    /** [previewPosition], from a test's [sink] when it plays the preview (-1 with no engine at all). */
+    fun previewPositionNow(): Long = sink?.previewPosition() ?: if (loaded) previewPosition() else -1L
 
     /** Live pad [pad] plays [sample] (null: empty). Main thread, like every command. */
     fun setClip(pad: Int, sample: NativeSample?): Boolean {

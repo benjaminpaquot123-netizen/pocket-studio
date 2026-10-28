@@ -841,7 +841,8 @@ fun AppRoot() {
         if (NativeEngine.isAvailable) NativeEngine.setBufferBursts(settings.bufferBursts)
     }
 
-    val engineAvailable = NativeEngine.isAvailable
+    // The native audio stream (its start, stop and health): a test's command sink has none.
+    val engineAvailable = NativeEngine.isNative
     val stream by Metrics.streamInfo.collectAsStateWithLifecycle()
     val roundTrip by Metrics.roundTripMs.collectAsStateWithLifecycle()
 

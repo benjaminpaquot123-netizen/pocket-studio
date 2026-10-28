@@ -62,7 +62,8 @@ data class TutoChapter(
  * goes (the Guide's [com.pocketstudio.model.guide.GuideAction] screens). [listen]: what
  * « Écouter l'exemple » plays ("drums:kick,snare", "parts:bass", "part:Drop", "vs:Drop:Intro",
  * "song"). [keep], [lanesFrom], [transpose]: how « Montre-moi » makes a part; [song]: the
- * arrangement it lays out ("Intro:32,Montée:8,…").
+ * arrangement it lays out ("Intro:32,Montée:8,…"). [demo]: a « Montre-moi » of its own for a step
+ * ticked by hand ("kick": a long kick, then the kit's short one, each heard).
  */
 @Serializable
 data class TutoStep(
@@ -79,6 +80,7 @@ data class TutoStep(
     val lanesFrom: String = "",
     val transpose: Int = 0,
     val song: String = "",
+    val demo: String = "",
 ) {
     fun textFor(level: TutoLevel): String = if (level == TutoLevel.Pro) textPro ?: text else text
 

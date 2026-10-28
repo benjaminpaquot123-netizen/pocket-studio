@@ -256,7 +256,8 @@ class TutoJourneyTest {
                 assertTrue("${s.id}: its button", has("tuto_need"))
                 click("tuto_need")
             }
-            // The first 4 bars' dotted notes touched, then « Copier sur les mesures suivantes »; the Drop 2's bass in its part.
+            // Lot « tuto 5 »: a bar's dotted notes touched, « Copier sur les mesures suivantes », the next bar to write,
+            // « Copier » again; the Drop 2's bass in its part (Pro: then its Sub, the bass an octave down).
             c.startsWith("notes:") || (c.startsWith("part:") && s.transpose != 0) -> {
                 assertTrue("${s.id}: « Créer la piste … » offered", has("tuto_need"))
                 click("tuto_need")
@@ -264,11 +265,16 @@ class TutoJourneyTest {
                 val (track, notes) = TutoHints.notes!!
                 assertEquals(track, h.vm.selectedTrack.value)
                 assertTrue("${s.id}: nothing written by the button", p().track(track).notes.notes.isEmpty())
-                assertTrue("${s.id}: the first 4 bars dotted", notes.all { it.start < 4 * 384 })
-                notes.forEach { h.vm.addNote(it) }
-                copy(s)
-                // Pro, the Drop 2: its Sub, the bass an octave down.
-                if (s.id !in progress().done) copy(s)
+                assertTrue("${s.id}: a bar or two dotted", notes.map { it.start / 384 }.distinct().size <= 2)
+                var rounds = 0
+                while (s.id !in progress().done) {
+                    assertTrue("${s.id}: $rounds rounds", ++rounds < 8)
+                    await("${s.id}: the dotted notes of now") { TutoHints.notes?.second == TutoChecks.ghostNotes(s, p(), target)?.second }
+                    val have = p().track(track).notes.notes
+                    TutoHints.notes!!.second.filter { g -> have.none { it.pitch == g.pitch && it.start == g.start } }.forEach { h.vm.addNote(it) }
+                    copy(s)
+                    compose.waitForIdle()
+                }
             }
             c.startsWith("changed:synth:") -> {
                 click("tuto_do")

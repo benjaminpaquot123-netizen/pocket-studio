@@ -102,7 +102,10 @@ class TutoCourseTest {
         assertEquals("Intro", map.first().label)
         assertEquals("Fin", map.last().label)
         assertTrue(map.first { it.label == "Drop" }.energy > map.first().energy)
-        assertTrue(map.all { it.bars % 8 == 0 })
+        // Every Drop starts a phrase of 8 bars (lot « tuto 5 »: the Montée is the last 4 bars of the Intro's 32).
+        val starts = map.runningFold(0) { at, b -> at + b.bars }
+        map.indices.filter { map[it].label.startsWith("Drop") }.forEach { assertEquals(0, starts[it] % 8) }
+        assertEquals(0, starts.last() % 8)
     }
 
     @Test
@@ -176,11 +179,15 @@ class TutoCourseTest {
         val ghosts = TutoChecks.ghostNotes(bass, q, target)!!
         assertEquals(0, ghosts.first)
         assertTrue(ghosts.second.size >= 4)
-        // The user taps the dotted notes (the first 4 bars), then « Copier sur les mesures suivantes »: done.
-        val motif = q.withTrack(q.track(0).copy(notes = q.track(0).notes.copy(notes = ghosts.second)))
-        assertFalse(TutoChecks.done(bass, motif, target))
-        assertEquals(TutoNeed.Copy("bass"), TutoChecks.need(bass, motif, target))
-        val written = TutoChecks.fulfil(TutoNeed.Copy("bass"), bass, motif, target)!!.first
+        // The user taps the dotted notes (a bar), then « Copier sur les mesures suivantes », and again: done.
+        var written = q
+        repeat(2) {
+            val dotted = TutoChecks.ghostNotes(bass, written, target)!!.second
+            val motif = written.withTrack(written.track(0).copy(notes = written.track(0).notes.copy(notes = dotted)))
+            assertFalse(TutoChecks.done(bass, motif, target))
+            assertEquals(TutoNeed.Copy("bass"), TutoChecks.need(bass, motif, target))
+            written = TutoChecks.fulfil(TutoNeed.Copy("bass"), bass, motif, target)!!.first
+        }
         assertTrue(TutoChecks.done(bass, written, target))
         // The pad's track is a new one (the first is the bass now).
         val pad = steps.getValue("pad_do")

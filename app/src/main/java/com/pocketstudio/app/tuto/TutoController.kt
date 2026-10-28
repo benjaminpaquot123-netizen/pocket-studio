@@ -174,6 +174,9 @@ class TutoController(
     private var listenJob: Job? = null
     private var demoJob: Job? = null
 
+    /** The step whose « Suivant » already said what leaving it undone costs (the next touch lets it go). */
+    private var skipSaid: String? = null
+
     init {
         store.load(projectId)?.let(::show)
         scope.launch { project.debounce(debounceMs).collect { check(it) } }
@@ -228,6 +231,13 @@ class TutoController(
         val u = _ui.value ?: return
         val flat = u.chapters.flatMap { it.steps }
         val at = flat.indexOf(u.current)
+        // Testers (lot « tuto 5 »: the tempo left at 120, the melody skipped, without a word): « Suivant » on a
+        // step to do, not done, says what the song will miss first; a second touch lets it go (the last one: the end says what is left).
+        if (by > 0 && at < flat.lastIndex && skipSaid != u.current.id && !u.current.manual && !u.current.listening && u.current.id !in u.progress.done) {
+            skipSaid = u.current.id
+            _ui.value = u.copy(made = skipText(u.current), open = true, bravo = false)
+            return
+        }
         // « Suivant » on the last step: the end (what is left to do, or « Bravo »), never back to the start.
         if (by > 0 && at == flat.lastIndex) {
             _ui.value = u.copy(atEnd = true, open = true, bravo = false)
@@ -316,14 +326,43 @@ class TutoController(
     private fun volumeRoles(c: String): List<String> =
         c.removePrefix("changed:volumes").removePrefix(":").split(',').map { it.trim() }.filter { it.isNotEmpty() }.ifEmpty { listOf("pad") }
 
-    /** « Partie « Intro » créée (copie du Groove) : sans Kick, Basse. » from the part just made in [after]. */
-    private fun partMade(before: Project, after: Project, label: String): String {
+    /** Where the user's parts stand against the order [s] asks for: what is still to add, or the first one out of place. */
+    private fun orderText(s: TutoStep, p: Project): String {
+        val (wanted, have) = TutoChecks.orderOf(s, p)
+        val shown = { l: String -> com.pocketstudio.model.Scene.shownLabel(l) }
+        val k = have.indices.firstOrNull { have[it] != wanted.getOrNull(it) }
+        return when {
+            k == null -> com.pocketstudio.model.i18n.tr("Encore : %s.", wanted.drop(have.size).joinToString(", ", transform = shown))
+            k == 0 -> com.pocketstudio.model.i18n.tr("Pas dans l'ordre : le morceau commence par « %s ».", shown(wanted[0]))
+            else -> com.pocketstudio.model.i18n.tr("Pas dans l'ordre : après « %1\$s » vient « %2\$s ». Le menu ⋮ d'une partie la retire, ou en insère une autre après.", shown(wanted[k - 1]), shown(wanted[k]))
+        }
+    }
+
+    /** What « Suivant » says on a step left undone: what the song will miss ([TutoStep.skip]), and that a second touch goes on. */
+    private fun skipText(s: TutoStep): String =
+        (if (s.skip.isNotEmpty()) tutoText(s.skip) else com.pocketstudio.model.i18n.tr("Cette étape n'est pas encore faite.")) + " " +
+            com.pocketstudio.model.i18n.tr("Touche encore « Suivant » pour la passer quand même.")
+
+    /**
+     * « Partie « Intro » créée (copie du Groove) : sans Kick, Basse. » from the part just made in [after] by [step].
+     * Testers (lot « tuto 5 »): the Drop 2's bass, the user's to write, is not said gone (« sans Basse » read as
+     * the bass just written lost); a pad that accelerates ([TutoStep.build]) is said, not changed behind the back.
+     */
+    private fun partMade(before: Project, after: Project, label: String, step: TutoStep): String {
         val full = before.allScenes.map(TutoChecks::bricks).maxByOrNull { it.size }.orEmpty()
         val now = TutoChecks.bricks(after.currentSceneContent())
-        val out = (full - now).map { brickName(after, it) }.distinct()
+        val writes = step.transpose != 0
+        val out = (full - now).filterNot { b -> writes && b.startsWith("inst:") && b.removePrefix("inst:").toIntOrNull()?.let { TutoChecks.roleOf(after, it) in setOf("bass", "sub") } == true }
+            .map { brickName(after, it) }.distinct()
         val name = com.pocketstudio.model.Scene.shownLabel(label)
-        return if (out.isEmpty()) com.pocketstudio.model.i18n.tr("Partie « %s » créée : tout le Groove y joue.", name)
+        val made = if (out.isEmpty()) com.pocketstudio.model.i18n.tr("Partie « %s » créée : tout le Groove y joue.", name)
         else com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie du Groove) : sans %2\$s.", name, out.joinToString(", "))
+        val more = when {
+            writes -> com.pocketstudio.model.i18n.tr("Sa basse est à toi d'écrire : les notes en pointillé.")
+            step.build.isNotEmpty() -> com.pocketstudio.model.i18n.tr("Sa caisse claire accélère mesure après mesure, et son dernier temps se tait.")
+            else -> null
+        }
+        return listOfNotNull(made, more).joinToString(" ")
     }
 
     private fun brickName(p: Project, brick: String): String = when {
@@ -366,7 +405,7 @@ class TutoController(
         }
         val p = project.value
         // Testers (lot « tuto 4 »): « Créer la partie » six times and nothing seen changing: what it made, in words.
-        if (need is TutoNeed.Part && p !== before) _ui.value = _ui.value?.copy(made = partMade(before, p, need.label))
+        if (need is TutoNeed.Part && p !== before) _ui.value = _ui.value?.copy(made = partMade(before, p, need.label, step))
         val go = made?.let { TutoGo(notes = it, spot = false) } ?: goFor(step, p, spot = false)
         go?.let { _goes.tryEmit(it) }
         // Still to do there (the notes to touch, the cells of the second bar): the panel folds out of the way.
@@ -571,6 +610,7 @@ class TutoController(
         val before = _ui.value
         val moved = before?.current?.id != step.id
         if (moved) {
+            skipSaid = null
             stopListening()
             stopDemo()
             baseline = step.check.takeIf { it.startsWith("changed:") }?.let { step.id to TutoChecks.signature(it.removePrefix("changed:"), project.value) }
@@ -619,8 +659,19 @@ class TutoController(
         }
         if (_ui.value?.progress?.style != u.progress.style || _ui.value?.demo != null) return
         // Never on by itself: the step stays with « Bravo », « Écouter ton résultat » and « Étape suivante ».
-        if (found.isNotEmpty()) tick(found, advance = false, bravo = true)
+        if (found.isNotEmpty()) {
+            tick(found, advance = false, bravo = true)
+            // The Drop 2's bass written: what its button said (« à toi d'écrire ») is said no more under « Bravo ».
+            if (u.current.id in found && (u.current.transpose != 0 || skipSaid == u.current.id || u.current.check.startsWith("song:"))) _ui.value = _ui.value?.copy(made = null)
+        }
         else if (_ui.value?.current?.id == u.current.id && _ui.value?.need != need) _ui.value = _ui.value?.copy(need = need)
+        // Testers (lot « tuto 5 »: seven parts in a wrong order, not a word): what is missing, or where the order goes wrong.
+        // The durations too: they are not ticked while the order is wrong.
+        if (found.isEmpty() && u.current.check.startsWith("song:") && _ui.value?.current?.id == u.current.id && p.song.isNotEmpty()) {
+            val (wanted, have) = TutoChecks.orderOf(u.current, p)
+            val said = if (wanted != have) orderText(u.current, p) else null
+            if (said != null && _ui.value?.made != said) _ui.value = _ui.value?.copy(made = said)
+        }
     }
 
     private fun audible(pcm: FloatArray): Boolean {

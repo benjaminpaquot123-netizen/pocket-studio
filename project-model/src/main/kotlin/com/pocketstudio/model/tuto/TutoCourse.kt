@@ -16,6 +16,13 @@ data class TutoCourse(
     val format: Int = 1,
     val style: String = "",
     val chapters: List<TutoChapter> = emptyList(),
+    /**
+     * The course's own lines, by role ("bass"…), where the assistant's would be too long to write
+     * by hand (testers, lot « tuto 5 »: the same 14 notes four times). A phrase of 4 bars, its
+     * notes as "step:Note:length" (16ths from its start, « F2 », « Gb2 »: 41, 42), played over the
+     * whole clip; its repeated bars are written by « Copier sur les mesures suivantes ».
+     */
+    val lines: Map<String, String> = emptyMap(),
 ) {
     /** The chapters of [level], each with only its steps of that level. */
     fun chaptersFor(level: TutoLevel): List<TutoChapter> =
@@ -71,6 +78,8 @@ data class TutoChapter(
  * ticked by hand ("kick": a long kick, then the kit's short one, each heard). [hearMine]: a listening
  * step that plays the user's own music, then the example (« Écoute ta boucle, puis l'exemple »):
  * ticked once both were heard (testers, lot « tuto 4 »: it was ticked on the user's loop alone).
+ * [skip]: what the song misses when « Suivant » leaves this step undone (said before it lets it go).
+ * [build]: the pad whose hits accelerate bar after bar in the part the step makes (the Montée's snare).
  */
 @Serializable
 data class TutoStep(
@@ -89,6 +98,8 @@ data class TutoStep(
     val song: String = "",
     val demo: String = "",
     val hearMine: Boolean = false,
+    val skip: String = "",
+    val build: String = "",
 ) {
     fun textFor(level: TutoLevel): String = if (level == TutoLevel.Pro) textPro ?: text else text
 

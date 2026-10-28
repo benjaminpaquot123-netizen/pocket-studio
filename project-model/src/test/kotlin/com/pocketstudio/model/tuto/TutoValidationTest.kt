@@ -4,6 +4,7 @@ import com.pocketstudio.model.EffectType
 import com.pocketstudio.model.FxPresets
 import com.pocketstudio.model.Hit
 import com.pocketstudio.model.InstrumentTrack
+import com.pocketstudio.model.Note
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.StudioDrums
@@ -95,19 +96,27 @@ class TutoValidationTest {
         var p = target.blank()
         for (id in listOf("bass_do", "pad_do")) {
             val s = step(id)
-            val (q, track) = TutoChecks.fulfil(TutoChecks.need(s, p, target)!!, s, p, target)!!
-            val ghosts = TutoChecks.ghostNotes(s, q, target)!!.second
-            assertTrue("$id: ${ghosts.size} notes", ghosts.size >= 6)
-            fun with(n: Int) = q.withTrack(q.track(track!!).copy(notes = q.track(track).notes.copy(notes = ghosts.take(n))))
-            assertFalse("$id: the first three", TutoChecks.done(s, with(3), target))
-            assertFalse("$id: all but one", TutoChecks.done(s, with(ghosts.size - 1), target))
-            assertNull("$id: no copy before the first 4 bars are written", TutoChecks.need(s, with(ghosts.size - 1), target))
-            // Lot « tuto 4 »: the dotted notes are the first 4 bars; the copy button writes the next 4.
-            assertFalse("$id: the first 4 bars only", TutoChecks.done(s, with(ghosts.size), target))
-            val need = TutoChecks.need(s, with(ghosts.size), target)
-            assertTrue("$id: $need", need is TutoNeed.Copy)
-            p = TutoChecks.fulfil(need!!, s, with(ghosts.size), target)!!.first
-            assertTrue(id, TutoChecks.done(s, p, target))
+            var (q, made) = TutoChecks.fulfil(TutoChecks.need(s, p, target)!!, s, p, target)!!
+            val track = made!!
+            // Lot « tuto 5 »: the bars to write by hand dotted, then « Copier », until the line is all there.
+            var rounds = 0
+            while (!TutoChecks.done(s, q, target)) {
+                assertTrue("$id: $rounds rounds", ++rounds < 8)
+                val ghosts = TutoChecks.ghostNotes(s, q, target)!!.second
+                val have = q.track(track).notes.notes
+                val missing = ghosts.filter { g -> have.none { it.pitch == g.pitch && it.start == g.start } }
+                if (missing.isEmpty()) {
+                    val need = TutoChecks.need(s, q, target)
+                    assertTrue("$id: $need", need is TutoNeed.Copy)
+                    q = TutoChecks.fulfil(need!!, s, q, target)!!.first
+                    continue
+                }
+                fun with(notes: List<Note>) = q.withTrack(q.track(track).copy(notes = q.track(track).notes.copy(notes = have + notes)))
+                assertFalse("$id: all but one", TutoChecks.done(s, with(missing.dropLast(1)), target))
+                assertNull("$id: no copy before the bar is written", TutoChecks.need(s, with(missing.dropLast(1)), target))
+                q = with(missing)
+            }
+            p = q
         }
     }
 
@@ -189,7 +198,7 @@ class TutoValidationTest {
         val gap = step("gap")
         val erase = TutoChecks.toErase(gap, inMontee)!!
         assertTrue(erase.isNotEmpty())
-        assertTrue(erase.values.flatten().all { it >= inMontee.drums.steps - 2 && it >= 48 })
+        assertTrue(erase.values.flatten().all { it >= inMontee.drums.steps - TutoChecks.GAP_CELLS && it >= 48 })
         assertFalse(TutoChecks.done(gap, filled, target))
         assertTrue(TutoChecks.toErase(gap, TutoChecks.show(gap, filled, target)!!.switchScene(montee))!!.isEmpty())
         assertNull(TutoChecks.toErase(fill, inMontee))
@@ -250,7 +259,7 @@ class TutoValidationTest {
         // The map: the parts the course lays out, each once, no « Drop 2 » twice.
         val map = TutoChecks.map(target)
         assertEquals(listOf("Intro", "Montée", "Drop", "Break", "Montée", "Drop 2", "Fin"), map.map { it.label })
-        assertEquals(listOf(32, 8, 32, 16, 8, 32, 16), map.map { it.bars })
+        assertEquals(listOf(28, 4, 32, 12, 4, 32, 16), map.map { it.bars })
         assertTrue(StarterWizard.style("jump_up") != null)
     }
 }

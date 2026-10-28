@@ -146,18 +146,14 @@ class TutoLot4Test {
         for (id in listOf("bass_do", "pad_do", "lead_do")) {
             val s = step(id)
             val (q, track) = TutoChecks.fulfil(TutoChecks.need(s, p, target)!!, s, p, target)!!
-            val ghosts = TutoChecks.ghostNotes(s, q, target)!!.second
-            val all = target.notes(StarterWizard.Part.entries.first { "notes:${it.id}" == s.check }).notes
-            assertEquals("$id: the first half dotted", all.size / 2, ghosts.size)
-            assertTrue(ghosts.all { it.start < 4 * 384 })
-            touches += ghosts.map { it.start }.distinct().size
-            val motif = q.withTrack(q.track(track!!).copy(notes = q.track(track).notes.copy(notes = ghosts)))
-            // Then the whole line is dotted (what is left of it).
-            p = TutoChecks.fulfil(TutoChecks.need(s, motif, target)!!, s, motif, target)!!.first
+            // Lot « tuto 5 »: a bar or two by hand, the others by « Copier » (TutoLot5Test has the details).
+            val (written, taps) = TutoLot5Test.writeLine(s, q, track!!, target)
+            touches += taps
+            p = written
             assertTrue(id, TutoChecks.done(s, p, target))
         }
-        // With « Accords » on, a chord is one touch: 4 + 4 + 3 = 14 bass taps, 4 chords, 3 lead notes (was 28 + 24 + 6).
-        assertTrue("$touches touches", touches <= 14 + 4 + 3)
+        // With « Accords » on, a chord is one touch: 7 bass taps, 2 chords, 3 lead notes (was 14 + 4 + 3, and 28 + 24 + 6 before).
+        assertTrue("$touches touches", touches <= 7 + 2 + 3)
         // The chord button lays the dotted triad from its lowest note (the key of the course).
         val harmony = target.harmony
         val chords = target.notes(StarterWizard.Part.Pad).notes.groupBy { it.start }.values
@@ -194,8 +190,8 @@ class TutoLot4Test {
         assertTrue("« Mix »" in levels && "dB" in levels && "curseur « Volume »" !in levels)
         // The parts come at 8 bars: the text says the next step gives their length.
         assertTrue("8 mesures" in step("song_order").text)
-        // The roll is not on the cells the gap erases (a/167, b/240).
-        assertTrue("avant-dernier" in step("fill").text)
+        // The roll is not on the cells the gap erases (a/167, b/240): the last hit before the silence.
+        assertTrue("dernier coup" in step("fill").text)
     }
 
     /** a/167, b/240: the roll made, then erased two steps later. The fill is before the last two cells, which the gap empties. */
@@ -207,10 +203,12 @@ class TutoLot4Test {
         val inMontee = p.switchScene(montee)
         val n = inMontee.drums.steps
         val lane = TutoChecks.laneOf("snare")
-        fun roll(at: Int) = inMontee.copy(drums = inMontee.drums.copy(lanes = inMontee.drums.lanes.mapIndexed { i, l -> if (i == lane) l.copy(hits = l.hits + (at to Hit(1f, repeats = 2))) else l }))
+        // Lot « tuto 5 »: the silence is the last beat, the roll ×3 or more just before it (the build rolls ×2 already).
+        fun roll(at: Int, times: Int = 4) = inMontee.copy(drums = inMontee.drums.copy(lanes = inMontee.drums.lanes.mapIndexed { i, l -> if (i == lane) l.copy(hits = l.hits + (at to Hit(1f, repeats = times))) else l }))
         assertFalse("on a cell the silence takes away", TutoChecks.done(fill, roll(n - 2), target))
-        assertFalse(TutoChecks.done(fill, roll(n - 1), target))
-        val rolled = roll(n - 4)
+        assertFalse(TutoChecks.done(fill, roll(n - 4), target))
+        assertFalse("×2 is the build's", TutoChecks.done(fill, roll(n - 5, 2), target))
+        val rolled = roll(n - 5)
         assertTrue(TutoChecks.done(fill, rolled, target))
         val gapped = TutoChecks.show(step("gap"), rolled, target)!!
         assertTrue(TutoChecks.done(step("gap"), gapped, target))
@@ -223,7 +221,7 @@ class TutoLot4Test {
     fun theFacileWordsAreExplained() {
         val facile = course.chaptersFor(TutoLevel.Facile)
         val text = facile.flatMap { c -> c.steps.map { it.textFor(TutoLevel.Facile) } }.joinToString("\n")
-        for (w in listOf("kick (", "caisse claire (", "« Charley » (", "accord (", "c'est le groove", "transition (", "le mix, c'est", "« mes. 1/2 » dit", "« Suivre »", "« dB »", "« M4A »", "« WAV »")) {
+        for (w in listOf("kick (", "caisse claire (", "« Charley » (", "accord (", "c'est le groove", "transition (", "le mix, c'est", "« mes. 1/2 »", "« Suivre »", "« dB »", "« M4A »", "« WAV »")) {
             assertTrue("$w not explained", w in text)
         }
         assertEquals("La vitesse et la couleur du morceau", facile.first().title)
@@ -297,11 +295,9 @@ class TutoLot4Test {
         val (ghostTrack, ghosts) = TutoChecks.ghostNotes(d2, p, target)!!
         assertEquals(bass, ghostTrack)
         val groove = target.notes(StarterWizard.Part.Bass).notes
-        assertEquals(groove.size / 2, ghosts.size)
+        assertTrue("its first bar only", ghosts.isNotEmpty() && ghosts.all { it.start < 384 })
         assertTrue("another bass", ghosts.map { it.pitch }.toSet() != groove.map { it.pitch }.toSet())
-        p = p.withTrack(p.track(bass).copy(notes = p.track(bass).notes.copy(notes = ghosts)))
-        assertEquals(TutoNeed.Copy("bass"), TutoChecks.need(d2, p, target))
-        p = TutoChecks.fulfil(TutoNeed.Copy("bass"), d2, p, target)!!.first
+        p = TutoLot5Test.writeLine(d2, p, bass, target).first
         assertFalse("its Sub still the old one", TutoChecks.done(d2, p, target))
         assertEquals(TutoNeed.Track("sub"), TutoChecks.need(d2, p, target))
         p = TutoChecks.fulfil(TutoNeed.Track("sub"), d2, p, target)!!.first

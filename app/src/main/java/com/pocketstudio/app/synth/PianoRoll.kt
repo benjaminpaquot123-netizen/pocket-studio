@@ -101,6 +101,15 @@ data class PianoRollActions(
 
 /** A bar of the piano roll (its lines are drawn every 16 sixteenths). */
 
+/**
+ * The notes a touch on the tutorial's dotted note [dotted] writes: itself, or with « Accords » on its
+ * whole dotted chord, the dotted notes at its start not written yet (testers, lot « tuto 5 »: « toucher
+ * la note du bas pose les 3 », and it wrote one).
+ */
+internal fun dottedTouch(dotted: Note, hints: List<Note>, clip: NoteClip, chordMode: Boolean): List<Note> =
+    if (!chordMode) listOf(dotted)
+    else hints.filter { h -> h.start == dotted.start && clip.notes.none { it.pitch == h.pitch && it.start == h.start } }.ifEmpty { listOf(dotted) }
+
 private const val LOW = 24   // C1
 private const val HIGH = 108 // C8: the top of a piano, where the keyboard's highest octaves still write
 /** A row (a semitone) on a phone, and on a tablet where fingers aim at a single row. */
@@ -683,8 +692,11 @@ private fun Grid(
                                     val dotted = hints.firstOrNull { it.pitch == pitchAt(down.position.y) && tick in it.start until it.end }
                                     val start = tick / grid * grid
                                     val pitch = harmony.snap(pitchAt(down.position.y))
-                                    // A dotted note of the tutorial touched: written as it is (its length, its place).
-                                    if (dotted != null) actions.add(dotted)
+                                    // A dotted note of the tutorial touched: written as it is (its length, its place); with
+                                    // « Accords » on, its whole dotted chord at once, one undo step (testers, lot « tuto 5 »: one note).
+                                    val chord = dotted?.let { dottedTouch(it, hints, clip, chordMode) }.orEmpty()
+                                    if (chord.size > 1) actions.replaceClip(chord.fold(clip) { c, n -> c.add(n) }, null)
+                                    else if (dotted != null) actions.add(dotted)
                                     else if (chordMode) actions.addChord(start, newLength, pitch) else actions.add(Note(start, newLength, pitch))
                                 }
                                 return@awaitEachGesture

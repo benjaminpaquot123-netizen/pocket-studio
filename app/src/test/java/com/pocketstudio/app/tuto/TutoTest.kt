@@ -171,7 +171,8 @@ class TutoTest {
         assertEquals(174.0, rendered.single().after.tempoBpm, 0.0)
         assertNotNull(rendered.single().before)
         // « Montre-moi » on the kick.
-        c.goTo(1, 1)
+        // Lot « tuto 5 »: « Déjà prêt pour toi » first, then the kick's sound, then its cells.
+        c.goTo(1, 2)
         assertEquals("kick_do", c.ui.value!!.current.id)
         assertTrue(c.canShow())
         assertTrue(c.showMe())

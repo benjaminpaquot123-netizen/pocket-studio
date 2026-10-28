@@ -178,27 +178,9 @@ class TutoLot4Test {
     }
 
     @Test
-    fun theCrashIsDottedOnTheDropsFirstCellOnly() {
-        val song = target.song
-        val drop = song.allScenes.indexOfFirst { it.label == "Drop" }
-        val montee = song.allScenes.indexOfFirst { it.label == "Montée" }
-        // In the Montée: « Aller dans la partie Drop » first, nothing dotted.
-        val flow = MutableStateFlow(song.switchSceneForTest(montee).withoutCrash())
-        val c = controller(flow)
-        c.start("jump_up", TutoLevel.Pro)
-        idle()
-        goTo(c, "crash")
-        assertNotNull(c.ui.value!!.need)
-        assertNull(c.hint(flow.value.drums.steps))
-        c.fulfilNeed(); idle(100)
-        assertEquals(drop, flow.value.scene)
-        await("the need gone") { c.ui.value!!.need == null }
-        assertEquals(TutoChecks.CRASH_LANE to setOf(0), c.hint(flow.value.drums.steps))
-    }
-
-    @Test
     fun theHitsToTakeAwayAreDrawnOnlyInTheMontee() {
-        val song = target.song
+        // The assistant's song: its Montée still has hits on its last beat (the course's example has its silence).
+        val song = target.assistantSong
         val drop = song.allScenes.indexOfFirst { it.label == "Drop" }
         val flow = MutableStateFlow(song.switchSceneForTest(drop))
         val c = controller(flow)
@@ -391,14 +373,6 @@ class TutoLot4Test {
 
 /** [this] showing scene [i] (as « Aller dans la partie »). */
 private fun Project.switchSceneForTest(i: Int): Project = switchScene(i)
-
-/** The Drop's crash taken away (the step still to do). */
-private fun Project.withoutCrash(): Project {
-    val drop = allScenes.indexOfFirst { it.label == "Drop" }
-    return switchSceneForTest(drop).let { p ->
-        p.copy(drums = p.drums.copy(lanes = p.drums.lanes.mapIndexed { i, l -> if (i == TutoChecks.CRASH_LANE) l.copy(hits = emptyMap()) else l }))
-    }.switchSceneForTest(scene)
-}
 
 /** Only the target's first scene (the Groove), no song yet. */
 private fun Project.keepOnlyFirstSceneForTest(): Project {

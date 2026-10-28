@@ -580,11 +580,18 @@ private fun Grid(
         play = Neon.TextPrimary, outside = Color.Black.copy(alpha = 0.35f), rootRow = Neon.Cyan.copy(alpha = 0.10f),
     )
     val selColor = Neon.Acid
-    Row(Modifier.fillMaxWidth().height(height)) {
-        Column(Modifier.width(keysWidth).verticalScroll(vScroll).testTag("roll_keys")) {
+    // Testers (lot « tuto 4 »): the keys and the grid each scrolled with the same state, and the keys' labels
+    // (« Do3 / Do2 ») jumped an octave while the grid stayed: one vertical scroll now carries both.
+    val keysPx = with(density) { keysWidth.roundToPx() }
+    Row(
+        Modifier.fillMaxWidth().height(height)
+            .onSizeChanged { view = androidx.compose.ui.unit.IntSize((it.width - keysPx).coerceAtLeast(0), it.height) }
+            .verticalScroll(vScroll),
+    ) {
+        Column(Modifier.width(keysWidth).testTag("roll_keys")) {
             for (p in high downTo low) RollKey(p, rowHeight, keysWidth, english, named = allNames || p % 12 == 0, keyOn, keyOff)
         }
-        Box(Modifier.weight(1f).onSizeChanged { view = it }.verticalScroll(vScroll).horizontalScroll(hScroll)) {
+        Box(Modifier.weight(1f).horizontalScroll(hScroll)) {
             Canvas(
                 Modifier
                     .size(stepWidth * clip.steps, rowHeight * rows)

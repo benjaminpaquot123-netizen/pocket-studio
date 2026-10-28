@@ -32,5 +32,6 @@
   "masquer": "ausblenden",
   "%s LUFS · crête %s dBTP": "%s LUFS · Spitze %s dBTP",
   "Tout réentendre": "Alle wieder hören",
-  "Coupé dans Mes pistes, donc absent du fichier : %s.": "In Meine Spuren stummgeschaltet, also nicht in der Datei: %s."
+  "Coupé dans Mes pistes, donc absent du fichier : %s.": "In Meine Spuren stummgeschaltet, also nicht in der Datei: %s.",
+  "« Partager » renomme aussi le projet « %s ».": "„Teilen“ benennt auch das Projekt „%s“ um."
 }

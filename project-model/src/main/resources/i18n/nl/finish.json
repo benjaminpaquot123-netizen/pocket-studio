@@ -32,5 +32,6 @@
   "masquer": "verbergen",
   "%s LUFS · crête %s dBTP": "%s LUFS · piek %s dBTP",
   "Tout réentendre": "Alles weer horen",
-  "Coupé dans Mes pistes, donc absent du fichier : %s.": "Gedempt in Mijn sporen, dus niet in het bestand: %s."
+  "Coupé dans Mes pistes, donc absent du fichier : %s.": "Gedempt in Mijn sporen, dus niet in het bestand: %s.",
+  "« Partager » renomme aussi le projet « %s ».": "‘Delen’ geeft ook het project ‘%s’ deze naam."
 }

@@ -209,7 +209,7 @@ private fun RetoursBubble(record: () -> Unit, stop: () -> Unit, note: () -> Unit
     BoxWithConstraints(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
         val maxW = with(density) { maxWidth.toPx() }
         val maxH = with(density) { maxHeight.toPx() }
-        val bw = with(density) { (BUTTON_WIDTH * 3 + 8.dp).toPx() }
+        val bw = with(density) { (BUTTON_WIDTH * 2 + MORE_WIDTH + 8.dp).toPx() }
         val bh = with(density) { BUBBLE_HEIGHT.toPx() }
         val margin = with(density) { 4.dp.toPx() }
         // Physical place (px from the top left): first left of « ? », on the tempo's line.
@@ -244,14 +244,14 @@ private fun RetoursBubble(record: () -> Unit, stop: () -> Unit, note: () -> Unit
                     val since = remember { System.nanoTime() }
                     LaunchedEffect(Unit) { while (true) { delay(1000); now = System.nanoTime() } }
                     BubbleButton("■", Retours.clock((now - since) / 1_000_000).substringBefore('.') + if (r.segment > 1) " · ${r.segment}" else "",
-                        tr("Arrêter l'enregistrement"), "retours_stop", Neon.Red, stop)
+                        tr("Arrêter l'enregistrement"), "retours_stop", Neon.Red, onClick = stop)
                 }
-                RecState.Idle -> BubbleButton("●", "REC", tr("Filmer l'écran avec le son"), "retours_rec", Neon.Red, record)
+                RecState.Idle -> BubbleButton("●", "REC", tr("Filmer l'écran avec le son"), "retours_rec", Neon.Red, onClick = record)
                 else -> BubbleButton("…", "", tr("Patiente…"), "retours_wait", Neon.TextSecondary) {}
             }
-            BubbleButton("✎", tr("Noter"), tr("Écrire une note"), "retours_note", Neon.Cyan, note)
+            BubbleButton("✎", tr("Noter"), tr("Écrire une note"), "retours_note", Neon.Cyan, onClick = note)
             Box {
-                BubbleButton("⋯", "", tr("Mode retours"), "retours_more", Neon.TextSecondary) { menu = true }
+                BubbleButton("⋯", "", tr("Mode retours"), "retours_more", Neon.TextSecondary, width = MORE_WIDTH) { menu = true }
                 com.pocketstudio.ui.ScaledDropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     DropdownMenuItem(text = { Text(tr("Envoyer mes retours")) }, onClick = { menu = false; Retours.exportOpen.value = true },
                         modifier = Modifier.testTag("retours_menu_send"))
@@ -263,16 +263,18 @@ private fun RetoursBubble(record: () -> Unit, stop: () -> Unit, note: () -> Unit
     }
 }
 
-private val BUTTON_WIDTH = 46.dp
+// Testers (lot « tuto 4 »): narrower, so that it clears the song position's ▾ (« Intro mes. 1/144 ») on its line.
+private val BUTTON_WIDTH = 42.dp
+private val MORE_WIDTH = 30.dp
 private val BUBBLE_HEIGHT = 36.dp
 /** Where the bubble first sits: left of the top bar's « ? », on the tempo's line. */
 private val START_FROM_RIGHT = 60.dp
 private val START_FROM_TOP = 60.dp
 
 @Composable
-private fun BubbleButton(symbol: String, label: String, description: String, tag: String, tint: Color, onClick: () -> Unit) {
+private fun BubbleButton(symbol: String, label: String, description: String, tag: String, tint: Color, width: androidx.compose.ui.unit.Dp = BUTTON_WIDTH, onClick: () -> Unit) {
     Row(
-        Modifier.height(BUBBLE_HEIGHT).widthIn(min = BUTTON_WIDTH).clickable(onClick = onClick)
+        Modifier.height(BUBBLE_HEIGHT).widthIn(min = width).clickable(onClick = onClick)
             .semantics { contentDescription = description }.padding(horizontal = 3.dp).testTag(tag),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,

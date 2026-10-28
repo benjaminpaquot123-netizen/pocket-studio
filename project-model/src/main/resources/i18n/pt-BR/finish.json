@@ -32,5 +32,6 @@
   "masquer": "esconder",
   "%s LUFS · crête %s dBTP": "%s LUFS · pico %s dBTP",
   "Tout réentendre": "Ouvir tudo de novo",
-  "Coupé dans Mes pistes, donc absent du fichier : %s.": "Silenciada em Minhas faixas, então fora do arquivo: %s."
+  "Coupé dans Mes pistes, donc absent du fichier : %s.": "Silenciada em Minhas faixas, então fora do arquivo: %s.",
+  "« Partager » renomme aussi le projet « %s ».": "“Compartilhar” também renomeia o projeto “%s”."
 }

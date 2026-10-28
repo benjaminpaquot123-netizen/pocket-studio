@@ -32,5 +32,6 @@
   "masquer": "隠す",
   "%s LUFS · crête %s dBTP": "%s LUFS · ピーク %s dBTP",
   "Tout réentendre": "全部また聞く",
-  "Coupé dans Mes pistes, donc absent du fichier : %s.": "マイトラックでミュート中なのでファイルに入りません：%s。"
+  "Coupé dans Mes pistes, donc absent du fichier : %s.": "マイトラックでミュート中なのでファイルに入りません：%s。",
+  "« Partager » renomme aussi le projet « %s ».": "「共有」でプロジェクト「%s」の名前も変わります。"
 }

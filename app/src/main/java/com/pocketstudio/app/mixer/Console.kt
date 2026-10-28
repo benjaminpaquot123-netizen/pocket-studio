@@ -149,6 +149,8 @@ private fun ConsoleStrip(info: StripInfo, c: Channel, meter: () -> Float, action
     val tint = info.color ?: Neon.Cyan
     Column(
         Modifier.width(CONSOLE_STRIP_W).clip(RoundedCornerShape(12.dp)).background(Neon.SurfaceHigh.copy(alpha = 0.35f))
+            // The tutorial rings (and brings into view) the whole strip it names, its name with its fader.
+            .spot("console_strip_$index")
             .padding(horizontal = 4.dp, vertical = 6.dp).testTag("strip_$index"),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp),

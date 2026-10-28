@@ -110,3 +110,19 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - Demande en discussion : un APK avec un « mode retours » (enregistrer l'écran, écrire des notes à tout moment) pour faire tout le tuto jump up et me le montrer.
 - Mode retours validé : vidéo de l'écran + son de l'appli, notes ✎ à tout moment, journal automatique, activé par défaut dans l'APK envoyé (bouton flottant dès l'ouverture) et coupable dans ⋯ › Aide ; découpage automatique en morceaux de 20 Mo max (limite d'envoi 30 Mo) ; envoi ici dans la discussion.
 - APK du Mode retours : à compiler et envoyer directement dès qu'il est prêt (accord donné).
+- 2026-10-28 09:50 (APK 226, tuto jump up Facile, ch. 1 étape 1) : « Écouter l'exemple » passe à « Arrêter l'écoute » mais aucun son, et l'étape se coche quand même ; les pads, eux, sonnent (même en Bluetooth voiture). À corriger plus tard, Benjamin continue le test.
+- Mode retours : la vidéo envoyée a une piste audio vide (codec inconnu, 0 canal). À corriger avec l'exemple.
+- 09:56 : « Comment savoir où placer le kick en jump up ? Le tuto l'explique ? » (encore au chapitre 1, étape 1 ; tempo resté à 120). Le tuto le montre au chapitre 2 (cases en pointillé + « Pourquoi ? » two-step) : vérifier que c'est assez visible.
+- 09:59 : étape « choisis la tonalité Fa, gamme sombre » : Benjamin ne sait pas comment savoir laquelle choisir (la fiche Accords affiche « Fa phrygienne »). À améliorer : le texte Facile doit nommer exactement le mot affiché à l'écran et le tuto doit éclairer le bon bouton.
+- 10:01 : le panneau du tuto revient souvent replié et se perd dans la page (même teinte que les cartes) : le distinguer mieux (bord/couleur/lueur comme le Guide) et garder son état ouvert/replié. Aussi : étape 3/3 « tonalité » non cochée alors que la fiche Accords affichait déjà « Fa phrygienne » (détecteur ?).
+- 10:07 (ch. 4 « Charleys et percussions ») : le panneau du tuto doit toujours être ouvert quand on en a besoin (il ne sait pas s'il l'a fermé lui-même). Pas de kit de batterie « jump up » : le projet du tuto part d'un kit intégré non ressemblant ; il a dû choisir le kit « Drum and bass », le plus proche. Le tuto devrait proposer/charger d'office les sons du style (kit jump up).
+- 10:09 (ch. 6-7, basse) : « Montre-moi » pour la basse : l'étape s'est cochée mais rien n'a été montré (on ne voit ni où la basse est écrite ni ce qui a changé) ; perdu à cet endroit. « Montre-moi » doit emmener à l'écran concerné (Clavier/notes de la basse), mettre en évidence ce qui a été ajouté et le faire entendre.
+- La barre du bas du tuto (Écouter l'exemple, ←, →, Montre-moi…) doit faire plus professionnelle et rendre évident où toucher (vrais boutons libellés, bouton principal mis en avant).
+- 10:14–10:16 (2 vidéos, nouveau projet tuto Facile jump up) :
+  - le projet du tuto démarre avec une piste « Synthé » déjà là et s'ouvre sur Clavier (contraire de « tu construis tout ») ;
+  - « Je le fais » ouvre une bulle « Le réglage est ici. Le Guide t'attend dans sa barre, en bas » + « Compris » : mot « Guide » au lieu de « tuto », bulle qui cache l'écran à chaque fois ;
+  - caisse claire « (2 mesures) » alors que la boucle fait 1 mesure : il faut passer la longueur à 2 sans que ce soit dit ;
+  - les cases en pointillé ne se voient que pendant l'éclairage ;
+  - basse : « Je le fais » arrive sur la piste Synthé (« Jeu des accords », arpège, strum) au lieu de créer/ouvrir une piste Basse ; on ne sait pas comment « ajouter une piste Basse » ;
+  - vidéos du téléphone sans son (enregistreur système réglé sans audio).
+- Décisions tuto (2026-10-28) : « Montre-moi » = 1B (montre puis efface pour qu'on le refasse soi-même, « mais bien réalisé ») ; recommencer = 2A (« Recommencer le tuto » sur un nouveau projet vide). GO pour revoir tout le tuto d'après ses retours, APK direct après.

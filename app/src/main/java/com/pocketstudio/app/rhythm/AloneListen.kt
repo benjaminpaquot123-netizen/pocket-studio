@@ -112,7 +112,7 @@ fun HoldAlone(active: Boolean, hold: () -> (() -> Unit)) {
  * was. [label]: « Écouter seul » or « Écouter seule »; [name]: what is heard, for TalkBack.
  */
 @Composable
-fun AloneButton(on: Boolean, label: String, name: String, tag: String, modifier: Modifier = Modifier, toggle: () -> Unit) {
+fun AloneButton(on: Boolean, label: String, name: String, tag: String, modifier: Modifier = Modifier, compact: Boolean = false, toggle: () -> Unit) {
     val shape = RoundedCornerShape(24.dp)
     Row(
         modifier.heightIn(min = 48.dp).clip(shape)
@@ -123,7 +123,7 @@ fun AloneButton(on: Boolean, label: String, name: String, tag: String, modifier:
                 selected = on
                 contentDescription = if (on) tr("Arrêter") else tr("Écouter « %s » seul, en boucle", name)
             }
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = if (compact) 10.dp else 16.dp)
             .testTag(tag),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),

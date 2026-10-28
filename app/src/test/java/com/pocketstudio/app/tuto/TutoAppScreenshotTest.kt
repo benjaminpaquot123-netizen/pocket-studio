@@ -13,6 +13,7 @@ import com.pocketstudio.model.tuto.TutoLevel
 import com.pocketstudio.model.tuto.TutoProgress
 import com.pocketstudio.model.tuto.TutoTarget
 import org.junit.After
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -65,14 +66,17 @@ class TutoAppScreenshotTest {
         await("panel") { has("tuto_panel") }
     }
 
-    /** The snare: « Passer à 2 mesures », then its dotted cells on the grid, all the step long. */
+    /**
+     * The snare: « Passer à 2 mesures », then its dotted cells on the grid, all the step long; the
+     * panel folds out of the way (lot « tuto 3 »), the bar pages right above the cells.
+     */
     @Test
     fun snareOnTheGrid() {
         open("snare_do")
         compose.onNodeWithTag("tuto_need").performClick()
         await("2 bars") { h.vm.project.value.drums.steps == 32 }
-        compose.onNodeWithTag("tuto_do").performClick()
         await("dotted cells") { has("tuto_hint") }
+        assertTrue("folded", has("tuto_folded_text"))
         compose.mainClock.advanceTimeBy(3_000)
         await("the ring gone") { !has("tuto_spot_ring") }
         settle()

@@ -2,6 +2,8 @@
 
 package com.pocketstudio.app.session
 
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import com.pocketstudio.ui.ScaledAlertDialog
 
 import com.pocketstudio.app.learn.spot
@@ -392,10 +394,24 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
         // Phase 37: the song's chords, every part, a touch from changing them all.
         if (ui.song.isNotEmpty() && ui.chords.isNotEmpty()) SongChordsStrip(ui.chords, actions.openChords)
         ui.song.forEachIndexed { i, part -> PartRow(i, part, ui, actions, insertAfter = { inserting = it }) }
+        // Testers (lot « tuto 3 »): each part added pushes these buttons down (a row more above, the chords' strip):
+        // after an add they are brought back into view, never left under the bottom of the screen.
+        val addRow = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+        var added by remember { mutableStateOf(false) }
+        LaunchedEffect(ui.song.size) {
+            if (added) {
+                added = false
+                kotlinx.coroutines.delay(50)
+                runCatching { addRow.bringIntoView() }
+            }
+        }
         Text(if (ui.song.isEmpty()) tr("Ajouter :") else tr("Ajouter à la fin :"), style = MaterialTheme.typography.bodyMedium)
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
+            modifier = Modifier.bringIntoViewRequester(addRow).spot("song_add").testTag("song_add"),
+        ) {
             ui.scenes.forEachIndexed { i, s ->
-                if (s != null) OutlinedButton(onClick = { actions.addPart(i) }, enabled = ui.song.size < SongPart.MAX_PARTS, modifier = Modifier.testTag("add_part_$i")) {
+                if (s != null) OutlinedButton(onClick = { added = true; actions.addPart(i) }, enabled = ui.song.size < SongPart.MAX_PARTS, modifier = Modifier.testTag("add_part_$i")) {
                     Text("+ ${ui.title(i)}", maxLines = 1, softWrap = false)
                 }
             }

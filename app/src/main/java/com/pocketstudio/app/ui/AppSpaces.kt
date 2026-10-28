@@ -323,7 +323,7 @@ fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions, li
         Text(tr("Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         tracks.forEachIndexed { i, t ->
             if (i > 0) HorizontalDivider(color = Neon.Outline.copy(alpha = 0.5f))
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) {
                 Box(Modifier.size(12.dp).background(t.color, CircleShape))
                 Column(
                     Modifier.weight(1f).heightIn(min = 48.dp).clip(RoundedCornerShape(8.dp))
@@ -334,12 +334,13 @@ fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions, li
                     verticalArrangement = Arrangement.Center,
                 ) {
                     Text(t.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    // Testers (lot « tuto 3 »): « Changer le … » cut short; whole, on a second line if it must.
                     Text(
                         if (t.mute) tr("coupée") else tr("Changer le son"), style = MaterialTheme.typography.labelMedium,
-                        color = if (t.mute) Neon.Amber else Neon.Cyan, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                        color = if (t.mute) Neon.Amber else Neon.Cyan, maxLines = 2, overflow = TextOverflow.Ellipsis,
                     )
                 }
-                com.pocketstudio.app.rhythm.AloneButton(trackAlone(t), tr("Écouter seule"), t.name, "simple_alone_${t.key}") { actions.listenAlone(t.key) }
+                com.pocketstudio.app.rhythm.AloneButton(trackAlone(t), tr("Écouter seule"), t.name, "simple_alone_${t.key}", compact = true) { actions.listenAlone(t.key) }
                 // A fader, not a loudspeaker (owner, APK 224: the 🔊 looked like « play » and stayed silent).
                 IconButton(onClick = { sheetFor = t.key }, modifier = Modifier.spot("simple_volume_${t.key}").testTag("simple_volume_${t.key}")) {
                     Icon(Icons.Filled.Tune, contentDescription = tr("Volume de %s", t.name), tint = if (t.mute) Neon.Amber else Neon.TextPrimary)

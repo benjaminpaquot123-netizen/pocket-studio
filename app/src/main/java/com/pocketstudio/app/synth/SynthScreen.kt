@@ -553,7 +553,8 @@ private fun PresetsCard(patch: SynthPatch, actions: SynthActions, browser: Sound
 
 @Composable
 internal fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boolean, setAdvanced: (Boolean) -> Unit) {
-    NeonCard {
+    // The tutorial's « Je le fais » on a sound's settings (« Coupure »…) rings this card.
+    NeonCard(modifier = Modifier.spot(com.pocketstudio.app.ui.SYNTH_SETTINGS_SPOT)) {
         SectionLabel(tr("Réglages du son"), foldKey = "Réglages du son")
         Text(tr("Forme d'onde"), style = MaterialTheme.typography.bodyMedium)
         ChoiceRow(WAVES, patch.get(SynthPatch.OSC1_WAVE)) { v ->

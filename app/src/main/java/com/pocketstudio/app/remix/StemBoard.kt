@@ -1,6 +1,8 @@
 package com.pocketstudio.app.remix
 
 import com.pocketstudio.app.audio.Pcm
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 /*
  * « Tableau des pistes » (owner, 2026-10-28): each stem's sound drawn as a curve, a stretch chosen
@@ -25,6 +27,9 @@ data class StemSelection(
         /** Short enough not to soften an attack, long enough not to click. */
         const val DEFAULT_FADE_IN_MS = 4
         const val DEFAULT_FADE_OUT_MS = 12
+
+        /** The rate of the frames (B3): the stems as the engine plays them ([com.pocketstudio.engine.NativeStems], 48 kHz). */
+        const val SAMPLE_RATE = 48_000
     }
 }
 
@@ -76,4 +81,27 @@ interface StemBoardActions {
 
     /** Cuts stem [stem] of [setId] into its phrases, one a pad (free pads only), at most [max]. */
     fun chop(setId: String, stem: Int, max: Int = 8)
+
+    /** What the actions are doing and what they said (B3); a fake may leave it idle. */
+    val state: StateFlow<StemBoardState> get() = StemBoardState.IDLE
+
+    /** The board showed [StemBoardState.message]: it goes. */
+    fun dismissMessage() {}
+}
+
+/** What the board shows of its actions' work (B3). */
+data class StemBoardState(
+    /** The stretch heard alone ([StemBoardActions.play]), null when nothing plays. */
+    val playing: StemSelection? = null,
+    /** Where the listening is, in frames of the stem (the play head), -1 when nothing plays. */
+    val playFrame: Long = -1,
+    /** What is being prepared (« Voix vers le pad… »), null when nothing is. */
+    val busy: String? = null,
+    /** What the last send or chop did (« 6 phrases sur les pads 9 à 14. ») or why not, until read. */
+    val message: String? = null,
+) {
+    companion object {
+        /** Nothing playing, nothing said. */
+        val IDLE: StateFlow<StemBoardState> = MutableStateFlow(StemBoardState())
+    }
 }

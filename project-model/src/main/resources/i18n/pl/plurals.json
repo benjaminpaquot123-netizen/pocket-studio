@@ -22,5 +22,9 @@
   "%d packs installés|few": "%d paczki zainstalowane",
   "%d packs installés|many": "%d paczek zainstalowanych",
   "%d n'ont pas pu venir|few": "%d nie dotarły",
-  "%d n'ont pas pu venir|many": "%d nie dotarło"
+  "%d n'ont pas pu venir|many": "%d nie dotarło",
+  "%1$d phrases sur les pads %2$s.|few": "%1$d frazy na padach %2$s.",
+  "%1$d phrases sur les pads %2$s.|many": "%1$d fraz na padach %2$s.",
+  "Plus de pad libre pour les %d dernières.|few": "Brak wolnego padu dla ostatnich %d.",
+  "Plus de pad libre pour les %d dernières.|many": "Brak wolnego padu dla ostatnich %d."
 }

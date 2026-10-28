@@ -189,6 +189,7 @@ import com.pocketstudio.app.mixer.AutomationUi
 import com.pocketstudio.app.remix.RemixScreen
 import com.pocketstudio.app.remix.RemixUi
 import com.pocketstudio.app.remix.RemixViewModel
+import com.pocketstudio.app.remix.beforePlay
 import com.pocketstudio.app.studio.StudioViewModel
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.ui.Neon
@@ -2807,6 +2808,9 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                             // The project's ▶ and « Écouter » never sound together (remix lot 1, Sarah: two voices at
                             // once): ▶ from the top bar, a part touched or « Jouer depuis… » stops « Écouter » too.
                             LaunchedEffect(transport.playing) { if (transport.playing) remixVm.pause() }
+                            // The stem board's actions (B3, the board itself is B1's): a stretch heard alone
+                            // and the Remix's « Écouter » share the preview player, never sound together.
+                            val stemBoard = remember(rhythmVm, remixVm) { rhythmVm.stemBoard.beforePlay(remixVm::stop) }
                             RemixScreen(
                                 RemixUi(
                                     modelInstalled, remixState, sets, preview,
@@ -2841,9 +2845,10 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     pickSong = { pickSong.launch(arrayOf("audio/*")) },
                                     cancel = remixVm::cancel,
                                     dismiss = remixVm::dismiss,
-                                    // « Écouter » stops the project first (they never sound together).
-                                    playAll = { set -> if (rhythmVm.transport.value.playing) rhythmVm.togglePlay(); remixVm.playAll(set) },
+                                    // « Écouter » stops the project and the board's stretch first (they never sound together).
+                                    playAll = { set -> stemBoard.stop(); if (rhythmVm.transport.value.playing) rhythmVm.togglePlay(); remixVm.playAll(set) },
                                     toggleStem = { set, stem ->
+                                        stemBoard.stop()
                                         // A switch of another song (or of none playing) starts « Écouter ».
                                         if (remixVm.preview.value?.setId != set.id && rhythmVm.transport.value.playing) rhythmVm.togglePlay()
                                         remixVm.toggleStem(set, stem)
@@ -2869,7 +2874,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     },
                                     clearRemix = rhythmVm::clearRemix,
                                     // The project's ▶ and « Écouter » never sound together.
-                                    togglePlay = { remixVm.pause(); rhythmVm.togglePlay() },
+                                    togglePlay = { remixVm.pause(); stemBoard.stop(); rhythmVm.togglePlay() },
                                     retry = remixVm::retry,
                                     setStartBar = rhythmVm::setRemixStartBar,
                                     setStemVolume = rhythmVm::setStemVolume,

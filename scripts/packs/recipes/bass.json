@@ -698,7 +698,7 @@
    },
    {
     "role": "perc",
-    "pattern": "......o.......o.......o.....o.o.",
+    "pattern": "......o.......o.......o....o..o.",
     "source": "dnb",
     "tip_fr": "Quelques petits coups discrets entre les temps : ils font rouler le rythme."
    }

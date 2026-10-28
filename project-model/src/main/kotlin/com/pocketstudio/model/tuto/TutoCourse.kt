@@ -19,7 +19,9 @@ data class TutoCourse(
 ) {
     /** The chapters of [level], each with only its steps of that level. */
     fun chaptersFor(level: TutoLevel): List<TutoChapter> =
-        chapters.filter { level.code in it.levels }.map { c -> c.copy(steps = c.steps.filter { level.code in it.levels }) }.filter { it.steps.isNotEmpty() }
+        chapters.filter { level.code in it.levels }
+            .map { c -> c.copy(title = c.titleFor(level), steps = c.steps.filter { level.code in it.levels }) }
+            .filter { it.steps.isNotEmpty() }
 
     companion object {
         private val json = Json { ignoreUnknownKeys = true }
@@ -42,18 +44,21 @@ data class TutoCourse(
 enum class TutoLevel(val code: String) { Facile("f"), Pro("p") }
 
 /**
- * A chapter: its [title], its « Pourquoi ? » ([why]); [map]: the song's map (parts, bars, energy)
- * is shown under it. [levels]: "f", "p" or "fp".
+ * A chapter: its [title] ([titlePro]: in Pro, when the words differ), its « Pourquoi ? » ([why]);
+ * [map]: the song's map (parts, bars, energy) is shown under it. [levels]: "f", "p" or "fp".
  */
 @Serializable
 data class TutoChapter(
     val id: String,
     val title: String,
+    val titlePro: String? = null,
     val why: String = "",
     val levels: String = "fp",
     val map: Boolean = false,
     val steps: List<TutoStep> = emptyList(),
-)
+) {
+    fun titleFor(level: TutoLevel): String = if (level == TutoLevel.Pro) titlePro ?: title else title
+}
 
 /**
  * One step. [text]: « À toi : … » ([textPro]: in Pro, when the words differ); [why]: its own
@@ -63,7 +68,9 @@ data class TutoChapter(
  * « Écouter l'exemple » plays ("drums:kick,snare", "parts:bass", "part:Drop", "vs:Drop:Intro",
  * "song"). [keep], [lanesFrom], [transpose]: how « Montre-moi » makes a part; [song]: the
  * arrangement it lays out ("Intro:32,Montée:8,…"). [demo]: a « Montre-moi » of its own for a step
- * ticked by hand ("kick": a long kick, then the kit's short one, each heard).
+ * ticked by hand ("kick": a long kick, then the kit's short one, each heard). [hearMine]: a listening
+ * step that plays the user's own music, then the example (« Écoute ta boucle, puis l'exemple »):
+ * ticked once both were heard (testers, lot « tuto 4 »: it was ticked on the user's loop alone).
  */
 @Serializable
 data class TutoStep(
@@ -81,6 +88,7 @@ data class TutoStep(
     val transpose: Int = 0,
     val song: String = "",
     val demo: String = "",
+    val hearMine: Boolean = false,
 ) {
     fun textFor(level: TutoLevel): String = if (level == TutoLevel.Pro) textPro ?: text else text
 

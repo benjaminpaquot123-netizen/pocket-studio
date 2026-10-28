@@ -1,5 +1,4 @@
 {
-  "Chapitre %1$d/%2$d · %3$s": "Bölüm %1$d/%2$d · %3$s",
   "Étape %1$d/%2$d": "Adım %1$d/%2$d",
   "Pro": "Pro",
   "Facile": "Kolay",
@@ -63,16 +62,10 @@
   "Les transitions": "Geçişler",
   "Entre deux parties, un petit événement prévient l'oreille : un roulement, une cymbale, un silence.": "İki bölüm arasında küçük bir olay kulağı uyarır: bir trampet yuvarlaması, bir zil, bir sessizlik.",
   "Un demi-temps de rien, et le Drop paraît deux fois plus fort.": "Yarım vuruşluk hiçlik, ve Drop iki kat güçlü gelir.",
-  "Toutes les 8 ou 16 mesures, change un détail : un coup de percussion, un charley ouvert.": "Her 8 ya da 16 ölçüde bir ayrıntıyı değiştir: bir perküsyon, açık bir hi-hat.",
   "Les effets": "Efektler",
   "Le mix": "Miks",
-  "Regarde les vu-mètres pendant le Drop : rien ne doit rester dans le rouge.": "Drop sırasında göstergelere bak: hiçbir şey kırmızıda kalmamalı.",
-  "Équilibre les groupes : batterie, basse, musique. Compare au morceau d'exemple.": "Grupları dengele: davul, bas, müzik. Örnek parçayla karşılaştır.",
   "Le mastering": "Mastering",
   "Le master colle le tout et donne le volume des clubs, sans écraser le kick.": "Master hepsini birbirine yapıştırır ve kick'i ezmeden kulüp ses seviyesini verir.",
-  "À toi : mets un compresseur multibande (OTT) et un limiteur sur le master.": "Sıra sende: master'a çok bantlı bir kompresör (OTT) ve bir limiter koy.",
-  "Vérifie le volume (loudness) avant d'exporter : vise celui des clubs.": "Dışa aktarmadan önce ses yüksekliğini (loudness) kontrol et: kulüp seviyesini hedefle.",
   "Exporte ton morceau": "Parçanı dışa aktar",
-  "Ton morceau est fini : fais-le écouter !": "Parçan bitti: herkese dinlet!",
-  "WAV pour un DJ, M4A pour tes amis, pistes séparées pour un remix.": "DJ için WAV, arkadaşların için M4A, remix için ayrı kanallar."
+  "Ton morceau est fini : fais-le écouter !": "Parçan bitti: herkese dinlet!"
 }

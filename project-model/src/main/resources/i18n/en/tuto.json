@@ -1,5 +1,4 @@
 {
-  "Chapitre %1$d/%2$d · %3$s": "Chapter %1$d/%2$d · %3$s",
   "Étape %1$d/%2$d": "Step %1$d/%2$d",
   "Pro": "Pro",
   "Facile": "Easy",
@@ -63,16 +62,10 @@
   "Les transitions": "Transitions",
   "Entre deux parties, un petit événement prévient l'oreille : un roulement, une cymbale, un silence.": "Between two parts, a small event warns the ear: a roll, a cymbal, a silence.",
   "Un demi-temps de rien, et le Drop paraît deux fois plus fort.": "Half a beat of nothing, and the Drop feels twice as strong.",
-  "Toutes les 8 ou 16 mesures, change un détail : un coup de percussion, un charley ouvert.": "Every 8 or 16 bars, change a detail: a percussion hit, an open hi-hat.",
   "Les effets": "Effects",
   "Le mix": "The mix",
-  "Regarde les vu-mètres pendant le Drop : rien ne doit rester dans le rouge.": "Watch the meters during the Drop: nothing should stay in the red.",
-  "Équilibre les groupes : batterie, basse, musique. Compare au morceau d'exemple.": "Balance the groups: drums, bass, music. Compare with the example track.",
   "Le mastering": "Mastering",
   "Le master colle le tout et donne le volume des clubs, sans écraser le kick.": "The master glues it all and gives club loudness, without crushing the kick.",
-  "À toi : mets un compresseur multibande (OTT) et un limiteur sur le master.": "Your turn: put a multiband compressor (OTT) and a limiter on the master.",
-  "Vérifie le volume (loudness) avant d'exporter : vise celui des clubs.": "Check the loudness before exporting: aim for club level.",
   "Exporte ton morceau": "Export your track",
-  "Ton morceau est fini : fais-le écouter !": "Your track is finished: let people hear it!",
-  "WAV pour un DJ, M4A pour tes amis, pistes séparées pour un remix.": "WAV for a DJ, M4A for your friends, separate tracks for a remix."
+  "Ton morceau est fini : fais-le écouter !": "Your track is finished: let people hear it!"
 }

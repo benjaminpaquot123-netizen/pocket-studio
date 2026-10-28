@@ -2378,7 +2378,10 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 target = project.mixer.target,
                                 styleLufs = com.pocketstudio.model.LoudnessTargets.forStyle(project.style, project.mixVersion),
                                 buses = project.mixer.buses,
-                                strips = mixerStrips(project),
+                                // Tutorial testers (lot « tuto 4 », b/139): no silent « Basse acide » strip in the tutorial's project.
+                                strips = mixerStrips(project).let { all ->
+                                    if (tutoUi != null && project.allScenes.none { s -> s.acid.steps.take(s.acid.length.coerceAtLeast(0)).any { it.gate } }) all.filter { it.ch != com.pocketstudio.model.AutoTarget.ACID_CHANNEL } else all
+                                },
                                 spectrum = spectrum,
                                 analyserOpen = analyserOn,
                                 setAnalyser = { analyserOn = it },

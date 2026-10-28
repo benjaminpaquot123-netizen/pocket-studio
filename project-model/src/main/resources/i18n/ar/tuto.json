@@ -1,5 +1,4 @@
 {
-  "Chapitre %1$d/%2$d · %3$s": "الفصل %1$d/%2$d · %3$s",
   "Étape %1$d/%2$d": "الخطوة %1$d/%2$d",
   "Pro": "محترف",
   "Facile": "سهل",
@@ -63,16 +62,10 @@
   "Les transitions": "الانتقالات",
   "Entre deux parties, un petit événement prévient l'oreille : un roulement, une cymbale, un silence.": "بين جزأين، حدث صغير ينبّه الأذن: دحرجة، صنج، صمت.",
   "Un demi-temps de rien, et le Drop paraît deux fois plus fort.": "نصف ضربة من لا شيء، فيبدو الـ Drop أقوى مرتين.",
-  "Toutes les 8 ou 16 mesures, change un détail : un coup de percussion, un charley ouvert.": "كل 8 أو 16 مازورة، غيّر تفصيلًا: ضربة إيقاع، هاي هات مفتوح.",
   "Les effets": "المؤثرات",
   "Le mix": "المزج",
-  "Regarde les vu-mètres pendant le Drop : rien ne doit rester dans le rouge.": "راقب العدّادات خلال الـ Drop: لا شيء يجب أن يبقى في الأحمر.",
-  "Équilibre les groupes : batterie, basse, musique. Compare au morceau d'exemple.": "وازن المجموعات: الطبول، البيس، الموسيقى. قارن مع مقطوعة المثال.",
   "Le mastering": "الماسترينغ",
   "Le master colle le tout et donne le volume des clubs, sans écraser le kick.": "الماستر يلصق كل شيء ويعطي صوت النوادي، دون أن يسحق الكيك.",
-  "À toi : mets un compresseur multibande (OTT) et un limiteur sur le master.": "دورك: ضع ضاغطًا متعدد النطاقات (OTT) ومحدِّدًا على الماستر.",
-  "Vérifie le volume (loudness) avant d'exporter : vise celui des clubs.": "تحقّق من الجهارة (loudness) قبل التصدير: استهدف مستوى النوادي.",
   "Exporte ton morceau": "صدّر مقطوعتك",
-  "Ton morceau est fini : fais-le écouter !": "مقطوعتك اكتملت: أسمِعها للجميع!",
-  "WAV pour un DJ, M4A pour tes amis, pistes séparées pour un remix.": "WAV للـ DJ، وM4A لأصدقائك، ومسارات منفصلة للريمكس."
+  "Ton morceau est fini : fais-le écouter !": "مقطوعتك اكتملت: أسمِعها للجميع!"
 }

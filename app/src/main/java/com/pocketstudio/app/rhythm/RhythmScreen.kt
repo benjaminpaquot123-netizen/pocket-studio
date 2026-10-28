@@ -887,7 +887,10 @@ private fun RollMenu(
                         modifier = Modifier.testTag("roll_ramp_$r"))
                 }
             }
-            TextButton(onClick = { burst(1); close() }, modifier = Modifier.testTag("roll_burst")) { Text(tr("Rafale de 1/32 sur le temps")) }
+            // Tutorial testers (lot « tuto 4 »): the roll's own note value, the burst below being another action (it read as the roll's label).
+            if (hit.repeats > 1) Text(tr("×%1\$d : %1\$d coups dans la case, des 1/%2\$d", hit.repeats, 16 * hit.repeats),
+                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("roll_value"))
+            TextButton(onClick = { burst(1); close() }, modifier = Modifier.testTag("roll_burst")) { Text(tr("Tout le temps en ×2 (rafale de 1/32)")) }
             // Phase 37: a hit that plays only now and then (the same draw each time, the export too).
             Text(tr("Chance de jouer"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {

@@ -1,5 +1,4 @@
 {
-  "Chapitre %1$d/%2$d · %3$s": "第 %1$d/%2$d 章 · %3$s",
   "Étape %1$d/%2$d": "第 %1$d/%2$d 步",
   "Pro": "专业",
   "Facile": "简单",
@@ -63,16 +62,10 @@
   "Les transitions": "过渡",
   "Entre deux parties, un petit événement prévient l'oreille : un roulement, une cymbale, un silence.": "两段之间，一个小事件提醒耳朵：一段滚奏、一下镲片、一段安静。",
   "Un demi-temps de rien, et le Drop paraît deux fois plus fort.": "半拍的空白，让 Drop 听起来强两倍。",
-  "Toutes les 8 ou 16 mesures, change un détail : un coup de percussion, un charley ouvert.": "每 8 或 16 小节改一个细节：一下打击乐、一个开镲。",
   "Les effets": "效果",
   "Le mix": "混音",
-  "Regarde les vu-mètres pendant le Drop : rien ne doit rester dans le rouge.": "Drop 时看电平表：任何东西都不能一直在红区。",
-  "Équilibre les groupes : batterie, basse, musique. Compare au morceau d'exemple.": "平衡各组：鼓、贝斯、音乐。和示例曲子比较一下。",
   "Le mastering": "母带处理",
   "Le master colle le tout et donne le volume des clubs, sans écraser le kick.": "母带把一切粘合起来，给出俱乐部的响度，又不压扁底鼓。",
-  "À toi : mets un compresseur multibande (OTT) et un limiteur sur le master.": "轮到你：在母带上加一个多段压缩（OTT）和一个限制器。",
-  "Vérifie le volume (loudness) avant d'exporter : vise celui des clubs.": "导出前检查响度：以俱乐部水平为目标。",
   "Exporte ton morceau": "导出你的曲子",
-  "Ton morceau est fini : fais-le écouter !": "你的曲子完成了：放给大家听吧！",
-  "WAV pour un DJ, M4A pour tes amis, pistes séparées pour un remix.": "给 DJ 用 WAV，给朋友用 M4A，做混音用分轨。"
+  "Ton morceau est fini : fais-le écouter !": "你的曲子完成了：放给大家听吧！"
 }

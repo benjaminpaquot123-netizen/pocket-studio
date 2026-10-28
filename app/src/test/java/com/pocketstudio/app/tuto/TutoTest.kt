@@ -118,8 +118,16 @@ class TutoTest {
         assertEquals("tempo", c.ui.value!!.current.id)
         flow.value = empty.copy(tempoBpm = 174.0)
         await("tempo ticked") { "tempo" in c.ui.value!!.progress.done }
-        assertEquals("key", c.ui.value!!.current.id)
+        // Owner (2026-10-28): never on by itself; the step stays with « Bravo » until « Étape suivante ».
+        idle(500)
+        assertEquals("tempo", c.ui.value!!.current.id)
         assertTrue(c.ui.value.toString(), c.ui.value!!.bravo)
+        c.toggleOpen()
+        c.toggleOpen()
+        assertTrue("« Bravo » kept while the step stays", c.ui.value!!.bravo)
+        c.next()
+        assertEquals("key", c.ui.value!!.current.id)
+        assertFalse(c.ui.value!!.bravo)
         // A restart: a new controller on the same project finds the same place.
         val again = controller(flow, history, store)
         assertEquals("key", again.ui.value!!.current.id)

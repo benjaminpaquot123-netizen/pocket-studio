@@ -94,9 +94,11 @@ android {
                 // (bench.sublayers=1: the bass music subs as layers of their bass, G1b SubLayers.)
                 // (bench.guide=accept: each song followed to the end of its Guide's parcours first, G6.)
                 // RealProjectsTest (docs/TESTS-REELS.md): -Preal.projects, -Preal.out, -Preal.live, -Preal.render.
-                for (key in listOf("bench.out", "bench.render", "bench.styles", "bench.guide", "bench.live", "bench.seconds", "bench.loop", "bench.sublayers", "real.projects", "real.out", "real.live", "real.render")) {
+                // The « testeur humain » bench (scripts/human-tester.sh): -Phuman.dir, its seats side by side.
+                for (key in listOf("bench.out", "bench.render", "bench.styles", "bench.guide", "bench.live", "bench.seconds", "bench.loop", "bench.sublayers", "real.projects", "real.out", "real.live", "real.render", "human.dir")) {
                     providers.gradleProperty(key).orNull?.let { value -> it.systemProperty("ps.$key", value) }
                 }
+                if (providers.gradleProperty("human.dir").isPresent) it.maxParallelForks = 2
                 // Every style's song in one run (or every preview, PreviewLevelBench): more room than the tests need.
                 if (listOf("bench.live", "bench.out", "bench.render").any { k -> providers.gradleProperty(k).isPresent }) it.maxHeapSize = "3g"
             }

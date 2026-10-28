@@ -1785,6 +1785,11 @@ fun AppRoot() {
                 // « Tuto de A à Z »: its panel takes the Guide's place while it runs.
                 val tutoNow = tutoUi
                 if (tutoNow != null && !showLive && !showLivePads && !showTimeline) {
+                    val tutoProject by rhythmVm.project.collectAsStateWithLifecycle()
+                    val tutoTransport by rhythmVm.transport.collectAsStateWithLifecycle()
+                    // « Écouter ton résultat »: only once there is something of the user's to hear.
+                    val mine = tutoProject.drums.lanes.any { it.hits.isNotEmpty() } || tutoProject.track(0).notes.notes.isNotEmpty() ||
+                        tutoProject.tracks.any { it.notes.notes.isNotEmpty() }
                     com.pocketstudio.app.tuto.TutoPanel(
                         tutoNow, tuto.canShow(),
                         com.pocketstudio.app.tuto.TutoActions(
@@ -1792,9 +1797,14 @@ fun AppRoot() {
                             need = tuto::fulfilNeed, markDone = tuto::markDone,
                             toggle = tuto::toggleOpen, next = tuto::next, previous = tuto::previous,
                             chapters = { tutoChapters = true }, quit = tuto::quit, restart = restartTuto,
+                            playMine = {
+                                tuto.stopListening()
+                                if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.toggleSong() else rhythmVm.togglePlay()
+                            },
                         ),
                         modifier = if (landscape) Modifier.navigationBarsPadding() else Modifier,
                         map = remember(tutoNow.progress.style) { com.pocketstudio.app.tuto.tutoMap(tutoNow.progress.style) },
+                        mine = mine, minePlaying = tutoTransport.playing,
                     )
                 } else if (tuto.resumable && !showLive && !showLivePads && !showTimeline) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {

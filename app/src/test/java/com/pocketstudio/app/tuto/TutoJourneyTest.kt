@@ -120,8 +120,12 @@ class TutoJourneyTest {
         var examples = 0
         val early = ArrayList<String>()
         for (s in steps) {
-            if (s.id in progress().done) { early += s.id; continue }
             await("${s.id} shown") { progress().current == s.id }
+            if (s.id in progress().done) {
+                early += s.id
+                if (has("tuto_next_big")) click("tuto_next_big")
+                continue
+            }
             val start = p()
             val depth = h.vm.session.undoDepth
             // « Montre-moi »: shown, then taken back; never ticks, never in « Annuler ».
@@ -156,6 +160,14 @@ class TutoJourneyTest {
             assertEquals("${s.id}: something appeared by itself", content(start), content(p()))
             perform(s, level)
             await("${s.id}: ticked once done") { s.id in progress().done }
+            // « C'est fait » goes on (the user's own touch); a step seen done stays (owner, 2026-10-28).
+            if (s.manual) continue
+            idle(400)
+            assertEquals("${s.id}: went on by itself", s.id, progress().current)
+            if (steps.all { it.id in progress().done }) break
+            await("${s.id}: « Bravo »") { has("tuto_bravo") }
+            if (s.check.startsWith("lane:")) assertTrue("${s.id}: « Écouter ton résultat »", has("tuto_play_mine"))
+            click("tuto_next_big")
         }
         assertTrue(steps.all { it.id in progress().done })
         // Only a step a former one already did may be ticked before it is reached.

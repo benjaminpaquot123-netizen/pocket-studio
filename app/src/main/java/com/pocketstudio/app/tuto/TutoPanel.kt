@@ -8,6 +8,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.Box
@@ -109,6 +110,8 @@ class TutoActions(
     val quit: () -> Unit = {},
     /** « Recommencer le tuto »: a new empty project, the same style and level. */
     val restart: () -> Unit = {},
+    /** « ▶ Écouter ton résultat » on a step done: the project's own music (again: it stops). */
+    val playMine: () -> Unit = {},
 )
 
 /** « Recommencer le tuto ». */
@@ -139,11 +142,14 @@ private fun panelColor(): Color = androidx.compose.ui.graphics.lerp(Neon.Backgro
  * « À toi : … », its « Pourquoi ? », the song's map in the structure chapters, then its action bar:
  * the step's main action as a big filled button (what it needs first, « Je le fais », « C'est
  * fait »), « ▶ Écouter l'exemple » and « Montre-moi » under it, « ← Précédent » and « Suivant → ».
+ * A step done stays (« Bravo, c'est réussi ! »): « Étape suivante » is the big button, « ▶ Écouter
+ * ton résultat » ([mine]: something to hear in the project, [minePlaying]: it plays) beside the example.
  * Folded, one line: the screen stays free to work on. A new step opens it again.
  */
 @Composable
 fun TutoPanel(
     ui: TutoUi, canShow: Boolean, actions: TutoActions, modifier: Modifier = Modifier, map: List<TutoMapBlock> = emptyList(),
+    mine: Boolean = false, minePlaying: Boolean = false,
     reducedMotion: Boolean = com.pocketstudio.app.onboarding.animationsOff(androidx.compose.ui.platform.LocalContext.current),
 ) {
     val step = ui.current
@@ -192,8 +198,20 @@ fun TutoPanel(
                     Text(" " + restartTutoLabel(), maxLines = 1)
                 }
             } else if (ui.bravo) {
-                Text(tr("Bravo, c'est bon ! Étape suivante :"), color = Neon.Acid, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold,
-                    modifier = Modifier.testTag("tuto_bravo"))
+                Row(
+                    Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Neon.Acid.copy(alpha = 0.14f)).border(1.dp, Neon.Acid, RoundedCornerShape(12.dp))
+                        .padding(horizontal = 12.dp, vertical = 8.dp).testTag("tuto_bravo"),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(Icons.Filled.EmojiEvents, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(24.dp))
+                    Column(Modifier.padding(start = 10.dp)) {
+                        Text(tr("Bravo, c'est réussi !"), color = Neon.Acid, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                        Text(
+                            if (mine) tr("Écoute ton résultat, puis touche « Étape suivante » quand tu veux.") else tr("Touche « Étape suivante » quand tu veux."),
+                            style = MaterialTheme.typography.bodySmall, color = Neon.TextPrimary,
+                        )
+                    }
+                }
             }
             Column(Modifier.heightIn(max = 240.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Row(verticalAlignment = Alignment.Top) {
@@ -218,7 +236,7 @@ fun TutoPanel(
                     )
                 }
             }
-            ActionBar(ui, canShow, actions)
+            ActionBar(ui, canShow, actions, mine, minePlaying)
         }
     }
 }
@@ -246,7 +264,7 @@ private fun primaryOf(ui: TutoUi): Primary {
  * shares its width (two lines of text at 130 %), the arrows turn round in a right-to-left language.
  */
 @Composable
-private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions) {
+private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: Boolean, minePlaying: Boolean) {
     val step = ui.current
     val primary = primaryOf(ui)
     val busy = ui.preparing || ui.playing
@@ -275,6 +293,13 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions) {
         Primary.NONE -> Unit
     }
     val secondaries = buildList<@Composable RowScope.() -> Unit> {
+        // A step done: the user's own result first, then the example to compare.
+        if (primary == Primary.NEXT && mine && !step.listening) add {
+            OutlinedButton(onClick = actions.playMine, contentPadding = SECONDARY_PADDING, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_play_mine")) {
+                Icon(if (minePlaying) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(18.dp))
+                Text(" " + if (minePlaying) tr("Arrêter") else tr("Écouter ton résultat"), maxLines = 2, textAlign = TextAlign.Center)
+            }
+        }
         if (step.listen.isNotEmpty() && primary != Primary.LISTEN) add {
             OutlinedButton(onClick = actions.listen, contentPadding = SECONDARY_PADDING, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_listen")) { ListenContent(ui, busy) }
         }
@@ -283,7 +308,7 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions) {
                 Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
                 Text(" " + tr("C'est fait"), maxLines = 2, textAlign = TextAlign.Center)
             }
-        } else if (canShow) add {
+        } else if (canShow && primary != Primary.NEXT) add {
             val showing = ui.demo != null
             OutlinedButton(
                 onClick = if (showing) actions.stopDemo else actions.showMe, contentPadding = SECONDARY_PADDING,

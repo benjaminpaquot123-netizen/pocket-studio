@@ -76,7 +76,7 @@ data class TutoUi(
     val preparing: Boolean = false,
     val playing: Boolean = false,
     val failed: Boolean = false,
-    /** The step just ticked by itself (« Bravo ! »), until the next is looked at. */
+    /** The step just ticked by its detector (« Bravo ! »): it stays shown until « Étape suivante ». */
     val bravo: Boolean = false,
     /** What the step needs first (its main button), null: nothing. */
     val need: TutoNeed? = null,
@@ -105,7 +105,8 @@ data class TutoUi(
 
 /**
  * « Tuto de A à Z » in a project ([projectId]'s entry of [store]): follows the project and ticks a
- * step whose detector holds ([TutoChecks.done]); « Montre-moi » shows the target step by step
+ * step whose detector holds ([TutoChecks.done]), staying on it until « Étape suivante » (owner,
+ * 2026-10-28: never on by itself, time to hear the result); « Montre-moi » shows the target step by step
  * ([demoShow]: frames shown and heard, never saved nor undoable) then takes it away, the step left
  * to do; « Écouter l'exemple » rendered from the course's target ([render]: never the project)
  * and played by [player], a listening step ticked once enough of it really went out; « Je le fais »
@@ -182,7 +183,7 @@ class TutoController(
     }
 
     /** Folds or unfolds the panel (kept while the step stays: the next one opens it again). */
-    fun toggleOpen() { _ui.value = _ui.value?.let { it.copy(open = !it.open, bravo = false) } }
+    fun toggleOpen() { _ui.value = _ui.value?.let { it.copy(open = !it.open) } }
 
     fun goTo(chapter: Int, step: Int = 0) {
         val u = _ui.value ?: return
@@ -338,7 +339,7 @@ class TutoController(
         val step = u.current
         stopDemo()
         pauseMusic()
-        _ui.value = u.copy(preparing = true, failed = false, bravo = false)
+        _ui.value = u.copy(preparing = true, failed = false)
         listenJob = scope.launch {
             val example = withContext(worker) { TutoChecks.example(step, t) }
             val pcm = example?.let { render(it) }
@@ -393,7 +394,7 @@ class TutoController(
         scope.launch { check(project.value) }
     }
 
-    /** [p] saved and shown on its current step (the first not done when none is named); a new step opens the panel. */
+    /** [p] saved and shown on its current step (the first not done when none is named); a new step opens the panel, its « Bravo » kept while it stays. */
     private fun save(p: TutoProgress, chapters: List<TutoChapter> = _ui.value?.chapters.orEmpty(), bravo: Boolean = false) {
         val course = TutoCourse.of(p.style) ?: return
         val list = if (_ui.value?.progress?.level == p.level && chapters.isNotEmpty()) chapters else course.chaptersFor(p.level)
@@ -412,7 +413,7 @@ class TutoController(
         val kept = _ui.value
         val same = kept != null && !moved
         _ui.value = TutoUi(
-            saved, list, chapter, list[chapter].steps.indexOf(step), open = if (same) kept!!.open else true, bravo = bravo,
+            saved, list, chapter, list[chapter].steps.indexOf(step), open = if (same) kept!!.open else true, bravo = bravo || (same && kept!!.bravo),
             preparing = same && kept!!.preparing, playing = same && kept!!.playing, failed = same && kept!!.failed,
             need = target?.let { TutoChecks.need(step, project.value, it, base()) },
             demo = if (same) kept!!.demo else null, demoCells = if (same) kept!!.demoCells else null, fade = if (same) kept!!.fade else 0f,
@@ -421,7 +422,10 @@ class TutoController(
         if (moved && before != null) scope.launch { check(project.value) }
     }
 
-    /** Ticks [ids]; [advance]: on to the next step not done when the current one is among them. */
+    /**
+     * Ticks [ids]; [advance] (« C'est fait », the user's own touch): on to the next step not done
+     * when the current one is among them; [bravo]: « Bravo ! » on the current one, which stays.
+     */
     private fun tick(ids: Set<String>, advance: Boolean, bravo: Boolean) {
         val u = _ui.value ?: return
         val done = u.progress.done + ids
@@ -430,7 +434,7 @@ class TutoController(
         val flat = u.chapters.flatMap { it.steps }
         val moveOn = advance && u.current.id in ids
         val next = if (moveOn) flat.drop(flat.indexOf(u.current) + 1).firstOrNull { it.id !in done } ?: flat.firstOrNull { it.id !in done } ?: u.current else u.current
-        save(u.progress.copy(done = done, current = next.id), bravo = bravo && moveOn)
+        save(u.progress.copy(done = done, current = next.id), bravo = bravo && !moveOn && u.current.id in ids)
     }
 
     /** Every step whose detector holds now is ticked (a "changed:…" one only while it is shown); never during « Montre-moi ». */
@@ -445,7 +449,8 @@ class TutoController(
             }.map { it.id }.toSet() to TutoChecks.need(u.current, p, t, base)
         }
         if (_ui.value?.progress?.style != u.progress.style || _ui.value?.demo != null) return
-        if (found.isNotEmpty()) tick(found, advance = true, bravo = true)
+        // Never on by itself: the step stays with « Bravo », « Écouter ton résultat » and « Étape suivante ».
+        if (found.isNotEmpty()) tick(found, advance = false, bravo = true)
         else if (_ui.value?.current?.id == u.current.id && _ui.value?.need != need) _ui.value = _ui.value?.copy(need = need)
     }
 

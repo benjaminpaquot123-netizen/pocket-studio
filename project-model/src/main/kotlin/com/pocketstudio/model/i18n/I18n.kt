@@ -86,6 +86,7 @@ object I18n {
         "remixroute",
         // Remix testers (lot « remix 1 »): finding and understanding the Remix.
         "extract",
+        "board",
     )
 
     @Volatile

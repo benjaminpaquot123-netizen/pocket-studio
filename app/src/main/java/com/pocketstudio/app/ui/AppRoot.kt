@@ -2855,6 +2855,11 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     },
                                     padAsk = stemPadAsk?.let { com.pocketstudio.app.remix.PadAsk(it.lane, com.pocketstudio.app.rhythm.padName(project, it.lane)) },
                                     projectKey = com.pocketstudio.app.remix.keyLabel(project.harmony, SettingsStore.state.value.englishNotes),
+                                    board = overview?.let { ov ->
+                                        project.remix.setId?.let { id ->
+                                            com.pocketstudio.app.remix.StemBoardUi(id, project.remix.name, ov.frames, project.remix.songBpm, project.remix.firstBeat, rhythmVm.boardPeaks)
+                                        }
+                                    },
                                 ),
                                 RemixActions(
                                     effects = { fxChannel = 3 },
@@ -2893,6 +2898,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     clearRemix = rhythmVm::clearRemix,
                                     // The project's ▶ and « Écouter » never sound together.
                                     togglePlay = { remixVm.pause(); stemBoard.stop(); rhythmVm.togglePlay() },
+                                    board = stemBoard,
                                     retry = remixVm::retry,
                                     setStartBar = rhythmVm::setRemixStartBar,
                                     setStemVolume = rhythmVm::setStemVolume,

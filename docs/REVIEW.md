@@ -1054,3 +1054,10 @@ Relecture neuve de la branche `basses` (rebasée sur `guide`) : 0 grave, 5 moyen
 - Mots du Facile hors tuto : « Scie », « Triangle », « Carré » dans les sous-titres des sons (assistant, `SoundLooks.describe`) ; il faudrait des mots simples en Mode simple (et leurs 14 traductions).
 - « Gain ajouté pour la cible : −100,0 dB » (d/284) : sans doute une estimation faite sur du silence (le faux moteur du banc ?), à vérifier sur téléphone ; au minimum, ne rien afficher tant que la valeur n'a pas de sens (`MasterLoudness`, `drive`).
 - « Les pistes sont éclatées » (d §8) : ce n'est pas le tuto, c'est la rangée de pistes de Sons (`SonsHeader`, `AppSpaces.kt`). Batterie, Basse acide, Voix et Remix sont en tête ; Basse, Sub, Accords et Mélodie viennent après, hors de l'écran d'un téléphone (« Remix · Sépare… » coupé, d/111), et la rangée ne défile pas jusqu'à la piste ouverte. Au Mix, elles sont toutes là. Pistes : amener la puce allumée dans l'écran, ou mettre les pistes d'instrument en tête ; le nom de la piste en cours au-dessus du piano roll.
+
+## APK 228 : restes après l'intégration (2026-10-28)
+- Tuto : la cymbale d'entrée du Drop attend une option « une seule fois » sur un coup (modèle et moteur) ; la Montée de 4 mesures n'est qu'une case étroite sur la carte des parties.
+- Tuto : capture `tuto_app_bass` : la rangée d'outils du piano roll est à moitié cachée sous « Partie : A » quand la page défile vers les notes en pointillé.
+- Tableau des pistes : « → Pad » prend toujours le premier pad libre (pas de choix précis) ; pas de tableau pour un morceau séparé hors projet ; « → Pad / → Live » existent encore sur la page Remix à côté du tableau (à unifier).
+- Sons : la rangée des pistes ne défile pas jusqu'à la piste ouverte (Basse, Sub, Accords, Mélodie après Remix, hors écran).
+- Mots de l'assistant hors tuto (« Scie », « Triangle ») : à simplifier avec leurs 14 traductions. « −100 dB » au master (d/284) : à vérifier sur téléphone.

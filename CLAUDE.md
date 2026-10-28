@@ -20,6 +20,12 @@ Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues 
 - Rappels et tâches planifiées (nom et message) : toujours en français.
 - Design : moderne mais pas trop, facile à prendre en main, façon FL Studio Mobile en plus clair. Règles dans `docs/DESIGN.md`. Benjamin a délégué les choix de design : décider sans lui demander, montrer les captures dans la PR.
 
+## Travail en équipes (auto-surveillance)
+- Dès que des agents, des testeurs ou des tâches longues tournent en arrière-plan, lancer une surveillance automatique (Monitor) et la relancer à chaque expiration, tant qu'il reste du travail en cours.
+- Elle signale : chaque compte rendu ou capture qui arrive, et une file de compilation bloquée (des builds en attente pendant que la machine ne fait presque rien).
+- Prévenir Benjamin à chaque fin d'agent, avec les captures « après » pour le design ; ne jamais attendre qu'il demande des nouvelles.
+- Compilations : un verrou `flock` par groupe d'équipes (au moins deux en parallèle quand la mémoire le permet) ; banc testeur humain : `--max-workers` au moins égal au nombre de sièges.
+
 ## Règle d'or
 Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vérifier licence et dernière version, tenir `THIRD_PARTY.md` à jour. Trois échecs sérieux sur une brique = alternative suivante + ligne dans DECISIONS.md.
 

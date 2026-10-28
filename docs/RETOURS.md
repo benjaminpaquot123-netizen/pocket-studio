@@ -150,3 +150,8 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - « Ajoute 3 agents maintenant pour améliorer le design : il est déjà magnifique, mais l'améliorer subtilement, avec des effets hyper pro. » (design délégué : décider sans demander, montrer les captures).
 - Le lot design (D1, D2, D3) doit aussi être dans l'APK 228 envoyé à Benjamin.
 - Remix, « tableau des pistes » (demande de Benjamin) : voir la courbe du son de chaque piste (« les petites montagnes russes »), sélectionner de gauche à droite pour rogner, copier où on veut (pad, instrument, nouvelle piste, Live), zoom, découpe de la voix en phrases ; extraction facile. 3 équipes dédiées, en raccord avec le nouveau design. Consigne : l'APK 228 est le SEUL APK compilé, et il contient tout (tuto, Remix, design, tableau des pistes).
+- « Donne des news dès la fin d'un agent ou autre, et des captures pour le nouveau design. »
+- Captures du design : seulement les « après » (pas besoin des « avant »).
+- Vumètres : mettre l'effet « dégradé de pixels » (haut de barre qui se défait en pixels, Mix du Mode simple) sur toutes les lignes de son / vumètres de l'appli, avec des pixels plus fins (ils sont trop gros).
+- Vumètres (précision) : garder le dégradé vert → ambre → rouge (plus beau), l'améliorer (transitions douces), partout ; haut en pixels fins.
+- « Inscris-le dans tes règles internes, l'auto-surveillance : ça t'arrive souvent. » → section « Travail en équipes (auto-surveillance) » ajoutée à CLAUDE.md.

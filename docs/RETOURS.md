@@ -78,3 +78,31 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - [x] 2026-10-26 — Benjamin : « Fais seulement l'APK quand tout est fini. Le Play Store, seulement quand je te le demanderai. » → un seul APK à la fin ; chantier Play Store en attente de sa demande.
 - [x] 2026-10-27 — Benjamin : « Termine tout en full », puis : « Une fois que tout est terminé et sur GitHub, prévois un énorme audit avec un beau panel. L'objectif est de trouver toutes les imperfections du programme, quel que soit le type. » et « N'hésite pas à tout mettre en même temps, pas de limite. » → grand audit final (`docs/PLAN-AUDIT-FINAL.md`) avec tous les auditeurs en parallèle (fin du mode éco pour cet audit).
 - [x] 2026-10-27 — Benjamin : « N'hésite pas à me donner des news à chaque fin de quelque chose. » → un court message à chaque étape finie.
+
+## 2026-10-27 (soir)
+- « Tu peux tout corriger, faire pour le Play Store, mettre et compiler sur GitHub. Tu as tous les droits » : CI de GitHub relancée, Play Store en préparation.
+- Nom final de l'appli : **BenStudio**, avec un logo et une animation d'ouverture stylée et pro ; ouverture claire et sympa.
+- Ajouter d'autres langues pour toucher un large public (proposition : espagnol, portugais du Brésil, allemand, italien, polonais, turc, indonésien, hindi, japonais, coréen, chinois simplifié, arabe).
+- Prix : 2,99 € (achat unique). Nom : BenStudio.
+- Dépôt GitHub : passera en privé avant la sortie Play (réponse « A »), après l'installation de la première version Play sur son téléphone.
+- Statut (Belgique, indépendant complémentaire ou non) et déploiement réel sur le Play Store : « on avisera à ce moment-là ». Tout préparer quand même (AAB, fiche, textes), sans publier.
+- Animation d'ouverture validée par Benjamin (« Il est parfait !! ») : double battement, nom écrit en 1,2 s, tenu 1 s, environ 4 s en tout.
+- Avant le Play Store : intégration « hyper pratique » d'un mini clavier type Arturia MiniLab 3 (jouer, pads live, potards de la 303 qui bougent, etc.).
+- Son de l'audit final (extraits avant/après) validé : « Nickel le son ».
+- Prix final : 4,99 €, avec une promo de lancement à 2,99 € pendant 1 ou 2 semaines (réponse de Benjamin : « Oui pour la promo »).
+- Play Store : rien dans cette version (« Le Play Store tu attends, j'ai dit »). La branche fx-play reste de côté, intacte, jusqu'à sa demande.
+- APK demandé dès que possible : la nouvelle version complète (audit + BenStudio + MiniLab), sans Play Store (réponse « B »), compilée ici.
+- APK en 2 temps (réponse « A ») : d'abord en FR/EN/NL dès les tests verts, puis un second avec les 15 langues.
+- 2026-10-27 22:18 (APK 224, Mode simple, Guide carte « Le kick ») : impossible d'écouter le kick seul en boucle ; seul ▶ (tout le morceau) existe. « Écouter seule » de la fiche Batterie fait écouter toute la batterie.
+- Le 🔊 de « Mes pistes » n'ouvrait que le volume, sans son. Demandé : sur chaque ligne, « ▶ Écouter seule » (joue tout de suite en boucle, seule) et une icône de curseur pour le volume ; dans la fenêtre, « Écouter seule » lance la boucle directement.
+- Rendre plus intuitif « ce qu'il faut faire » et mettre légèrement en avant la fenêtre des étapes du Guide : légère lueur des bords au rythme d'un cœur.
+- Question ouverte : où est le « grand tuto » pour tout faire de A à Z soi-même ? (aujourd'hui l'assistant crée tout, le Guide fait valider). En discussion, rien de lancé.
+- « Ne compile rien à tes modifs encore » : pas d'APK tant qu'il ne le demande pas.
+- Demande : une démo proposée à l'ouverture, où c'est le programme lui-même qui tourne (pas une vidéo) et montre vite les gestes en Mode simple, dans toutes les langues.
+- Mixeur en Mode simple : choix 1A (onglet « Mix » simplifié), « encore plus pro et intuitif ». Maquette pro proposée en haut de la page de choix, à valider avant de construire.
+- Tuto de A à Z : en attente (« c'est trop tôt, il y aura des modifications visuelles à faire »). Ne pas le lancer.
+- Maquette Mix validée (« Parfait ») avec une retouche : haut des vumètres en « dégradé de pixels » (la barre se défait en pixels vers le haut), pas une couleur ni un grain. Construction lancée après le lot « Écouter seul ».
+- Dégradé de pixels des vumètres validé (« Parfait »).
+- « Essaie de bosser sans trop gaspiller de quota » : moins d'équipes en parallèle, pas de travail en double, messages courts.
+- Démo automatique : trop tôt aussi (« La démo c'est trop tôt j'ai dit »). Équipe arrêtée, rien fusionné ; branche fx-demo laissée de côté.
+- GO tuto de A à Z (« lestgo ») : un mode facile et un mode pro, + le nouvel écran « Nouveau projet » à 3 choix (J'apprends / Fais-moi un morceau / Je pars de zéro + « Autres façons de commencer »).

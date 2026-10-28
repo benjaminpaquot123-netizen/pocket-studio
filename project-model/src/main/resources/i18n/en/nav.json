@@ -3,7 +3,6 @@
   "%d pistes": "%d tracks",
   "%d réglages bougent déjà : retires-en un dans Mix pour en automatiser un autre.": "%d settings already move: remove one in Mix to automate another.",
   "16 pads": "16 pads",
-  "4 onglets et des mots de tous les jours : idéal pour commencer.": "4 tabs and everyday words: ideal to start.",
   "Accords courts": "Short chords",
   "Appui long sur un drapeau de partie : sa feuille (Fill, Break, Montée…).": "Hold a part's flag: its sheet (Fill, Break, Build-up…).",
   "Arrange les parties": "Arrange the parts",
@@ -330,5 +329,6 @@
   "déjà en place": "already in place",
   "Chapitre %1$d · %2$s": "Chapter %1$d · %2$s",
   "Langue du téléphone": "Phone language",
-  "Toutes les langues": "All languages"
+  "Toutes les langues": "All languages",
+  "5 onglets et des mots de tous les jours : idéal pour commencer.": "5 tabs and everyday words: ideal to start."
 }

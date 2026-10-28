@@ -3,7 +3,6 @@
   "%d pistes": "ścieżki: %d",
   "%d réglages bougent déjà : retires-en un dans Mix pour en automatiser un autre.": "Ustawienia, które już się ruszają: %d. Usuń jedno w Miksie, żeby zautomatyzować inne.",
   "16 pads": "16 padów",
-  "4 onglets et des mots de tous les jours : idéal pour commencer.": "4 zakładki i codzienne słowa: idealne na start.",
   "Accords courts": "Krótkie akordy",
   "Appui long sur un drapeau de partie : sa feuille (Fill, Break, Montée…).": "Przytrzymaj flagę części: jej karta (Przejście, Break, Build-up…).",
   "Arrange les parties": "Układa części",
@@ -330,5 +329,6 @@
   "déjà en place": "już na miejscu",
   "Chapitre %1$d · %2$s": "Rozdział %1$d · %2$s",
   "Langue du téléphone": "Język telefonu",
-  "Toutes les langues": "Wszystkie języki"
+  "Toutes les langues": "Wszystkie języki",
+  "5 onglets et des mots de tous les jours : idéal pour commencer.": "5 zakładek i codzienne słowa: idealne na start."
 }

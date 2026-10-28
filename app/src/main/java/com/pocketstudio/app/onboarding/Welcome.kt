@@ -204,7 +204,7 @@ private fun ModeChoice(simple: Boolean, choose: (Boolean) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("welcome_mode")) {
         Text(tr("Comment veux-tu travailler ?"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth().height(androidx.compose.foundation.layout.IntrinsicSize.Min)) {
-            ModeCard(tr("Simple"), tr("4 onglets et des mots de tous les jours : idéal pour commencer."), simple, "welcome_mode_simple", Modifier.weight(1f)) { choose(true) }
+            ModeCard(tr("Simple"), tr("5 onglets et des mots de tous les jours : idéal pour commencer."), simple, "welcome_mode_simple", Modifier.weight(1f)) { choose(true) }
             ModeCard(tr("Complet"), tr("Tous les outils : structure, sons, mix et live."), !simple, "welcome_mode_full", Modifier.weight(1f)) { choose(false) }
         }
     }

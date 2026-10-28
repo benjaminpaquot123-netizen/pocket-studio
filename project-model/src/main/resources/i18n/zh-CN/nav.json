@@ -3,7 +3,6 @@
   "%d pistes": "%d 条音轨",
   "%d réglages bougent déjà : retires-en un dans Mix pour en automatiser un autre.": "已经有 %d 个参数在自动变化：在 混音 里删掉一个才能自动化新的。",
   "16 pads": "16 个打击垫",
-  "4 onglets et des mots de tous les jours : idéal pour commencer.": "4 个标签页，用日常用语：最适合入门。",
   "Accords courts": "短和弦",
   "Appui long sur un drapeau de partie : sa feuille (Fill, Break, Montée…).": "长按段落的旗标：打开它的面板（加花、Break、Build-up…）。",
   "Arrange les parties": "编排段落",
@@ -330,5 +329,6 @@
   "déjà en place": "已就位",
   "Chapitre %1$d · %2$s": "第 %1$d 章 · %2$s",
   "Langue du téléphone": "手机语言",
-  "Toutes les langues": "所有语言"
+  "Toutes les langues": "所有语言",
+  "5 onglets et des mots de tous les jours : idéal pour commencer.": "5 个标签页，用日常用语：最适合入门。"
 }

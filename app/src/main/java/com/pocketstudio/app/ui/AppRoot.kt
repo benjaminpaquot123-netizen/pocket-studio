@@ -10,6 +10,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import com.pocketstudio.ui.ScaledAlertDialog
 import com.pocketstudio.ui.ScaledBottomSheet
 import com.pocketstudio.ui.ScaledDialog
+import com.pocketstudio.ui.settleIn
 
 import com.pocketstudio.model.guide.guideTracks
 import com.pocketstudio.model.partMarks
@@ -2055,7 +2056,8 @@ fun AppRoot() {
                         remixShown = tab == AppTab.Audio && audioPage == 1, openRemix = openRemix, voiceShown = tab == AppTab.Audio && audioPage == 0,
                     )
                 }
-                Box(Modifier.weight(1f)) {
+                // Another tab settles in (it rises a little and fades the rest of the way in): drawn only.
+                Box(Modifier.weight(1f).settleIn(tab)) {
                 // Each tab keeps its own screen state (Notes or Clavier, folded cards, chosen tools)
                 // while another tab is shown, as long as the app lives.
                 tabStates.SaveableStateProvider(tab.name) {

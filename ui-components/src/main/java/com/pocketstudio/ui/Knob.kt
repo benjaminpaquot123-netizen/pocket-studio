@@ -5,7 +5,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +18,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +28,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.CustomAccessibilityAction
@@ -38,6 +44,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -53,7 +60,8 @@ class KnobColors(
 
 /**
  * A rotary knob (potard), 0..1 over a 270° sweep. Drag up or down to turn it (the whole sweep
- * is about 200 dp of finger travel), double-tap to put it back to [default].
+ * is about 200 dp of finger travel), double-tap to put it back to [default]. Under the finger the
+ * cap sinks a little; turning it ticks lightly at [default] and at both ends, as a notched pot.
  */
 @Composable
 fun Knob(
@@ -70,11 +78,16 @@ fun Knob(
 ) {
     val current by rememberUpdatedState(value)
     val change by rememberUpdatedState(onValueChange)
-    val haptics = LocalHapticFeedback.current
+    val haptics by rememberUpdatedState(LocalHapticFeedback.current)
+    val notchAt by rememberUpdatedState(default)
+    val reduced = LocalReducedMotion.current
+    // 0 at rest, 1 under the finger: read only where the cap is drawn.
+    val held = remember { Animatable(0f) }
+    val scope = rememberCoroutineScope()
     val resetLabel = com.pocketstudio.model.i18n.tr("Remettre comme au départ")
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(0.dp)) {
         val shown = rememberUpdatedState(value)
-        val face = remember(colors.cap, colors.capEdge, colors.pointer, colors.track, colors.value) { knobFace(colors, shown) }
+        val face = remember(colors.cap, colors.capEdge, colors.pointer, colors.track, colors.value) { knobFace(colors, shown, held.asState()) }
         Spacer(
             Modifier.size(size)
                 .holding(onHold)
@@ -86,9 +99,20 @@ fun Knob(
                     customActions = listOf(CustomAccessibilityAction(resetLabel) { change(default); true })
                     setProgress { v -> change(v.coerceIn(0f, 1f)); true }
                 }
+                .pointerInput(reduced) {
+                    if (reduced) return@pointerInput
+                    awaitEachGesture {
+                        awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+                        scope.launch { held.animateTo(1f, StudioMotion.pressIn()) }
+                        do {
+                            val event = awaitPointerEvent(PointerEventPass.Final)
+                        } while (event.changes.any { it.pressed })
+                        scope.launch { held.animateTo(0f, StudioMotion.pressOut()) }
+                    }
+                }
                 .pointerInput(Unit) {
                     detectTapGestures(onDoubleTap = {
-                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        haptics.hold()
                         change(default)
                     })
                 }
@@ -97,7 +121,9 @@ fun Knob(
                     var v = 0f
                     detectVerticalDragGestures(onDragStart = { v = current }) { c, dy ->
                         c.consume()
+                        val before = v
                         v = (v - dy / travel).coerceIn(0f, 1f)
+                        if (passesNotch(before, v, notchAt) || passesNotch(before, v, 0f) || passesNotch(before, v, 1f)) haptics.notch()
                         change(v)
                     }
                 }
@@ -123,7 +149,7 @@ private val KnobValueStyle = androidx.compose.ui.text.TextStyle(fontFeatureSetti
  * its upper edge) with its pointer. Brushes are made when the size changes; turning the knob
  * only reads [value] while drawing.
  */
-private fun knobFace(colors: KnobColors, value: State<Float>): Modifier = Modifier.drawWithCache {
+private fun knobFace(colors: KnobColors, value: State<Float>, held: State<Float>): Modifier = Modifier.drawWithCache {
     val r = size.minDimension / 2f
     val c = Offset(size.width / 2f, size.height / 2f)
     val stroke = r * 0.12f
@@ -152,13 +178,16 @@ private fun knobFace(colors: KnobColors, value: State<Float>): Modifier = Modifi
         val v = value.value
         drawArc(colors.track, 135f, 270f, false, arcTopLeft, arc, style = scale)
         if (v > 0.005f) drawArc(colors.value, 135f, 270f * v, false, arcTopLeft, arc, style = scale)
-        drawCircle(shadow, capR * 1.16f, c + Offset(0f, capR * 0.12f))
-        drawCircle(rim, capR, c)
-        drawCircle(cap, capR * 0.88f, c)
-        // Light from above on the cap's upper edge.
-        drawArc(shineColor, 215f, 110f, false, shineTopLeft, shineSize, style = shine)
-        val angle = Math.toRadians(135.0 + 270.0 * v)
-        val dir = Offset(cos(angle).toFloat(), sin(angle).toFloat())
-        drawLine(colors.pointer, c + dir * (capR * 0.25f), c + dir * (capR * 0.8f), strokeWidth = r * 0.1f, cap = StrokeCap.Round)
+        // The cap sinks a touch while a finger is on it (D1).
+        scale(1f - (1f - StudioMotion.PRESSED_SCALE) * held.value, c) {
+            drawCircle(shadow, capR * 1.16f, c + Offset(0f, capR * 0.12f))
+            drawCircle(rim, capR, c)
+            drawCircle(cap, capR * 0.88f, c)
+            // Light from above on the cap's upper edge.
+            drawArc(shineColor, 215f, 110f, false, shineTopLeft, shineSize, style = shine)
+            val angle = Math.toRadians(135.0 + 270.0 * v)
+            val dir = Offset(cos(angle).toFloat(), sin(angle).toFloat())
+            drawLine(colors.pointer, c + dir * (capR * 0.25f), c + dir * (capR * 0.8f), strokeWidth = r * 0.1f, cap = StrokeCap.Round)
+        }
     }
 }

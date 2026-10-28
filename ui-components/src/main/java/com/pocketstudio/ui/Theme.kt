@@ -4,7 +4,10 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalRippleConfiguration
+import androidx.compose.material3.RippleConfiguration
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
@@ -13,8 +16,11 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -183,14 +189,31 @@ val MonoStyle = TextStyle(fontFamily = Inter, fontWeight = FontWeight.SemiBold, 
 
 @Composable
 fun PocketStudioTheme(palette: Palette = Palettes.Studio, content: @Composable () -> Unit) {
-    CompositionLocalProvider(LocalPalette provides palette) {
+    val context = LocalContext.current
+    // The phone's « Supprimer les animations » (or a caller's own choice): the touch effects stay still.
+    val reduced = LocalReducedMotion.current || remember(context) { systemAnimationsOff(context) }
+    CompositionLocalProvider(LocalPalette provides palette, LocalReducedMotion provides reduced) {
         // The interface's direction, given above the theme (MainActivity): right to left for Arabic.
         val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
         MaterialTheme(colorScheme = colorScheme(palette), typography = if (rtl) rtlTypography else typography, shapes = shapes) {
-            CompositionLocalProvider(LocalContentColor provides palette.textPrimary, content = content)
+            CompositionLocalProvider(
+                LocalContentColor provides palette.textPrimary,
+                LocalRippleConfiguration provides remember(palette) { rippleOf(palette) },
+                content = content,
+            )
         }
     }
 }
+
+/**
+ * The touch ripple of every button, chip and row: a warm light (the accent lightened) rather
+ * than Material's grey, a little softer. It reads on the graphite panels and on the orange of a
+ * filled button alike.
+ */
+private fun rippleOf(p: Palette) = RippleConfiguration(
+    color = lerp(p.accent, Color.White, 0.45f),
+    rippleAlpha = RippleAlpha(draggedAlpha = 0.14f, focusedAlpha = 0.10f, hoveredAlpha = 0.06f, pressedAlpha = 0.10f),
+)
 
 /** Instrument track colours (InstrumentTrack.color indexes them): distinct on light and dark. */
 val TrackColors = listOf(

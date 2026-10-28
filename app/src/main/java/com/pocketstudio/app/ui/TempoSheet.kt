@@ -60,6 +60,8 @@ import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.MonoStyle
+import com.pocketstudio.ui.RollingText
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.pillColors
 import kotlinx.coroutines.launch
@@ -119,10 +121,10 @@ fun TempoPad(tempoBpm: Double, actions: TempoActions, close: () -> Unit, modifie
                 Icon(Icons.Filled.Remove, contentDescription = tr("Tempo moins"))
             }
             Row(Modifier.weight(1f), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.Bottom) {
-                Text(
-                    if (typing) draft.digits else "$current", style = MonoStyle.copy(fontSize = 44.sp, fontWeight = FontWeight.ExtraBold),
-                    color = if (typing) Neon.Cyan else Neon.TextPrimary, modifier = Modifier.testTag("tempo_display"),
-                )
+                val big = MonoStyle.copy(fontSize = 44.sp, fontWeight = FontWeight.ExtraBold)
+                // Typed figures show as typed; the tempo itself rolls to its new value (−, +, a tap).
+                if (typing) Text(draft.digits, style = big, color = Neon.Cyan, modifier = Modifier.testTag("tempo_display"))
+                else RollingText("$current", style = big, color = Neon.TextPrimary, modifier = Modifier.testTag("tempo_display"))
                 Text(" BPM", style = MaterialTheme.typography.titleMedium, color = Neon.TextSecondary, modifier = Modifier.padding(bottom = 8.dp))
             }
             RepeatingIconButton({ actions.set((current + 1).toDouble().coerceAtMost(Project.MAX_TEMPO)); draft = TempoDraft() }, Modifier.testTag("tempo_plus")) {
@@ -206,7 +208,7 @@ private fun Key(label: String?, tag: String, modifier: Modifier, enabled: Boolea
         else -> Neon.TextPrimary
     }
     Box(
-        modifier.height(52.dp).widthIn(min = 64.dp).clip(shape).background(bg).border(1.dp, Color.White.copy(alpha = 0.06f), shape)
+        modifier.height(52.dp).widthIn(min = 64.dp).pressScale(enabled).clip(shape).background(bg).border(1.dp, Color.White.copy(alpha = 0.06f), shape)
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
             .then(if (description != null) Modifier.semantics { contentDescription = description } else Modifier)
             .testTag(tag),

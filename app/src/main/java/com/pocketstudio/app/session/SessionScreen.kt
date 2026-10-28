@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.session
 
+import com.pocketstudio.ui.pressScale
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import com.pocketstudio.ui.ScaledAlertDialog
@@ -283,7 +284,7 @@ fun SessionScreen(
 private fun LiveEntry(open: () -> Unit) {
     Button(
         onClick = open,
-        modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("open_live"),
+        modifier = Modifier.pressScale().fillMaxWidth().heightIn(min = 56.dp).testTag("open_live"),
         colors = ButtonDefaults.buttonColors(containerColor = Neon.Cyan, contentColor = Neon.OnAccent),
     ) {
         Icon(Icons.Filled.PlayArrow, contentDescription = null)

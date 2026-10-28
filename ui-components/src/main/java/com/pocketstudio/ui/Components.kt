@@ -10,9 +10,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -72,6 +70,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -166,7 +165,7 @@ fun NeonCard(
             .dropShadow(shape, PanelShadowContact)
             .clip(shape)
             .then(remember(surface, accent, highlighted) { Modifier.panelFinish(surface, accent.takeIf { highlighted }) })
-            .then(if (fold.animate) Modifier.animateContentSize(spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow)) else Modifier)
+            .then(if (fold.animate) Modifier.animateContentSize(StudioMotion.spatial()) else Modifier)
             .then(if (folded) Modifier.height(headerHeight).clipToBounds() else Modifier)
             .onGloballyPositioned {
                 fold.card = it
@@ -280,7 +279,7 @@ fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neo
  */
 @Composable
 private fun SectionTitle(text: String, color: Color, folded: Boolean?, subtle: Boolean = false) {
-    val turn by animateFloatAsState(if (folded == true) -90f else 0f, label = "fold-chevron")
+    val turn by animateFloatAsState(if (folded == true) -90f else 0f, StudioMotion.spatial(), label = "fold-chevron")
     val chevron = Neon.TextSecondary.copy(alpha = 0.45f)
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         if (subtle) Box(Modifier.size(8.dp).clip(CircleShape).background(color))
@@ -343,23 +342,29 @@ fun FoldSection(
         Box(Modifier.fillMaxWidth().then(if (canFold) Modifier.foldToggle(key, folded) else Modifier), contentAlignment = Alignment.CenterStart) {
             SectionTitle(title, color, folded.takeIf { canFold }, subtle)
         }
-        AnimatedVisibility(!folded, enter = expandVertically() + fadeIn(), exit = shrinkVertically() + fadeOut()) {
+        AnimatedVisibility(
+            !folded,
+            enter = expandVertically(StudioMotion.spatial()) + fadeIn(StudioMotion.effects()),
+            exit = shrinkVertically(StudioMotion.spatial()) + fadeOut(StudioMotion.effects()),
+        ) {
             Column(verticalArrangement = Arrangement.spacedBy(spacing), content = content)
         }
     }
 }
 
-/** Label on the left, value on the right; used for technical readouts. */
+/** Label on the left, value on the right; used for technical readouts. A new value rolls in. */
 @Composable
 fun StatRow(label: String, value: String, valueColor: Color = Neon.TextPrimary) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(label, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
-        Text(
+        RollingText(
             value,
             modifier = Modifier.weight(1f),
             style = MonoStyle,
             color = valueColor,
             textAlign = TextAlign.End,
+            maxLines = Int.MAX_VALUE,
+            softWrap = true,
         )
     }
 }
@@ -399,12 +404,14 @@ fun ProSlider(
     val pressed by interaction.collectIsPressedAsState()
     val dragged by interaction.collectIsDraggedAsState()
     val active = pressed || dragged
-    val grow by animateFloatAsState(if (active) 1.25f else 1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy), label = "thumb")
+    val grow by animateFloatAsState(if (active) 1.25f else 1f, StudioMotion.spatial(), label = "thumb")
     val ink = if (enabled) accent else Neon.TextSecondary.copy(alpha = 0.5f)
     val rail = Neon.SurfaceHigh
+    val haptics = LocalHapticFeedback.current
     Slider(
         value = value,
-        onValueChange = onValueChange,
+        // A few steps (a choice of 2 to 24): a light tick at each one, like a notched control.
+        onValueChange = if (steps in 1..NOTCHED_STEPS_MAX) { v -> if (v != value) haptics.notch(); onValueChange(v) } else onValueChange,
         modifier = modifier.then(
             if (label == null && valueText == null) Modifier
             else Modifier.semantics {

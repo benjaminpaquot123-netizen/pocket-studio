@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.settings
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -150,7 +151,7 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
 @Composable
 private fun GlossaryButton(tag: String) {
     val learn = com.pocketstudio.app.learn.LocalLearn.current
-    androidx.compose.material3.Button(onClick = { learn.open("") }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag(tag)) {
+    androidx.compose.material3.Button(onClick = { learn.open("") }, modifier = Modifier.pressScale().fillMaxWidth().heightIn(min = 48.dp).testTag(tag)) {
         androidx.compose.material3.Icon(Icons.Filled.LibraryMusic, contentDescription = null)
         Text("  " + tr("Les mots de la musique, à écouter"))
     }
@@ -186,7 +187,7 @@ fun HelpPage(actions: HelpActions) {
             NeonCard {
                 SectionLabel(tr("Aide"))
                 actions.missions?.let { start ->
-                    androidx.compose.material3.Button(onClick = start, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("help_missions")) {
+                    androidx.compose.material3.Button(onClick = start, modifier = Modifier.pressScale().fillMaxWidth().heightIn(min = 48.dp).testTag("help_missions")) {
                         Text(tr("Mon premier morceau, avec le Guide"))
                     }
                 }

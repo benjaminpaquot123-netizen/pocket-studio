@@ -1,5 +1,6 @@
 package com.pocketstudio.app.library
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.model.i18n.inSentence
 import androidx.compose.foundation.layout.heightIn
 import com.pocketstudio.ui.ScaledAlertDialog
@@ -208,18 +209,18 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
                 androidx.compose.material3.FilledTonalButton(
                     onClick = actions.create, enabled = !ui.creating,
                     colors = androidx.compose.material3.ButtonDefaults.filledTonalButtonColors(containerColor = Neon.Cyan.copy(alpha = 0.2f), contentColor = Neon.Cyan),
-                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).padding(horizontal = 12.dp).testTag("wizard_create_now"),
+                    modifier = Modifier.pressScale(enabled = !ui.creating).fillMaxWidth().heightIn(min = 48.dp).padding(horizontal = 12.dp).testTag("wizard_create_now"),
                 ) { Text(if (ui.creating) tr("Préparation…") else tr("Créer tout de suite avec les choix conseillés"), textAlign = TextAlign.Center) }
             }
             if (style != null && ui.step > 0) {
                 Row(Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, bottom = 12.dp, top = 4.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedButton(onClick = actions.back, modifier = Modifier.weight(1f).testTag("wizard_back")) { Text(tr("Retour")) }
                     if (ui.step >= ui.lastStep) {
-                        Button(onClick = actions.create, enabled = !ui.creating, modifier = Modifier.weight(1f).testTag("wizard_create")) {
+                        Button(onClick = actions.create, enabled = !ui.creating, modifier = Modifier.pressScale(enabled = !ui.creating).weight(1f).testTag("wizard_create")) {
                             Text(if (ui.creating) tr("Préparation…") else tr("Créer le morceau"))
                         }
                     } else {
-                        Button(onClick = actions.next, modifier = Modifier.weight(1f).testTag("wizard_next")) { Text(tr("Suivant")) }
+                        Button(onClick = actions.next, modifier = Modifier.pressScale().weight(1f).testTag("wizard_next")) { Text(tr("Suivant")) }
                     }
                 }
             }
@@ -330,7 +331,7 @@ private fun StyleCard(s: StarterWizard.Style, chosen: Boolean, expanded: Boolean
                     }
                 }
                 // ▶ stays at the card's left: one wide button to choose, readable in every language.
-                Button(onClick = { actions.chooseStyle(s.id) }, modifier = Modifier.fillMaxWidth().padding(top = 6.dp).testTag("wizard_style_choose_${s.id}")) {
+                Button(onClick = { actions.chooseStyle(s.id) }, modifier = Modifier.pressScale().fillMaxWidth().padding(top = 6.dp).testTag("wizard_style_choose_${s.id}")) {
                     Text(tr("Choisir ce style"), textAlign = TextAlign.Center)
                 }
             }
@@ -444,7 +445,7 @@ private fun StylePacks(style: StarterWizard.Style, packs: PacksUi, actions: Wiza
                 modifier = Modifier.testTag("wizard_style_packs_progress"))
             LinearProgressIndicator(progress = { fraction }, modifier = Modifier.fillMaxWidth(), color = Neon.Cyan, trackColor = Neon.SurfaceHigh)
         } else {
-            Button(onClick = { missing.forEach { actions.download(it.id) } }, modifier = Modifier.fillMaxWidth().testTag("wizard_style_packs_download")) {
+            Button(onClick = { missing.forEach { actions.download(it.id) } }, modifier = Modifier.pressScale().fillMaxWidth().testTag("wizard_style_packs_download")) {
                 Text(tr("Télécharger les sons du style"))
             }
         }
@@ -611,7 +612,7 @@ private fun AcidLineCard(line: com.pocketstudio.model.AcidPattern, ui: WizardUi,
             tr("Touche un pas : la note suivante de la gamme (après la plus haute, un silence –). Appui long : accent (couleur pleine), puis slide ⌒, puis les deux."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
-        Button(onClick = actions.generateAcid, modifier = Modifier.fillMaxWidth().testTag("wizard_acid_generate")) {
+        Button(onClick = actions.generateAcid, modifier = Modifier.pressScale().fillMaxWidth().testTag("wizard_acid_generate")) {
             Icon(Icons.Filled.AutoAwesome, contentDescription = null)
             Text("  " + tr("Génère-moi une ligne"))
         }

@@ -1,5 +1,6 @@
 package com.pocketstudio.app.retours
 
+import com.pocketstudio.ui.pressScale
 import android.app.Activity
 import android.media.projection.MediaProjectionConfig
 import android.media.projection.MediaProjectionManager
@@ -328,7 +329,7 @@ fun RetoursNoteSheet(save: (String) -> Unit, cancel: () -> Unit) {
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)) {
                     TextButton(onClick = cancel, modifier = Modifier.testTag("retours_note_cancel")) { Text(tr("Annuler")) }
-                    Button(onClick = { save(text) }, enabled = text.isNotBlank(), modifier = Modifier.testTag("retours_note_save")) { Text(tr("Enregistrer la note")) }
+                    Button(onClick = { save(text) }, enabled = text.isNotBlank(), modifier = Modifier.pressScale(enabled = text.isNotBlank()).testTag("retours_note_save")) { Text(tr("Enregistrer la note")) }
                 }
             }
         }
@@ -371,7 +372,7 @@ fun RetoursExportPanel(close: () -> Unit) {
                         }
                         Button(
                             onClick = { if (WavExporter.share(context, list, tr("Envoyer mes retours"))) sent = true },
-                            modifier = Modifier.fillMaxWidth().testTag("retours_send_all"),
+                            modifier = Modifier.pressScale().fillMaxWidth().testTag("retours_send_all"),
                         ) { Text(tr("Tout envoyer")) }
                         Text(tr("Une vidéo à la fois si ta messagerie refuse les gros envois."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                         OutlinedButton(

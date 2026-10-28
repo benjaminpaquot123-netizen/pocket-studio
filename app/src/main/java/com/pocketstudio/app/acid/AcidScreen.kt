@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.acid
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.i18n.tr
 
@@ -148,7 +149,7 @@ fun AcidScreen(
             Row(Modifier.height(androidx.compose.foundation.layout.IntrinsicSize.Min), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(
                     onClick = actions.generate,
-                    modifier = Modifier.weight(1f).fillMaxHeight().heightIn(min = 56.dp).spot("acid_generate", tr("Nouvelle ligne")).testTag("acid_generate"),
+                    modifier = Modifier.pressScale().weight(1f).fillMaxHeight().heightIn(min = 56.dp).spot("acid_generate", tr("Nouvelle ligne")).testTag("acid_generate"),
                     shape = RoundedCornerShape(10.dp),
                 ) {
                     Icon(Icons.Filled.AutoAwesome, contentDescription = null)

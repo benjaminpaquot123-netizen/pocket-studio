@@ -370,5 +370,6 @@
   "la fabrication du son s'est bloquée, réessaie dans un instant": "音の作成が止まってしまいました。少し待ってからもう一度試してね",
   "Plus aucune partie possible : la prise va s'arrêter.": "これ以上パートを置けません：テイクはまもなく止まります。",
   "Plus qu'une partie possible : la prise s'arrêtera ensuite.": "あと 1 パートまで。そのあとテイクは止まります。",
-  "Plus de place pour d'autres réglages (16 au plus) : 1 n'a pas été écrit.": "これ以上設定を置けません（最大16）：1 件が書き込まれませんでした。"
+  "Plus de place pour d'autres réglages (16 au plus) : 1 n'a pas été écrit.": "これ以上設定を置けません（最大16）：1 件が書き込まれませんでした。",
+  "Ton morceau garde son tempo (%s) : la chanson s'y cale, sans changer de hauteur.": "あなたの曲はテンポ（%s）を保ちます：追加した曲がそれに合わせ、音の高さは変わりません。"
 }

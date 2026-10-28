@@ -49,5 +49,6 @@
   "Elle tourne en boucle pendant que tu la modifies. ⟳ Boucler, en haut, pour reprendre le morceau.": "Se repite en bucle mientras la editas. ⟳ Bucle, arriba, para volver a la canción.",
   "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "En bucle (⟳ Bucle). ▶ toca solo esta parte.",
   "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "La canción suena: toca la cuadrícula y esta parte se queda bajo tus dedos, en bucle.",
-  "Boucler": "Bucle"
+  "Boucler": "Bucle",
+  "Tout le morceau, du début": "Toda la canción, desde el principio"
 }

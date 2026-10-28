@@ -370,5 +370,6 @@
   "la fabrication du son s'est bloquée, réessaie dans un instant": "声音生成卡住了，请稍后再试",
   "Plus aucune partie possible : la prise va s'arrêter.": "不能再加段落了：录音即将停止。",
   "Plus qu'une partie possible : la prise s'arrêtera ensuite.": "只能再加 1 个段落：之后录音会停止。",
-  "Plus de place pour d'autres réglages (16 au plus) : 1 n'a pas été écrit.": "没有空间放更多设置了（最多 16 个）：有 1 个没有写入。"
+  "Plus de place pour d'autres réglages (16 au plus) : 1 n'a pas été écrit.": "没有空间放更多设置了（最多 16 个）：有 1 个没有写入。",
+  "Ton morceau garde son tempo (%s) : la chanson s'y cale, sans changer de hauteur.": "你的作品保持原速（%s）：歌曲会跟随它，音高不变。"
 }

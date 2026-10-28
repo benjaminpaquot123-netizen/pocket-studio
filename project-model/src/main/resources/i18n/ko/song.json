@@ -370,5 +370,6 @@
   "la fabrication du son s'est bloquée, réessaie dans un instant": "사운드 만들기가 멈췄어요, 잠시 후 다시 해 보세요",
   "Plus aucune partie possible : la prise va s'arrêter.": "더 넣을 수 있는 파트가 없어요: 테이크가 곧 멈춰요.",
   "Plus qu'une partie possible : la prise s'arrêtera ensuite.": "파트는 1개만 더 넣을 수 있어요. 그다음 테이크가 멈춰요.",
-  "Plus de place pour d'autres réglages (16 au plus) : 1 n'a pas été écrit.": "설정을 더 넣을 자리가 없어요 (최대 16개): 1개가 기록되지 않았어요."
+  "Plus de place pour d'autres réglages (16 au plus) : 1 n'a pas été écrit.": "설정을 더 넣을 자리가 없어요 (최대 16개): 1개가 기록되지 않았어요.",
+  "Ton morceau garde son tempo (%s) : la chanson s'y cale, sans changer de hauteur.": "내 곡은 템포(%s)를 그대로 유지해요. 노래가 음높이는 그대로 템포에 맞춰져요."
 }

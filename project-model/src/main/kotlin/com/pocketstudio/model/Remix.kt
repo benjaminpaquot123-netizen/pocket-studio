@@ -85,3 +85,10 @@ fun Project.remixEndBars(seconds: Double = remix.seconds): Int {
  */
 fun Project.exportEndBars(remixSeconds: Double = remix.seconds): Int = maxOf(audioEndBars(), remixEndBars(remixSeconds))
 
+
+/**
+ * The project has music of its own (a beat, notes, a recording): adding a song to play along then
+ * leaves its tempo and key as they are, the song follows them (remix lot 1). An empty project (« Partir
+ * de zéro ») takes the song's.
+ */
+fun Project.hasMusicOfItsOwn(): Boolean = allScenes.any { !it.isEmpty } || audioTracks.any { it.clip != null }

@@ -370,5 +370,6 @@
   "la fabrication du son s'est bloquée, réessaie dans un instant": "tworzenie dźwięku utknęło, spróbuj za chwilę",
   "Plus aucune partie possible : la prise va s'arrêter.": "Nie można dodać więcej części: nagranie zaraz się zatrzyma.",
   "Plus qu'une partie possible : la prise s'arrêtera ensuite.": "Możliwa jeszcze tylko 1 część: potem nagranie się zatrzyma.",
-  "Plus de place pour d'autres réglages (16 au plus) : 1 n'a pas été écrit.": "Brak miejsca na więcej ustawień (maks. 16): 1 nie zostało zapisane."
+  "Plus de place pour d'autres réglages (16 au plus) : 1 n'a pas été écrit.": "Brak miejsca na więcej ustawień (maks. 16): 1 nie zostało zapisane.",
+  "Ton morceau garde son tempo (%s) : la chanson s'y cale, sans changer de hauteur.": "Twój utwór zachowuje swoje tempo (%s): piosenka się do niego dopasowuje, bez zmiany wysokości."
 }

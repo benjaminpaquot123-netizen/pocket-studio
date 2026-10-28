@@ -2780,6 +2780,9 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                             val project by rhythmVm.project.collectAsStateWithLifecycle()
                             val transport by rhythmVm.transport.collectAsStateWithLifecycle()
                             val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
+                            // The project's ▶ and « Écouter » never sound together (remix lot 1, Sarah: two voices at
+                            // once): ▶ from the top bar, a part touched or « Jouer depuis… » stops « Écouter » too.
+                            LaunchedEffect(transport.playing) { if (transport.playing) remixVm.pause() }
                             RemixScreen(
                                 RemixUi(
                                     modelInstalled, remixState, sets, preview,
@@ -2805,18 +2808,29 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     pickSong = { pickSong.launch(arrayOf("audio/*")) },
                                     cancel = remixVm::cancel,
                                     dismiss = remixVm::dismiss,
-                                    playAll = remixVm::playAll,
-                                    toggleStem = remixVm::toggleStem,
+                                    // « Écouter » stops the project first (they never sound together).
+                                    playAll = { set -> if (rhythmVm.transport.value.playing) rhythmVm.togglePlay(); remixVm.playAll(set) },
+                                    toggleStem = { set, stem ->
+                                        // A switch of another song (or of none playing) starts « Écouter ».
+                                        if (remixVm.preview.value?.setId != set.id && rhythmVm.transport.value.playing) rhythmVm.togglePlay()
+                                        remixVm.toggleStem(set, stem)
+                                    },
                                     pause = remixVm::pause,
                                     stemToLive = rhythmVm::stemToLive,
                                     setFollowTempo = rhythmVm::setRemixFollowTempo,
                                     delete = remixVm::delete,
                                     useSong = { set ->
-                                        rhythmVm.useSong(set)
+                                        // « Écouter » stops: the song now plays with the project (remix lot 1: two voices at once).
+                                        remixVm.pause()
+                                        val adopted = rhythmVm.useSong(set)
                                         val what = listOfNotNull(set.info.bpm.takeIf { it > 0 }?.let { "%.0f BPM".format(it) }, set.info.keyLabel)
-                                        if (what.isNotEmpty()) {
-                                            android.widget.Toast.makeText(context, tr("Projet calé : %s", what.joinToString(", ")), android.widget.Toast.LENGTH_SHORT).show()
+                                        val said = when {
+                                            // Remix lot 1: the user's song keeps its tempo and key, the song follows it.
+                                            !adopted -> tr("Ton morceau garde son tempo (%s) : la chanson s'y cale, sans changer de hauteur.", "%.0f BPM".format(rhythmVm.project.value.tempoBpm))
+                                            what.isNotEmpty() -> tr("Projet calé : %s", what.joinToString(", "))
+                                            else -> null
                                         }
+                                        said?.let { android.widget.Toast.makeText(context, it, android.widget.Toast.LENGTH_SHORT).show() }
                                     },
                                     clearRemix = rhythmVm::clearRemix,
                                     // The project's ▶ and « Écouter » never sound together.

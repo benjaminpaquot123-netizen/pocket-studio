@@ -49,5 +49,6 @@
   "Elle tourne en boucle pendant que tu la modifies. ⟳ Boucler, en haut, pour reprendre le morceau.": "Bagian ini di-loop selama kamu edit. ⟳ Loop, di atas, untuk kembali ke lagu.",
   "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "Di-loop (⟳ Loop). ▶ memutar bagian ini saja.",
   "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "Lagu sedang diputar: sentuh grid dan bagian ini tetap di bawah jarimu, di-loop.",
-  "Boucler": "Loop"
+  "Boucler": "Loop",
+  "Tout le morceau, du début": "Seluruh lagu, dari awal"
 }

@@ -325,6 +325,30 @@ fun SpotlightOverlay(registry: SpotRegistry, targets: List<String>, card: @Compo
     }
 }
 
+/**
+ * « Tuto de A à Z »'s « Je le fais »: the first of [targets] on the screen ringed a moment
+ * ([com.pocketstudio.app.tuto.TutoSpotRing]): no dimming, no card, the screen's touches go through.
+ */
+@Composable
+fun SpotRingOverlay(registry: SpotRegistry, targets: List<String>) {
+    DisposableEffect(registry) {
+        registry.watching = true
+        onDispose { registry.watching = false }
+    }
+    var origin by remember { mutableStateOf(Offset.Zero) }
+    androidx.compose.runtime.LaunchedEffect(targets) {
+        repeat(REVEAL_TRIES) {
+            if (targets.any { registry.reveal(it) }) return@LaunchedEffect
+            kotlinx.coroutines.delay(REVEAL_WAIT_MS)
+        }
+    }
+    registry.version.intValue
+    val target = targets.firstNotNullOfOrNull { registry.find(it) }?.translate(-origin.x, -origin.y)
+    Box(Modifier.fillMaxSize().onGloballyPositioned { origin = it.boundsInWindow().topLeft }) {
+        com.pocketstudio.app.tuto.TutoSpotRing(target)
+    }
+}
+
 /** The screen just opened may take a few frames to put its controls: tried this many times, this far apart. */
 private const val REVEAL_TRIES = 10
 private const val REVEAL_WAIT_MS = 100L

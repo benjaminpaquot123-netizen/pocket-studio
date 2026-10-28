@@ -10,12 +10,15 @@ import android.media.AudioTrack
  */
 class PcmPlayer(private val onStop: () -> Unit = {}) {
     private var track: AudioTrack? = null
+    /** Frames of the last sound that went out (its whole length once it ended). */
+    private var played = 0L
 
     val isPlaying: Boolean get() = track != null
 
     /** False when the phone refused to play it. [loop]: round and round until [stop]. */
     fun play(pcm: Pcm, loop: Boolean = false): Boolean {
         stop()
+        played = 0L
         val mask = if (pcm.channels == 2) AudioFormat.CHANNEL_OUT_STEREO else AudioFormat.CHANNEL_OUT_MONO
         val t = runCatching {
             AudioTrack.Builder()
@@ -39,7 +42,7 @@ class PcmPlayer(private val onStop: () -> Unit = {}) {
             t.setNotificationMarkerPosition(pcm.frames)
             t.setPlaybackPositionUpdateListener(object : AudioTrack.OnPlaybackPositionUpdateListener {
                 override fun onMarkerReached(at: AudioTrack) {
-                    if (track === at) stop()
+                    if (track === at) { played = pcm.frames.toLong(); stop() }
                 }
                 override fun onPeriodicNotification(at: AudioTrack) = Unit
             })
@@ -48,6 +51,9 @@ class PcmPlayer(private val onStop: () -> Unit = {}) {
         t.play()
         return true
     }
+
+    /** Frames that went out to the speakers so far (what the phone's mixer took). */
+    fun position(): Long = track?.let { t -> runCatching { t.playbackHeadPosition.toLong() and 0xFFFFFFFFL }.getOrDefault(0L) }?.also { played = maxOf(played, it) } ?: played
 
     fun stop() {
         val t = track ?: return

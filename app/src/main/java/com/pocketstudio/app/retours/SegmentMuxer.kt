@@ -25,7 +25,16 @@ class SegmentMuxer(
     private val maxBytes: Long = MAX_BYTES,
     private val requestKeyFrame: () -> Unit = {},
     private val onSegment: (n: Int, firstPtsUs: Long) -> Unit = { _, _ -> },
+    /** The sound's clock (its times are System.nanoTime's, in µs). */
+    private val nowUs: () -> Long = { System.nanoTime() / 1000L },
 ) {
+    /**
+     * Added to each picture's time so that it reads in the sound's clock. Owner's phone (APK 226):
+     * the screen's pictures came timed by another clock than the sound (hours apart), every sound
+     * sample was « before the first picture » and dropped: an audio track with no sample at all
+     * (codec unknown, 0 channels). Measured on the first picture: 0 when both clocks agree.
+     */
+    private var videoShiftUs: Long? = null
     private var videoFormat: MediaFormat? = null
     private var audioFormat: MediaFormat? = null
     private var expectAudio = true
@@ -54,14 +63,16 @@ class SegmentMuxer(
     /** An encoded picture; the first file starts on a key picture once both formats are known. */
     fun writeVideo(data: ByteBuffer, info: MediaCodec.BufferInfo) {
         if (info.size <= 0 || info.flags and MediaCodec.BUFFER_FLAG_CODEC_CONFIG != 0) return
+        val shift = videoShiftUs ?: (nowUs() - info.presentationTimeUs).let { gap -> if (kotlin.math.abs(gap) > CLOCK_GAP_US) gap else 0L }.also { videoShiftUs = it }
+        val pts = info.presentationTimeUs + shift
         val key = info.flags and MediaCodec.BUFFER_FLAG_KEY_FRAME != 0
         when {
             sink == null -> {
                 if (!key || !ready()) { if (ready()) askKey(); return }
-                start(info.presentationTimeUs)
+                start(pts)
             }
             bytes + info.size > maxBytes - HEADROOM -> {
-                if (key) start(info.presentationTimeUs)
+                if (key) start(pts)
                 else {
                     askKey()
                     // Never past the limit: a picture that does not fit waits for the key one.
@@ -69,9 +80,9 @@ class SegmentMuxer(
                 }
             }
         }
-        if (info.presentationTimeUs <= lastVideoUs) return
-        lastVideoUs = info.presentationTimeUs
-        put(videoTrack, data, info)
+        if (pts <= lastVideoUs) return
+        lastVideoUs = pts
+        put(videoTrack, data, info, pts)
     }
 
     /** Encoded sound; dropped before the first file and when it would not fit. */
@@ -80,15 +91,15 @@ class SegmentMuxer(
         if (sink == null || audioTrack < 0 || info.presentationTimeUs < basePtsUs || info.presentationTimeUs <= lastAudioUs) return
         if (bytes + info.size > maxBytes - INDEX_ROOM) return
         lastAudioUs = info.presentationTimeUs
-        put(audioTrack, data, info)
+        put(audioTrack, data, info, info.presentationTimeUs)
     }
 
     private fun askKey() {
         if (!asked) { asked = true; requestKeyFrame() }
     }
 
-    private fun put(track: Int, data: ByteBuffer, info: MediaCodec.BufferInfo) {
-        val shifted = MediaCodec.BufferInfo().apply { set(info.offset, info.size, info.presentationTimeUs - basePtsUs, info.flags) }
+    private fun put(track: Int, data: ByteBuffer, info: MediaCodec.BufferInfo, ptsUs: Long) {
+        val shifted = MediaCodec.BufferInfo().apply { set(info.offset, info.size, ptsUs - basePtsUs, info.flags) }
         sink?.write(track, data, shifted)
         bytes += info.size
     }
@@ -125,5 +136,7 @@ class SegmentMuxer(
         /** Room kept for the last pictures before the next key one, and the file's index. */
         const val HEADROOM = 1_500_000L
         const val INDEX_ROOM = 400_000L
+        /** Clocks further apart than this on the first picture are two clocks (2 s). */
+        const val CLOCK_GAP_US = 2_000_000L
     }
 }

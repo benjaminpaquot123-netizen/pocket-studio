@@ -83,6 +83,8 @@ class RetoursTest {
         Retours.clock = System::nanoTime
         Retours.wall = System::currentTimeMillis
         File(context.filesDir, Retours.DIR).deleteRecursively()
+        // The switch turned off in a test must not stay off for the next ones (help_page).
+        SettingsStore.forgetForTests()
     }
 
     /** The app as MainActivity lays it out: the host over a stand-in screen with a tagged button. */
@@ -228,7 +230,8 @@ class RetoursTest {
         val sinks = mutableListOf<FakeSink>()
         var keyAsked = false
         val started = mutableListOf<Int>()
-        val m = SegmentMuxer(open = { n -> FakeSink(n).also { sinks += it } }, requestKeyFrame = { keyAsked = true }, onSegment = { n, _ -> started += n })
+        // Pictures and sound on the same clock here.
+        val m = SegmentMuxer(open = { n -> FakeSink(n).also { sinks += it } }, requestKeyFrame = { keyAsked = true }, onSegment = { n, _ -> started += n }, nowUs = { 5_000_000L })
         val data = ByteBuffer.allocate(64)
         fun info(size: Int, us: Long, flags: Int) = MediaCodec.BufferInfo().apply { set(0, size, us, flags) }
         // Sound before the first file: dropped.
@@ -260,6 +263,54 @@ class RetoursTest {
         // Nothing lost but the sound before the first picture: every picture is in a file.
         assertEquals(4500, sinks.sumOf { s -> s.writes.count { it.first == 0 } })
         assertEquals("BenStudio-retours-20261028-101500-2.mp4", SegmentNames.name("20261028-101500", 2))
+    }
+
+    /** A sink that also says in which order the formats were given, the file started and the samples written. */
+    private class OrderSink : MuxSink {
+        val log = mutableListOf<String>()
+        val formats = mutableListOf<MediaFormat>()
+        override fun addTrack(format: MediaFormat): Int { log += "track"; formats += format; return formats.size - 1 }
+        override fun start() { log += "start" }
+        override fun write(track: Int, data: ByteBuffer, info: MediaCodec.BufferInfo) { log += "w$track@${info.presentationTimeUs}" }
+        override fun stop() { log += "stop" }
+        override fun release() = Unit
+    }
+
+    /**
+     * Owner's video (APK 226): an audio track with no sample (codec unknown, 0 channels). The screen's
+     * pictures came on another clock than the sound (hours apart): every sound sample was older than
+     * the first picture and dropped. Now the pictures are read in the sound's clock: the file has its
+     * AAC track (its format given before the start) and the sound's samples, in time with the pictures.
+     */
+    @Test
+    fun theSoundIsWrittenWhenThePicturesComeOnAnotherClock() {
+        val sinks = mutableListOf<OrderSink>()
+        val soundNow = 1_000_000_000L  // the sound's clock (System.nanoTime, µs): 1000 s after boot
+        val pictures = soundNow + 3L * 3600 * 1_000_000  // the pictures' clock: 3 hours ahead
+        var now = soundNow
+        val m = SegmentMuxer(open = { OrderSink().also { sinks += it } }, nowUs = { now })
+        val data = ByteBuffer.allocate(64)
+        fun info(size: Int, us: Long, flags: Int) = MediaCodec.BufferInfo().apply { set(0, size, us, flags) }
+        m.videoFormat(MediaFormat.createVideoFormat("video/avc", 576, 1280))
+        val aac = MediaFormat.createAudioFormat("audio/mp4a-latm", 48_000, 2)
+        m.audioFormat(aac)
+        for (i in 0 until 90) {
+            now = soundNow + i * 33_333L
+            m.writeVideo(data, info(5_000, pictures + i * 33_333L, if (i % 30 == 0) MediaCodec.BUFFER_FLAG_KEY_FRAME else 0))
+            // The sound of the same moment, on its own clock (an AAC frame each 21.3 ms).
+            m.writeAudio(data, info(300, now + 10_000, 0))
+            m.writeAudio(data, info(300, now + 31_333, 0))
+        }
+        m.finish()
+        val s = sinks.single()
+        assertEquals(listOf("track", "track", "start"), s.log.take(3))
+        assertEquals("audio/mp4a-latm", s.formats[1].getString(MediaFormat.KEY_MIME))
+        assertEquals(2, s.formats[1].getInteger(MediaFormat.KEY_CHANNEL_COUNT))
+        val sound = s.log.filter { it.startsWith("w1@") }.map { it.substringAfter('@').toLong() }
+        assertTrue("sound samples written: ${sound.size}", sound.size >= 170)
+        // In time with the pictures: the first sound sample within 50 ms of the first picture.
+        assertTrue("first sound at ${sound.first()} µs", sound.first() in 0..50_000)
+        assertEquals("stop", s.log.last())
     }
 
     @Test

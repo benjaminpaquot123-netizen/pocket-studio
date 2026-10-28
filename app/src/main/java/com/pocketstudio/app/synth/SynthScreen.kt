@@ -161,6 +161,8 @@ class NotesUi(
     val stepsPerBar: Int = 16,
     /** The play position read where it is drawn (audit 16: not the whole roll redrawn at each step); null: [playStep]. */
     val playStepOf: (() -> Int)? = null,
+    /** « Tuto de A à Z »: the notes its step asks for on this track, dotted until written. */
+    val hints: List<Note> = emptyList(),
 )
 
 @Composable
@@ -197,6 +199,8 @@ fun SynthScreen(
     var showNotes by rememberSaveable { mutableStateOf(startWithNotes) }
     // Each request once (coming back to the tab later keeps the view chosen since).
     var notesSeen by rememberSaveable { mutableStateOf(0) }
+    var rollShownFor by rememberSaveable { mutableStateOf(0) }
+    val rollRequester = remember { BringIntoViewRequester() }
     LaunchedEffect(notesRequest) {
         if (notesRequest > notesSeen) {
             showNotes = true
@@ -260,6 +264,16 @@ fun SynthScreen(
                 tracks?.takeIf { it.showBar }?.let { TrackBar(it) }
                 ModeSwitch(showNotes, tracks) { showNotes = it }
                 record?.invoke(false)
+                // Sent to the notes by the tutorial (« Créer la piste Basse »): the grid itself in view.
+                // Only for the tutorial's dotted notes: « Ouvrir dans Notes » keeps « Enregistrer » in sight.
+                val dotted = notes.hints.isNotEmpty()
+                LaunchedEffect(notesRequest, dotted) {
+                    if (dotted && notesRequest > rollShownFor) {
+                        rollShownFor = notesRequest
+                        kotlinx.coroutines.delay(120)
+                        rollRequester.bringIntoView()
+                    }
+                }
                 NeonCard {
                     PianoRoll(
                         notes.clip, notes.ghosts, notes.playStep, notes.actions,
@@ -269,6 +283,8 @@ fun SynthScreen(
                         clipboard = notes.clipboard, frozen = notes.frozen,
                         stepsPerBar = notes.stepsPerBar,
                         playStepOf = notes.playStepOf,
+                        hints = notes.hints,
+                        gridModifier = Modifier.bringIntoViewRequester(rollRequester),
                     )
                 }
                 if (tabletUpright) {

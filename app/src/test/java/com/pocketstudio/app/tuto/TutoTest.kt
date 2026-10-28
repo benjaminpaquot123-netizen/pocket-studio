@@ -57,10 +57,12 @@ class TutoTest {
         }
     }
 
-    private class FakePlayer : GuideListenPlayer {
+    /** Says what went out as [out] says (all of it by default). */
+    private class FakePlayer(var out: (Pcm) -> Long = { it.frames.toLong() }) : GuideListenPlayer {
         val played = ArrayList<Pcm>()
         override fun play(pcm: Pcm, ended: () -> Unit): Boolean { played += pcm; return true }
         override fun stop() {}
+        override fun heard(): Long = played.lastOrNull()?.let(out) ?: 0L
     }
 
     private fun idle(ms: Long = 50) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
@@ -85,11 +87,22 @@ class TutoTest {
     }
 
     /** A controller on [flow] whose edits go through [history] (one step each), as the session does. */
-    private fun controller(flow: MutableStateFlow<Project>, history: History<Project>, store: TutoStore, rendered: MutableList<TutoExample> = ArrayList(), player: FakePlayer = FakePlayer()) =
-        TutoController(
+    private fun controller(
+        flow: MutableStateFlow<Project>, history: History<Project>, store: TutoStore, rendered: MutableList<TutoExample> = ArrayList(), player: FakePlayer = FakePlayer(),
+        level: Float = 0.1f, shown: MutableList<Project?> = ArrayList(),
+    ): TutoController {
+        // « Montre-moi »'s frames shown as the app shows them: on screen, never in the history.
+        var before: Project? = null
+        return TutoController(
             scope, "p1", flow, edit = { f -> history.push(history.current.f()); flow.value = history.current }, store = store,
-            render = { ex -> rendered += ex; FloatArray(OfflineExport.SAMPLE_RATE * 2) { 0.1f } }, player = player, debounceMs = 10,
+            render = { ex -> rendered += ex; FloatArray(OfflineExport.SAMPLE_RATE * 2) { level } }, player = player, debounceMs = 10,
+            demoShow = { frame ->
+                shown += frame
+                if (frame != null) { if (before == null) before = flow.value; flow.value = frame } else { before?.let { flow.value = it }; before = null }
+            },
+            frameMs = 20, holdMs = 100, fadeMs = 100,
         )
+    }
 
     @Test
     fun aStepIsTickedByItsDetectorAndTheTutorialResumesAfterARestart() {
@@ -119,34 +132,81 @@ class TutoTest {
         assertEquals("key", again.ui.value!!.current.id)
     }
 
+    /**
+     * Owner (2026-10-28): « Écouter l'exemple » ticks a listening step only once the example really
+     * went out (not when it starts, never when it is silent); « Montre-moi » shows the kick cell by
+     * cell, keeps it a moment with its caption, then takes it all back: the project as it was,
+     * nothing in « Annuler », the step still to do, its dotted cells still there.
+     */
     @Test
-    fun showMeIsOneUndoStepAndListeningNeverTouchesTheProject() {
-        val empty = Project(name = "").sanitized()
+    fun listeningTicksOnceHeardAndShowMeShowsThenTakesItBack() {
+        val empty = com.pocketstudio.model.tuto.TutoTarget.of("jump_up")!!.blank()
         val flow = MutableStateFlow(empty)
         val history = History(empty)
         val rendered = ArrayList<TutoExample>()
-        val player = FakePlayer()
-        val c = controller(flow, history, MemoryStore(), rendered, player)
+        var out = 0L
+        val player = FakePlayer { out }
+        val shown = ArrayList<Project?>()
+        val c = controller(flow, history, MemoryStore(), rendered, player, shown = shown)
         c.start("jump_up", TutoLevel.Pro)
-        // « Écouter l'exemple » of the first step (a listening step): heard, ticked, the project untouched.
         c.listen()
-        await("example heard") { player.played.isNotEmpty() }
+        await("example played") { player.played.isNotEmpty() }
+        assertTrue(c.ui.value!!.playing)
+        idle(500)
+        assertFalse("ticked before anything went out", "ref" in c.ui.value!!.progress.done)
+        out = OfflineExport.SAMPLE_RATE.toLong()  // 1 s of the 2 went out: half of it
+        await("listening ticked once heard") { "ref" in c.ui.value!!.progress.done }
         assertSame(empty, flow.value)
         assertEquals(0, history.undoDepth)
+        // The reference: the Montée then the Drop of the finished song.
         assertEquals(174.0, rendered.single().after.tempoBpm, 0.0)
-        await("listening ticked") { "ref" in c.ui.value!!.progress.done }
-        // « Montre-moi » on the kick: one undo step, which takes it back.
+        assertNotNull(rendered.single().before)
+        // « Montre-moi » on the kick.
         c.goTo(1, 1)
         assertEquals("kick_do", c.ui.value!!.current.id)
         assertTrue(c.canShow())
         assertTrue(c.showMe())
-        assertEquals(1, history.undoDepth)
-        assertEquals(setOf(0, 10), flow.value.drums.lanes[0].hits.keys.filter { it < 16 }.toSet())
-        await("kick ticked") { "kick_do" in c.ui.value!!.progress.done }
-        assertEquals(empty, history.undo())
-        // The dotted cells of a drum step: the recipe's kick.
-        c.goTo(1, 1)
+        await("demo ends") { c.ui.value!!.demo == null }
+        val frames = shown.filterNotNull()
+        assertTrue("shown cell by cell: ${frames.size}", frames.size >= 3)
+        assertEquals(frames.map { it.drums.lanes[0].hits.size }.sorted(), frames.map { it.drums.lanes[0].hits.size })
+        assertEquals(setOf(0, 10), frames.last().drums.lanes[0].hits.keys.filter { it < 16 }.toSet())
+        assertNull("taken back", shown.last())
+        assertEquals(empty, flow.value)
+        assertEquals(0, history.undoDepth)
+        idle(200)
+        assertFalse("Montre-moi does not tick", "kick_do" in c.ui.value!!.progress.done)
         assertEquals(0 to setOf(0, 10), c.hint(16))
+        // A silent example is not played: it says so.
+        val quiet = FakePlayer()
+        val q = controller(MutableStateFlow(empty), History(empty), MemoryStore(), player = quiet, level = 0f)
+        q.start("jump_up", TutoLevel.Facile)
+        q.listen()
+        await("silence said") { q.ui.value!!.failed }
+        assertTrue(quiet.played.isEmpty())
+    }
+
+    /** The snare needs 2 bars: the main button says so and makes only that; a new step opens the panel again. */
+    @Test
+    fun theMainButtonMeetsTheStepsNeedAndANewStepOpensThePanel() {
+        val empty = com.pocketstudio.model.tuto.TutoTarget.of("jump_up")!!.blank()
+        val flow = MutableStateFlow(empty)
+        val history = History(empty)
+        val c = controller(flow, history, MemoryStore())
+        c.start("jump_up", TutoLevel.Facile)
+        c.goTo(2, 0)
+        assertEquals("snare_do", c.ui.value!!.current.id)
+        assertEquals(com.pocketstudio.model.tuto.TutoNeed.Bars(2), c.ui.value!!.need)
+        c.toggleOpen()
+        assertFalse(c.ui.value!!.open)
+        c.fulfilNeed()
+        assertEquals(32, flow.value.drums.steps)
+        assertEquals(1, history.undoDepth)
+        assertTrue(flow.value.drums.lanes.all { it.hits.isEmpty() })
+        await("need met") { c.ui.value!!.need == null }
+        assertFalse("folded within the step", c.ui.value!!.open)
+        c.next()
+        assertTrue("a new step opens it", c.ui.value!!.open)
     }
 
     @Test
@@ -177,38 +237,5 @@ class TutoTest {
         compose.onNodeWithTag("tuto_level_pro").performClick()
         compose.onNodeWithTag("tuto_style_jump_up").performScrollTo().performClick()
         assertEquals(listOf("jump_up" to TutoLevel.Pro), learned)
-    }
-
-    /** In the app: a new empty project with the jump up course, its first steps done the way a user does them. */
-    @Test
-    fun theFirstJumpUpStepsInTheApp() {
-        h.start(simple = true, build = {
-            // « J'apprends » makes an empty project.
-            session.edit { Project(name = "") }
-            PrefsTutoStore(h.app).save(projectId, TutoProgress("jump_up", TutoLevel.Facile))
-        })
-        await("panel") { compose.onAllNodesWithTag("tuto_panel").fetchSemanticsNodes().isNotEmpty() }
-        compose.onNodeWithText("Chapitre 1/", substring = true).assertExists()
-        // 1. Listen to the reference (skipped here: no engine), 2. the tempo with « Montre-moi ».
-        compose.onNodeWithTag("tuto_next").performClick()
-        compose.onNodeWithTag("tuto_show").performClick()
-        await("tempo") { h.vm.project.value.tempoBpm == 174.0 }
-        await("tempo ticked") { compose.onAllNodesWithTag("tuto_bravo").fetchSemanticsNodes().isNotEmpty() }
-        // « Montre-moi » was one step: undone, the tempo goes back (the step stays done).
-        h.vm.undo()
-        assertEquals(120.0, h.vm.project.value.tempoBpm, 0.0)
-        // 3. The key, by hand: the user sets F phrygian (the song's chords sheet does it); seen and ticked.
-        h.vm.session.edit { it.copy(harmony = com.pocketstudio.model.Harmony(5, com.pocketstudio.model.Scale.Phrygian, lock = true)) }
-        await("key ticked") { compose.onAllNodesWithText("Chapitre 2/", substring = true).fetchSemanticsNodes().isNotEmpty() }
-        // 4. The kick: heard (skipped), then « Je le fais »: the Rythme tab, the kick pad, its cells dotted.
-        compose.onNodeWithTag("tuto_next").performClick()
-        compose.onNodeWithTag("tuto_do").performClick()
-        await("dotted cells") { compose.onAllNodesWithTag("tuto_hint", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty() }
-        compose.onNodeWithTag("step_0").performClick()
-        compose.onNodeWithTag("step_10").performClick()
-        await("kick ticked") { compose.onAllNodesWithText("Chapitre 3/", substring = true).fetchSemanticsNodes().isNotEmpty() }
-        assertEquals(setOf(0, 10), h.vm.project.value.drums.lanes[0].hits.keys.filter { it < 16 }.toSet())
-        // Kept for the next start of the app.
-        assertTrue(PrefsTutoStore(h.app).load(h.vm.projectId)!!.done.containsAll(setOf("tempo", "key", "kick_do")))
     }
 }

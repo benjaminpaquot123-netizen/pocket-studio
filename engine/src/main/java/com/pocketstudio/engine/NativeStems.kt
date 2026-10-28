@@ -42,6 +42,12 @@ class NativeStems private constructor(internal val handle: Long) : AutoCloseable
 
     companion object {
         /** Reads and resamples the four WAVs. Blocking (seconds): worker thread. Null if unreadable. */
+        /** [data] (interleaved stereo at 48 kHz) as a bundle for the preview player ([NativeEngine.setPreviewStems]). */
+        fun fromPcm(data: FloatArray): NativeStems? {
+            val handle = NativeEngine.stemsFromPcm(data)
+            return if (handle == 0L) null else NativeStems(handle)
+        }
+
         fun load(drums: String, bass: String, other: String, vocals: String): NativeStems? {
             val handle = NativeEngine.stemsLoad(arrayOf(drums, bass, other, vocals))
             return if (handle == 0L) null else NativeStems(handle)

@@ -126,3 +126,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
   - basse : « Je le fais » arrive sur la piste Synthé (« Jeu des accords », arpège, strum) au lieu de créer/ouvrir une piste Basse ; on ne sait pas comment « ajouter une piste Basse » ;
   - vidéos du téléphone sans son (enregistreur système réglé sans audio).
 - Décisions tuto (2026-10-28) : « Montre-moi » = 1B (montre puis efface pour qu'on le refasse soi-même, « mais bien réalisé ») ; recommencer = 2A (« Recommencer le tuto » sur un nouveau projet vide). GO pour revoir tout le tuto d'après ses retours, APK direct après.
+- Mode debug : les textes nouveaux ou modifiés du tuto et du Mode retours en français uniquement pour l'instant (traductions avant toute sortie publique).

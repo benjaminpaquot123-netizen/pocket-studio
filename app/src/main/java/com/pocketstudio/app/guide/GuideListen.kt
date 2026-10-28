@@ -3,6 +3,7 @@ package com.pocketstudio.app.guide
 import com.pocketstudio.app.audio.Pcm
 import com.pocketstudio.app.audio.PcmPlayer
 import com.pocketstudio.app.learn.LearnViewModel
+import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.engine.OfflineExport
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.guide.GuideActions
@@ -51,9 +52,12 @@ interface GuideListenPlayer {
     /** Starts [pcm]; false when it cannot. [ended] is called once it has played to its end (or was stopped). */
     fun play(pcm: Pcm, ended: () -> Unit): Boolean
     fun stop()
+
+    /** Frames of what plays (or just played) that really went out to the speakers; -1: it cannot tell. */
+    fun heard(): Long = -1L
 }
 
-/** The app's player: the library's previews' [PcmPlayer]. */
+/** Android's own player ([PcmPlayer]): the stand-in when the engine cannot play it. */
 class PcmListenPlayer : GuideListenPlayer {
     private var ended: (() -> Unit)? = null
     private val player = PcmPlayer { ended?.invoke() }
@@ -66,6 +70,97 @@ class PcmListenPlayer : GuideListenPlayer {
     override fun stop() {
         ended = null
         player.stop()
+    }
+
+    override fun heard(): Long = player.position()
+}
+
+/**
+ * The app's player for the examples (the tutorial's « Écouter l'exemple », the Guide's « Sans /
+ * Avec »): the engine's preview player, mixed into the engine's own output, where the pads sound.
+ * APK 226: Android's player (an AudioTrack beside the engine's exclusive stream) said
+ * « Arrêter l'écoute » and stayed on it for 15 s over a 1.4 s example: nothing ever went out, on
+ * the speaker or in the car. What the engine plays is heard where the pads are, and it is in the
+ * « Mode retours » recording. [heard]: the preview's position, what really went out. When the
+ * engine plays nothing within [startMs] (its stream closed), Android's player takes over.
+ */
+class EnginePcmPlayer(
+    private val scope: kotlinx.coroutines.CoroutineScope,
+    private val fallback: GuideListenPlayer = PcmListenPlayer(),
+    private val startMs: Long = 1500,
+) : GuideListenPlayer {
+    private var stems: com.pocketstudio.engine.NativeStems? = null
+    private var poll: Job? = null
+    private var onFallback = false
+    @Volatile private var heardFrames = 0L
+
+    override fun play(pcm: Pcm, ended: () -> Unit): Boolean {
+        stop()
+        if (!NativeEngine.isNative || pcm.sampleRate != OfflineExport.SAMPLE_RATE || pcm.channels !in 1..2) return useFallback(pcm, ended)
+        val data = if (pcm.channels == 2) pcm.data else FloatArray(pcm.data.size * 2) { pcm.data[it / 2] }
+        val s = runCatching { com.pocketstudio.engine.NativeStems.fromPcm(data) }.getOrNull() ?: return useFallback(pcm, ended)
+        if (!NativeEngine.setPreviewStems(s)) {
+            s.close()
+            return useFallback(pcm, ended)
+        }
+        stems = s
+        NativeEngine.playPreview(true)
+        val frames = data.size / 2L
+        poll = scope.launch {
+            val t0 = System.currentTimeMillis()
+            var started = false
+            while (true) {
+                delay(POLL_MS)
+                val pos = NativeEngine.previewPosition()
+                when {
+                    pos >= 0 -> { started = true; heardFrames = maxOf(heardFrames, pos) }
+                    started -> { heardFrames = frames; break }  // played to its end
+                    System.currentTimeMillis() - t0 > startMs -> {
+                        // Nothing went out: the engine's stream is not running. Android's player instead.
+                        releaseEngine()
+                        com.pocketstudio.app.report.AppLog.add("Écoute : le moteur ne joue pas, lecteur Android à la place")
+                        poll = null
+                        if (!useFallback(pcm, ended)) ended()
+                        return@launch
+                    }
+                }
+                if (heardFrames >= frames - 1) { heardFrames = frames; break }
+            }
+            releaseEngine()
+            poll = null
+            ended()
+        }
+        return true
+    }
+
+    private fun useFallback(pcm: Pcm, ended: () -> Unit): Boolean {
+        onFallback = true
+        return fallback.play(pcm, ended)
+    }
+
+    private fun releaseEngine() {
+        val s = stems ?: return
+        stems = null
+        runCatching {
+            NativeEngine.playPreview(false)
+            NativeEngine.setPreviewStems(null)
+        }
+        s.close()  // the engine keeps its own reference until it lets go
+    }
+
+    override fun stop() {
+        poll?.cancel()
+        poll = null
+        releaseEngine()
+        if (onFallback) fallback.stop()
+        onFallback = false
+        heardFrames = 0L
+    }
+
+    override fun heard(): Long = if (onFallback) fallback.heard() else heardFrames
+
+    private companion object {
+        const val POLL_MS = 50L
     }
 }
 

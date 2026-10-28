@@ -991,6 +991,8 @@ object NativeEngine {
     private external fun nativeInstallSample(pad: Int, handle: Long): Boolean
     external fun stemsLoad(paths: Array<String>): Long
     external fun stemsRelease(handle: Long)
+    /** A bundle playing [data] (interleaved stereo at 48 kHz) on its first stem, the others silent; 0 when refused. */
+    external fun stemsFromPcm(data: FloatArray): Long
     external fun stemsFrames(handle: Long): Long
     external fun stemsExtract(handle: Long, stem: Int, start: Long, count: Long): FloatArray
     external fun stemsPeaks(handle: Long, stem: Int, buckets: Int): FloatArray

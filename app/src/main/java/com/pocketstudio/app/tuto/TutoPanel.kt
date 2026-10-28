@@ -1,6 +1,17 @@
 package com.pocketstudio.app.tuto
 
 import androidx.compose.animation.animateContentSize
+import com.pocketstudio.model.i18n.inSentence
+import com.pocketstudio.model.tuto.TutoNeed
+import com.pocketstudio.app.guide.guideEdge
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -76,9 +87,11 @@ import com.pocketstudio.ui.Neon
 /** A text of the course (tutos/<style>.json, checked by TutoCourseTest) or a style's name, in the interface's language. */
 internal fun tutoText(fr: String): String = tr(fr)
 
-/** The dotted cells the Rythme tab shows on a pad while a drum step is shown: (pad, steps). */
+/** What the tutorial draws on the screens: dotted cells of a drum step (pad, steps), dotted notes of a melodic step (track, notes), the cells « Montre-moi » lit fading away (pad, steps, how much they show). */
 object TutoHints {
     var cells by mutableStateOf<Pair<Int, Set<Int>>?>(null)
+    var notes by mutableStateOf<Pair<Int, List<com.pocketstudio.model.Note>>?>(null)
+    var fading by mutableStateOf<Triple<Int, Set<Int>, Float>?>(null)
 }
 
 /** What the panel's buttons do ([TutoController]'s). */
@@ -86,28 +99,61 @@ class TutoActions(
     val listen: () -> Unit = {},
     val doIt: () -> Unit = {},
     val showMe: () -> Unit = {},
+    val stopDemo: () -> Unit = {},
+    val need: () -> Unit = {},
     val markDone: () -> Unit = {},
     val toggle: () -> Unit = {},
     val next: () -> Unit = {},
     val previous: () -> Unit = {},
     val chapters: () -> Unit = {},
     val quit: () -> Unit = {},
+    /** « Recommencer le tuto »: a new empty project, the same style and level. */
+    val restart: () -> Unit = {},
 )
 
+/** « Recommencer le tuto ». */
+fun restartTutoLabel(): String = tr("Recommencer le tuto")
+
+/** The words of a need's button, as the step's text names it. */
+fun needLabel(need: TutoNeed): String = when (need) {
+    is TutoNeed.Bars -> tr("Passer à %d mesures", need.bars)
+    is TutoNeed.Track -> when (need.role) {
+        "bass" -> tr("Créer la piste Basse")
+        "pad" -> tr("Créer la piste Accords")
+        "lead" -> tr("Créer la piste Mélodie")
+        else -> tr("Créer la piste Sub")
+    }
+    is TutoNeed.Part -> tr("Créer la partie « %s »", Scene.shownLabel(need.label))
+    is TutoNeed.Name -> tr("Nommer la partie « %s »", need.label)
+    TutoNeed.Lengths -> tr("Donner les durées conseillées")
+    is TutoNeed.Scene -> tr("Aller dans la partie « %s »", Scene.shownLabel(need.label))
+}
+
+/** The panel's background: the screen's, tinted with the tutorial's colour (never a page card's grey). */
+@Composable
+private fun panelColor(): Color = androidx.compose.ui.graphics.lerp(Neon.Background, Neon.Cyan, 0.07f)
+
 /**
- * The tutorial over the bottom of the screen: chapter X/N and step x/n with a progress bar, then
- * (unfolded) « À toi : … », its « Pourquoi ? », the song's map in the structure chapters, and
- * three buttons: « ▶ Écouter l'exemple », « Je le fais », « Montre-moi » (« C'est fait » for a
- * step only the user can tick). Folded, one line: the screen stays free to work on.
+ * The tutorial over the bottom of the screen, apart from the page's cards (its own tint, an accent
+ * edge that beats like the Guide's): chapter X/N and step x/n with a progress bar, then (unfolded)
+ * « À toi : … », its « Pourquoi ? », the song's map in the structure chapters, then its action bar:
+ * the step's main action as a big filled button (what it needs first, « Je le fais », « C'est
+ * fait »), « ▶ Écouter l'exemple » and « Montre-moi » under it, « ← Précédent » and « Suivant → ».
+ * Folded, one line: the screen stays free to work on. A new step opens it again.
  */
 @Composable
-fun TutoPanel(ui: TutoUi, canShow: Boolean, actions: TutoActions, modifier: Modifier = Modifier, map: List<TutoMapBlock> = emptyList()) {
+fun TutoPanel(
+    ui: TutoUi, canShow: Boolean, actions: TutoActions, modifier: Modifier = Modifier, map: List<TutoMapBlock> = emptyList(),
+    reducedMotion: Boolean = com.pocketstudio.app.onboarding.animationsOff(androidx.compose.ui.platform.LocalContext.current),
+) {
     val step = ui.current
     val chapter = ui.chapters[ui.chapter]
     val done = step.id in ui.progress.done
+    val shape = RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp)
+    val beat = com.pocketstudio.app.guide.rememberGuideBeat(animated = !reducedMotion)
     Surface(
-        color = Neon.Surface, shape = RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp),
-        modifier = modifier.fillMaxWidth().border(1.dp, Neon.Cyan.copy(alpha = 0.6f), RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp)).testTag("tuto_panel"),
+        color = panelColor(), shape = shape,
+        modifier = modifier.fillMaxWidth().border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel"),
     ) {
         Column(Modifier.padding(horizontal = 14.dp, vertical = 8.dp).animateContentSize(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -141,22 +187,141 @@ fun TutoPanel(ui: TutoUi, canShow: Boolean, actions: TutoActions, modifier: Modi
             if (ui.finished) {
                 Text(tr("Bravo, ton morceau est fini ! Tu peux tout réécouter et continuer à le changer."), color = Neon.Acid,
                     style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("tuto_finished"))
+                OutlinedButton(onClick = actions.restart, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_restart_finished")) {
+                    Icon(Icons.Filled.Replay, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Text(" " + restartTutoLabel(), maxLines = 1)
+                }
             } else if (ui.bravo) {
                 Text(tr("Bravo, c'est bon ! Étape suivante :"), color = Neon.Acid, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold,
                     modifier = Modifier.testTag("tuto_bravo"))
             }
-            Column(Modifier.heightIn(max = 260.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Column(Modifier.heightIn(max = 240.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Row(verticalAlignment = Alignment.Top) {
                     if (done) Icon(Icons.Filled.CheckCircle, contentDescription = tr("Fait"), tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp).size(20.dp).testTag("tuto_step_done"))
                     Text(tutoText(step.textFor(ui.progress.level)), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.testTag("tuto_text"))
                 }
                 Why(step.why ?: chapter.why.takeIf { it.isNotEmpty() })
                 if (chapter.map && map.isNotEmpty()) SongMap(map)
-                if (ui.failed) Text(tr("L'exemple ne s'écoute pas ici."), color = Neon.Amber, style = MaterialTheme.typography.bodySmall)
+                if (ui.failed) Text(tr("L'exemple ne s'entend pas : monte le volume du téléphone, puis touche encore « Écouter l'exemple »."), color = Neon.Amber,
+                    style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("tuto_failed"))
             }
-            Buttons(ui, canShow, actions)
+            ui.demo?.let { phase ->
+                Row(
+                    Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Neon.Amber.copy(alpha = 0.16f)).border(1.dp, Neon.Amber, RoundedCornerShape(12.dp))
+                        .padding(horizontal = 12.dp, vertical = 8.dp).testTag("tuto_demo_caption"),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(Icons.Filled.Visibility, contentDescription = null, tint = Neon.Amber, modifier = Modifier.size(20.dp))
+                    Text(
+                        if (phase == TutoDemoPhase.SHOWING) tr("Regarde, je le fais pour toi…") else tr("Voilà ce qu'il fallait faire — à toi maintenant !"),
+                        style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = Neon.TextPrimary, modifier = Modifier.padding(start = 8.dp),
+                    )
+                }
+            }
+            ActionBar(ui, canShow, actions)
         }
     }
+}
+
+/** What the big button of a step does, and its words. */
+private enum class Primary { NEXT, NEED, DO, MARK, LISTEN, NONE }
+
+private fun primaryOf(ui: TutoUi): Primary {
+    val s = ui.current
+    return when {
+        // A step done that stays shown (an example heard to its end): on to the next one.
+        s.id in ui.progress.done && !ui.finished -> Primary.NEXT
+        ui.need != null -> Primary.NEED
+        s.spot.isNotEmpty() -> Primary.DO
+        s.manual -> Primary.MARK
+        s.listen.isNotEmpty() -> Primary.LISTEN
+        else -> Primary.NONE
+    }
+}
+
+/**
+ * The action bar (owner, 2026-10-28: « plus professionnelle, qu'on voie où toucher »): the step's
+ * main action as a big filled button, the example and « Montre-moi » as two clear buttons with
+ * their icon and their words, then « ← Précédent » and « Suivant → » with their words. Each row
+ * shares its width (two lines of text at 130 %), the arrows turn round in a right-to-left language.
+ */
+@Composable
+private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions) {
+    val step = ui.current
+    val primary = primaryOf(ui)
+    val busy = ui.preparing || ui.playing
+    val big = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+    val filled = ButtonDefaults.buttonColors(containerColor = Neon.Cyan, contentColor = Neon.OnAccent)
+    when (primary) {
+        Primary.NEXT -> Button(onClick = actions.next, colors = ButtonDefaults.buttonColors(containerColor = Neon.Acid, contentColor = Neon.OnAccent), modifier = big.testTag("tuto_next_big")) {
+            Text(tr("Étape suivante") + "  ", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(20.dp))
+        }
+        Primary.NEED -> Button(onClick = actions.need, enabled = ui.demo == null, colors = filled, modifier = big.testTag("tuto_need")) {
+            Icon(Icons.Filled.AddCircle, contentDescription = null, modifier = Modifier.size(20.dp))
+            Text("  " + needLabel(ui.need!!), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+        }
+        Primary.DO -> Button(onClick = actions.doIt, enabled = ui.demo == null, colors = filled, modifier = big.testTag("tuto_do")) {
+            Icon(Icons.Filled.TouchApp, contentDescription = null, modifier = Modifier.size(20.dp))
+            Text("  " + tr("Je le fais"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+        }
+        Primary.MARK -> Button(onClick = actions.markDone, colors = filled, modifier = big.testTag("tuto_mark")) {
+            Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(20.dp))
+            Text("  " + if (step.spot.isEmpty()) tr("J'ai compris") else tr("C'est fait"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+        }
+        Primary.LISTEN -> Button(onClick = actions.listen, colors = filled, modifier = big.testTag("tuto_listen")) {
+            ListenContent(ui, busy)
+        }
+        Primary.NONE -> Unit
+    }
+    val secondaries = buildList<@Composable RowScope.() -> Unit> {
+        if (step.listen.isNotEmpty() && primary != Primary.LISTEN) add {
+            OutlinedButton(onClick = actions.listen, contentPadding = SECONDARY_PADDING, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_listen")) { ListenContent(ui, busy) }
+        }
+        if (step.manual && primary != Primary.MARK) add {
+            OutlinedButton(onClick = actions.markDone, contentPadding = SECONDARY_PADDING, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_mark")) {
+                Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
+                Text(" " + tr("C'est fait"), maxLines = 2, textAlign = TextAlign.Center)
+            }
+        } else if (canShow) add {
+            val showing = ui.demo != null
+            OutlinedButton(
+                onClick = if (showing) actions.stopDemo else actions.showMe, contentPadding = SECONDARY_PADDING,
+                modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_show"),
+            ) {
+                Icon(if (showing) Icons.Filled.Stop else Icons.Filled.Visibility, contentDescription = null, modifier = Modifier.size(18.dp))
+                Text(" " + if (showing) tr("Arrêter") else tr("Montre-moi"), maxLines = 2, textAlign = TextAlign.Center)
+            }
+        }
+    }
+    if (secondaries.isNotEmpty()) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        secondaries.forEach { it() }
+    }
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        TextButton(onClick = actions.previous, enabled = ui.chapter > 0 || ui.step > 0, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_prev")) {
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, modifier = Modifier.size(18.dp))
+            Text(" " + tr("Précédent"), maxLines = 1)
+        }
+        Box(Modifier.weight(1f))
+        TextButton(onClick = actions.next, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_next")) {
+            Text(tr("Suivant") + " ", maxLines = 1)
+            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(18.dp))
+        }
+    }
+}
+
+/** The secondary buttons' inner room: their words on one line on a phone, two at 130 %. */
+private val SECONDARY_PADDING = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 6.dp)
+
+/** « ▶ Écouter l'exemple », a wheel while it is prepared, « ■ Arrêter l'écoute » while it plays. */
+@Composable
+private fun ListenContent(ui: TutoUi, busy: Boolean) {
+    when {
+        ui.preparing -> CircularProgressIndicator(Modifier.size(16.dp).semantics { contentDescription = tr("Préparation de l'écoute") }, strokeWidth = 2.dp)
+        busy -> Icon(Icons.Filled.Stop, contentDescription = null, modifier = Modifier.size(18.dp))
+        else -> Icon(Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(18.dp))
+    }
+    Text(" " + if (busy) tr("Arrêter l'écoute") else tr("Écouter l'exemple"), maxLines = 2, textAlign = TextAlign.Center)
 }
 
 /** « Pourquoi ? »: one or two sentences, folded until touched. */
@@ -167,47 +332,6 @@ private fun Why(text: String?) {
     Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).clickable { open = !open }.testTag("tuto_why")) {
         Text((if (open) "▾ " else "▸ ") + tr("Pourquoi ?"), style = MaterialTheme.typography.labelLarge, color = Neon.Cyan)
         if (open) Text(tutoText(text), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_why_text"))
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun Buttons(ui: TutoUi, canShow: Boolean, actions: TutoActions) {
-    val step = ui.current
-    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth()) {
-        if (step.listen.isNotEmpty()) {
-            val busy = ui.preparing || ui.playing
-            OutlinedButton(onClick = actions.listen, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_listen")) {
-                when {
-                    ui.preparing -> CircularProgressIndicator(Modifier.size(16.dp).semantics { contentDescription = tr("Préparation de l'écoute") }, strokeWidth = 2.dp)
-                    busy -> Icon(Icons.Filled.Stop, contentDescription = null, modifier = Modifier.size(18.dp))
-                    else -> Icon(Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(18.dp))
-                }
-                Text(" " + if (busy) tr("Arrêter l'écoute") else tr("Écouter l'exemple"), maxLines = 1)
-            }
-        }
-        if (step.spot.isNotEmpty()) {
-            Button(onClick = actions.doIt, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_do"),
-                colors = ButtonDefaults.buttonColors(containerColor = Neon.Cyan, contentColor = Neon.OnAccent)) {
-                Icon(Icons.Filled.TouchApp, contentDescription = null, modifier = Modifier.size(18.dp))
-                Text(" " + tr("Je le fais"), maxLines = 1)
-            }
-        }
-        if (step.manual) {
-            OutlinedButton(onClick = actions.markDone, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_mark")) {
-                Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
-                Text(" " + if (step.spot.isEmpty()) tr("J'ai compris") else tr("C'est fait"), maxLines = 1)
-            }
-        } else if (canShow) {
-            OutlinedButton(onClick = actions.showMe, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_show")) {
-                Icon(Icons.Filled.Visibility, contentDescription = null, modifier = Modifier.size(18.dp))
-                Text(" " + tr("Montre-moi"), maxLines = 1)
-            }
-        }
-        Row {
-            IconButton(onClick = actions.previous, modifier = Modifier.testTag("tuto_prev")) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Étape précédente")) }
-            IconButton(onClick = actions.next, modifier = Modifier.testTag("tuto_next")) { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = tr("Étape suivante")) }
-        }
     }
 }
 
@@ -262,7 +386,7 @@ fun SongMap(blocks: List<TutoMapBlock>, modifier: Modifier = Modifier) {
 
 /** The chapters, each with its steps done; one touch goes there. « Passer en Pro », « Quitter le tuto ». */
 @Composable
-fun TutoChapterList(ui: TutoUi, goTo: (Int) -> Unit, setLevel: (TutoLevel) -> Unit, quit: () -> Unit, close: () -> Unit) {
+fun TutoChapterList(ui: TutoUi, goTo: (Int) -> Unit, setLevel: (TutoLevel) -> Unit, quit: () -> Unit, close: () -> Unit, restart: () -> Unit = {}) {
     Column(Modifier.fillMaxSize().padding(16.dp).testTag("tuto_chapter_list"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(tr("Tuto de A à Z"), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
@@ -292,6 +416,11 @@ fun TutoChapterList(ui: TutoUi, goTo: (Int) -> Unit, setLevel: (TutoLevel) -> Un
             OutlinedButton(onClick = { setLevel(TutoLevel.Facile) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_to_easy")) {
                 Text(tr("Revenir en Facile"))
             }
+        }
+        // Owner (2026-10-28, 2A): start again from an empty project, the same style and level (this one is kept).
+        OutlinedButton(onClick = restart, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_restart")) {
+            Icon(Icons.Filled.Replay, contentDescription = null, modifier = Modifier.size(18.dp))
+            Text(" " + tr("Recommencer le tuto (nouveau projet vide)"))
         }
         TextButton(onClick = quit, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_quit")) {
             Text(tr("Quitter le tuto (tu pourras le reprendre)"), color = Neon.TextSecondary)
@@ -355,14 +484,105 @@ private fun LevelCard(title: String, line: String, chosen: Boolean, tag: String,
 /** The map of [style]'s song (cached by the target). */
 fun tutoMap(style: String): List<TutoMapBlock> = TutoTarget.of(style)?.let(TutoChecks::map).orEmpty()
 
-/** A step cell the tutorial asks for, still empty: a dotted outline in the pad's [color]. */
+/**
+ * A step cell the tutorial asks for, still empty: a soft fill of the pad's [color] and a dashed
+ * outline that stands out on the dark grid, there for the whole step (not only while lit).
+ */
 @Composable
 fun TutoHintCell(color: Color) {
     Canvas(Modifier.fillMaxSize().padding(3.dp).testTag("tuto_hint")) {
-        val r = 6.dp.toPx()
+        val r = androidx.compose.ui.geometry.CornerRadius(6.dp.toPx())
+        drawRoundRect(color.copy(alpha = 0.28f), cornerRadius = r)
         drawRoundRect(
-            color.copy(alpha = 0.9f), cornerRadius = androidx.compose.ui.geometry.CornerRadius(r),
-            style = Stroke(width = 2.dp.toPx(), pathEffect = androidx.compose.ui.graphics.PathEffect.dashPathEffect(floatArrayOf(6.dp.toPx(), 4.dp.toPx()))),
+            Color.White.copy(alpha = 0.9f), cornerRadius = r,
+            style = Stroke(width = 2.5.dp.toPx(), pathEffect = androidx.compose.ui.graphics.PathEffect.dashPathEffect(floatArrayOf(6.dp.toPx(), 4.dp.toPx()))),
         )
+    }
+}
+
+/**
+ * The key step's own sheet: « Gamme » then « Tonique », the words the piano roll's « Gamme et
+ * accords » uses; the ones the step asks for drawn dotted until chosen. A touch sets the song's key
+ * (one undo step, the scale locked as the assistant does).
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun TutoKeySheetContent(harmony: com.pocketstudio.model.Harmony, wanted: com.pocketstudio.model.Harmony, set: (com.pocketstudio.model.Harmony) -> Unit, close: () -> Unit) {
+    val english = com.pocketstudio.app.settings.englishNotes()
+    Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 24.dp).testTag("tuto_key_sheet"), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(tr("Tonalité"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+            TextButton(onClick = close, modifier = Modifier.testTag("tuto_key_close")) { Text(tr("Fermer")) }
+        }
+        val now = if (harmony.scale == com.pocketstudio.model.Scale.Off) tr("aucune") else "${com.pocketstudio.model.NoteNames.key(harmony.root, english)} ${tr(harmony.scale.label).inSentence()}"
+        Text(tr("Tonalité du morceau : %s", now), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_key_now"))
+        Text(tr("Gamme"), style = MaterialTheme.typography.titleSmall)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            com.pocketstudio.model.Scale.entries.filter { it != com.pocketstudio.model.Scale.Off }.forEach { sc ->
+                KeyChip(tr(sc.label), harmony.scale == sc, sc == wanted.scale, "tuto_scale_${sc.name}") {
+                    set(harmony.copy(scale = sc, lock = true))
+                }
+            }
+        }
+        Text(tr("Tonique"), style = MaterialTheme.typography.titleSmall)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            (0..11).forEach { i ->
+                KeyChip(com.pocketstudio.model.NoteNames.key(i, english), harmony.root == i && harmony.scale != com.pocketstudio.model.Scale.Off, i == wanted.root, "tuto_root_$i") {
+                    set(harmony.copy(root = i, scale = if (harmony.scale == com.pocketstudio.model.Scale.Off) wanted.scale else harmony.scale, lock = true))
+                }
+            }
+        }
+    }
+}
+
+/** [TutoKeySheetContent] in a sheet over the screen. */
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Composable
+fun TutoKeySheet(harmony: com.pocketstudio.model.Harmony, wanted: com.pocketstudio.model.Harmony, set: (com.pocketstudio.model.Harmony) -> Unit, close: () -> Unit) {
+    com.pocketstudio.ui.ScaledBottomSheet(
+        onDismissRequest = close, sheetState = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true), containerColor = Neon.Surface,
+    ) { TutoKeySheetContent(harmony, wanted, set, close) }
+}
+
+/** A choice of the key sheet: filled when chosen, dotted when it is the one the step asks for. */
+@Composable
+private fun KeyChip(label: String, chosen: Boolean, wanted: Boolean, tag: String, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(10.dp)
+    val amber = Neon.Amber
+    Box(
+        Modifier.heightIn(min = 48.dp).widthIn(min = 52.dp).clip(shape)
+            .background(if (chosen) Neon.Cyan else if (wanted) Neon.Amber.copy(alpha = 0.18f) else Neon.SurfaceHigh)
+            .then(if (wanted && !chosen) Modifier.drawDashed(amber) else Modifier.border(1.dp, if (chosen) Neon.Cyan else Neon.Outline, shape))
+            .clickable(onClick = onClick).padding(horizontal = 12.dp).testTag(tag),
+        contentAlignment = Alignment.Center,
+    ) { Text(label, color = if (chosen) Neon.OnAccent else Neon.TextPrimary, fontWeight = if (chosen || wanted) FontWeight.Bold else FontWeight.Normal) }
+}
+
+/** A dashed outline around a control (what the tutorial asks to touch). */
+fun Modifier.drawDashed(color: Color): Modifier = drawBehind {
+    val r = androidx.compose.ui.geometry.CornerRadius(10.dp.toPx())
+    drawRoundRect(color, cornerRadius = r, style = Stroke(width = 2.dp.toPx(), pathEffect = androidx.compose.ui.graphics.PathEffect.dashPathEffect(floatArrayOf(6.dp.toPx(), 4.dp.toPx()))))
+}
+
+/**
+ * « Je le fais »: the control of the step ringed a moment (a ring that pulses, no card, nothing to
+ * close), over the screen without taking its touches; it goes by itself ([TutoController]'s panel
+ * stays as it is). [target]: the control's place in the window (null: not found, nothing drawn).
+ */
+@Composable
+fun TutoSpotRing(target: androidx.compose.ui.geometry.Rect?, modifier: Modifier = Modifier) {
+    if (target == null) return
+    val transition = androidx.compose.animation.core.rememberInfiniteTransition(label = "tuto_ring")
+    val pulse = transition.animateFloat(
+        0f, 1f, androidx.compose.animation.core.infiniteRepeatable(androidx.compose.animation.core.tween(900), androidx.compose.animation.core.RepeatMode.Reverse), label = "tuto_ring_pulse",
+    )
+    val amber = Neon.Amber
+    Canvas(modifier.fillMaxSize().testTag("tuto_spot_ring")) {
+        val grow = 4.dp.toPx() + 6.dp.toPx() * pulse.value
+        val r = androidx.compose.ui.geometry.CornerRadius(14.dp.toPx())
+        val tl = Offset(target.left - grow, target.top - grow)
+        val sz = androidx.compose.ui.geometry.Size(target.width + 2 * grow, target.height + 2 * grow)
+        drawRoundRect(amber.copy(alpha = 0.18f * (1f - pulse.value)), tl, sz, r)
+        drawRoundRect(amber.copy(alpha = 0.95f - 0.4f * pulse.value), tl, sz, r, style = Stroke(3.dp.toPx()))
     }
 }

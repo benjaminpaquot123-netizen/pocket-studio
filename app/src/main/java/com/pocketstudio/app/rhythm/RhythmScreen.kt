@@ -684,6 +684,10 @@ private fun StepGrid(
                         if (velocity == null && com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) -> l == lane && step in cells } == true) {
                             com.pocketstudio.app.tuto.TutoHintCell(color)
                         }
+                        // « Montre-moi » taken back: the cells it lit fade out.
+                        if (velocity == null) com.pocketstudio.app.tuto.TutoHints.fading?.let { (l, cells, alpha) ->
+                            if (l == lane && step in cells && alpha > 0f) Box(Modifier.fillMaxSize().background(color.copy(alpha = 0.85f * alpha)))
+                        }
                         // The hit fills the cell up to its strength.
                         if (velocity != null) {
                             Box(

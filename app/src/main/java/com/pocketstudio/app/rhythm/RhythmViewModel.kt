@@ -1191,11 +1191,49 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * « Tuto de A à Z »'s « Écouter l'exemple »: [p] (a sandbox made from the course's target, never
      * the open project) as the Guide's listenings hear it, up to [maxBars] bars, rendered offline.
      */
-    suspend fun renderExample(p: Project, maxBars: Int = 8): FloatArray? {
+    suspend fun renderExample(p: Project, maxBars: Int = 8, minBars: Int = EXAMPLE_MIN_BARS): FloatArray? {
         guideRenderForTest?.let { return it(p, p)?.first }
         if (!NativeEngine.isAvailable) return null
         awaitSoundsLoaded()
-        return renderGuidePeak(p, maxBars)
+        return renderGuidePeak(p, maxBars, minBars)
+    }
+
+    /** « Montre-moi »'s demonstration: the project as it was before its first frame (null: none under way). */
+    private var tutoDemoBefore: Project? = null
+
+    /**
+     * « Montre-moi » of the tutorial: [frame] shown and heard as it is (the screens and the engine
+     * follow), never written to disk nor kept in « Annuler »; null: the project as it was before
+     * the first frame, at once.
+     */
+    fun tutoDemo(frame: Project?) {
+        if (frame != null) {
+            val before = tutoDemoBefore ?: project.value.also { b ->
+                tutoDemoBefore = b
+                // A save meanwhile writes the project as it was, never the demonstration.
+                session.saveAs = { b }
+            }
+            session.showQuietly { frame }
+            if (before.tracks != frame.tracks || before.synthTrackName != frame.synthTrackName) loadTrackFonts()
+        } else {
+            val before = tutoDemoBefore ?: return
+            tutoDemoBefore = null
+            session.showQuietly { before }
+            session.saveAs = null
+        }
+        syncEngine()
+    }
+
+    /** What a frame of « Montre-moi » sounds: a pad, or notes on a track (as the keys play them, a moment). */
+    fun tutoDemoSound(sound: com.pocketstudio.model.tuto.TutoSound) {
+        if (!NativeEngine.isAvailable || _transport.value.playing) return
+        sound.lane?.let { NativeEngine.triggerPad(it, 0.9f) }
+        val id = sound.track ?: return
+        sound.pitches.forEach { NativeEngine.synthNoteOn(it, 0.8f, id) }
+        viewModelScope.launch {
+            kotlinx.coroutines.delay(180)
+            sound.pitches.forEach { NativeEngine.synthNoteOff(it, id) }
+        }
     }
 
     /** Tests (G6): the Guide's « Sans / Avec » rendered here in place of the engine (Robolectric has none). */
@@ -1203,10 +1241,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     internal var guideRenderForTest: (suspend (with: Project, without: Project) -> Pair<FloatArray, FloatArray>?)? = null
 
     /** The song's first Drop (else Refrain, else its first part, else the scene shown), up to [maxBars] bars, as the Guide's listenings hear it. */
-    private suspend fun renderGuidePeak(p: Project, maxBars: Int = 8): FloatArray? {
+    private suspend fun renderGuidePeak(p: Project, maxBars: Int = 8, minBars: Int = 1): FloatArray? {
         val part = com.pocketstudio.model.FirstListen.firstMain(p).coerceAtLeast(0)
         val steps = p.song.getOrNull(part)?.let { p.partSteps(it) } ?: p.sceneSteps(p.scene)
-        val bars = (steps / p.stepsPerBar.coerceAtLeast(1)).coerceIn(1, maxBars)
+        // A loop of one bar (the kick alone) goes round [minBars] times: an example heard, not a blip.
+        val bars = (steps / p.stepsPerBar.coerceAtLeast(1)).coerceIn(minBars.coerceAtMost(maxBars), maxBars)
         return renderOffline(p.partHeard(part), OfflineExport.framesFor(bars, p.tempoBpm, p.beatsPerBar)) {}
     }
 
@@ -9412,6 +9451,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         /** [beforePress]'s key for a row or « ■ Tout » (a column's key is never empty). */
         private const val ROW_PRESS = ""
         const val PROJECT_ID = "projet-1"
+        /** The tutorial's examples last at least this many bars (a one-bar loop goes round). */
+        const val EXAMPLE_MIN_BARS = 4
         const val BUSY_TRACK_SOUND = "Préparation du son…"
         /** How early (sixteenths) a note played ahead of the first step still lands on it. */
         private const val EARLY_STEPS = 1.0

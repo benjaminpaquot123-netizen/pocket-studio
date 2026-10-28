@@ -158,6 +158,10 @@ fun PianoRoll(
     frozen: Boolean = false,
     /** Sixteenths in a bar of the time signature (12 in 3/4): copies, pastes and the ruler count in its bars. */
     stepsPerBar: Int = 16,
+    /** « Tuto de A à Z »: the notes a step asks for, dotted until written (a touch on one writes it). */
+    hints: List<Note> = emptyList(),
+    /** On the grid itself (the tutorial brings it into view). */
+    gridModifier: Modifier = Modifier,
     /** The play position read where it is drawn (audit 16: the grid is not redrawn at each step); null: [playStep]. */
     playStepOf: (() -> Int)? = null,
 ) = com.pocketstudio.ui.LeftToRight {
@@ -280,12 +284,14 @@ fun PianoRoll(
                 targetBar = bar
                 selection = NoteEdits.inBar(clip, bar, barTicks)
             }
-            Grid(
-                clip, if (showGhosts) ghosts else emptyList(), stepOf, newSteps * TICK, actions, gridHeight, harmony, chordMode,
-                hScroll, stepWidth, grid, selectMode, selection, select = { selection = it }, apply = apply,
-                rowHeight = if (tablet) TABLET_ROW else ROW, keysWidth = keysWidth, allNames = tablet, keyOn = keyOn, keyOff = keyOff,
-                locked = frozen, barSteps = barSteps,
-            )
+            Box(gridModifier) {
+                Grid(
+                    clip, if (showGhosts) ghosts else emptyList(), stepOf, newSteps * TICK, actions, gridHeight, harmony, chordMode,
+                    hScroll, stepWidth, grid, selectMode, selection, select = { selection = it }, apply = apply,
+                    rowHeight = if (tablet) TABLET_ROW else ROW, keysWidth = keysWidth, allNames = tablet, keyOn = keyOn, keyOff = keyOff,
+                    locked = frozen, barSteps = barSteps, hints = hints,
+                )
+            }
             VelocityLane(clip, selection, hScroll, stepWidth, apply, keysWidth)
             Text(
                 if (selectMode) tr("Touche des notes ou trace un cadre pour les choisir ; glisse une note choisie pour tout déplacer. Couloir du bas : la force de chaque note.")
@@ -503,6 +509,7 @@ private fun Grid(
     keyOff: ((Int) -> Unit)?,
     locked: Boolean = false,
     barSteps: Int = 16,
+    hints: List<Note> = emptyList(),
 ) {
     val vScroll = rememberScrollState()
     val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
@@ -515,8 +522,11 @@ private fun Grid(
     val low = minOf(LOW, clip.notes.minOfOrNull { it.pitch } ?: LOW)
     val high = maxOf(HIGH, clip.notes.maxOfOrNull { it.pitch } ?: HIGH)
     val rows = high - low + 1
-    // Start around C4-C5.
-    LaunchedEffect(Unit) { vScroll.scrollTo(((high - 76) * rowPx).roundToInt()) }
+    // Start around C4-C5; the tutorial's dotted notes in view when it shows some (a bass is low).
+    // (around the line's middle: a few high notes of a bass must not take the low ones out of sight)
+    val hintTop = hints.map { it.pitch }.sorted().takeIf { it.isNotEmpty() }?.let { p -> (p[p.size / 2] + 7).coerceIn(low, high) }
+    LaunchedEffect(hintTop) { vScroll.scrollTo(((high - (hintTop ?: 76)) * rowPx).roundToInt()) }
+    val tutoHint = Neon.Amber
     var drag by remember { mutableStateOf<Pair<Note, Note>?>(null) }
     var box by remember { mutableStateOf<Pair<Offset, Offset>?>(null) }
     var groupMove by remember { mutableStateOf<Pair<Int, Int>?>(null) }  // (ticks, semitones) while dragging a selection
@@ -542,7 +552,7 @@ private fun Grid(
                         contentDescription = tr("Grille des notes : %d notes", clip.notes.size)
                         if (!locked) customActions = rollAccessibleActions(clip.notes, english, actions)
                     }
-                    .pointerInput(clip, newLength, harmony, chordMode, selectMode, selection, grid, stepPx, locked) {
+                    .pointerInput(clip, newLength, harmony, chordMode, selectMode, selection, grid, stepPx, locked, hints) {
                         fun pitchAt(y: Float) = (high - (y / rowPx).toInt()).coerceIn(low, high)
                         fun tickAt(x: Float) = (x / stepPx * TICK).toInt().coerceIn(0, clip.ticks - 1)
                         awaitEachGesture {
@@ -620,9 +630,13 @@ private fun Grid(
                                     // Something chosen: a touch on nothing lets it go (FL Studio Mobile's way).
                                     select(emptySet())
                                 } else if ((up.position - down.position).getDistance() < slop) {
-                                    val start = tickAt(down.position.x) / grid * grid
+                                    val tick = tickAt(down.position.x)
+                                    val dotted = hints.firstOrNull { it.pitch == pitchAt(down.position.y) && tick in it.start until it.end }
+                                    val start = tick / grid * grid
                                     val pitch = harmony.snap(pitchAt(down.position.y))
-                                    if (chordMode) actions.addChord(start, newLength, pitch) else actions.add(Note(start, newLength, pitch))
+                                    // A dotted note of the tutorial touched: written as it is (its length, its place).
+                                    if (dotted != null) actions.add(dotted)
+                                    else if (chordMode) actions.addChord(start, newLength, pitch) else actions.add(Note(start, newLength, pitch))
                                 }
                                 return@awaitEachGesture
                             }
@@ -701,6 +715,13 @@ private fun Grid(
                 ghosts.filter { it.pitch in low..high }.forEach { g ->
                     val (o, sz) = noteRect(g)
                     drawRoundRect(colors.ghost, o, sz, CornerRadius(4f))
+                }
+                // The tutorial's notes still to write: a soft fill and a dashed outline that stand out on the grid.
+                val dash = androidx.compose.ui.graphics.PathEffect.dashPathEffect(floatArrayOf(5.dp.toPx(), 3.dp.toPx()))
+                hints.filter { it.pitch in low..high && clip.notes.none { n -> n.pitch == it.pitch && n.start == it.start } }.forEach { h ->
+                    val (o, sz) = noteRect(h)
+                    drawRoundRect(tutoHint.copy(alpha = 0.22f), o, sz, CornerRadius(4f))
+                    drawRoundRect(tutoHint, o, sz, CornerRadius(4f), style = Stroke(2.dp.toPx(), pathEffect = dash))
                 }
                 val dragging = drag
                 val group = groupMove

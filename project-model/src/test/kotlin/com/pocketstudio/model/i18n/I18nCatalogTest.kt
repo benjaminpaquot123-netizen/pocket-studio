@@ -25,11 +25,11 @@ class I18nCatalogTest {
     /** Every language but French (the keys). */
     private val translated = Lang.entries - Lang.FR
 
-    /** The French keys used by the code, with where they are. */
-    private fun keys(): Map<String, String> {
+    /** The French keys used by the code (in the files [which] keeps), with where they are. */
+    private fun keys(which: (File) -> Boolean = { true }): Map<String, String> {
         val found = linkedMapOf<String, String>()
         roots.forEach { root ->
-            root.walkTopDown().filter { it.extension == "kt" }.forEach { f ->
+            root.walkTopDown().filter { it.extension == "kt" && which(it) }.forEach { f ->
                 f.readLines().forEachIndexed { i, line ->
                     (call.findAll(line).map { it.groupValues[1] } + countCall.findAll(line).flatMap { it.groupValues.drop(1) }).forEach { raw ->
                         // An unescaped $ in the source is a Kotlin template (%1\$s is a placeholder, not one).
@@ -70,11 +70,15 @@ class I18nCatalogTest {
         keys.forEach { (key, where) ->
             if (where.endsWith(" TEMPLATE")) problems += "$where: template inside tr(\"$key\"): use %s"
         }
+        // TEMPORARY (debug of the tutorial, owner 2026-10-28): the tutorial's and the « Mode retours »' new
+        // texts are French only for now; a missing translation of theirs falls back to French.
+        val waiting = keys { pending(it) }.keys - keys { !pending(it) }.keys
         translated.forEach { lang ->
             val table = I18n.table(lang)
             keys.forEach { (key, where) ->
                 val t = table[key]
                 when {
+                    t.isNullOrBlank() && key in waiting -> Unit
                     t.isNullOrBlank() -> problems += "$where: no ${lang.code} for \"$key\""
                     placeholders(t) != placeholders(key) -> problems += "$where: ${lang.code} placeholders differ for \"$key\" -> \"$t\""
                 }
@@ -197,7 +201,17 @@ class I18nCatalogTest {
         }
     }
 
+    /** A file of the areas whose translations wait ([PENDING_TRANSLATION_AREAS]): its folder is named after the area. */
+    private fun pending(f: File): Boolean = f.parentFile?.name in PENDING_TRANSLATION_AREAS
+
     companion object {
+        /**
+         * TEMPORARY (owner, 2026-10-28, tutorial debug): the areas whose new texts are in French only
+         * for now (the app shows French where a translation is missing). Translate them, then empty
+         * this set, before any public release (docs/DECISIONS.md).
+         */
+        val PENDING_TRANSLATION_AREAS = setOf("tuto", "retours")
+
         /** Kept although no code writes them: names an older version may have saved in English or Dutch. */
         private val KEPT_UNUSED = setOf("Charleston", "Cloche (Plaits)")
 
@@ -218,6 +232,9 @@ class I18nCatalogTest {
             "GuideParcours.kt: fr",
             // « Tuto de A à Z »: the course's texts (tutos/*.json, checked by TutoCourseTest) and the styles' names (ModelTextsTest).
             "TutoPanel.kt: fr",
+            // The key sheet's scales (Scale, checked by ModelTextsTest).
+            "TutoPanel.kt: sc.label",
+            "TutoPanel.kt: harmony.scale.label",
             // A word's alias in the « ? » helps (SoundGlossary.forHelp): compared with the shown term, never shown itself.
             "SoundGlossary.kt: it",
             // G4: « Voilà ce que j'ai mis »: an effect's name and a send's bus (EffectType, Buses: checked by ModelTextsTest).

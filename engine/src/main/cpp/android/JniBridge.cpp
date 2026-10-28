@@ -266,6 +266,20 @@ JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsLoad(JNIE
     }
 }
 
+// A short sound (interleaved stereo at 48 kHz) played by the preview player, apart from the project:
+// the tutorial's and the Guide's examples go out where the pads do. Stem 0 holds it, the others are silent.
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsFromPcm(JNIEnv* env, jobject, jfloatArray data) {
+    const jsize n = data ? env->GetArrayLength(data) : 0;
+    if (n < 2) return 0;
+    try {
+        std::vector<std::vector<float>> stems(ps::StemBundle::kStems, std::vector<float>(static_cast<size_t>(n & ~1), 0.0f));
+        env->GetFloatArrayRegion(data, 0, n & ~1, stems[0].data());
+        return reinterpret_cast<jlong>(ps::StemBundle::fromFloat(stems));
+    } catch (...) {
+        return 0;
+    }
+}
+
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_stemsRelease(JNIEnv*, jobject, jlong handle) {
     auto* b = reinterpret_cast<ps::StemBundle*>(handle);
     if (b && b->release()) delete b;

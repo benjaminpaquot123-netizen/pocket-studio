@@ -249,7 +249,7 @@ private fun RetoursBubble(record: () -> Unit, stop: () -> Unit, note: () -> Unit
             BubbleButton("✎", tr("Noter"), tr("Écrire une note"), "retours_note", Neon.Cyan, note)
             Box {
                 BubbleButton("⋯", "", tr("Mode retours"), "retours_more", Neon.TextSecondary) { menu = true }
-                DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                com.pocketstudio.ui.ScaledDropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     DropdownMenuItem(text = { Text(tr("Envoyer mes retours")) }, onClick = { menu = false; Retours.exportOpen.value = true },
                         modifier = Modifier.testTag("retours_menu_send"))
                     DropdownMenuItem(text = { Text(tr("Masquer la bulle")) }, onClick = { menu = false; hide() },

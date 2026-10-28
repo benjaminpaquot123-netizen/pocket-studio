@@ -643,10 +643,13 @@ fun AppRoot() {
     val startTuto: (String, com.pocketstudio.model.tuto.TutoLevel) -> Unit = { style, level ->
         rhythmVm.stop()
         SettingsStore.update(context) { it.copy(simpleMode = level == com.pocketstudio.model.tuto.TutoLevel.Facile) }
-        projectsVm.create(Project(name = "")) { id ->
+        // Owner (2026-10-28): truly empty, the style's drum sounds already on the pads, opened on the first steps' screen.
+        val blank = com.pocketstudio.model.tuto.TutoTarget.of(style)?.blank() ?: Project(name = "")
+        projectsVm.create(blank) { id ->
             com.pocketstudio.app.tuto.PrefsTutoStore(context).save(id, com.pocketstudio.model.tuto.TutoProgress(style, level))
             showProjects = false
             projectsNewOnly = false
+            tab = AppTab.Rythme
             openProject(id)
         }
     }
@@ -1305,10 +1308,12 @@ fun AppRoot() {
         }
     }
     // The instrument tracks for the Sons space's chips ([bar]) or for the synth screen's own use.
+    // « Tuto de A à Z »: the first track hidden while it is still blank (set below, once the tutorial is known).
+    var tutoHidesFirst by remember { mutableStateOf(false) }
     fun tracksUiOf(fp: Project, selected: Int, freezing: Int?, bar: Boolean): TracksUi {
         val frozen = com.pocketstudio.model.Freeze.frozenIds(fp)
         return TracksUi(
-            tracks = fp.instrumentTracks,
+            tracks = fp.instrumentTracks.filter { !(tutoHidesFirst && it.id == 0) },
             selected = selected,
             select = { id -> rhythmVm.selectTrack(id); go(AppTab.Synthe) },
             add = rhythmVm::addTrack,
@@ -1355,7 +1360,7 @@ fun AppRoot() {
     val guideListen = remember(rhythmVm) {
         com.pocketstudio.app.guide.GuideListen(
             guideScope, project = { rhythmVm.project.value }, render = rhythmVm::renderGuideAB,
-            player = com.pocketstudio.app.guide.PcmListenPlayer(),
+            player = com.pocketstudio.app.guide.EnginePcmPlayer(guideScope),
             pauseMusic = { if (rhythmVm.transport.value.playing) rhythmVm.togglePlay() },
             check = rhythmVm::renderGuideCheck,
         )
@@ -1392,11 +1397,24 @@ fun AppRoot() {
             render = { ex ->
                 rhythmVm.renderExample(ex.after)?.let { after -> com.pocketstudio.app.tuto.TutoController.joined(ex.before?.let { rhythmVm.renderExample(it) }, after) }
             },
-            player = com.pocketstudio.app.guide.PcmListenPlayer(),
+            player = com.pocketstudio.app.tuto.TutoTestHooks.player ?: com.pocketstudio.app.guide.EnginePcmPlayer(rhythmVm.viewModelScope),
             pauseMusic = { if (rhythmVm.transport.value.playing) rhythmVm.togglePlay() },
+            demoShow = rhythmVm::tutoDemo, demoSound = rhythmVm::tutoDemoSound,
         )
     }
-    DisposableEffect(tuto) { onDispose { tuto.stopListening() } }
+    DisposableEffect(tuto) { onDispose { tuto.stopListening(); tuto.stopDemo(); rhythmVm.tutoDemo(null) } }
+    // « Recommencer le tuto » (owner, 2A): a new empty project, the same style and level; this one is kept.
+    val restartTuto: () -> Unit = { tuto.saved?.let { startTuto(it.style, it.level) } }
+    // The key step's own sheet, and the control « Je le fais » rings a moment.
+    var tutoKeySheet by rememberSaveable { mutableStateOf(false) }
+    var tutoSpot by remember { mutableStateOf<List<String>?>(null) }
+    LaunchedEffect(tutoSpot) { if (tutoSpot != null) { kotlinx.coroutines.delay(TUTO_SPOT_MS); tutoSpot = null } }
+    if (tutoKeySheet) {
+        val keyProject by rhythmVm.project.collectAsStateWithLifecycle()
+        val wanted = tuto.ui.value?.progress?.style?.let { com.pocketstudio.model.tuto.TutoTarget.of(it)?.harmony }
+        if (wanted == null) tutoKeySheet = false
+        else com.pocketstudio.app.tuto.TutoKeySheet(keyProject.harmony, wanted, rhythmVm::setHarmony, close = { tutoKeySheet = false })
+    }
     val tutoUi by tuto.ui.collectAsStateWithLifecycle()
     // « Mode retours »: the screen shown and the tutorial's step, in its event log (French, for whoever reads it).
     LaunchedEffect(tab, toolPage) { com.pocketstudio.app.retours.Retours.screen(tab.name + (toolPage?.takeIf { tab == AppTab.Outils }?.let { " › ${it.name}" } ?: "")) }
@@ -1408,9 +1426,18 @@ fun AppRoot() {
         tutoDoneSeen = done
     }
     var tutoChapters by rememberSaveable { mutableStateOf(false) }
-    // The dotted cells of a drum step, on the Rythme tab.
-    val tutoSteps = rhythmVm.project.collectAsStateWithLifecycle().value.drums.steps
-    LaunchedEffect(tutoUi?.current?.id, tutoSteps) { com.pocketstudio.app.tuto.TutoHints.cells = tuto.hint(tutoSteps) }
+    // The dotted cells of a drum step (Rythme), the dotted notes of a melodic one (its notes), shown the whole step.
+    val tutoProject = rhythmVm.project.collectAsStateWithLifecycle().value
+    val tutoSteps = tutoProject.drums.steps
+    LaunchedEffect(tutoUi?.current?.id, tutoSteps, tutoUi == null) { com.pocketstudio.app.tuto.TutoHints.cells = tuto.hint(tutoSteps) }
+    LaunchedEffect(tutoUi?.current?.id, tutoProject, tutoUi == null) { com.pocketstudio.app.tuto.TutoHints.notes = tuto.ghostNotes(tutoProject) }
+    LaunchedEffect(tutoUi?.demoCells, tutoUi?.fade) {
+        com.pocketstudio.app.tuto.TutoHints.fading = tutoUi?.demoCells?.let { (lane, cells) -> Triple(lane, cells, tutoUi?.fade ?: 0f) }
+    }
+    // A drum step shows its pad on the grid (its dotted cells in sight), without leaving the screen shown.
+    LaunchedEffect(tutoUi?.current?.id) { tutoUi?.pad?.let(rhythmVm::selectPad) }
+    // The tutorial hides the first track while it is still blank: the project starts truly empty.
+    LaunchedEffect(tutoUi == null, tutoProject) { tutoHidesFirst = tutoUi != null && com.pocketstudio.model.tuto.TutoChecks.blankFirst(tutoProject) }
     if (tutoChapters) tutoUi?.let { u ->
         ScaledDialog(onDismissRequest = { tutoChapters = false }, properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)) {
             androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
@@ -1421,6 +1448,7 @@ fun AppRoot() {
                         tuto.setLevel(level)
                     },
                     quit = { tuto.quit(); tutoChapters = false }, close = { tutoChapters = false },
+                    restart = { tutoChapters = false; restartTuto() },
                 )
             }
         }
@@ -1511,7 +1539,22 @@ fun AppRoot() {
     LaunchedEffect(tuto) {
         tuto.goes.collect { g ->
             g.pad?.let(rhythmVm::selectPad)
-            guideGo(com.pocketstudio.app.guide.GuideNav.go(g.open, rhythmVm.project.value, SettingsStore.state.value.simpleMode))
+            when {
+                g.keySheet -> tutoKeySheet = true
+                g.notes != null -> {
+                    melodyShownFor = rhythmVm.projectId
+                    rhythmVm.selectTrack(g.notes)
+                    notesRequest++
+                    go(AppTab.Synthe)
+                }
+                g.open != null -> {
+                    guideGo(com.pocketstudio.app.guide.GuideNav.go(g.open, rhythmVm.project.value, SettingsStore.state.value.simpleMode))
+                    // No card to close (owner: « Le Guide t'attend… » + « Compris » each time): a ring that goes by itself.
+                    val lit = guideSpot
+                    guideSpot = null
+                    if (g.spot) tutoSpot = lit
+                }
+            }
         }
     }
     // A lit control goes dark by itself after a while, or as soon as the space changes.
@@ -1745,16 +1788,22 @@ fun AppRoot() {
                     com.pocketstudio.app.tuto.TutoPanel(
                         tutoNow, tuto.canShow(),
                         com.pocketstudio.app.tuto.TutoActions(
-                            listen = tuto::listen, doIt = tuto::doIt, showMe = { tuto.showMe() }, markDone = tuto::markDone,
+                            listen = tuto::listen, doIt = tuto::doIt, showMe = { tuto.showMe() }, stopDemo = tuto::stopDemo,
+                            need = tuto::fulfilNeed, markDone = tuto::markDone,
                             toggle = tuto::toggleOpen, next = tuto::next, previous = tuto::previous,
-                            chapters = { tutoChapters = true }, quit = tuto::quit,
+                            chapters = { tutoChapters = true }, quit = tuto::quit, restart = restartTuto,
                         ),
                         modifier = if (landscape) Modifier.navigationBarsPadding() else Modifier,
                         map = remember(tutoNow.progress.style) { com.pocketstudio.app.tuto.tutoMap(tutoNow.progress.style) },
                     )
                 } else if (tuto.resumable && !showLive && !showLivePads && !showTimeline) {
-                    TextButton(onClick = tuto::resume, modifier = Modifier.fillMaxWidth().heightIn(min = 40.dp).testTag("tuto_resume")) {
-                        Text(tr("Reprendre le tuto"), color = Neon.Cyan)
+                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        TextButton(onClick = tuto::resume, modifier = Modifier.weight(1f).heightIn(min = 40.dp).testTag("tuto_resume")) {
+                            Text(tr("Reprendre le tuto"), color = Neon.Cyan)
+                        }
+                        TextButton(onClick = restartTuto, modifier = Modifier.weight(1f).heightIn(min = 40.dp).testTag("tuto_restart_quit")) {
+                            Text(com.pocketstudio.app.tuto.restartTutoLabel(), color = Neon.TextSecondary)
+                        }
                     }
                 }
                 if (guideShown && !guideSide && tutoNow == null) {
@@ -2138,6 +2187,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     clipboard = noteClipboard,
                                     frozen = shownTrack in frozenTracks,
                                     songChords = { songChordsOpen = true },
+                                    hints = com.pocketstudio.app.tuto.TutoHints.notes?.takeIf { it.first == shownTrack }?.second.orEmpty(),
                                 ),
                                 instrument = InstrumentUi(
                                     library = library,
@@ -2375,7 +2425,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 top = top,
                                 tracks = if (simpleView) ({
                                     val alone by rhythmVm.alone.collectAsStateWithLifecycle()
-                                    SimpleTracksCard(simpleTracks(project), simpleTracksActions, alone)
+                                    SimpleTracksCard(simpleTracks(project, hideFirst = tutoHidesFirst), simpleTracksActions, alone)
                                 }) else null,
                                 live = LivePadsUi(
                                     pads = project.live,
@@ -2846,6 +2896,8 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
     // Phase 36: « ? qui étiquette l'écran » over the screen, and « Voir le réglage » pointing at a control.
     if (helpLabels && !showProjects) {
         com.pocketstudio.app.learn.HelpLabelsOverlay(spots, hide = { helpLabels = false }, reportBug = { reportBug("étiquettes « ? »") })
+    } else if (tutoSpot != null && !showProjects) {
+        com.pocketstudio.app.learn.SpotRingOverlay(spots, tutoSpot.orEmpty())
     } else if (guideSpot != null && !showProjects) {
         // « Voir le réglage »: the control lit, a word of what it is for, gone at a touch.
         com.pocketstudio.app.learn.SpotlightOverlay(spots, guideSpot.orEmpty()) { modifier, _ ->
@@ -3476,7 +3528,7 @@ internal fun AcidSoundSheet(vm: RhythmViewModel, close: () -> Unit) {
  * « Mes pistes » of the Mode simple: the drums, the acid when it plays, every instrument and
  * audio track, in everyday words, each with its mixer channel.
  */
-internal fun simpleTracks(p: Project): List<SimpleTrack> {
+internal fun simpleTracks(p: Project, hideFirst: Boolean = false): List<SimpleTrack> {
     val channels = p.mixer.channels
     fun track(key: String, ch: Int, name: String, color: Color, pads: List<SimplePad> = emptyList()): SimpleTrack {
         val c = channels.getOrNull(ch) ?: com.pocketstudio.model.Channel()
@@ -3490,7 +3542,7 @@ internal fun simpleTracks(p: Project): List<SimpleTrack> {
     return listOfNotNull(
         track(com.pocketstudio.model.SongPart.DRUMS, 0, tr("Batterie"), com.pocketstudio.app.live.DRUMS_COLOR, pads),
         if (acidPlays) track(com.pocketstudio.model.SongPart.ACID, 1, tr("Basse acide"), Color(0xFF81C784)) else null,
-    ) + p.instrumentTracks.map { t ->
+    ) + p.instrumentTracks.filter { !(hideFirst && it.id == 0) }.map { t ->
         track(com.pocketstudio.model.SongPart.inst(t.id), com.pocketstudio.model.InstrumentTrack.mixerChannel(t.id), com.pocketstudio.model.DefaultNames.shown(t.name), com.pocketstudio.ui.trackColor(t.color))
     } + p.audioTracks.map { t ->
         track(com.pocketstudio.model.SongPart.audio(t.id), com.pocketstudio.model.AudioTrack.mixerChannel(t.id), com.pocketstudio.model.DefaultNames.shown(t.name), com.pocketstudio.ui.trackColor(t.color))
@@ -3551,6 +3603,8 @@ private fun SimpleMixTab(vm: RhythmViewModel) {
 
 /** How long « Voir le réglage » keeps a control lit (it also goes at a touch on « Compris »). */
 private const val GUIDE_SPOT_MS = 8000L
+/** « Je le fais »'s ring stays this long, then goes by itself. */
+private const val TUTO_SPOT_MS = 2600L
 
 /**
  * [content] with the engine's position ([RhythmViewModel.live], new about 30 times a second) read

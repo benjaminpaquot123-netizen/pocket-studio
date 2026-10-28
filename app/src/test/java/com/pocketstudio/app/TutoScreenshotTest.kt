@@ -84,4 +84,37 @@ class TutoScreenshotTest {
 
     @Test
     fun chapters() = shoot("chapters") { TutoChapterList(ui(TutoLevel.Facile, "make_intro"), {}, {}, {}, {}) }
+
+    /** The step's need as its big button: « Passer à 2 mesures ». */
+    @Test
+    fun stepNeedsBars() = shoot("step_need_bars") { Panel(ui(TutoLevel.Facile, "snare_do").copy(need = com.pocketstudio.model.tuto.TutoNeed.Bars(2))) }
+
+    /** The bass: « Créer la piste Basse ». */
+    @Test
+    fun stepNeedsTrack() = shoot("step_need_track") { Panel(ui(TutoLevel.Facile, "bass_do").copy(need = com.pocketstudio.model.tuto.TutoNeed.Track("bass"))) }
+
+    /** « Montre-moi » done: its caption, the step left to do. */
+    @Test
+    fun demoCaption() = shoot("demo_caption") { Panel(ui(TutoLevel.Facile, "kick_do").copy(demo = com.pocketstudio.app.tuto.TutoDemoPhase.HOLDING)) }
+
+    /** An example heard to its end: « Étape suivante ». */
+    @Test
+    fun listenedNext() = shoot("listened_next") {
+        val u = ui(TutoLevel.Facile, "kick_hear")
+        Panel(u.copy(progress = u.progress.copy(done = u.progress.done + "kick_hear")))
+    }
+
+    /** The key step's sheet: « Phrygienne » and « Fa » dotted. */
+    @Test
+    fun keySheet() = shoot("key_sheet") {
+        com.pocketstudio.app.tuto.TutoKeySheetContent(com.pocketstudio.model.Harmony(), com.pocketstudio.model.tuto.TutoTarget.of("jump_up")!!.harmony, {}, {})
+    }
+
+    /** At 130 % and right to left (Arabic): the bar still reads and nothing is cut. */
+    @Test
+    fun barAt130Rtl() = shoot("step_130_rtl") {
+        androidx.compose.runtime.CompositionLocalProvider(androidx.compose.ui.platform.LocalLayoutDirection provides androidx.compose.ui.unit.LayoutDirection.Rtl) {
+            com.pocketstudio.app.ui.UiScaled(1.3f) { Panel(ui(TutoLevel.Facile, "clap_do")) }
+        }
+    }
 }

@@ -6,6 +6,8 @@ import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.i18n.Lang
+import com.pocketstudio.model.track
+import com.pocketstudio.model.withTrack
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -42,7 +44,7 @@ class TutoCourseTest {
     /** From an empty project, « Montre-moi » on each step in turn ticks it: the whole jump up track is made. */
     @Test
     fun showMeTicksEveryStepFromAnEmptyProject() {
-        val empty = Project(name = "").sanitized()
+        val empty = target.blank()
         val steps = course.chaptersFor(TutoLevel.Pro).flatMap { it.steps }
         steps.forEach { assertFalse("${it.id} is done in an empty project", TutoChecks.done(it, empty, target, TutoChecks.signature(it.check.substringAfter(':'), empty))) }
         var p = empty
@@ -112,11 +114,95 @@ class TutoCourseTest {
 
     @Test
     fun everyTextHasItsTranslations() {
+        // TEMPORARY (owner, 2026-10-28, tutorial debug): the course's texts are French only for now.
+        if ("tuto" in com.pocketstudio.model.i18n.I18nCatalogTest.PENDING_TRANSLATION_AREAS) return
         val texts = course.chapters.flatMap { c -> listOf(c.title, c.why) + c.steps.flatMap { listOfNotNull(it.text, it.textPro, it.why) } }.filter { it.isNotEmpty() }
         val problems = (Lang.entries - Lang.FR).flatMap { lang ->
             val table = I18n.table(lang)
             texts.filter { table[it].isNullOrBlank() }.map { "${lang.code}: $it" }
         }
         assertTrue("${problems.size} missing:\n" + problems.take(40).joinToString("\n"), problems.isEmpty())
+    }
+
+    /** Owner (2026-10-28): the tutorial's project starts truly empty, with the style's drum sounds on its pads. */
+    @Test
+    fun theTutorialProjectIsEmptyWithTheStylesDrums() {
+        val p = target.blank()
+        assertTrue(p.drums.lanes.all { it.hits.isEmpty() })
+        assertTrue(p.tracks.isEmpty())
+        assertTrue(TutoChecks.blankFirst(p))
+        assertTrue(p.song.isEmpty() && p.allScenes.all { it.isEmpty })
+        assertEquals(target.song.kitVersion, p.kitVersion)
+        assertEquals(target.song.padVoices, p.padVoices)
+        assertEquals(120.0, p.tempoBpm, 0.0)
+        assertEquals(com.pocketstudio.model.Scale.Off, p.harmony.scale)
+        // Nothing in it is done but nothing.
+        course.chapters.flatMap { it.steps }.forEach { assertFalse(it.id, TutoChecks.done(it, p, target)) }
+    }
+
+    /** The snare's line lasts 2 bars: « Passer à 2 mesures » first; the bass: « Créer la piste Basse », with its notes dotted. */
+    @Test
+    fun eachStepSaysWhatItNeedsAndTheButtonMakesOnlyThat() {
+        val steps = course.chapters.flatMap { it.steps }.associateBy { it.id }
+        var p = target.blank()
+        assertNull(TutoChecks.need(steps.getValue("kick_do"), p, target))
+        val snare = steps.getValue("snare_do")
+        assertEquals(TutoNeed.Bars(2), TutoChecks.need(snare, p, target))
+        p = TutoChecks.fulfil(TutoNeed.Bars(2), snare, p, target)!!.first
+        assertEquals(32, p.drums.steps)
+        assertNull(TutoChecks.need(snare, p, target))
+        assertTrue("no hit made", p.drums.lanes.all { it.hits.isEmpty() })
+        val bass = steps.getValue("bass_do")
+        assertEquals(TutoNeed.Track("bass"), TutoChecks.need(bass, p, target))
+        assertNull(TutoChecks.ghostNotes(bass, p, target))
+        val (q, id) = TutoChecks.fulfil(TutoNeed.Track("bass"), bass, p, target)!!
+        // The blank first track became the Basse: the jump up bass sound, no note.
+        assertEquals(0, id)
+        assertEquals("Basse", q.track(0).name)
+        // The style's bass sound (as « + Piste » › Basse gives it in jump up), not the blank synth.
+        assertTrue(q.track(0).synth != Project().synth)
+        assertTrue(q.track(0).notes.notes.isEmpty())
+        assertFalse(TutoChecks.done(bass, q, target))
+        val ghosts = TutoChecks.ghostNotes(bass, q, target)!!
+        assertEquals(0, ghosts.first)
+        assertTrue(ghosts.second.size >= 4)
+        // The user taps the dotted notes: done.
+        val written = q.withTrack(q.track(0).copy(notes = q.track(0).notes.copy(notes = ghosts.second)))
+        assertTrue(TutoChecks.done(bass, written, target))
+        // The pad's track is a new one (the first is the bass now).
+        val pad = steps.getValue("pad_do")
+        val (r, padId) = TutoChecks.fulfil(TutoChecks.need(pad, written, target)!!, pad, written, target)!!
+        assertTrue(padId!! > 0)
+        assertEquals("Accords", r.track(padId).name)
+    }
+
+    /** « Montre-moi » goes a cell or a note at a time and ends on the target; the key detector sees a key already right. */
+    @Test
+    fun showMeGoesStepByStepAndTheKeyIsSeenWhenAlreadyRight() {
+        val steps = course.chapters.flatMap { it.steps }.associateBy { it.id }
+        val p = target.blank()
+        val kick = TutoChecks.demo(steps.getValue("kick_do"), p, target)!!
+        assertTrue(kick.frames.size >= 3)
+        assertEquals(kick.frames.size, kick.sounds.size)
+        val hits = kick.frames.map { it.drums.lanes[0].hits.size }
+        assertEquals(hits.sorted(), hits)
+        assertTrue(TutoChecks.done(steps.getValue("kick_do"), kick.frames.last(), target))
+        assertTrue(kick.sounds.filterNotNull().all { it.lane == 0 })
+        val bass = TutoChecks.demo(steps.getValue("bass_do"), p, target)!!
+        val notes = bass.frames.map { f -> f.track(0).notes.notes.size }
+        assertEquals(0, notes.first())
+        assertEquals(notes.sorted(), notes)
+        assertTrue(TutoChecks.done(steps.getValue("bass_do"), bass.frames.last(), target))
+        // The key: right already, it is done (the step ticks as soon as it is shown).
+        val key = steps.getValue("key")
+        assertTrue(TutoChecks.done(key, p.copy(harmony = com.pocketstudio.model.Harmony(5, com.pocketstudio.model.Scale.Phrygian)), target))
+        assertEquals("tuto.key", key.spot)
+        // The texts name the words on the screens.
+        assertTrue(key.text, "« Phrygienne »" in key.text && "« Fa »" in key.text)
+        assertTrue("« Caisse »" in steps.getValue("snare_do").text)
+        // The reference example: the Montée, then the Drop.
+        val ref = TutoChecks.example(steps.getValue("ref"), target)!!
+        assertEquals("Montée", ref.before!!.allScenes[ref.before!!.scene].label)
+        assertEquals("Drop", ref.after.allScenes[ref.after.scene].label)
     }
 }

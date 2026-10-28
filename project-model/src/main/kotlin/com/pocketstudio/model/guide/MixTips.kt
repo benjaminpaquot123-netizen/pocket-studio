@@ -58,7 +58,8 @@ object MixTips {
                 tips += tip("bass:${t.key}", t, -BASS_OVER_DB, bass = true)
             }
         }
-        heard.firstOrNull { t -> db(p.mixer.channels[t.channel].volume) >= HOT_DB && overStart(p, t.channel) > 0.5f }?.let { t -> tips += tip("hot:${t.key}", t, -HOT_DB, bass = false) }
+        // Testers (lot « tuto 5 »): only a track that plays (« Rim couvre les autres » for a pad never touched).
+        heard.firstOrNull { t -> facts.song.plays(t.key) && db(p.mixer.channels[t.channel].volume) >= HOT_DB && overStart(p, t.channel) > 0.5f }?.let { t -> tips += tip("hot:${t.key}", t, -HOT_DB, bass = false) }
         return tips.distinctBy { it.ch.takeIf { ch -> ch >= 0 } ?: it.id }
     }
 

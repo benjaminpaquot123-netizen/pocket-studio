@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -781,7 +782,8 @@ private fun LaneTools(
             TOOL_ZONE -> tr("Zone : glisse sur les mesures à régler (ou touche la première puis la dernière) ; la hauteur où tu lâches donne le niveau. Avant et après, rien ne change.")
             else -> tr("Dessine au doigt ; deux touches rapides effacent un point. « Lisser » adoucit un trait tremblé, « Annuler » le défait.")
         },
-        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+        // Testers (lot « tuto 5 »): the same height for every tool (the curve moved by a line when « Ligne » was chosen).
+        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, minLines = 4,
     )
 }
 
@@ -973,7 +975,9 @@ private fun TargetPicker(
     ScaledAlertDialog(
         onDismissRequest = dismiss,
         properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
-        modifier = Modifier.widthIn(max = 640.dp).fillMaxWidth().padding(horizontal = 10.dp).testTag("automation_picker"),
+        // Testers (lot « tuto 5 »): one height whatever track is chosen (the window grew and shrank, recentred, and
+        // a touch on « Accords » landed on the row under it).
+        modifier = Modifier.widthIn(max = 640.dp).fillMaxWidth().fillMaxHeight(0.82f).padding(horizontal = 10.dp).testTag("automation_picker"),
         title = { Text(tr("Que veux-tu faire bouger ?")) },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState())) { TargetPickerContent(used, channels, master, strips, pick, addFilter, preferred) }

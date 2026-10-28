@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.export.Loudness
@@ -113,11 +114,16 @@ internal fun MasterLoudnessPanel(values: () -> FloatArray, target: LoudnessTarge
     TextButton(onClick = { details = !details }, modifier = Modifier.testTag("loudness_details")) {
         Text(if (details) tr("Masquer les détails") else tr("Détails"), style = MaterialTheme.typography.labelMedium)
     }
+    // Testers (lot « tuto 5 »): opened at the screen's bottom, the details were under the tutorial's panel: brought into view.
+    val detailsInView = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+    androidx.compose.runtime.LaunchedEffect(details) { if (details) { kotlinx.coroutines.delay(60); detailsInView.bringIntoView() } }
     if (details) {
         val detail by remember(values) { derivedStateOf { loudnessDetailsText(values()) } }
-        Text(detail, style = MonoStyle, color = Neon.TextSecondary, modifier = Modifier.testTag("loudness_chip_details"))
-        WithHelp(Glossary.LUFS) {
-            Text(line, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("loudness_readings"))
+        androidx.compose.foundation.layout.Column(Modifier.bringIntoViewRequester(detailsInView)) {
+            Text(detail, style = MonoStyle, color = Neon.TextSecondary, modifier = Modifier.testTag("loudness_chip_details"))
+            WithHelp(Glossary.LUFS) {
+                Text(line, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("loudness_readings"))
+            }
         }
     }
     Text(tr("Volume visé"), style = MaterialTheme.typography.bodyMedium)
@@ -142,7 +148,8 @@ internal fun MasterLoudnessPanel(values: () -> FloatArray, target: LoudnessTarge
         },
         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
     )
-    if (target != LoudnessTarget.OFF && drive != 0f) {
+    // No reading yet (the engine not playing, a test without one) reads −100: never « −100 dB », as if the song were silenced.
+    if (target != LoudnessTarget.OFF && drive != 0f && drive.isFinite() && kotlin.math.abs(drive) < 40f) {
         Text(
             tr("Gain ajouté pour la cible : %s dB", (if (drive > 0f) "+" else "") + LoudnessTargets.format(drive.toDouble())),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("loudness_drive"),

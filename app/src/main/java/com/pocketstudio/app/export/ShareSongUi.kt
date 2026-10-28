@@ -62,7 +62,10 @@ internal suspend fun shareWhileShown(lifecycle: androidx.lifecycle.Lifecycle, re
 fun ShareProgressDialog(export: ExportUi, cancel: () -> Unit, dismiss: () -> Unit, wav: Boolean = false) {
     val failed = !export.running && export.error != null
     ScaledAlertDialog(
-        onDismissRequest = { if (!export.running) dismiss() },
+        // Testers (lot « tuto 5 »): the back gesture stops it as « Annuler » does; a touch beside it (a second
+        // touch on « Partager ») does nothing.
+        onDismissRequest = { if (export.running) cancel() else dismiss() },
+        properties = androidx.compose.ui.window.DialogProperties(dismissOnClickOutside = !export.running),
         title = { Text(if (failed) tr("Partage impossible") else tr("Je prépare ton morceau…")) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("share_progress")) {
@@ -73,12 +76,29 @@ fun ShareProgressDialog(export: ExportUi, cancel: () -> Unit, dismiss: () -> Uni
                         export.stage ?: if (wav) tr("Fabrication du son en WAV, qualité studio.") else tr("Fabrication du son, puis compression en M4A."),
                         style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
                     )
-                    LinearProgressIndicator(
-                        progress = { export.progress },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
-                        color = Neon.Acid,
-                        trackColor = Neon.SurfaceHigh,
-                    )
+                    // Testers (lot « tuto 5 »): a bar at 0 is a still dot that looks stuck; until the render moves,
+                    // the bar runs (the sounds are being read), then it fills with its percentage beside it.
+                    val shown = export.progress.coerceIn(0f, 1f)
+                    if (shown <= 0f) {
+                        LinearProgressIndicator(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp).testTag("share_progress_waiting"),
+                            color = Neon.Acid, trackColor = Neon.SurfaceHigh,
+                        )
+                    } else {
+                        androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                            LinearProgressIndicator(
+                                progress = { shown },
+                                modifier = Modifier.weight(1f).padding(vertical = 6.dp).testTag("share_progress_bar"),
+                                color = Neon.Acid,
+                                trackColor = Neon.SurfaceHigh,
+                            )
+                            Text(
+                                "  " + com.pocketstudio.model.i18n.percent((shown * 100).toInt()),
+                                style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary,
+                                modifier = Modifier.testTag("share_progress_percent"),
+                            )
+                        }
+                    }
                     Text(tr("Ensuite, choisis l'appli pour l'envoyer."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
             }

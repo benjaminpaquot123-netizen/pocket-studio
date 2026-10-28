@@ -6320,7 +6320,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * take over when it goes (all on the main thread).
      */
     suspend fun pollMeters() {
-        if (!NativeEngine.isAvailable) return
+        // The meters are the native engine's only (a test's command sink has none: « Prêt à partager ? » opened
+        // with the bench's engine plugged in threw here and froze the screen, lot « tuto 5 »).
+        if (!NativeEngine.isNative) return
         val n = NativeEngine.MIXER_CHANNELS
         val me = Any()
         try {
@@ -8775,26 +8777,36 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun shareSong(format: ExportFormat = ExportFormat.M4a) {
         val p = project.value
+        // Testers (lot « tuto 5 »): « Partager » touched twice in a row makes one song, one share menu.
+        if (_export.value.running || exportJob != null || shareWaiting) return
         if (!NativeEngine.isAvailable) {
             _export.value = _export.value.copy(sharing = true, error = tr("Le moteur audio n'est pas prêt : réessaie dans un instant."))
             return
         }
         // A take just stopped may still be being written: the song waits for it.
+        shareWaiting = true
         viewModelScope.launch {
-            if (_takeSaving.value) {
-                _export.value = _export.value.copy(sharing = true, running = true, progress = 0f, stage = tr("Écriture de la prise…"), error = null, files = emptyList())
-                takeJob?.join()
-                _export.value = _export.value.copy(running = false, stage = null)
-                // « Annuler » touched while the take was written (lot 1: it always works).
-                if (exportCancelled) {
-                    exportCancelled = false
-                    _export.value = _export.value.copy(sharing = false)
-                    return@launch
-                }
-            }
-            val now = project.value
-            startExport(com.pocketstudio.app.export.ShareSong.settings(now.song.isNotEmpty(), sceneBars(now), exportEnd(now), format), share = true)
+            try { shareAfterTake(format) } finally { shareWaiting = false }
         }
+    }
+
+    /** « Partager mon morceau » waiting for a take being written (one at a time, see [shareSong]). */
+    private var shareWaiting = false
+
+    private suspend fun shareAfterTake(format: ExportFormat) {
+        if (_takeSaving.value) {
+            _export.value = _export.value.copy(sharing = true, running = true, progress = 0f, stage = tr("Écriture de la prise…"), error = null, files = emptyList())
+            takeJob?.join()
+            _export.value = _export.value.copy(running = false, stage = null)
+            // « Annuler » touched while the take was written (lot 1: it always works).
+            if (exportCancelled) {
+                exportCancelled = false
+                _export.value = _export.value.copy(sharing = false)
+                return
+            }
+        }
+        val now = project.value
+        startExport(com.pocketstudio.app.export.ShareSong.settings(now.song.isNotEmpty(), sceneBars(now), exportEnd(now), format), share = true)
     }
 
     /** Closes the « Partager mon morceau » window after an error. */
@@ -9313,7 +9325,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 ending = tr("Export terminé : %s", done.joinToString(", ") { it.name })
                 AppLog.add("Export ${settings.what} ${settings.format} : ${done.size} fichier(s), ${frames / OfflineExport.SAMPLE_RATE} s" +
                     if (share) " (partage)" else "")
-                if (share) _shareRequests.trySend(done.toList())
+                // « Annuler » touched at the very end: no share menu opens after the window closed.
+                if (share && !exportCancelled) _shareRequests.trySend(done.toList())
             } catch (e: kotlinx.coroutines.CancellationException) {
                 done.forEach { it.delete() }
                 _export.value = _export.value.copy(running = false, files = emptyList(), stage = null, sharing = false)
@@ -9330,6 +9343,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     })
                 ending = _export.value.error
             } finally {
+                // Whatever ended it (even an error that is not an Exception), the window never stays on a run that is over.
+                if (_export.value.running) _export.value = _export.value.copy(running = false, stage = null, sharing = _export.value.sharing && _export.value.error != null)
                 exportCancelled = false
                 exportJob = null
                 com.pocketstudio.app.export.ExportRun.end(ending)
@@ -9414,6 +9429,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         running?.cancel()
         // Lot 1: whatever step it is in (waiting for the sounds, between two steps), the export stops now.
         exportJob?.cancel()
+        // Testers (lot « tuto 5 »): « Annuler » closes « Je prépare ton morceau… » at once; the run ends behind it
+        // (its files deleted, no share menu). A run with no job left (it died) is let go too.
+        _export.value = if (exportJob == null && !_takeSaving.value) _export.value.copy(running = false, stage = null, sharing = false)
+        else _export.value.copy(sharing = false)
     }
 
     override fun onCleared() {

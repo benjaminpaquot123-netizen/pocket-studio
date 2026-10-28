@@ -123,6 +123,17 @@ object TutoHints {
      * moment over the grid (testers, lot « tuto 4 »: the page turned without a word, the hits seemed gone).
      */
     var banner by mutableStateOf<String?>(null)
+    /** The step shown (its id): a screen places its view once per step, never again by itself (lot « tuto 5 »). */
+    var step by mutableStateOf<String?>(null)
+    /**
+     * « Copier sur les mesures suivantes » when it is the next thing to do (the motif written by hand), offered
+     * where the user looks (the grid's line) as well as in the panel; null: not now.
+     */
+    var copy by mutableStateOf<(() -> Unit)?>(null)
+    /** « Je le fais » asked the drum grid for a page: (pad, bar from 0, when). */
+    var page by mutableStateOf<Triple<Int, Int, Long>?>(null)
+    /** [copy] is the drum grid's (the hats' strengths), not the piano roll's. */
+    var copyOnGrid by mutableStateOf(false)
 }
 
 /** How long a screen waits before turning by itself for the tutorial (the last touch seen first). */
@@ -146,6 +157,55 @@ fun TutoBanner(modifier: Modifier = Modifier) {
         )
     }
 }
+
+/**
+ * The tutorial's line over the drum grid (testers, lot « tuto 5 »), always there while the tutorial
+ * runs, one height: « Mesure 1/2 · Caisse », then « encore 2 cases » on this page, or « Mesure 2 ·
+ * 3 cases → » when they are on another page (a touch goes there: the page never turns by itself),
+ * what the screen just changed (« → Charley »), and « Copier » when it is the next thing to do.
+ * Nothing of it over the cells.
+ */
+@Composable
+fun TutoGridLine(bar: Int, bars: Int, pad: String, here: Int, elsewhere: Pair<Int, Int>?, go: (Int) -> Unit, copy: (() -> Unit)?) {
+    val said = TutoHints.banner
+    androidx.compose.runtime.LaunchedEffect(said) { if (said != null) { kotlinx.coroutines.delay(TUTO_BANNER_MS); if (TutoHints.banner == said) TutoHints.banner = null } }
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(10.dp)).background(Neon.Amber.copy(alpha = 0.10f)).padding(start = 10.dp, end = 4.dp)
+            .testTag("tuto_grid_line"),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(
+                (if (bars > 1) tr("Mesure %1\$d/%2\$d", bar + 1, bars) + " · " else "") + pad,
+                style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.testTag("tuto_grid_where"),
+            )
+            val status = when {
+                said != null -> said
+                here > 0 -> trCount(here, "Encore %d case en pointillé ici", "Encore %d cases en pointillé ici")
+                else -> null
+            }
+            if (status != null) Text(status, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Amber, maxLines = 1,
+                overflow = TextOverflow.Ellipsis, modifier = Modifier.testTag("tuto_grid_status"))
+        }
+        when {
+            copy != null -> Button(onClick = copy, modifier = Modifier.heightIn(min = 40.dp).testTag("tuto_grid_copy")) { Text(tr("Copier"), maxLines = 1) }
+            elsewhere != null && here == 0 -> TextButton(onClick = { go(elsewhere.first) }, modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_bar_go")) {
+                Text(
+                    trCount(elsewhere.second, "Mesure %2\$d · %1\$d case", "Mesure %2\$d · %1\$d cases", elsewhere.second, elsewhere.first + 1) + (if (elsewhere.first > bar) " →" else ""),
+                    color = Neon.Amber, fontWeight = FontWeight.Bold, maxLines = 1,
+                )
+            }
+        }
+    }
+}
+
+/** Over the piano roll: the track and the bar in sight (« Basse · mesure 2/8 »). */
+fun tutoRollWhere(track: String?, bar: Int, bars: Int): String =
+    listOfNotNull(track?.takeIf { it.isNotBlank() }, tr("mesure %1\$d/%2\$d", bar, bars)).joinToString(" · ")
+
+/** Over the piano roll, the notes to write by hand all written: « Copier » beside it does the rest. */
+fun tutoMotifDone(): String = tr("Motif posé ! La suite se copie :")
 
 /** « Encore 3 notes en pointillé » over the piano roll ([ahead]: some of them out of sight, that way). */
 fun tutoNotesLeft(left: Int, ahead: Boolean?): String = when {
@@ -388,6 +448,17 @@ private fun FoldedLine(ui: TutoUi, done: Boolean, actions: TutoActions) {
                 Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.padding(start = 4.dp).size(18.dp))
             }
         }
+        // Testers (lot « tuto 5 »): the step's next button (« Copier sur les mesures suivantes »…) on the folded line
+        // itself, one touch; it was hidden until the panel was unfolded.
+        ui.need != null -> Row(
+            line.background(Neon.Amber.copy(alpha = 0.14f)).border(1.dp, Neon.Amber, shape).clickable(onClick = actions.need).padding(horizontal = 10.dp)
+                .testTag("tuto_need_folded"),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(needLabel(ui.need), color = Neon.Amber, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 1,
+                overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Amber, modifier = Modifier.size(18.dp))
+        }
         else -> Row(
             line.clickable(onClick = actions.toggle).testTag("tuto_folded_text"),
             verticalAlignment = Alignment.CenterVertically,
@@ -506,6 +577,11 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Précédent"), modifier = Modifier.size(20.dp))
             }
             secondaries.forEach { it() }
+            // Testers (lot « tuto 5 »): « Suivant → » stays where it was (a quick touch there replayed the example).
+            TextButton(onClick = actions.next, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_next")) {
+                Text(tr("Suivant") + " ", maxLines = 1)
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(18.dp))
+            }
             return@Row
         }
         TextButton(onClick = actions.previous, enabled = back, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_prev")) {

@@ -66,10 +66,15 @@ class OfflineExport : AutoCloseable {
         return FloatArray(stereo.size / 2) { 0.5f * (stereo[2 * it] + stereo[2 * it + 1]) }
     }
 
-    val progress: Float get() = if (closed || sink != null) 1f else NativeEngine.exportProgress(handle)
+    val progress: Float get() = when {
+        closed -> 1f
+        sink != null -> sink.exportProgress(handle)
+        else -> NativeEngine.exportProgress(handle)
+    }
 
     fun cancel() {
-        if (!closed && sink == null) NativeEngine.exportCancel(handle)
+        if (closed) return
+        if (sink != null) sink.exportCancel(handle) else NativeEngine.exportCancel(handle)
     }
 
     /** Only once [render] has returned. */

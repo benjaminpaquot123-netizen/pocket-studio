@@ -143,16 +143,23 @@ class TutoScreenTest {
         assertEquals(null, mapFocus("parts:bass"))
     }
 
-    /** The bass line goes on past the screen: the roll goes there by itself, and says how many are left. */
+    /**
+     * The bass line goes on past the screen: the line over the roll says so (« plus loin → »), the roll
+     * does not move by itself (lot « tuto 5 »: it moved under the finger); a touch on the line takes it there.
+     */
     @Test
-    fun thePianoRollGoesToTheDottedNotesOutOfSight() {
+    fun thePianoRollGoesToTheDottedNotesOutOfSightWhenAsked() {
         val t = NoteClip.TICKS_PER_STEP
         val far = listOf(Note(52 * t, 2 * t, 41), Note(56 * t, 2 * t, 41))
-        compose.setContent { PocketStudioTheme { PianoRoll(NoteClip(steps = 64), emptyList(), -1, PianoRollActions(), hints = far) } }
-        // Out of sight it would say « plus loin → »; the roll went there: they are in sight.
-        await("the roll went to them") {
-            compose.onNodeWithTag("tuto_notes_left").fetchSemanticsNode().config[SemanticsProperties.Text].joinToString() == "Encore 2 notes en pointillé à toucher"
-        }
+        compose.setContent { PocketStudioTheme { PianoRoll(NoteClip(steps = 64), emptyList(), -1, PianoRollActions(), hints = far, trackName = "Basse") } }
+        fun said() = compose.onNodeWithTag("tuto_notes_left_text", useUnmergedTree = true).fetchSemanticsNode().config[SemanticsProperties.Text].joinToString()
+        fun where() = compose.onNodeWithTag("tuto_roll_where", useUnmergedTree = true).fetchSemanticsNode().config[SemanticsProperties.Text].joinToString()
+        repeat(10) { idle(100); compose.waitForIdle() }
+        assertEquals("Encore 2 notes en pointillé, plus loin →", said())
+        assertEquals("Basse · mesure 1/4", where())
+        compose.onNodeWithTag("tuto_notes_left").performClick()
+        await("the roll went to them") { said() == "Encore 2 notes en pointillé à toucher" }
+        assertTrue(where(), where().startsWith("Basse · mesure 4/4"))
     }
 
     /** Karim's snare on 2 bars: the second bar, out of sight, is shown once the first bar's dotted cells are touched. */
@@ -171,6 +178,11 @@ class TutoScreenTest {
         assertTrue(has("drum_pages"))
         cells.filter { it < 16 }.forEach { h.vm.toggleStep(it) }
         assertEquals(lane, h.vm.transport.value.selectedPad)
+        // Lot « tuto 5 »: the page does not turn by itself; the line over the grid says where, a touch goes there.
+        repeat(20) { idle(100); compose.waitForIdle() }
+        assertTrue("still the first bar", has("step_0") && !has("step_${cells.first { it >= 16 }}"))
+        assertTrue(has("tuto_bar_go"))
+        compose.onNodeWithTag("tuto_bar_go").performClick()
         await("the second bar shown") { has("step_${cells.first { it >= 16 }}") }
     }
 }

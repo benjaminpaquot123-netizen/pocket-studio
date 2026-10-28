@@ -163,6 +163,10 @@ class NotesUi(
     val playStepOf: (() -> Int)? = null,
     /** « Tuto de A à Z »: the notes its step asks for on this track, dotted until written. */
     val hints: List<Note> = emptyList(),
+    /** The track's name (said on the tutorial's line over the grid). */
+    val trackName: String? = null,
+    /** « Copier sur les mesures suivantes » offered over the grid (the motif written), null: not now. */
+    val copyMotif: (() -> Unit)? = null,
 )
 
 @Composable
@@ -263,6 +267,11 @@ fun SynthScreen(
             ) {
                 tracks?.takeIf { it.showBar }?.let { TrackBar(it) }
                 ModeSwitch(showNotes, tracks) { showNotes = it }
+                // Testers (lot « tuto 5 »): the track's sound was four screens under the notes, nothing said it was there.
+                androidx.compose.material3.TextButton(
+                    onClick = { scope.launch { soundRequester.bringIntoView() } },
+                    modifier = Modifier.heightIn(min = 40.dp).testTag("synth_to_sound"),
+                ) { Text(tr("Régler le son de la piste") + " ↓") }
                 record?.invoke(false)
                 // Sent to the notes by the tutorial (« Créer la piste Basse »): the grid itself in view.
                 // Only for the tutorial's dotted notes: « Ouvrir dans Notes » keeps « Enregistrer » in sight.
@@ -285,6 +294,8 @@ fun SynthScreen(
                         playStepOf = notes.playStepOf,
                         hints = notes.hints,
                         gridModifier = Modifier.bringIntoViewRequester(rollRequester),
+                        trackName = notes.trackName,
+                        copyMotif = notes.copyMotif,
                     )
                 }
                 if (tabletUpright) {

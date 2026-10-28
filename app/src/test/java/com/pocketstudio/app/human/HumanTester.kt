@@ -139,6 +139,15 @@ abstract class HumanTester(private val seat: String) {
         runCatching { scenario?.onActivity { v = ViewModelProvider(it)[RhythmViewModel::class.java] } }
         // An example of 8 s to hear (Robolectric has no engine to render it).
         v?.let { if (it.guideRenderForTest == null) it.guideRenderForTest = { _, _ -> FloatArray(OfflineExport.SAMPLE_RATE * 8) { k -> 0.3f * kotlin.math.sin(k * 0.05f) } to FloatArray(2) } }
+        // The built-in sounds as the phone's engine renders them (Robolectric has none: « Ce son n'a pas pu être lu »).
+        runCatching {
+            scenario?.onActivity { a ->
+                val lib = ViewModelProvider(a)[com.pocketstudio.app.library.SoundLibraryViewModel::class.java]
+                if (lib.kitCache.isEmpty()) for (voice in 0 until 64) {
+                    lib.kitCache[voice] = com.pocketstudio.app.audio.Pcm(FloatArray(2 * 9600) { k -> 0.5f * kotlin.math.sin(k * 0.01f) * kotlin.math.exp(-k / 4000f) }, 2, OfflineExport.SAMPLE_RATE)
+                }
+            }
+        }
         return v
     }
 

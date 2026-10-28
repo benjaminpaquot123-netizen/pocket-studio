@@ -129,7 +129,7 @@ class TutoJourneyTest {
             val start = p()
             val depth = h.vm.session.undoDepth
             // « Montre-moi »: shown, then taken back; never ticks, never in « Annuler ».
-            if (!has("tuto_show") && !s.manual && !s.listening && s.check != "changed:kit" && !s.check.startsWith("changed:synth")) noDemo += s.id
+            if (!has("tuto_show") && !s.manual && !s.listening && !s.check.startsWith("changed:synth")) noDemo += s.id
             if (has("tuto_show")) {
                 click("tuto_show")
                 await("${s.id}: demo shown") { has("tuto_demo_caption") }
@@ -227,8 +227,8 @@ class TutoJourneyTest {
                 click("tuto_do")
                 val lane = TutoChecks.laneOf("hat")
                 h.vm.selectPad(lane)
-                // Long presses: two hits softer.
-                p().drums.lanes[lane].hits.keys.sorted().take(2).forEach { h.vm.cycleVelocity(it) }
+                // Long presses › « Doux »: the 4 hats on the beats of the first bar.
+                listOf(0, 4, 8, 12).forEach { h.vm.setHitVelocity(it, 0.2f) }
             }
             c.startsWith("notes:") || c == "track:sub" -> {
                 assertTrue("${s.id}: « Créer la piste … » offered", has("tuto_need"))
@@ -239,17 +239,14 @@ class TutoJourneyTest {
                 assertTrue("${s.id}: nothing written by the button", p().track(track).notes.notes.isEmpty())
                 notes.forEach { h.vm.addNote(it) }
             }
-            c == "changed:kit" -> {
-                // The kick's sheet: a shorter, drier kick (its decay).
-                click("tuto_do")
-                closeSheetIfAny()
-                h.vm.session.edit { q -> q.copy(padVoices = q.padVoices + (0 to (q.padVoices[0] ?: com.pocketstudio.model.PadVoice(com.pocketstudio.model.PadVoice.KICK_STUDIO)).with(com.pocketstudio.model.PadVoice.DECAY, 0.2f))) }
-            }
             c.startsWith("changed:synth:") -> {
                 click("tuto_do")
-                val id = TutoChecks.trackFor(p(), c.removePrefix("changed:synth:"))!!
+                val spec = c.removePrefix("changed:synth:")
+                val id = TutoChecks.trackFor(p(), spec.substringBefore(':'))!!
                 h.vm.selectTrack(id)
-                h.vm.setSynthParam(SynthPatch.CUTOFF, 0.93f)
+                // The knobs the step names, each turned up (« Coupure », « Résonance »…).
+                val knobs = spec.substringAfter(':', "").split('+').filter { it.isNotBlank() }.map { SynthPatch::class.java.getField(it).getInt(null) }
+                for (k in knobs.ifEmpty { listOf(SynthPatch.CUTOFF) }) h.vm.setSynthParam(k, (p().track(id).synth.get(k) + 0.3f).coerceAtMost(1f))
                 closeSheetIfAny()
             }
             c.startsWith("part:") || c.startsWith("label:") || c == "song:phrases" -> {

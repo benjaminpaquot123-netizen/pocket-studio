@@ -539,7 +539,7 @@ fun TutoKeySheetContent(harmony: com.pocketstudio.model.Harmony, wanted: com.poc
             Text(tr("Tonalité"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
             TextButton(onClick = close, modifier = Modifier.testTag("tuto_key_close")) { Text(tr("Fermer")) }
         }
-        val now = if (harmony.scale == com.pocketstudio.model.Scale.Off) tr("aucune") else "${com.pocketstudio.model.NoteNames.key(harmony.root, english)} ${tr(harmony.scale.label).inSentence()}"
+        val now = if (harmony.scale == com.pocketstudio.model.Scale.Off) tr("aucune") else "${com.pocketstudio.model.NoteNames.key(harmony.root, english)} · ${tr(harmony.scale.label)}"
         Text(tr("Tonalité du morceau : %s", now), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_key_now"))
         Text(tr("Gamme"), style = MaterialTheme.typography.titleSmall)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {

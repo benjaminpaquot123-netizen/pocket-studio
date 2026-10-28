@@ -67,6 +67,8 @@ data class KitChoice(val id: String, val name: String, val group: Int) {
 fun kitName(p: Project): String {
     val samples = p.drums.lanes.mapNotNull { it.sample?.name }
     if (samples.isEmpty()) return when {
+        // Tutorial lot 3: the drum & bass kit built in (its short kick on the kick's pad).
+        com.pocketstudio.model.StudioDrums.isDnbKick(p.padVoices[0]) -> tr("Drum & bass")
         // Lot 2: the kit with the 808 on its pad (« Trap (808) », « Drill (808) », the assistant's trap).
         p.padVoices.values.any { it.kind == com.pocketstudio.model.PadVoice.BASS_808 } -> tr("Studio + 808")
         p.kitVersion >= Project.KIT_V2 -> tr("Studio")

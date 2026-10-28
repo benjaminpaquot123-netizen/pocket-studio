@@ -19,7 +19,7 @@ class TutoCourseTest {
     private val course = TutoCourse.of("jump_up")!!
     private val target = TutoTarget.of("jump_up")!!
 
-    private val known = Regex("""^(listen|manual|tempo|key|lane:(kick|snare|clap|hat|perc)|velocity:hat|notes:(bass|pad|lead)|track:sub|insert:[A-Z_]+|send:[01]|automation|master|changed:(volumes|kit|synth:\w+)|label:\w+|part:[^:]+:(less|nokick|full|differs)|song:(order|phrases)|fill|crash|gap)$""")
+    private val known = Regex("""^(listen|manual|tempo|key|lane:(kick|snare|clap|hat|perc)|velocity:hat|notes:(bass|pad|lead)|track:sub|insert:[A-Z_]+|send:[01]|automation|master|changed:(volumes(:[a-z,]+)?|kit|synth:\w+(:[A-Z_0-9+]+)?)|label:\w+|part:[^:]+:(less|nokick|full|differs)|song:(order|phrases)|fill|crash|gap)$""")
 
     @Test
     fun theCourseHasItsChaptersAndStepsInBothLevels() {
@@ -133,7 +133,16 @@ class TutoCourseTest {
         assertTrue(TutoChecks.blankFirst(p))
         assertTrue(p.song.isEmpty() && p.allScenes.all { it.isEmpty })
         assertEquals(target.song.kitVersion, p.kitVersion)
-        assertEquals(target.song.padVoices, p.padVoices)
+        // Jump up: the drum & bass kit built in, its short kick tuned to F on the kick's pad (« Kit : Drum & bass »).
+        assertTrue(com.pocketstudio.model.StudioDrums.isDnbKick(p.padVoices[0]))
+        assertEquals(com.pocketstudio.model.StudioDrums.kickHz(5), p.padVoices[0]!!.param(com.pocketstudio.model.PadVoice.TUNE)!!, 0.01f)
+        assertEquals(target.song.padVoices, p.padVoices - 0)
+        // The example's drum effects (the punch on the kick and the snare), not the snare's reverb (a step's).
+        val kick = com.pocketstudio.model.Mixer.padChannel(0)
+        val snare = com.pocketstudio.model.Mixer.padChannel(2)
+        assertEquals(target.song.mixer.channels[kick].inserts, p.mixer.channels[kick].inserts)
+        assertTrue(p.mixer.channels[snare].inserts.any { it.effect == com.pocketstudio.model.EffectType.COMPRESSOR })
+        assertTrue(p.mixer.channels.all { c -> c.sends.all { it == 0f } })
         assertEquals(120.0, p.tempoBpm, 0.0)
         assertEquals(com.pocketstudio.model.Scale.Off, p.harmony.scale)
         // Nothing in it is done but nothing.

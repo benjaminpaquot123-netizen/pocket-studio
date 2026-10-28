@@ -5455,6 +5455,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // Lot 2: trap and drill without a pack, the studio kit with the engine's 808 on its pad.
         add(KitChoice("kit808:trap", tr("Trap (808)"), KitChoice.BUILT_IN))
         add(KitChoice("kit808:drill", tr("Drill (808)"), KitChoice.BUILT_IN))
+        // Tutorial lot 3: drum & bass without a pack (the jump up tutorial starts on it).
+        add(KitChoice("kitdnb:jump_up", tr("Drum & bass"), KitChoice.BUILT_IN))
         (lib as? LibraryState.Ready)?.presets?.filter { it.bank == 128 }?.sortedBy { it.program }?.forEach { kit ->
             add(KitChoice("gm:${kit.program}", tr(kit.name), KitChoice.GM))
         }
@@ -5493,6 +5495,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 loadKit(kit, whole = true)
             }
             "pack" -> _packsOnPhone.value.firstOrNull { it.id == rest }?.let(::loadPackKit)
+            "kitdnb" -> {
+                session.edit { p -> com.pocketstudio.model.StudioDrums.withDnbKit(p) }
+                pushPads()
+                pushMixer()
+                if (NativeEngine.isAvailable) {
+                    NativeEngine.setKitVersion(Project.KIT_V3)
+                    pushPadVoices(project.value)
+                    NativeEngine.triggerPad(0, 0.9f)
+                }
+                _done.value = tr("Fait : kit %s sur les 16 pads", tr("Drum & bass"))
+            }
             "kit808" -> {
                 if (com.pocketstudio.model.StudioDrums.with808Kit(project.value, rest) == null) return
                 session.edit { p -> com.pocketstudio.model.StudioDrums.with808Kit(p, rest) ?: p }

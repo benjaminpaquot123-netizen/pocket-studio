@@ -1,11 +1,14 @@
 package com.pocketstudio.app.human
 
 import android.app.Application
+import android.content.Intent
+import android.media.MediaFormat
 import android.os.Looper
 import android.os.SystemClock
 import android.view.InputDevice
 import android.view.MotionEvent
 import androidx.compose.ui.test.isFocused
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.performTextInput
 import androidx.lifecycle.ViewModelProvider
@@ -23,6 +26,7 @@ import com.pocketstudio.app.rhythm.RhythmViewModel
 import com.pocketstudio.app.settings.SettingsStore
 import com.pocketstudio.app.tuto.PrefsTutoStore
 import com.pocketstudio.app.tuto.TutoTestHooks
+import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.engine.OfflineExport
 import org.junit.After
 import org.junit.Assume.assumeTrue
@@ -33,6 +37,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import org.robolectric.shadows.ShadowMediaCodec
 import java.io.File
 import java.time.Duration
 
@@ -72,11 +77,25 @@ abstract class HumanTester(private val seat: String) {
 
     private val ears = Ears()
 
+    /** Copies what fits (as VideoExportTest): the shadow codec stands in for the phone's AAC encoder. */
+    private val passThrough = ShadowMediaCodec.CodecConfig.Codec { input, output ->
+        val n = minOf(input.remaining(), output.remaining())
+        output.put(input.duplicate().also { it.limit(it.position() + n) })
+        input.position(input.position() + n)
+    }
+    // Lot « tuto 4 » (É0): the play head moves as on a phone, and « Partager » exports.
+    private val playhead = BenchPlayhead()
+    private var lastVm: RhythmViewModel? = null
+    /** Said once in the next sound-N.txt (what Android's share menu did). */
+    private var note: String? = null
+
     @After
     fun end() {
         runCatching { scenario?.close() }
         com.pocketstudio.app.rhythm.ClosingSaves.awaitIdleBlocking(15_000)
         TutoTestHooks.player = null
+        NativeEngine.sink = null
+        ShadowMediaCodec.clearCodecs()
         LaunchRule.askAtStartForTest = true
         SettingsStore.forgetForTests()
         com.pocketstudio.model.i18n.I18n.everyday = false
@@ -92,6 +111,8 @@ abstract class HumanTester(private val seat: String) {
         val start = File(dir, "start.txt").readLines().mapNotNull { l -> l.split('=', limit = 2).takeIf { it.size == 2 }?.let { it[0].trim() to it[1].trim() } }.toMap()
         freshInstall()
         TutoTestHooks.player = ears
+        // The phone's AAC encoder (« Partager » in M4A): the shadow codec copies the sound through.
+        ShadowMediaCodec.addEncoder(MediaFormat.MIMETYPE_AUDIO_AAC, ShadowMediaCodec.CodecConfig(16 * 1024, 16 * 1024, passThrough))
         scenario = ActivityScenario.launch(MainActivity::class.java)
         val journal = File(dir, "journal.txt")
         settle(1500)
@@ -148,14 +169,77 @@ abstract class HumanTester(private val seat: String) {
                 }
             }
         }
+        lastVm = v
         return v
+    }
+
+    /**
+     * The bench's engine stands in for a touch on « Partager » or « Écouter » of « Prêt à partager ? »,
+     * then while that export runs or that song plays, and only then: the screens that read the
+     * engine's meters or lit pads need the native library, which Robolectric has not. Any other
+     * gesture (one that may open such a screen) first stops the song it played and lets it go.
+     */
+    private fun engineBefore(kind: String, x: Float, y: Float) {
+        if (kind == "touche" && (touches("share_go", x, y) || touches("share_listen", x, y))) {
+            NativeEngine.sink = NativeEngine.sink ?: BenchEngine()
+            return
+        }
+        if (kind == "attends" || NativeEngine.sink == null) return
+        val v = lastVm
+        if (v?.export?.value?.running == true) return
+        if (v != null && songPlaying(v)) v.toggleSong()
+        settleLooper()
+        NativeEngine.sink = null
+    }
+
+    private fun engineDone() {
+        val v = lastVm
+        if (NativeEngine.sink != null && v?.export?.value?.running != true && (v == null || !songPlaying(v))) NativeEngine.sink = null
+    }
+
+    private fun songPlaying(v: RhythmViewModel) = v.transport.value.playing && v.sessionUi.value.songIndex >= 0
+
+    private fun settleLooper() = shadowOf(Looper.getMainLooper()).idle()
+
+    /** The node tagged [tag] is under the finger at ([x], [y]) (screen pixels, any window). */
+    private fun touches(tag: String, x: Float, y: Float): Boolean = runCatching {
+        compose.onAllNodesWithTag(tag).fetchSemanticsNodes().any { n ->
+            val at = n.positionOnScreen
+            x >= at.x && x <= at.x + n.size.width && y >= at.y && y <= at.y + n.size.height
+        }
+    }.getOrDefault(false)
+
+    /** Android's share menu, as a phone shows it once the song is ready: the apps to send it with. */
+    private fun shareMenu() {
+        val started = shadowOf(app).peekNextStartedActivity() ?: return
+        if (started.action != Intent.ACTION_CHOOSER) return
+        shadowOf(app).nextStartedActivity
+        @Suppress("DEPRECATION")
+        val stream = started.getParcelableExtra<Intent>(Intent.EXTRA_INTENT)?.let { send ->
+            send.getParcelableExtra<android.net.Uri>(Intent.EXTRA_STREAM) ?: send.getParcelableArrayListExtra<android.net.Uri>(Intent.EXTRA_STREAM)?.firstOrNull()
+        }
+        val file = stream?.lastPathSegment?.substringAfterLast('/') ?: "?"
+        val apps = arrayOf("WhatsApp", "Messages", "Gmail", "Drive", "Enregistrer dans Fichiers")
+        scenario?.onActivity { a ->
+            android.app.AlertDialog.Builder(a)
+                .setTitle("Partager « $file »")
+                .setItems(apps) { d, which ->
+                    note = "Ton morceau « $file » part avec ${apps[which]} (ici rien ne part vraiment : c'est la fin du partage)."
+                    d.dismiss()
+                }
+                .setOnCancelListener { note = "Menu de partage fermé : rien n'a été envoyé." }
+                .show()
+        }
+        shadowOf(Looper.getMainLooper()).idle()
     }
 
     /** One gesture: « touche X Y », « appui-long X Y », « glisse X1 Y1 X2 Y2 », « ecris … », « retour », « attends S ». */
     private fun play(cmd: String) {
         val words = cmd.split(Regex("\\s+"))
         fun f(i: Int) = words.getOrNull(i)?.replace(',', '.')?.toFloatOrNull() ?: error("bad gesture: $cmd")
-        when (words[0].lowercase()) {
+        val kind = words[0].lowercase()
+        engineBefore(kind, words.getOrNull(1)?.replace(',', '.')?.toFloatOrNull() ?: -1f, words.getOrNull(2)?.replace(',', '.')?.toFloatOrNull() ?: -1f)
+        when (kind) {
             "touche" -> { val d = SystemClock.uptimeMillis(); touch(MotionEvent.ACTION_DOWN, f(1), f(2), d); pass(80); touch(MotionEvent.ACTION_UP, f(1), f(2), d); settle(900) }
             "appui-long" -> { val d = SystemClock.uptimeMillis(); touch(MotionEvent.ACTION_DOWN, f(1), f(2), d); pass(900); touch(MotionEvent.ACTION_UP, f(1), f(2), d); settle(900) }
             "glisse" -> {
@@ -190,6 +274,7 @@ abstract class HumanTester(private val seat: String) {
             shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(d))
             runCatching { compose.mainClock.advanceTimeBy(d) }
             ears.tick()
+            lastVm?.let { playhead.tick(it, SystemClock.uptimeMillis()) }
             left -= d
         }
     }
@@ -203,6 +288,8 @@ abstract class HumanTester(private val seat: String) {
             runCatching { compose.waitForIdle() }
         }
         vm()
+        engineDone()
+        shareMenu()
     }
 
     private fun show(dir: File, n: Int) {
@@ -219,6 +306,7 @@ abstract class HumanTester(private val seat: String) {
         if (ears.playing) add("l'exemple du tuto joue (encore ${(ears.frames - ears.heard()) / OfflineExport.SAMPLE_RATE + 1} s)")
         if (vm()?.transport?.value?.playing == true) add("la musique du projet joue en boucle")
     }.let { if (it.isEmpty()) "Son : rien ne joue." else "Son : " + it.joinToString(" ; ") + "." }
+        .let { s -> note?.let { n -> note = null; "$s\n$n" } ?: s }
 
     /** For the report, never shown to the tester: where the tutorial is. */
     private fun inside(): String = runCatching {
@@ -243,3 +331,13 @@ class HumanTesterA : HumanTester("a")
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = HumanTester.PHONE)
 class HumanTesterB : HumanTester("b")
+
+@RunWith(RobolectricTestRunner::class)
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
+@Config(qualifiers = HumanTester.PHONE)
+class HumanTesterC : HumanTester("c")
+
+@RunWith(RobolectricTestRunner::class)
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
+@Config(qualifiers = HumanTester.PHONE)
+class HumanTesterD : HumanTester("d")

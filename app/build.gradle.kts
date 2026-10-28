@@ -98,7 +98,7 @@ android {
                 for (key in listOf("bench.out", "bench.render", "bench.styles", "bench.guide", "bench.live", "bench.seconds", "bench.loop", "bench.sublayers", "real.projects", "real.out", "real.live", "real.render", "human.dir")) {
                     providers.gradleProperty(key).orNull?.let { value -> it.systemProperty("ps.$key", value) }
                 }
-                if (providers.gradleProperty("human.dir").isPresent) it.maxParallelForks = 2
+                if (providers.gradleProperty("human.dir").isPresent) it.maxParallelForks = 4
                 // Every style's song in one run (or every preview, PreviewLevelBench): more room than the tests need.
                 if (listOf("bench.live", "bench.out", "bench.render").any { k -> providers.gradleProperty(k).isPresent }) it.maxHeapSize = "3g"
             }

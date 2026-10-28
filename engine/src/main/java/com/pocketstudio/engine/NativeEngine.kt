@@ -684,8 +684,8 @@ object NativeEngine {
     /** [param]: 0 gain (0..1, 0.8 = unity), 1 mute, 2 solo. */
     fun setStemParam(stem: Int, param: Int, value: Float) = post(CMD_STEM_PARAM, value, stem, param)
 
-    /** Song frame (48 kHz) heard on step 0. */
-    fun setStemStart(frame: Long) = post(CMD_STEM_START, 0f, frame.coerceIn(0L, Int.MAX_VALUE.toLong()).toInt())
+    /** Song frame (48 kHz) heard on step 0; negative: the song comes in that many frames after step 0 (silence first). */
+    fun setStemStart(frame: Long) = post(CMD_STEM_START, 0f, frame.coerceIn(-Int.MAX_VALUE.toLong(), Int.MAX_VALUE.toLong()).toInt())
 
     /** Song position in frames while the stems play, else -1. */
     external fun stemPosition(): Long

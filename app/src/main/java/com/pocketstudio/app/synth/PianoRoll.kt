@@ -262,8 +262,9 @@ fun PianoRoll(
                     label = { Text(tr("Tout voir"), maxLines = 1, softWrap = false) }, colors = chipColors,
                     modifier = Modifier.testTag("roll_fit"),
                 )
-                Text(tr("  Zoom"), style = MaterialTheme.typography.bodySmall)
+                // The word with its buttons (a tablet's row wraps them together).
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(tr("  Zoom"), style = MaterialTheme.typography.bodySmall)
                     TextButton(onClick = { zoomBy(1 / 1.5f, 1f) }, enabled = stepWidth.value > minOf(MIN_STEP, viewWidth / clip.steps) + 0.01f, modifier = Modifier.testTag("zoom_out")) { Text("−") }
                     // The level between − and +, so the gap between them means something.
                     if (tablet) Text(com.pocketstudio.model.i18n.percent((stepWidth.value / ZOOMS[1].value * 100).roundToInt()), style = MaterialTheme.typography.labelLarge,

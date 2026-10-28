@@ -1461,6 +1461,8 @@ fun AppRoot() {
     // Testers (lot « tuto 4 »): the tutorial's panel has the bottom of the screen (no floating keyboard over its
     // rings), a step ticked closes a hit's menu (its first touch on « Étape suivante » was lost closing it).
     LaunchedEffect(tutoUi == null) { com.pocketstudio.app.tuto.TutoHints.active = tutoUi != null }
+    // Its screens gone, the tutorial no longer runs for them (the drum grid follows the music again).
+    DisposableEffect(Unit) { onDispose { com.pocketstudio.app.tuto.TutoHints.active = false } }
     LaunchedEffect(tutoUi?.progress?.done?.size) { com.pocketstudio.app.tuto.TutoHints.ticked++ }
     LaunchedEffect(tutoUi?.current?.id) { com.pocketstudio.app.tuto.TutoHints.knobs = tuto.place()?.knobs.orEmpty().toSet() }
     LaunchedEffect(tutoUi?.current?.id) { com.pocketstudio.app.tuto.TutoHints.step = tutoUi?.current?.id }

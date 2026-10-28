@@ -22,6 +22,7 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import java.time.Duration
+import kotlinx.coroutines.launch
 
 /** The tutorial in the app (app/screenshots/tuto_app_*.png): the snare's step on the grid, the bass's dotted notes. */
 @RunWith(RobolectricTestRunner::class)
@@ -48,8 +49,10 @@ class TutoAppScreenshotTest {
 
     /** Saved (« Sauvegardé » shown each time, the image does not depend on when the save ended). */
     private fun settle() {
-        kotlinx.coroutines.runBlocking { h.vm.flushNow() }
-        await("saved") { has("save_status") || true }
+        // Not runBlocking on the main thread (it hung 22 min: the save waited for the main looper it held):
+        // the save off it, the looper turned until it ends, 20 s at most.
+        val save = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch { h.vm.flushNow() }
+        await("saved") { save.isCompleted }
         repeat(10) { shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(100)); compose.waitForIdle() }
     }
 

@@ -762,7 +762,7 @@ private fun StepGrid(
                         if (rollStep == step && hit != null) {
                             RollMenu(hit, step % per + 1, close = { rollStep = -1 },
                                 force = { actions.setHitVelocity(step, it) }, roll = { n, r -> actions.setRoll(step, n, r) }, burst = { actions.burst(step, it) },
-                                chance = { actions.setHitChance(step, it) })
+                                chance = { actions.setHitChance(step, it) }, simple = simple)
                         }
                     }
                 }
@@ -881,6 +881,8 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
 private fun RollMenu(
     hit: com.pocketstudio.model.Hit, beatStep: Int, close: () -> Unit, force: (Float) -> Unit, roll: (Int, Int) -> Unit, burst: (Int) -> Unit,
     chance: (Int) -> Unit = {},
+    /** The Mode simple (the tutorial's Facile): force and roll only (testers, lot « tuto 5 »: « rafale de 1/32 », « Chance de jouer »). */
+    simple: Boolean = false,
 ) {
     val chips = pillColors()
     ScaledDropdownMenu(expanded = true, onDismissRequest = close, modifier = Modifier.testTag("roll_menu")) {
@@ -912,13 +914,15 @@ private fun RollMenu(
             // Tutorial testers (lot « tuto 4 »): the roll's own note value, the burst below being another action (it read as the roll's label).
             if (hit.repeats > 1) Text(tr("×%1\$d : %1\$d coups dans la case, des 1/%2\$d", hit.repeats, 16 * hit.repeats),
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("roll_value"))
-            TextButton(onClick = { burst(1); close() }, modifier = Modifier.testTag("roll_burst")) { Text(tr("Tout le temps en ×2 (rafale de 1/32)")) }
-            // Phase 37: a hit that plays only now and then (the same draw each time, the export too).
-            Text(tr("Chance de jouer"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                com.pocketstudio.model.DrumPattern.CHANCES.forEach { c ->
-                    FilterChip(selected = hit.chance == c, onClick = { chance(c) }, label = { Text(percent(c)) }, colors = chips,
-                        modifier = Modifier.testTag("roll_chance_$c"))
+            if (!simple) {
+                TextButton(onClick = { burst(1); close() }, modifier = Modifier.testTag("roll_burst")) { Text(tr("Tout le temps en ×2 (rafale de 1/32)")) }
+                // Phase 37: a hit that plays only now and then (the same draw each time, the export too).
+                Text(tr("Chance de jouer"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    com.pocketstudio.model.DrumPattern.CHANCES.forEach { c ->
+                        FilterChip(selected = hit.chance == c, onClick = { chance(c) }, label = { Text(percent(c)) }, colors = chips,
+                            modifier = Modifier.testTag("roll_chance_$c"))
+                    }
                 }
             }
         }

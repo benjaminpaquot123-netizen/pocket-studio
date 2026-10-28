@@ -3707,7 +3707,8 @@ private const val SWITCH_COVER_MS = 5000L
 /** « Je le fais »'s ring stays this long, then goes by itself. */
 private const val TUTO_SPOT_MS = 2600L
 /** The user's own music heard this long ticks a listening step about it (« Écoute toute ta batterie »). */
-private const val TUTO_MINE_HEARD_MS = 2500L
+// Testers (lot « tuto 5 »): « ta batterie, puis l'exemple » not ticked when the example was touched within 2.5 s (a rule nobody saw).
+private const val TUTO_MINE_HEARD_MS = 600L
 /** The synth's « Réglages du son » card ([com.pocketstudio.app.synth.SoundCard]). */
 internal const val SYNTH_SETTINGS_SPOT = "synth_settings"
 

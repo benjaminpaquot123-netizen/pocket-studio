@@ -338,5 +338,8 @@
   "%1$s : environ %2$s.": "%1$s: sekitar %2$s.",
   "Quatre briques": "Empat blok",
   "Trois briques": "Tiga blok",
-  "Bienvenue dans BenStudio": "Selamat datang di BenStudio"
+  "Bienvenue dans BenStudio": "Selamat datang di BenStudio",
+  "téléchargé": "unduhan",
+  "Un son du pack « %1$s » n'a pas pu être lu (%2$s) : ton morceau prend le son intégré à la place.": "Satu suara dari pack “%1$s” tidak bisa dibaca (%2$s): lagumu memakai suara bawaan sebagai gantinya.",
+  "Des sons du pack « %1$s » n'ont pas pu être lus (%2$s) : ton morceau prend les sons intégrés à la place.": "Beberapa suara dari pack “%1$s” tidak bisa dibaca (%2$s): lagumu memakai suara bawaan sebagai gantinya."
 }

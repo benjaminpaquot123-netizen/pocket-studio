@@ -338,5 +338,8 @@
   "%1$s : environ %2$s.": "%1$s: نحو %2$s.",
   "Quatre briques": "أربع كتل",
   "Trois briques": "ثلاث كتل",
-  "Bienvenue dans BenStudio": "مرحبًا بك في BenStudio"
+  "Bienvenue dans BenStudio": "مرحبًا بك في BenStudio",
+  "téléchargé": "المُنزَّلة",
+  "Un son du pack « %1$s » n'a pas pu être lu (%2$s) : ton morceau prend le son intégré à la place.": "تعذّرت قراءة صوت من الحزمة «%1$s» (%2$s): تستخدم مقطوعتك الصوت المدمج بدلًا منه.",
+  "Des sons du pack « %1$s » n'ont pas pu être lus (%2$s) : ton morceau prend les sons intégrés à la place.": "تعذّرت قراءة بعض أصوات الحزمة «%1$s» (%2$s): تستخدم مقطوعتك الأصوات المدمجة بدلًا منها."
 }

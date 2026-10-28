@@ -339,17 +339,12 @@ object StemRouting {
     }
 
     /**
-     * Pad [lane] is free for a cut: no sound of its own, no studio voice, no hit in any scene. A
-     * kit's sound nobody plays may go; a kick the beat plays never does. (The same rule as R2's
-     * `RemixVoice.padIsFree`: at the merge, one of the two stays.)
+     * Pad [lane] is free for a cut: no sound of its own, no studio voice, no hit in any scene (one
+     * rule for the Remix page's « → Pad » and the board: [com.pocketstudio.model.RemixVoice.padIsFree]).
      */
-    fun padIsFree(p: Project, lane: Int): Boolean {
-        val own = p.drums.lanes.getOrNull(lane) ?: return false
-        if (own.sample != null || own.hits.isNotEmpty() || p.padVoices.containsKey(lane)) return false
-        return p.scenes.withIndex().none { (i, s) -> i != p.scene && s.drums.lanes.getOrNull(lane)?.hits?.isNotEmpty() == true }
-    }
+    fun padIsFree(p: Project, lane: Int): Boolean = com.pocketstudio.model.RemixVoice.padIsFree(p, lane)
 
-    fun freePads(p: Project): List<Int> = (0 until DrumPattern.PAD_COUNT).filter { padIsFree(p, it) }
+    fun freePads(p: Project): List<Int> = com.pocketstudio.model.RemixVoice.freePads(p)
 
     /** The pad a stretch goes to: the one the user named (even with a sound: the user chose it), else the first free one. */
     fun padFor(p: Project, named: Int?): Int? =

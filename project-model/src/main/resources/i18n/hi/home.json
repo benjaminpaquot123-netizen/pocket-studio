@@ -338,5 +338,8 @@
   "%1$s : environ %2$s.": "%1$s: लगभग %2$s।",
   "Quatre briques": "चार ब्लॉक्स",
   "Trois briques": "तीन ब्लॉक्स",
-  "Bienvenue dans BenStudio": "BenStudio में स्वागत है"
+  "Bienvenue dans BenStudio": "BenStudio में स्वागत है",
+  "téléchargé": "डाउनलोड किया गया",
+  "Un son du pack « %1$s » n'a pas pu être lu (%2$s) : ton morceau prend le son intégré à la place.": "पैक “%1$s” की एक आवाज़ पढ़ी नहीं जा सकी (%2$s): तुम्हारा गाना उसकी जगह बिल्ट-इन आवाज़ लेता है।",
+  "Des sons du pack « %1$s » n'ont pas pu être lus (%2$s) : ton morceau prend les sons intégrés à la place.": "पैक “%1$s” की कुछ आवाज़ें पढ़ी नहीं जा सकीं (%2$s): तुम्हारा गाना उनकी जगह बिल्ट-इन आवाज़ें लेता है।"
 }

@@ -338,5 +338,8 @@
   "%1$s : environ %2$s.": "%1$s: about %2$s.",
   "Quatre briques": "Four blocks",
   "Trois briques": "Three blocks",
-  "Bienvenue dans BenStudio": "Welcome to BenStudio"
+  "Bienvenue dans BenStudio": "Welcome to BenStudio",
+  "téléchargé": "downloaded",
+  "Un son du pack « %1$s » n'a pas pu être lu (%2$s) : ton morceau prend le son intégré à la place.": "A sound from the pack “%1$s” couldn't be read (%2$s): your song uses the built-in sound instead.",
+  "Des sons du pack « %1$s » n'ont pas pu être lus (%2$s) : ton morceau prend les sons intégrés à la place.": "Some sounds from the pack “%1$s” couldn't be read (%2$s): your song uses the built-in sounds instead."
 }

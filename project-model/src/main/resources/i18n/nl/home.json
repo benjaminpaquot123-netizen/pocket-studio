@@ -338,5 +338,8 @@
   "%1$s : environ %2$s.": "%1$s: ongeveer %2$s.",
   "Quatre briques": "Vier blokken",
   "Trois briques": "Drie blokken",
-  "Bienvenue dans BenStudio": "Welkom bij BenStudio"
+  "Bienvenue dans BenStudio": "Welkom bij BenStudio",
+  "téléchargé": "gedownload",
+  "Un son du pack « %1$s » n'a pas pu être lu (%2$s) : ton morceau prend le son intégré à la place.": "Een geluid uit het pack ‘%1$s’ kon niet gelezen worden (%2$s): je nummer gebruikt in plaats daarvan het ingebouwde geluid.",
+  "Des sons du pack « %1$s » n'ont pas pu être lus (%2$s) : ton morceau prend les sons intégrés à la place.": "Enkele geluiden uit het pack ‘%1$s’ konden niet gelezen worden (%2$s): je nummer gebruikt in plaats daarvan de ingebouwde geluiden."
 }

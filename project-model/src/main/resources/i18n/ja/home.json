@@ -338,5 +338,8 @@
   "%1$s : environ %2$s.": "%1$s：約 %2$s。",
   "Quatre briques": "4つのブロック",
   "Trois briques": "3つのブロック",
-  "Bienvenue dans BenStudio": "BenStudio へようこそ"
+  "Bienvenue dans BenStudio": "BenStudio へようこそ",
+  "téléchargé": "ダウンロード済み",
+  "Un son du pack « %1$s » n'a pas pu être lu (%2$s) : ton morceau prend le son intégré à la place.": "パック「%1$s」の音を読み込めませんでした（%2$s）：代わりに内蔵の音を使います。",
+  "Des sons du pack « %1$s » n'ont pas pu être lus (%2$s) : ton morceau prend les sons intégrés à la place.": "パック「%1$s」のいくつかの音を読み込めませんでした（%2$s）：代わりに内蔵の音を使います。"
 }

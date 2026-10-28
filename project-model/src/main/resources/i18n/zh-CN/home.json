@@ -338,5 +338,8 @@
   "%1$s : environ %2$s.": "%1$s：约 %2$s。",
   "Quatre briques": "四块",
   "Trois briques": "三块",
-  "Bienvenue dans BenStudio": "欢迎来到 BenStudio"
+  "Bienvenue dans BenStudio": "欢迎来到 BenStudio",
+  "téléchargé": "已下载",
+  "Un son du pack « %1$s » n'a pas pu être lu (%2$s) : ton morceau prend le son intégré à la place.": "无法读取音色包“%1$s”中的一个声音（%2$s）：你的曲子改用内置声音。",
+  "Des sons du pack « %1$s » n'ont pas pu être lus (%2$s) : ton morceau prend les sons intégrés à la place.": "无法读取音色包“%1$s”中的一些声音（%2$s）：你的曲子改用内置声音。"
 }

@@ -338,5 +338,8 @@
   "%1$s : environ %2$s.": "%1$s: yaklaşık %2$s.",
   "Quatre briques": "Dört blok",
   "Trois briques": "Üç blok",
-  "Bienvenue dans BenStudio": "BenStudio'ya hoş geldin"
+  "Bienvenue dans BenStudio": "BenStudio'ya hoş geldin",
+  "téléchargé": "indirilen",
+  "Un son du pack « %1$s » n'a pas pu être lu (%2$s) : ton morceau prend le son intégré à la place.": "“%1$s” paketinden bir ses okunamadı (%2$s): parçan onun yerine yerleşik sesi kullanıyor.",
+  "Des sons du pack « %1$s » n'ont pas pu être lus (%2$s) : ton morceau prend les sons intégrés à la place.": "“%1$s” paketinden bazı sesler okunamadı (%2$s): parçan onların yerine yerleşik sesleri kullanıyor."
 }

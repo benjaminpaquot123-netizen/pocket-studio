@@ -353,7 +353,7 @@ private fun InProject(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 tr("Partir de la mesure %d de la chanson", r.startBar + 1),
-                Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium,
+                Modifier.weight(1f).testTag("remix_start_bar"), style = MaterialTheme.typography.bodyMedium,
             )
             IconButton(onClick = { actions.setStartBar(r.startBar - 1) }, enabled = r.startBar > 0, modifier = Modifier.testTag("remix_bar_prev")) {
                 Icon(Icons.Filled.Remove, contentDescription = tr("Mesure précédente"))

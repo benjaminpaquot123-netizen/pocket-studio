@@ -51,7 +51,7 @@ class RemixUnderstoodTest {
             }
         }
         // Its own line, whole (it was « Me » between « Jouer » and « Effets » on this phone).
-        compose.onNodeWithText("Départ dans la chanson : mesure 3").assertIsDisplayed()
+        compose.onNodeWithText("Partir de la mesure 3 de la chanson").assertIsDisplayed()
         assertFalse(layout("remix_start_bar").hasVisualOverflow)
         compose.onNodeWithTag("remix_keys").assertIsDisplayed()
         compose.onNodeWithText("Tonalité : projet en Fa mineur, chanson en La mineur").assertExists()

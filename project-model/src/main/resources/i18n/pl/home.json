@@ -338,5 +338,8 @@
   "%1$s : environ %2$s.": "%1$s: około %2$s.",
   "Quatre briques": "Cztery klocki",
   "Trois briques": "Trzy klocki",
-  "Bienvenue dans BenStudio": "Witaj w BenStudio"
+  "Bienvenue dans BenStudio": "Witaj w BenStudio",
+  "téléchargé": "pobrana",
+  "Un son du pack « %1$s » n'a pas pu être lu (%2$s) : ton morceau prend le son intégré à la place.": "Nie udało się odczytać dźwięku z paczki „%1$s” (%2$s): twój utwór używa zamiast niego wbudowanego dźwięku.",
+  "Des sons du pack « %1$s » n'ont pas pu être lus (%2$s) : ton morceau prend les sons intégrés à la place.": "Nie udało się odczytać kilku dźwięków z paczki „%1$s” (%2$s): twój utwór używa zamiast nich wbudowanych dźwięków."
 }

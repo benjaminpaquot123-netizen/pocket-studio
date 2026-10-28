@@ -338,5 +338,8 @@
   "%1$s : environ %2$s.": "%1$s: 약 %2$s.",
   "Quatre briques": "블록 네 개",
   "Trois briques": "블록 세 개",
-  "Bienvenue dans BenStudio": "BenStudio에 오신 걸 환영해요"
+  "Bienvenue dans BenStudio": "BenStudio에 오신 걸 환영해요",
+  "téléchargé": "다운로드한",
+  "Un son du pack « %1$s » n'a pas pu être lu (%2$s) : ton morceau prend le son intégré à la place.": "“%1$s” 팩의 소리를 읽을 수 없었어요 (%2$s): 대신 내장 소리를 써요.",
+  "Des sons du pack « %1$s » n'ont pas pu être lus (%2$s) : ton morceau prend les sons intégrés à la place.": "“%1$s” 팩의 소리 몇 개를 읽을 수 없었어요 (%2$s): 대신 내장 소리들을 써요."
 }

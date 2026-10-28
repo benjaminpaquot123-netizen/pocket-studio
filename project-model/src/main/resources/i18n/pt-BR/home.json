@@ -338,5 +338,8 @@
   "%1$s : environ %2$s.": "%1$s: cerca de %2$s.",
   "Quatre briques": "Quatro blocos",
   "Trois briques": "Três blocos",
-  "Bienvenue dans BenStudio": "Bem-vindo ao BenStudio"
+  "Bienvenue dans BenStudio": "Bem-vindo ao BenStudio",
+  "téléchargé": "baixado",
+  "Un son du pack « %1$s » n'a pas pu être lu (%2$s) : ton morceau prend le son intégré à la place.": "Não foi possível ler um som do pack “%1$s” (%2$s): sua música usa o som integrado no lugar.",
+  "Des sons du pack « %1$s » n'ont pas pu être lus (%2$s) : ton morceau prend les sons intégrés à la place.": "Não foi possível ler alguns sons do pack “%1$s” (%2$s): sua música usa os sons integrados no lugar."
 }

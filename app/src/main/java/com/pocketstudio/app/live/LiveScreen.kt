@@ -125,6 +125,7 @@ import com.pocketstudio.model.sceneLabel
 import com.pocketstudio.model.slotLoopSteps
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.liveGlow
 import com.pocketstudio.ui.trackColor
 import com.pocketstudio.ui.fadingEdges
 import com.pocketstudio.ui.fadingHorizontalScroll
@@ -517,7 +518,7 @@ private fun LiveTopBar(ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit
             }
         }
         Box(
-            Modifier.size(48.dp).clip(CircleShape).clickable(onClick = actions.togglePlay).testTag("live_play").spot("live_play", tr("Jouer la partie"))
+            Modifier.size(48.dp).liveGlow(ui.playing, Neon.Acid, inset = 2.dp).clip(CircleShape).clickable(onClick = actions.togglePlay).testTag("live_play").spot("live_play", tr("Jouer la partie"))
                 .semantics { contentDescription = if (ui.playing) tr("Arrêter") else tr("Jouer") },
             contentAlignment = Alignment.Center,
         ) {

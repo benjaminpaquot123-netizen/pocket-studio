@@ -1695,7 +1695,16 @@ fun AppRoot() {
         if (aloneTabByGuide == tab) aloneTabByGuide = null else rhythmVm.stopAlone()
     }
     val studioBackground = Neon.Background
-    androidx.compose.runtime.CompositionLocalProvider(com.pocketstudio.app.learn.LocalSpots provides spots) {
+    // The beat the lights of what plays breathe on (the Play button): polled on each frame of the
+    // song only, read while drawing; this screen never recomposes with it.
+    val breathTransport = rhythmVm.transport.collectAsStateWithLifecycle()
+    val breathProject = rhythmVm.project.collectAsStateWithLifecycle()
+    val breath = com.pocketstudio.ui.rememberBreath(
+        playing = { breathTransport.value.playing },
+        step = { if (com.pocketstudio.engine.NativeEngine.isAvailable) com.pocketstudio.engine.NativeEngine.absoluteStep() else -1 },
+        bpm = { breathProject.value.tempoBpm.toFloat() },
+    )
+    androidx.compose.runtime.CompositionLocalProvider(com.pocketstudio.app.learn.LocalSpots provides spots, com.pocketstudio.ui.LocalBreath provides breath) {
     // A new mode draws every screen again (their names and words change; the project does not).
     androidx.compose.runtime.key(simple) {
     Box(Modifier.fillMaxSize()) {

@@ -304,33 +304,16 @@ private fun LimiterLine(gain: () -> Float) {
  */
 @Composable
 private fun MasterMeter(peak: () -> Float) {
-    val off = Neon.SurfaceHigh
-    val low = Neon.Acid
-    val mid = Neon.Amber
-    val high = Neon.Red
-    androidx.compose.foundation.Canvas(Modifier.fillMaxWidth().height(12.dp).testTag("master_meter")) {
-        val segments = 32
-        val gap = 2.dp.toPx()
-        val w = (size.width - gap * (segments - 1)) / segments
-        val lit = masterMeterFraction(peak()) * segments
-        val radius = androidx.compose.ui.geometry.CornerRadius(2.dp.toPx())
-        for (i in 0 until segments) {
-            val x = i * (w + gap)
-            val db = METER_MIN_DB + (METER_MAX_DB - METER_MIN_DB) * i / segments
-            val color = when {
-                db >= METER_RED_DB -> high
-                db >= METER_RED_DB - 9f -> mid
-                else -> low
-            }
-            val on = (lit - i).coerceIn(0f, 1f)
-            // The red zone is always shown dimly: where the level must not stay.
-            drawRoundRect(color = if (db >= METER_RED_DB) high.copy(alpha = 0.18f) else off,
-                topLeft = androidx.compose.ui.geometry.Offset(x, 0f), size = androidx.compose.ui.geometry.Size(w, size.height), cornerRadius = radius)
-            if (on > 0f) drawRoundRect(color = color.copy(alpha = 0.35f + 0.65f * on),
-                topLeft = androidx.compose.ui.geometry.Offset(x, 0f), size = androidx.compose.ui.geometry.Size(w, size.height), cornerRadius = radius)
-        }
-    }
+    // The app's meter (a gradient, fine pixels at its tip, its peak held), amber from −10 dBFS, red
+    // from −1 dBFS; the red part of its track always shown dimly.
+    LevelMeter(
+        { masterMeterFraction(peak()) }, Modifier.testTag("master_meter"), thickness = 12.dp, warnZone = true,
+        zones = com.pocketstudio.ui.MeterZones(amber = meterAt(METER_RED_DB - 9f), red = meterAt(METER_RED_DB)),
+    )
 }
+
+/** Where [db] stands on the master meter, 0..1. */
+private fun meterAt(db: Float): Float = (db - METER_MIN_DB) / (METER_MAX_DB - METER_MIN_DB)
 
 /** The master meter's scale: from silence (−40 dBFS) to +6 dBFS; red from the limiter's ceiling. */
 private const val METER_MIN_DB = -40f

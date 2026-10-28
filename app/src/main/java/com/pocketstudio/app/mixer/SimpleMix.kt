@@ -406,13 +406,10 @@ private fun PlayAlone(on: Boolean, name: String, tag: String, toggle: () -> Unit
     }
 }
 
-/** Bayer's 4×4 ordered dither: a pixel of the meter's top is lit when its threshold is under the density there. */
-private val BAYER = intArrayOf(0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5)
-
 /**
  * The big fader: marks of its dB on the start side ([top], 0, −12, [bottom]; none on a small one),
- * its travel and cap, and its meter on the end side, green, yellow, red, whose top dissolves into
- * pixels (an ordered dither, sparser upwards, solid below). A slide moves it from where it is;
+ * its travel and cap, and its meter on the end side (the app's [com.pocketstudio.ui.LevelBar]: green,
+ * amber, red in a gradient, its top dissolving into fine pixels, its peak held). A slide moves it from where it is;
  * two touches put it back at 0 dB.
  */
 @Composable
@@ -440,9 +437,9 @@ private fun MixFader(
     val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val off = Neon.Surface
     val accent = Neon.Cyan
-    val low = Neon.Acid
-    val mid = Color(0xFFFFD166)
-    val high = Neon.Red
+    // Amber from −12 dBFS, red over −1 (on this scale).
+    val bar = com.pocketstudio.ui.rememberLevelBar(MIX_ZONES, dissolve = if (mini) 18.dp else 28.dp)
+    val peak = com.pocketstudio.ui.rememberPeakHold { meterPosition(meter()) }
     val cap = Neon.TextPrimary
     Canvas(
         Modifier.width(if (mini) 44.dp else 64.dp).height(height)
@@ -500,7 +497,7 @@ private fun MixFader(
         val mw = (if (mini) 5.dp else 6.dp).toPx()
         val mx = x(trackX + 14.dp.toPx() + if (rtl) mw else 0f)
         drawRoundRect(off, Offset(mx, pad), Size(mw, h), CornerRadius(mw / 2f))
-        drawMeter(meterPosition(meter()), mx, pad, mw, h, if (mini) 14.dp.toPx() else 24.dp.toPx(), 2.dp.toPx(), low, mid, high)
+        bar.draw(this, meterPosition(meter()), Offset(mx, pad), Size(mw, h), vertical = true, peak = peak.floatValue)
         // The cap.
         val cy = y(value)
         val capW = (if (mini) 24.dp else 30.dp).toPx()
@@ -512,48 +509,5 @@ private fun MixFader(
 private val MARK = Color(0x99A0A8B4)
 private val GROOVE = Color.Black.copy(alpha = 0.55f)
 
-/** Where the meter's colour changes (heights 0..1): green, yellow, red. */
-private val BANDS = floatArrayOf(0f, 0.6f, 0.785f, 1f)
-
-/** The colour of the meter at height [pos] (0..1): green, yellow from −12 dBFS, red over −1. */
-private fun zone(pos: Float, low: Color, mid: Color, high: Color): Color = when {
-    pos < BANDS[1] -> low
-    pos < BANDS[2] -> mid
-    else -> high
-}
-
-/**
- * A level bar [level] (0..1) high in the column at [x], [top], [w] × [h]: solid from the bottom,
- * its upper [dither] pixels broken into square pixels of [px], sparser towards the top (Bayer).
- * Nothing allocated: a few rectangles a frame.
- */
-private fun DrawScope.drawMeter(level: Float, x: Float, top: Float, w: Float, h: Float, dither: Float, px: Float, low: Color, mid: Color, high: Color) {
-    if (level <= 0f) return
-    val litH = level * h
-    val barTop = top + h - litH
-    val fade = minOf(dither, litH)
-    val solidTop = barTop + fade
-    val bottom = top + h
-    // The solid part, cut where the colour changes.
-    for (b in 0 until 3) {
-        val y0 = maxOf(solidTop, top + (1f - BANDS[b + 1]) * h)
-        val y1 = minOf(bottom, top + (1f - BANDS[b]) * h)
-        if (y1 > y0) drawRect(zone((BANDS[b] + BANDS[b + 1]) / 2f, low, mid, high), Offset(x, y0), Size(w, y1 - y0))
-    }
-    // The pixels: row 0 at the top (the sparsest).
-    // On whole screen pixels: no seam between two squares.
-    val x0 = kotlin.math.round(x)
-    val cols = maxOf(1, (w / px).toInt())
-    val cw = kotlin.math.round(w / cols)
-    val rows = (fade / px).toInt()
-    val y0 = kotlin.math.round(barTop)
-    val ph = kotlin.math.round(px)
-    for (r in 0 until rows) {
-        val y = y0 + r * ph
-        val density = (r + 1f) / (rows + 1f)
-        val color = zone(1f - (y - top) / h, low, mid, high)
-        for (c in 0 until cols) {
-            if ((BAYER[(r and 3) * 4 + (c and 3)] + 0.5f) / 16f < density) drawRect(color, Offset(x0 + c * cw, y), Size(cw, ph))
-        }
-    }
-}
+/** Where the Mix's meters turn amber (−12 dBFS) and red (−1 dBFS), on their scale. */
+private val MIX_ZONES = com.pocketstudio.ui.MeterZones(amber = 0.6f, red = 0.785f)

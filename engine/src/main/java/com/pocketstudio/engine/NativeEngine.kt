@@ -711,6 +711,14 @@ object NativeEngine {
     const val SCOPE_FRAMES = 4096
     /** The last [SCOPE_FRAMES] of the output (mono) or of the microphone, oldest first. */
     external fun readScope(microphone: Boolean, out: FloatArray)
+    /**
+     * « Mode retours »: the output (stereo interleaved, 48 kHz) copied for the screen recording's
+     * sound, from [tapStart] to [tapStop]; [tapRead] fills [out] with what came (whole frames) and
+     * says how many floats. One reader thread, never the main one for long.
+     */
+    external fun tapStart()
+    external fun tapStop()
+    external fun tapRead(out: FloatArray): Int
     /** Microphone on for the tuner (needs the permission); false when unavailable. Blocking (up to 1 s). */
     external fun micOpen(): Boolean
     external fun micClose()

@@ -271,6 +271,48 @@ void testReopenedOutputCutsTheMonitor() {
     CHECK(!engine.hasNonFinite());
 }
 
+// « Mode retours »: the screen recording hears exactly what the phone plays (the cleaned output,
+// stereo, in order), nothing while the tap is off, and a mono output twice per frame.
+void testRetoursTapCopiesTheOutput() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    for (int step = 0; step < 16; step += 2) engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, step});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    std::vector<float> out(256 * 2), got(256 * 2), heard;
+    float scratch[8];
+    for (int b = 0; b < 4; ++b) engine.process(nullptr, 0, 0, out.data(), 256, 2);
+    CHECK(engine.tapRead(scratch, 8) == 0);  // off: nothing copied
+    engine.tapStart();
+    std::vector<float> played;
+    for (int b = 0; b < 40; ++b) {
+        engine.process(nullptr, 0, 0, out.data(), 256, 2);
+        played.insert(played.end(), out.begin(), out.end());
+        // The reader takes odd amounts: still whole frames.
+        for (std::size_t n; (n = engine.tapRead(got.data(), 301)) > 0;) {
+            CHECK(n % 2 == 0);
+            heard.insert(heard.end(), got.begin(), got.begin() + static_cast<long>(n));
+        }
+    }
+    CHECK(heard.size() == played.size());
+    float peak = 0.0f, diff = 0.0f;
+    for (std::size_t i = 0; i < std::min(heard.size(), played.size()); ++i) {
+        peak = std::max(peak, std::fabs(played[i]));
+        diff = std::max(diff, std::fabs(heard[i] - played[i]));
+    }
+    CHECK(peak > 0.05f);
+    CHECK(diff == 0.0f);
+    engine.tapStop();
+    engine.process(nullptr, 0, 0, out.data(), 256, 2);
+    CHECK(engine.tapRead(got.data(), got.size()) == 0);
+    // A mono output: each sample twice.
+    std::vector<float> mono(128);
+    engine.tapStart();
+    engine.process(nullptr, 0, 0, mono.data(), 128, 1);
+    CHECK(engine.tapRead(got.data(), got.size()) == 256);
+    for (int i = 0; i < 128; ++i) CHECK(got[2 * i] == mono[i] && got[2 * i + 1] == mono[i]);
+    CHECK(!engine.hasNonFinite());
+}
+
 }  // namespace voice_tests
 
 #define PS_VOICE_TESTS \
@@ -279,4 +321,5 @@ void testReopenedOutputCutsTheMonitor() {
     {"voice_monitor_on_its_track", voice_tests::testMonitorHearsTheMicrophoneOnItsTrack}, \
     {"voice_punch_mutes_from_its_step", voice_tests::testPunchMutesTheClipFromItsStep}, \
     {"voice_failed_punch_gives_clip_back", voice_tests::testFailedPunchGivesTheClipBack}, \
-    {"voice_reopen_cuts_monitor", voice_tests::testReopenedOutputCutsTheMonitor},
+    {"voice_reopen_cuts_monitor", voice_tests::testReopenedOutputCutsTheMonitor}, \
+    {"retours_tap_copies_output", voice_tests::testRetoursTapCopiesTheOutput},

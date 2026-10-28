@@ -72,14 +72,17 @@ class MainActivity : ComponentActivity() {
                     LocalLayoutDirection provides layoutDirectionOf(settings.language.rtl),
                 ) {
                     PocketStudioTheme(palette) {
-                        Box {
-                            // The app starts underneath at once (project read off the main thread, « Ouverture
-                            // du projet… », audio engine): the intro waits for nothing.
-                            com.pocketstudio.app.projects.ProjectGate { com.pocketstudio.app.learn.LearnLayer { AppRoot() } }
-                            if (Intro.playing) {
-                                BrandIntro(onDone = { Intro.playing = false })
-                                // Gone with the screen (rotated, closed): never left « playing ».
-                                androidx.compose.runtime.DisposableEffect(Unit) { onDispose { Intro.playing = false } }
+                        // « Mode retours »: its floating bubble over everything, once the intro is over.
+                        com.pocketstudio.app.retours.RetoursHost(show = settings.retoursMode && !Intro.playing) {
+                            Box {
+                                // The app starts underneath at once (project read off the main thread, « Ouverture
+                                // du projet… », audio engine): the intro waits for nothing.
+                                com.pocketstudio.app.projects.ProjectGate { com.pocketstudio.app.learn.LearnLayer { AppRoot() } }
+                                if (Intro.playing) {
+                                    BrandIntro(onDone = { Intro.playing = false })
+                                    // Gone with the screen (rotated, closed): never left « playing ».
+                                    androidx.compose.runtime.DisposableEffect(Unit) { onDispose { Intro.playing = false } }
+                                }
                             }
                         }
                         // A new language rebuilds the screen (texts are read when drawn); recreating the

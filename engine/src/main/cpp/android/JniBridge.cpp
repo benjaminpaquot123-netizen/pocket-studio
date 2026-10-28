@@ -510,6 +510,24 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_readScope(JNIEn
     env->SetFloatArrayRegion(out, 0, ps::Engine::kScopeFrames, buf);
 }
 
+// « Mode retours »: the output's copy for the screen recording (one reader thread).
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_tapStart(JNIEnv*, jobject) { host().engine().tapStart(); }
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_tapStop(JNIEnv*, jobject) { host().engine().tapStop(); }
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_tapRead(JNIEnv* env, jobject, jfloatArray out) {
+    const jsize capacity = env->GetArrayLength(out);
+    float buf[4096];
+    jsize done = 0;
+    while (done < capacity) {
+        const std::size_t want = static_cast<std::size_t>(std::min<jsize>(4096, capacity - done));
+        const std::size_t got = host().engine().tapRead(buf, want);
+        if (got == 0) break;
+        env->SetFloatArrayRegion(out, done, static_cast<jsize>(got), buf);
+        done += static_cast<jsize>(got);
+        if (got < (want & ~std::size_t{1})) break;
+    }
+    return done;
+}
+
 // Microphone on for the tuner (false: unavailable); off again with micClose.
 JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_micOpen(JNIEnv*, jobject) {
     return host().startRecordingInput(ps::AudioHost::MicTuner) ? JNI_TRUE : JNI_FALSE;

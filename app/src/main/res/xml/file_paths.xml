@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
     <cache-path name="exports" path="exports/" />
+    <!-- « Mode retours »: videos and notes.zip, shared only from « Envoyer mes retours ». -->
+    <files-path name="retours" path="retours/" />
 </paths>

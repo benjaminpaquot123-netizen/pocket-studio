@@ -198,6 +198,7 @@ fun HelpPage(actions: HelpActions) {
                 Text(tr("Partout dans l'appli, le petit « ? » à côté d'un mot l'explique aussi."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
+            com.pocketstudio.app.retours.RetoursHelpCard()
             NeonCard {
                 SectionLabel(tr("Lexique"))
                 Glossary.ALL.forEach { h ->

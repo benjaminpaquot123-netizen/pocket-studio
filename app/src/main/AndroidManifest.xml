@@ -14,6 +14,8 @@
     <uses-permission android:name="android.permission.POST_PROMOTED_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROCESSING" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <!-- « Mode retours »: the owner films the screen while testing (consent asked each time). -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- Bluetooth MIDI keyboards: found by a scan, never used for location. -->
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" />
@@ -65,6 +67,12 @@
             android:name=".export.ExportService"
             android:exported="false"
             android:foregroundServiceType="dataSync|mediaProcessing" />
+
+        <!-- « Mode retours »: the screen recording goes on while the app is in the background. -->
+        <service
+            android:name=".retours.RetoursService"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

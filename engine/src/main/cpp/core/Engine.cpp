@@ -1619,6 +1619,17 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
         blockPeak = std::max(blockPeak, std::fabs(v));
     }
     if (!finite || mixer_.takeBlewUp()) nonFinite_.store(true, std::memory_order_relaxed);
+    // « Mode retours »: the cleaned output for the screen recording's sound (stereo; a mono output twice).
+    if (tapOn_.load(std::memory_order_acquire)) {
+        if (outputChannels == 2) {
+            tap_.write(output, static_cast<std::size_t>(numFrames) * 2);
+        } else if (outputChannels > 0) {
+            for (int i = 0; i < numFrames; ++i) {
+                const float frame[2] = {output[i * outputChannels], output[i * outputChannels + (outputChannels > 1 ? 1 : 0)]};
+                tap_.write(frame, 2);
+            }
+        }
+    }
 
     float previous = peak_.load(std::memory_order_relaxed);
     while (blockPeak > previous &&

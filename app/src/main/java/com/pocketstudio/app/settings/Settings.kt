@@ -69,6 +69,11 @@ data class AppSettings(
     val simpleMode: Boolean = false,
     /** « M'entendre dans le casque »: the voice comes back in wired headphones during a take (off by default). */
     val monitorVoice: Boolean = false,
+    /**
+     * « Mode retours »: the floating bubble to film the screen and write notes while testing.
+     * On by default in the owner's test builds; MUST default to false before any public release.
+     */
+    val retoursMode: Boolean = true,
 ) {
     companion object {
         val UI_SCALES = listOf(0.85f, 1f, 1.15f, 1.3f)
@@ -109,9 +114,11 @@ object SettingsStore {
             favouriteFx = p.getStringSet("favouriteFx", d.favouriteFx)?.toSet() ?: d.favouriteFx,
             simpleMode = p.getBoolean("simpleMode", d.simpleMode),
             monitorVoice = p.getBoolean("monitorVoice", d.monitorVoice),
+            retoursMode = p.getBoolean("retoursMode", d.retoursMode),
         )
         I18n.lang = _state.value.language
         I18n.everyday = _state.value.simpleMode
+        com.pocketstudio.app.retours.Retours.active = _state.value.retoursMode
         _favouriteFx.value = _state.value.favouriteFx
         loaded = true
         return _state.value
@@ -121,6 +128,7 @@ object SettingsStore {
         val s = transform(load(context))
         I18n.lang = s.language
         I18n.everyday = s.simpleMode
+        com.pocketstudio.app.retours.Retours.active = s.retoursMode
         _state.value = s
         _favouriteFx.value = s.favouriteFx
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
@@ -141,6 +149,7 @@ object SettingsStore {
             .putStringSet("favouriteFx", HashSet(s.favouriteFx))
             .putBoolean("simpleMode", s.simpleMode)
             .putBoolean("monitorVoice", s.monitorVoice)
+            .putBoolean("retoursMode", s.retoursMode)
             .apply()
     }
 

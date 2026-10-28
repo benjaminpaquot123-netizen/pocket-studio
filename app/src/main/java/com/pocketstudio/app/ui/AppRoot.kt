@@ -1398,6 +1398,15 @@ fun AppRoot() {
     }
     DisposableEffect(tuto) { onDispose { tuto.stopListening() } }
     val tutoUi by tuto.ui.collectAsStateWithLifecycle()
+    // « Mode retours »: the screen shown and the tutorial's step, in its event log (French, for whoever reads it).
+    LaunchedEffect(tab, toolPage) { com.pocketstudio.app.retours.Retours.screen(tab.name + (toolPage?.takeIf { tab == AppTab.Outils }?.let { " › ${it.name}" } ?: "")) }
+    LaunchedEffect(tutoUi?.chapter, tutoUi?.step, tutoUi == null) { com.pocketstudio.app.retours.Retours.tutoAt(tutoUi?.let(::tutoWhere) ?: "") }
+    var tutoDoneSeen by remember { mutableStateOf<Set<String>?>(null) }
+    LaunchedEffect(tutoUi?.progress?.done) {
+        val done = tutoUi?.progress?.done ?: return@LaunchedEffect
+        tutoDoneSeen?.let { seen -> (done - seen).forEach { com.pocketstudio.app.retours.Retours.event("tuto fait", it) } }
+        tutoDoneSeen = done
+    }
     var tutoChapters by rememberSaveable { mutableStateOf(false) }
     // The dotted cells of a drum step, on the Rythme tab.
     val tutoSteps = rhythmVm.project.collectAsStateWithLifecycle().value.drums.steps
@@ -3590,4 +3599,10 @@ private fun ControllerOverlays(
         ) { legendOpen = !legendOpen }
     }
     flash?.let { com.pocketstudio.app.midi.ControllerFlash(it) }
+}
+
+/** Where the tutorial is, for the « Mode retours » log: « chapitre 2/9 « Le rythme » · étape 3/5 (drums-kick) ». */
+internal fun tutoWhere(u: com.pocketstudio.app.tuto.TutoUi): String {
+    val c = u.chapters.getOrNull(u.chapter) ?: return ""
+    return "chapitre ${u.chapter + 1}/${u.chapters.size} « ${c.title} » · étape ${u.step + 1}/${c.steps.size} (${u.current.id})"
 }

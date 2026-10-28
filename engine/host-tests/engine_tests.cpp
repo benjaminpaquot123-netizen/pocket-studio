@@ -3107,6 +3107,7 @@ void testProcessNeverAllocates() {
         audio.sample = sample;
         engine.post(audio);
         engine.post({ps::CommandType::SetAudioClipParam, 4.0f, 2, ps::AudioTracks::LoopSteps});
+        engine.tapStart();  // « Mode retours »: the output copied too (the ring fills, then drops)
         static ps::RecordBuffer recording(kRate * 4);
         ps::Command arm{ps::CommandType::RecordArm, 0.0f, 1};
         arm.record = &recording;

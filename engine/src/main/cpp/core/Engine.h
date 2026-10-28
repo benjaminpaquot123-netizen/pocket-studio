@@ -23,6 +23,7 @@
 #include "Synth.h"
 #include "Smoother.h"
 #include "StemPlayer.h"
+#include "SpscFloatRing.h"
 #include "SpscQueue.h"
 
 namespace ps {
@@ -419,6 +420,14 @@ public:
         const uint32_t end = (microphone ? micScopeAt_ : outScopeAt_).load(std::memory_order_acquire);
         for (int i = 0; i < kScopeFrames; ++i) out[i] = ring[(end + static_cast<uint32_t>(i)) % kScopeFrames].load(std::memory_order_relaxed);
     }
+    // « Mode retours » (the app's screen recording): a copy of the output, stereo interleaved, after
+    // the clean-up below, for the video's sound. Off by default: the callback then writes nothing.
+    // tapStart / tapRead / tapStop from one reader thread (the ring's consumer); a full ring drops.
+    static constexpr std::size_t kTapCapacity = std::size_t{1} << 17;  // 1.36 s of stereo at 48 kHz
+    void tapStart() { tap_.discard(); tapOn_.store(true, std::memory_order_release); }
+    void tapStop() { tapOn_.store(false, std::memory_order_release); }
+    // Up to maxSamples floats (whole frames: an even count), oldest first.
+    std::size_t tapRead(float* out, std::size_t maxSamples) { return tap_.read(out, maxSamples & ~std::size_t{1}); }
     bool stemsLoaded() const { return stems_.loaded(); }  // tests
     int64_t stemPosition() const { return stems_.position(); }
     // Song position of the preview player in frames, -1 when stopped.
@@ -586,6 +595,8 @@ private:
     // `local`: the step from the scene's start (loop curves with a length of their own).
     void applyAutomation(int patternStep, int songStep, int offset, int local);
     std::array<std::atomic<float>, kScopeFrames> outScope_{}, micScope_{};
+    SpscFloatRing tap_{kTapCapacity};
+    std::atomic<bool> tapOn_{false};
     std::atomic<uint32_t> outScopeAt_{0}, micScopeAt_{0};
     static void scopeWrite(std::array<std::atomic<float>, kScopeFrames>& ring, std::atomic<uint32_t>& at, float v) {
         const uint32_t i = at.load(std::memory_order_relaxed);

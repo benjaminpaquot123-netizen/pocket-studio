@@ -40,6 +40,8 @@ object AppLog {
         val clean = LogTail.redact(message)
         // The bug report's journal sees it too (with its own time stamps).
         Journal.app(clean)
+        // « Mode retours »: the journal (errors among it) in its event log too, while it is on.
+        com.pocketstudio.app.retours.Retours.fromLog(clean)
         val line = "${LocalTime.now().format(time)} $clean"
         synchronized(lines) {
             if (lines.size == CAPACITY) lines.removeFirst()

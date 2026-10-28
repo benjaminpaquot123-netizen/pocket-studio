@@ -231,14 +231,16 @@ class TutoController(
                     ?.let { TutoGo(notes = it, spot = spot) } ?: TutoGo(GuideOpen(s.spot, s.target), spot = spot)
             }
             // Testers (lot « tuto 3 »): the filter's « Coupure » is in the sound's settings, not in its ready-made sounds.
-            c.startsWith("changed:synth:") -> TutoChecks.trackFor(p, c.removePrefix("changed:synth:"))?.let { TutoGo(settings = it, spot = spot) } ?: plain
+            c.startsWith("changed:synth:") -> TutoChecks.trackFor(p, c.removePrefix("changed:synth:").substringBefore(':'))?.let { TutoGo(settings = it, spot = spot) } ?: plain
             // A send or an effect: the effects box of the track the step names (the reverb's send there, dotted).
             c.startsWith("send:") || c.startsWith("insert:") -> channelOf(p, s.target.ifEmpty { "bass" })
                 ?.let { TutoGo(effects = it, send = if (c.startsWith("send:")) arg.toIntOrNull() else null, spot = spot) } ?: plain
             // The volumes: the fader of the track the step names first.
-            c == "changed:volumes" -> channelOf(p, s.target.ifEmpty { "pad" })?.let { TutoGo(open = GuideOpen(s.spot, s.target), strip = it, spot = spot) } ?: plain
+            c == "changed:volumes" || c.startsWith("changed:volumes:") -> channelOf(p, s.target.ifEmpty { "pad" })?.let { TutoGo(open = GuideOpen(s.spot, s.target), strip = it, spot = spot) } ?: plain
             // « Ajouter : » and its buttons, not the parts' list above them.
             c == "song:order" -> TutoGo(GuideOpen(SONG_ADD_SPOT, ""), spot = spot)
+            // The hits to take away: the first pad that still has some (« Caisse », then « Charley »).
+            c == "gap" -> TutoGo(GuideOpen(s.spot, s.target), TutoChecks.toErase(s, p)?.keys?.minOrNull() ?: pad, spot = spot)
             else -> plain
         }
     }
@@ -326,7 +328,9 @@ class TutoController(
             } finally {
                 // Stopped on the way (another step, « Quitter »): the project as it was all the same.
                 if (!restored) demoShow(null)
-                if (_ui.value?.demo != null) _ui.value = _ui.value?.copy(demo = null, demoCells = null, fade = 0f)
+                // A step with nothing to do on the screen (« J'ai compris »): the panel back, its button in sight.
+                val back = step.manual || step.spot.isEmpty()
+                if (_ui.value?.demo != null) _ui.value = _ui.value?.let { it.copy(demo = null, demoCells = null, fade = 0f, open = it.open || (back && it.current.id == step.id)) }
                 demoJob = null
                 scope.launch { check(project.value) }
             }
@@ -351,6 +355,9 @@ class TutoController(
         val u = _ui.value ?: return null
         return target?.let { TutoChecks.hint(u.current, it, steps) }
     }
+
+    /** The hits the current step asks to take away ([TutoChecks.toErase]), null when it takes none. */
+    fun toErase(p: Project): Map<Int, Set<Int>>? = _ui.value?.let { TutoChecks.toErase(it.current, p) }
 
     /** The dotted notes of a melodic step on its track ([TutoChecks.ghostNotes]), null when none. */
     fun ghostNotes(p: Project): Pair<Int, List<com.pocketstudio.model.Note>>? {

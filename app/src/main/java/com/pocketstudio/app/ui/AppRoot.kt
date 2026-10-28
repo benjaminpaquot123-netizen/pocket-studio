@@ -1448,7 +1448,10 @@ fun AppRoot() {
     val tutoProject = rhythmVm.project.collectAsStateWithLifecycle().value
     val tutoSteps = tutoProject.drums.steps
     LaunchedEffect(tutoUi?.current?.id, tutoSteps, tutoUi == null) { com.pocketstudio.app.tuto.TutoHints.cells = tuto.hint(tutoSteps) }
-    LaunchedEffect(tutoUi?.current?.id, tutoProject, tutoUi == null) { com.pocketstudio.app.tuto.TutoHints.notes = tuto.ghostNotes(tutoProject) }
+    LaunchedEffect(tutoUi?.current?.id, tutoProject, tutoUi == null) {
+        com.pocketstudio.app.tuto.TutoHints.notes = tuto.ghostNotes(tutoProject)
+        com.pocketstudio.app.tuto.TutoHints.erase = tuto.toErase(tutoProject)
+    }
     LaunchedEffect(tutoUi?.demoCells, tutoUi?.fade) {
         com.pocketstudio.app.tuto.TutoHints.fading = tutoUi?.demoCells?.let { (lane, cells) -> Triple(lane, cells, tutoUi?.fade ?: 0f) }
     }

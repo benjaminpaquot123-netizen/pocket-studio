@@ -108,6 +108,8 @@ object TutoHints {
     /** The [focus] the piano roll last answered (not state: read and written there only). */
     var focusSeen = 0
     var demo by mutableStateOf(false)
+    /** The hits a step asks to take away, by pad ([TutoChecks.toErase]): drawn crossed out. */
+    var erase by mutableStateOf<Map<Int, Set<Int>>?>(null)
 }
 
 /** « Encore 3 notes en pointillé » over the piano roll ([ahead]: some of them out of sight, that way). */
@@ -654,6 +656,21 @@ fun tutoMap(style: String): List<TutoMapBlock> = TutoTarget.of(style)?.let(TutoC
  * A step cell the tutorial asks for, still empty: a soft fill of the pad's [color] and a dashed
  * outline that stands out on the dark grid, there for the whole step (not only while lit).
  */
+@Composable
+fun TutoEraseCell() {
+    val red = Neon.Red
+    Canvas(Modifier.fillMaxSize().padding(3.dp).testTag("tuto_erase")) {
+        val r = androidx.compose.ui.geometry.CornerRadius(6.dp.toPx())
+        val w = 2.5.dp.toPx()
+        drawRoundRect(red, cornerRadius = r, style = Stroke(width = w, pathEffect = androidx.compose.ui.graphics.PathEffect.dashPathEffect(floatArrayOf(6.dp.toPx(), 4.dp.toPx()))))
+        val m = size.minDimension * 0.28f
+        val c = center
+        drawLine(red, c - androidx.compose.ui.geometry.Offset(m, m), c + androidx.compose.ui.geometry.Offset(m, m), strokeWidth = w)
+        drawLine(red, c + androidx.compose.ui.geometry.Offset(-m, m), c + androidx.compose.ui.geometry.Offset(m, -m), strokeWidth = w)
+    }
+}
+
+/** A cell of the step's target still empty, dotted. */
 @Composable
 fun TutoHintCell(color: Color) {
     Canvas(Modifier.fillMaxSize().padding(3.dp).testTag("tuto_hint")) {

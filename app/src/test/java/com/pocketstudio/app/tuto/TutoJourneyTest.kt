@@ -277,6 +277,12 @@ class TutoJourneyTest {
                 // The part a transition works in, then the gesture (a mixer's, a curve's, a pad's) as its target has it.
                 if (has("tuto_need")) click("tuto_need")
                 if (has("tuto_do")) click("tuto_do")
+                // Testers (lot « tuto 3 »): the hits to take away are crossed out where they are, their bar shown.
+                if (c == "gap") {
+                    // The page turns to the bar holding them once the last touch was seen (the composition's clock).
+                    compose.mainClock.advanceTimeBy(2_000)
+                    await("${s.id}: the hits to take away, crossed out") { has("tuto_erase") }
+                }
                 closeSheetIfAny()
                 val done = TutoChecks.show(s, p(), target)
                 assertNotNull("${s.id}: no way to do it", done)

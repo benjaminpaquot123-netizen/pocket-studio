@@ -518,6 +518,8 @@ private fun StepGrid(
     // them is the one shown (the second bar was out of sight), and the page does not turn with the music meanwhile.
     val tutoLeft = com.pocketstudio.app.tuto.TutoHints.cells?.takeIf { it.first == lane }?.second
         ?.filter { it < project.drums.steps && it !in hits }?.sorted().orEmpty()
+            // ... or the hits it asks to take away (crossed out), on their bar too.
+            .ifEmpty { com.pocketstudio.app.tuto.TutoHints.erase?.get(lane)?.filter { it in hits }?.sorted().orEmpty() }
     val tutoDemo = com.pocketstudio.app.tuto.TutoHints.demo
     LaunchedEffect(tutoLeft) {
         if (tutoLeft.isEmpty() || tutoLeft.any { it / per == chosenBar }) return@LaunchedEffect
@@ -700,6 +702,8 @@ private fun StepGrid(
                         if (velocity == null && com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) -> l == lane && step in cells } == true) {
                             com.pocketstudio.app.tuto.TutoHintCell(color)
                         }
+                        // A hit the step asks to take away: crossed out over it (drawn below, on top of the hit).
+                        val erasing = velocity != null && com.pocketstudio.app.tuto.TutoHints.erase?.get(lane)?.contains(step) == true
                         // « Montre-moi » taken back: the cells it lit fade out.
                         if (velocity == null) com.pocketstudio.app.tuto.TutoHints.fading?.let { (l, cells, alpha) ->
                             if (l == lane && step in cells && alpha > 0f) Box(Modifier.fillMaxSize().background(color.copy(alpha = 0.85f * alpha)))
@@ -739,6 +743,7 @@ private fun StepGrid(
                                 modifier = Modifier.padding(bottom = 2.dp),
                             )
                         }
+                        if (erasing) com.pocketstudio.app.tuto.TutoEraseCell()
                         if (rollStep == step && hit != null) {
                             RollMenu(hit, step % per + 1, close = { rollStep = -1 },
                                 force = { actions.setHitVelocity(step, it) }, roll = { n, r -> actions.setRoll(step, n, r) }, burst = { actions.burst(step, it) },

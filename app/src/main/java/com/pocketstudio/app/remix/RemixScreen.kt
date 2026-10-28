@@ -17,6 +17,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ContentCut
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.runtime.remember
+import androidx.compose.ui.text.drawText
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.PlayArrow
@@ -48,6 +53,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
@@ -84,7 +90,44 @@ class RemixUi(
     val memoryProblem: String? = null,
     /** [memoryProblem] is the device's size: checking again would change nothing. */
     val memoryNever: Boolean = false,
+    /** The project's song, where the song's voice can come in (null: the project has no song). */
+    val plan: SongPlan? = null,
+    /** Sixteenths the song lasts as the project plays it (0: not known yet). */
+    val songSteps: Int = 0,
+    /** Bars « → Pad » and « → Live » copy. */
+    val padBars: Int = 1,
+    /** The last cut of the song put on a pad, with its pad's sound (to trim it). */
+    val cut: RemixCutUi? = null,
+    /** Every pad is used: « → Pad » asks before covering pad [PadAsk.lane]. */
+    val padAsk: PadAsk? = null,
 )
+
+/**
+ * The project's song for the voice's placement: each part's name and length in sixteenths, the bar's
+ * length, and the places the voice can come in on (the first part of each name).
+ */
+class SongPlan(val parts: List<Pair<String, Int>>, val stepsPerBar: Int, val places: List<com.pocketstudio.model.RemixVoice.Place>) {
+    val steps: Int get() = parts.sumOf { it.second }
+
+    /** The part playing on song step [step], or -1 past the end. */
+    fun partAt(step: Int): Int {
+        var at = 0
+        parts.forEachIndexed { i, (_, n) ->
+            if (step < at + n) return i
+            at += n
+        }
+        return -1
+    }
+
+    /** The song step part [index] starts on. */
+    fun startOf(index: Int): Int = parts.take(index.coerceIn(0, parts.size)).sumOf { it.second }
+}
+
+/** The last cut on a pad: its pad, what is said of it, its sound and the sound's length (seconds) and outline. */
+class RemixCutUi(val lane: Int, val message: String, val sample: com.pocketstudio.model.PadSample?, val seconds: Double, val peaks: FloatArray)
+
+/** « → Pad » with every pad used: pad [lane] (named [name]) would be covered. */
+class PadAsk(val lane: Int, val name: String)
 
 class RemixActions(
     val downloadModel: () -> Unit = {},
@@ -116,6 +159,17 @@ class RemixActions(
     val setStartAt: (Float) -> Unit = {},
     /** Reads the free memory again. */
     val checkMemory: () -> Unit = {},
+    /** The song comes in on this song step of the project (a sixteenth from its start). */
+    val setAt: (Int) -> Unit = {},
+    val setPadBars: (Int) -> Unit = {},
+    /** « Découper la voix en phrases »: each phrase on a free pad. */
+    val splitVoice: () -> Unit = {},
+    /** The question of [RemixUi.padAsk]: cover the pad, or not. */
+    val confirmPad: () -> Unit = {},
+    val dismissPadAsk: () -> Unit = {},
+    /** The last cut's start, end, fades (a key per drag: one undo step). */
+    val editCut: (String?, (com.pocketstudio.model.PadSample) -> com.pocketstudio.model.PadSample) -> Unit = { _, _ -> },
+    val playCut: () -> Unit = {},
     /** The effects box of the remix's strip (the live pads play there too); null: no button. */
     val effects: (() -> Unit)? = null,
 )
@@ -214,7 +268,6 @@ private fun Progress(text: String, fraction: Float?, cancel: () -> Unit) {
 @Composable
 private fun InProject(ui: RemixUi, actions: RemixActions) {
     val r = ui.remix
-    var padBars by rememberSaveable { mutableIntStateOf(1) }
     NeonCard(modifier = Modifier.testTag("remix_project")) {
         SectionLabel(tr("Dans le projet : %s", r.name), color = Neon.Magenta, foldKey = "Dans le projet")
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -222,23 +275,16 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
                 Icon(if (ui.transportPlaying) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null)
                 Text(" " + if (ui.transportPlaying) tr("Arrêter") else tr("Jouer"))
             }
-            Text(tr("Mesure %d", r.startBar + 1), Modifier.weight(1f), maxLines = 1)
+            ui.overview?.let { ov ->
+                val now = if (ui.position >= 0) ui.position else r.startFrame(SAMPLE_RATE)
+                Text(
+                    "${clock(now)} / ${clock(ov.frames)}",
+                    style = MonoStyle, color = Neon.TextSecondary, maxLines = 1, modifier = Modifier.weight(1f),
+                )
+            } ?: Spacer(Modifier.weight(1f))
             actions.effects?.let { open ->
                 TextButton(onClick = open, modifier = Modifier.testTag("remix_effects")) { Text(tr("Effets")) }
             }
-            IconButton(onClick = { actions.setStartBar(r.startBar - 1) }, enabled = r.startBar > 0) {
-                Icon(Icons.Filled.Remove, contentDescription = tr("Mesure précédente"))
-            }
-            IconButton(onClick = { actions.setStartBar(r.startBar + 1) }, modifier = Modifier.testTag("remix_bar_next")) {
-                Icon(Icons.Filled.Add, contentDescription = tr("Mesure suivante"))
-            }
-        }
-        ui.overview?.let { ov ->
-            val now = if (ui.position >= 0) ui.position else r.startFrame(SAMPLE_RATE)
-            Text(
-                "${clock(now)} / ${clock(ov.frames)}" + if (ui.position < 0) " · " + tr("départ") else "",
-                style = MonoStyle, color = Neon.TextSecondary,
-            )
         }
         if (ui.remixLoading) {
             Text(tr("Chargement des pistes…"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
@@ -259,17 +305,31 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
                 LinearProgressIndicator(Modifier.fillMaxWidth(), color = Neon.Magenta)
             }
         }
+        ui.plan?.takeIf { it.parts.isNotEmpty() }?.let { plan -> Placement(plan, r.atStep, ui.songSteps, actions.setAt) }
+        // The song's own start (its bar heard first): not where it comes in, said so.
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                tr("Partir de la mesure %d de la chanson", r.startBar + 1),
+                Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium,
+            )
+            IconButton(onClick = { actions.setStartBar(r.startBar - 1) }, enabled = r.startBar > 0, modifier = Modifier.testTag("remix_bar_prev")) {
+                Icon(Icons.Filled.Remove, contentDescription = tr("Mesure précédente"))
+            }
+            IconButton(onClick = { actions.setStartBar(r.startBar + 1) }, modifier = Modifier.testTag("remix_bar_next")) {
+                Icon(Icons.Filled.Add, contentDescription = tr("Mesure suivante"))
+            }
+        }
         FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(tr("Vers le pad :"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             listOf(1, 2, 4).forEach { b ->
                 FilterChip(
-                    selected = padBars == b, onClick = { padBars = b },
+                    selected = ui.padBars == b, onClick = { actions.setPadBars(b) },
                     label = { Text(com.pocketstudio.app.ui.barsShort(b)) },
                     colors = pillColors(),
+                    modifier = Modifier.testTag("remix_pad_bars_$b"),
                 )
             }
         }
-        ui.padTask?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Amber) }
         Demucs.STEMS.forEachIndexed { i, stem ->
             val m = r.stems[i]
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -284,8 +344,8 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
                     colors = pillColors(Neon.Acid),
                     modifier = Modifier.testTag("stem_solo_$i"),
                 )
-                TextButton(onClick = { actions.stemToPad(i, padBars) }, modifier = Modifier.testTag("stem_pad_$i")) { Text("→ Pad") }
-                TextButton(onClick = { actions.stemToLive(i, padBars) }, modifier = Modifier.testTag("stem_live_$i")) { Text("→ Live") }
+                TextButton(onClick = { actions.stemToPad(i, ui.padBars) }, modifier = Modifier.testTag("stem_pad_$i")) { Text("→ Pad") }
+                TextButton(onClick = { actions.stemToLive(i, ui.padBars) }, modifier = Modifier.testTag("stem_live_$i")) { Text("→ Live") }
             }
             ui.overview?.let { ov ->
                 Waveform(
@@ -298,15 +358,172 @@ private fun InProject(ui: RemixUi, actions: RemixActions) {
                 )
             }
             ProSlider(value = m.volume, onValueChange = { actions.setStemVolume(i, it) }, modifier = Modifier.testTag("stem_volume_$i"))
+            if (stem == "vocals") {
+                OutlinedButton(onClick = actions.splitVoice, modifier = Modifier.fillMaxWidth().testTag("remix_split_voice")) {
+                    Icon(Icons.Filled.ContentCut, contentDescription = null)
+                    Text(" " + tr("Découper la voix en phrases (pads libres)"))
+                }
+            }
         }
+        // Said where the user just touched: the cut's progress, its pad, or why it failed.
+        ui.padTask?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("remix_pad_task")) }
+        ui.cut?.let { CutCard(it, actions) }
         Text(
-            tr("Les pistes démarrent avec le Rythme, à partir de la mesure choisie (trait vert). Touche une forme d'onde pour partir de là.") + " " +
-                tr("« → Pad » copie les mesures choisies sur le pad sélectionné, « → Live » sur un pad live libre (Live › Pads) pour lancer et couper chaque partie en rythme."),
+            tr("La chanson part de la mesure choisie (trait vert) : touche une forme d'onde pour partir de là.") + " " +
+                tr("« → Pad » copie les mesures choisies sur un pad libre (jamais sur un son que ton rythme joue), « → Live » sur un pad live libre (Live › Pads) pour lancer et couper chaque partie en rythme."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         TextButton(onClick = actions.clearRemix, modifier = Modifier.testTag("remix_clear")) { Text(tr("Retirer du projet")) }
     }
+    ui.padAsk?.let { ask ->
+        ScaledAlertDialog(
+            onDismissRequest = actions.dismissPadAsk,
+            title = { Text(tr("Tous les pads servent déjà")) },
+            text = { Text(tr("Remplacer le son du pad %1\$d (« %2\$s ») par ce passage ? Partout où ton rythme joue ce pad, on entendra la chanson.", ask.lane + 1, ask.name)) },
+            confirmButton = {
+                TextButton(onClick = actions.confirmPad, modifier = Modifier.testTag("remix_pad_replace")) { Text(tr("Remplacer"), color = Neon.RedText) }
+            },
+            dismissButton = { TextButton(onClick = actions.dismissPadAsk, modifier = Modifier.testTag("remix_pad_keep")) { Text(tr("Annuler")) } },
+            modifier = Modifier.testTag("remix_pad_ask"),
+        )
+    }
 }
+
+/**
+ * Where the song comes in: the project's song as a strip of parts with the song over it (drag it,
+ * or touch a place), the first part of each name one touch away, and a bar earlier or later.
+ */
+@Composable
+private fun Placement(plan: SongPlan, atStep: Int, songSteps: Int, setAt: (Int) -> Unit) {
+    val spb = plan.stepsPerBar.coerceAtLeast(1)
+    val part = plan.partAt(atStep)
+    val bar = atStep / spb + 1
+    Text(
+        when {
+            part < 0 -> tr("La chanson entre à la mesure %d, après la fin de ton morceau : place-la plus tôt.", bar)
+            plan.startOf(part) == atStep -> tr("La chanson entre à la mesure %1\$d, au début de « %2\$s ».", bar, plan.parts[part].first)
+            else -> tr("La chanson entre à la mesure %1\$d, dans « %2\$s ».", bar, plan.parts[part].first)
+        },
+        style = MaterialTheme.typography.bodyMedium,
+        color = if (part < 0) Neon.Amber else Neon.TextPrimary,
+        modifier = Modifier.testTag("remix_at_text"),
+    )
+    SongStrip(plan, atStep, songSteps, setAt)
+    Text(tr("Glisse la chanson sur ton morceau, ou place-la au début de :"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+    Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        plan.places.forEach { place ->
+            FilterChip(
+                selected = atStep == place.step,
+                onClick = { setAt(place.step) },
+                label = { Text(if (place.index == 0) tr("Début") else place.name, maxLines = 1) },
+                colors = pillColors(Neon.Magenta),
+                modifier = Modifier.testTag("remix_place_${place.index}"),
+            )
+        }
+    }
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(tr("Une mesure plus tôt ou plus tard"), Modifier.weight(1f), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        IconButton(onClick = { setAt(((atStep - 1) / spb * spb).coerceAtLeast(0)) }, enabled = atStep > 0, modifier = Modifier.testTag("remix_at_prev")) {
+            Icon(Icons.Filled.Remove, contentDescription = tr("Une mesure plus tôt"))
+        }
+        IconButton(onClick = { setAt((atStep / spb + 1) * spb) }, enabled = atStep < plan.steps, modifier = Modifier.testTag("remix_at_next")) {
+            Icon(Icons.Filled.Add, contentDescription = tr("Une mesure plus tard"))
+        }
+    }
+}
+
+/**
+ * The project's song, part after part (names written where they fit), with the song played along
+ * over it as a magenta band from where it comes in. A drag moves the band (snapped to bars), a touch
+ * puts its start there.
+ */
+@Composable
+private fun SongStrip(plan: SongPlan, atStep: Int, songSteps: Int, setAt: (Int) -> Unit) = com.pocketstudio.ui.LeftToRight {
+    val spb = plan.stepsPerBar.coerceAtLeast(1)
+    val total = maxOf(plan.steps, atStep + songSteps.coerceAtLeast(spb), 1)
+    val text = androidx.compose.ui.text.rememberTextMeasurer()
+    val style = androidx.compose.ui.text.TextStyle(color = Neon.TextPrimary, fontSize = 11.sp)
+    var dragged by remember { mutableStateOf<Int?>(null) }
+    val shown = dragged ?: atStep
+    val latest = androidx.compose.runtime.rememberUpdatedState(atStep)
+    val colors = listOf(Neon.SurfaceHigh, Neon.Surface)
+    val band = Neon.Magenta
+    fun snap(step: Float): Int = ((step / spb).roundToInt() * spb).coerceIn(0, (plan.steps / spb) * spb)
+    Canvas(
+        Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .testTag("remix_plan")
+            .pointerInput(plan.steps, spb) { detectTapGestures { o -> setAt(snap(o.x / size.width * total)) } }
+            .pointerInput(plan.steps, spb) {
+                var grab = 0f
+                detectHorizontalDragGestures(
+                    onDragStart = { o -> grab = o.x / size.width * total - latest.value; dragged = latest.value },
+                    onDragEnd = { dragged?.let(setAt); dragged = null },
+                    onDragCancel = { dragged = null },
+                ) { change, _ ->
+                    change.consume()
+                    dragged = snap(change.position.x / size.width * total - grab)
+                }
+            },
+    ) {
+        val w = size.width
+        val h = size.height
+        var at = 0
+        plan.parts.forEachIndexed { i, (name, steps) ->
+            val x0 = at.toFloat() / total * w
+            val x1 = (at + steps).toFloat() / total * w
+            drawRect(colors[i % 2], Offset(x0, h * 0.45f), androidx.compose.ui.geometry.Size(x1 - x0, h * 0.55f))
+            val label = text.measure(name, style, maxLines = 1)
+            if (label.size.width < x1 - x0 - 4) drawText(label, topLeft = Offset(x0 + 3, h * 0.45f + (h * 0.55f - label.size.height) / 2))
+            at += steps
+        }
+        // The song played along: from where it comes in, as long as it lasts (a stub when unknown).
+        val v0 = shown.toFloat() / total * w
+        val v1 = (shown + songSteps.coerceAtLeast(spb)).toFloat() / total * w
+        drawRoundRect(band, Offset(v0, h * 0.05f), androidx.compose.ui.geometry.Size((v1 - v0).coerceAtLeast(6f), h * 0.32f), androidx.compose.ui.geometry.CornerRadius(6f, 6f))
+        drawLine(band, Offset(v0, 0f), Offset(v0, h), strokeWidth = 4f)
+    }
+}
+
+/** The last cut on a pad: its start, its end and a fade, heard with ▶. */
+@Composable
+private fun CutCard(cut: RemixCutUi, actions: RemixActions) {
+    Text(cut.message, style = MaterialTheme.typography.bodyMedium, color = Neon.Acid, modifier = Modifier.testTag("remix_cut_message"))
+    val s = cut.sample ?: return
+    if (cut.seconds <= 0) return
+    if (cut.peaks.isNotEmpty()) com.pocketstudio.app.rhythm.Waveform(cut.peaks, Neon.Magenta, Modifier.testTag("remix_cut_wave"), region = s.start to s.end)
+    com.pocketstudio.app.mixer.LabeledSlider(tr("Début"), tr("%.2f s", s.start * cut.seconds), s.start, "remix_cut_start") { v ->
+        actions.editCut("start") { it.copy(start = minOf(v, it.end - 0.01f).coerceAtLeast(0f)) }
+    }
+    com.pocketstudio.app.mixer.LabeledSlider(tr("Fin"), tr("%.2f s", s.end * cut.seconds), s.end, "remix_cut_end") { v ->
+        actions.editCut("end") { it.copy(end = maxOf(v, it.start + 0.01f).coerceAtMost(1f)) }
+    }
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(tr("Fondu"), style = MaterialTheme.typography.bodyMedium)
+        val fade = CUT_FADES.minBy { (_, a, r) -> kotlin.math.abs(a - s.attack) + kotlin.math.abs(r - s.release) }
+        CUT_FADES.forEachIndexed { k, f ->
+            FilterChip(
+                selected = f == fade,
+                onClick = { actions.editCut(null) { it.copy(attack = f.second, release = f.third) } },
+                label = { Text(f.first()) },
+                colors = pillColors(),
+                modifier = Modifier.testTag("remix_cut_fade_$k"),
+            )
+        }
+        Spacer(Modifier.weight(1f))
+        IconButton(onClick = actions.playCut, modifier = Modifier.testTag("remix_cut_play")) {
+            Icon(Icons.Filled.PlayArrow, contentDescription = tr("Écouter le pad"), tint = Neon.Cyan)
+        }
+    }
+}
+
+/** The fades a cut offers: name, attack and release (seconds). « Court » is what a cut gets. */
+private val CUT_FADES = listOf(
+    Triple({ tr("Sans") }, 0f, 0.003f),
+    Triple({ tr("Court") }, com.pocketstudio.model.RemixVoice.CUT_ATTACK, com.pocketstudio.model.RemixVoice.CUT_RELEASE),
+    Triple({ tr("Long") }, 0.05f, 0.3f),
+)
 
 /** Asks before deleting a separated song; refuses while a project plays it along. */
 @Composable

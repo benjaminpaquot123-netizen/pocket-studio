@@ -507,7 +507,9 @@ abstract class HumanTester(private val seat: String) {
         if (v.stemOverview.value == null) return "la chanson « ${r.name} » du Remix ne s'entend pas encore (ses pistes se chargent)"
         val solo = r.stems.any { it.solo }
         val heard = Demucs.STEMS.indices.filter { i -> val m = r.stems[i]; (if (solo) m.solo else !m.mute) && m.volume > 0.01f }
-        val from = if (r.startBar > 0) ", depuis sa mesure ${r.startBar + 1}" else ""
+        val from = (if (r.startBar > 0) ", depuis sa mesure ${r.startBar + 1}" else "") +
+            // R2: placed later in the song (its voice on the drop), said as the ear would tell.
+            (if (r.atStep > 0) ", qui entre à la mesure ${r.atStep / v.project.value.stepsPerBar.coerceAtLeast(1) + 1} du morceau" else "")
         // Where the song is: known while the bench's engine plays it (the Remix page on screen).
         val voice = if (VOCALS in heard && NativeEngine.sink != null) voiceNow(r.name, v.stemPosition.value) else ""
         return when {
@@ -548,7 +550,8 @@ abstract class HumanTester(private val seat: String) {
     /** Pads holding a part of a separated song: pad → (its sound's name, it plays in the loop). */
     private fun stemPads(): Map<Int, Pair<String, Boolean>> {
         val p = lastVm?.project?.value ?: return emptyMap()
-        val stem = Regex("^(${STEM_NAMES.joinToString("|")}) · ")
+        // « Voix · <chanson> » (older cuts) or « Voix 2 » (R2: numbered cuts).
+        val stem = Regex("^(${STEM_NAMES.joinToString("|")})( · | \\d+$)")
         return p.drums.lanes.withIndex().mapNotNull { (i, lane) ->
             lane.sample?.name?.takeIf { stem.containsMatchIn(it) }?.let { i to (it to lane.hits.isNotEmpty()) }
         }.toMap()

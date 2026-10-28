@@ -65,7 +65,8 @@ data class KitChoice(val id: String, val name: String, val group: Int) {
  * (« Standard · Caisse »), else « Perso ».
  */
 fun kitName(p: Project): String {
-    val samples = p.drums.lanes.mapNotNull { it.sample?.name }
+    // Cuts of a separated song (« Voix 2 ») sit on free pads: they never rename the kit (R2).
+    val samples = p.drums.lanes.mapNotNull { it.sample?.name }.filterNot(com.pocketstudio.model.RemixVoice::isCut)
     if (samples.isEmpty()) return when {
         // Tutorial lot 3: the drum & bass kit built in (its short kick on the kick's pad).
         com.pocketstudio.model.StudioDrums.isDnbKick(p.padVoices[0]) -> tr("Drum & bass")

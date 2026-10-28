@@ -1189,6 +1189,36 @@ open class ScreenshotTest {
         )
     }
 
+    /** R2 (remix lot 1): the voice placed on the drop, cut into phrases, the last one trimmed. */
+    @Test
+    @Config(qualifiers = "w400dp-h1900dp-xxhdpi")
+    fun remixVoiceOnTheDrop() = shoot("remix_voice_drop") {
+        val remix = com.pocketstudio.model.Remix("abc", "Ma chanson", 120.0, 0.0, seconds = 40.0, followTempo = true, atStep = 192)
+            .withStem(0) { it.copy(mute = true) }.withStem(1) { it.copy(mute = true) }.withStem(2) { it.copy(mute = true) }
+        val plan = com.pocketstudio.app.remix.SongPlan(
+            listOf("Intro" to 128, "Montée" to 64, "Drop" to 128, "Pause" to 64, "Drop 2" to 128), 16,
+            listOf(
+                com.pocketstudio.model.RemixVoice.Place(0, "Intro", 0), com.pocketstudio.model.RemixVoice.Place(1, "Montée", 128),
+                com.pocketstudio.model.RemixVoice.Place(2, "Drop", 192), com.pocketstudio.model.RemixVoice.Place(3, "Pause", 320),
+                com.pocketstudio.model.RemixVoice.Place(4, "Drop 2", 384),
+            ),
+        )
+        val peaks = FloatArray(160) { i -> if (i % 40 in 6..30) 0.3f + 0.5f * kotlin.math.abs(kotlin.math.sin(i * 0.4f)) else 0.01f }
+        com.pocketstudio.app.remix.RemixScreen(
+            com.pocketstudio.app.remix.RemixUi(
+                true, com.pocketstudio.app.remix.SeparationState.Idle, emptyList(),
+                remix = remix, projectBpm = 174.0, plan = plan, songSteps = 464, padBars = 2,
+                overview = com.pocketstudio.app.rhythm.StemOverview(List(4) { st -> FloatArray(400) { i -> if (st == 3) peaks[i * 160 / 400] else 0.3f + 0.4f * kotlin.math.abs(kotlin.math.sin(i * 0.13f)) } }, 48_000L * 40),
+                cut = com.pocketstudio.app.remix.RemixCutUi(
+                    12, "6 phrases sur les pads 9, 10, 11, 12, 13, 14. Pose-les dans Batterie, sur la partie de ton choix.",
+                    com.pocketstudio.model.PadSample("a.wav", "Voix 6", start = 0.04f, end = 0.92f, attack = com.pocketstudio.model.RemixVoice.CUT_ATTACK, release = com.pocketstudio.model.RemixVoice.CUT_RELEASE),
+                    2.6, FloatArray(120) { i -> if (i in 8..110) 0.2f + 0.6f * kotlin.math.abs(kotlin.math.sin(i * 0.21f)) else 0.02f },
+                ),
+            ),
+            com.pocketstudio.app.remix.RemixActions(effects = {}),
+        )
+    }
+
     @Test
     @Config(qualifiers = "w400dp-h1500dp-xxhdpi")
     fun acidEditor() = shoot("acid_editor") {

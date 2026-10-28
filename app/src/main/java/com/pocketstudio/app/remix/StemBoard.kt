@@ -50,9 +50,18 @@ interface StemEdits {
 
     /**
      * The phrases of [stem] (a voice): the stretches between its silences, in frames, at most
-     * [max], each snapped to the nearest beat when [beatFrames] is given.
+     * [max], each snapped to the nearest beat when [beatFrames] is given. Each range is
+     * `start until end` (so a selection's `endFrame` is `range.last + 1`), in time order.
      */
     fun phrases(stem: Pcm, beatFrames: Long? = null, max: Int = 8): List<LongRange>
+
+    /**
+     * As [phrases], the beat grid starting at frame [firstBeatFrame] of the stem (the song's first
+     * beat, `Remix.firstBeat` × rate) instead of frame 0. Added by B2: a song rarely starts on a
+     * beat. The default ignores the offset, so simple fakes need not implement it.
+     */
+    fun phrases(stem: Pcm, beatFrames: Long?, max: Int, firstBeatFrame: Long): List<LongRange> =
+        phrases(stem, beatFrames, max)
 }
 
 /** What the board asks of the app (B3). */

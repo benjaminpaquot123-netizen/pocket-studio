@@ -370,5 +370,6 @@
   "la fabrication du son s'est bloquée, réessaie dans un instant": "het geluid maken liep vast, probeer het zo opnieuw",
   "Plus aucune partie possible : la prise va s'arrêter.": "Geen delen meer mogelijk: de opname stopt zo.",
   "Plus qu'une partie possible : la prise s'arrêtera ensuite.": "Nog maar 1 deel mogelijk: daarna stopt de opname.",
-  "Plus de place pour d'autres réglages (16 au plus) : 1 n'a pas été écrit.": "Geen ruimte meer voor andere instellingen (hoogstens 16): 1 is niet geschreven."
+  "Plus de place pour d'autres réglages (16 au plus) : 1 n'a pas été écrit.": "Geen ruimte meer voor andere instellingen (hoogstens 16): 1 is niet geschreven.",
+  "Ton morceau garde son tempo (%s) : la chanson s'y cale, sans changer de hauteur.": "Je nummer houdt zijn tempo (%s): het liedje volgt het, zonder van toonhoogte te veranderen."
 }

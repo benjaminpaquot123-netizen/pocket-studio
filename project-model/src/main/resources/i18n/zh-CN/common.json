@@ -49,5 +49,6 @@
   "Elle tourne en boucle pendant que tu la modifies. ⟳ Boucler, en haut, pour reprendre le morceau.": "编辑时它会一直循环。点顶部的 ⟳ 循环，回到整首歌。",
   "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "循环中（⟳ 循环）。▶ 单独播放这个段落。",
   "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "歌曲正在播放：点一下网格，这个段落就会留在你手边循环。",
-  "Boucler": "循环"
+  "Boucler": "循环",
+  "Tout le morceau, du début": "整首歌，从头开始"
 }

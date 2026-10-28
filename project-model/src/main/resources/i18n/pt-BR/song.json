@@ -370,5 +370,6 @@
   "la fabrication du son s'est bloquée, réessaie dans un instant": "a criação do som travou, tente de novo daqui a pouco",
   "Plus aucune partie possible : la prise va s'arrêter.": "Não cabe mais nenhuma parte: o take vai parar.",
   "Plus qu'une partie possible : la prise s'arrêtera ensuite.": "Só mais uma parte possível: depois o take para.",
-  "Plus de place pour d'autres réglages (16 au plus) : 1 n'a pas été écrit.": "Sem espaço para mais ajustes (16 no máximo): 1 não foi escrito."
+  "Plus de place pour d'autres réglages (16 au plus) : 1 n'a pas été écrit.": "Sem espaço para mais ajustes (16 no máximo): 1 não foi escrito.",
+  "Ton morceau garde son tempo (%s) : la chanson s'y cale, sans changer de hauteur.": "Sua música mantém o andamento (%s): a canção se ajusta a ele, sem mudar de tom."
 }

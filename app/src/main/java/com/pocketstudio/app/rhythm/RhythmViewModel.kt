@@ -29,6 +29,7 @@ import com.pocketstudio.engine.NativeStems
 import com.pocketstudio.app.remix.StemSet
 import com.pocketstudio.app.remix.StemStore
 import com.pocketstudio.model.Remix
+import com.pocketstudio.model.hasMusicOfItsOwn
 import com.pocketstudio.model.LiveSlots
 import com.pocketstudio.model.LiveState
 import com.pocketstudio.model.LiveDivision
@@ -5181,23 +5182,30 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /**
-     * The project plays a separated song along, at the song's tempo and in its key. One undo step.
+     * The project plays a separated song along. One undo step. A project with music of its own keeps
+     * its tempo and its key: the song follows the project's tempo (stretched, its pitch kept; remix
+     * lot 1: Sarah's and Mehdi's jump up went from 174 to 120 BPM and changed key without a word).
+     * An empty project takes the song's tempo and key. Returns true when the project took them.
      * [heard]: the parts the user kept on while listening (« Voix » alone): the others come in muted.
      */
-    fun useSong(set: StemSet, heard: List<Boolean>? = null) {
+    fun useSong(set: StemSet, heard: List<Boolean>? = null): Boolean {
         val info = set.info
+        val adopts = !project.value.hasMusicOfItsOwn()
         session.edit("remix") { p ->
-            p.copy(
+            val remix = Remix(set.id, set.name, info.bpm, info.firstBeat, seconds = set.seconds, stems = Remix.stemsHeard(heard))
+            if (!adopts) p.copy(remix = remix.copy(followTempo = info.bpm > 0 && kotlin.math.abs(info.bpm - p.tempoBpm) > 0.05))
+            else p.copy(
                 tempoBpm = if (info.bpm > 0) info.bpm else p.tempoBpm,
                 harmony = info.root?.let { Harmony(it, if (info.minor) Scale.Minor else Scale.Major) } ?: p.harmony,
-                remix = Remix(set.id, set.name, info.bpm, info.firstBeat, seconds = set.seconds, stems = Remix.stemsHeard(heard)),
+                remix = remix,
             )
         }
         StemStore.pin(getApplication(), set.id)
-        if (!NativeEngine.isAvailable) return
+        if (!NativeEngine.isAvailable) return adopts
         NativeEngine.setTempo(project.value.tempoBpm)
         if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
         pushRemix()
+        return adopts
     }
 
     fun clearRemix() {

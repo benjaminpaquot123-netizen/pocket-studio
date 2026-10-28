@@ -49,5 +49,6 @@
   "Elle tourne en boucle pendant que tu la modifies. ⟳ Boucler, en haut, pour reprendre le morceau.": "يتكرر أثناء تعديله. ⟳ Loop في الأعلى لاستعادة الأغنية.",
   "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "في تكرار (⟳ Loop). ▶ يشغّل هذا الجزء وحده.",
   "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "الأغنية تعمل: انقر على الشبكة ويبقى هذا الجزء تحت أصابعك، في تكرار.",
-  "Boucler": "Loop"
+  "Boucler": "Loop",
+  "Tout le morceau, du début": "المقطوعة كاملة، من البداية"
 }

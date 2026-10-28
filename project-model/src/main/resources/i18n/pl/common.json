@@ -49,5 +49,6 @@
   "Elle tourne en boucle pendant que tu la modifies. ⟳ Boucler, en haut, pour reprendre le morceau.": "Gra w pętli, gdy ją edytujesz. ⟳ Pętla u góry przywraca utwór.",
   "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "W pętli (⟳ Pętla). ▶ gra tylko tę część.",
   "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "Utwór gra: dotknij siatki, a ta część zostanie pod palcami, w pętli.",
-  "Boucler": "Pętla"
+  "Boucler": "Pętla",
+  "Tout le morceau, du début": "Cały utwór, od początku"
 }

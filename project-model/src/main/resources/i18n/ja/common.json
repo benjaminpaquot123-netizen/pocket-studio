@@ -49,5 +49,6 @@
   "Elle tourne en boucle pendant que tu la modifies. ⟳ Boucler, en haut, pour reprendre le morceau.": "編集中はループ再生します。上の ⟳ ループで曲に戻れます。",
   "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "ループ中（⟳ ループ）。▶ でこのパートだけ再生。",
   "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "曲を再生中：グリッドをタップすると、このパートが手元でループします。",
-  "Boucler": "ループ"
+  "Boucler": "ループ",
+  "Tout le morceau, du début": "曲全体を最初から"
 }

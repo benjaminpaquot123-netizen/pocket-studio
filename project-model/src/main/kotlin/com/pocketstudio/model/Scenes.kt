@@ -175,7 +175,7 @@ internal fun Project.syncScenes(): Project {
         scenesWithTakes() + mixer.insertScenes
     var size = all.size
     while (size - 1 > index && all[size - 1].isEmpty && all[size - 1].label.isBlank() && size - 1 !in used) size--
-    val list = all.take(size)
+    val list = if (index == scene) withEditsInBarCopies(all.take(size), index, scenes[index].drums, drums) else all.take(size)
     return copy(
         scene = index,
         scenes = list.mapIndexed { i, s ->
@@ -184,6 +184,57 @@ internal fun Project.syncScenes(): Project {
         },
         song = song.filter { it.scene in list.indices }.take(SongPart.MAX_PARTS).map { it.sanitized(partKeys, list.size, remix.setId != null) },
     )
+}
+
+/**
+ * The hits just written in scene [index] ([before] → [after], its drums) also go to the one-bar
+ * « Crash » and « Fill » scenes the song plays for one of its bars ([DrumArrangement], [fillAtEnd]):
+ * those are copies of that bar made when the song was built, and a pad put in the Drop afterwards
+ * (a phrase of a song's voice) was heard in the Drop looped but not on the Drop's first and last
+ * bars of the song, nor in its export (remix lot 1, Mehdi). A step changes in a copy only where
+ * the copy still agrees with what the scene had there: its crash and its fill stay theirs.
+ * [scenes] itself when nothing changes.
+ */
+private fun Project.withEditsInBarCopies(scenes: List<Scene>, index: Int, before: DrumPattern, after: DrumPattern): List<Scene> {
+    if (before === after || before.steps != after.steps || song.isEmpty()) return scenes
+    val changed = after.lanes.indices.filter { i ->
+        val b = before.lanes.getOrNull(i)
+        val a = after.lanes[i]
+        // A pad with its own loop (a polyrhythm) has no bar of the scene's loop to follow.
+        b != null && b.hits != a.hits && b.length == 0 && a.length == 0
+    }.toSet()
+    if (changed.isEmpty()) return scenes
+    val spb = stepsPerBar
+    val loopBars = (after.steps / spb).coerceAtLeast(1)
+    // Each copy and the bar of the scene's loop it stands for (the other tracks carry on from there).
+    val copies = song.mapNotNull { part ->
+        val copy = part.play[SongPart.DRUMS]?.takeIf { part.scene == index && it != index } ?: return@mapNotNull null
+        val s = scenes.getOrNull(copy) ?: return@mapNotNull null
+        if ((s.label != DrumArrangement.CRASH_LABEL && s.label != PartIntents.FILL_LABEL) || s.drums.steps != spb) return@mapNotNull null
+        val bar = (part.from.filterKeys { it != SongPart.DRUMS }.values.maxOrNull() ?: 0) % loopBars
+        copy to bar
+    }.distinct()
+    if (copies.isEmpty()) return scenes
+    val out = scenes.toMutableList()
+    for ((copy, bar) in copies) {
+        val drums = out[copy].drums
+        val first = bar * spb
+        val lanes = drums.lanes.mapIndexed { i, lane ->
+            if (i !in changed) return@mapIndexed lane
+            val was = before.lanes[i].hits
+            val now = after.lanes[i].hits
+            var hits = lane.hits
+            for (step in first until first + spb) {
+                val old = was[step]
+                val new = now[step]
+                if (old == new || lane.hits[step - first] != old) continue
+                hits = if (new == null) hits - (step - first) else hits + ((step - first) to new)
+            }
+            if (hits == lane.hits) lane else lane.copy(hits = hits)
+        }
+        if (lanes != drums.lanes) out[copy] = out[copy].copy(drums = drums.copy(lanes = lanes))
+    }
+    return out
 }
 
 /**

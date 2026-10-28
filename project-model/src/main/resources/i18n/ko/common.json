@@ -49,5 +49,6 @@
   "Elle tourne en boucle pendant que tu la modifies. ⟳ Boucler, en haut, pour reprendre le morceau.": "편집하는 동안 루프돼요. 위쪽 ⟳ 루프를 누르면 곡으로 돌아가요.",
   "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "루프 중 (⟳ 루프). ▶를 누르면 이 파트만 재생해요.",
   "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "곡이 재생 중이에요. 그리드를 탭하면 이 파트가 손끝에 남아 루프돼요.",
-  "Boucler": "루프"
+  "Boucler": "루프",
+  "Tout le morceau, du début": "곡 전체, 처음부터"
 }

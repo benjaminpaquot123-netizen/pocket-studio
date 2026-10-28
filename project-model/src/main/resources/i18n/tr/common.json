@@ -49,5 +49,6 @@
   "Elle tourne en boucle pendant que tu la modifies. ⟳ Boucler, en haut, pour reprendre le morceau.": "Sen düzenlerken döngüde çalar. Şarkıya dönmek için üstteki ⟳ Döngü.",
   "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "Döngüde (⟳ Döngü). ▶ bu bölümü tek başına çalar.",
   "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "Şarkı çalıyor: ızgaraya dokun, bu bölüm döngüde parmaklarının altında kalır.",
-  "Boucler": "Döngü"
+  "Boucler": "Döngü",
+  "Tout le morceau, du début": "Parçanın tamamı, baştan"
 }

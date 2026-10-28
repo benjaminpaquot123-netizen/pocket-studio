@@ -49,5 +49,6 @@
   "Elle tourne en boucle pendant que tu la modifies. ⟳ Boucler, en haut, pour reprendre le morceau.": "Er läuft im Loop, während du ihn bearbeitest. ⟳ Loop oben bringt den Song zurück.",
   "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "Im Loop (⟳ Loop). ▶ spielt nur diesen Teil.",
   "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "Der Song läuft: Tippe auf das Raster und dieser Teil bleibt im Loop unter deinen Fingern.",
-  "Boucler": "Loop"
+  "Boucler": "Loop",
+  "Tout le morceau, du début": "Der ganze Song, von Anfang an"
 }

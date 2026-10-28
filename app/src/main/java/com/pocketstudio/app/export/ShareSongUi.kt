@@ -42,10 +42,19 @@ fun ShareSongProgress(rhythmVm: RhythmViewModel, wav: Boolean = false) {
             if (WavExporter.share(context, files, tr("Partager mon morceau"))) {
                 // G5: the Guide's « Prêt à partager ? » is decided (« C'est partagé »).
                 rhythmVm.guide.markDone("share.ready", "keep")
+                // Remix testers (Mehdi): the share ended with no word from the app; the file is said ready, and where its copy is.
+                android.widget.Toast.makeText(context, shareReadyText(files, rhythmVm.export.value.savedInMusic), android.widget.Toast.LENGTH_LONG).show()
             }
         }
     }
     if (export.sharing) ShareProgressDialog(export, cancel = rhythmVm::cancelExport, dismiss = rhythmVm::dismissShare, wav = wav)
+}
+
+/** « C'est prêt » once the song is made and its share menu open: its file, and its copy in Musique when there is one. */
+internal fun shareReadyText(files: List<java.io.File>, savedInMusic: Boolean): String {
+    val name = files.joinToString(", ") { it.name }
+    return if (savedInMusic) tr("C'est prêt : %s, une copie est aussi dans Musique › BenStudio.", name)
+    else tr("C'est prêt : %s. Choisis l'appli pour l'envoyer.", name)
 }
 
 /**

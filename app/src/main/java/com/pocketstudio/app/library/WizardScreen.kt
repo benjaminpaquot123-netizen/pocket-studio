@@ -252,6 +252,9 @@ private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
             tr("Touche une carte pour lire sa description, ▶ pour l'écouter."),
         style = MaterialTheme.typography.bodyMedium,
     )
+    // Every card says « 174 BPM »: the word explained once, above them (Mode simple).
+    PlainWordsLines("BPM")
+    packs.message?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("wizard_style_message")) }
     // The card opened to be read (the chosen style's when coming back).
     var open by rememberSaveable { mutableStateOf(chosen) }
     StyleFamilies("wizard", style = { s ->
@@ -347,6 +350,7 @@ private fun LineStep(
         SectionLabel(tr(role.title), color = color)
         Text(tr(role.explanation), style = MaterialTheme.typography.bodyLarge)
         Text(styleTip(style, line.tip), style = MaterialTheme.typography.bodyMedium, fontStyle = FontStyle.Italic, color = Neon.TextSecondary)
+        PlainWordsLines(role.explanation, line.tip)
         PatternPreview(line.pattern, color)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(tr("Utiliser cette ligne"), modifier = Modifier.weight(1f))
@@ -405,7 +409,11 @@ private fun StylePacks(style: StarterWizard.Style, packs: PacksUi, actions: Wiza
     val index = (packs.index as? IndexState.Ready)?.index ?: return
     val missing = style.packs.mapNotNull { id -> index.packs.firstOrNull { it.id == id } }
         .filter { e -> packs.installed.none { it.id == e.id } }
-    if (missing.isEmpty()) return
+    if (missing.isEmpty()) {
+        // Remix testers: the card no longer vanishes in silence once the sounds are here.
+        packs.readyNote?.let { ReadyLine(it, Modifier.testTag("wizard_style_packs_ready")) }
+        return
+    }
     val downloading = missing.mapNotNull { packs.downloading[it.id] }
     NeonCard(accent = Neon.Cyan, modifier = Modifier.testTag("wizard_style_packs")) {
         SectionLabel(tr("Les vrais sons du style"))
@@ -414,7 +422,10 @@ private fun StylePacks(style: StarterWizard.Style, packs: PacksUi, actions: Wiza
             style = MaterialTheme.typography.bodyMedium,
         )
         if (downloading.isNotEmpty()) {
-            LinearProgressIndicator(progress = { downloading.average().toFloat() }, modifier = Modifier.fillMaxWidth(), color = Neon.Cyan)
+            val fraction = downloading.average().toFloat()
+            Text(tr("Téléchargement… %d %%", (fraction * 100).roundToInt()), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+                modifier = Modifier.testTag("wizard_style_packs_progress"))
+            LinearProgressIndicator(progress = { fraction }, modifier = Modifier.fillMaxWidth(), color = Neon.Cyan, trackColor = Neon.SurfaceHigh)
         } else {
             Button(onClick = { missing.forEach { actions.download(it.id) } }, modifier = Modifier.fillMaxWidth().testTag("wizard_style_packs_download")) {
                 Text(tr("Télécharger les sons du style"))
@@ -440,7 +451,7 @@ private fun PackOffer(style: StarterWizard.Style, packs: PacksUi, actions: Wizar
         }
         progress != null -> NeonCard {
             Text(tr("Téléchargement du pack %s… %d %%", tr(style.name), (progress * 100).roundToInt()))
-            LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth(), color = Neon.Cyan)
+            LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth(), color = Neon.Cyan, trackColor = Neon.SurfaceHigh)
             TextButton(onClick = { actions.cancelDownload(style.id) }) { Text(tr("Annuler")) }
         }
         entry != null -> NeonCard(modifier = Modifier.testTag("wizard_pack_offer")) {
@@ -453,6 +464,16 @@ private fun PackOffer(style: StarterWizard.Style, packs: PacksUi, actions: Wizar
         else -> Unit
     }
     packs.message?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodySmall) }
+    packs.readyNote?.let { ReadyLine(it) }
+}
+
+/** « ✓ C'est prêt : … », in the « ça marche » green: what was downloaded is on the phone. */
+@Composable
+internal fun ReadyLine(text: String, modifier: Modifier = Modifier) {
+    Row(modifier, verticalAlignment = Alignment.CenterVertically) {
+        Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(18.dp))
+        Text(text, color = Neon.Acid, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(start = 6.dp))
+    }
 }
 
 /** The line's groove, one square per step, filled as strong as the hit; the beats numbered, a gap between bars. */
@@ -721,7 +742,8 @@ internal fun sectionsIntro(plan: StarterWizard.ScenePlan): String = when {
 private fun SceneBadge(scenes: Set<Int>, plan: StarterWizard.ScenePlan) {
     if (scenes.isEmpty()) return
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.testTag("wizard_scene_badge")) {
-        scenes.sorted().forEach { SceneLetter(it) }
+        // Remix testers (Sarah): « A C » meant nothing in the Mode simple; the line says the parts' names.
+        if (!com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode) scenes.sorted().forEach { SceneLetter(it) }
         Text(
             if (scenes.size == plan.count) tr("Joue dans toutes les parties") else tr("Joue dans %s", plan.sections(scenes)),
             style = MaterialTheme.typography.bodyMedium, color = sceneColor(scenes.min()), modifier = Modifier.padding(start = 4.dp),
@@ -759,6 +781,8 @@ private fun MoodStep(style: StarterWizard.Style, mood: StarterWizard.Mood?, pack
         style = MaterialTheme.typography.bodyMedium,
     )
     StylePacks(style, packs, actions)
+    // A download that failed, a preview that could not be made: said where the buttons are.
+    packs.message?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("wizard_mood_message")) }
     Text(tr("Touche une ambiance pour l'entendre : ses quatre accords, joués sur le rythme du style."),
         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     var details by rememberSaveable { mutableStateOf(false) }
@@ -815,6 +839,7 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, p
         partNotes(style, part, ui.plan).forEach { note ->
             Text(note, style = MaterialTheme.typography.bodyMedium, fontStyle = FontStyle.Italic, color = Neon.TextSecondary)
         }
+        PlainWordsLines(part.explanation, style.melody.tips[part])
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(tr("Créer cette piste"), modifier = Modifier.weight(1f))
             Switch(checked = row?.enabled ?: false, onCheckedChange = { actions.setPartEnabled(part, it) }, modifier = Modifier.testTag("wizard_part_enabled"))
@@ -843,6 +868,8 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, p
                     i == 0 && sound.name == style.melody.sound(part) -> tr("Conseillé")
                     sound.sampled != null -> tr("Sample d'un pack")
                     sound.plaits != null -> SoundLooks.describe(sound.plaits!!)
+                    // Remix testers (Sarah): « Scie · 5 voix · te… » in the Mode simple; two everyday words instead.
+                    com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode -> SoundLooks.describePlain(sound.synth)
                     else -> SoundLooks.describe(sound.synth)
                 },
                 modifier = m.testTag("wizard_part_sound_$i"),

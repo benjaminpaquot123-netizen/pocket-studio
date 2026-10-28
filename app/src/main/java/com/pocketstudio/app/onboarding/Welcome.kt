@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.RecordVoiceOver
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -63,6 +64,8 @@ class WelcomeActions(
     val demo: () -> Unit = {},
     val empty: () -> Unit = {},
     val later: () -> Unit = {},
+    /** Remix testers (Sarah): « Extraire la voix d'une chanson », the Remix on a project of its own. */
+    val remix: () -> Unit = {},
     /** Phase 36: the Mode simple (true) or every tool (false), chosen before starting. */
     val chooseMode: (Boolean) -> Unit = {},
 )
@@ -88,6 +91,7 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, si
                         // A second quick touch while the first project opens makes no second one.
                         demo = { if (!leaving) { demoReady = true; leaving = true; actions.demo() } },
                         empty = { if (!leaving) { leaving = true; actions.empty() } },
+                        remix = { if (!leaving) { leaving = true; actions.remix() } },
                         later = { leaving = false; demoReady = false; actions.later() },
                         chooseMode = actions.chooseMode,
                     ),
@@ -159,6 +163,12 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
                 Icons.Filled.Add, tr("Partir de zéro"),
                 tr("Un projet vide : à toi de jouer."),
                 Neon.TextSecondary, onClick = actions.empty, tag = "welcome_empty",
+            )
+            // Remix testers (Sarah installed the app for this and found it nowhere): one way in, under the others.
+            Choice(
+                Icons.Filled.RecordVoiceOver, tr("Extraire la voix d'une chanson"),
+                tr("Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste."),
+                com.pocketstudio.app.ui.REMIX_COLOR, onClick = actions.remix, tag = "welcome_remix",
             )
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 TextButton(onClick = actions.later, modifier = Modifier.heightIn(min = 48.dp).testTag("welcome_later")) {

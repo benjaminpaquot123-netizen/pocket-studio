@@ -1,0 +1,21 @@
+{
+  "Extraire la voix d'une chanson": "노래에서 보컬 추출",
+  "Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste.": "휴대폰에서 노래를 골라요: 앱이 보컬, 드럼, 베이스, 나머지로 나눠요.",
+  "Il t'attend dans ⋮ › Extraire la voix d'une chanson, quand tu veux.": "원할 때 ⋮ › 노래에서 보컬 추출에서 기다리고 있어요.",
+  "C'est prêt : le pack « %s » est sur ton téléphone.": "준비됐어요: “%s” 팩이 휴대폰에 있어요.",
+  "Cette écoute n'a pas pu être préparée : réessaie dans un instant.": "이 미리 듣기를 준비할 수 없었어요: 잠시 후 다시 해 보세요.",
+  "C'est prêt : le modèle est sur ton téléphone. Choisis une chanson.": "준비됐어요: 모델이 휴대폰에 있어요. 노래를 골라요.",
+  "Départ dans la chanson : mesure %d": "노래 시작 위치: %d마디",
+  "Caler au tempo": "템포에 맞추기",
+  "Tonalité : projet en %1$s, chanson en %2$s": "조성: 프로젝트는 %1$s, 노래는 %2$s",
+  "Ton projet : %s": "내 프로젝트: %s",
+  "C'est prêt : %s, une copie est aussi dans Musique › BenStudio.": "준비됐어요: %s, 복사본은 음악 › BenStudio에도 있어요.",
+  "C'est prêt : %s. Choisis l'appli pour l'envoyer.": "준비됐어요: %s. 보낼 앱을 골라요.",
+  "BPM : la vitesse du morceau, en battements par minute.": "BPM: 곡의 빠르기, 1분당 박자 수예요.",
+  "Two-step : le nom de ce rythme de batterie, deux coups par mesure.": "투스텝: 이 드럼 리듬의 이름, 한 마디에 두 번 쳐요.",
+  "Hoover : un gros synthé qui hurle, le son des raves.": "후버: 울부짖는 듯한 큰 신스, 레이브의 소리예요.",
+  "Sub : la basse la plus grave, celle qu'on sent dans le ventre.": "서브: 가장 낮은 베이스, 배로 느껴지는 소리예요.",
+  "Octave : la même note, plus grave ou plus aiguë.": "옥타브: 같은 음을 더 낮게 또는 더 높게.",
+  "Creux": "텅 빈",
+  "épais": "두꺼운"
+}

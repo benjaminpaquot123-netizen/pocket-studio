@@ -1,0 +1,21 @@
+{
+  "Extraire la voix d'une chanson": "गाने से आवाज़ अलग करो",
+  "Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste.": "फ़ोन से कोई गाना चुनो: ऐप आवाज़, ड्रम, बेस और बाकी को अलग कर देता है।",
+  "Il t'attend dans ⋮ › Extraire la voix d'une chanson, quand tu veux.": "ये ⋮ › गाने से आवाज़ अलग करो में तुम्हारा इंतज़ार कर रहा है, जब चाहो।",
+  "C'est prêt : le pack « %s » est sur ton téléphone.": "तैयार: पैक “%s” तुम्हारे फ़ोन में है।",
+  "Cette écoute n'a pas pu être préparée : réessaie dans un instant.": "यह सुनना तैयार नहीं हो पाया: थोड़ी देर में फिर कोशिश करो।",
+  "C'est prêt : le modèle est sur ton téléphone. Choisis une chanson.": "तैयार: मॉडल तुम्हारे फ़ोन में है। कोई गाना चुनो।",
+  "Départ dans la chanson : mesure %d": "गाने में शुरुआत: bar %d",
+  "Caler au tempo": "टेम्पो पर बैठाओ",
+  "Tonalité : projet en %1$s, chanson en %2$s": "स्केल: प्रोजेक्ट %1$s में, गाना %2$s में",
+  "Ton projet : %s": "तुम्हारा प्रोजेक्ट: %s",
+  "C'est prêt : %s, une copie est aussi dans Musique › BenStudio.": "तैयार: %s, इसकी एक कॉपी Music › BenStudio में भी है।",
+  "C'est prêt : %s. Choisis l'appli pour l'envoyer.": "तैयार: %s। भेजने के लिए ऐप चुनो।",
+  "BPM : la vitesse du morceau, en battements par minute.": "BPM: गाने की रफ़्तार, एक मिनट में कितनी बीट।",
+  "Two-step : le nom de ce rythme de batterie, deux coups par mesure.": "Two-step: इस ड्रम रिदम का नाम, हर bar में दो चोट।",
+  "Hoover : un gros synthé qui hurle, le son des raves.": "Hoover: चीखता हुआ बड़ा synth, रेव पार्टियों की आवाज़।",
+  "Sub : la basse la plus grave, celle qu'on sent dans le ventre.": "Sub: सबसे गहरा बेस, जो पेट में महसूस होता है।",
+  "Octave : la même note, plus grave ou plus aiguë.": "Octave: वही सुर, नीचे या ऊपर।",
+  "Creux": "खोखला",
+  "épais": "भारी"
+}

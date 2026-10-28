@@ -340,7 +340,7 @@ private fun OtherChoices(actions: LaunchActions) {
     )
     // Benjamin (2026-10-24): the Remix « mis en avant », one touch from here.
     Choice(
-        Icons.Filled.Album, tr("Remixer une chanson"), tr("L'appli sépare une chanson en batterie, basse, voix et le reste : rejoue-la à ta façon."),
+        Icons.Filled.Album, tr("Extraire la voix d'une chanson"), tr("L'appli sépare une chanson en batterie, basse, voix et le reste : rejoue-la à ta façon."),
         com.pocketstudio.app.ui.REMIX_COLOR, actions.remix, "launch_remix",
     )
 }

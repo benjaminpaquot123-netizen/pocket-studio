@@ -61,6 +61,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
@@ -206,7 +208,12 @@ object RetoursTaps {
 private fun RetoursBubble(record: () -> Unit, stop: () -> Unit, note: () -> Unit, hide: () -> Unit) {
     val rec by Retours.rec.collectAsState()
     val density = LocalDensity.current
-    BoxWithConstraints(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
+    // Where this box is in the window (below the status bar): the controls to keep clear are in window pixels.
+    var origin by remember { mutableStateOf(Offset.Zero) }
+    val keepClear by Retours.keepClear.collectAsState()
+    // Dragged by the user: their place is kept, whatever is under it.
+    var placedByHand by rememberSaveable { mutableStateOf(false) }
+    BoxWithConstraints(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().onGloballyPositioned { origin = it.positionInWindow() }) {
         val maxW = with(density) { maxWidth.toPx() }
         val maxH = with(density) { maxHeight.toPx() }
         val bw = with(density) { (BUTTON_WIDTH * 2 + MORE_WIDTH + 8.dp).toPx() }
@@ -215,9 +222,23 @@ private fun RetoursBubble(record: () -> Unit, stop: () -> Unit, note: () -> Unit
         // Physical place (px from the top left): first left of « ? », on the tempo's line.
         var x by rememberSaveable { mutableStateOf(Float.NaN) }
         var y by rememberSaveable { mutableStateOf(Float.NaN) }
-        if (x.isNaN()) { x = maxW - bw - with(density) { START_FROM_RIGHT.toPx() }; y = with(density) { START_FROM_TOP.toPx() } }
-        x = x.coerceIn(margin, (maxW - bw - margin).coerceAtLeast(margin))
-        y = y.coerceIn(margin, (maxH - bh - margin).coerceAtLeast(margin))
+        if (x.isNaN() || !placedByHand) {
+            // Worked out apart, then written once (a state written twice in one pass would recompose for ever).
+            val startX = maxW - bw - with(density) { START_FROM_RIGHT.toPx() }
+            var startY = with(density) { START_FROM_TOP.toPx() }
+            // Not over a control (« Boucler » in the full app): just under it instead.
+            keepClear.values.forEach { r ->
+                val local = r.translate(-origin)
+                if (startX < local.right && startX + bw > local.left && startY < local.bottom && startY + bh > local.top) startY = local.bottom + margin
+            }
+            val toX = startX.coerceIn(margin, (maxW - bw - margin).coerceAtLeast(margin))
+            val toY = startY.coerceIn(margin, (maxH - bh - margin).coerceAtLeast(margin))
+            if (x != toX) x = toX
+            if (y != toY) y = toY
+        } else {
+            x = x.coerceIn(margin, (maxW - bw - margin).coerceAtLeast(margin))
+            y = y.coerceIn(margin, (maxH - bh - margin).coerceAtLeast(margin))
+        }
         var menu by remember { mutableStateOf(false) }
         val active = rec !is RecState.Idle
         Row(
@@ -230,6 +251,7 @@ private fun RetoursBubble(record: () -> Unit, stop: () -> Unit, note: () -> Unit
                 .pointerInput(maxW, maxH) {
                     detectDragGestures { change, drag ->
                         change.consume()
+                        placedByHand = true
                         x = (x + drag.x).coerceIn(margin, maxW - bw - margin)
                         y = (y + drag.y).coerceIn(margin, maxH - bh - margin)
                     }

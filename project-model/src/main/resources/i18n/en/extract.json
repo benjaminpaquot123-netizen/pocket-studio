@@ -1,0 +1,21 @@
+{
+  "Extraire la voix d'une chanson": "Extract the vocals from a song",
+  "Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste.": "Pick a song on your phone: the app separates the vocals, drums, bass and the rest.",
+  "Il t'attend dans ⋮ › Extraire la voix d'une chanson, quand tu veux.": "It waits for you in ⋮ › Extract the vocals from a song, whenever you like.",
+  "C'est prêt : le pack « %s » est sur ton téléphone.": "Ready: the “%s” pack is on your phone.",
+  "Cette écoute n'a pas pu être préparée : réessaie dans un instant.": "This preview couldn't be prepared: try again in a moment.",
+  "C'est prêt : le modèle est sur ton téléphone. Choisis une chanson.": "Ready: the model is on your phone. Pick a song.",
+  "Départ dans la chanson : mesure %d": "Start in the song: bar %d",
+  "Caler au tempo": "Fit to tempo",
+  "Tonalité : projet en %1$s, chanson en %2$s": "Key: project in %1$s, song in %2$s",
+  "Ton projet : %s": "Your project: %s",
+  "C'est prêt : %s, une copie est aussi dans Musique › BenStudio.": "Ready: %s, a copy is also in Music › BenStudio.",
+  "C'est prêt : %s. Choisis l'appli pour l'envoyer.": "Ready: %s. Choose the app to send it with.",
+  "BPM : la vitesse du morceau, en battements par minute.": "BPM: the song's speed, in beats per minute.",
+  "Two-step : le nom de ce rythme de batterie, deux coups par mesure.": "Two-step: the name of this drum rhythm, two kicks per bar.",
+  "Hoover : un gros synthé qui hurle, le son des raves.": "Hoover: a big screaming synth, the sound of raves.",
+  "Sub : la basse la plus grave, celle qu'on sent dans le ventre.": "Sub: the lowest bass, the one you feel in your stomach.",
+  "Octave : la même note, plus grave ou plus aiguë.": "Octave: the same note, lower or higher.",
+  "Creux": "Hollow",
+  "épais": "thick"
+}

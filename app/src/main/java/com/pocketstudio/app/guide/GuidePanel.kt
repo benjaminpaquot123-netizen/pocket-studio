@@ -113,14 +113,19 @@ fun guideMark(status: GuideStatus): String = when (status) {
     GuideStatus.TODO -> "○"
 }
 
-/** Where the Guide is, in a few words: « Étape 12/34 : la basse au Drop 2 », an alert, or all done. */
+/**
+ * Where the Guide is, in a few words: the card to do (« la basse au Drop 2 »), an alert, or all done.
+ * Remix testers (Sarah, Mehdi): « Étape 6/26 » became « Étape 7/26 » on the same card when another one
+ * got done elsewhere (a share, a sound changed): it read as the Guide moving by itself, and 26 steps
+ * scared a beginner. The bar shows the card; the % next to it is the one progress count.
+ */
 fun guideStepLine(ui: GuideUi): String {
     val next = ui.next
     return when {
         ui.loading -> ""
         next == null -> tr("Tout est fait")
         next.alert || ui.step == 0 -> tr("À corriger : %s", next.title)
-        else -> tr("Étape %1\$d/%2\$d : %3\$s", ui.step, ui.total, next.title)
+        else -> next.title
     }
 }
 

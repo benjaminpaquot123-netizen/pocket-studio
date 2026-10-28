@@ -1,0 +1,21 @@
+{
+  "Extraire la voix d'une chanson": "曲からボーカルを取り出す",
+  "Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste.": "スマホの曲を選んでね：アプリがボーカル、ドラム、ベース、その他に分けます。",
+  "Il t'attend dans ⋮ › Extraire la voix d'une chanson, quand tu veux.": "⋮ › 曲からボーカルを取り出す でいつでも待っています。",
+  "C'est prêt : le pack « %s » est sur ton téléphone.": "準備完了：パック「%s」がスマホに入りました。",
+  "Cette écoute n'a pas pu être préparée : réessaie dans un instant.": "この試聴を準備できませんでした：少ししてからもう一度試してね。",
+  "C'est prêt : le modèle est sur ton téléphone. Choisis une chanson.": "準備完了：モデルがスマホに入りました。曲を選んでね。",
+  "Départ dans la chanson : mesure %d": "曲の開始位置：%d 小節目",
+  "Caler au tempo": "テンポに合わせる",
+  "Tonalité : projet en %1$s, chanson en %2$s": "キー：プロジェクトは %1$s、曲は %2$s",
+  "Ton projet : %s": "あなたのプロジェクト：%s",
+  "C'est prêt : %s, une copie est aussi dans Musique › BenStudio.": "準備完了：%s。コピーは ミュージック › BenStudio にもあります。",
+  "C'est prêt : %s. Choisis l'appli pour l'envoyer.": "準備完了：%s。送るアプリを選んでね。",
+  "BPM : la vitesse du morceau, en battements par minute.": "BPM：曲の速さ。1分間の拍の数です。",
+  "Two-step : le nom de ce rythme de batterie, deux coups par mesure.": "ツーステップ：このドラムのリズムの名前。1小節に2打です。",
+  "Hoover : un gros synthé qui hurle, le son des raves.": "フーバー：叫ぶような太いシンセ。レイヴの音です。",
+  "Sub : la basse la plus grave, celle qu'on sent dans le ventre.": "サブ：いちばん低いベース。お腹で感じる音です。",
+  "Octave : la même note, plus grave ou plus aiguë.": "オクターブ：同じ音の、低い版または高い版。",
+  "Creux": "うつろ",
+  "épais": "厚い"
+}

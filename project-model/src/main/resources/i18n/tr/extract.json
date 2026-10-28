@@ -1,0 +1,21 @@
+{
+  "Extraire la voix d'une chanson": "Bir şarkıdan vokali çıkar",
+  "Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste.": "Telefondan bir şarkı seç: uygulama vokali, davulu, bası ve geri kalanı ayırır.",
+  "Il t'attend dans ⋮ › Extraire la voix d'une chanson, quand tu veux.": "İstediğin zaman ⋮ › Bir şarkıdan vokali çıkar içinde seni bekliyor.",
+  "C'est prêt : le pack « %s » est sur ton téléphone.": "Hazır: “%s” paketi telefonunda.",
+  "Cette écoute n'a pas pu être préparée : réessaie dans un instant.": "Bu dinleme hazırlanamadı: birazdan tekrar dene.",
+  "C'est prêt : le modèle est sur ton téléphone. Choisis une chanson.": "Hazır: model telefonunda. Bir şarkı seç.",
+  "Départ dans la chanson : mesure %d": "Şarkıda başlangıç: ölçü %d",
+  "Caler au tempo": "Tempoya uydur",
+  "Tonalité : projet en %1$s, chanson en %2$s": "Ton: proje %1$s, şarkı %2$s",
+  "Ton projet : %s": "Projen: %s",
+  "C'est prêt : %s, une copie est aussi dans Musique › BenStudio.": "Hazır: %s, bir kopyası da Müzik › BenStudio içinde.",
+  "C'est prêt : %s. Choisis l'appli pour l'envoyer.": "Hazır: %s. Göndermek için uygulamayı seç.",
+  "BPM : la vitesse du morceau, en battements par minute.": "BPM: şarkının hızı, dakikadaki vuruş sayısı.",
+  "Two-step : le nom de ce rythme de batterie, deux coups par mesure.": "Two-step: bu davul ritminin adı, ölçü başına iki vuruş.",
+  "Hoover : un gros synthé qui hurle, le son des raves.": "Hoover: çığlık atan kocaman bir synth, rave'lerin sesi.",
+  "Sub : la basse la plus grave, celle qu'on sent dans le ventre.": "Sub: en kalın bas, karnında hissettiğin ses.",
+  "Octave : la même note, plus grave ou plus aiguë.": "Oktav: aynı nota, daha kalın ya da daha ince.",
+  "Creux": "Boğuk",
+  "épais": "kalın"
+}

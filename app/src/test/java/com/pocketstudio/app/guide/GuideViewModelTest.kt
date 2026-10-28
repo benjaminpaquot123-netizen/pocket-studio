@@ -141,6 +141,8 @@ class GuideViewModelTest {
         assertEquals(settled + 1, ui.step)
         assertEquals(ui.total - ui.toDecide, settled)
         assertEquals(Math.round(100f * settled / ui.total), ui.percent)
+        // Remix testers: the bar says the card to do, no « Étape n/N » that moved when a card got done elsewhere.
+        assertEquals(ui.next!!.title, com.pocketstudio.app.guide.guideStepLine(ui))
         val lead = ui.cards.getValue("sound.lead")
         assertTrue(lead.heard.toString(), lead.heard.any { "mélodie" in it })
     }

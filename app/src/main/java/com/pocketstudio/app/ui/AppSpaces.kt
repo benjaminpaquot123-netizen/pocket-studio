@@ -94,6 +94,8 @@ internal fun SonsHeader(
     tab: AppTab, tracks: TracksUi, go: (AppTab) -> Unit, audioTracks: Int, simple: Boolean = false,
     /** Lot 2: the Remix page of Sons › Voix is shown (its own chip is lit), and the way to it. */
     remixShown: Boolean = false, openRemix: () -> Unit = {},
+    /** The audio tracks' own page is shown (Remix testers: the Accordeur lit « Voix · Micro », as if the track had changed). */
+    voiceShown: Boolean = tab == AppTab.Audio && !remixShown,
 ) {
     val lying = androidx.compose.ui.platform.LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
     Box(Modifier.fillMaxWidth().background(lerp(Neon.Background, Color.Black, 0.06f)).padding(horizontal = 8.dp, vertical = if (lying) 2.dp else 4.dp)) {
@@ -112,7 +114,7 @@ internal fun SonsHeader(
                             1 -> tr("%d piste", 1)
                             else -> tr("%d pistes", audioTracks)
                         },
-                        Color(0xFFE57373), tab == AppTab.Audio && !remixShown, "sons_Audio",
+                        Color(0xFFE57373), voiceShown, "sons_Audio",
                     ) { go(AppTab.Audio) }
                     // Benjamin (2026-10-24): the Remix « mis en avant », a chip of its own, one touch from Sons.
                     EditorChip(tr("Remix"), tr("Séparer"), REMIX_COLOR, remixShown, "sons_Remix", onClick = openRemix)
@@ -333,7 +335,8 @@ fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions, li
                         .testTag("simple_track_${t.key}"),
                     verticalArrangement = Arrangement.Center,
                 ) {
-                    Text(t.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    // Remix testers (Sarah): « Souffle mont… » cut short; a long name on two lines.
+                    Text(t.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis)
                     // Testers (lot « tuto 3 »): « Changer le … » cut short; whole, on a second line if it must.
                     Text(
                         if (t.mute) tr("coupée") else tr("Changer le son"), style = MaterialTheme.typography.labelMedium,

@@ -1,0 +1,21 @@
+{
+  "Extraire la voix d'une chanson": "Extrair a voz de uma música",
+  "Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste.": "Escolha uma música do celular: o app separa a voz, a bateria, o baixo e o resto.",
+  "Il t'attend dans ⋮ › Extraire la voix d'une chanson, quand tu veux.": "Ele espera você em ⋮ › Extrair a voz de uma música, quando quiser.",
+  "C'est prêt : le pack « %s » est sur ton téléphone.": "Pronto: o pack “%s” está no seu celular.",
+  "Cette écoute n'a pas pu être préparée : réessaie dans un instant.": "Não foi possível preparar esta prévia: tente de novo daqui a pouco.",
+  "C'est prêt : le modèle est sur ton téléphone. Choisis une chanson.": "Pronto: o modelo está no seu celular. Escolha uma música.",
+  "Départ dans la chanson : mesure %d": "Início na música: compasso %d",
+  "Caler au tempo": "Ajustar ao andamento",
+  "Tonalité : projet en %1$s, chanson en %2$s": "Tom: projeto em %1$s, música em %2$s",
+  "Ton projet : %s": "Seu projeto: %s",
+  "C'est prêt : %s, une copie est aussi dans Musique › BenStudio.": "Pronto: %s, uma cópia também está em Música › BenStudio.",
+  "C'est prêt : %s. Choisis l'appli pour l'envoyer.": "Pronto: %s. Escolha o app para enviar.",
+  "BPM : la vitesse du morceau, en battements par minute.": "BPM: a velocidade da música, em batidas por minuto.",
+  "Two-step : le nom de ce rythme de batterie, deux coups par mesure.": "Two-step: o nome deste ritmo de bateria, duas batidas por compasso.",
+  "Hoover : un gros synthé qui hurle, le son des raves.": "Hoover: um synth enorme que grita, o som das raves.",
+  "Sub : la basse la plus grave, celle qu'on sent dans le ventre.": "Sub: o grave mais profundo, aquele que se sente na barriga.",
+  "Octave : la même note, plus grave ou plus aiguë.": "Oitava: a mesma nota, mais grave ou mais aguda.",
+  "Creux": "Oco",
+  "épais": "encorpado"
+}

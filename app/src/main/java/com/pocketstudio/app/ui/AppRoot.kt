@@ -818,6 +818,15 @@ fun AppRoot() {
             learn = { firstLaunchSeen(); tutoChooserOpen = true },
             demo = { firstLaunchSeen(); projectsVm.create(com.pocketstudio.model.Demos.ALL.first().third()) { id -> openProject(id) } },
             empty = { firstLaunchSeen(); projectsVm.create(Project(name = "")) { id -> openProject(id) } },
+            // Remix testers: « Extraire la voix d'une chanson » opens the Remix on a project of its own (as « Que veux-tu faire ? » does).
+            remix = {
+                firstLaunchSeen()
+                projectsVm.create(Project(name = "Remix")) { id ->
+                    // Asked through the separation's own request (declared before the Remix's page): handled once the project is open.
+                    com.pocketstudio.app.remix.SeparationJob.requestOpen()
+                    openProject(id)
+                }
+            },
             later = firstLaunchSeen,
         ),
         playDemo = { if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.toggleSong() else rhythmVm.togglePlay() },
@@ -1767,7 +1776,7 @@ fun AppRoot() {
                         TopMenuItem(tr("Live : jouer en direct"), "more_live", openLive),
                         // Audit final (03 G4): the voice has its own way in the Mode simple.
                         TopMenuItem(tr("Enregistrer ma voix"), "more_voice", openVoice),
-                        TopMenuItem(tr("Remixer une chanson"), "more_remix", openRemix),
+                        TopMenuItem(tr("Extraire la voix d'une chanson"), "more_remix", openRemix),
                         // Audit final (05): the long press on the name was the only way to rename the song.
                         TopMenuItem(tr("Renommer le morceau"), "more_rename") { renamingProject = true },
                         TopMenuItem(tr("Mes projets"), "more_projects") { showProjects = true },
@@ -2026,7 +2035,7 @@ fun AppRoot() {
                     SonsHeader(
                         tab, tracksUiOf(hp, if (tab == AppTab.Synthe) hShown else -1, hFreezing, bar = true),
                         go = { t -> if (t == AppTab.Audio) audioPage = 0; go(t) }, audioTracks = hp.audioTracks.size, simple = simple,
-                        remixShown = tab == AppTab.Audio && audioPage == 1, openRemix = openRemix,
+                        remixShown = tab == AppTab.Audio && audioPage == 1, openRemix = openRemix, voiceShown = tab == AppTab.Audio && audioPage == 0,
                     )
                 }
                 Box(Modifier.weight(1f)) {
@@ -2797,6 +2806,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     position = stemPosition,
                                     memoryProblem = remixMemory,
                                     memoryNever = remixMemoryNever,
+                                    projectKey = com.pocketstudio.app.remix.keyLabel(project.harmony, SettingsStore.state.value.englishNotes),
                                 ),
                                 RemixActions(
                                     effects = { fxChannel = 3 },

@@ -82,6 +82,8 @@ object I18n {
     val AREAS = listOf(
         "common", "home", "rhythm", "song", "synth", "audio", "mixer", "tools", "model", "finish", "master", "parts", "record",
         "write", "instruments", "learn", "nav", "bugreport", "guide", "a11y", "brand", "plurals", "listen", "tuto", "mixsimple", "retours",
+        // Remix testers (lot « remix 1 »): finding and understanding the Remix.
+        "extract",
     )
 
     @Volatile

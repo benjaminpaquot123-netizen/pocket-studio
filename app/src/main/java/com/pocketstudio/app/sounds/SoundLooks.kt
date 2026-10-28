@@ -108,6 +108,22 @@ object SoundLooks {
         return parts.joinToString(" · ")
     }
 
+    /**
+     * The Mode simple's two words on a synth patch (Remix testers: « Scie · 5 voix · te… »): how it
+     * sounds (bright, hollow, soft), then thick when several voices play it, else how it lasts.
+     */
+    fun describePlain(patch: SynthPatch): String {
+        val wave = patch.get(SynthPatch.OSC1_WAVE)
+        val colour = if (wave < 0.25f) tr("Brillant") else if (wave < 0.75f) tr("Creux") else tr("Doux")
+        val second = when {
+            patch.get(SynthPatch.UNISON) * 6 >= 0.5f -> tr("épais")
+            patch.get(SynthPatch.A_ATTACK) > 0.35f -> tr("monte doucement")
+            patch.get(SynthPatch.A_SUSTAIN) < 0.2f -> tr("court")
+            else -> tr("tenu")
+        }
+        return "$colour · $second"
+    }
+
     fun describe(patch: PlaitsPatch): String = PlaitsPatch.MODELS.getOrNull(patch.model)?.let { tr(it) }.orEmpty()
 
     fun describe(sound: AcidSound): String =

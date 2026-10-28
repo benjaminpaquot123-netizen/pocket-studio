@@ -1,0 +1,21 @@
+{
+  "Extraire la voix d'une chanson": "استخراج الصوت من أغنية",
+  "Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste.": "اختر أغنية من هاتفك: يفصل التطبيق الصوت والطبول والباص والباقي.",
+  "Il t'attend dans ⋮ › Extraire la voix d'une chanson, quand tu veux.": "ينتظرك في ⋮ › استخراج الصوت من أغنية، متى شئت.",
+  "C'est prêt : le pack « %s » est sur ton téléphone.": "جاهز: الحزمة «%s» على هاتفك.",
+  "Cette écoute n'a pas pu être préparée : réessaie dans un instant.": "تعذّر تجهيز هذا الاستماع: أعد المحاولة بعد لحظة.",
+  "C'est prêt : le modèle est sur ton téléphone. Choisis une chanson.": "جاهز: النموذج على هاتفك. اختر أغنية.",
+  "Départ dans la chanson : mesure %d": "البداية في الأغنية: المازورة %d",
+  "Caler au tempo": "ضبط على السرعة",
+  "Tonalité : projet en %1$s, chanson en %2$s": "المقام: المشروع في %1$s، الأغنية في %2$s",
+  "Ton projet : %s": "مشروعك: %s",
+  "C'est prêt : %s, une copie est aussi dans Musique › BenStudio.": "جاهز: %s، وتوجد نسخة أيضًا في Music › BenStudio.",
+  "C'est prêt : %s. Choisis l'appli pour l'envoyer.": "جاهز: %s. اختر التطبيق لإرساله.",
+  "BPM : la vitesse du morceau, en battements par minute.": "BPM: سرعة المقطوعة، بعدد النبضات في الدقيقة.",
+  "Two-step : le nom de ce rythme de batterie, deux coups par mesure.": "Two-step: اسم إيقاع الطبول هذا، ضربتان في كل مازورة.",
+  "Hoover : un gros synthé qui hurle, le son des raves.": "Hoover: سينث ضخم يصرخ، صوت حفلات الرّيف.",
+  "Sub : la basse la plus grave, celle qu'on sent dans le ventre.": "Sub: أعمق باص، الذي تشعر به في بطنك.",
+  "Octave : la même note, plus grave ou plus aiguë.": "الأوكتاف: النغمة نفسها، أخفض أو أعلى.",
+  "Creux": "أجوف",
+  "épais": "سميك"
+}

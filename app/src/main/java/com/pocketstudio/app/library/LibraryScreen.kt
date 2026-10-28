@@ -115,6 +115,7 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
             Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 // Errors and notices at the top, where they are seen (the pack list can be far below).
                 ui.packs.message?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("library_message")) }
+                ui.packs.readyNote?.let { ReadyLine(it, Modifier.testTag("library_ready")) }
                 // New packs or richer versions published: one touch brings them all.
                 AllPacksNews(ui, actions)
                 // Without its pack, a style has one or two kicks to offer: the pack is proposed first.

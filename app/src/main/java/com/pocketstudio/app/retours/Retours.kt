@@ -75,6 +75,12 @@ object Retours {
     /** « Envoyer mes retours » open (from the bubble or Aide). */
     val exportOpen = MutableStateFlow(false)
 
+    /**
+     * Remix testers (Mehdi): the bubble's first place covered the top bar's « Boucler » in the full app.
+     * Controls it must not start over, by name, in window pixels (set by the controls themselves).
+     */
+    val keepClear = MutableStateFlow<Map<String, androidx.compose.ui.geometry.Rect>>(emptyMap())
+
     /** The video file being written (not offered for sending until finished). */
     @Volatile var recordingFile: File? = null
 

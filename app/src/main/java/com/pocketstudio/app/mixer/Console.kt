@@ -4,7 +4,6 @@ import com.pocketstudio.ui.ScaledBottomSheet
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
@@ -70,6 +69,7 @@ import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.HelpDot
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.app.ui.showcasePanel
 import com.pocketstudio.ui.ProSlider
 import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.ui.pillColors
@@ -102,7 +102,7 @@ internal fun Console(
 ) {
     var sheetFor by rememberSaveable { mutableStateOf<Int?>(null) }
     Column(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Neon.Surface).border(1.dp, Neon.Outline, RoundedCornerShape(16.dp))
+        Modifier.fillMaxWidth().showcasePanel(RoundedCornerShape(16.dp))
             .padding(vertical = 8.dp).testTag("console"),
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
@@ -148,7 +148,7 @@ private fun ConsoleStrip(info: StripInfo, c: Channel, meter: () -> Float, action
     val index = info.ch
     val tint = info.color ?: Neon.Cyan
     Column(
-        Modifier.width(CONSOLE_STRIP_W).clip(RoundedCornerShape(12.dp)).background(Neon.SurfaceHigh.copy(alpha = 0.35f))
+        Modifier.width(CONSOLE_STRIP_W).consoleStrip(RoundedCornerShape(12.dp), 0.35f)
             // The tutorial rings (and brings into view) the whole strip it names, its name with its fader.
             .spot("console_strip_$index")
             .padding(horizontal = 4.dp, vertical = 6.dp).testTag("strip_$index"),
@@ -248,7 +248,7 @@ internal fun VerticalFader(
         travel[0] = size.height.coerceAtLeast(1f)
         val trackX = size.width * 0.42f
         val trackW = 6.dp.toPx()
-        drawRoundRect(off, Offset(trackX - trackW / 2f, 0f), Size(trackW, size.height), CornerRadius(trackW / 2f))
+        drawFaderSlot(trackX, 0f, trackW, size.height, off)
         val y = (1f - value) * size.height
         drawRoundRect(accent.copy(alpha = 0.55f), Offset(trackX - trackW / 2f, y), Size(trackW, size.height - y), CornerRadius(trackW / 2f))
         // 0 dB marked on the travel.
@@ -260,22 +260,30 @@ internal fun VerticalFader(
         val lit = (meter() / 0.89f).coerceIn(0f, 1f)
         drawRoundRect(off, Offset(mx, 0f), Size(mw, size.height), CornerRadius(2.dp.toPx()))
         if (lit > 0f) {
-            val h = lit * size.height
-            val color = when {
-                lit < 0.65f -> low
-                lit < 0.85f -> mid
-                else -> high
+            // As on a desk: green at the foot, amber higher up, red at the top, in LED segments.
+            val litTop = size.height * (1f - lit)
+            for (z in 0 until 3) {
+                val z0 = maxOf(litTop, size.height * (1f - ZONES[z + 1]))
+                val z1 = size.height * (1f - ZONES[z])
+                if (z1 > z0) drawRect(if (z == 0) low else if (z == 1) mid else high, Offset(mx, z0), Size(mw, z1 - z0))
             }
-            drawRoundRect(color, Offset(mx, size.height - h), Size(mw, h), CornerRadius(2.dp.toPx()))
+            val step = 3.dp.toPx()
+            var g = size.height - step
+            while (g > litTop) {
+                drawLine(off, Offset(mx, g), Offset(mx + mw, g), 1f)
+                g -= step
+            }
         }
         // The cap, wide enough for a thumb to see where it is.
         val capH = 14.dp.toPx()
         val capW = 30.dp.toPx()
-        drawRoundRect(Color.Black.copy(alpha = 0.4f), Offset(trackX - capW / 2f, y - capH / 2f + 1.dp.toPx()), Size(capW, capH), CornerRadius(4.dp.toPx()))
-        drawRoundRect(cap, Offset(trackX - capW / 2f, y - capH / 2f), Size(capW, capH), CornerRadius(4.dp.toPx()))
-        drawLine(Color.Black.copy(alpha = 0.6f), Offset(trackX - capW / 2f + 4.dp.toPx(), y), Offset(trackX + capW / 2f - 4.dp.toPx(), y), 1.5.dp.toPx())
+        drawFaderCap(trackX, y, capW, capH, cap, CAP_MARK, 1.5.dp.toPx())
     }
 }
+
+/** Where the console's meter turns amber, then red (heights 0..1, as the bar's colour did). */
+private val ZONES = floatArrayOf(0f, 0.65f, 0.85f, 1f)
+private val CAP_MARK = Color.Black.copy(alpha = 0.6f)
 
 /**
  * A strip's sheet: its volume and pan, M and S, its effects (the same box as under each sound),

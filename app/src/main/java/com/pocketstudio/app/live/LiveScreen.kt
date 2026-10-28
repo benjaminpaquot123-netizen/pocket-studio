@@ -73,6 +73,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.graphicsLayer
@@ -80,6 +81,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -486,7 +488,14 @@ private fun LeaveDuringTake(armed: Boolean, leave: () -> Unit, stay: () -> Unit)
  */
 @Composable
 private fun LiveTopBar(ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit, slim: Boolean = false) = BoxWithConstraints(
-    Modifier.fillMaxWidth().height(if (slim) 48.dp else 56.dp).background(Neon.Surface).testTag("live_top_bar"),
+    Modifier.fillMaxWidth().height(if (slim) 48.dp else 56.dp)
+        // Lit from above with a machined foot, as the app's top bar (lot « design pro »).
+        .background(Brush.verticalGradient(listOf(lerp(Neon.Surface, Color.White, 0.03f), lerp(Neon.Surface, Color.Black, 0.08f))))
+        .drawBehind {
+            drawLine(BAR_FOOT_SHADE, Offset(0f, size.height - 1.5f), Offset(size.width, size.height - 1.5f), 1f)
+            drawLine(BAR_FOOT_LIGHT, Offset(0f, size.height - 0.5f), Offset(size.width, size.height - 0.5f), 1f)
+        }
+        .testTag("live_top_bar"),
 ) {
     val p = ui.project
     // A narrow screen (a small phone, a big interface size): ← alone, « Lancer à » gives way with
@@ -512,7 +521,12 @@ private fun LiveTopBar(ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit
                 .semantics { contentDescription = if (ui.playing) tr("Arrêter") else tr("Jouer") },
             contentAlignment = Alignment.Center,
         ) {
-            Box(Modifier.size(44.dp).clip(CircleShape).background(if (ui.playing) Neon.Acid else Neon.Cyan), contentAlignment = Alignment.Center) {
+            val playColor = if (ui.playing) Neon.Acid else Neon.Cyan
+            Box(
+                Modifier.size(44.dp).clip(CircleShape)
+                    .background(Brush.verticalGradient(listOf(lerp(playColor, Color.White, 0.2f), playColor))).background(BUTTON_GLOSS),
+                contentAlignment = Alignment.Center,
+            ) {
                 Icon(if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.OnAccent)
             }
         }
@@ -819,7 +833,10 @@ private fun MuteButton(c: LiveColumn, muted: Boolean, toggleMute: () -> Unit, mo
 /** A column's head: the track's colour, its name, then its M (a full 48 dp when there is room). */
 @Composable
 private fun ColumnHeader(c: LiveColumn, muted: Boolean, width: Dp, height: Dp, toggleMute: () -> Unit) {
-    Column(Modifier.width(width).height(height).clip(RoundedCornerShape(10.dp)).background(Neon.Surface)) {
+    Column(
+        Modifier.width(width).height(height).clip(RoundedCornerShape(10.dp))
+            .background(Brush.verticalGradient(listOf(lerp(Neon.Surface, Color.White, 0.04f), lerp(Neon.Surface, Color.Black, 0.05f)))),
+    ) {
         Box(Modifier.fillMaxWidth().height(4.dp).background(Brush.horizontalGradient(listOf(c.color, c.color.copy(alpha = 0.45f)))))
         Text(
             c.name, Modifier.fillMaxWidth().weight(1f).padding(horizontal = 4.dp, vertical = 2.dp), style = MaterialTheme.typography.labelMedium,
@@ -847,7 +864,10 @@ private fun SceneButton(
     val rest = Color.White.copy(alpha = 0.06f)
     Row(
         Modifier.width(width).height(height).clip(RoundedCornerShape(12.dp))
-            .background(if (current) Neon.Cyan.copy(alpha = 0.22f) else Neon.Surface)
+            .background(
+                if (current) SolidColor(Neon.Cyan.copy(alpha = 0.22f))
+                else Brush.verticalGradient(listOf(lerp(Neon.Surface, Color.White, 0.04f), lerp(Neon.Surface, Color.Black, 0.05f))),
+            )
             .let { m ->
                 when {
                     waiting -> m.blinkingBorder(2.dp, 12.dp) { cyan.copy(alpha = blink.value) }
@@ -902,34 +922,48 @@ private fun LivePadCell(
     val shape = RoundedCornerShape(12.dp)
     val lit = animateFloatAsState(if (playing) 1f else 0f, tween(220), label = "pad-lit")
     val color = c.color
-    val idleTop = if (hasContent) color.copy(alpha = 0.34f) else Neon.Surface
+    val idleTop = if (hasContent) color.copy(alpha = 0.34f) else lerp(Neon.Surface, Color.Black, 0.07f)
     val idleBottom = if (hasContent) color.copy(alpha = 0.16f) else Neon.Surface
     val litBottom = lerp(color, Color.Black, 0.28f)
     val edge = Color.White.copy(alpha = if (hasContent) 0.14f else 0.05f)
     Box(
         Modifier.size(width, height)
-            .drawBehind {
-                // The glow around a playing pad, stronger on each beat.
-                val on = lit.value
-                if (on > 0.01f) {
-                    val beat = pulse.value
-                    val r = 12.dp.toPx()
-                    for (k in 1..3) {
-                        val spread = k * 1.5.dp.toPx()
-                        drawRoundRect(
-                            color.copy(alpha = (on * (0.14f + 0.26f * beat) / k).coerceIn(0f, 1f)),
-                            topLeft = Offset(-spread, -spread), size = Size(size.width + 2 * spread, size.height + 2 * spread),
-                            cornerRadius = CornerRadius(r + spread), style = Stroke(1.5.dp.toPx()),
-                        )
+            // Brushes and strokes made once per size: a playing pad redraws every frame without garbage.
+            .drawWithCache {
+                val ring = Stroke(1.5.dp.toPx())
+                val r = 12.dp.toPx()
+                onDrawBehind {
+                    // The glow around a playing pad, stronger on each beat.
+                    val on = lit.value
+                    if (on > 0.01f) {
+                        val beat = pulse.value
+                        for (k in 1..3) {
+                            val spread = k * 1.5.dp.toPx()
+                            drawRoundRect(
+                                color.copy(alpha = (on * (0.14f + 0.26f * beat) / k).coerceIn(0f, 1f)),
+                                topLeft = Offset(-spread, -spread), size = Size(size.width + 2 * spread, size.height + 2 * spread),
+                                cornerRadius = CornerRadius(r + spread), style = ring,
+                            )
+                        }
                     }
                 }
             }
             .clip(shape)
-            .drawBehind {
-                val on = lit.value
-                drawRect(Brush.verticalGradient(listOf(lerp(idleTop, color, on), lerp(idleBottom, litBottom, on))))
-                // A light flash on the beat, fading through it.
-                if (on > 0.01f) drawRect(Color.White.copy(alpha = 0.18f * on * pulse.value))
+            .drawWithCache {
+                // Resting: a pad with something to play stands out (lit from above), an empty one is a slight hollow.
+                val idle = Brush.verticalGradient(listOf(idleTop, idleBottom))
+                val litFill = Brush.verticalGradient(listOf(color, litBottom))
+                val sheen = Brush.verticalGradient(0f to Color.White.copy(alpha = 0.07f), 0.45f to Color.Transparent)
+                onDrawBehind {
+                    val on = lit.value
+                    if (on < 0.99f) drawRect(idle)
+                    if (on > 0.01f) {
+                        drawRect(litFill, alpha = on)
+                        // A light flash on the beat, fading through it.
+                        drawRect(Color.White.copy(alpha = 0.18f * on * pulse.value))
+                    }
+                    if (hasContent) drawRect(sheen)
+                }
             }
             .let { m ->
                 if (pending) m.blinkingBorder(3.dp, 12.dp) { color.copy(alpha = blink.value) }
@@ -1091,6 +1125,12 @@ private val MAX_CELL_W = 120.dp
 private val MAX_CELL_H = 96.dp
 private val GRID_PAD_H = 8.dp
 private val GRID_PAD_V = 6.dp
+
+private val BAR_FOOT_SHADE = Color.Black.copy(alpha = 0.32f)
+private val BAR_FOOT_LIGHT = Color.White.copy(alpha = 0.07f)
+
+/** The light on a raised button's upper half (Play). */
+private val BUTTON_GLOSS = Brush.verticalGradient(0f to Color.White.copy(alpha = 0.2f), 0.5f to Color.White.copy(alpha = 0.04f), 0.55f to Color.Transparent)
 
 /** A row's name for TalkBack: « B · Couplet ». */
 private fun rowName(p: Project, scene: Int): String {

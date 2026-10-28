@@ -183,6 +183,13 @@ private val SCENE_LETTER = 52.dp
 private val SCENE_NAME_MIN = 60.dp
 private val SCENE_FULL_MAX = 140.dp
 
+private val TOP_SHEEN = Color.White.copy(alpha = 0.06f)
+private val FOOT_SHADE = Color.Black.copy(alpha = 0.32f)
+private val FOOT_LIGHT = Color.White.copy(alpha = 0.07f)
+
+/** The light on a raised button's upper half (the projects' folder, Play). */
+private val GLOSS = Brush.verticalGradient(0f to Color.White.copy(alpha = 0.2f), 0.5f to Color.White.copy(alpha = 0.04f), 0.55f to Color.Transparent)
+
 /**
  * Always on top: the open project (tap for "Mes projets", hold to rename it), the scene edited,
  * undo/redo, record, play and share, on every screen. The tempo and the song's position are in the
@@ -192,7 +199,12 @@ private val SCENE_FULL_MAX = 140.dp
 fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.layout.BoxWithConstraints(
     Modifier.fillMaxWidth()
         .background(Brush.verticalGradient(listOf(lerp(Neon.Surface, Color.Black, 0.12f), lerp(Neon.Background, Color.Black, 0.1f))))
-        .drawBehind { drawLine(Color.White.copy(alpha = 0.07f), Offset(0f, size.height - 1f), Offset(size.width, size.height - 1f), 1f) }
+        // A machined edge (lot « design pro »): a faint light line on top, a dark one then a light one at the foot.
+        .drawBehind {
+            drawLine(TOP_SHEEN, Offset.Zero, Offset(size.width, 0f), 1f)
+            drawLine(FOOT_SHADE, Offset(0f, size.height - 1.5f), Offset(size.width, size.height - 1.5f), 1f)
+            drawLine(FOOT_LIGHT, Offset(0f, size.height - 0.5f), Offset(size.width, size.height - 0.5f), 1f)
+        }
         // The status bar above; lying down, the 3-button navigation bar and the camera hole on the
         // sides: the bar's own buttons stay clear of them (the background goes under).
         .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)),
@@ -237,7 +249,8 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
         ) {
             Box(
                 Modifier.size(34.dp).clip(RoundedCornerShape(10.dp))
-                    .background(Brush.linearGradient(listOf(Neon.Cyan, lerp(Neon.Cyan, Color.Black, 0.3f)))),
+                    .background(Brush.linearGradient(listOf(Neon.Cyan, lerp(Neon.Cyan, Color.Black, 0.3f))))
+                    .background(GLOSS),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(Icons.Filled.FolderOpen, contentDescription = tr("Mes projets"), tint = Neon.OnAccent, modifier = Modifier.size(18.dp))
@@ -317,7 +330,8 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                 Modifier.requiredSize(42.dp)
                     .shadow(if (ui.playing) 14.dp else 6.dp, CircleShape, ambientColor = playColor, spotColor = playColor)
                     .clip(CircleShape)
-                    .background(Brush.verticalGradient(listOf(lerp(playColor, Color.White, 0.2f), playColor))),
+                    .background(Brush.verticalGradient(listOf(lerp(playColor, Color.White, 0.2f), playColor)))
+                    .background(GLOSS),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(

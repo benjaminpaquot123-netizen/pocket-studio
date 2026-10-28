@@ -1,13 +1,14 @@
 # Avancement
 
 ## Où on en est (2026-10-28)
+- Tuto : une étape réussie n'avance plus jamais seule (« Bravo », « Écouter ton résultat », « Étape suivante »). Banc « testeur humain » (`HumanTester.kt`, `scripts/human-tester.sh`, `scripts/human-act.py`) : la vraie appli dans Robolectric, pilotée par un agent qui ne voit que l'écran. Premier passage : Léa (débutante, Facile) et Karim (producteur, Pro), rapports dans docs/testeur-humain/.
 - Branche `ccr-80af1a1b-mn0wec` (intégration fx-int) : le grand audit final (23 auditeurs, vérifications adverses, 16 lots de correction, relecture neuve et ses 7 MOYEN corrigés), BenStudio (nom, logo, ouverture « double battement » validée), MiniLab 3 et claviers génériques, 15 langues (drapeaux, pluriels CLDR, arabe RTL), « ▶ Écouter seul » (piste, pad, Guide), Guide plus clair avec lueur au rythme d'un cœur, onglet Mix du Mode simple (maquette validée, vumètres en dégradé de pixels), tuto de A à Z jump up (Facile 15 ch. / Pro 17 ch.) et nouvel écran « Nouveau projet » à 3 choix. Tests locaux verts (project-model, app, captures, compilation androidTest). APK 224 envoyé (avant langues/Mix/tuto).
 - Consignes de Benjamin : pas d'APK tant qu'il ne le demande pas ; Play Store seulement à sa demande (branche fx-play gardée de côté, non fusionnée ; prix prévu 4,99 € avec promo 2,99 €) ; démo automatique « trop tôt » (branche fx-demo abandonnée) ; économiser le quota ; des nouvelles à chaque étape.
 
 ## Prochaine étape exacte
-1. Attendre les retours de Benjamin sur le tuto, le Mix et les langues ; APK quand il le demande (versionCode > 224, `scripts/local-release.sh`).
-2. PR de la branche vers main (CI de GitHub relancée), fusion après CI verte.
-3. Plus tard : tuto des autres styles, démo automatique, chantier Play Store (sur demande).
+1. Lot « tuto 3 » en cours (brief : scratchpad `humain/FIX-BRIEF-T3.md`) : équipe Écran (branche fx-t3e) et équipe Contenu (branche fx-t3c) corrigent ce qu'ont trouvé les testeurs humains (docs/testeur-humain/). Ensuite : fusion dans fx-int, tests complets, 2e passage des deux testeurs (`scripts/human-tester.sh`), puis résultat + APK 228 envoyés ensemble à Benjamin (versionCode > 227, `scripts/local-release.sh`).
+2. Plus tard (réponse 1A) : ajouts musicaux de Karim au tuto (basse question-réponse et wobble, préparation du drop, 2e drop qui change la basse) ; tuto des autres styles ; traductions du tuto et du Mode retours ; Mode retours désactivé par défaut avant toute version publique.
+3. PR de la branche vers main (CI de GitHub), Play Store et démo seulement à la demande de Benjamin.
 
 **Phase 0 fusionnée le 2026-10-18, phase 1 fusionnée le 2026-10-19 (feu vert de Benjamin).** Phase en cours : 2 (sampler et notes).
 

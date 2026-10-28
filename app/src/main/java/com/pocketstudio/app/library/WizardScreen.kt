@@ -186,6 +186,9 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
                     dismissButton = { TextButton(onClick = { confirmClose = false }) { Text(tr("Continuer")) } },
                 )
             }
+            // Lot « tuto 5 » (Lucas): what went wrong is said at the top, never under the step's
+            // long content, with the way out next to it.
+            ui.error?.let { message -> WizardError(message, retry = if (style != null && ui.step > 0) actions.create else null, busy = ui.creating) }
             Column(
                 Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 6.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -198,7 +201,6 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
                     is StarterWizard.Step.Melodic -> PartStep(style!!, ui, packs, current.part, playing, actions)
                     StarterWizard.Step.Summary -> SummaryStep(ui, style!!)
                 }
-                ui.error?.let { Text(it, color = Neon.Amber, modifier = Modifier.testTag("wizard_error")) }
             }
             if (style != null && ui.step > 0 && ui.step < ui.lastStep) {
                 // The details are for whoever wants them: the advised choices are already made.
@@ -221,6 +223,21 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
                     }
                 }
             }
+        }
+    }
+}
+
+/** The assistant's error, at its top: the words, and « Réessayer » when the song can be made again. */
+@Composable
+private fun WizardError(message: String, retry: (() -> Unit)?, busy: Boolean) {
+    Row(
+        Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
+            .background(Neon.Amber.copy(alpha = 0.15f)).padding(start = 12.dp, end = 4.dp, top = 6.dp, bottom = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(message, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f).testTag("wizard_error"))
+        if (retry != null) {
+            androidx.compose.material3.TextButton(onClick = retry, enabled = !busy, modifier = Modifier.testTag("wizard_retry")) { Text(tr("Réessayer")) }
         }
     }
 }

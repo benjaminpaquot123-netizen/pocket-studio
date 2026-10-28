@@ -456,7 +456,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             ClosingSaves.awaitIdleBlocking((deadline - System.currentTimeMillis()).coerceAtLeast(0))
             ProjectOpener(projectId, store, journals).open()
         }
-    ).also { o -> o.notice?.let { _notice.value = it } }
+    ).also { o ->
+        // What opening it found, and what was waiting for it (a pack sound the assistant replaced).
+        val said = listOfNotNull(o.notice, PendingNotice.take(projectId))
+        if (said.isNotEmpty()) _notice.value = said.joinToString("\n\n")
+    }
 
     /** True when the app opened on no project because the last one crashed it twice as it opened. */
     val rescued: Boolean get() = opened.rescued

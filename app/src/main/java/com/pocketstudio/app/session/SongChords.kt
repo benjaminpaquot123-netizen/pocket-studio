@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.session
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.model.i18n.inSentence
 import com.pocketstudio.ui.ScaledBottomSheet
 import com.pocketstudio.ui.ScaledDropdownMenu
@@ -154,7 +155,7 @@ fun SongChordsContent(ui: SongChordsUi, actions: SongChordsActions) {
             Button(
                 onClick = actions.apply, enabled = ui.trying,
                 colors = ButtonDefaults.buttonColors(containerColor = Neon.Magenta, contentColor = Neon.OnAccent),
-                modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("song_chords_apply"),
+                modifier = Modifier.pressScale(enabled = ui.trying).weight(1f).heightIn(min = 48.dp).testTag("song_chords_apply"),
             ) { Text(tr("Appliquer à tout le morceau"), maxLines = 2) }
             OutlinedButton(onClick = actions.cancel, modifier = Modifier.heightIn(min = 48.dp).testTag("song_chords_cancel")) {
                 Text(if (ui.trying) tr("Annuler") else tr("Fermer"), maxLines = 1)

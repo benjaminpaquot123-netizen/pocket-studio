@@ -1,5 +1,6 @@
 package com.pocketstudio.app.generate
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.model.i18n.tr
 
 import com.pocketstudio.app.help.Glossary
@@ -161,7 +162,7 @@ private fun ModelCard(ui: GenerateUi, actions: GenerateActions) {
             }
             else -> {
                 if (d is ModelDownload.Failed) Text(d.message, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium)
-                Button(onClick = actions.download, modifier = Modifier.fillMaxWidth().testTag("generate_download")) {
+                Button(onClick = actions.download, modifier = Modifier.pressScale().fillMaxWidth().testTag("generate_download")) {
                     Text(tr("Télécharger le modèle (%s)", GenerationModel.SIZE_LABEL))
                 }
             }
@@ -208,7 +209,7 @@ private fun PromptCard(ui: GenerateUi, actions: GenerateActions) {
                 if (s is GenerateState.Failed) {
                     Text(s.message, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("generate_error"))
                 }
-                Button(onClick = actions.generate, enabled = ui.prompt.isNotBlank(), modifier = Modifier.fillMaxWidth().testTag("generate_go")) {
+                Button(onClick = actions.generate, enabled = ui.prompt.isNotBlank(), modifier = Modifier.pressScale(enabled = ui.prompt.isNotBlank()).fillMaxWidth().testTag("generate_go")) {
                     Text(if (ui.result == null) tr("Générer") else tr("Générer un autre essai"))
                 }
                 Text(tr("Quelques secondes à une minute selon l'appareil."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
@@ -223,7 +224,7 @@ private fun ResultCard(ui: GenerateUi, actions: GenerateActions) {
     NeonCard(modifier = Modifier.testTag("generate_result")) {
         SectionLabel(tr("Résultat : %s", ui.result), color = Neon.Magenta, foldKey = "Résultat")
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(onClick = if (ui.playing) actions.stop else actions.play, modifier = Modifier.testTag("generate_play")) {
+            Button(onClick = if (ui.playing) actions.stop else actions.play, modifier = Modifier.pressScale().testTag("generate_play")) {
                 Icon(if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null)
                 Text(if (ui.playing) tr(" Arrêter") else tr(" Écouter"))
             }

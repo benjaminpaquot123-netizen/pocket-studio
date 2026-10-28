@@ -1,5 +1,6 @@
 package com.pocketstudio.app.settings
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.ui.ScaledDialog
 
 import com.pocketstudio.model.i18n.tr
@@ -145,7 +146,7 @@ fun GuideDialog(onClose: () -> Unit, pages: List<GuidePage> = GUIDE_PAGES, tag: 
                     if (!last) TextButton(onClick = onClose, modifier = Modifier.testTag("guide_skip")) { Text(tr("Passer")) }
                     Box(Modifier.weight(1f))
                     if (page > 0) TextButton(onClick = { page-- }) { Text(tr("Retour")) }
-                    Button(onClick = { if (last) onDone() else page++ }, modifier = Modifier.testTag("guide_next")) {
+                    Button(onClick = { if (last) onDone() else page++ }, modifier = Modifier.pressScale().testTag("guide_next")) {
                         Text(if (last) done else tr("Suivant"))
                     }
                 }

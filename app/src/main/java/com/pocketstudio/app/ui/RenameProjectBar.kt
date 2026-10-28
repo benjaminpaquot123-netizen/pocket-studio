@@ -1,5 +1,6 @@
 package com.pocketstudio.app.ui
 
+import com.pocketstudio.ui.pressScale
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -76,7 +77,7 @@ fun RenameProjectBar(current: String, onDone: (String) -> Unit, onDismiss: () ->
         Button(
             onClick = { onDone(name.text) }, enabled = ok,
             colors = ButtonDefaults.buttonColors(containerColor = Neon.Cyan, contentColor = Neon.OnAccent),
-            modifier = Modifier.testTag("rename_project_ok"),
+            modifier = Modifier.pressScale(enabled = ok).testTag("rename_project_ok"),
         ) { Text(tr("OK")) }
     }
 }

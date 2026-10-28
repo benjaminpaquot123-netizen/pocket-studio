@@ -1,5 +1,6 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.ui.ScaledDialog
 
 import androidx.compose.foundation.layout.Arrangement
@@ -58,7 +59,7 @@ fun TrackAddChoices(
 ) {
     Column(modifier.padding(20.dp).testTag("track_add_sheet"), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(tr("Ajouter une piste"), style = MaterialTheme.typography.titleLarge)
-        Button(onClick = { onPick(TrackKind.Melody, true) }, modifier = Modifier.fillMaxWidth().testTag("track_add_write")) {
+        Button(onClick = { onPick(TrackKind.Melody, true) }, modifier = Modifier.pressScale().fillMaxWidth().testTag("track_add_write")) {
             Icon(Icons.Filled.AutoAwesome, contentDescription = null)
             Text("  " + tr("Écrire une mélodie pour moi"), textAlign = TextAlign.Center)
         }

@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.app.learn.spot
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.ui.semantics.contentDescription
@@ -503,7 +504,7 @@ private fun SimpleSoundCard(tracks: TracksUi) {
         SectionLabel(tr("Le son"), foldKey = "Le son (mode simple)")
         Text(tr(t.soundLabel), style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
         tracks.changeSound?.let { change ->
-            androidx.compose.material3.Button(onClick = { change(t.id) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("simple_change_sound")) {
+            androidx.compose.material3.Button(onClick = { change(t.id) }, modifier = Modifier.pressScale().fillMaxWidth().heightIn(min = 48.dp).testTag("simple_change_sound")) {
                 Text(tr("Changer le son"))
             }
         }

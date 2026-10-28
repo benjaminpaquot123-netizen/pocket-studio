@@ -1,5 +1,6 @@
 package com.pocketstudio.app.report
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.ui.ScaledBottomSheet
 import com.pocketstudio.ui.ScaledPopup
 
@@ -229,7 +230,7 @@ fun BugReportContent(ui: BugReportUi, actions: BugReportActions, modifier: Modif
             )
         }
         ui.message?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.Amber, modifier = Modifier.testTag("bug_message")) }
-        Button(onClick = actions.share, enabled = !ui.busy, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bug_share")) {
+        Button(onClick = actions.share, enabled = !ui.busy, modifier = Modifier.pressScale(enabled = !ui.busy).fillMaxWidth().heightIn(min = 56.dp).testTag("bug_share")) {
             if (ui.busy) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp, color = Neon.OnAccent)
             else Icon(Icons.Filled.IosShare, contentDescription = null, modifier = Modifier.size(20.dp))
             Text("  " + tr("Partager"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
@@ -322,7 +323,7 @@ fun CaptureChipContent(capture: () -> Unit, cancel: () -> Unit) {
         ) {
             Button(
                 onClick = capture, colors = ButtonDefaults.buttonColors(containerColor = Neon.Amber, contentColor = Color.Black),
-                modifier = Modifier.heightIn(min = 48.dp).testTag("bug_capture_now"),
+                modifier = Modifier.pressScale().heightIn(min = 48.dp).testTag("bug_capture_now"),
             ) {
                 Text("📸 " + tr("Capturer"), fontWeight = FontWeight.Bold, maxLines = 1)
             }

@@ -1,5 +1,6 @@
 package com.pocketstudio.app.instruments
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.model.i18n.tr
 
 import androidx.compose.foundation.layout.Arrangement
@@ -50,7 +51,7 @@ internal fun SampledPanel(ui: InstrumentUi) {
         )
     }
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Button(onClick = ui.chooseSample, modifier = Modifier.weight(1f).testTag("sampled_choose")) {
+        Button(onClick = ui.chooseSample, modifier = Modifier.pressScale().weight(1f).testTag("sampled_choose")) {
             Icon(Icons.Filled.LibraryMusic, contentDescription = null)
             Text(tr("  Bibliothèque"), maxLines = 1)
         }

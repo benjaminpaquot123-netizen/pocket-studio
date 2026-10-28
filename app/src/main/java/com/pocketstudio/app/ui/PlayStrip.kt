@@ -70,6 +70,7 @@ import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.songBars
 import com.pocketstudio.model.songStepOf
 import com.pocketstudio.ui.MonoStyle
+import com.pocketstudio.ui.RollingText
 import com.pocketstudio.ui.Neon
 
 /**
@@ -217,7 +218,7 @@ private fun TempoButton(bpm: Double, open: () -> Unit) {
                 .padding(horizontal = 10.dp, vertical = 5.dp),
             verticalAlignment = Alignment.Bottom,
         ) {
-            Text("${Math.round(bpm)}", style = MonoStyle.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold), color = Neon.Cyan)
+            RollingText("${Math.round(bpm)}", style = MonoStyle.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold), color = Neon.Cyan)
             Text(" BPM", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
         }
     }
@@ -260,7 +261,8 @@ private fun PositionLabel(ui: PlayStripUi, actions: PlayStripActions, modifier: 
                             maxLines = 1, overflow = TextOverflow.Ellipsis,
                         )
                     }
-                    Text(
+                    // The bar rolls to the next one, as on a studio display.
+                    RollingText(
                         tr("mes. %1\$d/%2\$d", pos.bar, pos.bars), style = MonoStyle.copy(fontSize = 14.sp, lineHeight = 16.sp), color = color,
                         maxLines = 1, softWrap = false, modifier = Modifier.testTag("top_position_bar"),
                     )

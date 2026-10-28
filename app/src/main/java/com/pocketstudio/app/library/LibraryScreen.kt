@@ -1,5 +1,6 @@
 package com.pocketstudio.app.library
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.ui.ScaledAlertDialog
 
 import com.pocketstudio.model.i18n.tr
@@ -164,7 +165,7 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                                 accent = look.color, selected = playing, onClick = { actions.preview(option.ref) },
                                 subtitle = if (playing) tr("En écoute… touche pour arrêter") else tr("Touche pour écouter"),
                                 trailing = {
-                                    FilledTonalButton(onClick = { actions.use(option) }, modifier = Modifier.testTag("library_use_$i")) { Text(tr("Poser")) }
+                                    FilledTonalButton(onClick = { actions.use(option) }, modifier = Modifier.pressScale().testTag("library_use_$i")) { Text(tr("Poser")) }
                                 },
                                 modifier = m.testTag("library_sound_$i"),
                             )
@@ -225,7 +226,7 @@ private fun StylePackOffer(ui: LibraryUi, actions: LibraryActions) {
         } else {
             androidx.compose.material3.Button(
                 onClick = { missing.forEach { actions.download(it.id) } },
-                modifier = Modifier.fillMaxWidth().testTag("library_style_packs_download"),
+                modifier = Modifier.pressScale().fillMaxWidth().testTag("library_style_packs_download"),
             ) { Text(tr("Télécharger les sons du style")) }
         }
     }
@@ -251,7 +252,7 @@ private fun PackList(ui: LibraryUi, actions: LibraryActions) {
                 if (all.isNotEmpty() && packs.queue == null) {
                     androidx.compose.material3.Button(
                         onClick = { asking = false },
-                        modifier = Modifier.fillMaxWidth().testTag("library_download_all"),
+                        modifier = Modifier.pressScale().fillMaxWidth().testTag("library_download_all"),
                     ) {
                         Icon(Icons.Filled.CloudDownload, contentDescription = null)
                         Text(" " + tr("Tout télécharger (%1\$d packs, %2\$s)", all.size, mb(com.pocketstudio.model.PackCatalog.totalBytes(all))))
@@ -359,7 +360,7 @@ private fun AllPacksNews(ui: LibraryUi, actions: LibraryActions) {
             },
             style = MaterialTheme.typography.bodyMedium,
         )
-        androidx.compose.material3.Button(onClick = { asking = true }, modifier = Modifier.fillMaxWidth().testTag("library_complete_all")) {
+        androidx.compose.material3.Button(onClick = { asking = true }, modifier = Modifier.pressScale().fillMaxWidth().testTag("library_complete_all")) {
             Text(tr("Tout compléter"))
         }
     }
@@ -414,7 +415,7 @@ private fun SearchResults(query: String, ui: LibraryUi, actions: LibraryActions)
                 accent = look.color, selected = playing, onClick = { actions.preview(option.ref) },
                 subtitle = tr(hit.pack.name),
                 trailing = {
-                    FilledTonalButton(onClick = { actions.use(option) }, modifier = Modifier.testTag("library_result_use_$i")) { Text(tr("Poser")) }
+                    FilledTonalButton(onClick = { actions.use(option) }, modifier = Modifier.pressScale().testTag("library_result_use_$i")) { Text(tr("Poser")) }
                 },
                 modifier = m.testTag("library_result_$i"),
             )

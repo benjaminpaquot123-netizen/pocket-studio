@@ -1,5 +1,6 @@
 package com.pocketstudio.app.studio
 
+import com.pocketstudio.ui.pressScale
 import com.pocketstudio.model.i18n.tr
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -76,7 +77,7 @@ fun StudioScreen(
                 Button(
                     onClick = onTogglePlay,
                     enabled = engineAvailable,
-                    modifier = Modifier.fillMaxWidth().height(64.dp).testTag("play"),
+                    modifier = Modifier.pressScale(enabled = engineAvailable).fillMaxWidth().height(64.dp).testTag("play"),
                     colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
                 ) {
                     Icon(

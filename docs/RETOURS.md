@@ -106,3 +106,7 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - « Essaie de bosser sans trop gaspiller de quota » : moins d'équipes en parallèle, pas de travail en double, messages courts.
 - Démo automatique : trop tôt aussi (« La démo c'est trop tôt j'ai dit »). Équipe arrêtée, rien fusionné ; branche fx-demo laissée de côté.
 - GO tuto de A à Z (« lestgo ») : un mode facile et un mode pro, + le nouvel écran « Nouveau projet » à 3 choix (J'apprends / Fais-moi un morceau / Je pars de zéro + « Autres façons de commencer »).
+- 2026-10-28 : règle de collaboration : « Pose une question et repose-moi une question avant de faire quelque chose : il faut qu'on valide ensemble. » Rien n'est lancé sans son accord explicite.
+- Demande en discussion : un APK avec un « mode retours » (enregistrer l'écran, écrire des notes à tout moment) pour faire tout le tuto jump up et me le montrer.
+- Mode retours validé : vidéo de l'écran + son de l'appli, notes ✎ à tout moment, journal automatique, activé par défaut dans l'APK envoyé (bouton flottant dès l'ouverture) et coupable dans ⋯ › Aide ; découpage automatique en morceaux de 20 Mo max (limite d'envoi 30 Mo) ; envoi ici dans la discussion.
+- APK du Mode retours : à compiler et envoyer directement dès qu'il est prêt (accord donné).

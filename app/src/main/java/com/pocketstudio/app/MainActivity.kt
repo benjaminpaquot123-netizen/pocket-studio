@@ -29,6 +29,12 @@ import com.pocketstudio.ui.Palettes
 import com.pocketstudio.ui.PocketStudioTheme
 
 class MainActivity : ComponentActivity() {
+    /** The second touch of a double tap on a button that changed the screen is not the new screen's ([DoubleTouchGuard]). */
+    override fun dispatchTouchEvent(ev: android.view.MotionEvent): Boolean {
+        if (com.pocketstudio.app.ui.DoubleTouchGuard.drop(ev.actionMasked, ev.x, ev.y, ev.eventTime, resources.displayMetrics.density)) return true
+        return super.dispatchTouchEvent(ev)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // The system splash (Android 12+): BenStudio's pads pop in and beat twice; it leaves at the
         // first frame, nothing holds it (BrandIntro takes over at the same place, the app starts under it).

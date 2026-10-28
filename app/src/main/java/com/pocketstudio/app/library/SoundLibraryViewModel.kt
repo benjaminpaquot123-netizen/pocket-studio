@@ -1022,11 +1022,15 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         _wizard.update { it.copy(creating = true, error = null) }
         viewModelScope.launch {
             try {
-                val song = songFrom(w)
+                // Lot « tuto 5 » (Lucas, Sarah): a pack sound that cannot be read no longer blocks the
+                // song: that line takes the built-in sound, and the new project says so.
+                val replaced = mutableListOf<String>()
+                val song = songFrom(w, replaced)
                 if (song == null) {
                     _wizard.update { it.copy(creating = false, error = tr("Garde au moins une ligne pour commencer.")) }
                     return@launch
                 }
+                createdNotice = fallbackNotice(replaced)
                 // The choices stay until the project is written (the caller closes the assistant then).
                 then(song.project, song.files, song.guide)
             } catch (e: CancellationException) {
@@ -1055,15 +1059,18 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 val app = getApplication<Application>()
                 val installed = withContext(Dispatchers.IO) { runCatching { PackStore.installed(app) }.getOrElse { _packs.value.installed } }
                 _packs.update { it.copy(installed = installed) }
+                val replaced = mutableListOf<String>()
                 val song = try {
-                    songFrom(withStyle(WizardUi(), style, installed))
+                    songFrom(withStyle(WizardUi(), style, installed), replaced)
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
                     if (installed.isEmpty()) throw e
                     AppLog.add("Morceau en un geste : un son de pack illisible (${e.message}), sons intégrés à la place")
+                    replaced.clear()
                     songFrom(withStyle(WizardUi(), style, emptyList()))
                 } ?: throw IllegalStateException(tr("aucun son à jouer"))
+                createdNotice = fallbackNotice(replaced)
                 then(song.project, song.files, song.guide)
             } catch (e: CancellationException) {
                 _quick.value = QuickUi()
@@ -1106,23 +1113,61 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     /** A song built by the assistant: the project, the sounds to store in its folder, its guide. */
     private class Song(val project: Project, val files: Map<String, Pcm>, val guide: List<com.pocketstudio.app.settings.GuidePage>)
 
-    /** The song the choices [w] make (null: nothing would play); throws when a sound cannot be read. */
-    private suspend fun songFrom(w: WizardUi): Song? {
+    /**
+     * What the new project says once open (a pack sound replaced by a built-in one), taken once by
+     * the caller of [create] when it opens the song.
+     */
+    private var createdNotice: String? = null
+
+    fun takeCreatedNotice(): String? = createdNotice.also { createdNotice = null }
+
+    /** « Un son du pack « Drum & bass » n'a pas pu être lu (Kick 4)… », or null when nothing was replaced. */
+    private fun fallbackNotice(replaced: List<String>): String? {
+        if (replaced.isEmpty()) return null
+        val packs = replaced.map { it.substringAfter(" · ", "").ifEmpty { tr("téléchargé") } }.distinct().joinToString(", ")
+        val names = replaced.map { it.substringBefore(" · ") }.distinct().joinToString(", ")
+        return if (replaced.size == 1) tr("Un son du pack « %1\$s » n'a pas pu être lu (%2\$s) : ton morceau prend le son intégré à la place.", packs, names)
+        else tr("Des sons du pack « %1\$s » n'ont pas pu être lus (%2\$s) : ton morceau prend les sons intégrés à la place.", packs, names)
+    }
+
+    /** The name of the downloaded pack [packId] (« Drum & bass »), for what is said. */
+    private fun packName(packId: String): String = _packs.value.installed.firstOrNull { it.id == packId }?.name ?: packId
+
+    /**
+     * The song the choices [w] make (null: nothing would play); throws when a sound cannot be read.
+     * With [replaced], a downloaded pack's sound that cannot be read (a file damaged or gone) gives
+     * way to the line's built-in sound instead, and « sound · pack » is added there.
+     */
+    private suspend fun songFrom(w: WizardUi, replaced: MutableList<String>? = null): Song? {
         val style = w.style ?: return null
         val sounds = HashMap<Role, PadSample?>()
         val files = HashMap<String, Pcm>()
         for (line in style.lines) {
             val row = w.rows[line.role] ?: continue
-            val option = row.sound ?: continue
+            var option = row.sound ?: continue
             if (!row.enabled) continue
-            val ref = option.ref
             // The kit voice the pad already has needs no file (unless the line shapes it: the ride); nor does a
             // line the style gives a studio voice of the engine (its tuned kick, the rumble: S3).
-            if (ref is SoundRef.Kit && ((ref.voice == line.role.lane && !StarterWizard.shapesKit(line.role)) || StudioDrums.voiceFor(style, line.role, Harmony(style.melody.root)) != null)) {
+            fun needsNoFile(ref: SoundRef) =
+                ref is SoundRef.Kit && ((ref.voice == line.role.lane && !StarterWizard.shapesKit(line.role)) || StudioDrums.voiceFor(style, line.role, Harmony(style.melody.root)) != null)
+            if (needsNoFile(option.ref)) {
                 sounds[line.role] = null
                 continue
             }
-            val pcm = load(ref) ?: throw IllegalStateException(tr("un son n'a pas pu être lu, réessaie"))
+            var pcm = load(option.ref)
+            val fromPack = (option.ref as? SoundRef.Pack)?.packId
+            if (pcm == null && fromPack != null && replaced != null) {
+                AppLog.add("Assistant : son de pack illisible (${option.name}), son intégré à la place")
+                replaced += option.name.substringBefore(" · ") + " · " + packName(fromPack)
+                option = defaultRow(line.role, style.id, emptyList()).sound ?: throw IllegalStateException(tr("un son n'a pas pu être lu, réessaie"))
+                if (needsNoFile(option.ref)) {
+                    sounds[line.role] = null
+                    continue
+                }
+                pcm = load(option.ref)
+            }
+            val ref = option.ref
+            if (pcm == null) throw IllegalStateException(tr("un son n'a pas pu être lu, réessaie"))
             val file = "${UUID.randomUUID().toString().take(12)}.wav"
             files[file] = pcm
             val sample = PadSample(file, option.name.substringBefore(" · ").take(40))
@@ -1131,9 +1176,19 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         if (sounds.isEmpty() && (w.mood == null || w.parts.values.none { it.enabled })) return null
         val chosen = if (w.mood == null) emptyMap() else w.parts.filterValues { it.enabled }.mapValues { it.value.sound }
         // Pack sounds and kit voices played across the keys: copied into the project, set on their own note.
-        val parts = chosen.mapValues { (_, sound) ->
+        val parts = chosen.mapValues { (part, chosenSound) ->
+            var sound = chosenSound
             if (sound.packFile == null && sound.kitVoice == null) return@mapValues sound
-            val (pcm, root) = packPartSound(sound) ?: throw IllegalStateException(tr("un son n'a pas pu être lu, réessaie"))
+            var read = packPartSound(sound)
+            val fromPack = sound.packFile?.first
+            if (read == null && fromPack != null && replaced != null) {
+                AppLog.add("Assistant : son de pack illisible (${sound.name}), son intégré à la place")
+                replaced += sound.name + " · " + packName(fromPack)
+                sound = StarterWizard.soundsFor(part, style, emptyList()).first()
+                if (sound.packFile == null && sound.kitVoice == null) return@mapValues sound
+                read = packPartSound(sound)
+            }
+            val (pcm, root) = read ?: throw IllegalStateException(tr("un son n'a pas pu être lu, réessaie"))
             val file = "${UUID.randomUUID().toString().take(12)}.wav"
             files[file] = pcm
             sound.copy(sampled = sound.sampled!!.copy(file = file, root = root ?: 60f))

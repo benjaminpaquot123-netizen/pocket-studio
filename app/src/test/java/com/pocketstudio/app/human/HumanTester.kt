@@ -378,7 +378,7 @@ abstract class HumanTester(private val seat: String) {
     /** The node tagged [tag] is under the finger at ([x], [y]) (screen pixels, any window). */
     private fun touches(tag: String, x: Float, y: Float): Boolean = runCatching {
         compose.onAllNodesWithTag(tag).fetchSemanticsNodes().any { n ->
-            val at = n.positionOnScreen
+            val at = BenchWindows.drawnPosition(n, app.resources.displayMetrics)
             x >= at.x && x <= at.x + n.size.width && y >= at.y && y <= at.y + n.size.height
         }
     }.getOrDefault(false)
@@ -440,8 +440,23 @@ abstract class HumanTester(private val seat: String) {
         }
     }
 
-    /** A finger on the glass at ([x], [y]) in the screen's pixels: the window there gets it. */
+    /**
+     * A finger on the glass at ([x], [y]) in the screen's pixels: the window there gets it. The
+     * screen (screen-N.png) draws each window where a phone puts it (a dialog centred), while
+     * Robolectric takes every window's touches as if it sat at its own (0, 0): the touch is moved by
+     * that gap, for the window a phone would give it to (lot « tuto 5 »: « Quitter », « Passer »,
+     * « Annuler » of a centred dialog fell beside it). The gesture keeps its window's gap to the end.
+     */
     private fun touch(action: Int, x: Float, y: Float, downAt: Long) {
+        if (action == MotionEvent.ACTION_DOWN) gestureShift = BenchWindows.shiftAt(x, y, app.resources.displayMetrics)
+        val (dx, dy) = gestureShift
+        sendTouch(action, x - dx, y - dy, downAt)
+    }
+
+    /** The gap of the window the current gesture went to (see [touch]). */
+    private var gestureShift = 0f to 0f
+
+    private fun sendTouch(action: Int, x: Float, y: Float, downAt: Long) {
         val e = MotionEvent.obtain(downAt, SystemClock.uptimeMillis(), action, x, y, 0)
         e.source = InputDevice.SOURCE_TOUCHSCREEN
         InstrumentationRegistry.getInstrumentation().uiAutomation.injectInputEvent(e, true)
@@ -578,17 +593,19 @@ abstract class HumanTester(private val seat: String) {
         return heard()
     }
 
-    /** The middle of the node tagged [tag] on the screen (the first one), or null when there is none. */
+    /** The middle of the node tagged [tag] on the screen as drawn (the first one), or null when there is none. */
     protected fun centerOf(tag: String): Pair<Float, Float>? = runCatching {
         compose.onAllNodesWithTag(tag).fetchSemanticsNodes().firstOrNull()?.let { n ->
-            n.positionOnScreen.x + n.size.width / 2f to n.positionOnScreen.y + n.size.height / 2f
+            val at = BenchWindows.drawnPosition(n, app.resources.displayMetrics)
+            at.x + n.size.width / 2f to at.y + n.size.height / 2f
         }
     }.getOrNull()
 
-    /** The node showing [text] (the first one), its middle, or null. */
+    /** The node showing [text] (the first one), its middle on the screen as drawn, or null. */
     protected fun centerOfText(text: String, substring: Boolean = false): Pair<Float, Float>? = runCatching {
         compose.onAllNodes(androidx.compose.ui.test.hasText(text, substring = substring)).fetchSemanticsNodes().firstOrNull()?.let { n ->
-            n.positionOnScreen.x + n.size.width / 2f to n.positionOnScreen.y + n.size.height / 2f
+            val at = BenchWindows.drawnPosition(n, app.resources.displayMetrics)
+            at.x + n.size.width / 2f to at.y + n.size.height / 2f
         }
     }.getOrNull()
 

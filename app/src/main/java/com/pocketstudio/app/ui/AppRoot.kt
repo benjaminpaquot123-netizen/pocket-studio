@@ -319,7 +319,11 @@ fun AppRoot() {
     val navPrefs = remember { NavPrefs(context) }
     var lastSons by rememberSaveable { mutableStateOf(navPrefs.lastSons) }
     var partsView by rememberSaveable { mutableStateOf(navPrefs.partsView) }
-    LaunchedEffect(tab) { if (tab in SONS_TABS) { lastSons = tab; navPrefs.lastSons = tab } }
+    LaunchedEffect(tab) {
+        // A touch that just changed the screen: its double tap's second touch is not for the new one.
+        DoubleTouchGuard.screenChanged(android.os.SystemClock.uptimeMillis())
+        if (tab in SONS_TABS) { lastSons = tab; navPrefs.lastSons = tab }
+    }
     // Switching modes keeps the screen when the other mode has it (nothing in the project changes).
     LaunchedEffect(simple) {
         if (simple && SimpleTab.of(tab) == null && tab != AppTab.Live && tab != AppTab.Outils && tab != AppTab.Acide && tab != AppTab.Audio) tab = AppTab.Morceau
@@ -632,6 +636,7 @@ fun AppRoot() {
                         create = {
                             libraryVm.create { project, sounds, guide ->
                                 projectsVm.create(songMade(project, guide), sounds, failed = libraryVm::createFailed) { id ->
+                                    com.pocketstudio.app.rhythm.PendingNotice.put(id, libraryVm.takeCreatedNotice())
                                     guideOpen = true
                                     libraryVm.closeWizard()
                                     tab = AppTab.Morceau  // the song is ready to hear: land on it (kept across the rebuild)
@@ -731,6 +736,7 @@ fun AppRoot() {
                             rhythmVm.stop()
                             libraryVm.quickCreate(id) { project, sounds, guide ->
                                 projectsVm.create(songMade(project, guide), sounds, failed = libraryVm::quickFailed) { newId ->
+                                    com.pocketstudio.app.rhythm.PendingNotice.put(newId, libraryVm.takeCreatedNotice())
                                     guideOpen = true
                                     libraryVm.quickDone()
                                     tab = AppTab.Morceau  // the song is ready to hear: land on it (kept across the rebuild)

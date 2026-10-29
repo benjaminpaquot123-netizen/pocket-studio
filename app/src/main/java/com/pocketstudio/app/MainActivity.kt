@@ -29,6 +29,9 @@ import com.pocketstudio.ui.Palettes
 import com.pocketstudio.ui.PocketStudioTheme
 
 class MainActivity : ComponentActivity() {
+    /** What the opening plays on its two heartbeats at this start: the sound, two soft taps, or nothing. */
+    private var introCue: com.pocketstudio.app.onboarding.IntroCue = com.pocketstudio.app.onboarding.IntroCue.None
+
     /** The second touch of a double tap on a button that changed the screen is not the new screen's ([DoubleTouchGuard]). */
     override fun dispatchTouchEvent(ev: android.view.MotionEvent): Boolean {
         if (com.pocketstudio.app.ui.DoubleTouchGuard.drop(ev.actionMasked, ev.x, ev.y, ev.eventTime, resources.displayMetrics.density)) return true
@@ -45,7 +48,7 @@ class MainActivity : ComponentActivity() {
         if (savedInstanceState == null) Intro.splashElapsedMs = 0L
         splash.setOnExitAnimationListener { view ->
             val start = view.iconAnimationStartMillis
-            if (start > 0L) Intro.splashElapsedMs = (android.os.SystemClock.uptimeMillis() - start).coerceIn(0L, 1000L)
+            if (start > 0L) Intro.splashElapsedMs = (android.os.SystemClock.uptimeMillis() - start).coerceIn(0L, com.pocketstudio.app.onboarding.IntroTimeline.SPLASH_MS)
             view.remove()
         }
         enableEdgeToEdge()
@@ -57,6 +60,11 @@ class MainActivity : ComponentActivity() {
         // The intro at each start of the app, not when the screen is rebuilt (rotation, new language).
         if (savedInstanceState == null) {
             Intro.playing = true
+            // The sound is read and made ready on its own thread now, long before its first beat.
+            val prefs = SettingsStore.state.value
+            introCue = com.pocketstudio.app.onboarding.IntroCue.forLaunch(
+                this, { window.decorView }, com.pocketstudio.app.onboarding.animationsOff(this), prefs.introSound, prefs.haptics,
+            )
             openAsked(intent)
         }
         val folds = FoldPrefs(this)
@@ -85,7 +93,7 @@ class MainActivity : ComponentActivity() {
                                 // du projet… », audio engine): the intro waits for nothing.
                                 com.pocketstudio.app.projects.ProjectGate { com.pocketstudio.app.learn.LearnLayer { AppRoot() } }
                                 if (Intro.playing) {
-                                    BrandIntro(onDone = { Intro.playing = false })
+                                    BrandIntro(onDone = { Intro.playing = false }, cue = introCue)
                                     // Gone with the screen (rotated, closed): never left « playing ».
                                     androidx.compose.runtime.DisposableEffect(Unit) { onDispose { Intro.playing = false } }
                                 }

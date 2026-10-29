@@ -51,7 +51,7 @@ class SmokeTest {
     fun appStartsPlaysAndNavigates() {
         assertTrue("native engine must load", NativeEngine.isAvailable)
         compose.waitUntil(10_000) { NativeEngine.streamInfo().let { it.running && it.callbacks > 0 } }
-        // The opening (BrandIntro) first: it covers the app for about a second.
+        // The opening (BrandIntro) first: it covers the app for under 5 s.
         compose.waitUntil(10_000) { compose.onAllNodesWithTag("intro").fetchSemanticsNodes().isEmpty() }
         // First launch: the welcome choices open; "later" keeps the starter beat (then Pro, below).
         compose.waitForIdle()

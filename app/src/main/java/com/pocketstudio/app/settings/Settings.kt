@@ -60,6 +60,8 @@ data class AppSettings(
     val language: Lang = Lang.FR,
     /** A light vibration on each beat while the Live page plays (off: it can annoy). */
     val liveBeatHaptics: Boolean = false,
+    /** The opening's double heartbeat is heard (never with the phone on silent or vibrate). */
+    val introSound: Boolean = true,
     /** The ready-made effects starred in the effects box (their ids). */
     val favouriteFx: Set<String> = emptySet(),
     /**
@@ -111,6 +113,7 @@ object SettingsStore {
             keyLayout = runCatching { KeyLayout.valueOf(p.getString("keyLayout", d.keyLayout.name)!!) }.getOrDefault(d.keyLayout),
             language = Lang.of(p.getString("language", d.language.code)),
             liveBeatHaptics = p.getBoolean("liveBeatHaptics", d.liveBeatHaptics),
+            introSound = p.getBoolean("introSound", d.introSound),
             favouriteFx = p.getStringSet("favouriteFx", d.favouriteFx)?.toSet() ?: d.favouriteFx,
             simpleMode = p.getBoolean("simpleMode", d.simpleMode),
             monitorVoice = p.getBoolean("monitorVoice", d.monitorVoice),
@@ -145,6 +148,7 @@ object SettingsStore {
             .putString("keyLayout", s.keyLayout.name)
             .putString("language", s.language.code)
             .putBoolean("liveBeatHaptics", s.liveBeatHaptics)
+            .putBoolean("introSound", s.introSound)
             // A copy: SharedPreferences must not keep the set it is given.
             .putStringSet("favouriteFx", HashSet(s.favouriteFx))
             .putBoolean("simpleMode", s.simpleMode)

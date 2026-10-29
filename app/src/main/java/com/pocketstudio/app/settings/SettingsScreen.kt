@@ -97,6 +97,9 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
     }, second = {
         NeonCard {
             SectionLabel(tr("Son"))
+            Toggle(tr("Son d'ouverture"), tr("Un double battement de cœur quand l'appli s'ouvre. Rien si le téléphone est en silencieux."), s.introSound, "intro_sound") { v ->
+                actions.update { it.copy(introSound = v) }
+            }
             Text(tr("Volume du métronome : %d %%", (s.metronomeLevel * 100).roundToInt()), style = MaterialTheme.typography.bodyMedium)
             ProSlider(value = s.metronomeLevel, onValueChange = { v -> actions.update { it.copy(metronomeLevel = v) } }, modifier = Modifier.testTag("metronome_level"))
             Text(tr("Décompte avant d'enregistrer"), style = MaterialTheme.typography.bodyMedium)

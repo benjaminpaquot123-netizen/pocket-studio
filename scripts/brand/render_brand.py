@@ -11,13 +11,15 @@ right side for the bowls (the lower one wider, as in a real B). Writes:
   app/src/main/res/drawable/ic_notification.xml
   app/src/main/res/drawable/avd_splash_logo.xml the splash: pads pop in, then a double heartbeat
 With --preview DIR: contact sheets (48/96/512 px, light, dark, themed, notification) and the
-opening as key frames, intro.mp4 and intro.gif (the same timeline as BrandIntro.kt).
+opening as key frames, intro.mp4 and intro.gif (the same timeline as BrandIntro.kt; a sketch: the
+app's own frames, with the shock waves, sparks and lights, come from BrandTest.previewFrames).
 Needs cairosvg, Pillow and fontTools (pip install cairosvg pillow fonttools); ffmpeg for the video.
 The Compose intro (app/.../onboarding/BrandIntro.kt) draws the same geometry and timeline: keep
 them in step.
 
 Usage: python3 scripts/brand/render_brand.py [--preview DIR]
 """
+import math
 import os
 import subprocess
 import sys
@@ -95,15 +97,20 @@ def rr(x, y, w, h, tl, tr, br, bl):
 PADS = [Pad(p) for p in RAW_PADS]
 
 # --- The opening's timeline (ms from the splash's start), as BrandIntro.kt -----------------------
+# The splash (at most SPLASH_MS) pops the pads in and breathes in; the app draws the rest, in step
+# with the sound (render_heartbeat.py): the double heartbeat comes after the splash has gone.
 POP_STAGGER, POP_MS = 60, 260
-BEATS = ((480, 0.12, 0.55, 0.85), (640, 0.07, 0.35, 0.6))  # start, swell, pad flash, ring alpha
-BEAT_UP, BEAT_DOWN = 70, 160
-RING_MS = 360
-FLASH_STAGGER, FLASH_UP, FLASH_DOWN = 35, 40, 220
-RISE = (900, 1250)
-NAME = (1000, 2200)
-LINE = (1900, 2500)
-FADE = (3500, 3800)
+HALO_IN = (120, 520)
+INHALE = (560, 1100)  # the breath in before the first beat: the mark 3.5 % smaller, the halo 20 % dimmer
+INHALE_DEPTH, INHALE_DIM, RELEASE_MS = 0.035, 0.2, 70
+BEATS = ((1100, 0.15, 0.6, 0.9), (1340, 0.085, 0.38, 0.6))  # start, swell, pad flash, ring alpha
+BEAT_UP, SPRING_MS, SPRING_DECAY, SPRING_END = 55, 300, 85, 700
+RING_MS = 480
+FLASH_STAGGER, FLASH_UP, FLASH_DOWN = 35, 40, 240
+RISE = (1650, 2050)
+NAME = (1750, 2850)
+LINE = (2550, 3150)
+FADE = (4400, 4700)
 LIFT, NAME_TOP = 0.13, 0.19  # of the 288 dp box: the mark goes up, the name sits under it
 SPLASH_MS = 1000
 
@@ -130,18 +137,30 @@ def pop(i, t):
     return overshoot(x) if x < 1 else 1.0
 
 
-def pulse(u):
-    if u < 0 or u > BEAT_UP + BEAT_DOWN:
+def ease_cos(x):
+    """Android's accelerate_decelerate interpolator."""
+    return (1 - math.cos(math.pi * x)) / 2
+
+
+def inhale(t):
+    if t < BEATS[0][0]:
+        return ease_cos(ramp(t, *INHALE))
+    return 1 - ease_out(ramp(t, BEATS[0][0], BEATS[0][0] + RELEASE_MS))
+
+
+def spring(u):
+    if u <= 0 or u > SPRING_END:
         return 0.0
     if u < BEAT_UP:
         return ease_out(u / BEAT_UP)
-    return 1 - ease((u - BEAT_UP) / BEAT_DOWN)
+    v = u - BEAT_UP
+    return math.cos(2 * math.pi * v / SPRING_MS) * math.exp(-v / SPRING_DECAY)
 
 
 def heartbeat(t):
-    s = 1.0
+    s = 1 - INHALE_DEPTH * inhale(t)
     for start, swell, _, _ in BEATS:
-        s *= 1 + swell * pulse(t - start)
+        s *= 1 + swell * spring(t - start)
     return s
 
 
@@ -162,7 +181,7 @@ def rings(t):
     for start, _, _, alpha in BEATS:
         x = ramp(t, start, start + RING_MS)
         if 0 < x < 1:
-            out.append((0.85 + 0.75 * ease_out(x), alpha * (1 - x)))
+            out.append((0.85 + 1.05 * ease_out(x), alpha * (1 - x)))
     return out
 
 
@@ -376,39 +395,25 @@ def target(name, animators):
 
 
 def splash_avd():
-    """The splash, within 1 s: the pads pop in one after the other, then the double heartbeat
-    (lub-dub: the mark swells twice, a ring goes out on each beat, the pads flash in turn)."""
+    """The splash, within 1 s: the pads pop in one after the other, the halo comes up, then the
+    mark breathes in (a little smaller, the halo a little dimmer) towards the first heartbeat,
+    which the app draws (BrandIntro), in step with its sound."""
     ind = "            "
-    body = halo_path(ind, ' android:name="halo" android:fillAlpha="0"')
-    for k in range(len(BEATS)):
-        body += (f'{ind}<group android:name="ring{k}" android:pivotX="54" android:pivotY="54" android:scaleX="0.85" android:scaleY="0.85">\n'
-                 f'{ind}    <path android:name="ringPath{k}" android:strokeColor="{argb(RING)}" android:strokeWidth="1.6" android:strokeAlpha="0" '
-                 f'android:pathData="{circle(54, 54, 31)}" />\n{ind}</group>\n')
-    pads = ""
+    pads = halo_path(ind + "    ", ' android:name="halo" android:fillAlpha="0"')
     for i, p in enumerate(PADS):
-        pads += (f'{ind}        <group android:name="pad{i}" android:pivotX="{p.cx:.3f}" android:pivotY="{p.cy:.3f}" android:scaleX="0" android:scaleY="0">\n'
-                 + vd_pad(i, p, ind + "            ", named=True) + f'{ind}        </group>\n')
-    body += (f'{ind}<group android:name="beat0" android:pivotX="54" android:pivotY="54">\n'
-             f'{ind}    <group android:name="beat1" android:pivotX="54" android:pivotY="54">\n{pads}{ind}    </group>\n{ind}</group>\n')
-    targets = target("halo", [lambda ind: anim(ind, "fillAlpha", 120, 400, 0, 1)])
+        pads += (f'{ind}    <group android:name="pad{i}" android:pivotX="{p.cx:.3f}" android:pivotY="{p.cy:.3f}" android:scaleX="0" android:scaleY="0">\n'
+                 + vd_pad(i, p, ind + "        ") + f'{ind}    </group>\n')
+    body = f'{ind}<group android:name="breath" android:pivotX="54" android:pivotY="54">\n{pads}{ind}</group>\n'
+    inhale_ms = INHALE[1] - INHALE[0]
+    targets = target("halo", [lambda ind: anim(ind, "fillAlpha", HALO_IN[0], HALO_IN[1] - HALO_IN[0], 0, 1),
+                              lambda ind: anim(ind, "fillAlpha", INHALE[0], inhale_ms, 1, round(1 - INHALE_DIM, 3), "@android:interpolator/accelerate_decelerate")])
     for i in range(len(PADS)):
         targets += target(f"pad{i}", [lambda ind, i=i, pr=pr: anim(ind, pr, i * POP_STAGGER, POP_MS, 0, 1, "@android:interpolator/overshoot")
                                       for pr in ("scaleX", "scaleY")])
-        flashes = []
-        for start, _, peak, _ in BEATS:
-            s = start + i * FLASH_STAGGER
-            flashes.append(lambda ind, s=s, peak=peak: anim(ind, "fillAlpha", s, FLASH_UP, 0, peak))
-            flashes.append(lambda ind, s=s, peak=peak: anim(ind, "fillAlpha", s + FLASH_UP, FLASH_DOWN, peak, 0))
-        targets += target(f"flash{i}", flashes)
-    for k, (start, swell, _, alpha) in enumerate(BEATS):
-        beat = []
-        for pr in ("scaleX", "scaleY"):
-            beat.append(lambda ind, pr=pr, start=start, swell=swell: anim(ind, pr, start, BEAT_UP, 1, round(1 + swell, 3), "@android:interpolator/decelerate_cubic"))
-            beat.append(lambda ind, pr=pr, start=start, swell=swell: anim(ind, pr, start + BEAT_UP, BEAT_DOWN, round(1 + swell, 3), 1, "@android:interpolator/accelerate_decelerate"))
-        targets += target(f"beat{k}", beat)
-        targets += target(f"ring{k}", [lambda ind, pr=pr, start=start: anim(ind, pr, start, RING_MS, 0.85, 1.6, "@android:interpolator/decelerate_cubic") for pr in ("scaleX", "scaleY")])
-        targets += target(f"ringPath{k}", [lambda ind, start=start, alpha=alpha: anim(ind, "strokeAlpha", start, RING_MS, alpha, 0)])
-    assert max(b[0] for b in BEATS) + RING_MS <= SPLASH_MS
+    targets += target("breath", [lambda ind, pr=pr: anim(ind, pr, INHALE[0], inhale_ms, 1, round(1 - INHALE_DEPTH, 4), "@android:interpolator/accelerate_decelerate")
+                                 for pr in ("scaleX", "scaleY")])
+    # Nothing the splash cannot hand over without a jump: the beats come after it.
+    assert min(b[0] for b in BEATS) > SPLASH_MS
     return (HEAD + '<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"\n'
             '    xmlns:aapt="http://schemas.android.com/aapt">\n    <aapt:attr name="android:drawable">\n'
             '        <vector android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">\n'
@@ -441,7 +446,7 @@ def intro_frame(t, width=540, height=960):
     ring_svg = "".join(f'<circle cx="54" cy="54" r="{31 * s:.3f}" fill="none" stroke="{RING}" stroke-width="1.6" stroke-opacity="{a:.3f}"/>' for s, a in rings(t))
     parts.append(f'<g transform="translate({cx} {cy - lift}) scale({u}) translate(-54 -54)">{ring_svg}</g>')
     parts.append(f'<g transform="translate({cx} {cy - lift}) scale({u * beat}) translate(-54 -54)">'
-                 f'<circle cx="58" cy="58" r="44" fill="url(#halo)" fill-opacity="{ramp(t, 120, 520):.3f}"/>{svg_mark(t=t)}</g>')
+                 f'<circle cx="58" cy="58" r="44" fill="url(#halo)" fill-opacity="{ramp(t, *HALO_IN) * (1 - INHALE_DIM * inhale(t)):.3f}"/>{svg_mark(t=t)}</g>')
     name = ease(ramp(t, *NAME))
     if name > 0:
         size = 34 * dp
@@ -507,7 +512,7 @@ def previews(out_dir):
     # The opening: key frames, then a video and a GIF of every frame at 30 fps.
     frames = os.path.join(out_dir, "intro-frames")
     os.makedirs(frames, exist_ok=True)
-    for t in (100, 300, 550, 710, 900, 1300, 1600):
+    for t in (100, 300, 900, 1150, 1400, 1900, 2700):
         raster(intro_frame(t), 540, 960).save(os.path.join(out_dir, f"intro-{t:04d}ms.png"))
     n = int(FADE[1] / (1000 / 30)) + 8
     for k in range(n):

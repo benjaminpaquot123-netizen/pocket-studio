@@ -47,7 +47,12 @@ class RemixFindableTest {
     fun fromTheOpeningItIsOneTouch() {
         h.start(launchChoice = true)
         h.awaitTag("launch_remix")
+        // Owner (2026-10-29): a showcase card of its own, « Remix », the separation said under it.
+        compose.onNodeWithTag("launch_remix").assertTextContains("Remix", substring = true)
+            .assertTextContains("Séparation des pistes : batterie, basse, voix et le reste.")
+        // On the project open: straight on the Remix, no new project, so no « Simple ou Pro ? ».
         compose.withinGestures("Remixer une chanson (ouverture)", FROM_OPENING) { tap("launch_remix") }
+        compose.onNodeWithTag("mode_step").assertDoesNotExist()
         assertRemix()
     }
 
@@ -61,16 +66,21 @@ class RemixFindableTest {
         h.awaitTag("welcome_remix")
         val before = com.pocketstudio.app.projects.CurrentProject.get(h.app)
         compose.onNodeWithText("Extraire la voix d'une chanson").assertExists()
-        // The last card of the welcome (its order kept, Benjamin's): one scroll on a small phone, then one touch.
-        compose.withinGestures("Extraire la voix (accueil)", FROM_A_SPACE) { tap("welcome_remix") }
+        // The last card of the welcome (its order kept, Benjamin's): one scroll on a small phone, one touch,
+        // then « Simple ou Pro ? » (a new project, owner 2026-10-29).
+        compose.withinGestures("Extraire la voix (accueil)", FROM_A_SPACE + 1) {
+            tap("welcome_remix")
+            tap("mode_card_simple")
+        }
         val end = System.currentTimeMillis() + 10_000
         while (com.pocketstudio.app.projects.CurrentProject.get(h.app) == before) {
             check(System.currentTimeMillis() < end) { "no project made for the Remix" }
             Thread.sleep(50)
             org.robolectric.shadows.ShadowLooper.idleMainLooper()
         }
-        // The project opens (the activity is rebuilt on it) with the Remix page asked for.
-        assertTrue(com.pocketstudio.app.remix.SeparationJob.openRemix.value)
+        // The project opens (the activity is rebuilt on it) with the Remix page asked for (the request
+        // may already be taken by the screen before the rebuild: its page is kept across it, as
+        // « Que veux-tu faire ? »'s Remix does).
         com.pocketstudio.app.remix.SeparationJob.openHandled()
     }
 

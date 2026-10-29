@@ -53,20 +53,23 @@ class SmokeTest {
         compose.waitUntil(10_000) { NativeEngine.streamInfo().let { it.running && it.callbacks > 0 } }
         // The opening (BrandIntro) first: it covers the app for about a second.
         compose.waitUntil(10_000) { compose.onAllNodesWithTag("intro").fetchSemanticsNodes().isEmpty() }
-        // First launch: the welcome choices open; the five spaces (not the Mode simple, phase 36), then
-        // "later" keeps the starter beat.
+        // First launch: the welcome choices open; "later" keeps the starter beat (then Pro, below).
         compose.waitForIdle()
         if (compose.onAllNodesWithTag("welcome_later").fetchSemanticsNodes().isNotEmpty()) {
-            compose.onNodeWithTag("welcome_mode_full").performScrollTo().performClick()
             compose.onNodeWithTag("welcome_later").performScrollTo().performClick()
         }
         compose.waitForIdle()
         // Any later start: « Que veux-tu faire ? », where « Continuer » opens the last project (one touch).
         if (compose.onAllNodesWithTag("launch_continue").fetchSemanticsNodes().isNotEmpty()) {
-            compose.onNodeWithTag("launch_mode_full").performScrollTo().performClick()
             compose.onNodeWithTag("launch_continue").performScrollTo().performClick()
         }
         compose.waitForIdle()
+        // The project's own mode (owner, 2026-10-29): Pro, through the top bar's chip.
+        if (compose.onAllNodesWithTag("tab_simple_Morceau").fetchSemanticsNodes().isNotEmpty()) {
+            compose.onNodeWithTag("top_mode").performClick()
+            compose.onNodeWithTag("mode_card_pro").performClick()
+            compose.waitForIdle()
+        }
         assertTrue("no « Que veux-tu faire ? » left over the project", compose.onAllNodesWithTag("launch").fetchSemanticsNodes().isEmpty())
 
         // Rhythm screen: the starter groove plays and makes sound. « Continuer » reopens the last space

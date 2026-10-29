@@ -153,6 +153,9 @@ class GuideAuditTest {
         val before = h.vm.project.value.guide.start
         tap("tab_Plus")
         tap("plus_missions")
+        // A new song: « Simple ou Pro ? » first (owner, 2026-10-29).
+        h.awaitTag("mode_step")
+        tap("mode_card_pro")
         h.awaitTag("wizard")
         assertEquals(before, h.vm.project.value.guide.start)
     }

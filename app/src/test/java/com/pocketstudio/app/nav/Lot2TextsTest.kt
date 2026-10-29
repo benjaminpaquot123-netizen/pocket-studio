@@ -85,7 +85,7 @@ class Lot2TextsTest {
     fun theModeSimpleSaysWhereTheOtherExportsAre() {
         h.start(simple = true)
         tap("tab_simple_Envoyer")
-        compose.onNodeWithTag("share_other_where", useUnmergedTree = true).assertTextContains("mode complet", substring = true)
+        compose.onNodeWithTag("share_other_where", useUnmergedTree = true).assertTextContains("mode Pro", substring = true)
     }
 
     @Test

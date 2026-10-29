@@ -87,6 +87,8 @@ object I18n {
         // Remix testers (lot « remix 1 »): finding and understanding the Remix.
         "extract",
         "board",
+        // Owner (2026-10-29): « Simple ou Pro ? » for each project, and the home screen's Remix card.
+        "mode",
     )
 
     @Volatile

@@ -1,0 +1,20 @@
+{
+  "Simple ou Pro ?": "간단 또는 프로?",
+  "Comment veux-tu voir ce projet ? Tu pourras changer à tout moment avec la pastille en haut.": "이 프로젝트를 어떻게 볼까요? 위쪽 배지로 언제든 바꿀 수 있어요.",
+  "Le mode choisit aussi le niveau du tuto. Tu pourras changer de mode à tout moment avec la pastille en haut.": "모드가 튜토리얼 수준도 정해요. 위쪽 배지로 언제든 모드를 바꿀 수 있어요.",
+  "Ton dernier choix": "마지막 선택",
+  "Pour débuter : 4 onglets, de gros boutons et des mots de tous les jours.": "처음이라면: 탭 4개, 큰 버튼, 일상 단어.",
+  "Pour aller loin : tous les outils, structure, sons, mix et live.": "더 깊이: 모든 도구, 구조, 사운드, 믹스, 라이브.",
+  "Avec le tuto Facile": "쉬움 튜토리얼과 함께",
+  "Avec le tuto Pro": "프로 튜토리얼과 함께",
+  "Changer de mode": "모드 바꾸기",
+  "Mode %s. Toucher pour changer de mode.": "%s 모드. 눌러서 모드를 바꾸세요.",
+  "Mode de ce projet": "이 프로젝트의 모드",
+  "Ton morceau ne change pas : seuls les écrans et les mots changent. Ce projet garde le mode choisi.": "곡은 바뀌지 않아요. 화면과 단어만 바뀌어요. 이 프로젝트는 고른 모드를 기억해요.",
+  "En ce moment": "지금 모드",
+  "Passer en mode Pro": "프로 모드로 전환",
+  "Passer en mode Simple": "간단 모드로 전환",
+  "Piste par piste, MIDI, FLAC… (passe en mode Pro)": "트랙별, MIDI, FLAC… (프로 모드로 전환)",
+  "Pro : tous les outils": "프로: 모든 도구",
+  "Séparation des pistes : batterie, basse, voix et le reste.": "트랙 분리: 드럼, 베이스, 보컬, 나머지."
+}

@@ -226,8 +226,6 @@ class LaunchActions(
     /** Lot 2: « Remixer une chanson »: the Remix (a song split into drums, bass, voice and the rest). */
     val remix: () -> Unit = {},
     val missions: () -> Unit = {},
-    /** The Mode simple (true) or every tool; the chooser stays. */
-    val chooseMode: (Boolean) -> Unit = {},
 )
 
 /** « Que veux-tu faire ? » over the whole screen while [show]. */
@@ -244,7 +242,8 @@ fun LaunchChoice(show: Boolean, ui: LaunchUi, actions: LaunchActions) {
 
 /**
  * The screen: « Continuer » first and biggest (one touch), then « Nouveau morceau » and « Mes
- * projets », then the missions and the mode, smaller. Side by side when the screen is wide and low
+ * projets », then the Remix, then the missions, smaller. The mode is no longer here (owner,
+ * 2026-10-29): each project has its own, chosen when it starts and shown in its top bar. Side by side when the screen is wide and low
  * (a phone or a tablet lying down), one under the other otherwise.
  */
 @OptIn(ExperimentalLayoutApi::class)
@@ -282,16 +281,11 @@ fun LaunchScreen(ui: LaunchUi, actions: LaunchActions) {
                     ContinueCard(ui, actions.resume, Modifier.fillMaxWidth())
                     OtherChoices(actions)
                 }
-                FlowRow(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    TextButton(onClick = actions.missions, modifier = Modifier.heightIn(min = 48.dp).align(Alignment.CenterVertically).testTag("launch_missions")) {
+                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    TextButton(onClick = actions.missions, modifier = Modifier.heightIn(min = 48.dp).testTag("launch_missions")) {
                         Icon(Icons.Filled.Flag, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.padding(end = 6.dp).size(20.dp))
                         Text(if (ui.missionsActive) tr("Reprendre Mon premier morceau") else tr("Mon premier morceau, avec le Guide"), color = Neon.TextPrimary)
                     }
-                    ModeSwitch(ui.simple, actions.chooseMode, Modifier.align(Alignment.CenterVertically))
                 }
             }
         }
@@ -312,7 +306,15 @@ private fun ContinueCard(ui: LaunchUi, onClick: () -> Unit, modifier: Modifier) 
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(tr("Continuer"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = color)
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(tr("Continuer"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = color)
+                // The project's own mode (owner, 2026-10-29), said quietly.
+                Text(
+                    com.pocketstudio.app.ui.modeName(ui.simple), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary,
+                    modifier = Modifier.clip(RoundedCornerShape(50)).border(1.dp, Neon.Outline, RoundedCornerShape(50))
+                        .padding(horizontal = 8.dp, vertical = 2.dp).testTag("launch_mode_of_project"),
+                )
+            }
             Text(
                 ui.name, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = Neon.TextPrimary,
                 maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.testTag("launch_name"),
@@ -336,11 +338,67 @@ private fun OtherChoices(actions: LaunchActions) {
         Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir un autre morceau, le copier ou le renommer."),
         Color(0xFF5BB8F5), actions.projects, "launch_projects",  // sky blue: green means "playing"
     )
-    // Benjamin (2026-10-24): the Remix « mis en avant », one touch from here.
-    Choice(
-        Icons.Filled.Album, tr("Extraire la voix d'une chanson"), tr("L'appli sépare une chanson en batterie, basse, voix et le reste : rejoue-la à ta façon."),
-        com.pocketstudio.app.ui.REMIX_COLOR, actions.remix, "launch_remix",
-    )
+    // Benjamin (2026-10-24, then 2026-10-29): the Remix « mis en avant », one touch from here, a
+    // showcase card of its own for those who come for it.
+    RemixCard(actions.remix)
+}
+
+/**
+ * « Remix »: the separation of a song's tracks, a showcase card in the Remix's violet, four
+ * stacked waves as its picture (the four tracks it gives).
+ */
+@Composable
+private fun RemixCard(onClick: () -> Unit) {
+    val shape = RoundedCornerShape(18.dp)
+    val color = com.pocketstudio.app.ui.REMIX_COLOR
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = 88.dp).showcasePanel(shape, accent = color, edge = 1.5.dp, wash = 0.16f)
+            .clickable(role = Role.Button, onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .testTag("launch_remix"),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        StemsMedallion(color, 48.dp)
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(tr("Remix"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
+            Text(
+                tr("Séparation des pistes : batterie, basse, voix et le reste."),
+                style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, maxLines = 2, overflow = TextOverflow.Ellipsis,
+            )
+        }
+        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = color)
+    }
+}
+
+/** A round medallion (as [IconMedallion]) holding four small waves stacked: a song's four tracks. */
+@Composable
+private fun StemsMedallion(color: Color, size: androidx.compose.ui.unit.Dp) {
+    Box(
+        Modifier.size(size).clip(androidx.compose.foundation.shape.CircleShape)
+            .background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(color.copy(alpha = 0.28f), color.copy(alpha = 0.13f))))
+            .border(1.dp, androidx.compose.ui.graphics.Brush.verticalGradient(listOf(color.copy(alpha = 0.6f), color.copy(alpha = 0.12f))), androidx.compose.foundation.shape.CircleShape),
+    ) {
+        androidx.compose.foundation.Canvas(Modifier.fillMaxSize().padding(size * 0.22f)) {
+            val rows = 4
+            val gap = this.size.height / rows
+            val amps = floatArrayOf(0.9f, 0.55f, 0.75f, 0.4f)
+            for (r in 0 until rows) {
+                val mid = gap * (r + 0.5f)
+                val path = androidx.compose.ui.graphics.Path()
+                val n = 14
+                for (i in 0..n) {
+                    val x = this.size.width * i / n
+                    val y = mid + gap * 0.38f * amps[r] * kotlin.math.sin(i * (1.1f + r * 0.45f)).toFloat()
+                    if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
+                }
+                drawPath(
+                    path, color.copy(alpha = 1f - r * 0.12f),
+                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 1.8.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round),
+                )
+            }
+        }
+    }
 }
 
 /** A choice under « Continuer »: a round icon, a title and one line. */
@@ -359,38 +417,6 @@ private fun Choice(icon: ImageVector, title: String, line: String, color: Color,
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
             Text(line, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
-        }
-    }
-}
-
-/** « Mode : Simple | Complet », small: one touch changes it, nothing in the project changes. */
-@Composable
-private fun ModeSwitch(simple: Boolean, choose: (Boolean) -> Unit, modifier: Modifier = Modifier) {
-    Row(modifier.testTag("launch_mode"), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(tr("Mode"), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
-        ModePill(tr("Simple"), simple, "launch_mode_simple") { choose(true) }
-        ModePill(tr("Complet"), !simple, "launch_mode_full") { choose(false) }
-    }
-}
-
-@Composable
-private fun ModePill(label: String, chosen: Boolean, tag: String, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(24.dp)
-    Box(
-        Modifier.heightIn(min = 48.dp).clip(shape)
-            .selectable(selected = chosen, role = Role.RadioButton, onClick = onClick)
-            .padding(vertical = 6.dp)
-            .testTag(tag),
-        contentAlignment = Alignment.Center,
-    ) {
-        Box(
-            Modifier.clip(shape)
-                .background(if (chosen) Neon.Cyan.copy(alpha = 0.22f) else Neon.Surface)
-                .border(if (chosen) 1.5.dp else 1.dp, if (chosen) Neon.Cyan else Neon.Outline, shape)
-                .padding(horizontal = 14.dp, vertical = 8.dp),
-        ) {
-            Text(label, style = MaterialTheme.typography.bodyMedium, fontWeight = if (chosen) FontWeight.Bold else FontWeight.Normal,
-                color = if (chosen) Neon.Cyan else Neon.TextPrimary)
         }
     }
 }

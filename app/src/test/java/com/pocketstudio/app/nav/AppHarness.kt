@@ -50,7 +50,7 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
         build: RhythmViewModel.() -> Unit = { songWithTracks() },
     ) {
         File(app.filesDir, "projects").deleteRecursively()
-        listOf("nav", "missions", "settings", "next_steps", "song_ready", "share", "tools", "launch").forEach {
+        listOf("nav", "missions", "settings", "next_steps", "song_ready", "share", "tools", "launch", "project_modes").forEach {
             app.getSharedPreferences(it, 0).edit().clear().commit()
         }
         // A project of its own: a save still running from an earlier test lands in another file.

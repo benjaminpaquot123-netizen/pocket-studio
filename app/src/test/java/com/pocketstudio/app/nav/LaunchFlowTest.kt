@@ -162,21 +162,41 @@ class LaunchFlowTest {
         compose.onNodeWithTag("timeline_screen").assertIsDisplayed()
     }
 
+    /**
+     * Owner (2026-10-29): the mode is no longer two small chips at the foot of this screen; each
+     * project has its own, said on « Continuer », chosen when a project starts.
+     */
     @Test
-    fun theModeChangesThereAndTheChoiceStays() {
+    fun theModeIsTheProjectsOwnAndNoLongerChosenHere() {
         h.start(simple = true, launchChoice = true)
         val before = h.vm.project.value
-        compose.onNodeWithTag("launch_mode_simple").assertIsSelected()
-        tap("launch_mode_full")
-        assertFalse(SettingsStore.state.value.simpleMode)
-        compose.onNodeWithTag("launch_mode_full").assertIsSelected()
-        compose.onNodeWithTag("launch").assertIsDisplayed()
-        tap("launch_mode_simple")
-        assertTrue(SettingsStore.state.value.simpleMode)
-        // The Mode simple's project behind « Continuer ».
+        assertFalse(exists("launch_mode"))
+        assertFalse(exists("launch_mode_simple"))
+        compose.onNodeWithTag("launch_mode_of_project", useUnmergedTree = true).assertTextEquals("Simple")
         tap("launch_continue")
         compose.onNodeWithTag("tab_simple_Morceau").assertIsDisplayed()
+        compose.onNodeWithTag("top_mode_text", useUnmergedTree = true).assertTextEquals("Simple")
         assertSame(before, h.vm.project.value)
+    }
+
+    /** « Mon premier morceau » starts a new song: « Simple ou Pro ? » first, its Retour back on the project. */
+    @Test
+    fun myFirstSongAsksTheModeFirst() {
+        h.start(launchChoice = true)
+        tap("launch_missions")
+        compose.onNodeWithTag("mode_step").assertIsDisplayed()
+        assertFalse(exists("wizard"))
+        tap("mode_step_back")
+        assertFalse(exists("mode_step"))
+        assertFalse(exists("wizard"))
+        assertFalse(SettingsStore.state.value.simpleMode)
+        // From Plus › Aide too, through the same step; Simple chosen, the assistant opens in it.
+        tap("tab_Plus")
+        tap("plus_missions")
+        compose.onNodeWithTag("mode_step").assertIsDisplayed()
+        tap("mode_card_simple")
+        assertTrue(SettingsStore.state.value.simpleMode)
+        h.awaitTag("wizard")
     }
 
     /** Audit final (02 M9): with no project, « Remixer une chanson » makes one (it led nowhere: « Mes projets » stayed over it). */
@@ -185,6 +205,11 @@ class LaunchFlowTest {
         h.start(launchChoice = true, noProject = true, build = {})
         h.awaitTag("launch_remix")
         compose.onNodeWithTag("launch_remix").performScrollTo().performClick()
+        // A new project: « Simple ou Pro ? » first (nothing made before), then the Remix's own project.
+        compose.waitForIdle()
+        compose.onNodeWithTag("mode_step").assertIsDisplayed()
+        assertTrue(com.pocketstudio.app.projects.CurrentProject.isNone(com.pocketstudio.app.projects.CurrentProject.get(h.app)))
+        tap("mode_card_pro")
         val end = System.currentTimeMillis() + 10_000
         while (com.pocketstudio.app.projects.CurrentProject.isNone(com.pocketstudio.app.projects.CurrentProject.get(h.app))) {
             check(System.currentTimeMillis() < end) { "no project made for the Remix" }

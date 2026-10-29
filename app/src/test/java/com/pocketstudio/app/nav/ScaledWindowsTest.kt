@@ -55,9 +55,9 @@ class ScaledWindowsTest {
     @Test
     fun theLaunchChoiceIsDrawnAtTheInterfaceSize() {
         h.start(scale = 1.3f, launchChoice = true)
-        h.awaitTag("launch_mode_simple")
-        val tall = heightDp("launch_mode_simple")
-        assertTrue("« Simple » is $tall dp high", tall >= 48f * 1.3f - 0.5f)
+        h.awaitTag("launch_missions")
+        val tall = heightDp("launch_missions")
+        assertTrue("« Mon premier morceau » is $tall dp high", tall >= 48f * 1.3f - 0.5f)
     }
 
     @Test

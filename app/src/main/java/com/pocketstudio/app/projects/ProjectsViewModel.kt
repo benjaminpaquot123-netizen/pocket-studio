@@ -1,5 +1,7 @@
 package com.pocketstudio.app.projects
 
+import com.pocketstudio.app.settings.ProjectModes
+
 import com.pocketstudio.model.i18n.tr
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -79,16 +81,23 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** Creates [project] (a blank or a demo) named after the next free number unless it has a name; returns its id. */
-    fun create(project: Project, replacing: String? = null, then: (String) -> Unit) = io(tr("Nouveau projet")) {
+    fun create(project: Project, replacing: String? = null, then: (String) -> Unit) = modeOfNew().let { simple -> io(tr("Nouveau projet")) {
         // [replacing]: a project about to go to the trash; its name is free again (no « Mon projet 1 » / « 2 » seesaw).
         val named = if (project.name.isBlank() || project.name == Project().name) project.copy(name = catalog.nextName(ignoring = replacing)) else project
         val id = catalog.create(named.asNewProject())
+        ProjectModes.set(getApplication(), id, simple)
         refreshNow()
         withContext(Dispatchers.Main) { then(id) }
-    }
+    } }
+
+    /**
+     * The mode the new project is made in (Simple or Pro, just chosen by the user): read when the
+     * creation is asked, before the screens that asked for it close (and show the open project's).
+     */
+    private fun modeOfNew(): Boolean = com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode
 
     /** A new project with its own sounds ([sounds]: file name in its samples folder → audio). */
-    fun create(project: Project, sounds: Map<String, com.pocketstudio.app.audio.Pcm>, failed: (String) -> Unit = {}, then: (String) -> Unit) = io(tr("Nouveau morceau"), failed) {
+    fun create(project: Project, sounds: Map<String, com.pocketstudio.app.audio.Pcm>, failed: (String) -> Unit = {}, then: (String) -> Unit) = modeOfNew().let { simple -> io(tr("Nouveau morceau"), failed) {
         // Never the same name as a song already there (a second « Rétro techno » is « Rétro techno 2 »):
         // the new song is plainly another project, the first one still in the list.
         val named = if (project.name.isBlank()) project.copy(name = catalog.nextName()) else project.copy(name = catalog.freeName(project.name))
@@ -96,9 +105,10 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
             dir.mkdirs()
             sounds.forEach { (name, pcm) -> com.pocketstudio.app.audio.FloatWav.write(java.io.File(dir, name), pcm) }
         }
+        ProjectModes.set(getApplication(), id, simple)
         refreshNow()
         withContext(Dispatchers.Main) { then(id) }
-    }
+    } }
 
     /**
      * [saveFirst]: saves the open project first (when [info] is it); false (not saved: a full
@@ -107,7 +117,8 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     fun duplicate(info: ProjectInfo, saveFirst: suspend () -> Boolean = { true }) = io(tr("Copie du projet")) {
         if (!saved(saveFirst)) return@io
         // Saved in French, shown translated (DefaultNames).
-        catalog.duplicate(info.id, "${info.name} (copie)".take(ProjectCatalog.MAX_NAME))
+        val copy = catalog.duplicate(info.id, "${info.name} (copie)".take(ProjectCatalog.MAX_NAME))
+        ProjectModes.copy(getApplication(), info.id, copy)
         refreshNow()
     }
 

@@ -102,6 +102,8 @@ class TopBarUi(
     val recordInto: String? = null,
     /** Redo offered when there is room (false: the Mode simple's lighter bar, ↶ alone). */
     val redo: Boolean = true,
+    /** The project's mode chip (« Simple » or « Pro », owner 2026-10-29): true Simple, false Pro, null not shown. */
+    val mode: Boolean? = null,
 )
 
 class TopBarActions(
@@ -121,6 +123,8 @@ class TopBarActions(
      * not in its four tabs (Live, Mes projets, Réglages, Aide, Mode complet). Null: ⤴ as usual.
      */
     val more: List<TopMenuItem>? = null,
+    /** A touch on the mode chip: the change of mode. */
+    val mode: () -> Unit = {},
 )
 
 /** One line of the top bar's « ⋯ » menu (Mode simple). */
@@ -135,14 +139,21 @@ enum class SceneChipMode { Hidden, Letter, Full }
  * with a scene, where the folder alone leaves room for the scene's letter: the name then gets a
  * line of its own above the buttons). (The tempo lives in the play strip under the bar, see PlayStrip.)
  */
-data class TopBarLayout(val showRedo: Boolean, val scene: SceneChipMode, val sceneMaxWidth: Dp = 0.dp, val projectName: Boolean = true)
+data class TopBarLayout(val showRedo: Boolean, val scene: SceneChipMode, val sceneMaxWidth: Dp = 0.dp, val projectName: Boolean = true, val modeInRow: Boolean = false)
 
 /**
  * Fits the top bar into [width]. Never removed: the projects button (with room for a bit of the
  * name), undo, record, play and share. Then, while there is room, by priority: the scene's letter, the
  * scene's section name, redo.
  */
-fun topBarLayout(width: Dp, hasScene: Boolean): TopBarLayout {
+fun topBarLayout(width: Dp, hasScene: Boolean, modeChip: Dp? = null): TopBarLayout {
+    // The mode chip (owner, 2026-10-29): in the row when it leaves the project's name a few letters
+    // and the scene its letter; else on the name's own line above the buttons (a narrow phone).
+    if (modeChip != null) {
+        val inRow = topBarLayout(width - modeChip, hasScene)
+        val fits = width - modeChip - ALWAYS_SHOWN >= PROJECT_ROOM && inRow.projectName && (!hasScene || inRow.scene != SceneChipMode.Hidden)
+        return if (fits) inRow.copy(modeInRow = true) else topBarLayout(width, hasScene).copy(projectName = false)
+    }
     // No scene shown (Morceau, Outils…): redo gives way below this width (48 dp more since ⤴ joined the bar).
     if (!hasScene) return TopBarLayout(showRedo = width >= 388.dp, scene = SceneChipMode.Hidden)
     var budget = width - ALWAYS_SHOWN - PROJECT_MIN
@@ -183,6 +194,10 @@ private val EXTRAS_RESERVE = 36.dp
 private val SCENE_LETTER = 52.dp
 private val SCENE_NAME_MIN = 60.dp
 private val SCENE_FULL_MAX = 140.dp
+/** The mode chip's room in the row: its text capped at [modeChipMax], with a little margin. */
+fun modeChipRoom(simple: Boolean): Dp = modeChipMax(simple) + 4.dp
+/** Next to the mode chip, the projects button keeps its folder and a few letters of the name. */
+private val PROJECT_ROOM = 72.dp
 
 private val TOP_SHEEN = Color.White.copy(alpha = 0.06f)
 private val FOOT_SHADE = Color.Black.copy(alpha = 0.32f)
@@ -212,14 +227,15 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
 ) {
     // Narrow (a small phone, a big text size): redo, then the scene's name give their room to the
     // project name; the projects button, the scene's letter and play never go.
-    val layout = topBarLayout(maxWidth, ui.scene != null)
+    val layout = topBarLayout(maxWidth, ui.scene != null, modeChip = ui.mode?.let(::modeChipRoom))
     val showRedo = layout.showRedo && ui.redo
     androidx.compose.foundation.layout.Column {
     // Squeezed (a small phone with a big text size): the project's name gets a line of its own
     // above the buttons (never gone), the folder alone stays in the row.
     if (!layout.projectName) {
         Row(
-            Modifier.fillMaxWidth().height(24.dp).padding(horizontal = 12.dp)
+            // With the mode chip (no room for it in the row) the line is as high as its touch target.
+            Modifier.fillMaxWidth().height(if (ui.mode != null && !layout.modeInRow) 48.dp else 24.dp).padding(start = 12.dp, end = if (ui.mode != null && !layout.modeInRow) 6.dp else 12.dp)
                 .combinedClickable(onClick = actions.projects, onLongClick = actions.rename, onLongClickLabel = tr("Renommer le projet"))
                 .testTag("top_project_line"),
             verticalAlignment = Alignment.CenterVertically,
@@ -233,8 +249,10 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             } else if (ui.saved) {
                 Icon(Icons.Filled.Check, contentDescription = tr("Sauvegardé"), tint = Neon.Acid, modifier = Modifier.size(12.dp).testTag("top_saved"))
             }
+            if (ui.mode != null && !layout.modeInRow) ModeChip(ui.mode, actions.mode)
         }
     }
+
     Row(
         Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 6.dp).testTag("top_bar"),
         verticalAlignment = Alignment.CenterVertically,
@@ -283,6 +301,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                 }
             }
         }
+        if (ui.mode != null && layout.modeInRow) ModeChip(ui.mode, actions.mode)
         if (ui.scene != null && layout.scene != SceneChipMode.Hidden) {
             SceneChip(ui.scene, layout.scene == SceneChipMode.Full, layout.sceneMaxWidth, actions)
         }

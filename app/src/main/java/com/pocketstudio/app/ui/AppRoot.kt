@@ -674,10 +674,13 @@ fun AppRoot() {
     if (tutoChooserOpen) {
         ScaledDialog(onDismissRequest = { tutoChooserOpen = false }, properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)) {
             androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
+                // Opened once « Simple ou Pro ? » is answered: the mode just chosen is the level.
+                val tutoSimple = SettingsStore.state.value.simpleMode
                 com.pocketstudio.app.tuto.TutoChooser(
                     start = { style, level -> tutoChooserOpen = false; startTuto(style, level) },
                     close = { tutoChooserOpen = false },
-                    simple = SettingsStore.state.value.simpleMode,
+                    simple = tutoSimple,
+                    fixedLevel = if (tutoSimple) com.pocketstudio.model.tuto.TutoLevel.Facile else com.pocketstudio.model.tuto.TutoLevel.Pro,
                 )
             }
         }
@@ -821,7 +824,7 @@ fun AppRoot() {
         show = !settings.guideSeen && !com.pocketstudio.app.onboarding.Intro.playing,
         simple = settings.simpleMode,
         actions = com.pocketstudio.app.onboarding.WelcomeActions(
-            chooseMode = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
+            chooseMode = { v -> com.pocketstudio.app.settings.ProjectModes.choose(context, v) },
             // The guided song is « Mon premier morceau »: its song starts on the Guide's first cards (G5).
             guided = { firstLaunchSeen(); firstSongNext = true; rhythmVm.stop(); libraryVm.openWizard() },
             learn = { firstLaunchSeen(); tutoChooserOpen = true },
@@ -1234,13 +1237,17 @@ fun AppRoot() {
     val learn = com.pocketstudio.app.learn.LocalLearn.current
     // G5: « Mon premier morceau » (the old Missions): its first cards, in the Guide. Audit final: on a new song,
     // from the assistant (the open one stays as it is); the song made opens with the Guide on its first cards.
-    val startMissions: () -> Unit = {
+    val startMissionsNow: () -> Unit = {
         helpLabels = false
         toolPage = null
         firstSongNext = true
         rhythmVm.stop()
         libraryVm.openWizard()
     }
+    // Owner (2026-10-29): « Simple ou Pro ? » before any new project started from here (the welcome
+    // and « Nouveau projet » ask on their own pages). The way to start waits under its key.
+    var modeAsk by rememberSaveable(key = "mode_ask") { mutableStateOf<String?>(null) }
+    val startMissions: () -> Unit = { modeAsk = START_MISSIONS }
     com.pocketstudio.app.onboarding.LaunchChooser(launch, rhythmVm, projectsVm, show = launch.open && settings.guideSeen && !com.pocketstudio.app.onboarding.Intro.playing, simple = simple,
         hasProject = !noProject,
         actions = com.pocketstudio.app.onboarding.LaunchActions(
@@ -1251,30 +1258,69 @@ fun AppRoot() {
             remix = {
                 launch.choose()
                 // Audit final (02 M9): with no project, « Mes projets » stays over everything; the Remix
-                // gets a project of its own first (as « Mon premier morceau » does), then opens on it.
-                if (noProject) {
-                    projectsVm.create(Project(name = "Remix")) { id ->
-                        openRemix()  // kept across the rebuild the new project brings
-                        openProject(id)
-                    }
-                } else {
-                    openRemix()
-                }
+                // gets a project of its own first (as « Mon premier morceau » does, after « Simple ou
+                // Pro ? »), then opens on it. With one, straight on the Remix of the project open.
+                if (noProject) modeAsk = START_REMIX_NEW else openRemix()
             },
             missions = {
                 launch.choose()
-                when {
+                modeAsk = if (noProject) START_MISSIONS_NEW else START_MISSIONS
+            },
+        ),
+    )
+    modeAsk?.let { way ->
+        com.pocketstudio.app.ui.ModeStepDialog(
+            choose = { v ->
+                modeAsk = null
+                com.pocketstudio.app.settings.ProjectModes.choose(context, v)
+                when (way) {
+                    START_MISSIONS -> startMissionsNow()
                     // No project (lot 1): « Mon premier morceau » starts on a new one (the blank stand-in is never saved).
-                    noProject -> projectsVm.create(com.pocketstudio.model.guide.GuideStart.begin(Project(name = ""), com.pocketstudio.model.guide.GuideStart.FIRST)) { id ->
+                    START_MISSIONS_NEW -> projectsVm.create(com.pocketstudio.model.guide.GuideStart.begin(Project(name = ""), com.pocketstudio.model.guide.GuideStart.FIRST)) { id ->
                         guideOpen = true
                         openProject(id)
                     }
-                    else -> startMissions()
+                    START_REMIX_NEW -> projectsVm.create(Project(name = "Remix")) { id ->
+                        openRemix()  // kept across the rebuild the new project brings
+                        openProject(id)
+                    }
+                    START_NEW_STYLE -> {
+                        // « Mon premier morceau »: the song the assistant makes now goes on with its first cards.
+                        firstSongNext = rhythmVm.project.value.guide.start == com.pocketstudio.model.guide.GuideStart.FIRST
+                        rhythmVm.stop()
+                        libraryVm.openWizard()
+                    }
+                    START_TUTO -> { toolPage = null; tutoChooserOpen = true }
                 }
             },
-            chooseMode = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
-        ),
-    )
+            back = { modeAsk = null },
+            tuto = way == START_TUTO,
+        )
+    }
+    // Owner (2026-10-29): each project keeps its mode. On its own screens (no start under way) the
+    // open project's mode is shown, and a change of mode made there is kept with it; a mode chosen
+    // for a new project that is not made after all (Retour) never sticks to the open one.
+    val startingNew = showProjects || noProject || wizardUi.open || tutoChooserOpen || modeAsk != null || launch.open || !settings.guideSeen
+    LaunchedEffect(rhythmVm.projectId, startingNew) {
+        if (startingNew || CurrentProject.isNone(rhythmVm.projectId)) return@LaunchedEffect
+        com.pocketstudio.app.settings.ProjectModes.follow(context, rhythmVm.projectId, SettingsStore.state.value.simpleMode) { rec ->
+            SettingsStore.update(context) { it.copy(simpleMode = rec) }
+        }
+    }
+    var modeSeen by remember { mutableStateOf<Boolean?>(null) }
+    LaunchedEffect(simple) {
+        val before = modeSeen
+        modeSeen = simple
+        if (before == null || before == simple || startingNew || CurrentProject.isNone(rhythmVm.projectId)) return@LaunchedEffect
+        com.pocketstudio.app.settings.ProjectModes.set(context, rhythmVm.projectId, simple)
+    }
+    // The top bar's mode chip: the change of mode, with what it changes.
+    var modeSwitchOpen by rememberSaveable { mutableStateOf(false) }
+    if (modeSwitchOpen) {
+        com.pocketstudio.app.ui.ModeSwitchDialog(
+            simple, choose = { v -> com.pocketstudio.app.settings.ProjectModes.choose(context, v) }, close = { modeSwitchOpen = false },
+        )
+    }
     // G3: a track's sheet; its layers and its sound open over it (the sheet waits underneath).
     trackSheetKey?.let { key ->
         com.pocketstudio.app.guide.TrackSheetRoute(
@@ -1607,12 +1653,8 @@ fun AppRoot() {
                 else -> rhythmVm.listenFromStart()
             }
             com.pocketstudio.app.guide.GuideGo.SongGuide -> songGuideOpen = true
-            com.pocketstudio.app.guide.GuideGo.NewStyle -> {
-                // « Mon premier morceau »: the song the assistant makes now goes on with its first cards.
-                firstSongNext = rhythmVm.project.value.guide.start == com.pocketstudio.model.guide.GuideStart.FIRST
-                rhythmVm.stop()
-                libraryVm.openWizard()
-            }
+            // A song in another style is a new project: « Simple ou Pro ? » first.
+            com.pocketstudio.app.guide.GuideGo.NewStyle -> modeAsk = START_NEW_STYLE
             com.pocketstudio.app.guide.GuideGo.Remix -> { guideOpen = false; openRemix() }
             is com.pocketstudio.app.guide.GuideGo.Record -> {
                 melodyShownFor = rhythmVm.projectId
@@ -1773,6 +1815,7 @@ fun AppRoot() {
                     // Lying down the editors' header gives its line to the editor: the chip stays there.
                     scene = if ((!simple || landscape) && (tab in SCENE_TABS || (tab == AppTab.Audio && audioPage == 0))) sceneChip(topProject) else null,
                     redo = !simple,
+                    mode = simple,
                     saved = saveError == null && !topUnsaved,
                     recordInto = topRecordInto?.let { topProject.sceneTitle(it) },
                 ),
@@ -1803,6 +1846,7 @@ fun AppRoot() {
                     },
                     selectScene = rhythmVm::selectScene, newScene = rhythmVm::newScene,
                     share = shareSong,
+                    mode = { modeSwitchOpen = true },
                     // Mode simple: « Envoyer » is a tab; the rest of the app in « ⋯ ».
                     more = if (!simple) null else listOf(
                         TopMenuItem(tr("Live : jouer en direct"), "more_live", openLive),
@@ -1814,7 +1858,7 @@ fun AppRoot() {
                         TopMenuItem(tr("Mes projets"), "more_projects") { showProjects = true },
                         TopMenuItem(tr("Réglages"), "more_settings") { toolPage = ToolPage.Reglages; go(AppTab.Outils) },
                         TopMenuItem(tr("Aide et premiers pas"), "more_help") { toolPage = ToolPage.Aide; go(AppTab.Outils) },
-                        TopMenuItem(tr("Passer en mode complet"), "more_full") { SettingsStore.update(context) { it.copy(simpleMode = false) } },
+                        TopMenuItem(tr("Passer en mode Pro"), "more_full") { SettingsStore.update(context) { it.copy(simpleMode = false) } },
                         TopMenuItem(tr("Signaler un bug"), "more_bug") { reportBug("menu ⋯") },
                     ),
                 ),
@@ -2957,7 +3001,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                         showSteps = { toolPage = null; go(AppTab.Morceau); guideOpen = true },
                                         missions = startMissions,
                                         // Testers (lot « tuto 5 »): the tutorial found again from a project (proposal in fix5-ecran.md).
-                                        tuto = { toolPage = null; tutoChooserOpen = true },
+                                        tuto = { modeAsk = START_TUTO },
                                         resumeTuto = if (tuto.resumable) ({ toolPage = null; tuto.resume() }) else null,
                                     ),
                                 )
@@ -3871,3 +3915,10 @@ internal fun tutoWhere(u: com.pocketstudio.app.tuto.TutoUi): String {
     val c = u.chapters.getOrNull(u.chapter) ?: return ""
     return "chapitre ${u.chapter + 1}/${u.chapters.size} « ${c.title} » · étape ${u.step + 1}/${c.steps.size} (${u.current.id})"
 }
+
+/** The ways to start a new project that wait for « Simple ou Pro ? » ([com.pocketstudio.app.ui.ModeStepDialog]). */
+private const val START_MISSIONS = "missions"
+private const val START_MISSIONS_NEW = "missions_new"
+private const val START_REMIX_NEW = "remix_new"
+private const val START_NEW_STYLE = "new_style"
+private const val START_TUTO = "tuto"

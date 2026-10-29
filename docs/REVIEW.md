@@ -1082,6 +1082,4 @@ Restes :
 - `HumanRemixJourneyTest` : la forme d'onde arrive après la lecture des pistes, hors du fil principal ; le test attend jusqu'à 10 s (1 s avant, trop court quand toute la suite tourne).
 
 ## Enregistrement d'écran sans son (Benjamin, 2026-10-29)
-- Deux enregistrements d'écran du téléphone de Benjamin (MP3 et MP4 de 8,5 s, ouverture de l'appli) : piste son entièrement à zéro (−91 dB, aucun échantillon non nul), donc ni le son de l'appli ni le micro ne sont captés.
-- Cause probable : le moteur joue en AAudio exclusif (MMAP), qui contourne le mélangeur d'Android, et l'enregistreur d'écran ne peut pas le capter. Autre cause possible : l'option son de l'enregistreur.
-- À faire, après la pause et avec l'accord de Benjamin : un mode « Filmer l'écran » (sortie partagée, captable) proposé quand un enregistrement d'écran démarre, ou un export vidéo du morceau. C'est utile pour TikTok et Instagram. À vérifier aussi dans les audits.
+- Réglé : c'était un paramètre de l'enregistreur du téléphone (MagicOS 11), pas l'appli. Sa vidéo suivante a bien le son.

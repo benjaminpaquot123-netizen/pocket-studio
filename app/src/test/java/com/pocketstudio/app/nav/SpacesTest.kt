@@ -131,7 +131,9 @@ class SpacesTest {
         for (t in listOf("Morceau", "Rythme", "Clavier", "Mix", "Envoyer")) {
             tap("tab_simple_$t")
             for (jargon in listOf("Lead", "303", "Quantifier")) {
+                // « Acid 303 » is the 303's name (Benjamin, 2026-10-29), shown in the Mode simple too: a bare « 303 » is the jargon.
                 val found = compose.onAllNodes(hasText(jargon, substring = true), useUnmergedTree = true).fetchSemanticsNodes()
+                    .filter { n -> (n.config.getOrElseNullable(androidx.compose.ui.semantics.SemanticsProperties.Text) { null } ?: emptyList()).any { it.text.replace("Acid 303", "").contains(jargon) } }
                 assertTrue("« $jargon » on $t: ${found.map { it.config }}", found.isEmpty())
             }
         }

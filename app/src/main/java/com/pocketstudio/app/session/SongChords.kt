@@ -108,7 +108,7 @@ fun songChordsUi(p: Project, tried: RhythmViewModel.ChordTry?, english: Boolean)
             FollowUi(t.id, com.pocketstudio.model.DefaultNames.shown(t.name), ChordTrack.follows(base, t) && t.id !in frozen, t.id in frozen)
         } + listOfNotNull(
             // The 303, when it plays in the song: its steps move by the scale like the notes.
-            FollowUi(ChordTrack.ACID, tr("Ligne acide (TB-303)"), ChordTrack.acidFollows(base)).takeIf { ChordTrack.acidPlays(base) },
+            FollowUi(ChordTrack.ACID, tr("Ligne acide (Acid 303)"), ChordTrack.acidFollows(base)).takeIf { ChordTrack.acidPlays(base) },
         ),
         trying = tried != null,
     )

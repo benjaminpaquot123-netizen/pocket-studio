@@ -42,7 +42,7 @@ sealed class GuideGo {
     /** Audit final: the sheet of drum pad [lane] (its sound only: the rest of the kit stays). */
     data class Pad(val lane: Int) : GuideGo()
 
-    /** Audit final: a 303 line made in the song's key (when it has none), then its sounds (« Générer une basse acide »). */
+    /** Audit final: a 303 line made in the song's key (when it has none), then its sounds (« Générer une ligne Acid 303 »). */
     data object AcidGenerate : GuideGo()
 
     /** The 303's sounds. */

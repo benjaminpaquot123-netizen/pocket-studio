@@ -16,5 +16,12 @@
   "Passer en mode Simple": "Switch to Simple mode",
   "Piste par piste, MIDI, FLAC… (passe en mode Pro)": "Track by track, MIDI, FLAC… (switches to Pro mode)",
   "Pro : tous les outils": "Pro: every tool",
-  "Séparation des pistes : batterie, basse, voix et le reste.": "Track separation: drums, bass, vocals and the rest."
+  "Séparation des pistes : batterie, basse, voix et le reste.": "Track separation: drums, bass, vocals and the rest.",
+  "La basse qui couine de l'acid house. Touche « Écris-moi une ligne », puis touche une case pour changer sa note.": "The squelchy bass of acid house. Tap “Write me a line”, then tap a box to change its note.",
+  "La basse qui couine de l'acid house, case par case": "The squelchy bass of acid house, box by box",
+  "Écris-moi une ligne": "Write me a line",
+  "Nombre de notes": "Number of notes",
+  "Plus fort": "Louder",
+  "Case %d": "Box %d",
+  "Touche une case pour la changer. Couleur pleine = plus fort, ⌒ = la note glisse vers la suivante, – = silence.": "Tap a box to change it. Full colour = louder, ⌒ = the note glides into the next one, – = rest."
 }

@@ -158,7 +158,7 @@ fun KnobPanel(hint: KnobHint, candidates: List<KnobSlot>, enabled: Boolean, acti
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(tr("Potards automatiques"), style = MaterialTheme.typography.bodyLarge)
-                Text(tr("Ils suivent l'écran affiché : la 303 sur la basse acide, le son sur une piste de Sons, les volumes dans Mix, les effets en Live."),
+                Text(tr("Ils suivent l'écran affiché : l'Acid 303 sur son écran, le son sur une piste de Sons, les volumes dans Mix, les effets en Live."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
             Switch(checked = enabled, onCheckedChange = actions.setEnabled, modifier = Modifier.testTag("knob_enabled"))
@@ -232,7 +232,7 @@ fun AutoKnobsCard(enabled: Boolean, setEnabled: (Boolean) -> Unit, open: () -> U
         SectionLabel(tr("Potards automatiques"))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                tr("Les 8 premiers potards de ton contrôleur règlent tout seuls l'écran affiché : la 303 sur la basse acide, le son sur une piste de Sons, les volumes dans Mix, les effets en Live."),
+                tr("Les 8 premiers potards de ton contrôleur règlent tout seuls l'écran affiché : l'Acid 303 sur son écran, le son sur une piste de Sons, les volumes dans Mix, les effets en Live."),
                 style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f),
             )
             Switch(checked = enabled, onCheckedChange = setEnabled, modifier = Modifier.testTag("midi_auto_knobs_switch"))

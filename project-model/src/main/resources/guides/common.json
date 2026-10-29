@@ -265,7 +265,7 @@
    "kind": "decide",
    "simple": true,
    "title": "Ajoute une basse",
-   "why": "Une ligne grave : génère une basse acide, ou joue des notes graves au clavier d'une piste.",
+   "why": "Une ligne grave : génère une ligne Acid 303, ou joue des notes graves au clavier d'une piste.",
    "applicable": [
     "by_hand"
    ],
@@ -275,7 +275,7 @@
    "proposals": [
     {
      "id": "acid",
-     "label": "Générer une basse acide",
+     "label": "Générer une ligne Acid 303",
      "why": "Une ligne 303, en un toucher.",
      "action": {
       "type": "open",

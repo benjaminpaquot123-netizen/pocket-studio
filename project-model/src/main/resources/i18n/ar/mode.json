@@ -16,5 +16,12 @@
   "Passer en mode Simple": "الانتقال إلى الوضع البسيط",
   "Piste par piste, MIDI, FLAC… (passe en mode Pro)": "مسارًا بمسار، MIDI، FLAC… (ينتقل إلى وضع المحترف)",
   "Pro : tous les outils": "محترف: كل الأدوات",
-  "Séparation des pistes : batterie, basse, voix et le reste.": "فصل المسارات: الطبول والباص والصوت والباقي."
+  "Séparation des pistes : batterie, basse, voix et le reste.": "فصل المسارات: الطبول والباص والصوت والباقي.",
+  "La basse qui couine de l'acid house. Touche « Écris-moi une ligne », puis touche une case pour changer sa note.": "البيس الذي يصيح في الأسيد هاوس. اضغط «اكتب لي خطًا»، ثم اضغط خانة لتغيير نوتتها.",
+  "La basse qui couine de l'acid house, case par case": "البيس الذي يصيح في الأسيد هاوس، خانة خانة",
+  "Écris-moi une ligne": "اكتب لي خطًا",
+  "Nombre de notes": "عدد النوتات",
+  "Plus fort": "أقوى",
+  "Case %d": "الخانة %d",
+  "Touche une case pour la changer. Couleur pleine = plus fort, ⌒ = la note glisse vers la suivante, – = silence.": "اضغط خانة لتغييرها. لون ممتلئ = أقوى، ⌒ = تنزلق النوتة إلى التالية، – = صمت."
 }

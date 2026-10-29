@@ -158,7 +158,7 @@ object FxPresets {
 
 /** What a sound is for, to offer the right ready-made effects first. */
 enum class SoundKind(val label: String) {
-    LEAD("Lead"), PLUCK("Pluck"), BASS("Basse"), PAD("Nappe"), KEYS("Clavier"), DRUMS("Batterie"), ACID("Basse acide"), AUDIO("Audio");
+    LEAD("Lead"), PLUCK("Pluck"), BASS("Basse"), PAD("Nappe"), KEYS("Clavier"), DRUMS("Batterie"), ACID(DefaultNames.ACID), AUDIO("Audio");
 
     companion object {
         /** From a sound library family ("Basses", "Nappes"…), if it says. */

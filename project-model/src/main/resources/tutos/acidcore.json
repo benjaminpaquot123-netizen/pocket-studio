@@ -49,7 +49,7 @@
       "steps": [
         {
           "id": "ready",
-          "text": "Avant de commencer : ton kit est déjà celui de l'acidcore (un kick dur accordé sur Fa♯), et la piste « Basse acide 303 » a déjà son son « Hurleur ». Tu n'as rien à régler.",
+          "text": "Avant de commencer : ton kit est déjà celui de l'acidcore (un kick dur accordé sur Fa♯), et la piste « Acid 303 » a déjà son son « Hurleur ». Tu n'as rien à régler.",
           "textPro": "Déjà prêt : le kick gabber de l'assistant (saturé, accordé sur Fa♯), charleys 909, et la 303 au son « Hurleur » avec sa saturation et son écho."
         },
         {
@@ -114,7 +114,7 @@
         },
         {
           "id": "acid_show",
-          "text": "La ligne acide s'écrit dans un écran de producteur, case par case. Touche « Montre-moi » : l'appli l'écrit pour toi sur la piste « Basse acide 303 ». Écoute-la ensuite avec « Écouter ton résultat ».",
+          "text": "La ligne acide s'écrit dans un écran de producteur, case par case. Touche « Montre-moi » : l'appli l'écrit pour toi sur la piste « Acid 303 ». Écoute-la ensuite avec « Écouter ton résultat ».",
           "why": "À 185 BPM, la 303 joue presque chaque case : les accents et les slides la font hurler au lieu de crépiter.",
           "levels": "f",
           "check": "notes:acid",
@@ -321,7 +321,7 @@
         },
         {
           "id": "filter_intro",
-          "text": "À toi : automatise la « Coupure » de la 303 sur l'Intro : « Automatiser un réglage », « Basse acide 303 », « Coupure », « Par partie », une courbe qui monte du début à la fin.",
+          "text": "À toi : automatise la « Coupure » de la 303 sur l'Intro : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », une courbe qui monte du début à la fin.",
           "why": "La 303 arrive fermée et s'ouvre : c'est la montée de l'Intro.",
           "levels": "p",
           "check": "automation:rise",

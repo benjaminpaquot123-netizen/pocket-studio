@@ -42,7 +42,7 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
     GuidePage(
         tr("Bienvenue dans BenStudio"),
         listOf(
-            tr("Fais de la musique avec ton appareil : des rythmes, une basse acide, un synthé, et même le remix de tes morceaux préférés."),
+            tr("Fais de la musique avec ton appareil : des rythmes, une basse Acid 303, un synthé, et même le remix de tes morceaux préférés."),
             tr("Tout est sauvegardé tout seul, à chaque geste."),
         ),
     ),
@@ -61,7 +61,7 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
         listOf(
             tr("En bas de l'écran, ou à gauche quand l'écran est couché :"),
             tr("Structure : les parties du morceau sur la ligne du temps ; deux touches sur un bloc l'ouvrent."),
-            tr("Sons : la batterie, la basse acide, la voix et chaque piste d'instrument, en puces en haut."),
+            tr("Sons : la batterie, l'Acid 303, la voix et chaque piste d'instrument, en puces en haut."),
             tr("Mix : la console (les volumes côte à côte), les effets, l'automation et l'export."),
             tr("Live : jouer les parties en direct, avec les pads et les effets."),
             tr("Plus : tes projets, l'aide, les réglages, le clavier MIDI."),

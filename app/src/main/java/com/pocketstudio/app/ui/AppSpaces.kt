@@ -84,10 +84,10 @@ import com.pocketstudio.ui.pillColors
 // --- Sons: every track as a chip above its editor ---------------------------------------------------
 
 /**
- * The Sons space's chips, above every editor: « Batterie », « Basse acide », each instrument
+ * The Sons space's chips, above every editor: « Batterie », « Acid 303 », each instrument
  * track (its menu, « Changer le son », « + Piste ») and « Voix et audio ». A touch opens that
  * track's editor; the chip of the editor shown is lit. [simple]: the Mode simple's Clavier, the
- * instrument tracks alone.
+ * Acid 303 (always in sight, Benjamin 2026-10-29) and the instrument tracks.
  */
 @Composable
 internal fun SonsHeader(
@@ -103,9 +103,12 @@ internal fun SonsHeader(
             tracks,
             modifier = Modifier.spot("sons_chips", tr("Tes pistes")),
             leading = {
-                if (!simple) {
+                if (simple) {
+                    // Benjamin (2026-10-29): the 303 found at once in the Mode simple too, yellow, first.
+                    com.pocketstudio.app.acid.AcidChip(tab == AppTab.Acide, onClick = { go(AppTab.Acide) })
+                } else {
                     EditorChip(tr("Batterie"), tr("16 pads"), com.pocketstudio.app.live.DRUMS_COLOR, tab == AppTab.Rythme, "sons_Rythme") { go(AppTab.Rythme) }
-                    EditorChip(tr("Basse acide"), "303", Color(0xFF81C784), tab == AppTab.Acide, "sons_Acide") { go(AppTab.Acide) }
+                    com.pocketstudio.app.acid.AcidChip(tab == AppTab.Acide, onClick = { go(AppTab.Acide) })
                     // The voice next to them: always in sight, whatever the number of tracks after.
                     EditorChip(
                         tr("Voix"),
@@ -127,7 +130,7 @@ internal fun SonsHeader(
 /** The Remix's colour (its chip in Sons, its card on « Que veux-tu faire ? »). */
 internal val REMIX_COLOR = Color(0xFFBA68C8)
 
-/** A chip of the Sons space for an editor that is not an instrument track (the drums, the acid, the audio tracks). */
+/** A chip of the Sons space for an editor that is not an instrument track (the drums, the audio tracks; the acid has its own, [com.pocketstudio.app.acid.AcidChip]). */
 @Composable
 private fun RowScope.EditorChip(label: String, sub: String, color: Color, selected: Boolean, tag: String, onClick: () -> Unit) {
     Row(

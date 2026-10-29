@@ -21,7 +21,7 @@ enum class KnobScreen {
 
     val label: String get() = when (this) {
         Rythme -> tr("Rythme")
-        Acide -> tr("Acide")
+        Acide -> tr("Acid 303")
         Synthe -> tr("Synthé")
         Mixeur -> tr("Mixeur")
         Live -> tr("Live")

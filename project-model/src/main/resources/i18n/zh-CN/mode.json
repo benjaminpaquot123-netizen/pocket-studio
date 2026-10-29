@@ -16,5 +16,12 @@
   "Passer en mode Simple": "切换到简单模式",
   "Piste par piste, MIDI, FLAC… (passe en mode Pro)": "逐轨、MIDI、FLAC…（切换到专业模式）",
   "Pro : tous les outils": "专业：所有工具",
-  "Séparation des pistes : batterie, basse, voix et le reste.": "分轨：鼓、贝斯、人声和其余部分。"
+  "Séparation des pistes : batterie, basse, voix et le reste.": "分轨：鼓、贝斯、人声和其余部分。",
+  "La basse qui couine de l'acid house. Touche « Écris-moi une ligne », puis touche une case pour changer sa note.": "酸性浩室那种吱吱叫的贝斯。点“帮我写一条”，然后点一个格子来改它的音。",
+  "La basse qui couine de l'acid house, case par case": "酸性浩室那种吱吱叫的贝斯，一格一格写",
+  "Écris-moi une ligne": "帮我写一条",
+  "Nombre de notes": "音符数量",
+  "Plus fort": "更响",
+  "Case %d": "第 %d 格",
+  "Touche une case pour la changer. Couleur pleine = plus fort, ⌒ = la note glisse vers la suivante, – = silence.": "点一个格子来修改。实心颜色 = 更响，⌒ = 这个音滑向下一个，– = 休止。"
 }

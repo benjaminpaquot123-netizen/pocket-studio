@@ -110,7 +110,7 @@ object GuideSheets {
         t.key.startsWith("pad:") -> t.key.removePrefix("pad:").toInt().let { lane ->
             p.drums.lanes.getOrNull(lane)?.sample?.name?.let(com.pocketstudio.model.DefaultNames::shownSample) ?: com.pocketstudio.model.DefaultNames.shown(t.name)
         }
-        t.key == GuideTrack.ACID -> "TB-303"
+        t.key == GuideTrack.ACID -> com.pocketstudio.model.DefaultNames.ACID
         else -> com.pocketstudio.model.DefaultNames.shown(t.name)
     }
 

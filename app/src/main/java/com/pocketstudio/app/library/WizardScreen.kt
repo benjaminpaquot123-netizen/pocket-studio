@@ -546,15 +546,15 @@ private fun styleTip(style: StarterWizard.Style, tip: String): String {
 @Composable
 private fun AcidStep(style: StarterWizard.Style, ui: WizardUi, actions: WizardActions) {
     NeonCard(modifier = Modifier.testTag("wizard_acid")) {
-        SectionLabel(tr("Ligne acide (TB-303)"), color = Neon.Acid)
-        Text(tr("La ligne qui couine et qui gronde, jouée par une TB-303 : c'est la star du style. Elle est déjà écrite pour toi : change-la comme tu veux."),
+        SectionLabel(tr("Ligne acide (Acid 303)"), color = Neon.Acid)
+        Text(tr("La ligne qui couine et qui gronde, jouée par l'Acid 303 : c'est la star du style. Elle est déjà écrite pour toi : change-la comme tu veux."),
             style = MaterialTheme.typography.bodyLarge)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(tr("Utiliser la ligne acide"), modifier = Modifier.weight(1f))
             Switch(checked = ui.acid, onCheckedChange = actions.setAcidEnabled, modifier = Modifier.testTag("wizard_acid_enabled"))
         }
         if (!ui.acid) {
-            Text(tr("Pas de ligne acide : la basse acide restera libre pour la tienne."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            Text(tr("Pas de ligne acide : l'Acid 303 restera libre pour la tienne."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             return@NeonCard
         }
         if (ui.acidPlays) SceneBadge(ui.plan.acid, ui.plan)
@@ -729,13 +729,13 @@ private fun ScenesCard(plan: StarterWizard.ScenePlan, style: StarterWizard.Style
     }
 }
 
-/** The 303 in the summary: "TB-303 · Saturée · 2 mesures", "ta ligne" when written on its step, or "pas utilisée". */
+/** The 303 in the summary: "Acid 303 · Saturée · 2 mesures", "ta ligne" when written on its step, or "pas utilisée". */
 internal fun acidSummary(ui: WizardUi): String {
     val line = ui.acidPattern
     if (!ui.acidPlays || line == null) return tr("pas utilisée")
     val bars = (line.length + 15) / 16
     return listOfNotNull(
-        "TB-303",
+        com.pocketstudio.model.DefaultNames.ACID,
         ui.acidSoundName?.let { tr(it) },
         trCount(bars, "1 mesure", "%d mesures"),
         tr("ta ligne").takeIf { ui.acidNotes != null },

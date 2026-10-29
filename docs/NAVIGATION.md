@@ -9,7 +9,7 @@ Ce qui ne bouge pas, sur tous les espaces : la barre du haut (projet, partie, �
 | Avant (7 onglets) | Contenu | Maintenant | Mode simple |
 |---|---|---|---|
 | **Rythme** | Pads, grille de pas, puce « Kit », feuille d'un pad, son du pad, découpe, rééchantillonnage, imports (fichier, dossier, zip), métronome, décompte, swing, ● Enregistrer mes pads | **Sons › Batterie** (puce en tête) | **Rythme** |
-| **Acide** | Pas de la 303, Générer, sons, potards, enregistrement des potards, effets | **Sons › Basse acide** | Le son : Mon morceau › Basse acide › « Changer le son ». Les pas : Mode complet |
+| **Acide** | Pas de la 303, Générer, sons, potards, enregistrement des potards, effets | **Sons › Acid 303** (pastille jaune) | **Clavier › Acid 303** (pastille jaune, en premier), ou « + Piste › Acid 303 » ; ses pas en mots simples |
 | **Synthé** | Pistes (barre de pistes), clavier, notes (piano roll), instruments, Plaits, son échantillonné, transcription, jeu (pitch, mod, arpège), pads d'accords, effets, gel, accords du morceau | **Sons › une puce par piste** (la barre de pistes est devenue la rangée de puces de Sons, avec son menu, « Changer le son » et « + Piste ») | **Clavier** (les pistes d'instruments en puces) |
 | **Mixeur** | Une carte par voie (volume, pan, muet, solo, effets), automation, sortie générale, bus, analyseur, export | **Mix** : une console (faders côte à côte, M, S, vumètre) ; toucher le nom d'une voie ouvre sa feuille (volume, pan, effets, « Ce qui joue », courbes). Sous la console : automation, sortie, bus, export | Volume d'une piste : Mon morceau › 🔊 |
 | **Audio** | Pistes audio, Remix, Accordeur, Générer | **Sons › Voix** (mêmes quatre pages) ; le **Remix** a sa puce à lui dans Sons (lot 2) | — (Mode complet) |

@@ -130,7 +130,7 @@ fun Project.guideTracks(): List<GuideTrack> {
         out += GuideTrack(GuideTrack.pad(lane), role, DefaultNames.KIT_PADS.getOrElse(lane) { "Pad ${lane + 1}" }, Mixer.padChannel(lane))
     }
     if (out.isNotEmpty()) out += GuideTrack(GuideTrack.DRUMS, GuideRoles.DRUMS, "Batterie", 0)
-    if (scenes.any { s -> s.acid.steps.take(s.acid.length.coerceAtLeast(0)).any { it.gate } }) out += GuideTrack(GuideTrack.ACID, GuideRoles.ACID, "Acide", 1)
+    if (scenes.any { s -> s.acid.steps.take(s.acid.length.coerceAtLeast(0)).any { it.gate } }) out += GuideTrack(GuideTrack.ACID, GuideRoles.ACID, DefaultNames.ACID, 1)
     for (t in instrumentTracks) out += GuideTrack(GuideTrack.inst(t.id), GuideRoles.of(t), t.name, InstrumentTrack.mixerChannel(t.id))
     for (a in audioTracks) out += GuideTrack(GuideTrack.audio(a.id), GuideRoles.AUDIO, a.name, AudioTrack.mixerChannel(a.id))
     return out.sortedBy { GuideRoles.ORDER.indexOf(it.role).let { i -> if (i < 0) GuideRoles.ORDER.size else i } }

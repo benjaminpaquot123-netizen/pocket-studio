@@ -124,7 +124,7 @@ enum class SimpleTab(val icon: ImageVector, val tab: AppTab) {
     }
 
     companion object {
-        fun of(tab: AppTab): SimpleTab? = entries.firstOrNull { it.tab == tab }
+        fun of(tab: AppTab): SimpleTab? = entries.firstOrNull { it.tab == tab } ?: Clavier.takeIf { tab == AppTab.Acide }
     }
 }
 

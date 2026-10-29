@@ -128,7 +128,7 @@ class LanguageTest {
         // Phase 36: the bottom bar shows the five spaces (or the Mode simple's five tabs), no longer the seven tabs.
         assertEquals(listOf("Structuur", "Klanken", "Mix", "Live", "Meer"), Space.entries.map { it.label })
         assertEquals(listOf("Mijn nummer", "Ritme", "Klavier", "Mix", "Versturen"), SimpleTab.entries.map { it.label })
-        assertEquals(listOf("Ritme", "Acid", "Synth", "Mixer", "Audio", "Nummer", "Tools", "Live", "Versturen"), AppTab.entries.map { it.label })
+        assertEquals(listOf("Ritme", "Acid 303", "Synth", "Mixer", "Audio", "Nummer", "Tools", "Live", "Versturen"), AppTab.entries.map { it.label })
         val p = Project().renameScene(0, "Pont")
         assertEquals("A · Brug", p.sceneTitle(0))
         I18n.lang = Lang.EN

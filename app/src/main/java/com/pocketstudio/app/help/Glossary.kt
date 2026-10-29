@@ -183,7 +183,7 @@ object Glossary {
         tr("La note glisse vers la suivante au lieu de sauter, quand tu tiens une touche et en appuies une autre. Le fameux effet des 808 du trap."),
     )
     val ACID: Help get() = Help(
-        tr("Basse acide"),
+        tr("Acid 303"),
         tr("Le son de la Roland TB-303 qui a fait naître l'acid house : une basse qui couine quand on ouvre le filtre."),
     )
     val FILTER: Help get() = Help(

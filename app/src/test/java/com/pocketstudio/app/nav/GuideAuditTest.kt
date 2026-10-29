@@ -30,7 +30,7 @@ import java.time.Duration
 /**
  * The final audit's fixes of the Guide in the whole app: Retour closes it (it no longer leaves the
  * app), the kick's « Autre idée de son » changes the kick only, « Voilà ce que j'ai mis » keeps its
- * choice in sight, the Clavier keeps the track the Guide picked, « Générer une basse acide » makes
+ * choice in sight, the Clavier keeps the track the Guide picked, « Générer une ligne Acid 303 » makes
  * one, « Mon premier morceau » starts a new song, and lying down the panel sits on the side.
  */
 @RunWith(RobolectricTestRunner::class)
@@ -136,7 +136,7 @@ class GuideAuditTest {
         assertEquals(bass, h.vm.selectedTrack.value)
     }
 
-    /** 08 #7: « Générer une basse acide » (a song made by hand, Mode simple) makes a 303 line, then offers its sounds. */
+    /** 08 #7: « Générer une ligne Acid 303 » (a song made by hand, Mode simple) makes a 303 line, then offers its sounds. */
     @Test
     fun generateAnAcidBassMakesOne() {
         startOn(Project(name = "À la main").let { it.copy(drums = it.drums.toggle(0, 0).toggle(0, 8)) }, simple = true)

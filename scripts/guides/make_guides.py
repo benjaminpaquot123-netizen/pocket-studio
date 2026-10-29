@@ -379,7 +379,7 @@ def stage1(s):
             T("La basse qui couine quand son filtre s'ouvre : la signature du style, elle bouge tout le morceau.",
               "The bass that squeals as its filter opens: the style's signature, it moves the whole song.",
               "De bas die piept als zijn filter opengaat: het handelsmerk van de stijl, hij beweegt het hele nummer."),
-            T("La basse acide", "The acid bass", "De acid-bas"),
+            T("Acid 303", "Acid 303", "Acid 303"),
             T("Elle « parle » quand son filtre s'ouvre.", "It “talks” as its filter opens.", "Hij ‘praat’ als zijn filter opengaat."),
             "acid", "acid"))
     if s.chords != "none":
@@ -1277,9 +1277,9 @@ COMMON = [
          proposals=[open_spot("grid", T("Aller à la grille", "Go to the grid", "Naar het raster"), T("Seize cases par mesure.", "Sixteen cells a bar.", "Zestien vakjes per maat."), "rhythm.pattern"),
                     open_spot("kit", T("Choisir une batterie", "Choose a drum kit", "Een drumstel kiezen"), T("Le son des coups.", "The hits' sound.", "De klank van de slagen."), "rhythm.kit")]),
     card("start.bassline", START, T("Ajoute une basse", "Add a bass", "Voeg een bas toe"),
-         T("Une ligne grave : génère une basse acide, ou joue des notes graves au clavier d'une piste.", "A low line: generate an acid bass, or play low notes on a track's keyboard.", "Een lage lijn: genereer een acid-bas, of speel lage noten op het klavier van een spoor."),
+         T("Une ligne grave : génère une ligne Acid 303, ou joue des notes graves au clavier d'une piste.", "A low line: generate an Acid 303 line, or play low notes on a track's keyboard.", "Een lage lijn: genereer een Acid 303-lijn, of speel lage noten op het klavier van een spoor."),
          simple=True, applicable=["by_hand"], done=["bassline"], lexicon="bass",
-         proposals=[open_spot("acid", T("Générer une basse acide", "Generate an acid bass", "Een acid-bas genereren"), T("Une ligne 303, en un toucher.", "A 303 line, in one tap.", "Een 303-lijn, met één tik."), "acid.generate"),
+         proposals=[open_spot("acid", T("Générer une ligne Acid 303", "Generate an Acid 303 line", "Een Acid 303-lijn genereren"), T("Une ligne 303, en un toucher.", "A 303 line, in one tap.", "Een 303-lijn, met één tik."), "acid.generate"),
                     open_spot("notes", T("Jouer la basse au clavier", "Play the bass on the keyboard", "De bas op het klavier spelen"), T("Les notes du bas du clavier.", "The keyboard's low notes.", "De lage noten van het klavier."), "notes.track", target="bass")]),
     card("start.tune", START, T("Ajoute une mélodie", "Add a melody", "Voeg een melodie toe"),
          T("Joue quelques notes au clavier d'une piste : il reste dans la gamme.", "Play a few notes on a track's keyboard: it stays in the scale.", "Speel een paar noten op het klavier van een spoor: het blijft in de toonladder."),

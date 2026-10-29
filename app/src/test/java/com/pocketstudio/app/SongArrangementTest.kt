@@ -342,7 +342,7 @@ class SongArrangementTest {
                         p,
                         rows = listOf(
                             com.pocketstudio.app.session.TimelineRow(SongPart.DRUMS, "Batterie", androidx.compose.ui.graphics.Color.Blue),
-                            com.pocketstudio.app.session.TimelineRow(SongPart.ACID, "Basse acide", androidx.compose.ui.graphics.Color.Green),
+                            com.pocketstudio.app.session.TimelineRow(SongPart.ACID, "Acid 303", androidx.compose.ui.graphics.Color.Green),
                         ),
                     ),
                     com.pocketstudio.app.session.TimelineActions(

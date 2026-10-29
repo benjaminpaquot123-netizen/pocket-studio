@@ -50,7 +50,7 @@
       "steps": [
         {
           "id": "ready",
-          "text": "Avant de commencer : ton kit est déjà celui de l'acid techno (une 909), et la piste « Basse acide 303 » a déjà le son du style. Tu n'as rien à régler.",
+          "text": "Avant de commencer : ton kit est déjà celui de l'acid techno (une 909), et la piste « Acid 303 » a déjà le son du style. Tu n'as rien à régler.",
           "textPro": "Déjà prêt : la 909 de l'assistant (kick « crunch », charleys 909), et la 303 avec son son du style (sans notes) : saturation, écho et pompe sur sa tranche."
         },
         {
@@ -124,7 +124,7 @@
         },
         {
           "id": "acid_show",
-          "text": "La ligne acide s'écrit dans un écran de producteur, case par case. Touche « Montre-moi » : l'appli l'écrit pour toi sur la piste « Basse acide 303 ». Écoute-la ensuite avec « Écouter ton résultat ».",
+          "text": "La ligne acide s'écrit dans un écran de producteur, case par case. Touche « Montre-moi » : l'appli l'écrit pour toi sur la piste « Acid 303 ». Écoute-la ensuite avec « Écouter ton résultat ».",
           "why": "L'accent fait crier une note, le slide la lie à la suivante : avec trois notes seulement, la 303 parle.",
           "levels": "f",
           "check": "notes:acid",
@@ -331,7 +331,7 @@
         },
         {
           "id": "filter",
-          "text": "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Basse acide 303 », « Coupure », « Par partie », et dessine une courbe qui monte jusqu'au milieu du Drop puis redescend.",
+          "text": "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », et dessine une courbe qui monte jusqu'au milieu du Drop puis redescend.",
           "why": "La ligne ne change presque pas : c'est le filtre qui raconte l'histoire.",
           "levels": "p",
           "check": "automation:wave",

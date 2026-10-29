@@ -88,7 +88,7 @@ open class WriteScreenshotTest : ScreenshotTest() {
     /** « Accords du morceau »: a progression being heard (« Appliquer » lit), each part's chords, the tracks that follow. */
     @Test
     fun songChordsSheet() = shoot("song_chords_sheet") {
-        // With a 303 line in its parts: « Ligne acide (TB-303) » follows too.
+        // With a 303 line in its parts: « Ligne acide (Acid 303) » follows too.
         val line = com.pocketstudio.model.AcidPattern(steps = List(com.pocketstudio.model.AcidPattern.MAX_STEPS) { com.pocketstudio.model.AcidStep(gate = it % 4 == 2) })
         val p = song().let { q -> q.copy(acid = line, scenes = q.scenes.map { it.copy(acid = line) }).sanitized() }
         val degrees = ChordTrack.degreesOf(p, Progression.Sad)

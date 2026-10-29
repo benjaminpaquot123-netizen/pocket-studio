@@ -16,5 +16,12 @@
   "Passer en mode Simple": "간단 모드로 전환",
   "Piste par piste, MIDI, FLAC… (passe en mode Pro)": "트랙별, MIDI, FLAC… (프로 모드로 전환)",
   "Pro : tous les outils": "프로: 모든 도구",
-  "Séparation des pistes : batterie, basse, voix et le reste.": "트랙 분리: 드럼, 베이스, 보컬, 나머지."
+  "Séparation des pistes : batterie, basse, voix et le reste.": "트랙 분리: 드럼, 베이스, 보컬, 나머지.",
+  "La basse qui couine de l'acid house. Touche « Écris-moi une ligne », puis touche une case pour changer sa note.": "애시드 하우스의 끽끽대는 베이스. “라인 써 줘”를 탭한 뒤, 칸을 탭해서 음을 바꾸세요.",
+  "La basse qui couine de l'acid house, case par case": "애시드 하우스의 끽끽대는 베이스, 한 칸씩",
+  "Écris-moi une ligne": "라인 써 줘",
+  "Nombre de notes": "음표 수",
+  "Plus fort": "더 세게",
+  "Case %d": "칸 %d",
+  "Touche une case pour la changer. Couleur pleine = plus fort, ⌒ = la note glisse vers la suivante, – = silence.": "칸을 탭해서 바꾸세요. 꽉 찬 색 = 더 세게, ⌒ = 다음 음으로 미끄러짐, – = 쉼."
 }

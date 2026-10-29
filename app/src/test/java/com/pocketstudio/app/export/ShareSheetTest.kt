@@ -67,7 +67,7 @@ class ShareSheetTest {
     @Test
     fun aSoloLeftOnIsCaughtWithItsTrackName() {
         val p = project(SongPart(0, bars = 90)).withChannel(1) { it.copy(solo = true) }
-        assertEquals(listOf(ShareCheck.Solo(listOf("Basse acide"))), checks(p))
+        assertEquals(listOf(ShareCheck.Solo(listOf("Acid 303"))), checks(p))
         assertTrue(ShareCheck.Solo(listOf("x")).warning)
     }
 
@@ -218,7 +218,7 @@ class ShareSheetTest {
                 ShareSheetContent(
                     ShareSheetUi(
                         "Mon tube", seconds = 2, parts = 1,
-                        checks = listOf(ShareCheck.Solo(listOf("Basse acide")), ShareCheck.Muted(listOf("Batterie")), ShareCheck.Short(2), ShareCheck.Saturation),
+                        checks = listOf(ShareCheck.Solo(listOf("Acid 303")), ShareCheck.Muted(listOf("Batterie")), ShareCheck.Short(2), ShareCheck.Saturation),
                     ),
                     ShareSheetActions(
                         unsolo = { unsolo++ }, lowerMaster = { lower++ }, toMixer = { mixer++ }, toStructure = { structure++ }, otherExports = { others++ },

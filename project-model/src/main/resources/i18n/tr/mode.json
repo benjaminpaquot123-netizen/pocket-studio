@@ -16,5 +16,12 @@
   "Passer en mode Simple": "Basit moda geç",
   "Piste par piste, MIDI, FLAC… (passe en mode Pro)": "Parça parça, MIDI, FLAC… (Pro moda geçer)",
   "Pro : tous les outils": "Pro: tüm araçlar",
-  "Séparation des pistes : batterie, basse, voix et le reste.": "Parça ayırma: davul, bas, vokal ve geri kalanı."
+  "Séparation des pistes : batterie, basse, voix et le reste.": "Parça ayırma: davul, bas, vokal ve geri kalanı.",
+  "La basse qui couine de l'acid house. Touche « Écris-moi une ligne », puis touche une case pour changer sa note.": "Acid house'un ciyaklayan bası. “Bana bir çizgi yaz”a dokun, sonra notasını değiştirmek için bir kutuya dokun.",
+  "La basse qui couine de l'acid house, case par case": "Acid house'un ciyaklayan bası, kutu kutu",
+  "Écris-moi une ligne": "Bana bir çizgi yaz",
+  "Nombre de notes": "Nota sayısı",
+  "Plus fort": "Daha güçlü",
+  "Case %d": "Kutu %d",
+  "Touche une case pour la changer. Couleur pleine = plus fort, ⌒ = la note glisse vers la suivante, – = silence.": "Değiştirmek için bir kutuya dokun. Dolu renk = daha güçlü, ⌒ = nota bir sonrakine kayar, – = sessizlik."
 }

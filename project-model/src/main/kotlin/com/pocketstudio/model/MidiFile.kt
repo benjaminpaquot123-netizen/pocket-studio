@@ -24,7 +24,7 @@ object MidiFile {
 
     /**
      * The project as MIDI: the whole song (scenes chained) when it has one and [song] is set, else
-     * the current scene once. Tracks: the first instrument track (channel 1), Basse acide (2), the
+     * the current scene once. Tracks: the first instrument track (channel 1), Acid 303 (2), the
      * added instrument tracks (3 to 9), Batterie (10).
      */
     fun export(project: Project, song: Boolean = project.song.isNotEmpty()): ByteArray {
@@ -90,7 +90,7 @@ object MidiFile {
         val tracks = listOf(
             conductor,
             noteTrack(project.synthTrackName, 0, program, warped(synth)),
-            noteTrack(tr("Basse acide"), 1, 38, warped(acid)),  // GM "Synth Bass 1"
+            noteTrack(tr("Acid 303"), 1, 38, warped(acid)),  // GM "Synth Bass 1"
         ) + project.tracks.map { t ->
             // Channels 3..9 (index 2..8): never the drums' channel 10.
             noteTrack(t.name, 1 + t.id, t.instrument?.takeIf { it.bank < 128 }?.program ?: 81, warped(added.getValue(t.id)))

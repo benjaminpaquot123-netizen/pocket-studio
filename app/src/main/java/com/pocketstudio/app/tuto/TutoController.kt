@@ -405,7 +405,7 @@ class TutoController(
     private fun brickName(p: Project, brick: String): String = when {
         brick.startsWith("pad:") -> brick.removePrefix("pad:").toIntOrNull()?.let { com.pocketstudio.app.rhythm.padName(p, it) } ?: brick
         brick.startsWith("inst:") -> brick.removePrefix("inst:").toIntOrNull()?.let { com.pocketstudio.model.DefaultNames.shown(p.track(it).name) } ?: brick
-        brick == "acid" -> "303"
+        brick == "acid" -> com.pocketstudio.model.DefaultNames.ACID
         else -> brick
     }
 

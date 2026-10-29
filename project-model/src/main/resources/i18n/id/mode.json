@@ -16,5 +16,12 @@
   "Passer en mode Simple": "Pindah ke mode Simpel",
   "Piste par piste, MIDI, FLAC… (passe en mode Pro)": "Trek demi trek, MIDI, FLAC… (pindah ke mode Pro)",
   "Pro : tous les outils": "Pro: semua alat",
-  "Séparation des pistes : batterie, basse, voix et le reste.": "Pemisahan trek: drum, bass, vokal, dan sisanya."
+  "Séparation des pistes : batterie, basse, voix et le reste.": "Pemisahan trek: drum, bass, vokal, dan sisanya.",
+  "La basse qui couine de l'acid house. Touche « Écris-moi une ligne », puis touche une case pour changer sa note.": "Bass mencicit khas acid house. Ketuk “Tuliskan baris untukku”, lalu ketuk sebuah kotak untuk mengubah notnya.",
+  "La basse qui couine de l'acid house, case par case": "Bass mencicit khas acid house, kotak demi kotak",
+  "Écris-moi une ligne": "Tuliskan baris untukku",
+  "Nombre de notes": "Jumlah not",
+  "Plus fort": "Lebih keras",
+  "Case %d": "Kotak %d",
+  "Touche une case pour la changer. Couleur pleine = plus fort, ⌒ = la note glisse vers la suivante, – = silence.": "Ketuk sebuah kotak untuk mengubahnya. Warna penuh = lebih keras, ⌒ = not meluncur ke not berikutnya, – = jeda."
 }

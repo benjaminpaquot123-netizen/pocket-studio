@@ -16,5 +16,12 @@
   "Passer en mode Simple": "シンプルモードに切り替え",
   "Piste par piste, MIDI, FLAC… (passe en mode Pro)": "トラックごと、MIDI、FLAC…（プロモードに切り替わります）",
   "Pro : tous les outils": "プロ：すべてのツール",
-  "Séparation des pistes : batterie, basse, voix et le reste.": "トラック分離：ドラム、ベース、ボーカル、その他。"
+  "Séparation des pistes : batterie, basse, voix et le reste.": "トラック分離：ドラム、ベース、ボーカル、その他。",
+  "La basse qui couine de l'acid house. Touche « Écris-moi une ligne », puis touche une case pour changer sa note.": "アシッドハウスのキュンと鳴くベース。「ラインを書いて」をタップして、マスをタップすると音を変えられます。",
+  "La basse qui couine de l'acid house, case par case": "アシッドハウスのキュンと鳴くベースを、1マスずつ",
+  "Écris-moi une ligne": "ラインを書いて",
+  "Nombre de notes": "音の数",
+  "Plus fort": "強く",
+  "Case %d": "マス %d",
+  "Touche une case pour la changer. Couleur pleine = plus fort, ⌒ = la note glisse vers la suivante, – = silence.": "マスをタップして変更。塗りつぶし = 強く、⌒ = 次の音へすべる、– = 休み。"
 }

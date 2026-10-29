@@ -45,8 +45,8 @@ class AcidLanesTest {
         // First in the acid line's group, before its volume.
         assertEquals(acid, targets.subList(targets.indexOf(acid.first()), targets.indexOf(acid.first()) + acid.size))
         assertTrue(targets.indexOf(acid.last()) < targets.indexOf(AutoTarget(AutoTarget.VOLUME, 1)))
-        assertEquals("303 Coupure · Basse acide", automationLabel(AutoTarget.acid(0), mixer.channels, mixer.master))
-        assertEquals("303 Saturation · Basse acide", automationLabel(AutoTarget.acid(7), mixer.channels, mixer.master))
+        assertEquals("303 Coupure · Acid 303", automationLabel(AutoTarget.acid(0), mixer.channels, mixer.master))
+        assertEquals("303 Saturation · Acid 303", automationLabel(AutoTarget.acid(7), mixer.channels, mixer.master))
         // Without the acid strip (a list of other strips), none of them.
         val noAcid = automationTargets(mixer.channels, mixer.master, listOf(StripInfo(0, "Batterie")))
         assertTrue(noAcid.none { it.kind == AutoTarget.ACID })

@@ -71,8 +71,8 @@ object SoundGlossary {
         // --- The instruments ---
         SoundWord("bass", tr("Basse"), tr("L'instrument le plus grave après le kick : il joue les notes de base des accords et fait bouger le corps."),
             listOf("Basse")) { one(withBass(groove(), "Basse ronde")) },
-        SoundWord("acid", tr("Basse acide (303)"), tr("Le son de la Roland TB-303 : une basse qui couine et qui « parle » quand son filtre s'ouvre. Né avec l'acid house."),
-            listOf("Basse acide", "Acide")) { one(acid()) },
+        SoundWord("acid", tr("Acid 303"), tr("Le son de la Roland TB-303 : une basse qui couine et qui « parle » quand son filtre s'ouvre. Né avec l'acid house."),
+            listOf("Acid 303", "Basse acide", "Acide")) { one(acid()) },
         SoundWord("pad", tr("Nappe"), tr("Un son doux et long qui tient les accords en fond, comme un tapis sous le morceau."),
             listOf("Nappe")) { one(withChords(Project(tempoBpm = 110.0).asStart(), "Nappe")) },
         SoundWord("lead", tr("Lead"), tr("La mélodie principale, celle qu'on retient et qu'on chante. Elle passe devant tout le reste."),

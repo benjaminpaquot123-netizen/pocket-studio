@@ -130,7 +130,7 @@ object I18n {
         "Lead" to "Mélodie", "Leads" to "Mélodies", "Lead carré" to "Mélodie carrée", "Lead acide" to "Mélodie acide",
         "Lead trance" to "Mélodie trance", "Mélodie (lead)" to "Mélodie", "Pluck" to "Son court", "Pluck future" to "Son court futur",
         "Pluck / percussif" to "Son court / percussif", "Stabs" to "Accords courts", "Accords (nappe)" to "Accords",
-        "Sub" to "Basse profonde", "Sub drop" to "Chute grave", "Quantifier" to "Remettre en rythme", "Acide" to "Basse acide",
+        "Sub" to "Basse profonde", "Sub drop" to "Chute grave", "Quantifier" to "Remettre en rythme",
         "Lead qui crie" to "Mélodie qui crie", "Lead chiptune" to "Mélodie chiptune", "Lead filtré" to "Mélodie filtrée",
         "Lead hyperpop" to "Mélodie hyperpop", "Lead / mélodie" to "Mélodie", "Lead 2 (sawtooth)" to "Mélodie 2 (dents de scie)",
     )

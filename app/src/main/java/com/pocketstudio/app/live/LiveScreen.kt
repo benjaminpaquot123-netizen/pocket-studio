@@ -141,7 +141,7 @@ data class LiveColumn(val key: String, val name: String, val color: Color, val c
 fun liveColumnsOf(p: Project): List<LiveColumn> = p.liveColumns.mapNotNull { key ->
     when {
         key == SongPart.DRUMS -> LiveColumn(key, tr("Batterie"), DRUMS_COLOR, 0)
-        key == SongPart.ACID -> LiveColumn(key, tr("Acide"), Color(0xFF81C784), 1)
+        key == SongPart.ACID -> LiveColumn(key, tr("Acid 303"), com.pocketstudio.app.acid.AcidLook.Track, 1)
         key == SongPart.REMIX -> LiveColumn(key, tr("Remix"), Color(0xFF90A4AE), 3)
         key.startsWith("inst:") -> p.instrumentTracks.firstOrNull { SongPart.inst(it.id) == key }?.let {
             LiveColumn(key, DefaultNames.shown(it.name), trackColor(it.color), InstrumentTrack.mixerChannel(it.id))
@@ -438,7 +438,7 @@ private fun PanelRail(ui: LiveScreenUi, tab: LivePanelTab, onTab: (LivePanelTab)
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         FullScreenButton(immersive, toggleFull)
-        listOf(LivePanelTab.Effets to tr("Effets"), LivePanelTab.Acide to "303", LivePanelTab.Pads to tr("Pads"), LivePanelTab.Notes to tr("Notes")).forEach { (t, label) ->
+        listOf(LivePanelTab.Effets to tr("Effets"), LivePanelTab.Acide to tr("Acid 303"), LivePanelTab.Pads to tr("Pads"), LivePanelTab.Notes to tr("Notes")).forEach { (t, label) ->
             val idle = t == LivePanelTab.Acide && !ui.hasAcid
             Box(
                 Modifier.size(48.dp).clip(RoundedCornerShape(12.dp))
@@ -447,8 +447,9 @@ private fun PanelRail(ui: LiveScreenUi, tab: LivePanelTab, onTab: (LivePanelTab)
                     .semantics { contentDescription = tr("Ouvrir %s", label) },
                 contentAlignment = Alignment.Center,
             ) {
+                // « Acid 303 » on two lines in the 48 dp rail.
                 Text(
-                    label, style = MaterialTheme.typography.labelSmall, maxLines = 1,
+                    label, style = MaterialTheme.typography.labelSmall, maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                     color = if (idle) Neon.TextSecondary.copy(alpha = 0.6f) else if (t == tab) Neon.Cyan else Neon.TextPrimary,
                 )
             }
@@ -1062,7 +1063,7 @@ private fun LivePanel(
     Column(modifier.clip(shape).background(Neon.Surface).testTag("live_panel")) {
         Row(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             val tabs = if (sideBySide) listOf(LivePanelTab.Effets to tr("Effets et 303"), LivePanelTab.Pads to tr("Pads"), LivePanelTab.Notes to tr("Notes"))
-            else listOf(LivePanelTab.Effets to tr("Effets"), LivePanelTab.Acide to "303", LivePanelTab.Pads to tr("Pads"), LivePanelTab.Notes to tr("Notes"))
+            else listOf(LivePanelTab.Effets to tr("Effets"), LivePanelTab.Acide to tr("Acid 303"), LivePanelTab.Pads to tr("Pads"), LivePanelTab.Notes to tr("Notes"))
             // The tabs share the row by the length of their names (a bigger text makes them
             // smaller, never hides one under ⛶).
             Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(4.dp)) {

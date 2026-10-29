@@ -3950,7 +3950,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         for (bus in 0..1) if (_liveReturns.value[bus] != 0.5f) setLiveReturn(bus, 0.5f)
         _liveFx.value.trackKills.forEach { (ch, bands) -> bands.forEach { liveKill(it, false, ch) } }
         _liveChops.value.toList().forEach { liveTrackChop(it, false) }
-        // The 303 as the page's sliders left it: back to the sound saved (Sons › Basse acide shows it).
+        // The 303 as the page's sliders left it: back to the sound saved (Sons › Acid 303 shows it).
         _liveAcid.value.keys.toList().forEach(::resetLiveAcid)
     }
 
@@ -9999,7 +9999,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             "morceau" -> tr("Morceau")
             "boucle" -> tr("Boucle")
             "batterie" -> tr("Batterie")
-            "acide" -> tr("Acide")
+            "acide" -> tr("Acid 303")
             "synthe" -> tr("Synthé")
             LIVE_FX_STEM_LABEL -> tr("Effets live")
             else -> label.replaceFirstChar { it.uppercase() }

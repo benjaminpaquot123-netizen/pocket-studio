@@ -16,5 +16,12 @@
   "Passer en mode Simple": "Passa alla modalità Semplice",
   "Piste par piste, MIDI, FLAC… (passe en mode Pro)": "Traccia per traccia, MIDI, FLAC… (passa alla modalità Pro)",
   "Pro : tous les outils": "Pro: tutti gli strumenti",
-  "Séparation des pistes : batterie, basse, voix et le reste.": "Separazione delle tracce: batteria, basso, voce e il resto."
+  "Séparation des pistes : batterie, basse, voix et le reste.": "Separazione delle tracce: batteria, basso, voce e il resto.",
+  "La basse qui couine de l'acid house. Touche « Écris-moi une ligne », puis touche une case pour changer sa note.": "Il basso che squittisce dell'acid house. Tocca “Scrivimi una linea”, poi tocca una casella per cambiarne la nota.",
+  "La basse qui couine de l'acid house, case par case": "Il basso che squittisce dell'acid house, casella per casella",
+  "Écris-moi une ligne": "Scrivimi una linea",
+  "Nombre de notes": "Numero di note",
+  "Plus fort": "Più forte",
+  "Case %d": "Casella %d",
+  "Touche une case pour la changer. Couleur pleine = plus fort, ⌒ = la note glisse vers la suivante, – = silence.": "Tocca una casella per cambiarla. Colore pieno = più forte, ⌒ = la nota scivola verso la successiva, – = pausa."
 }

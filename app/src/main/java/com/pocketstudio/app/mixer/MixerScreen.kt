@@ -75,7 +75,7 @@ data class StripInfo(val ch: Int, val name: String, val color: androidx.compose.
 const val MASTER_CHANNEL = 4
 
 /** Drums, acid, the first instrument track, the remix: a project with no added track (names shown through tr()). */
-val BASIC_STRIPS = listOf(StripInfo(0, "Batterie"), StripInfo(1, "Basse acide"), StripInfo(2, "Synthé"), StripInfo(3, "Remix"))
+val BASIC_STRIPS = listOf(StripInfo(0, "Batterie"), StripInfo(1, com.pocketstudio.model.DefaultNames.ACID), StripInfo(2, "Synthé"), StripInfo(3, "Remix"))
 
 /** Index of the limiter gain in the meters (after one peak per mixer channel). */
 const val LIMITER_METER = com.pocketstudio.engine.NativeEngine.METER_LIMITER

@@ -16,5 +16,12 @@
   "Passer en mode Simple": "सिंपल मोड पर जाओ",
   "Piste par piste, MIDI, FLAC… (passe en mode Pro)": "ट्रैक दर ट्रैक, MIDI, FLAC… (प्रो मोड पर जाता है)",
   "Pro : tous les outils": "प्रो: सारे टूल",
-  "Séparation des pistes : batterie, basse, voix et le reste.": "ट्रैक अलग करना: ड्रम, बेस, आवाज़ और बाकी।"
+  "Séparation des pistes : batterie, basse, voix et le reste.": "ट्रैक अलग करना: ड्रम, बेस, आवाज़ और बाकी।",
+  "La basse qui couine de l'acid house. Touche « Écris-moi une ligne », puis touche une case pour changer sa note.": "एसिड हाउस का चीं-चीं करता बेस। “मेरे लिए एक लाइन लिखो” दबाओ, फिर किसी खाने को दबाकर उसका नोट बदलो।",
+  "La basse qui couine de l'acid house, case par case": "एसिड हाउस का चीं-चीं करता बेस, खाना-दर-खाना",
+  "Écris-moi une ligne": "मेरे लिए एक लाइन लिखो",
+  "Nombre de notes": "नोट्स की संख्या",
+  "Plus fort": "ज़्यादा ज़ोर से",
+  "Case %d": "खाना %d",
+  "Touche une case pour la changer. Couleur pleine = plus fort, ⌒ = la note glisse vers la suivante, – = silence.": "किसी खाने को बदलने के लिए उसे दबाओ। भरा रंग = ज़्यादा ज़ोर से, ⌒ = नोट अगले नोट तक फिसलता है, – = चुप।"
 }

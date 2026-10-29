@@ -222,7 +222,7 @@ enum class AppTab(val icon: ImageVector) {
     /** The screen's name in the interface's language (the spaces and the Mode simple's tabs have their own: [Space], [SimpleTab]). */
     val label: String get() = when (this) {
         Rythme -> tr("Rythme")
-        Acide -> tr("Acide")
+        Acide -> tr("Acid 303")
         Synthe -> tr("Synthé")
         Mixeur -> tr("Mixeur")
         Audio -> tr("Audio")
@@ -1410,6 +1410,7 @@ fun AppRoot() {
             showBar = bar,
             simple = simple,
             addVoice = if (simple) null else ({ rhythmVm.addAudioTrack(); audioPage = 0; go(AppTab.Audio) }),
+            addAcid = { go(AppTab.Acide) },
         )
     }
     val openLaneFromTimeline: (Int) -> Unit = { lane ->
@@ -1673,7 +1674,7 @@ fun AppRoot() {
             // Audit final: one pad's sound (the kick's « Autre idée de son »), on the Rythme tab.
             is com.pocketstudio.app.guide.GuideGo.Pad -> { if (tab != AppTab.Rythme) aloneTabByGuide = AppTab.Rythme; go(AppTab.Rythme); guidePad = g.lane }
             com.pocketstudio.app.guide.GuideGo.AcidSound -> acidSheetOpen = true
-            // Audit final: « Générer une basse acide » makes the line (a song without one), then offers its sounds.
+            // Audit final: « Générer une ligne Acid 303 » makes the line (a song without one), then offers its sounds.
             com.pocketstudio.app.guide.GuideGo.AcidGenerate -> {
                 if (!com.pocketstudio.model.guide.GuideStart.bassline(rhythmVm.project.value)) rhythmVm.generateAcid()
                 acidSheetOpen = true
@@ -2314,6 +2315,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                             WithLive(liveState) { live ->
                                                         AcidScreen(
                                 modifier = partModifier,
+                                simple = simple,
                                 record = {
                                     com.pocketstudio.app.record.RecordBar(
                                         com.pocketstudio.app.record.recordBarUi(rhythmVm, tr("Enregistrer les boutons"), com.pocketstudio.app.record.TakeSource.ACID),
@@ -3297,7 +3299,7 @@ private fun openUri(context: Context, uri: Uri) {
 
 /** Drums, acid, every instrument track in its colour, then the remix. */
 fun mixerStrips(p: com.pocketstudio.model.Project): List<com.pocketstudio.app.mixer.StripInfo> =
-    listOf(com.pocketstudio.app.mixer.StripInfo(0, "Batterie"), com.pocketstudio.app.mixer.StripInfo(1, "Basse acide")) +
+    listOf(com.pocketstudio.app.mixer.StripInfo(0, "Batterie"), com.pocketstudio.app.mixer.StripInfo(1, com.pocketstudio.model.DefaultNames.ACID)) +
         p.instrumentTracks.map { t ->
             com.pocketstudio.app.mixer.StripInfo(com.pocketstudio.model.InstrumentTrack.mixerChannel(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
         } +
@@ -3339,7 +3341,7 @@ fun quickFxActions(vm: RhythmViewModel): com.pocketstudio.app.mixer.QuickFxActio
 fun timelineRows(p: Project, info: Map<String, com.pocketstudio.app.rhythm.SampleInfo> = emptyMap()): List<com.pocketstudio.app.session.TimelineRow> =
     listOf(
         com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.DRUMS, "Batterie", com.pocketstudio.app.live.DRUMS_COLOR),
-        com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.ACID, "Basse acide", androidx.compose.ui.graphics.Color(0xFF81C784)),
+        com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.ACID, com.pocketstudio.model.DefaultNames.ACID, com.pocketstudio.app.acid.AcidLook.Track),
     ) + p.instrumentTracks.map { t ->
         com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.inst(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
     } + p.audioTracks.map { t ->
@@ -3819,7 +3821,7 @@ internal fun AcidSoundSheet(vm: RhythmViewModel, close: () -> Unit) {
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
-                    Text(tr("Son de : %s", tr("Basse acide")), style = MaterialTheme.typography.titleLarge, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                    Text(tr("Son de : %s", tr("Acid 303")), style = MaterialTheme.typography.titleLarge, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
                     Text(tr("Touche un son : il remplace celui de cette piste dans tout le morceau."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
                 TextButton(onClick = close, modifier = Modifier.testTag("acid_sound_close")) { Text(tr("Fermer")) }
@@ -3846,7 +3848,7 @@ internal fun simpleTracks(p: Project, hideFirst: Boolean = false): List<SimpleTr
     }
     return listOfNotNull(
         track(com.pocketstudio.model.SongPart.DRUMS, 0, tr("Batterie"), com.pocketstudio.app.live.DRUMS_COLOR, pads),
-        if (acidPlays) track(com.pocketstudio.model.SongPart.ACID, 1, tr("Basse acide"), Color(0xFF81C784)) else null,
+        if (acidPlays) track(com.pocketstudio.model.SongPart.ACID, 1, tr("Acid 303"), com.pocketstudio.app.acid.AcidLook.Track) else null,
     ) + p.instrumentTracks.filter { !(hideFirst && it.id == 0) }.map { t ->
         track(com.pocketstudio.model.SongPart.inst(t.id), com.pocketstudio.model.InstrumentTrack.mixerChannel(t.id), com.pocketstudio.model.DefaultNames.shown(t.name), com.pocketstudio.ui.trackColor(t.color))
     } + p.audioTracks.map { t ->

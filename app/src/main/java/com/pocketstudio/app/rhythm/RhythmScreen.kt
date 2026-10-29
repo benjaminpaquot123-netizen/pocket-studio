@@ -1132,8 +1132,8 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                         text = {
                             Text(
                                 (
-                                    if (bars == 1) tr("Le son du pad « %s » sera remplacé par l'enregistrement de tout ce qui joue sur une mesure : la batterie, la basse acide, les synthés.", DrumKitInfo.names[lane])
-                                    else tr("Le son du pad « %s » sera remplacé par l'enregistrement de tout ce qui joue sur %d mesures : la batterie, la basse acide, les synthés.", DrumKitInfo.names[lane], bars)
+                                    if (bars == 1) tr("Le son du pad « %s » sera remplacé par l'enregistrement de tout ce qui joue sur une mesure : la batterie, l'Acid 303, les synthés.", DrumKitInfo.names[lane])
+                                    else tr("Le son du pad « %s » sera remplacé par l'enregistrement de tout ce qui joue sur %d mesures : la batterie, l'Acid 303, les synthés.", DrumKitInfo.names[lane], bars)
                                 ) + " " + tr("Pratique pour en faire une boucle. Pour garder ton son, choisis « Non » ; la flèche Annuler en haut le remet aussi."),
                             )
                         },

@@ -90,6 +90,8 @@ class TracksUi(
     val simple: Boolean = false,
     /** Phase 36: « + Piste » › « Voix (micro) », an audio track to sing on (null: not offered). */
     val addVoice: (() -> Unit)? = null,
+    /** « + Piste » › « Acid 303 »: opens the 303's editor (Benjamin, 2026-10-29; null: not offered). */
+    val addAcid: (() -> Unit)? = null,
 ) {
     /** Whether track [id] plays notes in the scene shown. */
     fun hasNotes(id: Int) = tracks.firstOrNull { it.id == id }?.notes?.notes?.isNotEmpty() == true
@@ -213,7 +215,7 @@ fun TrackBar(
         }
     }
     if (choosing) {
-        TrackAddDialog(onDismiss = { choosing = false }, voice = ui.addVoice?.let { v -> { choosing = false; v() } }, simple = ui.simple) { kind, write ->
+        TrackAddDialog(onDismiss = { choosing = false }, voice = ui.addVoice?.let { v -> { choosing = false; v() } }, simple = ui.simple, acid = ui.addAcid?.let { a -> { choosing = false; a() } }) { kind, write ->
             choosing = false
             if (kind == null) ui.add() else ui.addKind?.invoke(kind, write)
         }

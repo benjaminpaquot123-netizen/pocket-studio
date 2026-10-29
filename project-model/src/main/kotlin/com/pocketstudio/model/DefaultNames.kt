@@ -14,12 +14,21 @@ import com.pocketstudio.model.i18n.tr
  * imported "Bass groove.wav" or "Basse live.wav" is never turned into "Basse groove" or "Bass live".
  */
 object DefaultNames {
+    /**
+     * The acid track's name, the same in every language (Benjamin, 2026-10-29: « Acid 303 », not a
+     * brand name). It was « Basse acide » before: a name saved then is shown as this one.
+     */
+    const val ACID = "Acid 303"
+
+    /** App names renamed since: the old French one → the one shown now. */
+    private val RENAMED = mapOf("Basse acide" to ACID)
+
     /** Whole names. */
     private val EXACT: Set<String> by lazy {
         (
             listOf(
                 "Nouveau projet", "Mon premier rythme", "Mon projet", "Mon morceau", "Mon son",
-                "Synthé", "Basse", "Nappe", "Lead", "Batterie", "Basse acide", "Remix", "Piste", "Sample",
+                "Synthé", "Basse", "Nappe", "Lead", "Batterie", ACID, "Remix", "Piste", "Sample",
                 "Son importé", "Morceau 1 mesure", "Voix", SimpleMelody.NAME, StarterWizard.RISER_TRACK, StarterWizard.OLD_RISER_TRACK, StarterWizard.SUB_TRACK, StarterWizard.SUB_DROP_TRACK,
                 StarterWizard.COUNTER_TRACK,
             ) + TrackKind.entries.map { it.trackName } + StarterWizard.CHORD_TRACK_NAMES + Demos.ALL.map { it.first } + StarterWizard.STYLES.map { it.name }
@@ -89,6 +98,7 @@ object DefaultNames {
     /** [name] in the interface's language when the app gave it, else as it is. */
     fun shown(name: String): String {
         if (name in EXACT) return tr(name)
+        RENAMED[name]?.let { return tr(it) }
         fromTranslation[name]?.let { return tr(it) }
         numbered.forEach { (re, fr) -> re.matchEntire(name)?.groupValues?.get(1)?.toIntOrNull()?.let { return tr(fr, it) } }
         timed.forEach { (re, fr) -> re.matchEntire(name)?.let { return tr(fr, it.groupValues[1]) } }
@@ -121,9 +131,9 @@ object DefaultNames {
     }
 
     /** The French of a whole default name given in any language ("Bass", "Bas" → "Basse"), or null for any other name. */
-    fun french(name: String): String? = if (name in EXACT) name else fromTranslation[name]
+    fun french(name: String): String? = if (name in EXACT) name else RENAMED[name] ?: fromTranslation[name]
 
     /** True when [name] is one of the app's own names (in any language). */
     fun isDefault(name: String): Boolean =
-        name in EXACT || name in fromTranslation || numbered.any { it.first.matches(name) } || timed.any { it.first.matches(name) }
+        name in EXACT || name in RENAMED || name in fromTranslation || numbered.any { it.first.matches(name) } || timed.any { it.first.matches(name) }
 }

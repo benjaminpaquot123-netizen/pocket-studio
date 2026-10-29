@@ -485,8 +485,8 @@ open class ScreenshotTest {
             }
             // Lying down, the solo banner folds into a chip of the strip.
             StripShot(124.0, song = true, loop = false, playing = true, com.pocketstudio.app.ui.PlayPosition("Refrain", 14, 60), soloed = listOf("Batterie"))
-            com.pocketstudio.app.ui.SoloBanner(listOf("Batterie", "Basse acide"), {})
-            com.pocketstudio.app.ui.SoloBanner(listOf("Batterie", "Basse acide", "Lead", "Voix"), {})
+            com.pocketstudio.app.ui.SoloBanner(listOf("Batterie", "Acid 303"), {})
+            com.pocketstudio.app.ui.SoloBanner(listOf("Batterie", "Acid 303", "Lead", "Voix"), {})
             com.pocketstudio.app.ui.RenameProjectBar("Da Funk (remix)", {}, {})
             // The editors' header: stopped, the song playing and followed, « ⟳ Partie » gone on by
             // itself after a touch on the grid.
@@ -1010,7 +1010,7 @@ open class ScreenshotTest {
         androidx.compose.foundation.layout.Box(Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
             androidx.compose.material3.Surface(shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp), color = Neon.Surface,
                 modifier = Modifier.padding(16.dp).widthIn(max = 520.dp)) {
-                com.pocketstudio.app.synth.TrackAddChoices(onPick = { _, _ -> }, onDismiss = {})
+                com.pocketstudio.app.synth.TrackAddChoices(onPick = { _, _ -> }, onDismiss = {}, acid = {})
             }
         }
     }
@@ -1687,7 +1687,7 @@ open class ScreenshotTest {
             com.pocketstudio.app.export.ShareSheetUi(
                 "Nuit sur la ville", seconds = 178, parts = 6,
                 checks = listOf(
-                    com.pocketstudio.app.export.ShareCheck.Solo(listOf("Basse acide")),
+                    com.pocketstudio.app.export.ShareCheck.Solo(listOf("Acid 303")),
                     com.pocketstudio.app.export.ShareCheck.Muted(listOf("Voix 1")),
                     com.pocketstudio.app.export.ShareCheck.Saturation,
                 ),
@@ -1981,7 +1981,7 @@ open class ScreenshotTest {
         p = p.withAudioTrack(p.audioTracks[0].copy(clip = com.pocketstudio.model.AudioClip("v.wav", "Prise", 9.0, start = 64, song = true)))
         val rows = com.pocketstudio.app.ui.timelineRows(p)
         return com.pocketstudio.app.session.TimelineUi(
-            p, rows, listOf(com.pocketstudio.app.session.TimelineLane(0, "acid", "303 Coupure · Basse acide")),
+            p, rows, listOf(com.pocketstudio.app.session.TimelineLane(0, "acid", "303 Coupure · Acid 303")),
             playing = true, songIndex = 2, upcoming = 3, songStep = { 100 }, loop = 2..3, canUndo = true,
         )
     }

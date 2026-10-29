@@ -56,6 +56,10 @@ class PrefsTutoStore(context: Context) : TutoStore {
 object TutoTestHooks {
     @androidx.annotation.VisibleForTesting
     var player: GuideListenPlayer? = null
+
+    /** False: no offer to download the style's kit (a journey played offline, whatever the catalogue says). */
+    @androidx.annotation.VisibleForTesting
+    var kitOffer: Boolean = true
 }
 
 /**
@@ -199,6 +203,19 @@ class TutoController(
 
     fun resume() {
         store.load(projectId)?.let { show(it.copy(active = true)) }
+    }
+
+    /**
+     * Socle 2: the style's drum kit decided for this project ([TutoProgress.KIT_PACK]: its pack's
+     * sounds on the pads; [TutoProgress.KIT_BUILT_IN]: « Plus tard », the built-in kit), kept with
+     * the progress so the offer is not made again.
+     */
+    fun setKit(kit: String) {
+        val u = _ui.value ?: return
+        if (u.progress.kit == kit) return
+        val p = u.progress.copy(kit = kit)
+        store.save(projectId, p)
+        _ui.value = u.copy(progress = p)
     }
 
     /** « Quitter le tuto »: it folds away, kept to resume. */
@@ -372,7 +389,9 @@ class TutoController(
         else com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie du Groove) : sans %2\$s.", name, out.joinToString(", "))
         val more = when {
             writes -> com.pocketstudio.model.i18n.tr("Sa basse est à toi d'écrire : les notes en pointillé.")
-            step.build.isNotEmpty() -> com.pocketstudio.model.i18n.tr("Sa caisse claire accélère mesure après mesure, et son dernier temps se tait.")
+            // The pad the part builds up (the Montée's snare, a clap, a hat…), named as the grid names it.
+            step.build.isNotEmpty() -> if (step.build == "snare") com.pocketstudio.model.i18n.tr("Sa caisse claire accélère mesure après mesure, et son dernier temps se tait.")
+                else com.pocketstudio.model.i18n.tr("Son pad « %s » accélère mesure après mesure, et son dernier temps se tait.", com.pocketstudio.app.rhythm.padName(after, TutoChecks.laneOf(step.build)))
             else -> null
         }
         return listOfNotNull(made, more).joinToString(" ")

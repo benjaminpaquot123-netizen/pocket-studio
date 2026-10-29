@@ -33,8 +33,14 @@ class TutoAppScreenshotTest {
     val compose = createAndroidComposeRule<ComponentActivity>()
     private val h = AppHarness(compose)
 
+    // The steps as they show once the kit is decided (the offer to download it: tuto_kit_offer.png).
+    init { TutoTestHooks.kitOffer = false }
+
     @After
-    fun end() = h.finish()
+    fun end() {
+        TutoTestHooks.kitOffer = true
+        h.finish()
+    }
 
     private fun has(tag: String) = compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
 

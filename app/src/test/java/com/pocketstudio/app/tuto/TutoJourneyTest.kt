@@ -71,6 +71,7 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
     @After
     fun end() {
         TutoTestHooks.player = null
+        TutoTestHooks.kitOffer = true
         h.finish()
     }
 
@@ -118,6 +119,8 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
 
     private fun journey(level: TutoLevel) {
         TutoTestHooks.player = player
+        // Offline, whatever the catalogue: the built-in kit (the offer is TutoKitTest's).
+        TutoTestHooks.kitOffer = false
         h.start(simple = level == TutoLevel.Facile, build = {
             // « J'apprends » › level › Jump up: the tutorial's own empty project.
             session.edit { target.blank() }

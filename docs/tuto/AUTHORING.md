@@ -51,6 +51,7 @@ Elles viennent de `docs/testeur-humain/` (lots « tuto 3 » à « tuto 5 »).
 | `lines` | Les lignes du cours par rôle (§ 4). |
 | `lineBars` | La longueur d'une phrase en mesures (1, 2, 4 ou 8), si ce n'est pas le plus petit nombre qui contient ses notes. |
 | `follow` | Les rôles dont la phrase courte **suit les accords** quand elle se répète (« Copier » la transpose d'un accord à l'autre). |
+| `drums` | La batterie du cours (§ 4 bis), à la place des lignes de la recette. |
 | `chapters` | Les chapitres (§ 3). |
 
 `key`, `chords` et `mood` changent le morceau cible du tuto (l'exemple, les notes en pointillé, le contrôle de « Tonalité ») sans toucher aux recettes de l'assistant.
@@ -100,7 +101,8 @@ Chapitre : `id` (unique), `title`, `titlePro`, `why` (« Pourquoi ? »), `levels
 
 ## 4. Les lignes (`lines`)
 
-Rôles : `bass`, `pad` (les accords / la nappe, une seule piste d'accords), `lead`, `acid` (la 303).
+Rôles : `bass`, `pad` (les accords), `lead`, `acid` (la 303), et deux pistes de plus :
+`pad2` (une **nappe** à côté des accords : piste « Nappe », son de nappe du style) et `counter` (un **contre-chant** à côté de la mélodie : piste « Contre-chant »). Ces deux-là n'existent que par leur ligne dans `lines`.
 La `sub` n'a pas de ligne : c'est la basse une octave plus bas (`track:sub`), immobile.
 
 Une ligne = des entrées séparées par des espaces : `pas:Note:longueur[:extra]`.
@@ -127,7 +129,25 @@ Exemples :
 
 **303** (`acid`) : seulement pour un style qui a une 303 (`acid_techno`, `acid_house`, `acidcore`). Les pas à écrire sont en pointillé dans l'onglet Acide (Pro), avec leur note, leur accent (`!`) et leur slide (`⌒`). Le détecteur `notes:acid` vérifie la note, l'octave, l'accent et le slide de chaque pas.
 
-Sans ligne dans le cours, les notes visées sont celles de l'assistant.
+Sans ligne dans le cours, les notes visées sont celles de l'assistant (sauf `pad2` et `counter`, qui en demandent une).
+
+---
+
+## 4 bis. La batterie du cours (`drums`)
+
+```json
+"drums": {
+  "*":     { "kick": "X...X...X...X...", "openhat": "..x...x...x...x.", "hat": "x.x.x.x.x.x.x.x.", "shaker": "o.x.o.x.o.x.o.x." },
+  "Break": { "hat": "x...x...x...x...", "crash": "X..............." },
+  "Drop":  { "kick": "X...X...X...X...", "clap": "....X.......X...", "hat": "xxxxxxxxxxxxxxxx", "crash": "X..............." }
+}
+```
+
+- `"*"` : la batterie de tout le morceau, **à la place des lignes de la recette** (le groove que l'utilisateur écrit, les `lane:…`, les exemples `drums:…`). Une recette sans le rôle n'en a plus.
+- `"<Partie>"` : la batterie de cette partie (et de ses secondes : « Drop » vaut aussi pour « Drop 2 »), **exactement ces pads** (les autres se taisent dans l'exemple). « Créer la partie » y pose ces coups sur les pads que l'utilisateur joue ; une étape `lane:<rôle>` avec `"part": "<Partie>"` les fait écrire dans cette partie.
+- Une case par pas : 16, 32 ou 64 cases (1, 2 ou 4 mesures). `X` fort, `x` normal, `o` doux, `2` `3` `4` un roulement, `.` rien.
+- Rôles : `kick`, `snare`, `clap`, `hat`, `openhat` (ou `open_hat`), `ride`, `perc`, `rim` (= `perc`, le pad Rim), `perc2`, `shaker` (= `perc2`, le pad Shaker), `tom`, `rumble`, `808`, et `crash`. Deux rôles sur le même pad (`ride` et `crash`, `rim` et `perc`) : erreur.
+- **`crash`** : un coup joué **une seule fois** au début de la partie, jamais en boucle (dans l'exemple ; l'utilisateur le pose avec l'étape `crash:once`). Pas dans `"*"`.
 
 ---
 
@@ -141,10 +161,11 @@ Sans ligne dans le cours, les notes visées sont celles de l'assistant.
 | `key` | La tonalité et la gamme du cours. | oui (gamme puis tonique) |
 | `swing` | Le swing du style (à moitié de sa valeur près, au plus 5 points). Seulement pour un style qui swingue. | oui |
 | `lane:<rôle>` | Toutes les cases de la ligne du style sur ce pad (un peu de surplus toléré), sur toute sa longueur (« Passer à 2 mesures » proposé). Rôles : `kick`, `snare`, `clap`, `hat`, `open_hat`, `perc`, `perc2`, `tom`, `ride`, `rumble`, `808` (ceux que le style joue). | oui |
+| `lane:<rôle>` + `part` | Pareil, dans cette partie, avec sa batterie à elle (`drums.<Partie>`) ; le bouton mène d'abord à la partie. | oui |
 | `lane:<rôle>:rolls` | Pareil, et chaque roulement de la ligne (« 3 » : 3 coups dans une case) roulé pareil (Pro). | oui |
 | `velocity:hat` | Les charleys des temps plus doux que ceux d'entre, sur chaque mesure (« Copier » après la 1re). | oui |
 | `offset:<rôle>:late` / `:early` | Au moins la moitié des coups du pad joués en retard / en avance d'au moins 5 ms (réglage « Décalage du coup », Pro). | oui |
-| `notes:bass` / `notes:pad` / `notes:lead` | Toutes les notes de la ligne écrites sur la piste de ce rôle. | oui, mesure par mesure |
+| `notes:bass` / `notes:pad` / `notes:lead` / `notes:pad2` / `notes:counter` | Toutes les notes de la ligne écrites sur la piste de ce rôle (« Créer la piste … » la fait : Basse, ou 808 dans les styles 808, Accords, Mélodie, Nappe, Contre-chant). | oui, mesure par mesure |
 | `notes:acid` | Toute la ligne 303 : notes, accents, slides. | oui |
 | `track:sub` | Une piste Sub = la basse une octave plus bas (un bouton). | oui |
 | `changed:synth:<rôle>:<BOUTON+BOUTON>` | Les boutons nommés montés d'au moins 15 sur 100 : `CUTOFF`, `RESONANCE`, `OSC2_DETUNE`, `GLIDE`, `A_ATTACK`, `UNISON_DETUNE`. | — |
@@ -161,7 +182,8 @@ Sans ligne dans le cours, les notes visées sont celles de l'assistant.
 | `song:phrases` | L'ordre **et** chaque durée de `song`. | oui (bouton « Durées conseillées ») |
 | `fill` | Un roulement dans le dernier temps de la partie `part` (avant le silence `length`, ou celui de son étape `gap`) : un coup ×3 ou plus ; sur un pad qui n'accélère pas dans la partie (`target: "tom"`), 3 coups ou plus. | oui |
 | `gap` | Les dernières `length` cases de la partie `part` silencieuses, sur les pads des rôles de `target` (vide : tous). | oui (cases barrées) |
-| `crash` | La cymbale (pad 12) sur la 1re case d'une des parties `part` (défaut : Drop, Drop 2). | oui |
+| `crash` | La cymbale (pad 12) sur la 1re case d'une des parties `part` (défaut : Drop, Drop 2), **dans la boucle** (elle revient à chaque tour : le jump up). | oui |
+| `crash:once` | La cymbale **une seule fois**, au début de chaque passage de la partie `part` dans le morceau : sa 1re mesure joue une mesure « Crash », puis la partie continue (comme l'assistant). Après l'étape `song:order`. | oui |
 | `shared` | Le morceau exporté et partagé (l'appli le marque). | — |
 
 ---
@@ -175,7 +197,9 @@ Vide (aucun coup, aucune note, aucune partie) mais avec :
 - le **son de la 303** du style (sans notes) ;
 - les pistes que le cours crée (« Créer la piste Basse / Accords / Mélodie ») prennent le son, le volume et l'effet que l'assistant donne à ce rôle dans le style.
 
-**Les packs téléchargés ne sont pas pris** : tout part des sons intégrés, pour que les exemples (faits des mêmes sons) sonnent comme ce que l'utilisateur construit, même hors ligne. Tempo, tonalité et swing sont réglés par des étapes.
+**Le kit du style** (`TutoKit`) : au départ du tuto, si les packs d'où l'assistant prend la batterie du style (ses machines, TR-909…, et son pack à lui) ne sont pas sur le téléphone, une carte propose « Télécharger le kit <style> (taille) » ou « Plus tard ». Une fois là, chaque pad prend le son du pack que l'assistant lui donnerait. **Les exemples jouent toujours les sons de batterie du projet** : avec le pack s'il est chargé, avec les sons intégrés sinon. Hors ligne, tout marche avec les sons intégrés. Le choix est gardé pour le projet.
+
+Tempo, tonalité et swing sont réglés par des étapes.
 
 ---
 
@@ -248,12 +272,12 @@ flock <lock> ./gradlew --max-workers=3 --no-configuration-cache :app:testDebugUn
 
 ## 11. Ce qu'un cours ne peut pas encore dire
 
-- **Triolets « 3 coups sur 2 cases »** (charleys trap / drill) : le moteur ne joue que des rafales dans une case (`3` = 3 coups dans une 16e) ; `lane:hat:rolls` détecte celles-là.
+- **Triolets « 3 coups sur 2 cases »** (charleys trap / drill) : en cours d'ajout au moteur (autre chantier) ; aujourd'hui seules les rafales dans une case (`3` = 3 coups dans une 16e), détectées par `lane:hat:rolls`.
 - **Une variante dans une partie longue** (couper une ligne 8 mesures sur 32, un mini-break de 2 mesures) : il faut une partie de plus.
 - **Le décalage d'un coup, les roulements et la 303** ne s'écrivent qu'en Pro (le Mode simple n'a pas ces réglages).
-- **Batterie du cours** : les lignes de batterie sont celles de la recette du style (pas de `lines` pour les pads, pas de force par coup au-delà de X / x / o).
-- **Une seule piste d'accords** (pas de nappe séparée des accords), pas de contre-chant à écrire.
+- **Force des coups** : trois niveaux (X / x / o) dans `drums`, pas de force fine.
+- **Sons de batterie hors kit** (conga, cowbell, güira…) : `drums` nomme les pads par leur rôle ; un pad joue le son du kit (ou du pack) à sa place.
 - **Glissé 808** : sa durée est celle du style, pas réglable note par note ; pas de pitch bend.
 - **Swing par piste** : seulement le swing global.
 - **Accords enrichis** (m9, sus2) : la grille se donne en degrés, la couleur vient du style.
-- **Packs** : le tuto ne charge pas les sons téléchargés.
+- **Packs** : seule la batterie vient du pack du style ; les sons des pistes (basse, accords…) restent ceux du synthé.

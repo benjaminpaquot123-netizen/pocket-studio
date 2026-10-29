@@ -21,6 +21,8 @@ import com.pocketstudio.model.NoteClip
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SongPart
+import com.pocketstudio.model.DrumArrangement
+import com.pocketstudio.model.partKeys
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.StarterWizard.Part
 import com.pocketstudio.model.StudioDrums
@@ -56,18 +58,55 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
     val style: StarterWizard.Style = TutoCourse.of(base.id)?.let { c ->
         val key = TutoCourse.keyOf(c.key)
         val degrees = TutoCourse.degreesOf(c.chords)?.takeIf { it.isNotEmpty() }
-        if (key == null && degrees == null) return@let base
+        val lines = courseLines(c.drums[TutoCourse.ALL_PARTS])
+        if (key == null && degrees == null && lines == null) return@let base
         val (scale, theirs) = StarterWizard.progressionOf(base, mood)
-        base.copy(melody = base.melody.copy(
-            root = key?.first ?: base.melody.root,
-            progressions = base.melody.progressions + (mood to ((key?.second ?: scale) to (degrees ?: theirs))),
-        ))
+        base.copy(
+            melody = if (key == null && degrees == null) base.melody else base.melody.copy(
+                root = key?.first ?: base.melody.root,
+                progressions = base.melody.progressions + (mood to ((key?.second ?: scale) to (degrees ?: theirs))),
+            ),
+            // The course's own drums in place of the recipe's lines (the crash is not a line: it is played once).
+            lines = lines ?: base.lines,
+        )
     } ?: base
 
     val harmony = StarterWizard.harmonyOf(style, mood)
 
-    /** The recipe's drum line of [role] (a [StarterWizard.Role] id: "kick", "open_hat", "rumble"…), null when it has none. */
-    fun line(role: String): StarterWizard.Line? = style.lines.firstOrNull { it.role.id == role }
+    /**
+     * The drum line of [role] (a [StarterWizard.Role] id: "kick", "open_hat", "rumble"…): in the
+     * part [part] when the course gives it its own drums, else the course's or the recipe's line
+     * for every part, else the first part of the course that has one; null when none.
+     */
+    fun line(role: String, part: String? = null): StarterWizard.Line? {
+        part?.let { partLines(it) }?.let { lines -> return lines.firstOrNull { it.role.id == role } }
+        style.lines.firstOrNull { it.role.id == role }?.let { return it }
+        return TutoCourse.of(style.id)?.drums.orEmpty().keys.filter { it != TutoCourse.ALL_PARTS }
+            .firstNotNullOfOrNull { k -> partLines(k)?.firstOrNull { it.role.id == role } }
+    }
+
+    /** The course's own drums of the part [label] (its key, or the part it is a second of: « Drop 2 » → « Drop »), null when none. */
+    fun partLines(label: String): List<StarterWizard.Line>? {
+        val drums = TutoCourse.of(style.id)?.drums ?: return null
+        val key = drums.keys.firstOrNull { it == label.trim() } ?: STEM.matchEntire(label.trim())?.groupValues?.get(1)?.takeIf { it in drums } ?: return null
+        return courseLines(drums[key])
+    }
+
+    /** The course's crash in the part [label] (played once at its start), null when it has none. */
+    fun crashIn(label: String): Boolean {
+        val drums = TutoCourse.of(style.id)?.drums ?: return false
+        val key = drums.keys.firstOrNull { it == label.trim() } ?: STEM.matchEntire(label.trim())?.groupValues?.get(1)?.takeIf { it in drums } ?: return false
+        return drums[key]?.keys?.any { TutoCourse.DRUM_NAMES[it] == TutoCourse.CRASH } == true
+    }
+
+    /** The drums of the part [label] the course gives it, over [steps] (null: none of its own). */
+    fun partDrums(label: String, steps: Int? = null): DrumPattern? {
+        val lines = partLines(label) ?: return null
+        val n = (steps ?: lines.maxOfOrNull { it.pattern.length } ?: 16).coerceIn(DrumPattern.MIN_STEPS, DrumPattern.MAX_STEPS)
+        val lanes = MutableList(DrumPattern.PAD_COUNT) { com.pocketstudio.model.DrumLane() }
+        for (l in lines) lanes[l.role.lane] = lanes[l.role.lane].copy(hits = StarterWizard.hits(l, n))
+        return DrumPattern(steps = n, lanes = lanes)
+    }
 
     /** The bass is the 808 ([StudioDrums.BASS_808]: trap, drill, phonk, jersey club, reggaeton): the tutorial's is an 808 track. */
     val bass808: Boolean get() = style.id in StudioDrums.BASS_808
@@ -159,6 +198,25 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
         course?.let { c -> p.id in c.lines || c.chapters.any { ch -> ch.steps.any { it.check == "notes:${p.id}" } } } == true
     }
 
+    /**
+     * The notes of a track role ([TRACK_ROLES]): the assistant's parts' ([notes]), a second pad's
+     * and a counter-melody's (the course's lines only, over 8 bars); null when the role has none.
+     */
+    fun roleNotes(role: String): NoteClip? {
+        Part.entries.firstOrNull { it.id == role }?.let { return notes(it) }
+        if (role !in EXTRA_ROLES) return null
+        val c = course ?: return null
+        return lineClip(c, role, NoteClip(steps = StarterWizard.PHRASE_STEPS))
+    }
+
+    /** The part whose kind of track and sound a role takes: the second pad the chords', the counter-melody the lead's. */
+    fun partOf(role: String): Part? = when (role) {
+        "sub" -> Part.Bass
+        PAD2 -> Part.Pad
+        COUNTER -> Part.Lead
+        else -> Part.entries.firstOrNull { it.id == role }
+    }
+
     /** The style's whole song as the assistant makes it (the drums a part takes from it: the Montée's before its silence). */
     val assistantSong: Project by lazy {
         val parts = parts.associateWith { NewTracks.sound(kind(it), style) }
@@ -238,6 +296,14 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
 
         /** The 303's role in a course's lines. */
         const val ACID = "acid"
+        /** A second pad (« Nappe ») beside the chords, and a counter-melody (« Contre-chant ») beside the lead. */
+        const val PAD2 = "pad2"
+        const val COUNTER = "counter"
+        val EXTRA_ROLES = setOf(PAD2, COUNTER)
+        /** The roles a track of the tutorial plays. */
+        val TRACK_ROLES = listOf("bass", "pad", "lead", PAD2, COUNTER)
+        /** The names of the extra roles' tracks (saved in French, translated at display). */
+        val EXTRA_NAMES = mapOf(PAD2 to "Nappe", COUNTER to StarterWizard.COUNTER_TRACK)
         /** A line this long (4 bars of 16ths) or longer is a phrase written once, then copied. */
         const val MOTIF_MIN_STEPS = 64
         /** A course's line: a phrase of at most this many steps (4 bars) when its length is not said. */
@@ -247,6 +313,12 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
         val STEM = Regex("""^(.+) \d+$""")
         /** The ends of a song, played as its Intro when the target has none of its own. */
         val ENDINGS = setOf("Fin", "Outro")
+
+        /** A course's drums of one part as lines (the crash left out), null when it gives none. */
+        fun courseLines(drums: Map<String, String>?): List<StarterWizard.Line>? = drums?.mapNotNull { (name, pattern) ->
+            val id = TutoCourse.DRUM_NAMES[name.trim()]?.takeIf { it != TutoCourse.CRASH } ?: return@mapNotNull null
+            StarterWizard.Role.entries.firstOrNull { it.id == id }?.let { StarterWizard.Line(it, pattern.trim(), "") }
+        }?.takeIf { it.isNotEmpty() }
 
         private val NOTE = Regex("""^([A-G])([b#]?)(-?\d)$""")
         private val LETTERS = mapOf('C' to 0, 'D' to 2, 'E' to 4, 'F' to 5, 'G' to 7, 'A' to 9, 'B' to 11)
@@ -343,6 +415,9 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
 
         private val cache = ConcurrentHashMap<String, TutoTarget>()
         fun of(style: String): TutoTarget? = StarterWizard.style(style)?.let { s -> cache.getOrPut(style) { TutoTarget(s) } }
+
+        /** Tests: [style]'s target made again (its course changed). */
+        internal fun forget(style: String) { cache.remove(style) }
     }
 }
 
@@ -528,7 +603,7 @@ object TutoChecks {
 
     private fun median(notes: List<Note>): Int = notes.map { it.pitch }.sorted().let { it[it.size / 2] }
 
-    /** What track [id] plays: "bass", "sub", "pad", "lead" by its name, else by its notes; null with neither. */
+    /** What track [id] plays: "bass", "sub", "pad", "lead", "pad2" (« Nappe »), "counter" (« Contre-chant ») by its name, else by its notes; null with neither. */
     fun roleOf(p: Project, id: Int): String? {
         namedRole(p, id)?.let { return it }
         val notes = notesOf(p, id).ifEmpty { return null }
@@ -545,6 +620,9 @@ object TutoChecks {
         val name = p.track(id).name.lowercase()
         return when {
             "sub" in name -> "sub"
+            // The tutorial's second pad and counter-melody (their own tracks, beside the chords and the lead).
+            "contre" in name -> TutoTarget.COUNTER
+            name.trim() == "nappe" -> TutoTarget.PAD2
             listOf("bass", "basse", "808").any { it in name } -> "bass"
             listOf("accord", "nappe", "pad", "chord").any { it in name } -> "pad"
             listOf("mélodie", "melod", "lead", "hoover").any { it in name } -> "lead"
@@ -571,6 +649,9 @@ object TutoChecks {
         return l.equals(wanted, ignoreCase = true) || l.equals(Scene.shownLabel(wanted), ignoreCase = true) ||
             (wanted == "Fin" && l.equals("Outro", ignoreCase = true))
     }
+
+    /** The scene named [label], empty or not (a part whose pads are all to write), -1 when none. */
+    private fun namedScene(p: Project, label: String): Int = sceneLabelled(p, label).takeIf { it >= 0 } ?: p.allScenes.indexOfFirst { labelIs(it.label, label) }
 
     private fun sceneLabelled(p: Project, label: String): Int = p.allScenes.indexOfFirst { labelIs(it.label, label) && !it.isEmpty }
 
@@ -634,8 +715,9 @@ object TutoChecks {
             c == "key" -> p.harmony.root == target.harmony.root && p.harmony.scale == target.harmony.scale
             // The style's swing (house, garage, boom bap, lo-fi), within 5 points of it.
             c == "swing" -> target.style.swing > 0.0 && kotlin.math.abs(p.swing - target.style.swing) <= minOf(SWING_TOLERANCE, target.style.swing / 2)
-            c.startsWith("lane:") -> target.line(arg.substringBefore(':'))?.let { line ->
-                p.allScenes.any { laneMatches(it.drums, lanesOf(arg.substringBefore(':'), target), line, p.stepsPerBar, rolls = c.endsWith(":rolls")) }
+            // With a [TutoStep.part]: the course's drums of that part, in that part.
+            c.startsWith("lane:") -> target.line(arg, partOf(step))?.let { line ->
+                scenesOf(p, partOf(step)).any { laneMatches(it.drums, lanesOf(arg, target), line, p.stepsPerBar, rolls = c.endsWith(":rolls")) }
             } ?: false
             // The 4 hats on the beats softer than those between them (one hit made « Doux » is not the groove).
             c == "velocity:hat" -> p.allScenes.any { hatsSwing(it.drums, p.stepsPerBar, target) }
@@ -644,8 +726,8 @@ object TutoChecks {
             // The 303's line: every step of it, its note, its accent and its slide.
             c == "notes:acid" -> target.acid?.let { a -> p.allScenes.any { acidMatches(it.acid, a) } } ?: false
             // Every dotted note written (not 3 of 12: the testers' bass and chords ticked with the screen's first notes).
-            c.startsWith("notes:") -> Part.entries.firstOrNull { it.id == arg }?.let { part ->
-                trackFor(p, arg)?.let { id -> notesMatch(notesOf(p, id), target.notes(part).notes) }
+            c.startsWith("notes:") -> target.roleNotes(arg)?.let { wanted ->
+                trackFor(p, arg)?.let { id -> notesMatch(notesOf(p, id), wanted.notes) }
             } ?: false
             c == "track:sub" -> trackFor(p, "bass")?.let { bass ->
                 val wanted = subOf(notesOf(p, bass))
@@ -701,6 +783,7 @@ object TutoChecks {
                 hits.any { it.repeats >= FILL_REPEATS } || (!buildsIn(step, target) && hits.size >= FILL_REPEATS)
             } ?: false
             // The crash on the first beat of the part (or of one of the parts) the step names: a hit once, at its entry.
+            c == "crash:once" -> partsOf(step).let { parts -> parts.any { sceneLabelled(p, it) >= 0 } && parts.filter { sceneLabelled(p, it) >= 0 }.all { crashOnceDone(p, it) } }
             c == "crash" -> p.allScenes.any { s -> partsOf(step).any { labelIs(s.label, it) } && s.drums.lanes.getOrNull(CRASH_LANE)?.hits?.containsKey(0) == true }
             c == "gap" -> sceneLabelled(p, partsOf(step).first()).takeIf { it >= 0 }?.let { i ->
                 val d = sceneAt(p, i).drums
@@ -734,8 +817,15 @@ object TutoChecks {
      * fill, the gap and the curve, the Drop and the Drop 2 for the crash.
      */
     fun partsOf(step: TutoStep): List<String> = step.part.split(',').map { it.trim() }.filter { it.isNotEmpty() }.ifEmpty {
-        if (step.check == "crash") listOf("Drop", "Drop 2") else listOf("Montée")
+        if (step.check.startsWith("crash")) listOf("Drop", "Drop 2") else listOf("Montée")
     }
+
+    /** The part a drum step works in ([TutoStep.part], its first), null for one of the whole loop. */
+    private fun partOf(step: TutoStep): String? = step.part.split(',').map { it.trim() }.firstOrNull { it.isNotEmpty() }
+
+    /** The scenes of [p] named [label] as they are now; every scene when [label] is null. */
+    private fun scenesOf(p: Project, label: String?): List<Scene> =
+        p.allScenes.indices.filter { label == null || labelIs(p.allScenes[it].label, label) }.map { sceneAt(p, it) }
 
     /** The pad a fill rolls on: its [TutoStep.target] when it is a drum role, else the snare. */
     fun fillRole(step: TutoStep): String = step.target.takeIf { it in DRUM_ROLES } ?: "snare"
@@ -908,13 +998,11 @@ object TutoChecks {
 
     /** Where the part [label] plays in [p]'s song: (first bar, bars) of each time. */
     private fun spansOf(p: Project, label: String): List<Pair<Int, Int>> {
-        val per = p.stepsPerBar.coerceAtLeast(1)
         var bar = 0
-        return p.song.mapNotNull { part ->
-            val bars = p.partSteps(part) / per
+        return runs(p).mapNotNull { r ->
             val at = bar
-            bar += bars
-            (at to bars).takeIf { labelIs(p.allScenes.getOrNull(part.scene)?.label.orEmpty(), label) }
+            bar += r.bars
+            (at to r.bars).takeIf { labelIs(p.allScenes.getOrNull(r.scene)?.label.orEmpty(), label) }
         }
     }
 
@@ -925,11 +1013,7 @@ object TutoChecks {
     /** Each part of the song as long as [spec] advises for its label, the others in phrases of 8 bars. */
     private fun phrasesDone(p: Project, spec: String): Boolean {
         if (p.song.size < 3) return false
-        val per = p.stepsPerBar.coerceAtLeast(1)
-        return p.song.zip(specFor(p, spec)).all { (part, e) ->
-            val b = p.partSteps(part) / per
-            e?.let { b == it.second } ?: (b % 8 == 0)
-        }
+        return runs(p).zip(specFor(p, spec)).all { (r, e) -> e?.let { r.bars == it.second } ?: (r.bars % 8 == 0) }
     }
 
     /**
@@ -939,12 +1023,12 @@ object TutoChecks {
     private fun standsFor(p: Project, label: String, wanted: String): Boolean =
         labelIs(label, wanted) || (wanted in TutoTarget.ENDINGS && labelIs(label, "Intro") && TutoTarget.ENDINGS.none { sceneLabelled(p, it) >= 0 })
 
-    /** For each part of [p]'s song, the entry of [spec] it stands for, in order (null: a part the course does not name). */
+    /** For each part of [p]'s song ([runs]), the entry of [spec] it stands for, in order (null: a part the course does not name). */
     private fun specFor(p: Project, spec: String): List<Pair<String, Int>?> {
         val wanted = barsOfList(spec)
         var k = 0
-        return p.song.map { part ->
-            val label = p.allScenes.getOrNull(part.scene)?.label.orEmpty()
+        return runs(p).map { r ->
+            val label = p.allScenes.getOrNull(r.scene)?.label.orEmpty()
             if (k < wanted.size && standsFor(p, label, wanted[k].first)) wanted[k++]
             else wanted.firstOrNull { labelIs(label, it.first) } ?: wanted.firstOrNull { standsFor(p, label, it.first) }
         }
@@ -994,7 +1078,7 @@ object TutoChecks {
                 }))
             }
             c.startsWith("lane:") -> {
-                val line = target.line(arg) ?: return null
+                val line = target.line(arg, partOf(step)) ?: return null
                 val wide = withSteps(p, line.pattern.length)
                 val lane = laneOf(arg)
                 wide.copy(drums = wide.drums.copy(lanes = wide.drums.lanes.mapIndexed { i, l -> if (i == lane) l.copy(hits = StarterWizard.hits(line, wide.drums.steps)) else l }))
@@ -1015,9 +1099,9 @@ object TutoChecks {
                 p.copy(acid = mine.copy(length = maxOf(mine.length, wantedLength(wanted, a)), steps = mine.steps.mapIndexed { i, st -> wanted[i] ?: st }))
             }
             c.startsWith("notes:") -> {
-                val part = Part.entries.firstOrNull { it.id == arg } ?: return null
-                val (q, id) = ensureTrack(p, part, target) ?: return null
-                q.withTrack(q.track(id).copy(notes = target.notes(part)))
+                val notes = target.roleNotes(arg) ?: return null
+                val (q, id) = ensureTrack(p, arg, target) ?: return null
+                q.withTrack(q.track(id).copy(notes = notes))
             }
             c == "track:sub" -> withSub(p, target) ?: return null
             c.startsWith("insert:") -> {
@@ -1070,6 +1154,7 @@ object TutoChecks {
                     }
                 }))
             } ?: return null
+            c == "crash:once" -> partsOf(step).fold(p) { q, l -> crashOnce(q, l) ?: q }
             c == "crash" -> inScene(p, partsOf(step).first { sceneLabelled(p, it) >= 0 || it == partsOf(step).last() }) { q ->
                 q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { i, l -> if (i == CRASH_LANE) l.copy(hits = l.hits + (0 to Hit(1f))) else l }))
             } ?: return null
@@ -1216,7 +1301,7 @@ object TutoChecks {
     /** The whole line [step] asks for (its track's, the Drop 2's moved bass), null for a step with none. */
     private fun lineOf(step: TutoStep, target: TutoTarget): List<Note>? = when {
         step.check == "notes:acid" -> target.acid?.let(::acidNotes)
-        step.check.startsWith("notes:") -> Part.entries.firstOrNull { it.id == step.check.removePrefix("notes:") }?.let { target.notes(it).notes }
+        step.check.startsWith("notes:") -> target.roleNotes(step.check.removePrefix("notes:"))?.notes
         writesBass(step) -> movedBass(step, target)
         else -> null
     }
@@ -1232,8 +1317,8 @@ object TutoChecks {
     }
 
     /** [p] with track [part] (an existing one, else a new one: [partTrack]), and its id. */
-    private fun ensureTrack(p: Project, part: Part, target: TutoTarget): Pair<Project, Int>? =
-        trackFor(p, part.id)?.let { p to it } ?: partTrack(p, part.id, target)
+    private fun ensureTrack(p: Project, role: String, target: TutoTarget): Pair<Project, Int>? =
+        trackFor(p, role)?.let { p to it } ?: partTrack(p, role, target)
 
     /**
      * The first track still as a new project has it (its default name, no note anywhere): the
@@ -1247,18 +1332,22 @@ object TutoChecks {
      * it when it is still blank); null when no track is free.
      */
     fun partTrack(p: Project, role: String, target: TutoTarget): Pair<Project, Int>? {
-        val part = if (role == "sub") Part.Bass else Part.entries.firstOrNull { it.id == role } ?: return null
-        val kind = if (role == "sub") target.kind(part) else target.trackKind(part)
+        val part = target.partOf(role) ?: return null
+        val kind = if (role == "sub" || role in TutoTarget.EXTRA_ROLES) target.kind(part) else target.trackKind(part)
         val added = NewTracks.add(p, kind, target.style) ?: return null
         val new = added.tracks.first { n -> p.tracks.none { it.id == n.id } }
-        val steps = if (role == "sub") trackFor(p, "bass")?.let { p.track(it).notes.steps } ?: 16 else target.notes(part).steps
+        val steps = if (role == "sub") trackFor(p, "bass")?.let { p.track(it).notes.steps } ?: 16 else (target.roleNotes(role) ?: target.notes(part)).steps
         // The 808 track: the style's 808 (its length, its dirt, its click, its slide), as the assistant's pad plays it.
         val voice = if (kind != TrackKind.Bass808) new.voice808 else {
             val theirs = StudioDrums.voice808(target.style, target.harmony)
             com.pocketstudio.model.PadVoice(com.pocketstudio.model.PadVoice.BASS_808, theirs.params.filterKeys { it in com.pocketstudio.model.PadVoice.TRACK_808_PARAMS })
                 .let { v -> if ((v.param(com.pocketstudio.model.PadVoice.GLIDE) ?: 0f) > 0f) v else v.with(com.pocketstudio.model.PadVoice.GLIDE, NewTracks.GLIDE_808) }.sanitized()
         }
-        val made = new.copy(name = if (role == "sub") "Sub" else new.name, notes = new.notes.withSteps(steps).copy(notes = emptyList()), voice808 = voice)
+        val named = new.copy(name = if (role == "sub") "Sub" else TutoTarget.EXTRA_NAMES[role] ?: new.name, notes = new.notes.withSteps(steps).copy(notes = emptyList()), voice808 = voice)
+        // The second pad and the counter-melody: the style's own sounds for them (liquid's pad layer, its counter), else a pad and the lead's.
+        val made = extraSound(role, target)?.let { (synth, plaits) ->
+            if (plaits != null) named.copy(engine = 1, plaits = plaits) else named.copy(engine = 0, synth = synth ?: named.synth)
+        } ?: named
         // The bass's own effect, as the assistant's song has it (jump up: « Growl », its distortion and its
         // three-band squash; measured: without it the growl synth alone is dull, 0.9 % of its energy over 2 kHz, 6.9 % with it).
         val fx = target.style.effects.firstOrNull { it.target == role && it.preset.isNotEmpty() }?.let { FxPresets.byId(it.preset) }
@@ -1269,6 +1358,21 @@ object TutoChecks {
         val first = p.withTrack(made.copy(id = 0, color = p.track(0).color))
         return withChannels(first, listOf(InstrumentTrack.mixerChannel(0))) { level } to 0
     }
+
+    /** The library sound of an extra role's track (synth, or Plaits), null: the kind's own. */
+    private fun extraSound(role: String, target: TutoTarget): Pair<SynthPatch?, com.pocketstudio.model.PlaitsPatch?>? {
+        val name = when (role) {
+            TutoTarget.PAD2 -> target.style.melody.padLayer ?: PAD2_SOUND
+            TutoTarget.COUNTER -> target.style.melody.counter ?: return null
+            else -> return null
+        }
+        com.pocketstudio.model.SoundLibrary.SYNTH.firstOrNull { it.name == name }?.let { return it.sound to null }
+        com.pocketstudio.model.SoundLibrary.PLAITS.firstOrNull { it.name == name }?.let { return null to it.sound }
+        return null
+    }
+
+    /** The second pad's sound when the style names none. */
+    private const val PAD2_SOUND = "Nappe"
 
     private fun withChannels(p: Project, chans: List<Int>, f: (Channel) -> Channel): Project =
         p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.mapIndexed { i, ch -> if (i in chans) f(ch) else ch }))
@@ -1329,8 +1433,11 @@ object TutoChecks {
         var q = p.switchScene(groove).copySceneTo(dest).renameScene(dest, label).switchScene(dest)
         val keep = step.keep.split(',').map { it.trim() }.toSet()
         val all = "*" in keep
-        // The assistant's drums (the Montée's hats still on its last beat: the gap step erases them).
-        val from = step.lanesFrom.takeIf { it.isNotEmpty() }?.let { target.sceneOf(it) }?.takeIf { it >= 0 }?.let { target.assistantSong.allScenes[it].drums }
+        // The course's own drums of that part, else the assistant's (the Montée's hats still on its last beat: the gap step erases them).
+        val fromLabel = step.lanesFrom.ifEmpty { label.takeIf { target.partLines(it) != null }.orEmpty() }
+        val from = fromLabel.takeIf { it.isNotEmpty() }?.let { l ->
+            target.partDrums(l) ?: target.sceneOf(l).takeIf { it >= 0 }?.let { target.assistantSong.allScenes[it].drums }
+        }
         if (from != null) q = withSteps(q, from.steps)
         val steps = q.drums.steps
         q = q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { i, l ->
@@ -1399,7 +1506,11 @@ object TutoChecks {
         val moved = target.movedStep
         val build = target.buildStep
         // The course's chords and lead on the assistant's tracks that play them.
-        val own = listOf(Part.Pad, Part.Lead).filter { it.id in lines }.mapNotNull { part -> target.songTrack(part)?.let { it to target.notes(part).notes } }.toMap()
+        val own = listOf(Part.Pad, Part.Lead).filter { it.id in lines }.mapNotNull { part -> target.songTrack(part)?.let { it to target.notes(part).notes } }.toMap() +
+            // The second pad, the counter-melody: on the assistant's tracks of that name when it has them.
+            TutoTarget.EXTRA_ROLES.filter { it in lines }.mapNotNull { role ->
+                song.instrumentTracks.firstOrNull { namedRole(song, it.id) == role }?.let { t -> target.roleNotes(role)?.let { t.id to it.notes } }
+            }.toMap()
         p.allScenes.forEachIndexed { i, sc ->
             if (sc.isEmpty) return@forEachIndexed
             var q = p.switchScene(i)
@@ -1426,6 +1537,10 @@ object TutoChecks {
                     }
                 }
             }
+            // The course's own drums of this part (and of its variants: « Drop 2 » plays the Drop's).
+            target.partDrums(sc.label, q.drums.steps)?.let { d ->
+                q = q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { k, l -> l.copy(hits = d.lanes[k].hits) }))
+            }
             own.forEach { (id, notes) ->
                 val t = q.track(id)
                 if (t.notes.notes.isNotEmpty()) {
@@ -1450,7 +1565,72 @@ object TutoChecks {
             }
             p = q.switchScene(shown)
         }
+        // The course's crashes: once at their part's start, never looped.
+        p.allScenes.map { it.label }.filter { it.isNotBlank() && target.crashIn(it) }.distinct().forEach { label -> crashOnce(p, label)?.let { p = it } }
         return p
+    }
+
+    /**
+     * [p] with a crash played once at each start of the part [label] in its song, never looped
+     * (the assistant's way, [DrumArrangement]: the part's first bar plays a one-bar « Crash » scene,
+     * its loop's first bar with the cymbal on its first cell, then the part goes on where it was);
+     * null when the part is not in the song, or when nothing changes.
+     */
+    fun crashOnce(p: Project, label: String): Project? {
+        val q = p.sanitized()
+        val i = sceneLabelled(q, label).takeIf { it >= 0 } ?: return null
+        if (q.song.none { it.scene == i }) return null
+        val spb = q.stepsPerBar.coerceAtLeast(1)
+        val loop = sceneAt(q, i).drums
+        val lanes = loop.lanes.mapIndexed { k, l ->
+            val bar = l.hits.filterKeys { it < spb }
+            l.copy(hits = if (k == CRASH_LANE) bar + (0 to Hit(StarterWizard.CRASH_VELOCITY)) else bar, length = 0)
+        }
+        val crash = DrumPattern(steps = spb, lanes = lanes)
+        val scenes = q.allScenes.toMutableList()
+        val at = scenes.indexOfFirst { it.label == DrumArrangement.CRASH_LABEL && it.drums == crash }.takeIf { it >= 0 } ?: run {
+            if (scenes.size >= Scene.MAX) return null
+            scenes += Scene(drums = crash, label = DrumArrangement.CRASH_LABEL)
+            scenes.size - 1
+        }
+        val keys = q.partKeys
+        val song = ArrayList<SongPart>()
+        q.song.forEachIndexed { k, part ->
+            val starts = part.scene == i && !(k > 0 && q.song[k - 1].scene == i && part.from.isNotEmpty())
+            if (!starts || SongPart.DRUMS in part.play) { song += part; return@forEachIndexed }
+            val bars = q.partSteps(part) / spb
+            song += part.copy(repeats = 1, bars = 1, play = part.play + (SongPart.DRUMS to at))
+            if (bars > 1) song += part.copy(repeats = 1, bars = bars - 1, from = keys.associateWith { (part.fromBars(it) + 1).coerceAtMost(SongPart.MAX_FROM) })
+        }
+        if (song.size > SongPart.MAX_PARTS) return null
+        return q.copy(scenes = scenes, song = song).sanitized().takeIf { it != q }
+    }
+
+    /** Each start of the part [label] in [p]'s song plays the crash once (a one-bar scene with the cymbal on its first cell). */
+    private fun crashOnceDone(p: Project, label: String): Boolean {
+        val i = sceneLabelled(p, label).takeIf { it >= 0 } ?: return false
+        val starts = runs(p).filter { it.scene == i }.ifEmpty { return false }
+        return starts.all { r ->
+            p.song[r.first].play[SongPart.DRUMS]?.let { j -> p.allScenes.getOrNull(j)?.drums?.lanes?.getOrNull(CRASH_LANE)?.hits?.containsKey(0) } == true
+        }
+    }
+
+    /**
+     * A part of the song as the user laid it out: [scene] played from song part [first] for [bars]
+     * bars, the parts that go on where the one before stopped (its crash bar, then the rest) one with it.
+     */
+    class Run(val scene: Int, val first: Int, val last: Int, val bars: Int)
+
+    fun runs(p: Project): List<Run> {
+        val per = p.stepsPerBar.coerceAtLeast(1)
+        val out = ArrayList<Run>()
+        p.song.forEachIndexed { k, part ->
+            val bars = p.partSteps(part) / per
+            val prev = out.lastOrNull()
+            if (prev != null && prev.last == k - 1 && p.song[k - 1].scene == part.scene && part.from.isNotEmpty()) out[out.size - 1] = Run(prev.scene, prev.first, k, prev.bars + bars)
+            else out += Run(part.scene, k, k, bars)
+        }
+        return out
     }
 
     /** The silence a built part ends on: its gap step's, else a beat. */
@@ -1506,6 +1686,24 @@ object TutoChecks {
         return before to top
     }
 
+    /**
+     * [example] played with [kit]'s drum sounds (the user's project: the style's pack once it is on
+     * the phone, else the built-in kit), so that « Écouter l'exemple » sounds as what the user
+     * builds: each pad's own sound, the studio voices, the kit, the pads' strips.
+     */
+    fun withKitOf(example: Project, kit: Project): Project {
+        val strips = setOf(0) + (0 until DrumPattern.PAD_COUNT).map { Mixer.padChannel(it) }
+        fun lanes(d: DrumPattern) = d.copy(lanes = d.lanes.mapIndexed { i, l -> l.copy(sample = kit.drums.lanes.getOrNull(i)?.sample) })
+        return example.copy(
+            kitVersion = kit.kitVersion, padVoices = kit.padVoices, drums = lanes(example.drums),
+            scenes = example.scenes.map { it.copy(drums = lanes(it.drums)) },
+            mixer = example.mixer.copy(channels = example.mixer.channels.mapIndexed { i, c ->
+                val mine = kit.mixer.channels.getOrNull(i)
+                if (i in strips && mine != null) c.copy(volume = mine.volume, pan = mine.pan, inserts = mine.inserts) else c
+            }),
+        ).sanitized()
+    }
+
     /** The target's part named [label] alone, in a loop. */
     private fun part(target: TutoTarget, label: String): Project? {
         val i = target.sceneOf(label).takeIf { it >= 0 } ?: return null
@@ -1523,7 +1721,7 @@ object TutoChecks {
         val lanes = blank.drums.lanes.map { it.copy(hits = emptyMap()) }.toMutableList()
         for (role in DRUM_ROLES) if (role in bricks) target.line(role)?.let { lanes[laneOf(role)] = lanes[laneOf(role)].copy(hits = StarterWizard.hits(it, steps)) }
         var p = blank.copy(tempoBpm = target.style.bpm, harmony = target.harmony, swing = target.song.swing, drums = DrumPattern(steps = steps, lanes = lanes))
-        for (part in listOf(Part.Bass, Part.Pad, Part.Lead)) if (part.id in bricks) p = show(TutoStep("x", "", check = "notes:${part.id}"), p, target) ?: p
+        for (role in TutoTarget.TRACK_ROLES) if (role in bricks) p = show(TutoStep("x", "", check = "notes:$role"), p, target) ?: p
         if (TutoTarget.ACID in bricks) target.acid?.let { a -> p = p.copy(acid = a) }
         return p.sanitized()
     }
@@ -1626,7 +1824,7 @@ object TutoChecks {
         val c = step.check
         val arg = argOf(c)
         return when {
-            c.startsWith("lane:") -> target.line(arg)?.let { line ->
+            c.startsWith("lane:") -> partOf(step)?.let { l -> namedScene(p, l).takeIf { it >= 0 && it != p.scene }?.let { TutoNeed.Scene(l) } } ?: target.line(arg, partOf(step))?.let { line ->
                 barsOf(p, line).takeIf { p.drums.steps < line.pattern.length.coerceAtMost(4 * p.stepsPerBar) }?.let { TutoNeed.Bars(it) }
             }
             // Its track first; its first 4 bars written: « Copier sur les mesures suivantes ».
@@ -1691,12 +1889,18 @@ object TutoChecks {
         is TutoNeed.Part -> makePart(p, step, target)?.let { it to null }
         is TutoNeed.Name -> p.renameScene(grooveOf(p), need.label) to null
         is TutoNeed.Lengths -> lengths(p, step.song)?.let { it to null }
-        is TutoNeed.Scene -> sceneLabelled(p, need.label).takeIf { it >= 0 }?.let { p.switchScene(it) to null }
+        is TutoNeed.Scene -> namedScene(p, need.label).takeIf { it >= 0 }?.let { p.switchScene(it) to null }
     }
 
     /** Each part of the song given the bars [spec] names for its label (the order kept); null when nothing changes. */
     private fun lengths(p: Project, spec: String): Project? {
-        val song = p.song.zip(specFor(p, spec)).map { (part, e) -> part.copy(repeats = 1, bars = e?.second ?: 8) }
+        val song = runs(p).zip(specFor(p, spec)).flatMap { (r, e) ->
+            val bars = e?.second ?: 8
+            val parts = p.song.subList(r.first, r.last + 1)
+            // A part split for its crash keeps its first bar, the rest takes the others.
+            if (parts.size == 2 && bars > 1) listOf(parts[0].copy(repeats = 1, bars = 1), parts[1].copy(repeats = 1, bars = bars - 1))
+            else listOf(parts[0].copy(repeats = 1, bars = bars))
+        }
         return p.copy(song = song).takeIf { it.song != p.song }
     }
 
@@ -1768,7 +1972,7 @@ object TutoChecks {
             }
             (c.startsWith("notes:") && c != "notes:acid") || c == "track:sub" -> {
                 val role = if (c == "track:sub") "sub" else arg
-                val (start, id) = (if (c == "track:sub") partTrack(p, "sub", target) else ensureTrack(p, Part.entries.first { it.id == arg }, target)) ?: return null
+                val (start, id) = (if (c == "track:sub") partTrack(p, "sub", target) else ensureTrack(p, arg, target)) ?: return null
                 val endTrack = (if (c == "track:sub") end.instrumentTracks.firstOrNull { roleOf(end, it.id) == "sub" }?.id else trackFor(end, role))?.let { end.track(it) }
                 // Testers (lot « tuto 5 »: the show wrote other bars than the dotted ones): the notes dotted now, no more.
                 val wanted = if (c == "track:sub") endTrack?.notes?.notes.orEmpty() else wantedNotes(step, p, target).orEmpty()
@@ -1803,7 +2007,7 @@ object TutoChecks {
     fun hint(step: TutoStep, target: TutoTarget, steps: Int): Pair<Int, Set<Int>>? {
         if (!step.check.startsWith("lane:")) return null
         val role = argOf(step.check)
-        val line = target.line(role) ?: return null
+        val line = target.line(role, partOf(step)) ?: return null
         return laneOf(role) to StarterWizard.hits(line, steps).keys
     }
 

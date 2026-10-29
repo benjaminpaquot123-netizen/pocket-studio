@@ -240,16 +240,52 @@ class TutoActions(
     val leaveEnd: () -> Unit = {},
 )
 
+/**
+ * Socle 2 (owner: every tutorial on its style's box of sounds): at the tutorial's start, when the
+ * style's pack is not on the phone, « Télécharger le kit <style> (taille) » in one touch, or
+ * « Plus tard » to go on with the built-in sounds. [progress]: the download under way (0..1),
+ * [error]: why it did not come (the built-in sounds stay).
+ */
+@Composable
+fun TutoKitCard(style: String, size: String, progress: Float?, error: String?, download: () -> Unit, later: () -> Unit, modifier: Modifier = Modifier) {
+    val shape = RoundedCornerShape(14.dp)
+    Column(
+        modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp).clip(shape).background(panelColor()).border(1.5.dp, Neon.Amber, shape)
+            .padding(12.dp).testTag("tuto_kit"),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        Text(tr("Le kit %s", style), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+        Text(
+            tr("Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés."),
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+        )
+        error?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Red, modifier = Modifier.testTag("tuto_kit_error")) }
+        if (progress != null) {
+            Text(tr("Téléchargement du kit… %d %%", (progress * 100).toInt()), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("tuto_kit_progress"))
+            LinearProgressIndicator(progress = { progress }, color = Neon.Amber, trackColor = Neon.SurfaceHigh, modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)))
+        } else {
+            Button(
+                onClick = download, colors = ButtonDefaults.buttonColors(containerColor = Neon.Amber, contentColor = Neon.Background),
+                modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_kit_download"),
+            ) { Text(tr("Télécharger le kit %1\$s (%2\$s)", style, size), textAlign = TextAlign.Center) }
+        }
+        TextButton(onClick = later, modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp).testTag("tuto_kit_later")) { Text(tr("Plus tard"), color = Neon.TextSecondary) }
+    }
+}
+
 /** « Recommencer le tuto ». */
 fun restartTutoLabel(): String = tr("Recommencer le tuto")
 
 /** The words of a need's button, as the step's text names it. */
-fun needLabel(need: TutoNeed): String = when (need) {
+fun needLabel(need: TutoNeed, style: String? = null): String = when (need) {
     is TutoNeed.Bars -> tr("Passer à %d mesures", need.bars)
     is TutoNeed.Track -> when (need.role) {
-        "bass" -> tr("Créer la piste Basse")
+        // Trap, drill…: the bass is an 808 track (« + Piste › Basse 808 »).
+        "bass" -> if (style?.let { com.pocketstudio.model.tuto.TutoTarget.of(it)?.bass808 } == true) tr("Créer la piste 808") else tr("Créer la piste Basse")
         "pad" -> tr("Créer la piste Accords")
         "lead" -> tr("Créer la piste Mélodie")
+        com.pocketstudio.model.tuto.TutoTarget.PAD2 -> tr("Créer la piste Nappe")
+        com.pocketstudio.model.tuto.TutoTarget.COUNTER -> tr("Créer la piste Contre-chant")
         // Lot « tuto 4 »: the Sub is the bass an octave down, written by the same touch.
         else -> tr("Copier la basse une octave plus bas")
     }
@@ -457,7 +493,7 @@ private fun FoldedLine(ui: TutoUi, done: Boolean, actions: TutoActions) {
                 .testTag("tuto_need_folded"),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(needLabel(ui.need), color = Neon.Amber, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 1,
+            Text(needLabel(ui.need, ui.progress.style), color = Neon.Amber, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 1,
                 overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Amber, modifier = Modifier.size(18.dp))
         }
@@ -519,7 +555,7 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
         }
         Primary.NEED -> Button(onClick = actions.need, enabled = ui.demo == null, colors = filled, modifier = big.testTag("tuto_need")) {
             Icon(Icons.Filled.AddCircle, contentDescription = null, modifier = Modifier.size(20.dp))
-            Text("  " + needLabel(ui.need!!), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+            Text("  " + needLabel(ui.need!!, ui.progress.style), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
         }
         Primary.DO -> Button(onClick = actions.doIt, enabled = ui.demo == null, colors = filled, modifier = big.testTag("tuto_do")) {
             Icon(Icons.Filled.TouchApp, contentDescription = null, modifier = Modifier.size(20.dp))

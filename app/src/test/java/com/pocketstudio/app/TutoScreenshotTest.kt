@@ -76,6 +76,17 @@ class TutoScreenshotTest {
     @Test
     fun chooser() = shoot("chooser") { TutoChooser(start = { _, _ -> }, close = {}) }
 
+    /** Socle 2: the style's kit to download at the tutorial's start, over its first step. */
+    @Test
+    fun kitOffer() = shoot("kit_offer") {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+            androidx.compose.foundation.layout.Column {
+                com.pocketstudio.app.tuto.TutoKitCard("Jump up DnB", "2 Mo", progress = null, error = null, download = {}, later = {})
+                TutoPanel(ui(TutoLevel.Facile, "ref"), true, TutoActions(), map = tutoMap("jump_up"))
+            }
+        }
+    }
+
     @Test
     fun stepFacile() = shoot("step_facile") { Panel(ui(TutoLevel.Facile, "kick_do")) }
 

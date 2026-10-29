@@ -20,7 +20,7 @@ object TutoValidation {
     )
 
     /** The roles a step can name: the drum roles, the tracks' and the 303. */
-    val ROLES: Set<String> = TutoChecks.DRUM_ROLES.toSet() + setOf("bass", "sub", "pad", "lead", "acid")
+    val ROLES: Set<String> = TutoChecks.DRUM_ROLES.toSet() + setOf("bass", "sub", "pad", "lead", "acid") + TutoTarget.EXTRA_ROLES
 
     /** What "keep" can hold besides [ROLES]: every brick ("*"), every pad ("drums"), the pads no line names ("perc"). */
     private val KEEP_EXTRA = setOf("*", "drums", "perc")
@@ -28,7 +28,7 @@ object TutoValidation {
     private val KNOBS = setOf("CUTOFF", "RESONANCE", "OSC2_DETUNE", "GLIDE", "A_ATTACK", "UNISON_DETUNE")
 
     /** The checks with no argument. */
-    private val PLAIN = setOf("manual", "listen", "tempo", "key", "swing", "velocity:hat", "track:sub", "automation", "master", "shared", "song:order", "song:phrases", "fill", "crash", "gap")
+    private val PLAIN = setOf("manual", "listen", "tempo", "key", "swing", "velocity:hat", "track:sub", "automation", "master", "shared", "song:order", "song:phrases", "fill", "crash", "crash:once", "gap")
 
     fun problems(course: TutoCourse, file: String): List<String> {
         val out = ArrayList<String>()
@@ -51,6 +51,7 @@ object TutoValidation {
         }
         course.lineBars.forEach { (role, bars) -> if (bars !in listOf(1, 2, 4, 8) || role !in course.lines) bad("lineBars.$role: $bars (1, 2, 4 or 8, for a line written)") }
         course.follow.forEach { if (it !in course.lines) bad("follow: « $it » has no line") }
+        drumsProblems(course, target).forEach(::bad)
         val steps = course.chapters.flatMap { it.steps }
         if (course.chapters.isEmpty()) bad("no chapter")
         (course.chapters.map { it.id }.groupBy { it } + steps.map { it.id }.groupBy { it }).filterValues { it.size > 1 }.keys.forEach { bad("id « $it » twice") }
@@ -85,6 +86,7 @@ object TutoValidation {
             if (s.demo.isNotEmpty() && (s.demo != "kick" || TutoTarget.kitOf(target.style) == null)) bad("$id: demo « ${s.demo} » (« kick », for a style starting on a kit of TutoTarget.KITS)")
             if (s.part.isNotEmpty()) TutoChecks.partsOf(s).forEach { if (!madeOrEnding(it)) bad("$id: part « $it » is made by no step") }
             if (s.length < 0 || s.length > 64) bad("$id: length ${s.length}")
+            if (s.check == "crash:once" && steps.indexOfFirst { it.check == "song:order" }.let { it < 0 || it > steps.indexOf(s) }) bad("$id: crash:once before the song is laid out (a song:order step first)")
             listenProblem(s.listen, target)?.let { bad("$id: listen « ${s.listen} »: $it") }
             if (s.listening && s.listen.isEmpty()) bad("$id: a listening step with nothing to listen to")
             if (s.hearMine && !s.listening) bad("$id: hearMine on a step that is not a listening one")
@@ -104,6 +106,35 @@ object TutoValidation {
 
     private val LEVELS = setOf("f", "p", "fp")
 
+    /** What is wrong in [course]'s own drums: unknown part or role, a pattern of the wrong length or cells, two roles on one pad. */
+    private fun drumsProblems(course: TutoCourse, target: TutoTarget): List<String> {
+        val out = ArrayList<String>()
+        val made = course.chapters.flatMap { it.steps }.mapNotNull { s ->
+            when {
+                s.check.startsWith("part:") -> s.check.removePrefix("part:").substringBeforeLast(':')
+                s.check.startsWith("label:") -> s.check.removePrefix("label:")
+                else -> null
+            }
+        }.toSet()
+        course.drums.forEach { (part, roles) ->
+            if (part != TutoCourse.ALL_PARTS && part !in made && target.sceneOf(part) < 0) out += "drums: part « $part » is made by no step and is not in the style's song"
+            if (roles.isEmpty()) out += "drums.$part: no role"
+            val lanes = HashMap<Int, String>()
+            roles.forEach { (name, pattern) ->
+                val id = TutoCourse.DRUM_NAMES[name.trim()]
+                if (id == null) out += "drums.$part: role « $name » (one of ${TutoCourse.DRUM_NAMES.keys})"
+                val p = pattern.trim()
+                if (p.length !in setOf(16, 32, 64)) out += "drums.$part.$name: ${p.length} cells (16, 32 or 64)"
+                p.filter { it !in TutoCourse.DRUM_CELLS }.toSet().forEach { out += "drums.$part.$name: cell « $it » (X x o 2 3 4 .)" }
+                if (p.none { it != '.' }) out += "drums.$part.$name: no hit"
+                if (id == TutoCourse.CRASH && part == TutoCourse.ALL_PARTS) out += "drums.*.crash: a crash is played once at a part's start, give it a part"
+                val lane = if (id == TutoCourse.CRASH) TutoChecks.CRASH_LANE else StarterWizard.Role.entries.firstOrNull { it.id == id }?.lane
+                if (lane != null) lanes.put(lane, name)?.let { other -> out += "drums.$part: « $other » and « $name » on the same pad" }
+            }
+        }
+        return out
+    }
+
     /** What is wrong with [s]'s check, null when it is one the detectors know. */
     private fun checkProblem(s: TutoStep, target: TutoTarget, made: Set<String>): String? {
         val c = s.check
@@ -112,20 +143,21 @@ object TutoValidation {
             c in PLAIN -> when {
                 c == "swing" && target.style.swing <= 0.0 -> "swing: the style « ${target.style.id} » does not swing"
                 (c == "fill" || c == "gap" || c == "automation") && s.part.isEmpty() && "Montée" !in made -> "$c in the Montée, which no step makes: give it a part"
-                c == "crash" && s.part.isEmpty() && "Drop" !in made -> "crash in the Drop, which no step makes: give it a part"
+                c.startsWith("crash") && s.part.isEmpty() && "Drop" !in made -> "crash in the Drop, which no step makes: give it a part"
                 c == "fill" && s.target.isNotEmpty() && s.target !in TutoChecks.DRUM_ROLES -> "fill on « ${s.target} », no drum role"
                 c == "track:sub" && target.notes(Part.Bass).notes.isEmpty() -> "track:sub without a bass"
                 else -> null
             }
             c.startsWith("lane:") -> when {
                 c.removePrefix("lane:$arg").let { it.isNotEmpty() && it != ":rolls" } -> "lane:<role> or lane:<role>:rolls"
-                target.line(arg) == null -> "the style has no « $arg » line (${target.style.lines.map { it.role.id }})"
+                target.line(arg, TutoChecks.partsOf(s).first().takeIf { s.part.isNotEmpty() }) == null -> "the style has no « $arg » line (${target.style.lines.map { it.role.id }})"
                 else -> null
             }
             c == "notes:acid" -> if (target.acid == null) "the style has no 303 line" else null
-            c.startsWith("notes:") -> when (val part = Part.entries.firstOrNull { it.id == arg }) {
-                null -> "notes:<bass|pad|lead|acid>"
-                else -> if (target.notes(part).notes.isEmpty()) "no notes for « $arg »" else null
+            c.startsWith("notes:") -> when {
+                arg !in TutoTarget.TRACK_ROLES -> "notes:<${(TutoTarget.TRACK_ROLES + "acid").joinToString("|")}>"
+                target.roleNotes(arg)?.notes.isNullOrEmpty() -> "no notes for « $arg »" + if (arg in TutoTarget.EXTRA_ROLES) " (write them in lines.$arg)" else ""
+                else -> null
             }
             c.startsWith("offset:") -> if (arg.substringBefore(':') !in TutoChecks.DRUM_ROLES || arg.substringAfter(':', "late") !in setOf("late", "early")) "offset:<drum role>:<late|early>" else null
             c.startsWith("automation:") -> if (arg !in TutoChecks.CURVE_SHAPES) "automation:<${TutoChecks.CURVE_SHAPES.joinToString("|")}>" else null
@@ -167,7 +199,7 @@ object TutoValidation {
                 when {
                     r in TutoChecks.DRUM_ROLES -> target.line(r) == null
                     r == "acid" -> target.acid == null
-                    r in setOf("bass", "pad", "lead") -> false
+                    r in TutoTarget.TRACK_ROLES -> target.roleNotes(r)?.notes.isNullOrEmpty()
                     else -> true
                 }
             }?.let { "« $it » is nothing the style plays" }

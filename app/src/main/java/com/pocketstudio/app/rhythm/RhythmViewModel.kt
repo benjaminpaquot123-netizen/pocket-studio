@@ -5884,6 +5884,43 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         session.edit { p -> p.copy(drums = p.drums.copy(lanes = p.drums.lanes.mapIndexed { i, l -> l.copy(sample = byLane[i]) })) }
     }
 
+    /**
+     * Socle 2 (owner: every tutorial on its style's box of sounds): the style's pack sounds on their
+     * pads ([com.pocketstudio.model.tuto.TutoKit.sounds]: pad → pack id, pack name, sound), each decoded and
+     * prepared, then all placed in one undo step; the other pads keep theirs, the studio voices on
+     * those pads leave. [done] true once at least one came (a sound that cannot be read keeps the built-in one).
+     */
+    fun loadTutoKit(sounds: Map<Int, Triple<String, String, com.pocketstudio.model.PackSound>>, done: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val app = getApplication<Application>()
+            val pads = ArrayList<Pair<Int, PadSample>>()
+            for ((lane, s) in sounds) {
+                val (id, name, sound) = s
+                val pcm = withContext(Dispatchers.IO) {
+                    runCatching { com.pocketstudio.app.audio.AudioDecoder.decode(app, Uri.fromFile(com.pocketstudio.app.library.PackStore.file(app, id, sound))) }.getOrNull()
+                } ?: continue
+                val prepared = runCatching { withContext(Dispatchers.IO) { padSamples.add(pcm.withoutTail(), com.pocketstudio.model.DefaultNames.kitPad(name, lane)) } }.getOrNull() ?: continue
+                padSamples.register(prepared.second)
+                pads += lane to prepared.first.copy(choke = if (lane == 5 || lane == 6) 1 else 0)
+            }
+            if (pads.isEmpty()) {
+                done(false)
+                return@launch
+            }
+            val byLane = pads.toMap()
+            session.edit { p ->
+                p.copy(
+                    drums = p.drums.copy(lanes = p.drums.lanes.mapIndexed { i, l -> byLane[i]?.let { l.copy(sample = it) } ?: l }),
+                    padVoices = p.padVoices - byLane.keys,
+                )
+            }
+            pushPads()
+            if (NativeEngine.isAvailable) pushPadVoices(project.value)
+            AppLog.add("Tuto : kit du style, ${pads.size} sons sur les pads")
+            done(true)
+        }
+    }
+
     /** A downloaded pack as a kit ([com.pocketstudio.model.PackKits]): each pad's sound decoded, then all placed at once. */
     private fun loadPackKit(m: com.pocketstudio.model.PackManifest) {
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) {

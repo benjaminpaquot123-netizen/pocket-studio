@@ -43,6 +43,13 @@ data class TutoCourse(
     val key: String = "",
     /** The chords, one a bar, as degrees of the key in Roman numerals: "i iv", "i VI III VII" (empty: the mood's). */
     val chords: String = "",
+    /**
+     * The course's own drums, by part ("*": every part, in place of the recipe's lines; "Drop": that
+     * part, and its variants « Drop 2 »…, exactly these pads), then by drum role ([DRUM_NAMES]):
+     * a cell a step, 16, 32 or 64 of them, "X" strong, "x" medium, "o" soft, "2" "3" "4" a roll,
+     * "." nothing. "crash": a hit played once at the part's start, never looped (« crash:once »).
+     */
+    val drums: Map<String, Map<String, String>> = emptyMap(),
 ) {
     /** The chapters of [level], each with only its steps of that level. */
     fun chaptersFor(level: TutoLevel): List<TutoChapter> =
@@ -54,8 +61,25 @@ data class TutoCourse(
         private val json = Json { ignoreUnknownKeys = true }
         private val cache = ConcurrentHashMap<String, TutoCourse>()
 
-        /** The roles a course's [lines] can write: the assistant's parts and the 303. */
-        val LINE_ROLES = setOf("bass", "pad", "lead", "acid")
+        /** The roles a course's [lines] can write: the assistant's parts, the 303, a second pad and a counter-melody. */
+        val LINE_ROLES = setOf("bass", "pad", "lead", "acid", "pad2", "counter")
+
+        /** The part of [drums] every part plays (the recipe's lines replaced). */
+        const val ALL_PARTS = "*"
+
+        /** The crash, played once at a part's start. */
+        const val CRASH = "crash"
+
+        /**
+         * The drum roles a course's [drums] names, as the assistant's ([com.pocketstudio.model.StarterWizard.Role]
+         * ids), with the kit's other names for their pads: "openhat" the open hat, "shaker" the second
+         * percussion's (the shaker pad), "rim" the percussion's (the rim pad); and [CRASH].
+         */
+        val DRUM_NAMES: Map<String, String> = com.pocketstudio.model.StarterWizard.Role.entries.associate { it.id to it.id } +
+            mapOf("openhat" to "open_hat", "shaker" to "perc2", "rim" to "perc", CRASH to CRASH)
+
+        /** A pattern cell: strong, medium, soft, a roll, nothing. */
+        val DRUM_CELLS = setOf('X', 'x', 'o', '2', '3', '4', '.')
 
         /**
          * The styles with a course written: every style of the assistant that has its file
@@ -68,7 +92,16 @@ data class TutoCourse(
 
         private fun resource(style: String): java.net.URL? = TutoCourse::class.java.classLoader?.getResource("tutos/$style.json")
 
+        /** Tests: a course in place of a style's file (null: its file again). */
+        internal val testCourses = ConcurrentHashMap<String, TutoCourse>()
+
+        internal fun forTest(style: String, course: TutoCourse?) {
+            if (course == null) testCourses.remove(style) else testCourses[style] = course
+            TutoTarget.forget(style)
+        }
+
         fun of(style: String): TutoCourse? {
+            testCourses[style]?.let { return it }
             if (style !in STYLES) return null
             return cache.getOrPut(style) {
                 val stream = TutoCourse::class.java.classLoader?.getResourceAsStream("tutos/$style.json") ?: return null
@@ -183,11 +216,19 @@ data class TutoProgress(
     val done: Set<String> = emptySet(),
     val current: String = "",
     val active: Boolean = true,
+    /**
+     * The style's drum kit ([TutoKit]): "" not decided yet (the offer to download it may show),
+     * [KIT_PACK] its pack's sounds on the pads, [KIT_BUILT_IN] « Plus tard », the built-in kit.
+     */
+    val kit: String = "",
 ) {
     fun encode(): String = Json.encodeToString(serializer(), this)
 
     companion object {
         private val json = Json { ignoreUnknownKeys = true }
+
+        const val KIT_PACK = "pack"
+        const val KIT_BUILT_IN = "builtin"
 
         /** Null when [text] is missing or unreadable (an older or damaged entry: no tutorial). */
         fun decode(text: String?): TutoProgress? = text?.let { runCatching { json.decodeFromString(serializer(), it) }.getOrNull() }

@@ -116,8 +116,8 @@
         {
           "id": "hat_rolls",
           "levels": "p",
-          "text": "À toi : « Passer à 2 mesures », puis sur le pad « Charley », les cases en pointillé (« Remplir 1/2 » pose les croches d'un geste). Puis les roulements de la mesure 2 : appui long sur la case 10, « Roulement » ×3 (3 coups dans la case) ; sur les cases 13 à 16, ×2 chacune, « ↗ Montant » (la rafale grimpe en force jusqu'au 1 suivant).",
-          "why": "Une rafale qui monte pousse vers le 1 suivant ; jamais la même deux mesures de suite, sinon ça sonne « preset ».",
+          "text": "À toi : « Passer à 2 mesures », puis sur le pad « Charley », les cases en pointillé (« Remplir 1/2 » pose les croches d'un geste). Mesure 1, le 4e temps en triolets : appui long sur la case 13, « Triolet » › « 3 sur 2 cases », puis pareil sur la case 15. Mesure 2, les roulements : case 10, « Roulement » ×3 (3 coups dans la case) ; cases 13 à 16, ×2 chacune, « ↗ Montant » (la rafale grimpe en force jusqu'au 1 suivant).",
+          "why": "Triolets dans une mesure, rafale dans l'autre : jamais deux mesures pareilles, sinon ça sonne « preset ».",
           "check": "lane:hat:rolls",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -125,10 +125,10 @@
         },
         {
           "id": "hat_triplet",
-          "levels": "p",
-          "text": "À toi : un triolet. Mesure 2, temps 4 : sur le pad « Charley », pose « 3 coups sur 2 cases » sur les deux dernières cases. Trois coups à la place de deux : le charley « trébuche », c'est le flow des charleys trap (Metro Boomin, Southside).",
+          "levels": "f",
+          "text": "À toi : les triolets. Mesure 1, sur le pad « Charley », appui long sur le coup de la case 13, puis « Triolet » › « 3 sur 2 cases » ; pareil sur la case 15. Trois coups à la place de deux : le charley « trébuche », c'est le flow des charleys trap.",
           "why": "Le triolet casse la régularité des doubles croches : l'oreille est surprise juste avant le retour du 1.",
-          "check": "listen",
+          "check": "triplet:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
           "listen": "drums:kick,clap,hat"

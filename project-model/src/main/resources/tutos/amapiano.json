@@ -1,0 +1,387 @@
+{
+  "format": 1,
+  "style": "amapiano",
+  "key": "G dorian",
+  "chords": "i IV i IV",
+  "lines": {
+    "bass": "2:G2:2:110 5:G2:2:100 7:G3:2:75 10:G2:2:105 13:D3:2:80 18:C2:2:110 21:C2:2:100 25:C3:2:75 29:C2:1:95 30:G2:2:80 34:G2:2:110 37:G2:2:100 39:G3:2:75 42:G2:2:105 45:D3:2:80 54:G2:2:80 58:C2:3:110 62:E2:2:85",
+    "pad": "3:Bb3+D4+F4+A4:3:90 8:Bb3+D4+F4+A4:1:70 12:Bb3+D4+F4+A4:1:75 19:Bb3+D4+E4+G4:9:85",
+    "lead": "2:G5:1:90 5:D5:1:80 41:Bb4:1:85 44:G4:1:80"
+  },
+  "lineBars": {
+    "bass": 4,
+    "pad": 2,
+    "lead": 4
+  },
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "L'amapiano, la house sud-africaine plus lente : un piano jazzy et un tambour grave qui chante, le « log drum ».",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait d'amapiano fini : d'abord le piano et les percussions légères, puis le log drum qui arrive et rebondit.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo sur 112 BPM, plus lent que la house. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 112 BPM (l'amapiano vit entre 108 et 115).",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick,hat,clap",
+          "skip": "Sans ça, ton morceau n'a pas le chaloupé de l'amapiano."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne », puis « Sol ».",
+          "textPro": "À toi : règle la tonalité sur Sol dorien : Gm9 et C9, des accords de jazz.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, ton piano ne sonnera pas jazzy."
+        }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "Les percussions",
+      "why": "Des percussions légères qui conversent : le shaker qui ne s'arrête jamais, des « toc » qui se répondent, une conga en clave.",
+      "steps": [
+        {
+          "id": "ready",
+          "text": "Avant de commencer : le kit de l'amapiano est chargé. Tu n'as rien à régler.",
+          "textPro": "Déjà prêt pour toi : le kit du style, kick accordé, percussions placées. Chaque piste que tu créeras arrivera avec son son conseillé.",
+          "check": "manual"
+        },
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad du shaker, touche toutes les cases (« Remplir » puis « tout ») : il tourne tout le morceau.",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:hat"
+        },
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad « Kick », touche les 4 cases en pointillé : un kick doux et rond sur chaque temps.",
+          "textPro": "À toi : le kick sur les 4 temps, en « Moyen » : il laisse la place au log drum.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick,hat"
+        },
+        {
+          "id": "clap_do",
+          "text": "À toi : sur le pad « Clap », touche les 2 cases en pointillé, sur 2 et 4 : sec et court, le repère de la danse.",
+          "check": "lane:clap",
+          "spot": "rhythm.pattern",
+          "target": "clap",
+          "listen": "drums:kick,hat,clap"
+        },
+        {
+          "id": "perc_do",
+          "text": "À toi : touche « Passer à 2 mesures », puis sur le pad « Rim », les cases en pointillé : des « toc » de bois qui se répondent d'une mesure à l'autre.",
+          "textPro": "À toi : les rims en question-réponse sur 2 mesures (jamais au hasard).",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,hat,clap,perc"
+        },
+        {
+          "id": "conga_do",
+          "text": "À toi : sur le pad « Conga », touche les 4 cases en pointillé : la clave, un motif qui revient à chaque mesure.",
+          "textPro": "À toi : la conga en clave : le 2, juste avant le 3, entre le 3 et le 4, le 4.",
+          "check": "lane:perc2",
+          "spot": "rhythm.pattern",
+          "target": "perc2",
+          "listen": "drums:kick,hat,clap,perc,perc2"
+        },
+        {
+          "id": "swing",
+          "levels": "p",
+          "text": "À toi : mets le swing à 20 : un balancement léger. Le log drum le prendra aussi.",
+          "check": "swing",
+          "spot": "rhythm.pattern",
+          "listen": "drums:kick,hat,clap,perc,perc2"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toutes tes percussions, puis celles de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,hat,clap,perc,perc2",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "Le piano",
+      "why": "Des accords jazzy de piano électrique, juste après le temps, un tenu puis des petits coups, avec des silences.",
+      "steps": [
+        {
+          "id": "pad_hear",
+          "text": "Écoute le piano seul.",
+          "check": "listen",
+          "listen": "parts:pad"
+        },
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Les 3 coups de la mesure 1, puis l'accord long de la mesure 2. Puis « Copier ».",
+          "textPro": "À toi : crée la piste Accords : Gm9 sans fondamentale (Si♭ Ré Fa La), trois coups après les temps ; puis C9 (Si♭ Ré Mi Sol) tenu presque toute la mesure. Deux notes seulement bougent.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,pad",
+          "skip": "Sans piano, il n'y a pas d'amapiano : le nom vient de lui."
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "La petite phrase de piano",
+      "why": "Quatre notes en quatre mesures : des trous partout, pour laisser le log drum répondre.",
+      "steps": [
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 2 notes de la mesure 1 et les 2 de la mesure 3.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:pad,lead"
+        },
+        {
+          "id": "lead_delay",
+          "levels": "p",
+          "text": "À toi : au Mixeur, sur la piste « Mélodie », monte « Envoi écho » : les notes se répètent dans les trous.",
+          "check": "send:1",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:lead"
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "Le log drum",
+      "why": "Un tambour grave qui joue les notes de la basse, toujours entre les kicks : une phrase pose la question, la suivante répond.",
+      "steps": [
+        {
+          "id": "bass_hear",
+          "text": "Écoute le log drum avec le kick : il rebondit dans les trous.",
+          "check": "listen",
+          "listen": "parts:kick,bass"
+        },
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse » (le son « Log drum » est déjà choisi), puis les 5 notes de la mesure 1 et les 5 de la mesure 2. « Copier sur les mesures suivantes » refait la mesure 1 en mesure 3. Écris enfin les 3 notes de la mesure 4 : elle commence par un silence.",
+          "textPro": "À toi : crée la piste Basse (log drum). Mesure 1 sur Sol (la question), mesure 2 sur Do (la réponse), mesure 3 = mesure 1, mesure 4 variée avec un temps de silence. Les notes aiguës sont plus douces, les graves plus fortes.",
+          "why": "Le silence avant une note la rend plus lourde.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass",
+          "skip": "Sans log drum, il manque le cœur de l'amapiano."
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Drop",
+      "why": "Tout ce que tu as fait joue ensemble, log drum compris : c'est le Drop, le moment le plus fort. Les autres parties naîtront de lui.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes, puis l'exemple.",
+          "check": "listen",
+          "listen": "parts:kick,hat,clap,perc,perc2,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Drop ».",
+          "check": "label:Drop",
+          "spot": "song.parts",
+          "listen": "parts:kick,hat,clap,perc,perc2,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "map": true,
+      "why": "En amapiano, tout le morceau prépare l'entrée du log drum : il arrive tard, comme une récompense.",
+      "steps": [
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : le shaker, les « toc » et le piano, sans kick.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_groove",
+          "text": "Écoute le Groove : le kick et le piano, mais pas encore de log drum.",
+          "check": "listen",
+          "listen": "part:Groove"
+        },
+        {
+          "id": "map_drop",
+          "text": "Écoute le Drop : le log drum entre enfin.",
+          "check": "listen",
+          "listen": "vs:Groove:Drop",
+          "why": "S'il jouait dès le début, il ne surprendrait plus."
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Drop : tu enlèves des briques. Le Groove vient en dernier : c'est le Drop sans sa brique vedette.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro : le shaker, les « toc » et le piano, sans kick ni log drum.",
+          "check": "part:Intro:nokick+nobass",
+          "spot": "song.parts",
+          "keep": "hat,perc,pad",
+          "listen": "vs:Intro:Groove"
+        },
+        {
+          "id": "make_break",
+          "text": "À toi : crée le Break : le piano, la petite phrase et le shaker seulement.",
+          "check": "part:Break:nokick+nobass",
+          "spot": "song.parts",
+          "keep": "hat,pad,lead",
+          "listen": "vs:Drop:Break"
+        },
+        {
+          "id": "make_drop2",
+          "text": "À toi : crée le Drop 2 : tout, avec les percussions de l'exemple et leurs relances.",
+          "check": "part:Drop 2:full",
+          "spot": "song.parts",
+          "keep": "*",
+          "lanesFrom": "Drop",
+          "listen": "vs:Drop:Drop 2"
+        },
+        {
+          "id": "variation",
+          "text": "À toi : dans la partie « Drop 2 », ajoute quelques coups de conga ou de « toc » : une réponse de plus au log drum.",
+          "check": "changed:drums:Drop 2",
+          "spot": "rhythm.pattern",
+          "listen": "vs:Drop:Drop 2",
+          "why": "Une percussion de plus garde l'oreille en éveil."
+        },
+        {
+          "id": "make_fin",
+          "text": "À toi : crée la Fin : le kick et les percussions, sans log drum.",
+          "check": "part:Fin:less+nobass",
+          "spot": "song.parts",
+          "keep": "kick,hat,clap,perc",
+          "listen": "vs:Drop:Intro"
+        },
+        {
+          "id": "make_groove",
+          "text": "À toi : crée le Groove : tout sauf le log drum.",
+          "check": "part:Groove:less+nobass",
+          "spot": "song.parts",
+          "keep": "kick,hat,clap,perc,perc2,pad,lead",
+          "listen": "vs:Groove:Drop"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Groove, Drop, Break, Drop 2 et Fin.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "song": "Intro:8,Groove:24,Drop:16,Break:8,Drop 2:16,Fin:8",
+          "listen": "song"
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 8, Groove 24, Drop 16, Break 8, Drop 2 16, Fin 8. « Donner les durées conseillées » le fait d'un coup.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:8,Groove:24,Drop:16,Break:8,Drop 2:16,Fin:8",
+          "why": "Le log drum attend 32 mesures (plus d'une minute) avant d'entrer : 80 mesures à 112 BPM, près de 3 minutes."
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "Une réverbe sur le piano ; pas de pompe ici : le contraste entre les percussions douces et le log drum lourd doit rester.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "levels": "f",
+          "text": "Écoute la réverbe : le piano, d'abord sans, puis avec.",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "reverb",
+          "levels": "p",
+          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur la piste « Accords ». Garde le kick, les percussions et le log drum secs.",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:pad"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le log drum et le kick ne doivent pas se masquer ; le piano reste derrière.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords ».",
+          "textPro": "À toi : au Mixeur, baisse un peu le fader des Accords.",
+          "check": "changed:volumes:pad",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:kick,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "levels": "p",
+      "title": "Le mastering",
+      "why": "Pas de sur-limitation : le relief entre les percussions douces et le log drum fait le style.",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Streaming » : plus doux que « Club », il garde le relief.",
+          "check": "loudness:STREAMING",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter !",
+      "steps": [
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

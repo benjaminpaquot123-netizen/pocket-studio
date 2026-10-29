@@ -7,6 +7,7 @@
 
 ## Prochaine étape exacte
 1. Fait (2026-10-29) : traduction totale (37 tutos + panneau du tuto dans les 14 langues, notation Do Ré Mi pour es/pt-BR/it/tr, octaves anglaises pour C D E). APK 229 envoyé avant la traduction ; Benjamin ne veut pas d'APK pour l'instant (« enregistre juste »).
+   Fait (2026-10-29, APK 233) : liste de corrections de Benjamin (pads d'un projet vide, pas de clignotement après le logo, retour à l'accueil, Acid 303 en jaune et en avant, Remix dans les deux sens, « Ma bibliothèque » de sons). À confirmer sur son téléphone : les pads. Restes : « Garder » depuis un clip audio ou un pad live ; piste audio qui prend un son de la bibliothèque.
 2. Prochaine étape : les audits, quand Benjamin les lance (question 1A/1B/1C toujours en attente : quand arrêter).
 3. Restes : docs/REVIEW.md (« Tuto tous styles », « APK 228 ») ; jungle encore creuse dans les médiums ; vocabulaire ancien du panneau à harmoniser en polonais (« cegiełka ») et hindi (« हिस्सा ») ; japonais « 終了 » pour la partie Fin ; sons manquants des fiches (`scratchpad/styles/*-synthese.md`).
 4. PR vers main, Play Store et démo seulement à la demande de Benjamin.

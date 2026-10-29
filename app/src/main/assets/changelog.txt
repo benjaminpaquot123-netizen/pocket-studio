@@ -1,5 +1,5 @@
-Un cœur qui se sent dans la main. « C'est pas faux ! »
-- Ouverture : plus aucun son ; le double battement se sent en vibration, bien franc (Réglages › Battement à l'ouverture).
-- J'apprends : les 37 tutos sont traduits dans les 15 langues ; Do Ré Mi en espagnol, portugais, italien et turc.
-- Simple ou Pro à chaque nouveau projet, la carte Remix sur l'accueil.
-- Charleys en triolets pour la trap et la drill.
+Corrections du chef, « C'est pas faux ! »
+- Les pads sont là dès l'ouverture d'un projet vide, sans clignotement après le logo.
+- Retour à l'accueil depuis un projet (⋯ › Accueil, ou le bouton retour).
+- L'Acid 303, en jaune, en premier dans Clavier et Sons, même en mode Simple.
+- Remix depuis l'accueil ou un projet ; « Ma bibliothèque » pour garder tes sons.

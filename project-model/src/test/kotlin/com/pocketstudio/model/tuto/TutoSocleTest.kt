@@ -85,9 +85,14 @@ class TutoSocleTest {
         assertEquals(53, TutoTarget.byDegrees(57, -2, key)) // F3
         val bar = listOf(Note(0, 24, 45, 0.8f), Note(48, 24, 52, 0.8f))  // A2, E3
         val clip = TutoTarget.fitted(NoteClip(steps = 64), bar, steps = 16, chords = listOf(0, 5, 2, 6), key = key)
-        // Bar 2 on VI: five degrees up, A2 → F3, E3 → C4.
+        // Bar 2 on VI: to the nearest, two degrees down (not five up), A2 → F2, E3 → C3.
         val bar2 = clip.notes.filter { it.start in 384 until 768 }.map { it.pitch }
-        assertEquals(listOf(53, 60), bar2)
+        assertEquals(listOf(41, 48), bar2)
+        // Bar 3 on III: two degrees up, A2 → C3.
+        assertEquals(listOf(48, 55), clip.notes.filter { it.start in 768 until 1152 }.map { it.pitch })
+        assertEquals(-2, TutoTarget.nearest(5, key))
+        assertEquals(3, TutoTarget.nearest(3, key))
+        assertEquals(-3, TutoTarget.nearest(4, key))
         // Without chords: the same bar four times.
         assertEquals(listOf(45, 52), TutoTarget.fitted(NoteClip(steps = 64), bar, steps = 16).notes.filter { it.start in 384 until 768 }.map { it.pitch })
     }

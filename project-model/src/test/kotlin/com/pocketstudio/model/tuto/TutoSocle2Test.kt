@@ -7,6 +7,7 @@ import com.pocketstudio.model.PadSample
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.instrumentTracks
+import com.pocketstudio.model.renameScene
 import com.pocketstudio.model.switchScene
 import com.pocketstudio.model.track
 import org.junit.After
@@ -173,6 +174,42 @@ class TutoSocle2Test {
         assertFalse(0 in ex.padVoices)
         assertTrue(ex.drums.lanes[0].hits.isNotEmpty())
     }
+
+    /** Synthwave's chords in an arpeggio: the track the course makes plays them so from its start. */
+    @Test
+    fun theRecipesArpeggiatorStays() {
+        val t = TutoTarget.of("synthwave")!!
+        val (p, id) = TutoChecks.partTrack(t.blank(), "pad", t)!!
+        val wanted = t.notes(com.pocketstudio.model.StarterWizard.Part.Pad).performance
+        assertTrue(wanted != com.pocketstudio.model.Performance())
+        assertEquals(wanted, p.track(id).notes.performance)
+    }
+
+    /** The echo on one track the step names (the bass alone), not the lead's. */
+    @Test
+    fun anEchoOnTheTrackNamed() {
+        val t = TutoTarget.of("techno")!!
+        val (p, id) = TutoChecks.partTrack(t.blank(), "bass", t)!!
+        val s = step("send:1", target = "bass")
+        assertEquals(listOf(com.pocketstudio.model.InstrumentTrack.mixerChannel(id)), TutoChecks.channelsToDo(s, p))
+        assertTrue(TutoChecks.done(s, TutoChecks.show(s, p, t)!!, t))
+    }
+
+    /** « Montre-moi » of a variation: a new hit on an empty cell (dnb's open hat already on the second to last). */
+    @Test
+    fun aVariationOnAnEmptyCell() {
+        val t = TutoTarget.of("dnb")!!
+        val blank = t.blank()
+        val full = blank.copy(drums = blank.drums.copy(steps = 32, lanes = blank.drums.lanes.mapIndexed { i, l ->
+            if (i == 0) l.copy(hits = mapOf(0 to com.pocketstudio.model.Hit(1f))) else if (i == 6) l.copy(hits = (16 until 32).associateWith { com.pocketstudio.model.Hit(0.5f) }) else l
+        })).renamed("Drop 2")
+        val s = step("changed:drums:Drop 2")
+        val base = TutoChecks.signature("drums:Drop 2", full)
+        val shown = TutoChecks.show(s, full, t)!!
+        assertTrue(TutoChecks.done(s, shown, t, base))
+    }
+
+    private fun Project.renamed(label: String) = sanitized().renameScene(0, label).sanitized()
 
     @Test
     fun theValidationReadsTheDrums() {

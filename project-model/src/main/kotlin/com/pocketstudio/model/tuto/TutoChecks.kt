@@ -176,7 +176,7 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
         for (at in 0 until length) {
             val k = at / steps
             val st = phrase[at % steps] ?: continue
-            val shift = if (follow) chordDegrees[(at / 16) % chordDegrees.size] - chordDegrees[((at % steps) / 16) % chordDegrees.size] else 0
+            val shift = if (follow) nearest(chordDegrees[(at / 16) % chordDegrees.size] - chordDegrees[((at % steps) / 16) % chordDegrees.size], harmony) else 0
             out[at] = if (shift == 0 || k == 0) st else acidStep(base.root, byDegrees(acidPitch(base.root, st), shift, harmony), st.accent, st.slide)
         }
         base.copy(steps = out, length = length).sanitized()
@@ -390,11 +390,21 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
             val notes = (0 until times).flatMap { k ->
                 phrase.map { n ->
                     val at = n.start + k * each
-                    val shift = if (chords == null || key == null || k == 0) 0 else chords[(at / bar) % chords.size] - chords[(n.start / bar) % chords.size]
+                    val shift = if (chords == null || key == null || k == 0) 0 else nearest(chords[(at / bar) % chords.size] - chords[(n.start / bar) % chords.size], key)
                     n.copy(start = at, pitch = if (shift == 0) n.pitch else byDegrees(n.pitch, shift, key!!).coerceIn(0, 127))
                 }
             }
             return c.copy(notes = notes.filter { it.start < c.ticks }).sanitized()
+        }
+
+        /**
+         * A move of [degrees] along [key]'s scale towards the nearest note (a fifth up is a fourth
+         * down: synthwave's bass goes down to G1, F1, D1 rather than up), within half the scale.
+         */
+        fun nearest(degrees: Int, key: Harmony): Int {
+            val n = key.scale.intervals.size.takeIf { key.scale != com.pocketstudio.model.Scale.Off && it > 0 } ?: 12
+            val d = Math.floorMod(degrees, n)
+            return if (d > n / 2) d - n else d
         }
 
         /**
@@ -552,7 +562,8 @@ object TutoChecks {
      */
     private fun sendChannels(p: Project, bus: Int, step: TutoStep? = null): List<Int> {
         val roles = step?.target?.split(',')?.map { it.trim() }?.filter { it.isNotEmpty() }.orEmpty()
-        if (roles.size >= 2 || roles.any { it in DRUM_ROLES }) return roles.mapNotNull { r -> stripOf(p, r) }
+        // Any target but the jump up's own reverb (« pad »: its chords and its snare) names the strips (the echo on the bass alone).
+        if (roles.isNotEmpty() && !(bus == 0 && roles == listOf("pad"))) return roles.mapNotNull { r -> stripOf(p, r) }
         return if (bus == 0) listOfNotNull(trackFor(p, "pad")?.let(InstrumentTrack::mixerChannel), Mixer.FIRST_PAD + laneOf("snare"))
         else listOfNotNull(trackFor(p, "lead")?.let(InstrumentTrack::mixerChannel))
     }
@@ -1110,8 +1121,14 @@ object TutoChecks {
             }
             c.startsWith("loudness:") -> LoudnessTarget.entries.firstOrNull { it.name == arg }?.let { p.copy(mixer = p.mixer.copy(target = it)) } ?: return null
             c.startsWith("changed:drums:") -> inScene(p, c.removePrefix("changed:drums:")) { q ->
-                // A variation: an open hat on the second to last cell.
-                q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { i, l -> if (i == OPEN_HAT_LANE) l.copy(hits = l.hits + ((q.drums.steps - 2) to Hit(0.8f))) else l }))
+                // A variation: an open hat on an empty cell near the end (the second to last first), else a percussion's.
+                val n = q.drums.steps
+                val cells = (n - 2 downTo n / 2) + (n - 1 downTo n / 2)
+                val free = (listOf(OPEN_HAT_LANE) + variationLanes().filter { it != OPEN_HAT_LANE }.sorted()).firstNotNullOfOrNull { l ->
+                    cells.firstOrNull { it !in q.drums.lanes[l].hits }?.let { l to it }
+                }
+                if (free == null) q
+                else q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { i, l -> if (i == free.first) l.copy(hits = l.hits + (free.second to Hit(0.8f))) else l }))
             } ?: return null
             c.startsWith("send:") -> {
                 val bus = arg.toIntOrNull() ?: return null
@@ -1343,7 +1360,12 @@ object TutoChecks {
             com.pocketstudio.model.PadVoice(com.pocketstudio.model.PadVoice.BASS_808, theirs.params.filterKeys { it in com.pocketstudio.model.PadVoice.TRACK_808_PARAMS })
                 .let { v -> if ((v.param(com.pocketstudio.model.PadVoice.GLIDE) ?: 0f) > 0f) v else v.with(com.pocketstudio.model.PadVoice.GLIDE, NewTracks.GLIDE_808) }.sanitized()
         }
-        val named = new.copy(name = if (role == "sub") "Sub" else TutoTarget.EXTRA_NAMES[role] ?: new.name, notes = new.notes.withSteps(steps).copy(notes = emptyList()), voice808 = voice)
+        // The recipe's way of playing the part (synthwave's and trance's chords in an arpeggio): the track's from its start.
+        val performance = if (role == "sub" || role in TutoTarget.EXTRA_ROLES) new.notes.performance else target.notes(part).performance
+        val named = new.copy(
+            name = if (role == "sub") "Sub" else TutoTarget.EXTRA_NAMES[role] ?: new.name,
+            notes = new.notes.withSteps(steps).copy(notes = emptyList(), performance = performance), voice808 = voice,
+        )
         // The second pad and the counter-melody: the style's own sounds for them (liquid's pad layer, its counter), else a pad and the lead's.
         val made = extraSound(role, target)?.let { (synth, plaits) ->
             if (plaits != null) named.copy(engine = 1, plaits = plaits) else named.copy(engine = 0, synth = synth ?: named.synth)

@@ -863,8 +863,11 @@ fun TutoChooser(start: (style: String, level: TutoLevel) -> Unit, close: () -> U
                     Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan)
                 }
             }
-            Text(tr("Bientôt pour les autres styles"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary, modifier = Modifier.padding(top = 6.dp).testTag("tuto_soon"))
-            Text(soon.joinToString(" · ") { tutoText(it.name) }, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary.copy(alpha = 0.7f))
+            // Every style with its course: no « Bientôt » line.
+            if (soon.isNotEmpty()) {
+                Text(tr("Bientôt pour les autres styles"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary, modifier = Modifier.padding(top = 6.dp).testTag("tuto_soon"))
+                Text(soon.joinToString(" · ") { tutoText(it.name) }, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary.copy(alpha = 0.7f))
+            }
         }
     }
 }

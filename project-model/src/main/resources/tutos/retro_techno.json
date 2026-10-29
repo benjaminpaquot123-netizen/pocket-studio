@@ -1,0 +1,462 @@
+{
+  "format": 1,
+  "style": "retro_techno",
+  "key": "D minor",
+  "chords": "i i VI VII",
+  "lines": {
+    "bass": "0:D2:1 3:D2:1 6:D2:2 8:D2:1 11:D2:1 14:D2:1",
+    "lead": "0:D3:4 6:D3:4 12:D4:1 13:D3:3 16:D3:4 22:D3:4 28:F3:4"
+  },
+  "lineBars": {
+    "bass": 1,
+    "lead": 2
+  },
+  "follow": [
+    "bass",
+    "lead"
+  ],
+  "drums": {
+    "*": {
+      "snare": "............................................................x234"
+    }
+  },
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "Chaque style a sa vitesse et sa couleur : on règle les deux avant de jouer la moindre note.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de rétro techno, les raves belges de 1991 : un énorme synthé qui hurle (le « hoover », comme un aspirateur) tourne en boucle sur une boîte à rythmes 909 sèche.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 128 BPM, 128 battements par minute. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 128 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick",
+          "skip": "Sans ça, ton morceau reste à 120 BPM : trop lent pour une rave."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » puis « Ré ».",
+          "textPro": "À toi : règle la tonalité sur Ré mineur. La grille des raves de 1991 : Ré mineur deux mesures, puis Si♭ et Do (i–VI–VII).",
+          "why": "Trois accords qui montent vers le retour au Ré : la grille de toutes les raves.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:bass",
+          "skip": "Sans cette gamme, tes notes ne prendront pas la couleur du rétro techno."
+        }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "La 909",
+      "titlePro": "La batterie 909",
+      "why": "La boîte à rythmes Roland TR-909 : le son des raves. Kick, clap et charleys, secs comme dans un hangar.",
+      "steps": [
+        {
+          "id": "ready",
+          "text": "Avant de commencer : ton kit est déjà une 909 complète, avec ses effets. Tu n'as rien à régler.",
+          "textPro": "Déjà prêt : kick, clap, charleys et caisse de la 909 (kit de l'assistant), le « zap » sur un pad de percussion."
+        },
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad « Kick », touche les cases en pointillé : une sur chaque temps.",
+          "textPro": "À toi : le kick 909 sur chaque temps.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick",
+          "skip": "Sans kick, pas de rave."
+        },
+        {
+          "id": "clap_do",
+          "text": "À toi : sur le pad « Clap », touche les cases en pointillé : les temps 2 et 4.",
+          "textPro": "À toi : le clap 909 sur 2 et 4.",
+          "check": "lane:clap",
+          "spot": "rhythm.pattern",
+          "target": "clap",
+          "listen": "drums:kick,clap"
+        },
+        {
+          "id": "open_hat_do",
+          "text": "À toi : sur le pad « Charley ouvert », touche les cases en pointillé, entre les kicks.",
+          "textPro": "À toi : le charley ouvert sur les contretemps.",
+          "why": "Le « tchi » entre les kicks fait sauter la salle.",
+          "check": "lane:open_hat",
+          "spot": "rhythm.pattern",
+          "target": "open_hat",
+          "listen": "drums:kick,clap,open_hat"
+        },
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad « Charley », touche les cases en pointillé : un fort, un doux, pour que ça file.",
+          "textPro": "À toi : les charleys fermés à deux forces.",
+          "levels": "p",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,open_hat,hat"
+        },
+        {
+          "id": "snare_do",
+          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé, à la fin de la 2e mesure : un petit roulement qui accélère. Touche d'abord « Passer à 2 mesures » si on te le propose.",
+          "textPro": "À toi : le roulement de caisse en fin de 2e mesure (1, 2, 3, 4 coups par case).",
+          "why": "Un roulement qui accélère relance l'énergie avant la mesure suivante.",
+          "check": "lane:snare",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "listen": "drums:kick,clap,snare"
+        },
+        {
+          "id": "perc_do",
+          "text": "À toi : sur le pad du « zap » (un bruit de laser), touche la case en pointillé, une fois toutes les 2 mesures.",
+          "textPro": "À toi : le zap toutes les 2 mesures.",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,perc"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toute ta 909 quelques secondes, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,clap,open_hat,hat,snare",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La basse",
+      "why": "Une basse simple qui suit le rythme du riff, plus bas : c'est le riff qui fait tout.",
+      "steps": [
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse », puis les 6 notes en pointillé de la mesure 1. « Copier sur les mesures suivantes » la recopie en suivant les accords : elle descend sur Si♭, puis remonte sur Do.",
+          "textPro": "À toi : crée la piste Basse (son « Basse analogique ») : la mesure 1 sur Ré, puis « Copier » : elle suit la grille Ré, Ré, Si♭, Do.",
+          "why": "La basse suit les accords sans rien inventer : elle donne au riff son sol.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass"
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "Le hoover",
+      "titlePro": "Le riff de hoover",
+      "why": "Le riff ! Un énorme synthé qui hurle, joué en notes tenues avec un saut d'octave qui retombe : toute la salle le reconnaît dès la première note.",
+      "steps": [
+        {
+          "id": "lead_hear",
+          "text": "Écoute le riff de hoover seul.",
+          "check": "listen",
+          "listen": "parts:lead"
+        },
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 4 notes de la mesure 1 et les 3 de la mesure 2 (des notes longues). « Copier sur les mesures suivantes » le recopie en suivant les accords.",
+          "textPro": "À toi : crée la piste Mélodie (son « Hoover ») : Ré tenu, Ré tenu, Ré aigu qui retombe ; puis Ré, Ré, Fa. « Copier » le transpose sur Si♭ et Do.",
+          "why": "Des notes tenues, pas des petites notes piquées : le hoover a besoin de temps pour hurler.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:kick,bass,lead",
+          "skip": "Sans hoover, il n'y a pas de rave."
+        },
+        {
+          "id": "lead_knobs",
+          "text": "À toi : dans « Régler le son de la piste » de la Mélodie, monte « Épaisseur (désaccord) » d'au moins 15, puis, dans « Réglages avancés », « Glissé entre les notes » d'au moins 15 : le hoover s'épaissit et plonge d'une note à l'autre comme une sirène.",
+          "levels": "p",
+          "check": "changed:synth:lead:OSC2_DETUNE+GLIDE",
+          "spot": "sounds.track",
+          "target": "lead",
+          "listen": "parts:lead"
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Groove",
+      "why": "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes, puis l'exemple. Ce synthé qui hurle sur une 909, c'est une rave de 1991.",
+          "check": "listen",
+          "listen": "parts:kick,clap,open_hat,hat,snare,bass,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.",
+          "textPro": "À toi : nomme cette scène « Groove » : la boucle complète, d'où tu tireras les autres parties.",
+          "check": "label:Groove",
+          "spot": "song.parts",
+          "listen": "parts:kick,clap,open_hat,hat,snare,bass,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "why": "Une partie, c'est un ensemble de boucles qui jouent ensemble. Un morceau, c'est une suite de parties qui montent et descendent en énergie.",
+      "map": true,
+      "steps": [
+        {
+          "id": "brick",
+          "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la basse). Une partie, ce sont plusieurs briques qui jouent ensemble.",
+          "why": "Tu changes une partie en ajoutant ou en enlevant des briques : c'est comme ça qu'on fait monter ou descendre l'énergie."
+        },
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : la 909 seule.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_drop",
+          "text": "Écoute le Drop : le hoover arrive, tout joue.",
+          "why": "Le riff n'arrive qu'après 32 mesures : on l'attend, il frappe.",
+          "check": "listen",
+          "listen": "part:Drop"
+        },
+        {
+          "id": "map_break",
+          "text": "Écoute le Break : sans kick ni basse, le hoover seul avec les charleys.",
+          "check": "listen",
+          "listen": "part:Break"
+        },
+        {
+          "id": "map_phrases",
+          "text": "Regarde la carte : au milieu du Drop, un « Mini-break » de 2 mesures sans kick, comme dans Energy Flash de Joey Beltram.",
+          "why": "Deux mesures sans kick au milieu du Drop : quand il revient, la salle explose."
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Groove : tu enlèves des briques, tu en changes une.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro : le kick, les charleys et le zap.",
+          "check": "part:Intro:less+nobass",
+          "spot": "song.parts",
+          "keep": "kick,hat,open_hat,perc",
+          "listen": "vs:Drop:Intro"
+        },
+        {
+          "id": "make_intro2",
+          "text": "À toi : crée l'Intro 2 : le clap, la caisse et la basse arrivent ; le hoover attend le Drop.",
+          "check": "part:Intro 2:less+bass",
+          "spot": "song.parts",
+          "keep": "kick,clap,open_hat,hat,snare,perc,bass",
+          "listen": "vs:Intro:Intro 2"
+        },
+        {
+          "id": "make_drop",
+          "text": "À toi : crée le Drop : tout joue.",
+          "check": "part:Drop:full",
+          "spot": "song.parts",
+          "keep": "*",
+          "listen": "vs:Intro 2:Drop"
+        },
+        {
+          "id": "make_mini",
+          "text": "À toi : crée le Mini-break : le hoover, la basse et les charleys, sans kick.",
+          "check": "part:Mini-break:nokick",
+          "spot": "song.parts",
+          "keep": "open_hat,hat,bass,lead",
+          "listen": "vs:Drop:Break"
+        },
+        {
+          "id": "make_break",
+          "text": "À toi : crée le Break : le hoover et les charleys, sans kick ni basse.",
+          "check": "part:Break:nokick+nobass",
+          "spot": "song.parts",
+          "keep": "hat,lead",
+          "listen": "vs:Drop:Break"
+        },
+        {
+          "id": "make_drop2",
+          "text": "À toi : crée le Drop 2 : tout joue, sauf le zap.",
+          "check": "part:Drop 2:differs",
+          "spot": "song.parts",
+          "keep": "kick,clap,open_hat,hat,snare,bass,lead",
+          "listen": "vs:Drop:Drop 2"
+        },
+        {
+          "id": "make_fin",
+          "text": "À toi : crée la Fin : la 909 seule.",
+          "check": "part:Fin:less",
+          "spot": "song.parts",
+          "keep": "kick,hat,open_hat,perc",
+          "listen": "vs:Drop:Intro"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Mini-break, Drop, Break, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Le morceau », ajoute dans l'ordre Intro, Intro 2, Drop, Mini-break, Drop, Break, Drop 2 et Fin.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "song": "Intro:16,Intro 2:16,Drop:16,Mini-break:2,Drop:14,Break:16,Drop 2:24,Fin:16",
+          "listen": "song",
+          "skip": "Dans un autre ordre, le Mini-break ne coupera pas le Drop."
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 16, Mini-break 2, Drop 14, Break 16, Drop 2 24 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "textPro": "À toi : les durées : Intro 16 mesures, Intro 2 16, Drop 16, Mini-break 2, Drop 14, Break 16, Drop 2 24 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
+          "why": "Le Drop, son Mini-break et sa suite font 32 mesures : le Break tombe au début d'une phrase. 3 minutes 45 à 128 BPM.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:16,Intro 2:16,Drop:16,Mini-break:2,Drop:14,Break:16,Drop 2:24,Fin:16"
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Un roulement, un silence, une cymbale : la rave prévient avant chaque retour.",
+      "steps": [
+        {
+          "id": "gap",
+          "text": "À toi : dans la partie « Break », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
+          "why": "Un temps de rien, et le hoover qui revient avec le kick paraît énorme.",
+          "check": "gap",
+          "spot": "rhythm.pattern",
+          "part": "Break",
+          "listen": "vs:Break:Drop"
+        },
+        {
+          "id": "crash",
+          "text": "À toi : dans la partie « Drop », touche la toute première case du pad de la cymbale.",
+          "check": "crash",
+          "spot": "rhythm.pattern",
+          "part": "Drop",
+          "listen": "part:Drop"
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "Une réverbe métallique sur la caisse, et le filtre du hoover qu'on ouvre et ferme « à la main », comme dans Mentasm.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "text": "Écoute la réverbe : la caisse claire, d'abord sans, puis avec : un hangar.",
+          "levels": "f",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "reverb",
+          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur la tranche du pad « Clap ».",
+          "levels": "p",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "clap",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "filter_hear",
+          "text": "Écoute le Drop : le hoover s'ouvre, hurle, puis se referme.",
+          "levels": "f",
+          "check": "listen",
+          "listen": "part:Drop"
+        },
+        {
+          "id": "filter",
+          "text": "À toi : automatise la « Coupure » de la piste « Mélodie » sur le Drop : une courbe qui monte jusqu'au milieu puis redescend.",
+          "why": "Dans les raves de 1991, le filtre se bougeait à la main : c'est lui qui faisait le spectacle.",
+          "levels": "p",
+          "check": "automation:wave",
+          "spot": "song.automation",
+          "target": "lead",
+          "part": "Drop",
+          "listen": "part:Drop"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le mix, c'est le volume de chaque piste : le kick et le grave devant, le reste derrière. Chaque son trouve sa place.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie » (le hoover), puis celui de la piste « Basse ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "textPro": "À toi : au Mixeur, baisse un peu le curseur de la piste « Mélodie » (le hoover), puis celui de la piste « Basse ».",
+          "check": "changed:volumes:lead,bass",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:kick,clap,bass,lead"
+        },
+        {
+          "id": "meters",
+          "text": "Repère : pendant le Drop, les vu-mètres du Mixeur ne doivent pas rester dans le rouge. Si une piste rougit, baisse son fader.",
+          "levels": "p"
+        },
+        {
+          "id": "buses",
+          "text": "Repères : le kick devant, le hoover énorme mais juste derrière, la batterie sèche, un peu de réverbe sur le clap seulement. Compare au morceau d'exemple.",
+          "levels": "p",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "title": "Le mastering",
+      "why": "Le master colle le tout et donne le volume des clubs, sans écraser le kick.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "La sortie générale a un limiteur intégré, toujours le dernier de la chaîne (il n'apparaît pas dans ses « Effets ») : il empêche le son de dépasser. À toi : dans « Sortie générale », règle « Volume visé » sur « Club » : ton morceau sonne aussi fort qu'en club.",
+          "check": "loudness:CLUB",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter !",
+      "steps": [
+        {
+          "id": "formats",
+          "text": "WAV pour un DJ (la qualité studio), M4A pour tes amis (un fichier léger), pistes séparées pour un remix.",
+          "levels": "p"
+        },
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

@@ -151,16 +151,17 @@ class TutoSocleTest {
         assertEquals(setOf(5), TutoChecks.lanesOf("hat", TutoTarget.of("techno")))
     }
 
-    /** A gap that silences the hats alone, a tom fill, a filter up and down: in the Break of the techno course. */
+    /** A gap that silences the hats alone, a tom fill, a filter up and down: in the Break of a techno song. */
     @Test
     fun gapsFillsAndCurvesOfAnyPart() {
         val target = TutoTarget.of("techno")!!
-        val course = TutoCourse.of("techno")!!
-        val steps = course.chapters.flatMap { it.steps }.associateBy { it.id }
-        assertEquals(setOf(5), TutoChecks.gapLanes(steps.getValue("gap"), target))
-        assertEquals(listOf("Break"), TutoChecks.partsOf(steps.getValue("toms")))
-        assertEquals("tom", TutoChecks.fillRole(steps.getValue("toms")))
-        assertEquals(4, TutoChecks.fillEnd(steps.getValue("toms"), target))
+        // Written here, not read from tutos/techno.json: the course is the Techno team's, and changes.
+        val hatsGap = step("gap", target = "hat", part = "Break")
+        val toms = step("fill", target = "tom", part = "Break", length = 4)
+        assertEquals(setOf(5), TutoChecks.gapLanes(hatsGap, target))
+        assertEquals(listOf("Break"), TutoChecks.partsOf(toms))
+        assertEquals("tom", TutoChecks.fillRole(toms))
+        assertEquals(4, TutoChecks.fillEnd(toms, target))
         // The crash: the Drop the step names, the Drop and the Drop 2 by default.
         assertEquals(listOf("Drop", "Drop 2"), TutoChecks.partsOf(step("crash")))
         assertEquals(listOf("Montée"), TutoChecks.partsOf(step("gap")))

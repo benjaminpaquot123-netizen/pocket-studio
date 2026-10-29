@@ -277,6 +277,8 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
             }),
             // The style's 303, silent: its sound and its root, no note.
             acid = acid?.let { a -> fresh.acid.copy(root = a.root, sound = a.sound) } ?: fresh.acid,
+            // A style at the new project's tempo (house 122, deep house 120): its tempo step would be done before a touch.
+            tempoBpm = if (kotlin.math.abs(fresh.tempoBpm - style.bpm) <= TEMPO_SLACK) FAR_TEMPO else fresh.tempoBpm,
         )
         val kit = kitOf(style)?.let { KITS[it] }
         return (if (kit != null) kit(made.copy(harmony = harmony)).copy(harmony = made.harmony) else made).sanitized()
@@ -298,6 +300,11 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
          * assistant takes it), when a kit of [KITS] stands for it.
          */
         fun kitOf(style: StarterWizard.Style): String? = (style.kit[StarterWizard.Role.Kick] ?: style.id).takeIf { it in KITS }
+
+        /** How far from the style's tempo the tempo step still counts as done (BPM). */
+        const val TEMPO_SLACK = 2.0
+        /** The empty project's tempo when the new project's is the style's already: far enough to set. */
+        const val FAR_TEMPO = 100.0
 
         /** The 303's role in a course's lines. */
         const val ACID = "acid"
@@ -788,7 +795,7 @@ object TutoChecks {
         val arg = argOf(c)
         return when {
             step.manual || step.listening -> false
-            c == "tempo" -> kotlin.math.abs(p.tempoBpm - target.style.bpm) <= 2.0
+            c == "tempo" -> kotlin.math.abs(p.tempoBpm - target.style.bpm) <= TutoTarget.TEMPO_SLACK
             c == "key" -> p.harmony.root == target.harmony.root && p.harmony.scale == target.harmony.scale
             // The style's swing (house, garage, boom bap, lo-fi), within 5 points of it.
             c == "swing" -> target.style.swing > 0.0 && kotlin.math.abs(p.swing - target.style.swing) <= minOf(SWING_TOLERANCE, target.style.swing / 2)

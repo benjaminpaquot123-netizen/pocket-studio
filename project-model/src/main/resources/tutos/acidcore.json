@@ -1,0 +1,408 @@
+{
+  "format": 1,
+  "style": "acidcore",
+  "key": "F# phrygian",
+  "lines": {
+    "acid": "0:F#2:1 1:F#2:1:s 2:F#3:1:a 3:F#2:1 4:F#2:1 5:F#3:1:a 6:F#2:1 7:G2:1 8:F#2:1 9:F#2:1:s 10:F#3:1:a 11:F#2:1 12:A2:1 13:F#2:1:s 14:F#3:1:a 15:E3:1 16:F#2:1 17:F#2:1:s 18:F#3:1:a 19:F#2:1 20:F#2:1 21:F#3:1:a 22:F#2:1:s 23:G2:1 24:F#2:1 25:F#3:1:a 26:C#3:1 27:F#3:1 28:A2:1 29:F#3:1:a 30:G2:1:s 31:F#3:1:as"
+  },
+  "lineBars": {
+    "acid": 2
+  },
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "Chaque style a sa vitesse et sa couleur : on règle les deux avant de jouer la moindre note.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait d'acidcore, le hardcore acide des free parties : la 303 seule au début, puis un kick de gabber à 185 BPM qui la rejoint. C'est ce que tu vas construire.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 185 BPM, 185 battements par minute. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 185 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick",
+          "skip": "Sans ça, ton morceau reste à 120 BPM : l'acidcore va deux fois plus vite qu'une marche rapide."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau, très sombre. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne » puis « Fa♯ ».",
+          "textPro": "À toi : règle la tonalité sur Fa♯ phrygien : la 303 tourne sur Fa♯ et son octave, la seconde mineure Sol la fait grincer. Le kick est accordé sur Fa♯.",
+          "why": "Le kick et la 303 partagent la même note : ils sonnent comme un seul monstre.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:acid",
+          "skip": "Sans cette gamme, tes notes ne prendront pas la couleur du acidcore."
+        }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "La batterie",
+      "why": "Un kick de gabber saturé, le charley ouvert qui galope, un clap pour l'appui : la 303 fait tout le reste.",
+      "steps": [
+        {
+          "id": "ready",
+          "text": "Avant de commencer : ton kit est déjà celui de l'acidcore (un kick dur accordé sur Fa♯), et la piste « Basse acide 303 » a déjà son son « Hurleur ». Tu n'as rien à régler.",
+          "textPro": "Déjà prêt : le kick gabber de l'assistant (saturé, accordé sur Fa♯), charleys 909, et la 303 au son « Hurleur » avec sa saturation et son écho."
+        },
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad « Kick », touche les cases en pointillé : une sur chaque temps.",
+          "textPro": "À toi : le kick gabber sur chaque temps.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick",
+          "skip": "Sans kick, pas de hardcore."
+        },
+        {
+          "id": "open_hat_do",
+          "text": "À toi : sur le pad « Charley ouvert », touche les cases en pointillé, entre les kicks.",
+          "textPro": "À toi : le charley ouvert sur les contretemps.",
+          "why": "Le galop du hardcore : un charley entre chaque kick.",
+          "check": "lane:open_hat",
+          "spot": "rhythm.pattern",
+          "target": "open_hat",
+          "listen": "drums:kick,open_hat"
+        },
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad « Charley », touche les cases en pointillé : très serré, presque sans arrêt.",
+          "textPro": "À toi : les charleys fermés en doubles croches.",
+          "levels": "p",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,open_hat,hat"
+        },
+        {
+          "id": "clap_do",
+          "text": "À toi : sur le pad « Clap », touche les cases en pointillé : les temps 2 et 4.",
+          "textPro": "À toi : le clap sur 2 et 4.",
+          "check": "lane:clap",
+          "spot": "rhythm.pattern",
+          "target": "clap",
+          "listen": "drums:kick,open_hat,clap"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toute ta batterie quelques secondes, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,open_hat,clap",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "acid",
+      "title": "La ligne acide (la 303)",
+      "titlePro": "La 303",
+      "why": "La TB-303 de Roland est une petite machine à basse. Sa ligne couine, glisse et se tord : c'est la vedette, la basse et la mélodie à la fois.",
+      "steps": [
+        {
+          "id": "acid_hear",
+          "text": "Écoute la ligne acide seule : une boucle qui tourne, avec des notes qui crient (les accents) et d'autres qui glissent.",
+          "check": "listen",
+          "listen": "parts:acid"
+        },
+        {
+          "id": "acid_show",
+          "text": "La ligne acide s'écrit dans un écran de producteur, case par case. Touche « Montre-moi » : l'appli l'écrit pour toi sur la piste « Basse acide 303 ». Écoute-la ensuite avec « Écouter ton résultat ».",
+          "why": "À 185 BPM, la 303 joue presque chaque case : les accents et les slides la font hurler au lieu de crépiter.",
+          "levels": "f",
+          "check": "notes:acid",
+          "listen": "parts:acid",
+          "skip": "Sans ligne acide, il n'y a pas d'acidcore."
+        },
+        {
+          "id": "acid_do",
+          "text": "À toi : ouvre l'onglet Acide et écris la ligne de 2 mesures : presque toutes les cases, sur Fa♯ et son octave, avec Sol, La, Do♯ et Mi. Puis les accents (!) et les slides (⌒) en pointillé. La mesure 2 commence comme la 1re et part ailleurs à mi-chemin.",
+          "why": "À 185 BPM, la 303 joue presque chaque case : les accents et les slides la font hurler au lieu de crépiter.",
+          "levels": "p",
+          "check": "notes:acid",
+          "spot": "acid",
+          "target": "acid",
+          "listen": "parts:kick,acid",
+          "skip": "Sans ligne acide, il n'y a pas d'acidcore."
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Groove",
+      "why": "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes, puis l'exemple. Une 303 en furie sur un kick de gabber : c'est l'acidcore des teufs.",
+          "check": "listen",
+          "listen": "parts:kick,open_hat,clap,acid",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.",
+          "textPro": "À toi : nomme cette scène « Groove » : la boucle complète, d'où tu tireras les autres parties.",
+          "check": "label:Groove",
+          "spot": "song.parts",
+          "listen": "parts:kick,open_hat,clap,acid"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "why": "Une partie, c'est un ensemble de boucles qui jouent ensemble. Un morceau, c'est une suite de parties qui montent et descendent en énergie.",
+      "map": true,
+      "steps": [
+        {
+          "id": "brick",
+          "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la basse). Une partie, ce sont plusieurs briques qui jouent ensemble.",
+          "why": "Tu changes une partie en ajoutant ou en enlevant des briques : c'est comme ça qu'on fait monter ou descendre l'énergie."
+        },
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : la 303 seule, sans batterie.",
+          "why": "La 303 seule en ouverture, c'est la signature des free parties : la foule attend le kick.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_drop",
+          "text": "Écoute le Drop : tout joue, la 303 grande ouverte.",
+          "check": "listen",
+          "listen": "part:Drop"
+        },
+        {
+          "id": "map_break",
+          "text": "Écoute le Break : la 303 seule à nouveau.",
+          "check": "listen",
+          "listen": "part:Break"
+        },
+        {
+          "id": "map_phrases",
+          "text": "Regarde la carte : chaque case est une partie, avec sa durée en mesures. La courbe montre l'énergie.",
+          "why": "Le Break et sa Montée font 16 mesures : le Drop 2 tombe au début d'une phrase."
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Groove : tu enlèves des briques, tu en changes une.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro : la 303 seule.",
+          "check": "part:Intro:nokick+acid",
+          "spot": "song.parts",
+          "keep": "acid",
+          "listen": "vs:Drop:Intro"
+        },
+        {
+          "id": "make_intro2",
+          "text": "À toi : crée l'Intro 2 : le kick et le clap rejoignent la 303.",
+          "check": "part:Intro 2:acid",
+          "spot": "song.parts",
+          "keep": "kick,clap,acid",
+          "listen": "vs:Intro:Intro 2"
+        },
+        {
+          "id": "make_drop",
+          "text": "À toi : crée le Drop : tout joue.",
+          "check": "part:Drop:full",
+          "spot": "song.parts",
+          "keep": "*",
+          "listen": "vs:Intro 2:Drop"
+        },
+        {
+          "id": "make_break",
+          "text": "À toi : crée le Break : la 303 seule.",
+          "check": "part:Break:nokick+acid",
+          "spot": "song.parts",
+          "keep": "acid",
+          "listen": "vs:Drop:Break"
+        },
+        {
+          "id": "make_montee",
+          "text": "À toi : crée la Montée : sans kick, le clap va de plus en plus vite avec la 303, puis un temps de silence.",
+          "check": "part:Montée:nokick",
+          "spot": "song.parts",
+          "keep": "clap,acid",
+          "build": "clap",
+          "listen": "vs:Break:Montée"
+        },
+        {
+          "id": "make_drop2",
+          "text": "À toi : crée le Drop 2 : tout joue, sauf le clap.",
+          "check": "part:Drop 2:differs",
+          "spot": "song.parts",
+          "keep": "kick,open_hat,hat,acid",
+          "listen": "vs:Drop:Drop 2"
+        },
+        {
+          "id": "make_fin",
+          "text": "À toi : crée la Fin : le kick et la 303.",
+          "check": "part:Fin:less",
+          "spot": "song.parts",
+          "keep": "kick,acid",
+          "listen": "vs:Drop:Intro"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Le morceau », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "song": "Intro:16,Intro 2:16,Drop:32,Break:12,Montée:4,Drop 2:32,Fin:16",
+          "listen": "song",
+          "skip": "Dans un autre ordre, la 303 n'ouvrira pas le morceau seule."
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "textPro": "À toi : les durées : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
+          "why": "Intro et Intro 2 font 32 mesures, le Break et sa Montée 16 : chaque Drop tombe au début d'une phrase. 2 minutes 46 à 185 BPM.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:16,Intro 2:16,Drop:32,Break:12,Montée:4,Drop 2:32,Fin:16"
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Un silence, une cymbale : même à 185 BPM, on prévient l'oreille.",
+      "steps": [
+        {
+          "id": "gap",
+          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
+          "check": "gap",
+          "spot": "rhythm.pattern",
+          "part": "Montée",
+          "target": "clap",
+          "listen": "vs:Montée:Drop 2"
+        },
+        {
+          "id": "crash",
+          "text": "À toi : dans la partie « Drop », touche la toute première case du pad de la cymbale.",
+          "check": "crash",
+          "spot": "rhythm.pattern",
+          "part": "Drop",
+          "listen": "part:Drop"
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Le geste du filtre",
+      "why": "Le filtre de la 303 s'ouvre et se ferme pendant tout le morceau : fermé, elle gronde ; ouvert, elle hurle.",
+      "steps": [
+        {
+          "id": "filter_hear",
+          "text": "Écoute l'Intro : la 303 seule, son filtre s'ouvre petit à petit.",
+          "levels": "f",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "filter_intro",
+          "text": "À toi : automatise la « Coupure » de la 303 sur l'Intro : « Automatiser un réglage », « Basse acide 303 », « Coupure », « Par partie », une courbe qui monte du début à la fin.",
+          "why": "La 303 arrive fermée et s'ouvre : c'est la montée de l'Intro.",
+          "levels": "p",
+          "check": "automation:rise",
+          "spot": "song.automation",
+          "target": "acid",
+          "part": "Intro",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "filter",
+          "text": "À toi : automatise la « Coupure » de la 303 sur le Drop : une courbe qui monte jusqu'au milieu puis redescend.",
+          "levels": "p",
+          "check": "automation:wave",
+          "spot": "song.automation",
+          "target": "acid",
+          "part": "Drop",
+          "listen": "part:Drop"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le mix, c'est le volume de chaque piste : le kick et le grave devant, le reste derrière. Chaque son trouve sa place.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la 303, puis celui du pad « Clap ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "textPro": "À toi : au Mixeur, baisse un peu le curseur de la 303, puis celui du pad « Clap ».",
+          "check": "changed:volumes:acid,clap",
+          "spot": "mixer.strip",
+          "target": "acid",
+          "listen": "parts:kick,clap,acid"
+        },
+        {
+          "id": "meters",
+          "text": "Repère : pendant le Drop, les vu-mètres du Mixeur ne doivent pas rester dans le rouge. Si une piste rougit, baisse son fader.",
+          "levels": "p"
+        },
+        {
+          "id": "buses",
+          "text": "Repères : le kick et la 303 au même niveau, le clap juste dessous. Compare au morceau d'exemple.",
+          "levels": "p",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "title": "Le mastering",
+      "why": "Le master colle le tout et donne le volume des clubs, sans écraser le kick.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "La sortie générale a un limiteur intégré, toujours le dernier de la chaîne (il n'apparaît pas dans ses « Effets ») : il empêche le son de dépasser. L'acidcore est très fort et saturé : c'est normal pour le style. À toi : dans « Sortie générale », règle « Volume visé » sur « Club » : ton morceau sonne aussi fort qu'en club.",
+          "check": "loudness:CLUB",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter !",
+      "steps": [
+        {
+          "id": "formats",
+          "text": "WAV pour un DJ (la qualité studio), M4A pour tes amis (un fichier léger), pistes séparées pour un remix.",
+          "levels": "p"
+        },
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

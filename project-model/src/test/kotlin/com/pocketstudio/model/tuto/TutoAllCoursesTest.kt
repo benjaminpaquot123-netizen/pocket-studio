@@ -24,8 +24,8 @@ class TutoAllCoursesTest {
         // TutoCourse.STYLES: the files present, in the assistant's order; the others say « Bientôt ».
         assertEquals(StarterWizard.STYLES.map { it.id }.filter { it in ids }, TutoCourse.STYLES)
         assertTrue("jump_up" in TutoCourse.STYLES)
-        val without = StarterWizard.STYLES.map { it.id }.first { it !in ids }
-        assertEquals(null, TutoCourse.of(without))
+        // A style without its file has no course (every style may have one).
+        StarterWizard.STYLES.map { it.id }.firstOrNull { it !in ids }?.let { assertEquals(null, TutoCourse.of(it)) }
     }
 
     @Test

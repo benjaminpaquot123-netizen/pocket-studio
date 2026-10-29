@@ -328,12 +328,13 @@ class TutoTest {
         compose.onNodeWithTag("mode_card_pro").performClick()
         compose.onNodeWithTag("tuto_chooser").assertExists()
         compose.onNodeWithTag("tuto_level_pro").assertDoesNotExist()
-        compose.onNodeWithTag("tuto_soon").performScrollTo().assertExists()
+        if (com.pocketstudio.model.StarterWizard.STYLES.any { it.id !in com.pocketstudio.model.tuto.TutoCourse.STYLES }) compose.onNodeWithTag("tuto_soon").performScrollTo().assertExists()
+        else compose.onNodeWithTag("tuto_soon").assertDoesNotExist()
         // The styles with a course file are offered; one without is among « Bientôt pour les autres styles ».
         assertEquals(1, compose.onAllNodesWithTag("tuto_style_jump_up").fetchSemanticsNodes().size)
         com.pocketstudio.model.tuto.TutoCourse.STYLES.forEach { compose.onNodeWithTag("tuto_style_$it").assertExists() }
-        val soon = com.pocketstudio.model.StarterWizard.STYLES.first { it.id !in com.pocketstudio.model.tuto.TutoCourse.STYLES }
-        compose.onNodeWithTag("tuto_style_${soon.id}").assertDoesNotExist()
+        com.pocketstudio.model.StarterWizard.STYLES.firstOrNull { it.id !in com.pocketstudio.model.tuto.TutoCourse.STYLES }
+            ?.let { compose.onNodeWithTag("tuto_style_${it.id}").assertDoesNotExist() }
         compose.onNodeWithTag("tuto_style_jump_up").performScrollTo().performClick()
         assertEquals(listOf("jump_up" to TutoLevel.Pro), learned)
     }

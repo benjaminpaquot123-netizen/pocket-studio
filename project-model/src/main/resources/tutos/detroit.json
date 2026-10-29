@@ -1,0 +1,471 @@
+{
+  "format": 1,
+  "style": "detroit",
+  "mood": "happy",
+  "key": "A dorian",
+  "chords": "i IV",
+  "lines": {
+    "bass": "0:A2:2 3:A3:1 6:A2:1 8:A2:2 11:A3:1 14:A2:1 16:D2:2 19:D3:1 22:D2:1 24:D2:2 27:A2:1 30:D2:1",
+    "pad": "0:A3+C4+E4+G4:16 16:A3+C4+D4+F#4:16",
+    "lead": "0:A4:1 2:C5:1 4:A4:1 8:E5:1 10:C5:1 12:A4:1 16:A4:1 18:C5:1 20:A4:1 24:E5:8"
+  },
+  "lineBars": {
+    "bass": 2,
+    "pad": 2,
+    "lead": 2
+  },
+  "drums": {
+    "*": {
+      "ride": "x.......x.......",
+      "hat": "xo.oxo.oxo.oxo.o"
+    }
+  },
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "Chaque style a sa vitesse et sa couleur : on règle les deux avant de jouer la moindre note.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de techno de Detroit, la toute première techno (1985-1990) : des cordes mélancoliques, une basse funky, une boîte à rythmes qui roule. C'est ce que tu vas construire.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 126 BPM, 126 battements par minute. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 126 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick",
+          "skip": "Sans ça, ton morceau reste à 120 BPM : trop lent pour Detroit."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau : mélancolique mais lumineuse, comme Detroit. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure avec une note claire) puis « La ».",
+          "textPro": "À toi : règle la tonalité sur La dorien : mineur, mais avec la sixte majeure (Fa♯) qui éclaire l'accord de Ré. La couleur de Derrick May et de Jeff Mills.",
+          "why": "Toutes tes notes suivront cette gamme : les cordes sonneront tristes et chaudes à la fois.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, tes notes ne prendront pas la couleur du Detroit."
+        },
+        {
+          "id": "swing",
+          "text": "À toi : mets le swing à environ 15 % : les petits charleys traînent un peu, comme joués par un humain.",
+          "why": "Detroit, c'est la soul jouée par des machines : le swing donne le côté humain.",
+          "levels": "p",
+          "check": "swing",
+          "spot": "rhythm.pattern",
+          "listen": "drums:kick,hat,perc"
+        }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "La batterie",
+      "why": "Une boîte à rythmes qui roule : le kick sur chaque temps, la caisse claire sur 2 et 4, les charleys qui ne s'arrêtent jamais.",
+      "steps": [
+        {
+          "id": "ready",
+          "text": "Avant de commencer : ton kit est déjà celui de Detroit (des sons de boîtes à rythmes 909 et 808), avec ses effets. Tu n'as rien à régler.",
+          "textPro": "Déjà prêt : le kit de l'assistant pour Detroit (caisse et charleys 909, kick accordé sur La), volumes et effets, saturation légère sur la batterie."
+        },
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad « Kick » (la grosse caisse), touche les cases en pointillé : une sur chaque temps.",
+          "textPro": "À toi : le kick sur chaque temps.",
+          "why": "Régulier comme une chaîne d'usine de voitures : Detroit est la ville des voitures.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick",
+          "skip": "Sans kick, pas de techno."
+        },
+        {
+          "id": "snare_do",
+          "text": "À toi : sur le pad « Caisse » (le « clac »), touche les cases en pointillé : les temps 2 et 4.",
+          "textPro": "À toi : la caisse 909 sur 2 et 4.",
+          "why": "Simple et sèche, elle laisse la place aux cordes.",
+          "check": "lane:snare",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "listen": "drums:kick,snare"
+        },
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad « Charley », touche les cases en pointillé : un coup fort, un coup doux, sans arrêt.",
+          "textPro": "À toi : les charleys serrés, à deux forces (un sur deux plus doux).",
+          "why": "Deux forces qui alternent, c'est ce qui fait rouler les charleys au lieu de crépiter.",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,snare,hat"
+        },
+        {
+          "id": "open_hat_do",
+          "text": "À toi : sur le pad « Charley ouvert », touche les cases en pointillé, entre les kicks.",
+          "textPro": "À toi : le charley ouvert sur les contretemps.",
+          "check": "lane:open_hat",
+          "spot": "rhythm.pattern",
+          "target": "open_hat",
+          "listen": "drums:kick,snare,hat,open_hat"
+        },
+        {
+          "id": "perc_do",
+          "text": "À toi : sur le pad « Perc » (le bord de la caisse, un « toc » sec), touche les cases en pointillé : il ne tombe jamais avec le kick.",
+          "textPro": "À toi : le rim, en réponse au kick : c'est lui qui rend le groove funky.",
+          "why": "Il répond au kick au lieu de le doubler : question, réponse, comme dans le funk.",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,snare,perc"
+        },
+        {
+          "id": "ride_do",
+          "text": "À toi : sur le pad « Ride », touche les cases en pointillé : elle suit le kick sur les temps 1 et 3. Elle n'arrivera qu'au Drop.",
+          "textPro": "À toi : la ride sur 1 et 3, pour le Drop (Strings of Life : « la ride au rythme du kick »).",
+          "levels": "p",
+          "check": "lane:ride",
+          "spot": "rhythm.pattern",
+          "target": "ride",
+          "listen": "drums:kick,ride"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toute ta batterie quelques secondes, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,snare,hat,open_hat,perc",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "Les cordes",
+      "titlePro": "Les accords",
+      "why": "L'âme de Detroit : des accords de cordes un peu tristes, frappés au début de la mesure puis tenus, comme un orchestre de machines.",
+      "steps": [
+        {
+          "id": "pad_hear",
+          "text": "Écoute les cordes seules : deux accords qui alternent.",
+          "check": "listen",
+          "listen": "parts:pad"
+        },
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords », puis les 4 notes en pointillé de la mesure 1 (un accord de La), et les 4 de la mesure 2 (un accord de Ré). Puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Accords (son « Machine à cordes »). Mesure 1 : La m7 serré (La Do Mi Sol) ; mesure 2 : Ré 7 en voix menées (La Do Ré Fa♯) : seules deux notes bougent. « Copier sur les mesures suivantes ».",
+          "why": "Deux accords qui ne changent que de deux notes : on glisse de l'un à l'autre sans secousse.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad",
+          "skip": "Sans cordes, il manque l'âme de Detroit."
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La basse",
+      "why": "Une basse ronde et funky, héritée de la soul : elle saute d'une octave à l'autre et suit l'accord.",
+      "steps": [
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse », puis les 6 notes de la mesure 1 (sur La, avec des sauts vers le haut) et les 6 de la mesure 2 (sur Ré). Puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Basse (son « Basse ronde ») : mesure 1 sur La avec ses sauts d'octave, mesure 2 sur Ré qui remonte à La, puis « Copier sur les mesures suivantes ».",
+          "why": "Le saut d'octave, c'est le geste de la basse funk : il fait danser sans charger le grave.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass,pad",
+          "skip": "Sans basse, ton Drop manque de rebond."
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "La cloche",
+      "why": "Une cloche qui égrène les notes de l'accord, comme un carillon de machine (écoute « The Bells » de Jeff Mills).",
+      "steps": [
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 6 notes de la mesure 1 et les 4 de la mesure 2 (la dernière est longue). Puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Mélodie (son « Cloche FM ») : La Do La, Mi Do La, puis La Do La et un Mi tenu. « Copier sur les mesures suivantes ».",
+          "why": "Un aller-retour sur trois notes, et une note tenue pour respirer : on le retient tout de suite.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Groove",
+      "why": "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes, puis l'exemple. Des cordes qui chantent sur une boîte à rythmes qui danse : c'est Detroit.",
+          "check": "listen",
+          "listen": "parts:kick,snare,hat,open_hat,perc,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.",
+          "textPro": "À toi : nomme cette scène « Groove » : la boucle complète, d'où tu tireras les autres parties.",
+          "check": "label:Groove",
+          "spot": "song.parts",
+          "listen": "parts:kick,snare,hat,open_hat,perc,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "why": "Une partie, c'est un ensemble de boucles qui jouent ensemble. Un morceau, c'est une suite de parties qui montent et descendent en énergie.",
+      "map": true,
+      "steps": [
+        {
+          "id": "brick",
+          "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la basse). Une partie, ce sont plusieurs briques qui jouent ensemble.",
+          "why": "Tu changes une partie en ajoutant ou en enlevant des briques : c'est comme ça qu'on fait monter ou descendre l'énergie."
+        },
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : la batterie et les cordes, sans basse.",
+          "why": "Les cordes sont là dès le début : à Detroit, elles portent tout le morceau.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_drop",
+          "text": "Écoute le Drop : la basse, la cloche et la ride, tout joue.",
+          "why": "Le cœur du morceau, 32 mesures.",
+          "check": "listen",
+          "listen": "part:Drop"
+        },
+        {
+          "id": "map_break",
+          "text": "Écoute le Break : plus de kick ni de basse, les cordes tenues et les charleys.",
+          "why": "À Detroit, on change le motif plutôt que de faire un grand roulement : le Break respire.",
+          "check": "listen",
+          "listen": "part:Break"
+        },
+        {
+          "id": "map_phrases",
+          "text": "Regarde la carte : chaque case est une partie, avec sa durée en mesures. La courbe montre l'énergie.",
+          "why": "Des parties de 16 et 32 mesures : chaque changement tombe au début d'une phrase."
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Groove : tu enlèves des briques, tu en changes une.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro à partir du Groove : le kick, les charleys, le « toc » et les cordes.",
+          "check": "part:Intro:less+nobass",
+          "spot": "song.parts",
+          "keep": "kick,hat,open_hat,perc,pad",
+          "listen": "vs:Drop:Intro"
+        },
+        {
+          "id": "make_intro2",
+          "text": "À toi : crée l'Intro 2 : la caisse claire et la basse arrivent ; la cloche et la ride attendent le Drop.",
+          "why": "Une brique de plus toutes les 16 mesures : l'énergie monte doucement.",
+          "check": "part:Intro 2:less+bass",
+          "spot": "song.parts",
+          "keep": "kick,snare,hat,open_hat,perc,bass,pad",
+          "listen": "vs:Intro:Intro 2"
+        },
+        {
+          "id": "make_drop",
+          "text": "À toi : crée le Drop : tout joue.",
+          "check": "part:Drop:full",
+          "spot": "song.parts",
+          "keep": "*",
+          "listen": "vs:Intro 2:Drop"
+        },
+        {
+          "id": "make_break",
+          "text": "À toi : crée le Break : les cordes et les charleys seulement.",
+          "why": "Les cordes tenues, seules : le moment le plus émouvant.",
+          "check": "part:Break:nokick+nobass",
+          "spot": "song.parts",
+          "keep": "hat,pad",
+          "listen": "vs:Drop:Break"
+        },
+        {
+          "id": "make_drop2",
+          "text": "À toi : crée le Drop 2 : tout joue, sauf le « toc ». Le groove change un peu.",
+          "why": "À Detroit, la variation vient d'un motif qui change, pas d'un roulement.",
+          "check": "part:Drop 2:differs",
+          "spot": "song.parts",
+          "keep": "kick,snare,hat,open_hat,ride,bass,pad,lead",
+          "listen": "vs:Drop:Drop 2"
+        },
+        {
+          "id": "make_fin",
+          "text": "À toi : crée la Fin : la batterie et les cordes, sans basse ni cloche.",
+          "check": "part:Fin:less",
+          "spot": "song.parts",
+          "keep": "kick,hat,open_hat,perc,pad",
+          "listen": "vs:Drop:Intro"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Le morceau », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Drop 2 et Fin.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "song": "Intro:16,Intro 2:16,Drop:32,Break:16,Drop 2:24,Fin:16",
+          "listen": "song",
+          "skip": "Dans un autre ordre, le Break n'arrivera pas entre les deux Drops."
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 16, Drop 2 24 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "textPro": "À toi : les durées : Intro 16 mesures, Intro 2 16, Drop 32, Break 16, Drop 2 24 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
+          "why": "Des blocs de 16 et 32 mesures : chaque partie commence au début d'une phrase. 3 minutes 49 à 126 BPM.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:16,Intro 2:16,Drop:32,Break:16,Drop 2:24,Fin:16"
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Detroit change par petites touches : un silence, une cymbale, un motif qui bouge.",
+      "steps": [
+        {
+          "id": "gap",
+          "text": "À toi : dans la partie « Break », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
+          "why": "Un temps de rien, et le retour du kick paraît plus fort.",
+          "check": "gap",
+          "spot": "rhythm.pattern",
+          "part": "Break",
+          "listen": "vs:Break:Drop"
+        },
+        {
+          "id": "crash",
+          "text": "À toi : dans la partie « Drop », touche la toute première case du pad de la cymbale : un seul coup, au moment où tout arrive.",
+          "check": "crash",
+          "spot": "rhythm.pattern",
+          "part": "Drop",
+          "listen": "part:Drop"
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "La réverbe donne de l'espace aux cordes, l'écho fait répondre la cloche.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "text": "Écoute la réverbe : la caisse claire et les cordes, d'abord sans, puis avec. Le son prend de la place, comme dans une grande salle.",
+          "levels": "f",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "reverb",
+          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur la tranche du pad « Caisse ».",
+          "levels": "p",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "snare",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "filter",
+          "text": "À toi : automatise la « Coupure » de la piste « Accords » sur le Break : « Automatiser un réglage », « Accords », « Filtre (balayage) », « Par partie », et dessine une courbe qui monte jusqu'à la fin du Break.",
+          "why": "Les cordes s'ouvrent pendant le Break : le Drop 2 arrive en pleine lumière.",
+          "levels": "p",
+          "check": "automation:rise",
+          "spot": "song.automation",
+          "target": "pad",
+          "part": "Break",
+          "listen": "part:Break"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le mix, c'est le volume de chaque piste : le kick et le grave devant, le reste derrière. Chaque son trouve sa place.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie », puis celui de la piste « Accords ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "textPro": "À toi : au Mixeur, baisse un peu le curseur de la piste « Mélodie », puis celui de la piste « Accords ».",
+          "check": "changed:volumes:lead,pad",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:kick,snare,bass,pad,lead"
+        },
+        {
+          "id": "meters",
+          "text": "Repère : pendant le Drop, les vu-mètres du Mixeur ne doivent pas rester dans le rouge. Si une piste rougit, baisse son fader.",
+          "levels": "p"
+        },
+        {
+          "id": "buses",
+          "text": "Repères : la basse seule au centre, le kick devant, les cordes larges juste derrière, la cloche plus bas encore. Compare au morceau d'exemple.",
+          "levels": "p",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "title": "Le mastering",
+      "why": "Le master colle le tout et donne le volume des clubs, sans écraser le kick.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "La sortie générale a un limiteur intégré, toujours le dernier de la chaîne (il n'apparaît pas dans ses « Effets ») : il empêche le son de dépasser. À toi : dans « Sortie générale », règle « Volume visé » sur « Club » : ton morceau sonne aussi fort qu'en club.",
+          "check": "loudness:CLUB",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter !",
+      "steps": [
+        {
+          "id": "formats",
+          "text": "WAV pour un DJ (la qualité studio), M4A pour tes amis (un fichier léger), pistes séparées pour un remix.",
+          "levels": "p"
+        },
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

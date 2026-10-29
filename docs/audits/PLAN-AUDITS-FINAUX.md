@@ -42,6 +42,57 @@ Demande de Benjamin : « des audits finaux pour contrôler que tout fonctionne n
    - projet ancien ;
    - disque presque plein.
 
+## 1 bis. Exports et mastering (demande de Benjamin : « il faut que la masterisation soit nickel, avec les options qu'on doit proposer pour les pros »)
+
+### Ce qui existe aujourd'hui
+- Formats : WAV (16/24 bits, 32 bits flottants sans limiteur), FLAC, M4A, 44,1 ou 48 kHz.
+- Piste par piste (stems), MIDI.
+- « Volume visé » : streaming −14 LUFS, volume du style, club, ou libre (protection seule).
+- Rapport LUFS / crête, avertissement si la crête est trop haute ou si le limiteur tasse trop.
+
+### Lot « Master pro » à faire AVANT le tour 1 (préparé, pas lancé)
+Les options que propose un outil pro, groupées derrière « Avancé » en Pro. Le Mode simple garde ses 3 choix clairs.
+1. **Cible de volume** :
+   - Spotify / YouTube −14, Apple Music −16, club −9, « comme le style », et une valeur libre (−6 à −23 LUFS) ;
+   - plafond de crête au choix : −1, −0,5 ou −0,3 dBTP, mesuré en true peak après l'encodage ;
+   - sans limiteur (32 bits flottants).
+2. **Chaîne du master visible et réglable** :
+   - EQ, compresseur de bus (« glue »), largeur stéréo avec grave en mono sous X Hz, saturation douce, limiteur (attaque, relâchement, look-ahead) ;
+   - **écoute A/B** avec et sans master, au même volume (gain compensé) ;
+   - **morceau de référence** importé, comparé au volume égal.
+3. **Mesures de pro** :
+   - LUFS intégré, court terme max et momentané max, LRA (dynamique), true peak, PLR ;
+   - corrélation et compatibilité mono, spectre comparé à la référence.
+   - Un rapport exporté avec le fichier.
+4. **Fichier final** :
+   - 16, 24 ou 32 bits flottants, 44,1, 48 ou 96 kHz ;
+   - **dither** au passage en 16 bits (TPDF, mise en forme du bruit en option) ;
+   - fondu de début et de fin, silence de fin réglable (queue de réverbe gardée), début et fin coupés au premier et au dernier son ;
+   - plage exportée : morceau, partie, boucle ou sélection ;
+   - métadonnées : titre, artiste, BPM, tonalité, pochette.
+5. **Stems pour pros** :
+   - piste par piste, avec ou sans le traitement du master, avec ou sans les envois (réverbe, écho) ;
+   - tous de la même longueur, depuis 0 ;
+   - noms propres.
+   - **Test de nullité** : la somme des stems doit égaler le mix.
+6. **Autres sorties** :
+   - MIDI (toutes les pistes, tempo, signature) ;
+   - projet complet (partage et réouverture identique) ;
+   - vidéo de partage.
+
+### Contrôles automatiques des exports (banc, à chaque tour)
+- Une **matrice** : chaque format × fréquence × bits × cible × plafond, sur 5 styles. On mesure LUFS ±0,5 de la cible, true peak sous le plafond après l'encodage (M4A et FLAC compris), aucun NaN, aucun clic, et la bonne durée (fin et queue de réverbe).
+- **Aller-retour** :
+  - le projet exporté puis réouvert est identique ;
+  - le MIDI exporté puis réimporté donne les mêmes notes ;
+  - la somme des stems égale le mix (nullité sous −60 dB).
+- **Fichiers lisibles** : les fichiers sont lus par ffmpeg sans erreur, avec les bonnes métadonnées.
+- **Comparaison** : écoute contre la sortie en direct (« ce que j'entends = ce que j'exporte »).
+
+### Dans les tours
+- L'ingénieur du son et un pro masterisent un morceau pour Spotify, puis pour le club. Ils exportent WAV 24 bits, FLAC, M4A et les stems, puis jugent le résultat au rapport et au spectrogramme.
+- Un débutant partage son morceau en deux gestes et doit obtenir un fichier propre sans rien régler.
+
 ## 2. Les testeurs (toujours neufs, un tour = 6 sièges)
 
 | Rôle | Ce qu'il fait | Ce qu'il juge |
@@ -107,6 +158,7 @@ Demande de Benjamin : « des audits finaux pour contrôler que tout fonctionne n
 ## 8. Ce qui est prêt et ce qui reste à préparer
 - **Prêt** : le banc testeur humain (6 sièges), le banc des morceaux, les briefs des tours précédents, les tests automatiques.
 - **En préparation** (équipe Banc 2) : la langue par siège, la commande `ecoute` (rendu par le vrai moteur, rapport et spectrogramme), la conservation et l'analyse des fichiers exportés, les sons des packs lisibles au rendu.
+- **À faire avant le tour 1** : le lot « Master pro » (§1 bis).
 - **À préparer avant le tour 1** :
   - les profils d'appareil par siège (petit téléphone, tablette, paysage, 130 %) ;
   - la matrice de captures × 15 langues avec détection des débordements ;

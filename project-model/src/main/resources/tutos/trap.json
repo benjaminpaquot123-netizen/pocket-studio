@@ -1,0 +1,464 @@
+{
+  "format": 1,
+  "style": "trap",
+  "mood": "dark",
+  "key": "F minor",
+  "chords": "i i VI VII",
+  "lines": {
+    "bass": "0:F1:7 7:F1:3 10:F1:6 16:F1:7 23:F1:3 26:F1:5 30:F2:2 32:Db1:7 39:Db1:3 42:Db1:6 48:Eb1:7 55:Eb1:3 58:Eb1:5 62:Eb2:2",
+    "pad": "0:F3+Ab3+C4:16 16:F3+Ab3+C4:16 32:Db3+F3+Ab3:16 48:Eb3+G3+Bb3:16",
+    "lead": "0:F6:4 6:C6:2 10:Ab5:2 16:F5:4 22:Ab5:2 26:C6:2 30:Eb6:2"
+  },
+  "lineBars": {
+    "bass": 4,
+    "pad": 4,
+    "lead": 2
+  },
+  "follow": [
+    "bass",
+    "pad"
+  ],
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "Chaque style a sa vitesse et sa couleur. La trap va vite sur la grille, mais on la ressent deux fois plus lente, lourde et sombre.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de trap fini : l'Intro (la cloche seule), puis le Refrain, où la 808 (la basse très grave) tombe avec le kick. C'est un instrumental : un rappeur posera sa voix dessus. Tu vas le construire brique par brique.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 140 BPM, 140 battements par minute. « Je le fais » ouvre la fiche Tempo. On la sent à 70 : le coup de caisse ou de clap ne tombe qu'une fois par mesure.",
+          "textPro": "À toi : règle le tempo sur 140 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick,hat",
+          "skip": "Sans ça, ton morceau reste à 120 BPM : ce n'est plus du trap."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau, sombre comme la trap. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Mineure » (une gamme sombre) puis « Fa » (la note de départ).",
+          "textPro": "À toi : règle la tonalité sur Fa mineur, gamme « Mineure », tonique « Fa ». La 808 joue ainsi sur Fa1, 44 Hz : assez grave pour trembler, assez haut pour que la saturation l'entende au téléphone.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, ta 808 ne tombera pas juste avec le reste."
+        }
+      ]
+    },
+    {
+      "id": "kick",
+      "title": "Le kick",
+      "why": "Le kick (la grosse caisse) tape peu en trap : trois coups par mesure, toujours avec une note de 808. À eux deux, c'est un seul gros coup.",
+      "steps": [
+        {
+          "id": "kick_hear",
+          "text": "Écoute le kick de la trap, seul : court, il laisse le grave à la 808.",
+          "check": "listen",
+          "listen": "drums:kick"
+        },
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad « Kick studio » (le bouton qui joue le kick), touche les cases en pointillé. Chaque case est un moment de la boucle.",
+          "textPro": "À toi : sur le pad « Kick studio », touche les cases en pointillé : le 1, puis deux coups qui rebondissent.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick"
+        },
+        {
+          "id": "kick_808",
+          "levels": "p",
+          "text": "Ton kick est court exprès, et accordé sur Fa comme la 808 : la 808 jouera sur une piste à part, avec une note sous chaque coup de kick. Un kick long « baverait » sur elle.",
+          "why": "Kick court + 808 longue : le claquement vient du kick, le tremblement de la 808.",
+          "check": "manual"
+        }
+      ]
+    },
+    {
+      "id": "clap",
+      "title": "Le clap",
+      "why": "Un seul clap par mesure, sur le 3e temps (on compte 1, 2, 3, 4) : c'est ce qui rend la trap lente et lourde.",
+      "steps": [
+        {
+          "id": "clap_do",
+          "text": "À toi : sur le pad « Clap » (un claquement de mains), touche la case en pointillé : le 3e temps, la case numérotée 3.",
+          "textPro": "À toi : sur le pad « Clap », le coup sur le 3 : le demi-temps.",
+          "why": "Avec un seul clap par mesure, ton morceau à 140 se danse à 70 : c'est le « demi-temps » de la trap.",
+          "check": "lane:clap",
+          "spot": "rhythm.pattern",
+          "target": "clap",
+          "listen": "drums:kick,clap"
+        }
+      ]
+    },
+    {
+      "id": "hats",
+      "title": "Les charleys",
+      "titlePro": "Charleys et roulements",
+      "why": "Le charley (la petite cymbale qui fait « tss ») donne la vitesse. En trap, il roule : des rafales très rapides, jamais deux fois au même endroit.",
+      "steps": [
+        {
+          "id": "hat_do",
+          "levels": "f",
+          "text": "À toi : les charleys tiennent sur 2 mesures (une mesure = un tour de la boucle). Touche « Passer à 2 mesures », puis sur le pad « Charley », touche toutes les cases en pointillé. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un seul geste.",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,clap,hat"
+        },
+        {
+          "id": "hat_rolls",
+          "levels": "p",
+          "text": "À toi : « Passer à 2 mesures », puis sur le pad « Charley », les cases en pointillé (« Remplir 1/2 » pose les croches d'un geste). Puis les roulements de la mesure 2 : appui long sur la case 10, « Roulement » ×3 (3 coups dans la case) ; sur les cases 13 à 16, ×2 chacune, « ↗ Montant » (la rafale grimpe en force jusqu'au 1 suivant).",
+          "why": "Une rafale qui monte pousse vers le 1 suivant ; jamais la même deux mesures de suite, sinon ça sonne « preset ».",
+          "check": "lane:hat:rolls",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:hat"
+        },
+        {
+          "id": "hat_triplet",
+          "levels": "p",
+          "text": "À toi : un triolet. Mesure 2, temps 4 : sur le pad « Charley », pose « 3 coups sur 2 cases » sur les deux dernières cases. Trois coups à la place de deux : le charley « trébuche », c'est le flow des charleys trap (Metro Boomin, Southside).",
+          "why": "Le triolet casse la régularité des doubles croches : l'oreille est surprise juste avant le retour du 1.",
+          "check": "listen",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,clap,hat"
+        },
+        {
+          "id": "ohat_do",
+          "text": "À toi : sur le pad « Charley ouvert » (un « tsss » plus long), touche la case en pointillé de la mesure 2.",
+          "check": "lane:open_hat",
+          "spot": "rhythm.pattern",
+          "target": "open_hat",
+          "listen": "drums:kick,clap,hat,open_hat"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toute ta batterie quelques secondes, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,clap,hat,open_hat",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La 808",
+      "why": "La 808, c'est la basse de la trap : une note très grave et longue sous chaque kick, qui glisse parfois vers une autre note.",
+      "steps": [
+        {
+          "id": "bass_hear",
+          "text": "Écoute la 808 avec le kick : elle tombe avec lui, tient longtemps, et deux fois glisse d'une octave vers le haut (« wouuh »).",
+          "check": "listen",
+          "listen": "parts:kick,bass"
+        },
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse » : c'est une piste 808. Touche les 3 notes en pointillé de la mesure 1 : elles tombent avec le kick. Puis les 4 notes de la mesure 2 : l'avant-dernière dure jusque sous la dernière, elle glisse. « Copier sur les mesures suivantes » écrit les mesures 3 et 4 (les mêmes, plus bas, avec les accords).",
+          "textPro": "À toi : crée la piste Basse (une piste « Basse 808 », écrite au piano roll). Mesure 1 : Fa1 sur les 3 kicks. Mesure 2 : la note du pas 27 dure jusque sous Fa2 (pas 31) : deux notes qui se chevauchent glissent, d'une octave vers le haut. « Copier » : les mesures 3 et 4 descendent sur Ré♭ (VI) et Mi♭ (VII), le glissé d'octave compris.",
+          "why": "La 808 glisse quand une note dure jusqu'après le début de la suivante : peu de glissés, sinon on ne les remarque plus.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass",
+          "skip": "Sans 808, ta trap n'a pas de grave : c'est elle qui fait trembler les enceintes."
+        },
+        {
+          "id": "bass_pump",
+          "levels": "p",
+          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste 808 : elle se baisse une fraction de seconde à chaque kick (le sidechain). Le kick claque, la 808 tremble juste après.",
+          "check": "insert:PUMP",
+          "spot": "mixer.strip",
+          "target": "bass",
+          "listen": "parts:kick,bass"
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "Les accords",
+      "why": "Des cordes sombres tenues en fond : elles ne jouent qu'au Refrain, pour laisser la place à la voix pendant les couplets.",
+      "steps": [
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille (fais-la glisser si tu ne le vois pas) : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1, puis « Copier sur les mesures suivantes » : les accords suivants descendent tout seuls.",
+          "textPro": "À toi : crée la piste Accords (des cordes). Mesure 1 : Fa mineur tenu une mesure (« Accords » pose la triade d'un toucher), puis « Copier » : Fa mineur, Ré♭ (VI) et Mi♭ (VII), suivis le long de la gamme.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad",
+          "skip": "Sans accords, ton refrain n'aura pas sa couleur sombre."
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "La mélodie",
+      "why": "La cloche joue une petite phrase de 2 mesures, du début à la fin : c'est elle qu'on retient. Elle ne bouge pas quand l'accord change.",
+      "steps": [
+        {
+          "id": "lead_hear",
+          "text": "Écoute la mélodie de cloche avec la 808.",
+          "check": "listen",
+          "listen": "parts:bass,lead"
+        },
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les notes en pointillé : 3 à la mesure 1, 4 à la mesure 2. Il y a des trous : c'est voulu. Puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Mélodie (« Cloche FM ») et écris ses 2 mesures : Fa, Do, La♭, puis Fa, La♭, Do, Mi♭, environ une note par temps, avec des trous. « Copier » : elle reste la même sur Ré♭ et Mi♭, où ses notes deviennent des tensions (7e majeure, 9e) : le côté mélancolique.",
+          "why": "Une phrase courte, répétée, avec du vide : le rappeur s'en souvient et il a de la place.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead",
+          "skip": "Sans mélodie, personne ne retiendra ton beat."
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Refrain",
+      "why": "Tout ce que tu as fait joue ensemble : c'est le Refrain, le moment où tout le monde joue. Les autres parties naîtront de lui.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes (tout ce que tu as fait), puis l'exemple. Tout joue en même temps : c'est le Refrain, la partie la plus pleine.",
+          "textPro": "Écoute ta boucle quelques secondes, puis l'exemple.",
+          "check": "listen",
+          "listen": "parts:kick,clap,hat,open_hat,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Refrain » : c'est ta partie de départ, celle où tout joue.",
+          "check": "label:Refrain",
+          "spot": "song.parts",
+          "listen": "parts:kick,clap,hat,open_hat,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "why": "Un morceau de rap, c'est une Intro, puis le Refrain et les Couplets qui alternent. Le Couplet laisse la place à la voix.",
+      "map": true,
+      "steps": [
+        {
+          "id": "brick",
+          "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la 808). Une partie, ce sont plusieurs briques qui jouent ensemble.",
+          "why": "Tu changes une partie en ajoutant ou en enlevant des briques : c'est comme ça qu'on fait monter ou descendre l'énergie.",
+          "check": "manual"
+        },
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : la cloche seule. C'est là que le rappeur se prépare (et que le producteur glisse sa signature, le « tag »).",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_couplet",
+          "text": "Écoute le Couplet : sans les cordes, avec des charleys plus simples. La voix du rappeur prend cette place.",
+          "why": "Moins de briques au Couplet : la voix passe devant.",
+          "check": "listen",
+          "listen": "part:Couplet"
+        },
+        {
+          "id": "map_refrain",
+          "text": "Écoute le Refrain : tout revient, les cordes et les roulements.",
+          "why": "Le Refrain revient trois fois : c'est le moment que tout le monde chante.",
+          "check": "listen",
+          "listen": "part:Refrain"
+        },
+        {
+          "id": "map_bars",
+          "text": "Bon à savoir : en trap, le rappeur compte une mesure quand l'appli en compte deux (il entend le clap sur 2 et 4 d'une mesure lente). Son couplet de « 16 mesures » fait donc 32 mesures ici, presque une minute.",
+          "why": "Un couplet de 16 mesures de l'appli ne durerait que 27 secondes : trop court pour un vrai couplet.",
+          "check": "manual"
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Refrain : tu enlèves des briques.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro à partir du Refrain : seule la mélodie reste.",
+          "why": "La cloche seule donne envie sans tout montrer : quand le kick et la 808 arrivent, ça tombe d'un coup.",
+          "check": "part:Intro:nokick+nobass",
+          "spot": "song.parts",
+          "listen": "vs:Intro:Refrain",
+          "keep": "lead"
+        },
+        {
+          "id": "make_couplet",
+          "text": "À toi : crée le Couplet à partir du Refrain : sans les accords ni le charley ouvert, avec des charleys plus simples.",
+          "why": "Le Couplet est la place de la voix : on enlève ce qui la gênerait.",
+          "check": "part:Couplet:nopad+less",
+          "spot": "song.parts",
+          "listen": "vs:Refrain:Couplet",
+          "keep": "kick,clap,hat,bass,lead",
+          "lanesFrom": "Couplet"
+        },
+        {
+          "id": "make_pre",
+          "text": "À toi : crée le Pré-refrain à partir du Refrain : sans kick ni 808, pour 2 mesures juste avant chaque Refrain.",
+          "why": "Quand la 808 se tait deux mesures, tout le monde attend son retour : le Refrain tombe deux fois plus fort.",
+          "check": "part:Pré-refrain:nokick+nobass",
+          "spot": "song.parts",
+          "listen": "vs:Couplet:Refrain",
+          "keep": "clap,hat,lead"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, puis Intro pour l'Outro (la fin rejoue l'Intro). L'étape suivante donne leur durée.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "listen": "song",
+          "song": "Intro:4,Refrain:16,Couplet:30,Pré-refrain:2,Refrain:16,Couplet:30,Pré-refrain:2,Refrain:16,Outro:4",
+          "skip": "Dans un autre ordre, la 808 ne se taira pas juste avant chaque Refrain."
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 4 mesures, Refrain 16, Couplet 30, Pré-refrain 2. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "why": "Couplet 30 + Pré-refrain 2 = 32 mesures, les 16 mesures du rappeur. Refrain 16 = ses 8. En tout 3 min 26.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:4,Refrain:16,Couplet:30,Pré-refrain:2,Refrain:16,Couplet:30,Pré-refrain:2,Refrain:16,Outro:4"
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Entre deux parties, un petit événement prévient l'oreille : une rafale, une cymbale.",
+      "steps": [
+        {
+          "id": "fill",
+          "levels": "p",
+          "text": "À toi : dans la partie « Pré-refrain », « Mesure 2 », pad « Charley » : appui long sur le dernier coup avant la fin, puis « Roulement » ×4 « ↗ Montant » : une rafale qui monte jusqu'au Refrain.",
+          "check": "fill",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "vs:Couplet:Refrain",
+          "part": "Pré-refrain"
+        },
+        {
+          "id": "crash",
+          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Crash » (la grande cymbale) dans la toute première case : le Refrain arrive avec un éclat.",
+          "check": "crash",
+          "spot": "rhythm.pattern",
+          "listen": "part:Refrain",
+          "part": "Refrain"
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "La réverbe (l'écho d'une grande salle) donne de l'espace au clap et aux cordes ; l'écho répète la cloche en rythme.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "levels": "f",
+          "text": "Écoute la réverbe : la batterie et les accords, d'abord sans, puis avec. Le son prend de la place.",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "reverb",
+          "levels": "p",
+          "text": "À toi : au Mixeur, touche le nom de la piste « Accords », puis dans « Réverbe et écho », monte « Envoi réverbe ». Fais pareil sur la tranche du pad « Clap ».",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "pad,clap",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "delay",
+          "levels": "p",
+          "text": "À toi : au Mixeur, sur la piste « Mélodie », monte « Envoi écho » : chaque note de cloche se répète, comme dans les beats de Metro Boomin.",
+          "check": "send:1",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:lead"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le mix, c'est le volume de chaque piste : le kick et la basse devant, le reste derrière, pour laisser la place à la voix.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "textPro": "À toi : au Mixeur, baisse un peu les faders « Accords » et « Mélodie » : le kick et la 808 devant, les cordes loin derrière.",
+          "check": "changed:volumes:pad,lead",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:kick,clap,bass,pad,lead"
+        },
+        {
+          "id": "meters",
+          "levels": "p",
+          "text": "Repère : pendant le Refrain, les vu-mètres du Mixeur ne doivent pas rester dans le rouge. Si une piste rougit, baisse son fader.",
+          "check": "manual"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "title": "Le mastering",
+      "why": "Le master colle le tout et donne au morceau le volume des sons de trap, sans écraser le kick.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Auto (style) » : il vise le volume des morceaux de trap (environ −8,5 LUFS). Le limiteur intégré, toujours le dernier, empêche le son de dépasser.",
+          "check": "loudness:AUTO",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter à un rappeur !",
+      "steps": [
+        {
+          "id": "formats",
+          "levels": "p",
+          "text": "WAV pour un rappeur qui enregistre dessus (la qualité studio), M4A pour tes amis (un fichier léger), pistes séparées pour un ingénieur du son.",
+          "check": "manual"
+        },
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

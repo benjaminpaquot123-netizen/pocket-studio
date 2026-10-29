@@ -1080,3 +1080,8 @@ Restes :
 - MINEUR 8 : la 808 du trap ne « tape » pas (notes longues et liées) ; raccourcir d'une case dans le cours.
 - Styles 808 (trap Ré♭1, drill et jersey club Mi♭1 / Ré♭1) : notes écrites sous Mi1 par leur cours, gardées (la saleté et le clic de la 808 la portent sur un téléphone).
 - `HumanRemixJourneyTest` : la forme d'onde arrive après la lecture des pistes, hors du fil principal ; le test attend jusqu'à 10 s (1 s avant, trop court quand toute la suite tourne).
+
+## Enregistrement d'écran sans son (Benjamin, 2026-10-29)
+- Deux enregistrements d'écran du téléphone de Benjamin (MP3 et MP4 de 8,5 s, ouverture de l'appli) : piste son entièrement à zéro (−91 dB, aucun échantillon non nul), donc ni le son de l'appli ni le micro ne sont captés.
+- Cause probable : le moteur joue en AAudio exclusif (MMAP), qui contourne le mélangeur d'Android, et l'enregistreur d'écran ne peut pas le capter. Autre cause possible : l'option son de l'enregistreur.
+- À faire, après la pause et avec l'accord de Benjamin : un mode « Filmer l'écran » (sortie partagée, captable) proposé quand un enregistrement d'écran démarre, ou un export vidéo du morceau. C'est utile pour TikTok et Instagram. À vérifier aussi dans les audits.

@@ -56,7 +56,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
         listOf(
             Line(Role.Kick, "X......X..X.....", "Peu de coups de kick, toujours en même temps que la 808."),
             Line(Role.Clap, "........X.......", "Un seul clap par mesure, sur le 3 : c'est ce qui rend le groove lent et lourd."),
-            Line(Role.Hat, "X.x.X.x.X.x.X.x.X.x.X.x.X3x.2222", "Charleys réguliers, puis des rafales très rapides en fin de boucle : le fameux roulement.", build = "x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x."),
+            Line(Role.Hat, "X.x.X.x.X.x.t.t.X.x.X.x.X3x.2222", "Charleys réguliers, un temps en triolets (trois coups sur deux cases), puis des rafales très rapides en fin de boucle : le fameux roulement.", build = "x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x."),
             Line(Role.OpenHat, "......................X.........", "Un charley ouvert de temps en temps pour laisser respirer."),
         ),
         swing = 0.0,
@@ -87,7 +87,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
         listOf(
             Line(Role.Kick, "X.........X.......X....X........", "Peu de coups de kick, jamais au même endroit d'une mesure à l'autre."),
             Line(Role.Snare, "........X...................X...", "Caisse claire sur le 3 de la 1re mesure, puis sur le 4 de la 2e : ce décalage fait tout le style."),
-            Line(Role.Hat, "X..x..x.X..x..x.X..x..x.X.33.3x.", "Charleys en « 3-3-2 » avec de petites rafales en triolets : ça sautille."),
+            Line(Role.Hat, "X..x..x.X..x..x.X..x..x.X.33t.x.", "Charleys en « 3-3-2 » avec de petites rafales et un triolet (trois coups sur deux cases) : ça sautille."),
             Line(Role.Perc, "......x.......x.......x....o....", "Un petit « toc » (rim) qui répond à la caisse claire et annonce le coup suivant.", voice = 10),
         ),
         swing = 0.12,

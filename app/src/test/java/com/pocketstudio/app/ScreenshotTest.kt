@@ -15,6 +15,7 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.click
+import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performClick
@@ -187,6 +188,55 @@ open class ScreenshotTest {
         compose.onNodeWithTag("step_1").performTouchInput { click(center) }
         org.junit.Assert.assertNull(project.drums.lanes[0].hits[1])
         compose.onRoot().captureRoboImage("screenshots/${prefix}rhythm_velocity.png")
+    }
+
+    /**
+     * « Triolet »: the hats with triplets (3 small marks over 2 cells), then a hit held and made a
+     * triplet from its menu (its next cell taken), and a touch on a covered cell that takes it away.
+     */
+    @Test
+    @Config(qualifiers = "w400dp-h1300dp-xxhdpi")
+    fun rhythmTriplets() {
+        org.junit.Assume.assumeTrue(wanted("rhythm_triplets"))
+        val hat = com.pocketstudio.model.StarterWizard.Role.Hat.lane
+        var drums = DrumPattern()
+        DrumKitInfo.starterHits.forEach { (lane, steps) -> if (lane != hat) steps.forEach { drums = drums.toggle(lane, it) } }
+        drums = drums.copy(lanes = drums.lanes.mapIndexed { i, l -> if (i == hat) l.copy(hits = com.pocketstudio.model.StarterWizard.hits("X.x.T.x.X.x.t.t.")) else l })
+        var project by androidx.compose.runtime.mutableStateOf(Project(tempoBpm = 140.0, drums = drums))
+        compose.setContent {
+            PocketStudioTheme {
+                Box(Modifier.fillMaxSize().background(Neon.Background)) {
+                    RhythmScreen(
+                        project = project,
+                        transport = TransportUi(selectedPad = hat),
+                        live = LiveUi(),
+                        canUndo = true,
+                        canRedo = false,
+                        actions = RhythmActions(
+                            toggleStep = { step -> project = project.copy(drums = project.drums.toggle(hat, step)).sanitized() },
+                            setSpread = { step, n, m, r -> project = project.copy(drums = project.drums.withRoll(hat, step, n, r, m)).sanitized() },
+                        ),
+                    )
+                }
+            }
+        }
+        compose.onNodeWithTag("step_cells").performScrollTo()
+        compose.waitForIdle()
+        compose.onRoot().captureRoboImage("screenshots/${prefix}rhythm_triplets.png")
+        // The hit on cell 9 held: « 3 sur 2 cases » makes it a triplet, cell 10's hit goes.
+        compose.onNodeWithTag("step_8").performTouchInput { longClick() }
+        compose.onNodeWithTag("roll_triplet").performClick()
+        compose.waitForIdle()
+        org.junit.Assert.assertEquals(com.pocketstudio.model.Hit(1f, repeats = 3, span = 2), project.drums.lanes[hat].hits[8])
+        org.junit.Assert.assertNull(project.drums.lanes[hat].hits[9])
+        com.github.takahirom.roborazzi.captureScreenRoboImage("screenshots/${prefix}rhythm_triplet_menu.png")
+        compose.onNodeWithTag("roll_close").performClick()
+        compose.waitForIdle()
+        // A touch on the cell a triplet covers takes the triplet away.
+        compose.onNodeWithTag("step_5").performClick()
+        compose.waitForIdle()
+        org.junit.Assert.assertNull(project.drums.lanes[hat].hits[4])
+        org.junit.Assert.assertNull(project.drums.lanes[hat].hits[5])
     }
 
     @Test

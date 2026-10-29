@@ -63,5 +63,11 @@
   "Énergie : %d": "الطاقة: %d",
   "Énergie, longueur, plus…": "الطاقة، الطول، المزيد…",
   "↗ Montant": "↗ صاعد",
-  "↘ Descendant": "↘ هابط"
+  "↘ Descendant": "↘ هابط",
+  "Triolet": "ثلاثية",
+  "3 sur 2 cases": "3 على خانتين",
+  "6 sur le temps": "6 على النبضة",
+  "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "ثلاثية: %1$d ضربات منتظمة على %2$d خانات (الخانة التالية جزء منها)",
+  "dans le triolet": "داخل الثلاثية",
+  "triolet, %1$d coups sur %2$d cases": "ثلاثية، %1$d ضربات على %2$d خانات"
 }

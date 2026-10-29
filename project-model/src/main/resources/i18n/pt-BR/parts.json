@@ -63,5 +63,11 @@
   "Énergie : %d": "Energia: %d",
   "Énergie, longueur, plus…": "Energia, duração, mais…",
   "↗ Montant": "↗ Subindo",
-  "↘ Descendant": "↘ Descendo"
+  "↘ Descendant": "↘ Descendo",
+  "Triolet": "Tercina",
+  "3 sur 2 cases": "3 em 2 casas",
+  "6 sur le temps": "6 no tempo",
+  "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Tercina: %1$d batidas regulares em %2$d casas (a casa seguinte faz parte)",
+  "dans le triolet": "dentro da tercina",
+  "triolet, %1$d coups sur %2$d cases": "tercina, %1$d batidas em %2$d casas"
 }

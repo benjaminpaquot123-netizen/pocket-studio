@@ -2191,6 +2191,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     paintEnd = rhythmVm::paintEnd,
                                     setRoll = rhythmVm::setRoll,
                                     burst = rhythmVm::burstAt,
+                                    setSpread = rhythmVm::setSpread,
                                     setPadLength = rhythmVm::setPadLength,
                                     setHitChance = rhythmVm::setHitChance,
                                     rerollChances = rhythmVm::rerollChances,

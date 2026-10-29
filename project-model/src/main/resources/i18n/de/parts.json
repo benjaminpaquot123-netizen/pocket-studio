@@ -63,5 +63,11 @@
   "Énergie : %d": "Energie: %d",
   "Énergie, longueur, plus…": "Energie, Länge, mehr…",
   "↗ Montant": "↗ Steigend",
-  "↘ Descendant": "↘ Fallend"
+  "↘ Descendant": "↘ Fallend",
+  "Triolet": "Triole",
+  "3 sur 2 cases": "3 auf 2 Felder",
+  "6 sur le temps": "6 auf den Schlag",
+  "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Triole: %1$d gleichmäßige Schläge auf %2$d Felder (das nächste Feld gehört dazu)",
+  "dans le triolet": "in der Triole",
+  "triolet, %1$d coups sur %2$d cases": "Triole, %1$d Schläge auf %2$d Felder"
 }

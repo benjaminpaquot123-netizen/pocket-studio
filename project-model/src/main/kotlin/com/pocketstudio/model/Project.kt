@@ -247,7 +247,7 @@ data class DrumPattern(
             lanes = fixedLanes.map { lane ->
                 lane.copy(
                     // Hits past the loop's end stay, unheard: a time signature tried and undone gives them back.
-                    hits = lane.hits.filterKeys { it in 0 until MAX_STEPS }.mapValues { (_, h) -> h.sanitized() },
+                    hits = DrumLane.uncovered(lane.hits.filterKeys { it in 0 until MAX_STEPS }.mapValues { (_, h) -> h.sanitized() }),
                     sample = lane.sample?.takeIf { it.isSafe }?.sanitized(),
                     pan = lane.pan.finite(0f).coerceIn(-1f, 1f),
                     length = lane.length.coerceIn(0, MAX_STEPS),
@@ -289,19 +289,45 @@ data class DrumPattern(
     fun rotate(lane: Int, by: Int): DrumPattern =
         withHits(lane, lanes[lane].hits.mapKeys { (step, _) -> if (step < steps) Math.floorMod(step + by, steps) else step })
 
-    /** Next roll for a hit (the « Roulements » tool): 1 → 2 → 3 → 4 → 1. No hit: nothing changes. */
+    /**
+     * Next roll for a hit (the « Roulements » tool): 1 → 2 → 3 → 4 → 1; a triplet goes back to one hit.
+     * No hit: nothing changes.
+     */
     fun cycleRepeats(lane: Int, step: Int): DrumPattern {
         val hit = lanes[lane].hits[step] ?: return this
-        return withHits(lane, lanes[lane].hits + (step to hit.copy(repeats = hit.repeats % CYCLE_REPEATS + 1)))
+        val next = if (hit.isSpread) hit.copy(repeats = 1, span = 1) else hit.copy(repeats = hit.repeats % CYCLE_REPEATS + 1)
+        return withHits(lane, lanes[lane].hits + (step to next))
     }
 
     /**
      * One hit's roll: [repeats] hits in its step (1..[MAX_REPEATS]) and the way its strength goes
      * along them ([Hit.ramp]: 0 even, 1 rising, -1 falling). No hit there: unchanged.
      */
-    fun withRoll(lane: Int, step: Int, repeats: Int, ramp: Int = 0): DrumPattern {
+    fun withRoll(lane: Int, step: Int, repeats: Int, ramp: Int = 0, span: Int = 1): DrumPattern {
+        if (span > 1) return withSpread(lane, step, repeats, span, ramp)
         val hit = lanes[lane].hits[step] ?: return this
-        return withHits(lane, lanes[lane].hits + (step to hit.copy(repeats = repeats.coerceIn(1, MAX_REPEATS), ramp = ramp.coerceIn(-1, 1))))
+        return withHits(lane, lanes[lane].hits + (step to hit.copy(repeats = repeats.coerceIn(1, MAX_REPEATS), ramp = ramp.coerceIn(-1, 1), span = 1)))
+    }
+
+    /**
+     * A roll spread over several steps: [hits] evenly over [span] steps from [step]'s hit (the
+     * « Triolet »: 3 over 2). The steps it covers lose their own hit on this pad (one change, one
+     * undo step: they are the triplet's now). Not past the pad's loop (it would ring into the next
+     * one's first step): unchanged then, as without a hit at [step].
+     */
+    fun withSpread(lane: Int, step: Int, hits: Int, span: Int, ramp: Int? = null): DrumPattern {
+        val l = lanes.getOrNull(lane) ?: return this
+        val hit = l.hits[step] ?: return this
+        val m = span.coerceIn(1, Hit.MAX_SPAN)
+        if (!canSpread(lane, step, m)) return this
+        val spread = hit.copy(repeats = hits.coerceIn(1, MAX_REPEATS), span = m, ramp = (ramp ?: hit.ramp).coerceIn(-1, 1))
+        return withHits(lane, l.hits - (step + 1 until step + m) + (step to spread))
+    }
+
+    /** Whether a roll from [step] over [span] steps stays inside pad [lane]'s loop. */
+    fun canSpread(lane: Int, step: Int, span: Int): Boolean {
+        val l = lanes.getOrNull(lane) ?: return false
+        return step >= 0 && step + span <= minOf(l.loopSteps(steps), steps)
     }
 
     /**
@@ -313,7 +339,7 @@ data class DrumPattern(
         val first = step / 4 * 4
         val velocity = lanes[lane].hits[step]?.velocity ?: 1f
         val added = (first until minOf(first + 4, steps)).associateWith { st ->
-            (lanes[lane].hits[st] ?: Hit(velocity)).copy(repeats = 2, ramp = ramp.coerceIn(-1, 1))
+            (lanes[lane].hits[st] ?: Hit(velocity)).copy(repeats = 2, ramp = ramp.coerceIn(-1, 1), span = 1)
         }
         return withHits(lane, lanes[lane].hits + added)
     }
@@ -322,6 +348,8 @@ data class DrumPattern(
     fun setHit(lane: Int, step: Int, on: Boolean, velocity: Float = 1f): DrumPattern {
         if (step !in 0 until steps) return this
         val current = lanes[lane]
+        // A step a triplet covers is the triplet's: painted over, it stays; erased, the triplet goes.
+        current.covering(step)?.let { head -> return if (on) this else withHits(lane, current.hits - head) }
         val has = step in current.hits
         if (has == on) return this
         return withHits(lane, if (on) current.hits + (step to Hit(velocity)) else current.hits - step)
@@ -371,6 +399,8 @@ data class DrumPattern(
 
     fun toggle(lane: Int, step: Int, velocity: Float = 1f): DrumPattern {
         val current = lanes[lane]
+        // A touch on a step a triplet covers takes the triplet away (as a touch on its first step).
+        current.covering(step)?.let { head -> return withHits(lane, current.hits - head) }
         val hits = if (step in current.hits) current.hits - step else current.hits + (step to Hit(velocity))
         return copy(lanes = lanes.toMutableList().also { it[lane] = current.copy(hits = hits) })
     }
@@ -412,11 +442,41 @@ data class DrumLane(
     /** The steps this lane plays before it starts over in a pattern of [patternSteps]. */
     fun loopSteps(patternSteps: Int): Int = if (length > 0) length else patternSteps
 
+    /** The step whose spread roll (a triplet) covers [step] (after its own), null when none does. */
+    fun covering(step: Int): Int? = coveringIn(hits, step)
+
     /** What [DrumPattern.sanitized] would leave as it is. */
     internal fun isClean(): Boolean =
         pan.isFinite() && pan in -1f..1f && length in 0..DrumPattern.MAX_STEPS &&
             (sample == null || (sample.isSafe && sample.sanitized() == sample)) &&
-            hits.all { (step, h) -> step in 0 until DrumPattern.MAX_STEPS && h.isClean() }
+            hits.all { (step, h) -> step in 0 until DrumPattern.MAX_STEPS && h.isClean() && coveringIn(hits, step) == null }
+
+    companion object {
+        private fun coveringIn(hits: Map<Int, Hit>, step: Int): Int? {
+            for (d in 1 until Hit.MAX_SPAN) {
+                val h = hits[step - d] ?: continue
+                if (h.span > d) return step - d
+            }
+            return null
+        }
+
+        /**
+         * [hits] without those on a step a spread roll covers (a file of another version, a pattern
+         * shifted under a triplet): the earlier hit, the triplet, keeps its steps.
+         */
+        fun uncovered(hits: Map<Int, Hit>): Map<Int, Hit> {
+            if (hits.values.none { it.span > 1 }) return hits
+            val out = LinkedHashMap<Int, Hit>()
+            var coveredTo = -1
+            for (step in hits.keys.sorted()) {
+                if (step <= coveredTo) continue
+                val h = hits.getValue(step)
+                out[step] = h
+                if (h.span > 1) coveredTo = step + h.span - 1
+            }
+            return out
+        }
+    }
 }
 
 /**
@@ -523,15 +583,29 @@ data class Hit(
      * ([DrumChance], [Project.drumSeed]). Left out of the file at 100: hits saved before always play.
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val chance: Int = 100,
+    /**
+     * The steps its roll spreads over, 1..[MAX_SPAN]: [repeats] hits evenly over [span] steps (the
+     * « Triolet »: 3 over 2 steps, the trap hats' 16th triplets; 6 over a beat). The steps it covers
+     * after its own hold nothing on this pad ([DrumLane.covering]). Left out of the file at 1: an
+     * older version reads [repeats] hits in the one step (a roll ×3), the covered step empty.
+     * The engine's SetDrumStepRoll, after the hit.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val span: Int = 1,
 ) {
     /** No pan nor pitch of its own (the engine's step detail command is not needed). */
     val isPlain: Boolean get() = pan == 0f && pitch == 0
+
+    /** Hits spread over more than its own step (a triplet, or any N over M steps). */
+    val isSpread: Boolean get() = span > 1
+
+    /** A triplet: hits spread over several steps, not one a step ([TRIPLET]: 3 over 2; 6 over 4). */
+    val isTriplet: Boolean get() = span > 1 && repeats % span != 0
 
     /** What [sanitized] would leave as it is. */
     internal fun isClean(): Boolean = velocity.isFinite() && repeats in 1..DrumPattern.MAX_REPEATS &&
         pan.isFinite() && pan in -1f..1f && pitch in -MAX_PITCH..MAX_PITCH && ramp in -1..1 &&
         offset.isFinite() && offset in -MAX_OFFSET_MS..MAX_OFFSET_MS && glide in 0..MAX_GLIDE_MS &&
-        chance in MIN_CHANCE..100
+        chance in MIN_CHANCE..100 && span in 1..MAX_SPAN
 
     fun sanitized() = copy(
         // Not clamped (any strength already saved stays); only a NaN, which no save could write, goes.
@@ -543,10 +617,16 @@ data class Hit(
         offset = offset.finite(0f).coerceIn(-MAX_OFFSET_MS, MAX_OFFSET_MS),
         glide = glide.coerceIn(0, MAX_GLIDE_MS),
         chance = chance.coerceIn(MIN_CHANCE, 100),
+        span = span.coerceIn(1, MAX_SPAN),
     )
 
     companion object {
         const val MAX_PITCH = 24
+        /** The most steps a roll spreads over (the engine's kMaxRollSpan: a beat). */
+        const val MAX_SPAN = 4
+        /** « Triolet »: 3 hits over 2 steps (16th triplets), and « 6 sur le temps »: 6 over 4. (hits, span). */
+        val TRIPLET = 3 to 2
+        val TRIPLET_BEAT = 6 to 4
         /** The engine's micro-timing range (SetDrumStepOffset), each way. */
         const val MAX_OFFSET_MS = 50f
         /** The engine's longest 808 slide (SetDrumStepGlide). */

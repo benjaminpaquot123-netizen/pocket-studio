@@ -748,7 +748,10 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     if (natives[i] != null && beat[i].second is SoundRef.Kit && StarterWizard.shapesKit(line.role)) {
                         NativeEngine.setPadParams(lane, StarterWizard.kitShaped(line.role, PadSample("", "")).engineParams())
                     }
-                    StarterWizard.hits(line, steps).forEach { (step, hit) -> NativeEngine.setDrumHit(lane, step, hit.velocity, hit.repeats, hit.ramp) }
+                    StarterWizard.hits(line, steps).forEach { (step, hit) ->
+                        NativeEngine.setDrumHit(lane, step, hit.velocity, hit.repeats, hit.ramp)
+                        com.pocketstudio.app.rhythm.DrumHits.sendSpread(lane, step, hit)
+                    }
                 }
                 // The 303 line under the chords (acid house, rave techno).
                 if (acid != null) {

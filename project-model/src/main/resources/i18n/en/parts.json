@@ -63,5 +63,11 @@
   "Énergie : %d": "Energy: %d",
   "Énergie, longueur, plus…": "Energy, length, more…",
   "↗ Montant": "↗ Rising",
-  "↘ Descendant": "↘ Falling"
+  "↘ Descendant": "↘ Falling",
+  "Triolet": "Triplet",
+  "3 sur 2 cases": "3 over 2 cells",
+  "6 sur le temps": "6 over the beat",
+  "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Triplet: %1$d even hits over %2$d cells (the next cell is part of it)",
+  "dans le triolet": "in the triplet",
+  "triolet, %1$d coups sur %2$d cases": "triplet, %1$d hits over %2$d cells"
 }

@@ -1,0 +1,460 @@
+{
+  "format": 1,
+  "style": "minimal",
+  "key": "G minor",
+  "chords": "i",
+  "lines": {
+    "bass": "2:G2:2 6:G2:1 10:G2:2 13:G2:1 18:G2:2 22:G2:1 26:G2:2 29:G2:1 34:G2:2 38:G2:1 42:G2:2 45:G2:1 50:G2:2 54:G2:1 58:F2:2 61:G2:1",
+    "pad": "3:G3+Bb3+D4:1 10:G3+Bb3+D4:1",
+    "lead": "0:G4:1 3:G4:1 6:G4:1 9:G4:1 12:D5:1 15:G4:1 18:G4:1 21:G4:1 24:G4:1 27:G4:1 30:D5:1"
+  },
+  "lineBars": {
+    "bass": 4,
+    "pad": 1,
+    "lead": 2
+  },
+  "drums": {
+    "*": {
+      "hat": "..x...x...x...x."
+    }
+  },
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "Chaque style a sa vitesse et sa couleur : on règle les deux avant de jouer la moindre note.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de minimal : très peu de sons, des petits clics précis, une basse courte. Chaque détail compte, le silence aussi.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 128 BPM, 128 battements par minute. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 128 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick",
+          "skip": "Sans ça, ton morceau reste à 120 BPM : la minimal tourne à 128."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » puis « Sol ».",
+          "textPro": "À toi : règle la tonalité sur Sol mineur. Un seul accord pour tout le morceau : en minimal, la mélodie, c'est le rythme.",
+          "why": "Un seul accord, une seule couleur : l'oreille se concentre sur les petits clics.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, tes notes ne prendront pas la couleur du minimal."
+        },
+        {
+          "id": "swing",
+          "text": "À toi : mets le swing à environ 15 % : les petits coups entre les temps traînent, le groove se met à balancer.",
+          "why": "La minimal vit de son balancement : sans swing, les clics sonnent comme un métronome.",
+          "levels": "p",
+          "check": "swing",
+          "spot": "rhythm.pattern",
+          "listen": "drums:kick,hat,perc"
+        }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "Les clics",
+      "titlePro": "La batterie",
+      "why": "En minimal, la batterie est un jeu de petits sons très précis : on en met peu, et chacun a sa place.",
+      "steps": [
+        {
+          "id": "ready",
+          "text": "Avant de commencer : ton kit est déjà celui de la minimal : un kick sec et court, des petits clics. Tu n'as rien à régler.",
+          "textPro": "Déjà prêt : le kit de l'assistant pour la minimal (kick court, rim, shaker), volumes et effets."
+        },
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad « Kick », touche les cases en pointillé : une sur chaque temps. Il est court et sec, sans gronder.",
+          "textPro": "À toi : le kick sur chaque temps, sec et court.",
+          "why": "Un kick court laisse toute la place aux détails.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick",
+          "skip": "Sans kick, le groove n'a plus de repère."
+        },
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad « Charley », touche les cases en pointillé : un petit « tic » entre chaque kick, comme une horloge.",
+          "textPro": "À toi : le charley sec sur les contretemps.",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,hat"
+        },
+        {
+          "id": "perc_do",
+          "text": "À toi : sur le pad « Perc » (un « toc » de rim), touche les cases en pointillé des 2 mesures : il tombe à côté des temps, et la 2e mesure change un peu. Touche d'abord « Passer à 2 mesures » si on te le propose.",
+          "textPro": "À toi : le rim décalé sur 2 mesures : la 2e mesure diffère d'un coup.",
+          "why": "Une boucle de 2 mesures qui change d'un seul coup : l'oreille croit l'entendre bouger sans cesse.",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,hat,perc"
+        },
+        {
+          "id": "clap_do",
+          "text": "À toi : sur le pad « Clap », touche les cases en pointillé : très doux, sur 2 et 4, plus un petit coup juste avant la mesure suivante.",
+          "textPro": "À toi : le clap très doux sur 2 et 4, avec son fantôme en fin de mesure.",
+          "why": "Presque caché, il fait balancer sans prendre de place.",
+          "check": "lane:clap",
+          "spot": "rhythm.pattern",
+          "target": "clap",
+          "listen": "drums:kick,hat,perc,clap"
+        },
+        {
+          "id": "perc2_do",
+          "text": "À toi : sur le pad du shaker (une petite maraca), touche les cases en pointillé : un coup léger sur chaque croche. Il arrivera au Drop.",
+          "textPro": "À toi : le shaker en croches, pour le Drop.",
+          "levels": "p",
+          "check": "lane:perc2",
+          "spot": "rhythm.pattern",
+          "target": "perc2",
+          "listen": "drums:kick,hat,perc2"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute tes clics quelques secondes, puis ceux de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,hat,perc,clap",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La basse",
+      "why": "Une basse courte et sèche, pincée comme une corde, dans le médium plutôt que très grave.",
+      "steps": [
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse », puis les 4 notes en pointillé de la mesure 1, entre les kicks. « Copier sur les mesures suivantes », puis les 4 notes de la mesure 4 (une descend d'un cran) et « Copier » encore.",
+          "textPro": "À toi : crée la piste Basse (son « Basse pincée ») : 4 notes courtes sur Sol entre les kicks, « Copier », puis la mesure 4 qui passe par Fa, « Copier ».",
+          "why": "Une basse courte laisse du silence entre ses notes : en minimal, le silence fait partie du groove.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass",
+          "skip": "Sans basse, ton groove n'a pas de rebond."
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "L'accord qui revient de loin",
+      "titlePro": "Le stab dub",
+      "why": "Un seul petit accord, très court, avec un long écho : il remplit l'espace sans rien encombrer.",
+      "steps": [
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes. Fais les 2 accords de la mesure 1, puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Accords (son « Pluck », écho « dub » déjà posé) : deux stabs de Sol mineur en contretemps (pas 4 et 11), puis « Copier ».",
+          "why": "L'écho transforme deux petits accords en tout un rythme.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,pad"
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "La cloche qui se décale",
+      "why": "Une petite cloche tous les trois pas : elle tombe chaque fois ailleurs par rapport au kick. C'est l'effet hypnotique de la minimal.",
+      "steps": [
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les notes en pointillé : une case sur trois, 6 à la mesure 1 et 5 à la mesure 2. Puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Mélodie (son « Cloche FM ») : une note tous les 3 pas, 3 contre 4, sur Sol avec un Ré. « Copier ».",
+          "why": "Trois contre quatre : la cloche et le kick ne retombent ensemble que de temps en temps, l'oreille se perd avec plaisir.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:kick,lead"
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Groove",
+      "why": "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes, puis l'exemple. Peu de sons, mais chacun à sa place : c'est la minimal.",
+          "check": "listen",
+          "listen": "parts:kick,hat,perc,clap,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.",
+          "textPro": "À toi : nomme cette scène « Groove » : la boucle complète, d'où tu tireras les autres parties.",
+          "check": "label:Groove",
+          "spot": "song.parts",
+          "listen": "parts:kick,hat,perc,clap,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "why": "Une partie, c'est un ensemble de boucles qui jouent ensemble. Un morceau, c'est une suite de parties qui montent et descendent en énergie.",
+      "map": true,
+      "steps": [
+        {
+          "id": "brick",
+          "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la basse). Une partie, ce sont plusieurs briques qui jouent ensemble.",
+          "why": "Tu changes une partie en ajoutant ou en enlevant des briques : c'est comme ça qu'on fait monter ou descendre l'énergie."
+        },
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : le kick, le tic et le rim.",
+          "why": "Trois sons suffisent pour commencer.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_drop",
+          "text": "Écoute le Drop : le shaker, l'accord et la cloche arrivent.",
+          "why": "Même au plus fort, la minimal reste légère.",
+          "check": "listen",
+          "listen": "part:Drop"
+        },
+        {
+          "id": "map_break",
+          "text": "Écoute le Break : sans kick, l'accord et ses échos flottent.",
+          "check": "listen",
+          "listen": "part:Break"
+        },
+        {
+          "id": "map_phrases",
+          "text": "Regarde la carte : chaque case est une partie, avec sa durée en mesures. La courbe montre l'énergie.",
+          "why": "En minimal, on construit par petites touches : une brique entre ou sort toutes les 8 ou 16 mesures."
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Groove : tu enlèves des briques, tu en changes une.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro à partir du Groove : le kick, le tic et le rim seulement.",
+          "check": "part:Intro:less+nobass",
+          "spot": "song.parts",
+          "keep": "kick,hat,perc",
+          "listen": "vs:Drop:Intro"
+        },
+        {
+          "id": "make_intro2",
+          "text": "À toi : crée l'Intro 2 : le clap et la basse arrivent.",
+          "check": "part:Intro 2:less+bass",
+          "spot": "song.parts",
+          "keep": "kick,hat,perc,clap,bass",
+          "listen": "vs:Intro:Intro 2"
+        },
+        {
+          "id": "make_drop",
+          "text": "À toi : crée le Drop : tout joue.",
+          "check": "part:Drop:full",
+          "spot": "song.parts",
+          "keep": "*",
+          "listen": "vs:Intro 2:Drop"
+        },
+        {
+          "id": "make_break",
+          "text": "À toi : crée le Break : le rim et l'accord, sans kick ni basse.",
+          "why": "Enlever le kick, c'est le plus grand changement possible en minimal.",
+          "check": "part:Break:nokick+nobass",
+          "spot": "song.parts",
+          "keep": "perc,pad",
+          "listen": "vs:Drop:Break"
+        },
+        {
+          "id": "make_montee",
+          "text": "À toi : crée la Montée : sans kick ni basse, le tic, le rim et l'accord, puis un temps de silence à la fin.",
+          "check": "part:Montée:nokick",
+          "spot": "song.parts",
+          "keep": "hat,perc,pad",
+          "listen": "vs:Break:Montée"
+        },
+        {
+          "id": "make_drop2",
+          "text": "À toi : crée le Drop 2 : tout joue, sauf la cloche.",
+          "why": "Retirer une brique change tout : la minimal construit par soustraction.",
+          "check": "part:Drop 2:differs",
+          "spot": "song.parts",
+          "keep": "kick,hat,perc,clap,perc2,bass,pad",
+          "listen": "vs:Drop:Drop 2"
+        },
+        {
+          "id": "make_fin",
+          "text": "À toi : crée la Fin : le kick, le tic et le rim.",
+          "check": "part:Fin:less",
+          "spot": "song.parts",
+          "keep": "kick,hat,perc",
+          "listen": "vs:Drop:Intro"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Le morceau », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "song": "Intro:16,Intro 2:16,Drop:32,Break:12,Montée:4,Drop 2:24,Fin:16",
+          "listen": "song",
+          "skip": "Dans un autre ordre, la Montée n'arrivera pas juste avant le Drop 2."
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 24 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "textPro": "À toi : les durées : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 24 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
+          "why": "Le Break et sa Montée font 16 mesures : le Drop 2 tombe au début d'une phrase. 3 minutes 45 à 128 BPM.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:16,Intro 2:16,Drop:32,Break:12,Montée:4,Drop 2:24,Fin:16"
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "En minimal, une transition est un détail : un silence, une cymbale.",
+      "steps": [
+        {
+          "id": "gap",
+          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
+          "why": "Un temps de silence, et le kick qui revient paraît énorme.",
+          "check": "gap",
+          "spot": "rhythm.pattern",
+          "part": "Montée",
+          "listen": "vs:Montée:Drop 2"
+        },
+        {
+          "id": "crash",
+          "text": "À toi : dans la partie « Drop », touche la toute première case du pad de la cymbale : un seul coup, discret.",
+          "check": "crash",
+          "spot": "rhythm.pattern",
+          "part": "Drop",
+          "listen": "part:Drop"
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "En minimal, l'écho est un instrument : il transforme un clic en rythme.",
+      "steps": [
+        {
+          "id": "delay_hear",
+          "text": "Écoute le Drop : les clics et l'accord se répètent en écho, de plus en plus loin.",
+          "levels": "f",
+          "check": "listen",
+          "listen": "part:Drop"
+        },
+        {
+          "id": "delay",
+          "text": "À toi : au Mixeur, monte « Envoi écho » sur la tranche du pad « Perc » (le rim) : chaque « toc » se répète en rythme.",
+          "why": "Un écho réglé sur le tempo invente des coups que tu n'as pas écrits.",
+          "levels": "p",
+          "check": "send:1",
+          "spot": "mixer.strip",
+          "target": "perc",
+          "listen": "drums:kick,perc"
+        },
+        {
+          "id": "filter",
+          "text": "À toi : automatise la « Coupure » de la piste « Accords » sur le Drop : une courbe qui monte jusqu'au milieu puis redescend.",
+          "why": "Le même accord pendant 32 mesures, mais jamais tout à fait le même son.",
+          "levels": "p",
+          "check": "automation:wave",
+          "spot": "song.automation",
+          "target": "pad",
+          "part": "Drop",
+          "listen": "part:Drop"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le mix, c'est le volume de chaque piste : le kick et le grave devant, le reste derrière. Chaque son trouve sa place.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "textPro": "À toi : au Mixeur, baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ».",
+          "check": "changed:volumes:pad,lead",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:kick,hat,perc,bass,pad,lead"
+        },
+        {
+          "id": "meters",
+          "text": "Repère : pendant le Drop, les vu-mètres du Mixeur ne doivent pas rester dans le rouge. Si une piste rougit, baisse son fader.",
+          "levels": "p"
+        },
+        {
+          "id": "buses",
+          "text": "Repères : le kick et la basse devant, les clics nets et brillants, l'accord et la cloche loin derrière, noyés dans l'écho. Compare au morceau d'exemple.",
+          "levels": "p",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "title": "Le mastering",
+      "why": "Le master colle le tout et donne le volume des clubs, sans écraser le kick.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "La sortie générale a un limiteur intégré, toujours le dernier de la chaîne (il n'apparaît pas dans ses « Effets ») : il empêche le son de dépasser. En minimal, on garde de la dynamique : ne pousse pas plus fort que « Club ». À toi : dans « Sortie générale », règle « Volume visé » sur « Club » : ton morceau sonne aussi fort qu'en club.",
+          "check": "loudness:CLUB",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter !",
+      "steps": [
+        {
+          "id": "formats",
+          "text": "WAV pour un DJ (la qualité studio), M4A pour tes amis (un fichier léger), pistes séparées pour un remix.",
+          "levels": "p"
+        },
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

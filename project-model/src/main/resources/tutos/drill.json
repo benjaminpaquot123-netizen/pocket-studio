@@ -1,0 +1,474 @@
+{
+  "format": 1,
+  "style": "drill",
+  "mood": "dark",
+  "key": "G harmonic minor",
+  "chords": "i VI iv V",
+  "lines": {
+    "bass": "0:G1:8 10:G1:5 14:G2:2 18:Eb1:6 23:Bb1:5 30:Eb1:3 32:C2:8 42:C2:5 46:C3:2 50:D2:10 59:G1:5",
+    "pad": "0:G3+Bb3+D4:16 16:Eb3+G3+Bb3:16 32:C3+Eb3+G3:16 48:D3+F#3+A3:16",
+    "lead": "0:G4:4 6:Bb4:2 16:D5:4 22:Bb4:2 26:A4:2 32:G4:4 38:Bb4:2 48:D5:2 52:F#5:2 56:G5:8"
+  },
+  "lineBars": {
+    "bass": 4,
+    "pad": 4,
+    "lead": 4
+  },
+  "follow": [
+    "bass",
+    "pad"
+  ],
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "La drill est née à Londres, puis a gagné New York et Paris. Elle va vite sur la grille, se ressent lente, et sonne froide et menaçante.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de drill fini : l'Intro (le piano seul), puis le Refrain, où la 808 glisse sous une caisse claire décalée. C'est un instrumental pour un rappeur : tu vas le construire brique par brique.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 142 BPM, 142 battements par minute. « Je le fais » ouvre la fiche Tempo. On la sent à 71 : le coup de caisse ou de clap ne tombe qu'une fois par mesure.",
+          "textPro": "À toi : règle le tempo sur 142 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick,hat",
+          "skip": "Sans ça, ton morceau reste à 120 BPM : ce n'est plus du drill."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Mineure harmonique » (une gamme sombre, un peu orientale) puis « Sol » (la note de départ).",
+          "textPro": "À toi : règle la tonalité sur Sol mineur harmonique : gamme « Mineure harmonique », tonique « Sol ». Son Fa♯ (la 7e haussée) donne l'accord de Ré majeur et la couleur « film noir » des pianos drill.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, ton piano perdra sa couleur drill."
+        }
+      ]
+    },
+    {
+      "id": "snare",
+      "title": "La caisse claire",
+      "why": "Le secret de la drill : la caisse claire tombe sur le 3e temps de la 1re mesure, puis sur le 4e de la 2e. Ce retard tire le rythme vers l'avant.",
+      "steps": [
+        {
+          "id": "snare_hear",
+          "text": "Écoute la caisse claire avec le kick : la 2e caisse arrive un temps plus tard que la 1re.",
+          "check": "listen",
+          "listen": "drums:kick,snare"
+        },
+        {
+          "id": "snare_do",
+          "text": "À toi : la caisse claire tient sur 2 mesures (une mesure = un tour de la boucle). Touche « Passer à 2 mesures », puis sur le pad « Caisse », la case en pointillé de la mesure 1, puis celle de la mesure 2.",
+          "textPro": "À toi : « Passer à 2 mesures », puis sur le pad « Caisse » : le 3 de la mesure 1, le 4 de la mesure 2.",
+          "why": "Sur 2 et 4 comme en rap classique, on perd tout : c'est ce décalage qui fait la drill.",
+          "check": "lane:snare",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "listen": "drums:kick,snare"
+        }
+      ]
+    },
+    {
+      "id": "kick",
+      "title": "Le kick",
+      "why": "Le kick se fait rare en drill, et jamais au même endroit d'une mesure à l'autre : la 808 porte déjà le grave.",
+      "steps": [
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad « Kick studio » (le bouton qui joue le kick), touche les cases en pointillé des 2 mesures.",
+          "textPro": "À toi : sur le pad « Kick studio », les 4 coups en pointillé : 2 par mesure, pas aux mêmes places.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick,snare"
+        }
+      ]
+    },
+    {
+      "id": "hats",
+      "title": "Les charleys",
+      "titlePro": "Charleys et percussions",
+      "why": "Les charleys de la drill sautillent en « 3-3-2 » : un coup, deux cases vides, un coup, deux vides, un coup, une vide. Le petit « toc » du rim répond à la caisse claire.",
+      "steps": [
+        {
+          "id": "hat_do",
+          "levels": "f",
+          "text": "À toi : sur le pad « Charley », touche toutes les cases en pointillé des 2 mesures : tu verras le motif 3-3-2 (un coup toutes les 3 cases, puis toutes les 2).",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,snare,hat"
+        },
+        {
+          "id": "hat_rolls",
+          "levels": "p",
+          "text": "À toi : sur le pad « Charley », le 3-3-2 des 2 mesures (cases 1, 4, 7, 9, 12, 15) et les cases en pointillé de la fin de la mesure 2. Puis mesure 2, cases 11, 12 et 14 : appui long, « Roulement » ×3 chacune : trois petites rafales juste avant de reboucler.",
+          "why": "Une rafale avant la caisse et une autre en fin de boucle, pas plus : le reste respire.",
+          "check": "lane:hat:rolls",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:hat"
+        },
+        {
+          "id": "hat_triplet",
+          "levels": "p",
+          "text": "À toi : un triolet. Mesure 1, juste avant la caisse claire (cases 7 et 8) : pose « 3 coups sur 2 cases » sur le pad « Charley ». Trois coups à la place de deux : le charley trébuche et annonce la caisse.",
+          "why": "Le triolet juste avant la caisse claire, c'est la relance typique des charleys drill.",
+          "check": "listen",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,snare,hat"
+        },
+        {
+          "id": "perc_do",
+          "text": "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé des 2 mesures : il répond à la caisse claire.",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,snare,hat,perc"
+        },
+        {
+          "id": "swing",
+          "levels": "p",
+          "text": "À toi : un peu de swing, 16 % sur le curseur « Swing » sous la grille : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.",
+          "why": "Les producteurs drill swinguent les charleys de 8 à 15 % : le sautillement sans perdre la raideur.",
+          "check": "swing",
+          "spot": "rhythm.pattern",
+          "listen": "drums:kick,snare,hat,perc"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toute ta batterie quelques secondes, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,snare,hat,perc",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La 808 qui glisse",
+      "why": "En drill, la 808 chante presque : elle glisse plusieurs fois par mesure, vers l'octave ou la quinte, et finit sa boucle par un long glissé vers le bas.",
+      "steps": [
+        {
+          "id": "bass_hear",
+          "text": "Écoute la 808 avec la batterie : écoute les « wouuh » quand elle glisse.",
+          "check": "listen",
+          "listen": "parts:kick,snare,bass"
+        },
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse » : c'est une piste 808. Touche les 3 notes en pointillé de la mesure 1 : la 2e passe sous la 3e, elle glisse vers l'aigu. Puis les 3 de la mesure 2. « Copier sur les mesures suivantes » écrit la mesure 3 (la même, plus haut). Puis les 2 notes de la mesure 4, et « Copier » encore.",
+          "textPro": "À toi : crée la piste Basse (« Basse 808 », au piano roll). Mesure 1 : Sol1, puis Sol1 qui glisse vers Sol2. Mesure 2 : Mi♭1 qui glisse vers Si♭1 (la quinte), puis Mi♭1 qui glisse vers la mesure 3. « Copier » : la mesure 3 en Do. Mesure 4 : Ré2 tenu, puis le long glissé descendant vers Sol1. « Copier ».",
+          "why": "Deux notes qui se chevauchent glissent : en drill, c'est la signature, plusieurs fois par mesure.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass",
+          "skip": "Sans 808, ta drill n'a ni grave ni glissés."
+        },
+        {
+          "id": "bass_pump",
+          "levels": "p",
+          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste 808 : elle se baisse un instant à chaque kick, le kick claque par-dessus.",
+          "check": "insert:PUMP",
+          "spot": "mixer.strip",
+          "target": "bass",
+          "listen": "parts:kick,bass"
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "Les accords",
+      "why": "Des cordes froides tenues en fond, une mesure par accord : elles n'arrivent qu'au Refrain, pour le rendre dramatique.",
+      "steps": [
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1, puis « Copier sur les mesures suivantes » : les 3 accords suivants se posent tout seuls.",
+          "textPro": "À toi : crée la piste Accords (des cordes) : Sol mineur à la mesure 1, puis « Copier » : Mi♭ (VI), Do mineur (iv) et Ré majeur (V, avec le Fa♯), suivis le long de la gamme.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad",
+          "skip": "Sans accords, ton refrain sera moins dramatique."
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "La mélodie",
+      "why": "Un piano froid et lent, avec beaucoup de vide : 2 à 4 notes par mesure, et une note qui change à la 4e mesure pour relancer.",
+      "steps": [
+        {
+          "id": "lead_hear",
+          "text": "Écoute le piano avec la 808.",
+          "check": "listen",
+          "listen": "parts:bass,lead"
+        },
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les notes en pointillé : 2 à la mesure 1, 3 à la mesure 2, « Copier sur les mesures suivantes » pour la mesure 3, puis 3 à la mesure 4, et « Copier » encore.",
+          "textPro": "À toi : crée la piste Mélodie (un piano) : Sol, Si♭ | Ré, Si♭, La | (la mesure 1, « Copier ») | Ré, Fa♯, Sol tenu. Elle reste dans la gamme sans suivre les accords ; le Fa♯ de la mesure 4 tombe sur Ré majeur.",
+          "why": "Du vide dans chaque mesure : la voix du rappeur va s'y glisser.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead",
+          "skip": "Sans piano, ta drill perd sa mélodie froide."
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Refrain",
+      "why": "Tout ce que tu as fait joue ensemble : c'est le Refrain, le moment où tout le monde joue. Les autres parties naîtront de lui.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes (tout ce que tu as fait), puis l'exemple. Tout joue en même temps : c'est le Refrain, la partie la plus pleine.",
+          "textPro": "Écoute ta boucle quelques secondes, puis l'exemple.",
+          "check": "listen",
+          "listen": "parts:kick,snare,hat,perc,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Refrain » : c'est ta partie de départ, celle où tout joue.",
+          "check": "label:Refrain",
+          "spot": "song.parts",
+          "listen": "parts:kick,snare,hat,perc,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "why": "Une Intro, puis Refrains et Couplets qui alternent. Avant chaque Refrain, la 808 se tait : c'est le grand classique de la drill.",
+      "map": true,
+      "steps": [
+        {
+          "id": "brick",
+          "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la 808). Une partie, ce sont plusieurs briques qui jouent ensemble.",
+          "why": "Tu changes une partie en ajoutant ou en enlevant des briques : c'est comme ça qu'on fait monter ou descendre l'énergie.",
+          "check": "manual"
+        },
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : le piano seul, comme une menace.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_couplet",
+          "text": "Écoute le Couplet : sans les cordes, la place de la voix.",
+          "check": "listen",
+          "listen": "part:Couplet"
+        },
+        {
+          "id": "map_refrain",
+          "text": "Écoute le Refrain : tout joue, la 808 au plus fort.",
+          "check": "listen",
+          "listen": "part:Refrain"
+        },
+        {
+          "id": "map_bars",
+          "text": "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici.",
+          "why": "Un couplet de 16 mesures de l'appli ne durerait que 27 secondes : un rappeur n'aurait pas le temps de dire grand-chose.",
+          "check": "manual"
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Refrain : tu enlèves des briques.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro à partir du Refrain : le piano seul.",
+          "why": "Le piano seul installe l'ambiance ; quand la 808 tombe, ça frappe.",
+          "check": "part:Intro:nokick+nobass",
+          "spot": "song.parts",
+          "listen": "vs:Intro:Refrain",
+          "keep": "lead"
+        },
+        {
+          "id": "make_couplet",
+          "text": "À toi : crée le Couplet à partir du Refrain : sans les accords.",
+          "why": "Moins de couches : la voix passe devant.",
+          "check": "part:Couplet:nopad+less",
+          "spot": "song.parts",
+          "listen": "vs:Refrain:Couplet",
+          "keep": "kick,snare,hat,perc,bass,lead",
+          "lanesFrom": "Couplet"
+        },
+        {
+          "id": "make_pre",
+          "text": "À toi : crée le Pré-refrain : sans kick ni 808, 2 mesures juste avant chaque Refrain.",
+          "why": "Couper la 808 deux mesures avant le refrain, c'est le grand classique de la drill : tout le monde attend son retour.",
+          "check": "part:Pré-refrain:nokick+nobass",
+          "spot": "song.parts",
+          "listen": "vs:Couplet:Refrain",
+          "keep": "snare,hat,perc,lead"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "listen": "song",
+          "song": "Intro:8,Refrain:16,Couplet:30,Pré-refrain:2,Refrain:16,Couplet:30,Pré-refrain:2,Refrain:16,Outro:4",
+          "skip": "Dans un autre ordre, la 808 ne se taira pas avant chaque Refrain."
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 30, Pré-refrain 2, et l'Outro 4. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». « Donner les durées conseillées » le fait d'un coup.",
+          "why": "Couplet 30 + Pré-refrain 2 = 32 mesures : les 16 mesures du rappeur. En tout 3 min 30.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:8,Refrain:16,Couplet:30,Pré-refrain:2,Refrain:16,Couplet:30,Pré-refrain:2,Refrain:16,Outro:4"
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Entre deux parties, un petit événement prévient l'oreille : une rafale, une cymbale.",
+      "steps": [
+        {
+          "id": "fill",
+          "levels": "p",
+          "text": "À toi : dans la partie « Pré-refrain », « Mesure 2 », pad « Charley » : appui long sur le dernier coup, puis « Roulement » ×4 : une dernière rafale avant le retour de la 808.",
+          "check": "fill",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "vs:Couplet:Refrain",
+          "part": "Pré-refrain"
+        },
+        {
+          "id": "crash",
+          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Crash » (la grande cymbale) dans la toute première case.",
+          "check": "crash",
+          "spot": "rhythm.pattern",
+          "listen": "part:Refrain",
+          "part": "Refrain"
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "La réverbe et l'écho donnent au piano son côté lointain et glacé ; un filtre qui s'ouvre fait monter l'Intro.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "levels": "f",
+          "text": "Écoute la réverbe : la caisse claire et les accords, d'abord sans, puis avec.",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "reverb",
+          "levels": "p",
+          "text": "À toi : au Mixeur, sur la piste « Accords », monte « Envoi réverbe ». Fais pareil sur la tranche du pad « Caisse ».",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "pad,snare",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "delay",
+          "levels": "p",
+          "text": "À toi : sur la piste « Mélodie », monte « Envoi écho » : le piano se répète dans le lointain.",
+          "check": "send:1",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:lead"
+        },
+        {
+          "id": "intro_filter",
+          "levels": "p",
+          "text": "À toi : automatise le filtre du piano sur l'Intro : « Automatiser un réglage », « Mélodie », « Filtre (balayage) », « Par partie », et une courbe qui monte du début à la fin de l'Intro : le piano sort du brouillard.",
+          "check": "automation:rise",
+          "spot": "song.automation",
+          "target": "lead",
+          "listen": "part:Intro",
+          "part": "Intro"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le mix, c'est le volume de chaque piste : le kick et la basse devant, le reste derrière, pour laisser la place à la voix.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "textPro": "À toi : au Mixeur, baisse un peu « Accords » et « Mélodie » : la 808 et le kick d'abord, puis la caisse, puis les charleys.",
+          "check": "changed:volumes:pad,lead",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:kick,snare,bass,pad,lead"
+        },
+        {
+          "id": "meters",
+          "levels": "p",
+          "text": "Repère : pendant le Refrain, les vu-mètres du Mixeur ne doivent pas rester dans le rouge. Si une piste rougit, baisse son fader.",
+          "check": "manual"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "title": "Le mastering",
+      "why": "Le master colle le tout et donne le volume des morceaux de drill, sans écraser la 808.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Auto (style) » : il vise le volume des morceaux de drill (environ −8,5 LUFS).",
+          "check": "loudness:AUTO",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter à un rappeur !",
+      "steps": [
+        {
+          "id": "formats",
+          "levels": "p",
+          "text": "WAV pour un rappeur qui enregistre dessus (la qualité studio), M4A pour tes amis (un fichier léger), pistes séparées pour un ingénieur du son.",
+          "check": "manual"
+        },
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

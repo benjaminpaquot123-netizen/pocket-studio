@@ -1,0 +1,420 @@
+{
+  "format": 1,
+  "style": "phonk",
+  "mood": "dark",
+  "key": "F phrygian",
+  "chords": "i i II i",
+  "lines": {
+    "bass": "0:F1:6 6:F1:4 10:F1:2 12:C2:3 14:F2:2",
+    "lead": "0:F4:2 3:F4:2 6:F4:2 8:Ab4:2 11:Ab4:2 14:Gb4:2",
+    "pad": "0:F3+Ab3+C4:16"
+  },
+  "lineBars": {
+    "bass": 1,
+    "lead": 1,
+    "pad": 1
+  },
+  "follow": [
+    "bass",
+    "pad"
+  ],
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "Le phonk, c'est le son des vidéos de voitures qui dérapent : une petite cloche qui tourne en boucle, une 808 qui gronde, tout est sale exprès.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de phonk fini : la cloche seule dans l'Intro, puis le Refrain où tout cogne. C'est un instrumental : un rappeur, ou des voix samplées, viendront dessus.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 130 BPM, 130 battements par minute. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 130 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick,hat",
+          "skip": "Sans ça, ton morceau reste à 120 BPM : ce n'est plus du phonk."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau, menaçante. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne » (une gamme très sombre) puis « Fa » (la note de départ).",
+          "textPro": "À toi : règle la tonalité sur Fa phrygien : gamme « Phrygienne », tonique « Fa ». Sa 2de bémol (Sol♭, un demi-ton au-dessus de Fa) est la note « menace » du phonk.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:lead",
+          "skip": "Sans cette gamme, ta cloche perdra son côté menaçant."
+        }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "La batterie",
+      "titlePro": "Le beat",
+      "why": "Une batterie qui cogne : un kick lourd, un clap sur le 2e et le 4e temps (on compte 1, 2, 3, 4), une caisse claire empilée sur un clap sur deux, des charleys rapides.",
+      "steps": [
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad « Kick studio » (le bouton qui joue le kick), touche les 3 cases en pointillé.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick"
+        },
+        {
+          "id": "clap_do",
+          "text": "À toi : sur le pad « Clap », les 2 cases en pointillé : le 2e et le 4e temps.",
+          "check": "lane:clap",
+          "spot": "rhythm.pattern",
+          "target": "clap",
+          "listen": "drums:kick,clap"
+        },
+        {
+          "id": "snare_do",
+          "text": "À toi : sur le pad « Caisse », la case en pointillé : pile sous le 2e clap.",
+          "why": "Deux sons empilés frappent plus fort qu'un seul : en phonk, tout doit cogner.",
+          "check": "lane:snare",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "listen": "drums:kick,clap,snare"
+        },
+        {
+          "id": "hat_do",
+          "levels": "f",
+          "text": "À toi : les charleys tiennent sur 2 mesures. Touche « Passer à 2 mesures », puis sur le pad « Charley », toutes les cases en pointillé. Astuce : « Remplir 1/2 » pose un coup sur deux d'un seul geste.",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,clap,snare,hat"
+        },
+        {
+          "id": "hat_rolls",
+          "levels": "p",
+          "text": "À toi : « Passer à 2 mesures », puis sur le pad « Charley », les cases en pointillé (« Remplir 1/2 » pose un coup sur deux). Puis mesure 2, cases 15 et 16 : appui long, « Roulement » ×2 chacune : une petite rafale qui relance la boucle.",
+          "check": "lane:hat:rolls",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:hat"
+        },
+        {
+          "id": "ohat_do",
+          "text": "À toi : sur le pad « Charley ouvert », la case en pointillé à la fin de chaque mesure.",
+          "check": "lane:open_hat",
+          "spot": "rhythm.pattern",
+          "target": "open_hat",
+          "listen": "drums:kick,clap,snare,hat,open_hat"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toute ta batterie quelques secondes, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,clap,snare,hat,open_hat",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La 808",
+      "why": "La 808 tape avec chaque kick, presque toujours sur la même note, puis glisse vers l'aigu à la fin de la mesure. Elle gronde : elle est saturée.",
+      "steps": [
+        {
+          "id": "bass_hear",
+          "text": "Écoute la 808 avec le kick : un seul gros coup, puis le glissé.",
+          "check": "listen",
+          "listen": "parts:kick,bass"
+        },
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse » : c'est une piste 808. Touche les 5 notes en pointillé de la mesure 1 : 3 avec les kicks, puis 2 courtes qui glissent l'une dans l'autre. « Copier sur les mesures suivantes » fait le reste : à la mesure 3, tout monte d'un demi-ton avec l'accord.",
+          "textPro": "À toi : crée la piste Basse (« Basse 808 »). Mesure 1 : Fa1 sur les 3 kicks, puis Do2 qui dure sous Fa2 : le glissé vers l'octave. « Copier » : elle suit l'accord (Sol♭ à la mesure 3, le ♭II).",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass",
+          "skip": "Sans 808, ton phonk ne gronde pas."
+        },
+        {
+          "id": "bass_pump",
+          "levels": "p",
+          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste 808 : elle se baisse à chaque kick, et le kick passe devant.",
+          "check": "insert:PUMP",
+          "spot": "mixer.strip",
+          "target": "bass",
+          "listen": "parts:kick,bass"
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "La cowbell",
+      "why": "La cowbell (la petite cloche des boîtes à rythmes 808) joue la mélodie en boucle : c'est elle qui fait le phonk.",
+      "steps": [
+        {
+          "id": "lead_hear",
+          "text": "Écoute la cowbell seule : des coups courts, en 3-3-2.",
+          "check": "listen",
+          "listen": "parts:lead"
+        },
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 6 notes en pointillé de la mesure 1. « Copier sur les mesures suivantes » la répète partout : elle ne change jamais.",
+          "textPro": "À toi : crée la piste Mélodie (une cloche). Mesure 1 : Fa, Fa, Fa, La♭, La♭, Sol♭, en 3-3-2, notes courtes. « Copier » : elle reste la même sur tous les accords.",
+          "why": "La même petite phrase du début à la fin : c'est ce qui rend le phonk hypnotique.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead",
+          "skip": "Sans cowbell, ce n'est plus du phonk."
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "La nappe",
+      "why": "Une nappe sombre, discrète, sous la cowbell : elle élargit le son au Refrain et dans les Couplets.",
+      "steps": [
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords » (au-dessus de la grille) et touche la note du bas en pointillé de la mesure 1, puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Accords (une nappe) : Fa mineur tenu une mesure, puis « Copier » : Sol♭ majeur à la mesure 3, le ♭II du phrygien.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Refrain",
+      "why": "Tout ce que tu as fait joue ensemble : c'est le Refrain, le moment où tout le monde joue. Les autres parties naîtront de lui.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes (tout ce que tu as fait), puis l'exemple. Tout joue en même temps : c'est le Refrain, la partie la plus pleine.",
+          "textPro": "Écoute ta boucle quelques secondes, puis l'exemple.",
+          "check": "listen",
+          "listen": "parts:kick,clap,snare,hat,open_hat,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Refrain » : c'est ta partie de départ, celle où tout joue.",
+          "check": "label:Refrain",
+          "spot": "song.parts",
+          "listen": "parts:kick,clap,snare,hat,open_hat,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "why": "Le phonk avance par blocs de 8 mesures. Le Couplet garde le beat et la 808 mais retire la cowbell : la place des voix.",
+      "map": true,
+      "steps": [
+        {
+          "id": "brick",
+          "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la 808). Une partie, ce sont plusieurs briques qui jouent ensemble.",
+          "why": "Tu changes une partie en ajoutant ou en enlevant des briques.",
+          "check": "manual"
+        },
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : la cowbell seule.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_refrain",
+          "text": "Écoute le Refrain : tout tombe d'un coup.",
+          "check": "listen",
+          "listen": "part:Refrain"
+        },
+        {
+          "id": "map_couplet",
+          "text": "Écoute le Couplet : le beat et la 808 continuent, la cowbell se tait.",
+          "check": "listen",
+          "listen": "part:Couplet"
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Refrain : tu enlèves des briques.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro à partir du Refrain : la cowbell seule.",
+          "why": "La cowbell seule fait monter l'attente : quand tout tombe, ça frappe.",
+          "check": "part:Intro:nokick+nobass",
+          "spot": "song.parts",
+          "listen": "vs:Intro:Refrain",
+          "keep": "lead"
+        },
+        {
+          "id": "make_couplet",
+          "text": "À toi : crée le Couplet à partir du Refrain : sans la cowbell ni le charley ouvert.",
+          "check": "part:Couplet:nolead+less",
+          "spot": "song.parts",
+          "listen": "vs:Refrain:Couplet",
+          "keep": "kick,clap,snare,hat,bass,pad"
+        },
+        {
+          "id": "make_pre",
+          "text": "À toi : crée le Pré-refrain : sans kick ni 808, 2 mesures juste avant chaque Refrain.",
+          "why": "Tout retirer juste avant le Refrain : le retour du kick et de la 808 fait l'effet d'un coup de frein à main.",
+          "check": "part:Pré-refrain:nokick+nobass",
+          "spot": "song.parts",
+          "listen": "vs:Couplet:Refrain",
+          "keep": "clap,snare,hat,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "listen": "song",
+          "song": "Intro:8,Refrain:16,Couplet:14,Pré-refrain:2,Refrain:16,Couplet:14,Pré-refrain:2,Refrain:16,Outro:4",
+          "skip": "Dans un autre ordre, la 808 ne se taira pas avant chaque Refrain."
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 14, Pré-refrain 2, Outro 4. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». « Donner les durées conseillées » le fait d'un coup.",
+          "why": "Couplet 14 + Pré-refrain 2 = 16 : des blocs de 8, comme tout le phonk. En tout 2 min 50.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:8,Refrain:16,Couplet:14,Pré-refrain:2,Refrain:16,Couplet:14,Pré-refrain:2,Refrain:16,Outro:4"
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Entre deux parties, un petit événement prévient l'oreille : une rafale, une cymbale.",
+      "steps": [
+        {
+          "id": "fill",
+          "levels": "p",
+          "text": "À toi : dans la partie « Pré-refrain », « Mesure 2 », pad « Charley » : appui long sur le dernier coup, puis « Roulement » ×4 « ↗ Montant ».",
+          "check": "fill",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "vs:Couplet:Refrain",
+          "part": "Pré-refrain"
+        },
+        {
+          "id": "crash",
+          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Crash » (la grande cymbale) dans la toute première case.",
+          "check": "crash",
+          "spot": "rhythm.pattern",
+          "listen": "part:Refrain",
+          "part": "Refrain"
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Tout saturer",
+      "why": "Le phonk est sale exprès : la distorsion partout, et un écrêteur sur la sortie pour qu'il sonne plus fort que tout.",
+      "steps": [
+        {
+          "id": "dirt_hear",
+          "levels": "f",
+          "text": "Écoute le Refrain : la cowbell, la 808 et la batterie sont toutes saturées, comme une vieille cassette poussée trop fort.",
+          "check": "listen",
+          "listen": "part:Refrain"
+        },
+        {
+          "id": "hat_ott",
+          "levels": "p",
+          "text": "À toi : au Mixeur, mets l'effet « OTT multibande » sur le pad « Charley » : il écrase et fait briller les charleys, comme dans les beats de drift.",
+          "check": "insert:OTT",
+          "spot": "mixer.strip",
+          "target": "hat",
+          "listen": "drums:hat"
+        },
+        {
+          "id": "clipper",
+          "levels": "p",
+          "text": "À toi : dans « Sortie générale », ajoute l'effet « Écrêteur » : il coupe les pointes pour que tout sonne plus fort et plus sale.",
+          "why": "Les producteurs de phonk poussent leur master plus fort que raisonnable : c'est le son du style.",
+          "check": "master",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le mix, c'est le volume de chaque piste : le kick et la basse devant, le reste derrière, pour laisser la place à la voix.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "textPro": "À toi : au Mixeur, baisse un peu « Accords » et « Mélodie » : la 808 et le kick devant, la cowbell juste derrière.",
+          "check": "changed:volumes:pad,lead",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:kick,clap,bass,pad,lead"
+        },
+        {
+          "id": "meters",
+          "levels": "p",
+          "text": "Repère : pendant le Refrain, les vu-mètres du Mixeur ne doivent pas rester dans le rouge. Si une piste rougit, baisse son fader.",
+          "check": "manual"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "title": "Le mastering",
+      "why": "Le master pousse le tout aussi fort que les morceaux de phonk, sans que le limiteur ne fasse craquer.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Auto (style) » : environ −7 LUFS, le plus fort de tout le hip-hop.",
+          "check": "loudness:AUTO",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter à un rappeur !",
+      "steps": [
+        {
+          "id": "formats",
+          "levels": "p",
+          "text": "WAV pour un rappeur qui enregistre dessus (la qualité studio), M4A pour tes amis (un fichier léger), pistes séparées pour un ingénieur du son.",
+          "check": "manual"
+        },
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

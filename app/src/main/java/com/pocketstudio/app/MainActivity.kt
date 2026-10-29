@@ -60,10 +60,10 @@ class MainActivity : ComponentActivity() {
         // The intro at each start of the app, not when the screen is rebuilt (rotation, new language).
         if (savedInstanceState == null) {
             Intro.playing = true
-            // The sound is read and made ready on its own thread now, long before its first beat.
+            // The heartbeat is felt: two taps of the vibrator on the drawn beats (no sound).
             val prefs = SettingsStore.state.value
             introCue = com.pocketstudio.app.onboarding.IntroCue.forLaunch(
-                this, { window.decorView }, com.pocketstudio.app.onboarding.animationsOff(this), prefs.introSound, prefs.haptics,
+                this, com.pocketstudio.app.onboarding.animationsOff(this), prefs.introSound, prefs.haptics,
             )
             openAsked(intent)
         }

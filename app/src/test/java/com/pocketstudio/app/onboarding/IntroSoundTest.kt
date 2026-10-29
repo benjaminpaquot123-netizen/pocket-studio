@@ -5,18 +5,16 @@ import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.io.File
 import kotlin.math.abs
-import kotlin.math.pow
 
 /**
- * The opening's timeline and its sound (assets/intro/ting.wav, made by
+ * The opening's timeline and its felt heartbeat (owner, 2026-10-29: no sound, two taps of the
+ * vibrator; formerly a sound file made by
  * scripts/brand/render_heartbeat.py): the length asked for, the hand-over from the splash
  * without a jump, the two drawn beats on the sound's two beats to the frame, a clean, mastered
  * file, and when the phone hears it, feels it, or neither.
  */
 class IntroSoundTest {
-    private val wav by lazy { Wav.parse(File("src/main/assets/${IntroSound.ASSET}").readBytes()) }
 
     @Test
     fun atMostOneSecondLongerThanBefore() {
@@ -53,17 +51,8 @@ class IntroSoundTest {
 
     @Test
     fun theTwoDrawnBeatsAreTheSoundsTwoBeats() {
-        assertEquals(48_000, wav.sampleRate)
-        assertEquals(1, wav.channels)
         val beats = IntArray(IntroTimeline.BEAT_COUNT) { IntroTimeline.beatFrame(it) }
         assertArrayEquals(intArrayOf(4800, 16320), beats)
-        // Owner (2026-10-29): the beats are felt, not heard; the file is silent on them and until the
-        // ting, which rings when the light runs over the name (its cue point, written by the script).
-        assertEquals(1, wav.cues.size)
-        val ting = wav.cues[0]
-        assertEquals(64_800, ting)
-        for (i in 0..ting) assertEquals("frame $i", 0f, wav.sample(i))
-        assertTrue(highs(ting, ting + 96) > 1e-6)
         // And the drawing beats there: the mark swells from that frame on, the pads light up.
         for (k in 0 until IntroTimeline.BEAT_COUNT) {
             val at = IntroTimeline.beatStart(k)
@@ -83,26 +72,6 @@ class IntroSoundTest {
     }
 
     @Test
-    fun theSoundIsCleanAndMastered() {
-        val n = wav.frames
-        var peak = 0f
-        for (i in 0 until n) {
-            val v = wav.sample(i)
-            assertTrue(v.isFinite())
-            peak = maxOf(peak, abs(v))
-        }
-        // -1 dBTP asked (true peak, measured by the script); the samples stay under it, unclipped.
-        assertTrue("peak $peak", peak <= 10f.pow(-1f / 20f) && peak > 0.3f)
-        // It ends in silence, faded (no click), well before the opening fades out.
-        for (i in n - 64 until n) assertEquals(0f, wav.sample(i))
-        assertTrue(IntroTimeline.SOUND_START + n / 48f < IntroTimeline.FADE_START)
-        // Its loudness, in short: a ting, not a blast (about -16 LUFS by the script), over its first half second.
-        val from = wav.cues[0]
-        val rms = kotlin.math.sqrt((from until from + 24_000).sumOf { (wav.sample(it) * wav.sample(it)).toDouble() } / 24_000)
-        assertTrue("rms $rms", rms > 0.01 && rms < 0.3)
-    }
-
-    @Test
     fun theSoundStartsAtTheFrameThatPlaysNow() {
         assertTrue(IntroTimeline.SOUND_START >= IntroTimeline.SPLASH_MS)
         assertTrue(IntroTimeline.SOUND_LATEST < IntroTimeline.beatStart(0))
@@ -116,23 +85,15 @@ class IntroSoundTest {
         val normal = AudioManager.RINGER_MODE_NORMAL
         val vibrate = AudioManager.RINGER_MODE_VIBRATE
         val silent = AudioManager.RINGER_MODE_SILENT
-        fun mode(reduced: Boolean = false, on: Boolean = true, haptics: Boolean = true, ringer: Int = normal, volume: Int = 7, music: Boolean = false) =
-            introCueMode(reduced, on, haptics, ringer, volume, music)
-        // Owner (2026-10-29): the heartbeat is felt (two taps), only the ting is heard.
-        assertEquals(IntroCueMode.Sound, mode())
-        assertEquals(IntroCueMode.Ting, mode(haptics = false))
-        // Silent: nothing. Vibrate: the two taps alone (if vibrations are on in Réglages).
-        assertEquals(IntroCueMode.Quiet, mode(ringer = silent))
+        fun mode(reduced: Boolean = false, on: Boolean = true, haptics: Boolean = true, ringer: Int = normal) = introCueMode(reduced, on, haptics, ringer)
+        // Owner (2026-10-29): the heartbeat is felt, never heard: two taps, whatever the media volume.
+        assertEquals(IntroCueMode.Taps, mode())
         assertEquals(IntroCueMode.Taps, mode(ringer = vibrate))
-        assertEquals(IntroCueMode.Quiet, mode(ringer = vibrate, haptics = false))
-        // « Son d'ouverture » off in Réglages: the taps alone; the animations off: nothing at all.
-        assertEquals(IntroCueMode.Taps, mode(on = false))
-        assertEquals(IntroCueMode.Quiet, mode(on = false, haptics = false))
+        // Silent phone, the animations off, « Battement à l'ouverture » or the vibrations off in Réglages: nothing.
+        assertEquals(IntroCueMode.Quiet, mode(ringer = silent))
         assertEquals(IntroCueMode.Quiet, mode(reduced = true))
-        assertEquals(IntroCueMode.Quiet, mode(reduced = true, ringer = vibrate))
-        // Media volume at zero, or another app's music playing: no ting over it, the taps still.
-        assertEquals(IntroCueMode.Taps, mode(volume = 0))
-        assertEquals(IntroCueMode.Taps, mode(music = true))
+        assertEquals(IntroCueMode.Quiet, mode(on = false))
+        assertEquals(IntroCueMode.Quiet, mode(haptics = false))
     }
 
     @Test
@@ -150,15 +111,5 @@ class IntroSoundTest {
             assertTrue(abs(sx) < IntroTimeline.Sparks.count(k) * 0.3f)
         }
         assertTrue(IntroTimeline.Sparks.count(1) < IntroTimeline.Sparks.count(0))
-    }
-
-    /** Energy of the first difference (the highs) over [from, to). */
-    private fun highs(from: Int, to: Int): Double {
-        var e = 0.0
-        for (i in from + 1 until to) {
-            val d = (wav.sample(i) - wav.sample(i - 1)).toDouble()
-            e += d * d
-        }
-        return e
     }
 }

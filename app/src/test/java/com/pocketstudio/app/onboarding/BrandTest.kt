@@ -52,7 +52,7 @@ import java.util.Locale
  * ends by itself or at a touch, stays still with the phone's animations off; the language is the
  * phone's at the first start and picked from a list; music canvases stay left to right in a
  * right-to-left language. The sound (or the taps) on the timeline's beats, silent when skipped
- * early or with the animations off; « Son d'ouverture » in Réglages. Key frames in
+ * early or with the animations off; « Battement à l'ouverture » in Réglages. Key frames in
  * app/screenshots/brand/.
  */
 @RunWith(RobolectricTestRunner::class)

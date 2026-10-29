@@ -97,7 +97,7 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
     }, second = {
         NeonCard {
             SectionLabel(tr("Son"))
-            Toggle(tr("Son d'ouverture"), tr("Un petit « ting » quand l'appli s'ouvre ; le battement de cœur, lui, se sent en vibration. Rien si le téléphone est en silencieux."), s.introSound, "intro_sound") { v ->
+            Toggle(tr("Battement à l'ouverture"), tr("Deux battements de cœur en vibration quand l'appli s'ouvre. Rien si le téléphone est en silencieux."), s.introSound, "intro_sound") { v ->
                 actions.update { it.copy(introSound = v) }
             }
             Text(tr("Volume du métronome : %d %%", (s.metronomeLevel * 100).roundToInt()), style = MaterialTheme.typography.bodyMedium)

@@ -1,0 +1,480 @@
+{
+  "format": 1,
+  "style": "deep_house",
+  "key": "F dorian",
+  "chords": "i i IV IV",
+  "lines": {
+    "bass": "2:F2:2:105 6:F2:2:100 10:F2:2:100 13:F2:1:70 14:F3:2:90 18:C3:2:100 22:F2:2:100 26:F2:2:100 29:F2:1:70 30:Ab2:2:90 34:Bb1:2:105 38:Bb1:2:100 42:Bb1:2:100 45:Bb1:1:70 46:Bb2:2:90 50:F2:2:100 54:Bb1:2:100 58:Bb1:2:100 61:Bb1:1:70 62:D2:2:90",
+    "pad": "2:Ab3+C4+Eb4+G4:2:95 5:Ab3+C4+Eb4+G4:2:80 10:Ab3+C4+Eb4+G4:2:90 13:Ab3+C4+Eb4+G4:1:65 18:Ab3+C4+Eb4+G4:2:95 21:Ab3+C4+Eb4+G4:2:80 26:Ab3+C4+Eb4+G4:3:90 30:Ab3+C4+Eb4+G4:2:75 34:D3+F3+Ab3+C4:2:95 37:D3+F3+Ab3+C4:2:80 42:D3+F3+Ab3+C4:2:90 45:D3+F3+Ab3+C4:1:65 50:D3+F3+Ab3+C4:2:95 53:D3+F3+Ab3+C4:2:80 58:D3+F3+Ab3+C4:3:90 62:D3+F3+Ab3+C4:2:75",
+    "lead": "2:F4:6:90 56:C5:3:80 59:Ab4:5:75"
+  },
+  "lineBars": {
+    "bass": 4,
+    "pad": 4,
+    "lead": 4
+  },
+  "follow": [
+    "bass",
+    "pad"
+  ],
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "La deep house prend son temps : un tempo tranquille et des couleurs de jazz.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de deep house finie : un piano électrique feutré, une basse ronde, des percussions qui roulent. Rien ne cogne, tout balance.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 120 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 120 BPM, le bas de la fourchette house (116 à 126) : c'est le côté « deep ».",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick,clap,hat",
+          "skip": "Sans ça, ton morceau reste à 100 BPM : trop lent pour danser."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne » (une gamme mineure douce, un peu jazz), puis « Fa ».",
+          "textPro": "À toi : règle la tonalité sur Fa dorien : Fm9 et B♭9, les deux accords que Kerri Chandler fait tourner toute une nuit.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, ton piano ne prendra pas sa couleur chaude."
+        }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "La batterie",
+      "titlePro": "Le beat",
+      "why": "Un kick rond sur chaque temps, un clap discret, et des percussions qui roulent entre les coups : le groove « rolling » de la deep house.",
+      "steps": [
+        {
+          "id": "ready",
+          "text": "Avant de commencer : le kit est prêt, avec le kick, le clap et les toms de la boîte à rythmes 909. « FX » sur un pad veut dire qu'un effet y est déjà posé. Tu n'as rien à régler.",
+          "textPro": "Déjà prêt pour toi : kick, clap et toms de la TR-909, kick accordé sur la tonalité, percussions du style. Chaque piste que tu créeras arrivera avec son son conseillé.",
+          "check": "manual"
+        },
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad « Kick », touche les 4 cases en pointillé : un coup sur chaque temps.",
+          "textPro": "À toi : le kick sur les 4 temps, rond et sans clic.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick"
+        },
+        {
+          "id": "clap_do",
+          "text": "À toi : sur le pad « Clap », touche les 2 cases en pointillé, sur les temps 2 et 4. Il est un peu en retrait : on reste doux.",
+          "textPro": "À toi : le clap sur 2 et 4, en « Moyen » : en deep, il ne claque pas.",
+          "check": "lane:clap",
+          "spot": "rhythm.pattern",
+          "target": "clap",
+          "listen": "drums:kick,clap"
+        },
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad « Charley », touche les cases en pointillé : un coup fort entre chaque temps, et des petits coups très doux autour.",
+          "textPro": "À toi : les charleys, le contretemps fort et les fantômes doux autour.",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,clap,hat"
+        },
+        {
+          "id": "hat_vel",
+          "levels": "p",
+          "text": "À toi : sur le pad « Charley », les coups des temps (cases 1, 2, 3, 4) doivent rester en « Doux », ceux entre les temps en « Fort » : appui long sur un coup, puis « Doux » ou « Fort ». « Copier sur les mesures suivantes » quand la 1re mesure est prête.",
+          "why": "Le swing vient autant des forces que du décalage : des fantômes doux autour d'un contretemps fort.",
+          "check": "velocity:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:hat"
+        },
+        {
+          "id": "perc_do",
+          "text": "À toi : sur le pad de percussion, touche les cases en pointillé : quelques coups légers et décalés, comme joués à la main.",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,clap,hat,perc"
+        },
+        {
+          "id": "tom_do",
+          "text": "À toi : sur le pad « Tom », touche les 3 cases en pointillé : le tom roule entre les coups de kick, sans jamais les toucher.",
+          "textPro": "À toi : le tom 909 sur les cases 3, 9 et 11 : le motif « rolling » de la deep house.",
+          "check": "lane:tom",
+          "spot": "rhythm.pattern",
+          "target": "tom",
+          "listen": "drums:kick,clap,hat,perc,tom"
+        },
+        {
+          "id": "swing",
+          "levels": "p",
+          "text": "À toi : mets le swing à 30 (environ 61 à 66 % sur une MPC) : les doubles croches paires traînent, paresseuses.",
+          "check": "swing",
+          "spot": "rhythm.pattern",
+          "listen": "drums:kick,clap,hat,perc,tom"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toute ta batterie quelques secondes, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,clap,hat,perc,tom",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La basse",
+      "why": "Une basse ronde et liée qui se glisse entre les coups de kick. Elle ne tombe jamais sur le 1er temps : c'est le kick qui l'a.",
+      "steps": [
+        {
+          "id": "bass_hear",
+          "text": "Écoute la basse avec le kick.",
+          "check": "listen",
+          "listen": "parts:kick,bass"
+        },
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse », puis les 5 notes en pointillé de la mesure 1, puis les 5 de la mesure 2. « Copier sur les mesures suivantes » refait les 2 mesures sur l'accord suivant (Si♭).",
+          "textPro": "À toi : crée la piste Basse. Mesure 1 sur Fa (le saut d'octave en fin), mesure 2 qui répond par la quinte (Do) et la tierce (La♭) ; « Copier » les transpose sur B♭ pour les mesures 3 et 4.",
+          "why": "Aucune note sur la case 1 : le kick a le 1, la basse arrive juste après, et ça balance.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass",
+          "skip": "Sans basse, ton morceau n'aura pas de grave."
+        },
+        {
+          "id": "bass_sub",
+          "levels": "p",
+          "text": "À toi : touche « Copier la basse une octave plus bas » : une piste « Sub » tient le grave, immobile.",
+          "check": "track:sub",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass"
+        },
+        {
+          "id": "bass_pump",
+          "levels": "p",
+          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la Sub, puis sur la Basse : elles s'effacent à chaque kick (sidechain rapide).",
+          "check": "insert:PUMP",
+          "spot": "mixer.strip",
+          "target": "sub,bass",
+          "listen": "parts:kick,bass"
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "Le piano électrique",
+      "titlePro": "Les accords de Kerri Chandler",
+      "why": "Des accords riches (de 4 notes) joués juste après les temps, sans leur note grave : c'est l'âme de la deep house.",
+      "steps": [
+        {
+          "id": "pad_hear",
+          "text": "Écoute le piano seul : deux accords seulement, joués en petits coups juste après les temps.",
+          "check": "listen",
+          "listen": "parts:pad"
+        },
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les 4 coups de la mesure 1, puis les 4 de la mesure 2. « Copier sur les mesures suivantes » les refait sur l'accord suivant.",
+          "textPro": "À toi : crée la piste Accords. Fm9 sans fondamentale (La♭ Do Mi♭ Sol), juste après les temps, deux mesures ; « Copier » les descend sur B♭9 (Ré Fa La♭ Do) : la même forme déplacée, le « mouvement parallèle » de Kerri Chandler.",
+          "why": "Le même accord déplacé le long de la gamme : c'est la couleur des progressions de Kerri Chandler.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,pad",
+          "skip": "Sans accords, ta deep house perd sa couleur."
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "La voix",
+      "why": "Un seul petit bout de voix, noyé d'écho, toutes les 4 mesures : en deep house, le vide compte autant que la voix.",
+      "steps": [
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes en pointillé : une longue au début, et la réponse à la mesure 4.",
+          "textPro": "À toi : crée la piste Mélodie (une voix) : un chop en mesure 1, la réponse (Do, La♭) en mesure 4, rien entre.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:pad,lead"
+        },
+        {
+          "id": "lead_delay",
+          "levels": "p",
+          "text": "À toi : au Mixeur, sur la piste « Mélodie », monte « Envoi écho » : la voix se répète et se perd au loin (le côté « dub »).",
+          "check": "send:1",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:lead"
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Groove",
+      "why": "Tout ce que tu as fait joue ensemble : c'est ta partie de départ.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes, puis l'exemple.",
+          "check": "listen",
+          "listen": "parts:kick,clap,hat,perc,tom,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Groove ».",
+          "check": "label:Groove",
+          "spot": "song.parts",
+          "listen": "parts:kick,clap,hat,perc,tom,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "map": true,
+      "why": "En deep house, le Drop n'explose pas : il s'épaissit. Une couche entre ou sort toutes les 8 mesures.",
+      "steps": [
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : la batterie et les percussions, sans basse ni piano.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_drop",
+          "text": "Écoute le Drop : tout joue, et un shaker roule en plus.",
+          "check": "listen",
+          "listen": "part:Drop",
+          "why": "Un shaker de plus suffit : la deep house monte doucement."
+        },
+        {
+          "id": "map_break",
+          "text": "Écoute le Break : le kick et la basse se taisent, le piano et les percussions continuent.",
+          "check": "listen",
+          "listen": "part:Break"
+        },
+        {
+          "id": "map_phrases",
+          "text": "Regarde la carte : l'Intro et la petite Montée font 28 + 4 = 32 mesures, le Break et sa Montée 12 + 4 = 16.",
+          "check": "manual",
+          "why": "Chaque Drop tombe au début d'une phrase de 8, là où le DJ l'attend."
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Groove : tu enlèves ou tu ajoutes des briques.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro : toute la batterie, sans la basse, le piano ni la voix.",
+          "check": "part:Intro:less+nobass+nopad",
+          "spot": "song.parts",
+          "keep": "kick,clap,hat,perc,tom",
+          "listen": "vs:Drop:Intro"
+        },
+        {
+          "id": "make_montee",
+          "text": "À toi : crée la Montée : sans kick ni basse ni voix. Elle ne dure que 4 mesures.",
+          "textPro": "À toi : crée la Montée (4 mesures) : sans kick, basse ni voix. Pas de roulement de caisse ni de souffle en deep : le tom et un temps de silence suffisent.",
+          "check": "part:Montée:nokick+nobass+nolead",
+          "spot": "song.parts",
+          "keep": "clap,hat,perc,tom,pad",
+          "lanesFrom": "Montée",
+          "listen": "vs:Intro:Montée"
+        },
+        {
+          "id": "make_drop",
+          "text": "À toi : crée le Drop : tout ton Groove.",
+          "check": "part:Drop:full",
+          "spot": "song.parts",
+          "keep": "*",
+          "listen": "vs:Montée:Drop"
+        },
+        {
+          "id": "make_break",
+          "text": "À toi : crée le Break : le piano, les charleys, les percussions et le tom, sans kick ni basse.",
+          "check": "part:Break:nokick+nobass",
+          "spot": "song.parts",
+          "keep": "hat,perc,tom,pad,lead",
+          "listen": "vs:Drop:Break",
+          "why": "On respire, mais le groove continue : les percussions restent."
+        },
+        {
+          "id": "make_drop2",
+          "text": "À toi : crée le Drop 2 : tout ton Groove, avec la batterie de l'exemple et ses relances de fin de phrase.",
+          "textPro": "À toi : crée le Drop 2 : tout, sur la batterie de l'exemple (4 mesures, une relance en fin de phrase).",
+          "check": "part:Drop 2:full",
+          "spot": "song.parts",
+          "keep": "*",
+          "lanesFrom": "Drop",
+          "listen": "vs:Drop:Drop 2",
+          "why": "Une couche de plus, sans rien casser : l'énergie grimpe d'un cran."
+        },
+        {
+          "id": "make_fin",
+          "text": "À toi : crée la Fin : la batterie et les percussions, pour le DJ.",
+          "check": "part:Fin:less+nobass",
+          "spot": "song.parts",
+          "keep": "kick,clap,hat,perc,tom",
+          "listen": "vs:Drop:Intro"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Montée, Drop, Break, Montée, Drop 2 et Fin.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "song": "Intro:28,Montée:4,Drop:16,Break:12,Montée:4,Drop 2:16,Fin:16",
+          "listen": "song"
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 28, Montée 4, Drop 16, Break 12, Drop 2 16, Fin 16. « Donner les durées conseillées » le fait d'un coup.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:28,Montée:4,Drop:16,Break:12,Montée:4,Drop 2:16,Fin:16",
+          "why": "96 mesures à 120 BPM : un peu plus de 3 minutes."
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "En deep house, on prévient l'oreille en douceur : un roulement de toms, un temps de silence.",
+      "steps": [
+        {
+          "id": "toms",
+          "text": "À toi : dans la partie « Montée », dernière mesure, pad « Tom » : touche les 4 cases de l'avant-dernier temps, un petit roulement juste avant le silence.",
+          "textPro": "À toi : un fill de toms 909 sur l'avant-dernier temps de la Montée, juste avant le temps de silence.",
+          "check": "fill",
+          "spot": "rhythm.pattern",
+          "target": "tom",
+          "part": "Montée",
+          "listen": "part:Montée"
+        },
+        {
+          "id": "gap",
+          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps : un temps de silence avant le Drop.",
+          "check": "gap",
+          "spot": "rhythm.pattern",
+          "part": "Montée",
+          "listen": "vs:Montée:Drop",
+          "why": "Un temps de rien, et le kick qui revient fait l'effet d'un Drop, sans rien casser."
+        },
+        {
+          "id": "variation",
+          "text": "À toi : dans la partie « Drop 2 », ajoute quelques coups de shaker ou de charley ouvert : une couche de plus que dans le Drop.",
+          "check": "changed:drums:Drop 2",
+          "spot": "rhythm.pattern",
+          "listen": "vs:Drop:Drop 2"
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "La réverbe met le piano dans une pièce chaude ; le filtre qui s'ouvre dans le Break fait remonter la lumière.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "levels": "f",
+          "text": "Écoute la réverbe (l'écho d'une grande salle) : le piano, d'abord sans, puis avec.",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "reverb",
+          "levels": "p",
+          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur la piste « Accords ».",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "filter",
+          "levels": "p",
+          "text": "À toi : automatise la « Coupure » du filtre de la piste « Accords » dans le Break : une courbe qui monte du début à la fin, le piano s'ouvre.",
+          "check": "automation",
+          "spot": "song.automation",
+          "target": "pad",
+          "part": "Break",
+          "listen": "part:Break"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le kick et la basse devant, le piano juste derrière, la voix encore derrière.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ».",
+          "textPro": "À toi : au Mixeur, baisse un peu les faders des Accords et de la Mélodie.",
+          "check": "changed:volumes:pad,lead",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:kick,clap,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "levels": "p",
+      "title": "Le mastering",
+      "why": "La deep house reste un peu moins forte que la house de club : elle garde son relief.",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Club ». Garde un œil sur le relief : en deep, on ne pousse pas plus fort.",
+          "check": "loudness:CLUB",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter !",
+      "steps": [
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

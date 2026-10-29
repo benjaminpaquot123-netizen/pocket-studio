@@ -89,6 +89,8 @@ object I18n {
         "board",
         // Owner (2026-10-29): « Simple ou Pro ? » for each project, and the home screen's Remix card.
         "mode",
+        // « Tuto de A à Z » of every style (2026-10-29): the courses' texts, one file per style family.
+        "tuto_techno", "tuto_house", "tuto_bass", "tuto_hiphop", "tuto_autres",
     )
 
     @Volatile

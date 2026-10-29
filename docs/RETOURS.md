@@ -158,4 +158,5 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 
 ## 2026-10-29 (APK 232, téléphone de Benjamin)
 - Ouverture : battement uniquement en vibration, plus de son (ting retiré) ; fait dans l'APK 232.
-- **Bug à corriger** : en rouvrant un projet déjà ouvert (Mode simple, « Mon projet 3 », kit 808 modernes), l'onglet Rythme n'affiche pas les pads. Il faut passer par un autre onglet puis revenir pour qu'ils apparaissent. Capture : `/root/.claude/uploads/2ed29bda-5e9a-5850-a6a7-bbf3293c7a09/5caf4f06-image.jpg` (prise après le contournement, pads visibles).
+- **Bug à corriger** : un projet déjà créé mais vide, rouvert (Mode simple, « Mon projet 3 ») : l'onglet Rythme n'affiche pas les pads, même après le choix d'un kit ; aller sur Clavier puis revenir les fait apparaître. Capture : `/root/.claude/uploads/2ed29bda-5e9a-5850-a6a7-bbf3293c7a09/5caf4f06-image.jpg` (prise après le contournement, pads visibles).
+- Ouverture : « les vibrations, c'est génial ». **Bug** : après le logo, on voit la page d'avant, puis un clignotement avant d'afficher l'accueil et les projets.

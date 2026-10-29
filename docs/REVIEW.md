@@ -1085,4 +1085,5 @@ Restes :
 - Réglé : c'était un paramètre de l'enregistreur du téléphone (MagicOS 11), pas l'appli. Sa vidéo suivante a bien le son.
 
 ## Corrections à faire (liste de Benjamin)
-1. **Pads absents à la réouverture d'un projet** (Mode simple, onglet Rythme) : ils n'apparaissent qu'après être allé sur un autre onglet et revenu. À reproduire dans un test (projet ouvert, retour à l'accueil, réouverture du même projet, onglet Rythme), puis à corriger.
+1. **Pads absents dans un projet vide** (précision de Benjamin) : on ouvre un projet déjà créé mais vide (rien dedans), puis l'onglet Rythme. Aucun pad. On choisit un kit : toujours aucun pad. On va sur Clavier (Synthé) et on revient : les pads apparaissent. À reproduire dans un test (projet vide créé avant, rouvert, onglet Rythme, choix d'un kit), puis à corriger.
+2. **Clignotement après l'ouverture** : à la fin de l'animation (logo et vibrations), on voit d'abord la page d'avant (le dernier écran de la session précédente ?), puis un clignotement avant l'accueil et les projets. Il faut passer de l'animation à l'écran final sans montrer d'écran intermédiaire.

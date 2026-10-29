@@ -139,7 +139,10 @@ Benjamin le veut ainsi : les auditeurs d'ergonomie et de design sont des profess
 2. **J'apprends** : tuto complet d'un style par famille, en Facile et en Pro, avec kit à télécharger ou « Plus tard ».
 3. **Fais-moi un morceau** : assistant, écoute des styles, Guide jusqu'au morceau fini.
 4. **Je pars de zéro** : batterie à la main (roulements, triolets, décalage), notes, accords, 303, structure, mix.
-5. **Remix** : carte de l'accueil, séparation, tableau des pistes, phrases de voix sur les pads, voix dans le morceau.
+5. **Remix** : carte de l'accueil, séparation, tableau des pistes, phrases de voix sur les pads, voix dans le morceau. Demande de Benjamin : l'intégration doit être facile **dans les deux sens**, et les audits le vérifient :
+   - **depuis un projet en cours** : ouvrir le Remix sans quitter le projet, puis envoyer des morceaux de la chanson (voix, phrase, boucle de batterie ou de basse) dans CE projet (pads, piste, partie) et revenir ;
+   - **depuis le menu Remix de l'accueil** : séparer une chanson, puis choisir « dans un projet existant » (lequel) ou « dans un nouveau projet » (Simple ou Pro) ; on peut aussi partir de l'idée de la chanson (« faire un morceau à partir de cette chanson »), avec son tempo et sa tonalité repris ;
+   - aucun cul-de-sac : retour au projet ou à l'accueil, et rien de perdu en changeant de projet.
 6. **Live** : pads, effets, enregistrement de la performance.
 7. **Mix et master** : Mode simple et Pro, effets, automation, vumètres.
 8. **Partager et exporter** : WAV, M4A, MIDI, projet. Le fichier est récupéré et analysé.

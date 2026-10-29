@@ -856,6 +856,11 @@
     "tip_fr": "Une seule caisse claire au milieu de la mesure (le 3) : c'est ce qui donne l'impression de demi-vitesse."
    },
    {
+    "role": "clap",
+    "pattern": "........X.......",
+    "tip_fr": "Un clap pile sur la caisse claire : les deux ensemble font un « clac » plus épais et plus large."
+   },
+   {
     "role": "hat",
     "pattern": "x.x.x.x...x.x.xo",
     "source": "dubstep",
@@ -946,6 +951,10 @@
     "on": "snare",
     "reverb": 0.2,
     "delay": 0.3
+   },
+   {
+    "on": "clap",
+    "reverb": 0.3
    },
    {
     "on": "chords",

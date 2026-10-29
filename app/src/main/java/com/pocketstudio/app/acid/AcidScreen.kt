@@ -238,6 +238,7 @@ private fun StepGrid(
                     val i = shown * AcidPattern.STEPS_PER_PAGE + row * 8 + col
                     AcidStepCell(
                         acid, i, english, selected = i == selected, playing = i == playStep,
+                        hint = com.pocketstudio.app.tuto.TutoHints.acid?.get(i),
                         modifier = Modifier.weight(1f).clickable { actions.selectStep(i) }.testTag("acid_step_$i"),
                     )
                 }
@@ -257,8 +258,12 @@ private fun StepGrid(
  * it; a thicker edge when [selected] or [playing]. [modifier] carries its size and its touches.
  */
 @Composable
-fun AcidStepCell(acid: AcidPattern, index: Int, english: Boolean, modifier: Modifier = Modifier, selected: Boolean = false, playing: Boolean = false) {
+fun AcidStepCell(acid: AcidPattern, index: Int, english: Boolean, modifier: Modifier = Modifier, selected: Boolean = false, playing: Boolean = false, hint: com.pocketstudio.model.AcidStep? = null) {
     val s = acid.steps[index]
+    // The tutorial's step to write here (its note, accent, slide), while it is not written so: dashed in amber, its note shown.
+    val todo = hint?.takeIf { h ->
+        !s.gate || acid.root + s.note + 12 * s.octave != acid.root + h.note + 12 * h.octave || s.accent != h.accent || s.slide != h.slide
+    }
     val fill = when {
         !s.gate -> Neon.Surface
         s.accent -> Neon.Cyan
@@ -271,10 +276,11 @@ fun AcidStepCell(acid: AcidPattern, index: Int, english: Boolean, modifier: Modi
             .clip(RoundedCornerShape(6.dp))
             .background(fill)
             .border(
-                width = if (selected || playing) 2.dp else 1.dp,
+                width = if (selected || playing || todo != null) 2.dp else 1.dp,
                 color = when {
                     playing -> Neon.TextPrimary
                     selected -> Neon.Magenta
+                    todo != null -> Neon.Amber
                     else -> Neon.Outline
                 },
                 shape = RoundedCornerShape(6.dp),
@@ -283,7 +289,11 @@ fun AcidStepCell(acid: AcidPattern, index: Int, english: Boolean, modifier: Modi
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
+            if (todo != null && !s.gate) Text(
+                noteName(acid.root + todo.note, english) + (if (todo.accent) "!" else "") + (if (todo.slide) "⌒" else "") +
+                    (if (todo.octave > 0) "↑".repeat(todo.octave) else if (todo.octave < 0) "↓" else ""),
+                fontSize = 11.sp, color = Neon.Amber, modifier = Modifier.testTag("tuto_acid_hint"),
+            ) else Text(
                 if (s.gate) noteName(acid.root + s.note, english) else "–",
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,

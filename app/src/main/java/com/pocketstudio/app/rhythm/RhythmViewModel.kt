@@ -8478,6 +8478,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (NativeEngine.isAvailable) pushHit(lane, step, project.value.drums.lanes[lane].hits[step])
     }
 
+    /**
+     * One hit's micro-timing on the selected pad, in ms: early (< 0) or late (> 0), up to
+     * [com.pocketstudio.model.Hit.MAX_OFFSET_MS] (the lo-fi's lazy snare, a clap pushed ahead); a slide is one undo step.
+     */
+    fun setHitOffset(step: Int, ms: Float) {
+        val lane = _transport.value.selectedPad
+        val hit = project.value.drums.lanes[lane].hits[step] ?: return
+        session.edit("hit-offset-$lane-$step") { p ->
+            p.copy(drums = p.drums.copy(lanes = p.drums.lanes.mapIndexed { i, l -> if (i == lane) l.copy(hits = l.hits + (step to hit.copy(offset = ms).sanitized())) else l }))
+        }
+        if (NativeEngine.isAvailable) pushHit(lane, step, project.value.drums.lanes[lane].hits[step])
+    }
+
     /** One hit's pitch in semitones on the selected pad (its own sound only). */
     fun setHitPitch(step: Int, pitch: Int) = editHitDetail(step, "hit-pitch") { it.copy(pitch = pitch) }
 

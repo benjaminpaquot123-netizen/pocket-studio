@@ -121,7 +121,7 @@ data class TutoUi(
     /** The drum pad the current step is about (its dotted cells are on it), null when none. */
     val pad: Int? get() = current.check.let { c ->
         when {
-            c.startsWith("lane:") -> TutoChecks.laneOf(c.removePrefix("lane:"))
+            c.startsWith("lane:") -> TutoChecks.laneOf(TutoChecks.argOf(c))
             c == "velocity:hat" -> TutoChecks.laneOf("hat")
             c == "fill" || c == "gap" -> TutoChecks.laneOf("snare")
             c == "crash" -> TutoChecks.CRASH_LANE
@@ -277,7 +277,7 @@ class TutoController(
             // Testers (lot « tuto 5 »): only the knobs still to turn (a second « Je le fais » showed « Épaisseur », done, not « Glissé »).
             c.startsWith("changed:synth:") -> TutoChecks.trackFor(p, c.removePrefix("changed:synth:").substringBefore(':'))?.let { TutoGo(settings = it, spot = spot, knobs = knobsLeft(c, p, it)) } ?: plain
             // Testers (lot « tuto 5 »): the roll goes on the snare, in the Montée's last bar: that pad and that page.
-            c == "fill" -> TutoGo(GuideOpen(s.spot, s.target), TutoChecks.laneOf("snare"), spot = spot, bar = (p.drums.steps / p.stepsPerBar.coerceAtLeast(1) - 1).coerceAtLeast(0))
+            c == "fill" -> TutoGo(GuideOpen(s.spot, s.target), TutoChecks.laneOf(TutoChecks.fillRole(s)), spot = spot, bar = (p.drums.steps / p.stepsPerBar.coerceAtLeast(1) - 1).coerceAtLeast(0))
             // A send or an effect: the effects box of the first strip the step still has to do (lot « tuto 4 »: the
             // « Accords » done, the snare's next; the Sub's pump, then the Basse's), the reverb's send there, dotted.
             c.startsWith("send:") || c.startsWith("insert:") -> (TutoChecks.channelsToDo(s, p).firstOrNull() ?: channelOf(p, s.target.substringBefore(',').ifEmpty { "bass" }))
@@ -512,7 +512,13 @@ class TutoController(
      * The hits the current step asks to take away ([TutoChecks.toErase]), null when it takes none, or
      * while its part is not the one shown (testers: crosses drawn in the Drop for the Montée's hits).
      */
-    fun toErase(p: Project): Map<Int, Set<Int>>? = _ui.value?.takeIf { it.need == null }?.let { TutoChecks.toErase(it.current, p) }
+    fun toErase(p: Project): Map<Int, Set<Int>>? = _ui.value?.takeIf { it.need == null }?.let { TutoChecks.toErase(it.current, p, target) }
+
+    /** The 303 steps the current step shows dotted ([TutoChecks.acidWanted]), by index; null when none. */
+    fun acidHints(p: Project): Map<Int, com.pocketstudio.model.AcidStep>? {
+        val u = _ui.value ?: return null
+        return target?.let { TutoChecks.acidWanted(u.current, p, it) }
+    }
 
     /** The dotted notes of a melodic step on its track ([TutoChecks.ghostNotes]), null when none. */
     fun ghostNotes(p: Project): Pair<Int, List<com.pocketstudio.model.Note>>? {
@@ -723,7 +729,7 @@ class TutoController(
         const val KEY_SPOT = "tuto.key"
         /** The song's « Ajouter : » buttons ([com.pocketstudio.app.guide.GuideNav]). */
         const val SONG_ADD_SPOT = "song.add"
-        private val DRUM_ROLES = setOf("kick", "snare", "clap", "hat", "perc")
+        private val DRUM_ROLES = TutoChecks.DRUM_ROLES.toSet()
 
         /**
          * Whether listening step [s] can play the user's own music: every instrument its example

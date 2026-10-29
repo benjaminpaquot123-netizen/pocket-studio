@@ -73,6 +73,7 @@
   "Force": "Velocity",
   "Force : touche un coup, plus haut pour plus fort, plus bas pour plus doux, puis règle-le avec le curseur.": "Velocity: tap a hit, higher for louder, lower for softer, then fine-tune it with the slider.",
   "Force du coup %d": "Hit %d velocity",
+  "Décalage du coup %d": "Hit %d timing",
   "G": "L",
   "G %d": "L %d",
   "Glisse vers le haut ou le bas pour tourner ; deux touchers : réglage de départ.": "Slide up or down to turn; double-tap: back to default.",

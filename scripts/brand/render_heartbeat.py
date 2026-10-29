@@ -2,14 +2,17 @@
 """BenStudio's opening sound: a double heartbeat (« boum-boum »), produced like a studio sound.
 
 Synthesised from scratch (nothing sampled), so it is reproducible bit for bit:
-  - a warm sub (a sine falling from about 105 Hz to 52 Hz, lightly saturated so that its upper
-    harmonics carry it on a phone's small speaker);
-  - a felt body (a low thump: band-passed noise and a short falling sine around 150 Hz);
-  - a soft attack click (a few ms of 2-6 kHz) so that the beat is heard on a phone;
+  - a warm sub (a sine falling from about 105 Hz to 52 Hz) for car speakers and headphones;
+  - its own harmonics (3rd to 14th, gliding with it, in phase) where a phone's small speaker
+    plays (160 to 1400 Hz): the ear rebuilds the missing fundamental and hears a deep « boum »
+    even with no sub at all (owner, 2026-10-29: « a piece of wood far away » on the phone);
+  - a chest punch (a fast pitch drop from 240 to 110 Hz) and a soft attack tick;
   - the second beat softer and shorter, as a real heart's « dub »;
-  - a short dark room (a small algorithmic reverb, on everything but the sub);
+  - a small, close room (mostly on the chord), not a far one;
   - a very quiet A add9 chord opening under the name, and a faint glint when the name shines.
-Mastered to about -14 LUFS (ITU-R BS.1770-4), true peak at most -1 dBTP (4x oversampled), no clip.
+Mastered to about -12 LUFS (ITU-R BS.1770-4), true peak at most -1 dBTP (4x oversampled), no clip.
+On a phone's speaker (simulated: 4th-order high-pass at 350 Hz) it plays about 4.5 dB louder than
+the first version.
 
 Timing: sample 0 of the file plays at SOUND_START ms of the opening's timeline (BrandIntro.kt's
 IntroTimeline), so each beat starts exactly at its frame: (BEAT_START[k] - SOUND_START) * 48.
@@ -37,11 +40,11 @@ BEAT_START = (1100, 1340)   # ms: « lub », « dub »
 NAME_START = 1750           # ms: the name comes in, the chord opens
 NAME_SHINE = 2350           # ms: the light runs over the name, the glint
 LENGTH_MS = 3200            # the file's length (it ends, faded, well before the opening's fade)
-TARGET_LUFS = -14.0
+TARGET_LUFS = -12.0  # owner (2026-10-29): « bien intense »
 CEILING_DBTP = -1.0
 
 RNG = np.random.default_rng(20261029)
-SUB, MALLET = 0.55, 2.5  # the sub's level, and the mids' (what a phone's speaker plays)
+SUB, PHONE = 0.25, 4.5  # the sub's level, and its harmonics' (what a phone's speaker plays)
 
 
 def frames(ms_on_timeline):
@@ -70,33 +73,38 @@ def highpass(x, f, order=2):
 
 
 def beat(n_total, onset, gain, sub_from, sub_to, sub_decay, body_decay, click):
-    """One heartbeat starting exactly at sample [onset]: (dry sub, everything else)."""
+    """One heartbeat starting exactly at sample [onset]: (dry sub, everything else).
+
+    Owner (2026-10-29): on a car's speakers it was right, on the phone « a piece of wood resonating
+    far away ». A phone's speaker plays almost nothing under 300 Hz, so the bass it gets is the
+    sub's own harmonics (2nd to 7th, gliding with it): the ear rebuilds the missing fundamental
+    and hears a deep « boum » (the « missing fundamental », as bass enhancers do). No more wooden
+    knock or tom near 330 Hz: everything a phone plays is the same note as the sub."""
     n = n_total - onset
     t = np.arange(n) / SR
     # Sub: a sine falling fast to its note, phase 0 at the onset (no step).
     f = sub_to + (sub_from - sub_to) * np.exp(-t / 0.028)
     ph = 2 * np.pi * np.cumsum(f) / SR - 2 * np.pi * f[0] / SR
-    e = env_ad(n, 0.007, sub_decay)
+    e = env_ad(n, 0.006, sub_decay)
     sub = np.tanh(2.4 * np.sin(ph)) / np.tanh(2.4) * e
-    harm = 0.30 * np.sin(2 * ph) * env_ad(n, 0.002, sub_decay * 0.55)
-    # Body: a felt knock (falling sine near 150 Hz) and a puff of low noise.
-    fk = 120 + 55 * np.exp(-t / 0.02)
-    knock = np.sin(2 * np.pi * np.cumsum(fk) / SR - 2 * np.pi * fk[0] / SR) * env_ad(n, 0.0015, body_decay)
-    puff = bandpass(RNG.standard_normal(n), 90, 380) * env_ad(n, 0.001, body_decay * 0.8)
-    puff /= max(1e-9, np.max(np.abs(puff)))
-    # Felt mallet: the part a phone's small speaker plays (a muffled tom near 330 Hz, a puff of mids).
-    fm = 300 + 90 * np.exp(-t / 0.012)
-    mallet = np.sin(2 * np.pi * np.cumsum(fm) / SR - 2 * np.pi * fm[0] / SR) * env_ad(n, 0.001, body_decay * 0.55)
-    felt = bandpass(RNG.standard_normal(n), 320, 1600) * env_ad(n, 0.0008, body_decay * 0.4)
-    felt /= max(1e-9, np.max(np.abs(felt)))
-    # Click: a few ms of soft high noise and a 2.6 kHz blip, so a phone's speaker says « tok ».
-    hiss = bandpass(RNG.standard_normal(n), 1800, 6000) * env_ad(n, 0.0004, 0.004)
-    hiss /= max(1e-9, np.max(np.abs(hiss)))
-    blip = np.sin(2 * np.pi * 2600 * t) * env_ad(n, 0.0005, 0.006)
+    # Phone bass: the sub's harmonics, gliding with it, a little shorter than the sub itself.
+    # The harmonics a phone plays best (3rd to 14th: 150 to 750 Hz at the end of the glide), the
+    # 6th to 9th strongest, all in phase with the sub so they fuse into one deep note.
+    harmonics = sum(np.exp(-((k - 7.5) / 3.5) ** 2) * np.sin(k * ph) for k in range(3, 15))
+    phone_bass = np.tanh(1.3 * harmonics / np.max(np.abs(harmonics))) * env_ad(n, 0.003, sub_decay * 0.25)
+    phone_bass = bandpass(phone_bass, 160, 1400)
+    # Chest punch: a fast pitch drop from 240 to 110 Hz, the « thump » of a kick drum's body.
+    fp = 110 + 130 * np.exp(-t / 0.016)
+    punch = np.sin(2 * np.pi * np.cumsum(fp) / SR - 2 * np.pi * fp[0] / SR) * env_ad(n, 0.001, body_decay)
+    # A breath of low-mid noise under it (skin), short, and a soft attack so the beat is felt at once.
+    skin = bandpass(RNG.standard_normal(n), 140, 900) * env_ad(n, 0.0008, body_decay * 0.35)
+    skin /= max(1e-9, np.max(np.abs(skin)))
+    tick = bandpass(RNG.standard_normal(n), 1200, 4500) * env_ad(n, 0.0004, 0.003)
+    tick /= max(1e-9, np.max(np.abs(tick)))
     out_sub = np.zeros(n_total)
     out_rest = np.zeros(n_total)
     out_sub[onset:] = gain * SUB * sub
-    out_rest[onset:] = gain * (harm + 0.62 * knock + 0.36 * puff + MALLET * (0.5 * mallet + 0.3 * felt) + click * (0.36 * hiss + 0.2 * blip))
+    out_rest[onset:] = gain * (PHONE * phone_bass + 0.55 * punch + 0.16 * skin + click * 0.45 * tick)
     return out_sub, out_rest
 
 
@@ -179,12 +187,13 @@ def render():
     n = LENGTH_MS * SR // 1000
     lub, dub = (frames(b) for b in BEAT_START)
     s1, r1 = beat(n, lub, 1.0, 105, 52, 0.32, 0.06, 1.0)
-    s2, r2 = beat(n, dub, 0.7, 98, 56, 0.22, 0.04, 0.6)
+    s2, r2 = beat(n, dub, 0.7, 98, 56, 0.22, 0.04, 1.0)
     pad = 0.085 * chord(n, frames(NAME_START))
     bell = 0.022 * glint(n, frames(NAME_SHINE))
     rest = r1 + r2
-    wet = room(0.9 * rest + 1.4 * pad + 2.0 * bell)
-    mix = s1 + s2 + rest + pad + bell + 0.16 * wet
+    # Close, not « far away »: a small dry room, mostly on the chord and the glint.
+    wet = room(0.25 * rest + 1.4 * pad + 2.0 * bell)
+    mix = s1 + s2 + rest + pad + bell + 0.07 * wet
     mix = highpass(mix, 22)  # no DC, nothing under the sub
     # The end: a cosine fade to digital silence over the last 0.6 s.
     tail = int(0.6 * SR)

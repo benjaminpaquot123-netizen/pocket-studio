@@ -6,11 +6,10 @@
 - Consignes de Benjamin : pas d'APK tant qu'il ne le demande pas ; Play Store seulement à sa demande (branche fx-play gardée de côté, non fusionnée ; prix prévu 4,99 € avec promo 2,99 €) ; démo automatique « trop tôt » (branche fx-demo abandonnée) ; économiser le quota ; des nouvelles à chaque étape.
 
 ## Prochaine étape exacte
-1. APK 229 envoyé (2026-10-29) : tuto de A à Z pour les 37 styles (socle générique, kit du style, batterie du cours, triolets), Simple/Pro obligatoire à chaque projet, carte Remix sur l'accueil, nouvelle ouverture avec double battement. Attendre les retours de Benjamin sur téléphone.
-2. Question en attente : quand arrêter les audits (1A recommandé).
-3. Restes : docs/REVIEW.md (« Tuto tous styles », « APK 228 ») ; jungle encore creuse dans les médiums ; TutoJourneyTest jungle Pro parfois en dépassement de délai sur machine chargée ; sons manquants relevés par les fiches (`scratchpad/styles/*-synthese.md` : kits intégrés par style, guitare, güira, clave, gate de caisse, variantes dans une partie).
-4. Ensuite (si Benjamin veut) : testeurs humains sur un style par famille ; proposer de télécharger tous les packs au premier lancement ; traductions du tuto ; Mode retours désactivé avant toute version publique.
-5. PR vers main, Play Store et démo seulement à la demande de Benjamin.
+1. Fait (2026-10-29) : traduction totale (37 tutos + panneau du tuto dans les 14 langues, notation Do Ré Mi pour es/pt-BR/it/tr, octaves anglaises pour C D E). APK 229 envoyé avant la traduction ; Benjamin ne veut pas d'APK pour l'instant (« enregistre juste »).
+2. Prochaine étape : les audits, quand Benjamin les lance (question 1A/1B/1C toujours en attente : quand arrêter).
+3. Restes : docs/REVIEW.md (« Tuto tous styles », « APK 228 ») ; jungle encore creuse dans les médiums ; vocabulaire ancien du panneau à harmoniser en polonais (« cegiełka ») et hindi (« हिस्सा ») ; japonais « 終了 » pour la partie Fin ; sons manquants des fiches (`scratchpad/styles/*-synthese.md`).
+4. PR vers main, Play Store et démo seulement à la demande de Benjamin.
 
 **Phase 0 fusionnée le 2026-10-18, phase 1 fusionnée le 2026-10-19 (feu vert de Benjamin).** Phase en cours : 2 (sampler et notes).
 

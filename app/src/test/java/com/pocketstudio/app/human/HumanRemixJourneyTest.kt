@@ -110,7 +110,9 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         tap(reach("use_${set.id}"), "Jouer avec le projet")
         assertEquals(set.id, project()?.remix?.setId)
         act("attends 1")
-        // Its four parts are drawn (the screen follows: nothing froze it).
+        // Its four parts are drawn (the screen follows: nothing froze it). Their waves are read off the main
+        // thread: on a loaded machine (the whole suite at once) a second may not be enough, a person waits a little more.
+        repeat(9) { if (centerOf("waveform_3") == null) act("attends 1") }
         assertNotNull("no waveform", centerOf("waveform_3"))
         // The voice alone (S), then ▶.
         tap(reach("stem_solo_3"), "S of Voix")

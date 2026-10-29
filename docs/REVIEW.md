@@ -1061,3 +1061,22 @@ Relecture neuve de la branche `basses` (rebasée sur `guide`) : 0 grave, 5 moyen
 - Tableau des pistes : « → Pad » prend toujours le premier pad libre (pas de choix précis) ; pas de tableau pour un morceau séparé hors projet ; « → Pad / → Live » existent encore sur la page Remix à côté du tableau (à unifier).
 - Sons : la rangée des pistes ne défile pas jusqu'à la piste ouverte (Basse, Sub, Accords, Mélodie après Remix, hors écran).
 - Mots de l'assistant hors tuto (« Scie », « Triangle ») : à simplifier avec leurs 14 traductions. « −100 dB » au master (d/284) : à vérifier sur téléphone.
+
+## Tuto tous styles : relecture neuve (2026-10-29)
+Bilan du relecteur : 0 GRAVE, 6 MOYEN, 8 MINEUR. Corrigés :
+- MOYEN 1 : le kit du style ne remplace plus en silence les sons d'un tuto commencé. Seul un tuto vierge (aucune étape faite, aucun son à soi sur un pad) le reçoit tout seul ; sinon la carte demande « Mettre les sons du kit … sur les pads » / « Plus tard » (`TutoKit.offer`). Un kit téléchargé depuis la carte arrive sur les pads.
+- MOYEN 2 et 3 : `TutoAllCoursesTest` vérifie l'ordre réel des parties et leurs durées, fait aussi les étapes « changed:… » (comme l'appli, depuis leur point de départ), dit pourquoi les autres sont sautées (« C'est fait », exemples, partage) et échoue si plus de la moitié le sont ; contenu vérifié : kick et basse là où l'étape les garde, aucun kick dans une partie « nokick », aucune note hors gamme, aucune basse sous Mi1.
+- MOYEN 4 : `TutoKitTest` (carte, « Plus tard », hors ligne, tuto vierge en une étape d'annulation, tuto commencé, téléchargement demandé).
+- MOYEN 5 : médiums du drum & bass et de la jungle, mesurés sur le morceau Pro (bande 500-2000 Hz, part du mix) : drum & bass -14,3 → -10,3 dB (assistant -8,0), jungle -21,4 → -16,0 dB (assistant -9,2). Causes : la piste Sub du tuto était le son de la basse une octave plus bas (le grave mangeait le limiteur) ; les pistes Basse, Accords, Mélodie avaient le son nu de la bibliothèque, pas celui que l'assistant finit (reese, couche médium) ; la courbe de filtre de la Montée gardait le filtre fermé avant elle (les accords de la jungle muets dans le 1er Drop) ; accords et mélodie de la jungle une octave sous ceux de l'assistant.
+- MOYEN 6 : « Copier » ne descend jamais la basse sous Mi1 (ou sous la note la plus grave que le cours écrit lui-même) ; ligne de basse de la pop une octave plus haut (registre de l'assistant).
+- MINEUR 1 (`loadTutoKit` une seule fois à la fois), MINEUR 2 (le mode Simple/Pro d'un projet supprimé pour de bon est oublié), MINEUR 4 (les tests des cours échouent sans cours), MINEUR 6 (étape « Streaming » de la pop : « un peu moins fort que la démo, c'est le niveau des plateformes »).
+
+Restes :
+- Jungle : bande médium encore 7 dB sous l'assistant. Le Drop du cours n'a pas la mélodie (c'est la nouveauté du Drop 2), l'étape des volumes baisse accords et mélodie de 2 dB, et la chaîne d'effets de l'assistant (égaliseur, clipper, élargisseur) n'est pas reprise : la reprendre occuperait des emplacements que les étapes « insert:… » attendent libres.
+- Basse au-dessus de la Sub : l'assistant coupe le grave de la basse (passe-haut 80-120 Hz), pas le tuto. Un filtre sur la piste Basse serait pris par l'étape « automation » de la basse (speed garage, tech house), qui le balaierait comme un passe-bas.
+- MINEUR 3 : course possible entre « choisir le mode » et l'effet `follow` (`AppRoot.kt`), à reprendre en ne posant le mode qu'aux choix explicites.
+- MINEUR 5 : un triolet peut déborder d'un coup dans la boucle suivante si on raccourcit ensuite la boucle du pad ; couper `span` dans `sanitized` (modèle de la batterie).
+- MINEUR 7 : pas de sidechain sur la basse dans le tuto (étape Pro « pompe » à ajouter au chapitre mix des styles club).
+- MINEUR 8 : la 808 du trap ne « tape » pas (notes longues et liées) ; raccourcir d'une case dans le cours.
+- Styles 808 (trap Ré♭1, drill et jersey club Mi♭1 / Ré♭1) : notes écrites sous Mi1 par leur cours, gardées (la saleté et le clic de la 808 la portent sur un téléphone).
+- `HumanRemixJourneyTest` : la forme d'onde arrive après la lecture des pistes, hors du fil principal ; le test attend jusqu'à 10 s (1 s avant, trop court quand toute la suite tourne).

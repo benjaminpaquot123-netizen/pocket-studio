@@ -64,6 +64,20 @@ class ModeChoiceTest {
 
     private fun clearModes() = h.app.getSharedPreferences("project_modes", 0).edit().clear().commit()
 
+    /** Review (MINEUR 2): the record of a project gone for good goes with it; the others and the last choice stay. */
+    @Test
+    fun theModeOfAProjectGoneForGoodIsForgotten() {
+        clearModes()
+        ProjectModes.set(h.app, "kept", true)
+        ProjectModes.set(h.app, "gone", false)
+        ProjectModes.choose(h.app, false)
+        ProjectModes.dropMissing(h.app) { setOf("kept") }
+        assertEquals(true, ProjectModes.of(h.app, "kept"))
+        assertNull(ProjectModes.of(h.app, "gone"))
+        assertEquals(false, ProjectModes.last(h.app))
+        SettingsStore.forgetForTests()
+    }
+
     @Test
     fun eachProjectKeepsItsOwnModeAndTheLastChoiceIsRemembered() {
         clearModes()

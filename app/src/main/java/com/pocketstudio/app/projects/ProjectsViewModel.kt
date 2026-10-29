@@ -74,10 +74,11 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
 
     fun refresh() = io(tr("Liste des projets"), counts = false) { refreshNow() }
 
-    /** Live take journals of projects gone for good (deleted, purged from the trash): never written anywhere. */
+    /** Live take journals and Simple/Pro records of projects gone for good (deleted, purged from the trash): never written anywhere. */
     private fun forgetGoneJournals() {
         val app = getApplication<Application>()
         com.pocketstudio.app.rhythm.LiveTakeJournals.of(app).dropMissing(catalog.knownIds() + CurrentProject.get(app))
+        ProjectModes.dropMissing(app) { catalog.knownIds() + CurrentProject.get(app) }
     }
 
     /** Creates [project] (a blank or a demo) named after the next free number unless it has a name; returns its id. */

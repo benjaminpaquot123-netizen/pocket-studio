@@ -60,6 +60,10 @@ object TutoTestHooks {
     /** False: no offer to download the style's kit (a journey played offline, whatever the catalogue says). */
     @androidx.annotation.VisibleForTesting
     var kitOffer: Boolean = true
+
+    /** The packs' state the kit offer reads instead of the library's (a catalogue without network). */
+    @androidx.annotation.VisibleForTesting
+    var packs: kotlinx.coroutines.flow.StateFlow<com.pocketstudio.app.library.PacksUi>? = null
 }
 
 /**

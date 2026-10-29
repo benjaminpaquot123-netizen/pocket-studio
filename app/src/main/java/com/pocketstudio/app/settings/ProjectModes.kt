@@ -56,4 +56,18 @@ object ProjectModes {
     fun forget(context: Context, id: String) {
         prefs(context).edit().remove(key(id)).apply()
     }
+
+    /**
+     * Review (MINEUR 2): the records of projects gone for good (deleted, purged from the trash), [keep]
+     * the projects there. The records are read first: a project's folder is made before its record,
+     * so one created meanwhile is in [keep] when it is read.
+     */
+    fun dropMissing(context: Context, keep: () -> Set<String>) {
+        val p = prefs(context)
+        val recorded = p.all.keys.filter { it.startsWith("p:") }
+        if (recorded.isEmpty()) return
+        val there = keep()
+        val gone = recorded.filter { it.removePrefix("p:") !in there }
+        if (gone.isNotEmpty()) p.edit().apply { gone.forEach(::remove) }.apply()
+    }
 }

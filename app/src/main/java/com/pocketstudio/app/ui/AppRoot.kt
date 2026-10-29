@@ -1485,25 +1485,35 @@ fun AppRoot() {
     DisposableEffect(tuto) { onDispose { tuto.stopListening(); tuto.stopDemo(); rhythmVm.tutoDemo(null) } }
     // Socle 2 (owner: every tutorial on its style's box of sounds): the style's pack, once on the phone, on the pads.
     val tutoKitUi by tuto.ui.collectAsStateWithLifecycle()
-    val tutoPacks by libraryVm.packs.collectAsStateWithLifecycle()
+    val tutoPacks by (com.pocketstudio.app.tuto.TutoTestHooks.packs ?: libraryVm.packs).collectAsStateWithLifecycle()
     val tutoKitStyle = tutoKitUi?.progress?.style
     val tutoKitChoice = tutoKitUi?.progress?.kit
-    LaunchedEffect(tutoKitStyle) { if (tutoKitStyle != null && com.pocketstudio.app.tuto.TutoTestHooks.kitOffer) libraryVm.refreshPacks() }
-    LaunchedEffect(tutoKitStyle, tutoKitChoice, tutoPacks.index, tutoPacks.installed) {
+    // The user asked for the kit here (« Télécharger », « Mettre ces sons »): it goes on the pads once on the phone.
+    var tutoKitAsked by rememberSaveable(tutoKitStyle) { mutableStateOf(false) }
+    LaunchedEffect(tutoKitStyle) {
+        if (tutoKitStyle != null && com.pocketstudio.app.tuto.TutoTestHooks.kitOffer && com.pocketstudio.app.tuto.TutoTestHooks.packs == null) libraryVm.refreshPacks()
+    }
+    // What the kit card shows, and what is done by itself (review 2026-10-29: never over a course under way).
+    val tutoKitOffer = run {
+        val u = tutoKitUi ?: return@run com.pocketstudio.model.tuto.TutoKit.Offer.Wait
+        val target = com.pocketstudio.model.tuto.TutoTarget.of(u.progress.style)
+        if (target == null || !com.pocketstudio.app.tuto.TutoTestHooks.kitOffer) return@run com.pocketstudio.model.tuto.TutoKit.Offer.Wait
+        val index = (tutoPacks.index as? com.pocketstudio.app.library.IndexState.Ready)?.index?.packs
+        // Read once the effect runs: the pads' sounds at that moment, not a key of it.
+        com.pocketstudio.model.tuto.TutoKit.offer(target, u.progress, rhythmVm.project.value, index, tutoPacks.installed, tutoKitAsked)
+    }
+    LaunchedEffect(tutoKitOffer) {
         val style = tutoKitStyle ?: return@LaunchedEffect
-        if (tutoKitChoice != "" || !com.pocketstudio.app.tuto.TutoTestHooks.kitOffer) return@LaunchedEffect
         val target = com.pocketstudio.model.tuto.TutoTarget.of(style) ?: return@LaunchedEffect
-        // Offline (no catalogue): the built-in sounds, the offer later.
-        val index = (tutoPacks.index as? com.pocketstudio.app.library.IndexState.Ready)?.index?.packs ?: return@LaunchedEffect
-        if (com.pocketstudio.model.tuto.TutoKit.packs(target, index).isEmpty()) {
-            tuto.setKit(com.pocketstudio.model.tuto.TutoProgress.KIT_BUILT_IN)
-            return@LaunchedEffect
+        when (tutoKitOffer) {
+            com.pocketstudio.model.tuto.TutoKit.Offer.BuiltIn -> tuto.setKit(com.pocketstudio.model.tuto.TutoProgress.KIT_BUILT_IN)
+            com.pocketstudio.model.tuto.TutoKit.Offer.Apply -> {
+                val names = tutoPacks.installed.associate { it.id to it.name }
+                val sounds = com.pocketstudio.model.tuto.TutoKit.sounds(target, tutoPacks.installed).mapValues { (_, v) -> Triple(v.first, names[v.first] ?: v.first, v.second) }
+                rhythmVm.loadTutoKit(sounds) { ok -> tuto.setKit(if (ok) com.pocketstudio.model.tuto.TutoProgress.KIT_PACK else com.pocketstudio.model.tuto.TutoProgress.KIT_BUILT_IN) }
+            }
+            else -> Unit
         }
-        if (com.pocketstudio.model.tuto.TutoKit.missing(target, index, tutoPacks.installed).isNotEmpty()) return@LaunchedEffect
-        val names = tutoPacks.installed.associate { it.id to it.name }
-        val sounds = com.pocketstudio.model.tuto.TutoKit.sounds(target, tutoPacks.installed).mapValues { (_, v) -> Triple(v.first, names[v.first] ?: v.first, v.second) }
-        if (sounds.isEmpty()) tuto.setKit(com.pocketstudio.model.tuto.TutoProgress.KIT_BUILT_IN)
-        else rhythmVm.loadTutoKit(sounds) { ok -> tuto.setKit(if (ok) com.pocketstudio.model.tuto.TutoProgress.KIT_PACK else com.pocketstudio.model.tuto.TutoProgress.KIT_BUILT_IN) }
     }
     // « Recommencer le tuto » (owner, 2A): a new empty project, the same style and level; this one is kept.
     val restartTuto: () -> Unit = { tuto.saved?.let { startTuto(it.style, it.level) } }
@@ -1987,20 +1997,23 @@ fun AppRoot() {
                     val mine = tutoProject.drums.lanes.any { it.hits.isNotEmpty() } || tutoProject.track(0).notes.notes.isNotEmpty() ||
                         tutoProject.tracks.any { it.notes.notes.isNotEmpty() }
                     val mineFirst = tutoNow.current.listening && com.pocketstudio.app.tuto.TutoController.mineFor(tutoNow.current, tutoProject)
-                    // Socle 2: « Télécharger le kit <style> (taille) » / « Plus tard », while the style's pack is not on the phone.
+                    // Socle 2: « Télécharger le kit <style> (taille) » / « Plus tard », while the style's pack is not on the phone;
+                    // « Mettre ces sons » / « Plus tard » when it is but the course is under way (never put in silence).
                     val kitTarget = com.pocketstudio.model.tuto.TutoTarget.of(tutoNow.progress.style)
-                    val kitIndex = (tutoPacks.index as? com.pocketstudio.app.library.IndexState.Ready)?.index?.packs
-                    val kitMissing = if (tutoNow.progress.kit.isEmpty() && kitTarget != null && kitIndex != null && com.pocketstudio.app.tuto.TutoTestHooks.kitOffer)
-                        com.pocketstudio.model.tuto.TutoKit.missing(kitTarget, kitIndex, tutoPacks.installed) else emptyList()
-                    if (kitMissing.isNotEmpty()) {
+                    val kitMissing = (tutoKitOffer as? com.pocketstudio.model.tuto.TutoKit.Offer.Download)?.missing.orEmpty()
+                    if (kitTarget != null && (kitMissing.isNotEmpty() || tutoKitOffer == com.pocketstudio.model.tuto.TutoKit.Offer.Ask)) {
                         val loading = kitMissing.mapNotNull { tutoPacks.downloading[it.id] }
                         com.pocketstudio.app.tuto.TutoKitCard(
-                            style = com.pocketstudio.app.tuto.tutoText(kitTarget!!.style.name),
+                            style = com.pocketstudio.app.tuto.tutoText(kitTarget.style.name),
                             size = tr("%d Mo", ((kitMissing.sumOf { it.sizeBytes } + 500_000) / 1_000_000).coerceAtLeast(1)),
                             progress = if (loading.isEmpty()) null else loading.sum() / kitMissing.size,
                             error = tutoPacks.message?.takeIf { loading.isEmpty() },
-                            download = { kitMissing.forEach { libraryVm.downloadPack(it.id) } },
+                            download = {
+                                tutoKitAsked = true
+                                kitMissing.forEach { libraryVm.downloadPack(it.id) }
+                            },
                             later = { tuto.setKit(com.pocketstudio.model.tuto.TutoProgress.KIT_BUILT_IN) },
+                            onPhone = kitMissing.isEmpty(),
                         )
                     }
                     com.pocketstudio.app.tuto.TutoPanel(

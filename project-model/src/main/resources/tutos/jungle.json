@@ -5,8 +5,8 @@
   "chords": "i i VI VII",
   "lines": {
     "bass": "0:G2:8 10:G2:4 14:D3:2 16:G2:6 22:Bb2:2 26:D3:4 30:F3:2",
-    "pad": "0:G3+Bb3+D4:16",
-    "lead": "0:G3:8 24:G3:4 28:Bb3:2"
+    "pad": "0:G4+Bb4+D5:16",
+    "lead": "0:G4:8 24:G4:4 28:Bb4:2"
   },
   "lineBars": {
     "bass": 2,

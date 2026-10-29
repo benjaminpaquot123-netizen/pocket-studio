@@ -5,7 +5,7 @@
   "key": "E major",
   "chords": "I V vi IV",
   "lines": {
-    "bass": "0:E1:4 4:E1:2:0.6 6:E2:2 8:E1:4 12:E1:2:0.6 14:B1:2",
+    "bass": "0:E2:4 4:E2:2:0.6 6:E3:2 8:E2:4 12:E2:2:0.6 14:B2:2",
     "pad": "0:E3+G#3+B3:2 3:E3+G#3+B3:2 6:E3+G#3+B3:3 10:E3+G#3+B3:2 13:E3+G#3+B3:2",
     "lead": "0:G#4:2 2:G#4:2 4:F#4:2 6:E4:2 10:B4:4 16:C#5:2 18:B4:2 20:G#4:2 22:F#4:6"
   },
@@ -499,7 +499,7 @@
       "steps": [
         {
           "id": "loudness",
-          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Streaming » (−14 LUFS) : Spotify ou YouTube baissent de toute façon les morceaux plus forts, autant garder les coups de caisse vivants.",
+          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Streaming » (−14 LUFS) : Spotify ou YouTube baissent de toute façon les morceaux plus forts, autant garder les coups de caisse vivants. Il paraîtra un peu moins fort que la démo de l'assistant : c'est normal, c'est le niveau des plateformes.",
           "check": "loudness:STREAMING",
           "spot": "mixer.master",
           "listen": "song"

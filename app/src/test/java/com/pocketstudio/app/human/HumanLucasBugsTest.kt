@@ -13,6 +13,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.After
 import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
@@ -44,13 +45,16 @@ class HumanLucasBugsTest : HumanTester("lucas-bugs") {
         return act("touche ${where!!.first} ${where.second}")
     }
 
-    /** Brings the node tagged [tag] into the screen's middle part (a swipe at a time), then its middle. */
-    private fun reach(tag: String): Pair<Float, Float> {
+    /**
+     * Brings the node tagged [tag] into the screen's middle part (a swipe at a time, at [x]: the
+     * screen's edge by default, the middle for a list whose edge does not scroll), then its middle.
+     */
+    private fun reach(tag: String, x: Float = 10f): Pair<Float, Float> {
         repeat(10) {
             val at = centerOf(tag) ?: error("no $tag")
             if (at.second in 320f..(screenHeight - 360f)) return at
             val dy = (at.second - screenHeight / 2f).coerceIn(-400f, 400f)
-            act("glisse 10 ${screenHeight / 2f + dy / 2} 10 ${screenHeight / 2f - dy / 2}")
+            act("glisse $x ${screenHeight / 2f + dy / 2} $x ${screenHeight / 2f - dy / 2}")
         }
         return centerOf(tag)!!
     }
@@ -133,13 +137,21 @@ class HumanLucasBugsTest : HumanTester("lucas-bugs") {
      * second fell on its grid and wrote a stray note (screen-118.png; without the guard, this test
      * shows the same note). As the bench plays them: one after the other, at the same place.
      */
+    @After
+    fun kitOfferBack() {
+        com.pocketstudio.app.tuto.TutoTestHooks.kitOffer = true
+    }
+
     @Test
     fun aDoubleTapOnCreerLaPisteBasseWritesNoNote() {
+        // His run had no style kit to offer: the card (TutoKitTest's) would come over the grid whenever the catalogue answers.
+        com.pocketstudio.app.tuto.TutoTestHooks.kitOffer = false
         begin()
         tap(centerOfText("J'apprends"), "J'apprends")
         // Simple: the tutorial's Facile level, not asked again.
         tap(centerOf("mode_card_simple"), "Simple")
-        tap(centerOfText("Jump up DnB", substring = true), "Jump up")
+        // 37 styles to learn now: Jump up further down the list, brought into view as he would.
+        tap(reach("tuto_style_jump_up", x = app.resources.displayMetrics.widthPixels / 2f), "Jump up")
         act("attends 4")
         // Chapter 5, « La basse », from the tutorial's list of chapters.
         tap(centerOf("tuto_chapters"), "the chapters")

@@ -247,7 +247,11 @@ class TutoActions(
  * [error]: why it did not come (the built-in sounds stay).
  */
 @Composable
-fun TutoKitCard(style: String, size: String, progress: Float?, error: String?, download: () -> Unit, later: () -> Unit, modifier: Modifier = Modifier) {
+fun TutoKitCard(
+    style: String, size: String, progress: Float?, error: String?, download: () -> Unit, later: () -> Unit, modifier: Modifier = Modifier,
+    /** The kit is on the phone already, the course under way: « Mettre ces sons » ([download]) rather than a download. */
+    onPhone: Boolean = false,
+) {
     val shape = RoundedCornerShape(14.dp)
     Column(
         modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp).clip(shape).background(panelColor()).border(1.5.dp, Neon.Amber, shape)
@@ -256,7 +260,8 @@ fun TutoKitCard(style: String, size: String, progress: Float?, error: String?, d
     ) {
         Text(tr("Le kit %s", style), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
         Text(
-            tr("Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés."),
+            if (onPhone) tr("Le kit est sur ton téléphone. Ses sons remplaceront ceux de tes pads (« Annuler » les remet).")
+            else tr("Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         error?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Red, modifier = Modifier.testTag("tuto_kit_error")) }
@@ -267,7 +272,12 @@ fun TutoKitCard(style: String, size: String, progress: Float?, error: String?, d
             Button(
                 onClick = download, colors = ButtonDefaults.buttonColors(containerColor = Neon.Amber, contentColor = Neon.Background),
                 modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_kit_download"),
-            ) { Text(tr("Télécharger le kit %1\$s (%2\$s)", style, size), textAlign = TextAlign.Center) }
+            ) {
+                Text(
+                    if (onPhone) tr("Mettre les sons du kit %s sur les pads", style) else tr("Télécharger le kit %1\$s (%2\$s)", style, size),
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
         TextButton(onClick = later, modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp).testTag("tuto_kit_later")) { Text(tr("Plus tard"), color = Neon.TextSecondary) }
     }

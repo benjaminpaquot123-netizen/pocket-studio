@@ -5891,35 +5891,51 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * those pads leave. [done] true once at least one came (a sound that cannot be read keeps the built-in one).
      */
     fun loadTutoKit(sounds: Map<Int, Triple<String, String, com.pocketstudio.model.PackSound>>, done: (Boolean) -> Unit) {
+        // Review (MINEUR 1): one load at a time (the offer may be seen again while this one runs).
+        if (tutoKitLoading) return
+        tutoKitLoading = true
         viewModelScope.launch {
-            val app = getApplication<Application>()
-            val pads = ArrayList<Pair<Int, PadSample>>()
-            for ((lane, s) in sounds) {
-                val (id, name, sound) = s
-                val pcm = withContext(Dispatchers.IO) {
-                    runCatching { com.pocketstudio.app.audio.AudioDecoder.decode(app, Uri.fromFile(com.pocketstudio.app.library.PackStore.file(app, id, sound))) }.getOrNull()
-                } ?: continue
-                val prepared = runCatching { withContext(Dispatchers.IO) { padSamples.add(pcm.withoutTail(), com.pocketstudio.model.DefaultNames.kitPad(name, lane)) } }.getOrNull() ?: continue
-                padSamples.register(prepared.second)
-                pads += lane to prepared.first.copy(choke = if (lane == 5 || lane == 6) 1 else 0)
+            try {
+                val app = getApplication<Application>()
+                val pads = ArrayList<Pair<Int, PadSample>>()
+                for ((lane, s) in sounds) {
+                    val (id, name, sound) = s
+                    val file = com.pocketstudio.app.library.PackStore.file(app, id, sound)
+                    val pcm = withContext(Dispatchers.IO) {
+                        runCatching { tutoKitDecodeForTest?.invoke(file) ?: com.pocketstudio.app.audio.AudioDecoder.decode(app, Uri.fromFile(file)) }
+                            .onFailure { AppLog.add("Tuto : son du kit illisible, ${sound.file} (${it.message})") }.getOrNull()
+                    } ?: continue
+                    val prepared = runCatching { withContext(Dispatchers.IO) { padSamples.add(pcm.withoutTail(), com.pocketstudio.model.DefaultNames.kitPad(name, lane)) } }
+                        .onFailure { AppLog.add("Tuto : son du kit non préparé, ${sound.file} (${it.message})") }.getOrNull() ?: continue
+                    padSamples.register(prepared.second)
+                    pads += lane to prepared.first.copy(choke = if (lane == 5 || lane == 6) 1 else 0)
+                }
+                if (pads.isEmpty()) {
+                    done(false)
+                    return@launch
+                }
+                val byLane = pads.toMap()
+                session.edit { p ->
+                    p.copy(
+                        drums = p.drums.copy(lanes = p.drums.lanes.mapIndexed { i, l -> byLane[i]?.let { l.copy(sample = it) } ?: l }),
+                        padVoices = p.padVoices - byLane.keys,
+                    )
+                }
+                pushPads()
+                if (NativeEngine.isAvailable) pushPadVoices(project.value)
+                AppLog.add("Tuto : kit du style, ${pads.size} sons sur les pads")
+                done(true)
+            } finally {
+                tutoKitLoading = false
             }
-            if (pads.isEmpty()) {
-                done(false)
-                return@launch
-            }
-            val byLane = pads.toMap()
-            session.edit { p ->
-                p.copy(
-                    drums = p.drums.copy(lanes = p.drums.lanes.mapIndexed { i, l -> byLane[i]?.let { l.copy(sample = it) } ?: l }),
-                    padVoices = p.padVoices - byLane.keys,
-                )
-            }
-            pushPads()
-            if (NativeEngine.isAvailable) pushPadVoices(project.value)
-            AppLog.add("Tuto : kit du style, ${pads.size} sons sur les pads")
-            done(true)
         }
     }
+
+    private var tutoKitLoading = false
+
+    /** A pack sound's decoding on the bench (Robolectric has no FLAC decoder). */
+    @androidx.annotation.VisibleForTesting
+    internal var tutoKitDecodeForTest: ((java.io.File) -> com.pocketstudio.app.audio.Pcm)? = null
 
     /** A downloaded pack as a kit ([com.pocketstudio.model.PackKits]): each pad's sound decoded, then all placed at once. */
     private fun loadPackKit(m: com.pocketstudio.model.PackManifest) {

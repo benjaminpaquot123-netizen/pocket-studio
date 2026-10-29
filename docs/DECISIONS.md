@@ -863,3 +863,9 @@
 - 2026-10-29 · Recette dubstep : clap sur le 3 (sur la caisse, réverbe 0,3). Raison : Attack « Mystik », EDMProd (caisse + clap réverbéré). Retour arrière : retirer la ligne clap de `recipes/bass.json` et regénérer.
 - 2026-10-29 · Tuto liquid : accords en triades posées sur la basse (Fa maj7, Mi m7, La m7 entendus). Raison : « Accords » ne pose que des triades. Retour arrière : voicings de 4 notes quand « Accords » saura les poser.
 - 2026-10-29 · Tuto bass music : Drop 2 = un élément en plus, pas un switch de son de basse. Raison : un son ne change pas par partie. Retour arrière : réécrire `make_drop2` quand le socle le permettra.
+- 2026-10-29 · Tutos hip-hop : la partie de départ s'appelle « Refrain » (tout joue), les autres en sont des copies allégées · le Refrain est la boucle la plus pleine d'un instrumental rap · retour : renommer en « Groove » dans les 7 JSON.
+- 2026-10-29 · Trap et drill : Couplet de 30 + Pré-refrain de 2 = 32 mesures de l'appli (16 mesures de rappeur en demi-temps) · un couplet de 16 mesures de grille dure 27 s, trop court · retour : `song` de chaque cours.
+- 2026-10-29 · Boom bap : forme « couplet d'abord » (Intro 4, Couplet 16, Refrain 8 ×3) et grille i VI i VI · les classiques new-yorkais ; voicings copiables en un geste · retour : `song` et `chords` du cours.
+- 2026-10-29 · Étapes triolets écrites avec `check: "listen"` en attendant `triplet:hat` · la validation refuse un détecteur inconnu · retour : changer le `check` des étapes `hat_triplet` (trap, drill) quand le détecteur arrive.
+- 2026-10-29 · `TutoJourneyTest` pose les roulements d'une étape `lane:<rôle>:rolls` · aucun cours ne l'utilisait avant ; sans ça le parcours Pro ne pouvait pas finir · retour : retirer le bloc dans le test.
+- 2026-10-29 · Recettes hip-hop inchangées · leurs lignes correspondent déjà aux fiches de recherche · retour : sans objet.

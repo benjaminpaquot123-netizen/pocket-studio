@@ -65,7 +65,7 @@ class WelcomeActions(
     val later: () -> Unit = {},
     /** Remix testers (Sarah): « Extraire la voix d'une chanson », the Remix on a project of its own. */
     val remix: () -> Unit = {},
-    /** Phase 36: the Mode simple (true) or every tool (false), chosen before starting. */
+    /** The mode of the project about to start: Simple (true) or Pro (false), chosen at « Simple ou Pro ? ». */
     val chooseMode: (Boolean) -> Unit = {},
 )
 
@@ -80,19 +80,40 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, si
     var demoReady by rememberSaveable(key = "demo_ready") { mutableStateOf(false) }
     // A project is being opened (the activity rebuilds then): the choices stay until it is.
     var leaving by remember { mutableStateOf(false) }
+    // Owner (2026-10-29): each way to start (but « Plus tard ») asks « Simple ou Pro ? » first; its
+    // Retour comes back to the choices. The way touched waits here (kept through a rotation).
+    var asking by rememberSaveable(key = "welcome_asking") { mutableStateOf<String?>(null) }
     if (show || leaving) {
-        ScaledDialog(onDismissRequest = { leaving = false; demoReady = false; actions.later() }, properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false)) {
+        ScaledDialog(
+            onDismissRequest = { if (asking != null) asking = null else { leaving = false; demoReady = false; actions.later() } },
+            properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false),
+        ) {
             Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
-                WelcomeScreen(
-                    WelcomeActions(
-                        guided = actions.guided,
-                        learn = actions.learn,
+                val start: (String) -> Unit = { way ->
+                    when (way) {
+                        "guided" -> actions.guided()
+                        "learn" -> actions.learn()
                         // A second quick touch while the first project opens makes no second one.
-                        demo = { if (!leaving) { demoReady = true; leaving = true; actions.demo() } },
-                        empty = { if (!leaving) { leaving = true; actions.empty() } },
-                        remix = { if (!leaving) { leaving = true; actions.remix() } },
+                        "demo" -> if (!leaving) { demoReady = true; leaving = true; actions.demo() }
+                        "empty" -> if (!leaving) { leaving = true; actions.empty() }
+                        "remix" -> if (!leaving) { leaving = true; actions.remix() }
+                    }
+                }
+                val way = asking
+                if (way != null) {
+                    com.pocketstudio.app.ui.ModeStep(
+                        choose = { v -> asking = null; actions.chooseMode(v); start(way) },
+                        back = { asking = null },
+                        tuto = way == "learn",
+                    )
+                } else WelcomeScreen(
+                    WelcomeActions(
+                        guided = { asking = "guided" },
+                        learn = { asking = "learn" },
+                        demo = { if (!leaving) asking = "demo" },
+                        empty = { if (!leaving) asking = "empty" },
+                        remix = { if (!leaving) asking = "remix" },
                         later = { leaving = false; demoReady = false; actions.later() },
-                        chooseMode = actions.chooseMode,
                     ),
                     simple = simple,
                 )
@@ -140,8 +161,6 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
                     Text(tr("Ton studio de musique, dans ta poche."), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
                 }
             }
-            // Phase 36: how the app is laid out, before anything (Réglages changes it later, nothing is lost).
-            ModeChoice(simple, actions.chooseMode)
             Text(tr("Bienvenue ! Fais ta musique sur ton appareil. Par quoi on commence ?"), style = MaterialTheme.typography.bodyLarge)
             Choice(
                 Icons.Filled.AutoAwesome, tr("Créer mon premier morceau (guidé)"),
@@ -198,36 +217,5 @@ private fun Choice(icon: ImageVector, title: String, line: String, color: Color,
             Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = if (primary) color else Neon.TextPrimary)
             Text(line, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
         }
-    }
-}
-
-/**
- * « Comment veux-tu travailler ? »: the Mode simple (four tabs, everyday words) or every tool
- * (the five spaces). Two cards side by side, the chosen one lit; Réglages changes it later.
- */
-@Composable
-private fun ModeChoice(simple: Boolean, choose: (Boolean) -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("welcome_mode")) {
-        Text(tr("Comment veux-tu travailler ?"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth().height(androidx.compose.foundation.layout.IntrinsicSize.Min)) {
-            ModeCard(tr("Simple"), tr("5 onglets et des mots de tous les jours : idéal pour commencer."), simple, "welcome_mode_simple", Modifier.weight(1f)) { choose(true) }
-            ModeCard(tr("Complet"), tr("Tous les outils : structure, sons, mix et live."), !simple, "welcome_mode_full", Modifier.weight(1f)) { choose(false) }
-        }
-    }
-}
-
-@Composable
-private fun ModeCard(title: String, line: String, chosen: Boolean, tag: String, modifier: Modifier, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(14.dp)
-    Column(
-        modifier.fillMaxHeight()
-            .showcasePanel(shape, accent = Neon.Cyan.takeIf { chosen }, edge = if (chosen) 2.dp else 1.dp, wash = 0.2f)
-            .selectable(selected = chosen, role = Role.RadioButton, onClick = onClick)
-            .padding(12.dp)
-            .testTag(tag),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = if (chosen) Neon.Cyan else Neon.TextPrimary)
-        Text(line, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
 }

@@ -58,6 +58,8 @@ class HumanLucasBugsTest : HumanTester("lucas-bugs") {
     /** Home › « Créer mon premier morceau (guidé) » › Bass music › Jump up DnB › « Choisir ce style » (c/1-5). */
     private fun wizardOnJumpUp() {
         tap(centerOfText("Créer mon premier morceau", substring = true), "the big orange button")
+        // « Simple ou Pro ? » (owner, 2026-10-29): Simple, as a first launch suggests.
+        tap(centerOf("mode_card_simple"), "Simple")
         tap(centerOfText("Bass music", substring = true), "Bass music")
         tap(centerOfText("Jump up DnB", substring = true), "the Jump up card")
         tap(centerOfText("Choisir ce style", substring = true), "Choisir ce style")
@@ -88,6 +90,7 @@ class HumanLucasBugsTest : HumanTester("lucas-bugs") {
     fun theWelcomeGuideAnswersSuivantAndPasser() {
         begin()
         tap(centerOfText("Partir de zéro"), "Partir de zéro")
+        tap(centerOf("mode_card_simple"), "Simple")
         act("attends 2")
         // ⋮ › « Aide et premiers pas » › « Revoir le guide des premiers pas ».
         act("touche 543 43")
@@ -105,6 +108,7 @@ class HumanLucasBugsTest : HumanTester("lucas-bugs") {
     fun insererApresInsertsThePartPicked() {
         begin()
         tap(centerOfText("Partir de zéro"), "Partir de zéro")
+        tap(centerOf("mode_card_simple"), "Simple")
         act("attends 2")
         // Three parts A, B, C in the song, as the tutorial's chapter 10 makes them.
         val vm = rhythm()!!
@@ -133,6 +137,8 @@ class HumanLucasBugsTest : HumanTester("lucas-bugs") {
     fun aDoubleTapOnCreerLaPisteBasseWritesNoNote() {
         begin()
         tap(centerOfText("J'apprends"), "J'apprends")
+        // Simple: the tutorial's Facile level, not asked again.
+        tap(centerOf("mode_card_simple"), "Simple")
         tap(centerOfText("Jump up DnB", substring = true), "Jump up")
         act("attends 4")
         // Chapter 5, « La basse », from the tutorial's list of chapters.

@@ -84,12 +84,18 @@ class ShellFixesTest {
     fun twoQuickTouchesOnTheWelcomeMakeOneProject() {
         var empty = 0
         var demo = 0
-        compose.setContent { PocketStudioTheme { FirstLaunch(true, WelcomeActions(empty = { empty++ }, demo = { demo++ }), playDemo = {}) } }
+        val modes = mutableListOf<Boolean>()
+        compose.setContent { PocketStudioTheme { FirstLaunch(true, WelcomeActions(empty = { empty++ }, demo = { demo++ }, chooseMode = { modes += it }), playDemo = {}) } }
+        // Owner (2026-10-29): « Simple ou Pro ? » first, then the project.
         compose.onNodeWithTag("welcome_empty").performClick()
+        assertEquals(0, empty)
+        compose.onNodeWithTag("mode_card_simple").performClick()
         compose.onNodeWithTag("welcome_empty").performClick()
         compose.onNodeWithTag("welcome_demo").performClick()
+        compose.onNodeWithTag("mode_step").assertDoesNotExist()
         assertEquals(1, empty)
         assertEquals(0, demo)
+        assertEquals(listOf(true), modes)
     }
 
     @Test

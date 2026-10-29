@@ -51,6 +51,8 @@ class OnboardingUiTest {
                 WelcomeScreen(WelcomeActions(guided = { chosen += "guided" }, demo = { chosen += "demo" }, empty = { chosen += "empty" }, later = { chosen += "later" }))
             }
         }
+        // The mode is no longer chosen beforehand on the welcome: each way to start asks it (FirstLaunch).
+        compose.onNodeWithTag("welcome_mode").assertDoesNotExist()
         compose.onNodeWithText("Créer mon premier morceau (guidé)").assertExists()
         compose.onNodeWithTag("welcome_guided").performClick()
         compose.onNodeWithTag("welcome_demo").performClick()
@@ -104,11 +106,17 @@ class OnboardingUiTest {
         StarterWizard.STYLES.filter { it.family == "Techno" || it.family == "House" }.forEach { compose.onNodeWithTag("quick_style_${it.id}").assertExists() }
         compose.onNodeWithTag("quick_style_trap").assertDoesNotExist()  // Hip-hop still folded
         compose.onNodeWithTag("quick_style_techno").performScrollTo().performClick()
+        // « Simple ou Pro ? » first (owner, 2026-10-29): nothing made before a mode is touched.
+        compose.onNodeWithTag("mode_step").assertExists()
+        assertTrue(quick.isEmpty())
+        compose.onNodeWithTag("mode_card_pro").performClick()
         compose.onNodeWithTag("quick_style_house").performScrollTo().performClick()
+        compose.onNodeWithTag("mode_card_simple").performClick()
         assertEquals(listOf("techno", "house"), quick)
         // A folded family opens with one touch; « Personnaliser pas à pas » opens the assistant on that style.
         compose.onNodeWithTag("quick_family_Hip-hop").performScrollTo().performClick()
         compose.onNodeWithTag("quick_custom_trap").performScrollTo().performClick()
+        compose.onNodeWithTag("mode_card_pro").performClick()
         assertEquals(listOf("trap"), custom)
         // An open family closes the same way.
         compose.onNodeWithTag("quick_family_Techno").performScrollTo().performClick()
@@ -124,8 +132,10 @@ class OnboardingUiTest {
         compose.onNodeWithTag("demo_play_0").performScrollTo().performClick()
         assertEquals(listOf(0), previewed)
         assertTrue(created.isEmpty())
-        // « Je pars de zéro » makes the empty project.
+        // « Je pars de zéro » makes the empty project, once its mode is chosen.
         compose.onNodeWithTag("start_empty").performScrollTo().performClick()
+        assertTrue(created.isEmpty())
+        compose.onNodeWithTag("mode_card_simple").performClick()
         assertEquals(listOf(2), created)
     }
 
@@ -155,6 +165,7 @@ class OnboardingUiTest {
         compose.onNodeWithTag("quick_error").assertTextEquals("Le morceau n'a pas pu être préparé (son illisible : Kick).").performClick()
         assertEquals(1, dismissed)
         compose.onNodeWithTag("quick_style_techno").performScrollTo().performClick()
+        compose.onNodeWithTag("mode_card_pro").performClick()
         assertEquals(listOf("techno"), quick)
     }
 

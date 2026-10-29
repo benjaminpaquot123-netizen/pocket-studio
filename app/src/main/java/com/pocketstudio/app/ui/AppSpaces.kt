@@ -194,7 +194,7 @@ internal fun plusEntries(
     PlusEntry("glossary", Icons.AutoMirrored.Filled.MenuBook, tr("Les mots de la musique, à écouter"), tr("Chaque mot avec un exemple sonore"), open = glossary),
     PlusEntry("Reglages", Icons.Filled.Settings, tr("Réglages"), tr("Langue, thème, taille, son, mode simple"), page = ToolPage.Reglages),
     PlusEntry(
-        "mode", Icons.Filled.ToggleOn, if (simple) tr("Passer en mode complet") else tr("Passer en mode simple"),
+        "mode", Icons.Filled.ToggleOn, if (simple) tr("Passer en mode Pro") else tr("Passer en mode Simple"),
         if (simple) tr("Les cinq espaces : Structure, Sons, Mix, Live, Plus") else tr("Cinq onglets : Mon morceau, Rythme, Clavier, Mix, Envoyer"),
         open = { setSimple(!simple) },
     ),

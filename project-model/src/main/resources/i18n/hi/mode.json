@@ -1,0 +1,20 @@
+{
+  "Simple ou Pro ?": "सिंपल या प्रो?",
+  "Comment veux-tu voir ce projet ? Tu pourras changer à tout moment avec la pastille en haut.": "इस प्रोजेक्ट को कैसे देखना चाहते हो? ऊपर के बैज से कभी भी बदल सकते हो।",
+  "Le mode choisit aussi le niveau du tuto. Tu pourras changer de mode à tout moment avec la pastille en haut.": "मोड से ट्यूटोरियल का लेवल भी तय होता है। ऊपर के बैज से कभी भी मोड बदल सकते हो।",
+  "Ton dernier choix": "तुम्हारी पिछली पसंद",
+  "Pour débuter : 4 onglets, de gros boutons et des mots de tous les jours.": "शुरुआत के लिए: 4 टैब, बड़े बटन और रोज़ के शब्द।",
+  "Pour aller loin : tous les outils, structure, sons, mix et live.": "आगे जाने के लिए: सारे टूल, स्ट्रक्चर, साउंड, मिक्स और लाइव।",
+  "Avec le tuto Facile": "आसान ट्यूटोरियल के साथ",
+  "Avec le tuto Pro": "प्रो ट्यूटोरियल के साथ",
+  "Changer de mode": "मोड बदलो",
+  "Mode %s. Toucher pour changer de mode.": "%s मोड। मोड बदलने के लिए छुओ।",
+  "Mode de ce projet": "इस प्रोजेक्ट का मोड",
+  "Ton morceau ne change pas : seuls les écrans et les mots changent. Ce projet garde le mode choisi.": "तुम्हारा गाना नहीं बदलता: सिर्फ़ स्क्रीन और शब्द बदलते हैं। यह प्रोजेक्ट चुना हुआ मोड रखता है।",
+  "En ce moment": "अभी",
+  "Passer en mode Pro": "प्रो मोड पर जाओ",
+  "Passer en mode Simple": "सिंपल मोड पर जाओ",
+  "Piste par piste, MIDI, FLAC… (passe en mode Pro)": "ट्रैक दर ट्रैक, MIDI, FLAC… (प्रो मोड पर जाता है)",
+  "Pro : tous les outils": "प्रो: सारे टूल",
+  "Séparation des pistes : batterie, basse, voix et le reste.": "ट्रैक अलग करना: ड्रम, बेस, आवाज़ और बाकी।"
+}

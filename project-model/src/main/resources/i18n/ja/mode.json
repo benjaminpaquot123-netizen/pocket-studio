@@ -1,0 +1,20 @@
+{
+  "Simple ou Pro ?": "シンプル？プロ？",
+  "Comment veux-tu voir ce projet ? Tu pourras changer à tout moment avec la pastille en haut.": "このプロジェクトをどう表示する？上のバッジでいつでも変えられます。",
+  "Le mode choisit aussi le niveau du tuto. Tu pourras changer de mode à tout moment avec la pastille en haut.": "モードでチュートリアルのレベルも決まります。上のバッジでいつでもモードを変えられます。",
+  "Ton dernier choix": "前回の選択",
+  "Pour débuter : 4 onglets, de gros boutons et des mots de tous les jours.": "はじめての人に：4つのタブ、大きなボタン、ふだんの言葉。",
+  "Pour aller loin : tous les outils, structure, sons, mix et live.": "もっと深く：すべてのツール、構成、音、ミックス、ライブ。",
+  "Avec le tuto Facile": "かんたんチュートリアル付き",
+  "Avec le tuto Pro": "プロチュートリアル付き",
+  "Changer de mode": "モードを変える",
+  "Mode %s. Toucher pour changer de mode.": "%sモード。タップでモードを変更。",
+  "Mode de ce projet": "このプロジェクトのモード",
+  "Ton morceau ne change pas : seuls les écrans et les mots changent. Ce projet garde le mode choisi.": "曲は変わりません。変わるのは画面と言葉だけ。このプロジェクトは選んだモードを覚えます。",
+  "En ce moment": "いまのモード",
+  "Passer en mode Pro": "プロモードに切り替え",
+  "Passer en mode Simple": "シンプルモードに切り替え",
+  "Piste par piste, MIDI, FLAC… (passe en mode Pro)": "トラックごと、MIDI、FLAC…（プロモードに切り替わります）",
+  "Pro : tous les outils": "プロ：すべてのツール",
+  "Séparation des pistes : batterie, basse, voix et le reste.": "トラック分離：ドラム、ベース、ボーカル、その他。"
+}

@@ -108,15 +108,28 @@ class Journey(private val compose: ComposeTestRule, private val log: (String) ->
     // --- The paths -------------------------------------------------------------------------------
 
     /**
-     * A first launch: the welcome, « Comment veux-tu travailler ? » ([simple] or every tool), then
-     * the guided song ([guided]: the assistant opens) or « Plus tard » (the starter beat).
+     * A first launch: the welcome, then the guided song ([guided]: « Simple ou Pro ? » ([simple] or
+     * Pro), the assistant opens) or « Plus tard » (the starter beat, then Pro with the top bar's
+     * mode chip when not [simple]).
      */
     fun firstLaunch(simple: Boolean, guided: Boolean) {
         await("welcome", 30_000)
-        tap(if (simple) "welcome_mode_simple" else "welcome_mode_full")
-        tap(if (guided) "welcome_guided" else "welcome_later")
-        if (!guided) awaitGone("welcome")
+        if (guided) {
+            tap("welcome_guided")
+            tap(modeCard(simple))
+        } else {
+            tap("welcome_later")
+            awaitGone("welcome")
+            if (!simple) {
+                tap("top_mode")
+                tap(modeCard(false))
+                awaitGone("mode_switch")
+            }
+        }
     }
+
+    /** « Simple ou Pro ? »'s card. */
+    private fun modeCard(simple: Boolean) = if (simple) "mode_card_simple" else "mode_card_pro"
 
     /** « Que veux-tu faire ? », as each later start of the app asks: « Continuer » opens the last project. */
     fun continueLastProject() {
@@ -130,6 +143,8 @@ class Journey(private val compose: ComposeTestRule, private val log: (String) ->
         await("launch", 30_000)
         tap("launch_new")
         tap("starter_wizard")
+        // « Simple ou Pro ? » (owner, 2026-10-29): the mode the app is in.
+        tap(modeCard(com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode))
         await("wizard")
     }
 

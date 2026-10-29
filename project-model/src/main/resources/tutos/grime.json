@@ -1,0 +1,403 @@
+{
+  "format": 1,
+  "style": "grime",
+  "mood": "dark",
+  "key": "E minor",
+  "chords": "i i VI v",
+  "lines": {
+    "bass": "0:E2:2 3:E2:2 6:E2:4 10:B2:4 14:G2:2 16:E2:2 19:E2:2 22:E2:4 26:B2:4 30:G2:2 32:C2:2 35:C2:2 38:C2:4 42:G2:4 46:E2:2 48:B1:2 51:B1:2 54:B1:4 58:F#2:4 62:D2:2",
+    "pad": "0:E3+E4:2 6:E3+E4:2 20:E3+E4:2 26:E3+E4:2 30:E3+E4:1 32:C3+C4:2 38:C3+C4:2 52:B2+B3:2 58:B2+B3:2 62:B2+B3:1",
+    "lead": "0:E5:2 3:E5:2 6:E5:4 10:B5:4 14:G5:2 16:E5:2 19:E5:2 22:E5:4 26:B5:4 30:G5:2 32:C5:2 35:C5:2 38:C5:4 42:G5:4 46:E5:2 48:B4:2 51:B4:2 54:B4:4 58:F#5:4 62:D5:2"
+  },
+  "lineBars": {
+    "bass": 4,
+    "pad": 4,
+    "lead": 4
+  },
+  "follow": [
+    "bass",
+    "pad",
+    "lead"
+  ],
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "Le grime, c'est le rap électronique de l'est de Londres, né sur les radios pirates vers 2002 : rapide, brut, froid. Les MC (les rappeurs) foncent à 140.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de grime fini : un petit « clic » sec, une basse carrée qui grogne, des notes de synthé glacées et beaucoup de trous. C'est un instrumental pour un MC : tu vas le construire brique par brique.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 140 BPM, 140 battements par minute. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 140 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick,hat",
+          "skip": "Sans ça, ton morceau reste à 120 BPM : ce n'est plus du grime."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau, froide. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » puis « Mi ».",
+          "textPro": "À toi : règle la tonalité sur Mi mineur, gamme « Mineure », tonique « Mi » : la basse carrée grogne sur Mi2, son sub tient Mi1.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:bass",
+          "skip": "Sans cette gamme, ta basse ne sonnera pas juste."
+        }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "La batterie sèche",
+      "titlePro": "Le beat",
+      "why": "Une batterie sèche, pleine de trous : le kick joue avec la basse, le clap tombe sur le 2e et le 4e temps (on compte 1, 2, 3, 4), et un petit clic remplace les charleys.",
+      "steps": [
+        {
+          "id": "kick_do",
+          "text": "À toi : le kick tient sur 2 mesures (une mesure = un tour de la boucle). Touche « Passer à 2 mesures », puis sur le pad « Kick », les cases en pointillé des 2 mesures.",
+          "textPro": "À toi : « Passer à 2 mesures », puis le kick décalé des 2 mesures : il joue avec la basse, pas sur chaque temps (l'héritage du UK garage).",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick"
+        },
+        {
+          "id": "clap_do",
+          "text": "À toi : sur le pad « Clap », les cases en pointillé : le 2e et le 4e temps.",
+          "check": "lane:clap",
+          "spot": "rhythm.pattern",
+          "target": "clap",
+          "listen": "drums:kick,clap"
+        },
+        {
+          "id": "perc_do",
+          "text": "À toi : sur le pad « Rim », les 4 cases en pointillé, entre les temps : le « clic eski », le petit coup sec de Wiley dans « Eskimo ».",
+          "why": "Ce clic remplace le charley : c'est le son du premier grime.",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,clap,perc"
+        },
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad « Charley », les cases en pointillé : des croches, qui tiennent le tempo.",
+          "why": "Pas de rafales de charleys en grime : c'est une habitude de la drill, pas d'ici.",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,clap,perc,hat"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toute ta batterie quelques secondes, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,clap,perc,hat",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La basse carrée",
+      "why": "Une onde carrée brute, sans arrondi, en petits coups « stop-start » : en grime, la basse est souvent la mélodie elle-même.",
+      "steps": [
+        {
+          "id": "bass_hear",
+          "text": "Écoute la basse avec la batterie.",
+          "check": "listen",
+          "listen": "parts:kick,clap,bass"
+        },
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse », puis les 5 notes en pointillé de la mesure 1. « Copier sur les mesures suivantes » écrit les 3 autres mesures : elles suivent les accords.",
+          "textPro": "À toi : crée la piste Basse (une onde carrée). Mesure 1 : Mi, Mi, Mi tenu, Si, Sol, en coups courts. « Copier » : la même figure sur Mi, Do et Si, le long de la gamme.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass",
+          "skip": "Sans basse, ton grime n'a pas de grognement."
+        },
+        {
+          "id": "bass_sub",
+          "text": "À toi : touche « Copier la basse une octave plus bas » : une piste « Sub » joue ta basse une octave plus bas. C'est le « sublow », le grave qu'on sent dans le ventre.",
+          "check": "track:sub",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass"
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "Les stabs glacés",
+      "why": "Pas d'accords pleins en grime : des notes seules avec leur octave, courtes et glacées, qui répondent à la basse. Beaucoup de vide autour : la place du MC.",
+      "steps": [
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords » (au-dessus de la grille) : toucher la note du bas en pointillé pose les 2 notes. Fais les 2 coups de la mesure 1, puis les 3 de la mesure 2, puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Accords : Mi et son octave, 2 coups mesure 1, 3 coups mesure 2. « Copier » : la même figure sur Do, puis Si.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:bass,pad"
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "Le lead chiptune",
+      "why": "Un son de vieille console de jeu qui reprend le riff de la basse tout en haut : le côté « sonnerie de téléphone » du grime de 2003.",
+      "steps": [
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 5 notes en pointillé de la mesure 1 : le riff de basse, trois octaves plus haut. Puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Mélodie (« Lead chiptune ») : le riff de basse trois octaves plus haut, mesure 1, puis « Copier ».",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:bass,lead"
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Refrain",
+      "why": "Tout ce que tu as fait joue ensemble : c'est le Refrain, le moment où tout le monde joue. Les autres parties naîtront de lui.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes (tout ce que tu as fait), puis l'exemple. Tout joue en même temps : c'est le Refrain, la partie la plus pleine.",
+          "textPro": "Écoute ta boucle quelques secondes, puis l'exemple.",
+          "check": "listen",
+          "listen": "parts:kick,clap,perc,hat,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Refrain » : c'est ta partie de départ, celle où tout joue.",
+          "check": "label:Refrain",
+          "spot": "song.parts",
+          "listen": "parts:kick,clap,perc,hat,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "why": "Le grime se pense en blocs de 8 mesures : quelque chose change tous les 8, et les MC rappent chacun 8 ou 16 mesures.",
+      "map": true,
+      "steps": [
+        {
+          "id": "brick",
+          "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la basse). Une partie, ce sont plusieurs briques qui jouent ensemble.",
+          "why": "Tu changes une partie en ajoutant ou en enlevant des briques.",
+          "check": "manual"
+        },
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : les stabs et le clic, sans kick ni basse.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_couplet",
+          "text": "Écoute le Couplet : sans le lead chiptune. Puis sa 2e moitié, presque nue : kick, clap et basse seulement.",
+          "why": "8 mesures pleines, 8 mesures nues : comme « Pulse X », le tout premier grime.",
+          "check": "listen",
+          "listen": "vs:Couplet:Couplet 2"
+        },
+        {
+          "id": "map_bars",
+          "text": "Bon à savoir : en grime, une mesure de l'appli est une mesure du MC (le clap sur 2 et 4). Un tour de 16 mesures dure 27 secondes : les MC rappent vite.",
+          "check": "manual"
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Refrain : tu enlèves des briques.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro à partir du Refrain : les stabs et le clic seulement.",
+          "check": "part:Intro:nokick+nobass",
+          "spot": "song.parts",
+          "listen": "vs:Intro:Refrain",
+          "keep": "pad,perc"
+        },
+        {
+          "id": "make_couplet",
+          "text": "À toi : crée le Couplet à partir du Refrain : sans le lead chiptune, avec des charleys plus simples.",
+          "check": "part:Couplet:nolead+less",
+          "spot": "song.parts",
+          "listen": "vs:Refrain:Couplet",
+          "keep": "kick,clap,perc,hat,bass,sub,pad",
+          "lanesFrom": "Couplet"
+        },
+        {
+          "id": "make_couplet2",
+          "text": "À toi : crée le Couplet 2 à partir du Refrain : le kick, le clap, la basse et le sub, rien d'autre.",
+          "why": "Tout enlever d'un coup au milieu du couplet : le MC se retrouve seul avec la basse, sa voix claque.",
+          "check": "part:Couplet 2:nopad+nolead",
+          "spot": "song.parts",
+          "listen": "vs:Couplet:Couplet 2",
+          "keep": "kick,clap,bass,sub"
+        },
+        {
+          "id": "make_pont",
+          "text": "À toi : crée le Pont à partir du Refrain : les stabs et le clic, sans kick ni basse.",
+          "why": "Le « drop-out » : presque rien, puis le beat repart d'un coup, comme un « reload » à la radio pirate.",
+          "check": "part:Pont:nokick+nobass",
+          "spot": "song.parts",
+          "listen": "vs:Pont:Refrain",
+          "keep": "pad,perc"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Couplet 2, Refrain, Couplet, Couplet 2, Pont, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "listen": "song",
+          "song": "Intro:8,Refrain:16,Couplet:8,Couplet 2:8,Refrain:16,Couplet:8,Couplet 2:8,Pont:8,Refrain:16,Outro:8",
+          "skip": "Dans un autre ordre, les blocs de 8 ne tomberont plus juste."
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 8, Couplet 2 8, Pont 8, Outro 8. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». « Donner les durées conseillées » le fait d'un coup.",
+          "why": "Tout se compte en 8 : chaque MC sait où il en est. En tout 2 min 58.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:8,Refrain:16,Couplet:8,Couplet 2:8,Refrain:16,Couplet:8,Couplet 2:8,Pont:8,Refrain:16,Outro:8"
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Juste avant le Refrain, un temps de silence : le MC finit sa phrase, et tout repart.",
+      "steps": [
+        {
+          "id": "gap",
+          "text": "À toi : dans la partie « Couplet 2 », dernière mesure, efface tous les coups du dernier temps (touche chaque croix rouge) : un temps de silence avant le Refrain.",
+          "check": "gap",
+          "spot": "rhythm.pattern",
+          "listen": "vs:Couplet 2:Refrain",
+          "part": "Couplet 2"
+        },
+        {
+          "id": "crash",
+          "text": "À toi : dans la partie « Refrain », pose un coup sur le pad « Crash » dans la toute première case.",
+          "check": "crash",
+          "spot": "rhythm.pattern",
+          "listen": "part:Refrain",
+          "part": "Refrain"
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "Le grime est sec : très peu de réverbe. Seul le lead a de l'écho, pour le côté jeu vidéo.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "levels": "f",
+          "text": "Écoute la réverbe : la caisse claire et les accords, d'abord sans, puis avec. En grime, on en met très peu.",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "delay",
+          "levels": "p",
+          "text": "À toi : au Mixeur, sur la piste « Mélodie », monte « Envoi écho » : le lead chiptune rebondit.",
+          "check": "send:1",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:lead"
+        },
+        {
+          "id": "reverb",
+          "levels": "p",
+          "text": "À toi : sur la piste « Accords », monte un peu « Envoi réverbe » : juste assez pour que les stabs aient l'air glacés.",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:pad"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le mix, c'est le volume de chaque piste : le kick et la basse devant, le reste derrière, pour laisser la place à la voix.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "textPro": "À toi : au Mixeur, baisse un peu « Accords » et « Mélodie » : la basse, le sub et le clap devant.",
+          "check": "changed:volumes:pad,lead",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:kick,clap,bass,pad,lead"
+        },
+        {
+          "id": "meters",
+          "levels": "p",
+          "text": "Repère : pendant le Refrain, les vu-mètres du Mixeur ne doivent pas rester dans le rouge. Si une piste rougit, baisse son fader.",
+          "check": "manual"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "title": "Le mastering",
+      "why": "Le master colle le tout et donne le volume des morceaux de grime.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Auto (style) » : environ −8,5 LUFS.",
+          "check": "loudness:AUTO",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter à un rappeur !",
+      "steps": [
+        {
+          "id": "formats",
+          "levels": "p",
+          "text": "WAV pour un rappeur qui enregistre dessus (la qualité studio), M4A pour tes amis (un fichier léger), pistes séparées pour un ingénieur du son.",
+          "check": "manual"
+        },
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

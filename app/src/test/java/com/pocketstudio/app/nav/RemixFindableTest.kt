@@ -101,7 +101,7 @@ class RemixFindableTest {
         h.start(simple = true)
         compose.withinGestures("Remixer une chanson (Mode simple)", FROM_A_SPACE) {
             tap("top_more")
-            compose.onNodeWithTag("more_remix").assertTextContains("Extraire la voix d'une chanson")
+            compose.onNodeWithTag("more_remix").assertTextContains("Remix")
             tap("more_remix")
         }
         assertRemix()

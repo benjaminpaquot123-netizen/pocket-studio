@@ -249,7 +249,9 @@ class ModeChoiceTest {
         compose.waitForIdle()
         assertFalse(exists("wizard"))
         // « Mes projets » under it, then back on the open project: its own mode again.
+        // « ← » of « Mes projets »: the home screen (owner, 2026-10-29), then « Continuer ».
         if (exists("projects")) tap("projects_back")
+        if (exists("launch_continue")) tap("launch_continue")
         assertFalse(exists("projects"))
         assertFalse(SettingsStore.state.value.simpleMode)
         assertEquals(false, ProjectModes.of(h.app, h.vm.projectId))

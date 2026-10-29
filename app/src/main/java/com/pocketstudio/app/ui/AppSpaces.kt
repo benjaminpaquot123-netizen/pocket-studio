@@ -34,6 +34,7 @@ import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.Checklist
@@ -187,10 +188,14 @@ internal class PlusEntry(val key: String, val icon: ImageVector, val title: Stri
 
 /** The Plus page's entries, in the order a lost beginner looks for them. */
 internal fun plusEntries(
+    /** « Accueil »: « Que veux-tu faire ? » (null: not offered). */
+    home: (() -> Unit)? = null,
     projects: () -> Unit, glossary: () -> Unit, missions: () -> Unit, simple: Boolean, setSimple: (Boolean) -> Unit,
     /** « Signaler un bug » (null: not offered). */
     bugReport: (() -> Unit)? = null,
 ): List<PlusEntry> = listOfNotNull(
+    // Owner (2026-10-29): the home screen, its Remix card, one touch away from a project.
+    home?.let { PlusEntry("home", Icons.Filled.Home, tr("Accueil"), tr("Continuer, nouveau morceau, Remix…"), open = it) },
     PlusEntry("projects", Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir, créer, dupliquer, envoyer un projet"), open = projects),
     PlusEntry("Aide", Icons.AutoMirrored.Filled.HelpOutline, tr("Aide"), tr("Les premiers pas, le Guide, le lexique"), page = ToolPage.Aide),
     PlusEntry("missions", Icons.Filled.Flag, tr("Mon premier morceau, avec le Guide"), tr("Ses premières cartes, du style au partage"), open = missions),

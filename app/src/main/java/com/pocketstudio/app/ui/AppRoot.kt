@@ -1473,6 +1473,7 @@ fun AppRoot() {
     LaunchedEffect(tutoUi?.current?.id, tutoSteps, tutoUi == null, tutoUi?.need, tutoUi?.progress?.done) { com.pocketstudio.app.tuto.TutoHints.cells = tuto.hint(tutoSteps) }
     LaunchedEffect(tutoUi?.current?.id, tutoProject, tutoUi == null, tutoUi?.need) {
         com.pocketstudio.app.tuto.TutoHints.notes = tuto.ghostNotes(tutoProject)
+        com.pocketstudio.app.tuto.TutoHints.acid = tuto.acidHints(tutoProject)
         com.pocketstudio.app.tuto.TutoHints.erase = tuto.toErase(tutoProject)
         com.pocketstudio.app.tuto.TutoHints.sendNote = tuto.sendNote(tutoProject)
     }
@@ -2130,6 +2131,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     setPadPan = rhythmVm::setPadPan,
                                     setHitPan = rhythmVm::setHitPan,
                                     setHitPitch = rhythmVm::setHitPitch,
+                                    setHitOffset = rhythmVm::setHitOffset,
                                     setHitVelocity = rhythmVm::setHitVelocity,
                                     toggleHit = rhythmVm::toggleHit,
                                     cycleVelocity = rhythmVm::cycleVelocity,

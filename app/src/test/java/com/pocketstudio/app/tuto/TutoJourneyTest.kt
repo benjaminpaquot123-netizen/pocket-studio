@@ -29,27 +29,35 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
+import org.robolectric.ParameterizedRobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import java.time.Duration
 import kotlin.math.abs
 
 /**
- * Owner (2026-10-28): the whole jump up course, Facile and Pro, done in the app the way a user
+ * Owner (2026-10-28): every course of `tutos/` (jump up first, each style's file then: a course
+ * added is played here without a line of code), Facile and Pro, done in the app the way a user
  * does it, step after step: the step's main button, « Je le fais » (the right screen, its dotted
  * cells or notes in sight), the cells and the notes touched, the sheets' choices. At each step:
  * nothing appears by itself, « Montre-moi » shows then leaves the project exactly as it was (and
  * nothing in « Annuler »), « Écouter l'exemple » plays something to hear, the step is ticked only
  * once done. (That the examples are really audible through the engine: TutoExampleSoundBench.)
  */
-@RunWith(RobolectricTestRunner::class)
+@RunWith(ParameterizedRobolectricTestRunner::class)
 @Config(qualifiers = "w360dp-h780dp")
-class TutoJourneyTest {
+class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
+    companion object {
+        @JvmStatic
+        @ParameterizedRobolectricTestRunner.Parameters(name = "{0} {1}")
+        fun courses(): List<Array<Any>> = TutoCourse.STYLES.flatMap { s -> TutoLevel.entries.map { arrayOf<Any>(s, it) } }
+    }
+
     @get:Rule
     val compose = createAndroidComposeRule<ComponentActivity>()
     private val h = AppHarness(compose)
-    private val target = TutoTarget.of("jump_up")!!
+    private val target = TutoTarget.of(style)!!
+    private val course = TutoCourse.of(style)!!
 
     private class Player : GuideListenPlayer {
         val played = ArrayList<Pcm>()
@@ -102,17 +110,18 @@ class TutoJourneyTest {
     }
 
     @Test
-    fun theWholeCourseInFacile() = journey(TutoLevel.Facile)
+    fun theWholeCourse() = journey(level)
 
-    @Test
-    fun theWholeCourseInPro() = journey(TutoLevel.Pro)
+    /** The part the user adds to the song for [label]: its own, or the Intro again for a « Fin » the course does not make. */
+    private fun sceneFor(label: String): Int = p().allScenes.indexOfFirst { it.label == label }.takeIf { it >= 0 }
+        ?: if (label in TutoTarget.ENDINGS) p().allScenes.indexOfFirst { it.label == "Intro" } else -1
 
     private fun journey(level: TutoLevel) {
         TutoTestHooks.player = player
         h.start(simple = level == TutoLevel.Facile, build = {
             // « J'apprends » › level › Jump up: the tutorial's own empty project.
             session.edit { target.blank() }
-            PrefsTutoStore(h.app).save(projectId, TutoProgress("jump_up", level))
+            PrefsTutoStore(h.app).save(projectId, TutoProgress(style, level))
         })
         // A short tone stands for the engine's render (Robolectric has none).
         h.vm.guideRenderForTest = { a, _ -> FloatArray(OfflineExport.SAMPLE_RATE * 2) { 0.3f * kotlin.math.sin(it * 0.05f) } to FloatArray(2) }
@@ -120,7 +129,7 @@ class TutoJourneyTest {
         // Truly empty: no hit, no note, the first track hidden (no « Synthé » in « Mes pistes »).
         assertTrue(p().drums.lanes.all { it.hits.isEmpty() })
         assertTrue(TutoChecks.blankFirst(p()))
-        val steps = TutoCourse.of("jump_up")!!.chaptersFor(level).flatMap { it.steps }
+        val steps = course.chaptersFor(level).flatMap { it.steps }
         var demos = 0
         val noDemo = ArrayList<String>()
         var examples = 0
@@ -193,10 +202,14 @@ class TutoJourneyTest {
         assertTrue("ticked before reached: $early", early.size <= 2)
         // Every step with something to show showed it, every example was played.
         assertTrue("no Montre-moi: $noDemo", noDemo.isEmpty())
-        assertTrue("$demos demos", demos >= 18)
+        if (style == "jump_up") assertTrue("$demos demos", demos >= 18)
         assertEquals("early: $early", steps.count { it.listen.isNotEmpty() && it.id !in early }, examples)
-        // The song made by hand: seven parts in order.
-        assertEquals(listOf("Intro", "Montée", "Drop", "Break", "Montée", "Drop 2", "Fin"), p().song.map { p().allScenes[it.scene].label })
+        // The song made by hand: its parts in the course's order (jump up: seven parts).
+        steps.firstOrNull { it.check == "song:order" }?.let { order ->
+            val wanted = order.song.split(',').map { it.substringBeforeLast(':').trim() }
+            assertEquals(wanted.map { l -> p().allScenes[sceneFor(l)].label }, p().song.map { p().allScenes[it.scene].label })
+        }
+        if (style == "jump_up") assertEquals(listOf("Intro", "Montée", "Drop", "Break", "Montée", "Drop 2", "Fin"), p().song.map { p().allScenes[it.scene].label })
     }
 
     /** [s] done as a user does it. */
@@ -210,15 +223,15 @@ class TutoJourneyTest {
             c == "tempo" -> {
                 click("tuto_do")
                 await("tempo sheet") { has("tempo_sheet") }
-                h.vm.setTempo(174.0)
+                h.vm.setTempo(target.style.bpm)
                 closeSheet()
             }
             c == "key" -> {
                 click("tuto_do")
                 await("key sheet") { has("tuto_key_sheet") }
-                click("tuto_scale_Phrygian")
-                click("tuto_root_5")
-                await("key set") { p().harmony.root == 5 }
+                click("tuto_scale_${target.harmony.scale.name}")
+                click("tuto_root_${target.harmony.root}")
+                await("key set") { p().harmony.root == target.harmony.root && p().harmony.scale == target.harmony.scale }
                 closeSheet()
             }
             c.startsWith("lane:") -> {
@@ -258,6 +271,20 @@ class TutoJourneyTest {
             }
             // Lot « tuto 5 »: a bar's dotted notes touched, « Copier sur les mesures suivantes », the next bar to write,
             // « Copier » again; the Drop 2's bass in its part (Pro: then its Sub, the bass an octave down).
+            // The 303: its dotted steps written in the Acide tab, then « Copier » (lot « tous les styles »).
+            c == "notes:acid" -> {
+                if (has("tuto_do")) click("tuto_do")
+                var rounds = 0
+                while (s.id !in progress().done) {
+                    assertTrue("${s.id}: $rounds rounds", ++rounds < 8)
+                    await("${s.id}: the dotted steps of now") { TutoHints.acid == TutoChecks.acidWanted(s, p(), target) }
+                    val wanted = TutoHints.acid!!
+                    h.vm.session.edit { q -> q.copy(acid = q.acid.copy(root = target.acid!!.root, length = maxOf(q.acid.length, ((wanted.keys.maxOrNull() ?: 0) / 16 + 1) * 16), steps = q.acid.steps.mapIndexed { i, st -> wanted[i] ?: st })) }
+                    compose.waitForIdle()
+                    copy(s)
+                    compose.waitForIdle()
+                }
+            }
             c.startsWith("notes:") || (c.startsWith("part:") && s.transpose != 0) -> {
                 assertTrue("${s.id}: « Créer la piste … » offered", has("tuto_need"))
                 click("tuto_need")
@@ -298,8 +325,8 @@ class TutoJourneyTest {
             c == "song:order" -> {
                 click("tuto_do")
                 await("the song's page") { has("session") }
-                for (label in listOf("Intro", "Montée", "Drop", "Break", "Montée", "Drop 2", "Fin")) {
-                    val i = p().allScenes.indexOfFirst { it.label == label }
+                for (label in s.song.split(',').map { it.substringBeforeLast(':').trim() }) {
+                    val i = sceneFor(label)
                     assertTrue(label, i >= 0)
                     click("add_part_$i")
                 }

@@ -140,6 +140,8 @@ data class RhythmActions(
     /** One hit's own pan (-1..1) and pitch (semitones) on the selected pad. */
     val setHitPan: (step: Int, pan: Float) -> Unit = { _, _ -> },
     val setHitPitch: (step: Int, pitch: Int) -> Unit = { _, _ -> },
+    /** One hit's micro-timing in ms (early < 0 < late). */
+    val setHitOffset: (step: Int, ms: Float) -> Unit = { _, _ -> },
     /** One hit's strength, 0.05..1, on the selected pad (« Force »). */
     val setHitVelocity: (step: Int, velocity: Float) -> Unit = { _, _ -> },
     /** Opens the drums' quick effects. */
@@ -826,6 +828,9 @@ private fun StepGrid(
         if (pickedHit != null && tool == 4) {
             LabeledSlider(tr("Force du coup %d", picked % per + 1), percent((pickedHit.velocity * 100).roundToInt()), pickedHit.velocity,
                 com.pocketstudio.model.DrumPattern.MIN_VELOCITY..1f) { actions.setHitVelocity(picked, it) }
+            // The hit early or late (the lo-fi's lazy snare): a few ms off its cell.
+            LabeledSlider(tr("Décalage du coup %d", picked % per + 1), "%+d ms".format(pickedHit.offset.roundToInt()), pickedHit.offset,
+                -com.pocketstudio.model.Hit.MAX_OFFSET_MS..com.pocketstudio.model.Hit.MAX_OFFSET_MS) { actions.setHitOffset(picked, it) }
         }
         if (pickedHit != null && tool == 3 && ownSound) {
             LabeledSlider(tr("Hauteur du coup %d", picked % per + 1), semitones(pickedHit.pitch), pickedHit.pitch.toFloat(), -12f..12f, steps = 23) {

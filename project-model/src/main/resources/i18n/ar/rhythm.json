@@ -73,6 +73,7 @@
   "Force": "Velocity",
   "Force : touche un coup, plus haut pour plus fort, plus bas pour plus doux, puis règle-le avec le curseur.": "Velocity: اضغط على ضربة، أعلى ليكون أقوى، أسفل ليكون أنعم، ثم اضبطها بدقة بالمنزلق.",
   "Force du coup %d": "Velocity الضربة %d",
+  "Décalage du coup %d": "إزاحة الضربة %d",
   "G": "L",
   "G %d": "L %d",
   "Glisse vers le haut ou le bas pour tourner ; deux touchers : réglage de départ.": "مرّر للأعلى أو للأسفل للتدوير؛ نقرتان: العودة للافتراضي.",

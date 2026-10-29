@@ -73,6 +73,7 @@
   "Force": "Velocity",
   "Force : touche un coup, plus haut pour plus fort, plus bas pour plus doux, puis règle-le avec le curseur.": "Velocity: tocca un colpo, più in alto per più forte, più in basso per più piano, poi regolalo con lo slider.",
   "Force du coup %d": "Velocity del colpo %d",
+  "Décalage du coup %d": "Spostamento del colpo %d",
   "G": "S",
   "G %d": "S %d",
   "Glisse vers le haut ou le bas pour tourner ; deux touchers : réglage de départ.": "Scorri su o giù per girare; doppio tocco: valore iniziale.",

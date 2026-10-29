@@ -73,6 +73,7 @@
   "Force": "벨로시티",
   "Force : touche un coup, plus haut pour plus fort, plus bas pour plus doux, puis règle-le avec le curseur.": "벨로시티: 히트를 탭하세요. 위쪽일수록 세게, 아래쪽일수록 약하게. 그다음 슬라이더로 조절하세요.",
   "Force du coup %d": "히트 %d 벨로시티",
+  "Décalage du coup %d": "히트 %d 타이밍",
   "G": "L",
   "G %d": "L %d",
   "Glisse vers le haut ou le bas pour tourner ; deux touchers : réglage de départ.": "위아래로 밀어서 돌려요. 두 번 탭: 기본값으로.",

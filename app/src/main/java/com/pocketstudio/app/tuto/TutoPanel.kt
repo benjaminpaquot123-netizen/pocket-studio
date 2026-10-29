@@ -102,6 +102,8 @@ internal fun tutoText(fr: String): String = tr(fr)
 object TutoHints {
     var cells by mutableStateOf<Pair<Int, Set<Int>>?>(null)
     var notes by mutableStateOf<Pair<Int, List<com.pocketstudio.model.Note>>?>(null)
+    /** The 303 steps a step asks for, by index (the Acide tab draws them dashed until written). */
+    var acid by mutableStateOf<Map<Int, com.pocketstudio.model.AcidStep>?>(null)
     var fading by mutableStateOf<Triple<Int, Set<Int>, Float>?>(null)
     var send by mutableStateOf<Pair<Int, Int>?>(null)
     var focus by mutableIntStateOf(0)
@@ -676,9 +678,9 @@ private fun Why(text: String?, toggled: () -> Unit = {}) {
 /** The colour of a part on the map (by its section's name; the Intro and the Fin in a quiet grey-blue, not the accent). */
 @Composable
 private fun partColor(label: String): Color = when {
-    label.startsWith("Drop") -> Neon.Magenta
-    label == "Montée" -> Neon.Amber
-    label == "Break" -> Color(0xFF5BB8F5)
+    label.startsWith("Drop") || label.startsWith("Refrain") -> Neon.Magenta
+    label.startsWith("Montée") || label.startsWith("Pré-refrain") -> Neon.Amber
+    label.startsWith("Break") || label.startsWith("Pont") -> Color(0xFF5BB8F5)
     else -> Color(0xFF9AA4B2)
 }
 

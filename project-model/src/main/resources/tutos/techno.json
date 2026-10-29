@@ -1,0 +1,90 @@
+{
+  "format": 1,
+  "style": "techno",
+  "lines": {
+    "bass": "2:F2:1 6:F2:1 10:F2:1 14:Ab2:1"
+  },
+  "lineBars": { "bass": 1 },
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur",
+      "why": "La techno roule vite et sombre : on règle ça avant tout le reste.",
+      "steps": [
+        { "id": "ref", "text": "Écoute d'abord le morceau que tu vas faire.", "check": "listen", "listen": "song" },
+        { "id": "tempo", "text": "À toi : mets le tempo à 132.", "check": "tempo", "spot": "tempo", "listen": "drums:kick,hat" },
+        { "id": "key", "text": "À toi : choisis la gamme Phrygienne, puis Fa.", "textPro": "À toi : Fa phrygien.", "check": "key", "spot": "tuto.key", "listen": "parts:bass" }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "La batterie",
+      "steps": [
+        { "id": "kick_do", "text": "À toi : un kick sur chaque temps.", "check": "lane:kick", "spot": "rhythm.pattern", "target": "kick", "listen": "drums:kick" },
+        { "id": "ohat_do", "text": "À toi : le charley ouvert entre les kicks.", "check": "lane:open_hat", "spot": "rhythm.pattern", "target": "open_hat", "listen": "drums:kick,open_hat" },
+        { "id": "clap_do", "text": "À toi : le clap sur les cases en pointillé.", "check": "lane:clap", "spot": "rhythm.pattern", "target": "clap", "listen": "drums:kick,open_hat,clap" },
+        { "id": "hat_do", "levels": "p", "text": "À toi : les charleys fermés.", "check": "lane:hat", "spot": "rhythm.pattern", "target": "hat", "listen": "drums:kick,open_hat,clap,hat" },
+        { "id": "swing", "levels": "p", "text": "À toi : un tout petit peu de swing.", "check": "swing", "spot": "rhythm.pattern", "listen": "drums:kick,open_hat,clap,hat" },
+        { "id": "drums_hear", "text": "Écoute ta batterie, puis l'exemple.", "check": "listen", "listen": "drums:kick,open_hat,clap,hat", "hearMine": true }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La basse",
+      "steps": [
+        { "id": "bass_do", "text": "À toi : écris une mesure de basse, puis « Copier ».", "check": "notes:bass", "spot": "notes.track", "target": "bass", "listen": "parts:kick,bass" }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta boucle : le Groove",
+      "steps": [
+        { "id": "groove_name", "text": "À toi : nomme ta boucle « Groove ».", "check": "label:Groove", "spot": "song.parts", "listen": "parts:kick,open_hat,clap,hat,bass" }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "map": true,
+      "steps": [
+        { "id": "map_intro", "text": "Écoute l'Intro : la batterie pour le DJ.", "check": "listen", "listen": "part:Intro" },
+        { "id": "map_drop", "text": "Écoute le Drop : tout joue.", "check": "listen", "listen": "part:Drop" }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "steps": [
+        { "id": "make_intro", "text": "À toi : l'Intro, sans la basse.", "check": "part:Intro:less+nobass", "spot": "song.parts", "keep": "kick,open_hat,clap,hat", "listen": "vs:Drop:Intro" },
+        { "id": "make_drop", "text": "À toi : le Drop, tout ton Groove.", "check": "part:Drop:full", "spot": "song.parts", "keep": "*", "listen": "part:Drop" },
+        { "id": "make_break", "text": "À toi : le Break, sans kick.", "check": "part:Break:nokick", "spot": "song.parts", "keep": "hat,bass", "listen": "vs:Drop:Break" }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "steps": [
+        { "id": "song_order", "text": "À toi : Intro, Drop, Break, Drop, Fin.", "check": "song:order", "spot": "song.parts", "song": "Intro:16,Drop:32,Break:16,Drop:32,Fin:16", "listen": "song" },
+        { "id": "song_phrases", "text": "À toi : les durées conseillées.", "check": "song:phrases", "spot": "song.parts", "song": "Intro:16,Drop:32,Break:16,Drop:32,Fin:16" }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "steps": [
+        { "id": "toms", "text": "À toi : un roulement de toms à la fin du Break.", "check": "fill", "spot": "rhythm.pattern", "target": "tom", "part": "Break", "length": 4, "listen": "part:Break" },
+        { "id": "gap", "text": "À toi : coupe les charleys sur le dernier temps du Break.", "check": "gap", "spot": "rhythm.pattern", "target": "hat", "part": "Break", "listen": "vs:Break:Drop" },
+        { "id": "crash", "text": "À toi : une cymbale au tout début du Drop.", "check": "crash", "spot": "rhythm.pattern", "part": "Drop", "listen": "part:Drop" },
+        { "id": "filter", "levels": "p", "text": "À toi : dans le Drop, ouvre puis referme le filtre de la basse.", "check": "automation:wave", "spot": "song.automation", "target": "bass", "part": "Drop", "listen": "part:Drop" }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Termine ton morceau",
+      "steps": [
+        { "id": "loudness", "text": "À toi : volume visé « Club ».", "check": "loudness:CLUB", "spot": "mixer.master", "listen": "song" },
+        { "id": "share", "text": "À toi : exporte et partage ton morceau.", "check": "shared", "spot": "share.export" }
+      ]
+    }
+  ]
+}

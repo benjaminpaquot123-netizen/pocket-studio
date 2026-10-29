@@ -73,6 +73,7 @@
   "Force": "Intensidade",
   "Force : touche un coup, plus haut pour plus fort, plus bas pour plus doux, puis règle-le avec le curseur.": "Intensidade: toque numa batida, mais alto para mais forte, mais baixo para mais suave, depois ajuste com o slider.",
   "Force du coup %d": "Intensidade da batida %d",
+  "Décalage du coup %d": "Deslocamento da batida %d",
   "G": "E",
   "G %d": "E %d",
   "Glisse vers le haut ou le bas pour tourner ; deux touchers : réglage de départ.": "Deslize para cima ou para baixo para girar; dois toques: valor inicial.",

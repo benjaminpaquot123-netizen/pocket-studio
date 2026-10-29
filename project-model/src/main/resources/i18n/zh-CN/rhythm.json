@@ -73,6 +73,7 @@
   "Force": "力度",
   "Force : touche un coup, plus haut pour plus fort, plus bas pour plus doux, puis règle-le avec le curseur.": "力度：点一个打击，往上点更响，往下点更轻，再用推子微调。",
   "Force du coup %d": "第 %d 下的力度",
+  "Décalage du coup %d": "第 %d 下的时值偏移",
   "G": "左",
   "G %d": "左 %d",
   "Glisse vers le haut ou le bas pour tourner ; deux touchers : réglage de départ.": "上下滑动来转动；点两下：恢复默认。",

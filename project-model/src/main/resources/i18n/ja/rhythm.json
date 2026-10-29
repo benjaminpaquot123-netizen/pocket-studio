@@ -73,6 +73,7 @@
   "Force": "ベロシティ",
   "Force : touche un coup, plus haut pour plus fort, plus bas pour plus doux, puis règle-le avec le curseur.": "ベロシティ：ヒットをタップ。上ほど強く、下ほど弱く。スライダーで微調整。",
   "Force du coup %d": "ヒット %d のベロシティ",
+  "Décalage du coup %d": "ヒット %d のタイミング",
   "G": "L",
   "G %d": "L %d",
   "Glisse vers le haut ou le bas pour tourner ; deux touchers : réglage de départ.": "上下にスライドで回す。ダブルタップで初期値に戻る。",

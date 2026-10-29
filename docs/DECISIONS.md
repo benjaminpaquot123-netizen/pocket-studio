@@ -869,3 +869,8 @@
 - 2026-10-29 · Étapes triolets écrites avec `check: "listen"` en attendant `triplet:hat` · la validation refuse un détecteur inconnu · retour : changer le `check` des étapes `hat_triplet` (trap, drill) quand le détecteur arrive.
 - 2026-10-29 · `TutoJourneyTest` pose les roulements d'une étape `lane:<rôle>:rolls` · aucun cours ne l'utilisait avant ; sans ça le parcours Pro ne pouvait pas finir · retour : retirer le bloc dans le test.
 - 2026-10-29 · Recettes hip-hop inchangées · leurs lignes correspondent déjà aux fiches de recherche · retour : sans objet.
+- 2026-10-29 · Tutos Techno : 10 cours (techno, detroit, minimal, hard_techno, industrial_techno, retro_techno, trance, gabber, acid_techno, acidcore), tempos et tonalités des recettes, durées de 2:46 à 3:56. Raison : un exemple identique à l'assistant. Retour arrière : supprimer les fichiers.
+- 2026-10-29 · Tutos Techno : 2e section nommée « Intro 2 » (la basse arrive), le Groove restant la boucle complète. Raison : le Groove est la source des parties et ne peut pas être une partie réduite. Retour arrière : renommer quand le socle le permettra.
+- 2026-10-29 · Tutos Techno : hoover et mélodie trance en phrases de 2 mesures transposées par « Copier » (`follow`). Raison : le parcours montre au plus 2 mesures en pointillé à la fois. Retour arrière : phrases de 4 mesures si le socle l'accepte.
+- 2026-10-29 · Tutos acid : la 303 en Facile par « Montre-moi », écrite à la main en Pro. Raison : pas d'éditeur de 303 dans le Mode simple. Retour arrière : une étape Facile de 303 simplifiée.
+- 2026-10-29 · Recettes Techno : aucune modification. Les écarts des fiches passent par les lignes et le champ `drums` des cours. Raison : garder l'assistant stable. Retour arrière : sans objet.

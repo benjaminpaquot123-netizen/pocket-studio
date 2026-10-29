@@ -1,0 +1,486 @@
+{
+  "format": 1,
+  "style": "afrobeats",
+  "mood": "happy",
+  "key": "A major",
+  "chords": "I V vi IV",
+  "lines": {
+    "bass": "0:A1:6 6:A1:2 8:A1:4 12:E2:2 14:F#2:2",
+    "pad": "0:A3+C#4+E4:2 3:A3+C#4+E4:2 6:A3+C#4+E4:3 10:A3+C#4+E4:2 13:A3+C#4+E4:2",
+    "lead": "0:A4:1 2:B4:2 5:C#5:1 6:E5:4 12:F#5:2 16:F#5:2 19:E5:1 20:C#5:2 24:B4:4"
+  },
+  "lineBars": { "bass": 1, "pad": 1, "lead": 2 },
+  "follow": ["bass", "pad"],
+  "drums": {
+    "*": {
+      "kick": "X.....X.X.......X.....X.X.....o.",
+      "snare": "....x.......x.......x.......xo..",
+      "shaker": "xoXoxoXoxoXoxoXo",
+      "perc": "x..x..x...x.x...",
+      "openhat": "......x........."
+    }
+  },
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "L'afrobeats (la pop du Nigeria et du Ghana) danse sans se presser et sonne ensoleillé.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait d'afrobeats fini : le Pré-refrain (les percussions se resserrent), puis le Refrain (tout joue). C'est ce que tu vas construire, brique par brique.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 105 BPM, 105 battements par minute. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 105 BPM, celui d'Essence (Wizkid) et de Calm Down (Rema), à 2 près.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick,snare,hat",
+          "skip": "Sans ça, ton morceau reste à 120 BPM : trop pressé, le groove ne respire plus."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau, ensoleillée. « Je le fais » ouvre la fiche Tonalité : touche « Majeure » (la gamme joyeuse) puis « La » (la note de départ).",
+          "textPro": "À toi : règle la tonalité sur La majeur : l'afrobeats est surtout majeur et lumineux.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, tes accords ne seront pas ceux de l'exemple."
+        }
+      ]
+    },
+    {
+      "id": "shaker",
+      "title": "Le shaker d'abord",
+      "why": "En afrobeats, ce sont les percussions qui mènent la danse, et la batterie qui les suit. On commence donc par le shaker (une petite maraca).",
+      "steps": [
+        {
+          "id": "ready",
+          "text": "Avant de commencer : le kit de l'afrobeats est déjà chargé, avec ses réglages. Tu n'as rien à régler, seulement à jouer.",
+          "textPro": "Déjà prêt : le kit et les réglages de l'assistant pour l'afrobeats (un rim à la place de la caisse claire, un shaker à la place du charley, des congas ; volumes et place gauche-droite).",
+          "check": "manual"
+        },
+        {
+          "id": "shaker_do",
+          "text": "À toi : sur le pad du shaker, touche « Remplir tout », sous la grille : un coup sur chaque case. C'est le moteur du groove.",
+          "textPro": "À toi : le shaker en doubles croches (« Remplir tout ») ; les coups des temps sont plus forts.",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:hat"
+        }
+      ]
+    },
+    {
+      "id": "kick",
+      "title": "Le kick et le rim",
+      "why": "Jamais un kick sur chaque temps : il tape sur le 1, puis sur le « et » du 2 et sur le 3. Ce coup décalé donne l'élan. Le rim (le bord de la caisse) claque doucement sur 2 et 4.",
+      "steps": [
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad du kick, touche les 4 cases en pointillé : le 1er temps, juste avant le 3e temps, le 3e temps, et un dernier coup juste avant la fin.",
+          "textPro": "À toi : le kick sur 1, le « et » du 2 et le 3, plus un coup plus doux sur le « et » du 4.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:hat,kick"
+        },
+        {
+          "id": "rim_do",
+          "text": "À toi : sur le pad « Rim », touche les 2 cases en pointillé : le 2e et le 4e temps.",
+          "textPro": "À toi : le rim sur 2 et 4, doux : jamais une caisse claire qui claque.",
+          "check": "lane:snare",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "listen": "drums:hat,kick,snare"
+        }
+      ]
+    },
+    {
+      "id": "percs",
+      "title": "Les congas",
+      "titlePro": "Congas et swing",
+      "why": "Les congas (des tambours qu'on frappe à la main) répondent au kick dans ses trous : question, réponse.",
+      "steps": [
+        {
+          "id": "conga_do",
+          "text": "À toi : « Passer à 2 mesures », puis sur le pad « Conga », touche les cases en pointillé des 2 mesures : elles sautillent entre les coups de kick.",
+          "textPro": "À toi : les congas sur 2 mesures (« Passer à 2 mesures »), dans les trous du kick.",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:hat,kick,snare,perc"
+        },
+        {
+          "id": "swing",
+          "levels": "p",
+          "text": "À toi : du swing, environ 15 % : les doubles croches paires arrivent un peu en retard. Tout sur la grille, c'est l'erreur n° 1 qui rend un afrobeats raide.",
+          "check": "swing",
+          "spot": "rhythm.pattern",
+          "listen": "drums:hat,kick,snare,perc"
+        },
+        {
+          "id": "conga_late",
+          "levels": "p",
+          "text": "À toi : avec l'outil « Force », règle le « Décalage du coup » de la moitié des congas à +5 ms ou plus : elles traînent un tout petit peu, comme un percussionniste.",
+          "check": "offset:perc:late",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:hat,kick,snare,perc"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute tes percussions quelques secondes, puis celles de l'exemple.",
+          "check": "listen",
+          "listen": "drums:hat,kick,snare,perc",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La basse",
+      "why": "Une basse ronde, jouée comme par un bassiste : la note de l'accord sur le 1, puis deux petites notes qui mènent à l'accord suivant.",
+      "steps": [
+        {
+          "id": "bass_hear",
+          "text": "Écoute la basse avec le kick.",
+          "check": "listen",
+          "listen": "parts:kick,bass"
+        },
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse », puis les 5 notes en pointillé de la mesure 1. « Copier sur les mesures suivantes » la fait suivre les accords.",
+          "textPro": "À toi : crée la piste Basse et écris la mesure 1 : La tenu sur le 1, La sur le « et » du 2 et sur le 3, puis Mi et Fa♯ qui mènent à l'accord suivant. « Copier » suit la grille Mi, Fa♯m, Ré.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass",
+          "skip": "Sans basse, le groove n'a pas de rondeur."
+        },
+        {
+          "id": "bass_pump",
+          "levels": "p",
+          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste Basse : elle se baisse un peu à chaque kick (3 à 4 dB suffisent).",
+          "check": "insert:PUMP",
+          "spot": "mixer.strip",
+          "target": "bass",
+          "listen": "parts:kick,bass"
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "Les accords",
+      "why": "La, Mi, Fa♯ mineur, Ré, au piano électrique, en petits coups qui sautillent : c'est lui qui fait danser les épaules.",
+      "steps": [
+        {
+          "id": "pad_hear",
+          "text": "Écoute les accords : de petits coups décalés, jamais tenus.",
+          "check": "listen",
+          "listen": "parts:pad"
+        },
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes d'un coup. Fais les 5 coups de la mesure 1, puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Accords (piano électrique). Mesure 1 : La majeur en 5 coups (3-3-4-3-3), puis « Copier » : la copie suit la grille.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad",
+          "skip": "Sans accords, la mélodie n'aura rien sur quoi se poser."
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "La mélodie",
+      "why": "La guitare (ici un marimba) chante une phrase qui monte, puis une réponse qui redescend, sur cinq notes seulement : la gamme pentatonique, celle des mélodies ensoleillées.",
+      "steps": [
+        {
+          "id": "lead_hear",
+          "text": "Écoute la mélodie avec les accords.",
+          "check": "listen",
+          "listen": "parts:pad,lead"
+        },
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les notes en pointillé : 5 à la mesure 1, 4 à la mesure 2. « Copier sur les mesures suivantes » la rejoue sur les mesures 3 et 4.",
+          "textPro": "À toi : crée la piste Mélodie et écris la phrase : mesure 1 La Si Do♯ Mi… Fa♯ (l'appel qui monte), mesure 2 Fa♯ Mi Do♯ Si (la réponse), puis « Copier ».",
+          "why": "En afrobeats, la répétition est une qualité : deux mesures qui reviennent, et on chante avec.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead",
+          "skip": "Sans mélodie, ton morceau n'a pas d'accroche."
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Refrain",
+      "why": "Tout ce que tu as fait joue ensemble : c'est ton Refrain. Les autres parties naîtront de lui.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes, puis l'exemple.",
+          "check": "listen",
+          "listen": "parts:kick,snare,hat,perc,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Refrain » : c'est ta partie de départ.",
+          "check": "label:Refrain",
+          "spot": "song.parts",
+          "listen": "part:Refrain"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "map": true,
+      "why": "Un afrobeats est une chanson : les percussions entrent une à une, le couplet se dépouille pour la voix, le refrain remet tout.",
+      "steps": [
+        {
+          "id": "brick",
+          "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la basse). Une partie, ce sont plusieurs briques qui jouent ensemble.",
+          "check": "manual",
+          "why": "Tu changes une partie en ajoutant ou en enlevant des briques : c'est comme ça qu'on fait monter ou descendre l'énergie."
+        },
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : la mélodie, les accords et le shaker.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_couplet",
+          "text": "Écoute le Couplet : kick, rim, shaker, basse et accords ; les congas et la mélodie attendent.",
+          "check": "listen",
+          "listen": "part:Couplet",
+          "why": "Le couplet se dépouille pour la voix."
+        },
+        {
+          "id": "map_pre",
+          "text": "Écoute le Pré-refrain : les congas arrivent, les percussions se resserrent.",
+          "check": "listen",
+          "listen": "part:Pré-refrain"
+        },
+        {
+          "id": "map_post",
+          "text": "Écoute le Post-refrain : la mélodie seule sur les percussions, sans les accords.",
+          "check": "listen",
+          "listen": "part:Post-refrain"
+        },
+        {
+          "id": "map_pont",
+          "text": "Écoute le Pont : plus de kick ni de basse, les percussions et la mélodie.",
+          "check": "listen",
+          "listen": "part:Pont",
+          "why": "Quand le kick revient au dernier refrain, la piste repart."
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie de ton Refrain : tu enlèves des briques.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro à partir du Refrain : le shaker, les accords et la mélodie.",
+          "check": "part:Intro:less+nokick",
+          "spot": "song.parts",
+          "keep": "hat,pad,lead",
+          "listen": "vs:Refrain:Intro"
+        },
+        {
+          "id": "make_couplet",
+          "text": "À toi : crée le Couplet : kick, rim, shaker, basse et accords. Les congas et la mélodie s'en vont.",
+          "check": "part:Couplet:less+nolead",
+          "spot": "song.parts",
+          "keep": "kick,snare,hat,bass,pad",
+          "lanesFrom": "Couplet",
+          "listen": "vs:Refrain:Couplet"
+        },
+        {
+          "id": "make_pre",
+          "text": "À toi : crée le Pré-refrain : comme le Couplet, avec les congas en plus.",
+          "check": "part:Pré-refrain:less+nolead",
+          "spot": "song.parts",
+          "keep": "kick,snare,hat,perc,bass,pad",
+          "lanesFrom": "Pré-refrain",
+          "listen": "vs:Couplet:Pré-refrain",
+          "why": "Une percussion de plus, et l'énergie monte vers le refrain."
+        },
+        {
+          "id": "make_post",
+          "text": "À toi : crée le Post-refrain : tout, sauf les accords.",
+          "check": "part:Post-refrain:nopad",
+          "spot": "song.parts",
+          "keep": "kick,snare,hat,perc,bass,lead",
+          "listen": "vs:Refrain:Post-refrain"
+        },
+        {
+          "id": "make_pont",
+          "text": "À toi : crée le Pont : le shaker, les congas, les accords et la mélodie, sans kick ni basse.",
+          "check": "part:Pont:nokick+nobass",
+          "spot": "song.parts",
+          "keep": "hat,perc,pad,lead",
+          "listen": "vs:Refrain:Pont"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, Intro (elle sert de Fin). L'étape suivante donne les durées.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "song": "Intro:4,Couplet:8,Pré-refrain:4,Refrain:16,Post-refrain:4,Couplet:8,Pré-refrain:4,Refrain:8,Pont:8,Refrain:16,Fin:4",
+          "listen": "song",
+          "skip": "Dans un autre ordre, le Pré-refrain n'arrivera pas juste avant chaque Refrain."
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (puis 8, puis 16), Post-refrain 4, Pont 8, Fin 4. Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:4,Couplet:8,Pré-refrain:4,Refrain:16,Post-refrain:4,Couplet:8,Pré-refrain:4,Refrain:8,Pont:8,Refrain:16,Fin:4",
+          "why": "Le 1er refrain tombe à 37 secondes, et le tout dure 3 min 12."
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Entre deux parties, un petit événement prévient l'oreille : un roulement de congas, un silence, une cymbale.",
+      "steps": [
+        {
+          "id": "fill",
+          "text": "À toi : dans la partie « Pré-refrain », dernière mesure, pad « Conga » : touche 3 cases à la suite juste avant le dernier temps, un petit roulement.",
+          "check": "fill",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "part": "Pré-refrain",
+          "listen": "part:Pré-refrain"
+        },
+        {
+          "id": "gap",
+          "text": "À toi : dans la partie « Pré-refrain », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un silence juste avant le Refrain.",
+          "check": "gap",
+          "spot": "rhythm.pattern",
+          "part": "Pré-refrain",
+          "listen": "vs:Pré-refrain:Refrain",
+          "why": "Un instant de rien, et le Refrain paraît deux fois plus fort."
+        },
+        {
+          "id": "crash",
+          "text": "À toi : dans la partie « Refrain », une cymbale sur la toute première case.",
+          "check": "crash",
+          "spot": "rhythm.pattern",
+          "part": "Refrain",
+          "listen": "part:Refrain"
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "Une réverbe légère sur les accords, un petit écho sur la mélodie : les mixes d'afrobeats sont propres, chauds et précis.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "levels": "f",
+          "text": "Écoute la réverbe : d'abord sans, puis avec. Elle donne de l'espace aux accords.",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "reverb",
+          "levels": "p",
+          "text": "À toi : au Mixeur, monte un peu « Envoi réverbe » sur la piste « Accords ».",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:pad"
+        },
+        {
+          "id": "delay",
+          "levels": "p",
+          "text": "À toi : au Mixeur, monte « Envoi écho » sur la piste « Mélodie », peu (15 à 20 %) : la guitare des disques a toujours ce petit écho.",
+          "check": "send:1",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:lead"
+        },
+        {
+          "id": "chorus",
+          "levels": "p",
+          "text": "À toi : au Mixeur, mets l'effet « Chorus » sur la piste « Mélodie », léger (vitesse lente, peu de mélange) : elle s'élargit et brille, comme une guitare claire.",
+          "check": "insert:CHORUS",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:lead"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Chaque percussion a sa place ; les accords restent sous la mélodie ; la voix passerait devant tout.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "textPro": "À toi : baisse un peu les faders « Accords » et « Mélodie ».",
+          "check": "changed:volumes:pad,lead",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:kick,snare,hat,perc,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "levels": "p",
+      "title": "Le mastering",
+      "why": "Le master colle le tout et règle le volume final.",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Auto (style) » : le volume des tubes d'afrobeats.",
+          "check": "loudness:AUTO",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter !",
+      "steps": [
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

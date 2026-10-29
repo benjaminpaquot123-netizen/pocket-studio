@@ -1,0 +1,524 @@
+{
+  "format": 1,
+  "style": "pop",
+  "mood": "happy",
+  "key": "E major",
+  "chords": "I V vi IV",
+  "lines": {
+    "bass": "0:E1:4 4:E1:2:0.6 6:E2:2 8:E1:4 12:E1:2:0.6 14:B1:2",
+    "pad": "0:E3+G#3+B3:2 3:E3+G#3+B3:2 6:E3+G#3+B3:3 10:E3+G#3+B3:2 13:E3+G#3+B3:2",
+    "lead": "0:G#4:2 2:G#4:2 4:F#4:2 6:E4:2 10:B4:4 16:C#5:2 18:B4:2 20:G#4:2 22:F#4:6"
+  },
+  "lineBars": { "bass": 1, "pad": 1, "lead": 2 },
+  "follow": ["bass", "pad"],
+  "drums": {
+    "*": {
+      "kick": "X...X...X...X...",
+      "snare": "....X.......X...",
+      "clap": "....X.......X...",
+      "hat": "X.x.X.x.X.x.X.x.",
+      "openhat": "..............x.",
+      "shaker": "..o...o...o...o."
+    },
+    "Couplet": {
+      "kick": "X.....o.X.......",
+      "snare": "....X.......X...",
+      "clap": "....X.......X...",
+      "hat": "X.x.X.x.X.x.X.x."
+    }
+  },
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "La pop d'aujourd'hui avance à un pas de marche rapide et sonne lumineuse : on règle ça avant tout le reste.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de pop fini : le Pré-refrain (ça monte), puis le Refrain (tout le monde chante). C'est ce que tu vas construire, brique par brique.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 116 BPM, 116 battements par minute. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 116 BPM.",
+          "why": "Assez vif pour danser, assez posé pour qu'on comprenne les paroles.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick,clap,hat",
+          "skip": "Sans ça, ton morceau reste à 120 BPM : un peu trop pressé pour cette pop-là."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau, lumineuse. « Je le fais » ouvre la fiche Tonalité : touche « Majeure » (la gamme joyeuse) puis « Mi » (la note de départ).",
+          "textPro": "À toi : règle la tonalité sur Mi majeur, celle d'Anti-Hero (Taylor Swift) : une tonalité confortable pour chanter.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, tes accords ne seront pas ceux de l'exemple."
+        }
+      ]
+    },
+    {
+      "id": "kick",
+      "title": "Le kick",
+      "why": "Le kick (la grosse caisse, le « boum ») tient le pas de danse. Au refrain, la pop actuelle le met sur chaque temps, comme le disco (Dua Lipa, The Weeknd).",
+      "steps": [
+        {
+          "id": "ready",
+          "text": "Avant de commencer : le kit de la pop est déjà chargé, avec ses réglages. Tu n'as rien à régler, seulement à jouer.",
+          "textPro": "Déjà prêt : le kit et les réglages de l'assistant pour la pop (volumes, place gauche-droite, effets des pads). Chaque piste que tu créeras arrivera avec son son conseillé.",
+          "check": "manual"
+        },
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad du kick, touche les 4 cases en pointillé, une par temps. Astuce : « Remplir 1/4 », sous la grille, le fait d'un geste.",
+          "textPro": "À toi : le kick en quatre temps (« Remplir 1/4 »).",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick"
+        }
+      ]
+    },
+    {
+      "id": "snare",
+      "title": "Caisse claire et clap",
+      "why": "Sur les temps 2 et 4, la caisse claire et le clap claquent ensemble : c'est là que le public tape dans ses mains (le « backbeat »).",
+      "steps": [
+        {
+          "id": "snare_do",
+          "text": "À toi : sur le pad « Caisse » (le « clac » de la batterie), touche les 2 cases en pointillé : le 2e et le 4e temps.",
+          "textPro": "À toi : la caisse claire sur 2 et 4.",
+          "check": "lane:snare",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "listen": "drums:kick,snare"
+        },
+        {
+          "id": "clap_do",
+          "text": "À toi : sur le pad « Clap » (un claquement de mains), touche les 2 cases en pointillé, pile sur la caisse claire.",
+          "textPro": "À toi : le clap doublé sur la caisse claire.",
+          "why": "Deux sons au même endroit en font un plus large : la caisse donne le corps, le clap l'éclat.",
+          "check": "lane:clap",
+          "spot": "rhythm.pattern",
+          "target": "clap",
+          "listen": "drums:kick,snare,clap"
+        }
+      ]
+    },
+    {
+      "id": "hats",
+      "title": "Les charleys",
+      "titlePro": "Charleys et percussions",
+      "why": "Le charley (le « tss ») tient le tempo deux fois par temps ; le shaker et le charley ouvert donnent de l'élan au refrain.",
+      "steps": [
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad « Charley », touche les 8 cases en pointillé, une case sur deux. Astuce : « Remplir 1/2 » le fait d'un geste.",
+          "textPro": "À toi : les charleys en croches (« Remplir 1/2 »).",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,snare,clap,hat"
+        },
+        {
+          "id": "ohat_do",
+          "levels": "p",
+          "text": "À toi : le charley ouvert, une seule case tout à la fin de la mesure : il lance la mesure suivante.",
+          "check": "lane:open_hat",
+          "spot": "rhythm.pattern",
+          "target": "open_hat",
+          "listen": "drums:kick,snare,clap,hat,open_hat"
+        },
+        {
+          "id": "shaker_do",
+          "levels": "p",
+          "text": "À toi : le shaker, doux, entre les temps (4 cases).",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,snare,clap,hat,perc"
+        },
+        {
+          "id": "perc2_do",
+          "levels": "p",
+          "text": "À toi : la 2e percussion sur 2 et 4, avec le clap : un shaker plus appuyé, là où les disques mettent un tambourin.",
+          "check": "lane:perc2",
+          "spot": "rhythm.pattern",
+          "target": "perc2",
+          "listen": "drums:kick,snare,clap,hat,perc,perc2"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute ta batterie quelques secondes, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,snare,clap,hat,open_hat,perc,perc2",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "Les 4 accords",
+      "why": "Mi, Si, Do♯ mineur, La : ces quatre accords (I–V–vi–IV) portent des centaines de tubes. L'oreille les connaît déjà, elle se sent chez elle.",
+      "steps": [
+        {
+          "id": "pad_hear",
+          "text": "Écoute les accords au piano : de petits coups qui sautillent et laissent de la place à la voix.",
+          "check": "listen",
+          "listen": "parts:pad"
+        },
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », juste au-dessus de la grille : toucher la note du bas en pointillé pose les 3 notes d'un coup. Fais les 5 coups de la mesure 1, puis « Copier sur les mesures suivantes » : les 3 autres accords arrivent tout seuls.",
+          "textPro": "À toi : crée la piste Accords (un piano). Mesure 1 : Mi majeur en 5 coups (3-3-4-3-3), puis « Copier sur les mesures suivantes » : la copie suit la grille Si, Do♯m, La.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad",
+          "skip": "Sans accords, ta mélodie n'aura rien sur quoi se poser."
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La basse",
+      "why": "La basse joue la note principale de chaque accord, avec le kick, et saute à l'octave pour faire danser.",
+      "steps": [
+        {
+          "id": "bass_hear",
+          "text": "Écoute la basse avec le kick.",
+          "check": "listen",
+          "listen": "parts:kick,bass"
+        },
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse », puis les 6 notes en pointillé de la mesure 1. « Copier sur les mesures suivantes » la fait suivre les accords.",
+          "textPro": "À toi : crée la piste Basse. Mesure 1 : Mi grave, un Mi plus doux, le saut d'octave sur le « et » du 2, puis la quinte (Si) en fin de mesure pour amener l'accord suivant. « Copier » suit la grille.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass",
+          "skip": "Sans basse, le refrain n'aura pas de poids."
+        },
+        {
+          "id": "bass_pump",
+          "levels": "p",
+          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste Basse : elle se baisse à chaque kick, et le kick passe devant.",
+          "check": "insert:PUMP",
+          "spot": "mixer.strip",
+          "target": "bass",
+          "listen": "parts:kick,bass"
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "La mélodie",
+      "titlePro": "Le hook",
+      "why": "En pop, tout est au service d'une mélodie qu'on retient. Elle tient en deux mesures : une question qui monte, une réponse qui redescend, puis un silence pour respirer.",
+      "steps": [
+        {
+          "id": "lead_hear",
+          "text": "Écoute la mélodie : deux notes pareilles, puis elle monte ; la réponse redescend et se pose.",
+          "check": "listen",
+          "listen": "parts:pad,lead"
+        },
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les notes en pointillé : 5 à la mesure 1, 4 à la mesure 2. « Copier sur les mesures suivantes » la rejoue sur les mesures 3 et 4.",
+          "textPro": "À toi : crée la piste Mélodie et écris le hook au piano roll : mesure 1 (Sol♯ Sol♯ Fa♯ Mi… Si : l'appel), mesure 2 (Do♯ Si Sol♯ Fa♯, tenu : la réponse), puis « Copier ».",
+          "why": "On retient ce qui se répète presque à l'identique : deux mesures, jouées deux fois.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead",
+          "skip": "Sans mélodie, ton morceau n'a pas de refrain à chanter."
+        },
+        {
+          "id": "topline",
+          "text": "Si tu veux : chante la mélodie sur la piste « Voix » (« la la la » suffit) : c'est la « topline », la mélodie chantée par-dessus la musique. Rien d'obligatoire, touche « C'est fait » pour continuer.",
+          "textPro": "Facultatif : enregistre ta topline sur la piste « Voix », en suivant le hook ou en l'inventant. La pop se fait souvent ainsi : la musique d'abord, puis un « topliner » écrit la mélodie et les paroles dessus.",
+          "check": "manual",
+          "spot": "record.voice"
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Refrain",
+      "why": "Tout ce que tu as fait joue ensemble : c'est ton Refrain, le moment le plus fort. Les autres parties naîtront de lui, en enlevant des briques.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes, puis l'exemple.",
+          "check": "listen",
+          "listen": "parts:kick,snare,clap,hat,open_hat,perc,perc2,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Refrain » : c'est ta partie de départ.",
+          "check": "label:Refrain",
+          "spot": "song.parts",
+          "listen": "part:Refrain"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "map": true,
+      "why": "Une chanson pop alterne des moments calmes, où l'on raconte (les couplets), et des moments forts, où l'on chante tous ensemble (les refrains).",
+      "steps": [
+        {
+          "id": "brick",
+          "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la basse). Une partie, ce sont plusieurs briques qui jouent ensemble.",
+          "check": "manual",
+          "why": "Tu changes une partie en ajoutant ou en enlevant des briques : c'est comme ça qu'on fait monter ou descendre l'énergie."
+        },
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : le piano et un avant-goût de la mélodie, sans batterie.",
+          "check": "listen",
+          "listen": "part:Intro",
+          "why": "Une intro pop dure moins de 15 secondes : on donne envie, puis on chante."
+        },
+        {
+          "id": "map_couplet",
+          "text": "Écoute le Couplet : le kick ne tape plus que sur 1 et 3, la mélodie se tait.",
+          "check": "listen",
+          "listen": "part:Couplet",
+          "why": "Le couplet laisse la place à la voix qui raconte l'histoire."
+        },
+        {
+          "id": "map_pre",
+          "text": "Écoute le Pré-refrain : le kick s'en va, la caisse claire accélère, puis tout se tait un temps.",
+          "check": "listen",
+          "listen": "part:Pré-refrain",
+          "why": "On crée un manque juste avant le refrain : il paraît deux fois plus grand."
+        },
+        {
+          "id": "map_post",
+          "text": "Écoute le Post-refrain : juste après le refrain, la mélodie revient seule sur le rythme, sans les accords.",
+          "check": "listen",
+          "listen": "part:Post-refrain",
+          "why": "C'est le « pop drop » : au lieu de redescendre, la chanson garde l'énergie et répète son hook sans paroles (Clarity de Zedd, Delicate de Taylor Swift)."
+        },
+        {
+          "id": "map_pont",
+          "text": "Écoute le Pont : plus de kick ni de basse, juste les accords et la mélodie.",
+          "check": "listen",
+          "listen": "part:Pont",
+          "why": "Un passage différent avant le dernier refrain : on respire, pour que le dernier refrain explose."
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie de ton Refrain : tu enlèves des briques.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro à partir du Refrain : seulement les accords et la mélodie.",
+          "check": "part:Intro:less+nokick",
+          "spot": "song.parts",
+          "keep": "pad,lead",
+          "listen": "vs:Refrain:Intro",
+          "why": "On fait entendre la mélodie tout de suite : on la retient avant même le refrain."
+        },
+        {
+          "id": "make_couplet",
+          "text": "À toi : crée le Couplet : la batterie, la basse et les accords, sans la mélodie. Son kick ne tape plus que sur 1 et 3.",
+          "textPro": "À toi : crée le Couplet : batterie, basse, accords, sans mélodie ni percussions ; le kick passe sur 1 et 3 avec l'anticipation (le « et » du 2).",
+          "check": "part:Couplet:less+nolead",
+          "spot": "song.parts",
+          "keep": "kick,snare,clap,hat,bass,pad",
+          "lanesFrom": "Couplet",
+          "listen": "vs:Refrain:Couplet",
+          "why": "Moins de kick, pas de mélodie : la voix a toute la place."
+        },
+        {
+          "id": "make_pre",
+          "text": "À toi : crée le Pré-refrain : sans kick. Sa caisse claire va de plus en plus vite, puis tout se tait sur le dernier temps.",
+          "textPro": "À toi : crée le Pré-refrain, sans kick : la caisse claire accélère mesure après mesure (noires, croches, doubles croches) jusqu'au temps de silence d'avant le Refrain.",
+          "check": "part:Pré-refrain:nokick",
+          "spot": "song.parts",
+          "keep": "snare,clap,hat,perc,bass,pad",
+          "lanesFrom": "Pré-refrain",
+          "build": "snare",
+          "listen": "vs:Couplet:Pré-refrain",
+          "why": "La tension monte parce qu'il manque le kick et que tout s'accélère."
+        },
+        {
+          "id": "make_post",
+          "text": "À toi : crée le Post-refrain : tout, sauf les accords. La mélodie reste seule sur le rythme.",
+          "check": "part:Post-refrain:nopad",
+          "spot": "song.parts",
+          "keep": "kick,snare,clap,hat,open_hat,perc,perc2,bass,lead",
+          "listen": "vs:Refrain:Post-refrain",
+          "why": "Sans les accords, le hook ressort : c'est lui qu'on chantonne en sortant."
+        },
+        {
+          "id": "make_pont",
+          "text": "À toi : crée le Pont : les accords, la mélodie et les charleys, sans kick ni basse.",
+          "check": "part:Pont:nokick+nobass",
+          "spot": "song.parts",
+          "keep": "hat,pad,lead",
+          "listen": "vs:Refrain:Pont",
+          "why": "Le vide avant le dernier refrain : l'oreille se repose."
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre de la chanson, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, Intro (elle sert de Fin). L'étape suivante donne les durées.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "song": "Intro:4,Couplet:8,Pré-refrain:8,Refrain:16,Post-refrain:4,Couplet:8,Pré-refrain:8,Refrain:16,Pont:8,Refrain:16,Fin:4",
+          "listen": "song",
+          "skip": "Dans un autre ordre, le Pré-refrain n'arrivera pas juste avant chaque Refrain."
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 8, Refrain 16, Post-refrain 4, Pont 8, Fin 4. Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:4,Couplet:8,Pré-refrain:8,Refrain:16,Post-refrain:4,Couplet:8,Pré-refrain:8,Refrain:16,Pont:8,Refrain:16,Fin:4",
+          "why": "Le 1er refrain arrive à 41 secondes : à la radio comme en streaming, il doit tomber avant 45 secondes. Le tout dure 3 min 27."
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Entre deux parties, un petit événement prévient l'oreille : un roulement, un silence, une cymbale.",
+      "steps": [
+        {
+          "id": "fill",
+          "text": "À toi : dans la partie « Pré-refrain », dernière mesure, pad « Caisse » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4.",
+          "check": "fill",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "part": "Pré-refrain",
+          "listen": "part:Pré-refrain"
+        },
+        {
+          "id": "gap",
+          "text": "À toi : dans la partie « Pré-refrain », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Refrain.",
+          "check": "gap",
+          "spot": "rhythm.pattern",
+          "part": "Pré-refrain",
+          "listen": "vs:Pré-refrain:Refrain",
+          "why": "Un temps de rien, et le Refrain paraît deux fois plus fort."
+        },
+        {
+          "id": "crash",
+          "text": "À toi : dans la partie « Refrain », une cymbale sur la toute première case.",
+          "check": "crash",
+          "spot": "rhythm.pattern",
+          "part": "Refrain",
+          "listen": "part:Refrain"
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "La réverbe (l'écho d'une salle) donne de l'espace au piano et au clap ; l'écho répète les notes de la mélodie.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "levels": "f",
+          "text": "Écoute la réverbe : la caisse claire et les accords, d'abord sans, puis avec.",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "reverb",
+          "levels": "p",
+          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur la piste « Accords », puis sur le pad « Caisse ». Peu : la pop reste proche et nette.",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "pad,snare",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "delay",
+          "levels": "p",
+          "text": "À toi : au Mixeur, monte « Envoi écho » sur la piste « Mélodie » : chaque note se répète en rythme, derrière.",
+          "check": "send:1",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:lead"
+        },
+        {
+          "id": "riser",
+          "levels": "p",
+          "text": "À toi : automatise le filtre de la piste « Accords » sur le Pré-refrain : « Automatiser un réglage », « Accords », « Filtre (balayage) », « Par partie », une courbe qui monte jusqu'au Refrain.",
+          "check": "automation",
+          "spot": "song.automation",
+          "target": "pad",
+          "part": "Pré-refrain",
+          "listen": "part:Pré-refrain"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "En pop, la voix et la mélodie sont devant ; le piano reste juste dessous pour ne pas les cacher.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "textPro": "À toi : baisse un peu les faders « Accords » et « Mélodie » ; si tu as chanté, la Voix passe devant tout le reste.",
+          "check": "changed:volumes:pad,lead",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:kick,snare,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "title": "Le mastering",
+      "why": "Le master donne au morceau le volume des plateformes d'écoute.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Streaming » (−14 LUFS) : Spotify ou YouTube baissent de toute façon les morceaux plus forts, autant garder les coups de caisse vivants.",
+          "check": "loudness:STREAMING",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ta chanson est finie : fais-la écouter !",
+      "steps": [
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

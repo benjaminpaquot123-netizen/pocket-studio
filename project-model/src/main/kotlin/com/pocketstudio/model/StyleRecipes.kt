@@ -1145,13 +1145,13 @@ internal val STYLE_RECIPES: List<Style> = listOf(
         "pop", "Pop", "Autres", 116.0,
         "La pop des radios d'aujourd'hui : un rythme simple qui donne envie de bouger, les quatre accords qu'on entend partout et une mélodie qu'on retient. Il ne manque plus que ta voix !",
         listOf(
-            Line(Role.Kick, "X...X...X...X...", "Grosse caisse sur le 1 et le 3, avec un petit coup juste avant le 3 pour faire rebondir.", build = "X.....x.X......."),
+            Line(Role.Kick, "X...X...X...X...", "Grosse caisse sur chaque temps au refrain, comme la pop disco ; au couplet, seulement sur le 1 et le 3, avec un petit coup juste avant le 3 pour faire rebondir.", build = "X.....x.X......."),
             Line(Role.Snare, "....X.......X...", "La caisse claire sous le clap : le coup qui claque sur 2 et 4."),
             Line(Role.Clap, "....X.......X...", "Le clap sur 2 et 4 : c'est là qu'on tape dans les mains."),
             Line(Role.Hat, "x.o.x.o.x.o.x.o.", "Un charley deux fois par temps, simple et régulier, pour tenir le tempo."),
             Line(Role.OpenHat, "...............x", "Un charley ouvert tout à la fin pour lancer la mesure suivante."),
             Line(Role.Perc, "..o...o...o...o.", "Un shaker entre les temps : il donne de l'élan au refrain.", voice = 13),
-            Line(Role.Perc2, "....x.......x...", "Un tambourin sur les temps 2 et 4 : il arrive au refrain et le fait sonner plus grand.", voice = 13),
+            Line(Role.Perc2, "....x.......x...", "Un coup de shaker plus appuyé sur 2 et 4, avec le clap (là où les disques mettent un tambourin) : il arrive au refrain et le fait sonner plus grand.", voice = 13),
         ),
         swing = 0.0,
         melody = Melody(

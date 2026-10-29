@@ -23,6 +23,8 @@ import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Inventory2
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material3.AlertDialog
@@ -71,6 +73,8 @@ class LibraryUi(
     val styleId: String? = null,
     /** On mobile data (not Wi-Fi): downloading everything is announced with a warning. */
     val metered: Boolean = false,
+    /** « Ma bibliothèque »: the sounds the user kept, shown in their family with an « À moi » badge. */
+    val mine: List<com.pocketstudio.model.MySound> = emptyList(),
 )
 
 class LibraryActions(
@@ -84,6 +88,10 @@ class LibraryActions(
     /** « Tout télécharger » (false) or « Tout compléter » (true). */
     val downloadAll: (complete: Boolean) -> Unit = {},
     val cancelAll: () -> Unit = {},
+    /** A kept sound renamed, filed under another family, deleted (« Ma bibliothèque »). */
+    val renameMine: (String, String) -> Unit = { _, _ -> },
+    val setMineKind: (String, String) -> Unit = { _, _ -> },
+    val deleteMine: (String) -> Unit = {},
 )
 
 /**
@@ -131,17 +139,20 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                     modifier = Modifier.fillMaxWidth().testTag("library_search"),
                 )
                 if (query.isNotBlank()) {
+                    val mine = ui.mine.filter { matches(it, query) }
+                    if (mine.isNotEmpty()) MySoundsCard(mine, null, ui, actions)
                     SearchResults(query, ui, actions)
                     PackList(ui, actions)
                     return@Column
                 }
                 Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    SoundPacks.KIND_LABELS.filterKeys { it != "loop" }.forEach { (k, label) ->
+                    libraryKinds(ui.mine).forEach { k ->
+                        val label = SoundPacks.KIND_LABELS.getValue(k)
                         val look = SoundLooks.of(k)
                         FamilyChip(tr(label), look.icon, look.color, selected = kind == k, onClick = { kind = k }, modifier = Modifier.testTag("library_kind_$k"))
                     }
                 }
-                val categories = libraryChoices(kind, ui.packs.installed, ui.styleId)
+                val categories = mineCategory(kind, ui.mine) + libraryChoices(kind, ui.packs.installed, ui.styleId)
                 if (categories.isEmpty()) {
                     Text(tr("Aucun son de ce type pour l'instant : télécharge un pack ci-dessous qui en contient."),
                         style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
@@ -152,11 +163,17 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                     ChipRow(categories.size, categories.indexOf(shown)) { i ->
                         val c = categories[i]
                         FamilyChip(
-                            c.title.substringAfter(" · ", c.title), if (c.id == KIT_CATEGORY || c.id == KIT_OTHER_CATEGORY) Icons.Filled.Apps else Icons.Filled.Inventory2, look.color,
+                            c.title.substringAfter(" · ", c.title), when (c.id) {
+                                KIT_CATEGORY, KIT_OTHER_CATEGORY -> Icons.Filled.Apps
+                                MINE_CATEGORY -> Icons.Filled.Person
+                                else -> Icons.Filled.Inventory2
+                            }, look.color,
                             selected = c.id == shown.id, onClick = { category = c.id }, modifier = Modifier.testTag("library_source_${c.id}"),
                         )
                     }
-                    NeonCard {
+                    if (shown.id == MINE_CATEGORY) {
+                        MySoundsCard(ui.mine.filter { it.kind == kind }, kind, ui, actions)
+                    } else NeonCard {
                         SectionLabel(shown.title, foldKey = "Sons de la bibliothèque")
                         TileGrid(shown.options.size, minTileWidth = 260.dp) { i, m ->
                             val option = shown.options[i]
@@ -178,6 +195,136 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                 PackList(ui, actions)
             }
         }
+    }
+}
+
+/** The id of the category of the user's own sounds (« À moi »). */
+internal const val MINE_CATEGORY = "mine"
+
+/**
+ * The families of the library, in the app's order; those that hold sounds the user kept come
+ * first (found at once), and « Boucles » shows only then (no pack sound is a loop to put on a pad).
+ */
+internal fun libraryKinds(mine: List<com.pocketstudio.model.MySound>): List<String> {
+    val own = mine.map { it.kind }.toSet()
+    val all = SoundPacks.KIND_LABELS.keys.filter { it != "loop" || it in own }
+    return all.filter { it in own } + all.filter { it !in own }
+}
+
+/** « À moi » first among the sources of [kind] when the user kept sounds of it. */
+internal fun mineCategory(kind: String, mine: List<com.pocketstudio.model.MySound>): List<SoundCategory> {
+    val own = mine.filter { it.kind == kind }
+    if (own.isEmpty()) return emptyList()
+    return listOf(SoundCategory(MINE_CATEGORY, tr("À moi"), own.map { SoundOption(SoundRef.Mine(it.id), it.name) }))
+}
+
+/** A kept sound found by a search: its name (as saved and as shown) or its family's. */
+private fun matches(s: com.pocketstudio.model.MySound, query: String): Boolean {
+    val q = query.trim().lowercase()
+    if (q.isEmpty()) return false
+    val label = SoundPacks.KIND_LABELS[s.kind].orEmpty()
+    return listOf(s.name, com.pocketstudio.model.DefaultNames.shownSample(s.name), label, tr(label)).any { q in it.lowercase() }
+}
+
+/** « 98 BPM · La mineur · 2,4 s »: what is known of a kept sound. */
+internal fun mySoundDetails(s: com.pocketstudio.model.MySound): String = listOfNotNull(
+    s.bpm.takeIf { it > 0 }?.let { "%.0f BPM".format(it) },
+    com.pocketstudio.app.remix.SongInfo(root = s.root.takeIf { it in 0..11 }, minor = s.minor).keyLabel,
+    tr("%.1f s", s.seconds),
+).joinToString(" · ")
+
+/**
+ * The user's own sounds, as the app's are shown (the same tiles, in their family's colour), with
+ * an « À moi » badge: touch to hear, « Poser » to use, ✎ to rename, file elsewhere or delete.
+ * [kind] null: the sounds of several families (a search), each in its own colour.
+ */
+@Composable
+private fun MySoundsCard(sounds: List<com.pocketstudio.model.MySound>, kind: String?, ui: LibraryUi, actions: LibraryActions) {
+    var editing by rememberSaveable { mutableStateOf<String?>(null) }
+    // The sound being renamed: its card above the others.
+    editing?.let { id ->
+        val s = sounds.firstOrNull { it.id == id }
+        if (s == null) editing = null else MySoundEditor(s, actions, onDone = { editing = null })
+    }
+    NeonCard(modifier = Modifier.testTag("library_mine")) {
+        SectionLabel(tr("Ma bibliothèque"))
+        TileGrid(sounds.size, minTileWidth = 260.dp) { i, m ->
+            val s = sounds[i]
+            val look = SoundLooks.of(kind ?: s.kind)
+            val ref = SoundRef.Mine(s.id)
+            val playing = ui.playing == ref
+            SoundTile(
+                title = com.pocketstudio.model.DefaultNames.shownSample(s.name), icon = if (playing) Icons.Filled.GraphicEq else look.icon,
+                accent = look.color, selected = playing, onClick = { actions.preview(ref) },
+                subtitle = if (playing) tr("En écoute… touche pour arrêter") else mySoundDetails(s),
+                badge = tr("À moi"),
+                trailing = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(onClick = { editing = s.id }, modifier = Modifier.testTag("library_mine_edit_$i")) {
+                            Icon(Icons.Filled.Edit, contentDescription = tr("Modifier %s", com.pocketstudio.model.DefaultNames.shownSample(s.name)), tint = Neon.TextSecondary)
+                        }
+                        FilledTonalButton(onClick = { actions.use(SoundOption(ref, s.name)) }, modifier = Modifier.pressScale().testTag("library_mine_use_$i")) { Text(tr("Poser")) }
+                    }
+                },
+                modifier = m.testTag("library_mine_$i"),
+            )
+        }
+        Text(tr("Touche un son pour l'écouter, « Poser » pour le mettre sur %s.", ui.target),
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+    }
+}
+
+/**
+ * Rename a kept sound, put it in another family, or delete it (asked first): a card in place of
+ * its tile, in the library itself (the name typed with the sounds still in view).
+ */
+@Composable
+internal fun MySoundEditor(s: com.pocketstudio.model.MySound, actions: LibraryActions, onDone: () -> Unit) {
+    var name by rememberSaveable(s.id) { mutableStateOf(com.pocketstudio.model.DefaultNames.shownSample(s.name)) }
+    var kind by rememberSaveable(s.id) { mutableStateOf(s.kind) }
+    var deleting by rememberSaveable(s.id) { mutableStateOf(false) }
+    NeonCard(accent = SoundLooks.of(kind).color, modifier = Modifier.testTag("library_mine_editor")) {
+        SectionLabel(tr("Mon son"))
+        androidx.compose.material3.OutlinedTextField(
+            value = name, onValueChange = { name = it.take(com.pocketstudio.model.MySounds.MAX_NAME) }, singleLine = true,
+            label = { Text(tr("Nom")) }, modifier = Modifier.fillMaxWidth().testTag("library_mine_name"),
+        )
+        Text(tr("Famille"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
+        Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            com.pocketstudio.model.MySounds.KINDS.forEach { k ->
+                val label = SoundPacks.KIND_LABELS.getValue(k)
+                val look = SoundLooks.of(k)
+                FamilyChip(tr(label), look.icon, look.color, selected = kind == k, onClick = { kind = k }, modifier = Modifier.testTag("library_mine_kind_$k"))
+            }
+        }
+        Text(mySoundDetails(s), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            TextButton(onClick = { deleting = true }, modifier = Modifier.testTag("library_mine_delete")) { Text(tr("Supprimer"), color = Neon.RedText) }
+            androidx.compose.foundation.layout.Spacer(Modifier.weight(1f))
+            TextButton(onClick = onDone, modifier = Modifier.testTag("library_mine_cancel")) { Text(tr("Annuler")) }
+            FilledTonalButton(
+                onClick = {
+                    onDone()
+                    val shown = com.pocketstudio.model.DefaultNames.shownSample(s.name)
+                    if (name.isNotBlank() && name.trim() != shown) actions.renameMine(s.id, name.trim())
+                    if (kind != s.kind) actions.setMineKind(s.id, kind)
+                },
+                modifier = Modifier.testTag("library_mine_save"),
+            ) { Text(tr("Enregistrer")) }
+        }
+    }
+    if (deleting) {
+        ScaledAlertDialog(
+            onDismissRequest = { deleting = false },
+            title = { Text(tr("Supprimer ce son ?")) },
+            text = { Text(tr("« %s » quitte ta bibliothèque. Les projets qui l'utilisent gardent leur copie.", com.pocketstudio.model.DefaultNames.shownSample(s.name))) },
+            confirmButton = {
+                TextButton(onClick = { deleting = false; onDone(); actions.deleteMine(s.id) }, modifier = Modifier.testTag("library_mine_delete_confirm")) {
+                    Text(tr("Supprimer"), color = Neon.RedText)
+                }
+            },
+            dismissButton = { TextButton(onClick = { deleting = false }) { Text(tr("Annuler")) } },
+        )
     }
 }
 

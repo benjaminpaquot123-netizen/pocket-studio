@@ -199,23 +199,24 @@ class LaunchFlowTest {
         h.awaitTag("wizard")
     }
 
-    /** Audit final (02 M9): with no project, « Remixer une chanson » makes one (it led nowhere: « Mes projets » stayed over it). */
+    /**
+     * Audit final (02 M9), then owner (2026-10-29): with no project, « Remix » opens on its own (it
+     * led nowhere: « Mes projets » stayed over it). No project is made before a song is chosen and
+     * where it goes; its « ← » comes back here.
+     */
     @Test
-    fun withNoProjectTheRemixGetsAProjectOfItsOwn() {
+    fun withNoProjectTheRemixOpensOnItsOwnAndComesBack() {
         h.start(launchChoice = true, noProject = true, build = {})
         h.awaitTag("launch_remix")
         compose.onNodeWithTag("launch_remix").performScrollTo().performClick()
-        // A new project: « Simple ou Pro ? » first (nothing made before), then the Remix's own project.
         compose.waitForIdle()
-        compose.onNodeWithTag("mode_step").assertIsDisplayed()
+        compose.onNodeWithTag("remix_home").assertIsDisplayed()
+        compose.onNodeWithTag("remix_start").assertIsDisplayed()
+        assertFalse(exists("mode_step"))
         assertTrue(com.pocketstudio.app.projects.CurrentProject.isNone(com.pocketstudio.app.projects.CurrentProject.get(h.app)))
-        tap("mode_card_pro")
-        val end = System.currentTimeMillis() + 10_000
-        while (com.pocketstudio.app.projects.CurrentProject.isNone(com.pocketstudio.app.projects.CurrentProject.get(h.app))) {
-            check(System.currentTimeMillis() < end) { "no project made for the Remix" }
-            Thread.sleep(50)
-            org.robolectric.shadows.ShadowLooper.idleMainLooper()
-        }
+        tap("remix_home_back")
+        compose.onNodeWithTag("launch").assertIsDisplayed()
+        assertFalse(exists("remix_home"))
     }
 
     /**

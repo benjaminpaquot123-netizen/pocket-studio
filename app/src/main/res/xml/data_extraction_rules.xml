@@ -7,7 +7,7 @@
   projects back without their sounds (ProjectOpening). Re-downloadable or huge files stay out: models,
   sound packs, instrument banks, separated songs (stems), caches, latency measured on this phone.
   A phone-to-phone transfer has no such cap: it carries the projects with their sounds, the
-  separated songs and the trash.
+  separated songs, the sounds kept in « Ma bibliothèque » (mysounds/) and the trash.
   Keep in step with backup_rules.xml (older Android) and BackupRulesTest.
 -->
 <data-extraction-rules>
@@ -28,6 +28,7 @@
         <include domain="file" path="favorites.json" />
         <include domain="file" path="stems/" />
         <include domain="file" path="stems-pinned.txt" />
+        <include domain="file" path="mysounds/" />
         <include domain="sharedpref" path="settings.xml" />
         <include domain="sharedpref" path="projects.xml" />
         <include domain="sharedpref" path="ui.xml" />

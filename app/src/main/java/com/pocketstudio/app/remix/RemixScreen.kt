@@ -107,6 +107,11 @@ class RemixUi(
     val projectKey: String? = null,
     /** The stem board of the song in the project (null: its stems are not loaded yet). */
     val board: StemBoardUi? = null,
+    /**
+     * Opened from « Que veux-tu faire ? », outside any project (owner, 2026-10-29): no « Dans le
+     * projet », and each song's button asks where it goes ([RemixActions.useSong]).
+     */
+    val home: Boolean = false,
 )
 
 /**
@@ -206,14 +211,18 @@ fun RemixScreen(ui: RemixUi, actions: RemixActions) {
         com.pocketstudio.ui.AdaptivePanes(
             spacing = 12.dp,
             first = { RemixStart(ui, actions, openBoard) },
-            second = { ui.sets.forEach { set -> StemCard(set, ui.preview?.takeIf { it.setId == set.id }, ui.remix.setId == set.id, actions, projectLine(ui)) } },
+            second = {
+                ui.sets.forEach { set ->
+                    StemCard(set, ui.preview?.takeIf { it.setId == set.id }, !ui.home && ui.remix.setId == set.id, actions, projectLine(ui).takeIf { !ui.home }, ui.home)
+                }
+            },
         )
     }
 }
 
 @Composable
 private fun RemixStart(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit) {
-    if (ui.remix.setId != null) InProject(ui, actions, openBoard)
+    if (ui.remix.setId != null && !ui.home) InProject(ui, actions, openBoard)
     NeonCard(modifier = Modifier.testTag("remix_start")) {
         SectionLabel(tr("Séparer une chanson"), help = Glossary.REMIX)
         Text(
@@ -610,7 +619,7 @@ private fun projectLine(ui: RemixUi): String =
     tr("Ton projet : %s", listOfNotNull("%.0f BPM".format(ui.projectBpm), ui.projectKey).joinToString(" · "))
 
 @Composable
-private fun StemCard(set: StemSet, preview: StemPreview?, inProject: Boolean, actions: RemixActions, project: String? = null) {
+private fun StemCard(set: StemSet, preview: StemPreview?, inProject: Boolean, actions: RemixActions, project: String? = null, home: Boolean = false) {
     var confirmDelete by rememberSaveable(set.id) { mutableStateOf(false) }
     NeonCard(modifier = Modifier.testTag("stems_${set.id}")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -634,7 +643,7 @@ private fun StemCard(set: StemSet, preview: StemPreview?, inProject: Boolean, ac
         }
         if (!inProject) {
             Button(onClick = { actions.useSong(set) }, modifier = Modifier.fillMaxWidth().testTag("use_${set.id}")) {
-                Text(tr("Jouer avec le projet"))
+                Text(if (home) tr("Utiliser cette chanson") else tr("Jouer avec le projet"))
             }
         }
         val playing = preview?.playing == true

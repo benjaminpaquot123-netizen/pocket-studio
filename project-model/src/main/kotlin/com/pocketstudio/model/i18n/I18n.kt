@@ -99,6 +99,8 @@ object I18n {
         "mode",
         // « Tuto de A à Z » of every style (2026-10-29): the courses' texts, one file per style family.
         "tuto_techno", "tuto_house", "tuto_bass", "tuto_hiphop", "tuto_autres",
+        // Owner (2026-10-29): « Ma bibliothèque de sons » and the Remix from the home screen.
+        "mysounds",
     )
 
     @Volatile

@@ -30,6 +30,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.BookmarkAdd
 import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
@@ -628,6 +629,11 @@ private fun BoardActionsBar(ui: StemBoardUi, state: StemBoardView, actions: Stem
                     Text("→ " + tr("Piste"))
                 }
                 OutlinedButton(onClick = { actions.send(sel, StemDestination.Live) }, contentPadding = padding, modifier = Modifier.testTag("board_to_live")) { Text("→ Live") }
+            }
+            // Owner (2026-10-29): any piece of the song, kept for every project in « Ma bibliothèque ».
+            OutlinedButton(onClick = { actions.send(sel, StemDestination.Mine) }, modifier = Modifier.fillMaxWidth().testTag("board_to_library")) {
+                Icon(Icons.Filled.BookmarkAdd, contentDescription = null)
+                Text(" " + tr("Garder dans ma bibliothèque"))
             }
         }
         if (sel == null || sel.stem == VOCALS_STEM) {

@@ -480,9 +480,11 @@ fun AppRoot() {
         val previewing by libraryVm.playing.collectAsStateWithLifecycle()
         val libTransport by rhythmVm.transport.collectAsStateWithLifecycle()
         val lane = libTransport.selectedPad
+        val mySounds by libraryVm.mySounds.collectAsStateWithLifecycle()
         LaunchedEffect(Unit) {
             libraryVm.dismissMessage()
             libraryVm.refreshPacks()
+            libraryVm.refreshMine()
         }
         val sizes by androidx.compose.runtime.produceState(emptyMap<String, Long>(), packsUi.installed) {
             value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
@@ -516,6 +518,7 @@ fun AppRoot() {
                         metered = androidx.compose.runtime.remember {
                             runCatching { context.getSystemService(android.net.ConnectivityManager::class.java).isActiveNetworkMetered }.getOrDefault(false)
                         },
+                        mine = mySounds,
                     ),
                     com.pocketstudio.app.library.LibraryActions(
                         close = close,
@@ -523,11 +526,13 @@ fun AppRoot() {
                         preview = libraryVm::preview,
                         use = { option ->
                             libraryVm.use(option.ref) { pcm ->
-                                val name = option.name.substringBefore(" · ")
+                                // A kept sound keeps its whole name (« Voix · Ma chanson ») and its length.
+                                val mine = (option.ref as? com.pocketstudio.app.library.SoundRef.Mine)?.let { r -> mySounds.firstOrNull { it.id == r.id } }
+                                val name = if (mine != null) mine.name else option.name.substringBefore(" · ")
                                 val placed = when {
-                                    forTrack -> rhythmVm.useAsTrackSound(pcm, name, (option.ref as? com.pocketstudio.app.library.SoundRef.Pack)?.sound?.kind)
+                                    forTrack -> rhythmVm.useAsTrackSound(pcm, name, mine?.kind ?: (option.ref as? com.pocketstudio.app.library.SoundRef.Pack)?.sound?.kind)
                                     live >= 0 -> rhythmVm.placeOnLivePad(live, pcm, name)
-                                    else -> rhythmVm.placeOnPad(pcm, name, oneShot = true)
+                                    else -> rhythmVm.placeOnPad(pcm, name, oneShot = mine == null)
                                 }
                                 if (placed) close()
                                 else libraryVm.notice(tr("Un son est encore en train d'être posé ou enregistré : réessaie dans un instant."))
@@ -538,6 +543,9 @@ fun AppRoot() {
                         deletePack = libraryVm::deletePack,
                         downloadAll = libraryVm::downloadAll,
                         cancelAll = libraryVm::cancelAll,
+                        renameMine = libraryVm::renameMine,
+                        setMineKind = libraryVm::setMineKind,
+                        deleteMine = libraryVm::deleteMine,
                     ),
                 )
             }
@@ -1135,7 +1143,15 @@ fun AppRoot() {
     var toolPage by rememberSaveable { mutableStateOf<ToolPage?>(null) }
     // Lot 2: the Remix (Sons › Voix, its second page), « mis en avant »: one touch from « Que veux-tu
     // faire ? », a chip in Sons, a line of the Mode simple's « ⋯ ».
-    val openRemix: () -> Unit = { audioPage = 1; go(AppTab.Audio) }
+    // Owner (2026-10-29): the space the Remix was opened from (a menu, the Guide, a card), for its « ← » in Pro.
+    var remixFrom by rememberSaveable { mutableStateOf<AppTab?>(null) }
+    val openRemix: () -> Unit = {
+        // From the Sons space's own chips no « ← » is needed: its row is there.
+        if (tab != AppTab.Audio) remixFrom = tab.takeIf { it !in SONS_TABS }
+        audioPage = 1
+        go(AppTab.Audio)
+    }
+    LaunchedEffect(tab) { if (tab != AppTab.Audio) remixFrom = null }
     // The separation's notification touched: its Remix page (audit 02 M5).
     val remixAsked by com.pocketstudio.app.remix.SeparationJob.openRemix.collectAsStateWithLifecycle()
     LaunchedEffect(remixAsked) {
@@ -1143,6 +1159,15 @@ fun AppRoot() {
             com.pocketstudio.app.remix.SeparationJob.openHandled()
             openRemix()
         }
+    }
+    // A song separated from « Que veux-tu faire ? » for this project (« Dans un projet existant »): in its Remix now.
+    LaunchedEffect(rhythmVm.projectId) {
+        val setId = com.pocketstudio.app.remix.RemixFromHome.take(rhythmVm.projectId) ?: return@LaunchedEffect
+        val set = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+            com.pocketstudio.app.remix.StemStore.read(com.pocketstudio.app.remix.StemStore.dirFor(context, setId))
+        } ?: return@LaunchedEffect
+        rhythmVm.useSong(set)
+        openRemix()
     }
     // Audit final (03 G4): « Ma voix », the audio tracks' page (a first track made when there is none).
     val openVoice: () -> Unit = {
@@ -1270,6 +1295,9 @@ fun AppRoot() {
     // Owner (2026-10-29): « Simple ou Pro ? » before any new project started from here (the welcome
     // and « Nouveau projet » ask on their own pages). The way to start waits under its key.
     var modeAsk by rememberSaveable(key = "mode_ask") { mutableStateOf<String?>(null) }
+    // The Remix of « Que veux-tu faire ? » is open; the way a song goes once « Simple ou Pro ? » is answered (« Build:<set> »).
+    var remixHome by rememberSaveable(key = "remix_home") { mutableStateOf(false) }
+    var remixWay by rememberSaveable(key = "remix_way") { mutableStateOf<String?>(null) }
     val startMissions: () -> Unit = { modeAsk = START_MISSIONS }
     com.pocketstudio.app.onboarding.LaunchWatch(launch, rhythmVm)
     // Drawn last, over the studio (see the end of the screen below).
@@ -1283,11 +1311,10 @@ fun AppRoot() {
             newSong = { launch.choose(comeBack = true); projectsNewOnly = true; showProjects = true },
             projects = { launch.choose(comeBack = true); projectsNewOnly = false; showProjects = true },
             remix = {
-                launch.choose()
-                // Audit final (02 M9): with no project, « Mes projets » stays over everything; the Remix
-                // gets a project of its own first (as « Mon premier morceau » does, after « Simple ou
-                // Pro ? »), then opens on it. With one, straight on the Remix of the project open.
-                if (noProject) modeAsk = START_REMIX_NEW else openRemix()
+                // Owner (2026-10-29): the song is separated first, outside any project; then it goes into a
+                // project already there, a new one (« Simple ou Pro ? » first) or a song built on it.
+                launch.choose(comeBack = true)
+                remixHome = true
             },
             missions = {
                 launch.choose()
@@ -1295,6 +1322,40 @@ fun AppRoot() {
             },
         ),
     ) }
+    // Owner (2026-10-29): the Remix of « Que veux-tu faire ? » (RemixFromHome): « ← Accueil » goes back there.
+    if (remixHome) {
+        val closeRemixHome = {
+            remixHome = false
+            if (!launch.returned() && noProject) leaveApp()
+            Unit
+        }
+        ScaledDialog(onDismissRequest = closeRemixHome, properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)) {
+            androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
+                val homeProjects by projectsVm.state.collectAsStateWithLifecycle()
+                LaunchedEffect(Unit) { projectsVm.refresh() }
+                com.pocketstudio.app.remix.RemixHomePage(
+                    remixVm, homeProjects.projects, rhythmVm.projectId.takeIf { !noProject },
+                    close = closeRemixHome,
+                    pickSong = { pickSong.launch(arrayOf("audio/*")) },
+                    downloadModel = { remixVm.downloadModel(); askNotifications() },
+                    // A new project: « Simple ou Pro ? » first, as every new project.
+                    onWay = { set, way -> remixWay = "${way.name}:${set.id}"; modeAsk = START_REMIX_WAY },
+                    onProject = { set, p ->
+                        remixHome = false
+                        launch.settled()
+                        if (!noProject && p.id == rhythmVm.projectId) {
+                            rhythmVm.useSong(set)
+                            openRemix()
+                        } else {
+                            com.pocketstudio.app.remix.RemixFromHome.put(p.id, set.id)
+                            openRemix()  // kept across the rebuild the other project brings
+                            openProject(p.id)
+                        }
+                    },
+                )
+            }
+        }
+    }
     modeAsk?.let { way ->
         com.pocketstudio.app.ui.ModeStepDialog(
             choose = { v ->
@@ -1310,6 +1371,20 @@ fun AppRoot() {
                     START_REMIX_NEW -> projectsVm.create(Project(name = "Remix")) { id ->
                         openRemix()  // kept across the rebuild the new project brings
                         openProject(id)
+                    }
+                    START_REMIX_WAY -> {
+                        val (wayName, setId) = remixWay.orEmpty().split(":", limit = 2).let { it.getOrElse(0) { "" } to it.getOrElse(1) { "" } }
+                        val set = remixVm.sets.value.firstOrNull { it.id == setId }
+                        val remixBy = com.pocketstudio.app.remix.RemixWay.entries.firstOrNull { it.name == wayName }
+                        remixWay = null
+                        if (set != null && remixBy != null) {
+                            projectsVm.create(com.pocketstudio.app.remix.RemixFromHome.projectFor(set, remixBy), emptyMap()) { id ->
+                                remixHome = false
+                                launch.settled()
+                                openRemix()  // kept across the rebuild the new project brings
+                                openProject(id)
+                            }
+                        }
                     }
                     START_NEW_STYLE -> {
                         // « Mon premier morceau »: the song the assistant makes now goes on with its first cards.
@@ -2271,6 +2346,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     openPadEffects = { fxChannel = com.pocketstudio.model.Mixer.padChannel(rhythmVm.transport.value.selectedPad) },
                                     openLibrary = { showLibrary = true },
                                     toKeyboard = { if (rhythmVm.padToKeyboard()) tab = AppTab.Synthe },
+                                    keepInLibrary = { rhythmVm.keepPadInLibrary() },
                                     setPadPan = rhythmVm::setPadPan,
                                     setHitPan = rhythmVm::setHitPan,
                                     setHitPitch = rhythmVm::setHitPitch,
@@ -2785,6 +2861,15 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     )
                                 }
                             } else {
+                            // Owner (2026-10-29): opened from elsewhere in the project, the Remix shows its way back there.
+                            val from = remixFrom?.takeIf { audioPage == 1 && it != AppTab.Audio }
+                            if (from != null) {
+                                androidx.activity.compose.BackHandler { remixFrom = null; go(from) }
+                                TextButton(onClick = { remixFrom = null; go(from) }, modifier = Modifier.heightIn(min = 48.dp).testTag("remix_back")) {
+                                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, modifier = Modifier.size(18.dp))
+                                    Text(" " + if (from == AppTab.Morceau) tr("Mon morceau") else tr("Retour au projet"))
+                                }
+                            }
                             // Scrollable: whole words on a small phone or with big text (never "Remi/x").
                             androidx.compose.material3.ScrollableTabRow(selectedTabIndex = audioPage, containerColor = Neon.Surface, contentColor = Neon.Cyan, edgePadding = 8.dp) {
                                 listOf(tr("Pistes audio"), tr("Remix"), tr("Accordeur"), tr("Générer")).forEachIndexed { i, label ->
@@ -3834,6 +3919,7 @@ internal fun SoundChooserSheet(vm: RhythmViewModel, track: Int, close: () -> Uni
             }
             com.pocketstudio.app.sounds.SoundBrowser(trackSoundBrowser(vm, project, favorites, afterPick = close))
             real?.let { com.pocketstudio.app.instruments.RealInstruments(it) }
+            com.pocketstudio.app.library.MySoundsOnKeys(vm, track, close)
         }
     }
 }
@@ -4026,6 +4112,7 @@ internal fun tutoWhere(u: com.pocketstudio.app.tuto.TutoUi): String {
 private const val START_MISSIONS = "missions"
 private const val START_MISSIONS_NEW = "missions_new"
 private const val START_REMIX_NEW = "remix_new"
+private const val START_REMIX_WAY = "remix_way"
 private const val START_NEW_STYLE = "new_style"
 private const val START_TUTO = "tuto"
 

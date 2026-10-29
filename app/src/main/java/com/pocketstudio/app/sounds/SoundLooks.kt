@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Grain
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Hub
 import androidx.compose.material.icons.filled.LibraryMusic
+import androidx.compose.material.icons.filled.Loop
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Piano
@@ -68,6 +69,7 @@ object SoundLooks {
         "percussions mélodiques", "mallet" -> SoundLook(Icons.Filled.Notifications, KEYS)
         "effets", "fx", "effets synthé" -> SoundLook(Icons.Filled.AutoAwesome, FX)
         "voix", "vocal" -> SoundLook(Icons.Filled.RecordVoiceOver, VOICE)
+        "boucles", "loop" -> SoundLook(Icons.Filled.Loop, PLUCK)
         "bruitages", "foley" -> SoundLook(Icons.Filled.Vibration, FX)
         "cymbales", "ride" -> SoundLook(Icons.Filled.BlurOn, OPEN_HAT)
         // Each drum family in its pad's colour (Rythme tab), so they tell apart at a glance.

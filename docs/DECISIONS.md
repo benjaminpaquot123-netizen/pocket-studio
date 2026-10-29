@@ -911,3 +911,4 @@
 - 2026-10-29 · Remix depuis l'accueil : on sépare d'abord, hors projet, puis on choisit « faire un morceau à partir de cette chanson » (tempo, tonalité, pistes audibles), « dans un nouveau projet » (chanson muette, réserve de morceaux) ou « dans un projet existant ». La chanson est mise dans ce projet à son ouverture, pour que « Annuler » marche. Retour arrière : `remixHome` dans `AppRoot`.
 - 2026-10-29 · Le menu « ⋯ » du Mode simple dit « Remix ». En Pro, le Remix ouvert hors de l'espace Sons montre « ← Mon morceau ».
 - 2026-10-29 · `mysounds/` va dans le transfert d'appareil, pas dans la sauvegarde cloud (limite de 25 Mo).
+- 2026-10-29 : un projet vide s'ouvre sur les pads (Rythme), un projet rempli sur « Mon morceau » (choix 1A de Benjamin, APK 233 : les pads n'étaient pas là dès l'ouverture). Retour arrière : toujours ouvrir sur « Mon morceau ».

@@ -46,6 +46,9 @@ sealed interface StemDestination {
 
     /** A free live pad (Live › Pads). */
     data object Live : StemDestination
+
+    /** « Ma bibliothèque »: kept for every project, at the song's own tempo, with its key. */
+    data object Mine : StemDestination
 }
 
 /** The edits (B2): pure work on samples, off the main thread, never on the audio thread. */

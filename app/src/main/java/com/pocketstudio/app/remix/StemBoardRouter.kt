@@ -72,6 +72,12 @@ interface StemBoardHost {
     /** [pcm] on live pad [pad], named [name]. */
     suspend fun putOnLivePad(pcm: Pcm, name: String, pad: Int)
 
+    /**
+     * [pcm] kept in « Ma bibliothèque » named [name], filed under [kind], at [bpm] with song
+     * [setId]'s key; the sound as kept (null: the library is not available here).
+     */
+    suspend fun keepInLibrary(pcm: Pcm, name: String, kind: String, bpm: Double, setId: String): com.pocketstudio.model.MySound? = null
+
     /** The song step the transport plays now, -1 when it is stopped. */
     fun songStepNow(): Int
 
@@ -211,6 +217,17 @@ class StemBoardRouter(
                     host.putOnNewAudioTrack(pcm, name, step, bpm)
                         ?: return@launchWork tr("Les huit pistes audio sont prises : vide-en une ou pose le son sur un pad.")
                     tr("« %1\$s » est sur une nouvelle piste audio, à la mesure %2\$d.", DefaultNames.shown(name), step / p.stepsPerBar.coerceAtLeast(1) + 1)
+                }
+            }
+            is StemDestination.Mine -> {
+                val song = p.remix.takeIf { it.setId == sel.setId }?.name.orEmpty().trim()
+                val name = if (song.isEmpty()) french else "$french · $song"
+                launchWork(tr("%s vers ma bibliothèque…", label)) {
+                    var bpm = 0.0
+                    val pcm = cut(sel, fitted = false) { bpm = it } ?: return@launchWork null
+                    val kept = host.keepInLibrary(pcm, name, com.pocketstudio.model.MySounds.kindOfStem(sel.stem, pcm.seconds), bpm, sel.setId)
+                        ?: return@launchWork tr("Ce son n'a pas pu être gardé (%s).", tr("bibliothèque indisponible"))
+                    com.pocketstudio.app.library.keptNotice(kept)
                 }
             }
             is StemDestination.Live -> {

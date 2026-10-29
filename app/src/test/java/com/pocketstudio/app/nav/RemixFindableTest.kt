@@ -50,7 +50,7 @@ class RemixFindableTest {
         // Owner (2026-10-29): a showcase card of its own, « Remix », the separation said under it.
         compose.onNodeWithTag("launch_remix").assertTextContains("Remix", substring = true)
             .assertTextContains("Séparation des pistes : batterie, basse, voix et le reste.")
-        // On the project open: straight on the Remix, no new project, so no « Simple ou Pro ? ».
+        // Owner (2026-10-29): the Remix of the home screen, a song chosen first: no project made, so no « Simple ou Pro ? ».
         compose.withinGestures("Remixer une chanson (ouverture)", FROM_OPENING) { tap("launch_remix") }
         compose.onNodeWithTag("mode_step").assertDoesNotExist()
         assertRemix()
@@ -101,7 +101,7 @@ class RemixFindableTest {
         h.start(simple = true)
         compose.withinGestures("Remixer une chanson (Mode simple)", FROM_A_SPACE) {
             tap("top_more")
-            compose.onNodeWithTag("more_remix").assertTextContains("Extraire la voix d'une chanson")
+            compose.onNodeWithTag("more_remix").assertTextContains("Remix")
             tap("more_remix")
         }
         assertRemix()

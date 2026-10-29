@@ -61,6 +61,8 @@ fun SoundTile(
     modifier: Modifier = Modifier,
     subtitle: String? = null,
     trailing: (@Composable () -> Unit)? = null,
+    /** A short word in a pill after the name (« À moi »: a sound the user kept), or none. */
+    badge: String? = null,
 ) {
     val shape = RoundedCornerShape(14.dp)
     val interaction = remember { MutableInteractionSource() }
@@ -92,11 +94,21 @@ fun SoundTile(
             Icon(icon, contentDescription = null, tint = Color.White, modifier = Modifier.size(18.dp))
         }
         Column(Modifier.weight(1f)) {
-            Text(
-                // Two lines rather than a cut name ("Distorsion de phase").
-                title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold, lineHeight = 17.sp,
-                color = Neon.TextPrimary, maxLines = 2, overflow = TextOverflow.Ellipsis,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(
+                    // Two lines rather than a cut name ("Distorsion de phase").
+                    title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold, lineHeight = 17.sp,
+                    color = Neon.TextPrimary, maxLines = 2, overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false),
+                )
+                if (badge != null) {
+                    Text(
+                        badge, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = accent, maxLines = 1,
+                        modifier = Modifier.clip(RoundedCornerShape(50)).background(accent.copy(alpha = 0.18f))
+                            .border(1.dp, accent.copy(alpha = 0.6f), RoundedCornerShape(50)).padding(horizontal = 6.dp, vertical = 1.dp),
+                    )
+                }
+            }
             if (subtitle != null) {
                 Text(
                     subtitle, style = MaterialTheme.typography.labelSmall, letterSpacing = 0.2.sp,

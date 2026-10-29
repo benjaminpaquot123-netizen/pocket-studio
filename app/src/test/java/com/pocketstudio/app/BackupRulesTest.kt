@@ -21,7 +21,9 @@ class BackupRulesTest {
      */
     private val ownWork = setOf("projects-backup", "favorites.json")
     /** Moved whole from phone to phone (no cap), never in the cloud: the projects' folders and their sounds. */
-    private val transferOnly = setOf("projects")
+    private val transferOnly = setOf("projects",
+        // « Ma bibliothèque de sons »: the user's own sounds (float WAVs, too big for the cloud's cap).
+        "mysounds")
     /** Re-downloadable, rebuilt, huge or tied to this phone: never in the cloud backup. */
     private val leftOut = setOf("retours", "models", "packs", "sounds", "stems", "stems-pinned.txt", "basic-pitch.onnx", "projects-trash", "last_crash.txt", "applog.txt", "applog-previous.txt",
         // A separation running (its marker, for this phone's next launch only).
@@ -56,6 +58,7 @@ class BackupRulesTest {
         // A phone-to-phone transfer has no cap: the separated songs and the trash go too, models and packs not.
         val transfer = includes("data_extraction_rules.xml", "device-transfer").filter { it.first == "file" }.map { it.second }.toSet()
         assertTrue(transfer.containsAll(ownWork + transferOnly + setOf("stems", "projects-trash")))
+        assertTrue("the kept sounds never go to the cloud", cloud.none { it.second == "mysounds" })
         assertTrue("the sounds never go to the cloud", cloud.none { it.second == "projects" })
         assertTrue(transfer.none { it in setOf("models", "packs", "sounds", "basic-pitch.onnx") })
     }

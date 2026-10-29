@@ -164,6 +164,33 @@ class StemBoardVmTest {
         assertTrue(vm.project.value.drums.lanes.all { it.sample == null })
     }
 
+    /** Owner (2026-10-29): « Garder dans ma bibliothèque »: the stretch at the song's own tempo, with its key; the project untouched. */
+    @Test
+    fun aStretchIsKeptInMyLibraryWithTheSongsTempoAndKey() {
+        File(app.filesDir, "mysounds").deleteRecursively()
+        val vm = open()
+        val set = withSong(vm)
+        val before = vm.project.value
+        val depth = vm.session.undoDepth
+        vm.stemBoard.send(StemSelection(set.id, 3, 96_000, 192_000), StemDestination.Mine)
+        assertEquals(
+            "« Voix · Ma chanson » est dans ta bibliothèque (Voix) : tu le retrouves dans « Changer le son », pour tous tes projets.",
+            said(vm),
+        )
+        val kept = com.pocketstudio.app.library.MySoundLibrary.sounds.value.single()
+        assertEquals("vocal", kept.kind)
+        assertEquals(2.0, kept.seconds, 0.01)
+        assertEquals(120.0, kept.bpm, 0.0)
+        assertEquals(9, kept.root)
+        assertTrue(kept.minor)
+        // Read at the song's own speed, never the project's fitted copy.
+        assertTrue(sink.extracted.any { it.second == 96_000L && it.third == 96_000L })
+        assertEquals(before, vm.project.value)
+        assertEquals(depth, vm.session.undoDepth)
+        File(app.filesDir, "mysounds").deleteRecursively()
+        runBlocking { com.pocketstudio.app.library.MySoundLibrary.refresh(app) }
+    }
+
     @Test
     fun aStretchOnAPadNeverTheKick() {
         val vm = open()

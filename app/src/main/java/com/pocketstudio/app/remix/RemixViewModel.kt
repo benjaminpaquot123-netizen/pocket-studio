@@ -57,6 +57,11 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
         checkMemory()
     }
 
+    /** Reads the separated songs again (the home screen's Remix opens: a project deleted since may free one). */
+    fun refreshSets() {
+        viewModelScope.launch { refresh() }
+    }
+
     /** Reads the device's memory again (after closing other apps). */
     fun checkMemory() {
         val memory = android.app.ActivityManager.MemoryInfo()

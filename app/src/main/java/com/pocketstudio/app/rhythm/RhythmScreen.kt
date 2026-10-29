@@ -62,6 +62,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Piano
+import androidx.compose.material.icons.filled.BookmarkAdd
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.foundation.layout.heightIn
@@ -150,6 +151,8 @@ data class RhythmActions(
     val openPadEffects: () -> Unit = {},
     /** The pad's sample on the synth keyboard (opens Synthé). */
     val toKeyboard: () -> Unit = {},
+    /** « Garder dans ma bibliothèque »: the selected pad's own sound, kept for every project. */
+    val keepInLibrary: () -> Unit = {},
     /** Opens the sound library for the selected pad. */
     val openLibrary: () -> Unit = {},
     /** All-pads grid: (lane, step). */
@@ -995,6 +998,15 @@ private fun RollMenu(
     }
 }
 
+/** « Garder dans ma bibliothèque »: the pad's sound for every project (owner, 2026-10-29). */
+@Composable
+private fun KeepInLibraryButton(actions: RhythmActions) {
+    OutlinedButton(onClick = actions.keepInLibrary, modifier = Modifier.fillMaxWidth().testTag("pad_keep_library")) {
+        Icon(Icons.Filled.BookmarkAdd, contentDescription = null)
+        Text(" " + tr("Garder dans ma bibliothèque"))
+    }
+}
+
 @Composable
 internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: RhythmActions, simple: Boolean = false) {
     val color = DrumKitInfo.colors[lane]
@@ -1026,6 +1038,7 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
             // The Mode simple: another sound and its volume (its own sound can go back to the kit's).
             LabeledSlider(tr("Volume du pad"), percent((volume / 0.8f * 100).roundToInt()), volume, 0f..1f) { actions.setPadVolume(lane, it) }
             if (sample != null && !busy) {
+                KeepInLibraryButton(actions)
                 TextButton(onClick = actions.removeSample, modifier = Modifier.testTag("remove_sample")) { Text(tr("Revenir au son %s", DrumKitInfo.names[lane])) }
             }
             return@NeonCard
@@ -1057,6 +1070,7 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                 Icon(Icons.Filled.Piano, contentDescription = null)
                 Text(tr("  Jouer ce sample au clavier"))
             }
+            if (!busy) KeepInLibraryButton(actions)
         }
         if (sample != null && info != null) {
             // The sample editor stays folded until asked for: a beginner sees the sound, not its knobs.

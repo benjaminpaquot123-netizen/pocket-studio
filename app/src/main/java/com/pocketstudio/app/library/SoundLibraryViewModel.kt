@@ -64,6 +64,8 @@ sealed interface SoundRef {
     data class Demo(val index: Int) : SoundRef
     /** A multizone instrument's preview (phase 38): from its pack when downloaded, else fetched from the catalogue. */
     data class Instrument(val packId: String) : SoundRef
+    /** A sound of « Ma bibliothèque » ([MySoundLibrary]), by its id. */
+    data class Mine(val id: String) : SoundRef
 }
 
 data class SoundOption(val ref: SoundRef, val name: String)
@@ -408,6 +410,29 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
 
     fun dismissMessage() = _packs.update { it.copy(message = null, readyNote = null) }
 
+    // --- « Ma bibliothèque » ---------------------------------------------------------------------
+
+    /** The sounds the user kept, shared by every project. */
+    val mySounds: StateFlow<List<com.pocketstudio.model.MySound>> = MySoundLibrary.sounds
+
+    fun refreshMine() {
+        viewModelScope.launch { MySoundLibrary.refresh(getApplication()) }
+    }
+
+    fun renameMine(id: String, name: String) {
+        viewModelScope.launch { MySoundLibrary.rename(getApplication(), id, name) }
+    }
+
+    fun setMineKind(id: String, kind: String) {
+        viewModelScope.launch { MySoundLibrary.setKind(getApplication(), id, kind) }
+    }
+
+    /** Deletes the kept sound (the projects that use it keep their own copy). */
+    fun deleteMine(id: String) {
+        if (_playing.value == SoundRef.Mine(id) || _preparing.value == SoundRef.Mine(id)) stopPreview()
+        viewModelScope.launch { MySoundLibrary.delete(getApplication(), id) }
+    }
+
     /** A line for the library's notice spot (shown at the top of the library). */
     fun notice(text: String) = _packs.update { it.copy(message = text) }
 
@@ -543,6 +568,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 runCatching { AudioDecoder.decode(app, Uri.fromFile(f)) }.onFailure { AppLog.add("Aperçu illisible ${ref.packId} : ${it.message}") }.getOrNull()
             }
         }
+        is SoundRef.Mine -> MySoundLibrary.load(getApplication(), ref.id)
         is SoundRef.Pack -> withContext(Dispatchers.IO) {
             val file = PackStore.file(getApplication(), ref.packId, ref.sound)
             runCatching { AudioDecoder.decode(getApplication(), Uri.fromFile(file)) }

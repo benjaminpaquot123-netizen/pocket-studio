@@ -265,6 +265,7 @@ class I18nCatalogTest {
             "RealInstruments.kt: e.name",
             "Tracks.kt: multi.name.ifBlank { \"Instrument\" }",
             "LibraryScreen.kt: label",
+            "MySoundLibrary.kt: label",  // a family of sounds (SoundPacks.KIND_LABELS, checked by ModelTextsTest)
             "LibraryScreen.kt: option.name.substringBefore(\" · \")",
             // The style's name, as in the assistant (checked by ModelTextsTest).
             "LibraryScreen.kt: style.name",

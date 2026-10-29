@@ -47,6 +47,8 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
         launchChoice: Boolean = false,
         /** Lot 1: no project at all (the last one deleted): the app on its blank stand-in. */
         noProject: Boolean = false,
+        /** The open project's id (a fresh one when null). */
+        projectId: String? = null,
         build: RhythmViewModel.() -> Unit = { songWithTracks() },
     ) {
         File(app.filesDir, "projects").deleteRecursively()
@@ -54,7 +56,7 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
             app.getSharedPreferences(it, 0).edit().clear().commit()
         }
         // A project of its own: a save still running from an earlier test lands in another file.
-        com.pocketstudio.app.projects.CurrentProject.set(app, if (noProject) com.pocketstudio.app.projects.CurrentProject.NONE else "nav-test-" + System.nanoTime())
+        com.pocketstudio.app.projects.CurrentProject.set(app, if (noProject) com.pocketstudio.app.projects.CurrentProject.NONE else projectId ?: ("nav-test-" + System.nanoTime()))
         SettingsStore.forgetForTests()
         SettingsStore.update(app) {
             it.copy(guideSeen = !firstLaunch, simpleMode = simple, uiScale = scale, language = lang, englishNotes = lang != com.pocketstudio.model.i18n.Lang.FR)
@@ -141,6 +143,22 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
 }
 
 /** A song of three parts (Intro, Refrain, Drop) with the drums, a « Basse » and a « Lead » track, on the scene A. */
+/**
+ * The Remix's ViewModel ([com.pocketstudio.app.projects.AppViewModels]) and the sound library's
+ * made with this test's application before the app shows them: the default factory keeps the
+ * first test's one, whose files are another test's.
+ */
+internal fun AppHarness.appViewModelsOfThisTest() {
+    val factory = object : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T = modelClass.getConstructor(Application::class.java).newInstance(app)
+    }
+    val owner = com.pocketstudio.app.projects.AppViewModels.of(app)
+    ViewModelProvider(owner, factory)[com.pocketstudio.app.remix.RemixViewModel::class.java]
+    // The sound library's is the activity's own.
+    ViewModelProvider(compose.activity, factory)[com.pocketstudio.app.library.SoundLibraryViewModel::class.java]
+}
+
 internal fun RhythmViewModel.songWithTracks() {
     // The new project's acid line is drawn at random: a fixed one, for screenshots that stay the same.
     session.edit { it.copy(acid = com.pocketstudio.model.AcidGenerator(kotlin.random.Random(3)).generate(com.pocketstudio.model.AcidPattern(), com.pocketstudio.model.AcidGenerator.NOTE_SETS[5])) }

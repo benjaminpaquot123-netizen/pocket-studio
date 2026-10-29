@@ -2279,6 +2279,45 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         return true
     }
 
+    /**
+     * « Garder dans ma bibliothèque »: pad [lane]'s own sound (imported, recorded, a piece of the
+     * Remix), cut to its region, kept for every project ([com.pocketstudio.app.library.MySoundLibrary]);
+     * said when it is there (or why not). The project does not change.
+     */
+    fun keepPadInLibrary(lane: Int = _transport.value.selectedPad): Boolean {
+        val s = project.value.drums.lanes.getOrNull(lane)?.sample ?: return false
+        val bpm = if (s.fitBeats > 0) project.value.tempoBpm else 0.0
+        viewModelScope.launch {
+            val pcm = readOrNull { padSamples.read(s.file) }
+            if (pcm == null || pcm.frames == 0) {
+                _notice.value = tr("Ce son n'a pas pu être lu.")
+                return@launch
+            }
+            val ch = pcm.channels
+            val from = (s.start * pcm.frames).toInt().coerceIn(0, pcm.frames - 1)
+            val to = (s.end * pcm.frames).toInt().coerceIn(from + 1, pcm.frames)
+            var data = if (from == 0 && to == pcm.frames) pcm.data else pcm.data.copyOfRange(from * ch, to * ch)
+            if (s.reverse) {
+                val frames = data.size / ch
+                val src = data
+                data = FloatArray(src.size) { i -> src[(frames - 1 - i / ch) * ch + i % ch] }
+            }
+            val cut = Pcm(data, ch, pcm.sampleRate)
+            _notice.value = try {
+                val kept = com.pocketstudio.app.library.MySoundLibrary.keep(
+                    getApplication(), cut, s.name, com.pocketstudio.model.MySounds.kindOfPad(com.pocketstudio.model.MySounds.padKind(lane), cut.seconds, s.name),
+                    bpm = bpm, origin = project.value.name,
+                )
+                com.pocketstudio.app.library.keptNotice(kept)
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                tr("Ce son n'a pas pu être gardé (%s).", e.message ?: e.javaClass.simpleName)
+            }
+        }
+        return true
+    }
+
     /** A sound file of the phone on the keyboard of the selected track. */
     fun importTrackSound(uri: Uri) {
         viewModelScope.launch {
@@ -5540,6 +5579,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             }
             pushLive()
             AppLog.add("Tableau des pistes : « $name » sur le pad live ${pad + 1}")
+        }
+
+        override suspend fun keepInLibrary(pcm: Pcm, name: String, kind: String, bpm: Double, setId: String): com.pocketstudio.model.MySound? {
+            val app = getApplication<Application>()
+            val info = withContext(Dispatchers.IO) { com.pocketstudio.app.remix.StemStore.read(com.pocketstudio.app.remix.StemStore.dirFor(app, setId))?.info }
+            return com.pocketstudio.app.library.MySoundLibrary.keep(
+                app, pcm, name, kind, bpm = bpm, root = info?.root, minor = info?.minor == true,
+                origin = project.value.remix.takeIf { it.setId == setId }?.name.orEmpty(),
+            )
         }
 
         override fun songStepNow(): Int =

@@ -594,7 +594,31 @@ object TutoChecks {
         val mine = hits.keys
         if (!(mine.containsAll(wanted.keys) && (mine - wanted.keys).size <= maxOf(1, wanted.size / 2))) return false
         // "lane:hat:rolls": each roll of the line (trap's hats, a « 3 »: three hits in one cell) rolled there too.
-        return !rolls || wanted.all { (s, h) -> h.repeats < 2 || (hits[s]?.repeats ?: 1) == h.repeats }
+        return !rolls || wanted.all { (s, h) -> (h.repeats < 2 || (hits[s]?.repeats ?: 1) == h.repeats) && (hits[s]?.span ?: 1) == h.span }
+    }
+
+    /** Whether one of [lanes] holds a triplet ([Hit.isTriplet]) inside the loop. */
+    private fun hasTriplet(d: DrumPattern, lanes: Set<Int>): Boolean =
+        lanes.any { l -> d.lanes.getOrNull(l)?.hits?.any { (s, h) -> s < d.steps && h.isTriplet } == true }
+
+    /**
+     * « Montre-moi » of "triplet:<role>": the triplets of the style's line on that pad where they fit
+     * (trap's hats: the last beat of the first bar), else one on the first bar's last beat: 3 hits over
+     * its first 2 cells (a hit added there when there is none). Null when the loop has no room.
+     */
+    private fun withTriplet(p: Project, role: String, target: TutoTarget): Project? {
+        val lane = laneOf(role)
+        val steps = p.drums.steps
+        val fromLine = target.line(role)?.let { StarterWizard.hits(it, steps) }.orEmpty().filter { (s, h) -> h.isTriplet && s + h.span <= steps }
+        val wanted = fromLine.ifEmpty {
+            val at = (p.stepsPerBar - 4).coerceAtLeast(0)
+            mapOf(at to Hit(p.drums.lanes[lane].hits[at]?.velocity ?: 0.6f, repeats = Hit.TRIPLET.first, span = Hit.TRIPLET.second))
+        }
+        var d = p.drums
+        for ((s, h) in wanted.entries.sortedBy { it.key }) {
+            d = d.setHit(lane, s, true, h.velocity).withSpread(lane, s, h.repeats, h.span)
+        }
+        return p.copy(drums = d).takeIf { hasTriplet(d, setOf(lane)) }
     }
 
     /** The notes [mine] hold every one of [wanted] (its pitch, its start): the dotted notes all written. */
@@ -641,6 +665,8 @@ object TutoChecks {
             c == "velocity:hat" -> p.allScenes.any { hatsSwing(it.drums, p.stepsPerBar, target) }
             // "offset:snare:late": at least half the role's hits played late (early), by [OFFSET_MS] or more (the lo-fi's lazy snare).
             c.startsWith("offset:") -> p.allScenes.any { sc -> offsetDone(sc.drums, lanesOf(arg.substringBefore(':'), target), arg.substringAfter(':', "late") == "early") }
+            // "triplet:hat": at least one triplet (3 hits over 2 cells, or 6 over a beat) on the role's pad, in any part.
+            c.startsWith("triplet:") -> p.allScenes.any { sc -> hasTriplet(sc.drums, lanesOf(arg, target)) }
             // The 303's line: every step of it, its note, its accent and its slide.
             c == "notes:acid" -> target.acid?.let { a -> p.allScenes.any { acidMatches(it.acid, a) } } ?: false
             // Every dotted note written (not 3 of 12: the testers' bass and chords ticked with the screen's first notes).
@@ -1008,6 +1034,7 @@ object TutoChecks {
                     if (i != lane) l else l.copy(hits = hits.mapValues { (s, h) -> h.copy(velocity = v[s % line.pattern.length]?.velocity ?: 0.35f) })
                 }))
             }
+            c.startsWith("triplet:") -> withTriplet(p, arg, target) ?: return null
             c == "notes:acid" -> {
                 val a = target.acid ?: return null
                 val wanted = acidWanted(step, p, target) ?: return null

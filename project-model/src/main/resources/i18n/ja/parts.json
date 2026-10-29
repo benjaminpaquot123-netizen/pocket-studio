@@ -63,5 +63,11 @@
   "Énergie : %d": "エネルギー：%d",
   "Énergie, longueur, plus…": "エネルギー、長さ、その他…",
   "↗ Montant": "↗ 上昇",
-  "↘ Descendant": "↘ 下降"
+  "↘ Descendant": "↘ 下降",
+  "Triolet": "3連符",
+  "3 sur 2 cases": "2マスに3打",
+  "6 sur le temps": "1拍に6打",
+  "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "3連符：%2$d マスに均等な %1$d 打（次のマスもその一部）",
+  "dans le triolet": "3連符の中",
+  "triolet, %1$d coups sur %2$d cases": "3連符、%2$d マスに %1$d 打"
 }

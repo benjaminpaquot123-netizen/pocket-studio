@@ -206,6 +206,8 @@ data class RhythmActions(
     /** A hit held: its roll (×1..×8, [ramp] 1 rising, -1 falling), or 32nds over its beat. */
     val setRoll: (step: Int, repeats: Int, ramp: Int) -> Unit = { _, _, _ -> },
     val burst: (step: Int, ramp: Int) -> Unit = { _, _ -> },
+    /** A held hit made a triplet: [hits] over [span] steps (3 over 2: « Triolet »), [ramp] as in [setRoll]. */
+    val setSpread: (step: Int, hits: Int, span: Int, ramp: Int) -> Unit = { _, _, _, _ -> },
     /** Phase 37: the selected pad's own loop in steps (0 = the pattern's), a polyrhythm. */
     val setPadLength: (Int) -> Unit = {},
     /** Phase 37: a hit's chance to play on each pass (5..100 %), and « Autre tirage » (the chances drawn again). */
@@ -676,6 +678,10 @@ private fun StepGrid(
                     val isBeat = step % 4 == 0
                     val playing = step == padPlayStep
                     val hit = hits[step]
+                    // A step a triplet covers (after its own): the triplet's, drawn and touched as it.
+                    val owner = project.drums.lanes[lane].covering(step)
+                    val ownerHit = owner?.let { hits[it] }
+                    val at = owner ?: step
                     // Past the pad's own loop: kept, unheard (dimmed).
                     val pastLoop = ownLoop && step >= padLoop
                     val isPicked = tool >= 2 && step == picked && hit != null
@@ -703,11 +709,11 @@ private fun StepGrid(
                                 if (tool == 4) {
                                     // « Force »: a touch on a hit sets its strength by where it lands
                                     // (top = full); the slider below then fine-tunes it.
-                                    Modifier.pointerInput(step, hit != null, project.drums.steps) {
-                                        detectTapGestures { at ->
-                                            if (hit != null && step < project.drums.steps) {
-                                                picked = step
-                                                actions.setHitVelocity(step, (1f - at.y / size.height).coerceIn(0f, 1f))
+                                    Modifier.pointerInput(at, (hit ?: ownerHit) != null, project.drums.steps) {
+                                        detectTapGestures { touch ->
+                                            if ((hit ?: ownerHit) != null && step < project.drums.steps) {
+                                                picked = at
+                                                actions.setHitVelocity(at, (1f - touch.y / size.height).coerceIn(0f, 1f))
                                             }
                                         }
                                     }
@@ -720,15 +726,16 @@ private fun StepGrid(
                                             if (step < project.drums.steps) {
                                                 when (tool) {
                                                     0 -> actions.toggleStep(step)
-                                                    1 -> actions.cycleRoll(step)
-                                                    else -> if (hit != null) picked = step
+                                                    1 -> actions.cycleRoll(at)
+                                                    else -> if ((hit ?: ownerHit) != null) picked = at
                                                 }
                                             }
                                         },
                                         onLongClick = {
                                             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            // A hit: its force and its roll; an empty cell: a strong hit.
-                                            if (hit != null && step < project.drums.steps) rollStep = step else actions.cycleVelocity(step)
+                                            // A hit: its force and its roll; an empty cell: a strong hit; a step a triplet covers: the triplet's.
+                                            if (ownerHit != null) rollStep = at
+                                            else if (hit != null && step < project.drums.steps) rollStep = step else actions.cycleVelocity(step)
                                         },
                                     )
                                 },
@@ -736,7 +743,7 @@ private fun StepGrid(
                             // Audit final (22): TalkBack says the step and what is on it.
                             .semantics(mergeDescendants = true) {
                                 contentDescription = tr("Pas %d", step % per + 1)
-                                stateDescription = stepState(hit)
+                                stateDescription = if (ownerHit != null) tr("dans le triolet") else stepState(hit)
                             }
                             .testTag("step_$step"),
                         contentAlignment = Alignment.BottomCenter,
@@ -751,6 +758,14 @@ private fun StepGrid(
                         if (velocity == null) com.pocketstudio.app.tuto.TutoHints.fading?.let { (l, cells, alpha) ->
                             if (l == lane && step in cells && alpha > 0f) Box(Modifier.fillMaxSize().background(color.copy(alpha = 0.85f * alpha)))
                         }
+                        // A step a triplet covers: the triplet's colour, a little lighter, and its marks.
+                        if (ownerHit != null && owner != null) {
+                            Box(
+                                Modifier.fillMaxWidth().fillMaxHeight(ownerHit.velocity.coerceIn(0.08f, 1f)).alpha(0.7f)
+                                    .background(Brush.verticalGradient(listOf(lerp(color, Color.White, if (playing) 0.45f else 0.2f), color))),
+                            )
+                            TripletMarks(ownerHit, step - owner, Modifier.fillMaxSize())
+                        }
                         // The hit fills the cell up to its strength.
                         if (velocity != null) {
                             Box(
@@ -758,7 +773,9 @@ private fun StepGrid(
                                     .background(Brush.verticalGradient(listOf(lerp(color, Color.White, if (playing) 0.45f else 0.2f), color))),
                             )
                             val repeats = hits[step]?.repeats ?: 1
-                            if (repeats > 1) {
+                            // A triplet: its hits drawn as small marks across its steps (3 over 2 cells).
+                            if (hit != null && hit.isSpread) TripletMarks(hit, 0, Modifier.fillMaxSize())
+                            else if (repeats > 1) {
                                 val ramp = when (hits[step]?.ramp) { 1 -> "↗"; -1 -> "↘"; else -> "" }
                                 Text("×$repeats$ramp", style = MaterialTheme.typography.labelLarge, color = Color(0xFF1E2023),
                                     modifier = Modifier.align(Alignment.Center))
@@ -788,9 +805,11 @@ private fun StepGrid(
                         }
                         if (erasing) com.pocketstudio.app.tuto.TutoEraseCell()
                         if (rollStep == step && hit != null) {
+                            val spreadsTo = project.drums.lanes[lane].loopSteps(project.drums.steps).coerceAtMost(project.drums.steps)
                             RollMenu(hit, step % per + 1, close = { rollStep = -1 },
                                 force = { actions.setHitVelocity(step, it) }, roll = { n, r -> actions.setRoll(step, n, r) }, burst = { actions.burst(step, it) },
-                                chance = { actions.setHitChance(step, it) }, simple = simple)
+                                chance = { actions.setHitChance(step, it) }, simple = simple,
+                                spread = { n, m, r -> actions.setSpread(step, n, m, r) }, roomFor = { m -> step + m <= spreadsTo })
                         }
                     }
                 }
@@ -912,6 +931,9 @@ private fun RollMenu(
     chance: (Int) -> Unit = {},
     /** The Mode simple (the tutorial's Facile): force and roll only (testers, lot « tuto 5 »: « rafale de 1/32 », « Chance de jouer »). */
     simple: Boolean = false,
+    /** A triplet: (hits, steps, ramp). [roomFor]: whether the pad's loop has that many steps from this one. */
+    spread: (Int, Int, Int) -> Unit = { _, _, _ -> },
+    roomFor: (Int) -> Boolean = { true },
 ) {
     val chips = pillColors()
     ScaledDropdownMenu(expanded = true, onDismissRequest = close, modifier = Modifier.testTag("roll_menu")) {
@@ -931,17 +953,32 @@ private fun RollMenu(
             Text(tr("Roulement"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 com.pocketstudio.model.DrumPattern.ROLLS.forEach { n ->
-                    FilterChip(selected = hit.repeats == n, onClick = { roll(n, hit.ramp) }, label = { Text("×$n") }, colors = chips, modifier = Modifier.testTag("roll_$n"))
+                    FilterChip(selected = hit.repeats == n && !hit.isSpread, onClick = { roll(n, hit.ramp) }, label = { Text("×$n") }, colors = chips, modifier = Modifier.testTag("roll_$n"))
+                }
+            }
+            // The triplet (trap and drill hats): 3 hits evenly over this cell and the next; in Pro, 6 over the beat too.
+            Text(tr("Triolet"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                val shapes = listOf(com.pocketstudio.model.Hit.TRIPLET to tr("3 sur 2 cases")) +
+                    (if (simple) emptyList() else listOf(com.pocketstudio.model.Hit.TRIPLET_BEAT to tr("6 sur le temps")))
+                shapes.forEach { (shape, label) ->
+                    val (n, m) = shape
+                    FilterChip(
+                        selected = hit.repeats == n && hit.span == m, enabled = roomFor(m), onClick = { spread(n, m, hit.ramp) }, label = { Text(label) }, colors = chips,
+                        modifier = Modifier.testTag(if (m == 2) "roll_triplet" else "roll_triplet_$m"),
+                    )
                 }
             }
             FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 listOf(1 to tr("↗ Montant"), 0 to tr("Égal"), -1 to tr("↘ Descendant")).forEach { (r, label) ->
-                    FilterChip(selected = hit.ramp == r, enabled = hit.repeats > 1, onClick = { roll(hit.repeats, r) }, label = { Text(label) }, colors = chips,
-                        modifier = Modifier.testTag("roll_ramp_$r"))
+                    FilterChip(selected = hit.ramp == r, enabled = hit.repeats > 1, onClick = { if (hit.isSpread) spread(hit.repeats, hit.span, r) else roll(hit.repeats, r) },
+                        label = { Text(label) }, colors = chips, modifier = Modifier.testTag("roll_ramp_$r"))
                 }
             }
+            if (hit.isSpread) Text(tr("Triolet : %1\$d coups réguliers sur %2\$d cases (la case d'après en fait partie)", hit.repeats, hit.span),
+                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("roll_value"))
             // Tutorial testers (lot « tuto 4 »): the roll's own note value, the burst below being another action (it read as the roll's label).
-            if (hit.repeats > 1) Text(tr("×%1\$d : %1\$d coups dans la case, des 1/%2\$d", hit.repeats, 16 * hit.repeats),
+            else if (hit.repeats > 1) Text(tr("×%1\$d : %1\$d coups dans la case, des 1/%2\$d", hit.repeats, 16 * hit.repeats),
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("roll_value"))
             if (!simple) {
                 TextButton(onClick = { burst(1); close() }, modifier = Modifier.testTag("roll_burst")) { Text(tr("Tout le temps en ×2 (rafale de 1/32)")) }
@@ -1196,11 +1233,46 @@ internal fun panLabel(pan: Float): String = when {
     else -> tr("Centre")
 }
 
+/**
+ * A triplet's hits as small marks: [hit]'s [Hit.repeats] spread evenly over its [Hit.span] cells,
+ * those falling in the cell [index] of them (0 = its own) drawn there, dark over the hit's colour.
+ */
+@Composable
+private fun TripletMarks(hit: com.pocketstudio.model.Hit, index: Int, modifier: Modifier) {
+    val n = hit.repeats.coerceAtLeast(1)
+    val m = hit.span.coerceAtLeast(1)
+    androidx.compose.foundation.Canvas(modifier.testTag("triplet_marks")) {
+        val w = 3.dp.toPx()
+        val inset = 3.dp.toPx()
+        for (k in 0 until n) {
+            val pos = k * m.toFloat() / n - index
+            if (pos < 0f || pos >= 1f) continue
+            val x = inset + pos * (size.width - 2 * inset - w)
+            // Dark with a light edge: readable over the hit's colour and over the empty top of a soft hit.
+            val edge = 1.dp.toPx()
+            drawRoundRect(
+                Color.White.copy(alpha = 0.85f), topLeft = androidx.compose.ui.geometry.Offset(x - edge, size.height * 0.28f - edge),
+                size = androidx.compose.ui.geometry.Size(w + 2 * edge, size.height * 0.44f + 2 * edge),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(w, w),
+            )
+            drawRoundRect(
+                Color(0xFF1E2023), topLeft = androidx.compose.ui.geometry.Offset(x, size.height * 0.28f),
+                size = androidx.compose.ui.geometry.Size(w, size.height * 0.44f),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(w / 2, w / 2),
+            )
+        }
+    }
+}
+
 /** What TalkBack says of a step: empty, or a hit with its force and its repeats. */
 internal fun stepState(hit: com.pocketstudio.model.Hit?): String {
     if (hit == null) return tr("vide")
     val force = tr("coup, force %d %%", (hit.velocity * 100).roundToInt())
-    return if (hit.repeats > 1) force + ", " + tr("%d répétitions", hit.repeats) else force
+    return when {
+        hit.isSpread -> force + ", " + tr("triolet, %1\$d coups sur %2\$d cases", hit.repeats, hit.span)
+        hit.repeats > 1 -> force + ", " + tr("%d répétitions", hit.repeats)
+        else -> force
+    }
 }
 
 private fun panShort(pan: Float) = if (pan < 0f) tr("G") else tr("D")

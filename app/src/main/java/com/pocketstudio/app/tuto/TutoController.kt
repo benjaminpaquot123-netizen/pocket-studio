@@ -123,6 +123,7 @@ data class TutoUi(
         when {
             c.startsWith("lane:") -> TutoChecks.laneOf(TutoChecks.argOf(c))
             c == "velocity:hat" -> TutoChecks.laneOf("hat")
+            c.startsWith("triplet:") -> TutoChecks.laneOf(TutoChecks.argOf(c))
             c == "fill" || c == "gap" -> TutoChecks.laneOf("snare")
             c == "crash" -> TutoChecks.CRASH_LANE
             else -> null

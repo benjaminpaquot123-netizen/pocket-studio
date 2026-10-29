@@ -127,6 +127,7 @@ object TutoValidation {
                 null -> "notes:<bass|pad|lead|acid>"
                 else -> if (target.notes(part).notes.isEmpty()) "no notes for « $arg »" else null
             }
+            c.startsWith("triplet:") -> if (arg !in TutoChecks.DRUM_ROLES) "triplet:<drum role> (one of ${TutoChecks.DRUM_ROLES})" else null
             c.startsWith("offset:") -> if (arg.substringBefore(':') !in TutoChecks.DRUM_ROLES || arg.substringAfter(':', "late") !in setOf("late", "early")) "offset:<drum role>:<late|early>" else null
             c.startsWith("automation:") -> if (arg !in TutoChecks.CURVE_SHAPES) "automation:<${TutoChecks.CURVE_SHAPES.joinToString("|")}>" else null
             c.startsWith("insert:") -> if (EffectType.entries.none { it.name == arg }) "no effect « $arg »" else null

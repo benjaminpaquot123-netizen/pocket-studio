@@ -63,5 +63,11 @@
   "Énergie : %d": "Energie: %d",
   "Énergie, longueur, plus…": "Energie, lengte, meer…",
   "↗ Montant": "↗ Stijgend",
-  "↘ Descendant": "↘ Dalend"
+  "↘ Descendant": "↘ Dalend",
+  "Triolet": "Triool",
+  "3 sur 2 cases": "3 over 2 vakjes",
+  "6 sur le temps": "6 over de tel",
+  "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Triool: %1$d gelijke slagen over %2$d vakjes (het volgende vakje hoort erbij)",
+  "dans le triolet": "in de triool",
+  "triolet, %1$d coups sur %2$d cases": "triool, %1$d slagen over %2$d vakjes"
 }

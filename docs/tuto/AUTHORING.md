@@ -141,8 +141,9 @@ Sans ligne dans le cours, les notes visées sont celles de l'assistant.
 | `key` | La tonalité et la gamme du cours. | oui (gamme puis tonique) |
 | `swing` | Le swing du style (à moitié de sa valeur près, au plus 5 points). Seulement pour un style qui swingue. | oui |
 | `lane:<rôle>` | Toutes les cases de la ligne du style sur ce pad (un peu de surplus toléré), sur toute sa longueur (« Passer à 2 mesures » proposé). Rôles : `kick`, `snare`, `clap`, `hat`, `open_hat`, `perc`, `perc2`, `tom`, `ride`, `rumble`, `808` (ceux que le style joue). | oui |
-| `lane:<rôle>:rolls` | Pareil, et chaque roulement de la ligne (« 3 » : 3 coups dans une case) roulé pareil (Pro). | oui |
+| `lane:<rôle>:rolls` | Pareil, et chaque roulement de la ligne (« 3 » : 3 coups dans une case ; « t » : un triolet sur 2 cases) roulé pareil (Pro). | oui |
 | `velocity:hat` | Les charleys des temps plus doux que ceux d'entre, sur chaque mesure (« Copier » après la 1re). | oui |
+| `triplet:<rôle>` | Au moins un **triolet** sur le pad de ce rôle, dans n'importe quelle partie : 3 coups sur 2 cases (ou 6 sur un temps), choisi par l'appui long sur un coup › « Triolet ». Rôles : ceux de `lane:` (`hat` le plus souvent). | oui (les triolets de la ligne du style, sinon un sur le dernier temps de la 1re mesure) |
 | `offset:<rôle>:late` / `:early` | Au moins la moitié des coups du pad joués en retard / en avance d'au moins 5 ms (réglage « Décalage du coup », Pro). | oui |
 | `notes:bass` / `notes:pad` / `notes:lead` | Toutes les notes de la ligne écrites sur la piste de ce rôle. | oui, mesure par mesure |
 | `notes:acid` | Toute la ligne 303 : notes, accents, slides. | oui |
@@ -248,7 +249,7 @@ flock <lock> ./gradlew --max-workers=3 --no-configuration-cache :app:testDebugUn
 
 ## 11. Ce qu'un cours ne peut pas encore dire
 
-- **Triolets « 3 coups sur 2 cases »** (charleys trap / drill) : le moteur ne joue que des rafales dans une case (`3` = 3 coups dans une 16e) ; `lane:hat:rolls` détecte celles-là.
+- **Triolets** : `triplet:<rôle>` vérifie qu'il y en a un, pas sa place exacte ; pour la place, `lane:<rôle>:rolls` (la ligne de la recette, où `t` / `T` = un triolet sur 2 cases, doit être refaite triolet pour triolet).
 - **Une variante dans une partie longue** (couper une ligne 8 mesures sur 32, un mini-break de 2 mesures) : il faut une partie de plus.
 - **Le décalage d'un coup, les roulements et la 303** ne s'écrivent qu'en Pro (le Mode simple n'a pas ces réglages).
 - **Batterie du cours** : les lignes de batterie sont celles de la recette du style (pas de `lines` pour les pads, pas de force par coup au-delà de X / x / o).

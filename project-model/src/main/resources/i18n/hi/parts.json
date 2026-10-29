@@ -63,5 +63,11 @@
   "Énergie : %d": "एनर्जी: %d",
   "Énergie, longueur, plus…": "एनर्जी, लंबाई, और…",
   "↗ Montant": "↗ ऊपर जाता",
-  "↘ Descendant": "↘ नीचे जाता"
+  "↘ Descendant": "↘ नीचे जाता",
+  "Triolet": "ट्रिपलेट",
+  "3 sur 2 cases": "2 खानों में 3",
+  "6 sur le temps": "बीट पर 6",
+  "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "ट्रिपलेट: %2$d खानों में %1$d बराबर चोट (अगला खाना भी इसका हिस्सा है)",
+  "dans le triolet": "ट्रिपलेट के अंदर",
+  "triolet, %1$d coups sur %2$d cases": "ट्रिपलेट, %2$d खानों में %1$d चोट"
 }

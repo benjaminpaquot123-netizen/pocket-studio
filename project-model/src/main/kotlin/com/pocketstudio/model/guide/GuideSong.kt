@@ -155,7 +155,7 @@ class GuideSong(val project: Project, val tracks: List<GuideTrack> = project.gui
             val hit = l.hits[at] ?: continue
             if (at >= d.steps) continue
             any = true
-            h = 31 * h + step * 7 + (hit.velocity * 20).toInt() + hit.repeats * 1000
+            h = 31 * h + step * 7 + (hit.velocity * 20).toInt() + hit.repeats * 1000 + (hit.span - 1) * 100_000
         }
         return if (any) h or 1 else 0
     }

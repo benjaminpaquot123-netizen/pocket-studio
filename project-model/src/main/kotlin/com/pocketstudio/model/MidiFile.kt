@@ -148,7 +148,8 @@ object MidiFile {
     /**
      * The drum hits, rolls as their hits: the step split evenly, each hit 0.85 times softer than the
      * one before, a swung (odd) step shorter by the swing so its roll stays inside it (as the engine
-     * plays them). The swing's delay itself is added later, with every other note's.
+     * plays them); a triplet's hits evenly over its steps ([Hit.span]). The swing's delay itself is
+     * added later, with every other note's.
      */
     private fun drumNotes(drums: DrumPattern, sceneSteps: Int, offset: Int, swing: Double, seed: Int = 0): List<MidiNote> {
         val out = ArrayList<MidiNote>()
@@ -160,11 +161,12 @@ object MidiFile {
                 // draws it, at its place in the song (the file is the song heard).
                 l.hits[drums.laneStep(lane, s)]?.takeIf { DrumChance.plays(seed, lane, offset / step + s, it.chance) }?.let { hit ->
                     val n = hit.repeats.coerceIn(1, DrumPattern.MAX_REPEATS)
-                    val length = step * (if (s % 2 == 1) 1.0 - swing else 1.0)
+                    val span = hit.span.coerceIn(1, Hit.MAX_SPAN)
+                    val length = if (span > 1) step.toDouble() * span else step * (if (s % 2 == 1) 1.0 - swing else 1.0)
                     val every = length / n
                     for (k in 0 until n) {
                         val at = (k * every).toInt()
-                        val next = if (k + 1 < n) ((k + 1) * every).toInt() else step
+                        val next = if (k + 1 < n) ((k + 1) * every).toInt() else (step * span)
                         val v = hit.velocity * 0.85.pow(k).toFloat()
                         out += MidiNote(DRUM_CHANNEL, PAD_NOTES[lane], offset + s * step + at, minOf(step / 2, next - at).coerceAtLeast(1), velocity(v))
                     }

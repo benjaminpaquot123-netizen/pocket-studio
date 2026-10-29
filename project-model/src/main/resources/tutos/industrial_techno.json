@@ -1,0 +1,457 @@
+{
+  "format": 1,
+  "style": "industrial_techno",
+  "key": "G phrygian",
+  "chords": "i i i II",
+  "lines": {
+    "pad": "0:G3+D4+G4:16 16:G3+D4+G4:16 32:G3+D4+G4:16 48:Ab3+Eb4+Ab4:16",
+    "lead": "0:G3:2 30:Ab3:2"
+  },
+  "lineBars": {
+    "pad": 4,
+    "lead": 2
+  },
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "Chaque style a sa vitesse et sa couleur : on règle les deux avant de jouer la moindre note.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de techno industrielle : pas de mélodie, des bruits de métal et de machines, un kick saturé qui boite. C'est ce que tu vas construire.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 136 BPM, 136 battements par minute. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 136 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick",
+          "skip": "Sans ça, ton morceau reste à 120 BPM : trop lent pour la techno industrielle."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau, la plus noire. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne » puis « Sol ».",
+          "textPro": "À toi : règle la tonalité sur Sol phrygien : presque pas de notes, un bourdon sur Sol et la seconde mineure La♭ comme seule couleur. Kick et rumble sont accordés sur Sol.",
+          "why": "Ici, les notes comptent peu : la gamme sert surtout à accorder le grave.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, tes notes ne prendront pas la couleur du techno industrielle."
+        },
+        {
+          "id": "swing",
+          "text": "À toi : mets un tout petit peu de swing (5 %) : la machine balance à peine.",
+          "why": "Juste assez de swing pour que l'usine respire.",
+          "levels": "p",
+          "check": "swing",
+          "spot": "rhythm.pattern",
+          "listen": "drums:kick,tom,hat"
+        }
+      ]
+    },
+    {
+      "id": "kick",
+      "title": "Le kick qui boite",
+      "why": "Un kick saturé sur chaque temps, plus deux petits coups fantômes : la machine boite et balance comme un pendule.",
+      "steps": [
+        {
+          "id": "ready",
+          "text": "Avant de commencer : ton kit est déjà celui de la techno industrielle : un kick dur et saturé, un grondement, des percussions métalliques. Tu n'as rien à régler.",
+          "textPro": "Déjà prêt : le kick dur saturé (préset « distortion »), le rumble accordé sur Sol, la saturation sur la batterie, la distorsion sur le métal."
+        },
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad « Kick », touche les cases en pointillé : une sur chaque temps, et deux petits coups doux juste avant les temps 2 et 4.",
+          "textPro": "À toi : le kick sur chaque temps, avec ses deux kicks fantômes (en « Doux ») avant 2 et 4.",
+          "why": "Les kicks fantômes donnent le balancement d'une machine qui tourne mal.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick",
+          "skip": "Sans kick, l'usine s'arrête."
+        },
+        {
+          "id": "rumble_do",
+          "text": "À toi : sur le pad « Rumble », touche les mêmes cases que le kick : il gronde après chaque coup.",
+          "textPro": "À toi : le rumble, calé sur le kick : c'est la basse du morceau.",
+          "why": "Le rumble est la seule basse : un grave sale qui roule entre les coups.",
+          "check": "lane:rumble",
+          "spot": "rhythm.pattern",
+          "target": "rumble",
+          "listen": "drums:kick,rumble"
+        }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "Les machines",
+      "titlePro": "Toms, caisse et métal",
+      "why": "Des toms comme des pistons, une caisse claire qui souffle comme de la vapeur, un coup de métal sur chaque contretemps.",
+      "steps": [
+        {
+          "id": "tom_do",
+          "text": "À toi : sur le pad « Toms », touche les cases en pointillé : ils cognent entre les kicks.",
+          "textPro": "À toi : les toms graves entre les kicks, comme un second kick.",
+          "why": "Des toms graves sous le kick, comme des machines dans une usine.",
+          "check": "lane:tom",
+          "spot": "rhythm.pattern",
+          "target": "tom",
+          "listen": "drums:kick,tom"
+        },
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad « Charley », touche les cases en pointillé, entre les kicks.",
+          "textPro": "À toi : le charley sur les contretemps.",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,tom,hat"
+        },
+        {
+          "id": "snare_do",
+          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé : les temps 2 et 4, et un petit coup à la fin.",
+          "textPro": "À toi : la caisse « vapeur » sur 2 et 4, avec son coup de relance.",
+          "check": "lane:snare",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "listen": "drums:kick,tom,snare"
+        },
+        {
+          "id": "perc_do",
+          "text": "À toi : sur le pad « Perc » (un coup de métal), touche les cases en pointillé : un sur chaque contretemps.",
+          "textPro": "À toi : le métal saturé sur les contretemps.",
+          "levels": "p",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,perc"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toute ta batterie quelques secondes, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,rumble,tom,hat,snare",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "Le bourdon",
+      "titlePro": "Le bourdon (accords)",
+      "why": "Pas de jolis accords : un mur de son tenu, sombre et grinçant, qui ne bouge presque pas.",
+      "steps": [
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords », puis les 3 notes de la mesure 1 (une note longue, grave et aiguë). « Copier sur les mesures suivantes », puis les 3 notes de la mesure 4, un cran plus haut, et « Copier » encore.",
+          "textPro": "À toi : crée la piste Accords (son « Essaim ») : la quinte Sol-Ré tenue, La♭ à la mesure 4. « Copier ».",
+          "why": "Un son tenu qui ne bouge pas installe la menace ; le demi-ton de la mesure 4 serre la gorge.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,rumble,pad"
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "Le coup de métal",
+      "why": "Une seule note de métal qui revient comme un marteau sur une enclume : rare, elle frappe d'autant plus fort.",
+      "steps": [
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 2 notes en pointillé : une au début de la mesure 1, une à la fin de la mesure 2. Puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Mélodie (son « Cloche », effet robot) : Sol au premier temps, La♭ tout à la fin de la 2e mesure. « Copier ».",
+          "why": "Deux coups en deux mesures : le silence entre eux fait peur.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:kick,lead"
+        },
+        {
+          "id": "lead_delay",
+          "text": "À toi : au Mixeur, monte « Envoi écho » sur la piste « Mélodie » : le coup de métal se répète au loin.",
+          "levels": "p",
+          "check": "send:1",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:lead"
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Groove",
+      "why": "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes, puis l'exemple. Une usine qui tourne : c'est la techno industrielle.",
+          "check": "listen",
+          "listen": "parts:kick,rumble,tom,hat,snare,perc,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.",
+          "textPro": "À toi : nomme cette scène « Groove » : la boucle complète, d'où tu tireras les autres parties.",
+          "check": "label:Groove",
+          "spot": "song.parts",
+          "listen": "parts:kick,rumble,tom,hat,snare,perc,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "why": "Une partie, c'est un ensemble de boucles qui jouent ensemble. Un morceau, c'est une suite de parties qui montent et descendent en énergie.",
+      "map": true,
+      "steps": [
+        {
+          "id": "brick",
+          "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la basse). Une partie, ce sont plusieurs briques qui jouent ensemble.",
+          "why": "Tu changes une partie en ajoutant ou en enlevant des briques : c'est comme ça qu'on fait monter ou descendre l'énergie."
+        },
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : le kick, le rumble et le charley.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_drop",
+          "text": "Écoute le Drop : tout tourne, le bourdon et le métal en plus.",
+          "check": "listen",
+          "listen": "part:Drop"
+        },
+        {
+          "id": "map_break",
+          "text": "Écoute le Break : sans kick, le grondement et le bourdon restent.",
+          "why": "Dans les pauses, le kick sort mais le grondement reste : la menace ne s'arrête jamais.",
+          "check": "listen",
+          "listen": "part:Break"
+        },
+        {
+          "id": "map_phrases",
+          "text": "Regarde la carte : au milieu du Drop, 8 mesures « Drop B » sans les toms, puis ils reviennent.",
+          "why": "En techno industrielle, on retire une boucle 8 mesures puis on la remet : l'énergie bouge sans rien ajouter."
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Groove : tu enlèves des briques, tu en changes une.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro : le kick, le rumble et le charley.",
+          "check": "part:Intro:less",
+          "spot": "song.parts",
+          "keep": "kick,rumble,hat",
+          "listen": "vs:Drop:Intro"
+        },
+        {
+          "id": "make_intro2",
+          "text": "À toi : crée l'Intro 2 : les toms et la caisse arrivent.",
+          "check": "part:Intro 2:less+nopad",
+          "spot": "song.parts",
+          "keep": "kick,rumble,tom,hat,snare",
+          "listen": "vs:Intro:Intro 2"
+        },
+        {
+          "id": "make_drop",
+          "text": "À toi : crée le Drop : tout joue.",
+          "check": "part:Drop:full",
+          "spot": "song.parts",
+          "keep": "*",
+          "listen": "vs:Intro 2:Drop"
+        },
+        {
+          "id": "make_dropb",
+          "text": "À toi : crée le Drop B : le Drop sans les toms.",
+          "why": "Une brique retirée 8 mesures, et l'oreille la réclame.",
+          "check": "part:Drop B:less",
+          "spot": "song.parts",
+          "keep": "kick,rumble,hat,snare,perc,pad,lead",
+          "listen": "vs:Drop:Intro 2"
+        },
+        {
+          "id": "make_break",
+          "text": "À toi : crée le Break : le rumble, le bourdon et le métal, sans kick.",
+          "check": "part:Break:nokick",
+          "spot": "song.parts",
+          "keep": "rumble,pad,lead",
+          "listen": "vs:Drop:Break"
+        },
+        {
+          "id": "make_drop2",
+          "text": "À toi : crée le Drop 2 : tout joue, sauf le coup de métal de la piste Mélodie.",
+          "check": "part:Drop 2:differs",
+          "spot": "song.parts",
+          "keep": "kick,rumble,tom,hat,snare,perc,pad",
+          "listen": "vs:Drop:Drop 2"
+        },
+        {
+          "id": "make_fin",
+          "text": "À toi : crée la Fin : le kick, le rumble et le charley.",
+          "check": "part:Fin:less",
+          "spot": "song.parts",
+          "keep": "kick,rumble,hat",
+          "listen": "vs:Drop:Intro"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Drop B, Drop, Break, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Le morceau », ajoute dans l'ordre Intro, Intro 2, Drop, Drop B, Drop, Break, Drop 2 et Fin.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "song": "Intro:16,Intro 2:16,Drop:16,Drop B:8,Drop:8,Break:16,Drop 2:32,Fin:16",
+          "listen": "song",
+          "skip": "Dans un autre ordre, le Drop B ne coupera pas le Drop en son milieu."
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 16, Drop B 8, Drop 8, Break 16, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "textPro": "À toi : les durées : Intro 16 mesures, Intro 2 16, Drop 16, Drop B 8, Drop 8, Break 16, Drop 2 32 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
+          "why": "Des blocs de 8 et 16 mesures : chaque boucle entre ou sort au début d'une phrase. 3 minutes 46 à 136 BPM.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:16,Intro 2:16,Drop:16,Drop B:8,Drop:8,Break:16,Drop 2:32,Fin:16"
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Pas de grands roulements ici : un silence, une cymbale.",
+      "steps": [
+        {
+          "id": "gap",
+          "text": "À toi : dans la partie « Break », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
+          "why": "Même le grondement se tait : le retour du kick fait l'effet d'un coup de marteau.",
+          "check": "gap",
+          "spot": "rhythm.pattern",
+          "part": "Break",
+          "listen": "vs:Break:Drop"
+        },
+        {
+          "id": "crash",
+          "text": "À toi : dans la partie « Drop 2 », touche la toute première case du pad de la cymbale.",
+          "check": "crash",
+          "spot": "rhythm.pattern",
+          "part": "Drop 2",
+          "listen": "part:Drop"
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "La réverbe noie la caisse comme dans un hangar ; le bourdon s'ouvre et se ferme lentement.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "text": "Écoute la réverbe : la caisse et le bourdon, d'abord sans, puis avec : on se retrouve dans un hangar.",
+          "levels": "f",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "reverb",
+          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur la tranche du pad « Caisse ».",
+          "levels": "p",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "snare",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "filter",
+          "text": "À toi : automatise la « Coupure » de la piste « Accords » sur le Drop : une courbe qui monte jusqu'au milieu puis redescend.",
+          "why": "Le bourdon ne change pas de note : c'est son filtre qui le fait respirer.",
+          "levels": "p",
+          "check": "automation:wave",
+          "spot": "song.automation",
+          "target": "pad",
+          "part": "Drop",
+          "listen": "part:Drop"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le mix, c'est le volume de chaque piste : le kick et le grave devant, le reste derrière. Chaque son trouve sa place.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords » (le bourdon), puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "textPro": "À toi : au Mixeur, baisse un peu le curseur de la piste « Accords » (le bourdon), puis celui de la piste « Mélodie ».",
+          "check": "changed:volumes:pad,lead",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:kick,rumble,tom,snare,pad,lead"
+        },
+        {
+          "id": "meters",
+          "text": "Repère : pendant le Drop, les vu-mètres du Mixeur ne doivent pas rester dans le rouge. Si une piste rougit, baisse son fader.",
+          "levels": "p"
+        },
+        {
+          "id": "buses",
+          "text": "Repères : le kick et le rumble devant, les toms juste dessous, le métal panné, le bourdon en fond. Compare au morceau d'exemple.",
+          "levels": "p",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "title": "Le mastering",
+      "why": "Le master colle le tout et donne le volume des clubs, sans écraser le kick.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "La sortie générale a un limiteur intégré, toujours le dernier de la chaîne (il n'apparaît pas dans ses « Effets ») : il empêche le son de dépasser. À toi : dans « Sortie générale », règle « Volume visé » sur « Club » : ton morceau sonne aussi fort qu'en club.",
+          "check": "loudness:CLUB",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter !",
+      "steps": [
+        {
+          "id": "formats",
+          "text": "WAV pour un DJ (la qualité studio), M4A pour tes amis (un fichier léger), pistes séparées pour un remix.",
+          "levels": "p"
+        },
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

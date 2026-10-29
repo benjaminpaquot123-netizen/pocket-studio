@@ -10,7 +10,7 @@ import kotlin.math.abs
 import kotlin.math.pow
 
 /**
- * The opening's timeline and its sound (assets/intro/heartbeat.wav, made by
+ * The opening's timeline and its sound (assets/intro/ting.wav, made by
  * scripts/brand/render_heartbeat.py): the length asked for, the hand-over from the splash
  * without a jump, the two drawn beats on the sound's two beats to the frame, a clean, mastered
  * file, and when the phone hears it, feels it, or neither.
@@ -55,19 +55,15 @@ class IntroSoundTest {
     fun theTwoDrawnBeatsAreTheSoundsTwoBeats() {
         assertEquals(48_000, wav.sampleRate)
         assertEquals(1, wav.channels)
-        // The cue points the script wrote are the timeline's beats, to the frame.
         val beats = IntArray(IntroTimeline.BEAT_COUNT) { IntroTimeline.beatFrame(it) }
         assertArrayEquals(intArrayOf(4800, 16320), beats)
-        assertArrayEquals(beats, wav.cues)
-        // The sound's first beat starts on its frame: digital silence before, sound right after.
-        for (i in 0..beats[0]) assertEquals("frame $i", 0f, wav.sample(i))
-        assertTrue((beats[0] + 1..beats[0] + 3).any { wav.sample(it) != 0f })
-        // Each beat is an attack on its frame: the highs jump there.
-        for (b in beats) {
-            val before = highs(b - 96, b)
-            val after = highs(b, b + 96)
-            assertTrue("beat at $b: $before -> $after", after > 8 * before + 1e-6)
-        }
+        // Owner (2026-10-29): the beats are felt, not heard; the file is silent on them and until the
+        // ting, which rings when the light runs over the name (its cue point, written by the script).
+        assertEquals(1, wav.cues.size)
+        val ting = wav.cues[0]
+        assertEquals(64_800, ting)
+        for (i in 0..ting) assertEquals("frame $i", 0f, wav.sample(i))
+        assertTrue(highs(ting, ting + 96) > 1e-6)
         // And the drawing beats there: the mark swells from that frame on, the pads light up.
         for (k in 0 until IntroTimeline.BEAT_COUNT) {
             val at = IntroTimeline.beatStart(k)
@@ -96,13 +92,14 @@ class IntroSoundTest {
             peak = maxOf(peak, abs(v))
         }
         // -1 dBTP asked (true peak, measured by the script); the samples stay under it, unclipped.
-        assertTrue("peak $peak", peak <= 10f.pow(-1f / 20f) && peak > 0.5f)
+        assertTrue("peak $peak", peak <= 10f.pow(-1f / 20f) && peak > 0.3f)
         // It ends in silence, faded (no click), well before the opening fades out.
         for (i in n - 64 until n) assertEquals(0f, wav.sample(i))
         assertTrue(IntroTimeline.SOUND_START + n / 48f < IntroTimeline.FADE_START)
-        // Its loudness, in short: the beats carry it (about -14 LUFS by the script).
-        val rms = kotlin.math.sqrt((0 until n).sumOf { (wav.sample(it) * wav.sample(it)).toDouble() } / n)
-        assertTrue("rms $rms", rms > 0.03 && rms < 0.3)
+        // Its loudness, in short: a ting, not a blast (about -16 LUFS by the script), over its first half second.
+        val from = wav.cues[0]
+        val rms = kotlin.math.sqrt((from until from + 24_000).sumOf { (wav.sample(it) * wav.sample(it)).toDouble() } / 24_000)
+        assertTrue("rms $rms", rms > 0.01 && rms < 0.3)
     }
 
     @Test
@@ -121,19 +118,21 @@ class IntroSoundTest {
         val silent = AudioManager.RINGER_MODE_SILENT
         fun mode(reduced: Boolean = false, on: Boolean = true, haptics: Boolean = true, ringer: Int = normal, volume: Int = 7, music: Boolean = false) =
             introCueMode(reduced, on, haptics, ringer, volume, music)
+        // Owner (2026-10-29): the heartbeat is felt (two taps), only the ting is heard.
         assertEquals(IntroCueMode.Sound, mode())
-        // Silent: nothing. Vibrate: two soft taps (if vibrations are on in Réglages).
+        assertEquals(IntroCueMode.Ting, mode(haptics = false))
+        // Silent: nothing. Vibrate: the two taps alone (if vibrations are on in Réglages).
         assertEquals(IntroCueMode.Quiet, mode(ringer = silent))
         assertEquals(IntroCueMode.Taps, mode(ringer = vibrate))
         assertEquals(IntroCueMode.Quiet, mode(ringer = vibrate, haptics = false))
-        // « Son d'ouverture » off in Réglages, the animations off: nothing at all.
-        assertEquals(IntroCueMode.Quiet, mode(on = false))
-        assertEquals(IntroCueMode.Quiet, mode(on = false, ringer = vibrate))
+        // « Son d'ouverture » off in Réglages: the taps alone; the animations off: nothing at all.
+        assertEquals(IntroCueMode.Taps, mode(on = false))
+        assertEquals(IntroCueMode.Quiet, mode(on = false, haptics = false))
         assertEquals(IntroCueMode.Quiet, mode(reduced = true))
         assertEquals(IntroCueMode.Quiet, mode(reduced = true, ringer = vibrate))
-        // Media volume at zero, or another app's music playing: not over it.
-        assertEquals(IntroCueMode.Quiet, mode(volume = 0))
-        assertEquals(IntroCueMode.Quiet, mode(music = true))
+        // Media volume at zero, or another app's music playing: no ting over it, the taps still.
+        assertEquals(IntroCueMode.Taps, mode(volume = 0))
+        assertEquals(IntroCueMode.Taps, mode(music = true))
     }
 
     @Test

@@ -11,22 +11,30 @@ import android.os.SystemClock
 import android.view.HapticFeedbackConstants
 import android.view.View
 
-/** What the opening does with its two heartbeats besides drawing them. */
+/**
+ * What the opening does with its two heartbeats besides drawing them. Owner (2026-10-29): the
+ * heartbeat is felt, not heard (two taps of the phone's vibration on the drawn beats), and only the
+ * small « ting » when the light runs over the name is heard (assets/intro/ting.wav).
+ */
 enum class IntroCueMode {
-    /** The double heartbeat is heard (assets/intro/heartbeat.wav). */
+    /** The two taps on the beats, and the ting. */
     Sound,
 
-    /** The phone is on vibrate: two soft taps, on the beats. */
+    /** The ting alone: vibrations off in Réglages. */
+    Ting,
+
+    /** The two taps alone: the phone is on vibrate, the opening's sound is off, or the media is muted or busy. */
     Taps,
 
-    /** Nothing: silent phone, sound off in Réglages, animations off, media volume at zero, other music playing. */
+    /** Nothing: silent phone, animations off, or neither sound nor vibrations allowed. */
     Quiet,
 }
 
 /**
  * The phone's state and the app's settings decide: never a sound with the phone on silent or
- * vibrate (two soft taps on vibrate, if vibrations are on), never over the music of another app,
- * never with the animations off (the still image fades out silently).
+ * vibrate, never over the music of another app, never anything with the animations off (the still
+ * image fades out silently); the taps follow Réglages › Vibrations, the ting Réglages › Son
+ * d'ouverture.
  */
 fun introCueMode(
     reducedMotion: Boolean,
@@ -35,12 +43,15 @@ fun introCueMode(
     ringerMode: Int,
     mediaVolume: Int,
     otherMusic: Boolean,
-): IntroCueMode = when {
-    reducedMotion || !soundOn -> IntroCueMode.Quiet
-    ringerMode == AudioManager.RINGER_MODE_SILENT -> IntroCueMode.Quiet
-    ringerMode == AudioManager.RINGER_MODE_VIBRATE -> if (hapticsOn) IntroCueMode.Taps else IntroCueMode.Quiet
-    mediaVolume <= 0 || otherMusic -> IntroCueMode.Quiet
-    else -> IntroCueMode.Sound
+): IntroCueMode {
+    if (reducedMotion || ringerMode == AudioManager.RINGER_MODE_SILENT) return IntroCueMode.Quiet
+    val ting = soundOn && ringerMode != AudioManager.RINGER_MODE_VIBRATE && mediaVolume > 0 && !otherMusic
+    return when {
+        ting && hapticsOn -> IntroCueMode.Sound
+        ting -> IntroCueMode.Ting
+        hapticsOn -> IntroCueMode.Taps
+        else -> IntroCueMode.Quiet
+    }
 }
 
 /** The opening's feedback, driven by its timeline (BrandIntro calls these on the main thread). */
@@ -66,19 +77,23 @@ interface IntroCue {
             val mode = runCatching {
                 introCueMode(reducedMotion, soundOn, hapticsOn, audio.ringerMode, audio.getStreamVolume(AudioManager.STREAM_MUSIC), audio.isMusicActive)
             }.getOrDefault(IntroCueMode.Quiet)
+            val taps = { k: Int ->
+                // Soft: a key's tick, then a lighter clock tick for the « dub ».
+                view().performHapticFeedback(if (k == 0) HapticFeedbackConstants.VIRTUAL_KEY else HapticFeedbackConstants.CLOCK_TICK)
+                Unit
+            }
             return when (mode) {
-                IntroCueMode.Sound -> {
+                IntroCueMode.Sound, IntroCueMode.Ting -> {
                     val sound = IntroSound(context)
+                    val felt = mode == IntroCueMode.Sound
                     object : IntroCue {
                         override fun start(atMs: Float) = sound.play(atMs)
+                        override fun beat(k: Int) { if (felt) taps(k) }
                         override fun stop() = sound.stop()
                     }
                 }
                 IntroCueMode.Taps -> object : IntroCue {
-                    override fun beat(k: Int) {
-                        // Soft: a key's tick, then a lighter clock tick for the « dub ».
-                        view().performHapticFeedback(if (k == 0) HapticFeedbackConstants.VIRTUAL_KEY else HapticFeedbackConstants.CLOCK_TICK)
-                    }
+                    override fun beat(k: Int) = taps(k)
                 }
                 IntroCueMode.Quiet -> None
             }
@@ -86,7 +101,7 @@ interface IntroCue {
     }
 }
 
-/** A WAV file's 16-bit PCM and its cue points (frames), as scripts/brand/render_heartbeat.py writes it. */
+/** A WAV file's 16-bit PCM and its cue points (frames), as scripts/brand/render_heartbeat.py writes it (--ting). */
 class Wav(val sampleRate: Int, val channels: Int, val bytes: ByteArray, val dataOffset: Int, val dataLength: Int, val cues: IntArray) {
     val frames: Int get() = dataLength / (2 * channels)
 
@@ -230,7 +245,7 @@ class IntroSound(context: Context, private val asset: String = ASSET) {
     }
 
     companion object {
-        const val ASSET = "intro/heartbeat.wav"
+        const val ASSET = "intro/ting.wav"
 
         /** Volume steps of the fade when skipped (every [FADE_STEP_MS]). */
         private const val FADE_STEPS = 8

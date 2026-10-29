@@ -383,7 +383,7 @@ object IntroTimeline {
     /** The splash's longest time on screen: the intro takes over by then at the latest. */
     const val SPLASH_MS = 1000L
 
-    /** The sound (assets/intro/heartbeat.wav): its frame 0 plays at [SOUND_START]; 48 kHz. */
+    /** The sound (assets/intro/ting.wav, the heartbeat itself is felt): its frame 0 plays at [SOUND_START]; 48 kHz. */
     const val SOUND_START = 1000f
     const val SAMPLE_RATE = 48_000
 

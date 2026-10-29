@@ -20,7 +20,9 @@ The beats' first samples are written as WAV cue points (« lub », « dub »), w
 read back. Before the first beat the file is digital silence.
 
 Writes app/src/main/assets/intro/heartbeat.wav (48 kHz, mono, 16 bit).
-Usage: python3 scripts/brand/render_heartbeat.py [--out FILE] [--report]
+Usage: python3 scripts/brand/render_heartbeat.py [--ting] [--out FILE] [--report]
+  --ting  writes app/src/main/assets/intro/ting.wav, the only sound the app plays since 2026-10-29
+          (the heartbeat is felt, by the phone's vibration)
 Needs numpy and scipy.
 """
 import os
@@ -32,6 +34,9 @@ from scipy import signal
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(ROOT, "app", "src", "main", "assets", "intro", "heartbeat.wav")
+# Owner (2026-10-29): the heartbeat is felt (the phone's vibration), only the ting is heard.
+TING_OUT = os.path.join(ROOT, "app", "src", "main", "assets", "intro", "ting.wav")
+TING_LUFS = -16.0
 
 SR = 48000
 # --- Keep in step with IntroTimeline (BrandIntro.kt) and render_brand.py ---------------------------
@@ -206,13 +211,31 @@ def render():
     return mix, (lub, dub)
 
 
+def render_ting():
+    """The opening's only sound since 2026-10-29: the glint, when the light runs over the name,
+    in a small close room; silent before it, on the same timeline (sample 0 at SOUND_START)."""
+    n = LENGTH_MS * SR // 1000
+    at = frames(NAME_SHINE)
+    bell = glint(n, at)
+    mix = bell + 0.25 * room(bell)
+    mix = highpass(mix, 300)
+    tail = int(0.6 * SR)
+    mix[-tail:] *= 0.5 + 0.5 * np.cos(np.linspace(0, np.pi, tail))
+    mix[:at] = 0.0
+    for _ in range(8):
+        mix *= 10 ** ((TING_LUFS - lufs(mix)) / 20)
+        mix = limit(mix, CEILING_DBTP - 0.15)
+    mix[:at] = 0.0
+    return mix, (at,)
+
+
 def write_wav(path, x, cues):
     pcm = np.round(np.clip(x, -1, 1) * 32767).astype("<i2").tobytes()
     fmt = struct.pack("<HHIIHH", 1, 1, SR, SR * 2, 2, 16)
     cue = struct.pack("<I", len(cues)) + b"".join(
         struct.pack("<II4sIII", i + 1, pos, b"data", 0, 0, pos) for i, pos in enumerate(cues))
     labels = b""
-    for i, name in enumerate((b"lub", b"dub")[: len(cues)]):
+    for i, name in enumerate(((b"ting",) if len(cues) == 1 else (b"lub", b"dub"))[: len(cues)]):
         body = struct.pack("<I", i + 1) + name + b"\0"
         body += b"\0" * (len(body) % 2)
         labels += b"labl" + struct.pack("<I", len(body)) + body
@@ -227,13 +250,14 @@ def write_wav(path, x, cues):
 
 
 def main():
-    out = sys.argv[sys.argv.index("--out") + 1] if "--out" in sys.argv else OUT
-    mix, cues = render()
+    ting = "--ting" in sys.argv
+    out = sys.argv[sys.argv.index("--out") + 1] if "--out" in sys.argv else (TING_OUT if ting else OUT)
+    mix, cues = render_ting() if ting else render()
     q = np.round(np.clip(mix, -1, 1) * 32767) / 32767
     write_wav(out, mix, cues)
     print(f"wrote {out}: {len(mix) / SR:.2f} s, {lufs(q):.2f} LUFS, true peak {true_peak_db(q):.2f} dBTP, "
           f"sample peak {20 * np.log10(np.max(np.abs(q))):.2f} dBFS, beats at frames {cues}")
-    if "--report" in sys.argv:
+    if "--report" in sys.argv and not ting:
         for name, a in (("lub", cues[0]), ("dub", cues[1])):
             w = q[a:a + SR // 50]
             print(f"  {name}: peak {20 * np.log10(np.max(np.abs(w))):.1f} dBFS in its first 20 ms")

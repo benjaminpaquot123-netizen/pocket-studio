@@ -1083,3 +1083,6 @@ Restes :
 
 ## Enregistrement d'écran sans son (Benjamin, 2026-10-29)
 - Réglé : c'était un paramètre de l'enregistreur du téléphone (MagicOS 11), pas l'appli. Sa vidéo suivante a bien le son.
+
+## Corrections à faire (liste de Benjamin)
+1. **Pads absents à la réouverture d'un projet** (Mode simple, onglet Rythme) : ils n'apparaissent qu'après être allé sur un autre onglet et revenu. À reproduire dans un test (projet ouvert, retour à l'accueil, réouverture du même projet, onglet Rythme), puis à corriger.

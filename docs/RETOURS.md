@@ -155,3 +155,7 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - Vumètres : mettre l'effet « dégradé de pixels » (haut de barre qui se défait en pixels, Mix du Mode simple) sur toutes les lignes de son / vumètres de l'appli, avec des pixels plus fins (ils sont trop gros).
 - Vumètres (précision) : garder le dégradé vert → ambre → rouge (plus beau), l'améliorer (transitions douces), partout ; haut en pixels fins.
 - « Inscris-le dans tes règles internes, l'auto-surveillance : ça t'arrive souvent. » → section « Travail en équipes (auto-surveillance) » ajoutée à CLAUDE.md.
+
+## 2026-10-29 (APK 232, téléphone de Benjamin)
+- Ouverture : battement uniquement en vibration, plus de son (ting retiré) ; fait dans l'APK 232.
+- **Bug à corriger** : en rouvrant un projet déjà ouvert (Mode simple, « Mon projet 3 », kit 808 modernes), l'onglet Rythme n'affiche pas les pads. Il faut passer par un autre onglet puis revenir pour qu'ils apparaissent. Capture : `/root/.claude/uploads/2ed29bda-5e9a-5850-a6a7-bbf3293c7a09/5caf4f06-image.jpg` (prise après le contournement, pads visibles).

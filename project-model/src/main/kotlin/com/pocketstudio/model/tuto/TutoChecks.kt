@@ -1546,15 +1546,15 @@ object TutoChecks {
             }
             // Yanis (lot « tuto 4 »): the curve fell in the Montée and the Drop 2 sat under the Drop. A part that
             // builds (the Montée, the Pré-refrain) climbs from the part before it towards the next; a second
-            // one (« Drop 2 », « Refrain 2 ») has at least its first's energy, as its text says.
-            return laid.mapIndexed { k, (label, bars) ->
+            // one (« Drop 2 », « Refrain 2 ») has its first's energy, as its text says.
+            val level = laid.mapIndexed { k, (label, _) ->
                 val stem = TutoTarget.STEM.matchEntire(label.trim())?.groupValues?.get(1)
                 val first = stem?.let { st -> laid.indices.filter { labelIs(laid[it].first, st) }.maxOfOrNull { energy[it] } }
-                when {
-                    BUILDS.any { labelIs(label, it) } -> TutoMapBlock(label, bars, energy.getOrNull(k - 1) ?: energy[k], (energy.getOrNull(k + 1) ?: 1f) * MONTEE_TOP)
-                    first != null -> TutoMapBlock(label, bars, maxOf(first, energy[k]))
-                    else -> TutoMapBlock(label, bars, energy[k])
-                }
+                first ?: energy[k]
+            }
+            return laid.mapIndexed { k, (label, bars) ->
+                if (BUILDS.any { labelIs(label, it) }) TutoMapBlock(label, bars, level.getOrNull(k - 1) ?: level[k], (level.getOrNull(k + 1) ?: 1f) * MONTEE_TOP)
+                else TutoMapBlock(label, bars, level[k])
             }
         }
         val sections = StarterWizard.songSections(song)

@@ -210,7 +210,7 @@ class I18nCatalogTest {
          * for now (the app shows French where a translation is missing). Translate them, then empty
          * this set, before any public release (docs/DECISIONS.md).
          */
-        val PENDING_TRANSLATION_AREAS = setOf("tuto", "retours")
+        val PENDING_TRANSLATION_AREAS = emptySet<String>()
 
         /** Kept although no code writes them: names an older version may have saved in English or Dutch. */
         private val KEPT_UNUSED = setOf("Charleston", "Cloche (Plaits)")

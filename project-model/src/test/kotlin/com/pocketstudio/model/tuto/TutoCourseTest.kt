@@ -118,12 +118,15 @@ class TutoCourseTest {
 
     @Test
     fun everyTextHasItsTranslations() {
-        // TEMPORARY (owner, 2026-10-28, tutorial debug): the course's texts are French only for now.
-        if ("tuto" in com.pocketstudio.model.i18n.I18nCatalogTest.PENDING_TRANSLATION_AREAS) return
-        val texts = course.chapters.flatMap { c -> listOf(c.title, c.why) + c.steps.flatMap { listOfNotNull(it.text, it.textPro, it.why) } }.filter { it.isNotEmpty() }
-        val problems = (Lang.entries - Lang.FR).flatMap { lang ->
-            val table = I18n.table(lang)
-            texts.filter { table[it].isNullOrBlank() }.map { "${lang.code}: $it" }
+        // Owner (2026-10-29): « mode traduction total »: every course of every style, in every language.
+        val problems = TutoCourse.STYLES.flatMap { style ->
+            val c = TutoCourse.of(style)!!
+            val texts = c.chapters.flatMap { ch -> listOfNotNull(ch.title, ch.titlePro, ch.why) + ch.steps.flatMap { listOfNotNull(it.text, it.textPro, it.why, it.skip) } }
+                .filter { it.isNotBlank() }.distinct()
+            (Lang.entries - Lang.FR).flatMap { lang ->
+                val table = I18n.table(lang)
+                texts.filter { table[it].isNullOrBlank() }.map { "$style ${lang.code}: $it" }
+            }
         }
         assertTrue("${problems.size} missing:\n" + problems.take(40).joinToString("\n"), problems.isEmpty())
     }

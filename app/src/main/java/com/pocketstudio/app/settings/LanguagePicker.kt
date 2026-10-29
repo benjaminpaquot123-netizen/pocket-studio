@@ -83,7 +83,7 @@ fun LanguagePicker(modifier: Modifier = Modifier) {
             current = settings.language,
             pick = { lang ->
                 open = false
-                if (settings.language != lang) SettingsStore.update(context) { it.copy(language = lang, englishNotes = lang != Lang.FR) }
+                if (settings.language != lang) SettingsStore.update(context) { it.copy(language = lang, englishNotes = !lang.solfege) }
             },
             close = { open = false },
         )

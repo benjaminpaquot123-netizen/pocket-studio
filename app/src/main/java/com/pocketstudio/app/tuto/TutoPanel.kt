@@ -941,7 +941,7 @@ fun TutoKeySheetContent(harmony: com.pocketstudio.model.Harmony, wanted: com.poc
     val english = com.pocketstudio.app.settings.englishNotes()
     Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 24.dp).testTag("tuto_key_sheet"), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(tr("Tonalité"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+            Text(tr("Tonalité du morceau"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
             TextButton(onClick = close, modifier = Modifier.testTag("tuto_key_close")) { Text(tr("Fermer")) }
         }
         val now = if (harmony.scale == com.pocketstudio.model.Scale.Off) tr("aucune") else "${com.pocketstudio.model.NoteNames.key(harmony.root, english)} · ${tr(harmony.scale.label)}"

@@ -165,7 +165,7 @@ object SettingsStore {
     fun adoptPhoneLanguage(context: Context, locale: java.util.Locale) {
         if (context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).contains("language")) return
         val lang = Lang.forLocale(locale)
-        update(context) { it.copy(language = lang, englishNotes = lang != Lang.FR) }
+        update(context) { it.copy(language = lang, englishNotes = !lang.solfege) }
     }
 
     /** Ready-made effect [id] starred, or no longer. */

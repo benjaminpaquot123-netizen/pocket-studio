@@ -44,7 +44,15 @@ enum class Lang(val code: String, val nativeName: String, val flag: String, val 
     fun nameIn(ui: Lang): String =
         Locale.forLanguageTag(code).getDisplayLanguage(ui.locale).ifBlank { nativeName }.replaceFirstChar { it.titlecase(ui.locale) }
 
+    /**
+     * Whether musicians of this language name notes Do Ré Mi (French, Spanish, Portuguese, Italian,
+     * Turkish) rather than C D E: the notation chosen with the language, and the one its texts write.
+     */
+    val solfege: Boolean get() = this in SOLFEGE
+
     companion object {
+        private val SOLFEGE = setOf(FR, ES, PT_BR, IT, TR)
+
         fun of(code: String?): Lang = entries.firstOrNull { it.code == code } ?: FR
 
         /**
@@ -89,6 +97,8 @@ object I18n {
         "board",
         // Owner (2026-10-29): « Simple ou Pro ? » for each project, and the home screen's Remix card.
         "mode",
+        // « Tuto de A à Z » of every style (2026-10-29): the courses' texts, one file per style family.
+        "tuto_techno", "tuto_house", "tuto_bass", "tuto_hiphop", "tuto_autres",
     )
 
     @Volatile

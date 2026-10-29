@@ -1,0 +1,560 @@
+{
+  "format": 1,
+  "style": "dubstep",
+  "key": "E phrygian",
+  "chords": "i i i II",
+  "lines": {
+    "bass": "0:E2:8 10:E2:4 14:E3:2 16:E2:12 28:F2:2",
+    "pad": "0:E3+G3+B3:16",
+    "lead": "0:E5:2 8:G5:2 14:F5:1"
+  },
+  "lineBars": {
+    "bass": 2,
+    "pad": 1,
+    "lead": 2
+  },
+  "follow": [
+    "bass",
+    "pad"
+  ],
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "Le dubstep de Londres : un tempo de 140, mais une batterie qui semble jouer deux fois plus lentement, une basse qui fait « wob wob », et beaucoup d'espace.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de dubstep fini : la Montée, puis le Drop, lourd et lent, où la basse fait « wob wob ». C'est ce que tu vas construire, brique par brique.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 140 BPM, 140 battements par minute. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 140 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "why": "140, mais la caisse claire ne tape qu'une fois par mesure : on danse à mi-vitesse, à 70.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick,snare,clap,hat",
+          "skip": "Sans ça, ton morceau reste à 120 BPM : bien trop lent pour du dubstep."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau, très sombre. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Phrygienne » (une gamme très sombre) puis « Mi » (la note de départ). Pas besoin de retenir ces mots.",
+          "textPro": "À toi : règle la tonalité sur Mi phrygien, gamme « Phrygienne », tonique « Mi » : le Mi grave de la Sub (41 Hz) est le plus profond que les clubs rendent proprement, et le Fa juste au-dessus fait frissonner. Ici, « Je le fais » ouvre la fiche Tonalité.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, tes notes ne prendront pas la couleur sombre du dubstep."
+        }
+      ]
+    },
+    {
+      "id": "kick",
+      "title": "Le kick",
+      "why": "Le kick (la grosse caisse), c'est le battement de cœur. En dubstep, il frappe sur le 1er temps, puis un rappel après le 3e (on compte 1, 2, 3, 4 dans chaque mesure) : peu de coups, très lourds.",
+      "steps": [
+        {
+          "id": "ready",
+          "text": "Avant de commencer : sur un pad, « FX » veut dire qu'un effet y est déjà posé (il rend le son plus percutant), « G 30 » ou « D 45 » que le son est placé un peu à gauche ou à droite. Tout est prêt : tu n'as rien à régler.",
+          "textPro": "Déjà prêt pour toi, pour que ça sonne dubstep tout de suite : les sons de batterie du style, réglés comme l'assistant les règle (volumes, effets, place à gauche ou à droite : « G 30 », « D 45 ») ; compresseur, saturation et clipper sur la tranche « Batterie ». Chaque piste que tu créeras arrivera avec son son conseillé. « Basse acide 303 », « Voix » et « Remix » sont dans tout projet : le tuto ne s'en sert pas.",
+          "check": "manual"
+        },
+        {
+          "id": "kick_hear",
+          "text": "Écoute le kick (la grosse caisse, le gros « boum » de la batterie) du dubstep, seul : peu de coups, chacun pèse lourd.",
+          "textPro": "Écoute le kick du dubstep, seul : peu de coups, chacun pèse lourd.",
+          "check": "listen",
+          "listen": "drums:kick"
+        },
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad du kick (le bouton qui joue le kick), touche « Passer à 2 mesures » s'il est proposé, puis les cases en pointillé des 2 mesures.",
+          "textPro": "À toi : sur le pad du kick, les cases en pointillé des 2 mesures : le 1, un rappel après le 3, et dans la 2e mesure un coup qui bouscule.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick"
+        }
+      ]
+    },
+    {
+      "id": "snare",
+      "title": "Caisse claire et clap",
+      "why": "La caisse claire (le « clac » de la batterie) ne tape qu'une fois par mesure, sur le 3e temps : c'est ce qui donne l'impression de jouer au ralenti, le « demi-temps ».",
+      "steps": [
+        {
+          "id": "snare_do",
+          "text": "À toi : sur le pad « Caisse », touche la case en pointillé : une seule par mesure, au milieu.",
+          "textPro": "À toi : sur le pad « Caisse », la case 9 (le 3e temps) : le demi-temps.",
+          "why": "Une caisse sur le 3 au lieu de 2 et 4 : le même tempo paraît deux fois plus lent.",
+          "check": "lane:snare",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "listen": "drums:kick,snare"
+        },
+        {
+          "id": "clap_do",
+          "text": "À toi : sur le pad « Clap » (un claquement de mains), touche la case en pointillé, pile sur la caisse claire.",
+          "why": "La caisse donne le poids, le clap l'éclat : ensemble, ils font le gros « clac » du dubstep.",
+          "check": "lane:clap",
+          "spot": "rhythm.pattern",
+          "target": "clap",
+          "listen": "drums:kick,snare,clap"
+        }
+      ]
+    },
+    {
+      "id": "hats",
+      "title": "Les charleys",
+      "titlePro": "Charleys, percussions et swing",
+      "why": "Pendant que le kick et la caisse traînent, le charley (la petite cymbale qui fait « tss ») garde la vitesse normale. Il se tait sur la caisse pour lui laisser la place.",
+      "steps": [
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad « Charley » (le « tss » de la batterie), touche les cases en pointillé. Astuce : « Remplir 1/2 », sous la grille, pose un coup sur deux d'un geste ; efface ensuite celui du milieu et ajoute le dernier.",
+          "textPro": "À toi : sur le pad « Charley », les croches, muettes sur le 3, avec un petit coup doux à la fin.",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,snare,clap,hat"
+        },
+        {
+          "id": "perc_do",
+          "text": "À toi : sur le pad de percussion, touche les cases en pointillé : de petits coups décalés.",
+          "why": "Décalés par rapport aux temps, ils font chalouper le rythme, comme du reggae.",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,snare,clap,hat,perc"
+        },
+        {
+          "id": "swing",
+          "text": "À toi : monte le swing (le balancement) jusqu'à la valeur entourée, environ 20 % : les charleys se balancent un peu.",
+          "textPro": "À toi : un swing d'environ 20 % (le « shuffle » des charleys).",
+          "why": "Le dubstep vient du dub jamaïcain : un peu de balancement le rend vivant.",
+          "check": "swing",
+          "spot": "rhythm.pattern",
+          "listen": "drums:kick,snare,clap,hat,perc"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toute ta batterie quelques secondes, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,snare,clap,hat,perc",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La basse",
+      "why": "La vedette du dubstep : la « wobble ». Un filtre s'ouvre et se ferme en rythme sur chaque note tenue : ça fait « wob wob ». Plus la note est longue, plus il y a de wobs.",
+      "steps": [
+        {
+          "id": "bass_hear",
+          "text": "Écoute la basse avec la batterie : de longues notes qui font « wob wob », et à la fin de la 2e mesure une note qui monte d'un cran pour faire frissonner.",
+          "check": "listen",
+          "listen": "parts:kick,snare,clap,hat,bass"
+        },
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les 3 notes en pointillé de la mesure 1, puis les 2 de la mesure 2 : une très longue, et une petite plus haute. « Copier sur les mesures suivantes » fait le reste : à la fin, la basse suit l'accord.",
+          "textPro": "À toi : crée la piste Basse (« Basse wobble », effet « Basse grasse »). Écris les mesures 1 et 2 dans le piano roll : Mi tenu, Mi, le saut d'octave, puis un Mi de 3 temps et le Fa (la seconde mineure) ; « Copier sur les mesures suivantes » : à la mesure 4, la basse monte sur Fa avec l'accord.",
+          "why": "La longueur d'une note, c'est le nombre de « wobs » : une note longue fait une longue phrase.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass",
+          "skip": "Sans basse, il n'y a pas de dubstep : la wobble, c'est le style."
+        }
+      ]
+    },
+    {
+      "id": "bass_design",
+      "title": "Le son de la basse",
+      "why": "Le « wob » vient d'un filtre qu'un LFO (un petit moteur réglé sur le tempo) ouvre et ferme. Une Sub propre en dessous garde le grave, la pompe laisse passer le kick.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "bass_knobs",
+          "text": "À toi : sous le piano roll, touche « Régler le son de la piste », puis monte la « Coupure » et la « Résonance » d'au moins 15 chacune : le wob s'ouvre plus et siffle. Dans « Réglages avancés », la vitesse du LFO change le wob : 1/8, 1/4 ou 1/16.",
+          "why": "Un wob à la même vitesse tout le Drop lasse vite : dans le morceau d'exemple, sa vitesse change toutes les 8 mesures.",
+          "check": "changed:synth:bass:CUTOFF+RESONANCE",
+          "spot": "sounds.track",
+          "target": "bass",
+          "listen": "parts:bass"
+        },
+        {
+          "id": "bass_sub",
+          "text": "À toi : touche « Copier la basse une octave plus bas » : une piste « Sub » joue ta basse une octave plus bas, sans ses sauts d'octave. C'est le grave qu'on sent dans le ventre : il reste en place.",
+          "check": "track:sub",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass"
+        },
+        {
+          "id": "bass_pump",
+          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste Sub, puis sur la piste Basse : elles se baissent à chaque kick (sidechain). C'est surtout la Sub qui se bat avec le kick dans le grave.",
+          "check": "insert:PUMP",
+          "spot": "mixer.strip",
+          "target": "sub,bass",
+          "listen": "parts:kick,bass"
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "La nappe",
+      "why": "La piste « Accords » tient une nappe sombre avec de l'écho : elle pose le décor de l'Intro et du Break, avant que la basse n'arrive.",
+      "steps": [
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille (fais-la glisser si tu ne le vois pas) : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1, puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Accords (une nappe avec écho). « Accords » pose la triade d'un toucher : Mi mineur à la mesure 1, puis « Copier sur les mesures suivantes » : Mi m trois fois, puis Fa (le ♭II phrygien).",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad",
+          "skip": "Sans nappe, l'Intro et le Break seront tout nus."
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "La cloche",
+      "why": "Quelques notes de cloche, rares et inquiétantes, avec beaucoup d'écho : l'ambiance du dubstep de Londres.",
+      "steps": [
+        {
+          "id": "lead_hear",
+          "text": "Écoute la cloche avec la basse.",
+          "check": "listen",
+          "listen": "parts:bass,lead"
+        },
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes en pointillé de la mesure 1. La mesure 2 reste vide : c'est voulu. Puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Mélodie (« Cloche FM », effet « Écho dub ») : 3 notes en mesure 1, Mi, Sol et le Fa qui grince, une mesure de silence, puis « Copier sur les mesures suivantes ».",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead",
+          "skip": "Sans cloche, le Drop 2 n'aura rien de neuf."
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Groove",
+      "why": "Tout ce que tu as fait joue ensemble : c'est ta première partie (un moment de ton morceau), ta partie de départ. Les autres parties naîtront d'elle.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes (tout ce que tu as fait), puis l'exemple. Ce rythme qui donne envie de bouger, c'est le groove.",
+          "textPro": "Écoute ta boucle quelques secondes, puis l'exemple.",
+          "check": "listen",
+          "listen": "parts:kick,snare,clap,hat,perc,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Groove » : c'est ta partie de départ.",
+          "check": "label:Groove",
+          "spot": "song.parts",
+          "listen": "parts:kick,snare,clap,hat,perc,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "why": "Une partie, c'est un ensemble de boucles qui jouent ensemble. Un morceau, c'est une suite de parties qui montent et descendent en énergie.",
+      "map": true,
+      "steps": [
+        {
+          "id": "brick",
+          "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la basse). Une partie, ce sont plusieurs briques qui jouent ensemble.",
+          "why": "Tu changes une partie en ajoutant ou en enlevant des briques : c'est comme ça qu'on fait monter ou descendre l'énergie.",
+          "check": "manual"
+        },
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : la nappe et les charleys, sans la basse.",
+          "why": "Avec sa Montée, elle fait 24 mesures : le décor se pose.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_montee",
+          "text": "Écoute la Montée : le kick tape sur chaque temps, puis deux fois plus vite, puis encore deux fois plus vite ; et tout se tait un temps.",
+          "why": "En dubstep, c'est le kick qui accélère, pas la caisse claire.",
+          "check": "listen",
+          "listen": "part:Montée"
+        },
+        {
+          "id": "map_drop",
+          "text": "Écoute le Drop : la caisse sur le 3, et la wobble qui tombe.",
+          "why": "C'est le cœur du morceau : lourd, lent, énorme.",
+          "check": "listen",
+          "listen": "part:Drop"
+        },
+        {
+          "id": "map_break",
+          "text": "Écoute le Break : la batterie s'arrête, la nappe et la cloche reviennent.",
+          "why": "Quand la percussion s'arrête, le retour de la basse fait l'effet d'une vague.",
+          "check": "listen",
+          "listen": "part:Break"
+        },
+        {
+          "id": "map_drop2",
+          "text": "Écoute le Drop 2 : la même énergie, avec la cloche en plus.",
+          "why": "Un élément nouveau garde l'oreille en éveil.",
+          "check": "listen",
+          "listen": "part:Drop 2"
+        },
+        {
+          "id": "map_phrases",
+          "text": "Regarde la carte : chaque case est une partie, avec sa durée en mesures. La courbe montre l'énergie.",
+          "why": "En dubstep, on compte en phrases de 8 mesures : l'Intro et sa Montée font 16 + 8 = 24 mesures, le Drop tombe au début d'une phrase.",
+          "check": "manual"
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Groove : tu enlèves ou tu changes des briques.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro à partir du Groove : la nappe, la cloche, les charleys et la percussion. Ni kick, ni caisse, ni basse.",
+          "why": "En dubstep, l'Intro installe l'ambiance : la batterie lourde est gardée pour le Drop.",
+          "check": "part:Intro:less",
+          "spot": "song.parts",
+          "keep": "hat,perc,pad,lead",
+          "listen": "vs:Drop:Intro"
+        },
+        {
+          "id": "make_montee",
+          "text": "À toi : crée la Montée à partir du Groove : sans basse. Son kick va de plus en plus vite, mesure après mesure, puis tout se tait sur le dernier temps, juste avant le Drop.",
+          "textPro": "À toi : crée la Montée à partir du Groove, sans basse : 8 mesures. Le kick tape les noires, puis les croches, puis les doubles croches ; le dernier temps se tait.",
+          "why": "Le kick qui accélère, c'est la Montée du dubstep : la caisse claire reste sur le 3.",
+          "check": "part:Montée:nobass",
+          "spot": "song.parts",
+          "keep": "kick,hat,pad",
+          "lanesFrom": "Montée",
+          "listen": "vs:Intro:Montée",
+          "build": "kick"
+        },
+        {
+          "id": "make_drop",
+          "text": "À toi : crée le Drop à partir du Groove : toute la batterie et la basse. La nappe et la cloche s'en vont.",
+          "why": "On vide le haut pour laisser toute la place à la wobble.",
+          "check": "part:Drop:drop",
+          "spot": "song.parts",
+          "keep": "kick,snare,clap,hat,perc,bass",
+          "listen": "vs:Montée:Drop"
+        },
+        {
+          "id": "make_break",
+          "text": "À toi : crée le Break à partir du Groove : la nappe, la cloche, les charleys et la percussion. Pas de kick, pas de basse.",
+          "why": "Le vide après le plein : l'oreille se repose.",
+          "check": "part:Break:nokick",
+          "spot": "song.parts",
+          "keep": "hat,perc,pad,lead",
+          "listen": "vs:Drop:Break"
+        },
+        {
+          "id": "make_drop2",
+          "text": "À toi : crée le Drop 2 à partir du Groove : comme le Drop, avec la cloche en plus.",
+          "why": "Même énergie, un élément de plus : le public reste en éveil.",
+          "check": "part:Drop 2:differs+lead",
+          "spot": "song.parts",
+          "keep": "kick,snare,clap,hat,perc,bass,lead",
+          "listen": "vs:Drop:Drop 2"
+        },
+        {
+          "id": "make_fin",
+          "text": "À toi : crée la Fin : la nappe et les charleys, pour finir dans l'ambiance.",
+          "why": "La Fin laisse au DJ de quoi passer au morceau suivant.",
+          "check": "part:Fin:less",
+          "spot": "song.parts",
+          "keep": "hat,perc,pad",
+          "listen": "vs:Drop:Intro"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "song": "Intro:16,Montée:8,Drop:32,Break:8,Montée:8,Drop 2:32,Fin:8",
+          "listen": "song",
+          "skip": "Dans un autre ordre, la Montée n'arrivera pas juste avant chaque Drop."
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 16, Montée 8, Drop 32, Break 8, Drop 2 32 et Fin 8. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "why": "Des phrases de 8 : chaque Drop tombe au début d'une phrase. À 140, le morceau dure un peu plus de 3 minutes.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:16,Montée:8,Drop:32,Break:8,Montée:8,Drop 2:32,Fin:8"
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Entre deux parties, un petit événement prévient l'oreille : un roulement, un silence.",
+      "steps": [
+        {
+          "id": "fill",
+          "text": "À toi : dans la partie « Montée », va à la dernière mesure, pad du kick : appui long sur le dernier coup, juste avant la case « 4 », puis sous « Roulement », touche « ×3 » : une dernière rafale avant le silence. Ne touche à rien d'autre dans cette fenêtre.",
+          "textPro": "À toi : dans la partie « Montée », dernière mesure, pad du kick : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3.",
+          "check": "fill",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "part:Montée"
+        },
+        {
+          "id": "gap",
+          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop.",
+          "why": "Un temps de rien, et la wobble tombe deux fois plus fort.",
+          "check": "gap",
+          "spot": "rhythm.pattern",
+          "listen": "vs:Montée:Drop"
+        },
+        {
+          "id": "variation",
+          "text": "À toi : dans la partie « Drop 2 », ajoute un coup sur le pad de percussion : le Drop 2 ne sonne plus tout à fait comme le Drop.",
+          "levels": "p",
+          "check": "changed:drums:Drop 2",
+          "spot": "rhythm.pattern",
+          "listen": "vs:Drop:Drop 2"
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "La réverbe (l'écho d'une grande salle) donne de l'espace, l'écho répète les notes, et un filtre qui s'ouvre fait monter la tension.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "text": "Écoute la réverbe : la caisse claire et la piste « Accords », d'abord sans, puis avec. Le son prend de la place, comme dans une grande salle.",
+          "levels": "f",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "reverb",
+          "text": "À toi : au Mixeur, touche le nom de la piste « Accords », puis dans « Réverbe et écho », monte « Envoi réverbe ». Fais pareil sur la tranche du pad « Caisse ». En dubstep, la caisse et la nappe vivent dans l'écho et la réverbe : c'est l'héritage du dub.",
+          "levels": "p",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "delay",
+          "text": "À toi : au Mixeur, touche la tranche du pad « Caisse », puis monte « Envoi écho » : chaque coup de caisse se répète au loin, comme dans le dub.",
+          "levels": "p",
+          "check": "send:1",
+          "spot": "mixer.strip",
+          "target": "snare",
+          "listen": "drums:kick,snare,clap"
+        },
+        {
+          "id": "riser_hear",
+          "text": "Écoute la Montée : la nappe s'ouvre petit à petit, comme si on enlevait une couverture. C'est un filtre qui s'ouvre : la tension monte jusqu'au Drop.",
+          "levels": "f",
+          "check": "listen",
+          "listen": "part:Montée"
+        },
+        {
+          "id": "riser",
+          "text": "À toi : automatise la « Coupure » du filtre de la piste « Accords » sur la Montée : « Automatiser un réglage », « Accords », « Filtre (balayage) », puis « Par partie », et dessine une courbe qui monte du début à la fin de la Montée.",
+          "levels": "p",
+          "check": "automation",
+          "spot": "song.automation",
+          "target": "pad",
+          "listen": "part:Montée"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le mix, c'est le volume de chaque piste : la Sub énorme, le kick et la caisse devant, la wobble juste dessous, la nappe et la cloche derrière.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "textPro": "À toi : au Mixeur, baisse un peu le fader de la piste « Accords » et celui de la piste « Mélodie ».",
+          "check": "changed:volumes:pad,lead",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:kick,snare,bass,pad,lead"
+        },
+        {
+          "id": "meters",
+          "text": "Repère : pendant le Drop, les vu-mètres du Mixeur ne doivent pas rester dans le rouge. Si une piste rougit, baisse son fader.",
+          "levels": "p",
+          "check": "manual"
+        },
+        {
+          "id": "buses",
+          "text": "Repères pour équilibrer : la Sub très présente et bien au milieu, le kick court, la caisse et le clap larges, la wobble juste sous la batterie, nappe et cloche loin derrière. Compare au morceau d'exemple.",
+          "levels": "p",
+          "check": "manual",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "title": "Le mastering",
+      "why": "Le master colle le tout et donne le volume des clubs, sans écraser le kick.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "La sortie générale a un limiteur intégré, toujours le dernier de la chaîne (il n'apparaît pas dans ses « Effets ») : il empêche le son de dépasser. Pas d'OTT ici : il écraserait l'attaque du kick. À toi : dans « Sortie générale », règle « Volume visé » sur « Club » : ton morceau sonne aussi fort qu'en club.",
+          "check": "loudness:CLUB",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter !",
+      "steps": [
+        {
+          "id": "formats",
+          "text": "WAV pour un DJ (la qualité studio), M4A pour tes amis (un fichier léger), pistes séparées pour un remix.",
+          "levels": "p",
+          "check": "manual"
+        },
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

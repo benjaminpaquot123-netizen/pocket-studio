@@ -996,6 +996,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
         listOf(
             Line(Role.Kick, "X.........x.....X.....x...x.....", "Une grosse caisse sur le 1, un rappel après la caisse claire ; dans la 2e mesure, un coup en plus qui bouscule. Peu de coups, chacun pèse lourd."),
             Line(Role.Snare, "........X.......", "Une seule caisse claire au milieu de la mesure (le 3) : c'est ce qui donne l'impression de demi-vitesse."),
+            Line(Role.Clap, "........X.......", "Un clap pile sur la caisse claire : les deux ensemble font un « clac » plus épais et plus large."),
             Line(Role.Hat, "x.x.x.x...x.x.xo", "Le charley garde la vitesse normale, deux fois par temps, pendant que le reste traîne. Il se tait sur la caisse claire pour lui laisser toute la place."),
             Line(Role.Perc, "...o..o....o..o.", "Petits coups de percussion décalés pour le côté chaloupé."),
         ),
@@ -1016,7 +1017,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
         references = listOf("Skrillex – Scary Monsters and Nice Sprites (2010)", "Rusko – Cockney Thug (2007)", "Benga & Coki – Night (2007)", "Skream – Midnight Request Line (2005)", "Digital Mystikz – Anti War Dub (2006)"),
         kit = mapOf(),
         form = SongForm.Build,
-        effects = listOf(StyleFx("snare", reverb = 0.2f, delay = 0.3f), StyleFx("pad", reverb = 0.4f, delay = 0.2f), StyleFx("lead", preset = "dub_echo"), StyleFx("bass", preset = "fat_bass"), StyleFx("pad", insert = "PUMP", params = listOf(0.6f, 0.45f, 0.0f))),
+        effects = listOf(StyleFx("snare", reverb = 0.2f, delay = 0.3f), StyleFx("clap", reverb = 0.3f), StyleFx("pad", reverb = 0.4f, delay = 0.2f), StyleFx("lead", preset = "dub_echo"), StyleFx("bass", preset = "fat_bass"), StyleFx("pad", insert = "PUMP", params = listOf(0.6f, 0.45f, 0.0f))),
         breakWith = Layers(setOf(Role.Hat, Role.Perc), setOf(Part.Pad, Part.Lead)),
         riser = true,
         sweeps = listOf(Sweep("pad", mapOf(1 to (0.25f to 1.0f)))),

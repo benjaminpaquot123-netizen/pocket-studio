@@ -44,7 +44,15 @@ enum class Lang(val code: String, val nativeName: String, val flag: String, val 
     fun nameIn(ui: Lang): String =
         Locale.forLanguageTag(code).getDisplayLanguage(ui.locale).ifBlank { nativeName }.replaceFirstChar { it.titlecase(ui.locale) }
 
+    /**
+     * Whether musicians of this language name notes Do Ré Mi (French, Spanish, Portuguese, Italian,
+     * Turkish) rather than C D E: the notation chosen with the language, and the one its texts write.
+     */
+    val solfege: Boolean get() = this in SOLFEGE
+
     companion object {
+        private val SOLFEGE = setOf(FR, ES, PT_BR, IT, TR)
+
         fun of(code: String?): Lang = entries.firstOrNull { it.code == code } ?: FR
 
         /**

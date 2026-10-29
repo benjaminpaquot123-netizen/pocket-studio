@@ -1,0 +1,516 @@
+{
+  "format": 1,
+  "style": "hard_techno",
+  "key": "F# phrygian",
+  "chords": "i i II i",
+  "lines": {
+    "pad": "0:F#3+F#4:8 24:F#3+F#4:4 30:F#3+F#4:1",
+    "lead": "0:F#4:8 8:F#4:4 14:F#5:2 16:F#4:8 24:F#4:4 28:C#5:4"
+  },
+  "lineBars": {
+    "pad": 2,
+    "lead": 2
+  },
+  "follow": [
+    "pad"
+  ],
+  "drums": {
+    "*": {
+      "ride": "..x.o.x.o.x.o.x."
+    }
+  },
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "Chaque style a sa vitesse et sa couleur : on règle les deux avant de jouer la moindre note.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de hard techno : un kick saturé suivi d'un grondement, à 150 BPM, des sirènes de rave et un faux départ avant le vrai Drop. C'est ce que tu vas construire.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 150 BPM, 150 battements par minute. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 150 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick",
+          "skip": "Sans ça, ton morceau reste à 120 BPM : la hard techno va bien plus vite."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau, très sombre. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne » puis « Fa♯ ».",
+          "textPro": "À toi : règle la tonalité sur Fa♯ phrygien. Ton kick et ton rumble sont accordés sur Fa♯ : ils sonnent avec le reste comme un seul instrument.",
+          "why": "Le kick est accordé sur la note du morceau : grave et notes ne se battent pas.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, tes notes ne prendront pas la couleur du hard techno."
+        }
+      ]
+    },
+    {
+      "id": "kick",
+      "title": "Le kick et le rumble",
+      "why": "Tout repose sur le kick : saturé, sur chaque temps, suivi d'un grondement grave accordé (le rumble).",
+      "steps": [
+        {
+          "id": "ready",
+          "text": "Avant de commencer : ton kit est déjà celui de la hard techno : un kick dur et saturé, accordé sur la note du morceau, et son rumble. Tu n'as rien à régler.",
+          "textPro": "Déjà prêt : le kick dur de l'assistant (saturé, enveloppe de hauteur courte, accordé sur Fa♯), le rumble (préset « rumble » : réverbe, distorsion, passe-bas), le punch et l'OTT léger sur le master."
+        },
+        {
+          "id": "kick_hear",
+          "text": "Écoute le kick et son grondement, seuls.",
+          "check": "listen",
+          "listen": "drums:kick,rumble"
+        },
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad « Kick », touche les cases en pointillé : une sur chaque temps.",
+          "textPro": "À toi : le kick sur chaque temps.",
+          "why": "À 150 BPM, quatre coups par mesure suffisent à faire sauter toute une salle.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick",
+          "skip": "Sans kick, pas de hard techno."
+        },
+        {
+          "id": "rumble_do",
+          "text": "À toi : sur le pad « Rumble » (le grondement), touche les mêmes cases que le kick.",
+          "textPro": "À toi : le rumble sur chaque temps : c'est lui, la basse.",
+          "why": "Le rumble joue la basse : on ne met pas de piste Basse en plus, deux graves se battraient.",
+          "check": "lane:rumble",
+          "spot": "rhythm.pattern",
+          "target": "rumble",
+          "listen": "drums:kick,rumble"
+        }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "Clap, charleys et percussion",
+      "titlePro": "Le reste de la batterie",
+      "why": "Le clap claque comme un fouet, les charleys donnent l'urgence, une percussion tourne en rond.",
+      "steps": [
+        {
+          "id": "clap_do",
+          "text": "À toi : sur le pad « Clap », touche les cases en pointillé des 2 mesures : les temps 2 et 4, et un petit roulement tout à la fin. Touche d'abord « Passer à 2 mesures » si on te le propose.",
+          "textPro": "À toi : le clap sur 2 et 4, avec le roulement en fin de 2e mesure.",
+          "check": "lane:clap",
+          "spot": "rhythm.pattern",
+          "target": "clap",
+          "listen": "drums:kick,clap"
+        },
+        {
+          "id": "open_hat_do",
+          "text": "À toi : sur le pad « Charley ouvert », touche les cases en pointillé, entre les kicks.",
+          "textPro": "À toi : le charley ouvert sur les contretemps.",
+          "check": "lane:open_hat",
+          "spot": "rhythm.pattern",
+          "target": "open_hat",
+          "listen": "drums:kick,clap,open_hat"
+        },
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad « Charley », touche les cases en pointillé : des petits coups en continu.",
+          "textPro": "À toi : les charleys fermés serrés.",
+          "levels": "p",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,open_hat,hat"
+        },
+        {
+          "id": "perc_do",
+          "text": "À toi : sur le pad « Perc », touche les cases en pointillé : une case sur trois. Elle ne tombe jamais au même endroit par rapport au kick.",
+          "textPro": "À toi : la percu tous les 3 pas, à la schranz.",
+          "why": "Trois contre quatre : la percussion tourne en rond, c'est le tournis de la schranz (la techno allemande très dure).",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,perc"
+        },
+        {
+          "id": "ride_do",
+          "text": "À toi : sur le pad « Ride », touche les cases en pointillé. Elle arrivera au Drop.",
+          "textPro": "À toi : la ride sur les contretemps, pour le Drop.",
+          "levels": "p",
+          "check": "lane:ride",
+          "spot": "rhythm.pattern",
+          "target": "ride",
+          "listen": "drums:kick,ride"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toute ta batterie quelques secondes, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,rumble,clap,open_hat,perc",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "Le hoover",
+      "titlePro": "Le hoover (accords)",
+      "why": "Le synthé « aspirateur » (le hoover) : un son de rave énorme, frappé une ou deux fois par mesure, comme une sirène.",
+      "steps": [
+        {
+          "id": "pad_hear",
+          "text": "Écoute le hoover seul.",
+          "check": "listen",
+          "listen": "parts:pad"
+        },
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords », puis les notes en pointillé : 2 notes à la mesure 1, 4 à la mesure 2. Chaque coup, c'est la même note jouée grave et aiguë. « Copier sur les mesures suivantes » fait le reste : la mesure 3 monte d'un cran.",
+          "textPro": "À toi : crée la piste Accords (son « Hoover ») : Fa♯ en octaves, frappé puis tenu, deux petites relances en fin de mesure 2 ; « Copier » suit la grille : Sol (le ♭II) à la mesure 3.",
+          "why": "Le demi-ton de la mesure 3 fait monter la tension avant de retomber sur Fa♯.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,pad"
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "Le lead",
+      "why": "Un gros synthé épais emprunté à la hard trance : une note tenue sur la note du morceau, qui crie.",
+      "steps": [
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes de la mesure 1 et les 3 de la mesure 2 (des notes longues). Puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Mélodie (son « Supersaw ») : Fa♯ tenu, Fa♯ court, Fa♯ aigu ; puis Fa♯ tenu, Fa♯ court, Do♯. « Copier ».",
+          "why": "Une note tenue sur la tonique, c'est le cri de la hard techno : les mains se lèvent.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:kick,rumble,lead"
+        },
+        {
+          "id": "lead_knobs",
+          "text": "À toi : dans « Régler le son de la piste » de la Mélodie, monte « Épaisseur (désaccord) » d'au moins 15 : le lead devient un mur.",
+          "levels": "p",
+          "check": "changed:synth:lead:OSC2_DETUNE",
+          "spot": "sounds.track",
+          "target": "lead",
+          "listen": "parts:lead"
+        },
+        {
+          "id": "lead_dist",
+          "text": "À toi : au Mixeur, mets l'effet « Distorsion » sur la piste « Mélodie » : il gagne du grain et passe au-dessus du kick.",
+          "why": "En hard techno, la saturation se met sur les sons, pas sur le master.",
+          "levels": "p",
+          "check": "insert:DISTORTION",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:lead"
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Groove",
+      "why": "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes, puis l'exemple. Ce kick qui cogne et ce cri de synthé, c'est la hard techno.",
+          "check": "listen",
+          "listen": "parts:kick,rumble,clap,open_hat,perc,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.",
+          "textPro": "À toi : nomme cette scène « Groove » : la boucle complète, d'où tu tireras les autres parties.",
+          "check": "label:Groove",
+          "spot": "song.parts",
+          "listen": "parts:kick,rumble,clap,open_hat,perc,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "why": "Une partie, c'est un ensemble de boucles qui jouent ensemble. Un morceau, c'est une suite de parties qui montent et descendent en énergie.",
+      "map": true,
+      "steps": [
+        {
+          "id": "brick",
+          "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la basse). Une partie, ce sont plusieurs briques qui jouent ensemble.",
+          "why": "Tu changes une partie en ajoutant ou en enlevant des briques : c'est comme ça qu'on fait monter ou descendre l'énergie."
+        },
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : le kick, le rumble et les percussions.",
+          "why": "Le DJ cale ton morceau sur le kick.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_drop",
+          "text": "Écoute le Drop : le hoover et le lead, tout joue.",
+          "check": "listen",
+          "listen": "part:Drop"
+        },
+        {
+          "id": "map_break",
+          "text": "Écoute le Break : plus de kick, le hoover seul.",
+          "why": "En hard techno, l'énergie vient des retours après les pauses.",
+          "check": "listen",
+          "listen": "part:Break"
+        },
+        {
+          "id": "map_phrases",
+          "text": "Regarde la carte : avant le Drop 2, une Montée puis un « Faux drop » : le kick revient, mais sans le grondement. Le vrai Drop arrive 4 mesures plus tard.",
+          "why": "Le faux drop retient le grave : quand il revient, le Drop paraît deux fois plus gros."
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Groove : tu enlèves des briques, tu en changes une.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro : le kick, le rumble, les charleys et la percussion.",
+          "check": "part:Intro:less",
+          "spot": "song.parts",
+          "keep": "kick,rumble,hat,perc",
+          "listen": "vs:Drop:Intro"
+        },
+        {
+          "id": "make_intro2",
+          "text": "À toi : crée l'Intro 2 : le clap, le charley ouvert et le lead arrivent ; le hoover attend le Drop.",
+          "check": "part:Intro 2:less+nopad",
+          "spot": "song.parts",
+          "keep": "kick,rumble,clap,open_hat,hat,perc,lead",
+          "listen": "vs:Intro:Intro 2"
+        },
+        {
+          "id": "make_drop",
+          "text": "À toi : crée le Drop : tout joue.",
+          "check": "part:Drop:full",
+          "spot": "song.parts",
+          "keep": "*",
+          "listen": "vs:Intro 2:Drop"
+        },
+        {
+          "id": "make_break",
+          "text": "À toi : crée le Break : le hoover et les charleys, sans kick.",
+          "check": "part:Break:nokick",
+          "spot": "song.parts",
+          "keep": "hat,pad",
+          "listen": "vs:Drop:Break"
+        },
+        {
+          "id": "make_montee",
+          "text": "À toi : crée la Montée : sans kick, le clap va de plus en plus vite, puis un temps de silence.",
+          "why": "Le clap qui s'emballe annonce le retour du kick.",
+          "check": "part:Montée:nokick",
+          "spot": "song.parts",
+          "keep": "clap,hat,pad",
+          "build": "clap",
+          "listen": "vs:Break:Montée"
+        },
+        {
+          "id": "make_faux",
+          "text": "À toi : crée le Faux drop : le kick, le clap et les charleys, sans le rumble ni les synthés.",
+          "why": "Le kick revient, mais sans le grave : la salle croit au Drop… et le vrai arrive 4 mesures après.",
+          "check": "part:Faux drop:less",
+          "spot": "song.parts",
+          "keep": "kick,clap,open_hat,hat",
+          "listen": "vs:Montée:Drop"
+        },
+        {
+          "id": "make_drop2",
+          "text": "À toi : crée le Drop 2 : tout joue, sauf la percussion qui tourne.",
+          "check": "part:Drop 2:differs",
+          "spot": "song.parts",
+          "keep": "kick,rumble,clap,open_hat,hat,ride,pad,lead",
+          "listen": "vs:Drop:Drop 2"
+        },
+        {
+          "id": "make_fin",
+          "text": "À toi : crée la Fin : le kick, le rumble et les charleys.",
+          "check": "part:Fin:less",
+          "spot": "song.parts",
+          "keep": "kick,rumble,hat,perc",
+          "listen": "vs:Drop:Intro"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Intro 2, Drop, Break, Montée, Faux drop, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "textPro": "À toi : dans « Le morceau », ajoute dans l'ordre Intro, Intro 2, Drop, Break, Montée, Faux drop, Drop 2 et Fin.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "song": "Intro:16,Intro 2:16,Drop:32,Break:8,Montée:4,Faux drop:4,Drop 2:32,Fin:16",
+          "listen": "song",
+          "skip": "Dans un autre ordre, le faux drop n'arrivera pas juste avant le vrai."
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 8, Montée 4, Faux drop 4, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "textPro": "À toi : les durées : Intro 16 mesures, Intro 2 16, Drop 32, Break 8, Montée 4, Faux drop 4, Drop 2 32 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
+          "why": "Break, Montée et Faux drop font 16 mesures : le vrai Drop 2 tombe au début d'une phrase. 3 minutes 25 à 150 BPM.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:16,Intro 2:16,Drop:32,Break:8,Montée:4,Faux drop:4,Drop 2:32,Fin:16"
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Un roulement, un silence, une cymbale : on prévient l'oreille avant chaque retour du kick.",
+      "steps": [
+        {
+          "id": "fill",
+          "text": "À toi : dans la partie « Montée », dernière mesure, pad « Clap » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4.",
+          "levels": "p",
+          "check": "fill",
+          "spot": "rhythm.pattern",
+          "target": "clap",
+          "part": "Montée",
+          "listen": "part:Montée"
+        },
+        {
+          "id": "gap",
+          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence avant le Faux drop.",
+          "why": "Un temps de rien, et le kick qui revient frappe deux fois plus fort.",
+          "check": "gap",
+          "spot": "rhythm.pattern",
+          "part": "Montée",
+          "listen": "vs:Montée:Drop"
+        },
+        {
+          "id": "crash",
+          "text": "À toi : dans la partie « Drop 2 », touche la toute première case du pad de la cymbale : le vrai Drop est là.",
+          "check": "crash",
+          "spot": "rhythm.pattern",
+          "part": "Drop 2",
+          "listen": "part:Drop"
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "Le filtre qui s'ouvre et se ferme fait vivre le lead tenu ; la réverbe fait claquer le clap.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "text": "Écoute la réverbe : le clap et le hoover, d'abord sans, puis avec.",
+          "levels": "f",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "reverb",
+          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur la tranche du pad « Clap ».",
+          "levels": "p",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "clap",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "filter_hear",
+          "text": "Écoute le Drop : le lead s'ouvre, crie, puis se referme.",
+          "levels": "f",
+          "check": "listen",
+          "listen": "part:Drop"
+        },
+        {
+          "id": "filter",
+          "text": "À toi : automatise la « Coupure » de la piste « Mélodie » sur le Drop : une courbe qui monte jusqu'au milieu puis redescend.",
+          "why": "Une seule note pendant 32 mesures : c'est le filtre qui la fait chanter.",
+          "levels": "p",
+          "check": "automation:wave",
+          "spot": "song.automation",
+          "target": "lead",
+          "part": "Drop",
+          "listen": "part:Drop"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le mix, c'est le volume de chaque piste : le kick et le grave devant, le reste derrière. Chaque son trouve sa place.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "textPro": "À toi : au Mixeur, baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ».",
+          "check": "changed:volumes:pad,lead",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:kick,rumble,clap,pad,lead"
+        },
+        {
+          "id": "meters",
+          "text": "Repère : pendant le Drop, les vu-mètres du Mixeur ne doivent pas rester dans le rouge. Si une piste rougit, baisse son fader.",
+          "levels": "p"
+        },
+        {
+          "id": "buses",
+          "text": "Repères : le kick devant tout, le rumble juste dessous (un seul grave, au centre), le clap présent, le hoover et le lead derrière, larges. Compare au morceau d'exemple.",
+          "levels": "p",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "title": "Le mastering",
+      "why": "Le master colle le tout et donne le volume des clubs, sans écraser le kick.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "La sortie générale a un limiteur intégré, toujours le dernier de la chaîne (il n'apparaît pas dans ses « Effets ») : il empêche le son de dépasser. La hard techno sonne très fort, mais la saturation se fait sur les sons, pas ici. À toi : dans « Sortie générale », règle « Volume visé » sur « Club » : ton morceau sonne aussi fort qu'en club.",
+          "check": "loudness:CLUB",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter !",
+      "steps": [
+        {
+          "id": "formats",
+          "text": "WAV pour un DJ (la qualité studio), M4A pour tes amis (un fichier léger), pistes séparées pour un remix.",
+          "levels": "p"
+        },
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

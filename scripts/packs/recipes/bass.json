@@ -1355,7 +1355,7 @@
     "role": "kick",
     "pattern": "X...X...X...X...",
     "source": "pop",
-    "tip_fr": "Grosse caisse sur le 1 et le 3, avec un petit coup juste avant le 3 pour faire rebondir.",
+    "tip_fr": "Grosse caisse sur chaque temps au refrain, comme la pop disco ; au couplet, seulement sur le 1 et le 3, avec un petit coup juste avant le 3 pour faire rebondir.",
     "build": "X.....x.X......."
    },
    {
@@ -1393,7 +1393,7 @@
     "role": "perc2",
     "pattern": "....x.......x...",
     "voice": "shaker",
-    "tip_fr": "Un tambourin sur les temps 2 et 4 : il arrive au refrain et le fait sonner plus grand."
+    "tip_fr": "Un coup de shaker plus appuyé sur 2 et 4, avec le clap (là où les disques mettent un tambourin) : il arrive au refrain et le fait sonner plus grand."
    }
   ],
   "progressions": {

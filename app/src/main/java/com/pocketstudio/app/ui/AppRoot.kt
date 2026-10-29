@@ -113,6 +113,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -417,6 +418,24 @@ fun AppRoot() {
         if (uri != null) projectsVm.importZip(uri)
     }
     val openScope = rememberCoroutineScope()
+    // Owner (2026-10-29): the home screen (« Que veux-tu faire ? », its Remix card) is always one step
+    // away from a project: « Accueil » in the menus, « ← » of « Mes projets », and the system's Retour.
+    // The music stops (the home screen plays nothing) and the project is saved on the way.
+    val goHome: () -> Unit = {
+        showProjects = false
+        projectsNewOnly = false
+        launch.ask()
+        openScope.launch {
+            rhythmVm.keepTake()  // a microphone take in progress lands on its track first
+            rhythmVm.stop()
+            rhythmVm.flushNow()
+        }
+    }
+    // The studio's last Retour (registered before every other, so any sheet, page or panel open
+    // closes first): the project, then the home screen, then out of the app (from there). Whether it
+    // applies is set further down, once every window over the studio is known ([homeBackOn]).
+    val homeBack = remember { mutableStateOf(false) }
+    androidx.activity.compose.BackHandler(enabled = homeBack.value) { goHome() }
     // Another project: save this one, remember the choice, then rebuild every screen on it.
     // [deleteAfter]: the project left goes to the trash once the next one is open (the open
     // project itself deleted from « Mes projets », which then stays on screen).
@@ -689,18 +708,22 @@ fun AppRoot() {
     val noProject = CurrentProject.isNone(rhythmVm.projectId)
     // Leaving the app's screens with no project: back to the phone (nothing to go back to here).
     val leaveApp = { context.findActivity()?.moveTaskToBack(true); Unit }
-    if (showProjects || noProject) {
+    // « Que veux-tu faire ? » on screen (drawn in the app's window, under the opening's logo at a start).
+    val launchShown = launch.open && navSettings.guideSeen
+    // With no project, « Mes projets » stays on screen, except under « Que veux-tu faire ? » (a window would cover it).
+    if (showProjects || (noProject && !launchShown)) {
         val projectsUi by projectsVm.state.collectAsStateWithLifecycle()
         val quickUi by libraryVm.quick.collectAsStateWithLifecycle()
         val previewingDemo by libraryVm.playing.collectAsStateWithLifecycle()
         val preparingDemo by libraryVm.preparing.collectAsStateWithLifecycle()
         LaunchedEffect(Unit) { projectsVm.refresh() }
-        // Retour: back where it was opened from (« Que veux-tu faire ? » or the project).
+        // Retour: « Que veux-tu faire ? », where the projects come from (owner, 2026-10-29: from a
+        // project too, it led back to that project and the home screen was out of reach).
         val closeProjects = {
             showProjects = false
             projectsNewOnly = false
             // With no project there is nothing under it: « Que veux-tu faire ? » when it came from there, else out of the app.
-            if (!launch.returned() && noProject) leaveApp()
+            if (!launch.returned()) { if (noProject) leaveApp() else goHome() }
             Unit
         }
         androidx.activity.compose.BackHandler { closeProjects() }
@@ -1248,11 +1271,15 @@ fun AppRoot() {
     // and « Nouveau projet » ask on their own pages). The way to start waits under its key.
     var modeAsk by rememberSaveable(key = "mode_ask") { mutableStateOf<String?>(null) }
     val startMissions: () -> Unit = { modeAsk = START_MISSIONS }
-    com.pocketstudio.app.onboarding.LaunchChooser(launch, rhythmVm, projectsVm, show = launch.open && settings.guideSeen && !com.pocketstudio.app.onboarding.Intro.playing, simple = simple,
+    com.pocketstudio.app.onboarding.LaunchWatch(launch, rhythmVm)
+    // Drawn last, over the studio (see the end of the screen below).
+    val launchChooser: @Composable () -> Unit = { com.pocketstudio.app.onboarding.LaunchChooser(rhythmVm, projectsVm, show = launchShown, simple = simple,
         hasProject = !noProject,
         actions = com.pocketstudio.app.onboarding.LaunchActions(
             // No project to continue: Retour leaves the app (« Mes projets » would only lead back here).
             resume = { if (noProject) leaveApp() else launch.choose() },
+            // The project, then this screen, then out of the app (owner, 2026-10-29).
+            back = leaveApp,
             newSong = { launch.choose(comeBack = true); projectsNewOnly = true; showProjects = true },
             projects = { launch.choose(comeBack = true); projectsNewOnly = false; showProjects = true },
             remix = {
@@ -1267,7 +1294,7 @@ fun AppRoot() {
                 modeAsk = if (noProject) START_MISSIONS_NEW else START_MISSIONS
             },
         ),
-    )
+    ) }
     modeAsk?.let { way ->
         com.pocketstudio.app.ui.ModeStepDialog(
             choose = { v ->
@@ -1759,6 +1786,12 @@ fun AppRoot() {
     // A sheet or a dialog over the screen takes Retour first (its own window on the phone): never the Guide behind it.
     val sheetOver = tempoSheetOpen || songChordsOpen || songGuideOpen || showShare || showVideo || kitSheetOpen || acidSheetOpen ||
         soundChooserTrack != null || layersTrack != null || trackSheetKey != null
+    // A window over the studio (a sheet, the assistant, « Mes projets ») takes Retour itself: the
+    // studio's window has the focus only when none is over it.
+    val studioFocused = androidx.compose.ui.platform.LocalWindowInfo.current.isWindowFocused
+    val homeBackOn = studioFocused && !tutoKeySheet && !launch.open && !noProject && settings.guideSeen && !sheetOver && !showProjects && !wizardUi.open &&
+        !tutoChooserOpen && modeAsk == null && !songVersionsOpen && fxChannel < 0 && !showLibrary
+    androidx.compose.runtime.SideEffect { homeBack.value = homeBackOn }
     androidx.activity.compose.BackHandler(enabled = guideOpen && guideShown && !sheetOver) { guideOpen = false }
     androidx.activity.compose.BackHandler(enabled = guideSpot != null && !sheetOver) { guideSpot = null }
     androidx.activity.compose.BackHandler(enabled = helpLabels && !sheetOver) { helpLabels = false }
@@ -1819,8 +1852,10 @@ fun AppRoot() {
     Box(Modifier.fillMaxSize()) {
     Scaffold(
         // « Mes projets » is a dialog above: behind it, a plain background, so the studio never flashes
-        // through while the screens are rebuilt on another project.
-        modifier = if (showProjects || switching) Modifier.drawWithContent { drawRect(studioBackground) } else Modifier,
+        // through while the screens are rebuilt on another project; « Que veux-tu faire ? » is drawn over it
+        // (and TalkBack does not read the studio under it).
+        modifier = Modifier.studioCover(showProjects || switching || launchShown, studioBackground)
+            .then(if (launchShown) Modifier.clearAndSetSemantics {} else Modifier),
         containerColor = Neon.Background,
         // One under the other (the slot alone would draw them on top of each other).
         topBar = { Column {
@@ -1888,9 +1923,11 @@ fun AppRoot() {
                         TopMenuItem(tr("Live : jouer en direct"), "more_live", openLive),
                         // Audit final (03 G4): the voice has its own way in the Mode simple.
                         TopMenuItem(tr("Enregistrer ma voix"), "more_voice", openVoice),
-                        TopMenuItem(tr("Extraire la voix d'une chanson"), "more_remix", openRemix),
+                        // Owner (2026-10-29): « Remix », its name everywhere else.
+                        TopMenuItem(tr("Remix"), "more_remix", openRemix),
                         // Audit final (05): the long press on the name was the only way to rename the song.
                         TopMenuItem(tr("Renommer le morceau"), "more_rename") { renamingProject = true },
+                        TopMenuItem(tr("Accueil"), "more_home", goHome),
                         TopMenuItem(tr("Mes projets"), "more_projects") { showProjects = true },
                         TopMenuItem(tr("Réglages"), "more_settings") { toolPage = ToolPage.Reglages; go(AppTab.Outils) },
                         TopMenuItem(tr("Aide et premiers pas"), "more_help") { toolPage = ToolPage.Aide; go(AppTab.Outils) },
@@ -2173,6 +2210,13 @@ fun AppRoot() {
                 Box(Modifier.weight(1f).settleIn(tab)) {
                 // Each tab keeps its own screen state (Notes or Clavier, folded cards, chosen tools)
                 // while another tab is shown, as long as the app lives.
+                // Owner (2026-10-29): after a screen covered the studio (« Mes projets », « Que veux-tu faire ? »),
+                // the tab is built afresh (its saved state kept), as going to another tab and back did by hand
+                // when Rythme came back without its pads.
+                val covered = showProjects || switching || launchShown
+                val coverSeen = remember { intArrayOf(0, 0) }
+                if (covered) coverSeen[0] = 1 else if (coverSeen[0] == 1) { coverSeen[0] = 0; coverSeen[1]++ }
+                androidx.compose.runtime.key(coverSeen[1]) {
                 tabStates.SaveableStateProvider(tab.name) {
                 when (tab) {
                         AppTab.Rythme -> {
@@ -3036,6 +3080,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                         }
                         AppTab.Outils -> PlusSpace(
                             plusEntries(
+                                home = goHome,
                                 projects = { showProjects = true },
                                 glossary = { learn.open("") },
                                 missions = startMissions,
@@ -3181,7 +3226,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                             )
                         }
                     }
-                }
+                } }
                 }
                 }
             }
@@ -3209,6 +3254,8 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
             com.pocketstudio.app.guide.GuideSpotCard(close = { guideSpot = null }, modifier = modifier)
         }
     }
+    // Over everything of the studio: « Que veux-tu faire ? ».
+    launchChooser()
     }
     }
     }
@@ -3979,3 +4026,12 @@ private const val START_MISSIONS_NEW = "missions_new"
 private const val START_REMIX_NEW = "remix_new"
 private const val START_NEW_STYLE = "new_style"
 private const val START_TUTO = "tuto"
+
+/**
+ * The studio hidden under a screen shown over it (« Mes projets », « Que veux-tu faire ? », another
+ * project opening): a plain background drawn over it. Its content is still drawn underneath:
+ * skipped, the layers of its screens (each pad has its own) could come back empty when shown
+ * again (owner, 2026-10-29: no pads on Rythme until another tab was visited).
+ */
+internal fun Modifier.studioCover(covered: Boolean, color: Color): Modifier =
+    if (covered) drawWithContent { drawContent(); drawRect(color) } else this

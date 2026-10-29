@@ -232,9 +232,9 @@ class BugReportFlowTest {
     fun aCrashBannerHoldsNothingBackAndNothingPopsUpLater() {
         File(h.app.filesDir, "last_crash.txt").writeText("Version 0.22 · 2026-10-24 · thread main\njava.lang.IllegalStateException: boum")
         start(launchChoice = true)
-        // The choice shows at once, the banner waits under the bar.
+        // The choice shows at once (the studio under it, its banner too, hidden and not read out), the banner waits under the bar.
         compose.onNodeWithTag("launch").assertIsDisplayed()
-        assertTrue(exists("crash_banner"))
+        assertFalse(exists("crash_banner"))
         tap("launch_continue")
         assertFalse(exists("launch"))
         compose.onNodeWithTag("crash_banner").assertIsDisplayed()

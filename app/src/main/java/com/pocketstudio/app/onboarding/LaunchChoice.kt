@@ -21,6 +21,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -184,16 +187,12 @@ fun launchUi(p: Project, info: ProjectInfo?, now: Long, simple: Boolean, mission
 private fun clock(seconds: Int) = "%d:%02d".format(seconds / 60, seconds % 60)
 
 /**
- * « Que veux-tu faire ? » wired to the app: shown while [show], on the open project ([vm]) and its
- * last save (the projects' list); remembers when the app is left and asks again at [gate] when
- * it comes back after a long time away ([LaunchRule]).
+ * « Que veux-tu faire ? » wired to the app: remembers when the app is left and asks again at
+ * [gate] when it comes back after a long time away ([LaunchRule]). Kept apart from the screen
+ * ([LaunchChooser]): it lives as long as the app's screen, whatever is shown.
  */
 @Composable
-internal fun LaunchChooser(
-    gate: LaunchGate, vm: com.pocketstudio.app.rhythm.RhythmViewModel, projectsVm: com.pocketstudio.app.projects.ProjectsViewModel,
-    show: Boolean, simple: Boolean, actions: LaunchActions,
-    hasProject: Boolean = true,
-) {
+internal fun LaunchWatch(gate: LaunchGate, vm: com.pocketstudio.app.rhythm.RhythmViewModel) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val prefs = androidx.compose.runtime.remember { LaunchPrefs(context) }
     androidx.lifecycle.compose.LifecycleEventEffect(androidx.lifecycle.Lifecycle.Event.ON_STOP) { prefs.leftAt = System.currentTimeMillis() }
@@ -201,6 +200,18 @@ internal fun LaunchChooser(
         val busy = vm.transport.value.playing || vm.recording.value || vm.audioRecording.value != null
         if (com.pocketstudio.app.settings.SettingsStore.state.value.guideSeen && LaunchRule.askAgain(prefs.leftAt, System.currentTimeMillis(), busy)) gate.ask()
     }
+}
+
+/**
+ * The screen itself while [show], drawn in the app's own window over the studio (see [LaunchChoice]
+ * with inline): it is already there under the opening's logo, which then simply fades off it.
+ */
+@Composable
+internal fun LaunchChooser(
+    vm: com.pocketstudio.app.rhythm.RhythmViewModel, projectsVm: com.pocketstudio.app.projects.ProjectsViewModel,
+    show: Boolean, simple: Boolean, actions: LaunchActions,
+    hasProject: Boolean = true,
+) {
     if (!show) return
     val project by vm.project.collectAsStateWithLifecycle()
     val list by projectsVm.state.collectAsStateWithLifecycle()
@@ -213,7 +224,7 @@ internal fun LaunchChooser(
         // A card that does not apply to this song (no style: no « Change un son ») counts as settled.
         if (guideUi.loading) project.guide.statusOf(id).settled else guideUi.cards[id]?.status?.settled ?: true
     }
-    LaunchChoice(true, launchUi(project, list.projects.firstOrNull { it.id == vm.projectId }, now, simple, firstSong).copy(hasProject = hasProject), actions)
+    LaunchChoice(true, launchUi(project, list.projects.firstOrNull { it.id == vm.projectId }, now, simple, firstSong).copy(hasProject = hasProject), actions, inline = true)
 }
 
 /** The choices; nothing in the project changes nor plays until one is made. */
@@ -226,14 +237,33 @@ class LaunchActions(
     /** Lot 2: « Remixer une chanson »: the Remix (a song split into drums, bass, voice and the rest). */
     val remix: () -> Unit = {},
     val missions: () -> Unit = {},
+    /**
+     * The system's Retour on this screen. Owner (2026-10-29): the project, then this home screen,
+     * then out of the app; null: « Continuer » (a screen shown on its own, the tests of gestures).
+     */
+    val back: (() -> Unit)? = null,
 )
 
-/** « Que veux-tu faire ? » over the whole screen while [show]. */
+/**
+ * « Que veux-tu faire ? » over the whole screen while [show]. [inline]: drawn in the app's own
+ * window, over the studio (owner, 2026-10-29: as a window of its own it came a moment after the
+ * opening's logo, the last screen of the project and a flash showing in between); otherwise a
+ * window above everything.
+ */
 @Composable
-fun LaunchChoice(show: Boolean, ui: LaunchUi, actions: LaunchActions) {
+fun LaunchChoice(show: Boolean, ui: LaunchUi, actions: LaunchActions, inline: Boolean = false) {
     if (!show) return
+    val back = actions.back ?: actions.resume
+    if (inline) {
+        androidx.activity.compose.BackHandler(onBack = back)
+        // Takes every touch (the studio under it never gets one); clear of the status and navigation bars.
+        Surface(color = Neon.Background, modifier = Modifier.fillMaxSize().testTag("launch_page")) {
+            Box(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing)) { LaunchScreen(ui, actions) }
+        }
+        return
+    }
     ScaledDialog(
-        onDismissRequest = actions.resume,
+        onDismissRequest = back,
         properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false),
     ) {
         Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) { LaunchScreen(ui, actions) }

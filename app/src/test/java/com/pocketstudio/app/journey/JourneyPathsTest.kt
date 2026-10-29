@@ -150,7 +150,10 @@ class JourneyPathsTest {
         h.start()
         j.tap("top_projects")
         j.await("projects")
+        // « ← » of « Mes projets »: the home screen (owner, 2026-10-29), « Continuer » back on the project.
         j.tap("projects_back")
+        j.await("launch_continue")
+        j.tap("launch_continue")
         j.tap("tab_Live")
         j.await("live_screen")
         j.await("live_play")

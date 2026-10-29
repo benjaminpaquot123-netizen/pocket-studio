@@ -1,0 +1,398 @@
+{
+  "format": 1,
+  "style": "disco",
+  "key": "A dorian",
+  "chords": "i IV i IV",
+  "lines": {
+    "bass": "0:A2:2:110 4:A2:1:90 6:A3:1:95 8:A2:1:100 10:C3:1:90 12:E3:1:95 14:G3:1:90 15:A3:1:100 19:D2:1:100 21:D3:2:95 23:D2:1:90 25:B2:1:90 27:C3:1:95 29:D3:1:90 31:D2:1:100 32:A2:2:110 36:A2:1:90 38:A3:1:95 40:A2:1:100 42:C3:1:90 44:E3:1:95 46:G3:1:90 47:A3:1:100 50:B2:1:90 52:C3:1:95 54:D3:2:100 56:D2:1:100 58:C3:1:90 60:B2:1:90 62:A2:1:95",
+    "pad": "2:C4+E4+G4:1:70 4:C4+E4+G4:1:110 6:C4+E4+G4:1:70 10:C4+E4+G4:1:70 12:C4+E4+G4:1:110 14:C4+E4+G4:1:70 18:C4+F#4+A4:1:70 20:C4+F#4+A4:1:110 22:C4+F#4+A4:1:70 26:C4+F#4+A4:1:70 28:C4+F#4+A4:1:110 30:C4+F#4+A4:1:70",
+    "lead": "0:A5:8:90 8:G5:8:85 16:F#5:16:90"
+  },
+  "lineBars": {
+    "bass": 4,
+    "pad": 2,
+    "lead": 2
+  },
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "Le disco des années 70 (et de Daft Punk) : un tempo de danse tranquille, une couleur joyeuse et un peu jazz.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de disco fini : la batterie, la basse qui court, la guitare en petits coups et les cordes qui s'envolent au refrain.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo sur 116 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 116 BPM, celui de « Get Lucky » (Chic tourne entre 110 et 120).",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick,snare,open_hat",
+          "skip": "Sans ça, ton morceau ne danse pas comme un disque de disco."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Dorienne », puis « La ».",
+          "textPro": "À toi : règle la tonalité sur La dorien : Am7 et D7, le va-et-vient de « Good Times » (Em7–A7), transposé.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, ta basse et ta guitare ne sonneront pas funky."
+        }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "La batterie",
+      "titlePro": "Le beat",
+      "why": "Un kick sur chaque temps (c'est le disco qui l'a rendu reine de la piste), une vraie caisse claire, et le « tsss » du charley ouvert entre les coups.",
+      "steps": [
+        {
+          "id": "ready",
+          "text": "Avant de commencer : le kit du disco est chargé, un kit de batteur, sec. Tu n'as rien à régler.",
+          "textPro": "Déjà prêt pour toi : le kit du style, mixé sec comme sur les disques de 1978. Chaque piste que tu créeras arrivera avec son son conseillé.",
+          "check": "manual"
+        },
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad « Kick », touche les 4 cases en pointillé : un coup sur chaque temps.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick"
+        },
+        {
+          "id": "snare_do",
+          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé : les temps 2 et 4, et deux petits coups doux autour, comme un batteur.",
+          "textPro": "À toi : la caisse sur 2 et 4 avec ses deux fantômes doux.",
+          "check": "lane:snare",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "listen": "drums:kick,snare"
+        },
+        {
+          "id": "ohat_do",
+          "text": "À toi : sur le pad « Charley ouvert », touche les 4 cases en pointillé, entre les kicks : le fameux « tsss ».",
+          "check": "lane:open_hat",
+          "spot": "rhythm.pattern",
+          "target": "open_hat",
+          "listen": "drums:kick,snare,open_hat"
+        },
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad « Charley », touche les cases en pointillé : sur les temps, et juste après chaque « tsss » pour le couper : « tsss-tchic ».",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,snare,open_hat,hat"
+        },
+        {
+          "id": "perc_do",
+          "text": "À toi : sur le pad des congas, touche les 4 cases en pointillé : des coups joués à la main, pour la chaleur.",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,snare,open_hat,hat,perc"
+        },
+        {
+          "id": "tamb_do",
+          "text": "À toi : sur le pad du tambourin, touche les 8 cases en pointillé : une croche sur deux. « Remplir » puis « 1/2 » le fait d'un geste.",
+          "check": "lane:perc2",
+          "spot": "rhythm.pattern",
+          "target": "perc2",
+          "listen": "drums:kick,snare,open_hat,hat,perc,perc2"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toute ta batterie, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,snare,open_hat,hat,perc,perc2",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La basse funk",
+      "why": "La basse porte le morceau : elle monte par les notes de l'accord et arrive un peu avant chaque mesure, comme Bernard Edwards dans « Good Times ».",
+      "steps": [
+        {
+          "id": "bass_hear",
+          "text": "Écoute la basse avec la batterie.",
+          "check": "listen",
+          "listen": "parts:kick,snare,open_hat,bass"
+        },
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse ». Mesure 1 : la montée La, Do, Mi, Sol, La (8 notes). Mesure 2, sur Ré : 7 notes. « Copier sur les mesures suivantes » refait la mesure 1 en mesure 3 ; écris enfin les 8 notes de la mesure 4.",
+          "textPro": "À toi : crée la piste Basse. Sur Am7 : coups sur le temps puis montée par l'accord (Do, Mi, Sol) et l'octave qui anticipe la mesure suivante ; sur D7 : la 6te puis la 7e (Si, Do), le procédé funk ; « Copier » pour la mesure 3, puis la descente de la mesure 4.",
+          "why": "La dernière note arrive une double croche avant la mesure suivante : c'est ce qui fait sautiller le funk.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass",
+          "skip": "Sans basse, ton disco n'a plus de moteur."
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "La guitare",
+      "titlePro": "La guitare « chucking »",
+      "why": "Des accords en petits coups secs, à la manière de Nile Rodgers : la plupart doux, quelques-uns qui claquent. La guitare devient une percussion.",
+      "steps": [
+        {
+          "id": "pad_hear",
+          "text": "Écoute la guitare seule.",
+          "check": "listen",
+          "listen": "parts:pad"
+        },
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Les 6 coups de la mesure 1, puis les 6 de la mesure 2 (un autre accord). Puis « Copier ».",
+          "textPro": "À toi : crée la piste Accords : Am7 puis D7 sans fondamentale (Do Mi Sol, puis Do Fa♯ La : deux notes bougent). Six coups courts par mesure, les deux du milieu des temps 2 et 4 plus forts.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,bass,pad",
+          "skip": "Sans guitare, il manque le « tchic » funky."
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "Les cordes",
+      "why": "Des cordes qui planent au-dessus du groove, en notes longues : l'orchestre dans la boîte de nuit.",
+      "steps": [
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes longues en pointillé des mesures 1 et 2. « Copier sur les mesures suivantes » fait le reste.",
+          "textPro": "À toi : crée la piste Mélodie (des cordes) : La puis Sol sur Am7, Fa♯ tenu toute la mesure sur D7 : une ligne qui descend doucement par les notes des accords. Des notes longues, jamais de petits coups. Puis « Copier ».",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:pad,lead"
+        },
+        {
+          "id": "lead_reverb",
+          "levels": "p",
+          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur la piste « Mélodie » : les cordes remplissent la salle.",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:lead"
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le refrain",
+      "why": "Tout ce que tu as fait joue ensemble, cordes et tambourin compris : c'est le moment le plus plein, le refrain. On l'appelle « Drop » dans l'appli.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes, puis l'exemple.",
+          "check": "listen",
+          "listen": "parts:kick,snare,open_hat,hat,perc,perc2,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Drop » : c'est ton refrain, le moment où tout joue.",
+          "check": "label:Drop",
+          "spot": "song.parts",
+          "listen": "parts:kick,snare,open_hat,hat,perc,perc2,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "map": true,
+      "why": "Un disque de disco est une chanson : des couplets (le Groove), des refrains (le Drop), et le « break » où la basse et la batterie jouent seules.",
+      "steps": [
+        {
+          "id": "map_groove",
+          "text": "Écoute le Groove, le couplet : batterie, basse et guitare. Il laisse la place à la voix.",
+          "check": "listen",
+          "listen": "part:Groove"
+        },
+        {
+          "id": "map_drop",
+          "text": "Écoute le Drop, le refrain : les cordes et le tambourin arrivent.",
+          "check": "listen",
+          "listen": "part:Drop"
+        },
+        {
+          "id": "map_break",
+          "text": "Écoute le Break : le moment où le DJ laisse la batterie et la basse seules.",
+          "check": "listen",
+          "listen": "part:Break"
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie de ton refrain : tu enlèves des briques.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro : la batterie et la guitare, sans basse ni cordes.",
+          "check": "part:Intro:less+nobass",
+          "spot": "song.parts",
+          "keep": "kick,snare,open_hat,hat,pad",
+          "listen": "vs:Intro:Groove"
+        },
+        {
+          "id": "make_groove",
+          "text": "À toi : crée le Groove (le couplet) : tout sauf les cordes et le tambourin.",
+          "check": "part:Groove:less+nolead",
+          "spot": "song.parts",
+          "keep": "kick,snare,open_hat,hat,perc,bass,pad",
+          "listen": "vs:Groove:Drop"
+        },
+        {
+          "id": "make_montee",
+          "text": "À toi : crée la Montée : 4 mesures comme le Groove, qui finiront par un roulement de caisse avant le refrain.",
+          "check": "part:Montée:less+nolead",
+          "spot": "song.parts",
+          "keep": "kick,snare,open_hat,hat,perc,bass,pad",
+          "lanesFrom": "Montée",
+          "listen": "vs:Montée:Drop"
+        },
+        {
+          "id": "make_break",
+          "text": "À toi : crée le Break : la batterie, les congas et la basse seules, sans guitare ni cordes.",
+          "check": "part:Break:less+nopad+nolead",
+          "spot": "song.parts",
+          "keep": "kick,snare,hat,perc,bass",
+          "listen": "vs:Drop:Break",
+          "why": "Le break était fait pour les danseurs (et pour les DJ qui mélangeaient deux disques)."
+        },
+        {
+          "id": "make_fin",
+          "text": "À toi : crée la Fin : la batterie, la basse et la guitare.",
+          "check": "part:Fin:less+nolead",
+          "spot": "song.parts",
+          "keep": "kick,snare,open_hat,hat,bass,pad",
+          "listen": "vs:Drop:Intro"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Groove, Montée, Drop, Groove, Drop, Break, Drop et Fin.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "song": "Intro:8,Groove:12,Montée:4,Drop:8,Groove:16,Drop:8,Break:16,Drop:16,Fin:8",
+          "listen": "song"
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 8, Groove 12 puis 16, Montée 4, Drop 8 puis 16 à la fin, Break 16, Fin 8. « Donner les durées conseillées » le fait d'un coup.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:8,Groove:12,Montée:4,Drop:8,Groove:16,Drop:8,Break:16,Drop:16,Fin:8",
+          "why": "Deux couplets, trois refrains et un break : 96 mesures à 116 BPM, 3 min 20."
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "En disco, c'est le batteur qui prévient : un roulement de caisse claire avant le refrain.",
+      "steps": [
+        {
+          "id": "fill",
+          "text": "À toi : dans la partie « Montée », dernière mesure, pad « Caisse » : touche les 4 cases du dernier temps : un roulement de batteur.",
+          "textPro": "À toi : un fill de caisse en doubles croches sur le dernier temps de la Montée.",
+          "check": "fill",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "part": "Montée",
+          "listen": "vs:Montée:Drop",
+          "why": "Le fill annonce le refrain sans couper la danse : on ne s'arrête jamais en disco."
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "Très peu d'effets : la guitare de Nile Rodgers « n'a eu besoin d'aucun traitement ». Un peu de réverbe sur la caisse suffit.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "levels": "f",
+          "text": "Écoute la réverbe : la caisse claire et la guitare, d'abord sans, puis avec.",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "reverb",
+          "levels": "p",
+          "text": "À toi : au Mixeur, monte un peu « Envoi réverbe » sur le pad « Caisse » : une plaque courte, comme en 1978.",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "snare",
+          "listen": "drums:kick,snare"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "La basse et le kick devant, la guitare claire au milieu, les cordes larges derrière.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie » (les cordes).",
+          "textPro": "À toi : au Mixeur, baisse un peu le fader des cordes.",
+          "check": "changed:volumes:lead",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:kick,snare,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "levels": "p",
+      "title": "Le mastering",
+      "why": "Le disco garde son relief : pas besoin de pousser comme en techno.",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Streaming » : un niveau plus doux qui garde la dynamique du batteur.",
+          "check": "loudness:STREAMING",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter !",
+      "steps": [
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

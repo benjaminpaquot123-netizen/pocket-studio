@@ -219,6 +219,8 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
             }),
             // The style's 303, silent: its sound and its root, no note.
             acid = acid?.let { a -> fresh.acid.copy(root = a.root, sound = a.sound) } ?: fresh.acid,
+            // A style at the new project's tempo (house 122, deep house 120): its tempo step would be done before a touch.
+            tempoBpm = if (kotlin.math.abs(fresh.tempoBpm - style.bpm) <= TEMPO_SLACK) FAR_TEMPO else fresh.tempoBpm,
         )
         val kit = kitOf(style)?.let { KITS[it] }
         return (if (kit != null) kit(made.copy(harmony = harmony)).copy(harmony = made.harmony) else made).sanitized()
@@ -240,6 +242,11 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
          * assistant takes it), when a kit of [KITS] stands for it.
          */
         fun kitOf(style: StarterWizard.Style): String? = (style.kit[StarterWizard.Role.Kick] ?: style.id).takeIf { it in KITS }
+
+        /** How far from the style's tempo the tempo step still counts as done (BPM). */
+        const val TEMPO_SLACK = 2.0
+        /** The empty project's tempo when the new project's is the style's already: far enough to set. */
+        const val FAR_TEMPO = 100.0
 
         /** The 303's role in a course's lines. */
         const val ACID = "acid"
@@ -659,7 +666,7 @@ object TutoChecks {
         val arg = argOf(c)
         return when {
             step.manual || step.listening -> false
-            c == "tempo" -> kotlin.math.abs(p.tempoBpm - target.style.bpm) <= 2.0
+            c == "tempo" -> kotlin.math.abs(p.tempoBpm - target.style.bpm) <= TutoTarget.TEMPO_SLACK
             c == "key" -> p.harmony.root == target.harmony.root && p.harmony.scale == target.harmony.scale
             // The style's swing (house, garage, boom bap, lo-fi), within 5 points of it.
             c == "swing" -> target.style.swing > 0.0 && kotlin.math.abs(p.swing - target.style.swing) <= minOf(SWING_TOLERANCE, target.style.swing / 2)
@@ -1058,8 +1065,11 @@ object TutoChecks {
             }
             c.startsWith("loudness:") -> LoudnessTarget.entries.firstOrNull { it.name == arg }?.let { p.copy(mixer = p.mixer.copy(target = it)) } ?: return null
             c.startsWith("changed:drums:") -> inScene(p, c.removePrefix("changed:drums:")) { q ->
-                // A variation: an open hat on the second to last cell.
-                q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { i, l -> if (i == OPEN_HAT_LANE) l.copy(hits = l.hits + ((q.drums.steps - 2) to Hit(0.8f))) else l }))
+                // A variation: an open hat on the second to last cell, or the last free one before it (a style whose
+                // open hat plays every off-beat has one there already: no new hit).
+                val open = q.drums.lanes.getOrNull(OPEN_HAT_LANE)?.hits.orEmpty()
+                val at = ((q.drums.steps - 2) downTo 0).firstOrNull { it !in open } ?: (q.drums.steps - 2)
+                q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { i, l -> if (i == OPEN_HAT_LANE) l.copy(hits = l.hits + (at to Hit(0.8f))) else l }))
             } ?: return null
             c.startsWith("send:") -> {
                 val bus = arg.toIntOrNull() ?: return null

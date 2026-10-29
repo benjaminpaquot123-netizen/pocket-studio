@@ -1365,7 +1365,7 @@
    },
    {
     "role": "perc2",
-    "pattern": "...x..x....x..x.",
+    "pattern": "....x..x..x.x...",
     "voice": "conga",
     "tip_fr": "Une conga qui répond au log drum : elle arrive au Drop."
    }

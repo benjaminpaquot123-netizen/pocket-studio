@@ -1,0 +1,440 @@
+{
+  "format": 1,
+  "style": "afro_house",
+  "key": "E minor",
+  "chords": "i i iv III",
+  "lines": {
+    "bass": "2:E2:2:105 5:E2:1:80 10:E2:2:100 13:E2:2:85 18:E2:2:105 21:E2:1:80 26:E2:2:100 29:B2:2:85 34:A2:2:105 37:A2:1:80 42:A2:2:100 45:A2:2:85 50:G2:2:105 53:G2:1:80 58:G2:2:100 61:D3:2:85",
+    "pad": "0:E3+G3+B3+D4+F#4:16:80 16:E3+G3+B3+D4+F#4:16:75 32:C3+E3+G3+B3:16:80 48:B2+D3+F#3+G3:16:75",
+    "lead": "2:E5:8:90 34:B4:4:80 40:G4:8:85"
+  },
+  "lineBars": {
+    "bass": 4,
+    "pad": 4,
+    "lead": 4
+  },
+  "follow": [
+    "bass"
+  ],
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "L'afro house, née en Afrique du Sud : un tempo de house tranquille, une couleur mineure chaude, et des percussions partout.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait d'afro house fini : les toms et les congas qui roulent, le marimba, les nappes qui s'ouvrent petit à petit.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo sur 122 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 122 BPM (l'afro house vit entre 118 et 124).",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick,perc,hat",
+          "skip": "Sans ça, ton morceau n'a pas le balancement de l'afro house."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « Mi ».",
+          "textPro": "À toi : règle la tonalité sur Mi mineur : Mi m, puis La m et Sol, comme chez Black Coffee.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, tes nappes ne prendront pas leur couleur."
+        }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "Les percussions",
+      "why": "En afro house, ce sont les percussions qui mènent : congas, shaker, bois et toms tournent autour d'un kick doux.",
+      "steps": [
+        {
+          "id": "ready",
+          "text": "Avant de commencer : le kit de l'afro house est chargé, avec ses congas, son shaker, son bois et ses toms. Tu n'as rien à régler.",
+          "textPro": "Déjà prêt pour toi : le kit du style, kick accordé sur la tonalité, percussions placées à gauche et à droite.",
+          "check": "manual"
+        },
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad « Kick », touche les 4 cases en pointillé : un kick rond sur chaque temps.",
+          "textPro": "À toi : le kick sur les 4 temps, doux et sans clic : il laisse mener les percussions.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick"
+        },
+        {
+          "id": "perc_do",
+          "text": "À toi : touche « Passer à 2 mesures », puis sur le pad des congas, les cases en pointillé : « un-deux-trois, un-deux-trois, un-deux ».",
+          "textPro": "À toi : les congas en 3-3-2 sur 2 mesures, plus serrées à la fin de la 2e.",
+          "why": "Trois groupes inégaux contre le kick régulier : ça fait chalouper les hanches.",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,perc"
+        },
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad du shaker, touche toutes les cases (« Remplir » puis « tout ») : il tourne sans arrêt, plus fort entre les coups.",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,perc,hat"
+        },
+        {
+          "id": "wood_do",
+          "text": "À toi : sur le pad du bois, touche les cases en pointillé : un petit « toc » en 3-3-2 qui croise les congas.",
+          "check": "lane:perc2",
+          "spot": "rhythm.pattern",
+          "target": "perc2",
+          "listen": "drums:kick,perc,hat,perc2"
+        },
+        {
+          "id": "tom_do",
+          "text": "À toi : sur le pad « Tom », touche les 3 cases en pointillé des 2 mesures : il répond en fin de mesure, comme un bongo.",
+          "check": "lane:tom",
+          "spot": "rhythm.pattern",
+          "target": "tom",
+          "listen": "drums:kick,perc,hat,perc2,tom"
+        },
+        {
+          "id": "clap_do",
+          "text": "À toi : sur le pad « Clap », touche les 2 cases en pointillé, sur 2 et 4 : discret, il marque juste la danse.",
+          "check": "lane:clap",
+          "spot": "rhythm.pattern",
+          "target": "clap",
+          "listen": "drums:kick,perc,hat,perc2,tom,clap"
+        },
+        {
+          "id": "ohat_do",
+          "text": "À toi : sur le pad « Charley ouvert », touche les 4 cases en pointillé, entre les kicks.",
+          "check": "lane:open_hat",
+          "spot": "rhythm.pattern",
+          "target": "open_hat",
+          "listen": "drums:kick,perc,hat,perc2,tom,clap,open_hat"
+        },
+        {
+          "id": "swing",
+          "levels": "p",
+          "text": "À toi : mets le swing à 25 : congas et shaker traînent, comme joués à la main.",
+          "check": "swing",
+          "spot": "rhythm.pattern",
+          "listen": "drums:kick,perc,hat,perc2,tom"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toutes tes percussions, puis celles de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,perc,hat,perc2,tom,clap,open_hat",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La basse",
+      "why": "Une basse ronde et grave, entre les coups de kick, qui suit les accords : Mi, puis La, puis Sol.",
+      "steps": [
+        {
+          "id": "bass_hear",
+          "text": "Écoute la basse avec le kick et les congas.",
+          "check": "listen",
+          "listen": "parts:kick,perc,bass"
+        },
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse », puis les 4 notes de la mesure 1 et les 4 de la mesure 2. « Copier sur les mesures suivantes » les fait suivre les accords (La, puis Sol).",
+          "textPro": "À toi : crée la piste Basse. Deux mesures sur Mi (la 2e remonte sur Si, la quinte), puis « Copier » : la même phrase sur La et sur Sol.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass",
+          "skip": "Sans basse, ton morceau n'a pas de grave."
+        },
+        {
+          "id": "bass_pump",
+          "levels": "p",
+          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste Basse : elle s'efface à chaque kick.",
+          "check": "insert:PUMP",
+          "spot": "mixer.strip",
+          "target": "bass",
+          "listen": "parts:kick,bass"
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "La nappe",
+      "why": "Des accords chauds et tenus, une mesure chacun, qui laissent toute la place aux percussions.",
+      "steps": [
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : un seul accord long par mesure. Touche la note du bas en pointillé de chaque mesure.",
+          "textPro": "À toi : crée la piste Accords (une nappe) : Em9 deux mesures, puis Am7 et Gmaj7, tenus une mesure chacun.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,pad"
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "Le marimba",
+      "why": "Trois notes de marimba en quatre mesures : peu de notes, simples et répétées, elles deviennent hypnotiques.",
+      "steps": [
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes en pointillé : une longue en mesure 1, deux en mesure 3.",
+          "textPro": "À toi : crée la piste Mélodie (marimba) : Mi aigu en mesure 1, Si et Sol en mesure 3, rien en 2 et 4.",
+          "why": "Moins il y a de notes, plus on les retient.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:perc,pad,lead"
+        },
+        {
+          "id": "lead_delay",
+          "levels": "p",
+          "text": "À toi : au Mixeur, sur la piste « Mélodie », monte « Envoi écho » : le marimba se répète et flotte.",
+          "check": "send:1",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:lead"
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Drop",
+      "why": "Tout ce que tu as fait joue ensemble : c'est le Drop, le moment le plus plein. Les autres parties naîtront de lui.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes, puis l'exemple.",
+          "check": "listen",
+          "listen": "parts:kick,perc,hat,perc2,tom,clap,open_hat,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Drop ».",
+          "check": "label:Drop",
+          "spot": "song.parts",
+          "listen": "parts:kick,perc,hat,perc2,tom,clap,open_hat,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "map": true,
+      "why": "L'afro house n'explose pas : elle monte par étages de 16 mesures, une couche de plus à chaque fois.",
+      "steps": [
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : le kick, les toms, le shaker et le bois.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_groove",
+          "text": "Écoute le Groove : les congas, la basse et le marimba arrivent, sans la nappe.",
+          "check": "listen",
+          "listen": "part:Groove"
+        },
+        {
+          "id": "map_drop",
+          "text": "Écoute le Drop : la nappe arrive, tout joue.",
+          "check": "listen",
+          "listen": "part:Drop"
+        },
+        {
+          "id": "map_break",
+          "text": "Écoute le Break : le kick et la basse partent, la nappe et les percussions restent.",
+          "check": "listen",
+          "listen": "part:Break"
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Drop : tu enlèves des briques. Le Groove vient en dernier : c'est le Drop sans sa brique vedette.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro : le kick, les toms, le shaker et le bois.",
+          "check": "part:Intro:less+nobass",
+          "spot": "song.parts",
+          "keep": "kick,hat,perc2,tom",
+          "listen": "vs:Intro:Groove"
+        },
+        {
+          "id": "make_break",
+          "text": "À toi : crée le Break : sans kick ni basse ; la nappe, le marimba et les percussions restent.",
+          "check": "part:Break:nokick+nobass",
+          "spot": "song.parts",
+          "keep": "perc,hat,perc2,tom,pad,lead",
+          "listen": "vs:Drop:Break"
+        },
+        {
+          "id": "make_drop2",
+          "text": "À toi : crée le Drop 2 : tout, avec les percussions de l'exemple et leurs relances.",
+          "check": "part:Drop 2:full",
+          "spot": "song.parts",
+          "keep": "*",
+          "lanesFrom": "Drop",
+          "listen": "vs:Drop:Drop 2"
+        },
+        {
+          "id": "variation",
+          "text": "À toi : dans la partie « Drop 2 », ajoute quelques coups sur un pad de percussion (congas, bois) ou de charley ouvert : le 2e Drop ne sonne plus tout à fait comme le 1er.",
+          "check": "changed:drums:Drop 2",
+          "spot": "rhythm.pattern",
+          "listen": "vs:Drop:Drop 2",
+          "why": "Une percussion de plus garde l'oreille en éveil."
+        },
+        {
+          "id": "make_fin",
+          "text": "À toi : crée la Fin : les percussions et le kick, pour le DJ.",
+          "check": "part:Fin:less+nobass",
+          "spot": "song.parts",
+          "keep": "kick,perc,hat,perc2,tom",
+          "listen": "vs:Drop:Intro"
+        },
+        {
+          "id": "make_groove",
+          "text": "À toi : crée le Groove : tout sauf la nappe.",
+          "check": "part:Groove:less+nopad",
+          "spot": "song.parts",
+          "keep": "kick,perc,hat,perc2,tom,clap,open_hat,bass,lead",
+          "listen": "vs:Groove:Drop"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Groove, Drop, Break, Drop 2 et Fin.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "song": "Intro:16,Groove:16,Drop:16,Break:16,Drop 2:16,Fin:16",
+          "listen": "song"
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne 16 mesures à chaque partie. « Donner les durées conseillées » le fait d'un coup.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:16,Groove:16,Drop:16,Break:16,Drop 2:16,Fin:16",
+          "why": "Des étages de 16 mesures : 96 mesures à 122 BPM, un peu plus de 3 minutes."
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Pas de roulement de caisse ni de silence : ce sont les toms qui annoncent la suite.",
+      "steps": [
+        {
+          "id": "toms",
+          "text": "À toi : dans la partie « Break », pad « Tom », touche les 4 cases du dernier temps : un roulement de toms qui ramène le kick.",
+          "check": "fill",
+          "spot": "rhythm.pattern",
+          "target": "tom",
+          "part": "Break",
+          "listen": "vs:Break:Drop"
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "Le filtre qui s'ouvre sur le marimba fait monter la lumière, sans rien casser.",
+      "steps": [
+        {
+          "id": "filter_hear",
+          "levels": "f",
+          "text": "Écoute le Groove : le marimba s'ouvre petit à petit, comme si on enlevait une couverture.",
+          "check": "listen",
+          "listen": "part:Groove"
+        },
+        {
+          "id": "filter",
+          "levels": "p",
+          "text": "À toi : automatise la « Coupure » du filtre de la piste « Mélodie » sur le Groove : une courbe qui monte du début à la fin.",
+          "check": "automation",
+          "spot": "song.automation",
+          "target": "lead",
+          "part": "Groove",
+          "listen": "part:Groove"
+        },
+        {
+          "id": "reverb",
+          "levels": "p",
+          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur la piste « Accords » : la nappe s'éloigne et s'élargit.",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:pad"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le kick et la basse ensemble, les percussions vivantes devant, la nappe et le marimba derrière.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ».",
+          "textPro": "À toi : au Mixeur, baisse un peu les faders des Accords et de la Mélodie.",
+          "check": "changed:volumes:pad,lead",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:kick,perc,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "levels": "p",
+      "title": "Le mastering",
+      "why": "L'afro house garde du relief : les percussions doivent respirer.",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Club ».",
+          "check": "loudness:CLUB",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter !",
+      "steps": [
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

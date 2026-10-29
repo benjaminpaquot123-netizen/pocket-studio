@@ -491,7 +491,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
             Line(Role.Hat, "xoxoxoxoxoxoxoxo", "Le shaker tourne tout le long, avec des coups plus ou moins forts.", voice = 13),
             Line(Role.Clap, "....X.......X...", "Un claquement sec et court sur 2 et 4, le repère de la danse."),
             Line(Role.Perc, "......x..x...x.......x..x.x.x...", "Des petits « toc » de bois qui répondent au log drum, comme une conversation.", voice = 10),
-            Line(Role.Perc2, "...x..x....x..x.", "Une conga qui répond au log drum : elle arrive au Drop.", voice = 14),
+            Line(Role.Perc2, "....x..x..x.x...", "Une conga qui répond au log drum : elle arrive au Drop.", voice = 14),
         ),
         swing = 0.2,
         melody = Melody(

@@ -160,3 +160,6 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - Ouverture : battement uniquement en vibration, plus de son (ting retiré) ; fait dans l'APK 232.
 - **Bug à corriger** : un projet déjà créé mais vide, rouvert (Mode simple, « Mon projet 3 ») : l'onglet Rythme n'affiche pas les pads, même après le choix d'un kit ; aller sur Clavier puis revenir les fait apparaître. Capture : `/root/.claude/uploads/2ed29bda-5e9a-5850-a6a7-bbf3293c7a09/5caf4f06-image.jpg` (prise après le contournement, pads visibles).
 - Ouverture : « les vibrations, c'est génial ». **Bug** : après le logo, on voit la page d'avant, puis un clignotement avant d'afficher l'accueil et les projets.
+
+## 2026-10-29 (APK 233, téléphone de Benjamin)
+- « Note pour plus tard » : le problème du pad qui n'est pas ouvert directement est toujours là (vidéo : le projet vide s'ouvre sur « Mon morceau », les pads seulement après avoir touché Rythme). Noté en n° 5 dans docs/REVIEW.md.

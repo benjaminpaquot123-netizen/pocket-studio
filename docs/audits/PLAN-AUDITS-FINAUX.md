@@ -142,7 +142,8 @@ Benjamin le veut ainsi : les auditeurs d'ergonomie et de design sont des profess
 5. **Remix** : carte de l'accueil, séparation, tableau des pistes, phrases de voix sur les pads, voix dans le morceau. Demande de Benjamin : l'intégration doit être facile **dans les deux sens**, et les audits le vérifient :
    - **depuis un projet en cours** : ouvrir le Remix sans quitter le projet, puis envoyer des morceaux de la chanson (voix, phrase, boucle de batterie ou de basse) dans CE projet (pads, piste, partie) et revenir ;
    - **depuis le menu Remix de l'accueil** : séparer une chanson, puis choisir « dans un projet existant » (lequel) ou « dans un nouveau projet » (Simple ou Pro) ; on peut aussi partir de l'idée de la chanson (« faire un morceau à partir de cette chanson »), avec son tempo et sa tonalité repris ;
-   - aucun cul-de-sac : retour au projet ou à l'accueil, et rien de perdu en changeant de projet.
+   - aucun cul-de-sac : retour au projet ou à l'accueil, et rien de perdu en changeant de projet ;
+   - **surtout, ma bibliothèque de sons** (demande de Benjamin) : un morceau extrait (voix, phrase, boucle, one-shot) se garde dans une bibliothèque personnelle, nommé, rangé par famille avec sa couleur et son icône, écoutable et marqué de son tempo et de sa tonalité. On le retrouve partout où l'on choisit un son (pads, clavier, pistes, Live), **intégré visuellement comme les sons de l'appli** (mêmes vignettes, mêmes familles, un badge « À moi »), et on le garde d'un projet à l'autre. Les audits de design vérifient qu'on ne voit pas la différence avec les sons d'origine.
 6. **Live** : pads, effets, enregistrement de la performance.
 7. **Mix et master** : Mode simple et Pro, effets, automation, vumètres.
 8. **Partager et exporter** : WAV, M4A, MIDI, projet. Le fichier est récupéré et analysé.

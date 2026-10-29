@@ -1,0 +1,579 @@
+{
+  "format": 1,
+  "style": "liquid_dnb",
+  "key": "A minor",
+  "chords": "VI v i i",
+  "lines": {
+    "bass": "0:F2:8 10:F2:4 14:C3:2 16:E2:8 26:E2:4 30:B2:2 32:A2:8 42:A2:4 46:E3:2 48:A2:6 54:C3:2 56:E3:4 60:D3:2 62:C3:2",
+    "pad": "0:A3+C4+E4:16 16:G3+B3+D4:16 32:C4+E4+G4:16 48:C4+E4+G4:16",
+    "lead": "2:E5:2 8:C5:2 12:A4:4 18:B4:2 24:G4:2 28:E4:4 34:C5:2 40:E5:2 44:G5:4 50:E5:2 56:D5:6"
+  },
+  "lineBars": {
+    "bass": 4,
+    "pad": 4,
+    "lead": 4
+  },
+  "follow": [
+    "bass",
+    "pad",
+    "lead"
+  ],
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "Le liquid, c'est la drum & bass douce : le même rythme rapide, mais des accords jazzy, une basse ronde et beaucoup de lumière.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de liquid fini : la Montée, où la batterie s'ouvre petit à petit, puis le Drop, tout doux mais plein. C'est ce que tu vas construire, brique par brique.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 174 BPM, 174 battements par minute. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 174 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "why": "Le liquid garde la vitesse de la drum & bass ; c'est la douceur des sons qui change tout.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick,snare,hat",
+          "skip": "Sans ça, ton morceau reste à 120 BPM : bien trop lent pour du liquid."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau, douce et un peu triste. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Mineure » puis « La » (la note de départ). Pas besoin de retenir ces mots.",
+          "textPro": "À toi : règle la tonalité sur La mineur, gamme « Mineure », tonique « La ». La grille Fa – Mi m – La m – La m est celle du refrain de Netsky – Memory Lane, transposée. Ici, « Je le fais » ouvre la fiche Tonalité.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, tes notes ne prendront pas la couleur douce et nostalgique du liquid."
+        }
+      ]
+    },
+    {
+      "id": "kick",
+      "title": "Le kick",
+      "why": "Le kick (la grosse caisse), c'est le battement de cœur. En liquid, il frappe sur le 1er temps et juste après le 3e (on compte 1, 2, 3, 4 dans chaque mesure) : le « two-step ». Le même rythme que la drum & bass ; c'est le reste qui devient doux.",
+      "steps": [
+        {
+          "id": "ready",
+          "text": "Avant de commencer : sur un pad, « FX » veut dire qu'un effet y est déjà posé (il rend le son plus percutant), « G 30 » ou « D 45 » que le son est placé un peu à gauche ou à droite. Tout est prêt : tu n'as rien à régler.",
+          "textPro": "Déjà prêt pour toi, pour que ça sonne liquid tout de suite : le kit « Drum & bass » (sous les pads) ; des effets sur plusieurs pads (le badge « FX » : par exemple un compresseur et une saturation sur le kick et la caisse claire) ; compresseur, saturation et clipper sur la tranche « Batterie » ; des pads placés à gauche ou à droite (« G 30 », « D 45 »). Chaque piste que tu créeras arrivera avec son son conseillé. « Basse acide 303 », « Voix » et « Remix » sont dans tout projet : le tuto ne s'en sert pas.",
+          "check": "manual"
+        },
+        {
+          "id": "kick_hear",
+          "text": "Écoute le kick (la grosse caisse, le gros « boum » de la batterie) du liquid, seul : deux coups par mesure, et une petite relance dans la 2e.",
+          "textPro": "Écoute le kick du liquid, seul : le two-step et sa relance.",
+          "check": "listen",
+          "listen": "drums:kick"
+        },
+        {
+          "id": "kick_do",
+          "text": "À toi : sur le pad du kick (le bouton qui joue le kick), touche « Passer à 2 mesures » s'il est proposé, puis les cases en pointillé des 2 mesures.",
+          "textPro": "À toi : sur le pad du kick, les cases en pointillé des 2 mesures : le two-step (1.1 et 1.3.3) et la relance au début de la 2e.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick"
+        },
+        {
+          "id": "kick_sound",
+          "text": "Ton kick est déjà court et sec : c'est celui du kit « Drum & bass », chargé d'office (« Kit : Drum & bass », sous les pads). « Montre-moi » fait entendre un kick long, puis le tien : le long bave sur la basse. Pour changer le son d'un pad : appui long sur le pad.",
+          "why": "Un kick court laisse la place à la basse ronde et au piano.",
+          "levels": "p",
+          "check": "manual",
+          "demo": "kick",
+          "listen": "drums:kick"
+        }
+      ]
+    },
+    {
+      "id": "snare",
+      "title": "La caisse claire",
+      "why": "La caisse claire (le « clac » de la batterie) frappe sur 2 et 4. Entourée de petits coups très doux, elle devient souple et funky, comme un batteur de soul accéléré.",
+      "steps": [
+        {
+          "id": "snare_do",
+          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures (une mesure = un tour de la boucle) : les gros coups sur 2 et 4, et les petits coups doux entre eux.",
+          "textPro": "À toi : sur le pad « Caisse », les cases en pointillé des 2 mesures : 2 et 4, et les notes fantômes en 2.4 et 3.2, 6 à 12 dB plus bas.",
+          "check": "lane:snare",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "listen": "drums:kick,snare"
+        }
+      ]
+    },
+    {
+      "id": "hats",
+      "title": "Les charleys",
+      "titlePro": "Charleys, shaker et ride",
+      "why": "Le charley (la petite cymbale qui fait « tss ») ondule quatre fois par temps, fort puis doux. Un shaker en plus imite le break de vieux disque soul. La ride brille au Drop.",
+      "steps": [
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad « Charley » (le « tss » de la batterie), touche toutes les cases des 2 mesures : il joue sur chaque case. Astuce : « Remplir », sous la grille, les pose d'un geste.",
+          "textPro": "À toi : sur le pad « Charley », les doubles croches des 2 mesures, fort puis doux (« Remplir » les pose d'un geste).",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,snare,hat"
+        },
+        {
+          "id": "ohat_do",
+          "text": "À toi : sur le pad « Charley ouvert », la case en pointillé de chaque mesure : il respire juste avant la mesure suivante.",
+          "check": "lane:open_hat",
+          "spot": "rhythm.pattern",
+          "target": "open_hat",
+          "listen": "drums:kick,snare,hat,open_hat"
+        },
+        {
+          "id": "perc_do",
+          "text": "À toi : sur le pad de percussion (le shaker), touche les cases en pointillé des 2 mesures.",
+          "why": "Le shaker remplace le « Think break » que les producteurs glissent sous leur batterie, très bas et filtré.",
+          "levels": "p",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,snare,hat,open_hat,perc"
+        },
+        {
+          "id": "ride_do",
+          "text": "À toi : sur le pad « Ride » (la grande cymbale qui tinte), touche les cases en pointillé : une sur deux. Elle ne jouera qu'au Drop.",
+          "check": "lane:ride",
+          "spot": "rhythm.pattern",
+          "target": "ride",
+          "listen": "drums:kick,snare,hat,ride"
+        },
+        {
+          "id": "swing",
+          "text": "À toi : monte le swing (le balancement) jusqu'à la valeur entourée, environ 13 % : la batterie se balance comme un batteur soul.",
+          "textPro": "À toi : un peu de swing, environ 13 % : les doubles croches paires arrivent un poil en retard.",
+          "why": "Le liquid vient de la soul et du jazz : un rythme trop droit y sonne raide.",
+          "check": "swing",
+          "spot": "rhythm.pattern",
+          "listen": "drums:kick,snare,hat"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toute ta batterie quelques secondes, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,snare,hat,open_hat,perc,ride",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La basse",
+      "why": "Une basse ronde et douce, qui chante comme un bassiste de soul : elle porte les accords, avec de petits pas et quelques sauts.",
+      "steps": [
+        {
+          "id": "bass_hear",
+          "text": "Écoute la basse avec la batterie : ronde, sans grogner, elle change de note à chaque accord.",
+          "check": "listen",
+          "listen": "parts:kick,snare,hat,bass"
+        },
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse » (une piste = un instrument de ton morceau), puis les 3 notes en pointillé de la mesure 1. « Copier sur les mesures suivantes » écrit les mesures 2 et 3 en suivant les accords. Puis les 5 notes de la mesure 4, qui remonte vers l'aigu.",
+          "textPro": "À toi : crée la piste Basse (« Basse ronde », pompe douce). Mesure 1 dans le piano roll : la fondamentale Fa tenue, la même plus courte, la quinte Do ; « Copier sur les mesures suivantes » la pose sur Mi puis sur La ; puis la relance de la mesure 4 (La, Do, Mi, Ré, Do).",
+          "why": "La basse joue la note du bas de chaque accord : le piano peut l'oublier, il sonnera plus léger.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass",
+          "skip": "Sans basse, ton liquid n'aura pas de fond."
+        }
+      ]
+    },
+    {
+      "id": "bass_design",
+      "title": "Le son de la basse",
+      "why": "Une basse liquid reste ronde : on la garde fermée, on met une Sub dessous et une pompe légère pour laisser passer le kick.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "bass_sub",
+          "text": "À toi : touche « Copier la basse une octave plus bas » : une piste « Sub » joue ta basse une octave plus bas, sans ses sauts d'octave. C'est le grave qu'on sent dans le ventre : il reste en place.",
+          "check": "track:sub",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass"
+        },
+        {
+          "id": "bass_pump",
+          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste Sub, puis sur la piste Basse : elles se baissent à chaque kick (sidechain). C'est surtout la Sub qui se bat avec le kick dans le grave.",
+          "check": "insert:PUMP",
+          "spot": "mixer.strip",
+          "target": "sub,bass",
+          "listen": "parts:kick,bass"
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "Le piano",
+      "why": "La piste « Accords » joue au piano électrique : c'est la couleur jazzy du liquid. Posé sur la basse, chaque accord de 3 notes devient un accord riche, de 7e.",
+      "steps": [
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons juste au-dessus de la grille (fais-la glisser si tu ne le vois pas) : toucher la note du bas en pointillé pose les 3 notes de l'accord. Fais-le à la mesure 1, puis « Copier sur les mesures suivantes » : les accords suivent la basse tout seuls.",
+          "textPro": "À toi : crée la piste Accords (« Rhodes FM »). « Accords » pose la triade d'un toucher : La m sur la basse Fa (= Fa maj7) à la mesure 1, puis « Copier sur les mesures suivantes » : Sol sur la basse Mi (= Mi m7), Do sur la basse La (= La m7).",
+          "why": "On n'y met pas la note de la basse : basse et piano ensemble font l'accord de 7e, sans boue dans le grave.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad",
+          "skip": "Sans piano, il n'y a plus de liquid."
+        },
+        {
+          "id": "pad_chorus",
+          "text": "À toi : au Mixeur, mets l'effet « Chorus » sur la piste « Accords » : le piano ondule doucement, comme un vieux Rhodes.",
+          "levels": "p",
+          "check": "insert:CHORUS",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:pad"
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "La cloche qui répond",
+      "why": "Une petite cloche joue un contre-chant : une mélodie qui répond au piano, avec de l'écho. Elle arrive au Drop 2.",
+      "steps": [
+        {
+          "id": "lead_hear",
+          "text": "Écoute la cloche avec le piano et la basse.",
+          "check": "listen",
+          "listen": "parts:bass,pad,lead"
+        },
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 3 notes en pointillé de la mesure 1. « Copier sur les mesures suivantes » fait la mesure 2, un peu plus bas. Puis les notes des mesures 3 et 4 (3, puis 2).",
+          "textPro": "À toi : crée la piste Mélodie et écris le contre-chant : mesure 1 (Mi, Do, La, il descend dans l'accord), « Copier » la répète plus bas sur Mi m, puis les mesures 3 et 4 à la main : il remonte (Do, Mi, Sol) et se pose sur Ré.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead",
+          "skip": "Sans contre-chant, le Drop 2 n'aura rien de neuf."
+        },
+        {
+          "id": "lead_echo",
+          "text": "À toi : au Mixeur, touche le nom de la piste « Mélodie », puis monte « Envoi écho » : chaque note de cloche se répète, comme des gouttes.",
+          "levels": "p",
+          "check": "send:1",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:lead"
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Groove",
+      "why": "Tout ce que tu as fait joue ensemble : c'est ta première partie (un moment de ton morceau), ta partie de départ. Les autres parties naîtront d'elle.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes (tout ce que tu as fait), puis l'exemple. Ce rythme qui donne envie de bouger, c'est le groove.",
+          "textPro": "Écoute ta boucle quelques secondes, puis l'exemple.",
+          "check": "listen",
+          "listen": "parts:kick,snare,hat,open_hat,perc,ride,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Groove » : c'est ta partie de départ.",
+          "check": "label:Groove",
+          "spot": "song.parts",
+          "listen": "parts:kick,snare,hat,open_hat,perc,ride,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "why": "Une partie, c'est un ensemble de boucles qui jouent ensemble. Un morceau, c'est une suite de parties qui montent et descendent en énergie.",
+      "map": true,
+      "steps": [
+        {
+          "id": "brick",
+          "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la basse). Une partie, ce sont plusieurs briques qui jouent ensemble.",
+          "why": "Tu changes une partie en ajoutant ou en enlevant des briques : c'est comme ça qu'on fait monter ou descendre l'énergie.",
+          "check": "manual"
+        },
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : le piano et la batterie, sans la basse.",
+          "why": "Avec sa Montée, elle fait 32 mesures : le DJ a le temps de mélanger.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_montee",
+          "text": "Écoute la Montée : le kick accélère, mesure après mesure, puis tout se tait un temps.",
+          "why": "La basse manque : on attend qu'elle arrive.",
+          "check": "listen",
+          "listen": "part:Montée"
+        },
+        {
+          "id": "map_drop",
+          "text": "Écoute le Drop : la basse arrive sous le piano, la ride brille.",
+          "why": "En liquid, le Drop est plein mais pas violent.",
+          "check": "listen",
+          "listen": "part:Drop"
+        },
+        {
+          "id": "map_break",
+          "text": "Écoute le Break : le piano seul ou presque, on respire.",
+          "why": "La pause rend le Drop suivant plus émouvant.",
+          "check": "listen",
+          "listen": "part:Break"
+        },
+        {
+          "id": "map_drop2",
+          "text": "Écoute le Drop 2 : la même chose, avec la cloche qui répond.",
+          "why": "Un élément nouveau, et le Drop 2 raconte encore quelque chose.",
+          "check": "listen",
+          "listen": "part:Drop 2"
+        },
+        {
+          "id": "map_phrases",
+          "text": "Regarde la carte : chaque case est une partie, avec sa durée en mesures. La courbe montre l'énergie.",
+          "why": "Les DJ comptent en phrases de 8 mesures : le Drop tombe toujours au début d'une phrase (24 + 8 = 32 mesures avant lui).",
+          "check": "manual"
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Groove : tu enlèves ou tu changes des briques.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro à partir du Groove. Elle garde la batterie (sans la ride) et le piano ; la basse et la cloche s'en vont.",
+          "why": "Le piano dès l'Intro : en liquid, on annonce la couleur tout de suite.",
+          "check": "part:Intro:less",
+          "spot": "song.parts",
+          "keep": "kick,snare,hat,open_hat,perc,pad",
+          "listen": "vs:Drop:Intro"
+        },
+        {
+          "id": "make_montee",
+          "text": "À toi : crée la Montée à partir du Groove : sans basse. Son kick va de plus en plus vite, mesure après mesure, puis tout se tait sur le dernier temps, juste avant le Drop.",
+          "textPro": "À toi : crée la Montée à partir du Groove, sans basse : 8 mesures. Le kick accélère (noires, croches, doubles croches) sous le piano ; le dernier temps se tait.",
+          "why": "En liquid, on ne fait pas rouler la caisse : c'est le kick qui accélère, plus doux.",
+          "check": "part:Montée:nobass",
+          "spot": "song.parts",
+          "keep": "kick,snare,hat,pad",
+          "lanesFrom": "Montée",
+          "listen": "vs:Intro:Montée",
+          "build": "kick"
+        },
+        {
+          "id": "make_drop",
+          "text": "À toi : crée le Drop à partir du Groove : toute la batterie avec la ride, la basse et le piano. La cloche attend.",
+          "why": "Tout arrive ensemble, sauf la cloche : on la garde pour plus tard.",
+          "check": "part:Drop:bass+pad+nolead",
+          "spot": "song.parts",
+          "keep": "kick,snare,hat,open_hat,perc,ride,bass,pad",
+          "listen": "vs:Montée:Drop"
+        },
+        {
+          "id": "make_break",
+          "text": "À toi : crée le Break à partir du Groove : le piano, la cloche, les charleys et le shaker. Pas de kick, pas de basse.",
+          "why": "Le vide après le plein : le piano reste seul, l'émotion monte.",
+          "check": "part:Break:nokick",
+          "spot": "song.parts",
+          "keep": "hat,perc,pad,lead",
+          "listen": "vs:Drop:Break"
+        },
+        {
+          "id": "make_drop2",
+          "text": "À toi : crée le Drop 2 à partir du Groove : tout ton Groove, cloche comprise.",
+          "why": "Même énergie, un élément de plus : le public reste en éveil.",
+          "check": "part:Drop 2:differs+lead",
+          "spot": "song.parts",
+          "keep": "*",
+          "listen": "vs:Drop:Drop 2"
+        },
+        {
+          "id": "make_fin",
+          "text": "À toi : crée la Fin : la batterie et le piano, pour que le DJ enchaîne.",
+          "why": "La Fin laisse au DJ de quoi passer au morceau suivant.",
+          "check": "part:Fin:less",
+          "spot": "song.parts",
+          "keep": "kick,snare,hat,open_hat,perc,pad",
+          "listen": "vs:Drop:Intro"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Montée, Drop, Break, Montée, Drop 2 et Fin (par exemple « + B · Intro »). Chaque partie arrive avec 8 mesures : l'étape suivante leur donne leur durée.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "song": "Intro:24,Montée:8,Drop:32,Break:16,Montée:8,Drop 2:32,Fin:16",
+          "listen": "song",
+          "skip": "Dans un autre ordre, la Montée n'arrivera pas juste avant chaque Drop."
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 24, Montée 8, Drop 32, Break 16, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
+          "why": "L'Intro et sa Montée font 32 mesures, chaque Drop tombe au début d'une phrase. Le morceau dure un peu plus de 3 minutes.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:24,Montée:8,Drop:32,Break:16,Montée:8,Drop 2:32,Fin:16"
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Entre deux parties, un petit événement prévient l'oreille : un roulement, un silence.",
+      "steps": [
+        {
+          "id": "fill",
+          "text": "À toi : dans la partie « Montée », va à la dernière mesure, pad du kick : appui long sur le dernier coup, juste avant la case « 4 », puis sous « Roulement », touche « ×3 » : une dernière rafale de kick avant le silence. Ne touche à rien d'autre dans cette fenêtre.",
+          "textPro": "À toi : dans la partie « Montée », dernière mesure, pad du kick : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3.",
+          "check": "fill",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "part:Montée"
+        },
+        {
+          "id": "gap",
+          "text": "À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop.",
+          "why": "Un temps de rien, et l'arrivée de la basse paraît immense.",
+          "check": "gap",
+          "spot": "rhythm.pattern",
+          "listen": "vs:Montée:Drop"
+        },
+        {
+          "id": "crash",
+          "text": "À toi : dans la partie « Drop », touche la toute première case du pad « Ride » si elle est vide : un coup de cymbale pile à l'arrivée du Drop.",
+          "levels": "p",
+          "check": "crash",
+          "spot": "rhythm.pattern",
+          "part": "Drop",
+          "listen": "part:Drop"
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "La réverbe (l'écho d'une grande salle) donne de l'espace, l'écho répète les notes, et un filtre qui s'ouvre fait monter la tension.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "text": "Écoute la réverbe : la caisse claire et la piste « Accords », d'abord sans, puis avec. Le son prend de la place, comme dans une grande salle.",
+          "levels": "f",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "reverb",
+          "text": "À toi : au Mixeur, touche le nom de la piste « Accords », puis dans « Réverbe et écho », monte « Envoi réverbe ». Fais pareil sur la tranche du pad « Caisse ». En liquid, la réverbe est sur la musique, à peine sur la batterie : le piano flotte, la batterie reste nette.",
+          "levels": "p",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "riser_hear",
+          "text": "Écoute la Montée : le piano s'ouvre petit à petit, comme si on enlevait une couverture. C'est un filtre qui s'ouvre : la lumière arrive avec le Drop.",
+          "levels": "f",
+          "check": "listen",
+          "listen": "part:Montée"
+        },
+        {
+          "id": "riser",
+          "text": "À toi : automatise la « Coupure » du filtre de la piste « Accords » sur la Montée : « Automatiser un réglage », « Accords », « Filtre (balayage) », puis « Par partie », et dessine une courbe qui monte du début à la fin de la Montée.",
+          "levels": "p",
+          "check": "automation",
+          "spot": "song.automation",
+          "target": "pad",
+          "listen": "part:Montée"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "En liquid, la musique est devant : le piano et la basse portent le morceau, la batterie reste un peu en dessous, nette et légère.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie », puis celui de la piste « Accords ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "textPro": "À toi : au Mixeur, baisse un peu le fader de la cloche (« Mélodie ») et celui du piano (« Accords »), juste assez pour que la basse respire.",
+          "check": "changed:volumes:lead,pad",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:kick,snare,bass,pad,lead"
+        },
+        {
+          "id": "meters",
+          "text": "Repère : pendant le Drop, les vu-mètres du Mixeur ne doivent pas rester dans le rouge. Si une piste rougit, baisse son fader.",
+          "levels": "p",
+          "check": "manual"
+        },
+        {
+          "id": "buses",
+          "text": "Repères pour équilibrer : la Sub et le piano devant, le kick et la caisse juste dessous (en liquid, on garde la batterie légère), la cloche et la nappe derrière. Compare au morceau d'exemple.",
+          "levels": "p",
+          "check": "manual",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "title": "Le mastering",
+      "why": "Le master colle le tout et donne le volume des clubs, sans écraser le kick.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "La sortie générale a un limiteur intégré, toujours le dernier de la chaîne (il n'apparaît pas dans ses « Effets ») : il empêche le son de dépasser. Pas d'OTT ici : il écraserait l'attaque du kick. À toi : dans « Sortie générale », règle « Volume visé » sur « Club » : ton morceau sonne aussi fort qu'en club.",
+          "check": "loudness:CLUB",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter !",
+      "steps": [
+        {
+          "id": "formats",
+          "text": "WAV pour un DJ (la qualité studio), M4A pour tes amis (un fichier léger), pistes séparées pour un remix.",
+          "levels": "p",
+          "check": "manual"
+        },
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

@@ -229,12 +229,17 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
          * The kits built in that stand for a drum pack (« Kit ▾ »'s, nothing to download), by the
          * pack the style takes its kick from ([StarterWizard.Style.kit]): the tutorial starts on it.
          * A style whose pack has none starts on the assistant's own kit (its studio voices: the
-         * tuned kick of house and techno, the hard kick, the rumble, the 808).
+         * tuned kick of house and techno, the hard kick, the rumble, the 808). The drum & bass kit
+         * also stands for the packs of drum & bass's other styles (neurofunk, liquid, jungle: the same
+         * short kick and cracking snare at 165-174 BPM; bass family, 2026-10-29).
          */
-        val KITS: Map<String, (Project) -> Project> = mapOf("dnb" to StudioDrums::withDnbKit)
+        val KITS: Map<String, (Project) -> Project> = listOf("dnb", "neurofunk", "liquid_dnb", "jungle").associateWith { { p: Project -> StudioDrums.withDnbKit(p) } }
 
-        /** The pack [style]'s kick comes from, when a kit of [KITS] stands for it. */
-        fun kitOf(style: StarterWizard.Style): String? = style.kit[StarterWizard.Role.Kick]?.takeIf { it in KITS }
+        /**
+         * The pack [style]'s kick comes from (its recipe's source, else the style's own pack, as the
+         * assistant takes it), when a kit of [KITS] stands for it.
+         */
+        fun kitOf(style: StarterWizard.Style): String? = (style.kit[StarterWizard.Role.Kick] ?: style.id).takeIf { it in KITS }
 
         /** The 303's role in a course's lines. */
         const val ACID = "acid"

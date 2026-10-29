@@ -1,0 +1,409 @@
+{
+  "format": 1,
+  "style": "lofi",
+  "mood": "dreamy",
+  "key": "F major",
+  "chords": "IV I vi ii",
+  "lines": {
+    "bass": "0:Bb1:10 10:Bb1:2 12:F2:4 16:F2:10 26:F2:2 28:C3:4 32:D2:10 42:D2:2 44:A2:4 48:G1:10 58:G1:2 60:D2:4",
+    "pad": "0:F3+A3+C4+D4:8 10:F3+A3+C4+D4:6:0.6 16:C3+E3+G3+A3:8 26:C3+E3+G3+A3:6:0.6 32:A3+C4+E4+F4:8 42:A3+C4+E4+F4:6:0.6 48:D3+F3+A3+Bb3:8 58:D3+F3+A3+Bb3:6:0.6",
+    "lead": "4:C5:4 8:A4:8 36:E5:4 40:C5:8 48:A4:16"
+  },
+  "lineBars": {
+    "bass": 4,
+    "pad": 4,
+    "lead": 4
+  },
+  "follow": [
+    "bass",
+    "pad",
+    "lead"
+  ],
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "Le lo-fi, c'est le hip-hop tout doux des vidéos pour réviser : lent, rêveur, un peu abîmé comme un vieux vinyle.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de lo-fi fini : des accords jazz au piano électrique, une batterie feutrée qui traîne un peu, le craquement d'un vieux disque. Tu vas le construire brique par brique.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 84 BPM, 84 battements par minute. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 84 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick,hat",
+          "skip": "Sans ça, ton morceau reste à 120 BPM : ce n'est plus du lo-fi."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau, rêveuse. « Je le fais » ouvre la fiche Tonalité : touche « Majeure » (une gamme lumineuse) puis « Fa » (la note de départ).",
+          "textPro": "À toi : règle la tonalité sur Fa majeur, gamme « Majeure », tonique « Fa ». Les accords de 9e feront le côté jazz : le majeur reste doux, pas joyeux.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, tes accords ne sonneront pas rêveurs."
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "Les accords d'abord",
+      "why": "En lo-fi, on commence par les accords : quatre accords de jazz au piano électrique, qui tournent sans jamais se « résoudre ». Tout le reste les accompagne.",
+      "steps": [
+        {
+          "id": "pad_hear",
+          "text": "Écoute les accords seuls.",
+          "check": "listen",
+          "listen": "parts:pad"
+        },
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons au-dessus de la grille : toucher la note du bas en pointillé pose toutes les notes de l'accord. Fais les 2 accords de la mesure 1 (le 2e plus doux), puis « Copier sur les mesures suivantes » : les 3 autres accords se posent tout seuls.",
+          "textPro": "À toi : crée la piste Accords (piano électrique). Mesure 1 : Si♭ maj9 sans sa fondamentale (Fa, La, Do, Ré), deux fois, la 2e plus douce. « Copier » : Fa maj9, Ré m9 et Sol m9, suivis le long de la gamme (IV – I – vi – ii, une boucle qui ne se résout pas).",
+          "why": "Des accords de 4 notes avec la 7e et la 9e : c'est ce qui sonne « jazz » et doux.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad",
+          "skip": "Sans accords, il n'y a pas de lo-fi."
+        }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "La batterie feutrée",
+      "titlePro": "La batterie",
+      "why": "Une batterie qu'on entend à peine : un kick doux, une caisse claire jouée tout doucement, des charleys légers. Le swing la fait traîner.",
+      "steps": [
+        {
+          "id": "kick_do",
+          "text": "À toi : le kick tient sur 2 mesures (une mesure = un tour de la boucle). Touche « Passer à 2 mesures », puis sur le pad « Kick », les cases en pointillé des 2 mesures.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick"
+        },
+        {
+          "id": "snare_do",
+          "text": "À toi : sur le pad « Caisse », les cases en pointillé : le 2e et le 4e temps (on compte 1, 2, 3, 4 dans chaque mesure).",
+          "check": "lane:snare",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "listen": "drums:kick,snare"
+        },
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad « Charley », touche les cases en pointillé : des croches, et des petites notes douces entre elles.",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,snare,hat"
+        },
+        {
+          "id": "perc_do",
+          "text": "À toi : sur le pad « Maracas » (un shaker), les 4 cases en pointillé, juste avant chaque temps : presque inaudible, c'est de la texture.",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,snare,hat,perc"
+        },
+        {
+          "id": "swing",
+          "text": "À toi : le swing. Sous la grille, monte le curseur « Swing » jusqu'à 33 %. Les petites notes arrivent en retard : la batterie devient paresseuse.",
+          "textPro": "À toi : swing à 33 % sur le curseur (62,5 % sur une MPC) : les doubles croches d'entre les temps traînent vers le triolet.",
+          "why": "Le swing et le retard donnent le côté nonchalant, comme un batteur fatigué.",
+          "check": "swing",
+          "spot": "rhythm.pattern",
+          "listen": "drums:kick,snare,hat,perc",
+          "skip": "Sans swing, ta batterie sonnera comme une machine."
+        },
+        {
+          "id": "snare_late",
+          "levels": "p",
+          "text": "À toi : la caisse « ivre ». Sur le pad « Caisse », appui long sur chaque coup, puis « Décalage du coup » à +15 ms : elle arrive après le temps, comme chez J Dilla qui jouait sans aimanter les coups sur la grille.",
+          "why": "Le retard de la caisse, c'est le « drunk » du lo-fi : ça traîne, ça respire.",
+          "check": "offset:snare:late",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "listen": "drums:kick,snare,hat,perc"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toute ta batterie quelques secondes, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,snare,hat,perc",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La basse",
+      "why": "Une basse douce et chaude, deux ou trois notes par mesure, sous les accords : elle reste discrète.",
+      "steps": [
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse », puis les 3 notes en pointillé de la mesure 1. « Copier sur les mesures suivantes » écrit les 3 autres mesures : elles suivent les accords.",
+          "textPro": "À toi : crée la piste Basse : Si♭1 tenu, un rappel, puis la quinte (Fa2). « Copier » : la même figure sur Fa, Ré et Sol, le long de la gamme.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass",
+          "skip": "Sans basse, le morceau flotte sans fond."
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "La mélodie",
+      "why": "Deux notes, beaucoup de silence, les deux mêmes un peu plus haut, puis une note longue : on laisse respirer.",
+      "steps": [
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les 2 notes en pointillé de la mesure 1. « Copier sur les mesures suivantes » les reprend plus haut à la mesure 3. Touche ensuite la note longue de la mesure 4, puis « Copier » encore.",
+          "textPro": "À toi : crée la piste Mélodie : Do, La | silence | (« Copier » : Mi, Do) | La tenu une mesure, puis « Copier ». Sur ces accords, ces notes sont des 9es et des 7es : la couleur rêveuse.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Refrain",
+      "why": "Tout ce que tu as fait joue ensemble : c'est le Refrain, le moment où tout le monde joue. Les autres parties naîtront de lui.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes (tout ce que tu as fait), puis l'exemple. Tout joue en même temps : c'est le Refrain, la partie la plus pleine.",
+          "textPro": "Écoute ta boucle quelques secondes, puis l'exemple.",
+          "check": "listen",
+          "listen": "parts:kick,snare,hat,perc,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Refrain » : c'est ta partie de départ, celle où tout joue.",
+          "check": "label:Refrain",
+          "spot": "song.parts",
+          "listen": "parts:kick,snare,hat,perc,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "why": "Le lo-fi varie en enlevant, pas en ajoutant : on retire la batterie, on étouffe les accords, puis tout revient.",
+      "map": true,
+      "steps": [
+        {
+          "id": "brick",
+          "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la basse). Une partie, ce sont plusieurs briques qui jouent ensemble.",
+          "why": "Tu changes une partie en ajoutant ou en enlevant des briques.",
+          "check": "manual"
+        },
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : les accords seuls.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_couplet",
+          "text": "Écoute le Couplet : sans la mélodie, la place de la voix.",
+          "check": "listen",
+          "listen": "part:Couplet"
+        },
+        {
+          "id": "map_pont",
+          "text": "Écoute le Pont : sans kick ni caisse, le morceau flotte, puis la batterie revient.",
+          "why": "Une pause sans batterie, et son retour fait du bien.",
+          "check": "listen",
+          "listen": "part:Pont"
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Refrain : tu enlèves des briques.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro à partir du Refrain : les accords seuls.",
+          "check": "part:Intro:nokick+nobass",
+          "spot": "song.parts",
+          "listen": "vs:Intro:Refrain",
+          "keep": "pad"
+        },
+        {
+          "id": "make_couplet",
+          "text": "À toi : crée le Couplet à partir du Refrain : sans la mélodie.",
+          "why": "Sans mélodie, la voix du rappeur a toute la place.",
+          "check": "part:Couplet:nolead+less",
+          "spot": "song.parts",
+          "listen": "vs:Refrain:Couplet",
+          "keep": "kick,snare,hat,perc,bass,pad"
+        },
+        {
+          "id": "make_pont",
+          "text": "À toi : crée le Pont à partir du Refrain : sans kick ni caisse, juste les charleys, le shaker, la basse et les accords.",
+          "check": "part:Pont:nokick",
+          "spot": "song.parts",
+          "listen": "vs:Refrain:Pont",
+          "keep": "hat,perc,bass,pad"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Refrain, Couplet, Refrain, Pont, Couplet, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "listen": "song",
+          "song": "Intro:4,Refrain:8,Couplet:16,Refrain:8,Pont:8,Couplet:8,Refrain:8,Outro:4",
+          "skip": "Dans un autre ordre, le Pont ne tombera pas au milieu."
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 4 mesures, Refrain 8, Couplet 16, Refrain 8, Pont 8, Couplet 8, Refrain 8, Outro 4. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». « Donner les durées conseillées » le fait d'un coup.",
+          "why": "Des blocs de 8 et de 16, et quelque chose qui change tous les 8 : en tout 3 minutes, la durée des morceaux lo-fi.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:4,Refrain:8,Couplet:16,Refrain:8,Pont:8,Couplet:8,Refrain:8,Outro:4"
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Entre deux parties, la batterie s'arrête un instant : on reprend son souffle.",
+      "steps": [
+        {
+          "id": "gap",
+          "text": "À toi : dans la partie « Couplet », dernière mesure, efface les coups de kick et de caisse du dernier temps (touche chaque croix rouge) : un souffle avant le Refrain.",
+          "check": "gap",
+          "spot": "rhythm.pattern",
+          "target": "kick,snare",
+          "listen": "vs:Couplet:Refrain",
+          "part": "Couplet",
+          "length": 4
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "La réverbe donne de l'espace aux accords ; un filtre qui s'ouvre fait sortir l'Intro d'une pièce voisine.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "levels": "f",
+          "text": "Écoute la réverbe : la caisse claire et les accords, d'abord sans, puis avec.",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "reverb",
+          "levels": "p",
+          "text": "À toi : au Mixeur, sur la piste « Accords », monte « Envoi réverbe ».",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "delay",
+          "levels": "p",
+          "text": "À toi : sur la piste « Mélodie », monte « Envoi écho » : chaque note se répète, de plus en plus loin.",
+          "check": "send:1",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:lead"
+        },
+        {
+          "id": "intro_filter",
+          "levels": "p",
+          "text": "À toi : automatise le filtre des accords sur l'Intro : « Automatiser un réglage », « Accords », « Filtre (balayage) », « Par partie », et une courbe qui monte du début à la fin de l'Intro : les accords s'ouvrent, comme si on ouvrait la porte.",
+          "check": "automation:rise",
+          "spot": "song.automation",
+          "target": "pad",
+          "listen": "part:Intro",
+          "part": "Intro"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le mix, c'est le volume de chaque piste : le kick et la basse devant, le reste derrière, pour laisser la place à la voix.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "textPro": "À toi : au Mixeur, baisse un peu « Accords » et « Mélodie » : en lo-fi tout est doux, rien ne dépasse.",
+          "check": "changed:volumes:pad,lead",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:kick,snare,bass,pad,lead"
+        },
+        {
+          "id": "meters",
+          "levels": "p",
+          "text": "Repère : pendant le Refrain, les vu-mètres du Mixeur ne doivent pas rester dans le rouge. Si une piste rougit, baisse son fader.",
+          "check": "manual"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "title": "Le mastering",
+      "why": "Le master colle le tout, sans pousser : le lo-fi s'écoute bas, longtemps.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Auto (style) » : environ −12 LUFS, bien moins fort que la trap. Le lo-fi reste doux.",
+          "check": "loudness:AUTO",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter à un rappeur !",
+      "steps": [
+        {
+          "id": "formats",
+          "levels": "p",
+          "text": "WAV pour un rappeur qui enregistre dessus (la qualité studio), M4A pour tes amis (un fichier léger), pistes séparées pour un ingénieur du son.",
+          "check": "manual"
+        },
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

@@ -63,5 +63,11 @@
   "Énergie : %d": "Enerji: %d",
   "Énergie, longueur, plus…": "Enerji, uzunluk, daha fazlası…",
   "↗ Montant": "↗ Yükselen",
-  "↘ Descendant": "↘ Alçalan"
+  "↘ Descendant": "↘ Alçalan",
+  "Triolet": "Triole",
+  "3 sur 2 cases": "2 hücreye 3",
+  "6 sur le temps": "Vuruşa 6",
+  "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Triole: %2$d hücreye %1$d eşit vuruş (sonraki hücre de onun parçası)",
+  "dans le triolet": "triolenin içinde",
+  "triolet, %1$d coups sur %2$d cases": "triole, %2$d hücreye %1$d vuruş"
 }

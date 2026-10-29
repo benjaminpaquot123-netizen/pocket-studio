@@ -374,7 +374,7 @@ fun ShareSheetContent(
             Column(Modifier.weight(1f)) {
                 Text(tr("Autres exports"), color = Neon.Cyan)
                 // Lot 2: the Mode simple has no Mix (the button takes it to the full mode).
-                Text(if (simple) tr("Piste par piste, MIDI, FLAC… (passe en mode complet)") else tr("Piste par piste, MIDI, FLAC… dans Mix"),
+                Text(if (simple) tr("Piste par piste, MIDI, FLAC… (passe en mode Pro)") else tr("Piste par piste, MIDI, FLAC… dans Mix"),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("share_other_where"))
             }
             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan)

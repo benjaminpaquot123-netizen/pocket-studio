@@ -63,5 +63,11 @@
   "Énergie : %d": "Energia: %d",
   "Énergie, longueur, plus…": "Energia, długość, więcej…",
   "↗ Montant": "↗ Rosnąco",
-  "↘ Descendant": "↘ Malejąco"
+  "↘ Descendant": "↘ Malejąco",
+  "Triolet": "Triola",
+  "3 sur 2 cases": "3 na 2 pola",
+  "6 sur le temps": "6 na miarę",
+  "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Triola: %1$d równych uderzeń na %2$d polach (następne pole do niej należy)",
+  "dans le triolet": "w trioli",
+  "triolet, %1$d coups sur %2$d cases": "triola, %1$d uderzeń na %2$d polach"
 }

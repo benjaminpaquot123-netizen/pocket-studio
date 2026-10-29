@@ -834,15 +834,16 @@ fun TutoChapterList(ui: TutoUi, goTo: (Int) -> Unit, setLevel: (TutoLevel) -> Un
  * « Bientôt pour les autres styles ».
  */
 @Composable
-fun TutoChooser(start: (style: String, level: TutoLevel) -> Unit, close: () -> Unit, simple: Boolean = true) {
-    var level by rememberSaveable { mutableStateOf(if (simple) TutoLevel.Facile else TutoLevel.Pro) }
+fun TutoChooser(start: (style: String, level: TutoLevel) -> Unit, close: () -> Unit, simple: Boolean = true, fixedLevel: TutoLevel? = null) {
+    // [fixedLevel]: given by « Simple ou Pro ? » just before (owner, 2026-10-29): not asked twice.
+    var level by rememberSaveable { mutableStateOf(fixedLevel ?: if (simple) TutoLevel.Facile else TutoLevel.Pro) }
     Column(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp).testTag("tuto_chooser"), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = close, modifier = Modifier.testTag("tuto_chooser_back")) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Retour")) }
             Text(tr("J'apprends"), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
         }
         Text(tr("Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie."), style = MaterialTheme.typography.bodyLarge)
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
+        if (fixedLevel == null) Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
             LevelCard(tr("Facile"), tr("Une quinzaine de chapitres, des mots simples, les écrans du Mode simple."), level == TutoLevel.Facile, "tuto_level_easy", Modifier.weight(1f)) { level = TutoLevel.Facile }
             LevelCard(tr("Pro"), tr("Tout le vocabulaire : piano roll, synthé, courbes, envois d'effets, mix et master."), level == TutoLevel.Pro, "tuto_level_pro", Modifier.weight(1f)) { level = TutoLevel.Pro }
         }

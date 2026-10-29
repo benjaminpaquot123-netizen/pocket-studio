@@ -1,0 +1,20 @@
+{
+  "Simple ou Pro ?": "بسيط أم محترف؟",
+  "Comment veux-tu voir ce projet ? Tu pourras changer à tout moment avec la pastille en haut.": "كيف تريد أن ترى هذا المشروع؟ يمكنك التغيير في أي وقت بالشارة في الأعلى.",
+  "Le mode choisit aussi le niveau du tuto. Tu pourras changer de mode à tout moment avec la pastille en haut.": "الوضع يحدد أيضًا مستوى الدرس. يمكنك تغيير الوضع في أي وقت بالشارة في الأعلى.",
+  "Ton dernier choix": "اختيارك الأخير",
+  "Pour débuter : 4 onglets, de gros boutons et des mots de tous les jours.": "للبداية: 4 تبويبات وأزرار كبيرة وكلمات يومية.",
+  "Pour aller loin : tous les outils, structure, sons, mix et live.": "للذهاب أبعد: كل الأدوات، البنية والأصوات والمزج والعزف المباشر.",
+  "Avec le tuto Facile": "مع الدرس السهل",
+  "Avec le tuto Pro": "مع درس المحترف",
+  "Changer de mode": "تغيير الوضع",
+  "Mode %s. Toucher pour changer de mode.": "الوضع %s. المس لتغيير الوضع.",
+  "Mode de ce projet": "وضع هذا المشروع",
+  "Ton morceau ne change pas : seuls les écrans et les mots changent. Ce projet garde le mode choisi.": "أغنيتك لا تتغير: تتغير الشاشات والكلمات فقط. يحتفظ هذا المشروع بالوضع المختار.",
+  "En ce moment": "الآن",
+  "Passer en mode Pro": "الانتقال إلى وضع المحترف",
+  "Passer en mode Simple": "الانتقال إلى الوضع البسيط",
+  "Piste par piste, MIDI, FLAC… (passe en mode Pro)": "مسارًا بمسار، MIDI، FLAC… (ينتقل إلى وضع المحترف)",
+  "Pro : tous les outils": "محترف: كل الأدوات",
+  "Séparation des pistes : batterie, basse, voix et le reste.": "فصل المسارات: الطبول والباص والصوت والباقي."
+}

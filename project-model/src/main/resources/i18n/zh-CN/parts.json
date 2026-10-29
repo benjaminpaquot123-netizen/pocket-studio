@@ -63,5 +63,11 @@
   "Énergie : %d": "能量：%d",
   "Énergie, longueur, plus…": "能量、长度、更多…",
   "↗ Montant": "↗ 上升",
-  "↘ Descendant": "↘ 下降"
+  "↘ Descendant": "↘ 下降",
+  "Triolet": "三连音",
+  "3 sur 2 cases": "2 格 3 下",
+  "6 sur le temps": "一拍 6 下",
+  "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "三连音：%2$d 格内均匀 %1$d 下（下一格也属于它）",
+  "dans le triolet": "在三连音里",
+  "triolet, %1$d coups sur %2$d cases": "三连音，%2$d 格 %1$d 下"
 }

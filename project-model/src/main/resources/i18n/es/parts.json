@@ -63,5 +63,11 @@
   "Énergie : %d": "Energía: %d",
   "Énergie, longueur, plus…": "Energía, duración, más…",
   "↗ Montant": "↗ Subiendo",
-  "↘ Descendant": "↘ Bajando"
+  "↘ Descendant": "↘ Bajando",
+  "Triolet": "Tresillo",
+  "3 sur 2 cases": "3 en 2 casillas",
+  "6 sur le temps": "6 en el tiempo",
+  "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Tresillo: %1$d golpes regulares en %2$d casillas (la casilla siguiente forma parte)",
+  "dans le triolet": "dentro del tresillo",
+  "triolet, %1$d coups sur %2$d cases": "tresillo, %1$d golpes en %2$d casillas"
 }

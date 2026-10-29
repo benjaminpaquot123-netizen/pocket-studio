@@ -177,9 +177,9 @@
    },
    {
     "role": "hat",
-    "pattern": "X.x.X.x.X.x.X.x.X.x.X.x.X3x.2222",
+    "pattern": "X.x.X.x.X.x.t.t.X.x.X.x.X3x.2222",
     "source": "trap",
-    "tip_fr": "Charleys réguliers, puis des rafales très rapides en fin de boucle : le fameux roulement.",
+    "tip_fr": "Charleys réguliers, un temps en triolets (trois coups sur deux cases), puis des rafales très rapides en fin de boucle : le fameux roulement.",
     "build": "x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x."
    },
    {
@@ -324,9 +324,9 @@
    },
    {
     "role": "hat",
-    "pattern": "X..x..x.X..x..x.X..x..x.X.33.3x.",
+    "pattern": "X..x..x.X..x..x.X..x..x.X.33t.x.",
     "source": "drill",
-    "tip_fr": "Charleys en « 3-3-2 » avec de petites rafales en triolets : ça sautille."
+    "tip_fr": "Charleys en « 3-3-2 » avec de petites rafales et un triolet (trois coups sur deux cases) : ça sautille."
    },
    {
     "role": "perc",

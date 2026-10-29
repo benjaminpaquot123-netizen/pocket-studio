@@ -23,7 +23,7 @@ class StarterWizardTest {
             assertEquals(s.name, s.lines.size, s.lines.map { it.role.lane }.toSet().size)
             for (l in s.lines) {
                 assertTrue("${s.name} ${l.role}", l.pattern.length == 16 || l.pattern.length == 32)
-                assertTrue("${s.name} ${l.role}", l.pattern.all { it in "Xxo.234" } && StarterWizard.hits(l.pattern).isNotEmpty())
+                assertTrue("${s.name} ${l.role}", l.pattern.all { it in "Xxo.234Tt" } && StarterWizard.hits(l.pattern).isNotEmpty())
                 assertTrue(l.tip.isNotBlank())
                 assertTrue("${s.name} ${l.role}", l.voice == null || l.voice in 0 until DrumPattern.PAD_COUNT)
             }

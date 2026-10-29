@@ -12,6 +12,7 @@ import com.pocketstudio.app.guide.GuideListenPlayer
 import com.pocketstudio.app.nav.AppHarness
 import com.pocketstudio.engine.OfflineExport
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.SynthPatch
 import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.track
@@ -257,6 +258,14 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
                 for (cell in cells.sorted()) {
                     if (has("step_$cell")) click("step_$cell") else h.vm.toggleStep(cell)
                     compose.waitForIdle()
+                }
+                // "lane:<role>:rolls" (Pro): each roll of the line made as a user would (long press › « Roulement » ×N).
+                if (c.endsWith(":rolls")) {
+                    val line = target.line(c.removePrefix("lane:").substringBefore(':'))!!
+                    StarterWizard.hits(line, p().drums.steps).filterValues { it.repeats > 1 }.forEach { (cell, hit) ->
+                        h.vm.setRoll(cell, hit.repeats, 0)
+                        compose.waitForIdle()
+                    }
                 }
             }
             c == "velocity:hat" -> {

@@ -125,10 +125,11 @@ object TutoValidation {
                 if (id == null) out += "drums.$part: role « $name » (one of ${TutoCourse.DRUM_NAMES.keys})"
                 val p = pattern.trim()
                 if (p.length !in setOf(16, 32, 64)) out += "drums.$part.$name: ${p.length} cells (16, 32 or 64)"
-                p.filter { it !in TutoCourse.DRUM_CELLS }.toSet().forEach { out += "drums.$part.$name: cell « $it » (X x o 2 3 4 .)" }
+                p.filter { it !in TutoCourse.DRUM_CELLS }.toSet().forEach { out += "drums.$part.$name: cell « $it » (X x o 2 3 4 T t .)" }
                 if (p.none { it != '.' }) out += "drums.$part.$name: no hit"
-                if (id == TutoCourse.CRASH && part == TutoCourse.ALL_PARTS) out += "drums.*.crash: a crash is played once at a part's start, give it a part"
-                val lane = if (id == TutoCourse.CRASH) TutoChecks.CRASH_LANE else StarterWizard.Role.entries.firstOrNull { it.id == id }?.lane
+                // The crash shares the kit's one cymbal with the ride: with a ride, its hits are the ride's strong ones.
+                val role = TutoTarget.drumRole(name, target.style)
+                val lane = if (role == TutoCourse.CRASH) null else StarterWizard.Role.entries.firstOrNull { it.id == role }?.lane
                 if (lane != null) lanes.put(lane, name)?.let { other -> out += "drums.$part: « $other » and « $name » on the same pad" }
             }
         }
@@ -159,6 +160,7 @@ object TutoValidation {
                 target.roleNotes(arg)?.notes.isNullOrEmpty() -> "no notes for « $arg »" + if (arg in TutoTarget.EXTRA_ROLES) " (write them in lines.$arg)" else ""
                 else -> null
             }
+            c.startsWith("triplet:") -> if (arg !in TutoChecks.DRUM_ROLES) "triplet:<drum role> (one of ${TutoChecks.DRUM_ROLES})" else null
             c.startsWith("offset:") -> if (arg.substringBefore(':') !in TutoChecks.DRUM_ROLES || arg.substringAfter(':', "late") !in setOf("late", "early")) "offset:<drum role>:<late|early>" else null
             c.startsWith("automation:") -> if (arg !in TutoChecks.CURVE_SHAPES) "automation:<${TutoChecks.CURVE_SHAPES.joinToString("|")}>" else null
             c.startsWith("insert:") -> if (EffectType.entries.none { it.name == arg }) "no effect « $arg »" else null

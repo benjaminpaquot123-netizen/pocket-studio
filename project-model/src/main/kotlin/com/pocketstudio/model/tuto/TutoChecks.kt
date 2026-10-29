@@ -58,7 +58,7 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
     val style: StarterWizard.Style = TutoCourse.of(base.id)?.let { c ->
         val key = TutoCourse.keyOf(c.key)
         val degrees = TutoCourse.degreesOf(c.chords)?.takeIf { it.isNotEmpty() }
-        val lines = courseLines(c.drums[TutoCourse.ALL_PARTS])
+        val lines = c.drums[TutoCourse.ALL_PARTS]?.let { mergedLines(base, it) }
         if (key == null && degrees == null && lines == null) return@let base
         val (scale, theirs) = StarterWizard.progressionOf(base, mood)
         base.copy(
@@ -66,7 +66,7 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
                 root = key?.first ?: base.melody.root,
                 progressions = base.melody.progressions + (mood to ((key?.second ?: scale) to (degrees ?: theirs))),
             ),
-            // The course's own drums in place of the recipe's lines (the crash is not a line: it is played once).
+            // The course's own drums in place of the recipe's lines it names (the others stay).
             lines = lines ?: base.lines,
         )
     } ?: base
@@ -89,14 +89,14 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
     fun partLines(label: String): List<StarterWizard.Line>? {
         val drums = TutoCourse.of(style.id)?.drums ?: return null
         val key = drums.keys.firstOrNull { it == label.trim() } ?: STEM.matchEntire(label.trim())?.groupValues?.get(1)?.takeIf { it in drums } ?: return null
-        return courseLines(drums[key])
+        return courseLines(drums[key], style)
     }
 
     /** The course's crash in the part [label] (played once at its start), null when it has none. */
     fun crashIn(label: String): Boolean {
         val drums = TutoCourse.of(style.id)?.drums ?: return false
         val key = drums.keys.firstOrNull { it == label.trim() } ?: STEM.matchEntire(label.trim())?.groupValues?.get(1)?.takeIf { it in drums } ?: return false
-        return drums[key]?.keys?.any { TutoCourse.DRUM_NAMES[it] == TutoCourse.CRASH } == true
+        return drums[key]?.keys?.any { drumRole(it, style) == TutoCourse.CRASH } == true
     }
 
     /** The drums of the part [label] the course gives it, over [steps] (null: none of its own). */
@@ -287,12 +287,17 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
          * The kits built in that stand for a drum pack (« Kit ▾ »'s, nothing to download), by the
          * pack the style takes its kick from ([StarterWizard.Style.kit]): the tutorial starts on it.
          * A style whose pack has none starts on the assistant's own kit (its studio voices: the
-         * tuned kick of house and techno, the hard kick, the rumble, the 808).
+         * tuned kick of house and techno, the hard kick, the rumble, the 808). The drum & bass kit
+         * also stands for the packs of drum & bass's other styles (neurofunk, liquid, jungle: the same
+         * short kick and cracking snare at 165-174 BPM; bass family, 2026-10-29).
          */
-        val KITS: Map<String, (Project) -> Project> = mapOf("dnb" to StudioDrums::withDnbKit)
+        val KITS: Map<String, (Project) -> Project> = listOf("dnb", "neurofunk", "liquid_dnb", "jungle").associateWith { { p: Project -> StudioDrums.withDnbKit(p) } }
 
-        /** The pack [style]'s kick comes from, when a kit of [KITS] stands for it. */
-        fun kitOf(style: StarterWizard.Style): String? = style.kit[StarterWizard.Role.Kick]?.takeIf { it in KITS }
+        /**
+         * The pack [style]'s kick comes from (its recipe's source, else the style's own pack, as the
+         * assistant takes it), when a kit of [KITS] stands for it.
+         */
+        fun kitOf(style: StarterWizard.Style): String? = (style.kit[StarterWizard.Role.Kick] ?: style.id).takeIf { it in KITS }
 
         /** The 303's role in a course's lines. */
         const val ACID = "acid"
@@ -314,11 +319,48 @@ class TutoTarget private constructor(base: StarterWizard.Style) {
         /** The ends of a song, played as its Intro when the target has none of its own. */
         val ENDINGS = setOf("Fin", "Outro")
 
-        /** A course's drums of one part as lines (the crash left out), null when it gives none. */
-        fun courseLines(drums: Map<String, String>?): List<StarterWizard.Line>? = drums?.mapNotNull { (name, pattern) ->
-            val id = TutoCourse.DRUM_NAMES[name.trim()]?.takeIf { it != TutoCourse.CRASH } ?: return@mapNotNull null
-            StarterWizard.Role.entries.firstOrNull { it.id == id }?.let { StarterWizard.Line(it, pattern.trim(), "") }
+        /** The kit voice of the shaker (the pad « Shaker »). */
+        private const val SHAKER_VOICE = 13
+
+        /**
+         * The drum role a course's [name] is in [style] ([TutoCourse.DRUM_NAMES]; [TutoCourse.CRASH]),
+         * null when none: « shaker » is the recipe's line played by the shaker (afrobeats' hats), else
+         * the second percussion's.
+         */
+        fun drumRole(name: String, style: StarterWizard.Style): String? {
+            val id = TutoCourse.DRUM_NAMES[name.trim()] ?: return null
+            if (name.trim() == "shaker") style.lines.firstOrNull { it.voice == SHAKER_VOICE }?.let { return it.role.id }
+            return id
+        }
+
+        /**
+         * A course's drums of one part as lines (the crash left out), each keeping the recipe line's
+         * kit voice (the afro shaker, the congas), null when it gives none.
+         */
+        fun courseLines(drums: Map<String, String>?, style: StarterWizard.Style): List<StarterWizard.Line>? = drums?.mapNotNull { (name, pattern) ->
+            val id = drumRole(name, style)?.takeIf { it != TutoCourse.CRASH } ?: return@mapNotNull null
+            StarterWizard.Role.entries.firstOrNull { it.id == id }?.let { r ->
+                StarterWizard.Line(r, pattern.trim(), style.lines.firstOrNull { it.role == r }?.tip.orEmpty(), voice = style.lines.firstOrNull { it.role == r }?.voice)
+            }
         }?.takeIf { it.isNotEmpty() }
+
+        /**
+         * The recipe's lines with the course's « * » drums: the roles it names replaced, the others
+         * kept, its new ones added; its crash, with a ride on the kit's one cymbal, played as strong
+         * hits of the ride.
+         */
+        fun mergedLines(base: StarterWizard.Style, drums: Map<String, String>): List<StarterWizard.Line> {
+            val mine = courseLines(drums, base).orEmpty().associateBy { it.role }
+            var out = base.lines.map { l -> mine[l.role] ?: l } + mine.values.filter { m -> base.lines.none { it.role == m.role } }
+            val crash = drums.entries.firstOrNull { drumRole(it.key, base) == TutoCourse.CRASH }?.value?.trim()
+            if (crash != null) out = out.map { l ->
+                if (l.role != StarterWizard.Role.Ride) l
+                else l.copy(pattern = (0 until maxOf(l.pattern.length, crash.length)).map { i ->
+                    if (crash.getOrNull(i) in setOf('X', 'x')) 'X' else l.pattern.getOrElse(i % l.pattern.length) { '.' }
+                }.joinToString(""))
+            }
+            return out
+        }
 
         private val NOTE = Regex("""^([A-G])([b#]?)(-?\d)$""")
         private val LETTERS = mapOf('C' to 0, 'D' to 2, 'E' to 4, 'F' to 5, 'G' to 7, 'A' to 9, 'B' to 11)
@@ -686,7 +728,31 @@ object TutoChecks {
         val mine = hits.keys
         if (!(mine.containsAll(wanted.keys) && (mine - wanted.keys).size <= maxOf(1, wanted.size / 2))) return false
         // "lane:hat:rolls": each roll of the line (trap's hats, a « 3 »: three hits in one cell) rolled there too.
-        return !rolls || wanted.all { (s, h) -> h.repeats < 2 || (hits[s]?.repeats ?: 1) == h.repeats }
+        return !rolls || wanted.all { (s, h) -> (h.repeats < 2 || (hits[s]?.repeats ?: 1) == h.repeats) && (hits[s]?.span ?: 1) == h.span }
+    }
+
+    /** Whether one of [lanes] holds a triplet ([Hit.isTriplet]) inside the loop. */
+    private fun hasTriplet(d: DrumPattern, lanes: Set<Int>): Boolean =
+        lanes.any { l -> d.lanes.getOrNull(l)?.hits?.any { (s, h) -> s < d.steps && h.isTriplet } == true }
+
+    /**
+     * « Montre-moi » of "triplet:<role>": the triplets of the style's line on that pad where they fit
+     * (trap's hats: the last beat of the first bar), else one on the first bar's last beat: 3 hits over
+     * its first 2 cells (a hit added there when there is none). Null when the loop has no room.
+     */
+    private fun withTriplet(p: Project, role: String, target: TutoTarget): Project? {
+        val lane = laneOf(role)
+        val steps = p.drums.steps
+        val fromLine = target.line(role)?.let { StarterWizard.hits(it, steps) }.orEmpty().filter { (s, h) -> h.isTriplet && s + h.span <= steps }
+        val wanted = fromLine.ifEmpty {
+            val at = (p.stepsPerBar - 4).coerceAtLeast(0)
+            mapOf(at to Hit(p.drums.lanes[lane].hits[at]?.velocity ?: 0.6f, repeats = Hit.TRIPLET.first, span = Hit.TRIPLET.second))
+        }
+        var d = p.drums
+        for ((s, h) in wanted.entries.sortedBy { it.key }) {
+            d = d.setHit(lane, s, true, h.velocity).withSpread(lane, s, h.repeats, h.span)
+        }
+        return p.copy(drums = d).takeIf { hasTriplet(d, setOf(lane)) }
     }
 
     /** The notes [mine] hold every one of [wanted] (its pitch, its start): the dotted notes all written. */
@@ -734,6 +800,8 @@ object TutoChecks {
             c == "velocity:hat" -> p.allScenes.any { hatsSwing(it.drums, p.stepsPerBar, target) }
             // "offset:snare:late": at least half the role's hits played late (early), by [OFFSET_MS] or more (the lo-fi's lazy snare).
             c.startsWith("offset:") -> p.allScenes.any { sc -> offsetDone(sc.drums, lanesOf(arg.substringBefore(':'), target), arg.substringAfter(':', "late") == "early") }
+            // "triplet:hat": at least one triplet (3 hits over 2 cells, or 6 over a beat) on the role's pad, in any part.
+            c.startsWith("triplet:") -> p.allScenes.any { sc -> hasTriplet(sc.drums, lanesOf(arg, target)) }
             // The 303's line: every step of it, its note, its accent and its slide.
             c == "notes:acid" -> target.acid?.let { a -> p.allScenes.any { acidMatches(it.acid, a) } } ?: false
             // Every dotted note written (not 3 of 12: the testers' bass and chords ticked with the screen's first notes).
@@ -1103,6 +1171,7 @@ object TutoChecks {
                     if (i != lane) l else l.copy(hits = hits.mapValues { (s, h) -> h.copy(velocity = v[s % line.pattern.length]?.velocity ?: 0.35f) })
                 }))
             }
+            c.startsWith("triplet:") -> withTriplet(p, arg, target) ?: return null
             c == "notes:acid" -> {
                 val a = target.acid ?: return null
                 val wanted = acidWanted(step, p, target) ?: return null
@@ -1587,6 +1656,15 @@ object TutoChecks {
             }
             p = q.switchScene(shown)
         }
+        // A crash in every part's loop (« * »), when no ride holds the kit's one cymbal: on its pad in each scene that plays drums.
+        TutoCourse.of(target.style.id)?.drums?.get(TutoCourse.ALL_PARTS)?.entries?.firstOrNull { TutoTarget.drumRole(it.key, target.style) == TutoCourse.CRASH }?.value?.trim()
+            ?.takeIf { target.style.lines.none { it.role == StarterWizard.Role.Ride } }?.let { pattern ->
+                val line = StarterWizard.Line(StarterWizard.Role.Ride, pattern, "")
+                p = p.copy(scenes = p.allScenes.map { sc ->
+                    if (sc.drums.lanes.none { it.hits.isNotEmpty() }) sc
+                    else sc.copy(drums = sc.drums.copy(lanes = sc.drums.lanes.mapIndexed { k, l -> if (k == CRASH_LANE) l.copy(hits = l.hits + StarterWizard.hits(line, sc.drums.steps)) else l }))
+                }).sanitized()
+            }
         // The course's crashes: once at their part's start, never looped.
         p.allScenes.map { it.label }.filter { it.isNotBlank() && target.crashIn(it) }.distinct().forEach { label -> crashOnce(p, label)?.let { p = it } }
         return p

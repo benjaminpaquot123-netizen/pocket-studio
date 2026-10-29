@@ -53,9 +53,9 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
     fun aSongsVoiceGoesIntoTheProjectWithTouchesOnly() {
         assumeTrue("not while the bench runs seats", System.getProperty("ps.human.dir").isNullOrBlank())
         begin()
-        // A new project, as a person who knows what they want: Complet, Partir de zéro.
-        tap(centerOfText("Complet"), "Complet")
+        // A new project, as a person who knows what they want: Partir de zéro, then Pro.
         tap(centerOfText("Partir de zéro"), "Partir de zéro")
+        tap(centerOf("mode_card_pro"), "Pro")
         // The Remix, from the sounds' strip.
         tap(centerOfText("Remix"), "the Remix chip")
         assertNotNull("the Remix page is not there", centerOf("remix_pick"))

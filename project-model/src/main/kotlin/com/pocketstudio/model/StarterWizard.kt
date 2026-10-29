@@ -616,13 +616,18 @@ object StarterWizard {
             .filter { it.first < steps }.toMap()
     }
 
-    /** A pattern string as hits (steps without a hit are left out; '2' to '4': a roll of that many hits). */
+    /**
+     * A pattern string as hits (steps without a hit are left out; '2' to '4': a roll of that many
+     * hits; 'T' strong, 't' medium: a triplet, 3 hits over this step and the next, which is '.').
+     */
     fun hits(pattern: String): Map<Int, Hit> = pattern.mapIndexedNotNull { i, c ->
         when (c) {
             'X' -> i to Hit(1f)
             'x' -> i to Hit(0.6f)
             'o' -> i to Hit(0.35f)
             in '2'..'4' -> i to Hit(0.6f, repeats = c - '0')
+            'T' -> i to Hit(1f, repeats = Hit.TRIPLET.first, span = Hit.TRIPLET.second)
+            't' -> i to Hit(0.6f, repeats = Hit.TRIPLET.first, span = Hit.TRIPLET.second)
             else -> null
         }
     }.toMap()

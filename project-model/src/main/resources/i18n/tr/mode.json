@@ -1,0 +1,20 @@
+{
+  "Simple ou Pro ?": "Basit mi Pro mu?",
+  "Comment veux-tu voir ce projet ? Tu pourras changer à tout moment avec la pastille en haut.": "Bu projeyi nasıl görmek istersin? Üstteki etiketle istediğin zaman değiştirebilirsin.",
+  "Le mode choisit aussi le niveau du tuto. Tu pourras changer de mode à tout moment avec la pastille en haut.": "Mod, eğitimin seviyesini de belirler. Üstteki etiketle istediğin zaman mod değiştirebilirsin.",
+  "Ton dernier choix": "Son seçimin",
+  "Pour débuter : 4 onglets, de gros boutons et des mots de tous les jours.": "Başlamak için: 4 sekme, büyük düğmeler ve günlük kelimeler.",
+  "Pour aller loin : tous les outils, structure, sons, mix et live.": "Daha ileri gitmek için: tüm araçlar, yapı, sesler, miks ve canlı.",
+  "Avec le tuto Facile": "Kolay eğitimle",
+  "Avec le tuto Pro": "Pro eğitimle",
+  "Changer de mode": "Mod değiştir",
+  "Mode %s. Toucher pour changer de mode.": "%s modu. Mod değiştirmek için dokun.",
+  "Mode de ce projet": "Bu projenin modu",
+  "Ton morceau ne change pas : seuls les écrans et les mots changent. Ce projet garde le mode choisi.": "Şarkın değişmez: yalnızca ekranlar ve kelimeler değişir. Bu proje seçilen modu saklar.",
+  "En ce moment": "Şu anda",
+  "Passer en mode Pro": "Pro moda geç",
+  "Passer en mode Simple": "Basit moda geç",
+  "Piste par piste, MIDI, FLAC… (passe en mode Pro)": "Parça parça, MIDI, FLAC… (Pro moda geçer)",
+  "Pro : tous les outils": "Pro: tüm araçlar",
+  "Séparation des pistes : batterie, basse, voix et le reste.": "Parça ayırma: davul, bas, vokal ve geri kalanı."
+}

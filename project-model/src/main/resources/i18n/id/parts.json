@@ -63,5 +63,11 @@
   "Énergie : %d": "Energi: %d",
   "Énergie, longueur, plus…": "Energi, panjang, lainnya…",
   "↗ Montant": "↗ Naik",
-  "↘ Descendant": "↘ Turun"
+  "↘ Descendant": "↘ Turun",
+  "Triolet": "Triplet",
+  "3 sur 2 cases": "3 dalam 2 kotak",
+  "6 sur le temps": "6 dalam satu ketukan",
+  "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Triplet: %1$d pukulan rata dalam %2$d kotak (kotak berikutnya ikut jadi bagiannya)",
+  "dans le triolet": "di dalam triplet",
+  "triolet, %1$d coups sur %2$d cases": "triplet, %1$d pukulan dalam %2$d kotak"
 }

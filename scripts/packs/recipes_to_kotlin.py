@@ -15,7 +15,8 @@ Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a ba
     roles: tom (lane 8, kit toms), ride (lane 12, the kit cymbal: no pack has a ride), perc2 (lane 13, a second
     percussion: shaker by default), rumble (lane 3: the kick again, played wherever the kick plays, meant for the
     "rumble" fx preset: reverb, distortion, low-pass, pump).
-    pattern: 'X' strong, 'x' medium, 'o' soft, '.' nothing, '2' '3' '4' a medium roll of that many hits in the step.
+    pattern: 'X' strong, 'x' medium, 'o' soft, '.' nothing, '2' '3' '4' a medium roll of that many hits in the step,
+      'T' strong / 't' medium: a triplet, 3 hits over this step and the next one, which must be '.' (not the last step).
   bass/lead "pattern" (and acid "pattern"): one token per step on the bar's chord: 'R' root, '2'..'7' scale
     steps, 'O' octave up (lower case 'r' 'o' softer), '=' the previous pitch again (a common tone held across
     the chord change), '-' holds the note, '.' silence, '/' holds the note and slides into the next one (808
@@ -164,7 +165,7 @@ GM_FALLBACK = {
 }
 DEFAULT_PRESET = {"bass": "Basse ronde", "chords": "Nappe chaude", "lead": "Lead"}
 PART = {"bass": "Bass", "chords": "Pad", "lead": "Lead"}
-DRUM_CHARS = set("Xxo.234")
+DRUM_CHARS = set("Xxo.234Tt")
 LINE_CHARS = set("R23457Oro.-6/=")
 CHORD_CHARS = set("Xxo-.")
 # Built-in kit voices (DrumKit order), for a line's "voice" and a "kit:" sound.
@@ -234,6 +235,13 @@ def sound_of(gid, part, spec):
     return DEFAULT_PRESET[part], None
 
 
+def triplets(pattern, gid, what):
+    # A triplet ('T', 't') covers its step and the next: that one is '.', inside the bar.
+    for i, c in enumerate(pattern):
+        if c in "Tt":
+            check(i + 1 < len(pattern) and pattern[i + 1] == "." and (i + 1) % 16 != 0, f"{gid} {what}: the triplet at {i} needs a '.' after it, in its bar")
+
+
 def line(pattern, chars, gid, what, lengths=(16, 32, 64)):
     check(len(pattern) in lengths, f"{gid} {what}: {len(pattern)} steps")
     check(set(pattern) <= chars, f"{gid} {what}: bad characters in {pattern}")
@@ -264,12 +272,13 @@ def style(r):
         role = ROLES.get(d["role"])
         check(role is not None, f"{gid}: role {d['role']}")
         pat = line(d["pattern"], DRUM_CHARS, gid, d["role"], lengths=(16, 32))
+        triplets(pat, gid, d["role"])
         check(any(c not in "." for c in pat), f"{gid} {d['role']}: no hit")
         voice = d.get("voice")
         check(voice is None or voice in VOICES, f"{gid} {d['role']}: unknown voice {voice} ({sorted(VOICES)})")
         extra = f", voice = {VOICES[voice]}" if voice is not None else ""
         if d.get("build"):
-            line(d["build"], DRUM_CHARS, gid, d["role"] + " build", lengths=(16, 32))
+            triplets(line(d["build"], DRUM_CHARS, gid, d["role"] + " build", lengths=(16, 32)), gid, d["role"] + " build")
             extra += f", build = {kstr(d['build'])}"
         if d.get("off"):
             extra += ", off = true"

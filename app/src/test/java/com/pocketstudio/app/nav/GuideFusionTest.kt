@@ -138,6 +138,9 @@ class GuideFusionTest {
         val before = h.vm.project.value.guide.start
         tap("launch_missions")
         assertFalse(shown("launch"))
+        // A new song: « Simple ou Pro ? » first (owner, 2026-10-29).
+        h.awaitTag("mode_step")
+        tap("mode_card_pro")
         // Audit final (01 M8): a song is open: a new one, from the assistant; the open song is not turned into a first song.
         h.awaitTag("wizard")
         assertEquals(before, h.vm.project.value.guide.start)

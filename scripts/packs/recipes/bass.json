@@ -856,6 +856,11 @@
     "tip_fr": "Une seule caisse claire au milieu de la mesure (le 3) : c'est ce qui donne l'impression de demi-vitesse."
    },
    {
+    "role": "clap",
+    "pattern": "........X.......",
+    "tip_fr": "Un clap pile sur la caisse claire : les deux ensemble font un « clac » plus épais et plus large."
+   },
+   {
     "role": "hat",
     "pattern": "x.x.x.x...x.x.xo",
     "source": "dubstep",
@@ -946,6 +951,10 @@
     "on": "snare",
     "reverb": 0.2,
     "delay": 0.3
+   },
+   {
+    "on": "clap",
+    "reverb": 0.3
    },
    {
     "on": "chords",
@@ -1355,7 +1364,7 @@
     "role": "kick",
     "pattern": "X...X...X...X...",
     "source": "pop",
-    "tip_fr": "Grosse caisse sur le 1 et le 3, avec un petit coup juste avant le 3 pour faire rebondir.",
+    "tip_fr": "Grosse caisse sur chaque temps au refrain, comme la pop disco ; au couplet, seulement sur le 1 et le 3, avec un petit coup juste avant le 3 pour faire rebondir.",
     "build": "X.....x.X......."
    },
    {
@@ -1393,7 +1402,7 @@
     "role": "perc2",
     "pattern": "....x.......x...",
     "voice": "shaker",
-    "tip_fr": "Un tambourin sur les temps 2 et 4 : il arrive au refrain et le fait sonner plus grand."
+    "tip_fr": "Un coup de shaker plus appuyé sur 2 et 4, avec le clap (là où les disques mettent un tambourin) : il arrive au refrain et le fait sonner plus grand."
    }
   ],
   "progressions": {

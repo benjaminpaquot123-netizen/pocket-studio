@@ -143,11 +143,11 @@ Sans ligne dans le cours, les notes visées sont celles de l'assistant (sauf `pa
 }
 ```
 
-- `"*"` : la batterie de tout le morceau, **à la place des lignes de la recette** (le groove que l'utilisateur écrit, les `lane:…`, les exemples `drums:…`). Une recette sans le rôle n'en a plus.
+- `"*"` : la batterie de tout le morceau : chaque rôle nommé **remplace la ligne de la recette** (le groove que l'utilisateur écrit, les `lane:…`, les exemples `drums:…`) ; les rôles non nommés gardent celle de la recette, un rôle nouveau s'ajoute.
 - `"<Partie>"` : la batterie de cette partie (et de ses secondes : « Drop » vaut aussi pour « Drop 2 »), **exactement ces pads** (les autres se taisent dans l'exemple). « Créer la partie » y pose ces coups sur les pads que l'utilisateur joue ; une étape `lane:<rôle>` avec `"part": "<Partie>"` les fait écrire dans cette partie.
-- Une case par pas : 16, 32 ou 64 cases (1, 2 ou 4 mesures). `X` fort, `x` normal, `o` doux, `2` `3` `4` un roulement, `.` rien.
-- Rôles : `kick`, `snare`, `clap`, `hat`, `openhat` (ou `open_hat`), `ride`, `perc`, `rim` (= `perc`, le pad Rim), `perc2`, `shaker` (= `perc2`, le pad Shaker), `tom`, `rumble`, `808`, et `crash`. Deux rôles sur le même pad (`ride` et `crash`, `rim` et `perc`) : erreur.
-- **`crash`** : un coup joué **une seule fois** au début de la partie, jamais en boucle (dans l'exemple ; l'utilisateur le pose avec l'étape `crash:once`). Pas dans `"*"`.
+- Une case par pas : 16, 32 ou 64 cases (1, 2 ou 4 mesures). `X` fort, `x` normal, `o` doux, `2` `3` `4` un roulement, `T` / `t` un triolet sur cette case et la suivante (qui reste `.`), `.` rien.
+- Rôles : `kick`, `snare`, `clap`, `hat`, `openhat` (ou `open_hat`), `ride`, `perc`, `rim` (= `perc`, le pad Rim), `perc2`, `shaker`, `tom`, `rumble`, `808`, et `crash`. **`shaker`** = la ligne de la recette jouée par le shaker (les charleys de l'afrobeats), sinon `perc2` (le pad Shaker). Une ligne gardée garde sa voix de kit (les congas de l'afrobeats). Deux rôles sur le même pad (`rim` et `perc`) : erreur.
+- **`crash`** dans une partie : un coup joué **une seule fois** au début de la partie, jamais en boucle (dans l'exemple ; l'utilisateur le pose avec l'étape `crash:once`). Dans `"*"` : en boucle sur la cymbale ; avec un `ride` (le kit n'a qu'une cymbale), ses coups deviennent des coups forts du ride.
 
 ---
 
@@ -162,8 +162,9 @@ Sans ligne dans le cours, les notes visées sont celles de l'assistant (sauf `pa
 | `swing` | Le swing du style (à moitié de sa valeur près, au plus 5 points). Seulement pour un style qui swingue. | oui |
 | `lane:<rôle>` | Toutes les cases de la ligne du style sur ce pad (un peu de surplus toléré), sur toute sa longueur (« Passer à 2 mesures » proposé). Rôles : `kick`, `snare`, `clap`, `hat`, `open_hat`, `perc`, `perc2`, `tom`, `ride`, `rumble`, `808` (ceux que le style joue). | oui |
 | `lane:<rôle>` + `part` | Pareil, dans cette partie, avec sa batterie à elle (`drums.<Partie>`) ; le bouton mène d'abord à la partie. | oui |
-| `lane:<rôle>:rolls` | Pareil, et chaque roulement de la ligne (« 3 » : 3 coups dans une case) roulé pareil (Pro). | oui |
+| `lane:<rôle>:rolls` | Pareil, et chaque roulement de la ligne (« 3 » : 3 coups dans une case ; « t » : un triolet sur 2 cases) roulé pareil (Pro). | oui |
 | `velocity:hat` | Les charleys des temps plus doux que ceux d'entre, sur chaque mesure (« Copier » après la 1re). | oui |
+| `triplet:<rôle>` | Au moins un **triolet** sur le pad de ce rôle, dans n'importe quelle partie : 3 coups sur 2 cases (ou 6 sur un temps), choisi par l'appui long sur un coup › « Triolet ». Rôles : ceux de `lane:` (`hat` le plus souvent). | oui (les triolets de la ligne du style, sinon un sur le dernier temps de la 1re mesure) |
 | `offset:<rôle>:late` / `:early` | Au moins la moitié des coups du pad joués en retard / en avance d'au moins 5 ms (réglage « Décalage du coup », Pro). | oui |
 | `notes:bass` / `notes:pad` / `notes:lead` / `notes:pad2` / `notes:counter` | Toutes les notes de la ligne écrites sur la piste de ce rôle (« Créer la piste … » la fait : Basse, ou 808 dans les styles 808, Accords, Mélodie, Nappe, Contre-chant). | oui, mesure par mesure |
 | `notes:acid` | Toute la ligne 303 : notes, accents, slides. | oui |
@@ -272,7 +273,7 @@ flock <lock> ./gradlew --max-workers=3 --no-configuration-cache :app:testDebugUn
 
 ## 11. Ce qu'un cours ne peut pas encore dire
 
-- **Triolets « 3 coups sur 2 cases »** (charleys trap / drill) : en cours d'ajout au moteur (autre chantier) ; aujourd'hui seules les rafales dans une case (`3` = 3 coups dans une 16e), détectées par `lane:hat:rolls`.
+- **Triolets** : `triplet:<rôle>` vérifie qu'il y en a un, pas sa place exacte ; pour la place, `lane:<rôle>:rolls` (la ligne de la recette, où `t` / `T` = un triolet sur 2 cases, doit être refaite triolet pour triolet).
 - **Une variante dans une partie longue** (couper une ligne 8 mesures sur 32, un mini-break de 2 mesures) : il faut une partie de plus.
 - **Le décalage d'un coup, les roulements et la 303** ne s'écrivent qu'en Pro (le Mode simple n'a pas ces réglages).
 - **Force des coups** : trois niveaux (X / x / o) dans `drums`, pas de force fine.

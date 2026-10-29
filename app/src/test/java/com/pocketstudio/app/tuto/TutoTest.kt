@@ -317,19 +317,23 @@ class TutoTest {
                     ProjectsActions(learn = { s, l -> learned += s to l }, wizard = { wizard++ }, create = { created += it }), newOnly = true)
             }
         }
+        // Owner (2026-10-29): « Simple ou Pro ? » before each start; for « J'apprends » it is the level.
         compose.onNodeWithTag("starter_wizard").performClick()
+        compose.onNodeWithTag("mode_card_simple").performClick()
         assertEquals(1, wizard)
         compose.onNodeWithTag("start_empty").performClick()
+        compose.onNodeWithTag("mode_card_simple").performClick()
         assertEquals(listOf(1), created)
         compose.onNodeWithTag("start_learn").performClick()
+        compose.onNodeWithTag("mode_card_pro").performClick()
         compose.onNodeWithTag("tuto_chooser").assertExists()
+        compose.onNodeWithTag("tuto_level_pro").assertDoesNotExist()
         compose.onNodeWithTag("tuto_soon").performScrollTo().assertExists()
         // The styles with a course file are offered; one without is among « Bientôt pour les autres styles ».
         assertEquals(1, compose.onAllNodesWithTag("tuto_style_jump_up").fetchSemanticsNodes().size)
         com.pocketstudio.model.tuto.TutoCourse.STYLES.forEach { compose.onNodeWithTag("tuto_style_$it").assertExists() }
         val soon = com.pocketstudio.model.StarterWizard.STYLES.first { it.id !in com.pocketstudio.model.tuto.TutoCourse.STYLES }
         compose.onNodeWithTag("tuto_style_${soon.id}").assertDoesNotExist()
-        compose.onNodeWithTag("tuto_level_pro").performClick()
         compose.onNodeWithTag("tuto_style_jump_up").performScrollTo().performClick()
         assertEquals(listOf("jump_up" to TutoLevel.Pro), learned)
     }

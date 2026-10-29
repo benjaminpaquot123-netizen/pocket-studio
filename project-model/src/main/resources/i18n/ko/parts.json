@@ -63,5 +63,11 @@
   "Énergie : %d": "에너지: %d",
   "Énergie, longueur, plus…": "에너지, 길이, 더 보기…",
   "↗ Montant": "↗ 올라가기",
-  "↘ Descendant": "↘ 내려가기"
+  "↘ Descendant": "↘ 내려가기",
+  "Triolet": "셋잇단",
+  "3 sur 2 cases": "2칸에 3번",
+  "6 sur le temps": "한 박에 6번",
+  "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "셋잇단: %2$d칸에 고르게 %1$d번 (다음 칸도 포함돼요)",
+  "dans le triolet": "셋잇단 안",
+  "triolet, %1$d coups sur %2$d cases": "셋잇단, %2$d칸에 %1$d번"
 }

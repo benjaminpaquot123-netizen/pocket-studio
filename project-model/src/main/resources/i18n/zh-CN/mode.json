@@ -1,0 +1,20 @@
+{
+  "Simple ou Pro ?": "简单还是专业？",
+  "Comment veux-tu voir ce projet ? Tu pourras changer à tout moment avec la pastille en haut.": "想怎样查看这个项目？随时可以用顶部的标签切换。",
+  "Le mode choisit aussi le niveau du tuto. Tu pourras changer de mode à tout moment avec la pastille en haut.": "模式也决定教程的难度。随时可以用顶部的标签切换模式。",
+  "Ton dernier choix": "你上次的选择",
+  "Pour débuter : 4 onglets, de gros boutons et des mots de tous les jours.": "适合入门：4 个标签页、大按钮、日常用语。",
+  "Pour aller loin : tous les outils, structure, sons, mix et live.": "想走得更远：所有工具，结构、声音、混音和现场。",
+  "Avec le tuto Facile": "配简单教程",
+  "Avec le tuto Pro": "配专业教程",
+  "Changer de mode": "切换模式",
+  "Mode %s. Toucher pour changer de mode.": "%s模式。轻触切换模式。",
+  "Mode de ce projet": "此项目的模式",
+  "Ton morceau ne change pas : seuls les écrans et les mots changent. Ce projet garde le mode choisi.": "你的歌曲不会改变：只有界面和用词会变。此项目会记住所选模式。",
+  "En ce moment": "当前模式",
+  "Passer en mode Pro": "切换到专业模式",
+  "Passer en mode Simple": "切换到简单模式",
+  "Piste par piste, MIDI, FLAC… (passe en mode Pro)": "逐轨、MIDI、FLAC…（切换到专业模式）",
+  "Pro : tous les outils": "专业：所有工具",
+  "Séparation des pistes : batterie, basse, voix et le reste.": "分轨：鼓、贝斯、人声和其余部分。"
+}

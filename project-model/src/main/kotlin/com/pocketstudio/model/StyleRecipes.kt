@@ -56,7 +56,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
         listOf(
             Line(Role.Kick, "X......X..X.....", "Peu de coups de kick, toujours en même temps que la 808."),
             Line(Role.Clap, "........X.......", "Un seul clap par mesure, sur le 3 : c'est ce qui rend le groove lent et lourd."),
-            Line(Role.Hat, "X.x.X.x.X.x.X.x.X.x.X.x.X3x.2222", "Charleys réguliers, puis des rafales très rapides en fin de boucle : le fameux roulement.", build = "x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x."),
+            Line(Role.Hat, "X.x.X.x.X.x.t.t.X.x.X.x.X3x.2222", "Charleys réguliers, un temps en triolets (trois coups sur deux cases), puis des rafales très rapides en fin de boucle : le fameux roulement.", build = "x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x."),
             Line(Role.OpenHat, "......................X.........", "Un charley ouvert de temps en temps pour laisser respirer."),
         ),
         swing = 0.0,
@@ -87,7 +87,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
         listOf(
             Line(Role.Kick, "X.........X.......X....X........", "Peu de coups de kick, jamais au même endroit d'une mesure à l'autre."),
             Line(Role.Snare, "........X...................X...", "Caisse claire sur le 3 de la 1re mesure, puis sur le 4 de la 2e : ce décalage fait tout le style."),
-            Line(Role.Hat, "X..x..x.X..x..x.X..x..x.X.33.3x.", "Charleys en « 3-3-2 » avec de petites rafales en triolets : ça sautille."),
+            Line(Role.Hat, "X..x..x.X..x..x.X..x..x.X.33t.x.", "Charleys en « 3-3-2 » avec de petites rafales et un triolet (trois coups sur deux cases) : ça sautille."),
             Line(Role.Perc, "......x.......x.......x....o....", "Un petit « toc » (rim) qui répond à la caisse claire et annonce le coup suivant.", voice = 10),
         ),
         swing = 0.12,
@@ -996,6 +996,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
         listOf(
             Line(Role.Kick, "X.........x.....X.....x...x.....", "Une grosse caisse sur le 1, un rappel après la caisse claire ; dans la 2e mesure, un coup en plus qui bouscule. Peu de coups, chacun pèse lourd."),
             Line(Role.Snare, "........X.......", "Une seule caisse claire au milieu de la mesure (le 3) : c'est ce qui donne l'impression de demi-vitesse."),
+            Line(Role.Clap, "........X.......", "Un clap pile sur la caisse claire : les deux ensemble font un « clac » plus épais et plus large."),
             Line(Role.Hat, "x.x.x.x...x.x.xo", "Le charley garde la vitesse normale, deux fois par temps, pendant que le reste traîne. Il se tait sur la caisse claire pour lui laisser toute la place."),
             Line(Role.Perc, "...o..o....o..o.", "Petits coups de percussion décalés pour le côté chaloupé."),
         ),
@@ -1016,7 +1017,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
         references = listOf("Skrillex – Scary Monsters and Nice Sprites (2010)", "Rusko – Cockney Thug (2007)", "Benga & Coki – Night (2007)", "Skream – Midnight Request Line (2005)", "Digital Mystikz – Anti War Dub (2006)"),
         kit = mapOf(),
         form = SongForm.Build,
-        effects = listOf(StyleFx("snare", reverb = 0.2f, delay = 0.3f), StyleFx("pad", reverb = 0.4f, delay = 0.2f), StyleFx("lead", preset = "dub_echo"), StyleFx("bass", preset = "fat_bass"), StyleFx("pad", insert = "PUMP", params = listOf(0.6f, 0.45f, 0.0f))),
+        effects = listOf(StyleFx("snare", reverb = 0.2f, delay = 0.3f), StyleFx("clap", reverb = 0.3f), StyleFx("pad", reverb = 0.4f, delay = 0.2f), StyleFx("lead", preset = "dub_echo"), StyleFx("bass", preset = "fat_bass"), StyleFx("pad", insert = "PUMP", params = listOf(0.6f, 0.45f, 0.0f))),
         breakWith = Layers(setOf(Role.Hat, Role.Perc), setOf(Part.Pad, Part.Lead)),
         riser = true,
         sweeps = listOf(Sweep("pad", mapOf(1 to (0.25f to 1.0f)))),
@@ -1145,13 +1146,13 @@ internal val STYLE_RECIPES: List<Style> = listOf(
         "pop", "Pop", "Autres", 116.0,
         "La pop des radios d'aujourd'hui : un rythme simple qui donne envie de bouger, les quatre accords qu'on entend partout et une mélodie qu'on retient. Il ne manque plus que ta voix !",
         listOf(
-            Line(Role.Kick, "X...X...X...X...", "Grosse caisse sur le 1 et le 3, avec un petit coup juste avant le 3 pour faire rebondir.", build = "X.....x.X......."),
+            Line(Role.Kick, "X...X...X...X...", "Grosse caisse sur chaque temps au refrain, comme la pop disco ; au couplet, seulement sur le 1 et le 3, avec un petit coup juste avant le 3 pour faire rebondir.", build = "X.....x.X......."),
             Line(Role.Snare, "....X.......X...", "La caisse claire sous le clap : le coup qui claque sur 2 et 4."),
             Line(Role.Clap, "....X.......X...", "Le clap sur 2 et 4 : c'est là qu'on tape dans les mains."),
             Line(Role.Hat, "x.o.x.o.x.o.x.o.", "Un charley deux fois par temps, simple et régulier, pour tenir le tempo."),
             Line(Role.OpenHat, "...............x", "Un charley ouvert tout à la fin pour lancer la mesure suivante."),
             Line(Role.Perc, "..o...o...o...o.", "Un shaker entre les temps : il donne de l'élan au refrain.", voice = 13),
-            Line(Role.Perc2, "....x.......x...", "Un tambourin sur les temps 2 et 4 : il arrive au refrain et le fait sonner plus grand.", voice = 13),
+            Line(Role.Perc2, "....x.......x...", "Un coup de shaker plus appuyé sur 2 et 4, avec le clap (là où les disques mettent un tambourin) : il arrive au refrain et le fait sonner plus grand.", voice = 13),
         ),
         swing = 0.0,
         melody = Melody(

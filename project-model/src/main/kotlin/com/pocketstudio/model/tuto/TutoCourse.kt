@@ -46,7 +46,7 @@ data class TutoCourse(
     /**
      * The course's own drums, by part ("*": every part, in place of the recipe's lines; "Drop": that
      * part, and its variants « Drop 2 »…, exactly these pads), then by drum role ([DRUM_NAMES]):
-     * a cell a step, 16, 32 or 64 of them, "X" strong, "x" medium, "o" soft, "2" "3" "4" a roll,
+     * a cell a step, 16, 32 or 64 of them, "X" strong, "x" medium, "o" soft, "2" "3" "4" a roll, "T" "t" a triplet over two cells,
      * "." nothing. "crash": a hit played once at the part's start, never looped (« crash:once »).
      */
     val drums: Map<String, Map<String, String>> = emptyMap(),
@@ -78,8 +78,8 @@ data class TutoCourse(
         val DRUM_NAMES: Map<String, String> = com.pocketstudio.model.StarterWizard.Role.entries.associate { it.id to it.id } +
             mapOf("openhat" to "open_hat", "shaker" to "perc2", "rim" to "perc", CRASH to CRASH)
 
-        /** A pattern cell: strong, medium, soft, a roll, nothing. */
-        val DRUM_CELLS = setOf('X', 'x', 'o', '2', '3', '4', '.')
+        /** A pattern cell: strong, medium, soft, a roll, a triplet over this cell and the next ('T' 't'), nothing. */
+        val DRUM_CELLS = setOf('X', 'x', 'o', '2', '3', '4', 'T', 't', '.')
 
         /**
          * The styles with a course written: every style of the assistant that has its file

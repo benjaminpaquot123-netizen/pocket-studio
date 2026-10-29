@@ -66,7 +66,8 @@ class TutoSocle2Test {
         val t = TutoTarget.of(style)!!
         assertEquals("X...X...X...X...", t.line("kick")!!.pattern)
         assertEquals("o.x.o.x.o.x.o.x.", t.line("perc2")!!.pattern)
-        assertNull("the recipe's ride is gone", t.line("ride"))
+        // The roles it does not name keep the recipe's lines.
+        assertEquals(com.pocketstudio.model.StarterWizard.style(style)!!.lines.first { it.role.id == "ride" }.pattern, t.line("ride")!!.pattern)
         // The Break's own hats, in the Break.
         assertEquals("x...x...x...x...", t.line("hat", "Break")!!.pattern)
         assertEquals("x.x.x.x.x.x.x.x.", t.line("hat")!!.pattern)
@@ -211,6 +212,18 @@ class TutoSocle2Test {
 
     private fun Project.renamed(label: String) = sanitized().renameScene(0, label).sanitized()
 
+    /** « shaker » is the recipe's line the shaker plays (afrobeats' hats); a crash with a ride: the ride's strong hits. */
+    @Test
+    fun shakerAndCrashFollowTheKit() {
+        val afro = com.pocketstudio.model.StarterWizard.style("afrobeats")!!
+        assertEquals("hat", TutoTarget.drumRole("shaker", afro))
+        assertEquals("perc2", TutoTarget.drumRole("shaker", com.pocketstudio.model.StarterWizard.style("trance")!!))
+        val jungle = com.pocketstudio.model.StarterWizard.style("jungle")!!
+        val merged = TutoTarget.mergedLines(jungle, mapOf("ride" to "x.x.x.x.x.x.x.x.", "crash" to "..............X."))
+        assertEquals("x.x.x.x.x.x.x.X.", merged.first { it.role.id == "ride" }.pattern)
+        assertTrue("the recipe's hats stay", merged.any { it.role.id == "hat" })
+    }
+
     @Test
     fun theValidationReadsTheDrums() {
         val bad = TutoCourse.parse(
@@ -221,7 +234,7 @@ class TutoSocle2Test {
             }}""").replace("""{"id":"g","text":"t","check":"label:Groove"},""", """{"id":"g","text":"t","check":"label:Groove"},{"id":"cr","text":"t","check":"crash:once","part":"Drop"},"""),
         )
         val problems = TutoValidation.problems(bad, "trance.json").joinToString("\n")
-        listOf("drums.*.kick: 8 cells", "role « guitar »", "drums.*.crash", "« ride » and « crash » on the same pad", "cell « Z »", "part « Pont »", "crash:once before the song")
+        listOf("drums.*.kick: 8 cells", "role « guitar »", "cell « Z »", "part « Pont »", "crash:once before the song")
             .forEach { assertTrue("$it in\n$problems", it in problems) }
     }
 }

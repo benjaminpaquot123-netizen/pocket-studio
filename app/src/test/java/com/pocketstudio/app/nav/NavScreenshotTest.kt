@@ -118,6 +118,8 @@ open class NavScreenshotTest {
     /** G5: « Mon premier morceau » (Plus): audit final, a new song from the assistant (the open one stays as it is). */
     @Test fun guideFirst() = shot("guide_first") {
         tap("tab_Plus"); compose.onNodeWithTag("plus_missions").performScrollTo(); tap("plus_missions")
+        // « Simple ou Pro ? » first (owner, 2026-10-29).
+        tap("mode_card_pro")
         awaitGuide("wizard")
     }
     /** G5: a song just made: the Guide opens on « Ton morceau est prêt ». */
@@ -125,6 +127,17 @@ open class NavScreenshotTest {
         h.vm.session.edit { com.pocketstudio.model.guide.GuideStart.begin(houseSong(), com.pocketstudio.model.guide.GuideStart.SONG) }
         awaitGuide("guide_card_start.ready")
     }
+    /** Owner (2026-10-29): « Nouveau projet › Je pars de zéro » asks « Simple ou Pro ? » (the last choice marked). */
+    @Test fun modeStep() = shot("mode_step") {
+        com.pocketstudio.app.settings.ProjectModes.choose(h.app, false)
+        tap("top_projects"); tap("project_new"); tap("start_empty")
+    }
+    /** « J'apprends »: the same step, each card saying the tutorial's level it gives. */
+    @Test fun modeStepLearn() = shot("mode_step_learn", simple = true) {
+        tap("top_projects"); tap("project_new"); tap("start_learn")
+    }
+    /** The top bar's mode chip, touched: the change of mode and what it changes. */
+    @Test fun modeSwitch() = shot("mode_switch") { tap("top_mode") }
     @Test fun helpLabels() = shot("help_labels") { tap("help_labels_button") }
     @Test fun helpLabelsSons() = shot("help_labels_sons") { tap("tab_Sons"); tap("help_labels_button") }
     @Test fun helpLabelsMix() = shot("help_labels_mix") { tap("tab_Mix"); tap("help_labels_button") }
@@ -169,7 +182,7 @@ open class NavScale130ScreenshotTest : NavScreenshotTest() {
         val SCALED = setOf(
             "structure", "structure_parts", "sons", "sons_synth", "mix", "live", "plus", "simple_song", "simple_rhythm", "simple_keys",
             "simple_send", "welcome_mode", "guide_first", "guide_ready", "help_labels", "help_labels_simple", "launch", "launch_simple",
-            "sheet_pad", "sheet_share",
+            "sheet_pad", "sheet_share", "mode_step", "mode_switch",
         )
     }
 }
@@ -189,7 +202,7 @@ open class NavTabletScreenshotTest : NavScreenshotTest() {
     companion object {
         val TABLET = setOf(
             "structure", "structure_parts", "sons", "sons_synth", "mix", "live", "plus", "plus_settings", "simple_song", "simple_keys",
-            "simple_send", "welcome_mode", "guide_first", "guide_ready", "help_labels", "launch",
+            "simple_send", "welcome_mode", "guide_first", "guide_ready", "help_labels", "launch", "mode_step",
         )
     }
 }

@@ -55,11 +55,12 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
         NeonCard {
             SectionLabel(tr("Affichage"))
             // Phase 36: the Mode simple or every tool; the project stays the same either way.
-            Text(tr("Façon de travailler"), style = MaterialTheme.typography.bodyMedium)
+            // Owner (2026-10-29): it is the open project's mode (each project keeps its own).
+            Text(tr("Mode de ce projet"), style = MaterialTheme.typography.bodyMedium)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 FilterChip(selected = s.simpleMode, onClick = { actions.update { it.copy(simpleMode = true) } }, label = { Text(tr("Simple : 4 onglets")) },
                     colors = chip, modifier = Modifier.testTag("mode_simple"))
-                FilterChip(selected = !s.simpleMode, onClick = { actions.update { it.copy(simpleMode = false) } }, label = { Text(tr("Complet : tous les outils")) },
+                FilterChip(selected = !s.simpleMode, onClick = { actions.update { it.copy(simpleMode = false) } }, label = { Text(tr("Pro : tous les outils")) },
                     colors = chip, modifier = Modifier.testTag("mode_full"))
             }
             Text(tr("Changer de façon de travailler ne change rien à tes morceaux."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)

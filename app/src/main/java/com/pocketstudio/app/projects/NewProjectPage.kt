@@ -55,6 +55,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -73,6 +74,10 @@ import kotlin.math.roundToInt
  * Guide), « Je pars de zéro » (an empty project). Everything else (a style's song in one touch,
  * the starting beat, the demos, the Remix, an import) waits folded under « Autres façons de
  * commencer » (open while a song is being prepared).
+ *
+ * Owner (2026-10-29): no new project without « Simple ou Pro ? ». Each way to start goes through
+ * [com.pocketstudio.app.ui.ModeStep] first (Retour comes back here); for « J'apprends » the mode
+ * is also the tutorial's level (Simple: Facile), asked once. The demos only play: no step.
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -85,18 +90,28 @@ internal fun NewProjectPage(
     val busy = quick.creating != null
     // Leaving the page ends a demo still playing.
     DisposableEffect(Unit) { onDispose { actions.stopDemo() } }
+    val context = androidx.compose.ui.platform.LocalContext.current
+    // The way to start touched, waiting for « Simple ou Pro ? » (kept through a rotation): see [startOf].
+    var pending by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<String?>(null) }
     var learning by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
+    // Before the steps below: « Autres façons de commencer » stays open on the way back from them.
+    var others by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
     if (learning) {
+        // Retour: back on « Simple ou Pro ? », one step at a time.
         androidx.activity.compose.BackHandler { learning = false }
+        val simple = com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode
         com.pocketstudio.app.tuto.TutoChooser(
-            start = { style, level -> learning = false; leave(); actions.learn(style, level) },
+            start = { style, level -> learning = false; pending = null; leave(); actions.learn(style, level) },
             close = { learning = false },
-            simple = com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode,
+            simple = simple,
+            fixedLevel = if (simple) com.pocketstudio.model.tuto.TutoLevel.Facile else com.pocketstudio.model.tuto.TutoLevel.Pro,
         )
         return
     }
-    var others by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
-    Column(Modifier.fillMaxSize().padding(horizontal = 12.dp, vertical = 8.dp).testTag("new_project"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    // The step lies over the page, which stays as it was under it (its families open or folded).
+    Box(Modifier.fillMaxSize()) {
+    val asking = pending
+    Column(Modifier.fillMaxSize().then(if (asking != null) Modifier.clearAndSetSemantics {} else Modifier).padding(horizontal = 12.dp, vertical = 8.dp).testTag("new_project"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = close, enabled = !busy, modifier = Modifier.testTag("new_project_back")) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Retour"))
@@ -108,19 +123,53 @@ internal fun NewProjectPage(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             BigChoice(Icons.Filled.School, tr("J'apprends"), tr("Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie."),
-                Neon.Acid, !busy, "start_learn") { learning = true }
+                Neon.Acid, !busy, "start_learn") { pending = START_LEARN }
             BigChoice(Icons.Filled.Bolt, tr("Fais-moi un morceau"), tr("Choisis un style : l'assistant fait le morceau, le Guide t'aide à le finir."),
-                Neon.Cyan, !busy, "starter_wizard") { leave(); actions.wizard() }
+                Neon.Cyan, !busy, "starter_wizard") { pending = START_WIZARD }
             BigChoice(Icons.Filled.Edit, tr("Je pars de zéro"), tr("Un projet vide : à toi de jouer."),
                 Neon.Amber, !busy, "start_empty") {
-                starters.indexOfFirst { it.group == StarterGroup.Empty }.takeIf { it >= 0 }?.let { leave(); actions.create(it) }
+                starters.indexOfFirst { it.group == StarterGroup.Empty }.takeIf { it >= 0 }?.let { pending = START_STARTER + it }
             }
             val open = others || busy || quick.error != null
             TextButton(onClick = { others = !others }, enabled = !busy, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("start_others")) {
                 Text((if (open) "▾ " else "▸ ") + tr("Autres façons de commencer"), color = Neon.TextSecondary, style = MaterialTheme.typography.titleSmall)
             }
-            if (open) OtherStarts(starters, quick, actions, busy, leave)
+            if (open) OtherStarts(starters, quick, actions, busy, leave) { pending = it }
         }
+    }
+    if (asking != null) {
+        androidx.activity.compose.BackHandler { pending = null }
+        androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
+            com.pocketstudio.app.ui.ModeStep(
+                choose = { simple ->
+                    com.pocketstudio.app.settings.ProjectModes.choose(context, simple)
+                    if (asking == START_LEARN) learning = true
+                    else {
+                        pending = null
+                        startOf(asking, starters, actions, leave)
+                    }
+                },
+                back = { pending = null },
+                tuto = asking == START_LEARN,
+            )
+        }
+    }
+    }
+}
+
+private const val START_LEARN = "learn"
+private const val START_WIZARD = "wizard"
+private const val START_STARTER = "starter:"
+private const val START_QUICK = "quick:"
+private const val START_CUSTOM = "custom:"
+
+/** Runs the way to start [key] stands for, once its mode is chosen. */
+private fun startOf(key: String, starters: List<ProjectStarter>, actions: ProjectsActions, leave: () -> Unit) {
+    when {
+        key == START_WIZARD -> { leave(); actions.wizard() }
+        key.startsWith(START_STARTER) -> key.removePrefix(START_STARTER).toIntOrNull()?.takeIf { it in starters.indices }?.let { leave(); actions.create(it) }
+        key.startsWith(START_QUICK) -> actions.quickStyle(key.removePrefix(START_QUICK))
+        key.startsWith(START_CUSTOM) -> actions.customStyle(key.removePrefix(START_CUSTOM))
     }
 }
 
@@ -151,7 +200,7 @@ private fun BigChoice(icon: ImageVector, title: String, line: String, accent: an
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun OtherStarts(starters: List<ProjectStarter>, quick: QuickUi, actions: ProjectsActions, busy: Boolean, leave: () -> Unit) {
+private fun OtherStarts(starters: List<ProjectStarter>, quick: QuickUi, actions: ProjectsActions, busy: Boolean, leave: () -> Unit, ask: (String) -> Unit) {
     SectionLabel(StarterGroup.Style.title, Modifier.padding(top = 4.dp))
     Text(
         // Lot 2: the real lengths (a Techno lasts 5 to 6 minutes), each style says its own.
@@ -163,7 +212,7 @@ private fun OtherStarts(starters: List<ProjectStarter>, quick: QuickUi, actions:
             modifier = Modifier.fillMaxWidth().clickable(onClick = actions.dismissQuickError).testTag("quick_error"))
     }
     // The assistant's families, all folded at first (but the one of a song being prepared): one touch on a style makes its song.
-    com.pocketstudio.app.library.StyleFamilies("quick", style = { QuickStyleCard(it, quick, actions) },
+    com.pocketstudio.app.library.StyleFamilies("quick", style = { QuickStyleCard(it, quick, ask) },
         open = setOfNotNull(StarterWizard.STYLES.find { it.id == quick.creating }?.family),
         calm = com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode)
     // The other starters under their headings (the starting beat closes the styles' group; the empty project is above).
@@ -178,12 +227,13 @@ private fun OtherStarts(starters: List<ProjectStarter>, quick: QuickUi, actions:
                 DemoRow(s, demo, quick, actions)
                 demo++
             } else {
-                StarterRow(s, Icons.Filled.GraphicEq, !busy) { leave(); actions.create(i) }
+                StarterRow(s, Icons.Filled.GraphicEq, !busy) { ask(START_STARTER + i) }
             }
         }
     }
     actions.remix?.let { remix ->
         StarterRow(tr("Extraire la voix d'une chanson"), tr("L'appli sépare une chanson en batterie, basse, voix et le reste : rejoue-la à ta façon."), "remix",
+            // The Remix opens on the project already open: no new project, no mode to choose.
             Icons.Filled.Album, !busy) { leave(); remix() }
     }
     StarterRow(tr("Importer un projet (.zip)"), tr("Un projet envoyé depuis un autre téléphone."), "import", Icons.Filled.FolderOpen, !busy) { actions.importZip() }
@@ -254,14 +304,14 @@ private fun DemoRow(s: ProjectStarter, index: Int, quick: QuickUi, actions: Proj
  * wheel says so in place of its description.
  */
 @Composable
-private fun QuickStyleCard(s: StarterWizard.Style, quick: QuickUi, actions: ProjectsActions) {
+private fun QuickStyleCard(s: StarterWizard.Style, quick: QuickUi, ask: (String) -> Unit) {
     val preparing = quick.creating == s.id
     val busy = quick.creating != null
     val color = familyLook(s.family).second
     Card(
         colors = CardDefaults.cardColors(containerColor = Neon.SurfaceHigh),
         border = if (preparing) BorderStroke(1.5.dp, Neon.Cyan) else null,
-        modifier = Modifier.fillMaxWidth().clickable(enabled = !busy) { actions.quickStyle(s.id) }.testTag("quick_style_${s.id}"),
+        modifier = Modifier.fillMaxWidth().clickable(enabled = !busy) { ask(START_QUICK + s.id) }.testTag("quick_style_${s.id}"),
     ) {
         Row(Modifier.height(IntrinsicSize.Min)) {
             Box(Modifier.width(5.dp).fillMaxHeight().background(color))
@@ -287,7 +337,7 @@ private fun QuickStyleCard(s: StarterWizard.Style, quick: QuickUi, actions: Proj
                     Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = ink, modifier = Modifier.size(16.dp))
                     Text(" " + tr("Créer le morceau"), style = MaterialTheme.typography.labelLarge, color = ink, maxLines = 1,
                         overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
-                    TextButton(onClick = { actions.customStyle(s.id) }, enabled = !busy, modifier = Modifier.testTag("quick_custom_${s.id}")) {
+                    TextButton(onClick = { ask(START_CUSTOM + s.id) }, enabled = !busy, modifier = Modifier.testTag("quick_custom_${s.id}")) {
                         val quiet = if (busy) Neon.TextSecondary.copy(alpha = 0.5f) else Neon.TextPrimary.copy(alpha = 0.8f)
                         Icon(Icons.Filled.Tune, contentDescription = null, modifier = Modifier.size(16.dp), tint = quiet)
                         Text(" " + tr("Pas à pas"), color = quiet, maxLines = 1)

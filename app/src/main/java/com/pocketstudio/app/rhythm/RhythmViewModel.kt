@@ -8728,6 +8728,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun pushHitNow(lane: Int, step: Int, hit: Hit?) {
         NativeEngine.setDrumHit(lane, step, hit?.velocity ?: 0f, hit?.repeats ?: 1, hit?.ramp ?: 0)
         if (hit == null) return
+        // A triplet (its hits spread over several steps): the roll command after the hit.
+        DrumHits.sendSpread(lane, step, hit)
         // Only hits with their own pan or pitch, timing, 808 slide or chance need more (the hit command resets them).
         if (!hit.isPlain) NativeEngine.setDrumStepDetail(lane, step, hit.pan, hit.pitch)
         if (hit.offset != 0f) NativeEngine.setDrumStepOffset(lane, step, hit.offset)
@@ -8792,7 +8794,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         val before = project.value
         session.editQuietly { it.copy(drums = it.drums.setHit(lane, step, on)) }
-        if (project.value != before && NativeEngine.isAvailable) pushHit(lane, step, project.value.drums.lanes[lane].hits[step])
+        // Erasing a step a triplet covers takes the triplet away: its own step is sent too.
+        if (project.value != before && NativeEngine.isAvailable) {
+            val was = before.drums.lanes[lane].hits
+            val now = project.value.drums.lanes[lane].hits
+            (was.keys + now.keys).filter { was[it] != now[it] }.forEach { pushHit(lane, it, now[it]) }
+        }
     }
 
     /** The finger lifted: the stroke becomes one undo step. */
@@ -8808,6 +8815,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (project.value.drums.lanes[lane].hits[step] == null) return
         session.edit { it.copy(drums = it.drums.withRoll(lane, step, repeats, ramp)) }
         if (NativeEngine.isAvailable) pushHit(lane, step, project.value.drums.lanes[lane].hits[step])
+    }
+
+    /** The step a triplet on the selected pad covers [step] from (its own step), [step] itself when none. */
+    fun hitStepOf(step: Int): Int = project.value.drums.lanes[_transport.value.selectedPad].covering(step) ?: step
+
+    /**
+     * A triplet on the selected pad: [hits] evenly over [span] steps from [step]'s hit (3 over 2:
+     * « Triolet »; 6 over 4: « 6 sur le temps »), [ramp] as in [setRoll]. The steps it covers lose
+     * their own hit (the same undo step). No room before the pad's loop ends: nothing changes.
+     */
+    fun setSpread(step: Int, hits: Int, span: Int, ramp: Int) {
+        val lane = _transport.value.selectedPad
+        if (project.value.drums.lanes[lane].hits[step] == null) return
+        session.edit { it.copy(drums = it.drums.withRoll(lane, step, hits, ramp, span)) }
+        pushLane(lane)
     }
 
     /** 32nds over the beat of [step] on the selected pad ([ramp] as in [setRoll]): one undo step. */

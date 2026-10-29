@@ -1,0 +1,437 @@
+{
+  "format": 1,
+  "style": "uk_garage",
+  "key": "A minor",
+  "chords": "i VI iv v",
+  "lines": {
+    "bass": "0:A2:3:110 7:A2:1:80 10:A2:3:105 14:A3:2:90 16:F2:3:110 23:F2:1:80 26:F2:3:105 30:F3:2:90 32:D2:3:110 39:D2:1:80 42:D2:3:105 46:D3:2:90 48:E2:3:110 55:E2:1:80 58:E2:3:105 62:G2:2:90",
+    "pad": "3:C4+E4+G4+B4:2:90 6:C4+E4+G4+B4:2:75 11:C4+E4+G4+B4:2:85 14:C4+E4+G4+B4:1:70 19:A3+C4+E4+G4:3:90 26:A3+C4+E4+G4:2:80 30:A3+C4+E4+G4:1:65 35:F3+A3+C4+E4:2:90 38:F3+A3+C4+E4:2:75 43:F3+A3+C4+E4:2:85 46:F3+A3+C4+E4:1:70 51:E3+G3+B3+D4:3:90 58:E3+G3+B3+D4:2:80 62:E3+G3+B3+D4:1:65",
+    "lead": "2:A4:1:100 5:E5:2:95 24:G4:1:80 27:C5:2:75 34:A4:1:100 37:E5:2:95 56:G4:1:80 59:C5:2:75 61:A4:2:70"
+  },
+  "lineBars": {
+    "bass": 4,
+    "pad": 4,
+    "lead": 4
+  },
+  "follow": [
+    "bass",
+    "pad"
+  ],
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "Le UK garage, c'est le « 2-step » anglais de la fin des années 90 : rapide, sautillant, soul.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de UK garage fini : le Couplet, puis le Refrain où les bouts de voix arrivent. Écoute comme la grosse caisse saute des temps.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo sur 132 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 132 BPM (le garage vit entre 130 et 137).",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick,snare,hat",
+          "skip": "Sans ça, ton morceau reste trop lent : le 2-step doit sautiller."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure », puis « La ».",
+          "textPro": "À toi : règle la tonalité sur La mineur : Am9, Fmaj9, Dm9, Em7, des accords de soul.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, tes accords ne sonneront pas soul."
+        }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "Le 2-step",
+      "titlePro": "Le beat 2-step",
+      "why": "La grosse caisse ne tape pas sur chaque temps : elle saute le 3e. Ce trou fait boiter le rythme, c'est le « 2-step ».",
+      "steps": [
+        {
+          "id": "ready",
+          "text": "Avant de commencer : le kit du garage est chargé. « FX » sur un pad veut dire qu'un effet y est posé. Tu n'as rien à régler.",
+          "textPro": "Déjà prêt pour toi : le kit du style, ses effets et ses placements. L'appli joue déjà les charleys un peu en retard, comme les disques.",
+          "check": "manual"
+        },
+        {
+          "id": "kick_do",
+          "text": "À toi : la boucle fait 2 mesures. Touche « Passer à 2 mesures », puis sur le pad « Kick », les cases en pointillé : le 1er temps, puis juste après le 3e. À la toute fin, un petit coup doux.",
+          "textPro": "À toi : le kick 2-step sur les cases 1 et 11, sur 2 mesures, avec le coup doux de la fin qui relance.",
+          "why": "En sautant le 3e temps, le kick fait sautiller tout le rythme.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick"
+        },
+        {
+          "id": "snare_do",
+          "text": "À toi : sur le pad « Rim » (un « toc » sur le bord de la caisse), touche les cases en pointillé des 2 mesures : les temps 2 et 4, et quelques coups doux décalés.",
+          "textPro": "À toi : le rim sur 2 et 4 et ses coups doux décalés qui se répondent.",
+          "check": "lane:snare",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "listen": "drums:kick,snare"
+        },
+        {
+          "id": "clap_do",
+          "text": "À toi : sur le pad « Clap », touche les 2 cases en pointillé, sur 2 et 4 : le claquement sec du garage.",
+          "check": "lane:clap",
+          "spot": "rhythm.pattern",
+          "target": "clap",
+          "listen": "drums:kick,snare,clap"
+        },
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad « Charley », touche les cases en pointillé.",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,snare,clap,hat"
+        },
+        {
+          "id": "ohat_do",
+          "text": "À toi : sur le pad « Charley ouvert », touche les 3 cases en pointillé. Pas de « tchi » au milieu de la mesure : il sonnerait house.",
+          "textPro": "À toi : le charley ouvert à la moitié des temps 1, 2 et 4, pas du 3.",
+          "check": "lane:open_hat",
+          "spot": "rhythm.pattern",
+          "target": "open_hat",
+          "listen": "drums:kick,snare,clap,hat,open_hat"
+        },
+        {
+          "id": "perc_do",
+          "text": "À toi : sur le pad du shaker, touche toutes les cases (« Remplir » puis « tout » le fait d'un geste) : il roule sans arrêt.",
+          "check": "lane:perc",
+          "spot": "rhythm.pattern",
+          "target": "perc",
+          "listen": "drums:kick,snare,clap,hat,open_hat,perc"
+        },
+        {
+          "id": "swing",
+          "levels": "p",
+          "text": "À toi : mets le swing à 30 (environ 58 à 62 % sur une MPC) : les doubles croches paires arrivent en retard. Écoute avant et après : c'est tout le garage.",
+          "check": "swing",
+          "spot": "rhythm.pattern",
+          "listen": "drums:kick,snare,clap,hat,open_hat,perc"
+        },
+        {
+          "id": "snare_late",
+          "levels": "p",
+          "text": "À toi : sur le pad « Rim », règle « Décalage du coup » de chaque coup un peu en retard (5 à 10 ms) : la caisse traîne derrière le temps, ça boite encore mieux.",
+          "check": "offset:snare:late",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "listen": "drums:kick,snare,clap,hat"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toute ta batterie, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,snare,clap,hat,open_hat,perc",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La basse",
+      "why": "Elle tape avec la grosse caisse, puis lui répond dans ses trous : elle fait rebondir le 2-step.",
+      "steps": [
+        {
+          "id": "bass_hear",
+          "text": "Écoute la basse avec le kick.",
+          "check": "listen",
+          "listen": "parts:kick,bass"
+        },
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse », puis les 4 notes en pointillé de la mesure 1. « Copier sur les mesures suivantes » la refait sur chaque accord (Fa, Ré, Mi). Écris enfin les 4 notes de la mesure 4.",
+          "textPro": "À toi : crée la piste Basse. Mesure 1 avec le kick (cases 1 et 11) et l'octave en réponse ; « Copier » la fait suivre les accords (Fa, Ré) ; mesure 4 sur Mi, qui finit sur Sol pour revenir à La.",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass",
+          "skip": "Sans basse, ton garage n'aura pas de rebond."
+        },
+        {
+          "id": "bass_sub",
+          "levels": "p",
+          "text": "À toi : touche « Copier la basse une octave plus bas » : un sub pur, sans effet, sous la basse (le grave des sound systems).",
+          "check": "track:sub",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:kick,bass"
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "Les accords",
+      "why": "Des accords jazzy de piano électrique, en petits coups juste après les temps, comme chez MJ Cole.",
+      "steps": [
+        {
+          "id": "pad_hear",
+          "text": "Écoute les accords seuls : quatre couleurs, une par mesure.",
+          "check": "listen",
+          "listen": "parts:pad"
+        },
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords » et allume « Accords » : toucher la note du bas en pointillé pose tout l'accord. Fais les coups de la mesure 1, puis ceux de la mesure 2. « Copier sur les mesures suivantes » les refait plus bas, sur les deux accords suivants.",
+          "textPro": "À toi : crée la piste Accords. Sans fondamentale (la basse l'a) : Am9 (Do Mi Sol Si), puis Fmaj9 (La Do Mi Sol), juste après les temps ; « Copier » descend ces deux mesures d'une quinte : Dm9 (Fa La Do Mi), Em7 (Mi Sol Si Ré). Le « chord planing » du garage.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:kick,pad",
+          "skip": "Sans accords, ton garage perd son côté soul."
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "Les bouts de voix",
+      "why": "Des syllabes découpées et rejouées comme une mélodie : la voix lance un appel, puis se répond plus grave.",
+      "steps": [
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les notes en pointillé, mesure après mesure : 2 notes pour l'appel, 2 plus graves pour la réponse.",
+          "textPro": "À toi : crée la piste Mélodie (des voix) : l'appel (La, Mi) en mesures 1 et 3, la réponse plus grave (Sol, Do) en 2 et 4.",
+          "why": "La même syllabe, plus basse, répond comme un 2e chanteur : c'est le jeu de Todd Edwards.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:pad,lead"
+        },
+        {
+          "id": "lead_delay",
+          "levels": "p",
+          "text": "À toi : au Mixeur, sur la piste « Mélodie », monte « Envoi écho » : les syllabes rebondissent en croches.",
+          "check": "send:1",
+          "spot": "mixer.strip",
+          "target": "lead",
+          "listen": "parts:lead"
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Refrain",
+      "why": "Tout ce que tu as fait joue ensemble : c'est le Refrain, le moment le plus plein. Les autres parties naîtront de lui.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes, puis l'exemple.",
+          "check": "listen",
+          "listen": "parts:kick,snare,clap,hat,open_hat,perc,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Refrain ».",
+          "check": "label:Refrain",
+          "spot": "song.parts",
+          "listen": "parts:kick,snare,clap,hat,open_hat,perc,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "map": true,
+      "why": "Le garage est une chanson : des Couplets où l'on chante, des Refrains où tout le monde joue, un Pont pour respirer.",
+      "steps": [
+        {
+          "id": "map_couplet",
+          "text": "Écoute le Couplet : le 2-step, la basse et les accords. Il laisse la place au chant.",
+          "check": "listen",
+          "listen": "part:Couplet"
+        },
+        {
+          "id": "map_pre",
+          "text": "Écoute le Pré-refrain : 4 mesures, et la batterie qui se coupe toute la dernière mesure.",
+          "check": "listen",
+          "listen": "part:Pré-refrain",
+          "why": "Une mesure de vide, et le Refrain tombe deux fois plus fort."
+        },
+        {
+          "id": "map_refrain",
+          "text": "Écoute le Refrain : le clap, le charley ouvert et les bouts de voix arrivent.",
+          "check": "listen",
+          "listen": "part:Refrain"
+        },
+        {
+          "id": "map_pont",
+          "text": "Écoute le Pont : sans kick ni basse, les accords et les voix.",
+          "check": "listen",
+          "listen": "part:Pont"
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Refrain : tu enlèves des briques.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro : les charleys, le rim, le shaker et les accords, sans kick ni basse.",
+          "check": "part:Intro:less+nobass+nokick",
+          "spot": "song.parts",
+          "keep": "snare,hat,perc,pad",
+          "listen": "vs:Intro:Couplet"
+        },
+        {
+          "id": "make_couplet",
+          "text": "À toi : crée le Couplet : le kick, le rim, les charleys, la basse et les accords. Pas de clap ni de voix : la place est pour le chant.",
+          "check": "part:Couplet:less+nolead",
+          "spot": "song.parts",
+          "keep": "kick,snare,hat,bass,pad",
+          "lanesFrom": "Couplet",
+          "listen": "vs:Couplet:Refrain"
+        },
+        {
+          "id": "make_pre",
+          "text": "À toi : crée le Pré-refrain : comme le Couplet, avec le shaker en plus. Il mène au Refrain.",
+          "check": "part:Pré-refrain:less+nolead",
+          "spot": "song.parts",
+          "keep": "kick,snare,hat,perc,bass,pad",
+          "lanesFrom": "Pré-refrain",
+          "listen": "vs:Pré-refrain:Refrain"
+        },
+        {
+          "id": "make_pont",
+          "text": "À toi : crée le Pont : sans kick ni basse ; les accords, les voix, le shaker et les charleys restent.",
+          "check": "part:Pont:nokick+nobass",
+          "spot": "song.parts",
+          "keep": "hat,perc,pad,lead",
+          "listen": "vs:Refrain:Pont"
+        },
+        {
+          "id": "make_fin",
+          "text": "À toi : crée la Fin : sans basse, comme les disques garage qui finissent sur la batterie et les accords.",
+          "check": "part:Fin:less+nobass",
+          "spot": "song.parts",
+          "keep": "kick,snare,clap,hat,open_hat,perc,pad",
+          "listen": "vs:Refrain:Intro"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre Intro, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain et Fin.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "song": "Intro:8,Couplet:12,Pré-refrain:4,Refrain:16,Couplet:12,Pré-refrain:4,Refrain:16,Pont:8,Refrain:16,Fin:8",
+          "listen": "song"
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 8, Couplet 12, Pré-refrain 4, Refrain 16, Pont 8, Fin 8. « Donner les durées conseillées » le fait d'un coup.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:8,Couplet:12,Pré-refrain:4,Refrain:16,Couplet:12,Pré-refrain:4,Refrain:16,Pont:8,Refrain:16,Fin:8",
+          "why": "Couplet et Pré-refrain font 16 mesures, comme le Refrain : 104 mesures à 132 BPM, un peu plus de 3 minutes."
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Le geste garage : couper toute la batterie une mesure avant le Refrain.",
+      "steps": [
+        {
+          "id": "gap",
+          "text": "À toi : dans la partie « Pré-refrain », dernière mesure, efface tous les coups de batterie (touche chaque croix rouge) : une mesure de vide juste avant le Refrain.",
+          "textPro": "À toi : dans le Pré-refrain, coupe toute la batterie sur la dernière mesure.",
+          "check": "gap",
+          "spot": "rhythm.pattern",
+          "part": "Pré-refrain",
+          "length": 16,
+          "listen": "vs:Pré-refrain:Refrain",
+          "why": "Une mesure de vide, et le Refrain tombe deux fois plus fort."
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "La réverbe donne de la place aux accords ; le rim garde un peu d'air.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "levels": "f",
+          "text": "Écoute la réverbe : le rim et les accords, d'abord sans, puis avec.",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "reverb",
+          "levels": "p",
+          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur la piste « Accords », puis sur le pad « Rim ».",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "pad,snare",
+          "listen": "fx:reverb"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le kick et la basse ensemble devant, les voix bien présentes, les accords derrière.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords ».",
+          "textPro": "À toi : au Mixeur, baisse un peu le fader des Accords.",
+          "check": "changed:volumes:pad",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:kick,snare,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "levels": "p",
+      "title": "Le mastering",
+      "why": "Le master colle le tout et donne le volume des clubs.",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Club ».",
+          "check": "loudness:CLUB",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter !",
+      "steps": [
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

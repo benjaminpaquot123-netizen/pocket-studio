@@ -100,9 +100,39 @@ Les options que propose un outil pro, groupées derrière « Avancé » en Pro. 
 | **Débutant** (2 par tour : âges, aisance et patience variés) | J'apprends (tuto Facile), Fais-moi un morceau, Mode simple | Comprendre, se perdre, nombre de gestes, envie de continuer |
 | **Producteur pro** (1 à 2) : un habitué de FL Studio Mobile, un DJ ou bootlegger, un beatmaker hip-hop | Je pars de zéro, tuto Pro, Remix, Live, export | Vitesse, outils qui manquent, réalisme du style |
 | **Ingénieur du son** (1) | Écoute tout avec la commande `ecoute` (rapport et spectrogramme), mixe, masterise, exporte | Niveaux, équilibre, saturation, réalisme sonore, export |
-| **Ergonome / UX** (tours 2 et 3) | Les parcours clés avec un chronomètre de gestes | Découvrabilité, charge mentale, cohérence, retours arrière |
-| **Designer UI** (hors banc, sur les captures) | Passe en revue les captures de tous les écrans × langues × tailles | Cohérence, alignements, débordements, hiérarchie, finition |
-| **Accessibilité** (hors banc + banc) | Captures à 130 %, contrastes, cibles, libellés TalkBack | Règles du §1.5 |
+| **Ergonome UX senior** (à chaque tour, sur le banc) | Les parcours clés, avec le compte des gestes et du temps | Découvrabilité, charge mentale, cohérence, retours arrière (voir §2 bis) |
+| **Designer UI senior** (à chaque tour, sur les captures) | Passe en revue les captures de tous les écrans × langues × tailles | Cohérence, alignements, débordements, hiérarchie, finition (voir §2 bis) |
+| **Designer motion** (tours 1 et dernier) | Les transitions, l'ouverture, les retours au toucher, image par image | Utile, 150 à 250 ms, sans saccade, coupé si les animations sont désactivées |
+| **Expert accessibilité** (à chaque tour, hors banc et sur le banc) | Captures à 130 %, contrastes, cibles, libellés TalkBack, daltonisme | Règles du §1.5 |
+
+## 2 bis. Ergonomie et visuel : des pros, très exigeants
+Benjamin le veut ainsi : les auditeurs d'ergonomie et de design sont des professionnels **seniors et très exigeants**. Ils jugent l'appli comme une app vendue sur le Play Store face aux meilleures, pas comme un projet amateur.
+- **Leurs références** :
+  - FL Studio Mobile, Koala Sampler, BandLab, Ableton Note, Groovebox, Roland Zenbeats ;
+  - les guides Material 3 et Apple HIG ;
+  - les 10 heuristiques de Nielsen ;
+  - les WCAG 2.2 niveau AA.
+- **Leur note** : chaque écran est noté de 1 à 10 sur 6 critères. Un écran est validé à **8/10 minimum sur chaque critère**.
+  1. Clarté : l'action principale se voit en moins de 2 s.
+  2. Efficacité : nombre de gestes, comparé à la meilleure appli de référence.
+  3. Cohérence : composants, mots et couleurs.
+  4. Finition visuelle : grille, alignements au dp près, espaces, typographie, icônes.
+  5. Retour et états : vide, chargement, erreur, succès.
+  6. Accessibilité.
+- **Ils ne laissent rien passer** :
+  - un alignement décalé de 2 dp, une icône d'un autre style ;
+  - un texte coupé dans une seule des 15 langues ;
+  - un bouton qui change de place d'un écran à l'autre ;
+  - un mot technique non expliqué en Mode simple ;
+  - une animation qui saccade ;
+  - un écran sans état vide soigné.
+- **Ce que chaque défaut contient** :
+  - la capture annotée, avec la zone entourée et la cote mesurée ;
+  - la règle enfreinte ;
+  - ce que fait la référence ;
+  - une correction précise.
+- **Leur gravité compte autant que celle des testeurs** : un écran sous 8/10 bloque la fin des audits comme un Grave.
+- **Ils sont présents à chaque tour**, et toujours neufs, comme les autres testeurs. Le tour suivant vérifie que ce qu'ils ont signalé est vraiment corrigé.
 
 ## 3. Les parcours (chaque tour en couvre une partie, tous passent au moins une fois)
 1. **Premier lancement** : langue, ouverture avec son, accueil, choix Simple ou Pro.
@@ -149,7 +179,7 @@ Les options que propose un outil pro, groupées derrière « Avancé » en Pro. 
 4. Revue neuve, tests complets, captures regardées.
 5. Tour suivant : testeurs neufs, autres langues, parcours qui couvrent aussi les zones corrigées.
 6. **On s'arrête** quand ces 4 conditions sont réunies :
-   - un tour complet ne trouve ni Bloquant ni Grave, et les Moyens se comptent sur les doigts d'une main ;
+   - un tour complet ne trouve ni Bloquant ni Grave, et les Moyens se comptent sur les doigts d'une main ; chaque écran a au moins 8/10 sur chaque critère des auditeurs d'ergonomie et de design (§2 bis) ;
    - les 15 langues sont passées ;
    - le banc des morceaux est dans les cibles ;
    - la matrice de captures est propre.

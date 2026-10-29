@@ -1,0 +1,412 @@
+{
+  "format": 1,
+  "style": "boom_bap",
+  "mood": "dark",
+  "key": "D minor",
+  "chords": "i VI i VI",
+  "lines": {
+    "bass": "0:D2:5 6:D2:2 10:D2:4 16:Bb1:5 22:Bb1:2 26:Bb1:4 32:D2:5 38:D2:2 42:D2:4 48:Bb1:5 54:Bb1:2 58:C2:4",
+    "pad": "0:F3+A3+C4+E4:7 8:F3+A3+C4+E4:4 13:F3+A3+C4+E4:2 16:D3+F3+A3+C4:7 24:D3+F3+A3+C4:4 29:D3+F3+A3+C4:2",
+    "lead": "0:D5:3 8:A4:3 12:F4:3 16:D4:6 32:A4:3 40:E4:3 44:C4:3 48:A3:6"
+  },
+  "lineBars": {
+    "bass": 4,
+    "pad": 2,
+    "lead": 4
+  },
+  "follow": [
+    "bass",
+    "pad",
+    "lead"
+  ],
+  "chapters": [
+    {
+      "id": "bases",
+      "title": "La vitesse et la couleur du morceau",
+      "titlePro": "Le tempo et la tonalité",
+      "why": "Le boom bap, c'est le rap de New York des années 90 : « boom » le kick, « bap » la caisse claire. Lent, sombre, il balance.",
+      "steps": [
+        {
+          "id": "ref",
+          "text": "Écoute un extrait de boom bap fini : une boucle de piano jazz, comme coupée dans un vieux disque, un kick rond et une caisse claire qui claque. C'est un instrumental pour un rappeur : tu vas le construire brique par brique.",
+          "check": "listen",
+          "listen": "song"
+        },
+        {
+          "id": "tempo",
+          "text": "À toi : règle le tempo (la vitesse du morceau) sur 92 BPM, 92 battements par minute. « Je le fais » ouvre la fiche Tempo.",
+          "textPro": "À toi : règle le tempo sur 92 BPM. « Je le fais » ouvre la fiche Tempo.",
+          "check": "tempo",
+          "spot": "tempo",
+          "listen": "drums:kick,hat",
+          "skip": "Sans ça, ton morceau reste à 120 BPM : ce n'est plus du boom bap."
+        },
+        {
+          "id": "key",
+          "text": "À toi : choisis la couleur du morceau. « Je le fais » ouvre la fiche Tonalité : touche « Mineure » (une gamme sombre) puis « Ré » (la note de départ).",
+          "textPro": "À toi : règle la tonalité sur Ré mineur, gamme « Mineure », tonique « Ré » : la contrebasse sonne ronde sur Ré2, le piano chaud dans le médium.",
+          "why": "Toutes les notes que tu poseras ensuite suivront cette gamme : rien ne sonnera faux.",
+          "check": "key",
+          "spot": "tuto.key",
+          "listen": "parts:pad",
+          "skip": "Sans cette gamme, ta boucle de piano ne sonnera pas juste."
+        }
+      ]
+    },
+    {
+      "id": "drums",
+      "title": "Le boom et le bap",
+      "titlePro": "La batterie",
+      "why": "Le kick (« boom ») rebondit juste après les temps, la caisse claire (« bap ») claque sur le 2e et le 4e temps (on compte 1, 2, 3, 4 dans chaque mesure).",
+      "steps": [
+        {
+          "id": "kick_do",
+          "text": "À toi : le kick tient sur 2 mesures (une mesure = un tour de la boucle). Touche « Passer à 2 mesures », puis sur le pad « Kick », les cases en pointillé des 2 mesures.",
+          "textPro": "À toi : « Passer à 2 mesures », puis sur le pad « Kick » : le 1, les rebonds juste après le 2 et le 3, et le petit kick fantôme de la mesure 2, juste avant un temps.",
+          "why": "Le kick rebondit juste après le temps : c'est ce qui fait hocher la tête.",
+          "check": "lane:kick",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "drums:kick"
+        },
+        {
+          "id": "snare_do",
+          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures : sur le 2 et le 4, plus deux toutes petites notes à la fin de la mesure 2.",
+          "textPro": "À toi : sur le pad « Caisse » : 2 et 4, et les deux notes fantômes (douces) de la mesure 2 qui font rouler le groove.",
+          "check": "lane:snare",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "listen": "drums:kick,snare"
+        },
+        {
+          "id": "hat_do",
+          "text": "À toi : sur le pad « Charley », touche les cases en pointillé : des croches, et deux petites notes en plus.",
+          "check": "lane:hat",
+          "spot": "rhythm.pattern",
+          "target": "hat",
+          "listen": "drums:kick,snare,hat"
+        },
+        {
+          "id": "swing",
+          "text": "À toi : le swing. Sous la grille, monte le curseur « Swing » jusqu'à 27 %. Écoute : la batterie arrête de marcher au pas et se met à balancer.",
+          "textPro": "À toi : swing à 27 % sur le curseur de l'appli, soit 60 % sur une MPC (58 % pour le classique, 62 % pour un son plus jazz). Il retarde une double croche sur deux.",
+          "why": "Le swing retarde une petite note sur deux : c'est le « balancement » des boîtes à rythmes des années 90.",
+          "check": "swing",
+          "spot": "rhythm.pattern",
+          "listen": "drums:kick,snare,hat",
+          "skip": "Sans swing, ton boom bap sonnera comme un robot."
+        },
+        {
+          "id": "snare_late",
+          "levels": "p",
+          "text": "À toi : la caisse claire « en retard ». Sur le pad « Caisse », appui long sur chaque coup fort, puis « Décalage du coup » à +10 ms : elle arrive un poil après le temps, nonchalante.",
+          "why": "Une caisse un peu en retard, c'est le « laid-back » : le batteur qui prend son temps.",
+          "check": "offset:snare:late",
+          "spot": "rhythm.pattern",
+          "target": "snare",
+          "listen": "drums:kick,snare,hat"
+        },
+        {
+          "id": "ohat_do",
+          "text": "À toi : sur le pad « Charley ouvert », la case en pointillé tout à la fin de la mesure 2 : il relance la boucle.",
+          "check": "lane:open_hat",
+          "spot": "rhythm.pattern",
+          "target": "open_hat",
+          "listen": "drums:kick,snare,hat,open_hat"
+        },
+        {
+          "id": "shaker_do",
+          "levels": "p",
+          "text": "À toi : sur le pad « Maracas », les 4 cases en pointillé, entre les temps : un shaker discret qui n'arrivera qu'au Refrain.",
+          "check": "lane:perc2",
+          "spot": "rhythm.pattern",
+          "target": "perc2",
+          "listen": "drums:kick,snare,hat,perc2"
+        },
+        {
+          "id": "drums_hear",
+          "text": "Écoute toute ta batterie quelques secondes, puis celle de l'exemple.",
+          "check": "listen",
+          "listen": "drums:kick,snare,hat,open_hat,perc2",
+          "hearMine": true
+        }
+      ]
+    },
+    {
+      "id": "bass",
+      "title": "La basse",
+      "why": "Pas de 808 ici : une basse courte et ronde, comme une contrebasse, qui tape avec le kick.",
+      "steps": [
+        {
+          "id": "bass_hear",
+          "text": "Écoute la basse avec la batterie.",
+          "check": "listen",
+          "listen": "parts:kick,snare,hat,bass"
+        },
+        {
+          "id": "bass_do",
+          "text": "À toi : touche « Créer la piste Basse », puis les 3 notes en pointillé de la mesure 1 : elles tombent avec le kick. « Copier sur les mesures suivantes » écrit les mesures 2 et 3. Touche ensuite les 3 notes de la mesure 4, puis « Copier » encore.",
+          "textPro": "À toi : crée la piste Basse. Mesure 1 : Ré2 sur les kicks, notes courtes. « Copier » : la mesure 2 descend sur Si♭ (l'accord VI), la 3 revient sur Ré. Mesure 4 : Si♭, puis Do qui remonte vers le Ré. « Copier ».",
+          "check": "notes:bass",
+          "spot": "notes.track",
+          "target": "bass",
+          "listen": "parts:bass",
+          "skip": "Sans basse, ta boucle n'a pas de fond."
+        }
+      ]
+    },
+    {
+      "id": "chords",
+      "title": "La boucle",
+      "why": "Le cœur du boom bap : une boucle de piano jazz de 2 mesures, comme coupée dans un vieux disque de soul. Elle tourne du début à la fin.",
+      "steps": [
+        {
+          "id": "pad_hear",
+          "text": "Écoute la boucle seule : deux accords de jazz qui reviennent sans fin.",
+          "check": "listen",
+          "listen": "parts:pad"
+        },
+        {
+          "id": "pad_do",
+          "text": "À toi : touche « Créer la piste Accords ». Allume « Accords », dans la rangée de boutons au-dessus de la grille : toucher la note du bas en pointillé pose toutes les notes de l'accord. Fais les 3 accords de la mesure 1, puis « Copier sur les mesures suivantes ».",
+          "textPro": "À toi : crée la piste Accords. Mesure 1 : Ré m9 sans sa fondamentale (Fa, La, Do, Mi), 3 fois, le dernier en avance sur le temps. « Copier » : la mesure 2 en Si♭ maj9 (Ré, Fa, La, Do), puis la boucle de 2 mesures se répète.",
+          "why": "Des accords de 4 notes, sans la note du bas (la basse la joue) : c'est le son des pianistes de jazz qu'on samplait.",
+          "check": "notes:pad",
+          "spot": "notes.track",
+          "target": "pad",
+          "listen": "parts:pad",
+          "skip": "Sans la boucle, il n'y a plus de boom bap."
+        }
+      ]
+    },
+    {
+      "id": "lead",
+      "title": "La mélodie",
+      "why": "Une phrase de piano électrique sur 4 mesures : trois notes et une note longue, puis la même phrase plus bas, comme une réponse.",
+      "steps": [
+        {
+          "id": "lead_do",
+          "text": "À toi : touche « Créer la piste Mélodie », puis les notes en pointillé : 3 à la mesure 1, 1 longue à la mesure 2. « Copier sur les mesures suivantes » écrit la réponse, plus bas, aux mesures 3 et 4.",
+          "textPro": "À toi : crée la piste Mélodie (piano électrique) : Ré, La, Fa, puis Ré tenu. « Copier » : la réponse une quinte plus bas, dans la gamme (La, Mi, Do, puis La tenu), qui tombe en 9e et 7e sur les accords.",
+          "why": "Une question, puis sa réponse plus bas, avec du vide entre les notes : comme un musicien de jazz qui laisse respirer.",
+          "check": "notes:lead",
+          "spot": "notes.track",
+          "target": "lead",
+          "listen": "parts:lead"
+        }
+      ]
+    },
+    {
+      "id": "groove",
+      "title": "Ta première partie : le Refrain",
+      "why": "Tout ce que tu as fait joue ensemble : c'est le Refrain, le moment où tout le monde joue. Les autres parties naîtront de lui.",
+      "steps": [
+        {
+          "id": "groove_hear",
+          "text": "Écoute ta boucle quelques secondes (tout ce que tu as fait), puis l'exemple. Tout joue en même temps : c'est le Refrain, la partie la plus pleine.",
+          "textPro": "Écoute ta boucle quelques secondes, puis l'exemple.",
+          "check": "listen",
+          "listen": "parts:kick,snare,hat,open_hat,perc2,bass,pad,lead",
+          "hearMine": true
+        },
+        {
+          "id": "groove_name",
+          "text": "À toi : nomme cette partie « Refrain » : c'est ta partie de départ, celle où tout joue.",
+          "check": "label:Refrain",
+          "spot": "song.parts",
+          "listen": "parts:kick,snare,hat,open_hat,perc2,bass,pad,lead"
+        }
+      ]
+    },
+    {
+      "id": "structure",
+      "title": "Comprendre les parties",
+      "why": "Un morceau de boom bap commence souvent par un couplet : trois couplets de 16 mesures, un refrain de 8 entre chacun. L'énergie vient du rappeur, la boucle change peu.",
+      "map": true,
+      "steps": [
+        {
+          "id": "brick",
+          "text": "Une brique, c'est la boucle d'un seul instrument (le kick, la basse). Une partie, ce sont plusieurs briques qui jouent ensemble.",
+          "why": "Tu changes une partie en ajoutant ou en enlevant des briques.",
+          "check": "manual"
+        },
+        {
+          "id": "map_intro",
+          "text": "Écoute l'Intro : la boucle seule, comme le disque qu'on vient de poser.",
+          "check": "listen",
+          "listen": "part:Intro"
+        },
+        {
+          "id": "map_couplet",
+          "text": "Écoute le Couplet : la batterie, la basse et la boucle, sans la phrase de piano électrique. La voix prend sa place.",
+          "check": "listen",
+          "listen": "part:Couplet"
+        },
+        {
+          "id": "map_refrain",
+          "text": "Écoute le Refrain : la phrase revient, avec le shaker. À l'époque, c'est là que le DJ scratchait.",
+          "check": "listen",
+          "listen": "part:Refrain"
+        }
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Construis tes parties",
+      "why": "Chaque nouvelle partie part d'une copie du Refrain : tu enlèves des briques.",
+      "steps": [
+        {
+          "id": "make_intro",
+          "text": "À toi : crée l'Intro à partir du Refrain : la boucle seule.",
+          "why": "La boucle seule, puis la batterie qui tombe : l'entrée classique du boom bap.",
+          "check": "part:Intro:nokick+nobass",
+          "spot": "song.parts",
+          "listen": "vs:Intro:Couplet",
+          "keep": "pad"
+        },
+        {
+          "id": "make_couplet",
+          "text": "À toi : crée le Couplet à partir du Refrain : sans la phrase de piano électrique, sans le shaker ni le charley ouvert.",
+          "why": "La boucle continue, la mélodie s'efface : la voix du rappeur devient la mélodie.",
+          "check": "part:Couplet:nolead+less",
+          "spot": "song.parts",
+          "listen": "vs:Refrain:Couplet",
+          "keep": "kick,snare,hat,bass,pad",
+          "lanesFrom": "Couplet"
+        }
+      ]
+    },
+    {
+      "id": "arrange",
+      "title": "Range tes parties",
+      "why": "La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.",
+      "steps": [
+        {
+          "id": "song_order",
+          "text": "À toi : dans « Le morceau », sous « Ajouter », touche dans l'ordre les boutons qui finissent par Intro, Couplet, Refrain, Couplet, Refrain, Couplet, Refrain, puis Intro pour l'Outro. L'étape suivante donne leur durée.",
+          "check": "song:order",
+          "spot": "song.parts",
+          "listen": "song",
+          "song": "Intro:4,Couplet:16,Refrain:8,Couplet:16,Refrain:8,Couplet:16,Refrain:8,Outro:4",
+          "skip": "Dans un autre ordre, le rappeur n'aura pas ses trois couplets."
+        },
+        {
+          "id": "song_phrases",
+          "text": "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 16, Refrain 8, Outro 4. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». « Donner les durées conseillées » le fait d'un coup.",
+          "why": "Trois couplets de 16 mesures et des refrains de 8 : la forme des classiques de New York. En tout 3 min 29.",
+          "check": "song:phrases",
+          "spot": "song.parts",
+          "song": "Intro:4,Couplet:16,Refrain:8,Couplet:16,Refrain:8,Couplet:16,Refrain:8,Outro:4"
+        }
+      ]
+    },
+    {
+      "id": "transitions",
+      "title": "Les transitions",
+      "why": "Entre deux parties, un petit événement prévient l'oreille : ici, le kick qui se tait un temps.",
+      "steps": [
+        {
+          "id": "gap",
+          "text": "À toi : dans la partie « Couplet », dernière mesure, efface les coups de kick du dernier temps (touche chaque croix rouge) : la batterie « respire » juste avant le Refrain.",
+          "why": "Un temps sans kick, et le Refrain retombe plus lourd.",
+          "check": "gap",
+          "spot": "rhythm.pattern",
+          "target": "kick",
+          "listen": "vs:Couplet:Refrain",
+          "part": "Couplet",
+          "length": 4
+        }
+      ]
+    },
+    {
+      "id": "fx",
+      "title": "Les effets",
+      "why": "Le son « vieux disque » : de la réverbe sur la caisse claire seulement, un grain de vieille machine sur la batterie.",
+      "steps": [
+        {
+          "id": "reverb_hear",
+          "levels": "f",
+          "text": "Écoute la réverbe : la caisse claire et la boucle, d'abord sans, puis avec.",
+          "check": "listen",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "reverb",
+          "levels": "p",
+          "text": "À toi : au Mixeur, sur la tranche du pad « Caisse », monte « Envoi réverbe ». Pas sur le kick : il resterait flou.",
+          "check": "send:0",
+          "spot": "mixer.strip",
+          "target": "snare",
+          "listen": "fx:reverb"
+        },
+        {
+          "id": "crush",
+          "levels": "p",
+          "text": "À toi : au Mixeur, mets l'effet « Bitcrusher » (le grain des vieux samplers 12 bits, comme la SP-1200) sur le pad « Kick », puis sur le pad « Caisse ». Garde-le léger.",
+          "check": "insert:BITCRUSHER",
+          "spot": "mixer.strip",
+          "target": "kick,snare",
+          "listen": "drums:kick,snare,hat"
+        }
+      ]
+    },
+    {
+      "id": "mix",
+      "title": "Le mix : les volumes",
+      "titlePro": "Le mix",
+      "why": "Le mix, c'est le volume de chaque piste : le kick et la basse devant, le reste derrière, pour laisser la place à la voix.",
+      "steps": [
+        {
+          "id": "levels",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "textPro": "À toi : au Mixeur, baisse un peu « Accords » et « Mélodie » : le kick et la caisse devant, la boucle derrière, la voix au milieu.",
+          "check": "changed:volumes:pad,lead",
+          "spot": "mixer.strip",
+          "target": "pad",
+          "listen": "parts:kick,snare,bass,pad,lead"
+        },
+        {
+          "id": "meters",
+          "levels": "p",
+          "text": "Repère : pendant le Refrain, les vu-mètres du Mixeur ne doivent pas rester dans le rouge. Si une piste rougit, baisse son fader.",
+          "check": "manual"
+        }
+      ]
+    },
+    {
+      "id": "master",
+      "title": "Le mastering",
+      "why": "Le master colle le tout sans écraser le claquement de la caisse claire.",
+      "levels": "p",
+      "steps": [
+        {
+          "id": "loudness",
+          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Auto (style) » : il vise environ −10 LUFS, moins fort que la trap. Le boom bap garde du relief : pas d'écrêteur.",
+          "check": "loudness:AUTO",
+          "spot": "mixer.master",
+          "listen": "song"
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "title": "Exporte ton morceau",
+      "why": "Ton morceau est fini : fais-le écouter à un rappeur !",
+      "steps": [
+        {
+          "id": "formats",
+          "levels": "p",
+          "text": "WAV pour un rappeur qui enregistre dessus (la qualité studio), M4A pour tes amis (un fichier léger), pistes séparées pour un ingénieur du son.",
+          "check": "manual"
+        },
+        {
+          "id": "share",
+          "text": "À toi : exporte ton morceau (l'appli en fait un fichier son) et partage-le. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio.",
+          "textPro": "À toi : exporte ton morceau et partage-le.",
+          "check": "shared",
+          "spot": "share.export"
+        }
+      ]
+    }
+  ]
+}

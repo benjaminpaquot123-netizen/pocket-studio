@@ -27,6 +27,9 @@ only the stable ones: what is under 30 Hz in the mix (B8, over -15 dB; -20 is th
 the whole song (B12) and the bass heard through an average phone (B2, the floor of a transition
 stage). The others (attack, its spread, the dip under the kick, the bass's place against the mix) are
 listed: their reading depends on the line (notes too short for an attack window, a kick-less intro).
+
+« Le kick disparaît » (--kick, the song bench's kick pass): a part of a song whose kick no longer lifts the
+exported mix (KICK_RISE_MIN, KICK_RISE_SHARE) fails too.
 """
 import argparse
 import json
@@ -107,6 +110,17 @@ INFRA_MAX = -20.0
 INFRA_HARD = -15.0
 KICK_DIP_MAX = -3.0
 EXCITER_MAX_LU = 1.0
+# « Le kick disparaît » (Benjamin, APK 233, Acidcore; docs/REVIEW.md, corrections n° 6): ps_measure --punch, how much one
+# kick hit lifts the exported mix (dB, its 40 ms against the 100 ms before; « rise »), part by part. A part fails when it
+# lifts it less than KICK_RISE_MIN, or less than KICK_RISE_SHARE of what it lifts the drums alone when those are already
+# under twice that (breakbeats and gabber: their own drums fill the gaps between the kicks). Measured on the 37 styles
+# (2026-10-30): the buried Acidcore 0.2 dB in its Drop (-0.1 in its Groove), every other part 1.9 dB or more (median
+# 5); 2 dB is the floor of what was heard as a kick on top (the levelled Acidcore: 3.2). KICK_RISE_GOAL is listed only.
+# A part where the kick plays fewer than KICK_HITS_MIN hits (an Intro, a Break, a Pont without one) is left out.
+KICK_RISE_MIN = 2.0
+KICK_RISE_SHARE = 0.5
+KICK_RISE_GOAL = 3.0
+KICK_HITS_MIN = 8
 
 # G0: the smallest share of bars that differ between two Drops (Refrains) of a song (DropVariation.MIN).
 DROP_VARIATION_MIN = 0.25
@@ -222,6 +236,21 @@ def capped(style, m):
     return gap is not None and gap < 0 and loss is not None and loss >= max_loss(m) - 0.15
 
 
+def kick_parts(m):
+    """The parts where the kick plays (ps_measure --punch), each with « need »: the rise it must reach."""
+    out = []
+    for q in m.get("kick") or []:
+        if (q.get("hits") or 0) < KICK_HITS_MIN or q.get("rise") is None or q.get("rise_drums") is None:
+            continue
+        out.append(dict(q, need=min(KICK_RISE_MIN, KICK_RISE_SHARE * q["rise_drums"])))
+    return out
+
+
+def buried(m):
+    """The parts that bury their kick."""
+    return [q for q in kick_parts(m) if q["rise"] < q["need"]]
+
+
 def criteria(styles):
     """(label, styles that meet it, styles that fail it, hard) for each acceptance criterion."""
     out = []
@@ -284,6 +313,11 @@ def criteria(styles):
             lambda s, m: m.get("infra_below_30") is None or m["infra_below_30"] <= INFRA_HARD, hard=True)
         add(f"B8 Rien sous 30 Hz : infra ≤ {fr(INFRA_MAX, 0)} dB du Drop (la cible)",
             lambda s, m: m.get("infra_below_30") is None or m["infra_below_30"] <= INFRA_MAX)
+    if any(m.get("kick") for m in styles.values()):
+        add(f"Le kick ressort du mix complet : un coup soulève l'export d'au moins {fr(KICK_RISE_MIN, 0)} dB (ou la moitié de ce qu'il soulève la batterie seule), chaque partie où il joue",
+            lambda s, m: not buried(m), hard=True)
+        add(f"Le kick ressort d'au moins {fr(KICK_RISE_GOAL, 0)} dB dans chaque partie où il joue (listé)",
+            lambda s, m: all(q["rise"] >= KICK_RISE_GOAL for q in kick_parts(m)))
     if any(m.get("exciter_lu") is not None for m in styles.values()):
         add(f"B12 L'exciteur ajoute au plus +{fr(EXCITER_MAX_LU, 0)} LU au morceau (avant master)",
             lambda s, m: m.get("exciter_lu") is None or m["exciter_lu"] <= EXCITER_MAX_LU, hard=True)
@@ -316,6 +350,7 @@ def main():
     ap.add_argument("--premaster", help="folder of ps_measure JSONs of the songs rendered before the master chain")
     ap.add_argument("--m4a", help="folder of ps_measure JSONs of the songs as decoded M4A (ceiling -2 dBTP, AAC 256 kbit/s)")
     ap.add_argument("--cmds", help="folder of the recorded .pscmd files: their META lines (the model's drop_variation, G0)")
+    ap.add_argument("--kick", help="folder of ps_measure --punch JSONs: the kick's lift in the mix, part by part")
     ap.add_argument("--title", default="Banc de mesure du son")
     a = ap.parse_args()
 
@@ -366,6 +401,14 @@ def main():
             elif s.endswith(".first") and s[:-6] in styles:
                 # The first encode, before the app's check encodes it again lower.
                 styles[s[:-6]]["m4a_true_peak_first"] = dec.get("true_peak")
+    if a.kick and os.path.isdir(a.kick):
+        for s, k in load(a.kick).items():
+            if s in styles:
+                drive = styles[s].get("drive_db") or 0.0
+                for q in k.get("parts") or []:
+                    # What the master chain took off the part (LU): before the master, plus the target's gain, minus the export.
+                    q["chain_db"] = None if q.get("pre_lufs") is None or q.get("mix_lufs") is None else round(q["pre_lufs"] + drive - q["mix_lufs"], 2)
+                styles[s]["kick"] = k.get("parts") or []
     with open(a.json, "w") as f:
         json.dump({"styles": styles}, f, indent=1, ensure_ascii=False, sort_keys=True)
         f.write("\n")
@@ -428,6 +471,10 @@ def main():
                 detail = ", ".join(f"{s} ({fr((styles[s].get('bass') or {}).get(key), 1)})" for s in failed)
             elif label.startswith("B8"):
                 detail = ", ".join(f"{s} ({fr(styles[s].get('infra_below_30'), 1)})" for s in failed)
+            elif label.startswith("Le kick ressort du mix"):
+                detail = ", ".join(f"{s} ({', '.join(q['label'] + ' ' + fr(q['rise'], 1) for q in buried(styles[s]))})" for s in failed)
+            elif label.startswith("Le kick ressort d'au moins"):
+                detail = ", ".join(f"{s} ({', '.join(q['label'] + ' ' + fr(q['rise'], 1) for q in kick_parts(styles[s]) if q['rise'] < KICK_RISE_GOAL)})" for s in failed)
             elif label.startswith("B12"):
                 detail = ", ".join(f"{s} ({fr(styles[s].get('exciter_lu'), 2, True)})" for s in failed)
             elif label.startswith("Continu"):
@@ -539,6 +586,25 @@ def main():
     lines += ["", "## Défauts", "", "| Style | NaN | Écrêtés | DC | Fin (dBFS, 500 ms) | Durée (s) |", "|---|---|---|---|---|---|"]
     for s, m in sorted(styles.items()):
         lines.append(f"| {s} | {m['non_finite']} | {m['clipped']} | {fr(m['dc'], 4)} | {fr(m['end_dbfs'], 1)} | {fr(m['seconds'], 1)} |")
+
+    if any(m.get("kick") for m in styles.values()):
+        lines += ["", "## Le kick dans le mix complet (passe kick)", "",
+                  "Par partie : combien un coup de kick soulève le morceau exporté (dB : ses 40 ms contre les 100 ms d'avant), "
+                  "la même chose dans la batterie seule passée par le master, la part du kick dans la bande 40–120 Hz avant le master "
+                  "(0 : tout est à lui) et ce que la chaîne du master retire à la partie (LU). « pas de kick » : moins de "
+                  f"{KICK_HITS_MIN} coups dans la partie (exclue). Seuil bloquant : {fr(KICK_RISE_MIN, 0)} dB, ou la moitié de la "
+                  "batterie seule quand elle-même monte peu (breakbeat, gabber). L'Acidcore de l'APK 233 : 0,2 dB au Drop.", "",
+                  "| Style | Partie | Coups | Mix complet (dB) | Batterie seule (dB) | Part du kick 40–120 Hz (dB) | Chaîne du master (LU) | |",
+                  "|---|---|---|---|---|---|---|---|"]
+        for s, m in sorted(styles.items()):
+            need = {q["label"]: q["need"] for q in kick_parts(m)}
+            for q in m.get("kick") or []:
+                if q["label"] not in need:
+                    lines.append(f"| {s} | {q['label']} | {q.get('hits', 0)} | – | – | – | {fr(q.get('chain_db'), 1)} | pas de kick |")
+                    continue
+                flag = "**noyé**" if q["rise"] < need[q["label"]] else ("à surveiller" if q["rise"] < KICK_RISE_GOAL else "ok")
+                lines.append(f"| {s} | {q['label']} | {q['hits']} | {fr(q['rise'], 1)} | {fr(q['rise_drums'], 1)} | {fr(q.get('kick_share'), 1)} | "
+                             f"{fr(q.get('chain_db'), 1)} | {flag} |")
 
     if a.ffmpeg and os.path.exists(a.ffmpeg):
         lines += ["", "## Contre-vérification ffmpeg (`ebur128=peak=true`)", "",

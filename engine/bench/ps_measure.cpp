@@ -488,6 +488,140 @@ double median(std::vector<double> v) {
     return v.size() % 2 ? v[v.size() / 2] : 0.5 * (v[v.size() / 2 - 1] + v[v.size() / 2]);
 }
 
+// --- « Le kick disparaît » (Benjamin, APK 233, Acidcore; docs/REVIEW.md, corrections n° 6): does the kick
+// keep its impact in the whole mix? Its hits are found in the kick rendered alone (before the master);
+// per part (every section of one label together), how much one hit raises the mix: the power of the
+// mono sum over the 40 ms from the hit against the 100 ms ending 20 ms before it (« rise », dB), in the
+// export, in the drums alone through the master and in the song before the master; the same through
+// the 40-120 Hz band (« band_* »: a long, distorted kick fills that band between its hits too, so the
+// broadband rise is the one that tells a buried kick), and the kick's own share of that band before the
+// master (« kick_share », dB: 0 when it is all of it). The Acidcore of APK 233 (its 303's saturation not
+// levelled): -0.1 dB in its Drop, 4.7 with the drums alone, 3.0 once levelled.
+//
+//   ps_measure --punch <kick.wav> <drums.wav> <pre.wav> <song.wav> <song.pscmd>
+struct BandPass {
+    Biquad2 h1, h2, l1, l2;
+    BandPass(double rate, double lo, double hi)
+        : h1(Biquad2::highPass(rate, lo, 0.54119610)), h2(Biquad2::highPass(rate, lo, 1.30656296)), l1(lowPass(rate, hi, 0.54119610)), l2(lowPass(rate, hi, 1.30656296)) {}
+    static Biquad2 lowPass(double rate, double hz, double q) {
+        const double w = 2 * M_PI * hz / rate, alpha = std::sin(w) / (2 * q), c = std::cos(w), a0 = 1 + alpha;
+        return Biquad2::of((1 - c) / 2 / a0, (1 - c) / a0, (1 - c) / 2 / a0, -2 * c / a0, (1 - alpha) / a0);
+    }
+    double operator()(double x) { return l2(l1(h2(h1(x)))); }
+};
+
+// The power of the mono sum, frame by frame, through the 40-120 Hz band when `band`.
+std::vector<float> monoPower(const Audio& a, bool band) {
+    BandPass f(a.rate, 40, 120);
+    std::vector<float> out(a.frames());
+    for (size_t i = 0; i < a.frames(); ++i) {
+        double v = 0.5 * (static_cast<double>(a.l[i]) + a.r[i]);
+        if (band) v = f(v);
+        out[i] = static_cast<float>(v * v);
+    }
+    return out;
+}
+
+double sumOf(const std::vector<float>& p, int64_t from, int64_t to) {
+    from = std::max<int64_t>(from, 0);
+    to = std::min<int64_t>(to, static_cast<int64_t>(p.size()));
+    double s = 0;
+    for (int64_t i = from; i < to; ++i) s += p[static_cast<size_t>(i)];
+    return s;
+}
+
+int punchMain(int argc, char** argv) {
+    if (argc != 7) {
+        std::fprintf(stderr, "usage: ps_measure --punch <kick.wav> <drums.wav> <pre.wav> <song.wav> <song.pscmd>\n");
+        return 1;
+    }
+    Audio kick, drums, pre, mix;
+    const char* names[] = {argv[2], argv[3], argv[4], argv[5]};
+    Audio* audios[] = {&kick, &drums, &pre, &mix};
+    for (int i = 0; i < 4; ++i) {
+        if (!readWav(names[i], *audios[i]) || audios[i]->frames() == 0) {
+            std::fprintf(stderr, "ps_measure: cannot read %s\n", names[i]);
+            return 1;
+        }
+    }
+    std::vector<Section> sections;
+    int64_t songFrames = static_cast<int64_t>(std::min({kick.frames(), drums.frames(), pre.frames(), mix.frames()}));
+    {
+        std::ifstream in(argv[6]);
+        std::string text;
+        while (std::getline(in, text)) {
+            std::istringstream ls(text);
+            std::string op;
+            ls >> op;
+            if (op == "SONG") {
+                std::string kv;
+                while (ls >> kv) if (kv.rfind("frames=", 0) == 0) songFrames = std::min<int64_t>(songFrames, std::stoll(kv.substr(7)));
+            } else if (op == "SECTION") {
+                int index = 0;
+                long long frame = 0;
+                std::string label;
+                ls >> index >> frame;
+                std::getline(ls, label);
+                label.erase(0, label.find_first_not_of(' '));
+                sections.push_back({frame, 0, label});
+            } else if (op == "C" || op == "RENDER") {
+                break;  // the header is over
+            }
+        }
+    }
+    if (sections.empty()) sections.push_back({0, 0, "Morceau"});
+    for (size_t i = 0; i < sections.size(); ++i) {
+        sections[i].start = std::min(sections[i].start, songFrames);
+        sections[i].end = i + 1 < sections.size() ? std::min(sections[i + 1].start, songFrames) : songFrames;
+    }
+    // The kick's hits: note starts in its envelope (one value a millisecond).
+    const int64_t ms = kick.rate / 1000;
+    std::vector<int64_t> hits;
+    for (int64_t k : onsets(rmsEnvelope(kick, 0, songFrames))) hits.push_back(k * ms);
+    const int64_t on = 40 * ms, offFrom = 120 * ms, offTo = 20 * ms;
+    const std::vector<float> wide[] = {monoPower(mix, false), monoPower(drums, false), monoPower(pre, false)};
+    const std::vector<float> band[] = {monoPower(mix, true), monoPower(drums, true), monoPower(pre, true), monoPower(kick, true)};
+    auto rise = [&](const std::vector<float>& p, const std::vector<int64_t>& at) {
+        if (at.empty()) return static_cast<double>(NAN);
+        double h = 0, v = 0;
+        for (int64_t o : at) {
+            h += sumOf(p, o, o + on) / static_cast<double>(on);
+            v += sumOf(p, o - offFrom, o - offTo) / static_cast<double>(offFrom - offTo);
+        }
+        return db(h) - db(v);
+    };
+    // Per label, in the song's order.
+    std::vector<std::string> order;
+    std::map<std::string, std::vector<std::pair<int64_t, int64_t>>> byLabel;
+    for (const auto& s : sections) {
+        if (s.end <= s.start) continue;
+        if (!byLabel.count(s.label)) order.push_back(s.label);
+        byLabel[s.label].emplace_back(s.start, s.end);
+    }
+    std::printf("{\"parts\": [");
+    for (size_t i = 0; i < order.size(); ++i) {
+        const auto& ranges = byLabel[order[i]];
+        std::vector<int64_t> at;
+        double seconds = 0, kickBand = 0, preBand = 0;
+        for (auto [s, e] : ranges) {
+            for (int64_t o : hits) if (o - offFrom >= s && o + on <= e) at.push_back(o);
+            seconds += static_cast<double>(e - s) / kick.rate;
+            kickBand += sumOf(band[3], s, e);
+            preBand += sumOf(band[2], s, e);
+        }
+        std::string label;
+        for (char c : order[i]) if (c != '"' && c != '\\') label += c;
+        std::printf("%s\n  {\"label\": \"%s\", \"seconds\": %.2f, \"hits\": %zu, \"kick_lufs\": %s, \"pre_lufs\": %s, \"mix_lufs\": %s, \"drums_lufs\": %s, "
+                    "\"rise\": %s, \"rise_drums\": %s, \"rise_pre\": %s, \"band_rise\": %s, \"band_rise_drums\": %s, \"kick_share\": %s}",
+                    i ? "," : "", label.c_str(), seconds, at.size(), num(loudness(kick, ranges).lufs).c_str(), num(loudness(pre, ranges).lufs).c_str(),
+                    num(loudness(mix, ranges).lufs).c_str(), num(loudness(drums, ranges).lufs).c_str(), num(rise(wide[0], at)).c_str(),
+                    num(rise(wide[1], at)).c_str(), num(rise(wide[2], at)).c_str(), num(rise(band[0], at)).c_str(), num(rise(band[1], at)).c_str(),
+                    num(!at.empty() && kickBand > 0 && preBand > 0 ? db(kickBand) - db(preBand) : NAN).c_str());
+    }
+    std::printf("\n]}\n");
+    return 0;
+}
+
 struct BassMeasures {
     double phone200 = NAN, phone300 = NAN, place300 = NAN, harmonics = NAN, attack = NAN, attackSpread = NAN, kickDip = NAN, lufs = NAN;
     int notes = 0, kicks = 0;
@@ -501,6 +635,7 @@ int main(int argc, char** argv) {
     // through the phone (B3), with --kick (the kick alone) the bass's dip under it (B9), with --dry
     // (the song before the master without the bass exciter) what the exciter adds (B12), with
     // --bass-free (the basses alone, not ducked: ps_render --no-duck) the dip read against them.
+    if (argc > 1 && !std::strcmp(argv[1], "--punch")) return punchMain(argc, argv);
     std::string leadPath, bassPath, kickPath, prePath, dryPath, bassFreePath;
     std::vector<char*> args{argv[0]};
     for (int i = 1; i < argc; ++i) {

@@ -22,7 +22,7 @@ def measure(style, **over):
     return m
 
 
-def run(measures, renders=None, cmds=None):
+def run(measures, renders=None, cmds=None, kick=None):
     with tempfile.TemporaryDirectory() as d:
         os.mkdir(os.path.join(d, "json"))
         for m in measures:
@@ -42,6 +42,12 @@ def run(measures, renders=None, cmds=None):
                 with open(os.path.join(d, "cmds", style + ".pscmd"), "w") as f:
                     f.write(text)
             args += ["--cmds", os.path.join(d, "cmds")]
+        if kick:
+            os.mkdir(os.path.join(d, "kick"))
+            for style, parts in kick.items():
+                with open(os.path.join(d, "kick", style + ".json"), "w") as f:
+                    json.dump({"parts": parts}, f)
+            args += ["--kick", os.path.join(d, "kick")]
         p = subprocess.run(args, capture_output=True, text=True)
         return p.returncode, p.stderr.strip(), open(os.path.join(d, "r.md")).read() if os.path.exists(os.path.join(d, "r.md")) else ""
 
@@ -130,6 +136,24 @@ def main():
     check("Drops too alike are listed, not blocking", code == 0 and "jump_up (0,08)" in md and "Variation entre Drops" in md)
     code, err, md = run([measure("house")])
     check("without recordings, no variation line", code == 0 and "Variation entre Drops ≥" not in md)
+
+    # « Le kick disparaît » (Benjamin, APK 233): a part where one kick hit no longer lifts the export fails.
+    def part(label, rise, drums, hits=100):
+        return {"label": label, "hits": hits, "rise": rise, "rise_drums": drums, "rise_pre": rise, "kick_share": -1.0,
+                "pre_lufs": -14.0, "mix_lufs": -8.0, "drums_lufs": -9.0, "kick_lufs": -16.0}
+    no_kick = dict(part("Break", None, None, hits=0))
+    code, err, md = run([measure("acidcore")], kick={"acidcore": [part("Intro", None, None, hits=0), part("Drop", 3.2, 4.9)]})
+    check("a kick that lifts the Drop by 3.2 dB passes; a part without kick is left out", code == 0 and "| acidcore | Intro | 0 | – |" in md and "| acidcore | Drop | 100 | 3,2 | 4,9 |" in md)
+    code, err, md = run([measure("acidcore")], kick={"acidcore": [part("Groove", 4.0, 5.9), part("Drop", 0.2, 4.9), no_kick]})
+    check("Acidcore of APK 233 (0.2 dB in its Drop) fails", code == 1 and "Le kick ressort" in err and "acidcore" in err and "**noyé**" in md)
+    code, err, md = run([measure("jungle")], kick={"jungle": [part("Drop", 1.7, 3.1)]})
+    check("a breakbeat whose drums alone lift 3.1 dB passes at 1.7 (half of it)", code == 0 and "à surveiller" in md)
+    code, err, md = run([measure("jungle")], kick={"jungle": [part("Drop", 1.4, 3.1)]})
+    check("... and fails under half of it", code == 1)
+    code, err, md = run([measure("techno")], kick={"techno": [part("Drop", 1.9, 15.7)]})
+    check("1.9 dB in a Drop whose drums alone lift 15.7 fails", code == 1 and "techno" in err and "techno (Drop 1,9)" in md)
+    code, err, md = run([measure("techno")], kick={"techno": [part("Breakdown", 0.1, 4.0, hits=5)]})
+    check("fewer than 8 hits: left out", code == 0 and "pas de kick" in md)
 
     print("ALL PASSED" if not failures else f"{failures} FAILURE(S)")
     sys.exit(1 if failures else 0)

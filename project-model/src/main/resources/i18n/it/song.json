@@ -389,5 +389,9 @@
   "Rien n'a été joué : la case reste vide.": "Non è stato suonato nulla: la casella resta vuota.",
   "Cette case ne va pas ici : choisis une case de la même piste ou du même genre.": "Questa casella non va qui: scegli una casella della stessa traccia o dello stesso tipo.",
   "Les huit pistes audio sont prises : vide-en une pour poser ce son.": "Le otto tracce audio sono occupate: svuotane una per mettere questo suono.",
-  "la brique %s": "il blocco %s"
+  "la brique %s": "il blocco %s",
+  "Cases": "Caselle",
+  "Moins de cases": "Meno caselle",
+  "Plus de cases": "Più caselle",
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Il tuo primo loop sta girando. Tocca un punto per aggiungerci un suono."
 }

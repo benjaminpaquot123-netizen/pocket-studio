@@ -119,4 +119,43 @@ class LiveCellsTest {
         assertNull(LiveCells.loopBars(0.4, 120.0, 4))
         assertNotNull(LiveCells.loopBars(1.5, 120.0, 3))
     }
+
+    @Test
+    fun theCasesStepperGoesThroughItsChoicesAndIsKept() {
+        assertEquals(8, Project().liveRowsShown)
+        assertEquals(12, LiveCells.stepRows(8, up = true))
+        assertEquals(6, LiveCells.stepRows(8, up = false))
+        assertEquals(16, LiveCells.stepRows(16, up = true))
+        assertEquals(4, LiveCells.stepRows(4, up = false))
+        val p = Project(liveRows = 12).sanitized()
+        assertEquals(12, ProjectJson.decode(ProjectJson.encode(p)).sanitized().liveRowsShown)
+        // Not one of the choices: back to 8; left out of the file at its default.
+        assertEquals(8, Project(liveRows = 5).sanitized().liveRowsShown)
+        assertFalse(ProjectJson.encode(Project().sanitized()).contains("liveRows"))
+    }
+
+    @Test
+    fun aRowPastTheLastBrickIsANewBrickToFill() {
+        val p = twoScenes()
+        // Recorded into row D (index 3): bricks C and D added, empty but for that cell.
+        val rec = p.withRecordedCell(SongPart.DRUMS, 3, emptyList(), listOf(PlayedMemory.KeptHit(0, 0.9f, 0.0)), 0.0, 16.0)!!
+        assertEquals(4, rec.allScenes.size)
+        assertTrue(rec.cellHasContent(SongPart.DRUMS, 3))
+        assertFalse(rec.cellHasContent(SongPart.DRUMS, 2))
+        assertEquals(0, rec.scene)
+        // Nothing played: no brick added.
+        assertNull(p.withRecordedCell(SongPart.DRUMS, 3, emptyList(), emptyList(), 0.0, 16.0))
+        // Copied into a new row; a sound of the library too.
+        val copied = p.withCopiedCell(SongPart.ACID, 1, SongPart.ACID, 5)!!
+        assertEquals(6, copied.allScenes.size)
+        assertTrue(copied.cellHasContent(SongPart.ACID, 5))
+        val withAudio = p.addAudioTrack()!!
+        val key = SongPart.audio(withAudio.audioTracks.single().id)
+        val placed = withAudio.withAudioInCell(key, 2, AudioClip("s1.wav", "Boucle", seconds = 4.0, loopSteps = 32, bpm = 120.0))!!
+        assertTrue(placed.cellHasContent(key, 2))
+        // Past the last possible brick: nothing.
+        assertNull(p.withCopiedCell(SongPart.ACID, 1, SongPart.ACID, Scene.MAX))
+        // Saved and opened again.
+        assertTrue(ProjectJson.decode(ProjectJson.encode(rec)).sanitized().cellHasContent(SongPart.DRUMS, 3))
+    }
 }

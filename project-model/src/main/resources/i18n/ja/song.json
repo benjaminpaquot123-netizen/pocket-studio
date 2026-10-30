@@ -389,5 +389,9 @@
   "Rien n'a été joué : la case reste vide.": "何も演奏されませんでした:マスは空のままです。",
   "Cette case ne va pas ici : choisis une case de la même piste ou du même genre.": "このマスはここに合いません:同じトラックか同じ種類のマスを選んでね。",
   "Les huit pistes audio sont prises : vide-en une pour poser ce son.": "8本のオーディオトラックがすべて使用中:この音を置くには1本を空けてね。",
-  "la brique %s": "ブロック %s"
+  "la brique %s": "ブロック %s",
+  "Cases": "マス",
+  "Moins de cases": "マスを減らす",
+  "Plus de cases": "マスを増やす",
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "最初のループが鳴っています。点をタップすると、そこに音を追加できます。"
 }

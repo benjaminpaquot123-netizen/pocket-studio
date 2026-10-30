@@ -389,5 +389,9 @@
   "Rien n'a été joué : la case reste vide.": "Tidak ada yang dimainkan: kotaknya tetap kosong.",
   "Cette case ne va pas ici : choisis une case de la même piste ou du même genre.": "Kotak ini tidak cocok di sini: pilih kotak dari trek yang sama atau jenis yang sama.",
   "Les huit pistes audio sont prises : vide-en une pour poser ce son.": "Kedelapan trek audio sudah terpakai: kosongkan satu untuk menaruh suara ini.",
-  "la brique %s": "blok %s"
+  "la brique %s": "blok %s",
+  "Cases": "Kotak",
+  "Moins de cases": "Lebih sedikit kotak",
+  "Plus de cases": "Lebih banyak kotak",
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Loop pertamamu sedang berputar. Sentuh sebuah titik untuk menambahkan suara di sana."
 }

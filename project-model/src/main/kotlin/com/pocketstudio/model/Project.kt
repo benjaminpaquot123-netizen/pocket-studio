@@ -125,6 +125,8 @@ data class Project(
      * [LiveSlots.QUANTUM_HALF_BAR]; 0 (left out of the file): [liveQuantum] bars.
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val liveQuantumFine: Int = 0,
+    /** « Cases − 8 + »: bricks the Live grid shows at once (one of [LiveCells.ROWS]); 0 (left out of the file): 8. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val liveRows: Int = 0,
     /**
      * Phase 37: the seed the drums' chances are drawn from ([Hit.chance], [DrumChance]): the same
      * seed, the same passes (an export is the song heard); « Autre tirage » picks another. Left out
@@ -191,6 +193,7 @@ data class Project(
         style = style?.take(64)?.ifBlank { null },
         songVersions = songVersions.take(SongVersion.MAX).map { it.sanitized(this) },
         liveQuantumFine = liveQuantumFine.takeIf { it in LiveSlots.FINE_QUANTA } ?: 0,
+        liveRows = liveRows.takeIf { it in LiveCells.ROWS } ?: 0,
         drumSeed = drumSeed.coerceIn(0, DrumChance.MAX_SEED),
         multi = multi.sanitized(),
         voice808 = voice808.copy(kind = PadVoice.BASS_808).sanitized(),

@@ -3540,6 +3540,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         session.editQuietly { it.copy(liveQuantum = next.liveQuantum, liveQuantumFine = next.liveQuantumFine) }
     }
 
+    /** « Cases − 8 + »: bricks the Live grid shows at once (kept with the project, no undo step). */
+    fun setLiveRows(rows: Int) {
+        if (rows !in com.pocketstudio.model.LiveCells.ROWS || rows == project.value.liveRows) return
+        session.editQuietly { it.copy(liveRows = rows) }
+    }
+
     /**
      * A pad: track [key] plays its part of scene [scene] from the next launch line (each track
      * counts from its own launch). Stopped, the transport starts with that track alone. During the
@@ -4520,9 +4526,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun recordCell(key: String, scene: Int) {
         val p = project.value
-        if (!com.pocketstudio.model.LiveCells.canRecord(key) || scene !in p.allScenes.indices || p.cellHasContent(key, scene)) return
+        if (!com.pocketstudio.model.LiveCells.canRecord(key) || scene !in 0 until Scene.MAX || p.cellHasContent(key, scene)) return
         if (_cellRecording.value != null) stopCellRecording()
-        if (!_transport.value.playing) launchRow(scene)
+        // A new brick (a row past the last one) has nothing to play yet: the current brick gives the beat.
+        if (!_transport.value.playing) launchRow(if (scene in p.allScenes.indices) scene else p.scene)
         cellNotes.clear(); cellHits.clear(); cellHeld.clear()
         cellArmedAt = playedClock()
         _cellRecording.value = com.pocketstudio.app.live.CellRecording(key, scene)

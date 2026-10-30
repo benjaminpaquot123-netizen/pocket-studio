@@ -20,6 +20,8 @@ import com.pocketstudio.model.instrumentTracks
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -97,6 +99,33 @@ class LiveMidiJourneyTest {
         assertTrue(vm.project.value.allScenes[0].synthNotes.notes.any { it.pitch == 67 && it.start == 4 * t && it.length == 2 * t })
         vm.undo()
         assertTrue(vm.project.value.allScenes[0].synthNotes.notes.none { it.pitch == 67 })
+    }
+
+    /**
+     * Hot-plug: the keyboard unplugged (or a « all notes off ») while keys are held: their notes
+     * end there for the app too (a cell recording or a take never keeps one ringing to its end).
+     */
+    @Test
+    fun aKeyboardUnpluggedWhileAKeyIsHeldEndsItsNoteForTheApp() {
+        com.pocketstudio.engine.NativeEngine.sink = com.pocketstudio.app.human.BenchEngine()
+        try {
+            val midi = com.pocketstudio.app.midi.MidiViewModel(app)
+            val got = ArrayList<com.pocketstudio.app.midi.MidiCommand>()
+            val scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined)
+            scope.launch { midi.commands.collect { got += it } }
+            midi.receiveForTest(byteArrayOf(0x90.toByte(), 62, 100))
+            assertEquals(com.pocketstudio.app.midi.MidiCommand.Note(0, 62, 100 / 127f, true), got.last())
+            midi.disconnect()
+            assertEquals(com.pocketstudio.app.midi.MidiCommand.Note(0, 62, 0f, false), got.last())
+            // Plugged again: it plays as before.
+            midi.receiveForTest(byteArrayOf(0x90.toByte(), 64, 90))
+            assertEquals(com.pocketstudio.app.midi.MidiCommand.Note(0, 64, 90 / 127f, true), got.last())
+            midi.receiveForTest(byteArrayOf(0xB0.toByte(), 123, 0))  // all notes off
+            assertTrue(got.contains(com.pocketstudio.app.midi.MidiCommand.Note(0, 64, 0f, false)))
+            scope.cancel()
+        } finally {
+            com.pocketstudio.engine.NativeEngine.sink = null
+        }
     }
 
     @Test

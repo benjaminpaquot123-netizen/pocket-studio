@@ -1064,9 +1064,15 @@ private fun LivePadCell(
     ) {
         if (mark != CellMark.None) {
             // Lot 4b: « ici » (the cell being filled) or « ● REC » (recording what is played).
-            val rec = mark == CellMark.Rec
-            Box(Modifier.clip(RoundedCornerShape(10.dp)).background(if (rec) Neon.Red else Neon.Amber).padding(horizontal = 8.dp, vertical = 2.dp)) {
-                Text(if (rec) "● REC" else tr("ici"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = if (rec) Color.White else Color.Black, maxLines = 1)
+            if (mark == CellMark.Rec) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Box(Modifier.size(20.dp).graphicsLayer { alpha = 0.55f + 0.45f * pulse.value }.clip(CircleShape).background(Neon.Red))
+                    Text("REC", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = Color.White, maxLines = 1, softWrap = false)
+                }
+            } else {
+                Box(Modifier.clip(RoundedCornerShape(10.dp)).background(Neon.Amber).padding(horizontal = 8.dp, vertical = 2.dp)) {
+                    Text(tr("ici"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Color.Black, maxLines = 1, softWrap = false)
+                }
             }
         } else if (playing) {
             // Where the loop is: a ring going round from the top.

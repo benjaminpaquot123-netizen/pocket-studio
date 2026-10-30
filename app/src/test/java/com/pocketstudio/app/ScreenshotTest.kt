@@ -615,7 +615,10 @@ open class ScreenshotTest {
 
 
     /** The Live page's example: four named scenes, drums, acid, two instrument tracks, a voice and a remix. */
-    protected fun liveUi(acidStopped: Boolean = false, spectrum: Boolean = false, fx: com.pocketstudio.app.live.LiveFxUi = com.pocketstudio.app.live.LiveFxUi()): com.pocketstudio.app.live.LiveScreenUi {
+    protected fun liveUi(
+        acidStopped: Boolean = false, spectrum: Boolean = false, fx: com.pocketstudio.app.live.LiveFxUi = com.pocketstudio.app.live.LiveFxUi(),
+        cellRecording: com.pocketstudio.app.live.CellRecording? = null,
+    ): com.pocketstudio.app.live.LiveScreenUi {
         val drums = DrumPattern().toggle(0, 0).toggle(0, 8).toggle(2, 4).toggle(2, 12)
         val acid = com.pocketstudio.model.AcidPattern(steps = List(com.pocketstudio.model.AcidPattern.MAX_STEPS) { i -> com.pocketstudio.model.AcidStep(gate = i % 3 == 0) })
         val notes = com.pocketstudio.model.NoteClip(16, listOf(com.pocketstudio.model.Note(0, 48, 60), com.pocketstudio.model.Note(96, 48, 63)))
@@ -643,12 +646,40 @@ open class ScreenshotTest {
             acid = mapOf(0 to 0.62f, 1 to 0.8f, 7 to 0.55f),
             // A kick and a bass under some hats: what the pads show faintly behind them.
             spectrum = if (!spectrum) ({ null }) else ({ FloatArray(40) { b -> -14f - b * 1.1f - if (b in 18..24) 10f else 0f } }),
-            fx = fx,
+            fx = fx, cellRecording = cellRecording,
         )
     }
 
     @Test
     fun liveGrid() = shoot("live_grid", fullScreen = true) {
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+    }
+
+    /** Lot 4b: an empty cell touched (the 303 in Intro): « Qu'est-ce que tu y mets ? ». */
+    @Test
+    fun liveCellMenu() = shoot("live_cell_menu", fullScreen = true, prepare = {
+        compose.onNodeWithTag("live_pad_acid_0").performClick()
+        compose.waitForIdle()
+    }) {
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+    }
+
+    /** Lot 4b: « Jouer et enregistrer ici » on the synth in Couplet: the cell records, the keys to play on below. */
+    @Test
+    fun liveCellRecording() = shoot("live_cell_recording", fullScreen = true) {
+        com.pocketstudio.app.live.LiveScreen(
+            liveUi(cellRecording = com.pocketstudio.app.live.CellRecording(com.pocketstudio.model.SongPart.inst(0), 1)),
+            com.pocketstudio.app.live.LiveActions(),
+        )
+    }
+
+    /** Lot 4b: « Copier une autre case »: the cell marked « ici », the bar asking for the one to copy. */
+    @Test
+    fun liveCellCopy() = shoot("live_cell_copy", fullScreen = true, prepare = {
+        compose.onNodeWithTag("live_pad_acid_0").performClick()
+        compose.onNodeWithTag("live_cell_copy").performClick()
+        compose.waitForIdle()
+    }) {
         com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
     }
 

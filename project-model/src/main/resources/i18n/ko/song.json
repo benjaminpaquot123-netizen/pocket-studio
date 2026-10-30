@@ -278,7 +278,6 @@
   "Ta prise Live a été gardée : elle est dans le morceau (%d parties).": "Live 테이크가 저장됐어요: 곡에 있어요 (파트 %d개).",
   "Tempo (60 à 200 BPM)": "템포 (60~200 BPM)",
   "Temps par mesure :": "마디당 박 수:",
-  "Tenus": "홀드",
   "Terminé": "완료",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "곡이 비어 있어요. 재생될 순서대로 파트를 추가하세요 (인트로, 벌스, 후렴…).",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "패드를 탭하면 사운드가 시작되고, 다시 탭하면 멈춰요. 모두 박에 맞춰져요.",
@@ -393,5 +392,10 @@
   "Cases": "칸",
   "Moins de cases": "칸 줄이기",
   "Plus de cases": "칸 늘리기",
-  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "첫 루프가 돌고 있어요. 점을 탭해서 거기에 소리를 추가하세요."
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "첫 루프가 돌고 있어요. 점을 탭해서 거기에 소리를 추가하세요.",
+  "Voir les autres pistes": "다른 트랙 보기",
+  "L'effet": "이펙트",
+  "Comment il joue": "연주 방식",
+  "Appui": "누르기",
+  "Tenu": "홀드"
 }

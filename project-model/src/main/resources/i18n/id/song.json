@@ -278,7 +278,6 @@
   "Ta prise Live a été gardée : elle est dans le morceau (%d parties).": "Take Live-mu disimpan: sudah ada di lagu (%d bagian).",
   "Tempo (60 à 200 BPM)": "Tempo (60 sampai 200 BPM)",
   "Temps par mesure :": "Ketukan per bar:",
-  "Tenus": "Ditahan",
   "Terminé": "Selesai",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "Lagumu kosong: tambah bagianmu sesuai urutan mainnya (Intro, Verse, Reff…).",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "Sentuh pad untuk memulai suaranya, sentuh lagi untuk menghentikannya. Semuanya tetap pas di ketukan.",
@@ -393,5 +392,10 @@
   "Cases": "Kotak",
   "Moins de cases": "Lebih sedikit kotak",
   "Plus de cases": "Lebih banyak kotak",
-  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Loop pertamamu sedang berputar. Sentuh sebuah titik untuk menambahkan suara di sana."
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Loop pertamamu sedang berputar. Sentuh sebuah titik untuk menambahkan suara di sana.",
+  "Voir les autres pistes": "Lihat trek lainnya",
+  "L'effet": "Efek",
+  "Comment il joue": "Cara bermain",
+  "Appui": "Tekan",
+  "Tenu": "Tahan"
 }

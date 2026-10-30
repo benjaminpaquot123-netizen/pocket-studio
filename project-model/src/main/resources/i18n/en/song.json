@@ -278,7 +278,6 @@
   "Ta prise Live a été gardée : elle est dans le morceau (%d parties).": "Your Live take was kept: it is in the song (%d parts).",
   "Tempo (60 à 200 BPM)": "Tempo (60 to 200 BPM)",
   "Temps par mesure :": "Beats per bar:",
-  "Tenus": "Held",
   "Terminé": "Done",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "Your song is empty: add your parts in the order they play (Intro, Verse, Chorus…).",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "Tap a pad to start its sound, tap it again to stop it. Everything stays on the beat.",
@@ -393,5 +392,10 @@
   "Cases": "Cells",
   "Moins de cases": "Fewer cells",
   "Plus de cases": "More cells",
-  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Your first loop is playing. Tap a dot to add a sound there."
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Your first loop is playing. Tap a dot to add a sound there.",
+  "Voir les autres pistes": "Show the other tracks",
+  "L'effet": "The effect",
+  "Comment il joue": "How it plays",
+  "Appui": "Press",
+  "Tenu": "Hold"
 }

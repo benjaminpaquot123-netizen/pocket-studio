@@ -40,6 +40,8 @@ fun UnderTopBar(
     loopChip: Boolean = true,
     /** « − 113 + »: − and + a BPM beside the tempo (the Live page). */
     tempoSteps: Boolean = false,
+    /** False: no tempo in the strip (the page shows it itself). */
+    showTempo: Boolean = true,
 ) {
     val project by vm.project.collectAsStateWithLifecycle()
     val transport by vm.transport.collectAsStateWithLifecycle()
@@ -75,7 +77,7 @@ fun UnderTopBar(
             PlayStripUi(
                 project.tempoBpm, hasSong = controls && project.song.isNotEmpty(), loopPart = loopPart, playing = playing, position = position, parts = parts,
                 soloed = if (landscape || !controls) soloed else emptyList(), helpOn = helpOn,
-                loopChip = loopChip || loopPart,
+                loopChip = loopChip || loopPart, showTempo = showTempo,
             ),
             PlayStripActions(openTempo = { setTempoOpen(true) }, nudgeTempo = if (tempoSteps) vm::nudgeTempo else null, setLoopPart = vm::setLoopPart, playFrom = vm::playSongPart, playWholeSong = vm::listenFromStart, clearSolos = vm::clearSolos, toggleHelp = toggleHelp, reportBug = reportBug),
         )
@@ -101,4 +103,6 @@ fun PositionStrip(
     helpOn: Boolean? = null, toggleHelp: () -> Unit = {}, reportBug: (() -> Unit)? = null,
     /** « − 113 + » (the Live page). */
     tempoSteps: Boolean = false,
-) = UnderTopBar(vm, tempoOpen, setTempoOpen, renaming = false, closeRename = {}, controls = false, helpOn = helpOn, toggleHelp = toggleHelp, reportBug = reportBug, tempoSteps = tempoSteps)
+    /** Lot 4d: false where the page shows the tempo itself (the Live page's bar). */
+    showTempo: Boolean = true,
+) = UnderTopBar(vm, tempoOpen, setTempoOpen, renaming = false, closeRename = {}, controls = false, helpOn = helpOn, toggleHelp = toggleHelp, reportBug = reportBug, tempoSteps = tempoSteps, showTempo = showTempo)

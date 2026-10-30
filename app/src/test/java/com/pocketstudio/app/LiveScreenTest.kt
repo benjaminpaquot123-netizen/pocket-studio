@@ -164,7 +164,7 @@ class LiveScreenTest {
         val ch = mutableListOf<String>()
         compose.setContent {
             PocketStudioTheme {
-                LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions(trackChop = { c, on -> ch += "$c $on" }))
+                LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions(trackChop = { c, on -> ch += "$c $on" }), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets)
             }
         }
         compose.onNodeWithTag("live_fx_acid").performClick()
@@ -215,7 +215,7 @@ class LiveScreenTest {
         compose.setContent {
             val d = androidx.compose.ui.platform.LocalDensity.current
             androidx.compose.runtime.CompositionLocalProvider(androidx.compose.ui.platform.LocalDensity provides androidx.compose.ui.unit.Density(d.density, 1.3f)) {
-                PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions()) }
+                PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets) }
             }
         }
         val full = compose.onNodeWithTag("live_fullscreen").getBoundsInRoot()
@@ -229,7 +229,7 @@ class LiveScreenTest {
     @Config(qualifiers = "w316dp-h640dp-xxhdpi")
     fun uprightOnAShortScreenThePadOfTheEffectsIsInView() {
         // 09/20: at 130 % upright the pad XY was all under the fold; the panel keeps room for it.
-        compose.setContent { PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions()) } }
+        compose.setContent { PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets) } }
         val screen = compose.onNodeWithTag("live_screen").getBoundsInRoot()
         val xy = compose.onNodeWithTag("xy_pad").getBoundsInRoot()
         org.junit.Assert.assertTrue("at least 90 dp of the pad in view (${screen.bottom - xy.top})", screen.bottom - xy.top >= 90.dp)
@@ -237,7 +237,7 @@ class LiveScreenTest {
 
     @Test
     fun fullScreenFoldsThePanelAndATabOpensItAgain() {
-        compose.setContent { PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions()) } }
+        compose.setContent { PocketStudioTheme { LiveScreen(LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets) } }
         compose.onNodeWithTag("live_fx_acid").assertIsDisplayed()
         compose.onNodeWithTag("live_fullscreen").performClick()
         compose.onNodeWithTag("live_fx_acid").assertDoesNotExist()

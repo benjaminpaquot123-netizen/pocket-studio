@@ -652,24 +652,19 @@ open class ScreenshotTest {
 
     @Test
     fun liveGrid() = shoot("live_grid", fullScreen = true) {
-        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+        // Lot 4d: the tools open on the effects, the grid above in lower rows.
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets)
     }
 
-    /** Lot 4c: the Briques grid in style B, its panel folded: the cells lit, queued, the dots of the new bricks. */
+    /** Lot 4c: the Briques grid in style B, its tools folded in their dock (lot 4d): the cells lit, queued, the dots of the new bricks. */
     @Test
-    fun liveGridB() = shoot("live_grid_b", fullScreen = true, prepare = {
-        compose.onNodeWithTag("live_panel_fold").performClick()
-        compose.waitForIdle()
-    }) {
+    fun liveGridB() = shoot("live_grid_b", fullScreen = true) {
         com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
     }
 
     /** Lot 4c: a project with one loop playing: « Ta première boucle tourne… », a « + » beside it. */
     @Test
-    fun liveFirstLoop() = shoot("live_first_loop", fullScreen = true, prepare = {
-        compose.onNodeWithTag("live_panel_fold").performClick()
-        compose.waitForIdle()
-    }) {
+    fun liveFirstLoop() = shoot("live_first_loop", fullScreen = true) {
         val one = Project(scenes = emptyList(), drums = DrumPattern().toggle(0, 0).toggle(0, 8).toggle(2, 4).toggle(2, 12)).addTrack("Basse")!!.sanitized()
         com.pocketstudio.app.live.LiveScreen(
             com.pocketstudio.app.live.LiveScreenUi(one, com.pocketstudio.model.LiveState.on(0, 0), clock = 6, playing = true),
@@ -709,7 +704,7 @@ open class ScreenshotTest {
     fun liveFx() = shoot("live_fx", fullScreen = true, prepare = {
         compose.onNodeWithTag("live_fx_inst:0").performScrollTo().performClick()
     }) {
-        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets)
     }
 
     /** « Tenus » with the lock on: « Freinage » kept (its padlock), the bass cut while held. */
@@ -727,7 +722,7 @@ open class ScreenshotTest {
                     locks = setOf(com.pocketstudio.model.AutoTarget.LIVE_TAPE_STOP),
                 ),
             ),
-            com.pocketstudio.app.live.LiveActions(),
+            com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets,
         )
     }
 
@@ -739,7 +734,7 @@ open class ScreenshotTest {
     }) {
         com.pocketstudio.app.live.LiveScreen(
             liveUi(fx = com.pocketstudio.app.live.LiveFxUi(values = mapOf(com.pocketstudio.model.AutoTarget.LIVE_BUILD_UP to 0.6f), dropArmed = true)),
-            com.pocketstudio.app.live.LiveActions(),
+            com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets,
         )
     }
 
@@ -758,7 +753,7 @@ open class ScreenshotTest {
                     ),
                 ),
             ),
-            com.pocketstudio.app.live.LiveActions(),
+            com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets,
         )
     }
 
@@ -768,7 +763,7 @@ open class ScreenshotTest {
         compose.onNodeWithTag("live_fx_settings").performClick()
         compose.waitForIdle()
     }) {
-        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets)
     }
 
     @Test
@@ -788,7 +783,7 @@ open class ScreenshotTest {
                 song, ui.grid, 45, ui.playing, ui.muted, ui.acid, listOf(0.7f, 0.5f),
                 take = com.pocketstudio.app.live.TakeUi.Recording(32, 42, 21), takeAppend = true, chops = setOf(1),
             ),
-            com.pocketstudio.app.live.LiveActions(),
+            com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets,
         )
     }
 
@@ -809,7 +804,7 @@ open class ScreenshotTest {
     @Test
     @Config(qualifiers = "w860dp-h400dp-land-xxhdpi")
     fun liveLandscape() = shoot("live_landscape", fullScreen = true) {
-        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions(), initialTab = com.pocketstudio.app.live.LivePanelTab.Effets)
     }
 
     @Test

@@ -278,7 +278,6 @@
   "Ta prise Live a été gardée : elle est dans le morceau (%d parties).": "Je Live-opname is bewaard: ze staat in het nummer (%d delen).",
   "Tempo (60 à 200 BPM)": "Tempo (60 tot 200 BPM)",
   "Temps par mesure :": "Tellen per maat:",
-  "Tenus": "Vasthouden",
   "Terminé": "Klaar",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "Je nummer is leeg: voeg je delen toe in de volgorde waarin ze spelen (Intro, Couplet, Refrein…).",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "Tik op een pad om het geluid te starten, tik nog eens om het te stoppen. Alles blijft op de tel.",
@@ -393,5 +392,10 @@
   "Cases": "Vakken",
   "Moins de cases": "Minder vakken",
   "Plus de cases": "Meer vakken",
-  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Je eerste loop draait. Tik op een punt om er een geluid aan toe te voegen."
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Je eerste loop draait. Tik op een punt om er een geluid aan toe te voegen.",
+  "Voir les autres pistes": "Andere sporen tonen",
+  "L'effet": "Het effect",
+  "Comment il joue": "Hoe het speelt",
+  "Appui": "Indrukken",
+  "Tenu": "Vasthouden"
 }

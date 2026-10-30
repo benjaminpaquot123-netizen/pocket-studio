@@ -45,6 +45,12 @@ object AutoTempo {
         return if (abs(whole / detected - 1.0) <= SNAP && whole in MIN_BPM..MAX_BPM) whole else detected
     }
 
+    /** Library kinds that are hits (never a tempo), whatever their length. */
+    private val HIT_KINDS = setOf("kick", "snare", "clap", "hat", "open_hat", "perc", "tom", "ride", "foley")
+
+    /** A sound of the library that has no tempo: a kit's hit, a party sound (a horn, a shout), a hit [kind]. */
+    fun isHit(hitSource: Boolean, kind: String?): Boolean = hitSource || kind in HIT_KINDS
+
     /**
      * The project already has a tempo of its own: a sound set it, or it has music (bricks filled, a
      * take, a sound on an audio track) or a song heard along. Its tempo then stays.

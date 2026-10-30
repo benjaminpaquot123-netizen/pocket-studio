@@ -50,5 +50,7 @@
   "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "लूप में (⟳ लूप)। ▶ सिर्फ़ ये पार्ट बजाता है।",
   "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "गाना चल रहा है: ग्रिड पर टैप करो, ये पार्ट लूप में तुम्हारी उँगलियों के नीचे रहेगा।",
   "Boucler": "लूप",
-  "Tout le morceau, du début": "पूरा गाना, शुरू से"
+  "Tout le morceau, du début": "पूरा गाना, शुरू से",
+  "Tempo calé sur %1$s : %2$d": "टेम्पो %1$s पर सेट: %2$d",
+  "Revenir au tempo de %1$s (%2$d)": "%1$s के टेम्पो पर वापस (%2$d)"
 }

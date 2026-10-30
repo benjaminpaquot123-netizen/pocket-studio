@@ -684,8 +684,113 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (!NativeEngine.isAvailable) return
         p.live.clips.take(NativeEngine.LIVE_PADS).forEachIndexed { i, clip ->
             if (clip != null) NativeEngine.setClipParams(i, clip.beats, clip.oneShot, clip.gain)
-            NativeEngine.setClip(i, clip?.let { padSamples.native(it.file) })
+            val stored = clip?.let { padSamples.native(it.file) }
+            val pick = fitPick("l$i", clip?.takeIf { it.follows }?.let { c -> stored?.let { TempoFits.want("l$i", c.file, it.frames, c.bpm, p.tempoBpm) } })
+            NativeEngine.setClip(i, pick.sample ?: stored, refit = pick.refit)
         }
+        fitLoops(p)
+    }
+
+    // --- Step 4e: loops that follow the tempo, and the tempo set by the first one ---------------
+
+    private val tempoFits = TempoFits()
+    private var fitJob: kotlinx.coroutines.Job? = null
+
+    /** What a slot plays (an export takes the copy if made, without touching what the phone plays). */
+    private fun fitPick(slot: String, want: TempoFits.Want?): TempoFits.Pick =
+        if (NativeEngine.isCapturing) TempoFits.Pick(tempoFits.ready(want), false) else tempoFits.pick(slot, want)
+
+    /** Every loop of [p] that follows the tempo, as it should play now. */
+    private fun fitWants(p: Project): List<TempoFits.Want> {
+        val audio = p.audioTracks.mapNotNull { t ->
+            val c = t.clip?.takeIf { it.follows } ?: return@mapNotNull null
+            padSamples.native(c.file)?.let { TempoFits.want("a${t.id}", c.file, it.frames, c.bpm, p.tempoBpm) }
+        }
+        val live = p.live.clips.take(NativeEngine.LIVE_PADS).mapIndexedNotNull { i, c ->
+            c?.takeIf { it.follows }?.let { cl -> padSamples.native(cl.file)?.let { TempoFits.want("l$i", cl.file, it.frames, cl.bpm, p.tempoBpm) } }
+        }
+        return audio + live
+    }
+
+    /**
+     * The copies the loops need at the tempo, made one by one on a worker thread once the tempo
+     * settles (a « + » held, a drag), then handed to the engine as refits.
+     */
+    private fun fitLoops(p: Project) {
+        if (NativeEngine.isCapturing || !NativeEngine.isAvailable) return
+        val wants = fitWants(p)
+        val missing = tempoFits.missing(wants)
+        if (missing.isEmpty()) {
+            if (fitJob?.isActive != true) tempoFits.prune(wants)
+            return
+        }
+        if (fitJob?.isActive == true && fitFor == p.tempoBpm) return
+        fitJob?.cancel()
+        fitFor = p.tempoBpm
+        fitJob = viewModelScope.launch {
+            kotlinx.coroutines.delay(250)  // tempo nudges and drags settle first
+            for (w in missing) {
+                val source = padSamples.native(w.file) ?: continue
+                val copy = finishOrRelease(Dispatchers.Default, NativeSample::close) { tempoFits.compute(source, w.frames) }
+                if (copy == null) AppLog.add("Calage au tempo impossible pour une boucle (${w.slot})")
+                tempoFits.register(w.key, copy)
+                if (!isActive) break
+            }
+            fitFor = Double.NaN
+            pushAudio()
+            pushLive()
+        }
+    }
+
+    private var fitFor = Double.NaN
+
+    /** « Tempo calé sur Boys : 113 · Annuler »: shown once a sound set the tempo. */
+    data class TempoSet(val name: String, val bpm: Double, val previous: Double)
+
+    private val _tempoSet = MutableStateFlow<TempoSet?>(null)
+    val tempoSet: StateFlow<TempoSet?> = _tempoSet.asStateFlow()
+
+    /** A sound just set the tempo ([lead]), it was [previous]: heard at once, the banner shown. */
+    private fun tempoLed(lead: com.pocketstudio.model.TempoLead, previous: Double) {
+        AppLog.add("Tempo calé sur « ${lead.name} » : ${"%.1f".format(lead.bpm)} BPM (avant ${"%.1f".format(previous)})")
+        _tempoSet.value = TempoSet(lead.name, lead.bpm, previous)
+        pushTempo()
+    }
+
+    /** « Annuler » on the banner: the tempo before, in one step; the sound stays (stretched to it). */
+    fun undoTempoSet() {
+        val set = _tempoSet.value ?: return
+        _tempoSet.value = null
+        session.edit { com.pocketstudio.model.AutoTempo.undone(it, set.previous) }
+        pushTempo()
+    }
+
+    fun dismissTempoSet() {
+        _tempoSet.value = null
+    }
+
+    /** « Revenir au tempo de Boys » in the tempo sheet. */
+    fun backToLeadTempo() {
+        val lead = project.value.tempoLead ?: return
+        if (lead.bpm == project.value.tempoBpm) return
+        // Its exact tempo (a song's 113.2), not the sheet's whole BPM: nothing stretched any more.
+        session.edit { it.copy(tempoBpm = lead.bpm) }
+        tempoSheetDepth = session.undoDepth
+        pushTempo()
+    }
+
+    /**
+     * The tempo of a sound about to be placed ([file] stored, [seconds] long): [known] (the
+     * library's), else the engine's beat tracker on it; 0 for a hit, a shout, nothing found.
+     */
+    private suspend fun tempoOfPlaced(file: String, seconds: Double, known: Double, oneShot: Boolean): Double {
+        if (oneShot || seconds < com.pocketstudio.model.AutoTempo.MIN_LOOP_SECONDS) return 0.0
+        if (known > 0.0) return com.pocketstudio.model.AutoTempo.tempoOf(seconds, known = known)
+        if (!NativeEngine.isNative) return 0.0
+        val found = withContext(Dispatchers.Default) { runCatching { NativeEngine.analyzeTempo(padSamples.fileOf(file).path) }.getOrNull() }
+        val bpm = found?.getOrNull(0)?.toDouble() ?: 0.0
+        val confidence = found?.getOrNull(1) ?: 0f
+        return if (confidence >= MIN_TEMPO_CONFIDENCE) com.pocketstudio.model.AutoTempo.tempoOf(seconds, detected = bpm) else 0.0
     }
 
     fun toggleLive(pad: Int) {
@@ -1393,7 +1498,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             // On the live grid, a track playing another scene (or stopped) keeps what it plays.
             if (!waitsFor(LiveSlots.audio(id)) || _liveGrid.value?.diverged != true) NativeEngine.setAudioOn(id, audioPlays(p, id, part, alone))
             val clip = p.audioTracks.firstOrNull { it.id == id }?.clip
-            val native = clip?.let { padSamples.native(it.file) }
+            val stored = clip?.let { padSamples.native(it.file) }
+            // A loop following the tempo (step 4e): its copy at the project's tempo once made.
+            val pick = fitPick("a$id", clip?.takeIf { it.follows }?.let { c -> stored?.let { TempoFits.want("a$id", c.file, it.frames, c.bpm, p.tempoBpm) } })
+            val native = pick.sample ?: stored
             if (clip != null && native != null) {
                 NativeEngine.setAudioClipParams(
                     id, clip.start, clip.engineLoopSteps(sceneSteps, p.tempoBpm), clip.gain,
@@ -1401,8 +1509,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     song = clip.song, offsetFrames = clip.offsetFrames(OfflineExport.SAMPLE_RATE),
                 )
             }
-            NativeEngine.setAudioClip(id, native)
+            NativeEngine.setAudioClip(id, native, refit = pick.refit)
         }
+        fitLoops(p)
     }
 
     /** Audio track [id] sounds in song [part] (null: scene [scene] alone); never the track being retaken (live only). */
@@ -1666,7 +1775,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _liveStarting.value = true
             try {
                 awaitSoundsLoaded()
-                val sounds = make(project.value.tempoBpm)
+                val madeAt = project.value.tempoBpm
+                val sounds = make(madeAt)
                 val made = HashMap<Int, com.pocketstudio.model.LiveStarter.Made>()
                 for ((i, sound) in sounds) {
                     val pad = com.pocketstudio.model.LiveStarter.PADS.getOrNull(i) ?: continue
@@ -1674,7 +1784,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     padSamples.register(prepared)
                     made[i] = com.pocketstudio.model.LiveStarter.Made(sample.file, sound.second)
                 }
-                session.editQuietly { q -> q.copy(live = com.pocketstudio.model.LiveStarter.applied(q.live, made)) }
+                // Its loops follow the tempo from then on (step 4e), its hits stay as they are.
+                val files = made.values.map { it.file }.toSet()
+                session.editQuietly { q ->
+                    val live = com.pocketstudio.model.LiveStarter.applied(q.live, made)
+                    q.copy(live = live.copy(clips = live.clips.map { c -> if (c != null && c.file in files && !c.oneShot) c.copy(bpm = madeAt) else c }))
+                }
                 pushLive()
                 AppLog.add("Pads prêts à jouer : ${made.size} sons posés")
             } catch (e: kotlinx.coroutines.CancellationException) {
@@ -1689,14 +1804,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** On live pad [pad] (from the sound library), its length in beats fitted to the tempo; false when busy. */
-    fun placeOnLivePad(pad: Int, pcm: Pcm, name: String): Boolean {
+    /**
+     * On live pad [pad] (from the sound library), its length in beats fitted to the tempo; false
+     * when busy. Step 4e: a loop with a tempo ([known], else the beat tracker's) follows the
+     * project's tempo, stretched live, and the first one of a project without a tempo sets it.
+     */
+    fun placeOnLivePad(pad: Int, pcm: Pcm, name: String, known: Double = 0.0, oneShot: Boolean = false): Boolean {
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
         if (pad !in 0 until LivePads.MAX) return true
         AppLog.add("Pad live ${pad + 1} : « $name » de la bibliothèque")
-        sampleJob(tr("Pose du son sur le pad live %d…", pad + 1), live = pad) { padSamples.add(pcm, name) }
+        sampleJob(tr("Pose du son sur le pad live %d…", pad + 1), live = pad, liveTempo = LiveTempo(known, oneShot)) { padSamples.add(pcm, name) }
         return true
     }
+
+    /** How a live pad's new sound finds its tempo ([placeOnLivePad]). */
+    private class LiveTempo(val known: Double, val oneShot: Boolean)
 
     /** On the first audio track without a clip; one is added when all are taken. */
     fun placeOnAudioTrack(pcm: Pcm, name: String) {
@@ -4599,26 +4721,41 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /**
-     * « Un son de ma bibliothèque » on cell ([key], [scene]): a loop fitted to whole bars at the
-     * project's tempo (its pitch kept), on an audio track in that brick (see [withAudioInCell]); one
-     * undo step. False while another sound is still being placed.
+     * « Un son de ma bibliothèque » on cell ([key], [scene]), on an audio track in that brick (see
+     * [withAudioInCell]); one undo step. False while another sound is still being placed.
+     * Step 4e: a loop with a tempo ([known], else the beat tracker's) is kept as it is and follows
+     * the project's tempo, stretched live; the first one of a project without a tempo sets it
+     * (« Tempo calé sur … · Annuler »). A loop of unknown tempo is fitted to whole bars at the
+     * project's tempo (its pitch kept) and follows it from then on; a short sound plays once a bar.
      */
-    fun placeInCell(key: String, scene: Int, pcm: Pcm, name: String): Boolean {
+    fun placeInCell(key: String, scene: Int, pcm: Pcm, name: String, known: Double = 0.0, oneShot: Boolean = false): Boolean {
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
         audioJob(tr("Pose du son…")) {
+            val (kept, keptPrepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, name) }
+            padSamples.register(keptPrepared)
+            val bpm = tempoOfPlaced(kept.file, pcm.seconds, known, oneShot)
             val p = project.value
-            val bars = LiveCells.loopBars(pcm.seconds, p.tempoBpm, p.beatsPerBar)
-            val fitted = if (bars != null && NativeEngine.isNative) {
-                val frames = Math.round(bars * p.beatsPerBar * 60.0 / p.tempoBpm * pcm.sampleRate)
-                withContext(Dispatchers.Default) { NativeEngine.stretchPcm(pcm.data, pcm.channels, frames, pcm.sampleRate) }
-                    ?.let { Pcm(it, pcm.channels, pcm.sampleRate) } ?: pcm
-            } else pcm
-            val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(fitted, name) }
-            padSamples.register(prepared)
-            val clip = AudioClip(sample.file, sample.name, seconds = fitted.seconds, loopSteps = (bars ?: 1) * p.stepsPerBar, bpm = p.tempoBpm)
-            if (project.value.withAudioInCell(key, scene, clip) == null) throw UserMessage(tr("Les huit pistes audio sont prises : vide-en une pour poser ce son."))
-            session.edit { q -> q.withAudioInCell(key, scene, clip) ?: q }
-            AppLog.add("Live : « $name » dans la brique ${Scene.NAMES.getOrElse(scene) { "?" }} (${bars ?: 0} mesures)")
+            val lead = com.pocketstudio.model.AutoTempo.leadFor(p, name, bpm)
+            val tempo = lead?.bpm ?: p.tempoBpm
+            val clip = if (bpm > 0.0 && com.pocketstudio.model.AutoTempo.canFit(bpm, tempo)) {
+                val bars = LiveCells.loopBars(pcm.seconds, bpm, p.beatsPerBar) ?: 1
+                AudioClip(kept.file, kept.name, seconds = pcm.seconds, loopSteps = bars * p.stepsPerBar, bpm = bpm, fit = true)
+            } else {
+                val bars = LiveCells.loopBars(pcm.seconds, p.tempoBpm, p.beatsPerBar)
+                val fitted = if (bars != null && !oneShot && NativeEngine.isNative) {
+                    val frames = Math.round(bars * p.beatsPerBar * 60.0 / p.tempoBpm * pcm.sampleRate)
+                    withContext(Dispatchers.Default) { NativeEngine.stretchPcm(pcm.data, pcm.channels, frames, pcm.sampleRate) }
+                        ?.let { Pcm(it, pcm.channels, pcm.sampleRate) }
+                } else null
+                val (sample, prepared) = if (fitted != null) withContext(Dispatchers.IO) { padSamples.add(fitted, name) } else kept to null
+                prepared?.let(padSamples::register)
+                val loops = bars != null && !oneShot
+                AudioClip(sample.file, sample.name, seconds = (fitted ?: pcm).seconds, loopSteps = (if (loops) bars!! else 1) * p.stepsPerBar, bpm = p.tempoBpm, fit = loops)
+            }
+            if (p.withAudioInCell(key, scene, clip) == null) throw UserMessage(tr("Les huit pistes audio sont prises : vide-en une pour poser ce son."))
+            session.edit { q -> (lead?.let { com.pocketstudio.model.AutoTempo.led(q, it) } ?: q).withAudioInCell(key, scene, clip) ?: q }
+            AppLog.add("Live : « $name » dans la brique ${Scene.NAMES.getOrElse(scene) { "?" }} (${clip.loopSteps / p.stepsPerBar.coerceAtLeast(1)} mesures, ${"%.1f".format(clip.bpm)} BPM)")
+            if (lead != null) tempoLed(lead, p.tempoBpm)
             pushMixer()
             pushAudio()
             padSamples.prune(project.value.sampleFiles)
@@ -5423,16 +5560,22 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun useSong(set: StemSet, heard: List<Boolean>? = null): Boolean {
         val info = set.info
-        val adopts = !project.value.hasMusicOfItsOwn()
+        val before = project.value
+        val adopts = !before.hasMusicOfItsOwn()
+        // Step 4e: the song sets the tempo of a project without one (« Tempo calé sur Boys »).
+        val lead = if (adopts) com.pocketstudio.model.AutoTempo.leadFor(before.copy(remix = Remix()), set.name, info.bpm) else null
         session.edit("remix") { p ->
             val remix = Remix(set.id, set.name, info.bpm, info.firstBeat, seconds = set.seconds, stems = Remix.stemsHeard(heard))
             if (!adopts) p.copy(remix = remix.copy(followTempo = info.bpm > 0 && kotlin.math.abs(info.bpm - p.tempoBpm) > 0.05))
-            else p.copy(
-                tempoBpm = if (info.bpm > 0) info.bpm else p.tempoBpm,
+            else (lead?.let { com.pocketstudio.model.AutoTempo.led(p, it) } ?: p).copy(
+                // A loop set the tempo already (a live pad): it stays, the song is stretched to it.
+                tempoBpm = if (info.bpm > 0 && before.tempoLead == null) info.bpm else p.tempoBpm,
                 harmony = info.root?.let { Harmony(it, if (info.minor) Scale.Minor else Scale.Major) } ?: p.harmony,
-                remix = remix,
+                // It follows the tempo from then on: « − BPM + » on the Live moves it too.
+                remix = remix.copy(followTempo = info.bpm > 0),
             )
         }
+        if (lead != null && kotlin.math.abs(lead.bpm - before.tempoBpm) >= 0.05) _tempoSet.value = TempoSet(lead.name, lead.bpm, before.tempoBpm)
         StemStore.pin(getApplication(), set.id)
         if (!NativeEngine.isAvailable) return adopts
         NativeEngine.setTempo(project.value.tempoBpm)
@@ -6553,7 +6696,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     if (audio.none { kotlin.math.abs(it) > SILENT }) continue
                     val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), spec.name) }
                     padSamples.register(prepared)
-                    made += LiveClip(sample.file, sample.name, (spec.bars * p.beatsPerBar).coerceAtMost(LivePads.MAX_BEATS), spec.oneShot)
+                    made += LiveClip(sample.file, sample.name, (spec.bars * p.beatsPerBar).coerceAtMost(LivePads.MAX_BEATS), spec.oneShot, bpm = if (spec.oneShot) 0.0 else p.tempoBpm)
                 }
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
@@ -6874,7 +7017,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * or on live pad [live] (looping every [beats] beats, or as long as the sound lasts).
      */
     private fun sampleJob(
-        busy: String?, live: Int? = null, beats: Int? = null, cancellable: Boolean = false,
+        busy: String?, live: Int? = null, beats: Int? = null, cancellable: Boolean = false, liveTempo: LiveTempo? = null,
         lane: Int = _transport.value.selectedPad, done: () -> Unit = {},
         work: suspend () -> Pair<PadSample, PadSamples.Prepared>,
     ) {
@@ -6885,8 +7028,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 val (sample, prepared) = withContext(Dispatchers.IO) { work() }
                 padSamples.register(prepared)
                 if (live != null) {
-                    val clip = LiveClip(sample.file, sample.name, beats ?: LivePads.beatsFor(prepared.info.seconds, project.value.tempoBpm))
-                    session.edit { p -> p.copy(live = p.live.with(live, clip)) }
+                    val seconds = prepared.info.seconds
+                    val bpm = liveTempo?.let { tempoOfPlaced(sample.file, seconds, it.known, it.oneShot) } ?: 0.0
+                    val before = project.value
+                    val lead = com.pocketstudio.model.AutoTempo.leadFor(before, sample.name, bpm)
+                    val follows = bpm > 0.0 && com.pocketstudio.model.AutoTempo.canFit(bpm, lead?.bpm ?: before.tempoBpm)
+                    val clip = if (follows) LiveClip(sample.file, sample.name, LivePads.beatsFor(seconds, bpm), bpm = bpm)
+                    else LiveClip(sample.file, sample.name, beats ?: LivePads.beatsFor(seconds, before.tempoBpm))
+                    session.edit { p -> (lead?.let { com.pocketstudio.model.AutoTempo.led(p, it) } ?: p).let { q -> q.copy(live = q.live.with(live, clip)) } }
+                    if (lead != null) tempoLed(lead, before.tempoBpm)
                     pushLive()
                     _sampleTask.value = SampleTask.Idle
                     return@launch
@@ -8839,6 +8989,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** The project's tempo to the engine, and to what follows it (the remix, pads fitted to beats). */
     private fun pushTempo() {
         if (NativeEngine.isAvailable) NativeEngine.setTempo(project.value.tempoBpm)
+        // Loops following the tempo: their copies at the new one, then refitted (step 4e).
+        if (project.value.audioTracks.any { it.clip?.follows == true } || project.value.live.clips.any { it?.follows == true }) {
+            pushAudio()
+            pushLive()
+        }
         if (project.value.remix.followTempo) pushRemix()
         if (project.value.drums.lanes.any { (it.sample?.fitBeats ?: 0) > 0 }) pushPads()
     }
@@ -9597,7 +9752,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         loadTrackFonts()
         loadMultiBanks()
         var waited = 0
-        while ((loadingBanks.isNotEmpty() || loadingMulti.isNotEmpty() || stemsJob?.isActive == true || remixStretchJob?.isActive == true || stretchJob?.isActive == true) &&
+        while ((loadingBanks.isNotEmpty() || loadingMulti.isNotEmpty() || stemsJob?.isActive == true || remixStretchJob?.isActive == true || stretchJob?.isActive == true || fitJob?.isActive == true) &&
             waited++ < 300
         ) kotlinx.coroutines.delay(50)
     }
@@ -10171,6 +10326,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         running?.cancel()
         recorder?.stop()
         padSamples.close()
+        tempoFits.close()
         stems?.close()
         stretched?.close()
         if (NativeEngine.isAvailable) NativeEngine.stopTransport()
@@ -10192,6 +10348,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
         /** Below this a rendered pad is silence (about -80 dBFS): no pad for it. */
         private const val SILENT = 1e-4f
+        /** The beat tracker's share of agreeing beats under which a sound is taken as having no tempo. */
+        private const val MIN_TEMPO_CONFIDENCE = 0.3f
 
         /** The first project of a new install, and the "Rythme de départ" choice: a beat and an acid line. */
         fun starterProject(name: String = "Mon premier rythme"): Project {

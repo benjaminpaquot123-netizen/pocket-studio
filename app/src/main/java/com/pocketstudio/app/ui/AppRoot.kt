@@ -551,10 +551,14 @@ fun AppRoot() {
                                 // A kept sound keeps its whole name (« Voix · Ma chanson ») and its length.
                                 val mine = (option.ref as? com.pocketstudio.app.library.SoundRef.Mine)?.let { r -> mySounds.firstOrNull { it.id == r.id } }
                                 val name = if (mine != null) mine.name else option.name.substringBefore(" · ")
+                                // Step 4e: its tempo if the library knows it; a hit or a shout has none.
+                                val known = mine?.bpm ?: 0.0
+                                val hit = com.pocketstudio.model.AutoTempo.isHit(option.ref is com.pocketstudio.app.library.SoundRef.Kit || option.ref is com.pocketstudio.app.library.SoundRef.Party,
+                                    mine?.kind ?: (option.ref as? com.pocketstudio.app.library.SoundRef.Pack)?.sound?.kind)
                                 val placed = when {
-                                    cell != null -> rhythmVm.placeInCell(cell.key, cell.scene, pcm, name)
+                                    cell != null -> rhythmVm.placeInCell(cell.key, cell.scene, pcm, name, known, hit)
                                     forTrack -> rhythmVm.useAsTrackSound(pcm, name, mine?.kind ?: (option.ref as? com.pocketstudio.app.library.SoundRef.Pack)?.sound?.kind)
-                                    live >= 0 -> rhythmVm.placeOnLivePad(live, pcm, name)
+                                    live >= 0 -> rhythmVm.placeOnLivePad(live, pcm, name, known, hit)
                                     else -> rhythmVm.placeOnPad(pcm, name, oneShot = mine == null)
                                 }
                                 if (placed) close()
@@ -3665,7 +3669,7 @@ internal fun LiveRoute(
     var tempoOpen by rememberSaveable { mutableStateOf(false) }
     if (tempoOpen) {
         LaunchedEffect(Unit) { vm.beginTempoSheet() }
-        TempoSheet(ui.project.tempoBpm, TempoActions(set = vm::setSheetTempo, tap = vm::tapSheetTempo), onClose = { tempoOpen = false })
+        TempoSheet(ui.project.tempoBpm, TempoActions(set = vm::setSheetTempo, tap = vm::tapSheetTempo, lead = ui.project.tempoLead, backToLead = vm::backToLeadTempo), onClose = { tempoOpen = false })
     }
     com.pocketstudio.app.live.LiveScreen(
         ui,
@@ -3717,7 +3721,7 @@ internal fun LivePadsRoute(
     )
     if (tempoOpen) {
         LaunchedEffect(Unit) { vm.beginTempoSheet() }
-        TempoSheet(ui.project.tempoBpm, TempoActions(set = vm::setSheetTempo, tap = vm::tapSheetTempo), onClose = { tempoOpen = false })
+        TempoSheet(ui.project.tempoBpm, TempoActions(set = vm::setSheetTempo, tap = vm::tapSheetTempo, lead = ui.project.tempoLead, backToLead = vm::backToLeadTempo), onClose = { tempoOpen = false })
     }
     if (versionsOpen) {
         com.pocketstudio.app.record.SongVersionsSheet(

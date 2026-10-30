@@ -86,6 +86,9 @@ class TempoActions(
     val set: (Double) -> Unit = {},
     /** « Taper en rythme »: one tap. */
     val tap: () -> Unit = {},
+    /** The sound the tempo was set on (step 4e): « Revenir au tempo de Boys » while the tempo is elsewhere. */
+    val lead: com.pocketstudio.model.TempoLead? = null,
+    val backToLead: () -> Unit = {},
 )
 
 /**
@@ -158,6 +161,26 @@ fun TempoPad(tempoBpm: Double, actions: TempoActions, close: () -> Unit, modifie
                 label = { Text("×2", style = MaterialTheme.typography.titleMedium) }, colors = pillColors(),
                 modifier = Modifier.semantics { contentDescription = tr("Double du tempo") }.testTag("tempo_double"),
             )
+        }
+        // Step 4e: back to the tempo of the sound that set it, in one touch (its exact tempo).
+        val lead = actions.lead
+        if (lead != null && kotlin.math.abs(lead.bpm - tempoBpm) >= 0.05) {
+            Row(
+                Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(14.dp))
+                    .background(Neon.Cyan.copy(alpha = 0.12f))
+                    .border(1.dp, Neon.Cyan.copy(alpha = 0.5f), RoundedCornerShape(14.dp))
+                    .clickable(role = Role.Button) { draft = TempoDraft(); actions.backToLead() }
+                    .padding(horizontal = 16.dp)
+                    .testTag("tempo_back_to_lead"),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Text(
+                    tr("Revenir au tempo de %1\$s (%2\$d)", com.pocketstudio.model.DefaultNames.shownSample(lead.name), Math.round(lead.bpm).toInt()),
+                    style = MaterialTheme.typography.titleSmall, color = Neon.Cyan, maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                )
+            }
         }
         // The keypad: 1 to 9, then erase, 0, OK.
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {

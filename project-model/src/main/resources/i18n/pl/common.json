@@ -50,5 +50,7 @@
   "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "W pętli (⟳ Pętla). ▶ gra tylko tę część.",
   "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "Utwór gra: dotknij siatki, a ta część zostanie pod palcami, w pętli.",
   "Boucler": "Pętla",
-  "Tout le morceau, du début": "Cały utwór, od początku"
+  "Tout le morceau, du début": "Cały utwór, od początku",
+  "Tempo calé sur %1$s : %2$d": "Tempo dopasowane do %1$s: %2$d",
+  "Revenir au tempo de %1$s (%2$d)": "Wróć do tempa %1$s (%2$d)"
 }

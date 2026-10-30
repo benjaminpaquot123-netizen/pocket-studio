@@ -50,5 +50,7 @@
   "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "In een lus (⟳ Lus). ▶ speelt alleen dit deel.",
   "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "Het nummer speelt: raak het raster aan en dit deel blijft onder je vingers, in een lus.",
   "Boucler": "Lus",
-  "Tout le morceau, du début": "Het hele nummer, vanaf het begin"
+  "Tout le morceau, du début": "Het hele nummer, vanaf het begin",
+  "Tempo calé sur %1$s : %2$d": "Tempo afgestemd op %1$s: %2$d",
+  "Revenir au tempo de %1$s (%2$d)": "Terug naar het tempo van %1$s (%2$d)"
 }

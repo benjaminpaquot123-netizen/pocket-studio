@@ -82,11 +82,13 @@ fun UnderTopBar(
             PlayStripActions(openTempo = { setTempoOpen(true) }, nudgeTempo = if (tempoSteps) vm::nudgeTempo else null, setLoopPart = vm::setLoopPart, playFrom = vm::playSongPart, playWholeSong = vm::listenFromStart, clearSolos = vm::clearSolos, toggleHelp = toggleHelp, reportBug = reportBug),
         )
         if (!landscape && controls) SoloBanner(soloed, vm::clearSolos)
+        val tempoSet by vm.tempoSet.collectAsStateWithLifecycle()
+        TempoBanner(tempoSet, vm::undoTempoSet, vm::dismissTempoSet)
     }
     if (tempoOpen) {
         // Whatever the sheet changes until it closes is one undo step.
         LaunchedEffect(Unit) { vm.beginTempoSheet() }
-        TempoSheet(project.tempoBpm, TempoActions(set = vm::setSheetTempo, tap = vm::tapSheetTempo), onClose = { setTempoOpen(false) })
+        TempoSheet(project.tempoBpm, TempoActions(set = vm::setSheetTempo, tap = vm::tapSheetTempo, lead = project.tempoLead, backToLead = vm::backToLeadTempo), onClose = { setTempoOpen(false) })
     }
 }
 

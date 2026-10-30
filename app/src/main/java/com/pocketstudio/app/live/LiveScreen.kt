@@ -1035,7 +1035,8 @@ private fun LivePadCell(
     SideEffect { livePadCompositions++ }
     val haptics = LocalHapticFeedback.current
     val shape = RoundedCornerShape(9.dp)
-    val lit = animateFloatAsState(if (playing) 1f else 0f, tween(220), label = "pad-lit")
+    // A track playing an empty cell: nothing lights up there.
+    val lit = animateFloatAsState(if (playing && hasContent) 1f else 0f, tween(220), label = "pad-lit")
     val color = c.color
     val clock = look.clock
     val showDot = !hasContent && !pending && mark == CellMark.None && !hint
@@ -1043,23 +1044,7 @@ private fun LivePadCell(
         Modifier.size(width, height)
             // Brushes made once per size: a playing pad redraws every frame without garbage.
             .drawWithCache {
-                val r = 9.dp.toPx()
-                val ring = Stroke(1.5.dp.toPx())
                 onDrawBehind {
-                    // The halo around a playing pad, breathing on the beat.
-                    val on = lit.value
-                    if (on > 0.01f) {
-                        val glow = (6f + 16f * clock.pulse).dp.toPx()
-                        val rings = 4
-                        for (k in 1..rings) {
-                            val spread = glow * k / rings
-                            drawRoundRect(
-                                color.copy(alpha = (on * 0.55f * (1f - (k - 1f) / rings) / rings).coerceIn(0f, 1f)),
-                                topLeft = Offset(-spread, -spread), size = Size(size.width + 2 * spread, size.height + 2 * spread),
-                                cornerRadius = CornerRadius(r + spread), style = ring,
-                            )
-                        }
-                    }
                     if (showDot) {
                         // The wave of the beat passing through this dot: the nearest playing cell's.
                         var best = 0f
@@ -1088,6 +1073,11 @@ private fun LivePadCell(
                 val progSide = 7.dp.toPx()
                 val progH = 4.dp.toPx()
                 val progR = CornerRadius(2.dp.toPx())
+                val halo = 6.dp.toPx()
+                val haloLine = halo / HALO_LAYERS
+                val haloStroke = Stroke(haloLine)
+                val haloColor = lerp(color, Color.White, 0.35f)
+                val radius = 9.dp.toPx()
                 onDrawBehind {
                     val on = lit.value
                     if (pending && on < 0.01f) {
@@ -1106,6 +1096,19 @@ private fun LivePadCell(
                             translate(left = x) { drawRect(sheen, size = Size(sheenW, size.height), alpha = on) }
                         }
                         bars?.let { previewBars(it, if (on > 0.5f) null else barBrush, GridLook.Ink.copy(alpha = 0.8f), if (on > 0.5f) 1f else 0.75f) }
+                        if (on > 0.01f) {
+                            // The halo, breathing on the beat: a glow along the inside of the edge
+                            // (outside, the grid's rows would cut it).
+                            val glow = halo * (0.45f + 0.55f * clock.pulse)
+                            for (k in 0 until HALO_LAYERS) {
+                                val inset = halo * k / HALO_LAYERS + haloLine / 2
+                                drawRoundRect(
+                                    haloColor.copy(alpha = (on * glow / halo * 0.7f * (1f - k.toFloat() / HALO_LAYERS)).coerceIn(0f, 1f)),
+                                    Offset(inset, inset), Size(size.width - 2 * inset, size.height - 2 * inset),
+                                    CornerRadius((radius - inset).coerceAtLeast(0f)), style = haloStroke,
+                                )
+                            }
+                        }
                         if (on > 0.5f) {
                             // Where the loop is: a thin bar along the top.
                             val w = size.width - 2 * progSide
@@ -1172,7 +1175,7 @@ private fun StopButton(label: String, modifier: Modifier, waiting: Boolean, blin
         modifier.clip(RoundedCornerShape(10.dp))
             .let { m ->
                 val red = Neon.Red
-                if (waiting) m.drawBehind { drawRect(red.copy(alpha = 0.25f + 0.35f * blink.value)) } else m.background(Neon.SurfaceHigh)
+                if (waiting) m.drawBehind { drawRect(red.copy(alpha = 0.25f + 0.35f * blink.value)) } else m.background(GridLook.Panel)
             }
             .launchOnPress(press, retract, stop).testTag(tag)
             // One id per control; the drums' ■ alone says what a track's ■ does (one label, not seven).
@@ -1282,6 +1285,8 @@ private val MIN_CELL_H = 48.dp
 private val MAX_CELL_W = 120.dp
 /** Lot 4c: a brick's row stops shrinking here (« Cases » past what fits: the grid scrolls). */
 private val ROW_MIN_H = 40.dp
+/** The playing cell's halo: thin strokes inside its edge, fainter inwards. */
+private const val HALO_LAYERS = 6
 private val GRID_PAD_H = 8.dp
 private val GRID_PAD_V = 6.dp
 

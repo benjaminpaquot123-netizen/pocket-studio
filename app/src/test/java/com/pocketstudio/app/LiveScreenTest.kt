@@ -202,8 +202,10 @@ class LiveScreenTest {
         val last = columns.last().key
         compose.onNodeWithTag("live_mute_$last").performScrollTo().performClick()
         compose.onNodeWithTag("live_stop_$last").performScrollTo().performClick()
+        // Its cell in B is empty (lot 4b): a touch asks what goes in it, it launches nothing.
         compose.onNodeWithTag("live_pad_${last}_1").performScrollTo().performClick()
-        assertEquals(listOf("mute $last", "stop $last", "pad $last 1"), calls)
+        assertEquals(listOf("mute $last", "stop $last"), calls)
+        compose.onNodeWithTag("live_cell_menu").assertIsDisplayed()
     }
 
     @Test

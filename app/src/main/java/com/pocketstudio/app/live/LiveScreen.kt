@@ -846,10 +846,10 @@ private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveA
         val cellH = ((innerH - top - header - stopH - gap * (shown + 2)) / shown).coerceAtLeast(if (dense) ROW_MIN_DENSE else ROW_MIN_H)
         val look = CellLook(clock, sources, cellW.value, cellH.value, gap.value)
         Column(Modifier.padding(horizontal = GRID_PAD_H, vertical = GRID_PAD_V).testTag("live_grid"), verticalArrangement = Arrangement.spacedBy(gap)) {
-            Row(Modifier.fillMaxWidth().height(top - gap), verticalAlignment = Alignment.CenterVertically) {
+            Row(Modifier.fillMaxWidth().height(top - gap), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                 // Lot 4d: « Lancer à » here (the bar keeps the tempo), beside « Cases ».
                 QuantumButton(p, actions.setQuantum, Modifier.weight(1f, fill = false))
-                Spacer(Modifier.weight(1f).width(4.dp))
+                Spacer(Modifier.width(8.dp))
                 CasesStepper(shown, actions.setRows)
             }
             Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
@@ -1216,7 +1216,12 @@ private fun StopButton(label: String, modifier: Modifier, waiting: Boolean, blin
             .semantics { if (label == "■") contentDescription = tr("Arrêter la piste") },
         contentAlignment = Alignment.Center,
     ) {
-        Text(label, style = MaterialTheme.typography.titleSmall, color = Neon.TextPrimary, maxLines = 1)
+        // « ■ Tout » in a narrow scene column (six tracks on a phone): smaller, never cut.
+        val style = MaterialTheme.typography.titleSmall
+        Text(
+            label, style = style, color = Neon.TextPrimary, maxLines = 1, softWrap = false, modifier = Modifier.padding(horizontal = 2.dp),
+            autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
+        )
     }
 }
 

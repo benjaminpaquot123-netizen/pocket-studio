@@ -147,6 +147,47 @@ class LiveMidiJourneyTest {
         assertFalse(vm.midiCellPad(2, 0.4f))
     }
 
+    /** Each panel of the new Live gives the controller its role (the tabs' names are what the app reads). */
+    @Test
+    fun eachPanelOfTheNewLiveGivesTheControllerItsRole() {
+        val expected = mapOf(
+            LivePanelTab.Briques to com.pocketstudio.app.midi.KnobScreen.Live,
+            LivePanelTab.Effets to com.pocketstudio.app.midi.KnobScreen.Live,
+            LivePanelTab.Notes to com.pocketstudio.app.midi.KnobScreen.Live,
+            LivePanelTab.Acide to com.pocketstudio.app.midi.KnobScreen.LiveAcide,
+            LivePanelTab.Pads to com.pocketstudio.app.midi.KnobScreen.LivePads,
+        )
+        assertEquals(LivePanelTab.entries.toSet(), expected.keys)
+        expected.forEach { (tab, screen) -> assertEquals(tab.name, screen, com.pocketstudio.app.midi.KnobScreen.of("Session", live = true, liveTab = tab.name)) }
+    }
+
+    /** The knobs on the Effets panel move the DJ filter (the XY pad) during a take, the encoder the tempo: in the song, and undone. */
+    @Test
+    fun knobsMoveTheLiveEffectsIntoTheTakeAndTheEncoderTheTempo() {
+        val vm = open()
+        val host = rhythmKnobHost(vm)
+        host.act(ControllerAction.Tempo(2))
+        assertEquals(122.0, vm.project.value.tempoBpm, 0.0)
+        vm.undo()
+        assertEquals(120.0, vm.project.value.tempoBpm, 0.0)
+        vm.togglePlay()
+        vm.takeClockForTest = 5
+        vm.togglePerformance()
+        vm.takeClockForTest = 16
+        vm.tickPerformance()
+        vm.takeClockForTest = 20
+        val filter = com.pocketstudio.model.AutoTarget.live(com.pocketstudio.model.AutoTarget.LIVE_FILTER)
+        host.apply(com.pocketstudio.app.midi.KnobTarget(filter), 0.2f)
+        assertEquals(0.2f, vm.liveFx.value.value(com.pocketstudio.model.AutoTarget.LIVE_FILTER, -1f), 1e-3f)
+        vm.takeClockForTest = 40
+        vm.togglePerformance()
+        val done = vm.take.value as TakeUi.Done
+        assertEquals(1, done.settings)
+        assertTrue(vm.project.value.automation.any { it.target == filter })
+        vm.undo()
+        assertTrue(vm.project.value.automation.none { it.target == filter })
+    }
+
     @Test
     fun aLivePadHitSoftlyOnTheControllerPlaysSoftAndTheTakeKeepsIt() {
         val vm = open()

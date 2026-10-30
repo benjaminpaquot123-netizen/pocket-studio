@@ -44,7 +44,7 @@ class HonestMixTest {
     fun everySongGetsTheHonestMix() {
         for (style in StarterWizard.STYLES) {
             val p = song(style)
-            assertEquals(style.id, Project.MIX_V4, p.mixVersion)
+            assertEquals(style.id, Project.MIX_V5, p.mixVersion)
             val channels = p.mixer.channels
             // One stage on the kick's transient: no fast compressor on the drum bus nor the master (the Punch at 10 ms).
             for (c in listOf(channels[0].inserts, p.mixer.master)) {
@@ -209,7 +209,7 @@ class HonestMixTest {
         val back = ProjectJson.decode(ProjectJson.encode(p))
         assertEquals(p.mixer.musicBus, back.mixer.musicBus)
         assertEquals(p.mixer.sidechainKey, back.mixer.sidechainKey)
-        assertEquals(Project.MIX_V4, back.mixVersion)
+        assertEquals(Project.MIX_V5, back.mixVersion)
         // Out of range: kept sane.
         val wild = Mixer(sidechainKey = Mixer.MASTER, musicBus = MusicBus(members = setOf(-1, 2, Mixer.MASTER, 20), depth = 3f, lowDepth = Float.NaN)).sanitized()
         assertEquals(-1, wild.sidechainKey)

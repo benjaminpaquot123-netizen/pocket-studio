@@ -295,7 +295,7 @@ internal object WizardMix {
 
     /**
      * S5, in [StarterWizard.build] just before [WideMix.apply] (then [withAudibleBass], last): the assistant's song gets an
-     * honest mix ([Project.MIX_V2], since S7 [Project.MIX_V4]: its loudness target aims at the Drop, the master chain takes
+     * honest mix ([Project.MIX_V2], since S7 [Project.MIX_V4], [Project.MIX_V5] since the Acidcore kick fix: its loudness target aims at the Drop, the master chain takes
      * 3 LU at most there). One stage on the kick's transient (the drum bus and the master glue
      * slow and in RMS, the Punch at 10 ms); a soft clipper on the bass before its OTT; a real
      * sidechain: the kick's sound (its pad) is the key, the melodic tracks and the returns go
@@ -304,7 +304,7 @@ internal object WizardMix {
      * The projects saved before keep their mix.
      */
     fun honest(project: Project, style: Style, partOfTrack: Map<Int, Part>): Project {
-        var p = project.copy(mixVersion = Project.MIX_V4)
+        var p = project.copy(mixVersion = Project.MIX_V5)
         var channels = p.mixer.channels.toMutableList()
         fun replaced(list: List<Insert>, from: Insert, to: Insert) = list.map { if (it.type == from.type && it.params == from.sanitized().params) to else it }
         channels[0] = channels[0].copy(inserts = replaced(channels[0].inserts, BUS_GLUE[0].sanitized(), BUS_GLUE_V2[0])).sanitized()

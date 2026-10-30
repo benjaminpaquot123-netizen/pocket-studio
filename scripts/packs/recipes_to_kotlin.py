@@ -72,7 +72,7 @@ Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a ba
     runs the intro backwards).
   "bass_tip" / "pad_tip" / "lead_tip": what that part does in this style (French), shown on its step.
   "fx": [{"on": bass|chords|lead|<drum role>|acid|drums|master, "preset": <FX_PRESETS id>, "insert": <EFFECTS name>,
-          "params": [up to 4 values 0..1 of the insert, the others its defaults], "reverb": 0..1, "delay": 0..1}]:
+          "params": [up to 5 values 0..1 of the insert (a SATURATION's 5th: « Volume constant »), the others its defaults], "reverb": 0..1, "delay": 0..1}]:
           effects put on that layer when the song is made (e.g. {"on": "chords", "insert": "VINYL"},
           {"on": "bass", "preset": "pump"}, {"on": "snare", "reverb": 0.4}); on the master: inserts only (a preset's
           inserts, or one), in its free slots.
@@ -411,7 +411,7 @@ def style(r):
         check(not preset or preset in FX_PRESETS, f"{gid} fx: unknown preset {preset} ({sorted(FX_PRESETS)})")
         check(not insert or insert in EFFECTS, f"{gid} fx: unknown insert {insert} ({sorted(EFFECTS)})")
         params = fx.get("params", [])
-        check(not params or (insert and len(params) <= 4 and all(num(v) is not None and 0 <= num(v) <= 1 for v in params)), f"{gid} fx: params 0..1 of an insert")
+        check(not params or (insert and len(params) <= 5 and all(num(v) is not None and 0 <= num(v) <= 1 for v in params)), f"{gid} fx: params 0..1 of an insert")
         check(on != "master" or not (fx.get("reverb") or fx.get("delay")), f"{gid} fx: no sends on the master")
         rev, dly = float(fx.get("reverb", 0)), float(fx.get("delay", 0))
         check(0 <= rev <= 1 and 0 <= dly <= 1, f"{gid} fx: sends 0..1")

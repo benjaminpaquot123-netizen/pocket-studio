@@ -23,7 +23,7 @@ class S7SpreadTest {
         var spread = 0
         for (style in StarterWizard.STYLES) {
             val p = song(style)
-            assertEquals(style.id, Project.MIX_V4, p.mixVersion)
+            assertEquals(style.id, Project.MIX_V5, p.mixVersion)
             // What plays the bass (the basses, the sub, the 808's pad): no spread.
             for (ch in p.bassChannels()) assertEquals("${style.id} bass strip $ch", 0f, spreadOf(p, ch), 0f)
             // The chords and pads (the main voices above the bass): spread, as wide as the style asks.

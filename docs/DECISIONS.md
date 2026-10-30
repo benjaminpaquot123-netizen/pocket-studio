@@ -912,3 +912,4 @@
 - 2026-10-29 · Le menu « ⋯ » du Mode simple dit « Remix ». En Pro, le Remix ouvert hors de l'espace Sons montre « ← Mon morceau ».
 - 2026-10-29 · `mysounds/` va dans le transfert d'appareil, pas dans la sauvegarde cloud (limite de 25 Mo).
 - 2026-10-29 · un projet vide s'ouvre sur les pads (Rythme), un projet rempli sur « Mon morceau » (choix 1A de Benjamin, APK 233 : les pads n'étaient pas là dès l'ouverture). Retour arrière : toujours ouvrir sur « Mon morceau ».
+- 2026-10-30 · Acidcore : la saturation de la 303 garde son volume (« Volume constant »). Sans, elle montait la 303 de 10,7 LU, 10 LU au-dessus de la batterie, et le gros kick disparaissait (retour de Benjamin, APK 233). Ses morceaux Acidcore déjà faits sont réparés à l'ouverture (mix v5). Retour arrière : enlever le 5e réglage dans la recette et la réparation dans ProjectJson.

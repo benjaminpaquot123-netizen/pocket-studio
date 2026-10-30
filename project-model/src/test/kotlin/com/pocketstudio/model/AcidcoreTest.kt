@@ -162,6 +162,49 @@ class AcidcoreTest {
         assertEquals(0.3f, p.mixer.master.first().params[0], 1e-6f)
     }
 
+    /**
+     * Benjamin (APK 233): « quand j'écoute toutes les pistes ensemble le gros kick disparaît ». The 303's saturation
+     * (drive 0.45) did not hold its level: rendered (ps_render, his song's Drop, before the master) it made the 303
+     * 10.7 LU louder (-18.3 → -7.6 LUFS) and 14 dB louder under 120 Hz, 10 LU over the drums (-17.4) and 4 dB over
+     * the kick in its own band; the master then held the 303 and the kick sank (a hit lifted the mix by 0.1 dB, 4.7
+     * with the drums alone). At a constant level (« Volume constant ») the 303 sits 2 LU under the kick.
+     */
+    @Test
+    fun acidcores303SaturationKeepsItsLevelSoTheKickStaysOverIt() {
+        val p = defaultSong(style("acidcore"))
+        val sats = p.mixer.channels[AutoTarget.ACID_CHANNEL].inserts.filter { it.effect == EffectType.SATURATION }
+        assertEquals(1, sats.size)
+        assertEquals(0.45f, sats.single().params[0], 1e-6f)  // its grit as before
+        assertEquals(1f, sats.single().params[EffectType.SAT_COMPENSATION])
+        assertEquals(0.7f, sats.single().params[3], 1e-6f)  // at 0 dB
+        assertEquals(Project.MIX_V5, p.mixVersion)
+    }
+
+    @Test
+    fun aSavedAcidcoreSongGetsIts303BackUnderTheKickOnce() {
+        val fresh = defaultSong(style("acidcore"))
+        fun withSat(p: Project, f: (List<Float>) -> List<Float>) = p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.mapIndexed { i, c ->
+            if (i != AutoTarget.ACID_CHANNEL) c else c.copy(inserts = c.inserts.map { if (it.effect == EffectType.SATURATION) it.copy(params = f(it.params)) else it })
+        }))
+        fun satOf(p: Project) = p.mixer.channels[AutoTarget.ACID_CHANNEL].inserts.single { it.effect == EffectType.SATURATION }.params
+        val off: (List<Float>) -> List<Float> = { it.toMutableList().also { v -> v[EffectType.SAT_COMPENSATION] = 0f } }
+        // As APK 233 saved it (Benjamin's song): read back at a constant level, MIX_V5, nothing else changed.
+        val saved = withSat(fresh, off).copy(mixVersion = Project.MIX_V4)
+        val back = ProjectJson.decode(ProjectJson.encode(saved))
+        assertEquals(1f, satOf(back)[EffectType.SAT_COMPENSATION])
+        assertEquals(Project.MIX_V5, back.mixVersion)
+        assertEquals(ProjectJson.decode(ProjectJson.encode(fresh)), back)
+        // Once: set back by hand since, it stays so.
+        val byHand = withSat(back, off)
+        assertEquals(0f, satOf(ProjectJson.decode(ProjectJson.encode(byHand)))[EffectType.SAT_COMPENSATION])
+        // A saturation the user turned (its drive), another style, a song of another mix: left as they are.
+        val turned = withSat(saved) { it.toMutableList().also { v -> v[0] = 0.6f } }
+        assertEquals(0f, satOf(ProjectJson.decode(ProjectJson.encode(turned)))[EffectType.SAT_COMPENSATION])
+        assertEquals(Project.MIX_V4, ProjectJson.decode(ProjectJson.encode(saved.copy(style = "acid_techno"))).mixVersion)
+        assertEquals(0f, satOf(ProjectJson.decode(ProjectJson.encode(saved.copy(style = "acid_techno"))))[EffectType.SAT_COMPENSATION])
+        assertEquals(0f, satOf(ProjectJson.decode(ProjectJson.encode(saved.copy(mixVersion = Project.MIX_V2))))[EffectType.SAT_COMPENSATION])
+    }
+
     @Test
     fun acidcoreFilterOpensOverTheIntroAndSweepsInTheBreaks() {
         val p = defaultSong(style("acidcore"))

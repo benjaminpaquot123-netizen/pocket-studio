@@ -655,6 +655,28 @@ open class ScreenshotTest {
         com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
     }
 
+    /** Lot 4c: the Briques grid in style B, its panel folded: the cells lit, queued, the dots of the new bricks. */
+    @Test
+    fun liveGridB() = shoot("live_grid_b", fullScreen = true, prepare = {
+        compose.onNodeWithTag("live_panel_fold").performClick()
+        compose.waitForIdle()
+    }) {
+        com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+    }
+
+    /** Lot 4c: a project with one loop playing: « Ta première boucle tourne… », a « + » beside it. */
+    @Test
+    fun liveFirstLoop() = shoot("live_first_loop", fullScreen = true, prepare = {
+        compose.onNodeWithTag("live_panel_fold").performClick()
+        compose.waitForIdle()
+    }) {
+        val one = Project(scenes = emptyList(), drums = DrumPattern().toggle(0, 0).toggle(0, 8).toggle(2, 4).toggle(2, 12)).addTrack("Basse")!!.sanitized()
+        com.pocketstudio.app.live.LiveScreen(
+            com.pocketstudio.app.live.LiveScreenUi(one, com.pocketstudio.model.LiveState.on(0, 0), clock = 6, playing = true),
+            com.pocketstudio.app.live.LiveActions(),
+        )
+    }
+
     /** Lot 4b: an empty cell touched (the 303 in Intro): « Qu'est-ce que tu y mets ? ». */
     @Test
     fun liveCellMenu() = shoot("live_cell_menu", fullScreen = true, prepare = {

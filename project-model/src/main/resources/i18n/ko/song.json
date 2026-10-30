@@ -389,5 +389,9 @@
   "Rien n'a été joué : la case reste vide.": "연주된 게 없어요: 칸은 비어 있어요.",
   "Cette case ne va pas ici : choisis une case de la même piste ou du même genre.": "이 칸은 여기에 안 맞아요: 같은 트랙이나 같은 종류의 칸을 고르세요.",
   "Les huit pistes audio sont prises : vide-en une pour poser ce son.": "오디오 트랙 8개가 모두 찼어요: 이 사운드를 넣으려면 하나를 비우세요.",
-  "la brique %s": "블록 %s"
+  "la brique %s": "블록 %s",
+  "Cases": "칸",
+  "Moins de cases": "칸 줄이기",
+  "Plus de cases": "칸 늘리기",
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "첫 루프가 돌고 있어요. 점을 탭해서 거기에 소리를 추가하세요."
 }

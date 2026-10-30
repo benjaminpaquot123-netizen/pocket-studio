@@ -389,5 +389,9 @@
   "Rien n'a été joué : la case reste vide.": "什么都没演奏:格子仍然是空的。",
   "Cette case ne va pas ici : choisis une case de la même piste ou du même genre.": "这个格子放不到这里:选择同一条音轨或同一类的格子。",
   "Les huit pistes audio sont prises : vide-en une pour poser ce son.": "八条音频轨都已占用:清空一条才能放这个声音。",
-  "la brique %s": "积木 %s"
+  "la brique %s": "积木 %s",
+  "Cases": "格子",
+  "Moins de cases": "减少格子",
+  "Plus de cases": "增加格子",
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "你的第一个循环正在播放。点按一个圆点，在那里添加声音。"
 }

@@ -389,5 +389,9 @@
   "Rien n'a été joué : la case reste vide.": "Nothing was played: the cell stays empty.",
   "Cette case ne va pas ici : choisis une case de la même piste ou du même genre.": "This cell doesn't fit here: pick a cell of the same track or the same kind.",
   "Les huit pistes audio sont prises : vide-en une pour poser ce son.": "All eight audio tracks are taken: empty one to place this sound.",
-  "la brique %s": "block %s"
+  "la brique %s": "block %s",
+  "Cases": "Cells",
+  "Moins de cases": "Fewer cells",
+  "Plus de cases": "More cells",
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Your first loop is playing. Tap a dot to add a sound there."
 }

@@ -85,6 +85,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
@@ -121,6 +122,7 @@ import com.pocketstudio.model.instrumentTracks
 import com.pocketstudio.model.liveColumns
 import com.pocketstudio.model.livePosition
 import com.pocketstudio.model.liveQuantumSteps
+import com.pocketstudio.model.liveRowsShown
 import com.pocketstudio.model.sceneLabel
 import com.pocketstudio.model.slotLoopSteps
 import com.pocketstudio.ui.MonoStyle
@@ -191,6 +193,8 @@ class LiveScreenUi(
     val fxOf: () -> LiveFxUi = { fx },
     /** Lot 4b: the empty cell recording what is played (null: none). */
     val cellRecording: CellRecording? = null,
+    /** Lot 4c: the grid's moving light off (null: the phone's « Supprimer les animations »). */
+    val reducedMotion: Boolean? = null,
 ) {
     /** What the effects are doing now: read in the small composables that show it (see [fxOf]). */
     val fx: LiveFxUi get() = fxOf()
@@ -271,6 +275,8 @@ class LiveActions(
     val copyCell: (fromKey: String, fromScene: Int, toKey: String, toScene: Int) -> Boolean = { _, _, _, _ -> false },
     /** A drum pad played on the page (it goes into the drum cell recording). */
     val drumHit: (lane: Int) -> Unit = {},
+    /** « Cases − 8 + »: how many bricks the grid shows (LiveCells.ROWS). */
+    val setRows: (Int) -> Unit = {},
 )
 
 /** The bottom panel's pages. */
@@ -398,8 +404,8 @@ fun LiveScreen(
                     // Too short for both (a big text size, a small phone): the open panel keeps
                     // PANEL_MIN (its pad in view) and the grid its header, a row and ■ (it scrolls).
                     val scenes = ui.project.allScenes.size
-                    val gridMin = HEADER_HEIGHT + 48.dp + (MIN_CELL_H + 6.dp) * 3 + 24.dp
-                    val gridShort = HEADER_COMPACT + 48.dp + (MIN_CELL_H + 6.dp) + 24.dp
+                    val gridMin = HEADER_HEIGHT + 96.dp + (MIN_CELL_H + 6.dp) * 3 + 24.dp
+                    val gridShort = HEADER_COMPACT + 96.dp + (MIN_CELL_H + 6.dp) + 24.dp
                     val gridAll = HEADER_HEIGHT + 48.dp + (64.dp + 6.dp) * scenes + 24.dp
                     val room = (maxHeight - gridMin).coerceAtLeast(PANEL_FOLDED)
                     val panelHeight = when {
@@ -783,52 +789,89 @@ private fun Counter(ui: LiveScreenUi) {
 /**
  * The grid: the scene buttons stay on the left, the track columns scroll sideways together, a
  * header (name, colour, M) above and the ■ of each track below. Always this way round (a track
- * added or a bigger text never turns it: the hand finds its scenes where they were). The cells
- * share the room (none smaller than a finger: past that, the grid scrolls).
+ * added or a bigger text never turns it: the hand finds its scenes where they were). Lot 4c:
+ * « Cases − 8 + » sets how many bricks share the height (none smaller than [ROW_MIN_H]: past that
+ * the grid scrolls); rows past the song's last brick are new bricks, their dots ready to fill.
  */
 @Composable
-private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveActions, marks: GridMarks, modifier: Modifier) = BoxWithConstraints(modifier) {
+private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveActions, marks: GridMarks, modifier: Modifier) = BoxWithConstraints(modifier.background(GridLook.Ground)) {
     val p = ui.project
-    val scenes = p.allScenes.indices.toList()
+    val shown = p.liveRowsShown
+    val rows = maxOf(shown, p.allScenes.size).coerceAtMost(Scene.MAX)
+    val scenes = (0 until rows).toList()
     val n = columns.size.coerceAtLeast(1)
-    val rows = scenes.size.coerceAtLeast(1)
     val compact = maxHeight < 440.dp
     val gap = if (compact) 4.dp else 6.dp
     val sceneWidth = when {
-        maxWidth >= 700.dp -> 128.dp
-        maxWidth >= 440.dp -> 104.dp
-        else -> 80.dp
+        maxWidth >= 700.dp -> 104.dp
+        maxWidth >= 440.dp -> 80.dp
+        else -> 52.dp
     }
     val innerW = maxWidth - GRID_PAD_H * 2
     val innerH = maxHeight - GRID_PAD_V * 2
     val fitW = (innerW - sceneWidth - gap * n) / n
     val h = rememberScrollState()
     val v = rememberScrollState()
+    val reduced = ui.reducedMotion ?: com.pocketstudio.app.onboarding.animationsOff(androidx.compose.ui.platform.LocalContext.current)
     // Blinks only while a launch or a stop waits, and only redraws (the cells read it when drawn).
-    val blink = rememberBlink(ui.playing && ui.grid?.hasPending == true)
-    // The playing clips breathe on the beat: one animation for the whole grid, read when drawn.
-    val pulse = rememberBeatPulse(ui.playing, ui.clockOf, p.tempoBpm)
+    val blink = rememberBlink(!reduced && ui.playing && ui.grid?.hasPending == true)
+    // One clock for everything that moves (halo, sheen, wave), read when drawn.
+    val clock = rememberGridClock(!reduced && ui.playing, ui.clockOf, p.tempoBpm)
+    // Where the wave leaves from: the cells playing now.
+    val sources = remember(ui.grid, ui.playing, columns) {
+        if (!ui.playing) emptyList() else columns.mapIndexedNotNull { i, c ->
+            val slot = LiveSlots.of(c.key) ?: return@mapIndexedNotNull null
+            val row = ui.grid?.slot(slot)?.playing ?: return@mapIndexedNotNull null
+            if (row >= 0 && p.cellHasContent(c.key, row)) WaveSource(i, row, c.color) else null
+        }
+    }
+    // Only one cell with something in it: the first loop, an invitation to add the next.
+    val single = remember(p, columns) {
+        val full = columns.flatMapIndexed { i, c -> p.allScenes.indices.filter { p.cellHasContent(c.key, it) }.map { i to it } }
+        full.singleOrNull()
+    }
     // A touch that only stops a fling launches nothing (see launchOnPress).
     val scrolling = remember(h, v) { { h.isScrollInProgress || v.isScrollInProgress } }
     androidx.compose.runtime.CompositionLocalProvider(LocalGridScrolling provides scrolling) {
         val header = if (compact) HEADER_COMPACT else HEADER_HEIGHT
         val stopH = if (compact) 44.dp else 48.dp
+        val top = 48.dp
         val cellW = fitW.coerceIn(MIN_CELL_W, MAX_CELL_W)
-        val cellH = ((innerH - header - stopH - gap * (rows + 1)) / rows)
-            .coerceIn(MIN_CELL_H, minOf(MAX_CELL_H, maxOf(cellW, MIN_CELL_H)))
+        val cellH = ((innerH - top - header - stopH - gap * (shown + 2)) / shown).coerceAtLeast(ROW_MIN_H)
+        val look = CellLook(clock, sources, cellW.value, cellH.value, gap.value)
         Column(Modifier.padding(horizontal = GRID_PAD_H, vertical = GRID_PAD_V).testTag("live_grid"), verticalArrangement = Arrangement.spacedBy(gap)) {
+            Row(Modifier.fillMaxWidth().height(top - gap), verticalAlignment = Alignment.CenterVertically) {
+                Text(tr("Briques"), Modifier.weight(1f), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary, maxLines = 1)
+                CasesStepper(shown, actions.setRows)
+            }
             Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
-                Box(Modifier.width(sceneWidth).height(header), contentAlignment = Alignment.BottomStart) {
-                    Text(tr("Briques"), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
-                }
+                Spacer(Modifier.width(sceneWidth).height(header))
                 ScrolledRow(h, gap) { columns.forEach { c -> ColumnHeader(c, c.key in ui.muted, cellW, header) { actions.toggleMute(c.key) } } }
             }
-            Column(Modifier.weight(1f, fill = false).fadingVerticalEdges(v).verticalScroll(v), verticalArrangement = Arrangement.spacedBy(gap)) {
-                scenes.forEach { scene ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
-                        SceneButton(ui, scene, sceneWidth, cellH, blink, pulse, press = { actions.press(null, scene) }, retract = { actions.retract(null) }) { actions.launchRow(scene) }
-                        ScrolledRow(h, gap) { columns.forEach { c -> GridCell(ui, c, scene, cellW, cellH, blink, pulse, actions, marks) } }
+            Box(Modifier.weight(1f, fill = false)) {
+                Column(Modifier.fadingVerticalEdges(v).verticalScroll(v), verticalArrangement = Arrangement.spacedBy(gap)) {
+                    scenes.forEach { scene ->
+                        Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
+                            SceneButton(ui, scene, sceneWidth, cellH, blink, press = { actions.press(null, scene) }, retract = { actions.retract(null) }) { actions.launchRow(scene) }
+                            ScrolledRow(h, gap) {
+                                columns.forEachIndexed { i, c ->
+                                    val hint = single != null && ui.playing && single.second == scene && single.first + 1 == i
+                                    GridCell(ui, c, i, scene, cellW, cellH, blink, look, actions, marks, hint)
+                                }
+                            }
+                        }
                     }
+                }
+                if (single != null && ui.playing && marks.here == null && marks.recording == null) {
+                    // Over the dots, below the first loop (the touches go through to the cells).
+                    Text(
+                        tr("Ta première boucle tourne. Touche un point pour y ajouter un son."),
+                        Modifier.align(Alignment.Center).padding(start = sceneWidth + 12.dp, end = 12.dp)
+                            .clip(RoundedCornerShape(12.dp)).background(GridLook.Ground)
+                            .border(1.dp, Color(0xFF2C3035), RoundedCornerShape(12.dp))
+                            .padding(horizontal = 14.dp, vertical = 8.dp).testTag("live_first_loop"),
+                        style = MaterialTheme.typography.bodyMedium, color = Color(0xFFAAB2BD), textAlign = TextAlign.Center,
+                    )
                 }
             }
             Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
@@ -848,9 +891,12 @@ private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveA
     }
 }
 
-/** One pad of the grid: track [c] in scene [scene], as the engine plays it. */
+/** What every cell's drawing shares: the clock, where the wave leaves from, the cells' size and gap (dp). */
+internal class CellLook(val clock: GridClock, val sources: List<WaveSource>, val w: Float, val h: Float, val gap: Float)
+
+/** One pad of the grid: track [c] (column [col]) in scene [scene], as the engine plays it. */
 @Composable
-private fun GridCell(ui: LiveScreenUi, c: LiveColumn, scene: Int, width: Dp, height: Dp, blink: State<Float>, pulse: State<Float>, actions: LiveActions, marks: GridMarks) {
+private fun GridCell(ui: LiveScreenUi, c: LiveColumn, col: Int, scene: Int, width: Dp, height: Dp, blink: State<Float>, look: CellLook, actions: LiveActions, marks: GridMarks, hint: Boolean) {
     val p = ui.project
     val slot = LiveSlots.of(c.key) ?: return
     val state = ui.grid?.slot(slot)
@@ -858,6 +904,7 @@ private fun GridCell(ui: LiveScreenUi, c: LiveColumn, scene: Int, width: Dp, hei
     val start = state?.start ?: 0
     val loop = if (playing) p.slotLoopSteps(c.key, scene) else 0
     val hasContent = p.cellHasContent(c.key, scene)
+    val bars = remember(p, c.key, scene, hasContent) { if (hasContent) cellBars(p, c.key, scene) else null }
     val mark = when {
         marks.recording?.let { it.key == c.key && it.scene == scene } == true -> CellMark.Rec
         marks.here?.let { it.key == c.key && it.scene == scene } == true -> CellMark.Here
@@ -866,11 +913,15 @@ private fun GridCell(ui: LiveScreenUi, c: LiveColumn, scene: Int, width: Dp, hei
     // An empty cell, the one recording, or a cell picked to copy: a touch, never a launch on the press.
     val plain = hasContent && !marks.picking && mark == CellMark.None
     val tap = marks.tap
+    val clock = look.clock
     LivePadCell(
         c, rowName(p, scene), width, height, hasContent, playing, pending = ui.playing && state?.pending == scene,
-        position = { livePosition(ui.clockOf(), start, loop) }, blink, pulse,
-        // The line the launch was armed for (« Lancer à » changed since does not move it).
-        waitLeft = { launchWaitLeft(ui.clockOf(), state?.quantum?.takeIf { it > 0 } ?: p.liveQuantumSteps) },
+        // The loop's progress, smooth between the clock's polls while the animations run.
+        position = {
+            val s = clock.steps
+            if (s >= 0f && loop > 0) (((s - start) % loop + loop) % loop) / loop else livePosition(ui.clockOf(), start, loop)
+        },
+        blink, look, col, scene, bars, hint,
         tag = "live_pad_${c.key}_$scene",
         press = { if (plain || tap == null) actions.press(c.key, scene) else false }, retract = { actions.retract(c.key) },
         mark = mark,
@@ -887,7 +938,7 @@ private fun ScrolledRow(state: ScrollState, gap: Dp, content: @Composable () -> 
 @Composable
 private fun MuteButton(c: LiveColumn, muted: Boolean, toggleMute: () -> Unit, modifier: Modifier) {
     Box(
-        modifier.clip(RoundedCornerShape(8.dp)).background(if (muted) Neon.Amber else Neon.SurfaceHigh)
+        modifier.clip(RoundedCornerShape(8.dp)).background(if (muted) Neon.Amber else Color(0xFF34383E))
             .clickable(onClick = toggleMute).testTag("live_mute_${c.key}").spot("live_mute_${c.key}", if (c.key == com.pocketstudio.model.SongPart.DRUMS) tr("Couper le son") else null)
             .semantics { contentDescription = if (muted) tr("Remettre le son de %s", c.name) else tr("Couper le son de %s", c.name) },
         contentAlignment = Alignment.Center,
@@ -900,10 +951,9 @@ private fun MuteButton(c: LiveColumn, muted: Boolean, toggleMute: () -> Unit, mo
 @Composable
 private fun ColumnHeader(c: LiveColumn, muted: Boolean, width: Dp, height: Dp, toggleMute: () -> Unit) {
     Column(
-        Modifier.width(width).height(height).clip(RoundedCornerShape(10.dp))
-            .background(Brush.verticalGradient(listOf(lerp(Neon.Surface, Color.White, 0.04f), lerp(Neon.Surface, Color.Black, 0.05f)))),
+        Modifier.width(width).height(height).clip(RoundedCornerShape(10.dp)).background(GridLook.Panel),
     ) {
-        Box(Modifier.fillMaxWidth().height(4.dp).background(Brush.horizontalGradient(listOf(c.color, c.color.copy(alpha = 0.45f)))))
+        Box(Modifier.fillMaxWidth().height(3.dp).background(c.color.copy(alpha = 0.9f)))
         Text(
             c.name, Modifier.fillMaxWidth().weight(1f).padding(horizontal = 4.dp, vertical = 2.dp), style = MaterialTheme.typography.labelMedium,
             maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center,
@@ -917,53 +967,48 @@ private fun ColumnHeader(c: LiveColumn, muted: Boolean, width: Dp, height: Dp, t
     }
 }
 
+/** A brick's button: its letter and name; the brick playing outlined in orange, one waiting blinks. */
 @Composable
 private fun SceneButton(
-    ui: LiveScreenUi, scene: Int, width: Dp, height: Dp, blink: State<Float>, pulse: State<Float>,
+    ui: LiveScreenUi, scene: Int, width: Dp, height: Dp, blink: State<Float>,
     press: () -> Boolean, retract: () -> Unit, launch: () -> Unit,
 ) {
     val p = ui.project
     val current = ui.playing && ui.grid?.row == scene
     val waiting = ui.playing && ui.grid?.pendingRow == scene
     val label = p.sceneLabel(scene).takeIf { it.isNotBlank() }?.let(Scene::shownLabel)
-    val cyan = Neon.Cyan
-    val rest = Color.White.copy(alpha = 0.06f)
-    Row(
-        Modifier.width(width).height(height).clip(RoundedCornerShape(12.dp))
-            .background(
-                if (current) SolidColor(Neon.Cyan.copy(alpha = 0.22f))
-                else Brush.verticalGradient(listOf(lerp(Neon.Surface, Color.White, 0.04f), lerp(Neon.Surface, Color.Black, 0.05f))),
-            )
+    val accent = Neon.Cyan
+    val shape = RoundedCornerShape(10.dp)
+    Column(
+        Modifier.width(width).height(height).clip(shape)
+            .background(if (current) Brush.horizontalGradient(listOf(Color(0xFF3A3227), GridLook.Panel)) else SolidColor(GridLook.Panel))
             .let { m ->
                 when {
-                    waiting -> m.blinkingBorder(2.dp, 12.dp) { cyan.copy(alpha = blink.value) }
-                    // The scene playing: its edge breathes with the beat (read when drawn).
-                    current -> m.blinkingBorder(2.dp, 12.dp) { cyan.copy(alpha = 0.55f + 0.45f * pulse.value) }
-                    else -> m.border(2.dp, rest, RoundedCornerShape(12.dp))
+                    waiting -> m.blinkingBorder(1.5.dp, 10.dp) { accent.copy(alpha = blink.value) }
+                    current -> m.border(1.5.dp, accent, shape)
+                    else -> m
                 }
             }
-            .launchOnPress(press, retract, launch).padding(horizontal = 6.dp).testTag("live_row_$scene"),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+            .launchOnPress(press, retract, launch).padding(horizontal = 2.dp).testTag("live_row_$scene"),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        if (width >= 72.dp) Text("▶", color = if (current) Neon.Cyan else Neon.TextSecondary, style = MaterialTheme.typography.titleSmall)
-        Column {
-            Text(Scene.NAMES.getOrElse(scene) { "?" }, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1)
-            if (label != null) {
-                Text(
-                    label, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary,
-                    maxLines = if (height >= 64.dp) 2 else 1, overflow = TextOverflow.Ellipsis,
-                )
-            }
+        Text(Scene.NAMES.getOrElse(scene) { "?" }, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1)
+        if (label != null && height >= 52.dp) {
+            Text(
+                label, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, textAlign = TextAlign.Center,
+                maxLines = if (height >= 72.dp && width >= 72.dp) 2 else 1, overflow = TextOverflow.Ellipsis,
+            )
         }
     }
 }
 
 /**
- * A pad: empty, with something to play (tinted with its track's colour), waiting for its launch
- * line (its edge blinks, a ring counts down), or playing (lit, a soft glow breathing on the beat,
- * a ring going round with its loop). Lighting up and going out fade in 220 ms. Everything that
- * moves is read when drawn: neither the clock nor the beat recompose a pad.
+ * A pad, style B: empty, a small dot the beat's wave runs through; with something to play, a soft
+ * gradient of its track's hue and a little preview of its loop; waiting for its launch line (its
+ * outline blinks, an arrow); playing (lit from light to deep, a sheen sliding with its loop, a
+ * halo breathing on the beat, a thin bar where the loop is). Lighting up and going out fade in
+ * 220 ms. Everything that moves is read when drawn: neither the clock nor the beat recompose a pad.
  */
 @Composable
 private fun LivePadCell(
@@ -976,8 +1021,11 @@ private fun LivePadCell(
     pending: Boolean,
     position: () -> Float,
     blink: State<Float>,
-    pulse: State<Float>,
-    waitLeft: () -> Float,
+    look: CellLook,
+    col: Int,
+    scene: Int,
+    bars: FloatArray?,
+    hint: Boolean,
     tag: String,
     press: () -> Boolean,
     retract: () -> Unit,
@@ -986,58 +1034,97 @@ private fun LivePadCell(
 ) {
     SideEffect { livePadCompositions++ }
     val haptics = LocalHapticFeedback.current
-    val shape = RoundedCornerShape(12.dp)
-    val lit = animateFloatAsState(if (playing) 1f else 0f, tween(220), label = "pad-lit")
+    val shape = RoundedCornerShape(9.dp)
+    // A track playing an empty cell: nothing lights up there.
+    val lit = animateFloatAsState(if (playing && hasContent) 1f else 0f, tween(220), label = "pad-lit")
     val color = c.color
-    val idleTop = if (hasContent) color.copy(alpha = 0.34f) else lerp(Neon.Surface, Color.Black, 0.07f)
-    val idleBottom = if (hasContent) color.copy(alpha = 0.16f) else Neon.Surface
-    val litBottom = lerp(color, Color.Black, 0.28f)
-    val edge = Color.White.copy(alpha = if (hasContent) 0.14f else 0.05f)
+    val clock = look.clock
+    val showDot = !hasContent && !pending && mark == CellMark.None && !hint
     Box(
         Modifier.size(width, height)
-            // Brushes and strokes made once per size: a playing pad redraws every frame without garbage.
+            // Brushes made once per size: a playing pad redraws every frame without garbage.
             .drawWithCache {
-                val ring = Stroke(1.5.dp.toPx())
-                val r = 12.dp.toPx()
                 onDrawBehind {
-                    // The glow around a playing pad, stronger on each beat.
-                    val on = lit.value
-                    if (on > 0.01f) {
-                        val beat = pulse.value
-                        for (k in 1..3) {
-                            val spread = k * 1.5.dp.toPx()
-                            drawRoundRect(
-                                color.copy(alpha = (on * (0.14f + 0.26f * beat) / k).coerceIn(0f, 1f)),
-                                topLeft = Offset(-spread, -spread), size = Size(size.width + 2 * spread, size.height + 2 * spread),
-                                cornerRadius = CornerRadius(r + spread), style = ring,
-                            )
+                    if (showDot) {
+                        // The wave of the beat passing through this dot: the nearest playing cell's.
+                        var best = 0f
+                        var tint: Color? = null
+                        look.sources.forEach { s ->
+                            val w = clock.wave(waveDistance(col, scene, s, look.w, look.h, look.gap))
+                            if (w > best) { best = w; tint = s.color }
                         }
+                        emptyDot(best, tint)
                     }
                 }
             }
             .clip(shape)
             .drawWithCache {
-                // Resting: a pad with something to play stands out (lit from above), an empty one is a slight hollow.
-                val idle = Brush.verticalGradient(listOf(idleTop, idleBottom))
-                val litFill = Brush.verticalGradient(listOf(color, litBottom))
-                val sheen = Brush.verticalGradient(0f to Color.White.copy(alpha = 0.07f), 0.45f to Color.Transparent)
+                val idle = Brush.linearGradient(listOf(GridLook.idleTop(color), GridLook.idleBottom(color)), Offset.Zero, Offset(size.width * 0.3f, size.height))
+                val litFill = Brush.linearGradient(listOf(color, GridLook.litBottom(color)), Offset.Zero, Offset(size.width * 0.36f, size.height))
+                val light = Brush.radialGradient(
+                    0f to GridLook.litLight(color), 0.55f to Color.Transparent,
+                    center = Offset(size.width * 0.2f, 0f), radius = size.width * 1.1f,
+                )
+                val barBrush = Brush.verticalGradient(listOf(GridLook.barTop(color), color.copy(alpha = 0.55f)))
+                val sheenW = size.width * 0.45f
+                val sheen = Brush.horizontalGradient(listOf(Color.Transparent, Color.White.copy(alpha = 0.25f), Color.Transparent), 0f, sheenW)
+                val line = 1.dp.toPx()
+                val progTop = 6.dp.toPx()
+                val progSide = 7.dp.toPx()
+                val progH = 4.dp.toPx()
+                val progR = CornerRadius(2.dp.toPx())
+                val halo = 6.dp.toPx()
+                val haloLine = halo / HALO_LAYERS
+                val haloStroke = Stroke(haloLine)
+                val haloColor = lerp(color, Color.White, 0.35f)
+                val radius = 9.dp.toPx()
                 onDrawBehind {
                     val on = lit.value
-                    if (on < 0.99f) drawRect(idle)
-                    if (on > 0.01f) {
-                        drawRect(litFill, alpha = on)
-                        // A light flash on the beat, fading through it.
-                        drawRect(Color.White.copy(alpha = 0.18f * on * pulse.value))
+                    if (pending && on < 0.01f) {
+                        drawRect(GridLook.queued(color))
+                    } else if (hasContent) {
+                        if (on < 0.99f) {
+                            drawRect(idle)
+                            drawRect(color.copy(alpha = 0.3f), size = Size(size.width, line))
+                        }
+                        if (on > 0.01f) {
+                            drawRect(litFill, alpha = on)
+                            drawRect(light, alpha = on)
+                            drawRect(Color.White.copy(alpha = 0.4f * on), size = Size(size.width, line))
+                            // The sheen slides across with the loop.
+                            val x = size.width * (-0.5f + 1.6f * position())
+                            translate(left = x) { drawRect(sheen, size = Size(sheenW, size.height), alpha = on) }
+                        }
+                        bars?.let { previewBars(it, if (on > 0.5f) null else barBrush, GridLook.Ink.copy(alpha = 0.8f), if (on > 0.5f) 1f else 0.75f) }
+                        if (on > 0.01f) {
+                            // The halo, breathing on the beat: a glow along the inside of the edge
+                            // (outside, the grid's rows would cut it).
+                            val glow = halo * (0.45f + 0.55f * clock.pulse)
+                            for (k in 0 until HALO_LAYERS) {
+                                val inset = halo * k / HALO_LAYERS + haloLine / 2
+                                drawRoundRect(
+                                    haloColor.copy(alpha = (on * glow / halo * 0.7f * (1f - k.toFloat() / HALO_LAYERS)).coerceIn(0f, 1f)),
+                                    Offset(inset, inset), Size(size.width - 2 * inset, size.height - 2 * inset),
+                                    CornerRadius((radius - inset).coerceAtLeast(0f)), style = haloStroke,
+                                )
+                            }
+                        }
+                        if (on > 0.5f) {
+                            // Where the loop is: a thin bar along the top.
+                            val w = size.width - 2 * progSide
+                            drawRoundRect(GridLook.Ink.copy(alpha = 0.2f), Offset(progSide, progTop), Size(w, progH), progR)
+                            drawRoundRect(GridLook.Ink, Offset(progSide, progTop), Size(w * position(), progH), progR)
+                        }
                     }
-                    if (hasContent) drawRect(sheen)
                 }
             }
             .let { m ->
                 when {
                     mark == CellMark.Rec -> m.border(3.dp, Neon.Red, shape)
                     mark == CellMark.Here -> m.border(2.dp, Neon.Amber, shape)
-                    pending -> m.blinkingBorder(3.dp, 12.dp) { color.copy(alpha = blink.value) }
-                    else -> m.border(1.dp, edge, shape)
+                    pending -> m.blinkingBorder(1.5.dp, 9.dp) { color.copy(alpha = 0.35f + 0.55f * blink.value) }
+                    hint -> m.border(1.dp, Color(0xFF3A3F46), shape)
+                    else -> m
                 }
             }
             // Launched on the finger's down (a controller's pad), a light buzz then.
@@ -1066,7 +1153,7 @@ private fun LivePadCell(
             // Lot 4b: « ici » (the cell being filled) or « ● REC » (recording what is played).
             if (mark == CellMark.Rec) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Box(Modifier.size(20.dp).graphicsLayer { alpha = 0.55f + 0.45f * pulse.value }.clip(CircleShape).background(Neon.Red))
+                    Box(Modifier.size(20.dp).graphicsLayer { alpha = 0.55f + 0.45f * clock.pulse }.clip(CircleShape).background(Neon.Red))
                     Text("REC", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = Color.White, maxLines = 1, softWrap = false)
                 }
             } else {
@@ -1074,23 +1161,10 @@ private fun LivePadCell(
                     Text(tr("ici"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Color.Black, maxLines = 1, softWrap = false)
                 }
             }
-        } else if (playing) {
-            // Where the loop is: a ring going round from the top.
-            val track = Color.Black.copy(alpha = 0.22f)
-            Canvas(Modifier.size(minOf(width, height) * 0.5f)) {
-                val s = 4.dp.toPx()
-                val topLeft = Offset(s / 2, s / 2)
-                val arc = Size(size.width - s, size.height - s)
-                drawArc(track, 0f, 360f, false, topLeft = topLeft, size = arc, style = Stroke(s))
-                drawArc(Color.White.copy(alpha = 0.92f), -90f, 360f * position(), false, topLeft = topLeft, size = arc, style = Stroke(s, cap = StrokeCap.Round))
-            }
         } else if (pending) {
-            // The ring empties until the launch line: when it is gone, the pad plays.
-            Box(Modifier.size(minOf(width, height) * 0.62f).countdownRing(waitLeft, color), contentAlignment = Alignment.Center) {
-                Text("→", Modifier.graphicsLayer { alpha = blink.value }, style = MaterialTheme.typography.titleLarge, color = color)
-            }
-        } else if (hasContent) {
-            Text("▶", style = MaterialTheme.typography.titleSmall, color = color.copy(alpha = 0.9f))
+            Text("→", Modifier.graphicsLayer { alpha = 0.5f + 0.5f * blink.value }, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = color)
+        } else if (hint) {
+            Text("+", style = MaterialTheme.typography.headlineSmall, color = Color(0xFF8C949F))
         }
     }
 }
@@ -1101,7 +1175,7 @@ private fun StopButton(label: String, modifier: Modifier, waiting: Boolean, blin
         modifier.clip(RoundedCornerShape(10.dp))
             .let { m ->
                 val red = Neon.Red
-                if (waiting) m.drawBehind { drawRect(red.copy(alpha = 0.25f + 0.35f * blink.value)) } else m.background(Neon.SurfaceHigh)
+                if (waiting) m.drawBehind { drawRect(red.copy(alpha = 0.25f + 0.35f * blink.value)) } else m.background(GridLook.Panel)
             }
             .launchOnPress(press, retract, stop).testTag(tag)
             // One id per control; the drums' ■ alone says what a track's ■ does (one label, not seven).
@@ -1207,9 +1281,12 @@ private val HEADER_COMPACT = 56.dp
 /** A cell never gets smaller than a finger: past these the grid scrolls. */
 private val MIN_CELL_W = 56.dp
 private val MIN_CELL_H = 48.dp
-/** Nor bigger than a big pad, however few the tracks. */
+/** Nor wider than a big pad, however few the tracks. */
 private val MAX_CELL_W = 120.dp
-private val MAX_CELL_H = 96.dp
+/** Lot 4c: a brick's row stops shrinking here (« Cases » past what fits: the grid scrolls). */
+private val ROW_MIN_H = 40.dp
+/** The playing cell's halo: thin strokes inside its edge, fainter inwards. */
+private const val HALO_LAYERS = 6
 private val GRID_PAD_H = 8.dp
 private val GRID_PAD_V = 6.dp
 
@@ -1236,32 +1313,6 @@ private fun rememberBlink(active: Boolean, low: Float = 0.35f, periodMs: Int = 4
     return rememberInfiniteTransition(label = "blink").animateFloat(
         low, 1f, infiniteRepeatable(tween(periodMs, easing = LinearEasing), RepeatMode.Reverse), label = "blink",
     )
-}
-
-/**
- * 1 on each beat while [playing], fading to 0 through the beat (0 when stopped). One animation for
- * the whole grid, driven by the polled clock; read its value where it is drawn (the playing pads'
- * glow, the scene playing): nothing recomposes with it.
- */
-@Composable
-private fun rememberBeatPulse(playing: Boolean, clockOf: () -> Int, bpm: Double): State<Float> {
-    val pulse = remember { Animatable(0f) }
-    val clock by rememberUpdatedState(clockOf)
-    if (playing) {
-        LaunchedEffect(bpm) {
-            val fade = (60_000.0 / bpm.coerceIn(40.0, 300.0) * 0.85).toInt()
-            snapshotFlow { clock().let { if (it < 0) -1 else it / STEPS_PER_BEAT } }
-                .distinctUntilChanged()
-                .collectLatest { beat ->
-                    if (beat < 0) return@collectLatest
-                    pulse.snapTo(1f)
-                    pulse.animateTo(0f, tween(fade, easing = FastOutSlowInEasing))
-                }
-        }
-    } else {
-        LaunchedEffect(Unit) { pulse.snapTo(0f) }
-    }
-    return pulse.asState()
 }
 
 /** A rounded border whose colour is read when drawn (a blink redraws it without recomposing). */

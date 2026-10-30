@@ -389,5 +389,9 @@
   "Rien n'a été joué : la case reste vide.": "No se ha tocado nada: la casilla sigue vacía.",
   "Cette case ne va pas ici : choisis une case de la même piste ou du même genre.": "Esta casilla no va aquí: elige una casilla de la misma pista o del mismo tipo.",
   "Les huit pistes audio sont prises : vide-en une pour poser ce son.": "Las ocho pistas de audio están ocupadas: vacía una para poner este sonido.",
-  "la brique %s": "el bloque %s"
+  "la brique %s": "el bloque %s",
+  "Cases": "Casillas",
+  "Moins de cases": "Menos casillas",
+  "Plus de cases": "Más casillas",
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí."
 }

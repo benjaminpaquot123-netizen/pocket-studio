@@ -389,5 +389,9 @@
   "Rien n'a été joué : la case reste vide.": "لم يُعزف شيء: تبقى الخانة فارغة.",
   "Cette case ne va pas ici : choisis une case de la même piste ou du même genre.": "هذه الخانة لا تناسب هنا: اختر خانة من المسار نفسه أو من النوع نفسه.",
   "Les huit pistes audio sont prises : vide-en une pour poser ce son.": "المسارات الصوتية الثمانية كلها مشغولة: أفرغ واحدًا لوضع هذا الصوت.",
-  "la brique %s": "الكتلة %s"
+  "la brique %s": "الكتلة %s",
+  "Cases": "الخانات",
+  "Moins de cases": "خانات أقل",
+  "Plus de cases": "خانات أكثر",
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "حلقتك الأولى تدور. المس نقطة لتضيف صوتًا هناك."
 }

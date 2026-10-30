@@ -389,5 +389,9 @@
   "Rien n'a été joué : la case reste vide.": "Er is niets gespeeld: het vak blijft leeg.",
   "Cette case ne va pas ici : choisis une case de la même piste ou du même genre.": "Dit vak past hier niet: kies een vak van hetzelfde spoor of dezelfde soort.",
   "Les huit pistes audio sont prises : vide-en une pour poser ce son.": "Alle acht audiosporen zijn bezet: maak er een leeg om dit geluid te plaatsen.",
-  "la brique %s": "blok %s"
+  "la brique %s": "blok %s",
+  "Cases": "Vakken",
+  "Moins de cases": "Minder vakken",
+  "Plus de cases": "Meer vakken",
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Je eerste loop draait. Tik op een punt om er een geluid aan toe te voegen."
 }

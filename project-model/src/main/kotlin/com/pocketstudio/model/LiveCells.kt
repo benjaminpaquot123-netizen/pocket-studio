@@ -62,6 +62,37 @@ object LiveCells {
     }
 
     private val LOOP_BARS = listOf(1, 2, 4, 8, 16, 32, 64)
+
+    /** « Cases − 8 + »: how many bricks (rows) the Live grid shows at once. */
+    val ROWS = listOf(4, 6, 8, 12, 16)
+    const val DEFAULT_ROWS = 8
+
+    /** The next (or previous, [up] false) choice of [ROWS] from [rows]; the ends stay. */
+    fun stepRows(rows: Int, up: Boolean): Int {
+        val i = ROWS.indexOf(rows).takeIf { it >= 0 } ?: ROWS.indexOf(DEFAULT_ROWS)
+        return ROWS[(i + if (up) 1 else -1).coerceIn(0, ROWS.lastIndex)]
+    }
+}
+
+/** How many bricks the Live grid shows ([Project.liveRows], [LiveCells.DEFAULT_ROWS] when unset). */
+val Project.liveRowsShown: Int get() = liveRows.takeIf { it in LiveCells.ROWS } ?: LiveCells.DEFAULT_ROWS
+
+/**
+ * Empty bricks added up to [scene]: the rows of the Live grid past the song's last brick are new
+ * bricks to fill. Not synced yet: [syncScenes] drops them again unless something fills or uses them.
+ */
+private fun Project.grownTo(scene: Int): Project {
+    if (scene < allScenes.size) return this
+    val synced = syncScenes()
+    val all = synced.allScenes
+    return synced.copy(scenes = all + List(scene + 1 - all.size) { Scene() })
+}
+
+/** [editScene] that also reaches a new brick past the last one ([grownTo]). */
+private fun Project.editBrick(index: Int, transform: (Scene) -> Scene): Project {
+    if (index < allScenes.size) return editScene(index, transform)
+    val grown = grownTo(index)
+    return grown.copy(scenes = grown.scenes.mapIndexed { i, s -> if (i == index) transform(s) else s }).syncScenes()
 }
 
 /**
@@ -80,7 +111,7 @@ fun Project.withRecordedCell(
     origin: Double,
     end: Double,
 ): Project? {
-    if (scene !in allScenes.indices || !LiveCells.canRecord(key)) return null
+    if (scene !in 0 until Scene.MAX || !LiveCells.canRecord(key)) return null
     val bar = stepsPerBar.coerceAtLeast(1)
     val all = LiveCells.bars(origin, end, bar)
     val kept = LiveCells.keptBars(key, all, bar)
@@ -100,7 +131,7 @@ fun Project.withRecordedCell(
                 val at = Math.floorMod(((n.start - start).coerceAtLeast(0.0) * NoteClip.TICKS_PER_STEP).roundToInt(), ticks)
                 Note(at, (n.length * NoteClip.TICKS_PER_STEP).roundToInt().coerceIn(1, NoteClip.MAX_TICKS), n.pitch, n.velocity.coerceIn(0f, 1f))
             }
-            editScene(scene) { s ->
+            editBrick(scene) { s ->
                 val old = if (id == 0) s.synthNotes else s.trackNotes[id] ?: NoteClip()
                 val clip = old.cleared().withSteps(steps).let { it.copy(notes = written) }.sanitized()
                 if (id == 0) s.copy(synthNotes = clip) else s.copy(trackNotes = s.trackNotes + (id to clip))
@@ -109,7 +140,7 @@ fun Project.withRecordedCell(
         LiveCells.Kind.DRUMS -> {
             val mine = hits.filter { it.at >= from && it.lane in 0 until DrumPattern.PAD_COUNT }
             if (mine.isEmpty()) return null
-            editScene(scene) { s ->
+            editBrick(scene) { s ->
                 val lanes = s.drums.lanes.map { it.copy(hits = emptyMap()) }.toMutableList()
                 mine.forEach { h ->
                     val step = Math.floorMod((h.at - start).coerceAtLeast(0.0).roundToInt(), steps)
@@ -132,19 +163,19 @@ fun Project.withRecordedCell(
 fun Project.withCopiedCell(fromKey: String, fromScene: Int, toKey: String, toScene: Int): Project? {
     val scenes = allScenes
     val from = scenes.getOrNull(fromScene) ?: return null
-    if (toScene !in scenes.indices || (fromKey == toKey && fromScene == toScene)) return null
+    if (toScene !in 0 until Scene.MAX || (fromKey == toKey && fromScene == toScene)) return null
     if (!LiveCells.canCopy(fromKey, toKey) || !cellHasContent(fromKey, fromScene)) return null
     return when (LiveCells.kindOf(toKey)) {
-        LiveCells.Kind.DRUMS -> editScene(toScene) { s ->
+        LiveCells.Kind.DRUMS -> editBrick(toScene) { s ->
             s.copy(drums = s.drums.copy(steps = from.drums.steps, lanes = s.drums.lanes.mapIndexed { i, l -> l.copy(hits = from.drums.lanes.getOrNull(i)?.hits ?: emptyMap()) }))
         }
-        LiveCells.Kind.ACID -> editScene(toScene) { s -> s.copy(acid = from.acid) }
+        LiveCells.Kind.ACID -> editBrick(toScene) { s -> s.copy(acid = from.acid) }
         LiveCells.Kind.NOTES -> {
             val src = fromKey.removePrefix("inst:").toIntOrNull() ?: return null
             val dst = toKey.removePrefix("inst:").toIntOrNull() ?: return null
             if (instrumentTracks.none { it.id == dst }) return null
             val notes = (if (src == 0) from.synthNotes else from.trackNotes[src]) ?: return null
-            editScene(toScene) { s -> if (dst == 0) s.copy(synthNotes = notes) else s.copy(trackNotes = s.trackNotes + (dst to notes)) }
+            editBrick(toScene) { s -> if (dst == 0) s.copy(synthNotes = notes) else s.copy(trackNotes = s.trackNotes + (dst to notes)) }
         }
         LiveCells.Kind.AUDIO -> {
             val clip = audioTracks.firstOrNull { SongPart.audio(it.id) == fromKey }?.clip ?: return null
@@ -161,6 +192,7 @@ fun Project.withCopiedCell(fromKey: String, fromScene: Int, toKey: String, toSce
  * the same brick). The clip belongs to [scene] and loops there. Null: eight audio tracks all taken.
  */
 fun Project.withAudioInCell(key: String, scene: Int, clip: AudioClip): Project? {
+    if (scene in allScenes.size until Scene.MAX) return grownTo(scene).withAudioInCell(key, scene, clip)?.syncScenes()
     if (scene !in allScenes.indices) return null
     val placed = clip.copy(scene = scene, song = false, once = false, start = 0).sanitized()
     val own = audioTracks.firstOrNull { SongPart.audio(it.id) == key && it.clip == null }

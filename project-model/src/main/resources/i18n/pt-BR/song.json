@@ -389,5 +389,9 @@
   "Rien n'a été joué : la case reste vide.": "Nada foi tocado: a casa continua vazia.",
   "Cette case ne va pas ici : choisis une case de la même piste ou du même genre.": "Esta casa não combina aqui: escolha uma casa da mesma faixa ou do mesmo tipo.",
   "Les huit pistes audio sont prises : vide-en une pour poser ce son.": "As oito faixas de áudio estão ocupadas: esvazie uma para colocar este som.",
-  "la brique %s": "o bloco %s"
+  "la brique %s": "o bloco %s",
+  "Cases": "Casas",
+  "Moins de cases": "Menos casas",
+  "Plus de cases": "Mais casas",
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Seu primeiro loop está tocando. Toque em um ponto para adicionar um som ali."
 }

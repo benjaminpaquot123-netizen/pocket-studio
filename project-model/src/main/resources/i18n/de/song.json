@@ -389,5 +389,9 @@
   "Rien n'a été joué : la case reste vide.": "Nichts gespielt: Das Feld bleibt leer.",
   "Cette case ne va pas ici : choisis une case de la même piste ou du même genre.": "Dieses Feld passt hier nicht: Wähle ein Feld derselben Spur oder derselben Art.",
   "Les huit pistes audio sont prises : vide-en une pour poser ce son.": "Alle acht Audiospuren sind belegt: Leere eine, um diesen Sound zu platzieren.",
-  "la brique %s": "Baustein %s"
+  "la brique %s": "Baustein %s",
+  "Cases": "Felder",
+  "Moins de cases": "Weniger Felder",
+  "Plus de cases": "Mehr Felder",
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Dein erster Loop läuft. Tippe auf einen Punkt, um dort einen Sound hinzuzufügen."
 }

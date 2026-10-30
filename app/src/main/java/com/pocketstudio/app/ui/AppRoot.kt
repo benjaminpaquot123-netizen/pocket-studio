@@ -3637,6 +3637,7 @@ fun liveActionsOf(
     cellFromLibrary = cellLibrary,
     copyCell = vm::copyCell,
     drumHit = { vm.liveDrumHit(it) },
+    setRows = vm::setLiveRows,
 )
 
 /** The Live page with its state from the ViewModel; every gesture goes back to it. */

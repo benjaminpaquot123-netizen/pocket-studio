@@ -389,5 +389,9 @@
   "Rien n'a été joué : la case reste vide.": "Hiçbir şey çalınmadı: kutu boş kalıyor.",
   "Cette case ne va pas ici : choisis une case de la même piste ou du même genre.": "Bu kutu buraya uymuyor: aynı parçadan ya da aynı türden bir kutu seç.",
   "Les huit pistes audio sont prises : vide-en une pour poser ce son.": "Sekiz ses parçasının hepsi dolu: bu sesi koymak için birini boşalt.",
-  "la brique %s": "%s bloğu"
+  "la brique %s": "%s bloğu",
+  "Cases": "Kutular",
+  "Moins de cases": "Daha az kutu",
+  "Plus de cases": "Daha çok kutu",
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "İlk döngün çalıyor. Oraya ses eklemek için bir noktaya dokun."
 }

@@ -389,5 +389,9 @@
   "Rien n'a été joué : la case reste vide.": "कुछ नहीं बजाया गया: खाना खाली ही रहा।",
   "Cette case ne va pas ici : choisis une case de la même piste ou du même genre.": "यह खाना यहाँ नहीं जमता: उसी ट्रैक या उसी तरह का खाना चुनो।",
   "Les huit pistes audio sont prises : vide-en une pour poser ce son.": "आठों ऑडियो ट्रैक भरे हैं: यह साउंड रखने के लिए एक खाली करो।",
-  "la brique %s": "ब्लॉक %s"
+  "la brique %s": "ब्लॉक %s",
+  "Cases": "खाने",
+  "Moins de cases": "कम खाने",
+  "Plus de cases": "ज़्यादा खाने",
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "तुम्हारा पहला लूप चल रहा है। वहाँ आवाज़ जोड़ने के लिए किसी बिंदु पर टैप करो।"
 }

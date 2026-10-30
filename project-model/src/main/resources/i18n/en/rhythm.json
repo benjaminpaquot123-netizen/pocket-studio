@@ -165,5 +165,13 @@
   "Kick dur": "Hard kick",
   "Rumble": "Rumble",
   "Place du coup %d": "Pan of hit %d",
-  "Place du pad": "Pad pan"
+  "Place du pad": "Pad pan",
+  "Pad %d : qu'est-ce que tu mets dessus ?": "Pad %d: what do you put on it?",
+  "Maintenant : %s": "Now: %s",
+  "Enregistrement… %s s": "Recording… %s s",
+  "Sons de l'appli": "App sounds",
+  "Régler": "Settings",
+  "Touche : jouer · appui long : changer": "Tap: play · long press: change",
+  "Moins de pads": "Fewer pads",
+  "Plus de pads": "More pads"
 }

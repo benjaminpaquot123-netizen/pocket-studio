@@ -28,6 +28,8 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.PlayArrow
@@ -135,6 +137,8 @@ class PlayStripUi(
 class PlayStripActions(
     /** A touch on the tempo: the tempo sheet (keypad, ready-made tempos, tap). */
     val openTempo: () -> Unit = {},
+    /** − and + a BPM beside the tempo (the Live page; null: the tempo alone). */
+    val nudgeTempo: ((Int) -> Unit)? = null,
     val setLoopPart: (Boolean) -> Unit = {},
     /** « Jouer depuis… »: the song from that part. */
     val playFrom: (Int) -> Unit = {},
@@ -180,7 +184,19 @@ fun PlayStrip(ui: PlayStripUi, actions: PlayStripActions) = BoxWithConstraints(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        TempoButton(ui.tempoBpm, actions.openTempo)
+        val nudge = actions.nudgeTempo
+        if (nudge != null) {
+            // « − 113 + »: always at hand on the Live page (held, they repeat); the figure opens the sheet.
+            RepeatingIconButton({ nudge(-1) }, Modifier.widthIn(min = TOUCH_HEIGHT).requiredHeight(TOUCH_HEIGHT).testTag("top_tempo_minus")) {
+                Icon(Icons.Filled.Remove, contentDescription = tr("Tempo moins"), modifier = Modifier.size(18.dp))
+            }
+            TempoButton(ui.tempoBpm, actions.openTempo)
+            RepeatingIconButton({ nudge(+1) }, Modifier.widthIn(min = TOUCH_HEIGHT).requiredHeight(TOUCH_HEIGHT).testTag("top_tempo_plus")) {
+                Icon(Icons.Filled.Add, contentDescription = tr("Tempo plus"), modifier = Modifier.size(18.dp))
+            }
+        } else {
+            TempoButton(ui.tempoBpm, actions.openTempo)
+        }
         PositionLabel(ui, actions, Modifier.weight(1f))
         if (ui.soloed.isNotEmpty()) SoloChip(ui.soloed, actions.clearSolos, iconOnly = soloIconOnly)
         if (loop) LoopPartChip(ui.loopPart, actions.setLoopPart, iconOnly = loopIconOnly)

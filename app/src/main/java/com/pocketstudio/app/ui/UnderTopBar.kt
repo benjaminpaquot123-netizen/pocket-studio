@@ -38,6 +38,8 @@ fun UnderTopBar(
     reportBug: (() -> Unit)? = null,
     /** « ⟳ Partie » offered (false: the Mode simple, where it shows only while a part loops, to stop it). */
     loopChip: Boolean = true,
+    /** « − 113 + »: − and + a BPM beside the tempo (the Live page). */
+    tempoSteps: Boolean = false,
 ) {
     val project by vm.project.collectAsStateWithLifecycle()
     val transport by vm.transport.collectAsStateWithLifecycle()
@@ -75,7 +77,7 @@ fun UnderTopBar(
                 soloed = if (landscape || !controls) soloed else emptyList(), helpOn = helpOn,
                 loopChip = loopChip || loopPart,
             ),
-            PlayStripActions(openTempo = { setTempoOpen(true) }, setLoopPart = vm::setLoopPart, playFrom = vm::playSongPart, playWholeSong = vm::listenFromStart, clearSolos = vm::clearSolos, toggleHelp = toggleHelp, reportBug = reportBug),
+            PlayStripActions(openTempo = { setTempoOpen(true) }, nudgeTempo = if (tempoSteps) vm::nudgeTempo else null, setLoopPart = vm::setLoopPart, playFrom = vm::playSongPart, playWholeSong = vm::listenFromStart, clearSolos = vm::clearSolos, toggleHelp = toggleHelp, reportBug = reportBug),
         )
         if (!landscape && controls) SoloBanner(soloed, vm::clearSolos)
     }
@@ -97,4 +99,6 @@ fun PositionStrip(
     vm: RhythmViewModel, tempoOpen: Boolean, setTempoOpen: (Boolean) -> Unit,
     /** Lot 2: the « ? » on the Live page too (null: none). */
     helpOn: Boolean? = null, toggleHelp: () -> Unit = {}, reportBug: (() -> Unit)? = null,
-) = UnderTopBar(vm, tempoOpen, setTempoOpen, renaming = false, closeRename = {}, controls = false, helpOn = helpOn, toggleHelp = toggleHelp, reportBug = reportBug)
+    /** « − 113 + » (the Live page). */
+    tempoSteps: Boolean = false,
+) = UnderTopBar(vm, tempoOpen, setTempoOpen, renaming = false, closeRename = {}, controls = false, helpOn = helpOn, toggleHelp = toggleHelp, reportBug = reportBug, tempoSteps = tempoSteps)

@@ -483,6 +483,8 @@ fun AppRoot() {
     // The sound library, for the selected drum pad or for a live pad (libraryLive >= 0).
     var showLibrary by rememberSaveable { mutableStateOf(false) }
     var libraryLive by rememberSaveable { mutableIntStateOf(-1) }
+    // Lot 4a: a live pad's « Ma bibliothèque » opens the browser on the user's own sounds.
+    var libraryMine by rememberSaveable { mutableStateOf(false) }
     // ... or for the selected instrument track's sampled sound.
     var libraryTrack by rememberSaveable { mutableStateOf(false) }
     if (showLibrary) {
@@ -504,7 +506,7 @@ fun AppRoot() {
             }
         }
         // A sound still loading when the library closed lands nowhere (libraryVm.closed()).
-        val close = { libraryVm.closed(); showLibrary = false; libraryLive = -1; libraryTrack = false }
+        val close = { libraryVm.closed(); showLibrary = false; libraryLive = -1; libraryTrack = false; libraryMine = false }
         val live = libraryLive
         val forTrack = libraryTrack
         val libProject by rhythmVm.project.collectAsStateWithLifecycle()
@@ -533,6 +535,7 @@ fun AppRoot() {
                         mine = mySounds,
                         recents = soundRecents,
                         favorites = soundFavorites,
+                        startMine = libraryMine,
                     ),
                     com.pocketstudio.app.library.LibraryActions(
                         close = close,
@@ -1012,6 +1015,11 @@ fun AppRoot() {
     }
     val recordPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) rhythmVm.startRecording() else permissionHelp = MIC_REFUSED
+    }
+    // Lot 4a: « Enregistrer » on a live pad (the pad waits here while the permission is asked).
+    var liveMicPad by rememberSaveable { mutableIntStateOf(-1) }
+    val liveRecordPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted && liveMicPad >= 0) rhythmVm.startLiveRecording(liveMicPad) else if (!granted) permissionHelp = MIC_REFUSED
     }
     // The "REC" live activity is a notification: without the permission (Android 13+), the phone
     // hides it. Asked once per launch, at the first recording, where it makes sense.
@@ -2221,6 +2229,15 @@ fun AppRoot() {
                         tap = rhythmVm::toggleLive,
                         stopAll = rhythmVm::stopLive,
                         edit = { liveEditing = it },
+                        setSize = rhythmVm::setLiveSize,
+                        library = { pad -> rhythmVm.dismissSampleError(); libraryLive = pad; showLibrary = true },
+                        browse = { pad, mine -> rhythmVm.dismissSampleError(); libraryLive = pad; libraryMine = mine; showLibrary = true },
+                        record = { pad ->
+                            liveMicPad = pad
+                            if (hasMic(context)) rhythmVm.startLiveRecording(pad) else liveRecordPermission.launch(Manifest.permission.RECORD_AUDIO)
+                        },
+                        stopRecord = rhythmVm::stopRecording,
+                        clear = rhythmVm::clearLive,
                     ),
                 )
             }
@@ -2234,7 +2251,7 @@ fun AppRoot() {
                     under = {
                         // Lot 2: the « ? » on the Live page too (its bar replaces the one that carries it elsewhere).
                         PositionStrip(
-                            rhythmVm, tempoOpen = tempoSheetOpen, setTempoOpen = { tempoSheetOpen = it },
+                            rhythmVm, tempoOpen = tempoSheetOpen, setTempoOpen = { tempoSheetOpen = it }, tempoSteps = true,
                             helpOn = helpLabels, toggleHelp = { helpLabels = !helpLabels }, reportBug = { reportBug("appui long sur « ? »") },
                         )
                     },
@@ -3656,6 +3673,7 @@ internal fun LivePadsRoute(
     val actions = liveActionsOf(vm, back = close, openEffects = openEffects)
     val fx = rememberSaveable(saver = com.pocketstudio.app.live.LiveFxState.Saver) { com.pocketstudio.app.live.LiveFxState() }
     var versionsOpen by rememberSaveable { mutableStateOf(false) }
+    var tempoOpen by rememberSaveable { mutableStateOf(false) }
     com.pocketstudio.app.session.LivePadsFullScreen(
         pads, padsActions, close,
         tempoBpm = ui.project.tempoBpm, beatsPerBar = ui.project.beatsPerBar, playing = ui.playing, clockOf = ui.clockOf,
@@ -3666,7 +3684,13 @@ internal fun LivePadsRoute(
         // The Live take from here too: the pads played are kept with it.
         record = { com.pocketstudio.app.live.RecordButton(ui.take, actions.record) },
         banner = { com.pocketstudio.app.live.TakeBanner(ui, actions, showReady = false, openVersions = { versionsOpen = true }) },
+        // Lot 4a: « − 113 + » always at hand; the figure opens the tempo sheet, everything follows live.
+        tempo = com.pocketstudio.app.session.StageTempo(nudge = vm::nudgeTempo, open = { tempoOpen = true }),
     )
+    if (tempoOpen) {
+        LaunchedEffect(Unit) { vm.beginTempoSheet() }
+        TempoSheet(ui.project.tempoBpm, TempoActions(set = vm::setSheetTempo, tap = vm::tapSheetTempo), onClose = { tempoOpen = false })
+    }
     if (versionsOpen) {
         com.pocketstudio.app.record.SongVersionsSheet(
             ui.project,
@@ -3738,6 +3762,7 @@ private fun LiveStateHost(
                     is SampleTask.Failed -> t.message
                     else -> if (liveStarting) tr("Préparation des pads prêts à jouer…") else null
                 },
+                recording = (sampleTask as? SampleTask.Recording)?.seconds,
             ),
         )
     }

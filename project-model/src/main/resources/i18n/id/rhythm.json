@@ -165,5 +165,13 @@
   "Kick dur": "Kick keras",
   "Rumble": "Rumble",
   "Place du coup %d": "Pan pukulan %d",
-  "Place du pad": "Pan pad"
+  "Place du pad": "Pan pad",
+  "Pad %d : qu'est-ce que tu mets dessus ?": "Pad %d: mau ditaruh apa?",
+  "Maintenant : %s": "Sekarang: %s",
+  "Enregistrement… %s s": "Merekam… %s dtk",
+  "Sons de l'appli": "Suara aplikasi",
+  "Régler": "Atur",
+  "Touche : jouer · appui long : changer": "Sentuh: mainkan · tekan lama: ganti",
+  "Moins de pads": "Lebih sedikit pad",
+  "Plus de pads": "Lebih banyak pad"
 }

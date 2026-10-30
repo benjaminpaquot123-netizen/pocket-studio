@@ -603,7 +603,7 @@ class LivePadsModelTest {
         assertEquals(null, s.clips[9])  // a path is never a file name
         assertEquals(LivePads.MAX_BEATS, s.clips[13]!!.beats)
         assertEquals(16, s.size)  // pad 14 holds a sound: the grid shows it
-        assertEquals(8, LivePads(size = 5).sanitized().size)
+        assertEquals(6, LivePads(size = 5).sanitized().size)  // 6 is a size since lot 4a
     }
 
     @Test

@@ -165,5 +165,13 @@
   "Kick dur": "Kick seco",
   "Rumble": "Rumble",
   "Place du coup %d": "Pan da batida %d",
-  "Place du pad": "Pan do pad"
+  "Place du pad": "Pan do pad",
+  "Pad %d : qu'est-ce que tu mets dessus ?": "Pad %d: o que você coloca nele?",
+  "Maintenant : %s": "Agora: %s",
+  "Enregistrement… %s s": "Gravando… %s s",
+  "Sons de l'appli": "Sons do app",
+  "Régler": "Ajustar",
+  "Touche : jouer · appui long : changer": "Toque: tocar · toque longo: trocar",
+  "Moins de pads": "Menos pads",
+  "Plus de pads": "Mais pads"
 }

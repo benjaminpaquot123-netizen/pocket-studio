@@ -165,5 +165,13 @@
   "Kick dur": "Kick قوي",
   "Rumble": "Rumble",
   "Place du coup %d": "Pan الضربة %d",
-  "Place du pad": "Pan الـPad"
+  "Place du pad": "Pan الـPad",
+  "Pad %d : qu'est-ce que tu mets dessus ?": "Pad %d: ماذا تضع عليه؟",
+  "Maintenant : %s": "الآن: %s",
+  "Enregistrement… %s s": "جارٍ التسجيل… %s ث",
+  "Sons de l'appli": "أصوات التطبيق",
+  "Régler": "ضبط",
+  "Touche : jouer · appui long : changer": "لمسة: تشغيل · ضغط مطوّل: تغيير",
+  "Moins de pads": "Pads أقل",
+  "Plus de pads": "Pads أكثر"
 }

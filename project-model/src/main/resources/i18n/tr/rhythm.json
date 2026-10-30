@@ -165,5 +165,13 @@
   "Kick dur": "Sert kick",
   "Rumble": "Rumble",
   "Place du coup %d": "%d. vuruşun konumu",
-  "Place du pad": "Pad konumu"
+  "Place du pad": "Pad konumu",
+  "Pad %d : qu'est-ce que tu mets dessus ?": "Pad %d: üstüne ne koyuyorsun?",
+  "Maintenant : %s": "Şu an: %s",
+  "Enregistrement… %s s": "Kaydediliyor… %s sn",
+  "Sons de l'appli": "Uygulamanın sesleri",
+  "Régler": "Ayarla",
+  "Touche : jouer · appui long : changer": "Dokun: çal · uzun bas: değiştir",
+  "Moins de pads": "Daha az pad",
+  "Plus de pads": "Daha çok pad"
 }

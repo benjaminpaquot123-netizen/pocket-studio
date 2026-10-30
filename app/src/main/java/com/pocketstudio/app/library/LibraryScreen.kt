@@ -74,6 +74,8 @@ class LibraryUi(
     /** « Récents » and « Favoris » of the sound browser (keys, see [keyOf]). */
     val recents: List<String> = emptyList(),
     val favorites: List<String> = emptyList(),
+    /** Lot 4a: opened on « Ma bibliothèque » (the family of the user's latest sound first). */
+    val startMine: Boolean = false,
 )
 
 class LibraryActions(
@@ -101,7 +103,7 @@ class LibraryActions(
  */
 @Composable
 fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
-    var kind by rememberSaveable { mutableStateOf(ui.startKind) }
+    var kind by rememberSaveable { mutableStateOf(if (ui.startMine) ui.mine.lastOrNull()?.kind?.takeIf { it in libraryKinds(ui.mine) } ?: ui.startKind else ui.startKind) }
     // A list to read: centred at a comfortable width on a tablet.
     com.pocketstudio.ui.ReadingWidth {
         Column(Modifier.fillMaxSize().background(Neon.Background).testTag("library")) {
@@ -147,7 +149,8 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                         ShelfBrowserUi(
                             shelves, kind, recents = ui.recents, favorites = ui.favorites, playing = ui.playing, tag = "library",
                             // The user's own sounds of this family found at once, as before (« À moi » first).
-                            start = MINE.takeIf { mine.isNotEmpty() }, stateKey = "library_$kind",
+                            // « Ma bibliothèque » asked for (a live pad): there even when it is empty, to say so.
+                            start = MINE.takeIf { mine.isNotEmpty() || ui.startMine }, stateKey = "library_$kind",
                             use = tr("Poser"),
                             mine = mine.map { SoundOption(SoundRef.Mine(it.id), it.name) },
                             mineContent = { MySoundsCard(mine, kind, ui, actions) },

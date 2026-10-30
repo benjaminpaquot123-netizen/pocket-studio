@@ -165,5 +165,13 @@
   "Kick dur": "Twardy kick",
   "Rumble": "Rumble",
   "Place du coup %d": "Pan uderzenia %d",
-  "Place du pad": "Pan pada"
+  "Place du pad": "Pan pada",
+  "Pad %d : qu'est-ce que tu mets dessus ?": "Pad %d: co na nim położysz?",
+  "Maintenant : %s": "Teraz: %s",
+  "Enregistrement… %s s": "Nagrywanie… %s s",
+  "Sons de l'appli": "Dźwięki aplikacji",
+  "Régler": "Ustaw",
+  "Touche : jouer · appui long : changer": "Dotknij: graj · przytrzymaj: zmień",
+  "Moins de pads": "Mniej padów",
+  "Plus de pads": "Więcej padów"
 }

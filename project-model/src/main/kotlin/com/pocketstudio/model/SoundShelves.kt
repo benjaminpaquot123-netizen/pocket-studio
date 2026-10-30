@@ -56,8 +56,12 @@ object SoundShelves {
         items.forEach { if (it.sub == null) loose.add(it) else bySub.getOrPut(it.sub) { mutableListOf() }.add(it) }
         // Small groups join the family's own sounds.
         bySub.filterValues { it.size < MIN_FOLDER }.keys.forEach { loose.addAll(bySub.remove(it)!!) }
-        // One group alone is no choice: its sounds are the family's.
-        if (bySub.size == 1) loose.addAll(0, bySub.remove(bySub.keys.first())!!)
+        // One group alone is no choice: its sounds are the family's, in their order (« Fête »: the horns first).
+        if (bySub.size == 1) {
+            bySub.clear()
+            loose.clear()
+            loose.addAll(items)
+        }
         val children = bySub.map { (sub, list) -> Shelf("$family/$sub", sub, emptyList(), turns(list)) }
         return Shelf(family, family, children, turns(loose))
     }

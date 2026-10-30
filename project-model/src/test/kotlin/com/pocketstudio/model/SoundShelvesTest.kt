@@ -43,6 +43,9 @@ class SoundShelvesTest {
         val shelves = SoundShelves.build(items("House", "Rond et punchy", "house", 20) + items("House", "Mat", "deep", 2))
         assertTrue(shelves.single().children.isEmpty())
         assertEquals(22, shelves.single().items.size)
+        // In their order: a group merged keeps its place.
+        val party = SoundShelves.build(items("Fête", "Klaxons", "a", 3) + items("Fête", "Voix", "b", 8))
+        assertEquals("a-1", party.single().items.first())
     }
 
     @Test

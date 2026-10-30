@@ -56,13 +56,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import com.pocketstudio.ui.TileGrid
 import com.pocketstudio.ui.SoundTile
-import com.pocketstudio.ui.ChipRow
 import com.pocketstudio.ui.FamilyChip
 import com.pocketstudio.ui.FoldSection
 import com.pocketstudio.app.sounds.SoundLooks
 import androidx.compose.material.icons.filled.GraphicEq
-import androidx.compose.material.icons.filled.Inventory2
-import androidx.compose.material.icons.filled.Apps
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -396,27 +393,20 @@ private fun LineStep(
                 ListenButton(demo, { actions.preview(demo) }, Modifier.testTag("wizard_line_listen"), label = tr("Avec le rythme"))
             }
         }
-        // The sources on one line that scrolls: the sounds stay right under them.
-        ChipRow(categories.size, categories.indexOfFirst { it.id == row.category }) { i ->
-            val c = categories[i]
-            FamilyChip(
-                c.title.substringAfter(" · ", c.title), if (c.id == KIT_CATEGORY) Icons.Filled.Apps else Icons.Filled.Inventory2, look.color,
-                selected = c.id == row.category, onClick = { actions.setCategory(role, c.id) },
-                modifier = Modifier.testTag("wizard_category_${c.id}"),
-            )
-        }
-        val options = categories.firstOrNull { it.id == row.category }?.options.orEmpty()
+        // The shared sound browser (Benjamin's list n° 13–14), opened on the chosen sound's folder;
+        // a touch chooses the line's sound and plays it, as before.
+        val shelves = androidx.compose.runtime.remember(role, style.id, packs.installed) { shelvesOf(categories, packs.installed, style.id) }
         val listening = LocalListening.current
-        TileGrid(options.size) { i, m ->
-            val option = options[i]
-            val heard = tileHeard(listening.playing, role, option)
-            SoundTile(
-                title = tr(option.name.substringBefore(" · ")), icon = if (heard) Icons.Filled.GraphicEq else look.icon,
-                accent = look.color, selected = option == row.sound, onClick = { actions.choose(role, option) },
-                subtitle = if (heard) tr("En écoute…") else null,
-                modifier = m.testTag("wizard_sound_$i"),
-            )
-        }
+        val marks = LocalSoundMarks.current
+        ShelfBrowser(
+            ShelfBrowserUi(
+                shelves, role.id, recents = marks.recents, favorites = marks.favorites, chosen = row.sound?.ref, tag = "wizard",
+                pickOnTap = true, start = row.sound?.let { com.pocketstudio.model.SoundShelves.pathOf(shelves, it).lastOrNull() },
+                search = { q -> shelfSearch(shelves, q) }, stateKey = "wizard_${role.id}",
+                heard = { tileHeard(listening.playing, role, it) },
+            ),
+            ShelfBrowserActions(choose = { actions.choose(role, it) }, toggleFavorite = { marks.toggle(it.ref) }),
+        )
         Text(tr("Touche un son pour l'écouter et le choisir ; « Avec le rythme » le fait entendre avec les lignes déjà choisies."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }

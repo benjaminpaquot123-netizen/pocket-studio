@@ -44,7 +44,8 @@ class MySoundsScreenTest {
         // The families that hold the user's sounds first; « Boucles » shown since one is a loop.
         assertEquals(listOf("vocal", "loop"), libraryKinds(listOf(voice, loop)).take(2))
         assertTrue(exists("library_kind_loop"))
-        compose.onNodeWithTag("library_source_mine").assertExists()
+        // Opened on « Ma bibliothèque » (the user's own sounds first), the families one step back.
+        compose.onNodeWithTag("library_back").assertExists()
         compose.onNodeWithTag("library_mine_0").assertTextContains("Voix · Ma chanson", substring = true)
             .assertTextContains("À moi", substring = true).assertTextContains("98 BPM · La mineur", substring = true)
         compose.onNodeWithTag("library_mine_use_0").performClick()

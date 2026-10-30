@@ -1,5 +1,7 @@
 package com.pocketstudio.model
 
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlin.math.abs
 import kotlin.math.ln
@@ -26,10 +28,13 @@ data class LiveClip(
 }
 
 /** The live pads grid: [size] pads shown, each one empty or holding a [LiveClip]. */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class LivePads(
     val size: Int = 8,
     val clips: List<LiveClip?> = List(MAX) { null },
+    /** The ready-to-play set ([LiveStarter]) was offered to this project once: never again (emptied by hand, they stay empty). */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val starterOffered: Boolean = false,
 ) {
     /** Pads up to the last one holding a sound (the grid never hides a sound). */
     val used: Int get() = clips.indexOfLast { it != null } + 1

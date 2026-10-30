@@ -34,5 +34,8 @@
   "%d étapes de plus|many": "%d خطوة أخرى",
   "%d packs installés|two": "تم تثبيت حزمتين",
   "%d packs installés|few": "تم تثبيت %d حزم",
-  "%d packs installés|many": "تم تثبيت %d حزمة"
+  "%d packs installés|many": "تم تثبيت %d حزمة",
+  "%d sons|two": "صوتان",
+  "%d sons|few": "%d أصوات",
+  "%d sons|many": "%d صوتًا"
 }

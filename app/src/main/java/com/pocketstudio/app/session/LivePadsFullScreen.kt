@@ -134,6 +134,7 @@ fun LivePadsFullScreen(
     /** Under the bar: the take's line (REC, then « Morceau écrit »), given by the app. */
     banner: (@Composable () -> Unit)? = null,
 ) {
+    androidx.compose.runtime.LaunchedEffect(Unit) { actions.opened() }
     HideSystemBars(true)
     if (androidx.activity.compose.LocalOnBackPressedDispatcherOwner.current != null) {
         androidx.activity.compose.BackHandler(onBack = close)

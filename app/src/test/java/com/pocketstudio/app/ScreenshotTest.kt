@@ -2039,19 +2039,32 @@ open class ScreenshotTest {
 
     /** The live pads on the whole screen, as the assistant fills them (Jump up DnB): two playing, one queued. */
     @Composable
-    private fun LivePadsStage() {
+    private fun LivePadsStage(size: Int = 8) {
         val clip = { n: String, b: Int -> com.pocketstudio.model.LiveClip("x.wav", n, b) }
-        val pads = com.pocketstudio.model.LivePads(8).with(0, clip("Batterie", 8)).with(1, clip("Basse", 16)).with(2, clip("Nappe", 16))
+        var pads = com.pocketstudio.model.LivePads(size).with(0, clip("Batterie", 8)).with(1, clip("Basse", 16)).with(2, clip("Nappe", 16))
             .with(3, clip("Sub", 8)).with(4, clip("Impact", 4).copy(oneShot = true)).with(5, clip("Morceau 4", 32))
+        if (size > 8) pads = pads.with(6, clip("Voix refrain", 8)).with(7, clip("Klaxon", 1).copy(oneShot = true)).with(8, clip("Charley", 2))
         val ui = liveUi()
         val columns = com.pocketstudio.app.live.liveColumnsOf(ui.project)
         com.pocketstudio.app.session.LivePadsFullScreen(
-            com.pocketstudio.app.session.LivePadsUi(pads, listOf(2, 2, 1, 0, 0, 0, 0, 0), editing = null),
-            com.pocketstudio.app.session.LivePadsActions(), close = {},
+            com.pocketstudio.app.session.LivePadsUi(pads, listOf(2, 2, 1) + List(13) { 0 }, editing = null),
+            com.pocketstudio.app.session.LivePadsActions(record = {}), close = {},
             tempoBpm = 174.0, beatsPerBar = 4, playing = true, clockOf = { 45 }, togglePlay = {},
             effects = { m -> com.pocketstudio.app.live.LiveFx(ui, columns, com.pocketstudio.app.live.LiveActions(), m) },
+            tempo = com.pocketstudio.app.session.StageTempo(nudge = {}, open = {}),
         )
     }
+
+    /** Lot 4a: 12 pads in 3 columns of square pads, the room left over above them. */
+    @Test
+    fun livePadsFull12() = shoot("live_pads_full_12", fullScreen = true) { LivePadsStage(12) }
+
+    /** Lot 4a: an empty pad touched: « Pad 7 : qu'est-ce que tu mets dessus ? ». */
+    @Test
+    fun livePadsChooser() = shoot("live_pads_chooser", fullScreen = true, prepare = {
+        compose.onNodeWithTag("live_full_pad_6").performClick()
+        compose.waitForIdle()
+    }) { LivePadsStage() }
 
     @Test
     fun livePadsFull() = shoot("live_pads_full", fullScreen = true, prepare = {

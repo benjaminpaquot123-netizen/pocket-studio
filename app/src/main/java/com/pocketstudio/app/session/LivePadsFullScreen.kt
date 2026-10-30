@@ -475,7 +475,8 @@ private fun BeatCounter(tempoBpm: Double, beatsPerBar: Int, clock: PadClock, tem
         val first = Neon.Cyan
         val other = Neon.Acid
         val off = Color.White.copy(alpha = 0.14f)
-        Canvas(Modifier.size(width = ((if (showBar) 12 else 9) * bpb).dp, height = 14.dp)) {
+        // Narrow with « − 113 + »: the pads themselves pulse on the beat, the lights give their room.
+        if (showBar) Canvas(Modifier.size(width = (12 * bpb).dp, height = 14.dp)) {
             val b = clock.beat()
             val now = if (b < 0) -1 else floor(b).toInt() % bpb
             val fade = if (b < 0) 0f else (1f - (b - floor(b)).toFloat()).let { it * it }

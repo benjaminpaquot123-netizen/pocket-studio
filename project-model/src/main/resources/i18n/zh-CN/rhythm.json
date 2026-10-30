@@ -165,5 +165,13 @@
   "Kick dur": "硬底鼓",
   "Rumble": "Rumble",
   "Place du coup %d": "第 %d 下的声像",
-  "Place du pad": "打击垫声像"
+  "Place du pad": "打击垫声像",
+  "Pad %d : qu'est-ce que tu mets dessus ?": "打击垫 %d：放什么上去？",
+  "Maintenant : %s": "现在：%s",
+  "Enregistrement… %s s": "录音中… %s 秒",
+  "Sons de l'appli": "应用内音色",
+  "Régler": "设置",
+  "Touche : jouer · appui long : changer": "点按：演奏 · 长按：更换",
+  "Moins de pads": "减少打击垫",
+  "Plus de pads": "增加打击垫"
 }

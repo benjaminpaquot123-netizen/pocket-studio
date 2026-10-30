@@ -165,5 +165,13 @@
   "Kick dur": "Kick duro",
   "Rumble": "Rumble",
   "Place du coup %d": "Pan del golpe %d",
-  "Place du pad": "Pan del pad"
+  "Place du pad": "Pan del pad",
+  "Pad %d : qu'est-ce que tu mets dessus ?": "Pad %d: ¿qué le pones?",
+  "Maintenant : %s": "Ahora: %s",
+  "Enregistrement… %s s": "Grabando… %s s",
+  "Sons de l'appli": "Sonidos de la app",
+  "Régler": "Ajustar",
+  "Touche : jouer · appui long : changer": "Toca: tocar · mantén pulsado: cambiar",
+  "Moins de pads": "Menos pads",
+  "Plus de pads": "Más pads"
 }

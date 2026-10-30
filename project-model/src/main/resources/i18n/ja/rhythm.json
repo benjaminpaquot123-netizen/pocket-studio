@@ -165,5 +165,13 @@
   "Kick dur": "ハードキック",
   "Rumble": "ランブル",
   "Place du coup %d": "ヒット %d のパン",
-  "Place du pad": "パッドのパン"
+  "Place du pad": "パッドのパン",
+  "Pad %d : qu'est-ce que tu mets dessus ?": "パッド %d：何をのせる？",
+  "Maintenant : %s": "いま：%s",
+  "Enregistrement… %s s": "録音中… %s 秒",
+  "Sons de l'appli": "アプリの音",
+  "Régler": "設定",
+  "Touche : jouer · appui long : changer": "タップ：再生 · 長押し：変更",
+  "Moins de pads": "パッドを減らす",
+  "Plus de pads": "パッドを増やす"
 }

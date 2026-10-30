@@ -80,6 +80,8 @@ class LivePadsUi(
     /** Drum pads that have a sound of their own (index to name), to reuse on a live pad. */
     val drumSounds: List<Pair<Int, String>> = emptyList(),
     val busy: String? = null,
+    /** Seconds recorded so far while the microphone records onto a live pad (null: not recording). */
+    val recording: Float? = null,
 )
 
 class LivePadsActions(
@@ -104,6 +106,11 @@ class LivePadsActions(
     val fullScreen: (() -> Unit)? = null,
     /** The pads shown: an empty set gets the ready-to-play sounds ([com.pocketstudio.model.LiveStarter]) once. */
     val opened: () -> Unit = {},
+    /** The one sound browser for a pad, opened on « Ma bibliothèque » (true) or on the app's sounds (false). */
+    val browse: (pad: Int, mine: Boolean) -> Unit = { pad, _ -> library(pad) },
+    /** « Enregistrer »: the microphone onto this pad until [stopRecord] (null: not offered). */
+    val record: ((Int) -> Unit)? = null,
+    val stopRecord: () -> Unit = {},
 )
 
 private fun beatsLabel(beats: Int) = when {

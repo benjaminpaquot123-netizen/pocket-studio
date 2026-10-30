@@ -21,6 +21,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.ui.input.pointer.PointerEventTimeoutCancellationException
+import androidx.compose.ui.semantics.onLongClick
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.LibraryMusic
+import androidx.compose.material.icons.filled.GraphicEq
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Delete
+import com.pocketstudio.model.padGrid
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -133,6 +143,8 @@ fun LivePadsFullScreen(
     record: (@Composable () -> Unit)? = null,
     /** Under the bar: the take's line (REC, then « Morceau écrit »), given by the app. */
     banner: (@Composable () -> Unit)? = null,
+    /** « − 113 + » in the bar, a touch on the figure opens the tempo sheet (null: the tempo shown only). */
+    tempo: StageTempo? = null,
 ) {
     androidx.compose.runtime.LaunchedEffect(Unit) { actions.opened() }
     HideSystemBars(true)
@@ -140,6 +152,8 @@ fun LivePadsFullScreen(
         androidx.activity.compose.BackHandler(onBack = close)
     }
     var fxOpen by rememberSaveable { mutableStateOf(false) }
+    // The pad whose sound is being chosen (« Pad 8 : qu'est-ce que tu mets dessus ? »).
+    var choosing by rememberSaveable { mutableStateOf<Int?>(null) }
     val clock = remember { PadClock() }
     val statesNow by rememberUpdatedState(ui.states)
     val clipsNow by rememberUpdatedState(ui.pads.clips)
@@ -172,11 +186,12 @@ fun LivePadsFullScreen(
         val wholeHeight = maxHeight
         val wholeWidth = maxWidth
         val pads: @Composable (Modifier) -> Unit = { m ->
-            PadGrid(ui, actions, clock, colorOf, beatsPerBar, close, m)
+            PadGrid(ui, actions, clock, colorOf, beatsPerBar, { choosing = it }, m)
         }
         Column(Modifier.fillMaxSize()) {
-            StageBar(tempoBpm, beatsPerBar, playing, clock, fxOpen, close, togglePlay, actions.stopAll, if (landscape) ({ fxOpen = !fxOpen }) else null, record)
+            StageBar(tempoBpm, beatsPerBar, playing, clock, fxOpen, close, togglePlay, actions.stopAll, if (landscape) ({ fxOpen = !fxOpen }) else null, record, tempo)
             banner?.invoke()
+            PadsHeader(ui, actions)
             if (landscape) {
                 val panelWidth = if (wholeWidth >= 900.dp) 420.dp else minOf(380.dp, wholeWidth * 0.5f)
                 Row(Modifier.fillMaxWidth().weight(1f)) {
@@ -200,6 +215,128 @@ fun LivePadsFullScreen(
                     FxPanel(sideways = false, { fxOpen = false }, effects, Modifier.fillMaxWidth().height(panelHeight))
                 }
                 if (!fxOpen) FxHandle { fxOpen = true }
+            }
+        }
+    }
+    choosing?.let { pad ->
+        PadChooser(pad, ui, actions, close = { choosing = null }, leave = close)
+    }
+}
+
+/**
+ * « Pad 8 : qu'est-ce que tu mets dessus ? »: the one sound browser, on « Ma bibliothèque » or on
+ * the app's sounds, or the microphone; for a pad with a sound (a long press), also its settings
+ * (on the page below) and « Vider ».
+ */
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Composable
+private fun PadChooser(pad: Int, ui: LivePadsUi, actions: LivePadsActions, close: () -> Unit, leave: () -> Unit) {
+    val clip = ui.pads.clips.getOrNull(pad)
+    val state = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    com.pocketstudio.ui.ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("live_pad_chooser")) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            WholeWordsText(
+                tr("Pad %d : qu'est-ce que tu mets dessus ?", pad + 1),
+                style = MaterialTheme.typography.titleLarge, color = Neon.TextPrimary, fontWeight = FontWeight.Bold,
+            )
+            if (clip != null) {
+                Text(tr("Maintenant : %s", DefaultNames.shownSample(clip.name)), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
+            }
+            val secs = ui.recording
+            if (secs != null) {
+                // The microphone records onto this pad: its time, and « Arrêter » puts it on.
+                Row(
+                    Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Neon.SurfaceHigh).padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(Modifier.size(14.dp).clip(RoundedCornerShape(7.dp)).background(Neon.Red))
+                    Text(
+                        tr("Enregistrement… %s s", "%.1f".format(java.util.Locale.getDefault(), secs)),
+                        Modifier.padding(start = 10.dp).weight(1f), style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary,
+                    )
+                    androidx.compose.material3.Button(
+                        onClick = { actions.stopRecord(); close() },
+                        modifier = Modifier.testTag("live_chooser_stop"),
+                    ) { Text(tr("Arrêter")) }
+                }
+            } else {
+                Row(Modifier.fillMaxWidth().height(androidx.compose.foundation.layout.IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    ChoiceTile(Icons.Filled.LibraryMusic, tr("Ma bibliothèque"), "live_chooser_mine", Modifier.weight(1f)) { close(); actions.browse(pad, true) }
+                    ChoiceTile(Icons.Filled.GraphicEq, tr("Sons de l'appli"), "live_chooser_app", Modifier.weight(1f)) { close(); actions.browse(pad, false) }
+                    actions.record?.let { rec ->
+                        ChoiceTile(Icons.Filled.Mic, tr("Enregistrer"), "live_chooser_record", Modifier.weight(1f)) { rec(pad) }
+                    }
+                }
+                if (clip != null) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        androidx.compose.material3.OutlinedButton(
+                            onClick = { close(); leave(); actions.edit(pad) },
+                            modifier = Modifier.weight(1f).testTag("live_chooser_settings"),
+                        ) {
+                            Icon(Icons.Filled.Tune, contentDescription = null)
+                            Text(" " + tr("Régler"), maxLines = 1)
+                        }
+                        androidx.compose.material3.OutlinedButton(
+                            onClick = { actions.clear(pad); close() },
+                            modifier = Modifier.weight(1f).testTag("live_chooser_clear"),
+                        ) {
+                            Icon(Icons.Filled.Delete, contentDescription = null)
+                            Text(" " + tr("Vider"), maxLines = 1)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/** One of the chooser's three big choices: an icon over its name. */
+@Composable
+private fun ChoiceTile(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, tag: String, modifier: Modifier, onClick: () -> Unit) {
+    Column(
+        modifier.fillMaxHeight().heightIn(min = 88.dp).clip(RoundedCornerShape(16.dp))
+            .background(Brush.verticalGradient(listOf(lerp(Neon.SurfaceHigh, Color.White, 0.05f), Neon.SurfaceHigh)))
+            .clickable(role = Role.Button, onClick = onClick)
+            .padding(horizontal = 6.dp, vertical = 12.dp).testTag(tag),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon(icon, contentDescription = null, tint = Neon.Amber, modifier = Modifier.size(28.dp))
+        WholeWordsText(label, Modifier.padding(top = 6.dp), color = Neon.TextPrimary, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.labelLarge, maxLines = 2)
+    }
+}
+
+/** The tempo in the pads' bar: − and + a BPM, a touch on the figure for the tempo sheet. */
+class StageTempo(val nudge: (Int) -> Unit, val open: () -> Unit)
+
+/** Over the pads: how to play them, and « Pads − 8 + » (never fewer pads than the last one with a sound). */
+@Composable
+private fun PadsHeader(ui: LivePadsUi, actions: LivePadsActions) {
+    Row(
+        Modifier.fillMaxWidth().padding(start = 16.dp, end = 10.dp, top = 2.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            ui.busy ?: tr("Touche : jouer · appui long : changer"),
+            Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium,
+            color = if (ui.busy != null) Neon.Amber else Neon.TextSecondary, maxLines = 2,
+        )
+        val shape = RoundedCornerShape(14.dp)
+        Row(
+            Modifier.clip(shape).background(Neon.Surface).padding(start = 12.dp).testTag("live_pads_size"),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(tr("Pads"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary, maxLines = 1)
+            val less = ui.pads.stepped(-1)
+            val more = ui.pads.stepped(+1)
+            IconButton(onClick = { actions.setSize(less) }, enabled = less != ui.pads.size, modifier = Modifier.testTag("live_pads_less")) {
+                Icon(Icons.Filled.Remove, contentDescription = tr("Moins de pads"))
+            }
+            Text("${ui.pads.size}", style = MonoStyle.copy(fontSize = 18.sp, fontWeight = FontWeight.Bold), color = Neon.TextPrimary, maxLines = 1,
+                modifier = Modifier.testTag("live_pads_count"))
+            IconButton(onClick = { actions.setSize(more) }, enabled = more != ui.pads.size, modifier = Modifier.testTag("live_pads_more")) {
+                Icon(Icons.Filled.Add, contentDescription = tr("Plus de pads"))
             }
         }
     }
@@ -237,6 +374,7 @@ private fun StageBar(
     /** Lying down: « Effets » here (upright: the handle under the pads). */
     toggleFx: (() -> Unit)?,
     record: (@Composable () -> Unit)? = null,
+    tempo: StageTempo? = null,
 ) = BoxWithConstraints(Modifier.fillMaxWidth()) {
     val wide = maxWidth >= 600.dp
     Row(
@@ -249,7 +387,7 @@ private fun StageBar(
         }
         if (wide) Text(tr("Pads live"), style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, maxLines = 1)
         Spacer(Modifier.weight(1f))
-        BeatCounter(tempoBpm, beatsPerBar, clock)
+        BeatCounter(tempoBpm, beatsPerBar, clock, tempo, showBar = wide || tempo == null)
         Spacer(Modifier.weight(1f))
         if (togglePlay != null) {
             StageButton(
@@ -313,27 +451,31 @@ private fun StageButton(
  * bar's first in orange). The numbers change once a beat; the lights are redrawn, not recomposed.
  */
 @Composable
-private fun BeatCounter(tempoBpm: Double, beatsPerBar: Int, clock: PadClock) {
+private fun BeatCounter(tempoBpm: Double, beatsPerBar: Int, clock: PadClock, tempo: StageTempo? = null, showBar: Boolean = true) {
     val beat by remember(clock) { derivedStateOf { clock.beat().let { if (it < 0) -1 else floor(it).toInt() } } }
     val bpb = beatsPerBar.coerceAtLeast(1)
-    val tempo = "${tempoBpm.roundToInt()}"
+    val shown = "${tempoBpm.roundToInt()}"
     Row(
-        Modifier.semantics(mergeDescendants = true) {}.testTag("live_pads_full_beat"),
+        (if (tempo == null) Modifier.semantics(mergeDescendants = true) {} else Modifier).testTag("live_pads_full_beat"),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        Column(horizontalAlignment = Alignment.End) {
-            Text(tempo, style = MonoStyle.copy(fontSize = 18.sp), color = Neon.TextPrimary, maxLines = 1)
-            Text("BPM", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1)
+        if (tempo != null) {
+            TempoStepper(shown, tempo)
+        } else {
+            Column(horizontalAlignment = Alignment.End) {
+                Text(shown, style = MonoStyle.copy(fontSize = 18.sp), color = Neon.TextPrimary, maxLines = 1)
+                Text("BPM", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1)
+            }
         }
-        Text(
+        if (showBar) Text(
             if (beat < 0) "–.–" else "${beat / bpb + 1}.${beat % bpb + 1}",
             style = MonoStyle.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold), color = if (beat < 0) Neon.TextSecondary else Neon.TextPrimary, maxLines = 1,
         )
         val first = Neon.Cyan
         val other = Neon.Acid
         val off = Color.White.copy(alpha = 0.14f)
-        Canvas(Modifier.size(width = (12 * bpb).dp, height = 14.dp)) {
+        Canvas(Modifier.size(width = ((if (showBar) 12 else 9) * bpb).dp, height = 14.dp)) {
             val b = clock.beat()
             val now = if (b < 0) -1 else floor(b).toInt() % bpb
             val fade = if (b < 0) 0f else (1f - (b - floor(b)).toFloat()).let { it * it }
@@ -352,7 +494,35 @@ private fun BeatCounter(tempoBpm: Double, beatsPerBar: Int, clock: PadClock) {
     }
 }
 
-/** The pads in as many columns as gives them the biggest size, filling the room they have. */
+/** « − 113 + »: a BPM less or more (held: they repeat), the figure opens the tempo sheet. */
+@Composable
+private fun TempoStepper(shown: String, tempo: StageTempo) {
+    val shape = RoundedCornerShape(14.dp)
+    Row(Modifier.clip(shape).background(Neon.Surface), verticalAlignment = Alignment.CenterVertically) {
+        com.pocketstudio.app.ui.RepeatingIconButton({ tempo.nudge(-1) }, Modifier.size(40.dp, 48.dp).testTag("live_pads_tempo_minus")) {
+            Icon(Icons.Filled.Remove, contentDescription = tr("Tempo moins"), modifier = Modifier.size(20.dp))
+        }
+        Column(
+            Modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(8.dp))
+                .clickable(role = Role.Button, onClickLabel = tr("Changer le tempo"), onClick = tempo.open)
+                .semantics(mergeDescendants = true) { contentDescription = tr("Tempo : %d BPM", shown.toIntOrNull() ?: 0) }
+                .padding(horizontal = 4.dp).testTag("live_pads_tempo"),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Text(shown, style = MonoStyle.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold), color = Neon.Amber, maxLines = 1)
+            Text("BPM", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1)
+        }
+        com.pocketstudio.app.ui.RepeatingIconButton({ tempo.nudge(+1) }, Modifier.size(40.dp, 48.dp).testTag("live_pads_tempo_plus")) {
+            Icon(Icons.Filled.Add, contentDescription = tr("Tempo plus"), modifier = Modifier.size(20.dp))
+        }
+    }
+}
+
+/**
+ * The pads in 2, 3 or 4 columns of full rows, square or a little wide ([padGrid]): the columns
+ * giving the biggest pads win, and the room left over stays above them, under the thumb.
+ */
 @Composable
 private fun PadGrid(
     ui: LivePadsUi,
@@ -360,17 +530,18 @@ private fun PadGrid(
     clock: PadClock,
     colorOf: (Int, LiveClip) -> Color,
     beatsPerBar: Int,
-    close: () -> Unit,
+    choose: (Int) -> Unit,
     modifier: Modifier,
-) = BoxWithConstraints(modifier.padding(12.dp)) {
+) = BoxWithConstraints(modifier.padding(12.dp), contentAlignment = Alignment.BottomCenter) {
     val count = ui.pads.size.coerceIn(1, LivePads.MAX)
     val gap = 12.dp
-    val cols = bestColumns(count, maxWidth, maxHeight, gap)
-    val rows = (count + cols - 1) / cols
-    val padW = (maxWidth - gap * (cols - 1)) / cols
-    val padH = (maxHeight - gap * (rows - 1)) / rows
+    val grid = padGrid(count, maxWidth.value, maxHeight.value, gap.value)
+    val cols = grid.cols
+    val rows = grid.rows
+    val padW = grid.padW.dp
+    val padH = grid.padH.dp
     val big = minOf(padW, padH) >= 140.dp
-    Column(verticalArrangement = Arrangement.spacedBy(gap)) {
+    Column(verticalArrangement = Arrangement.spacedBy(gap), modifier = Modifier.testTag("live_pads_grid")) {
         for (r in 0 until rows) {
             Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
                 for (c in 0 until cols) {
@@ -383,35 +554,23 @@ private fun PadGrid(
                     StagePad(
                         i, clip, ui.states.getOrElse(i) { 0 }, clip?.let { colorOf(i, it) } ?: Neon.SurfaceHigh, clock, beatsPerBar, big,
                         Modifier.size(padW, padH),
-                    ) {
-                        // An empty pad is set up on the page below.
-                        if (clip == null) {
-                            close()
-                            actions.edit(i)
-                        } else {
-                            actions.tap(i)
-                        }
-                    }
+                        // An empty pad asks what goes on it; a long press changes a pad's sound.
+                        onTap = { if (clip == null) choose(i) else actions.tap(i) },
+                        onLong = { choose(i) },
+                    )
                 }
             }
         }
     }
 }
 
-/** Columns giving the biggest pads for [count] pads in [w] x [h], in full rows (no hole at the end). */
-internal fun bestColumns(count: Int, w: Dp, h: Dp, gap: Dp): Int {
-    val all = (1..minOf(count, 8)).toList()
-    val full = all.filter { count % it == 0 }.ifEmpty { all }
-    return full.maxBy { cols ->
-        val rows = (count + cols - 1) / cols
-        minOf((w - gap * (cols - 1)).value / cols, (h - gap * (rows - 1)).value / rows)
-    }
-}
 
 /**
  * A big pad: its colour in a gradient, lit when it plays, its edge filling up with the loop; a
- * queued pad's edge blinks and empties until its launch; a one-shot flashes when it fires. Fires on
- * the finger's down (a light buzz), like a controller's pad.
+ * queued pad's edge blinks and empties until its launch; a one-shot flashes when it fires. A
+ * one-shot fires on the finger's down (a light buzz), like a controller's pad; a loop, quantised to
+ * the beat anyway, when the finger lifts, so a long press ([onLong]: change its sound) never
+ * switches it on.
  */
 @Composable
 private fun StagePad(
@@ -423,11 +582,14 @@ private fun StagePad(
     beatsPerBar: Int,
     big: Boolean,
     modifier: Modifier,
-    onDown: () -> Unit,
+    onTap: () -> Unit,
+    onLong: () -> Unit,
 ) {
     val haptics = LocalHapticFeedback.current
     val scope = rememberCoroutineScope()
-    val down by rememberUpdatedState(onDown)
+    val tap by rememberUpdatedState(onTap)
+    val long by rememberUpdatedState(onLong)
+    val early by rememberUpdatedState(clip?.oneShot == true)
     val lit = animateFloatAsState(if (state == 2) 1f else 0f, tween(200), label = "stage-lit")
     // The finger's touch, and a one-shot firing: a white flash fading out.
     val press = remember { Animatable(0f) }
@@ -520,7 +682,26 @@ private fun StagePad(
                         press.snapTo(1f)
                         press.animateTo(0f, tween(260))
                     }
-                    down()
+                    val fired = early
+                    if (fired) tap()
+                    var held = false
+                    val up = try {
+                        withTimeout(viewConfiguration.longPressTimeoutMillis) { waitForUpOrCancellation() }
+                    } catch (_: PointerEventTimeoutCancellationException) {
+                        held = true
+                        null
+                    }
+                    if (held) {
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        long()
+                        // The rest of this touch is the long press's: nothing else fires until the finger lifts.
+                        do {
+                            val event = awaitPointerEvent()
+                            event.changes.forEach { it.consume() }
+                        } while (event.changes.any { it.pressed })
+                    } else if (up != null && !fired) {
+                        tap()
+                    }
                 }
             }
             .semantics {
@@ -532,7 +713,8 @@ private fun StagePad(
                 }
                 contentDescription = "${clip?.name?.let(DefaultNames::shownSample) ?: tr("Pad %d", i + 1)} · $what"
                 role = Role.Button
-                onClick { down(); true }
+                onClick { tap(); true }
+                onLongClick(tr("Changer le son")) { long(); true }
             }
             .testTag("live_full_pad_$i"),
         contentAlignment = Alignment.Center,

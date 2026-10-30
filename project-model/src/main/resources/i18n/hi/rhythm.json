@@ -165,5 +165,13 @@
   "Kick dur": "हार्ड Kick",
   "Rumble": "Rumble",
   "Place du coup %d": "हिट %d का पैन",
-  "Place du pad": "पैड का पैन"
+  "Place du pad": "पैड का पैन",
+  "Pad %d : qu'est-ce que tu mets dessus ?": "पैड %d: इस पर क्या रखोगे?",
+  "Maintenant : %s": "अभी: %s",
+  "Enregistrement… %s s": "रिकॉर्डिंग… %s से.",
+  "Sons de l'appli": "ऐप के साउंड",
+  "Régler": "सेट करो",
+  "Touche : jouer · appui long : changer": "टैप: बजाओ · देर तक दबाओ: बदलो",
+  "Moins de pads": "कम पैड्स",
+  "Plus de pads": "ज़्यादा पैड्स"
 }

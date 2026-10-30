@@ -165,5 +165,13 @@
   "Kick dur": "하드 킥",
   "Rumble": "럼블",
   "Place du coup %d": "히트 %d 팬",
-  "Place du pad": "패드 팬"
+  "Place du pad": "패드 팬",
+  "Pad %d : qu'est-ce que tu mets dessus ?": "패드 %d: 무엇을 올릴까요?",
+  "Maintenant : %s": "지금: %s",
+  "Enregistrement… %s s": "녹음 중… %s초",
+  "Sons de l'appli": "앱 사운드",
+  "Régler": "설정",
+  "Touche : jouer · appui long : changer": "탭: 재생 · 길게 누르기: 바꾸기",
+  "Moins de pads": "패드 줄이기",
+  "Plus de pads": "패드 늘리기"
 }

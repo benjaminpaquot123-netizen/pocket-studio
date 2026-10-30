@@ -165,5 +165,13 @@
   "Kick dur": "Harde kick",
   "Rumble": "Rumble",
   "Place du coup %d": "Pan van slag %d",
-  "Place du pad": "Pan van de pad"
+  "Place du pad": "Pan van de pad",
+  "Pad %d : qu'est-ce que tu mets dessus ?": "Pad %d: wat zet je erop?",
+  "Maintenant : %s": "Nu: %s",
+  "Enregistrement… %s s": "Opnemen… %s s",
+  "Sons de l'appli": "Geluiden van de app",
+  "Régler": "Instellen",
+  "Touche : jouer · appui long : changer": "Tik: spelen · lang drukken: wijzigen",
+  "Moins de pads": "Minder pads",
+  "Plus de pads": "Meer pads"
 }

@@ -165,5 +165,13 @@
   "Kick dur": "Harte Kick",
   "Rumble": "Rumble",
   "Place du coup %d": "Panorama Schlag %d",
-  "Place du pad": "Pad-Panorama"
+  "Place du pad": "Pad-Panorama",
+  "Pad %d : qu'est-ce que tu mets dessus ?": "Pad %d: Was legst du drauf?",
+  "Maintenant : %s": "Jetzt: %s",
+  "Enregistrement… %s s": "Aufnahme… %s s",
+  "Sons de l'appli": "Sounds der App",
+  "Régler": "Einstellen",
+  "Touche : jouer · appui long : changer": "Tippen: spielen · lange drücken: ändern",
+  "Moins de pads": "Weniger Pads",
+  "Plus de pads": "Mehr Pads"
 }

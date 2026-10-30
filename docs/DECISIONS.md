@@ -926,3 +926,4 @@
 - 2026-10-30 · Remix → projet : les quatre pistes séparées entrent toujours dans le projet comme pistes audio à part entière (solo, muet, découpe, effets) ; le choix fait à l'écoute ne décide que lesquelles arrivent muettes (Benjamin). Retour arrière : n'importer que les pistes choisies.
 - 2026-10-30 · Tempo : le premier son à tempo posé fixe le tempo général (avec « Annuler »), les suivants s'étirent dessus ; le tempo se règle depuis le Live et tout suit en direct (Benjamin). Retour arrière : tempo fixé seulement à la main.
 - 2026-10-30 · Tempo : affiché et réglable seulement là où on joue (petit « − 113 + » en haut du Live et des pads), plus sur les pistes de la chanson extraite (Benjamin). Retour arrière : le tempo sur la carte de la chanson.
+- 2026-10-30 · Remix → projet (n° 15) et tempo (n° 16) validés par Benjamin ; priorité absolue : moteur audio irréprochable (n° 17, critères mesurés avant livraison).

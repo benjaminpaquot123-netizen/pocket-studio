@@ -177,3 +177,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - 2026-10-30 · Remix : peu importe ce qu'on a cliqué avant l'import (c'était pour écouter), les quatre pistes doivent être dans le projet, accessibles, qu'on puisse y chipoter, les isoler, les découper ; intégrées à part entière.
 - 2026-10-30 · « Le tempo se cale automatiquement au premier son qu'on met sur le Live et il doit pouvoir s'ajuster facilement depuis le Live, le tempo général. » Noté n° 16 et dans docs/remix/REMIX-PROJET.md.
 - 2026-10-30 · Le tempo sur les pistes de la chanson extraite n'est pas nécessaire ; il le veut surtout sur le pad, un petit endroit accessible pour le modifier pendant le Live.
+- 2026-10-30 · « C'est parfait, tu peux valider ça. Et le principal, c'est que le moteur audio soit nickel. » Noté n° 17.

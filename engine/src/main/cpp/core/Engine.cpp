@@ -330,7 +330,7 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::ToggleClip:
             if (command.a < 0) clips_.stopAll();
-            else clips_.toggle(command.a, !sequencer_.running());
+            else clips_.toggle(command.a, !sequencer_.running(), command.value);
             break;
         case CommandType::PlayPreview:
             if (command.value > 0.5f) {

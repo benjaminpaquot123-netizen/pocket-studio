@@ -64,7 +64,7 @@ void ClipLauncher::install(int slot, Sample* sample, bool refit) {
     // A loop refitted to a new tempo: where the beat clock is in its pass, faded in.
     if (picksUp) {
         const auto pos = static_cast<int64_t>((beat_ - s.startBeat) * beatFrames_);
-        if (pos >= 0 && pos < sample->frames()) s.voice = Voice{sample, pos, 0, fadeFrames_};
+        if (pos >= 0 && pos < sample->frames()) s.voice = Voice{sample, pos, 0, fadeFrames_, s.velocity};
     }
     states_[static_cast<size_t>(slot)].store(s.state, std::memory_order_relaxed);
 }
@@ -80,7 +80,7 @@ void ClipLauncher::setParam(int slot, int param, float value) {
     }
 }
 
-void ClipLauncher::toggle(int slot, bool idleClock) {
+void ClipLauncher::toggle(int slot, bool idleClock, float velocity) {
     if (slot < 0 || slot >= kSlots) return;
     Slot& s = slots_[static_cast<size_t>(slot)];
     if (!s.sample) return;
@@ -96,6 +96,7 @@ void ClipLauncher::toggle(int slot, bool idleClock) {
         if (idleClock && std::none_of(slots_.begin(), slots_.end(), [](const Slot& o) { return o.state != Off; })) beat_ = 0.0;
         const double grid = gridOf(s);
         s.startBeat = std::ceil(beat_ / grid - 1e-9) * grid;
+        s.velocity = std::isfinite(velocity) && velocity > 0.0f ? std::min(velocity, 1.0f) : 1.0f;
         s.state = Waiting;
     }
     states_[static_cast<size_t>(slot)].store(s.state, std::memory_order_relaxed);
@@ -120,7 +121,7 @@ void ClipLauncher::restart(Slot& s) {
         s.tail = s.voice;
         s.tail.fade = fadeFrames_;
     }
-    s.voice = Voice{s.sample, 0, 0};
+    s.voice = Voice{s.sample, 0, 0, 0, s.velocity};
 }
 
 void ClipLauncher::play(Voice& v, float gain, float& l, float& r) {
@@ -129,7 +130,7 @@ void ClipLauncher::play(Voice& v, float gain, float& l, float& r) {
         v = Voice{};
         return;
     }
-    float g = gain;
+    float g = gain * v.level;
     if (v.fade > 0) {
         g *= static_cast<float>(v.fade) / static_cast<float>(fadeFrames_);
         if (--v.fade == 0) {

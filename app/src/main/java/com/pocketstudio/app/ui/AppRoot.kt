@@ -1083,7 +1083,8 @@ fun AppRoot() {
                     knobsVm.control(c.controller, c.value, m.controller?.name ?: m.sources.firstOrNull { it.id == m.connected }?.name, c.channel)
                 }
                 // The Live page's pads: launches, mutes, live pads (the drums are played on the MIDI thread).
-                is MidiCommand.Pad -> knobsVm.pad(c.index)
+                // Step 4f: while a drum cell records, they play the drums into it; their strength reaches the live pads.
+                is MidiCommand.Pad -> if (!rhythmVm.midiCellPad(c.index, c.velocity)) knobsVm.pad(c.index, c.velocity)
                 is MidiCommand.PadLearnt -> {
                     if (c.packed !in padsHeard) padsHeard += c.packed
                     midiVm.padsLearnt(padsHeard.size)
@@ -3647,6 +3648,7 @@ fun liveActionsOf(
     copyCell = vm::copyCell,
     drumHit = { vm.liveDrumHit(it) },
     setRows = vm::setLiveRows,
+    selectTrack = vm::selectTrack,
 )
 
 /** The Live page with its state from the ViewModel; every gesture goes back to it. */
@@ -3755,6 +3757,7 @@ private fun LiveStateHost(
     val takeAppend by vm.takeAppend.collectAsStateWithLifecycle()
     val chops by vm.liveChops.collectAsStateWithLifecycle()
     val cellRecording by vm.cellRecording.collectAsStateWithLifecycle()
+    val selectedTrack by vm.selectedTrack.collectAsStateWithLifecycle()
     // The effects (moved at finger speed by the DJ filter and the Montée): read only where shown.
     val liveFx = vm.liveFx.collectAsStateWithLifecycle()
     val liveFxOf = remember(liveFx) { { liveFx.value } }
@@ -3784,6 +3787,7 @@ private fun LiveStateHost(
                 project, grid, playing = transport.playing, muted = muted, acid = acid, returns = returns, take = take, takeAppend = takeAppend,
                 chops = chops, takeUndoable = vm.canUndoPerformance(), clockOf = clockOf,
                 spectrum = spectrumOf, beatHaptics = settings.liveBeatHaptics, fxOf = liveFxOf, cellRecording = cellRecording,
+                selectedTrack = selectedTrack,
             ),
             com.pocketstudio.app.session.LivePadsUi(
                 pads = project.live,

@@ -203,6 +203,8 @@ class LiveScreenUi(
     val cellRecording: CellRecording? = null,
     /** Lot 4c: the grid's moving light off (null: the phone's « Supprimer les animations »). */
     val reducedMotion: Boolean? = null,
+    /** Step 4f: the track a MIDI keyboard plays (the selected one): Notes opens on it (null: the first). */
+    val selectedTrack: Int? = null,
 ) {
     /** What the effects are doing now: read in the small composables that show it (see [fxOf]). */
     val fx: LiveFxUi get() = fxOf()
@@ -283,6 +285,8 @@ class LiveActions(
     val copyCell: (fromKey: String, fromScene: Int, toKey: String, toScene: Int) -> Boolean = { _, _, _, _ -> false },
     /** A drum pad played on the page (it goes into the drum cell recording). */
     val drumHit: (lane: Int) -> Unit = {},
+    /** Step 4f: the track shown in Notes, so a MIDI keyboard plays (and records into) the same one. */
+    val selectTrack: (Int) -> Unit = {},
     /** « Cases − 8 + »: how many bricks the grid shows (LiveCells.ROWS). */
     val setRows: (Int) -> Unit = {},
     /** Lot 4d: « − 113 + » in the bar, a BPM less or more (held: it repeats). */

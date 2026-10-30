@@ -166,6 +166,8 @@ class ControllerTest {
         assertEquals(ControllerAction.LaunchCell(SongPart.ACID, 2), k.pad(2))
         k.screen = KnobScreen.LivePads
         assertEquals(ControllerAction.LivePad(9), k.pad(9))
+        // Step 4f: the pad's strength goes with it (a soft hit, a soft live pad).
+        assertEquals(ControllerAction.LivePad(3, 0.4f), k.pad(3, 0.4f))
         // Elsewhere the drums play them (from the MIDI thread): nothing for the app.
         k.screen = KnobScreen.Rythme
         assertNull(k.pad(0))

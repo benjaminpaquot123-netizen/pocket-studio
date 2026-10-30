@@ -37,7 +37,8 @@ public:
     void setParam(int slot, int param, float value);
     // Off -> waits for the grid; waiting or playing -> off. `idleClock`: nothing else keeps
     // time (transport stopped), so the first pad to start restarts the clock and plays at once.
-    void toggle(int slot, bool idleClock);
+    // `velocity` (0, 1]: how loud the loop or hit it starts plays (a controller's pad); <= 0: full.
+    void toggle(int slot, bool idleClock, float velocity = 1.0f);
     void stopAll();
     // Time signature n/4: launches wait for at most a bar; long loops stay in phase over 16 bars.
     void setBeatsPerBar(int beats) { beatsPerBar_ = std::clamp(beats, 2, 7); }
@@ -66,12 +67,14 @@ private:
         int64_t pos = 0;
         int fade = 0;  // > 0: fading out over the remaining frames
         int rise = 0;  // > 0: fading in over the remaining frames (a refit picked up mid-loop)
+        float level = 1.0f;  // the velocity of the tap that started it
     };
     struct Slot {
         Sample* sample = nullptr;
         int beats = 4;
         bool oneShot = false;
         float gain = 1.0f;
+        float velocity = 1.0f;  // of the tap that started it: each pass plays at it
         State state = Off;
         double startBeat = 0.0;  // waiting: when it starts; playing: when the current pass began
         Voice voice, tail;

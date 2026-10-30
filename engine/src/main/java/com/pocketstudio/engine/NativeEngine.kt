@@ -913,7 +913,8 @@ object NativeEngine {
         post(CMD_CLIP_PARAM, gain, pad, 2)
     }
     /** On at the next grid line, or off; [pad] < 0: every pad off. */
-    fun toggleClip(pad: Int) = post(CMD_TOGGLE_CLIP, 0f, pad)
+    /** [velocity] (0..1]: how loud the loop or hit it starts plays (a controller's pad); stopping ignores it. */
+    fun toggleClip(pad: Int, velocity: Float = 1f) = post(CMD_TOGGLE_CLIP, velocity, pad)
     /** Per pad: 0 off, 1 waiting for the grid, 2 playing ([LIVE_PADS] values). */
     external fun clipStates(out: IntArray)
 

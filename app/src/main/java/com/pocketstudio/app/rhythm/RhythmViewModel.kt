@@ -39,6 +39,7 @@ import com.pocketstudio.model.LiveState
 import com.pocketstudio.model.LiveDivision
 import com.pocketstudio.app.live.LiveFxUi
 import com.pocketstudio.model.liveColumnsMask
+import com.pocketstudio.model.liveRowsShown
 import com.pocketstudio.model.writeJournal
 import com.pocketstudio.model.keepingVersion
 import com.pocketstudio.model.takeUndoTarget
@@ -3666,8 +3667,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** « Cases − 8 + »: bricks the Live grid shows at once (kept with the project, no undo step). */
     fun setLiveRows(rows: Int) {
-        if (rows !in com.pocketstudio.model.LiveCells.ROWS || rows == project.value.liveRows) return
-        session.editQuietly { it.copy(liveRows = rows) }
+        if (rows !in com.pocketstudio.model.LiveCells.ROWS || rows == project.value.liveRowsShown) return
+        // Step 4f: a step of its own (quiet, an « Annuler » of an earlier edit took it back too).
+        session.edit("live-rows") { it.copy(liveRows = rows) }
     }
 
     /**
@@ -5921,13 +5923,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             return made
         }
 
-        override suspend fun putOnLivePad(pcm: Pcm, name: String, pad: Int) {
+        override suspend fun putOnLivePad(pcm: Pcm, name: String, pad: Int, bpm: Double) {
             val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, name) }
             padSamples.register(prepared)
             // One undo step: the grid grown to show the pad, and its sound.
             session.edit { p ->
                 val size = if (p.live.size <= pad) LivePads.SIZES.first { it > pad } else p.live.size
-                val clip = LiveClip(sample.file, sample.name, LivePads.beatsFor(prepared.info.seconds, p.tempoBpm))
+                val seconds = prepared.info.seconds
+                // Step 4f: a loop of the song (cut at [bpm]) follows the project's tempo, as a library loop.
+                val follows = bpm > 0.0 && seconds >= com.pocketstudio.model.AutoTempo.MIN_LOOP_SECONDS && com.pocketstudio.model.AutoTempo.canFit(bpm, p.tempoBpm)
+                val clip = if (follows) LiveClip(sample.file, sample.name, LivePads.beatsFor(seconds, bpm), bpm = bpm)
+                else LiveClip(sample.file, sample.name, LivePads.beatsFor(seconds, p.tempoBpm))
                 p.copy(live = p.live.copy(size = size).with(pad, clip))
             }
             pushLive()

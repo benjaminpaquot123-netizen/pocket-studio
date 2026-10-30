@@ -74,7 +74,7 @@ class StemBoardRouterTest {
             audio += listOf(pcm, name, atStep, bpm)
             return 0
         }
-        override suspend fun putOnLivePad(pcm: Pcm, name: String, pad: Int) {
+        override suspend fun putOnLivePad(pcm: Pcm, name: String, pad: Int, bpm: Double) {
             live += Triple(pcm, name, pad)
         }
         override fun songStepNow() = step

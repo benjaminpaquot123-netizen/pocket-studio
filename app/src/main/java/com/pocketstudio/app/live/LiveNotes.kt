@@ -58,12 +58,14 @@ internal fun LiveNotes(ui: LiveScreenUi, actions: LiveActions, modifier: Modifie
             Text(tr("Pas de piste à jouer : ajoute une piste dans Synthé."), style = MaterialTheme.typography.bodyMedium)
             return@Column
         }
-        var chosen by rememberSaveable { mutableIntStateOf(tracks.first().id) }
+        var chosen by rememberSaveable { mutableIntStateOf(ui.selectedTrack?.takeIf { s -> tracks.any { it.id == s } } ?: tracks.first().id) }
         // Lot 4b: a cell recording plays its own track (the drums: their pads, below).
         val rec = ui.cellRecording
         val recId = rec?.key?.takeIf { it.startsWith("inst:") }?.removePrefix("inst:")?.toIntOrNull()
         androidx.compose.runtime.LaunchedEffect(recId) { if (recId != null) chosen = recId }
         val id = tracks.firstOrNull { it.id == chosen }?.id ?: tracks.first().id
+        // Step 4f: a MIDI keyboard plays the track shown here (its notes go where these keys' go).
+        androidx.compose.runtime.LaunchedEffect(id) { actions.selectTrack(id) }
         var octave by rememberSaveable { mutableIntStateOf(4) }
         var inKey by rememberSaveable { mutableStateOf(true) }
         val chip = pillColors()

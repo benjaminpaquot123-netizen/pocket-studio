@@ -52,7 +52,7 @@ object PadBounce {
             val clip = clips.getOrNull(s.pad) ?: continue
             val src = sounds[s.pad] ?: continue
             if (s.oneShot) {
-                put(src, clip.gain, Math.round((s.from - start) * perStep), src.frames, cut = false)
+                put(src, clip.gain * s.velocity, Math.round((s.from - start) * perStep), src.frames, cut = false)
                 continue
             }
             // At least a beat: a clip of 0 beats (a damaged file) would never move on.
@@ -60,7 +60,7 @@ object PadBounce {
             var a = s.from
             while (a < s.until) {
                 val b = minOf(a + pass, s.until)
-                put(src, clip.gain, Math.round((a - start) * perStep), Math.round((b - a) * perStep).toInt(), cut = true)
+                put(src, clip.gain * s.velocity, Math.round((a - start) * perStep), Math.round((b - a) * perStep).toInt(), cut = true)
                 a += pass
             }
         }

@@ -16,9 +16,11 @@
    - **Mixeur** : potards = gauche/droite puis envois réverbe des 4 premières pistes ;
    - **Live, panneau Effets** : pads 1 à 8 = lancer les lignes A à H (au prochain temps de lancement, comme sur la grille) ; banque B = couper / rallumer les colonnes ; potards 1 et 2 = le filtre DJ (le pad XY), puis Montée, Réverbe, Écho et la 303 ; gros bouton = tempo ;
    - **Live, panneau 303** : pads = lancer la ligne 303 de A à H ; potards = les 6 gros curseurs de la 303 (ils bougent à l'écran) + réverbe et écho ;
-   - **Live, panneau Pads** (ou pads plein écran) : pads = les pads live 1 à 16 ;
+   - **Live, panneau Pads** (ou pads plein écran) : pads = les pads live 1 à 16, à la force de frappe (doux = moins fort, et la prise le garde) ;
+   - **Live, une case qui enregistre** (« Jouer et enregistrer ici ») : les touches jouent la piste de la case et vont dedans ; pour une case de batterie, les pads jouent la batterie dans la case ;
+   - **Live, panneau Notes** : les touches jouent la piste montrée dans Notes ;
    - **ailleurs** : potards = la voie de la piste choisie (volume, gauche/droite, couleur, saleté, mouvement, espace, envois).
-6. Pendant une prise du Live (●), tout ce que tu tournes sur la 303 et les effets est enregistré, comme à l'écran.
+6. Pendant une prise du Live (●), tout ce que tu tournes sur la 303 et les effets est enregistré, comme à l'écran ; les notes jouées au clavier et les pads live aussi.
 7. Pour changer quelque chose : **Plus › Clavier MIDI › Contrôleur MIDI**. On y voit l'appareil, son profil, ce que fait chaque commande écran par écran, ce qui arrive en direct (« Ce qui arrive »), et des boutons « Apprendre » (pads, faders, gros bouton, clic, lecture, arrêt, enregistrer). « Voir et changer les potards » pour les potards. « Oublier mes réglages pour cet appareil » remet tout comme au départ.
 
 Un autre clavier (Akai MPK mini, Novation Launchkey Mini, Korg nanoKONTROL2, Alesis, M-Audio, Nektar…) marche aussi : les touches jouent tout de suite, les pads sur le canal 10 aussi ; ses potards se rangent dans l'ordre où tu les tournes la première fois (ou « Apprendre »). Si ses pads n'envoient pas sur le canal 10 : « Apprendre mes pads », puis tape-les l'un après l'autre et « Terminé ». Tout ce que tu apprends est gardé pour cet appareil (son profil à toi).

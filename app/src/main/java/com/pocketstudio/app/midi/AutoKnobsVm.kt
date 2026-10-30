@@ -45,7 +45,7 @@ sealed interface ControllerAction {
     /** M of the Live grid's column [column] (0: the first). */
     data class Mute(val column: Int) : ControllerAction
     /** A live pad (sample pads of the Live page). */
-    data class LivePad(val pad: Int) : ControllerAction
+    data class LivePad(val pad: Int, val velocity: Float = 1f) : ControllerAction
 }
 
 /** What the knobs read and move: the open project, the selected track, the Live page's knobs. */
@@ -240,10 +240,10 @@ class AutoKnobs(private val host: KnobHost, settings: KnobSettings = KnobSetting
      * with the 303 panel, the first eight launch the 303's line of each row; with the live pads,
      * each pad its live pad. Returns the action done, if any.
      */
-    fun pad(index: Int): ControllerAction? {
+    fun pad(index: Int, velocity: Float = 1f): ControllerAction? {
         flash = null
         val action = when (screen) {
-            KnobScreen.LivePads -> ControllerAction.LivePad(index)
+            KnobScreen.LivePads -> ControllerAction.LivePad(index, velocity)
             KnobScreen.LiveAcide -> if (index < 8) ControllerAction.LaunchCell(SongPart.ACID, index) else ControllerAction.Mute(index - 8)
             KnobScreen.Live -> if (index < 8) ControllerAction.LaunchRow(index) else ControllerAction.Mute(index - 8)
             else -> null
@@ -356,7 +356,7 @@ fun rhythmKnobHost(vm: RhythmViewModel): KnobHost = object : KnobHost {
             }
             is ControllerAction.LivePad -> {
                 if (p.live.clips.getOrNull(a.pad) == null) return null
-                vm.toggleLive(a.pad)
+                vm.toggleLive(a.pad, a.velocity)
                 tr("Pad live %d", a.pad + 1)
             }
         }
@@ -434,9 +434,9 @@ class KnobsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** A pad on the Live page (the MIDI thread left it to the app): its launch, mute or live pad. */
-    fun pad(index: Int): ControllerAction? {
+    fun pad(index: Int, velocity: Float = 1f): ControllerAction? {
         val k = knobs ?: return null
-        val a = k.pad(index)
+        val a = k.pad(index, velocity)
         k.flash?.let(::flash)
         return a
     }

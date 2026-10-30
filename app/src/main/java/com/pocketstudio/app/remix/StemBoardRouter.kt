@@ -69,8 +69,8 @@ interface StemBoardHost {
     /** [pcm] on a new audio track named [name], from song step [atStep] ([bpm]: its tempo); its id, null when there are eight. */
     suspend fun putOnNewAudioTrack(pcm: Pcm, name: String, atStep: Int, bpm: Double): Int?
 
-    /** [pcm] on live pad [pad], named [name]. */
-    suspend fun putOnLivePad(pcm: Pcm, name: String, pad: Int)
+    /** [pcm] on live pad [pad], named [name]; [bpm]: its tempo (a loop then follows the project's, 0: unknown). */
+    suspend fun putOnLivePad(pcm: Pcm, name: String, pad: Int, bpm: Double = 0.0)
 
     /**
      * [pcm] kept in « Ma bibliothèque » named [name], filed under [kind], at [bpm] with song
@@ -235,8 +235,9 @@ class StemBoardRouter(
                     ?: return say(tr("Les 16 pads live sont pris : vides-en un dans Live › Pads."))
                 val name = StemRouting.nextName(p.live.clips.mapNotNull { it?.name }, french)
                 launchWork(tr("%1\$s vers le pad live %2\$d…", label, pad + 1)) {
-                    val pcm = cut(sel, fitted = true) ?: return@launchWork null
-                    host.putOnLivePad(pcm, name, pad)
+                    var bpm = 0.0
+                    val pcm = cut(sel, fitted = true) { bpm = it } ?: return@launchWork null
+                    host.putOnLivePad(pcm, name, pad, bpm)
                     tr("« %1\$s » est sur le pad live %2\$d.", DefaultNames.shownSample(name), pad + 1)
                 }
             }

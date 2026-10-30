@@ -254,14 +254,25 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         runCatching { device?.close() }
         port = null
         device = null
-        synchronized(held) {
+        releaseHeld()
+        padLearning = false
+        _state.update { it.copy(connected = null, clockBpm = null, controller = null, learningPads = null) }
+    }
+
+    /**
+     * Every key still down let go (unplugged, « all notes off »): silent in the engine, and ended for
+     * the app too (step 4f: a cell recording or a Live take never keeps a note ringing to its end).
+     */
+    private fun releaseHeld() {
+        val ended = synchronized(held) {
             if (NativeEngine.isAvailable) held.forEach { NativeEngine.liveNoteOff(it, trackOf[it]) }
+            val notes = held.toList()
             held.clear()
             playedAs.fill(-1)
             keysOn.fill(0)
+            notes
         }
-        padLearning = false
-        _state.update { it.copy(connected = null, clockBpm = null, controller = null, learningPads = null) }
+        ended.forEach { _commands.tryEmit(MidiCommand.Note(0, it, 0f, false)) }
     }
 
     /** « MiniLab 3 connecté — prêt à jouer »: a short toast once a controller is ready. */
@@ -494,14 +505,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
             _commands.tryEmit(MidiCommand.Control(channel, controller, value))
-            if (controller == CC_ALL_NOTES_OFF || controller == CC_ALL_SOUND_OFF) {
-                synchronized(held) {
-                    if (NativeEngine.isAvailable) held.forEach { NativeEngine.liveNoteOff(it, trackOf[it]) }
-                    held.clear()
-                    playedAs.fill(-1)
-                    keysOn.fill(0)
-                }
-            }
+            if (controller == CC_ALL_NOTES_OFF || controller == CC_ALL_SOUND_OFF) releaseHeld()
         }
 
         override fun clock() {

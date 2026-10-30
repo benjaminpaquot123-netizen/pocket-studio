@@ -39,6 +39,7 @@ import com.pocketstudio.model.LiveState
 import com.pocketstudio.model.LiveDivision
 import com.pocketstudio.app.live.LiveFxUi
 import com.pocketstudio.model.liveColumnsMask
+import com.pocketstudio.model.liveRowsShown
 import com.pocketstudio.model.writeJournal
 import com.pocketstudio.model.keepingVersion
 import com.pocketstudio.model.takeUndoTarget
@@ -793,12 +794,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         return if (confidence >= MIN_TEMPO_CONFIDENCE) com.pocketstudio.model.AutoTempo.tempoOf(seconds, detected = bpm) else 0.0
     }
 
-    fun toggleLive(pad: Int) {
+    /** A live pad tapped; [velocity]: its strength (a controller's pad), the loop or hit it starts plays that loud. */
+    fun toggleLive(pad: Int, velocity: Float = 1f) {
         if (project.value.live.clips.getOrNull(pad) == null) return
         // Started with the transport stopped (their clock runs on its own): the music plays all the same.
         val starts = !_transport.value.playing && pad !in padsSoundingNow()
-        if (NativeEngine.isAvailable) NativeEngine.toggleClip(pad)
-        livePadTapped(pad)
+        val v = velocity.takeIf { it.isFinite() && it > 0f }?.coerceAtMost(1f) ?: 1f
+        if (NativeEngine.isAvailable) NativeEngine.toggleClip(pad, v)
+        livePadTapped(pad, v)
         if (starts) watchPadsAlone()
     }
 
@@ -3664,8 +3667,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** « Cases − 8 + »: bricks the Live grid shows at once (kept with the project, no undo step). */
     fun setLiveRows(rows: Int) {
-        if (rows !in com.pocketstudio.model.LiveCells.ROWS || rows == project.value.liveRows) return
-        session.editQuietly { it.copy(liveRows = rows) }
+        if (rows !in com.pocketstudio.model.LiveCells.ROWS || rows == project.value.liveRowsShown) return
+        // Step 4f: a step of its own (quiet, an « Annuler » of an earlier edit took it back too).
+        session.edit("live-rows") { it.copy(liveRows = rows) }
     }
 
     /**
@@ -4617,17 +4621,32 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (project.value.instrumentTracks.none { it.id == id }) return
         if (NativeEngine.isAvailable) NativeEngine.synthNoteOn(pitch, velocity, id)
         playedNoteOn(id, pitch, velocity)
-        if (_cellRecording.value?.key == com.pocketstudio.model.SongPart.inst(id)) cellHeld[liveKey(id, pitch)] = LiveHeld(playedClock(), velocity)
-        if (performance != null && _take.value is com.pocketstudio.app.live.TakeUi.Recording) liveKeysHeld[liveKey(id, pitch)] = LiveHeld(takePosition(), velocity)
+        liveNoteTaken(id, pitch, velocity)
     }
 
     fun liveNoteOff(id: Int, pitch: Int) {
         if (NativeEngine.isAvailable) NativeEngine.synthNoteOff(pitch, id)
         playedNoteOff(id, pitch)
+        liveNoteReleased(id, pitch)
+    }
+
+    /**
+     * A key down (on the Live page's keys or a MIDI keyboard, already sounding) into what records
+     * it: the cell recording of its track, the performance take.
+     */
+    private fun liveNoteTaken(id: Int, pitch: Int, velocity: Float) {
+        if (_cellRecording.value?.key == com.pocketstudio.model.SongPart.inst(id)) cellHeld[liveKey(id, pitch)] = LiveHeld(playedClock(), velocity)
+        if (performance != null && _take.value is com.pocketstudio.app.live.TakeUi.Recording) liveKeysHeld[liveKey(id, pitch)] = LiveHeld(takePosition(), velocity)
+    }
+
+    private fun liveNoteReleased(id: Int, pitch: Int) {
         cellHeld.remove(liveKey(id, pitch))?.let { h -> cellNoteEnded(id, pitch, h, playedClock()) }
         val held = liveKeysHeld.remove(liveKey(id, pitch)) ?: return
         writeLiveNote(id, pitch, held.at, takePosition(), held.velocity)
     }
+
+    /** MIDI keys down, each with the track it started on (its release goes there, as the engine's). */
+    private val midiKeyTrack = HashMap<Int, Int>()
 
     // --- Lot 4b: an empty cell of the Live grid filled from the Live page (Benjamin's n° 9) ---
 
@@ -4653,6 +4672,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // A new brick (a row past the last one) has nothing to play yet: the current brick gives the beat.
         if (!_transport.value.playing) launchRow(if (scene in p.allScenes.indices) scene else p.scene)
         cellNotes.clear(); cellHits.clear(); cellHeld.clear()
+        // A MIDI keyboard plays the selected track: the cell's, so its keys go into the cell too.
+        key.removePrefix("inst:").toIntOrNull()?.takeIf { key.startsWith("inst:") }?.let(::selectTrack)
         cellArmedAt = playedClock()
         _cellRecording.value = com.pocketstudio.app.live.CellRecording(key, scene)
         AppLog.add("Live : case $key ${Scene.NAMES.getOrElse(scene) { "?" }} en enregistrement")
@@ -4664,6 +4685,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, velocity)
         playedPad(lane, velocity)
         if (_cellRecording.value?.key == com.pocketstudio.model.SongPart.DRUMS) cellHits += com.pocketstudio.model.PlayedMemory.KeptHit(lane, velocity, playedClock())
+    }
+
+    /**
+     * A pad of a MIDI controller on the Live page: while a drum cell records, it plays that drum pad
+     * into the cell (true); otherwise false and it keeps its Live role (a launch, a mute, a live pad).
+     */
+    fun midiCellPad(lane: Int, velocity: Float): Boolean {
+        if (_cellRecording.value?.key != com.pocketstudio.model.SongPart.DRUMS || lane !in 0 until DrumPattern.PAD_COUNT) return false
+        liveDrumHit(lane, velocity)
+        return true
     }
 
     private fun cellNoteEnded(id: Int, pitch: Int, held: LiveHeld, at: Double) {
@@ -4807,9 +4838,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Tests: the pads sounding as the engine says (null: [liveStates]). */
     internal var livePadsSoundingForTest: Set<Int>? = null
 
-    private fun livePadTapped(pad: Int) {
+    private fun livePadTapped(pad: Int, velocity: Float = 1f) {
         if (performance == null || !_take.value.running) return
-        performancePadTaps += com.pocketstudio.model.LivePadTake.Tap(pad, takePosition())
+        performancePadTaps += com.pocketstudio.model.LivePadTake.Tap(pad, takePosition(), velocity)
     }
 
     /**
@@ -5892,13 +5923,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             return made
         }
 
-        override suspend fun putOnLivePad(pcm: Pcm, name: String, pad: Int) {
+        override suspend fun putOnLivePad(pcm: Pcm, name: String, pad: Int, bpm: Double) {
             val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, name) }
             padSamples.register(prepared)
             // One undo step: the grid grown to show the pad, and its sound.
             session.edit { p ->
                 val size = if (p.live.size <= pad) LivePads.SIZES.first { it > pad } else p.live.size
-                val clip = LiveClip(sample.file, sample.name, LivePads.beatsFor(prepared.info.seconds, p.tempoBpm))
+                val seconds = prepared.info.seconds
+                // Step 4f: a loop of the song (cut at [bpm]) follows the project's tempo, as a library loop.
+                val follows = bpm > 0.0 && seconds >= com.pocketstudio.model.AutoTempo.MIN_LOOP_SECONDS && com.pocketstudio.model.AutoTempo.canFit(bpm, p.tempoBpm)
+                val clip = if (follows) LiveClip(sample.file, sample.name, LivePads.beatsFor(seconds, bpm), bpm = bpm)
+                else LiveClip(sample.file, sample.name, LivePads.beatsFor(seconds, p.tempoBpm))
                 p.copy(live = p.live.copy(size = size).with(pad, clip))
             }
             pushLive()
@@ -7935,13 +7970,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             if (on && pitch in 36 until 36 + DrumPattern.PAD_COUNT) {
                 playedPad(pitch - 36, velocity)
                 recordPad(pitch - 36, velocity)
+                if (_cellRecording.value?.key == com.pocketstudio.model.SongPart.DRUMS) {
+                    cellHits += com.pocketstudio.model.PlayedMemory.KeptHit(pitch - 36, velocity, playedClock())
+                }
             }
         } else if (on) {
             playedNoteOn(track, pitch, velocity)
             recordNoteOn(pitch, velocity)
+            // Step 4f: on the Live page, a cell recording and a take keep the keyboard's notes too.
+            midiKeyTrack.remove(pitch)?.let { liveNoteReleased(it, pitch) }
+            midiKeyTrack[pitch] = track
+            liveNoteTaken(track, pitch, velocity)
         } else {
             playedNoteOff(track, pitch)
             recordNoteOff(pitch)
+            liveNoteReleased(midiKeyTrack.remove(pitch) ?: track, pitch)
         }
     }
 

@@ -46,11 +46,23 @@ import com.pocketstudio.ui.pillColors
 internal fun LiveNotes(ui: LiveScreenUi, actions: LiveActions, modifier: Modifier = Modifier) {
     val tracks = ui.project.instrumentTracks
     Column(modifier.testTag("live_notes"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        if (ui.cellRecording?.key == com.pocketstudio.model.SongPart.DRUMS) {
+            Text(
+                tr("Joue aux pads : ils vont dans la case. Retouche-la pour arrêter."),
+                style = MaterialTheme.typography.bodySmall, color = Neon.Red, modifier = Modifier.padding(horizontal = 2.dp),
+            )
+            LiveDrumPads(List(8) { com.pocketstudio.app.rhythm.padName(ui.project, it) }, actions.drumHit)
+            return@Column
+        }
         if (tracks.isEmpty()) {
             Text(tr("Pas de piste à jouer : ajoute une piste dans Synthé."), style = MaterialTheme.typography.bodyMedium)
             return@Column
         }
         var chosen by rememberSaveable { mutableIntStateOf(tracks.first().id) }
+        // Lot 4b: a cell recording plays its own track (the drums: their pads, below).
+        val rec = ui.cellRecording
+        val recId = rec?.key?.takeIf { it.startsWith("inst:") }?.removePrefix("inst:")?.toIntOrNull()
+        androidx.compose.runtime.LaunchedEffect(recId) { if (recId != null) chosen = recId }
         val id = tracks.firstOrNull { it.id == chosen }?.id ?: tracks.first().id
         var octave by rememberSaveable { mutableIntStateOf(4) }
         var inKey by rememberSaveable { mutableStateOf(true) }
@@ -73,9 +85,10 @@ internal fun LiveNotes(ui: LiveScreenUi, actions: LiveActions, modifier: Modifie
             IconButton(onClick = { octave = (octave + 1).coerceAtMost(7) }, enabled = octave < 7) { Icon(Icons.Filled.Add, contentDescription = tr("Octave plus aiguë")) }
         }
         Text(
-            if (ui.take is TakeUi.Recording) tr("Tes notes s'ajoutent à la boucle de la partie que joue la piste, comme un looper, chacune sur sa double croche.")
+            if (rec != null) tr("Tes notes vont dans la case. Retouche-la pour arrêter : la boucle se cale sur la mesure.")
+            else if (ui.take is TakeUi.Recording) tr("Tes notes s'ajoutent à la boucle de la partie que joue la piste, comme un looper, chacune sur sa double croche.")
             else tr("Joue en direct. Avec ●, tes notes vont dans la prise."),
-            style = MaterialTheme.typography.bodySmall, color = if (ui.take is TakeUi.Recording) Neon.Red else Neon.TextSecondary,
+            style = MaterialTheme.typography.bodySmall, color = if (rec != null || ui.take is TakeUi.Recording) Neon.Red else Neon.TextSecondary,
             modifier = Modifier.padding(horizontal = 2.dp),
         )
         // A glissando from the screen's edge plays, it does not go back.

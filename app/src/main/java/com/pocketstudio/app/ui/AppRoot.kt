@@ -485,6 +485,8 @@ fun AppRoot() {
     var libraryLive by rememberSaveable { mutableIntStateOf(-1) }
     // Lot 4a: a live pad's « Ma bibliothèque » opens the browser on the user's own sounds.
     var libraryMine by rememberSaveable { mutableStateOf(false) }
+    // Lot 4b: ... or for an empty cell of the Live grid (« key|scene »).
+    var libraryCell by rememberSaveable { mutableStateOf<String?>(null) }
     // ... or for the selected instrument track's sampled sound.
     var libraryTrack by rememberSaveable { mutableStateOf(false) }
     if (showLibrary) {
@@ -506,8 +508,9 @@ fun AppRoot() {
             }
         }
         // A sound still loading when the library closed lands nowhere (libraryVm.closed()).
-        val close = { libraryVm.closed(); showLibrary = false; libraryLive = -1; libraryTrack = false; libraryMine = false }
+        val close = { libraryVm.closed(); showLibrary = false; libraryLive = -1; libraryTrack = false; libraryMine = false; libraryCell = null }
         val live = libraryLive
+        val cell = com.pocketstudio.app.live.LiveCell.read(libraryCell)
         val forTrack = libraryTrack
         val libProject by rhythmVm.project.collectAsStateWithLifecycle()
         val libTrack by rhythmVm.selectedTrack.collectAsStateWithLifecycle()
@@ -521,11 +524,12 @@ fun AppRoot() {
                         packsUi, previewing,
                         target = when {
                             forTrack -> tr("la piste « %s »", com.pocketstudio.model.DefaultNames.shown(libProject.track(libTrack).name))
+                            cell != null -> tr("la brique %s", com.pocketstudio.model.Scene.NAMES.getOrElse(cell.scene) { "?" })
                             live >= 0 -> tr("le pad live %d", live + 1)
                             // The sound on the pad now (« Kick de ma voix »), as the pad and the grid name it.
                             else -> tr("le pad %1\$d (%2\$s)", lane + 1, com.pocketstudio.app.rhythm.padName(libProject, lane))
                         },
-                        startKind = if (forTrack) "808" else if (live >= 0) "stab" else padKind(lane),
+                        startKind = if (forTrack) "808" else if (live >= 0 || cell != null) "stab" else padKind(lane),
                         sizes = sizes,
                         songPlaying = libTransport.playing,
                         styleId = com.pocketstudio.app.library.styleOfProject(libProject.name),
@@ -548,6 +552,7 @@ fun AppRoot() {
                                 val mine = (option.ref as? com.pocketstudio.app.library.SoundRef.Mine)?.let { r -> mySounds.firstOrNull { it.id == r.id } }
                                 val name = if (mine != null) mine.name else option.name.substringBefore(" · ")
                                 val placed = when {
+                                    cell != null -> rhythmVm.placeInCell(cell.key, cell.scene, pcm, name)
                                     forTrack -> rhythmVm.useAsTrackSound(pcm, name, mine?.kind ?: (option.ref as? com.pocketstudio.app.library.SoundRef.Pack)?.sound?.kind)
                                     live >= 0 -> rhythmVm.placeOnLivePad(live, pcm, name)
                                     else -> rhythmVm.placeOnPad(pcm, name, oneShot = mine == null)
@@ -2248,6 +2253,7 @@ fun AppRoot() {
             Box(Modifier.weight(1f).fillMaxHeight()) {
                 LiveRoute(
                     rhythmVm, lifecycleOwner, close = closeLive, onTab = { liveTab = it.name },
+                    cellLibrary = { key, scene -> rhythmVm.dismissSampleError(); libraryCell = com.pocketstudio.app.live.LiveCell(key, scene).save(); libraryMine = true; showLibrary = true },
                     under = {
                         // Lot 2: the « ? » on the Live page too (its bar replaces the one that carries it elsewhere).
                         PositionStrip(
@@ -3583,6 +3589,8 @@ fun liveActionsOf(
     back: () -> Unit = {},
     openEffects: (Int) -> Unit = {},
     togglePlay: () -> Unit = vm::togglePlay,
+    /** Lot 4b: the sound browser for an empty cell (track key, brick). */
+    cellLibrary: (String, Int) -> Unit = { _, _ -> },
 ): com.pocketstudio.app.live.LiveActions = com.pocketstudio.app.live.LiveActions(
     back = back,
     togglePlay = togglePlay,
@@ -3623,6 +3631,12 @@ fun liveActionsOf(
     setLock = vm::setLiveLock,
     setFxSettings = vm::setLiveFxSettings,
     setInsertParam = vm::setInsertParam,
+    // Lot 4b: an empty cell filled from the Live page.
+    recordCell = vm::recordCell,
+    stopCellRecording = vm::stopCellRecording,
+    cellFromLibrary = cellLibrary,
+    copyCell = vm::copyCell,
+    drumHit = { vm.liveDrumHit(it) },
 )
 
 /** The Live page with its state from the ViewModel; every gesture goes back to it. */
@@ -3638,11 +3652,13 @@ internal fun LiveRoute(
     under: (@Composable () -> Unit)? = null,
     onImmersive: (Boolean) -> Unit = {},
     onTab: (com.pocketstudio.app.live.LivePanelTab) -> Unit = {},
+    /** Lot 4b: the sound browser for an empty cell (track key, brick). */
+    cellLibrary: (String, Int) -> Unit = { _, _ -> },
 ) = LiveStateHost(vm, lifecycleOwner, liveEditing) { ui, pads ->
     com.pocketstudio.app.live.LiveScreen(
         ui,
         liveActionsOf(
-            vm, back = close, openEffects = openEffects,
+            vm, back = close, openEffects = openEffects, cellLibrary = cellLibrary,
             togglePlay = {
                 // ▶ here plays what the grid shows: the scene, not the song.
                 if (ui.playing) vm.togglePlay() else vm.launchRow(ui.project.scene)
@@ -3722,6 +3738,7 @@ private fun LiveStateHost(
     val take by vm.take.collectAsStateWithLifecycle()
     val takeAppend by vm.takeAppend.collectAsStateWithLifecycle()
     val chops by vm.liveChops.collectAsStateWithLifecycle()
+    val cellRecording by vm.cellRecording.collectAsStateWithLifecycle()
     // The effects (moved at finger speed by the DJ filter and the Montée): read only where shown.
     val liveFx = vm.liveFx.collectAsStateWithLifecycle()
     val liveFxOf = remember(liveFx) { { liveFx.value } }
@@ -3750,7 +3767,7 @@ private fun LiveStateHost(
             com.pocketstudio.app.live.LiveScreenUi(
                 project, grid, playing = transport.playing, muted = muted, acid = acid, returns = returns, take = take, takeAppend = takeAppend,
                 chops = chops, takeUndoable = vm.canUndoPerformance(), clockOf = clockOf,
-                spectrum = spectrumOf, beatHaptics = settings.liveBeatHaptics, fxOf = liveFxOf,
+                spectrum = spectrumOf, beatHaptics = settings.liveBeatHaptics, fxOf = liveFxOf, cellRecording = cellRecording,
             ),
             com.pocketstudio.app.session.LivePadsUi(
                 pads = project.live,

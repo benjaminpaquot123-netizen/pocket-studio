@@ -590,6 +590,25 @@ open class ScreenshotTest {
         }
     }
 
+    /** Step 4e: the tempo away from the song's, « Revenir au tempo de Boys (113) » under ½ and ×2. */
+    @Test
+    fun tempoSheetLead() = shoot("tempo_sheet_lead") {
+        Box(Modifier.background(Neon.Surface).padding(top = 12.dp)) {
+            com.pocketstudio.app.ui.TempoPad(124.0, com.pocketstudio.app.ui.TempoActions(lead = com.pocketstudio.model.TempoLead("Boys", 113.0)), {})
+        }
+    }
+
+    /** Step 4e: a loop just set the tempo: « Tempo calé sur Boys : 113 · Annuler » over the Live page. */
+    @Test
+    fun liveTempoBanner() = shoot("live_tempo_banner", fullScreen = true) {
+        androidx.compose.foundation.layout.Column {
+            com.pocketstudio.app.ui.TempoBanner(com.pocketstudio.app.rhythm.RhythmViewModel.TempoSet("Boys", 113.0, 120.0), undo = {}, dismiss = {})
+            Box(Modifier.weight(1f)) {
+                com.pocketstudio.app.live.LiveScreen(liveUi(), com.pocketstudio.app.live.LiveActions())
+            }
+        }
+    }
+
     @Test
     fun helpPage() = shoot("help_page") {
         com.pocketstudio.app.settings.HelpPage(com.pocketstudio.app.settings.HelpActions())

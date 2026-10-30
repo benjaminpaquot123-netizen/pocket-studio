@@ -56,6 +56,11 @@ sealed interface SoundRef {
     data class MoodDemo(val mood: StarterWizard.Mood) : SoundRef
     /** The beat chosen so far, up to [role] played with [sound]: the line heard in its groove. */
     data class LineDemo(val role: Role, val sound: SoundOption) : SoundRef
+    /**
+     * Line [role]'s [sound] alone, one hit through the style's effects of that line (its pad's, the
+     * drums', the master's), as the song plays it (Benjamin's list n° 7: the Acidcore kick saturated).
+     */
+    data class LineSound(val role: Role, val sound: SoundOption) : SoundRef
     /** A style with its advised sounds (drums, its parts, its 303), a few bars at its tempo: heard before choosing it. */
     data class StyleDemo(val styleId: String) : SoundRef
     /** The style's 303 line over the beat chosen so far, in the chosen mood. */
@@ -556,6 +561,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         is SoundRef.Melodic -> previewSource(ref).let { if (it is SoundRef.Instrument) load(it) else partInContext(ref) }
         is SoundRef.MoodDemo -> moodDemo(ref.mood)
         is SoundRef.LineDemo -> lineDemo(ref)
+        is SoundRef.LineSound -> lineSound(ref)
         is SoundRef.StyleDemo -> styleDemo(ref.styleId)
         SoundRef.AcidDemo -> acidDemo()
         is SoundRef.Demo -> demoPreview(ref.index)
@@ -710,7 +716,14 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val upTo = style.lines.indexOfFirst { it.role == ref.role }
         if (upTo < 0) return null
         val beat = style.lines.take(upTo).mapNotNull { line -> enabledSound(w, line) } + (style.lines[upTo] to ref.sound.ref)
-        return groove(style, beat, emptyList(), w.mood ?: style.melody.mood, bars = 2, acid = null, focusLane = style.lines[upTo].role.lane, loop = true)
+        return groove(style, beat, emptyList(), w.mood ?: style.melody.mood, bars = 2, acid = null, focusLane = style.lines[upTo].role.lane, loop = true, songFx = true)
+    }
+
+    /** One hit of the sound being tried, through the style's effects of its line (as in the song). */
+    private suspend fun lineSound(ref: SoundRef.LineSound): Pcm? {
+        val style = _wizard.value.style ?: return null
+        val line = style.lines.firstOrNull { it.role == ref.role } ?: return null
+        return groove(style, listOf(line to ref.sound.ref), emptyList(), _wizard.value.mood ?: style.melody.mood, bars = 1, acid = null, oneHit = true)
     }
 
     private fun enabledSound(w: WizardUi, line: StarterWizard.Line): Pair<StarterWizard.Line, SoundRef>? =
@@ -736,6 +749,10 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         focusLane: Int? = null,
         /** Made to go round: exactly [bars] bars, the ringing end laid over the start. */
         loop: Boolean = false,
+        /** The [beat] alone (one line), one hit on its first step rather than its pattern. */
+        oneHit: Boolean = false,
+        /** The drums' and the master's effects too, as in the song (always with the 303). */
+        songFx: Boolean = oneHit,
     ): Pcm? {
         if (!NativeEngine.isAvailable) return null
         // Audio first: the kit voice already on its pad needs nothing, the others are decoded or rendered.
@@ -774,7 +791,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                     if (natives[i] != null && beat[i].second is SoundRef.Kit && StarterWizard.shapesKit(line.role)) {
                         NativeEngine.setPadParams(lane, StarterWizard.kitShaped(line.role, PadSample("", "")).engineParams())
                     }
-                    StarterWizard.hits(line, steps).forEach { (step, hit) ->
+                    (if (oneHit) mapOf(0 to com.pocketstudio.model.Hit(1f)) else StarterWizard.hits(line, steps)).forEach { (step, hit) ->
                         NativeEngine.setDrumHit(lane, step, hit.velocity, hit.repeats, hit.ramp)
                         com.pocketstudio.app.rhythm.DrumHits.sendSpread(lane, step, hit)
                     }
@@ -823,8 +840,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 // The 303 heard with the beat sounds as in the song: through the style's effects on
                 // the acid line, the drums and the master (Acidcore's saturation and OTT).
-                if (acid != null) {
-                    for (ch in listOf(0, 1)) {
+                if (acid != null || songFx) {
+                    for (ch in if (acid != null) listOf(0, 1) else listOf(0)) {
                         val strip = fx.channels[ch]
                         com.pocketstudio.app.rhythm.RhythmViewModel.insertCommands(strip.inserts, { slot, type -> NativeEngine.setInsertType(ch, slot, type) }) { slot, k, v ->
                             NativeEngine.setInsertParam(ch, slot, k, v)
@@ -1010,7 +1027,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun choose(role: Role, option: SoundOption) {
         editRow(role) { it.copy(sound = option, enabled = true, chosen = true) }
-        val next = soundOnChoose(_playing.value ?: _preparing.value, role, option)
+        val next = soundOnChoose(_playing.value ?: _preparing.value, role, option, _wizard.value.style)
         if (_preparing.value != next && _playing.value != next) preview(next)
     }
 
@@ -1280,8 +1297,16 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
  * What to play when the sound [option] is picked for line [role]: the line with the beat again
  * when that is what is being heard ([current]), else the sound alone.
  */
-internal fun soundOnChoose(current: SoundRef?, role: Role, option: SoundOption): SoundRef =
-    if (current is SoundRef.LineDemo && current.role == role) SoundRef.LineDemo(role, option) else option.ref
+internal fun soundOnChoose(current: SoundRef?, role: Role, option: SoundOption, style: StarterWizard.Style? = null): SoundRef = when {
+    current is SoundRef.LineDemo && current.role == role -> SoundRef.LineDemo(role, option)
+    // Heard as the song will play it (the Acidcore kick through its distortion), not clean.
+    style != null && StarterWizard.lineHasEffects(style, role) -> SoundRef.LineSound(role, option)
+    else -> option.ref
+}
+
+/** The tile of [option] on line [role] is the one heard ([playing]): alone, or through its line's effects. */
+internal fun tileHeard(playing: SoundRef?, role: Role, option: SoundOption): Boolean =
+    playing == option.ref || playing == SoundRef.LineSound(role, option)
 
 /** Excerpts that go round until stopped: a drum line with the beat, the 303 with the beat. */
 /**

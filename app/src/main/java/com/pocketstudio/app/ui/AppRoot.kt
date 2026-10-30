@@ -315,9 +315,18 @@ fun AppRoot() {
     // Phase 36: the Mode simple (four tabs) or the five spaces; only how the project is shown.
     val navSettings by SettingsStore.state.collectAsStateWithLifecycle()
     val simple = navSettings.simpleMode
-    // The screen shown. A project with a song opens on it (Structure, Mon morceau), else on the drums.
-    var tab by rememberSaveable {
-        mutableStateOf(if (SettingsStore.state.value.simpleMode || rhythmVm.project.value.song.isNotEmpty()) AppTab.Morceau else AppTab.Rythme)
+    // The screen shown. A project with a song opens on it (Structure, Mon morceau), else on the drums
+    // (OpeningTab, both modes). The state outlives the rebuild another project brings: [tabFor] says
+    // whose screen it is, [tabAsked] that the way that opened the next project chose its screen.
+    var tab by rememberSaveable { mutableStateOf(OpeningTab.of(rhythmVm.project.value)) }
+    var tabFor by rememberSaveable(key = "tab_for") { mutableStateOf<String?>(rhythmVm.projectId) }
+    var tabAsked by rememberSaveable(key = "tab_asked") { mutableStateOf(false) }
+    remember(rhythmVm.projectId) {
+        if (tabFor != rhythmVm.projectId) {
+            tab = OpeningTab.afterRebuild(tab, tabFor, rhythmVm.projectId, tabAsked, rhythmVm.project.value)
+            tabFor = rhythmVm.projectId
+            tabAsked = false
+        }
     }
     // Where the navigation was left: the Sons space opens on its last editor, Structure on its last view.
     val navPrefs = remember { NavPrefs(context) }
@@ -454,6 +463,7 @@ fun AppRoot() {
                     else tr("Le projet n'a pas pu être sauvegardé (%s) : il reste ouvert, réessaie dans un instant.", failed.forUser())
                 Toast.makeText(context, text, Toast.LENGTH_LONG).show()
                 switching = false
+                tabAsked = false
                 return@launch
             }
             switching = true
@@ -670,6 +680,7 @@ fun AppRoot() {
                                     guideOpen = true
                                     libraryVm.closeWizard()
                                     tab = AppTab.Morceau  // the song is ready to hear: land on it (kept across the rebuild)
+                                    tabAsked = true
                                     openProject(id)
                                 }
                             }
@@ -693,6 +704,7 @@ fun AppRoot() {
             showProjects = false
             projectsNewOnly = false
             tab = AppTab.Rythme
+            tabAsked = true
             openProject(id)
         }
     }
@@ -754,7 +766,7 @@ fun AppRoot() {
                         stopDemo = libraryVm::stopDemoPreview,
                         back = closeProjects,
                         // The open project touched: on it, as « Continuer » does.
-                        resume = { showProjects = false; projectsNewOnly = false; launch.settled() },
+                        resume = { showProjects = false; projectsNewOnly = false; tab = OpeningTab.of(rhythmVm.project.value); launch.settled() },
                         open = { openProject(it.id) },
                         create = { i -> projectsVm.create(PROJECT_STARTERS[i].second()) { id -> openProject(id) } },
                         wizard = {
@@ -777,6 +789,7 @@ fun AppRoot() {
                                     guideOpen = true
                                     libraryVm.quickDone()
                                     tab = AppTab.Morceau  // the song is ready to hear: land on it (kept across the rebuild)
+                                    tabAsked = true
                                     openProject(newId)
                                 }
                             }
@@ -1305,7 +1318,8 @@ fun AppRoot() {
         hasProject = !noProject,
         actions = com.pocketstudio.app.onboarding.LaunchActions(
             // No project to continue: Retour leaves the app (« Mes projets » would only lead back here).
-            resume = { if (noProject) leaveApp() else launch.choose() },
+            // « Continuer » opens the project as a start does: its song, else its pads (OpeningTab).
+            resume = { if (noProject) leaveApp() else { tab = OpeningTab.of(rhythmVm.project.value); launch.choose() } },
             // The project, then this screen, then out of the app (owner, 2026-10-29).
             back = leaveApp,
             newSong = { launch.choose(comeBack = true); projectsNewOnly = true; showProjects = true },
@@ -1349,6 +1363,7 @@ fun AppRoot() {
                         } else {
                             com.pocketstudio.app.remix.RemixFromHome.put(p.id, set.id)
                             openRemix()  // kept across the rebuild the other project brings
+                            tabAsked = true
                             openProject(p.id)
                         }
                     },
@@ -1370,6 +1385,7 @@ fun AppRoot() {
                     }
                     START_REMIX_NEW -> projectsVm.create(Project(name = "Remix")) { id ->
                         openRemix()  // kept across the rebuild the new project brings
+                        tabAsked = true
                         openProject(id)
                     }
                     START_REMIX_WAY -> {
@@ -1382,6 +1398,7 @@ fun AppRoot() {
                                 remixHome = false
                                 launch.settled()
                                 openRemix()  // kept across the rebuild the new project brings
+                                tabAsked = true
                                 openProject(id)
                             }
                         }

@@ -10,6 +10,7 @@ import kotlin.math.ln
  * A live pad's sound. [file] lives in the project's `samples/` folder, like a drum pad's sound.
  * A loop restarts every [beats] beats while it is on; a [oneShot] plays once per tap.
  */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class LiveClip(
     val file: String,
@@ -17,13 +18,22 @@ data class LiveClip(
     val beats: Int = 4,
     val oneShot: Boolean = false,
     val gain: Float = 1f,
+    /**
+     * Step 4e: the tempo the loop was made at; a loop (not [oneShot]) with one follows the project's
+     * tempo, stretched ([AutoTempo.fittedFrames]). 0 (left out of the file): it keeps its speed.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val bpm: Double = 0.0,
 ) {
+    /** It is stretched to the project's tempo. */
+    val follows: Boolean get() = !oneShot && bpm > 0.0
+
     val isSafe: Boolean get() = PadSample(file, name).isSafe
 
     fun sanitized() = copy(
         name = name.take(40),
         beats = beats.coerceIn(1, LivePads.MAX_BEATS),
         gain = gain.takeIf { it.isFinite() }?.coerceIn(0f, 2f) ?: 1f,
+        bpm = bpm.takeIf { it.isFinite() && it in AutoTempo.MIN_BPM..AutoTempo.MAX_BPM } ?: 0.0,
     )
 }
 

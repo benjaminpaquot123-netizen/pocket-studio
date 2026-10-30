@@ -112,7 +112,16 @@ data class AudioClip(
      * Left out of the file when null.
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val nudgeMs: Float? = null,
+    /**
+     * Step 4e: a loop (from the library, on the Live grid) that follows the project's tempo live,
+     * stretched from [bpm] ([AutoTempo.fittedFrames]). False (left out of the file): it keeps its
+     * speed (a take: « Recaler sur le tempo »).
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val fit: Boolean = false,
 ) {
+    /** It is stretched to the project's tempo. */
+    val follows: Boolean get() = fit && !song && bpm > 0.0
+
     /** « Décaler la prise » as the user set it (see [nudgeMs]). */
     val manualOffsetMs: Float get() = nudgeMs ?: offsetMs
 

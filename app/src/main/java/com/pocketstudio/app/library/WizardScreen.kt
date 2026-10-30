@@ -77,6 +77,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pocketstudio.app.rhythm.DrumKitInfo
 import com.pocketstudio.model.PackEntry
+import com.pocketstudio.model.PackManifest
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.StarterWizard.Role
 import com.pocketstudio.ui.Neon
@@ -383,6 +384,9 @@ private fun LineStep(
     }
     val categories = soundCategories(role, style.id, packs.installed)
     val look = SoundLooks.of(role.id)
+    // Benjamin's list n° 7: the style's packs offered right where its sounds are chosen (the
+    // Acidcore kick's Gabber first), not only on the mood's step.
+    StylePacks(style, packs, actions, first = role, readyNote = false)
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
             // Folded or not for this line only (the same title in every step).
@@ -405,17 +409,18 @@ private fun LineStep(
         val listening = LocalListening.current
         TileGrid(options.size) { i, m ->
             val option = options[i]
+            val heard = tileHeard(listening.playing, role, option)
             SoundTile(
-                title = tr(option.name.substringBefore(" · ")), icon = if (listening.playing == option.ref) Icons.Filled.GraphicEq else look.icon,
+                title = tr(option.name.substringBefore(" · ")), icon = if (heard) Icons.Filled.GraphicEq else look.icon,
                 accent = look.color, selected = option == row.sound, onClick = { actions.choose(role, option) },
-                subtitle = if (listening.playing == option.ref) tr("En écoute…") else null,
+                subtitle = if (heard) tr("En écoute…") else null,
                 modifier = m.testTag("wizard_sound_$i"),
             )
         }
         Text(tr("Touche un son pour l'écouter et le choisir ; « Avec le rythme » le fait entendre avec les lignes déjà choisies."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
-    PackOffer(style, packs, actions)
+    PackOffer(style, packs, actions, offer = false)
 }
 
 /**
@@ -423,13 +428,12 @@ private fun LineStep(
  * one button gets them all, and the assistant then takes its sounds from them.
  */
 @Composable
-private fun StylePacks(style: StarterWizard.Style, packs: PacksUi, actions: WizardActions) {
+private fun StylePacks(style: StarterWizard.Style, packs: PacksUi, actions: WizardActions, first: StarterWizard.Role? = null, readyNote: Boolean = true) {
     val index = (packs.index as? IndexState.Ready)?.index ?: return
-    val missing = style.packs.mapNotNull { id -> index.packs.firstOrNull { it.id == id } }
-        .filter { e -> packs.installed.none { it.id == e.id } }
+    val missing = missingStylePacks(style, index.packs, packs.installed, first)
     if (missing.isEmpty()) {
         // Remix testers: the card no longer vanishes in silence once the sounds are here.
-        packs.readyNote?.let { ReadyLine(it, Modifier.testTag("wizard_style_packs_ready")) }
+        if (readyNote) packs.readyNote?.let { ReadyLine(it, Modifier.testTag("wizard_style_packs_ready")) }
         return
     }
     val downloading = missing.mapNotNull { packs.downloading[it.id] }
@@ -452,12 +456,23 @@ private fun StylePacks(style: StarterWizard.Style, packs: PacksUi, actions: Wiza
     }
 }
 
+/**
+ * [style]'s packs (its machines, its melodic sources, its own pack) in the catalogue and not on the
+ * phone; the machine of line [first] first (the Acidcore kick's Gabber, then the TR-909).
+ */
+internal fun missingStylePacks(style: StarterWizard.Style, catalogue: List<PackEntry>, installed: List<PackManifest>, first: StarterWizard.Role? = null): List<PackEntry> {
+    val machine = first?.let { style.kit[it] }
+    return style.packs.sortedBy { if (it == machine) 0 else 1 }
+        .mapNotNull { id -> catalogue.firstOrNull { it.id == id } }
+        .filter { e -> installed.none { it.id == e.id } }
+}
+
 private fun mb(bytes: Long) =
     if (bytes < 1_000_000) tr("%d ko", (bytes / 1000).coerceAtLeast(1)) else tr("%.1f Mo", bytes / 1e6)
 
 /** The style's own pack: to download (with its size), downloading, or there (and deletable). */
 @Composable
-private fun PackOffer(style: StarterWizard.Style, packs: PacksUi, actions: WizardActions) {
+private fun PackOffer(style: StarterWizard.Style, packs: PacksUi, actions: WizardActions, offer: Boolean = true) {
     val installed = packs.installed.firstOrNull { it.id == style.id }
     val entry: PackEntry? = (packs.index as? IndexState.Ready)?.index?.packs?.firstOrNull { it.id == style.id }
     val progress = packs.downloading[style.id]
@@ -467,6 +482,8 @@ private fun PackOffer(style: StarterWizard.Style, packs: PacksUi, actions: Wizar
                 color = Neon.TextSecondary, modifier = Modifier.weight(1f))
             TextButton(onClick = { actions.deletePack(style.id) }, modifier = Modifier.testTag("wizard_delete_pack")) { Text(tr("Supprimer")) }
         }
+        // Not offered twice: the style's packs above already do it ([StylePacks]).
+        !offer -> Unit
         progress != null -> NeonCard {
             Text(tr("Téléchargement du pack %s… %d %%", tr(style.name), (progress * 100).roundToInt()))
             LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth(), color = Neon.Cyan, trackColor = Neon.SurfaceHigh)

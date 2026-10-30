@@ -1023,6 +1023,27 @@ open class ScreenshotTest {
             com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable), null, com.pocketstudio.app.library.WizardActions())
     }
 
+    /** Benjamin's list n° 7: Acidcore's kick step, its packs (Gabber, TR-909) offered right above its sounds. */
+    @Test
+    fun wizardKickPacks() = shoot("wizard_kick_packs") {
+        val style = com.pocketstudio.model.StarterWizard.style("acidcore")!!
+        val rows = style.lines.associate { l ->
+            val cats = com.pocketstudio.app.library.soundCategories(l.role, style.id, emptyList())
+            l.role to com.pocketstudio.app.library.WizardRow(true, cats.first().id, cats.first().options.first())
+        }
+        val ui = com.pocketstudio.app.library.WizardUi(true, 0, style.id, rows, com.pocketstudio.model.StarterWizard.Mood.Dark, emptyMap())
+        val kick = ui.steps.indexOfFirst { it is com.pocketstudio.model.StarterWizard.Step.Drum && it.line.role == com.pocketstudio.model.StarterWizard.Role.Kick }
+        val catalogue = com.pocketstudio.model.PackIndex(listOf(
+            com.pocketstudio.model.PackEntry("gabber", "Gabber", "gabber.zip", "0".repeat(64), 4_200_000, sounds = 40),
+            com.pocketstudio.model.PackEntry("tr909", "TR-909", "tr909.zip", "0".repeat(64), 6_800_000, sounds = 60),
+            com.pocketstudio.model.PackEntry("tech_house", "Tech house", "tech_house.zip", "0".repeat(64), 5_000_000, sounds = 50),
+        ))
+        com.pocketstudio.app.library.WizardScreen(ui.copy(step = kick),
+            com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Ready(catalogue),
+                installed = listOf(com.pocketstudio.model.PackManifest("tech_house", "Tech house"))),
+            null, com.pocketstudio.app.library.WizardActions())
+    }
+
     @Test
     fun wizardMood() = shoot("wizard_mood") {
         com.pocketstudio.app.library.WizardScreen(wizardUi(1), com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable),

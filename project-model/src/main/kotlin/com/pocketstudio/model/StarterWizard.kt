@@ -1514,6 +1514,18 @@ object StarterWizard {
      */
     fun effectsMixer(style: Style, lines: Set<Role>, acid: Boolean): Mixer = withEffects(Project(), style, lines, emptyMap(), acid).mixer
 
+    /**
+     * The song gives a sound of line [role] effects of [style]'s (Benjamin's list n° 7: the Acidcore
+     * kick heard clean in « Choisis le son », saturated in the song): on its pad (the Acidcore kick's
+     * distortion), on the drums or on the master ([effectsMixer] with that line alone).
+     */
+    fun lineHasEffects(style: Style, role: Role): Boolean {
+        val plain = Project().mixer.sanitized()
+        val fx = effectsMixer(style, setOf(role), acid = false)
+        val pad = Mixer.padChannel(role.lane)
+        return fx.channels[pad] != plain.channels[pad] || fx.channels[0] != plain.channels[0] || fx.master != plain.master
+    }
+
     /** The insert [fx] adds: its effect with its [StyleFx.params] (the others its defaults), or null. */
     private fun insertOf(fx: StyleFx): Insert? = EffectType.entries.firstOrNull { it.name == fx.insert && it != EffectType.NONE }?.let { type ->
         Insert(type.ordinal, (fx.params + type.defaults.drop(fx.params.size)).take(type.defaults.size))

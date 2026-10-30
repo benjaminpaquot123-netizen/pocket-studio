@@ -67,7 +67,7 @@ fun TrackAddChoices(
         }
         Text(tr("Une piste Mélodie avec 4 mesures déjà écrites dans la tonalité du morceau. « Annuler » la retire."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-        // Benjamin (2026-10-29): the 303 offered here too, yellow, before the other kinds.
+        // Benjamin (2026-10-29): the 303 offered here too, before the other kinds (a tile as theirs since 2026-10-30).
         acid?.let { AcidTrackChoice(it) }
         Text(tr("Ou une piste à remplir toi-même, avec le bon son :"), style = MaterialTheme.typography.bodyMedium)
         val kinds = if (simple) TrackKind.entries - TrackKind.Pluck else TrackKind.entries
@@ -93,24 +93,12 @@ fun TrackAddChoices(
     }
 }
 
-/** « Acid 303 » in « + Piste »: the acid house bass line, a touch opens its editor. */
+/** « Acid 303 » in « + Piste », a tile as the other kinds (its yellow, no fill of its own): a touch opens its editor. */
 @Composable
 private fun AcidTrackChoice(onClick: () -> Unit) {
-    val ink = com.pocketstudio.app.acid.AcidLook.Ink
-    Surface(
-        onClick = onClick, shape = RoundedCornerShape(14.dp), color = com.pocketstudio.app.acid.AcidLook.Yellow,
-        modifier = Modifier.pressScale().fillMaxWidth().heightIn(min = 64.dp).testTag("track_add_acid"),
-    ) {
-        androidx.compose.foundation.layout.Row(
-            Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
-            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            com.pocketstudio.app.acid.AcidSmiley(36.dp)
-            Column {
-                Text(tr("Acid 303"), style = MaterialTheme.typography.titleMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold, color = ink)
-                Text(tr("La basse qui couine de l'acid house, case par case"), style = MaterialTheme.typography.bodySmall, color = ink.copy(alpha = 0.8f))
-            }
-        }
-    }
+    SoundTile(
+        title = tr("Acid 303"), icon = SoundLooks.of(TrackKind.Bass.family).icon, accent = com.pocketstudio.app.acid.AcidLook.Yellow, selected = false,
+        onClick = onClick, subtitle = tr("La basse qui couine de l'acid house, case par case"),
+        modifier = Modifier.fillMaxWidth().testTag("track_add_acid"),
+    )
 }

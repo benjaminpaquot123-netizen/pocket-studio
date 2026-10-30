@@ -32,7 +32,7 @@ void ClipLauncher::collectGarbage() {
     while (retired_.pop(s)) delete s;
 }
 
-void ClipLauncher::install(int slot, Sample* sample) {
+void ClipLauncher::install(int slot, Sample* sample, bool refit) {
     if (slot < 0 || slot >= kSlots) {
         retire(sample);
         return;
@@ -43,6 +43,7 @@ void ClipLauncher::install(int slot, Sample* sample) {
         retire(sample);
         return;
     }
+    const bool picksUp = refit && sample && s.state == Playing && !s.oneShot && s.voice.sample && s.voice.fade == 0;
     // A sound replaced before (still fading): cut now, it is let go.
     releaseHeld(s);
     // The sounding pass fades out (audit 13: it was cut, a click), the old sound held until it is
@@ -60,6 +61,11 @@ void ClipLauncher::install(int slot, Sample* sample) {
     }
     s.sample = sample;
     if (!sample) s.state = Off;
+    // A loop refitted to a new tempo: where the beat clock is in its pass, faded in.
+    if (picksUp) {
+        const auto pos = static_cast<int64_t>((beat_ - s.startBeat) * beatFrames_);
+        if (pos >= 0 && pos < sample->frames()) s.voice = Voice{sample, pos, 0, fadeFrames_};
+    }
     states_[static_cast<size_t>(slot)].store(s.state, std::memory_order_relaxed);
 }
 
@@ -131,6 +137,7 @@ void ClipLauncher::play(Voice& v, float gain, float& l, float& r) {
             return;
         }
     }
+    if (v.rise > 0) g *= 1.0f - static_cast<float>(v.rise--) / static_cast<float>(fadeFrames_);
     const float* d = v.sample->data();
     if (v.sample->channels() == 2) {
         l += d[v.pos * 2] * g;

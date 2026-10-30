@@ -708,9 +708,10 @@ object NativeEngine {
     fun previewPositionNow(): Long = sink?.previewPosition() ?: if (loaded) previewPosition() else -1L
 
     /** Live pad [pad] plays [sample] (null: empty). Main thread, like every command. */
-    fun setClip(pad: Int, sample: NativeSample?): Boolean {
-        sink?.let { it.install(0L, CommandSink.Install.LiveClip, pad, sample?.handle ?: 0L); return true }
-        return nativeInstallClip(pad, sample?.handle ?: 0L)
+    fun setClip(pad: Int, sample: NativeSample?, refit: Boolean = false): Boolean {
+        val index = if (refit) pad or REFIT else pad
+        sink?.let { it.install(0L, CommandSink.Install.LiveClip, index, sample?.handle ?: 0L); return true }
+        return nativeInstallClip(index, sample?.handle ?: 0L)
     }
 
     /** Frames [readScope] fills (Engine::kScopeFrames). */
@@ -782,13 +783,20 @@ object NativeEngine {
     /** Time signature [beats]/4 (2..7): count-in, bar lines, metronome accent, live pads grid. */
     fun setBeatsPerBar(beats: Int) = post(CMD_BEATS_PER_BAR, 0f, beats)
 
-    /** Audio track [track] plays [sample] (null: nothing). */
-    fun setAudioClip(track: Int, sample: NativeSample?) {
+    /**
+     * Audio track [track] plays [sample] (null: nothing). [refit]: the same loop stretched to a new
+     * tempo; a pass sounding carries on at its place in the new copy (Engine kRefit).
+     */
+    fun setAudioClip(track: Int, sample: NativeSample?, refit: Boolean = false) {
         val target = captureTarget
-        sink?.let { it.install(target, CommandSink.Install.AudioClip, track, sample?.handle ?: 0L); return }
-        if (target != 0L) exportInstallAudioClip(target, track, sample?.handle ?: 0L)
-        else nativeInstallAudioClip(track, sample?.handle ?: 0L)
+        val index = if (refit) track or REFIT else track
+        sink?.let { it.install(target, CommandSink.Install.AudioClip, index, sample?.handle ?: 0L); return }
+        if (target != 0L) exportInstallAudioClip(target, index, sample?.handle ?: 0L)
+        else nativeInstallAudioClip(index, sample?.handle ?: 0L)
     }
+
+    /** Engine kRefit: the sound installed is the same loop stretched to a new tempo. */
+    const val REFIT = 0x100
 
     /**
      * Where and how the clip plays: from step [start] (of the scene, or of the song when [song]),

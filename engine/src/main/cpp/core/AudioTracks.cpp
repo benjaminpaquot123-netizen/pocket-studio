@@ -32,7 +32,7 @@ void AudioTracks::collectGarbage() {
     while (retired_.pop(s)) delete s;
 }
 
-void AudioTracks::install(int track, Sample* sample) {
+void AudioTracks::install(int track, Sample* sample, bool refit) {
     if (track < 0 || track >= kTracks) {
         retire(sample);
         return;
@@ -42,6 +42,7 @@ void AudioTracks::install(int track, Sample* sample) {
         retire(sample);
         return;
     }
+    const Voice was = t.voice;
     // A clip replaced before (still fading): cut now, it is let go.
     releaseHeld(t);
     // The sounding pass fades out over the declick (audit 13: it was cut, a click), the old clip
@@ -59,6 +60,12 @@ void AudioTracks::install(int track, Sample* sample) {
     }
     t.sample = sample;
     t.resync = true;  // a song clip replaced while the song plays picks up where the song is
+    // A loop refitted to a new tempo: the same place of the loop in the new copy, faded in.
+    if (refit && sample && !t.song && was.sample && was.fade == 0 && was.due == 0 && was.sample->frames() > 0) {
+        const double at = static_cast<double>(was.pos) * static_cast<double>(sample->frames()) / static_cast<double>(was.sample->frames());
+        const auto pos = static_cast<int64_t>(at);
+        if (pos < sample->frames()) t.voice = Voice{sample, pos, 0, 0, declick_};
+    }
 }
 
 void AudioTracks::setParam(int track, int param, float value) {
@@ -180,6 +187,7 @@ void AudioTracks::play(const Track& t, Voice& v, float& l, float& r) {
             return;
         }
     }
+    if (v.rise > 0) g *= 1.0f - static_cast<float>(v.rise--) / static_cast<float>(declick_);
     const float* d = v.sample->data();
     if (v.sample->channels() == 2) {
         l += d[v.pos * 2] * g;

@@ -30,8 +30,10 @@ public:
     ClipLauncher& operator=(const ClipLauncher&) = delete;
 
     void prepare(int sampleRate) { fadeFrames_ = std::max(1, sampleRate / 200); }
-    // Takes over the caller's reference (nullptr clears the slot).
-    void install(int slot, Sample* sample);
+    // Takes over the caller's reference (nullptr clears the slot). `refit`: the same sound at
+    // another length (a loop stretched to a new tempo): a loop playing picks up at its place on the
+    // beat clock in the new copy (the old one fades under it), instead of waiting for its next pass.
+    void install(int slot, Sample* sample, bool refit = false);
     void setParam(int slot, int param, float value);
     // Off -> waits for the grid; waiting or playing -> off. `idleClock`: nothing else keeps
     // time (transport stopped), so the first pad to start restarts the clock and plays at once.
@@ -63,6 +65,7 @@ private:
         const Sample* sample = nullptr;
         int64_t pos = 0;
         int fade = 0;  // > 0: fading out over the remaining frames
+        int rise = 0;  // > 0: fading in over the remaining frames (a refit picked up mid-loop)
     };
     struct Slot {
         Sample* sample = nullptr;

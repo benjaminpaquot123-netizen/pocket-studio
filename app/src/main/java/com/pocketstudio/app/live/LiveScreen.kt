@@ -189,6 +189,8 @@ class LiveScreenUi(
      * speed, and only the controls showing them recompose, not the page. Default: [fx].
      */
     val fxOf: () -> LiveFxUi = { fx },
+    /** Lot 4b: the empty cell recording what is played (null: none). */
+    val cellRecording: CellRecording? = null,
 ) {
     /** What the effects are doing now: read in the small composables that show it (see [fxOf]). */
     val fx: LiveFxUi get() = fxOf()
@@ -260,6 +262,15 @@ class LiveActions(
     val setFxSettings: (LiveFxSettings) -> Unit = {},
     /** An effect's setting on a track (the Wobble pad). */
     val setInsertParam: (ch: Int, slot: Int, param: Int, value: Float) -> Unit = { _, _, _, _ -> },
+    /** Lot 4b, an empty cell: « Jouer et enregistrer ici » (touched again: [stopCellRecording]). */
+    val recordCell: (key: String, scene: Int) -> Unit = { _, _ -> },
+    val stopCellRecording: () -> Unit = {},
+    /** « Un son de ma bibliothèque » for that cell (the sound browser). */
+    val cellFromLibrary: (key: String, scene: Int) -> Unit = { _, _ -> },
+    /** « Copier une autre case »: false when the two do not go together (said by the app). */
+    val copyCell: (fromKey: String, fromScene: Int, toKey: String, toScene: Int) -> Boolean = { _, _, _, _ -> false },
+    /** A drum pad played on the page (it goes into the drum cell recording). */
+    val drumHit: (lane: Int) -> Unit = {},
 )
 
 /** The bottom panel's pages. */
@@ -331,6 +342,27 @@ fun LiveScreen(
         )
     }
     if (ui.beatHaptics && ui.playing) BeatTicks(ui.clockOf)
+    // Lot 4b: an empty cell's menu, the cell waiting for the one to copy, the cell recording.
+    var menuCell by rememberSaveable { mutableStateOf<String?>(null) }
+    var copyInto by rememberSaveable { mutableStateOf<String?>(null) }
+    val menu = LiveCell.read(menuCell)
+    val copyTarget = LiveCell.read(copyInto)
+    val trackName: (String) -> String = { key -> columns.firstOrNull { it.key == key }?.name ?: "" }
+    // Recording a cell: the panel shows what to play on (the notes, or the drum pads there).
+    LaunchedEffect(ui.cellRecording) { if (ui.cellRecording != null) { tab = LivePanelTab.Notes; panelOpen = true } }
+    val cellTap: (LiveColumn, Int, Boolean) -> Unit = { c, scene, hasContent ->
+        val rec = ui.cellRecording
+        when {
+            rec != null && rec.key == c.key && rec.scene == scene -> actions.stopCellRecording()
+            copyTarget != null -> {
+                if (hasContent && !(copyTarget.key == c.key && copyTarget.scene == scene)) actions.copyCell(c.key, scene, copyTarget.key, copyTarget.scene)
+                copyInto = null
+            }
+            !hasContent -> menuCell = LiveCell(c.key, scene).save()
+            else -> actions.launchPad(c.key, scene)
+        }
+    }
+    val gridMarks = GridMarks(copyTarget ?: menu, ui.cellRecording, picking = copyTarget != null, tap = cellTap)
     BoxWithConstraints(Modifier.fillMaxSize().background(Neon.Background).testTag("live_screen")) {
         // Lying down (or full screen) every row of height counts: a slimmer bar, and the take's
         // line only once ● is touched (it then offers where the take goes).
@@ -340,13 +372,15 @@ fun LiveScreen(
             // Full screen is for the grid: the strip gives way there.
             if (under != null && !immersive) under()
             TakeBanner(ui, actions, showReady = !short, openVersions = { versionsOpen = true })
+            ui.cellRecording?.let { CellRecordingBar(trackName(it.key), it, actions.stopCellRecording) }
+            copyTarget?.let { CopyCellBar(trackName(it.key), it, cancel = { copyInto = null }) }
             BoxWithConstraints(Modifier.fillMaxWidth().weight(1f)) {
                 val landscape = maxWidth > maxHeight
                 val wide = maxWidth >= 560.dp
                 val panelWidth = if (maxWidth >= 900.dp) 420.dp else 360.dp
                 if (landscape) {
                     Row(Modifier.fillMaxSize()) {
-                        LiveGrid(ui, columns, actions, Modifier.weight(1f).fillMaxHeight())
+                        LiveGrid(ui, columns, actions, gridMarks, Modifier.weight(1f).fillMaxHeight())
                         if (panelOpen) {
                             LivePanel(
                                 ui, columns, actions, fx, pads, padsActions, sideBySide = false, open = true, onToggle = { panelOpen = false },
@@ -375,7 +409,7 @@ fun LiveScreen(
                         else -> minOf((maxHeight - gridAll).coerceIn(PANEL_MIN, 470.dp), room)
                     }
                     Column(Modifier.fillMaxSize()) {
-                        LiveGrid(ui, columns, actions, Modifier.fillMaxWidth().weight(1f))
+                        LiveGrid(ui, columns, actions, gridMarks, Modifier.fillMaxWidth().weight(1f))
                         LivePanel(
                             ui, columns, actions, fx, pads, padsActions, sideBySide = wide, open = panelOpen, onToggle = { panelOpen = !panelOpen },
                             tab = tab, onTab = { tab = it; panelOpen = true }, immersive = immersive, toggleFull = toggleFull, sideways = false,
@@ -385,8 +419,28 @@ fun LiveScreen(
                 }
             }
         }
+        if (menu != null) {
+            EmptyCellMenu(
+                trackName(menu.key), menu,
+                record = { menuCell = null; actions.recordCell(menu.key, menu.scene) },
+                library = { menuCell = null; actions.cellFromLibrary(menu.key, menu.scene) },
+                copy = { menuCell = null; copyInto = menu.save() },
+                cancel = { menuCell = null },
+            )
+        }
     }
 }
+
+/**
+ * Lot 4b on the grid: the cell marked « ici » ([here]: its menu open, or waiting for the cell to
+ * copy), the one recording, whether a cell to copy is being picked, and what a touch on a cell does.
+ */
+internal class GridMarks(
+    val here: LiveCell? = null,
+    val recording: CellRecording? = null,
+    val picking: Boolean = false,
+    val tap: ((LiveColumn, Int, Boolean) -> Unit)? = null,
+)
 
 /**
  * Full screen: the phone's status and navigation bars hidden while [hidden] (a swipe from the edge
@@ -733,7 +787,7 @@ private fun Counter(ui: LiveScreenUi) {
  * share the room (none smaller than a finger: past that, the grid scrolls).
  */
 @Composable
-private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveActions, modifier: Modifier) = BoxWithConstraints(modifier) {
+private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveActions, marks: GridMarks, modifier: Modifier) = BoxWithConstraints(modifier) {
     val p = ui.project
     val scenes = p.allScenes.indices.toList()
     val n = columns.size.coerceAtLeast(1)
@@ -773,7 +827,7 @@ private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveA
                 scenes.forEach { scene ->
                     Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
                         SceneButton(ui, scene, sceneWidth, cellH, blink, pulse, press = { actions.press(null, scene) }, retract = { actions.retract(null) }) { actions.launchRow(scene) }
-                        ScrolledRow(h, gap) { columns.forEach { c -> GridCell(ui, c, scene, cellW, cellH, blink, pulse, actions) } }
+                        ScrolledRow(h, gap) { columns.forEach { c -> GridCell(ui, c, scene, cellW, cellH, blink, pulse, actions, marks) } }
                     }
                 }
             }
@@ -796,21 +850,31 @@ private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveA
 
 /** One pad of the grid: track [c] in scene [scene], as the engine plays it. */
 @Composable
-private fun GridCell(ui: LiveScreenUi, c: LiveColumn, scene: Int, width: Dp, height: Dp, blink: State<Float>, pulse: State<Float>, actions: LiveActions) {
+private fun GridCell(ui: LiveScreenUi, c: LiveColumn, scene: Int, width: Dp, height: Dp, blink: State<Float>, pulse: State<Float>, actions: LiveActions, marks: GridMarks) {
     val p = ui.project
     val slot = LiveSlots.of(c.key) ?: return
     val state = ui.grid?.slot(slot)
     val playing = ui.playing && state?.playing == scene
     val start = state?.start ?: 0
     val loop = if (playing) p.slotLoopSteps(c.key, scene) else 0
+    val hasContent = p.cellHasContent(c.key, scene)
+    val mark = when {
+        marks.recording?.let { it.key == c.key && it.scene == scene } == true -> CellMark.Rec
+        marks.here?.let { it.key == c.key && it.scene == scene } == true -> CellMark.Here
+        else -> CellMark.None
+    }
+    // An empty cell, the one recording, or a cell picked to copy: a touch, never a launch on the press.
+    val plain = hasContent && !marks.picking && mark == CellMark.None
+    val tap = marks.tap
     LivePadCell(
-        c, rowName(p, scene), width, height, p.cellHasContent(c.key, scene), playing, pending = ui.playing && state?.pending == scene,
+        c, rowName(p, scene), width, height, hasContent, playing, pending = ui.playing && state?.pending == scene,
         position = { livePosition(ui.clockOf(), start, loop) }, blink, pulse,
         // The line the launch was armed for (« Lancer à » changed since does not move it).
         waitLeft = { launchWaitLeft(ui.clockOf(), state?.quantum?.takeIf { it > 0 } ?: p.liveQuantumSteps) },
         tag = "live_pad_${c.key}_$scene",
-        press = { actions.press(c.key, scene) }, retract = { actions.retract(c.key) },
-    ) { actions.launchPad(c.key, scene) }
+        press = { if (plain || tap == null) actions.press(c.key, scene) else false }, retract = { actions.retract(c.key) },
+        mark = mark,
+    ) { if (tap != null) tap(c, scene, hasContent) else actions.launchPad(c.key, scene) }
 }
 
 @Composable
@@ -917,6 +981,7 @@ private fun LivePadCell(
     tag: String,
     press: () -> Boolean,
     retract: () -> Unit,
+    mark: CellMark = CellMark.None,
     launch: () -> Unit,
 ) {
     SideEffect { livePadCompositions++ }
@@ -968,8 +1033,12 @@ private fun LivePadCell(
                 }
             }
             .let { m ->
-                if (pending) m.blinkingBorder(3.dp, 12.dp) { color.copy(alpha = blink.value) }
-                else m.border(1.dp, edge, shape)
+                when {
+                    mark == CellMark.Rec -> m.border(3.dp, Neon.Red, shape)
+                    mark == CellMark.Here -> m.border(2.dp, Neon.Amber, shape)
+                    pending -> m.blinkingBorder(3.dp, 12.dp) { color.copy(alpha = blink.value) }
+                    else -> m.border(1.dp, edge, shape)
+                }
             }
             // Launched on the finger's down (a controller's pad), a light buzz then.
             .launchOnPress(
@@ -993,7 +1062,19 @@ private fun LivePadCell(
             },
         contentAlignment = Alignment.Center,
     ) {
-        if (playing) {
+        if (mark != CellMark.None) {
+            // Lot 4b: « ici » (the cell being filled) or « ● REC » (recording what is played).
+            if (mark == CellMark.Rec) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Box(Modifier.size(20.dp).graphicsLayer { alpha = 0.55f + 0.45f * pulse.value }.clip(CircleShape).background(Neon.Red))
+                    Text("REC", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = Color.White, maxLines = 1, softWrap = false)
+                }
+            } else {
+                Box(Modifier.clip(RoundedCornerShape(10.dp)).background(Neon.Amber).padding(horizontal = 8.dp, vertical = 2.dp)) {
+                    Text(tr("ici"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Color.Black, maxLines = 1, softWrap = false)
+                }
+            }
+        } else if (playing) {
             // Where the loop is: a ring going round from the top.
             val track = Color.Black.copy(alpha = 0.22f)
             Canvas(Modifier.size(minOf(width, height) * 0.5f)) {

@@ -31,6 +31,10 @@ import com.pocketstudio.app.remix.StemStore
 import com.pocketstudio.model.Remix
 import com.pocketstudio.model.hasMusicOfItsOwn
 import com.pocketstudio.model.LiveSlots
+import com.pocketstudio.model.LiveCells
+import com.pocketstudio.model.withRecordedCell
+import com.pocketstudio.model.withCopiedCell
+import com.pocketstudio.model.withAudioInCell
 import com.pocketstudio.model.LiveState
 import com.pocketstudio.model.LiveDivision
 import com.pocketstudio.app.live.LiveFxUi
@@ -166,6 +170,7 @@ import com.pocketstudio.model.withFirstTakeLevel
 import com.pocketstudio.model.takeForgets
 import com.pocketstudio.model.withTakes
 import com.pocketstudio.model.addAudioTrack
+import com.pocketstudio.model.cellHasContent
 import com.pocketstudio.model.exportEndBars
 import com.pocketstudio.model.remixFromStepAlone
 import com.pocketstudio.model.remixStemStart
@@ -4019,6 +4024,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * (written into a take as heard, at once); a Drop already waiting still drops on its bar line.
      */
     fun leaveLive() {
+        // Lot 4b: a cell recording keeps what was played (as if touched again).
+        stopCellRecording()
         // M of the Live page: heard again (it was never written in the project, nothing else shows it).
         _liveMuted.value.toList().forEach(::toggleLiveMute)
         _liveFx.value.locks.toList().forEach { setLiveLock(it, false) }
@@ -4482,14 +4489,140 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (project.value.instrumentTracks.none { it.id == id }) return
         if (NativeEngine.isAvailable) NativeEngine.synthNoteOn(pitch, velocity, id)
         playedNoteOn(id, pitch, velocity)
+        if (_cellRecording.value?.key == com.pocketstudio.model.SongPart.inst(id)) cellHeld[liveKey(id, pitch)] = LiveHeld(playedClock(), velocity)
         if (performance != null && _take.value is com.pocketstudio.app.live.TakeUi.Recording) liveKeysHeld[liveKey(id, pitch)] = LiveHeld(takePosition(), velocity)
     }
 
     fun liveNoteOff(id: Int, pitch: Int) {
         if (NativeEngine.isAvailable) NativeEngine.synthNoteOff(pitch, id)
         playedNoteOff(id, pitch)
+        cellHeld.remove(liveKey(id, pitch))?.let { h -> cellNoteEnded(id, pitch, h, playedClock()) }
         val held = liveKeysHeld.remove(liveKey(id, pitch)) ?: return
         writeLiveNote(id, pitch, held.at, takePosition(), held.velocity)
+    }
+
+    // --- Lot 4b: an empty cell of the Live grid filled from the Live page (Benjamin's n° 9) ---
+
+    private val _cellRecording = MutableStateFlow<com.pocketstudio.app.live.CellRecording?>(null)
+    /** The empty cell recording what is played (« Jouer et enregistrer ici »), null: none. */
+    val cellRecording: StateFlow<com.pocketstudio.app.live.CellRecording?> = _cellRecording.asStateFlow()
+    private val cellNotes = ArrayList<com.pocketstudio.model.PlayedMemory.KeptNote>()
+    private val cellHits = ArrayList<com.pocketstudio.model.PlayedMemory.KeptHit>()
+    private val cellHeld = HashMap<Long, LiveHeld>()
+    /** Where the cell was armed, on the clock of [playedClock] (the engine's own while it plays). */
+    private var cellArmedAt = 0.0
+
+    /**
+     * « Jouer et enregistrer ici »: cell ([key], [scene]), empty, records what is played on Live ›
+     * Notes (its instrument track) or on the drum pads until it is touched again ([stopCellRecording]);
+     * no maximum length. Stopped: the brick's row starts, so there is a beat to play on. The times
+     * are the engine's transport position (counted in frames on the audio thread, read here).
+     */
+    fun recordCell(key: String, scene: Int) {
+        val p = project.value
+        if (!com.pocketstudio.model.LiveCells.canRecord(key) || scene !in p.allScenes.indices || p.cellHasContent(key, scene)) return
+        if (_cellRecording.value != null) stopCellRecording()
+        if (!_transport.value.playing) launchRow(scene)
+        cellNotes.clear(); cellHits.clear(); cellHeld.clear()
+        cellArmedAt = playedClock()
+        _cellRecording.value = com.pocketstudio.app.live.CellRecording(key, scene)
+        AppLog.add("Live : case $key ${Scene.NAMES.getOrElse(scene) { "?" }} en enregistrement")
+    }
+
+    /** A drum pad played on the Live page: it sounds, and goes into the drum cell recording. */
+    fun liveDrumHit(lane: Int, velocity: Float = 0.9f) {
+        if (lane !in 0 until DrumPattern.PAD_COUNT) return
+        if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, velocity)
+        playedPad(lane, velocity)
+        if (_cellRecording.value?.key == com.pocketstudio.model.SongPart.DRUMS) cellHits += com.pocketstudio.model.PlayedMemory.KeptHit(lane, velocity, playedClock())
+    }
+
+    private fun cellNoteEnded(id: Int, pitch: Int, held: LiveHeld, at: Double) {
+        if (_cellRecording.value?.key != com.pocketstudio.model.SongPart.inst(id)) return
+        cellNotes += com.pocketstudio.model.PlayedMemory.KeptNote(id, pitch, held.velocity, held.at, (at - held.at).coerceAtLeast(com.pocketstudio.model.PlayedMemory.MIN_NOTE_STEPS))
+    }
+
+    /**
+     * The recording cell touched again: what was played becomes its content (one undo step), from
+     * the bar line of the first thing played, whole bars (the nearest: the loop stays in time), and
+     * it loops from the next launch line. Live effects are not written there (choice 3B).
+     */
+    fun stopCellRecording() {
+        val rec = _cellRecording.value ?: return
+        _cellRecording.value = null
+        val now = playedClock()
+        val id = rec.key.removePrefix("inst:").toIntOrNull()
+        cellHeld.toList().forEach { (k, h) -> if (id != null) cellNoteEnded(id, (k and 0xFF).toInt(), h, now) }
+        cellHeld.clear()
+        val first = (cellNotes.map { it.start } + cellHits.map { it.at }).minOrNull()
+        val p = project.value
+        val bar = p.stepsPerBar.coerceAtLeast(1).toDouble()
+        val origin = first?.let { kotlin.math.floor((it + com.pocketstudio.model.PlayedMemory.EARLY_STEPS) / bar) * bar }
+        val notes = cellNotes.toList()
+        val hits = cellHits.toList()
+        cellNotes.clear(); cellHits.clear()
+        if (origin == null || p.withRecordedCell(rec.key, rec.scene, notes, hits, origin, now) == null) {
+            _notice.value = tr("Rien n'a été joué : la case reste vide.")
+            return
+        }
+        session.edit { q -> q.withRecordedCell(rec.key, rec.scene, notes, hits, origin, now) ?: q }
+        AppLog.add("Live : case ${rec.key} enregistrée (${com.pocketstudio.model.LiveCells.bars(origin, now, p.stepsPerBar)} mesures jouées)")
+        cellChanged(rec.key, rec.scene)
+        launchPad(rec.key, rec.scene)
+    }
+
+    /** « Annuler » while a cell records: nothing written. */
+    fun cancelCellRecording() {
+        _cellRecording.value = null
+        cellNotes.clear(); cellHits.clear(); cellHeld.clear()
+    }
+
+    /** « Copier une autre case »: cell ([fromKey], [fromScene]) onto the empty ([toKey], [toScene]), one undo step; false: not the same kind. */
+    fun copyCell(fromKey: String, fromScene: Int, toKey: String, toScene: Int): Boolean {
+        val next = project.value.withCopiedCell(fromKey, fromScene, toKey, toScene)
+        if (next == null) {
+            _notice.value = tr("Cette case ne va pas ici : choisis une case de la même piste ou du même genre.")
+            return false
+        }
+        session.edit { q -> q.withCopiedCell(fromKey, fromScene, toKey, toScene) ?: q }
+        AppLog.add("Live : case $fromKey ${Scene.NAMES.getOrElse(fromScene) { "?" }} copiée sur $toKey ${Scene.NAMES.getOrElse(toScene) { "?" }}")
+        if (LiveCells.kindOf(toKey) == LiveCells.Kind.AUDIO) { pushMixer(); pushAudio() }
+        cellChanged(toKey, toScene)
+        return true
+    }
+
+    /**
+     * « Un son de ma bibliothèque » on cell ([key], [scene]): a loop fitted to whole bars at the
+     * project's tempo (its pitch kept), on an audio track in that brick (see [withAudioInCell]); one
+     * undo step. False while another sound is still being placed.
+     */
+    fun placeInCell(key: String, scene: Int, pcm: Pcm, name: String): Boolean {
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
+        audioJob(tr("Pose du son…")) {
+            val p = project.value
+            val bars = LiveCells.loopBars(pcm.seconds, p.tempoBpm, p.beatsPerBar)
+            val fitted = if (bars != null && NativeEngine.isNative) {
+                val frames = Math.round(bars * p.beatsPerBar * 60.0 / p.tempoBpm * pcm.sampleRate)
+                withContext(Dispatchers.Default) { NativeEngine.stretchPcm(pcm.data, pcm.channels, frames, pcm.sampleRate) }
+                    ?.let { Pcm(it, pcm.channels, pcm.sampleRate) } ?: pcm
+            } else pcm
+            val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(fitted, name) }
+            padSamples.register(prepared)
+            val clip = AudioClip(sample.file, sample.name, seconds = fitted.seconds, loopSteps = (bars ?: 1) * p.stepsPerBar, bpm = p.tempoBpm)
+            if (project.value.withAudioInCell(key, scene, clip) == null) throw UserMessage(tr("Les huit pistes audio sont prises : vide-en une pour poser ce son."))
+            session.edit { q -> q.withAudioInCell(key, scene, clip) ?: q }
+            AppLog.add("Live : « $name » dans la brique ${Scene.NAMES.getOrElse(scene) { "?" }} (${bars ?: 0} mesures)")
+            pushMixer()
+            pushAudio()
+            padSamples.prune(project.value.sampleFiles)
+        }
+        return true
+    }
+
+    /** A cell just filled: heard at once where its track plays that brick now. */
+    private fun cellChanged(key: String, scene: Int) {
+        val slot = LiveSlots.of(key) ?: return
+        if (playsNow(slot, scene)) pushSlot(project.value, slot, scene) else if (scene == project.value.scene) syncEngine()
     }
 
     /**

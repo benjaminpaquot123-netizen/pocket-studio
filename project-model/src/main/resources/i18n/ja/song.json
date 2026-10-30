@@ -278,7 +278,6 @@
   "Ta prise Live a été gardée : elle est dans le morceau (%d parties).": "Live テイクを残しました。曲に入っています（%d パート）。",
   "Tempo (60 à 200 BPM)": "テンポ（60〜200 BPM）",
   "Temps par mesure :": "1小節の拍数：",
-  "Tenus": "ホールド",
   "Terminé": "完了",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "曲が空です。パートを再生順に追加してね（イントロ、Aメロ、サビ…）。",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "パッドをタップで音がスタート、もう一度タップで停止。全部拍に合ったままです。",
@@ -393,5 +392,10 @@
   "Cases": "マス",
   "Moins de cases": "マスを減らす",
   "Plus de cases": "マスを増やす",
-  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "最初のループが鳴っています。点をタップすると、そこに音を追加できます。"
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "最初のループが鳴っています。点をタップすると、そこに音を追加できます。",
+  "Voir les autres pistes": "ほかのトラックを見る",
+  "L'effet": "エフェクト",
+  "Comment il joue": "鳴らしかた",
+  "Appui": "タッチ",
+  "Tenu": "ホールド"
 }

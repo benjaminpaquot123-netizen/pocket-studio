@@ -278,7 +278,6 @@
   "Ta prise Live a été gardée : elle est dans le morceau (%d parties).": "你的 Live 录音已保留：它在歌曲里（%d 个段落）。",
   "Tempo (60 à 200 BPM)": "速度（60 到 200 BPM）",
   "Temps par mesure :": "每小节拍数：",
-  "Tenus": "持续",
   "Terminé": "完成",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "你的歌是空的：按播放顺序添加段落（前奏、主歌、副歌…）。",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "点打击垫启动它的声音，再点一次停止。一切都卡在拍子上。",
@@ -393,5 +392,10 @@
   "Cases": "格子",
   "Moins de cases": "减少格子",
   "Plus de cases": "增加格子",
-  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "你的第一个循环正在播放。点按一个圆点，在那里添加声音。"
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "你的第一个循环正在播放。点按一个圆点，在那里添加声音。",
+  "Voir les autres pistes": "查看其他音轨",
+  "L'effet": "效果",
+  "Comment il joue": "演奏方式",
+  "Appui": "按下",
+  "Tenu": "持续"
 }

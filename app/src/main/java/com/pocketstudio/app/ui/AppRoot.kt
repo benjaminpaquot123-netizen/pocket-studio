@@ -2257,7 +2257,8 @@ fun AppRoot() {
                     under = {
                         // Lot 2: the « ? » on the Live page too (its bar replaces the one that carries it elsewhere).
                         PositionStrip(
-                            rhythmVm, tempoOpen = tempoSheetOpen, setTempoOpen = { tempoSheetOpen = it }, tempoSteps = true,
+                            // Lot 4d: the tempo is in the Live page's own bar (« − 113 + »), not here twice.
+                            rhythmVm, tempoOpen = tempoSheetOpen, setTempoOpen = { tempoSheetOpen = it }, showTempo = false,
                             helpOn = helpLabels, toggleHelp = { helpLabels = !helpLabels }, reportBug = { reportBug("appui long sur « ? »") },
                         )
                     },
@@ -3591,8 +3592,12 @@ fun liveActionsOf(
     togglePlay: () -> Unit = vm::togglePlay,
     /** Lot 4b: the sound browser for an empty cell (track key, brick). */
     cellLibrary: (String, Int) -> Unit = { _, _ -> },
+    /** Lot 4d: a touch on the bar's tempo (the tempo sheet). */
+    openTempo: () -> Unit = {},
 ): com.pocketstudio.app.live.LiveActions = com.pocketstudio.app.live.LiveActions(
     back = back,
+    nudgeTempo = vm::nudgeTempo,
+    openTempo = openTempo,
     togglePlay = togglePlay,
     setQuantum = vm::setLiveQuantum,
     restoreVersion = vm::restoreSongVersion,
@@ -3656,10 +3661,16 @@ internal fun LiveRoute(
     /** Lot 4b: the sound browser for an empty cell (track key, brick). */
     cellLibrary: (String, Int) -> Unit = { _, _ -> },
 ) = LiveStateHost(vm, lifecycleOwner, liveEditing) { ui, pads ->
+    // Lot 4d: the tempo in the page's own bar, its sheet here (as on the pads' full screen).
+    var tempoOpen by rememberSaveable { mutableStateOf(false) }
+    if (tempoOpen) {
+        LaunchedEffect(Unit) { vm.beginTempoSheet() }
+        TempoSheet(ui.project.tempoBpm, TempoActions(set = vm::setSheetTempo, tap = vm::tapSheetTempo), onClose = { tempoOpen = false })
+    }
     com.pocketstudio.app.live.LiveScreen(
         ui,
         liveActionsOf(
-            vm, back = close, openEffects = openEffects, cellLibrary = cellLibrary,
+            vm, back = close, openEffects = openEffects, cellLibrary = cellLibrary, openTempo = { tempoOpen = true },
             togglePlay = {
                 // ▶ here plays what the grid shows: the scene, not the song.
                 if (ui.playing) vm.togglePlay() else vm.launchRow(ui.project.scene)

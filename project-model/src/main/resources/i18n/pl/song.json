@@ -278,7 +278,6 @@
   "Ta prise Live a été gardée : elle est dans le morceau (%d parties).": "Twoje nagranie z Live zostało zachowane: jest w utworze (części: %d).",
   "Tempo (60 à 200 BPM)": "Tempo (60 do 200 BPM)",
   "Temps par mesure :": "Ćwierćnuty w takcie:",
-  "Tenus": "Trzymane",
   "Terminé": "Gotowe",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "Twój utwór jest pusty: dodaj części w kolejności grania (Intro, Zwrotka, Refren…).",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "Dotknij pada, żeby odpalić jego dźwięk, dotknij znowu, żeby go zatrzymać. Wszystko zostaje w rytmie.",
@@ -393,5 +392,10 @@
   "Cases": "Pola",
   "Moins de cases": "Mniej pól",
   "Plus de cases": "Więcej pól",
-  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Twoja pierwsza pętla gra. Dotknij kropki, aby dodać tam dźwięk."
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Twoja pierwsza pętla gra. Dotknij kropki, aby dodać tam dźwięk.",
+  "Voir les autres pistes": "Pokaż pozostałe ścieżki",
+  "L'effet": "Efekt",
+  "Comment il joue": "Jak gra",
+  "Appui": "Dotyk",
+  "Tenu": "Trzymanie"
 }

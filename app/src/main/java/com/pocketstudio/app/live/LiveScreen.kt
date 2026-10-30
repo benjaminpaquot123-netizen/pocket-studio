@@ -37,6 +37,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.draw.shadow
+import androidx.compose.material.icons.filled.GraphicEq
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Apps
+import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
@@ -59,6 +66,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.State
@@ -277,10 +285,14 @@ class LiveActions(
     val drumHit: (lane: Int) -> Unit = {},
     /** « Cases − 8 + »: how many bricks the grid shows (LiveCells.ROWS). */
     val setRows: (Int) -> Unit = {},
+    /** Lot 4d: « − 113 + » in the bar, a BPM less or more (held: it repeats). */
+    val nudgeTempo: (Int) -> Unit = {},
+    /** A touch on the bar's tempo: the tempo sheet (keypad, ready-made tempos, tap). */
+    val openTempo: () -> Unit = {},
 )
 
-/** The bottom panel's pages. */
-enum class LivePanelTab { Effets, Acide, Pads, Notes }
+/** The Live page's tabs: Briques (the grid alone, the tools folded), then the panel's pages. */
+enum class LivePanelTab { Briques, Effets, Acide, Pads, Notes }
 
 /**
  * The Live page, full screen: a bar (back to Morceau, ▶/■, launch quantum, bar.beat counter),
@@ -296,7 +308,8 @@ fun LiveScreen(
     actions: LiveActions,
     pads: LivePadsUi? = null,
     padsActions: LivePadsActions = LivePadsActions(),
-    initialTab: LivePanelTab = LivePanelTab.Effets,
+    /** Lot 4d: Briques (the default) opens on the grid alone, the tools folded in their dock. */
+    initialTab: LivePanelTab = LivePanelTab.Briques,
     /** Under the page's bar: the position strip (tempo, « mes. x/y »), given by the app. */
     under: (@Composable () -> Unit)? = null,
     /** Phase 36: « Plein écran » on or off (the app hides its bottom bar with the phone's). */
@@ -305,9 +318,21 @@ fun LiveScreen(
     onTab: (LivePanelTab) -> Unit = {},
 ) {
     val columns = liveColumnsOf(ui.project)
-    var tab by rememberSaveable { mutableStateOf(initialTab) }
-    LaunchedEffect(tab) { onTab(tab) }
-    var panelOpen by rememberSaveable { mutableStateOf(true) }
+    // The panel's page (kept while folded: ︿ opens it there again) and whether it is open.
+    var tab by rememberSaveable { mutableStateOf(if (initialTab == LivePanelTab.Briques) LivePanelTab.Effets else initialTab) }
+    var panelOpen by rememberSaveable { mutableStateOf(initialTab != LivePanelTab.Briques) }
+    LaunchedEffect(tab, panelOpen) { onTab(if (panelOpen) tab else LivePanelTab.Briques) }
+    // A tab of the dock or the panel: Briques folds the tools; Pads is the pads view on the whole
+    // screen (lot 4a; while a pad is being set up, its card here); the others open the panel there.
+    val choose: (LivePanelTab) -> Unit = { t ->
+        when {
+            t == LivePanelTab.Briques -> panelOpen = false
+            t == LivePanelTab.Pads && pads?.editing == null && padsActions.fullScreen != null -> { tab = t; padsActions.fullScreen.invoke() }
+            else -> { tab = t; panelOpen = true }
+        }
+    }
+    // « Régler » from the pads view: back here, that pad's settings in the open panel.
+    LaunchedEffect(pads?.editing) { if (pads?.editing != null) { tab = LivePanelTab.Pads; panelOpen = true } }
     var immersive by rememberSaveable { mutableStateOf(false) }
     val toggleFull: () -> Unit = {
         immersive = !immersive
@@ -389,38 +414,39 @@ fun LiveScreen(
                         LiveGrid(ui, columns, actions, gridMarks, Modifier.weight(1f).fillMaxHeight())
                         if (panelOpen) {
                             LivePanel(
-                                ui, columns, actions, fx, pads, padsActions, sideBySide = false, open = true, onToggle = { panelOpen = false },
-                                tab = tab, onTab = { tab = it }, immersive = immersive, toggleFull = toggleFull, sideways = true,
+                                ui, columns, actions, fx, pads, padsActions, sideBySide = false, fold = { panelOpen = false },
+                                tab = tab, choose = choose, immersive = immersive, toggleFull = toggleFull, sideways = true,
                                 modifier = Modifier.width(panelWidth).fillMaxHeight(),
                             )
                         } else {
-                            PanelRail(ui, tab, onTab = { tab = it; panelOpen = true }, immersive, toggleFull, Modifier.width(RAIL_WIDTH).fillMaxHeight())
+                            PanelRail(ui, choose, immersive, toggleFull, Modifier.width(RAIL_WIDTH).fillMaxHeight())
                         }
                     }
                 } else {
-                    // The grid keeps room for its header, three rows and the ■ row; the panel takes
-                    // what the scenes leave (more for the effects with few scenes), on a wide screen
-                    // its full height; folded, only its tabs.
-                    // Too short for both (a big text size, a small phone): the open panel keeps
-                    // PANEL_MIN (its pad in view) and the grid its header, a row and ■ (it scrolls).
-                    val scenes = ui.project.allScenes.size
-                    val gridMin = HEADER_HEIGHT + 96.dp + (MIN_CELL_H + 6.dp) * 3 + 24.dp
-                    val gridShort = HEADER_COMPACT + 96.dp + (MIN_CELL_H + 6.dp) + 24.dp
-                    val gridAll = HEADER_HEIGHT + 48.dp + (64.dp + 6.dp) * scenes + 24.dp
-                    val room = (maxHeight - gridMin).coerceAtLeast(PANEL_FOLDED)
-                    val panelHeight = when {
-                        !panelOpen -> PANEL_FOLDED
-                        wide -> minOf(430.dp, room)
-                        room < PANEL_MIN -> minOf(maxHeight - gridShort, PANEL_MIN).coerceAtLeast(PANEL_FOLDED)
-                        else -> minOf((maxHeight - gridAll).coerceIn(PANEL_MIN, 470.dp), room)
-                    }
-                    Column(Modifier.fillMaxSize()) {
-                        LiveGrid(ui, columns, actions, gridMarks, Modifier.fillMaxWidth().weight(1f))
-                        LivePanel(
-                            ui, columns, actions, fx, pads, padsActions, sideBySide = wide, open = panelOpen, onToggle = { panelOpen = !panelOpen },
-                            tab = tab, onTab = { tab = it; panelOpen = true }, immersive = immersive, toggleFull = toggleFull, sideways = false,
-                            modifier = Modifier.fillMaxWidth().height(panelHeight),
-                        )
+                    // Lot 4d: folded, the grid has the screen and the tools wait in their dock. Open,
+                    // the panel takes what the grid leaves past its rows made lower (about six
+                    // bricks in view), at least PANEL_MIN (its pad in view: the grid then scrolls);
+                    // a wide screen: its full height up to 430 dp.
+                    if (panelOpen) {
+                        val gridDense = 48.dp + HEADER_COMPACT + 48.dp + (ROW_MIN_DENSE + 4.dp) * 6 + 40.dp
+                        val gridShort = HEADER_COMPACT + 96.dp + (MIN_CELL_H + 6.dp) + 24.dp
+                        val panelHeight = when {
+                            wide -> minOf(430.dp, maxHeight - gridDense).coerceAtLeast(PANEL_MIN)
+                            else -> (maxHeight - gridDense).coerceIn(PANEL_MIN, PANEL_MAX)
+                        }.coerceAtMost((maxHeight - gridShort).coerceAtLeast(PANEL_MIN))
+                        Column(Modifier.fillMaxSize()) {
+                            LiveGrid(ui, columns, actions, gridMarks, Modifier.fillMaxWidth().weight(1f), dense = true)
+                            LivePanel(
+                                ui, columns, actions, fx, pads, padsActions, sideBySide = wide, fold = { panelOpen = false },
+                                tab = tab, choose = choose, immersive = immersive, toggleFull = toggleFull, sideways = false,
+                                modifier = Modifier.fillMaxWidth().height(panelHeight),
+                            )
+                        }
+                    } else {
+                        Column(Modifier.fillMaxSize()) {
+                            LiveGrid(ui, columns, actions, gridMarks, Modifier.fillMaxWidth().weight(1f))
+                            LiveDock(ui, wide, choose, unfold = { panelOpen = true }, immersive = immersive, toggleFull = toggleFull)
+                        }
                     }
                 }
             }
@@ -490,7 +516,7 @@ private fun FullScreenButton(on: Boolean, toggle: () -> Unit) {
 
 /** Lying down with the panel folded: a thin rail with its tabs (a touch opens the panel there) and ⛶. */
 @Composable
-private fun PanelRail(ui: LiveScreenUi, tab: LivePanelTab, onTab: (LivePanelTab) -> Unit, immersive: Boolean, toggleFull: () -> Unit, modifier: Modifier) {
+private fun PanelRail(ui: LiveScreenUi, onTab: (LivePanelTab) -> Unit, immersive: Boolean, toggleFull: () -> Unit, modifier: Modifier) {
     Column(
         modifier.clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)).background(Neon.Surface)
             .padding(vertical = 4.dp).testTag("live_panel_rail"),
@@ -498,11 +524,11 @@ private fun PanelRail(ui: LiveScreenUi, tab: LivePanelTab, onTab: (LivePanelTab)
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         FullScreenButton(immersive, toggleFull)
-        listOf(LivePanelTab.Effets to tr("Effets"), LivePanelTab.Acide to tr("Acid 303"), LivePanelTab.Pads to tr("Pads"), LivePanelTab.Notes to tr("Notes")).forEach { (t, label) ->
+        liveTabs(sideBySide = false).filter { it != LivePanelTab.Briques }.forEach { t ->
+            val label = tabLabel(t)
             val idle = t == LivePanelTab.Acide && !ui.hasAcid
             Box(
                 Modifier.size(48.dp).clip(RoundedCornerShape(12.dp))
-                    .background(if (t == tab) Neon.SurfaceHigh else Color.Transparent)
                     .clickable { onTab(t) }.testTag("live_rail_${t.name}")
                     .semantics { contentDescription = tr("Ouvrir %s", label) },
                 contentAlignment = Alignment.Center,
@@ -510,7 +536,7 @@ private fun PanelRail(ui: LiveScreenUi, tab: LivePanelTab, onTab: (LivePanelTab)
                 // « Acid 303 » on two lines in the 48 dp rail.
                 Text(
                     label, style = MaterialTheme.typography.labelSmall, maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                    color = if (idle) Neon.TextSecondary.copy(alpha = 0.6f) else if (t == tab) Neon.Cyan else Neon.TextPrimary,
+                    color = if (idle) Neon.TextSecondary.copy(alpha = 0.6f) else Neon.TextPrimary,
                 )
             }
         }
@@ -520,11 +546,9 @@ private fun PanelRail(ui: LiveScreenUi, tab: LivePanelTab, onTab: (LivePanelTab)
 /** The folded panel lying down. */
 private val RAIL_WIDTH = 56.dp
 
-/** The folded panel upright: its tabs only. */
-private val PANEL_FOLDED = 56.dp
-
-/** The open panel upright, at least (the grid scrolls past that). */
+/** The open panel upright, at least (the grid scrolls past that), and at most on a phone. */
 private val PANEL_MIN = 300.dp
+private val PANEL_MAX = 470.dp
 
 /** « Finir la prise ? »: leaving the Live page during a take ends it (or drops it while armed). */
 @Composable
@@ -560,23 +584,17 @@ private fun LiveTopBar(ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit
         .testTag("live_top_bar"),
 ) {
     val p = ui.project
-    // A narrow screen (a small phone, a big interface size): ← alone, « Lancer à » gives way with
-    // « … ». The counter and ● REC are placed first and never squeezed out.
+    // Lot 4d: ← alone, then « − 113 + » (the tempo always at hand, whatever the tab); « Lancer à »
+    // went down beside « Cases ». A narrow bar keeps the figure alone (a touch: the tempo sheet).
+    // The counter and ● REC are placed first and never squeezed out.
     val compact = maxWidth < LIVE_BAR_FULL
     Row(
         Modifier.fillMaxSize().padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp),
     ) {
-        if (compact) {
-            IconButton(onClick = leave, modifier = Modifier.size(48.dp).testTag("live_back").spot("live_back", tr("Revenir"))) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Retour"))
-            }
-        } else {
-            TextButton(onClick = leave, modifier = Modifier.testTag("live_back").spot("live_back", tr("Revenir"))) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-                Text(tr("Retour"), maxLines = 1)
-            }
+        IconButton(onClick = leave, modifier = Modifier.size(48.dp).testTag("live_back").spot("live_back", tr("Revenir"))) {
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Retour"))
         }
         Box(
             Modifier.size(48.dp).liveGlow(ui.playing, Neon.Acid, inset = 2.dp).clip(CircleShape).clickable(onClick = actions.togglePlay).testTag("live_play").spot("live_play", tr("Jouer la partie"))
@@ -592,23 +610,7 @@ private fun LiveTopBar(ui: LiveScreenUi, actions: LiveActions, leave: () -> Unit
                 Icon(if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.OnAccent)
             }
         }
-        // « Lancer à » : touching it goes 1 → 2 → 4 bars → a beat → half a bar. It takes what is left, cut with « … ».
-        val code = liveQuantumCode(p)
-        val next = LIVE_QUANTUM_CYCLE[(LIVE_QUANTUM_CYCLE.indexOf(code) + 1).mod(LIVE_QUANTUM_CYCLE.size)]
-        Box(Modifier.weight(1f)) {
-            Column(
-                Modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp)).background(Neon.SurfaceHigh)
-                    .clickable { actions.setQuantum(next) }.padding(horizontal = if (compact) 8.dp else 10.dp, vertical = 4.dp).testTag("live_quantum")
-                    .spot("live_quantum", tr("Quand ça part")),
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Text(tr("Lancer à"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(
-                    liveQuantumLabel(code), style = MaterialTheme.typography.labelLarge,
-                    maxLines = 1, overflow = TextOverflow.Ellipsis,
-                )
-            }
-        }
+        Box(Modifier.weight(1f), contentAlignment = Alignment.Center) { LiveTempo(p.tempoBpm, actions) }
         Counter(ui)
         RecordButton(ui.take, actions.record)
     }
@@ -794,17 +796,21 @@ private fun Counter(ui: LiveScreenUi) {
  * the grid scrolls); rows past the song's last brick are new bricks, their dots ready to fill.
  */
 @Composable
-private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveActions, marks: GridMarks, modifier: Modifier) = BoxWithConstraints(modifier.background(GridLook.Ground)) {
+private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveActions, marks: GridMarks, modifier: Modifier, dense: Boolean = false) = BoxWithConstraints(modifier.background(GridLook.Ground)) {
     val p = ui.project
     val shown = p.liveRowsShown
     val rows = maxOf(shown, p.allScenes.size).coerceAtMost(Scene.MAX)
     val scenes = (0 until rows).toList()
     val n = columns.size.coerceAtLeast(1)
-    val compact = maxHeight < 440.dp
-    val gap = if (compact) 4.dp else 6.dp
+    val compact = dense || maxHeight < 440.dp
+    // Lot 4d: on a phone upright, five tracks or more take narrower columns (and gaps) so that all of
+    // them fit across; past [MIN_CELL_W] the columns scroll, with a › that says so.
+    val crowded = maxWidth < 440.dp && n >= 5
+    val gap = if (compact || crowded) 4.dp else 6.dp
     val sceneWidth = when {
         maxWidth >= 700.dp -> 104.dp
         maxWidth >= 440.dp -> 80.dp
+        crowded -> 44.dp
         else -> 52.dp
     }
     val innerW = maxWidth - GRID_PAD_H * 2
@@ -837,16 +843,22 @@ private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveA
         val stopH = if (compact) 44.dp else 48.dp
         val top = 48.dp
         val cellW = fitW.coerceIn(MIN_CELL_W, MAX_CELL_W)
-        val cellH = ((innerH - top - header - stopH - gap * (shown + 2)) / shown).coerceAtLeast(ROW_MIN_H)
+        val cellH = ((innerH - top - header - stopH - gap * (shown + 2)) / shown).coerceAtLeast(if (dense) ROW_MIN_DENSE else ROW_MIN_H)
         val look = CellLook(clock, sources, cellW.value, cellH.value, gap.value)
         Column(Modifier.padding(horizontal = GRID_PAD_H, vertical = GRID_PAD_V).testTag("live_grid"), verticalArrangement = Arrangement.spacedBy(gap)) {
             Row(Modifier.fillMaxWidth().height(top - gap), verticalAlignment = Alignment.CenterVertically) {
-                Text(tr("Briques"), Modifier.weight(1f), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary, maxLines = 1)
+                // Lot 4d: « Lancer à » here (the bar keeps the tempo), beside « Cases ».
+                QuantumButton(p, actions.setQuantum, Modifier.weight(1f, fill = false))
+                Spacer(Modifier.weight(1f).width(4.dp))
                 CasesStepper(shown, actions.setRows)
             }
             Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
                 Spacer(Modifier.width(sceneWidth).height(header))
-                ScrolledRow(h, gap) { columns.forEach { c -> ColumnHeader(c, c.key in ui.muted, cellW, header) { actions.toggleMute(c.key) } } }
+                Box {
+                    ScrolledRow(h, gap) { columns.forEach { c -> ColumnHeader(c, c.key in ui.muted, cellW, header) { actions.toggleMute(c.key) } } }
+                    // Over the last name (never over an M): more tracks wait to the right.
+                    if (h.canScrollForward) MoreColumns(h, Modifier.align(Alignment.TopEnd).padding(top = 3.dp))
+                }
             }
             Box(Modifier.weight(1f, fill = false)) {
                 Column(Modifier.fadingVerticalEdges(v).verticalScroll(v), verticalArrangement = Arrangement.spacedBy(gap)) {
@@ -934,6 +946,20 @@ private fun ScrolledRow(state: ScrollState, gap: Dp, content: @Composable () -> 
     Row(Modifier.fadingEdges(state).horizontalScroll(state), horizontalArrangement = Arrangement.spacedBy(gap)) { content() }
 }
 
+/** Lot 4d: more tracks to the right (the columns scroll): a › over the last name, a touch shows the last ones. */
+@Composable
+private fun MoreColumns(state: ScrollState, modifier: Modifier) {
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    Box(
+        modifier.size(24.dp, 20.dp).clip(RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp)).background(Neon.Cyan.copy(alpha = 0.9f))
+            .clickable { scope.launch { state.animateScrollTo(state.maxValue) } }
+            .semantics { contentDescription = tr("Voir les autres pistes") }.testTag("live_columns_more"),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = Neon.OnAccent, modifier = Modifier.size(18.dp))
+    }
+}
+
 /** M: silent at once (not written in the project). */
 @Composable
 private fun MuteButton(c: LiveColumn, muted: Boolean, toggleMute: () -> Unit, modifier: Modifier) {
@@ -954,9 +980,12 @@ private fun ColumnHeader(c: LiveColumn, muted: Boolean, width: Dp, height: Dp, t
         Modifier.width(width).height(height).clip(RoundedCornerShape(10.dp)).background(GridLook.Panel),
     ) {
         Box(Modifier.fillMaxWidth().height(3.dp).background(c.color.copy(alpha = 0.9f)))
+        // A narrow column (six tracks on a phone): the name gets smaller before it is cut.
+        val style = MaterialTheme.typography.labelMedium
         Text(
-            c.name, Modifier.fillMaxWidth().weight(1f).padding(horizontal = 4.dp, vertical = 2.dp), style = MaterialTheme.typography.labelMedium,
-            maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center,
+            c.name, Modifier.fillMaxWidth().weight(1f).padding(horizontal = 2.dp, vertical = 2.dp), style = style,
+            maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center, softWrap = false,
+            autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
         )
         // Under the name: a finger that misses it does not land on a pad (which would launch a
         // scene, into the take). Lying down it is shorter, as wide as the column.
@@ -1191,9 +1220,89 @@ private fun StopButton(label: String, modifier: Modifier, waiting: Boolean, blin
     }
 }
 
+/** Lot 4d: a tab of the Live page's tools, as the dock and the open panel name it. */
+@Composable
+private fun tabLabel(t: LivePanelTab, sideBySide: Boolean = false): String = when (t) {
+    LivePanelTab.Briques -> tr("Briques")
+    LivePanelTab.Pads -> tr("Pads")
+    LivePanelTab.Effets -> if (sideBySide) tr("Effets et 303") else tr("Effets")
+    LivePanelTab.Notes -> tr("Notes")
+    LivePanelTab.Acide -> tr("Acid 303")
+}
+
+private fun tabIcon(t: LivePanelTab) = when (t) {
+    LivePanelTab.Briques -> Icons.Filled.GridView
+    LivePanelTab.Pads -> Icons.Filled.Apps
+    LivePanelTab.Effets -> Icons.Filled.AutoAwesome
+    LivePanelTab.Notes -> Icons.Filled.MusicNote
+    LivePanelTab.Acide -> Icons.Filled.GraphicEq
+}
+
+/** The tabs in order: Briques · Pads · Effets · Notes · Acid 303 (a wide screen: the 303 beside the effects). */
+private fun liveTabs(sideBySide: Boolean): List<LivePanelTab> =
+    if (sideBySide) listOf(LivePanelTab.Briques, LivePanelTab.Pads, LivePanelTab.Effets, LivePanelTab.Notes)
+    else listOf(LivePanelTab.Briques, LivePanelTab.Pads, LivePanelTab.Effets, LivePanelTab.Notes, LivePanelTab.Acide)
+
 /**
- * The panel: Effets | 303 | Pads (on a wide screen upright, effects and 303 side by side), with ⛶
- * and its fold (upright: down to its tabs; lying down, [sideways]: to a rail on the side).
+ * Lot 4d, the tools folded: one floating dock over the app's navigation, Briques · Pads · Effets ·
+ * Notes · Acid 303 (an icon over each name), ⛶ and ︿; the grid has the rest of the screen.
+ */
+@Composable
+private fun LiveDock(ui: LiveScreenUi, sideBySide: Boolean, choose: (LivePanelTab) -> Unit, unfold: () -> Unit, immersive: Boolean, toggleFull: () -> Unit) {
+    val shape = RoundedCornerShape(20.dp)
+    BoxWithConstraints(Modifier.fillMaxWidth().background(GridLook.Ground).padding(horizontal = 10.dp, vertical = 6.dp)) {
+        // A narrow dock (a small phone, a big text size): the icons alone, their names said.
+        val words = maxWidth >= 300.dp
+        Row(
+            Modifier.fillMaxWidth().height(DOCK_HEIGHT).shadow(10.dp, shape).clip(shape).background(Neon.Surface)
+                .border(1.dp, Color.White.copy(alpha = 0.06f), shape).padding(horizontal = 4.dp).testTag("live_dock"),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            liveTabs(sideBySide).forEach { t ->
+                val label = tabLabel(t, sideBySide)
+                val selected = t == LivePanelTab.Briques
+                // No 303 line in the project: its tab stays (its page says how to get one), greyed.
+                val idle = t == LivePanelTab.Acide && !ui.hasAcid
+                val ink = when {
+                    selected -> Neon.Cyan
+                    idle -> Neon.TextSecondary.copy(alpha = 0.6f)
+                    else -> Neon.TextPrimary
+                }
+                Column(
+                    Modifier.weight(1f).fillMaxHeight().padding(vertical = 4.dp).clip(RoundedCornerShape(14.dp))
+                        .clickable { choose(t) }.testTag("live_tab_${t.name}")
+                        .semantics(mergeDescendants = true) { this.selected = selected; if (!words) contentDescription = label },
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Icon(tabIcon(t), contentDescription = null, tint = ink, modifier = Modifier.size(22.dp))
+                    if (words) {
+                        val style = MaterialTheme.typography.labelMedium
+                        Text(
+                            label, color = ink, style = style, maxLines = 1, softWrap = false,
+                            autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
+                        )
+                    }
+                }
+            }
+            FullScreenButton(immersive, toggleFull)
+            IconButton(onClick = unfold, modifier = Modifier.testTag("live_panel_fold")) {
+                Icon(Icons.Filled.ExpandLess, contentDescription = tr("Déplier"))
+            }
+        }
+    }
+}
+
+/** The dock's height (its floating margins aside). */
+private val DOCK_HEIGHT = 60.dp
+
+/**
+ * Lot 4d, the tools open: a panel from the bottom (lying down, [sideways]: on the right). On top
+ * the same tabs as the dock, as one segmented control; then a header with the page's title and its
+ * tools as icons (the effects: Tout remettre, Verrouiller, Réglages; then ⛶ and Replier); then the
+ * page (the effects: « L'effet », « Comment il joue », the pad). A wide screen upright: effects and
+ * 303 side by side. [tight] (a short panel): no handle nor header, ⛶ and Replier beside the tabs,
+ * the effects' tools in their own first row.
  */
 @Composable
 private fun LivePanel(
@@ -1204,73 +1313,105 @@ private fun LivePanel(
     pads: LivePadsUi?,
     padsActions: LivePadsActions,
     sideBySide: Boolean,
-    open: Boolean,
-    onToggle: () -> Unit,
+    fold: () -> Unit,
     tab: LivePanelTab,
-    onTab: (LivePanelTab) -> Unit,
+    choose: (LivePanelTab) -> Unit,
     immersive: Boolean,
     toggleFull: () -> Unit,
     sideways: Boolean,
     modifier: Modifier,
-) {
+) = BoxWithConstraints(modifier) {
+    val tight = maxHeight < TIGHT_PANEL
     val shown = if (sideBySide && tab == LivePanelTab.Acide) LivePanelTab.Effets else tab
-    val shape = if (sideways) RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp) else RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
-    Column(modifier.clip(shape).background(Neon.Surface).testTag("live_panel")) {
-        Row(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            val tabs = if (sideBySide) listOf(LivePanelTab.Effets to tr("Effets et 303"), LivePanelTab.Pads to tr("Pads"), LivePanelTab.Notes to tr("Notes"))
-            else listOf(LivePanelTab.Effets to tr("Effets"), LivePanelTab.Acide to tr("Acid 303"), LivePanelTab.Pads to tr("Pads"), LivePanelTab.Notes to tr("Notes"))
-            // The tabs share the row by the length of their names (a bigger text makes them
-            // smaller, never hides one under ⛶).
-            Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                tabs.forEach { (t, label) ->
-                    val selected = open && shown == t
-                    // No 303 line in the project: its tab stays (it says how to get one) but greyed.
-                    val idle = t == LivePanelTab.Acide && !ui.hasAcid
-                    Box(
-                        Modifier.weight(label.length + 3f).height(48.dp).clip(RoundedCornerShape(24.dp)).background(if (selected) Neon.Cyan else Neon.SurfaceHigh)
-                            .clickable {
-                                onTab(t)
-                                // Lot 4a: « Pads » is the pads view, on the whole screen (Back: here, the card and its settings).
-                                if (t == LivePanelTab.Pads && pads?.editing == null) padsActions.fullScreen?.invoke()
-                            }.padding(horizontal = 4.dp).testTag("live_tab_${t.name}"),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        val style = MaterialTheme.typography.labelLarge
-                        Text(
-                            label, color = if (selected) Neon.OnAccent else if (idle) Neon.TextSecondary.copy(alpha = 0.6f) else Neon.TextPrimary,
-                            style = style, maxLines = 1, softWrap = false,
-                            autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 10.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
-                        )
-                    }
-                }
-            }
-            FullScreenButton(immersive, toggleFull)
-            IconButton(onClick = onToggle, modifier = Modifier.testTag("live_panel_fold")) {
-                Icon(
-                    when {
-                        sideways -> Icons.AutoMirrored.Filled.KeyboardArrowRight
-                        open -> Icons.Filled.ExpandMore
-                        else -> Icons.Filled.ExpandLess
-                    },
-                    contentDescription = if (open) tr("Replier") else tr("Déplier"),
-                )
+    val shape = if (sideways) RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp) else RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+    Column(Modifier.fillMaxSize().clip(shape).background(Neon.Surface).testTag("live_panel")) {
+        if (!tight && !sideways) {
+            // The sheet's handle: a touch folds it.
+            Box(
+                Modifier.fillMaxWidth().height(18.dp).clickable(onClickLabel = tr("Replier"), onClick = fold).testTag("live_panel_handle"),
+                contentAlignment = Alignment.Center,
+            ) { Box(Modifier.size(40.dp, 4.dp).clip(CircleShape).background(Neon.TextSecondary.copy(alpha = 0.5f))) }
+        } else {
+            Spacer(Modifier.height(6.dp))
+        }
+        Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Segmented(ui, liveTabs(sideBySide), shown, sideBySide, choose, Modifier.weight(1f))
+            if (tight) {
+                FullScreenButton(immersive, toggleFull)
+                FoldButton(sideways, fold)
             }
         }
-        if (!open) return@Column
-        Box(Modifier.fillMaxWidth().weight(1f).padding(horizontal = 10.dp)) {
+        if (!tight) {
+            Row(
+                Modifier.fillMaxWidth().height(52.dp).padding(start = 12.dp, end = 6.dp),
+                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                SectionTitle(if (shown == LivePanelTab.Effets) tr("L'effet") else tabLabel(shown, sideBySide), Modifier.weight(1f))
+                if (shown == LivePanelTab.Effets) LiveFxSafety(ui, actions, fx, Modifier, iconsOnly = true)
+                FullScreenButton(immersive, toggleFull)
+                FoldButton(sideways, fold)
+            }
+        } else {
+            Spacer(Modifier.height(6.dp))
+        }
+        Box(Modifier.fillMaxWidth().weight(1f).padding(start = 10.dp, end = 10.dp, bottom = 6.dp)) {
             when {
-                shown == LivePanelTab.Pads -> Column(Modifier.verticalScroll(rememberScrollState())) {
-                    if (pads != null) LivePadsCard(pads, padsActions)
+                shown == LivePanelTab.Pads -> {
+                    // A pad being set up (« Régler » from the pads view): its settings, under the pads, in view.
+                    val scroll = rememberScrollState()
+                    LaunchedEffect(pads?.editing, scroll.maxValue) { if (pads?.editing != null) scroll.animateScrollTo(scroll.maxValue) }
+                    Column(Modifier.verticalScroll(scroll)) {
+                        if (pads != null) LivePadsCard(pads, padsActions)
+                    }
                 }
                 shown == LivePanelTab.Notes -> LiveNotes(ui, actions, Modifier.fillMaxSize())
                 sideBySide -> Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    LiveFx(ui, columns, actions, Modifier.weight(1f).fillMaxHeight(), fx)
+                    LiveFx(ui, columns, actions, Modifier.weight(1f).fillMaxHeight(), fx, tools = tight)
                     LiveAcid(ui, actions, Modifier.weight(1f).fillMaxHeight())
                 }
                 shown == LivePanelTab.Acide -> LiveAcid(ui, actions, Modifier.fillMaxSize())
-                else -> LiveFx(ui, columns, actions, Modifier.fillMaxSize(), fx)
+                else -> LiveFx(ui, columns, actions, Modifier.fillMaxSize(), fx, tools = tight)
             }
         }
+    }
+}
+
+/** Below this height the open panel drops its handle and header (see [LivePanel]). */
+private val TIGHT_PANEL = 380.dp
+
+/** The open panel's tabs, one segmented control: the page shown lit; « Briques » folds the panel. */
+@Composable
+private fun Segmented(ui: LiveScreenUi, tabs: List<LivePanelTab>, shown: LivePanelTab, sideBySide: Boolean, choose: (LivePanelTab) -> Unit, modifier: Modifier) {
+    Row(
+        modifier.height(48.dp).clip(RoundedCornerShape(24.dp)).background(GridLook.Ground.copy(alpha = 0.7f)).padding(3.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        tabs.forEach { t ->
+            val label = tabLabel(t, sideBySide)
+            val selected = t == shown
+            val idle = t == LivePanelTab.Acide && !ui.hasAcid
+            // The tabs share the row by the length of their names (a bigger text makes them smaller).
+            Box(
+                Modifier.weight(label.length + 3f).fillMaxHeight().clip(RoundedCornerShape(21.dp)).background(if (selected) Neon.Cyan else Color.Transparent)
+                    .clickable { choose(t) }.padding(horizontal = 2.dp).testTag("live_tab_${t.name}").semantics { this.selected = selected },
+                contentAlignment = Alignment.Center,
+            ) {
+                val style = MaterialTheme.typography.labelLarge
+                Text(
+                    label, color = if (selected) Neon.OnAccent else if (idle) Neon.TextSecondary.copy(alpha = 0.6f) else Neon.TextPrimary,
+                    style = style, maxLines = 1, softWrap = false,
+                    autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
+                )
+            }
+        }
+    }
+}
+
+/** ﹀ (lying down: →): the panel folds back to the dock (or the rail). */
+@Composable
+private fun FoldButton(sideways: Boolean, fold: () -> Unit) {
+    IconButton(onClick = fold, modifier = Modifier.testTag("live_panel_fold")) {
+        Icon(if (sideways) Icons.AutoMirrored.Filled.KeyboardArrowRight else Icons.Filled.ExpandMore, contentDescription = tr("Replier"))
     }
 }
 
@@ -1279,12 +1420,14 @@ private val HEADER_HEIGHT = 80.dp
 private val HEADER_COMPACT = 56.dp
 
 /** A cell never gets smaller than a finger: past these the grid scrolls. */
-private val MIN_CELL_W = 56.dp
+private val MIN_CELL_W = 44.dp
 private val MIN_CELL_H = 48.dp
 /** Nor wider than a big pad, however few the tracks. */
 private val MAX_CELL_W = 120.dp
 /** Lot 4c: a brick's row stops shrinking here (« Cases » past what fits: the grid scrolls). */
 private val ROW_MIN_H = 40.dp
+/** Lot 4d: lower with the tools open (about six bricks stay in view over the panel). */
+private val ROW_MIN_DENSE = 30.dp
 /** The playing cell's halo: thin strokes inside its edge, fainter inwards. */
 private const val HALO_LAYERS = 6
 private val GRID_PAD_H = 8.dp

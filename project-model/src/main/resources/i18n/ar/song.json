@@ -278,7 +278,6 @@
   "Ta prise Live a été gardée : elle est dans le morceau (%d parties).": "حُفظ تسجيل Live: إنه في الأغنية (الأجزاء: %d).",
   "Tempo (60 à 200 BPM)": "السرعة (60 إلى 200 BPM)",
   "Temps par mesure :": "النبضات في المازورة:",
-  "Tenus": "مثبَّت",
   "Terminé": "تم",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "أغنيتك فارغة: أضف أجزاءك بترتيب عزفها (Intro، مقطع، لازمة…).",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "اضغط على Pad لتشغيل صوته، واضغط مجددًا لإيقافه. كل شيء يبقى على الإيقاع.",
@@ -393,5 +392,10 @@
   "Cases": "الخانات",
   "Moins de cases": "خانات أقل",
   "Plus de cases": "خانات أكثر",
-  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "حلقتك الأولى تدور. المس نقطة لتضيف صوتًا هناك."
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "حلقتك الأولى تدور. المس نقطة لتضيف صوتًا هناك.",
+  "Voir les autres pistes": "عرض المسارات الأخرى",
+  "L'effet": "المؤثر",
+  "Comment il joue": "طريقة العزف",
+  "Appui": "ضغط",
+  "Tenu": "مثبَّت"
 }

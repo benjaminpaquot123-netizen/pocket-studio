@@ -35,7 +35,7 @@ import org.robolectric.annotation.GraphicsMode
 
 /**
  * The Live page's bar on a narrow screen (316 dp: a 411 dp phone at « Taille de l'interface 130 % »),
- * in Dutch (longest words): ● REC, the counter, ▶ and ← stay whole and touchable.
+ * in Dutch (longest words): ● REC, the counter, ▶, ← and the tempo stay whole and touchable.
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE) // real text widths
@@ -84,10 +84,15 @@ class LiveTopBarTest {
             recorded = 0
             compose.onNodeWithTag("live_record").performClick()
             assertEquals("$l $w", 1, recorded)
-            // « Lancer à » keeps a touchable size between ▶ and the counter.
+            // Lot 4d: the tempo keeps a touchable size between ▶ and the counter.
+            val t = compose.onNodeWithTag("live_tempo").getBoundsInRoot()
+            assertTrue("tempo ${t.right - t.left}", t.right - t.left >= 48.dp - 0.5.dp)
+            assertTrue(t.left >= compose.onNodeWithTag("live_play").getBoundsInRoot().right)
+            assertTrue(t.right <= compose.onNodeWithTag("live_counter").getBoundsInRoot().left)
+            // « Lancer à » went down over the grid, still touchable.
             val q = compose.onNodeWithTag("live_quantum").getBoundsInRoot()
             assertTrue("quantum ${q.right - q.left}", q.right - q.left >= 48.dp)
-            assertTrue(q.right <= compose.onNodeWithTag("live_counter").getBoundsInRoot().left)
+            assertTrue(q.top >= compose.onNodeWithTag("live_top_bar").getBoundsInRoot().bottom)
         }
     }
 }

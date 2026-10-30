@@ -278,7 +278,6 @@
   "Ta prise Live a été gardée : elle est dans le morceau (%d parties).": "Dein Live-Take wurde behalten: Er ist im Song (%d Teile).",
   "Tempo (60 à 200 BPM)": "Tempo (60 bis 200 BPM)",
   "Temps par mesure :": "Schläge pro Takt:",
-  "Tenus": "Gehalten",
   "Terminé": "Fertig",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "Dein Song ist leer: Füg deine Teile in der Reihenfolge hinzu, in der sie spielen (Intro, Strophe, Refrain…).",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "Tippe auf ein Pad, um seinen Sound zu starten, nochmal, um ihn zu stoppen. Alles bleibt im Takt.",
@@ -393,5 +392,10 @@
   "Cases": "Felder",
   "Moins de cases": "Weniger Felder",
   "Plus de cases": "Mehr Felder",
-  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Dein erster Loop läuft. Tippe auf einen Punkt, um dort einen Sound hinzuzufügen."
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Dein erster Loop läuft. Tippe auf einen Punkt, um dort einen Sound hinzuzufügen.",
+  "Voir les autres pistes": "Weitere Spuren zeigen",
+  "L'effet": "Der Effekt",
+  "Comment il joue": "Wie es spielt",
+  "Appui": "Drücken",
+  "Tenu": "Halten"
 }

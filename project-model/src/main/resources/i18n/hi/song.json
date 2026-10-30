@@ -278,7 +278,6 @@
   "Ta prise Live a été gardée : elle est dans le morceau (%d parties).": "तुम्हारा Live टेक रख लिया गया: वो गाने में है (%d पार्ट)।",
   "Tempo (60 à 200 BPM)": "टेम्पो (60 से 200 BPM)",
   "Temps par mesure :": "हर bar में बीट्स:",
-  "Tenus": "होल्ड",
   "Terminé": "हो गया",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "तुम्हारा गाना खाली है: अपने पार्ट उसी क्रम में जोड़ो जिसमें वो बजते हैं (Intro, Verse, Chorus…)।",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "पैड का साउंड शुरू करने के लिए टैप करो, रोकने के लिए फिर टैप करो। सब बीट पर ही रहता है।",
@@ -393,5 +392,10 @@
   "Cases": "खाने",
   "Moins de cases": "कम खाने",
   "Plus de cases": "ज़्यादा खाने",
-  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "तुम्हारा पहला लूप चल रहा है। वहाँ आवाज़ जोड़ने के लिए किसी बिंदु पर टैप करो।"
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "तुम्हारा पहला लूप चल रहा है। वहाँ आवाज़ जोड़ने के लिए किसी बिंदु पर टैप करो।",
+  "Voir les autres pistes": "बाकी ट्रैक्स देखें",
+  "L'effet": "इफ़ेक्ट",
+  "Comment il joue": "कैसे बजता है",
+  "Appui": "दबाएँ",
+  "Tenu": "होल्ड"
 }

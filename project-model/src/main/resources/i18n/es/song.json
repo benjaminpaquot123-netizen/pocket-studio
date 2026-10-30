@@ -278,7 +278,6 @@
   "Ta prise Live a été gardée : elle est dans le morceau (%d parties).": "Tu toma Live se guardó: está en la canción (%d partes).",
   "Tempo (60 à 200 BPM)": "Tempo (60 a 200 BPM)",
   "Temps par mesure :": "Tiempos por compás:",
-  "Tenus": "Sostenidos",
   "Terminé": "Hecho",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "Tu canción está vacía: añade tus partes en el orden en que suenan (Intro, Estrofa, Estribillo…).",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "Toca un pad para lanzar su sonido, vuelve a tocarlo para detenerlo. Todo se queda a tiempo.",
@@ -393,5 +392,10 @@
   "Cases": "Casillas",
   "Moins de cases": "Menos casillas",
   "Plus de cases": "Más casillas",
-  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí."
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "Tu primer bucle está sonando. Toca un punto para añadir un sonido ahí.",
+  "Voir les autres pistes": "Ver las otras pistas",
+  "L'effet": "El efecto",
+  "Comment il joue": "Cómo suena",
+  "Appui": "Pulsar",
+  "Tenu": "Sostenido"
 }

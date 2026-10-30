@@ -132,6 +132,8 @@ class PlayStripUi(
     val helpOn: Boolean? = null,
     /** « ⟳ Partie » shown (with a song); false: the Mode simple's lighter strip. */
     val loopChip: Boolean = true,
+    /** Lot 4d: false where the page shows the tempo itself (the Live page's bar). */
+    val showTempo: Boolean = true,
 )
 
 class PlayStripActions(
@@ -194,7 +196,7 @@ fun PlayStrip(ui: PlayStripUi, actions: PlayStripActions) = BoxWithConstraints(
             RepeatingIconButton({ nudge(+1) }, Modifier.widthIn(min = TOUCH_HEIGHT).requiredHeight(TOUCH_HEIGHT).testTag("top_tempo_plus")) {
                 Icon(Icons.Filled.Add, contentDescription = tr("Tempo plus"), modifier = Modifier.size(18.dp))
             }
-        } else {
+        } else if (ui.showTempo) {
             TempoButton(ui.tempoBpm, actions.openTempo)
         }
         PositionLabel(ui, actions, Modifier.weight(1f))

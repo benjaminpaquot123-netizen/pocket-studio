@@ -278,7 +278,6 @@
   "Ta prise Live a été gardée : elle est dans le morceau (%d parties).": "Live kaydın saklandı: şarkıda (%d bölüm).",
   "Tempo (60 à 200 BPM)": "Tempo (60 ile 200 BPM arası)",
   "Temps par mesure :": "Ölçü başına vuruş:",
-  "Tenus": "Uzun tutulan",
   "Terminé": "Bitti",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "Şarkın boş: bölümlerini çaldıkları sırayla ekle (Giriş, Kıta, Nakarat…).",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "Sesini başlatmak için bir pad'e dokun, durdurmak için yeniden dokun. Her şey vuruşa oturmuş kalır.",
@@ -393,5 +392,10 @@
   "Cases": "Kutular",
   "Moins de cases": "Daha az kutu",
   "Plus de cases": "Daha çok kutu",
-  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "İlk döngün çalıyor. Oraya ses eklemek için bir noktaya dokun."
+  "Ta première boucle tourne. Touche un point pour y ajouter un son.": "İlk döngün çalıyor. Oraya ses eklemek için bir noktaya dokun.",
+  "Voir les autres pistes": "Diğer kanalları göster",
+  "L'effet": "Efekt",
+  "Comment il joue": "Nasıl çalar",
+  "Appui": "Bas",
+  "Tenu": "Uzun tut"
 }

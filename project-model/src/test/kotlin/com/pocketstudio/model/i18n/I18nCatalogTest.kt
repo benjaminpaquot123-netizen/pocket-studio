@@ -265,6 +265,16 @@ class I18nCatalogTest {
             "RealInstruments.kt: e.name",
             "Tracks.kt: multi.name.ifBlank { \"Instrument\" }",
             "LibraryScreen.kt: label",
+            // The sound browser (2026-10-30): folder titles (SoundShelves.FAMILIES, SoundCharacter.LABELS,
+            // PartySounds groups: ModelTextsTest; a machine is a pack name, a library group a pack sound's name),
+            // sound and pack names as the library showed them, the party sounds (ModelTextsTest).
+            "SoundShelfBrowser.kt: title",
+            "SoundShelfBrowser.kt: name",
+            "SoundShelfBrowser.kt: pack",
+            "SoundShelfBrowser.kt: option.name.substringBefore(\" · \")",
+            "LibraryScreen.kt: s.name",
+            "LibraryScreen.kt: s.group",
+            "LibraryScreen.kt: com.pocketstudio.model.PartySounds.FAMILY",
             "MySoundLibrary.kt: label",  // a family of sounds (SoundPacks.KIND_LABELS, checked by ModelTextsTest)
             "LibraryScreen.kt: option.name.substringBefore(\" · \")",
             // The style's name, as in the assistant (checked by ModelTextsTest).

@@ -1643,6 +1643,47 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         sampleJob(tr("Pose du son sur le pad live %d…", pad + 1), live = pad) { padSamples.add(pcm, name) }
     }
 
+    private var liveStarterJob: kotlinx.coroutines.Job? = null
+
+    private val _liveStarting = MutableStateFlow(false)
+    /** The ready-to-play live pads are being prepared (a few seconds). */
+    val liveStarting: StateFlow<Boolean> = _liveStarting.asStateFlow()
+
+    /**
+     * The live pads opened empty (Benjamin's list n° 12): the ready-to-play set
+     * ([com.pocketstudio.model.LiveStarter]) made by [make] at the project's tempo goes on them,
+     * once per project (emptied by hand later, they stay empty). One quiet step: « Annuler » never
+     * meets it. A pad filled meanwhile keeps its sound.
+     */
+    fun fillLiveStarter(make: suspend (Double) -> Map<Int, Pair<Pcm, Int>>) {
+        if (!NativeEngine.isAvailable || !com.pocketstudio.model.LiveStarter.wanted(project.value) || liveStarterJob?.isActive == true) return
+        liveStarterJob = viewModelScope.launch {
+            _liveStarting.value = true
+            try {
+                awaitSoundsLoaded()
+                val sounds = make(project.value.tempoBpm)
+                val made = HashMap<Int, com.pocketstudio.model.LiveStarter.Made>()
+                for ((i, sound) in sounds) {
+                    val pad = com.pocketstudio.model.LiveStarter.PADS.getOrNull(i) ?: continue
+                    val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(sound.first, pad.name) }
+                    padSamples.register(prepared)
+                    made[i] = com.pocketstudio.model.LiveStarter.Made(sample.file, sound.second)
+                }
+                session.editQuietly { q -> q.copy(live = com.pocketstudio.model.LiveStarter.applied(q.live, made)) }
+                pushLive()
+                AppLog.add("Pads prêts à jouer : ${made.size} sons posés")
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                AppLog.add("Pads prêts à jouer : échec (${e.message ?: e.javaClass.simpleName})")
+            } catch (e: OutOfMemoryError) {
+                AppLog.add("Pads prêts à jouer : mémoire insuffisante")
+            } finally {
+                _liveStarting.value = false
+            }
+        }
+    }
+
     /** On live pad [pad] (from the sound library), its length in beats fitted to the tempo; false when busy. */
     fun placeOnLivePad(pad: Int, pcm: Pcm, name: String): Boolean {
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false

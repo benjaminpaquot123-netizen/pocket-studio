@@ -31,7 +31,9 @@ object DefaultNames {
                 "Synthé", "Basse", "Nappe", "Lead", "Batterie", ACID, "Remix", "Piste", "Sample",
                 "Son importé", "Morceau 1 mesure", "Voix", SimpleMelody.NAME, StarterWizard.RISER_TRACK, StarterWizard.OLD_RISER_TRACK, StarterWizard.SUB_TRACK, StarterWizard.SUB_DROP_TRACK,
                 StarterWizard.COUNTER_TRACK,
-            ) + TrackKind.entries.map { it.trackName } + StarterWizard.CHORD_TRACK_NAMES + Demos.ALL.map { it.first } + StarterWizard.STYLES.map { it.name }
+            ) + TrackKind.entries.map { it.trackName } + StarterWizard.CHORD_TRACK_NAMES + Demos.ALL.map { it.first } + StarterWizard.STYLES.map { it.name } +
+                // The ready-to-play live pads and the party sounds put on a pad (Benjamin's list n° 12).
+                LiveStarter.PADS.map { it.name } + PartySounds.ALL.map { it.name }
             ).toSet()
     }
 

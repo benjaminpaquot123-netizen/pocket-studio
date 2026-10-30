@@ -71,6 +71,8 @@ sealed interface SoundRef {
     data class Instrument(val packId: String) : SoundRef
     /** A sound of « Ma bibliothèque » ([MySoundLibrary]), by its id. */
     data class Mine(val id: String) : SoundRef
+    /** A party sound shipped in the app ([com.pocketstudio.model.PartySounds]), by its id. */
+    data class Party(val id: String) : SoundRef
 }
 
 data class SoundOption(val ref: SoundRef, val name: String)
@@ -194,6 +196,9 @@ private const val FOCUS_VOLUME = 0.95f
 private const val BACKGROUND_VOLUME = 0.48f
 
 const val KIT_CATEGORY = "kit"
+
+/** The built-in kit's clap (voice 4), the starter set's clap. */
+private const val STARTER_CLAP = 4
 private const val PACK_PREFIX = "pack:"
 
 /**
@@ -575,12 +580,96 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
         is SoundRef.Mine -> MySoundLibrary.load(getApplication(), ref.id)
+        is SoundRef.Party -> partySound(ref.id)
         is SoundRef.Pack -> withContext(Dispatchers.IO) {
             val file = PackStore.file(getApplication(), ref.packId, ref.sound)
             runCatching { AudioDecoder.decode(getApplication(), Uri.fromFile(file)) }
                 .onFailure { AppLog.add("Son de pack illisible ${ref.sound.file} : ${it.message}") }
                 .getOrNull()
         }
+    }
+
+    /** A party sound of the app: its asset copied once to the cache (the decoder reads files), then decoded. */
+    private suspend fun partySound(id: String): Pcm? = withContext(Dispatchers.IO) {
+        val sound = com.pocketstudio.model.PartySounds.byId(id) ?: return@withContext null
+        val app = getApplication<Application>()
+        runCatching {
+            val dir = java.io.File(app.cacheDir, "party").apply { mkdirs() }
+            val file = java.io.File(dir, "${sound.id}.ogg")
+            if (!file.isFile || file.length() == 0L) {
+                // Written aside then renamed: a copy cut short is never read as the sound.
+                val part = java.io.File(dir, "${sound.id}.part")
+                app.assets.open(sound.asset).use { input -> part.outputStream().use { input.copyTo(it) } }
+                if (!part.renameTo(file)) error("rename")
+            }
+            AudioDecoder.decode(app, Uri.fromFile(file))
+        }.onFailure { AppLog.add("Son de fête illisible ${sound.id} : ${it.message}") }.getOrNull()
+    }
+
+    // --- « Récents » and « Favoris » of the sound browser ----------------------------------------
+
+    private fun marksPrefs() = getApplication<Application>().getSharedPreferences("sound_marks", android.content.Context.MODE_PRIVATE)
+
+    private val _recents = MutableStateFlow(runCatching { com.pocketstudio.model.SoundMarks.read(marksPrefs().getString("recents", null), com.pocketstudio.model.SoundMarks.MAX_RECENTS) }.getOrDefault(emptyList()))
+    /** The sounds last put somewhere (keys, newest first), for every project. */
+    val recents: StateFlow<List<String>> = _recents.asStateFlow()
+
+    private val _favorites = MutableStateFlow(runCatching { com.pocketstudio.model.SoundMarks.read(marksPrefs().getString("favorites", null), com.pocketstudio.model.SoundMarks.MAX_FAVORITES) }.getOrDefault(emptyList()))
+    /** The sounds starred ☆ (keys, last starred first), for every project. */
+    val favorites: StateFlow<List<String>> = _favorites.asStateFlow()
+
+    /** [ref] put in place: first of « Récents ». */
+    fun markUsed(ref: SoundRef) {
+        val key = keyOf(ref) ?: return
+        _recents.value = com.pocketstudio.model.SoundMarks.touched(_recents.value, key)
+        runCatching { marksPrefs().edit().putString("recents", com.pocketstudio.model.SoundMarks.write(_recents.value)).apply() }
+    }
+
+    /** [ref] starred, or no longer. */
+    fun toggleFavorite(ref: SoundRef) {
+        val key = keyOf(ref) ?: return
+        _favorites.value = com.pocketstudio.model.SoundMarks.toggled(_favorites.value, key)
+        runCatching { marksPrefs().edit().putString("favorites", com.pocketstudio.model.SoundMarks.write(_favorites.value)).apply() }
+    }
+
+    // --- The live pads ready to play ------------------------------------------------------------
+
+    /**
+     * The sounds of [com.pocketstudio.model.LiveStarter] at [bpm] (pad index → sound and the beats
+     * a loop lasts): the loops rendered offline from its style's recipe on a private engine, the
+     * clap from the kit, the party hits decoded. A sound that cannot be made is left out.
+     */
+    suspend fun liveStarter(bpm: Double): Map<Int, Pair<Pcm, Int>> {
+        val base = StarterWizard.style(com.pocketstudio.model.LiveStarter.STYLE) ?: return emptyMap()
+        val style = base.copy(bpm = bpm.coerceIn(60.0, 200.0))
+        val mood = style.melody.mood
+        val out = LinkedHashMap<Int, Pair<Pcm, Int>>()
+        com.pocketstudio.model.LiveStarter.PADS.forEachIndexed { i, pad ->
+            val made: Pair<Pcm, Int>? = try {
+                when (pad.source) {
+                    com.pocketstudio.model.LiveStarter.Source.KickLoop -> style.lines.firstOrNull { it.role == Role.Kick }?.let { line ->
+                        groove(style, listOf(line to SoundRef.Kit(line.role.lane)), emptyList(), mood, bars = 1, acid = null, loop = true, songFx = true)?.let { it to 4 }
+                    }
+                    com.pocketstudio.model.LiveStarter.Source.Clap -> kitVoice(STARTER_CLAP)?.let { it to 1 }
+                    com.pocketstudio.model.LiveStarter.Source.AcidLoop -> WizardAcid.recipe(style, mood)?.let { line ->
+                        val bars = ((line.length + AcidPattern.STEPS_PER_PAGE - 1) / AcidPattern.STEPS_PER_PAGE).coerceIn(1, 4)
+                        groove(style, emptyList(), emptyList(), mood, bars = bars, acid = line, loop = true)?.let { it to bars * 4 }
+                    }
+                    com.pocketstudio.model.LiveStarter.Source.BassLoop -> {
+                        val sound = StarterWizard.soundsFor(StarterWizard.Part.Bass, style, _packs.value.installed).first()
+                        groove(style, emptyList(), listOf(StarterWizard.Part.Bass to sound), mood, bars = 2, acid = null, loop = true)?.let { it to 8 }
+                    }
+                    com.pocketstudio.model.LiveStarter.Source.Party -> pad.party?.let { partySound(it) }?.let { it to 1 }
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                AppLog.add("Pads prêts à jouer : ${pad.name} n'a pas pu être préparé (${e.message})")
+                null
+            }
+            if (made != null) out[i] = made
+        }
+        return out
     }
 
     private suspend fun kitVoice(voice: Int): Pcm? {

@@ -491,6 +491,8 @@ fun AppRoot() {
         val libTransport by rhythmVm.transport.collectAsStateWithLifecycle()
         val lane = libTransport.selectedPad
         val mySounds by libraryVm.mySounds.collectAsStateWithLifecycle()
+        val soundRecents by libraryVm.recents.collectAsStateWithLifecycle()
+        val soundFavorites by libraryVm.favorites.collectAsStateWithLifecycle()
         LaunchedEffect(Unit) {
             libraryVm.dismissMessage()
             libraryVm.refreshPacks()
@@ -529,12 +531,15 @@ fun AppRoot() {
                             runCatching { context.getSystemService(android.net.ConnectivityManager::class.java).isActiveNetworkMetered }.getOrDefault(false)
                         },
                         mine = mySounds,
+                        recents = soundRecents,
+                        favorites = soundFavorites,
                     ),
                     com.pocketstudio.app.library.LibraryActions(
                         close = close,
                         togglePlay = rhythmVm::togglePlay,
                         preview = libraryVm::preview,
                         use = { option ->
+                            libraryVm.markUsed(option.ref)
                             libraryVm.use(option.ref) { pcm ->
                                 // A kept sound keeps its whole name (« Voix · Ma chanson ») and its length.
                                 val mine = (option.ref as? com.pocketstudio.app.library.SoundRef.Mine)?.let { r -> mySounds.firstOrNull { it.id == r.id } }
@@ -556,6 +561,7 @@ fun AppRoot() {
                         renameMine = libraryVm::renameMine,
                         setMineKind = libraryVm::setMineKind,
                         deleteMine = libraryVm::deleteMine,
+                        toggleFavorite = libraryVm::toggleFavorite,
                     ),
                 )
             }
@@ -645,7 +651,12 @@ fun AppRoot() {
             properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
         ) {
             androidx.activity.compose.BackHandler { if (wizardUi.step > 0) libraryVm.back() else closeWizard() }
+            val wizardRecents by libraryVm.recents.collectAsStateWithLifecycle()
+            val wizardFavorites by libraryVm.favorites.collectAsStateWithLifecycle()
             androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
+              androidx.compose.runtime.CompositionLocalProvider(
+                com.pocketstudio.app.library.LocalSoundMarks provides com.pocketstudio.app.library.SoundMarksUi(wizardRecents, wizardFavorites, libraryVm::toggleFavorite),
+              ) {
                 com.pocketstudio.app.library.WizardScreen(
                     wizardUi, packsUi, previewing,
                     com.pocketstudio.app.library.WizardActions(
@@ -688,6 +699,7 @@ fun AppRoot() {
                     ),
                     preparing = preparing,
                 )
+              }
             }
         }
     }
@@ -2205,6 +2217,7 @@ fun AppRoot() {
                     rhythmVm, lifecycleOwner, close = closeLivePads,
                     openEffects = { fxChannel = it },
                     padsActions = com.pocketstudio.app.session.LivePadsActions(
+                        opened = { rhythmVm.fillLiveStarter(libraryVm::liveStarter) },
                         tap = rhythmVm::toggleLive,
                         stopAll = rhythmVm::stopLive,
                         edit = { liveEditing = it },
@@ -2227,6 +2240,7 @@ fun AppRoot() {
                     },
                     openEffects = { fxChannel = it },
                     padsActions = com.pocketstudio.app.session.LivePadsActions(
+                        opened = { rhythmVm.fillLiveStarter(libraryVm::liveStarter) },
                         tap = rhythmVm::toggleLive,
                         stopAll = rhythmVm::stopLive,
                         setSize = rhythmVm::setLiveSize,
@@ -2740,6 +2754,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                             val sessionUi by rhythmVm.sessionUi.collectAsStateWithLifecycle()
                             val liveStates by rhythmVm.liveStates.collectAsStateWithLifecycle()
                             val sampleTask by rhythmVm.sampleTask.collectAsStateWithLifecycle()
+                            val liveStarting by rhythmVm.liveStarting.collectAsStateWithLifecycle()
                             val followSong by rhythmVm.followSong.collectAsStateWithLifecycle()
                             val songLoop by rhythmVm.songLoop.collectAsStateWithLifecycle()
                             LaunchedEffect(Unit) {
@@ -2819,10 +2834,11 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     busy = when (val t = sampleTask) {
                                         is SampleTask.Busy -> t.message
                                         is SampleTask.Failed -> t.message
-                                        else -> null
+                                        else -> if (liveStarting) tr("Préparation des pads prêts à jouer…") else null
                                     },
                                 ),
                                 liveActions = LivePadsActions(
+                        opened = { rhythmVm.fillLiveStarter(libraryVm::liveStarter) },
                                     tap = rhythmVm::toggleLive,
                                     stopAll = rhythmVm::stopLive,
                                     setSize = rhythmVm::setLiveSize,
@@ -3529,10 +3545,10 @@ fun controlLabel(target: com.pocketstudio.model.AutoTarget, p: Project, strips: 
 /** The kind of sound a drum pad usually holds, to open the library on it. */
 /**
  * The sounds a pad's sheet offers (appui long on a pad): the built-in kit's voices for its kind,
- * then the downloaded packs' sounds of that kind, a dozen at most.
+ * then the downloaded packs' best sounds of that kind, each pack in turn, a dozen at most.
  */
 private fun padSoundOptions(lane: Int, installed: List<com.pocketstudio.model.PackManifest>): List<com.pocketstudio.app.library.SoundOption> =
-    com.pocketstudio.app.library.libraryCategories(padKind(lane), installed).flatMap { it.options }.take(12)
+    com.pocketstudio.app.library.quickPicks(padKind(lane), installed, 12)
 
 private fun padKind(lane: Int) = when (lane) {
     0, 1 -> "kick"
@@ -3687,6 +3703,7 @@ private fun LiveStateHost(
     val liveFxOf = remember(liveFx) { { liveFx.value } }
     val liveStates by vm.liveStates.collectAsStateWithLifecycle()
     val sampleTask by vm.sampleTask.collectAsStateWithLifecycle()
+    val liveStarting by vm.liveStarting.collectAsStateWithLifecycle()
     // The output spectrum behind the pads XY: read only where drawn (the page does not recompose with it).
     val spectrum = vm.spectrum.collectAsStateWithLifecycle()
     val spectrumOf = remember(spectrum) { { spectrum.value } }
@@ -3719,7 +3736,7 @@ private fun LiveStateHost(
                 busy = when (val t = sampleTask) {
                     is SampleTask.Busy -> t.message
                     is SampleTask.Failed -> t.message
-                    else -> null
+                    else -> if (liveStarting) tr("Préparation des pads prêts à jouer…") else null
                 },
             ),
         )

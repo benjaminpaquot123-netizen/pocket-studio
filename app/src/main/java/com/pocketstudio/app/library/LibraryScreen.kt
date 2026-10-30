@@ -17,13 +17,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.GraphicEq
-import androidx.compose.material.icons.filled.Inventory2
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.CloudDownload
@@ -50,7 +47,6 @@ import com.pocketstudio.model.SoundPacks
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.app.rhythm.DrumKitInfo
 import com.pocketstudio.app.sounds.SoundLooks
-import com.pocketstudio.ui.ChipRow
 import com.pocketstudio.ui.FamilyChip
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.NeonCard
@@ -75,6 +71,9 @@ class LibraryUi(
     val metered: Boolean = false,
     /** « Ma bibliothèque »: the sounds the user kept, shown in their family with an « À moi » badge. */
     val mine: List<com.pocketstudio.model.MySound> = emptyList(),
+    /** « Récents » and « Favoris » of the sound browser (keys, see [keyOf]). */
+    val recents: List<String> = emptyList(),
+    val favorites: List<String> = emptyList(),
 )
 
 class LibraryActions(
@@ -92,6 +91,8 @@ class LibraryActions(
     val renameMine: (String, String) -> Unit = { _, _ -> },
     val setMineKind: (String, String) -> Unit = { _, _ -> },
     val deleteMine: (String) -> Unit = {},
+    /** ☆ on a sound: in « Favoris » or out. */
+    val toggleFavorite: (SoundRef) -> Unit = {},
 )
 
 /**
@@ -101,8 +102,6 @@ class LibraryActions(
 @Composable
 fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
     var kind by rememberSaveable { mutableStateOf(ui.startKind) }
-    var category by rememberSaveable(kind) { mutableStateOf<String?>(null) }
-    var query by rememberSaveable { mutableStateOf("") }
     // A list to read: centred at a comfortable width on a tablet.
     com.pocketstudio.ui.ReadingWidth {
         Column(Modifier.fillMaxSize().background(Neon.Background).testTag("library")) {
@@ -129,22 +128,8 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                 AllPacksNews(ui, actions)
                 // Without its pack, a style has one or two kicks to offer: the pack is proposed first.
                 StylePackOffer(ui, actions)
-                androidx.compose.material3.OutlinedTextField(
-                    value = query, onValueChange = { query = it }, singleLine = true,
-                    leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-                    trailingIcon = {
-                        if (query.isNotEmpty()) IconButton(onClick = { query = "" }) { Icon(Icons.Filled.Close, contentDescription = tr("Effacer")) }
-                    },
-                    placeholder = { Text(tr("Chercher un son (doigts, verre, conga…)")) },
-                    modifier = Modifier.fillMaxWidth().testTag("library_search"),
-                )
-                if (query.isNotBlank()) {
-                    val mine = ui.mine.filter { matches(it, query) }
-                    if (mine.isNotEmpty()) MySoundsCard(mine, null, ui, actions)
-                    SearchResults(query, ui, actions)
-                    PackList(ui, actions)
-                    return@Column
-                }
+                // The family of sounds (the pad's own first), then the shared browser: folders by
+                // meaning, « Récents », « Favoris », « Ma bibliothèque » and the search at the top.
                 Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     libraryKinds(ui.mine).forEach { k ->
                         val label = SoundPacks.KIND_LABELS.getValue(k)
@@ -152,54 +137,41 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                         FamilyChip(tr(label), look.icon, look.color, selected = kind == k, onClick = { kind = k }, modifier = Modifier.testTag("library_kind_$k"))
                     }
                 }
-                val categories = mineCategory(kind, ui.mine) + libraryChoices(kind, ui.packs.installed, ui.styleId)
-                if (categories.isEmpty()) {
-                    Text(tr("Aucun son de ce type pour l'instant : télécharge un pack ci-dessous qui en contient."),
-                        style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
-                } else {
-                    val shown = categories.firstOrNull { it.id == category } ?: categories.first()
-                    val look = SoundLooks.of(kind)
-                    // The sources on one line that scrolls: the sounds stay right under them.
-                    ChipRow(categories.size, categories.indexOf(shown)) { i ->
-                        val c = categories[i]
-                        FamilyChip(
-                            c.title.substringAfter(" · ", c.title), when (c.id) {
-                                KIT_CATEGORY, KIT_OTHER_CATEGORY -> Icons.Filled.Apps
-                                MINE_CATEGORY -> Icons.Filled.Person
-                                else -> Icons.Filled.Inventory2
-                            }, look.color,
-                            selected = c.id == shown.id, onClick = { category = c.id }, modifier = Modifier.testTag("library_source_${c.id}"),
-                        )
+                val shelves = androidx.compose.runtime.remember(kind, ui.packs.installed, ui.styleId) {
+                    shelvesOf(libraryChoices(kind, ui.packs.installed, ui.styleId), ui.packs.installed, ui.styleId, party = true)
+                }
+                val mine = ui.mine.filter { it.kind == kind }
+                NeonCard {
+                    SectionLabel(tr("Sons"), foldKey = "Sons de la bibliothèque")
+                    ShelfBrowser(
+                        ShelfBrowserUi(
+                            shelves, kind, recents = ui.recents, favorites = ui.favorites, playing = ui.playing, tag = "library",
+                            // The user's own sounds of this family found at once, as before (« À moi » first).
+                            start = MINE.takeIf { mine.isNotEmpty() }, stateKey = "library_$kind",
+                            use = tr("Poser"),
+                            mine = mine.map { SoundOption(SoundRef.Mine(it.id), it.name) },
+                            mineContent = { MySoundsCard(mine, kind, ui, actions) },
+                            search = { q -> librarySearch(q, ui) },
+                            kindOf = { o -> soundKind(o.ref, ui.mine) },
+                        ),
+                        ShelfBrowserActions(
+                            preview = { actions.preview(it.ref) },
+                            choose = { actions.use(it) },
+                            toggleFavorite = { actions.toggleFavorite(it.ref) },
+                        ),
+                    )
+                    if (shelves.isEmpty() && mine.isEmpty()) {
+                        Text(tr("Aucun son de ce type pour l'instant : télécharge un pack ci-dessous qui en contient."),
+                            style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
                     }
-                    if (shown.id == MINE_CATEGORY) {
-                        MySoundsCard(ui.mine.filter { it.kind == kind }, kind, ui, actions)
-                    } else NeonCard {
-                        SectionLabel(shown.title, foldKey = "Sons de la bibliothèque")
-                        TileGrid(shown.options.size, minTileWidth = 260.dp) { i, m ->
-                            val option = shown.options[i]
-                            val playing = ui.playing == option.ref
-                            SoundTile(
-                                title = tr(option.name.substringBefore(" · ")), icon = if (playing) Icons.Filled.GraphicEq else look.icon,
-                                accent = look.color, selected = playing, onClick = { actions.preview(option.ref) },
-                                subtitle = if (playing) tr("En écoute… touche pour arrêter") else tr("Touche pour écouter"),
-                                trailing = {
-                                    FilledTonalButton(onClick = { actions.use(option) }, modifier = Modifier.pressScale().testTag("library_use_$i")) { Text(tr("Poser")) }
-                                },
-                                modifier = m.testTag("library_sound_$i"),
-                            )
-                        }
-                        Text(tr("Touche un son pour l'écouter, « Poser » pour le mettre sur %s.", ui.target),
-                            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-                    }
+                    Text(tr("Touche un son pour l'écouter, « Poser » pour le mettre sur %s.", ui.target),
+                        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
                 PackList(ui, actions)
             }
         }
     }
 }
-
-/** The id of the category of the user's own sounds (« À moi »). */
-internal const val MINE_CATEGORY = "mine"
 
 /**
  * The families of the library, in the app's order; those that hold sounds the user kept come
@@ -209,13 +181,6 @@ internal fun libraryKinds(mine: List<com.pocketstudio.model.MySound>): List<Stri
     val own = mine.map { it.kind }.toSet()
     val all = SoundPacks.KIND_LABELS.keys.filter { it != "loop" || it in own }
     return all.filter { it in own } + all.filter { it !in own }
-}
-
-/** « À moi » first among the sources of [kind] when the user kept sounds of it. */
-internal fun mineCategory(kind: String, mine: List<com.pocketstudio.model.MySound>): List<SoundCategory> {
-    val own = mine.filter { it.kind == kind }
-    if (own.isEmpty()) return emptyList()
-    return listOf(SoundCategory(MINE_CATEGORY, tr("À moi"), own.map { SoundOption(SoundRef.Mine(it.id), it.name) }))
 }
 
 /** A kept sound found by a search: its name (as saved and as shown) or its family's. */
@@ -539,34 +504,26 @@ private fun DownloadAllDialog(ui: LibraryUi, complete: Boolean, onDismiss: () ->
     )
 }
 
-/** The sounds of the installed packs that match [query] (name, tags, kind, pack), to hear and place. */
-@Composable
-private fun SearchResults(query: String, ui: LibraryUi, actions: LibraryActions) {
-    val hits = androidx.compose.runtime.remember(query, ui.packs.installed) { com.pocketstudio.model.PackSearch.find(query, ui.packs.installed) }
-    NeonCard(modifier = Modifier.testTag("library_results")) {
-        SectionLabel(tr("Résultats"))
-        if (hits.isEmpty()) {
-            Text(
-                if (ui.packs.installed.isEmpty()) tr("La recherche fouille les packs téléchargés : télécharge-en ci-dessous.")
-                else tr("Aucun son trouvé : essaie un autre mot, ou télécharge d'autres packs ci-dessous."),
-                style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
-            )
-            return@NeonCard
-        }
-        TileGrid(hits.size, minTileWidth = 260.dp) { i, m ->
-            val hit = hits[i]
-            val option = SoundOption(SoundRef.Pack(hit.pack.id, hit.sound), "${hit.sound.name} · ${hit.pack.name}")
-            val look = SoundLooks.of(hit.sound.kind)
-            val playing = ui.playing == option.ref
-            SoundTile(
-                title = hit.sound.name, icon = if (playing) Icons.Filled.GraphicEq else look.icon,
-                accent = look.color, selected = playing, onClick = { actions.preview(option.ref) },
-                subtitle = tr(hit.pack.name),
-                trailing = {
-                    FilledTonalButton(onClick = { actions.use(option) }, modifier = Modifier.pressScale().testTag("library_result_use_$i")) { Text(tr("Poser")) }
-                },
-                modifier = m.testTag("library_result_$i"),
-            )
-        }
-    }
+/**
+ * The sounds that match [query]: the user's own (name or family), the party sounds, then the
+ * downloaded packs' (name, tags, kind, pack), to hear and place.
+ */
+internal fun librarySearch(query: String, ui: LibraryUi): List<SoundOption> {
+    val q = query.trim().lowercase()
+    if (q.isEmpty()) return emptyList()
+    val mine = ui.mine.filter { matches(it, query) }.map { SoundOption(SoundRef.Mine(it.id), it.name) }
+    val party = com.pocketstudio.model.PartySounds.ALL
+        .filter { s -> listOf(s.name, tr(s.name), s.group, tr(s.group), com.pocketstudio.model.PartySounds.FAMILY, tr(com.pocketstudio.model.PartySounds.FAMILY)).any { q in it.lowercase() } }
+        .map { SoundOption(SoundRef.Party(it.id), it.name) }
+    val packs = com.pocketstudio.model.PackSearch.find(query, ui.packs.installed)
+        .map { hit -> SoundOption(SoundRef.Pack(hit.pack.id, hit.sound), "${hit.sound.name} · ${hit.pack.name}") }
+    return mine + party + packs
+}
+
+/** The kind of a sound, for its tile's colour in a mixed list. */
+internal fun soundKind(ref: SoundRef, mine: List<com.pocketstudio.model.MySound>): String? = when (ref) {
+    is SoundRef.Pack -> ref.sound.kind
+    is SoundRef.Party -> com.pocketstudio.model.PartySounds.byId(ref.id)?.kind
+    is SoundRef.Mine -> mine.firstOrNull { it.id == ref.id }?.kind
+    else -> null
 }

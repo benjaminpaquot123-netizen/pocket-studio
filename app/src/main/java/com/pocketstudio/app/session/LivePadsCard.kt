@@ -102,6 +102,8 @@ class LivePadsActions(
     val effects: (() -> Unit)? = null,
     /** The pads on the whole screen, to play them live (null: no button). */
     val fullScreen: (() -> Unit)? = null,
+    /** The pads shown: an empty set gets the ready-to-play sounds ([com.pocketstudio.model.LiveStarter]) once. */
+    val opened: () -> Unit = {},
 )
 
 private fun beatsLabel(beats: Int) = when {
@@ -114,6 +116,7 @@ private fun beatsLabel(beats: Int) = when {
 /** Live pads: a tap switches a sound on (in time), the next tap switches it off. */
 @Composable
 fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
+    androidx.compose.runtime.LaunchedEffect(Unit) { actions.opened() }
     NeonCard(accent = Neon.Cyan, modifier = Modifier.testTag("live_pads")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             SectionLabel(tr("Pads live"), Modifier.weight(1f), help = Glossary.LIVE_PADS)

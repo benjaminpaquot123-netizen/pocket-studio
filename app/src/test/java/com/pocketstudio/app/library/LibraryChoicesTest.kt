@@ -1,8 +1,8 @@
 package com.pocketstudio.app.library
 
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.pocketstudio.app.rhythm.DrumKitInfo
 import com.pocketstudio.model.PackEntry
@@ -62,8 +62,8 @@ class LibraryChoicesTest {
         compose.onNodeWithTag("library_style_packs").assertExists()
         compose.onNodeWithTag("library_style_packs_download").performClick()
         assertEquals(style.packs, downloads)
-        // The kit's other sounds are a source too.
-        compose.onNodeWithText("Autres sons du kit").assertExists()
+        // The kit's other sounds are a source too: all sixteen in « Sons intégrés ».
+        compose.onNodeWithTag("library_folder_$KIT_FAMILY").assertTextContains("16 sons", substring = true)
     }
 
     @Test

@@ -101,6 +101,8 @@ object I18n {
         "tuto_techno", "tuto_house", "tuto_bass", "tuto_hiphop", "tuto_autres",
         // Owner (2026-10-29): « Ma bibliothèque de sons » and the Remix from the home screen.
         "mysounds",
+        // Owner (2026-10-30): the one sound browser (folders by meaning, Récents, Favoris), « Fête », the ready-to-play live pads.
+        "browser",
     )
 
     @Volatile

@@ -289,6 +289,13 @@ internal object WizardMix {
         else -> Triple(padPump.coerceAtMost(0.35f), 0.4f, 0.3f)
     }
 
+    /**
+     * « Le kick disparaît » (docs/REVIEW.md, corrections n° 6; scripts/song-bench.sh's kick pass): the basses of these
+     * styles further back (dB). The liquid's reese filled the gaps of its breakbeat over its whole band (its lows alone
+     * ducked): a kick hit lifted its Drop by 1.9 dB only (4.7 with the drums alone); 2.3 dB with its basses 3 dB back.
+     */
+    val BASS_TRIM_DB: Map<String, Float> = mapOf("liquid_dnb" to -3f)
+
     /** Bass music's low duck under the kick (the « Musique » bus's low depth) and its release (0.19: about 80 ms). */
     const val BASS_MUSIC_LOW_DUCK = 0.8f
     const val BASS_MUSIC_DUCK_RELEASE = 0.19f
@@ -321,6 +328,8 @@ internal object WizardMix {
         // The basses' soft clipper, before their OTT (or in their first free slot).
         val basses = partOfTrack.filterValues { it == Part.Bass }.keys +
             p.instrumentTracks.filter { it.name == StarterWizard.BASS_SWITCH_TRACK }.map { it.id }
+        // Its basses further back where they buried the kick (BASS_TRIM_DB): their sound's own gain, as the part mix sets it.
+        BASS_TRIM_DB[style.id]?.let { db -> basses.toSet().filter { id -> p.instrumentTracks.any { it.id == id } }.forEach { p = p.louder(it, db) } }
         if (style.id !in NO_CLIP) {
             for (id in basses.toSet()) {
                 val ch = InstrumentTrack.mixerChannel(id)
@@ -634,9 +643,10 @@ internal object WizardMix {
     /**
      * Son 8 (the leads chantier's lots B to D): a Break further down where its pads came out louder (the
      * dubstep pads spread wider, the liquid keys' « air » layer): Drop − Break had fallen to +3.96 and
-     * +3.95 LU on the bench.
+     * +3.95 LU on the bench. The liquid's 0.3 dB more since its reese went 3 dB back under the kick (BASS_TRIM_DB:
+     * Drop − Break +4.15 → +3.91 LU).
      */
-    private val BREAK_LAYER_TRIM_DB: Map<String, Float> = mapOf("dubstep" to 0.4f, "liquid_dnb" to 0.3f)
+    private val BREAK_LAYER_TRIM_DB: Map<String, Float> = mapOf("dubstep" to 0.4f, "liquid_dnb" to 0.6f)
 
     /**
      * S5b: the top of a Montée (a Pré-refrain) on the master fader, and the floor a club Montée eases

@@ -3,7 +3,7 @@
 # replayed through the engine core on Linux, measured, and summed up in a Markdown report.
 #
 #   scripts/song-bench.sh [--styles a,b,c] [--out DIR] [--ffmpeg] [--before FILE.json] [--no-record] [--jobs N]
-#                         [--premaster] [--m4a] [--keep-wav] [--kit3] [--no-bass] [--guide accept|first]
+#                         [--premaster] [--m4a] [--keep-wav] [--kit3] [--no-bass] [--no-kick] [--guide accept|first]
 #
 #   --styles   only these styles (ids of scripts/packs/recipes); default: all of them
 #   --out      work folder (default build/bench): cmds/ (.pscmd + samples), wav/, json/, render/ (ps_render's
@@ -29,6 +29,10 @@
 #              the kick alone (META kick) and, when it has a bass exciter (« Basse audible »), the song before
 #              the master without it, and (audit final) the basses alone not ducked, for B9: ps_measure --bass reads what a phone keeps of the bass
 #              (docs/hits/basses-qui-tapent.md § 8, B1-B12)
+#   --no-kick  skips the kick pass. By default each song also renders its kick alone before the master (META kick, else
+#              the kick's pad, 16), the drums alone through the master (strip 0) and the whole song before the master:
+#              ps_measure --punch reads, part by part, how much one kick hit lifts the export against the drums alone
+#              (Benjamin's Acidcore, APK 233: « le gros kick disparaît »). report.py fails a part that buries its kick.
 # Environment: GRADLE_ARGS (default --max-workers=1), CMAKE_EXTRA_ARGS (e.g. ccache), JOBS.
 # The rendered audio stays in the work folder: never commit it.
 set -euo pipefail
@@ -44,6 +48,7 @@ M4A=0
 KEEP=0
 KIT3=0
 BASS=1
+KICK=1
 GUIDE=""
 JOBS="${JOBS:-$(nproc 2>/dev/null || echo 2)}"
 while [ $# -gt 0 ]; do
@@ -60,6 +65,7 @@ while [ $# -gt 0 ]; do
         --keep-wav) KEEP=1; shift ;;
         --kit3) KIT3=1; shift ;;
         --no-bass) BASS=0; shift ;;
+        --no-kick) KICK=0; shift ;;
         --guide) GUIDE="$2"; shift 2 ;;
         *) echo "unknown option $1" >&2; exit 1 ;;
     esac
@@ -82,8 +88,9 @@ fi
 ls "$OUT"/cmds/*.pscmd > /dev/null 2>&1 || { echo "no .pscmd recorded in $OUT/cmds" >&2; exit 1; }
 
 echo "== Rendering and measuring ($JOBS at a time)"
-rm -rf "$OUT/wav" "$OUT/json" "$OUT/render" "$OUT/json-pre" "$OUT/json-m4a" "$OUT/hash"
+rm -rf "$OUT/wav" "$OUT/json" "$OUT/render" "$OUT/json-pre" "$OUT/json-m4a" "$OUT/json-kick" "$OUT/hash"
 mkdir -p "$OUT/wav" "$OUT/json" "$OUT/render" "$OUT/hash"
+[ "$KICK" = 1 ] && mkdir -p "$OUT/json-kick"
 [ "$PREMASTER" = 1 ] && mkdir -p "$OUT/json-pre"
 [ "$M4A" = 1 ] && mkdir -p "$OUT/json-m4a"
 [ "$FFMPEG" = 1 ] && KEEP=1
@@ -100,7 +107,7 @@ if [ "$KIT3" = 1 ]; then
         awk '/^RENDER /{print "AT -1"; print "C 100 3.0 0 0"} {print}' "$OUT/cmds/$s.pscmd" > "$OUT/cmds/$s.kit3"
     done
 fi
-export OUT TOOLS PREMASTER M4A KEEP KIT3 BASS
+export OUT TOOLS PREMASTER M4A KEEP KIT3 BASS KICK
 # A recording that names its lead's mixer channel (META lead, S4) also renders the lead alone: the
 # report reads how much its brightness moves along the song (ps_measure --lead).
 list | xargs -P "$JOBS" -I{} sh -c '
@@ -134,7 +141,17 @@ list | xargs -P "$JOBS" -I{} sh -c '
     fi
     "$TOOLS/ps_render" --report "$OUT/render/{}.json" "$cmd" "$OUT/wav/{}.wav" && "$TOOLS/ps_measure" "$OUT/wav/{}.wav" "$cmd" $leadArgs $bassArgs > "$OUT/json/{}.json" \
         || { echo "FAILED: {}" >&2; exit 255; }
-    rm -f "$OUT/wav/{}.lead.wav" "$OUT/wav/{}.bass.wav" "$OUT/wav/{}.bassfree.wav" "$OUT/wav/{}.pre-b.wav" "$OUT/wav/{}.kick.wav" "$OUT/wav/{}.dry.wav"
+    rm -f "$OUT/wav/{}.lead.wav" "$OUT/wav/{}.bass.wav" "$OUT/wav/{}.bassfree.wav" "$OUT/wav/{}.dry.wav"
+    # The kick pass (reusing the kick alone and the song before the master of the bass pass, when it made them).
+    if [ "$KICK" = 1 ]; then
+        k="${kick:-16}"
+        [ -f "$OUT/wav/{}.kick.wav" ] || "$TOOLS/ps_render" --no-limiter --solo "$k" "$cmd" "$OUT/wav/{}.kick.wav" || { echo "FAILED: {} (kick pass, kick)" >&2; exit 255; }
+        [ -f "$OUT/wav/{}.pre-b.wav" ] || "$TOOLS/ps_render" --no-limiter "$cmd" "$OUT/wav/{}.pre-b.wav" || { echo "FAILED: {} (kick pass, pre)" >&2; exit 255; }
+        "$TOOLS/ps_render" --solo 0 "$cmd" "$OUT/wav/{}.drums.wav" \
+            && "$TOOLS/ps_measure" --punch "$OUT/wav/{}.kick.wav" "$OUT/wav/{}.drums.wav" "$OUT/wav/{}.pre-b.wav" "$OUT/wav/{}.wav" "$cmd" > "$OUT/json-kick/{}.json" \
+            || { echo "FAILED: {} (kick pass)" >&2; exit 255; }
+    fi
+    rm -f "$OUT/wav/{}.pre-b.wav" "$OUT/wav/{}.kick.wav" "$OUT/wav/{}.drums.wav"
     (cd "$OUT/wav" && sha256sum "{}.wav" > "$OUT/hash/{}.txt")
     [ "$KEEP" = 1 ] || rm -f "$OUT/wav/{}.wav"
     if [ "$PREMASTER" = 1 ]; then
@@ -203,5 +220,6 @@ echo "== Report"
 python3 -I "$ROOT/scripts/bench/report.py" "$OUT/json" --out "$OUT/report.md" --json "$OUT/bench.json" \
     --hashes "$OUT/sha256.txt" --renders "$OUT/render" --cmds "$OUT/cmds" ${BEFORE:+--before "$BEFORE"} ${TITLE:+--title "$TITLE"} \
     $([ "$PREMASTER" = 1 ] && echo --premaster "$OUT/json-pre") $([ "$M4A" = 1 ] && echo --m4a "$OUT/json-m4a") \
+    $([ "$KICK" = 1 ] && echo --kick "$OUT/json-kick") \
     $([ "$FFMPEG" = 1 ] && echo --ffmpeg "$OUT/ffmpeg.txt")
 echo "Report: $OUT/report.md"

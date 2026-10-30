@@ -28,10 +28,10 @@ Demande de Benjamin (2026-10-30, vidéo APK 233) : une fois importée, la chanso
 Le choix fait à l'écoute ne sert qu'à décider quelles pistes arrivent en muet. **Les quatre pistes entrent toujours dans le projet.**
 
 ## L'import, en un seul écran clair : « Mettre Boys dans mon projet »
-1. **Le tempo.** « Boys est à 113 BPM, ton projet à 120. »
-   - Choix proposé par défaut : **« Mon projet passe à 113 »**. C'est le plus simple et ça ne touche pas au son.
-   - Autre choix : **« Caler Boys sur 120 »**, par étirement de qualité (signalsmith-stretch).
+1. **Le tempo (précision de Benjamin).** Le tempo se cale automatiquement sur le premier son à tempo qu'on pose (sur le Live ou dans le projet) : une boucle ou une chanson fixe le tempo général. Un son court (un coup, un cri) ne le fixe pas. Un bandeau l'annonce : « Tempo calé sur Boys : 113 · Annuler ».
+   - Les sons posés ensuite sont étirés sur ce tempo (signalsmith-stretch) et restent calés.
    - Le premier temps détecté est posé sur la mesure 1, réglable au besoin.
+   - **Le tempo général se règle facilement depuis le Live.** On touche le BPM en haut : − et + en grand, un glisser, « Taper » au doigt, ½ et ×2, et « Revenir au tempo de Boys ». Toutes les boucles et la chanson suivent en direct.
 2. **La tonalité.** « Boys est en La mineur. » Proposé : « Mes synthés et basses jouent en La mineur » (le panneau d'harmonie se règle). Autre choix : « Transposer Boys ».
 3. **La place.** « Toute la chanson, à partir de la brique A » (proposé par défaut), « Seulement un passage » (on le choisit sur la forme d'onde) ou « Juste la voix sur mon beat » (l'acapella, le remix classique).
 4. **Les parties (le gros plus).** L'appli repère l'intro, les couplets, les refrains et les drops (analyse de structure : changements d'énergie et répétitions, calés sur les mesures). Elle propose : « Créer les briques Intro, Couplet, Refrain… à partir de Boys ». Chaque partie devient une brique, jouable tout de suite dans le Live et réutilisable dans le morceau.

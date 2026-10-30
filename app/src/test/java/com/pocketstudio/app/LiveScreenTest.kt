@@ -245,4 +245,28 @@ class LiveScreenTest {
         compose.onNodeWithTag("live_fullscreen").performClick()
         compose.onNodeWithTag("live_fx_acid").assertIsDisplayed()
     }
+
+    /** Lot 4a: « Pads » in the Live is the pads view on the whole screen; while a pad is being set up, its card. */
+    @Test
+    fun thePadsTabOpensThePadsOnTheWholeScreen() {
+        var full = 0
+        val pads = com.pocketstudio.app.session.LivePadsUi(com.pocketstudio.model.LivePads(8), List(8) { 0 }, editing = null)
+        val actions = com.pocketstudio.app.session.LivePadsActions(fullScreen = { full++ })
+        var editing by androidx.compose.runtime.mutableStateOf<Int?>(null)
+        compose.setContent {
+            PocketStudioTheme {
+                LiveScreen(
+                    LiveScreenUi(project, LiveState.on(0), clock = 5, playing = true), LiveActions(),
+                    pads = com.pocketstudio.app.session.LivePadsUi(pads.pads, pads.states, editing = editing), padsActions = actions,
+                )
+            }
+        }
+        compose.onNodeWithTag("live_tab_Pads").performClick()
+        assertEquals(1, full)
+        // « Régler » from the pads view: back here, the pad's settings in the card, no second jump.
+        editing = 3
+        compose.onNodeWithTag("live_tab_Pads").performClick()
+        assertEquals(1, full)
+        compose.onNodeWithTag("live_editor").assertIsDisplayed()
+    }
 }

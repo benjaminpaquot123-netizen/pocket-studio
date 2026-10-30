@@ -499,7 +499,7 @@ private fun BeatCounter(tempoBpm: Double, beatsPerBar: Int, clock: PadClock, tem
 private fun TempoStepper(shown: String, tempo: StageTempo) {
     val shape = RoundedCornerShape(14.dp)
     Row(Modifier.clip(shape).background(Neon.Surface), verticalAlignment = Alignment.CenterVertically) {
-        com.pocketstudio.app.ui.RepeatingIconButton({ tempo.nudge(-1) }, Modifier.size(40.dp, 48.dp).testTag("live_pads_tempo_minus")) {
+        com.pocketstudio.app.ui.RepeatingIconButton({ tempo.nudge(-1) }, Modifier.size(48.dp).testTag("live_pads_tempo_minus")) {
             Icon(Icons.Filled.Remove, contentDescription = tr("Tempo moins"), modifier = Modifier.size(20.dp))
         }
         Column(
@@ -513,7 +513,7 @@ private fun TempoStepper(shown: String, tempo: StageTempo) {
             Text(shown, style = MonoStyle.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold), color = Neon.Amber, maxLines = 1)
             Text("BPM", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1)
         }
-        com.pocketstudio.app.ui.RepeatingIconButton({ tempo.nudge(+1) }, Modifier.size(40.dp, 48.dp).testTag("live_pads_tempo_plus")) {
+        com.pocketstudio.app.ui.RepeatingIconButton({ tempo.nudge(+1) }, Modifier.size(48.dp).testTag("live_pads_tempo_plus")) {
             Icon(Icons.Filled.Add, contentDescription = tr("Tempo plus"), modifier = Modifier.size(20.dp))
         }
     }

@@ -1073,7 +1073,11 @@ private fun LivePanel(
                     val idle = t == LivePanelTab.Acide && !ui.hasAcid
                     Box(
                         Modifier.weight(label.length + 3f).height(48.dp).clip(RoundedCornerShape(24.dp)).background(if (selected) Neon.Cyan else Neon.SurfaceHigh)
-                            .clickable { onTab(t) }.padding(horizontal = 4.dp).testTag("live_tab_${t.name}"),
+                            .clickable {
+                                onTab(t)
+                                // Lot 4a: « Pads » is the pads view, on the whole screen (Back: here, the card and its settings).
+                                if (t == LivePanelTab.Pads && pads?.editing == null) padsActions.fullScreen?.invoke()
+                            }.padding(horizontal = 4.dp).testTag("live_tab_${t.name}"),
                         contentAlignment = Alignment.Center,
                     ) {
                         val style = MaterialTheme.typography.labelLarge

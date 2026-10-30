@@ -69,6 +69,33 @@ class PlayStripTouchTargetsTest {
         assertEquals(1, cleared)
     }
 
+    /** Lot 4a: on the Live page, « − 124 + »: a BPM less or more, the figure still opens the sheet, each 48 dp. */
+    @Test
+    fun liveTempoStepsAreAtHandAndTouchable() {
+        val calls = mutableListOf<String>()
+        compose.setContent {
+            PocketStudioTheme {
+                Box(Modifier.width(360.dp)) {
+                    PlayStrip(
+                        PlayStripUi(124.0, hasSong = false, loopPart = false, playing = false, position = { PlayPosition("Couplet", 9, 60) }, helpOn = false),
+                        PlayStripActions(openTempo = { calls += "sheet" }, nudgeTempo = { calls += "$it" }),
+                    )
+                }
+            }
+        }
+        listOf("top_tempo_minus", "top_tempo", "top_tempo_plus", "top_position").forEach(::assertTouchable)
+        compose.onNodeWithTag("top_tempo_minus").performClick()
+        compose.onNodeWithTag("top_tempo_plus").performClick()
+        compose.onNodeWithTag("top_tempo").performClick()
+        assertEquals(listOf("-1", "1", "sheet"), calls)
+    }
+
+    @Test
+    fun elsewhereTheTempoHasNoSteps() {
+        strip()
+        compose.onNodeWithTag("top_tempo_minus").assertDoesNotExist()
+    }
+
     @Test
     fun withoutSoloedTracksGivenThereIsNoChip() {
         strip()

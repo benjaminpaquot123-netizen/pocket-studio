@@ -6617,6 +6617,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Lot 4a: records the microphone until [stopRecording] (or 30 s) onto live pad [pad], its loop length fitted to the tempo. */
+    fun startLiveRecording(pad: Int) {
+        if (pad !in 0 until LivePads.MAX) return
+        if (_sampleTask.value != SampleTask.Idle && _sampleTask.value !is SampleTask.Failed) return
+        val rec = MicRecorder().also { recorder = it }
+        _sampleTask.value = SampleTask.Recording(0f, 0f)
+        AppLog.add("Pad live ${pad + 1} : enregistrement micro")
+        sampleJob(null, live = pad) {
+            val pcm = rec.record { sec -> _sampleTask.value = SampleTask.Recording(sec, rec.level) }
+            recorder = null
+            if (pcm.frames < 480 || PadSamples.isSilent(pcm)) throw UserMessage(tr("Rien n'a été entendu : rapproche-toi du micro et réessaie."))
+            padSamples.add(pcm.withoutTail(), "Micro ${java.time.LocalTime.now().withNano(0)}")  // French, shown translated (DefaultNames)
+        }
+    }
+
     fun stopRecording() {
         recorder?.stop()
     }
@@ -8655,7 +8670,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun nudgeTempo(delta: Int) {
-        session.edit("tempo") { it.copy(tempoBpm = Math.round(it.tempoBpm).toDouble() + delta) }
+        session.edit("tempo") { it.copy(tempoBpm = (Math.round(it.tempoBpm).toDouble() + delta).coerceIn(Project.MIN_TEMPO, Project.MAX_TEMPO)) }
         pushTempo()
     }
 

@@ -98,6 +98,9 @@ class PadSamples(private val dir: File) {
     /** Blocking (background): reads [files] again (never deletes anything). */
     fun reload(files: Set<String>): List<Prepared> = loadAll(files, cleanUp = false)
 
+    /** Where [file] is stored (the engine's beat tracker reads it there). */
+    fun fileOf(file: String): File = File(dir, file)
+
     /** Blocking (background): the sound of [file] as stored. */
     fun read(file: String): Pcm = FloatWav.read(File(dir, file))
 

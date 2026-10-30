@@ -78,6 +78,9 @@ class RemixKeepsTheSongTest {
         val p = vm.project.value
         assertEquals(120.0, p.tempoBpm, 0.0)
         assertEquals(Harmony(9, Scale.Minor), p.harmony)
-        assertFalse(p.remix.followTempo)
+        // Step 4e: the song set the tempo (« Revenir au tempo de … ») and follows it from then on.
+        assertTrue(p.remix.followTempo)
+        assertEquals(1.0, p.remix.stretchFor(p.tempoBpm), 0.0)
+        assertEquals(song.name, p.tempoLead?.name)
     }
 }

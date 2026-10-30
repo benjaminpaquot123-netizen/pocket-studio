@@ -33,8 +33,11 @@ public:
     AudioTracks& operator=(const AudioTracks&) = delete;
 
     void prepare(int sampleRate) { declick_ = std::max(1, sampleRate / 200); }
-    // Takes over the caller's reference (nullptr empties the track).
-    void install(int track, Sample* sample);
+    // Takes over the caller's reference (nullptr empties the track). `refit`: the same sound at
+    // another length (a loop stretched to a new tempo): a scene clip sounding picks up at the same
+    // place of its loop in the new copy (the old one fades under it), instead of waiting for its
+    // next pass.
+    void install(int track, Sample* sample, bool refit = false);
     void setParam(int track, int param, float value);
     // A track switched off (by the song part playing) does not start again; a sounding pass fades.
     void setOn(int track, bool on);
@@ -69,6 +72,7 @@ private:
         int64_t pos = 0;
         int64_t due = 0;   // frames before it starts (inside the current block)
         int fade = 0;      // > 0: fading out over the remaining frames
+        int rise = 0;      // > 0: fading in over the remaining frames (a refit picked up mid-loop)
     };
     struct Track {
         Sample* sample = nullptr;

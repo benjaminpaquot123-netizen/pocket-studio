@@ -76,7 +76,9 @@ object RemixFromHome {
                 name = set.name.trim().take(NAME_MAX).ifBlank { "Remix" },
                 tempoBpm = if (info.bpm > 0) info.bpm else Project().tempoBpm,
                 harmony = info.root?.let { Harmony(it, if (info.minor) Scale.Minor else Scale.Major) } ?: Project().harmony,
-                remix = remix,
+                // Step 4e: the song set the tempo (« Revenir au tempo de Boys ») and follows it.
+                remix = remix.copy(followTempo = info.bpm > 0),
+                tempoLead = info.bpm.takeIf { it > 0 }?.let { com.pocketstudio.model.TempoLead(set.name, it).sanitized() },
             )
             RemixWay.Source -> Project(name = "Remix", remix = remix)
         }.sanitized()

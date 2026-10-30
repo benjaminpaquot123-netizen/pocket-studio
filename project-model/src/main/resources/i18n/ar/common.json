@@ -50,5 +50,7 @@
   "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "في تكرار (⟳ Loop). ▶ يشغّل هذا الجزء وحده.",
   "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "الأغنية تعمل: انقر على الشبكة ويبقى هذا الجزء تحت أصابعك، في تكرار.",
   "Boucler": "Loop",
-  "Tout le morceau, du début": "المقطوعة كاملة، من البداية"
+  "Tout le morceau, du début": "المقطوعة كاملة، من البداية",
+  "Tempo calé sur %1$s : %2$d": "تم ضبط السرعة على %1$s: %2$d",
+  "Revenir au tempo de %1$s (%2$d)": "العودة إلى سرعة %1$s (%2$d)"
 }

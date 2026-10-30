@@ -50,5 +50,7 @@
   "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "ループ中（⟳ ループ）。▶ でこのパートだけ再生。",
   "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "曲を再生中：グリッドをタップすると、このパートが手元でループします。",
   "Boucler": "ループ",
-  "Tout le morceau, du début": "曲全体を最初から"
+  "Tout le morceau, du début": "曲全体を最初から",
+  "Tempo calé sur %1$s : %2$d": "テンポを %1$s に合わせました：%2$d",
+  "Revenir au tempo de %1$s (%2$d)": "%1$s のテンポに戻す（%2$d）"
 }

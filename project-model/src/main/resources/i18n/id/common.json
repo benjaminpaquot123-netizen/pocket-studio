@@ -50,5 +50,7 @@
   "En boucle (⟳ Boucler). ▶ joue cette partie seule.": "Di-loop (⟳ Loop). ▶ memutar bagian ini saja.",
   "Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle.": "Lagu sedang diputar: sentuh grid dan bagian ini tetap di bawah jarimu, di-loop.",
   "Boucler": "Loop",
-  "Tout le morceau, du début": "Seluruh lagu, dari awal"
+  "Tout le morceau, du début": "Seluruh lagu, dari awal",
+  "Tempo calé sur %1$s : %2$d": "Tempo disesuaikan dengan %1$s: %2$d",
+  "Revenir au tempo de %1$s (%2$d)": "Kembali ke tempo %1$s (%2$d)"
 }

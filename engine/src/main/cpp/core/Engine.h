@@ -87,7 +87,7 @@ enum class CommandType : uint8_t {
                           // reverb and echo returns, 0.5 = as mixed)
     SetSynthEngine,       // a: 0 = subtractive synth, 1 = Plaits, 2 = sampled, 3 = multizone, 4 = the 808 (a General MIDI instrument still wins)
     SetPlaitsParam,       // a: PlaitsSynth::Param, value 0..1
-    InstallClip,          // a: live pad, sample: owned reference (nullptr = empty pad)
+    InstallClip,          // a: live pad (| kRefit), sample: owned reference (nullptr = empty pad)
     SetClipParam,         // a: live pad, b: ClipLauncher::Param, value
     ToggleClip,           // a: live pad (switches it on at the next grid line, or off); a < 0: all off
     PlayPreview,          // value 1: the preview stems (InstallStems with a = 1) play from the start; 0: stop
@@ -95,7 +95,7 @@ enum class CommandType : uint8_t {
     SetMetronomeLevel,    // value 0..1 (0.5 = default)
     SetDrumRepeat,        // a: lane, b: step, value: hits in that step (1 = plain, 2..4 = a roll)
     SetTrackOn,           // a: instrument track 1..kTracks-1, value 1 = in use (0 = silent, not rendered)
-    InstallAudioClip,     // a: audio track, sample: owned reference (nullptr = empty track)
+    InstallAudioClip,     // a: audio track (| kRefit), sample: owned reference (nullptr = empty track)
     SetAudioClipParam,    // a: audio track, b: AudioTracks::Param, value (LoopSteps follows SetStaging: a part's own)
     RecordArm,            // record: buffer the app keeps; a = 1: starts when the transport reaches its first step, 0: now
     RecordStop,           // the armed or running recording ends (the buffer's state becomes 2)
@@ -334,6 +334,10 @@ struct Automation {
         for (auto& h : held) if (h < 0) { h = target; return; }
     }
 };
+
+// InstallClip and InstallAudioClip: the new sound is the same loop stretched to a new tempo; one
+// playing picks up at its place in the new copy (faded in) instead of waiting for its next pass.
+constexpr int32_t kRefit = 0x100;
 
 struct Command {
     CommandType type = CommandType::SetPlaying;

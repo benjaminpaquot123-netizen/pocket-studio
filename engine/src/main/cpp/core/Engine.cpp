@@ -257,7 +257,8 @@ void Engine::applyCommand(const Command& command) {
             if (command.a >= 0 && command.a < kLanes) padStrip_[static_cast<size_t>(command.a)] = command.value > 0.5f;
             break;
         case CommandType::InstallAudioClip:
-            audio_.install(command.a, command.sample);  // takes the reference
+            // kRefit on the track: the same loop stretched to a new tempo (picked up where it is).
+            audio_.install(command.a & ~kRefit, command.sample, (command.a & kRefit) != 0);  // takes the reference
             break;
         case CommandType::SetAudioClipParam:
             // A part's own loop ("once" clips): it takes over with the waiting scene.
@@ -322,7 +323,7 @@ void Engine::applyCommand(const Command& command) {
             }
             break;
         case CommandType::InstallClip:
-            clips_.install(command.a, command.sample);  // takes the reference
+            clips_.install(command.a & ~kRefit, command.sample, (command.a & kRefit) != 0);  // takes the reference
             break;
         case CommandType::SetClipParam:
             clips_.setParam(command.a, command.b, command.value);

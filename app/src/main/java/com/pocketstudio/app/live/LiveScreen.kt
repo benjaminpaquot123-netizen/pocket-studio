@@ -819,7 +819,10 @@ private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveA
     }
     val innerW = maxWidth - GRID_PAD_H * 2
     val innerH = maxHeight - GRID_PAD_V * 2
-    val fitW = (innerW - sceneWidth - gap * n) / n
+    // Whole pixels (step 7c): a cell drawn half a pixel wider, n times over, pushed the last column
+    // (the Remix) past the edge of a tablet lying down, behind a ›.
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    val fitW = with(density) { kotlin.math.floor(((innerW - sceneWidth - gap * n) / n).toPx()).toDp() }
     val h = rememberScrollState()
     val v = rememberScrollState()
     val reduced = ui.reducedMotion ?: com.pocketstudio.app.onboarding.animationsOff(androidx.compose.ui.platform.LocalContext.current)

@@ -69,5 +69,6 @@
   "6 sur le temps": "Vuruşa 6",
   "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Triole: %2$d hücreye %1$d eşit vuruş (sonraki hücre de onun parçası)",
   "dans le triolet": "triolenin içinde",
-  "triolet, %1$d coups sur %2$d cases": "triole, %2$d hücreye %1$d vuruş"
+  "triolet, %1$d coups sur %2$d cases": "triole, %2$d hücreye %1$d vuruş",
+  "Fin (partie)": "Bitiş"
 }

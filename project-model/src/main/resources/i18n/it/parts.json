@@ -69,5 +69,6 @@
   "6 sur le temps": "6 sul tempo",
   "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Terzina: %1$d colpi regolari su %2$d caselle (la casella dopo ne fa parte)",
   "dans le triolet": "nella terzina",
-  "triolet, %1$d coups sur %2$d cases": "terzina, %1$d colpi su %2$d caselle"
+  "triolet, %1$d coups sur %2$d cases": "terzina, %1$d colpi su %2$d caselle",
+  "Fin (partie)": "Fine"
 }

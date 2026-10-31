@@ -114,6 +114,9 @@ bool machineOverloaded() {
 
 constexpr int kRate = 48000;
 constexpr int kChannels = 2;
+// The steps a test clears (the app sends at least that many, DrumPattern.SYNC_STEPS): 16 lanes of the
+// full 256 would fill the whole command queue.
+constexpr int kClearSteps = 64;
 // The limiter's look-ahead: the live output comes this many frames late (an export drops them).
 const int kLate = ps::MasterChain::latencyFor(kRate);  // the master chain's delay
 
@@ -2899,6 +2902,30 @@ void testThreeFourAndPartMutes() {
     CHECK(waltz.currentStep() == 0);
 }
 
+void testSixteenBarDrums() {
+    // Step 7a: a drum loop of 16 bars (256 steps), as long as a recorded Live cell keeps; a pad with
+    // its own loop past 255 steps (the old 8-bit length would wrap it to 0).
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetPatternSteps, 0.0f, 256});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 255});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 1, 0});
+    engine.post({ps::CommandType::SetDrumLaneSteps, 200.0f, 1});
+    engine.post({ps::CommandType::SetDrumHit, 1.0f, 2, 0});
+    engine.post({ps::CommandType::SetDrumLaneSteps, 256.0f, 2});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 6000 * 255 - 1000, 256);  // 120 BPM: a step is 6000 frames
+    CHECK(engine.laneTriggerCount(0) == 1);
+    CHECK(engine.laneTriggerCount(1) == 2);  // steps 0 and 200
+    render(engine, 2000, 256);
+    CHECK(engine.laneTriggerCount(0) == 2);  // step 255
+    render(engine, 6000, 256);
+    CHECK(engine.laneTriggerCount(0) == 3);  // round again at 256
+    CHECK(engine.laneTriggerCount(2) == 2);
+    CHECK(engine.drumLaneSteps(2) == 256);
+    CHECK(engine.currentStep() == 0);
+}
+
 void testPianoRollNotesAreSampleAccurate() {
     // 120 BPM: a step is 6000 frames, a tick 250. A note at tick 36 (1.5 steps), 48 ticks long.
     ps::Engine engine(kRate);
@@ -4845,7 +4872,7 @@ void testScenesSwapOnTheBar() {
     engine.post({ps::CommandType::SetDrumHit, 1.0f, 0, 0});
     engine.post({ps::CommandType::SetStaging, 1.0f});
     for (int lane = 0; lane < ps::Engine::kLanes; ++lane)
-        for (int st = 0; st < ps::Engine::kMaxSteps; ++st) engine.post({ps::CommandType::SetDrumHit, 0.0f, lane, st});
+        for (int st = 0; st < kClearSteps; ++st) engine.post({ps::CommandType::SetDrumHit, 0.0f, lane, st});
     engine.post({ps::CommandType::SetDrumHit, 1.0f, 2, 0});
     engine.post({ps::CommandType::SetDrumHit, 1.0f, 2, 8});
     engine.post({ps::CommandType::SetPatternSteps, 0.0f, 32});
@@ -6133,7 +6160,7 @@ constexpr int kLiveStep = 6000;  // 120 BPM: frames in a sixteenth
 void stageDrums(ps::Engine& engine, std::initializer_list<std::pair<int, int>> hits, int steps) {
     engine.post({ps::CommandType::SetStaging, 1.0f});
     for (int lane = 0; lane < ps::Engine::kLanes; ++lane)
-        for (int st = 0; st < ps::Engine::kMaxSteps; ++st) engine.post({ps::CommandType::SetDrumHit, 0.0f, lane, st});
+        for (int st = 0; st < kClearSteps; ++st) engine.post({ps::CommandType::SetDrumHit, 0.0f, lane, st});
     for (const auto& [lane, st] : hits) engine.post({ps::CommandType::SetDrumHit, 1.0f, lane, st});
     engine.post({ps::CommandType::SetPatternSteps, 0.0f, steps});
     engine.post({ps::CommandType::SetStaging, 0.0f});
@@ -6287,7 +6314,7 @@ void testLiveStopIsEmptiedContent() {
             engine->post({ps::CommandType::SetStaging, 1.0f});
             if (slot == ps::kSlotDrums) {
                 for (int lane = 0; lane < ps::Engine::kLanes; ++lane)
-                    for (int st = 0; st < ps::Engine::kMaxSteps; ++st) engine->post({ps::CommandType::SetDrumHit, 0.0f, lane, st});
+                    for (int st = 0; st < kClearSteps; ++st) engine->post({ps::CommandType::SetDrumHit, 0.0f, lane, st});
                 engine->post({ps::CommandType::SetPatternSteps, 0.0f, 16});
             } else if (slot == ps::kSlotAcid) {
                 for (int i = 0; i < ps::AcidTrack::kMaxSteps; ++i) engine->post({ps::CommandType::SetAcidStep, 0.0f, i, ps::AcidStep{}.pack()});
@@ -8054,7 +8081,7 @@ void testCommandBudgetPerCallback() {
         // A staged scene of more than the budget, taken whole in one callback.
         CHECK(e.post({CommandType::SetStaging, 1.0f}));
         for (int lane = 0; lane < ps::Engine::kLanes; ++lane)
-            for (int st = 0; st < ps::Engine::kMaxSteps; ++st) CHECK(e.post({CommandType::SetDrumHit, st % 4 == 0 ? 1.0f : 0.0f, lane, st}));
+            for (int st = 0; st < kClearSteps; ++st) CHECK(e.post({CommandType::SetDrumHit, st % 4 == 0 ? 1.0f : 0.0f, lane, st}));
         CHECK(e.post({CommandType::SetPlaying, 1.0f}));  // its last command (not a staged one: it shows)
         CHECK(e.post({CommandType::SetStaging, 0.0f}));
         e.process(nullptr, 0, 0, out, 64, 2);
@@ -8172,6 +8199,7 @@ int main(int argc, char** argv) {
         {"sound_swaps_never_allocate", testSoundSwapsNeverAllocate},
         {"onsets", testOnsetsFindTheHits},
         {"time_stretch", testTimeStretchKeepsPitchAndLength},
+        {"sixteen_bar_drums", testSixteenBarDrums},
         {"piano_roll", testPianoRollNotesAreSampleAccurate},
         {"instrument", testInstrumentPlaysTheSoundFont},
         {"insert_effects", testInsertEffects},

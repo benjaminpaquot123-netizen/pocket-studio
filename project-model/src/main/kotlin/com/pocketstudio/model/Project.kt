@@ -375,6 +375,14 @@ data class DrumPattern(
      * Phase 37: pad [lane]'s own loop of [length] steps (a polyrhythm: 3 against 4…), 0 or the
      * pattern's length = the pattern's loop. Its hits past that length stay, unheard.
      */
+    /**
+     * The steps a sync sends to the engine: every step it can read with this pattern (its loop, the
+     * longest pad loop), at least [SYNC_STEPS]. Steps past it are never played, so whatever an
+     * earlier, longer pattern left there is never heard, and a short pattern costs no more commands
+     * than before the 16-bar drums.
+     */
+    val engineReach: Int get() = maxOf(SYNC_STEPS, steps, lanes.maxOfOrNull { it.length } ?: 0).coerceAtMost(MAX_STEPS)
+
     fun withLaneLength(lane: Int, length: Int): DrumPattern {
         if (lane !in lanes.indices) return this
         val n = length.coerceIn(0, MAX_STEPS).let { if (it == steps) 0 else it }
@@ -436,7 +444,10 @@ data class DrumPattern(
         /** The softest hit « Force » sets (velocity 0 would remove it in the engine). */
         const val MIN_VELOCITY = 0.05f
         const val MIN_STEPS = 8
-        const val MAX_STEPS = 64
+        /** 16 bars, as long as a [NoteClip]: a Live cell records that much of drums too (step 7a). */
+        const val MAX_STEPS = 256
+        /** The steps every sync used to send (the old [MAX_STEPS]): a short pattern is still sent that far. */
+        const val SYNC_STEPS = 64
     }
 }
 

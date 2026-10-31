@@ -2740,7 +2740,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (waitsFor(LiveSlots.DRUMS)) return  // another scene plays: this one goes to the engine on its turn
         NativeEngine.setPatternSteps(drums.steps)
         drums.lanes.forEachIndexed { lane, l ->
-            for (step in 0 until DrumPattern.MAX_STEPS) pushHit(lane, step, l.hits[step])
+            for (step in 0 until drums.engineReach) pushHit(lane, step, l.hits[step])
             NativeEngine.setDrumLaneSteps(lane, l.length)
         }
     }
@@ -8153,8 +8153,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         if (fresh) hitTaken(scene, lane, step)
         if (playsNow(LiveSlots.DRUMS, scene) && NativeEngine.isAvailable) {
-            val hits = project.value.sceneView(scene).drums.lanes[lane].hits
-            for (s in 0 until DrumPattern.MAX_STEPS) pushHitNow(lane, s, hits[s])
+            val drums = project.value.sceneView(scene).drums
+            val hits = drums.lanes[lane].hits
+            for (s in 0 until drums.engineReach) pushHitNow(lane, s, hits[s])
         }
     }
 
@@ -8441,7 +8442,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             (hits.map { it.first } + replacedHits.keys.map { it.first }).distinct().forEach { scene ->
                 if (playsNow(LiveSlots.DRUMS, scene) || scene == project.value.scene) {
                     val drums = project.value.sceneView(scene).drums
-                    drums.lanes.forEachIndexed { lane, l -> for (s in 0 until DrumPattern.MAX_STEPS) pushHitNow(lane, s, l.hits[s]) }
+                    drums.lanes.forEachIndexed { lane, l -> for (s in 0 until drums.engineReach) pushHitNow(lane, s, l.hits[s]) }
                 }
             }
         }
@@ -9499,8 +9500,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun pushLane(lane: Int) {
         if (!NativeEngine.isAvailable) return
-        val hits = project.value.drums.lanes[lane].hits
-        for (step in 0 until DrumPattern.MAX_STEPS) pushHit(lane, step, hits[step])
+        val drums = project.value.drums
+        val hits = drums.lanes[lane].hits
+        for (step in 0 until drums.engineReach) pushHit(lane, step, hits[step])
         if (!waitsFor(LiveSlots.DRUMS)) NativeEngine.setDrumLaneSteps(lane, project.value.drums.lanes[lane].length)
     }
 

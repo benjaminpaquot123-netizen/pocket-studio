@@ -69,5 +69,6 @@
   "6 sur le temps": "बीट पर 6",
   "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "ट्रिपलेट: %2$d खानों में %1$d बराबर चोट (अगला खाना भी इसका हिस्सा है)",
   "dans le triolet": "ट्रिपलेट के अंदर",
-  "triolet, %1$d coups sur %2$d cases": "ट्रिपलेट, %2$d खानों में %1$d चोट"
+  "triolet, %1$d coups sur %2$d cases": "ट्रिपलेट, %2$d खानों में %1$d चोट",
+  "Fin (partie)": "अंत"
 }

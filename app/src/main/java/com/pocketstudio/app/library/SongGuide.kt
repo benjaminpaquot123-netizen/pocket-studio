@@ -17,7 +17,7 @@ fun List<com.pocketstudio.model.guide.GuidePageText>.toGuidePages(): List<GuideP
 fun songSummary(style: StarterWizard.Style, plan: StarterWizard.ScenePlan): String {
     val seconds = StarterWizard.songSeconds(style, plan)
     val titles = StarterWizard.songSectionTitles(style, plan).toMutableList()
-    if (titles.size > 1 && titles.last() == titles.first()) titles[titles.lastIndex] = tr("Fin")
+    if (titles.size > 1 && titles.last() == titles.first()) titles[titles.lastIndex] = com.pocketstudio.model.Scene.sectionName("Fin")
     return tr("%1\$s : environ %2\$s.", titles.joinToString(" → "), duration(seconds))
 }
 

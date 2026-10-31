@@ -454,7 +454,7 @@ public:
     const Sampler::PadParams& padParams(int pad) const { return sampler_.params(pad); }  // tests
 
     static constexpr int kLanes = 16;
-    static constexpr int kMaxSteps = 64;
+    static constexpr int kMaxSteps = 256;  // 16 bars, as long as a NoteTrack (a Live cell records that much)
 
     // Transport state for the UI: current pattern step (-1 when stopped or counting in).
     int currentStep() const { return currentStep_.load(std::memory_order_relaxed); }
@@ -632,7 +632,7 @@ private:
         int8_t pitch[kLanes][kMaxSteps] = {};  // semitones
         DrumStepExtra extra[kLanes][kMaxSteps] = {};
         uint8_t skip[kLanes][kMaxSteps] = {};  // 100 - the hit's chance in %, 0 = always plays
-        uint8_t laneSteps[kLanes] = {};        // 0: the pattern's length
+        uint16_t laneSteps[kLanes] = {};       // 0: the pattern's length
         int drumSteps = 16;
         std::array<bool, AudioTracks::kTracks> audioOn = filled<bool, AudioTracks::kTracks>(true);
         std::array<int, AudioTracks::kTracks> audioLoop = filled<int, AudioTracks::kTracks>(-1);  // -1: unchanged
@@ -723,10 +723,10 @@ private:
     // Phase 37: each hit's chance (stored as 100 - %, so the zeroed arrays mean « always ») and each
     // lane's own loop (0: the pattern's), with the draw's seed.
     uint8_t skip_[kLanes][kMaxSteps] = {};
-    uint8_t laneSteps_[kLanes] = {};
+    uint16_t laneSteps_[kLanes] = {};
     uint32_t chanceSeed_ = 0;
     // The pattern step lane `lane` plays at drums step `local` (its own loop, or the pattern's of `steps`).
-    static int laneStepOf(const uint8_t* laneSteps, int lane, int local, int steps) {
+    static int laneStepOf(const uint16_t* laneSteps, int lane, int local, int steps) {
         const int n = laneSteps[lane] > 0 ? laneSteps[lane] : steps;
         return ((local % n) + n) % n;
     }

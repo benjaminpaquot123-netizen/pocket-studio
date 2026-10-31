@@ -638,6 +638,12 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetStemStart:
             stems_.setStartFrame(command.a);
             break;
+        case CommandType::SetStemClip:
+            stems_.setClipField(command.a >> 16, (command.a >> 8) & 0xff, command.a & 0xff, command.b);
+            break;
+        case CommandType::CommitStemClips:
+            stems_.commitClips(command.a, command.b);
+            break;
         case CommandType::SetInstrument: {
             auto& t = sound(soundOf(command.a));
             // "No instrument" on a track that has none changes nothing: its synth notes keep sounding.

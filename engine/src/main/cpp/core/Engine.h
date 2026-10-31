@@ -208,6 +208,10 @@ enum class CommandType : uint8_t {
     // Punch-in: audio track a's clip goes silent from step b on (value 1: a song step, 0: the
     // track's own step), until the recording ends. a < 0: none.
     RecordMuteAt = 143,
+    // Step 5b: the song's stem edits. SetStemClip: a = stem << 16 | piece << 8 | StemPlayer::ClipField,
+    // b: the value (frames of the song as separated); CommitStemClips: a = stem, b = pieces (-1: none).
+    SetStemClip = 144,
+    CommitStemClips = 145,
 };
 static_assert(static_cast<int>(CommandType::SetPadVoiceParam) < 100, "the commands in order must stay under SetKitVersion");
 static_assert(static_cast<int>(CommandType::SetDrumStepOffset) == 80, "NativeEngine.kt numbers the phase 34 commands from 80");

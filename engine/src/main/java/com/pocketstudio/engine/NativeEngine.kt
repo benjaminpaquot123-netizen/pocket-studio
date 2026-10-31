@@ -108,6 +108,10 @@ object NativeEngine {
     // Final audit, voice (Engine.h, from 142): monitoring and the punch-in's mute.
     private const val CMD_MONITOR = 142
     private const val CMD_RECORD_MUTE_AT = 143
+    private const val CMD_STEM_CLIP = 144
+    private const val CMD_COMMIT_STEM_CLIPS = 145
+    /** Pieces a stem's edits hold at most (the engine's StemPlayer::kMaxClips). */
+    const val MAX_STEM_CLIPS = 32
 
     // Rolls' velocity ramps (Engine.h SetDrumStepRoll).
     const val ROLL_RAMP_LEGACY = 0
@@ -686,6 +690,20 @@ object NativeEngine {
 
     /** Song frame (48 kHz) heard on step 0; negative: the song comes in that many frames after step 0 (silence first). */
     fun setStemStart(frame: Long) = post(CMD_STEM_START, 0f, frame.coerceIn(-Int.MAX_VALUE.toLong(), Int.MAX_VALUE.toLong()).toInt())
+
+    /**
+     * Step 5b: stem [stem]'s edits, pieces of 5 numbers each (frames of the song as separated, 48 kHz):
+     * timeline frame, source frame, length, fade in, fade out. Null: none, the stem plays as separated.
+     * At most [MAX_STEM_CLIPS] pieces; committed at once (the engine never hears half of them).
+     */
+    fun setStemClips(stem: Int, clips: LongArray?) {
+        val count = clips?.let { minOf(it.size / 5, MAX_STEM_CLIPS) }
+        if (count != null) for (c in 0 until count) for (f in 0 until 5) {
+            val v = clips[c * 5 + f].coerceIn(0L, Int.MAX_VALUE.toLong()).toInt()
+            post(CMD_STEM_CLIP, 0f, (stem shl 16) or (c shl 8) or f, v)
+        }
+        post(CMD_COMMIT_STEM_CLIPS, 0f, stem, count ?: -1)
+    }
 
     /** Song position in frames while the stems play, else -1. */
     external fun stemPosition(): Long

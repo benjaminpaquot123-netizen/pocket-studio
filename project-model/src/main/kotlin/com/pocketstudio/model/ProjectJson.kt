@@ -17,11 +17,11 @@ object ProjectJson {
 
     fun encode(project: Project): String = json.encodeToString(Project.serializer(), project)
 
-    fun decode(text: String): Project = json.decodeFromString(Project.serializer(), text).sanitized().quietUnusedAcid().withAcidcoreSaturationLevelled()
+    fun decode(text: String): Project = json.decodeFromString(Project.serializer(), text).sanitized().quietUnusedAcid().withAcidcoreSaturationLevelled().withRemixPlaced()
 
     /** [decode] read from [input] as it goes (UTF-8): a big file never sits whole in memory as text. */
     @OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
-    fun decode(input: java.io.InputStream): Project = json.decodeFromStream(Project.serializer(), input).sanitized().quietUnusedAcid().withAcidcoreSaturationLevelled()
+    fun decode(input: java.io.InputStream): Project = json.decodeFromStream(Project.serializer(), input).sanitized().quietUnusedAcid().withAcidcoreSaturationLevelled().withRemixPlaced()
 
     /**
      * A 303 that plays nothing yet, saved at the level it had before its calibration (phase 30):

@@ -160,6 +160,8 @@ fun MixerScreen(
     automationActions: AutomationActions = AutomationActions(),
     hasSong: Boolean = false,
     strips: List<StripInfo> = BASIC_STRIPS,
+    /** Step 5a: the song's four stems (volume, Solo, Muet) right under the console; null without a song. */
+    songTracks: (@Composable () -> Unit)? = null,
     /** The output spectrum while the analyser is open (null: closed or not yet measured). */
     spectrum: FloatArray? = null,
     analyserOpen: Boolean = false,
@@ -209,6 +211,7 @@ fun MixerScreen(
             openCurves = { ch -> preferChannel(ch); scope.launch { automationCard.bringIntoView() } },
             faderHeight = faderHeight,
         )
+        songTracks?.invoke()
         AutomationEntry(automation.lanes.size, show = { scope.launch { automationCard.bringIntoView() } }, overview = { overview(null) })
     }, second = {
         AutomationCard(

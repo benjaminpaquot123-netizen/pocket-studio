@@ -140,14 +140,21 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         tap(centerOf("step_0"), "step 1")
         tap(centerOf("step_8"), "step 9")
         assertTrue("no hits on pad 1", project()!!.drums.lanes[0].hits.size == 2)
-        tap(centerOfText("Remix"), "the Remix chip")
+        // Step 5a: the chip now bears the song's name (« Ma chanson préférée · Chanson »).
+        // Past the screen's edge with a long name: the chips are swiped aside first, as a person does.
+        val width = app.resources.displayMetrics.widthPixels
+        centerOf("sons_Remix")?.let { (x, y) -> if (x > width - 80) { act("glisse ${width * 0.8f} $y ${width * 0.2f} $y"); act("attends 1") } }
+        tap(centerOf("sons_Remix"), "the song's chip")
+        // The song is in the project's structure now (step 5a): « Boucler » keeps the part going round, as before.
+        tap(centerOf("top_loop_part"), "Boucler")
         val loop = tap(reach("remix_play"), "Jouer")
         assertTrue(loop, loop.contains("le pad 1 (« Voix 1 ») sonne dans la boucle"))
         assertTrue(loop, loop.contains("avec la voix seule de « Ma chanson préférée », depuis sa mesure 3 (solo)"))
-        // Leaving the page while it plays: the loop goes on, the screen still follows.
-        val away = tap(centerOfText("16 pads", substring = true), "the Batterie chip")
+        // Leaving the page while it plays (the song's chip swiped the chips aside: Structure, at the bottom): the loop
+        // goes on, the screen still follows.
+        val away = tap(centerOf("tab_Mix"), "Mix")
         assertTrue(away, away.contains("la musique du projet joue en boucle"))
-        assertNotNull(centerOf("step_0"))
+        assertNotNull(centerOf("mixer"))
         assertTrue("the screen failed: $problems", problems.isEmpty())
         shot(File(System.getProperty("java.io.tmpdir"), "remix-journey-end.png"))
     }

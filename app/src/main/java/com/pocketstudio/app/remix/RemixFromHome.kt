@@ -42,6 +42,7 @@ import com.pocketstudio.model.ProjectInfo
 import com.pocketstudio.model.Remix
 import com.pocketstudio.model.Scale
 import com.pocketstudio.model.StemMix
+import com.pocketstudio.model.withRemixPlaced
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.NeonCard
@@ -63,13 +64,16 @@ enum class RemixWay {
 }
 
 object RemixFromHome {
-    /** The new project for [set] made [way]: its name, tempo, key and the song in its Remix. */
-    fun projectFor(set: StemSet, way: RemixWay): Project {
+    /**
+     * The new project for [set] made [way]: its name, tempo, key and the song in its Remix. [heard]:
+     * the parts switched on while listening (step 5a: all four come in, the others muted).
+     */
+    fun projectFor(set: StemSet, way: RemixWay, heard: List<Boolean>? = null): Project {
         val info = set.info
         val remix = Remix(
             set.id, set.name, info.bpm, info.firstBeat, seconds = set.seconds,
             // A source: every part muted, nothing heard over what the user makes; its pieces still cut.
-            stems = if (way == RemixWay.Source) List(Remix.STEMS) { StemMix(mute = true) } else List(Remix.STEMS) { StemMix() },
+            stems = if (way == RemixWay.Source) List(Remix.STEMS) { StemMix(mute = true) } else Remix.stemsHeard(heard),
         )
         return when (way) {
             RemixWay.Build -> Project(
@@ -81,22 +85,25 @@ object RemixFromHome {
                 tempoLead = info.bpm.takeIf { it > 0 }?.let { com.pocketstudio.model.TempoLead(set.name, it).sanitized() },
             )
             RemixWay.Source -> Project(name = "Remix", remix = remix)
-        }.sanitized()
+        }.sanitized().withRemixPlaced()
     }
 
     private const val NAME_MAX = 40
 
     // --- A song for a project not open yet ----------------------------------------------------
 
-    private val waiting = java.util.concurrent.ConcurrentHashMap<String, String>()
+    /** A song on its way to a project: its stems' folder and the parts heard while listening (null: all). */
+    data class Waiting(val setId: String, val heard: List<Boolean>? = null)
+
+    private val waiting = java.util.concurrent.ConcurrentHashMap<String, Waiting>()
 
     /** Song [setId] goes into project [projectId] once it is open (« Dans un projet existant »). */
-    fun put(projectId: String, setId: String) {
-        waiting[projectId] = setId
+    fun put(projectId: String, setId: String, heard: List<Boolean>? = null) {
+        waiting[projectId] = Waiting(setId, heard)
     }
 
     /** The song waiting for [projectId], once. */
-    fun take(projectId: String): String? = waiting.remove(projectId)
+    fun take(projectId: String): Waiting? = waiting.remove(projectId)
 }
 
 /**

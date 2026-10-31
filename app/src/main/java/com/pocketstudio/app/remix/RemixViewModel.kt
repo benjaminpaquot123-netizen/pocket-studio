@@ -104,6 +104,16 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
         SeparationService.separate(getApplication(), Uri.parse(uri), s.name)
     }
 
+    /**
+     * Step 5a: the parts last switched on while listening to each song (« Voix » alone), kept even
+     * once the listening stops (the destination dialog stops it first). Putting the song in a
+     * project brings its four parts, the others muted ([com.pocketstudio.model.Remix.stemsHeard]).
+     */
+    private val heard = java.util.concurrent.ConcurrentHashMap<String, List<Boolean>>()
+
+    /** The parts heard when [setId] was last listened to; null when it never was. */
+    fun heardFor(setId: String): List<Boolean>? = heard[setId]
+
     /** Plays the four stems of [set] together, apart from the project (all on by default). */
     fun playAll(set: StemSet) {
         val p = _preview.value
@@ -125,12 +135,14 @@ class RemixViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         val on = p.on.mapIndexed { i, v -> if (i == stem) !v else v }
+        heard[set.id] = on
         _preview.value = p.copy(on = on)
         if (NativeEngine.isAvailable) NativeEngine.setPreviewParam(stem, MUTE, if (on[stem]) 0f else 1f)
     }
 
     private fun start(set: StemSet, on: List<Boolean>) {
         stop()
+        heard[set.id] = on
         if (!NativeEngine.isAvailable) return
         _preview.value = StemPreview(set.id, on, loading = true)
         previewJob = viewModelScope.launch {

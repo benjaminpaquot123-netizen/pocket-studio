@@ -175,6 +175,7 @@ import com.pocketstudio.model.cellHasContent
 import com.pocketstudio.model.exportEndBars
 import com.pocketstudio.model.remixFromStepAlone
 import com.pocketstudio.model.remixStemStart
+import com.pocketstudio.model.withRemixPlaced
 import com.pocketstudio.model.audioPlays
 import com.pocketstudio.model.removeAudioTrack
 import com.pocketstudio.model.withAudioTrack
@@ -5606,6 +5607,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 remix = remix.copy(followTempo = info.bpm > 0),
             )
         }
+        // Step 5a: in the song's structure too (a part as long as it when the song has none), same undo step.
+        session.edit("remix") { p -> p.withRemixPlaced() }
         if (lead != null && kotlin.math.abs(lead.bpm - before.tempoBpm) >= 0.05) _tempoSet.value = TempoSet(lead.name, lead.bpm, before.tempoBpm)
         StemStore.pin(getApplication(), set.id)
         if (!NativeEngine.isAvailable) return adopts

@@ -86,7 +86,7 @@ data class Remix(
         /** The mixer strip the remix plays through: the song's group fader (its four stems under it). */
         const val STRIP = 3
 
-        /** The stems in the order they are shown (Voix, Batterie, Basse, Autres); stem indices as the engine has them. */
+        /** The stems in the order they are shown (Voix, Batterie, Basse, Reste); stem indices as the engine has them. */
         val SHOWN_ORDER = listOf(3, 0, 1, 2)
 
         /** The timeline key of stem [stem] (a line under the song's folder); [SongPart.REMIX] is the folder. */

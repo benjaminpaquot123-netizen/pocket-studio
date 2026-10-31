@@ -397,5 +397,13 @@
   "L'effet": "L'effetto",
   "Comment il joue": "Come suona",
   "Appui": "Premi",
-  "Tenu": "Tenuto"
+  "Tenu": "Tenuto",
+  "Retoucher %s": "Ritocca %s",
+  "Couper %1$s à la mesure %2$d": "Dividi %1$s alla battuta %2$d",
+  "Déplacer ce bout d'une mesure plus tard": "Sposta questo pezzo una battuta dopo",
+  "Déplacer ce bout d'une mesure plus tôt": "Sposta questo pezzo una battuta prima",
+  "Sans fondu au début": "Senza fade in",
+  "Sans fondu à la fin": "Senza fade out",
+  "Enlever ce bout": "Togli questo pezzo",
+  "Remettre %s comme au départ": "Rimetti %s com'era"
 }

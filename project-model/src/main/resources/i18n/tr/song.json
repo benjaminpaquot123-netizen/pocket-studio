@@ -397,5 +397,13 @@
   "L'effet": "Efekt",
   "Comment il joue": "Nasıl çalar",
   "Appui": "Bas",
-  "Tenu": "Uzun tut"
+  "Tenu": "Uzun tut",
+  "Retoucher %s": "%s düzenle",
+  "Couper %1$s à la mesure %2$d": "%1$s parçasını %2$d. ölçüden böl",
+  "Déplacer ce bout d'une mesure plus tard": "Bu parçayı bir ölçü ileri al",
+  "Déplacer ce bout d'une mesure plus tôt": "Bu parçayı bir ölçü geri al",
+  "Sans fondu au début": "Giriş fade'i yok",
+  "Sans fondu à la fin": "Çıkış fade'i yok",
+  "Enlever ce bout": "Bu parçayı kaldır",
+  "Remettre %s comme au départ": "%s ilk hâline dönsün"
 }

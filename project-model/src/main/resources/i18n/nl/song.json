@@ -397,5 +397,13 @@
   "L'effet": "Het effect",
   "Comment il joue": "Hoe het speelt",
   "Appui": "Indrukken",
-  "Tenu": "Vasthouden"
+  "Tenu": "Vasthouden",
+  "Retoucher %s": "%s bewerken",
+  "Couper %1$s à la mesure %2$d": "%1$s splitsen bij maat %2$d",
+  "Déplacer ce bout d'une mesure plus tard": "Dit stuk een maat later zetten",
+  "Déplacer ce bout d'une mesure plus tôt": "Dit stuk een maat eerder zetten",
+  "Sans fondu au début": "Niet infaden",
+  "Sans fondu à la fin": "Niet uitfaden",
+  "Enlever ce bout": "Dit stuk weghalen",
+  "Remettre %s comme au départ": "%s terugzetten zoals eerst"
 }

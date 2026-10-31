@@ -397,5 +397,13 @@
   "L'effet": "Efekt",
   "Comment il joue": "Jak gra",
   "Appui": "Dotyk",
-  "Tenu": "Trzymanie"
+  "Tenu": "Trzymanie",
+  "Retoucher %s": "Edytuj %s",
+  "Couper %1$s à la mesure %2$d": "Podziel %1$s w takcie %2$d",
+  "Déplacer ce bout d'une mesure plus tard": "Przesuń ten fragment o takt później",
+  "Déplacer ce bout d'une mesure plus tôt": "Przesuń ten fragment o takt wcześniej",
+  "Sans fondu au début": "Bez fade-in",
+  "Sans fondu à la fin": "Bez fade-out",
+  "Enlever ce bout": "Usuń ten fragment",
+  "Remettre %s comme au départ": "Przywróć %s do początku"
 }

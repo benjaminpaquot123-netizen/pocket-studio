@@ -397,5 +397,13 @@
   "L'effet": "效果",
   "Comment il joue": "演奏方式",
   "Appui": "按下",
-  "Tenu": "持续"
+  "Tenu": "持续",
+  "Retoucher %s": "编辑%s",
+  "Couper %1$s à la mesure %2$d": "在第 %2$d 小节切开%1$s",
+  "Déplacer ce bout d'une mesure plus tard": "把这段往后移一小节",
+  "Déplacer ce bout d'une mesure plus tôt": "把这段往前移一小节",
+  "Sans fondu au début": "不淡入",
+  "Sans fondu à la fin": "不淡出",
+  "Enlever ce bout": "移除这一段",
+  "Remettre %s comme au départ": "把%s恢复原样"
 }

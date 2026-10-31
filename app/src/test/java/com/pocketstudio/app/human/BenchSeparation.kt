@@ -26,7 +26,7 @@ import java.security.MessageDigest
  * stand-in for the heavy work ([SeparationService.Work], the service's own seam). The song is
  * read from the file the picker gave (a WAV), the separation takes a few seconds with its
  * progress, and gives back the four parts of [BenchSong] (the « Voix » stem is the sung voice,
- * clean); any other song lands whole in « Autres ». The model's download (174 MB) comes from a
+ * clean); any other song lands whole in « Reste ». The model's download (174 MB) comes from a
  * local server, at the size and with the progress a phone sees, in about six seconds. Bench only.
  */
 internal class BenchSeparation(

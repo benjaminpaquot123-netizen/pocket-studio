@@ -397,5 +397,13 @@
   "L'effet": "इफ़ेक्ट",
   "Comment il joue": "कैसे बजता है",
   "Appui": "दबाएँ",
-  "Tenu": "होल्ड"
+  "Tenu": "होल्ड",
+  "Retoucher %s": "%s एडिट करो",
+  "Couper %1$s à la mesure %2$d": "%1$s को bar %2$d पर बाँटो",
+  "Déplacer ce bout d'une mesure plus tard": "इस टुकड़े को एक bar बाद में ले जाओ",
+  "Déplacer ce bout d'une mesure plus tôt": "इस टुकड़े को एक bar पहले ले जाओ",
+  "Sans fondu au début": "Fade-in नहीं",
+  "Sans fondu à la fin": "Fade-out नहीं",
+  "Enlever ce bout": "यह टुकड़ा हटाओ",
+  "Remettre %s comme au départ": "%s को पहले जैसा करो"
 }

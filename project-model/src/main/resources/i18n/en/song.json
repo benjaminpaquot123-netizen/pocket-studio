@@ -397,5 +397,13 @@
   "L'effet": "The effect",
   "Comment il joue": "How it plays",
   "Appui": "Press",
-  "Tenu": "Hold"
+  "Tenu": "Hold",
+  "Retoucher %s": "Edit %s",
+  "Couper %1$s à la mesure %2$d": "Split %1$s at bar %2$d",
+  "Déplacer ce bout d'une mesure plus tard": "Move this piece one bar later",
+  "Déplacer ce bout d'une mesure plus tôt": "Move this piece one bar earlier",
+  "Sans fondu au début": "No fade-in",
+  "Sans fondu à la fin": "No fade-out",
+  "Enlever ce bout": "Remove this piece",
+  "Remettre %s comme au départ": "Put %s back as it was"
 }

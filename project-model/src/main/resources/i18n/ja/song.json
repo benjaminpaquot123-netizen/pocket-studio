@@ -397,5 +397,13 @@
   "L'effet": "エフェクト",
   "Comment il joue": "鳴らしかた",
   "Appui": "タッチ",
-  "Tenu": "ホールド"
+  "Tenu": "ホールド",
+  "Retoucher %s": "%s を編集",
+  "Couper %1$s à la mesure %2$d": "%2$d 小節目で %1$s を分割",
+  "Déplacer ce bout d'une mesure plus tard": "この部分を 1 小節あとへ",
+  "Déplacer ce bout d'une mesure plus tôt": "この部分を 1 小節まえへ",
+  "Sans fondu au début": "フェードインなし",
+  "Sans fondu à la fin": "フェードアウトなし",
+  "Enlever ce bout": "この部分を外す",
+  "Remettre %s comme au départ": "%s を最初の状態に戻す"
 }

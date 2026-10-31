@@ -84,6 +84,8 @@ class RemixSongEverywhereTest {
         h.awaitTag("stem_${SET}_vocals")
         tap("stem_${SET}_vocals")
         tap("use_$SET")
+        // Step 5c: « Mettre Boys dans mon projet », its choices as they are.
+        h.confirmImport()
         val p = h.vm.project.value
         assertEquals(SET, p.remix.setId)
         // All four stems in the project, the voice heard, the others muted.

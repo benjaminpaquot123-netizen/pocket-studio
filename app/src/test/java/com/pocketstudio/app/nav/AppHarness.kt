@@ -1,5 +1,7 @@
 package com.pocketstudio.app.nav
 
+import androidx.compose.ui.test.performClick
+
 import android.app.Application
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.geometry.Offset
@@ -94,6 +96,23 @@ internal class AppHarness(val compose: AndroidComposeTestRule<ActivityScenarioRu
         while (compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes().isEmpty()) {
             check(System.currentTimeMillis() < end) { "nothing tagged $tag after $timeoutMs ms" }
             Thread.sleep(50)
+            compose.waitForIdle()
+        }
+    }
+
+    /**
+     * Step 5c: « Mettre dans mon projet » on the song's import screen, once it shows and its parts
+     * are read (the button waits for them): the song goes in with the screen's own choices.
+     */
+    fun confirmImport(timeoutMs: Long = 10_000) {
+        awaitTag("import_go", timeoutMs)
+        val end = System.currentTimeMillis() + timeoutMs
+        var problem: Throwable? = null
+        while (compose.onAllNodesWithTag("import_go", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()) {
+            check(System.currentTimeMillis() < end) { "« Mettre dans mon projet » never went through: $problem" }
+            problem = runCatching { compose.onNode(androidx.compose.ui.test.hasTestTag("import_go") and androidx.compose.ui.test.isEnabled()).performClick() }.exceptionOrNull()
+            Thread.sleep(30)
+            org.robolectric.shadows.ShadowLooper.idleMainLooper()
             compose.waitForIdle()
         }
     }

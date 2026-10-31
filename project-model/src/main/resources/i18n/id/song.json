@@ -397,5 +397,13 @@
   "L'effet": "Efek",
   "Comment il joue": "Cara bermain",
   "Appui": "Tekan",
-  "Tenu": "Tahan"
+  "Tenu": "Tahan",
+  "Retoucher %s": "Edit %s",
+  "Couper %1$s à la mesure %2$d": "Belah %1$s di bar %2$d",
+  "Déplacer ce bout d'une mesure plus tard": "Geser potongan ini satu bar lebih lambat",
+  "Déplacer ce bout d'une mesure plus tôt": "Geser potongan ini satu bar lebih awal",
+  "Sans fondu au début": "Tanpa fade-in",
+  "Sans fondu à la fin": "Tanpa fade-out",
+  "Enlever ce bout": "Hapus potongan ini",
+  "Remettre %s comme au départ": "Kembalikan %s seperti semula"
 }

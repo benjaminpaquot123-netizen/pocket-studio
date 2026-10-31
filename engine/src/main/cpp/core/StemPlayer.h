@@ -42,9 +42,13 @@ public:
     int refCount() const { return refs_.load(std::memory_order_acquire); }
     // Same for a song and every copy stretched from it (the player maps its position between them).
     uint64_t song() const { return song_; }
+    // This copy's length over the song's as separated (1: the song itself; a copy stretched for
+    // another tempo: its ratio). Stem edits are told in the song's own frames and scaled by it.
+    double scale() const { return scale_; }
 
 private:
     StemBundle();
+    double scale_ = 1.0;
     std::array<std::vector<int16_t>, kStems> data_;
     int64_t frames_ = 0;
     uint64_t song_ = 0;
@@ -58,6 +62,15 @@ private:
 class StemPlayer {
 public:
     enum Param { Gain = 0, Mute = 1, Solo = 2 };
+    // Step 5b: a stem's non-destructive edits, pieces of it laid out on the song's timeline: frames
+    // [at, at + length) of the timeline play frames from `from` on, with linear fades in and out
+    // (frames). All in frames of the song as separated, at the engine rate (scaled for a copy).
+    enum ClipField { ClipAt = 0, ClipFrom = 1, ClipLength = 2, ClipFadeIn = 3, ClipFadeOut = 4 };
+    static constexpr int kMaxClips = 32;
+    struct Clip {
+        int64_t at = 0, from = 0, length = 0;
+        int32_t fadeIn = 0, fadeOut = 0;
+    };
 
     ~StemPlayer();
     void prepare(int sampleRate);
@@ -70,6 +83,11 @@ public:
     // the old tempo while the copy was made, had got to). NaN: no transport (the preview).
     void install(StemBundle* bundle, double steps = std::numeric_limits<double>::quiet_NaN(), double stepFrames = 0.0);
     void setParam(int stem, int param, float value);
+    // Step 5b: a field of piece `clip` of `stem`'s next edits (kept aside until committed).
+    void setClipField(int stem, int clip, int field, int64_t value);
+    // The pieces set aside become `stem`'s edits, its first `count` ones (-1: no edits, the stem
+    // plays as separated; 0: silent). Pieces overlapping: the later one is heard.
+    void commitClips(int stem, int count);
     // Negative: that many frames of silence before the song's first frame.
     void setStartFrame(int64_t frame) { startFrame_ = frame; }
 
@@ -102,6 +120,13 @@ private:
     // The bundle playing now fades out on its own over `frames` (from its current fade level).
     void fadeAway(int frames);
     void renderFrames(float* left, float* right, int from, int to, int wait);
+    // The edits in frames of `b` (its scale), into `out` (count -1: none).
+    void scaleEdits(const StemBundle* b, std::array<int, StemBundle::kStems>& count,
+                    std::array<std::array<Clip, kMaxClips>, StemBundle::kStems>& out) const;
+    void updateEnd();
+    // Stem `s`'s sample at timeline frame `pos` of a bundle `frames` long, through its scaled
+    // edits: the source frame (-1: silent) and the fade gain. `cursor`: the piece found last.
+    static int64_t sourceOf(const Clip* clips, int count, int64_t pos, int64_t frames, int edge, int& cursor, float& gain);
 
     StemBundle* bundle_ = nullptr;
     SpscQueue<StemBundle*, 64> retired_;
@@ -127,6 +152,10 @@ private:
         StemBundle* bundle = nullptr;
         int64_t pos = 0;
         int left = 0, length = 1;
+        // Its stems' edits, scaled for it when it started to fade.
+        std::array<int, StemBundle::kStems> count{-1, -1, -1, -1};
+        std::array<std::array<Clip, kMaxClips>, StemBundle::kStems> clips{};
+        std::array<int, StemBundle::kStems> cursor{};
     };
     // Two: a copy fading under a new one is still there when the next fade starts (the transport
     // started over, another copy) a few milliseconds later, never cut dead.
@@ -136,6 +165,16 @@ private:
     int liveAt_ = -1;       // frame of the next render() where the live gain starts to move, -1 none
     float liveGain_ = 1.0f; // 1 = heard: the plain mix, sample for sample
     std::atomic<int64_t> position_{-1};
+    // Step 5b: each stem's edits in song frames (staged until committed), and scaled for the
+    // bundle playing (its scale when they were worked out). Outgoing copies get theirs on the fly.
+    std::array<int, StemBundle::kStems> editCount_{-1, -1, -1, -1};
+    std::array<std::array<Clip, kMaxClips>, StemBundle::kStems> edits_{}, staged_{};
+    std::array<int, StemBundle::kStems> playCount_{-1, -1, -1, -1};
+    std::array<std::array<Clip, kMaxClips>, StemBundle::kStems> playEdits_{};
+    // Where the bundle playing ends: its last frame, or later when a piece was moved past it.
+    int64_t playEnd_ = 0;
+    std::array<int, StemBundle::kStems> cursor_{};
+    int edge_ = 96;  // 2 ms: the shortest fade at a piece's edge (no click at a cut)
 };
 
 }  // namespace ps

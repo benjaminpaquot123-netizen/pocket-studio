@@ -178,6 +178,9 @@ class RemixActions(
     val setPadBars: (Int) -> Unit = {},
     /** « Découper la voix en phrases »: each phrase on a free pad. */
     val splitVoice: () -> Unit = {},
+    /** Step 5d: the drums stem as a kit on the pads; the bass stem as notes (true: on the Acid 303). */
+    val drumsToKit: () -> Unit = {},
+    val bassToNotes: (Boolean) -> Unit = {},
     /** The question of [RemixUi.padAsk]: cover the pad, or not. */
     val confirmPad: () -> Unit = {},
     val dismissPadAsk: () -> Unit = {},
@@ -417,12 +420,19 @@ private fun InProject(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit)
                 )
             }
             ProSlider(value = m.volume, onValueChange = { actions.setStemVolume(i, it) }, modifier = Modifier.testTag("stem_volume_$i"))
-            if (stem == "vocals") {
-                OutlinedButton(onClick = actions.splitVoice, modifier = Modifier.fillMaxWidth().testTag("remix_split_voice")) {
-                    Icon(Icons.Filled.ContentCut, contentDescription = null)
-                    Text(" " + tr("Découper la voix en phrases (pads libres)"))
-                }
-            }
+        }
+        // Step 5d: « Faire de la matière »: the song's stems turned into pads, a kit, notes, one touch each.
+        Text(tr("Faire de la matière"), style = MaterialTheme.typography.titleSmall, color = Neon.Cyan, modifier = Modifier.padding(top = 8.dp).testTag("remix_matter"))
+        OutlinedButton(onClick = actions.splitVoice, modifier = Modifier.fillMaxWidth().testTag("remix_split_voice")) {
+            Icon(Icons.Filled.ContentCut, contentDescription = null)
+            Text(" " + tr("La voix en phrases sur les pads"))
+        }
+        OutlinedButton(onClick = actions.drumsToKit, modifier = Modifier.fillMaxWidth().testTag("remix_drum_kit")) {
+            Text(tr("La batterie en kit « %s »", r.name.ifBlank { tr("Remix") }))
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(onClick = { actions.bassToNotes(false) }, modifier = Modifier.weight(1f).testTag("remix_bass_notes")) { Text(tr("La basse en notes")) }
+            OutlinedButton(onClick = { actions.bassToNotes(true) }, modifier = Modifier.weight(1f).testTag("remix_bass_acid")) { Text(tr("La basse sur l'Acid 303")) }
         }
         // Said where the user just touched: the cut's progress, its pad, or why it failed.
         ui.padTask?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("remix_pad_task")) }

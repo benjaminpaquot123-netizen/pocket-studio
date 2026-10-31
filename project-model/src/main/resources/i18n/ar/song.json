@@ -397,5 +397,13 @@
   "L'effet": "المؤثر",
   "Comment il joue": "طريقة العزف",
   "Appui": "ضغط",
-  "Tenu": "مثبَّت"
+  "Tenu": "مثبَّت",
+  "Retoucher %s": "تعديل %s",
+  "Couper %1$s à la mesure %2$d": "تقسيم %1$s عند المازورة %2$d",
+  "Déplacer ce bout d'une mesure plus tard": "تأخير هذه القطعة مازورة واحدة",
+  "Déplacer ce bout d'une mesure plus tôt": "تقديم هذه القطعة مازورة واحدة",
+  "Sans fondu au début": "بدون Fade-in",
+  "Sans fondu à la fin": "بدون Fade-out",
+  "Enlever ce bout": "إزالة هذه القطعة",
+  "Remettre %s comme au départ": "إعادة %s كما كانت"
 }

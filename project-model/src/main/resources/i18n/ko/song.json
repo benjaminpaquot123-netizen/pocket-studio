@@ -397,5 +397,13 @@
   "L'effet": "이펙트",
   "Comment il joue": "연주 방식",
   "Appui": "누르기",
-  "Tenu": "홀드"
+  "Tenu": "홀드",
+  "Retoucher %s": "%s 편집",
+  "Couper %1$s à la mesure %2$d": "%2$d마디에서 %1$s 자르기",
+  "Déplacer ce bout d'une mesure plus tard": "이 조각을 한 마디 뒤로",
+  "Déplacer ce bout d'une mesure plus tôt": "이 조각을 한 마디 앞으로",
+  "Sans fondu au début": "페이드 인 없음",
+  "Sans fondu à la fin": "페이드 아웃 없음",
+  "Enlever ce bout": "이 조각 빼기",
+  "Remettre %s comme au départ": "%s 처음대로 되돌리기"
 }

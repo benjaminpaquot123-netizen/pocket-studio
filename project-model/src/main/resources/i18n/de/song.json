@@ -397,5 +397,13 @@
   "L'effet": "Der Effekt",
   "Comment il joue": "Wie es spielt",
   "Appui": "Drücken",
-  "Tenu": "Halten"
+  "Tenu": "Halten",
+  "Retoucher %s": "%s bearbeiten",
+  "Couper %1$s à la mesure %2$d": "%1$s bei Takt %2$d teilen",
+  "Déplacer ce bout d'une mesure plus tard": "Dieses Stück einen Takt später setzen",
+  "Déplacer ce bout d'une mesure plus tôt": "Dieses Stück einen Takt früher setzen",
+  "Sans fondu au début": "Kein Fade-in",
+  "Sans fondu à la fin": "Kein Fade-out",
+  "Enlever ce bout": "Dieses Stück entfernen",
+  "Remettre %s comme au départ": "%s wie am Anfang"
 }

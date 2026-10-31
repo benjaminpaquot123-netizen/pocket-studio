@@ -108,6 +108,10 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
 
         // « Jouer avec le projet »: the song plays along the project.
         tap(reach("use_${set.id}"), "Jouer avec le projet")
+        // Step 5c: « Mettre … dans mon projet », its choices as they are (the parts read first).
+        repeat(10) {
+            if (project()?.remix?.setId == null) centerOf("import_go")?.let { tap(it, "Mettre dans mon projet") } ?: act("attends 1")
+        }
         assertEquals(set.id, project()?.remix?.setId)
         act("attends 1")
         // Its four parts are drawn (the screen follows: nothing froze it). Their waves are read off the main
@@ -157,6 +161,14 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         assertNotNull(centerOf("mixer"))
         assertTrue("the screen failed: $problems", problems.isEmpty())
         shot(File(System.getProperty("java.io.tmpdir"), "remix-journey-end.png"))
+        // Step 5b (Benjamin): played without « Boucler », the song goes on when the page is left too.
+        tap(centerOf("tab_Sons"), "Sons")
+        tap(reach("remix_play"), "Arrêter")
+        tap(centerOf("top_loop_part"), "Boucler (off)")
+        val once = tap(reach("remix_play"), "Jouer")
+        assertTrue(once, once.contains("la musique du projet joue"))
+        val left = tap(centerOf("tab_Mix"), "Mix")
+        assertTrue(left, left.contains("la musique du projet joue") && left.contains("la voix seule de « Ma chanson préférée »"))
     }
 
     private fun rms(stereo: FloatArray, rate: Int, from: Double, to: Double): Double {

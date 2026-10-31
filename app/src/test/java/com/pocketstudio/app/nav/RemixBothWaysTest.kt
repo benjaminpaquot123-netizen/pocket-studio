@@ -204,6 +204,8 @@ class RemixBothWaysTest {
         RemixFromHome.put(id, set.id, VOICE_ONLY)
         h.start(projectId = id, build = {})
         val end = System.currentTimeMillis() + 10_000
+        // Step 5c: its import screen first.
+        h.confirmImport()
         while (h.vm.project.value.remix.setId != set.id) {
             check(System.currentTimeMillis() < end) { "the song never reached the project" }
             Thread.sleep(20)
@@ -221,6 +223,8 @@ class RemixBothWaysTest {
         RemixFromHome.put(id, set.id)
         h.start(projectId = id, build = {})
         val end = System.currentTimeMillis() + 10_000
+        // Step 5c: its import screen first.
+        h.confirmImport()
         while (h.vm.project.value.remix.setId != set.id) {
             check(System.currentTimeMillis() < end) { "the song never reached the project" }
             Thread.sleep(20)

@@ -175,6 +175,18 @@ import com.pocketstudio.model.cellHasContent
 import com.pocketstudio.model.exportEndBars
 import com.pocketstudio.model.remixFromStepAlone
 import com.pocketstudio.model.remixStemStart
+import com.pocketstudio.model.onlyPassage
+import com.pocketstudio.model.withSongSections
+import com.pocketstudio.model.cutStem
+import com.pocketstudio.model.moveStemPiece
+import com.pocketstudio.model.fadeStemPiece
+import com.pocketstudio.model.removeStemPiece
+import com.pocketstudio.model.resetStem
+import com.pocketstudio.model.piecesOf
+import com.pocketstudio.model.pieceAt
+import com.pocketstudio.model.remixTimeAtStep
+import com.pocketstudio.model.remixSecondsPerStep
+import com.pocketstudio.model.stemClipFrames
 import com.pocketstudio.model.withRemixPlaced
 import com.pocketstudio.model.audioPlays
 import com.pocketstudio.model.removeAudioTrack
@@ -5487,6 +5499,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             NativeEngine.setStemParam(i, 0, m.volume)
             NativeEngine.setStemParam(i, 1, if (m.mute) 1f else 0f)
             NativeEngine.setStemParam(i, 2, if (m.solo) 1f else 0f)
+            // Step 5b: its pieces (cut, moved, faded), in frames of the song as separated.
+            NativeEngine.setStemClips(i, p.remix.stemClipFrames(i, OfflineExport.SAMPLE_RATE))
         }
         val wanted = p.remix.setId
         if (loaded == null && stems != null) {
@@ -5590,25 +5604,36 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * An empty project takes the song's tempo and key. Returns true when the project took them.
      * [heard]: the parts the user kept on while listening (« Voix » alone): the others come in muted.
      */
-    fun useSong(set: StemSet, heard: List<Boolean>? = null): Boolean {
+    fun useSong(
+        set: StemSet, heard: List<Boolean>? = null,
+        choice: com.pocketstudio.model.SongImport? = null, sections: List<com.pocketstudio.model.SongSection> = emptyList(),
+    ): Boolean {
         val info = set.info
         val before = project.value
-        val adopts = !before.hasMusicOfItsOwn()
+        // Step 5c: « Mettre Boys dans mon projet » says it (its defaults follow the same rule).
+        val adopts = choice?.takeTempo ?: !before.hasMusicOfItsOwn()
+        val setKey = choice?.setKey ?: adopts
+        val place = choice?.place ?: com.pocketstudio.model.SongPlace.Whole
         // Step 4e: the song sets the tempo of a project without one (« Tempo calé sur Boys »).
         val lead = if (adopts) com.pocketstudio.model.AutoTempo.leadFor(before.copy(remix = Remix()), set.name, info.bpm) else null
+        // Everything in one undo step (« Annuler » takes it all back).
         session.edit("remix") { p ->
-            val remix = Remix(set.id, set.name, info.bpm, info.firstBeat, seconds = set.seconds, stems = Remix.stemsHeard(heard))
-            if (!adopts) p.copy(remix = remix.copy(followTempo = info.bpm > 0 && kotlin.math.abs(info.bpm - p.tempoBpm) > 0.05))
-            else (lead?.let { com.pocketstudio.model.AutoTempo.led(p, it) } ?: p).copy(
-                // A loop set the tempo already (a live pad): it stays, the song is stretched to it.
-                tempoBpm = if (info.bpm > 0 && before.tempoLead == null) info.bpm else p.tempoBpm,
-                harmony = info.root?.let { Harmony(it, if (info.minor) Scale.Minor else Scale.Major) } ?: p.harmony,
+            val stems = if (place == com.pocketstudio.model.SongPlace.VoiceOnly) Remix.stemsHeard(listOf(false, false, false, true)) else Remix.stemsHeard(heard)
+            var remix = Remix(set.id, set.name, info.bpm, info.firstBeat, seconds = set.seconds, stems = stems)
+            if (place == com.pocketstudio.model.SongPlace.Passage && choice != null) remix = remix.onlyPassage(choice.fromBar, choice.bars)
+            val keyed = if (setKey) info.root?.let { p.copy(harmony = Harmony(it, if (info.minor) Scale.Minor else Scale.Major)) } ?: p else p
+            val put = if (!adopts) keyed.copy(remix = remix.copy(followTempo = info.bpm > 0 && kotlin.math.abs(info.bpm - p.tempoBpm) > 0.05))
+            else (lead?.let { com.pocketstudio.model.AutoTempo.led(keyed, it) } ?: keyed).copy(
+                // A loop set the tempo already (a live pad): it stays, the song is stretched to it (unless asked).
+                tempoBpm = if (info.bpm > 0 && (before.tempoLead == null || choice?.takeTempo == true)) info.bpm else p.tempoBpm,
                 // It follows the tempo from then on: « − BPM + » on the Live moves it too.
                 remix = remix.copy(followTempo = info.bpm > 0),
             )
+            // Step 5a: in the song's structure too (a part as long as it when the song has none);
+            // step 5c: or its parts as bricks.
+            val placed = put.withRemixPlaced()
+            if (choice?.bricks == true && place != com.pocketstudio.model.SongPlace.Passage) placed.withSongSections(sections) ?: placed else placed
         }
-        // Step 5a: in the song's structure too (a part as long as it when the song has none), same undo step.
-        session.edit("remix") { p -> p.withRemixPlaced() }
         if (lead != null && kotlin.math.abs(lead.bpm - before.tempoBpm) >= 0.05) _tempoSet.value = TempoSet(lead.name, lead.bpm, before.tempoBpm)
         StemStore.pin(getApplication(), set.id)
         if (!NativeEngine.isAvailable) return adopts
@@ -5633,6 +5658,45 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun toggleStemMute(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(mute = !s.mute) } }
     fun toggleStemSolo(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(solo = !s.solo) } }
     fun setRemixStartBar(bar: Int) = editRemix("remix-start") { it.copy(startBar = bar.coerceIn(0, Remix.MAX_START_BAR)) }
+
+    // Step 5b: the song's stems edited in the Structure, on the bars (song step [step], a bar's
+    // start), each an undo step; the stems' files are never changed.
+    private fun remixSecondsNow(p: Project = project.value): Double =
+        p.remix.seconds.takeIf { it > 0 } ?: _stemOverview.value?.let { it.frames.toDouble() / OfflineExport.SAMPLE_RATE } ?: 0.0
+
+    /** Stem [stem] cut on song step [step]. */
+    fun cutStemAt(stem: Int, step: Int) {
+        val p = project.value
+        editRemix(null) { it.cutStem(stem, p.remixTimeAtStep(step), remixSecondsNow(p)) }
+    }
+
+    /** The piece of stem [stem] under song step [step] moved by [bars] bars (later when positive). */
+    fun moveStemPieceAt(stem: Int, step: Int, bars: Int) {
+        val p = project.value
+        editRemix(null) { it.moveStemPiece(stem, p.remixTimeAtStep(step) + 1e-6, bars * p.stepsPerBar * p.remixSecondsPerStep(), remixSecondsNow(p)) }
+    }
+
+    /** A fade of a bar in ([atStart]) or out on the piece of stem [stem] under song step [step]; again: none. */
+    fun toggleStemFadeAt(stem: Int, step: Int, atStart: Boolean) {
+        val p = project.value
+        val t = p.remixTimeAtStep(step) + 1e-6
+        val seconds = remixSecondsNow(p)
+        val piece = p.remix.piecesOf(stem, seconds).getOrNull(p.remix.pieceAt(stem, t, seconds)) ?: return
+        val bar = p.stepsPerBar * p.remixSecondsPerStep()
+        editRemix(null) {
+            if (atStart) it.fadeStemPiece(stem, t, fadeIn = if (piece.fadeIn > 0) 0.0 else bar, seconds = seconds)
+            else it.fadeStemPiece(stem, t, fadeOut = if (piece.fadeOut > 0) 0.0 else bar, seconds = seconds)
+        }
+    }
+
+    /** The piece of stem [stem] under song step [step] taken away. */
+    fun removeStemPieceAt(stem: Int, step: Int) {
+        val p = project.value
+        editRemix(null) { it.removeStemPiece(stem, p.remixTimeAtStep(step) + 1e-6, remixSecondsNow(p)) }
+    }
+
+    /** Stem [stem] as separated again. */
+    fun resetStem(stem: Int) = editRemix(null) { it.resetStem(stem) }
 
     private fun editRemix(key: String?, transform: (Remix) -> Remix) {
         session.edit(key) { p -> p.copy(remix = transform(p.remix)) }
@@ -5769,6 +5833,133 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 throw e
             } catch (e: Throwable) {
                 AppLog.add("Remix : découpe en phrases impossible (${e.message})")
+                _sampleTask.value = SampleTask.Failed(tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName))
+            }
+        }
+    }
+
+    // --- Step 5d: « Faire de la matière » (the song's stems as material of the project) -------
+
+    /** Stereo floats to mono. */
+    private fun monoOf(stereo: FloatArray) = FloatArray(stereo.size / 2) { (stereo[it * 2] + stereo[it * 2 + 1]) * 0.5f }
+
+    /**
+     * « La batterie en kit »: the drums stem's hits (its first minute from the remix start) told
+     * apart, the cleanest kicks, snares and hat made one-shots on the kit's pads (Kick, Kick 2,
+     * Caisse, Caisse 2, Charley): the step grid plays them at once. One undo step.
+     */
+    fun drumsToKit() {
+        val source = stems ?: return
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
+        val p = project.value
+        val rate = OfflineExport.SAMPLE_RATE
+        val from = p.remix.startFrame(rate).coerceAtLeast(0L)
+        val count = minOf(source.frames - from, 60L * rate)
+        val song = p.remix.name.ifBlank { "Remix" }
+        if (count <= 0) return
+        _remixCut.value = null
+        _sampleTask.value = SampleTask.Busy(tr("Kit de %s : je cherche les coups…", song))
+        viewModelScope.launch {
+            try {
+                val made = withContext(Dispatchers.IO) {
+                    val hits = com.pocketstudio.model.SongMatter.drumHits(monoOf(source.extract(DRUMS_STEM, from, count)), rate)
+                    val starts = hits.map { it.at }
+                    val lanes = mapOf(
+                        com.pocketstudio.model.SongMatter.Drum.Kick to listOf(0, 1),
+                        com.pocketstudio.model.SongMatter.Drum.Snare to listOf(2, 3),
+                        com.pocketstudio.model.SongMatter.Drum.Hat to listOf(5),
+                    )
+                    val names = mapOf(com.pocketstudio.model.SongMatter.Drum.Kick to "Kick", com.pocketstudio.model.SongMatter.Drum.Snare to "Caisse", com.pocketstudio.model.SongMatter.Drum.Hat to "Charley")
+                    com.pocketstudio.model.SongMatter.bestHits(hits).flatMap { (kind, best) ->
+                        best.zip(lanes.getValue(kind)).map { (hit, lane) ->
+                            // Up to the next hit (a one-shot, not the next one too), at most its kind's length.
+                            val next = starts.firstOrNull { it > hit.at } ?: Int.MAX_VALUE
+                            val length = minOf(com.pocketstudio.model.SongMatter.oneShotFrames(kind, rate), next - hit.at).toLong()
+                            val audio = source.extract(DRUMS_STEM, from + hit.at, length)
+                            val (sample, prepared) = padSamples.add(Pcm(audio, 2, rate), com.pocketstudio.model.DefaultNames.stemPad(names.getValue(kind), song))
+                            Triple(lane, sample.copy(release = RemixVoice.CUT_RELEASE), prepared)
+                        }
+                    }.sortedBy { it.first }
+                }
+                if (made.isEmpty()) {
+                    _sampleTask.value = SampleTask.Failed(tr("Pas de coups de batterie trouvés dans %s.", song))
+                    return@launch
+                }
+                made.forEach { padSamples.register(it.third) }
+                session.edit { q -> q.copy(drums = made.fold(q.drums) { d, (lane, sample, _) -> d.withSample(lane, sample) }) }
+                pushPads()
+                _sampleTask.value = SampleTask.Idle
+                val pads = made.map { it.first + 1 }
+                AppLog.add("Remix : kit de la batterie sur les pads $pads")
+                _remixCut.value = RemixCut(made.first().first, tr("Kit « %1\$s » sur les pads %2\$s : tes pas le jouent déjà.", song, pads.joinToString(", ")))
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                AppLog.add("Remix : kit de la batterie impossible (${e.message})")
+                _sampleTask.value = SampleTask.Failed(tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName))
+            }
+        }
+    }
+
+    /**
+     * « La basse en notes »: the bass stem followed note by note over the bars where the scene shown
+     * plays in the song (as heard there, on the project's sixteenths, at most 16 bars), on a new
+     * bass track (any sound can play it) or, [acid], on the Acid 303. One undo step.
+     */
+    fun bassToNotes(acid: Boolean = false) {
+        val source = stems ?: return
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
+        val p = project.value
+        val rate = OfflineExport.SAMPLE_RATE
+        val part = p.song.indexOfFirst { it.scene == p.scene }
+        val step0 = if (part >= 0) p.songStepOf(part) else p.remix.atStep
+        val maxSteps = if (acid) com.pocketstudio.model.AcidPattern.MAX_STEPS else com.pocketstudio.model.NoteClip.MAX_STEPS
+        val steps = (if (part >= 0) p.partSteps(p.song[part]) else 8 * p.stepsPerBar).coerceIn(p.stepsPerBar, maxSteps)
+        // Frames of the song as separated a sixteenth lasts here (the song stretched or not).
+        val stepFrames = p.remixSecondsPerStep() * rate
+        val start = Math.round(p.remixTimeAtStep(step0) * rate).coerceAtLeast(0L)
+        val song = p.remix.name.ifBlank { "Remix" }
+        if (stepFrames <= 0 || start >= source.frames) return
+        _sampleTask.value = SampleTask.Busy(tr("La basse de %s en notes…", song))
+        viewModelScope.launch {
+            try {
+                val notes = withContext(Dispatchers.Default) {
+                    val count = minOf(source.frames - start, Math.round(stepFrames * (steps + 2)))
+                    com.pocketstudio.model.SongMatter.bassNotes(monoOf(source.extract(BASS_STEM, start, count)), rate, stepFrames, steps)
+                }
+                if (notes.isEmpty()) {
+                    _sampleTask.value = SampleTask.Failed(tr("Pas de notes de basse trouvées dans %s.", song))
+                    return@launch
+                }
+                _sampleTask.value = SampleTask.Idle
+                if (acid) {
+                    session.edit { q -> q.copy(acid = q.acid.copy(length = steps, steps = com.pocketstudio.model.SongMatter.acidSteps(notes, steps, q.acid.root))) }
+                    pushAcid(project.value.acid)
+                    _notice.value = tr("La basse de %1\$s sur l'Acid 303 : %2\$d notes.", song, notes.size)
+                } else {
+                    val q = project.value
+                    val style = com.pocketstudio.app.library.styleOfProject(q.name)?.let(com.pocketstudio.model.StarterWizard::style)
+                    val next = com.pocketstudio.model.NewTracks.add(q, com.pocketstudio.model.TrackKind.Bass, style, false) ?: run {
+                        _notice.value = tr("Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre.")
+                        return@launch
+                    }
+                    val id = next.tracks.first { t -> q.tracks.none { it.id == t.id } }.id
+                    val name = com.pocketstudio.model.DefaultNames.stemPad("Basse", song)
+                    session.edit {
+                        userTrack(next, id).let { r ->
+                            r.copy(tracks = r.tracks.map { t -> if (t.id == id) t.copy(name = name, notes = com.pocketstudio.model.NoteClip(steps = steps, notes = notes)) else t })
+                        }
+                    }
+                    pushTracks()
+                    pushMixer()
+                    selectTrack(id)
+                    _notice.value = tr("La basse de %1\$s en %2\$d notes sur une piste à elle : change son son comme tu veux.", song, notes.size)
+                }
+                AppLog.add("Remix : basse en ${notes.size} notes${if (acid) " (Acid 303)" else ""}")
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                AppLog.add("Remix : basse en notes impossible (${e.message})")
                 _sampleTask.value = SampleTask.Failed(tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName))
             }
         }
@@ -10437,9 +10628,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         const val LIVE_DRIVE_SETTLE_MS = 1500L
         /** « Écouter seul »: how long it waits for another screen to hold it (a card folds, a sheet opens). */
         const val ALONE_GRACE_MS = 700L
-        internal val STEM_LABELS = listOf("Batterie", "Basse", "Autres", "Voix")
+        internal val STEM_LABELS = listOf("Batterie", "Basse", "Reste", "Voix")
         /** The voice: its stem and its label (French, as names are saved). */
         private const val VOICE_STEM = 3
+        private const val DRUMS_STEM = 0
+        private const val BASS_STEM = 1
         private const val VOICE_LABEL = "Voix"
 
         /** An export file's label ("batterie", "piste2-basse"…) as the progress line shows it. */

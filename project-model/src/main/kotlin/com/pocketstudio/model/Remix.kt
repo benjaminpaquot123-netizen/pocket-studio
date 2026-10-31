@@ -5,8 +5,13 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 
 /** One stem's strip in the remix: same fader law as the mixer (0.8 = unity). */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
-data class StemMix(val volume: Float = 0.8f, val mute: Boolean = false, val solo: Boolean = false)
+data class StemMix(
+    val volume: Float = 0.8f, val mute: Boolean = false, val solo: Boolean = false,
+    /** Step 5b: its edits (pieces cut, moved, faded: [StemClip]); null = played as separated. Left out of the file while null. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val clips: List<StemClip>? = null,
+)
 
 /**
  * A separated song played along with the project: [setId] names the stems folder on the phone,
@@ -47,7 +52,12 @@ data class Remix(
         seconds = seconds.takeIf { it.isFinite() }?.coerceIn(0.0, MAX_SECONDS) ?: 0.0,
         atStep = atStep.coerceIn(0, MAX_AT_STEP),
         stems = (stems + List((STEMS - stems.size).coerceAtLeast(0)) { StemMix() }).take(STEMS)
-            .map { it.copy(volume = it.volume.takeIf { v -> v.isFinite() }?.coerceIn(0f, 1f) ?: 0.8f) },
+            .map {
+                it.copy(
+                    volume = it.volume.takeIf { v -> v.isFinite() }?.coerceIn(0f, 1f) ?: 0.8f,
+                    clips = it.clips?.mapNotNull(StemClip::sanitized)?.take(StemClip.MAX),
+                )
+            },
     )
 
     /** Frames of one bar of the song (4/4) at [rate]; 0 when the tempo is unknown. */
@@ -76,7 +86,7 @@ data class Remix(
         /** The mixer strip the remix plays through: the song's group fader (its four stems under it). */
         const val STRIP = 3
 
-        /** The stems in the order they are shown (Voix, Batterie, Basse, Autres); stem indices as the engine has them. */
+        /** The stems in the order they are shown (Voix, Batterie, Basse, Reste); stem indices as the engine has them. */
         val SHOWN_ORDER = listOf(3, 0, 1, 2)
 
         /** The timeline key of stem [stem] (a line under the song's folder); [SongPart.REMIX] is the folder. */
@@ -105,7 +115,8 @@ fun Project.remixSteps(seconds: Double = remix.seconds): Int {
     val r = remix
     if (r.setId == null || !(seconds > 0) || !seconds.isFinite() || tempoBpm <= 0) return 0
     val rate = 48_000
-    val left = (seconds.coerceAtMost(Remix.MAX_SECONDS) - r.startFrame(rate).toDouble() / rate) * r.stretchFor(tempoBpm)
+    // Step 5b: as long as its last piece, when one was moved past the song's end (or the end cut away).
+    val left = (r.heardEnd(seconds).coerceAtMost(Remix.MAX_SECONDS * 2) - r.startFrame(rate).toDouble() / rate) * r.stretchFor(tempoBpm)
     if (left <= 0) return 0
     return kotlin.math.ceil(left * tempoBpm / 15.0 - 1e-6).toInt()  // a sixteenth = 15/bpm s
 }

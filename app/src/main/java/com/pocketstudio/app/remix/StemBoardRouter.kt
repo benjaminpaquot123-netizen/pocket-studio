@@ -343,7 +343,7 @@ class StemBoardRouter(
 /** The pure rules of [StemBoardRouter]: which pad, which name, which step, how it is said. */
 object StemRouting {
     /** The parts of a separated song, in stem order, as their names are saved (French, shown translated). */
-    val STEMS = listOf("Batterie", "Basse", "Autres", "Voix")
+    val STEMS = listOf("Batterie", "Basse", "Reste", "Voix")
 
     fun stemFrench(stem: Int): String = STEMS.getOrElse(stem) { "Piste" }
 
@@ -351,7 +351,7 @@ object StemRouting {
     fun stemLabel(stem: Int): String = when (stem) {
         0 -> tr("Batterie")
         1 -> tr("Basse")
-        2 -> tr("Autres")
+        2 -> tr("Reste")
         3 -> tr("Voix")
         else -> tr("Piste")
     }

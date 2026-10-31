@@ -397,5 +397,13 @@
   "L'effet": "O efeito",
   "Comment il joue": "Como toca",
   "Appui": "Toque",
-  "Tenu": "Sustentado"
+  "Tenu": "Sustentado",
+  "Retoucher %s": "Editar %s",
+  "Couper %1$s à la mesure %2$d": "Dividir %1$s no compasso %2$d",
+  "Déplacer ce bout d'une mesure plus tard": "Mover este trecho um compasso depois",
+  "Déplacer ce bout d'une mesure plus tôt": "Mover este trecho um compasso antes",
+  "Sans fondu au début": "Sem fade-in",
+  "Sans fondu à la fin": "Sem fade-out",
+  "Enlever ce bout": "Tirar este trecho",
+  "Remettre %s comme au départ": "Deixar %s como no começo"
 }

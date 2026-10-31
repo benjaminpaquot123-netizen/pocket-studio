@@ -397,5 +397,13 @@
   "L'effet": "El efecto",
   "Comment il joue": "Cómo suena",
   "Appui": "Pulsar",
-  "Tenu": "Sostenido"
+  "Tenu": "Sostenido",
+  "Retoucher %s": "Retocar %s",
+  "Couper %1$s à la mesure %2$d": "Dividir %1$s en el compás %2$d",
+  "Déplacer ce bout d'une mesure plus tard": "Mover este trozo un compás después",
+  "Déplacer ce bout d'une mesure plus tôt": "Mover este trozo un compás antes",
+  "Sans fondu au début": "Sin fundido al inicio",
+  "Sans fondu à la fin": "Sin fundido al final",
+  "Enlever ce bout": "Quitar este trozo",
+  "Remettre %s comme au départ": "Dejar %s como al principio"
 }

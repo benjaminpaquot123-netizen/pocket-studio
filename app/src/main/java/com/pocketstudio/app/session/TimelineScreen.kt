@@ -146,6 +146,9 @@ import com.pocketstudio.model.SongPart
 import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.channelOfKey
 import com.pocketstudio.model.Remix
+import com.pocketstudio.model.piecesOf
+import com.pocketstudio.model.pieceAt
+import com.pocketstudio.model.remixTimeAtStep
 import com.pocketstudio.model.clipPreview
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.i18n.trCount
@@ -214,6 +217,13 @@ class TimelineActions(
     /** Step 5a: M and S of one of the song's stems (engine order). */
     val toggleStemMute: (Int) -> Unit = {},
     val toggleStemSolo: (Int) -> Unit = {},
+    /** Step 5b: stem (first) edited on song step (second, a bar's start): cut, moved by bars (third), faded, taken away, reset. */
+    val cutStem: (Int, Int) -> Unit = { _, _ -> },
+    val moveStemPiece: (Int, Int, Int) -> Unit = { _, _, _ -> },
+    /** Third: the fade at the piece's start (else its end). */
+    val fadeStemPiece: (Int, Int, Boolean) -> Unit = { _, _, _ -> },
+    val removeStemPiece: (Int, Int) -> Unit = { _, _ -> },
+    val resetStem: (Int) -> Unit = {},
     val setLoop: (IntRange?) -> Unit = {},
     /** Song curve (lane index) in Mixeur › Automation. */
     val openLane: (Int) -> Unit = {},
@@ -1656,6 +1666,8 @@ private fun ClipMenuAt(m: ClipMenu, ui: TimelineUi, actions: TimelineActions, cl
                 style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             )
+            val stem = m.key?.let(Remix::stemOfKey)
+            if (stem != null) StemEditItems(p, stem, (p.partSpans.getOrNull(m.part)?.start ?: 0) + m.bar * p.stepsPerBar, actions, close)
             if (key != null) {
                 DropdownMenuItem(
                     text = { Text(editorName(key)) }, leadingIcon = { Icon(Icons.Filled.Edit, null) },
@@ -1754,6 +1766,61 @@ private fun ClipMenuAt(m: ClipMenu, ui: TimelineUi, actions: TimelineActions, cl
             onDismiss = close,
         )
     }
+}
+
+/**
+ * Step 5b: a long press on one of the song's stem lines edits that stem on the bar touched
+ * ([step], a song step): cut there, move the piece a bar either way, fade it in or out over a
+ * bar, take it away, or put the stem back as separated. Each an undo step, the file untouched.
+ */
+@Composable
+private fun StemEditItems(p: Project, stem: Int, step: Int, actions: TimelineActions, close: () -> Unit) {
+    val seconds = p.remix.seconds
+    val t = p.remixTimeAtStep(step) + 1e-6
+    val piece = p.remix.piecesOf(stem, seconds).getOrNull(p.remix.pieceAt(stem, t, seconds))
+    val name = com.pocketstudio.app.remix.StemRouting.stemLabel(stem)
+    val bar = step / p.stepsPerBar.coerceAtLeast(1) + 1
+    Text(
+        tr("Retoucher %s", name), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+    )
+    DropdownMenuItem(
+        text = { Text(tr("Couper %1\$s à la mesure %2\$d", name, bar)) }, leadingIcon = { Icon(Icons.Filled.ContentCut, null) },
+        enabled = piece != null && t - piece.at > 0.01,
+        onClick = { close(); actions.cutStem(stem, step) }, modifier = Modifier.testTag("tl_stem_cut"),
+    )
+    if (piece != null) {
+        DropdownMenuItem(
+            text = { Text(tr("Déplacer ce bout d'une mesure plus tard")) }, leadingIcon = { Icon(Icons.Filled.Add, null) },
+            onClick = { close(); actions.moveStemPiece(stem, step, 1) }, modifier = Modifier.testTag("tl_stem_later"),
+        )
+        DropdownMenuItem(
+            text = { Text(tr("Déplacer ce bout d'une mesure plus tôt")) }, leadingIcon = { Icon(Icons.Filled.Remove, null) },
+            enabled = piece.at > 0.0,
+            onClick = { close(); actions.moveStemPiece(stem, step, -1) }, modifier = Modifier.testTag("tl_stem_earlier"),
+        )
+        DropdownMenuItem(
+            text = { Text(if (piece.fadeIn > 0) tr("Sans fondu au début") else tr("Fondu au début")) },
+            leadingIcon = { Icon(Icons.AutoMirrored.Filled.ShowChart, null) },
+            onClick = { close(); actions.fadeStemPiece(stem, step, true) }, modifier = Modifier.testTag("tl_stem_fade_in"),
+        )
+        DropdownMenuItem(
+            text = { Text(if (piece.fadeOut > 0) tr("Sans fondu à la fin") else tr("Fondu à la fin")) },
+            leadingIcon = { Icon(Icons.AutoMirrored.Filled.ShowChart, null) },
+            onClick = { close(); actions.fadeStemPiece(stem, step, false) }, modifier = Modifier.testTag("tl_stem_fade_out"),
+        )
+        DropdownMenuItem(
+            text = { Text(tr("Enlever ce bout")) }, leadingIcon = { Icon(Icons.Filled.Delete, null) },
+            onClick = { close(); actions.removeStemPiece(stem, step) }, modifier = Modifier.testTag("tl_stem_remove"),
+        )
+    }
+    if (p.remix.stems.getOrNull(stem)?.clips != null) {
+        DropdownMenuItem(
+            text = { Text(tr("Remettre %s comme au départ", name)) }, leadingIcon = { Icon(Icons.Filled.Repeat, null) },
+            onClick = { close(); actions.resetStem(stem) }, modifier = Modifier.testTag("tl_stem_reset"),
+        )
+    }
+    HorizontalDivider()
 }
 
 /** One of the scenes in use, picked (the one [current] marked). */

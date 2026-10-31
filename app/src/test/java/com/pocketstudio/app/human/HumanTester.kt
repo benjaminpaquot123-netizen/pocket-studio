@@ -243,10 +243,13 @@ abstract class HumanTester(private val seat: String) {
         if ((kind == "touche" || kind == "appui-long" || kind == "glisse") && remixPage() && touchesRemixControl(x, y)) return
         val v = lastVm
         if (v?.export?.value?.running == true) return
-        if (v != null && songPlaying(v)) v.toggleSong()
+        // Step 5b: the song played from the Remix page (no « Boucler ») goes on too, as on a phone (it
+        // never stopped there): stopped here only while the bench lets its engine go, then played again.
+        val song = v != null && songPlaying(v)
+        if (song) v!!.toggleSong()
         // The loop played with the bench's engine (▶ on the Remix page) goes on without it: stopped
         // and started again, so that the screen's polls of the engine start again without it too.
-        val replay = v != null && v.transport.value.playing
+        val replay = !song && v != null && v.transport.value.playing
         if (replay) {
             v!!.togglePlay()
             pass(100)
@@ -256,6 +259,11 @@ abstract class HumanTester(private val seat: String) {
         settleLooper()
         NativeEngine.sink = null
         if (replay) {
+            v!!.togglePlay()
+            pass(100)
+        }
+        if (song) {
+            // ▶ as the Remix page has it (the song from its part, as on the phone).
             v!!.togglePlay()
             pass(100)
         }
@@ -282,13 +290,19 @@ abstract class HumanTester(private val seat: String) {
     }.getOrDefault(false)
 
     /** The Remix page's buttons that use the engine, by their tags' start. */
-    private val remixControls = listOf("use_", "listen_", "stem_", "remix_play", "remix_bar_next", "remix_bar_prev", "waveform_", "remix_follow_tempo", "remix_clear")
+    private val remixControls = listOf("use_", "import_", "listen_", "stem_", "remix_play", "remix_bar_next", "remix_bar_prev", "waveform_", "remix_follow_tempo", "remix_clear")
 
     private fun touchesRemixControl(x: Float, y: Float): Boolean = runCatching {
         compose.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsProperties.TestTag)).fetchSemanticsNodes().any { n ->
             val tag = n.config[SemanticsProperties.TestTag]
             // The part of it on screen (a row scrolled away under the tabs is not under the finger).
-            remixControls.any { tag.startsWith(it) } && n.boundsInWindow.contains(androidx.compose.ui.geometry.Offset(x, y))
+            // The import screen (step 5c) is a dialog: its window is not at the screen's corner.
+            val bounds = if (tag.startsWith("import_")) {
+                androidx.compose.ui.geometry.Rect(BenchWindows.drawnPosition(n, app.resources.displayMetrics), androidx.compose.ui.geometry.Size(n.size.width.toFloat(), n.size.height.toFloat()))
+            } else {
+                n.boundsInWindow
+            }
+            remixControls.any { tag.startsWith(it) } && bounds.contains(androidx.compose.ui.geometry.Offset(x, y))
         }
     }.getOrDefault(false)
 
@@ -644,7 +658,7 @@ abstract class HumanTester(private val seat: String) {
         const val PHONE = "w392dp-h852dp-hdpi"
 
         /** A stem's name on a pad (DefaultNames.stemPad, kept in French whatever the language). */
-        private val STEM_NAMES = listOf("Batterie", "Basse", "Autres", "Voix")
+        private val STEM_NAMES = listOf("Batterie", "Basse", "Reste", "Voix")
         private val VOCALS = Demucs.STEMS.indexOf("vocals")
         /** SeparationService's own actions: separate, download its model, cancel (last). */
         private val SEPARATION_ACTIONS = listOf("com.pocketstudio.SEPARATE", "com.pocketstudio.DOWNLOAD_MODEL", "com.pocketstudio.CANCEL_SEPARATION")

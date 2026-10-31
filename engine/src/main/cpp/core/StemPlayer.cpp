@@ -113,6 +113,8 @@ StemBundle* StemBundle::fromFloat(const std::vector<std::vector<float>>& stereo,
         std::transform(src.begin(), src.end(), dst.begin(), toPcm);
     }
     b->frames_ = static_cast<int64_t>(stereo[0].size() / 2);
+    if (sameSongAs && sameSongAs->frames_ > 0)
+        b->scale_ = sameSongAs->scale_ * static_cast<double>(b->frames_) / static_cast<double>(sameSongAs->frames_);
     return b;
 }
 
@@ -132,6 +134,7 @@ StemBundle* StemBundle::stretched(double ratio, int sampleRate) const {
     std::unique_ptr<StemBundle> b(new StemBundle());  // freed if an allocation below throws
     b->frames_ = outFrames;
     b->song_ = song_;  // the same song, at another tempo
+    b->scale_ = scale_ * static_cast<double>(outFrames) / static_cast<double>(frames_);
     for (int i = 0; i < kStems; ++i) {
         // One stem at a time: only its float copy and its stretched copy are alive together.
         const std::vector<float> in = extract(i, 0, frames_);
@@ -169,6 +172,7 @@ StemPlayer::~StemPlayer() {
 void StemPlayer::prepare(int sampleRate) {
     for (auto& s : smooth_) s.configure(static_cast<float>(sampleRate), 20.0f);
     fadeLength_ = std::max(1, sampleRate / 200);  // 5 ms
+    edge_ = std::max(1, sampleRate / 500);        // 2 ms
     crossfade_ = std::max(1, sampleRate / 100);   // 10 ms
     updateTargets();
     for (auto& s : smooth_) s.snap(s.target());
@@ -219,6 +223,8 @@ void StemPlayer::install(StemBundle* bundle, double steps, double stepFrames) {
         bundle_ = bundle;
     }
     pos_ = pos;
+    scaleEdits(bundle_, playCount_, playEdits_);
+    updateEnd();
     if (!bundle_) {
         playing_ = false;
         pendingStart_ = -1;
@@ -240,6 +246,9 @@ void StemPlayer::fadeAway(int frames) {
     retire(out.bundle);
     out.bundle = bundle_;  // its reference moves over
     out.pos = pos_;
+    out.count = playCount_;
+    out.clips = playEdits_;
+    out.cursor = cursor_;
     // From the level it is at: a bundle already fading (stop, start) goes on from there.
     float level = fadeLeft_ > 0 ? static_cast<float>(fadeLeft_) / static_cast<float>(fadeLength_) : 1.0f;
     if (fadeIn_ > 0) level *= 1.0f - static_cast<float>(fadeIn_) / static_cast<float>(fadeInLength_);
@@ -272,6 +281,97 @@ void StemPlayer::setParam(int stem, int param, float value) {
         default: return;
     }
     updateTargets();
+}
+
+void StemPlayer::setClipField(int stem, int clip, int field, int64_t value) {
+    if (stem < 0 || stem >= StemBundle::kStems || clip < 0 || clip >= kMaxClips) return;
+    Clip& c = staged_[static_cast<size_t>(stem)][static_cast<size_t>(clip)];
+    const int64_t v = std::max<int64_t>(0, value);
+    const auto f32 = static_cast<int32_t>(std::min<int64_t>(v, std::numeric_limits<int32_t>::max()));
+    switch (field) {
+        case ClipAt: c.at = v; break;
+        case ClipFrom: c.from = v; break;
+        case ClipLength: c.length = v; break;
+        case ClipFadeIn: c.fadeIn = f32; break;
+        case ClipFadeOut: c.fadeOut = f32; break;
+        default: break;
+    }
+}
+
+void StemPlayer::commitClips(int stem, int count) {
+    if (stem < 0 || stem >= StemBundle::kStems) return;
+    const auto s = static_cast<size_t>(stem);
+    editCount_[s] = count < 0 ? -1 : std::min(count, kMaxClips);
+    edits_[s] = staged_[s];
+    scaleEdits(bundle_, playCount_, playEdits_);
+    updateEnd();
+}
+
+void StemPlayer::updateEnd() {
+    int64_t end = bundle_ ? bundle_->frames() : 0;
+    for (size_t s = 0; s < playEdits_.size(); ++s) {
+        for (int i = 0; i < std::max(0, playCount_[s]); ++i) {
+            const Clip& c = playEdits_[s][static_cast<size_t>(i)];
+            end = std::max(end, c.at + c.length);
+        }
+    }
+    playEnd_ = end;
+}
+
+void StemPlayer::scaleEdits(const StemBundle* b, std::array<int, StemBundle::kStems>& count,
+                            std::array<std::array<Clip, kMaxClips>, StemBundle::kStems>& out) const {
+    const double k = b ? b->scale() : 1.0;
+    auto scaled = [k](int64_t v) { return static_cast<int64_t>(std::llround(static_cast<double>(v) * k)); };
+    for (size_t s = 0; s < edits_.size(); ++s) {
+        count[s] = editCount_[s];
+        for (int i = 0; i < std::max(0, editCount_[s]); ++i) {
+            const Clip& c = edits_[s][static_cast<size_t>(i)];
+            Clip& d = out[s][static_cast<size_t>(i)];
+            d.at = scaled(c.at);
+            d.length = scaled(c.length);
+            d.from = scaled(c.from);
+            d.fadeIn = static_cast<int32_t>(scaled(c.fadeIn));
+            d.fadeOut = static_cast<int32_t>(scaled(c.fadeOut));
+        }
+    }
+}
+
+int64_t StemPlayer::sourceOf(const Clip* clips, int count, int64_t pos, int64_t frames, int edge, int& cursor, float& gain) {
+    gain = 1.0f;
+    if (count < 0) return pos < frames ? pos : -1;
+    // The piece found last first (it plays on for many frames), else the latest one holding pos.
+    int hit = -1;
+    if (cursor >= 0 && cursor < count) {
+        const Clip& c = clips[cursor];
+        if (pos >= c.at && pos < c.at + c.length) {
+            hit = cursor;
+            // A later piece starting inside it covers it.
+            for (int i = count - 1; i > cursor; --i) {
+                if (pos >= clips[i].at && pos < clips[i].at + clips[i].length) {
+                    hit = i;
+                    break;
+                }
+            }
+        }
+    }
+    if (hit < 0) {
+        for (int i = count - 1; i >= 0; --i) {
+            if (pos >= clips[i].at && pos < clips[i].at + clips[i].length) {
+                hit = i;
+                break;
+            }
+        }
+    }
+    if (hit < 0) return -1;
+    cursor = hit;
+    const Clip& c = clips[hit];
+    const int64_t src = c.from + (pos - c.at);
+    if (src < 0 || src >= frames) return -1;
+    const int64_t in = pos - c.at, out = c.at + c.length - 1 - pos;
+    const int fi = std::max(edge, static_cast<int>(c.fadeIn)), fo = std::max(edge, static_cast<int>(c.fadeOut));
+    if (in < fi) gain *= static_cast<float>(in + 1) / static_cast<float>(fi);
+    if (out < fo) gain *= static_cast<float>(out + 1) / static_cast<float>(fo);
+    return src;
 }
 
 void StemPlayer::updateTargets() {
@@ -350,7 +450,7 @@ void StemPlayer::renderFrames(float* left, float* right, int from, int to, int w
         float g[StemBundle::kStems];
         for (int s = 0; s < StemBundle::kStems; ++s) g[s] = smooth_[static_cast<size_t>(s)].next() * kScale;
         float l = 0.0f, r = 0.0f;
-        if (playing_ && pos_ >= bundle_->frames()) playing_ = false;
+        if (playing_ && pos_ >= playEnd_) playing_ = false;
         if (playing_ && pos_ < 0 && fadeLeft_ == 0) {
             // The song comes in later: silence up to its first frame (the fade in waits for it).
             ++pos_;
@@ -369,11 +469,15 @@ void StemPlayer::renderFrames(float* left, float* right, int from, int to, int w
                 playing_ = false;
             } else {
                 if (pos_ >= 0) {
-                    const auto at = static_cast<size_t>(pos_) * 2;
                     for (int s = 0; s < StemBundle::kStems; ++s) {
-                        const int16_t* d = bundle_->stem(s);
-                        l += d[at] * g[s] * fade;
-                        r += d[at + 1] * g[s] * fade;
+                        const auto si = static_cast<size_t>(s);
+                        float edit = 1.0f;
+                        const int64_t src = sourceOf(playEdits_[si].data(), playCount_[si], pos_, bundle_->frames(), edge_, cursor_[si], edit);
+                        if (src < 0) continue;
+                        const int16_t* d = bundle_->stem(s) + src * 2;
+                        const float k = g[s] * fade * edit;
+                        l += d[0] * k;
+                        r += d[1] * k;
                     }
                 }
                 ++pos_;
@@ -382,12 +486,16 @@ void StemPlayer::renderFrames(float* left, float* right, int from, int to, int w
         for (auto& out : outs_) {
             if (!out.bundle) continue;
             const float fade = static_cast<float>(out.left) / static_cast<float>(out.length);
-            if (out.pos >= 0 && out.pos < out.bundle->frames()) {
-                const auto at = static_cast<size_t>(out.pos) * 2;
+            if (out.pos >= 0) {
                 for (int s = 0; s < StemBundle::kStems; ++s) {
-                    const int16_t* d = out.bundle->stem(s);
-                    l += d[at] * g[s] * fade;
-                    r += d[at + 1] * g[s] * fade;
+                    const auto si = static_cast<size_t>(s);
+                    float edit = 1.0f;
+                    const int64_t src = sourceOf(out.clips[si].data(), out.count[si], out.pos, out.bundle->frames(), edge_, out.cursor[si], edit);
+                    if (src < 0) continue;
+                    const int16_t* d = out.bundle->stem(s) + src * 2;
+                    const float k = g[s] * fade * edit;
+                    l += d[0] * k;
+                    r += d[1] * k;
                 }
             }
             ++out.pos;

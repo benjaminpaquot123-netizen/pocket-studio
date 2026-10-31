@@ -49,6 +49,18 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         return centerOf(tag)!!
     }
 
+    /**
+     * Waits (« attends 1 » at a time) until [done] holds: on the real condition, not a count of
+     * seconds, so a loaded machine only makes it slower. Two minutes only stop a test that hangs.
+     */
+    private fun waitFor(what: String, done: () -> Boolean) {
+        val until = System.currentTimeMillis() + 120_000
+        while (!done()) {
+            assertTrue("$what never came", System.currentTimeMillis() < until)
+            act("attends 1")
+        }
+    }
+
     @Test
     fun aSongsVoiceGoesIntoTheProjectWithTouchesOnly() {
         assumeTrue("not while the bench runs seats", System.getProperty("ps.human.dir").isNullOrBlank())
@@ -109,15 +121,14 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         // « Jouer avec le projet »: the song plays along the project.
         tap(reach("use_${set.id}"), "Jouer avec le projet")
         // Step 5c: « Mettre … dans mon projet », its choices as they are (the parts read first).
-        repeat(10) {
-            if (project()?.remix?.setId == null) centerOf("import_go")?.let { tap(it, "Mettre dans mon projet") } ?: act("attends 1")
+        waitFor("the song in the project") {
+            if (project()?.remix?.setId == null) centerOf("import_go")?.let { tap(it, "Mettre dans mon projet") }
+            project()?.remix?.setId != null
         }
         assertEquals(set.id, project()?.remix?.setId)
-        act("attends 1")
         // Its four parts are drawn (the screen follows: nothing froze it). Their waves are read off the main
-        // thread: on a loaded machine (the whole suite at once) a second may not be enough, a person waits a little more.
-        repeat(9) { if (centerOf("waveform_3") == null) act("attends 1") }
-        assertNotNull("no waveform", centerOf("waveform_3"))
+        // thread: on a loaded machine (the whole suite at once) it takes what it takes, a person waits for them.
+        waitFor("the waveforms") { centerOf("waveform_3") != null }
         // The voice alone (S), then ▶.
         tap(reach("stem_solo_3"), "S of Voix")
         val playing = tap(reach("remix_play"), "Jouer")
@@ -130,7 +141,8 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         tap(reach("remix_bar_next"), "+")
         tap(centerOfText("2 mes."), "2 mes.")
         val padded = tap(reach("stem_pad_3"), "→ Pad of Voix")
-        act("attends 1")
+        // The phrase is cut and written off the main thread: waited for as a person waits for the pad to light up.
+        waitFor("the voice on pad 1") { project()?.drums?.lanes?.get(0)?.sample != null && rhythm()?.sampleTask?.value !is com.pocketstudio.app.rhythm.SampleTask.Busy }
         val lane = project()!!.drums.lanes[0]
         assertTrue("${project()!!.drums.lanes.map { it.sample?.name }} ${rhythm()?.sampleTask?.value} ${project()!!.live.clips.map { it?.name }} sel=${rhythm()?.transport?.value?.selectedPad}", lane.sample?.name == "Voix 1")
         assertTrue(padded, padded.contains("Le pad 1 reçoit « Voix 1 »"))

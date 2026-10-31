@@ -258,7 +258,8 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::InstallAudioClip:
             // kRefit on the track: the same loop stretched to a new tempo (picked up where it is).
-            audio_.install(command.a & ~kRefit, command.sample, (command.a & kRefit) != 0);  // takes the reference
+            audio_.install(command.a & ~kRefit, command.sample, (command.a & kRefit) != 0,
+                           sequencer_.running() ? sequencer_.position() : 0.0, sequencer_.running() ? sequencer_.samplesPerStep() : 0.0);
             break;
         case CommandType::SetAudioClipParam:
             // A part's own loop ("once" clips): it takes over with the waiting scene.
@@ -454,6 +455,7 @@ void Engine::applyCommand(const Command& command) {
         }
         case CommandType::InstallStems:
             if (command.a == 1) preview_.install(command.stems);  // takes the reference
+            else if (sequencer_.running()) stems_.install(command.stems, sequencer_.position(), sequencer_.samplesPerStep());
             else stems_.install(command.stems);
             break;
         case CommandType::SetStemParam:
@@ -800,7 +802,7 @@ void Engine::onStep(int offset, int step) {
         return;
     }
     if (step == 0) {
-        stems_.start(offset);
+        stems_.start(offset, 0.0, sequencer_.samplesPerStep());
         if (record_ && recordOnStart_) {
             recordOnStart_ = false;
             recordStartOut_ = blockOut_ + offset;
@@ -848,7 +850,7 @@ void Engine::onStep(int offset, int step) {
             audio_.setOn(muteTrack_, false);
         }
     }
-    audio_.onStep(offset, audioLocals, songStep, sequencer_.samplesPerStep(), sequencer_.swing(), songStart_);
+    audio_.onStep(offset, audioLocals, songStep, sequencer_.samplesPerStep(), sequencer_.swing(), songStart_, step);
     for (int k = 0; k < kTracks; ++k) {
         auto& t = tracks_[static_cast<size_t>(k)];
         if (t.on) t.notes.onStep(offset, localOf(kSlotInst + k, step), sequencer_.samplesPerStep(), sequencer_.swing());

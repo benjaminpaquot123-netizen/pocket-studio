@@ -178,7 +178,7 @@ void StemPlayer::retire(StemBundle* b) {
     }
 }
 
-void StemPlayer::install(StemBundle* bundle) {
+void StemPlayer::install(StemBundle* bundle, double steps, double stepFrames) {
     // The same bundle again (every push of the app): it keeps playing, the extra reference goes.
     if (bundle && bundle == bundle_) {
         retire(bundle);
@@ -192,7 +192,16 @@ void StemPlayer::install(StemBundle* bundle) {
         const double ratio = static_cast<double>(bundle->frames()) / static_cast<double>(old->frames());
         // A silence before the song (negative) is the project's time, not the song's: it stays.
         if (startFrame_ > 0) startFrame_ = static_cast<int64_t>(std::llround(static_cast<double>(startFrame_) * ratio));
-        if (pos_ > 0) pos = static_cast<int64_t>(std::llround(static_cast<double>(pos_) * ratio));
+        playStart_ = static_cast<int64_t>(std::llround(static_cast<double>(playStart_) * ratio));
+        if (playing_ && std::isfinite(steps) && stepFrames > 1.0) {
+            // A copy is made for the tempo playing now (the app's rule): the steps gone by since
+            // the song started, at this tempo; a lead-in still going: the steps left of it.
+            const double since = steps - startSteps_;
+            if (playStart_ >= 0) pos = playStart_ + static_cast<int64_t>(std::llround(since * stepFrames));
+            else pos = static_cast<int64_t>(std::llround((since - leadSteps_) * stepFrames));
+        } else if (pos_ > 0) {
+            pos = static_cast<int64_t>(std::llround(static_cast<double>(pos_) * ratio));
+        }
     }
     if (playing_ && old) {
         const bool stopping = fadeLeft_ > 0;
@@ -264,9 +273,11 @@ void StemPlayer::updateTargets() {
     }
 }
 
-void StemPlayer::start(int offset) {
+void StemPlayer::start(int offset, double steps, double stepFrames) {
     if (!bundle_) return;
     pendingStart_ = std::max(0, offset);
+    pendingSteps_ = steps;
+    pendingStepFrames_ = stepFrames;
 }
 
 void StemPlayer::stop() {
@@ -304,6 +315,9 @@ void StemPlayer::render(float* left, float* right, int numFrames) {
             bundle_ = b;
         }
         pos_ = startFrame_;
+        playStart_ = startFrame_;
+        startSteps_ = pendingSteps_;
+        leadSteps_ = startFrame_ < 0 && pendingStepFrames_ > 1.0 ? static_cast<double>(-startFrame_) / pendingStepFrames_ : 0.0;
         playing_ = true;
         fadeLeft_ = 0;
         fadeIn_ = fadeInLength_ = fadeLength_;

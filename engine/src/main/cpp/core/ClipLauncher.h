@@ -77,13 +77,19 @@ private:
         float velocity = 1.0f;  // of the tap that started it: each pass plays at it
         State state = Off;
         double startBeat = 0.0;  // waiting: when it starts; playing: when the current pass began
-        Voice voice, tail;
+        Voice voice;
+        // Passes fading out: two, so that a stop just after a loop started over (its last pass
+        // still fading under the new one) never cuts that one dead.
+        std::array<Voice, 2> tails;
+        bool tailOf(const Sample* x) const { return tails[0].sample == x || tails[1].sample == x; }
         // The sound replaced while it played: kept until its fading voice is done (no click).
         Sample* held = nullptr;
     };
     void retire(Sample* s);
     void releaseHeld(Slot& s);
     void restart(Slot& s);
+    // The voice playing fades out on a free tail (the quietest one if both still sound).
+    void fadeAway(Slot& s);
     void align();
     void play(Voice& v, float gain, float& l, float& r);
     double gridOf(const Slot& s) const { return s.beats < beatsPerBar_ ? s.beats : beatsPerBar_; }

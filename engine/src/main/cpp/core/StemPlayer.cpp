@@ -160,7 +160,9 @@ std::vector<float> StemBundle::peaks(int stem, int buckets) const {
 
 StemPlayer::~StemPlayer() {
     if (bundle_ && bundle_->release()) delete bundle_;
-    if (out_.bundle && out_.bundle->release()) delete out_.bundle;
+    for (auto& o : outs_) {
+        if (o.bundle && o.bundle->release()) delete o.bundle;
+    }
     collectGarbage();
 }
 
@@ -225,18 +227,27 @@ void StemPlayer::install(StemBundle* bundle, double steps, double stepFrames) {
 }
 
 void StemPlayer::fadeAway(int frames) {
-    // Only one bundle fades out at a time: an older one still fading goes now.
-    retire(out_.bundle);
-    out_.bundle = bundle_;  // its reference moves over
-    out_.pos = pos_;
+    // A free place, else the quieter of the two fading (let go now: three fades within 10 ms).
+    Outgoing* to = &outs_[0];
+    for (auto& o : outs_) {
+        if (!o.bundle) {
+            to = &o;
+            break;
+        }
+        if (to->bundle && static_cast<int64_t>(o.left) * to->length < static_cast<int64_t>(to->left) * o.length) to = &o;
+    }
+    Outgoing& out = *to;
+    retire(out.bundle);
+    out.bundle = bundle_;  // its reference moves over
+    out.pos = pos_;
     // From the level it is at: a bundle already fading (stop, start) goes on from there.
     float level = fadeLeft_ > 0 ? static_cast<float>(fadeLeft_) / static_cast<float>(fadeLength_) : 1.0f;
     if (fadeIn_ > 0) level *= 1.0f - static_cast<float>(fadeIn_) / static_cast<float>(fadeInLength_);
-    out_.length = std::max(1, frames);
-    out_.left = std::max(0, static_cast<int>(std::lround(level * static_cast<float>(out_.length))));
-    if (out_.left == 0) {
-        retire(out_.bundle);
-        out_.bundle = nullptr;
+    out.length = std::max(1, frames);
+    out.left = std::max(0, static_cast<int>(std::lround(level * static_cast<float>(out.length))));
+    if (out.left == 0) {
+        retire(out.bundle);
+        out.bundle = nullptr;
     }
     bundle_ = nullptr;
     playing_ = false;
@@ -329,7 +340,7 @@ void StemPlayer::render(float* left, float* right, int numFrames) {
 void StemPlayer::renderFrames(float* left, float* right, int from, int to, int wait) {
     const float liveTarget = live_ ? 1.0f : 0.0f;
     if (from >= to) return;
-    if (!playing_ && !out_.bundle) {
+    if (!playing_ && !fading()) {
         if (wait < to) liveGain_ = liveTarget;
         return;
     }
@@ -368,20 +379,21 @@ void StemPlayer::renderFrames(float* left, float* right, int from, int to, int w
                 ++pos_;
             }
         }
-        if (out_.bundle) {
-            const float fade = static_cast<float>(out_.left) / static_cast<float>(out_.length);
-            if (out_.pos >= 0 && out_.pos < out_.bundle->frames()) {
-                const auto at = static_cast<size_t>(out_.pos) * 2;
+        for (auto& out : outs_) {
+            if (!out.bundle) continue;
+            const float fade = static_cast<float>(out.left) / static_cast<float>(out.length);
+            if (out.pos >= 0 && out.pos < out.bundle->frames()) {
+                const auto at = static_cast<size_t>(out.pos) * 2;
                 for (int s = 0; s < StemBundle::kStems; ++s) {
-                    const int16_t* d = out_.bundle->stem(s);
+                    const int16_t* d = out.bundle->stem(s);
                     l += d[at] * g[s] * fade;
                     r += d[at + 1] * g[s] * fade;
                 }
             }
-            ++out_.pos;
-            if (--out_.left <= 0) {
-                retire(out_.bundle);
-                out_.bundle = nullptr;
+            ++out.pos;
+            if (--out.left <= 0) {
+                retire(out.bundle);
+                out.bundle = nullptr;
             }
         }
         // The remix slot stopped or launched: a short ramp from its frame (exactly 1 when heard).
@@ -390,7 +402,7 @@ void StemPlayer::renderFrames(float* left, float* right, int from, int to, int w
         }
         left[i] += l * liveGain_;
         right[i] += r * liveGain_;
-        if (!playing_ && !out_.bundle) {
+        if (!playing_ && !fading()) {
             if (wait < to) liveGain_ = liveTarget;
             return;
         }

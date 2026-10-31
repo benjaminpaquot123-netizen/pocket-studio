@@ -89,7 +89,7 @@ public:
     bool loaded() const { return bundle_ != nullptr; }
     bool playing() const { return playing_; }
     // Something may sound in the next render(): playing, about to start, or a bundle fading out.
-    bool active() const { return playing_ || pendingStart_ >= 0 || out_.bundle != nullptr; }
+    bool active() const { return playing_ || pendingStart_ >= 0 || fading(); }
     // Song position in frames (UI). -1 when stopped, or while the song has not come in yet.
     int64_t position() const { return position_.load(std::memory_order_relaxed); }
 
@@ -127,7 +127,11 @@ private:
         StemBundle* bundle = nullptr;
         int64_t pos = 0;
         int left = 0, length = 1;
-    } out_;
+    };
+    // Two: a copy fading under a new one is still there when the next fade starts (the transport
+    // started over, another copy) a few milliseconds later, never cut dead.
+    std::array<Outgoing, 2> outs_{};
+    bool fading() const { return outs_[0].bundle != nullptr || outs_[1].bundle != nullptr; }
     bool live_ = true;
     int liveAt_ = -1;       // frame of the next render() where the live gain starts to move, -1 none
     float liveGain_ = 1.0f; // 1 = heard: the plain mix, sample for sample

@@ -2502,6 +2502,45 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         return true
     }
 
+    /**
+     * Step 7e: « Garder dans ma bibliothèque » from audio track [trackId]'s clip (a take, a sound put
+     * in a Live cell): its sound file as it plays, for every project; the project does not change.
+     */
+    fun keepAudioClipInLibrary(trackId: Int): Boolean {
+        val clip = project.value.audioTracks.firstOrNull { it.id == trackId }?.clip ?: return false
+        keepFileInLibrary(clip.file, clip.name, null, clip.bpm)
+        return true
+    }
+
+    /** Step 7e: the same from live pad [pad] (Live › Pads): a loop keeps its tempo, a hit none. */
+    fun keepLivePadInLibrary(pad: Int): Boolean {
+        val clip = project.value.live.clips.getOrNull(pad) ?: return false
+        keepFileInLibrary(clip.file, clip.name, null, if (clip.follows) clip.bpm else 0.0)
+        return true
+    }
+
+    /** Keeps sound file [file] of the project in « Ma bibliothèque » under [name], said when it is there (or why not). */
+    private fun keepFileInLibrary(file: String, name: String, padKind: String?, bpm: Double) {
+        viewModelScope.launch {
+            val pcm = readOrNull { padSamples.read(file) }
+            if (pcm == null || pcm.frames == 0) {
+                _notice.value = tr("Ce son n'a pas pu être lu.")
+                return@launch
+            }
+            _notice.value = try {
+                val kept = com.pocketstudio.app.library.MySoundLibrary.keep(
+                    getApplication(), pcm, name, com.pocketstudio.model.MySounds.kindOfPad(padKind, pcm.seconds, name),
+                    bpm = bpm, origin = project.value.name,
+                )
+                com.pocketstudio.app.library.keptNotice(kept)
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                tr("Ce son n'a pas pu être gardé (%s).", e.message ?: e.javaClass.simpleName)
+            }
+        }
+    }
+
     /** A sound file of the phone on the keyboard of the selected track. */
     fun importTrackSound(uri: Uri) {
         viewModelScope.launch {

@@ -28,6 +28,7 @@ import com.pocketstudio.model.cellHasContent
 import com.pocketstudio.ui.PocketStudioTheme
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -187,8 +188,21 @@ class LiveCellJourneyTest {
         val clip = vm.project.value.audioTracks.firstNotNullOf { it.clip }
         assertEquals(32, clip.loopSteps)  // two whole bars from bar 2
         assertEquals(32 * perStep / rate, clip.seconds, 0.01)
-        vm.undo()
+        // Step 7e: « Garder dans ma bibliothèque » from the clip, then from a live pad playing the same file.
+        val kept = { kotlinx.coroutines.runBlocking { com.pocketstudio.app.library.MySoundLibrary.refresh(app) }.size }
+        val before = kept()
+        assertTrue(vm.keepAudioClipInLibrary(vm.project.value.audioTracks.first { it.clip != null }.id))
+        until("the clip never reached the library") { kept() == before + 1 }
+        until("nothing said") { vm.notice.value != null }
+        assertFalse(vm.keepLivePadInLibrary(5))  // an empty pad: nothing
+        assertTrue(vm.placeOnLivePad(5, Pcm(FloatArray(4800) { 0.2f }, 1, rate), "Mon pad", oneShot = true))
+        until("the pad never got its sound") { vm.project.value.live.clips.getOrNull(5) != null }
+        assertTrue(vm.keepLivePadInLibrary(5))
+        until("the live pad never reached the library") { kept() == before + 2 }
+        // Kept outside the project: undoing the pad, then the cell, leaves the library as it is.
+        vm.undo(); vm.undo()
         assertFalse(vm.project.value.cellHasContent(key, 1))
+        assertEquals(before + 2, kept())
     }
 
     @Test

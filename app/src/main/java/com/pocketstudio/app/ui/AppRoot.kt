@@ -2276,6 +2276,7 @@ fun AppRoot() {
                         },
                         stopRecord = rhythmVm::stopRecording,
                         clear = rhythmVm::clearLive,
+                        keep = { rhythmVm.keepLivePadInLibrary(it) },
                     ),
                 )
             }
@@ -2314,6 +2315,7 @@ fun AppRoot() {
                         setOneShot = rhythmVm::setLiveOneShot,
                         setGain = rhythmVm::setLiveGain,
                         clear = rhythmVm::clearLive,
+                        keep = { rhythmVm.keepLivePadInLibrary(it) },
                         effects = { fxChannel = 3 },
                         fullScreen = { showLivePads = true },
                     ),
@@ -2915,6 +2917,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     setOneShot = rhythmVm::setLiveOneShot,
                                     setGain = rhythmVm::setLiveGain,
                                     clear = rhythmVm::clearLive,
+                        keep = { rhythmVm.keepLivePadInLibrary(it) },
                                     // The live pads play through the remix's strip: its effects.
                                     effects = { fxChannel = 3 },
                                     fullScreen = { showLivePads = true },
@@ -3101,6 +3104,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                         setFadeIn = rhythmVm::setAudioFadeIn,
                                         setFadeOut = rhythmVm::setAudioFadeOut,
                                         normalize = rhythmVm::normalizeAudio,
+                                        keepInLibrary = { rhythmVm.keepAudioClipInLibrary(it) },
                                         reverse = rhythmVm::reverseAudio,
                                         trim = rhythmVm::trimAudio,
                                         clear = rhythmVm::clearAudioClip,

@@ -3,6 +3,7 @@
 #include <array>
 #include <atomic>
 #include <cstdint>
+#include <limits>
 #include <string>
 #include <vector>
 
@@ -64,14 +65,19 @@ public:
     // plays, the old one crossfades into the new one over 10 ms (nullptr: it fades out); a copy
     // of the same song at another tempo goes on from the same musical position (the position
     // and the start frame scaled by the ratio of their lengths).
-    void install(StemBundle* bundle);
+    // `steps`, `stepFrames`: where the transport is now (Sequencer::position) and its step length:
+    // a copy for the tempo playing now picks up there (not where the old copy, which played on at
+    // the old tempo while the copy was made, had got to). NaN: no transport (the preview).
+    void install(StemBundle* bundle, double steps = std::numeric_limits<double>::quiet_NaN(), double stepFrames = 0.0);
     void setParam(int stem, int param, float value);
     // Negative: that many frames of silence before the song's first frame.
     void setStartFrame(int64_t frame) { startFrame_ = frame; }
 
     // Starts `offset` frames into the next render() call, with a 5 ms fade in (what was playing
     // fades out under it).
-    void start(int offset);
+    // `steps`, `stepFrames`: the transport's step it starts on and the step length then (a lead-in,
+    // the negative start frame, is the project's time: so many steps).
+    void start(int offset, double steps = 0.0, double stepFrames = 0.0);
     // Short fade then silence.
     void stop();
     // The live grid's remix slot: on, it is heard; off, it goes quiet in a few milliseconds from
@@ -83,7 +89,7 @@ public:
     bool loaded() const { return bundle_ != nullptr; }
     bool playing() const { return playing_; }
     // Something may sound in the next render(): playing, about to start, or a bundle fading out.
-    bool active() const { return playing_ || pendingStart_ >= 0 || out_.bundle != nullptr; }
+    bool active() const { return playing_ || pendingStart_ >= 0 || fading(); }
     // Song position in frames (UI). -1 when stopped, or while the song has not come in yet.
     int64_t position() const { return position_.load(std::memory_order_relaxed); }
 
@@ -105,6 +111,10 @@ private:
     std::array<Smoother, StemBundle::kStems> smooth_{};
     int64_t startFrame_ = 0;
     int64_t pos_ = 0;
+    // The transport's step the song started on, the start frame it started from in the bundle
+    // playing, and its lead-in in steps (a negative start frame).
+    double startSteps_ = 0.0, pendingSteps_ = 0.0, pendingStepFrames_ = 0.0, leadSteps_ = 0.0;
+    int64_t playStart_ = 0;
     int pendingStart_ = -1;
     bool playing_ = false;
     int fadeLeft_ = 0;
@@ -117,7 +127,11 @@ private:
         StemBundle* bundle = nullptr;
         int64_t pos = 0;
         int left = 0, length = 1;
-    } out_;
+    };
+    // Two: a copy fading under a new one is still there when the next fade starts (the transport
+    // started over, another copy) a few milliseconds later, never cut dead.
+    std::array<Outgoing, 2> outs_{};
+    bool fading() const { return outs_[0].bundle != nullptr || outs_[1].bundle != nullptr; }
     bool live_ = true;
     int liveAt_ = -1;       // frame of the next render() where the live gain starts to move, -1 none
     float liveGain_ = 1.0f; // 1 = heard: the plain mix, sample for sample

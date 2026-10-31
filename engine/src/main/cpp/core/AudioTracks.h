@@ -37,7 +37,10 @@ public:
     // another length (a loop stretched to a new tempo): a scene clip sounding picks up at the same
     // place of its loop in the new copy (the old one fades under it), instead of waiting for its
     // next pass.
-    void install(int track, Sample* sample, bool refit = false);
+    // `steps`, `stepFrames` (a refit): where the transport is now (Sequencer::position) and its
+    // step length; the copy, made for the tempo playing now, picks up at the transport's place in
+    // the pass (not where the old copy, played on at the old tempo meanwhile, had got to).
+    void install(int track, Sample* sample, bool refit = false, double steps = 0.0, double stepFrames = 0.0);
     void setParam(int track, int param, float value);
     // A track switched off (by the song part playing) does not start again; a sounding pass fades.
     void setOn(int track, bool on);
@@ -52,7 +55,9 @@ public:
         onStep(offset, locals, songStep, samplesPerStep, swing, songOrigin);
     }
     // The same with each track's own `local` (the live grid: each track counts from its own launch).
-    void onStep(int offset, const std::array<int, kTracks>& locals, int songStep, double samplesPerStep, double swing, int songOrigin);
+    // `transportStep`: the transport's step (Sequencer::position counts it), for a refit later.
+    void onStep(int offset, const std::array<int, kTracks>& locals, int songStep, double samplesPerStep, double swing, int songOrigin,
+                int transportStep = 0);
     // The song position jumped (transport start, the song started over or from another part):
     // song clips stop and pick up where the song is at the next step.
     void songJump();
@@ -73,6 +78,7 @@ private:
         int64_t due = 0;   // frames before it starts (inside the current block)
         int fade = 0;      // > 0: fading out over the remaining frames
         int rise = 0;      // > 0: fading in over the remaining frames (a refit picked up mid-loop)
+        double zero = 0.0; // the transport's step (unswung, with a fraction) where the clip's frame 0 is
     };
     struct Track {
         Sample* sample = nullptr;
@@ -85,14 +91,20 @@ private:
         int offset = 0;
         bool resync = true;  // song clip: pick up mid-clip at the next step
         float level = 1.0f;  // song clip: 0..1 towards `on` (a part's mute without stopping it)
-        Voice voice, tail;
+        Voice voice;
+        // Passes fading out: two, so that a stop just after a loop started over (its last pass
+        // still fading under the new one) never cuts that one dead.
+        std::array<Voice, 2> tails;
+        bool tailOf(const Sample* x) const { return tails[0].sample == x || tails[1].sample == x; }
         // The clip replaced while it sounded: kept until its fading voice is done (no click).
         Sample* held = nullptr;
     };
     void retire(Sample* s);
     void releaseHeld(Track& t);
     void play(const Track& t, Voice& v, float& l, float& r);
-    void startVoice(Track& t, int offset, int64_t pos);
+    void startVoice(Track& t, int offset, int64_t pos, double zero = 0.0);
+    // The voice playing fades out on a free tail (the quietest one if both still sound).
+    void fadeAway(Track& t);
 
     std::array<Track, kTracks> tracks_{};
     SpscQueue<Sample*, 64> retired_;

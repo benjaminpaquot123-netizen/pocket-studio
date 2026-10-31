@@ -16,9 +16,26 @@ AudioTracks::~AudioTracks() {
 void AudioTracks::releaseHeld(Track& t) {
     if (!t.held) return;
     if (t.voice.sample == t.held) t.voice = Voice{};
-    if (t.tail.sample == t.held) t.tail = Voice{};
+    for (Voice& v : t.tails) {
+        if (v.sample == t.held) v = Voice{};
+    }
     retire(t.held);
     t.held = nullptr;
+}
+
+void AudioTracks::fadeAway(Track& t) {
+    if (!t.voice.sample) return;
+    Voice* to = &t.tails[0];
+    for (Voice& v : t.tails) {
+        if (!v.sample) {
+            to = &v;
+            break;
+        }
+        if (to->sample && v.fade < to->fade) to = &v;
+    }
+    *to = t.voice;
+    if (to->fade == 0) to->fade = declick_;
+    t.voice = Voice{};
 }
 
 void AudioTracks::retire(Sample* s) {
@@ -32,7 +49,7 @@ void AudioTracks::collectGarbage() {
     while (retired_.pop(s)) delete s;
 }
 
-void AudioTracks::install(int track, Sample* sample, bool refit) {
+void AudioTracks::install(int track, Sample* sample, bool refit, double steps, double stepFrames) {
     if (track < 0 || track >= kTracks) {
         retire(sample);
         return;
@@ -47,24 +64,21 @@ void AudioTracks::install(int track, Sample* sample, bool refit) {
     releaseHeld(t);
     // The sounding pass fades out over the declick (audit 13: it was cut, a click), the old clip
     // held until it is done; render() lets it go then.
-    if (t.voice.sample) {
-        t.tail = t.voice;
-        if (t.tail.fade == 0) t.tail.fade = declick_;
-    }
-    t.voice = Voice{};
-    if (t.tail.sample && t.tail.sample == t.sample) {
+    fadeAway(t);
+    if (t.sample && t.tailOf(t.sample)) {
         t.held = t.sample;
     } else {
-        t.tail = Voice{};
         retire(t.sample);
     }
     t.sample = sample;
     t.resync = true;  // a song clip replaced while the song plays picks up where the song is
-    // A loop refitted to a new tempo: the same place of the loop in the new copy, faded in.
+    // A loop refitted to a new tempo: the transport's place in its pass, in the new copy (made for
+    // the tempo playing now), faded in.
     if (refit && sample && !t.song && was.sample && was.fade == 0 && was.due == 0 && was.sample->frames() > 0) {
-        const double at = static_cast<double>(was.pos) * static_cast<double>(sample->frames()) / static_cast<double>(was.sample->frames());
-        const auto pos = static_cast<int64_t>(at);
-        if (pos < sample->frames()) t.voice = Voice{sample, pos, 0, 0, declick_};
+        const double at = stepFrames > 1.0 ? (steps - was.zero) * stepFrames
+                                            : static_cast<double>(was.pos) * static_cast<double>(sample->frames()) / static_cast<double>(was.sample->frames());
+        const auto pos = static_cast<int64_t>(std::llround(at));
+        if (pos >= 0 && pos < sample->frames()) t.voice = Voice{sample, pos, 0, 0, declick_, was.zero};
     }
 }
 
@@ -120,17 +134,15 @@ void AudioTracks::songJump() {
 }
 
 // The clip `pos` frames past its step (before the offset) starts sounding `offset` frames into the block.
-void AudioTracks::startVoice(Track& t, int offset, int64_t pos) {
+void AudioTracks::startVoice(Track& t, int offset, int64_t pos, double zero) {
     // The previous pass, if still sounding, fades out under the new one.
-    if (t.voice.sample) {
-        t.tail = t.voice;
-        if (t.tail.fade == 0) t.tail.fade = declick_;
-    }
+    fadeAway(t);
     const int64_t at = pos - t.offset;  // a later clip (offset > 0) is that much behind
-    t.voice = at >= 0 ? Voice{t.sample, at, offset, 0} : Voice{t.sample, 0, offset - at, 0};
+    t.voice = at >= 0 ? Voice{t.sample, at, offset, 0, 0, zero} : Voice{t.sample, 0, offset - at, 0, 0, zero};
 }
 
-void AudioTracks::onStep(int offset, const std::array<int, kTracks>& locals, int songStep, double samplesPerStep, double swing, int songOrigin) {
+void AudioTracks::onStep(int offset, const std::array<int, kTracks>& locals, int songStep, double samplesPerStep, double swing, int songOrigin,
+                         int transportStep) {
     for (size_t k = 0; k < tracks_.size(); ++k) {
         auto& t = tracks_[k];
         const int local = locals[k];
@@ -154,14 +166,16 @@ void AudioTracks::onStep(int offset, const std::array<int, kTracks>& locals, int
         if (!t.on || local < t.start) continue;
         const int since = local - t.start;
         if (t.loopSteps > 0 ? since % t.loopSteps != 0 : since != 0) continue;
-        startVoice(t, offset, 0);
+        // Frame 0 on this step, later by its swing (an odd step) and the clip's offset.
+        const double late = (transportStep & 1) != 0 && samplesPerStep > 0.0 ? swing : 0.0;
+        startVoice(t, offset, 0, transportStep + late + (samplesPerStep > 0.0 ? t.offset / samplesPerStep : 0.0));
     }
 }
 
 void AudioTracks::stop() {
     for (auto& t : tracks_) {
+        // The passes already fading go on to their end: cut, the one that just started over clicked.
         if (t.voice.sample && t.voice.fade == 0) t.voice.fade = declick_;
-        t.tail = Voice{};
         t.resync = true;
     }
 }
@@ -203,7 +217,7 @@ void AudioTracks::render(float* const* lefts, float* const* rights, int numFrame
     for (int k = 0; k < kTracks; ++k) {
         Track& t = tracks_[static_cast<size_t>(k)];
         const float target = !t.song || t.on ? 1.0f : 0.0f;
-        if (!t.voice.sample && !t.tail.sample) {
+        if (!t.voice.sample && !t.tails[0].sample && !t.tails[1].sample) {
             t.level = target;
             continue;
         }
@@ -214,11 +228,12 @@ void AudioTracks::render(float* const* lefts, float* const* rights, int numFrame
             if (t.level != target) t.level = t.level < target ? std::min(target, t.level + ramp) : std::max(target, t.level - ramp);
             float l = 0.0f, r = 0.0f;
             play(t, t.voice, l, r);
-            play(t, t.tail, l, r);
+            play(t, t.tails[0], l, r);
+            play(t, t.tails[1], l, r);
             L[i] += l;
             R[i] += r;
         }
-        if (t.held && t.voice.sample != t.held && t.tail.sample != t.held) releaseHeld(t);
+        if (t.held && t.voice.sample != t.held && !t.tailOf(t.held)) releaseHeld(t);
     }
 }
 

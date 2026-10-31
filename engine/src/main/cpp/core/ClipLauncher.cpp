@@ -16,9 +16,26 @@ ClipLauncher::~ClipLauncher() {
 void ClipLauncher::releaseHeld(Slot& s) {
     if (!s.held) return;
     if (s.voice.sample == s.held) s.voice = Voice{};
-    if (s.tail.sample == s.held) s.tail = Voice{};
+    for (Voice& t : s.tails) {
+        if (t.sample == s.held) t = Voice{};
+    }
     retire(s.held);
     s.held = nullptr;
+}
+
+void ClipLauncher::fadeAway(Slot& s) {
+    if (!s.voice.sample) return;
+    Voice* to = &s.tails[0];
+    for (Voice& t : s.tails) {
+        if (!t.sample) {
+            to = &t;
+            break;
+        }
+        if (to->sample && t.fade < to->fade) to = &t;
+    }
+    *to = s.voice;
+    if (to->fade == 0) to->fade = fadeFrames_;
+    s.voice = Voice{};
 }
 
 void ClipLauncher::retire(Sample* s) {
@@ -48,15 +65,10 @@ void ClipLauncher::install(int slot, Sample* sample, bool refit) {
     releaseHeld(s);
     // The sounding pass fades out (audit 13: it was cut, a click), the old sound held until it is
     // done; render() lets it go then.
-    if (s.voice.sample) {
-        s.tail = s.voice;
-        if (s.tail.fade == 0) s.tail.fade = fadeFrames_;
-    }
-    s.voice = Voice{};
-    if (s.tail.sample && s.tail.sample == s.sample) {
+    fadeAway(s);
+    if (s.sample && s.tailOf(s.sample)) {
         s.held = s.sample;
     } else {
-        s.tail = Voice{};
         retire(s.sample);
     }
     s.sample = sample;
@@ -85,9 +97,7 @@ void ClipLauncher::toggle(int slot, bool idleClock, float velocity) {
     Slot& s = slots_[static_cast<size_t>(slot)];
     if (!s.sample) return;
     if (s.state == Playing && !s.oneShot) {
-        s.tail = s.voice;
-        s.tail.fade = fadeFrames_;
-        s.voice = Voice{};
+        fadeAway(s);
         s.state = Off;
     } else if (s.state == Waiting) {
         s.state = Off;
@@ -105,11 +115,7 @@ void ClipLauncher::toggle(int slot, bool idleClock, float velocity) {
 void ClipLauncher::stopAll() {
     for (size_t i = 0; i < slots_.size(); ++i) {
         Slot& s = slots_[i];
-        if (s.voice.sample) {
-            s.tail = s.voice;
-            s.tail.fade = fadeFrames_;
-            s.voice = Voice{};
-        }
+        fadeAway(s);
         s.state = Off;
         states_[i].store(Off, std::memory_order_relaxed);
     }
@@ -117,10 +123,7 @@ void ClipLauncher::stopAll() {
 
 void ClipLauncher::restart(Slot& s) {
     // The previous pass, if still sounding, fades out instead of being cut.
-    if (s.voice.sample) {
-        s.tail = s.voice;
-        s.tail.fade = fadeFrames_;
-    }
+    fadeAway(s);
     s.voice = Voice{s.sample, 0, 0, 0, s.velocity};
 }
 
@@ -183,7 +186,7 @@ void ClipLauncher::render(float* left, float* right, int numFrames) {
             Slot& s = slots_[k];
             if (!s.sample) {
                 // Emptied while it played: its last pass fades out.
-                play(s.tail, s.gain, l, r);
+                for (Voice& t : s.tails) play(t, s.gain, l, r);
                 continue;
             }
             if (s.state == Waiting && beat_ >= s.startBeat) {
@@ -197,7 +200,7 @@ void ClipLauncher::render(float* left, float* right, int numFrames) {
                 restart(s);
             }
             play(s.voice, s.gain, l, r);
-            play(s.tail, s.gain, l, r);
+            for (Voice& t : s.tails) play(t, s.gain, l, r);
             if (s.state == Playing && s.oneShot && !s.voice.sample) {
                 s.state = Off;
                 states_[k].store(Off, std::memory_order_relaxed);
@@ -208,7 +211,7 @@ void ClipLauncher::render(float* left, float* right, int numFrames) {
         beat_ += perFrame;
     }
     for (Slot& s : slots_) {
-        if (s.held && s.voice.sample != s.held && s.tail.sample != s.held) releaseHeld(s);
+        if (s.held && s.voice.sample != s.held && !s.tailOf(s.held)) releaseHeld(s);
     }
     syncAt_ = -1;
 }

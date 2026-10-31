@@ -48,5 +48,9 @@
   "La basse de %s en notes…": "%s のベースをノートに…",
   "Pas de notes de basse trouvées dans %s.": "%s にベースのノートが見つかりません。",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "%1$s のベースを Acid 303 に：%2$d ノート。",
-  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s のベースを %2$d ノートで専用トラックに：音色は自由に変えてね。"
+  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s のベースを %2$d ノートで専用トラックに：音色は自由に変えてね。",
+  "La mélodie de la voix en notes": "ボーカルのメロディをノートに",
+  "La voix de %s en notes…": "%s のボーカルをノートに…",
+  "Pas de notes de voix trouvées dans %s.": "%s にボーカルのノートが見つかりません。",
+  "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s のボーカルを %2$d ノートで専用トラックに：音色は自由に変えてね。"
 }

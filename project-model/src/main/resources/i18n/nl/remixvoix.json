@@ -48,5 +48,9 @@
   "La basse de %s en notes…": "De bas van %s als noten…",
   "Pas de notes de basse trouvées dans %s.": "Geen basnoten gevonden in %s.",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "De bas van %1$s op de Acid 303: %2$d noten.",
-  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "De bas van %1$s als %2$d noten op een eigen spoor: verander de klank zoals je wilt."
+  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "De bas van %1$s als %2$d noten op een eigen spoor: verander de klank zoals je wilt.",
+  "La mélodie de la voix en notes": "De zangmelodie als noten",
+  "La voix de %s en notes…": "De zang van %s als noten…",
+  "Pas de notes de voix trouvées dans %s.": "Geen zangnoten gevonden in %s.",
+  "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "De zang van %1$s als %2$d noten op een eigen spoor: verander de klank zoals je wilt."
 }

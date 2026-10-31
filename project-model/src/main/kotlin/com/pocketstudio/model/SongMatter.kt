@@ -93,14 +93,24 @@ object SongMatter {
      * time, the YIN method on a copy at 4 kHz), each step's pitch the most frequent of its frames,
      * a step too quiet a rest; equal steps in a row one note (a new attack starts another). MIDI 24..64 (the bass's range).
      */
-    fun bassNotes(mono: FloatArray, rate: Int, stepFrames: Double, steps: Int): List<Note> {
+    fun bassNotes(mono: FloatArray, rate: Int, stepFrames: Double, steps: Int): List<Note> =
+        followedNotes(mono, rate, stepFrames, steps, workRate = 4000, minHz = 30.0, maxHz = 400.0, range = 24..64)
+
+    /**
+     * Step 7f: the sung melody of [mono] (the « Voix » stem) as notes, as [bassNotes] does the bass:
+     * one pitch at a time, on a copy at 8 kHz (a voice goes up to about 1 kHz), MIDI 43..84 (G2..C6).
+     */
+    fun voiceNotes(mono: FloatArray, rate: Int, stepFrames: Double, steps: Int): List<Note> =
+        followedNotes(mono, rate, stepFrames, steps, workRate = 8000, minHz = 90.0, maxHz = 1100.0, range = 43..84)
+
+    private fun followedNotes(mono: FloatArray, rate: Int, stepFrames: Double, steps: Int, workRate: Int, minHz: Double, maxHz: Double, range: IntRange): List<Note> {
         if (rate <= 0 || stepFrames <= 0 || steps <= 0) return emptyList()
-        val factor = (rate / 4000).coerceAtLeast(1)
+        val factor = (rate / workRate).coerceAtLeast(1)
         val low = FloatArray(mono.size / factor) { k -> var s = 0f; for (i in k * factor until (k + 1) * factor) s += mono[i]; s / factor }
         val r = rate.toDouble() / factor
         val window = (0.06 * r).toInt()          // 60 ms: two periods of 33 Hz
-        val maxLag = (r / 30.0).toInt()
-        val minLag = (r / 400.0).toInt().coerceAtLeast(2)
+        val maxLag = (r / minHz).toInt()
+        val minLag = (r / maxHz).toInt().coerceAtLeast(2)
         val top = low.maxOfOrNull { abs(it) } ?: 0f
         if (top < 1e-4f) return emptyList()
         val pitches = IntArray(steps) { -1 }
@@ -137,7 +147,7 @@ object SongMatter {
                 if (found <= 0) continue
                 val hz = r / found
                 val midi = (69 + 12 * ln(hz / 440.0) / ln(2.0)).roundToInt()
-                if (midi in 24..64) votes.merge(midi, 1, Int::plus)
+                if (midi in range) votes.merge(midi, 1, Int::plus)
             }
             pitches[s] = votes.maxByOrNull { it.value }?.key ?: -1
         }

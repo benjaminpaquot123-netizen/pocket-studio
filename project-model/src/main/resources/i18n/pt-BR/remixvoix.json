@@ -48,5 +48,9 @@
   "La basse de %s en notes…": "O baixo de %s em notas…",
   "Pas de notes de basse trouvées dans %s.": "Nenhuma nota de baixo encontrada em %s.",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "O baixo de %1$s na Acid 303: %2$d notas.",
-  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "O baixo de %1$s em %2$d notas numa faixa só dele: troque o som como quiser."
+  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "O baixo de %1$s em %2$d notas numa faixa só dele: troque o som como quiser.",
+  "La mélodie de la voix en notes": "A melodia da voz em notas",
+  "La voix de %s en notes…": "A voz de %s em notas…",
+  "Pas de notes de voix trouvées dans %s.": "Nenhuma nota de voz encontrada em %s.",
+  "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "A voz de %1$s em %2$d notas numa faixa só dela: troque o som como quiser."
 }

@@ -3253,6 +3253,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     splitVoice = rhythmVm::splitVoice,
                                     drumsToKit = rhythmVm::drumsToKit,
                                     bassToNotes = rhythmVm::bassToNotes,
+                                    voiceToNotes = rhythmVm::voiceToNotes,
                                     confirmPad = rhythmVm::confirmStemPad,
                                     dismissPadAsk = rhythmVm::dismissStemPadAsk,
                                     editCut = rhythmVm::editCut,

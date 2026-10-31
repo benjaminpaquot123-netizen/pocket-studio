@@ -6044,7 +6044,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * plays in the song (as heard there, on the project's sixteenths, at most 16 bars), on a new
      * bass track (any sound can play it) or, [acid], on the Acid 303. One undo step.
      */
-    fun bassToNotes(acid: Boolean = false) {
+    fun bassToNotes(acid: Boolean = false) = stemToNotes(voice = false, acid = acid)
+
+    /**
+     * Step 7f: « La voix en notes »: the sung melody of the « Voix » stem followed note by note, as
+     * [bassToNotes] does the bass, on a new melody track (any sound can sing it). One undo step.
+     */
+    fun voiceToNotes() = stemToNotes(voice = true, acid = false)
+
+    private fun stemToNotes(voice: Boolean, acid: Boolean) {
         val source = stems ?: return
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
         val p = project.value
@@ -6058,15 +6066,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val start = Math.round(p.remixTimeAtStep(step0) * rate).coerceAtLeast(0L)
         val song = p.remix.name.ifBlank { "Remix" }
         if (stepFrames <= 0 || start >= source.frames) return
-        _sampleTask.value = SampleTask.Busy(tr("La basse de %s en notes…", song))
+        _sampleTask.value = SampleTask.Busy(if (voice) tr("La voix de %s en notes…", song) else tr("La basse de %s en notes…", song))
         viewModelScope.launch {
             try {
                 val notes = withContext(Dispatchers.Default) {
                     val count = minOf(source.frames - start, Math.round(stepFrames * (steps + 2)))
-                    com.pocketstudio.model.SongMatter.bassNotes(monoOf(source.extract(BASS_STEM, start, count)), rate, stepFrames, steps)
+                    if (voice) com.pocketstudio.model.SongMatter.voiceNotes(monoOf(source.extract(VOICE_STEM, start, count)), rate, stepFrames, steps)
+                    else com.pocketstudio.model.SongMatter.bassNotes(monoOf(source.extract(BASS_STEM, start, count)), rate, stepFrames, steps)
                 }
                 if (notes.isEmpty()) {
-                    _sampleTask.value = SampleTask.Failed(tr("Pas de notes de basse trouvées dans %s.", song))
+                    _sampleTask.value = SampleTask.Failed(if (voice) tr("Pas de notes de voix trouvées dans %s.", song) else tr("Pas de notes de basse trouvées dans %s.", song))
                     return@launch
                 }
                 _sampleTask.value = SampleTask.Idle
@@ -6077,12 +6086,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 } else {
                     val q = project.value
                     val style = com.pocketstudio.app.library.styleOfProject(q.name)?.let(com.pocketstudio.model.StarterWizard::style)
-                    val next = com.pocketstudio.model.NewTracks.add(q, com.pocketstudio.model.TrackKind.Bass, style, false) ?: run {
+                    val kind = if (voice) com.pocketstudio.model.TrackKind.Melody else com.pocketstudio.model.TrackKind.Bass
+                    val next = com.pocketstudio.model.NewTracks.add(q, kind, style, false) ?: run {
                         _notice.value = tr("Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre.")
                         return@launch
                     }
                     val id = next.tracks.first { t -> q.tracks.none { it.id == t.id } }.id
-                    val name = com.pocketstudio.model.DefaultNames.stemPad("Basse", song)
+                    val name = com.pocketstudio.model.DefaultNames.stemPad(if (voice) VOICE_LABEL else "Basse", song)
                     session.edit {
                         userTrack(next, id).let { r ->
                             r.copy(tracks = r.tracks.map { t -> if (t.id == id) t.copy(name = name, notes = com.pocketstudio.model.NoteClip(steps = steps, notes = notes)) else t })
@@ -6091,13 +6101,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     pushTracks()
                     pushMixer()
                     selectTrack(id)
-                    _notice.value = tr("La basse de %1\$s en %2\$d notes sur une piste à elle : change son son comme tu veux.", song, notes.size)
+                    _notice.value = if (voice) tr("La voix de %1\$s en %2\$d notes sur une piste à elle : change son son comme tu veux.", song, notes.size)
+                    else tr("La basse de %1\$s en %2\$d notes sur une piste à elle : change son son comme tu veux.", song, notes.size)
                 }
-                AppLog.add("Remix : basse en ${notes.size} notes${if (acid) " (Acid 303)" else ""}")
+                AppLog.add("Remix : ${if (voice) "voix" else "basse"} en ${notes.size} notes${if (acid) " (Acid 303)" else ""}")
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
             } catch (e: Throwable) {
-                AppLog.add("Remix : basse en notes impossible (${e.message})")
+                AppLog.add("Remix : ${if (voice) "voix" else "basse"} en notes impossible (${e.message})")
                 _sampleTask.value = SampleTask.Failed(tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName))
             }
         }

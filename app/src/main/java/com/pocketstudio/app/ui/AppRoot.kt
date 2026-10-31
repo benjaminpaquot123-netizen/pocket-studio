@@ -3514,7 +3514,10 @@ fun mixerStrips(p: com.pocketstudio.model.Project): List<com.pocketstudio.app.mi
             com.pocketstudio.app.mixer.StripInfo(com.pocketstudio.model.AudioTrack.mixerChannel(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
         } +
         // Step 5a: the song's group strip, named after it (its four stems under it, see SongTracksCard).
-        com.pocketstudio.app.mixer.StripInfo(3, p.remix.takeIf { it.setId != null }?.name?.ifBlank { null } ?: "Remix", com.pocketstudio.app.remix.SONG_COLOR)
+        (
+            p.remix.takeIf { it.setId != null }?.let { com.pocketstudio.app.mixer.StripInfo(3, it.name.ifBlank { "Remix" }, com.pocketstudio.app.remix.SONG_COLOR) }
+                ?: com.pocketstudio.app.mixer.StripInfo(3, "Remix")
+        )
 
 /** What the effects box does, wherever it shows (one box for every sound). */
 fun effectsActions(vm: RhythmViewModel): MixerActions = MixerActions(

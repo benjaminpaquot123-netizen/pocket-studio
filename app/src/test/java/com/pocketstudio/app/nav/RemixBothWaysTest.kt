@@ -16,6 +16,7 @@ import com.pocketstudio.app.remix.StemSet
 import com.pocketstudio.app.remix.StemStore
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectStore
+import com.pocketstudio.model.Remix
 import com.pocketstudio.model.Scale
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -150,7 +151,67 @@ class RemixBothWaysTest {
         assertEquals(other, id)
         // Never changed on disk behind its back: the song goes in once the project is open (undo then works).
         assertNull(p.remix.setId)
-        assertEquals(set.id, RemixFromHome.take(other))
+        assertEquals(RemixFromHome.Waiting(set.id), RemixFromHome.take(other))
+    }
+
+    /**
+     * Benjamin's video (APK 233, n° 15): « Voix » alone heard, then the song put in a project: only
+     * the voice played at first, then after ▶ the whole song (the choice lost). Step 5a: the four
+     * parts come in, the ones not heard muted, and ▶ or reopening keeps it.
+     */
+    @Test
+    fun fromHomeTheVoiceHeardAloneComesInWithTheOtherPartsMuted() {
+        song()
+        h.start(launchChoice = true)
+        val before = CurrentProject.get(h.app)
+        h.awaitTag("launch_remix")
+        tap("launch_remix")
+        h.awaitTag("stem_${SET}_vocals")
+        tap("stem_${SET}_vocals")
+        tap("use_$SET")
+        tap("remix_dest_build")
+        tap("mode_card_pro")
+        val (_, p) = switchedFrom(before)
+        // The new project, as opened from its file: the four parts, the voice heard, the others muted
+        // (▶ and saving keep it: RemixSongEverywhereTest).
+        assertEquals(Remix.STEMS, p.remix.stems.size)
+        assertEquals(VOICE_ONLY, p.remix.stems.map { !it.mute })
+    }
+
+    @Test
+    fun fromHomeIntoAnExistingProjectTheVoiceHeardAloneGoesWithTheSong() {
+        val set = song()
+        h.start(launchChoice = true)
+        val before = CurrentProject.get(h.app)
+        val other = "remix-other-" + System.nanoTime()
+        store.save(other, Project(name = "Mon autre projet", tempoBpm = 140.0))
+        h.awaitTag("launch_remix")
+        tap("launch_remix")
+        h.awaitTag("stem_${SET}_vocals")
+        tap("stem_${SET}_vocals")
+        tap("use_$SET")
+        tap("remix_dest_existing")
+        h.awaitTag("remix_dest_project_$other")
+        tap("remix_dest_project_$other")
+        switchedFrom(before)
+        assertEquals(RemixFromHome.Waiting(set.id, VOICE_ONLY), RemixFromHome.take(other))
+    }
+
+    @Test
+    fun aSongWaitingWithTheVoiceHeardAloneComesInWithTheOtherPartsMuted() {
+        val set = song()
+        val id = "remix-waiting-voice-" + System.nanoTime()
+        RemixFromHome.put(id, set.id, VOICE_ONLY)
+        h.start(projectId = id, build = {})
+        val end = System.currentTimeMillis() + 10_000
+        while (h.vm.project.value.remix.setId != set.id) {
+            check(System.currentTimeMillis() < end) { "the song never reached the project" }
+            Thread.sleep(20)
+            org.robolectric.shadows.ShadowLooper.idleMainLooper()
+            compose.waitForIdle()
+        }
+        assertEquals(4, h.vm.project.value.remix.stems.size)
+        assertEquals(VOICE_ONLY, h.vm.project.value.remix.stems.map { !it.mute })
     }
 
     @Test
@@ -209,5 +270,7 @@ class RemixBothWaysTest {
 
     private companion object {
         const val SET = "song-both-ways"
+        /** Drums, bass, other, vocals: « Voix » alone heard. */
+        val VOICE_ONLY = listOf(false, false, false, true)
     }
 }

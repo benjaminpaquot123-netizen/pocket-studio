@@ -152,7 +152,7 @@ fun liveColumnsOf(p: Project): List<LiveColumn> = p.liveColumns.mapNotNull { key
     when {
         key == SongPart.DRUMS -> LiveColumn(key, tr("Batterie"), DRUMS_COLOR, 0)
         key == SongPart.ACID -> LiveColumn(key, tr("Acid 303"), com.pocketstudio.app.acid.AcidLook.Track, 1)
-        key == SongPart.REMIX -> LiveColumn(key, tr("Remix"), Color(0xFF90A4AE), 3)
+        key == SongPart.REMIX -> LiveColumn(key, p.remix.name.ifBlank { tr("Remix") }, com.pocketstudio.app.remix.SONG_COLOR, 3)
         key.startsWith("inst:") -> p.instrumentTracks.firstOrNull { SongPart.inst(it.id) == key }?.let {
             LiveColumn(key, DefaultNames.shown(it.name), trackColor(it.color), InstrumentTrack.mixerChannel(it.id))
         }

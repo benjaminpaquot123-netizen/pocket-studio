@@ -53,6 +53,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.background
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -304,7 +306,7 @@ private fun Progress(text: String, fraction: Float?, cancel: () -> Unit) {
 private fun InProject(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit) {
     val r = ui.remix
     NeonCard(modifier = Modifier.testTag("remix_project")) {
-        SectionLabel(tr("Dans le projet : %s", r.name), color = Neon.Magenta, foldKey = "Dans le projet")
+        SectionLabel(tr("Chanson : %s", r.name), color = SONG_COLOR, foldKey = "Dans le projet")
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = actions.togglePlay, modifier = Modifier.testTag("remix_play")) {
                 Icon(if (ui.transportPlaying) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null)
@@ -382,10 +384,15 @@ private fun InProject(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit)
                 )
             }
         }
-        Demucs.STEMS.forEachIndexed { i, stem ->
+        // Step 5a: the four stems of the song, voice first (as in Structure and Mix), each in its colour.
+        Remix.SHOWN_ORDER.forEach { i ->
+            val stem = Demucs.STEMS[i]
             val m = r.stems[i]
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(StemStore.label(stem), Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
+                androidx.compose.foundation.layout.Box(
+                    Modifier.size(10.dp).background(stemColor(i), androidx.compose.foundation.shape.CircleShape),
+                )
+                Text(StemStore.label(stem), Modifier.weight(1f).testTag("song_stem_name_$i"), style = MaterialTheme.typography.bodyLarge)
                 FilterChip(
                     selected = m.mute, onClick = { actions.toggleStemMute(i) }, label = { Text("M") },
                     colors = pillColors(Neon.Amber),
@@ -727,3 +734,54 @@ private fun Waveform(peaks: FloatArray, playhead: Float, start: Float, dimmed: B
     }
 }
 
+
+
+/** Step 5a: the song's colour, the same on every screen (its chip in Sons, its folder in Structure, its strip, its Live column). */
+val SONG_COLOR = androidx.compose.ui.graphics.Color(0xFFBA68C8)
+
+/** The colour of stem [stem] (engine order: drums, bass, other, vocals) on every screen. */
+fun stemColor(stem: Int): androidx.compose.ui.graphics.Color = when (stem) {
+    0 -> androidx.compose.ui.graphics.Color(0xFF9575CD)
+    1 -> androidx.compose.ui.graphics.Color(0xFFFF8A65)
+    2 -> androidx.compose.ui.graphics.Color(0xFF4FC3F7)
+    else -> androidx.compose.ui.graphics.Color(0xFF81C784)
+}
+
+/**
+ * Step 5a, Mix: « Les 4 pistes de Boys » under the console: each stem's volume, Solo and Muet,
+ * voice first; the whole song goes through its strip (« Boys », with its effects) above.
+ */
+@Composable
+fun SongTracksCard(
+    remix: Remix,
+    setVolume: (Int, Float) -> Unit,
+    toggleMute: (Int) -> Unit,
+    toggleSolo: (Int) -> Unit,
+) {
+    val name = remix.name.ifBlank { tr("Remix") }
+    NeonCard(accent = SONG_COLOR, modifier = Modifier.testTag("song_tracks")) {
+        SectionLabel(tr("Les 4 pistes de %s", name), color = SONG_COLOR)
+        Text(
+            tr("Toute la chanson passe par la tranche « %s » du mixeur, avec ses effets. Ici, chaque piste a son volume, Solo et Muet.", name),
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+        )
+        Remix.SHOWN_ORDER.forEach { i ->
+            val m = remix.stems.getOrElse(i) { com.pocketstudio.model.StemMix() }
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                androidx.compose.foundation.layout.Box(
+                    Modifier.size(10.dp).background(stemColor(i), androidx.compose.foundation.shape.CircleShape),
+                )
+                Text(StemStore.label(Demucs.STEMS[i]), Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
+                FilterChip(
+                    selected = m.solo, onClick = { toggleSolo(i) }, label = { Text("S") },
+                    colors = pillColors(Neon.Acid), modifier = Modifier.testTag("song_stem_solo_$i"),
+                )
+                FilterChip(
+                    selected = m.mute, onClick = { toggleMute(i) }, label = { Text("M") },
+                    colors = pillColors(Neon.Amber), modifier = Modifier.testTag("song_stem_mute_$i"),
+                )
+            }
+            ProSlider(value = m.volume, onValueChange = { setVolume(i, it) }, modifier = Modifier.testTag("song_stem_volume_$i"))
+        }
+    }
+}

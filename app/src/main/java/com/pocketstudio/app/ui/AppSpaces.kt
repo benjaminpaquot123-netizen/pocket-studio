@@ -95,6 +95,8 @@ internal fun SonsHeader(
     tab: AppTab, tracks: TracksUi, go: (AppTab) -> Unit, audioTracks: Int, simple: Boolean = false,
     /** Lot 2: the Remix page of Sons › Voix is shown (its own chip is lit), and the way to it. */
     remixShown: Boolean = false, openRemix: () -> Unit = {},
+    /** Step 5a: the song in the project (« Boys · Chanson »), null when none (« Remix · Séparer »). */
+    songName: String? = null,
     /** The audio tracks' own page is shown (Remix testers: the Accordeur lit « Voix · Micro », as if the track had changed). */
     voiceShown: Boolean = tab == AppTab.Audio && !remixShown,
 ) {
@@ -121,7 +123,7 @@ internal fun SonsHeader(
                         Color(0xFFE57373), voiceShown, "sons_Audio",
                     ) { go(AppTab.Audio) }
                     // Benjamin (2026-10-24): the Remix « mis en avant », a chip of its own, one touch from Sons.
-                    EditorChip(tr("Remix"), tr("Séparer"), REMIX_COLOR, remixShown, "sons_Remix", onClick = openRemix)
+                    EditorChip(songName ?: tr("Remix"), if (songName != null) tr("Chanson") else tr("Séparer"), REMIX_COLOR, remixShown, "sons_Remix", onClick = openRemix)
                 }
             },
         )
@@ -129,7 +131,7 @@ internal fun SonsHeader(
 }
 
 /** The Remix's colour (its chip in Sons, its card on « Que veux-tu faire ? »). */
-internal val REMIX_COLOR = Color(0xFFBA68C8)
+internal val REMIX_COLOR = com.pocketstudio.app.remix.SONG_COLOR
 
 /** A chip of the Sons space for an editor that is not an instrument track (the drums, the audio tracks; the acid has its own, [com.pocketstudio.app.acid.AcidChip]). */
 @Composable

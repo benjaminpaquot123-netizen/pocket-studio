@@ -26,6 +26,7 @@ import com.pocketstudio.model.viewOfTrack
 import com.pocketstudio.model.songBars
 import com.pocketstudio.model.partSteps
 import com.pocketstudio.model.remixSteps
+import com.pocketstudio.model.remixSpans
 import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.sceneTitle
 import com.pocketstudio.model.audioSpans
@@ -1205,11 +1206,12 @@ fun AppRoot() {
     }
     // A song separated from « Que veux-tu faire ? » for this project (« Dans un projet existant »): in its Remix now.
     LaunchedEffect(rhythmVm.projectId) {
-        val setId = com.pocketstudio.app.remix.RemixFromHome.take(rhythmVm.projectId) ?: return@LaunchedEffect
+        val waiting = com.pocketstudio.app.remix.RemixFromHome.take(rhythmVm.projectId) ?: return@LaunchedEffect
         val set = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-            com.pocketstudio.app.remix.StemStore.read(com.pocketstudio.app.remix.StemStore.dirFor(context, setId))
+            com.pocketstudio.app.remix.StemStore.read(com.pocketstudio.app.remix.StemStore.dirFor(context, waiting.setId))
         } ?: return@LaunchedEffect
-        rhythmVm.useSong(set)
+        // Step 5a: the parts heard while listening come in heard, the others muted.
+        rhythmVm.useSong(set, waiting.heard)
         openRemix()
     }
     // Audit final (03 G4): « Ma voix », the audio tracks' page (a first track made when there is none).
@@ -1387,11 +1389,13 @@ fun AppRoot() {
                     onProject = { set, p ->
                         remixHome = false
                         launch.settled()
+                        // Step 5a: what was heard while listening (« Voix » alone) decides which parts come in muted.
+                        val heard = remixVm.heardFor(set.id)
                         if (!noProject && p.id == rhythmVm.projectId) {
-                            rhythmVm.useSong(set)
+                            rhythmVm.useSong(set, heard)
                             openRemix()
                         } else {
-                            com.pocketstudio.app.remix.RemixFromHome.put(p.id, set.id)
+                            com.pocketstudio.app.remix.RemixFromHome.put(p.id, set.id, heard)
                             openRemix()  // kept across the rebuild the other project brings
                             tabAsked = true
                             openProject(p.id)
@@ -1424,7 +1428,7 @@ fun AppRoot() {
                         val remixBy = com.pocketstudio.app.remix.RemixWay.entries.firstOrNull { it.name == wayName }
                         remixWay = null
                         if (set != null && remixBy != null) {
-                            projectsVm.create(com.pocketstudio.app.remix.RemixFromHome.projectFor(set, remixBy), emptyMap()) { id ->
+                            projectsVm.create(com.pocketstudio.app.remix.RemixFromHome.projectFor(set, remixBy, remixVm.heardFor(set.id)), emptyMap()) { id ->
                                 remixHome = false
                                 launch.settled()
                                 openRemix()  // kept across the rebuild the new project brings
@@ -1526,6 +1530,8 @@ fun AppRoot() {
                     go(AppTab.Synthe)
                 }
                 key.startsWith("audio:") -> { go(AppTab.Audio); audioPage = 0 }
+                // Step 5a: the song and its stems open on its card (Sons › Chanson).
+                key == com.pocketstudio.model.SongPart.REMIX || com.pocketstudio.model.Remix.stemOfKey(key) != null -> openRemix()
             }
         }
     }
@@ -2340,6 +2346,7 @@ fun AppRoot() {
                         tab, tracksUiOf(hp, if (tab == AppTab.Synthe) hShown else -1, hFreezing, bar = true),
                         go = { t -> if (t == AppTab.Audio) audioPage = 0; go(t) }, audioTracks = hp.audioTracks.size, simple = simple,
                         remixShown = tab == AppTab.Audio && audioPage == 1, openRemix = openRemix, voiceShown = tab == AppTab.Audio && audioPage == 0,
+                        songName = hp.remix.takeIf { it.setId != null }?.name?.ifBlank { tr("Remix") },
                     )
                 }
                 // Another tab settles in (it rises a little and fades the rest of the way in): drawn only.
@@ -2732,6 +2739,12 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 strips = mixerStrips(project).let { all ->
                                     if (tutoUi != null && project.allScenes.none { s -> s.acid.steps.take(s.acid.length.coerceAtLeast(0)).any { it.gate } }) all.filter { it.ch != com.pocketstudio.model.AutoTarget.ACID_CHANNEL } else all
                                 },
+                                // Step 5a: the song's four stems under the console (its strip is the group fader).
+                                songTracks = if (project.remix.setId == null) null else ({
+                                    com.pocketstudio.app.remix.SongTracksCard(
+                                        project.remix, rhythmVm::setStemVolume, rhythmVm::toggleStemMute, rhythmVm::toggleStemSolo,
+                                    )
+                                }),
                                 spectrum = spectrum,
                                 analyserOpen = analyserOn,
                                 setAnalyser = { analyserOn = it },
@@ -3193,7 +3206,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     useSong = { set ->
                                         // R2: the parts switched off while listening (« Voix » alone) come in muted; « Écouter »
                                         // then stops: the song now plays with the project (remix lot 1: two voices at once).
-                                        val heard = preview?.takeIf { it.setId == set.id }?.on
+                                        val heard = preview?.takeIf { it.setId == set.id }?.on ?: remixVm.heardFor(set.id)
                                         remixVm.pause()
                                         val adopted = rhythmVm.useSong(set, heard)
                                         val what = listOfNotNull(set.info.bpm.takeIf { it > 0 }?.let { "%.0f BPM".format(it) }, set.info.keyLabel)
@@ -3500,7 +3513,8 @@ fun mixerStrips(p: com.pocketstudio.model.Project): List<com.pocketstudio.app.mi
         p.audioTracks.map { t ->
             com.pocketstudio.app.mixer.StripInfo(com.pocketstudio.model.AudioTrack.mixerChannel(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
         } +
-        com.pocketstudio.app.mixer.StripInfo(3, "Remix")
+        // Step 5a: the song's group strip, named after it (its four stems under it, see SongTracksCard).
+        com.pocketstudio.app.mixer.StripInfo(3, p.remix.takeIf { it.setId != null }?.name?.ifBlank { null } ?: "Remix", com.pocketstudio.app.remix.SONG_COLOR)
 
 /** What the effects box does, wherever it shows (one box for every sound). */
 fun effectsActions(vm: RhythmViewModel): MixerActions = MixerActions(
@@ -3532,7 +3546,10 @@ fun quickFxActions(vm: RhythmViewModel): com.pocketstudio.app.mixer.QuickFxActio
  * The timeline rows: drums, acid, then each instrument and audio track in its colour; an audio
  * take's waveform from [info] (the loaded sounds' peaks) when it is there.
  */
-fun timelineRows(p: Project, info: Map<String, com.pocketstudio.app.rhythm.SampleInfo> = emptyMap()): List<com.pocketstudio.app.session.TimelineRow> =
+fun timelineRows(
+    p: Project, info: Map<String, com.pocketstudio.app.rhythm.SampleInfo> = emptyMap(),
+    stems: com.pocketstudio.app.rhythm.StemOverview? = null,
+): List<com.pocketstudio.app.session.TimelineRow> =
     listOf(
         com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.DRUMS, "Batterie", com.pocketstudio.app.live.DRUMS_COLOR),
         com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.ACID, com.pocketstudio.model.DefaultNames.ACID, com.pocketstudio.app.acid.AcidLook.Track),
@@ -3547,7 +3564,36 @@ fun timelineRows(p: Project, info: Map<String, com.pocketstudio.app.rhythm.Sampl
             takeSteps = clip?.steps(p.tempoBpm) ?: 0,
             takeStart = if (clip?.song == true) clip.start else -1,
         )
+    } + remixRows(p, stems)
+
+/**
+ * Step 5a: the song's folder (« Boys », where the Live column plays it) and its four stems under
+ * it, voice first, each with its waveform from where the song is heard ([stems]: their peaks).
+ */
+fun remixRows(p: Project, stems: com.pocketstudio.app.rhythm.StemOverview? = null): List<com.pocketstudio.app.session.TimelineRow> {
+    val r = p.remix
+    if (r.setId == null) return emptyList()
+    val rate = com.pocketstudio.engine.OfflineExport.SAMPLE_RATE
+    val seconds = r.seconds.takeIf { it > 0 } ?: stems?.let { it.frames.toDouble() / rate } ?: 0.0
+    val spans = p.remixSpans(seconds)
+    val steps = p.remixSteps(seconds)
+    val name = r.name.ifBlank { "Remix" }
+    val folder = com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.REMIX, name, com.pocketstudio.app.remix.SONG_COLOR, spans = spans)
+    return listOf(folder) + com.pocketstudio.model.Remix.SHOWN_ORDER.map { i ->
+        com.pocketstudio.app.session.TimelineRow(
+            com.pocketstudio.model.Remix.stemKey(i), com.pocketstudio.app.remix.StemRouting.stemLabel(i), com.pocketstudio.app.remix.stemColor(i),
+            spans = spans, peaks = stems?.let { heardPeaks(it, i, r.startFrame(rate)) }, takeSteps = steps, takeStart = r.atStep,
+        )
     }
+}
+
+/** The peaks of stem [stem] from song frame [from] on (what the project hears of it). */
+internal fun heardPeaks(ov: com.pocketstudio.app.rhythm.StemOverview, stem: Int, from: Long): FloatArray? {
+    val all = ov.peaks.getOrNull(stem) ?: return null
+    if (all.isEmpty() || ov.frames <= 0) return null
+    val first = (from.toDouble() / ov.frames * all.size).toInt().coerceIn(0, all.size)
+    return if (first >= all.size) null else all.copyOfRange(first, all.size)
+}
 
 /** Settings a MIDI knob can move: the instrument's sound, live effects, tempo, then the mixer. */
 fun learnTargets(p: Project, strips: List<com.pocketstudio.app.mixer.StripInfo>): List<com.pocketstudio.model.AutoTarget> {
@@ -3851,7 +3897,8 @@ internal fun TimelineRoute(
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { vm.pollLive() }
     }
     val sampleInfo by vm.sampleInfo.collectAsStateWithLifecycle()
-    val rows = remember(project, sampleInfo) { timelineRows(project, sampleInfo) }
+    val stemOverview by vm.stemOverview.collectAsStateWithLifecycle()
+    val rows = remember(project, sampleInfo, stemOverview) { timelineRows(project, sampleInfo, stemOverview) }
     val lanes = remember(project) { timelineLanes(project) }
     // No undo during a take: it could remove the track it goes to.
     val undoable = take == null && !recording && !performance.running
@@ -3888,6 +3935,8 @@ internal fun TimelineRoute(
             openEditor = openEditor,
             toggleMute = vm::toggleMute,
             toggleSolo = vm::toggleSolo,
+            toggleStemMute = vm::toggleStemMute,
+            toggleStemSolo = vm::toggleStemSolo,
             setLoop = vm::setSongLoop,
             openLane = openLane,
             undo = vm::undo,

@@ -32,6 +32,13 @@ data class Remix(
      * older projects read the same.
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val atStep: Int = 0,
+    /**
+     * Step 5a: the song is a track of the project (« Chanson : Boys », its four stems in Sons,
+     * Structure, Mix and Live) and was put in the song's structure once ([withRemixPlaced]): a part
+     * long enough for it when the song had none. False in projects saved before (they are placed
+     * when opened, once). Left out of the file while false.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val placed: Boolean = false,
 ) {
     fun sanitized(): Remix = copy(
         songBpm = songBpm.takeIf { it.isFinite() }?.coerceIn(0.0, Project.MAX_TEMPO) ?: 0.0,
@@ -66,8 +73,18 @@ data class Remix(
         const val MAX_AT_STEP = 1 shl 19
         /** Longer than any song the separation takes (7 minutes): a bad value cannot make an endless export. */
         const val MAX_SECONDS = 3600.0
-        /** The mixer strip the remix plays through. */
+        /** The mixer strip the remix plays through: the song's group fader (its four stems under it). */
         const val STRIP = 3
+
+        /** The stems in the order they are shown (Voix, Batterie, Basse, Autres); stem indices as the engine has them. */
+        val SHOWN_ORDER = listOf(3, 0, 1, 2)
+
+        /** The timeline key of stem [stem] (a line under the song's folder); [SongPart.REMIX] is the folder. */
+        fun stemKey(stem: Int) = "${SongPart.REMIX}:$stem"
+
+        /** The stem of a timeline key made by [stemKey], or null. */
+        fun stemOfKey(key: String): Int? =
+            key.takeIf { it.startsWith("${SongPart.REMIX}:") }?.substringAfter(':')?.toIntOrNull()?.takeIf { it in 0 until STEMS }
 
         /**
          * The stems' strips for a song put in the project after listening with [heard] on (« Voix »
@@ -144,3 +161,43 @@ fun Project.exportEndBars(remixSeconds: Double = remix.seconds): Int = maxOf(aud
  * de zéro ») takes the song's.
  */
 fun Project.hasMusicOfItsOwn(): Boolean = allScenes.any { !it.isEmpty } || audioTracks.any { it.clip != null }
+
+
+/**
+ * Step 5a: where the remix's song is heard in each part of the song, as fractions of the part (the
+ * timeline's lines under the song's folder): from [Remix.atStep], as long as it lasts ([remixSteps]);
+ * nothing in a part that leaves the remix out (the Live's « remix » column off). Empty lists when
+ * the song or its length is not known.
+ */
+fun Project.remixSpans(seconds: Double = remix.seconds): List<List<ClosedFloatingPointRange<Float>>> {
+    val length = remixSteps(seconds)
+    var at = 0
+    return song.map { part ->
+        val steps = partSteps(part)
+        val partStart = at
+        at += steps
+        if (steps <= 0 || length <= 0 || !part.plays(SongPart.REMIX)) return@map emptyList()
+        val from = (remix.atStep - partStart).coerceIn(0, steps)
+        val to = (remix.atStep + length - partStart).coerceIn(0, steps)
+        if (to > from) listOf(from.toFloat() / steps..to.toFloat() / steps) else emptyList()
+    }
+}
+
+/**
+ * Step 5a: the remix's song put in the song's structure, once: when the song has no part yet
+ * (Benjamin's « Ton morceau est vide » with a song in the project), one part on brique A as long
+ * as the song ([remixSteps], whole bars, at most [SongPart.MAX_BARS]) so the Structure shows its
+ * four lines on the bars (« Toute la chanson, à partir de la brique A »). Then [Remix.placed]:
+ * parts taken away afterwards stay so. Projects saved before step 5a get it when opened; their
+ * remix strip, stems and placing are kept as they were (nothing heard changes but the song now
+ * running through the part).
+ */
+fun Project.withRemixPlaced(): Project {
+    if (remix.setId == null || remix.placed) return this
+    val steps = remixSteps()
+    // The length not known yet (a song saved before it was kept): placed once it is known.
+    if (song.isNotEmpty()) return copy(remix = remix.copy(placed = true))
+    if (steps <= 0) return this
+    val bars = ((remix.atStep + steps + stepsPerBar - 1) / stepsPerBar.coerceAtLeast(1)).coerceIn(1, SongPart.MAX_BARS)
+    return copy(song = listOf(SongPart(scene = 0, bars = bars)), remix = remix.copy(placed = true))
+}

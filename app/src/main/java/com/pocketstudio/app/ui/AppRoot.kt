@@ -27,6 +27,8 @@ import com.pocketstudio.model.songBars
 import com.pocketstudio.model.partSteps
 import com.pocketstudio.model.remixSteps
 import com.pocketstudio.model.remixSpans
+import com.pocketstudio.model.remixStemSpans
+import com.pocketstudio.model.heardEnd
 import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.sceneTitle
 import com.pocketstudio.model.audioSpans
@@ -1204,14 +1206,34 @@ fun AppRoot() {
             openRemix()
         }
     }
+    // Step 5c: « Mettre Boys dans mon projet » (one screen of choices) before a song goes into this project.
+    var songImport by remember { mutableStateOf<Pair<com.pocketstudio.app.remix.StemSet, List<Boolean>?>?>(null) }
+    songImport?.let { (set, heard) ->
+        com.pocketstudio.app.remix.SongImportSheet(
+            set, rhythmVm.project.collectAsStateWithLifecycle().value,
+            sections = { kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { com.pocketstudio.app.remix.SongEnergy.sections(set) } },
+            put = { choice, parts ->
+                songImport = null
+                val adopted = rhythmVm.useSong(set, heard, choice, parts)
+                val what = listOfNotNull(set.info.bpm.takeIf { it > 0 }?.let { "%.0f BPM".format(it) }, set.info.keyLabel)
+                val said = when {
+                    !adopted -> tr("Ton morceau garde son tempo (%s) : la chanson s'y cale, sans changer de hauteur.", "%.0f BPM".format(rhythmVm.project.value.tempoBpm))
+                    what.isNotEmpty() -> tr("Projet calé : %s", what.joinToString(", "))
+                    else -> null
+                }
+                said?.let { android.widget.Toast.makeText(context, it, android.widget.Toast.LENGTH_SHORT).show() }
+            },
+            cancel = { songImport = null },
+        )
+    }
     // A song separated from « Que veux-tu faire ? » for this project (« Dans un projet existant »): in its Remix now.
     LaunchedEffect(rhythmVm.projectId) {
         val waiting = com.pocketstudio.app.remix.RemixFromHome.take(rhythmVm.projectId) ?: return@LaunchedEffect
         val set = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
             com.pocketstudio.app.remix.StemStore.read(com.pocketstudio.app.remix.StemStore.dirFor(context, waiting.setId))
         } ?: return@LaunchedEffect
-        // Step 5a: the parts heard while listening come in heard, the others muted.
-        rhythmVm.useSong(set, waiting.heard)
+        // Step 5a: the parts heard while listening come in heard, the others muted; step 5c: after its choices.
+        songImport = set to waiting.heard
         openRemix()
     }
     // Audit final (03 G4): « Ma voix », the audio tracks' page (a first track made when there is none).
@@ -1392,7 +1414,7 @@ fun AppRoot() {
                         // Step 5a: what was heard while listening (« Voix » alone) decides which parts come in muted.
                         val heard = remixVm.heardFor(set.id)
                         if (!noProject && p.id == rhythmVm.projectId) {
-                            rhythmVm.useSong(set, heard)
+                            songImport = set to heard
                             openRemix()
                         } else {
                             com.pocketstudio.app.remix.RemixFromHome.put(p.id, set.id, heard)
@@ -3208,15 +3230,8 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                         // then stops: the song now plays with the project (remix lot 1: two voices at once).
                                         val heard = preview?.takeIf { it.setId == set.id }?.on ?: remixVm.heardFor(set.id)
                                         remixVm.pause()
-                                        val adopted = rhythmVm.useSong(set, heard)
-                                        val what = listOfNotNull(set.info.bpm.takeIf { it > 0 }?.let { "%.0f BPM".format(it) }, set.info.keyLabel)
-                                        val said = when {
-                                            // Remix lot 1: the user's song keeps its tempo and key, the song follows it.
-                                            !adopted -> tr("Ton morceau garde son tempo (%s) : la chanson s'y cale, sans changer de hauteur.", "%.0f BPM".format(rhythmVm.project.value.tempoBpm))
-                                            what.isNotEmpty() -> tr("Projet calé : %s", what.joinToString(", "))
-                                            else -> null
-                                        }
-                                        said?.let { android.widget.Toast.makeText(context, it, android.widget.Toast.LENGTH_SHORT).show() }
+                                        // Step 5c: its choices first (« Mettre Boys dans mon projet »).
+                                        songImport = set to heard
                                     },
                                     clearRemix = rhythmVm::clearRemix,
                                     // The project's ▶ and « Écouter » never sound together.
@@ -3232,6 +3247,8 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     setAt = rhythmVm::setRemixAt,
                                     setPadBars = rhythmVm::setRemixPadBars,
                                     splitVoice = rhythmVm::splitVoice,
+                                    drumsToKit = rhythmVm::drumsToKit,
+                                    bassToNotes = rhythmVm::bassToNotes,
                                     confirmPad = rhythmVm::confirmStemPad,
                                     dismissPadAsk = rhythmVm::dismissStemPadAsk,
                                     editCut = rhythmVm::editCut,
@@ -3585,8 +3602,37 @@ fun remixRows(p: Project, stems: com.pocketstudio.app.rhythm.StemOverview? = nul
     return listOf(folder) + com.pocketstudio.model.Remix.SHOWN_ORDER.map { i ->
         com.pocketstudio.app.session.TimelineRow(
             com.pocketstudio.model.Remix.stemKey(i), com.pocketstudio.app.remix.StemRouting.stemLabel(i), com.pocketstudio.app.remix.stemColor(i),
-            spans = spans, peaks = stems?.let { heardPeaks(it, i, r.startFrame(rate)) }, takeSteps = steps, takeStart = r.atStep,
+            // Step 5b: an edited stem shows its pieces where they play.
+            spans = if (r.stems.getOrNull(i)?.clips != null) p.remixStemSpans(i, seconds) else spans,
+            peaks = stems?.let { ov ->
+                r.stems.getOrNull(i)?.clips?.let { editedPeaks(ov, i, it, r.startFrame(rate).toDouble() / rate, r.heardEnd(seconds)) }
+                    ?: heardPeaks(ov, i, r.startFrame(rate))
+            },
+            takeSteps = steps, takeStart = r.atStep,
         )
+    }
+}
+
+/**
+ * Step 5b: an edited stem's peaks over the song's timeline from second [from] to [to] (its pieces
+ * where they play, faded, silence between), at the overview's resolution.
+ */
+internal fun editedPeaks(
+    ov: com.pocketstudio.app.rhythm.StemOverview, stem: Int, clips: List<com.pocketstudio.model.StemClip>, from: Double, to: Double,
+): FloatArray? {
+    val all = ov.peaks.getOrNull(stem) ?: return null
+    if (all.isEmpty() || ov.frames <= 0 || to <= from) return null
+    val per = ov.frames.toDouble() / com.pocketstudio.engine.OfflineExport.SAMPLE_RATE / all.size  // seconds a bucket
+    val n = ((to - from) / per).toInt().coerceIn(1, all.size * 4)
+    return FloatArray(n) { k ->
+        val t = from + (k + 0.5) * per
+        val c = clips.lastOrNull { t >= it.at && t < it.at + it.length } ?: return@FloatArray 0f
+        val src = c.from + (t - c.at)
+        val v = all.getOrElse((src / per).toInt()) { 0f }
+        var g = 1.0
+        if (c.fadeIn > 0 && t - c.at < c.fadeIn) g *= (t - c.at) / c.fadeIn
+        if (c.fadeOut > 0 && c.at + c.length - t < c.fadeOut) g *= (c.at + c.length - t) / c.fadeOut
+        (v * g).toFloat()
     }
 }
 
@@ -3940,6 +3986,11 @@ internal fun TimelineRoute(
             toggleSolo = vm::toggleSolo,
             toggleStemMute = vm::toggleStemMute,
             toggleStemSolo = vm::toggleStemSolo,
+            cutStem = vm::cutStemAt,
+            moveStemPiece = vm::moveStemPieceAt,
+            fadeStemPiece = vm::toggleStemFadeAt,
+            removeStemPiece = vm::removeStemPieceAt,
+            resetStem = vm::resetStem,
             setLoop = vm::setSongLoop,
             openLane = openLane,
             undo = vm::undo,

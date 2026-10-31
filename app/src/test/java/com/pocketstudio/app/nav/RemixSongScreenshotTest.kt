@@ -8,6 +8,8 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.longClick
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.pocketstudio.app.remix.SongInfo
 import com.pocketstudio.app.remix.StemStore
@@ -49,7 +51,7 @@ class RemixSongScreenshotTest {
     }
 
     /** A project with its beat and tracks, then « Boys » put in it after « Voix » alone was heard. */
-    private fun start() {
+    private fun start(edit: com.pocketstudio.app.rhythm.RhythmViewModel.() -> Unit = {}) {
         val dir = StemStore.dirFor(h.app, SET)
         dir.mkdirs()
         listOf("drums", "bass", "other", "vocals").forEach { File(dir, "$it.wav").writeBytes(ByteArray(44)) }
@@ -57,6 +59,7 @@ class RemixSongScreenshotTest {
         h.start(build = {
             songWithTracks()
             useSong(set, listOf(false, false, false, true))
+            edit()
         })
     }
 
@@ -70,6 +73,17 @@ class RemixSongScreenshotTest {
         compose.onRoot().captureRoboImage("screenshots/remix_song_sons.png")
     }
 
+    /** Step 5d: « Faire de la matière » under the song's four stems. */
+    @Test
+    fun matter() {
+        start()
+        open("tab_Sons")
+        open("sons_Remix")
+        compose.onNodeWithTag("remix_bass_notes").performScrollTo()
+        compose.waitForIdle()
+        compose.onRoot().captureRoboImage("screenshots/remix_matter.png")
+    }
+
     @Test
     fun structure() {
         start()
@@ -77,6 +91,28 @@ class RemixSongScreenshotTest {
         if (compose.onAllNodesWithTag("structure_timeline").fetchSemanticsNodes().isNotEmpty()) open("structure_timeline")
         h.awaitTag("timeline_header_${Remix.stemKey(3)}")
         compose.onRoot().captureRoboImage("screenshots/remix_song_structure.png")
+    }
+
+    /** Step 5b: the voice cut on bar 5, its second piece a bar later and faded in; a long press on its line edits it. */
+    @Test
+    fun structureEdits() {
+        start {
+            cutStemAt(3, 64)
+            moveStemPieceAt(3, 64, 1)
+            toggleStemFadeAt(3, 80, true)
+        }
+        open("tab_Structure")
+        if (compose.onAllNodesWithTag("structure_timeline").fetchSemanticsNodes().isNotEmpty()) open("structure_timeline")
+        h.awaitTag("timeline_header_${Remix.stemKey(3)}")
+        compose.onRoot().captureRoboImage("screenshots/remix_stem_edits.png")
+        val row = compose.onNodeWithTag("timeline_header_${Remix.stemKey(3)}").fetchSemanticsNode().boundsInRoot
+        val grid = compose.onNodeWithTag("timeline_grid").fetchSemanticsNode().boundsInRoot
+        compose.onNodeWithTag("timeline_grid").performTouchInput {
+            longClick(androidx.compose.ui.geometry.Offset(grid.width * 0.3f, row.center.y - grid.top))
+        }
+        compose.mainClock.advanceTimeBy(500)
+        compose.waitForIdle()
+        compose.onRoot().captureRoboImage("screenshots/remix_stem_edit_menu.png")
     }
 
     @Test

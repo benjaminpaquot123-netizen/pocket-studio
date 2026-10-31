@@ -151,6 +151,37 @@ class LiveDockTest {
         }
     }
 
+    /** Step 7c: on a tablet lying down, every column (the Remix last) fits, tools open beside the grid or folded. */
+    private fun allColumnsFit(p: Project, tab: LivePanelTab?) {
+        compose.setContent {
+            PocketStudioTheme { LiveScreen(LiveScreenUi(p, LiveState.on(0), clock = 5, playing = true), LiveActions(), initialTab = tab ?: LivePanelTab.Briques) }
+        }
+        val grid = compose.onNodeWithTag("live_grid").getBoundsInRoot()
+        liveColumnsOf(p).forEach { c ->
+            listOf("live_mute_${c.key}", "live_stop_${c.key}").forEach { tag ->
+                val b = compose.onNodeWithTag(tag).getBoundsInRoot()
+                assertTrue("$tab: $tag ends at ${b.right}, the grid at ${grid.right}", b.right <= grid.right + 0.5.dp)
+            }
+        }
+        compose.onNodeWithTag("live_columns_more").assertDoesNotExist()
+    }
+
+    @Test
+    @Config(qualifiers = "w1280dp-h800dp-land-mdpi")
+    fun everyColumnFitsATabletLyingDown() {
+        var many = six
+        repeat(2) { many = many.addTrack("Piste ${it + 2}")!! }
+        allColumnsFit(many, LivePanelTab.Effets)
+    }
+
+    @Test
+    @Config(qualifiers = "w1280dp-h800dp-land-mdpi")
+    fun everyColumnFitsATabletLyingDownToolsFolded() {
+        var many = six
+        repeat(2) { many = many.addTrack("Piste ${it + 2}")!! }
+        allColumnsFit(many, null)
+    }
+
     @Test
     @Config(qualifiers = "w316dp-h640dp-xxhdpi")
     fun tooManyColumnsSayTheyScroll() {

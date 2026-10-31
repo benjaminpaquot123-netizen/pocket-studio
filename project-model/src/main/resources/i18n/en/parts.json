@@ -69,5 +69,6 @@
   "6 sur le temps": "6 over the beat",
   "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Triplet: %1$d even hits over %2$d cells (the next cell is part of it)",
   "dans le triolet": "in the triplet",
-  "triolet, %1$d coups sur %2$d cases": "triplet, %1$d hits over %2$d cells"
+  "triolet, %1$d coups sur %2$d cases": "triplet, %1$d hits over %2$d cells",
+  "Fin (partie)": "End"
 }

@@ -875,7 +875,7 @@ internal fun RenameSceneDialog(index: Int, current: String, onDone: (String) -> 
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     Scene.SECTIONS.forEach { s ->
                         FilterChip(
-                            selected = name == s, onClick = { name = s }, label = { Text(tr(s)) },
+                            selected = name == s, onClick = { name = s }, label = { Text(Scene.sectionName(s)) },
                             colors = pillColors(), modifier = Modifier.testTag("section_$s"),
                         )
                     }

@@ -69,5 +69,6 @@
   "6 sur le temps": "6 over de tel",
   "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Triool: %1$d gelijke slagen over %2$d vakjes (het volgende vakje hoort erbij)",
   "dans le triolet": "in de triool",
-  "triolet, %1$d coups sur %2$d cases": "triool, %1$d slagen over %2$d vakjes"
+  "triolet, %1$d coups sur %2$d cases": "triool, %1$d slagen over %2$d vakjes",
+  "Fin (partie)": "Einde"
 }

@@ -62,12 +62,20 @@ data class Scene(
          * stays as it is. The label is saved in French so a project reads the same in every language.
          */
         fun shownLabel(label: String): String {
-            if (label in SECTIONS || label in DRUM_LABELS) return tr(label)
+            if (label in SECTIONS || label in DRUM_LABELS) return sectionName(label)
             if (label.endsWith(ENERGY_SUFFIX)) return shownLabel(label.removeSuffix(ENERGY_SUFFIX)) + ENERGY_SUFFIX
             val numbered = Regex("""^(.+) (\d+)$""").matchEntire(label) ?: return label
             val (section, n) = numbered.destructured
-            return if (section in SECTIONS) "${tr(section)} $n" else label
+            return if (section in SECTIONS) "${sectionName(section)} $n" else label
         }
+
+        /**
+         * A section's name in the interface's language. « Fin » the part has a word of its own
+         * (Japanese エンディング, as « Ajouter une fin » says), « Fin » the end of a sound or a take
+         * keeps its own (終了); French says « Fin » for both.
+         */
+        fun sectionName(section: String): String =
+            if (section == "Fin") tr("Fin (partie)").takeUnless { it == "Fin (partie)" } ?: section else tr(section)
 
         const val MAX_LABEL = 20
     }

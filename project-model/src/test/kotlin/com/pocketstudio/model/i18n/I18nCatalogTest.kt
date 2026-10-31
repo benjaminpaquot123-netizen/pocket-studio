@@ -388,6 +388,22 @@ class I18nCatalogTest {
     }
 
     @Test
+    fun theWordsOfTheTutoPanelAreTheInterfacesWords() {
+        // Step 7h: the Fin part in Japanese is エンディング (as « Ajouter une fin »), not the 終了 of a sound's end.
+        I18n.lang = Lang.JA
+        assertEquals("エンディング", com.pocketstudio.model.Scene.shownLabel("Fin"))
+        assertEquals("エンディング 2", com.pocketstudio.model.Scene.shownLabel("Fin 2"))
+        assertEquals("終了", tr("Fin"))
+        I18n.lang = Lang.FR
+        assertEquals("Fin 2", com.pocketstudio.model.Scene.shownLabel("Fin 2"))
+        // The tutos say what the buttons say: no 終了 for the part, no cegiełka in Polish, no हिस्सा in Hindi.
+        val ja = I18n.AREAS.filter { it.startsWith("tuto") }.flatMap { I18n.area(Lang.JA, it).values }
+        assertTrue(ja.none { "終了" in it })
+        assertTrue(I18n.area(Lang.PL, "tuto").values.none { "cegieł" in it.lowercase() })
+        assertTrue(I18n.area(Lang.HI, "tuto").values.none { "हिस्स" in it })
+    }
+
+    @Test
     fun aFrenchTextHasOneTranslationAcrossAreas() {
         // The areas are merged: the same key with two meanings would show the wrong one somewhere.
         translated.forEach { lang ->

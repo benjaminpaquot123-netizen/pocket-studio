@@ -365,10 +365,10 @@ object NativeEngine {
         else -> 0
     }
     /**
-     * Phase 37: the steps pad [lane]'s lane loops over on its own (1..64, a polyrhythm); 0 = the
+     * Phase 37: the steps pad [lane]'s lane loops over on its own (1..256, a polyrhythm); 0 = the
      * pattern's length, as always. Follows [setStaging] (a scene's own).
      */
-    fun setDrumLaneSteps(lane: Int, steps: Int) = post(CMD_DRUM_LANE_STEPS, steps.coerceIn(0, 64).toFloat(), lane)
+    fun setDrumLaneSteps(lane: Int, steps: Int) = post(CMD_DRUM_LANE_STEPS, steps.coerceIn(0, 256).toFloat(), lane)
     /**
      * After [setDrumHit] (which resets it to always): the chance (0..1) the hit and its roll play on
      * each pass, drawn from the seed ([setDrumSeed]), the pad and the step's place in the song, the

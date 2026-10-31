@@ -177,7 +177,7 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetDrumLaneSteps:
             if (command.a >= 0 && command.a < kLanes && std::isfinite(command.value)) {
                 const int n = std::clamp(static_cast<int>(std::lround(command.value)), 0, kMaxSteps);
-                (staging_ ? staged_.laneSteps : laneSteps_)[command.a] = static_cast<uint8_t>(n);
+                (staging_ ? staged_.laneSteps : laneSteps_)[command.a] = static_cast<uint16_t>(n);
             }
             break;
         case CommandType::SetDrumStepChance:

@@ -27,9 +27,27 @@ class LiveCellsTest {
         assertEquals(3, LiveCells.bars(0.0, 3 * 16 - 6.0, 16))  // a hair early: three bars
         assertEquals(3, LiveCells.bars(0.0, 3 * 12 + 1.0, 12))  // 3/4
         assertEquals(40, LiveCells.bars(0.0, 40 * 16.0, 16))  // as long as it lasts
-        // A loop holds 16 bars of notes (4 of drums): a longer recording keeps its last bars.
+        // A loop holds 16 bars of notes and, since step 7a, of drums: a longer recording keeps its last bars.
         assertEquals(16, LiveCells.keptBars(SongPart.inst(0), 40, 16))
-        assertEquals(4, LiveCells.keptBars(SongPart.DRUMS, 40, 16))
+        assertEquals(16, LiveCells.keptBars(SongPart.DRUMS, 40, 16))
+        assertEquals(10, LiveCells.keptBars(SongPart.DRUMS, 10, 16))
+    }
+
+    @Test
+    fun aDrumCellKeepsTenBarsPlayedAndTheEngineIsSentThemAll() {
+        // Step 7a: before, a drum cell kept only its last 4 bars.
+        val hits = listOf(PlayedMemory.KeptHit(0, 1f, 0.0), PlayedMemory.KeptHit(1, 0.7f, 150.0))
+        val p = twoScenes().withRecordedCell(SongPart.DRUMS, 1, emptyList(), hits, 0.0, 10 * 16.0)!!
+        val drums = p.allScenes[1].drums
+        assertEquals(160, drums.steps)
+        assertEquals(1f, drums.lanes[0].hits.getValue(0).velocity)
+        assertEquals(0.7f, drums.lanes[1].hits.getValue(150).velocity)
+        // A sync sends every step the loop plays, and never less than before (64).
+        assertEquals(160, drums.engineReach)
+        assertEquals(DrumPattern.SYNC_STEPS, DrumPattern().engineReach)
+        assertEquals(200, DrumPattern().withLaneLength(3, 200).engineReach)
+        // Saved and reopened as it is.
+        assertEquals(drums, ProjectJson.decode(ProjectJson.encode(p)).allScenes[1].drums)
     }
 
     @Test
@@ -57,11 +75,11 @@ class LiveCellsTest {
     fun padsPlayedGoIntoTheDrumCell() {
         val p = twoScenes()
         val hits = listOf(PlayedMemory.KeptHit(1, 0.9f, 16.0), PlayedMemory.KeptHit(2, 0.5f, 20.2), PlayedMemory.KeptHit(1, 0.9f, 16.0 + 64.0 + 3.0))
-        val out = p.withRecordedCell(SongPart.DRUMS, 1, emptyList(), hits, origin = 16.0, end = 16.0 + 6 * 16.0)!!
+        val out = p.withRecordedCell(SongPart.DRUMS, 1, emptyList(), hits, origin = 16.0, end = 16.0 + 20 * 16.0)!!
         val d = out.allScenes[1].drums
-        // Six bars played: the drum loop holds four, the last four (bars 3 to 6).
-        assertEquals(64, d.steps)
-        assertEquals(setOf(32 + 3), d.lanes[1].hits.keys)  // the one played in bar 5
+        // Twenty bars played: the drum loop holds sixteen, the last sixteen (bars 5 to 20).
+        assertEquals(256, d.steps)
+        assertEquals(setOf(3), d.lanes[1].hits.keys)  // the one played in bar 5
         assertTrue(d.lanes[2].hits.isEmpty())  // played in bar 1: before the bars kept
         // A recording of the bars in time.
         val two = p.withRecordedCell(SongPart.DRUMS, 1, emptyList(), hits.take(2), origin = 16.0, end = 48.0)!!.allScenes[1].drums

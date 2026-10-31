@@ -76,7 +76,7 @@ class SaveSafetyTest {
 
     private fun damaged(): String {
         // Another scene of a file edited by hand: loops of no length, lengths out of range, a path.
-        val bad = """{"name":"B","drums":{"steps":200,"lanes":[{"hits":{"0":{"velocity":1.0,"repeats":99}},"sample":{"file":"../../x","name":"x"}}]},
+        val bad = """{"name":"B","drums":{"steps":999,"lanes":[{"hits":{"0":{"velocity":1.0,"repeats":99}},"sample":{"file":"../../x","name":"x"}}]},
             "acid":{"length":-1,"steps":[{"gate":true},{"gate":true},{"gate":true}]},
             "synthNotes":{"steps":0,"notes":[{"start":0,"length":24,"pitch":300},{"start":-5,"length":24,"pitch":60}]}}"""
         return """{"name":"Abîmé","scenes":[{"name":"A"},$bad],"scene":0,"song":[{"scene":0},{"scene":1}]}"""

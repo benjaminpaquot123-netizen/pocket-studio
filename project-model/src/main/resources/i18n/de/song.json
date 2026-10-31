@@ -405,5 +405,8 @@
   "Sans fondu au début": "Kein Fade-in",
   "Sans fondu à la fin": "Kein Fade-out",
   "Enlever ce bout": "Dieses Stück entfernen",
-  "Remettre %s comme au départ": "%s wie am Anfang"
+  "Remettre %s comme au départ": "%s wie am Anfang",
+  "Chante ou joue au micro. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Sing oder spiel ins Mikro. Tippe das Feld erneut an, um zu stoppen: Die Schleife rastet auf den Takt ein.",
+  "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Spiel auf den Noten: Sie klingen auf der Acid 303. Tippe das Feld erneut an, um zu stoppen: Die Schleife rastet auf den Takt ein.",
+  "Le micro ne répond pas : réessaie.": "Das Mikro antwortet nicht: Versuch es noch einmal."
 }

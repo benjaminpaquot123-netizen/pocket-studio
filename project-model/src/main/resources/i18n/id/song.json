@@ -405,5 +405,8 @@
   "Sans fondu au début": "Tanpa fade-in",
   "Sans fondu à la fin": "Tanpa fade-out",
   "Enlever ce bout": "Hapus potongan ini",
-  "Remettre %s comme au départ": "Kembalikan %s seperti semula"
+  "Remettre %s comme au départ": "Kembalikan %s seperti semula",
+  "Chante ou joue au micro. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Bernyanyi atau mainkan ke mik. Ketuk kotaknya lagi untuk berhenti: loop-nya pas di birama.",
+  "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Mainkan not: bunyinya di Acid 303. Ketuk kotaknya lagi untuk berhenti: loop-nya pas di birama.",
+  "Le micro ne répond pas : réessaie.": "Mik tidak merespons: coba lagi."
 }

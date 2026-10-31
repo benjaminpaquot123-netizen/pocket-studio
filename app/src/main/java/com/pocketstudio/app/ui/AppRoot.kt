@@ -3694,6 +3694,8 @@ fun liveActionsOf(
     cellLibrary: (String, Int) -> Unit = { _, _ -> },
     /** Lot 4d: a touch on the bar's tempo (the tempo sheet). */
     openTempo: () -> Unit = {},
+    /** Step 7b: « Jouer et enregistrer ici » (an audio cell asks for the microphone first). */
+    recordCell: (String, Int) -> Unit = vm::recordCell,
 ): com.pocketstudio.app.live.LiveActions = com.pocketstudio.app.live.LiveActions(
     back = back,
     nudgeTempo = vm::nudgeTempo,
@@ -3737,7 +3739,7 @@ fun liveActionsOf(
     setFxSettings = vm::setLiveFxSettings,
     setInsertParam = vm::setInsertParam,
     // Lot 4b: an empty cell filled from the Live page.
-    recordCell = vm::recordCell,
+    recordCell = recordCell,
     stopCellRecording = vm::stopCellRecording,
     cellFromLibrary = cellLibrary,
     copyCell = vm::copyCell,
@@ -3762,6 +3764,17 @@ internal fun LiveRoute(
     /** Lot 4b: the sound browser for an empty cell (track key, brick). */
     cellLibrary: (String, Int) -> Unit = { _, _ -> },
 ) = LiveStateHost(vm, lifecycleOwner, liveEditing) { ui, pads ->
+    // Step 7b: an audio cell records the microphone: the permission first (the cell waits here).
+    val context = androidx.compose.ui.platform.LocalContext.current
+    var micCell by rememberSaveable { mutableStateOf<String?>(null) }
+    val micAsk = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        com.pocketstudio.app.live.LiveCell.read(micCell)?.let { if (granted) vm.recordCell(it.key, it.scene) }
+        micCell = null
+    }
+    val recordCell: (String, Int) -> Unit = { key, scene ->
+        if (com.pocketstudio.model.LiveCells.kindOf(key) != com.pocketstudio.model.LiveCells.Kind.AUDIO || hasMic(context)) vm.recordCell(key, scene)
+        else { micCell = com.pocketstudio.app.live.LiveCell(key, scene).save(); micAsk.launch(Manifest.permission.RECORD_AUDIO) }
+    }
     // Lot 4d: the tempo in the page's own bar, its sheet here (as on the pads' full screen).
     var tempoOpen by rememberSaveable { mutableStateOf(false) }
     if (tempoOpen) {
@@ -3771,7 +3784,7 @@ internal fun LiveRoute(
     com.pocketstudio.app.live.LiveScreen(
         ui,
         liveActionsOf(
-            vm, back = close, openEffects = openEffects, cellLibrary = cellLibrary, openTempo = { tempoOpen = true },
+            vm, back = close, openEffects = openEffects, cellLibrary = cellLibrary, openTempo = { tempoOpen = true }, recordCell = recordCell,
             togglePlay = {
                 // ▶ here plays what the grid shows: the scene, not the song.
                 if (ui.playing) vm.togglePlay() else vm.launchRow(ui.project.scene)

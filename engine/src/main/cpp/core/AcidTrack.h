@@ -46,6 +46,10 @@ public:
     // Called by the sequencer for each 16th step at `frameOffset` in the coming block.
     void onStep(int frameOffset, int step, double samplesPerStep);
     void stop();
+    // Step 7b: a key played live on the 303 (Live › Notes while a 303 cell records), at the coming
+    // block's start: held until the next live key (a slide into it, legato as the machine) or
+    // key < 0 (let go). While a key is held the sequenced steps stay silent: the player has the voice.
+    void liveNote(int key, bool accent);
     // Adds the bass into a mono buffer.
     void render(float* mono, int numFrames);
 
@@ -83,6 +87,7 @@ private:
     PendingEvent pending_;
     int releaseCountdown_ = -1;
     bool sounding_ = false;
+    int liveKey_ = -1;  // the key held live (liveNote), -1: none
     uint32_t notesPlayed_ = 0;
 };
 

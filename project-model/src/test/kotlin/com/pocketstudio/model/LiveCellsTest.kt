@@ -67,8 +67,47 @@ class LiveCellsTest {
         assertEquals(0, out.scene)
         // Nothing of that track played: nothing to write.
         assertNull(p.withRecordedCell(SongPart.inst(0), 1, listOf(note(70, 33.0, track = 5)), emptyList(), 32.0, 48.0))
-        // The 303 and audio cells are not played into from here.
+        // A 303 cell takes only the notes played on the 303 (step 7b), none here.
         assertNull(p.withRecordedCell(SongPart.ACID, 1, notes, emptyList(), 32.0, 48.0))
+    }
+
+    @Test
+    fun notesPlayedOnThe303BecomeItsSteps() {
+        // Step 7b: every kind of track records but the remix.
+        assertTrue(LiveCells.canRecord(SongPart.ACID))
+        assertTrue(LiveCells.canRecord(SongPart.audio(0)))
+        assertFalse(LiveCells.canRecord(SongPart.REMIX))
+        val p = twoScenes()
+        val acid = { pitch: Int, at: Double, length: Double, velocity: Float -> PlayedMemory.KeptNote(LiveCells.ACID_TRACK, pitch, velocity, at, length) }
+        // From bar 2 (step 16): the root a hair early, a fifth up held into the octave (a slide), the octave hard (an accent).
+        val notes = listOf(acid(36, 15.9, 1.0, 0.6f), acid(43, 20.0, 4.2, 0.6f), acid(48, 24.0, 1.0, 0.95f), note(70, 22.0))
+        val out = p.withRecordedCell(SongPart.ACID, 0, notes, emptyList(), 16.0, 32.0)!!.allScenes[0].acid
+        assertEquals(16, out.length)
+        assertEquals(AcidStep(note = 0, octave = 0, gate = true), out.steps[0])
+        assertEquals(AcidStep(note = 7, octave = 0, slide = true, gate = true), out.steps[4])
+        assertEquals(AcidStep(note = 0, octave = 1, accent = true, gate = true), out.steps[8])
+        assertEquals(3, out.steps.count { it.gate })
+        // Played far above the 303's range: brought down by octaves; 12 bars played: the last 8 kept (its longest loop).
+        val high = LiveCells.acidSteps(listOf(acid(36 + 50, 0.0, 1.0, 0.5f)), 0.0, 16, 36)[0]
+        assertEquals(36 + 50 - 24, 36 + high.note + 12 * high.octave)
+        assertEquals(8, LiveCells.keptBars(SongPart.ACID, 12, 16))
+    }
+
+    @Test
+    fun aMicrophoneTakeIsCutOnItsBars() {
+        val key = SongPart.audio(0)
+        // 120 BPM at 48 kHz: 6000 frames a sixteenth. Heard from step 10; the first sound at step 16.2 (bar 2, a hair late).
+        val fps = 6000.0
+        val cut = LiveCells.micCut(key, 10.0, (6.0 + 31.5) .let { (it * fps).toInt() }, (6.2 * fps).toInt(), fps, 16)!!
+        assertEquals(2, cut.bars)  // 16.2 → 47.5: two bars, the nearest
+        assertEquals((6 * fps).toInt(), cut.fromFrame)  // bar 2 starts 6 steps into the take
+        assertEquals((32 * fps).toInt(), cut.frames)
+        // Ended early: silence after; started late on its bar line: silence before.
+        val data = FloatArray(10) { 1f }
+        assertEquals(listOf(0f, 1f, 1f), LiveCells.cutMic(data, LiveCells.MicCut(-1, 3, 1)).toList())
+        assertEquals(listOf(1f, 0f), LiveCells.cutMic(data, LiveCells.MicCut(9, 2, 1)).toList())
+        // Nothing heard: nothing to cut.
+        assertNull(LiveCells.micCut(key, 0.0, 1000, -1, fps, 16))
     }
 
     @Test

@@ -405,5 +405,8 @@
   "Sans fondu au début": "Giriş fade'i yok",
   "Sans fondu à la fin": "Çıkış fade'i yok",
   "Enlever ce bout": "Bu parçayı kaldır",
-  "Remettre %s comme au départ": "%s ilk hâline dönsün"
+  "Remettre %s comme au départ": "%s ilk hâline dönsün",
+  "Chante ou joue au micro. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Mikrofona şarkı söyle ya da çal. Durdurmak için kutuya tekrar dokun: döngü ölçüye oturur.",
+  "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Notaları çal: Acid 303'te çalarlar. Durdurmak için kutuya tekrar dokun: döngü ölçüye oturur.",
+  "Le micro ne répond pas : réessaie.": "Mikrofon yanıt vermiyor: yeniden dene."
 }

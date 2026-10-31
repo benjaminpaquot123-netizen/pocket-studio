@@ -405,5 +405,8 @@
   "Sans fondu au début": "Niet infaden",
   "Sans fondu à la fin": "Niet uitfaden",
   "Enlever ce bout": "Dit stuk weghalen",
-  "Remettre %s comme au départ": "%s terugzetten zoals eerst"
+  "Remettre %s comme au départ": "%s terugzetten zoals eerst",
+  "Chante ou joue au micro. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Zing of speel in de microfoon. Tik het vak opnieuw aan om te stoppen: de loop valt op de maat.",
+  "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Speel op de noten: ze klinken op de Acid 303. Tik het vak opnieuw aan om te stoppen: de loop valt op de maat.",
+  "Le micro ne répond pas : réessaie.": "De microfoon reageert niet: probeer het opnieuw."
 }

@@ -405,5 +405,8 @@
   "Sans fondu au début": "بدون Fade-in",
   "Sans fondu à la fin": "بدون Fade-out",
   "Enlever ce bout": "إزالة هذه القطعة",
-  "Remettre %s comme au départ": "إعادة %s كما كانت"
+  "Remettre %s comme au départ": "إعادة %s كما كانت",
+  "Chante ou joue au micro. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "غنِّ أو اعزف أمام الميكروفون. المس الخانة مجددًا للإيقاف: تنضبط الحلقة على المازورة.",
+  "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "اعزف على النوتات: تُسمع على Acid 303. المس الخانة مجددًا للإيقاف: تنضبط الحلقة على المازورة.",
+  "Le micro ne répond pas : réessaie.": "الميكروفون لا يستجيب: حاول مجددًا."
 }

@@ -212,6 +212,8 @@ enum class CommandType : uint8_t {
     // b: the value (frames of the song as separated); CommitStemClips: a = stem, b = pieces (-1: none).
     SetStemClip = 144,
     CommitStemClips = 145,
+    // Step 7b: a = MIDI key played live on the 303 (< 0: let go), value: velocity (accent above 0.8).
+    AcidLiveNote = 146,
 };
 static_assert(static_cast<int>(CommandType::SetPadVoiceParam) < 100, "the commands in order must stay under SetKitVersion");
 static_assert(static_cast<int>(CommandType::SetDrumStepOffset) == 80, "NativeEngine.kt numbers the phase 34 commands from 80");

@@ -405,5 +405,8 @@
   "Sans fondu au début": "Bez fade-in",
   "Sans fondu à la fin": "Bez fade-out",
   "Enlever ce bout": "Usuń ten fragment",
-  "Remettre %s comme au départ": "Przywróć %s do początku"
+  "Remettre %s comme au départ": "Przywróć %s do początku",
+  "Chante ou joue au micro. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Śpiewaj lub graj do mikrofonu. Dotknij pola ponownie, by zatrzymać: pętla dopasuje się do taktu.",
+  "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Graj na nutach: brzmią na Acid 303. Dotknij pola ponownie, by zatrzymać: pętla dopasuje się do taktu.",
+  "Le micro ne répond pas : réessaie.": "Mikrofon nie odpowiada: spróbuj jeszcze raz."
 }

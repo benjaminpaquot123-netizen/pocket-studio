@@ -405,5 +405,8 @@
   "Sans fondu au début": "페이드 인 없음",
   "Sans fondu à la fin": "페이드 아웃 없음",
   "Enlever ce bout": "이 조각 빼기",
-  "Remettre %s comme au départ": "%s 처음대로 되돌리기"
+  "Remettre %s comme au départ": "%s 처음대로 되돌리기",
+  "Chante ou joue au micro. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "마이크에 대고 노래하거나 연주해요. 멈추려면 칸을 다시 탭하세요: 루프가 마디에 맞춰져요.",
+  "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "노트를 연주해요: Acid 303으로 소리 나요. 멈추려면 칸을 다시 탭하세요: 루프가 마디에 맞춰져요.",
+  "Le micro ne répond pas : réessaie.": "마이크가 응답하지 않아요: 다시 해 보세요."
 }

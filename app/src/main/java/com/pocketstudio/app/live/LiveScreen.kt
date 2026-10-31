@@ -121,6 +121,7 @@ import com.pocketstudio.model.LiveDivision
 import com.pocketstudio.model.LiveFxSettings
 import com.pocketstudio.model.LiveState
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.LiveCells
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SongPart
 import com.pocketstudio.model.allScenes
@@ -384,7 +385,11 @@ fun LiveScreen(
     val copyTarget = LiveCell.read(copyInto)
     val trackName: (String) -> String = { key -> columns.firstOrNull { it.key == key }?.name ?: "" }
     // Recording a cell: the panel shows what to play on (the notes, or the drum pads there).
-    LaunchedEffect(ui.cellRecording) { if (ui.cellRecording != null) { tab = LivePanelTab.Notes; panelOpen = true } }
+    // An audio cell records the microphone: nothing to play on, the grid stays as it is.
+    LaunchedEffect(ui.cellRecording) {
+        val rec = ui.cellRecording
+        if (rec != null && LiveCells.kindOf(rec.key) != LiveCells.Kind.AUDIO) { tab = LivePanelTab.Notes; panelOpen = true }
+    }
     val cellTap: (LiveColumn, Int, Boolean) -> Unit = { c, scene, hasContent ->
         val rec = ui.cellRecording
         when {

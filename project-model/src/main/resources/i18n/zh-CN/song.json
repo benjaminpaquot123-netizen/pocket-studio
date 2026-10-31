@@ -405,5 +405,8 @@
   "Sans fondu au début": "不淡入",
   "Sans fondu à la fin": "不淡出",
   "Enlever ce bout": "移除这一段",
-  "Remettre %s comme au départ": "把%s恢复原样"
+  "Remettre %s comme au départ": "把%s恢复原样",
+  "Chante ou joue au micro. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "对着麦克风唱或演奏。再点一次格子就停止:循环会对齐到小节。",
+  "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "演奏音符:它们在 Acid 303 上发声。再点一次格子就停止:循环会对齐到小节。",
+  "Le micro ne répond pas : réessaie.": "麦克风没有响应:再试一次。"
 }

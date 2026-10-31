@@ -113,6 +113,10 @@ void AcidTrack::applyAutomated() {
 }
 
 void AcidTrack::onStep(int frameOffset, int step, double samplesPerStep) {
+    if (liveKey_ >= 0) {
+        previousSlide_ = false;
+        return;
+    }
     const int index = step % length_;
     const AcidStep& s = steps_[static_cast<size_t>(index)];
     if (!s.gate) {
@@ -133,7 +137,22 @@ void AcidTrack::onStep(int frameOffset, int step, double samplesPerStep) {
     previousSlide_ = holdIntoNext;
 }
 
+void AcidTrack::liveNote(int key, bool accent) {
+    if (key < 0) {
+        if (liveKey_ >= 0 && sounding_) releaseCountdown_ = 1;
+        liveKey_ = -1;
+        return;
+    }
+    pending_.offset = 0;
+    pending_.key = std::clamp(key, 0, 127);
+    pending_.accent = accent;
+    pending_.slide = liveKey_ >= 0 && sounding_;
+    pending_.releaseAfter = -1;
+    liveKey_ = pending_.key;
+}
+
 void AcidTrack::stop() {
+    liveKey_ = -1;
     pending_.offset = -1;
     if (automatedAt_ >= 0) applyAutomated();
     releaseCountdown_ = 1;

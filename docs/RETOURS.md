@@ -183,3 +183,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - 2026-11-01 (APK 234) · Tuto : « Le menu kick était fermé or c'est celui où on doit bosser. » Règle de Benjamin : chaque erreur signalée doit être vérifiée partout. Noté n° 19.
 - 2026-11-01 (APK 234, vidéo) · « Je clique sur Montre-moi mais le programme ne prend pas la peine de descendre. Il fait l'action rapidement. Il faudra que l'action Montre-moi soit parfaite. » Noté n° 20.
 - 2026-11-01 (APK 234) · Comment jouer piste par piste ? Réponse : S (solo). Benjamin : « C'est pas mieux de mettre un baffle et un baffle barré ? C'est pas intuitif surtout en mode simple. » Noté n° 21.
+- 2026-11-01 · « Faire de la matière c'est bizarre comme terme. Je sais même pas ce que ça veut dire. » Noté n° 22.

@@ -28,6 +28,7 @@ import com.pocketstudio.model.cellHasContent
 import com.pocketstudio.ui.PocketStudioTheme
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -136,6 +137,72 @@ class LiveCellJourneyTest {
         assertFalse(vm.project.value.cellHasContent(SongPart.inst(0), 1))
         vm.redo()
         assertEquals(clip.notes, reopened(vm).allScenes[1].synthNotes.notes)
+    }
+
+    @Test
+    fun notesPlayedIntoA303CellBecomeItsSteps() {
+        // Step 7b: « Jouer et enregistrer ici » on the 303 (it was greyed out): Live › Notes plays the 303.
+        val vm = open()
+        show(vm)
+        vm.playedClockForTest = 14.0
+        compose.onNodeWithTag("live_pad_${SongPart.ACID}_0").performClick()
+        compose.onNodeWithTag("live_cell_record").performClick()
+        compose.waitForIdle()
+        assertEquals(CellRecording(SongPart.ACID, 0), vm.cellRecording.value)
+        vm.playedClockForTest = 16.0; vm.liveNoteOn(0, 36, 0.6f)
+        vm.playedClockForTest = 17.0; vm.liveNoteOff(0, 36)
+        vm.playedClockForTest = 24.0; vm.liveNoteOn(0, 43, 0.95f)
+        vm.playedClockForTest = 25.0; vm.liveNoteOff(0, 43)
+        vm.playedClockForTest = 32.0
+        compose.onNodeWithTag("live_pad_${SongPart.ACID}_0").performClick()
+        compose.waitForIdle()
+        val acid = vm.project.value.allScenes[0].acid
+        assertEquals(16, acid.length)
+        assertEquals(listOf(0, 8), acid.steps.indices.filter { acid.steps[it].gate })
+        assertTrue(acid.steps[8].accent)
+        // The synth's notes of brick A are untouched; one undo step.
+        assertEquals(2, vm.project.value.allScenes[0].synthNotes.notes.size)
+        vm.undo()
+        assertFalse(vm.project.value.cellHasContent(SongPart.ACID, 0))
+    }
+
+    @Test
+    fun theMicrophoneGoesIntoAnAudioCellOnItsBars() {
+        // Step 7b: an audio cell records the microphone (here a take given by the test).
+        com.pocketstudio.engine.NativeEngine.sink = com.pocketstudio.app.human.BenchEngine()
+        val vm = open()
+        vm.addAudioTrack()
+        show(vm)
+        val key = SongPart.audio(vm.project.value.audioTracks.first().id)
+        val rate = 48_000
+        val perStep = rate * 15.0 / vm.project.value.tempoBpm
+        // Heard from step 12, a sound from step 16 to the end, 2 bars and a bit.
+        val data = FloatArray((38 * perStep).toInt()) { i -> if (i >= (4 * perStep).toInt()) 0.3f * kotlin.math.sin(i * 0.05f) else 0f }
+        vm.cellMicForTest = Pcm(data, 1, rate) to 12.0
+        compose.onNodeWithTag("live_pad_${key}_1").performClick()
+        compose.onNodeWithTag("live_cell_record").performClick()
+        compose.waitForIdle()
+        assertEquals(CellRecording(key, 1), vm.cellRecording.value)
+        vm.stopCellRecording()
+        until("the take never reached the cell") { vm.project.value.cellHasContent(key, 1) }
+        val clip = vm.project.value.audioTracks.firstNotNullOf { it.clip }
+        assertEquals(32, clip.loopSteps)  // two whole bars from bar 2
+        assertEquals(32 * perStep / rate, clip.seconds, 0.01)
+        // Step 7e: « Garder dans ma bibliothèque » from the clip, then from a live pad playing the same file.
+        val kept = { kotlinx.coroutines.runBlocking { com.pocketstudio.app.library.MySoundLibrary.refresh(app) }.size }
+        val before = kept()
+        assertTrue(vm.keepAudioClipInLibrary(vm.project.value.audioTracks.first { it.clip != null }.id))
+        until("the clip never reached the library") { kept() == before + 1 }
+        until("nothing said") { vm.notice.value != null }
+        assertFalse(vm.keepLivePadInLibrary(5))  // an empty pad: nothing
+        assertTrue(vm.placeOnLivePad(5, Pcm(FloatArray(4800) { 0.2f }, 1, rate), "Mon pad", oneShot = true))
+        until("the pad never got its sound") { vm.project.value.live.clips.getOrNull(5) != null }
+        assertTrue(vm.keepLivePadInLibrary(5))
+        until("the live pad never reached the library") { kept() == before + 2 }
+        // Kept outside the project: undoing the pad, then the cell, leaves the library as it is.
+        vm.undo(); vm.undo()
+        assertFalse(vm.project.value.cellHasContent(key, 1))
+        assertEquals(before + 2, kept())
     }
 
     @Test

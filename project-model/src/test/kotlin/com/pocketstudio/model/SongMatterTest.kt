@@ -62,6 +62,22 @@ class SongMatterTest {
     }
 
     @Test
+    fun aSungMelodyBecomesNotes() {
+        // Step 7f: a voice (a few harmonics, as sung) A3, E4, A4 then silence, a rest.
+        val step = 6000.0
+        val x = FloatArray((14 * step).toInt())
+        val voice = { hz: Double -> { t: Double -> 0.3 * sin(2 * PI * hz * t) + 0.15 * sin(4 * PI * hz * t) + 0.07 * sin(6 * PI * hz * t) } }
+        add(x, 0.0, 4 * step / rate, voice(220.0))                 // A3 (57)
+        add(x, 4 * step / rate, 2 * step / rate, voice(329.63))    // E4 (64)
+        add(x, 6 * step / rate, 4 * step / rate, voice(440.0))     // A4 (69)
+        val notes = SongMatter.voiceNotes(x, rate, step, 12)
+        val t = NoteClip.TICKS_PER_STEP
+        assertEquals(listOf(Note(0, 4 * t, 57), Note(4 * t, 2 * t, 64), Note(6 * t, 4 * t, 69)), notes)
+        // The bass's range is not the voice's: the same melody gives no bass notes up there.
+        assertTrue(SongMatter.bassNotes(x, rate, step, 12).none { it.pitch > 64 })
+    }
+
+    @Test
     fun theBassLineOnTheAcid303() {
         val t = NoteClip.TICKS_PER_STEP
         val steps = SongMatter.acidSteps(listOf(Note(0, 2 * t, 33), Note(4 * t, t, 48)), 16, 36)

@@ -848,6 +848,33 @@ void testAcidNotesStartOnTheStep() {
     CHECK(peak > 0.1f && peak < 1.0f);
 }
 
+void testAcidLiveNoteHoldsOverRests() {
+    // Step 7b: a key held live on the 303 sounds at once and keeps sounding over the line's rests
+    // (it used to let go on the next rest); a second key slides into it; let go, it dies away.
+    ps::AcidTrack acid;
+    acid.prepare(kRate);
+    acid.setLength(16);  // all rests
+    acid.liveNote(48, false);
+    auto held = renderAcid(acid, 4);
+    CHECK(acid.notesPlayed() == 1);
+    float late = 0.0f;
+    for (int i = 18000; i < 24000; ++i) late = std::max(late, std::fabs(held[static_cast<size_t>(i)]));
+    CHECK(late > 0.02f);  // step 3, still held
+    acid.liveNote(55, true);
+    renderAcid(acid, 1);
+    CHECK(acid.notesPlayed() == 2);
+    acid.liveNote(-1, false);
+    renderAcid(acid, 4);
+    const auto after = renderAcid(acid, 2);
+    float tail = 0.0f;
+    for (float v : after) tail = std::max(tail, std::fabs(v));
+    CHECK(tail < 0.01f);
+    // The line plays again once let go.
+    acid.setStep(0, note(0));
+    renderAcid(acid, 16);
+    CHECK(acid.notesPlayed() == 3);
+}
+
 void testAcidAccentIsLouder() {
     // Measured on the voice itself (no saturation), as energy over the note.
     auto rmsOf = [](bool accent) {
@@ -8159,6 +8186,7 @@ int main(int argc, char** argv) {
         {"toms_have_body", testTomsHaveBody},
         {"acid_step_packing", testAcidStepPacking},
         {"acid_notes_on_step", testAcidNotesStartOnTheStep},
+        {"acid_live_note", testAcidLiveNoteHoldsOverRests},
         {"acid_accent", testAcidAccentIsLouder},
         {"acid_drive_leaves_no_dc", testAcidDriveLeavesNoDc},
         {"acid_slide", testAcidSlideHoldsTheNote},

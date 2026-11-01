@@ -110,6 +110,7 @@ object NativeEngine {
     private const val CMD_RECORD_MUTE_AT = 143
     private const val CMD_STEM_CLIP = 144
     private const val CMD_COMMIT_STEM_CLIPS = 145
+    private const val CMD_ACID_LIVE_NOTE = 146
     /** Pieces a stem's edits hold at most (the engine's StemPlayer::kMaxClips). */
     const val MAX_STEM_CLIPS = 32
 
@@ -424,6 +425,8 @@ object NativeEngine {
     fun setAcidRoot(midiNote: Int) = post(CMD_SET_ACID_ROOT, 0f, midiNote)
     /** [param] in AcidTrack::Param order, [value] 0..1. */
     fun setAcidParam(param: Int, value: Float) = post(CMD_SET_ACID_PARAM, value, param)
+    /** Step 7b: MIDI key [key] played live on the 303 (held, a slide into the next one), [key] < 0 lets go; accent above 0.8. */
+    fun acidLiveNote(key: Int, velocity: Float = 0.7f) = post(CMD_ACID_LIVE_NOTE, velocity, key)
 
     fun synthNoteOn(note: Int, velocity: Float, track: Int = 0) = post(CMD_SYNTH_NOTE_ON, velocity, onTrack(track, note))
     fun synthNoteOff(note: Int, track: Int = 0) = post(CMD_SYNTH_NOTE_OFF, 0f, onTrack(track, note))

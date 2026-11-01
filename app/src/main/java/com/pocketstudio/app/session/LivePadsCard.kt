@@ -100,6 +100,8 @@ class LivePadsActions(
     val setOneShot: (Int, Boolean) -> Unit = { _, _ -> },
     val setGain: (Int, Float) -> Unit = { _, _ -> },
     val clear: (Int) -> Unit = {},
+    /** Step 7e: « Garder » a pad's sound in « Ma bibliothèque ». */
+    val keep: (Int) -> Unit = {},
     /** The effects box of the live pads' strip (shared with the remix), null: no button. */
     val effects: (() -> Unit)? = null,
     /** The pads on the whole screen, to play them live (null: no button). */

@@ -2502,6 +2502,45 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         return true
     }
 
+    /**
+     * Step 7e: « Garder dans ma bibliothèque » from audio track [trackId]'s clip (a take, a sound put
+     * in a Live cell): its sound file as it plays, for every project; the project does not change.
+     */
+    fun keepAudioClipInLibrary(trackId: Int): Boolean {
+        val clip = project.value.audioTracks.firstOrNull { it.id == trackId }?.clip ?: return false
+        keepFileInLibrary(clip.file, clip.name, null, clip.bpm)
+        return true
+    }
+
+    /** Step 7e: the same from live pad [pad] (Live › Pads): a loop keeps its tempo, a hit none. */
+    fun keepLivePadInLibrary(pad: Int): Boolean {
+        val clip = project.value.live.clips.getOrNull(pad) ?: return false
+        keepFileInLibrary(clip.file, clip.name, null, if (clip.follows) clip.bpm else 0.0)
+        return true
+    }
+
+    /** Keeps sound file [file] of the project in « Ma bibliothèque » under [name], said when it is there (or why not). */
+    private fun keepFileInLibrary(file: String, name: String, padKind: String?, bpm: Double) {
+        viewModelScope.launch {
+            val pcm = readOrNull { padSamples.read(file) }
+            if (pcm == null || pcm.frames == 0) {
+                _notice.value = tr("Ce son n'a pas pu être lu.")
+                return@launch
+            }
+            _notice.value = try {
+                val kept = com.pocketstudio.app.library.MySoundLibrary.keep(
+                    getApplication(), pcm, name, com.pocketstudio.model.MySounds.kindOfPad(padKind, pcm.seconds, name),
+                    bpm = bpm, origin = project.value.name,
+                )
+                com.pocketstudio.app.library.keptNotice(kept)
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                tr("Ce son n'a pas pu être gardé (%s).", e.message ?: e.javaClass.simpleName)
+            }
+        }
+    }
+
     /** A sound file of the phone on the keyboard of the selected track. */
     fun importTrackSound(uri: Uri) {
         viewModelScope.launch {
@@ -4632,12 +4671,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun liveNoteOn(id: Int, pitch: Int, velocity: Float) {
         if (project.value.instrumentTracks.none { it.id == id }) return
+        if (_cellRecording.value?.key == com.pocketstudio.model.SongPart.ACID) return acidKeyOn(pitch, velocity)
         if (NativeEngine.isAvailable) NativeEngine.synthNoteOn(pitch, velocity, id)
         playedNoteOn(id, pitch, velocity)
         liveNoteTaken(id, pitch, velocity)
     }
 
     fun liveNoteOff(id: Int, pitch: Int) {
+        if (acidKeyOff(pitch)) return
         if (NativeEngine.isAvailable) NativeEngine.synthNoteOff(pitch, id)
         playedNoteOff(id, pitch)
         liveNoteReleased(id, pitch)
@@ -4656,6 +4697,30 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         cellHeld.remove(liveKey(id, pitch))?.let { h -> cellNoteEnded(id, pitch, h, playedClock()) }
         val held = liveKeysHeld.remove(liveKey(id, pitch)) ?: return
         writeLiveNote(id, pitch, held.at, takePosition(), held.velocity)
+    }
+
+    /** Step 7b: the keys held on the 303 while its cell records, the last one sounding. */
+    private val acidKeys = ArrayList<Int>()
+
+    /** Step 7b: a key of Live › Notes while a 303 cell records: it sounds on the 303 and goes into the cell. */
+    private fun acidKeyOn(pitch: Int, velocity: Float) {
+        acidKeys.remove(pitch); acidKeys += pitch
+        if (NativeEngine.isAvailable) NativeEngine.acidLiveNote(pitch, velocity)
+        cellHeld[liveKey(LiveCells.ACID_TRACK, pitch)] = LiveHeld(playedClock(), velocity)
+    }
+
+    /** A key let go on the 303 (false: not one of its keys): the one still held under it sounds again, sliding. */
+    private fun acidKeyOff(pitch: Int): Boolean {
+        if (!acidKeys.remove(pitch)) return false
+        if (NativeEngine.isAvailable) NativeEngine.acidLiveNote(acidKeys.lastOrNull() ?: -1)
+        cellHeld.remove(liveKey(LiveCells.ACID_TRACK, pitch))?.let { h -> cellNoteEnded(LiveCells.ACID_TRACK, pitch, h, playedClock()) }
+        return true
+    }
+
+    private fun acidKeysOff() {
+        if (acidKeys.isEmpty()) return
+        acidKeys.clear()
+        if (NativeEngine.isAvailable) NativeEngine.acidLiveNote(-1)
     }
 
     /** MIDI keys down, each with the track it started on (its release goes there, as the engine's). */
@@ -4688,8 +4753,71 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // A MIDI keyboard plays the selected track: the cell's, so its keys go into the cell too.
         key.removePrefix("inst:").toIntOrNull()?.takeIf { key.startsWith("inst:") }?.let(::selectTrack)
         cellArmedAt = playedClock()
+        if (LiveCells.kindOf(key) == LiveCells.Kind.AUDIO && !recordAudioCell(key, scene)) return
         _cellRecording.value = com.pocketstudio.app.live.CellRecording(key, scene)
         AppLog.add("Live : case $key ${Scene.NAMES.getOrElse(scene) { "?" }} en enregistrement")
+    }
+
+    /** Step 7b: the microphone of an audio cell recording (null: none), and whether « Annuler » let it go. */
+    private var cellMic: MicRecorder? = null
+    private var cellMicDropped = false
+    /** Tests: the take an audio cell « records » instead of the microphone, and the step its first frame is heard at. */
+    internal var cellMicForTest: Pair<Pcm, Double>? = null
+
+    /**
+     * Step 7b: « Jouer et enregistrer ici » on an audio cell: the microphone until the cell is touched
+     * again, as it is (no silence cut: the take stays on the beat), its first frame placed on the
+     * transport as heard (the input's share of the measured round trip taken off). Then, as notes:
+     * from the bar line of the first sound, whole bars, the clip of that cell (one undo step).
+     */
+    private fun recordAudioCell(key: String, scene: Int): Boolean {
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
+        val p = project.value
+        val perSecond = p.tempoBpm / 15.0  // sixteenths a second
+        val longest = LiveCells.maxBars(key, p.stepsPerBar) * p.stepsPerBar / perSecond
+        val mic = MicRecorder(maxSeconds = (longest + 8).toInt().coerceIn(10, 180), trim = false).also { cellMic = it }
+        cellMicDropped = false
+        if (cellMicForTest != null) return true  // placed when the cell is touched again (stopCellRecording)
+        val inputMs = Metrics.roundTripMs.value?.let { (it - Metrics.streamInfo.value.outputLatencyMs.coerceAtLeast(0.0)).coerceAtLeast(0.0) } ?: 0.0
+        viewModelScope.launch {
+            var startStep = Double.NaN
+            val take = try {
+                withContext(Dispatchers.IO) {
+                    mic.record { sec -> if (startStep.isNaN()) startStep = playedClock() - sec * perSecond - inputMs / 1000.0 * perSecond }
+                }
+            } catch (e: Exception) {
+                AppLog.add("Live : micro de la case indisponible (${e.message})")
+                _cellRecording.value = null
+                _notice.value = tr("Le micro ne répond pas : réessaie.")
+                return@launch
+            }
+            cellMic = null
+            if (!cellMicDropped) placeMicTake(key, scene, take, startStep)
+        }
+        return true
+    }
+
+    /** A microphone take of audio cell ([key], [scene]), its first frame heard at [startStep]: cut on its bars, the cell's clip. */
+    private fun placeMicTake(key: String, scene: Int, take: Pcm, startStep: Double) {
+        val q = project.value
+        val onset = if (PadSamples.isSilent(take)) -1 else take.data.indexOfFirst { kotlin.math.abs(it) > MIC_ONSET }
+        val cut = LiveCells.micCut(key, startStep, take.frames, onset, take.sampleRate * 15.0 / q.tempoBpm, q.stepsPerBar)
+        if (cut == null) {
+            _notice.value = tr("Rien n'a été entendu : rapproche-toi du micro et réessaie.")
+            return
+        }
+        val pcm = Pcm(LiveCells.cutMic(take.data, cut), 1, take.sampleRate)
+        AppLog.add("Live : case $key enregistrée au micro (${cut.bars} mesures)")
+        audioJob(tr("Pose du son…")) {
+            val (kept, prepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, "Micro ${java.time.LocalTime.now().withNano(0)}") }  // French, shown translated (DefaultNames)
+            padSamples.register(prepared)
+            val clip = AudioClip(kept.file, kept.name, seconds = pcm.seconds, loopSteps = cut.bars * q.stepsPerBar, bpm = q.tempoBpm, fit = true)
+            if (project.value.withAudioInCell(key, scene, clip) == null) throw UserMessage(tr("Les huit pistes audio sont prises : vide-en une pour poser ce son."))
+            session.edit { r -> r.withAudioInCell(key, scene, clip) ?: r }
+            pushMixer(); pushAudio()
+            cellChanged(key, scene)
+            launchPad(key, scene)
+        }
     }
 
     /** A drum pad played on the Live page: it sounds, and goes into the drum cell recording. */
@@ -4711,7 +4839,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun cellNoteEnded(id: Int, pitch: Int, held: LiveHeld, at: Double) {
-        if (_cellRecording.value?.key != com.pocketstudio.model.SongPart.inst(id)) return
+        val key = if (id == LiveCells.ACID_TRACK) com.pocketstudio.model.SongPart.ACID else com.pocketstudio.model.SongPart.inst(id)
+        if (_cellRecording.value?.key != key) return
         cellNotes += com.pocketstudio.model.PlayedMemory.KeptNote(id, pitch, held.velocity, held.at, (at - held.at).coerceAtLeast(com.pocketstudio.model.PlayedMemory.MIN_NOTE_STEPS))
     }
 
@@ -4723,8 +4852,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun stopCellRecording() {
         val rec = _cellRecording.value ?: return
         _cellRecording.value = null
+        acidKeysOff()
+        // An audio cell: the microphone stops, its take is placed when it has come in (recordAudioCell).
+        if (LiveCells.kindOf(rec.key) == LiveCells.Kind.AUDIO) {
+            cellMicForTest?.let { (take, at) -> placeMicTake(rec.key, rec.scene, take, at) } ?: cellMic?.stop()
+            return
+        }
         val now = playedClock()
-        val id = rec.key.removePrefix("inst:").toIntOrNull()
+        val id = if (rec.key == com.pocketstudio.model.SongPart.ACID) LiveCells.ACID_TRACK else rec.key.removePrefix("inst:").toIntOrNull()
         cellHeld.toList().forEach { (k, h) -> if (id != null) cellNoteEnded(id, (k and 0xFF).toInt(), h, now) }
         cellHeld.clear()
         val first = (cellNotes.map { it.start } + cellHits.map { it.at }).minOrNull()
@@ -4747,6 +4882,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** « Annuler » while a cell records: nothing written. */
     fun cancelCellRecording() {
         _cellRecording.value = null
+        acidKeysOff()
+        cellMicDropped = true
+        cellMic?.stop()
         cellNotes.clear(); cellHits.clear(); cellHeld.clear()
     }
 
@@ -5906,7 +6044,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * plays in the song (as heard there, on the project's sixteenths, at most 16 bars), on a new
      * bass track (any sound can play it) or, [acid], on the Acid 303. One undo step.
      */
-    fun bassToNotes(acid: Boolean = false) {
+    fun bassToNotes(acid: Boolean = false) = stemToNotes(voice = false, acid = acid)
+
+    /**
+     * Step 7f: « La voix en notes »: the sung melody of the « Voix » stem followed note by note, as
+     * [bassToNotes] does the bass, on a new melody track (any sound can sing it). One undo step.
+     */
+    fun voiceToNotes() = stemToNotes(voice = true, acid = false)
+
+    private fun stemToNotes(voice: Boolean, acid: Boolean) {
         val source = stems ?: return
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return
         val p = project.value
@@ -5920,15 +6066,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val start = Math.round(p.remixTimeAtStep(step0) * rate).coerceAtLeast(0L)
         val song = p.remix.name.ifBlank { "Remix" }
         if (stepFrames <= 0 || start >= source.frames) return
-        _sampleTask.value = SampleTask.Busy(tr("La basse de %s en notes…", song))
+        _sampleTask.value = SampleTask.Busy(if (voice) tr("La voix de %s en notes…", song) else tr("La basse de %s en notes…", song))
         viewModelScope.launch {
             try {
                 val notes = withContext(Dispatchers.Default) {
                     val count = minOf(source.frames - start, Math.round(stepFrames * (steps + 2)))
-                    com.pocketstudio.model.SongMatter.bassNotes(monoOf(source.extract(BASS_STEM, start, count)), rate, stepFrames, steps)
+                    if (voice) com.pocketstudio.model.SongMatter.voiceNotes(monoOf(source.extract(VOICE_STEM, start, count)), rate, stepFrames, steps)
+                    else com.pocketstudio.model.SongMatter.bassNotes(monoOf(source.extract(BASS_STEM, start, count)), rate, stepFrames, steps)
                 }
                 if (notes.isEmpty()) {
-                    _sampleTask.value = SampleTask.Failed(tr("Pas de notes de basse trouvées dans %s.", song))
+                    _sampleTask.value = SampleTask.Failed(if (voice) tr("Pas de notes de voix trouvées dans %s.", song) else tr("Pas de notes de basse trouvées dans %s.", song))
                     return@launch
                 }
                 _sampleTask.value = SampleTask.Idle
@@ -5939,12 +6086,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 } else {
                     val q = project.value
                     val style = com.pocketstudio.app.library.styleOfProject(q.name)?.let(com.pocketstudio.model.StarterWizard::style)
-                    val next = com.pocketstudio.model.NewTracks.add(q, com.pocketstudio.model.TrackKind.Bass, style, false) ?: run {
+                    val kind = if (voice) com.pocketstudio.model.TrackKind.Melody else com.pocketstudio.model.TrackKind.Bass
+                    val next = com.pocketstudio.model.NewTracks.add(q, kind, style, false) ?: run {
                         _notice.value = tr("Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre.")
                         return@launch
                     }
                     val id = next.tracks.first { t -> q.tracks.none { it.id == t.id } }.id
-                    val name = com.pocketstudio.model.DefaultNames.stemPad("Basse", song)
+                    val name = com.pocketstudio.model.DefaultNames.stemPad(if (voice) VOICE_LABEL else "Basse", song)
                     session.edit {
                         userTrack(next, id).let { r ->
                             r.copy(tracks = r.tracks.map { t -> if (t.id == id) t.copy(name = name, notes = com.pocketstudio.model.NoteClip(steps = steps, notes = notes)) else t })
@@ -5953,13 +6101,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     pushTracks()
                     pushMixer()
                     selectTrack(id)
-                    _notice.value = tr("La basse de %1\$s en %2\$d notes sur une piste à elle : change son son comme tu veux.", song, notes.size)
+                    _notice.value = if (voice) tr("La voix de %1\$s en %2\$d notes sur une piste à elle : change son son comme tu veux.", song, notes.size)
+                    else tr("La basse de %1\$s en %2\$d notes sur une piste à elle : change son son comme tu veux.", song, notes.size)
                 }
-                AppLog.add("Remix : basse en ${notes.size} notes${if (acid) " (Acid 303)" else ""}")
+                AppLog.add("Remix : ${if (voice) "voix" else "basse"} en ${notes.size} notes${if (acid) " (Acid 303)" else ""}")
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
             } catch (e: Throwable) {
-                AppLog.add("Remix : basse en notes impossible (${e.message})")
+                AppLog.add("Remix : ${if (voice) "voix" else "basse"} en notes impossible (${e.message})")
                 _sampleTask.value = SampleTask.Failed(tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName))
             }
         }
@@ -10573,6 +10722,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     companion object {
+        /** A microphone sample louder than this is the take's first sound (step 7b, an audio cell's bar line). */
+        private const val MIC_ONSET = 0.02f
         /** [beforePress]'s key for a row or « ■ Tout » (a column's key is never empty). */
         private const val ROW_PRESS = ""
         const val PROJECT_ID = "projet-1"

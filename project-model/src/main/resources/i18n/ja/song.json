@@ -405,5 +405,8 @@
   "Sans fondu au début": "フェードインなし",
   "Sans fondu à la fin": "フェードアウトなし",
   "Enlever ce bout": "この部分を外す",
-  "Remettre %s comme au départ": "%s を最初の状態に戻す"
+  "Remettre %s comme au départ": "%s を最初の状態に戻す",
+  "Chante ou joue au micro. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "マイクに向かって歌うか演奏。止めるにはマスをもう一度タップ:ループは小節にそろいます。",
+  "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "ノートを演奏:Acid 303 で鳴ります。止めるにはマスをもう一度タップ:ループは小節にそろいます。",
+  "Le micro ne répond pas : réessaie.": "マイクが反応しません:もう一度試してね。"
 }

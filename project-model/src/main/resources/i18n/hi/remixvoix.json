@@ -48,5 +48,9 @@
   "La basse de %s en notes…": "%s का बेस नोट्स में…",
   "Pas de notes de basse trouvées dans %s.": "%s में बेस के नोट्स नहीं मिले।",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "%1$s का बेस Acid 303 पर: %2$d नोट्स।",
-  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s का बेस %2$d नोट्स में, अपने ट्रैक पर: इसकी आवाज़ जैसी चाहो बदलो।"
+  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s का बेस %2$d नोट्स में, अपने ट्रैक पर: इसकी आवाज़ जैसी चाहो बदलो।",
+  "La mélodie de la voix en notes": "वोकल्स की मेलोडी नोट्स में",
+  "La voix de %s en notes…": "%s के वोकल्स नोट्स में…",
+  "Pas de notes de voix trouvées dans %s.": "%s में वोकल्स के नोट्स नहीं मिले।",
+  "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s के वोकल्स %2$d नोट्स में, अपने ट्रैक पर: इसकी आवाज़ जैसी चाहो बदलो।"
 }

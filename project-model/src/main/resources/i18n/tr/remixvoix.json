@@ -48,5 +48,9 @@
   "La basse de %s en notes…": "%s basını notalara çeviriyorum…",
   "Pas de notes de basse trouvées dans %s.": "%s içinde bas notası bulunamadı.",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "%1$s basi Acid 303'te: %2$d nota.",
-  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s basi %2$d nota olarak kendi kanalında: sesini istediğin gibi değiştir."
+  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s basi %2$d nota olarak kendi kanalında: sesini istediğin gibi değiştir.",
+  "La mélodie de la voix en notes": "Vokal melodisi notalara",
+  "La voix de %s en notes…": "%s vokalini notalara çeviriyorum…",
+  "Pas de notes de voix trouvées dans %s.": "%s içinde vokal notası bulunamadı.",
+  "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s vokali %2$d nota olarak kendi kanalında: sesini istediğin gibi değiştir."
 }

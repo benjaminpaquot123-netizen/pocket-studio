@@ -181,6 +181,8 @@ class RemixActions(
     /** Step 5d: the drums stem as a kit on the pads; the bass stem as notes (true: on the Acid 303). */
     val drumsToKit: () -> Unit = {},
     val bassToNotes: (Boolean) -> Unit = {},
+    /** Step 7f: « La mélodie de la voix en notes ». */
+    val voiceToNotes: () -> Unit = {},
     /** The question of [RemixUi.padAsk]: cover the pad, or not. */
     val confirmPad: () -> Unit = {},
     val dismissPadAsk: () -> Unit = {},
@@ -434,6 +436,8 @@ private fun InProject(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit)
             OutlinedButton(onClick = { actions.bassToNotes(false) }, modifier = Modifier.weight(1f).testTag("remix_bass_notes")) { Text(tr("La basse en notes")) }
             OutlinedButton(onClick = { actions.bassToNotes(true) }, modifier = Modifier.weight(1f).testTag("remix_bass_acid")) { Text(tr("La basse sur l'Acid 303")) }
         }
+        // Step 7f: the sung melody too, on a melody track.
+        OutlinedButton(onClick = actions.voiceToNotes, modifier = Modifier.fillMaxWidth().testTag("remix_voice_notes")) { Text(tr("La mélodie de la voix en notes")) }
         // Said where the user just touched: the cut's progress, its pad, or why it failed.
         ui.padTask?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("remix_pad_task")) }
         ui.cut?.let { CutCard(it, actions) }

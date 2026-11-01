@@ -48,5 +48,9 @@
   "La basse de %s en notes…": "正在把%s的贝斯转成音符…",
   "Pas de notes de basse trouvées dans %s.": "%s里没找到贝斯音符。",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "%1$s的贝斯在 Acid 303 上：%2$d 个音符。",
-  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s的贝斯变成 %2$d 个音符，放在单独的轨道上：音色随你换。"
+  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s的贝斯变成 %2$d 个音符，放在单独的轨道上：音色随你换。",
+  "La mélodie de la voix en notes": "人声旋律转成音符",
+  "La voix de %s en notes…": "正在把%s的人声转成音符…",
+  "Pas de notes de voix trouvées dans %s.": "%s里没找到人声音符。",
+  "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s的人声变成 %2$d 个音符，放在单独的轨道上：音色随你换。"
 }

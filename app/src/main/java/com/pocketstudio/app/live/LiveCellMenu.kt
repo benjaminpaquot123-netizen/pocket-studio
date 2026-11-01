@@ -86,8 +86,12 @@ internal fun EmptyCellMenu(
             Text(tr("Cette case est vide. Qu'est-ce que tu y mets ?"), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
             MenuChoice(
                 Icons.Filled.FiberManualRecord, Neon.Red, tr("Jouer et enregistrer ici"),
-                if (canRecord) tr("Joue aux pads ou aux notes. Retouche la case pour arrêter : la boucle se cale sur la mesure.")
-                else tr("Pas pour cette piste : mets-y un son ou copie une case."),
+                when {
+                    !canRecord -> tr("Pas pour cette piste : mets-y un son ou copie une case.")
+                    LiveCells.kindOf(cell.key) == LiveCells.Kind.AUDIO -> tr("Chante ou joue au micro. Retouche la case pour arrêter : la boucle se cale sur la mesure.")
+                    LiveCells.kindOf(cell.key) == LiveCells.Kind.ACID -> tr("Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.")
+                    else -> tr("Joue aux pads ou aux notes. Retouche la case pour arrêter : la boucle se cale sur la mesure.")
+                },
                 enabled = canRecord, accent = true, tag = "live_cell_record", choose = record,
             )
             MenuChoice(Icons.Filled.MusicNote, Neon.Acid, tr("Un son de ma bibliothèque"), tr("Tes sons gardés, tes prises, tes boucles."), tag = "live_cell_library", choose = library)

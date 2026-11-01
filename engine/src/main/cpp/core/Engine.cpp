@@ -382,6 +382,9 @@ void Engine::applyCommand(const Command& command) {
         case CommandType::SetAcidRoot:
             acid_.setRoot(command.a);
             break;
+        case CommandType::AcidLiveNote:
+            acid_.liveNote(command.a, std::isfinite(command.value) && command.value > 0.8f);
+            break;
         case CommandType::SetAcidParam:
             if (command.a >= 0 && command.a < AcidTrack::ParamCount) {
                 acid_.setParam(static_cast<AcidTrack::Param>(command.a), command.value);

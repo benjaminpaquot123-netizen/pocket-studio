@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.BookmarkAdd
 import androidx.compose.material.icons.filled.FiberManualRecord
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
@@ -111,6 +112,8 @@ class AudioTracksUi(
 class AudioTracksActions(
     /** Opens a track's quick effects. */
     val effects: (Int) -> Unit = {},
+    /** Step 7e: « Garder dans ma bibliothèque » (a track's clip). */
+    val keepInLibrary: (Int) -> Unit = {},
     val add: () -> Unit = {},
     val remove: (Int) -> Unit = {},
     val rename: (Int, String) -> Unit = { _, _ -> },
@@ -460,6 +463,11 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
         }
         OutlinedButton(onClick = { actions.normalize(id) }, modifier = Modifier.testTag("audio_normalize_$id")) { Text(tr("Normaliser")) }
         OutlinedButton(onClick = { actions.reverse(id) }) { Text(tr("Inverser")) }
+    }
+    // Step 7e: the take for every project (the project does not change).
+    OutlinedButton(onClick = { actions.keepInLibrary(id) }, modifier = Modifier.fillMaxWidth().testTag("audio_keep_library_$id")) {
+        Icon(Icons.Filled.BookmarkAdd, contentDescription = null)
+        Text(" " + tr("Garder dans ma bibliothèque"))
     }
     // Where it plays: in the parts of its scene, in every part, or once along the whole song.
     val ownScene = clip.scene ?: ui.scene

@@ -25,6 +25,7 @@ import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.ui.input.pointer.PointerEventTimeoutCancellationException
 import androidx.compose.ui.semantics.onLongClick
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.BookmarkAdd
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.GraphicEq
@@ -275,6 +276,14 @@ private fun PadChooser(pad: Int, ui: LivePadsUi, actions: LivePadsActions, close
                         ) {
                             Icon(Icons.Filled.Tune, contentDescription = null)
                             Text(" " + tr("Régler"), maxLines = 1)
+                        }
+                        // Step 7e: the pad's sound for every project.
+                        androidx.compose.material3.OutlinedButton(
+                            onClick = { actions.keep(pad); close() },
+                            modifier = Modifier.weight(1f).testTag("live_chooser_keep"),
+                        ) {
+                            Icon(Icons.Filled.BookmarkAdd, contentDescription = null)
+                            Text(" " + tr("Garder"), maxLines = 1)
                         }
                         androidx.compose.material3.OutlinedButton(
                             onClick = { actions.clear(pad); close() },

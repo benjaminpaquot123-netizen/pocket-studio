@@ -48,5 +48,9 @@
   "La basse de %s en notes…": "Der Bass von %s als Noten…",
   "Pas de notes de basse trouvées dans %s.": "Keine Bassnoten in %s gefunden.",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "Der Bass von %1$s auf der Acid 303: %2$d Noten.",
-  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "Der Bass von %1$s als %2$d Noten auf einer eigenen Spur: wähl den Sound, wie du willst."
+  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "Der Bass von %1$s als %2$d Noten auf einer eigenen Spur: wähl den Sound, wie du willst.",
+  "La mélodie de la voix en notes": "Die Melodie der Vocals als Noten",
+  "La voix de %s en notes…": "Die Vocals von %s als Noten…",
+  "Pas de notes de voix trouvées dans %s.": "Keine Gesangsnoten in %s gefunden.",
+  "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "Die Vocals von %1$s als %2$d Noten auf einer eigenen Spur: wähl den Sound, wie du willst."
 }

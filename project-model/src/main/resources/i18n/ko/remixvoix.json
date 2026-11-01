@@ -48,5 +48,9 @@
   "La basse de %s en notes…": "%s 베이스를 노트로…",
   "Pas de notes de basse trouvées dans %s.": "%s에서 베이스 노트를 찾지 못했어요.",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "%1$s 베이스를 Acid 303에: 노트 %2$d개.",
-  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s 베이스를 노트 %2$d개로 전용 트랙에: 소리는 마음대로 바꿔요."
+  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s 베이스를 노트 %2$d개로 전용 트랙에: 소리는 마음대로 바꿔요.",
+  "La mélodie de la voix en notes": "보컬 멜로디를 노트로",
+  "La voix de %s en notes…": "%s 보컬을 노트로…",
+  "Pas de notes de voix trouvées dans %s.": "%s에서 보컬 노트를 찾지 못했어요.",
+  "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s 보컬을 노트 %2$d개로 전용 트랙에: 소리는 마음대로 바꿔요."
 }

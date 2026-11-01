@@ -13,7 +13,11 @@ import com.pocketstudio.model.i18n.tr
  * Records the microphone (mono, 48 kHz float) for a pad. [record] blocks until [stop] or the
  * time limit; call it from a background dispatcher. [level] is the latest peak (0..1).
  */
-class MicRecorder(private val maxSeconds: Int = 30) {
+class MicRecorder(
+    private val maxSeconds: Int = 30,
+    /** False (step 7b, an audio cell of the Live): the take as it is, from its first frame, so it stays on the beat. */
+    private val trim: Boolean = true,
+) {
     @Volatile var level = 0f
         private set
     @Volatile private var stopRequested = false
@@ -52,7 +56,7 @@ class MicRecorder(private val maxSeconds: Int = 30) {
             runCatching { rec.stop() }
             rec.release()
         }
-        return Pcm(trimSilence(out.copyOf(size)), 1, rate)
+        return Pcm(if (trim) trimSilence(out.copyOf(size)) else out.copyOf(size), 1, rate)
     }
 
     companion object {

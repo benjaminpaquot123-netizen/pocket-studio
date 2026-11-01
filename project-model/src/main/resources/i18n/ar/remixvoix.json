@@ -48,5 +48,9 @@
   "La basse de %s en notes…": "باص %s إلى نوتات…",
   "Pas de notes de basse trouvées dans %s.": "لم يُعثر على نوتات باص في %s.",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "باص %1$s على Acid 303: %2$d نوتة.",
-  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "باص %1$s في %2$d نوتة على مسار خاص به: غيّر صوته كما تريد."
+  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "باص %1$s في %2$d نوتة على مسار خاص به: غيّر صوته كما تريد.",
+  "La mélodie de la voix en notes": "لحن الغناء كنوتات",
+  "La voix de %s en notes…": "الغناء في %s إلى نوتات…",
+  "Pas de notes de voix trouvées dans %s.": "لم يُعثر على نوتات غناء في %s.",
+  "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "الغناء في %1$s في %2$d نوتة على مسار خاص به: غيّر صوته كما تريد."
 }

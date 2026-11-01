@@ -48,5 +48,9 @@
   "La basse de %s en notes…": "Bass %s jadi not…",
   "Pas de notes de basse trouvées dans %s.": "Tidak ada not bass di %s.",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "Bass %1$s di Acid 303: %2$d not.",
-  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "Bass %1$s jadi %2$d not di trek sendiri: ganti suaranya sesukamu."
+  "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "Bass %1$s jadi %2$d not di trek sendiri: ganti suaranya sesukamu.",
+  "La mélodie de la voix en notes": "Melodi vokal jadi not",
+  "La voix de %s en notes…": "Vokal %s jadi not…",
+  "Pas de notes de voix trouvées dans %s.": "Tidak ada not vokal di %s.",
+  "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "Vokal %1$s jadi %2$d not di trek sendiri: ganti suaranya sesukamu."
 }

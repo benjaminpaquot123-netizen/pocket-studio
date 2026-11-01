@@ -19,6 +19,7 @@ Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues 
 - Interface en français. Code, commentaires et commits en anglais.
 - Rappels et tâches planifiées (nom et message) : toujours en français.
 - Design : moderne mais pas trop, facile à prendre en main, façon FL Studio Mobile en plus clair. Règles dans `docs/DESIGN.md`. Benjamin a délégué les choix de design : décider sans lui demander, montrer les captures dans la PR.
+- Tout changement de design validé s'applique partout dans l'appli (raccord sur tous les écrans), pas seulement là où il a été demandé.
 - Captures envoyées à Benjamin (maquettes, captures de PR, APK) : sans la pastille flottante de retours « ● REC · Noter · ⋯ » (il ne s'en sert pas). Le bouton REC du Live, lui, reste.
 
 ## Travail en équipes (auto-surveillance)

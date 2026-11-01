@@ -215,6 +215,7 @@ Chaque étage doit être vert avant de passer au suivant, sauf les découvertes 
 - **Langues par tour** : ancien §4 (les 15 passent).
 
 ### Étage 7 : les vrais humains (en dernier)
+- **Testeurs réels externes (décision de Benjamin, 2026-11-01 : « pour la fin »)** : test fermé du Google Play (au moins 12 testeurs pendant 14 jours d'affilée, exigé pour un compte personnel récent avant la publication), recrutés dans l'entourage puis chez des musiciens (fils de retours de r/WeAreTheMusicMakers, r/edmproduction, r/makinghiphop, Audiofanzine, Discord de producteurs ; règles lues avant de poster ; rien posté sans l'accord de Benjamin) ; message prêt en français et en anglais.
 - **Bug bash d'une heure** : Benjamin, sa fille et l'ami de WhatsApp. Chacun a une mission ; l'écran est filmé et chacun pense à voix haute.
 - **Journal sur 3 jours** : ce qu'on a fait, ce qui a coincé, ce qui a fait plaisir (apprentissage dans le temps).
 - Les retours vont dans `docs/RETOURS.md`, puis passent par la règle « partout ».

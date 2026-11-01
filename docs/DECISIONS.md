@@ -995,3 +995,4 @@
 - 2026-11-01 · Règle de Benjamin : chaque erreur qu'il signale est corrigée là où il l'a vue ET vérifiée partout où elle peut se reproduire (test automatique couvrant tous les cas). Retour arrière : aucun.
 - 2026-11-01 · Muet / solo : icônes haut-parleur / haut-parleur barré et casque au lieu de « M » / « S », partout (idée de Benjamin, « pas intuitif surtout en mode simple »). Retour arrière : lettres M/S.
 - 2026-11-01 · « Faire de la matière » → « Piocher dans la chanson », boutons qui disent l'action (Benjamin ne comprenait pas le mot). Retour arrière : ancien titre.
+- 2026-11-01 · Tests du Remix : toujours avec la chanson de Benjamin « ADÉLA - Boys (Lyric Video) » (MP3 fourni), copie locale hors dépôt dans scratchpad/humain/chansons-test/adela-boys.mp3 ; jamais commitée ni publiée (dépôt public, chanson protégée). Si la copie a disparu (conteneur neuf), la redemander à Benjamin. Retour arrière : sons de test synthétiques.

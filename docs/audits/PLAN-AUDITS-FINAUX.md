@@ -204,3 +204,36 @@ Benjamin le veut ainsi : les auditeurs d'ergonomie et de design sont des profess
 - **Par tour** : 6 testeurs, 1 synthèse, 3 à 5 équipes de correction, 1 revue neuve. C'est l'ordre de grandeur des tours du tuto.
 - **Au total** : 3 tours au minimum pour faire passer les 15 langues, plus ceux qu'il faut pour qu'il ne reste plus de grave.
 - **Les audits automatiques** coûtent peu : ils passent avant chaque tour pour économiser les testeurs.
+
+## §10 Boîte à astuces (recherche du 2026-11-01, demande de Benjamin)
+Objectif : trouver tous les bugs et vérifier la logique d'utilisation, à la toute fin des modifications. Principe d'économie : d'abord les contrôles automatiques (bon marché, relançables), ensuite les équipes d'auditeurs IA, enfin les vrais humains.
+
+### A. Chasser les bugs
+1. **Testeurs IA à personas** (inspiré de PersonaTester, ScenGen, VisionDroid) : notre banc « testeur humain » piloté par l'écran seul, avec des personas très différents (enfant de 8 ans, ado qui veut faire de la trap, DJ en soirée, ingé son exigeant, senior qui découvre, gaucher, daltonien, non francophone en arabe ou japonais) ; un scénario par persona ; un « œil » qui compare la capture attendue à la capture obtenue pour trouver les bugs qui ne plantent pas (texte coupé, bouton mort, mauvais écran).
+2. **Oracles métamorphiques** (un résultat qu'on peut vérifier sans connaître la bonne réponse) : exporter deux fois = même fichier ; tout annuler = projet de départ ; sauvegarder, fermer, rouvrir = identique ; muet puis son = même audio ; tempo 120 → 90 → 120 = mêmes positions ; importer un zip exporté = même projet.
+3. **Tests de propriétés et fuzzing** : suites aléatoires de gestes et d'éditions (graine notée, rejouable) sur le modèle et l'interface, avec des invariants (aucun plantage, pas de NaN, rien de perdu, l'annulation revient toujours) ; Android `monkey` sur l'APK ; fichiers de projet abîmés exprès (tronqués, valeurs folles, anciennes versions).
+4. **Chaos Android** : l'appli tuée en arrière-plan (« Ne pas conserver les activités », `am kill`), rotation, écran partagé, mémoire basse, stockage plein, permission micro retirée en plein enregistrement, appel téléphonique et perte du focus audio, casque et Bluetooth branchés et débranchés, MiniLab branché à chaud, économie de batterie, changement de fréquence d'échantillonnage, police à 200 %, arabe (droite à gauche), mode sombre et clair.
+5. **Tests qui testent vraiment** : mutation testing (PIT pour Kotlin) sur les zones sensibles (sauvegarde, annulation, tempo) ; un test qui ne tombe pas quand on casse le code est à réécrire.
+6. **Moteur audio** : OboeTester sur le téléphone de Benjamin (test de glitchs et de latence, compteur XRuns), traces Perfetto pendant le pire cas (16 pads, 8 boucles, chanson séparée, effets), endurance de 2 h, chauffe et ralentissement du processeur, rendu identique en direct et à l'export, sonie et true peak de chaque export.
+7. **Outils automatiques** : lint Android, detekt ; ASan, UBSan et TSan sur les tests moteur Linux ; LeakCanary (fuites mémoire), StrictMode (travail sur le fil principal), surveillance des ANR (appli figée).
+8. **Données sans perte** : couper l'appli au milieu d'une sauvegarde, migrer tous les anciens formats, restaurer une sauvegarde, projets énormes (100 mesures, 16 pistes, longue chanson).
+9. **Règle de Benjamin** : chaque bug trouvé est cherché partout ailleurs (même cause, autres écrans, autres langues) avec un test qui couvre tous les cas.
+
+### B. Vérifier la logique d'utilisation
+1. **Évaluation heuristique** (les 10 règles de Nielsen et les heuristiques mobiles) écran par écran, puis **parcours cognitif** pour chaque tâche clé : à chaque pas, la personne sait-elle quoi faire, voit-elle le bouton, comprend-elle le résultat ?
+2. **Visites exploratoires** (tours de Whittaker : quartier d'affaires, mauvais quartier, saboteur, obsessionnel, historique ; mnémos FCC CUTS VIDS et SFDIPOT ; oracles de cohérence FEW HICCUPPS), en séances de 90 minutes avec des notes.
+3. **Mesures chiffrées par tâche** : temps jusqu'au premier son, puis jusqu'au premier morceau ; nombre de touchers ; erreurs et retours en arrière ; questionnaire SUS ; test des 5 secondes (que retient-on d'un écran ?) ; test du premier clic.
+4. **Chasse au jargon et à l'incohérence** (n° 21 et 22) : liste de tous les textes de l'appli, notés par un « débutant » ; même mot pour la même idée partout et dans les 15 langues ; mêmes icônes pour les mêmes actions.
+5. **Accessibilité** : TalkBack, contrastes, cibles d'au moins 48 dp, contrôles automatiques (Accessibility Test Framework dans les tests Robolectric), Accessibility Scanner sur le téléphone.
+6. **Regard visuel automatique** : captures de chaque écran dans les 15 langues, en police normale et en police à 200 %, en téléphone et en tablette, relues par un œil IA (textes coupés, chevauchements, boutons cachés), en plus des comparaisons Roborazzi.
+7. **Comparaison avec les concurrents**, tâche par tâche (Koala, FL Studio Mobile, BandLab, GarageBand, Remixlive) : plus simple ou plus compliqué chez nous ?
+
+### C. Les vrais humains (en dernier)
+- **Bug bash** d'une heure : Benjamin, sa fille, l'ami de WhatsApp, chacun avec une mission ; écran filmé et « penser à voix haute ».
+- Les retours vont dans docs/RETOURS.md, puis passent par la règle « partout ».
+
+### D. Organisation
+- Chaque tour : contrôles automatiques → équipes IA (une à la fois, en économie) → corrections (grave, puis moyen, puis léger) → nouveau tour avec une autre langue ; on s'arrête après 2 tours sans rien de grave ni de moyen.
+- Chaque trouvaille a : un niveau de gravité, une capture ou un son, un test qui la reproduit, et sa vérification « partout ».
+
+Sources : [VisionDroid, ICSE 2026](https://conf.researchr.org/details/icse-2026/icse-2026-journal-first-papers/26/Seeing-is-Believing-Vision-driven-Non-crash-Functional-Bug-Detection-for-Mobile-Apps) · [ScenGen](https://arxiv.org/abs/2506.05079v3) · [PersonaTester](https://arxiv.org/html/2603.24160v2) · [Keynote SE 2026, Chunyang Chen](https://se2026.inf.unibe.ch/en/program/keynotes/chunyang-chen/documents/SE2026_Keynote_Chunyang-Chen_Towards-Human-like-Testing.pdf) · [OboeTester](https://github.com/google/oboe/blob/master/apps/OboeTester/docs/Usage.md) · [OboeTester, tests automatiques](https://android.googlesource.com/platform/external/oboe/+/ba2fb95054ea5cea728f1ec320e882b471e7ba15/apps/OboeTester/docs/AutomatedTesting.md) · [Mesure de latence Android](https://source.android.com/docs/core/audio/latency/measure?hl=it) · [Tours exploratoires](https://agileconnection.com/article/using-tours-structure-your-exploratory-testing) · [Heuristiques mobiles](https://typeset.io/pdf/appropriating-and-assessing-heuristics-for-mobile-computing-4icfx1divd.pdf)

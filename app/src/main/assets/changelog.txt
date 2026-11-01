@@ -1,5 +1,5 @@
-Corrections du chef, « C'est pas faux ! »
-- Les pads sont là dès l'ouverture d'un projet vide, sans clignotement après le logo.
-- Retour à l'accueil depuis un projet (⋯ › Accueil, ou le bouton retour).
-- L'Acid 303, en jaune, en premier dans Clavier et Sons, même en mode Simple.
-- Remix depuis l'accueil ou un projet ; « Ma bibliothèque » pour garder tes sons.
+Le grand Live, « c'est pas faux ! »
+- Live tout neuf : grille des briques, pads carrés qui rétrécissent, case vide qui demande quoi y mettre, tempo − + toujours là et calé tout seul.
+- Remix : la chanson entre dans le projet avec ses 4 pistes à retoucher, un écran d'import, kit, basse et voix en notes.
+- Un seul navigateur de sons rangé par familles, dossier Fête, pads prêts à jouer ; MiniLab et claviers branchés partout.
+- Kick vérifié dans les 37 styles, moteur sans craquement aux changements de tempo, Acid 303 plus discrète.

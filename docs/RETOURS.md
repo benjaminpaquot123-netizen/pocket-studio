@@ -185,3 +185,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - 2026-11-01 (APK 234) · Comment jouer piste par piste ? Réponse : S (solo). Benjamin : « C'est pas mieux de mettre un baffle et un baffle barré ? C'est pas intuitif surtout en mode simple. » Noté n° 21.
 - 2026-11-01 · « Faire de la matière c'est bizarre comme terme. Je sais même pas ce que ça veut dire. » Noté n° 22.
 - 2026-11-01 (APK 234, vidéo) · Fin de vidéo : « un bruit de synthé comme si c'était un test » (piste « Voix · ADÉLA » = mélodie de la voix en notes). Projets supprimés avant pour que le bug soit net. Noté n° 23.
+- 2026-11-01 · « Revois entièrement l'extraction des morceaux dans Remix… plusieurs coupes de la chanson (voix)… pas du tout intuitif… couper des bouts super facilement, intuitivement et ultra pro. » Noté n° 24.

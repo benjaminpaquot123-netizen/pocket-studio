@@ -992,3 +992,4 @@
 - 2026-10-31 · Étape 7e : « Garder dans ma bibliothèque » sur un clip audio et un pad live (même rangement que les pads ; une boucle garde son tempo). Retour : retirer les deux boutons.
 - 2026-10-31 · Étape 7f : la mélodie de la voix en notes, même méthode que la basse (YIN sur une copie à 8 kHz, MIDI 43 à 84), sur une piste Mélodie. Retour : retirer le bouton.
 - 2026-10-31 · Étape 7h : la partie Fin a son propre mot (clé « Fin (partie) ») : japonais エンディング comme « Ajouter une fin » ; 終了 reste pour la fin d'un son ou d'une prise. Polonais klocek, hindi पार्ट dans le panneau du tuto. Retour : supprimer la clé.
+- 2026-11-01 · Règle de Benjamin : chaque erreur qu'il signale est corrigée là où il l'a vue ET vérifiée partout où elle peut se reproduire (test automatique couvrant tous les cas). Retour arrière : aucun.

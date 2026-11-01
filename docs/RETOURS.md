@@ -180,3 +180,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - 2026-10-30 · « C'est parfait, tu peux valider ça. Et le principal, c'est que le moteur audio soit nickel. » Noté n° 17.
 - 2026-10-30 · « Retire le smiley et rends le jaune comme les autres couleurs. C'est trop là (basse 303). » Ajouté au lot 1.
 - 2026-11-01 (APK 234) · « Note pour plus tard : quand je mets play on ne voit pas l'avancement sur les pistes » (Tableau des pistes du Remix). Noté n° 18.
+- 2026-11-01 (APK 234) · Tuto : « Le menu kick était fermé or c'est celui où on doit bosser. » Règle de Benjamin : chaque erreur signalée doit être vérifiée partout. Noté n° 19.

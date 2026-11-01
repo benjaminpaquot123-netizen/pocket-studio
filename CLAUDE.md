@@ -27,6 +27,8 @@ Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues 
 - Prévenir Benjamin à chaque fin d'agent, avec les captures « après » pour le design ; ne jamais attendre qu'il demande des nouvelles.
 - Compilations : un verrou `flock` par groupe d'équipes (au moins deux en parallèle quand la mémoire le permet) ; banc testeur humain : `--max-workers` au moins égal au nombre de sièges.
 
+- Chaque erreur signalée par Benjamin : la corriger là où il l'a vue ET vérifier partout où elle peut se reproduire, avec un test qui couvre tous les cas.
+
 ## Règle d'or
 Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vérifier licence et dernière version, tenir `THIRD_PARTY.md` à jour. Trois échecs sérieux sur une brique = alternative suivante + ligne dans DECISIONS.md.
 

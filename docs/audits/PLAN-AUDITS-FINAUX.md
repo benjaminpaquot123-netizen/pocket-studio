@@ -1,5 +1,7 @@
 # Plan des audits finaux (préparé le 2026-10-29, pas encore lancé)
 
+> **Depuis le 2026-11-01, la référence est `docs/audits/AUDIT.md`** (version unique revue par experts). Ce fichier garde le détail des rôles (§2, §2 bis), du lot Master pro (§1 bis) et des parcours (§3).
+
 Demande de Benjamin : « des audits finaux pour contrôler que tout fonctionne nickel » ; des débutants, des pros et des ingénieurs du son ; les sons récupérés et analysés ; chaque tour dans des langues différentes jusqu'à ce que toutes y passent ; on recommence en corrigeant le grave puis le moins grave ; des audits d'ergonomie et de design aussi : « il faut tout penser ».
 
 ## 1. Ce qu'on vérifie (8 axes)

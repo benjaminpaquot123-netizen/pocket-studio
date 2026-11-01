@@ -62,7 +62,7 @@ class ProjectJsonTest {
 
     @Test
     fun outOfRangeValuesAreClamped() {
-        val decoded = ProjectJson.decode("""{"tempoBpm":999,"swing":-1,"drums":{"steps":7,"lanes":[{"hits":{"3":{},"40":{},"70":{}}}]}}""")
+        val decoded = ProjectJson.decode("""{"tempoBpm":999,"swing":-1,"drums":{"steps":7,"lanes":[{"hits":{"3":{},"40":{},"300":{}}}]}}""")
         assertEquals(Project.MAX_TEMPO, decoded.tempoBpm, 0.0)
         assertEquals(0.0, decoded.swing, 0.0)
         assertEquals(DrumPattern.MIN_STEPS, decoded.drums.steps)

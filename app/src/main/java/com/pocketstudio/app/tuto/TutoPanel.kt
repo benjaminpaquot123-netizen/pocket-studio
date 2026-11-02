@@ -73,6 +73,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -1020,3 +1021,43 @@ fun TutoSpotRing(target: androidx.compose.ui.geometry.Rect?, modifier: Modifier 
         drawRoundRect(amber.copy(alpha = 0.95f - 0.4f * pulse.value), tl, sz, r, style = Stroke(3.dp.toPx()))
     }
 }
+
+/**
+ * n° 20 (« Montre-moi » that shows): a finger on the place of each gesture, a halo spreading from
+ * it as it touches ([gesture] counts them: each new one plays again). On a pad's grid ([cell] of a
+ * bar of [perBar] steps, two rows) the very cell, else the middle of [target].
+ */
+@Composable
+fun TutoFinger(target: androidx.compose.ui.geometry.Rect?, gesture: Int, cell: Int?, perBar: Int, modifier: Modifier = Modifier) {
+    if (target == null || gesture <= 0) return
+    val touch = remember { androidx.compose.animation.core.Animatable(0f) }
+    androidx.compose.runtime.LaunchedEffect(gesture) {
+        touch.snapTo(0f)
+        touch.animateTo(1f, androidx.compose.animation.core.tween(FINGER_TOUCH_MS))
+    }
+    val at = fingerAt(target, cell, perBar)
+    val amber = Neon.Amber
+    val finger = androidx.compose.ui.graphics.vector.rememberVectorPainter(androidx.compose.material.icons.Icons.Filled.TouchApp)
+    Canvas(modifier.fillMaxSize().testTag("tuto_finger")) {
+        val t = touch.value
+        val r = 10.dp.toPx() + 26.dp.toPx() * t
+        drawCircle(amber.copy(alpha = 0.35f * (1f - t)), r, at)
+        drawCircle(amber.copy(alpha = 0.9f * (1f - t)), r, at, style = Stroke(3.dp.toPx()))
+        // The finger presses (a little lower at the touch), its tip on the place.
+        val size = 40.dp.toPx()
+        val press = (if (t < 0.3f) t / 0.3f else 1f - (t - 0.3f) / 0.7f) * 4.dp.toPx()
+        translate(at.x - size * 0.35f, at.y - size * 0.08f + press) {
+            with(finger) { draw(androidx.compose.ui.geometry.Size(size, size), colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(Color.White)) }
+        }
+    }
+}
+
+/** Where a gesture of « Montre-moi » lands in [target]: cell [cell] of a bar of [perBar] steps in two rows, else its middle. */
+internal fun fingerAt(target: androidx.compose.ui.geometry.Rect, cell: Int?, perBar: Int): Offset {
+    if (cell == null || perBar <= 0) return target.center
+    val cols = (perBar / 2).coerceAtLeast(1)
+    val k = cell % perBar
+    return Offset(target.left + target.width * ((k % cols) + 0.5f) / cols, target.top + target.height * ((k / cols) + 0.5f) / 2f)
+}
+
+private const val FINGER_TOUCH_MS = 700

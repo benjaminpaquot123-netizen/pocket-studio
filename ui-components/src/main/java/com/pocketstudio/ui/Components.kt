@@ -95,7 +95,7 @@ interface FoldStore {
 /** Folds kept in memory (Compose state, so a change redraws the card). */
 open class MemoryFoldStore(initial: Map<String, Boolean> = emptyMap()) : FoldStore {
     private val folded = mutableStateMapOf<String, Boolean>().apply { putAll(initial) }
-    override fun isFolded(key: String) = folded[key] ?: false
+    override fun isFolded(key: String) = !FoldOverride.openAll && (folded[key] ?: false)
     override fun setFolded(key: String, folded: Boolean) {
         this.folded[key] = folded
     }
@@ -107,6 +107,14 @@ open class MemoryFoldStore(initial: Map<String, Boolean> = emptyMap()) : FoldSto
 }
 
 val LocalFoldStore = staticCompositionLocalOf<FoldStore> { MemoryFoldStore() }
+
+/**
+ * Benjamin's n° 19: while a tuto, the Guide or « Montre-moi » points at something, every card is
+ * open (the place to work is never in a folded card); the user's folds come back after.
+ */
+object FoldOverride {
+    var openAll by androidx.compose.runtime.mutableStateOf(false)
+}
 
 /** False where cards must stay open (a step-by-step assistant, a dialog). */
 val LocalFolding = staticCompositionLocalOf { true }

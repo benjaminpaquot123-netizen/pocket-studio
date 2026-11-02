@@ -71,6 +71,7 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
 
     @After
     fun end() {
+        com.pocketstudio.app.learn.SpotChecks.log = null
         TutoTestHooks.player = null
         TutoTestHooks.kitOffer = true
         h.finish()
@@ -120,6 +121,8 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
 
     private fun journey(level: TutoLevel) {
         TutoTestHooks.player = player
+        // n° 19–20: every control a step points at (« Je le fais », its button, « Montre-moi ») is checked once shown.
+        com.pocketstudio.app.learn.SpotChecks.log = mutableListOf()
         // Offline, whatever the catalogue: the built-in kit (the offer is TutoKitTest's).
         TutoTestHooks.kitOffer = false
         h.start(simple = level == TutoLevel.Facile, build = {
@@ -202,6 +205,11 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
             click("tuto_next_big")
         }
         assertTrue(steps.all { it.id in progress().done })
+        // n° 19: never in a folded card, off the screen or under the tuto's panel (37 courses, Facile and Pro).
+        val seen = com.pocketstudio.app.learn.SpotChecks.log.orEmpty()
+        assertTrue("$style $level: no target checked", seen.isNotEmpty())
+        val hidden = seen.filter { it.second != null }
+        assertTrue("$style $level: targets not seen: $hidden", hidden.isEmpty())
         // Only a step a former one already did may be ticked before it is reached.
         assertTrue("ticked before reached: $early", early.size <= 2)
         // Every step with something to show showed it, every example was played.

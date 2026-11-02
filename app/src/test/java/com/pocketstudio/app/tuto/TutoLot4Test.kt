@@ -273,11 +273,14 @@ class TutoLot4Test {
 
     @Test
     fun theNotesOfMontreMoiGoSlowerThanTheCells() {
+        // n° 20: a gesture at a time, about a second (they went by at 0.2 s); notes up to 1.5 s.
         assertEquals(TutoController.FRAME_MS, TutoController.demoFrameMs(false, 6))
-        // Six notes: 0.7 s each (they went by at 0.2 s); 28: about 8 s in all, never under the cells' pace.
-        assertEquals(700L, TutoController.demoFrameMs(true, 6))
-        assertEquals(8000L / 24, TutoController.demoFrameMs(true, 24))
-        assertTrue(TutoController.demoFrameMs(true, 200) >= TutoController.FRAME_MS)
+        assertEquals(1000L, TutoController.FRAME_MS)
+        assertEquals(TutoController.NOTE_FRAME_MAX, TutoController.demoFrameMs(true, 6))
+        assertEquals(12000L / 12, TutoController.demoFrameMs(true, 12))
+        // Sixteen hats: a little quicker, never too fast to follow.
+        assertEquals(TutoController.GESTURE_MIN_MS, TutoController.demoFrameMs(false, 40))
+        assertTrue(TutoController.demoFrameMs(true, 200) >= TutoController.GESTURE_MIN_MS)
     }
 
     @Test

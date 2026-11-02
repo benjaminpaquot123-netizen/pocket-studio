@@ -1003,3 +1003,4 @@
 - 2026-11-01 · L'Audit = docs/audits/AUDIT.md, version unique qui réunit le plan d'origine, la boîte à astuces, « tout est connecté » et smartphone/tablette, revue sous 9 regards d'experts (QA, audio temps réel, Android, UX, accessibilité, localisation, données et sécurité, performance, producteur/DJ) ; 8 étages dans l'ordre, critères d'arrêt chiffrés. Retour arrière : PLAN-AUDITS-FINAUX.md seul.
 - 2026-11-01 · Testeurs réels externes (test fermé Google Play, Reddit, forums) : à la toute fin, dans l'étage 7 de l'Audit (Benjamin). Retour arrière : plus tôt.
 - 2026-11-02 · Benjamin : après l'étape en cours (corr-fin-8 : 7d, n° 18 à 23), faire le point et attendre son feu vert avant de continuer.
+- 2026-11-02 · Méthode « rapide et économe » de PLAN-REPRISE.md ancrée dans CLAUDE.md : s'applique d'office à tout le projet ; toujours le modèle le plus fort (Benjamin 1B). Retour arrière : ancienne façon.

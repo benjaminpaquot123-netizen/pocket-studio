@@ -30,6 +30,14 @@ Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues 
 
 - Chaque erreur signalée par Benjamin : la corriger là où il l'a vue ET vérifier partout où elle peut se reproduire, avec un test qui couvre tous les cas.
 
+## Méthode de travail (Benjamin, 2026-11-02 : rapide et économe, toujours)
+Détail et sources : `docs/PLAN-REPRISE.md`.
+- Une équipe à la fois, deux au plus en parallèle sur des parties qui ne se touchent pas ; toujours le modèle le plus fort (choix 1B).
+- Consignes fermées : fichiers exacts (via `docs/CARTE-CODE.md`), tests qui prouvent la fin, ce qu'il ne faut pas toucher.
+- Les équipes : tests ciblés seulement, résumé des journaux (jamais le journal entier), captures des seuls écrans touchés, commit à chaque morceau vert.
+- L'orchestrateur lance lui-même les grandes vérifications (une seule, au moment de ranger dans fx-int) et la compilation de l'APK.
+- Nouvelles à Benjamin à chaque étape, en 3 à 5 lignes.
+
 ## Règle d'or
 Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vérifier licence et dernière version, tenir `THIRD_PARTY.md` à jour. Trois échecs sérieux sur une brique = alternative suivante + ligne dans DECISIONS.md.
 

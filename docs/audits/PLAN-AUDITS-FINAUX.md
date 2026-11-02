@@ -1,6 +1,6 @@
 # Plan des audits finaux (préparé le 2026-10-29, pas encore lancé)
 
-> **Depuis le 2026-11-01, la référence est `docs/audits/AUDIT.md`** (version unique revue par experts). Ce fichier garde le détail des rôles (§2, §2 bis), du lot Master pro (§1 bis) et des parcours (§3).
+> **Depuis le 2026-11-01, la référence est `docs/audits/AUDIT.md`** (version unique revue par experts). Ce fichier garde le détail des rôles (§2, §2 bis), du lot Master pro (§1 bis), des parcours (§3), des langues (§4) et de la gravité (§6). Les §5, §7, §8 et §9 sont remplacés par AUDIT (2026-11-02 : ils contredisaient la règle des deux équipes et les chiffres à jour).
 
 Demande de Benjamin : « des audits finaux pour contrôler que tout fonctionne nickel » ; des débutants, des pros et des ingénieurs du son ; les sons récupérés et analysés ; chaque tour dans des langues différentes jusqu'à ce que toutes y passent ; on recommence en corrigeant le grave puis le moins grave ; des audits d'ergonomie et de design aussi : « il faut tout penser ».
 
@@ -162,11 +162,7 @@ Benjamin le veut ainsi : les auditeurs d'ergonomie et de design sont des profess
 - Le rapport est toujours rédigé en français.
 
 ## 5. Les audits automatiques (sans testeur, avant chaque tour)
-- **Matrice de captures** : chaque écran × 15 langues × 4 tailles. Elle détecte les textes coupés (`hasVisualOverflow`), les chevauchements et ce qui sort de l'écran.
-- **Cibles tactiles** : tout élément cliquable de moins de 48 dp dans l'arbre sémantique. **Contrastes** : texte et fond mesurés sur les captures.
-- **Libellés** : tout bouton à icône sans description (TalkBack).
-- **Banc des morceaux** (`scripts/song-bench.sh`) : les 37 styles de l'assistant et les 37 morceaux cibles des tutos, rendus et mesurés selon le §1.2.
-- **Parcours automatiques** : `TutoJourneyTest` sur les 37 cours, et les tests existants (≈ 4 800).
+Remplacé par AUDIT, étage 1 (contrôles automatiques massifs).
 
 ## 6. La gravité
 - **Bloquant** : on ne peut pas finir, plantage, perte de projet, son cassé.
@@ -176,36 +172,13 @@ Benjamin le veut ainsi : les auditeurs d'ergonomie et de design sont des profess
 - **Idée** : pas un défaut, à garder pour plus tard.
 
 ## 7. La boucle
-1. Audits automatiques (§5), puis un tour de 6 sièges.
-2. Synthèse : dédoublonner, classer, séparer banc et appli (chaque défaut est reproduit avant d'être corrigé).
-3. Corrections par lots en parallèle :
-   - tout Bloquant, Grave et Moyen ;
-   - tout ce que ≥ 2 testeurs ont dit ;
-   - les Mineurs groupés.
-4. Revue neuve, tests complets, captures regardées.
-5. Tour suivant : testeurs neufs, autres langues, parcours qui couvrent aussi les zones corrigées.
-6. **On s'arrête** quand ces 4 conditions sont réunies :
-   - un tour complet ne trouve ni Bloquant ni Grave, et les Moyens se comptent sur les doigts d'une main ; chaque écran a au moins 8/10 sur chaque critère des auditeurs d'ergonomie et de design (§2 bis) ;
-   - les 15 langues sont passées ;
-   - le banc des morceaux est dans les cibles ;
-   - la matrice de captures est propre.
-7. Ensuite, Benjamin teste sur son téléphone et sa tablette : micro, MIDI, haut-parleur, ressenti.
+Remplacé par AUDIT §6 (boucle et critères d'arrêt). Le test de Benjamin sur téléphone et tablette est dans sa liste (`docs/PLAN-REPRISE.md`).
 
 ## 8. Ce qui est prêt et ce qui reste à préparer
-- **Prêt** : le banc testeur humain (6 sièges), le banc des morceaux, les briefs des tours précédents, les tests automatiques.
-- **En préparation** (équipe Banc 2) : la langue par siège, la commande `ecoute` (rendu par le vrai moteur, rapport et spectrogramme), la conservation et l'analyse des fichiers exportés, les sons des packs lisibles au rendu.
-- **À faire avant le tour 1** : le lot « Master pro » (§1 bis).
-- **À préparer avant le tour 1** :
-  - les profils d'appareil par siège (petit téléphone, tablette, paysage, 130 %) ;
-  - la matrice de captures × 15 langues avec détection des débordements ;
-  - les détecteurs de cibles tactiles, de contraste et de libellés ;
-  - les briefs par rôle (débutant, pro, ingénieur du son, ergonome, designer, accessibilité) ;
-  - les gabarits de rapport.
+Remplacé par AUDIT §3 (préparation, dont les outils des tours) et l'étape E de `docs/PLAN-REPRISE.md` (Master pro).
 
 ## 9. Le coût
-- **Par tour** : 6 testeurs, 1 synthèse, 3 à 5 équipes de correction, 1 revue neuve. C'est l'ordre de grandeur des tours du tuto.
-- **Au total** : 3 tours au minimum pour faire passer les 15 langues, plus ceux qu'il faut pour qu'il ne reste plus de grave.
-- **Les audits automatiques** coûtent peu : ils passent avant chaque tour pour économiser les testeurs.
+Remplacé par AUDIT §8.
 
 ## §10 Boîte à astuces (recherche du 2026-11-01, demande de Benjamin)
 Objectif : trouver tous les bugs et vérifier la logique d'utilisation, à la toute fin des modifications. Principe d'économie : d'abord les contrôles automatiques (bon marché, relançables), ensuite les équipes d'auditeurs IA, enfin les vrais humains.

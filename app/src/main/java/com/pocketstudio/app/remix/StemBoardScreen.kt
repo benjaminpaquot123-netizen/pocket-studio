@@ -105,7 +105,18 @@ class StemBoardUi(
     val peaks: StemPeakSource,
     /** Where the peaks are computed (never the main thread in the app; tests may compute them inline). */
     val peaksContext: CoroutineContext = Dispatchers.Default,
+    /**
+     * n° 18: where the project's ▶ is in the song (frames, -1: stopped), polled on the main thread
+     * (RhythmViewModel.pollStemPosition): the board's play head follows it while the music plays.
+     */
+    val songFrame: kotlinx.coroutines.flow.StateFlow<Long>? = null,
 )
+
+/** The song's play head of the board ([StemBoardUi.songFrame]); read while drawing only. */
+internal val LocalBoardSongFrame = androidx.compose.runtime.staticCompositionLocalOf<androidx.compose.runtime.State<Long>> { androidx.compose.runtime.mutableLongStateOf(-1L) }
+
+/** The frame the play head shows: a stretch listened to alone first, else the song as the project plays it. */
+internal fun boardHead(listened: Long, song: Long): Long = if (listened >= 0) listened else song
 
 /** The actions of a board nothing is plugged into yet: every button does nothing. */
 object NoStemBoardActions : StemBoardActions {
@@ -145,8 +156,9 @@ fun StemBoard(
     val grid = remember(ui.bpm, ui.firstBeat) { BeatGrid.of(ui.bpm, ui.firstBeat, BOARD_RATE) }
     // What plays and what the actions said: read while drawing (the play head) or in the bar only.
     val work = actions.state.collectAsState()
+    val song = (ui.songFrame ?: StemBoardState.NO_SONG).collectAsState()
     // Cards stay open here: the board's panels have no title to fold.
-    CompositionLocalProvider(LocalFolding provides false) {
+    CompositionLocalProvider(LocalFolding provides false, LocalBoardSongFrame provides song) {
         BoxWithConstraints(modifier.fillMaxSize().padding(12.dp).testTag("board")) {
             val board: @Composable (Modifier) -> Unit = { m ->
                 NeonCard(m) {
@@ -230,6 +242,7 @@ private fun BoardRuler(
     work: State<StemBoardState>,
     modifier: Modifier,
 ) {
+    val songHead = LocalBoardSongFrame.current
     val measurer = rememberTextMeasurer()
     val labelStyle = MonoStyle.copy(color = Neon.TextSecondary, fontSize = MaterialTheme.typography.labelSmall.fontSize)
     val tick = Neon.Outline
@@ -303,7 +316,7 @@ private fun BoardRuler(
                         val x1 = state.x(state.selEnd).coerceAtMost(size.width)
                         if (x1 > x0) drawRect(accent.copy(alpha = 0.55f), Offset(x0, h - 4.dp.toPx()), Size(x1 - x0, 4.dp.toPx()))
                     }
-                    drawPlayHead(work.value.playFrame, state, play)
+                    drawPlayHead(boardHead(work.value.playFrame, songHead.value), state, play)
                 }
             },
     )
@@ -349,6 +362,7 @@ private fun BoardTrack(
     work: State<StemBoardState>,
     modifier: Modifier,
 ) {
+    val songHead = LocalBoardSongFrame.current
     val lane = Neon.SurfaceHigh.copy(alpha = 0.55f)
     val line = Neon.Outline
     val accent = Neon.Cyan
@@ -447,7 +461,7 @@ private fun BoardTrack(
                             drawHandle(x0, accent, edgeWidth, knobW, knobH)
                             drawHandle(x1, accent, edgeWidth, knobW, knobH)
                         }
-                        drawPlayHead(work.value.playFrame, state, play)
+                        drawPlayHead(boardHead(work.value.playFrame, songHead.value), state, play)
                         drawRoundRect(line.copy(alpha = 0.35f), cornerRadius = corner, style = border)
                     }
                 },

@@ -106,5 +106,8 @@ data class StemBoardState(
     companion object {
         /** Nothing playing, nothing said. */
         val IDLE: StateFlow<StemBoardState> = MutableStateFlow(StemBoardState())
+
+        /** No song position known (a board shown without the project's transport). */
+        val NO_SONG: StateFlow<Long> = MutableStateFlow(-1L)
     }
 }

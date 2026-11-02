@@ -1,7 +1,7 @@
 # Pocket Studio : règles permanentes
 
 Référence complète : `docs/SPEC.md` (le prompt d'origine ; ne le modifier que sur demande de Benjamin).
-Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues GitHub ouvertes (rapports de recette et bugs) ; regarder aussi le dernier passage de « Nightly real use » (`docs/TESTS-REELS.md`) et traiter un échec.
+Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues GitHub ouvertes (rapports de recette et bugs) ; regarder aussi le dernier passage de « Nightly real use » (`docs/TESTS-REELS.md`) et traiter un échec (seul, il ne teste que main : pendant la reprise, il est lancé à la main sur fx-int à chaque rangement).
 À la fin de chaque session : commit poussé (même en plein travail) et `docs/PROGRESS.md` à jour.
 « continue » = reprendre la prochaine étape notée dans `docs/PROGRESS.md` (la première case non cochée de `docs/PLAN-REPRISE.md`), sans rien demander.
 
@@ -31,7 +31,7 @@ Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues 
 - Chaque erreur signalée par Benjamin : la corriger là où il l'a vue ET vérifier partout où elle peut se reproduire, avec un test qui couvre tous les cas.
 
 ## Méthode de travail (Benjamin, 2026-11-02 : rapide et économe, toujours)
-Détail et sources : `docs/PLAN-REPRISE.md`.
+Ordre des étapes, règles anti-conflit et sources : `docs/PLAN-REPRISE.md`.
 - Deux équipes en parallèle d'office quand c'est possible (parties qui ne se touchent pas, machine qui suit : disque > 5 Go, tests qui ne ralentissent pas), sinon une ; jamais plus de deux (sauf les sièges d'un tour de testeurs de l'Audit, seuls sur la machine) ; toujours le modèle le plus fort (choix 1B).
 - Consignes fermées : fichiers exacts (via `docs/CARTE-CODE.md`), tests qui prouvent la fin, ce qu'il ne faut pas toucher.
 - Les équipes : tests ciblés seulement, résumé des journaux (jamais le journal entier), captures des seuls écrans touchés, commit à chaque morceau vert.
@@ -66,7 +66,7 @@ Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vér
 ## Livraison
 - Une branche et une pull request par phase ; chaque PR publie l'aperçu sur la pré-release fixe `preview`.
 - Chaque fusion sur main publie une Release ; `releases/latest/download/pocket-studio.apk` = dernière version stable.
-- versionCode = numéro d'exécution de la CI. Changelog français de 5 lignes max dans `app/src/main/assets/changelog.txt`.
+- versionCode = numéro d'exécution de la CI ; une APK faite en local prend `VERSION_CODE` = dernière APK envoyée + 1 (notée dans PROGRESS), et toute APK suivante, CI comprise, doit rester au-dessus (sinon elle ne s'installe pas par-dessus). Changelog français de 5 lignes max dans `app/src/main/assets/changelog.txt`.
 - Liste de recette du jalon en cours : `app/src/main/assets/recette.json` (à réécrire à chaque jalon).
 - Signature : keystore chiffré `signing/release.p12` dans le dépôt, mot de passe dans le secret GitHub `SIGNING_PASSWORD`.
 

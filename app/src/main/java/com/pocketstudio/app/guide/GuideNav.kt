@@ -96,7 +96,8 @@ object GuideNav {
         return when (open.spot) {
             "tempo" -> GuideGo.Tempo
             "key" -> GuideGo.Chords
-            "song.parts" -> GuideGo.Tab(AppTab.Morceau, listOf("part_play_0", "structure_switch"), partsView = !simple)
+            // n° 19: in the Mode simple no switch; an empty song: where parts are added.
+            "song.parts" -> GuideGo.Tab(AppTab.Morceau, listOf("part_play_0", "structure_switch", "song_add", "timeline_ruler"), partsView = !simple)
             "song.add" -> GuideGo.Tab(AppTab.Morceau, listOf("song_add"), partsView = !simple)
             "sounds.track", "sounds.favorite" -> soundOf(track) ?: structure
             // G3: an instrument track's layers in their editor; another track's sound as before.

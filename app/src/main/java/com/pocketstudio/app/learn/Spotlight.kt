@@ -379,9 +379,17 @@ private const val REVEAL_MARGIN_PX = 48f
 object SpotChecks {
     var log: MutableList<Pair<List<String>, String?>>? = null
 
-    /** Records whether [ids] can be seen once their screen settled (tests only: nothing kept otherwise). */
-    fun record(registry: SpotRegistry, ids: List<String>) {
-        log?.add(ids to registry.hidden(ids))
+    /**
+     * Records whether [ids] can be seen once their screen settled (tests only: nothing kept otherwise).
+     * [found]: false when the place never came on the screen (a folded card); a place gone since
+     * (the screen moved on) is not judged.
+     */
+    fun record(registry: SpotRegistry, ids: List<String>, found: Boolean = true) {
+        val log = log ?: return
+        if (ids.isEmpty()) return
+        if (!found) { log.add(ids to "absent (carte repliée ou pas à l'écran)"); return }
+        if (ids.none { registry.find(it) != null }) return
+        log.add(ids to registry.hidden(ids))
     }
 }
 private const val REVEAL_WAIT_MS = 100L
@@ -401,12 +409,13 @@ private fun androidx.compose.foundation.layout.BoxScope.BoxLayoutHalf(target: Re
  * frames to put it), then, once the scroll settled, recorded for the tests ([SpotChecks]).
  */
 suspend fun revealAndCheck(registry: SpotRegistry, targets: List<String>) {
+    var found = false
     for (i in 0 until REVEAL_TRIES) {
-        if (targets.any { registry.reveal(it) }) break
+        if (targets.any { registry.reveal(it) }) { found = true; break }
         kotlinx.coroutines.delay(REVEAL_WAIT_MS)
     }
     kotlinx.coroutines.delay(REVEAL_SETTLE_MS)
-    SpotChecks.record(registry, targets)
+    SpotChecks.record(registry, targets, found)
 }
 
 /** A scroll into view takes this long at most. */

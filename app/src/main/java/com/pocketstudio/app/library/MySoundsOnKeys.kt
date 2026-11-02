@@ -39,7 +39,8 @@ fun MySoundsOnKeys(vm: RhythmViewModel, track: Int, close: () -> Unit) {
     Column(Modifier.testTag("keys_mine"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         SectionLabel(tr("Ma bibliothèque"))
         TileGrid(mine.size) { i, m ->
-            val s = mine[i]
+            // The library may shrink between the count and the tile (a sound deleted elsewhere): no crash.
+            val s = mine.getOrNull(i) ?: return@TileGrid
             val look = SoundLooks.of(s.kind)
             SoundTile(
                 title = DefaultNames.shownSample(s.name), icon = look.icon, accent = look.color, selected = false,

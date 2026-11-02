@@ -103,6 +103,40 @@ object SongMatter {
     fun voiceNotes(mono: FloatArray, rate: Int, stepFrames: Double, steps: Int): List<Note> =
         followedNotes(mono, rate, stepFrames, steps, workRate = 8000, minHz = 90.0, maxHz = 1100.0, range = 43..84)
 
+    /**
+     * n° 23: the bar a melody of [bars] bars is best taken from, given each bar's loudness
+     * ([levels], one value a bar of the song): the window with the most bars sung (louder than a
+     * quarter of the loudest), started on its first sung bar, so the notes begin where the voice
+     * does (never the song's silent intro). 0 when nothing sings.
+     */
+    fun singingStart(levels: DoubleArray, bars: Int): Int {
+        if (levels.isEmpty() || bars <= 0) return 0
+        val top = levels.max()
+        if (top <= 0.0) return 0
+        val sung = BooleanArray(levels.size) { levels[it] >= SUNG * top }
+        val counts = IntArray(levels.size) { b -> if (!sung[b]) 0 else (b until minOf(levels.size, b + bars)).count { sung[it] } }
+        val best = counts.max()
+        if (best == 0) return 0
+        // The earliest window nearly as sung as the best one: the notes start with the first verse, not later.
+        return counts.indexOfFirst { it > 0 && it >= NEARLY * best }
+    }
+
+    /** A bar is sung when it is louder than this share of the loudest. */
+    private const val SUNG = 0.25
+    private const val NEARLY = 0.75
+
+    /**
+     * n° 23: the sound a voice in notes gets at first: soft, round, a little breath and vibrato, closer
+     * to a voice than a test tone (any sound can sing it after).
+     */
+    val VOICE_SOUND: SynthPatch = SynthPatch(SynthPatch.DEFAULTS).let { base ->
+        listOf(
+            SynthPatch.OSC1_WAVE to 1f, SynthPatch.OSC2_DETUNE to 0.56f, SynthPatch.CUTOFF to 0.42f, SynthPatch.RESONANCE to 0.12f,
+            SynthPatch.FILTER_ENV to 0.12f, SynthPatch.A_ATTACK to 0.22f, SynthPatch.A_SUSTAIN to 0.9f, SynthPatch.A_RELEASE to 0.42f,
+            SynthPatch.VIBRATO to 0.12f, SynthPatch.LFO1_RATE to 0.42f,
+        ).fold(base) { p, (k, v) -> p.with(k, v) }
+    }
+
     private fun followedNotes(mono: FloatArray, rate: Int, stepFrames: Double, steps: Int, workRate: Int, minHz: Double, maxHz: Double, range: IntRange): List<Note> {
         if (rate <= 0 || stepFrames <= 0 || steps <= 0) return emptyList()
         val factor = (rate / workRate).coerceAtLeast(1)
@@ -145,11 +179,23 @@ object SongMatter {
                     }
                 }
                 if (found <= 0) continue
-                val hz = r / found
+                // n° 23: between two lags (parabola through the dip): a high voice is a few lags long at 8 kHz,
+                // one lag off was up to two semitones off.
+                val lag = if (found in 2 until maxLag) {
+                    val a = diff[found - 1]; val b = diff[found]; val c = diff[found + 1]
+                    val den = a - 2 * b + c
+                    if (den > 0) found + (0.5 * (a - c) / den).coerceIn(-0.5, 0.5) else found.toDouble()
+                } else found.toDouble()
+                val hz = r / lag
                 val midi = (69 + 12 * ln(hz / 440.0) / ln(2.0)).roundToInt()
                 if (midi in range) votes.merge(midi, 1, Int::plus)
             }
             pitches[s] = votes.maxByOrNull { it.value }?.key ?: -1
+        }
+        // A step an octave off between two equal ones (YIN's octave slip): the pitch around it.
+        for (k in 1 until steps - 1) {
+            val a = pitches[k - 1]; val b = pitches[k]; val c = pitches[k + 1]
+            if (a >= 0 && a == c && b >= 0 && abs(b - a) == 12) pitches[k] = a
         }
         val notes = mutableListOf<Note>()
         var s = 0

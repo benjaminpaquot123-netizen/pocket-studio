@@ -32,7 +32,7 @@ Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues 
 
 ## Méthode de travail (Benjamin, 2026-11-02 : rapide et économe, toujours)
 Détail et sources : `docs/PLAN-REPRISE.md`.
-- Une équipe à la fois, deux au plus en parallèle sur des parties qui ne se touchent pas ; toujours le modèle le plus fort (choix 1B).
+- Deux équipes en parallèle d'office quand c'est possible (parties qui ne se touchent pas, machine qui suit : disque > 5 Go, tests qui ne ralentissent pas), sinon une ; jamais plus de deux ; toujours le modèle le plus fort (choix 1B).
 - Consignes fermées : fichiers exacts (via `docs/CARTE-CODE.md`), tests qui prouvent la fin, ce qu'il ne faut pas toucher.
 - Les équipes : tests ciblés seulement, résumé des journaux (jamais le journal entier), captures des seuls écrans touchés, commit à chaque morceau vert.
 - L'orchestrateur lance lui-même les grandes vérifications (une seule, au moment de ranger dans fx-int) et la compilation de l'APK.

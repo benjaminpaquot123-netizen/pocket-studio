@@ -1004,3 +1004,4 @@
 - 2026-11-01 · Testeurs réels externes (test fermé Google Play, Reddit, forums) : à la toute fin, dans l'étage 7 de l'Audit (Benjamin). Retour arrière : plus tôt.
 - 2026-11-02 · Benjamin : après l'étape en cours (corr-fin-8 : 7d, n° 18 à 23), faire le point et attendre son feu vert avant de continuer.
 - 2026-11-02 · Méthode « rapide et économe » de PLAN-REPRISE.md ancrée dans CLAUDE.md : s'applique d'office à tout le projet ; toujours le modèle le plus fort (Benjamin 1B). Retour arrière : ancienne façon.
+- 2026-11-02 · Benjamin : deux équipes en parallèle acceptées d'office tant que ça ne ralentit pas. Retour arrière : une à la fois.

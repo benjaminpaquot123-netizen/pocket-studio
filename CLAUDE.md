@@ -3,7 +3,7 @@
 Référence complète : `docs/SPEC.md` (le prompt d'origine ; ne le modifier que sur demande de Benjamin).
 Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues GitHub ouvertes (rapports de recette et bugs) ; regarder aussi le dernier passage de « Nightly real use » (`docs/TESTS-REELS.md`) et traiter un échec.
 À la fin de chaque session : commit poussé (même en plein travail) et `docs/PROGRESS.md` à jour.
-« continue » = reprendre la prochaine étape notée dans `docs/PROGRESS.md`, sans rien demander.
+« continue » = reprendre la prochaine étape notée dans `docs/PROGRESS.md` (la première case non cochée de `docs/PLAN-REPRISE.md`), sans rien demander.
 
 ## Rôles
 - Benjamin ne code pas, ne lit pas le code et ne recopie jamais d'erreur. Il tranche, teste sur son téléphone, valide.
@@ -11,7 +11,7 @@ Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues 
 - Le prévenir seulement quand il doit faire quelque chose (tester, un compte, une licence, un secret GitHub : une seule demande groupée, pas à pas), et continuer quand même tout ce qui peut avancer sans lui.
 - Questions : numérotées, 2 à 4 options, la recommandée en premier, conséquence en une ligne, réponse du type « 1A, 2B ». Un lot par jalon au maximum.
 - Confiance de Benjamin (2026-10-24) : « prends les décisions pour moi ». Ne plus attendre ses réponses : choisir l'option recommandée, la noter dans `docs/DECISIONS.md`, avancer. Ne lui demander que ce qu'il est seul à pouvoir faire (tester sur son téléphone, un compte, un secret, une licence).
-- Mode économie de quota (par défaut, permanent) : peu d'agents et à la file (1 agent pour 2-3 tâches proches), modèle léger pour relectures et petites tâches, une seule relecture par version, messages courts, pas de vérifications inutiles. Si Benjamin dit « tu peux accélérer », mode rapide (agents en parallèle) pour la phase en cours seulement ; à la fin de cette phase, revenir automatiquement en économie et le lui dire.
+- Mode économie de quota (par défaut, permanent) : la « Méthode de travail » ci-dessous (elle remplace « à la file » et « modèle léger », 2026-11-02) ; une seule relecture par version, messages courts, pas de vérifications inutiles.
 - Retours de Benjamin (captures + explications de bug) : ne pas les analyser tout de suite. Les ranger dans `docs/RETOURS.md` (date, capture décrite, texte de Benjamin, une ligne par retour), répondre en une phrase « noté », et tout analyser d'un coup seulement quand Benjamin le demande (économie de quota). Après traitement, marquer chaque retour comme fait.
 - Tout le reste : décider, noter une ligne dans `docs/DECISIONS.md` (choix, raison, retour arrière), avancer.
 - Toujours parler français avec Benjamin (conversation, messages, rappels).
@@ -32,7 +32,7 @@ Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues 
 
 ## Méthode de travail (Benjamin, 2026-11-02 : rapide et économe, toujours)
 Détail et sources : `docs/PLAN-REPRISE.md`.
-- Deux équipes en parallèle d'office quand c'est possible (parties qui ne se touchent pas, machine qui suit : disque > 5 Go, tests qui ne ralentissent pas), sinon une ; jamais plus de deux ; toujours le modèle le plus fort (choix 1B).
+- Deux équipes en parallèle d'office quand c'est possible (parties qui ne se touchent pas, machine qui suit : disque > 5 Go, tests qui ne ralentissent pas), sinon une ; jamais plus de deux (sauf les sièges d'un tour de testeurs de l'Audit, seuls sur la machine) ; toujours le modèle le plus fort (choix 1B).
 - Consignes fermées : fichiers exacts (via `docs/CARTE-CODE.md`), tests qui prouvent la fin, ce qu'il ne faut pas toucher.
 - Les équipes : tests ciblés seulement, résumé des journaux (jamais le journal entier), captures des seuls écrans touchés, commit à chaque morceau vert.
 - L'orchestrateur lance lui-même les grandes vérifications (une seule, au moment de ranger dans fx-int) et la compilation de l'APK.
@@ -54,7 +54,7 @@ Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vér
 - `./gradlew :app:testDebugUnitTest` (logique) et `./gradlew :app:verifyRoborazziDebug` / `recordRoborazziDebug` (captures d'écran, à regarder soi-même).
 - `./gradlew :app:assembleRelease` : ne JAMAIS le lancer à chaque chantier ni à chaque phase (ça coûte du quota). Benjamin (2026-10-23) : l'APK ne se construit et ne s'envoie qu'une fois tout le plan terminé. La CI de GitHub fait ses propres constructions toute seule. La CI ajoute un test de fumée sur émulateur x86_64.
 - `./scripts/live-bench.sh` : « écoute en direct », les morceaux joués comme sur le téléphone (moteur temps réel, mêmes commandes que l'appli), niveau seconde par seconde, alerte fondu / silence / saut. Benjamin (2026-10-24) : chaque audit et chaque écoute de vérification passent aussi par ce chemin, jamais seulement par l'export.
-- APK : Benjamin (2026-10-24) : n'en construire et n'en envoyer que sur sa demande explicite.
+- APK : Benjamin (2026-10-24) : n'en construire et n'en envoyer que sur sa demande explicite. Déjà demandée : l'APK d'audit (étape G de `docs/PLAN-REPRISE.md`, consigne du 2026-10-31) et les versions release de l'Audit.
 - CI rouge : lire les journaux, corriger, relancer. N'en parler que si réglé ou vraiment bloqué.
 
 ## Revue de fin de phase (obligatoire)

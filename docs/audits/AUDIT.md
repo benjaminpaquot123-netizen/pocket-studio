@@ -6,7 +6,7 @@ Ce document **remplace et réunit** :
 - « tout est connecté » §11 ;
 - les ajouts smartphone/tablette de `docs/etudes/USAGE-TABLETTE-SMARTPHONE.md` §6.
 
-Les sections de l'ancien plan restent la référence pour le détail des rôles (§2, §2 bis), du lot Master pro (§1 bis) et des parcours (§3). Ce document fixe l'ordre, les règles, les critères d'arrêt et ajoute ce que la revue par experts a trouvé.
+Les sections de l'ancien plan restent la référence pour le détail des rôles (§2, §2 bis), du lot Master pro (§1 bis), des parcours (§3), des langues par tour (§4) et de la gravité (§6) ; ses §5, §7, §8 et §9 sont remplacés par ce document. Ce document fixe l'ordre, les règles, les critères d'arrêt et ajoute ce que la revue par experts a trouvé.
 
 **Quand :** à la toute fin des modifications, seulement sur le signal de Benjamin. La préparation (§3) commence dès le gel, sans attendre ce signal.
 **Conditions d'entrée (toutes vraies) :** étapes A à G de `docs/PLAN-REPRISE.md` faites, dont le lot « Master pro » (PLAN-AUDITS-FINAUX §1 bis) ; code gelé à l'étiquette `audit-1` ; APK release signée de cette étiquette ; zéro test rouge ; CI verte.
@@ -37,9 +37,10 @@ Les trois plans ont été relus sous l'angle de 9 métiers. C'est une relecture 
 2. **Tout est reproductible.** Graine du hasard notée, projet de départ joint, vidéo ou son à l'appui ; un défaut non reproduit n'est pas corrigé au hasard, il est d'abord reproduit par un test.
 3. **Chaque défaut a son oracle**, c'est-à-dire sa façon de savoir que c'est faux : une règle, une mesure, une comparaison ou une référence.
 4. **Règle « partout » de Benjamin** : chaque défaut est cherché partout où il peut se reproduire, et corrigé à la racine, avec un test qui couvre tous les cas. Chaque changement de design s'applique partout.
-5. **Version release.** On audite l'APK signée comme celle de Benjamin (R8 actif), pas la version de développement : celle de l'étiquette `audit-1`, puis une nouvelle étiquette à chaque tour (`audit-2`…).
+5. **Version release.** On audite l'APK signée comme celle de Benjamin (R8 actif), pas la version de développement : celle de l'étiquette `audit-1`, puis une nouvelle étiquette à chaque tour (`audit-2`…). Seuls le banc testeur (Robolectric) et les instruments de debug (LeakCanary, StrictMode, couverture) tournent forcément sur la version de debug.
 6. **Gel.** Pendant un tour, on ne développe aucune nouvelle fonction : seulement des corrections, sur des branches à part.
 7. **Économie.** On commence par ce qui ne coûte presque rien (automatique), et on finit par ce qui coûte le plus (équipes IA, humains). On ne relance que ce que les corrections ont touché, sauf au tour final où l'on relance tout.
+8. **Où ça tourne.** Ici (Linux, 4 cœurs, sans émulateur : pas de `/dev/kvm`) : tests hôtes, Robolectric, banc testeur, captures. Sur l'émulateur de la CI (lancée à la main) : la release R8 écran par écran, le démarrage à froid, `monkey`, le chaos Android, les images par seconde, la mémoire. Sur le téléphone de Benjamin : sa liste (`docs/PLAN-REPRISE.md`). Un contrôle qui ne peut tourner nulle part est remplacé par le plus proche possible et noté dans DECISIONS, jamais laissé ouvert.
 
 ## 2. Carte des risques (où chercher en premier)
 | Zone | Gravité si ça casse | Probabilité | Priorité |
@@ -55,14 +56,14 @@ Les trois plans ont été relus sous l'angle de 9 métiers. C'est une relecture 
 | Réglages, aide, rapport de bug | Gêne | Faible | **3** |
 
 ## 3. Préparation (une fois, avant le tour 1)
-- **Projets de référence**, figés et versionnés hors du dépôt public quand ils contiennent de la musique protégée :
+- **Projets de référence**, figés ; hors du dépôt public (copie locale, chemin noté dans la note de suivi) tout ce qui vient de Benjamin ou d'une chanson, et tout ce qui en est tiré (pistes séparées, notes, sons maîtres) :
   - un projet vide ;
   - un petit projet ;
   - un projet énorme (100 mesures, 16 pistes, 16 pads, chanson séparée) ;
   - un projet de chaque ancienne version de format ;
   - l'Acidcore de Benjamin ;
   - le projet Remix « ADÉLA - Boys » (chanson de test locale, jamais commitée).
-- **Sons « maîtres »** : l'export de chaque projet de référence avec la version de départ ; chaque tour compare au maître (test de nullité, tolérance chiffrée).
+- **Sons « maîtres »** : l'export de chaque projet de référence avec la version de départ (re-rendus depuis `audit-1` s'ils sont perdus) ; chaque tour compare au maître (test de nullité, tolérance chiffrée).
 - **Matrice d'appareils** (émulateurs et profils) :
   - petit téléphone 360 dp à 3 Go de mémoire ;
   - téléphone standard ;
@@ -73,7 +74,8 @@ Les trois plans ont été relus sous l'angle de 9 métiers. C'est une relecture 
   - un pliable (ouvert et fermé) ;
   - chacun en portrait et en paysage, en écran partagé, à 100 %, 130 % et 200 %.
 - **Instruments de mesure** : LeakCanary, StrictMode, détecteur d'ANR, traces Perfetto, compteur d'images, ASan/UBSan/TSan pour le moteur, couverture Jacoco, PIT (mutations), générateur de paires (type NIST ACTS), carte des fonctions (§5, étage 2).
-- **Pseudo-traduction** : une 16e « langue » de test, avec des textes plus longs, des accents et une écriture de droite à gauche.
+- **Outils des tours** (reste de l'ancien §8) : langue et profil d'appareil par siège ; la commande `ecoute` (rendu par le vrai moteur, rapport et spectrogramme : elle n'existe pas encore) ; fichiers exportés gardés et analysés ; `scripts/live-bench.sh` qui rejoue aussi les copies étirées (reste du n° 16 : `NativeSample.stretched` est nul sous l'enregistreur) ; détecteurs de cibles, contrastes et libellés.
+- **Pseudo-traduction** : une 16e « langue » de test (dans les tests seulement), avec des textes plus longs, des accents et une écriture de droite à gauche.
 - **Gabarits** : fiche de défaut, tableau de bord du tour, briefs par rôle.
 
 ---
@@ -89,7 +91,7 @@ Chaque étage doit être vert avant de passer au suivant, sauf les découvertes 
 - Licences tierces à jour (`THIRD_PARTY.md`), aucun secret dans le dépôt, aucune chanson protégée dans le dépôt.
 
 ### Étage 1 : contrôles automatiques massifs
-- **Captures** : chaque écran × 16 langues (dont la pseudo-traduction) × matrice d'appareils. On détecte les textes coupés, les chevauchements et ce qui sort de l'écran, puis on fait relire chaque capture par un « œil » IA.
+- **Captures** : chaque écran × 16 langues (dont la pseudo-traduction) × matrice d'appareils, combinaisons tirées par paires (générateur de paires), pas le produit complet. On détecte les textes coupés, les chevauchements et ce qui sort de l'écran ; l'« œil » IA ne relit que les captures signalées et les écrans clés dans chaque langue, jamais toutes.
 - **Accessibilité** : cibles d'au moins 48 dp, contrastes, libellés, ordre de lecture TalkBack (Accessibility Test Framework).
 - **Son** : banc des 37 styles, kick dans le mix, sonie et true peak, comparaison au son maître, direct = export.
 - **Exports** : matrice format × fréquence × bits × cible × plafond, nullité des pistes séparées, allers-retours MIDI et projet.
@@ -166,13 +168,8 @@ Chaque étage doit être vert avant de passer au suivant, sauf les découvertes 
   - 10 minutes de calage à l'échantillon près ;
   - zéro allocation, verrou ou log dans le rappel audio ;
   - charge de l'interface (défilement, animations) pendant le son.
-- **Sur le téléphone de Benjamin**, liste à lui donner :
-  - OboeTester (latence aller-retour, test de glitchs, compteur XRuns) ;
-  - trace Perfetto pendant le pire cas ;
-  - 30 minutes de Live pour la chauffe ;
-  - casque Bluetooth (message et compensation) ;
-  - MiniLab 3.
-- **Écoute** : l'ingénieur du son écoute à l'aveugle (test ABX) les exports contre le son maître, et juge le master Spotify et le master club.
+- **Sur le téléphone de Benjamin** : sa liste, moment 1 (`docs/PLAN-REPRISE.md`).
+- **Écoute** : l'ingénieur du son IA juge les exports, le master Spotify et le master club avec `ecoute` (rapport, spectrogramme, écart mesuré au son maître) ; une IA n'entend pas, donc pas de test ABX : l'oreille, c'est Benjamin (sa liste).
 
 ### Étage 5 : utilisabilité experte
 - **3 évaluateurs indépendants**, chacun avec les 10 heuristiques de Nielsen et les heuristiques mobiles, écran par écran ; on fusionne ensuite les trouvailles.
@@ -201,7 +198,7 @@ Chaque étage doit être vert avant de passer au suivant, sauf les découvertes 
   - non francophone.
 - Un parcours, une langue et un appareil par siège ; un « œil » compare l'écran attendu à l'écran obtenu (bugs qui ne plantent pas).
 - **Parcours** : ceux de l'ancien §3, plus :
-  - le Pad Live depuis l'accueil (moins de 5 s jusqu'au premier son) ;
+  - le Pad Live depuis l'accueil (premier son en 1 toucher) ;
   - la découpe du Remix ;
   - « Piocher dans la chanson » ;
   - les tutos avec « Montre-moi » ;
@@ -246,7 +243,7 @@ Chaque étage doit être vert avant de passer au suivant, sauf les découvertes 
 - **utilisabilité** :
   - au moins 90 % de réussite sur chaque tâche clé ;
   - SUS d'au moins 80 ;
-  - premier son du Pad Live en moins de 5 s ;
+  - premier son du Pad Live en 1 toucher depuis l'accueil, et en moins de 5 s sur le téléphone de Benjamin ;
   - chaque écran à 8/10 minimum.
 
 Les mesures d'utilisabilité ci-dessus viennent des testeurs IA ; l'étage 7 les confirme avec de vrais humains et ne rouvre la boucle que pour un Bloquant ou un Grave.
@@ -268,6 +265,6 @@ Ensuite seulement, l'étage 7 (Benjamin et ses proches ; le test fermé du Play 
 - Deux équipes au plus (Benjamin, 2026-11-02), avec une consigne fermée, et elles ne lancent que leurs tests ciblés ; l'agent lance les grandes vérifications.
 
 ## 9. Ce que Benjamin fera
-Une seule liste, en deux moments (APK d'audit, puis étage 7) : voir `docs/PLAN-REPRISE.md`, « Ce que Benjamin fera ». Elle comprend OboeTester, 30 min de Live au MiniLab, le casque Bluetooth, la trace Perfetto, le signal « Audit », le compte Google Play Console et l'accord pour recruter les 12 testeurs, puis le bug bash et le journal de 3 jours.
+Une seule liste, en deux moments (APK d'audit, puis étage 7), tenue à un seul endroit : `docs/PLAN-REPRISE.md`, « Ce que Benjamin fera ».
 
 Sources (en plus de celles des §10 et §11 de l'ancien plan et de l'étude smartphone/tablette) : [Android Vitals (Google)](https://developer.android.com/topic/performance/vitals) · [Qualité des applis grand écran (Android)](https://developer.android.com/docs/quality-guidelines/large-screens-app-quality) · [Nielsen : combien d'évaluateurs](https://www.nngroup.com/articles/how-to-conduct-a-heuristic-evaluation/) · [WCAG 2.2](https://www.w3.org/TR/WCAG22/) · [OboeTester](https://github.com/google/oboe/blob/master/apps/OboeTester/docs/Usage.md) · [Don't kill my app](https://dontkillmyapp.com/)

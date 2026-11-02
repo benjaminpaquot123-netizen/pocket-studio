@@ -6,7 +6,7 @@ Ce document **remplace et réunit** :
 - « tout est connecté » §11 ;
 - les ajouts smartphone/tablette de `docs/etudes/USAGE-TABLETTE-SMARTPHONE.md` §6.
 
-Les sections de l'ancien plan restent la référence pour le détail des rôles (§2, §2 bis), du lot Master pro (§1 bis), des parcours (§3), des langues par tour (§4) et de la gravité (§6) ; ses §5, §7, §8 et §9 sont remplacés par ce document. Ce document fixe l'ordre, les règles, les critères d'arrêt et ajoute ce que la revue par experts a trouvé.
+Les sections de l'ancien plan restent la référence pour le détail des rôles (§2, §2 bis), du lot Master pro (§1 bis), des parcours (§3), des langues par tour (§4) et de la gravité (§6) ; ses §1, §5 et §7 à §11 sont remplacés ou réunis ici (gardés pour le détail et les sources) ; **en cas d'écart, ce document fait foi** (exemple : l'arrêt et le nombre d'équipes de l'ancien §10 D). Ce document fixe l'ordre, les règles, les critères d'arrêt et ajoute ce que la revue par experts a trouvé.
 
 **Quand :** à la toute fin des modifications, seulement sur le signal de Benjamin. La préparation (§3) commence dès le gel, sans attendre ce signal.
 **Conditions d'entrée (toutes vraies) :** étapes A à G de `docs/PLAN-REPRISE.md` faites, dont le lot « Master pro » (PLAN-AUDITS-FINAUX §1 bis) ; code gelé à l'étiquette `audit-1` ; APK release signée de cette étiquette ; zéro test rouge ; CI verte.
@@ -73,7 +73,8 @@ Les trois plans ont été relus sous l'angle de 9 métiers. C'est une relecture 
   - Galaxy Tab A11 ;
   - un pliable (ouvert et fermé) ;
   - chacun en portrait et en paysage, en écran partagé, à 100 %, 130 % et 200 %.
-- **Instruments de mesure** : LeakCanary, StrictMode, détecteur d'ANR, traces Perfetto, compteur d'images, ASan/UBSan/TSan pour le moteur, couverture Jacoco, PIT (mutations), générateur de paires (type NIST ACTS), carte des fonctions (§5, étage 2).
+- **Instruments de mesure** : LeakCanary, StrictMode, détecteur d'ANR, traces Perfetto, compteur d'images, ASan/UBSan/TSan pour le moteur, couverture Jacoco, PIT (mutations), générateur de paires (PICT ou allpairspy, libres et installables ici), carte des fonctions (étage 2).
+- **Contrôles sur l'émulateur de la CI** (à créer : les jobs actuels ne testent que la version de debug) : un workflow lancé à la main sur une étiquette `audit-*`, qui installe son APK release et fait ce que le §1, point 8, met sur la CI (écran par écran, démarrage à froid, `monkey`, chaos, images par seconde, mémoire).
 - **Outils des tours** (reste de l'ancien §8) : langue et profil d'appareil par siège ; la commande `ecoute` (rendu par le vrai moteur, rapport et spectrogramme : elle n'existe pas encore) ; fichiers exportés gardés et analysés ; `scripts/live-bench.sh` qui rejoue aussi les copies étirées (reste du n° 16 : `NativeSample.stretched` est nul sous l'enregistreur) ; détecteurs de cibles, contrastes et libellés.
 - **Pseudo-traduction** : une 16e « langue » de test (dans les tests seulement), avec des textes plus longs, des accents et une écriture de droite à gauche.
 - **Gabarits** : fiche de défaut, tableau de bord du tour, briefs par rôle.
@@ -88,7 +89,7 @@ Chaque étage doit être vert avant de passer au suivant, sauf les découvertes 
 - Lint Android, detekt, avertissements du compilateur ; ressources et textes inutilisés.
 - Tests moteur sous ASan, UBSan et TSan.
 - Taille de l'APK, temps de démarrage à froid (objectif : moins de 1,5 s sur le téléphone standard).
-- Licences tierces à jour (`THIRD_PARTY.md`), aucun secret dans le dépôt, aucune chanson protégée dans le dépôt.
+- Licences tierces à jour (`THIRD_PARTY.md`), aucun secret dans le dépôt, aucune chanson protégée ni projet de Benjamin dans le dépôt : le seul déjà publié (`project-model/src/test/resources/guide/benjamin-jumpup.json`, ses notes, sans son, sur main depuis le 2026-10-25) est remplacé ici par un projet synthétique qui garde `GuideAnalyzerTest` ; l'historique git le garde (pas de réécriture de main).
 
 ### Étage 1 : contrôles automatiques massifs
 - **Captures** : chaque écran × 16 langues (dont la pseudo-traduction) × matrice d'appareils, combinaisons tirées par paires (générateur de paires), pas le produit complet. On détecte les textes coupés, les chevauchements et ce qui sort de l'écran ; l'« œil » IA ne relit que les captures signalées et les écrans clés dans chaque langue, jamais toutes.
@@ -239,7 +240,7 @@ Chaque étage doit être vert avant de passer au suivant, sauf les découvertes 
 - **captures** propres dans les 15 langues et la matrice d'appareils ;
 - **accessibilité** sans aucune erreur automatique et tous les critères WCAG AA tenus ;
 - **son** : le banc dans les cibles, le rendu maître identique, direct = export, zéro XRun dans le pire cas sur ordinateur ;
-- **performance** : démarrage à froid en moins de 1,5 s (téléphone standard de la matrice, puis vérifié sur le Honor), aucune saccade au-delà du seuil, aucune fuite ;
+- **performance** : démarrage à froid en moins de 1,5 s (téléphone standard de la matrice, puis sur le Honor, lu dans la trace Perfetto de Benjamin), aucune saccade au-delà du seuil, aucune fuite ;
 - **utilisabilité** :
   - au moins 90 % de réussite sur chaque tâche clé ;
   - SUS d'au moins 80 ;
@@ -265,6 +266,6 @@ Ensuite seulement, l'étage 7 (Benjamin et ses proches ; le test fermé du Play 
 - Deux équipes au plus (Benjamin, 2026-11-02), avec une consigne fermée, et elles ne lancent que leurs tests ciblés ; l'agent lance les grandes vérifications.
 
 ## 9. Ce que Benjamin fera
-Une seule liste, en deux moments (APK d'audit, puis étage 7), tenue à un seul endroit : `docs/PLAN-REPRISE.md`, « Ce que Benjamin fera ».
+Une seule liste, en trois moments (APK d'audit, début du test fermé, étage 7), tenue à un seul endroit : `docs/PLAN-REPRISE.md`, « Ce que Benjamin fera ».
 
 Sources (en plus de celles des §10 et §11 de l'ancien plan et de l'étude smartphone/tablette) : [Android Vitals (Google)](https://developer.android.com/topic/performance/vitals) · [Qualité des applis grand écran (Android)](https://developer.android.com/docs/quality-guidelines/large-screens-app-quality) · [Nielsen : combien d'évaluateurs](https://www.nngroup.com/articles/how-to-conduct-a-heuristic-evaluation/) · [WCAG 2.2](https://www.w3.org/TR/WCAG22/) · [OboeTester](https://github.com/google/oboe/blob/master/apps/OboeTester/docs/Usage.md) · [Don't kill my app](https://dontkillmyapp.com/)

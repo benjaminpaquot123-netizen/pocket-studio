@@ -1005,3 +1005,4 @@
 - 2026-11-02 · Benjamin : après l'étape en cours (corr-fin-8 : 7d, n° 18 à 23), faire le point et attendre son feu vert avant de continuer.
 - 2026-11-02 · Méthode « rapide et économe » de PLAN-REPRISE.md ancrée dans CLAUDE.md : s'applique d'office à tout le projet ; toujours le modèle le plus fort (Benjamin 1B). Retour arrière : ancienne façon.
 - 2026-11-02 · Benjamin : deux équipes en parallèle acceptées d'office tant que ça ne ralentit pas. Retour arrière : une à la fois.
+- 2026-11-02 · Benjamin : toutes les vérifications possibles pour ne pas attendre une équipe qui tourne en rond (surveillance disque, tests figés, démon bloqué, équipe sans progrès 45 min, échec répété) ; l'orchestrateur agit à chaque alerte. Retour arrière : surveillance disque et tests seuls.

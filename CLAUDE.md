@@ -37,6 +37,7 @@ Détail et sources : `docs/PLAN-REPRISE.md`.
 - Les équipes : tests ciblés seulement, résumé des journaux (jamais le journal entier), captures des seuls écrans touchés, commit à chaque morceau vert.
 - L'orchestrateur lance lui-même les grandes vérifications (une seule, au moment de ranger dans fx-int) et la compilation de l'APK.
 - Nouvelles à Benjamin à chaque étape, en 3 à 5 lignes.
+- Ne jamais attendre pour rien : surveillance automatique (disque < 2 Go, test Gradle figé > 20 min, démon Gradle bloqué, équipe sans nouveau commit ni note de suivi depuis 45 min, même échec relancé 2 fois) ; à chaque alerte, l'orchestrateur regarde la note de suivi et agit (tuer le processus figé, libérer le disque, relancer une fois, recadrer ou arrêter l'équipe qui tourne en rond, découper le lot) au lieu d'attendre.
 
 ## Règle d'or
 Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vérifier licence et dernière version, tenir `THIRD_PARTY.md` à jour. Trois échecs sérieux sur une brique = alternative suivante + ligne dans DECISIONS.md.

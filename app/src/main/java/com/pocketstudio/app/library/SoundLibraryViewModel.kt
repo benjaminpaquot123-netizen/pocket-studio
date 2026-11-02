@@ -73,6 +73,8 @@ sealed interface SoundRef {
     data class Mine(val id: String) : SoundRef
     /** A party sound shipped in the app ([com.pocketstudio.model.PartySounds]), by its id. */
     data class Party(val id: String) : SoundRef
+    /** A ready-made synth sound (a set of settings, not a file): its index in the chooser's list, or in its kept ones when [saved]. */
+    data class Preset(val index: Int, val saved: Boolean = false) : SoundRef
 }
 
 data class SoundOption(val ref: SoundRef, val name: String)
@@ -570,6 +572,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         is SoundRef.StyleDemo -> styleDemo(ref.styleId)
         SoundRef.AcidDemo -> acidDemo()
         is SoundRef.Demo -> demoPreview(ref.index)
+        // A synth's settings: played by its own chooser, never loaded as a file.
+        is SoundRef.Preset -> null
         is SoundRef.Instrument -> withContext(Dispatchers.IO) {
             val app = getApplication<Application>()
             val installed = _packs.value.installed.firstOrNull { it.id == ref.packId }

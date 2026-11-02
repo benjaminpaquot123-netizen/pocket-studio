@@ -187,6 +187,9 @@ internal fun shelfLook(family: String): Pair<ImageVector, Color> = when (family)
     RECENTS -> Icons.Filled.History to Color(0xFF90A4AE)
     FAVORITES -> Icons.Filled.Star to Color(0xFFFFD54F)
     MINE -> Icons.Filled.Person to Color(0xFF9575CD)
+    // A synth's family (Basses, Leads…): its own look, as on its tiles.
+    in com.pocketstudio.model.SoundCategories.SYNTH, in com.pocketstudio.model.SoundCategories.PLAITS, in com.pocketstudio.model.SoundCategories.ACID ->
+        SoundLooks.of(family).let { it.icon to it.color }
     else -> familyLook(family)
 }
 
@@ -220,6 +223,10 @@ class ShelfBrowserUi(
     val stateKey: String = tag,
     /** Whether a sound is heard now, when [playing] alone cannot tell (the assistant's line excerpts). */
     val heard: ((SoundOption) -> Boolean)? = null,
+    /** A tile's test tag (null: `<tag>_sound_<i>`), so a chooser keeps its own (the synth's `synth_sounds_<i>`). */
+    val tileTag: ((SoundOption) -> String)? = null,
+    /** « Ma bibliothèque »'s name here (the synth's kept sounds are its « Favoris »). */
+    val mineTitle: String? = null,
 )
 
 /** « Récents » and « Favoris » for the browsers deep in a screen (the assistant), and ☆. */
@@ -242,6 +249,8 @@ class ShelfBrowserActions(
     val preview: (SoundOption) -> Unit = {},
     val choose: (SoundOption) -> Unit = {},
     val toggleFavorite: (SoundOption) -> Unit = {},
+    /** A ✕ on the sounds it may remove (null: none), e.g. a kept synth sound. */
+    val remove: ((SoundOption) -> Unit)? = null,
 )
 
 /** How many tiles a folder shows before « Voir plus ». */
@@ -298,7 +307,7 @@ fun ShelfBrowser(ui: ShelfBrowserUi, actions: ShelfBrowserActions, modifier: Mod
                     here.isEmpty() -> {
                         if (recents.isNotEmpty()) FolderRow(RECENTS, tr("Récents"), recents.size, "${ui.tag}_recents") { at = RECENTS }
                         if (favorites.isNotEmpty()) FolderRow(FAVORITES, tr("Favoris"), favorites.size, "${ui.tag}_favorites") { at = FAVORITES }
-                        if (!ui.mine.isNullOrEmpty()) FolderRow(MINE, tr("Ma bibliothèque"), ui.mine.size, "${ui.tag}_shelf_mine") { at = MINE }
+                        if (!ui.mine.isNullOrEmpty()) FolderRow(MINE, ui.mineTitle ?: tr("Ma bibliothèque"), ui.mine.size, "${ui.tag}_shelf_mine") { at = MINE }
                         ui.shelves.forEach { s -> FolderRow(s.title, shelfTitle(s.title), s.count, "${ui.tag}_folder_${s.id}") { at = s.id } }
                         if (favorites.isEmpty()) Text(tr("Touche ☆ sur un son pour le retrouver dans « Favoris »."),
                             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
@@ -307,7 +316,7 @@ fun ShelfBrowser(ui: ShelfBrowserUi, actions: ShelfBrowserActions, modifier: Mod
                         val title = when (here) {
                             RECENTS -> tr("Récents")
                             FAVORITES -> tr("Favoris")
-                            MINE -> tr("Ma bibliothèque")
+                            MINE -> ui.mineTitle ?: tr("Ma bibliothèque")
                             else -> listOfNotNull(
                                 ui.shelves.firstOrNull { s -> s.children.any { it.id == here } }?.title?.let(::shelfTitle),
                                 ui.shelves.firstNotNullOfOrNull { it.find(here) }?.title?.let(::shelfTitle),
@@ -390,12 +399,17 @@ private fun Sounds(options: List<SoundOption>, ui: ShelfBrowserUi, actions: Shel
                                 tint = if (fav) Color(0xFFFFD54F) else Neon.TextSecondary)
                         }
                     }
+                    if (actions.remove != null && option.ref is SoundRef.Preset && option.ref.saved) {
+                        IconButton(onClick = { actions.remove.invoke(option) }, modifier = Modifier.testTag("${tag}_remove_$i")) {
+                            Icon(Icons.Filled.Close, contentDescription = tr("Retirer %s", tr(option.name.substringBefore(" · "))), tint = Neon.TextSecondary)
+                        }
+                    }
                     if (!ui.pickOnTap) {
                         FilledTonalButton(onClick = { actions.choose(option) }, modifier = Modifier.pressScale().testTag("${tag}_use_$i")) { Text(ui.use.ifEmpty { tr("Poser") }) }
                     }
                 }
             },
-            modifier = m.testTag("${tag}_$i"),
+            modifier = m.testTag(ui.tileTag?.invoke(option) ?: "${tag}_$i"),
         )
     }
     if (options.size > shown) {

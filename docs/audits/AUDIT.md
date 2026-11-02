@@ -8,7 +8,8 @@ Ce document **remplace et réunit** :
 
 Les sections de l'ancien plan restent la référence pour le détail des rôles (§2, §2 bis), du lot Master pro (§1 bis) et des parcours (§3). Ce document fixe l'ordre, les règles, les critères d'arrêt et ajoute ce que la revue par experts a trouvé.
 
-**Quand :** à la toute fin des modifications, seulement sur le signal de Benjamin.
+**Quand :** à la toute fin des modifications, seulement sur le signal de Benjamin. La préparation (§3) commence dès le gel, sans attendre ce signal.
+**Conditions d'entrée (toutes vraies) :** étapes A à G de `docs/PLAN-REPRISE.md` faites, dont le lot « Master pro » (PLAN-AUDITS-FINAUX §1 bis) ; code gelé à l'étiquette `audit-1` ; APK release signée de cette étiquette ; zéro test rouge ; CI verte.
 **Qui décide de l'ordre :** l'agent (décision de Benjamin du 2026-11-01).
 **Le mot « Audit »** désigne tout ce document.
 
@@ -36,7 +37,7 @@ Les trois plans ont été relus sous l'angle de 9 métiers. C'est une relecture 
 2. **Tout est reproductible.** Graine du hasard notée, projet de départ joint, vidéo ou son à l'appui ; un défaut non reproduit n'est pas corrigé au hasard, il est d'abord reproduit par un test.
 3. **Chaque défaut a son oracle**, c'est-à-dire sa façon de savoir que c'est faux : une règle, une mesure, une comparaison ou une référence.
 4. **Règle « partout » de Benjamin** : chaque défaut est cherché partout où il peut se reproduire, et corrigé à la racine, avec un test qui couvre tous les cas. Chaque changement de design s'applique partout.
-5. **Version release.** On audite l'APK signée comme celle de Benjamin (R8 actif), pas la version de développement.
+5. **Version release.** On audite l'APK signée comme celle de Benjamin (R8 actif), pas la version de développement : celle de l'étiquette `audit-1`, puis une nouvelle étiquette à chaque tour (`audit-2`…).
 6. **Gel.** Pendant un tour, on ne développe aucune nouvelle fonction : seulement des corrections, sur des branches à part.
 7. **Économie.** On commence par ce qui ne coûte presque rien (automatique), et on finit par ce qui coûte le plus (équipes IA, humains). On ne relance que ce que les corrections ont touché, sauf au tour final où l'on relance tout.
 
@@ -93,7 +94,7 @@ Chaque étage doit être vert avant de passer au suivant, sauf les découvertes 
 - **Son** : banc des 37 styles, kick dans le mix, sonie et true peak, comparaison au son maître, direct = export.
 - **Exports** : matrice format × fréquence × bits × cible × plafond, nullité des pistes séparées, allers-retours MIDI et projet.
 - **Performance** : saccades par écran (images à plus de 16 ms, puis 8 ms à 120 Hz), mémoire, fuites.
-- **Tous les tests existants** (plus de 6 300), à la recherche des tests instables (relancés 3 fois ; un test instable est réparé, jamais mis de côté).
+- **Tous les tests existants** (environ 5 500 au 2026-11-02), à la recherche des tests instables (relancés 3 fois ; un test instable est réparé, jamais mis de côté).
 
 ### Étage 2 : tout est connecté et prévu comme il faut
 1. **Carte des fonctions** (matrice de traçabilité). Une ligne par fonction (Pad Live, cases, briques, Remix et découpe, tempo, effets, 303, notes, accords, enregistrement, bibliothèque, export, tutos, Guide…). Une colonne par branchement attendu :
@@ -188,7 +189,7 @@ Chaque étage doit être vert avant de passer au suivant, sauf les découvertes 
 - **Chasse au jargon** : chaque texte noté par un « débutant » ; même mot pour la même idée, dans les 15 langues.
 
 ### Étage 6 : testeurs IA à personnalités (tours)
-- **Chaque tour : 6 à 8 sièges neufs.** Personnalités :
+- **Chaque tour : 6 sièges neufs** (8 si la machine suit), seuls sur la machine pendant le tour (exception à la règle des deux équipes). Personnalités :
   - enfant de 8 ans ;
   - ado trap ;
   - débutant adulte ;
@@ -230,7 +231,7 @@ Chaque étage doit être vert avant de passer au suivant, sauf les découvertes 
 ## 6. La boucle et les critères d'arrêt
 1. Les étages 0 à 5 sont verts.
 2. Tour de l'étage 6, puis synthèse : dédoublonnage, tri, reproduction par un test.
-3. Corrections du plus grave au plus léger (une équipe à la fois, en économie), avec la règle « partout ».
+3. Corrections du plus grave au plus léger (deux équipes au plus, méthode de CLAUDE.md), avec la règle « partout ».
 4. Revue neuve, tests complets, relance ciblée des étages touchés.
 5. Tour suivant, avec des sièges neufs, d'autres langues, et un test des zones corrigées.
 
@@ -241,14 +242,18 @@ Chaque étage doit être vert avant de passer au suivant, sauf les découvertes 
 - **captures** propres dans les 15 langues et la matrice d'appareils ;
 - **accessibilité** sans aucune erreur automatique et tous les critères WCAG AA tenus ;
 - **son** : le banc dans les cibles, le rendu maître identique, direct = export, zéro XRun dans le pire cas sur ordinateur ;
-- **performance** : démarrage en moins de 1,5 s, aucune saccade au-delà du seuil, aucune fuite ;
+- **performance** : démarrage à froid en moins de 1,5 s (téléphone standard de la matrice, puis vérifié sur le Honor), aucune saccade au-delà du seuil, aucune fuite ;
 - **utilisabilité** :
   - au moins 90 % de réussite sur chaque tâche clé ;
   - SUS d'au moins 80 ;
   - premier son du Pad Live en moins de 5 s ;
   - chaque écran à 8/10 minimum.
 
-Ensuite seulement, l'étage 7 (Benjamin et ses proches), puis une dernière relance complète.
+Les mesures d'utilisabilité ci-dessus viennent des testeurs IA ; l'étage 7 les confirme avec de vrais humains et ne rouvre la boucle que pour un Bloquant ou un Grave.
+
+**Garde-fou contre la boucle sans fin :** si, après 5 tours de l'étage 6, les critères ne sont pas tous vrais, l'agent envoie à Benjamin le tableau de bord et ce qui reste, avec une question (A : continuer jusqu'aux critères, B : accepter les Moyens restants et passer à l'étage 7), et continue les corrections en attendant.
+
+Ensuite seulement, l'étage 7 (Benjamin et ses proches ; le test fermé du Play Store a déjà démarré quand les étages 0 à 5 sont devenus verts), puis une dernière relance complète.
 
 ## 7. Ce que chaque tour livre
 - Un **tableau de bord** d'une page : les compteurs par gravité, la courbe des découvertes, les cases vides de la carte, les mesures son et performance, les notes des designers.
@@ -260,15 +265,9 @@ Ensuite seulement, l'étage 7 (Benjamin et ses proches), puis une dernière rela
 - **Étage 5** : quelques équipes, une à la fois.
 - **Étage 6** : de 3 tours au minimum (pour que les 15 langues passent) jusqu'aux critères d'arrêt.
 - **Étage 7** : le temps de Benjamin.
-- Les équipes travaillent une à la fois (consigne de Benjamin), avec une consigne courte, et ne lancent que les tests utiles.
+- Deux équipes au plus (Benjamin, 2026-11-02), avec une consigne fermée, et elles ne lancent que leurs tests ciblés ; l'agent lance les grandes vérifications.
 
-## 9. Ce que Benjamin fera (une seule liste, le moment venu)
-1. Installer l'APK d'audit.
-2. Lancer OboeTester : latence et glitchs.
-3. Faire 30 minutes de Live au MiniLab.
-4. Essayer un casque Bluetooth.
-5. Faire une trace Perfetto (guide pas à pas fourni).
-6. Faire le bug bash d'une heure avec sa fille et son ami.
-7. Tenir le journal sur 3 jours.
+## 9. Ce que Benjamin fera
+Une seule liste, en deux moments (APK d'audit, puis étage 7) : voir `docs/PLAN-REPRISE.md`, « Ce que Benjamin fera ». Elle comprend OboeTester, 30 min de Live au MiniLab, le casque Bluetooth, la trace Perfetto, le signal « Audit », le compte Google Play Console et l'accord pour recruter les 12 testeurs, puis le bug bash et le journal de 3 jours.
 
 Sources (en plus de celles des §10 et §11 de l'ancien plan et de l'étude smartphone/tablette) : [Android Vitals (Google)](https://developer.android.com/topic/performance/vitals) · [Qualité des applis grand écran (Android)](https://developer.android.com/docs/quality-guidelines/large-screens-app-quality) · [Nielsen : combien d'évaluateurs](https://www.nngroup.com/articles/how-to-conduct-a-heuristic-evaluation/) · [WCAG 2.2](https://www.w3.org/TR/WCAG22/) · [OboeTester](https://github.com/google/oboe/blob/master/apps/OboeTester/docs/Usage.md) · [Don't kill my app](https://dontkillmyapp.com/)

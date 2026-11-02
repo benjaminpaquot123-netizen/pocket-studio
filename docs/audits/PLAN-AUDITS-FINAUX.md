@@ -1,6 +1,6 @@
 # Plan des audits finaux (préparé le 2026-10-29, pas encore lancé)
 
-> **Depuis le 2026-11-01, la référence est `docs/audits/AUDIT.md`** (version unique revue par experts). Ce fichier garde le détail des rôles (§2, §2 bis), du lot Master pro (§1 bis), des parcours (§3), des langues (§4) et de la gravité (§6). Les §5, §7, §8 et §9 sont remplacés par AUDIT (2026-11-02 : ils contredisaient la règle des deux équipes et les chiffres à jour).
+> **Depuis le 2026-11-01, la référence est `docs/audits/AUDIT.md`** (version unique revue par experts). Ce fichier garde le détail des rôles (§2, §2 bis), du lot Master pro (§1 bis), des parcours (§3), des langues (§4) et de la gravité (§6). Les §5, §7, §8 et §9 sont remplacés par AUDIT (2026-11-02 : ils contredisaient la règle des deux équipes et les chiffres à jour) ; les §1, §10 et §11 y sont réunis et ne restent ici que pour le détail et les sources. **En cas d'écart, AUDIT fait foi.**
 
 Demande de Benjamin : « des audits finaux pour contrôler que tout fonctionne nickel » ; des débutants, des pros et des ingénieurs du son ; les sons récupérés et analysés ; chaque tour dans des langues différentes jusqu'à ce que toutes y passent ; on recommence en corrigeant le grave puis le moins grave ; des audits d'ergonomie et de design aussi : « il faut tout penser ».
 
@@ -208,8 +208,7 @@ Objectif : trouver tous les bugs et vérifier la logique d'utilisation, à la to
 - Les retours vont dans docs/RETOURS.md, puis passent par la règle « partout ».
 
 ### D. Organisation
-- Chaque tour : contrôles automatiques → équipes IA (une à la fois, en économie) → corrections (grave, puis moyen, puis léger) → nouveau tour avec une autre langue ; on s'arrête après 2 tours sans rien de grave ni de moyen.
-- Chaque trouvaille a : un niveau de gravité, une capture ou un son, un test qui la reproduit, et sa vérification « partout ».
+Remplacé par AUDIT §6 (boucle, critères d'arrêt) et §8 (deux équipes au plus).
 
 Sources : [VisionDroid, ICSE 2026](https://conf.researchr.org/details/icse-2026/icse-2026-journal-first-papers/26/Seeing-is-Believing-Vision-driven-Non-crash-Functional-Bug-Detection-for-Mobile-Apps) · [ScenGen](https://arxiv.org/abs/2506.05079v3) · [PersonaTester](https://arxiv.org/html/2603.24160v2) · [Keynote SE 2026, Chunyang Chen](https://se2026.inf.unibe.ch/en/program/keynotes/chunyang-chen/documents/SE2026_Keynote_Chunyang-Chen_Towards-Human-like-Testing.pdf) · [OboeTester](https://github.com/google/oboe/blob/master/apps/OboeTester/docs/Usage.md) · [OboeTester, tests automatiques](https://android.googlesource.com/platform/external/oboe/+/ba2fb95054ea5cea728f1ec320e882b471e7ba15/apps/OboeTester/docs/AutomatedTesting.md) · [Mesure de latence Android](https://source.android.com/docs/core/audio/latency/measure?hl=it) · [Tours exploratoires](https://agileconnection.com/article/using-tours-structure-your-exploratory-testing) · [Heuristiques mobiles](https://typeset.io/pdf/appropriating-and-assessing-heuristics-for-mobile-computing-4icfx1divd.pdf)
 

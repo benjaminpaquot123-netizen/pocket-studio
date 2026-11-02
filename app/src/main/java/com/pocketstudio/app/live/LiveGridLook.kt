@@ -43,13 +43,12 @@ import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
 import kotlin.math.exp
-import kotlin.math.hypot
 
 /**
  * Lot 4c, the Briques grid « style B » (DECISIONS 2026-10-30): a near-black ground, the cells in a
  * soft gradient of their track's hue, an empty cell a small dot. The playing cell lights up (light
  * to deep), a sheen slides with its loop, a halo breathes on the beat, a thin bar shows where the
- * loop is; on each beat a soft wave of light leaves the playing cells and runs through the dots.
+ * loop is. Nothing moves on an empty cell (Benjamin, 2026-11-01: no wave through the dots).
  * Everything moving is drawn on the UI thread from one clock ([GridClock]) and read only when
  * drawn (no recomposition); with the phone's animations off the clock does not run.
  */
@@ -69,11 +68,6 @@ internal object GridLook {
     fun barTop(a: Color) = lerp(a, Color.White, 0.15f)
     fun queued(a: Color) = lerp(Queued, a, 0.10f)
 
-    /** The wave: its front runs this fast (dp a second), this wide, fading through the beat and with distance. */
-    const val WAVE_SPEED = 420f
-    const val WAVE_WIDTH = 55f
-    const val WAVE_FADE = 1.6f
-    const val WAVE_REACH = 700f
 }
 
 /** The grid's one animation clock: the transport position (sixteenths, smoothed between polls) and the time since the beat. */
@@ -87,14 +81,6 @@ internal class GridClock {
 
     /** 1 on the beat, fading through it; [STILL] when the clock does not run. */
     val pulse: Float get() = if (steps < 0f) STILL else exp(-beatAge * 7f)
-
-    /** The wave's strength at [distanceDp] from a playing cell (0: none). */
-    fun wave(distanceDp: Float): Float {
-        if (steps < 0f) return 0f
-        val front = beatAge * GridLook.WAVE_SPEED
-        val d = distanceDp - front
-        return exp(-(d * d) / (2f * GridLook.WAVE_WIDTH * GridLook.WAVE_WIDTH)) * exp(-beatAge * GridLook.WAVE_FADE) * exp(-distanceDp / GridLook.WAVE_REACH)
-    }
 
     companion object {
         const val NO_BEAT = 10f
@@ -142,9 +128,6 @@ internal fun rememberGridClock(running: Boolean, clockOf: () -> Int, bpm: Double
 }
 
 private const val STEPS_A_BEAT = 4
-
-/** A playing cell the wave leaves from: its column and row, its colour. */
-internal class WaveSource(val col: Int, val row: Int, val color: Color)
 
 /**
  * The 8 bars of a cell's little preview (0..1): how busy each eighth of its loop is (hits, notes,
@@ -203,21 +186,10 @@ internal fun DrawScope.previewBars(bars: FloatArray, brush: Brush?, color: Color
     }
 }
 
-/** An empty cell: a small dot, swelling and taking the colour of the wave passing through it. */
-internal fun DrawScope.emptyDot(wave: Float, color: Color?) {
-    val c = Offset(size.width / 2, size.height / 2)
-    val r = 3.dp.toPx() * (1f + 0.9f * wave)
-    if (wave > 0.04f && color != null) {
-        drawCircle(color.copy(alpha = 0.35f * wave), r + 10.dp.toPx() * wave, c)
-        drawCircle(lerp(GridLook.Dot, color, wave.coerceAtMost(1f)), r, c)
-    } else {
-        drawCircle(GridLook.Dot, r, c)
-    }
+/** An empty cell: a small still dot (nothing moves on an inactive cell, Benjamin 2026-11-01). */
+internal fun DrawScope.emptyDot() {
+    drawCircle(GridLook.Dot, 3.dp.toPx(), Offset(size.width / 2, size.height / 2))
 }
-
-/** How far (dp) the cell at [col], [row] is from [s], cells [w] × [h] dp apart by [gap]. */
-internal fun waveDistance(col: Int, row: Int, s: WaveSource, w: Float, h: Float, gap: Float): Float =
-    hypot((col - s.col) * (w + gap), (row - s.row) * (h + gap))
 
 /** « Cases − 8 + »: how many bricks the grid shows (4, 6, 8, 12, 16). */
 @Composable

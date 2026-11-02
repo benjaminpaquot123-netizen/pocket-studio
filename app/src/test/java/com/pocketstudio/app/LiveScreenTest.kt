@@ -144,7 +144,7 @@ class LiveScreenTest {
         compose.onNodeWithTag("live_record").assertTextContains("REC").performClick()
         // Armed: the button says so; the choice can still change.
         take = TakeUi.Armed(16, 11)
-        compose.onNodeWithTag("live_record").assertTextContains("Armé")
+        compose.onNodeWithTag("live_record").assertTextContains("Prêt")
         compose.onNodeWithTag("live_take_replace").performClick()
         // Recording: the clock and the song's bar, ■ Fin in the line and on the button.
         take = TakeUi.Recording(16, 42, 21)

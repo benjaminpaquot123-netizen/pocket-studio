@@ -285,7 +285,7 @@ private fun StripBody(t: SimpleTrack, alone: Boolean, meters: () -> FloatArray, 
     )
     Text(faderDb(t.volume), style = MonoStyle.copy(fontSize = 12.sp), color = Neon.TextPrimary, maxLines = 1, modifier = Modifier.testTag("mix_db_${t.ch}"))
     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-        SquareToggle("M", t.mute, Neon.Amber, tr("Couper la piste %s", t.name), "mix_mute_${t.ch}") { actions.toggleMute(t.ch) }
+        com.pocketstudio.app.ui.MuteToggle(t.mute, t.name, "mix_mute_${t.ch}", size = androidx.compose.ui.unit.DpSize(30.dp, 40.dp)) { actions.toggleMute(t.ch) }
         PlayAlone(alone, t.name, "mix_alone_${t.key}") { actions.listenAlone(t.key) }
     }
 }
@@ -374,20 +374,6 @@ private fun TipCard(tip: MixTip?, apply: (MixTip) -> Unit) {
         }
         Text("⚠️ " + tip.text, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("mix_tip_text"))
         Pill(tip.fix, filled = true, tag = "mix_tip_fix") { apply(tip) }
-    }
-}
-
-/** « M »: the track silent or heard again. */
-@Composable
-private fun SquareToggle(letter: String, on: Boolean, color: Color, description: String, tag: String, toggle: () -> Unit) {
-    Box(
-        Modifier.size(width = 30.dp, height = 40.dp).clip(RoundedCornerShape(8.dp)).background(if (on) color else Neon.Surface)
-            .clickable(onClick = toggle)
-            .semantics { contentDescription = description; stateDescription = if (on) tr("activé") else tr("désactivé") }
-            .testTag(tag),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(letter, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = if (on) Color.Black else Neon.TextSecondary)
     }
 }
 

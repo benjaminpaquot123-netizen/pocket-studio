@@ -38,10 +38,7 @@
   "Pas de parties trouvées": "没找到段落",
   "Mettre dans mon projet": "放进我的项目",
   "Faire de la matière": "做成素材",
-  "La voix en phrases sur les pads": "人声按乐句放到打击垫",
-  "La batterie en kit « %s »": "鼓做成“%s”鼓组",
   "La basse en notes": "贝斯转成音符",
-  "La basse sur l'Acid 303": "贝斯放到 Acid 303",
   "Kit de %s : je cherche les coups…": "%s鼓组：正在找鼓点…",
   "Pas de coups de batterie trouvés dans %s.": "%s里没找到鼓点。",
   "Kit « %1$s » sur les pads %2$s : tes pas le jouent déjà.": "“%1$s”鼓组在打击垫 %2$s：你的步进已经在演奏它。",
@@ -49,7 +46,6 @@
   "Pas de notes de basse trouvées dans %s.": "%s里没找到贝斯音符。",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "%1$s的贝斯在 Acid 303 上：%2$d 个音符。",
   "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s的贝斯变成 %2$d 个音符，放在单独的轨道上：音色随你换。",
-  "La mélodie de la voix en notes": "人声旋律转成音符",
   "La voix de %s en notes…": "正在把%s的人声转成音符…",
   "Pas de notes de voix trouvées dans %s.": "%s里没找到人声音符。",
   "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s的人声变成 %2$d 个音符，放在单独的轨道上：音色随你换。"

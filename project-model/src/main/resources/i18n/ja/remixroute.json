@@ -20,7 +20,6 @@
   "Replier %s": "%s を閉じる",
   "Tous les pads ont déjà un son : choisis le pad à remplacer, ou vide-en un dans Batterie.": "全部のパッドにもう音があります。置き換えるパッドを選ぶか、ドラムで1つ空にしてね。",
   "Tous les pads ont déjà un son : vide un pad dans Batterie, puis recommence.": "全部のパッドにもう音があります。ドラムでパッドを1つ空にしてから、もう一度試してね。",
-  "Toute la chanson passe par la tranche « %s » du mixeur, avec ses effets. Ici, chaque piste a son volume, Solo et Muet.": "曲全体はミキサーの「%s」チャンネルをエフェクトごと通ります。ここでは各トラックに音量、ソロ、ミュートがあります。",
   "Trop long pour un pad : %d secondes au plus. Choisis un morceau plus court.": "パッドには長すぎます：最大%d秒。もっと短い部分を選んでね。",
   "Trop long pour une piste : %d minutes au plus. Choisis un morceau plus court.": "トラックには長すぎます：最大%d分。もっと短い部分を選んでね。",
   "chanson · 4 pistes": "曲 · 4トラック",

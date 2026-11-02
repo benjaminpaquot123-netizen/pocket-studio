@@ -38,10 +38,7 @@
   "Pas de parties trouvées": "No parts found",
   "Mettre dans mon projet": "Put in my project",
   "Faire de la matière": "Make material",
-  "La voix en phrases sur les pads": "The voice in phrases on the pads",
-  "La batterie en kit « %s »": "The drums as a “%s” kit",
   "La basse en notes": "The bass as notes",
-  "La basse sur l'Acid 303": "The bass on the Acid 303",
   "Kit de %s : je cherche les coups…": "%s kit: finding the hits…",
   "Pas de coups de batterie trouvés dans %s.": "No drum hits found in %s.",
   "Kit « %1$s » sur les pads %2$s : tes pas le jouent déjà.": "“%1$s” kit on pads %2$s: your steps already play it.",
@@ -49,7 +46,6 @@
   "Pas de notes de basse trouvées dans %s.": "No bass notes found in %s.",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "The bass of %1$s on the Acid 303: %2$d notes.",
   "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "The bass of %1$s as %2$d notes on its own track: change its sound as you like.",
-  "La mélodie de la voix en notes": "The vocal melody as notes",
   "La voix de %s en notes…": "The vocals of %s as notes…",
   "Pas de notes de voix trouvées dans %s.": "No vocal notes found in %s.",
   "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "The vocals of %1$s as %2$d notes on their own track: change their sound as you like."

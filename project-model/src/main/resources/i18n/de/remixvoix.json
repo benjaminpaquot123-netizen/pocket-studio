@@ -38,10 +38,7 @@
   "Pas de parties trouvées": "Keine Teile gefunden",
   "Mettre dans mon projet": "In mein Projekt",
   "Faire de la matière": "Material daraus machen",
-  "La voix en phrases sur les pads": "Die Stimme in Phrasen auf die Pads",
-  "La batterie en kit « %s »": "Das Schlagzeug als Kit „%s“",
   "La basse en notes": "Der Bass als Noten",
-  "La basse sur l'Acid 303": "Der Bass auf die Acid 303",
   "Kit de %s : je cherche les coups…": "Kit aus %s: ich suche die Schläge…",
   "Pas de coups de batterie trouvés dans %s.": "Keine Schlagzeugschläge in %s gefunden.",
   "Kit « %1$s » sur les pads %2$s : tes pas le jouent déjà.": "Kit „%1$s“ auf den Pads %2$s: deine Steps spielen es schon.",
@@ -49,7 +46,6 @@
   "Pas de notes de basse trouvées dans %s.": "Keine Bassnoten in %s gefunden.",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "Der Bass von %1$s auf der Acid 303: %2$d Noten.",
   "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "Der Bass von %1$s als %2$d Noten auf einer eigenen Spur: wähl den Sound, wie du willst.",
-  "La mélodie de la voix en notes": "Die Melodie der Vocals als Noten",
   "La voix de %s en notes…": "Die Vocals von %s als Noten…",
   "Pas de notes de voix trouvées dans %s.": "Keine Gesangsnoten in %s gefunden.",
   "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "Die Vocals von %1$s als %2$d Noten auf einer eigenen Spur: wähl den Sound, wie du willst."

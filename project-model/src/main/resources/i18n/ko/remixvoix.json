@@ -38,10 +38,7 @@
   "Pas de parties trouvées": "파트를 찾지 못했어요",
   "Mettre dans mon projet": "내 프로젝트에 넣기",
   "Faire de la matière": "재료로 만들기",
-  "La voix en phrases sur les pads": "목소리를 프레이즈로 패드에",
-  "La batterie en kit « %s »": "드럼을 “%s” 킷으로",
   "La basse en notes": "베이스를 노트로",
-  "La basse sur l'Acid 303": "베이스를 Acid 303에",
   "Kit de %s : je cherche les coups…": "%s 킷: 타격을 찾는 중…",
   "Pas de coups de batterie trouvés dans %s.": "%s에서 드럼 타격을 찾지 못했어요.",
   "Kit « %1$s » sur les pads %2$s : tes pas le jouent déjà.": "“%1$s” 킷이 패드 %2$s에: 스텝이 벌써 연주해요.",
@@ -49,7 +46,6 @@
   "Pas de notes de basse trouvées dans %s.": "%s에서 베이스 노트를 찾지 못했어요.",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "%1$s 베이스를 Acid 303에: 노트 %2$d개.",
   "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s 베이스를 노트 %2$d개로 전용 트랙에: 소리는 마음대로 바꿔요.",
-  "La mélodie de la voix en notes": "보컬 멜로디를 노트로",
   "La voix de %s en notes…": "%s 보컬을 노트로…",
   "Pas de notes de voix trouvées dans %s.": "%s에서 보컬 노트를 찾지 못했어요.",
   "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s 보컬을 노트 %2$d개로 전용 트랙에: 소리는 마음대로 바꿔요."

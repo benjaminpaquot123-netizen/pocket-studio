@@ -38,10 +38,7 @@
   "Pas de parties trouvées": "कोई पार्ट नहीं मिला",
   "Mettre dans mon projet": "मेरे प्रोजेक्ट में डालो",
   "Faire de la matière": "इससे मटीरियल बनाओ",
-  "La voix en phrases sur les pads": "आवाज़ के वाक्य पैड्स पर",
-  "La batterie en kit « %s »": "ड्रम्स को “%s” किट बनाओ",
   "La basse en notes": "बेस को नोट्स में",
-  "La basse sur l'Acid 303": "बेस Acid 303 पर",
   "Kit de %s : je cherche les coups…": "%s का किट: हिट्स ढूँढ रहा हूँ…",
   "Pas de coups de batterie trouvés dans %s.": "%s में ड्रम हिट नहीं मिले।",
   "Kit « %1$s » sur les pads %2$s : tes pas le jouent déjà.": "“%1$s” किट पैड %2$s पर: तुम्हारे स्टेप इसे पहले से बजाते हैं।",
@@ -49,7 +46,6 @@
   "Pas de notes de basse trouvées dans %s.": "%s में बेस के नोट्स नहीं मिले।",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "%1$s का बेस Acid 303 पर: %2$d नोट्स।",
   "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s का बेस %2$d नोट्स में, अपने ट्रैक पर: इसकी आवाज़ जैसी चाहो बदलो।",
-  "La mélodie de la voix en notes": "वोकल्स की मेलोडी नोट्स में",
   "La voix de %s en notes…": "%s के वोकल्स नोट्स में…",
   "Pas de notes de voix trouvées dans %s.": "%s में वोकल्स के नोट्स नहीं मिले।",
   "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s के वोकल्स %2$d नोट्स में, अपने ट्रैक पर: इसकी आवाज़ जैसी चाहो बदलो।"

@@ -1,0 +1,15 @@
+{
+  "Faire un kit avec la batterie": "ドラムからキットを作る",
+  "La chanson est en silence ici : elle sert de réserve de sons. Touche un haut-parleur pour l'entendre.": "ここでは曲は無音です：音の素材置き場です。聴くにはスピーカーをタッチしてください。",
+  "Mettre la voix sur les pads": "ボーカルをパッドに置く",
+  "Piocher dans la chanson": "曲から取り出す",
+  "Prêt": "準備完了",
+  "Prêt : l'enregistrement part au prochain lancement.": "準備完了：次のスタートで録音が始まります。",
+  "Rejouer la basse en notes": "ベースをノートで弾き直す",
+  "Rejouer la basse sur l'Acid 303": "ベースを Acid 303 で弾き直す",
+  "Rejouer la voix en notes": "ボーカルをノートで弾き直す",
+  "Réécouter toutes les pistes": "すべてのトラックをもう一度聴く",
+  "Ses phrases de voix sur tes pads, sa batterie en kit, sa basse et sa voix en notes": "ボーカルのフレーズをパッドに、ドラムをキットに、ベースとボーカルをノートに",
+  "Seule": "ソロ",
+  "Toute la chanson passe par la tranche « %s » du mixeur, avec ses effets. Ici, chaque piste a son volume, son casque (l'écouter seule) et son haut-parleur (la couper).": "曲全体がミキサーの「%s」チャンネルをエフェクトごと通ります。ここでは各トラックに音量、ヘッドホン（ソロで聴く）、スピーカー（ミュート）があります。"
+}

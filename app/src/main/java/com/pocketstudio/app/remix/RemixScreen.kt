@@ -181,7 +181,7 @@ class RemixActions(
     /** Step 5d: the drums stem as a kit on the pads; the bass stem as notes (true: on the Acid 303). */
     val drumsToKit: () -> Unit = {},
     val bassToNotes: (Boolean) -> Unit = {},
-    /** Step 7f: « La mélodie de la voix en notes ». */
+    /** Step 7f: « Rejouer la voix en notes ». */
     val voiceToNotes: () -> Unit = {},
     /** The question of [RemixUi.padAsk]: cover the pad, or not. */
     val confirmPad: () -> Unit = {},
@@ -398,16 +398,8 @@ private fun InProject(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit)
                     Modifier.size(10.dp).background(stemColor(i), androidx.compose.foundation.shape.CircleShape),
                 )
                 Text(StemStore.label(stem), Modifier.weight(1f).testTag("song_stem_name_$i"), style = MaterialTheme.typography.bodyLarge)
-                FilterChip(
-                    selected = m.mute, onClick = { actions.toggleStemMute(i) }, label = { Text("M") },
-                    colors = pillColors(Neon.Amber),
-                    modifier = Modifier.testTag("stem_mute_$i"),
-                )
-                FilterChip(
-                    selected = m.solo, onClick = { actions.toggleStemSolo(i) }, label = { Text("S") },
-                    colors = pillColors(Neon.Acid),
-                    modifier = Modifier.testTag("stem_solo_$i"),
-                )
+                com.pocketstudio.app.ui.MuteToggle(m.mute, StemStore.label(stem), "stem_mute_$i") { actions.toggleStemMute(i) }
+                com.pocketstudio.app.ui.SoloToggle(m.solo, StemStore.label(stem), "stem_solo_$i", color = Neon.Acid) { actions.toggleStemSolo(i) }
                 TextButton(onClick = { actions.stemToPad(i, ui.padBars) }, modifier = Modifier.testTag("stem_pad_$i")) { Text("→ Pad") }
                 TextButton(onClick = { actions.stemToLive(i, ui.padBars) }, modifier = Modifier.testTag("stem_live_$i")) { Text("→ Live") }
             }
@@ -423,21 +415,28 @@ private fun InProject(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit)
             }
             ProSlider(value = m.volume, onValueChange = { actions.setStemVolume(i, it) }, modifier = Modifier.testTag("stem_volume_$i"))
         }
-        // Step 5d: « Faire de la matière »: the song's stems turned into pads, a kit, notes, one touch each.
-        Text(tr("Faire de la matière"), style = MaterialTheme.typography.titleSmall, color = Neon.Cyan, modifier = Modifier.padding(top = 8.dp).testTag("remix_matter"))
+        // n° 23: « Dans un nouveau projet » keeps the song silent (a store of sounds): said, not a mystery.
+        if (r.stems.all { it.mute }) {
+            Text(tr("La chanson est en silence ici : elle sert de réserve de sons. Touche un haut-parleur pour l'entendre."),
+                style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("remix_all_muted"))
+        }
+        // Step 5d, n° 22: « Piocher dans la chanson » (was « Faire de la matière », not understood): the
+        // song's stems turned into pads, a kit, notes, one touch each; each button says what it does.
+        Text(tr("Piocher dans la chanson"), style = MaterialTheme.typography.titleSmall, color = Neon.Cyan, modifier = Modifier.padding(top = 8.dp).testTag("remix_matter"))
+        Text(tr("Ses phrases de voix sur tes pads, sa batterie en kit, sa basse et sa voix en notes"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         OutlinedButton(onClick = actions.splitVoice, modifier = Modifier.fillMaxWidth().testTag("remix_split_voice")) {
             Icon(Icons.Filled.ContentCut, contentDescription = null)
-            Text(" " + tr("La voix en phrases sur les pads"))
+            Text(" " + tr("Mettre la voix sur les pads"))
         }
         OutlinedButton(onClick = actions.drumsToKit, modifier = Modifier.fillMaxWidth().testTag("remix_drum_kit")) {
-            Text(tr("La batterie en kit « %s »", r.name.ifBlank { tr("Remix") }))
+            Text(tr("Faire un kit avec la batterie"))
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedButton(onClick = { actions.bassToNotes(false) }, modifier = Modifier.weight(1f).testTag("remix_bass_notes")) { Text(tr("La basse en notes")) }
-            OutlinedButton(onClick = { actions.bassToNotes(true) }, modifier = Modifier.weight(1f).testTag("remix_bass_acid")) { Text(tr("La basse sur l'Acid 303")) }
+            OutlinedButton(onClick = { actions.bassToNotes(false) }, modifier = Modifier.weight(1f).testTag("remix_bass_notes")) { Text(tr("Rejouer la basse en notes")) }
+            OutlinedButton(onClick = { actions.bassToNotes(true) }, modifier = Modifier.weight(1f).testTag("remix_bass_acid")) { Text(tr("Rejouer la basse sur l'Acid 303")) }
         }
         // Step 7f: the sung melody too, on a melody track.
-        OutlinedButton(onClick = actions.voiceToNotes, modifier = Modifier.fillMaxWidth().testTag("remix_voice_notes")) { Text(tr("La mélodie de la voix en notes")) }
+        OutlinedButton(onClick = actions.voiceToNotes, modifier = Modifier.fillMaxWidth().testTag("remix_voice_notes")) { Text(tr("Rejouer la voix en notes")) }
         // Said where the user just touched: the cut's progress, its pad, or why it failed.
         ui.padTask?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("remix_pad_task")) }
         ui.cut?.let { CutCard(it, actions) }
@@ -776,7 +775,7 @@ fun SongTracksCard(
     NeonCard(accent = SONG_COLOR, modifier = Modifier.testTag("song_tracks")) {
         SectionLabel(tr("Les 4 pistes de %s", name), color = SONG_COLOR)
         Text(
-            tr("Toute la chanson passe par la tranche « %s » du mixeur, avec ses effets. Ici, chaque piste a son volume, Solo et Muet.", name),
+            tr("Toute la chanson passe par la tranche « %s » du mixeur, avec ses effets. Ici, chaque piste a son volume, son casque (l'écouter seule) et son haut-parleur (la couper).", name),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
         Remix.SHOWN_ORDER.forEach { i ->
@@ -786,14 +785,8 @@ fun SongTracksCard(
                     Modifier.size(10.dp).background(stemColor(i), androidx.compose.foundation.shape.CircleShape),
                 )
                 Text(StemStore.label(Demucs.STEMS[i]), Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
-                FilterChip(
-                    selected = m.solo, onClick = { toggleSolo(i) }, label = { Text("S") },
-                    colors = pillColors(Neon.Acid), modifier = Modifier.testTag("song_stem_solo_$i"),
-                )
-                FilterChip(
-                    selected = m.mute, onClick = { toggleMute(i) }, label = { Text("M") },
-                    colors = pillColors(Neon.Amber), modifier = Modifier.testTag("song_stem_mute_$i"),
-                )
+                com.pocketstudio.app.ui.MuteToggle(m.mute, StemStore.label(Demucs.STEMS[i]), "song_stem_mute_$i") { toggleMute(i) }
+                com.pocketstudio.app.ui.SoloToggle(m.solo, StemStore.label(Demucs.STEMS[i]), "song_stem_solo_$i", color = Neon.Acid) { toggleSolo(i) }
             }
             ProSlider(value = m.volume, onValueChange = { setVolume(i, it) }, modifier = Modifier.testTag("song_stem_volume_$i"))
         }

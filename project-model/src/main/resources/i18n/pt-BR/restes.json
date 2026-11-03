@@ -17,5 +17,6 @@
   "Enregistrer ma performance": "Gravar minha performance",
   "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "No Live, ● grava tudo o que você toca (casas lançadas, pads, efeitos, notas). Ao parar, sua tomada vira sua música; “Desfazer” a retira de uma vez.",
   "dès %s": "a partir de %s",
-  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "Batida forte: outro som. O som do pad fica com as batidas leves."
+  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "Batida forte: outro som. O som do pad fica com as batidas leves.",
+  "format audio illisible": "formato de áudio ilegível"
 }

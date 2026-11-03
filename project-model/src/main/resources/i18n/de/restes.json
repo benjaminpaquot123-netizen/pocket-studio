@@ -17,5 +17,6 @@
   "Enregistrer ma performance": "Meine Performance aufnehmen",
   "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "Im Live nimmt ● alles auf, was du spielst (gestartete Felder, Pads, Effekte, Noten). Beim Stoppen wird deine Aufnahme zu deinem Song; „Rückgängig“ nimmt sie auf einmal zurück.",
   "dès %s": "ab %s",
-  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "Harte Schläge: ein anderer Sound. Der Sound des Pads behält die leisen Schläge."
+  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "Harte Schläge: ein anderer Sound. Der Sound des Pads behält die leisen Schläge.",
+  "format audio illisible": "Audioformat nicht lesbar"
 }

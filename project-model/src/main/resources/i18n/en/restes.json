@@ -17,5 +17,6 @@
   "Enregistrer ma performance": "Record my performance",
   "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "In the Live, ● records everything you play (cells launched, pads, effects, notes). When you stop, your take becomes your song; “Undo” takes it all back at once.",
   "dès %s": "from %s",
-  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "Hard hits: another sound. The pad's own sound keeps the soft hits."
+  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "Hard hits: another sound. The pad's own sound keeps the soft hits.",
+  "format audio illisible": "unreadable audio format"
 }

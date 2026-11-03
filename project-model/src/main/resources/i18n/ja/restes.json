@@ -17,5 +17,6 @@
   "Enregistrer ma performance": "演奏を録音",
   "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "ライブでは ● が演奏したすべて（再生したマス、パッド、エフェクト、ノート）を録音します。停止するとテイクが曲になり、「元に戻す」で一度に取り消せます。",
   "dès %s": "%s から",
-  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "強く叩くと別の音。弱い打撃はパッド本来の音のまま。"
+  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "強く叩くと別の音。弱い打撃はパッド本来の音のまま。",
+  "format audio illisible": "読み取れない音声形式"
 }

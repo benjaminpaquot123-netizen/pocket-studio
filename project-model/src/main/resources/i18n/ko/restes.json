@@ -17,5 +17,6 @@
   "Enregistrer ma performance": "내 연주 녹음",
   "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "라이브에서 ●는 연주하는 모든 것(재생한 칸, 패드, 효과, 음표)을 녹음해요. 멈추면 테이크가 곡이 되고, '실행 취소'로 한 번에 되돌릴 수 있어요.",
   "dès %s": "%s부터",
-  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "세게 치면 다른 소리. 약하게 치면 패드 원래 소리."
+  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "세게 치면 다른 소리. 약하게 치면 패드 원래 소리.",
+  "format audio illisible": "읽을 수 없는 오디오 형식"
 }

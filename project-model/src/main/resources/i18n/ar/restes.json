@@ -17,5 +17,6 @@
   "Enregistrer ma performance": "تسجيل أدائي",
   "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "في لايف، يسجّل ● كل ما تعزفه (الخانات التي تطلقها، الأزرار، المؤثرات، النوتات). عند الإيقاف تصبح لقطتك أغنيتك؛ و«تراجع» يزيلها دفعة واحدة.",
   "dès %s": "من %s",
-  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "الضربة القوية: صوت آخر. يبقى صوت اللوحة للضربات الخفيفة."
+  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "الضربة القوية: صوت آخر. يبقى صوت اللوحة للضربات الخفيفة.",
+  "format audio illisible": "صيغة صوت غير مقروءة"
 }

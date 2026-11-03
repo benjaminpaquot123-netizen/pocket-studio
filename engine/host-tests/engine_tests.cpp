@@ -1785,6 +1785,15 @@ void testSampleResamplesCleanly() {
     delete s;
     CHECK(ps::Sample::create(in.data(), 0, 2, 44100, kRate) == nullptr);
     CHECK(ps::Sample::create(in.data(), 10, 3, 44100, kRate) == nullptr);
+    // Audit stage 3: a lying rate is refused before any allocation (libsamplerate's 1/256..256).
+    CHECK(ps::Sample::create(in.data(), 10, 2, 100, kRate) == nullptr);
+    CHECK(ps::Sample::create(in.data(), 10, 2, 48000 * 300, kRate) == nullptr);
+    ps::Sample* low = ps::Sample::create(in.data(), 10, 2, 8000, kRate);  // a real phone rate still passes
+    CHECK(low != nullptr);
+    if (low) {
+        CHECK(low->release());
+        delete low;
+    }
 }
 
 void testPadSampleReplacesTheDrum() {

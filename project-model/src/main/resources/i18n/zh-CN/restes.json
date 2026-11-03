@@ -17,5 +17,6 @@
   "Enregistrer ma performance": "录下我的表演",
   "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "在现场页面，● 会录下你弹奏的一切（启动的格子、打击垫、效果、音符）。停止后，这段录音就成为你的歌曲；“撤销”可一次全部撤回。",
   "dès %s": "从 %s 起",
-  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "重击：换一个声音。轻击仍是打击垫自己的声音。"
+  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "重击：换一个声音。轻击仍是打击垫自己的声音。",
+  "format audio illisible": "无法读取的音频格式"
 }

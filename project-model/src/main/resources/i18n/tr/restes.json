@@ -17,5 +17,6 @@
   "Enregistrer ma performance": "Performansımı kaydet",
   "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "Live’da ● çaldığın her şeyi kaydeder (başlatılan kutular, padler, efektler, notalar). Durdurduğunda kaydın şarkın olur; “Geri al” hepsini bir kerede kaldırır.",
   "dès %s": "%s üstü",
-  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "Sert vuruş: başka bir ses. Pedin kendi sesi yumuşak vuruşlarda kalır."
+  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "Sert vuruş: başka bir ses. Pedin kendi sesi yumuşak vuruşlarda kalır.",
+  "format audio illisible": "okunamayan ses biçimi"
 }

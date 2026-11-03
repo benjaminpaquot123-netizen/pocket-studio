@@ -100,8 +100,26 @@ public:
     float loudLevel() const { return loudPublished_.load(std::memory_order_relaxed); }
     // What the estimate knows of the music's loudness is forgotten (another project).
     void resetEstimate();
-    void setMode(Mode m) { mode_ = m; }
+    void setMode(Mode m) {
+        wantedMode_ = m;
+        mode_ = forceSong_ ? Mode::Song : m;
+    }
     Mode mode() const { return mode_; }
+    // Lot E (« Master pro »): a target given in integrated LUFS (Spotify -14, Apple Music -16, a value
+    // typed in) aims at the whole song whatever the mix version (Song mode); off: the mix version's.
+    void setForceSong(bool on) {
+        forceSong_ = on;
+        mode_ = on ? Mode::Song : wantedMode_;
+    }
+    bool forceSong() const { return forceSong_; }
+    // Lot E: the limiter's attack, as a share of its look-ahead (0.2..1, 1 = the whole 1 ms as before:
+    // the gain glides down over it). The look-ahead (so the latency) never changes. Shorter: the gain
+    // comes down later, the peak still held (each frame of the shorter average saw it).
+    void setLimiterAttack(float share);
+    float limiterAttack() const { return attack_; }
+    // Lot E: the limiter's release times scaled (0.25..4, 1 = 30 ms after a short peak, 150 ms in the music).
+    void setLimiterRelease(float scale);
+    float limiterRelease() const { return releaseScale_; }
     // « Des basses qui tapent » (mix version 3, the assistant's songs since): with a target, a 4th-order
     // Butterworth high-pass at kLowCutHz after the DC blocker. Under 25-30 Hz no phone nor most
     // speakers play anything, but the clipper and the limiter hear it and take loudness off the whole
@@ -185,6 +203,10 @@ private:
     // --- Drop mode (S5): the loud part of the music before the drive, from 3 s windows; the
     // drive's mean square over the last 30 pieces (a window's own).
     Mode mode_ = Mode::Song;
+    Mode wantedMode_ = Mode::Song;
+    bool forceSong_ = false;
+    float attack_ = 1.0f, releaseScale_ = 1.0f;
+    int boxLen_ = 48;  // the averaging window (attack_ x lookAhead_ frames)
     LoudPart loudIn_;
     // What the clipper and the limiter take off the loud part now (LU), smoothed over its last
     // windows, and the drive (dB) those windows were heard with.

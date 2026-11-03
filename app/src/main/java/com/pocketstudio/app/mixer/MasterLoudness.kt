@@ -210,4 +210,21 @@ internal fun ExportReportLine(export: ExportUi) {
         )
     }
     export.lossDb?.takeIf { it >= 0.1 }?.let { LossLine(it, Modifier.testTag("export_loss")) }
+    // Lot E: the pro readings (LRA, maxima, PLR, correlation, mono), under a touch.
+    export.proReport?.let { r ->
+        var pro by rememberSaveable { mutableStateOf(false) }
+        TextButton(onClick = { pro = !pro }, modifier = Modifier.testTag("export_pro_readings")) {
+            Text(if (pro) tr("Masquer les mesures pro") else tr("Mesures pro"), style = MaterialTheme.typography.labelMedium)
+        }
+        if (pro) {
+            Column(Modifier.testTag("export_pro_lines")) {
+                com.pocketstudio.app.export.ProReport.lines(r, export.decodedPeakDb).forEach {
+                    Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                }
+                if (!com.pocketstudio.app.export.ProReport.monoSafe(r)) {
+                    Text(tr("Attention : en mono (une enceinte, un club), une partie du son s'annule."), style = MaterialTheme.typography.bodySmall, color = Neon.Amber)
+                }
+            }
+        }
+    }
 }

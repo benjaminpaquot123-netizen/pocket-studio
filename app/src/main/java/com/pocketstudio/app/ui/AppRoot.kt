@@ -2926,6 +2926,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     // Polled by the mixer itself (above).
                                     meters = rhythmVm.meters,
                                     reductions = rhythmVm.reductions,
+                                    pro = rhythmVm.masterProActions,
                                 ),
                                 master = project.mixer.master,
                                 masterDb = project.mixer.masterDb,

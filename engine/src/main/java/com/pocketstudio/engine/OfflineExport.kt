@@ -25,11 +25,13 @@ class OfflineExport : AutoCloseable {
      */
     fun render(
         file: File, frames: Long, tailFrames: Long, fadeOutFrames: Long = 0, autoTail: Boolean = false, floatWav: Boolean = false,
-        sampleRate: Int = SAMPLE_RATE, bits: Int = 24,
+        sampleRate: Int = SAMPLE_RATE, bits: Int = 24, finish: Finish = Finish(),
     ): ExportResult {
         sink?.let {
+            if (finish != Finish()) it.exportFinish(handle, finish.values())
             return it.exportRender(handle, file.absolutePath, frames, tailFrames, fadeOutFrames, autoTail, floatWav, sampleRate, if (floatWav) 32 else bits)
         }
+        NativeEngine.exportSetFinish(handle, finish.values())
         NativeEngine.exportSetFadeOut(handle, fadeOutFrames)
         NativeEngine.exportSetOptions(handle, autoTail, floatWav)
         NativeEngine.exportSetFormat(handle, sampleRate, if (floatWav) 32 else bits)
@@ -85,9 +87,27 @@ class OfflineExport : AutoCloseable {
         NativeEngine.exportDestroy(handle)
     }
 
+    /**
+     * Lot E (« Master pro »), the file's final form (OfflineRenderer::Finish): a fade-in, the silence
+     * cut at the start and the end, digital silence after it, the song's first frame kept (a part, a
+     * selection), the 16-bit dither's noise shaped. Frames at 48 kHz.
+     */
+    data class Finish(
+        val fadeInFrames: Long = 0,
+        val trimStart: Boolean = false,
+        val trimEnd: Boolean = false,
+        val endSilenceFrames: Long = 0,
+        val rangeStart: Long = 0,
+        val noiseShaping: Boolean = false,
+    ) {
+        fun values(): LongArray = longArrayOf(fadeInFrames, if (trimStart) 1 else 0, if (trimEnd) 1 else 0, endSilenceFrames, rangeStart, if (noiseShaping) 1 else 0)
+    }
+
     companion object {
         const val SAMPLE_RATE = 48000
         const val CD_RATE = 44100
+        /** Lot E: 96 kHz (resampled after the master). */
+        const val HIGH_RATE = 96000
 
         /** Frames for [bars] bars of [beatsPerBar] beats at [bpm] (swing keeps the bar length). */
         fun framesFor(bars: Int, bpm: Double, beatsPerBar: Int = 4): Long = Math.round(bars * beatsPerBar * 60.0 / bpm * SAMPLE_RATE)
@@ -108,7 +128,19 @@ data class ExportReport(
     val lossDb: Double = 0.0,
     /** S5: the loudness of the loudest part (the Drop), in LUFS; null without a Drop-aimed target. */
     val loudLufs: Double? = null,
+    /** Lot E: the loudest 400 ms and 3 s (LUFS), the loudness range (LU), the stereo correlation (−1..1), the mono fold (LUFS). */
+    val maxMomentary: Double? = null,
+    val maxShortTerm: Double? = null,
+    val lra: Double? = null,
+    val correlation: Double? = null,
+    val monoLufs: Double? = null,
 ) {
+    /** PLR: the true peak over the integrated loudness (dB); null for silence. */
+    val plr: Double? get() = lufs?.let { truePeakDb - it }
+
+    /** How much quieter the mono fold is (LU, ≥ 0 when mono loses loudness); null for silence. */
+    val monoDrop: Double? get() = lufs?.let { l -> monoLufs?.let { l - it } }
+
     companion object {
         fun of(values: FloatArray): ExportReport? = if (values.size < 5) null else ExportReport(
             lufs = values[NativeEngine.REPORT_LUFS].toDouble().takeIf { it > -100.0 },
@@ -118,6 +150,11 @@ data class ExportReport(
             driveDb = values[NativeEngine.REPORT_DRIVE].toDouble(),
             lossDb = values.getOrElse(NativeEngine.REPORT_LOSS) { 0f }.toDouble(),
             loudLufs = values.getOrNull(NativeEngine.REPORT_LOUD)?.toDouble()?.takeIf { it > -100.0 },
+            maxMomentary = values.getOrNull(NativeEngine.REPORT_MAX_MOMENTARY)?.toDouble()?.takeIf { it > -100.0 },
+            maxShortTerm = values.getOrNull(NativeEngine.REPORT_MAX_SHORT_TERM)?.toDouble()?.takeIf { it > -100.0 },
+            lra = values.getOrNull(NativeEngine.REPORT_LRA)?.toDouble(),
+            correlation = values.getOrNull(NativeEngine.REPORT_CORRELATION)?.toDouble(),
+            monoLufs = values.getOrNull(NativeEngine.REPORT_MONO)?.toDouble()?.takeIf { it > -100.0 },
         )
     }
 }

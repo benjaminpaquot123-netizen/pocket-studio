@@ -32,6 +32,15 @@
 //   PAD <pad> <id> / TRACKSAMPLE <track> <id> / AUDIOCLIP <track> <id> / STEMS 0 / INSTRUMENT <a> 0
 //   FADE <frames> / OPTIONS <autoTail> <floatWav> / FORMAT <rate> <bits> / RENDER <wav|float> <frames> <tail>
 //   SONG, SECTION, META, #: for ps_measure and people, ignored here.
+//
+// Lot E (« Master pro », scripts/export-matrix.sh), on top of the recording:
+//   --target <LUFS>       the loudness target (0: none); --whole-song: aimed at the whole song (a pro target)
+//   --rate <Hz> --bits <16|24|32>   the WAV's format (44100, 48000, 96000; 32 = float), dithered at 16 and 24
+//   --shape               16 bits: the dither's noise shaped
+//   --no-master-fx        the master's effects off (what the stems and the mix they add up to skip)
+//   --stem-mode <0..3>    Mixer::StemMode (1 dry, 2 the reverb's return alone, 3 the echo's)
+//   --fade-in <s> --end-silence <s> --trim --range-start <frame>   the file's finish (OfflineRenderer::Finish)
+//   --attack <0.2..1> --release <0.25..4>   the limiter's settings
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
@@ -79,6 +88,11 @@ int main(int argc, char** argv) {
     std::vector<int> solo;
     bool noExciter = false, noDuck = false;
     float ceiling = NAN, driveCeiling = NAN;
+    float target = NAN, attack = NAN, release = NAN;
+    bool wholeSong = false, noMasterFx = false, shape = false, trim = false;
+    int rate = 0, bits = 0, stemMode = -1;
+    double fadeIn = 0.0, endSilence = 0.0;
+    long long rangeStart = 0;
     std::string reportPath;
     std::vector<std::string> files;
     for (int i = 1; i < argc; ++i) {
@@ -94,6 +108,19 @@ int main(int argc, char** argv) {
         else if (!std::strcmp(argv[i], "--report") && i + 1 < argc) reportPath = argv[++i];
         else if (!std::strcmp(argv[i], "--ceiling") && i + 1 < argc) ceiling = std::strtof(argv[++i], nullptr);
         else if (!std::strcmp(argv[i], "--drive-ceiling") && i + 1 < argc) driveCeiling = std::strtof(argv[++i], nullptr);
+        else if (!std::strcmp(argv[i], "--target") && i + 1 < argc) target = std::strtof(argv[++i], nullptr);
+        else if (!std::strcmp(argv[i], "--whole-song")) wholeSong = true;
+        else if (!std::strcmp(argv[i], "--rate") && i + 1 < argc) rate = std::atoi(argv[++i]);
+        else if (!std::strcmp(argv[i], "--bits") && i + 1 < argc) bits = std::atoi(argv[++i]);
+        else if (!std::strcmp(argv[i], "--shape")) shape = true;
+        else if (!std::strcmp(argv[i], "--no-master-fx")) noMasterFx = true;
+        else if (!std::strcmp(argv[i], "--stem-mode") && i + 1 < argc) stemMode = std::atoi(argv[++i]);
+        else if (!std::strcmp(argv[i], "--fade-in") && i + 1 < argc) fadeIn = std::strtod(argv[++i], nullptr);
+        else if (!std::strcmp(argv[i], "--end-silence") && i + 1 < argc) endSilence = std::strtod(argv[++i], nullptr);
+        else if (!std::strcmp(argv[i], "--trim")) trim = true;
+        else if (!std::strcmp(argv[i], "--range-start") && i + 1 < argc) rangeStart = std::atoll(argv[++i]);
+        else if (!std::strcmp(argv[i], "--attack") && i + 1 < argc) attack = std::strtof(argv[++i], nullptr);
+        else if (!std::strcmp(argv[i], "--release") && i + 1 < argc) release = std::strtof(argv[++i], nullptr);
         else files.emplace_back(argv[i]);
     }
     if (files.size() != 2) {
@@ -224,6 +251,23 @@ int main(int argc, char** argv) {
         renderer.scheduleFrom(-1);
         renderer.post({ps::CommandType::SetMaster, driveCeiling, 9, 0});
     }
+    auto now = [&](ps::CommandType type, float value, int a) {
+        renderer.scheduleFrom(-1);
+        renderer.post({type, value, a, 0});
+    };
+    if (noMasterFx) now(ps::CommandType::SetMaster, 0.0f, 2);
+    if (stemMode >= 0) now(ps::CommandType::SetMasterPro, float(stemMode), ps::ProStemMode);
+    if (wholeSong) now(ps::CommandType::SetMasterPro, 1.0f, ps::ProForceSong);
+    if (std::isfinite(target)) now(ps::CommandType::SetMaster, target, 4);
+    if (std::isfinite(attack)) now(ps::CommandType::SetMasterPro, attack, ps::ProLimiterAttack);
+    if (std::isfinite(release)) now(ps::CommandType::SetMasterPro, release, ps::ProLimiterRelease);
+    ps::OfflineRenderer::Finish finish;
+    finish.fadeInFrames = static_cast<int64_t>(std::lround(fadeIn * 48000.0));
+    finish.endSilenceFrames = static_cast<int64_t>(std::lround(endSilence * 48000.0));
+    finish.trimStart = finish.trimEnd = trim;
+    finish.rangeStart = rangeStart;
+    finish.noiseShaping = shape;
+    renderer.setFinish(finish);
     int status = 0;
     if (kind == "float") {
         const std::vector<float> out = renderer.renderToBuffer(frames, tail);
@@ -231,7 +275,8 @@ int main(int argc, char** argv) {
         if (!f || std::fwrite(out.data(), sizeof(float), out.size(), f) != out.size()) status = 3;
         if (f) std::fclose(f);
     } else if (kind == "wav") {
-        if (asApp && fmtBits != 0) renderer.setOutputFormat(fmtRate, fmtBits);
+        if (rate != 0 || bits != 0) renderer.setOutputFormat(rate != 0 ? rate : 48000, bits != 0 ? bits : 24);
+        else if (asApp && fmtBits != 0) renderer.setOutputFormat(fmtRate, fmtBits);
         else renderer.setFloatWav(asApp ? floatWav : true);
         if (renderer.renderToWav(files[1].c_str(), frames, tail) != ps::OfflineRenderer::Result::Ok) status = 3;
     } else {
@@ -246,10 +291,12 @@ int main(int argc, char** argv) {
         } else {
             const double tpDb = r.truePeak > 0.0f ? 20.0 * std::log10(static_cast<double>(r.truePeak)) : -200.0;
             std::fprintf(f, "{\"lufs\": %.3f, \"true_peak_db\": %.3f, \"seconds\": %.3f, \"sample_rate\": %d, \"drive_db\": %.3f, \"music_lufs\": %.3f, "
-                            "\"loss_db\": %.3f, \"loud_lufs\": %.3f, \"music_loud_lufs\": %.3f, \"mode\": %d, \"target_lufs\": %.2f}\n",
+                            "\"loss_db\": %.3f, \"loud_lufs\": %.3f, \"music_loud_lufs\": %.3f, \"mode\": %d, \"target_lufs\": %.2f, "
+                            "\"max_momentary\": %.3f, \"max_short_term\": %.3f, \"lra\": %.3f, \"correlation\": %.4f, \"mono_lufs\": %.3f}\n",
                          r.lufs, tpDb, static_cast<double>(r.frames) / static_cast<double>(r.sampleRate > 0 ? r.sampleRate : 48000), r.sampleRate,
                          static_cast<double>(r.driveDb), r.musicLufs, static_cast<double>(r.lossDb), r.loudLufs, r.musicLoudLufs, r.mode,
-                         std::isfinite(r.targetLufs) ? static_cast<double>(r.targetLufs) : 0.0);
+                         std::isfinite(r.targetLufs) ? static_cast<double>(r.targetLufs) : 0.0, r.maxMomentary, r.maxShortTerm, r.lra,
+                         r.correlation, r.monoLufs);
             std::fclose(f);
         }
     }

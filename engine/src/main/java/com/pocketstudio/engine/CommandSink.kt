@@ -46,6 +46,9 @@ interface CommandSink {
     /** [OfflineExport.cancel]: [target]'s render stops and returns [ExportResult.Cancelled] (a sink that renders at once: nothing to stop). */
     fun exportCancel(target: Long) = Unit
 
+    /** Lot E: [OfflineExport.render]'s finish for [target]'s next render ([OfflineExport.Finish.values]). */
+    fun exportFinish(target: Long, values: LongArray) = Unit
+
     /** [OfflineExport.report] of [target]'s last render, as the JNI lays it out (null: none). */
     fun exportReport(target: Long): FloatArray? = null
 

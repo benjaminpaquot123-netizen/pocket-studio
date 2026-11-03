@@ -223,6 +223,18 @@ enum class CommandType : uint8_t {
     ResampleStop = 152,    // a = 0: the take ends on the next bar line heard (whole bars); a = 1: at once. Its state becomes 2
     SetMidiClockOut = 153, // value 1: MIDI clock events (Start, 24 ticks a beat on the transport's beats, Stop) for
                            // popClockEvent(), on the output's frames; 0: none (a Stop first when the transport runs)
+    // Lot E (« Master pro »), numbered 190 to 209.
+    SetMasterPro = 190,    // a: MasterProParam, value: its setting
+    InstallReference = 191,// sample: the reference song (nullptr: none), value: its integrated loudness (LUFS)
+};
+// SetMasterPro's settings.
+enum MasterProParam : int {
+    ProListen = 0,          // MasterCompare::Listen: 0 the master, 1 without it (same loudness), 2 the reference
+    ProArmed = 1,           // 1: the A/B's loudness is measured (the panel is open)
+    ProForceSong = 2,       // 1: the target is the whole song's integrated loudness (Spotify, Apple Music, a value)
+    ProLimiterAttack = 3,   // 0.2..1, a share of the look-ahead
+    ProLimiterRelease = 4,  // 0.25..4, the release times scaled
+    ProStemMode = 5,        // Mixer::StemMode (an export of separate tracks)
 };
 static_assert(static_cast<int>(CommandType::SetPadVoiceParam) < 100, "the commands in order must stay under SetKitVersion");
 static_assert(static_cast<int>(CommandType::SetDrumStepOffset) == 80, "NativeEngine.kt numbers the phase 34 commands from 80");
@@ -231,6 +243,7 @@ static_assert(static_cast<int>(CommandType::SetTrackZone) == 130, "NativeEngine.
 static_assert(static_cast<int>(CommandType::SetLayer) == 140, "NativeEngine.kt numbers the G1b commands from 140");
 static_assert(static_cast<int>(CommandType::SetMonitor) == 142, "NativeEngine.kt numbers the voice commands from 142");
 static_assert(static_cast<int>(CommandType::LaunchClipRow) == 150, "NativeEngine.kt numbers the lot B2 commands from 150");
+static_assert(static_cast<int>(CommandType::SetMasterPro) == 190, "NativeEngine.kt numbers the lot E commands from 190");
 
 // « Enregistrer ce que je joue » (lot B2): what the output plays, from a bar line of the live pads'
 // clock to another (stereo, interleaved, after the master). The app owns it (allocated off the audio
@@ -450,6 +463,7 @@ public:
         preview_.collectGarbage();
         clips_.collectGarbage();
         audio_.collectGarbage();
+        mixer_.masterCompare().collectGarbage();
     }
     bool audioClipPlaying(int track) const { return audio_.playing(track); }  // tests
 

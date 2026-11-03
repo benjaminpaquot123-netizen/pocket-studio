@@ -374,6 +374,19 @@ JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInsta
     return JNI_FALSE;
 }
 
+// Lot E: the reference song heard in « Master pro » (handle 0: none), at its integrated loudness (LUFS).
+JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallReference(JNIEnv*, jobject, jlong handle, jfloat lufs) {
+    host().engine().collectGarbage();
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s && s->compact()) return JNI_FALSE;
+    if (s) s->retain();
+    ps::Command command{ps::CommandType::InstallReference, lufs, 0, 0};
+    command.sample = s;
+    if (host().post(command)) return JNI_TRUE;
+    if (s && s->release()) delete s;
+    return JNI_FALSE;
+}
+
 JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallAudioClip(JNIEnv*, jobject, jlong exportHandle, jint track,
                                                                                     jlong handle) {
     auto* s = reinterpret_cast<ps::Sample*>(handle);
@@ -838,13 +851,31 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportSetFormat
     renderer(handle)->setOutputFormat(rate, bits);
 }
 
+// Lot E (« Master pro »): the next render's finish (layout: NativeEngine.FINISH_*): fade-in frames,
+// start trimmed (1), end trimmed (1), silence after the end (frames), first frame kept, noise shaping (1).
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportSetFinish(JNIEnv* env, jobject, jlong handle, jlongArray values) {
+    if (!values || env->GetArrayLength(values) < 6) return;
+    jlong v[6];
+    env->GetLongArrayRegion(values, 0, 6, v);
+    ps::OfflineRenderer::Finish f;
+    f.fadeInFrames = v[0];
+    f.trimStart = v[1] != 0;
+    f.trimEnd = v[2] != 0;
+    f.endSilenceFrames = v[3];
+    f.rangeStart = v[4];
+    f.noiseShaping = v[5] != 0;
+    renderer(handle)->setFinish(f);
+}
+
 // What the last render wrote (layout: NativeEngine.REPORT_*): integrated loudness (LUFS, -1000
 // for silence), true peak (dBTP), length (seconds), sample rate, the loudness target's drive (dB).
 JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_exportReport(JNIEnv* env, jobject, jlong handle) {
     const auto& r = renderer(handle)->report();
     // S5: then what the clipper and the limiter took off (LU), the loud part's loudness (LUFS, the
     // Drop; -1000 without a two-pass Drop render) and the target's mode (0 song, 1 Drop).
-    const jfloat values[8] = {
+    // Lot E: then the loudest 400 ms and 3 s (LUFS), the loudness range (LU), the stereo correlation,
+    // the mono fold's loudness (LUFS) and the target (LUFS, 0: none).
+    const jfloat values[14] = {
         static_cast<jfloat>(r.lufs),
         r.truePeak > 0.0f ? 20.0f * std::log10(r.truePeak) : -1000.0f,
         r.sampleRate > 0 ? static_cast<jfloat>(static_cast<double>(r.frames) / r.sampleRate) : 0.0f,
@@ -853,9 +884,15 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_exportRe
         r.lossDb,
         static_cast<jfloat>(r.loudLufs),
         static_cast<jfloat>(r.mode),
+        static_cast<jfloat>(r.maxMomentary),
+        static_cast<jfloat>(r.maxShortTerm),
+        static_cast<jfloat>(r.lra),
+        static_cast<jfloat>(r.correlation),
+        static_cast<jfloat>(r.monoLufs),
+        std::isfinite(r.targetLufs) ? r.targetLufs : 0.0f,
     };
-    jfloatArray result = env->NewFloatArray(8);
-    if (result) env->SetFloatArrayRegion(result, 0, 8, values);
+    jfloatArray result = env->NewFloatArray(14);
+    if (result) env->SetFloatArrayRegion(result, 0, 14, values);
     return result;
 }
 

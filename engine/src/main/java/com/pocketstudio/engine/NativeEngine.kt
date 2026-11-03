@@ -116,6 +116,9 @@ object NativeEngine {
     private const val CMD_RESAMPLE_ARM = 151
     private const val CMD_RESAMPLE_STOP = 152
     private const val CMD_MIDI_CLOCK_OUT = 153
+    // Lot E, « Master pro » (Engine.h, 190 to 209).
+    private const val CMD_MASTER_PRO = 190
+    private const val CMD_INSTALL_REFERENCE = 191
     /** Pieces a stem's edits hold at most (the engine's StemPlayer::kMaxClips). */
     const val MAX_STEM_CLIPS = 32
 
@@ -213,6 +216,13 @@ object NativeEngine {
     const val REPORT_LOSS = 5
     const val REPORT_LOUD = 6
     const val REPORT_MODE = 7
+    // Lot E: the pro readings.
+    const val REPORT_MAX_MOMENTARY = 8
+    const val REPORT_MAX_SHORT_TERM = 9
+    const val REPORT_LRA = 10
+    const val REPORT_CORRELATION = 11
+    const val REPORT_MONO = 12
+    const val REPORT_TARGET = 13
 
     /** [setLiveNoises] modes (the engine's PerformanceFx::Noises). */
     const val LIVE_NOISES_MIXED = 0
@@ -934,6 +944,35 @@ object NativeEngine {
     fun setLoudnessTarget(lufs: Float?) = post(CMD_MASTER, lufs ?: 0f, 4)
     /** The master limiter's ceiling in dBTP (−1 by default; −2 for an M4A). */
     fun setMasterCeiling(dbtp: Float) = post(CMD_MASTER, dbtp, 5)
+
+    // --- Lot E, « Master pro » (Engine.h MasterProParam) ---------------------------------------
+    /** What the master's output plays: [LISTEN_MASTER], [LISTEN_WITHOUT] (the mix before the master), [LISTEN_REFERENCE]. */
+    fun setMasterListen(listen: Int) = post(CMD_MASTER_PRO, listen.coerceIn(0, 2).toFloat(), 0)
+    /** « A/B au même volume »: every side heard at the quietest one's loudness (measured while on). */
+    fun setMasterCompare(on: Boolean) = post(CMD_MASTER_PRO, if (on) 1f else 0f, 1)
+    /** The loudness target aims at the whole song's integrated loudness (a pro target), whatever the mix version. */
+    fun setTargetWholeSong(on: Boolean) = post(CMD_MASTER_PRO, if (on) 1f else 0f, 2)
+    /** The limiter's attack, a share of its 1 ms look-ahead (0.2..1). */
+    fun setLimiterAttack(share: Float) = post(CMD_MASTER_PRO, share.coerceIn(0.2f, 1f), 3)
+    /** The limiter's release times scaled (0.25..4). */
+    fun setLimiterRelease(scale: Float) = post(CMD_MASTER_PRO, scale.coerceIn(0.25f, 4f), 4)
+    /** An export of separate tracks: [STEM_NORMAL], [STEM_DRY] (no send returns), [STEM_RETURN_REVERB], [STEM_RETURN_ECHO]. */
+    fun setStemMode(mode: Int) = post(CMD_MASTER_PRO, mode.coerceIn(0, 3).toFloat(), 5)
+
+    const val LISTEN_MASTER = 0
+    const val LISTEN_WITHOUT = 1
+    const val LISTEN_REFERENCE = 2
+    const val STEM_NORMAL = 0
+    const val STEM_DRY = 1
+    const val STEM_RETURN_REVERB = 2
+    const val STEM_RETURN_ECHO = 3
+
+    /** The reference song for « Master pro » (null: none), at its integrated loudness [lufs]. Live engine only. */
+    fun setReference(sample: NativeSample?, lufs: Float) {
+        sink?.let { it.post(0L, CMD_INSTALL_REFERENCE, lufs, 0, 0); return }
+        if (isNative) nativeInstallReference(sample?.handle ?: 0L, lufs)
+    }
+    private external fun nativeInstallReference(handle: Long, lufs: Float): Boolean
     /** Another project: the target's estimate of the music's loudness starts over. */
     fun resetLoudnessEstimate() = post(CMD_MASTER, 0f, 6)
     /** S4: the whole mix's lows in mono under [hz] (its side high-passed, 24 dB / octave); 0 = off, as before. */
@@ -1099,6 +1138,8 @@ object NativeEngine {
     external fun exportSetFadeOut(handle: Long, frames: Long)
     external fun exportSetOptions(handle: Long, autoTail: Boolean, floatWav: Boolean)
     external fun exportSetFormat(handle: Long, sampleRate: Int, bits: Int)
+    /** Lot E: the next render's finish (OfflineExport.Finish.values()). */
+    external fun exportSetFinish(handle: Long, values: LongArray)
     external fun exportReport(handle: Long): FloatArray
     external fun exportProgress(handle: Long): Float
     external fun exportRenderFloat(handle: Long, frames: Long, tail: Long): FloatArray

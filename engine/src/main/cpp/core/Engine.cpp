@@ -527,6 +527,22 @@ void Engine::applyCommand(const Command& command) {
             else if (command.a == 9) mixer_.masterChain().setDriveCeilingDb(command.value);  // dBTP, offline (S6); NaN: none
             else if (command.a == 10) mixer_.masterChain().setKnownLevel(command.value);  // LUFS, the known drive's loud part (S7)
             break;
+        case CommandType::SetMasterPro:
+            if (!std::isfinite(command.value)) break;
+            switch (command.a) {
+                case ProListen: mixer_.masterCompare().setListen(static_cast<int>(std::lround(command.value))); break;
+                case ProArmed: mixer_.masterCompare().setArmed(command.value > 0.5f); break;
+                case ProForceSong: mixer_.masterChain().setForceSong(command.value > 0.5f); break;
+                case ProLimiterAttack: mixer_.masterChain().setLimiterAttack(command.value); break;
+                case ProLimiterRelease: mixer_.masterChain().setLimiterRelease(command.value); break;
+                case ProStemMode: mixer_.setStemMode(static_cast<int>(std::lround(command.value))); break;
+                default: break;
+            }
+            break;
+        case CommandType::InstallReference:
+            mixer_.masterCompare().install(command.sample);
+            mixer_.masterCompare().setReferenceLufs(command.value);
+            break;
         case CommandType::SetSend:
             mixer_.setSend(command.a, command.b, command.value);
             break;

@@ -50,6 +50,7 @@ void Mixer::prepare(int sampleRate) {
     for (int ch = 0; ch < kChannels; ++ch) finishSwaps(ch);
     stripLevel_.fill(0.0f);
     chain_->prepare(sampleRate);
+    compare_->prepare(sampleRate, chain_->latency());
     masterGain_.configure(rate, 15.0f);
     masterGain_.snap(masterGain_.target());
     masterFader_.configure(rate, 10.0f);
@@ -695,11 +696,15 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
                 fed = true;
             }
         }
+        // Lot E: a « returns only » stem keeps every strip out of the mix (its sends still feed the buses).
+        const bool toMix = stemMode_ < StemReturn0 || pad || isLayer(ch);
         for (int i = 0; i < n; ++i) {
             const float l = chL_[static_cast<size_t>(i)] * s.gainL.next();
             const float r = chR_[static_cast<size_t>(i)] * s.gainR.next();
-            toL[i] += l;
-            toR[i] += r;
+            if (toMix) {
+                toL[i] += l;
+                toR[i] += r;
+            }
             for (size_t b = 0; b < kBuses; ++b) {
                 const float g = s.sendGain[b].next();
                 busL_[b][static_cast<size_t>(i)] += l * g;
@@ -741,8 +746,18 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
             std::fill(retL_.begin(), retL_.begin() + n, 0.0f);
             std::fill(retR_.begin(), retR_.begin() + n, 0.0f);
         }
+        // Lot E: a « dry » stem leaves every return out; a « returns » one keeps its bus's alone. The
+        // bus still runs (its tail is the same in every stem of the export).
+        const bool heard = stemMode_ == StemNormal || stemMode_ == StemReturn0 + static_cast<int>(b);
+        if (!heard) {
+            outL = retL_.data();
+            outR = retR_.data();
+            std::fill(retL_.begin(), retL_.begin() + n, 0.0f);
+            std::fill(retR_.begin(), retR_.begin() + n, 0.0f);
+        }
         if (b == 0) reverb_.process(busL_[b].data(), busR_[b].data(), outL, outR, n);
         else delay_.process(busL_[b].data(), busR_[b].data(), outL, outR, n);
+        if (!heard) continue;
         if (plain) continue;
         auto& eq = returnEq_[b];
         if (eq.active()) {
@@ -775,6 +790,12 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
             mL_[static_cast<size_t>(i)] += grpL_[static_cast<size_t>(i)];
             mR_[static_cast<size_t>(i)] += grpR_[static_cast<size_t>(i)];
         }
+    }
+    // Lot E: the mix as it comes into the master's processing, for « écoute A/B ».
+    const bool comparing = !chainBypass_ && compare_->active();
+    if (comparing) {
+        std::copy(mL_.begin(), mL_.begin() + n, abL_.begin());
+        std::copy(mR_.begin(), mR_.begin() + n, abR_.begin());
     }
     float masterLevel = blockPeak(mL_.data(), mR_.data(), n);
     if (activeInserts_[kMaster] > 0 && masterFxOn_) {
@@ -856,6 +877,7 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         }
     } else {
         stats = chain_->process(outL_.data(), outR_.data(), direct ? click_.data() : nullptr, n);
+        if (comparing) compare_->process(abL_.data(), abR_.data(), outL_.data(), outR_.data(), n);
     }
     float masterPeak = 0.0f;
     for (int i = 0; i < n; ++i) {

@@ -69,8 +69,9 @@ void MasterChain::prepare(int rate) {
     envAttack_ = 1.0f - std::exp(-1.0f / (0.008f * fs));
     envRelease_ = std::exp(-1.0f / (0.150f * fs));
     lpCoef_ = 1.0f - std::exp(-2.0f * 3.14159265f * 500.0f / fs);
-    relFast_ = std::exp(-1.0f / (0.030f * fs));
-    relSlow_ = std::exp(-1.0f / (0.150f * fs));
+    relFast_ = std::exp(-1.0f / (0.030f * releaseScale_ * fs));
+    relSlow_ = std::exp(-1.0f / (0.150f * releaseScale_ * fs));
+    boxLen_ = std::clamp(static_cast<int>(std::lround(attack_ * lookAhead_)), 1, lookAhead_);
     avgCoef_ = 1.0f - std::exp(-1.0f / (1.0f * fs));
     maxClip_ = dbToGain(kMaxClipDb);
     dcR_ = std::exp(-2.0 * 3.14159265358979 * 3.0 / fs);  // 3 Hz: -0.1 dB at 20 Hz
@@ -111,7 +112,7 @@ void MasterChain::prepare(int rate) {
     lfHead_ = lfTail_ = 0;
     lpL_ = lpR_ = 0.0f;
     box_.fill(1.0f);
-    boxSum_ = lookAhead_;
+    boxSum_ = boxLen_;
     boxPos_ = 0;
     nonUnity_ = 0;
     rel_ = avg_ = 1.0f;
@@ -385,6 +386,28 @@ float MasterChain::clip(ClipChannel& c, float x, float level, bool armed, float&
     return y;
 }
 
+void MasterChain::setLimiterAttack(float share) {
+    if (!std::isfinite(share)) return;
+    attack_ = std::clamp(share, 0.2f, 1.0f);
+    const int len = std::clamp(static_cast<int>(std::lround(attack_ * lookAhead_)), 1, lookAhead_);
+    if (len == boxLen_) return;
+    // The window starts again full of its newest value: no jump in the gain (audio thread, no allocation).
+    const float last = box_[static_cast<size_t>((boxPos_ + boxLen_ - 1) % boxLen_)];
+    boxLen_ = len;
+    std::fill(box_.begin(), box_.begin() + boxLen_, last);
+    boxPos_ = 0;
+    nonUnity_ = last != 1.0f ? boxLen_ : 0;
+    boxSum_ = static_cast<double>(last) * boxLen_;
+}
+
+void MasterChain::setLimiterRelease(float scale) {
+    if (!std::isfinite(scale)) return;
+    releaseScale_ = std::clamp(scale, 0.25f, 4.0f);
+    const float fs = static_cast<float>(rate_);
+    relFast_ = std::exp(-1.0f / (0.030f * releaseScale_ * fs));
+    relSlow_ = std::exp(-1.0f / (0.150f * releaseScale_ * fs));
+}
+
 void MasterChain::limit(float& l, float& r, float clipRatio, float& gain) {
     constexpr int kMask = kRing - 1;
     constexpr int kD = TruePeakFilter::kDelay;
@@ -425,12 +448,12 @@ void MasterChain::limit(float& l, float& r, float clipRatio, float& gain) {
     // Averaged over the look-ahead: the gain glides down along it and is at most the peak's own
     // when the peak comes out (each frame of the average saw it in its window).
     const auto at = static_cast<size_t>(boxPos_);
-    if (++boxPos_ == lookAhead_) boxPos_ = 0;
+    if (++boxPos_ >= boxLen_) boxPos_ = 0;
     nonUnity_ += (rel_ != 1.0f) - (box_[at] != 1.0f);
     boxSum_ += static_cast<double>(rel_) - static_cast<double>(box_[at]);
     box_[at] = rel_;
-    if (nonUnity_ == 0) boxSum_ = lookAhead_;  // back at rest: exactly unity again
-    const float smooth = nonUnity_ == 0 ? 1.0f : std::min(1.0f, static_cast<float>(boxSum_ / lookAhead_));
+    if (nonUnity_ == 0) boxSum_ = boxLen_;  // back at rest: exactly unity again
+    const float smooth = nonUnity_ == 0 ? 1.0f : std::min(1.0f, static_cast<float>(boxSum_ / boxLen_));
     const auto out = static_cast<size_t>((f - lookAhead_ + 1) & kMask);
     l = delayL_[out];
     r = delayR_[out];

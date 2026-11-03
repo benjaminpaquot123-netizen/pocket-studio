@@ -1122,3 +1122,4 @@ Restes :
 - Découpe côte à côte avec Structure sur tablette : lot D (prévu).
 - Corriger les 21 notes de voix à l'octave (YIN) : pas nécessaire pour l'objectif, à revoir si Benjamin l'entend.
 - Pluriels polonais et arabes (« bouts ») : forme générale affichée, à compléter dans `plurals.json`.
+- 2026-11-03 : « Nightly real use » lancée à la main sur fx-int (jamais lancée avant : la tâche planifiée ne tourne que sur main). Linux (endurance 6 min, petit téléphone 37 styles, vrais projets) : vert. Émulateur (`EnduranceTest`) : passe maintenant l'écran « Que veux-tu faire ? » et le flux audio démarre, mais ▶ ne fait pas avancer le transport en 10 s (`EnduranceTest.kt:129`). Pas reproductible ici (pas d'émulateur) : confié à la préparation de l'Audit (étape H, workflow émulateur), avec la trace logcat de l'artefact `nightly-emulator`.

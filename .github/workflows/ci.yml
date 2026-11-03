@@ -54,7 +54,9 @@ jobs:
           # Picked up by CMake at configure time; recover=all makes UBSan findings fatal.
           CXXFLAGS: -fsanitize=address,undefined -fno-sanitize-recover=all
           LDFLAGS: -fsanitize=address,undefined
-        run: ./scripts/host-tests.sh
+        # AddressSanitizer inflates stack frames: the tests' engines (64 live pads since Pad Live) need
+        # more than the default 8 MB main stack.
+        run: ulimit -s 65536 && ./scripts/host-tests.sh
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:

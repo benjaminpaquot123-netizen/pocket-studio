@@ -70,6 +70,12 @@ void* operator new(std::size_t n) {
 void operator delete(void* p) noexcept { std::free(p); }
 void operator delete(void* p, std::size_t) noexcept { std::free(p); }
 #define PS_COUNT_ALLOCATIONS 1
+#else
+// Under AddressSanitizer nothing is counted: the counters stay at zero, so the benches that read
+// them still build (their no-allocation checks are proven by the normal build).
+static std::atomic<bool> g_countAllocations{false};
+static std::atomic<int> g_allocations{0};
+
 #endif
 
 namespace {

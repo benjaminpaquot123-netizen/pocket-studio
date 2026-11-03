@@ -24,3 +24,13 @@ Branche fx-fix2 (à partir de fx-int). Sept retours d'une revue neuve de l'inter
   - Cibles de moins de 48 dp : mesurées, elles ne l'étaient pas pour le doigt. Compose agrandit déjà la zone de toucher des boutons à 48 dp (`touchBoundsInRoot` : 144 px à xxhdpi pour les boutons de 40 et 44 dp), et les puces du menu de case Remix ont 48 dp de toucher (Material). Changer leur taille aurait changé la mise en page pour rien : laissés tels quels, gardés par un test.
   - Tests : `A11yTargetsFixTest` (4 : barre de Pad Live et « × » de la prise, « × » du défi, puces et − + du menu de case Remix, tuile d'un bout : état coché, puis « Écouter » ; seule la tuile était rouge avant), `TrackSheetTest` (état de la case), `BugReportFlowTest` (l'interrupteur dit son état et change au toucher).
   - Reste noté : `synth/SynthScreen.kt` (octave − +) et `live/LiveGridLook.kt` (Cases − +) ont aussi une taille fixe de 40 et 44 dp : même zone de toucher agrandie par Compose, rien changé.
+
+## Vérification finale (après `git merge fx-int`, corrections moteur et sauvegarde comprises)
+- Tests ciblés verts : `padlive.*`, `remix.Cut*`, `live.LiveRemix*`, `*MasterPro*`, `StemBoardRouterTest`, `LiveCellJourneyTest`, `AutoTempoJourneyTest`, `TrackSheetTest`, `BugReport*`, `A11yTargetsFixTest`, textes (`TextsAuditTest`, `AppTextsTest`), `project-model` entier.
+- Captures (`verifyRoborazziDebug`) des écrans touchés, identiques aux références : `cut_screen`, `cut_screen_magnifier`, `masterpro_panel(_de)`, `padlive*`, `bug_sheet*`. Regardées : `cut_screen_magnifier` (loupe d'une coupe déplacée toujours là), `bug_sheet` (interrupteurs inchangés).
+
+## Décisions à recopier dans DECISIONS
+- 2026-11-03 · Découper la chanson : une ligne de coupe se prend dans 12 dp, et seulement si ses voisines sont à plus de 24 dp ; elle ne bouge qu'après le seuil de glissement. Raison : chanson entière coupée à chaque mesure, chaque appui prenait une coupe. Retour : `CUT_GRAB` à 28 dp et `CutModel.grabbable` sans le test des voisines.
+- 2026-11-03 · Pad Live pages B à D : un son de la bibliothèque passe par `placeOnLivePad` (comme la page A), un coup y reste un coup. Raison : tempo, garde « occupé » et téléphone plein déjà gérés là. Retour : `PadLiveController.placeSound` (historique git).
+- 2026-11-03 · Pack de Pad Live par page (`PadLiveSet.packs`), l'ancien champ `pack` lu comme celui de la page A. Raison : la page B disait le pack de A. Retour : ignorer `packs`.
+- 2026-11-03 · Boutons de 40 à 44 dp : laissés, Compose leur donne déjà 48 dp de toucher (vérifié par test). Raison : ne pas changer la mise en page. Retour : enlever leur `size()`.

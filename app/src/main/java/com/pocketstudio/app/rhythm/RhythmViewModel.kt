@@ -10915,6 +10915,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         exportCancelled = true  // a conversion in progress stops and leaves no file behind
         resampleCancelled = true
         resampling?.cancel()
+        // « Enregistrer ce que je joue » armed or recording: its native buffer freed (FIX-1).
+        padLive.played.release()
         // A Live take recording: kept as it was played up to the bar being played, written into
         // the song at the next opening (the screen's scope is gone: nothing can be written here).
         when (_take.value) {

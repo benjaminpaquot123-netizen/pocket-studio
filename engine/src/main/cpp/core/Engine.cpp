@@ -35,7 +35,8 @@ Engine::~Engine() {
         SoundFontPlayer::close(command.font);
         if (command.stems && command.stems->release()) delete command.stems;
         if (command.record) command.record->state.store(2, std::memory_order_release);
-        if (command.resample) command.resample->state.store(2, std::memory_order_release);
+        // ResampleStop's pointer only names its take (never touched): ResampleArm's is the one handed over.
+        if (command.resample && command.type == CommandType::ResampleArm) command.resample->state.store(2, std::memory_order_release);
     }
     finishRecording();
     finishResample();
@@ -351,7 +352,8 @@ void Engine::applyCommand(const Command& command) {
             }
             break;
         case CommandType::ResampleStop:
-            if (!resample_) break;
+            // Its take named (the app's): a late stop for the take before leaves the new one alone.
+            if (!resample_ || (command.resample && command.resample != resample_)) break;
             // Still waiting for its first bar line: nothing recorded, it ends here.
             if (command.a == 1 || resample_->state.load(std::memory_order_relaxed) == 0) finishResample();
             else if (resampleStop_ < 0) resampleStop_ = outTotal_;

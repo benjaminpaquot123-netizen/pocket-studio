@@ -3,6 +3,7 @@ package com.pocketstudio.app.padlive
 import androidx.lifecycle.viewModelScope
 import com.pocketstudio.app.audio.Pcm
 import com.pocketstudio.app.report.AppLog
+import com.pocketstudio.app.rhythm.ClosingSaves
 import com.pocketstudio.app.rhythm.RhythmViewModel
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.model.LiveClip
@@ -11,12 +12,14 @@ import com.pocketstudio.model.PadLive
 import com.pocketstudio.model.i18n.tr
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.atomic.AtomicLong
 import kotlin.math.ceil
 
 /** « Enregistrer ce que je joue », as the button shows it. */
@@ -39,8 +42,8 @@ interface ResampleSource {
     fun start(seconds: Int): Long
     /** [state 0 armed, 1 recording, 2 finished; frames written]. */
     fun status(handle: Long): LongArray?
-    /** Ends on the next bar line heard. */
-    fun stop()
+    /** Take [handle] ends on the next bar line heard (a take armed since is left alone). */
+    fun stop(handle: Long)
     /** What was recorded (stereo interleaved, [RATE]), freed; ends it at once when still running. */
     fun finish(handle: Long): FloatArray?
 
@@ -53,7 +56,7 @@ private object EngineResample : ResampleSource {
     // Armed in silence it waits for the music (the first pad tapped starts the clock on a bar line).
     override fun start(seconds: Int): Long = if (NativeEngine.isNative) NativeEngine.resampleStart(seconds, waitForSound = true) else 0L
     override fun status(handle: Long): LongArray? = if (handle != 0L) NativeEngine.resampleStatus(handle) else null
-    override fun stop() { if (NativeEngine.isNative) NativeEngine.resampleStop() }
+    override fun stop(handle: Long) { if (NativeEngine.isNative && handle != 0L) NativeEngine.resampleStop(handle) }
     override fun finish(handle: Long): FloatArray? = if (handle != 0L) NativeEngine.resampleFinish(handle) else null
 }
 
@@ -78,7 +81,8 @@ class PlayedTake(private val vm: RhythmViewModel) {
     internal var sourceForTest: ResampleSource? = null
     private val source: ResampleSource get() = sourceForTest ?: EngineResample
 
-    private var handle = 0L
+    /** The engine's buffer armed or recording (0: none); whoever takes it out frees it, once. */
+    private val handle = AtomicLong(0L)
     private var job: Job? = null
     /** The take recorded, waiting for its place, and the tempo it was played at. */
     private var take: Pcm? = null
@@ -90,7 +94,7 @@ class PlayedTake(private val vm: RhythmViewModel) {
             PlayedTakeUi.Ready, is PlayedTakeUi.Done -> arm()
             PlayedTakeUi.Armed -> cancel()
             is PlayedTakeUi.Recording -> {
-                source.stop()
+                source.stop(handle.get())
                 _ui.value = PlayedTakeUi.Ending
             }
             PlayedTakeUi.Ending -> Unit
@@ -108,7 +112,7 @@ class PlayedTake(private val vm: RhythmViewModel) {
             _message.value = tr("Pas assez de mémoire pour enregistrer : ferme d'autres applis et réessaie.")
             return
         }
-        handle = h
+        handle.set(h)
         _ui.value = PlayedTakeUi.Armed
         AppLog.add("Pad Live : enregistrer ce que je joue (armé, $seconds s au plus)")
         job?.cancel()
@@ -128,9 +132,11 @@ class PlayedTake(private val vm: RhythmViewModel) {
     }
 
     private suspend fun collect(h: Long) {
-        handle = 0L
+        // Already taken out ([release], [cancel]): freed there.
+        if (!handle.compareAndSet(h, 0L)) return
         val bpm = vm.project.value.tempoBpm
-        val data = withContext(Dispatchers.IO) { source.finish(h) } ?: FloatArray(0)
+        // Freed even when the screen closes meanwhile (the buffer is native: nothing else would free it).
+        val data = withContext(NonCancellable + Dispatchers.IO) { source.finish(h) } ?: FloatArray(0)
         val perBar = framesPerBar(bpm)
         val bars = Math.round(data.size / 2 / perBar).toInt().coerceAtMost(MAX_BARS)
         if (bars < 1) {
@@ -150,11 +156,22 @@ class PlayedTake(private val vm: RhythmViewModel) {
     fun cancel() {
         job?.cancel()
         job = null
-        val h = handle
-        handle = 0L
-        if (h != 0L) vm.viewModelScope.launch(Dispatchers.IO) { source.finish(h) }
+        val h = handle.getAndSet(0L)
+        if (h != 0L) vm.viewModelScope.launch(NonCancellable + Dispatchers.IO) { source.finish(h) }
         take = null
         _ui.value = PlayedTakeUi.Ready
+    }
+
+    /**
+     * The project closes ([RhythmViewModel.onCleared]): a take armed or recording is ended and its
+     * engine buffer (up to ~23 MB, native) freed away from the screen's scope, which is gone.
+     */
+    fun release() {
+        job?.cancel()
+        job = null
+        val h = handle.getAndSet(0L)
+        if (h != 0L) ClosingSaves.launch { source.finish(h) }
+        take = null
     }
 
     /** The first empty pad of the page shown (else of any page), or null: every pad is taken. */

@@ -565,9 +565,13 @@ JNIEXPORT jlongArray JNICALL Java_com_pocketstudio_engine_NativeEngine_resampleS
     return out;
 }
 
-// The take ends on the next bar line heard (its state becomes 2 there).
-JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_resampleStop(JNIEnv*, jobject) {
-    host().post({ps::CommandType::ResampleStop, 0.0f, 0});
+// Take `handle` ends on the next bar line heard (its state becomes 2 there); a stop arriving after
+// another take was armed leaves that one alone.
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_resampleStop(JNIEnv*, jobject, jlong handle) {
+    if (handle == 0) return;
+    ps::Command command{ps::CommandType::ResampleStop, 0.0f, 0};
+    command.resample = reinterpret_cast<ps::ResampleBuffer*>(handle);
+    host().post(command);
 }
 
 // What was recorded (stereo interleaved, the engine's rate), freeing the buffer. Not finished yet
@@ -576,7 +580,9 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_resampleStop(JN
 JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_resampleFinish(JNIEnv* env, jobject, jlong handle) {
     auto* b = reinterpret_cast<ps::ResampleBuffer*>(handle);
     if (b->state.load(std::memory_order_acquire) != 2) {
-        host().post({ps::CommandType::ResampleStop, 0.0f, 1});
+        ps::Command stop{ps::CommandType::ResampleStop, 0.0f, 1};
+        stop.resample = b;
+        host().post(stop);
         for (int waited = 0; waited < 500 && b->state.load(std::memory_order_acquire) != 2; waited += 2) {
             if (host().runWhileStopped([] {})) break;
             std::this_thread::sleep_for(std::chrono::milliseconds(2));

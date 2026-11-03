@@ -1,6 +1,8 @@
 package com.pocketstudio.app.remix
 
 import com.pocketstudio.app.audio.Pcm
+import com.pocketstudio.model.AutoCut
+import com.pocketstudio.model.SongCuts
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -90,6 +92,28 @@ interface StemBoardActions {
 
     /** The board showed [StemBoardState.message]: it goes. */
     fun dismissMessage() {}
+
+    // --- Lot C (n° 24): « Découper la chanson » (CutScreen.kt) ---------------------------------
+
+    /** [play], round and round until [stop] when [loop] (« Boucle »). */
+    fun play(sel: StemSelection, loop: Boolean) = play(sel)
+
+    /** The pieces kept for song [setId] ([frames] long): empty when none, or when they were another song's. */
+    fun savedCuts(setId: String, frames: Long): SongCuts = SongCuts(setId)
+
+    /** The cut screen's pieces, kept in the project as they change (no undo step: the screen has its own « Annuler »). */
+    fun saveCuts(cuts: SongCuts) {}
+
+    /**
+     * The auto cuts [mode] of stem [stem] between frames [from] and [to] of song [setId], each
+     * `start until end`; worked off the main thread. Null when the song cannot be read.
+     */
+    suspend fun autoCuts(setId: String, stem: Int, mode: AutoCut, from: Long, to: Long): List<LongRange>? = null
+
+    /** Several pieces sent together: one undo step on the pads and on a track; said once. */
+    fun sendPieces(sels: List<StemSelection>, dest: StemDestination) {
+        sels.forEach { send(it, dest) }
+    }
 }
 
 /** What the board shows of its actions' work (B3). */

@@ -200,11 +200,18 @@ class RemixActions(
 fun RemixScreen(ui: RemixUi, actions: RemixActions) {
     // The stem board takes the whole page while it is open (« ← » or Back closes it).
     var boardOpen by rememberSaveable { mutableStateOf(false) }
+    // Lot C (n° 24): « Découper la chanson », the same way (it replaces the board for cutting pieces).
+    var cutOpen by rememberSaveable { mutableStateOf(false) }
+    if (cutOpen && ui.board != null) {
+        CutScreen(ui.board, actions.board, onClose = { cutOpen = false })
+        return
+    }
     if (boardOpen && ui.board != null) {
         StemBoard(ui.board, actions.board, onClose = { boardOpen = false })
         return
     }
     val openBoard = { boardOpen = true }
+    val openCut = { cutOpen = true }
     // On a tablet: the remix in the project and a new separation on the left, the separated songs on the right.
     // Nothing separated yet: one column at a reading width.
     if (ui.sets.isEmpty()) {
@@ -212,12 +219,12 @@ fun RemixScreen(ui: RemixUi, actions: RemixActions) {
             Column(
                 Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) { RemixStart(ui, actions, openBoard) }
+            ) { RemixStart(ui, actions, openBoard, openCut) }
         }
     } else {
         com.pocketstudio.ui.AdaptivePanes(
             spacing = 12.dp,
-            first = { RemixStart(ui, actions, openBoard) },
+            first = { RemixStart(ui, actions, openBoard, openCut) },
             second = {
                 ui.sets.forEach { set ->
                     StemCard(set, ui.preview?.takeIf { it.setId == set.id }, !ui.home && ui.remix.setId == set.id, actions, projectLine(ui).takeIf { !ui.home }, ui.home)
@@ -228,8 +235,8 @@ fun RemixScreen(ui: RemixUi, actions: RemixActions) {
 }
 
 @Composable
-private fun RemixStart(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit) {
-    if (ui.remix.setId != null && !ui.home) InProject(ui, actions, openBoard)
+private fun RemixStart(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit, openCut: () -> Unit) {
+    if (ui.remix.setId != null && !ui.home) InProject(ui, actions, openBoard, openCut)
     NeonCard(modifier = Modifier.testTag("remix_start")) {
         SectionLabel(tr("Séparer une chanson"), help = Glossary.REMIX)
         Text(
@@ -308,7 +315,7 @@ private fun Progress(text: String, fraction: Float?, cancel: () -> Unit) {
 }
 
 @Composable
-private fun InProject(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit) {
+private fun InProject(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit, openCut: () -> Unit) {
     val r = ui.remix
     NeonCard(modifier = Modifier.testTag("remix_project")) {
         SectionLabel(tr("Chanson : %s", r.name), color = SONG_COLOR, foldKey = "Dans le projet")
@@ -335,8 +342,13 @@ private fun InProject(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit)
                 color = Neon.TextSecondary, modifier = Modifier.testTag("remix_keys"))
         }
         if (ui.board != null) {
+            // Lot C (n° 24): cutting the song into pieces, the way a sampler slices, first.
+            Button(onClick = openCut, modifier = Modifier.fillMaxWidth().testTag("remix_open_cut")) {
+                Icon(Icons.Filled.ContentCut, contentDescription = null)
+                Text(" " + tr("Découper la chanson"))
+            }
             // The big curves of each stem, to choose a stretch and send it anywhere.
-            Button(onClick = openBoard, modifier = Modifier.fillMaxWidth().testTag("remix_open_board")) {
+            OutlinedButton(onClick = openBoard, modifier = Modifier.fillMaxWidth().testTag("remix_open_board")) {
                 Icon(Icons.Filled.GraphicEq, contentDescription = null)
                 Text(" " + tr("Ouvrir le tableau des pistes"))
             }

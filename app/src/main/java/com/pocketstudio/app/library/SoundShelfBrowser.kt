@@ -227,7 +227,30 @@ class ShelfBrowserUi(
     val tileTag: ((SoundOption) -> String)? = null,
     /** « Ma bibliothèque »'s name here (the synth's kept sounds are its « Favoris »). */
     val mineTitle: String? = null,
+    /**
+     * Lot C (« Garder » of the Remix): where each kept sound came from (« Boys », a project), so
+     * that « Ma bibliothèque » files them in a folder per song ([mineFolders]); null: one list.
+     */
+    val mineGroupOf: ((SoundOption) -> String?)? = null,
+    /** What a folder of « Ma bibliothèque » shows of its sounds (null: [mineContent]'s tiles, or the plain ones). */
+    val mineContentOf: (@Composable (List<SoundOption>) -> Unit)? = null,
 )
+
+/** A folder of « Ma bibliothèque »: the song (or project) its sounds came from. */
+private const val MINE_FOLDER = "$MINE/"
+
+/**
+ * Lot C: « Ma bibliothèque » filed by where each sound came from ([groupOf]: « Boys », a project's
+ * name; blank: nowhere), in the order each first shows; the sounds from nowhere stay loose. Null
+ * when it would be one folder or none (a single folder is no choice: the list as it is).
+ */
+internal fun mineFolders(mine: List<SoundOption>, groupOf: (SoundOption) -> String?): Pair<List<Pair<String, List<SoundOption>>>, List<SoundOption>>? {
+    val folders = LinkedHashMap<String, MutableList<SoundOption>>()
+    val loose = ArrayList<SoundOption>()
+    mine.forEach { o -> groupOf(o)?.trim()?.takeIf { it.isNotEmpty() }?.let { folders.getOrPut(it) { mutableListOf() }.add(o) } ?: loose.add(o) }
+    if (folders.isEmpty() || (folders.size == 1 && loose.isEmpty())) return null
+    return folders.map { it.key to it.value.toList() } to loose
+}
 
 /** « Récents » and « Favoris » for the browsers deep in a screen (the assistant), and ☆. */
 class SoundMarksUi(val recents: List<String> = emptyList(), val favorites: List<String> = emptyList(), val toggle: (SoundRef) -> Unit = {})
@@ -276,14 +299,17 @@ fun ShelfBrowser(ui: ShelfBrowserUi, actions: ShelfBrowserActions, modifier: Mod
     val favoriteKeys = ui.favorites.toSet()
     // A folder that no longer exists (a pack deleted): back to the families.
     val folder = ui.shelves.firstNotNullOfOrNull { it.find(at) }
-    val gone = when (at) {
-        RECENTS -> recents.isEmpty()
-        FAVORITES -> favorites.isEmpty()
-        MINE -> ui.mine.isNullOrEmpty()
+    val mineFiled = remember(ui.mine, ui.mineGroupOf) { ui.mine?.let { m -> ui.mineGroupOf?.let { mineFolders(m, it) } } }
+    val mineFolder = if (at.startsWith(MINE_FOLDER)) mineFiled?.first?.firstOrNull { it.first == at.removePrefix(MINE_FOLDER) } else null
+    val gone = when {
+        at == RECENTS -> recents.isEmpty()
+        at == FAVORITES -> favorites.isEmpty()
+        at == MINE -> ui.mine.isNullOrEmpty()
+        at.startsWith(MINE_FOLDER) -> mineFolder == null
         else -> at.isNotEmpty() && folder == null
     }
-    if (gone) at = ""
-    val parent = ui.shelves.firstOrNull { s -> s.children.any { it.id == at } }?.id.orEmpty()
+    if (gone) at = if (at.startsWith(MINE_FOLDER) && !ui.mine.isNullOrEmpty()) MINE else ""
+    val parent = if (at.startsWith(MINE_FOLDER)) MINE else ui.shelves.firstOrNull { s -> s.children.any { it.id == at } }?.id.orEmpty()
     BackHandler(enabled = at.isNotEmpty()) { at = parent }
     Column(modifier.fillMaxWidth().testTag("${ui.tag}_browser"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         if (at.isEmpty() && ui.search != null) {
@@ -313,20 +339,30 @@ fun ShelfBrowser(ui: ShelfBrowserUi, actions: ShelfBrowserActions, modifier: Mod
                             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                     }
                     else -> {
-                        val title = when (here) {
-                            RECENTS -> tr("Récents")
-                            FAVORITES -> tr("Favoris")
-                            MINE -> ui.mineTitle ?: tr("Ma bibliothèque")
+                        val title = when {
+                            here == RECENTS -> tr("Récents")
+                            here == FAVORITES -> tr("Favoris")
+                            here == MINE -> ui.mineTitle ?: tr("Ma bibliothèque")
+                            here.startsWith(MINE_FOLDER) -> (ui.mineTitle ?: tr("Ma bibliothèque")) + " › " + here.removePrefix(MINE_FOLDER)
                             else -> listOfNotNull(
                                 ui.shelves.firstOrNull { s -> s.children.any { it.id == here } }?.title?.let(::shelfTitle),
                                 ui.shelves.firstNotNullOfOrNull { it.find(here) }?.title?.let(::shelfTitle),
                             ).joinToString(" › ")
                         }
                         Header(title, "${ui.tag}_back") { at = parent }
-                        when (here) {
-                            RECENTS -> Sounds(recents, ui, actions, favoriteKeys, "${ui.tag}_sound")
-                            FAVORITES -> Sounds(favorites, ui, actions, favoriteKeys, "${ui.tag}_sound")
-                            MINE -> ui.mineContent?.invoke() ?: Sounds(ui.mine.orEmpty(), ui, actions, favoriteKeys, "${ui.tag}_sound")
+                        val filed = mineFiled
+                        when {
+                            here == RECENTS -> Sounds(recents, ui, actions, favoriteKeys, "${ui.tag}_sound")
+                            here == FAVORITES -> Sounds(favorites, ui, actions, favoriteKeys, "${ui.tag}_sound")
+                            here == MINE && filed != null -> {
+                                // One folder per song the sounds were kept from (« Boys »), then the others.
+                                filed.first.forEach { (name, sounds) ->
+                                    FolderRow(MINE, name, sounds.size, "${ui.tag}_mine_folder_$name") { at = MINE_FOLDER + name }
+                                }
+                                if (filed.second.isNotEmpty()) MineSounds(filed.second, ui, actions, favoriteKeys)
+                            }
+                            here == MINE -> ui.mineContent?.invoke() ?: Sounds(ui.mine.orEmpty(), ui, actions, favoriteKeys, "${ui.tag}_sound")
+                            here.startsWith(MINE_FOLDER) -> MineSounds(mineFolder?.second.orEmpty(), ui, actions, favoriteKeys)
                             else -> ui.shelves.firstNotNullOfOrNull { it.find(here) }?.let { f ->
                                 f.children.forEach { c -> FolderRow(f.title, shelfTitle(c.title), c.count, "${ui.tag}_folder_${c.id}") { at = c.id } }
                                 Sounds(f.items, ui, actions, favoriteKeys, "${ui.tag}_sound")
@@ -337,6 +373,12 @@ fun ShelfBrowser(ui: ShelfBrowserUi, actions: ShelfBrowserActions, modifier: Mod
             }
         }
     }
+}
+
+/** Some of « Ma bibliothèque »'s sounds: as its caller shows them ([ShelfBrowserUi.mineContentOf]), else as tiles. */
+@Composable
+private fun MineSounds(sounds: List<SoundOption>, ui: ShelfBrowserUi, actions: ShelfBrowserActions, favorites: Set<String>) {
+    ui.mineContentOf?.invoke(sounds) ?: Sounds(sounds, ui, actions, favorites, "${ui.tag}_sound")
 }
 
 /** A folder: its icon, its name, how many sounds, the whole width a target. */

@@ -83,6 +83,9 @@ interface StemBoardHost {
 
     /** The project stops playing (listening to a stretch alone: never two sounds at once). */
     fun pauseMusic()
+
+    /** Lot C: the cut screen's pieces kept in the project ([Project.songCuts]), no undo step; a stand-in may ignore them. */
+    fun saveCuts(cuts: com.pocketstudio.model.SongCuts) {}
 }
 
 /**
@@ -102,13 +105,17 @@ class StemBoardRouter(
     override val state: StateFlow<StemBoardState> = _state.asStateFlow()
 
     private var work: Job? = null
+    /** Lot C: several pieces sent one after the other (live pads, instruments). */
+    private var batch: Job? = null
     private var listening: Job? = null
 
     override fun dismissMessage() = _state.update { it.copy(message = null) }
 
     // --- Listening -------------------------------------------------------------------------------
 
-    override fun play(sel: StemSelection) {
+    override fun play(sel: StemSelection) = play(sel, loop = false)
+
+    override fun play(sel: StemSelection, loop: Boolean) {
         if (_state.value.playing == sel) {
             stop()
             return
@@ -132,7 +139,14 @@ class StemBoardRouter(
                 return@launch
             }
             val me = coroutineContext[Job]
-            val started = player.play(pcm) { if (listening === me) ended() }
+            // « Boucle »: once it has played to its end, it starts again (off the player's callback).
+            lateinit var again: () -> Unit
+            again = {
+                if (listening === me) {
+                    if (!loop) ended() else scope.launch { if (listening === me && !player.play(pcm, again)) ended() }
+                }
+            }
+            val started = player.play(pcm, again)
             if (!started) {
                 ended()
                 return@launch
@@ -165,6 +179,11 @@ class StemBoardRouter(
 
     override fun send(sel: StemSelection, dest: StemDestination) {
         if (refusedBusy()) return
+        route(sel, dest)
+    }
+
+    /** [send] without the busy check (a batch of pieces sends them one after the other). */
+    private fun route(sel: StemSelection, dest: StemDestination) {
         if (sel.frames <= 0) return say(tr("Choisis d'abord un morceau de la piste : glisse le doigt sur sa courbe."))
         val p = host.project()
         val french = StemRouting.stemFrench(sel.stem)
@@ -244,6 +263,129 @@ class StemBoardRouter(
         }
     }
 
+    // --- Lot C: « Découper la chanson » ---------------------------------------------------------
+
+    override fun savedCuts(setId: String, frames: Long): com.pocketstudio.model.SongCuts =
+        host.project().songCuts.sanitized(setId, frames)
+
+    override fun saveCuts(cuts: com.pocketstudio.model.SongCuts) = host.saveCuts(cuts)
+
+    override suspend fun autoCuts(setId: String, stem: Int, mode: com.pocketstudio.model.AutoCut, from: Long, to: Long): List<LongRange>? =
+        try {
+            host.withSong(setId) { src -> SongCutFinder.find(src, edits, stem, mode, from, to) }
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            com.pocketstudio.app.report.AppLog.add("Découpe : coupes auto impossibles (${e.message})")
+            null
+        }
+
+    override fun sendPieces(sels: List<StemSelection>, dest: StemDestination) {
+        val pieces = sels.filter { it.frames > 0 }.sortedBy { it.startFrame }
+        if (pieces.isEmpty()) return say(tr("Coche d'abord un ou plusieurs bouts."))
+        if (pieces.size == 1 && dest !is StemDestination.Mine) return send(pieces.single(), dest)
+        if (refusedBusy()) return
+        val p = host.project()
+        val french = StemRouting.stemFrench(pieces.first().stem)
+        val label = StemRouting.stemLabel(pieces.first().stem)
+        val longest = pieces.maxOf { it.frames } / StemSelection.SAMPLE_RATE.toDouble()
+        if (dest !is StemDestination.Track && longest > PAD_MAX_SECONDS) {
+            return say(tr("Trop long pour un pad : %d secondes au plus. Choisis un morceau plus court.", PAD_MAX_SECONDS))
+        }
+        when (dest) {
+            is StemDestination.Pad -> {
+                val free = StemRouting.freePads(p)
+                if (free.isEmpty()) return say(tr("Tous les pads ont déjà un son : vide un pad dans Batterie, puis recommence."))
+                val first = StemRouting.nextNumber(p.drums.lanes.mapNotNull { it.sample?.name }, french)
+                val placed = pieces.take(free.size)
+                launchWork(tr("%s vers les pads…", label)) {
+                    val cuts = placed.mapIndexedNotNull { k, sel -> cut(sel, fitted = true)?.let { PadCut(free[k], it, "$french ${first + k}") } }
+                    if (cuts.isEmpty()) return@launchWork null
+                    host.putOnPads(cuts)
+                    val left = pieces.size - placed.size
+                    trCount(cuts.size, "1 bout sur le pad %2\$s.", "%1\$d bouts sur les pads %2\$s.", cuts.size, StemRouting.padsText(cuts.map { it.lane })) +
+                        if (left > 0) " " + trCount(left, "Plus de pad libre pour le dernier bout.", "Plus de pad libre pour les %d derniers bouts.", left) else ""
+                }
+            }
+            is StemDestination.Track -> {
+                val span = pieces.last().endFrame - pieces.first().startFrame
+                if (span / StemSelection.SAMPLE_RATE.toDouble() > TRACK_MAX_SECONDS) {
+                    return say(tr("Trop long pour une piste : %d minutes au plus. Choisis un morceau plus court.", TRACK_MAX_SECONDS / 60))
+                }
+                if (p.addAudioTrack() == null) return say(tr("Les huit pistes audio sont prises : vide-en une ou pose le son sur un pad."))
+                val name = StemRouting.nextName(p.audioTracks.map { it.name }, french).take(InstrumentTrack.MAX_NAME)
+                val step = StemRouting.stepOf(p, pieces.first())
+                launchWork(tr("%s vers une piste audio…", label)) {
+                    var bpm = 0.0
+                    val joined = host.withSong(pieces.first().setId) { src ->
+                        bpm = src.fittedBpm
+                        joinedAtTheirPlace(src, pieces)
+                    } ?: return@launchWork gone()
+                    if (StemRouting.isSilent(joined)) return@launchWork tr("Ce morceau de la piste est muet : rien n'a été posé.")
+                    host.putOnNewAudioTrack(joined, name, step, bpm)
+                        ?: return@launchWork tr("Les huit pistes audio sont prises : vide-en une ou pose le son sur un pad.")
+                    tr("%1\$d bouts sur la nouvelle piste audio « %2\$s », à leur place dans la chanson.", pieces.size, DefaultNames.shown(name))
+                }
+            }
+            is StemDestination.Mine -> {
+                val song = p.remix.takeIf { it.setId == pieces.first().setId }?.name.orEmpty().trim()
+                val name = if (song.isEmpty()) french else "$french · $song"
+                launchWork(tr("%s vers ma bibliothèque…", label)) {
+                    var kept = 0
+                    var last: com.pocketstudio.model.MySound? = null
+                    for (sel in pieces) {
+                        var bpm = 0.0
+                        val pcm = cut(sel, fitted = false) { bpm = it } ?: continue
+                        last = host.keepInLibrary(pcm, name, com.pocketstudio.model.MySounds.kindOfStem(sel.stem, pcm.seconds), bpm, sel.setId)
+                            ?: return@launchWork tr("Ce son n'a pas pu être gardé (%s).", tr("bibliothèque indisponible"))
+                        kept++
+                    }
+                    when {
+                        kept == 0 -> null
+                        kept == 1 -> last?.let { com.pocketstudio.app.library.keptNotice(it) }
+                        song.isEmpty() -> tr("%d bouts gardés dans Ma bibliothèque.", kept)
+                        else -> tr("%1\$d bouts gardés dans Ma bibliothèque, dans le dossier %2\$s.", kept, song)
+                    }
+                }
+            }
+            else -> {
+                // The live pads and the instruments take one piece at a time, each by its own route.
+                batch = scope.launch {
+                    val said = ArrayList<String>()
+                    try {
+                        for (sel in pieces) {
+                            _state.update { it.copy(message = null) }
+                            route(sel, dest)
+                            work?.join()
+                            _state.value.message?.let { if (it !in said) said += it }
+                        }
+                    } finally {
+                        _state.update { it.copy(busy = null, message = said.joinToString("\n").ifEmpty { null }) }
+                        batch = null
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * [pieces] of one stem as one sound from the first's start to the last's end, each at its own
+     * place (silence between them, their fades kept), as the project plays the song (fitted).
+     */
+    private fun joinedAtTheirPlace(src: StemSource, pieces: List<StemSelection>): Pcm {
+        val from = pieces.first().startFrame
+        val span = pieces.last().endFrame - from
+        val ratio = if (src.fittedBpm > 0 && src.songBpm > 0) src.songBpm / src.fittedBpm else 1.0
+        val out = FloatArray((Math.round(span * ratio) * 2).toInt())
+        for (sel in pieces) {
+            val pcm = cutOf(src, sel, fitted = true)
+            val at = (Math.round((sel.startFrame - from) * ratio) * 2).toInt()
+            val n = minOf(pcm.data.size, out.size - at)
+            if (n > 0) System.arraycopy(pcm.data, 0, out, at, n)
+        }
+        return Pcm(out, 2, StemSelection.SAMPLE_RATE)
+    }
+
     // --- Phrases ----------------------------------------------------------------------------------
 
     override fun chop(setId: String, stem: Int, max: Int) {
@@ -321,7 +463,7 @@ class StemBoardRouter(
     }
 
     private fun refusedBusy(): Boolean {
-        if (work?.isActive != true && !host.busy()) return false
+        if (work?.isActive != true && batch?.isActive != true && !host.busy()) return false
         say(tr("Patiente un instant, un son est en cours de préparation."))
         return true
     }

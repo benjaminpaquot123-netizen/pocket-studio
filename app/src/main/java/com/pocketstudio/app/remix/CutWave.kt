@@ -1,0 +1,392 @@
+package com.pocketstudio.app.remix
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.calculateCentroid
+import androidx.compose.foundation.gestures.calculatePan
+import androidx.compose.foundation.gestures.calculateZoom
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.isSpecified
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.input.pointer.AwaitPointerEventScope
+import androidx.compose.ui.input.pointer.PointerId
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChanged
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.pocketstudio.model.CutPiece
+import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.ui.MonoStyle
+import com.pocketstudio.ui.Neon
+import kotlin.math.max
+import kotlin.math.min
+
+/*
+ * Lot C (n° 24): the curves of « Découper la chanson » (mockup docs/maquettes/decoupe-deux.png):
+ * the whole stem small with the part shown framed, then that part big, each piece in its colour
+ * with its number, the cut lines and their handles, the orange play head; a cut moved by a finger
+ * shows a magnifier with its time and whether it sits on the beat.
+ */
+
+/** The pieces' colours, in turn (1 green, 2 blue, 3 purple, 4 orange, 5 yellow, 6 indigo). */
+val PIECE_COLORS = listOf(
+    Color(0xFF8BC34A), Color(0xFF29B6F6), Color(0xFFAB47BC), Color(0xFFFF7043), Color(0xFFFDD835), Color(0xFF7986CB),
+)
+
+fun pieceColor(i: Int): Color = PIECE_COLORS[((i % PIECE_COLORS.size) + PIECE_COLORS.size) % PIECE_COLORS.size]
+
+/** The piece of [pieces] (in time order) holding [frame], -1 when none: a binary search, no allocation. */
+internal fun pieceIndexAt(pieces: List<CutPiece>, frame: Long): Int {
+    var lo = 0
+    var hi = pieces.size - 1
+    while (lo <= hi) {
+        val mid = (lo + hi) ushr 1
+        val p = pieces[mid]
+        when {
+            frame < p.start -> hi = mid - 1
+            frame >= p.end -> lo = mid + 1
+            else -> return mid
+        }
+    }
+    return -1
+}
+
+/** The whole stem, small, the part shown framed: a touch or a slide brings that part of the song into view. */
+@Composable
+internal fun CutOverview(model: CutModel, view: StemBoardView, levels: BoardPeaks, modifier: Modifier) {
+    val muted = Neon.TextSecondary.copy(alpha = 0.55f)
+    val accent = Neon.Cyan
+    val lane = Neon.SurfaceHigh.copy(alpha = 0.55f)
+    Spacer(
+        modifier
+            .clip(RoundedCornerShape(8.dp))
+            .testTag("cut_overview")
+            .pointerInput(view) {
+                awaitEachGesture {
+                    val down = awaitFirstDown()
+                    fun center(x: Float) {
+                        if (size.width <= 0 || view.framesPerPx <= 0.0) return
+                        val frame = x / size.width * view.frames
+                        val wanted = frame - view.width * view.framesPerPx / 2
+                        view.scrollBy(-((wanted - view.start) / view.framesPerPx).toFloat())
+                    }
+                    center(down.position.x)
+                    while (true) {
+                        val e = awaitPointerEvent()
+                        val c = e.changes.firstOrNull { it.id == down.id } ?: break
+                        if (!c.pressed) break
+                        if (c.positionChanged()) center(c.position.x)
+                        c.consume()
+                    }
+                }
+            }
+            .drawWithCache {
+                val columns = max(1, (size.width / max(1f, density)).toInt())
+                val heights = FloatArray(columns)
+                val column = size.width / columns
+                onDrawBehind {
+                    drawRect(lane)
+                    val stem = model.stem
+                    val peaks = if (levels.ready > stem) levels.of(stem) else null
+                    val mid = size.height / 2
+                    if (peaks != null) {
+                        peaks.fill(0L, peaks.frames, heights)
+                        val scale = levels.scale(stem)
+                        for (c in 0 until columns) {
+                            val h = max(0.5f, min(mid, heights[c] * scale * mid))
+                            drawLine(muted, Offset(c * column, mid - h), Offset(c * column, mid + h), strokeWidth = max(1f, column * 0.7f))
+                        }
+                    }
+                    // The part shown, framed and lit.
+                    if (view.frames > 0 && view.framesPerPx > 0) {
+                        val x0 = (view.start / view.frames * size.width).toFloat()
+                        val x1 = ((view.start + view.width * view.framesPerPx) / view.frames * size.width).toFloat()
+                        drawRect(accent.copy(alpha = 0.18f), Offset(x0, 0f), Size(max(2f, x1 - x0), size.height))
+                        drawRect(accent, Offset(x0, 0f), Size(max(2f, x1 - x0), size.height), style = androidx.compose.ui.graphics.drawscope.Stroke(2.dp.toPx()))
+                    }
+                }
+            },
+    )
+}
+
+/**
+ * The part of the stem shown, big: each piece in its colour with its number on top, the cut lines
+ * and their handles below, the orange play head ([CutModel.cursor]) and the green one of what is
+ * heard. A touch moves the play head; a finger on a cut line moves it (magnet, magnifier); a slide
+ * elsewhere scrolls; two fingers zoom.
+ */
+@Composable
+internal fun CutZoom(
+    model: CutModel,
+    view: StemBoardView,
+    levels: BoardPeaks,
+    work: State<StemBoardState>,
+    onTouched: () -> Unit,
+    modifier: Modifier,
+) {
+    val measurer = rememberTextMeasurer()
+    val lane = Neon.SurfaceHigh.copy(alpha = 0.55f)
+    val grey = Neon.TextSecondary.copy(alpha = 0.35f)
+    val head = Neon.Cyan
+    val play = Neon.Acid
+    val numberStyle = TextStyle(color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+    Box(modifier) {
+        Spacer(
+            Modifier
+                .matchParentSize()
+                .clip(RoundedCornerShape(10.dp))
+                .testTag("cut_wave")
+                .onSizeChanged { view.layout(it.width.toFloat()) }
+                .pointerInput(model, view) {
+                    awaitEachGesture {
+                        val down = awaitFirstDown(requireUnconsumed = false)
+                        val slop = viewConfiguration.touchSlop
+                        val grab = (28.dp.toPx() * view.framesPerPx).toLong()
+                        if (model.beginMove(view.frameAt(down.position.x), grab)) {
+                            onTouched()
+                            follow(down.id) { x -> model.moveTo(view.frameAt(x)) }
+                            model.endMove()
+                            return@awaitEachGesture
+                        }
+                        var moved = false
+                        while (true) {
+                            val e = awaitPointerEvent()
+                            if (e.changes.count { it.pressed } > 1) {
+                                zoomAndScroll(view)
+                                return@awaitEachGesture
+                            }
+                            val c = e.changes.firstOrNull { it.id == down.id } ?: return@awaitEachGesture
+                            if (!c.pressed) break
+                            if (!moved && (c.position - down.position).getDistance() > slop) moved = true
+                            if (moved) {
+                                val dx = c.position.x - c.previousPosition.x
+                                if (dx != 0f) view.scrollBy(dx)
+                                c.consume()
+                            }
+                        }
+                        if (!moved) {
+                            onTouched()
+                            model.cursor = view.frameAt(down.position.x)
+                        }
+                    }
+                }
+                .drawWithCache {
+                    val column = max(1f, density)
+                    val columns = (size.width / column).toInt() + 2
+                    val heights = FloatArray(columns)
+                    val labels = arrayOfNulls<TextLayoutResult>(com.pocketstudio.model.Cuts.MAX_PIECES + 1)
+                    fun label(n: Int): TextLayoutResult? = if (n !in labels.indices) null
+                    else labels[n] ?: measurer.measure(n.toString(), numberStyle).also { labels[n] = it }
+                    val margin = 26.dp.toPx()
+                    val bottom = 22.dp.toPx()
+                    val lineW = 2.dp.toPx()
+                    val knob = 7.dp.toPx()
+                    val badge = 10.dp.toPx()
+                    val tri = Path()
+                    onDrawBehind {
+                        drawRect(lane)
+                        val fpp = view.framesPerPx
+                        if (fpp <= 0.0) return@onDrawBehind
+                        val pieces = model.pieces
+                        val stem = model.stem
+                        // Each piece's ground, in its colour.
+                        pieces.forEachIndexed { i, p ->
+                            val x0 = view.x(p.start)
+                            val x1 = view.x(p.end)
+                            if (x1 < 0f || x0 > size.width) return@forEachIndexed
+                            drawRect(pieceColor(i).copy(alpha = 0.16f), Offset(max(0f, x0), 0f), Size(min(size.width, x1) - max(0f, x0), size.height))
+                        }
+                        // The curve: each column in its piece's colour, grey outside the pieces.
+                        val peaks = if (levels.ready > stem) levels.of(stem) else null
+                        val mid = (size.height - bottom + margin) / 2
+                        val amp = (size.height - bottom - margin) / 2
+                        if (peaks != null) {
+                            val from = view.start.toLong()
+                            peaks.fill(from, from + (columns * column * fpp).toLong(), heights)
+                            val scale = levels.scale(stem)
+                            var c = 0
+                            while (c < columns) {
+                                val x = c * column
+                                val i = pieceIndexAt(pieces, view.frameAt(x))
+                                val h = max(0.5f, min(amp, heights[c] * scale * amp))
+                                drawLine(if (i >= 0) pieceColor(i) else grey, Offset(x, mid - h), Offset(x, mid + h), strokeWidth = column)
+                                c++
+                            }
+                        }
+                        // The cut lines, their handles below, the numbers on top.
+                        var lastEnd = Long.MIN_VALUE
+                        pieces.forEachIndexed { i, p ->
+                            val x0 = view.x(p.start)
+                            val x1 = view.x(p.end)
+                            if (p.start != lastEnd) drawCutLine(x0, lineW, knob, bottom)
+                            drawCutLine(x1, lineW, knob, bottom)
+                            lastEnd = p.end
+                            val cx = (max(0f, x0) + min(size.width, x1)) / 2
+                            if (x1 - x0 > badge * 2.2f && cx in 0f..size.width) {
+                                drawCircle(Color(0xCC111318), badge, Offset(cx, margin / 2 + 2f))
+                                label(i + 1)?.let { drawText(it, topLeft = Offset(cx - it.size.width / 2f, margin / 2 + 2f - it.size.height / 2f)) }
+                            }
+                            if (p.loop && x1 - x0 > badge * 4) {
+                                drawCircle(Color.White.copy(alpha = 0.85f), 3.dp.toPx(), Offset(x0 + badge, margin / 2 + 2f))
+                            }
+                        }
+                        // The play head the tools act at: an orange line, a small triangle on top.
+                        val hx = view.x(model.cursor)
+                        if (hx in 0f..size.width) {
+                            drawLine(head, Offset(hx, 0f), Offset(hx, size.height - bottom), strokeWidth = lineW)
+                            tri.rewind()
+                            tri.moveTo(hx - 7.dp.toPx(), 0f)
+                            tri.lineTo(hx + 7.dp.toPx(), 0f)
+                            tri.lineTo(hx, 9.dp.toPx())
+                            tri.close()
+                            drawPath(tri, head)
+                        }
+                        // What is heard now, green.
+                        val heard = work.value.playing?.takeIf { it.stem == stem }?.let { work.value.playFrame } ?: -1L
+                        if (heard >= 0) {
+                            val px = view.x(heard)
+                            if (px in 0f..size.width) {
+                                drawLine(play.copy(alpha = 0.25f), Offset(px, 0f), Offset(px, size.height), strokeWidth = 6.dp.toPx())
+                                drawLine(play, Offset(px, 0f), Offset(px, size.height), strokeWidth = lineW)
+                            }
+                        }
+                    }
+                },
+        )
+        model.movedTo?.let { at -> CutMagnifier(model, view, levels, at, Modifier.align(Alignment.TopStart)) }
+    }
+}
+
+/** A cut line at [x]: white, with its round handle at the bottom. */
+private fun DrawScope.drawCutLine(x: Float, width: Float, knob: Float, bottom: Float) {
+    if (x < -knob || x > size.width + knob) return
+    drawLine(Color.White.copy(alpha = 0.9f), Offset(x, 0f), Offset(x, size.height - bottom / 2), strokeWidth = width)
+    drawCircle(Color.White, knob, Offset(x, size.height - bottom / 2))
+    drawCircle(Color(0xFF6B7280), knob * 0.45f, Offset(x, size.height - bottom / 2))
+}
+
+/** The magnifier over a moved cut: a few hundredths of a second around it, its time, « sur le temps ». */
+@Composable
+private fun CutMagnifier(model: CutModel, view: StemBoardView, levels: BoardPeaks, at: Long, modifier: Modifier) {
+    val accent = Neon.Cyan
+    val widthDp = 200.dp
+    val x = view.x(at)
+    val shape = RoundedCornerShape(14.dp)
+    Column(
+        modifier
+            .offsetX(x, widthDp)
+            .width(widthDp)
+            .clip(shape)
+            .background(Color(0xFF15171C))
+            .border(2.dp, accent, shape)
+            .padding(6.dp)
+            .testTag("cut_magnifier"),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Spacer(
+            Modifier.fillMaxWidth().height(56.dp).drawWithCache {
+                val columns = max(1, (size.width / (3.dp.toPx())).toInt())
+                val heights = FloatArray(columns)
+                val col = size.width / columns
+                onDrawBehind {
+                    val span = MAGNIFIER_FRAMES
+                    val from = at - span / 2
+                    val peaks = if (levels.ready > model.stem) levels.of(model.stem) else null
+                    val mid = size.height / 2
+                    if (peaks != null) {
+                        peaks.fill(from, from + span, heights)
+                        val scale = levels.scale(model.stem)
+                        for (c in 0 until columns) {
+                            val f = from + span * c / columns
+                            val i = pieceIndexAt(model.pieces, f)
+                            val h = max(1f, min(mid, heights[c] * scale * mid))
+                            drawLine(if (i >= 0) pieceColor(i) else Color.Gray, Offset(c * col + col / 2, mid - h), Offset(c * col + col / 2, mid + h), strokeWidth = col * 0.75f)
+                        }
+                    }
+                    drawLine(Color.White, Offset(size.width / 2, 0f), Offset(size.width / 2, size.height), strokeWidth = 2.dp.toPx())
+                }
+            },
+        )
+        val where = if (model.onBeat(at)) " · " + tr("sur le temps") else ""
+        Text(
+            cutClock(at) + where,
+            style = MonoStyle.copy(fontSize = MaterialTheme.typography.labelLarge.fontSize, fontWeight = FontWeight.Bold),
+            color = accent,
+            modifier = Modifier.padding(top = 2.dp).testTag("cut_magnifier_time"),
+        )
+    }
+}
+
+/** Frames shown across the magnifier: 0.3 s. */
+private const val MAGNIFIER_FRAMES = BOARD_RATE * 3L / 10
+
+/** The magnifier centred over [x] px of the curve, never past its edges. */
+private fun Modifier.offsetX(x: Float, width: androidx.compose.ui.unit.Dp): Modifier =
+    this.then(Modifier.layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints.copy(minWidth = 0))
+        val w = width.roundToPx()
+        val left = (x - w / 2f).toInt().coerceIn(0, max(0, constraints.maxWidth - w))
+        layout(constraints.maxWidth, placeable.height) { placeable.place(IntOffset(left, 0)) }
+    })
+
+/** "0:28.46": a time in the song, to the hundredth (the magnifier). */
+fun cutClock(frames: Long, rate: Int = BOARD_RATE): String {
+    val hundredths = (frames * 100 + rate / 2) / rate
+    val s = hundredths / 100
+    return "%d:%02d.%02d".format(s / 60, s % 60, hundredths % 100)
+}
+
+/** Calls [move] with each position of pointer [id] until it lifts. */
+private suspend fun AwaitPointerEventScope.follow(id: PointerId, move: (Float) -> Unit) {
+    while (true) {
+        val e = awaitPointerEvent()
+        val c = e.changes.firstOrNull { it.id == id } ?: return
+        if (!c.pressed) return
+        if (c.positionChanged()) move(c.position.x)
+        c.consume()
+    }
+}
+
+/** Two fingers: pinch zooms around them, moving them scrolls; until every finger lifts. */
+private suspend fun AwaitPointerEventScope.zoomAndScroll(view: StemBoardView) {
+    while (true) {
+        val e = awaitPointerEvent()
+        if (e.changes.none { it.pressed }) return
+        val zoom = e.calculateZoom()
+        val pan = e.calculatePan()
+        val centroid = e.calculateCentroid(useCurrent = true)
+        if (zoom != 1f && centroid.isSpecified) view.zoomBy(zoom, centroid.x)
+        if (pan.x != 0f) view.scrollBy(pan.x)
+        e.changes.forEach { if (it.positionChanged()) it.consume() }
+    }
+}

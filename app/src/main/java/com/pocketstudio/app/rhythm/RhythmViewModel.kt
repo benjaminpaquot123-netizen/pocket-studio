@@ -6334,6 +6334,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         override fun pauseMusic() {
             if (_transport.value.playing) togglePlay()
         }
+
+        // Lot C: « Découper la chanson » keeps its pieces in the project (its own « Annuler » undoes them).
+        override fun saveCuts(cuts: com.pocketstudio.model.SongCuts) {
+            session.editQuietly { it.copy(songCuts = cuts) }
+        }
     }
 
     /** A song's stems as the stem board reads them: [fit] the copy at the project's tempo ([ratio] times as long), if any. */

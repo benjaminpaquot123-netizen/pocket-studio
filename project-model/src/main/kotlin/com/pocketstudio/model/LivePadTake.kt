@@ -9,8 +9,12 @@ import kotlin.math.ceil
  * at once; a one-shot plays its sound once).
  */
 object LivePadTake {
-    /** A tap on [pad] (-1: « Tout couper ») at transport step [at], [velocity] its strength (a controller's pad; 1 on the screen). */
-    data class Tap(val pad: Int, val at: Double, val velocity: Float = 1f)
+    /**
+     * A tap on [pad] (-1: « Tout couper ») at transport step [at], [velocity] its strength (a controller's pad; 1 on the screen).
+     * [bar] (Pad Live B2): its row was launched: it starts on the next bar line (one already waiting moves there, one
+     * playing goes on).
+     */
+    data class Tap(val pad: Int, val at: Double, val velocity: Float = 1f, val bar: Boolean = false)
 
     /**
      * Pad [pad] sounding from transport step [from] until [until] (a one-shot: [oneShot], it plays
@@ -39,11 +43,18 @@ object LivePadTake {
                 continue
             }
             val clip = clips.getOrNull(tap.pad) ?: continue
+            val barSteps = beatsPerBar.coerceAtLeast(1) * 4.0
             if (tap.pad in on) {
+                if (tap.bar) {
+                    // A row launched: a pad still waiting waits for the bar line instead, one playing goes on.
+                    val from = on.getValue(tap.pad)
+                    if (from > tap.at) on[tap.pad] = maxOf(ceil(tap.at / barSteps - 1e-9) * barSteps, start.toDouble())
+                    continue
+                }
                 stop(tap.pad, tap.at)
                 continue
             }
-            val grid = minOf(clip.beats, beatsPerBar.coerceAtLeast(1)) * 4.0
+            val grid = if (tap.bar) barSteps else minOf(clip.beats, beatsPerBar.coerceAtLeast(1)) * 4.0
             val line = ceil(tap.at / grid - 1e-9) * grid
             if (line >= end) continue
             val v = tap.velocity.takeIf { it.isFinite() && it > 0f }?.coerceAtMost(1f) ?: 1f

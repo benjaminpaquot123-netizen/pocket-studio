@@ -101,6 +101,10 @@ class PadLiveTouchCountTest {
         undo = { done += "undo" },
         openLive = { done += "live" },
         effects = { done += "effects" },
+        launchRow = { done += "row $it" },
+        setPitch = { pad, v -> done += "pitch $pad $v" },
+        setReverse = { pad, v -> done += "reverse $pad $v" },
+        played = { done += "played" },
     )
 
     /** [action] from the home screen in [budget] touches at most, and the app did [expect]. */
@@ -170,7 +174,12 @@ class PadLiveTouchCountTest {
         reach("Son d'un pad vide", 2, "browse") { press("padlive_pad_15") }
         reach("Filtre", 2, "filter true") { press("padlive_fx_filter") }
         reach("Écho", 2, "echo true") { press("padlive_fx_echo") }
-        reach("Roulement", 2, "roll true") { press("padlive_fx_roll") }
+        reach("Roulement", 2, "roll SIXTEENTH") { press("padlive_fx_roll") }
+        // Lot B2: a row launched on the bar, « Enregistrer ce que je joue », a pad's own sound.
+        reach("Lancer une ligne", 2, "row 0") { tap("padlive_row_0") }
+        reach("Enregistrer ce que je joue", 2, "played") { tap("padlive_played") }
+        reach("Hauteur d'un pad", 3, "pitch 0 1") { tap("padlive_mode_0"); tap("padlive_pitch_up") }
+        reach("Pad à l'envers", 3, "reverse 0 true") { tap("padlive_mode_0"); tap("padlive_reverse") }
         reach("Montée", 3, "riser") { tap("padlive_more"); press("padlive_fx_riser") }
         reach("Chute", 3, "brake true") { tap("padlive_more"); press("padlive_fx_brake") }
         reach("Bégaie", 3, "stutter true") { tap("padlive_more"); press("padlive_fx_stutter") }

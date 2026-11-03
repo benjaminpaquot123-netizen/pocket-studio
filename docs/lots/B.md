@@ -31,8 +31,43 @@
 - `AppRoot.kt` : `LiveStateHost` passé `internal` ; branchement de la bibliothèque pour les pads 17 à 64.
 - `engine/host-tests/engine_tests.cpp` : une ligne `#include` + une ligne de liste ; nouveau `padlive_tests.inc`.
 
-## Prochaine sous-étape : B2 (la scène)
-Effets à maintenir complets (Filtre XY de la maquette, Écho, Bégaiement, Montée, Chute, Roulement 1/4 à 1/16 et triolets), lancer une ligne de briques, « Enregistrer ce que je joue », tap tempo, horloge MIDI. Commandes moteur 150 à 169.
+## Fait : B2, la scène (2026-11-03, branche fx-b)
+- **Effets à maintenir** (`padlive/HeldFx.kt`, `PadLiveScreen.kt`) : Filtre (doigt sur le bouton : grave ↔ aigu comme en B1 ; glissé vers le haut dans le panneau « FILTRE DJ · TANT QUE TU APPUIES » de la maquette : coupure en travers, résonance en hauteur, « Passe-haut 1,8 kHz · résonance 40 % »), Écho (sortie en écho), Roulement (glissé dans son panneau : 1/4, 1/8, 1/8 T, 1/16, 1/16 T, 1/32 ; la dernière reste pour le prochain appui), Montée (sur la longueur du projet, « 4 mesures »), Chute (freinage), Bégaie (division du projet). Lâcher : tout revient (filtre et résonance au repos). Le panneau se pose sur les dernières rangées de pads : rien ne bouge sous le doigt.
+- **Reste de B1 corrigé** : « souffle qui monte » coupé → « %d mesures » ; et la règle partout a trouvé « grave ↔ aigu » coupé lui aussi (360 dp) : titres et sous-titres des 6 boutons rétrécissent (jusqu'à 9 sp) avant d'être coupés.
+- **Réglages par pad** (`PadModes.kt`) : Hauteur (−12 à +12 demi-tons, la longueur change avec), À l'envers, Attaque (0 à 1 s), Fin (0 à 2 s). Moteur : `SetClipParam` 3 à 6 (aucune nouvelle commande), lecture interpolée, attaque à chaque passage, fin quand on arrête le pad. Modèle : `LiveClip.pitch/reverse/attack/release` en fin, absents du fichier au repos. Une prise du Live qui garde les pads les rend pareil (`padlive/PadSound.kt`, sauf la Fin, voir restes).
+- **Lancer une ligne** : un ▶ au bout de chaque rangée de 4 pads ; tous partent ensemble sur la prochaine barre de mesure (un pad qui attendait y est déplacé, une boucle qui joue continue) ; si toutes ses boucles jouent, ▶ devient ■ et les arrête. Commande 150 `LaunchClipRow`. Groupes « un seul à la fois » respectés. Une prise du Live l'écrit (`LivePadTake.Tap.bar`).
+- **Enregistrer ce que je joue** (`padlive/PlayedTake.kt`, `PlayedTakeSheet.kt`) : le gros bouton rouge de la maquette. Armé, il part sur la prochaine barre où la musique joue (dans le silence, il attend le premier pad : l'horloge repart sur une barre avec lui) ; retouché, il finit sur la barre suivante : mesures entières, sortie complète (effets compris). Puis « Sur le pad vide A13 » (boucle au tempo, qui le suit ensuite) / « Dans une brique du Live » / « Jeter la prise ». 16 mesures ou 60 s au plus. Commandes 151 `ResampleArm`, 152 `ResampleStop`.
+- **Tap tempo** : « 124 » › « Taper » (la feuille de tempo existante), une étape d'annulation, les boucles suivent.
+- **Horloge MIDI** : en sortie, le moteur la compte sur le fil audio, sur les temps du transport (jamais swinguée), Start au premier pas, 24 tops par temps, Stop ; chaque message a le moment où son échantillon s'entend, envoyé avec l'horodatage Android + la latence de sortie (`midi/MidiClockOut.kt`, commande 153 `SetMidiClockOut`). Remplace l'ancienne horloge Kotlin qui dérivait. En entrée : déjà là (Start, Continue, tempo, Stop), testée depuis Pad Live.
+- **MiniLab** : ses 16 pads jouent la page affichée de Pad Live (mode, groupe, force ; « tenir » s'arrête au relâché : `MidiCommand.PadUp`) au lieu de la page A sans mode.
+- **Moteur, au passage** : les boucles des pads live partaient 1 échantillon en retard à chaque temps (horloge additionnée) : même tolérance que les barres, à l'échantillon près (aucun autre banc n'a bougé).
+
+## Règle « partout » (B2)
+- Mots coupés sur un téléphone : les 6 boutons d'effets (titre et sous-titre), 14 langues, 360 dp → `T/padlive/PadLiveSceneTest.noHeldEffectsWordsAreCutOnAPhoneInAnyLanguage` (mesure réelle des polices ; il a trouvé « grave ↔ aigu » en plus de la Montée). Même composant `FitText` pour les 12 textes.
+- Pads de la manette qui ne suivaient pas la page ni le mode : seul Pad Live a des pages et des modes ; `PadLiveController.midi` est le seul chemin (testé), les autres écrans gardent le leur.
+- Retard d'un échantillon des pads live : un seul endroit (`ClipLauncher::render`), couvert par `padlive_row_starts_on_the_bar` et `padlive_resample_from_bar_to_bar` (clics à 24000 pile).
+
+## Tests et résultats (B2)
+- Moteur (`engine/host-tests/padlive_tests.inc`) : `padlive_row_starts_on_the_bar`, `padlive_pad_pitch_reverse_attack_release`, `padlive_resample_from_bar_to_bar` (prise = 96000 échantillons pile, clic au même décalage qu'à la sortie), `padlive_midi_clock_out_on_the_beat` (tops tous les 960 échantillons pile à 125 BPM avec swing, aucun perdu quand le tempo change, Stop, Continue), `padlive_scene_without_allocating` (64 pads hauteur/envers/attaque/fin, lignes, prises, horloge, changement de tempo : 0 allocation). Suite complète : verte sauf les deux bancs CPU sensibles à la charge (`s4_no_alloc_and_cpu`, `m17_worst_case_live_cpu_bench`), mesurés en alternance avant/après pendant la grande vérification de fx-int : mêmes chiffres (14,2 à 15,8 % des deux côtés), donc du bruit.
+- App : `T/padlive/PadLiveTakeTest` (prise → pad : une annulation, refaire, sauvegarde → nouveau ViewModel ; prise → brique : dans l'export du morceau ; trop courte / lâchée / jetée : rien ; tap tempo ; son du pad cuit comme le moteur), `T/padlive/PadLiveMidiTest` (MiniLab : page affichée, modes, force ; ligne = une commande ; horloge en sortie et en entrée), `T/padlive/PadLiveSceneTest` (Filtre glissé dans son panneau, Roulement et ses divisions, ▶ de ligne, prise, mots qui tiennent), `T/padlive/PadLiveTouchCountTest` (nouvelles fonctions ≤ 3 touchers), `MT/PadLiveTest`, `MT/LivePadTakeTest`, `T/CommandIdsTest`, i18n (14 langues).
+
+## Décisions à recopier dans DECISIONS (B2)
+- 2026-11-03 · Effets maintenus : le panneau (XY du Filtre, divisions du Roulement) s'ouvre sous le doigt qui tient le bouton et se pilote en glissant vers le haut, sans lever le doigt. Raison : la maquette (3e écran) et « appuie et maintiens ». Retour : `HeldFxPanel` retiré, B1 inchangé dessous.
+- 2026-11-03 · « Enregistrer ce que je joue » = la sortie complète (effets compris), d'une barre à l'autre, et dans le silence elle attend le premier son. Raison : ce qu'on entend est ce qu'on garde ; pas de silence au début. Retour : `ResampleArm` a = 0.
+- 2026-11-03 · Une prise posée sur un pad est une boucle « qui suit le tempo » (bpm de la prise). Retour : `bpm = 0` dans `PlayedTake.placeOnPad`.
+- 2026-11-03 · Horloge MIDI en sortie comptée par le moteur (à l'échantillon) au lieu d'une minuterie Kotlin. Raison : la règle « jamais de minuteries Kotlin » et la dérive de l'ancienne. Retour : rétablir `startClock` d'avant (git).
+- 2026-11-03 · Les pads de la manette jouent la page affichée de Pad Live avec ses modes. Retour : `PadLiveController.midi` → false.
+- 2026-11-03 · Horloge des pads live : même tolérance (1e-9 temps) pour les départs que pour les barres : plus d'échantillon de retard. Retour : retirer `+ 1e-9` dans `ClipLauncher::render`.
+
+## Fichiers touchés hors liste stricte (B2, à savoir au rangement)
+- `A/audio/` : aucun ; `A/ui/AppRoot.kt` : une ligne (les commandes MIDI passent d'abord par Pad Live) + la branche `PadUp`.
+- `RhythmViewModel.kt` : section Live pads (`launchLiveRow`, `pushLive` envoie le son du pad), section Lot 4b (`livePadTapped` prend `bar`), section Enregistrer la performance (le son du pad cuit avant `PadBounce`).
+
+## Restes de B2
+- La « Fin » d'un pad n'est pas rendue dans la prise du Live gardée sur piste audio (`PadBounce` coupe en 5 ms) : à faire avec E (export) ou D.
+- Manette : ni ligne ni « Enregistrer ce que je joue » au MiniLab (ses 16 pads sont les 16 pads de la page) ; à voir avec ses lumières (D).
+- Horloge MIDI en sortie : à vérifier sur un vrai appareil MIDI (liste de Benjamin) ; l'horodatage suppose la latence annoncée par le téléphone.
+- Les secondes de B1 (premier son, premier rythme) restent à mesurer sur le téléphone.
 
 ## Restes de B1
 - Réglages par pad « hauteur », « à l'envers », attaque/fin : demandent le moteur (B2, commandes 150+).

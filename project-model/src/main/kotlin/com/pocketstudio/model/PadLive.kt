@@ -36,6 +36,26 @@ object PadLive {
     const val PAGE_SIZE = LivePads.MAX
     val PAGE_NAMES = listOf("A", "B", "C", "D")
 
+    /** A page's rows of pads (lot B2: a row is launched together, on the bar). */
+    const val ROWS = 4
+    const val ROW_SIZE = 4
+
+    /** What launching a row does: [starting] start on the next bar line, [stopping] stop now. */
+    data class RowLaunch(val starting: List<Int>, val stopping: List<Int>)
+
+    /**
+     * The row of pads from [first] ([ROW_SIZE] pads) launched, [playing] and [waiting] the pads
+     * playing or waiting for their line, as the engine does it (ClipLauncher::launchRow): its loops
+     * all on (playing or waiting), they stop; else every pad of it with a sound that is not a loop
+     * playing starts on the next bar line (hits too; one waiting moves there).
+     */
+    fun rowLaunch(pads: LivePads, first: Int, playing: Set<Int>, waiting: Set<Int>): RowLaunch {
+        val row = (first until (first + ROW_SIZE).coerceAtMost(LivePads.ALL)).filter { pads.at(it) != null }
+        val loops = row.filter { pads.at(it)?.oneShot == false }
+        if (loops.isNotEmpty() && loops.all { it in playing || it in waiting }) return RowLaunch(emptyList(), loops)
+        return RowLaunch(row.filter { pads.at(it)?.oneShot == true || it !in playing }, emptyList())
+    }
+
     /** « Un seul à la fois » groups a pad can join (0: none). */
     const val GROUPS = 4
 

@@ -56,6 +56,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
@@ -72,6 +73,7 @@ import com.pocketstudio.app.session.PadClock
 import com.pocketstudio.app.session.livePadColor
 import com.pocketstudio.model.DefaultNames
 import com.pocketstudio.model.LiveClip
+import com.pocketstudio.model.LiveDivision
 import com.pocketstudio.model.LivePads
 import com.pocketstudio.model.PadLive
 import com.pocketstudio.model.PadMode
@@ -97,6 +99,15 @@ class PadLiveUi(
     /** A held effect works on the music: the pads that play wear its veil. */
     val effectHeld: Boolean = false,
     val canUndo: Boolean = false,
+    /** Lot B2: « Bégaie »'s division and the « Montée »'s length in bars (the project's effect settings). */
+    val chop: LiveDivision = LiveDivision.SIXTEENTH,
+    val riserBars: Int = 4,
+    /** Lot B2: « Enregistrer ce que je joue ». */
+    val played: PlayedTakeUi = PlayedTakeUi.Ready,
+    /** Lot B2: the empty pad a take goes on (« A12 »; null: none free). */
+    val emptyPad: String? = null,
+    /** A word to show once (a take placed, too short…), null: none. */
+    val message: String? = null,
 )
 
 /** Every gesture of Pad Live, given by the app. */
@@ -119,8 +130,11 @@ class PadLiveActions(
     val stopAll: () -> Unit = {},
     /** Held effects: Filtre (null: let go; 0 grave .. 1 aigu), Écho, Roulement, then Montée, Chute, Bégaie under « Plus ». */
     val filter: (Float?) -> Unit = {},
+    /** Lot B2: the filter's resonance from its panel (0..1; null: back to its rest). */
+    val resonance: (Float?) -> Unit = {},
     val echo: (Boolean) -> Unit = {},
-    val roll: (Boolean) -> Unit = {},
+    /** The roll at a division (lot B2: chosen on its panel; null: let go). */
+    val roll: (LiveDivision?) -> Unit = {},
     val riser: () -> Unit = {},
     val brake: (Boolean) -> Unit = {},
     val stutter: (Boolean) -> Unit = {},
@@ -129,6 +143,19 @@ class PadLiveActions(
     val openLive: () -> Unit = {},
     /** « Plus » › the effects box of the pads' strip. */
     val effects: () -> Unit = {},
+    /** Lot B2: row [Int] (0..3) of the page shown launched together, on the bar. */
+    val launchRow: (Int) -> Unit = {},
+    /** Lot B2: a pad's own sound (pitch in semitones, backwards, attack and release in seconds). */
+    val setPitch: (pad: Int, Int) -> Unit = { _, _ -> },
+    val setReverse: (pad: Int, Boolean) -> Unit = { _, _ -> },
+    val setAttack: (pad: Int, Float) -> Unit = { _, _ -> },
+    val setRelease: (pad: Int, Float) -> Unit = { _, _ -> },
+    /** Lot B2: « Enregistrer ce que je joue » touched, and where its take goes. */
+    val played: () -> Unit = {},
+    val placeOnPad: () -> Unit = {},
+    val placeInBrick: () -> Unit = {},
+    val dropTake: () -> Unit = {},
+    val messageShown: () -> Unit = {},
 )
 
 /**
@@ -149,6 +176,7 @@ fun PadLiveScreen(
 ) {
     var more by rememberSaveable { mutableStateOf(false) }
     var settingsOf by rememberSaveable { mutableStateOf<Int?>(null) }
+    val held = remember { HeldFx() }
     val clock = remember { PadClock() }
     val statesNow by rememberUpdatedState(ui.states)
     val clipsNow by rememberUpdatedState(ui.pads.all)
@@ -179,15 +207,17 @@ fun PadLiveScreen(
         ui.busy?.let {
             Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("padlive_busy"))
         }
+        if (ui.busy == null) ui.message?.let { PadLiveMessage(it, actions.messageShown) }
         BoxWithConstraints(Modifier.fillMaxWidth().weight(1f)) {
             val gap = 8.dp
-            val byWidth = (maxWidth - gap * 3) / 4
+            // Lot B2: each row's ▶ at its end (the row launched together, on the bar).
+            val byWidth = (maxWidth - ROW_BUTTON - gap * 4) / 4
             val byHeight = (maxHeight - gap * 3) / 4
             // Square or a little taller when the screen has room (a phone upright), never past its row.
             val side = minOf(byWidth * 1.15f, byHeight)
             Column(Modifier.align(Alignment.TopCenter), verticalArrangement = Arrangement.spacedBy(gap)) {
                 for (row in 0 until 4) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(gap), verticalAlignment = Alignment.CenterVertically) {
                         for (col in 0 until 4) {
                             val slot = row * 4 + col
                             val pad = PadLive.pad(ui.page, slot)
@@ -200,16 +230,20 @@ fun PadLiveScreen(
                                 settings = { settingsOf = pad },
                             )
                         }
+                        RowButton(ui, row, Modifier.size(width = ROW_BUTTON, height = side), actions.launchRow)
                     }
                 }
             }
+            // A held effect's panel over the pads' last rows (the pads do not move under the finger).
+            HeldFxPanel(held, Modifier.align(Alignment.BottomCenter).fillMaxWidth())
         }
-        SceneEffects(actions, more)
+        SceneEffects(ui, actions, more, held)
         AnimatedVisibility(more) { MoreRow(ui, actions) }
-        Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), horizontalArrangement = Arrangement.End) {
+        Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            PlayedButton(ui.played, actions.played, Modifier.weight(1f))
             Row(
                 Modifier.heightIn(min = 52.dp).clip(RoundedCornerShape(16.dp)).background(if (more) Neon.SurfaceHigh else Neon.Surface)
-                    .clickable(role = Role.Button) { more = !more }.padding(horizontal = 22.dp).testTag("padlive_more"),
+                    .clickable(role = Role.Button) { more = !more }.padding(horizontal = 16.dp).testTag("padlive_more"),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
@@ -223,6 +257,7 @@ fun PadLiveScreen(
         if (clip == null) settingsOf = null
         else PadSettingsSheet(pad, clip, actions, close = { settingsOf = null })
     }
+    (ui.played as? PlayedTakeUi.Done)?.let { PlayedTakeSheet(it.bars, ui.emptyPad, actions) }
 }
 
 /** ← Pad Live · ▶/■ · « − 124 + » · ●. */
@@ -366,80 +401,150 @@ internal fun modeWord(mode: PadMode): String = when (mode) {
 }
 
 /**
- * « Effets de scène · Appuie et maintiens »: Filtre (the finger's place on it: grave to aigu),
- * Écho, Roulement; with « Plus », Montée, Chute and Bégaie too. Let go: everything comes back.
+ * « Effets de scène · Appuie et maintiens »: Filtre (the finger's place on it: grave to aigu; slid
+ * up, the panel's grid: cutoff and resonance), Écho, Roulement (slid up: its division); with
+ * « Plus », Montée (over the project's riser length), Chute and Bégaie too. Let go: everything comes back.
  */
 @Composable
-private fun SceneEffects(actions: PadLiveActions, more: Boolean) {
+private fun SceneEffects(ui: PadLiveUi, actions: PadLiveActions, more: Boolean, held: HeldFx) {
+    val heldMove: (HeldKind, androidx.compose.ui.geometry.Offset?, Float) -> Unit = { kind, at, across ->
+        when (val c = held.move(kind, at, across)) {
+            is HeldFx.Change.Filter -> {
+                actions.filter(c.cutoff)
+                actions.resonance(c.resonance)
+            }
+            is HeldFx.Change.FilterOff -> {
+                actions.filter(null)
+                if (c.resonance) actions.resonance(null)
+            }
+            is HeldFx.Change.Roll -> actions.roll(c.division)
+            HeldFx.Change.RollOff -> actions.roll(null)
+            null -> Unit
+        }
+    }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text(tr("EFFETS DE SCÈNE"), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, modifier = Modifier.weight(1f))
             Text(tr("Appuie et maintiens"), style = MaterialTheme.typography.labelMedium, color = Neon.TextPrimary)
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            HeldEffect(tr("Filtre"), tr("grave ↔ aigu"), "filter", Modifier.weight(1f), slide = actions.filter) {}
+            HeldEffect(tr("Filtre"), tr("grave ↔ aigu"), "filter", Modifier.weight(1f), track = { at, x -> heldMove(HeldKind.FILTER, at, x) }) {}
             HeldEffect(tr("Écho"), tr("en sortie"), "echo", Modifier.weight(1f), hold = actions.echo)
-            HeldEffect(tr("Roulement"), "1/16", "roll", Modifier.weight(1f), hold = actions.roll)
+            HeldEffect(tr("Roulement"), HeldFx.divisionWords(held.division), "roll", Modifier.weight(1f), track = { at, x -> heldMove(HeldKind.ROLL, at, x) }) {}
         }
         if (more) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                HeldEffect(tr("Montée"), tr("souffle qui monte"), "riser", Modifier.weight(1f), hold = { if (it) actions.riser() })
+                HeldEffect(tr("Montée"), riserWords(ui.riserBars), "riser", Modifier.weight(1f), hold = { if (it) actions.riser() })
                 HeldEffect(tr("Chute"), tr("freinage"), "brake", Modifier.weight(1f), hold = actions.brake)
-                HeldEffect(tr("Bégaie"), "1/16", "stutter", Modifier.weight(1f), hold = actions.stutter)
+                HeldEffect(tr("Bégaie"), HeldFx.divisionWords(ui.chop), "stutter", Modifier.weight(1f), hold = actions.stutter)
             }
         }
     }
 }
 
-/** A held effect's button: on while the finger stays ([hold]); [slide]: also the finger's place across it (0..1, null: let go). */
+/** The riser's length in words that fit its button on a phone (« 4 mesures »; the B1 « souffle qui monte » was cut). */
+internal fun riserWords(bars: Int): String = if (bars == 1) tr("1 mesure") else tr("%d mesures", bars)
+
+/**
+ * A held effect's button: on while the finger stays ([hold]); [track]: also where the finger is
+ * (window coordinates, null: let go) and its place across the button (0..1).
+ */
 @Composable
 private fun HeldEffect(
     title: String,
     line: String,
     tag: String,
     modifier: Modifier,
-    slide: ((Float?) -> Unit)? = null,
+    track: ((androidx.compose.ui.geometry.Offset?, Float) -> Unit)? = null,
     hold: (Boolean) -> Unit,
 ) {
     var held by remember { mutableStateOf(false) }
     val holdNow by rememberUpdatedState(hold)
-    val slideNow by rememberUpdatedState(slide)
+    val trackNow by rememberUpdatedState(track)
+    var coords by remember { mutableStateOf<androidx.compose.ui.layout.LayoutCoordinates?>(null) }
     val shape = RoundedCornerShape(14.dp)
     Column(
         modifier.heightIn(min = 60.dp).clip(shape).background(if (held) Neon.Amber.copy(alpha = 0.22f) else Neon.Surface)
             .border(if (held) 2.dp else 1.dp, if (held) Neon.Amber else Color.White.copy(alpha = 0.06f), shape)
+            .onGloballyPositioned { coords = it }
             .pointerInput(Unit) {
                 awaitEachGesture {
                     val down = awaitFirstDown()
                     held = true
                     val w = size.width.toFloat().coerceAtLeast(1f)
-                    slideNow?.invoke((down.position.x / w).coerceIn(0f, 1f))
+                    fun at(p: androidx.compose.ui.geometry.Offset) = coords?.takeIf { it.isAttached }?.localToWindow(p) ?: p
+                    trackNow?.invoke(at(down.position), (down.position.x / w).coerceIn(0f, 1f))
                     holdNow(true)
                     while (true) {
                         val event = awaitPointerEvent()
                         val change = event.changes.firstOrNull { it.id == down.id } ?: break
                         if (!change.pressed) break
-                        slideNow?.invoke((change.position.x / w).coerceIn(0f, 1f))
+                        trackNow?.invoke(at(change.position), (change.position.x / w).coerceIn(0f, 1f))
                         change.consume()
                     }
                     held = false
-                    slideNow?.invoke(null)
+                    trackNow?.invoke(null, 0.5f)
                     holdNow(false)
                 }
             }
             .semantics {
                 contentDescription = "$title · $line"
                 role = Role.Button
-                onClick { holdNow(true); holdNow(false); true }
+                onClick {
+                    trackNow?.invoke(null, 0.5f)
+                    holdNow(true); holdNow(false); true
+                }
             }
-            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .padding(horizontal = 10.dp, vertical = 8.dp)
             .testTag("padlive_fx_$tag"),
         verticalArrangement = Arrangement.Center,
     ) {
-        Text(title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Neon.TextPrimary, maxLines = 1)
-        Text(line, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1)
+        // Three buttons across a small phone: the words get a little smaller before they are cut
+        // (lot B2: « souffle qui monte » and « grave ↔ aigu » were, StillFitsTest-style check in PadLiveSceneTest).
+        FitText(title, MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold), Neon.TextPrimary, "padlive_fx_${tag}_title")
+        FitText(line, MaterialTheme.typography.labelSmall, Neon.TextSecondary, "padlive_fx_${tag}_line")
     }
 }
+
+/** One line that shrinks (down to 9 sp) before it is cut. */
+@Composable
+private fun FitText(text: String, style: androidx.compose.ui.text.TextStyle, color: Color, tag: String) {
+    Text(
+        text, Modifier.fillMaxWidth().testTag(tag), style = style, color = color, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis,
+        autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
+    )
+}
+
+/**
+ * A row's ▶ (lot B2): its pads launched together on the next bar line; ■ when its loops all play
+ * (a touch stops them). Nothing on a row without a sound.
+ */
+@Composable
+private fun RowButton(ui: PadLiveUi, row: Int, modifier: Modifier, launch: (Int) -> Unit) {
+    val first = PadLive.pad(ui.page, row * PadLive.ROW_SIZE)
+    val pads = (first until first + PadLive.ROW_SIZE)
+    val filled = pads.filter { ui.pads.at(it) != null }
+    if (filled.isEmpty()) {
+        Box(modifier)
+        return
+    }
+    val loops = filled.filter { ui.pads.at(it)?.oneShot == false }
+    val allOn = loops.isNotEmpty() && loops.all { ui.states.getOrElse(it) { 0 } != 0 }
+    val shape = RoundedCornerShape(10.dp)
+    Box(
+        modifier.clip(shape).background(Neon.Surface).border(1.dp, Color.White.copy(alpha = 0.06f), shape)
+            .clickable(role = Role.Button, onClickLabel = tr("Lancer la ligne")) { launch(row) }
+            .semantics { contentDescription = if (allOn) tr("Arrêter la ligne %d", row + 1) else tr("Lancer la ligne %d à la mesure", row + 1) }
+            .testTag("padlive_row_$row"),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(if (allOn) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null,
+            tint = if (allOn) Neon.Acid else Neon.TextSecondary, modifier = Modifier.size(18.dp))
+    }
+}
+
+/** A row's ▶'s width. */
+private val ROW_BUTTON = 26.dp
 
 /** « Plus »: everything stopped, « Annuler », the whole Live page, the pads' effects box. */
 @Composable

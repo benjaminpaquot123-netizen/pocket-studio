@@ -56,28 +56,102 @@ class PadLiveController(private val vm: RhythmViewModel) {
 
     private var packJob: Job? = null
 
+    /** Lot B2: « Enregistrer ce que je joue ». */
+    val played = PlayedTake(vm)
+
+    /** Pad Live is on the screen (set by its route): a controller's pads play its pads. */
+    @Volatile var shown: Boolean = false
+
+    /**
+     * Lot B2: a MIDI command while Pad Live is shown: its pads (hit, let go) play the page shown.
+     * True when taken (else it goes where it went before Pad Live).
+     */
+    fun midi(c: com.pocketstudio.app.midi.MidiCommand): Boolean {
+        if (!shown) return false
+        return when (c) {
+            is com.pocketstudio.app.midi.MidiCommand.Pad -> { midiPad(c.index, true, c.velocity); true }
+            is com.pocketstudio.app.midi.MidiCommand.PadUp -> { midiPad(c.index, false); true }
+            else -> false
+        }
+    }
+
+    /**
+     * Lot B2: a controller's pad [index] (0..15, as the screen's pads of the page shown) hit
+     * ([down], [velocity]) or let go: played as a finger on that pad (its mode, its group).
+     */
+    fun midiPad(index: Int, down: Boolean, velocity: Float = 1f) {
+        if (index !in 0 until PadLive.PAGE_SIZE) return
+        touch(PadLive.pad(vm.project.value.padLive.shownPage, index), down, velocity)
+    }
+
     /** Tests: the pads the controller switched (in the engine's place). */
     internal var toggleForTest: ((Int) -> Unit)? = null
 
     /** Tests: the pack maker (no audio engine there). */
     internal var makerForTest: PackMaker? = null
 
-    private fun toggle(pad: Int) {
+    private fun toggle(pad: Int, velocity: Float = 1f) {
         toggleForTest?.let { it(pad); return }
-        vm.toggleLive(pad)
+        vm.toggleLive(pad, velocity)
     }
 
     /**
      * A finger [down] on pad [pad] (any page), or up from it: what its mode says (see
-     * [PadLive.touch]); starting, it first stops the others of its group.
+     * [PadLive.touch]); starting, it first stops the others of its group. [velocity]: a
+     * controller's pad strength (the screen: 1).
      */
-    fun touch(pad: Int, down: Boolean) {
+    fun touch(pad: Int, down: Boolean, velocity: Float = 1f) {
         val pads = vm.project.value.live
         val clip = pads.at(pad) ?: return
         val sounding = vm.padsSoundingNow()
         if (PadLive.touch(clip, down, pad in sounding) != PadTouch.TOGGLE) return
-        PadLive.choked(pads, pad, sounding).forEach(::toggle)
-        toggle(pad)
+        PadLive.choked(pads, pad, sounding).forEach { toggle(it) }
+        toggle(pad, velocity)
+    }
+
+    /** The engine's pads: 0 off, 1 waiting for its line, 2 playing (without an engine: as [RhythmViewModel.padsSoundingNow] says, playing). */
+    private fun padStates(): IntArray {
+        if (!NativeEngine.isNative) {
+            val sounding = vm.padsSoundingNow()
+            return IntArray(LivePads.ALL) { if (it in sounding) 2 else 0 }
+        }
+        return IntArray(NativeEngine.LIVE_PADS).also(NativeEngine::clipStates)
+    }
+
+    /** Tests: the rows launched (first pad, pads starting, pads stopping) in the engine's place. */
+    internal var rowForTest: ((Int, List<Int>, List<Int>) -> Unit)? = null
+
+    /**
+     * Lot B2: row [row] (0..3) of page [page] launched together on the next bar line (its loops all
+     * on: they stop). Starting, the others of their « un seul à la fois » groups stop first.
+     */
+    fun launchRow(page: Int, row: Int) {
+        val pads = vm.project.value.live
+        val first = PadLive.pad(page, row.coerceIn(0, PadLive.ROWS - 1) * PadLive.ROW_SIZE)
+        val states = padStates()
+        val playing = states.indices.filterTo(HashSet()) { states[it] == 2 }
+        val waiting = states.indices.filterTo(HashSet()) { states[it] == 1 }
+        val sounding = playing + waiting
+        val plan = PadLive.rowLaunch(pads, first, playing, waiting)
+        if (plan.starting.isEmpty() && plan.stopping.isEmpty()) return
+        plan.starting.flatMap { PadLive.choked(pads, it, sounding) }.filter { it !in plan.starting }.distinct().forEach { toggle(it) }
+        rowForTest?.let { it(first, plan.starting, plan.stopping); return }
+        vm.launchLiveRow(first, PadLive.ROW_SIZE, plan.starting, plan.stopping)
+    }
+
+    /**
+     * Lot B2: pad [pad]'s own sound: [pitch] semitones, [reverse], [attack] and [release] seconds
+     * (null: unchanged). A slider's moves make one undo step.
+     */
+    fun setSound(pad: Int, pitch: Int? = null, reverse: Boolean? = null, attack: Float? = null, release: Float? = null) {
+        val key = when {
+            attack != null -> "padlive-attack-$pad"
+            release != null -> "padlive-release-$pad"
+            else -> null
+        }
+        vm.editLive(pad, key) { c ->
+            c.copy(pitch = pitch ?: c.pitch, reverse = reverse ?: c.reverse, attack = attack ?: c.attack, release = release ?: c.release)
+        }
     }
 
     /** The page shown (A to D): not an edit, never undone, kept with the project. */

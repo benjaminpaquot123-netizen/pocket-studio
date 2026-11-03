@@ -91,6 +91,7 @@ internal fun PadSettingsSheet(pad: Int, clip: LiveClip, actions: PadLiveActions,
             }
             Text(tr("Volume"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
             ProSlider(clip.gain, { actions.setGain(pad, it) }, valueRange = 0f..2f, modifier = Modifier.testTag("padlive_gain"))
+            PadSoundSettings(pad, clip, actions)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(onClick = { close(); actions.browse(pad) }, modifier = Modifier.weight(1f).testTag("padlive_change_sound")) {
                     Text(tr("Changer le son"))
@@ -102,3 +103,49 @@ internal fun PadSettingsSheet(pad: Int, clip: LiveClip, actions: PadLiveActions,
         }
     }
 }
+
+/**
+ * Lot B2: the pad's own sound: « Hauteur » (an octave down to an octave up, its length with it),
+ * « À l'envers », « Attaque » (each pass fades in) and « Fin » (stopped, it fades out). Heard at once.
+ */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@Composable
+private fun PadSoundSettings(pad: Int, clip: LiveClip, actions: PadLiveActions) {
+    val chips = pillColors()
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(tr("Hauteur"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary, modifier = Modifier.weight(1f))
+        OutlinedButton(
+            onClick = { actions.setPitch(pad, clip.pitch - 1) }, enabled = clip.pitch > -LiveClip.PITCH_RANGE,
+            modifier = Modifier.testTag("padlive_pitch_down"),
+        ) { Text("−") }
+        Text(
+            pitchWords(clip.pitch), style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary,
+            modifier = Modifier.testTag("padlive_pitch"),
+        )
+        OutlinedButton(
+            onClick = { actions.setPitch(pad, clip.pitch + 1) }, enabled = clip.pitch < LiveClip.PITCH_RANGE,
+            modifier = Modifier.testTag("padlive_pitch_up"),
+        ) { Text("+") }
+    }
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        FilterChip(
+            selected = clip.reverse, onClick = { actions.setReverse(pad, !clip.reverse) }, label = { Text(tr("À l'envers")) }, colors = chips,
+            modifier = Modifier.testTag("padlive_reverse"),
+        )
+    }
+    Text(tr("Attaque : %s", secondsWords(clip.attack)), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
+    ProSlider(clip.attack, { actions.setAttack(pad, it) }, valueRange = 0f..1f, modifier = Modifier.testTag("padlive_attack"))
+    Text(tr("Fin : %s", secondsWords(clip.release)), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
+    ProSlider(clip.release, { actions.setRelease(pad, it) }, valueRange = 0f..2f, modifier = Modifier.testTag("padlive_release"))
+}
+
+/** « +3 », « −5 », « 0 » demi-tons. */
+internal fun pitchWords(semitones: Int): String = when {
+    semitones > 0 -> tr("+%d demi-tons", semitones)
+    semitones < 0 -> tr("−%d demi-tons", -semitones)
+    else -> tr("normale")
+}
+
+/** « net » for none, else « 0,25 s ». */
+internal fun secondsWords(seconds: Float): String =
+    if (seconds < 0.005f) tr("nette") else tr("%s s", String.format(java.util.Locale.getDefault(), "%.2f", seconds))

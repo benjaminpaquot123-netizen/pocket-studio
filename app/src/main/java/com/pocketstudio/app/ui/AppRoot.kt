@@ -1078,6 +1078,8 @@ fun AppRoot() {
     // MIDI clock, start and stop drive the project's tempo and transport (main thread).
     LaunchedEffect(Unit) {
         midiVm.commands.collect { c ->
+            // Pad Live shown: the controller's pads play its pads (lot B2).
+            if (rhythmVm.padLive.midi(c)) return@collect
             when (c) {
                 // Following another machine's clock: no count-in, Start from the top (lined up again), Continue from where it stopped.
                 MidiCommand.Start -> rhythmVm.midiStart(fromTop = true)
@@ -1092,6 +1094,7 @@ fun AppRoot() {
                 // The Live page's pads: launches, mutes, live pads (the drums are played on the MIDI thread).
                 // Step 4f: while a drum cell records, they play the drums into it; their strength reaches the live pads.
                 is MidiCommand.Pad -> if (!rhythmVm.midiCellPad(c.index, c.velocity)) knobsVm.pad(c.index, c.velocity)
+                is MidiCommand.PadUp -> Unit
                 is MidiCommand.PadLearnt -> {
                     if (c.packed !in padsHeard) padsHeard += c.packed
                     midiVm.padsLearnt(padsHeard.size)

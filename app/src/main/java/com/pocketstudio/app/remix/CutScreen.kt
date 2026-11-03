@@ -243,17 +243,18 @@ private fun magnetName(m: CutMagnet): String = when (m) {
 private fun AutoRow(model: CutModel, finding: Boolean, onAuto: (AutoCut) -> Unit) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
         Menu(
-            label = tr("Coupes auto :"), value = if (finding) "…" else autoName(model.auto), tag = "cut_auto",
-            options = AutoCut.entries.map { autoName(it) to { onAuto(it) } }, modifier = Modifier.weight(1.15f),
+            label = tr("Coupes :"), value = if (finding) "…" else autoName(model.auto), tag = "cut_auto",
+            options = AutoCut.entries.map { autoName(it) to { onAuto(it) } }, modifier = Modifier.weight(1f, fill = false),
         )
         Menu(
             label = tr("Aimant :"), value = magnetName(model.magnet), tag = "cut_magnet",
             options = (if (model.hasGrid) CutMagnet.entries else listOf(CutMagnet.Free)).map { m -> magnetName(m) to { model.magnet = m } },
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f, fill = false),
         )
-        TextButton(onClick = model::undo, enabled = model.canUndo, modifier = Modifier.testTag("cut_undo")) {
-            Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = null, modifier = Modifier.size(18.dp))
-            Text(" " + tr("Annuler"), maxLines = 1)
+        Spacer(Modifier.weight(0.01f))
+        // The arrow alone: both menus keep their words on a phone.
+        IconButton(onClick = model::undo, enabled = model.canUndo, modifier = Modifier.testTag("cut_undo")) {
+            Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = tr("Annuler"), tint = if (model.canUndo) Neon.Cyan else Neon.TextSecondary)
         }
     }
 }
@@ -264,11 +265,13 @@ private fun Menu(label: String, value: String, tag: String, options: List<Pair<S
     Box(modifier) {
         Row(
             Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(24.dp)).background(Neon.SurfaceHigh)
-                .clickable(role = Role.Button) { open = true }.padding(horizontal = 12.dp).testTag(tag),
+                .clickable(role = Role.Button) { open = true }.padding(start = 10.dp, end = 4.dp).testTag(tag),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(label + " ", style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, maxLines = 1)
-            Text(value, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
+            // The value is what matters: the label gives way first on a narrow phone.
+            Text(label + " ", style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, maxLines = 1,
+                overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
+            Text(value, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1)
             Icon(Icons.Filled.ArrowDropDown, contentDescription = null, modifier = Modifier.size(18.dp))
         }
         DropdownMenu(expanded = open, onDismissRequest = { open = false }) {

@@ -68,7 +68,7 @@ internal fun PadSettingsSheet(pad: Int, clip: LiveClip, actions: PadLiveActions,
                 tr("Les pads d'un même groupe se coupent entre eux (charley ouvert et fermé)."),
                 style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
             )
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 (0..PadLive.GROUPS).forEach { g ->
                     FilterChip(
                         selected = clip.group == g, onClick = { actions.setGroup(pad, g) },

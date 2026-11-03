@@ -183,7 +183,8 @@ fun PadLiveScreen(
             val gap = 8.dp
             val byWidth = (maxWidth - gap * 3) / 4
             val byHeight = (maxHeight - gap * 3) / 4
-            val side = minOf(byWidth, byHeight)
+            // Square or a little taller when the screen has room (a phone upright), never past its row.
+            val side = minOf(byWidth * 1.15f, byHeight)
             Column(Modifier.align(Alignment.TopCenter), verticalArrangement = Arrangement.spacedBy(gap)) {
                 for (row in 0 until 4) {
                     Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
@@ -193,7 +194,7 @@ fun PadLiveScreen(
                             val clip = ui.pads.at(pad)
                             PadLivePad(
                                 pad, clip, ui.states.getOrElse(pad) { 0 }, clock, ui.effectHeld,
-                                Modifier.size(width = byWidth.coerceAtMost(side * 1.25f), height = side),
+                                Modifier.size(width = byWidth.coerceAtMost(side * 1.35f), height = side),
                                 touch = actions.touch,
                                 empty = { actions.browse(pad) },
                                 settings = { settingsOf = pad },
@@ -228,13 +229,13 @@ fun PadLiveScreen(
 @Composable
 private fun PadLiveBar(ui: PadLiveUi, actions: PadLiveActions, record: @Composable () -> Unit) {
     Row(Modifier.fillMaxWidth().padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-        IconButton(onClick = actions.back, modifier = Modifier.testTag("padlive_back")) {
+        IconButton(onClick = actions.back, modifier = Modifier.size(44.dp).testTag("padlive_back")) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Retour"), tint = Neon.Amber)
         }
-        Text(tr("Pad Live"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, maxLines = 1,
+        Text(tr("Pad Live"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1, softWrap = false,
             overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
         Box(
-            Modifier.size(52.dp).clip(CircleShape).background(if (ui.playing) Neon.Acid else Neon.SurfaceHigh)
+            Modifier.size(48.dp).clip(CircleShape).background(if (ui.playing) Neon.Acid else Neon.SurfaceHigh)
                 .clickable(role = Role.Button, onClick = actions.togglePlay).testTag("padlive_play")
                 .semantics { contentDescription = if (ui.playing) tr("Arrêter") else tr("Jouer") },
             contentAlignment = Alignment.Center,
@@ -243,7 +244,7 @@ private fun PadLiveBar(ui: PadLiveUi, actions: PadLiveActions, record: @Composab
         }
         Spacer(Modifier.width(8.dp))
         Row(Modifier.clip(RoundedCornerShape(14.dp)).background(Neon.Surface), verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = { actions.nudgeTempo(-1) }, modifier = Modifier.testTag("padlive_tempo_less")) {
+            IconButton(onClick = { actions.nudgeTempo(-1) }, modifier = Modifier.size(44.dp).testTag("padlive_tempo_less")) {
                 Icon(Icons.Filled.Remove, contentDescription = tr("Moins vite"))
             }
             Column(
@@ -253,7 +254,7 @@ private fun PadLiveBar(ui: PadLiveUi, actions: PadLiveActions, record: @Composab
                 Text("${ui.tempoBpm.toInt()}", style = MonoStyle.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold), color = Neon.Amber)
                 Text("BPM", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
             }
-            IconButton(onClick = { actions.nudgeTempo(1) }, modifier = Modifier.testTag("padlive_tempo_more")) {
+            IconButton(onClick = { actions.nudgeTempo(1) }, modifier = Modifier.size(44.dp).testTag("padlive_tempo_more")) {
                 Icon(Icons.Filled.Add, contentDescription = tr("Plus vite"))
             }
         }
@@ -382,7 +383,7 @@ private fun SceneEffects(actions: PadLiveActions, more: Boolean) {
         }
         if (more) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                HeldEffect(tr("Montée"), tr("jusqu'à la mesure"), "riser", Modifier.weight(1f), hold = { if (it) actions.riser() })
+                HeldEffect(tr("Montée"), tr("souffle qui monte"), "riser", Modifier.weight(1f), hold = { if (it) actions.riser() })
                 HeldEffect(tr("Chute"), tr("freinage"), "brake", Modifier.weight(1f), hold = actions.brake)
                 HeldEffect(tr("Bégaie"), "1/16", "stutter", Modifier.weight(1f), hold = actions.stutter)
             }
@@ -461,6 +462,6 @@ private fun MoreButton(icon: androidx.compose.ui.graphics.vector.ImageVector, la
     ) {
         val tint = if (enabled) Neon.TextPrimary else Neon.TextSecondary.copy(alpha = 0.5f)
         Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp))
-        Text(label, style = MaterialTheme.typography.labelMedium, color = tint, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(label, style = MaterialTheme.typography.labelMedium, color = tint, maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
     }
 }

@@ -509,6 +509,100 @@ JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_recordFi
     return out;
 }
 
+// --- Lot B2: « Enregistrer ce que je joue » (the output from bar line to bar line) ---
+
+static std::mutex resampleLock;
+static std::vector<ps::ResampleBuffer*> resampleZombies;
+
+static void freeReleasedResamples() {
+    std::lock_guard<std::mutex> guard(resampleLock);
+    resampleZombies.erase(std::remove_if(resampleZombies.begin(), resampleZombies.end(), [](ps::ResampleBuffer* b) {
+        if (b->state.load(std::memory_order_acquire) != 2) return false;
+        delete b;
+        return true;
+    }), resampleZombies.end());
+}
+
+// Arms a take of at most `seconds` from the next bar line of the live pads' clock (`waitForSound`:
+// the first one where a pad plays or the transport runs); 0 when there is no memory for it.
+JNIEXPORT jlong JNICALL Java_com_pocketstudio_engine_NativeEngine_resampleStart(JNIEnv*, jobject, jint seconds, jboolean waitForSound) {
+    if (seconds <= 0 || seconds > 120) return 0;
+    freeReleasedResamples();
+    ps::ResampleBuffer* buffer = nullptr;
+    try {
+        buffer = new ps::ResampleBuffer(static_cast<int64_t>(seconds) * host().engine().sampleRate());
+    } catch (const std::bad_alloc&) {
+        return 0;
+    }
+    ps::Command command{ps::CommandType::ResampleArm, 0.0f, waitForSound ? 1 : 0, 0};
+    command.resample = buffer;
+    if (!host().post(command)) {
+        delete buffer;
+        return 0;
+    }
+    return reinterpret_cast<jlong>(buffer);
+}
+
+// [state (0 waiting for its bar line, 1 recording, 2 finished), frames written].
+JNIEXPORT jlongArray JNICALL Java_com_pocketstudio_engine_NativeEngine_resampleStatus(JNIEnv* env, jobject, jlong handle) {
+    auto* b = reinterpret_cast<ps::ResampleBuffer*>(handle);
+    const jlong values[2] = {b->state.load(std::memory_order_acquire), b->written.load(std::memory_order_acquire)};
+    jlongArray out = env->NewLongArray(2);
+    if (out) env->SetLongArrayRegion(out, 0, 2, values);
+    return out;
+}
+
+// The take ends on the next bar line heard (its state becomes 2 there).
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_resampleStop(JNIEnv*, jobject) {
+    host().post({ps::CommandType::ResampleStop, 0.0f, 0});
+}
+
+// What was recorded (stereo interleaved, the engine's rate), freeing the buffer. Not finished yet
+// (or the stream closed): ended at once first; when the engine has not let go, what it wrote is
+// copied all the same and the buffer is kept until it does (as recordFinish).
+JNIEXPORT jfloatArray JNICALL Java_com_pocketstudio_engine_NativeEngine_resampleFinish(JNIEnv* env, jobject, jlong handle) {
+    auto* b = reinterpret_cast<ps::ResampleBuffer*>(handle);
+    if (b->state.load(std::memory_order_acquire) != 2) {
+        host().post({ps::CommandType::ResampleStop, 0.0f, 1});
+        for (int waited = 0; waited < 500 && b->state.load(std::memory_order_acquire) != 2; waited += 2) {
+            if (host().runWhileStopped([] {})) break;
+            std::this_thread::sleep_for(std::chrono::milliseconds(2));
+        }
+    }
+    const auto frames = static_cast<jsize>(std::clamp<int64_t>(b->written.load(std::memory_order_acquire), 0, b->capacity));
+    jfloatArray out = env->NewFloatArray(frames * 2);
+    if (out && frames > 0) env->SetFloatArrayRegion(out, 0, frames * 2, b->data.get());
+    if (b->state.load(std::memory_order_acquire) != 2) {
+        std::lock_guard<std::mutex> guard(resampleLock);
+        resampleZombies.push_back(b);
+        return out;
+    }
+    delete b;
+    freeReleasedResamples();
+    return out;
+}
+
+// MIDI clock out (lot B2): the engine's clock messages, as [status, when] pairs into `out` (when: the
+// System.nanoTime() clock, CLOCK_MONOTONIC like steady_clock, the output device's own latency not
+// included); returns how many pairs.
+JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeDrainMidiClock(JNIEnv* env, jobject, jlongArray out) {
+    const jsize room = std::min<jsize>(env->GetArrayLength(out) / 2, 256);
+    jlong buf[512];
+    auto& engine = host().engine();
+    int64_t frame = 0, nanos = 0;
+    engine.callbackClock(frame, nanos);
+    const double nanosPerFrame = 1e9 / std::max(1, engine.sampleRate());
+    ps::MidiClockEvent e;
+    jsize n = 0;
+    while (n < room && engine.popClockEvent(e)) {
+        buf[n * 2] = e.status;
+        buf[n * 2 + 1] = nanos + static_cast<jlong>(std::llround(static_cast<double>(e.frame - frame) * nanosPerFrame));
+        ++n;
+    }
+    if (n > 0) env->SetLongArrayRegion(out, 0, n * 2, buf);
+    return n;
+}
+
 // Steps since the song (re)started (song automation), -1 when stopped.
 JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeSongStep(JNIEnv*, jobject) {
     return static_cast<jint>(host().engine().songStep());

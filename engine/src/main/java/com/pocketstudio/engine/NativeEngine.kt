@@ -111,6 +111,11 @@ object NativeEngine {
     private const val CMD_STEM_CLIP = 144
     private const val CMD_COMMIT_STEM_CLIPS = 145
     private const val CMD_ACID_LIVE_NOTE = 146
+    // Lot B2, Pad Live « la scène » (Engine.h, 150 to 169).
+    private const val CMD_LAUNCH_CLIP_ROW = 150
+    private const val CMD_RESAMPLE_ARM = 151
+    private const val CMD_RESAMPLE_STOP = 152
+    private const val CMD_MIDI_CLOCK_OUT = 153
     /** Pieces a stem's edits hold at most (the engine's StemPlayer::kMaxClips). */
     const val MAX_STEM_CLIPS = 32
 
@@ -851,6 +856,27 @@ object NativeEngine {
     external fun recordStatus(handle: Long): FloatArray
     /** Stops, frees the recording and returns it (mono, 48 kHz); null if the engine did not let go. */
     external fun recordFinish(handle: Long): FloatArray?
+
+    /**
+     * Lot B2, « Enregistrer ce que je joue »: what the output plays from the next bar line of the
+     * live pads' clock ([waitForSound]: the first one where a pad plays or the transport runs), at
+     * most [seconds]; 0: no memory. [resampleStop] ends it on the next bar line heard.
+     */
+    external fun resampleStart(seconds: Int, waitForSound: Boolean): Long
+    /** [state 0 waiting for its bar line, 1 recording, 2 finished; frames recorded]. */
+    external fun resampleStatus(handle: Long): LongArray
+    external fun resampleStop()
+    /** What was recorded (stereo interleaved, 48 kHz), the buffer freed (ended at once first when still running). */
+    external fun resampleFinish(handle: Long): FloatArray?
+
+    /** Lot B2: the engine sends MIDI clock (Start, 24 ticks a beat, Stop) for [drainMidiClock]. */
+    fun setMidiClockOut(on: Boolean) = post(CMD_MIDI_CLOCK_OUT, if (on) 1f else 0f)
+    /**
+     * The MIDI clock messages due, as pairs [status, when] (when: [System.nanoTime] the message is
+     * heard with the sound, the output's own latency not included); returns how many pairs.
+     */
+    fun drainMidiClock(out: LongArray): Int = if (isNative && sink == null) nativeDrainMidiClock(out) else 0
+    private external fun nativeDrainMidiClock(out: LongArray): Int
     private external fun nativeInstallAudioClip(track: Int, handle: Long): Boolean
 
     /** Instrument track [track]'s sampled voice plays [sample] across the keys (null: none). */
@@ -933,6 +959,22 @@ object NativeEngine {
         post(CMD_CLIP_PARAM, if (oneShot) 1f else 0f, pad, 1)
         post(CMD_CLIP_PARAM, gain, pad, 2)
     }
+    /**
+     * Lot B2: how pad [pad] plays its sound: [pitch] in semitones (-24..24, read faster or slower),
+     * [reverse] backwards, [attack] and [release] in seconds (0..2, 0..4: each pass fades in, a pad
+     * stopped fades out).
+     */
+    fun setClipSound(pad: Int, pitch: Float, reverse: Boolean, attack: Float, release: Float) {
+        post(CMD_CLIP_PARAM, pitch, pad, 3)
+        post(CMD_CLIP_PARAM, if (reverse) 1f else 0f, pad, 4)
+        post(CMD_CLIP_PARAM, attack, pad, 5)
+        post(CMD_CLIP_PARAM, release, pad, 6)
+    }
+    /**
+     * Lot B2: the row of pads [first] until [first] + [count]: its loops all on, they stop; else each
+     * pad of it that does not play starts on the next bar line, all together.
+     */
+    fun launchClipRow(first: Int, count: Int) = post(CMD_LAUNCH_CLIP_ROW, 0f, first, count)
     /** On at the next grid line, or off; [pad] < 0: every pad off. */
     /** [velocity] (0..1]: how loud the loop or hit it starts plays (a controller's pad); stopping ignores it. */
     fun toggleClip(pad: Int, velocity: Float = 1f) = post(CMD_TOGGLE_CLIP, velocity, pad)

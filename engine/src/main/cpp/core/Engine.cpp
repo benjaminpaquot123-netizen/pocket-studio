@@ -35,8 +35,10 @@ Engine::~Engine() {
         SoundFontPlayer::close(command.font);
         if (command.stems && command.stems->release()) delete command.stems;
         if (command.record) command.record->state.store(2, std::memory_order_release);
+        if (command.resample) command.resample->state.store(2, std::memory_order_release);
     }
     finishRecording();
+    finishResample();
 }
 
 void Engine::prepare(int sampleRate) {
@@ -92,6 +94,8 @@ void Engine::applyCommand(const Command& command) {
             break;
         case CommandType::SetTransport:
             if (command.value > 0.5f) {
+                // Started again from the top while playing: the MIDI clock sends a new Start.
+                clockBeat_ = -1;
                 sequencer_.start(std::clamp(command.a, 0, 4));
                 rollCount_ = 0;
                 lookaheadStep_ = -1;
@@ -133,7 +137,7 @@ void Engine::applyCommand(const Command& command) {
                     t.multi.resetRoundRobin();
                 }
             } else {
-                stopTransport();
+                stopTransport(outTotal_);
             }
             break;
         case CommandType::SetTempo:
@@ -333,6 +337,34 @@ void Engine::applyCommand(const Command& command) {
             if (command.a < 0) clips_.stopAll();
             else clips_.toggle(command.a, !sequencer_.running(), command.value);
             break;
+        case CommandType::LaunchClipRow:
+            clips_.launchRow(command.a, command.b, !sequencer_.running());
+            break;
+        case CommandType::ResampleArm:
+            finishResample();
+            resample_ = command.resample;
+            if (resample_) {
+                resampleWait_ = command.a == 1;
+                resampleArmed_ = outTotal_;
+                resample_->written.store(0, std::memory_order_relaxed);
+                resample_->state.store(0, std::memory_order_release);
+            }
+            break;
+        case CommandType::ResampleStop:
+            if (!resample_) break;
+            // Still waiting for its first bar line: nothing recorded, it ends here.
+            if (command.a == 1 || resample_->state.load(std::memory_order_relaxed) == 0) finishResample();
+            else if (resampleStop_ < 0) resampleStop_ = outTotal_;
+            break;
+        case CommandType::SetMidiClockOut: {
+            const bool on = command.value > 0.5f;
+            if (on == clockOut_.load(std::memory_order_relaxed)) break;
+            if (!on && clockBeat_ >= 0) clockEvent(outTotal_, 0xFC);
+            clockOut_.store(on, std::memory_order_relaxed);
+            // Switched on while the transport runs: the other machine carries on from the next tick.
+            clockContinue_ = on && clockBeat_ >= 0;
+            break;
+        }
         case CommandType::PlayPreview:
             if (command.value > 0.5f) {
                 preview_.setStartFrame(0);
@@ -739,7 +771,11 @@ void Engine::applyCommand(const Command& command) {
 }
 
 // Stop: everything the transport started goes quiet (the stop command, or a song that ends).
-void Engine::stopTransport() {
+void Engine::stopTransport(int64_t at) {
+    if (clockBeat_ >= 0) {
+        clockEvent(at >= 0 ? at : outTotal_, 0xFC);
+        clockBeat_ = -1;
+    }
     swapAt_ = -1;
     stopAtSwap_ = false;
     leaveSong_ = false;
@@ -793,7 +829,7 @@ void Engine::onStep(int offset, int step) {
     if (step >= 0 && swapAt_ >= 0 && stopAtSwap_) {
         const int local = step - sceneStart_;
         if (local > 0 && local % bar == 0 && (swapAt_ == 0 || local >= swapAt_)) {
-            stopTransport();
+            stopTransport(blockOut_ + offset);
             sceneSwaps_.fetch_add(1, std::memory_order_relaxed);
             return;
         }
@@ -818,7 +854,10 @@ void Engine::onStep(int offset, int step) {
             record_->state.store(1, std::memory_order_release);
         }
     }
-    if (onBeat) clips_.syncBeat(offset, step / Sequencer::kStepsPerBeat);
+    if (onBeat) {
+        clips_.syncBeat(offset, step / Sequencer::kStepsPerBeat);
+        clockBeat(blockOut_ + offset, step / Sequencer::kStepsPerBeat);
+    }
     transportStep_.store(step, std::memory_order_relaxed);
     lastTransport_ = step;
     // A recorded performance starts here: the song position is the one it will have in the song.
@@ -1497,6 +1536,13 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     preview_.render(previewL, previewR, numFrames);
     clips_.setBeatFrames(sequencer_.samplesPerStep() * Sequencer::kStepsPerBeat);
     clips_.render(stemsL, stemsR, numFrames);
+    // « Enregistrer ce que je joue »: the bar line as it will be heard (after the master's delay).
+    if (resample_ && clips_.barAt() >= 0 && barCount_ < static_cast<int>(bars_.size())) {
+        bars_[static_cast<size_t>(barCount_++)] = {blockOut_ + clips_.barAt() + mixer_.latency(),
+                                                   clips_.barSounding() || (sequencer_.running() && lastTransport_ >= 0)};
+    }
+    // MIDI clock out: the ticks of the beat under way, up to the end of this block.
+    flushClock(static_cast<double>(blockOut_ + numFrames));
 
     gain_.setTarget(playing_.load(std::memory_order_relaxed) ? volume_ : 0.0f);
     const double invRate = 1.0 / sampleRate_;
@@ -1566,6 +1612,8 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
 
     // How the microphone lines up with the output (see align_): measured before this callback's input.
     const int64_t outBase = outTotal_;
+    callbackNanos_.store(std::chrono::duration_cast<std::chrono::nanoseconds>(started.time_since_epoch()).count(), std::memory_order_release);
+    callbackFrame_.store(outBase, std::memory_order_release);
     if (input && inputChannels > 0) {
         const double gap = static_cast<double>(inTotal_ - outBase);
         align_ = alignKnown_ ? std::max(gap, align_ - kAlignDecay * numFrames) : gap;
@@ -1631,6 +1679,7 @@ void Engine::process(const float* input, int numInputFrames, int inputChannels,
         blockPeak = std::max(blockPeak, std::fabs(v));
     }
     if (!finite || mixer_.takeBlewUp()) nonFinite_.store(true, std::memory_order_relaxed);
+    captureResample(output, numFrames, outputChannels, outBase);
     // « Mode retours »: the cleaned output for the screen recording's sound (stereo; a mono output twice).
     if (tapOn_.load(std::memory_order_acquire)) {
         if (outputChannels == 2) {
@@ -1733,6 +1782,100 @@ void Engine::recordInput(const float* input, int numInputFrames, int inputChanne
     record_->peak.store(peak, std::memory_order_relaxed);
     record_->written.store(at, std::memory_order_release);
     if (at >= capacity) finishRecording();
+}
+
+
+// --- Lot B2: « Enregistrer ce que je joue » and the MIDI clock out ----------------------------
+
+void Engine::finishResample() {
+    if (resample_) resample_->state.store(2, std::memory_order_release);
+    resample_ = nullptr;
+    resampleStop_ = -1;
+    barCount_ = 0;
+}
+
+void Engine::captureResample(const float* output, int numFrames, int outputChannels, int64_t outBase) {
+    if (!resample_) {
+        barCount_ = 0;
+        return;
+    }
+    const int64_t end = outBase + numFrames;
+    int state = resample_->state.load(std::memory_order_relaxed);
+    int64_t from = outBase, until = end;
+    bool done = false;
+    int used = 0;
+    for (int k = 0; k < barCount_; ++k) {
+        const BarLine& line = bars_[static_cast<size_t>(k)];
+        if (line.frame >= end) break;
+        used = k + 1;
+        if (state == 0) {
+            if (line.frame >= resampleArmed_ && (line.sounding || !resampleWait_)) {
+                state = 1;
+                from = line.frame;
+                resample_->state.store(1, std::memory_order_release);
+            }
+        } else if (resampleStop_ >= 0 && line.frame >= resampleStop_ && line.frame > from) {
+            until = line.frame;
+            done = true;
+            break;
+        }
+    }
+    // The bar lines reached are used up (those still ahead wait for their callback).
+    for (int k = used; k < barCount_; ++k) bars_[static_cast<size_t>(k - used)] = bars_[static_cast<size_t>(k)];
+    barCount_ -= used;
+    if (state != 1) return;
+    int64_t at = resample_->written.load(std::memory_order_relaxed);
+    const int64_t capacity = resample_->capacity;
+    float* data = resample_->data.get();
+    const int right = outputChannels > 1 ? 1 : 0;
+    for (int64_t f = std::max(from, outBase); f < until && at < capacity; ++f, ++at) {
+        const auto i = static_cast<size_t>(f - outBase) * static_cast<size_t>(outputChannels);
+        data[at * 2] = output[i];
+        data[at * 2 + 1] = output[i + static_cast<size_t>(right)];
+    }
+    resample_->written.store(at, std::memory_order_release);
+    if (done || at >= capacity) finishResample();
+}
+
+void Engine::clockEvent(int64_t frame, int32_t status) {
+    if (!clockOut_.load(std::memory_order_relaxed)) return;
+    const int64_t heard = frame + mixer_.latency();
+    if (clockContinue_ && status == 0xF8) {
+        clockContinue_ = false;
+        clockEvents_.push({heard, 0xFB});
+    }
+    // Full (nobody reads): dropped, never waited for.
+    clockEvents_.push({heard, status});
+}
+
+void Engine::clockBeat(int64_t frame, int beat) {
+    const auto at = static_cast<double>(frame);
+    if (clockBeat_ >= 0 && beat == clockBeat_ + 1) {
+        flushClock(at, true);  // the last ticks of the beat before
+    } else {
+        // The transport's first beat (or a jump): a Start with its first tick.
+        if (clockBeat_ < 0) clockEvent(frame, 0xFA);
+        clockTick_ = static_cast<int64_t>(beat) * kClockTicksPerBeat;
+    }
+    clockBeat_ = beat;
+    clockBeatFrame_ = at;
+    clockBeatFrames_ = sequencer_.samplesPerStep() * Sequencer::kStepsPerBeat;
+}
+
+void Engine::flushClock(double limit, bool all) {
+    if (clockBeat_ < 0) return;
+    const int64_t first = static_cast<int64_t>(clockBeat_) * kClockTicksPerBeat;
+    // The next beat's step sends its own ticks: at most one beat's worth here. `all`: that next
+    // beat is here (the tempo rose meanwhile): the beat's last ticks go out just before it, none lost.
+    while (clockTick_ < first + kClockTicksPerBeat) {
+        double f = clockBeatFrame_ + static_cast<double>(clockTick_ - first) * clockBeatFrames_ / kClockTicksPerBeat;
+        if (f >= limit) {
+            if (!all) break;
+            f = limit - 1.0;
+        }
+        clockEvent(std::llround(f), 0xF8);
+        ++clockTick_;
+    }
 }
 
 }  // namespace ps

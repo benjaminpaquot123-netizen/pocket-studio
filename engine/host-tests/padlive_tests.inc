@@ -52,8 +52,276 @@ static void sixtyFourPadsWithoutAllocating() {
     CHECK(finiteAndUnclipped(out));
 }
 
+// --- Lot B2 (« la scène »): a row launched on the bar, each pad's pitch / reverse / attack /
+// release, « Enregistrer ce que je joue » from bar line to bar line, the MIDI clock out. ---------
+
+// The first frame (from `from`) where the left output is not silent.
+static size_t firstSound(const std::vector<float>& out, size_t from = 0) {
+    for (size_t i = from; i < out.size() / 2; ++i) {
+        if (std::fabs(out[i * 2]) > 1e-6f) return i;
+    }
+    return out.size();
+}
+
+// A mono ramp: frame i holds i / frames * 0.5 (0 .. 0.5).
+static ps::Sample* rampSample(int frames) {
+    std::vector<float> d(static_cast<size_t>(frames));
+    for (int i = 0; i < frames; ++i) d[static_cast<size_t>(i)] = 0.5f * static_cast<float>(i) / static_cast<float>(frames);
+    return ps::Sample::create(d.data(), frames, 1, kRate, kRate);
+}
+
+static void rowStartsOnTheBar() {
+    ps::Engine engine(kRate);  // 120 BPM: a beat is 24000 frames, a bar 96000
+    installClip(engine, 0, constantSample(100, 1, 0.25f));  // a click every beat: the clock's reference
+    engine.post({ps::CommandType::SetClipParam, 1.0f, 0, ps::ClipLauncher::Beats});
+    // The row 4..7: a loop of 4 beats, a loop of 2, a hit, an empty pad.
+    installClip(engine, 4, constantSample(500, 2, 0.1f));
+    engine.post({ps::CommandType::SetClipParam, 4.0f, 4, ps::ClipLauncher::Beats});
+    installClip(engine, 5, constantSample(500, 1, 0.05f));
+    engine.post({ps::CommandType::SetClipParam, 2.0f, 5, ps::ClipLauncher::Beats});
+    installClip(engine, 6, constantSample(500, 1, 0.02f));
+    engine.post({ps::CommandType::SetClipParam, 1.0f, 6, ps::ClipLauncher::OneShot});
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 0});
+    auto head = render(engine, 36000, 256);  // beat 1.5
+    const size_t onset = firstSound(head);
+    CHECK(onset < 400);
+    engine.post({ps::CommandType::LaunchClipRow, 0.0f, 4, 4});
+    render(engine, 256, 256);
+    CHECK(engine.clipState(4) == ps::ClipLauncher::Waiting && engine.clipState(5) == ps::ClipLauncher::Waiting);
+    CHECK(engine.clipState(6) == ps::ClipLauncher::Waiting && engine.clipState(7) == ps::ClipLauncher::Off);
+    // Beat 2 and 3 (the 2-beat loop's own grid, a hit's beat) pass: still waiting, for the bar.
+    auto body = render(engine, 96000 - 36256 + 2000, 192);
+    CHECK(engine.clipState(4) == ps::ClipLauncher::Playing && engine.clipState(5) == ps::ClipLauncher::Playing);
+    const size_t bar = 96000 - 36256 + onset;  // where beat 4's click is in `body`
+    CHECK(std::fabs(body[(bar - 1) * 2]) < 1e-6f);
+    CHECK(std::fabs(body[bar * 2] - 0.42f) < 1e-3f);  // the click and the row's three sounds on one frame
+    CHECK(std::fabs(body[(bar + 50) * 2] - 0.42f) < 1e-3f);
+    // Again: its loops all play, so they stop (the hit is not a loop: left alone).
+    engine.post({ps::CommandType::LaunchClipRow, 0.0f, 4, 4});
+    render(engine, 2048, 256);
+    CHECK(engine.clipState(4) == ps::ClipLauncher::Off && engine.clipState(5) == ps::ClipLauncher::Off);
+    CHECK(engine.clipState(0) == ps::ClipLauncher::Playing);
+    // Out of range or empty: nothing.
+    engine.post({ps::CommandType::LaunchClipRow, 0.0f, 62, 8});
+    engine.post({ps::CommandType::LaunchClipRow, 0.0f, -5, 3});
+    render(engine, 512, 256);
+    CHECK(engine.clipState(63) == ps::ClipLauncher::Off);
+}
+
+static void padPitchReverseAttackRelease() {
+    auto hit = [](float pitch, float reverse, float attack) {
+        ps::Engine engine(kRate);
+        installClip(engine, 2, rampSample(1000));
+        engine.post({ps::CommandType::SetClipParam, 1.0f, 2, ps::ClipLauncher::OneShot});
+        engine.post({ps::CommandType::SetClipParam, pitch, 2, ps::ClipLauncher::Pitch});
+        engine.post({ps::CommandType::SetClipParam, reverse, 2, ps::ClipLauncher::Reverse});
+        engine.post({ps::CommandType::SetClipParam, attack, 2, ps::ClipLauncher::Attack});
+        engine.post({ps::CommandType::ToggleClip, 0.0f, 2});
+        return render(engine, 4000, 256);
+    };
+    auto ramp = [](double i) { return static_cast<float>(0.5 * i / 1000.0); };
+    // As recorded: frame k of the sound on frame k; the reference onset.
+    auto plain = hit(0.0f, 0.0f, 0.0f);
+    const size_t at = firstSound(plain) - 1;  // frame 0 of the ramp is silent
+    CHECK(std::fabs(plain[(at + 100) * 2] - ramp(100)) < 1e-4f);
+    CHECK(std::fabs(plain[(at + 1100) * 2]) < 1e-6f);  // over after 1000 frames
+    // An octave up: twice as fast, half as long.
+    auto up = hit(12.0f, 0.0f, 0.0f);
+    CHECK(std::fabs(up[(at + 100) * 2] - ramp(200)) < 1e-4f);
+    CHECK(std::fabs(up[(at + 499) * 2] - ramp(998)) < 1e-4f);
+    CHECK(std::fabs(up[(at + 520) * 2]) < 1e-6f);
+    // An octave down: half as fast, the frames in between read on a straight line.
+    auto down = hit(-12.0f, 0.0f, 0.0f);
+    CHECK(std::fabs(down[(at + 201) * 2] - ramp(100.5)) < 1e-4f);
+    CHECK(std::fabs(down[(at + 1990) * 2] - ramp(995)) < 1e-4f);
+    // Backwards: the ramp's end first.
+    auto back = hit(0.0f, 1.0f, 0.0f);
+    CHECK(std::fabs(back[at * 2] - ramp(999)) < 1e-4f);
+    CHECK(std::fabs(back[(at + 100) * 2] - ramp(899)) < 1e-4f);
+    // An attack of 10 ms (480 frames): half way, half as loud.
+    auto soft = hit(0.0f, 0.0f, 0.01f);
+    CHECK(std::fabs(soft[(at + 240) * 2] - 0.5f * ramp(240)) < 2e-3f);
+    CHECK(std::fabs(soft[(at + 700) * 2] - ramp(700)) < 1e-4f);
+
+    // A release of 0.1 s (4800 frames): a loop stopped fades out over it, not cut.
+    ps::Engine engine(kRate);
+    installClip(engine, 9, constantSample(96000, 1, 0.2f));
+    engine.post({ps::CommandType::SetClipParam, 4.0f, 9, ps::ClipLauncher::Beats});
+    engine.post({ps::CommandType::SetClipParam, 0.1f, 9, ps::ClipLauncher::Release});
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 9});
+    auto start = render(engine, 10240, 256);
+    const size_t on = firstSound(start);
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 9});
+    auto tail = render(engine, 8000, 256);
+    CHECK(std::fabs(tail[on * 2] - 0.2f) < 2e-3f);
+    CHECK(std::fabs(tail[(on + 2400) * 2] - 0.1f) < 2e-3f);
+    CHECK(std::fabs(tail[(on + 4810) * 2]) < 1e-6f);
+    CHECK(engine.clipState(9) == ps::ClipLauncher::Off);
+    // Out of range values are held to their limits (never a NaN).
+    engine.post({ps::CommandType::SetClipParam, 99.0f, 9, ps::ClipLauncher::Pitch});
+    engine.post({ps::CommandType::SetClipParam, NAN, 9, ps::ClipLauncher::Attack});
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 9});
+    CHECK(finiteAndUnclipped(render(engine, 24000, 256)));
+}
+
+static void resampleFromBarToBar() {
+    ps::Engine engine(kRate);
+    installClip(engine, 0, constantSample(100, 1, 0.5f));  // a click every beat
+    engine.post({ps::CommandType::SetClipParam, 1.0f, 0, ps::ClipLauncher::Beats});
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 0});
+    auto head = render(engine, 36000, 256);  // beat 1.5
+    const size_t onset = firstSound(head);
+    ps::ResampleBuffer take(kRate * 10);
+    ps::Command arm{ps::CommandType::ResampleArm, 0.0f, 0, 0};
+    arm.resample = &take;
+    engine.post(arm);
+    render(engine, 96000 - 36000 - 1000, 256);  // just before the bar line
+    CHECK(take.state.load() == 0 && take.written.load() == 0);
+    render(engine, 36000, 256);  // beat 5.5
+    CHECK(take.state.load() == 1);
+    engine.post({ps::CommandType::ResampleStop, 0.0f, 0});
+    render(engine, 96000, 256);  // past beat 8
+    CHECK(take.state.load() == 2);
+    // From the bar line at beat 4 to the one at beat 8, heard: whole bars, the click where it was heard.
+    CHECK(take.written.load() == 96000);
+    const size_t click = onset - static_cast<size_t>(kLate);
+    for (int beat = 0; beat < 4; ++beat) {
+        const size_t i = (static_cast<size_t>(beat) * 24000 + click) * 2;
+        CHECK(std::fabs(take.data[i] - 0.5f) < 1e-3f && std::fabs(take.data[i + 1] - 0.5f) < 1e-3f);
+        if (i >= 2) CHECK(std::fabs(take.data[i - 2]) < 1e-6f);
+    }
+    std::printf("  click at frame %zu of the take (the output's own offset from the bar line)\n", click);
+
+    // Armed in silence, waiting for the music: the free clock's bar lines pass, then the first pad
+    // tapped starts it (the clock starts over on a bar line with it).
+    ps::Engine quiet(kRate);
+    installClip(quiet, 3, constantSample(100, 1, 0.5f));
+    quiet.post({ps::CommandType::SetClipParam, 1.0f, 3, ps::ClipLauncher::Beats});
+    ps::ResampleBuffer waits(kRate * 4);
+    ps::Command wait{ps::CommandType::ResampleArm, 0.0f, 1, 0};
+    wait.resample = &waits;
+    quiet.post(wait);
+    render(quiet, 96000 * 2 + 7000, 256);
+    CHECK(waits.state.load() == 0);
+    quiet.post({ps::CommandType::ToggleClip, 0.0f, 3});
+    render(quiet, 30000, 256);
+    CHECK(waits.state.load() == 1);
+    CHECK(std::fabs(waits.data[click * 2] - 0.5f) < 1e-3f);
+    CHECK(std::fabs(waits.data[(click + 24000) * 2] - 0.5f) < 1e-3f);
+    // Full: it ends by itself, never past its buffer.
+    render(quiet, kRate * 5, 256);
+    CHECK(waits.state.load() == 2 && waits.written.load() == kRate * 4);
+    // Stopped before its bar line: nothing kept.
+    ps::ResampleBuffer early(kRate);
+    ps::Command again{ps::CommandType::ResampleArm, 0.0f, 0, 0};
+    again.resample = &early;
+    quiet.post(again);
+    quiet.post({ps::CommandType::ResampleStop, 0.0f, 0});
+    render(quiet, 256, 256);
+    CHECK(early.state.load() == 2 && early.written.load() == 0);
+}
+
+static void midiClockOutOnTheBeat() {
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetTempo, 125.0f});  // a beat is 23040 frames, a tick 960
+    engine.post({ps::CommandType::SetSwing, 0.5f});    // swung sixteenths: the clock stays straight
+    engine.post({ps::CommandType::SetMidiClockOut, 1.0f});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 23040 * 8 + 500, 192);
+    std::vector<ps::MidiClockEvent> got;
+    ps::MidiClockEvent e;
+    while (engine.popClockEvent(e)) got.push_back(e);
+    CHECK(got.size() >= 2 && got[0].status == 0xFA);
+    CHECK(got[0].frame == kLate);  // the first step falls on frame 0, heard kLate later
+    int ticks = 0;
+    for (size_t i = 1; i < got.size(); ++i) {
+        CHECK(got[i].status == 0xF8);
+        CHECK(got[i].frame == kLate + static_cast<int64_t>(i - 1) * 960);
+        ++ticks;
+    }
+    CHECK(ticks == 24 * 8 + 1);  // 8 beats and the next beat's first tick (before frame 23040 * 8 + 500)
+    // The tempo changes: the next beat's ticks take the new spacing, none lost, none early.
+    engine.post({ps::CommandType::SetTempo, 120.0f});
+    render(engine, 23040 * 2, 192);
+    int64_t last = got.back().frame;
+    int more = 0;
+    while (engine.popClockEvent(e)) {
+        CHECK(e.status == 0xF8 && e.frame > last);
+        last = e.frame;
+        ++more;
+    }
+    CHECK(more > 40 && more < 48);
+    // Stop: a Stop, then nothing.
+    engine.post({ps::CommandType::SetTransport, 0.0f});
+    render(engine, 23040, 192);
+    int stops = 0;
+    while (engine.popClockEvent(e)) {
+        if (e.status == 0xFC) ++stops;
+        else CHECK(e.status == 0xF8 && stops == 0);
+    }
+    CHECK(stops == 1);
+    // Off: nothing at all.
+    engine.post({ps::CommandType::SetMidiClockOut, 0.0f});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    render(engine, 23040 * 2, 192);
+    CHECK(!engine.popClockEvent(e));
+    // Switched on while playing: a Continue, then the ticks.
+    engine.post({ps::CommandType::SetMidiClockOut, 1.0f});
+    render(engine, 23040, 192);
+    CHECK(engine.popClockEvent(e) && e.status == 0xFB);
+    CHECK(engine.popClockEvent(e) && e.status == 0xF8);
+}
+
+static void sceneWithoutAllocating() {
+    ps::Engine engine(kRate);
+    for (int pad = 0; pad < ps::ClipLauncher::kSlots; ++pad) {
+        installClip(engine, pad, constantSample(6000, 1 + pad % 2, 0.002f));
+        engine.post({ps::CommandType::SetClipParam, float(1 + pad % 4), pad, ps::ClipLauncher::Beats});
+        engine.post({ps::CommandType::SetClipParam, float(pad % 25 - 12), pad, ps::ClipLauncher::Pitch});
+        engine.post({ps::CommandType::SetClipParam, float(pad % 2), pad, ps::ClipLauncher::Reverse});
+        engine.post({ps::CommandType::SetClipParam, 0.005f * float(pad % 3), pad, ps::ClipLauncher::Attack});
+        engine.post({ps::CommandType::SetClipParam, 0.05f * float(pad % 3), pad, ps::ClipLauncher::Release});
+    }
+    std::vector<std::unique_ptr<ps::ResampleBuffer>> takes;
+    for (int i = 0; i < 2; ++i) takes.push_back(std::make_unique<ps::ResampleBuffer>(kRate * 4));
+    engine.post({ps::CommandType::SetMidiClockOut, 1.0f});
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    std::vector<float> out(256 * 2);
+    for (int i = 0; i < 20; ++i) engine.process(nullptr, 0, 0, out.data(), 256, 2);  // warm-up
+    ps::MidiClockEvent e;
+    int events = 0;
+    g_allocations = 0;
+    g_countAllocations = true;
+    for (int i = 0; i < 1600; ++i) {
+        if (i % 7 == 0) engine.post({ps::CommandType::LaunchClipRow, 0.0f, (i / 7 % 16) * 4, 4});
+        if (i % 11 == 0) engine.post({ps::CommandType::ToggleClip, 1.0f, (i / 11) % ps::ClipLauncher::kSlots});
+        // A take armed, stopped more than a bar later (a bar is 375 blocks at 120 BPM).
+        if (i % 800 == 10) {
+            ps::Command arm{ps::CommandType::ResampleArm, 0.0f, i == 10 ? 1 : 0, 0};
+            arm.resample = takes[static_cast<size_t>(i / 800)].get();
+            engine.post(arm);
+        }
+        if (i % 800 == 500) engine.post({ps::CommandType::ResampleStop, 0.0f, 0});
+        if (i == 900) engine.post({ps::CommandType::SetTempo, 133.0f});
+        engine.process(nullptr, 0, 0, out.data(), 256, 2);
+        while (engine.popClockEvent(e)) ++events;
+    }
+    g_countAllocations = false;
+    CHECK(g_allocations.load() == 0);
+    CHECK(finiteAndUnclipped(out));
+    CHECK(events > 300);
+    int recorded = 0;
+    for (auto& t : takes) recorded += t->written.load() > 0 ? 1 : 0;
+    CHECK(recorded == 2);
+}
+
 }  // namespace padlive
 
 #define PS_PADLIVE_TESTS \
     {"padlive_page_d_plays_with_page_a", padlive::pageDPlaysWithPageA}, \
-    {"padlive_64_pads_without_allocating", padlive::sixtyFourPadsWithoutAllocating},
+    {"padlive_64_pads_without_allocating", padlive::sixtyFourPadsWithoutAllocating}, \
+    {"padlive_row_starts_on_the_bar", padlive::rowStartsOnTheBar}, \
+    {"padlive_pad_pitch_reverse_attack_release", padlive::padPitchReverseAttackRelease}, \
+    {"padlive_resample_from_bar_to_bar", padlive::resampleFromBarToBar}, \
+    {"padlive_midi_clock_out_on_the_beat", padlive::midiClockOutOnTheBeat}, \
+    {"padlive_scene_without_allocating", padlive::sceneWithoutAllocating},

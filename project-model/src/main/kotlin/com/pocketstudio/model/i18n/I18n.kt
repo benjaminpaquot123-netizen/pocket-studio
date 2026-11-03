@@ -105,6 +105,8 @@ object I18n {
         "mysounds",
         // Owner (2026-10-30): the one sound browser (folders by meaning, Récents, Favoris), « Fête », the ready-to-play live pads.
         "browser",
+        // Pad Live (n° 25, lot B1): the home screen's card, the pages, the pad modes, the packs.
+        "padlive",
     )
 
     @Volatile

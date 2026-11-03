@@ -157,6 +157,8 @@ data class Project(
     @EncodeDefault(EncodeDefault.Mode.NEVER) val guide: com.pocketstudio.model.guide.GuideState = com.pocketstudio.model.guide.GuideState.EMPTY,
     /** G1b: the first instrument track's [InstrumentTrack.layers]; left out of the file when it has none. */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val synthLayers: List<TrackLayer> = emptyList(),
+    /** Pad Live (n° 25, lot B): the home's « Live » project, its page and its pack ([PadLiveSet]); left out of the file at its defaults. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val padLive: PadLiveSet = PadLiveSet(),
 ) {
     /** Sixteenths in a bar. */
     val stepsPerBar: Int get() = beatsPerBar * 4

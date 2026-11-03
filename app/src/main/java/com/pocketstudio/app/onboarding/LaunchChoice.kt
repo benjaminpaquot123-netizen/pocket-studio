@@ -236,6 +236,8 @@ class LaunchActions(
     val projects: () -> Unit = {},
     /** Lot 2: « Remixer une chanson »: the Remix (a song split into drums, bass, voice and the rest). */
     val remix: () -> Unit = {},
+    /** Pad Live (n° 25): the pads ready to play, in the « Live » project created or resumed. */
+    val padLive: () -> Unit = {},
     val missions: () -> Unit = {},
     /**
      * The system's Retour on this screen. Owner (2026-10-29): the project, then this home screen,
@@ -371,7 +373,60 @@ private fun OtherChoices(actions: LaunchActions) {
     // Benjamin (2026-10-24, then 2026-10-29): the Remix « mis en avant », one touch from here, a
     // showcase card of its own for those who come for it.
     RemixCard(actions.remix)
+    // Benjamin (n° 25, 2026-11-01): « Pad Live » right under the Remix, like an app of its own.
+    PadLiveCard(actions.padLive)
 }
+
+/**
+ * « Pad Live · NOUVEAU »: the pads ready to play, in the mockup's orange (docs/maquettes/padlive-trois.png),
+ * a small grid of pads as its picture. One touch: Pad Live opens and its first hit sounds.
+ */
+@Composable
+private fun PadLiveCard(onClick: () -> Unit) {
+    val shape = RoundedCornerShape(18.dp)
+    val color = PAD_LIVE_COLOR
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = 88.dp).showcasePanel(shape, accent = color, edge = 1.5.dp, wash = 0.14f)
+            .clickable(role = Role.Button, onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .testTag("launch_padlive"),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Box(
+            Modifier.size(48.dp).clip(RoundedCornerShape(14.dp))
+                .background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Color(0xFFFFA24A), Color(0xFFFF6A3D)))),
+            contentAlignment = Alignment.Center,
+        ) {
+            androidx.compose.foundation.Canvas(Modifier.size(22.dp)) {
+                val cell = size.width / 4f
+                for (r in 0 until 4) for (c in 0 until 4) {
+                    drawRoundRect(
+                        Color(0xFF2A1408), androidx.compose.ui.geometry.Offset(c * cell + cell * 0.12f, r * cell + cell * 0.12f),
+                        androidx.compose.ui.geometry.Size(cell * 0.76f, cell * 0.76f), androidx.compose.ui.geometry.CornerRadius(cell * 0.2f),
+                    )
+                }
+            }
+        }
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(tr("Pad Live"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
+                Text(
+                    tr("NOUVEAU"), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Color(0xFF2A1408),
+                    modifier = Modifier.clip(RoundedCornerShape(6.dp)).background(color).padding(horizontal = 6.dp, vertical = 1.dp),
+                )
+            }
+            Text(
+                tr("Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite."),
+                style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, maxLines = 3, overflow = TextOverflow.Ellipsis,
+            )
+        }
+        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = color)
+    }
+}
+
+/** Pad Live's orange (the mockup's card and badge). */
+private val PAD_LIVE_COLOR = Color(0xFFFF9A3D)
 
 /**
  * « Remix »: the separation of a song's tracks, a showcase card in the Remix's violet, four

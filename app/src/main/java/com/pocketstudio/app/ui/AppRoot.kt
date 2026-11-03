@@ -563,6 +563,8 @@ fun AppRoot() {
                                 val placed = when {
                                     cell != null -> rhythmVm.placeInCell(cell.key, cell.scene, pcm, name, known, hit)
                                     forTrack -> rhythmVm.useAsTrackSound(pcm, name, mine?.kind ?: (option.ref as? com.pocketstudio.app.library.SoundRef.Pack)?.sound?.kind)
+                                    // Pad Live's pages B to D: its own path (the older screens fill page A).
+                                    live >= com.pocketstudio.model.LivePads.MAX -> { rhythmVm.padLive.placeSound(live, pcm, name, hit); true }
                                     live >= 0 -> rhythmVm.placeOnLivePad(live, pcm, name, known, hit)
                                     else -> rhythmVm.placeOnPad(pcm, name, oneShot = mine == null)
                                 }
@@ -1275,8 +1277,12 @@ fun AppRoot() {
     // ends with them (written, as leaving the Live page does); above the Live page, its effects
     // and its take stay as that page shows them.
     var showLivePads by rememberSaveable { mutableStateOf(false) }
+    // Pad Live (n° 25, lot B1): the home screen's card, its « Live » project on the whole screen;
+    // [padLiveWelcome]: just opened from the card, its first hit sounds once.
+    var showPadLive by rememberSaveable(key = "pad_live") { mutableStateOf(false) }
+    var padLiveWelcome by rememberSaveable(key = "pad_live_welcome") { mutableStateOf(false) }
     // The controller follows the screen shown (the Live page's panel too): knobs, pads, faders, encoder.
-    val controllerScreen = com.pocketstudio.app.midi.KnobScreen.of(tab.name, showLive, liveTab, showLivePads)
+    val controllerScreen = com.pocketstudio.app.midi.KnobScreen.of(tab.name, showLive, liveTab, showLivePads || showPadLive)
     com.pocketstudio.app.midi.KnobScreenFollower(knobsVm, controllerScreen)
     LaunchedEffect(controllerScreen) { midiVm.padsToDrums = !controllerScreen.isLive }
     // Revue neuve (MOYEN 5): its own restartable scope, so a MIDI message recomposes the overlays, not the app.
@@ -1375,11 +1381,29 @@ fun AppRoot() {
         actions = com.pocketstudio.app.onboarding.LaunchActions(
             // No project to continue: Retour leaves the app (« Mes projets » would only lead back here).
             // « Continuer » opens the project as a start does: its song, else its pads (OpeningTab).
-            resume = { if (noProject) leaveApp() else { tab = OpeningTab.of(rhythmVm.project.value); launch.choose() } },
+            resume = {
+                if (noProject) leaveApp() else {
+                    tab = OpeningTab.of(rhythmVm.project.value)
+                    // The « Live » project goes on in Pad Live, where it was played (n° 25).
+                    if (rhythmVm.project.value.padLive.home) showPadLive = true
+                    launch.choose()
+                }
+            },
             // The project, then this screen, then out of the app (owner, 2026-10-29).
             back = leaveApp,
             newSong = { launch.choose(comeBack = true); projectsNewOnly = true; showProjects = true },
             projects = { launch.choose(comeBack = true); projectsNewOnly = false; showProjects = true },
+            padLive = {
+                // Pad Live (n° 25): the « Live » project created the first time, then resumed (in Mes projets too).
+                launch.choose(comeBack = true)
+                padLiveWelcome = true
+                showPadLive = true
+                val home = projectsVm.state.value.projects.firstOrNull { it.padLive && !it.unreadable }
+                when {
+                    home == null -> projectsVm.create(com.pocketstudio.model.PadLive.newProject()) { id -> openProject(id) }
+                    noProject || home.id != rhythmVm.projectId -> openProject(home.id)
+                }
+            },
             remix = {
                 // Owner (2026-10-29): the song is separated first, outside any project; then it goes into a
                 // project already there, a new one (« Simple ou Pro ? » first) or a song built on it.
@@ -3459,6 +3483,25 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
             com.pocketstudio.app.guide.GuideSpotCard(close = { guideSpot = null }, modifier = modifier)
         }
     }
+    // Pad Live (n° 25) over the studio, as an app of its own; « Que veux-tu faire ? » stays above it.
+    if (showPadLive && !noProject) {
+        Box(Modifier.fillMaxSize().zIndex(3f)) {
+            com.pocketstudio.app.padlive.PadLiveRoute(
+                rhythmVm, lifecycleOwner,
+                close = {
+                    rhythmVm.leaveLiveEndingTake()
+                    showPadLive = false
+                },
+                browse = { pad -> rhythmVm.dismissSampleError(); libraryLive = pad; libraryMine = false; showLibrary = true },
+                // « Plus » › Briques: the Live page of the same project, Pad Live closed under it.
+                openLive = { showPadLive = false; openLive() },
+                openEffects = { fxChannel = it },
+                fete = libraryVm::liveStarter,
+                welcome = padLiveWelcome,
+                welcomed = { padLiveWelcome = false },
+            )
+        }
+    }
     // Over everything of the studio: « Que veux-tu faire ? ».
     launchChooser()
     }
@@ -3872,7 +3915,7 @@ internal fun LivePadsRoute(
  * lights, the spectrum while a pad XY shows it), for the Live page and the full-screen pads.
  */
 @Composable
-private fun LiveStateHost(
+internal fun LiveStateHost(
     vm: RhythmViewModel,
     lifecycleOwner: androidx.lifecycle.LifecycleOwner,
     liveEditing: Int?,

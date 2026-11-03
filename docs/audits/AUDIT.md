@@ -108,7 +108,7 @@ Chaque étage doit être vert avant de passer au suivant, sauf les découvertes 
    - sauvegardée et rouverte ;
    - exportée ;
    - direct = export ;
-   - pilotable au MiniLab et au MIDI ;
+   - pilotable au MiniLab 3 et au MIDI ; et le bon modèle reconnu pour chaque profil connu (`Controllers.PROFILES` : MiniLab 3, MiniLab mkII, MPK mini, Launchkey et Launchkey Mini, nanoKONTROL, LPD8, V-Mini…), un clavier inconnu marchant en générique (touches, potards appris), le nom affiché étant toujours le vrai (consigne de Benjamin du 2026-11-03) ;
    - prise dans l'enregistrement de la performance ;
    - accessible ;
    - expliquée dans l'aide et couverte par un tuto ou le Guide ;

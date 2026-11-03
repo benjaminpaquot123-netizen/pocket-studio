@@ -16,7 +16,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-/** The Guide's brain (docs/PLAN-GUIDE.md §4.2, §4.5): what it reads in the assistant's songs and in Benjamin's. */
+/** The Guide's brain (docs/PLAN-GUIDE.md §4.2, §4.5): what it reads in the assistant's songs and in a beginner's draft. */
 class GuideAnalyzerTest {
     private companion object {
         // Audit final: the sounds and the ducking are to hear now: fewer cards done by themselves.
@@ -31,8 +31,9 @@ class GuideAnalyzerTest {
             StarterWizard.defaultParts(style).associateWith { StarterWizard.soundsFor(it, style).first() })
     }
 
-    private val benjamin: Project by lazy {
-        ProjectJson.decode(GuideAnalyzerTest::class.java.classLoader.getResourceAsStream("guide/benjamin-jumpup.json")!!.bufferedReader().readText())
+    /** A beginner's jump up draft, synthetic (com.pocketstudio.model.SyntheticSongs.jumpUpDraft): nothing from a real project. */
+    private val draft: Project by lazy {
+        ProjectJson.decode(GuideAnalyzerTest::class.java.classLoader.getResourceAsStream("guide/brouillon-jumpup.json")!!.bufferedReader().readText())
     }
 
     /**
@@ -76,13 +77,13 @@ class GuideAnalyzerTest {
         assertEquals("Le kick (le « boum »)", r.cards.first { it.applicable }.card.titleFor(true))
     }
 
-    /** docs/guide/diagnostic-jump-up.md §1.4: what the analysis must see in Benjamin's song. */
+    /** docs/guide/diagnostic-jump-up.md §1.4: what the analysis must see in a beginner's song (the same faults, on a synthetic draft). */
     @Test
-    fun benjaminsSongShowsWhatTheDiagnosisFound() {
-        val r = GuideAnalyzer.analyze(benjamin)
+    fun aBeginnersDraftShowsWhatTheDiagnosisFinds() {
+        val r = GuideAnalyzer.analyze(draft)
         fun fact(id: String) = assertNotNull("no $id in ${r.facts.map { it.id }}", r.fact(id)).let { r.fact(id)!! }
         val names = { f: GuideFact -> f.tracks.mapNotNull { k -> r.sheets.firstOrNull { it.track.key == k }?.track?.name } }
-        // The pad plays through every Drop; the three Drops play the same notes (the bass changes sound, the lead waits in the first).
+        // The pad plays through every Drop; the three Drops play the same notes (only the bass changes sound).
         assertEquals(listOf("Nappe"), names(fact("pad.everywhere")))
         val drops = fact("peaks.identical")
         assertEquals(listOf(3f, 3f), drops.values)
@@ -104,7 +105,7 @@ class GuideAnalyzerTest {
         fact("chords.guess")
         // The summary: three lines, the header with its name, length and tracks.
         assertEquals(3, r.summary.size)
-        assertTrue(r.header, r.header.startsWith("${benjamin.name} · "))
+        assertTrue(r.header, r.header.startsWith("${draft.name} · "))
     }
 
     @Test

@@ -34,7 +34,7 @@ target_link_libraries(engine_tests PRIVATE ps_core)
 target_compile_options(engine_tests PRIVATE -Wall -Wextra -Werror)
 target_compile_definitions(engine_tests PRIVATE
     PS_REFERENCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/reference"
-    PS_SAMPLES_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../../app/src/test/resources/real-projects/jumpup-dnb-20261024/samples"
+    PS_SAMPLES_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../../app/src/test/resources/real-projects/brouillon-jumpup/samples"
     PS_OUTPUT_DIR="${CMAKE_CURRENT_BINARY_DIR}/renders")
 
 enable_testing()
@@ -51,4 +51,10 @@ add_executable(analysis_reference analysis_reference.cpp)
 target_link_libraries(analysis_reference PRIVATE ps_core)
 target_compile_options(analysis_reference PRIVATE -Wall -Wextra -Werror)
 target_compile_definitions(analysis_reference PRIVATE
-    PS_SAMPLES_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../../app/src/test/resources/real-projects/jumpup-dnb-20261024/samples")
+    PS_SAMPLES_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../../app/src/test/resources/real-projects/brouillon-jumpup/samples")
+
+# Audit stage 0: the engine's threads together (audio and UI), for ThreadSanitizer
+# (scripts/host-tests-tsan.sh); built here too so that it always compiles.
+add_executable(thread_tests thread_tests.cpp)
+target_link_libraries(thread_tests PRIVATE ps_core)
+target_compile_options(thread_tests PRIVATE -Wall -Wextra -Werror)

@@ -47,6 +47,11 @@
 | [kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines) | 1.11.0 | Apache-2.0 | Tâches asynchrones |
 | [Robolectric](https://github.com/robolectric/robolectric) | 4.17 | MIT | Tests sur JVM (tests uniquement) |
 | [Roborazzi](https://github.com/takahirom/roborazzi) | 1.76.0 | Apache-2.0 | Captures d'écran automatiques (tests uniquement) |
+| [Material 3 et Material Icons Extended](https://developer.android.com/jetpack/androidx/releases/compose-material3) (Compose) | versions du BOM 2026.09.00 | Apache-2.0 | Composants et icônes de l'interface |
+| [Kotlin](https://github.com/JetBrains/kotlin) (bibliothèque standard, plugins Compose et serialization) | 2.4.21 | Apache-2.0 | Langage de l'appli |
+| libc++ du NDK Android (`libc++_shared.so`) | NDK 30.0.16248370 | Apache-2.0 avec exception LLVM | Bibliothèque C++ du moteur et de la séparation, livrée dans l'APK |
+| [JUnit 4](https://github.com/junit-team/junit4) | 4.13.2 | EPL-1.0 | Tests uniquement |
+| [AndroidX Test](https://developer.android.com/jetpack/androidx/releases/test) (core, runner, rules, ext-junit) et kotlinx-coroutines-test | 1.7.0 / 1.7.0 / 1.7.0 / 1.3.0 ; 1.11.0 | Apache-2.0 | Tests uniquement (JVM et émulateur) |
 
 Écarté pour l'instant : [sst-filters](https://github.com/surge-synthesizer/sst-filters) (Surge, GPL-3.0) : ses filtres travaillent par 4 voix en SIMD (SSE, NEON par simde) et demandent sst-basic-blocks ; le ladder de DaisySP (suréchantillonné ×4) et les SVF suffisent aux cibles de S4 (repliement sous −60 dB par le suréchantillonnage des oscillateurs). À revoir si un filtre « de caractère » (OB-Xd, K35) manque.
 

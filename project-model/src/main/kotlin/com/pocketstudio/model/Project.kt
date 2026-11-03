@@ -273,7 +273,7 @@ data class DrumPattern(
     }
 
     /**
-     * The loop at [newSteps] (whole bars, 8 to 64). A shorter one keeps the hits past its end, unheard
+     * The loop at [newSteps] (whole beats, [MIN_STEPS] to [MAX_STEPS]: 16 bars since step 7a). A shorter one keeps the hits past its end, unheard
      * (as [sanitized] does): grown again, they are back. A longer one repeats the current loop, so the
      * groove keeps going, only over stretches of it (each the old loop's length) that hold no hit yet
      * on any pad: what was kept there comes back as it was, never overwritten nor doubled.

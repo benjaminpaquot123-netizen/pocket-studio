@@ -688,7 +688,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Polls the pads' lights about 30 times a second while their screen is visible. */
     suspend fun pollLiveStates() {
-        if (!NativeEngine.isAvailable) return
+        // The pads' states are the native engine's own (a test's command sink has none).
+        if (!NativeEngine.isNative) return
         val buf = IntArray(NativeEngine.LIVE_PADS)
         while (true) {
             NativeEngine.clipStates(buf)

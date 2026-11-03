@@ -51,6 +51,15 @@ fun widthClass(width: Dp): Int = when {
     else -> 4
 }
 
+/** The Material medium height class (480 dp): under it, a phone lying down. */
+val MEDIUM_HEIGHT_FROM: Dp = 480.dp
+
+/**
+ * Lot D: a work screen's two halves side by side (Live: bricks and pads; the cut and the
+ * Structure): an expanded width on a screen that is not a phone lying down.
+ */
+fun sideBySide(width: Dp, height: Dp): Boolean = width >= EXPANDED_FROM && height >= MEDIUM_HEIGHT_FROM
+
 /** Whether a box of this size shows two panes side by side. */
 fun twoPanes(width: Dp, height: Dp): Boolean =
     width >= TWO_PANES_FROM || (width > height && width >= TWO_PANES_LYING_FROM)

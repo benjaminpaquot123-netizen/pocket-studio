@@ -205,7 +205,7 @@ class RemixActions(
 internal fun CutWithStructure(structure: (@Composable () -> Unit)?, cut: @Composable () -> Unit) {
     androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxSize()) {
         val side = (maxWidth * 0.4f).coerceIn(360.dp, 560.dp)
-        if (structure != null && maxWidth >= com.pocketstudio.ui.EXPANDED_FROM) {
+        if (structure != null && com.pocketstudio.ui.sideBySide(maxWidth, maxHeight + 120.dp)) {
             androidx.compose.foundation.layout.Row(Modifier.fillMaxSize().testTag("cut_side_by_side")) {
                 androidx.compose.foundation.layout.Box(Modifier.weight(1f).fillMaxHeight()) { cut() }
                 androidx.compose.foundation.layout.Box(Modifier.width(side).fillMaxHeight().testTag("cut_structure")) { structure() }

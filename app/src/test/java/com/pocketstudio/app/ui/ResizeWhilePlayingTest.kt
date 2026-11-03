@@ -67,6 +67,10 @@ class ResizeWhilePlayingTest {
     fun setUp() {
         NativeEngine.sink = sink
         File(app.filesDir, "projects").deleteRecursively()
+        // The app as it first opens (no tab remembered by an earlier test).
+        listOf("nav", "missions", "settings", "next_steps", "song_ready", "share", "tools", "launch", "project_modes").forEach {
+            app.getSharedPreferences(it, 0).edit().clear().commit()
+        }
         val id = "resize-" + System.nanoTime()
         ProjectStore(File(app.filesDir, "projects")).save(id, Project(name = "Taille", drums = DrumPattern().toggle(0, 0).toggle(0, 8)).sanitized())
         CurrentProject.set(app, id)

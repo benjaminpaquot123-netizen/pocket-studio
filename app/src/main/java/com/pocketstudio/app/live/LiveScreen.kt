@@ -326,7 +326,8 @@ fun LiveScreen(
     val columns = liveColumnsOf(ui.project)
     // Lot D: an expanded width (a tablet lying down, a foldable open): the bricks and the pads side
     // by side, the pads beside the grid from the start (no pads view on the whole screen).
-    val expanded = liveExpanded(androidx.compose.ui.platform.LocalConfiguration.current.screenWidthDp.dp)
+    val screen = androidx.compose.ui.platform.LocalConfiguration.current
+    val expanded = liveExpanded(screen.screenWidthDp.dp, screen.screenHeightDp.dp)
     // The panel's page (kept while folded: ︿ opens it there again) and whether it is open.
     var tab by rememberSaveable {
         mutableStateOf(if (initialTab == LivePanelTab.Briques) (if (expanded && pads != null) LivePanelTab.Pads else LivePanelTab.Effets) else initialTab)
@@ -425,7 +426,7 @@ fun LiveScreen(
                 val wide = maxWidth >= 560.dp
                 val panelWidth = if (maxWidth >= 900.dp) 420.dp else 360.dp
                 val sidePanel = liveSidePanel(maxWidth)
-                if (liveExpanded(maxWidth)) {
+                if (liveExpanded(maxWidth, maxHeight + LIVE_BARS)) {
                     // Lot D: the bricks on the left, the pads (or the panel's other pages) on the right.
                     Row(Modifier.fillMaxSize().testTag("live_side_by_side")) {
                         LiveGrid(ui, columns, actions, gridMarks, Modifier.weight(1f).fillMaxHeight())
@@ -576,8 +577,14 @@ private fun PanelRail(ui: LiveScreenUi, onTab: (LivePanelTab) -> Unit, immersive
 /** The folded panel lying down. */
 private val RAIL_WIDTH = 56.dp
 
-/** Lot D: the Material « expanded » width class and up: the bricks and the pads side by side. */
-internal fun liveExpanded(width: Dp): Boolean = width >= com.pocketstudio.ui.EXPANDED_FROM
+/**
+ * Lot D: the Material « expanded » width class and up, on a screen at least of the medium height
+ * class (a phone lying down keeps its grid and its rail): the bricks and the pads side by side.
+ */
+internal fun liveExpanded(width: Dp, height: Dp): Boolean = com.pocketstudio.ui.sideBySide(width, height)
+
+/** The page's bars above the grid's box (the top bar, the strip), counted back for [liveExpanded]. */
+private val LIVE_BARS = 120.dp
 
 /** Side by side, the panel's width: the pads big enough to play with the fingers of one hand. */
 private fun liveSidePanel(width: Dp): Dp = (width * 0.42f).coerceIn(420.dp, 640.dp)

@@ -20,12 +20,12 @@ Branche fx-d (rangée sur fx-int au départ, fx-int refusionnée avant la derni�
 - `T/ui/KeyShortcutsTest` (correspondances, AppRoot entier : espace, Ctrl+Z, Ctrl+Maj+Z, Ctrl+Y, répétition ; un champ de texte garde son espace).
 - `T/ui/ResizeWhilePlayingTest` (manifeste ; vraie `MainActivity` : téléphone → tablette couchée → demi-écran → pliable → téléphone en pleine lecture : même activité, transport jamais arrêté ni relancé, même projet, barre ↔ rail).
 - `T/padlive/TenFingersTest`, `T/ui/TabletSideBySideTest` (Live et découpe côte à côte en étendu ; découpe seule sur téléphone ; 5 classes).
-- Captures (regardées) : `app/screenshots/sizes/{compact,medium,expanded,large,xlarge}_{padlive,live,cut_structure}.png` (`T/ui/SizeClassesScreenshotTest`). Réenregistrées car changées : `tablet8/land_live_*` (Galaxy Tab couchée = étendu : panneau à 42 %), `tablet/welcome`, `tablet/land_welcome`, `tablet8/welcome` (carte Pad Live de B3, pas réenregistrées à l'époque).
+- Captures (regardées) : `app/screenshots/sizes/{compact,medium,expanded,large,xlarge}_{padlive,live,cut_structure}.png` (`T/ui/SizeClassesScreenshotTest`). Réenregistrées car changées : `tablet8/land_live_*` (Galaxy Tab couchée = étendu : panneau à 42 %), `tablet/land_nav_live`, `tabA11/land_nav_live`, `tablet/welcome`, `tablet/land_welcome`, `tablet8/welcome` (carte Pad Live de B3, pas réenregistrées à l'époque).
 
 ## Décisions à recopier dans DECISIONS
 - 2026-11-03 · Taille de fenêtre : `configChanges` sur `MainActivity` plutôt que la sauvegarde d'état seule. Raison : appli tout Compose qui suit déjà la taille ; rien à reconstruire (gestes en cours, feuilles, défilements), le son ne voit rien. Retour : retirer `configChanges` du manifeste.
 - 2026-11-03 · Raccourcis : seulement ce que l'écran n'a pas pris (après `super.dispatchKeyEvent`) ; Ctrl+Y en plus de Ctrl+Maj+Z ; Meta compté comme Ctrl. Retour : `MainActivity.dispatchKeyEvent`.
-- 2026-11-03 · Côte à côte à partir de la classe « étendue » de Material (840 dp), mesurée sur la largeur de l'écran du Live (et non 760 dp de `TWO_PANES_FROM`) : la Galaxy Tab A11 couchée (1006 dp) l'a. Retour : `liveExpanded`, `CutWithStructure`.
+- 2026-11-03 · Côte à côte à partir de la classe « étendue » de Material (840 dp de large) et d'une hauteur moyenne (480 dp) : un téléphone couché (890 × 400) garde sa grille et son rail, la Galaxy Tab A11 couchée (1006 × 600) a le côte à côte (`U/Adaptive.sideBySide`). Retour : `liveExpanded`, `CutWithStructure`.
 - 2026-11-03 · Live en étendu : les pads live s'ouvrent à côté de la grille dès l'arrivée, l'onglet Pads ne passe plus en plein écran à cette largeur. Retour : `expanded` dans `LiveScreen`.
 - 2026-11-03 · Pad Live couché dès 520 dp de large : pads à gauche, commandes à droite (la main libre). Retour : `padLiveLying`.
 - 2026-11-03 · n° 9 : le clavier MIDI joue la 303 seulement pendant l'enregistrement d'une case Acid (pas sur l'écran Acid 303, qui reste un pas à pas). Retour : `keysToAcid`.
@@ -37,7 +37,7 @@ Branche fx-d (rangée sur fx-int au départ, fx-int refusionnée avant la derni�
 - Raccourcis : un seul point d'entrée (`KeyShortcuts.dispatch`), tous les écrans passent par lui.
 
 ## Fichiers touchés hors sections strictes (à savoir au rangement)
-- `RhythmViewModel.pollLive` : garde `isNative` au lieu de `isAvailable` (un puits de commandes de test n'a pas `laneTriggers` : plantait la vraie activité en test). Une ligne.
+- `RhythmViewModel.pollLive` et `pollLiveStates` : garde `isNative` au lieu de `isAvailable` (un puits de commandes de test n'a pas `laneTriggers` : plantait la vraie activité en test). Une ligne.
 - `AppRoot` : `setBufferBursts` gardé par `isNative` (même raison).
 - `remix/RemixScreen.kt` (C, puis D : permis) : paramètre `structure`, `CutWithStructure`.
 - Aucun texte nouveau à l'écran : pas de `restes.json` (rien à traduire).

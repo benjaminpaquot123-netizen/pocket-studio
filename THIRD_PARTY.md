@@ -50,3 +50,9 @@
 
 Écarté pour l'instant : [sst-filters](https://github.com/surge-synthesizer/sst-filters) (Surge, GPL-3.0) : ses filtres travaillent par 4 voix en SIMD (SSE, NEON par simde) et demandent sst-basic-blocks ; le ladder de DaisySP (suréchantillonné ×4) et les SVF suffisent aux cibles de S4 (repliement sous −60 dB par le suréchantillonnage des oscillateurs). À revoir si un filtre « de caractère » (OB-Xd, K35) manque.
 
+## Outils de banc (jamais dans l'appli)
+
+| Outil | Version | Licence | Usage |
+| --- | --- | --- | --- |
+| [FDK AAC](https://github.com/nu774/fdkaac) (`fdkaac`) | paquet système Ubuntu 24.04 | Licence FDK AAC (Fraunhofer) | Matrice des exports (`scripts/export-matrix.sh`) : encodage M4A de contrôle |
+| [FFmpeg](https://ffmpeg.org) | 6.1.1 (paquet système) | LGPL-2.1+/GPL-2+ | Relecture des fichiers exportés, décodage MP3 du contrôle sur vraie chanson |

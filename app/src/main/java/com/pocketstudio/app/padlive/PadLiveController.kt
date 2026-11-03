@@ -205,7 +205,7 @@ class PadLiveController(private val vm: RhythmViewModel) {
                 // The page's pads that sound stop: their sounds are being replaced.
                 val sounding = vm.padsSoundingNow()
                 (0 until PadLive.PAGE_SIZE).map { PadLive.pad(page, it) }.filter { it in sounding }.forEach(::toggle)
-                vm.session.edit { q -> q.copy(live = PadLive.placed(q.live, page, clips.toList()), padLive = q.padLive.copy(pack = id)) }
+                vm.session.edit { q -> q.copy(live = PadLive.placed(q.live, page, clips.toList()), padLive = q.padLive.withPack(page, id)) }
                 vm.pushLive()
                 AppLog.add("Pack ${pack.id} sur la page ${PadLive.PAGE_NAMES[page]} : ${sounds.size} sons")
             } catch (e: CancellationException) {

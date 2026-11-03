@@ -86,7 +86,7 @@ fun PadLiveRoute(
     val p = live.project
     val ui = PadLiveUi(
         pads = p.live, states = states, page = p.padLive.shownPage,
-        pack = p.padLive.pack.ifEmpty { if (p.live.starterOffered) LiveStarterPack else "" },
+        pack = shownPack(p),
         playing = live.playing, tempoBpm = p.tempoBpm, beatsPerBar = p.beatsPerBar,
         busy = busy ?: (sampleTask as? com.pocketstudio.app.rhythm.SampleTask.Busy)?.message
             ?: if (starting) com.pocketstudio.model.i18n.tr("Préparation des pads prêts à jouer…") else null,
@@ -191,6 +191,15 @@ fun PadLiveRoute(
 /** « A12 »: pad [pad]'s page and place. */
 internal fun padName(pad: Int): String =
     com.pocketstudio.model.PadLive.PAGE_NAMES[com.pocketstudio.model.PadLive.pageOf(pad)] + (pad % com.pocketstudio.model.PadLive.PAGE_SIZE + 1)
+
+/**
+ * The pack the page shown says (« Pack : Trap »): its own (fix 2, n° 6: page B said page A's), page A's
+ * ready-to-play set when nothing else was loaded there.
+ */
+internal fun shownPack(p: com.pocketstudio.model.Project): String {
+    val page = p.padLive.shownPage
+    return p.padLive.packOf(page).ifEmpty { if (page == 0 && p.live.starterOffered) LiveStarterPack else "" }
+}
 
 /**
  * The live pad [pad] the sound library fills, as its title says it: « le pad live 3 » for the Live

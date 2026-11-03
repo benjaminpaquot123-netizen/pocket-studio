@@ -23,7 +23,24 @@ data class PadLiveSet(
      * « Pistes séparées » renders again, one file per pad. Null: no take kept its pads.
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val take: PadTakeRecord? = null,
+    /**
+     * Fix 2, n° 6: the pack loaded on each page (index: page, "" none), so that page B never says
+     * page A's. [pack], from older files, stays page A's.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val packs: List<String> = emptyList(),
 ) {
+    /** The pack loaded on [page] ("" none). */
+    fun packOf(page: Int): String =
+        packs.getOrNull(page)?.takeIf { it.isNotEmpty() } ?: if (page == 0) pack else ""
+
+    /** Pack [id] loaded on [page]. */
+    fun withPack(page: Int, id: String): PadLiveSet {
+        if (page !in 0 until PadLive.PAGES) return this
+        val list = (packs.take(PadLive.PAGES) + List((page + 1 - packs.size).coerceAtLeast(0)) { "" }).toMutableList()
+        list[page] = id
+        return copy(packs = list)
+    }
+
     /** [page] read safely (a hand-edited file). */
     val shownPage: Int get() = page.coerceIn(0, PadLive.PAGES - 1)
 

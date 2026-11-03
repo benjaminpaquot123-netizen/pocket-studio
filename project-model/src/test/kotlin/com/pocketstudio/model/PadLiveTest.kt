@@ -150,4 +150,26 @@ class PadLiveTest {
         assertEquals(0f, wild.attack, 0f)
         assertEquals(LiveClip.MAX_RELEASE, wild.release, 0f)
     }
+
+    /** Fix 2, n° 6: a pack per page; an older file's single pack stays page A's; the file only grows when used. */
+    @Test
+    fun eachPageKeepsItsOwnPack() {
+        val trapOnA = PadLiveSet().withPack(0, "trap")
+        assertEquals("trap", trapOnA.packOf(0))
+        assertEquals("", trapOnA.packOf(1))
+        val houseOnB = trapOnA.withPack(1, "house")
+        assertEquals("trap", houseOnB.packOf(0))
+        assertEquals("house", houseOnB.packOf(1))
+        assertEquals("", houseOnB.packOf(3))
+        assertEquals(houseOnB, ProjectJson.decode(ProjectJson.encode(Project(padLive = houseOnB))).padLive)
+        // An older file: « pack » alone is page A's.
+        val old = PadLiveSet(pack = "trap")
+        assertEquals("trap", old.packOf(0))
+        assertEquals("", old.packOf(1))
+        assertEquals("trap", old.withPack(1, "house").packOf(0))
+        assertEquals("house", old.withPack(0, "house").packOf(0))
+        // Never used: not in the file.
+        assertFalse(ProjectJson.encode(Project(padLive = PadLiveSet(page = 1))).contains("packs"))
+        assertEquals(PadLiveSet(), PadLiveSet().withPack(7, "x"))
+    }
 }

@@ -31,4 +31,14 @@ class HitWithinTest {
         val roll = Hit(1f, repeats = 3)
         assertSame(roll, roll.within(step = 15, loop = 16))
     }
+
+    @Test
+    fun theMidiFileWritesTheTripletAsItIsHeard() {
+        // A triplet on steps 13-14, then the pad's loop shortened to 14 steps: two hits inside the loop, none on its next turn.
+        val drums = DrumPattern().toggle(2, 13).withSpread(2, 13, 3, 2).withLaneLength(2, 14)
+        assertEquals(2, drums.lanes[2].hits[13]!!.span)
+        val notes = MidiFile.read(MidiFile.export(Project(drums = drums), song = false)).notes.filter { it.channel == MidiFile.DRUM_CHANNEL }
+        val step = NoteClip.TICKS_PER_STEP
+        assertEquals(listOf(13 * step, 13 * step + step / 2), notes.map { it.start })
+    }
 }

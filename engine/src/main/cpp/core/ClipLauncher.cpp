@@ -274,7 +274,7 @@ void ClipLauncher::render(float* left, float* right, int numFrames) {
             if (!s.sample) {
                 // Emptied while it played: its last pass fades out.
                 const float l0 = l, r0 = r;
-                for (Voice& t : s.tails) play(t, s, l, r);
+                for (Voice& t : s.tails) if (t.sample) play(t, s, l, r);
                 blockPeak_[k] = std::max(blockPeak_[k], std::max(std::fabs(l - l0), std::fabs(r - r0)));
                 continue;
             }
@@ -292,7 +292,7 @@ void ClipLauncher::render(float* left, float* right, int numFrames) {
             }
             const float l0 = l, r0 = r;
             play(s.voice, s, l, r);
-            for (Voice& t : s.tails) play(t, s, l, r);
+            for (Voice& t : s.tails) if (t.sample) play(t, s, l, r);  // (most are empty: no call)
             const float peak = std::max(std::fabs(l - l0), std::fabs(r - r0));
             if (peak > blockPeak_[k]) blockPeak_[k] = peak;
             if (s.state == Playing && s.oneShot && !s.voice.sample) {

@@ -118,28 +118,27 @@ void Eq3::setParam(int p, float v) {
 }
 
 void Eq3::reset() {
-    for (auto& b : left_) b.reset();
-    for (auto& b : right_) b.reset();
+    for (auto& b : bands_) b.reset();
 }
 
 void Eq3::update() {
     const auto db = [&](int i) { return (gain_[static_cast<size_t>(i)] - 0.5f) * 24.0f; };
-    for (auto* side : {&left_, &right_}) {
-        (*side)[0].lowShelf(rate_, 100.0f, db(0));
-        (*side)[1].peak(rate_, 1000.0f, 0.9f, db(1));
-        (*side)[2].highShelf(rate_, 8000.0f, db(2));
-    }
+    // The coefficients only (the state stays: a knob turned while it plays, as before).
+    Biquad low, mid, high;
+    low.lowShelf(rate_, 100.0f, db(0));
+    mid.peak(rate_, 1000.0f, 0.9f, db(1));
+    high.highShelf(rate_, 8000.0f, db(2));
+    bands_[0].set(low);
+    bands_[1].set(mid);
+    bands_[2].set(high);
 }
 
 void Eq3::process(float* l, float* r, int n) {
     for (int i = 0; i < n; ++i) {
-        float a = l[i], b = r[i];
-        for (int k = 0; k < 3; ++k) {
-            a = left_[static_cast<size_t>(k)].process(a);
-            b = right_[static_cast<size_t>(k)].process(b);
-        }
-        l[i] = a;
-        r[i] = b;
+        Float2 x(l[i], r[i]);
+        for (auto& band : bands_) x = band.process(x);
+        l[i] = x.v[0];
+        r[i] = x.v[1];
     }
 }
 
@@ -239,20 +238,6 @@ void Saturator::setParam(int p, float v) {
     update();
 }
 
-namespace {
-
-// DaisySP's SoftClip (MIT, Utility/dsp.h): x (27 + x^2) / (27 + 9 x^2), +-1 past +-3; and its
-// antiderivative x^2/18 + 4/3 ln((x^2 + 3) / 3), then a straight line past +-3.
-struct SoftClipShape {
-    double f(double x) const { return x <= -3.0 ? -1.0 : x >= 3.0 ? 1.0 : x * (27.0 + x * x) / (27.0 + 9.0 * x * x); }
-    double F(double x) const {
-        const double a = std::fabs(x);
-        if (a >= 3.0) return 2.348392481493110 + (a - 3.0);  // F(3) = 1/2 + 4/3 ln 4
-        return x * x / 18.0 + (4.0 / 3.0) * std::log((x * x + 3.0) / 3.0);
-    }
-};
-
-}  // namespace
 
 namespace {
 
@@ -302,20 +287,32 @@ void Saturator::update() {
 void Saturator::process(float* l, float* r, int n) {
     const SoftClipShape curve;
     const bool open = toneCoef_ >= 1.0f;
-    for (int i = 0; i < n; ++i) {
-        if (drive_ != driveTarget_) setDrive(std::fabs(driveTarget_ - drive_) < 1e-5f ? driveTarget_ : drive_ + (driveTarget_ - drive_) * glide_);
-        const float wetL = shL_.process(l[i], pre_, 0.0f, curve) * post_ * wetGain_;
-        const float wetR = shR_.process(r[i], pre_, 0.0f, curve) * post_ * wetGain_;
-        const float dryL = shL_.dry(), dryR = shR_.dry();
-        if (open) {
-            lpL_ = wetL;
-            lpR_ = wetR;
-        } else {
-            lpL_ += toneCoef_ * (wetL - lpL_);
-            lpR_ += toneCoef_ * (wetR - lpR_);
+    constexpr int kChunk = DriveShaperPair::kMaxBlock;
+    float gain[kChunk], post[kChunk], wetL[kChunk], wetR[kChunk], dryL[kChunk], dryR[kChunk];
+    for (int from = 0; from < n; from += kChunk) {
+        const int m = std::min(kChunk, n - from);
+        // The drive's glide, frame by frame as before; then both channels' curves in one go.
+        for (int i = 0; i < m; ++i) {
+            if (drive_ != driveTarget_) setDrive(std::fabs(driveTarget_ - drive_) < 1e-5f ? driveTarget_ : drive_ + (driveTarget_ - drive_) * glide_);
+            gain[i] = pre_;
+            post[i] = post_;
         }
-        l[i] = (dryL + mix_ * (lpL_ - dryL)) * level_;
-        r[i] = (dryR + mix_ * (lpR_ - dryR)) * level_;
+        float* bl = l + from;
+        float* br = r + from;
+        sh_.process(bl, br, wetL, wetR, dryL, dryR, m, gain, nullptr, curve);
+        for (int i = 0; i < m; ++i) {
+            // (post x wetGain first: the rounding the frame-by-frame loop had, bit for bit.)
+            const float pw = post[i] * wetGain_, wl = wetL[i] * pw, wr = wetR[i] * pw;
+            if (open) {
+                lpL_ = wl;
+                lpR_ = wr;
+            } else {
+                lpL_ += toneCoef_ * (wl - lpL_);
+                lpR_ += toneCoef_ * (wr - lpR_);
+            }
+            bl[i] = (dryL[i] + mix_ * (lpL_ - dryL[i])) * level_;
+            br[i] = (dryR[i] + mix_ * (lpR_ - dryR[i])) * level_;
+        }
     }
 }
 
@@ -668,8 +665,7 @@ void SoftClipper::reset() {
     ms_ = 0.0f;
     w_ = 0.0f;
     ceiling_ = 1.0f;
-    shL_.reset();
-    shR_.reset();
+    sh_.reset();
 }
 
 void SoftClipper::process(float* l, float* r, int n) {
@@ -681,24 +677,35 @@ void SoftClipper::process(float* l, float* r, int n) {
         double f(double x) const { return SoftClipper::shape(knee, static_cast<float>(x)); }
         double F(double x) const { return SoftClipper::antiderivative(knee, x); }
     } const curve{knee};
-    for (int i = 0; i < n; ++i) {
-        const float xl = std::isfinite(l[i]) ? l[i] : 0.0f, xr = std::isfinite(r[i]) ? r[i] : 0.0f;
-        // The running level (both sides, the louder): the ceiling sits `margin` over it, never
-        // under -60 dBFS (silence is not clipped up).
-        const float power = 0.5f * (xl * xl + xr * xr);
-        ms_ += (power - ms_) * msCoef_;
-        // Under -80 dBFS: silence, the weight fades with the energy gathered (the level stays the
-        // one before until a sound comes, then that sound's own takes over at once).
-        if (power < 1e-8f) w_ -= w_ * msCoef_;
-        else w_ += (1.0f - w_) * msCoef_;
-        const float level = w_ > 1e-12f ? ms_ / w_ : 0.0f;
-        ceiling_ = std::max(1e-3f, std::sqrt(level) * margin);
-        const float inv = 1.0f / ceiling_;
-        const float yl = shL_.process(xl, inv, 0.0f, curve) * ceiling_;
-        const float yr = shR_.process(xr, inv, 0.0f, curve) * ceiling_;
-        const float dl = shL_.dry(), dr = shR_.dry();
-        l[i] = dl + mix * (yl - dl);
-        r[i] = dr + mix * (yr - dr);
+    constexpr int kChunk = DriveShaperPair::kMaxBlock;
+    float xl[kChunk], xr[kChunk], inv[kChunk], ceiling[kChunk], yl[kChunk], yr[kChunk], dl[kChunk], dr[kChunk];
+    for (int from = 0; from < n; from += kChunk) {
+        const int m = std::min(kChunk, n - from);
+        float* bl = l + from;
+        float* br = r + from;
+        for (int i = 0; i < m; ++i) {
+            xl[i] = std::isfinite(bl[i]) ? bl[i] : 0.0f;
+            xr[i] = std::isfinite(br[i]) ? br[i] : 0.0f;
+            // The running level (both sides, the louder): the ceiling sits `margin` over it, never
+            // under -60 dBFS (silence is not clipped up).
+            const float power = 0.5f * (xl[i] * xl[i] + xr[i] * xr[i]);
+            ms_ += (power - ms_) * msCoef_;
+            // Under -80 dBFS: silence, the weight fades with the energy gathered (the level stays the
+            // one before until a sound comes, then that sound's own takes over at once).
+            if (power < 1e-8f) w_ -= w_ * msCoef_;
+            else w_ += (1.0f - w_) * msCoef_;
+            const float level = w_ > 1e-12f ? ms_ / w_ : 0.0f;
+            ceiling_ = std::max(1e-3f, std::sqrt(level) * margin);
+            ceiling[i] = ceiling_;
+            inv[i] = 1.0f / ceiling_;
+        }
+        // Both channels' curves in one go (audit stage 4: the same output, in less time).
+        sh_.process(xl, xr, yl, yr, dl, dr, m, inv, nullptr, curve);
+        for (int i = 0; i < m; ++i) {
+            const float wl = yl[i] * ceiling[i], wr = yr[i] * ceiling[i];
+            bl[i] = dl[i] + mix * (wl - dl[i]);
+            br[i] = dr[i] + mix * (wr - dr[i]);
+        }
     }
 }
 

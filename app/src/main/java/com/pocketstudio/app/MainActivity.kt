@@ -38,6 +38,10 @@ class MainActivity : ComponentActivity() {
         return super.dispatchTouchEvent(ev)
     }
 
+    /** A physical keyboard: what the screen does not take becomes a shortcut (space = ▶/■, Ctrl+Z, Ctrl+Maj+Z). */
+    override fun dispatchKeyEvent(event: android.view.KeyEvent): Boolean =
+        com.pocketstudio.app.ui.KeyShortcuts.dispatch(event) { super.dispatchKeyEvent(it) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // The system splash (Android 12+): BenStudio's pads pop in and beat twice; it leaves at the
         // first frame, nothing holds it (BrandIntro takes over at the same place, the app starts under it).

@@ -41,12 +41,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PocketStudio">
 
+        <!-- Lot D: a window that changes size (split screen, a foldable opened, rotated, a keyboard
+             plugged in) is drawn again in place, never rebuilt: the sound and every screen's state
+             go on as they were (Compose follows the new size by itself). -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.BenStudio.Starting"
             android:launchMode="singleTask"
             android:screenOrientation="unspecified"
+            android:resizeableActivity="true"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|density|keyboard|keyboardHidden|navigation"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

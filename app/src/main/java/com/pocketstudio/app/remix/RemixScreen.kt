@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -195,15 +197,40 @@ class RemixActions(
     val board: StemBoardActions = NoStemBoardActions,
 )
 
+/**
+ * Lot D: « Découper la chanson » ([cut]) and, on an expanded width, the project's [structure]
+ * beside it (the pieces cut on the left, the song they go into on the right); alone otherwise.
+ */
+@Composable
+internal fun CutWithStructure(structure: (@Composable () -> Unit)?, cut: @Composable () -> Unit) {
+    androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxSize()) {
+        val side = (maxWidth * 0.4f).coerceIn(360.dp, 560.dp)
+        if (structure != null && com.pocketstudio.ui.sideBySide(maxWidth, maxHeight + 120.dp)) {
+            androidx.compose.foundation.layout.Row(Modifier.fillMaxSize().testTag("cut_side_by_side")) {
+                androidx.compose.foundation.layout.Box(Modifier.weight(1f).fillMaxHeight()) { cut() }
+                androidx.compose.foundation.layout.Box(Modifier.width(side).fillMaxHeight().testTag("cut_structure")) { structure() }
+            }
+        } else {
+            cut()
+        }
+    }
+}
+
 /** Remix: split a song into drums, bass, other and vocals, then listen to each part. */
 @Composable
-fun RemixScreen(ui: RemixUi, actions: RemixActions) {
+fun RemixScreen(
+    ui: RemixUi,
+    actions: RemixActions,
+    /** Lot D: the project's Structure, beside the cut screen on an expanded width (null: never). */
+    structure: (@Composable () -> Unit)? = null,
+) {
     // The stem board takes the whole page while it is open (« ← » or Back closes it).
     var boardOpen by rememberSaveable { mutableStateOf(false) }
     // Lot C (n° 24): « Découper la chanson », the same way (it replaces the board for cutting pieces).
     var cutOpen by rememberSaveable { mutableStateOf(false) }
     if (cutOpen && ui.board != null) {
-        CutScreen(ui.board, actions.board, onClose = { cutOpen = false })
+        val board = ui.board
+        CutWithStructure(structure) { CutScreen(board, actions.board, onClose = { cutOpen = false }) }
         return
     }
     if (boardOpen && ui.board != null) {

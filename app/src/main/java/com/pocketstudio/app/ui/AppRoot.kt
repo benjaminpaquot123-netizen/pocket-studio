@@ -1303,6 +1303,12 @@ fun AppRoot() {
     val controllerScreen = com.pocketstudio.app.midi.KnobScreen.of(tab.name, showLive, liveTab, showLivePads || showPadLive)
     com.pocketstudio.app.midi.KnobScreenFollower(knobsVm, controllerScreen)
     LaunchedEffect(controllerScreen) { midiVm.padsToDrums = !controllerScreen.isLive }
+    // Lot D: a physical keyboard's shortcuts on every screen (space = ▶/■, Ctrl+Z, Ctrl+Maj+Z), as the top bar's buttons.
+    KeyShortcuts.Handler(
+        play = rhythmVm::togglePlay,
+        undo = { com.pocketstudio.app.report.Journal.action("↶ Annuler (clavier)"); rhythmVm.undo() },
+        redo = { com.pocketstudio.app.report.Journal.action("↷ Rétablir (clavier)"); rhythmVm.redo() },
+    )
     // n° 9: an Acid 303 cell recording on the Live: the keyboard plays the 303 into it.
     LaunchedEffect(Unit) {
         rhythmVm.cellRecording.collect { midiVm.keysToAcid = it?.key == com.pocketstudio.model.SongPart.ACID }

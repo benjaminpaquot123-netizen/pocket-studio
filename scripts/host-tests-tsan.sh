@@ -6,6 +6,6 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BUILD="${HOST_TESTS_BUILD_DIR:-$ROOT/build/host-tests-tsan}"
 CXXFLAGS="${CXXFLAGS:-} -fsanitize=thread -g" CFLAGS="${CFLAGS:-} -fsanitize=thread -g" LDFLAGS="${LDFLAGS:-} -fsanitize=thread" \
-    cmake -S "$ROOT/engine/host-tests" -B "$BUILD" -DCMAKE_BUILD_TYPE=Release
+    cmake -S "$ROOT/engine/host-tests" -B "$BUILD" -DCMAKE_BUILD_TYPE=Release ${CMAKE_EXTRA_ARGS:-}
 cmake --build "$BUILD" -j --target thread_tests
 TSAN_OPTIONS="halt_on_error=1 exitcode=66 ${TSAN_OPTIONS:-}" "$BUILD/thread_tests"

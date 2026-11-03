@@ -57,6 +57,12 @@ jobs:
         # AddressSanitizer inflates stack frames: the tests' engines (64 live pads since Pad Live) need
         # more than the default 8 MB main stack.
         run: ulimit -s 65536 && ./scripts/host-tests.sh
+      # Audit stage 0: the audio thread and the UI thread together under ThreadSanitizer (ps_core again, TSan build).
+      - name: Engine threads (ThreadSanitizer)
+        env:
+          HOST_TESTS_BUILD_DIR: build/host-tests-tsan
+          CMAKE_EXTRA_ARGS: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        run: ./scripts/host-tests-tsan.sh
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:

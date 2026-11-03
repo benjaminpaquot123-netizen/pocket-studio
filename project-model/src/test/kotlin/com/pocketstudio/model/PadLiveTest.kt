@@ -106,4 +106,48 @@ class PadLiveTest {
         assertEquals(LivePads.MAX, a.size)
         assertTrue(a.starterOffered)
     }
+
+    // --- Lot B2 -------------------------------------------------------------------------------
+
+    @Test
+    fun aRowStartsTogetherOrStopsItsLoops() {
+        val pads = LivePads()
+            .withAt(PadLive.pad(1, 4), LiveClip("a.wav", "Basse", 4))
+            .withAt(PadLive.pad(1, 5), LiveClip("b.wav", "Clap", 1, oneShot = true))
+            .withAt(PadLive.pad(1, 7), LiveClip("c.wav", "Nappe", 8))
+        val first = PadLive.pad(1, 4)
+        // Nothing plays: every pad with a sound starts (the empty one is left out).
+        assertEquals(PadLive.RowLaunch(listOf(20, 21, 23), emptyList()), PadLive.rowLaunch(pads, first, emptySet(), emptySet()))
+        // One loop plays: it goes on, the others start (the hit too).
+        assertEquals(PadLive.RowLaunch(listOf(21, 23), emptyList()), PadLive.rowLaunch(pads, first, setOf(20), emptySet()))
+        // A loop waits: it moves to the bar line with them.
+        assertEquals(PadLive.RowLaunch(listOf(20, 21, 23), emptyList()), PadLive.rowLaunch(pads, first, emptySet(), setOf(20)))
+        // Its loops all on (playing or waiting): they stop, the hit is left alone.
+        assertEquals(PadLive.RowLaunch(emptyList(), listOf(20, 23)), PadLive.rowLaunch(pads, first, setOf(20), setOf(23)))
+        // A row of hits only: they hit again on the bar, each time.
+        val hits = LivePads().withAt(0, LiveClip("h.wav", "Hey", 1, oneShot = true))
+        assertEquals(PadLive.RowLaunch(listOf(0), emptyList()), PadLive.rowLaunch(hits, 0, setOf(0), emptySet()))
+        // An empty row: nothing.
+        assertEquals(PadLive.RowLaunch(emptyList(), emptyList()), PadLive.rowLaunch(pads, 0, emptySet(), emptySet()))
+    }
+
+    @Test
+    fun aPadsOwnSoundIsSavedHeldToItsRangeAndLeftOutAtRest() {
+        val clip = LiveClip("a.wav", "Basse", 4, pitch = -5, reverse = true, attack = 0.2f, release = 1.5f)
+        val p = Project().copy(live = LivePads().withAt(PadLive.pad(2, 3), clip))
+        val back = ProjectJson.decode(ProjectJson.encode(p))
+        assertEquals(clip, back.live.at(PadLive.pad(2, 3)))
+        // At rest, none of them is written (older files read the same, no new format number).
+        val plain = ProjectJson.encode(Project().copy(live = LivePads().withAt(0, LiveClip("b.wav", "Kick", 1))))
+        val written = kotlinx.serialization.json.Json.parseToJsonElement(plain).let { root ->
+            (root as kotlinx.serialization.json.JsonObject)["live"].let { it as kotlinx.serialization.json.JsonObject }["clips"]
+                .let { it as kotlinx.serialization.json.JsonArray }[0] as kotlinx.serialization.json.JsonObject
+        }
+        for (field in listOf("pitch", "reverse", "attack", "release")) assertFalse(field, field in written.keys)
+        // A hand-edited file: held to the ranges.
+        val wild = LiveClip("c.wav", "X", 1, pitch = 40, attack = Float.NaN, release = 99f).sanitized()
+        assertEquals(LiveClip.PITCH_RANGE, wild.pitch)
+        assertEquals(0f, wild.attack, 0f)
+        assertEquals(LiveClip.MAX_RELEASE, wild.release, 0f)
+    }
 }

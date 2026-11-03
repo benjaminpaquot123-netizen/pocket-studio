@@ -27,6 +27,14 @@ data class LiveClip(
     @EncodeDefault(EncodeDefault.Mode.NEVER) val hold: Boolean = false,
     /** Pad Live: its « un seul à la fois » group (1 to [PadLive.GROUPS]; 0: none): starting it stops the others of the group. */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val group: Int = 0,
+    /** Pad Live B2: the sound read higher or lower, in semitones ([PITCH_RANGE]; its length changes with it). */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val pitch: Int = 0,
+    /** Pad Live B2: played backwards (« À l'envers »). */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val reverse: Boolean = false,
+    /** Pad Live B2: each pass fades in over this many seconds (0 .. [MAX_ATTACK]). */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val attack: Float = 0f,
+    /** Pad Live B2: stopped, it fades out over this many seconds (0 .. [MAX_RELEASE]; 0: the short click-free fade). */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val release: Float = 0f,
 ) {
     /** It is stretched to the project's tempo. */
     val follows: Boolean get() = !oneShot && bpm > 0.0
@@ -40,7 +48,17 @@ data class LiveClip(
         bpm = bpm.takeIf { it.isFinite() && it in AutoTempo.MIN_BPM..AutoTempo.MAX_BPM } ?: 0.0,
         hold = hold && !oneShot,
         group = group.coerceIn(0, PadLive.GROUPS),
+        pitch = pitch.coerceIn(-PITCH_RANGE, PITCH_RANGE),
+        attack = attack.takeIf { it.isFinite() }?.coerceIn(0f, MAX_ATTACK) ?: 0f,
+        release = release.takeIf { it.isFinite() }?.coerceIn(0f, MAX_RELEASE) ?: 0f,
     )
+
+    companion object {
+        /** Semitones a pad goes up or down at most (an octave). */
+        const val PITCH_RANGE = 12
+        const val MAX_ATTACK = 2f
+        const val MAX_RELEASE = 4f
+    }
 }
 
 /**

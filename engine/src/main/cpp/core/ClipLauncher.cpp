@@ -23,7 +23,7 @@ void ClipLauncher::releaseHeld(Slot& s) {
     s.held = nullptr;
 }
 
-void ClipLauncher::fadeAway(Slot& s) {
+void ClipLauncher::fadeAway(Slot& s, int frames) {
     if (!s.voice.sample) return;
     Voice* to = &s.tails[0];
     for (Voice& t : s.tails) {
@@ -34,8 +34,18 @@ void ClipLauncher::fadeAway(Slot& s) {
         if (to->sample && t.fade < to->fade) to = &t;
     }
     *to = s.voice;
-    if (to->fade == 0) to->fade = fadeFrames_;
+    if (to->fade == 0) {
+        to->fadeLen = std::max(fadeFrames_, frames);
+        to->fade = to->fadeLen;
+    }
     s.voice = Voice{};
+}
+
+void ClipLauncher::stopSlot(Slot& s) {
+    if (s.state == Playing && !s.oneShot) fadeAway(s, s.release);
+    // A hit stopped by « Tout couper » or its row: it fades out too (a hit tapped again plays again).
+    else if (s.state == Playing) fadeAway(s, s.release);
+    s.state = Off;
 }
 
 void ClipLauncher::retire(Sample* s) {
@@ -75,8 +85,8 @@ void ClipLauncher::install(int slot, Sample* sample, bool refit) {
     if (!sample) s.state = Off;
     // A loop refitted to a new tempo: where the beat clock is in its pass, faded in.
     if (picksUp) {
-        const auto pos = static_cast<int64_t>((beat_ - s.startBeat) * beatFrames_);
-        if (pos >= 0 && pos < sample->frames()) s.voice = Voice{sample, pos, 0, fadeFrames_, s.velocity};
+        const double pos = std::floor((beat_ - s.startBeat) * beatFrames_ * s.speed);
+        if (pos >= 0.0 && pos < static_cast<double>(sample->frames())) s.voice = Voice{sample, pos, 0, fadeFrames_, s.velocity, 1, fadeFrames_};
     }
     states_[static_cast<size_t>(slot)].store(s.state, std::memory_order_relaxed);
 }
@@ -88,6 +98,10 @@ void ClipLauncher::setParam(int slot, int param, float value) {
         case Beats: s.beats = std::clamp(static_cast<int>(std::lround(value)), 1, kMaxBeats); break;
         case OneShot: s.oneShot = value > 0.5f; break;
         case Gain: s.gain = std::clamp(value, 0.0f, 2.0f); break;
+        case Pitch: s.speed = std::exp2(static_cast<double>(std::clamp(value, -24.0f, 24.0f)) / 12.0); break;
+        case Reverse: s.reverse = value > 0.5f; break;
+        case Attack: s.attack = static_cast<int>(std::lround(std::clamp(value, 0.0f, kMaxAttack) * static_cast<float>(rate_))); break;
+        case Release: s.release = static_cast<int>(std::lround(std::clamp(value, 0.0f, kMaxRelease) * static_cast<float>(rate_))); break;
         default: break;
     }
 }
@@ -97,8 +111,7 @@ void ClipLauncher::toggle(int slot, bool idleClock, float velocity) {
     Slot& s = slots_[static_cast<size_t>(slot)];
     if (!s.sample) return;
     if (s.state == Playing && !s.oneShot) {
-        fadeAway(s);
-        s.state = Off;
+        stopSlot(s);
     } else if (s.state == Waiting) {
         s.state = Off;
     } else {
@@ -112,11 +125,45 @@ void ClipLauncher::toggle(int slot, bool idleClock, float velocity) {
     states_[static_cast<size_t>(slot)].store(s.state, std::memory_order_relaxed);
 }
 
+void ClipLauncher::launchRow(int first, int count, bool idleClock) {
+    const int from = std::clamp(first, 0, kSlots);
+    const int to = std::clamp(first + std::max(count, 0), from, kSlots);
+    bool loops = false, allOn = true, any = false;
+    for (int k = from; k < to; ++k) {
+        const Slot& s = slots_[static_cast<size_t>(k)];
+        if (!s.sample) continue;
+        any = true;
+        if (s.oneShot) continue;
+        loops = true;
+        if (s.state == Off) allOn = false;
+    }
+    if (!any) return;
+    if (loops && allOn) {
+        for (int k = from; k < to; ++k) {
+            Slot& s = slots_[static_cast<size_t>(k)];
+            if (!s.sample || s.oneShot) continue;
+            stopSlot(s);
+            states_[static_cast<size_t>(k)].store(Off, std::memory_order_relaxed);
+        }
+        return;
+    }
+    if (idleClock && std::none_of(slots_.begin(), slots_.end(), [](const Slot& o) { return o.state != Off; })) beat_ = 0.0;
+    const double bar = beatsPerBar_;
+    const double start = std::ceil(beat_ / bar - 1e-9) * bar;
+    for (int k = from; k < to; ++k) {
+        Slot& s = slots_[static_cast<size_t>(k)];
+        if (!s.sample || (s.state == Playing && !s.oneShot)) continue;
+        s.startBeat = start;
+        if (s.state != Waiting) s.velocity = 1.0f;
+        s.state = Waiting;
+        states_[static_cast<size_t>(k)].store(Waiting, std::memory_order_relaxed);
+    }
+}
+
 void ClipLauncher::stopAll() {
     for (size_t i = 0; i < slots_.size(); ++i) {
         Slot& s = slots_[i];
-        fadeAway(s);
-        s.state = Off;
+        stopSlot(s);
         states_[i].store(Off, std::memory_order_relaxed);
     }
 }
@@ -124,33 +171,42 @@ void ClipLauncher::stopAll() {
 void ClipLauncher::restart(Slot& s) {
     // The previous pass, if still sounding, fades out instead of being cut.
     fadeAway(s);
-    s.voice = Voice{s.sample, 0, 0, 0, s.velocity};
+    s.voice = Voice{s.sample, 0.0, 0, s.attack, s.velocity, 1, std::max(1, s.attack)};
 }
 
-void ClipLauncher::play(Voice& v, float gain, float& l, float& r) {
+void ClipLauncher::play(Voice& v, const Slot& s, float& l, float& r) {
     if (!v.sample) return;
-    if (v.pos >= v.sample->frames()) {
+    const int64_t frames = v.sample->frames();
+    if (v.pos >= static_cast<double>(frames)) {
         v = Voice{};
         return;
     }
-    float g = gain * v.level;
+    float g = s.gain * v.level;
     if (v.fade > 0) {
-        g *= static_cast<float>(v.fade) / static_cast<float>(fadeFrames_);
+        g *= static_cast<float>(v.fade) / static_cast<float>(v.fadeLen);
         if (--v.fade == 0) {
             v = Voice{};
             return;
         }
     }
-    if (v.rise > 0) g *= 1.0f - static_cast<float>(v.rise--) / static_cast<float>(fadeFrames_);
+    if (v.rise > 0) g *= 1.0f - static_cast<float>(v.rise--) / static_cast<float>(v.riseLen);
     const float* d = v.sample->data();
-    if (v.sample->channels() == 2) {
-        l += d[v.pos * 2] * g;
-        r += d[v.pos * 2 + 1] * g;
-    } else {
-        l += d[v.pos] * g;
-        r += d[v.pos] * g;
+    const int ch = v.sample->channels();
+    const auto i0 = static_cast<int64_t>(v.pos);
+    const auto frac = static_cast<float>(v.pos - static_cast<double>(i0));
+    auto at = [&](int64_t i, int c) {
+        const int64_t k = s.reverse ? frames - 1 - i : i;
+        return d[k * ch + (ch == 2 ? c : 0)];
+    };
+    float a = at(i0, 0), b = at(i0, 1);
+    // Between two frames (a pad pitched): read in a straight line from one to the next.
+    if (frac > 0.0f && i0 + 1 < frames) {
+        a += frac * (at(i0 + 1, 0) - a);
+        b += frac * (at(i0 + 1, 1) - b);
     }
-    ++v.pos;
+    l += a * g;
+    r += b * g;
+    v.pos += s.speed;
 }
 
 void ClipLauncher::align() {
@@ -185,29 +241,42 @@ void ClipLauncher::render(float* left, float* right, int numFrames) {
     for (size_t k = 0; k < slots_.size(); ++k) {
         if (!slots_[k].idle()) used = k + 1;
     }
+    barAt_ = -1;
+    barSounding_ = false;
     for (int i = 0; i < numFrames; ++i) {
         if (i == syncAt_) align();
+        // A bar line crossed (or the clock started over on one): the first of this block is kept.
+        const auto bar = static_cast<int64_t>(std::floor(beat_ / beatsPerBar_ + 1e-9));
+        if (bar != lastBar_) {
+            lastBar_ = bar;
+            if (barAt_ < 0 && beat_ - static_cast<double>(bar * beatsPerBar_) < 2.0 * perFrame) {
+                barAt_ = i;
+                barSounding_ = std::any_of(slots_.begin(), slots_.begin() + static_cast<std::ptrdiff_t>(used), [](const Slot& o) { return o.state != Off; });
+            }
+        }
         float l = 0.0f, r = 0.0f;
         for (size_t k = 0; k < used; ++k) {
             Slot& s = slots_[k];
             if (s.idle()) continue;
             if (!s.sample) {
                 // Emptied while it played: its last pass fades out.
-                for (Voice& t : s.tails) play(t, s.gain, l, r);
+                for (Voice& t : s.tails) play(t, s, l, r);
                 continue;
             }
-            if (s.state == Waiting && beat_ >= s.startBeat) {
+            // The clock adds up a fraction a frame: a line is reached a hair before its exact frame
+            // count (the same tolerance as the bar lines above), never one frame late.
+            if (s.state == Waiting && beat_ + 1e-9 >= s.startBeat) {
                 s.state = Playing;
                 restart(s);
                 states_[k].store(Playing, std::memory_order_relaxed);
-            } else if (s.state == Playing && !s.oneShot && beat_ >= s.startBeat + s.beats) {
+            } else if (s.state == Playing && !s.oneShot && beat_ + 1e-9 >= s.startBeat + s.beats) {
                 s.startBeat += s.beats;
                 // Far behind (the clock snapped or jumped): line up with the clock again.
                 if (beat_ >= s.startBeat + s.beats) s.startBeat = std::floor(beat_ / s.beats) * s.beats;
                 restart(s);
             }
-            play(s.voice, s.gain, l, r);
-            for (Voice& t : s.tails) play(t, s.gain, l, r);
+            play(s.voice, s, l, r);
+            for (Voice& t : s.tails) play(t, s, l, r);
             if (s.state == Playing && s.oneShot && !s.voice.sample) {
                 s.state = Off;
                 states_[k].store(Off, std::memory_order_relaxed);

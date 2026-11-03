@@ -22,7 +22,6 @@ import com.pocketstudio.app.ui.TempoActions
 import com.pocketstudio.app.ui.TempoSheet
 import com.pocketstudio.app.ui.liveActionsOf
 import com.pocketstudio.model.AutoTarget
-import com.pocketstudio.model.LiveDivision
 
 /**
  * Pad Live as the app opens it (home screen card → the « Live » project): the Live page's state
@@ -57,6 +56,13 @@ fun PadLiveRoute(
     val starting by vm.liveStarting.collectAsStateWithLifecycle()
     val states by vm.liveStates.collectAsStateWithLifecycle()
     val canUndo by vm.session.canUndo.collectAsStateWithLifecycle()
+    val played by vm.padLive.played.ui.collectAsStateWithLifecycle()
+    val message by vm.padLive.played.message.collectAsStateWithLifecycle()
+    // Lot B2: a controller's pads play Pad Live's pads while it shows.
+    androidx.compose.runtime.DisposableEffect(Unit) {
+        vm.padLive.shown = true
+        onDispose { vm.padLive.shown = false }
+    }
     val actions = liveActionsOf(vm, back = close, openEffects = openEffects)
     var tempoOpen by rememberSaveable { mutableStateOf(false) }
     val p = live.project
@@ -67,6 +73,11 @@ fun PadLiveRoute(
         busy = busy ?: if (starting) com.pocketstudio.model.i18n.tr("Préparation des pads prêts à jouer…") else null,
         effectHeld = live.fxOf().values.isNotEmpty(),
         canUndo = canUndo,
+        chop = p.liveFx.chop,
+        riserBars = p.liveFx.riserBars,
+        played = played,
+        emptyPad = if (played is PlayedTakeUi.Done) vm.padLive.played.emptyPad()?.let { padName(it) } else null,
+        message = message,
     )
     Box(
         Modifier.fillMaxSize()
@@ -92,13 +103,24 @@ fun PadLiveRoute(
                 stopAll = vm::stopLive,
                 filter = { x -> vm.livePerformance(AutoTarget.LIVE_FILTER, x ?: AutoTarget.liveRest(AutoTarget.LIVE_FILTER)) },
                 echo = { on -> vm.liveHold(AutoTarget.LIVE_ECHO_OUT, on) },
-                roll = { on -> vm.liveRoll(if (on) LiveDivision.SIXTEENTH else null) },
+                resonance = { r -> vm.livePerformance(AutoTarget.LIVE_RESONANCE, r ?: AutoTarget.liveRest(AutoTarget.LIVE_RESONANCE)) },
+                roll = vm::liveRoll,
                 riser = { vm.liveRiser() },
                 brake = { on -> vm.liveHold(AutoTarget.LIVE_TAPE_STOP, on) },
                 stutter = { on -> vm.liveHold(AutoTarget.LIVE_CHOP, on) },
                 undo = vm::undo,
                 openLive = openLive,
                 effects = { openEffects(EFFECTS_CHANNEL) },
+                launchRow = { row -> vm.padLive.launchRow(p.padLive.shownPage, row) },
+                setPitch = { pad, v -> vm.padLive.setSound(pad, pitch = v) },
+                setReverse = { pad, v -> vm.padLive.setSound(pad, reverse = v) },
+                setAttack = { pad, v -> vm.padLive.setSound(pad, attack = v) },
+                setRelease = { pad, v -> vm.padLive.setSound(pad, release = v) },
+                played = vm.padLive.played::press,
+                placeOnPad = { vm.padLive.played.placeOnPad() },
+                placeInBrick = { vm.padLive.played.placeInBrick() },
+                dropTake = vm.padLive.played::cancel,
+                messageShown = vm.padLive.played::messageShown,
             ),
             clockOf = live.clockOf,
             record = { RecordButton(live.take, actions.record) },
@@ -109,6 +131,10 @@ fun PadLiveRoute(
         TempoSheet(p.tempoBpm, TempoActions(set = vm::setSheetTempo, tap = vm::tapSheetTempo, lead = p.tempoLead, backToLead = vm::backToLeadTempo), onClose = { tempoOpen = false })
     }
 }
+
+/** « A12 »: pad [pad]'s page and place. */
+internal fun padName(pad: Int): String =
+    com.pocketstudio.model.PadLive.PAGE_NAMES[com.pocketstudio.model.PadLive.pageOf(pad)] + (pad % com.pocketstudio.model.PadLive.PAGE_SIZE + 1)
 
 /** The live pads' strip (shared with the remix): the pads' « Effets ». */
 private const val EFFECTS_CHANNEL = 3

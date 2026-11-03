@@ -700,7 +700,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     internal fun pushLive(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
         p.live.all.take(NativeEngine.LIVE_PADS).forEachIndexed { i, clip ->
-            if (clip != null) NativeEngine.setClipParams(i, clip.beats, clip.oneShot, clip.gain)
+            if (clip != null) {
+                NativeEngine.setClipParams(i, clip.beats, clip.oneShot, clip.gain)
+                NativeEngine.setClipSound(i, clip.pitch.toFloat(), clip.reverse, clip.attack, clip.release)
+            }
             val stored = clip?.let { padSamples.native(it.file) }
             val pick = fitPick("l$i", clip?.takeIf { it.follows }?.let { c -> stored?.let { TempoFits.want("l$i", c.file, it.frames, c.bpm, p.tempoBpm) } })
             NativeEngine.setClip(i, pick.sample ?: stored, refit = pick.refit)
@@ -818,6 +821,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val v = velocity.takeIf { it.isFinite() && it > 0f }?.coerceAtMost(1f) ?: 1f
         if (NativeEngine.isAvailable) NativeEngine.toggleClip(pad, v)
         livePadTapped(pad, v)
+        if (starts) watchPadsAlone()
+    }
+
+    /**
+     * Pad Live B2: the row of pads from [first] ([count] pads) launched together: [starting] start on
+     * the next bar line, [stopping] stop (its loops were all on), as the engine does it
+     * ([NativeEngine.launchClipRow]); a take writes each of them.
+     */
+    internal fun launchLiveRow(first: Int, count: Int, starting: List<Int>, stopping: List<Int>) {
+        if (starting.isEmpty() && stopping.isEmpty()) return
+        val starts = !_transport.value.playing && starting.isNotEmpty() && padsSoundingNow().isEmpty()
+        if (NativeEngine.isAvailable) NativeEngine.launchClipRow(first, count)
+        stopping.forEach { livePadTapped(it) }
+        starting.forEach { livePadTapped(it, bar = true) }
         if (starts) watchPadsAlone()
     }
 
@@ -4992,9 +5009,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Tests: the pads sounding as the engine says (null: [liveStates]). */
     internal var livePadsSoundingForTest: Set<Int>? = null
 
-    private fun livePadTapped(pad: Int, velocity: Float = 1f) {
+    private fun livePadTapped(pad: Int, velocity: Float = 1f, bar: Boolean = false) {
         if (performance == null || !_take.value.running) return
-        performancePadTaps += com.pocketstudio.model.LivePadTake.Tap(pad, takePosition(), velocity)
+        performancePadTaps += com.pocketstudio.model.LivePadTake.Tap(pad, takePosition(), velocity, bar)
     }
 
     /**
@@ -5014,7 +5031,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         audioJob(tr("Écriture des pads live…"), always = true) {
             val sounds = withContext(Dispatchers.IO) {
                 spans.map { it.pad }.distinct().mapNotNull { pad ->
-                    clips.getOrNull(pad)?.let { c -> runCatching { pad to padSamples.read(c.file) }.getOrNull() }
+                    // Pad Live B2: its pitch, reverse and attack as the engine played them.
+                    clips.getOrNull(pad)?.let { c -> runCatching { pad to com.pocketstudio.app.padlive.PadSound.shaped(padSamples.read(c.file), c) }.getOrNull() }
                 }.toMap()
             }
             val pcm = withContext(Dispatchers.Default) { com.pocketstudio.app.audio.PadBounce.render(spans, clips, sounds, start, end, bpm) } ?: return@audioJob

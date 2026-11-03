@@ -214,6 +214,15 @@ enum class CommandType : uint8_t {
     CommitStemClips = 145,
     // Step 7b: a = MIDI key played live on the 303 (< 0: let go), value: velocity (accent above 0.8).
     AcidLiveNote = 146,
+    // Lot B2 (Pad Live, « la scène »), numbered 150 to 169. Each pad's pitch, reverse, attack and
+    // release go through SetClipParam (ClipLauncher::Param).
+    LaunchClipRow = 150,   // a: first live pad, b: pads in the row: ClipLauncher::launchRow (together, on the next bar line)
+    ResampleArm = 151,     // resample: a buffer the app keeps (nullptr: none): « Enregistrer ce que je joue », the output
+                           // from the next bar line of the live pads' clock on; a = 1: the first such line where a pad
+                           // plays or waits, or the transport runs (armed in silence, it waits for the music)
+    ResampleStop = 152,    // a = 0: the take ends on the next bar line heard (whole bars); a = 1: at once. Its state becomes 2
+    SetMidiClockOut = 153, // value 1: MIDI clock events (Start, 24 ticks a beat on the transport's beats, Stop) for
+                           // popClockEvent(), on the output's frames; 0: none (a Stop first when the transport runs)
 };
 static_assert(static_cast<int>(CommandType::SetPadVoiceParam) < 100, "the commands in order must stay under SetKitVersion");
 static_assert(static_cast<int>(CommandType::SetDrumStepOffset) == 80, "NativeEngine.kt numbers the phase 34 commands from 80");
@@ -221,6 +230,26 @@ static_assert(static_cast<int>(CommandType::SetDrumLaneSteps) == 120, "NativeEng
 static_assert(static_cast<int>(CommandType::SetTrackZone) == 130, "NativeEngine.kt numbers the phase 38 commands from 130");
 static_assert(static_cast<int>(CommandType::SetLayer) == 140, "NativeEngine.kt numbers the G1b commands from 140");
 static_assert(static_cast<int>(CommandType::SetMonitor) == 142, "NativeEngine.kt numbers the voice commands from 142");
+static_assert(static_cast<int>(CommandType::LaunchClipRow) == 150, "NativeEngine.kt numbers the lot B2 commands from 150");
+
+// « Enregistrer ce que je joue » (lot B2): what the output plays, from a bar line of the live pads'
+// clock to another (stereo, interleaved, after the master). The app owns it (allocated off the audio
+// thread); the engine writes frames [0, written) until state is 2, then never touches it again.
+struct ResampleBuffer {
+    explicit ResampleBuffer(int64_t capacityFrames)
+        : capacity(std::max<int64_t>(capacityFrames, 0)), data(new float[static_cast<size_t>(capacity) * 2]) {}
+    const int64_t capacity;
+    std::unique_ptr<float[]> data;
+    std::atomic<int64_t> written{0};
+    std::atomic<int> state{0};  // 0 armed (waiting for its bar line), 1 recording, 2 finished
+};
+
+// A MIDI clock message (lot B2, clock out): `status` 0xF8 tick, 0xFA Start, 0xFB Continue, 0xFC
+// Stop, due when output frame `frame` (Engine::framesRendered's count) is heard.
+struct MidiClockEvent {
+    int64_t frame = 0;
+    int32_t status = 0;
+};
 
 // The live grid's slots: one per track, each playing its own scene's part from its own start.
 enum Slot : int {
@@ -358,6 +387,8 @@ struct Command {
     StemBundle* stems = nullptr;
     // RecordArm only: the app keeps ownership; the engine writes into it until its state is 2.
     RecordBuffer* record = nullptr;
+    // ResampleArm only: the same.
+    ResampleBuffer* resample = nullptr;
 };
 
 // Platform-independent audio core. The platform layer (Oboe on Android,
@@ -443,6 +474,18 @@ public:
     // Song position of the preview player in frames, -1 when stopped.
     int64_t previewPosition() const { return preview_.position(); }
     ClipLauncher::State clipState(int pad) const { return clips_.state(pad); }
+    // MIDI clock out (SetMidiClockOut): one reader thread pops the events in order.
+    bool popClockEvent(MidiClockEvent& e) { return clockEvents_.pop(e); }
+    // When the last callback began (steady_clock nanoseconds) and the output frame it began with:
+    // an event's frame becomes a time. Any thread (read again if a callback came meanwhile).
+    void callbackClock(int64_t& frame, int64_t& nanos) const {
+        for (int tries = 0; tries < 4; ++tries) {
+            frame = callbackFrame_.load(std::memory_order_acquire);
+            nanos = callbackNanos_.load(std::memory_order_acquire);
+            if (callbackFrame_.load(std::memory_order_acquire) == frame) return;
+        }
+    }
+    static constexpr int kClockTicksPerBeat = 24;
     double clipBeat() const { return clips_.beat(); }  // tests
     bool instrumentActive(int track = 0) const { return tracks_[static_cast<size_t>(track)].instrument.active(); }  // tests
     // G1b: sound `s` (a track's own, 0..kTracks-1, or a layer's, layerSound()). Tests, and the engine.
@@ -584,6 +627,32 @@ private:
     static constexpr double kAlignDecay = 0.001;  // frames of drift allowed per output frame
     void finishRecording();
     void writePreroll(float v);
+    // « Enregistrer ce que je joue » (ResampleArm): the bar lines of the live pads' clock as heard
+    // (output frames, the master's delay included), kept until the output reaches them.
+    ResampleBuffer* resample_ = nullptr;
+    bool resampleWait_ = false;
+    int64_t resampleArmed_ = 0;  // output frame it was armed at: earlier bar lines do not start it
+    int64_t resampleStop_ = -1;  // output frame its end was asked at (-1: not asked)
+    struct BarLine {
+        int64_t frame = 0;
+        bool sounding = false;
+    };
+    std::array<BarLine, 8> bars_{};
+    int barCount_ = 0;
+    void captureResample(const float* output, int numFrames, int outputChannels, int64_t outBase);
+    void finishResample();
+    // MIDI clock out: the transport's beats (straight, never swung) cut in 24, as output frames.
+    std::atomic<bool> clockOut_{false};
+    std::atomic<int64_t> callbackFrame_{0}, callbackNanos_{0};
+    SpscQueue<MidiClockEvent, 512> clockEvents_;
+    int clockBeat_ = -1;  // the transport beat the ticks count from (-1: stopped)
+    int64_t clockTick_ = 0;
+    double clockBeatFrame_ = 0.0;
+    double clockBeatFrames_ = 24000.0;
+    bool clockContinue_ = false;  // switched on while playing: a Continue before the next tick
+    void clockEvent(int64_t frame, int32_t status);
+    void clockBeat(int64_t frame, int beat);
+    void flushClock(double limit, bool all = false);
     // No input (nullptr) while recording writes `numFrames` of silence: the take stays in time.
     void recordInput(const float* input, int numInputFrames, int inputChannels, int numFrames, int64_t outBase);
     // Monitoring (SetMonitor): the microphone through a small FIFO into an audio track's strip.
@@ -666,7 +735,8 @@ private:
     bool leaveSong_ = false;   // the armed swap leaves the song: its scene plays on its own
     bool inSong_ = true;       // the song plays (else a scene on its own: no song position)
     void leaveSongNow();
-    void stopTransport();
+    // `at`: the output frame it happens on (-1: the callback's start, a command).
+    void stopTransport(int64_t at = -1);
     std::atomic<int> songStep_{-1};
     std::atomic<uint32_t> sceneSwaps_{0};
     // MarkSong: armed on a quantum (0: none), the song step it starts.

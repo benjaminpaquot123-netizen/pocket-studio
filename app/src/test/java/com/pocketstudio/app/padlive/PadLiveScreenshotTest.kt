@@ -2,6 +2,8 @@ package com.pocketstudio.app.padlive
 
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTouchInput
 import com.pocketstudio.app.ScreenshotTest
 import com.pocketstudio.app.onboarding.LaunchActions
 import com.pocketstudio.app.onboarding.LaunchScreen
@@ -72,8 +74,67 @@ class PadLiveScreenshotTest : ScreenshotTest() {
         PadLiveScreen(ui(), PadLiveActions(), clockOf = { 6 }, record = { RecordDot() }, still = true)
     }
 
+    // --- Lot B2: the held effects' panels, a pad's own sound, the take recorded -------------------
+
+    /** The finger on [tag]'s button, then slid up into the panel to its place [x], [y] (0..1 of the grid). */
+    private fun holdInPanel(tag: String, x: Float, y: Float) {
+        compose.onNodeWithTag(tag).performTouchInput { down(center) }
+        compose.waitForIdle()
+        val area = compose.onNodeWithTag("padlive_held_area").fetchSemanticsNode().boundsInRoot
+        val button = compose.onNodeWithTag(tag).fetchSemanticsNode().boundsInRoot
+        compose.onNodeWithTag(tag).performTouchInput {
+            moveTo(androidx.compose.ui.geometry.Offset(area.left + area.width * x - button.left, area.top + area.height * (1f - y) - button.top))
+        }
+        compose.waitForIdle()
+    }
+
+    @Test
+    fun padLiveFilter() = shoot("padlive_filter", fullScreen = true, prepare = { holdInPanel("padlive_fx_filter", 0.78f, 0.6f) }) {
+        PadLiveScreen(ui(effect = true), PadLiveActions(), clockOf = { 6 }, record = { RecordDot() }, still = true)
+    }
+
+    @Test
+    fun padLiveRoll() = shoot("padlive_roll", fullScreen = true, prepare = { holdInPanel("padlive_fx_roll", 0.42f, 0.5f) }) {
+        PadLiveScreen(ui(effect = true), PadLiveActions(), clockOf = { 6 }, record = { RecordDot() }, still = true)
+    }
+
+    @Test
+    fun padLiveSound() = shoot("padlive_sound", fullScreen = true, prepare = {
+        compose.onNodeWithTag("padlive_mode_2").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithTag("padlive_release").performScrollTo()
+        compose.waitForIdle()
+    }) {
+        val tuned = pads.withAt(2, pads.at(2)!!.copy(pitch = -3, reverse = true, attack = 0.12f, release = 0.8f))
+        PadLiveScreen(
+            PadLiveUi(tuned, states, page = 0, pack = "fete", playing = true, tempoBpm = 124.0, beatsPerBar = 4, canUndo = true),
+            PadLiveActions(), clockOf = { 6 }, record = { RecordDot() }, still = true,
+        )
+    }
+
+    @Test
+    fun padLiveTake() = shoot("padlive_take", fullScreen = true) {
+        PadLiveScreen(
+            PadLiveUi(pads, states, page = 0, pack = "fete", playing = true, tempoBpm = 124.0, beatsPerBar = 4, canUndo = true,
+                played = PlayedTakeUi.Done(2), emptyPad = "A16"),
+            PadLiveActions(), clockOf = { 6 }, record = { RecordDot() }, still = true,
+        )
+    }
+
+    @Test
+    fun padLiveRecording() = shoot("padlive_recording", fullScreen = true) {
+        PadLiveScreen(
+            PadLiveUi(pads, states, page = 0, pack = "fete", playing = true, tempoBpm = 124.0, beatsPerBar = 4, canUndo = true,
+                played = PlayedTakeUi.Recording(3), message = "Ta prise est sur le pad A16."),
+            PadLiveActions(), clockOf = { 6 }, record = { RecordDot() }, still = true,
+        )
+    }
+
     companion object {
-        val SHOTS = setOf("padlive_home", "padlive", "padlive_more", "padlive_settings")
+        val SHOTS = setOf(
+            "padlive_home", "padlive", "padlive_more", "padlive_settings",
+            "padlive_filter", "padlive_roll", "padlive_sound", "padlive_take", "padlive_recording",
+        )
     }
 }
 

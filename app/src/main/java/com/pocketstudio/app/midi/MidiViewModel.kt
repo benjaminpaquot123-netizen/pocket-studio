@@ -64,6 +64,11 @@ sealed interface MidiCommand {
     data object Continue : MidiCommand
     data object Stop : MidiCommand
     data class Tempo(val bpm: Double) : MidiCommand
+    /**
+     * Lot B2: a controller's pad (as [Pad]) let go while the pads do not play the drums (Pad Live: a
+     * « tenir » pad stops).
+     */
+    data class PadUp(val index: Int) : MidiCommand
     /** A note received (it already sounds): for live recording. Channel 10 (9) = pads. */
     data class Note(val channel: Int, val pitch: Int, val velocity: Float, val on: Boolean) : MidiCommand
     /** A knob or fader moved (MIDI learn, mapped controls). */
@@ -243,11 +248,12 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         _monitor.value = emptyList()
         greet(profile)
         refresh(autoConnect = false)
+        if (_state.value.sendClock) startClock()
     }
 
     fun disconnect() {
         ++connection
-        clockJob?.cancel()
+        stopClock()
         runCatching { sendPort?.close() }
         sendPort = null
         runCatching { port?.close() }
@@ -366,64 +372,58 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Incoming events (MIDI thread) -----------------------------------------------------------
 
-    // --- Clock out: 24 ticks a beat, sent ahead with timestamps (Android delivers them on time) ---
+    // --- Clock out (lot B2): the engine counts it on the beats' frames ([MidiClockOut]) ---------
 
-    @Volatile private var clockBpm = 120.0
     private var clockJob: kotlinx.coroutines.Job? = null
 
     private var playing = false
 
+    /** Tests: where the clock goes instead of a device (status, time). */
+    @androidx.annotation.VisibleForTesting
+    internal var clockSentForTest: ((Int, Long) -> Unit)? = null
+
     fun setSendClock(on: Boolean) {
         // Following and sending at once with the same device would loop the clock back.
         _state.update { it.copy(sendClock = on, followClock = if (on) false else it.followClock) }
-        if (!on) stopClock() else transport(playing, clockBpm)
+        if (on) startClock() else stopClock()
     }
 
-    /** The transport started or stopped, or the tempo changed (from the main thread). */
-    fun transport(playing: Boolean, bpm: Double) {
+    /** The transport started or stopped, or the tempo changed (from the main thread): the engine sends the clock with it. */
+    fun transport(playing: Boolean, @Suppress("UNUSED_PARAMETER") bpm: Double) {
         this.playing = playing
-        clockBpm = bpm
-        if (!_state.value.sendClock || sendPort == null) return
-        if (playing && clockJob?.isActive != true) startClock() else if (!playing) stopClock()
+        if (_state.value.sendClock && clockJob?.isActive != true) startClock()
     }
 
     private fun send(byte: Int, at: Long) {
+        clockSentForTest?.let { it(byte, at); return }
         runCatching { sendPort?.send(byteArrayOf(byte.toByte()), 0, 1, at) }
     }
 
     private fun startClock() {
+        if (clockJob?.isActive == true || (sendPort == null && clockSentForTest == null)) return
+        NativeEngine.setMidiClockOut(true)
+        val out = MidiClockOut(::send)
         clockJob = viewModelScope.launch(kotlinx.coroutines.Dispatchers.Default) {
-            // Wait for the first step (after any count-in): the other machine starts with it.
-            while (NativeEngine.isAvailable && NativeEngine.absoluteStep() < 0) kotlinx.coroutines.delay(2)
-            val latencyNs = (Metrics.streamInfo.value.outputLatencyMs.takeIf { it > 0 } ?: 0.0) * 1_000_000
-            val position = NativeEngine.playPosition().coerceAtLeast(0.0)  // sixteenths already played
-            val stepNs = 15e9 / clockBpm
-            var next = System.nanoTime() + latencyNs.toLong() - (position * stepNs).toLong()
-            val tickNs = (60e9 / (clockBpm * 24)).toLong()
-            if (position < 1.0) {
-                send(0xFA, next)  // from the top: Start on the first step
-            } else {
-                // Switched on while playing: no burst of past ticks, carry on from now.
-                val now = System.nanoTime()
-                while (next < now) next += tickNs
-                send(0xFB, next)
-            }
-            while (true) {
-                val horizon = System.nanoTime() + 60_000_000
-                while (next < horizon) {
-                    send(0xF8, next)
-                    next += (60e9 / (clockBpm * 24)).toLong()
+            try {
+                while (true) {
+                    out.pump()
+                    kotlinx.coroutines.delay(MidiClockOut.PUMP_MS)
                 }
-                kotlinx.coroutines.delay(20)
+            } finally {
+                // The engine's Stop (sent when the clock is switched off while playing) goes out too.
+                kotlinx.coroutines.withContext(kotlinx.coroutines.NonCancellable) {
+                    kotlinx.coroutines.delay(MidiClockOut.PUMP_MS * 4)
+                    out.pump()
+                }
             }
         }
     }
 
     private fun stopClock() {
         if (clockJob == null) return
+        NativeEngine.setMidiClockOut(false)
         clockJob?.cancel()
         clockJob = null
-        send(0xFC, System.nanoTime())
     }
 
     private val listener = object : MidiListener {
@@ -475,7 +475,14 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         }
 
         override fun noteOff(channel: Int, note: Int) {
-            if (!NativeEngine.isAvailable || padLearning || channel == DRUM_CHANNEL || pads.padOf(channel, note) != null) return
+            if (padLearning) return
+            // Pad Live: a pad let go (a « tenir » pad stops); the drums ignore it.
+            val pad = pads.padOf(channel, note)
+            if (pad != null && !padsToDrums) {
+                _commands.tryEmit(MidiCommand.PadUp(pad))
+                return
+            }
+            if (!NativeEngine.isAvailable || channel == DRUM_CHANNEL || pad != null) return
             val played = synchronized(held) {
                 val p = playedAs.getOrNull(note)?.takeIf { it >= 0 } ?: note
                 if (note in playedAs.indices) playedAs[note] = -1

@@ -667,6 +667,14 @@ JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_clipStates(JNIE
     env->SetIntArrayRegion(out, 0, n, states);
 }
 
+// B3: how loud each live pad sounds now (ClipLauncher::level), for the lights that follow the sound.
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeClipLevels(JNIEnv* env, jobject, jfloatArray out) {
+    jfloat levels[ps::ClipLauncher::kSlots];
+    for (int i = 0; i < ps::ClipLauncher::kSlots; ++i) levels[i] = host().engine().clipLevel(i);
+    const jsize n = std::min<jsize>(env->GetArrayLength(out), ps::ClipLauncher::kSlots);
+    env->SetFloatArrayRegion(out, 0, n, levels);
+}
+
 // The audio track whose microphone is sent back now (-1: none, also once the output reopened). Any thread.
 JNIEXPORT jint JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeMonitorTrack(JNIEnv*, jobject) {
     return static_cast<jint>(host().engine().monitorTrack());

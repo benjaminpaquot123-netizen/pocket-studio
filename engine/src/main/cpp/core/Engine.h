@@ -474,6 +474,8 @@ public:
     // Song position of the preview player in frames, -1 when stopped.
     int64_t previewPosition() const { return preview_.position(); }
     ClipLauncher::State clipState(int pad) const { return clips_.state(pad); }
+    // B3: how loud live pad `pad` sounds now (its falling peak, ClipLauncher::level). Any thread.
+    float clipLevel(int pad) const { return clips_.level(pad); }
     // MIDI clock out (SetMidiClockOut): one reader thread pops the events in order.
     bool popClockEvent(MidiClockEvent& e) { return clockEvents_.pop(e); }
     // When the last callback began (steady_clock nanoseconds) and the output frame it began with:

@@ -315,6 +315,42 @@ static void sceneWithoutAllocating() {
     CHECK(recorded == 2);
 }
 
+// --- Lot B3 (« le jeu »): the lights follow the sound. ------------------------------------------
+
+// Each pad's level is its own sound's peak (a loud pad bright, a quiet one dim, a silent one 0),
+// it falls back within a few tenths of a second once the pad stops, and reading it allocates nothing.
+static void lightsFollowTheSound() {
+    ps::Engine engine(kRate);
+    installClip(engine, 0, constantSample(48000, 1, 0.5f));   // loud
+    installClip(engine, 1, constantSample(48000, 1, 0.05f));  // quiet
+    installClip(engine, 2, constantSample(48000, 1, 0.5f));   // never played
+    for (int pad = 0; pad < 3; ++pad) engine.post({ps::CommandType::SetClipParam, 4.0f, pad, ps::ClipLauncher::Beats});
+    CHECK(engine.clipLevel(0) == 0.0f);
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 0});
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 1});
+    std::vector<float> out(256 * 2);
+    g_allocations = 0;
+    g_countAllocations = true;
+    for (int i = 0; i < 40; ++i) engine.process(nullptr, 0, 0, out.data(), 256, 2);
+    float read = 0.0f;
+    for (int pad = 0; pad < ps::ClipLauncher::kSlots; ++pad) read += engine.clipLevel(pad);
+    g_countAllocations = false;
+    CHECK(g_allocations.load() == 0);
+    CHECK(read > 0.5f);
+    CHECK(std::fabs(engine.clipLevel(0) - 0.5f) < 0.02f);
+    CHECK(std::fabs(engine.clipLevel(1) - 0.05f) < 0.01f);
+    CHECK(engine.clipLevel(2) == 0.0f);
+    CHECK(engine.clipLevel(-1) == 0.0f && engine.clipLevel(64) == 0.0f);
+    // Stopped: dark again within half a second (its release is the short click-free fade).
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 0});
+    for (int i = 0; i < 4; ++i) engine.process(nullptr, 0, 0, out.data(), 256, 2);
+    const float falling = engine.clipLevel(0);
+    CHECK(falling > 0.0f && falling < 0.5f);
+    for (int i = 0; i < 94; ++i) engine.process(nullptr, 0, 0, out.data(), 256, 2);
+    CHECK(engine.clipLevel(0) < 0.01f);
+    CHECK(engine.clipLevel(1) > 0.04f);  // the other one still plays
+}
+
 }  // namespace padlive
 
 #define PS_PADLIVE_TESTS \
@@ -324,4 +360,5 @@ static void sceneWithoutAllocating() {
     {"padlive_pad_pitch_reverse_attack_release", padlive::padPitchReverseAttackRelease}, \
     {"padlive_resample_from_bar_to_bar", padlive::resampleFromBarToBar}, \
     {"padlive_midi_clock_out_on_the_beat", padlive::midiClockOutOnTheBeat}, \
-    {"padlive_scene_without_allocating", padlive::sceneWithoutAllocating},
+    {"padlive_scene_without_allocating", padlive::sceneWithoutAllocating}, \
+    {"padlive_lights_follow_the_sound", padlive::lightsFollowTheSound},

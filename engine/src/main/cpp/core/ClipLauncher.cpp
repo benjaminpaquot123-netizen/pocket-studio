@@ -174,6 +174,19 @@ void ClipLauncher::restart(Slot& s) {
     s.voice = Voice{s.sample, 0.0, 0, s.attack, s.velocity, 1, std::max(1, s.attack)};
 }
 
+void ClipLauncher::publishLevels(int numFrames) {
+    // A peak lights the pad at once; it then falls back over kLevelFallSeconds (one exp a block).
+    const float fall = std::exp(-static_cast<float>(numFrames) / (kLevelFallSeconds * static_cast<float>(rate_)));
+    for (size_t k = 0; k < slots_.size(); ++k) {
+        const float was = level_[k] * fall;
+        const float now = blockPeak_[k] > was ? blockPeak_[k] : (was < 1e-4f ? 0.0f : was);
+        blockPeak_[k] = 0.0f;
+        if (now == level_[k]) continue;
+        level_[k] = now;
+        levels_[k].store(now, std::memory_order_relaxed);
+    }
+}
+
 void ClipLauncher::play(Voice& v, const Slot& s, float& l, float& r) {
     if (!v.sample) return;
     const int64_t frames = v.sample->frames();
@@ -260,7 +273,9 @@ void ClipLauncher::render(float* left, float* right, int numFrames) {
             if (s.idle()) continue;
             if (!s.sample) {
                 // Emptied while it played: its last pass fades out.
+                const float l0 = l, r0 = r;
                 for (Voice& t : s.tails) play(t, s, l, r);
+                blockPeak_[k] = std::max(blockPeak_[k], std::max(std::fabs(l - l0), std::fabs(r - r0)));
                 continue;
             }
             // The clock adds up a fraction a frame: a line is reached a hair before its exact frame
@@ -275,8 +290,11 @@ void ClipLauncher::render(float* left, float* right, int numFrames) {
                 if (beat_ >= s.startBeat + s.beats) s.startBeat = std::floor(beat_ / s.beats) * s.beats;
                 restart(s);
             }
+            const float l0 = l, r0 = r;
             play(s.voice, s, l, r);
             for (Voice& t : s.tails) play(t, s, l, r);
+            const float peak = std::max(std::fabs(l - l0), std::fabs(r - r0));
+            if (peak > blockPeak_[k]) blockPeak_[k] = peak;
             if (s.state == Playing && s.oneShot && !s.voice.sample) {
                 s.state = Off;
                 states_[k].store(Off, std::memory_order_relaxed);
@@ -289,6 +307,7 @@ void ClipLauncher::render(float* left, float* right, int numFrames) {
     for (Slot& s : slots_) {
         if (s.held && s.voice.sample != s.held && !s.tailOf(s.held)) releaseHeld(s);
     }
+    publishLevels(numFrames);
     syncAt_ = -1;
 }
 

@@ -187,3 +187,6 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - 2026-11-01 (APK 234, vidéo) · Fin de vidéo : « un bruit de synthé comme si c'était un test » (piste « Voix · ADÉLA » = mélodie de la voix en notes). Projets supprimés avant pour que le bug soit net. Noté n° 23.
 - 2026-11-01 · « Revois entièrement l'extraction des morceaux dans Remix… plusieurs coupes de la chanson (voix)… pas du tout intuitif… couper des bouts super facilement, intuitivement et ultra pro. » Noté n° 24.
 - 2026-11-01 · Accueil : « Pad live » sous « Remix », accès à tout le Live comme une application à part ; test comparatif, super amusant et facile, avec toutes les fonctions des meilleurs. Noté n° 25.
+
+## 2026-11-03 (fin de journée)
+- « J'ai envie que le programme soit totalement terminé et complètement débuggé. J'ai peur qu'on fasse double emploi en commençant Play Store si le programme n'est pas terminé. » → tout le Play Store passe après l'Audit (PLAN-REPRISE, DECISIONS).

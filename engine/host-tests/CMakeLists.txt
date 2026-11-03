@@ -52,3 +52,9 @@ target_link_libraries(analysis_reference PRIVATE ps_core)
 target_compile_options(analysis_reference PRIVATE -Wall -Wextra -Werror)
 target_compile_definitions(analysis_reference PRIVATE
     PS_SAMPLES_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../../app/src/test/resources/real-projects/brouillon-jumpup/samples")
+
+# Audit stage 0: the engine's threads together (audio and UI), for ThreadSanitizer
+# (scripts/host-tests-tsan.sh); built here too so that it always compiles.
+add_executable(thread_tests thread_tests.cpp)
+target_link_libraries(thread_tests PRIVATE ps_core)
+target_compile_options(thread_tests PRIVATE -Wall -Wextra -Werror)

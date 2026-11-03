@@ -127,6 +127,9 @@ private:
 // sounds as with the mono input), and the chorus starts again with the transport (export = live).
 class StereoChorus {
 public:
+    // Audit stage 0: DaisySP's Chorus leaves its LFOs' direction uninitialised (its constructor is
+    // empty and Init keeps that sign): every chorus starts from a zeroed one, the same each time.
+    StereoChorus();
     void prepare(float rate);
     void setParam(int p, float v);
     void reset() { prepare(rate_); }  // DaisySP's Init clears the delay lines, no allocation

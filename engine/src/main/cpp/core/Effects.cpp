@@ -333,6 +333,8 @@ namespace {
 const daisysp::Chorus kNewChorus;
 }  // namespace
 
+StereoChorus::StereoChorus() : chorus_(kNewChorus) {}
+
 void StereoChorus::restartLfo() {
     if (p_[4] < 0.5f) return;
     // DaisySP keeps its LFOs private: all of it again (its lines hold under 50 ms of what played before).

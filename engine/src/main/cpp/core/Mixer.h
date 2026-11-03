@@ -8,6 +8,7 @@
 
 #include "Effects.h"
 #include "MasterChain.h"
+#include "MasterCompare.h"
 #include "PlateReverb.h"
 #include "Smoother.h"
 
@@ -160,6 +161,16 @@ public:
     int outputLatency() const { return chainBypass_ ? 0 : chain_->latency(); }
     MasterChain& masterChain() { return *chain_; }
     const MasterChain& masterChain() const { return *chain_; }
+    // Lot E: « écoute A/B » at the same loudness and the reference song (MasterCompare.h).
+    MasterCompare& masterCompare() { return *compare_; }
+    const MasterCompare& masterCompare() const { return *compare_; }
+    // Lot E: what an export of separate tracks takes of each strip. Normal: the strip and its sends'
+    // returns (as mixed). Dry: the strips without any send return (the « sans les envois » stems).
+    // Returns of bus 0 (reverb) or bus 1 (echo) only: every strip's sends into that bus, its return
+    // alone (no strip heard directly). Dry plus both returns adds up to the normal mix.
+    enum StemMode { StemNormal = 0, StemDry = 1, StemReturn0 = 2, StemReturn1 = 3 };
+    void setStemMode(int mode) { stemMode_ = std::clamp(mode, 0, 3); }
+    int stemMode() const { return stemMode_; }
     // Momentary, short-term and integrated (since ▶) loudness of the output, its true peak.
     LoudnessMeter& loudness() { return chain_->meter(); }
     // Every fader, pan and send gain at its target at once (an offline render, before its first
@@ -341,6 +352,9 @@ private:
     void finishSwaps(int ch);  // the strip is not heard: every effect waiting goes in now
     // --- The master chain (drive, clipper, limiter, meter): on the heap, about 100 kB.
     std::unique_ptr<MasterChain> chain_ = std::make_unique<MasterChain>();
+    std::unique_ptr<MasterCompare> compare_ = std::make_unique<MasterCompare>();
+    std::array<float, kChunk> abL_{}, abR_{};  // the mix before the master's processing (A/B)
+    int stemMode_ = StemNormal;
     std::array<float, kChunk> outL_{}, outR_{}, click_{};
     bool chainBypass_ = false;
     bool faderBeforeChain_ = false;

@@ -179,11 +179,18 @@ void ClipLauncher::align() {
 
 void ClipLauncher::render(float* left, float* right, int numFrames) {
     const double perFrame = 1.0 / beatFrames_;
+    // Only the slots up to the last one with something sounding or waiting are walked each frame
+    // (a slot only wakes up through a command, between blocks): Pad Live's pages left empty cost nothing.
+    size_t used = 0;
+    for (size_t k = 0; k < slots_.size(); ++k) {
+        if (!slots_[k].idle()) used = k + 1;
+    }
     for (int i = 0; i < numFrames; ++i) {
         if (i == syncAt_) align();
         float l = 0.0f, r = 0.0f;
-        for (size_t k = 0; k < slots_.size(); ++k) {
+        for (size_t k = 0; k < used; ++k) {
             Slot& s = slots_[k];
+            if (s.idle()) continue;
             if (!s.sample) {
                 // Emptied while it played: its last pass fades out.
                 for (Voice& t : s.tails) play(t, s.gain, l, r);

@@ -157,8 +157,8 @@ object NativeEngine {
     const val EXPR_ARP_OCTAVES = 6
     const val EXPR_ARP_GATE = 7
 
-    /** Live pads (ClipLauncher::kSlots). */
-    const val LIVE_PADS = 16
+    /** Live pads (ClipLauncher::kSlots): Pad Live's four pages of 16. */
+    const val LIVE_PADS = 64
 
     /** Insert slots per channel (and on the master, whose channel index is [MASTER]). */
     const val INSERTS = 8

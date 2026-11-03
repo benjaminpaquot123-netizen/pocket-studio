@@ -15,5 +15,8 @@
   "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "The sound couldn't be stored on the phone: it may be out of space.",
   "La page Live : une case par piste et par brique. Touche une case pour la lancer à la mesure suivante ; une case vide te propose d'y mettre un son ou de t'y enregistrer.": "The Live page: one cell per track and per brick. Touch a cell to launch it on the next bar; an empty cell offers to put a sound in it or to record into it.",
   "Enregistrer ma performance": "Record my performance",
-  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "In the Live, ● records everything you play (cells launched, pads, effects, notes). When you stop, your take becomes your song; “Undo” takes it all back at once."
+  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "In the Live, ● records everything you play (cells launched, pads, effects, notes). When you stop, your take becomes your song; “Undo” takes it all back at once.",
+  "dès %s": "from %s",
+  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "Hard hits: another sound. The pad's own sound keeps the soft hits.",
+  "format audio illisible": "unreadable audio format"
 }

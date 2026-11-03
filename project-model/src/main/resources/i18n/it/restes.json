@@ -15,5 +15,8 @@
   "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "Non è stato possibile salvare il suono sul telefono: forse manca spazio.",
   "La page Live : une case par piste et par brique. Touche une case pour la lancer à la mesure suivante ; une case vide te propose d'y mettre un son ou de t'y enregistrer.": "La pagina Live: una casella per traccia e per blocco. Tocca una casella per lanciarla alla battuta successiva; una casella vuota ti propone di metterci un suono o di registrarti dentro.",
   "Enregistrer ma performance": "Registra la mia performance",
-  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "Nel Live, ● registra tutto ciò che suoni (caselle lanciate, pad, effetti, note). Quando ti fermi, la tua ripresa diventa il tuo brano; “Annulla” la toglie in un colpo."
+  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "Nel Live, ● registra tutto ciò che suoni (caselle lanciate, pad, effetti, note). Quando ti fermi, la tua ripresa diventa il tuo brano; “Annulla” la toglie in un colpo.",
+  "dès %s": "da %s",
+  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "Colpo forte: un altro suono. Il suono del pad tiene i colpi leggeri.",
+  "format audio illisible": "formato audio illeggibile"
 }

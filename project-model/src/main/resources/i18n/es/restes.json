@@ -15,5 +15,8 @@
   "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "No se pudo guardar el sonido en el teléfono: quizá falta espacio.",
   "La page Live : une case par piste et par brique. Touche une case pour la lancer à la mesure suivante ; une case vide te propose d'y mettre un son ou de t'y enregistrer.": "La página Live: una casilla por pista y por bloque. Toca una casilla para lanzarla en el compás siguiente; una casilla vacía te ofrece poner un sonido o grabarte en ella.",
   "Enregistrer ma performance": "Grabar mi actuación",
-  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "En el Live, ● graba todo lo que tocas (casillas lanzadas, pads, efectos, notas). Al parar, tu toma se convierte en tu tema; “Deshacer” la quita de una vez."
+  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "En el Live, ● graba todo lo que tocas (casillas lanzadas, pads, efectos, notas). Al parar, tu toma se convierte en tu tema; “Deshacer” la quita de una vez.",
+  "dès %s": "desde %s",
+  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "Golpe fuerte: otro sonido. El sonido del pad se queda con los golpes suaves.",
+  "format audio illisible": "formato de audio ilegible"
 }

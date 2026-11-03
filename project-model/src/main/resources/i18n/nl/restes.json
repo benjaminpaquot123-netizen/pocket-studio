@@ -15,5 +15,8 @@
   "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "Het geluid kon niet op de telefoon worden bewaard: misschien is er te weinig ruimte.",
   "La page Live : une case par piste et par brique. Touche une case pour la lancer à la mesure suivante ; une case vide te propose d'y mettre un son ou de t'y enregistrer.": "De Live-pagina: één vak per spoor en per blok. Tik op een vak om het bij de volgende maat te starten; een leeg vak biedt aan er een geluid in te zetten of erin op te nemen.",
   "Enregistrer ma performance": "Mijn optreden opnemen",
-  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "In de Live neemt ● alles op wat je speelt (gestarte vakken, pads, effecten, noten). Als je stopt, wordt je opname je nummer; ‘Ongedaan maken’ haalt hem in één keer weg."
+  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "In de Live neemt ● alles op wat je speelt (gestarte vakken, pads, effecten, noten). Als je stopt, wordt je opname je nummer; ‘Ongedaan maken’ haalt hem in één keer weg.",
+  "dès %s": "vanaf %s",
+  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "Harde slag: een ander geluid. Het geluid van de pad houdt de zachte slagen.",
+  "format audio illisible": "onleesbaar audioformaat"
 }

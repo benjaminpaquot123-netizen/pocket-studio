@@ -158,10 +158,26 @@ class PadSamples(private val dir: File) {
             val fitted = fresh?.second ?: s?.takeIf { it.fitBeats > 0 }?.let { lastFitted[pad]?.second }
             if (s != null) NativeEngine.setPadParams(pad, s.engineParams(stretched = fitted != null))
             NativeEngine.setPadSample(pad, fitted ?: s?.let { loaded[it.file] })
+            // « Couches »: the base sound again as layer 0 (a pad with layers plays only them), then
+            // each layer for its velocities. A fitted pad plays its fitted copy alone.
+            if (s != null && fitted == null) padLayers(s).forEach { (layer, range, file) ->
+                NativeEngine.setPadLayer(pad, layer, range.first, range.last, loaded[file])
+            }
         }
         // The engine holds its own references: copies no pad uses any more can go.
         val inUse = lastFitted.values.map { it.first }.toSet()
         stretched.keys.filter { it !in inUse }.forEach { stretched.remove(it)?.close() }
+    }
+
+    /**
+     * The engine's layers for [s] (layer index, velocities, file), the base sound first; empty
+     * without layers, or when a sound is not in memory (the pad then plays its own sound alone).
+     */
+    fun padLayers(s: PadSample): List<Triple<Int, IntRange, String>> {
+        val ranges = s.layerRanges()
+        val files = s.files
+        if (ranges.isEmpty() || files.any { it !in loaded }) return emptyList()
+        return ranges.mapIndexed { i, r -> Triple(i, r, files[i]) }
     }
 
     fun close() {

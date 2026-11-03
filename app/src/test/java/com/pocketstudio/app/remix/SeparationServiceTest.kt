@@ -195,6 +195,24 @@ class SeparationServiceTest {
     }
 
     @Test
+    fun aFailureAfterTheModelLeavesNoHalfSong() {
+        // Audit stage 3 (atomic writes): the analysis failing (or a full phone at the rename or the meta
+        // file) left the model's « .part » folder, hundreds of MB, until the next separation.
+        installFakeModel()
+        val work = FakeWork().apply { onAnalyse = { throw java.io.IOException("disque plein") } }
+        separate(work)
+        waitUntil("the failure never came") { SeparationJob.state.value is SeparationState.Failed }
+        assertTrue(StemStore.list(app).isEmpty())
+        val left = File(app.filesDir, "stems").listFiles().orEmpty().map { it.name }
+        assertTrue("nothing half-made left: $left", left.isEmpty())
+        assertFalse(SeparationJob.marker(app).exists())
+        // And the next one goes through.
+        separate(FakeWork())
+        waitUntil("the second never ended") { SeparationJob.state.value is SeparationState.Done }
+        assertEquals(listOf("Chanson"), StemStore.list(app).map { it.name })
+    }
+
+    @Test
     fun aSeparationAndroidStoppedIsSaidAndCanStartAgain() {
         // Audit 02 G2: the app was killed mid-separation: its marker is still there on the next start.
         SeparationJob.markRunning(app, "Ma chanson", "content://test/ma-chanson.mp3")

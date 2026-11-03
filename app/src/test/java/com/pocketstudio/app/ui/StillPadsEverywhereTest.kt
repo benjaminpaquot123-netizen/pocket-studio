@@ -59,6 +59,8 @@ class StillPadsEverywhereTest {
     /** Every composable that draws a pad or a cell, by screen. */
     private val padsAndCells = listOf(
         "PadLiveScreen.kt" to "PadLivePad",
+        // Lot B3: « Fête »'s big pads.
+        "PartyMode.kt" to "PartyPad",
         "LiveScreen.kt" to "LivePadCell",
         "LivePadsFullScreen.kt" to "StagePad",
         "LivePadsCard.kt" to "LivePad",
@@ -157,5 +159,24 @@ class StillPadsEverywhereTest {
         val still = frame()
         compose.mainClock.advanceTimeBy(4_321)
         assertTrue("Pad Live's pads moved with nothing playing", still.contentEquals(frame()))
+    }
+
+    /** Lot B3: « Fête » with nothing playing (its room light follows the music): nothing moves either. */
+    @Test
+    fun partyWithNothingPlayingNeverMoves() {
+        compose.mainClock.autoAdvance = false
+        val pads = PadLive.placed(LivePads(), 0, List(6) { LiveClip("s$it.wav", "Son $it", 4, oneShot = it % 2 == 0) })
+        compose.setContent {
+            PocketStudioTheme {
+                PadLiveScreen(
+                    PadLiveUi(pads, List(LivePads.ALL) { 0 }, page = 0, pack = "fete", playing = false, tempoBpm = 124.0, beatsPerBar = 4),
+                    PadLiveActions(), clockOf = { -1 }, readLevels = { it.fill(0.5f) }, partyAtStart = true,
+                )
+            }
+        }
+        compose.mainClock.advanceTimeBy(1_000)
+        val still = frame()
+        compose.mainClock.advanceTimeBy(4_321)
+        assertTrue("« Fête » moved with nothing playing", still.contentEquals(frame()))
     }
 }

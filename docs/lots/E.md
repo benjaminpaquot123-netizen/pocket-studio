@@ -47,5 +47,13 @@ Branche `fx-e` (2026-11-03). Commandes moteur 190 et 191 (plage E : 190 à 209).
 - Spectre de la référence superposé à l'analyseur en direct (aujourd'hui : dans le rapport).
 - Mise en forme du dither propre à 96 kHz (le filtre de Lipshitz est calculé pour 44,1 ; à 96 kHz le bruit part au-dessus de 20 kHz, mieux encore, mais non optimisé).
 
+## Résultats (2026-11-03)
+- **Matrice en paires : 30 cas sur 30 OK, stems des 5 styles OK** (`build/matrix/report.md`, jamais commité). LUFS à ±0,2 de la cible pour toutes les cibles pro ; crête vraie sous le plafond dans tous les cas après encodage (M4A décodé compris) ; fichiers lus par ffmpeg (codec, fréquence, bits, durée, titre, artiste). Stems : résidu −103 (dnb), −92 (house, sans envois), −75 (lofi), −237 (techno), −97 dB (trap, sans envois).
+- Notés, pas échoués : « comme le style » visé au Drop sur 3 cas où la chaîne prend déjà ses 3 LU (Drop à −8,0 pour −7,5 en dnb, −8,2 pour −7,5 en techno, −9,3 pour −8 en house M4A) ; club −9 en M4A sur la dnb : −9,8 (la chaîne prend son maximum, 6,9 LU : on ne tasse pas plus).
+- **Défaut trouvé par la matrice et corrigé** : un fichier rééchantillonné (44,1 ou 96 kHz) d'un mix limité à 48 kHz dépassait le plafond de 0,1 à 0,3 dB (c01, c03, c05, c09, c24, c29) ; un limiteur true peak repasse maintenant à la fréquence du fichier (`OfflineRenderer::Output`, plafond du master). Règle « partout » : tous les exports rééchantillonnés passent par cet `Output` (WAV, FLAC, M4A, stems avec limiteur) ; les rendus en mémoire restent à 48 kHz. Matrice = le test qui couvre.
+- **Banc CPU `m17_worst_case_live_cpu_bench`** (avant = fx-int, après = fx-e, en alternance, 3 fois) : moyenne avant 29,6 / 25,0 / 26,0 %, après 23,5 / 22,7 / 24,5 % ; p99 avant 46,8 / 36,5 / 39,3 %, après 37,1 / 37,2 / 38,3 % : pas de recul (le chemin A/B ne coûte qu'une branche quand il est désarmé). Marge non regagnée : rien dans ce lot ne touchait le coût du direct ; à mesurer sur le téléphone. `master_cpu_budget` (1,9 à 2,0 % pour 2 %) et `drive_effects_cpu` échouent parfois, avant comme après, sur ce conteneur chargé (instables, déjà là).
+
 ## Reste
-- Résultats de la matrice et du banc CPU (ci-dessous, à compléter).
+- `master_cpu_budget` et `drive_effects_cpu` à la limite sur ce conteneur (instables avant le lot aussi) : à regarder avant G.
+- La matrice complète (toute la chanson, `MATRIX_SECONDS=1000`, toutes les combinaisons) : étage 1 de l'Audit.
+- L'écoute A/B et la référence ne sont testées que sur le banc hôte et par la logique de l'appli : à écouter sur le téléphone (liste de Benjamin, moment 1 : « master Spotify et master club »).

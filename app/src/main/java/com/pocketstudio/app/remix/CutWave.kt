@@ -31,7 +31,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.AwaitPointerEventScope
-import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChanged
 import androidx.compose.ui.layout.onSizeChanged
@@ -171,28 +170,36 @@ internal fun CutZoom(
                     awaitEachGesture {
                         val down = awaitFirstDown(requireUnconsumed = false)
                         val slop = viewConfiguration.touchSlop
-                        val grab = (28.dp.toPx() * view.framesPerPx).toLong()
-                        if (model.beginMove(view.frameAt(down.position.x), grab)) {
-                            onTouched()
-                            follow(down.id) { x -> model.moveTo(view.frameAt(x)) }
-                            model.endMove()
-                            return@awaitEachGesture
-                        }
+                        // A small zone, and only a line standing alone in it (see [CutModel.beginMove]):
+                        // the whole song cut every bar leaves the touches to the play head and the pinch.
+                        val grab = (CUT_GRAB.toPx() * view.framesPerPx).toLong()
+                        val grabbing = model.beginMove(view.frameAt(down.position.x), grab)
+                        if (grabbing) onTouched()
                         var moved = false
-                        while (true) {
-                            val e = awaitPointerEvent()
-                            if (e.changes.count { it.pressed } > 1) {
-                                zoomAndScroll(view)
-                                return@awaitEachGesture
+                        try {
+                            while (true) {
+                                val e = awaitPointerEvent()
+                                if (e.changes.count { it.pressed } > 1) {
+                                    // A second finger: the pinch wins, even over a cut being moved.
+                                    model.endMove()
+                                    zoomAndScroll(view)
+                                    return@awaitEachGesture
+                                }
+                                val c = e.changes.firstOrNull { it.id == down.id } ?: return@awaitEachGesture
+                                if (!c.pressed) break
+                                if (!moved && (c.position - down.position).getDistance() > slop) moved = true
+                                if (moved) {
+                                    if (grabbing) {
+                                        if (c.positionChanged()) model.moveTo(view.frameAt(c.position.x))
+                                    } else {
+                                        val dx = c.position.x - c.previousPosition.x
+                                        if (dx != 0f) view.scrollBy(dx)
+                                    }
+                                    c.consume()
+                                }
                             }
-                            val c = e.changes.firstOrNull { it.id == down.id } ?: return@awaitEachGesture
-                            if (!c.pressed) break
-                            if (!moved && (c.position - down.position).getDistance() > slop) moved = true
-                            if (moved) {
-                                val dx = c.position.x - c.previousPosition.x
-                                if (dx != 0f) view.scrollBy(dx)
-                                c.consume()
-                            }
+                        } finally {
+                            model.endMove()
                         }
                         if (!moved) {
                             onTouched()
@@ -366,16 +373,8 @@ fun cutClock(frames: Long, rate: Int = BOARD_RATE): String {
     return "%d:%02d.%02d".format(s / 60, s % 60, hundredths % 100)
 }
 
-/** Calls [move] with each position of pointer [id] until it lifts. */
-private suspend fun AwaitPointerEventScope.follow(id: PointerId, move: (Float) -> Unit) {
-    while (true) {
-        val e = awaitPointerEvent()
-        val c = e.changes.firstOrNull { it.id == id } ?: return
-        if (!c.pressed) return
-        if (c.positionChanged()) move(c.position.x)
-        c.consume()
-    }
-}
+/** Each side of a cut line, the zone a finger grabs it in. */
+internal val CUT_GRAB = 12.dp
 
 /** Two fingers: pinch zooms around them, moving them scrolls; until every finger lifts. */
 private suspend fun AwaitPointerEventScope.zoomAndScroll(view: StemBoardView) {

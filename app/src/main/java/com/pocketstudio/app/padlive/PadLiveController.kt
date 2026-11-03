@@ -205,7 +205,7 @@ class PadLiveController(private val vm: RhythmViewModel) {
                 // The page's pads that sound stop: their sounds are being replaced.
                 val sounding = vm.padsSoundingNow()
                 (0 until PadLive.PAGE_SIZE).map { PadLive.pad(page, it) }.filter { it in sounding }.forEach(::toggle)
-                vm.session.edit { q -> q.copy(live = PadLive.placed(q.live, page, clips.toList()), padLive = q.padLive.copy(pack = id)) }
+                vm.session.edit { q -> q.copy(live = PadLive.placed(q.live, page, clips.toList()), padLive = q.padLive.withPack(page, id)) }
                 vm.pushLive()
                 AppLog.add("Pack ${pack.id} sur la page ${PadLive.PAGE_NAMES[page]} : ${sounds.size} sons")
             } catch (e: CancellationException) {
@@ -217,21 +217,6 @@ class PadLiveController(private val vm: RhythmViewModel) {
             } finally {
                 _busy.value = null
             }
-        }
-    }
-
-    /**
-     * A sound chosen in the sound browser for pad [pad] of pages B to D (page A goes through the
-     * Live page's own path): stored, then on the pad in one undo step, a loop or a hit by its length.
-     */
-    fun placeSound(pad: Int, pcm: Pcm, name: String, oneShot: Boolean) {
-        if (pad !in LivePads.MAX until LivePads.ALL) return
-        vm.viewModelScope.launch {
-            val (sample, prepared) = withContext(Dispatchers.IO) { vm.padSamples.add(pcm, name) }
-            vm.padSamples.register(prepared)
-            val beats = if (oneShot) 1 else LivePads.beatsFor(pcm.seconds, vm.project.value.tempoBpm)
-            vm.session.edit { q -> q.copy(live = q.live.withAt(pad, LiveClip(sample.file, sample.name, beats, oneShot).sanitized())) }
-            vm.pushLive()
         }
     }
 

@@ -314,6 +314,9 @@ internal fun MasterProPanel(styleLufs: Float, actions: MasterProActions, onStyle
     MasterProPanel(project.mixer.pro, project.mixer.master, project.mixer.monoBassHz, styleLufs, actions, onStyleTarget)
 }
 
+/** Where « Libre » starts from the style's target (none in LUFS yet). */
+private const val FREE_START_LUFS = -11f
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun MasterProPanel(pro: MasterPro?, master: List<Insert>, monoBassHz: Float, styleLufs: Float, actions: MasterProActions, onStyleTarget: () -> Unit) {
@@ -333,6 +336,10 @@ internal fun MasterProPanel(pro: MasterPro?, master: List<Insert>, monoBassHz: F
     Column(Modifier.testTag("master_pro_panel"), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         // 1. The target: in integrated LUFS, or the style's (the « Volume visé » above).
         Text(tr("Cible de volume (morceau entier)"), style = MaterialTheme.typography.bodyMedium)
+        // « Libre » chosen: its slider stays, even from a preset's value and while it slides over
+        // one (fix 2, n° 4: it did nothing from a preset, and the slider went away at -14 or -16).
+        var freeMode by rememberSaveable { mutableStateOf(false) }
+        val free = freeMode || (p.targetLufs != null && MasterPro.presetOf(p.targetLufs) == null)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             MasterPro.Preset.entries.forEach { preset ->
                 val label = when (preset) {
@@ -341,18 +348,20 @@ internal fun MasterProPanel(pro: MasterPro?, master: List<Insert>, monoBassHz: F
                     MasterPro.Preset.CLUB -> tr("Club · −9")
                     MasterPro.Preset.STYLE -> tr("Comme le style · %s", LoudnessTargets.formatTarget(styleLufs))
                 }
-                val selected = if (preset == MasterPro.Preset.STYLE) p.targetLufs == null else p.targetLufs == preset.lufs
+                val selected = !free && if (preset == MasterPro.Preset.STYLE) p.targetLufs == null else p.targetLufs == preset.lufs
                 FilterChip(selected = selected, onClick = {
+                    freeMode = false
                     c.setTarget(preset.lufs)
                     if (preset == MasterPro.Preset.STYLE) onStyleTarget()
                 }, label = { Text(label) }, colors = colors, modifier = Modifier.testTag("pro_target_${preset.name}"))
             }
-            val free = p.targetLufs != null && MasterPro.presetOf(p.targetLufs) == null
-            FilterChip(selected = free, onClick = { c.setTarget(p.targetLufs ?: -11f) }, label = { Text(tr("Libre")) }, colors = colors,
-                modifier = Modifier.testTag("pro_target_free"))
+            FilterChip(selected = free, onClick = {
+                freeMode = true
+                if (p.targetLufs == null) c.setTarget(FREE_START_LUFS)
+            }, label = { Text(tr("Libre")) }, colors = colors, modifier = Modifier.testTag("pro_target_free"))
         }
-        val freeLufs = p.targetLufs
-        if (freeLufs != null && MasterPro.presetOf(freeLufs) == null) {
+        if (free) {
+            val freeLufs = p.targetLufs ?: FREE_START_LUFS
             Text(tr("%s LUFS", LoudnessTargets.formatTarget(freeLufs)), style = small, color = Neon.Cyan)
             ProSlider(value = freeLufs, onValueChange = { c.setTarget((it * 2).roundToInt() / 2f) },
                 valueRange = MasterPro.MIN_LUFS..MasterPro.MAX_LUFS, modifier = Modifier.testTag("pro_target_slider"))

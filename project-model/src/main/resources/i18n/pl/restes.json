@@ -9,5 +9,8 @@
   "Mettre dans la case": "Wstaw do pola",
   "Toute la chanson ici": "Cały utwór tutaj",
   "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "Fragment utworu w tym polu: startuje na takcie i podąża za tempem.",
-  "« %1$s » est dans la case Remix de la brique %2$s.": "„%1$s” jest w polu Remix bloku %2$s."
+  "« %1$s » est dans la case Remix de la brique %2$s.": "„%1$s” jest w polu Remix bloku %2$s.",
+  "Pose du son sur le pad %s…": "Kładę dźwięk na pad %s…",
+  "le pad %s": "pad %s",
+  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "Nie udało się zapisać dźwięku w telefonie: może brakuje miejsca."
 }

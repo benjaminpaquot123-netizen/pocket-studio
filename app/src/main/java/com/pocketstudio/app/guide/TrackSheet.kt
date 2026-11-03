@@ -1,5 +1,6 @@
 package com.pocketstudio.app.guide
 
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -239,7 +240,8 @@ private fun WhenColumn(sheet: GuideSheet, partNames: List<String>, actions: Trac
                         Modifier.width(56.dp).heightIn(min = 56.dp).clip(shape)
                             .background(if (on) Neon.Cyan.copy(alpha = 0.85f) else Neon.SurfaceHigh.copy(alpha = 0.5f))
                             .border(1.dp, if (on) Neon.Cyan else Neon.Outline, shape)
-                            .then(actions.togglePart?.let { t -> Modifier.clickable(role = Role.Checkbox) { t(i) } } ?: Modifier)
+                            // Fix 2, n° 7 (« règle partout »): a checkbox says whether it is ticked.
+                            .then(actions.togglePart?.let { t -> Modifier.toggleable(value = on, role = Role.Checkbox, onValueChange = { t(i) }) } ?: Modifier)
                             .semantics {
                                 selected = on
                                 contentDescription = if (on) tr("Partie %1\$d, %2\$s : elle joue", i + 1, label) else tr("Partie %1\$d, %2\$s : elle se tait", i + 1, label)

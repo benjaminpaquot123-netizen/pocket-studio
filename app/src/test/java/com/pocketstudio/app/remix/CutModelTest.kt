@@ -94,6 +94,35 @@ class CutModelTest {
         assertFalse(m.beginMove(20 * beat, slop = 2_000))
     }
 
+    /** Fix 2, n° 1: a 3-minute song cut every bar, all of it on a 360 dp phone (1080 px). */
+    @Test
+    fun theWholeSongCutEveryBarLeavesTheTouchesToThePlayHead() {
+        val song = 180L * BOARD_RATE
+        val bar = 4 * beat
+        val bars = (0 until song / bar).map { CutPiece(it * bar, (it + 1) * bar) }
+        val saved = mutableListOf<SongCuts>()
+        val m = CutModel("song", song, 120.0, 0.0, SongCuts("song", listOf(StemCuts(VOCALS_STEM, bars))), onChange = { saved += it })
+        val wholeSong = song / 1080.0  // frames per px
+        fun zone(fpp: Double) = (12 * 3 * fpp).toLong()  // 12 dp at xxhdpi
+        // The whole song shown: no line is grabbed, wherever the finger lands (on a line or between two).
+        for (f in listOf(10 * bar, 10 * bar + 2_000, 10 * bar + bar / 2, 0L, song)) assertFalse(m.beginMove(f, zone(wholeSong)))
+        // Zoomed in (a few bars across): the line under the finger is grabbed.
+        assertTrue(m.beginMove(10 * bar + 300, zone(48.0)))
+        // A tremor that stays on the same beat: no undo step, nothing saved.
+        m.moveTo(10 * bar + 900)
+        m.endMove()
+        assertFalse(m.canUndo)
+        assertTrue(saved.isEmpty())
+        // A real move: one undo step, saved once.
+        assertTrue(m.beginMove(10 * bar, zone(48.0)))
+        m.moveTo(10 * bar + beat)
+        m.moveTo(10 * bar + 2 * beat)
+        m.endMove()
+        assertEquals(1, m.undoCount)
+        assertEquals(1, saved.size)
+        assertEquals(10 * bar + 2 * beat, m.pieces[9].end)
+    }
+
     @Test
     fun ticksFollowThePiecesAndGiveTheSelectionsToSend() {
         val m = model()

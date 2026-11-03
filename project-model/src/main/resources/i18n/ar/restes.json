@@ -9,5 +9,8 @@
   "Mettre dans la case": "ضع في الخانة",
   "Toute la chanson ici": "الأغنية كلها هنا",
   "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "مقطع من الأغنية في هذه الخانة: يبدأ مع المازورة ويتبع الإيقاع.",
-  "« %1$s » est dans la case Remix de la brique %2$s.": "«%1$s» في خانة الريمكس للقطعة %2$s."
+  "« %1$s » est dans la case Remix de la brique %2$s.": "«%1$s» في خانة الريمكس للقطعة %2$s.",
+  "Pose du son sur le pad %s…": "وضع الصوت على الـPad %s…",
+  "le pad %s": "الـPad %s",
+  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "تعذّر حفظ الصوت على الهاتف: ربما لا توجد مساحة كافية."
 }

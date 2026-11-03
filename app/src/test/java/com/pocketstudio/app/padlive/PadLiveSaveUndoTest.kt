@@ -100,7 +100,11 @@ class PadLiveSaveUndoTest {
         vm.padLive.loadPack("trap") { emptyMap() }
         waitFor("the pack on page B") { vm.project.value.live.at(16) != null && vm.padLive.busy.value == null }
         val p = vm.project.value
-        assertEquals("trap", p.padLive.pack)
+        // Fix 2, n° 6: the pack is page B's, never page A's.
+        assertEquals("trap", p.padLive.packOf(1))
+        assertEquals("trap", shownPack(p))
+        assertEquals("", p.padLive.packOf(0))
+        assertTrue(shownPack(p.copy(padLive = p.padLive.copy(page = 0))) != "trap")
         assertEquals(1, p.padLive.page)
         assertNull("page A untouched", p.live.at(0))
         val hit = p.live.at(PadLive.pad(1, PadLive.HITS_FROM))!!
@@ -126,6 +130,7 @@ class PadLiveSaveUndoTest {
         val q = again.project.value
         assertTrue(q.padLive.home)
         assertEquals(1, q.padLive.page)
+        assertEquals("trap", q.padLive.packOf(1))
         assertEquals(3, q.live.at(16)?.group)
         assertEquals(PadMode.HOLD, PadLive.modeOf(q.live.at(PadLive.pad(1, PadLive.HITS_FROM))!!))
         assertTrue("listed as the « Live » project", projectCatalog(app).info(again.projectId)!!.padLive)

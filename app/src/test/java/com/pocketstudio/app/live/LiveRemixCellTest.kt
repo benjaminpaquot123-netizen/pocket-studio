@@ -254,4 +254,23 @@ class LiveRemixCellTest {
         waitUntil("said") { vm.liveRemix.busy.value == null && vm.notice.value == "Ce passage n'a pas pu être lu." }
         assertNull(vm.project.value.remix.cell(1))
     }
+
+    /** Fix 2, n° 3: a phone that cannot store the passage says so, never a crash, nothing changed. */
+    @Test
+    fun aFullPhoneIsSaidNotACrash() {
+        val id = "remix-full-${System.nanoTime()}"
+        store.save(id, Project(name = id, tempoBpm = 120.0).sanitized())
+        val vm = open(id)
+        vm.useSong(stemSet())
+        waitUntil("the stems loaded") { vm.stemOverview.value != null }
+        val samples = File(store.folder(id), "samples")
+        samples.deleteRecursively()
+        samples.writeText("not a folder")
+        val depth = vm.session.undoDepth
+        vm.liveRemix.choose(1, 3, 1, 2)
+        waitUntil("said") { vm.liveRemix.busy.value == null && vm.notice.value != null }
+        assertEquals("Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.", vm.notice.value)
+        assertNull(vm.project.value.remix.cell(1))
+        assertEquals(depth, vm.session.undoDepth)
+    }
 }

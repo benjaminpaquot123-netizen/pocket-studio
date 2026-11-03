@@ -9,5 +9,8 @@
   "Mettre dans la case": "枠に入れる",
   "Toute la chanson ici": "ここは曲全体",
   "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "この枠に曲の一部：小節頭で始まり、テンポに合わせます。",
-  "« %1$s » est dans la case Remix de la brique %2$s.": "「%1$s」はブロック %2$s のリミックス枠にあります。"
+  "« %1$s » est dans la case Remix de la brique %2$s.": "「%1$s」はブロック %2$s のリミックス枠にあります。",
+  "Pose du son sur le pad %s…": "パッド %s に音を配置中…",
+  "le pad %s": "パッド %s",
+  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "音をスマホに保存できませんでした：空き容量が足りないかもしれません。"
 }

@@ -444,10 +444,16 @@ private fun PadLivePad(
                         if (waitForUpOrCancellation() != null) emptyNow()
                         return@awaitEachGesture
                     }
+                    // The pad pressed, kept: a page switch restarts this with another index, and
+                    // a « tenir » pad must still let go of this one (fix 2, n° 2).
+                    val localPad = pad
                     haptics.hit()
-                    touchNow(pad, true)
-                    waitForUpOrCancellation()
-                    touchNow(pad, false)
+                    touchNow(localPad, true)
+                    try {
+                        waitForUpOrCancellation()
+                    } finally {
+                        touchNow(localPad, false)
+                    }
                 }
             }
             .semantics {
@@ -575,16 +581,21 @@ private fun HeldEffect(
                     fun at(p: androidx.compose.ui.geometry.Offset) = coords?.takeIf { it.isAttached }?.localToWindow(p) ?: p
                     trackNow?.invoke(at(down.position), (down.position.x / w).coerceIn(0f, 1f))
                     holdNow(true)
-                    while (true) {
-                        val event = awaitPointerEvent()
-                        val change = event.changes.firstOrNull { it.id == down.id } ?: break
-                        if (!change.pressed) break
-                        trackNow?.invoke(at(change.position), (change.position.x / w).coerceIn(0f, 1f))
-                        change.consume()
+                    try {
+                        while (true) {
+                            val event = awaitPointerEvent()
+                            val change = event.changes.firstOrNull { it.id == down.id } ?: break
+                            if (!change.pressed) break
+                            trackNow?.invoke(at(change.position), (change.position.x / w).coerceIn(0f, 1f))
+                            change.consume()
+                        }
+                    } finally {
+                        // Also when the button goes under the finger (« Moins », turning, « Fête »):
+                        // the effect never stays on (fix 2, n° 2).
+                        held = false
+                        trackNow?.invoke(null, 0.5f)
+                        holdNow(false)
                     }
-                    held = false
-                    trackNow?.invoke(null, 0.5f)
-                    holdNow(false)
                 }
             }
             .semantics {

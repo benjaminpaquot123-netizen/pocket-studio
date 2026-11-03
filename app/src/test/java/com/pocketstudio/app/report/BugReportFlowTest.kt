@@ -184,7 +184,11 @@ class BugReportFlowTest {
         start()
         openFromPlus()
         compose.onNodeWithTag("bug_text").performTextInput("Le son coupe au refrain")
+        // Fix 2, n° 7 (« règle partout »): the row is a switch that says whether it is on.
+        val before = compose.onNodeWithTag("bug_attach_project").fetchSemanticsNode().config.getOrElseNullable(androidx.compose.ui.semantics.SemanticsProperties.ToggleableState) { null }
+        org.junit.Assert.assertNotNull(before)
         tap("bug_attach_project")
+        org.junit.Assert.assertNotEquals(before, compose.onNodeWithTag("bug_attach_project").fetchSemanticsNode().config[androidx.compose.ui.semantics.SemanticsProperties.ToggleableState])
         tap("bug_share")
         val shadow = shadowOf(h.app)
         waitFor("the share menu") { shadow.peekNextStartedActivity() != null }

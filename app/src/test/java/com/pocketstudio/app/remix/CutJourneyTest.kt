@@ -177,8 +177,9 @@ class CutJourneyTest {
         // That cut moved by a finger: it sticks to the beat nearest to where the finger lifts (5 s).
         compose.onNodeWithTag("cut_wave").performTouchInput {
             down(Offset(v.x(Math.round(4.5 * BOARD_RATE)), height * 0.8f))
-            moveTo(Offset(v.x(Math.round(4.7 * BOARD_RATE)), height * 0.8f))
-            moveTo(Offset(v.x(Math.round(4.9 * BOARD_RATE)), height * 0.8f))
+            // Past the touch slop first (a tremor never moves a cut), then back to 4.95 s.
+            moveTo(Offset(v.x(Math.round(5.3 * BOARD_RATE)), height * 0.8f))
+            moveTo(Offset(v.x(Math.round(4.95 * BOARD_RATE)), height * 0.8f))
             up()
         }
         compose.waitForIdle()

@@ -77,8 +77,19 @@ private:
 // or 96 kHz), the report's meters, then the file or the buffer.
 class OfflineRenderer::Output {
 public:
-    Output(int engineRate, int outRate, int64_t frames, int64_t tailFrames, int64_t fadeOut, Sink sink, const Finish& finish = Finish{})
+    // `postCeilingDb` (dBTP; NaN: none): resampled, the file goes through a true-peak limiter again at its
+    // own rate (lot E: a 44.1 or 96 kHz file of a mix limited at 48 kHz read up to 0.5 dB over the ceiling).
+    Output(int engineRate, int outRate, int64_t frames, int64_t tailFrames, int64_t fadeOut, Sink sink, const Finish& finish = Finish{},
+           float postCeilingDb = NAN)
         : total_(frames + tailFrames), sink_(std::move(sink)), ratio_(static_cast<double>(outRate) / engineRate), finish_(finish) {
+        if (outRate != engineRate && std::isfinite(postCeilingDb)) {
+            post_ = std::make_unique<MasterChain>();
+            post_->setCeilingDb(postCeilingDb);
+            post_->prepare(outRate);
+            postL_.resize(static_cast<size_t>(4 * kBlock));
+            postR_.resize(static_cast<size_t>(4 * kBlock));
+            postOut_.resize(static_cast<size_t>(8 * kBlock));
+        }
         // The tail's last half second fades out: a long reverb is not cut dead at the file's end
         // (with the automatic tail, only one still ringing at the cap gets there).
         fade_ = std::min<int64_t>(tailFrames, engineRate / 2);
@@ -161,7 +172,17 @@ public:
             if (!pass(zeros.data(), n)) return false;
             left -= n;
         }
-        return src_ ? resample(nullptr, 0, true) : !failed_;
+        if (src_ && !resample(nullptr, 0, true)) return false;
+        // The post limiter's look-ahead: zeros push its last frames out.
+        if (post_) {
+            std::vector<float> zero(static_cast<size_t>(2 * kBlock), 0.0f);
+            while (postFlushed_ < post_->latency()) {
+                const int n = std::min(kBlock, post_->latency() - postFlushed_);
+                postFlushed_ += n;
+                if (!limitAndDeliver(zero.data(), n)) return false;
+            }
+        }
+        return !failed_;
     }
     void report(Report& r) const {
         r.lufs = meter_.integratedLufs();
@@ -189,6 +210,31 @@ private:
         return resample(out, m, false);
     }
     bool deliver(float* out, int m) {
+        if (post_) return limitAndDeliver(out, m);
+        return deliverNow(out, m);
+    }
+    // Through the post limiter, its latency dropped.
+    bool limitAndDeliver(const float* in, int m) {
+        for (int at = 0; at < m;) {
+            const int n = std::min(m - at, static_cast<int>(postL_.size()));
+            for (int i = 0; i < n; ++i) {
+                postL_[static_cast<size_t>(i)] = in[2 * (at + i)];
+                postR_[static_cast<size_t>(i)] = in[2 * (at + i) + 1];
+            }
+            post_->process(postL_.data(), postR_.data(), nullptr, n);
+            const int first = std::min(n, post_->latency() - postSkip_);
+            postSkip_ += first;
+            int k = 0;
+            for (int i = first; i < n; ++i, ++k) {
+                postOut_[static_cast<size_t>(2 * k)] = postL_[static_cast<size_t>(i)];
+                postOut_[static_cast<size_t>(2 * k + 1)] = postR_[static_cast<size_t>(i)];
+            }
+            if (k > 0 && !deliverNow(postOut_.data(), k)) return false;
+            at += n;
+        }
+        return !failed_;
+    }
+    bool deliverNow(float* out, int m) {
         for (int i = 0; i < m; ++i) {
             meter_.add(out[2 * i], out[2 * i + 1]);
             range_.add(out[2 * i], out[2 * i + 1]);
@@ -230,6 +276,9 @@ private:
     LoudnessMeter meter_;
     LoudnessRange range_;
     bool failed_ = false;
+    std::unique_ptr<MasterChain> post_;
+    std::vector<float> postL_, postR_, postOut_;
+    int postSkip_ = 0, postFlushed_ = 0;
 };
 
 // --- The renderer ---------------------------------------------------------------------------
@@ -469,13 +518,17 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
             const auto measure = [&](double d, float from, float to, double& lufs) {
                 return masterPass(*store, static_cast<float>(d), [](float*, int) { return true; }, from, to, &lufs);
             };
+            // Lot E: an M4A's limiter sits under its WAV's ceiling (SetMaster 9): the codec's headroom (1 dB
+            // at most) comes off the peaks, as in the Drop mode, not off the loudness asked.
+            const double maxLoss = MasterChain::kMaxLossDb +
+                                   (std::isfinite(live.driveCeilingDb()) ? std::clamp(double(live.driveCeilingDb()) - live.ceilingDb(), 0.0, 1.0) : 0.0);
             // What the chain takes off the driven music (LU): past kMaxLossDb it only squashes.
             const auto loss = [pre](double d, double l) { return pre + d - l; };
             const double d0 = clampDrive(target - pre);
             double l0 = 0.0, l1 = 0.0;
             if ((result = measure(d0, 0.8f, 0.875f, l0)) != Result::Ok) return result;
             drive = d0;
-            if (std::fabs(l0 - target) > 0.1 && !(l0 < target && loss(d0, l0) >= MasterChain::kMaxLossDb)) {
+            if (std::fabs(l0 - target) > 0.1 && !(l0 < target && loss(d0, l0) >= maxLoss)) {
                 const double d1 = clampDrive(d0 + (target - l0));
                 if ((result = measure(d1, 0.875f, 0.95f, l1)) != Result::Ok) return result;
                 drive = d1;
@@ -484,7 +537,7 @@ OfflineRenderer::Result OfflineRenderer::render(int64_t frames, int64_t tailFram
                     double d2 = d1 + (target - l1) / (slope > 0.05 ? slope : 1.0);
                     // Louder only while the chain gives loudness for its reduction.
                     const double lossSlope = 1.0 - slope;
-                    if (d2 > d1 && lossSlope > 0.05) d2 = std::min(d2, d1 + (MasterChain::kMaxLossDb - loss(d1, l1)) / lossSlope);
+                    if (d2 > d1 && lossSlope > 0.05) d2 = std::min(d2, d1 + (maxLoss - loss(d1, l1)) / lossSlope);
                     drive = clampDrive(d2);
                 }
             }
@@ -571,7 +624,11 @@ OfflineRenderer::Result OfflineRenderer::renderToWav(const char* path, int64_t f
     WavWriter wav;
     wav.setNoiseShaping(finish_.noiseShaping);
     if (!wav.openBits(path, outRate_, 2, bits_)) return Result::IoError;
-    Output output(sampleRate_, outRate_, kept(frames), tailFrames, fadeOut_, [&wav](float* b, int n) { return wav.write(b, n); }, finish_);
+    // The commands so far applied: the master's limiter and ceiling are known (resampled files are limited again).
+    engine_->process(nullptr, 0, 0, block_, 0, 2);
+    const MasterChain& mc = engine_->mixer().masterChain();
+    const float postCeiling = outRate_ != sampleRate_ && mc.limiterOn() ? mc.ceilingDb() : NAN;
+    Output output(sampleRate_, outRate_, kept(frames), tailFrames, fadeOut_, [&wav](float* b, int n) { return wav.write(b, n); }, finish_, postCeiling);
     if (!output.ok()) return Result::IoError;
     const std::string temp = std::string(path) + ".premaster";
     const Result r = render(frames, tailFrames, [&temp]() -> std::unique_ptr<Store> {

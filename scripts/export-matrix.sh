@@ -56,14 +56,16 @@ fi
 echo "== Cases (pairwise)"
 python3 -I "$ROOT/scripts/bench/pairwise.py" --check > "$OUT/cases.tsv"
 CASES="$OUT/cases"
-rm -rf "$CASES" "$OUT/stems"
+# --cases: those again only, the others kept.
+[ -n "$ONLY" ] || rm -rf "$CASES"
+rm -rf "$OUT/stems"
 mkdir -p "$CASES" "$OUT/stems"
-export OUT TOOLS CASES
+export OUT TOOLS CASES ROOT
 
 # One case: the render (and the M4A's encoding loop) into $CASES/<case>.<wav|m4a>, the report beside it.
 render_case() {
     IFS=$'\t' read -r id style format rate bits target ceiling <<< "$1"
-    cmd="$OUT/cmds/$style.pscmd"
+    cmd="$OUT/cmds/$style.case.pscmd"
     [ -f "$cmd" ] || { echo "FAILED: $id: no recording for $style" >&2; return 1; }
     args=()
     case "$target" in
@@ -75,7 +77,7 @@ render_case() {
         none) args+=(--no-limiter) ;;
     esac
     # Every other 16-bit case with the shaped dither.
-    [ "$bits" = 16 ] && [ $(( ${id#c} % 2 )) = 0 ] && args+=(--shape)
+    [ "$bits" = 16 ] && [ $(( 10#${id#c} % 2 )) = 0 ] && args+=(--shape)
     if [ "$format" = m4a ]; then
         # As the app: the limiter 1 dB under the ceiling, the drive found at the ceiling, encoded from 16
         # bits; decoded over the ceiling, rendered again lower (3 renders), then encoded lower.
@@ -109,11 +111,18 @@ render_case() {
 }
 export -f render_case
 
+# Each song's first MATRIX_SECONDS (100 by default: its Intro, its first Drop; the disk holds them all).
+SECONDS_CAP=$(( ${MATRIX_SECONDS:-100} * 48000 ))
+for f in "$OUT"/cmds/*.pscmd; do
+    case "$f" in *.case.pscmd|*.short.pscmd) continue ;; esac
+    awk -v cap="$SECONDS_CAP" '/^RENDER /{ if ($3 > cap) $3 = cap } {print}' "$f" > "${f%.pscmd}.case.pscmd"
+done
+
 echo "== Rendering ($JOBS at a time)"
 tail -n +2 "$OUT/cases.tsv" | while IFS= read -r line; do
     id="${line%%$'\t'*}"
     if [ -z "$ONLY" ] || [[ ",$ONLY," == *",$id,"* ]]; then printf '%s\0' "$line"; fi
-done | xargs -0 -P "$JOBS" -I{} bash -c 'render_case "$1"' _ {}
+done | xargs -0 -P "$JOBS" -I{} bash -c 'render_case "$1"' _ {} || echo "some renders failed (the check says which)"
 
 echo "== Stems (sum against the mix without the master)"
 # The first 40 s of each song (the RENDER line shortened): each strip alone with its sends, or (every
@@ -122,7 +131,7 @@ stem_style() {
     style="$1"; mode="$2"
     dir="$OUT/stems/$style"
     mkdir -p "$dir"
-    awk '/^RENDER /{ $3 = ($3 > 1920000 ? 1920000 : $3) } {print}' "$OUT/cmds/$style.pscmd" > "$OUT/cmds/$style.short.pscmd"
+    awk '/^RENDER /{ if ($3 > 1920000) $3 = 1920000 } {print}' "$OUT/cmds/$style.pscmd" > "$OUT/cmds/$style.short.pscmd"
     cmd="$OUT/cmds/$style.short.pscmd"
     "$TOOLS/ps_render" --no-limiter --no-master-fx --bits 32 "$cmd" "$dir/mix.wav"
     for ch in 0 1 2 3 5 6 7 8 9 10 11 12 13 14 15 32 33 34 35; do
@@ -137,6 +146,9 @@ stem_style() {
         "$TOOLS/ps_render" --no-limiter --no-master-fx --bits 24 --stem-mode 3 "$cmd" "$dir/stem-echo.wav"
     fi
     echo "$mode" > "$dir/mode.txt"
+    # Checked at once, the audio then deleted (the disk).
+    python3 -I "$ROOT/scripts/bench/matrix_check.py" --stems "$dir" > "$dir/result.json"
+    rm -f "$dir"/*.wav
     echo "  stems of $style ($mode) done"
 }
 export -f stem_style

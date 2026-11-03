@@ -101,6 +101,11 @@ def check_case(folder, case):
     if target in TARGETS:
         if lufs is None or abs(lufs - TARGETS[target]) > 0.5:
             problems.append(f"LUFS {lufs} (target {TARGETS[target]})")
+        # Lot E: the chain stops short of a target that loud rather than squash the song (6 LU at most taken,
+        # 7 for an M4A whose limiter sits 1 dB lower): said, not failed.
+        if lufs is not None and lufs < TARGETS[target] - 0.5 and report["loss_db"] >= (6.85 if fmt == "m4a" else 5.85):
+            problems = [p for p in problems if not p.startswith("LUFS")]
+            notes.append(f"{lufs:.1f} for {TARGETS[target]:.1f} (the chain's {report['loss_db']:.1f} LU taken: its most)")
     elif target == "style":
         want, loud = report["target_lufs"], report["loud_lufs"]
         if abs(loud - want) > 0.5:
@@ -136,15 +141,20 @@ def check_stems(folder, style):
                 return {"style": style, "mode": mode, "ok": False, "residual": None, "count": count, "why": f"{name} longer than the mix"}
     peak = np.max(np.abs(mix))
     residual = 20 * np.log10(max(np.max(np.abs(total - mix)), 1e-12) / max(peak, 1e-12))
-    return {"style": style, "mode": mode, "ok": residual < -60.0 and peak > 0.01, "residual": residual, "count": count, "why": ""}
+    return {"style": style, "mode": mode, "ok": bool(residual < -60.0 and peak > 0.01), "residual": float(residual), "count": count, "why": ""}
 
 
 def main():
+    if sys.argv[1] == "--stems":
+        d = sys.argv[2]
+        print(json.dumps(check_stems(os.path.dirname(os.path.dirname(d)), os.path.basename(d))))
+        return
     folder = sys.argv[1]
     lines = [l.rstrip("\n").split("\t") for l in open(os.path.join(folder, "cases.tsv")) if l.strip()]
     header, cases = lines[0], lines[1:]
     results = [check_case(folder, c) for c in cases if os.path.exists(os.path.join(folder, "cases", f"{c[0]}.json"))]
-    stems = [check_stems(folder, s) for s in sorted(os.listdir(os.path.join(folder, "stems"))) if os.path.isdir(os.path.join(folder, "stems", s))]
+    stems = [json.load(open(os.path.join(folder, "stems", s, "result.json"))) for s in sorted(os.listdir(os.path.join(folder, "stems")))
+             if os.path.exists(os.path.join(folder, "stems", s, "result.json"))]
     md = ["# Matrice des exports (paires)", "",
           "| cas | style | format | Hz | bits | cible | plafond | LUFS | crête | LRA | PLR | résultat |",
           "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |"]

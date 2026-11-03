@@ -16,9 +16,72 @@ data class PadLiveSet(
     @EncodeDefault(EncodeDefault.Mode.NEVER) val home: Boolean = false,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val page: Int = 0,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val pack: String = "",
+    /** Lot B3: the best stars (0..3) of each challenge played ([PadChallenge.LEVELS], in order). */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val stars: List<Int> = emptyList(),
+    /**
+     * Lot B3: the pads the last Live take kept (its « Pads live » audio track), as they played: what
+     * « Pistes séparées » renders again, one file per pad. Null: no take kept its pads.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val take: PadTakeRecord? = null,
 ) {
     /** [page] read safely (a hand-edited file). */
     val shownPage: Int get() = page.coerceIn(0, PadLive.PAGES - 1)
+
+    /** The challenge to play next: the first without two stars (1-based; past the last: the last). */
+    val nextChallenge: Int get() {
+        val first = PadChallenge.LEVELS.indices.firstOrNull { (stars.getOrNull(it) ?: 0) < 2 } ?: PadChallenge.LEVELS.lastIndex
+        return first + 1
+    }
+
+    /** [stars] with level [level] (1-based) at [got] if better. */
+    fun withStars(level: Int, got: Int): PadLiveSet {
+        val i = level - 1
+        if (i !in PadChallenge.LEVELS.indices) return this
+        val list = stars.take(PadChallenge.LEVELS.size).toMutableList()
+        while (list.size <= i) list += 0
+        if (got.coerceIn(0, 3) <= list[i]) return this
+        list[i] = got.coerceIn(0, 3)
+        return copy(stars = list)
+    }
+}
+
+/**
+ * Lot B3: one pad of a Live take as it sounded ([LivePadTake.Span]), kept with the project for
+ * « Pistes séparées ». [until] < 0: a hit, its whole sound once.
+ */
+@Serializable
+data class PadSpanRecord(val pad: Int, val from: Double, val until: Double, val velocity: Float = 1f) {
+    fun span(): LivePadTake.Span = LivePadTake.Span(pad, from, if (until < 0) Double.POSITIVE_INFINITY else until, oneShot = until < 0, velocity = velocity)
+
+    companion object {
+        fun of(s: LivePadTake.Span) = PadSpanRecord(s.pad, s.from, if (s.oneShot || !s.until.isFinite()) -1.0 else s.until, s.velocity)
+    }
+}
+
+/**
+ * Lot B3: the pads a Live take kept on audio track [track] (its « Pads live »): transport steps
+ * [start] to [end] at [bpm], each pad's [spans], and the pads' sounds as they were then ([clips],
+ * by pad), so that a pad changed since still gives the take's sound.
+ */
+@Serializable
+data class PadTakeRecord(
+    val track: Int,
+    val start: Int,
+    val end: Int,
+    val bpm: Double,
+    val spans: List<PadSpanRecord> = emptyList(),
+    val clips: Map<Int, LiveClip> = emptyMap(),
+) {
+    /** The pads it played, in order. */
+    val pads: List<Int> get() = spans.map { it.pad }.distinct().sorted()
+
+    /** The clips as a list by pad index (what [com.pocketstudio.model.LivePadTake] and the bounce read). */
+    fun clipList(): List<LiveClip?> = List(LivePads.ALL) { clips[it] }
+
+    companion object {
+        /** At most this many spans are kept (a long set: the rest plays on the track, not in the separate files). */
+        const val MAX_SPANS = 4096
+    }
 }
 
 /** How a pad plays: once per touch (« coup »), a loop a touch starts and the next stops (« boucle »), or a loop while held (« tenir »). */

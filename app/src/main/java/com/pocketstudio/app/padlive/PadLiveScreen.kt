@@ -29,6 +29,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Celebration
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.PlayArrow
@@ -80,6 +83,7 @@ import com.pocketstudio.model.PadMode
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.hit
 import com.pocketstudio.ui.padLight
 import com.pocketstudio.ui.rememberPadLight
 
@@ -108,6 +112,12 @@ class PadLiveUi(
     val emptyPad: String? = null,
     /** A word to show once (a take placed, too short…), null: none. */
     val message: String? = null,
+    /** Lot B3: the challenge (« Défi ») and the pad its example lights now (null: none). */
+    val challenge: ChallengeUi = ChallengeUi.Off,
+    val challengeLit: Int? = null,
+    /** Lot B3: a Live take (● REC) just kept: « Perf gardée » with Écouter and Partager; its song lasts [perfSeconds]. */
+    val takeDone: Boolean = false,
+    val perfSeconds: Int = 0,
 )
 
 /** Every gesture of Pad Live, given by the app. */
@@ -156,6 +166,13 @@ class PadLiveActions(
     val placeInBrick: () -> Unit = {},
     val dropTake: () -> Unit = {},
     val messageShown: () -> Unit = {},
+    /** Lot B3: « Défi » opens the challenge panel; its buttons. */
+    val challenge: () -> Unit = {},
+    val challengeActions: ChallengeActions = ChallengeActions(),
+    /** Lot B3: « Partager ma perf »; the kept take's « Écouter » and its line closed. */
+    val share: () -> Unit = {},
+    val listenTake: () -> Unit = {},
+    val dismissTake: () -> Unit = {},
 )
 
 /**
@@ -173,7 +190,19 @@ fun PadLiveScreen(
     record: @Composable () -> Unit = {},
     /** Tests: the pads' clock does not run (a still capture). */
     still: Boolean = false,
+    /** Lot B3: the pads' levels (the engine's, [com.pocketstudio.engine.NativeEngine.clipLevels]); null: the lights stay full while they play. */
+    readLevels: ((FloatArray) -> Unit)? = null,
+    /** Lot B3: the levels the lights read (tests give theirs). */
+    levels: PadLevels = remember { PadLevels() },
+    /** Lot B3: « Fête » shown (tests). */
+    partyAtStart: Boolean = false,
 ) {
+    var party by rememberSaveable { mutableStateOf(partyAtStart) }
+    if (party) {
+        androidx.activity.compose.BackHandler { party = false }
+        PartyScreen(ui, actions, clockOf, levels, readLevels, leave = { party = false }, still = still)
+        return
+    }
     var more by rememberSaveable { mutableStateOf(false) }
     var settingsOf by rememberSaveable { mutableStateOf<Int?>(null) }
     val held = remember { HeldFx() }
@@ -183,14 +212,20 @@ fun PadLiveScreen(
     val clockNow by rememberUpdatedState(clockOf)
     val tempoNow by rememberUpdatedState(ui.tempoBpm)
     val barNow by rememberUpdatedState(ui.beatsPerBar)
+    val readNow by rememberUpdatedState(readLevels)
     // One frame clock for every pad, only while something plays: still otherwise.
     val active = !still && (ui.playing || ui.states.any { it != 0 })
     LaunchedEffect(active) {
         if (!active) {
             clock.stop()
+            // Stopped: every light falls dark (a still capture keeps the levels it was given).
+            if (!still) levels.clear()
             return@LaunchedEffect
         }
-        val tick: (Long) -> Unit = { n -> clock.tick(n, clockNow(), statesNow, clipsNow, tempoNow, barNow) }
+        val tick: (Long) -> Unit = { n ->
+            clock.tick(n, clockNow(), statesNow, clipsNow, tempoNow, barNow)
+            readNow?.let { levels.update(it) }
+        }
         androidx.compose.runtime.withFrameNanos(tick)
         while (true) androidx.compose.animation.core.withInfiniteAnimationFrameNanos(tick)
     }
@@ -208,6 +243,7 @@ fun PadLiveScreen(
             Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("padlive_busy"))
         }
         if (ui.busy == null) ui.message?.let { PadLiveMessage(it, actions.messageShown) }
+        if (ui.takeDone) PerfLine(ui, actions)
         BoxWithConstraints(Modifier.fillMaxWidth().weight(1f)) {
             val gap = 8.dp
             // Lot B2: each row's ▶ at its end (the row launched together, on the bar).
@@ -222,12 +258,15 @@ fun PadLiveScreen(
                             val slot = row * 4 + col
                             val pad = PadLive.pad(ui.page, slot)
                             val clip = ui.pads.at(pad)
+                            // A challenge's example lights its pads as it plays (as if they played).
+                            val state = if (ui.challengeLit == pad) 2 else ui.states.getOrElse(pad) { 0 }
                             PadLivePad(
-                                pad, clip, ui.states.getOrElse(pad) { 0 }, clock, ui.effectHeld,
+                                pad, clip, state, clock, ui.effectHeld,
                                 Modifier.size(width = byWidth.coerceAtMost(side * 1.35f), height = side),
                                 touch = actions.touch,
                                 empty = { actions.browse(pad) },
                                 settings = { settingsOf = pad },
+                                level = if (readLevels != null && ui.challengeLit != pad) ({ levels.of(pad) }) else null,
                             )
                         }
                         RowButton(ui, row, Modifier.size(width = ROW_BUTTON, height = side), actions.launchRow)
@@ -237,8 +276,9 @@ fun PadLiveScreen(
             // A held effect's panel over the pads' last rows (the pads do not move under the finger).
             HeldFxPanel(held, Modifier.align(Alignment.BottomCenter).fillMaxWidth())
         }
-        SceneEffects(ui, actions, more, held)
-        AnimatedVisibility(more) { MoreRow(ui, actions) }
+        if (ui.challenge != ChallengeUi.Off) ChallengePanel(ui.challenge, ui.pads, actions.challengeActions)
+        else SceneEffects(ui, actions, more, held)
+        AnimatedVisibility(more) { MoreRow(ui, actions, party = { party = true }) }
         Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             PlayedButton(ui.played, actions.played, Modifier.weight(1f))
             Row(
@@ -314,6 +354,7 @@ private fun PadLivePad(
     touch: (Int, Boolean) -> Unit,
     empty: () -> Unit,
     settings: () -> Unit,
+    level: (() -> Float)? = null,
 ) {
     val haptics = LocalHapticFeedback.current
     val light = rememberPadLight()
@@ -336,7 +377,7 @@ private fun PadLivePad(
             .padLight(
                 light, color, playing = clip != null && state == 2, waiting = clip != null && state == 1,
                 progress = if (loops) ({ clock.position(pad, beats) }) else null,
-                veil = veil && state == 2, corner = 14.dp, touchable = clip != null,
+                veil = veil && state == 2, corner = 14.dp, touchable = clip != null, level = level,
             )
             .pointerInput(pad) {
                 awaitEachGesture {
@@ -345,20 +386,15 @@ private fun PadLivePad(
                         if (waitForUpOrCancellation() != null) emptyNow()
                         return@awaitEachGesture
                     }
-                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    haptics.hit()
                     touchNow(pad, true)
                     waitForUpOrCancellation()
                     touchNow(pad, false)
                 }
             }
             .semantics {
-                val what = when {
-                    clip == null -> tr("vide")
-                    state == 2 -> tr("joue")
-                    state == 1 -> tr("en attente")
-                    else -> tr("prêt")
-                }
-                contentDescription = "${name ?: tr("Pad %d", pad % PadLive.PAGE_SIZE + 1)} · $what"
+                // Lot B3: the same words on Pad Live and in « Fête » (sound, mode, state, place).
+                contentDescription = padDescription(pad, clip, state)
                 role = Role.Button
                 onClick {
                     if (clip == null) emptyNow() else { touchNow(pad, true); touchNow(pad, false) }
@@ -385,11 +421,17 @@ private fun PadLivePad(
                 modifier = Modifier.padding(top = 6.dp, end = 8.dp),
             )
         }
-        Text(
-            name.orEmpty(), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Neon.TextPrimary,
-            maxLines = 2, overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.align(Alignment.BottomStart).padding(horizontal = 10.dp, vertical = 8.dp),
-        )
+        // A short pad (a small phone with « Plus » open): its name a little smaller, clear of the corner's word.
+        BoxWithConstraints(Modifier.matchParentSize()) {
+            val style = MaterialTheme.typography.titleSmall
+            Text(
+                name.orEmpty(), style = style, fontWeight = FontWeight.Bold, color = Neon.TextPrimary,
+                maxLines = 2, overflow = TextOverflow.Ellipsis,
+                autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 10.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
+                modifier = Modifier.align(Alignment.BottomStart).heightIn(max = (maxHeight - 26.dp).coerceAtLeast(16.dp))
+                    .padding(horizontal = 10.dp).padding(bottom = 6.dp),
+            )
+        }
     }
 }
 
@@ -546,27 +588,66 @@ private fun RowButton(ui: PadLiveUi, row: Int, modifier: Modifier, launch: (Int)
 /** A row's ▶'s width. */
 private val ROW_BUTTON = 26.dp
 
-/** « Plus »: everything stopped, « Annuler », the whole Live page, the pads' effects box. */
+/**
+ * « Plus »: everything stopped, « Annuler », the whole Live page, the pads' effects box; lot B3:
+ * « Fête » (the pads on the whole screen) and « Partager » (ma perf).
+ */
 @Composable
-private fun MoreRow(ui: PadLiveUi, actions: PadLiveActions) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        MoreButton(Icons.Filled.StopCircle, tr("Tout couper"), "padlive_stop_all", Modifier.weight(1f), actions.stopAll)
-        MoreButton(Icons.AutoMirrored.Filled.Undo, tr("Annuler"), "padlive_undo", Modifier.weight(1f), actions.undo, enabled = ui.canUndo)
-        MoreButton(Icons.Filled.GridView, tr("Briques"), "padlive_live", Modifier.weight(1f), actions.openLive)
-        MoreButton(Icons.Filled.Tune, tr("Effets"), "padlive_effects", Modifier.weight(1f), actions.effects)
+private fun MoreRow(ui: PadLiveUi, actions: PadLiveActions, party: () -> Unit) {
+    // Two rows of three (lot B3: six buttons on one row cut « Briques » in two on a 360 dp phone).
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            MoreButton(Icons.Filled.StopCircle, tr("Tout couper"), "padlive_stop_all", Modifier.weight(1f), actions.stopAll)
+            MoreButton(Icons.AutoMirrored.Filled.Undo, tr("Annuler"), "padlive_undo", Modifier.weight(1f), actions.undo, enabled = ui.canUndo)
+            MoreButton(Icons.Filled.GridView, tr("Briques"), "padlive_live", Modifier.weight(1f), actions.openLive)
+        }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            MoreButton(Icons.Filled.Tune, tr("Effets"), "padlive_effects", Modifier.weight(1f), actions.effects)
+            MoreButton(Icons.Filled.Celebration, tr("Fête"), "padlive_party_open", Modifier.weight(1f), party)
+            MoreButton(Icons.Filled.IosShare, tr("Partager"), "padlive_share", Modifier.weight(1f), actions.share)
+        }
+    }
+}
+
+/** Lot B3: a Live take just kept (● REC, then Fin): « Perf gardée · 0:42 », « Écouter », « Partager », ✕. */
+@Composable
+private fun PerfLine(ui: PadLiveUi, actions: PadLiveActions) {
+    Row(
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(Neon.SurfaceHigh).padding(start = 12.dp)
+            .testTag("padlive_perf"),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(
+            tr("Perf gardée · %s", "%d:%02d".format(ui.perfSeconds / 60, ui.perfSeconds % 60)), style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold, color = Neon.Acid, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f),
+        )
+        androidx.compose.material3.TextButton(onClick = actions.listenTake, modifier = Modifier.heightIn(min = 48.dp).testTag("padlive_perf_listen")) {
+            Text(tr("Écouter"), maxLines = 1)
+        }
+        androidx.compose.material3.TextButton(onClick = actions.share, modifier = Modifier.heightIn(min = 48.dp).testTag("padlive_perf_share")) {
+            Text(tr("Partager"), maxLines = 1, fontWeight = FontWeight.Bold, color = Neon.Amber)
+        }
+        IconButton(onClick = actions.dismissTake, modifier = Modifier.size(44.dp).testTag("padlive_perf_close")) {
+            Icon(Icons.Filled.Close, contentDescription = tr("Fermer"), tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))
+        }
     }
 }
 
 @Composable
 private fun MoreButton(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, tag: String, modifier: Modifier, onClick: () -> Unit, enabled: Boolean = true) {
-    Column(
-        modifier.heightIn(min = 56.dp).clip(RoundedCornerShape(14.dp)).background(Neon.Surface)
-            .clickable(enabled = enabled, role = Role.Button, onClick = onClick).padding(6.dp).testTag(tag),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+    Row(
+        modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(14.dp)).background(Neon.Surface)
+            .clickable(enabled = enabled, role = Role.Button, onClick = onClick).padding(horizontal = 8.dp).testTag(tag),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
     ) {
         val tint = if (enabled) Neon.TextPrimary else Neon.TextSecondary.copy(alpha = 0.5f)
-        Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp))
-        Text(label, style = MaterialTheme.typography.labelMedium, color = tint, maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+        Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(18.dp))
+        Spacer(Modifier.width(6.dp))
+        Text(
+            label, style = MaterialTheme.typography.labelMedium, color = tint, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis,
+            autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = MaterialTheme.typography.labelMedium.fontSize, stepSize = 0.5.sp),
+        )
     }
 }

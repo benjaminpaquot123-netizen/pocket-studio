@@ -59,6 +59,12 @@ class PadLiveController(private val vm: RhythmViewModel) {
     /** Lot B2: « Enregistrer ce que je joue ». */
     val played = PlayedTake(vm)
 
+    /** Lot B3: the challenges (« refais ce rythme »). */
+    val challenge = ChallengeController(vm)
+
+    /** Lot B3: « Partager ma perf » (the sound, the pads one file each). */
+    val perf = PerfShare(vm)
+
     /** Pad Live is on the screen (set by its route): a controller's pads play its pads. */
     @Volatile var shown: Boolean = false
 
@@ -103,6 +109,7 @@ class PadLiveController(private val vm: RhythmViewModel) {
     fun touch(pad: Int, down: Boolean, velocity: Float = 1f) {
         val pads = vm.project.value.live
         val clip = pads.at(pad) ?: return
+        if (down) challenge.tapped(pad)
         val sounding = vm.padsSoundingNow()
         if (PadLive.touch(clip, down, pad in sounding) != PadTouch.TOGGLE) return
         PadLive.choked(pads, pad, sounding).forEach { toggle(it) }

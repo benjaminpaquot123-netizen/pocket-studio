@@ -105,6 +105,8 @@ object I18n {
         "mysounds",
         // Owner (2026-10-30): the one sound browser (folders by meaning, Récents, Favoris), « Fête », the ready-to-play live pads.
         "browser",
+        // Lot C (n° 24): « Découper la chanson », « Garder » filed by song, the rights line at sharing.
+        "remixc",
     )
 
     @Volatile

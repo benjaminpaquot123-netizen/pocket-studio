@@ -154,6 +154,12 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                             use = tr("Poser"),
                             mine = mine.map { SoundOption(SoundRef.Mine(it.id), it.name) },
                             mineContent = { MySoundsCard(mine, kind, ui, actions) },
+                            // Lot C: the pieces kept from a song in its own folder (« Ma bibliothèque › Boys »).
+                            mineGroupOf = { o -> (o.ref as? SoundRef.Mine)?.let { r -> mine.firstOrNull { it.id == r.id }?.origin } },
+                            mineContentOf = { some ->
+                                val ids = some.mapNotNull { (it.ref as? SoundRef.Mine)?.id }.toSet()
+                                MySoundsCard(mine.filter { it.id in ids }, kind, ui, actions)
+                            },
                             search = { q -> librarySearch(q, ui) },
                             kindOf = { o -> soundKind(o.ref, ui.mine) },
                         ),

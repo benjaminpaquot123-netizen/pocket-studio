@@ -311,7 +311,7 @@ class TutoController(
             c.startsWith("send:") || c.startsWith("insert:") -> (TutoChecks.channelsToDo(s, p).firstOrNull() ?: channelOf(p, s.target.substringBefore(',').ifEmpty { "bass" }))
                 ?.let { TutoGo(effects = it, send = if (c.startsWith("send:")) arg.toIntOrNull() else null, spot = spot) } ?: plain
             // The volumes: the fader of the track the step names first.
-            c == "changed:volumes" || c.startsWith("changed:volumes:") -> volumeRoles(c).firstNotNullOfOrNull { channelOf(p, it) }
+            c == "changed:volumes" || c.startsWith("changed:volumes:") -> volumeStrips(c, p).firstOrNull()
                 ?.let { TutoGo(open = GuideOpen(s.spot, s.target), strip = it, spot = spot) } ?: plain
             // « Ajouter : » and its buttons, not the parts' list above them.
             c == "song:order" -> TutoGo(GuideOpen(SONG_ADD_SPOT, ""), spot = spot)
@@ -326,9 +326,15 @@ class TutoController(
     /** The knobs of a "changed:synth:…" step not turned up yet since it began (all of them when none is, or no baseline). */
     private fun knobsLeft(c: String, p: Project, track: Int): List<Int> {
         val all = knobsOf(c)
-        val before = (base() as? List<*>)?.firstOrNull() as? com.pocketstudio.model.SynthPatch ?: return all
-        val now = p.track(track).synth
-        return all.filter { k -> now.get(k) < before.get(k) + KNOB_TURNED && now.get(k) < 0.95f }.ifEmpty { all }
+        val b = base() as? List<*>
+        val now = p.track(track)
+        val synth = b?.getOrNull(0) as? com.pocketstudio.model.SynthPatch ?: return all
+        val before = now.copy(synth = synth, plaits = b.getOrNull(1) as? com.pocketstudio.model.PlaitsPatch ?: now.plaits)
+        // The knob as the track's sound has it (a Plaits « Analogique + filtre »: its own cutoff and resonance).
+        return all.filter { k ->
+            val v = TutoChecks.knobValue(now, k) ?: return@filter true
+            v < (TutoChecks.knobValue(before, k) ?: v) + KNOB_TURNED && v < 0.95f
+        }.ifEmpty { all }
     }
 
     /** The strips a "send:<bus>" step sends (as [TutoChecks.done] reads them): the reverb's « Accords » and the snare's pad, the echo's lead. */
@@ -416,9 +422,19 @@ class TutoController(
     }
 
     /** The mixer channel of [role]'s track ("bass", "pad"…) or pad ("snare"…), null when the project has none. */
-    private fun channelOf(p: Project, role: String): Int? =
-        TutoChecks.trackFor(p, role)?.let(com.pocketstudio.model.InstrumentTrack::mixerChannel)
-            ?: role.takeIf { it in DRUM_ROLES }?.let { com.pocketstudio.model.Mixer.padChannel(TutoChecks.laneOf(it)) }
+    // The 303's own strip too ("acid": acid techno's « baisse la 303, puis le Clap » rang the Clap's, absent from the simple Mix).
+    private fun channelOf(p: Project, role: String): Int? = TutoChecks.stripOf(p, role)
+
+    /** The strips of a "changed:volumes:…" step, those not lowered yet since it began first (as [TutoChecks.done] reads them). */
+    private fun volumeStrips(c: String, p: Project): List<Int> {
+        val all = volumeRoles(c).mapNotNull { channelOf(p, it) }
+        val base = base() as? List<*> ?: return all
+        val (left, done) = all.partition { ch ->
+            val was = base.getOrNull(ch) as? Float ?: return@partition true
+            (p.mixer.channels.getOrNull(ch)?.volume ?: was) >= was - 0.005f
+        }
+        return left + done
+    }
 
     /** Where the current step's control is, to bring it into view when the step begins (no ring, the panel as it is). */
     fun place(): TutoGo? = _ui.value?.let { u -> goFor(u.current, project.value, spot = false) }

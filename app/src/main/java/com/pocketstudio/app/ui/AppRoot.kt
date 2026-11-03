@@ -1750,7 +1750,11 @@ fun AppRoot() {
     // Its screens gone, the tutorial no longer runs for them (the drum grid follows the music again).
     DisposableEffect(Unit) { onDispose { com.pocketstudio.app.tuto.TutoHints.active = false } }
     LaunchedEffect(tutoUi?.progress?.done?.size) { com.pocketstudio.app.tuto.TutoHints.ticked++ }
-    LaunchedEffect(tutoUi?.current?.id) { com.pocketstudio.app.tuto.TutoHints.knobs = tuto.place()?.knobs.orEmpty().toSet() }
+    LaunchedEffect(tutoUi?.current?.id) {
+        val place = tuto.place()
+        com.pocketstudio.app.tuto.TutoHints.knobs = place?.knobs.orEmpty().toSet()
+        com.pocketstudio.app.tuto.TutoHints.strip = place?.strip
+    }
     LaunchedEffect(tutoUi?.current?.id) { com.pocketstudio.app.tuto.TutoHints.step = tutoUi?.current?.id }
     // Testers (lot « tuto 5 »): « Copier sur les mesures suivantes » next: offered over the grid too, where the eyes are.
     val tutoCopy = (tutoUi?.need as? com.pocketstudio.model.tuto.TutoNeed.Copy)?.role
@@ -1924,6 +1928,7 @@ fun AppRoot() {
                 // The fader of the track the step names: the Mode simple's « Mix », else the console's strip with its
                 // name (testers, lot « tuto 4 »: the first strip, the drums', was ringed for the « Accords »).
                 g.strip != null -> {
+                    com.pocketstudio.app.tuto.TutoHints.strip = g.strip
                     go(AppTab.Mixeur)
                     val ids = listOf(if (simpleNow) "mix_strip_${g.strip}" else "console_strip_${g.strip}")
                     if (g.spot) tutoSpot = ids else tutoReveal = ids

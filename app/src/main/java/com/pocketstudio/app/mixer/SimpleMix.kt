@@ -182,6 +182,11 @@ fun SimpleMixScreen(ui: SimpleMixUi, meters: () -> FloatArray, loudness: () -> F
     val alone = ui.listening?.target
     com.pocketstudio.app.rhythm.HoldAlone(ui.listening?.from == SimpleMixActions.FROM, actions.holdAlone)
     val drums = ui.tracks.firstOrNull { it.key == com.pocketstudio.model.SongPart.DRUMS }
+    // A tutorial's step on a drum sound's level (acid techno: « puis celui du pad Clap »): the drums open on their sounds.
+    val asked = com.pocketstudio.app.tuto.TutoHints.strip
+    androidx.compose.runtime.LaunchedEffect(asked, drums != null) {
+        if (asked != null && drums?.pads.orEmpty().any { Mixer.padChannel(it.lane) == asked }) drumsOpen = true
+    }
     val shownPads = if (drumsOpen) drums?.pads.orEmpty().map { it.lane }.toSet() else emptySet()
     val meterPads by rememberUpdatedState(actions.meterPads)
     DisposableEffect(shownPads) {
@@ -297,7 +302,7 @@ private fun DrumsGroup(
     meters: () -> FloatArray, actions: SimpleMixActions,
 ) {
     Column(
-        Modifier.consoleStrip(RoundedCornerShape(12.dp), 0.45f).padding(6.dp).testTag("mix_strip_${t.ch}"),
+        Modifier.consoleStrip(RoundedCornerShape(12.dp), 0.45f).padding(6.dp).spot("mix_strip_${t.ch}").testTag("mix_strip_${t.ch}"),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Box(
@@ -318,7 +323,8 @@ private fun DrumsGroup(
                 val v = padVolumes[pad.lane] ?: Mixer.DEFAULT_VOLUME
                 val on = target != null && target.channels.isEmpty() && target.pads == setOf(pad.lane)
                 Column(
-                    Modifier.width(MINI_W).clip(RoundedCornerShape(8.dp)).background(Neon.Surface.copy(alpha = 0.7f)).padding(vertical = 4.dp).testTag("mix_pad_${pad.lane}"),
+                    Modifier.width(MINI_W).clip(RoundedCornerShape(8.dp)).background(Neon.Surface.copy(alpha = 0.7f)).padding(vertical = 4.dp)
+                        .spot("mix_strip_$ch").testTag("mix_pad_${pad.lane}"),
                     horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(pad.name, style = MaterialTheme.typography.labelSmall, maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center, lineHeight = 12.sp, modifier = Modifier.heightIn(min = 26.dp))

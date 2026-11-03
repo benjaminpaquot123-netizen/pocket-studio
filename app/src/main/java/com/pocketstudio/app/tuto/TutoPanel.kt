@@ -115,6 +115,8 @@ object TutoHints {
     var erase by mutableStateOf<Map<Int, Set<Int>>?>(null)
     /** The synth knobs a step names ([TutoGo.knobs]): dashed, the advanced ones unfolded. */
     var knobs by mutableStateOf<Set<Int>>(emptySet())
+    /** The mixer strip a step points at ([TutoGo.strip]): the simple Mix opens its drums when it is a drum sound's. */
+    var strip by mutableStateOf<Int?>(null)
     /** A send step's halves (« Accords ✓ · Caisse : à régler ici »), over its dashed send. */
     var sendNote by mutableStateOf<String?>(null)
     /** The tutorial runs (its panel has the bottom of the screen). */

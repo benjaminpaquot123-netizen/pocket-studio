@@ -344,7 +344,16 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
                 h.vm.selectTrack(id)
                 // The knobs the step names, each turned up (« Coupure », « Résonance »…).
                 val knobs = spec.substringAfter(':', "").split('+').filter { it.isNotBlank() }.map { SynthPatch::class.java.getField(it).getInt(null) }
-                for (k in knobs.ifEmpty { listOf(SynthPatch.CUTOFF) }) h.vm.setSynthParam(k, (p().track(id).synth.get(k) + 0.3f).coerceAtMost(1f))
+                for (k in knobs.ifEmpty { listOf(SynthPatch.CUTOFF) }) {
+                    val t = p().track(id)
+                    // The knob the screen shows: the synth's, or a Plaits « Analogique + filtre »'s own filter (techno's lead).
+                    val plaits = if (t.engine == 1) com.pocketstudio.model.PlaitsPatch.knobFor(t.plaits.model, k) else null
+                    if (t.engine == 1) assertNotNull("${s.id}: knob $k on the Plaits sound", plaits)
+                    if (plaits != null) {
+                        await("${s.id}: the knob shown") { has("plaits_param_$plaits") }
+                        h.vm.setPlaitsParam(plaits, (t.plaits.engineValues()[plaits] + 0.3f).coerceAtMost(1f))
+                    } else h.vm.setSynthParam(k, (t.synth.get(k) + 0.3f).coerceAtMost(1f))
+                }
                 closeSheetIfAny()
             }
             c.startsWith("part:") || c.startsWith("label:") || c == "song:phrases" -> {

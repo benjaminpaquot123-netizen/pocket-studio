@@ -275,7 +275,7 @@ private fun StyleStep(chosen: String?, packs: PacksUi, actions: WizardActions) {
     var open by rememberSaveable { mutableStateOf(chosen) }
     StyleFamilies("wizard", style = { s ->
         StyleCard(s, s.id == chosen, s.id == open, packs.installed.any { it.id == s.id }, { open = if (open == s.id) null else s.id }, actions)
-    }, open = listOfNotNull(chosen?.let { StarterWizard.style(it) }?.family).toSet(), calm = com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode)
+    }, open = listOfNotNull(chosen?.let { StarterWizard.style(it) }?.family).toSet(), calm = com.pocketstudio.app.settings.observedSettings().simpleMode)
     InstalledPacks(packs, actions)
 }
 
@@ -768,7 +768,7 @@ private fun SceneBadge(scenes: Set<Int>, plan: StarterWizard.ScenePlan) {
     if (scenes.isEmpty()) return
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.testTag("wizard_scene_badge")) {
         // Remix testers (Sarah): « A C » meant nothing in the Mode simple; the line says the parts' names.
-        if (!com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode) scenes.sorted().forEach { SceneLetter(it) }
+        if (!com.pocketstudio.app.settings.observedSettings().simpleMode) scenes.sorted().forEach { SceneLetter(it) }
         Text(
             if (scenes.size == plan.count) tr("Joue dans toutes les parties") else tr("Joue dans %s", plan.sections(scenes)),
             style = MaterialTheme.typography.bodyMedium, color = sceneColor(scenes.min()), modifier = Modifier.padding(start = 4.dp),
@@ -894,7 +894,7 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, p
                     sound.sampled != null -> tr("Sample d'un pack")
                     sound.plaits != null -> SoundLooks.describe(sound.plaits!!)
                     // Remix testers (Sarah): « Scie · 5 voix · te… » in the Mode simple; two everyday words instead.
-                    com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode -> SoundLooks.describePlain(sound.synth)
+                    com.pocketstudio.app.settings.observedSettings().simpleMode -> SoundLooks.describePlain(sound.synth)
                     else -> SoundLooks.describe(sound.synth)
                 },
                 modifier = m.testTag("wizard_part_sound_$i"),

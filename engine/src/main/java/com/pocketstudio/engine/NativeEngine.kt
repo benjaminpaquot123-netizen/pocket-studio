@@ -55,7 +55,7 @@ object NativeEngine {
     private const val CMD_PLAY_PREVIEW = 47
     private const val CMD_PREVIEW_PARAM = 48
     private const val CMD_METRONOME_LEVEL = 49
-    private const val CMD_DRUM_REPEAT = 50
+    // 50: SetDrumRepeat (a roll's hits go with SetDrumStepRoll; Audit stage 2: the bare repeat was never sent)
     private const val CMD_TRACK_ON = 51
     // 52: InstallAudioClip (native only)
     private const val CMD_AUDIO_CLIP_PARAM = 53
@@ -113,8 +113,7 @@ object NativeEngine {
     private const val CMD_ACID_LIVE_NOTE = 146
     // Lot B2, Pad Live « la scène » (Engine.h, 150 to 169).
     private const val CMD_LAUNCH_CLIP_ROW = 150
-    private const val CMD_RESAMPLE_ARM = 151
-    private const val CMD_RESAMPLE_STOP = 152
+    // 151: ResampleArm, 152: ResampleStop (native only: resampleStart / resampleStop)
     private const val CMD_MIDI_CLOCK_OUT = 153
     // Lot D2, « case Remix du Live » (Engine.h, 170 to 189); 170: InstallRemixCell (native only).
     private const val CMD_REMIX_CELL = 171
@@ -403,8 +402,6 @@ object NativeEngine {
      */
     fun setDrumStepDetail(lane: Int, step: Int, pan: Float, pitch: Int) =
         post(CMD_DRUM_STEP_DETAIL, pan, lane, step or ((pitch.coerceIn(-24, 24) + 64) shl 16))
-    /** Hits in the step: 1 = plain, 2..16 = a roll (at most 8 a step; more over a [setDrumStepRoll] span). */
-    fun setDrumRepeat(lane: Int, step: Int, repeats: Int) = post(CMD_DRUM_REPEAT, repeats.coerceIn(1, 16).toFloat(), lane, step)
     /**
      * After [setDrumHit] (which resets it): this hit, and its roll, plays [ms] milliseconds early (< 0,
      * -50..) or late (..50). An early hit is queued from the step before it; the first step after play

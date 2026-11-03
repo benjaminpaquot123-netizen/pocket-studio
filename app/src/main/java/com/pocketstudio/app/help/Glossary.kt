@@ -327,9 +327,19 @@ object Glossary {
         tr("Le petit retard entre ton toucher et le son. Plus il est bas, mieux on joue en direct."),
     )
 
+    /** Audit stage 2 (carte des fonctions): the Live page and its recording had no word in the Lexique. */
+    val LIVE: Help get() = Help(
+        tr("Live"),
+        tr("La page Live : une case par piste et par brique. Touche une case pour la lancer à la mesure suivante ; une case vide te propose d'y mettre un son ou de t'y enregistrer."),
+    )
+    val LIVE_TAKE: Help get() = Help(
+        tr("Enregistrer ma performance"),
+        tr("Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup."),
+    )
+
     /** Every term, in the order the Lexique shows them. */
     val ALL: List<Help> get() = listOf(
-        SCENE, BRICK, SONG, TIMELINE, LIVE_PADS, LOOP, TEMPO, BAR, STEP, SWING, METRONOME, COUNT_IN, TIME_SIGNATURE,
+        SCENE, BRICK, SONG, TIMELINE, LIVE, LIVE_TAKE, LIVE_PADS, LOOP, TEMPO, BAR, STEP, SWING, METRONOME, COUNT_IN, TIME_SIGNATURE,
         PAD, KIT, VELOCITY, PAN, PITCH, SAMPLE, ROLL, FIT_TEMPO, SLICE, ENVELOPE, CHOKE, SOUND_LIBRARY, SOUND_PACK,
         TRACK, SOURCE, PIANO_ROLL, SCALE, SCALE_LOCK, CHORD, PROGRESSION, ARPEGGIO, QUANTIZE, SYNTH, PLAITS, GENERAL_MIDI,
         UNISON, SAMPLED, ROOT_NOTE, GLIDE, ACID, FILTER, ACCENT_SLIDE, MIDI, MIDI_LEARN, BEND, SUSTAIN,

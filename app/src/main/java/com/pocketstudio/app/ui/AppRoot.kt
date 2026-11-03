@@ -743,7 +743,7 @@ fun AppRoot() {
         ScaledDialog(onDismissRequest = { tutoChooserOpen = false }, properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)) {
             androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
                 // Opened once « Simple ou Pro ? » is answered: the mode just chosen is the level.
-                val tutoSimple = SettingsStore.state.value.simpleMode
+                val tutoSimple = simple
                 com.pocketstudio.app.tuto.TutoChooser(
                     start = { style, level -> tutoChooserOpen = false; startTuto(style, level) },
                     close = { tutoChooserOpen = false },
@@ -2138,6 +2138,11 @@ fun AppRoot() {
                         TopMenuItem(tr("Live : jouer en direct"), "more_live", openLive),
                         // Audit final (03 G4): the voice has its own way in the Mode simple.
                         TopMenuItem(tr("Enregistrer ma voix"), "more_voice", openVoice),
+                        // Audit stage 2 (NavigationMapTest): the sound library in 3 touches from home on a small phone
+                        // (Rythme's button is below the fold there: a scroll made it 4).
+                        TopMenuItem(tr("Bibliothèque de sons"), "more_library") {
+                            libraryLive = -1; libraryMine = false; libraryCell = null; libraryTrack = false; showLibrary = true
+                        },
                         // Owner (2026-10-29): « Remix », its name everywhere else.
                         TopMenuItem(tr("Remix"), "more_remix", openRemix),
                         // Audit final (05): the long press on the name was the only way to rename the song.

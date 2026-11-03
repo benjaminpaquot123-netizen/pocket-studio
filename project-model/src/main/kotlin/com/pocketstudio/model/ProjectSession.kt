@@ -78,6 +78,7 @@ class ProjectSession(
      * [tag]: what the step was, returned by [undo] and [redo] when they go through it.
      */
     fun edit(coalesceKey: String? = null, tag: Any? = null, transform: (Project) -> Project) {
+        beforeChange?.invoke()
         val next = apply(transform)
         if (history.push(next, coalesceKey, clock(), tag)) publish()
     }
@@ -109,6 +110,14 @@ class ProjectSession(
      * the session's scope, like the edits.
      */
     @Volatile var saveAs: ((Project) -> Project)? = null
+
+    /**
+     * Called before each undoable change, undo and redo (not the quiet ones): something only shown
+     * (« Montre-moi »'s frames, through [showQuietly]) is taken away first, so that the change
+     * applies to the project itself (Audit stage 2: an undo or a touch during « Montre-moi » was
+     * made on the demonstration, then overwritten by it, and « Rétablir » brought it back as real).
+     */
+    var beforeChange: (() -> Unit)? = null
 
     /** How many undo steps there are (to note when a live recording starts). */
     val undoDepth: Int get() = history.undoDepth
@@ -144,6 +153,7 @@ class ProjectSession(
 
     /** Goes one step back; returns that step's tag (see [edit]), null when untagged or none. */
     fun undo(): Any? {
+        beforeChange?.invoke()
         if (history.undo() == null) return null
         publish()
         return history.lastTag
@@ -151,6 +161,7 @@ class ProjectSession(
 
     /** Goes one step forward again; returns that step's tag, null when untagged or none. */
     fun redo(): Any? {
+        beforeChange?.invoke()
         if (history.redo() == null) return null
         publish()
         return history.lastTag

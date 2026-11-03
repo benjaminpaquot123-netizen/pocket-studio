@@ -12,5 +12,8 @@
   "« %1$s » est dans la case Remix de la brique %2$s.": "«%1$s» في خانة الريمكس للقطعة %2$s.",
   "Pose du son sur le pad %s…": "وضع الصوت على الـPad %s…",
   "le pad %s": "الـPad %s",
-  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "تعذّر حفظ الصوت على الهاتف: ربما لا توجد مساحة كافية."
+  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "تعذّر حفظ الصوت على الهاتف: ربما لا توجد مساحة كافية.",
+  "La page Live : une case par piste et par brique. Touche une case pour la lancer à la mesure suivante ; une case vide te propose d'y mettre un son ou de t'y enregistrer.": "صفحة لايف: خانة لكل مسار ولكل قطعة. المس خانة لتبدأ في المازورة التالية؛ والخانة الفارغة تقترح عليك وضع صوت فيها أو التسجيل فيها.",
+  "Enregistrer ma performance": "تسجيل أدائي",
+  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "في لايف، يسجّل ● كل ما تعزفه (الخانات التي تطلقها، الأزرار، المؤثرات، النوتات). عند الإيقاف تصبح لقطتك أغنيتك؛ و«تراجع» يزيلها دفعة واحدة."
 }

@@ -254,7 +254,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { it.copy(connected = id, last = null, clockBpm = null, controller = ControllerInfo(name, kindOf(d.info), profile)) }
         synchronized(monitorLines) { monitorLines.clear() }
         _monitor.value = emptyList()
-        greet(profile)
+        greet(profile, name)
         refresh(autoConnect = false)
         if (_state.value.sendClock) startClock()
     }
@@ -291,8 +291,8 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** « MiniLab 3 connecté — prêt à jouer »: a short toast once a controller is ready. */
-    private fun greet(profile: com.pocketstudio.model.midi.ControllerProfile?) {
-        val text = if (profile != null) tr("%s connecté — prêt à jouer", profile.name.removePrefix("Arturia ")) else tr("Clavier MIDI connecté — prêt à jouer")
+    private fun greet(profile: com.pocketstudio.model.midi.ControllerProfile?, name: String) {
+        val text = greeting(profile, name)
         _state.update { it.copy(last = text) }
         runCatching { android.widget.Toast.makeText(getApplication(), text, android.widget.Toast.LENGTH_SHORT).show() }
     }
@@ -601,6 +601,17 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     companion object {
+        /**
+         * The toast once a controller is ready: the model the app knows it as, else the device's own name
+         * (Audit stage 2, Benjamin 2026-11-03: the name shown is always the real one, never « Clavier MIDI »
+         * for a keyboard the phone names), « Clavier MIDI » only when the phone gives no name.
+         */
+        fun greeting(profile: com.pocketstudio.model.midi.ControllerProfile?, name: String?): String = when {
+            profile != null -> tr("%s connecté — prêt à jouer", profile.name.removePrefix("Arturia "))
+            !name.isNullOrBlank() && name != tr("Appareil MIDI") -> tr("%s connecté — prêt à jouer", name.trim())
+            else -> tr("Clavier MIDI connecté — prêt à jouer")
+        }
+
         const val DRUM_CHANNEL = 9
         /** Lines kept in the monitor. */
         const val MONITOR = 10

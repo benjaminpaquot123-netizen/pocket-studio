@@ -189,9 +189,12 @@ class TrackSheetTest {
         compose.onNodeWithTag("track_sheet_part_$part").performClick()
         compose.waitForIdle()
         assertFalse(h.vm.project.value.song[part].plays(key))
+        // Audit stage 2: the box shows the change at once (it did not wait for the Guide's analysis).
+        assertEquals(androidx.compose.ui.state.ToggleableState.Off, ticked())
         compose.onNodeWithTag("track_sheet_part_$part").performScrollTo().performClick()
         compose.waitForIdle()
         assertTrue(h.vm.project.value.song[part].plays(key))
+        assertEquals(androidx.compose.ui.state.ToggleableState.On, ticked())
         // « Copier cette chaîne sur… » › the lead: the bass's effects and sends on the lead, one undo step.
         tap("track_sheet_copy")
         tap("track_sheet_copy_inst:$lead")

@@ -500,7 +500,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         io = Dispatchers.IO,
         // Lot 1: no project open (the last one deleted): a blank one in memory, never written.
         persist = !com.pocketstudio.app.projects.CurrentProject.isNone(projectId),
-    )
+    ).apply { beforeChange = { endTutoDemoShown() } }
     val project: StateFlow<Project> = session.project
 
     /**
@@ -1371,6 +1371,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * follow), never written to disk nor kept in « Annuler »; null: the project as it was before
      * the first frame, at once.
      */
+    /** A change, an undo or a redo during « Montre-moi »: the project itself back first (see ProjectSession.beforeChange). */
+    private fun endTutoDemoShown() {
+        val before = tutoDemoBefore ?: return
+        tutoDemoBefore = null
+        session.showQuietly { before }
+        session.saveAs = null
+    }
+
     fun tutoDemo(frame: Project?) {
         if (frame != null) {
             val before = tutoDemoBefore ?: project.value.also { b ->
@@ -9111,8 +9119,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         } else {
             endLiveGestures()
         }
-        if (!NativeEngine.isAvailable) return
+        // A stop (■, a call taking the sound, the headphones out) ends the take, engine or not (Audit stage 2).
         if (!playing && _recording.value) stopRecordingTake()
+        if (!NativeEngine.isAvailable) return
         if (playing) {
             drainLaunches(apply = false)  // what an earlier run left
             enginePlay(countInBars ?: if (t.countIn) 1 else 0, songStep)

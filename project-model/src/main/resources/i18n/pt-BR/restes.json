@@ -12,5 +12,8 @@
   "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s” está na célula Remix do bloco %2$s.",
   "Pose du son sur le pad %s…": "Colocando o som no pad %s…",
   "le pad %s": "o pad %s",
-  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "Não deu para guardar o som no celular: talvez falte espaço."
+  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "Não deu para guardar o som no celular: talvez falte espaço.",
+  "La page Live : une case par piste et par brique. Touche une case pour la lancer à la mesure suivante ; une case vide te propose d'y mettre un son ou de t'y enregistrer.": "A página Live: uma casa por faixa e por bloco. Toque numa casa para lançá-la no próximo compasso; uma casa vazia oferece colocar um som ou gravar nela.",
+  "Enregistrer ma performance": "Gravar minha performance",
+  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "No Live, ● grava tudo o que você toca (casas lançadas, pads, efeitos, notas). Ao parar, sua tomada vira sua música; “Desfazer” a retira de uma vez."
 }

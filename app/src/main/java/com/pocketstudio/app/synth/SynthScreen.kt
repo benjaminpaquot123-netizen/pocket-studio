@@ -804,7 +804,7 @@ private fun Key(
             .clip(shape)
             .background(face)
             .border(1.dp, if (isBlack) Color.Black.copy(alpha = 0.6f) else Color.Black.copy(alpha = 0.22f), shape)
-            .playable(com.pocketstudio.app.acid.noteName(note, com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes) + " " + (note / 12 - 1), enabled = !locked, start = { onNoteOn(note, 0.8f) }, stop = { onNoteOff(note) })
+            .playable(com.pocketstudio.app.acid.noteName(note, com.pocketstudio.app.settings.observedSettings().englishNotes) + " " + (note / 12 - 1), enabled = !locked, start = { onNoteOn(note, 0.8f) }, stop = { onNoteOff(note) })
             .pointerInput(note, locked) {
                 if (locked) return@pointerInput
                 detectTapGestures(onPress = { at ->

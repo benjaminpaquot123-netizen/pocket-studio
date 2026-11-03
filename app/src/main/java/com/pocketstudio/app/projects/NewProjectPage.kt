@@ -99,7 +99,7 @@ internal fun NewProjectPage(
     if (learning) {
         // Retour: back on « Simple ou Pro ? », one step at a time.
         androidx.activity.compose.BackHandler { learning = false }
-        val simple = com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode
+        val simple = com.pocketstudio.app.settings.observedSettings().simpleMode
         com.pocketstudio.app.tuto.TutoChooser(
             start = { style, level -> learning = false; pending = null; leave(); actions.learn(style, level) },
             close = { learning = false },
@@ -214,7 +214,7 @@ private fun OtherStarts(starters: List<ProjectStarter>, quick: QuickUi, actions:
     // The assistant's families, all folded at first (but the one of a song being prepared): one touch on a style makes its song.
     com.pocketstudio.app.library.StyleFamilies("quick", style = { QuickStyleCard(it, quick, ask) },
         open = setOfNotNull(StarterWizard.STYLES.find { it.id == quick.creating }?.family),
-        calm = com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode)
+        calm = com.pocketstudio.app.settings.observedSettings().simpleMode)
     // The other starters under their headings (the starting beat closes the styles' group; the empty project is above).
     StarterGroup.entries.filter { it != StarterGroup.Empty }.forEach { group ->
         val inGroup = starters.withIndex().filter { it.value.group == group }

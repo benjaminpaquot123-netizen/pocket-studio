@@ -91,6 +91,8 @@ object I18n {
         "common", "home", "rhythm", "song", "synth", "audio", "mixer", "tools", "model", "finish", "master", "parts", "record",
         "write", "instruments", "learn", "nav", "bugreport", "guide", "a11y", "brand", "plurals", "listen", "tuto", "mixsimple", "retours",
         "remixvoix",
+        // Fin 8 (2026-11-02): mute / solo icons, « Piocher dans la chanson », the tuto demos.
+        "fin8",
         "remixroute",
         // Remix testers (lot « remix 1 »): finding and understanding the Remix.
         "extract",

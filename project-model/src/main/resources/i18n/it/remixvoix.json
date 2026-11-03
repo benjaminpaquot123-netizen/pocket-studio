@@ -38,10 +38,7 @@
   "Pas de parties trouvées": "Nessuna parte trovata",
   "Mettre dans mon projet": "Metti nel mio progetto",
   "Faire de la matière": "Ricava materiale",
-  "La voix en phrases sur les pads": "La voce in frasi sui pad",
-  "La batterie en kit « %s »": "La batteria come kit “%s”",
   "La basse en notes": "Il basso in note",
-  "La basse sur l'Acid 303": "Il basso sulla Acid 303",
   "Kit de %s : je cherche les coups…": "Kit di %s: cerco i colpi…",
   "Pas de coups de batterie trouvés dans %s.": "Nessun colpo di batteria trovato in %s.",
   "Kit « %1$s » sur les pads %2$s : tes pas le jouent déjà.": "Kit “%1$s” sui pad %2$s: i tuoi step lo suonano già.",
@@ -49,7 +46,6 @@
   "Pas de notes de basse trouvées dans %s.": "Nessuna nota di basso trovata in %s.",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "Il basso di %1$s sulla Acid 303: %2$d note.",
   "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "Il basso di %1$s in %2$d note su una traccia sua: cambia il suono come vuoi.",
-  "La mélodie de la voix en notes": "La melodia della voce in note",
   "La voix de %s en notes…": "La voce di %s in note…",
   "Pas de notes de voix trouvées dans %s.": "Nessuna nota di voce trovata in %s.",
   "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "La voce di %1$s in %2$d note su una traccia sua: cambia il suono come vuoi."

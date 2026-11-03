@@ -108,6 +108,14 @@ data class TutoUi(
     val demoCells: Pair<Int, Set<Int>>? = null,
     val fade: Float = 0f,
     /**
+     * n° 20: the gesture « Montre-moi » is making (counted from 1, 0: none yet), and the cell of the
+     * pad it touches when it is one (null: the step's control as a whole, a key, a knob).
+     */
+    val gesture: Int = 0,
+    val gestureCell: Int? = null,
+    /** n° 20: the gesture slides (a knob, a fader: [dragOf]), null: a touch. */
+    val gestureDrag: TutoDrag? = null,
+    /**
      * Testers (lot « tuto 4 »): « Suivant » past the last step with steps still to do: the panel says
      * which ones (one touch goes there) instead of going back to the first of them without a word.
      */
@@ -305,7 +313,7 @@ class TutoController(
             c.startsWith("send:") || c.startsWith("insert:") -> (TutoChecks.channelsToDo(s, p).firstOrNull() ?: channelOf(p, s.target.substringBefore(',').ifEmpty { "bass" }))
                 ?.let { TutoGo(effects = it, send = if (c.startsWith("send:")) arg.toIntOrNull() else null, spot = spot) } ?: plain
             // The volumes: the fader of the track the step names first.
-            c == "changed:volumes" || c.startsWith("changed:volumes:") -> volumeRoles(c).firstNotNullOfOrNull { channelOf(p, it) }
+            c == "changed:volumes" || c.startsWith("changed:volumes:") -> volumeStrips(c, p).firstOrNull()
                 ?.let { TutoGo(open = GuideOpen(s.spot, s.target), strip = it, spot = spot) } ?: plain
             // « Ajouter : » and its buttons, not the parts' list above them.
             c == "song:order" -> TutoGo(GuideOpen(SONG_ADD_SPOT, ""), spot = spot)
@@ -320,9 +328,15 @@ class TutoController(
     /** The knobs of a "changed:synth:…" step not turned up yet since it began (all of them when none is, or no baseline). */
     private fun knobsLeft(c: String, p: Project, track: Int): List<Int> {
         val all = knobsOf(c)
-        val before = (base() as? List<*>)?.firstOrNull() as? com.pocketstudio.model.SynthPatch ?: return all
-        val now = p.track(track).synth
-        return all.filter { k -> now.get(k) < before.get(k) + KNOB_TURNED && now.get(k) < 0.95f }.ifEmpty { all }
+        val b = base() as? List<*>
+        val now = p.track(track)
+        val synth = b?.getOrNull(0) as? com.pocketstudio.model.SynthPatch ?: return all
+        val before = now.copy(synth = synth, plaits = b.getOrNull(1) as? com.pocketstudio.model.PlaitsPatch ?: now.plaits)
+        // The knob as the track's sound has it (a Plaits « Analogique + filtre »: its own cutoff and resonance).
+        return all.filter { k ->
+            val v = TutoChecks.knobValue(now, k) ?: return@filter true
+            v < (TutoChecks.knobValue(before, k) ?: v) + KNOB_TURNED && v < 0.95f
+        }.ifEmpty { all }
     }
 
     /** The strips a "send:<bus>" step sends (as [TutoChecks.done] reads them): the reverb's « Accords » and the snare's pad, the echo's lead. */
@@ -410,9 +424,19 @@ class TutoController(
     }
 
     /** The mixer channel of [role]'s track ("bass", "pad"…) or pad ("snare"…), null when the project has none. */
-    private fun channelOf(p: Project, role: String): Int? =
-        TutoChecks.trackFor(p, role)?.let(com.pocketstudio.model.InstrumentTrack::mixerChannel)
-            ?: role.takeIf { it in DRUM_ROLES }?.let { com.pocketstudio.model.Mixer.padChannel(TutoChecks.laneOf(it)) }
+    // The 303's own strip too ("acid": acid techno's « baisse la 303, puis le Clap » rang the Clap's, absent from the simple Mix).
+    private fun channelOf(p: Project, role: String): Int? = TutoChecks.stripOf(p, role)
+
+    /** The strips of a "changed:volumes:…" step, those not lowered yet since it began first (as [TutoChecks.done] reads them). */
+    private fun volumeStrips(c: String, p: Project): List<Int> {
+        val all = volumeRoles(c).mapNotNull { channelOf(p, it) }
+        val base = base() as? List<*> ?: return all
+        val (left, done) = all.partition { ch ->
+            val was = base.getOrNull(ch) as? Float ?: return@partition true
+            (p.mixer.channels.getOrNull(ch)?.volume ?: was) >= was - 0.005f
+        }
+        return left + done
+    }
 
     /** Where the current step's control is, to bring it into view when the step begins (no ring, the panel as it is). */
     fun place(): TutoGo? = _ui.value?.let { u -> goFor(u.current, project.value, spot = false) }
@@ -475,13 +499,22 @@ class TutoController(
             var restored = false
             try {
                 goFor(step, before, spot = false)?.takeIf { it.notes == null }?.let { _goes.tryEmit(it) }
+                // n° 20: the screen scrolls to the place (its card opened) before the first gesture.
+                delay(each.coerceAtMost(LEAD_MS * frameMs / FRAME_MS))
                 demo.frames.forEachIndexed { i, frame ->
+                    val pad = _ui.value?.pad
+                    val cell = pad?.let { lane ->
+                        val now = frame.drums.lanes.getOrNull(lane)?.hits?.keys.orEmpty()
+                        val was = (if (i == 0) before else demo.frames[i - 1]).drums.lanes.getOrNull(lane)?.hits?.keys.orEmpty()
+                        (now - was).minOrNull()
+                    }
+                    _ui.value = _ui.value?.copy(gesture = i + 1, gestureCell = cell, gestureDrag = if (cell == null) dragOf(step.check) else null)
                     demoShow(frame)
                     if (i == 0) goFor(step, frame, spot = false)?.takeIf { it.notes != null }?.let { _goes.tryEmit(it) }
                     demo.sounds[i]?.let(demoSound)
                     delay(each)
                 }
-                _ui.value = _ui.value?.copy(demo = TutoDemoPhase.HOLDING)
+                _ui.value = _ui.value?.copy(demo = TutoDemoPhase.HOLDING, gesture = 0, gestureCell = null, gestureDrag = null)
                 delay(holdMs)
                 val pad = _ui.value?.pad
                 val cells = pad?.let { lane ->
@@ -503,7 +536,7 @@ class TutoController(
                 // (lot « tuto 4 »): so too when the step's track is still to make (the demonstration's went with it, as
                 // all it showed): « Créer la piste … » in sight rather than another track's notes without a word.
                 val back = step.manual || step.spot.isEmpty() || _ui.value?.need != null
-                if (_ui.value?.demo != null) _ui.value = _ui.value?.let { it.copy(demo = null, demoCells = null, fade = 0f, open = it.open || (back && it.current.id == step.id)) }
+                if (_ui.value?.demo != null) _ui.value = _ui.value?.let { it.copy(demo = null, demoCells = null, fade = 0f, gesture = 0, gestureCell = null, gestureDrag = null, open = it.open || (back && it.current.id == step.id)) }
                 demoJob = null
                 scope.launch { check(project.value) }
             }
@@ -738,7 +771,20 @@ class TutoController(
 
         /** How long each frame of « Montre-moi » shows: a melodic one's notes slower (about 8 s in all, at most 0.7 s each), at [frameMs]'s pace. */
         internal fun demoFrameMs(melodic: Boolean, frames: Int, frameMs: Long = FRAME_MS): Long =
-            if (!melodic) frameMs else (NOTES_SHOWN_MS * frameMs / FRAME_MS / frames.coerceAtLeast(1)).coerceIn(frameMs, NOTE_FRAME_MAX * frameMs / FRAME_MS)
+            // n° 20 (« trop rapide et sans montrer »): a gesture at a time, about 1 to 1.5 s each; a long one
+            // (sixteen hats) a little quicker, never under [GESTURE_MIN_MS], about [DEMO_SHOWN_MS] in all.
+            (DEMO_SHOWN_MS * frameMs / FRAME_MS / frames.coerceAtLeast(1))
+                .coerceIn(GESTURE_MIN_MS * frameMs / FRAME_MS, (if (melodic) NOTE_FRAME_MAX else FRAME_MS) * frameMs / FRAME_MS)
+
+        /**
+         * n° 20: how « Montre-moi »'s finger moves on [check]'s control: a knob or a send turned up, a curve
+         * drawn, slides right; a fader lowered slides down; anything else is a touch (null).
+         */
+        fun dragOf(check: String): TutoDrag? = when {
+            check == "changed:volumes" || check.startsWith("changed:volumes:") -> TutoDrag.DOWN
+            check.startsWith("changed:synth:") || check.startsWith("send:") || check == "automation" || check.startsWith("automation:") -> TutoDrag.RIGHT
+            else -> null
+        }
 
         internal fun knobsOf(check: String): List<Int> =
             check.removePrefix("changed:synth:").substringAfter(':', "").split('+').mapNotNull { KNOBS[it.trim()] }
@@ -776,10 +822,14 @@ class TutoController(
         private const val MINE = "mine"
         private const val EXAMPLE = "example"
 
-        const val FRAME_MS = 200L
-        /** A melodic demonstration: about this long in all, each note at most [NOTE_FRAME_MAX] ms (at [FRAME_MS]'s pace). */
-        private const val NOTES_SHOWN_MS = 8000L
-        private const val NOTE_FRAME_MAX = 700L
+        /** A gesture of « Montre-moi » (a cell touched): about a second (n° 20). */
+        const val FRAME_MS = 1000L
+        /** A demonstration: about this long in all, each gesture at least [GESTURE_MIN_MS], a note at most [NOTE_FRAME_MAX] ms. */
+        private const val DEMO_SHOWN_MS = 12000L
+        const val GESTURE_MIN_MS = 700L
+        const val NOTE_FRAME_MAX = 1500L
+        /** Before the first gesture: the screen scrolls to its place. */
+        private const val LEAD_MS = 900L
         const val HOLD_MS = 3200L
         const val FADE_MS = 700L
         private const val FADE_TICK = 50L

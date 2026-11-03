@@ -38,10 +38,7 @@
   "Pas de parties trouvées": "Geen delen gevonden",
   "Mettre dans mon projet": "In mijn project zetten",
   "Faire de la matière": "Materiaal maken",
-  "La voix en phrases sur les pads": "De stem in zinnen op de pads",
-  "La batterie en kit « %s »": "De drums als kit ‘%s’",
   "La basse en notes": "De bas als noten",
-  "La basse sur l'Acid 303": "De bas op de Acid 303",
   "Kit de %s : je cherche les coups…": "Kit van %s: ik zoek de slagen…",
   "Pas de coups de batterie trouvés dans %s.": "Geen drumslagen gevonden in %s.",
   "Kit « %1$s » sur les pads %2$s : tes pas le jouent déjà.": "Kit ‘%1$s’ op pads %2$s: je stappen spelen hem al.",
@@ -49,7 +46,6 @@
   "Pas de notes de basse trouvées dans %s.": "Geen basnoten gevonden in %s.",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "De bas van %1$s op de Acid 303: %2$d noten.",
   "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "De bas van %1$s als %2$d noten op een eigen spoor: verander de klank zoals je wilt.",
-  "La mélodie de la voix en notes": "De zangmelodie als noten",
   "La voix de %s en notes…": "De zang van %s als noten…",
   "Pas de notes de voix trouvées dans %s.": "Geen zangnoten gevonden in %s.",
   "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "De zang van %1$s als %2$d noten op een eigen spoor: verander de klank zoals je wilt."

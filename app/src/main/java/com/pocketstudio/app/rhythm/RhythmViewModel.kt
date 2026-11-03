@@ -5976,7 +5976,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    // --- Step 5d: « Faire de la matière » (the song's stems as material of the project) -------
+    // --- Step 5d: « Piocher dans la chanson » (the song's stems as material of the project) -------
 
     /** Stereo floats to mono. */
     private fun monoOf(stereo: FloatArray) = FloatArray(stereo.size / 2) { (stereo[it * 2] + stereo[it * 2 + 1]) * 0.5f }
@@ -6063,13 +6063,24 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val steps = (if (part >= 0) p.partSteps(p.song[part]) else 8 * p.stepsPerBar).coerceIn(p.stepsPerBar, maxSteps)
         // Frames of the song as separated a sixteenth lasts here (the song stretched or not).
         val stepFrames = p.remixSecondsPerStep() * rate
-        val start = Math.round(p.remixTimeAtStep(step0) * rate).coerceAtLeast(0L)
+        val partStart = Math.round(p.remixTimeAtStep(step0) * rate).coerceAtLeast(0L)
         val song = p.remix.name.ifBlank { "Remix" }
-        if (stepFrames <= 0 || start >= source.frames) return
+        if (stepFrames <= 0 || partStart >= source.frames) return
         _sampleTask.value = SampleTask.Busy(if (voice) tr("La voix de %s en notes…", song) else tr("La basse de %s en notes…", song))
         viewModelScope.launch {
             try {
                 val notes = withContext(Dispatchers.Default) {
+                    // n° 23: from where it sings (the part shown may be the song's silent intro: two notes, then
+                    // nothing): the bars of the song with the most singing, from the part's bar on, else from the start.
+                    val stem = if (voice) VOICE_STEM else BASS_STEM
+                    val barFrames = stepFrames * p.stepsPerBar.coerceAtLeast(1)
+                    val levels = stemBarLevels(source, stem, barFrames)
+                    val fromBar = (partStart / barFrames).toInt()
+                    val after = levels.copyOfRange(fromBar.coerceAtMost(levels.size), levels.size)
+                    val bars = steps / p.stepsPerBar.coerceAtLeast(1)
+                    val pick = if (after.any { it >= 0.25 * (levels.maxOrNull() ?: 0.0) && it > 0 }) fromBar + com.pocketstudio.model.SongMatter.singingStart(after, bars)
+                    else com.pocketstudio.model.SongMatter.singingStart(levels, bars)
+                    val start = if (levels.isEmpty()) partStart else Math.round(pick * barFrames).coerceIn(0L, source.frames - 1)
                     val count = minOf(source.frames - start, Math.round(stepFrames * (steps + 2)))
                     if (voice) com.pocketstudio.model.SongMatter.voiceNotes(monoOf(source.extract(VOICE_STEM, start, count)), rate, stepFrames, steps)
                     else com.pocketstudio.model.SongMatter.bassNotes(monoOf(source.extract(BASS_STEM, start, count)), rate, stepFrames, steps)
@@ -6095,7 +6106,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     val name = com.pocketstudio.model.DefaultNames.stemPad(if (voice) VOICE_LABEL else "Basse", song)
                     session.edit {
                         userTrack(next, id).let { r ->
-                            r.copy(tracks = r.tracks.map { t -> if (t.id == id) t.copy(name = name, notes = com.pocketstudio.model.NoteClip(steps = steps, notes = notes)) else t })
+                            // n° 23: the voice sings with a soft, voice-like sound at first (not the melody's test-like lead).
+                            r.copy(tracks = r.tracks.map { t ->
+                                if (t.id == id) t.copy(name = name, notes = com.pocketstudio.model.NoteClip(steps = steps, notes = notes))
+                                    .let { if (voice) it.copy(synth = com.pocketstudio.model.SongMatter.VOICE_SOUND) else it } else t
+                            })
                         }
                     }
                     pushTracks()
@@ -6112,6 +6127,27 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 _sampleTask.value = SampleTask.Failed(tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName))
             }
         }
+    }
+
+    /**
+     * n° 23: each bar's loudness of stem [stem] (root mean square, mono), read ten seconds at a time
+     * (a whole song never sits in memory). Worker thread.
+     */
+    private fun stemBarLevels(source: NativeStems, stem: Int, barFrames: Double): DoubleArray {
+        if (barFrames <= 0) return DoubleArray(0)
+        val bars = (source.frames / barFrames).toInt()
+        val sums = DoubleArray(bars)
+        val piece = 10L * OfflineExport.SAMPLE_RATE
+        var at = 0L
+        while (at < source.frames) {
+            val mono = monoOf(source.extract(stem, at, minOf(piece, source.frames - at)))
+            for (i in mono.indices) {
+                val b = ((at + i) / barFrames).toInt()
+                if (b < bars) sums[b] += mono[i].toDouble() * mono[i]
+            }
+            at += piece
+        }
+        return DoubleArray(bars) { kotlin.math.sqrt(sums[it] / barFrames) }
     }
 
     /** The last cut's start, end and fades ([remixCut]'s pad), one undo step per drag. */

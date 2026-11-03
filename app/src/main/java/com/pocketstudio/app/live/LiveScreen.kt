@@ -653,7 +653,7 @@ private val LIVE_BAR_FULL = 380.dp
 internal fun RecordButton(take: TakeUi, record: () -> Unit) {
     val blink = rememberBlink(take is TakeUi.Armed, low = 0.25f, periodMs = 400)
     val label = when (take) {
-        is TakeUi.Armed -> tr("Armé")
+        is TakeUi.Armed -> tr("Prêt")
         is TakeUi.Recording -> tr("Fin")
         is TakeUi.Writing -> "…"
         else -> "REC"
@@ -742,7 +742,7 @@ internal fun TakeBanner(ui: LiveScreenUi, actions: LiveActions, showReady: Boole
                 // Ready or armed: where the take goes, while it can still change.
                 val armed = take is TakeUi.Armed
                 Text(
-                    if (armed) tr("Armé : la prise part à la prochaine ligne de lancement.") else tr("La prise :"),
+                    if (armed) tr("Prêt : l'enregistrement part au prochain lancement.") else tr("La prise :"),
                     Modifier.weight(1f, fill = false), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 2,
                 )
                 if (parts > 0) {
@@ -833,16 +833,8 @@ private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveA
     val reduced = ui.reducedMotion ?: com.pocketstudio.app.onboarding.animationsOff(androidx.compose.ui.platform.LocalContext.current)
     // Blinks only while a launch or a stop waits, and only redraws (the cells read it when drawn).
     val blink = rememberBlink(!reduced && ui.playing && ui.grid?.hasPending == true)
-    // One clock for everything that moves (halo, sheen, wave), read when drawn.
+    // One clock for everything that moves (halo, sheen), read when drawn.
     val clock = rememberGridClock(!reduced && ui.playing, ui.clockOf, p.tempoBpm)
-    // Where the wave leaves from: the cells playing now.
-    val sources = remember(ui.grid, ui.playing, columns) {
-        if (!ui.playing) emptyList() else columns.mapIndexedNotNull { i, c ->
-            val slot = LiveSlots.of(c.key) ?: return@mapIndexedNotNull null
-            val row = ui.grid?.slot(slot)?.playing ?: return@mapIndexedNotNull null
-            if (row >= 0 && p.cellHasContent(c.key, row)) WaveSource(i, row, c.color) else null
-        }
-    }
     // Only one cell with something in it: the first loop, an invitation to add the next.
     val single = remember(p, columns) {
         val full = columns.flatMapIndexed { i, c -> p.allScenes.indices.filter { p.cellHasContent(c.key, it) }.map { i to it } }
@@ -856,7 +848,7 @@ private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveA
         val top = 48.dp
         val cellW = fitW.coerceIn(MIN_CELL_W, MAX_CELL_W)
         val cellH = ((innerH - top - header - stopH - gap * (shown + 2)) / shown).coerceAtLeast(if (dense) ROW_MIN_DENSE else ROW_MIN_H)
-        val look = CellLook(clock, sources, cellW.value, cellH.value, gap.value)
+        val look = CellLook(clock, cellW.value, cellH.value, gap.value)
         Column(Modifier.padding(horizontal = GRID_PAD_H, vertical = GRID_PAD_V).testTag("live_grid"), verticalArrangement = Arrangement.spacedBy(gap)) {
             Row(Modifier.fillMaxWidth().height(top - gap), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                 // Lot 4d: « Lancer à » here (the bar keeps the tempo), beside « Cases ».
@@ -916,7 +908,7 @@ private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveA
 }
 
 /** What every cell's drawing shares: the clock, where the wave leaves from, the cells' size and gap (dp). */
-internal class CellLook(val clock: GridClock, val sources: List<WaveSource>, val w: Float, val h: Float, val gap: Float)
+internal class CellLook(val clock: GridClock, val w: Float, val h: Float, val gap: Float)
 
 /** One pad of the grid: track [c] (column [col]) in scene [scene], as the engine plays it. */
 @Composable
@@ -972,16 +964,15 @@ private fun MoreColumns(state: ScrollState, modifier: Modifier) {
     }
 }
 
-/** M: silent at once (not written in the project). */
+/** The crossed speaker: silent at once (not written in the project). */
 @Composable
 private fun MuteButton(c: LiveColumn, muted: Boolean, toggleMute: () -> Unit, modifier: Modifier) {
-    Box(
-        modifier.clip(RoundedCornerShape(8.dp)).background(if (muted) Neon.Amber else Color(0xFF34383E))
-            .clickable(onClick = toggleMute).testTag("live_mute_${c.key}").spot("live_mute_${c.key}", if (c.key == com.pocketstudio.model.SongPart.DRUMS) tr("Couper le son") else null)
-            .semantics { contentDescription = if (muted) tr("Remettre le son de %s", c.name) else tr("Couper le son de %s", c.name) },
-        contentAlignment = Alignment.Center,
-    ) {
-        Text("M", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = if (muted) Color.Black else Neon.TextSecondary)
+    androidx.compose.foundation.layout.BoxWithConstraints(modifier, contentAlignment = Alignment.Center) {
+        com.pocketstudio.app.ui.MuteToggle(
+            muted, c.name, "live_mute_${c.key}", caption = false,
+            modifier = Modifier.spot("live_mute_${c.key}", if (c.key == com.pocketstudio.model.SongPart.DRUMS) tr("Couper le son") else null),
+            size = androidx.compose.ui.unit.DpSize(maxWidth, maxHeight), toggle = toggleMute,
+        )
     }
 }
 
@@ -1086,16 +1077,8 @@ private fun LivePadCell(
             // Brushes made once per size: a playing pad redraws every frame without garbage.
             .drawWithCache {
                 onDrawBehind {
-                    if (showDot) {
-                        // The wave of the beat passing through this dot: the nearest playing cell's.
-                        var best = 0f
-                        var tint: Color? = null
-                        look.sources.forEach { s ->
-                            val w = clock.wave(waveDistance(col, scene, s, look.w, look.h, look.gap))
-                            if (w > best) { best = w; tint = s.color }
-                        }
-                        emptyDot(best, tint)
-                    }
+                    // Benjamin (2026-11-01): nothing moves on an empty cell, the dot stays still.
+                    if (showDot) emptyDot()
                 }
             }
             .clip(shape)

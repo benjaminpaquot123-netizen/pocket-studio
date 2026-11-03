@@ -71,6 +71,7 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
 
     @After
     fun end() {
+        com.pocketstudio.app.learn.SpotChecks.log = null
         TutoTestHooks.player = null
         TutoTestHooks.kitOffer = true
         h.finish()
@@ -120,6 +121,8 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
 
     private fun journey(level: TutoLevel) {
         TutoTestHooks.player = player
+        // n° 19–20: every control a step points at (« Je le fais », its button, « Montre-moi ») is checked once shown.
+        com.pocketstudio.app.learn.SpotChecks.log = mutableListOf()
         // Offline, whatever the catalogue: the built-in kit (the offer is TutoKitTest's).
         TutoTestHooks.kitOffer = false
         h.start(simple = level == TutoLevel.Facile, build = {
@@ -202,6 +205,11 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
             click("tuto_next_big")
         }
         assertTrue(steps.all { it.id in progress().done })
+        // n° 19: never in a folded card, off the screen or under the tuto's panel (37 courses, Facile and Pro).
+        val seen = com.pocketstudio.app.learn.SpotChecks.log.orEmpty()
+        assertTrue("$style $level: no target checked", seen.isNotEmpty())
+        val hidden = seen.filter { it.second != null }
+        assertTrue("$style $level: targets not seen: $hidden", hidden.isEmpty())
         // Only a step a former one already did may be ticked before it is reached.
         assertTrue("ticked before reached: $early", early.size <= 2)
         // Every step with something to show showed it, every example was played.
@@ -336,7 +344,16 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
                 h.vm.selectTrack(id)
                 // The knobs the step names, each turned up (« Coupure », « Résonance »…).
                 val knobs = spec.substringAfter(':', "").split('+').filter { it.isNotBlank() }.map { SynthPatch::class.java.getField(it).getInt(null) }
-                for (k in knobs.ifEmpty { listOf(SynthPatch.CUTOFF) }) h.vm.setSynthParam(k, (p().track(id).synth.get(k) + 0.3f).coerceAtMost(1f))
+                for (k in knobs.ifEmpty { listOf(SynthPatch.CUTOFF) }) {
+                    val t = p().track(id)
+                    // The knob the screen shows: the synth's, or a Plaits « Analogique + filtre »'s own filter (techno's lead).
+                    val plaits = if (t.engine == 1) com.pocketstudio.model.PlaitsPatch.knobFor(t.plaits.model, k) else null
+                    if (t.engine == 1) assertNotNull("${s.id}: knob $k on the Plaits sound", plaits)
+                    if (plaits != null) {
+                        await("${s.id}: the knob shown") { has("plaits_param_$plaits") }
+                        h.vm.setPlaitsParam(plaits, (t.plaits.engineValues()[plaits] + 0.3f).coerceAtMost(1f))
+                    } else h.vm.setSynthParam(k, (t.synth.get(k) + 0.3f).coerceAtMost(1f))
+                }
                 closeSheetIfAny()
             }
             c.startsWith("part:") || c.startsWith("label:") || c == "song:phrases" -> {

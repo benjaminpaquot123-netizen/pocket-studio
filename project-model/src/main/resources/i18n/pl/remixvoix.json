@@ -38,10 +38,7 @@
   "Pas de parties trouvées": "Nie znaleziono części",
   "Mettre dans mon projet": "Wstaw do projektu",
   "Faire de la matière": "Zrób z tego materiał",
-  "La voix en phrases sur les pads": "Wokal w frazach na pady",
-  "La batterie en kit « %s »": "Perkusja jako zestaw „%s”",
   "La basse en notes": "Bas jako nuty",
-  "La basse sur l'Acid 303": "Bas na Acid 303",
   "Kit de %s : je cherche les coups…": "Zestaw z %s: szukam uderzeń…",
   "Pas de coups de batterie trouvés dans %s.": "Nie znaleziono uderzeń perkusji w %s.",
   "Kit « %1$s » sur les pads %2$s : tes pas le jouent déjà.": "Zestaw „%1$s” na padach %2$s: twoje kroki już go grają.",
@@ -49,7 +46,6 @@
   "Pas de notes de basse trouvées dans %s.": "Nie znaleziono nut basu w %s.",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "Bas z %1$s na Acid 303: %2$d nut.",
   "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "Bas z %1$s jako %2$d nut na osobnej ścieżce: zmień brzmienie, jak chcesz.",
-  "La mélodie de la voix en notes": "Melodia wokalu jako nuty",
   "La voix de %s en notes…": "Wokal z %s jako nuty…",
   "Pas de notes de voix trouvées dans %s.": "Nie znaleziono nut wokalu w %s.",
   "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "Wokal z %1$s jako %2$d nut na osobnej ścieżce: zmień brzmienie, jak chcesz."

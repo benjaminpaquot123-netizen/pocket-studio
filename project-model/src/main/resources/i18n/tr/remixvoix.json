@@ -38,10 +38,7 @@
   "Pas de parties trouvées": "Bölüm bulunamadı",
   "Mettre dans mon projet": "Projeme ekle",
   "Faire de la matière": "Malzeme çıkar",
-  "La voix en phrases sur les pads": "Vokal cümle cümle pad'lere",
-  "La batterie en kit « %s »": "Davul “%s” kiti olsun",
   "La basse en notes": "Bas notalara",
-  "La basse sur l'Acid 303": "Bas hattı Acid 303'e",
   "Kit de %s : je cherche les coups…": "%s kiti: vuruşları arıyorum…",
   "Pas de coups de batterie trouvés dans %s.": "%s içinde davul vuruşu bulunamadı.",
   "Kit « %1$s » sur les pads %2$s : tes pas le jouent déjà.": "“%1$s” kiti %2$s pad'lerinde: adımların onu zaten çalıyor.",
@@ -49,7 +46,6 @@
   "Pas de notes de basse trouvées dans %s.": "%s içinde bas notası bulunamadı.",
   "La basse de %1$s sur l'Acid 303 : %2$d notes.": "%1$s basi Acid 303'te: %2$d nota.",
   "La basse de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s basi %2$d nota olarak kendi kanalında: sesini istediğin gibi değiştir.",
-  "La mélodie de la voix en notes": "Vokal melodisi notalara",
   "La voix de %s en notes…": "%s vokalini notalara çeviriyorum…",
   "Pas de notes de voix trouvées dans %s.": "%s içinde vokal notası bulunamadı.",
   "La voix de %1$s en %2$d notes sur une piste à elle : change son son comme tu veux.": "%1$s vokali %2$d nota olarak kendi kanalında: sesini istediğin gibi değiştir."

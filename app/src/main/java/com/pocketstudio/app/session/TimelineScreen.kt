@@ -1007,13 +1007,13 @@ private fun TrackHeader(
             val stemMix = stem?.let { p.remix.stems.getOrNull(it) }
             if (stem != null && stemMix != null) {
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    MuteSolo("M", stemMix.mute, Neon.Red, tr("Couper la piste %s", name), "timeline_mute_${row.key}") { actions.toggleStemMute(stem) }
-                    MuteSolo("S", stemMix.solo, Neon.Cyan, tr("Écouter la piste %s seule", name), "timeline_solo_${row.key}") { actions.toggleStemSolo(stem) }
+                    MuteSolo(true, stemMix.mute, Neon.Red, name, "timeline_mute_${row.key}") { actions.toggleStemMute(stem) }
+                    MuteSolo(false, stemMix.solo, Neon.Cyan, name, "timeline_solo_${row.key}") { actions.toggleStemSolo(stem) }
                 }
             } else if (ch != null && channel != null) {
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    MuteSolo("M", channel.mute, Neon.Red, tr("Couper la piste %s", name), "timeline_mute_${row.key}") { actions.toggleMute(ch) }
-                    MuteSolo("S", channel.solo, Neon.Cyan, tr("Écouter la piste %s seule", name), "timeline_solo_${row.key}") { actions.toggleSolo(ch) }
+                    MuteSolo(true, channel.mute, Neon.Red, name, "timeline_mute_${row.key}") { actions.toggleMute(ch) }
+                    MuteSolo(false, channel.solo, Neon.Cyan, name, "timeline_solo_${row.key}") { actions.toggleSolo(ch) }
                 }
             }
         }
@@ -1032,19 +1032,11 @@ private fun TrackHeader(
 }
 
 @Composable
-private fun MuteSolo(letter: String, on: Boolean, color: Color, description: String, tag: String, toggle: () -> Unit) {
-    // Audit final (20 M5, 22): a little larger (Compose widens the touch to 48 dp around it), and
-    // TalkBack says whether it is on.
-    Box(
-        Modifier.size(width = 40.dp, height = 32.dp).clip(RoundedCornerShape(6.dp))
-            .background(if (on) color else Neon.SurfaceHigh)
-            .toggleable(value = on, role = androidx.compose.ui.semantics.Role.Switch, onValueChange = { toggle() })
-            .semantics { contentDescription = description }
-            .testTag(tag),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(letter, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = if (on) Color.Black else Neon.TextSecondary)
-    }
+private fun MuteSolo(mute: Boolean, on: Boolean, color: Color, name: String, tag: String, toggle: () -> Unit) {
+    // Audit final (20 M5, 22): Compose widens the touch to 48 dp around it; n° 21: icons, never M / S.
+    val size = androidx.compose.ui.unit.DpSize(40.dp, 32.dp)
+    if (mute) com.pocketstudio.app.ui.MuteToggle(on, name, tag, color = color, size = size, caption = false, toggle = toggle)
+    else com.pocketstudio.app.ui.SoloToggle(on, name, tag, color = color, size = size, caption = false, toggle = toggle)
 }
 
 /** A song curve's header: what it moves; a touch opens it in the Mixeur. */

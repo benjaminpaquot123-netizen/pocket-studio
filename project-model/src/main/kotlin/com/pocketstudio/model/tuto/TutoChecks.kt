@@ -617,6 +617,23 @@ object TutoChecks {
      */
     private const val KNOB_STEP = 0.15f
 
+    /**
+     * Synth knob [k] ([SynthPatch] index) as track [t] plays it: its synth's, or the Plaits knob doing
+     * the same ([PlaitsPatch.knobFor]: the « Lead filtré »'s filter, techno Pro); null: its sound has none.
+     */
+    fun knobValue(t: InstrumentTrack, k: Int): Float? = when (t.engine) {
+        0 -> t.synth.get(k)
+        1 -> com.pocketstudio.model.PlaitsPatch.knobFor(t.plaits.model, k)?.let { t.plaits.engineValues()[it] }
+        else -> null
+    }
+
+    /** [t] with knob [k] at [v] where its sound has it ([knobValue]). */
+    fun withKnob(t: InstrumentTrack, k: Int, v: Float): InstrumentTrack = when (t.engine) {
+        0 -> t.copy(synth = t.synth.with(k, v))
+        1 -> com.pocketstudio.model.PlaitsPatch.knobFor(t.plaits.model, k)?.let { t.copy(plaits = t.plaits.with(it, v)) } ?: t
+        else -> t
+    }
+
     /** The knobs of a "changed:synth:…" check (empty: any change counts) and its role. */
     private fun knobsOf(check: String): Pair<String, List<Int>> {
         val spec = check.removePrefix("changed:synth:")
@@ -863,9 +880,15 @@ object TutoChecks {
             // The knobs the step names turned up since it began (not the distortion the synth has none of).
             c.startsWith("changed:synth:") && knobsOf(c).second.isNotEmpty() -> {
                 val (role, knobs) = knobsOf(c)
-                val before = (baseline as? List<*>)?.firstOrNull() as? SynthPatch
+                val base = baseline as? List<*>
                 val id = trackFor(p, role)
-                before != null && id != null && knobs.all { k -> p.track(id).synth.get(k).let { it >= before.get(k) + KNOB_STEP || it >= 0.95f } }
+                val now = id?.let { p.track(it) }
+                // The track as it was ([signature]: its synth, its Plaits, its engine), read the way it plays now.
+                val before = (base?.getOrNull(0) as? SynthPatch)?.let { s -> now?.copy(synth = s, plaits = base.getOrNull(1) as? com.pocketstudio.model.PlaitsPatch ?: now.plaits) }
+                before != null && now != null && knobs.all { k ->
+                    val was = knobValue(before, k)
+                    knobValue(now, k)?.let { v -> was != null && (v >= was + KNOB_STEP || v >= 0.95f) } == true
+                }
             }
             // Théo (lot « tuto 5 »): « percussion ou charley ouvert », not any hit (a closed hat ticked it): a new hit on one of those pads.
             c.startsWith("changed:drums:") -> (baseline as? List<*>)?.let { base ->
@@ -1246,7 +1269,7 @@ object TutoChecks {
                 val (role, knobs) = knobsOf(c)
                 val id = trackFor(p, role) ?: return null
                 val t = p.track(id)
-                p.withTrack(t.copy(synth = knobs.fold(t.synth) { s, k -> s.with(k, (s.get(k) + 0.3f).coerceAtMost(1f)) }))
+                p.withTrack(knobs.fold(t) { u, k -> knobValue(u, k)?.let { withKnob(u, k, (it + 0.3f).coerceAtMost(1f)) } ?: u })
             }
             c.startsWith("label:") -> p.renameScene(grooveOf(p), arg)
             c.startsWith("part:") -> makePart(p, step, target)?.let { q ->
@@ -1474,7 +1497,7 @@ object TutoChecks {
         // The second pad and the counter-melody: the style's own sounds for them (liquid's pad layer, its counter), else a pad and the lead's.
         val made = extraSound(role, target)?.let { (synth, plaits) ->
             if (plaits != null) named.copy(engine = 1, plaits = plaits) else named.copy(engine = 0, synth = synth ?: named.synth)
-        } ?: finished(role, target, named)
+        }.let { it ?: finished(role, target, named) }.let { withFilterAsked(role, target, it) }
         // The bass's own effect, as the assistant's song has it (jump up: « Growl », its distortion and its
         // three-band squash; measured: without it the growl synth alone is dull, 0.9 % of its energy over 2 kHz, 6.9 % with it).
         val fx = target.style.effects.firstOrNull { it.target == role && it.preset.isNotEmpty() }?.let { FxPresets.byId(it.preset) }
@@ -1484,6 +1507,21 @@ object TutoChecks {
         val level = withFx.mixer.channels[InstrumentTrack.mixerChannel(made.id)]
         val first = p.withTrack(made.copy(id = 0, color = p.track(0).color))
         return withChannels(first, listOf(InstrumentTrack.mixerChannel(0))) { level } to 0
+    }
+
+    /**
+     * A Plaits track whose course asks to turn its filter (« monte la Coupure », techno Pro: the
+     * « Basse analogique » had none, the knob was nowhere on the screen): the module's « Analogique +
+     * filtre » (VA-VCF), the same knobs, whose « Coupure » and « Résonance » are really there.
+     */
+    private fun withFilterAsked(role: String, target: TutoTarget, t: InstrumentTrack): InstrumentTrack {
+        if (t.engine != 1) return t
+        val knobs = TutoCourse.of(target.style.id)?.chapters.orEmpty().flatMap { it.steps }
+            .filter { it.check.startsWith("changed:synth:") && knobsOf(it.check).first == role }.flatMap { knobsOf(it.check).second }
+        val model = t.plaits.model
+        if (knobs.all { com.pocketstudio.model.PlaitsPatch.knobFor(model, it) != null }) return t
+        if (knobs.any { com.pocketstudio.model.PlaitsPatch.knobFor(com.pocketstudio.model.PlaitsPatch.VA_VCF, it) == null }) return t
+        return t.copy(plaits = t.plaits.copy(model = com.pocketstudio.model.PlaitsPatch.VA_VCF))
     }
 
     /**

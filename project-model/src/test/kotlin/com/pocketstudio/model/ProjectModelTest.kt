@@ -722,7 +722,11 @@ class DrumLengthTest {
         assertEquals(32, back.steps)
         assertEquals(setOf(0, 16), back.lanes[0].hits.keys.filter { it < back.steps }.toSet())
         assertEquals(setOf(4, 20, 36), back.lanes[2].hits.keys)
-        assertEquals(64, one.withSteps(100).steps)
+        // Step 7a: 16 bars at most (a Live cell records that much of drums), whole beats.
+        assertEquals(100, one.withSteps(100).steps)
+        assertEquals(DrumPattern.MAX_STEPS, one.withSteps(1000).steps)
+        assertEquals(256, DrumPattern.MAX_STEPS)
+        assertEquals(DrumPattern.MIN_STEPS, one.withSteps(1).steps)
         assertEquals(one, one.withSteps(16))
     }
 

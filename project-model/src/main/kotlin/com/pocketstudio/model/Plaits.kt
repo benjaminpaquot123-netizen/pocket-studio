@@ -63,5 +63,29 @@ data class PlaitsPatch(
         )
         /** Labels of the knobs, in engine order after the model. */
         val PARAMS = listOf("Harmoniques", "Timbre", "Morph", "Déclin", "Couleur", "Relâche", "Volume")
+
+        /** « Analogique + filtre » (VA-VCF): its TIMBRE is the filter's cutoff, its HARMONICS the resonance (Plaits 1.2 source). */
+        const val VA_VCF = 0
+
+        /**
+         * The knob ([engineValues] index) of [model] that does what the subtractive synth's [synthParam] does
+         * (null: none). Only where the module really works so: the VA-VCF's cutoff and resonance.
+         */
+        fun knobFor(model: Int, synthParam: Int): Int? = when {
+            model == VA_VCF && synthParam == SynthPatch.CUTOFF -> 2
+            model == VA_VCF && synthParam == SynthPatch.RESONANCE -> 1
+            else -> null
+        }
+
+        /** The synth parameter knob [param] of [model] stands for ([knobFor]'s reverse; null: none). */
+        fun synthParamOf(model: Int, param: Int): Int? =
+            listOf(SynthPatch.CUTOFF, SynthPatch.RESONANCE).firstOrNull { knobFor(model, it) == param }
+
+        /** The label [model] gives knob [param] (French, to translate): the VA-VCF names its filter's knobs as the synth does. */
+        fun labelOf(model: Int, param: Int): String = when (synthParamOf(model, param)) {
+            SynthPatch.CUTOFF -> "Coupure"
+            SynthPatch.RESONANCE -> "Résonance"
+            else -> PARAMS[param - 1]
+        }
     }
 }

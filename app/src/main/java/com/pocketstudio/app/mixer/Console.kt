@@ -170,8 +170,8 @@ private fun ConsoleStrip(info: StripInfo, c: Channel, meter: () -> Float, action
             )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            ConsoleToggle("M", c.mute, Neon.Red, tr("Couper la piste %s", name), "mute_$index") { actions.toggleMute(index) }
-            ConsoleToggle("S", c.solo, Neon.Cyan, tr("Écouter la piste %s seule", name), "solo_$index") { actions.toggleSolo(index) }
+            com.pocketstudio.app.ui.MuteToggle(c.mute, name, "mute_$index", color = Neon.Red, size = androidx.compose.ui.unit.DpSize(32.dp, 40.dp)) { actions.toggleMute(index) }
+            com.pocketstudio.app.ui.SoloToggle(c.solo, name, "solo_$index", size = androidx.compose.ui.unit.DpSize(32.dp, 40.dp)) { actions.toggleSolo(index) }
         }
         VerticalFader(
             c.volume, { actions.setVolume(index, it) }, meter, tr("Volume de %s", name), "volume_$index", height = faderHeight,
@@ -189,20 +189,6 @@ private fun ConsoleStrip(info: StripInfo, c: Channel, meter: () -> Float, action
                 Text("$moves", style = MaterialTheme.typography.labelSmall, color = Neon.Amber)
             }
         }
-    }
-}
-
-@Composable
-private fun ConsoleToggle(letter: String, on: Boolean, color: Color, description: String, tag: String, toggle: () -> Unit) {
-    Box(
-        Modifier.size(width = 32.dp, height = 40.dp).clip(RoundedCornerShape(8.dp))
-            .background(if (on) color else Neon.SurfaceHigh)
-            .clickable(onClick = toggle)
-            .semantics { contentDescription = description; stateDescription = if (on) tr("activé") else tr("désactivé") }
-            .testTag(tag),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(letter, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = if (on) Color.Black else Neon.TextSecondary)
     }
 }
 

@@ -73,7 +73,7 @@ class RemixSongScreenshotTest {
         compose.onRoot().captureRoboImage("screenshots/remix_song_sons.png")
     }
 
-    /** Step 5d: « Faire de la matière » under the song's four stems. */
+    /** Step 5d: « Piocher dans la chanson » under the song's four stems. */
     @Test
     fun matter() {
         start()

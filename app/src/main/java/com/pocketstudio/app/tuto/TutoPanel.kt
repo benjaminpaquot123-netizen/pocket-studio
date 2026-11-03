@@ -28,6 +28,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.offset
+import com.pocketstudio.app.learn.spot
+import kotlin.math.roundToInt
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -73,6 +76,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -114,6 +118,8 @@ object TutoHints {
     var erase by mutableStateOf<Map<Int, Set<Int>>?>(null)
     /** The synth knobs a step names ([TutoGo.knobs]): dashed, the advanced ones unfolded. */
     var knobs by mutableStateOf<Set<Int>>(emptySet())
+    /** The mixer strip a step points at ([TutoGo.strip]): the simple Mix opens its drums when it is a drum sound's. */
+    var strip by mutableStateOf<Int?>(null)
     /** A send step's halves (« Accords ✓ · Caisse : à régler ici »), over its dashed send. */
     var sendNote by mutableStateOf<String?>(null)
     /** The tutorial runs (its panel has the bottom of the screen). */
@@ -137,6 +143,9 @@ object TutoHints {
     /** [copy] is the drum grid's (the hats' strengths), not the piano roll's. */
     var copyOnGrid by mutableStateOf(false)
 }
+
+/** The tutorial's line over the drum grid, as a spot (a reveal of the cells keeps it in sight). */
+const val TUTO_GRID_LINE_SPOT = "tuto_grid_line"
 
 /** How long a screen waits before turning by itself for the tutorial (the last touch seen first). */
 const val TUTO_TURN_MS = 450L
@@ -173,7 +182,7 @@ fun TutoGridLine(bar: Int, bars: Int, pad: String, here: Int, elsewhere: Pair<In
     androidx.compose.runtime.LaunchedEffect(said) { if (said != null) { kotlinx.coroutines.delay(TUTO_BANNER_MS); if (TutoHints.banner == said) TutoHints.banner = null } }
     Row(
         Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(10.dp)).background(Neon.Amber.copy(alpha = 0.10f)).padding(start = 10.dp, end = 4.dp)
-            .testTag("tuto_grid_line"),
+            .spot(TUTO_GRID_LINE_SPOT).testTag("tuto_grid_line"),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
@@ -1020,3 +1029,86 @@ fun TutoSpotRing(target: androidx.compose.ui.geometry.Rect?, modifier: Modifier 
         drawRoundRect(amber.copy(alpha = 0.95f - 0.4f * pulse.value), tl, sz, r, style = Stroke(3.dp.toPx()))
     }
 }
+
+/** n° 20: a gesture of « Montre-moi » that slides (a knob turned up, a fader lowered), not a touch. */
+enum class TutoDrag { RIGHT, DOWN }
+
+/**
+ * n° 20 (« Montre-moi » that shows): a finger on the place of each gesture, a halo spreading from
+ * it as it touches ([gesture] counts them: each new one plays again). On a pad's grid ([cell] of a
+ * bar of [perBar] steps, two rows) the very cell, else the middle of [target]. A [drag] (a knob, a
+ * fader): the finger presses, slides along [dragPath] leaving a trail, then lifts.
+ */
+@Composable
+fun TutoFinger(target: androidx.compose.ui.geometry.Rect?, gesture: Int, cell: Int?, perBar: Int, modifier: Modifier = Modifier, drag: TutoDrag? = null) {
+    if (target == null || gesture <= 0) return
+    val touch = remember { androidx.compose.animation.core.Animatable(0f) }
+    androidx.compose.runtime.LaunchedEffect(gesture, drag) {
+        touch.snapTo(0f)
+        touch.animateTo(1f, androidx.compose.animation.core.tween(if (drag != null) FINGER_DRAG_MS else FINGER_TOUCH_MS, easing = androidx.compose.animation.core.LinearEasing))
+    }
+    val path = drag?.let { dragPath(target, it) }
+    val amber = Neon.Amber
+    val finger = androidx.compose.ui.graphics.vector.rememberVectorPainter(androidx.compose.material.icons.Icons.Filled.TouchApp)
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    val size = with(density) { FINGER_SIZE.toPx() }
+    // Where the finger is now (read in the draw and layout phases only: the animation recomposes nothing).
+    fun tip(t: Float): Offset = path?.let { (a, b) -> androidx.compose.ui.geometry.lerp(a, b, dragProgress(t)) } ?: fingerAt(target, cell, perBar)
+    Canvas(modifier.fillMaxSize().testTag("tuto_finger")) {
+        val t = touch.value
+        val at = tip(t)
+        if (path != null) {
+            // The way it went: a trail from where it pressed to where it is, a dot where it started.
+            val (a, _) = path
+            drawLine(amber.copy(alpha = 0.75f), a, at, strokeWidth = 6.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round)
+            drawCircle(amber.copy(alpha = 0.6f), 6.dp.toPx(), a)
+            val held = if (t < DRAG_PRESS) t / DRAG_PRESS else if (t > 1f - DRAG_LIFT) (1f - t) / DRAG_LIFT else 1f
+            drawCircle(amber.copy(alpha = 0.35f * held), 18.dp.toPx(), at)
+            drawCircle(amber.copy(alpha = 0.9f * held), 18.dp.toPx(), at, style = Stroke(3.dp.toPx()))
+        } else {
+            val r = 10.dp.toPx() + 26.dp.toPx() * t
+            drawCircle(amber.copy(alpha = 0.35f * (1f - t)), r, at)
+            drawCircle(amber.copy(alpha = 0.9f * (1f - t)), r, at, style = Stroke(3.dp.toPx()))
+        }
+    }
+    // The finger itself, its tip on the place (a little lower while it presses).
+    Box(
+        Modifier.offset {
+            val t = touch.value
+            val at = tip(t)
+            // A drag's tip stays on its path (the halo says it presses); a touch dips a little.
+            val press = if (path != null) 0f else (if (t < 0.3f) t / 0.3f else 1f - (t - 0.3f) / 0.7f) * 4.dp.toPx()
+            androidx.compose.ui.unit.IntOffset((at.x - size * 0.35f).roundToInt(), (at.y - size * 0.08f + press).roundToInt())
+        }.size(FINGER_SIZE).testTag("tuto_finger_tip"),
+    ) {
+        androidx.compose.foundation.Image(finger, contentDescription = null, colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(Color.White), modifier = Modifier.fillMaxSize())
+    }
+}
+
+/** The way a [drag] goes over [target]: a knob's slider (in its lower half) to the right, a fader down. */
+internal fun dragPath(target: androidx.compose.ui.geometry.Rect, drag: TutoDrag): Pair<Offset, Offset> = when (drag) {
+    TutoDrag.RIGHT -> {
+        val y = target.top + target.height * 0.7f
+        Offset(target.left + target.width * 0.25f, y) to Offset(target.left + target.width * 0.75f, y)
+    }
+    TutoDrag.DOWN -> Offset(target.center.x, target.top + target.height * 0.3f) to Offset(target.center.x, target.top + target.height * 0.65f)
+}
+
+/** How far along its path a drag is at [t] (0..1 of its time): still while pressing, eased along, still while lifting. */
+internal fun dragProgress(t: Float): Float =
+    androidx.compose.animation.core.FastOutSlowInEasing.transform(((t - DRAG_PRESS) / (1f - DRAG_PRESS - DRAG_LIFT)).coerceIn(0f, 1f))
+
+/** Where a gesture of « Montre-moi » lands in [target]: cell [cell] of a bar of [perBar] steps in two rows, else its middle. */
+internal fun fingerAt(target: androidx.compose.ui.geometry.Rect, cell: Int?, perBar: Int): Offset {
+    if (cell == null || perBar <= 0) return target.center
+    val cols = (perBar / 2).coerceAtLeast(1)
+    val k = cell % perBar
+    return Offset(target.left + target.width * ((k % cols) + 0.5f) / cols, target.top + target.height * ((k / cols) + 0.5f) / 2f)
+}
+
+private const val FINGER_TOUCH_MS = 700
+/** A drag of « Montre-moi »: under the gesture's second ([TutoController.FRAME_MS]), slow enough to follow. */
+internal const val FINGER_DRAG_MS = 900
+private const val DRAG_PRESS = 0.15f
+private const val DRAG_LIFT = 0.15f
+private val FINGER_SIZE = 40.dp

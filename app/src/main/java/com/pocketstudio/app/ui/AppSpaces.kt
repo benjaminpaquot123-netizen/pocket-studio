@@ -385,7 +385,8 @@ private fun SimpleTrackSheet(t: SimpleTrack, alone: Boolean, actions: SimpleTrac
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 // « Écouter seule » plays at once (the loop of the part, the track alone): no ▶ to find first.
                 com.pocketstudio.app.rhythm.AloneButton(alone, tr("Écouter seule"), t.name, "simple_track_solo") { actions.listenAlone(t.key) }
-                FilterChip(selected = t.mute, onClick = { actions.toggleMute(t.ch) }, label = { Text(tr("Couper")) }, colors = pillColors(Neon.Amber), modifier = Modifier.heightIn(min = 48.dp).testTag("simple_track_mute"))
+                // n° 21: the app's one mute button (speaker / crossed speaker, its word under it in Mode simple).
+                MuteToggle(t.mute, t.name, "simple_track_mute", size = androidx.compose.ui.unit.DpSize(48.dp, 40.dp), caption = true) { actions.toggleMute(t.ch) }
                 // A solo kept in the song by an older version: one touch takes it off.
                 if (t.solo) FilterChip(selected = true, onClick = { actions.toggleSolo(t.ch) }, label = { Text(tr("Seule ✓")) }, colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("simple_track_kept_solo"))
             }

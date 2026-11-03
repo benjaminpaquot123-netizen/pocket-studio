@@ -111,6 +111,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.zIndex
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.geometry.Offset
@@ -1701,12 +1703,13 @@ fun AppRoot() {
     LaunchedEffect(tutoSpot) { if (tutoSpot != null) { kotlinx.coroutines.delay(TUTO_SPOT_MS); tutoSpot = null } }
     // Testers (lot « tuto 3 »): the step's control brought into view, ringed or not (its screen may take a few frames).
     var tutoReveal by remember { mutableStateOf<List<String>?>(null) }
+    // n° 20: the place of the step last brought into view, where « Montre-moi »'s finger goes.
+    var tutoPlace by remember { mutableStateOf<List<String>>(emptyList()) }
     LaunchedEffect(tutoReveal) {
         val ids = tutoReveal ?: return@LaunchedEffect
-        for (i in 0 until 10) {
-            kotlinx.coroutines.delay(100)
-            if (ids.any { spots.reveal(it) }) break
-        }
+        tutoPlace = ids
+        kotlinx.coroutines.delay(100)
+        com.pocketstudio.app.learn.revealAndCheck(spots, ids)
         tutoReveal = null
     }
     if (tutoKeySheet) {
@@ -1739,10 +1742,19 @@ fun AppRoot() {
     // Testers (lot « tuto 4 »): the tutorial's panel has the bottom of the screen (no floating keyboard over its
     // rings), a step ticked closes a hit's menu (its first touch on « Étape suivante » was lost closing it).
     LaunchedEffect(tutoUi == null) { com.pocketstudio.app.tuto.TutoHints.active = tutoUi != null }
+    // n° 19: a tuto or a control pointed at by the Guide: every card open, the target never folded away.
+    androidx.compose.runtime.SideEffect { com.pocketstudio.ui.FoldOverride.openAll = tutoUi != null || guideSpot != null }
+    DisposableEffect(Unit) { onDispose { com.pocketstudio.ui.FoldOverride.openAll = false } }
+    spots.windowHeight = androidx.compose.ui.platform.LocalWindowInfo.current.containerSize.height.toFloat()
+    if (tutoUi == null) spots.coverTop = Float.MAX_VALUE
     // Its screens gone, the tutorial no longer runs for them (the drum grid follows the music again).
     DisposableEffect(Unit) { onDispose { com.pocketstudio.app.tuto.TutoHints.active = false } }
     LaunchedEffect(tutoUi?.progress?.done?.size) { com.pocketstudio.app.tuto.TutoHints.ticked++ }
-    LaunchedEffect(tutoUi?.current?.id) { com.pocketstudio.app.tuto.TutoHints.knobs = tuto.place()?.knobs.orEmpty().toSet() }
+    LaunchedEffect(tutoUi?.current?.id) {
+        val place = tuto.place()
+        com.pocketstudio.app.tuto.TutoHints.knobs = place?.knobs.orEmpty().toSet()
+        com.pocketstudio.app.tuto.TutoHints.strip = place?.strip
+    }
     LaunchedEffect(tutoUi?.current?.id) { com.pocketstudio.app.tuto.TutoHints.step = tutoUi?.current?.id }
     // Testers (lot « tuto 5 »): « Copier sur les mesures suivantes » next: offered over the grid too, where the eyes are.
     val tutoCopy = (tutoUi?.need as? com.pocketstudio.model.tuto.TutoNeed.Copy)?.role
@@ -1916,6 +1928,7 @@ fun AppRoot() {
                 // The fader of the track the step names: the Mode simple's « Mix », else the console's strip with its
                 // name (testers, lot « tuto 4 »: the first strip, the drums', was ringed for the « Accords »).
                 g.strip != null -> {
+                    com.pocketstudio.app.tuto.TutoHints.strip = g.strip
                     go(AppTab.Mixeur)
                     val ids = listOf(if (simpleNow) "mix_strip_${g.strip}" else "console_strip_${g.strip}")
                     if (g.spot) tutoSpot = ids else tutoReveal = ids
@@ -2189,8 +2202,10 @@ fun AppRoot() {
                     // « Mettre ces sons » / « Plus tard » when it is but the course is under way (never put in silence).
                     val kitTarget = com.pocketstudio.model.tuto.TutoTarget.of(tutoNow.progress.style)
                     val kitMissing = (tutoKitOffer as? com.pocketstudio.model.tuto.TutoKit.Offer.Download)?.missing.orEmpty()
-                    if (kitTarget != null && (kitMissing.isNotEmpty() || tutoKitOffer == com.pocketstudio.model.tuto.TutoKit.Offer.Ask)) {
-                        val loading = kitMissing.mapNotNull { tutoPacks.downloading[it.id] }
+                    val kitLoading = kitMissing.mapNotNull { tutoPacks.downloading[it.id] }
+                    // Folded with the panel while the user works on the screen (the grid had 160 dp left under it at 780 dp).
+                    if (kitTarget != null && (tutoNow.open || kitLoading.isNotEmpty()) && (kitMissing.isNotEmpty() || tutoKitOffer == com.pocketstudio.model.tuto.TutoKit.Offer.Ask)) {
+                        val loading = kitLoading
                         com.pocketstudio.app.tuto.TutoKitCard(
                             style = com.pocketstudio.app.tuto.tutoText(kitTarget.style.name),
                             size = tr("%d Mo", ((kitMissing.sumOf { it.sizeBytes } + 500_000) / 1_000_000).coerceAtLeast(1)),
@@ -2217,7 +2232,9 @@ fun AppRoot() {
                             },
                             goTo = { c, i -> tuto.goTo(c, i) }, leaveEnd = tuto::leaveEnd,
                         ),
-                        modifier = if (landscape) Modifier.navigationBarsPadding() else Modifier,
+                        // n° 19: what the panel covers; a control revealed goes above it.
+                        modifier = (if (landscape) Modifier.navigationBarsPadding() else Modifier)
+                            .onGloballyPositioned { spots.coverTop = if (landscape) Float.MAX_VALUE else it.boundsInWindow().top },
                         map = remember(tutoNow.progress.style) { com.pocketstudio.app.tuto.tutoMap(tutoNow.progress.style) },
                         mine = mine, minePlaying = tutoTransport.playing, mineFirst = mineFirst,
                     )
@@ -3206,7 +3223,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     projectKey = com.pocketstudio.app.remix.keyLabel(project.harmony, SettingsStore.state.value.englishNotes),
                                     board = overview?.let { ov ->
                                         project.remix.setId?.let { id ->
-                                            com.pocketstudio.app.remix.StemBoardUi(id, project.remix.name, ov.frames, project.remix.songBpm, project.remix.firstBeat, rhythmVm.boardPeaks)
+                                            com.pocketstudio.app.remix.StemBoardUi(id, project.remix.name, ov.frames, project.remix.songBpm, project.remix.firstBeat, rhythmVm.boardPeaks, songFrame = rhythmVm.stemPosition)
                                         }
                                     },
                                 ),
@@ -3430,6 +3447,10 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
     // Phase 36: « ? qui étiquette l'écran » over the screen, and « Voir le réglage » pointing at a control.
     if (helpLabels && !showProjects) {
         com.pocketstudio.app.learn.HelpLabelsOverlay(spots, hide = { helpLabels = false }, reportBug = { reportBug("étiquettes « ? »") })
+    } else if (tutoUi?.demo == com.pocketstudio.app.tuto.TutoDemoPhase.SHOWING && !showProjects) {
+        // n° 20: a finger on each gesture of « Montre-moi », the grid's very cell when it is one.
+        val fingerOn = if (tutoUi?.gestureCell != null) listOf("step_cells") else tutoPlace
+        com.pocketstudio.app.learn.SpotFingerOverlay(spots, fingerOn, tutoUi?.gesture ?: 0, tutoUi?.gestureCell, rhythmVm.project.value.stepsPerBar, tutoUi?.gestureDrag)
     } else if (tutoSpot != null && !showProjects) {
         com.pocketstudio.app.learn.SpotRingOverlay(spots, tutoSpot.orEmpty())
     } else if (guideSpot != null && !showProjects) {
@@ -4196,10 +4217,14 @@ internal fun simpleTracks(p: Project, hideFirst: Boolean = false): List<SimpleTr
     val pads = p.guideTracks().filter { it.key.startsWith("pad:") }.mapNotNull { t ->
         t.key.removePrefix("pad:").toIntOrNull()?.let { SimplePad(it, com.pocketstudio.model.DefaultNames.shown(t.name)) }
     }
+    // n° 23: a project born from a Remix shows no empty « Batterie » or « Synthé » it never used.
+    val remix = p.remix.setId != null
+    val drumsEmpty = remix && p.allScenes.none { sc -> sc.drums.lanes.any { it.hits.isNotEmpty() } } && p.drums.lanes.none { it.hits.isNotEmpty() }
+    val firstHidden = hideFirst || (remix && com.pocketstudio.model.tuto.TutoChecks.blankFirst(p))
     return listOfNotNull(
-        track(com.pocketstudio.model.SongPart.DRUMS, 0, tr("Batterie"), com.pocketstudio.app.live.DRUMS_COLOR, pads),
+        if (drumsEmpty) null else track(com.pocketstudio.model.SongPart.DRUMS, 0, tr("Batterie"), com.pocketstudio.app.live.DRUMS_COLOR, pads),
         if (acidPlays) track(com.pocketstudio.model.SongPart.ACID, 1, tr("Acid 303"), com.pocketstudio.app.acid.AcidLook.Track) else null,
-    ) + p.instrumentTracks.filter { !(hideFirst && it.id == 0) }.map { t ->
+    ) + p.instrumentTracks.filter { !(firstHidden && it.id == 0) }.map { t ->
         track(com.pocketstudio.model.SongPart.inst(t.id), com.pocketstudio.model.InstrumentTrack.mixerChannel(t.id), com.pocketstudio.model.DefaultNames.shown(t.name), com.pocketstudio.ui.trackColor(t.color))
     } + p.audioTracks.map { t ->
         track(com.pocketstudio.model.SongPart.audio(t.id), com.pocketstudio.model.AudioTrack.mixerChannel(t.id), com.pocketstudio.model.DefaultNames.shown(t.name), com.pocketstudio.ui.trackColor(t.color))

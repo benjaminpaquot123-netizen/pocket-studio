@@ -1,6 +1,16 @@
 package com.pocketstudio.app.sounds
 
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.SoundShelves
+import com.pocketstudio.app.library.MINE
+import com.pocketstudio.app.library.ShelfBrowser
+import com.pocketstudio.app.library.ShelfBrowserActions
+import com.pocketstudio.app.library.ShelfBrowserUi
+import com.pocketstudio.app.library.SoundOption
+import com.pocketstudio.app.library.SoundRef
+import com.pocketstudio.app.library.SoundShelf
+import com.pocketstudio.app.library.shelfSearch
+import androidx.compose.runtime.remember
 
 import com.pocketstudio.ui.fadingHorizontalScroll
 import androidx.compose.animation.AnimatedContent
@@ -64,58 +74,39 @@ class SoundBrowserUi(
     val extras: Boolean = true,
 )
 
-/** Families of ready-made sounds as coloured tabs, their sounds as tiles, "Au hasard" and "Garder ce son". */
+/**
+ * Ready-made sounds (settings, not files) in the app's one sound browser ([ShelfBrowser], 7d):
+ * search, the kept ones as « Favoris », the families as folders, opened on the sound playing now;
+ * a touch puts the sound on (and plays it). « Au hasard » and « Garder ce son » under it.
+ */
 @Composable
 fun SoundBrowser(ui: SoundBrowserUi) {
-    val families = (if (ui.favorites.isNotEmpty()) listOf(SoundCategories.FAVORITES) else emptyList()) + ui.categories
-    val start = ui.sounds.firstOrNull { it.name == ui.current }?.category
-        ?: if (ui.favorites.any { it.name == ui.current }) SoundCategories.FAVORITES else ui.categories.first()
-    var family by rememberSaveable(ui.tag) { mutableStateOf(start) }
-    // The family of the sound playing now, whenever it changes (another track shown, a sound
-    // chosen elsewhere): never the family left open for the previous track.
-    val currentFamily = ui.sounds.firstOrNull { it.name == ui.current }?.category
-        ?: SoundCategories.FAVORITES.takeIf { ui.favorites.any { it.name == ui.current } }
-    androidx.compose.runtime.LaunchedEffect(ui.current) { if (currentFamily != null) family = currentFamily }
-    if (family !in families) family = ui.categories.first()
+    val shelves = remember(ui.categories, ui.sounds) { presetShelves(ui) }
+    val mine = remember(ui.favorites) { ui.favorites.mapIndexed { i, s -> presetOption(SoundRef.Preset(i, saved = true), s, ui) } }
+    val current = ui.sounds.indexOfFirst { it.name == ui.current }.takeIf { it >= 0 }?.let { SoundRef.Preset(it) }
+        ?: ui.favorites.indexOfFirst { it.name == ui.current }.takeIf { it >= 0 }?.let { SoundRef.Preset(it, saved = true) }
+    // Opened on the family of the sound playing now, whenever it changes (another track shown, a
+    // sound chosen elsewhere): never the folder left open for the previous track.
+    val start = when (current) {
+        is SoundRef.Preset -> if (current.saved) SAVED else ui.sounds[current.index].category
+        // A sound of its own (not one of these): the first family open, its sounds one touch away.
+        else -> ui.categories.firstOrNull()
+    }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag(ui.tag)) {
-        Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            families.forEach { f ->
-                val look = SoundLooks.of(f)
-                FamilyChip(
-                    label = tr(f), icon = look.icon, accent = look.color, selected = family == f, onClick = { family = f },
-                    modifier = Modifier.testTag("${ui.tag}_family_$f"),
-                )
-            }
-        }
-        AnimatedContent(family, transitionSpec = { fadeIn(tween(180)) togetherWith fadeOut(tween(120)) }, label = "family") { shown ->
-            val look = SoundLooks.of(shown)
-            if (shown == SoundCategories.FAVORITES) {
-                TileGrid(ui.favorites.size) { i, m ->
-                    val s = ui.favorites[i]
-                    val own = SoundLooks.of(s.category)
-                    SoundTile(
-                        title = tr(s.name), icon = own.icon, accent = own.color, selected = s.name == ui.current,
-                        onClick = { ui.pickFavorite(i) }, subtitle = ui.describe(s),
-                        trailing = {
-                            IconButton(onClick = { ui.deleteFavorite(i) }, modifier = Modifier.size(32.dp)) {
-                                Icon(Icons.Filled.Close, contentDescription = tr("Retirer %s", tr(s.name)), tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))
-                            }
-                        },
-                        modifier = m.testTag("${ui.tag}_fav_$i"),
-                    )
-                }
-            } else {
-                val shownSounds = ui.sounds.withIndex().filter { it.value.category == shown }
-                TileGrid(shownSounds.size) { k, m ->
-                    val (i, s) = shownSounds[k]
-                    SoundTile(
-                        title = tr(s.name), icon = look.icon, accent = look.color, selected = s.name == ui.current,
-                        onClick = { ui.pick(i) }, subtitle = ui.describe(s),
-                        modifier = m.testTag("${ui.tag}_$i"),
-                    )
-                }
-            }
-        }
+        ShelfBrowser(
+            ShelfBrowserUi(
+                shelves = shelves, kind = ui.categories.firstOrNull().orEmpty(), chosen = current, tag = ui.tag, pickOnTap = true,
+                mine = mine.takeIf { it.isNotEmpty() }, mineTitle = tr("Favoris"),
+                search = { q -> shelfSearch(shelves + listOf(SoundShelves.Shelf(SAVED, SAVED, emptyList(), mine)), q) },
+                start = start, stateKey = "${ui.tag}:$start",
+                kindOf = { o -> (o.ref as? SoundRef.Preset)?.let { r -> (if (r.saved) ui.favorites else ui.sounds).getOrNull(r.index)?.category } },
+                tileTag = { o -> (o.ref as? SoundRef.Preset)?.let { r -> if (r.saved) "${ui.tag}_fav_${r.index}" else "${ui.tag}_${r.index}" }.orEmpty() },
+            ),
+            ShelfBrowserActions(
+                choose = { o -> (o.ref as? SoundRef.Preset)?.let { r -> if (r.saved) ui.pickFavorite(r.index) else ui.pick(r.index) } },
+                remove = { o -> (o.ref as? SoundRef.Preset)?.takeIf { it.saved }?.let { ui.deleteFavorite(it.index) } },
+            ),
+        )
         // A narrow pane (a tablet's side, a big interface size): the words go on two lines and the
         // buttons grow together, never « Garder ce » cut.
         if (ui.extras) Row(Modifier.fillMaxWidth().height(androidx.compose.foundation.layout.IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -133,4 +124,17 @@ fun SoundBrowser(ui: SoundBrowserUi) {
             Text(tr("« Garder ce son » le range dans tes favoris, pour tous tes projets."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
     }
+}
+
+/** The kept sounds' folder (« Favoris » here). */
+private const val SAVED = MINE
+
+/** A ready-made sound as a browser option: its name, and its few words in small. */
+private fun presetOption(ref: SoundRef, s: NamedSound<*>, ui: SoundBrowserUi): SoundOption =
+    SoundOption(ref, ui.describe(s)?.takeIf { it.isNotBlank() }?.let { "${s.name} · $it" } ?: s.name)
+
+/** One folder per family, in the browser's order, its sounds in the library's order. */
+internal fun presetShelves(ui: SoundBrowserUi): List<SoundShelf> = ui.categories.mapNotNull { c ->
+    val items = ui.sounds.withIndex().filter { it.value.category == c }.map { (i, s) -> presetOption(SoundRef.Preset(i), s, ui) }
+    if (items.isEmpty()) null else SoundShelves.Shelf(c, c, emptyList(), items)
 }

@@ -116,6 +116,21 @@ Sortie : une liste courte « à ajouter » ou « à simplifier », proposée à 
 - Les testeurs passent par lots de 4 à 6 en même temps. Les tests lourds tournent seuls.
 - Chaque tour livre un tableau de bord (`docs/audits/GABARIT-TABLEAU-DE-BORD.md`) et un résumé de 5 lignes à Benjamin.
 
+## 8 bis. Mode ultra mais économe (consigne de Benjamin, 2026-11-03)
+Toujours le modèle le plus fort (consigne 1B), mais sans gaspiller :
+- **Une seule construction de l'appli par tour**, partagée par tous les testeurs. Les testeurs ne compilent pas et ne lancent pas la suite de tests.
+- **Le recensement des boutons (§1) et les tutos (§2) sont des programmes**, pas des agents. Un agent ne lit que les lignes en échec.
+- **Missions bornées** : chaque testeur a un nombre de touchers et de minutes au plus. Il rend un rapport court (gabarit), pas de récit.
+- **Captures** : l'« œil » ne regarde que les captures signalées par les contrôles automatiques et un écran clé par langue. Jamais toutes.
+- **Doublons d'abord** : les défauts de tous les testeurs d'un tour sont regroupés **avant** les contradicteurs. Un défaut vu cinq fois ne coûte qu'une vérification.
+- **Contradicteurs selon la gravité** : trois pour un Grave ou un Bloquant, un seul pour un Moyen, aucun pour un Mineur (corrigé s'il est simple, sinon listé).
+- **Corrections groupées par zone** : une équipe par zone de code, jamais un agent par défaut.
+- **Tours qui rapetissent** : un parcours vert deux tours de suite sort de la rotation. Les tours suivants se concentrent sur ce qui a cassé.
+- **Équipe rouge et concurrence une seule fois**, au premier tour, puis seulement sur ce qui a changé.
+- **Journaux** : seuls les résumés sont lus, comme d'habitude.
+- **Arrêt dès que les critères du §7 sont atteints.** Pas de tour « pour voir ».
+- Si la limite de la semaine approche : on finit et on range le tour en cours, puis on s'arrête. La note de suivi suffit pour reprendre.
+
 ## 9. Ce que Benjamin fera
 - Dire « Audit ultra » quand il veut le lancer.
 - Trancher le lot de questions de la comparaison (§6).

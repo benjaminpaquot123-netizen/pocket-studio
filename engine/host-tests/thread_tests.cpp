@@ -65,6 +65,11 @@ void engineThreads() {
         engine.post({ps::CommandType::SetSynthNoteCount, 0.0f, 8});
         if (round % 50 == 0) engine.post({ps::CommandType::SetTransport, round % 100 == 0 ? 1.0f : 0.0f, 0});
         if (round % 20 == 0) engine.post({ps::CommandType::InstallSample, 0.0f, round % 4, 0, ps::Sample::create(tone.data(), tone.size(), 1, kRate, kRate)});
+        // Lot D2: the remix column's passages installed, refitted and switched while they play.
+        if (round % 10 == 5) engine.post({ps::CommandType::InstallRemixCell, 0.0f, (round / 10) % 3 | (round % 20 == 5 ? ps::kRefit : 0), 16,
+                                          ps::Sample::create(tone.data(), tone.size(), 1, kRate, kRate)});
+        if (round % 7 == 0) engine.post({ps::CommandType::SetRemixCell, 0.0f, round % 4 - 1});
+        (void)engine.remixCellPlaying();
         engine.post({ps::CommandType::SetGain, 0.3f + 0.1f * float(round % 5)});
         // The app frees what the audio thread let go of on this same thread (NativeEngine: main thread).
         engine.collectGarbage();

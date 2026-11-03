@@ -573,10 +573,11 @@ void RemixCells::install(int cell, Sample* sample, int loopSteps, bool refit) {
 void RemixCells::toTail(int frames) {
     if (!voice_.sample) return;
     // A free tail, else the one closest to its end.
-    Voice* t = !tails_[0].sample ? &tails_[0] : !tails_[1].sample ? &tails_[1] : tails_[0].fade <= tails_[1].fade ? &tails_[0] : &tails_[1];
-    retire(const_cast<Sample*>(t->sample));
-    *t = voice_;
-    t->fade = t->fadeLen = std::max(1, frames);
+    const size_t i = !tails_[0].sample ? 0 : !tails_[1].sample ? 1 : tails_[0].fade <= tails_[1].fade ? 0 : 1;
+    Voice& t = tails_[i];
+    retire(const_cast<Sample*>(t.sample));
+    t = voice_;
+    t.fade = t.fadeLen = std::max(1, frames);
     voice_ = Voice{};
 }
 

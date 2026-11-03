@@ -10746,6 +10746,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                                     finish = settings.pro.finish(stems, rangeStart, writtenBits),
                                 ).also { rendered = job.report() }
                             }
+                        } catch (e: Throwable) {
+                            // Audit stage 3: a render that threw (a sound gone, the disk) leaves no half file.
+                            wav.delete()
+                            throw e
                         } finally {
                             poll?.cancel()
                             // Closed on the main thread, after the render returned.

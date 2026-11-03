@@ -38,16 +38,22 @@ class ProjectStore(private val root: File, private val backup: File? = null) {
         val main = File(dir, MAIN)
         val tmp = File(dir, TMP)
         val bytes = ProjectJson.encode(project).toByteArray(Charsets.UTF_8)
-        FileOutputStream(tmp).use { out ->
-            out.write(bytes)
-            out.fd.sync()
+        try {
+            FileOutputStream(tmp).use { out ->
+                out.write(bytes)
+                out.fd.sync()
+            }
+            if (main.exists()) {
+                val backup = File(dir, BACKUP)
+                Files.copy(main.toPath(), backup.toPath(), StandardCopyOption.REPLACE_EXISTING)
+                FileOutputStream(backup, true).use { it.fd.sync() }
+            }
+            Files.move(tmp.toPath(), main.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
+        } catch (e: Throwable) {
+            // Audit stage 3: a save that failed (a full phone) leaves no half file taking the room again.
+            tmp.delete()
+            throw e
         }
-        if (main.exists()) {
-            val backup = File(dir, BACKUP)
-            Files.copy(main.toPath(), backup.toPath(), StandardCopyOption.REPLACE_EXISTING)
-            FileOutputStream(backup, true).use { it.fd.sync() }
-        }
-        Files.move(tmp.toPath(), main.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
         syncDirectory(dir)
         mirror(id, bytes)
     }

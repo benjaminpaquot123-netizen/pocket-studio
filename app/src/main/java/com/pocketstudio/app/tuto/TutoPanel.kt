@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import com.pocketstudio.app.learn.spot
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -141,6 +142,9 @@ object TutoHints {
     var copyOnGrid by mutableStateOf(false)
 }
 
+/** The tutorial's line over the drum grid, as a spot (a reveal of the cells keeps it in sight). */
+const val TUTO_GRID_LINE_SPOT = "tuto_grid_line"
+
 /** How long a screen waits before turning by itself for the tutorial (the last touch seen first). */
 const val TUTO_TURN_MS = 450L
 
@@ -176,7 +180,7 @@ fun TutoGridLine(bar: Int, bars: Int, pad: String, here: Int, elsewhere: Pair<In
     androidx.compose.runtime.LaunchedEffect(said) { if (said != null) { kotlinx.coroutines.delay(TUTO_BANNER_MS); if (TutoHints.banner == said) TutoHints.banner = null } }
     Row(
         Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(10.dp)).background(Neon.Amber.copy(alpha = 0.10f)).padding(start = 10.dp, end = 4.dp)
-            .testTag("tuto_grid_line"),
+            .spot(TUTO_GRID_LINE_SPOT).testTag("tuto_grid_line"),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {

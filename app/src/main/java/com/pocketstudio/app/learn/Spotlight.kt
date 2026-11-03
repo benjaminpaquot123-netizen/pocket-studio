@@ -38,6 +38,7 @@ import androidx.compose.ui.node.currentValueOf
 import androidx.compose.ui.relocation.bringIntoView
 import kotlinx.coroutines.launch
 import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -108,10 +109,13 @@ class SpotRegistry {
      * Audit final: control [id] (a prefix with « * ») scrolled into view when it is on the screen's page but
      * out of sight; false when no such control is there (yet).
      */
-    fun reveal(id: String): Boolean {
+    fun reveal(id: String, withHead: Boolean = true): Boolean {
         val match = if (id.endsWith("*")) spots.entries.firstOrNull { it.key.startsWith(id.dropLast(1)) }?.value else spots[id]
         val node = match?.owner as? SpotNode ?: return false
-        node.reveal(roomBelow(REVEAL_MARGIN_PX))
+        // What it names to keep in sight with it, above it (the drum grid's bar pages and tuto line over its cells).
+        val above = if (!withHead) 0f else node.revealFrom.mapNotNull { (spots[it]?.owner as? SpotNode)?.windowTop }.minOrNull()
+            ?.let { node.windowTop - it }?.takeIf { it > 0f } ?: 0f
+        node.reveal(roomBelow(REVEAL_MARGIN_PX), above)
         return true
     }
 
@@ -135,28 +139,37 @@ val LocalSpots = staticCompositionLocalOf<SpotRegistry?> { null }
  * This control is [id] for the missions, and [label] (a few words, already translated) in the
  * « ? » labels of the screen. Does nothing outside the app's registry (tests, previews).
  */
-fun Modifier.spot(id: String, label: String? = null): Modifier = this then SpotElement(id, label)
+fun Modifier.spot(id: String, label: String? = null, revealFrom: List<String> = emptyList()): Modifier = this then SpotElement(id, label, revealFrom)
 
 /** [spot] as a modifier node: it reads the registry where it is attached and leaves it when detached. */
-private data class SpotElement(val id: String, val label: String?) : androidx.compose.ui.node.ModifierNodeElement<SpotNode>() {
-    override fun create() = SpotNode(id, label)
+private data class SpotElement(val id: String, val label: String?, val revealFrom: List<String>) : androidx.compose.ui.node.ModifierNodeElement<SpotNode>() {
+    override fun create() = SpotNode(id, label, revealFrom)
     override fun update(node: SpotNode) {
         if (node.id != id) node.leave()
         node.id = id
         node.label = label
+        node.revealFrom = revealFrom
     }
 }
 
-internal class SpotNode(var id: String, var label: String?) : Modifier.Node(),
+/**
+ * [revealFrom]: the spots above this one that a reveal keeps in sight with it (from the highest of
+ * those there), when the screen has room for both; else from them down, as far as it goes.
+ */
+internal class SpotNode(var id: String, var label: String?, var revealFrom: List<String> = emptyList()) : Modifier.Node(),
     androidx.compose.ui.node.GlobalPositionAwareModifierNode,
     androidx.compose.ui.node.CompositionLocalConsumerModifierNode {
     private var registry: SpotRegistry? = null
     private var width = 0f
     private var height = 0f
 
+    /** Its top in the window, not cut by what scrolls around it (its rect is). */
+    internal var windowTop = 0f
+
     override fun onGloballyPositioned(coordinates: androidx.compose.ui.layout.LayoutCoordinates) {
         width = coordinates.size.width.toFloat()
         height = coordinates.size.height.toFloat()
+        windowTop = coordinates.positionInWindow().y
         val r = registry ?: currentValueOf(LocalSpots)?.also { registry = it } ?: return
         r.put(id, this, coordinates.boundsInWindow(), label)
     }
@@ -165,10 +178,14 @@ internal class SpotNode(var id: String, var label: String?) : Modifier.Node(),
         registry?.remove(id, this)
     }
 
-    /** Scrolled into view by whatever scrolls around it, with [below] pixels free under it (above the tuto's panel). */
-    fun reveal(below: Float = 0f) {
+    /**
+     * Scrolled into view by whatever scrolls around it, with [below] pixels free under it (above the
+     * tuto's panel) and [above] pixels over it in sight too. Too tall for the screen, its top goes
+     * first (what is above it, then itself): A1, the tuto's « Mesure 2 · 3 cases → » went off the top.
+     */
+    fun reveal(below: Float = 0f, above: Float = 0f) {
         if (isAttached) coroutineScope.launch {
-            runCatching { if (width > 0f && height > 0f) bringIntoView { Rect(0f, 0f, width, height + below) } else bringIntoView() }
+            runCatching { if (width > 0f && height > 0f) bringIntoView { Rect(0f, -above, width, height + below) } else bringIntoView() }
         }
     }
 
@@ -415,6 +432,8 @@ suspend fun revealAndCheck(registry: SpotRegistry, targets: List<String>) {
         kotlinx.coroutines.delay(REVEAL_WAIT_MS)
     }
     kotlinx.coroutines.delay(REVEAL_SETTLE_MS)
+    // A screen too short for what is over the target too (the cells' line, the tuto's panel unfolded): the target alone, it comes first.
+    if (found && registry.hidden(targets) != null && targets.any { registry.reveal(it, withHead = false) }) kotlinx.coroutines.delay(REVEAL_SETTLE_MS)
     SpotChecks.record(registry, targets, found)
 }
 

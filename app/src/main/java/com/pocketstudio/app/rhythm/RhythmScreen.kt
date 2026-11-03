@@ -344,6 +344,9 @@ fun RhythmScreen(
     }
 }
 
+/** What a reveal of the cells keeps in sight above them: the bar pages, the tuto's line. */
+private val STEP_CELLS_HEAD = listOf("step_pages", com.pocketstudio.app.tuto.TUTO_GRID_LINE_SPOT)
+
 /** Lying down, what the pads' column holds besides four rows: its padding, the kit's line, the gaps. */
 private val LYING_ROOM = 24.dp + 24.dp + 48.dp + 8.dp
 
@@ -602,7 +605,7 @@ private fun StepGrid(
         if (bars > 1) {
             FlowRow(
                 itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
-                modifier = Modifier.testTag("drum_pages"),
+                modifier = Modifier.spot("step_pages").testTag("drum_pages"),
             ) {
                 Text(tr("Mesure"), style = MaterialTheme.typography.bodyMedium)
                 (0 until bars).forEach { b ->
@@ -632,7 +635,8 @@ private fun StepGrid(
         val loopSteps = project.drums.steps
         Box { Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier.spot("step_cells", tr("Glisse pour poser")).testTag("step_cells").then(
+            // Revealed with the bar pages and the tuto's line over it (where the cells left are, a touch away).
+            modifier = Modifier.spot("step_cells", tr("Glisse pour poser"), revealFrom = STEP_CELLS_HEAD).testTag("step_cells").then(
                 if (tool != 0) Modifier
                 else Modifier.pointerInput(bar, per, loopSteps) {
                     val cols = (per / 2).coerceAtLeast(1)

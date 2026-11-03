@@ -2202,8 +2202,10 @@ fun AppRoot() {
                     // « Mettre ces sons » / « Plus tard » when it is but the course is under way (never put in silence).
                     val kitTarget = com.pocketstudio.model.tuto.TutoTarget.of(tutoNow.progress.style)
                     val kitMissing = (tutoKitOffer as? com.pocketstudio.model.tuto.TutoKit.Offer.Download)?.missing.orEmpty()
-                    if (kitTarget != null && (kitMissing.isNotEmpty() || tutoKitOffer == com.pocketstudio.model.tuto.TutoKit.Offer.Ask)) {
-                        val loading = kitMissing.mapNotNull { tutoPacks.downloading[it.id] }
+                    val kitLoading = kitMissing.mapNotNull { tutoPacks.downloading[it.id] }
+                    // Folded with the panel while the user works on the screen (the grid had 160 dp left under it at 780 dp).
+                    if (kitTarget != null && (tutoNow.open || kitLoading.isNotEmpty()) && (kitMissing.isNotEmpty() || tutoKitOffer == com.pocketstudio.model.tuto.TutoKit.Offer.Ask)) {
+                        val loading = kitLoading
                         com.pocketstudio.app.tuto.TutoKitCard(
                             style = com.pocketstudio.app.tuto.tutoText(kitTarget.style.name),
                             size = tr("%d Mo", ((kitMissing.sumOf { it.sizeBytes } + 500_000) / 1_000_000).coerceAtLeast(1)),

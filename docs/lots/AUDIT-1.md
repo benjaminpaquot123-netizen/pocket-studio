@@ -67,7 +67,14 @@ Aucun.
 - **D-1-12** `FitText` rapetissait le coréen pour rien (coupure entre syllabes prise pour un mot coupé). Corrigé (`breaksAnywhere` : hangul).
 - **D-1-13** MINEUR 5 « Tuto tous styles » : un triolet au bout d'une boucle de pad raccourcie débordait sur le premier pas du tour suivant. Corrigé : `Hit.within` (seuls ses coups avant la fin), appliqué à chaque envoi au moteur (`pushHitNow`), le coup écrit reste entier. Test `HitWithinTest`.
 - **D-1-14** MINEUR 8 « Tuto tous styles » : la 808 du trap ne tapait pas (notes liées). Corrigé : chaque note s'arrête une case avant la suivante, les deux glissés d'octave gardés. Test `Trap808Test`.
+- **D-1-15** Le même triolet était écrit entier dans l'export MIDI (le fichier ne jouait pas comme le direct). Corrigé : `MidiFile` passe par `Hit.within`. Test `HitWithinTest.theMidiFileWritesTheTripletAsItIsHeard`.
 - Restes acceptés (raisons dans `Allowed`) : noms longs de l'utilisateur raccourcis par « … » ; nom de colonne du Live au plus petit (6 colonnes, police 130 %) ; pads courts de Pad Live avec « Plus » ouvert dans les langues longues ; « comp. » du piano roll en espagnol ; aide d'une ligne du Rythme couchée.
+
+## Tests instables (suite JVM complète × 3, `--max-workers=4`, une à la fois)
+
+- Passe 1 (code gelé `audit-1`) : 3 137 réussis, 0 échec (34 min). Passe 2 (avec les corrections de l'étage 1) : 1 échec. Passe 3 (après fusion de `fx-int`, étages 2 et 3) : 0 échec ; Gradle s'est figé 30 min après le dernier test (blocage interne du travailleur de tests, aucun test en cours), tué, résultats complets lus.
+- **Instable : `HumanRemixJourneyTest.aSongsVoiceGoesIntoTheProjectWithTouchesOnly`** (« the waveforms never came », 325 s, 1 passe sur 3). Cause trouvée et reproduite à coup sûr (moteur du banc retiré pendant « Mettre dans mon projet ») : le banc ne prête son moteur qu'à la page Remix ; une chanson entrée dans le projet pendant que le moteur était rendu n'était jamais chargée (le ViewModel ne charge les pistes que pour un moteur présent), donc les ondes n'arrivaient jamais. Pas un défaut de l'appli (sur téléphone le moteur est toujours là). Correction (`HumanTester.engineDone`) : quand la page Remix a le moteur et que les pistes de la chanson du projet manquent, le banc resynchronise le ViewModel comme au démarrage du moteur d'un téléphone (une fois par chanson). Échouait à coup sûr avant (scénario forcé), passe après ; le message d'échec dit maintenant l'état (moteur, chanson, ondes, chargement, page).
+- Autres suspects (RemixSongEverywhere, Tuto, bancs CPU) : stables sur les 3 passes et sur 3 relances ciblées.
 
 ## Ce qui reste (étage 1)
 - MINEUR 3 (course mode / `follow`) : machine à états, à l'étage 2. MINEUR 7 (étape « pompe » du tuto) : contenu de cours, non fait.

@@ -56,7 +56,7 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
     private fun waitFor(what: String, done: () -> Boolean) {
         val until = System.currentTimeMillis() + 300_000
         while (!done()) {
-            assertTrue("$what never came", System.currentTimeMillis() < until)
+            assertTrue("$what never came (${remixState()})", System.currentTimeMillis() < until)
             act("attends 1")
         }
     }

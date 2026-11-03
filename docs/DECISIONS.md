@@ -1118,3 +1118,9 @@
 - 2026-11-03 · Pad Live pages B à D : un son de la bibliothèque passe par `placeOnLivePad` (comme la page A), un coup y reste un coup. Raison : tempo, garde « occupé » et téléphone plein déjà gérés là. Retour : `PadLiveController.placeSound` (historique git).
 - 2026-11-03 · Pack de Pad Live par page (`PadLiveSet.packs`), l'ancien champ `pack` lu comme celui de la page A. Raison : la page B disait le pack de A. Retour : ignorer `packs`.
 - 2026-11-03 · Boutons de 40 à 44 dp : laissés, Compose leur donne déjà 48 dp de toucher (vérifié par test). Raison : ne pas changer la mise en page. Retour : enlever leur `size()`.
+- 2026-11-03 · Ce qui n'est que montré (« Montre-moi ») est retiré avant tout changement, annulation ou rétablissement (`ProjectSession.beforeChange`). Raison : défaut grave n° 1. Retour : retirer le crochet.
+- 2026-11-03 · « Bibliothèque de sons » dans le menu ⋯ du Mode simple. Raison : 3 touchers depuis l'accueil. Retour : retirer l'entrée (et le chemin de `NavigationMapTest`).
+- 2026-11-03 · Un clavier MIDI inconnu est accueilli par le nom que le téléphone lui donne. Raison : consigne de Benjamin. Retour : `MidiViewModel.greeting`.
+- 2026-11-03 · Carte des fonctions tenue par un test (`CarteFonctionsTest`) avec un plafond de cases vides (40) qui ne peut que baisser. Raison : AUDIT §6 « aucune case vide ». Retour : supprimer le test.
+- 2026-11-03 · Générateur de paires en Kotlin dans les tests (glouton sur le produit complet, petit) plutôt que PICT/allpairspy. Raison : rien à installer, déterministe. Retour : `Pairwise.cases`.
+- 2026-11-03 · Couches de vélocité d'un pad de batterie (moteur `setPadLayer`, sans bouton) : on ajoute le réglage « Couches » dans la fiche du pad, en Pro (utile au MiniLab, sensible à la force) plutôt que de retirer le code. Fait au tour de corrections de l'étage 3. Retour : retirer `setPadLayer`.

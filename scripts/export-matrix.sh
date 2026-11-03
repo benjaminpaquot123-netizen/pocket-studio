@@ -125,7 +125,8 @@ tail -n +2 "$OUT/cases.tsv" | while IFS= read -r line; do
 done | xargs -0 -P "$JOBS" -I{} bash -c 'render_case "$1"' _ {} || echo "some renders failed (the check says which)"
 
 echo "== Stems (sum against the mix without the master)"
-# The first 40 s of each song (the RENDER line shortened): each strip alone with its sends, or (every
+# The first 40 s of each song (the RENDER line shortened), in 32-bit float WAV as the app writes stems without the
+# master (a strip may peak over 0 dBFS): each strip alone with its sends, or (every
 # other style) each strip dry plus the reverb's and the echo's returns alone.
 stem_style() {
     style="$1"; mode="$2"
@@ -136,14 +137,14 @@ stem_style() {
     "$TOOLS/ps_render" --no-limiter --no-master-fx --bits 32 "$cmd" "$dir/mix.wav"
     for ch in 0 1 2 3 5 6 7 8 9 10 11 12 13 14 15 32 33 34 35; do
         if [ "$mode" = sends ]; then
-            "$TOOLS/ps_render" --no-limiter --no-master-fx --bits 24 --solo "$ch" "$cmd" "$dir/stem-$ch.wav"
+            "$TOOLS/ps_render" --no-limiter --no-master-fx --bits 32 --solo "$ch" "$cmd" "$dir/stem-$ch.wav"
         else
-            "$TOOLS/ps_render" --no-limiter --no-master-fx --bits 24 --stem-mode 1 --solo "$ch" "$cmd" "$dir/stem-$ch.wav"
+            "$TOOLS/ps_render" --no-limiter --no-master-fx --bits 32 --stem-mode 1 --solo "$ch" "$cmd" "$dir/stem-$ch.wav"
         fi
     done
     if [ "$mode" = dry ]; then
-        "$TOOLS/ps_render" --no-limiter --no-master-fx --bits 24 --stem-mode 2 "$cmd" "$dir/stem-reverb.wav"
-        "$TOOLS/ps_render" --no-limiter --no-master-fx --bits 24 --stem-mode 3 "$cmd" "$dir/stem-echo.wav"
+        "$TOOLS/ps_render" --no-limiter --no-master-fx --bits 32 --stem-mode 2 "$cmd" "$dir/stem-reverb.wav"
+        "$TOOLS/ps_render" --no-limiter --no-master-fx --bits 32 --stem-mode 3 "$cmd" "$dir/stem-echo.wav"
     fi
     echo "$mode" > "$dir/mode.txt"
     # Checked at once, the audio then deleted (the disk).

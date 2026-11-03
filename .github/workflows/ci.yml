@@ -230,6 +230,13 @@ jobs:
         with:
           name: apk
           path: dist/pocket-studio-unsigned.apk
+      # Audit stage 0: R8's mapping of this build, to read a release's stack traces (bug reports, logcat).
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: r8-mapping
+          path: app/build/outputs/mapping/release/
+          retention-days: 90
+          if-no-files-found: warn
 
   smoke:
     name: Emulator smoke test

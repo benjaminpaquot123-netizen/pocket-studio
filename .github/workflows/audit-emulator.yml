@@ -127,7 +127,7 @@ jobs:
           retention-days: 30
           path: |
             app/build/audit-emulator/
-            app/build/outputs/mapping/release/mapping.txt
+            app/build/outputs/mapping/release/
             app/build/reports/androidTests/
             app/build/realuse-logcat.txt
           if-no-files-found: ignore

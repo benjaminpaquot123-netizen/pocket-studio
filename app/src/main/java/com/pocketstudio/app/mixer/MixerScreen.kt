@@ -132,6 +132,8 @@ data class MixerActions(
     val watchMeters: (suspend () -> Unit)? = null,
     /** Each insert's compressor gain reduction in dB (channel * 8 + slot, ≤ 0), kept fresh with [meters]. */
     val reductions: kotlinx.coroutines.flow.StateFlow<FloatArray> = kotlinx.coroutines.flow.MutableStateFlow(FloatArray(0)),
+    /** Lot E (« Master pro »): the master's « Avancé » and the file's final form (Pro mode). */
+    val pro: MasterProActions = MasterProActions(),
 )
 
 val EXPORT_BARS = listOf(1, 2, 4, 8, 16)
@@ -230,6 +232,7 @@ fun MixerScreen(
             // With a target the limiter works on purpose: lowering the master would only raise its gain.
             if (target == com.pocketstudio.model.LoudnessTarget.OFF) LimiterHint({ meters().getOrElse(LIMITER_METER) { 1f } }, masterDb, actions.setMasterDb)
             MasterLoudnessPanel(loudness, target, styleLufs, actions.setLoudnessTarget)
+            MasterProPanel(styleLufs, actions.pro) { actions.setLoudnessTarget(com.pocketstudio.model.LoudnessTarget.AUTO) }
             var open by rememberSaveable { mutableStateOf(false) }
             EffectsToggle(effectsSummary(master), open, Modifier.testTag("master_effects")) { open = !open }
             if (open) InsertChain(MASTER_CHANNEL, master, actions)
@@ -512,17 +515,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                     enabled = !export.running, label = { Text(tr("FLAC (sans perte, léger)")) }, colors = chipColors,
                     modifier = Modifier.testTag("export_format_Flac"),
                 )
-                // For a CD or a distributor that asks for it: 44.1 kHz, 16 bits (dithered).
-                FilterChip(
-                    selected = export.cdRate, onClick = { actions.setExportCdRate(!export.cdRate) }, enabled = !export.running,
-                    label = { Text(tr("44,1 kHz")) }, colors = chipColors, modifier = Modifier.testTag("export_cd_rate"),
-                )
-                if (export.format != ExportFormat.M4a && !(export.limiterOff && export.format == ExportFormat.Wav)) {
-                    FilterChip(
-                        selected = export.bits16, onClick = { actions.setExportBits16(!export.bits16) }, enabled = !export.running,
-                        label = { Text(tr("16 bits")) }, colors = chipColors, modifier = Modifier.testTag("export_bits16"),
-                    )
-                }
+                // Lot E: the rate and the bits are in « Fichier final » below (44,1, 48, 96 kHz; 16, 24, 32 bits).
                 // For a mixing or mastering engineer: no limiter on the mix, stems that add back up to it.
                 if (export.what == ExportWhat.Stems) {
                     FilterChip(
@@ -564,6 +557,8 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                     }
                 }
             }
+            // Lot E: the file's final form (rate, bits, dither, range, start and end, stems, tags, report).
+            com.pocketstudio.app.export.ExportOptionsPanel(export, hasSong, actions.pro)
             if (!export.running) {
                 TextButton(onClick = actions.exportMidi, modifier = Modifier.fillMaxWidth().testTag("export_midi")) {
                     Text(if (hasSong) tr("Exporter les notes en fichier MIDI (tout le morceau)") else tr("Exporter les notes en fichier MIDI"))

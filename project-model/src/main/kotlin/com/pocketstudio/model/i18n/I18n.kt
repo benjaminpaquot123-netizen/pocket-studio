@@ -109,6 +109,8 @@ object I18n {
         "remixc",
         // Pad Live (n° 25, lot B1): the home screen's card, the pages, the pad modes, the packs.
         "padlive",
+        // Lot E (« Master pro »): the master's « Avancé », the file's final form, the pro readings and report.
+        "masterpro",
     )
 
     @Volatile

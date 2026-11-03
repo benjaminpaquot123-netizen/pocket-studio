@@ -60,3 +60,98 @@ internal fun hasLiveNoises(p: Project, song: Boolean): Boolean = p.automation.an
             ((song || !lane.songOnly) && lane.songValues.any { (it ?: 0f) > 0f })
         )
 }
+
+/**
+ * Lot E (« Master pro »): separate tracks all of one length, from the song's frame 0. Each stem's
+ * automatic tail ends where its own sound dies away; the shorter ones get digital silence up to the
+ * longest (the RIFF and data sizes patched). Blocking, worker thread.
+ */
+internal object WavLength {
+    private class Layout(val dataAt: Long, val dataBytes: Long, val frameBytes: Int, val bits: Int, val float: Boolean)
+
+    private fun layout(f: java.io.RandomAccessFile): Layout {
+        val head = ByteArray(12)
+        f.seek(0)
+        f.readFully(head)
+        if (String(head, 0, 4) != "RIFF" || String(head, 8, 4) != "WAVE") throw java.io.IOException("not a WAV")
+        var pos = 12L
+        var frameBytes = 0
+        var bits = 0
+        var float = false
+        val tag = ByteArray(8)
+        while (pos + 8 <= f.length()) {
+            f.seek(pos)
+            f.readFully(tag)
+            val id = String(tag, 0, 4)
+            val size = java.nio.ByteBuffer.wrap(tag, 4, 4).order(java.nio.ByteOrder.LITTLE_ENDIAN).int.toLong() and 0xFFFFFFFFL
+            if (id == "fmt ") {
+                val fmt = ByteArray(16)
+                f.readFully(fmt)
+                val b = java.nio.ByteBuffer.wrap(fmt).order(java.nio.ByteOrder.LITTLE_ENDIAN)
+                float = b.short.toInt() == 3
+                val channels = b.short.toInt()
+                b.int; b.int; b.short
+                bits = b.short.toInt()
+                frameBytes = channels * bits / 8
+            } else if (id == "data") {
+                return Layout(pos + 8, size, frameBytes, bits, float)
+            }
+            pos += 8 + size + (size and 1)
+        }
+        throw java.io.IOException("no data")
+    }
+
+    fun frames(wav: java.io.File): Long = java.io.RandomAccessFile(wav, "r").use { f -> layout(f).let { it.dataBytes / it.frameBytes } }
+
+    /** [wav] (a WAV the engine wrote, its data last) padded with silence to [frames] frames. */
+    fun padTo(wav: java.io.File, frames: Long) {
+        java.io.RandomAccessFile(wav, "rw").use { f ->
+            val l = layout(f)
+            val want = frames * l.frameBytes
+            if (want <= l.dataBytes) return
+            if (l.dataAt + l.dataBytes != f.length()) throw java.io.IOException("data not last")
+            f.seek(f.length())
+            val zeros = ByteArray(1 shl 16)
+            var left = want - l.dataBytes
+            while (left > 0) {
+                val n = minOf(left, zeros.size.toLong()).toInt()
+                f.write(zeros, 0, n)
+                left -= n
+            }
+            val le = { v: Long -> byteArrayOf(v.toByte(), (v shr 8).toByte(), (v shr 16).toByte(), (v shr 24).toByte()) }
+            f.seek(l.dataAt - 4)
+            f.write(le(want))
+            f.seek(4)
+            f.write(le(f.length() - 8))
+            // A float WAV's « fact » chunk counts frames too.
+            if (l.float) {
+                var pos = 12L
+                val tag = ByteArray(8)
+                while (pos + 8 < l.dataAt) {
+                    f.seek(pos)
+                    f.readFully(tag)
+                    val size = java.nio.ByteBuffer.wrap(tag, 4, 4).order(java.nio.ByteOrder.LITTLE_ENDIAN).int.toLong() and 0xFFFFFFFFL
+                    if (String(tag, 0, 4) == "fact") {
+                        f.seek(pos + 8)
+                        f.write(le(frames))
+                    }
+                    pos += 8 + size + (size and 1)
+                }
+            }
+        }
+    }
+
+    /** The sample peak of [wav] in dBFS (the M4A guard's first gain; null when silent or unreadable). */
+    fun peakDb(wav: java.io.File): Double? = runCatching {
+        com.pocketstudio.app.export.WavPcm.open(wav).use { pcm ->
+            val buf = FloatArray(4096 * pcm.channels)
+            var peak = 0f
+            while (true) {
+                val n = pcm.readFloat(buf, 4096)
+                if (n == 0) break
+                for (i in 0 until n * pcm.channels) peak = maxOf(peak, kotlin.math.abs(buf[i]))
+            }
+            if (peak > 0f) 20 * kotlin.math.log10(peak.toDouble()) else null
+        }
+    }.getOrNull()
+}

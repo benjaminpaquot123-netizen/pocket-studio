@@ -153,8 +153,12 @@ object M4aGuard {
         decodedPeak: suspend () -> Double?,
         step: (Step) -> Unit = {},
         mayGoOn: (Step) -> Boolean = { true },
+        // Lot E: the ceiling the decoded file must stay under (« Master pro » −1, −0,5 or −0,3 dBTP) and
+        // the limiter's for the first render (1 dB under it).
+        maxDecodedDb: Double = MAX_DECODED_DBTP,
+        firstCeiling: Float = AacEncoder.CEILING_DBTP,
     ): Run {
-        var ceiling = AacEncoder.CEILING_DBTP
+        var ceiling = firstCeiling
         var source = sourcePeakDb
         var renders = 1
         var encodings = 0
@@ -165,13 +169,13 @@ object M4aGuard {
             encodings++
             step(Step(Step.Kind.Check, renders, MAX_RENDERS))
             val peak = decodedPeak() ?: return Run(null, ceiling, gain, renders, encodings)
-            if (peak <= MAX_DECODED_DBTP) return Run(peak, ceiling, gain, renders, encodings)
-            val next = (ceiling - (peak - MAX_DECODED_DBTP + MARGIN_LIMIT_DB)).toFloat()
+            if (peak <= maxDecodedDb) return Run(peak, ceiling, gain, renders, encodings)
+            val next = (ceiling - (peak - maxDecodedDb + MARGIN_LIMIT_DB)).toFloat()
             val again = Step(Step.Kind.Render, renders + 1, MAX_RENDERS)
             if (renders >= MAX_RENDERS || next < MIN_CEILING_DBTP || !mayGoOn(again)) {
                 // The last resort: this mix, encoded lower (as [encodeWithin]); the first try always
                 // (the file must not saturate), the next ones only within the budget.
-                var g = gain * 10.0.pow((MAX_DECODED_DBTP - MARGIN_DB - peak) / 20.0).toFloat()
+                var g = gain * 10.0.pow((maxDecodedDb - MARGIN_DB - peak) / 20.0).toFloat()
                 var encoded = gain
                 var last: Double = peak
                 for (tries in 1..MAX_TRIES) {
@@ -183,8 +187,8 @@ object M4aGuard {
                     encodings++
                     step(Step(Step.Kind.Check, tries + 1, 0))
                     last = decodedPeak() ?: return Run(null, ceiling, g, renders, encodings)
-                    if (last <= MAX_DECODED_DBTP || tries == MAX_TRIES) break
-                    g *= 10.0.pow((MAX_DECODED_DBTP - MARGIN_DB - last) / 20.0).toFloat()
+                    if (last <= maxDecodedDb || tries == MAX_TRIES) break
+                    g *= 10.0.pow((maxDecodedDb - MARGIN_DB - last) / 20.0).toFloat()
                 }
                 return Run(last, ceiling, encoded, renders, encodings)
             }

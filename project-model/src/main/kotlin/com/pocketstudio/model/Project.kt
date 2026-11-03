@@ -700,6 +700,8 @@ data class Mixer(
      * song made by hand, every strip at 0 dB). Left out of the file when empty.
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val startVolumes: List<Float> = emptyList(),
+    /** Lot E (« Master pro »): the pro master's settings (null: none touched, the master as before). Left out of the file when null. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val pro: MasterPro? = null,
 ) {
     /** Strip [ch]'s volume as the assistant left it (0 dB without one). */
     fun startVolume(ch: Int): Float = startVolumes.getOrNull(ch) ?: DEFAULT_VOLUME
@@ -735,6 +737,7 @@ data class Mixer(
         sidechainKey = sidechainKey.takeIf { it in 0 until CHANNELS && it != MASTER } ?: -1,
         musicBus = musicBus?.sanitized(),
         startVolumes = startVolumes.take(CHANNELS).map { v -> v.takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: DEFAULT_VOLUME },
+        pro = pro?.sanitized()?.takeUnless { it.isDefault },
     )
 
     companion object {

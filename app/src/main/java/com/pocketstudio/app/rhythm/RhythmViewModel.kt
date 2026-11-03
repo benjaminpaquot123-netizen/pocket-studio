@@ -328,6 +328,13 @@ data class ExportUi(
     /** « 16 bits » (dithered) instead of 24 for WAV and FLAC. */
     val bits16: Boolean = false,
     val error: String? = null,
+    /** Lot E (« Master pro »): the file's final form under « Avancé » (its defaults: the export as before). */
+    val pro: com.pocketstudio.app.export.ExportOptions = com.pocketstudio.app.export.ExportOptions(),
+    /** Lot E: the last mix's full report (the pro readings), null for separate tracks. */
+    val proReport: com.pocketstudio.engine.ExportReport? = null,
+    /** Lot E: the song's parts and bars (« Plage exportée »). */
+    val parts: Int = 0,
+    val songBars: Int = 0,
 ) {
     val file: File? get() = files.firstOrNull()
 
@@ -10002,7 +10009,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _export = MutableStateFlow(ExportUi())
     /** The export settings, « La scène » as long as the current scene unless a length was picked. */
-    val export: StateFlow<ExportUi> = combine(_export, project, remixSeconds) { e, p, _ -> e.forProject(sceneBars(p), p.song.isNotEmpty(), exportEnd(p)) }
+    val export: StateFlow<ExportUi> = combine(_export, project, remixSeconds) { e, p, _ ->
+        e.forProject(sceneBars(p), p.song.isNotEmpty(), exportEnd(p))
+            .copy(parts = p.song.size, songBars = (p.song.sumOf { p.partSteps(it).toLong() } / p.stepsPerBar.coerceAtLeast(1)).toInt())
+    }
         .stateIn(viewModelScope, SharingStarted.Eagerly, ExportUi().forProject(sceneBars(project.value), project.value.song.isNotEmpty()))
     private var running: OfflineExport? = null
 
@@ -10049,7 +10059,44 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (NativeEngine.isAvailable) NativeEngine.setLoudnessTarget(loudnessLufs(project.value))
     }
 
-    private fun loudnessLufs(p: Project): Float? = com.pocketstudio.model.LoudnessTargets.lufs(p.mixer.target, p.style, p.mixVersion)
+    private fun loudnessLufs(p: Project): Float? {
+        // Lot E: syncEngine sends the target from here (live, or into an export being described): the
+        // master pro's settings go with it, to the same engine.
+        pushMasterPro(p)
+        return p.mixer.pro?.targetLufs ?: com.pocketstudio.model.LoudnessTargets.lufs(p.mixer.target, p.style, p.mixVersion)
+    }
+
+    /** Lot E: the pro target's mode, the ceiling and the limiter's settings (the defaults: the master as before). */
+    private fun pushMasterPro(p: Project) {
+        val pro = p.mixer.pro ?: com.pocketstudio.model.MasterPro()
+        NativeEngine.setTargetWholeSong(pro.targetLufs != null)
+        NativeEngine.setMasterCeiling(pro.ceilingDb)
+        NativeEngine.setLimiterAttack(pro.attack)
+        NativeEngine.setLimiterRelease(pro.release)
+    }
+
+    // --- Lot E, « Master pro » ------------------------------------------------------------------
+    /** The pro master's settings, the « A/B » state and the reference song. */
+    val masterPro: com.pocketstudio.app.mixer.MasterProController by lazy {
+        com.pocketstudio.app.mixer.MasterProController(
+            viewModelScope, getApplication(), project,
+            edit = { label, f -> session.edit(label) { p -> p.copy(mixer = p.mixer.copy(pro = f(p.mixer.pro ?: com.pocketstudio.model.MasterPro()).takeUnless { it.isDefault })) } },
+            sync = { if (NativeEngine.isAvailable) NativeEngine.setLoudnessTarget(loudnessLufs(project.value)) },
+            setInsertType = ::setInsertType,
+            setMonoBass = { hz -> session.edit("mix-mono-bass") { p -> p.copy(mixer = p.mixer.copy(monoBassHz = hz)) }; if (NativeEngine.isAvailable) NativeEngine.setMonoBass(hz) },
+            projectId = { projectId },
+        )
+    }
+
+    /** Lot E: what the mixer's « Avancé » panels act through (MixerActions.pro). */
+    val masterProActions: com.pocketstudio.app.mixer.MasterProActions by lazy {
+        com.pocketstudio.app.mixer.MasterProActions(masterPro, masterPro.live, ::setExportOptions)
+    }
+
+    /** Lot E: « Avancé » › the file's final form. */
+    fun setExportOptions(options: com.pocketstudio.app.export.ExportOptions) {
+        _export.value = _export.value.copy(pro = options)
+    }
 
     fun setStemsWithMaster(on: Boolean) {
         _export.value = _export.value.copy(stemsWithMaster = on)
@@ -10119,11 +10166,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * Describes the project to an export engine. For the song, the first part's scene plays first
      * and each next scene is staged half a step into the part before it, swapping on its last bar line.
      */
-    private fun describe(job: OfflineExport, p: Project, song: Boolean, soloChannel: Int?, limited: Boolean = true, masterFx: Boolean = true) {
+    private fun describe(job: OfflineExport, p: Project, song: Boolean, soloChannel: Int?, limited: Boolean = true, masterFx: Boolean = true, dry: Boolean = false) {
         // The remix's song comes in where the song has it (the song plays from its first step).
         captureSongStep = if (song) 0 else NativeEngine.OUTSIDE_SONG
         try {
             describeInto(job, p, song, soloChannel, limited, masterFx)
+            // Lot E: separate tracks without their sends (each strip dry), and each send's return alone.
+            val returnBus = returnStemBus(soloChannel)
+            if (returnBus != null || (dry && soloChannel != null)) NativeEngine.captureInto(job) {
+                NativeEngine.setStemMode(if (returnBus != null) NativeEngine.STEM_RETURN_REVERB + returnBus else NativeEngine.STEM_DRY)
+            }
         } finally {
             captureSongStep = NativeEngine.OUTSIDE_SONG
         }
@@ -10143,7 +10195,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             if (soloChannel != null) NativeEngine.setLoudnessTarget(null)
             // The Live page's own sounds (riser, build-up noise): only in the « Effets live » file.
             if (soloChannel != null) NativeEngine.setLiveNoises(if (soloChannel == LIVE_FX_STEM) NativeEngine.LIVE_NOISES_ONLY else NativeEngine.LIVE_NOISES_OFF)
-            if (soloChannel != null && soloChannel != LIVE_FX_STEM) {
+            // Lot E: a project's own ceiling and limiter (Master pro), as live.
+            pushMasterPro(p)
+            if (soloChannel != null && soloChannel != LIVE_FX_STEM && returnStemBus(soloChannel) == null) {
                 // A stem is its strip alone, whatever solos and mutes the mix was left with.
                 for (ch in Mixer.TRACK_STRIPS) if (ch != MASTER) NativeEngine.setChannelSolo(ch, false)
                 NativeEngine.setChannelMute(soloChannel, false)
@@ -10174,6 +10228,76 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 NativeEngine.captureAt(-1)
             }
         }
+    }
+
+    /** Lot E: a stem rendered, waiting for the others' length before it is packed. */
+    private class HeldStem(val index: Int, val wav: File)
+
+    /** Lot E: the « sans les envois » files of each send's return (reverb, echo) the project uses. */
+    private fun returnStems(p: Project): List<Pair<String, Int?>> = listOfNotNull(
+        ("reverbe" to RETURN_REVERB_STEM).takeIf { p.mixer.channels.any { c -> (c.sends.getOrNull(0) ?: 0f) > 0f } },
+        ("echo" to RETURN_ECHO_STEM).takeIf { p.mixer.channels.any { c -> (c.sends.getOrNull(1) ?: 0f) > 0f } },
+    )
+
+    /** The bus (0 reverb, 1 echo) whose return a stem holds alone, or null. */
+    private fun returnStemBus(solo: Int?): Int? = when (solo) {
+        RETURN_REVERB_STEM -> 0
+        RETURN_ECHO_STEM -> 1
+        else -> null
+    }
+
+    /** Lot E: a held stem's WAV into FLAC or M4A (an M4A over the ceiling once decoded: encoded lower, never rendered again). */
+    private suspend fun packStem(app: Application, h: HeldStem, settings: ExportUi, count: Int, ceilingDb: Float, m4aCeiling: Float): File {
+        val wav = h.wav
+        val name = if (settings.format == ExportFormat.M4a) tr("Compression M4A") else tr("Conversion FLAC")
+        _export.value = _export.value.copy(stage = "$name (${h.index + 1}/$count)")
+        val packed = File(wav.parentFile, wav.nameWithoutExtension + "." + settings.format.extension)
+        try {
+            if (settings.format == ExportFormat.Flac) {
+                withContext(Dispatchers.IO) { FlacEncoder.encode(wav, packed, { exportCancelled }) }
+            } else {
+                val cancelled = { exportCancelled }
+                com.pocketstudio.app.export.M4aGuard.run(
+                    withContext(Dispatchers.IO) { com.pocketstudio.app.rhythm.WavLength.peakDb(wav) },
+                    render = { null },
+                    encode = { g -> withContext(Dispatchers.IO) { AacEncoder.encode(wav, packed, g, cancelled) } },
+                    decodedPeak = { withContext(Dispatchers.IO) { decodedTruePeak(app, packed, cancelled) } },
+                    mayGoOn = { it.kind != com.pocketstudio.app.export.M4aGuard.Step.Kind.Render },
+                    maxDecodedDb = ceilingDb.toDouble(),
+                    firstCeiling = m4aCeiling,
+                )
+            }
+        } catch (e: Exception) {
+            packed.delete()
+            throw e
+        } finally {
+            wav.delete()
+        }
+        return packed
+    }
+
+    /**
+     * Lot E: [out]'s tags (the song's name, the artist from « Avancé », its BPM and key; never fails the
+     * export), and for the card's mix export the report beside it (returned, null otherwise).
+     */
+    private suspend fun tagAndReport(
+        p: Project, out: File, report: com.pocketstudio.engine.ExportReport?, decodedPeak: Double?, settings: ExportUi,
+        rate: Int, bits: Int, ceilingDb: Float, share: Boolean,
+    ): File? = withContext(Dispatchers.IO) {
+        val tags = com.pocketstudio.app.export.SongTags(
+            title = com.pocketstudio.model.DefaultNames.shown(p.name), artist = settings.pro.artist, bpm = p.tempoBpm,
+            key = com.pocketstudio.app.export.SongTags.keyOf(p.harmony), cover = masterPro.coverBytes(),
+        )
+        runCatching { com.pocketstudio.app.export.Metadata.tag(out, tags) }.onFailure { AppLog.add("Export : étiquettes impossibles (${it.message})") }
+        if (share || report == null || !settings.pro.report) return@withContext null
+        runCatching {
+            val mixBands = if (out.extension == "wav") com.pocketstudio.app.export.Bands.of(out) else null
+            com.pocketstudio.app.export.ProReport.write(
+                out, tags.title, settings.format.name.uppercase(), rate, bits,
+                p.mixer.pro?.targetLufs ?: com.pocketstudio.model.LoudnessTargets.lufs(p.mixer.target, p.style, p.mixVersion), ceilingDb, report, decodedPeak,
+                mixBands, masterPro.referenceBands(), p.mixer.pro?.referenceName,
+            )
+        }.onFailure { AppLog.add("Export : rapport impossible (${it.message})") }.getOrNull()
     }
 
     /**
@@ -10417,14 +10541,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _export.value = shown.copy(error = tr("Le morceau est vide : ajoute des parties dans Structure."), files = emptyList())
             return
         }
-        val frames = if (song) songFrames(p) else OfflineExport.framesFor(settings.bars, p.tempoBpm, p.beatsPerBar)
+        // Lot E: a part or a selection of the song (its frames before are rendered, not kept).
+        val range = if (song && settings.what != ExportWhat.Loop) settings.pro.songRange(p) else null
+        val frames = range?.let { it.last + 1 } ?: if (song) songFrames(p) else OfflineExport.framesFor(settings.bars, p.tempoBpm, p.beatsPerBar)
+        val rangeStart = range?.first ?: 0L
         // A fade-out ends the file on silence: no tail to ring out after it.
-        val fadeFrames = settings.fadeFrames(frames)
+        val fadeFrames = settings.fadeFrames(frames - rangeStart)
         // Otherwise the tail rings out until the sound has died away (at most MAX_TAIL_FRAMES).
         val tailFrames = if (fadeFrames > 0) 0L else MAX_TAIL_FRAMES
         // Each render: (label for the file and the screen, solo channel or null for the mix).
         val renders: List<Pair<String, Int?>> = when (settings.what) {
-            ExportWhat.Stems -> stemExports(p, song)
+            ExportWhat.Stems -> stemExports(p, song).let { s -> if (settings.pro.stemsDry && s.isNotEmpty()) s + returnStems(p) else s }
             ExportWhat.Song -> listOf("morceau" to null)
             ExportWhat.Loop -> listOf("boucle" to null)
         }
@@ -10446,8 +10573,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             var seconds: Double? = null
             var loss: Double? = null
             var decodedPeak: Double? = null
-            val writtenRate = if (settings.cdRate) OfflineExport.CD_RATE else OfflineExport.SAMPLE_RATE
-            val writtenBits = if (!settings.limited && settings.format == ExportFormat.Wav) 32 else if (settings.bits16 || settings.format == ExportFormat.M4a) 16 else 24
+            val writtenRate = settings.pro.rateFor(settings.format, settings.cdRate)
+            val writtenBits = settings.pro.bitsFor(settings.format, settings.limited, settings.bits16)
+            val stems = settings.what == ExportWhat.Stems
+            // Lot E: the ceiling the file stays under (Master pro), an M4A's limiter 1 dB lower (its codec's headroom).
+            val ceilingDb = p.mixer.pro?.ceilingDb ?: MASTER_CEILING_DBTP
+            val m4aCeiling = ceilingDb + (AacEncoder.CEILING_DBTP - MASTER_CEILING_DBTP)
+            // Stems wait for one length (the longest), then are packed.
+            val held = ArrayList<HeldStem>()
+            var proReport: com.pocketstudio.engine.ExportReport? = null
             try {
                 // Just after the project opened, its sounds, banks and song may still be loading: the
                 // file would have the kit and the synth in their place.
@@ -10456,7 +10590,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     // Lot 1: what this render may still spend on its M4A check (a new render of the
                     // song, a further lowering); each stem its own, counted once the sounds are in.
                     val budget = com.pocketstudio.app.export.ExportBudget()
-                    val wav = runCatching { WavExporter.newFile(app, "${com.pocketstudio.model.DefaultNames.shown(p.name).take(28)}-$label") }.getOrElse { throw UserMessage(tr("Impossible de préparer le fichier d'export.")) }
+                    val fileLabel = if (stems) "%02d-%s".format(java.util.Locale.ROOT, index + 1, label) else label
+                    val wav = runCatching { WavExporter.newFile(app, "${com.pocketstudio.model.DefaultNames.shown(p.name).take(28)}-$fileLabel") }.getOrElse { throw UserMessage(tr("Impossible de préparer le fichier d'export.")) }
                     _export.value = _export.value.copy(stage = if (renders.size > 1) "${stageName(label)} (${index + 1}/${renders.size})" else null)
                     // The mix into [wav], its limiter at [ceiling] dBTP (an M4A's; null: the default −1). Again
                     // for an M4A that went over −1 dBTP once decoded (M4aGuard): the limiter, lower, takes the peaks down.
@@ -10469,12 +10604,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         var stalled = false
                         val result = try {
                             // In the try: a describe that fails (a sound gone) still closes the private engine.
-                            describe(job, p, song, solo, settings.limited, settings.masterFx)
+                            describe(job, p, song, solo, settings.limited && returnStemBus(solo) == null, settings.masterFx && returnStemBus(solo) == null, settings.pro.stemsDry)
                             if (ceiling != null) NativeEngine.captureInto(job) {
                                 NativeEngine.setMasterCeiling(ceiling)
                                 // S6 (G6): a Drop-aimed song's M4A keeps its WAV's drive (searched at −1 dBTP), the
                                 // lower ceiling only limits: as loud as the WAV instead of 3 LU under it.
-                                if (p.mixVersion >= Project.MIX_V2) NativeEngine.setDriveCeiling(MASTER_CEILING_DBTP)
+                                if (p.mixVersion >= Project.MIX_V2) NativeEngine.setDriveCeiling(ceilingDb)
                             }
                             running = job
                             val watch = com.pocketstudio.app.export.StallWatch()
@@ -10495,10 +10630,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                             }
                             withContext(Dispatchers.IO) {
                                 job.render(
-                                    wav, frames, tailFrames, fadeFrames, autoTail = true, floatWav = !settings.limited,
-                                    sampleRate = if (settings.cdRate) OfflineExport.CD_RATE else OfflineExport.SAMPLE_RATE,
+                                    wav, frames, tailFrames, fadeFrames, autoTail = true, floatWav = writtenBits == 32,
+                                    sampleRate = writtenRate,
                                     // M4A is encoded from 16 bits, dithered there: its WAV stays 24-bit.
-                                    bits = if (settings.bits16 && settings.format != ExportFormat.M4a) 16 else 24,
+                                    bits = if (settings.format == ExportFormat.M4a) 24 else writtenBits,
+                                    finish = settings.pro.finish(stems, rangeStart, writtenBits),
                                 ).also { rendered = job.report() }
                             }
                         } finally {
@@ -10520,7 +10656,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     }
                     // An M4A's limiter holds −2 dBTP: decoded, the AAC stays under −1 dBTP (checked below).
                     var report = budget.took(com.pocketstudio.app.export.M4aGuard.Step.Kind.Render) {
-                        renderMix(if (settings.format == ExportFormat.M4a) AacEncoder.CEILING_DBTP else null)
+                        renderMix(if (settings.format == ExportFormat.M4a) m4aCeiling else null)
                     }
                     // Measured on the full-quality mix, before any compression (the engine's own report,
                     // as written; read again here only if it is missing).
@@ -10528,6 +10664,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         loudness = report?.lufs ?: withContext(Dispatchers.IO) { runCatching { Loudness.integrated(wav) }.getOrNull() }
                         truePeak = report?.truePeakDb
                         seconds = report?.seconds
+                        proReport = report
                         loss = report?.takeIf { it.driveDb != 0.0 }?.lossDb
                         // S5: the live target settles on the drive the whole song needed.
                         report?.takeIf { p.mixVersion >= Project.MIX_V2 && it.loudLufs != null && settings.what == ExportWhat.Song }
@@ -10542,6 +10679,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     if (exportCancelled) {
                         wav.delete()
                         throw kotlinx.coroutines.CancellationException("annulé")
+                    }
+                    // Lot E: separate tracks are packed once all are rendered, at one length (the longest).
+                    if (stems) {
+                        held += HeldStem(index, wav)
+                        return@forEachIndexed
                     }
                     val out = if (settings.format == ExportFormat.Wav) {
                         wav
@@ -10602,6 +10744,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                                         com.pocketstudio.app.export.ExportRun.progress(_export.value.progress, s.label() + part)
                                     },
                                     mayGoOn = budget::allows,
+                                    maxDecodedDb = ceilingDb.toDouble(),
+                                    firstCeiling = m4aCeiling,
                                 )
                                 if (exportCancelled) throw kotlinx.coroutines.CancellationException("annulé")
                                 if (checked.encodings > 1) {
@@ -10622,11 +10766,26 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     // Listed first: a cancel from here on deletes it with the others.
                     done += out
                     if (exportCancelled) throw kotlinx.coroutines.CancellationException("annulé")
+                    // Lot E: the file's title, artist, BPM, key (and the report beside it, from « Avancé »).
+                    tagAndReport(p, out, if (solo == null) report else null, if (solo == null) decodedPeak else null, settings, writtenRate, writtenBits, ceilingDb, share)
+                        ?.let { done += it; musicOk = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, it, "text/plain") } && musicOk }
                     musicOk = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, out, settings.format.mime) } && musicOk
+                }
+                // Lot E: the separate tracks at one length from frame 0, then packed (FLAC, M4A) one by one.
+                if (held.isNotEmpty()) {
+                    val longest = withContext(Dispatchers.IO) { held.maxOf { com.pocketstudio.app.rhythm.WavLength.frames(it.wav) } }
+                    held.forEach { h ->
+                        if (exportCancelled) throw kotlinx.coroutines.CancellationException("annulé")
+                        withContext(Dispatchers.IO) { com.pocketstudio.app.rhythm.WavLength.padTo(h.wav, longest) }
+                        val out = if (settings.format == ExportFormat.Wav) h.wav else packStem(app, h, settings, renders.size, ceilingDb, m4aCeiling)
+                        done += out
+                        tagAndReport(p, out, null, null, settings, writtenRate, writtenBits, ceilingDb, share)
+                        musicOk = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, out, settings.format.mime) } && musicOk
+                    }
                 }
                 _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, stage = null, loudness = loudness,
                     truePeakDb = truePeak, seconds = seconds, lossDb = loss, decodedPeakDb = decodedPeak, writtenRate = writtenRate,
-                    writtenBits = writtenBits, writtenFormat = settings.format, sharing = false)
+                    writtenBits = writtenBits, writtenFormat = settings.format, sharing = false, proReport = proReport)
                 ending = tr("Export terminé : %s", done.joinToString(", ") { it.name })
                 AppLog.add("Export ${settings.what} ${settings.format} : ${done.size} fichier(s), ${frames / OfflineExport.SAMPLE_RATE} s" +
                     if (share) " (partage)" else "")
@@ -10634,9 +10793,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 if (share && !exportCancelled) _shareRequests.trySend(done.toList())
             } catch (e: kotlinx.coroutines.CancellationException) {
                 done.forEach { it.delete() }
+                held.forEach { it.wav.delete() }
                 _export.value = _export.value.copy(running = false, files = emptyList(), stage = null, sharing = false)
             } catch (e: Exception) {
                 done.forEach { it.delete() }
+                held.forEach { it.wav.delete() }
                 AppLog.add("Export : échec (${e.message})")
                 // « Partager mon morceau » keeps its window open to show what went wrong.
                 _export.value = _export.value.copy(running = false, files = emptyList(), stage = null,
@@ -10841,6 +11002,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         const val MAX_TAIL_FRAMES = 10L * OfflineExport.SAMPLE_RATE
         /** The master limiter's ceiling of a WAV (dBTP, the engine's MasterChain::kDefaultCeilingDb): an M4A searches its drive there (S6). */
         const val MASTER_CEILING_DBTP = -1f
+        /** Lot E: the « Réverbe » and « Écho » files of separate tracks without their sends (no strip: a return alone). */
+        internal const val RETURN_REVERB_STEM = -10
+        internal const val RETURN_ECHO_STEM = -11
 
         /** How long the sound and mix stay unchanged before the live gain is estimated again (watchSoundForLiveDrive). */
         const val LIVE_DRIVE_SETTLE_MS = 1500L
@@ -10861,6 +11025,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             "acide" -> tr("Acid 303")
             "synthe" -> tr("Synthé")
             LIVE_FX_STEM_LABEL -> tr("Effets live")
+            "reverbe" -> tr("Réverbe")
+            "echo" -> tr("Écho")
             else -> label.replaceFirstChar { it.uppercase() }
         }
         private const val OVERVIEW_BUCKETS = 400

@@ -8384,6 +8384,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
         } else if (on) {
+            // n° 9: an Acid 303 cell recording: the keyboard plays the 303 into it (MidiViewModel.keysToAcid).
+            if (_cellRecording.value?.key == com.pocketstudio.model.SongPart.ACID) {
+                midiKeyTrack.remove(pitch)?.let { liveNoteReleased(it, pitch) }
+                acidKeyOn(pitch, velocity)
+                return
+            }
             playedNoteOn(track, pitch, velocity)
             recordNoteOn(pitch, velocity)
             // Step 4f: on the Live page, a cell recording and a take keep the keyboard's notes too.
@@ -8391,6 +8397,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             midiKeyTrack[pitch] = track
             liveNoteTaken(track, pitch, velocity)
         } else {
+            if (acidKeyOff(pitch)) return
             playedNoteOff(track, pitch)
             recordNoteOff(pitch)
             liveNoteReleased(midiKeyTrack.remove(pitch) ?: track, pitch)

@@ -1303,6 +1303,10 @@ fun AppRoot() {
     val controllerScreen = com.pocketstudio.app.midi.KnobScreen.of(tab.name, showLive, liveTab, showLivePads || showPadLive)
     com.pocketstudio.app.midi.KnobScreenFollower(knobsVm, controllerScreen)
     LaunchedEffect(controllerScreen) { midiVm.padsToDrums = !controllerScreen.isLive }
+    // n° 9: an Acid 303 cell recording on the Live: the keyboard plays the 303 into it.
+    LaunchedEffect(Unit) {
+        rhythmVm.cellRecording.collect { midiVm.keysToAcid = it?.key == com.pocketstudio.model.SongPart.ACID }
+    }
     // Revue neuve (MOYEN 5): its own restartable scope, so a MIDI message recomposes the overlays, not the app.
     ControllerOverlays(midiVm, knobsVm, rhythmVm, controllerScreen, onMidiPage = tab == AppTab.Outils && toolPage == ToolPage.Midi)
     val closeLivePads = {

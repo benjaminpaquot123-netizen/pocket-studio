@@ -36,7 +36,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.ViewDay
 import androidx.compose.material.icons.filled.ViewStream
-import androidx.compose.material3.DropdownMenu
+import com.pocketstudio.ui.ScaledDropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -274,7 +274,7 @@ private fun Menu(label: String, value: String, tag: String, options: List<Pair<S
             Text(value, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1)
             Icon(Icons.Filled.ArrowDropDown, contentDescription = null, modifier = Modifier.size(18.dp))
         }
-        DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+        ScaledDropdownMenu(expanded = open, onDismissRequest = { open = false }) {
             options.forEachIndexed { i, (name, pick) ->
                 DropdownMenuItem(text = { Text(name) }, onClick = { open = false; pick() }, modifier = Modifier.testTag("${tag}_$i"))
             }

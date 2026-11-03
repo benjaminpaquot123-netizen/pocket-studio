@@ -561,6 +561,8 @@ object NativeEngine {
      * about half a second. Near 1 the sound starts to crackle (too many heavy effects at once).
      */
     external fun cpuLoad(): Float
+    /** [cpuLoad], or none (0) under a test's stand-in [sink], which has no audio thread to measure. */
+    fun cpuLoadNow(): Float = if (sink != null) 0f else cpuLoad()
     /** Steps since play without wrapping (-1 stopped): the piano roll loops on its own length. */
     fun absoluteStep(): Int = sink?.absoluteStep() ?: nativeAbsoluteStep()
     private external fun nativeAbsoluteStep(): Int
@@ -1045,6 +1047,8 @@ object NativeEngine {
     fun toggleClip(pad: Int, velocity: Float = 1f) = post(CMD_TOGGLE_CLIP, velocity, pad)
     /** Per pad: 0 off, 1 waiting for the grid, 2 playing ([LIVE_PADS] values). */
     external fun clipStates(out: IntArray)
+    /** [clipStates], or all off under a test's stand-in [sink] (no clip launcher there). */
+    fun clipStatesNow(out: IntArray) = if (sink != null) out.fill(0) else clipStates(out)
 
     /**
      * B3 (the lights that follow the sound): how loud each live pad sounds now, its peak falling

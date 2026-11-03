@@ -701,7 +701,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (!NativeEngine.isNative) return
         val buf = IntArray(NativeEngine.LIVE_PADS)
         while (true) {
-            NativeEngine.clipStates(buf)
+            NativeEngine.clipStatesNow(buf)
             val now = buf.take(LivePads.ALL)
             if (now != _liveStates.value) _liveStates.value = now
             kotlinx.coroutines.delay(33)
@@ -862,7 +862,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         livePadsSoundingForTest?.let { return it }
         if (!NativeEngine.isAvailable) return emptySet()
         val buf = IntArray(NativeEngine.LIVE_PADS)
-        NativeEngine.clipStates(buf)
+        NativeEngine.clipStatesNow(buf)
         return buf.indices.filterTo(HashSet()) { buf[it] != 0 }
     }
 
@@ -7593,7 +7593,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         var busy = false
         while (true) {
-            busy = com.pocketstudio.app.mixer.cpuBusyNext(busy, NativeEngine.cpuLoad())
+            busy = com.pocketstudio.app.mixer.cpuBusyNext(busy, NativeEngine.cpuLoadNow())
             emit(busy)
             kotlinx.coroutines.delay(500)
         }

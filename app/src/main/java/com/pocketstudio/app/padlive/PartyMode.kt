@@ -244,10 +244,15 @@ private fun PartyPad(pad: Int, ui: PadLiveUi, clock: PadClock, levels: PadLevels
                 if (!has) Modifier else Modifier.pointerInput(pad) {
                     awaitEachGesture {
                         awaitFirstDown()
+                        val localPad = pad
                         haptics.hit()
-                        touchNow(pad, true)
-                        waitForUpOrCancellation()
-                        touchNow(pad, false)
+                        touchNow(localPad, true)
+                        try {
+                            waitForUpOrCancellation()
+                        } finally {
+                            // A pad emptied or a party closed under the finger still lets go (fix 2, n° 2).
+                            touchNow(localPad, false)
+                        }
                     }
                 },
             )

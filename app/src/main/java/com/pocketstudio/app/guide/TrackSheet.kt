@@ -441,7 +441,11 @@ internal fun TrackSheetRoute(
     com.pocketstudio.app.rhythm.HoldAlone(true, vm::holdAlone)
     TrackSheet(
         name = DefaultNames.shown(track.name),
-        sheet = guide.sheets.firstOrNull { it.track.key == key },
+        // Audit stage 2: the « Quand » boxes follow the project at once (the Guide's analysis comes 300 ms or more
+        // later, so a touched box looked unchanged); a box is lit where the track is switched on in that part.
+        sheet = guide.sheets.firstOrNull { it.track.key == key }?.let { s ->
+            if (partKey == null || project.song.isEmpty()) s else s.copy(parts = project.song.map { it.plays(partKey) })
+        },
         partNames = partNames,
         targets = targets,
         notice = guideNotice ?: notice,

@@ -2,6 +2,7 @@ package com.pocketstudio.app.settings
 
 import com.pocketstudio.model.i18n.tr
 import android.content.Context
+import androidx.compose.runtime.collectAsState
 import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.i18n.Lang
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,6 +85,14 @@ data class AppSettings(
 }
 
 /** Reads and writes [AppSettings] (SharedPreferences "settings"); the app follows [state]. */
+/**
+ * The settings, observed: a composable that reads them this way is drawn again when they change
+ * (Audit stage 2: a `SettingsStore.state.value` read in composition kept the old mode or note names
+ * on the screen shown until something else redrew it).
+ */
+@androidx.compose.runtime.Composable
+fun observedSettings(): AppSettings = SettingsStore.state.collectAsState().value
+
 object SettingsStore {
     private const val PREFS = "settings"
     private val _state = MutableStateFlow(AppSettings())

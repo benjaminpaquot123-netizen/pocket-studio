@@ -138,7 +138,7 @@ class HeldFx {
         }
 
         fun hzWords(hz: Float): String =
-            if (hz >= 1000f) tr("%s kHz", String.format(java.util.Locale.getDefault(), "%.1f", hz / 1000f)) else tr("%d Hz", hz.roundToInt())
+            if (hz >= 1000f) tr("%s kHz", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", hz / 1000f)) else tr("%d Hz", hz.roundToInt())
 
         /** « Passe-haut 1,8 kHz · résonance 40 % » (the mockup's words). */
         fun filterWords(cutoff: Float, resonance: Float): String {

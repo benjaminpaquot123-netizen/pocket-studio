@@ -8155,6 +8155,7 @@ void testCommandBudgetPerCallback() {
 #include "padlive_tests.inc"
 #include "masterpro_tests.inc"
 #include "liveremix_tests.inc"
+#include "contract_tests.inc"
 
 int main(int argc, char** argv) {
     const char* only = nullptr;  // a test's name: run that one alone
@@ -8165,6 +8166,7 @@ int main(int argc, char** argv) {
     const TestCase tests[] = {
         PS_MASTER_TESTS
         PS_MASTERPRO_TESTS
+        PS_CONTRACT_TESTS
         {"spsc_queue", testSpscQueue},
         {"pad_strips", testPadStrips},
         {"spsc_float_ring", testSpscFloatRing},

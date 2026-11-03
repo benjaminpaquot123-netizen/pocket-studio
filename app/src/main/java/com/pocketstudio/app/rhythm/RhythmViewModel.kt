@@ -678,8 +678,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Live pads: sounds switched on and off by a tap, in time ---------------------------------
 
-    private val _liveStates = MutableStateFlow(List(LivePads.MAX) { 0 })
-    /** Per live pad: 0 off, 1 waiting for its beat, 2 playing. */
+    /** Pad Live (n° 25, lot B1): pages, modes, groups and packs, kept apart from this file (`padlive/`). */
+    val padLive = com.pocketstudio.app.padlive.PadLiveController(this)
+
+    private val _liveStates = MutableStateFlow(List(LivePads.ALL) { 0 })
+    /** Per live pad of the four pages ([LivePads.ALL]): 0 off, 1 waiting for its beat, 2 playing. */
     val liveStates: StateFlow<List<Int>> = _liveStates.asStateFlow()
 
     /** Polls the pads' lights about 30 times a second while their screen is visible. */
@@ -688,15 +691,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val buf = IntArray(NativeEngine.LIVE_PADS)
         while (true) {
             NativeEngine.clipStates(buf)
-            val now = buf.take(LivePads.MAX)
+            val now = buf.take(LivePads.ALL)
             if (now != _liveStates.value) _liveStates.value = now
             kotlinx.coroutines.delay(33)
         }
     }
 
-    private fun pushLive(p: Project = project.value) {
+    internal fun pushLive(p: Project = project.value) {
         if (!NativeEngine.isAvailable) return
-        p.live.clips.take(NativeEngine.LIVE_PADS).forEachIndexed { i, clip ->
+        p.live.all.take(NativeEngine.LIVE_PADS).forEachIndexed { i, clip ->
             if (clip != null) NativeEngine.setClipParams(i, clip.beats, clip.oneShot, clip.gain)
             val stored = clip?.let { padSamples.native(it.file) }
             val pick = fitPick("l$i", clip?.takeIf { it.follows }?.let { c -> stored?.let { TempoFits.want("l$i", c.file, it.frames, c.bpm, p.tempoBpm) } })
@@ -720,7 +723,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val c = t.clip?.takeIf { it.follows } ?: return@mapNotNull null
             padSamples.native(c.file)?.let { TempoFits.want("a${t.id}", c.file, it.frames, c.bpm, p.tempoBpm) }
         }
-        val live = p.live.clips.take(NativeEngine.LIVE_PADS).mapIndexedNotNull { i, c ->
+        val live = p.live.all.take(NativeEngine.LIVE_PADS).mapIndexedNotNull { i, c ->
             c?.takeIf { it.follows }?.let { cl -> padSamples.native(cl.file)?.let { TempoFits.want("l$i", cl.file, it.frames, cl.bpm, p.tempoBpm) } }
         }
         return audio + live
@@ -809,7 +812,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** A live pad tapped; [velocity]: its strength (a controller's pad), the loop or hit it starts plays that loud. */
     fun toggleLive(pad: Int, velocity: Float = 1f) {
-        if (project.value.live.clips.getOrNull(pad) == null) return
+        if (project.value.live.at(pad) == null) return
         // Started with the transport stopped (their clock runs on its own): the music plays all the same.
         val starts = !_transport.value.playing && pad !in padsSoundingNow()
         val v = velocity.takeIf { it.isFinite() && it > 0f }?.coerceAtMost(1f) ?: 1f
@@ -827,7 +830,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private var padsWatch: kotlinx.coroutines.Job? = null
 
     /** The live pads sounding or waiting now, as the engine says. */
-    private fun padsSoundingNow(): Set<Int> {
+    internal fun padsSoundingNow(): Set<Int> {
         livePadsSoundingForTest?.let { return it }
         if (!NativeEngine.isAvailable) return emptySet()
         val buf = IntArray(NativeEngine.LIVE_PADS)
@@ -861,9 +864,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setLiveSize(size: Int) = session.edit { p -> p.copy(live = p.live.copy(size = size)) }
 
-    private fun editLive(pad: Int, key: String? = null, transform: (LiveClip) -> LiveClip) {
-        val clip = project.value.live.clips.getOrNull(pad) ?: return
-        session.edit(key) { p -> p.copy(live = p.live.with(pad, transform(clip).sanitized())) }
+    internal fun editLive(pad: Int, key: String? = null, transform: (LiveClip) -> LiveClip) {
+        val clip = project.value.live.at(pad) ?: return
+        session.edit(key) { p -> p.copy(live = p.live.withAt(pad, transform(clip).sanitized())) }
         pushLive()
     }
 
@@ -872,7 +875,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun setLiveGain(pad: Int, gain: Float) = editLive(pad, "live-gain-$pad") { it.copy(gain = gain) }
 
     fun clearLive(pad: Int) {
-        session.edit { p -> p.copy(live = p.live.with(pad, null)) }
+        session.edit { p -> p.copy(live = p.live.withAt(pad, null)) }
         pushLive()
     }
 
@@ -5006,7 +5009,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _notice.value = tr("Les pistes audio sont toutes prises : les pads live de cette prise n'ont pas été gardés.")
             return
         }
-        val clips = p.live.clips
+        val clips = p.live.all
         val bpm = p.tempoBpm
         audioJob(tr("Écriture des pads live…"), always = true) {
             val sounds = withContext(Dispatchers.IO) {
@@ -5107,7 +5110,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         performanceDoneDepth = session.undoDepth
         dropTakeJournalOnceSaved(t.id)
         // The live pads it played: one more audio track, written in the background.
-        val padSpans = com.pocketstudio.model.LivePadTake.spans(project.value.live.clips, performancePadsAtStart, performancePadTaps, t.start, end, project.value.beatsPerBar)
+        val padSpans = com.pocketstudio.model.LivePadTake.spans(project.value.live.all, performancePadsAtStart, performancePadTaps, t.start, end, project.value.beatsPerBar)
         performancePadTaps = ArrayList()
         padSpansForTest = padSpans
         bouncePerformancePads(padSpans, t.start, end, if (performanceAppend) before.song.sumOf { before.partSteps(it) } else 0, undoTo)

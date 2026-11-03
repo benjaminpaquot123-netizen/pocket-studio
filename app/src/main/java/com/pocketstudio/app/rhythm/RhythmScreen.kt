@@ -23,6 +23,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import com.pocketstudio.ui.fadingHorizontalScroll
+import com.pocketstudio.ui.padLight
 import com.pocketstudio.ui.WithHelp
 import com.pocketstudio.ui.HelpDot
 import com.pocketstudio.app.help.Glossary
@@ -430,8 +431,9 @@ internal fun padVoiceName(kind: Int): String = when (kind) {
 }
 
 /**
- * One pad, as on a drum machine: its colour in relief, a glow when it sounds (fading out), a
- * coloured edge when chosen, a small press.
+ * One pad, as on a drum machine: its colour in relief, lit when it sounds (fading out), a
+ * coloured edge when chosen; the one light of every pad (n° 25, [padLight]): the inner light while
+ * it sounds, the finger's 200 ms ripple. Nothing moves on a pad that does not sound.
  */
 @Composable
 private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean, hasHits: Boolean, hasFx: Boolean, onHit: () -> Unit, modifier: Modifier, ratio: Boolean = true, muted: Boolean = false, onHold: () -> Unit = {}, pan: Float = 0f) {
@@ -440,7 +442,7 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
     val pressed by interaction.collectIsPressedAsState()
     // Lights at once, fades in a quarter second.
     val glow by animateFloatAsState(if (lit || pressed) 1f else 0f, if (lit || pressed) snap<Float>() else tween<Float>(260), label = "pad-glow")
-    val press by animateFloatAsState(if (pressed) 0.95f else 1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessHigh), label = "pad-press")
+    val light = com.pocketstudio.ui.rememberPadLight()
     val surface = Neon.Surface
     val rest = if (selected) 0.42f else 0.24f
     val top = lerp(lerp(surface, color, rest + 0.1f), color, glow)
@@ -448,10 +450,10 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
     Box(
         modifier
             .then(if (ratio) Modifier.aspectRatioAtMost(1.2f, 150.dp) else Modifier)
-            .scale(press)
-            .shadow(if (glow > 0.05f) 18.dp * glow else if (selected) 8.dp else 3.dp, shape, ambientColor = color, spotColor = color)
+            .shadow(if (selected) 8.dp else 3.dp, shape, ambientColor = color, spotColor = color)
             .clip(shape)
             .background(Brush.verticalGradient(listOf(top, bottom)))
+            .padLight(light, color, playing = lit, corner = 14.dp)
             .border(
                 if (selected) 2.dp else 1.dp,
                 if (selected) Brush.verticalGradient(listOf(lerp(color, Color.White, 0.3f), color))
@@ -695,19 +697,22 @@ private fun StepGrid(
                     // Empty cells are hollowed into the panel; the beats a little lighter.
                     val fill = Color.Black.copy(alpha = if (isBeat) 0.16f else 0.28f)
                     val cell = RoundedCornerShape(7.dp)
+                    // n° 25: only a cell that sounds lights under the playhead; an empty one never moves.
+                    val sounds = playing && (velocity != null || ownerHit != null)
+                    val light = com.pocketstudio.ui.rememberPadLight()
                     Box(
                         modifier = Modifier
                             .weight(1f)
                             .aspectRatioAtMost(0.8f, cellMax)
                             .alpha(if (pastLoop) 0.3f else 1f)
-                            .then(if (playing && velocity != null) Modifier.shadow(10.dp, cell, ambientColor = color, spotColor = color) else Modifier)
                             .clip(cell)
                             .background(fill)
+                            .padLight(light, color, playing = sounds, corner = 7.dp)
                             .border(
-                                if (playing || isPicked) 2.dp else 1.dp,
+                                if (sounds || isPicked) 2.dp else 1.dp,
                                 when {
                                     isPicked -> Neon.Cyan
-                                    playing -> Neon.TextPrimary
+                                    sounds -> Neon.TextPrimary
                                     else -> Color.White.copy(alpha = 0.07f)
                                 },
                                 cell,
@@ -1389,10 +1394,14 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
                 for (col in 0 until project.stepsPerBar) {
                     val step = bar * project.stepsPerBar + col
                     val hit = l.hits[step]
+                    // n° 25: only a hit lights under the playhead; an empty cell never moves.
+                    val sounds = step == currentStep && hit != null
+                    val light = com.pocketstudio.ui.rememberPadLight()
                     Box(
                         Modifier.weight(1f).height(22.dp).clip(RoundedCornerShape(3.dp))
                             .background(if (hit != null) color.copy(alpha = 0.35f + 0.65f * hit.velocity) else if (col % 4 == 0) Neon.SurfaceHigh else Neon.Surface)
-                            .border(if (step == currentStep) 2.dp else 0.5.dp, if (step == currentStep) Neon.TextPrimary else Neon.Outline, RoundedCornerShape(3.dp))
+                            .padLight(light, color, playing = sounds, corner = 3.dp)
+                            .border(if (sounds) 2.dp else 0.5.dp, if (sounds) Neon.TextPrimary else Neon.Outline, RoundedCornerShape(3.dp))
                             .clickable { actions.toggleHit(lane, step) }
                             .testTag("cell_${lane}_$step"),
                     )

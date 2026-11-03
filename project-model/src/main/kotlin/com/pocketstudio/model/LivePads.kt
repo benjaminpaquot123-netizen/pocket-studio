@@ -23,6 +23,10 @@ data class LiveClip(
      * tempo, stretched ([AutoTempo.fittedFrames]). 0 (left out of the file): it keeps its speed.
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val bpm: Double = 0.0,
+    /** Pad Live (n° 25): « Tenir », the loop sounds while the finger stays on the pad ([PadMode.HOLD]). */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val hold: Boolean = false,
+    /** Pad Live: its « un seul à la fois » group (1 to [PadLive.GROUPS]; 0: none): starting it stops the others of the group. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val group: Int = 0,
 ) {
     /** It is stretched to the project's tempo. */
     val follows: Boolean get() = !oneShot && bpm > 0.0
@@ -34,10 +38,16 @@ data class LiveClip(
         beats = beats.coerceIn(1, LivePads.MAX_BEATS),
         gain = gain.takeIf { it.isFinite() }?.coerceIn(0f, 2f) ?: 1f,
         bpm = bpm.takeIf { it.isFinite() && it in AutoTempo.MIN_BPM..AutoTempo.MAX_BPM } ?: 0.0,
+        hold = hold && !oneShot,
+        group = group.coerceIn(0, PadLive.GROUPS),
     )
 }
 
-/** The live pads grid: [size] pads shown, each one empty or holding a [LiveClip]. */
+/**
+ * The live pads grid: [size] pads shown, each one empty or holding a [LiveClip]. Pad Live (n° 25)
+ * adds pages B to D ([more], pads [MAX] + 1 to [ALL]): [clips] stays page A, the pads every older
+ * screen (Live page, Morceau, the Remix's « vers un pad ») shows and fills.
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class LivePads(
@@ -45,7 +55,27 @@ data class LivePads(
     val clips: List<LiveClip?> = List(MAX) { null },
     /** The ready-to-play set ([LiveStarter]) was offered to this project once: never again (emptied by hand, they stay empty). */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val starterOffered: Boolean = false,
+    /** Pad Live's pages B, C and D ([ALL] - [MAX] pads, page after page); left out of the file while empty. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val more: List<LiveClip?> = emptyList(),
 ) {
+    /** Every pad of the four pages, A to D ([ALL]): pad `i` is the engine's live slot `i`. */
+    val all: List<LiveClip?> get() = clips.take(MAX) + List(MAX - clips.size.coerceAtMost(MAX)) { null } +
+        more.take(ALL - MAX) + List((ALL - MAX - more.size).coerceAtLeast(0)) { null }
+
+    /** Pad [pad] of any page (null: empty or out of range). */
+    fun at(pad: Int): LiveClip? = if (pad < MAX) clips.getOrNull(pad) else more.getOrNull(pad - MAX)
+
+    /** Pad [pad] of any page set to [clip] ([with] for page A). */
+    fun withAt(pad: Int, clip: LiveClip?): LivePads = when {
+        pad in 0 until MAX -> with(pad, clip)
+        pad in MAX until ALL -> {
+            val grown = more.take(ALL - MAX) + List((ALL - MAX - more.size).coerceAtLeast(0)) { null }
+            val next = grown.mapIndexed { i, c -> if (i == pad - MAX) clip else c }
+            copy(more = if (next.all { it == null }) emptyList() else next)
+        }
+        else -> this
+    }
+
     /** Pads up to the last one holding a sound (the grid never hides a sound). */
     val used: Int get() = clips.indexOfLast { it != null } + 1
 
@@ -53,7 +83,11 @@ data class LivePads(
         val fixed = (clips + List((MAX - clips.size).coerceAtLeast(0)) { null }).take(MAX)
             .map { c -> c?.takeIf { it.isSafe }?.sanitized() }
         val minSize = fixed.indexOfLast { it != null } + 1
-        return copy(size = SIZES.firstOrNull { it >= maxOf(size, minSize) } ?: MAX, clips = fixed)
+        val pages = more.take(ALL - MAX).map { c -> c?.takeIf { it.isSafe }?.sanitized() }
+        return copy(
+            size = SIZES.firstOrNull { it >= maxOf(size, minSize) } ?: MAX, clips = fixed,
+            more = if (pages.all { it == null }) emptyList() else pages + List(ALL - MAX - pages.size) { null },
+        )
     }
 
     /**
@@ -71,6 +105,8 @@ data class LivePads(
 
     companion object {
         const val MAX = 16
+        /** Pad Live's four pages of [MAX] (A to D): the engine's ClipLauncher::kSlots. */
+        const val ALL = 64
         const val MAX_BEATS = 64
         /** « Pads − 8 + »: 4, 6, 8 (2 columns), 12 (3), 16 (4). */
         val SIZES = listOf(4, 6, 8, 12, 16)
@@ -117,7 +153,7 @@ fun padGrid(count: Int, w: Float, h: Float, gap: Float): PadGrid {
 /** Every sample file the project uses (drum pads of every scene, live pads, audio clips, sampled instruments). */
 val Project.sampleFiles: Set<String> get() =
     (allScenes.flatMap { s -> s.drums.lanes.mapNotNull { it.sample?.file } } +
-        drums.lanes.mapNotNull { it.sample?.file } + live.clips.mapNotNull { it?.file } +
+        drums.lanes.mapNotNull { it.sample?.file } + live.all.mapNotNull { it?.file } +
         audioTracks.mapNotNull { it.clip?.file } + allTrackSounds.mapNotNull { it.sampled.file }).toSet()
 
 /**
@@ -132,7 +168,7 @@ fun Project.withoutSounds(files: Set<String>): Project {
     return copy(
         drums = drums.cleaned(),
         scenes = scenes.map { it.copy(drums = it.drums.cleaned()) },
-        live = live.copy(clips = live.clips.map { c -> c?.takeIf { it.file !in files } }),
+        live = live.copy(clips = live.clips.map { c -> c?.takeIf { it.file !in files } }, more = live.more.map { c -> c?.takeIf { it.file !in files } }),
         audioTracks = audioTracks.map { t ->
             t.mapTakes { c -> c.takeIf { it.file !in files } }
         },

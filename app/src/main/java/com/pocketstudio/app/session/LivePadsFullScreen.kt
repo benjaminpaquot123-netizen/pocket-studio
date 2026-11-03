@@ -114,6 +114,8 @@ import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.WholeWordsText
 import com.pocketstudio.ui.trackColor
+import com.pocketstudio.ui.padLight
+import com.pocketstudio.ui.rememberPadLight
 import kotlinx.coroutines.launch
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -596,57 +598,29 @@ private fun StagePad(
     onLong: () -> Unit,
 ) {
     val haptics = LocalHapticFeedback.current
-    val scope = rememberCoroutineScope()
     val tap by rememberUpdatedState(onTap)
     val long by rememberUpdatedState(onLong)
     val early by rememberUpdatedState(clip?.oneShot == true)
     val lit = animateFloatAsState(if (state == 2) 1f else 0f, tween(200), label = "stage-lit")
-    // The finger's touch, and a one-shot firing: a white flash fading out.
-    val press = remember { Animatable(0f) }
-    val flash = remember { Animatable(0f) }
+    val light = rememberPadLight()
     val oneShot = clip?.oneShot == true
-    LaunchedEffect(state, oneShot) {
-        if (state == 2 && oneShot) {
-            flash.snapTo(1f)
-            flash.animateTo(0f, tween(450, easing = FastOutSlowInEasing))
-        }
-    }
     val beats = clip?.beats ?: 4
     val radius = if (big) 22.dp else 16.dp
     val surface = Neon.Surface
     val surfaceHigh = Neon.SurfaceHigh
     Box(
         modifier
+            // n° 25: the pad's fill and edge, still; what plays wears the one light of every pad
+            // (inner light, the loop's ring, the finger's ripple): nothing breathes or blinks.
             .drawWithCache {
                 val r = radius.toPx()
-                val edgeW = (if (big) 5.dp else 4.dp).toPx()
-                val outline = outlineFromTop(size, r, edgeW / 2)
-                val measure = PathMeasure().apply { setPath(outline, false) }
-                val length = measure.length
-                val part = Path()
                 val corner = CornerRadius(r)
                 val litBrush = Brush.verticalGradient(listOf(lerp(color, Color.White, 0.22f), color, lerp(color, Color.Black, 0.38f)))
                 val idleBrush = Brush.verticalGradient(listOf(lerp(surfaceHigh, color, 0.42f), lerp(surface, color, 0.16f)))
                 val emptyBrush = Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.035f), Color.Black.copy(alpha = 0.2f)))
-                val sheen = Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.16f), Color.Transparent), endY = size.height * 0.5f)
-                onDrawWithContent {
+                val gloss = Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.16f), Color.Transparent), endY = size.height * 0.5f)
+                onDrawBehind {
                     val on = lit.value
-                    val b = clock.beat()
-                    val running = b >= 0
-                    // On the beat: 1, fading through it; the bar's first beat a little stronger.
-                    val frac = if (running) (b - floor(b)).toFloat() else 1f
-                    val pulse = (1f - frac).let { it * it } * if (running && floor(b).toInt() % beatsPerBar.coerceAtLeast(1) == 0) 1f else 0.7f
-                    // The glow around a playing pad, breathing on the beat.
-                    if (on > 0.01f) {
-                        for (k in 1..4) {
-                            val spread = k * 2.5.dp.toPx()
-                            drawRoundRect(
-                                color.copy(alpha = (on * (0.12f + 0.3f * pulse) / k).coerceIn(0f, 1f)),
-                                topLeft = Offset(-spread, -spread), size = Size(size.width + 2 * spread, size.height + 2 * spread),
-                                cornerRadius = CornerRadius(r + spread), style = Stroke(2.5.dp.toPx()),
-                            )
-                        }
-                    }
                     when {
                         clip == null -> drawRoundRect(emptyBrush, cornerRadius = corner)
                         else -> {
@@ -654,44 +628,19 @@ private fun StagePad(
                             if (on > 0f) drawRoundRect(litBrush, cornerRadius = corner, alpha = on)
                         }
                     }
-                    drawRoundRect(sheen, cornerRadius = corner)
-                    // A light flash on the beat while it plays, the touch and a one-shot's hit on top.
-                    val white = (0.16f * on * pulse) + 0.22f * press.value + 0.55f * flash.value
-                    if (white > 0.005f) drawRoundRect(Color.White.copy(alpha = white.coerceAtMost(0.8f)), cornerRadius = corner)
-                    // The edge.
-                    val edge = Stroke(edgeW, cap = StrokeCap.Round)
-                    when {
-                        clip == null -> drawRoundRect(Color.White.copy(alpha = 0.07f), cornerRadius = corner, style = Stroke(1.dp.toPx()))
-                        state == 1 -> {
-                            // Queued: the edge blinks on the eighths and empties until the launch line.
-                            val blink = if (running) 0.35f + 0.65f * (if ((b * 2 - floor(b * 2)) < 0.5) 1f else 0.25f) else 0.7f
-                            drawPath(outline, color.copy(alpha = 0.25f), style = Stroke(edgeW))
-                            val left = if (running) clock.waitLeft(beats, beatsPerBar) else 1f
-                            part.reset()
-                            measure.getSegment(0f, length * left, part, true)
-                            drawPath(part, lerp(color, Color.White, 0.35f).copy(alpha = blink), style = edge)
-                        }
-                        state == 2 && !oneShot -> {
-                            // Where the loop is: the edge fills up from the top, round the pad.
-                            drawPath(outline, Color.Black.copy(alpha = 0.28f), style = Stroke(edgeW))
-                            part.reset()
-                            measure.getSegment(0f, length * clock.position(i, beats), part, true)
-                            drawPath(part, Color.White.copy(alpha = 0.95f), style = edge)
-                        }
-                        state == 2 -> drawRoundRect(Color.White.copy(alpha = 0.55f), cornerRadius = corner, style = Stroke(2.dp.toPx()))
-                        else -> drawRoundRect(Color.White.copy(alpha = 0.14f), cornerRadius = corner, style = Stroke(1.dp.toPx()))
-                    }
-                    drawContent()
+                    drawRoundRect(gloss, cornerRadius = corner)
+                    drawRoundRect(Color.White.copy(alpha = if (clip == null) 0.07f else 0.14f), cornerRadius = corner, style = Stroke(1.dp.toPx()))
                 }
             }
+            .padLight(
+                light, color, playing = clip != null && state == 2, waiting = clip != null && state == 1,
+                progress = if (clip != null && !oneShot) ({ clock.position(i, beats) }) else null,
+                corner = radius, touchable = clip != null,
+            )
             .pointerInput(Unit) {
                 awaitEachGesture {
                     awaitFirstDown()
                     haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                    scope.launch {
-                        press.snapTo(1f)
-                        press.animateTo(0f, tween(260))
-                    }
                     val fired = early
                     if (fired) tap()
                     var held = false
@@ -832,8 +781,8 @@ internal class PadClock {
     private var bpm = 120.0
     private var lastStep = -1
     private var beatsPerBar = 4
-    private val prev = IntArray(LivePads.MAX)
-    private val starts = DoubleArray(LivePads.MAX)
+    private val prev = IntArray(LivePads.ALL)
+    private val starts = DoubleArray(LivePads.ALL)
     /** No frame seen yet since the page opened (or everything stopped). */
     private var fresh = true
 
@@ -874,7 +823,7 @@ internal class PadClock {
             running = false
         }
         lastStep = step
-        for (k in 0 until minOf(states.size, LivePads.MAX)) {
+        for (k in 0 until minOf(states.size, LivePads.ALL)) {
             val s = states[k]
             if (s == 2 && prev[k] != 2) {
                 // Off on its own clock, the first pad launched plays at once: beat 0.

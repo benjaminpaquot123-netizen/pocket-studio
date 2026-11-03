@@ -51,3 +51,6 @@ Une seule boîte d'effets, la même partout où un son se choisit : carte « Eff
 | Pitch shift / harmoniseur | voix plus aiguë ou plus grave | pas encore (pitch des pads et des prises seulement) |
 | Vocoder, granulaire, convolution | voix robot musicale, textures, vraies salles | pas encore |
 | Limiteur / maximiseur | volume final | limiteur de la sortie générale (fixe) |
+
+## Lumière des pads et des cases (n° 25, lot B1)
+Un seul composant, `PadLight` (`ui-components/.../PadLight.kt`), sur tous les écrans à pads et à cases (Rythme : pads, pas, « Tous les pads » ; Live : briques, pads live, plein écran ; Pad Live). Pad ou case inactifs : rien ne bouge, jamais (ni onde, ni souffle, ni clignotement). Qui joue : lumière intérieure douce et fin anneau d'avancement de sa boucle ; en attente de son temps : l'anneau pâle, immobile ; touché : petite onde de 200 ms au point du doigt ; effet maintenu : léger voile de couleur sur les bords. Allumage 150 ms, extinction 250 ms. Test « partout » : `StillPadsEverywhereTest`.

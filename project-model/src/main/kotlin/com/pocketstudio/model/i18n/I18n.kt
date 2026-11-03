@@ -107,6 +107,8 @@ object I18n {
         "browser",
         // Lot C (n° 24): « Découper la chanson », « Garder » filed by song, the rights line at sharing.
         "remixc",
+        // Pad Live (n° 25, lot B1): the home screen's card, the pages, the pad modes, the packs.
+        "padlive",
     )
 
     @Volatile

@@ -20,6 +20,8 @@ data class ProjectInfo(
     val unreadable: Boolean = false,
     /** « La version d'avant la dernière séance » is kept ([ProjectCatalog.restoreOpening]). */
     val hasOpening: Boolean = false,
+    /** Pad Live (n° 25): the home's « Live » project ([PadLiveSet.home]). */
+    val padLive: Boolean = false,
 )
 
 /** A project .zip brought in: the new project's [id], and the sounds it named but did not hold (left out). */
@@ -45,7 +47,7 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
         val scene = p.currentSceneContent()
         return ProjectInfo(
             id, p.name, modified, p.tempoBpm, scene.stepsFor(p.stepsPerBar) / p.stepsPerBar, p.allScenes.size, p.remix.setId != null,
-            hasOpening = File(dir, ProjectStore.OPENING).isFile,
+            hasOpening = File(dir, ProjectStore.OPENING).isFile, padLive = p.padLive.home,
         )
     }
 

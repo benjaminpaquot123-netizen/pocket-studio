@@ -137,6 +137,7 @@ import com.pocketstudio.model.slotLoopSteps
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.liveGlow
+import com.pocketstudio.ui.padLight
 import com.pocketstudio.ui.trackColor
 import com.pocketstudio.ui.fadingEdges
 import com.pocketstudio.ui.fadingHorizontalScroll
@@ -1036,11 +1037,12 @@ private fun SceneButton(
 }
 
 /**
- * A pad, style B: empty, a small dot the beat's wave runs through; with something to play, a soft
- * gradient of its track's hue and a little preview of its loop; waiting for its launch line (its
- * outline blinks, an arrow); playing (lit from light to deep, a sheen sliding with its loop, a
- * halo breathing on the beat, a thin bar where the loop is). Lighting up and going out fade in
- * 220 ms. Everything that moves is read when drawn: neither the clock nor the beat recompose a pad.
+ * A pad, style B: empty, a small still dot; with something to play, a soft gradient of its track's
+ * hue and a little preview of its loop; waiting for its launch line (the still ring of every pad,
+ * an arrow); playing (lit from light to deep, with the one light of every pad, n° 25: inner light
+ * and the loop's ring, [padLight]; the finger's 200 ms ripple). Lighting up and going out fade in
+ * 220 ms. Nothing moves on a cell that does not play. Everything that moves is read when drawn:
+ * neither the clock nor the beat recompose a pad.
  */
 @Composable
 private fun LivePadCell(
@@ -1072,6 +1074,7 @@ private fun LivePadCell(
     val color = c.color
     val clock = look.clock
     val showDot = !hasContent && !pending && mark == CellMark.None && !hint
+    val light = com.pocketstudio.ui.rememberPadLight()
     Box(
         Modifier.size(width, height)
             // Brushes made once per size: a playing pad redraws every frame without garbage.
@@ -1085,23 +1088,8 @@ private fun LivePadCell(
             .drawWithCache {
                 val idle = Brush.linearGradient(listOf(GridLook.idleTop(color), GridLook.idleBottom(color)), Offset.Zero, Offset(size.width * 0.3f, size.height))
                 val litFill = Brush.linearGradient(listOf(color, GridLook.litBottom(color)), Offset.Zero, Offset(size.width * 0.36f, size.height))
-                val light = Brush.radialGradient(
-                    0f to GridLook.litLight(color), 0.55f to Color.Transparent,
-                    center = Offset(size.width * 0.2f, 0f), radius = size.width * 1.1f,
-                )
                 val barBrush = Brush.verticalGradient(listOf(GridLook.barTop(color), color.copy(alpha = 0.55f)))
-                val sheenW = size.width * 0.45f
-                val sheen = Brush.horizontalGradient(listOf(Color.Transparent, Color.White.copy(alpha = 0.25f), Color.Transparent), 0f, sheenW)
                 val line = 1.dp.toPx()
-                val progTop = 6.dp.toPx()
-                val progSide = 7.dp.toPx()
-                val progH = 4.dp.toPx()
-                val progR = CornerRadius(2.dp.toPx())
-                val halo = 6.dp.toPx()
-                val haloLine = halo / HALO_LAYERS
-                val haloStroke = Stroke(haloLine)
-                val haloColor = lerp(color, Color.White, 0.35f)
-                val radius = 9.dp.toPx()
                 onDrawBehind {
                     val on = lit.value
                     if (pending && on < 0.01f) {
@@ -1113,40 +1101,22 @@ private fun LivePadCell(
                         }
                         if (on > 0.01f) {
                             drawRect(litFill, alpha = on)
-                            drawRect(light, alpha = on)
                             drawRect(Color.White.copy(alpha = 0.4f * on), size = Size(size.width, line))
-                            // The sheen slides across with the loop.
-                            val x = size.width * (-0.5f + 1.6f * position())
-                            translate(left = x) { drawRect(sheen, size = Size(sheenW, size.height), alpha = on) }
                         }
                         bars?.let { previewBars(it, if (on > 0.5f) null else barBrush, GridLook.Ink.copy(alpha = 0.8f), if (on > 0.5f) 1f else 0.75f) }
-                        if (on > 0.01f) {
-                            // The halo, breathing on the beat: a glow along the inside of the edge
-                            // (outside, the grid's rows would cut it).
-                            val glow = halo * (0.45f + 0.55f * clock.pulse)
-                            for (k in 0 until HALO_LAYERS) {
-                                val inset = halo * k / HALO_LAYERS + haloLine / 2
-                                drawRoundRect(
-                                    haloColor.copy(alpha = (on * glow / halo * 0.7f * (1f - k.toFloat() / HALO_LAYERS)).coerceIn(0f, 1f)),
-                                    Offset(inset, inset), Size(size.width - 2 * inset, size.height - 2 * inset),
-                                    CornerRadius((radius - inset).coerceAtLeast(0f)), style = haloStroke,
-                                )
-                            }
-                        }
-                        if (on > 0.5f) {
-                            // Where the loop is: a thin bar along the top.
-                            val w = size.width - 2 * progSide
-                            drawRoundRect(GridLook.Ink.copy(alpha = 0.2f), Offset(progSide, progTop), Size(w, progH), progR)
-                            drawRoundRect(GridLook.Ink, Offset(progSide, progTop), Size(w * position(), progH), progR)
-                        }
                     }
                 }
             }
+            // n° 25: the inner light and the loop's ring while it plays, the still ring while it waits.
+            .padLight(
+                light, color, playing = playing && hasContent, waiting = pending && hasContent,
+                progress = position, corner = 9.dp, touchable = hasContent || pending,
+            )
             .let { m ->
                 when {
                     mark == CellMark.Rec -> m.border(3.dp, Neon.Red, shape)
                     mark == CellMark.Here -> m.border(2.dp, Neon.Amber, shape)
-                    pending -> m.blinkingBorder(1.5.dp, 9.dp) { color.copy(alpha = 0.35f + 0.55f * blink.value) }
+                    pending -> m.border(1.5.dp, color.copy(alpha = 0.6f), shape)
                     hint -> m.border(1.dp, Color(0xFF3A3F46), shape)
                     else -> m
                 }
@@ -1176,20 +1146,26 @@ private fun LivePadCell(
         if (mark != CellMark.None) {
             // Lot 4b: « ici » (the cell being filled) or « ● REC » (recording what is played).
             if (mark == CellMark.Rec) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Box(Modifier.size(20.dp).graphicsLayer { alpha = 0.55f + 0.45f * clock.pulse }.clip(CircleShape).background(Neon.Red))
-                    Text("REC", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = Color.White, maxLines = 1, softWrap = false)
-                }
+                RecMark(clock)
             } else {
                 Box(Modifier.clip(RoundedCornerShape(10.dp)).background(Neon.Amber).padding(horizontal = 8.dp, vertical = 2.dp)) {
                     Text(tr("ici"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Color.Black, maxLines = 1, softWrap = false)
                 }
             }
         } else if (pending) {
-            Text("→", Modifier.graphicsLayer { alpha = 0.5f + 0.5f * blink.value }, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = color)
+            Text("→", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = color)
         } else if (hint) {
             Text("+", style = MaterialTheme.typography.headlineSmall, color = Color(0xFF8C949F))
         }
+    }
+}
+
+/** « ● REC » on the cell being recorded (it plays: its dot beats with the music). */
+@Composable
+private fun RecMark(clock: GridClock) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(Modifier.size(20.dp).graphicsLayer { alpha = 0.55f + 0.45f * clock.pulse }.clip(CircleShape).background(Neon.Red))
+        Text("REC", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = Color.White, maxLines = 1, softWrap = false)
     }
 }
 
@@ -1428,8 +1404,6 @@ private val MAX_CELL_W = 120.dp
 private val ROW_MIN_H = 40.dp
 /** Lot 4d: lower with the tools open (about six bricks stay in view over the panel). */
 private val ROW_MIN_DENSE = 30.dp
-/** The playing cell's halo: thin strokes inside its edge, fainter inwards. */
-private const val HALO_LAYERS = 6
 private val GRID_PAD_H = 8.dp
 private val GRID_PAD_V = 6.dp
 

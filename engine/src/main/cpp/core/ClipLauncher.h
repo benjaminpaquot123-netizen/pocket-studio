@@ -17,9 +17,11 @@ namespace ps {
 // (the loop length, at most a bar). The clock runs on its own when the transport is stopped
 // and snaps to the sequencer's beats while it plays.
 // Real-time safe except where noted: never allocates or frees.
+// Pad Live (n° 25): four pages of 16 pads, A to D, all live at once (a loop of page A keeps
+// playing while page B is shown): 64 slots; a slot with nothing sounding costs one test a frame.
 class ClipLauncher {
 public:
-    static constexpr int kSlots = 16;
+    static constexpr int kSlots = 64;
     static constexpr int kMaxBeats = 64;
     enum Param { Beats = 0, OneShot = 1, Gain = 2 };
     enum State : uint8_t { Off = 0, Waiting = 1, Playing = 2 };
@@ -82,6 +84,8 @@ private:
         // still fading under the new one) never cuts that one dead.
         std::array<Voice, 2> tails;
         bool tailOf(const Sample* x) const { return tails[0].sample == x || tails[1].sample == x; }
+        // Nothing sounds nor waits: render() skips it.
+        bool idle() const { return state == Off && !voice.sample && !tails[0].sample && !tails[1].sample; }
         // The sound replaced while it played: kept until its fading voice is done (no click).
         Sample* held = nullptr;
     };

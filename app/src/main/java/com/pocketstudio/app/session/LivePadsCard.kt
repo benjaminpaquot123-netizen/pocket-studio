@@ -11,11 +11,6 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material3.Button
 import com.pocketstudio.app.help.Glossary
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -54,13 +49,13 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import com.pocketstudio.ui.hit
 import com.pocketstudio.ui.pressScale
+import com.pocketstudio.ui.padLight
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -154,12 +149,10 @@ fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
                 )
             }
         }
-        val blink = rememberInfiniteTransition(label = "waiting")
-        val waitAlpha by blink.animateFloat(0.3f, 1f, infiniteRepeatable(tween(250), RepeatMode.Reverse), label = "waitAlpha")
         (0 until ui.pads.size step 4).forEach { start ->
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 for (i in start until start + 4) {
-                    LivePad(i, ui.pads.clips.getOrNull(i), ui.states.getOrElse(i) { 0 }, ui.editing == i, waitAlpha, Modifier.weight(1f)) {
+                    LivePad(i, ui.pads.clips.getOrNull(i), ui.states.getOrElse(i) { 0 }, ui.editing == i, Modifier.weight(1f)) {
                         when {
                             ui.editing != null -> actions.edit(i)
                             ui.pads.clips.getOrNull(i) == null -> actions.edit(i)
@@ -190,9 +183,10 @@ fun LivePadsCard(ui: LivePadsUi, actions: LivePadsActions) {
 }
 
 @Composable
-private fun LivePad(i: Int, clip: LiveClip?, state: Int, selected: Boolean, waitAlpha: Float, modifier: Modifier, onClick: () -> Unit) {
+private fun LivePad(i: Int, clip: LiveClip?, state: Int, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
     val shape = RoundedCornerShape(12.dp)
-    // Empty: hollow. Loaded: in relief. Playing: lit green with a glow.
+    // Empty: hollow. Loaded: in relief. Playing: lit green, with the one light of every pad (n° 25):
+    // waiting, its ring still; nothing moves on a pad that does not play.
     val fill = when {
         clip == null -> Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.22f), Color.Black.copy(alpha = 0.3f)))
         state == 2 -> Brush.verticalGradient(listOf(lerp(Neon.Acid, Color.White, 0.2f), Neon.Acid))
@@ -200,17 +194,17 @@ private fun LivePad(i: Int, clip: LiveClip?, state: Int, selected: Boolean, wait
     }
     val border = when {
         selected -> BorderStroke(3.dp, Neon.Cyan)
-        state == 1 -> BorderStroke(3.dp, Neon.Acid.copy(alpha = waitAlpha))
         clip == null -> BorderStroke(1.dp, Color.White.copy(alpha = 0.06f))
         else -> BorderStroke(1.dp, Color.White.copy(alpha = 0.16f))
     }
     val haptics = LocalHapticFeedback.current
+    val light = com.pocketstudio.ui.rememberPadLight()
     Box(
         modifier.aspectRatioAtMost(1f, 96.dp)
-            .pressScale()
-            .then(if (state == 2) Modifier.shadow(14.dp, shape, ambientColor = Neon.Acid, spotColor = Neon.Acid) else Modifier)
             // The same light tick as every pad of the app.
-            .clip(shape).background(fill).border(border, shape).clickable { haptics.hit(); onClick() }.testTag("live_pad_$i"),
+            .clip(shape).background(fill).border(border, shape)
+            .padLight(light, Neon.Acid, playing = clip != null && state == 2, waiting = clip != null && state == 1, corner = 12.dp)
+            .clickable { haptics.hit(); onClick() }.testTag("live_pad_$i"),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(4.dp)) {

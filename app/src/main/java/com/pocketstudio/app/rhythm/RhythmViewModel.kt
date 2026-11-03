@@ -552,7 +552,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Polls the engine about 30 times a second while the screen is visible. */
     suspend fun pollLive() {
-        if (!NativeEngine.isAvailable) return
+        // The lanes' triggers are the native engine's own (a test's command sink has none).
+        if (!NativeEngine.isNative) return
         NativeEngine.laneTriggers(lastTriggers)
         while (true) {
             NativeEngine.laneTriggers(triggers)
@@ -687,7 +688,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Polls the pads' lights about 30 times a second while their screen is visible. */
     suspend fun pollLiveStates() {
-        if (!NativeEngine.isAvailable) return
+        // The pads' states are the native engine's own (a test's command sink has none).
+        if (!NativeEngine.isNative) return
         val buf = IntArray(NativeEngine.LIVE_PADS)
         while (true) {
             NativeEngine.clipStates(buf)
@@ -8384,6 +8386,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
         } else if (on) {
+            // n° 9: an Acid 303 cell recording: the keyboard plays the 303 into it (MidiViewModel.keysToAcid).
+            if (_cellRecording.value?.key == com.pocketstudio.model.SongPart.ACID) {
+                midiKeyTrack.remove(pitch)?.let { liveNoteReleased(it, pitch) }
+                acidKeyOn(pitch, velocity)
+                return
+            }
             playedNoteOn(track, pitch, velocity)
             recordNoteOn(pitch, velocity)
             // Step 4f: on the Live page, a cell recording and a take keep the keyboard's notes too.
@@ -8391,6 +8399,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             midiKeyTrack[pitch] = track
             liveNoteTaken(track, pitch, velocity)
         } else {
+            if (acidKeyOff(pitch)) return
             playedNoteOff(track, pitch)
             recordNoteOff(pitch)
             liveNoteReleased(midiKeyTrack.remove(pitch) ?: track, pitch)

@@ -1,5 +1,8 @@
 package com.pocketstudio.app.padlive
 
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -229,66 +232,49 @@ fun PadLiveScreen(
         androidx.compose.runtime.withFrameNanos(tick)
         while (true) androidx.compose.animation.core.withInfiniteAnimationFrameNanos(tick)
     }
-    Column(
+    // Lot D: lying down (a phone turned, a tablet), the pads fill the left and the scene's
+    // controls (pages, effects, « Plus », the big red button) stand on the right, in reach of
+    // the other hand; upright, one column as on the mockup.
+    BoxWithConstraints(
         Modifier.fillMaxSize()
             .background(Brush.verticalGradient(listOf(lerp(Neon.Background, Color.Black, 0.2f), lerp(Neon.Background, Color.Black, 0.5f))))
             .windowInsetsPadding(WindowInsets.safeDrawing)
             .padding(horizontal = 12.dp)
             .testTag("padlive"),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        PadLiveBar(ui, actions, record)
-        PageRow(ui, actions)
-        ui.busy?.let {
-            Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("padlive_busy"))
+        val lying = padLiveLying(maxWidth, maxHeight)
+        val side = padLiveSidePanel(maxWidth)
+        val notes: @Composable () -> Unit = {
+            ui.busy?.let {
+                Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("padlive_busy"))
+            }
+            if (ui.busy == null) ui.message?.let { PadLiveMessage(it, actions.messageShown) }
+            if (ui.takeDone) PerfLine(ui, actions)
         }
-        if (ui.busy == null) ui.message?.let { PadLiveMessage(it, actions.messageShown) }
-        if (ui.takeDone) PerfLine(ui, actions)
-        BoxWithConstraints(Modifier.fillMaxWidth().weight(1f)) {
-            val gap = 8.dp
-            // Lot B2: each row's ▶ at its end (the row launched together, on the bar).
-            val byWidth = (maxWidth - ROW_BUTTON - gap * 4) / 4
-            val byHeight = (maxHeight - gap * 3) / 4
-            // Square or a little taller when the screen has room (a phone upright), never past its row.
-            val side = minOf(byWidth * 1.15f, byHeight)
-            Column(Modifier.align(Alignment.TopCenter), verticalArrangement = Arrangement.spacedBy(gap)) {
-                for (row in 0 until 4) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(gap), verticalAlignment = Alignment.CenterVertically) {
-                        for (col in 0 until 4) {
-                            val slot = row * 4 + col
-                            val pad = PadLive.pad(ui.page, slot)
-                            val clip = ui.pads.at(pad)
-                            // A challenge's example lights its pads as it plays (as if they played).
-                            val state = if (ui.challengeLit == pad) 2 else ui.states.getOrElse(pad) { 0 }
-                            PadLivePad(
-                                pad, clip, state, clock, ui.effectHeld,
-                                Modifier.size(width = byWidth.coerceAtMost(side * 1.35f), height = side),
-                                touch = actions.touch,
-                                empty = { actions.browse(pad) },
-                                settings = { settingsOf = pad },
-                                level = if (readLevels != null && ui.challengeLit != pad) ({ levels.of(pad) }) else null,
-                            )
-                        }
-                        RowButton(ui, row, Modifier.size(width = ROW_BUTTON, height = side), actions.launchRow)
+        if (!lying) {
+            Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                PadLiveBar(ui, actions, record)
+                PageRow(ui, actions)
+                notes()
+                PadsGrid(ui, actions, clock, held, readLevels, levels, settings = { settingsOf = it }, Modifier.fillMaxWidth().weight(1f))
+                PadLiveControls(ui, actions, more, toggleMore = { more = !more }, held, party = { party = true })
+            }
+        } else {
+            Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                PadLiveBar(ui, actions, record)
+                Row(Modifier.fillMaxWidth().weight(1f), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        notes()
+                        PadsGrid(ui, actions, clock, held, readLevels, levels, settings = { settingsOf = it }, Modifier.fillMaxWidth().weight(1f).padding(bottom = 8.dp).testTag("padlive_pads_side"))
+                    }
+                    Column(
+                        Modifier.width(side).fillMaxHeight().verticalScroll(rememberScrollState()).testTag("padlive_side"),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
+                        PageRow(ui, actions)
+                        PadLiveControls(ui, actions, more, toggleMore = { more = !more }, held, party = { party = true })
                     }
                 }
-            }
-            // A held effect's panel over the pads' last rows (the pads do not move under the finger).
-            HeldFxPanel(held, Modifier.align(Alignment.BottomCenter).fillMaxWidth())
-        }
-        if (ui.challenge != ChallengeUi.Off) ChallengePanel(ui.challenge, ui.pads, actions.challengeActions)
-        else SceneEffects(ui, actions, more, held)
-        AnimatedVisibility(more) { MoreRow(ui, actions, party = { party = true }) }
-        Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            PlayedButton(ui.played, actions.played, Modifier.weight(1f))
-            Row(
-                Modifier.heightIn(min = 52.dp).clip(RoundedCornerShape(16.dp)).background(if (more) Neon.SurfaceHigh else Neon.Surface)
-                    .clickable(role = Role.Button) { more = !more }.padding(horizontal = 16.dp).testTag("padlive_more"),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                Icon(Icons.Filled.MoreHoriz, contentDescription = null, tint = Neon.TextPrimary)
-                Text(if (more) tr("Moins") else tr("Plus"), style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary)
             }
         }
     }
@@ -298,6 +284,78 @@ fun PadLiveScreen(
         else PadSettingsSheet(pad, clip, actions, close = { settingsOf = null })
     }
     (ui.played as? PlayedTakeUi.Done)?.let { PlayedTakeSheet(it.bars, ui.emptyPad, actions) }
+}
+
+/** Lot D: Pad Live lying down (pads on the left, controls on the right) from this room on. */
+internal fun padLiveLying(width: androidx.compose.ui.unit.Dp, height: androidx.compose.ui.unit.Dp): Boolean = width > height && width >= 520.dp
+
+/** Lying down, the controls' column: about a third of the screen. */
+private fun padLiveSidePanel(width: androidx.compose.ui.unit.Dp): androidx.compose.ui.unit.Dp = (width * 0.36f).coerceIn(250.dp, 480.dp)
+
+/** The 16 pads of the page shown, each row's ▶ at its end, a held effect's panel over the last rows. */
+@Composable
+private fun PadsGrid(
+    ui: PadLiveUi,
+    actions: PadLiveActions,
+    clock: PadClock,
+    held: HeldFx,
+    readLevels: ((FloatArray) -> Unit)?,
+    levels: PadLevels,
+    settings: (Int) -> Unit,
+    modifier: Modifier,
+) {
+    BoxWithConstraints(modifier) {
+        val gap = 8.dp
+        // Lot B2: each row's ▶ at its end (the row launched together, on the bar).
+        val byWidth = (maxWidth - ROW_BUTTON - gap * 4) / 4
+        val byHeight = (maxHeight - gap * 3) / 4
+        // Square or a little taller when the screen has room (a phone upright), never past its row.
+        val side = minOf(byWidth * 1.15f, byHeight)
+        Column(Modifier.align(Alignment.TopCenter), verticalArrangement = Arrangement.spacedBy(gap)) {
+            for (row in 0 until 4) {
+                Row(horizontalArrangement = Arrangement.spacedBy(gap), verticalAlignment = Alignment.CenterVertically) {
+                    for (col in 0 until 4) {
+                        val slot = row * 4 + col
+                        val pad = PadLive.pad(ui.page, slot)
+                        val clip = ui.pads.at(pad)
+                        // A challenge's example lights its pads as it plays (as if they played).
+                        val state = if (ui.challengeLit == pad) 2 else ui.states.getOrElse(pad) { 0 }
+                        PadLivePad(
+                            pad, clip, state, clock, ui.effectHeld,
+                            Modifier.size(width = byWidth.coerceAtMost(side * 1.35f), height = side),
+                            touch = actions.touch,
+                            empty = { actions.browse(pad) },
+                            settings = { settings(pad) },
+                            level = if (readLevels != null && ui.challengeLit != pad) ({ levels.of(pad) }) else null,
+                        )
+                    }
+                    RowButton(ui, row, Modifier.size(width = ROW_BUTTON, height = side), actions.launchRow)
+                }
+            }
+        }
+        // A held effect's panel over the pads' last rows (the pads do not move under the finger).
+        HeldFxPanel(held, Modifier.align(Alignment.BottomCenter).fillMaxWidth())
+    }
+}
+
+/** Under (upright) or beside (lying down) the pads: the effects or the challenge, « Plus », the big red button. */
+@Composable
+private fun PadLiveControls(ui: PadLiveUi, actions: PadLiveActions, more: Boolean, toggleMore: () -> Unit, held: HeldFx, party: () -> Unit) {
+    if (ui.challenge != ChallengeUi.Off) ChallengePanel(ui.challenge, ui.pads, actions.challengeActions)
+    else SceneEffects(ui, actions, more, held)
+    AnimatedVisibility(more) { MoreRow(ui, actions, party = party) }
+    Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        PlayedButton(ui.played, actions.played, Modifier.weight(1f))
+        Row(
+            Modifier.heightIn(min = 52.dp).clip(RoundedCornerShape(16.dp)).background(if (more) Neon.SurfaceHigh else Neon.Surface)
+                .clickable(role = Role.Button, onClick = toggleMore).padding(horizontal = 16.dp).testTag("padlive_more"),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Icon(Icons.Filled.MoreHoriz, contentDescription = null, tint = Neon.TextPrimary)
+            Text(if (more) tr("Moins") else tr("Plus"), style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary)
+        }
+    }
 }
 
 /** ← Pad Live · ▶/■ · « − 124 + » · ●. */

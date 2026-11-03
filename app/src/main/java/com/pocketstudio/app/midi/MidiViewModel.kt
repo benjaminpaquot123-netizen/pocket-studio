@@ -133,6 +133,14 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
      */
     @Volatile var pads: PadMap = PadMap()
     @Volatile var padsToDrums: Boolean = true
+
+    /**
+     * n° 9: an Acid 303 cell of the Live records: the keys play the 303 (the app sounds them and
+     * writes them into the cell) instead of the synth. Set from the main thread.
+     */
+    @Volatile var keysToAcid: Boolean = false
+    /** Keys down that went to the 303 ([keysToAcid] when pressed): their release goes there too. Under held's lock. */
+    private val acidOn = BooleanArray(128)
     @Volatile private var padLearning: Boolean = false
 
     /** The project's key: when locked, keys out of the scale play the nearest note of it. */
@@ -272,8 +280,9 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     private fun releaseHeld() {
         val ended = synchronized(held) {
             if (NativeEngine.isAvailable) held.forEach { NativeEngine.liveNoteOff(it, trackOf[it]) }
-            val notes = held.toList()
+            val notes = held.toList() + acidOn.indices.filter { acidOn[it] }.map { playedAs[it].takeIf { p -> p >= 0 } ?: it }
             held.clear()
+            acidOn.fill(false)
             playedAs.fill(-1)
             keysOn.fill(0)
             notes
@@ -465,9 +474,14 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
                 val played = if (h.lock) h.snap(note).coerceIn(0, 127) else note
                 synchronized(held) {
                     if (note in playedAs.indices) playedAs[note] = played
-                    held += played
-                    if (keysOn[played]++ == 0) trackOf[played] = NativeEngine.liveTrack
-                    NativeEngine.liveNoteOn(played, v, trackOf[played])
+                    if (keysToAcid && note in acidOn.indices) {
+                        // The app sounds it on the 303 (RhythmViewModel.midiNote): not on the synth.
+                        acidOn[note] = true
+                    } else {
+                        held += played
+                        if (keysOn[played]++ == 0) trackOf[played] = NativeEngine.liveTrack
+                        NativeEngine.liveNoteOn(played, v, trackOf[played])
+                    }
                 }
                 _commands.tryEmit(MidiCommand.Note(channel, played, v, true))
             }
@@ -486,11 +500,16 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
             val played = synchronized(held) {
                 val p = playedAs.getOrNull(note)?.takeIf { it >= 0 } ?: note
                 if (note in playedAs.indices) playedAs[note] = -1
-                if (p in keysOn.indices) keysOn[p] = (keysOn[p] - 1).coerceAtLeast(0)
-                // Another key still holds the same note: it keeps sounding.
-                if (keysOn.getOrElse(p) { 0 } == 0) {
-                    held -= p
-                    NativeEngine.liveNoteOff(p, trackOf.getOrElse(p) { NativeEngine.liveTrack })
+                if (acidOn.getOrElse(note) { false }) {
+                    // A 303 key: the app lets it go there.
+                    acidOn[note] = false
+                } else {
+                    if (p in keysOn.indices) keysOn[p] = (keysOn[p] - 1).coerceAtLeast(0)
+                    // Another key still holds the same note: it keeps sounding.
+                    if (keysOn.getOrElse(p) { 0 } == 0) {
+                        held -= p
+                        NativeEngine.liveNoteOff(p, trackOf.getOrElse(p) { NativeEngine.liveTrack })
+                    }
                 }
                 p
             }

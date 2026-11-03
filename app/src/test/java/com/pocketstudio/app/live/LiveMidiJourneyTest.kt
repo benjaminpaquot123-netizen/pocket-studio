@@ -204,4 +204,69 @@ class LiveMidiJourneyTest {
         vm.togglePerformance()
         assertEquals(listOf(LivePadTake.Span(0, 32.0, 48.0, velocity = 0.5f)), vm.padSpansForTest)
     }
+    /** The engine's place for [aMidiKeyboardPlaysThe303IntoItsCellRecording]: the commands posted, by type. */
+    private class Posts : com.pocketstudio.engine.CommandSink {
+        val types = java.util.Collections.synchronizedList(ArrayList<Pair<Int, Int>>())
+        private var next = 1L
+        override fun post(target: Long, type: Int, value: Float, a: Int, b: Int) { if (target == 0L) types += type to a }
+        override fun scheduleFrom(target: Long, frame: Long) = Unit
+        override fun install(target: Long, kind: com.pocketstudio.engine.CommandSink.Install, index: Int, sample: Long) = Unit
+        @Synchronized override fun sampleCreate(data: FloatArray, channels: Int, sampleRate: Int): Long = next++
+        override fun sampleFrames(handle: Long): Long = 48_000L
+        override fun sampleRelease(handle: Long) = Unit
+        @Synchronized override fun exportCreate(): Long = next++
+        override fun exportRender(target: Long, path: String, frames: Long, tailFrames: Long, fadeOutFrames: Long, autoTail: Boolean, floatWav: Boolean, sampleRate: Int, bits: Int) =
+            com.pocketstudio.engine.ExportResult.Cancelled
+        override fun exportRenderFloat(target: Long, frames: Long, tailFrames: Long): FloatArray = FloatArray(0)
+        override fun exportDestroy(target: Long) = Unit
+    }
+
+    /**
+     * n° 9: while an Acid 303 cell of the Live records, a MIDI keyboard plays the 303 (not the
+     * synth) and its notes go into the cell, as Live › Notes' keys do; saved, undone, and the
+     * keyboard plays the synth again once the cell is done.
+     */
+    @Test
+    fun aMidiKeyboardPlaysThe303IntoItsCellRecording() {
+        val sink = Posts()
+        com.pocketstudio.engine.NativeEngine.sink = sink
+        try {
+            val vm = open()
+            val midi = com.pocketstudio.app.midi.MidiViewModel(app)
+            val scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined)
+            // As AppRoot wires them: the commands to the project, the cell recording to the keyboard's target.
+            scope.launch { midi.commands.collect { c -> if (c is com.pocketstudio.app.midi.MidiCommand.Note) vm.midiNote(c.channel, c.pitch, c.velocity, c.on) } }
+            scope.launch { vm.cellRecording.collect { midi.keysToAcid = it?.key == SongPart.ACID } }
+            vm.playedClockForTest = 20.0
+            vm.recordCell(SongPart.ACID, 1)
+            assertTrue(midi.keysToAcid)
+            sink.types.clear()
+            vm.playedClockForTest = 32.0; midi.receiveForTest(byteArrayOf(0x90.toByte(), 48, 100))
+            vm.playedClockForTest = 36.0; midi.receiveForTest(byteArrayOf(0x80.toByte(), 48, 0))
+            vm.playedClockForTest = 40.0; midi.receiveForTest(byteArrayOf(0x90.toByte(), 51, 64))
+            vm.playedClockForTest = 42.0; midi.receiveForTest(byteArrayOf(0x80.toByte(), 51, 0))
+            // Heard on the 303, never on the synth.
+            assertTrue("the 303 sounds: ${sink.types}", sink.types.any { it.first == 146 && it.second == 48 })
+            assertTrue("no synth note: ${sink.types}", sink.types.none { it.first == 16 })
+            vm.playedClockForTest = 48.0
+            vm.stopCellRecording()
+            assertFalse(midi.keysToAcid)
+            val acid = vm.project.value.allScenes[1].acid
+            assertTrue("the cell has the 303 notes: $acid", acid.steps.count { it.gate } >= 2)
+            // Kept on disk with the project.
+            kotlinx.coroutines.runBlocking { vm.flushNow() }
+            val reopened = RhythmViewModel(app)
+            assertEquals(acid, reopened.project.value.allScenes[1].acid)
+            // Undone: the cell is empty again.
+            vm.undo()
+            assertTrue(vm.project.value.allScenes.getOrNull(1)?.acid?.steps?.none { it.gate } ?: true)
+            // The cell done, the keyboard plays the synth again.
+            sink.types.clear()
+            midi.receiveForTest(byteArrayOf(0x90.toByte(), 60, 100))
+            assertTrue(sink.types.any { it.first == 16 })
+            scope.cancel()
+        } finally {
+            com.pocketstudio.engine.NativeEngine.sink = null
+        }
+    }
 }

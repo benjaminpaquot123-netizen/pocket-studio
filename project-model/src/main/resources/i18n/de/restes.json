@@ -1,0 +1,13 @@
+{
+  "%1$s dans la case Remix de la brique %2$s.": "%1$s im Remix-Feld von Block %2$s.",
+  "%1$s vers la case Remix de la brique %2$s…": "%1$s ins Remix-Feld von Block %2$s…",
+  "Chaque brique a déjà un passage dans la colonne Remix : enlèves-en un dans Live.": "Jeder Block hat schon eine Stelle in der Remix-Spalte: entferne eine im Live.",
+  "Choisir un passage": "Stelle wählen",
+  "Découpe en cours…": "Wird geschnitten…",
+  "Le tempo de la chanson n'est pas connu : choisis le passage dans « Découper la chanson ».": "Das Tempo des Songs ist unbekannt: wähle die Stelle in „Den Song zerschneiden“.",
+  "Longueur (mesures)": "Länge (Takte)",
+  "Mettre dans la case": "Ins Feld setzen",
+  "Toute la chanson ici": "Ganzer Song hier",
+  "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "Eine Stelle des Songs in diesem Feld: sie startet auf dem Takt und folgt dem Tempo.",
+  "« %1$s » est dans la case Remix de la brique %2$s.": "„%1$s“ ist im Remix-Feld von Block %2$s."
+}

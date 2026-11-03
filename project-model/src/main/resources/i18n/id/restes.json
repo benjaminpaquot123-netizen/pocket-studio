@@ -1,0 +1,13 @@
+{
+  "%1$s dans la case Remix de la brique %2$s.": "%1$s di sel Remix blok %2$s.",
+  "%1$s vers la case Remix de la brique %2$s…": "%1$s ke sel Remix blok %2$s…",
+  "Chaque brique a déjà un passage dans la colonne Remix : enlèves-en un dans Live.": "Setiap blok sudah punya bagian di kolom Remix: hapus satu di Live.",
+  "Choisir un passage": "Pilih bagian",
+  "Découpe en cours…": "Memotong…",
+  "Le tempo de la chanson n'est pas connu : choisis le passage dans « Découper la chanson ».": "Tempo lagu tidak diketahui: pilih bagiannya di “Potong lagu”.",
+  "Longueur (mesures)": "Panjang (birama)",
+  "Mettre dans la case": "Taruh di sel",
+  "Toute la chanson ici": "Seluruh lagu di sini",
+  "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "Bagian lagu di sel ini: mulai di birama dan mengikuti tempo.",
+  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s” ada di sel Remix blok %2$s."
+}

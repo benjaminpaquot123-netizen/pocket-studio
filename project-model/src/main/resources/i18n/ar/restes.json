@@ -1,0 +1,13 @@
+{
+  "%1$s dans la case Remix de la brique %2$s.": "%1$s في خانة الريمكس للقطعة %2$s.",
+  "%1$s vers la case Remix de la brique %2$s…": "%1$s إلى خانة الريمكس للقطعة %2$s…",
+  "Chaque brique a déjà un passage dans la colonne Remix : enlèves-en un dans Live.": "كل قطعة لها مقطع في عمود الريمكس: احذف واحدًا في Live.",
+  "Choisir un passage": "اختر مقطعًا",
+  "Découpe en cours…": "جارٍ القص…",
+  "Le tempo de la chanson n'est pas connu : choisis le passage dans « Découper la chanson ».": "إيقاع الأغنية غير معروف: اختر المقطع في «قطّع الأغنية».",
+  "Longueur (mesures)": "الطول (مازورات)",
+  "Mettre dans la case": "ضع في الخانة",
+  "Toute la chanson ici": "الأغنية كلها هنا",
+  "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "مقطع من الأغنية في هذه الخانة: يبدأ مع المازورة ويتبع الإيقاع.",
+  "« %1$s » est dans la case Remix de la brique %2$s.": "«%1$s» في خانة الريمكس للقطعة %2$s."
+}

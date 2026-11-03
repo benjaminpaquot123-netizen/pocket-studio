@@ -1,0 +1,13 @@
+{
+  "%1$s dans la case Remix de la brique %2$s.": "%1$s nella casella Remix del blocco %2$s.",
+  "%1$s vers la case Remix de la brique %2$s…": "%1$s verso la casella Remix del blocco %2$s…",
+  "Chaque brique a déjà un passage dans la colonne Remix : enlèves-en un dans Live.": "Ogni blocco ha già un passaggio nella colonna Remix: togline uno in Live.",
+  "Choisir un passage": "Scegli un passaggio",
+  "Découpe en cours…": "Taglio in corso…",
+  "Le tempo de la chanson n'est pas connu : choisis le passage dans « Découper la chanson ».": "Il tempo della canzone non è noto: scegli il passaggio in “Taglia il brano”.",
+  "Longueur (mesures)": "Durata (battute)",
+  "Mettre dans la case": "Metti nella casella",
+  "Toute la chanson ici": "Tutta la canzone qui",
+  "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "Un passaggio della canzone in questa casella: parte sulla battuta e segue il tempo.",
+  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s” è nella casella Remix del blocco %2$s."
+}

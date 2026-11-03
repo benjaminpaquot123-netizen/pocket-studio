@@ -111,6 +111,8 @@ object I18n {
         "padlive",
         // Lot E (« Master pro »): the master's « Avancé », the file's final form, the pro readings and report.
         "masterpro",
+        // Lot D (« Restes »): the Live's remix cell (a passage of the song per brick), the small leftovers.
+        "restes",
     )
 
     @Volatile

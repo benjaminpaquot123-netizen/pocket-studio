@@ -77,6 +77,11 @@ class StemBoardRouterTest {
         override suspend fun putOnLivePad(pcm: Pcm, name: String, pad: Int, bpm: Double) {
             live += Triple(pcm, name, pad)
         }
+        val cells = ArrayList<List<Any>>()
+        override suspend fun putInRemixCell(pcm: Pcm, name: String, scene: Int, bpm: Double, stem: Int, fromSeconds: Double) {
+            cells += listOf(pcm.frames, name, scene, bpm, stem, fromSeconds)
+            p = p.copy(remix = p.remix.withCell(scene, com.pocketstudio.model.RemixCell(scene, "c$scene.wav", name, 1, bpm, stem, fromSeconds)))
+        }
         override fun songStepNow() = step
         override fun pauseMusic() {
             paused++
@@ -195,7 +200,19 @@ class StemBoardRouterTest {
         assertEquals(1, host.instruments.size)
         assertEquals("Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre.", r.state.value.message)
 
-        host.p = beat().copy(live = LivePads(clips = List(LivePads.MAX) { i -> if (i < 3) LiveClip("l$i.wav", "Basse $i") else null }))
+        // Lot D2: a passage of the project's song goes in the Live grid's remix column, brick after brick.
+        r.send(sel(stem = 1), StemDestination.Live)
+        assertEquals(listOf(24_000, "Basse", 0, 120.0, 1, 2.0), host.cells.single())
+        assertEquals("« Basse » est dans la case Remix de la brique A.", r.state.value.message)
+        r.send(sel(), StemDestination.Live)
+        assertEquals(1, host.cells.last()[2])
+        host.p = host.p.copy(remix = host.p.remix.copy(cells = (0 until com.pocketstudio.model.Scene.MAX).map { com.pocketstudio.model.RemixCell(it, "c$it.wav", "x") }))
+        r.send(sel(), StemDestination.Live)
+        assertEquals(2, host.cells.size)
+        assertEquals("Chaque brique a déjà un passage dans la colonne Remix : enlèves-en un dans Live.", r.state.value.message)
+        assertTrue(host.live.isEmpty())
+        // Another song than the project's: a live pad, as before.
+        host.p = beat().copy(remix = Remix("other", "Autre", songBpm = 120.0), live = LivePads(clips = List(LivePads.MAX) { i -> if (i < 3) LiveClip("l$i.wav", "Basse $i") else null }))
         r.send(sel(stem = 1), StemDestination.Live)
         assertEquals(3, host.live.single().third)
         assertEquals("Basse 3", host.live.single().second)

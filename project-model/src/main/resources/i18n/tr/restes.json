@@ -1,0 +1,13 @@
+{
+  "%1$s dans la case Remix de la brique %2$s.": "%1$s, %2$s bloğunun Remix hücresinde.",
+  "%1$s vers la case Remix de la brique %2$s…": "%1$s, %2$s bloğunun Remix hücresine…",
+  "Chaque brique a déjà un passage dans la colonne Remix : enlèves-en un dans Live.": "Her blokta Remix sütununda zaten bir parça var: Live'da birini kaldır.",
+  "Choisir un passage": "Bir parça seç",
+  "Découpe en cours…": "Kesiliyor…",
+  "Le tempo de la chanson n'est pas connu : choisis le passage dans « Découper la chanson ».": "Şarkının temposu bilinmiyor: parçayı “Şarkıyı kes” içinde seç.",
+  "Longueur (mesures)": "Uzunluk (ölçü)",
+  "Mettre dans la case": "Hücreye koy",
+  "Toute la chanson ici": "Şarkının tamamı burada",
+  "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "Bu hücrede şarkıdan bir parça: ölçüde başlar ve tempoyu izler.",
+  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s”, %2$s bloğunun Remix hücresinde."
+}

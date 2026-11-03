@@ -1,0 +1,13 @@
+{
+  "%1$s dans la case Remix de la brique %2$s.": "%1$s in de Remix-cel van blok %2$s.",
+  "%1$s vers la case Remix de la brique %2$s…": "%1$s naar de Remix-cel van blok %2$s…",
+  "Chaque brique a déjà un passage dans la colonne Remix : enlèves-en un dans Live.": "Elk blok heeft al een stuk in de Remix-kolom: haal er een weg in Live.",
+  "Choisir un passage": "Kies een stuk",
+  "Découpe en cours…": "Bezig met knippen…",
+  "Le tempo de la chanson n'est pas connu : choisis le passage dans « Découper la chanson ».": "Het tempo van het nummer is onbekend: kies het stuk in ‘Het nummer knippen’.",
+  "Longueur (mesures)": "Lengte (maten)",
+  "Mettre dans la case": "In de cel zetten",
+  "Toute la chanson ici": "Hele nummer hier",
+  "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "Een stuk van het nummer in deze cel: het start op de maat en volgt het tempo.",
+  "« %1$s » est dans la case Remix de la brique %2$s.": "‘%1$s’ staat in de Remix-cel van blok %2$s."
+}

@@ -1,0 +1,13 @@
+{
+  "%1$s dans la case Remix de la brique %2$s.": "%1$s をブロック %2$s のリミックス枠に。",
+  "%1$s vers la case Remix de la brique %2$s…": "%1$s をブロック %2$s のリミックス枠へ…",
+  "Chaque brique a déjà un passage dans la colonne Remix : enlèves-en un dans Live.": "どのブロックにもリミックス列の区間があります：Live で1つ外してください。",
+  "Choisir un passage": "区間を選ぶ",
+  "Découpe en cours…": "カット中…",
+  "Le tempo de la chanson n'est pas connu : choisis le passage dans « Découper la chanson ».": "曲のテンポが不明です：「曲をカット」で区間を選んでください。",
+  "Longueur (mesures)": "長さ（小節）",
+  "Mettre dans la case": "枠に入れる",
+  "Toute la chanson ici": "ここは曲全体",
+  "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "この枠に曲の一部：小節頭で始まり、テンポに合わせます。",
+  "« %1$s » est dans la case Remix de la brique %2$s.": "「%1$s」はブロック %2$s のリミックス枠にあります。"
+}

@@ -309,7 +309,7 @@ internal fun ChallengePanel(ui: ChallengeUi, pads: com.pocketstudio.model.LivePa
                 c?.let { challengeTitle(it) } ?: tr("Défi"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold,
                 color = Neon.Amber, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f).testTag("padlive_challenge_title"),
             )
-            IconButton(onClick = actions.close, modifier = Modifier.size(40.dp).testTag("padlive_challenge_close")) {
+            IconButton(onClick = actions.close, modifier = Modifier.size(48.dp).testTag("padlive_challenge_close")) {
                 Icon(Icons.Filled.Close, contentDescription = tr("Fermer le défi"), tint = Neon.TextSecondary)
             }
         }

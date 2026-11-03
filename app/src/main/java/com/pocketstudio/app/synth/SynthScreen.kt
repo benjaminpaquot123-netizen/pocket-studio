@@ -59,6 +59,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.ui.layout.onSizeChanged
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -277,11 +278,14 @@ fun SynthScreen(
                 // Sent to the notes by the tutorial (« Créer la piste Basse »): the grid itself in view.
                 // Only for the tutorial's dotted notes: « Ouvrir dans Notes » keeps « Enregistrer » in sight.
                 val dotted = notes.hints.isNotEmpty()
+                val toolsRoom = with(androidx.compose.ui.platform.LocalDensity.current) { 64.dp.toPx() }
+                var rollTall by remember { mutableStateOf(0) }
                 LaunchedEffect(notesRequest, dotted) {
                     if (dotted && notesRequest > rollShownFor) {
                         rollShownFor = notesRequest
                         kotlinx.coroutines.delay(120)
-                        rollRequester.bringIntoView()
+                        // With the tools' row just above the grid (APK 228: it was left half under « Partie : A »).
+                        rollRequester.bringIntoView(androidx.compose.ui.geometry.Rect(0f, -toolsRoom, 1f, rollTall.toFloat()))
                     }
                 }
                 NeonCard {
@@ -294,7 +298,7 @@ fun SynthScreen(
                         stepsPerBar = notes.stepsPerBar,
                         playStepOf = notes.playStepOf,
                         hints = notes.hints,
-                        gridModifier = Modifier.bringIntoViewRequester(rollRequester),
+                        gridModifier = Modifier.bringIntoViewRequester(rollRequester).onSizeChanged { rollTall = it.height },
                         trackName = notes.trackName,
                         copyMotif = notes.copyMotif,
                     )
@@ -648,11 +652,11 @@ internal fun OctaveControl(octave: Int, actions: SynthActions) {
         Modifier.clip(RoundedCornerShape(50)).background(Color.Black.copy(alpha = 0.25f)),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        IconButton(onClick = { actions.shiftOctave(-1) }, modifier = Modifier.size(40.dp)) {
+        IconButton(onClick = { actions.shiftOctave(-1) }, modifier = Modifier.size(48.dp)) {
             Icon(Icons.Filled.Remove, contentDescription = tr("Octave plus bas"), modifier = Modifier.size(18.dp))
         }
         Text(tr("Octave %d", NoteNames.keyboardOctave(octave, english)), style = MonoStyle, color = Neon.Cyan, maxLines = 1, softWrap = false)
-        IconButton(onClick = { actions.shiftOctave(1) }, modifier = Modifier.size(40.dp)) {
+        IconButton(onClick = { actions.shiftOctave(1) }, modifier = Modifier.size(48.dp)) {
             Icon(Icons.Filled.Add, contentDescription = tr("Octave plus haut"), modifier = Modifier.size(18.dp))
         }
     }

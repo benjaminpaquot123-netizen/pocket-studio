@@ -191,3 +191,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 ## 2026-11-03 (fin de journée)
 - « J'ai envie que le programme soit totalement terminé et complètement débuggé. J'ai peur qu'on fasse double emploi en commençant Play Store si le programme n'est pas terminé. » → tout le Play Store passe après l'Audit (PLAN-REPRISE, DECISIONS).
 - « Précision MiniLab 3 mais doit fonctionner et détecter si c'est un autre modèle. » → déjà en place (`Controllers.detect` : 8 profils + générique) ; ajouté à la carte des fonctions de l'Audit (étage 2) pour chaque fonction pilotable.
+- « Est-ce que tu peux me prévenir quand les audits sont terminés. J'aimerais en refaire un deuxième en ultra. Mais peut-être différemment. » → le prévenir à la fin de l'Audit (étage 6 propre, avant les vrais humains) et lui proposer alors un 2e audit « ultra » d'une autre méthode.

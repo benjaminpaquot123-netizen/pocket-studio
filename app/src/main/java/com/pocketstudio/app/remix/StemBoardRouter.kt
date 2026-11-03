@@ -10,6 +10,7 @@ import com.pocketstudio.model.DrumPattern
 import com.pocketstudio.model.InstrumentTrack
 import com.pocketstudio.model.LivePads
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.firstFreeRemixCell
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.i18n.trCount
 import kotlinx.coroutines.CoroutineScope
@@ -86,6 +87,12 @@ interface StemBoardHost {
 
     /** Lot C: the cut screen's pieces kept in the project ([Project.songCuts]), no undo step; a stand-in may ignore them. */
     fun saveCuts(cuts: com.pocketstudio.model.SongCuts) {}
+
+    /**
+     * Lot D2: [pcm] (cut at [bpm], the song's tempo) in brick [scene]'s cell of the Live grid's remix
+     * column, named [name], taken from stem [stem] at [fromSeconds] into the song; one undo step.
+     */
+    suspend fun putInRemixCell(pcm: Pcm, name: String, scene: Int, bpm: Double, stem: Int, fromSeconds: Double) {}
 }
 
 /**
@@ -247,6 +254,19 @@ class StemBoardRouter(
                     val kept = host.keepInLibrary(pcm, name, com.pocketstudio.model.MySounds.kindOfStem(sel.stem, pcm.seconds), bpm, sel.setId)
                         ?: return@launchWork tr("Ce son n'a pas pu être gardé (%s).", tr("bibliothèque indisponible"))
                     com.pocketstudio.app.library.keptNotice(kept)
+                }
+            }
+            // Lot D2: a passage of the project's own song goes in the Live grid's remix column, the
+            // first brick without a passage (a song of another set still goes on a live pad).
+            is StemDestination.Live if p.remix.setId != null && p.remix.setId == sel.setId -> {
+                val scene = p.firstFreeRemixCell()
+                    ?: return say(tr("Chaque brique a déjà un passage dans la colonne Remix : enlèves-en un dans Live."))
+                val letter = com.pocketstudio.model.Scene.NAMES.getOrElse(scene) { "?" }
+                launchWork(tr("%1\$s vers la case Remix de la brique %2\$s…", label, letter)) {
+                    var bpm = 0.0
+                    val pcm = cut(sel, fitted = false) { bpm = it } ?: return@launchWork null
+                    host.putInRemixCell(pcm, french, scene, bpm, sel.stem, sel.startFrame / StemSelection.SAMPLE_RATE.toDouble())
+                    tr("« %1\$s » est dans la case Remix de la brique %2\$s.", label, letter)
                 }
             }
             is StemDestination.Live -> {

@@ -102,6 +102,11 @@ class CutJourneyTest {
             kept += pcm to name
             return MySound("id${kept.size}", name, kind, "id${kept.size}.wav", pcm.seconds, origin = "Boys")
         }
+        val cells = ArrayList<Int>()
+        override suspend fun putInRemixCell(pcm: Pcm, name: String, scene: Int, bpm: Double, stem: Int, fromSeconds: Double) {
+            cells += scene
+            p = p.copy(remix = p.remix.withCell(scene, com.pocketstudio.model.RemixCell(scene, "c$scene.wav", name, 1, bpm, stem, fromSeconds)))
+        }
         override fun songStepNow() = -1
         override fun pauseMusic() = Unit
         override fun saveCuts(cuts: SongCuts) {
@@ -219,7 +224,9 @@ class CutJourneyTest {
             StemSelection("song", VOCALS_STEM, 168_000, 264_000),
         )
         router.sendPieces(sels, StemDestination.Live)
-        assertEquals(2, host.live.size)
+        // Lot D2: each piece in the Live grid's remix column, brick A then brick B.
+        assertEquals(listOf(0, 1), host.cells)
+        assertTrue(host.live.isEmpty())
         assertEquals(2, router.state.value.message!!.lines().size)
         router.dismissMessage()
 

@@ -136,8 +136,9 @@ data class SongPart(
         return copy(
             repeats = if (length != null) 1 else repeats.coerceIn(1, MAX_REPEATS),
             muted = muted.filter { it in keys || (remix && it == REMIX) }.toSet(),
-            play = play.filter { (k, s) -> k in keys && s in 0 until scenes && s != scene },
-            from = from.filter { (k, b) -> k in keys && b > 0 }.mapValues { it.value.coerceAtMost(MAX_FROM) },
+            // Lot D2: the remix too (a passage of the song in a brick's remix cell, from a take).
+            play = play.filter { (k, s) -> (k in keys || (remix && k == REMIX)) && s in 0 until scenes && s != scene },
+            from = from.filter { (k, b) -> (k in keys || (remix && k == REMIX)) && b > 0 }.mapValues { it.value.coerceAtMost(MAX_FROM) },
             bars = length,
         )
     }

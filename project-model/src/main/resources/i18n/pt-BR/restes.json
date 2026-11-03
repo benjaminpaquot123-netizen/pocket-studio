@@ -1,0 +1,13 @@
+{
+  "%1$s dans la case Remix de la brique %2$s.": "%1$s na célula Remix do bloco %2$s.",
+  "%1$s vers la case Remix de la brique %2$s…": "%1$s para a célula Remix do bloco %2$s…",
+  "Chaque brique a déjà un passage dans la colonne Remix : enlèves-en un dans Live.": "Cada bloco já tem um trecho na coluna Remix: tire um no Live.",
+  "Choisir un passage": "Escolher um trecho",
+  "Découpe en cours…": "Cortando…",
+  "Le tempo de la chanson n'est pas connu : choisis le passage dans « Découper la chanson ».": "O andamento da música não é conhecido: escolha o trecho em “Cortar a música”.",
+  "Longueur (mesures)": "Duração (compassos)",
+  "Mettre dans la case": "Pôr na célula",
+  "Toute la chanson ici": "Música inteira aqui",
+  "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "Um trecho da música nesta célula: começa no compasso e segue o andamento.",
+  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s” está na célula Remix do bloco %2$s."
+}

@@ -207,6 +207,8 @@ class LiveScreenUi(
     val reducedMotion: Boolean? = null,
     /** Step 4f: the track a MIDI keyboard plays (the selected one): Notes opens on it (null: the first). */
     val selectedTrack: Int? = null,
+    /** Lot D2: the brick whose remix cell's passage is being cut (null: none). */
+    val remixBusy: Int? = null,
 ) {
     /** What the effects are doing now: read in the small composables that show it (see [fxOf]). */
     val fx: LiveFxUi get() = fxOf()
@@ -295,6 +297,10 @@ class LiveActions(
     val nudgeTempo: (Int) -> Unit = {},
     /** A touch on the bar's tempo: the tempo sheet (keypad, ready-made tempos, tap). */
     val openTempo: () -> Unit = {},
+    /** Lot D2: brick [scene]'s remix cell plays [bars] bars of stem [stem] (-1: the whole song) from the song's bar [fromBar]. */
+    val chooseRemixCell: (scene: Int, stem: Int, fromBar: Int, bars: Int) -> Unit = { _, _, _, _ -> },
+    /** Lot D2: brick [scene]'s remix cell plays the whole song again. */
+    val clearRemixCell: (scene: Int) -> Unit = {},
 )
 
 /** The Live page's tabs: Briques (the grid alone, the tools folded), then the panel's pages. */
@@ -388,6 +394,8 @@ fun LiveScreen(
     // Lot 4b: an empty cell's menu, the cell waiting for the one to copy, the cell recording.
     var menuCell by rememberSaveable { mutableStateOf<String?>(null) }
     var copyInto by rememberSaveable { mutableStateOf<String?>(null) }
+    // Lot D2: the remix cell whose menu is open (a long press on it), its brick.
+    var remixMenu by rememberSaveable { mutableStateOf<Int?>(null) }
     val menu = LiveCell.read(menuCell)
     val copyTarget = LiveCell.read(copyInto)
     val trackName: (String) -> String = { key -> columns.firstOrNull { it.key == key }?.name ?: "" }
@@ -409,7 +417,10 @@ fun LiveScreen(
             else -> actions.launchPad(c.key, scene)
         }
     }
-    val gridMarks = GridMarks(copyTarget ?: menu, ui.cellRecording, picking = copyTarget != null, tap = cellTap)
+    val gridMarks = GridMarks(
+        copyTarget ?: menu ?: remixMenu?.let { LiveCell(SongPart.REMIX, it) }, ui.cellRecording, picking = copyTarget != null, tap = cellTap,
+        remixHold = { scene -> if (ui.cellRecording == null && copyTarget == null) remixMenu = scene },
+    )
     BoxWithConstraints(Modifier.fillMaxSize().background(Neon.Background).testTag("live_screen")) {
         // Lying down (or full screen) every row of height counts: a slimmer bar, and the take's
         // line only once ● is touched (it then offers where the take goes).
@@ -491,6 +502,14 @@ fun LiveScreen(
                 cancel = { menuCell = null },
             )
         }
+        remixMenu?.let { scene ->
+            RemixCellMenu(
+                ui.project, trackName(SongPart.REMIX), scene, busy = ui.remixBusy != null,
+                choose = { stem, from, bars -> remixMenu = null; actions.chooseRemixCell(scene, stem, from, bars) },
+                clear = { remixMenu = null; actions.clearRemixCell(scene) },
+                cancel = { remixMenu = null },
+            )
+        }
     }
 }
 
@@ -503,6 +522,8 @@ internal class GridMarks(
     val recording: CellRecording? = null,
     val picking: Boolean = false,
     val tap: ((LiveColumn, Int, Boolean) -> Unit)? = null,
+    /** Lot D2: a long press on brick [scene]'s remix cell (its menu: a passage of the song). */
+    val remixHold: ((Int) -> Unit)? = null,
 )
 
 /**
@@ -975,6 +996,10 @@ private fun GridCell(ui: LiveScreenUi, c: LiveColumn, col: Int, scene: Int, widt
         tag = "live_pad_${c.key}_$scene",
         press = { if (plain || tap == null) actions.press(c.key, scene) else false }, retract = { actions.retract(c.key) },
         mark = mark,
+        // Lot D2: the remix column's cells take a passage of the song (a long press: their menu).
+        hold = marks.remixHold?.takeIf { c.key == SongPart.REMIX && hasContent }?.let { h -> { h(scene) } },
+        label = if (c.key == SongPart.REMIX) p.remix.cell(scene)?.label() else null,
+        busy = c.key == SongPart.REMIX && ui.remixBusy == scene,
     ) { if (tap != null) tap(c, scene, hasContent) else actions.launchPad(c.key, scene) }
 }
 
@@ -1097,6 +1122,9 @@ private fun LivePadCell(
     press: () -> Boolean,
     retract: () -> Unit,
     mark: CellMark = CellMark.None,
+    hold: (() -> Unit)? = null,
+    label: String? = null,
+    busy: Boolean = false,
     launch: () -> Unit,
 ) {
     SideEffect { livePadCompositions++ }
@@ -1162,6 +1190,8 @@ private fun LivePadCell(
                     haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                     launch()
                 },
+                hold = hold?.let { h -> { haptics.performHapticFeedback(HapticFeedbackType.LongPress); h() } },
+                holdLabel = tr("Choisir un passage"),
             )
             .testTag(tag)
             .semantics {
@@ -1187,6 +1217,18 @@ private fun LivePadCell(
             }
         } else if (pending) {
             Text("→", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = color)
+        } else if (busy) {
+            Text("…", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = GridLook.Ink)
+        } else if (label != null && hasContent) {
+            // Lot D2: the remix cell's passage (« Voix · 4 »): still, never cut (it shrinks first).
+            val style = MaterialTheme.typography.labelMedium
+            // On a dark pill over the cell's bars: readable lit or not.
+            com.pocketstudio.ui.FitText(
+                label,
+                Modifier.align(Alignment.BottomCenter).padding(3.dp).clip(RoundedCornerShape(6.dp)).background(Color.Black.copy(alpha = 0.55f))
+                    .padding(horizontal = 4.dp, vertical = 1.dp).testTag("${tag}_label"),
+                style, color = Color.White, fontWeight = FontWeight.Bold, min = 7.sp,
+            )
         } else if (hint) {
             Text("+", style = MaterialTheme.typography.headlineSmall, color = Color(0xFF8C949F))
         }

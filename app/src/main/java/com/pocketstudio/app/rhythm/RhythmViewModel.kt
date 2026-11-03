@@ -104,6 +104,7 @@ import com.pocketstudio.model.LiveClip
 import com.pocketstudio.model.LivePads
 import com.pocketstudio.model.SampledPatch
 import com.pocketstudio.model.RootNote
+import com.pocketstudio.model.remixCellOf
 import com.pocketstudio.model.sampleFiles
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.hasOwnFx
@@ -3523,6 +3524,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             for (slot in 0 until LiveSlots.COUNT) NativeEngine.setSlotOffset(slot, (part?.fromBars(LiveSlots.key(slot)) ?: 0) * p.stepsPerBar)
             // The remix: silent in a part that mutes it (it keeps its place), else heard.
             NativeEngine.setRemixOn(part?.plays(SongPart.REMIX) ?: true)
+            // Lot D2: the passage of the brick the remix plays in this part (-1: the whole song).
+            NativeEngine.setRemixCell(p.remixCellOf(part?.sceneFor(SongPart.REMIX) ?: index))
             // The scene a strip's track plays in this part (the master and the buses: the part's).
             fun sceneOf(ch: Int?): Int = ch?.let(::liveSlotOfChannel)?.let { part?.sceneFor(LiveSlots.key(it)) } ?: index
             // Per-scene automation clips: the scene's own steps (all of them, empty ones included).
@@ -3667,6 +3670,22 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** The grid as it plays now: every column on the scene heard when nothing was launched apart. */
     private fun liveNow(): LiveState = _liveGrid.value ?: LiveState.on(heardScene ?: project.value.scene)
+
+    /**
+     * Lot D2: a remix cell changed (a passage chosen or taken away): the remix slot plays what the
+     * brick it plays now holds, at once, at its place (the song part's, else the grid's).
+     */
+    /** Lot D2: what a remix cell's choice said (« Voix dans la case Remix de la brique C. »), or why not. */
+    internal fun liveRemixSays(text: String) {
+        _notice.value = text
+    }
+
+    internal fun liveRemixPushed() {
+        if (!NativeEngine.isAvailable || NativeEngine.isCapturing || pushingPart) return
+        val p = project.value
+        val scene = playingPart()?.sceneFor(SongPart.REMIX) ?: liveNow().slot(LiveSlots.REMIX).playing
+        if (scene >= 0) NativeEngine.setRemixCell(p.remixCellOf(scene))
+    }
 
     /** The grid as song part [part] plays (null: scene [scene] alone), from [start] or the engine's [states]. */
     private fun gridOfPart(part: SongPart?, scene: Int, start: Int, states: IntArray?): LiveState =
@@ -4424,7 +4443,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     NativeEngine.setAcidLength(view.acid.length)
                     view.acid.steps.forEachIndexed { i, st -> NativeEngine.setAcidStep(i, st.pack()) }
                 }
-                LiveSlots.REMIX -> Unit
+                LiveSlots.REMIX -> NativeEngine.setRemixCell(p.remixCellOf(scene))
                 in LiveSlots.AUDIO until LiveSlots.AUDIO + 4, in LiveSlots.AUDIO2 until LiveSlots.AUDIO2 + AudioTrack.MAX - 4 -> {
                     val id = LiveSlots.audioOf(slot)!!
                     NativeEngine.setAudioOn(id, audioPlays(p, id, null, scene))
@@ -5533,6 +5552,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Remix: a separated song played along with the project ---------------------------------
 
+    /** Lot D2 (« case Remix du Live »): a passage of the song per brick of the Live grid's remix column. */
+    val liveRemix = com.pocketstudio.app.live.LiveRemixCells(this)
+
     private var stems: NativeStems? = null
     private var stemsId: String? = null
     /** Length in seconds of the stems loaded ([stemsId]): the export's end for a project saved before it kept it. */
@@ -5683,6 +5705,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _stemOverview.value = null
         }
         if (loaded == null && wanted != null && stemsJob?.isActive != true) loadStems(wanted)
+        liveRemix.push(p)
+        // The passage of the brick heard (an export: the scene it renders; a song's parts stage theirs).
+        if (NativeEngine.isCapturing) NativeEngine.setRemixCell(p.remixCellOf(p.scene)) else liveRemixPushed()
     }
 
     /** Song step the live playback started on, as the remix places its song ([remixFrom]). */
@@ -6334,6 +6359,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             AppLog.add("Tableau des pistes : « $name » sur la piste audio ${made + 1}, pas $atStep")
             return made
         }
+
+        override suspend fun putInRemixCell(pcm: Pcm, name: String, scene: Int, bpm: Double, stem: Int, fromSeconds: Double) =
+            liveRemix.place(scene, pcm, name, bpm, stem, fromSeconds, say = false)
 
         override suspend fun putOnLivePad(pcm: Pcm, name: String, pad: Int, bpm: Double) {
             val (sample, prepared) = withContext(Dispatchers.IO) { padSamples.add(pcm, name) }
@@ -10911,6 +10939,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     override fun onCleared() {
+        liveRemix.close()
         stemBoardMade?.stop()  // the stretch heard alone goes with the screen
         exportCancelled = true  // a conversion in progress stops and leaves no file behind
         resampleCancelled = true

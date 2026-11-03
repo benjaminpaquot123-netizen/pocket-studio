@@ -188,6 +188,14 @@ int main(int argc, char** argv) {
             ps::Sample* s = ps::Sample::create(data.data(), static_cast<int64_t>(data.size()) / channels, channels, rate, 48000);
             if (!s) fail(line, "sample rejected");
             samples[id] = s;
+        } else if (op == "REMIXCELL") {
+            // Lot D2: cell | refit (0x100) | loop steps << 12, as NativeEngine.setRemixCellSound packs it.
+            int index = 0;
+            long id = 0;
+            if (!(ls >> index >> id)) fail(line, "bad REMIXCELL");
+            ps::Command c{ps::CommandType::InstallRemixCell, 0.0f, index & (0xFF | ps::kRefit), static_cast<int32_t>(static_cast<uint32_t>(index) >> 12)};
+            c.sample = sampleOf(id, line);
+            renderer.post(c);
         } else if (op == "PAD" || op == "TRACKSAMPLE" || op == "AUDIOCLIP") {
             int index = 0;
             long id = 0;

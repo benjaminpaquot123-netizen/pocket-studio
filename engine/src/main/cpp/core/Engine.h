@@ -223,6 +223,14 @@ enum class CommandType : uint8_t {
     ResampleStop = 152,    // a = 0: the take ends on the next bar line heard (whole bars); a = 1: at once. Its state becomes 2
     SetMidiClockOut = 153, // value 1: MIDI clock events (Start, 24 ticks a beat on the transport's beats, Stop) for
                            // popClockEvent(), on the output's frames; 0: none (a Stop first when the transport runs)
+    // Lot D2 (« case Remix du Live »), numbered 170 to 189: a passage of the song per cell of the
+    // remix column (RemixCells).
+    InstallRemixCell = 170,// a: cell (a brick, 0..RemixCells::kCells-1) | kRefit, b: its loop in steps (whole bars),
+                           // sample: owned reference (nullptr: the cell emptied); a refit is the same passage
+                           // at another tempo (picked up where it is, cross-faded)
+    SetRemixCell = 171,    // a: the cell the remix slot plays (-1: none, the whole song as before). Follows
+                           // SetStaging (taken at the slot's launch or the scene swap, then back to -1); else
+                           // at once (the same cell playing goes on; another one picks up at its place)
     // Lot E (« Master pro »), numbered 190 to 209.
     SetMasterPro = 190,    // a: MasterProParam, value: its setting
     InstallReference = 191,// sample: the reference song (nullptr: none), value: its integrated loudness (LUFS)
@@ -243,6 +251,7 @@ static_assert(static_cast<int>(CommandType::SetTrackZone) == 130, "NativeEngine.
 static_assert(static_cast<int>(CommandType::SetLayer) == 140, "NativeEngine.kt numbers the G1b commands from 140");
 static_assert(static_cast<int>(CommandType::SetMonitor) == 142, "NativeEngine.kt numbers the voice commands from 142");
 static_assert(static_cast<int>(CommandType::LaunchClipRow) == 150, "NativeEngine.kt numbers the lot B2 commands from 150");
+static_assert(static_cast<int>(CommandType::InstallRemixCell) == 170, "NativeEngine.kt numbers the lot D2 commands from 170");
 static_assert(static_cast<int>(CommandType::SetMasterPro) == 190, "NativeEngine.kt numbers the lot E commands from 190");
 
 // « Enregistrer ce que je joue » (lot B2): what the output plays, from a bar line of the live pads'
@@ -460,6 +469,7 @@ public:
             t.multi.collectGarbage();
         }
         stems_.collectGarbage();
+        remixCells_.collectGarbage();
         preview_.collectGarbage();
         clips_.collectGarbage();
         audio_.collectGarbage();
@@ -485,6 +495,7 @@ public:
     std::size_t tapRead(float* out, std::size_t maxSamples) { return tap_.read(out, maxSamples & ~std::size_t{1}); }
     bool stemsLoaded() const { return stems_.loaded(); }  // tests
     int64_t stemPosition() const { return stems_.position(); }
+    int remixCellPlaying() const { return remixCells_.playing(); }  // lot D2, tests
     // Song position of the preview player in frames, -1 when stopped.
     int64_t previewPosition() const { return preview_.position(); }
     ClipLauncher::State clipState(int pad) const { return clips_.state(pad); }
@@ -618,6 +629,16 @@ private:
     void renderLayers(const float** channels, const float** rights, int numFrames);
     Sampler sampler_;
     StemPlayer stems_;
+    // Lot D2: the remix column's passages, the one heard (-1: the whole song) and whether the slot
+    // is heard at all (not stopped nor muted by a song part).
+    RemixCells remixCells_;
+    int remixCell_ = -1;
+    bool remixHeard_ = true;
+    // The remix slot as it is now: the whole song or the passage `remixCell_` (from `local` steps
+    // into it when it starts; the same passage at the same place goes on, whatever asked).
+    void applyRemix(int offset, double local);
+    // The remix slot's steps since its start at the transport's position (0 when stopped).
+    double remixLocalNow() const;
     // The remix screen's own listening of a song's stems, free of the transport.
     StemPlayer preview_;
     ClipLauncher clips_;
@@ -728,6 +749,7 @@ private:
         // Per insert slot: 1 plays, 0 passed by in the waiting scene, -1 unchanged.
         std::array<int8_t, Mixer::kChannels * Mixer::kInserts> insertOn = unchangedInserts();
         bool remixOn = true;  // SetRemixOn while staging: false when the waiting song part mutes the remix
+        int remixCell = -1;   // SetRemixCell while staging: the waiting part's passage (-1: the whole song)
     };
     template <typename T, size_t N>
     static std::array<T, N> filled(T v) {

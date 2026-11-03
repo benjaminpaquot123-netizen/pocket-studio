@@ -3854,6 +3854,8 @@ fun liveActionsOf(
     recordCell = recordCell,
     stopCellRecording = vm::stopCellRecording,
     cellFromLibrary = cellLibrary,
+    chooseRemixCell = vm.liveRemix::choose,
+    clearRemixCell = vm.liveRemix::clear,
     copyCell = vm::copyCell,
     drumHit = { vm.liveDrumHit(it) },
     setRows = vm::setLiveRows,
@@ -3984,6 +3986,7 @@ internal fun LiveStateHost(
     val liveStates by vm.liveStates.collectAsStateWithLifecycle()
     val sampleTask by vm.sampleTask.collectAsStateWithLifecycle()
     val liveStarting by vm.liveStarting.collectAsStateWithLifecycle()
+    val remixBusy by vm.liveRemix.busy.collectAsStateWithLifecycle()
     // The output spectrum behind the pads XY: read only where drawn (the page does not recompose with it).
     val spectrum = vm.spectrum.collectAsStateWithLifecycle()
     val spectrumOf = remember(spectrum) { { spectrum.value } }
@@ -4007,7 +4010,7 @@ internal fun LiveStateHost(
                 project, grid, playing = transport.playing, muted = muted, acid = acid, returns = returns, take = take, takeAppend = takeAppend,
                 chops = chops, takeUndoable = vm.canUndoPerformance(), clockOf = clockOf,
                 spectrum = spectrumOf, beatHaptics = settings.liveBeatHaptics, fxOf = liveFxOf, cellRecording = cellRecording,
-                selectedTrack = selectedTrack,
+                selectedTrack = selectedTrack, remixBusy = remixBusy,
             ),
             com.pocketstudio.app.session.LivePadsUi(
                 pads = project.live,

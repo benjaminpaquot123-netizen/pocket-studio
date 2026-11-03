@@ -570,13 +570,14 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
                 )
                 // Audit stage 1: smaller before its end is lost (« · joue » dropped in 12 languages on a phone).
                 com.pocketstudio.ui.FitText(
-                    (if (part.bars == null) "× ${part.repeats}  ·  " else "") + barsLabel(ui.barsOf(part)) +
+                    // (Non-breaking spaces inside « × 2 » and « 2 mes. »: two lines break between them, never inside.)
+                    (if (part.bars == null) "×\u00A0${part.repeats}  ·  " else "") + barsLabel(ui.barsOf(part)).replace(' ', '\u00A0') +
                         (if (part.mixed) "  ·  " + tr("mélange") else "") + when {
                         active -> "  ·  " + tr("joue")
                         next -> "  ·  " + tr("ensuite")
                         else -> ""
                     },
-                    style = MonoStyle,
+                    style = MonoStyle, maxLines = 2, min = 11.sp,
                     color = when {
                         next -> Neon.Amber
                         active -> Neon.Magenta

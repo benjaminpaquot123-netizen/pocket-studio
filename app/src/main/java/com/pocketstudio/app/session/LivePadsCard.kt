@@ -208,7 +208,7 @@ private fun LivePad(i: Int, clip: LiveClip?, state: Int, selected: Boolean, modi
             .clickable { haptics.hit(); onClick() }.testTag("live_pad_$i"),
         contentAlignment = Alignment.Center,
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(4.dp).shrinkToFit()) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(4.dp)) {
             val ink = if (state == 2) Color(0xFF14210F) else if (clip == null) Neon.TextSecondary else Neon.TextPrimary
             if (clip == null) Text("+", color = ink, fontSize = 22.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, lineHeight = 23.sp)
             else {

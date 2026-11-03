@@ -278,7 +278,9 @@ fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neo
             .foldToggle(key, folded) { fold!!.animate = true }
     } else modifier
     if (help == null) Box(headerModifier, contentAlignment = Alignment.CenterStart) { label() }
-    else WithHelp(help, headerModifier, about = helpAbout) { label() }
+    // Audit stage 1: the title takes what is left after its « ? » (a long title pushed the « ? » out of
+    // the row, over the button beside it: Rythme's « PAS : … » under « Tous les pads »).
+    else WithHelp(help, headerModifier, about = helpAbout) { Box(Modifier.weight(1f, fill = false)) { label() } }
 }
 
 /**
@@ -294,7 +296,7 @@ private fun SectionTitle(text: String, color: Color, folded: Boolean?, subtle: B
         else Box(Modifier.width(3.dp).height(12.dp).clip(RoundedCornerShape(2.dp)).background(color))
         // Audit final (22): a title TalkBack can jump to.
         Text(text.upperShown(), style = if (subtle) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelSmall.merge(SectionCaps), color = if (subtle) Neon.TextSecondary else lerp(color, Neon.TextPrimary, 0.25f),
-            modifier = Modifier.semantics { heading() })
+            modifier = Modifier.weight(1f, fill = false).semantics { heading() })
         if (folded != null) {
             // A small open "v", turned to ">" when folded: there, not shouting.
             Canvas(Modifier.size(12.dp).rotate(turn)) {

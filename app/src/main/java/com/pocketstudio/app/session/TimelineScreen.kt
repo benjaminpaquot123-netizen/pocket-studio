@@ -710,10 +710,10 @@ private fun TimelineClock(ui: TimelineUi, modifier: Modifier) {
             (if (beat >= 0) clockText((beat * beatSeconds).toInt()) else "0:00") + " / " + clockText(total),
             style = MonoStyle, fontSize = 16.sp, color = if (beat >= 0) Neon.TextPrimary else Neon.TextSecondary, maxLines = 1,
         )
-        Text(
+        com.pocketstudio.ui.FitText(
             if (beat >= 0) tr("mes. %1\$d.%2\$d", beat / beatsPerBar + 1, beat % beatsPerBar + 1) + " / " + p.songBars
             else trCount(p.songBars, "1 mesure", "%d mesures"),
-            style = MonoStyle, color = if (beat >= 0) Neon.Magenta else Neon.TextSecondary, maxLines = 1,
+            style = MonoStyle, color = if (beat >= 0) Neon.Magenta else Neon.TextSecondary,
         )
     }
 }

@@ -159,7 +159,9 @@ object MidiFile {
             drums.lanes.take(PAD_NOTES.size).forEachIndexed { lane, l ->
                 // Phase 37: each pad on its own loop, and a hit with a chance drawn as the engine
                 // draws it, at its place in the song (the file is the song heard).
-                l.hits[drums.laneStep(lane, s)]?.takeIf { DrumChance.plays(seed, lane, offset / step + s, it.chance) }?.let { hit ->
+                val at = drums.laneStep(lane, s)
+                // A triplet over the end of its pad's loop: only its hits before the end, as the engine plays it (Hit.within).
+                l.hits[at]?.takeIf { DrumChance.plays(seed, lane, offset / step + s, it.chance) }?.within(at, l.loopSteps(drums.steps))?.let { hit ->
                     val n = hit.repeats.coerceIn(1, DrumPattern.MAX_REPEATS)
                     val span = hit.span.coerceIn(1, Hit.MAX_SPAN)
                     val length = if (span > 1) step.toDouble() * span else step * (if (s % 2 == 1) 1.0 - swing else 1.0)

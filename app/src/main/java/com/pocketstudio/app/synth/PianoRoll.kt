@@ -534,7 +534,7 @@ private fun VelocityLane(
             val label = MaterialTheme.typography.labelSmall
             androidx.compose.foundation.text.BasicText(
                 tr("Force"), style = label.copy(color = Neon.TextSecondary, letterSpacing = 0.sp), maxLines = 1,
-                autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 5.sp, maxFontSize = label.fontSize, stepSize = 0.5.sp),
+                autoSize = com.pocketstudio.ui.WholeWordsAutoSize(5.sp, label.fontSize),
             )
         }
         Box(Modifier.weight(1f).horizontalScroll(hScroll)) {

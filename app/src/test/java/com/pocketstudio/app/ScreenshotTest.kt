@@ -94,6 +94,12 @@ open class ScreenshotTest {
     /** The interface's direction (right to left for an Arabic subclass, as MainActivity does). */
     protected open val rtl = false
 
+    /** The phone's font size (Android's « Taille de police »; 1.3 = « Grand »), over the density's. */
+    protected open val fontScale = 1f
+
+    /** Called once the screen is drawn and touched as [shoot]'s `prepare` asked, before the image (audit: [com.pocketstudio.app.audit.LayoutScan]). */
+    protected open fun inspect(name: String) {}
+
     /** [prepare]: touches made before the image (a switch that only the screen itself holds). */
     protected fun shoot(
         name: String, palette: Palette = Palettes.Studio, prepare: () -> Unit = {}, fullScreen: Boolean = false, content: @Composable () -> Unit,
@@ -101,14 +107,20 @@ open class ScreenshotTest {
         org.junit.Assume.assumeTrue(wanted(name))
         compose.setContent {
             androidx.compose.runtime.CompositionLocalProvider(androidx.compose.ui.platform.LocalLayoutDirection provides com.pocketstudio.ui.layoutDirectionOf(rtl)) {
+                val density = androidx.compose.ui.platform.LocalDensity.current
+                androidx.compose.runtime.CompositionLocalProvider(
+                    androidx.compose.ui.platform.LocalDensity provides if (fontScale == 1f) density else androidx.compose.ui.unit.Density(density.density, density.fontScale * fontScale),
+                ) {
                 com.pocketstudio.app.ui.UiScaled(uiScale) {
                     PocketStudioTheme(palette) {
                         Box(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color.Black).padding(if (fullScreen) fullScreenChrome else chrome).background(Neon.Background)) { content() }
                     }
                 }
+                }
             }
         }
         prepare()
+        inspect(name)
         compose.onRoot().captureRoboImage("screenshots/$prefix$name.png")
     }
 

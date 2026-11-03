@@ -29,6 +29,14 @@ open class I18nScreenshotTest : ScreenshotTest() {
         SettingsStore.update(ApplicationProvider.getApplicationContext()) { it.copy(language = lang, englishNotes = true) }
     }
 
+    /** Audit stage 1: nothing cut nor drawn over another text, read on the layout ([com.pocketstudio.app.audit.LayoutScan]). */
+    override fun inspect(name: String) {
+        val density = ApplicationProvider.getApplicationContext<android.content.Context>().resources.displayMetrics.density
+        val found = com.pocketstudio.app.audit.LayoutScan.scan(compose, density, com.pocketstudio.app.audit.CaptureMatrixTest.LAYOUT)
+            .filterNot { com.pocketstudio.app.audit.Allowed.matches(name, it) }
+        org.junit.Assert.assertTrue("$prefix$name:\n" + found.joinToString("\n"), found.isEmpty())
+    }
+
     @After
     fun french() {
         SettingsStore.update(ApplicationProvider.getApplicationContext()) { it.copy(language = Lang.FR, englishNotes = false) }

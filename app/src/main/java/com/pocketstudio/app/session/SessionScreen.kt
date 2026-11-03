@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.session
 
+import com.pocketstudio.ui.shrinkToFit
 import com.pocketstudio.ui.pressScale
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.foundation.relocation.bringIntoViewRequester
@@ -567,14 +568,16 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
                     ui.title(part.scene), fontSize = 18.sp, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis,
                     color = if (active) Neon.Magenta else Neon.TextPrimary,
                 )
-                Text(
-                    (if (part.bars == null) "× ${part.repeats}  ·  " else "") + barsLabel(ui.barsOf(part)) +
+                // Audit stage 1: smaller before its end is lost (« · joue » dropped in 12 languages on a phone).
+                com.pocketstudio.ui.FitText(
+                    // (Non-breaking spaces inside « × 2 » and « 2 mes. »: two lines break between them, never inside.)
+                    (if (part.bars == null) "×\u00A0${part.repeats}  ·  " else "") + barsLabel(ui.barsOf(part)).replace(' ', '\u00A0') +
                         (if (part.mixed) "  ·  " + tr("mélange") else "") + when {
                         active -> "  ·  " + tr("joue")
                         next -> "  ·  " + tr("ensuite")
                         else -> ""
                     },
-                    style = MonoStyle, maxLines = 1,
+                    style = MonoStyle, maxLines = 2, min = 11.sp,
                     color = when {
                         next -> Neon.Amber
                         active -> Neon.Magenta
@@ -782,8 +785,8 @@ private fun SceneAction(
         Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp))
         // A long word (German « Umbenennen ») a little smaller rather than cut.
         val style = MaterialTheme.typography.labelMedium
-        Text(short, style = style, color = tint, maxLines = 1, softWrap = false, modifier = Modifier.padding(horizontal = 2.dp),
-            autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp))
+        Text(short, style = style, color = tint, maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.padding(horizontal = 2.dp),
+            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(9.sp, style.fontSize))
     }
 }
 
@@ -845,7 +848,9 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, dr
             .testTag("scene_$i"),
         contentAlignment = Alignment.Center,
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        // Audit stage 1: a short tile (a phone lying down, a big font, a tall script) shows its three lines
+        // a little smaller instead of losing the last one (« 1 batt » cut under « Intro »).
+        Column(Modifier.shrinkToFit(), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(Scene.NAMES[i], fontSize = 22.sp, fontWeight = FontWeight.Bold, color = content, lineHeight = 24.sp)
             if (label.isNotBlank()) {
                 Text(Scene.shownLabel(label), fontSize = 12.sp, fontWeight = FontWeight.Medium, color = content, maxLines = 1, overflow = TextOverflow.Ellipsis, lineHeight = 14.sp)

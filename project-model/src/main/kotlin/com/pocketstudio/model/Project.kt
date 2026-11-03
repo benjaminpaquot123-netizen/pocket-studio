@@ -692,6 +692,20 @@ data class Hit(
     /** A triplet: hits spread over several steps, not one a step ([TRIPLET]: 3 over 2; 6 over 4). */
     val isTriplet: Boolean get() = span > 1 && repeats % span != 0
 
+    /**
+     * This hit as a loop of [loop] steps plays it at [step] (review « Tuto tous styles », MINEUR 5): a
+     * roll spread past the loop's end (the pad's loop shortened under a triplet) keeps only its hits
+     * before the end, over the steps left, instead of spilling into the next turn's first step. The
+     * hit itself is kept as written: grown again, the loop plays it whole.
+     */
+    fun within(step: Int, loop: Int): Hit {
+        val left = loop - step
+        if (span <= 1 || left >= span || left <= 0) return this
+        // Hit k sits at k * span / repeats steps: those before `left`.
+        val kept = (left * repeats + span - 1) / span
+        return copy(span = left, repeats = kept.coerceIn(1, repeats))
+    }
+
     /** What [sanitized] would leave as it is. */
     internal fun isClean(): Boolean = velocity.isFinite() && repeats in 1..DrumPattern.MAX_REPEATS &&
         pan.isFinite() && pan in -1f..1f && pitch in -MAX_PITCH..MAX_PITCH && ramp in -1..1 &&

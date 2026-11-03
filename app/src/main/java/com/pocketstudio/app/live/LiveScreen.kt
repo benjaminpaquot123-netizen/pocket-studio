@@ -1056,7 +1056,7 @@ private fun ColumnHeader(c: LiveColumn, muted: Boolean, width: Dp, height: Dp, t
         Text(
             c.name, Modifier.fillMaxWidth().weight(1f).padding(horizontal = 2.dp, vertical = 2.dp), style = style,
             maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center, softWrap = false,
-            autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
+            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(9.sp, style.fontSize),
         )
         // Under the name: a finger that misses it does not land on a pad (which would launch a
         // scene, into the take). Lying down it is shorter, as wide as the column.
@@ -1273,9 +1273,10 @@ private fun StopButton(label: String, modifier: Modifier, waiting: Boolean, blin
     ) {
         // « ■ Tout » in a narrow scene column (six tracks on a phone): smaller, never cut.
         val style = MaterialTheme.typography.titleSmall
-        Text(
-            label, style = style, color = Neon.TextPrimary, maxLines = 1, softWrap = false, modifier = Modifier.padding(horizontal = 2.dp),
-            autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
+        // Audit stage 1: two lines before a cut word (« ■ Wszys » in Polish on a phone): « ■ » then the word.
+        com.pocketstudio.ui.FitText(
+            label, Modifier.padding(horizontal = 2.dp), style, color = Neon.TextPrimary, maxLines = 2, min = 8.sp,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
         )
     }
 }
@@ -1339,8 +1340,8 @@ private fun LiveDock(ui: LiveScreenUi, sideBySide: Boolean, choose: (LivePanelTa
                     if (words) {
                         val style = MaterialTheme.typography.labelMedium
                         Text(
-                            label, color = ink, style = style, maxLines = 1, softWrap = false,
-                            autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
+                            label, color = ink, style = style, maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(9.sp, style.fontSize),
                         )
                     }
                 }
@@ -1459,8 +1460,8 @@ private fun Segmented(ui: LiveScreenUi, tabs: List<LivePanelTab>, shown: LivePan
                 val style = MaterialTheme.typography.labelLarge
                 Text(
                     label, color = if (selected) Neon.OnAccent else if (idle) Neon.TextSecondary.copy(alpha = 0.6f) else Neon.TextPrimary,
-                    style = style, maxLines = 1, softWrap = false,
-                    autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
+                    style = style, maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                    autoSize = com.pocketstudio.ui.WholeWordsAutoSize(9.sp, style.fontSize),
                 )
             }
         }

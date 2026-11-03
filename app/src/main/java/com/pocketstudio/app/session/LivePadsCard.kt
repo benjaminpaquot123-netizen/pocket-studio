@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.session
 
+import com.pocketstudio.ui.shrinkToFit
 import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -209,9 +210,20 @@ private fun LivePad(i: Int, clip: LiveClip?, state: Int, selected: Boolean, modi
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(4.dp)) {
             val ink = if (state == 2) Color(0xFF14210F) else if (clip == null) Neon.TextSecondary else Neon.TextPrimary
-            Text(clip?.name?.let { com.pocketstudio.model.DefaultNames.shownSample(it) } ?: "+", color = ink, fontSize = if (clip == null) 22.sp else 12.sp, fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center, maxLines = 2, lineHeight = 13.sp)
-            if (clip != null) Text(if (clip.oneShot) tr("une fois") else beatsLabel(clip.beats), color = ink.copy(alpha = 0.75f), fontSize = 10.sp, maxLines = 1)
+            if (clip == null) Text("+", color = ink, fontSize = 22.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, lineHeight = 23.sp)
+            else {
+                // Audit stage 1 (« carte des pads live »): whole words, smaller before they are cut (a small phone,
+                // a big font, Hindi or Korean: « Kick 909 », « 2 batt. » fell off the pad's bottom).
+                com.pocketstudio.ui.FitText(
+                    com.pocketstudio.model.DefaultNames.shownSample(clip.name), Modifier,
+                    androidx.compose.ui.text.TextStyle(fontSize = 12.sp, lineHeight = 13.sp), color = ink, fontWeight = FontWeight.Bold,
+                    maxLines = 2, min = 8.sp, textAlign = TextAlign.Center,
+                )
+                com.pocketstudio.ui.FitText(
+                    if (clip.oneShot) tr("une fois") else beatsLabel(clip.beats), style = androidx.compose.ui.text.TextStyle(fontSize = 10.sp, lineHeight = 12.sp),
+                    color = ink.copy(alpha = 0.75f), min = 7.sp, textAlign = TextAlign.Center,
+                )
+            }
         }
     }
 }

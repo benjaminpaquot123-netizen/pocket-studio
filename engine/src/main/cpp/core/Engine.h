@@ -220,7 +220,8 @@ enum class CommandType : uint8_t {
     ResampleArm = 151,     // resample: a buffer the app keeps (nullptr: none): « Enregistrer ce que je joue », the output
                            // from the next bar line of the live pads' clock on; a = 1: the first such line where a pad
                            // plays or waits, or the transport runs (armed in silence, it waits for the music)
-    ResampleStop = 152,    // a = 0: the take ends on the next bar line heard (whole bars); a = 1: at once. Its state becomes 2
+    ResampleStop = 152,    // a = 0: the take ends on the next bar line heard (whole bars); a = 1: at once. Its state becomes 2;
+                           // resample: the take it ends (compared only, never touched; nullptr: the current one)
     SetMidiClockOut = 153, // value 1: MIDI clock events (Start, 24 ticks a beat on the transport's beats, Stop) for
                            // popClockEvent(), on the output's frames; 0: none (a Stop first when the transport runs)
     // Lot D2 (« case Remix du Live »), numbered 170 to 189: a passage of the song per cell of the

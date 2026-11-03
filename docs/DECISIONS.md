@@ -1137,3 +1137,4 @@
 - 2026-11-03 · « Volume visé » Auto et Club : « l'export y est exactement » → « l'export s'en approche autant qu'il peut sans écraser le son ». Retour arrière : l'ancien texte.
 - 2026-11-03 · Club 1A : le message du volume atteint est fait ; le bouton « Couper les infra-basses » n'est pas mis, car mesuré sans effet (−10,57 → −10,66 LUFS à 30 Hz) : ce sont les crêtes du sub et du kick vers 40–60 Hz qui coûtent au limiteur. Question de suite posée à Benjamin. Retour : sans objet.
 - 2026-11-03 · Club (Benjamin : A) : on laisse tel quel ; le message dit le volume atteint, le son ne change pas (pas de baisse du sub/kick ni de compresseur des basses). Retour : sans objet.
+- 2026-11-03 (nuit) · Consigne de Benjamin : « Si tu as des questions, choisis pour moi la recommandée » : pour la nuit, chaque question prend l'option recommandée, notée ici, et listée dans le résumé du matin pour qu'il puisse revenir dessus. Retour : il tranche autrement le matin.

@@ -1131,3 +1131,4 @@
 - 2026-11-03 · PIT lancé à la main hors Gradle, pas de plugin dans le build. Raison : rien à maintenir dans le build, Gradle 9. Retour : sans objet.
 - 2026-11-03 : optimisations du fil audio seulement bit à bit (rendu maître identique, §6) ; le logarithme par table de la saturation, plus rapide mais pas identique au bit sur un morceau entier, est retiré. Retour arrière : le commit « table logarithm » de fx-s4.
 - 2026-11-03 : paires stéréo dans un registre (extension vectorielle GCC/Clang, pas d'intrinsèques) : un seul code pour x86 et ARM. Retour arrière : revenir aux deux objets scalaires (`DriveShaper` ×2, `Biquad` ×2, `KWeighting` ×2).
+- 2026-11-03 · Master « Club » qui ne peut pas atteindre −9 LUFS sans s'écraser (Benjamin : 1A) : l'appli dit le volume réellement atteint et pourquoi (« −10,6 LUFS : plus fort, il s'écraserait ») et propose de couper les infra-basses ; le son n'est pas forcé. À faire au prochain tour de corrections. Retour : sans objet.

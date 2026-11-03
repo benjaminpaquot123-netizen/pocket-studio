@@ -1,0 +1,13 @@
+{
+  "%1$s dans la case Remix de la brique %2$s.": "%1$s en la casilla Remix del bloque %2$s.",
+  "%1$s vers la case Remix de la brique %2$s…": "%1$s a la casilla Remix del bloque %2$s…",
+  "Chaque brique a déjà un passage dans la colonne Remix : enlèves-en un dans Live.": "Cada bloque ya tiene un fragmento en la columna Remix: quita uno en Live.",
+  "Choisir un passage": "Elegir un fragmento",
+  "Découpe en cours…": "Cortando…",
+  "Le tempo de la chanson n'est pas connu : choisis le passage dans « Découper la chanson ».": "No se conoce el tempo de la canción: elige el fragmento en “Cortar la canción”.",
+  "Longueur (mesures)": "Duración (compases)",
+  "Mettre dans la case": "Poner en la casilla",
+  "Toute la chanson ici": "Toda la canción aquí",
+  "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "Un fragmento de la canción en esta casilla: arranca en el compás y sigue el tempo.",
+  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s” está en la casilla Remix del bloque %2$s."
+}

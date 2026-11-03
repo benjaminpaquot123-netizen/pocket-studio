@@ -250,16 +250,18 @@ class StemBoardVmTest {
         assertTrue(vm.project.value.audioTracks.none { it.name == "Voix 1" })
     }
 
+    /** Lot D2: a stretch of the project's song « Dans le Live » goes in the remix column's first free brick. */
     @Test
-    fun aStretchOnAFreeLivePad() {
+    fun aStretchInTheLivesRemixColumn() {
         val vm = open()
         val set = withSong(vm)
         val depth = vm.session.undoDepth
         vm.stemBoard.send(StemSelection(set.id, 1, 0, 96_000), StemDestination.Live)
-        assertEquals("« Basse 1 » est sur le pad live 1.", said(vm))
-        val clip = vm.project.value.live.clips[0]!!
-        assertEquals("Basse 1", clip.name)
-        assertEquals(4, clip.beats)  // 2 s at 120 BPM
+        assertEquals("« Basse » est dans la case Remix de la brique A.", said(vm))
+        val cell = vm.project.value.remix.cell(0)!!
+        assertEquals("Basse", cell.name)
+        assertEquals(1, cell.bars)  // 2 s at 120 BPM
+        assertEquals(120.0, cell.bpm, 0.0)
         assertEquals(depth + 1, vm.session.undoDepth)
     }
 

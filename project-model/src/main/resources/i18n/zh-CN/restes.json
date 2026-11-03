@@ -1,0 +1,13 @@
+{
+  "%1$s dans la case Remix de la brique %2$s.": "%1$s 放在积木 %2$s 的混音格中。",
+  "%1$s vers la case Remix de la brique %2$s…": "%1$s 正放入积木 %2$s 的混音格…",
+  "Chaque brique a déjà un passage dans la colonne Remix : enlèves-en un dans Live.": "每块积木在混音列中都已有片段：请在 Live 中移除一个。",
+  "Choisir un passage": "选择片段",
+  "Découpe en cours…": "正在剪切…",
+  "Le tempo de la chanson n'est pas connu : choisis le passage dans « Découper la chanson ».": "不知道歌曲的速度：请在“切分歌曲”中选择片段。",
+  "Longueur (mesures)": "长度（小节）",
+  "Mettre dans la case": "放入此格",
+  "Toute la chanson ici": "这里放整首歌",
+  "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "此格放歌曲的一段：从小节开始，跟随速度。",
+  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s”在积木 %2$s 的混音格中。"
+}

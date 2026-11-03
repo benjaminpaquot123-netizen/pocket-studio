@@ -1,0 +1,13 @@
+{
+  "%1$s dans la case Remix de la brique %2$s.": "%1$s w polu Remix bloku %2$s.",
+  "%1$s vers la case Remix de la brique %2$s…": "%1$s do pola Remix bloku %2$s…",
+  "Chaque brique a déjà un passage dans la colonne Remix : enlèves-en un dans Live.": "Każdy blok ma już fragment w kolumnie Remix: usuń jeden w Live.",
+  "Choisir un passage": "Wybierz fragment",
+  "Découpe en cours…": "Cięcie…",
+  "Le tempo de la chanson n'est pas connu : choisis le passage dans « Découper la chanson ».": "Tempo utworu jest nieznane: wybierz fragment w „Potnij piosenkę”.",
+  "Longueur (mesures)": "Długość (takty)",
+  "Mettre dans la case": "Wstaw do pola",
+  "Toute la chanson ici": "Cały utwór tutaj",
+  "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "Fragment utworu w tym polu: startuje na takcie i podąża za tempem.",
+  "« %1$s » est dans la case Remix de la brique %2$s.": "„%1$s” jest w polu Remix bloku %2$s."
+}

@@ -374,6 +374,30 @@ JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInsta
     return JNI_FALSE;
 }
 
+// Lot D2: a remix cell's passage; `index` = cell | refit (0x100) | loop steps << 12 (NativeEngine.setRemixCellSound).
+static ps::Command remixCellCommand(jint index, ps::Sample* s) {
+    ps::Command command{ps::CommandType::InstallRemixCell, 0.0f, index & (0xFF | ps::kRefit), static_cast<int32_t>(static_cast<uint32_t>(index) >> 12)};
+    command.sample = s;
+    return command;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallRemixCell(JNIEnv*, jobject, jint index, jlong handle) {
+    host().engine().collectGarbage();
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s && s->compact()) return JNI_FALSE;
+    if (s) s->retain();
+    if (host().post(remixCellCommand(index, s))) return JNI_TRUE;
+    if (s && s->release()) delete s;
+    return JNI_FALSE;
+}
+
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_exportInstallRemixCell(JNIEnv*, jobject, jlong exportHandle, jint index, jlong handle) {
+    auto* s = reinterpret_cast<ps::Sample*>(handle);
+    if (s && s->compact()) return;
+    if (s) s->retain();
+    reinterpret_cast<ps::OfflineRenderer*>(exportHandle)->post(remixCellCommand(index, s));
+}
+
 // Lot E: the reference song heard in « Master pro » (handle 0: none), at its integrated loudness (LUFS).
 JNIEXPORT jboolean JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeInstallReference(JNIEnv*, jobject, jlong handle, jfloat lufs) {
     host().engine().collectGarbage();

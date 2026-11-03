@@ -1,0 +1,13 @@
+{
+  "%1$s dans la case Remix de la brique %2$s.": "%1$s ब्लॉक %2$s के रीमिक्स खाने में।",
+  "%1$s vers la case Remix de la brique %2$s…": "%1$s ब्लॉक %2$s के रीमिक्स खाने की ओर…",
+  "Chaque brique a déjà un passage dans la colonne Remix : enlèves-en un dans Live.": "हर ब्लॉक के रीमिक्स कॉलम में पहले से हिस्सा है: Live में एक हटाएँ।",
+  "Choisir un passage": "हिस्सा चुनें",
+  "Découpe en cours…": "काटा जा रहा है…",
+  "Le tempo de la chanson n'est pas connu : choisis le passage dans « Découper la chanson ».": "गाने की टेम्पो पता नहीं है: “गाना काटो” में हिस्सा चुनें।",
+  "Longueur (mesures)": "लंबाई (बार)",
+  "Mettre dans la case": "खाने में डालें",
+  "Toute la chanson ici": "पूरा गाना यहाँ",
+  "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "इस खाने में गाने का एक हिस्सा: यह बार पर शुरू होता है और टेम्पो के साथ चलता है।",
+  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s” ब्लॉक %2$s के रीमिक्स खाने में है।"
+}

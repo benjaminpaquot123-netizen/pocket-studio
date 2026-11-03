@@ -1,0 +1,13 @@
+{
+  "%1$s dans la case Remix de la brique %2$s.": "%1$s in the Remix cell of brick %2$s.",
+  "%1$s vers la case Remix de la brique %2$s…": "%1$s to the Remix cell of brick %2$s…",
+  "Chaque brique a déjà un passage dans la colonne Remix : enlèves-en un dans Live.": "Every brick already has a passage in the Remix column: remove one in Live.",
+  "Choisir un passage": "Choose a passage",
+  "Découpe en cours…": "Cutting…",
+  "Le tempo de la chanson n'est pas connu : choisis le passage dans « Découper la chanson ».": "The song's tempo is not known: choose the passage in “Cut up the song”.",
+  "Longueur (mesures)": "Length (bars)",
+  "Mettre dans la case": "Put in the cell",
+  "Toute la chanson ici": "Whole song here",
+  "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "A passage of the song in this cell: it starts on the bar and follows the tempo.",
+  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s” is in the Remix cell of brick %2$s."
+}

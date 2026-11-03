@@ -116,6 +116,8 @@ object NativeEngine {
     private const val CMD_RESAMPLE_ARM = 151
     private const val CMD_RESAMPLE_STOP = 152
     private const val CMD_MIDI_CLOCK_OUT = 153
+    // Lot D2, « case Remix du Live » (Engine.h, 170 to 189); 170: InstallRemixCell (native only).
+    private const val CMD_REMIX_CELL = 171
     // Lot E, « Master pro » (Engine.h, 190 to 209).
     private const val CMD_MASTER_PRO = 190
     private const val CMD_INSTALL_REFERENCE = 191
@@ -830,6 +832,32 @@ object NativeEngine {
         if (target != 0L) exportInstallAudioClip(target, index, sample?.handle ?: 0L)
         else nativeInstallAudioClip(index, sample?.handle ?: 0L)
     }
+
+    /** Cells of the remix column the engine holds (RemixCells::kCells): one per brick. */
+    const val REMIX_CELLS = 32
+
+    /**
+     * Lot D2: cell [cell] of the Live grid's remix column (a brick) holds [sample], a passage of the
+     * song looping over [loopSteps] steps (whole bars), at the project's tempo (null: emptied).
+     * [refit]: the same passage stretched to a new tempo (picked up where it plays). Main thread.
+     */
+    fun setRemixCellSound(cell: Int, sample: NativeSample?, loopSteps: Int, refit: Boolean = false) {
+        if (cell !in 0 until REMIX_CELLS) return
+        val target = captureTarget
+        val index = cell or (if (refit) REFIT else 0) or (loopSteps.coerceIn(1, 1 shl 18) shl 12)
+        sink?.let { it.install(target, CommandSink.Install.RemixCell, index, sample?.handle ?: 0L); return }
+        if (target != 0L) exportInstallRemixCell(target, index, sample?.handle ?: 0L)
+        else nativeInstallRemixCell(index, sample?.handle ?: 0L)
+    }
+
+    /**
+     * Lot D2: the remix slot plays the passage of cell [cell] (-1: the whole song, as before). While
+     * staging, the scene's (taken at its launch or swap); else at once.
+     */
+    fun setRemixCell(cell: Int) = post(CMD_REMIX_CELL, 0f, if (cell in 0 until REMIX_CELLS) cell else -1)
+
+    private external fun nativeInstallRemixCell(index: Int, handle: Long): Boolean
+    private external fun exportInstallRemixCell(exportHandle: Long, index: Int, handle: Long)
 
     /** Engine kRefit: the sound installed is the same loop stretched to a new tempo. */
     const val REFIT = 0x100

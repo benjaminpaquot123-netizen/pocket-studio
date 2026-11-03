@@ -365,8 +365,8 @@ private fun PadLiveBar(ui: PadLiveUi, actions: PadLiveActions, record: @Composab
         IconButton(onClick = actions.back, modifier = Modifier.size(44.dp).testTag("padlive_back")) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Retour"), tint = Neon.Amber)
         }
-        Text(tr("Pad Live"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1, softWrap = false,
-            overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+        // Lot D2: smaller before it is cut (« Pad… » on a 360 dp phone), in every language.
+        com.pocketstudio.ui.FitText(tr("Pad Live"), Modifier.weight(1f).testTag("padlive_title"), MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         Box(
             Modifier.size(48.dp).clip(CircleShape).background(if (ui.playing) Neon.Acid else Neon.SurfaceHigh)
                 .clickable(role = Role.Button, onClick = actions.togglePlay).testTag("padlive_play")
@@ -482,12 +482,12 @@ private fun PadLivePad(
         // A short pad (a small phone with « Plus » open): its name a little smaller, clear of the corner's word.
         BoxWithConstraints(Modifier.matchParentSize()) {
             val style = MaterialTheme.typography.titleSmall
-            Text(
-                name.orEmpty(), style = style, fontWeight = FontWeight.Bold, color = Neon.TextPrimary,
-                maxLines = 2, overflow = TextOverflow.Ellipsis,
-                autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 10.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
-                modifier = Modifier.align(Alignment.BottomStart).heightIn(max = (maxHeight - 26.dp).coerceAtLeast(16.dp))
-                    .padding(horizontal = 10.dp).padding(bottom = 6.dp),
+            // Lot D2: a word is never split over two lines (« Monté/e »): smaller first.
+            com.pocketstudio.ui.FitText(
+                name.orEmpty(),
+                Modifier.align(Alignment.BottomStart).heightIn(max = (maxHeight - 26.dp).coerceAtLeast(16.dp))
+                    .padding(horizontal = 10.dp).padding(bottom = 6.dp).testTag("padlive_name_$pad"),
+                style, color = Neon.TextPrimary, fontWeight = FontWeight.Bold, maxLines = 2, min = 9.sp,
             )
         }
     }
@@ -606,14 +606,10 @@ private fun HeldEffect(
     }
 }
 
-/** One line that shrinks (down to 9 sp) before it is cut. */
+/** One line that shrinks (down to 9 sp) before it is cut: the shared [com.pocketstudio.ui.FitText]. */
 @Composable
-private fun FitText(text: String, style: androidx.compose.ui.text.TextStyle, color: Color, tag: String) {
-    Text(
-        text, Modifier.fillMaxWidth().testTag(tag), style = style, color = color, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis,
-        autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
-    )
-}
+private fun FitText(text: String, style: androidx.compose.ui.text.TextStyle, color: Color, tag: String) =
+    com.pocketstudio.ui.FitText(text, Modifier.fillMaxWidth().testTag(tag), style, color = color)
 
 /**
  * A row's ▶ (lot B2): its pads launched together on the next bar line; ■ when its loops all play

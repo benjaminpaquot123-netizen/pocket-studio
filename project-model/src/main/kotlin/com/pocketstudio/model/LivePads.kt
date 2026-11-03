@@ -171,7 +171,7 @@ fun padGrid(count: Int, w: Float, h: Float, gap: Float): PadGrid {
 /** Every sample file the project uses (drum pads of every scene, live pads, audio clips, sampled instruments). */
 val Project.sampleFiles: Set<String> get() =
     (allScenes.flatMap { s -> s.drums.lanes.mapNotNull { it.sample?.file } } +
-        drums.lanes.mapNotNull { it.sample?.file } + live.all.mapNotNull { it?.file } +
+        drums.lanes.mapNotNull { it.sample?.file } + live.all.mapNotNull { it?.file } + remix.cells.map { it.file } +
         audioTracks.mapNotNull { it.clip?.file } + allTrackSounds.mapNotNull { it.sampled.file }).toSet()
 
 /**
@@ -187,6 +187,7 @@ fun Project.withoutSounds(files: Set<String>): Project {
         drums = drums.cleaned(),
         scenes = scenes.map { it.copy(drums = it.drums.cleaned()) },
         live = live.copy(clips = live.clips.map { c -> c?.takeIf { it.file !in files } }, more = live.more.map { c -> c?.takeIf { it.file !in files } }),
+        remix = remix.copy(cells = remix.cells.filter { it.file !in files }),
         audioTracks = audioTracks.map { t ->
             t.mapTakes { c -> c.takeIf { it.file !in files } }
         },

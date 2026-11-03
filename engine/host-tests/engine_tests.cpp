@@ -8154,6 +8154,7 @@ void testCommandBudgetPerCallback() {
 #include "remix5b_tests.inc"
 #include "padlive_tests.inc"
 #include "masterpro_tests.inc"
+#include "liveremix_tests.inc"
 
 int main(int argc, char** argv) {
     const char* only = nullptr;  // a test's name: run that one alone
@@ -8372,6 +8373,7 @@ int main(int argc, char** argv) {
         PS_MOTEUR17_TESTS
         PS_REMIX5B_TESTS
         PS_PADLIVE_TESTS
+        PS_LIVEREMIX_TESTS
     };
     for (const auto& t : tests) {
         if (only && std::strcmp(only, t.name) != 0) continue;

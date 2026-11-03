@@ -7,6 +7,8 @@
 
 ## Prochaine étape exacte
 
+**Arrêt demandé par Benjamin (2026-11-03, en fin de journée)** : A1 à A3, B (Pad Live complet), C (Remix découpe), D 1re partie (sans moteur) et E (Master pro) faits et rangés dans fx-int. Reprise au prochain « continue » : finir D avec la case Remix du Live (atelier /home/user/fx-rc, branche fx-rc, lot arrêté en cours : relire `git log fx-int..fx-rc` et `docs/lots/D2.md` s'il existe, sinon repartir de la consigne D2), puis grande vérification et `:app:assembleRelease` (arrêtées en cours), puis E2, F, G selon PLAN-REPRISE.
+
 **« continue » = la première case non cochée de « L'ordre » dans `docs/PLAN-REPRISE.md` (la seule liste à cocher), avec la méthode de CLAUDE.md « Méthode de travail ». État : lot fin-8 fait sur fx-fin (7d synthés, n° 18 à 23), pas encore rangé (5 tests rouges). Dernière APK envoyée : 234 (faite en local ; la CI n'en est qu'à 223) ; dès l'étape G, APK et AAB par la CI seule, numéro de la CI + 100.**
 
 ## Historique de la reprise (listes closes, ne pas suivre)

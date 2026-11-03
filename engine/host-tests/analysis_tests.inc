@@ -110,7 +110,7 @@ void testOnsetsMatchAubio() {
     const auto& ref = aubioReference()["onsets"];
     CHECK(ref.items.size() > 20);
     auto cases = corpus::syntheticOnsetCases();
-    // The real samples of the jump-up project, by name.
+    // The library sounds kept with the synthetic jump-up draft, by name.
     for (const auto& r : ref.items) {
         const std::string name = r["name"].text;
         if (name.rfind("sample_", 0) != 0) continue;

@@ -149,8 +149,17 @@ object I18n {
         "Lead hyperpop" to "Mélodie hyperpop", "Lead / mélodie" to "Mélodie", "Lead 2 (sawtooth)" to "Mélodie 2 (dents de scie)",
     )
 
+    /**
+     * Tests only (Audit §3, « pseudo-traduction »): when set, every text is shown through it, from its
+     * French (longer, accented, right to left with [lang] set to a right-to-left language), instead of
+     * its translation. The app never sets it.
+     */
+    @Volatile
+    var pseudo: ((String) -> String)? = null
+
     fun t(fr: String): String {
         val text = if (everyday) EVERYDAY[fr] ?: fr else fr
+        pseudo?.let { return it(text) }
         return if (lang == Lang.FR) text else table(lang)[text]?.takeIf { it.isNotEmpty() } ?: text
     }
 
@@ -239,7 +248,7 @@ fun trCount(n: Int, one: String, other: String, vararg args: Any?): String {
     if (n == 1) return if ('%' in one) tr(one, *values) else tr(one)
     val lang = I18n.lang
     val category = pluralOf(lang.code, n.toLong())
-    if (lang != Lang.FR && category != Plural.OTHER) {
+    if (lang != Lang.FR && category != Plural.OTHER && I18n.pseudo == null) {
         I18n.table(lang)["$other|${category.key}"]?.takeIf { it.isNotEmpty() }?.let { return String.format(lang.locale, it, *values) }
     }
     return tr(other, *values)

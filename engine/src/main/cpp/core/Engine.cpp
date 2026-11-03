@@ -69,6 +69,7 @@ void Engine::prepare(int sampleRate) {
     tracks_[0].on = true;
     mixer_.prepare(sampleRate);
     stems_.prepare(sampleRate);
+    remixCells_.prepare(sampleRate);
     preview_.prepare(sampleRate);
     clips_.prepare(sampleRate);
     audio_.prepare(sampleRate);
@@ -401,6 +402,7 @@ void Engine::applyCommand(const Command& command) {
                 staged_.audioLoop.fill(-1);
                 staged_.insertOn.fill(-1);
                 staged_.remixOn = true;
+                staged_.remixCell = -1;
             }
             songRestart_ = command.b == 1;  // the waiting scene starts the song over (it loops)
             songRestartAt_ = command.b == 1 && std::isfinite(command.value)
@@ -644,9 +646,26 @@ void Engine::applyCommand(const Command& command) {
             }
             break;
         case CommandType::SetRemixOn:
-            if (staging_) staged_.remixOn = command.value > 0.5f;
-            else stems_.setLive(command.value > 0.5f);
+            if (staging_) {
+                staged_.remixOn = command.value > 0.5f;
+            } else {
+                remixHeard_ = command.value > 0.5f;
+                applyRemix(0, remixLocalNow());
+            }
             break;
+        case CommandType::InstallRemixCell:
+            remixCells_.install(command.a & ~kRefit, command.sample, command.b, (command.a & kRefit) != 0);  // takes the reference
+            break;
+        case CommandType::SetRemixCell: {
+            const int cell = command.a >= 0 && command.a < RemixCells::kCells ? command.a : -1;
+            if (staging_) {
+                staged_.remixCell = cell;
+            } else {
+                remixCell_ = cell;
+                applyRemix(0, remixLocalNow());
+            }
+            break;
+        }
         case CommandType::SetAutomationSongRamp: {
             const int lane = command.a & 0xFF;
             const int first = command.b & 0xFFFF;
@@ -814,7 +833,10 @@ void Engine::stopTransport(int64_t at) {
         sl.transportOffset = 0;  // a part sent while playing never moves the next start
     }
     staged_.remixOn = true;
+    staged_.remixCell = -1;
     stems_.setLive(true);
+    remixHeard_ = true;
+    remixCells_.stop();
     transportStep_.store(-1, std::memory_order_relaxed);
     transportPosition_.store(-1.0, std::memory_order_relaxed);
     lastTransport_ = -1;
@@ -864,6 +886,7 @@ void Engine::onStep(int offset, int step) {
     }
     if (step == 0) {
         stems_.start(offset, 0.0, sequencer_.samplesPerStep());
+        applyRemix(offset, -static_cast<double>(slots_[kSlotRemix].start));
         if (record_ && recordOnStart_) {
             recordOnStart_ = false;
             recordStartOut_ = blockOut_ + offset;
@@ -894,6 +917,8 @@ void Engine::onStep(int offset, int step) {
     }
     // Live launches due on this step, after the scene swap (armed later, they win).
     if (anyPending_) launchSlots(step, offset);
+    // Lot D2: the remix column's passage keeps to the transport's beats (after the launches).
+    if (onBeat && remixCell_ >= 0 && remixHeard_) remixCells_.sync(offset, static_cast<double>(localOf(kSlotRemix, step)));
     // Patterns count from the start of their slot (the scene's start unless the live grid launched
     // it on its own); the remix stems follow the transport.
     const int local = step - sceneStart_;
@@ -1148,9 +1173,13 @@ void Engine::swapScene(int step, int offset) {
         sl.tag = kRowTag;
         publishSlot(k);
     }
-    // The remix plays unless the part taking over mutes it (then for the next swap: played again).
-    stems_.setLive(staged_.remixOn, offset);
+    // The remix plays unless the part taking over mutes it (then for the next swap: played again):
+    // the whole song, or the passage of the cell the part gives it (lot D2).
+    remixHeard_ = staged_.remixOn;
+    remixCell_ = staged_.remixCell;
     staged_.remixOn = true;
+    staged_.remixCell = -1;
+    applyRemix(offset, static_cast<double>(localOf(kSlotRemix, step)));
     if (songRestart_) {
         // A part that simply follows keeps the song running; a jump (back to the start, or to
         // another part, or into the song from a scene played on its own) moves it, and song
@@ -1309,7 +1338,11 @@ void Engine::swapSlot(int k, int step, int offset, bool empty) {
         if (!empty && loop >= 0) audio_.setParam(a, AudioTracks::LoopSteps, static_cast<float>(loop));
         if (!empty) loop = -1;
     } else if (k == kSlotRemix) {
-        stems_.setLive(!empty, offset);
+        remixHeard_ = !empty;
+        if (!empty) remixCell_ = staged_.remixCell;
+        staged_.remixCell = -1;
+        // Its passage counts from the launch (a part carrying on: from where it was).
+        applyRemix(offset, static_cast<double>(slots_[static_cast<size_t>(k)].stagedOffset));
     }
     auto& sl = slots_[static_cast<size_t>(k)];
     sl.start = step - sl.stagedOffset;
@@ -1329,6 +1362,28 @@ void Engine::swapSlot(int k, int step, int offset, bool empty) {
         lane.values = lane.staged;
         lane.hasStaged = false;
     }
+}
+
+// Lot D2: the remix slot plays the whole song, a passage of it, or nothing.
+void Engine::applyRemix(int offset, double local) {
+    if (!remixHeard_) {
+        stems_.setLive(false, offset);
+        remixCells_.stop(offset);
+        return;
+    }
+    if (remixCell_ >= 0) {
+        stems_.setLive(false, offset);
+        if (sequencer_.running()) remixCells_.play(remixCell_, offset, local);
+        else remixCells_.stop(offset);
+        return;
+    }
+    remixCells_.stop(offset);
+    stems_.setLive(true, offset);
+}
+
+double Engine::remixLocalNow() const {
+    if (!sequencer_.running()) return 0.0;
+    return sequencer_.position() - static_cast<double>(slots_[kSlotRemix].start);
 }
 
 // The scene playing goes on by itself, outside the song: song clips fade, song curves hold.
@@ -1542,6 +1597,8 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     }
     renderLayers(channels, rights, numFrames);
     stems_.render(stemsL, stemsR, numFrames);
+    remixCells_.setStepFrames(sequencer_.samplesPerStep());
+    remixCells_.render(stemsL, stemsR, numFrames);
     // The stems listened to on the Remix page play apart from the project: added after the mixer,
     // so a strip left in solo (or the remix's strip muted) never silences them.
     float* previewL = previewL_.data();

@@ -1,12 +1,15 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <atomic>
+#include <cmath>
 #include <cstdint>
 #include <limits>
 #include <string>
 #include <vector>
 
+#include "Sample.h"
 #include "Smoother.h"
 #include "SpscQueue.h"
 
@@ -175,6 +178,84 @@ private:
     int64_t playEnd_ = 0;
     std::array<int, StemBundle::kStems> cursor_{};
     int edge_ = 96;  // 2 ms: the shortest fade at a piece's edge (no click at a cut)
+};
+
+
+// Lot D2 (« case Remix du Live »): a passage of the separated song per cell of the Live grid's
+// remix column (one per brick): a stem or the whole song, cut on whole bars and stretched to the
+// project's tempo off the audio thread (as the loops of step 4e). The remix slot plays one of them
+// in a loop counted from its launch on the transport's grid (sample-accurate on the bar), instead
+// of the whole song. Its read position follows the transport's beats: when the tempo changes, the
+// copy playing is read faster or slower until the copy for the new tempo comes (a refit, picked up
+// at the same place and cross-faded): never a gap nor a jump. Real-time safe except where noted.
+class RemixCells {
+public:
+    static constexpr int kCells = 32;
+    RemixCells() = default;
+    ~RemixCells();
+    RemixCells(const RemixCells&) = delete;
+    RemixCells& operator=(const RemixCells&) = delete;
+
+    void prepare(int sampleRate) {
+        rate_ = std::max(1, sampleRate);
+        stopFade_ = std::max(1, sampleRate / 200);   // 5 ms
+        crossFade_ = std::max(1, sampleRate / 100);  // 10 ms
+    }
+    // Takes over one reference (nullptr: the cell is emptied). `loopSteps`: the passage's length in
+    // transport steps (whole bars). `refit`: the same passage at another tempo (no restart).
+    void install(int cell, Sample* sample, int loopSteps, bool refit);
+    bool has(int cell) const { return cell >= 0 && cell < kCells && cells_[static_cast<size_t>(cell)].sample != nullptr; }
+    // Cell `cell` plays from `offset` frames into the next render(), `local` steps into its loop
+    // (0: from its first frame, at full level; elsewhere it fades in). A cell already playing goes on.
+    void play(int cell, int offset, double local);
+    // Fades out from `offset` frames into the next render().
+    void stop(int offset = 0);
+    // The transport's beat at `offset` frames into the next render(): the cell playing is `local`
+    // steps from its start there (its clock is pulled to it over the next beat, or snapped when far).
+    void sync(int offset, double local);
+    // Frames per step at the current tempo (each block).
+    void setStepFrames(double frames) {
+        if (frames > 1.0 && std::isfinite(frames)) stepFrames_ = frames;
+    }
+    // Adds the passage into the stereo pair.
+    void render(float* left, float* right, int numFrames);
+    bool active() const { return voice_.sample != nullptr || tails_[0].sample != nullptr || tails_[1].sample != nullptr || startAt_ >= 0; }
+    // The cell heard (-1: none), any thread.
+    int playing() const { return heard_.load(std::memory_order_relaxed); }
+    // Not the audio thread: frees the passages let go of.
+    void collectGarbage();
+
+private:
+    struct Voice {
+        const Sample* sample = nullptr;
+        double local = 0.0;  // steps since the cell's start
+        int loopSteps = 16;
+        int rise = 0, riseLen = 1;  // > 0: fading in
+        int fade = 0, fadeLen = 1;  // > 0: fading out (a tail)
+    };
+    struct Cell {
+        Sample* sample = nullptr;
+        int loopSteps = 16;
+    };
+    void retire(Sample* s);
+    void toTail(int frames);
+    void begin(int cell, double local);
+    float read(const Voice& v, float& r) const;
+
+    std::array<Cell, kCells> cells_{};
+    Voice voice_{};
+    int cell_ = -1;
+    std::array<Voice, 2> tails_{};
+    std::atomic<int> heard_{-1};
+    int startAt_ = -1, startCell_ = -1;
+    double startLocal_ = 0.0;
+    int stopAt_ = -1;
+    int syncAt_ = -1;
+    double syncLocal_ = 0.0;
+    double correction_ = 0.0;  // steps added per frame until the next beat (the clock pulled to the transport)
+    double stepFrames_ = 6000.0;
+    int rate_ = 48000, stopFade_ = 240, crossFade_ = 480;
+    SpscQueue<Sample*, 64> retired_;
 };
 
 }  // namespace ps

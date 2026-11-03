@@ -88,5 +88,9 @@ interface CommandSink {
     fun stemPosition(): Long? = null
     fun previewPosition(): Long? = null
 
-    enum class Install { PadSample, TrackSample, AudioClip, Stems, Instrument, LiveClip, PreviewStems }
+    enum class Install {
+        PadSample, TrackSample, AudioClip, Stems, Instrument, LiveClip, PreviewStems,
+        /** Lot D2: a remix cell's passage; index = cell | refit (0x100) | loop steps << 12. */
+        RemixCell,
+    }
 }

@@ -517,4 +517,222 @@ void StemPlayer::renderFrames(float* left, float* right, int from, int to, int w
     }
 }
 
+
+// --- RemixCells (lot D2: « case Remix du Live ») ---------------------------------------------
+
+RemixCells::~RemixCells() {
+    for (auto& c : cells_) retire(c.sample);
+    retire(const_cast<Sample*>(voice_.sample));
+    for (auto& t : tails_) retire(const_cast<Sample*>(t.sample));
+    collectGarbage();
+}
+
+void RemixCells::retire(Sample* s) {
+    if (s && s->release() && !retired_.push(s)) {
+        // Queue full (64 releases without a collection): leak rather than free here.
+    }
+}
+
+void RemixCells::collectGarbage() {
+    Sample* s = nullptr;
+    while (retired_.pop(s)) delete s;
+}
+
+void RemixCells::install(int cell, Sample* sample, int loopSteps, bool refit) {
+    if (cell < 0 || cell >= kCells || (sample && (sample->frames() <= 0 || !sample->data()))) {
+        retire(sample);
+        return;
+    }
+    Cell& c = cells_[static_cast<size_t>(cell)];
+    const int steps = std::clamp(loopSteps, 1, 1 << 16);
+    if (sample == c.sample) {
+        retire(sample);  // the same passage again (a resync): the extra reference goes
+        c.loopSteps = steps;
+        return;
+    }
+    Sample* old = c.sample;
+    c.sample = sample;
+    c.loopSteps = steps;
+    // The cell heard: the new copy takes over at the same place (a refit: the same passage at another
+    // tempo; else another passage), cross-faded; emptied, it fades out.
+    if (cell == cell_) {
+        if (!sample) {
+            toTail(stopFade_);
+            cell_ = -1;
+            heard_.store(-1, std::memory_order_relaxed);
+        } else if (voice_.sample) {
+            const double local = voice_.local;
+            toTail(crossFade_);
+            begin(cell, refit ? std::fmod(std::max(0.0, local), static_cast<double>(steps)) : std::max(0.0, local));
+            voice_.rise = voice_.riseLen = crossFade_;
+        }
+    }
+    retire(old);
+}
+
+void RemixCells::toTail(int frames) {
+    if (!voice_.sample) return;
+    // A free tail, else the one closest to its end.
+    Voice* t = !tails_[0].sample ? &tails_[0] : !tails_[1].sample ? &tails_[1] : tails_[0].fade <= tails_[1].fade ? &tails_[0] : &tails_[1];
+    retire(const_cast<Sample*>(t->sample));
+    *t = voice_;
+    t->fade = t->fadeLen = std::max(1, frames);
+    voice_ = Voice{};
+}
+
+void RemixCells::begin(int cell, double local) {
+    // The same passage already at that place (a song part that carries on, the scene sent again):
+    // it goes on, pulled to the place over the next beat.
+    if (cell == cell_ && voice_.sample && voice_.sample == cells_[static_cast<size_t>(cell)].sample && local >= 0.0) {
+        const double loop = voice_.loopSteps;
+        double err = std::fmod(local - voice_.local, loop);
+        if (err > loop * 0.5) err -= loop;
+        if (err < -loop * 0.5) err += loop;
+        if (std::fabs(err) < 0.05) {
+            correction_ = err / (4.0 * stepFrames_);
+            return;
+        }
+    }
+    toTail(crossFade_);
+    const Cell& c = cells_[static_cast<size_t>(cell)];
+    cell_ = cell;
+    heard_.store(c.sample ? cell : -1, std::memory_order_relaxed);
+    correction_ = 0.0;
+    if (!c.sample) return;
+    c.sample->retain();  // the voice holds its own reference (a refit may retire the cell's meanwhile)
+    voice_.sample = c.sample;
+    voice_.loopSteps = c.loopSteps;
+    voice_.local = local;
+    voice_.fade = 0;
+    // From its first frame: at full level, sample-accurate (the passage has its own short fades).
+    double phase = local / c.loopSteps;
+    phase -= std::floor(phase);
+    const bool fromStart = phase * static_cast<double>(c.sample->frames()) < 0.5;
+    voice_.rise = voice_.riseLen = fromStart ? 0 : stopFade_;
+    if (voice_.riseLen == 0) voice_.riseLen = 1;
+}
+
+void RemixCells::play(int cell, int offset, double local) {
+    if (cell < 0 || cell >= kCells || !std::isfinite(local)) return;
+    stopAt_ = -1;
+    startAt_ = std::max(0, offset);
+    startCell_ = cell;
+    startLocal_ = local;
+}
+
+void RemixCells::stop(int offset) {
+    startAt_ = -1;
+    if (cell_ < 0 && !voice_.sample) return;
+    stopAt_ = std::max(0, offset);
+}
+
+void RemixCells::sync(int offset, double local) {
+    if (!std::isfinite(local)) return;
+    syncAt_ = std::max(0, offset);
+    syncLocal_ = local;
+}
+
+float RemixCells::read(const Voice& v, float& r) const {
+    const Sample* s = v.sample;
+    const int64_t frames = s->frames();
+    const int ch = s->channels();
+    const float* d = s->data();
+    if (v.local < 0.0) {
+        r = 0.0f;
+        return 0.0f;
+    }
+    double phase = v.local / v.loopSteps;
+    phase -= std::floor(phase);
+    const double x = phase * static_cast<double>(frames);
+    const double loopFrames = v.loopSteps * stepFrames_;
+    if (std::fabs(static_cast<double>(frames) - loopFrames) < 2.0) {
+        // The copy for this tempo: read as it is, frame by frame (no interpolation dulling it).
+        const int64_t i = static_cast<int64_t>(std::llround(x)) % frames;
+        const float l = d[i * ch];
+        r = ch > 1 ? d[i * ch + 1] : l;
+        return l;
+    }
+    // Another tempo's copy, until its refit: read faster or slower (4-point Hermite), on the beat.
+    const auto i1 = static_cast<int64_t>(x);
+    const float t = static_cast<float>(x - static_cast<double>(i1));
+    auto at = [&](int64_t i, int c) {
+        i %= frames;
+        if (i < 0) i += frames;
+        return d[i * ch + (ch > 1 ? c : 0)];
+    };
+    auto hermite = [&](int c) {
+        const float y0 = at(i1 - 1, c), y1 = at(i1, c), y2 = at(i1 + 1, c), y3 = at(i1 + 2, c);
+        const float c1 = 0.5f * (y2 - y0);
+        const float c2 = y0 - 2.5f * y1 + 2.0f * y2 - 0.5f * y3;
+        const float c3 = 0.5f * (y3 - y0) + 1.5f * (y1 - y2);
+        return ((c3 * t + c2) * t + c1) * t + y1;
+    };
+    r = hermite(1);
+    return hermite(0);
+}
+
+void RemixCells::render(float* left, float* right, int numFrames) {
+    if (!active() && stopAt_ < 0 && syncAt_ < 0) return;
+    const double step = 1.0 / stepFrames_;
+    for (int i = 0; i < numFrames; ++i) {
+        if (i == stopAt_) {
+            toTail(stopFade_);
+            cell_ = -1;
+            heard_.store(-1, std::memory_order_relaxed);
+            stopAt_ = -1;
+        }
+        if (i == startAt_) {
+            begin(startCell_, startLocal_);
+            startAt_ = -1;
+        }
+        if (i == syncAt_) {
+            syncAt_ = -1;
+            if (voice_.sample) {
+                const double loop = voice_.loopSteps;
+                double err = std::fmod(syncLocal_ - voice_.local, loop);
+                if (err > loop * 0.5) err -= loop;
+                if (err < -loop * 0.5) err += loop;
+                if (std::fabs(err) > 0.5) {
+                    // The transport moved (a jump): picked up at its place, cross-faded.
+                    const int cell = cell_;
+                    begin(cell, syncLocal_);
+                    voice_.rise = voice_.riseLen = crossFade_;
+                } else {
+                    // Pulled to the beat over the next one (a tempo change within a block): no jump.
+                    correction_ = err / (4.0 * stepFrames_);
+                }
+            }
+        }
+        float l = 0.0f, r = 0.0f;
+        if (voice_.sample) {
+            float vr = 0.0f;
+            const float vl = read(voice_, vr);
+            float g = 1.0f;
+            if (voice_.rise > 0) g = 1.0f - static_cast<float>(voice_.rise--) / static_cast<float>(voice_.riseLen);
+            l += vl * g;
+            r += vr * g;
+            voice_.local += step + correction_;
+        }
+        for (auto& t : tails_) {
+            if (!t.sample) continue;
+            float tr = 0.0f;
+            const float tl = read(t, tr);
+            float g = static_cast<float>(t.fade) / static_cast<float>(t.fadeLen);
+            if (t.rise > 0) g *= 1.0f - static_cast<float>(t.rise--) / static_cast<float>(t.riseLen);
+            l += tl * g;
+            r += tr * g;
+            t.local += step;
+            if (--t.fade <= 0) {
+                retire(const_cast<Sample*>(t.sample));
+                t = Voice{};
+            }
+        }
+        left[i] += l;
+        right[i] += r;
+    }
+    if (stopAt_ >= numFrames) stopAt_ -= numFrames;
+    if (startAt_ >= numFrames) startAt_ -= numFrames;
+    if (syncAt_ >= numFrames) syncAt_ -= numFrames;
+}
+
 }  // namespace ps

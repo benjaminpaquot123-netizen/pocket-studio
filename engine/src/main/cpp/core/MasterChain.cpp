@@ -98,6 +98,7 @@ void MasterChain::prepare(int rate) {
 
     clipL_.reset();
     clipR_.reset();
+    clipUp_.reset();
     held_ = env_ = 0.0f;
     holdLeft_ = 0;
     armed_ = 0;
@@ -284,8 +285,15 @@ MasterChain::Stats MasterChain::process(float* l, float* r, const float* direct,
         else if (armed_ > 0) --armed_;
         const bool armed = armed_ > 0;
         float ratioL = 1.0f, ratioR = 1.0f;
-        float yl = clip(clipL_, xl, level, armed, ratioL);
-        float yr = clip(clipR_, xr, level, armed, ratioR);
+        Float2 up[Oversampler4x::kFactor];
+        clipUp_.up(Float2(xl, xr), up);
+        float upL[Oversampler4x::kFactor], upR[Oversampler4x::kFactor];
+        for (int k = 0; k < Oversampler4x::kFactor; ++k) {
+            upL[k] = up[k].v[0];
+            upR[k] = up[k].v[1];
+        }
+        float yl = clip(clipL_, xl, upL, level, armed, ratioL);
+        float yr = clip(clipR_, xr, upR, level, armed, ratioR);
         float gain = 1.0f;
         limit(yl, yr, std::min(ratioL, ratioR), gain);
         stats.minGain = std::min(stats.minGain, gain);
@@ -339,15 +347,13 @@ float MasterChain::clipOnly2(ClipChannel& c, float in, float level, bool armed) 
     return out;
 }
 
-float MasterChain::clip(ClipChannel& c, float x, float level, bool armed, float& ratio) {
+float MasterChain::clip(ClipChannel& c, float x, const float* up, float level, bool armed, float& ratio) {
     // The input kClipDelay frames back: what comes out where nothing was clipped.
     c.dry[static_cast<size_t>(c.dryPos)] = x;
     const float dry = c.dry[static_cast<size_t>((c.dryPos - kClipDelay) & 7)];
     c.dryPos = (c.dryPos + 1) & 7;
     // Only the clipper's change is brought back down (band-limited, so its harmonics do not fold
     // back): what it leaves alone comes out exactly as it went in.
-    float up[Oversampler4x::kFactor];
-    c.os.up(x, up);
     float residual[Oversampler4x::kFactor];
     bool any = false;
     for (int k = 0; k < Oversampler4x::kFactor; ++k) {

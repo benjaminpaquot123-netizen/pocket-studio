@@ -51,10 +51,10 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
 
     /**
      * Waits (« attends 1 » at a time) until [done] holds: on the real condition, not a count of
-     * seconds, so a loaded machine only makes it slower. Two minutes only stop a test that hangs.
+     * seconds, so a loaded machine only makes it slower. Five minutes only stop a test that hangs (51 s alone, past two minutes under a full run).
      */
     private fun waitFor(what: String, done: () -> Boolean) {
-        val until = System.currentTimeMillis() + 120_000
+        val until = System.currentTimeMillis() + 300_000
         while (!done()) {
             assertTrue("$what never came", System.currentTimeMillis() < until)
             act("attends 1")
@@ -78,7 +78,7 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
 
         // The model comes down, the song is read and separated: each state is on the screen.
         val seen = LinkedHashSet<String>()
-        val until = System.currentTimeMillis() + 120_000
+        val until = System.currentTimeMillis() + 300_000
         while (SeparationJob.state.value.busy || SeparationJob.state.value == SeparationState.Idle && seen.isEmpty()) {
             assertTrue("the separation never ended", System.currentTimeMillis() < until)
             when (SeparationJob.state.value) {

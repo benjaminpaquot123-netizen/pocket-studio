@@ -13,6 +13,7 @@ import com.pocketstudio.model.CutPiece
 import com.pocketstudio.model.Cuts
 import com.pocketstudio.model.SongCuts
 import com.pocketstudio.model.StemCuts
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
@@ -170,13 +171,29 @@ class CutModel(
     private var moving: Cuts.Line? = null
     private var movingFrom: List<CutPiece>? = null
 
-    /** The cut line within [slop] frames of [frame] starts following the finger; false when none is there. */
+    /** Whether the moving cut really moved yet: the undo step and the save wait for that. */
+    private var moved = false
+
+    /**
+     * The cut line within [slop] frames of [frame] starts following the finger; false when none is
+     * there, or when another line is within twice [slop] of it (the whole song shown, cut every bar:
+     * a touch places the play head, the lines are grabbed once zoomed in).
+     */
     fun beginMove(frame: Long, slop: Long): Boolean {
-        val line = Cuts.lineNear(pieces, frame, slop) ?: return false
-        pushUndo()  // one undo step for the whole move
+        val line = grabbable(frame, slop) ?: return false
         moving = line
         movingFrom = pieces
+        moved = false
         return true
+    }
+
+    /** The line a finger at [frame] grabs with a zone of [slop] frames, null when none (or too crowded). */
+    fun grabbable(frame: Long, slop: Long): Cuts.Line? {
+        val all = Cuts.lines(pieces)
+        val i = all.indices.filter { abs(all[it].frame - frame) <= slop }.minByOrNull { abs(all[it].frame - frame) } ?: return null
+        val at = all[i].frame
+        val near = listOfNotNull(all.getOrNull(i - 1), all.getOrNull(i + 1)).any { abs(it.frame - at) <= 2 * slop }
+        return if (near) null else all[i]
     }
 
     /** Where the moved cut is now (stuck by the magnet), null when none moves. */
@@ -186,18 +203,25 @@ class CutModel(
     fun moveTo(frame: Long) {
         val line = moving ?: return
         val from = movingFrom ?: return
-        val moved = Cuts.moveLine(from, line, stuck(frame), frames)
-        movedTo = Cuts.movedLine(moved, line).frame
+        val now = Cuts.moveLine(from, line, stuck(frame), frames)
+        movedTo = Cuts.movedLine(now, line).frame
+        if (!moved) {
+            if (now == from) return
+            pushUndo()  // one undo step for the whole move, on its first real change
+            moved = true
+        }
         val s = stemCuts()
-        cuts = cuts.with(withPieces(s.copy(pieces = from), moved))
+        cuts = cuts.with(withPieces(s.copy(pieces = from), now))
     }
 
+    /** The finger lifted (or a second one came): saved once when the cut really moved. */
     fun endMove() {
         if (moving == null) return
         moving = null
         movingFrom = null
         movedTo = null
-        onChange(cuts)
+        if (moved) onChange(cuts)
+        moved = false
     }
 
     fun undo() {

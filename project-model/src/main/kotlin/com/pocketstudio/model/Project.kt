@@ -157,6 +157,8 @@ data class Project(
     @EncodeDefault(EncodeDefault.Mode.NEVER) val guide: com.pocketstudio.model.guide.GuideState = com.pocketstudio.model.guide.GuideState.EMPTY,
     /** G1b: the first instrument track's [InstrumentTrack.layers]; left out of the file when it has none. */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val synthLayers: List<TrackLayer> = emptyList(),
+    /** Lot C (n° 24): « Découper la chanson », the pieces of each stem of the remix ([SongCuts]); left out of the file when none. */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val songCuts: SongCuts = SongCuts(),
 ) {
     /** Sixteenths in a bar. */
     val stepsPerBar: Int get() = beatsPerBar * 4

@@ -12,5 +12,8 @@
   "« %1$s » est dans la case Remix de la brique %2$s.": "„%1$s“ ist im Remix-Feld von Block %2$s.",
   "Pose du son sur le pad %s…": "Sound wird auf Pad %s gelegt…",
   "le pad %s": "das Pad %s",
-  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "Der Sound konnte nicht auf dem Handy gespeichert werden: Vielleicht fehlt Speicherplatz."
+  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "Der Sound konnte nicht auf dem Handy gespeichert werden: Vielleicht fehlt Speicherplatz.",
+  "La page Live : une case par piste et par brique. Touche une case pour la lancer à la mesure suivante ; une case vide te propose d'y mettre un son ou de t'y enregistrer.": "Die Live-Seite: ein Feld pro Spur und pro Baustein. Tippe auf ein Feld, um es zum nächsten Takt zu starten; ein leeres Feld bietet dir an, einen Sound hineinzulegen oder darin aufzunehmen.",
+  "Enregistrer ma performance": "Meine Performance aufnehmen",
+  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "Im Live nimmt ● alles auf, was du spielst (gestartete Felder, Pads, Effekte, Noten). Beim Stoppen wird deine Aufnahme zu deinem Song; „Rückgängig“ nimmt sie auf einmal zurück."
 }

@@ -12,5 +12,8 @@
   "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s”在积木 %2$s 的混音格中。",
   "Pose du son sur le pad %s…": "正在把声音放到打击垫 %s…",
   "le pad %s": "打击垫 %s",
-  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "声音没能存到手机上：可能空间不够。"
+  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "声音没能存到手机上：可能空间不够。",
+  "La page Live : une case par piste et par brique. Touche une case pour la lancer à la mesure suivante ; une case vide te propose d'y mettre un son ou de t'y enregistrer.": "现场页面：每条音轨、每个积木各一个格子。点一下格子，它会在下一小节开始播放；空格子会让你放入声音或在里面录音。",
+  "Enregistrer ma performance": "录下我的表演",
+  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "在现场页面，● 会录下你弹奏的一切（启动的格子、打击垫、效果、音符）。停止后，这段录音就成为你的歌曲；“撤销”可一次全部撤回。"
 }

@@ -1109,3 +1109,8 @@
 - 2026-11-03 · Menu de la case Remix par appui long (et action TalkBack), le toucher reste « lancer ». Raison : une case Remix n'est jamais vide (toute la chanson). Retour : `remixHold` dans `GridMarks`.
 - 2026-11-03 · « Dans le Live » depuis la découpe = colonne Remix (première brique libre) pour la chanson du projet ; un pad live pour une autre chanson. Raison : « un passage par case » ; les pads live gardent « Ma bibliothèque ». Retour : la garde `p.remix.setId == sel.setId` dans `StemBoardRouter`.
 - 2026-11-03 · Textes qui doivent tenir : un seul composant `FitText` (mots jamais coupés, plus petit d'abord, hauteur de ligne qui suit). Retour : `TextAutoSize.StepBased` d'avant.
+- ResampleStop cible sa prise par le pointeur du buffer (pas d'id) : la file est FIFO et le buffer n'est
+  libéré qu'après le traitement de ses stops, donc pas d'ABA. Retour arrière : stop sans pointeur.
+- Libération de la prise à la fermeture sur `ClosingSaves` (exécuteur déjà existant), pas un nouveau fil.
+- Référence Master pro : jeton global du contrôleur propriétaire, pour qu'une fermeture tardive n'efface
+  pas celle du projet suivant.

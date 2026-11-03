@@ -72,6 +72,13 @@ public:
     void render(float* left, float* right, int numFrames);
 
     State state(int slot) const { return static_cast<State>(states_[static_cast<size_t>(slot)].load(std::memory_order_relaxed)); }
+    // B3 (« les lumières suivent le son »): how loud each pad sounds now, 0..1 and more (its peak,
+    // falling back over kLevelFallSeconds): read by the UI from any thread, written once a block.
+    float level(int slot) const {
+        if (slot < 0 || slot >= kSlots) return 0.0f;
+        return levels_[static_cast<size_t>(slot)].load(std::memory_order_relaxed);
+    }
+    static constexpr float kLevelFallSeconds = 0.12f;
     double beat() const { return beat_; }  // tests
     // The frame of the last render() where the clock crossed a bar line (-1: none), and whether a pad
     // was playing or waiting there (a recording that waits for the music starts on such a line).
@@ -122,11 +129,16 @@ private:
     // A pad stopped by a tap (or « Tout couper », or a row): its release.
     void stopSlot(Slot& s);
     void align();
+    void publishLevels(int numFrames);
     void play(Voice& v, const Slot& s, float& l, float& r);
     double gridOf(const Slot& s) const { return s.beats < beatsPerBar_ ? s.beats : beatsPerBar_; }
 
     std::array<Slot, kSlots> slots_{};
     std::array<std::atomic<uint8_t>, kSlots> states_{};
+    // B3: each slot's peak in the block being rendered, and its falling level as last published.
+    std::array<float, kSlots> blockPeak_{};
+    std::array<float, kSlots> level_{};
+    std::array<std::atomic<float>, kSlots> levels_{};
     SpscQueue<Sample*, 64> retired_;
     double beatFrames_ = 24000.0;
     double beat_ = 0.0;

@@ -5045,7 +5045,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 if (grown == null || id == null) q
                 else grown.withAudioTrack(grown.audioTracks.first { it.id == id }.copy(
                     clip = AudioClip(sample.file, name, pcm.seconds, start = songStart, song = true, bpm = bpm),
-                ))
+                )).let { g ->
+                    // Pad Live B3: how each pad played, for « Pistes séparées » (one file per pad).
+                    g.copy(padLive = g.padLive.copy(take = com.pocketstudio.app.padlive.PerfExport.record(id, spans, clips, start, end, bpm)))
+                }
             }
             if (session.undoDepth == performanceDoneDepth && performanceDoneDepth >= 0) {
                 // Nothing done since the take: the pads join its undo step.

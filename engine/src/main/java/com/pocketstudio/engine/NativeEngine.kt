@@ -982,6 +982,16 @@ object NativeEngine {
     external fun clipStates(out: IntArray)
 
     /**
+     * B3 (the lights that follow the sound): how loud each live pad sounds now, its peak falling
+     * back over about 120 ms ([LIVE_PADS] values, 0 when silent). Without the native engine: zeros.
+     */
+    fun clipLevels(out: FloatArray) {
+        if (isNative) nativeClipLevels(out) else out.fill(0f)
+    }
+
+    private external fun nativeClipLevels(out: FloatArray)
+
+    /**
      * The live grid: the slots of [mask] (1 shl slot) take over their part of [scene] (staged with
      * [setStaging] just before) or stop ([scene] < 0) on the first transport step that is a
      * multiple of [quantumSteps]. The whole mask is a row (the scene changes, [sceneSwaps]).

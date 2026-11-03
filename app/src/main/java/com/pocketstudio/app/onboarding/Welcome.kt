@@ -67,6 +67,8 @@ class WelcomeActions(
     val remix: () -> Unit = {},
     /** The mode of the project about to start: Simple (true) or Pro (false), chosen at « Simple ou Pro ? ». */
     val chooseMode: (Boolean) -> Unit = {},
+    /** Pad Live (lot B3: the child persona installed the app and found no Pad Live): the pads ready to play, straight away. */
+    val padLive: () -> Unit = {},
 )
 
 /**
@@ -113,6 +115,8 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, si
                         demo = { if (!leaving) asking = "demo" },
                         empty = { if (!leaving) asking = "empty" },
                         remix = { if (!leaving) asking = "remix" },
+                        // No « Simple ou Pro ? » for Pad Live: it has its own simple level.
+                        padLive = { if (!leaving) actions.padLive() },
                         later = { leaving = false; demoReady = false; actions.later() },
                     ),
                     simple = simple,
@@ -188,6 +192,8 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
                 tr("Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste."),
                 com.pocketstudio.app.ui.REMIX_COLOR, onClick = actions.remix, tag = "welcome_remix",
             )
+            // Lot B3 (persona Léo, 8): Pad Live was only on « Que veux-tu faire ? », never on the first launch.
+            PadLiveCard(actions.padLive)
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 TextButton(onClick = actions.later, modifier = Modifier.heightIn(min = 48.dp).testTag("welcome_later")) {
                     Text(tr("Plus tard : voir le rythme de départ"), color = Neon.TextSecondary)

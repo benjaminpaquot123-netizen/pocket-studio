@@ -130,10 +130,89 @@ class PadLiveScreenshotTest : ScreenshotTest() {
         )
     }
 
+    // --- Lot B3: the challenge, « Fête », the kept take and « Partager ma perf » ------------------
+
+    /** Level 3 on the « coup » pads of page A (Klaxon, Laser, Ouh ouh…). */
+    private val challenge = com.pocketstudio.model.PadChallenge.make(3, com.pocketstudio.model.PadChallenge.shotsOf(pads, 0), 124.0)!!
+
+    @Test
+    fun padLiveChallenge() = shoot("padlive_challenge", fullScreen = true) {
+        // The example plays its third hit: that pad lit; the music stopped for it.
+        val quiet = List(LivePads.ALL) { 0 }
+        PadLiveScreen(
+            PadLiveUi(pads, quiet, page = 0, pack = "fete", playing = false, tempoBpm = 124.0, beatsPerBar = 4,
+                challenge = ChallengeUi.Listening(challenge, 2), challengeLit = challenge.hits[2].pad),
+            PadLiveActions(), clockOf = { -1 }, record = { RecordDot() }, still = true,
+        )
+    }
+
+    @Test
+    fun padLiveChallengeDone() = shoot("padlive_challenge_done", fullScreen = true) {
+        val result = com.pocketstudio.model.PadChallenge.Result(5, 6, 1, 2, listOf(true, true, true, false, true, true), -1)
+        PadLiveScreen(
+            PadLiveUi(pads, List(LivePads.ALL) { 0 }, page = 0, pack = "fete", playing = false, tempoBpm = 124.0, beatsPerBar = 4,
+                challenge = ChallengeUi.Done(challenge, result)),
+            PadLiveActions(), clockOf = { -1 }, record = { RecordDot() }, still = true,
+        )
+    }
+
+    @Test
+    fun padLivePerf() = shoot("padlive_perf", fullScreen = true) {
+        PadLiveScreen(
+            PadLiveUi(pads, states, page = 0, pack = "fete", playing = true, tempoBpm = 124.0, beatsPerBar = 4, canUndo = true, takeDone = true, perfSeconds = 42),
+            PadLiveActions(), clockOf = { 6 }, record = { RecordDot() }, still = true,
+        )
+    }
+
+    /** The pads' levels as the engine gives them: the kick loud, the 303 quiet. */
+    private val loud = PadLevels().apply { update { it[0] = 0.9f; it[2] = 0.08f } }
+
+    @Test
+    fun padLiveParty() = shoot("padlive_party", fullScreen = true) {
+        PadLiveScreen(
+            ui(), PadLiveActions(), clockOf = { 6 }, record = { RecordDot() }, still = true,
+            readLevels = {}, levels = loud, partyAtStart = true,
+        )
+    }
+
+    @Test
+    fun padLiveLevels() = shoot("padlive_levels", fullScreen = true) {
+        PadLiveScreen(ui(), PadLiveActions(), clockOf = { 6 }, record = { RecordDot() }, still = true, readLevels = {}, levels = loud)
+    }
+
+    @Test
+    fun padLiveShare() = shoot("padlive_share") {
+        PerfShareContent(
+            PerfShareUi(seconds = 42, pads = 5, format = com.pocketstudio.app.rhythm.ExportFormat.M4a, stems = PerfStemsUi.Running(1, 5), soundRunning = false),
+            PerfShareActions(),
+        )
+    }
+
     companion object {
         val SHOTS = setOf(
             "padlive_home", "padlive", "padlive_more", "padlive_settings",
             "padlive_filter", "padlive_roll", "padlive_sound", "padlive_take", "padlive_recording",
+            "padlive_challenge", "padlive_challenge_done", "padlive_perf", "padlive_party", "padlive_levels", "padlive_share",
+        )
+    }
+}
+
+/** Lot B3: Pad Live on a small phone (360 dp): the pages, the pack and « Défi » on one line, « Plus » with its six buttons. */
+@RunWith(RobolectricTestRunner::class)
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
+@Config(qualifiers = "w360dp-h740dp-xxhdpi")
+class PadLiveSmallPhoneScreenshotTest : ScreenshotTest() {
+    override fun wanted(name: String) = name == "padlive_small"
+
+    @Test
+    fun padLiveSmall() = shoot("padlive_small", fullScreen = true, prepare = {
+        compose.onNodeWithTag("padlive_more").performClick()
+        compose.waitForIdle()
+    }) {
+        val pads = PadLive.placed(LivePads(), 0, LiveStarter.PADS.mapIndexed { i, p -> LiveClip("s$i.wav", p.name, if (p.oneShot) 1 else p.beats, p.oneShot, p.gain) })
+        PadLiveScreen(
+            PadLiveUi(pads, List(LivePads.ALL) { 0 }, page = 0, pack = "fete", playing = false, tempoBpm = 124.0, beatsPerBar = 4),
+            PadLiveActions(), clockOf = { -1 }, record = { RecordDot() }, still = true,
         )
     }
 }

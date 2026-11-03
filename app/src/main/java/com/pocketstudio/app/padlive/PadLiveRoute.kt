@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewModelScope
 import com.pocketstudio.app.audio.Pcm
 import com.pocketstudio.app.live.HideSystemBars
 import com.pocketstudio.app.live.RecordButton
@@ -58,6 +59,21 @@ fun PadLiveRoute(
     val canUndo by vm.session.canUndo.collectAsStateWithLifecycle()
     val played by vm.padLive.played.ui.collectAsStateWithLifecycle()
     val message by vm.padLive.played.message.collectAsStateWithLifecycle()
+    // Lot B3: the challenge, « Partager ma perf ».
+    val challenge by vm.padLive.challenge.ui.collectAsStateWithLifecycle()
+    val stems by vm.padLive.perf.stems.collectAsStateWithLifecycle()
+    val export by vm.export.collectAsStateWithLifecycle()
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val sharePrefs = androidx.compose.runtime.remember { com.pocketstudio.app.export.SharePrefs(context) }
+    var perfOpen by rememberSaveable { mutableStateOf(false) }
+    androidx.compose.runtime.DisposableEffect(vm) {
+        val c = vm.padLive.challenge
+        c.player = com.pocketstudio.app.tuto.TutoTestHooks.player ?: com.pocketstudio.app.guide.EnginePcmPlayer(vm.viewModelScope)
+        onDispose {
+            c.close()
+            c.player = null
+        }
+    }
     // Lot B2: a controller's pads play Pad Live's pads while it shows.
     androidx.compose.runtime.DisposableEffect(Unit) {
         vm.padLive.shown = true
@@ -78,6 +94,10 @@ fun PadLiveRoute(
         played = played,
         emptyPad = if (played is PlayedTakeUi.Done) vm.padLive.played.emptyPad()?.let { padName(it) } else null,
         message = message,
+        challenge = challenge,
+        challengeLit = (challenge as? ChallengeUi.Listening)?.let { u -> u.c.hits.getOrNull(u.at)?.pad },
+        takeDone = live.take is com.pocketstudio.app.live.TakeUi.Done,
+        perfSeconds = perfSeconds(p),
     )
     Box(
         Modifier.fillMaxSize()
@@ -121,9 +141,42 @@ fun PadLiveRoute(
                 placeInBrick = { vm.padLive.played.placeInBrick() },
                 dropTake = vm.padLive.played::cancel,
                 messageShown = vm.padLive.played::messageShown,
+                challenge = { if (vm.padLive.challenge.open) vm.padLive.challenge.close() else vm.padLive.challenge.open() },
+                challengeActions = ChallengeActions(
+                    listen = vm.padLive.challenge::listen,
+                    yourTurn = vm.padLive.challenge::yourTurn,
+                    finish = vm.padLive.challenge::finish,
+                    again = vm.padLive.challenge::again,
+                    next = vm.padLive.challenge::next,
+                    close = vm.padLive.challenge::close,
+                ),
+                share = { perfOpen = true },
+                listenTake = vm::listenPerformance,
+                dismissTake = vm::dismissPerformance,
             ),
             clockOf = live.clockOf,
             record = { RecordButton(live.take, actions.record) },
+            readLevels = if (com.pocketstudio.engine.NativeEngine.isNative) com.pocketstudio.engine.NativeEngine::clipLevels else null,
+        )
+    }
+    if (perfOpen) {
+        PerfShareSheet(
+            PerfShareUi(
+                seconds = perfSeconds(p), pads = PerfExport.takeOf(p)?.pads?.size ?: 0, format = sharePrefs.format, stems = stems,
+                soundRunning = export.running,
+            ),
+            PerfShareActions(
+                setFormat = sharePrefs::choose,
+                shareSound = {
+                    perfOpen = false
+                    vm.padLive.perf.shareSound(sharePrefs.format)
+                },
+                shareStems = { vm.padLive.perf.shareStems(context) },
+                close = {
+                    perfOpen = false
+                    vm.padLive.perf.reset()
+                },
+            ),
         )
     }
     if (tempoOpen) {

@@ -894,6 +894,8 @@ fun AppRoot() {
     val firstLaunchSeen = { SettingsStore.update(context) { it.copy(guideSeen = true) } }
     // Phase 36: a first launch starts in the Mode simple (the welcome says so, one touch changes it).
     LaunchedEffect(Unit) { if (!SettingsStore.state.value.guideSeen && !SettingsStore.state.value.simpleMode) SettingsStore.update(context) { it.copy(simpleMode = true) } }
+    // Lot B3: « Pad Live » chosen at the first launch: opened as the home's card opens it (below).
+    var padLiveFromWelcome by rememberSaveable(key = "pad_live_from_welcome") { mutableStateOf(false) }
     com.pocketstudio.app.onboarding.FirstLaunch(
         // After the opening (BrandIntro): a window would cover it.
         show = !settings.guideSeen && !com.pocketstudio.app.onboarding.Intro.playing,
@@ -915,6 +917,7 @@ fun AppRoot() {
                 }
             },
             later = firstLaunchSeen,
+            padLive = { firstLaunchSeen(); padLiveFromWelcome = true },
         ),
         playDemo = { if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.toggleSong() else rhythmVm.togglePlay() },
     )
@@ -1284,6 +1287,18 @@ fun AppRoot() {
     // [padLiveWelcome]: just opened from the card, its first hit sounds once.
     var showPadLive by rememberSaveable(key = "pad_live") { mutableStateOf(false) }
     var padLiveWelcome by rememberSaveable(key = "pad_live_welcome") { mutableStateOf(false) }
+    // Lot B3: Pad Live chosen at the first launch: its « Live » project made and opened, as the home's card does.
+    LaunchedEffect(padLiveFromWelcome) {
+        if (!padLiveFromWelcome) return@LaunchedEffect
+        padLiveFromWelcome = false
+        padLiveWelcome = true
+        showPadLive = true
+        val home = projectsVm.state.value.projects.firstOrNull { it.padLive && !it.unreadable }
+        when {
+            home == null -> projectsVm.create(com.pocketstudio.model.PadLive.newProject()) { id -> openProject(id) }
+            noProject || home.id != rhythmVm.projectId -> openProject(home.id)
+        }
+    }
     // The controller follows the screen shown (the Live page's panel too): knobs, pads, faders, encoder.
     val controllerScreen = com.pocketstudio.app.midi.KnobScreen.of(tab.name, showLive, liveTab, showLivePads || showPadLive)
     com.pocketstudio.app.midi.KnobScreenFollower(knobsVm, controllerScreen)
@@ -3494,6 +3509,9 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                 close = {
                     rhythmVm.leaveLiveEndingTake()
                     showPadLive = false
+                    // Lot B3 (persona Claire): ← left her in the « Live » project's drum grid, a studio she never
+                    // asked for; Pad Live is an app of its own: ← goes back to « Que veux-tu faire ? ».
+                    goHome()
                 },
                 browse = { pad -> rhythmVm.dismissSampleError(); libraryLive = pad; libraryMine = false; showLibrary = true },
                 // « Plus » › Briques: the Live page of the same project, Pad Live closed under it.

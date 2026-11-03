@@ -73,3 +73,54 @@
 - Réglages par pad « hauteur », « à l'envers », attaque/fin : demandent le moteur (B2, commandes 150+).
 - Les secondes (premier son < 5 s, rythme < 30 s) : à mesurer sur le téléphone de Benjamin (moment 1). Le jeu « Fête » se rend en quelques secondes à la création du projet.
 - Packs : boucles rendues avec les sons intégrés du style (sans les packs téléchargés).
+
+## Fait : B3, le jeu et le partage (2026-11-03, branche fx-b)
+- **Défi « refais ce rythme »** (`M/PadChallenge.kt`, `A/padlive/Challenge.kt`) : bouton « 🎯 Défi » de la maquette (à droite des pages ; sa cible seule sous 350 dp). 6 défis d'une mesure (Boum boum, Ping-pong, Le galop, Le contretemps, Le roulement, Le boss) sur les pads « coup » de la page, au tempo du projet borné à 80–120. « Écouter » : la musique s'arrête, l'exemple (rendu d'avance depuis les vrais sons des pads, joué par l'aperçu du moteur) allume ses pads l'un après l'autre ; « À toi » : les touchers sur les pads (écran ou manette) sont chronométrés, notés à la fin du nombre de coups ou à « J'ai fini » : 0 à 3 étoiles, « N sur M », « un peu trop vite / lent » (dit par TalkBack). Meilleures étoiles gardées dans le projet (`PadLiveSet.stars`, hors annulation) ; le défi suivant = le premier sans 2 étoiles. Le panneau remplace les effets tant qu'il est ouvert.
+- **Lumières qui suivent le son** : le moteur publie le niveau de chaque pad (crête qui retombe en 120 ms, un atomique par pad écrit une fois par bloc, sans commande : `ClipLauncher::level`, JNI `clipLevels`) ; `PadLight(level = …)` : la lumière intérieure d'un pad qui joue va d'une lueur (30 %) au plein ; un pad inactif ne dessine toujours rien, et rien n'est lu quand rien ne joue.
+- **Mode « Fête »** (`A/padlive/PartyMode.kt`) : « Plus » › « Fête » : les 16 pads de la page en plein écran (gros pads, noms en grand), ✕, pages A–D, ▶/■ ; la lumière de la pièce suit le pad le plus fort ; Retour ou ✕ revient à Pad Live.
+- **Export de la perf** (`A/padlive/PerfShare.kt`) : après ● REC → Fin, une ligne « Perf gardée · 0:42 · Écouter · Partager · ✕ » ; « Plus » › « Partager » aussi. « Partager ma perf » : « Le son » (M4A/WAV, l'export du morceau écrit par la prise, effets compris, avec sa fenêtre de progression) et « Pistes séparées » : un WAV par pad joué, rendu de nouveau depuis la prise (`PadTakeRecord` gardé avec le projet dans `PadLiveSet.take`, annulé avec la prise), copié dans Musique › BenStudio puis menu de partage. Les fichiers additionnés redonnent la piste « Pads live » à l'échantillon près (test).
+- **Reste de B2 fait** : la « Fin » d'un pad est rendue dans la prise gardée (`PadBounce` : la dernière passe continue après l'arrêt et s'éteint sur la durée de la Fin, comme `ClipLauncher::stopSlot`).
+- **Accessibilité** : chaque pad dit « son, mode, groupe, état, pad A9 » (même texte sur Pad Live et en Fête, `PadLiveA11y.kt`) ; double toucher TalkBack = un doigt ; résultats du défi et des pistes en zone annoncée ; vibration `Feel.Hit` à chaque pad (réglage Vibrations) ; gros pads = « Fête ».
+- **Sur le chemin (personas)** : Pad Live ajouté au premier lancement (`Welcome.kt`) ; ← de Pad Live ramène à « Que veux-tu faire ? » ; la bulle du « Mode retours » ne se pose plus sur la rangée des pages (Défi, Pack) ; « Plus » sur deux rangées de trois (« Briques » coupé en deux à 360 dp) ; noms des pads qui rétrécissent sur un pad court.
+
+## Personas (B3, banc « testeur humain », `T/human/HumanPadLivePersonasTest.kt`, touchers sur les pixels de l'écran)
+Captures regardées (dossier `-Ppersona.dir`). Le banc n'a pas de moteur : le jeu prêt à jouer est remplacé par un son court par pad (comme le banc le fait pour le kit), la prise ● REC n'y avance pas (horloge du moteur) : elle est testée par `T/padlive/PadLiveExportTest` à travers le ViewModel.
+- **Léo, 8 ans** (installe l'appli, veut taper sur des pads) : Grave trouvé et corrigé : Pad Live absent du premier lancement (seulement sur « Que veux-tu faire ? ») ; Grave trouvé et corrigé : la bulle « REC · Noter » couvrait « Défi », son toucher ne l'ouvrait pas. Ensuite : un pad, Défi, Écouter, ses pads allumés, à lui, résultat avec étoiles, Fête, sortie : OK.
+- **Karim, DJ** : ▶ d'une ligne, tempo +, Filtre glissé, page B puis A, « Partager » sans perf (« Pas encore de perf gardée : touche ● REC… »), défi direct « À moi ! » puis « J'ai fini » : rien de Bloquant ni de Grave.
+- **Claire, débutante** : pad, Plus, Fête, page B en Fête, Retour (quitte la Fête d'abord), ← : Moyen trouvé et corrigé : ← la laissait dans la grille de batterie du projet « Live » ; maintenant l'accueil.
+- Reste : aucun Bloquant ni Grave.
+
+## Règle « partout » (B3)
+- Pads qui bougent à l'arrêt : le nouveau `PartyMode.PartyPad` ajouté à `T/ui/StillPadsEverywhereTest` (lumière partagée, aucune animation propre) + « Fête » immobile 4 s sans rien qui joue, même avec des niveaux lus.
+- Fonctions à plus de 3 touchers : Défi (2), Partager ma perf (3), Fête (3) ajoutés à `PadLiveTouchCountTest`.
+- Mots coupés à 360 dp : capture `padlive_small` regardée (« Plus » à deux rangées, page/pack/défi sur une ligne).
+- La bulle « Mode retours » sur des boutons : seul Pad Live est en plein écran sans barre du haut ; la rangée des pages est déclarée à éviter (`Retours.keepClear`), comme « Boucler » l'était.
+
+## Tests et résultats (B3)
+- Moteur : `padlive_lights_follow_the_sound` (niveau fort ≈ 0,5, faible ≈ 0,05, jamais joué 0, retombe sous 0,01 en ½ s, lecture sans allocation) ; padlive_* verts.
+- `MT/PadChallengeTest` (niveaux, score, premier toucher en retard pardonné, faux pad, trop vite/lent, étoiles gardées, enregistrement JSON par défaut absent), `T/padlive/PadLiveChallengeTest` (exemple entendu pads allumés, rejoué 3 étoiles, gardé hors annulation, défi suivant, raté, page sans « coup »), `T/padlive/PadLiveExportTest` (Fin rendue ; prise → un WAV par pad dont la somme = la piste à 1e-5 près, sauvegarde → nouveau ViewModel, annuler ; « Le son » = l'export du morceau avec les pads ; sans prise : message), `PadLiveTouchCountTest`, `StillPadsEverywhereTest`, onboarding, i18n (14 langues).
+- Captures (regardées) : `padlive_challenge`, `padlive_challenge_done`, `padlive_perf`, `padlive_party`, `padlive_levels`, `padlive_share`, `padlive_small` ; réenregistrées car touchées : `padlive`, `padlive_more`, `padlive_filter`, `padlive_roll`, `padlive_take`, `padlive_recording`.
+
+## Décisions à recopier dans DECISIONS (B3)
+- 2026-11-03 · Défi : l'exemple est un son rendu d'avance depuis les sons des pads et joué par l'aperçu du moteur ; les touchers ne sont que chronométrés (écarts), aucune minuterie ne tient le temps de la musique. Retour : retirer le bouton Défi.
+- 2026-11-03 · Défi au tempo du projet borné 80–120, noté dès le dernier coup (ou « J'ai fini »), premier toucher pris comme départ ; 2 étoiles ouvrent le suivant. Retour : `PadChallenge.MIN_BPM/MAX_BPM`, `score`.
+- 2026-11-03 · Lumières qui suivent le son : niveau par pad publié par le moteur (atomique, une fois par bloc), sans commande. Retour : `level = null` dans Pad Live.
+- 2026-11-03 · « Gros pads » = le mode Fête (les 16 pads en plein écran) plutôt qu'un réglage de plus. Retour : un réglage.
+- 2026-11-03 · Pistes séparées d'une perf = un WAV 32 bits flottant par pad, rendus depuis la prise gardée (`PadLiveSet.take`), au gain de la piste « Pads live » ; pas d'effets de scène dedans (ils sont dans « Le son »). Raison : 8 pistes audio au plus, 64 pads. Retour : retirer « Pistes séparées ».
+- 2026-11-03 · Pad Live sur le premier lancement aussi (sans « Simple ou Pro ? »), et ← de Pad Live mène à l'accueil. Raison : personas Léo et Claire. Retour : `WelcomeScreen` / `goHome()` dans `close`.
+
+## Idées (B3, à recopier dans REVIEW et DECISIONS)
+- **Vidéo de l'écran** : pas tentée au-delà de l'étude : il faut MediaProjection (fenêtre d'accord système) + encodeur vidéo + son du moteur synchronisé ; rien de cela ne se teste ici (pas d'émulateur, Robolectric sans codec vidéo). La « Vidéo pour les réseaux » existante (forme d'onde, 30 s) reste le partage vidéo. Idée : réutiliser le chemin d'enregistrement d'écran du « Mode retours » (`RetoursService`) pour une perf.
+- **Ableton Link** : SDK C++ (GPL-2.0, compatible usage perso) mais il faut multidiffusion UDP sur le Wi-Fi, verrou multicast Android et un second appareil Link pour vérifier : non testable ici, demi-journée non engagée. Idée pour D/E avec un appareil de Benjamin.
+
+## Restes de B3
+- Pistes séparées : seulement les pads ; les briques jouées pendant la prise restent dans « Piste par piste » de Mix. Le volume de la tranche « Pads live » du mixeur n'est pas appliqué aux fichiers (le gain du clip, si).
+- Petit téléphone (360 dp) avec « Plus » ouvert : les pads deviennent courts, les noms longs (« Boucle de kick ») sont abrégés ; à revoir avec la tablette (D).
+- Le banc ne fait pas avancer une prise ● REC (pas d'horloge moteur) : un siège de banc avec le moteur hôte serait utile (D).
+- Résultat du défi sur le téléphone : à essayer par Benjamin (liste du moment 1 : un enfant, un défi).
+
+## Fichiers touchés hors liste stricte (B3, à savoir au rangement)
+- `A/retours/` : aucun (seulement `Retours.keepClear` appelé depuis `PadLivePages.kt`).
+- `A/onboarding/Welcome.kt` (carte Pad Live) et `LaunchChoice.kt` (`PadLiveCard` passé `internal`) ; `A/ui/AppRoot.kt` (premier lancement → Pad Live ; ← → accueil).
+- `RhythmViewModel.kt` : section Enregistrer la performance seulement (la prise garde `PadLiveSet.take`).
+- `app/build.gradle.kts` : propriété `persona.dir` passée aux tests.

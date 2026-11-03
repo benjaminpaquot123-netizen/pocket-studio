@@ -40,7 +40,9 @@ import kotlin.math.max
  *   goes round ([progress]; still and full without one);
  * - **waiting** for its beat: the ring drawn faintly, still;
  * - **touched**: a small ripple from the finger, 200 ms, then nothing;
- * - **held effect** on it: a light veil of colour on its edges ([veil]).
+ * - **held effect** on it: a light veil of colour on its edges ([veil]);
+ * - lot B3, **the light follows the sound** ([level], read when drawn): a playing pad's inner light
+ *   is as bright as its sound is loud, from a dim glow to full (a pad that does not play: nothing).
  * Lighting up takes 150 ms, going out 250 ms. Everything that moves is read when drawn: a playing
  * pad redraws, it never recomposes; nothing is allocated per frame.
  */
@@ -87,6 +89,8 @@ fun Modifier.padLight(
     veil: Boolean = false,
     corner: Dp = 12.dp,
     touchable: Boolean = true,
+    /** Lot B3: how loud the pad sounds now (0..1, read when drawn); null: its light stays full while it plays. */
+    level: (() -> Float)? = null,
 ): Modifier {
     val lit = animateFloatAsState(
         if (playing) 1f else 0f,
@@ -141,7 +145,8 @@ fun Modifier.padLight(
         onDrawWithContent {
             val on = lit.value
             if (on > 0.004f) {
-                drawRoundRect(inner, size = Size(w, h), cornerRadius = round, alpha = on)
+                val loud = level?.invoke()?.takeIf { it.isFinite() }?.let { padLightFollow(it) } ?: 1f
+                drawRoundRect(inner, size = Size(w, h), cornerRadius = round, alpha = on * loud)
                 val p = progress?.invoke()?.takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: 1f
                 drawPath(ring, ringColor.copy(alpha = 0.18f * on), style = ringStyle)
                 if (p > 0f) {
@@ -163,3 +168,15 @@ fun Modifier.padLight(
         }
     }
 }
+
+/**
+ * Lot B3: a pad's inner light for its sound's [level] (a peak, 0..1): never below a dim glow while
+ * it plays (a quiet tail still shows it plays), full from about −6 dB; the ear's curve in between.
+ */
+fun padLightFollow(level: Float): Float {
+    val l = level.coerceIn(0f, 1f)
+    return (PAD_LIGHT_FLOOR + (1f - PAD_LIGHT_FLOOR) * kotlin.math.sqrt((l * 2f).coerceAtMost(1f))).coerceIn(PAD_LIGHT_FLOOR, 1f)
+}
+
+/** The dimmest a playing pad's inner light gets (lot B3). */
+const val PAD_LIGHT_FLOOR = 0.3f

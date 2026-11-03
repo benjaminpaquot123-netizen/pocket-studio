@@ -445,7 +445,7 @@ private const val REVEAL_SETTLE_MS = 400L
  * one touch per [gesture]; each gesture's place is checked for the tests ([SpotChecks]): seen, not under the panel.
  */
 @Composable
-fun SpotFingerOverlay(registry: SpotRegistry, targets: List<String>, gesture: Int, cell: Int?, perBar: Int) {
+fun SpotFingerOverlay(registry: SpotRegistry, targets: List<String>, gesture: Int, cell: Int?, perBar: Int, drag: com.pocketstudio.app.tuto.TutoDrag? = null) {
     DisposableEffect(registry) {
         registry.watching = true
         onDispose { registry.watching = false }
@@ -455,6 +455,6 @@ fun SpotFingerOverlay(registry: SpotRegistry, targets: List<String>, gesture: In
     registry.version.intValue
     val target = targets.firstNotNullOfOrNull { registry.find(it) }?.translate(-origin.x, -origin.y)
     Box(Modifier.fillMaxSize().onGloballyPositioned { origin = it.boundsInWindow().topLeft }) {
-        com.pocketstudio.app.tuto.TutoFinger(target, gesture, cell, perBar)
+        com.pocketstudio.app.tuto.TutoFinger(target, gesture, cell, perBar, drag = drag)
     }
 }

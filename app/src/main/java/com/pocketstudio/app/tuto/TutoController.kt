@@ -113,6 +113,8 @@ data class TutoUi(
      */
     val gesture: Int = 0,
     val gestureCell: Int? = null,
+    /** n° 20: the gesture slides (a knob, a fader: [dragOf]), null: a touch. */
+    val gestureDrag: TutoDrag? = null,
     /**
      * Testers (lot « tuto 4 »): « Suivant » past the last step with steps still to do: the panel says
      * which ones (one touch goes there) instead of going back to the first of them without a word.
@@ -506,13 +508,13 @@ class TutoController(
                         val was = (if (i == 0) before else demo.frames[i - 1]).drums.lanes.getOrNull(lane)?.hits?.keys.orEmpty()
                         (now - was).minOrNull()
                     }
-                    _ui.value = _ui.value?.copy(gesture = i + 1, gestureCell = cell)
+                    _ui.value = _ui.value?.copy(gesture = i + 1, gestureCell = cell, gestureDrag = if (cell == null) dragOf(step.check) else null)
                     demoShow(frame)
                     if (i == 0) goFor(step, frame, spot = false)?.takeIf { it.notes != null }?.let { _goes.tryEmit(it) }
                     demo.sounds[i]?.let(demoSound)
                     delay(each)
                 }
-                _ui.value = _ui.value?.copy(demo = TutoDemoPhase.HOLDING, gesture = 0, gestureCell = null)
+                _ui.value = _ui.value?.copy(demo = TutoDemoPhase.HOLDING, gesture = 0, gestureCell = null, gestureDrag = null)
                 delay(holdMs)
                 val pad = _ui.value?.pad
                 val cells = pad?.let { lane ->
@@ -534,7 +536,7 @@ class TutoController(
                 // (lot « tuto 4 »): so too when the step's track is still to make (the demonstration's went with it, as
                 // all it showed): « Créer la piste … » in sight rather than another track's notes without a word.
                 val back = step.manual || step.spot.isEmpty() || _ui.value?.need != null
-                if (_ui.value?.demo != null) _ui.value = _ui.value?.let { it.copy(demo = null, demoCells = null, fade = 0f, gesture = 0, gestureCell = null, open = it.open || (back && it.current.id == step.id)) }
+                if (_ui.value?.demo != null) _ui.value = _ui.value?.let { it.copy(demo = null, demoCells = null, fade = 0f, gesture = 0, gestureCell = null, gestureDrag = null, open = it.open || (back && it.current.id == step.id)) }
                 demoJob = null
                 scope.launch { check(project.value) }
             }
@@ -773,6 +775,16 @@ class TutoController(
             // (sixteen hats) a little quicker, never under [GESTURE_MIN_MS], about [DEMO_SHOWN_MS] in all.
             (DEMO_SHOWN_MS * frameMs / FRAME_MS / frames.coerceAtLeast(1))
                 .coerceIn(GESTURE_MIN_MS * frameMs / FRAME_MS, (if (melodic) NOTE_FRAME_MAX else FRAME_MS) * frameMs / FRAME_MS)
+
+        /**
+         * n° 20: how « Montre-moi »'s finger moves on [check]'s control: a knob or a send turned up, a curve
+         * drawn, slides right; a fader lowered slides down; anything else is a touch (null).
+         */
+        fun dragOf(check: String): TutoDrag? = when {
+            check == "changed:volumes" || check.startsWith("changed:volumes:") -> TutoDrag.DOWN
+            check.startsWith("changed:synth:") || check.startsWith("send:") || check == "automation" || check.startsWith("automation:") -> TutoDrag.RIGHT
+            else -> null
+        }
 
         internal fun knobsOf(check: String): List<Int> =
             check.removePrefix("changed:synth:").substringAfter(':', "").split('+').mapNotNull { KNOBS[it.trim()] }

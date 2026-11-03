@@ -3450,7 +3450,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
     } else if (tutoUi?.demo == com.pocketstudio.app.tuto.TutoDemoPhase.SHOWING && !showProjects) {
         // n° 20: a finger on each gesture of « Montre-moi », the grid's very cell when it is one.
         val fingerOn = if (tutoUi?.gestureCell != null) listOf("step_cells") else tutoPlace
-        com.pocketstudio.app.learn.SpotFingerOverlay(spots, fingerOn, tutoUi?.gesture ?: 0, tutoUi?.gestureCell, rhythmVm.project.value.stepsPerBar)
+        com.pocketstudio.app.learn.SpotFingerOverlay(spots, fingerOn, tutoUi?.gesture ?: 0, tutoUi?.gestureCell, rhythmVm.project.value.stepsPerBar, tutoUi?.gestureDrag)
     } else if (tutoSpot != null && !showProjects) {
         com.pocketstudio.app.learn.SpotRingOverlay(spots, tutoSpot.orEmpty())
     } else if (guideSpot != null && !showProjects) {

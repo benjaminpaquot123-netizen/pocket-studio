@@ -1,0 +1,133 @@
+name: Audit release on the emulator
+
+# The Audit's checks of the RELEASE build (R8) on the emulator (docs/audits/AUDIT.md §1 point 8 and
+# §3 « Contrôles sur l'émulateur de la CI »): by hand only (Actions › Audit release on the emulator ›
+# Run workflow), on an audit-* tag. The APK is built here with the debug key (it never leaves this
+# job: only the results and R8's mapping are uploaded), then scripts/audit-emulator.sh installs it
+# and runs cold start, screen by screen, monkey, chaos, frames and memory.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Étiquette à auditer (audit-1, audit-2…)"
+        required: true
+        default: "audit-1"
+      monkey_seed:
+        description: "Graine de monkey (la même graine rejoue les mêmes gestes)"
+        default: "4242"
+      monkey_events:
+        description: "Nombre de gestes de monkey"
+        default: "5000"
+      endurance:
+        description: "Relancer aussi EnduranceTest (version debug) avec son logcat"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: audit-emulator-${{ github.event.inputs.ref }}
+  cancel-in-progress: false
+
+env:
+  NDK_VERSION: "30.0.16248370"
+  CMAKE_VERSION: "4.1.2"
+  ANDROID_PLATFORM: "platforms;android-37.0"
+  BUILD_TOOLS: "build-tools;37.0.0"
+
+jobs:
+  release:
+    name: Release (R8) on the emulator
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Only an audit tag
+        env:
+          REF: ${{ github.event.inputs.ref }}
+        run: |
+          case "$REF" in audit-[0-9]*) ;; *) echo "::error::Not an audit tag: $REF"; exit 1 ;; esac
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.inputs.ref }}
+          submodules: false
+      - name: Fetch submodules with retries (GitLab is sometimes overloaded)
+        run: |
+          git submodule update --init --depth=1 --force -- $(git config -f .gitmodules --get-regexp '\.path$' | awk '{print $2}' | grep -v eigen)
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            git submodule update --init --depth=1 --force -- separation/third_party/eigen && break
+            echo "eigen: attempt $i failed, waiting"; sleep 30
+          done
+          if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
+        with:
+          packages: ${{ env.ANDROID_PLATFORM }} ${{ env.BUILD_TOOLS }} ndk;${{ env.NDK_VERSION }} cmake;${{ env.CMAKE_VERSION }}
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      # Release with R8, for x86_64 too, signed with the debug key: an emulator check only.
+      - name: Build the release APK (R8)
+        run: |
+          ./gradlew -PemulatorAbi -PallowDebugSigning :app:assembleRelease
+          ls -l app/build/outputs/apk/release/
+          cp app/build/outputs/apk/release/*.apk "$RUNNER_TEMP/audit.apk"
+      - name: Build the debug test APKs
+        if: github.event.inputs.endurance == 'true'
+        run: ./gradlew -PemulatorAbi :app:assembleDebug :app:assembleDebugAndroidTest
+      - name: Cache the emulator and its system image
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ${{ env.ANDROID_HOME }}/emulator
+            ${{ env.ANDROID_HOME }}/system-images/android-35/google_apis/x86_64
+          key: emulator-35-google_apis-x86_64-v1
+      - name: Download the emulator and its system image
+        run: |
+          for attempt in 1 2 3 4; do
+            sdkmanager --install emulator 'system-images;android-35;google_apis;x86_64' --channel=0 > /dev/null || true
+            if [ -x "$ANDROID_HOME/emulator/emulator" ] && [ -f "$ANDROID_HOME/system-images/android-35/google_apis/x86_64/system.img" ]; then exit 0; fi
+            echo "Download incomplete (attempt $attempt), retrying"
+            sleep $((attempt * 20))
+          done
+          exit 1
+      - name: Release checks on the emulator
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
+        env:
+          SEED: ${{ github.event.inputs.monkey_seed }}
+          EVENTS: ${{ github.event.inputs.monkey_events }}
+        with:
+          api-level: 35
+          arch: x86_64
+          target: google_apis
+          disable-animations: false
+          emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none
+          script: ./scripts/audit-emulator.sh "$RUNNER_TEMP/audit.apk" --seed "$SEED" --events "$EVENTS"
+      # The transport that did not move on ▶ (REVIEW 2026-11-03): the debug EnduranceTest again, with its log.
+      - name: EnduranceTest (debug) on the emulator
+        if: always() && github.event.inputs.endurance == 'true'
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
+        with:
+          api-level: 35
+          arch: x86_64
+          target: google_apis
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none
+          script: ./scripts/emulator-tests.sh --endurance 2 --class com.pocketstudio.app.EnduranceTest
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: audit-emulator-${{ github.event.inputs.ref }}
+          retention-days: 30
+          path: |
+            app/build/audit-emulator/
+            app/build/outputs/mapping/release/mapping.txt
+            app/build/reports/androidTests/
+            app/build/realuse-logcat.txt
+          if-no-files-found: ignore

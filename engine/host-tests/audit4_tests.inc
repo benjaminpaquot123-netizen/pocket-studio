@@ -1,22 +1,10 @@
 // Audit stage 4 (« audio expert »): the audio thread's headroom regained without changing the sound.
-// The overdrive's curve takes its logarithm from a table and a short series (lnFrom1To4) instead of
-// libm, and the drive effects shape both channels block by block (DriveShaper::processPair) instead
-// of frame by frame. These tests hold both to the code from before: bit for bit for the block form,
-// under -140 dBFS for the logarithm (the anti-aliasing divides F's differences: a rough logarithm
-// would show there first).
+// The drive effects shape both channels block by block (DriveShaper::processPair) instead of frame
+// by frame: these tests hold that to the frame-by-frame code, bit for bit (whole songs rendered
+// through both are identical: docs/lots/AUDIT-4.md). Then the desktop checks of AUDIT étage 4.
 // Included by engine_tests.cpp (kept apart to ease merging).
 
 namespace audit4 {
-
-// The shape as it was before stage 4: std::log.
-struct LibmSoftClip {
-    double f(double x) const { return ps::SoftClipShape{}.f(x); }
-    double F(double x) const {
-        const double a = std::fabs(x);
-        if (a >= 3.0) return 2.348392481493110 + (a - 3.0);
-        return x * x / 18.0 + (4.0 / 3.0) * std::log((x * x + 3.0) / 3.0);
-    }
-};
 
 // A second shape (the synth's tanh), so the block form is not only right for one curve.
 struct Tanh {
@@ -42,25 +30,6 @@ std::vector<float> driveInput(int frames, uint32_t seed) {
                                               0.3f * static_cast<float>(std::sin(phase)) + noise);
     }
     return x;
-}
-
-void testFastLogMatchesLibm() {
-    double worst = 0.0;
-    auto at = [&](double y) {
-        const double e = std::fabs(ps::lnFrom1To4(y) - std::log(y));
-        worst = std::max(worst, e);
-    };
-    for (int i = 0; i <= 3000000; ++i) at(1.0 + 3.0 * i / 3000000.0);
-    // Each cell's edges, an ulp either side.
-    for (int c = 0; c <= 64; ++c) {
-        const double edge = c < 32 ? 1.0 + c / 32.0 : 2.0 + (c - 32) / 16.0;
-        for (double y : {std::nextafter(edge, 0.0), edge, std::nextafter(edge, 8.0)})
-            if (y >= 1.0 && y <= 4.0) at(y);
-    }
-    const bool nanStays = std::isnan(ps::lnFrom1To4(std::nan("")));
-    std::printf("  lnFrom1To4 on [1, 4]: worst error %.3g (libm's own rounding: 2.2e-16 to 4.4e-16), NaN in, NaN out: %d\n", worst, nanStays);
-    CHECK(worst < 1.0e-15);
-    CHECK(nanStays);
 }
 
 // processPair() is process() then dry(), frame for frame, bit for bit: any block size, a gain and an
@@ -101,35 +70,9 @@ bool pairMatchesPerSample(const Shape& shape, uint32_t seed) {
 }
 
 void testDrivePairMatchesPerSample() {
-    const bool soft = pairMatchesPerSample(ps::SoftClipShape{}, 11u), libm = pairMatchesPerSample(LibmSoftClip{}, 12u),
-               tanh = pairMatchesPerSample(Tanh{}, 13u);
-    std::printf("  processPair == process + dry, bit for bit: soft clip %d, its libm form %d, tanh %d\n", soft, libm, tanh);
-    CHECK(soft && libm && tanh);
-}
-
-// The overdrive with lnFrom1To4 against the one with std::log, through the whole drive (4x, the
-// anti-aliasing): the residual stays under -140 dBFS at every gain the Saturator uses (DaisySP's
-// pre-gain runs from 0.5 to ~1000).
-void testSoftClipNullAgainstLibm() {
-    const auto x = driveInput(kRate * 2, 5u);
-    double worstDb = -400.0;
-    float worstGain = 0.0f;
-    for (float g : {0.5f, 1.0f, 2.0f, 3.0f, 6.0f, 12.0f, 40.0f, 150.0f, 1000.0f}) {
-        ps::DriveShaper<> fast, ref;
-        double worst = 0.0;
-        for (float v : x) {
-            const float a = fast.process(v, g, 0.0f, ps::SoftClipShape{});
-            const float b = ref.process(v, g, 0.0f, LibmSoftClip{});
-            worst = std::max(worst, static_cast<double>(std::fabs(a - b)));
-        }
-        const double db = 20.0 * std::log10(worst + 1e-30);
-        if (db > worstDb) {
-            worstDb = db;
-            worstGain = g;
-        }
-    }
-    std::printf("  overdrive, table logarithm against libm's: worst residual %.1f dBFS (at pre-gain %.1f)\n", worstDb, worstGain);
-    CHECK(worstDb < -140.0);
+    const bool soft = pairMatchesPerSample(ps::SoftClipShape{}, 11u), tanh = pairMatchesPerSample(Tanh{}, 13u);
+    std::printf("  processPair == process + dry, bit for bit: soft clip %d, tanh %d\n", soft, tanh);
+    CHECK(soft && tanh);
 }
 
 // The Saturator effect through the block form: stereo, every block size the phone may ask (1 to 1024
@@ -242,9 +185,7 @@ void testTenMinutesAt44kWithChangingBuffers() {
 }  // namespace audit4
 
 #define PS_AUDIT4_TESTS                                                                   \
-    {"a4_fast_log_matches_libm", audit4::testFastLogMatchesLibm},                         \
     {"a4_drive_pair_matches_per_sample", audit4::testDrivePairMatchesPerSample},          \
-    {"a4_soft_clip_null_against_libm", audit4::testSoftClipNullAgainstLibm},              \
     {"a4_saturator_block_sizes_agree", audit4::testSaturatorBlockSizesAgree},             \
     {"a4_worst_case_at_every_buffer_and_rate", audit4::testWorstCaseAtEveryBufferAndRate}, \
     {"a4_ten_minutes_at_44k_changing_buffers", audit4::testTenMinutesAt44kWithChangingBuffers},

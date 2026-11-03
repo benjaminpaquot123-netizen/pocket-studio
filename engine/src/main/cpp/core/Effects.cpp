@@ -302,7 +302,8 @@ void Saturator::process(float* l, float* r, int n) {
         float* br = r + from;
         DriveShaper<Oversampler4x>::processPair(shL_, shR_, bl, br, wetL, wetR, dryL, dryR, m, gain, nullptr, curve);
         for (int i = 0; i < m; ++i) {
-            const float wl = wetL[i] * post[i] * wetGain_, wr = wetR[i] * post[i] * wetGain_;
+            // (post x wetGain first: the rounding the frame-by-frame loop had, bit for bit.)
+            const float pw = post[i] * wetGain_, wl = wetL[i] * pw, wr = wetR[i] * pw;
             if (open) {
                 lpL_ = wl;
                 lpR_ = wr;

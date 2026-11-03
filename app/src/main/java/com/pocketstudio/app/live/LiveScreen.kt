@@ -324,16 +324,21 @@ fun LiveScreen(
     onTab: (LivePanelTab) -> Unit = {},
 ) {
     val columns = liveColumnsOf(ui.project)
+    // Lot D: an expanded width (a tablet lying down, a foldable open): the bricks and the pads side
+    // by side, the pads beside the grid from the start (no pads view on the whole screen).
+    val expanded = liveExpanded(androidx.compose.ui.platform.LocalConfiguration.current.screenWidthDp.dp)
     // The panel's page (kept while folded: ︿ opens it there again) and whether it is open.
-    var tab by rememberSaveable { mutableStateOf(if (initialTab == LivePanelTab.Briques) LivePanelTab.Effets else initialTab) }
-    var panelOpen by rememberSaveable { mutableStateOf(initialTab != LivePanelTab.Briques) }
+    var tab by rememberSaveable {
+        mutableStateOf(if (initialTab == LivePanelTab.Briques) (if (expanded && pads != null) LivePanelTab.Pads else LivePanelTab.Effets) else initialTab)
+    }
+    var panelOpen by rememberSaveable { mutableStateOf(initialTab != LivePanelTab.Briques || (expanded && pads != null)) }
     LaunchedEffect(tab, panelOpen) { onTab(if (panelOpen) tab else LivePanelTab.Briques) }
     // A tab of the dock or the panel: Briques folds the tools; Pads is the pads view on the whole
     // screen (lot 4a; while a pad is being set up, its card here); the others open the panel there.
     val choose: (LivePanelTab) -> Unit = { t ->
         when {
             t == LivePanelTab.Briques -> panelOpen = false
-            t == LivePanelTab.Pads && pads?.editing == null && padsActions.fullScreen != null -> { tab = t; padsActions.fullScreen.invoke() }
+            t == LivePanelTab.Pads && pads?.editing == null && padsActions.fullScreen != null && !expanded -> { tab = t; padsActions.fullScreen.invoke() }
             else -> { tab = t; panelOpen = true }
         }
     }
@@ -419,7 +424,22 @@ fun LiveScreen(
                 val landscape = maxWidth > maxHeight
                 val wide = maxWidth >= 560.dp
                 val panelWidth = if (maxWidth >= 900.dp) 420.dp else 360.dp
-                if (landscape) {
+                val sidePanel = liveSidePanel(maxWidth)
+                if (liveExpanded(maxWidth)) {
+                    // Lot D: the bricks on the left, the pads (or the panel's other pages) on the right.
+                    Row(Modifier.fillMaxSize().testTag("live_side_by_side")) {
+                        LiveGrid(ui, columns, actions, gridMarks, Modifier.weight(1f).fillMaxHeight())
+                        if (panelOpen) {
+                            LivePanel(
+                                ui, columns, actions, fx, pads, padsActions, sideBySide = false, fold = { panelOpen = false },
+                                tab = tab, choose = choose, immersive = immersive, toggleFull = toggleFull, sideways = true,
+                                modifier = Modifier.width(sidePanel).fillMaxHeight(),
+                            )
+                        } else {
+                            PanelRail(ui, choose, immersive, toggleFull, Modifier.width(RAIL_WIDTH).fillMaxHeight())
+                        }
+                    }
+                } else if (landscape) {
                     Row(Modifier.fillMaxSize()) {
                         LiveGrid(ui, columns, actions, gridMarks, Modifier.weight(1f).fillMaxHeight())
                         if (panelOpen) {
@@ -555,6 +575,12 @@ private fun PanelRail(ui: LiveScreenUi, onTab: (LivePanelTab) -> Unit, immersive
 
 /** The folded panel lying down. */
 private val RAIL_WIDTH = 56.dp
+
+/** Lot D: the Material « expanded » width class and up: the bricks and the pads side by side. */
+internal fun liveExpanded(width: Dp): Boolean = width >= com.pocketstudio.ui.EXPANDED_FROM
+
+/** Side by side, the panel's width: the pads big enough to play with the fingers of one hand. */
+private fun liveSidePanel(width: Dp): Dp = (width * 0.42f).coerceIn(420.dp, 640.dp)
 
 /** The open panel upright, at least (the grid scrolls past that), and at most on a phone. */
 private val PANEL_MIN = 300.dp

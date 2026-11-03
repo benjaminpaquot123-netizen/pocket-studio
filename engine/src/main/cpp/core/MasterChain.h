@@ -167,7 +167,8 @@ private:
         void reset();
     };
     float clipOnly2(ClipChannel& c, float in, float level, bool armed);
-    float clip(ClipChannel& c, float x, float level, bool armed, float& ratio);
+    // `up`: x at 4x (both channels go up together, clipUp_).
+    float clip(ClipChannel& c, float x, const float* up, float level, bool armed, float& ratio);
     void limit(float& l, float& r, float clipRatio, float& gain);
     void estimate();
     void estimateDrop();
@@ -248,6 +249,9 @@ private:
 
     // --- Clipper.
     ClipChannel clipL_, clipR_;
+    // Audit stage 4: both channels' way up to 4x in one register (lane 0 left, lane 1 right; each
+    // ClipChannel's own oversampler now only goes down). The same floats as two Oversampler4x.
+    Oversampler4xPair clipUp_;
     float held_ = 0.0f, env_ = 0.0f;
     int armed_ = 0;  // frames the clipper still listens after a sample over its level
     int holdLeft_ = 0, holdFrames_ = 1200;

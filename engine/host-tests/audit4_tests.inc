@@ -136,6 +136,26 @@ void testBiquadPairMatchesScalar() {
     CHECK(mismatches == 0);
 }
 
+// KWeighting2 (the loudness meters' K-weighting, both sides in one register) is two KWeightings,
+// bit for bit, at both rates.
+void testKWeightingPairMatchesScalar() {
+    const auto a = driveInput(kRate, 41u), b = driveInput(kRate, 42u);
+    int mismatches = 0;
+    for (int rate : {44100, 48000}) {
+        ps::KWeighting left, right;
+        ps::KWeighting2 both;
+        left.prepare(rate);
+        right.prepare(rate);
+        both.prepare(rate);
+        for (size_t i = 0; i < a.size(); ++i) {
+            const ps::KWeighting2::Lanes y = both.process(a[i], b[i]);
+            if (y[0] != left.process(a[i]) || y[1] != right.process(b[i])) ++mismatches;
+        }
+    }
+    std::printf("  KWeighting2 == two KWeightings, bit for bit: %d frames apart\n", mismatches);
+    CHECK(mismatches == 0);
+}
+
 // AUDIT étage 4, « sur ordinateur »: the Live page's worst case (16 pads, 8 loops, the song of 4 stems
 // stretched 120 -> 128, drums, 4 effects per strip and on the master, sends, live effects) at every
 // buffer size a phone may ask (64 to 1024 frames) and at 44.1 and 48 kHz: no NaN, under full scale,
@@ -222,5 +242,6 @@ void testTenMinutesAt44kWithChangingBuffers() {
     {"a4_drive_pair_matches_per_sample", audit4::testDrivePairMatchesPerSample},          \
     {"a4_saturator_block_sizes_agree", audit4::testSaturatorBlockSizesAgree},             \
     {"a4_biquad_pair_matches_scalar", audit4::testBiquadPairMatchesScalar},               \
+    {"a4_kweighting_pair_matches_scalar", audit4::testKWeightingPairMatchesScalar},       \
     {"a4_worst_case_at_every_buffer_and_rate", audit4::testWorstCaseAtEveryBufferAndRate}, \
     {"a4_ten_minutes_at_44k_changing_buffers", audit4::testTenMinutesAt44kWithChangingBuffers},

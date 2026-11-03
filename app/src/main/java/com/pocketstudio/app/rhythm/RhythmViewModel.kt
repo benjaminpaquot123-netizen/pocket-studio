@@ -552,7 +552,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Polls the engine about 30 times a second while the screen is visible. */
     suspend fun pollLive() {
-        if (!NativeEngine.isAvailable) return
+        // The lanes' triggers are the native engine's own (a test's command sink has none).
+        if (!NativeEngine.isNative) return
         NativeEngine.laneTriggers(lastTriggers)
         while (true) {
             NativeEngine.laneTriggers(triggers)

@@ -937,7 +937,8 @@ fun AppRoot() {
         if (NativeEngine.isAvailable) NativeEngine.setMetronomeLevel(settings.metronomeLevel)
     }
     LaunchedEffect(settings.bufferBursts) {
-        if (NativeEngine.isAvailable) NativeEngine.setBufferBursts(settings.bufferBursts)
+        // The native stream's own setting (a test's command sink has no stream).
+        if (NativeEngine.isNative) NativeEngine.setBufferBursts(settings.bufferBursts)
     }
 
     // The native audio stream (its start, stop and health): a test's command sink has none.

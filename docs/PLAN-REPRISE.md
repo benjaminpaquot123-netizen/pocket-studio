@@ -29,11 +29,16 @@ La méthode (deux équipes, consignes fermées, tests ciblés, captures, surveil
 - [ ] **J. Fin**, sur le oui de Benjamin (consigne du 2026-10-28 : PR vers main seulement à sa demande ; la fusion publie la Release proposée en mise à jour sur son téléphone) : dernière relance complète, relecture neuve de ce qui a changé depuis la dernière (corrections de l'étage 7 comprises), PR vers main (par l'API REST ou l'outil GitHub : `gh pr` passe par GraphQL, bloqué ici), Release. **Sortie** : CI verte sur main ; Release au-dessus de la dernière APK d'audit (même suite de numéros de la CI) ; changelog, `recette.json`, PROGRESS et ROADMAP à jour. Play Store (production) ensuite, seulement à la demande de Benjamin : l'AAB de cette Release, après les 14 jours du test fermé (moment 3).
 
 ## Fichiers partagés entre deux équipes (règles anti-conflit)
-- **Docs** (DECISIONS, REVIEW, PROGRESS) : les équipes n'y écrivent pas ; chacune tient sa note de suivi `docs/lots/<lot>.md` (fait, en cours, prochaine sous-étape, décisions à recopier) ; je recopie au rangement.
+- **Docs** (DECISIONS, REVIEW, PROGRESS, THIRD_PARTY) : les équipes n'y écrivent pas ; chacune tient sa note de suivi `docs/lots/<lot>.md` (fait, en cours, prochaine sous-étape, décisions à recopier) ; je recopie au rangement.
 - **Textes et traductions** : chaque lot a son propre fichier `project-model/src/main/resources/i18n/<langue>/<lot>.json` (comme `fin8.json`), jamais ceux des autres ; il l'inscrit d'une ligne dans `I18n.AREAS` (`model/i18n/I18n.kt`).
 - **Modèle du projet** (`model/Project.kt`) : chaque lot y ajoute ses champs à la fin, avec une valeur par défaut, sans nouveau numéro de format ; le 2e rangé se recale.
 - **`AppRoot.kt` et l'accueil** : seul B ; **la grille et le modèle du Live** : B, puis D ; **le navigateur de sons** (`library/SoundShelfBrowser.kt`) : C seulement (« Garder »), B l'appelle sans le changer.
 - **Moteur** (C++, commandes, pont JNI) **et export** : une seule équipe à la fois (B, D, E ; C n'y touche pas) ; deux lots ne prennent jamais le même numéro de commande.
+- **`rhythm/RhythmViewModel.kt`** (B et C, carte A3) : chacun seulement dans ses sections `// --- …` (B : Live pads, Live grid, Enregistrer la performance, Lot 4b ; C : Remix, Step 5b, Step 5d, Stem board, Audio to notes) ; le nouveau code va dans des fichiers neufs de son paquet (`padlive/`, `remix/`), tenus par un seul champ ; conflit au rangement = garder les deux côtés.
+- **`remix/StemBoardRouter.kt`** : C, sauf la branche `StemDestination.Live` (elle lit `p.live.clips` et `LivePads.MAX`) : B la recale s'il change les pads live ; C n'y touche pas.
+- **`export/ShareSheet.kt` et `export/ExportService.kt`** : B pendant B/C (export de la performance), puis E ; le rappel des droits de C vit dans `remix/RightsNotice.kt`, appelé d'une ligne ajoutée par l'orchestrateur au rangement.
+- **`ui-components`, `app/build.gradle.kts`, `gradle/libs.versions.toml`, `AndroidManifest.xml`** : B pendant B/C, puis D ; C crée ses composants dans `remix/` et demande le reste par sa note de suivi.
+- **Numéros de commande du moteur** : B 150 à 169, D 170 à 189, E 190 à 209 (derniers pris : 140 à 146).
 - **Captures de référence** (`app/screenshots/`) : jamais fusionnées à la main ; celles en conflit sont réenregistrées au rangement et regardées.
 - **Rangement** : la première équipe finie est rangée d'abord ; l'autre reprend fx-int dans sa branche avant sa dernière vérification.
 

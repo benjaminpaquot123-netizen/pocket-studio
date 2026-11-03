@@ -106,6 +106,36 @@ void testSaturatorBlockSizesAgree() {
 }
 
 
+// Biquad2 (the Ott's band split, both sides in one register) is two Biquads, bit for bit: every
+// filter shape, an input moving on each side.
+void testBiquadPairMatchesScalar() {
+    const auto a = driveInput(kRate, 31u), b = driveInput(kRate, 32u);
+    int mismatches = 0, filters = 0;
+    for (int shape = 0; shape < 5; ++shape) {
+        for (float hz : {40.0f, 120.0f, 2500.0f, 15000.0f}) {
+            ps::Biquad c;
+            switch (shape) {
+                case 0: c.lowPass(kRate, hz); break;
+                case 1: c.highPass(kRate, hz); break;
+                case 2: c.peak(kRate, hz, 2.0f, 9.0f); break;
+                case 3: c.lowShelf(kRate, hz, -6.0f); break;
+                default: c.highPassQ(kRate, hz, 1.3066f); break;
+            }
+            ps::Biquad left = c, right = c;
+            ps::Biquad2 both;
+            both.set(c);
+            both.reset();
+            for (size_t i = 0; i < a.size(); ++i) {
+                const ps::Float2 y = both.process(ps::Float2(a[i], b[i]));
+                if (y.v[0] != left.process(a[i]) || y.v[1] != right.process(b[i])) ++mismatches;
+            }
+            ++filters;
+        }
+    }
+    std::printf("  Biquad2 == two Biquads, bit for bit: %d filters, %d frames apart\n", filters, mismatches);
+    CHECK(mismatches == 0);
+}
+
 // AUDIT étage 4, « sur ordinateur »: the Live page's worst case (16 pads, 8 loops, the song of 4 stems
 // stretched 120 -> 128, drums, 4 effects per strip and on the master, sends, live effects) at every
 // buffer size a phone may ask (64 to 1024 frames) and at 44.1 and 48 kHz: no NaN, under full scale,
@@ -191,5 +221,6 @@ void testTenMinutesAt44kWithChangingBuffers() {
 #define PS_AUDIT4_TESTS                                                                   \
     {"a4_drive_pair_matches_per_sample", audit4::testDrivePairMatchesPerSample},          \
     {"a4_saturator_block_sizes_agree", audit4::testSaturatorBlockSizesAgree},             \
+    {"a4_biquad_pair_matches_scalar", audit4::testBiquadPairMatchesScalar},               \
     {"a4_worst_case_at_every_buffer_and_rate", audit4::testWorstCaseAtEveryBufferAndRate}, \
     {"a4_ten_minutes_at_44k_changing_buffers", audit4::testTenMinutesAt44kWithChangingBuffers},

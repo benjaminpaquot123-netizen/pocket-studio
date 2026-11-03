@@ -191,16 +191,19 @@ constexpr float kDownThreshold = -18.0f, kUpThreshold = -24.0f;
 
 void Ott::prepare(float rate) {
     rate_ = rate;
-    for (Split* s : {&left_, &right_}) {
-        s->lp1a.lowPass(rate, kLowSplit);
-        s->lp1b.lowPass(rate, kLowSplit);
-        s->hp1a.highPass(rate, kLowSplit);
-        s->hp1b.highPass(rate, kLowSplit);
-        s->lp2a.lowPass(rate, kHighSplit);
-        s->lp2b.lowPass(rate, kHighSplit);
-        s->hp2a.highPass(rate, kHighSplit);
-        s->hp2b.highPass(rate, kHighSplit);
-    }
+    Biquad lp1, hp1, lp2, hp2;
+    lp1.lowPass(rate, kLowSplit);
+    hp1.highPass(rate, kLowSplit);
+    lp2.lowPass(rate, kHighSplit);
+    hp2.highPass(rate, kHighSplit);
+    split_.lp1a.set(lp1);
+    split_.lp1b.set(lp1);
+    split_.hp1a.set(hp1);
+    split_.hp1b.set(hp1);
+    split_.lp2a.set(lp2);
+    split_.lp2b.set(lp2);
+    split_.hp2a.set(hp2);
+    split_.hp2b.set(hp2);
     update();
     reset();
 }
@@ -222,9 +225,7 @@ void Ott::update() {
 }
 
 void Ott::reset() {
-    for (Split* s : {&left_, &right_}) {
-        for (Biquad* q : {&s->lp1a, &s->lp1b, &s->hp1a, &s->hp1b, &s->lp2a, &s->lp2b, &s->hp2a, &s->hp2b}) q->reset();
-    }
+    for (Biquad2* q : {&split_.lp1a, &split_.lp1b, &split_.hp1a, &split_.hp1b, &split_.lp2a, &split_.lp2b, &split_.hp2a, &split_.hp2b}) q->reset();
     env_.fill(0.0f);
     gainDb_.fill(0.0f);
     gain_.fill(1.0f);
@@ -238,15 +239,14 @@ void Ott::process(float* l, float* r, int n) {
     const float makeup = 4.0f * down;
     for (int i = 0; i < n; ++i) {
         const float xl = finiteOr0(l[i]), xr = finiteOr0(r[i]);
-        float bl[3], br[3];
-        auto split = [](Split& s, float x, float* band) {
-            band[0] = s.lp1b.process(s.lp1a.process(x));
-            const float rest = s.hp1b.process(s.hp1a.process(x));
-            band[1] = s.lp2b.process(s.lp2a.process(rest));
-            band[2] = s.hp2b.process(s.hp2a.process(rest));
-        };
-        split(left_, xl, bl);
-        split(right_, xr, br);
+        // Both sides' band split at once (audit stage 4: the same sums, lane by lane).
+        Split& s = split_;
+        const Float2 x(xl, xr);
+        const Float2 low = s.lp1b.process(s.lp1a.process(x));
+        const Float2 rest = s.hp1b.process(s.hp1a.process(x));
+        const Float2 mid = s.lp2b.process(s.lp2a.process(rest));
+        const Float2 high = s.hp2b.process(s.hp2a.process(rest));
+        const float bl[3] = {low.v[0], mid.v[0], high.v[0]}, br[3] = {low.v[1], mid.v[1], high.v[1]};
         for (size_t b = 0; b < 3; ++b) {
             const float e = std::max(std::fabs(bl[b]), std::fabs(br[b]));
             env_[b] += (e - env_[b]) * (e > env_[b] ? attack_[b] : release_[b]);

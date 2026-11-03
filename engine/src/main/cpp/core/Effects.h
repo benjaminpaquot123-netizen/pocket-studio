@@ -39,8 +39,32 @@ public:
     }
 
 private:
+    friend class Biquad2;
     void set(double b0, double b1, double b2, double a0, double a1, double a2);
     float b0_ = 1, b1_ = 0, b2_ = 0, a1_ = 0, a2_ = 0, z1_ = 0, z2_ = 0;
+};
+
+// Audit stage 4: a stereo pair's copies of one Biquad in one register (Float2): lane by lane the
+// float operations of Biquad::process, half the instructions.
+class Biquad2 {
+public:
+    void set(const Biquad& c) {
+        b0_ = Float2(c.b0_);
+        b1_ = Float2(c.b1_);
+        b2_ = Float2(c.b2_);
+        a1_ = Float2(c.a1_);
+        a2_ = Float2(c.a2_);
+    }
+    void reset() { z1_ = z2_ = Float2(0.0f); }
+    Float2 process(Float2 x) {
+        const Float2 y = b0_ * x + z1_;
+        z1_ = b1_ * x - a1_ * y + z2_;
+        z2_ = b2_ * x - a2_ * y;
+        return y;
+    }
+
+private:
+    Float2 b0_{1.0f}, b1_{0.0f}, b2_{0.0f}, a1_{0.0f}, a2_{0.0f}, z1_{0.0f}, z2_{0.0f};
 };
 
 // Three bands: low shelf 100 Hz, bell 1 kHz, high shelf 8 kHz, each ±12 dB (0.5 = flat).
@@ -55,7 +79,7 @@ private:
     void update();
     float rate_ = 48000;
     std::array<float, 3> gain_{0.5f, 0.5f, 0.5f};
-    std::array<Biquad, 3> left_{}, right_{};
+    std::array<Biquad2, 3> bands_{};  // both sides at once (lane 0 left, lane 1 right)
 };
 
 // Feed-forward compressor, stereo-linked, soft knee. Below the threshold it leaves the sound as
@@ -597,11 +621,12 @@ private:
     void update();
     float rate_ = 48000;
     std::array<float, 4> p_{0.6f, 0.5f, 0.7f, 0.7f};
-    // Per side: low = LP1·LP1, rest = HP1·HP1, mid = LP2·LP2(rest), high = HP2·HP2(rest).
+    // Both sides at once (lane 0 left, lane 1 right): low = LP1·LP1, rest = HP1·HP1, mid = LP2·LP2(rest),
+    // high = HP2·HP2(rest).
     struct Split {
-        Biquad lp1a, lp1b, hp1a, hp1b, lp2a, lp2b, hp2a, hp2b;
+        Biquad2 lp1a, lp1b, hp1a, hp1b, lp2a, lp2b, hp2a, hp2b;
     };
-    Split left_, right_;
+    Split split_;
     std::array<float, 3> env_{}, gainDb_{}, gain_{1.0f, 1.0f, 1.0f}, attack_{}, release_{};
     int count_ = 0;
 };

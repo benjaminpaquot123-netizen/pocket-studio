@@ -118,28 +118,27 @@ void Eq3::setParam(int p, float v) {
 }
 
 void Eq3::reset() {
-    for (auto& b : left_) b.reset();
-    for (auto& b : right_) b.reset();
+    for (auto& b : bands_) b.reset();
 }
 
 void Eq3::update() {
     const auto db = [&](int i) { return (gain_[static_cast<size_t>(i)] - 0.5f) * 24.0f; };
-    for (auto* side : {&left_, &right_}) {
-        (*side)[0].lowShelf(rate_, 100.0f, db(0));
-        (*side)[1].peak(rate_, 1000.0f, 0.9f, db(1));
-        (*side)[2].highShelf(rate_, 8000.0f, db(2));
-    }
+    // The coefficients only (the state stays: a knob turned while it plays, as before).
+    Biquad low, mid, high;
+    low.lowShelf(rate_, 100.0f, db(0));
+    mid.peak(rate_, 1000.0f, 0.9f, db(1));
+    high.highShelf(rate_, 8000.0f, db(2));
+    bands_[0].set(low);
+    bands_[1].set(mid);
+    bands_[2].set(high);
 }
 
 void Eq3::process(float* l, float* r, int n) {
     for (int i = 0; i < n; ++i) {
-        float a = l[i], b = r[i];
-        for (int k = 0; k < 3; ++k) {
-            a = left_[static_cast<size_t>(k)].process(a);
-            b = right_[static_cast<size_t>(k)].process(b);
-        }
-        l[i] = a;
-        r[i] = b;
+        Float2 x(l[i], r[i]);
+        for (auto& band : bands_) x = band.process(x);
+        l[i] = x.v[0];
+        r[i] = x.v[1];
     }
 }
 

@@ -110,9 +110,18 @@ class RemixSongScreenshotTest {
         compose.onNodeWithTag("timeline_grid").performTouchInput {
             longClick(androidx.compose.ui.geometry.Offset(grid.width * 0.3f, row.center.y - grid.top))
         }
-        compose.mainClock.advanceTimeBy(500)
-        compose.waitForIdle()
-        compose.onRoot().captureRoboImage("screenshots/remix_stem_edit_menu.png")
+        // A paused clock and a fixed step: the tab bar's glow is caught on the same frame every run.
+        compose.mainClock.autoAdvance = false
+        compose.mainClock.advanceTimeBy(2_000)
+        // The bottom bar's selected-tab glow anti-aliases a few pixels differently from run to run:
+        // 0.5 % of the image is allowed (a real change of the menu is far larger).
+        compose.onRoot().captureRoboImage(
+            "screenshots/remix_stem_edit_menu.png",
+            roborazziOptions = com.github.takahirom.roborazzi.RoborazziOptions(
+                compareOptions = com.github.takahirom.roborazzi.RoborazziOptions.CompareOptions(changeThreshold = 0.005f),
+            ),
+        )
+        compose.mainClock.autoAdvance = true
     }
 
     @Test

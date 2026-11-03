@@ -9,5 +9,8 @@
   "Mettre dans la case": "Hücreye koy",
   "Toute la chanson ici": "Şarkının tamamı burada",
   "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "Bu hücrede şarkıdan bir parça: ölçüde başlar ve tempoyu izler.",
-  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s”, %2$s bloğunun Remix hücresinde."
+  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s”, %2$s bloğunun Remix hücresinde.",
+  "Pose du son sur le pad %s…": "Ses %s pad'ine konuyor…",
+  "le pad %s": "%s pad'i",
+  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "Ses telefona kaydedilemedi: yer kalmamış olabilir."
 }

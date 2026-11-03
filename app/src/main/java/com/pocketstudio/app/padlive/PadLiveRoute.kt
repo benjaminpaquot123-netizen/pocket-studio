@@ -54,6 +54,8 @@ fun PadLiveRoute(
         }
     }
     val busy by vm.padLive.busy.collectAsStateWithLifecycle()
+    // Fix 2, n° 3: a sound put on a pad from the library (any page): its line while it is stored, why it was not.
+    val sampleTask by vm.sampleTask.collectAsStateWithLifecycle()
     val starting by vm.liveStarting.collectAsStateWithLifecycle()
     val states by vm.liveStates.collectAsStateWithLifecycle()
     val canUndo by vm.session.canUndo.collectAsStateWithLifecycle()
@@ -86,14 +88,15 @@ fun PadLiveRoute(
         pads = p.live, states = states, page = p.padLive.shownPage,
         pack = p.padLive.pack.ifEmpty { if (p.live.starterOffered) LiveStarterPack else "" },
         playing = live.playing, tempoBpm = p.tempoBpm, beatsPerBar = p.beatsPerBar,
-        busy = busy ?: if (starting) com.pocketstudio.model.i18n.tr("Préparation des pads prêts à jouer…") else null,
+        busy = busy ?: (sampleTask as? com.pocketstudio.app.rhythm.SampleTask.Busy)?.message
+            ?: if (starting) com.pocketstudio.model.i18n.tr("Préparation des pads prêts à jouer…") else null,
         effectHeld = live.fxOf().values.isNotEmpty(),
         canUndo = canUndo,
         chop = p.liveFx.chop,
         riserBars = p.liveFx.riserBars,
         played = played,
         emptyPad = if (played is PlayedTakeUi.Done) vm.padLive.played.emptyPad()?.let { padName(it) } else null,
-        message = message,
+        message = message ?: (sampleTask as? com.pocketstudio.app.rhythm.SampleTask.Failed)?.message,
         challenge = challenge,
         challengeLit = (challenge as? ChallengeUi.Listening)?.let { u -> u.c.hits.getOrNull(u.at)?.pad },
         takeDone = live.take is com.pocketstudio.app.live.TakeUi.Done,
@@ -140,7 +143,7 @@ fun PadLiveRoute(
                 placeOnPad = { vm.padLive.played.placeOnPad() },
                 placeInBrick = { vm.padLive.played.placeInBrick() },
                 dropTake = vm.padLive.played::cancel,
-                messageShown = vm.padLive.played::messageShown,
+                messageShown = { if (message != null) vm.padLive.played.messageShown() else vm.dismissSampleError() },
                 challenge = { if (vm.padLive.challenge.open) vm.padLive.challenge.close() else vm.padLive.challenge.open() },
                 challengeActions = ChallengeActions(
                     listen = vm.padLive.challenge::listen,
@@ -188,6 +191,14 @@ fun PadLiveRoute(
 /** « A12 »: pad [pad]'s page and place. */
 internal fun padName(pad: Int): String =
     com.pocketstudio.model.PadLive.PAGE_NAMES[com.pocketstudio.model.PadLive.pageOf(pad)] + (pad % com.pocketstudio.model.PadLive.PAGE_SIZE + 1)
+
+/**
+ * The live pad [pad] the sound library fills, as its title says it: « le pad live 3 » for the Live
+ * grid's (Pad Live's page A), « le pad B1 » for Pad Live's pages B to D (fix 2, n° 5: was « 17 »).
+ */
+internal fun libraryTarget(pad: Int): String =
+    if (pad >= com.pocketstudio.model.LivePads.MAX) com.pocketstudio.model.i18n.tr("le pad %s", padName(pad))
+    else com.pocketstudio.model.i18n.tr("le pad live %d", pad + 1)
 
 /** The live pads' strip (shared with the remix): the pads' « Effets ». */
 private const val EFFECTS_CHANNEL = 3

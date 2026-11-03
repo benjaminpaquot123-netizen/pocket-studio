@@ -9,5 +9,8 @@
   "Mettre dans la case": "खाने में डालें",
   "Toute la chanson ici": "पूरा गाना यहाँ",
   "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "इस खाने में गाने का एक हिस्सा: यह बार पर शुरू होता है और टेम्पो के साथ चलता है।",
-  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s” ब्लॉक %2$s के रीमिक्स खाने में है।"
+  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s” ब्लॉक %2$s के रीमिक्स खाने में है।",
+  "Pose du son sur le pad %s…": "साउंड पैड %s पर लग रहा है…",
+  "le pad %s": "पैड %s",
+  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "साउंड फ़ोन पर सेव नहीं हो सका: शायद जगह कम है।"
 }

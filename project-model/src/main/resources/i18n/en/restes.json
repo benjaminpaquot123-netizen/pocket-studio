@@ -9,5 +9,8 @@
   "Mettre dans la case": "Put in the cell",
   "Toute la chanson ici": "Whole song here",
   "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "A passage of the song in this cell: it starts on the bar and follows the tempo.",
-  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s” is in the Remix cell of brick %2$s."
+  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s” is in the Remix cell of brick %2$s.",
+  "Pose du son sur le pad %s…": "Putting the sound on pad %s…",
+  "le pad %s": "pad %s",
+  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "The sound couldn't be stored on the phone: it may be out of space."
 }

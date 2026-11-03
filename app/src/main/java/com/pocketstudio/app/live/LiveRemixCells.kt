@@ -132,6 +132,15 @@ class LiveRemixCells internal constructor(private val vm: RhythmViewModel) {
                     return@launch
                 }
                 place(scene, pcm, nameOf(stem, p), bpm, stem, start.toDouble() / StemSelection.SAMPLE_RATE)
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: OutOfMemoryError) {
+                AppLog.add("Case Remix : mémoire insuffisante")
+                vm.liveRemixSays(tr("Pas assez de mémoire pour ce son : essaie plus court."))
+            } catch (e: Exception) {
+                // Fix 2, n° 3: a full phone (the sound cannot be stored) is said, never a crash.
+                AppLog.add("Case Remix : échec (${e.message ?: e.javaClass.simpleName})")
+                vm.liveRemixSays(tr("Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place."))
             } finally {
                 _busy.value = null
             }

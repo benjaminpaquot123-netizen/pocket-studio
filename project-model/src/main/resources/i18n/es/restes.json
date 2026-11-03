@@ -9,5 +9,8 @@
   "Mettre dans la case": "Poner en la casilla",
   "Toute la chanson ici": "Toda la canción aquí",
   "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "Un fragmento de la canción en esta casilla: arranca en el compás y sigue el tempo.",
-  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s” está en la casilla Remix del bloque %2$s."
+  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s” está en la casilla Remix del bloque %2$s.",
+  "Pose du son sur le pad %s…": "Poniendo el sonido en el pad %s…",
+  "le pad %s": "el pad %s",
+  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "No se pudo guardar el sonido en el teléfono: quizá falta espacio."
 }

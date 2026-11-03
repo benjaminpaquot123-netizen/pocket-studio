@@ -220,21 +220,6 @@ class PadLiveController(private val vm: RhythmViewModel) {
         }
     }
 
-    /**
-     * A sound chosen in the sound browser for pad [pad] of pages B to D (page A goes through the
-     * Live page's own path): stored, then on the pad in one undo step, a loop or a hit by its length.
-     */
-    fun placeSound(pad: Int, pcm: Pcm, name: String, oneShot: Boolean) {
-        if (pad !in LivePads.MAX until LivePads.ALL) return
-        vm.viewModelScope.launch {
-            val (sample, prepared) = withContext(Dispatchers.IO) { vm.padSamples.add(pcm, name) }
-            vm.padSamples.register(prepared)
-            val beats = if (oneShot) 1 else LivePads.beatsFor(pcm.seconds, vm.project.value.tempoBpm)
-            vm.session.edit { q -> q.copy(live = q.live.withAt(pad, LiveClip(sample.file, sample.name, beats, oneShot).sanitized())) }
-            vm.pushLive()
-        }
-    }
-
     private var welcomeJob: Job? = null
 
     /**

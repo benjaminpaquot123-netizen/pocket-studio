@@ -530,7 +530,7 @@ fun AppRoot() {
                         target = when {
                             forTrack -> tr("la piste « %s »", com.pocketstudio.model.DefaultNames.shown(libProject.track(libTrack).name))
                             cell != null -> tr("la brique %s", com.pocketstudio.model.Scene.NAMES.getOrElse(cell.scene) { "?" })
-                            live >= 0 -> tr("le pad live %d", live + 1)
+                            live >= 0 -> com.pocketstudio.app.padlive.libraryTarget(live)
                             // The sound on the pad now (« Kick de ma voix »), as the pad and the grid name it.
                             else -> tr("le pad %1\$d (%2\$s)", lane + 1, com.pocketstudio.app.rhythm.padName(libProject, lane))
                         },
@@ -563,8 +563,6 @@ fun AppRoot() {
                                 val placed = when {
                                     cell != null -> rhythmVm.placeInCell(cell.key, cell.scene, pcm, name, known, hit)
                                     forTrack -> rhythmVm.useAsTrackSound(pcm, name, mine?.kind ?: (option.ref as? com.pocketstudio.app.library.SoundRef.Pack)?.sound?.kind)
-                                    // Pad Live's pages B to D: its own path (the older screens fill page A).
-                                    live >= com.pocketstudio.model.LivePads.MAX -> { rhythmVm.padLive.placeSound(live, pcm, name, hit); true }
                                     live >= 0 -> rhythmVm.placeOnLivePad(live, pcm, name, known, hit)
                                     else -> rhythmVm.placeOnPad(pcm, name, oneShot = mine == null)
                                 }

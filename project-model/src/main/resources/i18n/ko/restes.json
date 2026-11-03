@@ -9,5 +9,8 @@
   "Mettre dans la case": "칸에 넣기",
   "Toute la chanson ici": "여기는 곡 전체",
   "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "이 칸에 곡의 한 구간: 마디에서 시작하고 템포를 따라가요.",
-  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s”는 블록 %2$s의 리믹스 칸에 있어요."
+  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s”는 블록 %2$s의 리믹스 칸에 있어요.",
+  "Pose du son sur le pad %s…": "패드 %s에 사운드 넣는 중…",
+  "le pad %s": "패드 %s",
+  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "사운드를 휴대폰에 저장하지 못했어요: 공간이 부족할 수 있어요."
 }

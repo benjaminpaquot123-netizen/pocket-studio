@@ -9,5 +9,8 @@
   "Mettre dans la case": "Ins Feld setzen",
   "Toute la chanson ici": "Ganzer Song hier",
   "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "Eine Stelle des Songs in diesem Feld: sie startet auf dem Takt und folgt dem Tempo.",
-  "« %1$s » est dans la case Remix de la brique %2$s.": "„%1$s“ ist im Remix-Feld von Block %2$s."
+  "« %1$s » est dans la case Remix de la brique %2$s.": "„%1$s“ ist im Remix-Feld von Block %2$s.",
+  "Pose du son sur le pad %s…": "Sound wird auf Pad %s gelegt…",
+  "le pad %s": "das Pad %s",
+  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "Der Sound konnte nicht auf dem Handy gespeichert werden: Vielleicht fehlt Speicherplatz."
 }

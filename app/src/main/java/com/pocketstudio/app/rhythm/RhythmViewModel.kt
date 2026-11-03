@@ -1857,14 +1857,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun placeOnLivePad(pad: Int, pcm: Pcm, name: String, known: Double = 0.0, oneShot: Boolean = false): Boolean {
         if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
-        if (pad !in 0 until LivePads.MAX) return true
-        AppLog.add("Pad live ${pad + 1} : « $name » de la bibliothèque")
-        sampleJob(tr("Pose du son sur le pad live %d…", pad + 1), live = pad, liveTempo = LiveTempo(known, oneShot)) { padSamples.add(pcm, name) }
+        if (pad !in 0 until LivePads.ALL) return true
+        // Fix 2, n° 3: Pad Live's pages B to D the same way (tempo, busy guard, a full phone said),
+        // their hits as hits (« coup »), their pads named as Pad Live names them (« B1 »).
+        val paged = pad >= LivePads.MAX
+        val shown = if (paged) com.pocketstudio.app.padlive.padName(pad) else (pad + 1).toString()
+        AppLog.add("Pad live $shown : « $name » de la bibliothèque")
+        val busy = if (paged) tr("Pose du son sur le pad %s…", shown) else tr("Pose du son sur le pad live %d…", pad + 1)
+        sampleJob(busy, live = pad, liveTempo = LiveTempo(known, oneShot, shot = paged && oneShot)) { padSamples.add(pcm, name) }
         return true
     }
 
-    /** How a live pad's new sound finds its tempo ([placeOnLivePad]). */
-    private class LiveTempo(val known: Double, val oneShot: Boolean)
+    /** How a live pad's new sound finds its tempo ([placeOnLivePad]); [shot]: a hit kept as a hit (Pad Live's pages B to D). */
+    private class LiveTempo(val known: Double, val oneShot: Boolean, val shot: Boolean = false)
 
     /** On the first audio track without a clip; one is added when all are taken. */
     fun placeOnAudioTrack(pcm: Pcm, name: String) {
@@ -1900,7 +1905,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 _sampleTask.value = SampleTask.Failed(tr("Pas assez de mémoire pour ce son : essaie plus court."))
             } catch (e: Exception) {
                 AppLog.add("Piste audio : échec (${e.message})")
-                _sampleTask.value = SampleTask.Failed(if (e is UserMessage) e.message!! else tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName))
+                _sampleTask.value = SampleTask.Failed(failedWords(e))
             }
         }
     }
@@ -7492,6 +7497,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     private class UserMessage(message: String) : Exception(message)
 
+    /** What a sound that could not be put in place says (pads and audio tracks alike). */
+    private fun failedWords(e: Exception): String = when (e) {
+        is UserMessage -> e.message!!
+        // Fix 2, n° 3: the sound could not be written (a full phone, most likely), in plain words.
+        is java.io.IOException -> tr("Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.")
+        else -> tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName)
+    }
+
     /**
      * Runs [work] off the main thread and puts the sound it makes on the selected drum pad,
      * or on live pad [live] (looping every [beats] beats, or as long as the sound lasts).
@@ -7513,9 +7526,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     val before = project.value
                     val lead = com.pocketstudio.model.AutoTempo.leadFor(before, sample.name, bpm)
                     val follows = bpm > 0.0 && com.pocketstudio.model.AutoTempo.canFit(bpm, lead?.bpm ?: before.tempoBpm)
-                    val clip = if (follows) LiveClip(sample.file, sample.name, LivePads.beatsFor(seconds, bpm), bpm = bpm)
-                    else LiveClip(sample.file, sample.name, beats ?: LivePads.beatsFor(seconds, before.tempoBpm))
-                    session.edit { p -> (lead?.let { com.pocketstudio.model.AutoTempo.led(p, it) } ?: p).let { q -> q.copy(live = q.live.with(live, clip)) } }
+                    val clip = when {
+                        follows -> LiveClip(sample.file, sample.name, LivePads.beatsFor(seconds, bpm), bpm = bpm)
+                        liveTempo?.shot == true -> LiveClip(sample.file, sample.name, 1, oneShot = true)
+                        else -> LiveClip(sample.file, sample.name, beats ?: LivePads.beatsFor(seconds, before.tempoBpm))
+                    }.sanitized()
+                    session.edit { p -> (lead?.let { com.pocketstudio.model.AutoTempo.led(p, it) } ?: p).let { q -> q.copy(live = q.live.withAt(live, clip)) } }
                     if (lead != null) tempoLed(lead, before.tempoBpm)
                     pushLive()
                     _sampleTask.value = SampleTask.Idle
@@ -7535,9 +7551,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             } catch (e: Exception) {
                 recorder = null
                 AppLog.add("Son du pad : échec (${e.message})")
-                _sampleTask.value = SampleTask.Failed(
-                    if (e is UserMessage) e.message!! else tr("Ça n'a pas marché : %s", e.message ?: e.javaClass.simpleName),
-                )
+                _sampleTask.value = SampleTask.Failed(failedWords(e))
             }
         }
         if (cancellable) resampleJob = job

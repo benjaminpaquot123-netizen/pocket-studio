@@ -9,5 +9,8 @@
   "Mettre dans la case": "Pôr na célula",
   "Toute la chanson ici": "Música inteira aqui",
   "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "Um trecho da música nesta célula: começa no compasso e segue o andamento.",
-  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s” está na célula Remix do bloco %2$s."
+  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s” está na célula Remix do bloco %2$s.",
+  "Pose du son sur le pad %s…": "Colocando o som no pad %s…",
+  "le pad %s": "o pad %s",
+  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "Não deu para guardar o som no celular: talvez falte espaço."
 }

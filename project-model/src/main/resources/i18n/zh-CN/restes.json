@@ -9,5 +9,8 @@
   "Mettre dans la case": "放入此格",
   "Toute la chanson ici": "这里放整首歌",
   "Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo.": "此格放歌曲的一段：从小节开始，跟随速度。",
-  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s”在积木 %2$s 的混音格中。"
+  "« %1$s » est dans la case Remix de la brique %2$s.": "“%1$s”在积木 %2$s 的混音格中。",
+  "Pose du son sur le pad %s…": "正在把声音放到打击垫 %s…",
+  "le pad %s": "打击垫 %s",
+  "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "声音没能存到手机上：可能空间不够。"
 }

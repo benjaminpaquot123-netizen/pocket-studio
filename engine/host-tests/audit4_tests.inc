@@ -32,13 +32,14 @@ std::vector<float> driveInput(int frames, uint32_t seed) {
     return x;
 }
 
-// processPair() is process() then dry(), frame for frame, bit for bit: any block size, a gain and an
-// offset moving every frame, both shapes.
+// processPair() is process() then dry(), frame for frame, bit for bit, and so is DriveShaperPair:
+// any block size, a gain and an offset moving every frame, both shapes.
 template <class Shape>
 bool pairMatchesPerSample(const Shape& shape, uint32_t seed) {
     const int frames = kRate;
     const auto a = driveInput(frames, seed), b = driveInput(frames, seed * 7u + 1u);
     ps::DriveShaper<> sa, sb, pa, pb;
+    ps::DriveShaperPair both;  // the stereo effects' form: one register for the pair's filters
     int mismatches = 0;
     uint32_t s = seed;
     float gain[ps::DriveShaper<>::kMaxBlock], offset[ps::DriveShaper<>::kMaxBlock];
@@ -52,7 +53,10 @@ bool pairMatchesPerSample(const Shape& shape, uint32_t seed) {
             offset[i] = 0.1f * t;
         }
         ps::DriveShaper<>::processPair(pa, pb, &a[static_cast<size_t>(from)], &b[static_cast<size_t>(from)], wa, wb, da, db, n, gain, offset, shape);
+        float va[ps::DriveShaper<>::kMaxBlock], vb[ps::DriveShaper<>::kMaxBlock], ea[ps::DriveShaper<>::kMaxBlock], eb[ps::DriveShaper<>::kMaxBlock];
+        both.process(&a[static_cast<size_t>(from)], &b[static_cast<size_t>(from)], va, vb, ea, eb, n, gain, offset, shape);
         for (int i = 0; i < n; ++i) {
+            if (va[i] != wa[i] || vb[i] != wb[i] || ea[i] != da[i] || eb[i] != db[i]) ++mismatches;
             const float ya = sa.process(a[static_cast<size_t>(from + i)], gain[i], offset[i], shape);
             const float yb = sb.process(b[static_cast<size_t>(from + i)], gain[i], offset[i], shape);
             if (ya != wa[i] || yb != wb[i] || sa.dry() != da[i] || sb.dry() != db[i]) ++mismatches;
@@ -71,7 +75,7 @@ bool pairMatchesPerSample(const Shape& shape, uint32_t seed) {
 
 void testDrivePairMatchesPerSample() {
     const bool soft = pairMatchesPerSample(ps::SoftClipShape{}, 11u), tanh = pairMatchesPerSample(Tanh{}, 13u);
-    std::printf("  processPair == process + dry, bit for bit: soft clip %d, tanh %d\n", soft, tanh);
+    std::printf("  processPair and DriveShaperPair == process + dry, bit for bit: soft clip %d, tanh %d\n", soft, tanh);
     CHECK(soft && tanh);
 }
 

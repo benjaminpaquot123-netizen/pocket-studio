@@ -100,8 +100,7 @@ public:
     void setParam(int p, float v);
     void reset() {
         lpL_ = lpR_ = 0.0f;
-        shL_.reset();
-        shR_.reset();
+        sh_.reset();
         setDrive(driveTarget_);
     }
     void process(float* l, float* r, int n);
@@ -114,7 +113,7 @@ private:
     // DaisySP Overdrive's curve and gains, run at 4x with antiderivative anti-aliasing
     // (DriveShaper.h): the dry signal is DriveShaper::kDelay frames late with it. The drive glides
     // (its two gains move together: the level holds).
-    DriveShaper<Oversampler4x> shL_, shR_;
+    DriveShaperPair sh_;  // both channels (audit stage 4: one register for the pair)
     float driveTarget_ = 0.0f, drive_ = 0.0f, pre_ = 1.0f, post_ = 1.0f, glide_ = 0.01f;
     float toneCoef_ = 1.0f, mix_ = 1.0f, level_ = 1.0f, wetGain_ = 1.0f;
     float lpL_ = 0.0f, lpR_ = 0.0f;
@@ -255,7 +254,7 @@ private:
     // the weight fades with the energy, so a sound after a blank is measured on its own first
     // samples instead of against the silence (review m1: its attack was clipped hard).
     float ms_ = 0.0f, w_ = 0.0f, msCoef_ = 0.0f, ceiling_ = 1.0f;
-    DriveShaper<Oversampler4x> shL_, shR_;
+    DriveShaperPair sh_;  // both channels (audit stage 4: one register for the pair)
 };
 
 // The live performance effects of the master (PerformanceFx) are at the end of this file: they
@@ -543,8 +542,7 @@ public:
     void setParam(int p, float v);
     void reset() {
         lp1L_ = lp2L_ = lp1R_ = lp2R_ = dcInL_ = dcOutL_ = dcInR_ = dcOutR_ = 0.0f;
-        shL_.reset();
-        shR_.reset();
+        sh_.reset();
         drive_ = -1.0f;  // the next block starts at its drive (no glide from a stale one)
     }
     void process(float* l, float* r, int n);
@@ -557,7 +555,7 @@ private:
     float lp1L_ = 0, lp2L_ = 0, lp1R_ = 0, lp2R_ = 0;
     float dcInL_ = 0, dcOutL_ = 0, dcInR_ = 0, dcOutR_ = 0;
     // The curve at 4x with antiderivative anti-aliasing; the drive glides (no click on a turn).
-    DriveShaper<Oversampler4x> shL_, shR_;
+    DriveShaperPair sh_;  // both channels (audit stage 4: one register for the pair)
     float drive_ = -1.0f;
 };
 

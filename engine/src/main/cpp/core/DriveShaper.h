@@ -138,4 +138,79 @@ private:
     int pos_ = 0;
 };
 
+// Audit stage 4: two DriveShapers of a stereo pair as one, for the stereo drive effects (saturation,
+// distortion, clipper): the same output as DriveShaper::processPair, bit for bit, with the pair's
+// oversampling filters run in one register (Oversampler4xPair). Up to kMaxBlock frames a call.
+class DriveShaperPair {
+public:
+    static constexpr int kDelay = Oversampler4xPair::kDelay;
+    static constexpr int kMaxBlock = 64;
+
+    void reset() {
+        os_.reset();
+        prevU_[0] = prevU_[1] = prevF_[0] = prevF_[1] = 0.0;
+        prevX_[0] = prevX_[1] = 0.0f;
+        dryA_.fill(0.0f);
+        dryB_.fill(0.0f);
+        pos_ = 0;
+    }
+
+    // As DriveShaper::processPair (a, b: the two channels; offset may be null).
+    template <class Shape>
+    void process(const float* xa, const float* xb, float* wetA, float* wetB, float* dryA, float* dryB, int n, const float* gain,
+                 const float* offset, const Shape& shape) {
+        constexpr int kF = Oversampler4xPair::kFactor;
+        constexpr float kLift = 0.20710678f;
+        Float2 up[kMaxBlock * kF];
+        for (int i = 0; i < n; ++i) {
+            dryA_[static_cast<size_t>(pos_)] = xa[i];
+            dryB_[static_cast<size_t>(pos_)] = xb[i];
+            pos_ = pos_ == kDelay ? 0 : pos_ + 1;
+            dryA[i] = dryA_[static_cast<size_t>(pos_)];
+            dryB[i] = dryB_[static_cast<size_t>(pos_)];
+            os_.up(Float2(xa[i], xb[i]), up + i * kF);
+        }
+        // The curve, lane by lane: DriveShaper::process's arithmetic, both chains interleaved.
+        double pUa = prevU_[0], pFa = prevF_[0], pUb = prevU_[1], pFb = prevF_[1];
+        float pXa = prevX_[0], pXb = prevX_[1];
+        for (int i = 0; i < n; ++i) {
+            const float g = gain[i], o = offset ? offset[i] : 0.0f;
+            for (int k = i * kF; k < (i + 1) * kF; ++k) {
+                const float va = up[k].v[0], vb = up[k].v[1];
+                const float la = (1.0f + kLift) * va - kLift * pXa;
+                const float lb = (1.0f + kLift) * vb - kLift * pXb;
+                pXa = va;
+                pXb = vb;
+                const double ua = static_cast<double>(la) * g + o, ub = static_cast<double>(lb) * g + o;
+                const double fa = shape.F(ua), fb = shape.F(ub);
+                const double da = ua - pUa, db = ub - pUb;
+                up[k] = Float2(static_cast<float>(std::fabs(da) > 1.0e-4 ? (fa - pFa) / da : shape.f(0.5 * (ua + pUa))),
+                               static_cast<float>(std::fabs(db) > 1.0e-4 ? (fb - pFb) / db : shape.f(0.5 * (ub + pUb))));
+                pUa = ua;
+                pFa = fa;
+                pUb = ub;
+                pFb = fb;
+            }
+        }
+        prevU_[0] = pUa;
+        prevF_[0] = pFa;
+        prevU_[1] = pUb;
+        prevF_[1] = pFb;
+        prevX_[0] = pXa;
+        prevX_[1] = pXb;
+        for (int i = 0; i < n; ++i) {
+            const Float2 y = os_.down(up + i * kF);
+            wetA[i] = y.v[0];
+            wetB[i] = y.v[1];
+        }
+    }
+
+private:
+    Oversampler4xPair os_;
+    double prevU_[2] = {0.0, 0.0}, prevF_[2] = {0.0, 0.0};
+    float prevX_[2] = {0.0f, 0.0f};
+    std::array<float, kDelay + 1> dryA_{}, dryB_{};
+    int pos_ = 0;
+};
+
 }  // namespace ps

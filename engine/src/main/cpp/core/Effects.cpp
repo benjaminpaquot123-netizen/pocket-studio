@@ -288,7 +288,7 @@ void Saturator::update() {
 void Saturator::process(float* l, float* r, int n) {
     const SoftClipShape curve;
     const bool open = toneCoef_ >= 1.0f;
-    constexpr int kChunk = DriveShaper<Oversampler4x>::kMaxBlock;
+    constexpr int kChunk = DriveShaperPair::kMaxBlock;
     float gain[kChunk], post[kChunk], wetL[kChunk], wetR[kChunk], dryL[kChunk], dryR[kChunk];
     for (int from = 0; from < n; from += kChunk) {
         const int m = std::min(kChunk, n - from);
@@ -300,7 +300,7 @@ void Saturator::process(float* l, float* r, int n) {
         }
         float* bl = l + from;
         float* br = r + from;
-        DriveShaper<Oversampler4x>::processPair(shL_, shR_, bl, br, wetL, wetR, dryL, dryR, m, gain, nullptr, curve);
+        sh_.process(bl, br, wetL, wetR, dryL, dryR, m, gain, nullptr, curve);
         for (int i = 0; i < m; ++i) {
             // (post x wetGain first: the rounding the frame-by-frame loop had, bit for bit.)
             const float pw = post[i] * wetGain_, wl = wetL[i] * pw, wr = wetR[i] * pw;
@@ -666,8 +666,7 @@ void SoftClipper::reset() {
     ms_ = 0.0f;
     w_ = 0.0f;
     ceiling_ = 1.0f;
-    shL_.reset();
-    shR_.reset();
+    sh_.reset();
 }
 
 void SoftClipper::process(float* l, float* r, int n) {
@@ -679,7 +678,7 @@ void SoftClipper::process(float* l, float* r, int n) {
         double f(double x) const { return SoftClipper::shape(knee, static_cast<float>(x)); }
         double F(double x) const { return SoftClipper::antiderivative(knee, x); }
     } const curve{knee};
-    constexpr int kChunk = DriveShaper<Oversampler4x>::kMaxBlock;
+    constexpr int kChunk = DriveShaperPair::kMaxBlock;
     float xl[kChunk], xr[kChunk], inv[kChunk], ceiling[kChunk], yl[kChunk], yr[kChunk], dl[kChunk], dr[kChunk];
     for (int from = 0; from < n; from += kChunk) {
         const int m = std::min(kChunk, n - from);
@@ -702,7 +701,7 @@ void SoftClipper::process(float* l, float* r, int n) {
             inv[i] = 1.0f / ceiling_;
         }
         // Both channels' curves in one go (audit stage 4: the same output, in less time).
-        DriveShaper<Oversampler4x>::processPair(shL_, shR_, xl, xr, yl, yr, dl, dr, m, inv, nullptr, curve);
+        sh_.process(xl, xr, yl, yr, dl, dr, m, inv, nullptr, curve);
         for (int i = 0; i < m; ++i) {
             const float wl = yl[i] * ceiling[i], wr = yr[i] * ceiling[i];
             bl[i] = dl[i] + mix * (wl - dl[i]);

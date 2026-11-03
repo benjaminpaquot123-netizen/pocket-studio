@@ -100,7 +100,7 @@ void Distortion::process(float* l, float* r, int n) {
     const bool gliding = startDrive != drive_;
     float drive = drive_, level = 0.5f / std::tanh(0.5f * drive), bias = type == 1 ? 0.15f * drive : 0.0f;
     float rest = type == 1 ? shape(type, bias) : 0.0f;
-    constexpr int kChunk = DriveShaper<Oversampler4x>::kMaxBlock;
+    constexpr int kChunk = DriveShaperPair::kMaxBlock;
     float inL[kChunk], inR[kChunk], gain[kChunk], offset[kChunk], levels[kChunk], rests[kChunk];
     float wl[kChunk], wr[kChunk], dryL[kChunk], dryR[kChunk];
     for (int from = 0; from < n; from += kChunk) {
@@ -123,7 +123,7 @@ void Distortion::process(float* l, float* r, int n) {
             rests[j] = rest;
         }
         // Both channels' curves in one go (audit stage 4: the same output, in less time).
-        DriveShaper<Oversampler4x>::processPair(shL_, shR_, inL, inR, wl, wr, dryL, dryR, m, gain, offset, curve);
+        sh_.process(inL, inR, wl, wr, dryL, dryR, m, gain, offset, curve);
         for (int j = 0; j < m; ++j) {
             const float yl = (wl[j] - rests[j]) * levels[j];
             const float yr = (wr[j] - rests[j]) * levels[j];

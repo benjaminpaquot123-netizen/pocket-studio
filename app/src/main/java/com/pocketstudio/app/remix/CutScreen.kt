@@ -3,6 +3,7 @@ package com.pocketstudio.app.remix
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -357,7 +358,8 @@ private fun PieceTile(i: Int, frames: Long, loop: Boolean, ticked: Boolean, hear
     Box(
         modifier.heightIn(min = 76.dp).clip(shape).background(ground)
             .border(if (ticked) 2.dp else 0.dp, if (ticked) Neon.Cyan else Color.Transparent, shape)
-            .clickable(role = Role.Checkbox, onClick = onTick)
+            // Fix 2, n° 7: a checkbox says whether it is ticked.
+            .toggleable(value = ticked, role = Role.Checkbox, onValueChange = { onTick() })
             .semantics { contentDescription = tr("Bout %d", i + 1) }
             .testTag("cut_piece_$i"),
     ) {

@@ -181,6 +181,11 @@ class TrackSheetTest {
         val part = h.vm.project.value.song.indexOfFirst { it.plays(key) }
         // (Scrolled to: a box half out of its line counts as shown, its middle is not.)
         compose.onNodeWithTag("track_sheet_part_$part").performScrollTo()
+        // Fix 2, n° 7: a checkbox that says whether it is ticked.
+        fun ticked() = compose.onNodeWithTag("track_sheet_part_$part").fetchSemanticsNode().config
+            .getOrElseNullable(androidx.compose.ui.semantics.SemanticsProperties.ToggleableState) { null }
+        val before = ticked()
+        assertTrue(before != null)
         compose.onNodeWithTag("track_sheet_part_$part").performClick()
         compose.waitForIdle()
         assertFalse(h.vm.project.value.song[part].plays(key))

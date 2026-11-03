@@ -9,6 +9,7 @@ import android.view.View
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -245,14 +246,15 @@ fun BugReportContent(ui: BugReportUi, actions: BugReportActions, modifier: Modif
 @Composable
 private fun SwitchRow(title: String, line: String, on: Boolean, set: (Boolean) -> Unit, tag: String) {
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 56.dp).clip(RoundedCornerShape(12.dp)).clickable(role = Role.Switch) { set(!on) }.padding(vertical = 4.dp),
+        // Fix 2, n° 7 (« règle partout »): the row is the switch, and says whether it is on.
+        Modifier.fillMaxWidth().heightIn(min = 56.dp).clip(RoundedCornerShape(12.dp)).toggleable(value = on, role = Role.Switch, onValueChange = set).padding(vertical = 4.dp).testTag(tag),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
             Text(title, style = MaterialTheme.typography.bodyLarge)
             Text(line, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
-        Switch(checked = on, onCheckedChange = set, modifier = Modifier.padding(start = 8.dp).testTag(tag))
+        Switch(checked = on, onCheckedChange = null, modifier = Modifier.padding(start = 8.dp))
     }
 }
 

@@ -33,6 +33,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -155,11 +157,19 @@ data class PadSheetUi(
     val sounds: List<String> = emptyList(),
     /** The pad is heard alone in a loop now (« Écouter seul »). */
     val alone: Boolean = false,
+    /** Mode Pro: the pad's « Couches » show (other sounds for harder hits). */
+    val pro: Boolean = false,
+    /** The pad's velocity layers: name and the velocity (1..127) each starts from. */
+    val layers: List<Pair<String, Int>> = emptyList(),
 )
 
-fun padSheetUi(p: Project, lane: Int, sounds: List<String>, alone: Boolean = false): PadSheetUi {
+fun padSheetUi(p: Project, lane: Int, sounds: List<String>, alone: Boolean = false, pro: Boolean = false): PadSheetUi {
     val strip = p.mixer.channels.getOrNull(Mixer.padChannel(lane))
-    return PadSheetUi(lane, padName(p, lane), strip?.volume ?: 0.8f, p.drums.lanes[lane].pan, strip?.mute == true, p.drums.lanes[lane].sample != null, sounds, alone)
+    val sample = p.drums.lanes[lane].sample
+    return PadSheetUi(
+        lane, padName(p, lane), strip?.volume ?: 0.8f, p.drums.lanes[lane].pan, strip?.mute == true, sample != null, sounds, alone,
+        pro = pro, layers = sample?.layers.orEmpty().map { DefaultNames.shownSample(it.name) to it.from },
+    )
 }
 
 /** Callbacks of a pad's sheet. */
@@ -176,6 +186,11 @@ class PadSheetActions(
     val listenAlone: (() -> Unit)? = null,
     /** The sheet keeps « Écouter seul » going while it shows (the returned call lets go). */
     val holdAlone: () -> (() -> Unit) = { {} },
+    /** « Couches »: sound [i] of the sheet's list becomes a layer for the hard hits. */
+    val addLayer: (Int) -> Unit = {},
+    val removeLayer: (Int) -> Unit = {},
+    /** Layer [index] starts from velocity [from] (1..127). */
+    val setLayerFrom: (index: Int, from: Int) -> Unit = { _, _ -> },
 )
 
 /** A pad held: its sheet (another sound in one touch, its volume and pan, cut it). */
@@ -192,6 +207,7 @@ internal fun PadSheet(ui: PadSheetUi, actions: PadSheetActions, close: () -> Uni
                 pickSound = { if (!ui.alone) close(); actions.pickSound(it) }, origin = { if (!ui.alone) close(); actions.origin() }, more = { close(); actions.more() },
                 setVolume = actions.setVolume, setPan = actions.setPan, toggleMute = actions.toggleMute, panDone = actions.panDone,
                 listenAlone = actions.listenAlone,
+                addLayer = actions.addLayer, removeLayer = actions.removeLayer, setLayerFrom = actions.setLayerFrom,
             ),
             close,
         )
@@ -233,6 +249,37 @@ fun PadSheetContent(ui: PadSheetUi, actions: PadSheetActions, close: () -> Unit)
             label = { Text(if (ui.muted) tr("Pad coupé : touche pour l'entendre") else tr("Couper ce pad")) },
             modifier = Modifier.heightIn(min = 48.dp).testTag("pad_mute"),
         )
+        if (ui.pro && ui.hasSample) PadLayers(ui, actions)
+    }
+}
+
+/** « Couches » (Pro): other sounds for the pad's harder hits, each from a strength of its own. */
+@Composable
+private fun PadLayers(ui: PadSheetUi, actions: PadSheetActions) {
+    var choosing by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf(false) }
+    Text(tr("Couches"), style = MaterialTheme.typography.titleSmall, modifier = Modifier.testTag("pad_layers"))
+    Text(
+        tr("Frappe forte : un autre son. Le son du pad garde les coups doux."),
+        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+    )
+    ui.layers.forEachIndexed { i, (name, from) ->
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(name, Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodyMedium)
+            Text(tr("dès %s", percent((from * 100f / 127f).roundToInt())), style = MonoStyle, color = Neon.Cyan, modifier = Modifier.testTag("pad_layer_from_$i"))
+            TextButton(onClick = { actions.removeLayer(i) }, modifier = Modifier.heightIn(min = 48.dp).testTag("pad_layer_remove_$i")) { Text(tr("Retirer")) }
+        }
+        ProSlider(
+            value = from.toFloat(), valueRange = com.pocketstudio.model.PadLayer.FROM_RANGE.first.toFloat()..com.pocketstudio.model.PadLayer.FROM_RANGE.last.toFloat(),
+            onValueChange = { actions.setLayerFrom(i, it.roundToInt()) }, modifier = Modifier.testTag("pad_layer_slider_$i"),
+        )
+    }
+    if (ui.layers.size < com.pocketstudio.model.PadLayer.MAX && ui.sounds.isNotEmpty()) {
+        OutlinedButton(onClick = { choosing = !choosing }, modifier = Modifier.heightIn(min = 48.dp).testTag("pad_layer_add")) {
+            Text(if (choosing) tr("Fermer") else tr("Ajouter une couche"))
+        }
+        if (choosing) FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp), maxItemsInEachRow = 2) {
+            ui.sounds.forEachIndexed { i, name -> SoundTile(name, "pad_layer_sound_$i", Modifier.weight(1f)) { choosing = false; actions.addLayer(i) } }
+        }
     }
 }
 

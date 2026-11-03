@@ -2672,6 +2672,18 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                             }
                                         }
                                     },
+                                    addPadLayer = { lane, i ->
+                                        padSoundOptions(lane, packsOnPhone).getOrNull(i)?.let { option ->
+                                            rhythmVm.dismissSampleError()
+                                            libraryVm.use(option.ref) { pcm ->
+                                                if (!rhythmVm.addPadLayer(lane, pcm, option.name.substringBefore(" · "))) {
+                                                    libraryVm.notice(tr("Un son est encore en train d'être posé ou enregistré : réessaie dans un instant."))
+                                                }
+                                            }
+                                        }
+                                    },
+                                    removePadLayer = rhythmVm::removePadLayer,
+                                    setPadLayerFrom = rhythmVm::setPadLayerFrom,
                                     openKits = rhythmVm::refreshPacks,
                                     chooseKit = rhythmVm::chooseKit,
                                     paintStep = rhythmVm::paintStep,

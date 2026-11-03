@@ -198,6 +198,10 @@ data class RhythmActions(
     /** Sounds of the pad's kind its sheet offers (names), and one of them put on pad (lane). */
     val padSounds: (Int) -> List<String> = { emptyList() },
     val pickPadSound: (Int, Int) -> Unit = { _, _ -> },
+    /** « Couches » (Pro): sound [i] of the pad's sheet becomes a layer of pad [lane]. */
+    val addPadLayer: (lane: Int, i: Int) -> Unit = { _, _ -> },
+    val removePadLayer: (lane: Int, index: Int) -> Unit = { _, _ -> },
+    val setPadLayerFrom: (lane: Int, index: Int, from: Int) -> Unit = { _, _, _ -> },
     /** « ▶ Écouter seul » of a pad (its sheet): alone in a loop, or stopped. */
     val listenPadAlone: ((Int) -> Unit)? = null,
     val holdAlone: () -> (() -> Unit) = { {} },
@@ -281,12 +285,14 @@ fun RhythmScreen(
     }
     padSheet?.let { lane ->
         PadSheet(
-            padSheetUi(project, lane, remember(lane, project.drums.lanes[lane].sample) { actions.padSounds(lane) }, alone = lane in alonePads),
+            padSheetUi(project, lane, remember(lane, project.drums.lanes[lane].sample) { actions.padSounds(lane) }, alone = lane in alonePads, pro = !simple),
             PadSheetActions(
                 pickSound = { actions.pickPadSound(lane, it) }, origin = { actions.removeSampleOf(lane) }, more = actions.openLibrary,
                 setVolume = { actions.setPadVolume(lane, it) }, setPan = { actions.setPadPanOf(lane, it) }, toggleMute = { actions.togglePadMute(lane) },
                 panDone = { actions.padPanDone(lane) },
                 listenAlone = actions.listenPadAlone?.let { f -> { f(lane) } }, holdAlone = actions.holdAlone,
+                addLayer = { actions.addPadLayer(lane, it) }, removeLayer = { actions.removePadLayer(lane, it) },
+                setLayerFrom = { i, from -> actions.setPadLayerFrom(lane, i, from) },
             ),
             close = { padSheet = null },
         )

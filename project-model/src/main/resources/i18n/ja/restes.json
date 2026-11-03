@@ -15,5 +15,7 @@
   "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "音をスマホに保存できませんでした：空き容量が足りないかもしれません。",
   "La page Live : une case par piste et par brique. Touche une case pour la lancer à la mesure suivante ; une case vide te propose d'y mettre un son ou de t'y enregistrer.": "ライブページ：トラックとブロックごとに1つのマス。マスをタッチすると次の小節から再生；空のマスでは音を入れるか、そこに録音できます。",
   "Enregistrer ma performance": "演奏を録音",
-  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "ライブでは ● が演奏したすべて（再生したマス、パッド、エフェクト、ノート）を録音します。停止するとテイクが曲になり、「元に戻す」で一度に取り消せます。"
+  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "ライブでは ● が演奏したすべて（再生したマス、パッド、エフェクト、ノート）を録音します。停止するとテイクが曲になり、「元に戻す」で一度に取り消せます。",
+  "dès %s": "%s から",
+  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "強く叩くと別の音。弱い打撃はパッド本来の音のまま。"
 }

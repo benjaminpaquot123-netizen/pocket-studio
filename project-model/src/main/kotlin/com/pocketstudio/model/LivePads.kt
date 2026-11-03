@@ -170,8 +170,8 @@ fun padGrid(count: Int, w: Float, h: Float, gap: Float): PadGrid {
 
 /** Every sample file the project uses (drum pads of every scene, live pads, audio clips, sampled instruments). */
 val Project.sampleFiles: Set<String> get() =
-    (allScenes.flatMap { s -> s.drums.lanes.mapNotNull { it.sample?.file } } +
-        drums.lanes.mapNotNull { it.sample?.file } + live.all.mapNotNull { it?.file } + remix.cells.map { it.file } +
+    (allScenes.flatMap { s -> s.drums.lanes.flatMap { it.sample?.files.orEmpty() } } +
+        drums.lanes.flatMap { it.sample?.files.orEmpty() } + live.all.mapNotNull { it?.file } + remix.cells.map { it.file } +
         audioTracks.mapNotNull { it.clip?.file } + allTrackSounds.mapNotNull { it.sampled.file }).toSet()
 
 /**
@@ -181,7 +181,13 @@ val Project.sampleFiles: Set<String> get() =
  */
 fun Project.withoutSounds(files: Set<String>): Project {
     if (files.isEmpty()) return this
-    fun DrumPattern.cleaned() = copy(lanes = lanes.map { lane -> if (lane.sample?.file?.let { it in files } == true) lane.copy(sample = null) else lane })
+    fun DrumPattern.cleaned() = copy(lanes = lanes.map { lane ->
+        when {
+            lane.sample?.file?.let { it in files } == true -> lane.copy(sample = null)
+            lane.sample?.layers?.any { it.file in files } == true -> lane.copy(sample = lane.sample.copy(layers = lane.sample.layers.filter { it.file !in files }))
+            else -> lane
+        }
+    })
     fun SampledPatch.cleaned() = if (file?.let { it in files } == true) copy(file = null, name = "") else this
     return copy(
         drums = drums.cleaned(),

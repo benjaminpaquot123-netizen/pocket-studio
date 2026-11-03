@@ -15,5 +15,7 @@
   "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "Nie udało się zapisać dźwięku w telefonie: może brakuje miejsca.",
   "La page Live : une case par piste et par brique. Touche une case pour la lancer à la mesure suivante ; une case vide te propose d'y mettre un son ou de t'y enregistrer.": "Strona Live: jedno pole na ścieżkę i na klocek. Dotknij pola, aby uruchomić je od następnego taktu; puste pole proponuje włożenie dźwięku lub nagranie się w nim.",
   "Enregistrer ma performance": "Nagraj mój występ",
-  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "W Live ● nagrywa wszystko, co grasz (uruchomione pola, pady, efekty, nuty). Po zatrzymaniu twoje nagranie staje się utworem; „Cofnij” usuwa je za jednym razem."
+  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "W Live ● nagrywa wszystko, co grasz (uruchomione pola, pady, efekty, nuty). Po zatrzymaniu twoje nagranie staje się utworem; „Cofnij” usuwa je za jednym razem.",
+  "dès %s": "od %s",
+  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "Mocne uderzenie: inny dźwięk. Dźwięk padu zostaje dla delikatnych uderzeń."
 }

@@ -15,5 +15,7 @@
   "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "Ses telefona kaydedilemedi: yer kalmamış olabilir.",
   "La page Live : une case par piste et par brique. Touche une case pour la lancer à la mesure suivante ; une case vide te propose d'y mettre un son ou de t'y enregistrer.": "Live sayfası: her parça ve her blok için bir kutu. Bir kutuya dokun, bir sonraki ölçüde başlasın; boş bir kutu içine ses koymayı ya da kayıt yapmayı önerir.",
   "Enregistrer ma performance": "Performansımı kaydet",
-  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "Live’da ● çaldığın her şeyi kaydeder (başlatılan kutular, padler, efektler, notalar). Durdurduğunda kaydın şarkın olur; “Geri al” hepsini bir kerede kaldırır."
+  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "Live’da ● çaldığın her şeyi kaydeder (başlatılan kutular, padler, efektler, notalar). Durdurduğunda kaydın şarkın olur; “Geri al” hepsini bir kerede kaldırır.",
+  "dès %s": "%s üstü",
+  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "Sert vuruş: başka bir ses. Pedin kendi sesi yumuşak vuruşlarda kalır."
 }

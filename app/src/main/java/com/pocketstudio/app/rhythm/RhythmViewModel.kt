@@ -87,6 +87,7 @@ import com.pocketstudio.model.Performance
 import com.pocketstudio.model.Progression
 import com.pocketstudio.model.NoteClip
 import com.pocketstudio.model.ArpMode
+import com.pocketstudio.model.PadLayer
 import com.pocketstudio.model.PadSample
 import com.pocketstudio.app.export.AacEncoder
 import com.pocketstudio.app.export.FlacEncoder
@@ -7520,6 +7521,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun sampleJob(
         busy: String?, live: Int? = null, beats: Int? = null, cancellable: Boolean = false, liveTempo: LiveTempo? = null,
         lane: Int = _transport.value.selectedPad, done: () -> Unit = {},
+        /** Where the sound goes on the drum pad (null: it becomes the pad's own sound). */
+        place: ((Project, PadSample) -> Project)? = null,
         work: suspend () -> Pair<PadSample, PadSamples.Prepared>,
     ) {
         if (busy != null) _sampleTask.value = SampleTask.Busy(busy, cancellable)
@@ -7545,10 +7548,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     _sampleTask.value = SampleTask.Idle
                     return@launch
                 }
-                session.edit { p -> p.copy(drums = p.drums.withSample(lane, sample)) }
+                session.edit { p -> place?.invoke(p, sample) ?: p.copy(drums = p.drums.withSample(lane, sample)) }
                 pushPads()
                 _sampleTask.value = SampleTask.Idle
-                if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, 0.9f)
+                if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, if (place != null) 1f else 0.9f)
                 done()
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
@@ -9430,6 +9433,51 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun removeSampleOf(lane: Int) {
         if (project.value.drums.lanes.getOrNull(lane)?.sample == null) return
         session.edit { p -> p.copy(drums = p.drums.withSample(lane, null)) }
+        pushPads()
+    }
+
+    /**
+     * « Couches » (Pro): [pcm] becomes a layer of pad [lane] for its hard hits (from
+     * [PadLayer.DEFAULT_FROM], or above the last layer). Only on a pad with its own sound, [PadLayer.MAX]
+     * at most. False when the pad cannot take one now (busy, no sound of its own, full).
+     */
+    fun addPadLayer(lane: Int, pcm: Pcm, name: String): Boolean {
+        val own = project.value.drums.lanes.getOrNull(lane)?.sample ?: return false
+        if (own.layers.size >= PadLayer.MAX) return false
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
+        sampleJob(tr("Pose du son sur le pad %d…", lane + 1), lane = lane, place = { p, added ->
+            val base = p.drums.lanes.getOrNull(lane)?.sample
+            if (base == null) p
+            else {
+                val from = maxOf(PadLayer.DEFAULT_FROM, (base.layers.lastOrNull()?.from ?: 0) + 1).coerceAtMost(PadLayer.FROM_RANGE.last)
+                p.copy(drums = p.drums.withSample(lane, base.withLayer(PadLayer(added.file, added.name, from))))
+            }
+        }) { padSamples.add(pcm.withoutTail(), name) }
+        return true
+    }
+
+    /** Pad [lane] without its layer [index] (« Couches »). */
+    fun removePadLayer(lane: Int, index: Int) {
+        val own = project.value.drums.lanes.getOrNull(lane)?.sample ?: return
+        if (index !in own.layers.indices) return
+        session.edit { p -> p.copy(drums = p.drums.withSample(lane, own.copy(layers = own.layers.filterIndexed { i, _ -> i != index }))) }
+        pushPads()
+    }
+
+    /** Layer [index] of pad [lane] plays from velocity [from] (1..127); a slide is one undo step. */
+    fun setPadLayerFrom(lane: Int, index: Int, from: Int) {
+        val own = project.value.drums.lanes.getOrNull(lane)?.sample ?: return
+        val layer = own.layers.getOrNull(index) ?: return
+        // Kept between its neighbours: the slider never reorders the layers under the finger.
+        val low = (own.layers.getOrNull(index - 1)?.from ?: (PadLayer.FROM_RANGE.first - 1)) + 1
+        val high = (own.layers.getOrNull(index + 1)?.from ?: (PadLayer.FROM_RANGE.last + 1)) - 1
+        if (low > high) return
+        val v = from.coerceIn(low, high)
+        if (v == layer.from) return
+        session.edit("pad-layer-$lane-$index") { p ->
+            val base = p.drums.lanes[lane].sample ?: return@edit p
+            p.copy(drums = p.drums.withSample(lane, base.copy(layers = base.layers.mapIndexed { i, l -> if (i == index) l.copy(from = v) else l }).sanitized()))
+        }
         pushPads()
     }
 

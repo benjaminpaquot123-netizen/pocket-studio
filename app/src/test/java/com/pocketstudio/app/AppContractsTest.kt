@@ -36,9 +36,6 @@ class AppContractsTest {
 
     /** NativeEngine functions the app does not call, each with its reason (a new one fails until wired or listed). */
     private val notCalledByTheApp = mapOf(
-        // A drum pad's velocity layers (Sampler::layerArg): built in phase 34, no kit uses them yet. Listed for
-        // Benjamin in docs/lots/AUDIT-2.md (wire a « couches de vélocité » control, or drop the engine side).
-        "setPadLayer" to "engine capability without a control (AUDIT-2, item for the main agent)",
         // The mixer channel of an instrument track: the model has its own (InstrumentTrack.mixerChannel).
         "trackChannel" to "kept as the reference the model's copy names",
     )

@@ -15,5 +15,7 @@
   "Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.": "साउंड फ़ोन पर सेव नहीं हो सका: शायद जगह कम है।",
   "La page Live : une case par piste et par brique. Touche une case pour la lancer à la mesure suivante ; une case vide te propose d'y mettre un son ou de t'y enregistrer.": "लाइव पेज: हर ट्रैक और हर ब्रिक के लिए एक खाना। खाने को छुओ ताकि वह अगले बार पर चले; खाली खाना उसमें आवाज़ रखने या रिकॉर्ड करने का सुझाव देता है।",
   "Enregistrer ma performance": "मेरी परफ़ॉर्मेंस रिकॉर्ड करें",
-  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "लाइव में ● तुम जो भी बजाते हो सब रिकॉर्ड करता है (चलाए गए खाने, पैड, इफ़ेक्ट, नोट्स)। रुकने पर तुम्हारा टेक तुम्हारा गाना बन जाता है; “पूर्ववत करें” उसे एक बार में हटा देता है।"
+  "Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup.": "लाइव में ● तुम जो भी बजाते हो सब रिकॉर्ड करता है (चलाए गए खाने, पैड, इफ़ेक्ट, नोट्स)। रुकने पर तुम्हारा टेक तुम्हारा गाना बन जाता है; “पूर्ववत करें” उसे एक बार में हटा देता है।",
+  "dès %s": "%s से",
+  "Frappe forte : un autre son. Le son du pad garde les coups doux.": "ज़ोर की थाप: दूसरी आवाज़। पैड की अपनी आवाज़ हल्की थापों के लिए रहती है।"
 }

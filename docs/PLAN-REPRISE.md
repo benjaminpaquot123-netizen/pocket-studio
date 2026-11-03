@@ -7,6 +7,8 @@ La méthode (deux équipes, consignes fermées, tests ciblés, captures, surveil
 
 **Consigne de Benjamin (2026-11-03) : rien du Play Store tant que le programme n'est pas terminé et complètement débuggé** (pas de double emploi). Donc : E2, la partie Play de G (AAB) et de H (fiche, confidentialité, sécurité des données, clé pour Google), le moment 2 et le test fermé passent **après l'Audit** (étage 7 vert, avant J) ; l'Audit porte sur la version GitHub ; E2 fait, les seuls ajouts Play (version play, mises à jour par Google, rapport par mail) sont relus par un relecteur neuf et repassent les étages 0 et 1 de l'Audit sur l'AAB avant le test fermé. Conséquence : les 14 jours du test fermé courent après l'Audit, la sortie Play recule d'environ deux semaines. Le point 3 du moment 1 (compte Google, etc.) attend aussi.
 
+**Consigne de Benjamin (2026-11-03, soir) : commencer le grand Audit tout de suite, sans fabriquer d'APK** (il la demandera ; elle est faite à sa demande seulement). Donc : la case Remix du Live (fin de D) se termine en parallèle de la préparation de l'Audit (§3) et de l'étage 0 ; la relecture neuve F se fait au début de l'étage 2 ; G se réduit au gel (`audit-1`, CI verte, zéro test rouge) : pas d'APK envoyée, le contrôle de la version release (R8) de l'étage 0 se fait par compilation ici et sur la CI.
+
 **Pour chaque lot, en plus de sa sortie :**
 - **Règle « partout »** : pour chaque défaut corrigé, la note de suivi liste où il pouvait se reproduire et le test qui couvre tous ces endroits.
 - **Design raccord** : un changement de design passe par le composant partagé, et un test « partout » (modèle : `MuteSoloEverywhereTest`) échoue si un écran le contourne.

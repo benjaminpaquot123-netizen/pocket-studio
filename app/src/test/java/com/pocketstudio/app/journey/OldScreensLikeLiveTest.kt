@@ -102,8 +102,6 @@ class OldScreensLikeLiveTest {
         val sink = ExportSink()
         NativeEngine.sink = sink
         try {
-            // Robolectric: the last export's job can be left in its field once completed (noted in docs/lots/D.md).
-            if (exportJob(vm) == null) jobField.set(vm, null)
             vm.exportWav()
             waitFor("the export") {
                 lastExport = "${sink.rendered} created=${sink.created} job=${exportJob(vm)} ${com.pocketstudio.app.report.AppLog.dump(4).replace("\n", " / ")}"

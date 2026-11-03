@@ -6462,7 +6462,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Closes banks nobody plays or browses any more (the engine keeps its own instances). */
     private fun releaseUnusedFonts() {
         // An export may be copying a font on its worker (TinySoundFont's count is not atomic).
-        if (running != null || exportJob != null) return
+        if (running != null || exportJob?.isActive == true) return
         val used = project.value.allTrackSounds.mapNotNull { it.instrument?.bankId }.toSet() + _bankId.value
         fonts.keys.filter { it !in used }.forEach { fonts.remove(it)?.close() }
     }
@@ -10082,7 +10082,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun shareSong(format: ExportFormat = ExportFormat.M4a) {
         val p = project.value
         // Testers (lot « tuto 5 »): « Partager » touched twice in a row makes one song, one share menu.
-        if (_export.value.running || exportJob != null || shareWaiting) return
+        if (_export.value.running || exportJob?.isActive == true || shareWaiting) return
         if (!NativeEngine.isAvailable) {
             _export.value = _export.value.copy(sharing = true, error = tr("Le moteur audio n'est pas prêt : réessaie dans un instant."))
             return
@@ -10377,7 +10377,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     @Volatile internal var videoBusy = false
 
     /** An export is being made (the card's, « Partager », the video): one private render at a time. */
-    val exportBusy: Boolean get() = running != null || exportJob != null || videoBusy
+    val exportBusy: Boolean get() = running != null || exportJob?.isActive == true || videoBusy
 
     /**
      * The « vidéo 9:16 » (phase 39): the song (or the scene looped when there is none) as
@@ -10411,7 +10411,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Renders with [settings] (the card's, or « Partager mon morceau »'s with [share]). */
     private fun startExport(settings: ExportUi, share: Boolean) {
-        if (!NativeEngine.isAvailable || running != null || exportJob != null) return
+        if (!NativeEngine.isAvailable || running != null || exportJob?.isActive == true) return
         if (videoBusy) {
             _export.value = _export.value.copy(error = tr("Une vidéo est en cours : attends qu'elle finisse."), files = emptyList())
             return
@@ -10745,7 +10745,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         exportJob?.cancel()
         // Testers (lot « tuto 5 »): « Annuler » closes « Je prépare ton morceau… » at once; the run ends behind it
         // (its files deleted, no share menu). A run with no job left (it died) is let go too.
-        _export.value = if (exportJob == null && !_takeSaving.value) _export.value.copy(running = false, stage = null, sharing = false)
+        _export.value = if (exportJob?.isActive != true && !_takeSaving.value) _export.value.copy(running = false, stage = null, sharing = false)
         else _export.value.copy(sharing = false)
     }
 

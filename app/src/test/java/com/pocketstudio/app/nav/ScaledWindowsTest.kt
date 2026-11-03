@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.unit.dp
 import org.junit.After
@@ -56,6 +57,9 @@ class ScaledWindowsTest {
     fun theLaunchChoiceIsDrawnAtTheInterfaceSize() {
         h.start(scale = 1.3f, launchChoice = true)
         h.awaitTag("launch_missions")
+        // Under the Pad Live card (n° 25) it is below the fold at 130 %: the screen scrolls to it.
+        compose.onNodeWithTag("launch_missions").performScrollTo()
+        compose.waitForIdle()
         val tall = heightDp("launch_missions")
         assertTrue("« Mon premier morceau » is $tall dp high", tall >= 48f * 1.3f - 0.5f)
     }

@@ -5,8 +5,10 @@ import android.content.pm.ActivityInfo
 import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.test.core.app.ActivityScenario
@@ -91,6 +93,16 @@ class EnduranceTest {
         CurrentProject.set(app, ids[0])
 
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
+            // « Que veux-tu faire ? » opens first since the launch choice (as in SmokeTest): « Continuer »
+            // opens the project, whose engine then starts.
+            compose.waitUntil(15_000) { compose.onAllNodesWithTag("intro").fetchSemanticsNodes().isEmpty() }
+            compose.waitForIdle()
+            for (tag in listOf("welcome_later", "launch_continue")) {
+                if (compose.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()) {
+                    compose.onNodeWithTag(tag).performScrollTo().performClick()
+                    compose.waitForIdle()
+                }
+            }
             waitFor("the audio stream", 20) { NativeEngine.streamInfo().let { it.running && it.callbacks > 0 } }
             RealUse.describeStream()
             val rounds = ArrayList<Round>()

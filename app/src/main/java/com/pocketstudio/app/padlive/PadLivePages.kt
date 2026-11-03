@@ -14,7 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.DropdownMenu
+import com.pocketstudio.ui.ScaledDropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -92,7 +92,7 @@ private fun PackPicker(ui: PadLiveUi, actions: PadLiveActions) {
             )
             Icon(Icons.Filled.ArrowDropDown, contentDescription = null, tint = Neon.TextSecondary)
         }
-        DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+        ScaledDropdownMenu(expanded = open, onDismissRequest = { open = false }) {
             PadLive.PACKS.forEach { pack ->
                 DropdownMenuItem(
                     text = { Text(packName(pack)) },

@@ -29,6 +29,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.boundsInWindow
+import kotlinx.coroutines.flow.update
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
@@ -51,7 +54,13 @@ internal fun packName(pack: PadLive.Pack): String = if (pack.style == null) tr("
 internal fun PageRow(ui: PadLiveUi, actions: PadLiveActions) {
     // A small phone (360 dp): the page letters a little narrower, « Fête ▾ » without « Pack : »,
     // the challenge's target alone (TalkBack still says « Défi »).
-    androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxWidth()) {
+    // Lot B3 (persona Léo): the « Mode retours » bubble sat on « Défi » and « Pack » and took their touches: it keeps clear of this row.
+    androidx.compose.runtime.DisposableEffect(Unit) {
+        onDispose { com.pocketstudio.app.retours.Retours.keepClear.update { it - "padlive_pages" } }
+    }
+    androidx.compose.foundation.layout.BoxWithConstraints(
+        Modifier.fillMaxWidth().onGloballyPositioned { c -> com.pocketstudio.app.retours.Retours.keepClear.update { it + ("padlive_pages" to c.boundsInWindow()) } },
+    ) {
         val compact = maxWidth < 380.dp
         // Narrower still (a 360 dp phone): « Défi » shows only its target.
         val tiny = maxWidth < 350.dp

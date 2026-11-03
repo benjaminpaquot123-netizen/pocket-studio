@@ -105,6 +105,8 @@ class PadLiveTouchCountTest {
         setPitch = { pad, v -> done += "pitch $pad $v" },
         setReverse = { pad, v -> done += "reverse $pad $v" },
         played = { done += "played" },
+        challenge = { done += "challenge" },
+        share = { done += "share" },
     )
 
     /** [action] from the home screen in [budget] touches at most, and the app did [expect]. */
@@ -194,6 +196,14 @@ class PadLiveTouchCountTest {
         reach("Longueur", 3, "beats 0 8") { tap("padlive_mode_0"); tap("padlive_beats_8") }
         reach("Changer le son", 3, "browse 0") { tap("padlive_mode_0"); tap("padlive_change_sound") }
         reach("Vider", 3, "clear 0") { tap("padlive_mode_0"); tap("padlive_clear") }
+        // Lot B3: the challenge, « Partager ma perf », « Fête » (its pads played: the 3rd touch).
+        reach("Défi", 2, "challenge") { tap("padlive_challenge_open") }
+        reach("Partager ma perf", 3, "share") { tap("padlive_more"); tap("padlive_share") }
+        reach("Fête", 3, "party") {
+            tap("padlive_more"); tap("padlive_party_open")
+            compose.onNodeWithTag("padlive_party").assertExists()
+            done += "party"
+        }
     }
 }
 

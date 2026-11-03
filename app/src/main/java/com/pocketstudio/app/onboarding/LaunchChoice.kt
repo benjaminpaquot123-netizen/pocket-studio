@@ -382,7 +382,7 @@ private fun OtherChoices(actions: LaunchActions) {
  * a small grid of pads as its picture. One touch: Pad Live opens and its first hit sounds.
  */
 @Composable
-private fun PadLiveCard(onClick: () -> Unit) {
+internal fun PadLiveCard(onClick: () -> Unit) {
     val shape = RoundedCornerShape(18.dp)
     val color = PAD_LIVE_COLOR
     Row(

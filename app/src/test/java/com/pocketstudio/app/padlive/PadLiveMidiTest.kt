@@ -150,6 +150,35 @@ class PadLiveMidiTest {
         assertEquals(1, sink.of(Sink.LAUNCH_CLIP_ROW).size)
     }
 
+    /** FIX-1: switched off and on again quickly, the engine's clock queue (single reader) is never read by two threads. */
+    @Test
+    fun theClockQueueHasOneReaderWhenSwitchedQuickly() {
+        val inside = java.util.concurrent.atomic.AtomicInteger(0)
+        val overlaps = java.util.concurrent.atomic.AtomicInteger(0)
+        val reads = java.util.concurrent.atomic.AtomicInteger(0)
+        val midi = MidiViewModel(app)
+        midi.clockSentForTest = { _, _ -> }
+        midi.clockDrainForTest = { _ ->
+            if (inside.incrementAndGet() > 1) overlaps.incrementAndGet()
+            reads.incrementAndGet()
+            Thread.sleep(3)
+            inside.decrementAndGet()
+            0
+        }
+        for (i in 0 until 12) {
+            midi.setSendClock(true)
+            Thread.sleep(6)
+            midi.setSendClock(false)
+            Thread.sleep(4)
+            midi.setSendClock(true)
+            Thread.sleep(20)
+            midi.setSendClock(false)
+        }
+        Thread.sleep(200)
+        assertTrue("the queue was read (${reads.get()})", reads.get() > 12)
+        assertEquals("two readers at once", 0, overlaps.get())
+    }
+
     @Test
     fun theClockGoesOutWithTheEnginesTimesAndComesIn() {
         // Out: the engine's messages (status, when heard), sent with the output's latency added.

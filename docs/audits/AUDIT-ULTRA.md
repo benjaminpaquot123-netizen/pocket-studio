@@ -2,6 +2,7 @@
 
 **Demande de Benjamin (2026-11-03)** : « Il faut que l'application soit testée par énormément d'utilisateurs qui n'y connaissent rien, qui connaissent un peu, ou qui connaissent beaucoup ; que tous les boutons soient connectés partout dans les tutos ; que le programme soit idéalement parfait. »
 
+**Validé par Benjamin le 2026-11-03** (il gère lui-même la limite de la semaine ; le prévenir dès qu'il peut passer en mode extra, c'est-à-dire à la fin du premier Audit).
 **Quand :** après le premier Audit (`AUDIT.md`, étages 0 à 6 verts), sur le signal de Benjamin, en mode ultra (beaucoup d'agents). Le Play Store vient après (consigne du 2026-11-03).
 **Différence avec le premier Audit :** le premier vérifie que tout marche ; l'ultra vérifie que **tout le monde y arrive**, partout, et que **chaque bouton est relié, expliqué et utile**. Méthode différente : une foule de testeurs, des contradicteurs pour chaque défaut, une équipe rouge, et la comparaison avec la concurrence.
 
@@ -129,7 +130,6 @@ Toujours le modèle le plus fort (consigne 1B), mais sans gaspiller :
 - **Équipe rouge et concurrence une seule fois**, au premier tour, puis seulement sur ce qui a changé.
 - **Journaux** : seuls les résumés sont lus, comme d'habitude.
 - **Arrêt dès que les critères du §7 sont atteints.** Pas de tour « pour voir ».
-- Si la limite de la semaine approche : on finit et on range le tour en cours, puis on s'arrête. La note de suivi suffit pour reprendre.
 
 ## 9. Ce que Benjamin fera
 - Dire « Audit ultra » quand il veut le lancer.

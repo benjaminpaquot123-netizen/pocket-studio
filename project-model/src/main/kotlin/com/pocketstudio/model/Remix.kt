@@ -44,6 +44,12 @@ data class Remix(
      * when opened, once). Left out of the file while false.
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val placed: Boolean = false,
+    /**
+     * Lot D2 (« case Remix du Live »): the passages of the song put in cells of the Live grid's
+     * remix column, one per brick at most. A brick without one plays the whole song, as before.
+     * Left out of the file while empty.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val cells: List<RemixCell> = emptyList(),
 ) {
     fun sanitized(): Remix = copy(
         songBpm = songBpm.takeIf { it.isFinite() }?.coerceIn(0.0, Project.MAX_TEMPO) ?: 0.0,
@@ -58,7 +64,15 @@ data class Remix(
                     clips = it.clips?.mapNotNull(StemClip::sanitized)?.take(StemClip.MAX),
                 )
             },
+        cells = cells.mapNotNull { it.sanitized() }.distinctBy { it.scene }.sortedBy { it.scene },
     )
+
+    /** Lot D2: the passage of brick [scene]'s remix cell, or null (the whole song plays there). */
+    fun cell(scene: Int): RemixCell? = cells.firstOrNull { it.scene == scene }
+
+    /** Lot D2: brick [scene]'s remix cell holding [cell] (null: back to the whole song). */
+    fun withCell(scene: Int, cell: RemixCell?): Remix =
+        copy(cells = (cells.filter { it.scene != scene } + listOfNotNull(cell?.copy(scene = scene))).sortedBy { it.scene })
 
     /** Frames of one bar of the song (4/4) at [rate]; 0 when the tempo is unknown. */
     fun barFrames(rate: Int): Long = if (songBpm > 0) Math.round(4 * 60.0 / songBpm * rate) else 0L
@@ -212,3 +226,67 @@ fun Project.withRemixPlaced(): Project {
     val bars = ((remix.atStep + steps + stepsPerBar - 1) / stepsPerBar.coerceAtLeast(1)).coerceIn(1, SongPart.MAX_BARS)
     return copy(song = listOf(SongPart(scene = 0, bars = bars)), remix = remix.copy(placed = true))
 }
+
+
+/**
+ * Lot D2 (« case Remix du Live »): a passage of the separated song in brick [scene]'s cell of the
+ * Live grid's remix column. [file] (in the project's `samples/`, like a pad's sound) holds [bars]
+ * whole bars of it cut at [bpm] (the song's tempo, so it follows the project's: stretched off the
+ * audio thread); [stem] the stem it was taken from ([WHOLE]: the four together), [from] where in
+ * the song it starts (seconds), [name] what the cell shows (« Voix », French, shown translated).
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@Serializable
+data class RemixCell(
+    val scene: Int,
+    val file: String,
+    val name: String,
+    val bars: Int = 1,
+    val bpm: Double = 0.0,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val stem: Int = WHOLE,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val from: Double = 0.0,
+) {
+    /** Steps the passage loops over in a project of [stepsPerBar] steps a bar. */
+    fun loopSteps(stepsPerBar: Int): Int = bars * stepsPerBar.coerceAtLeast(1)
+
+    /** In range; null when it cannot be played (a brick past the last, a file name that is not safe). */
+    fun sanitized(): RemixCell? {
+        if (scene !in 0 until Scene.MAX || !PadSample(file, name).isSafe) return null
+        return copy(
+            name = name.take(40),
+            bars = bars.coerceIn(1, MAX_BARS),
+            bpm = bpm.takeIf { it.isFinite() && it in AutoTempo.MIN_BPM..AutoTempo.MAX_BPM } ?: 0.0,
+            stem = stem.coerceIn(WHOLE, Remix.STEMS - 1),
+            from = from.takeIf { it.isFinite() }?.coerceIn(0.0, Remix.MAX_SECONDS) ?: 0.0,
+        )
+    }
+
+    companion object {
+        /** [stem] for the whole song (its four stems together). */
+        const val WHOLE = -1
+        /** The longest passage, in bars (a cell is a loop, not the song). */
+        const val MAX_BARS = 32
+        /** Lengths offered in the cell's menu, in bars. */
+        val LENGTHS = listOf(1, 2, 4, 8, 16)
+
+        /**
+         * The whole bars a passage of [seconds] at [bpm] ([beatsPerBar] a bar) loops over: the
+         * nearest number, one at least, [MAX_BARS] at most. 1 when the tempo is not known.
+         */
+        fun barsFor(seconds: Double, bpm: Double, beatsPerBar: Int): Int {
+            val bars = seconds * bpm / 60.0 / beatsPerBar.coerceAtLeast(1)
+            if (!bars.isFinite() || bars < 1.0) return 1
+            return kotlin.math.round(bars).toInt().coerceIn(1, MAX_BARS)
+        }
+
+        /** Frames of [bars] bars at [bpm] at [rate] (the passage cut to whole bars). */
+        fun framesFor(bars: Int, bpm: Double, beatsPerBar: Int, rate: Int): Long =
+            if (bpm <= 0.0) 0L else Math.round(bars * beatsPerBar.coerceAtLeast(1) * 60.0 / bpm * rate)
+    }
+}
+
+/** Lot D2: the first brick whose remix cell holds no passage yet ([Scene.MAX] bricks), or null. */
+fun Project.firstFreeRemixCell(): Int? = (0 until Scene.MAX).firstOrNull { remix.cell(it) == null }
+
+/** Lot D2: the engine's remix cell for brick [scene] (the brick itself), or -1 when it plays the whole song. */
+fun Project.remixCellOf(scene: Int): Int = if (remix.setId != null && remix.cell(scene) != null) scene else -1

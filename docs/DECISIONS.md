@@ -1072,3 +1072,9 @@
 - 2026-11-03 · Horloge MIDI en sortie comptée par le moteur (à l'échantillon) au lieu d'une minuterie Kotlin. Raison : la règle « jamais de minuteries Kotlin » et la dérive de l'ancienne. Retour : rétablir `startClock` d'avant (git).
 - 2026-11-03 · Les pads de la manette jouent la page affichée de Pad Live avec ses modes. Retour : `PadLiveController.midi` → false.
 - 2026-11-03 · Horloge des pads live : même tolérance (1e-9 temps) pour les départs que pour les barres : plus d'échantillon de retard. Retour : retirer `+ 1e-9` dans `ClipLauncher::render`.
+- 2026-11-03 · Défi : l'exemple est un son rendu d'avance depuis les sons des pads et joué par l'aperçu du moteur ; les touchers ne sont que chronométrés (écarts), aucune minuterie ne tient le temps de la musique. Retour : retirer le bouton Défi.
+- 2026-11-03 · Défi au tempo du projet borné 80–120, noté dès le dernier coup (ou « J'ai fini »), premier toucher pris comme départ ; 2 étoiles ouvrent le suivant. Retour : `PadChallenge.MIN_BPM/MAX_BPM`, `score`.
+- 2026-11-03 · Lumières qui suivent le son : niveau par pad publié par le moteur (atomique, une fois par bloc), sans commande. Retour : `level = null` dans Pad Live.
+- 2026-11-03 · « Gros pads » = le mode Fête (les 16 pads en plein écran) plutôt qu'un réglage de plus. Retour : un réglage.
+- 2026-11-03 · Pistes séparées d'une perf = un WAV 32 bits flottant par pad, rendus depuis la prise gardée (`PadLiveSet.take`), au gain de la piste « Pads live » ; pas d'effets de scène dedans (ils sont dans « Le son »). Raison : 8 pistes audio au plus, 64 pads. Retour : retirer « Pistes séparées ».
+- 2026-11-03 · Pad Live sur le premier lancement aussi (sans « Simple ou Pro ? »), et ← de Pad Live mène à l'accueil. Raison : personas Léo et Claire. Retour : `WelcomeScreen` / `goHome()` dans `close`.

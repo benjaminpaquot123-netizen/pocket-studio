@@ -1114,3 +1114,7 @@
 - Libération de la prise à la fermeture sur `ClosingSaves` (exécuteur déjà existant), pas un nouveau fil.
 - Référence Master pro : jeton global du contrôleur propriétaire, pour qu'une fermeture tardive n'efface
   pas celle du projet suivant.
+- 2026-11-03 · Découper la chanson : une ligne de coupe se prend dans 12 dp, et seulement si ses voisines sont à plus de 24 dp ; elle ne bouge qu'après le seuil de glissement. Raison : chanson entière coupée à chaque mesure, chaque appui prenait une coupe. Retour : `CUT_GRAB` à 28 dp et `CutModel.grabbable` sans le test des voisines.
+- 2026-11-03 · Pad Live pages B à D : un son de la bibliothèque passe par `placeOnLivePad` (comme la page A), un coup y reste un coup. Raison : tempo, garde « occupé » et téléphone plein déjà gérés là. Retour : `PadLiveController.placeSound` (historique git).
+- 2026-11-03 · Pack de Pad Live par page (`PadLiveSet.packs`), l'ancien champ `pack` lu comme celui de la page A. Raison : la page B disait le pack de A. Retour : ignorer `packs`.
+- 2026-11-03 · Boutons de 40 à 44 dp : laissés, Compose leur donne déjà 48 dp de toucher (vérifié par test). Raison : ne pas changer la mise en page. Retour : enlever leur `size()`.

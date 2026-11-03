@@ -234,7 +234,8 @@ void testStopsRightAfterALoopStartsOverDoNotClick() {
 // callback against its 2 ms budget (this thread's CPU time: other processes do not count), no
 // allocation, nothing over full scale, no NaN.
 struct Load { double mean, p99, p999, worst; };
-static Load worstCaseLive(bool stripFx, bool masterFx, bool liveFx, bool print);
+// (Audit stage 4: any buffer size, 44.1 or 48 kHz, a shorter run; the bench itself runs 20 s of 96 frames at 48 kHz.)
+static Load worstCaseLive(bool stripFx, bool masterFx, bool liveFx, bool print, int block = 96, int rate = kRate, int seconds = 20);
 
 void testWorstCaseLiveCpuBench() {
     const Load all = worstCaseLive(true, true, true, true);
@@ -253,30 +254,29 @@ void testWorstCaseLiveCpuBench() {
     CHECK_TIMING(all.p99 < 0.33);
 }
 
-static Load worstCaseLive(bool stripFx, bool masterFx, bool liveFx, bool print) {
-    const int block = 96;
-    const double budget = double(block) / kRate;
+static Load worstCaseLive(bool stripFx, bool masterFx, bool liveFx, bool print, int block, int rate, int seconds) {
+    const double budget = double(block) / rate;
     auto chord = [&](int k, int64_t frames) {
         std::vector<float> d(size_t(frames) * 2);
         const float f = 80.0f + 23.0f * float(k);
         for (int64_t i = 0; i < frames; ++i) {
-            const float t = float(i) / float(kRate);
+            const float t = float(i) / float(rate);
             const float v = 0.02f * (std::sin(2.0f * float(M_PI) * f * t) + 0.5f * std::sin(2.0f * float(M_PI) * 1.5f * f * t));
             d[size_t(i) * 2] = d[size_t(i) * 2 + 1] = v;
         }
-        return ps::Sample::create(d.data(), frames, 2, kRate, kRate);
+        return ps::Sample::create(d.data(), frames, 2, rate, rate);
     };
-    const int bar120 = 96000, bar128 = 90000;
-    std::vector<std::vector<float>> stems(4, std::vector<float>(size_t(kRate) * 30 * 2));
+    const int bar120 = rate * 2, bar128 = rate * 2 * 120 / 128;
+    std::vector<std::vector<float>> stems(4, std::vector<float>(size_t(rate) * 30 * 2));
     for (int st = 0; st < 4; ++st)
-        for (int i = 0; i < kRate * 30; ++i) stems[size_t(st)][size_t(i) * 2] = stems[size_t(st)][size_t(i) * 2 + 1] = 0.05f * std::sin(2.0f * float(M_PI) * (110.0f * float(st + 1)) * float(i) / float(kRate));
+        for (int i = 0; i < rate * 30; ++i) stems[size_t(st)][size_t(i) * 2] = stems[size_t(st)][size_t(i) * 2 + 1] = 0.05f * std::sin(2.0f * float(M_PI) * (110.0f * float(st + 1)) * float(i) / float(rate));
     auto* song = ps::StemBundle::fromFloat(stems);
-    std::vector<std::vector<float>> stems128(4, std::vector<float>(size_t(kRate) * 30 * 120 / 128 * 2));
+    std::vector<std::vector<float>> stems128(4, std::vector<float>(size_t(rate) * 30 * 120 / 128 * 2));
     for (int st = 0; st < 4; ++st)
-        for (size_t i = 0; i < stems128[0].size() / 2; ++i) stems128[size_t(st)][i * 2] = stems128[size_t(st)][i * 2 + 1] = 0.05f * std::sin(2.0f * float(M_PI) * (110.0f * float(st + 1)) * float(i) / float(kRate));
+        for (size_t i = 0; i < stems128[0].size() / 2; ++i) stems128[size_t(st)][i * 2] = stems128[size_t(st)][i * 2 + 1] = 0.05f * std::sin(2.0f * float(M_PI) * (110.0f * float(st + 1)) * float(i) / float(rate));
     auto* song128 = ps::StemBundle::fromFloat(stems128, song);
 
-    ps::Engine engine(kRate);
+    ps::Engine engine(rate);
     engine.setCommandBudget(ps::Engine::kLiveCommandBudget);
     auto inserts = [&](int ch, std::initializer_list<int> types) {
         if (ch == ps::Mixer::kMaster ? !masterFx : !stripFx) return;
@@ -320,7 +320,7 @@ static Load worstCaseLive(bool stripFx, bool masterFx, bool liveFx, bool print) 
     engine.post({ps::CommandType::SetTransport, 1.0f, 0});
     for (int k = 0; k < 16; ++k) engine.post({ps::CommandType::ToggleClip, 0.0f, k});
 
-    const int total = kRate * 20, changeAt = kRate * 8 + 4321, swapAt = changeAt + kRate;
+    const int total = rate * seconds, changeAt = rate * 8 + 4321, swapAt = changeAt + rate;
     std::vector<float> out(size_t(block) * 2);
     std::vector<double> cpu;
     int allocations = 0;
@@ -343,7 +343,7 @@ static Load worstCaseLive(bool stripFx, bool masterFx, bool liveFx, bool print) 
                 engine.post(b);
             }
         }
-        const bool counted = done >= kRate;  // the setup commands are in
+        const bool counted = done >= rate;  // the setup commands are in
         if (counted) {
             g_allocations = 0;
             g_countAllocations = true;
@@ -360,7 +360,7 @@ static Load worstCaseLive(bool stripFx, bool masterFx, bool liveFx, bool print) 
             finite = finite && std::isfinite(v);
             peak = std::max(peak, std::fabs(v));
         }
-        if (done % (kRate * 2) < block) engine.collectGarbage();  // the app's own thread, now and then
+        if (done % (rate * 2) < block) engine.collectGarbage();  // the app's own thread, now and then
     }
     engine.post({ps::CommandType::SetTransport, 0.0f, 0});
     engine.process(nullptr, 0, 0, out.data(), block, 2);

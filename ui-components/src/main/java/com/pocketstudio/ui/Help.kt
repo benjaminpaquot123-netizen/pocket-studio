@@ -40,11 +40,17 @@ data class Help(val term: String, val text: String)
 val LocalHelpListen = androidx.compose.runtime.staticCompositionLocalOf<(Help) -> (() -> Unit)?> { { null } }
 
 /**
+ * The controls (their test tags) a help dot explains. Read by the guard test of the screens that
+ * must explain every control that is not obvious (HelpCoverageTest): nothing else reads it.
+ */
+val HelpAbout = androidx.compose.ui.semantics.SemanticsPropertyKey<List<String>>("HelpAbout") { parent, child -> parent.orEmpty() + child }
+
+/**
  * A small faded "?" in a circle next to a term; a tap explains it. Discreet on purpose: it is
- * there for whoever wonders, not to draw the eye.
+ * there for whoever wonders, not to draw the eye. [about]: the test tags of the controls it explains.
  */
 @Composable
-fun HelpDot(help: Help, modifier: Modifier = Modifier, color: Color = Neon.TextSecondary) {
+fun HelpDot(help: Help, modifier: Modifier = Modifier, color: Color = Neon.TextSecondary, about: List<String> = emptyList()) {
     // Kept when the screen turns (a dialog that vanished on rotation would look like a bug).
     var open by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
     // Audit final (22): readable (4.5:1 on the panels; 0.55 gave 3:1) and a little larger. The touch
@@ -55,7 +61,10 @@ fun HelpDot(help: Help, modifier: Modifier = Modifier, color: Color = Neon.TextS
             .clip(CircleShape)
             .clickable(role = androidx.compose.ui.semantics.Role.Button) { open = true }
             .padding(5.dp)
-            .semantics { contentDescription = tr("Qu'est-ce que « %s » ?", help.term) }
+            .semantics {
+                contentDescription = tr("Qu'est-ce que « %s » ?", help.term)
+                if (about.isNotEmpty()) set(HelpAbout, about)
+            }
             .testTag("help_${help.term}"),
         contentAlignment = Alignment.Center,
     ) {
@@ -83,9 +92,9 @@ fun HelpDialog(help: Help, onDismiss: () -> Unit) {
 
 /** A term followed by its help dot, on one line. */
 @Composable
-fun WithHelp(help: Help?, modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit) {
+fun WithHelp(help: Help?, modifier: Modifier = Modifier, about: List<String> = emptyList(), content: @Composable RowScope.() -> Unit) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(0.dp)) {
         content()
-        if (help != null) HelpDot(help)
+        if (help != null) HelpDot(help, about = about)
     }
 }

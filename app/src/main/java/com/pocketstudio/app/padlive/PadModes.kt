@@ -51,7 +51,9 @@ internal fun PadSettingsSheet(pad: Int, clip: LiveClip, actions: PadLiveActions,
                 tr("Pad %1\$s%2\$d : %3\$s", PadLive.PAGE_NAMES[PadLive.pageOf(pad)], pad % PadLive.PAGE_SIZE + 1, DefaultNames.shownSample(clip.name)),
                 style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary,
             )
-            Text(tr("Quand je touche le pad"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
+            com.pocketstudio.ui.WithHelp(com.pocketstudio.app.help.ScreenHelp.PADLIVE_MODES, about = listOf("padlive_mode_shot", "padlive_mode_loop", "padlive_mode_hold")) {
+                Text(tr("Quand je touche le pad"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
+            }
             val mode = PadLive.modeOf(clip)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOf(
@@ -63,7 +65,9 @@ internal fun PadSettingsSheet(pad: Int, clip: LiveClip, actions: PadLiveActions,
                         modifier = Modifier.testTag("padlive_mode_${m.name.lowercase()}"))
                 }
             }
-            Text(tr("Un seul à la fois"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
+            com.pocketstudio.ui.WithHelp(com.pocketstudio.app.help.ScreenHelp.PADLIVE_GROUPS, about = listOf("padlive_group_*")) {
+                Text(tr("Un seul à la fois"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
+            }
             Text(
                 tr("Les pads d'un même groupe se coupent entre eux (charley ouvert et fermé)."),
                 style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
@@ -133,7 +137,9 @@ private fun PadSoundSettings(pad: Int, clip: LiveClip, actions: PadLiveActions) 
             modifier = Modifier.testTag("padlive_reverse"),
         )
     }
-    Text(tr("Attaque : %s", secondsWords(clip.attack)), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
+    com.pocketstudio.ui.WithHelp(com.pocketstudio.app.help.ScreenHelp.PADLIVE_SHAPE, about = listOf("padlive_attack", "padlive_release")) {
+        Text(tr("Attaque : %s", secondsWords(clip.attack)), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
+    }
     ProSlider(clip.attack, { actions.setAttack(pad, it) }, valueRange = 0f..1f, modifier = Modifier.testTag("padlive_attack"))
     Text(tr("Fin : %s", secondsWords(clip.release)), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
     ProSlider(clip.release, { actions.setRelease(pad, it) }, valueRange = 0f..2f, modifier = Modifier.testTag("padlive_release"))

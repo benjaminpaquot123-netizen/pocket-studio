@@ -141,8 +141,8 @@ internal fun MasterLoudnessPanel(values: () -> FloatArray, target: LoudnessTarge
     val lufs = LoudnessTargets.formatTarget(shownLufs(target, styleLufs) ?: 0f)
     Text(
         when (target) {
-            LoudnessTarget.AUTO -> tr("Le volume des morceaux de ce style (%s). La sortie monte ou baisse doucement pour y arriver ; l'export y est exactement.", lufs)
-            LoudnessTarget.CLUB -> tr("Fort, comme en club (%s). La sortie monte doucement pour y arriver ; l'export y est exactement.", lufs)
+            LoudnessTarget.AUTO -> tr("Le volume des morceaux de ce style (%s). La sortie monte ou baisse doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.", lufs)
+            LoudnessTarget.CLUB -> tr("Fort, comme en club (%s). La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.", lufs)
             LoudnessTarget.STREAMING -> tr("%s : le volume où Spotify et YouTube ramènent tous les morceaux.", lufs)
             LoudnessTarget.OFF -> tr("Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation.")
         },
@@ -210,11 +210,22 @@ internal fun ExportReportLine(export: ExportUi) {
         )
     }
     export.lossDb?.takeIf { it >= 0.1 }?.let { LossLine(it, Modifier.testTag("export_loss")) }
+    // Decision 1A: under its target because louder would crush it: said, with the loudness reached (never forced).
+    val target = export.targetLufs
+    com.pocketstudio.app.export.TargetReach.short(target, lufs, export.proReport?.loudLufs, export.lossDb)?.let { reached ->
+        Text(
+            com.pocketstudio.app.export.TargetReach.words(reached, target!!), style = MaterialTheme.typography.bodySmall,
+            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, color = Neon.Amber, modifier = Modifier.testTag("export_short"),
+        )
+        Text(com.pocketstudio.app.export.TargetReach.why(), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+    }
     // Lot E: the pro readings (LRA, maxima, PLR, correlation, mono), under a touch.
     export.proReport?.let { r ->
         var pro by rememberSaveable { mutableStateOf(false) }
-        TextButton(onClick = { pro = !pro }, modifier = Modifier.testTag("export_pro_readings")) {
-            Text(if (pro) tr("Masquer les mesures pro") else tr("Mesures pro"), style = MaterialTheme.typography.labelMedium)
+        WithHelp(com.pocketstudio.app.help.ScreenHelp.PRO_READINGS, about = listOf("export_pro_readings")) {
+            TextButton(onClick = { pro = !pro }, modifier = Modifier.testTag("export_pro_readings")) {
+                Text(if (pro) tr("Masquer les mesures pro") else tr("Mesures pro"), style = MaterialTheme.typography.labelMedium)
+            }
         }
         if (pro) {
             Column(Modifier.testTag("export_pro_lines")) {

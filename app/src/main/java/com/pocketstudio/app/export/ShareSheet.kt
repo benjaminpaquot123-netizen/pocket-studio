@@ -347,6 +347,7 @@ fun ShareSheetContent(
                             if (details) tr("masquer") else tr("détails"), style = MaterialTheme.typography.labelSmall, color = Neon.Cyan,
                             modifier = Modifier.clickable(role = Role.Button) { details = !details }.padding(6.dp).testTag("share_details"),
                         )
+                        com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.Glossary.LUFS, about = listOf("share_details"))
                     }
                     if (details) {
                         Text(
@@ -395,6 +396,7 @@ fun ShareSheetContent(
                     colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("share_format_${format.name}"),
                 )
             }
+            com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.Glossary.FORMATS, about = listOf("share_format_*"))
         }
         ui.rightsProject?.let { com.pocketstudio.app.remix.RightsLine(it, Modifier.padding(horizontal = 20.dp, vertical = 4.dp)) }
         Button(

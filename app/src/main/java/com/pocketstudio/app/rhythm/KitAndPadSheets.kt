@@ -257,7 +257,11 @@ fun PadSheetContent(ui: PadSheetUi, actions: PadSheetActions, close: () -> Unit)
 @Composable
 private fun PadLayers(ui: PadSheetUi, actions: PadSheetActions) {
     var choosing by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf(false) }
-    Text(tr("Couches"), style = MaterialTheme.typography.titleSmall, modifier = Modifier.testTag("pad_layers"))
+    com.pocketstudio.ui.WithHelp(
+        com.pocketstudio.app.help.ScreenHelp.LAYERS, about = listOf("pad_layers", "pad_layer_add", "pad_layer_slider_*", "pad_layer_remove_*"),
+    ) {
+        Text(tr("Couches"), style = MaterialTheme.typography.titleSmall, modifier = Modifier.testTag("pad_layers"))
+    }
     Text(
         tr("Frappe forte : un autre son. Le son du pad garde les coups doux."),
         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,

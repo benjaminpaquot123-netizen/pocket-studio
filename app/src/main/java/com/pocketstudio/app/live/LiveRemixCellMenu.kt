@@ -96,10 +96,15 @@ internal fun RemixCellMenu(
                 tr("%1\$s · brique %2\$s", track, Scene.NAMES.getOrElse(scene) { "?" }),
                 style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
             )
-            Text(
-                tr("Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo."),
-                style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
-            )
+            com.pocketstudio.ui.WithHelp(
+                com.pocketstudio.app.help.ScreenHelp.REMIX_CELL,
+                about = listOf("remix_cell_stem_*", "remix_cell_earlier", "remix_cell_later", "remix_cell_bars_*", "remix_cell_put"),
+            ) {
+                Text(
+                    tr("Un passage de la chanson dans cette case : il part sur la mesure et suit le tempo."),
+                    style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.weight(1f, fill = false),
+                )
+            }
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 (listOf(RemixCell.WHOLE) + Remix.SHOWN_ORDER).forEach { s ->
                     FilterChip(

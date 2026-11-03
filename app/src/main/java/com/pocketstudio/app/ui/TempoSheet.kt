@@ -115,7 +115,9 @@ fun TempoPad(tempoBpm: Double, actions: TempoActions, close: () -> Unit, modifie
     val typing = draft.digits.isNotEmpty()
     Column(modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(tr("Tempo"), style = MaterialTheme.typography.titleLarge, color = Neon.TextPrimary, modifier = Modifier.weight(1f))
+            Text(tr("Tempo"), style = MaterialTheme.typography.titleLarge, color = Neon.TextPrimary)
+            com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.ScreenHelp.TEMPO_SET, about = listOf("tempo_tap", "tempo_display", "tempo_half", "tempo_double"))
+            androidx.compose.foundation.layout.Spacer(Modifier.weight(1f))
             TextButton(onClick = close, modifier = Modifier.testTag("tempo_close")) { Text(tr("Fermer")) }
         }
         // The tempo as typed (accent) or as it is now, between − and + (held: they repeat).

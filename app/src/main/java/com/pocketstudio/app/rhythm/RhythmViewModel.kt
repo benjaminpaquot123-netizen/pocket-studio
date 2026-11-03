@@ -334,6 +334,8 @@ data class ExportUi(
     val pro: com.pocketstudio.app.export.ExportOptions = com.pocketstudio.app.export.ExportOptions(),
     /** Lot E: the last mix's full report (the pro readings), null for separate tracks. */
     val proReport: com.pocketstudio.engine.ExportReport? = null,
+    /** Decision 1A: the loudness the last mix aimed at (LUFS; null without a target), to say when it stayed under it. */
+    val targetLufs: Double? = null,
     /** Lot E: the song's parts and bars (« Plage exportée »). */
     val parts: Int = 0,
     val songBars: Int = 0,
@@ -10901,7 +10903,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, stage = null, loudness = loudness,
                     truePeakDb = truePeak, seconds = seconds, lossDb = loss, decodedPeakDb = decodedPeak, writtenRate = writtenRate,
-                    writtenBits = writtenBits, writtenFormat = settings.format, sharing = false, proReport = proReport)
+                    writtenBits = writtenBits, writtenFormat = settings.format, sharing = false, proReport = proReport,
+                    targetLufs = (p.mixer.pro?.targetLufs ?: com.pocketstudio.model.LoudnessTargets.lufs(p.mixer.target, p.style, p.mixVersion))?.toDouble())
                 ending = tr("Export terminé : %s", done.joinToString(", ") { it.name })
                 AppLog.add("Export ${settings.what} ${settings.format} : ${done.size} fichier(s), ${frames / OfflineExport.SAMPLE_RATE} s" +
                     if (share) " (partage)" else "")

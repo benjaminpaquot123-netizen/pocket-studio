@@ -346,6 +346,8 @@ private fun PadLiveControls(ui: PadLiveUi, actions: PadLiveActions, more: Boolea
     AnimatedVisibility(more) { MoreRow(ui, actions, party = party) }
     Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         PlayedButton(ui.played, actions.played, Modifier.weight(1f))
+        // « Plus » open, « Moins » takes the room (« Aufnehmen, was ich spiele » must not be cut): the « ? » waits.
+        if (!more) com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.ScreenHelp.PADLIVE_PLAYED, Modifier.align(Alignment.CenterVertically), about = listOf("padlive_played"))
         Row(
             Modifier.heightIn(min = 52.dp).clip(RoundedCornerShape(16.dp)).background(if (more) Neon.SurfaceHigh else Neon.Surface)
                 .clickable(role = Role.Button, onClick = toggleMore).padding(horizontal = 16.dp).testTag("padlive_more"),
@@ -530,7 +532,12 @@ private fun SceneEffects(ui: PadLiveUi, actions: PadLiveActions, more: Boolean, 
     }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(tr("EFFETS DE SCÈNE"), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, modifier = Modifier.weight(1f))
+            Text(tr("EFFETS DE SCÈNE"), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
+            com.pocketstudio.ui.HelpDot(
+                com.pocketstudio.app.help.ScreenHelp.PADLIVE_EFFECTS,
+                about = listOf("padlive_fx_filter", "padlive_fx_echo", "padlive_fx_roll", "padlive_fx_riser", "padlive_fx_brake", "padlive_fx_stutter"),
+            )
+            Spacer(Modifier.weight(1f))
             Text(tr("Appuie et maintiens"), style = MaterialTheme.typography.labelMedium, color = Neon.TextPrimary)
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -670,6 +677,10 @@ private fun MoreRow(ui: PadLiveUi, actions: PadLiveActions, party: () -> Unit) {
             MoreButton(Icons.Filled.Tune, tr("Effets"), "padlive_effects", Modifier.weight(1f), actions.effects)
             MoreButton(Icons.Filled.Celebration, tr("Fête"), "padlive_party_open", Modifier.weight(1f), party)
             MoreButton(Icons.Filled.IosShare, tr("Partager"), "padlive_share", Modifier.weight(1f), actions.share)
+            com.pocketstudio.ui.HelpDot(
+                com.pocketstudio.app.help.ScreenHelp.PADLIVE_MORE, Modifier.align(Alignment.CenterVertically),
+                about = listOf("padlive_stop_all", "padlive_live", "padlive_effects", "padlive_party_open", "padlive_share"),
+            )
         }
     }
 }

@@ -10086,7 +10086,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     // --- Lot E, « Master pro » ------------------------------------------------------------------
     /** The pro master's settings, the « A/B » state and the reference song. */
-    val masterPro: com.pocketstudio.app.mixer.MasterProController by lazy {
+    private val masterProMade = lazy {
         com.pocketstudio.app.mixer.MasterProController(
             viewModelScope, getApplication(), project,
             edit = { label, f -> session.edit(label) { p -> p.copy(mixer = p.mixer.copy(pro = f(p.mixer.pro ?: com.pocketstudio.model.MasterPro()).takeUnless { it.isDefault })) } },
@@ -10096,6 +10096,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             projectId = { projectId },
         )
     }
+    val masterPro: com.pocketstudio.app.mixer.MasterProController by masterProMade
 
     /** Lot E: what the mixer's « Avancé » panels act through (MixerActions.pro). */
     val masterProActions: com.pocketstudio.app.mixer.MasterProActions by lazy {
@@ -10917,6 +10918,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         resampling?.cancel()
         // « Enregistrer ce que je joue » armed or recording: its native buffer freed (FIX-1).
         padLive.played.release()
+        // Master pro: this project's reference song leaves the engine with it (FIX-1).
+        if (masterProMade.isInitialized()) masterPro.close()
         // A Live take recording: kept as it was played up to the bar being played, written into
         // the song at the next opening (the screen's scope is gone: nothing can be written here).
         when (_take.value) {

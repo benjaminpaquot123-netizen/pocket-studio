@@ -35,7 +35,10 @@ class AbSameLevelTest {
 
     private class Sink : CommandSink {
         val pro = ArrayList<Pair<Int, Float>>()
+        /** InstallReference's loudness, in order (NaN: none). */
+        val references = java.util.Collections.synchronizedList(ArrayList<Float>())
         override fun post(target: Long, type: Int, value: Float, a: Int, b: Int) {
+            if (type == 191) references += value
             if (type == 190) pro += a to value
         }
         override fun scheduleFrom(target: Long, frame: Long) = Unit
@@ -87,6 +90,42 @@ class AbSameLevelTest {
         sink.pro.clear()
         c.leave()
         assertTrue(sink.pro.isEmpty())
+    }
+
+    /** FIX-1: a reference stays only while its project is open (the engine outlives projects). */
+    @Test
+    fun theReferenceLeavesTheEngineWithItsProject() {
+        val withRef = MutableStateFlow(Project(mixer = Mixer(pro = MasterPro(reference = "ref-a.wav", referenceName = "A", referenceLufs = -9f))))
+        java.io.File(app.filesDir, "references").mkdirs()
+        com.pocketstudio.app.audio.FloatWav.write(java.io.File(app.filesDir, "references/ref-a.wav"), FloatArray(2000) { 0.1f }, 0, 1000, 2, 48_000)
+        fun controller(p: MutableStateFlow<Project>, id: String) = MasterProController(
+            CoroutineScope(Dispatchers.Unconfined), app, p, edit = { _, _ -> }, sync = {}, setInsertType = { _, _, _ -> }, setMonoBass = {}, projectId = { id },
+        )
+        fun waitFor(n: Int) {
+            val until = System.currentTimeMillis() + 10_000
+            while (sink.references.size < n && System.currentTimeMillis() < until) Thread.sleep(5)
+        }
+        val a = controller(withRef, "ref-a")
+        a.attach()
+        waitFor(1)
+        assertEquals(listOf(-9f), sink.references.toList())
+        // Another project without one, its panel shown: the first one's reference is taken out.
+        val b = controller(MutableStateFlow(Project()), "ref-b")
+        b.attach()
+        assertEquals(2, sink.references.size)
+        assertTrue(sink.references[1].isNaN())
+        b.attach()
+        assertEquals("nothing more to take out", 2, sink.references.size)
+        // Closed with its reference in the engine: taken out; another's left alone.
+        val again = controller(withRef, "ref-a")
+        again.attach()
+        waitFor(3)
+        assertEquals(-9f, sink.references[2])
+        b.close()
+        assertEquals("b's close leaves a's reference", 3, sink.references.size)
+        again.close()
+        assertEquals(4, sink.references.size)
+        assertTrue(sink.references[3].isNaN())
     }
 
     @Test

@@ -390,6 +390,10 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     /** Tests: where the clock goes instead of a device (status, time). */
     @androidx.annotation.VisibleForTesting
     internal var clockSentForTest: ((Int, Long) -> Unit)? = null
+    /** Tests: the engine's clock queue in place of [NativeEngine.drainMidiClock]. */
+    internal var clockDrainForTest: ((LongArray) -> Int)? = null
+    /** The clock just switched off, still sending the engine's last messages (its Stop). */
+    private var clockDraining: kotlinx.coroutines.Job? = null
 
     fun setSendClock(on: Boolean) {
         // Following and sending at once with the same device would loop the clock back.
@@ -411,9 +415,14 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
     private fun startClock() {
         if (clockJob?.isActive == true || (sendPort == null && clockSentForTest == null)) return
         NativeEngine.setMidiClockOut(true)
-        val out = MidiClockOut(::send)
+        val out = clockDrainForTest?.let { MidiClockOut(::send, it) } ?: MidiClockOut(::send)
+        // The engine's clock queue has one reader: the clock switched off a moment ago ends first.
+        val previous = clockJob ?: clockDraining
+        clockDraining = null
         clockJob = viewModelScope.launch(kotlinx.coroutines.Dispatchers.Default) {
             try {
+                // Waited for even when switched off meanwhile: this job ends after it, so the next one waits for both.
+                previous?.let { kotlinx.coroutines.withContext(kotlinx.coroutines.NonCancellable) { it.join() } }
                 while (true) {
                     out.pump()
                     kotlinx.coroutines.delay(MidiClockOut.PUMP_MS)
@@ -432,6 +441,7 @@ class MidiViewModel(app: Application) : AndroidViewModel(app) {
         if (clockJob == null) return
         NativeEngine.setMidiClockOut(false)
         clockJob?.cancel()
+        clockDraining = clockJob
         clockJob = null
     }
 

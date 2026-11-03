@@ -62,17 +62,19 @@ class PadLiveTakeTest {
     private class Recorder(private val frames: Int) : ResampleSource {
         var state = 0
         var started = 0
-        var finished = 0
+        @Volatile var finished = 0
+        val stopped = ArrayList<Long>()
         override fun start(seconds: Int): Long {
             started++
             state = 0
             return 7L
         }
         override fun status(handle: Long): LongArray = longArrayOf(state.toLong(), if (state >= 1) frames.toLong() else 0L)
-        override fun stop() {
+        override fun stop(handle: Long) {
+            stopped += handle
             state = 2
         }
-        override fun finish(handle: Long): FloatArray {
+        @Synchronized override fun finish(handle: Long): FloatArray {
             finished++
             val was = state
             state = 2
@@ -181,6 +183,40 @@ class PadLiveTakeTest {
         // One undo step.
         vm.undo()
         assertTrue(vm.project.value.audioTracks.none { it.clip != null })
+    }
+
+    /** FIX-1: the project closed while the take is armed, or recording: its engine buffer is freed, once. */
+    @Test
+    fun closingTheProjectFreesTheTakesBuffer() {
+        for (recording in listOf(false, true)) {
+            val owner = androidx.lifecycle.ViewModelStore()
+            val vm = androidx.lifecycle.ViewModelProvider(owner, androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory(app))[RhythmViewModel::class.java]
+            vm.livePadsSoundingForTest = emptySet()
+            val recorder = Recorder(twoBars)
+            vm.padLive.played.sourceForTest = recorder
+            vm.asLive()
+            vm.padLive.played.press()
+            assertEquals(PlayedTakeUi.Armed, vm.padLive.played.ui.value)
+            if (recording) {
+                recorder.state = 1
+                waitFor("recording") { vm.padLive.played.ui.value is PlayedTakeUi.Recording }
+            }
+            owner.clear()  // onCleared: the screen's scope is gone
+            waitFor("freed (recording: $recording)") { recorder.finished >= 1 }
+            shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(200))
+            Thread.sleep(50)
+            assertEquals("freed once", 1, recorder.finished)
+        }
+    }
+
+    /** FIX-1: the stop names the take it ends (the engine leaves a take armed since alone). */
+    @Test
+    fun theStopNamesItsTake() {
+        val recorder = Recorder(twoBars)
+        val vm = liveVm(recorder)
+        vm.asLive()
+        record(vm, recorder)
+        assertEquals(listOf(7L), recorder.stopped)
     }
 
     @Test

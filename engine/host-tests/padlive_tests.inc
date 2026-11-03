@@ -351,6 +351,39 @@ static void lightsFollowTheSound() {
     CHECK(engine.clipLevel(1) > 0.04f);  // the other one still plays
 }
 
+// FIX-1: a stop names its take; a late one (sent for the take before) leaves the new one armed.
+static void resampleStopTargetsItsTake() {
+    ps::Engine engine(kRate);
+    installClip(engine, 0, constantSample(100, 1, 0.5f));
+    engine.post({ps::CommandType::SetClipParam, 1.0f, 0, ps::ClipLauncher::Beats});
+    engine.post({ps::CommandType::ToggleClip, 0.0f, 0});
+    render(engine, 1024, 256);
+    ps::ResampleBuffer first(kRate * 4);
+    ps::Command arm{ps::CommandType::ResampleArm, 0.0f, 0, 0};
+    arm.resample = &first;
+    engine.post(arm);
+    render(engine, 96000, 256);
+    CHECK(first.state.load() == 1);
+    // The next take armed before the stop of the first one reaches the engine.
+    ps::ResampleBuffer second(kRate * 4);
+    ps::Command next{ps::CommandType::ResampleArm, 0.0f, 0, 0};
+    next.resample = &second;
+    engine.post(next);
+    ps::Command late{ps::CommandType::ResampleStop, 0.0f, 1, 0};
+    late.resample = &first;
+    engine.post(late);
+    render(engine, 256, 256);
+    CHECK(first.state.load() == 2);
+    CHECK(second.state.load() == 0);  // still armed: the stop was not its own
+    render(engine, 96000, 256);
+    CHECK(second.state.load() == 1);
+    ps::Command own{ps::CommandType::ResampleStop, 0.0f, 1, 0};
+    own.resample = &second;
+    engine.post(own);
+    render(engine, 256, 256);
+    CHECK(second.state.load() == 2 && second.written.load() > 0);
+}
+
 }  // namespace padlive
 
 #define PS_PADLIVE_TESTS \
@@ -359,6 +392,7 @@ static void lightsFollowTheSound() {
     {"padlive_row_starts_on_the_bar", padlive::rowStartsOnTheBar}, \
     {"padlive_pad_pitch_reverse_attack_release", padlive::padPitchReverseAttackRelease}, \
     {"padlive_resample_from_bar_to_bar", padlive::resampleFromBarToBar}, \
+    {"padlive_resample_stop_targets_its_take", padlive::resampleStopTargetsItsTake}, \
     {"padlive_midi_clock_out_on_the_beat", padlive::midiClockOutOnTheBeat}, \
     {"padlive_scene_without_allocating", padlive::sceneWithoutAllocating}, \
     {"padlive_lights_follow_the_sound", padlive::lightsFollowTheSound},

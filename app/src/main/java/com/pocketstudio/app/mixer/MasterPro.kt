@@ -191,19 +191,32 @@ class MasterProController(
         refFile().delete()
         bands = null
         installedFor = null
+        if (installedBy === token) installedBy = null
         if (NativeEngine.isAvailable) NativeEngine.setReference(null, Float.NaN)
         if (_live.value.listen == NativeEngine.LISTEN_REFERENCE) setListen(NativeEngine.LISTEN_MASTER)
         edit("pro-reference") { it.copy(reference = null, referenceName = null, referenceLufs = null) }
     }
 
-    /** The panel is shown: the project's reference (if any) in the engine, once per project. */
+    /**
+     * The panel is shown: the project's reference in the engine, once per project; without one (or
+     * its file gone), the engine's own is taken out (it may be another project's, which outlives it).
+     */
     fun attach() {
-        val pro = project.value.mixer.pro ?: return
-        val lufs = pro.referenceLufs ?: return
+        if (!NativeEngine.isAvailable) return
+        val lufs = project.value.mixer.pro?.referenceLufs
         val id = projectId()
         val file = refFile(id)
-        if (installedFor == id || !file.exists() || !NativeEngine.isAvailable) return
+        if (lufs == null || !file.exists()) {
+            installedFor = null
+            if (installedBy != null) {
+                installedBy = null
+                NativeEngine.setReference(null, Float.NaN)
+            }
+            return
+        }
+        if (installedFor == id && installedBy === token) return
         installedFor = id
+        installedBy = token
         scope.launch {
             val sample = withContext(Dispatchers.IO) {
                 runCatching { FloatWav.read(file) }.getOrNull()?.let { NativeSample.create(it.data, it.channels, it.sampleRate) }
@@ -212,6 +225,23 @@ class MasterProController(
             sample.close()  // the engine holds its own reference
         }
     }
+
+    /**
+     * The project closes ([RhythmViewModel.onCleared]): its reference leaves the engine (unless the
+     * next project's screen installed its own meanwhile), and the master is heard as always.
+     */
+    fun close() {
+        if (!NativeEngine.isAvailable) return
+        if (installedBy === token) {
+            installedBy = null
+            NativeEngine.setReference(null, Float.NaN)
+        }
+        installedFor = null
+        if (_live.value.listen == NativeEngine.LISTEN_REFERENCE) NativeEngine.setMasterListen(NativeEngine.LISTEN_MASTER)
+    }
+
+    /** This controller's mark on the reference the engine holds ([installedBy]). */
+    private val token = Any()
 
     /** The reference's octave bands (dB against its whole), for the export's report; null without one. Worker thread. */
     fun referenceBands(): DoubleArray? {
@@ -245,6 +275,9 @@ class MasterProController(
     }
 
     companion object {
+        /** Which controller's reference the engine holds (null: none); the engine outlives projects. */
+        @Volatile private var installedBy: Any? = null
+
         const val REFERENCE_SECONDS = 90
         const val MAX_COVER_BYTES = 2L * 1024 * 1024
         const val DEFAULT_MONO_BASS = 120f

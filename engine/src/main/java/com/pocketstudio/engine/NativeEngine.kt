@@ -903,7 +903,8 @@ object NativeEngine {
     external fun resampleStart(seconds: Int, waitForSound: Boolean): Long
     /** [state 0 waiting for its bar line, 1 recording, 2 finished; frames recorded]. */
     external fun resampleStatus(handle: Long): LongArray
-    external fun resampleStop()
+    /** Take [handle] ends on the next bar line heard (another take armed since is left alone). */
+    external fun resampleStop(handle: Long)
     /** What was recorded (stereo interleaved, 48 kHz), the buffer freed (ended at once first when still running). */
     external fun resampleFinish(handle: Long): FloatArray?
 

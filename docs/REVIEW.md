@@ -1115,3 +1115,10 @@ Restes :
 - 2026-10-30 · Test instable sous charge : `HumanRemixJourneyTest.aSongsVoiceGoesIntoTheProjectWithTouchesOnly` a échoué une fois dans la suite complète (« Voix vers le pad… » pas fini à temps), passe seul. Rendu robuste (étape 7g) : le test attend la vraie condition (chanson importée, formes d'onde, voix sur le pad), plus de comptes de secondes.
 
 - 2026-11-03 (rangement A2) : `m17_worst_case_live_cpu_bench` frôle sa limite sur ce conteneur (p99 31 à 34 % pour < 33 %), mêmes chiffres au commit `67c8dfb` qui l'a écrit : pas de recul, marge mince. À regagner au lot E (Master pro) ; à mesurer sur le téléphone (OboeTester, trace Perfetto, moment 1).
+
+- 2026-11-03 (rangement C) : n° 24 découpe faite (écran « Découper la chanson »), « Garder » dans le navigateur unique (reste 7d), voix en notes sur la vraie chanson : 87,5 % à ±1 demi-ton contre la hauteur de Basic Pitch image par image (note contre note : 65,6 %, 21 notes à l'octave). Idées (non faites) :
+- Dupliquer, inverser, transposer, étirer une piste de la chanson dans Structure : l'écran Structure (`session/`) n'est pas à C et étirer demande `StemPlayer`/`TimeStretch` (moteur) → lot D ou Audit.
+- Séparation coupée qui reprend là où elle s'est arrêtée : aujourd'hui l'appli le dit et propose de relancer ; reprendre à mi-chemin demande des points de reprise dans le séparateur natif.
+- Découpe côte à côte avec Structure sur tablette : lot D (prévu).
+- Corriger les 21 notes de voix à l'octave (YIN) : pas nécessaire pour l'objectif, à revoir si Benjamin l'entend.
+- Pluriels polonais et arabes (« bouts ») : forme générale affichée, à compléter dans `plurals.json`.

@@ -245,6 +245,8 @@ data class ShareSheetUi(
     val truePeakDb: Double? = null,
     /** The project's own name now (« Mon projet 1 »): said when « Partager » will rename it ([name] differs). */
     val projectName: String? = null,
+    /** The project, for the Remix rights reminder (lot C, [com.pocketstudio.app.remix.RightsLine]). */
+    val rightsProject: com.pocketstudio.model.Project? = null,
     /** S5: how much the loudest moments are tassés for the volume ([ShareLevels.lossDb]). */
     val lossDb: Double? = null,
 )
@@ -394,6 +396,7 @@ fun ShareSheetContent(
                 )
             }
         }
+        ui.rightsProject?.let { com.pocketstudio.app.remix.RightsLine(it, Modifier.padding(horizontal = 20.dp, vertical = 4.dp)) }
         Button(
             onClick = actions.share, enabled = ui.name.isNotBlank() && !ui.running,
             modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth().heightIn(min = 56.dp).spot("share_go", tr("Partager")).testTag("share_go"),
@@ -517,7 +520,7 @@ fun ShareSheetRoute(
     val checks = remember(project, levels, loopBars) { shareChecks(project, com.pocketstudio.app.ui.mixerStrips(project), levels, loopBars) }
     val ui = (
         ShareSheetUi(
-            name = name, seconds = shareSeconds(project, loopBars), parts = project.song.size, checks = checks, projectName = project.name,
+            name = name, seconds = shareSeconds(project, loopBars), parts = project.song.size, checks = checks, projectName = project.name, rightsProject = project,
             format = prefs.format, playing = transport.playing, running = export.running, canLower = levels.canLower, lufs = levels.lufs,
             truePeakDb = levels.truePeakDb, lossDb = levels.lossDb,
         )

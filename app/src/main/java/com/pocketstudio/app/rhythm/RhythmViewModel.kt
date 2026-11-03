@@ -9325,7 +9325,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 if (_audioRecording.value != null) stopAudioRecording()
                 else if (_transport.value.playing) togglePlay()
                 stopLive()  // headphones out: no live pad keeps looping full blast on the speaker
-                if (!visible && NativeEngine.isAvailable) NativeEngine.stop()
+                // The phone's engine only (a test's stand-in has no audio stream to stop).
+                if (!visible && NativeEngine.isNative) NativeEngine.stop()
             }
         }
     }
@@ -9342,6 +9343,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Tapping a pad plays it and makes it the pad shown in the step grid. */
     fun hitPad(lane: Int) {
+        // Audit stage 3 (fuzzing): a pad out of range became the selected pad, and the next cell touched crashed.
+        if (lane !in 0 until DrumPattern.PAD_COUNT) return
         if (lane != _transport.value.selectedPad) closeSlicer()
         _transport.value = _transport.value.copy(selectedPad = lane)
         if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, 0.9f)

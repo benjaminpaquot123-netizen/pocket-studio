@@ -265,9 +265,11 @@ private fun PartyPad(pad: Int, ui: PadLiveUi, clock: PadClock, levels: PadLevels
         contentAlignment = Alignment.Center,
     ) {
         if (clip != null) {
-            Text(
-                DefaultNames.shownSample(clip.name), color = Neon.TextPrimary, fontWeight = FontWeight.Bold, fontSize = 18.sp,
-                textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.fillMaxWidth().padding(8.dp),
+            // Audit stage 1: whole words, smaller before « … » (« Boucle de ki… », « Monté/e » on a small phone).
+            com.pocketstudio.ui.FitText(
+                DefaultNames.shownSample(clip.name), Modifier.fillMaxWidth().padding(8.dp),
+                style = androidx.compose.ui.text.TextStyle(fontSize = 18.sp, lineHeight = 22.sp), color = Neon.TextPrimary, fontWeight = FontWeight.Bold,
+                maxLines = 3, min = 11.sp, textAlign = TextAlign.Center,
             )
         }
     }

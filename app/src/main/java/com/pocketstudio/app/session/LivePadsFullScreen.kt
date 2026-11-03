@@ -420,7 +420,7 @@ private fun StageBar(
                 verticalArrangement = Arrangement.Center,
             ) {
                 Icon(Icons.Filled.StopCircle, contentDescription = null, tint = Neon.Red, modifier = Modifier.size(26.dp))
-                Text(tr("Tout couper"), style = MaterialTheme.typography.labelSmall, color = Neon.TextPrimary, maxLines = 1, softWrap = false)
+                com.pocketstudio.ui.FitText(tr("Tout couper"), style = MaterialTheme.typography.labelSmall, color = Neon.TextPrimary, maxLines = 2, min = 8.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
             }
         }
         if (toggleFx != null) StageButton(Icons.Filled.Tune, tr("Effets"), tr("Effets"), lit = fxOpen, accent = Neon.Cyan, tag = "live_pads_fx_toggle", onClick = toggleFx)
@@ -453,7 +453,7 @@ private fun StageButton(
     ) {
         val ink = if (lit) Neon.OnAccent else Neon.TextPrimary
         Icon(icon, contentDescription = null, tint = if (lit) ink else tint ?: ink)
-        if (label != null) Text(label, Modifier.padding(start = 6.dp), color = ink, style = MaterialTheme.typography.labelLarge, maxLines = 1)
+        if (label != null) com.pocketstudio.ui.FitText(label, Modifier.padding(start = 6.dp), MaterialTheme.typography.labelLarge, color = ink)
     }
 }
 

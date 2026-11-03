@@ -176,7 +176,7 @@ internal fun HeldFxPanel(fx: HeldFx, modifier: Modifier = Modifier) {
     ) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             val style = MaterialTheme.typography.labelMedium
-            val fit = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp)
+            val fit = com.pocketstudio.ui.WholeWordsAutoSize(9.sp, style.fontSize)
             Text(
                 if (kind == HeldKind.FILTER) tr("FILTRE DJ · TANT QUE TU APPUIES") else tr("ROULEMENT · GLISSE POUR CHANGER"),
                 style = style, color = Neon.TextSecondary, maxLines = 1, softWrap = false, autoSize = fit,

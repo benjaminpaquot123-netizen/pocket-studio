@@ -27,7 +27,7 @@ import org.robolectric.annotation.GraphicsMode
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = "w400dp-h890dp-xxhdpi")
-class PadLiveScreenshotTest : ScreenshotTest() {
+open class PadLiveScreenshotTest : ScreenshotTest() {
     override fun wanted(name: String) = name in SHOTS
 
     /** Page A as a new « Live » project gets it, and four more hits. */

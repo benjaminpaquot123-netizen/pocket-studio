@@ -63,7 +63,7 @@ internal fun PlayedButton(state: PlayedTakeUi, press: () -> Unit, modifier: Modi
         val style = MaterialTheme.typography.titleMedium
         Text(
             words, style = style, color = Neon.TextPrimary, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis,
-            autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 10.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
+            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(10.sp, style.fontSize),
             modifier = Modifier.weight(1f).testTag("padlive_played_words"),
         )
     }

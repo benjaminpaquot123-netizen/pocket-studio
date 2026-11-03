@@ -16,6 +16,12 @@ Sample* Sample::create(const float* interleaved, int64_t frames, int channels, i
         s->frames_ = frames;
     } else {
         const double ratio = static_cast<double>(targetRate) / sourceRate;
+        // libsamplerate takes 1/256..256 (SRC_MAX_RATIO): past it, a lying rate (a 200 Hz header
+        // over a minute of audio) would ask gigabytes for a conversion that then fails anyway.
+        if (ratio > 256.0 || ratio < 1.0 / 256.0) {
+            delete s;
+            return nullptr;
+        }
         const auto outFrames = static_cast<int64_t>(std::ceil(frames * ratio)) + 16;
         s->data_.resize(static_cast<size_t>(outFrames * channels));
         SRC_DATA d{};

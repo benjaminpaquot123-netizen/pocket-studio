@@ -364,7 +364,8 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
             // Cleaned first: only plain file names count (a path like ../x is dropped here).
             val read = (project ?: throw IOException(tr("ce .zip n'est pas un projet BenStudio"))).sanitized()
             val missing = read.sampleFiles.filterNot { File(dir, "$SAMPLES/$it").isFile }.toSet()
-            val p = if (missing.isEmpty()) read else read.withoutSounds(missing)
+            // A name as long as the file allows (a crafted .zip) is cut as a rename would.
+            val p = (if (missing.isEmpty()) read else read.withoutSounds(missing)).let { if (it.name.length > MAX_NAME) it.copy(name = it.name.take(MAX_NAME)) else it }
             store.save(id, p)
             moveStems(stemsIn, p.remix.setId)
             return ImportedProject(id, missing.size)

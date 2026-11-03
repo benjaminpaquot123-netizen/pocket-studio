@@ -595,6 +595,20 @@ open class ScreenshotTest {
         }
     }
 
+    /** Audit stage 3: the same sheet in Pro, « Couches » (another sound for the hard hits), one layer and the sounds to add another. */
+    @Test
+    fun padSheetLayers() = shoot("pad_sheet_layers") {
+        Box(Modifier.background(Neon.Surface).padding(top = 12.dp)) {
+            com.pocketstudio.app.rhythm.PadSheetContent(
+                com.pocketstudio.app.rhythm.PadSheetUi(
+                    0, "Kick de ma voix", volume = 0.7f, pan = -0.2f, muted = false, hasSample = true,
+                    sounds = listOf("Kick", "Kick 2", "Kick rond"), pro = true, layers = listOf("Kick dur" to 100),
+                ),
+                com.pocketstudio.app.rhythm.PadSheetActions(), close = {},
+            )
+        }
+    }
+
     @Test
     fun tempoSheet() = shoot("tempo_sheet") {
         Box(Modifier.background(Neon.Surface).padding(top = 12.dp)) {

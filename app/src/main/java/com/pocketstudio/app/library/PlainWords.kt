@@ -39,7 +39,7 @@ internal object PlainWords {
 /** The plain lines of [PlainWords.of], in the Mode simple only. */
 @Composable
 internal fun PlainWordsLines(vararg french: String?, modifier: Modifier = Modifier) {
-    if (!com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode) return
+    if (!com.pocketstudio.app.settings.observedSettings().simpleMode) return
     val lines = PlainWords.of(*french)
     if (lines.isEmpty()) return
     Column(modifier.testTag("wizard_plain_words"), verticalArrangement = Arrangement.spacedBy(2.dp)) {

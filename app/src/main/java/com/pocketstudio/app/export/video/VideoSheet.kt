@@ -229,7 +229,7 @@ fun VideoExportRoute(rhythmVm: RhythmViewModel, close: () -> Unit) {
             share()
         }
     }
-    val project = rhythmVm.project.value
+    val project by rhythmVm.project.collectAsStateWithLifecycle()
     val part = plan.part.takeIf { it in project.song.indices }?.let { com.pocketstudio.model.video.VideoPlanner.partLabel(project, project.song[it].scene) }
     val parts = remember(project) { project.song.mapIndexed { i, sp -> "${i + 1}. " + com.pocketstudio.model.video.VideoPlanner.partLabel(project, sp.scene) } }
     val voice = remember(project) { com.pocketstudio.model.video.VideoPlanner.voicePart(project) }

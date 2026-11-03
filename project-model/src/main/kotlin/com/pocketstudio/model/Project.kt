@@ -531,9 +531,32 @@ data class PadSample(
     val gain: Float = 1f,
     /** 0 = plays at its own speed; otherwise lasts this many beats at the project tempo (pitch kept). */
     val fitBeats: Int = 0,
+    /**
+     * Audit stage 3 (« Couches », Pro): other sounds for harder hits, sorted by [PadLayer.from]. The
+     * pad's own sound plays below the first layer's velocity, each layer from its own up to the next
+     * one's. Left out of the file when empty: pads saved before play as they did. A pad fitted to the
+     * tempo ([fitBeats] > 0) plays its fitted copy only (its layers wait).
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val layers: List<PadLayer> = emptyList(),
 ) {
     /** Only a plain file name may come from disk: never a path. */
     val isSafe: Boolean get() = file.isNotEmpty() && file.length <= 80 && file.matches(SAFE_NAME) && !file.startsWith(".")
+
+    /** Every sound file this pad plays: its own, then its layers'. */
+    val files: List<String> get() = listOf(file) + layers.map { it.file }
+
+    /**
+     * The velocity ranges (0..127) the engine gets: the pad's own sound first, then each layer
+     * ([com.pocketstudio.engine] Sampler layers). Empty without layers.
+     */
+    fun layerRanges(): List<IntRange> {
+        if (layers.isEmpty()) return emptyList()
+        val starts = listOf(0) + layers.map { it.from }
+        return starts.mapIndexed { i, from -> from..((starts.getOrNull(i + 1) ?: 128) - 1) }
+    }
+
+    /** With [layer] added (its velocity kept apart from the others'), at most [PadLayer.MAX] layers. */
+    fun withLayer(layer: PadLayer): PadSample = copy(layers = (layers + layer)).sanitized()
 
     fun sanitized(): PadSample {
         val s = start.finite(0f).coerceIn(0f, 0.999f)
@@ -550,6 +573,7 @@ data class PadSample(
             choke = choke.coerceIn(0, CHOKE_GROUPS),
             gain = gain.finite(1f).coerceIn(0f, 2f),
             fitBeats = fitBeats.takeIf { it in FIT_BEATS } ?: 0,
+            layers = PadLayer.cleaned(layers),
         )
     }
 
@@ -580,6 +604,42 @@ data class PadSample(
 }
 
 internal fun Float.finite(default: Float) = if (isFinite()) this else default
+
+/**
+ * One of a drum pad's velocity layers ([PadSample.layers]): [file] (under `samples/`, as the pad's
+ * own) plays for hits from velocity [from] (1..127, as MIDI) up to the next layer's.
+ */
+@Serializable
+data class PadLayer(
+    val file: String,
+    val name: String,
+    val from: Int = DEFAULT_FROM,
+) {
+    val isSafe: Boolean get() = PadSample(file, name).isSafe
+
+    companion object {
+        /** Layers a pad holds besides its own sound (the engine's Sampler takes 8 with the base). */
+        const val MAX = 3
+        /** A new layer's start: the hard hits (the grid's full-strength cells, a MiniLab struck). */
+        const val DEFAULT_FROM = 100
+        /** Velocities a layer can start from: the pad's own sound always keeps the softest hits. */
+        val FROM_RANGE = 2..127
+
+        /**
+         * Safe files only, starts in [FROM_RANGE], sorted, each start apart (a layer landing on a
+         * taken start moves up, or is dropped at the top), [MAX] at most.
+         */
+        fun cleaned(layers: List<PadLayer>): List<PadLayer> {
+            val out = ArrayList<PadLayer>()
+            for (l in layers.filter { it.isSafe }.map { it.copy(name = it.name.take(40), from = it.from.coerceIn(FROM_RANGE)) }.sortedBy { it.from }) {
+                if (out.size >= MAX) break
+                val from = maxOf(l.from, (out.lastOrNull()?.from ?: FROM_RANGE.first - 1) + 1)
+                if (from <= FROM_RANGE.last) out += l.copy(from = from)
+            }
+            return out
+        }
+    }
+}
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable

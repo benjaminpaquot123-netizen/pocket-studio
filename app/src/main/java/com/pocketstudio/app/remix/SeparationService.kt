@@ -230,46 +230,58 @@ class SeparationService : Service() {
                 return SeparationState.Failed(tr("Modèle abîmé, supprimé : relance pour le retélécharger."))
             }
             val part = File(final.parentFile, "$key.part").apply { deleteRecursively() }
-            SeparationJob.set(SeparationState.Separating(name, 0f))
-            AppLog.add("Séparation : modèle lancé (${raw.seconds.roundToInt()} s, ${raw.channels} canaux, ${raw.sampleRate} Hz)")
-            val (result, why) = work.separate(SeparationModel.file(this), raw, part) { p ->
-                SeparationJob.set(SeparationState.Separating(name, p))
-                progress(tr("Séparation de « %s »", name), p)
-                !cancelled.get()
-            }
-            if (result != SeparationResult.Ok) {
+            // Audit stage 3: whatever fails from here (the analysis, a full phone at the rename or the
+            // meta file), no half-made song stays behind (hundreds of MB until the next separation).
+            try {
+                return separateInto(part, final, raw, name)
+            } catch (e: Throwable) {
                 part.deleteRecursively()
-                // The model's own words (an ONNX Runtime error…) reach the bug report.
-                if (result != SeparationResult.Cancelled) AppLog.add("Séparation : le modèle a échoué (${result.name}) : ${why.ifBlank { "sans détail" }}")
-                return when (result) {
-                    SeparationResult.Cancelled -> SeparationState.Idle
-                    SeparationResult.BadInput -> SeparationState.Failed(tr("Son illisible."))
-                    SeparationResult.IoError -> SeparationState.Failed(tr("Écriture impossible (stockage plein ou mémoire insuffisante)."))
-                    SeparationResult.OutOfMemory -> SeparationState.Failed(tr("Mémoire insuffisante pendant la séparation : ferme des applis ou prends un morceau plus court."))
-                    else -> SeparationState.Failed(tr("Le modèle de séparation a échoué."))
-                }
+                if (StemStore.read(final) == null) final.deleteRecursively()
+                throw e
             }
-            // « Annuler » touched once the model was done: nothing is kept (audit 02 M12).
-            if (cancelled.get()) {
-                part.deleteRecursively()
-                return SeparationState.Idle
-            }
-            SeparationJob.set(SeparationState.Analysing(name))
-            progress(tr("Tempo et tonalité de « %s »", name), null)
-            val info = work.analyse(part)
-            if (cancelled.get()) {
-                part.deleteRecursively()
-                return SeparationState.Idle
-            }
-            final.deleteRecursively()
-            if (!part.renameTo(final)) throw IOException(tr("écriture impossible"))
-            val set = StemStore.commit(final, name, raw.seconds, info)
-            StemStore.prune(this)
-            AppLog.add("Séparation : « $name » (${raw.seconds.roundToInt()} s) terminée")
-            return SeparationState.Done(set)
         } finally {
             dir.deleteRecursively()
         }
+    }
+
+    private fun separateInto(part: File, final: File, raw: AudioDecoder.RawAudio, name: String): SeparationState {
+        SeparationJob.set(SeparationState.Separating(name, 0f))
+        AppLog.add("Séparation : modèle lancé (${raw.seconds.roundToInt()} s, ${raw.channels} canaux, ${raw.sampleRate} Hz)")
+        val (result, why) = work.separate(SeparationModel.file(this), raw, part) { p ->
+            SeparationJob.set(SeparationState.Separating(name, p))
+            progress(tr("Séparation de « %s »", name), p)
+            !cancelled.get()
+        }
+        if (result != SeparationResult.Ok) {
+            part.deleteRecursively()
+            // The model's own words (an ONNX Runtime error…) reach the bug report.
+            if (result != SeparationResult.Cancelled) AppLog.add("Séparation : le modèle a échoué (${result.name}) : ${why.ifBlank { "sans détail" }}")
+            return when (result) {
+                SeparationResult.Cancelled -> SeparationState.Idle
+                SeparationResult.BadInput -> SeparationState.Failed(tr("Son illisible."))
+                SeparationResult.IoError -> SeparationState.Failed(tr("Écriture impossible (stockage plein ou mémoire insuffisante)."))
+                SeparationResult.OutOfMemory -> SeparationState.Failed(tr("Mémoire insuffisante pendant la séparation : ferme des applis ou prends un morceau plus court."))
+                else -> SeparationState.Failed(tr("Le modèle de séparation a échoué."))
+            }
+        }
+        // « Annuler » touched once the model was done: nothing is kept (audit 02 M12).
+        if (cancelled.get()) {
+            part.deleteRecursively()
+            return SeparationState.Idle
+        }
+        SeparationJob.set(SeparationState.Analysing(name))
+        progress(tr("Tempo et tonalité de « %s »", name), null)
+        val info = work.analyse(part)
+        if (cancelled.get()) {
+            part.deleteRecursively()
+            return SeparationState.Idle
+        }
+        final.deleteRecursively()
+        if (!part.renameTo(final)) throw IOException(tr("écriture impossible"))
+        val set = StemStore.commit(final, name, raw.seconds, info)
+        StemStore.prune(this)
+        AppLog.add("Séparation : « $name » (${raw.seconds.roundToInt()} s) terminée")
+        return SeparationState.Done(set)
     }
 
 

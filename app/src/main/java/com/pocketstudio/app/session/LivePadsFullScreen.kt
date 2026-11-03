@@ -254,7 +254,7 @@ private fun PadChooser(pad: Int, ui: LivePadsUi, actions: LivePadsActions, close
                 ) {
                     Box(Modifier.size(14.dp).clip(RoundedCornerShape(7.dp)).background(Neon.Red))
                     Text(
-                        tr("Enregistrement… %s s", "%.1f".format(java.util.Locale.getDefault(), secs)),
+                        tr("Enregistrement… %s s", "%.1f".format(com.pocketstudio.model.i18n.I18n.lang.locale, secs)),
                         Modifier.padding(start = 10.dp).weight(1f), style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary,
                     )
                     androidx.compose.material3.Button(

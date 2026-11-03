@@ -87,6 +87,7 @@ import com.pocketstudio.model.Performance
 import com.pocketstudio.model.Progression
 import com.pocketstudio.model.NoteClip
 import com.pocketstudio.model.ArpMode
+import com.pocketstudio.model.PadLayer
 import com.pocketstudio.model.PadSample
 import com.pocketstudio.app.export.AacEncoder
 import com.pocketstudio.app.export.FlacEncoder
@@ -500,7 +501,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         io = Dispatchers.IO,
         // Lot 1: no project open (the last one deleted): a blank one in memory, never written.
         persist = !com.pocketstudio.app.projects.CurrentProject.isNone(projectId),
-    )
+    ).apply { beforeChange = { endTutoDemoShown() } }
     val project: StateFlow<Project> = session.project
 
     /**
@@ -700,7 +701,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (!NativeEngine.isNative) return
         val buf = IntArray(NativeEngine.LIVE_PADS)
         while (true) {
-            NativeEngine.clipStates(buf)
+            NativeEngine.clipStatesNow(buf)
             val now = buf.take(LivePads.ALL)
             if (now != _liveStates.value) _liveStates.value = now
             kotlinx.coroutines.delay(33)
@@ -861,7 +862,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         livePadsSoundingForTest?.let { return it }
         if (!NativeEngine.isAvailable) return emptySet()
         val buf = IntArray(NativeEngine.LIVE_PADS)
-        NativeEngine.clipStates(buf)
+        NativeEngine.clipStatesNow(buf)
         return buf.indices.filterTo(HashSet()) { buf[it] != 0 }
     }
 
@@ -1371,6 +1372,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * follow), never written to disk nor kept in « Annuler »; null: the project as it was before
      * the first frame, at once.
      */
+    /** A change, an undo or a redo during « Montre-moi »: the project itself back first (see ProjectSession.beforeChange). */
+    private fun endTutoDemoShown() {
+        val before = tutoDemoBefore ?: return
+        tutoDemoBefore = null
+        session.showQuietly { before }
+        session.saveAs = null
+    }
+
     fun tutoDemo(frame: Project?) {
         if (frame != null) {
             val before = tutoDemoBefore ?: project.value.also { b ->
@@ -7512,6 +7521,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun sampleJob(
         busy: String?, live: Int? = null, beats: Int? = null, cancellable: Boolean = false, liveTempo: LiveTempo? = null,
         lane: Int = _transport.value.selectedPad, done: () -> Unit = {},
+        /** Where the sound goes on the drum pad (null: it becomes the pad's own sound). */
+        place: ((Project, PadSample) -> Project)? = null,
         work: suspend () -> Pair<PadSample, PadSamples.Prepared>,
     ) {
         if (busy != null) _sampleTask.value = SampleTask.Busy(busy, cancellable)
@@ -7537,10 +7548,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     _sampleTask.value = SampleTask.Idle
                     return@launch
                 }
-                session.edit { p -> p.copy(drums = p.drums.withSample(lane, sample)) }
+                session.edit { p -> place?.invoke(p, sample) ?: p.copy(drums = p.drums.withSample(lane, sample)) }
                 pushPads()
                 _sampleTask.value = SampleTask.Idle
-                if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, 0.9f)
+                if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, if (place != null) 1f else 0.9f)
                 done()
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
@@ -7582,7 +7593,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         var busy = false
         while (true) {
-            busy = com.pocketstudio.app.mixer.cpuBusyNext(busy, NativeEngine.cpuLoad())
+            busy = com.pocketstudio.app.mixer.cpuBusyNext(busy, NativeEngine.cpuLoadNow())
             emit(busy)
             kotlinx.coroutines.delay(500)
         }
@@ -9111,8 +9122,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         } else {
             endLiveGestures()
         }
-        if (!NativeEngine.isAvailable) return
+        // A stop (■, a call taking the sound, the headphones out) ends the take, engine or not (Audit stage 2).
         if (!playing && _recording.value) stopRecordingTake()
+        if (!NativeEngine.isAvailable) return
         if (playing) {
             drainLaunches(apply = false)  // what an earlier run left
             enginePlay(countInBars ?: if (t.countIn) 1 else 0, songStep)
@@ -9313,7 +9325,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 if (_audioRecording.value != null) stopAudioRecording()
                 else if (_transport.value.playing) togglePlay()
                 stopLive()  // headphones out: no live pad keeps looping full blast on the speaker
-                if (!visible && NativeEngine.isAvailable) NativeEngine.stop()
+                // The phone's engine only (a test's stand-in has no audio stream to stop).
+                if (!visible && NativeEngine.isNative) NativeEngine.stop()
             }
         }
     }
@@ -9330,6 +9343,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Tapping a pad plays it and makes it the pad shown in the step grid. */
     fun hitPad(lane: Int) {
+        // Audit stage 3 (fuzzing): a pad out of range became the selected pad, and the next cell touched crashed.
+        if (lane !in 0 until DrumPattern.PAD_COUNT) return
         if (lane != _transport.value.selectedPad) closeSlicer()
         _transport.value = _transport.value.copy(selectedPad = lane)
         if (NativeEngine.isAvailable) NativeEngine.triggerPad(lane, 0.9f)
@@ -9421,6 +9436,51 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun removeSampleOf(lane: Int) {
         if (project.value.drums.lanes.getOrNull(lane)?.sample == null) return
         session.edit { p -> p.copy(drums = p.drums.withSample(lane, null)) }
+        pushPads()
+    }
+
+    /**
+     * « Couches » (Pro): [pcm] becomes a layer of pad [lane] for its hard hits (from
+     * [PadLayer.DEFAULT_FROM], or above the last layer). Only on a pad with its own sound, [PadLayer.MAX]
+     * at most. False when the pad cannot take one now (busy, no sound of its own, full).
+     */
+    fun addPadLayer(lane: Int, pcm: Pcm, name: String): Boolean {
+        val own = project.value.drums.lanes.getOrNull(lane)?.sample ?: return false
+        if (own.layers.size >= PadLayer.MAX) return false
+        if (_sampleTask.value is SampleTask.Busy || _sampleTask.value is SampleTask.Recording) return false
+        sampleJob(tr("Pose du son sur le pad %d…", lane + 1), lane = lane, place = { p, added ->
+            val base = p.drums.lanes.getOrNull(lane)?.sample
+            if (base == null) p
+            else {
+                val from = maxOf(PadLayer.DEFAULT_FROM, (base.layers.lastOrNull()?.from ?: 0) + 1).coerceAtMost(PadLayer.FROM_RANGE.last)
+                p.copy(drums = p.drums.withSample(lane, base.withLayer(PadLayer(added.file, added.name, from))))
+            }
+        }) { padSamples.add(pcm.withoutTail(), name) }
+        return true
+    }
+
+    /** Pad [lane] without its layer [index] (« Couches »). */
+    fun removePadLayer(lane: Int, index: Int) {
+        val own = project.value.drums.lanes.getOrNull(lane)?.sample ?: return
+        if (index !in own.layers.indices) return
+        session.edit { p -> p.copy(drums = p.drums.withSample(lane, own.copy(layers = own.layers.filterIndexed { i, _ -> i != index }))) }
+        pushPads()
+    }
+
+    /** Layer [index] of pad [lane] plays from velocity [from] (1..127); a slide is one undo step. */
+    fun setPadLayerFrom(lane: Int, index: Int, from: Int) {
+        val own = project.value.drums.lanes.getOrNull(lane)?.sample ?: return
+        val layer = own.layers.getOrNull(index) ?: return
+        // Kept between its neighbours: the slider never reorders the layers under the finger.
+        val low = (own.layers.getOrNull(index - 1)?.from ?: (PadLayer.FROM_RANGE.first - 1)) + 1
+        val high = (own.layers.getOrNull(index + 1)?.from ?: (PadLayer.FROM_RANGE.last + 1)) - 1
+        if (low > high) return
+        val v = from.coerceIn(low, high)
+        if (v == layer.from) return
+        session.edit("pad-layer-$lane-$index") { p ->
+            val base = p.drums.lanes[lane].sample ?: return@edit p
+            p.copy(drums = p.drums.withSample(lane, base.copy(layers = base.layers.mapIndexed { i, l -> if (i == index) l.copy(from = v) else l }).sanitized()))
+        }
         pushPads()
     }
 
@@ -10694,6 +10754,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                                     finish = settings.pro.finish(stems, rangeStart, writtenBits),
                                 ).also { rendered = job.report() }
                             }
+                        } catch (e: Throwable) {
+                            // Audit stage 3: a render that threw (a sound gone, the disk) leaves no half file.
+                            wav.delete()
+                            throw e
                         } finally {
                             poll?.cancel()
                             // Closed on the main thread, after the render returned.

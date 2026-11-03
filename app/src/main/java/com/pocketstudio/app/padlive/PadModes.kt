@@ -148,4 +148,4 @@ internal fun pitchWords(semitones: Int): String = when {
 
 /** « net » for none, else « 0,25 s ». */
 internal fun secondsWords(seconds: Float): String =
-    if (seconds < 0.005f) tr("nette") else tr("%s s", String.format(java.util.Locale.getDefault(), "%.2f", seconds))
+    if (seconds < 0.005f) tr("nette") else tr("%s s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.2f", seconds))

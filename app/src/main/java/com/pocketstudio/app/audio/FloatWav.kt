@@ -120,7 +120,8 @@ object FloatWav {
                         if (size and 1 == 1) input.skipBytes(1)
                     }
                     "data" -> {
-                        if (format != 3 || bits != 32 || channels !in 1..2 || rate <= 0) throw IOException("unsupported WAV")
+                        // A rate no sound has (a lying header) would ask the engine gigabytes to resample.
+                        if (format != 3 || bits != 32 || channels !in 1..2 || rate !in AudioDecoder.RATES) throw IOException("unsupported WAV")
                         val total = size / 4
                         start(total, channels, rate)
                         val bytes = ByteArray(CHUNK * 4)

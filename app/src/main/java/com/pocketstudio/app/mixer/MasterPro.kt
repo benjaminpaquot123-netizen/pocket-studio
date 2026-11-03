@@ -335,7 +335,9 @@ internal fun MasterProPanel(pro: MasterPro?, master: List<Insert>, monoBassHz: F
     val small = MaterialTheme.typography.bodySmall
     Column(Modifier.testTag("master_pro_panel"), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         // 1. The target: in integrated LUFS, or the style's (the « Volume visé » above).
-        Text(tr("Cible de volume (morceau entier)"), style = MaterialTheme.typography.bodyMedium)
+        com.pocketstudio.ui.WithHelp(com.pocketstudio.app.help.ScreenHelp.MASTER_TARGET, about = listOf("pro_target_*", "pro_target_slider")) {
+            Text(tr("Cible de volume (morceau entier)"), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f, fill = false))
+        }
         // « Libre » chosen: its slider stays, even from a preset's value and while it slides over
         // one (fix 2, n° 4: it did nothing from a preset, and the slider went away at -14 or -16).
         var freeMode by rememberSaveable { mutableStateOf(false) }
@@ -366,7 +368,9 @@ internal fun MasterProPanel(pro: MasterPro?, master: List<Insert>, monoBassHz: F
             ProSlider(value = freeLufs, onValueChange = { c.setTarget((it * 2).roundToInt() / 2f) },
                 valueRange = MasterPro.MIN_LUFS..MasterPro.MAX_LUFS, modifier = Modifier.testTag("pro_target_slider"))
         }
-        Text(tr("Plafond de crête (mesuré après compression)"), style = MaterialTheme.typography.bodyMedium)
+        com.pocketstudio.ui.WithHelp(com.pocketstudio.app.help.ScreenHelp.MASTER_CEILING, about = listOf("pro_ceiling_*")) {
+            Text(tr("Plafond de crête (mesuré après compression)"), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f, fill = false))
+        }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             MasterPro.CEILINGS.forEach { db ->
                 FilterChip(selected = p.ceilingDb == db, onClick = { c.setCeiling(db) }, label = { Text("${LoudnessTargets.format(db.toDouble())} dBTP") },
@@ -374,7 +378,11 @@ internal fun MasterProPanel(pro: MasterPro?, master: List<Insert>, monoBassHz: F
             }
         }
         // 2. The chain, in the order it plays.
-        Text(tr("La chaîne du master, dans l'ordre"), style = MaterialTheme.typography.bodyMedium)
+        com.pocketstudio.ui.WithHelp(
+            com.pocketstudio.app.help.ScreenHelp.MASTER_CHAIN, about = listOf("pro_mono_*", "pro_attack", "pro_release", "pro_chain"),
+        ) {
+            Text(tr("La chaîne du master, dans l'ordre"), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f, fill = false))
+        }
         MasterProController.CHAIN.forEachIndexed { i, stage ->
             val there = master.any { it.effect in MasterProController.stageTypes(stage) && !it.bypass }
             Text("${i + 1}. ${MasterProController.stageName(stage)} · " + if (there) tr("en place") else tr("absent"),
@@ -396,7 +404,11 @@ internal fun MasterProPanel(pro: MasterPro?, master: List<Insert>, monoBassHz: F
             Text(tr("Mettre la chaîne pro (réglages dans « Effets »)"))
         }
         // 3. A/B and the reference at the same loudness.
-        Text(tr("Écouter"), style = MaterialTheme.typography.bodyMedium)
+        com.pocketstudio.ui.WithHelp(
+            com.pocketstudio.app.help.ScreenHelp.MASTER_AB, about = listOf("pro_listen_*", "pro_compare", "pro_reference", "pro_reference_clear"),
+        ) {
+            Text(tr("Écouter"), style = MaterialTheme.typography.bodyMedium)
+        }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             listOfNotNull(
                 NativeEngine.LISTEN_MASTER to tr("A · avec le master"),

@@ -62,8 +62,8 @@ internal fun PageRow(ui: PadLiveUi, actions: PadLiveActions) {
         Modifier.fillMaxWidth().onGloballyPositioned { c -> com.pocketstudio.app.retours.Retours.keepClear.update { it + ("padlive_pages" to c.boundsInWindow()) } },
     ) {
         val compact = maxWidth < 380.dp
-        // Narrower still (a 360 dp phone): « Défi » shows only its target.
-        val tiny = maxWidth < 350.dp
+        // Narrower (most phones, since the row's « ? »): « Défi » shows only its target, the pack keeps its name.
+        val tiny = maxWidth < 420.dp
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(Modifier.clip(RoundedCornerShape(14.dp)).background(Neon.Surface).padding(4.dp), horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                 PadLive.PAGE_NAMES.forEachIndexed { page, letter ->
@@ -88,6 +88,8 @@ internal fun PageRow(ui: PadLiveUi, actions: PadLiveActions) {
                 }
             }
             Box(Modifier.weight(1f)) { PackPicker(ui, actions, compact) }
+            // Lot « Aide à jour »: pages, pack and the challenge's target in one « ? » (it fits beside them at 360 dp).
+            com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.ScreenHelp.PADLIVE_PAGES, about = listOf("padlive_page_*", "padlive_pack", "padlive_challenge_open"))
             ChallengeButton(ui, actions, tiny)
         }
     }

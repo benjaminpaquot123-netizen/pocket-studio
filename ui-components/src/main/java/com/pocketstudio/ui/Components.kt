@@ -244,7 +244,7 @@ fun Modifier.panelFinish(surface: Color, accent: Color? = null, corner: Dp = 16.
  * opens it, and the app remembers it under [foldKey] (the title by default).
  */
 @Composable
-fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neon.Cyan, help: Help? = null, foldKey: String? = null) {
+fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neon.Cyan, help: Help? = null, foldKey: String? = null, helpAbout: List<String> = emptyList()) {
     val fold = LocalCardFold.current.takeIf { LocalFolding.current }
     val me = remember { Any() }
     val isHeader = fold != null && (fold.header == null || fold.header === me)
@@ -278,7 +278,7 @@ fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neo
             .foldToggle(key, folded) { fold!!.animate = true }
     } else modifier
     if (help == null) Box(headerModifier, contentAlignment = Alignment.CenterStart) { label() }
-    else WithHelp(help, headerModifier) { label() }
+    else WithHelp(help, headerModifier, about = helpAbout) { label() }
 }
 
 /**

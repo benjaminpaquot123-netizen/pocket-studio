@@ -24,7 +24,7 @@ object Glossary {
     )
     val LIVE_PADS: Help get() = Help(
         tr("Pads live"),
-        tr("Des sons déjà enregistrés (boucles, voix, bouts de morceau) que tu lances et arrêtes d'un toucher, par-dessus ta partie. Ils restent calés sur le tempo, comme chez un DJ."),
+        tr("Des sons (boucles, coups, voix, bouts de morceau) que tu lances d'un toucher par-dessus ta musique : 4 pages de 16 pads dans Pad Live. Chaque pad joue en coup, en boucle ou tant que tu appuies ; les boucles restent calées sur le tempo, comme chez un DJ."),
     )
     val LOOP: Help get() = Help(
         tr("Boucle"),
@@ -70,7 +70,7 @@ object Glossary {
     )
     val VELOCITY: Help get() = Help(
         tr("Force (vélocité)"),
-        tr("La force d'un coup ou d'une note : plus c'est fort, plus ça tape. Dans Rythme, outil « Force » ou appui long sur une case."),
+        tr("La force d'un coup ou d'une note : plus c'est fort, plus ça tape. Dans Rythme, outil « Force » ou appui long sur une case. En mode Pro, les « Couches » du pad donnent un autre son aux coups forts."),
     )
     val PAN: Help get() = Help(
         tr("Place (pan)"),
@@ -106,7 +106,7 @@ object Glossary {
     )
     val SOUND_LIBRARY: Help get() = Help(
         tr("Bibliothèque de sons"),
-        tr("Tous les sons de l'appli rangés par famille (kick, caisse claire, basse…) : les sons intégrés et ceux des packs téléchargés."),
+        tr("Tous les sons de l'appli au même endroit, rangés en dossiers (batterie, basses, voix…), avec Récents, Favoris (touche ☆) et Ma bibliothèque, les sons que tu as gardés. Les packs téléchargés s'y ajoutent."),
     )
     val SOUND_PACK: Help get() = Help(
         tr("Pack de sons"),
@@ -152,7 +152,7 @@ object Glossary {
     )
     val SOURCE: Help get() = Help(
         tr("Instrument"),
-        tr("Ce qui joue les notes de la piste. Synthé : un synthé classique qui fabrique le son. Plaits : un synthé aux 24 modèles. Sample : un son enregistré joué sur tout le clavier (808, basses, stabs des packs). Instruments : 128 instruments classiques (piano, cordes…)."),
+        tr("Ce qui joue les notes de la piste. Synthé : il fabrique le son. Plaits : un synthé aux 24 modèles. Sample : un son enregistré joué sur tout le clavier (808, basses, stabs). Instruments réels : piano, guitare… enregistrés note par note. Instruments : 128 instruments classiques."),
     )
     val SYNTH: Help get() = Help(
         tr("Synthé"),
@@ -218,11 +218,11 @@ object Glossary {
     )
     val MUTE_SOLO: Help get() = Help(
         tr("Muet et solo"),
-        tr("Muet coupe la piste. Solo n'écoute qu'elle (et les autres pistes en solo)."),
+        tr("Le haut-parleur barré coupe la piste (muet). Le casque n'écoute qu'elle (solo), avec les autres pistes en solo."),
     )
     val INSERT: Help get() = Help(
         tr("Effet de piste"),
-        tr("Un effet branché directement sur une piste : saturation, filtre, compresseur… Jusqu'à quatre par piste."),
+        tr("Un effet branché directement sur une piste : saturation, filtre, compresseur… Jusqu'à huit par piste, et chacun peut ne jouer que dans certaines parties."),
     )
     val SEND: Help get() = Help(
         tr("Envoi"),
@@ -300,7 +300,7 @@ object Glossary {
     )
     val STEMS: Help get() = Help(
         tr("Piste par piste"),
-        tr("Un fichier par piste (batterie, basse, synthé…), pour continuer le morceau dans un autre logiciel."),
+        tr("Un fichier par piste (batterie, basse, synthé…), pour continuer le morceau dans un autre logiciel. Avec ou sans les envois : la réverbe et l'écho restent sur chaque piste, ou à part."),
     )
     val EXPORT_MIDI: Help get() = Help(
         tr("Fichier MIDI"),
@@ -308,7 +308,7 @@ object Glossary {
     )
     val REMIX: Help get() = Help(
         tr("Remix"),
-        tr("L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste) pour en jouer des bouts avec ton projet."),
+        tr("L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste). Découpe-les en bouts pour tes pads, ton Live ou une piste, ou joue des passages dans les cases Remix du Live."),
     )
     val AUDIO_TRACK: Help get() = Help(
         tr("Piste audio"),
@@ -330,11 +330,11 @@ object Glossary {
     /** Audit stage 2 (carte des fonctions): the Live page and its recording had no word in the Lexique. */
     val LIVE: Help get() = Help(
         tr("Live"),
-        tr("La page Live : une case par piste et par brique. Touche une case pour la lancer à la mesure suivante ; une case vide te propose d'y mettre un son ou de t'y enregistrer."),
+        tr("La page Live : une case par piste et par brique. Touche une case pour la lancer au prochain départ (« Lancer à » : la mesure, 2 mesures…) ; une case vide te propose d'y mettre un son ou de t'y enregistrer. La colonne Remix joue des passages de ta chanson séparée."),
     )
     val LIVE_TAKE: Help get() = Help(
         tr("Enregistrer ma performance"),
-        tr("Dans le Live, ● enregistre tout ce que tu joues (cases lancées, pads, effets, notes). À l'arrêt, ta prise devient ton morceau ; « Annuler » la retire d'un coup."),
+        tr("Dans le Live, REC enregistre tout ce que tu joues (cases, pads, effets, notes). À l'arrêt, ta prise devient ton morceau : une nouvelle version, ou ajoutée à la suite. « Annuler » la retire d'un coup ; l'ancien morceau reste dans « Versions »."),
     )
 
     /** Every term, in the order the Lexique shows them. */

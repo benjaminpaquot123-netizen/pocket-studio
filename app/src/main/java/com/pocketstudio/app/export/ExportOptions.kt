@@ -124,8 +124,14 @@ internal fun ExportOptionsPanel(export: com.pocketstudio.app.rhythm.ExportUi, ha
     ) { content() }
     val openState = androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf(false) }
     val open = openState.value
-    androidx.compose.material3.TextButton(onClick = { openState.value = !open }, modifier = Modifier.testTag("export_final")) {
-        androidx.compose.material3.Text(tr("Fichier final : %s", summary(export)), color = com.pocketstudio.ui.Neon.Cyan)
+    com.pocketstudio.ui.WithHelp(
+        com.pocketstudio.app.help.ScreenHelp.FINAL_FILE,
+        about = listOf("export_final", "export_rate_*", "export_bits_*", "export_shaping", "export_range_*", "export_fade_in_*", "export_trim", "export_end_silence_*",
+            "export_artist", "export_cover", "export_report"),
+    ) {
+        androidx.compose.material3.TextButton(onClick = { openState.value = !open }, modifier = Modifier.weight(1f, fill = false).testTag("export_final")) {
+            androidx.compose.material3.Text(tr("Fichier final : %s", summary(export)), color = com.pocketstudio.ui.Neon.Cyan)
+        }
     }
     if (!open) return
     val rate = o.rateFor(export.format, export.cdRate)
@@ -195,6 +201,7 @@ internal fun ExportOptionsPanel(export: com.pocketstudio.app.rhythm.ExportUi, ha
     } else {
         row {
             chip(o.stemsDry, tr("Sans les envois (réverbe et écho à part)"), "export_stems_dry") { set(o.copy(stemsDry = !o.stemsDry)) }
+            com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.ScreenHelp.STEMS_SENDS, about = listOf("export_stems_dry"))
         }
         androidx.compose.material3.Text(
             tr("Toutes les pistes ont la même longueur et partent du début : posées dans un autre logiciel, elles redonnent le mix."),

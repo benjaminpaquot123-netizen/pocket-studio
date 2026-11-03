@@ -907,12 +907,21 @@ private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveA
         Column(Modifier.padding(horizontal = GRID_PAD_H, vertical = GRID_PAD_V).testTag("live_grid"), verticalArrangement = Arrangement.spacedBy(gap)) {
             Row(Modifier.fillMaxWidth().height(top - gap), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                 // Lot 4d: « Lancer à » here (the bar keeps the tempo), beside « Cases ».
-                QuantumButton(p, actions.setQuantum, Modifier.weight(1f, fill = false))
+                Row(Modifier.weight(1f, fill = false), verticalAlignment = Alignment.CenterVertically) {
+                    QuantumButton(p, actions.setQuantum, Modifier.weight(1f, fill = false))
+                    com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.ScreenHelp.LIVE_LAUNCH, about = listOf("live_quantum", "live_cases_less", "live_cases_more"))
+                }
                 Spacer(Modifier.width(8.dp))
                 CasesStepper(shown, actions.setRows)
             }
             Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
-                Spacer(Modifier.width(sceneWidth).height(header))
+                // Lot « Aide à jour »: the empty corner over the bricks' letters holds the grid's « ? ».
+                Box(Modifier.width(sceneWidth).height(header), contentAlignment = Alignment.Center) {
+                    com.pocketstudio.ui.HelpDot(
+                        com.pocketstudio.app.help.ScreenHelp.LIVE_GRID,
+                        about = listOf("live_row_*", "live_pad_*", "live_stop_*", "live_stop_all", "live_mute_*", "live_columns_more"),
+                    )
+                }
                 Box {
                     ScrolledRow(h, gap) { columns.forEach { c -> ColumnHeader(c, c.key in ui.muted, cellW, header) { actions.toggleMute(c.key) } } }
                     // Over the last name (never over an M): more tracks wait to the right.

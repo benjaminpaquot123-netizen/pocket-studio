@@ -169,7 +169,12 @@ private fun CutHeader(ui: StemBoardUi, model: CutModel, actions: StemBoardAction
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Retour"), tint = Neon.Cyan)
         }
         Column(Modifier.weight(1f)) {
-            Text(tr("Découper la chanson"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(tr("Découper la chanson"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false))
+                // Lot « Aide à jour »: how to cut, by the title (the rows under it keep their height).
+                com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.ScreenHelp.CUT_TOOLS, about = listOf("cut_here", "cut_start", "cut_end", "cut_remove", "cut_loop"))
+            }
             Text(
                 listOf(ui.name, boardClock(ui.frames).substringBefore('.')).filter { it.isNotBlank() }.joinToString(" · "),
                 style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis,
@@ -252,6 +257,7 @@ private fun AutoRow(model: CutModel, finding: Boolean, onAuto: (AutoCut) -> Unit
             options = (if (model.hasGrid) CutMagnet.entries else listOf(CutMagnet.Free)).map { m -> magnetName(m) to { model.magnet = m } },
             modifier = Modifier.weight(1f, fill = false),
         )
+        com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.ScreenHelp.CUT_AUTO, about = listOf("cut_auto", "cut_magnet"))
         Spacer(Modifier.weight(0.01f))
         // The arrow alone: both menus keep their words on a phone.
         IconButton(onClick = model::undo, enabled = model.canUndo, modifier = Modifier.testTag("cut_undo")) {
@@ -327,7 +333,13 @@ private fun PieceList(model: CutModel, actions: StemBoardActions, work: State<St
     val chosen = model.chosen.toSet()
     Column(modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel(tr("Tes bouts · %d", pieces.size), modifier = Modifier.weight(1f).testTag("cut_count"))
+            SectionLabel(tr("Tes bouts · %d", pieces.size), modifier = Modifier.testTag("cut_count"))
+            // Lot « Aide à jour »: in this row (48 dp, the button's): the screen keeps its height.
+            com.pocketstudio.ui.HelpDot(
+                com.pocketstudio.app.help.ScreenHelp.CUT_SEND,
+                about = listOf("cut_to_pads", "cut_to_live", "cut_to_library", "cut_to_track", "cut_piece_*", "cut_all"),
+            )
+            Spacer(Modifier.weight(1f))
             TextButton(onClick = model::chooseAll, enabled = pieces.isNotEmpty(), modifier = Modifier.testTag("cut_all")) {
                 Text(if (chosen.size == pieces.size && pieces.isNotEmpty()) tr("Ne rien choisir") else tr("Tout choisir"), color = Neon.Cyan)
             }

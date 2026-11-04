@@ -85,7 +85,9 @@ class SmokeTest {
         compose.onNodeWithTag("rhythm").assertIsDisplayed()
         compose.onNodeWithTag("top_play").performClick()
         // RealUse.waitFor: on a timeout, it says what the app went through (the CI emulator).
-        RealUse.waitFor("the transport", 5) { NativeEngine.currentStep() >= 0 }
+        runCatching { RealUse.waitFor("the transport", 5) { NativeEngine.currentStep() >= 0 } }.onFailure {
+            throw IllegalStateException("${it.message}\nscreen:\n${RealUse.screenTree(compose)}")
+        }
         var heard = false
         compose.waitUntil(5_000) {
             heard = heard || Metrics.streamInfo.value.peak > 0.1f

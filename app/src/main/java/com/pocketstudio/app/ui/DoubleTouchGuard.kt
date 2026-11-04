@@ -46,6 +46,8 @@ object DoubleTouchGuard {
                 if (dropping) {
                     // Once: a third touch there is the user's own.
                     armedUntil = Long.MIN_VALUE
+                    // A touch the app swallowed on purpose says so (a « ▶ does nothing » report).
+                    com.pocketstudio.app.report.AppLog.add("Toucher ignoré (deuxième toucher d'un double toucher)")
                     return true
                 }
                 downX = x

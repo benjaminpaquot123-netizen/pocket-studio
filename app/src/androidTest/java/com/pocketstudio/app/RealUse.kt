@@ -1,5 +1,6 @@
 package com.pocketstudio.app
 
+import androidx.compose.ui.semantics.getOrNull
 import android.app.Application
 import android.app.Instrumentation
 import android.content.Intent
@@ -87,6 +88,23 @@ object RealUse {
             "mmap=${it.mmap} exclusive=${it.exclusive} lowLatency=${it.lowLatency} latency=${"%.1f".format(it.outputLatencyMs)} ms " +
             "xruns=${it.xruns} callbacks=${it.callbacks} running=${it.running}"
     }.also { log(it) }
+
+    /** The screen's tree (merged, as TalkBack reads it), cut short: what covered a button, read afterwards. */
+    fun screenTree(compose: androidx.compose.ui.test.junit4.ComposeTestRule): String = runCatching {
+        compose.onAllNodes(androidx.compose.ui.test.isRoot()).fetchSemanticsNodes().joinToString("\n--- window ---\n") { root ->
+            buildString {
+                fun walk(n: androidx.compose.ui.semantics.SemanticsNode, depth: Int) {
+                    if (length > 6000) return
+                    val c = n.config
+                    val tag = c.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.TestTag)
+                    val text = c.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.Text)?.joinToString(" ")
+                    if (tag != null || text != null) append("  ".repeat(depth.coerceAtMost(12))).append(tag ?: "").append(" ").append(text ?: "").append(" ").append(n.boundsInRoot).append('\n')
+                    n.children.forEach { walk(it, depth + 1) }
+                }
+                walk(root, 0)
+            }
+        }
+    }.getOrElse { "(no tree: ${it.message})" }
 
     fun db(x: Float) = if (x > 1e-9f) 20 * log10(x.toDouble()) else -200.0
 

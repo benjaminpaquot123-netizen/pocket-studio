@@ -70,7 +70,8 @@ class TutoKickSoundTest {
 
     private fun idle(ms: Long = 50) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
 
-    private fun await(what: String, timeoutMs: Long = 20_000, ok: () -> Boolean) {
+    // The real state is waited for; the cap only stops a hang (audit stage 1: 20 s of wall clock ran out under a loaded CI).
+    private fun await(what: String, timeoutMs: Long = 120_000, ok: () -> Boolean) {
         val end = System.currentTimeMillis() + timeoutMs
         while (!ok()) {
             idle(50)

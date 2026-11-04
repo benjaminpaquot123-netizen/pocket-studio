@@ -126,7 +126,10 @@ class EnduranceTest {
                 runBlocking { opened.awaitSoundsLoadedForTest() }
                 // ▶: the song (or the loop of a project without one).
                 j.tap("top_play")
-                waitFor("the transport", 10) { NativeEngine.currentStep() >= 0 }
+                // On a timeout, what was on the screen too (an overlay over ▶?).
+                runCatching { waitFor("the transport", 10) { NativeEngine.currentStep() >= 0 } }.onFailure {
+                    throw IllegalStateException("${it.message}\nscreen:\n${RealUse.screenTree(compose)}")
+                }
                 peak = maxOf(peak, listen(8))
                 // Loop the part: one touch, then back to the song.
                 if (j.exists("top_loop_part")) {

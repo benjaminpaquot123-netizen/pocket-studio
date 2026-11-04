@@ -496,8 +496,8 @@ private fun PadLivePad(
             // Lot D2: a word is never split over two lines (« Monté/e »): smaller first.
             com.pocketstudio.ui.FitText(
                 name.orEmpty(),
-                // (Audit stage 1: 4 dp more for the name on a short pad, room for its second line: « Boucle d… » on a 360 dp phone with « Plus » open.)
-                Modifier.align(Alignment.BottomStart).heightIn(max = (maxHeight - 22.dp).coerceAtLeast(16.dp))
+                // (Audit stage 1: room for its second line on a short pad; 24 dp keeps it clear of the corner word in tall scripts, Arabic at 360 dp.)
+                Modifier.align(Alignment.BottomStart).heightIn(max = (maxHeight - 24.dp).coerceAtLeast(16.dp))
                     .padding(horizontal = 10.dp).padding(bottom = 4.dp).testTag("padlive_name_$pad"),
                 style, color = Neon.TextPrimary, fontWeight = FontWeight.Bold, maxLines = 2, min = 9.sp,
             )

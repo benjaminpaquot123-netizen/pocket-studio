@@ -78,22 +78,29 @@ fun AdaptivePanes(
     second: @Composable ColumnScope.() -> Unit,
     /** The phone's single column when its order differs from [first] then [second]. */
     phone: (@Composable ColumnScope.() -> Unit)? = null,
+    /** The columns' tops fade once scrolled ([fadingTopEdge]): under a fixed bar, nothing shows cut in half. */
+    fadeTop: Boolean = false,
 ) {
+    @Composable
+    fun scrolled(m: Modifier): Modifier {
+        val state = rememberScrollState()
+        return (if (fadeTop) m.fadingTopEdge(state) else m).verticalScroll(state)
+    }
     BoxWithConstraints(modifier.fillMaxSize()) {
         if (twoPanes(maxWidth, maxHeight)) {
             Row(Modifier.fillMaxSize().padding(horizontal = padding / 2), horizontalArrangement = Arrangement.spacedBy(0.dp)) {
                 Column(
-                    Modifier.weight(1f).fillMaxHeight().verticalScroll(rememberScrollState()).padding(padding / 2, padding),
+                    scrolled(Modifier.weight(1f).fillMaxHeight()).padding(padding / 2, padding),
                     verticalArrangement = Arrangement.spacedBy(spacing), content = first,
                 )
                 Column(
-                    Modifier.weight(1f).fillMaxHeight().verticalScroll(rememberScrollState()).padding(padding / 2, padding),
+                    scrolled(Modifier.weight(1f).fillMaxHeight()).padding(padding / 2, padding),
                     verticalArrangement = Arrangement.spacedBy(spacing), content = second,
                 )
             }
         } else {
             Column(
-                Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(padding),
+                scrolled(Modifier.fillMaxSize()).padding(padding),
                 verticalArrangement = Arrangement.spacedBy(spacing),
             ) {
                 if (phone != null) {

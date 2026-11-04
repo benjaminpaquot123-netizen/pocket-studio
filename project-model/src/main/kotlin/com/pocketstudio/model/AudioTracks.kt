@@ -290,6 +290,19 @@ fun Project.chooseTake(id: Int, index: Int): Project {
 }
 
 /**
+ * Owner (2026-11-04, a fix everywhere the same gap is): take [index] of [AudioTrack.otherTakes] left
+ * out of « Prises » (an unwanted take); the one playing stays. Its file stays on disk while an undo
+ * step can bring it back.
+ */
+fun Project.forgetTake(id: Int, index: Int): Project {
+    val t = audioTracks.firstOrNull { it.id == id } ?: return this
+    val others = t.otherTakes
+    if (index !in others.indices) return this
+    val kept = others.filterIndexed { i, _ -> i != index }
+    return withAudioTrack(t.copy(previous = kept.firstOrNull(), older = kept.drop(1)))
+}
+
+/**
  * Where audio track [id] is heard in each song part: for each part, the stretches (fractions
  * 0..1 of the part) where its clip sounds (empty: silent there, switched off or not its scene).
  */

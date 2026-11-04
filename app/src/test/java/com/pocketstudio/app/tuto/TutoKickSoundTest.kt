@@ -103,9 +103,14 @@ class TutoKickSoundTest {
         click("tab_Sons")
     }
 
-    /** Karim's gesture: a long press on the kick's pad, then a sound of its sheet. */
+    /**
+     * Karim's gesture: the kick's sheet (since 2026-11-04 the pad card's « Réglages du pad », a long
+     * press now opens « Changer le son »), then a sound of its sheet.
+     */
     private fun pickOnTheKickPad(tile: String) {
-        compose.onNodeWithTag("pad_0").performTouchInput { longClick() }
+        h.vm.selectPad(0)
+        compose.waitForIdle()
+        click("pad_settings")
         await("the kick's sheet") { has("pad_sheet") }
         click(tile)
     }

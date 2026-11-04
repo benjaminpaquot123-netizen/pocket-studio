@@ -204,10 +204,9 @@ fun TrackBar(
                             )
                         }
                     }
-                    if (t.id != 0) {
-                        DropdownMenuItem(text = { Text(tr("Supprimer (Annuler possible)")) }, onClick = { menuFor = null; ui.remove(t.id) },
-                            modifier = Modifier.testTag("track_delete"))
-                    }
+                    // Owner (2026-11-04): the first track too (emptied and hidden, [RhythmViewModel.removeFirstTrack]).
+                    DropdownMenuItem(text = { Text(tr("Supprimer (Annuler possible)")) }, onClick = { menuFor = null; ui.remove(t.id) },
+                        modifier = Modifier.testTag("track_delete"))
                 }
             }
             // The chosen track's sound, one touch away (« Changer le son »).

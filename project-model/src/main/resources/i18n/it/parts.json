@@ -35,7 +35,6 @@
   "Kit : %s": "Kit: %s",
   "Kit de batterie": "Kit di batteria",
   "Kits General MIDI": "Kit General MIDI",
-  "Les pads sonnent, les cases gardent les coups. Appui long : son, volume.": "I pad suonano, le caselle tengono i colpi. Pressione lunga: suono, volume.",
   "Montée avant · 4 mes.": "Build-up prima · 4 batt.",
   "Montée avant · 8 mes.": "Build-up prima · 8 batt.",
   "Pad %1$d · %2$s": "Pad %1$d · %2$s",
@@ -47,7 +46,6 @@
   "×%1$d : %1$d coups dans la case, des 1/%2$d": "×%1$d: %1$d colpi nella casella, note da 1/%2$d",
   "Rien n'a changé : il n'y a plus de place pour une partie (24 au plus, 128 dans le morceau). Vide-en une pour continuer.": "Non è cambiato niente: non c'è più posto per una parte (24 al massimo, 128 nel brano). Svuotane una per continuare.",
   "Son d'origine": "Suono originale",
-  "Son, volume, pan": "Suono, volume, pan",
   "Studio": "Studio",
   "Touche un kit : il remplace les sons des 16 pads. Annuler le remet.": "Tocca un kit: sostituisce i suoni dei 16 pad. Annulla li rimette.",
   "Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8).": "Tocca una casella per aggiungere un colpo, fai scorrere il dito per dipingerne diversi. Pressione lunga su un colpo: forza e rullate (×2 a ×8).",
@@ -70,5 +68,6 @@
   "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Terzina: %1$d colpi regolari su %2$d caselle (la casella dopo ne fa parte)",
   "dans le triolet": "nella terzina",
   "triolet, %1$d coups sur %2$d cases": "terzina, %1$d colpi su %2$d caselle",
-  "Fin (partie)": "Fine"
+  "Fin (partie)": "Fine",
+  "Les pads sonnent, les cases gardent les coups. Appui long : changer le son.": "I pad suonano, le caselle tengono i colpi. Pressione lunga: cambia il suono."
 }

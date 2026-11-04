@@ -35,7 +35,6 @@
   "Kit : %s": "Kit: %s",
   "Kit de batterie": "Kit de batería",
   "Kits General MIDI": "Kits General MIDI",
-  "Les pads sonnent, les cases gardent les coups. Appui long : son, volume.": "Los pads suenan, las casillas guardan los golpes. Mantén pulsado: sonido, volumen.",
   "Montée avant · 4 mes.": "Subida antes · 4 comp.",
   "Montée avant · 8 mes.": "Subida antes · 8 comp.",
   "Pad %1$d · %2$s": "Pad %1$d · %2$s",
@@ -47,7 +46,6 @@
   "×%1$d : %1$d coups dans la case, des 1/%2$d": "×%1$d: %1$d golpes en la casilla, notas de 1/%2$d",
   "Rien n'a changé : il n'y a plus de place pour une partie (24 au plus, 128 dans le morceau). Vide-en une pour continuer.": "No ha cambiado nada: ya no hay sitio para otra parte (24 como máximo, 128 en la canción). Vacía una para seguir.",
   "Son d'origine": "Sonido original",
-  "Son, volume, pan": "Sonido, volumen, pan",
   "Studio": "Estudio",
   "Touche un kit : il remplace les sons des 16 pads. Annuler le remet.": "Toca un kit: sustituye los sonidos de los 16 pads. Deshacer los recupera.",
   "Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8).": "Toca una casilla para añadir un golpe, desliza el dedo para pintar varios. Mantén pulsado un golpe: fuerza y redobles (×2 a ×8).",
@@ -70,5 +68,6 @@
   "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Tresillo: %1$d golpes regulares en %2$d casillas (la casilla siguiente forma parte)",
   "dans le triolet": "dentro del tresillo",
   "triolet, %1$d coups sur %2$d cases": "tresillo, %1$d golpes en %2$d casillas",
-  "Fin (partie)": "Fin"
+  "Fin (partie)": "Fin",
+  "Les pads sonnent, les cases gardent les coups. Appui long : changer le son.": "Los pads suenan, las casillas guardan los golpes. Mantén pulsado: cambiar el sonido."
 }

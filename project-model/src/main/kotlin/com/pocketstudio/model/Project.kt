@@ -161,6 +161,11 @@ data class Project(
     @EncodeDefault(EncodeDefault.Mode.NEVER) val songCuts: SongCuts = SongCuts(),
     /** Pad Live (n° 25, lot B): the home's « Live » project, its page and its pack ([PadLiveSet]); left out of the file at its defaults. */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val padLive: PadLiveSet = PadLiveSet(),
+    /**
+     * Owner (2026-11-04): the first instrument track « deleted » from « Mes pistes » ([removeFirstTrack]);
+     * it stays hidden while it is still blank ([firstTrackDeleted]). Left out of the file when false.
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val firstTrackHidden: Boolean = false,
 ) {
     /** Sixteenths in a bar. */
     val stepsPerBar: Int get() = beatsPerBar * 4

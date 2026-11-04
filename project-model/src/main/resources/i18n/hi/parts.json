@@ -35,7 +35,6 @@
   "Kit : %s": "किट: %s",
   "Kit de batterie": "ड्रम किट",
   "Kits General MIDI": "General MIDI किट्स",
-  "Les pads sonnent, les cases gardent les coups. Appui long : son, volume.": "पैड बजते हैं, खाने हिट्स रखते हैं। लॉन्ग प्रेस: साउंड, वॉल्यूम।",
   "Montée avant · 4 mes.": "पहले Build-up · 4 bars",
   "Montée avant · 8 mes.": "पहले Build-up · 8 bars",
   "Pad %1$d · %2$s": "पैड %1$d · %2$s",
@@ -47,7 +46,6 @@
   "×%1$d : %1$d coups dans la case, des 1/%2$d": "×%1$d: खाने में %1$d चोट, 1/%2$d नोट",
   "Rien n'a changé : il n'y a plus de place pour une partie (24 au plus, 128 dans le morceau). Vide-en une pour continuer.": "कुछ नहीं बदला: एक और पार्ट के लिए जगह नहीं (ज़्यादा से ज़्यादा 24, गाने में 128)। आगे बढ़ने के लिए एक खाली करो।",
   "Son d'origine": "ओरिजिनल साउंड",
-  "Son, volume, pan": "साउंड, वॉल्यूम, पैन",
   "Studio": "स्टूडियो",
   "Touche un kit : il remplace les sons des 16 pads. Annuler le remet.": "एक किट पर टैप करो: ये 16 पैड्स के साउंड बदल देती है। अनडू उन्हें वापस लाता है।",
   "Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8).": "हिट जोड़ने के लिए खाने पर टैप करो, कई पेंट करने के लिए उँगली स्लाइड करो। हिट पर लॉन्ग प्रेस: ज़ोर और रोल्स (×2 से ×8)।",
@@ -70,5 +68,6 @@
   "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "ट्रिपलेट: %2$d खानों में %1$d बराबर चोट (अगला खाना भी इसका हिस्सा है)",
   "dans le triolet": "ट्रिपलेट के अंदर",
   "triolet, %1$d coups sur %2$d cases": "ट्रिपलेट, %2$d खानों में %1$d चोट",
-  "Fin (partie)": "अंत"
+  "Fin (partie)": "अंत",
+  "Les pads sonnent, les cases gardent les coups. Appui long : changer le son.": "पैड बजते हैं, खाने हिट्स रखते हैं। लॉन्ग प्रेस: साउंड बदलो।"
 }

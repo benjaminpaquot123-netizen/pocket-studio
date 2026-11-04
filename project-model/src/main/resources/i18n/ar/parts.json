@@ -35,7 +35,6 @@
   "Kit : %s": "الطقم: %s",
   "Kit de batterie": "طقم طبول",
   "Kits General MIDI": "أطقم General MIDI",
-  "Les pads sonnent, les cases gardent les coups. Appui long : son, volume.": "الـPads تُصدر الصوت، والخانات تحفظ الضربات. ضغطة مطوّلة: الصوت، المستوى.",
   "Montée avant · 4 mes.": "Build-up قبله · 4 مازورات",
   "Montée avant · 8 mes.": "Build-up قبله · 8 مازورات",
   "Pad %1$d · %2$s": "Pad %1$d · %2$s",
@@ -47,7 +46,6 @@
   "×%1$d : %1$d coups dans la case, des 1/%2$d": "×%1$d: %1$d ضربات في الخانة، نوتات 1/%2$d",
   "Rien n'a changé : il n'y a plus de place pour une partie (24 au plus, 128 dans le morceau). Vide-en une pour continuer.": "لم يتغير شيء: لا مكان لجزء آخر (24 كحد أقصى، 128 في الأغنية). أفرغ واحدًا للمتابعة.",
   "Son d'origine": "الصوت الأصلي",
-  "Son, volume, pan": "الصوت، المستوى، Pan",
   "Studio": "استوديو",
   "Touche un kit : il remplace les sons des 16 pads. Annuler le remet.": "اضغط على طقم: يستبدل أصوات الـPads الـ16. التراجع يعيدها.",
   "Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8).": "اضغط خانة لإضافة ضربة، ومرّر إصبعك لرسم عدة ضربات. ضغطة مطوّلة على ضربة: القوة والـRolls (×2 إلى ×8).",
@@ -70,5 +68,6 @@
   "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "ثلاثية: %1$d ضربات منتظمة على %2$d خانات (الخانة التالية جزء منها)",
   "dans le triolet": "داخل الثلاثية",
   "triolet, %1$d coups sur %2$d cases": "ثلاثية، %1$d ضربات على %2$d خانات",
-  "Fin (partie)": "النهاية"
+  "Fin (partie)": "النهاية",
+  "Les pads sonnent, les cases gardent les coups. Appui long : changer le son.": "الـPads تُصدر الصوت، والخانات تحفظ الضربات. ضغطة مطوّلة: تغيير الصوت."
 }

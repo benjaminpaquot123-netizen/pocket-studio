@@ -35,7 +35,6 @@
   "Kit : %s": "킷: %s",
   "Kit de batterie": "드럼 킷",
   "Kits General MIDI": "General MIDI 킷",
-  "Les pads sonnent, les cases gardent les coups. Appui long : son, volume.": "패드는 소리를 내고, 칸은 히트를 저장해요. 길게 누르기: 사운드, 볼륨.",
   "Montée avant · 4 mes.": "앞에 빌드업 · 4마디",
   "Montée avant · 8 mes.": "앞에 빌드업 · 8마디",
   "Pad %1$d · %2$s": "패드 %1$d · %2$s",
@@ -47,7 +46,6 @@
   "×%1$d : %1$d coups dans la case, des 1/%2$d": "×%1$d: 칸에 %1$d번, 1/%2$d 음표",
   "Rien n'a changé : il n'y a plus de place pour une partie (24 au plus, 128 dans le morceau). Vide-en une pour continuer.": "바뀐 게 없어요. 파트를 더 넣을 자리가 없어요 (최대 24개, 곡 안에서는 128개). 하나를 비우고 계속하세요.",
   "Son d'origine": "원래 사운드",
-  "Son, volume, pan": "사운드, 볼륨, 팬",
   "Studio": "스튜디오",
   "Touche un kit : il remplace les sons des 16 pads. Annuler le remet.": "킷을 탭하세요. 16패드의 사운드를 바꿔요. 실행 취소로 되돌릴 수 있어요.",
   "Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8).": "칸을 탭하면 히트가 들어가고, 손가락을 밀면 여러 개를 그려요. 히트를 길게 누르면: 세기와 롤 (×2~×8).",
@@ -70,5 +68,6 @@
   "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "셋잇단: %2$d칸에 고르게 %1$d번 (다음 칸도 포함돼요)",
   "dans le triolet": "셋잇단 안",
   "triolet, %1$d coups sur %2$d cases": "셋잇단, %2$d칸에 %1$d번",
-  "Fin (partie)": "끝"
+  "Fin (partie)": "끝",
+  "Les pads sonnent, les cases gardent les coups. Appui long : changer le son.": "패드는 소리를 내고, 칸은 히트를 저장해요. 길게 누르기: 사운드 바꾸기."
 }

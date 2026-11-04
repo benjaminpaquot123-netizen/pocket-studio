@@ -405,5 +405,7 @@
   "Remettre %s comme au départ": "Rimetti %s com'era",
   "Chante ou joue au micro. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Canta o suona al microfono. Tocca di nuovo la casella per fermare: il loop si allinea alla battuta.",
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Suona le note: suonano sulla Acid 303. Tocca di nuovo la casella per fermare: il loop si allinea alla battuta.",
-  "Le micro ne répond pas : réessaie.": "Il microfono non risponde: riprova."
+  "Le micro ne répond pas : réessaie.": "Il microfono non risponde: riprova.",
+  "Vider la case": "Svuota la casella",
+  "Annuler possible": "Si può annullare"
 }

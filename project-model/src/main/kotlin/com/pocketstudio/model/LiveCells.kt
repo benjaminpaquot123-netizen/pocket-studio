@@ -259,6 +259,25 @@ fun Project.withCopiedCell(fromKey: String, fromScene: Int, toKey: String, toSce
 }
 
 /**
+ * Owner (2026-11-04): cell ([key], [scene]) emptied: the drums' hits, the acid's line, the track's
+ * notes in that brick, or the audio track's clip when it belongs to that brick (the remix cell has its
+ * own « Toute la chanson »). Null when there is nothing to empty.
+ */
+fun Project.withClearedCell(key: String, scene: Int): Project? {
+    if (!cellHasContent(key, scene) || key == SongPart.REMIX) return null
+    return when (LiveCells.kindOf(key)) {
+        LiveCells.Kind.DRUMS -> editBrick(scene) { s -> s.copy(drums = s.drums.copy(lanes = s.drums.lanes.map { it.copy(hits = emptyMap()) })) }
+        LiveCells.Kind.ACID -> editBrick(scene) { s -> s.copy(acid = s.acid.copy(steps = s.acid.steps.map { it.copy(gate = false) })) }
+        LiveCells.Kind.NOTES -> {
+            val id = key.removePrefix("inst:").toIntOrNull() ?: return null
+            editBrick(scene) { s -> if (id == 0) s.copy(synthNotes = s.synthNotes.cleared()) else s.copy(trackNotes = s.trackNotes + (id to (s.trackNotes[id] ?: NoteClip()).cleared())) }
+        }
+        LiveCells.Kind.AUDIO -> copy(audioTracks = audioTracks.map { if (SongPart.audio(it.id) == key) it.copy(clip = null) else it })
+        else -> null
+    }
+}
+
+/**
  * [clip] (its sound file already in the project) as the content of cell ([key], [scene]): on that
  * audio track when it has no clip yet, else on the first audio track without one, else on a new
  * audio track (the cell of another kind of track gets its sound on an audio track of its own, in

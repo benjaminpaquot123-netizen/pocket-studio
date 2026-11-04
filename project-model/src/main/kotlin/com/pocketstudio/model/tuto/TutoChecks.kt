@@ -1505,7 +1505,8 @@ object TutoChecks {
         if (!blankFirst(p)) return withFx.withTrack(made) to made.id
         // The blank first track takes its place (same sound, same level), the slot of the new one stays free.
         val level = withFx.mixer.channels[InstrumentTrack.mixerChannel(made.id)]
-        val first = p.withTrack(made.copy(id = 0, color = p.track(0).color))
+        // A first track deleted from « Mes pistes » (Project.firstTrackHidden) comes back as this part.
+        val first = p.withTrack(made.copy(id = 0, color = p.track(0).color)).copy(firstTrackHidden = false)
         return withChannels(first, listOf(InstrumentTrack.mixerChannel(0))) { level } to 0
     }
 

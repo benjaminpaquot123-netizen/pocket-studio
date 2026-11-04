@@ -32,6 +32,7 @@ import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Home
@@ -295,6 +296,8 @@ class SimplePad(val lane: Int, val name: String)
 class SimpleTrack(
     val key: String, val ch: Int, val name: String, val color: Color, val volume: Float, val mute: Boolean, val solo: Boolean,
     val pads: List<SimplePad> = emptyList(),
+    /** Owner (2026-11-04): its sheet offers « Supprimer la piste » (every track but the Batterie). */
+    val deletable: Boolean = false,
 )
 
 class SimpleTracksActions(
@@ -309,6 +312,8 @@ class SimpleTracksActions(
     val listenPadAlone: (Int) -> Unit = {},
     /** « Mes pistes » keeps « Écouter seul » going while it shows (the returned call lets go). */
     val holdAlone: () -> (() -> Unit) = { {} },
+    /** « Supprimer la piste » of a track (its song key), undoable. */
+    val delete: (String) -> Unit = {},
 ) {
     companion object {
         /** [com.pocketstudio.app.rhythm.AloneListen.from] of a sound heard alone from « Mes pistes ». */
@@ -403,6 +408,14 @@ private fun SimpleTrackSheet(t: SimpleTrack, alone: Boolean, actions: SimpleTrac
             TextButton(onClick = { close(); actions.changeSound(t.key) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
                 Icon(Icons.Filled.GraphicEq, contentDescription = null)
                 Text("  " + tr("Changer le son"))
+            }
+            // Owner (2026-11-04, « J'aimerais supprimer le synthé »): last, in red, away from the rest; Annuler brings it back.
+            if (t.deletable) {
+                HorizontalDivider(color = Neon.Outline.copy(alpha = 0.5f), modifier = Modifier.padding(top = 8.dp))
+                TextButton(onClick = { close(); actions.delete(t.key) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("simple_track_delete")) {
+                    Icon(Icons.Filled.Delete, contentDescription = null, tint = Neon.RedText)
+                    Text("  " + tr("Supprimer la piste (Annuler possible)"), color = Neon.RedText)
+                }
             }
         }
     }

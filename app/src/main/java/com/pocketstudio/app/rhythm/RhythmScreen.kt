@@ -264,9 +264,16 @@ fun RhythmScreen(
     // A pad held (its sheet) and the kit list.
     var padSheet by rememberSaveable { mutableStateOf<Int?>(null) }
     var kitSheet by rememberSaveable { mutableStateOf(false) }
-    val hold: (Int) -> Unit = { lane -> actions.selectPad(lane); padSheet = lane }
+    val sheetOf: (Int) -> Unit = { lane -> actions.selectPad(lane); padSheet = lane }
+    // Owner (2026-11-04): a pad held goes straight to « Changer le son » (the library, for that pad), as the
+    // pad card's button does; its sheet (volume, pan, layers…) is the card's « Réglages du pad ». While the
+    // sampler is busy (the library's button is off then), the sheet as before.
+    val busySampler = padSound.task is SampleTask.Busy || padSound.task is SampleTask.Recording
+    val hold: (Int) -> Unit = { lane ->
+        if (busySampler) sheetOf(lane) else { actions.selectPad(lane); actions.dismissSampleError(); actions.openLibrary() }
+    }
     androidx.compose.runtime.LaunchedEffect(openPad) {
-        openPad?.takeIf { it in project.drums.lanes.indices }?.let(hold)
+        openPad?.takeIf { it in project.drums.lanes.indices }?.let(sheetOf)
         if (openPad != null) padOpened()
     }
     val kit = kitName(project)
@@ -275,7 +282,7 @@ fun RhythmScreen(
             KitChip(kit, onClick = { actions.openKits(); kitSheet = true })
             // A pad only sounds: what stays in the beat is in the cells (beginners tap pads and wait).
             Text(
-                tr("Les pads sonnent, les cases gardent les coups. Appui long : son, volume."),
+                tr("Les pads sonnent, les cases gardent les coups. Appui long : changer le son."),
                 // Three lines at most: the longer languages (German, Spanish) say it all on a phone.
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 3,
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
@@ -328,6 +335,8 @@ fun RhythmScreen(
     com.pocketstudio.ui.AdaptivePanes(
         Modifier,
         spacing = 8.dp,
+        // Owner (2026-11-04): scrolled, the pads and cells fade under « Partie : A » (no row cut in half against it).
+        fadeTop = true,
         first = {
             header(showGrid)
             PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad, onHold = hold, kitBar = kitBar, fitHeight = fitPad)
@@ -336,7 +345,7 @@ fun RhythmScreen(
         },
         second = {
             steps(cellMax)
-            PadSoundCard(project, transport.selectedPad, padSound, actions, simple)
+            PadSoundCard(project, transport.selectedPad, padSound, actions, simple, settings = { sheetOf(transport.selectedPad) })
         },
         // The phone keeps its order: the steps right under lower pads, the first row of cells on screen.
         phone = {
@@ -344,7 +353,7 @@ fun RhythmScreen(
             PadGrid(project, transport.selectedPad, live.litPads, actions.hitPad, compact = true, onHold = hold, kitBar = kitBar, fitHeight = fitPad ?: uprightPad)
             record?.invoke()
             steps(cellMax)
-            PadSoundCard(project, transport.selectedPad, padSound, actions, simple)
+            PadSoundCard(project, transport.selectedPad, padSound, actions, simple, settings = { sheetOf(transport.selectedPad) })
             GrooveCard(project, transport, actions, simple)
         },
     )
@@ -466,7 +475,7 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
                 else Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.14f), color.copy(alpha = 0.25f))),
                 shape,
             )
-            .combinedClickable(interactionSource = interaction, indication = null, onLongClickLabel = tr("Son, volume, pan"), onLongClick = onHold, onClick = onHit)
+            .combinedClickable(interactionSource = interaction, indication = null, onLongClickLabel = tr("Changer le son"), onLongClick = onHold, onClick = onHit)
             // A pad cut (its sheet): dimmed, its hits stay.
             .then(if (muted) Modifier.alpha(0.4f) else Modifier),
         contentAlignment = Alignment.Center,
@@ -1023,22 +1032,23 @@ private fun KeepInLibraryButton(actions: RhythmActions) {
 }
 
 @Composable
-internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: RhythmActions, simple: Boolean = false) {
+internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: RhythmActions, simple: Boolean = false, settings: (() -> Unit)? = null) {
     val color = DrumKitInfo.colors[lane]
     val sample = project.drums.lanes[lane].sample
     NeonCard(modifier = Modifier.testTag("pad_sound")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             // Its foldKey stays the former title: a card folded before stays folded.
             SectionLabel(tr("Son du pad"), color = color, help = Glossary.SAMPLE, foldKey = "Sample du pad")
-            Box(Modifier.weight(1f))
-            Text(
-                sample?.name?.let { com.pocketstudio.model.DefaultNames.shownSample(it) } ?: tr("%s (synthétisé)", DrumKitInfo.names[lane]),
-                style = MaterialTheme.typography.bodyMedium, maxLines = 1,
-                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f, fill = false).padding(start = 8.dp),
-                color = if (sample != null) Neon.TextPrimary else Neon.TextSecondary,
-            )
         }
+        // Owner (2026-11-04, « Tom aigu (sy… »): the sound's name on its own line, the card's whole width
+        // (beside the title it had half the room left and was cut).
+        Text(
+            sample?.name?.let { com.pocketstudio.model.DefaultNames.shownSample(it) } ?: tr("%s (synthétisé)", DrumKitInfo.names[lane]),
+            style = MaterialTheme.typography.bodyMedium, maxLines = 2,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth().testTag("pad_sound_name"),
+            color = if (sample != null) Neon.TextPrimary else Neon.TextSecondary,
+        )
         // The first thing a beginner wants here: another sound, from the library.
         val busy = ui.task is SampleTask.Busy || ui.task is SampleTask.Recording
         Button(
@@ -1047,6 +1057,13 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
         ) {
             Icon(Icons.Filled.LibraryMusic, contentDescription = null)
             Text(tr(" Changer le son"))
+        }
+        // The pad's sheet (listen alone, quick sounds, volume, pan, cut, layers): no longer the long press's.
+        if (settings != null) {
+            OutlinedButton(onClick = settings, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("pad_settings")) {
+                Icon(Icons.Filled.Tune, contentDescription = null)
+                Text(" " + tr("Réglages du pad"))
+            }
         }
         val volume = project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(lane))?.volume ?: 0.8f
         if (simple) {

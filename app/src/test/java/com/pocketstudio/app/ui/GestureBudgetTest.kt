@@ -389,7 +389,7 @@ class GestureBudgetTest {
             p, t, com.pocketstudio.app.rhythm.LiveUi(), canUndo = true, canRedo = false,
             actions = com.pocketstudio.app.rhythm.RhythmActions(
                 toggleStep = vm::toggleStep, cycleVelocity = vm::cycleVelocity, setHitVelocity = vm::setHitVelocity,
-                selectPad = vm::selectPad, removeSampleOf = vm::removeSampleOf, setPadVolume = vm::setPadVolume, togglePadMute = vm::togglePadMute,
+                selectPad = vm::selectPad, hitPad = vm::hitPad, removeSampleOf = vm::removeSampleOf, setPadVolume = vm::setPadVolume, togglePadMute = vm::togglePadMute,
                 openKits = vm::refreshPacks, chooseKit = vm::chooseKit,
                 paintStep = vm::paintStep, paintEnd = vm::paintEnd, setRoll = vm::setRoll, burst = vm::burstAt,
             ),
@@ -425,16 +425,19 @@ class GestureBudgetTest {
         val vm = vmWithSong()
         withPadSample(vm)
         compose.setContent { PocketStudioTheme { Rhythm(vm) } }
-        compose.withinGestures("Son d'un pad", 2) {
-            longPress("pad_0")
+        // Owner (2026-11-04): a long press is « Changer le son » (the library); the sheet is the card's « Réglages du pad ».
+        compose.withinGestures("Son d'un pad", 3) {
+            tap("pad_settings")
             tap("pad_sound_origin")
         }
         assertEquals(null, vm.project.value.drums.lanes[0].sample)
         vm.undo()
         assertTrue(vm.project.value.drums.lanes[0].sample != null)
         // The same sheet: the pad's volume and « Couper ce pad ».
-        compose.withinGestures("Couper un pad", 2) {
-            longPress("pad_3")
+        // Up to the pads and down to the card again: two scrolls of the five (the sheet is no longer the long press's).
+        compose.withinGestures("Couper un pad", 5) {
+            tap("pad_3")
+            tap("pad_settings")
             tap("pad_mute")
         }
         assertEquals(3, vm.transport.value.selectedPad)

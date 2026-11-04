@@ -43,6 +43,20 @@ fun Modifier.fadingHorizontalScroll(): Modifier {
     return fadingEdges(state).horizontalScroll(state)
 }
 
+/**
+ * The top of a scrolled column fades out (once it is scrolled), so what passes under a fixed bar
+ * above it (the « Partie : A » line) melts away instead of showing cut in half against that bar.
+ */
+fun Modifier.fadingTopEdge(state: ScrollableState, fade: Dp = 28.dp): Modifier = this
+    .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+    .drawWithContent {
+        drawContent()
+        if (state.canScrollBackward) {
+            val f = fade.toPx().coerceAtMost(size.height / 3)
+            drawRect(Brush.verticalGradient(listOf(Color.Transparent, Color.Black), startY = 0f, endY = f), size = Size(size.width, f), blendMode = BlendMode.DstIn)
+        }
+    }
+
 /** [fadingEdges] for a column: the top or the bottom fades where more waits (a cut row, cut knobs). */
 fun Modifier.fadingVerticalEdges(state: ScrollableState, fade: Dp = 24.dp): Modifier = this
     .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }

@@ -24,6 +24,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BookmarkAdd
 import androidx.compose.material.icons.filled.FiberManualRecord
@@ -146,6 +147,8 @@ class AudioTracksActions(
     val restorePrevious: (Int) -> Unit = {},
     /** The take picker: take (second) of the track's other takes, newest first, plays. */
     val chooseTake: (Int, Int) -> Unit = { _, _ -> },
+    /** « Prises »: an other take of a track left out (undoable). */
+    val forgetTake: (Int, Int) -> Unit = { _, _ -> },
     /** « Recaler sur le tempo »: a take recorded at another tempo stretched to the song's. */
     val realign: (Int) -> Unit = {},
     /** « Refaire mes. A-B »: track, first bar, last bar (of the song for a song clip, else of the part). */
@@ -406,6 +409,10 @@ private fun TakePicker(t: AudioTrack, busy: Boolean, actions: AudioTracksActions
                 selected = false, enabled = !busy, onClick = { actions.chooseTake(t.id, i) }, label = { Text(takeLabel(take)) }, colors = chip,
                 modifier = Modifier.testTag("audio_take_${t.id}_$i"),
             )
+            // Owner (2026-11-04): an unwanted take can go (Annuler brings it back).
+            IconButton(onClick = { actions.forgetTake(t.id, i) }, enabled = !busy, modifier = Modifier.testTag("audio_take_forget_${t.id}_$i")) {
+                Icon(Icons.Filled.Close, contentDescription = tr("Retirer %s", takeLabel(take)), tint = Neon.TextSecondary)
+            }
         }
     }
 }

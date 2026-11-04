@@ -405,5 +405,7 @@
   "Remettre %s comme au départ": "إعادة %s كما كانت",
   "Chante ou joue au micro. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "غنِّ أو اعزف أمام الميكروفون. المس الخانة مجددًا للإيقاف: تنضبط الحلقة على المازورة.",
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "اعزف على النوتات: تُسمع على Acid 303. المس الخانة مجددًا للإيقاف: تنضبط الحلقة على المازورة.",
-  "Le micro ne répond pas : réessaie.": "الميكروفون لا يستجيب: حاول مجددًا."
+  "Le micro ne répond pas : réessaie.": "الميكروفون لا يستجيب: حاول مجددًا.",
+  "Vider la case": "إفراغ الخانة",
+  "Annuler possible": "يمكن التراجع"
 }

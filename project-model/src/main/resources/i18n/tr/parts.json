@@ -35,7 +35,6 @@
   "Kit : %s": "Kit: %s",
   "Kit de batterie": "Davul kiti",
   "Kits General MIDI": "General MIDI kitleri",
-  "Les pads sonnent, les cases gardent les coups. Appui long : son, volume.": "Pad'ler ses çıkarır, kutular vuruşları saklar. Uzun bas: ses, seviye.",
   "Montée avant · 4 mes.": "Öncesine yükseliş · 4 ölçü",
   "Montée avant · 8 mes.": "Öncesine yükseliş · 8 ölçü",
   "Pad %1$d · %2$s": "Pad %1$d · %2$s",
@@ -47,7 +46,6 @@
   "×%1$d : %1$d coups dans la case, des 1/%2$d": "×%1$d: hücrede %1$d vuruş, 1/%2$d notalar",
   "Rien n'a changé : il n'y a plus de place pour une partie (24 au plus, 128 dans le morceau). Vide-en une pour continuer.": "Hiçbir şey değişmedi: yeni bölüm için yer yok (en fazla 24, şarkıda 128). Devam etmek için birini boşalt.",
   "Son d'origine": "Orijinal ses",
-  "Son, volume, pan": "Ses, seviye, pan",
   "Studio": "Stüdyo",
   "Touche un kit : il remplace les sons des 16 pads. Annuler le remet.": "Bir kite dokun: 16 pad'in seslerini değiştirir. Geri al eskisini getirir.",
   "Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8).": "Vuruş eklemek için bir kutuya dokun, birkaç tane boyamak için parmağını kaydır. Bir vuruşa uzun bas: güç ve roll'lar (×2 ile ×8).",
@@ -70,5 +68,6 @@
   "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Triole: %2$d hücreye %1$d eşit vuruş (sonraki hücre de onun parçası)",
   "dans le triolet": "triolenin içinde",
   "triolet, %1$d coups sur %2$d cases": "triole, %2$d hücreye %1$d vuruş",
-  "Fin (partie)": "Bitiş"
+  "Fin (partie)": "Bitiş",
+  "Les pads sonnent, les cases gardent les coups. Appui long : changer le son.": "Pad'ler ses çıkarır, kutular vuruşları saklar. Uzun bas: sesi değiştir."
 }

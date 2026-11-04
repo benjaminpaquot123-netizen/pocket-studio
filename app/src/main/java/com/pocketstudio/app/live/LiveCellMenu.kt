@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.FiberManualRecord
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material3.Icon
@@ -97,6 +98,35 @@ internal fun EmptyCellMenu(
             MenuChoice(Icons.Filled.MusicNote, Neon.Acid, tr("Un son de ma bibliothèque"), tr("Tes sons gardés, tes prises, tes boucles."), tag = "live_cell_library", choose = library)
             MenuChoice(Icons.Filled.ContentCopy, Neon.Cyan, tr("Copier une autre case"), tr("Touche ensuite la case à copier."), tag = "live_cell_copy", choose = copy)
             TextButton(onClick = cancel, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("live_cell_cancel")) {
+                Text(tr("Annuler"), style = MaterialTheme.typography.titleMedium, color = Neon.Amber)
+            }
+        }
+    }
+}
+
+/**
+ * Owner (2026-11-04, what can be made can be undone): a full cell held, « Vider la case » (its notes,
+ * hits, acid line or sound in that brick; Annuler brings them back), or « Annuler ».
+ */
+@Composable
+internal fun FullCellMenu(track: String, cell: LiveCell, clear: () -> Unit, cancel: () -> Unit) {
+    Box(
+        Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.35f))
+            .clickable(remember { MutableInteractionSource() }, indication = null, onClick = cancel).testTag("live_full_cell_scrim"),
+        contentAlignment = Alignment.BottomCenter,
+    ) {
+        Column(
+            Modifier.widthIn(max = 560.dp).fillMaxWidth().padding(10.dp).clip(RoundedCornerShape(24.dp)).background(Neon.SurfaceHigh)
+                .clickable(remember { MutableInteractionSource() }, indication = null) {}
+                .padding(16.dp).testTag("live_full_cell_menu"),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Text(
+                tr("%1\$s · brique %2\$s", track, Scene.NAMES.getOrElse(cell.scene) { "?" }),
+                style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
+            )
+            MenuChoice(Icons.Filled.DeleteSweep, Neon.Red, tr("Vider la case"), tr("Annuler possible"), tag = "live_cell_clear", choose = clear)
+            TextButton(onClick = cancel, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("live_full_cell_cancel")) {
                 Text(tr("Annuler"), style = MaterialTheme.typography.titleMedium, color = Neon.Amber)
             }
         }

@@ -202,6 +202,11 @@ import com.pocketstudio.model.sceneTitle
 import com.pocketstudio.model.editedShownScene
 import com.pocketstudio.model.duplicateTrack
 import com.pocketstudio.model.removeTrack
+import com.pocketstudio.model.removeFirstTrack
+import com.pocketstudio.model.withClearedCell
+import com.pocketstudio.model.forgetTake
+import com.pocketstudio.model.firstTrackDeleted
+import com.pocketstudio.model.intoFirstTrack
 import com.pocketstudio.model.ProjectSession
 import com.pocketstudio.model.ProjectStore
 import com.pocketstudio.model.SynthPatch
@@ -1017,10 +1022,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _notice.value = tr("Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre.")
             return
         }
-        val id = next.tracks.first { t -> p.tracks.none { it.id == t.id } }.id
-        session.edit { userTrack(next, id) }
+        val added = next.tracks.first { t -> p.tracks.none { it.id == t.id } }.id
+        // The first track deleted from « Mes pistes »: the new track takes its place (one undo step).
+        val reuse = p.firstTrackDeleted
+        val id = if (reuse) 0 else added
+        session.edit { userTrack(next, added).let { if (reuse) it.intoFirstTrack(added) else it } }
         pushTracks()
         pushMixer()
+        pushAutomation()
         selectTrack(id)
         AppLog.add("Piste ajoutée : ${project.value.track(id).name}")
     }
@@ -1037,10 +1046,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _notice.value = tr("Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre.")
             return
         }
-        val id = next.tracks.first { t -> p.tracks.none { it.id == t.id } }.id
-        session.edit { userTrack(next, id) }
+        val added = next.tracks.first { t -> p.tracks.none { it.id == t.id } }.id
+        val reuse = p.firstTrackDeleted
+        val id = if (reuse) 0 else added
+        session.edit { userTrack(next, added).let { if (reuse) it.intoFirstTrack(added) else it } }
         pushTracks()
         pushMixer()
+        pushAutomation()
         selectTrack(id)
         if (write) _notice.value = tr("Mélodie écrite : 4 mesures dans la tonalité du morceau, dans la partie %s. « Annuler » la retire.", project.value.sceneTitle(project.value.scene))
         AppLog.add("Piste ajoutée : ${project.value.track(id).name}${if (write) " (mélodie écrite)" else ""}")
@@ -1070,6 +1082,39 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushAutomation()
         releaseUnusedFonts()
         AppLog.add("Piste supprimée : $name")
+    }
+
+    /**
+     * Owner (2026-11-04): « Supprimer la piste » of the first track, which stays in the project: emptied
+     * (notes of every part, sound, strip) and hidden from « Mes pistes » and the track chips; Annuler
+     * brings it back as it was. « Ajouter une piste » puts the next one in its place.
+     */
+    fun removeFirstTrack() {
+        val name = project.value.track(0).name
+        session.edit { it.removeFirstTrack() }
+        // Another track to show the synth screen with, when there is one.
+        project.value.tracks.firstOrNull()?.let { if (track == 0) selectTrack(it.id) }
+        pushTracks()
+        pushMixer()
+        pushAutomation()
+        releaseUnusedFonts()
+        AppLog.add("Première piste supprimée : $name")
+    }
+
+    /** « Supprimer la piste » of any instrument track: the first one emptied and hidden ([removeFirstTrack]). */
+    fun deleteTrack(id: Int) = if (id == 0) removeFirstTrack() else removeTrack(id)
+
+    /**
+     * « Supprimer la piste » of the Acid 303 (Mode simple's « Mes pistes »): its line emptied in every
+     * part (its sound stays), so it is no longer listed; Annuler brings it back.
+     */
+    fun removeAcidLine() {
+        session.edit { p ->
+            fun AcidPattern.silent() = copy(steps = steps.map { it.copy(gate = false) })
+            p.copy(acid = p.acid.silent(), scenes = p.scenes.map { it.copy(acid = it.acid.silent()) })
+        }
+        pushAcid(project.value.acid)
+        AppLog.add("Acid 303 vidée dans tout le morceau")
     }
 
     fun renameTrack(id: Int, name: String) {
@@ -1687,6 +1732,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         reloadMissingSamples()
         pushAudio()
         padSamples.prune(project.value.sampleFiles)
+    }
+
+    /** « Prises »: take [index] of track [id]'s other takes left out (Annuler brings it back). */
+    fun forgetTake(id: Int, index: Int) {
+        val t = project.value.audioTracks.firstOrNull { it.id == id } ?: return
+        if (index !in t.otherTakes.indices || _audioRecording.value != null || _takeSaving.value) return
+        session.edit { it.forgetTake(id, index) }
+        AppLog.add("Prise retirée de la piste audio ${id + 1}")
     }
 
     /**
@@ -4966,6 +5019,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         return true
     }
 
+    /** Owner (2026-11-04): « Vider la case » of a full cell of the Live grid (one undo step). */
+    fun clearCell(key: String, scene: Int) {
+        if (project.value.withClearedCell(key, scene) == null) return
+        session.edit { q -> q.withClearedCell(key, scene) ?: q }
+        AppLog.add("Live : case $key ${Scene.NAMES.getOrElse(scene) { "?" }} vidée")
+        if (LiveCells.kindOf(key) == LiveCells.Kind.AUDIO) { pushMixer(); pushAudio() }
+        cellChanged(key, scene)
+    }
+
     /**
      * « Un son de ma bibliothèque » on cell ([key], [scene]), on an audio track in that brick (see
      * [withAudioInCell]); one undo step. False while another sound is still being placed.
@@ -6177,19 +6239,23 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         _notice.value = tr("Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre.")
                         return@launch
                     }
-                    val id = next.tracks.first { t -> q.tracks.none { it.id == t.id } }.id
+                    val added = next.tracks.first { t -> q.tracks.none { it.id == t.id } }.id
+                    // The first track deleted from « Mes pistes »: this one takes its place (as « Ajouter une piste »).
+                    val reuse = q.firstTrackDeleted
+                    val id = if (reuse) 0 else added
                     val name = com.pocketstudio.model.DefaultNames.stemPad(if (voice) VOICE_LABEL else "Basse", song)
                     session.edit {
-                        userTrack(next, id).let { r ->
+                        userTrack(next, added).let { r ->
                             // n° 23: the voice sings with a soft, voice-like sound at first (not the melody's test-like lead).
                             r.copy(tracks = r.tracks.map { t ->
-                                if (t.id == id) t.copy(name = name, notes = com.pocketstudio.model.NoteClip(steps = steps, notes = notes))
+                                if (t.id == added) t.copy(name = name, notes = com.pocketstudio.model.NoteClip(steps = steps, notes = notes))
                                     .let { if (voice) it.copy(synth = com.pocketstudio.model.SongMatter.VOICE_SOUND) else it } else t
                             })
-                        }
+                        }.let { if (reuse) it.intoFirstTrack(added) else it }
                     }
                     pushTracks()
                     pushMixer()
+                    if (reuse) pushAutomation()
                     selectTrack(id)
                     _notice.value = if (voice) tr("La voix de %1\$s en %2\$d notes sur une piste à elle : change son son comme tu veux.", song, notes.size)
                     else tr("La basse de %1\$s en %2\$d notes sur une piste à elle : change son son comme tu veux.", song, notes.size)
@@ -6332,13 +6398,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             session.edit { p ->
                 val next = p.addTrack(name) ?: return@edit p
                 val added = next.tracks.first { t -> p.tracks.none { it.id == t.id } }
-                id = added.id
+                // The first track deleted from « Mes pistes »: this one takes its place (as « Ajouter une piste »).
+                val reuse = p.firstTrackDeleted
+                id = if (reuse) 0 else added.id
                 userTrack(next, added.id).let { q ->
                     q.withTrack(q.track(added.id).copy(
                         engine = 2, instrument = null,
                         sampled = SampledPatch(file = sample.file, name = name, root = SampledPatch.fitRoot(root, emptyList()), release = 0.2f),
                     ).sanitized())
-                }
+                }.let { if (reuse) it.intoFirstTrack(added.id) else it }
             }
             val made = id ?: return null
             pushTracks()

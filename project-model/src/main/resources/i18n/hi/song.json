@@ -405,5 +405,7 @@
   "Remettre %s comme au départ": "%s को पहले जैसा करो",
   "Chante ou joue au micro. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "माइक में गाओ या बजाओ। रोकने के लिए खाने को फिर छुओ: लूप बार पर बैठ जाता है।",
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "नोट्स बजाओ: वे Acid 303 पर बजते हैं। रोकने के लिए खाने को फिर छुओ: लूप बार पर बैठ जाता है।",
-  "Le micro ne répond pas : réessaie.": "माइक जवाब नहीं दे रहा: फिर से कोशिश करो।"
+  "Le micro ne répond pas : réessaie.": "माइक जवाब नहीं दे रहा: फिर से कोशिश करो।",
+  "Vider la case": "खाना ख़ाली करो",
+  "Annuler possible": "अनडू हो सकता है"
 }

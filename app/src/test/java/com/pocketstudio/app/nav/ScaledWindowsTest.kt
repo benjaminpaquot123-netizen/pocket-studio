@@ -46,7 +46,8 @@ class ScaledWindowsTest {
         h.start(scale = 1.3f)
         compose.onNodeWithTag("tab_Sons").performClick()
         compose.waitForIdle()
-        compose.onNodeWithTag("pad_0").performTouchInput { longClick() }
+        // The pad's sheet: its card's « Réglages du pad » (a long press is « Changer le son » since 2026-11-04).
+        compose.onNodeWithTag("pad_settings").performScrollTo().performClick()
         compose.waitForIdle()
         // « Tous les sons… » is at least 56 dp high: 72.8 device dp at 130 %.
         val tall = heightDp("pad_sound_more")
@@ -69,7 +70,8 @@ class ScaledWindowsTest {
         h.start(scale = 1f)
         compose.onNodeWithTag("tab_Sons").performClick()
         compose.waitForIdle()
-        compose.onNodeWithTag("pad_0").performTouchInput { longClick() }
+        // The pad's sheet: its card's « Réglages du pad » (a long press is « Changer le son » since 2026-11-04).
+        compose.onNodeWithTag("pad_settings").performScrollTo().performClick()
         compose.waitForIdle()
         assertEquals(56f, heightDp("pad_sound_more"), 0.5f)
     }

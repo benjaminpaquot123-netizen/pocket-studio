@@ -146,7 +146,8 @@ open class NavScreenshotTest {
     /** Lot 2: windows of their own (a sheet, the share sheet) at the interface size. */
     @Test fun sheetPad() = shot("sheet_pad") {
         tap("tab_Sons")
-        compose.onNodeWithTag("pad_0").performTouchInput { longClick() }
+        // The pad's sheet: its card's « Réglages du pad » (a long press is « Changer le son » since 2026-11-04).
+        compose.onNodeWithTag("pad_settings").performScrollTo().performClick()
         compose.waitForIdle()
     }
     @Test fun sheetShare() = shot("sheet_share") { tap("top_share") }

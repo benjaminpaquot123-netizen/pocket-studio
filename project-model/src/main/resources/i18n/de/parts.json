@@ -35,7 +35,6 @@
   "Kit : %s": "Kit: %s",
   "Kit de batterie": "Drum-Kit",
   "Kits General MIDI": "General-MIDI-Kits",
-  "Les pads sonnent, les cases gardent les coups. Appui long : son, volume.": "Pads klingen, Kästchen behalten die Schläge. Lang drücken: Sound, Lautstärke.",
   "Montée avant · 4 mes.": "Build-up davor · 4 Takte",
   "Montée avant · 8 mes.": "Build-up davor · 8 Takte",
   "Pad %1$d · %2$s": "Pad %1$d · %2$s",
@@ -47,7 +46,6 @@
   "×%1$d : %1$d coups dans la case, des 1/%2$d": "×%1$d: %1$d Schläge im Feld, 1/%2$d-Noten",
   "Rien n'a changé : il n'y a plus de place pour une partie (24 au plus, 128 dans le morceau). Vide-en une pour continuer.": "Nichts geändert: Kein Platz für einen weiteren Teil (höchstens 24, 128 im Song). Leer einen, um weiterzumachen.",
   "Son d'origine": "Originalsound",
-  "Son, volume, pan": "Sound, Lautstärke, Pan",
   "Studio": "Studio",
   "Touche un kit : il remplace les sons des 16 pads. Annuler le remet.": "Tippe auf ein Kit: Es ersetzt die Sounds der 16 Pads. Rückgängig holt sie zurück.",
   "Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8).": "Tippe auf ein Kästchen, um einen Schlag hinzuzufügen, wisch mit dem Finger, um mehrere zu malen. Lang auf einen Schlag drücken: Stärke und Rolls (×2 bis ×8).",
@@ -70,5 +68,6 @@
   "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Triole: %1$d gleichmäßige Schläge auf %2$d Felder (das nächste Feld gehört dazu)",
   "dans le triolet": "in der Triole",
   "triolet, %1$d coups sur %2$d cases": "Triole, %1$d Schläge auf %2$d Felder",
-  "Fin (partie)": "Ende"
+  "Fin (partie)": "Ende",
+  "Les pads sonnent, les cases gardent les coups. Appui long : changer le son.": "Pads klingen, Kästchen behalten die Schläge. Lang drücken: Sound ändern."
 }

@@ -35,7 +35,6 @@
   "Kit : %s": "キット：%s",
   "Kit de batterie": "ドラムキット",
   "Kits General MIDI": "General MIDI キット",
-  "Les pads sonnent, les cases gardent les coups. Appui long : son, volume.": "パッドで鳴らし、マスにヒットを記録。長押し：音、音量。",
   "Montée avant · 4 mes.": "前にビルドアップ · 4小節",
   "Montée avant · 8 mes.": "前にビルドアップ · 8小節",
   "Pad %1$d · %2$s": "パッド %1$d · %2$s",
@@ -47,7 +46,6 @@
   "×%1$d : %1$d coups dans la case, des 1/%2$d": "×%1$d：マスに %1$d 打、1/%2$d 音符",
   "Rien n'a changé : il n'y a plus de place pour une partie (24 au plus, 128 dans le morceau). Vide-en une pour continuer.": "変更なし：これ以上パートを置けません（最大24、曲全体で128）。1つ空にして続けてね。",
   "Son d'origine": "元の音",
-  "Son, volume, pan": "音、音量、パン",
   "Studio": "スタジオ",
   "Touche un kit : il remplace les sons des 16 pads. Annuler le remet.": "キットをタップすると16パッドの音が入れ替わります。取り消しで元に戻ります。",
   "Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8).": "マスをタップでヒットを追加、指をすべらせてまとめて塗れます。ヒットを長押し：強さとロール（×2〜×8）。",
@@ -70,5 +68,6 @@
   "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "3連符：%2$d マスに均等な %1$d 打（次のマスもその一部）",
   "dans le triolet": "3連符の中",
   "triolet, %1$d coups sur %2$d cases": "3連符、%2$d マスに %1$d 打",
-  "Fin (partie)": "エンディング"
+  "Fin (partie)": "エンディング",
+  "Les pads sonnent, les cases gardent les coups. Appui long : changer le son.": "パッドで鳴らし、マスにヒットを記録。長押し：音を変更。"
 }

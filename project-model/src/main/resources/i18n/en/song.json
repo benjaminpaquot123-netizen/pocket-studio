@@ -405,5 +405,7 @@
   "Remettre %s comme au départ": "Put %s back as it was",
   "Chante ou joue au micro. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Sing or play into the mic. Tap the cell again to stop: the loop snaps to the bar.",
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Play the notes: they sound on the Acid 303. Tap the cell again to stop: the loop snaps to the bar.",
-  "Le micro ne répond pas : réessaie.": "The mic is not answering: try again."
+  "Le micro ne répond pas : réessaie.": "The mic is not answering: try again.",
+  "Vider la case": "Clear the cell",
+  "Annuler possible": "Can be undone"
 }

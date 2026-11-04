@@ -35,7 +35,6 @@
   "Kit : %s": "Kit: %s",
   "Kit de batterie": "Drum kit",
   "Kits General MIDI": "General MIDI kits",
-  "Les pads sonnent, les cases gardent les coups. Appui long : son, volume.": "Pads sound, cells keep the hits. Long press: sound, volume.",
   "Montée avant · 4 mes.": "Build-up before · 4 bars",
   "Montée avant · 8 mes.": "Build-up before · 8 bars",
   "Pad %1$d · %2$s": "Pad %1$d · %2$s",
@@ -47,7 +46,6 @@
   "×%1$d : %1$d coups dans la case, des 1/%2$d": "×%1$d: %1$d hits in the cell, 1/%2$d notes",
   "Rien n'a changé : il n'y a plus de place pour une partie (24 au plus, 128 dans le morceau). Vide-en une pour continuer.": "Nothing changed: there is no room for another part (24 at most, 128 in the song). Empty one to go on.",
   "Son d'origine": "Original sound",
-  "Son, volume, pan": "Sound, volume, pan",
   "Studio": "Studio",
   "Touche un kit : il remplace les sons des 16 pads. Annuler le remet.": "Tap a kit: it replaces the sounds of the 16 pads. Undo brings them back.",
   "Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8).": "Tap a cell to add a hit, slide your finger to paint several. Long press on a hit: strength and rolls (×2 to ×8).",
@@ -70,5 +68,6 @@
   "Triolet : %1$d coups réguliers sur %2$d cases (la case d'après en fait partie)": "Triplet: %1$d even hits over %2$d cells (the next cell is part of it)",
   "dans le triolet": "in the triplet",
   "triolet, %1$d coups sur %2$d cases": "triplet, %1$d hits over %2$d cells",
-  "Fin (partie)": "End"
+  "Fin (partie)": "End",
+  "Les pads sonnent, les cases gardent les coups. Appui long : changer le son.": "Pads sound, cells keep the hits. Long press: change the sound."
 }

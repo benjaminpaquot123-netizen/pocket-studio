@@ -302,6 +302,8 @@ class LiveActions(
     val chooseRemixCell: (scene: Int, stem: Int, fromBar: Int, bars: Int) -> Unit = { _, _, _, _ -> },
     /** Lot D2: brick [scene]'s remix cell plays the whole song again. */
     val clearRemixCell: (scene: Int) -> Unit = {},
+    /** Owner (2026-11-04): a full cell emptied (its long press, « Vider la case »), undoable. */
+    val clearCell: (key: String, scene: Int) -> Unit = { _, _ -> },
 )
 
 /** The Live page's tabs: Briques (the grid alone, the tools folded), then the panel's pages. */
@@ -397,6 +399,9 @@ fun LiveScreen(
     var copyInto by rememberSaveable { mutableStateOf<String?>(null) }
     // Lot D2: the remix cell whose menu is open (a long press on it), its brick.
     var remixMenu by rememberSaveable { mutableStateOf<Int?>(null) }
+    // Owner (2026-11-04): a full cell held, its menu (« Vider la case »).
+    var fullMenu by rememberSaveable { mutableStateOf<String?>(null) }
+    val full = LiveCell.read(fullMenu)
     val menu = LiveCell.read(menuCell)
     val copyTarget = LiveCell.read(copyInto)
     val trackName: (String) -> String = { key -> columns.firstOrNull { it.key == key }?.name ?: "" }
@@ -419,8 +424,9 @@ fun LiveScreen(
         }
     }
     val gridMarks = GridMarks(
-        copyTarget ?: menu ?: remixMenu?.let { LiveCell(SongPart.REMIX, it) }, ui.cellRecording, picking = copyTarget != null, tap = cellTap,
+        copyTarget ?: menu ?: full ?: remixMenu?.let { LiveCell(SongPart.REMIX, it) }, ui.cellRecording, picking = copyTarget != null, tap = cellTap,
         remixHold = { scene -> if (ui.cellRecording == null && copyTarget == null) remixMenu = scene },
+        cellHold = { cell -> if (ui.cellRecording == null && copyTarget == null) fullMenu = cell.save() },
     )
     BoxWithConstraints(Modifier.fillMaxSize().background(Neon.Background).testTag("live_screen")) {
         // Lying down (or full screen) every row of height counts: a slimmer bar, and the take's
@@ -503,6 +509,13 @@ fun LiveScreen(
                 cancel = { menuCell = null },
             )
         }
+        full?.let { cell ->
+            FullCellMenu(
+                trackName(cell.key), cell,
+                clear = { fullMenu = null; actions.clearCell(cell.key, cell.scene) },
+                cancel = { fullMenu = null },
+            )
+        }
         remixMenu?.let { scene ->
             RemixCellMenu(
                 ui.project, trackName(SongPart.REMIX), scene, busy = ui.remixBusy != null,
@@ -525,6 +538,8 @@ internal class GridMarks(
     val tap: ((LiveColumn, Int, Boolean) -> Unit)? = null,
     /** Lot D2: a long press on brick [scene]'s remix cell (its menu: a passage of the song). */
     val remixHold: ((Int) -> Unit)? = null,
+    /** Owner (2026-11-04): a long press on any other full cell (its menu: « Vider la case »). */
+    val cellHold: ((LiveCell) -> Unit)? = null,
 )
 
 /**
@@ -1013,7 +1028,10 @@ private fun GridCell(ui: LiveScreenUi, c: LiveColumn, col: Int, scene: Int, widt
         press = { if (plain || tap == null) actions.press(c.key, scene) else false }, retract = { actions.retract(c.key) },
         mark = mark,
         // Lot D2: the remix column's cells take a passage of the song (a long press: their menu).
-        hold = marks.remixHold?.takeIf { c.key == SongPart.REMIX && hasContent }?.let { h -> { h(scene) } },
+        hold = if (!hasContent) null
+        else if (c.key == SongPart.REMIX) marks.remixHold?.let { h -> { h(scene) } }
+        else marks.cellHold?.let { h -> { h(LiveCell(c.key, scene)) } },
+        holdLabel = if (c.key == SongPart.REMIX) tr("Choisir un passage") else tr("Vider la case"),
         label = if (c.key == SongPart.REMIX) p.remix.cell(scene)?.label() else null,
         busy = c.key == SongPart.REMIX && ui.remixBusy == scene,
     ) { if (tap != null) tap(c, scene, hasContent) else actions.launchPad(c.key, scene) }
@@ -1139,6 +1157,7 @@ private fun LivePadCell(
     retract: () -> Unit,
     mark: CellMark = CellMark.None,
     hold: (() -> Unit)? = null,
+    holdLabel: String = "",
     label: String? = null,
     busy: Boolean = false,
     launch: () -> Unit,
@@ -1207,7 +1226,7 @@ private fun LivePadCell(
                     launch()
                 },
                 hold = hold?.let { h -> { haptics.performHapticFeedback(HapticFeedbackType.LongPress); h() } },
-                holdLabel = tr("Choisir un passage"),
+                holdLabel = holdLabel,
             )
             .testTag(tag)
             .semantics {

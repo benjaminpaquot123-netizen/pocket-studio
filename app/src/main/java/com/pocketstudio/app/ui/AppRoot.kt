@@ -19,6 +19,7 @@ import com.pocketstudio.model.track
 import kotlin.math.roundToInt
 import com.pocketstudio.app.instruments.InstrumentUi
 import com.pocketstudio.model.instrumentTracks
+import com.pocketstudio.model.firstTrackDeleted
 import com.pocketstudio.app.audiotracks.AudioTracksActions
 import com.pocketstudio.app.audiotracks.AudioTracksScreen
 import com.pocketstudio.app.audiotracks.AudioTracksUi
@@ -1383,6 +1384,13 @@ fun AppRoot() {
         listenAlone = { key -> rhythmVm.toggleAlone(com.pocketstudio.app.rhythm.AloneTarget.ofSongKey(key), from = SimpleTracksActions.FROM) },
         listenPadAlone = { lane -> rhythmVm.toggleAlone(com.pocketstudio.app.rhythm.AloneTarget.ofKey(com.pocketstudio.model.guide.GuideTrack.pad(lane)), from = SimpleTracksActions.FROM) },
         holdAlone = rhythmVm::holdAlone,
+        delete = { key ->
+            when {
+                key == com.pocketstudio.model.SongPart.ACID -> rhythmVm.removeAcidLine()
+                key.startsWith("inst:") -> key.removePrefix("inst:").toIntOrNull()?.let(rhythmVm::deleteTrack)
+                key.startsWith("audio:") -> key.removePrefix("audio:").toIntOrNull()?.let(rhythmVm::removeAudioTrack)
+            }
+        },
     )
     val learn = com.pocketstudio.app.learn.LocalLearn.current
     // G5: « Mon premier morceau » (the old Missions): its first cards, in the Guide. Audit final: on a new song,
@@ -1616,7 +1624,7 @@ fun AppRoot() {
     fun tracksUiOf(fp: Project, selected: Int, freezing: Int?, bar: Boolean): TracksUi {
         val frozen = com.pocketstudio.model.Freeze.frozenIds(fp)
         return TracksUi(
-            tracks = fp.instrumentTracks.filter { !(tutoHidesFirst && it.id == 0) },
+            tracks = fp.instrumentTracks.filter { !((tutoHidesFirst || fp.firstTrackDeleted) && it.id == 0) },
             selected = selected,
             select = { id -> rhythmVm.selectTrack(id); go(AppTab.Synthe) },
             add = rhythmVm::addTrack,
@@ -1624,7 +1632,7 @@ fun AppRoot() {
             rename = rhythmVm::renameTrack,
             setColor = rhythmVm::setTrackColor,
             duplicate = rhythmVm::duplicateTrack,
-            remove = rhythmVm::removeTrack,
+            remove = rhythmVm::deleteTrack,
             // Audit final (08, 01 M10): the Mode simple's tracks change their sound, name, colour;
             // effects, the track's sheet and freezing are the full mode's.
             effects = if (simple) null else ({ id -> fxChannel = com.pocketstudio.model.InstrumentTrack.mixerChannel(id) }),
@@ -3205,6 +3213,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                         playFrom = rhythmVm::playFromTake,
                                         restorePrevious = rhythmVm::restorePreviousTake,
                                         chooseTake = rhythmVm::chooseTake,
+                                        forgetTake = rhythmVm::forgetTake,
                                         realign = rhythmVm::realignTake,
                                         punch = { id, from, to ->
                                             if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
@@ -3871,6 +3880,7 @@ fun liveActionsOf(
     cellFromLibrary = cellLibrary,
     chooseRemixCell = vm.liveRemix::choose,
     clearRemixCell = vm.liveRemix::clear,
+    clearCell = vm::clearCell,
     copyCell = vm::copyCell,
     drumHit = { vm.liveDrumHit(it) },
     setRows = vm::setLiveRows,
@@ -4314,7 +4324,8 @@ internal fun simpleTracks(p: Project, hideFirst: Boolean = false): List<SimpleTr
     val channels = p.mixer.channels
     fun track(key: String, ch: Int, name: String, color: Color, pads: List<SimplePad> = emptyList()): SimpleTrack {
         val c = channels.getOrNull(ch) ?: com.pocketstudio.model.Channel()
-        return SimpleTrack(key, ch, name, color, c.volume, c.mute, c.solo, pads)
+        // Every track can go but the Batterie (docs/DECISIONS.md, 2026-11-04).
+        return SimpleTrack(key, ch, name, color, c.volume, c.mute, c.solo, pads, deletable = key != com.pocketstudio.model.SongPart.DRUMS)
     }
     val acidPlays = p.allScenes.any { s -> s.acid.steps.take(s.acid.length.coerceAtLeast(0)).any { it.gate } }
     // The drums' own sounds (the pads with hits), each heard alone from the Batterie's line.
@@ -4324,7 +4335,8 @@ internal fun simpleTracks(p: Project, hideFirst: Boolean = false): List<SimpleTr
     // n° 23: a project born from a Remix shows no empty « Batterie » or « Synthé » it never used.
     val remix = p.remix.setId != null
     val drumsEmpty = remix && p.allScenes.none { sc -> sc.drums.lanes.any { it.hits.isNotEmpty() } } && p.drums.lanes.none { it.hits.isNotEmpty() }
-    val firstHidden = hideFirst || (remix && com.pocketstudio.model.tuto.TutoChecks.blankFirst(p))
+    // Owner (2026-11-04): the first track deleted from here stays hidden while it is blank.
+    val firstHidden = hideFirst || p.firstTrackDeleted || (remix && com.pocketstudio.model.tuto.TutoChecks.blankFirst(p))
     return listOfNotNull(
         if (drumsEmpty) null else track(com.pocketstudio.model.SongPart.DRUMS, 0, tr("Batterie"), com.pocketstudio.app.live.DRUMS_COLOR, pads),
         if (acidPlays) track(com.pocketstudio.model.SongPart.ACID, 1, tr("Acid 303"), com.pocketstudio.app.acid.AcidLook.Track) else null,

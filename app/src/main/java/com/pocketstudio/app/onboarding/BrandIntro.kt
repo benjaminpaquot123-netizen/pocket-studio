@@ -40,7 +40,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathFillType
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.translate
@@ -68,6 +67,7 @@ import kotlin.math.exp
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 /**
  * The BenStudio mark: four drum pads laid out as a « B » (two for the stem, two « D » pads for
@@ -81,6 +81,9 @@ object BrandMark {
     private val Amber = Color(0xFFFFC46B)
     private val Magenta = Color(0xFFFF5E7A)
     val Ring = Color(0xFFFFB35C)
+
+    /** What a struck pad flashes with: a warm white, never a cold one. */
+    val FlashTint = Color(0xFFFFF1D6)
 
     private const val SCALE = 0.9f
 
@@ -156,7 +159,13 @@ object BrandMark {
             center = haloCenter, radius = 44f * u,
         )
         val edgeStroke = Stroke(width = u)
-        val ringStroke = Stroke(width = 1.6f * u)
+
+        /** 12 strokes from 0.6 to 1.8 u: Stroke is a class, never made while drawing; 12 steps over 3 dp are invisible. */
+        val ringStrokes = Array(12) { Stroke(width = (0.6f + 1.2f * it / 11f) * u) }
+        fun ringStroke(widthU: Float): Stroke = ringStrokes[((widthU - 0.6f) / 1.2f * 11f).roundToInt().coerceIn(0, 11)]
+
+        /** The pads' lift at the full rise, in px (the halo and the dust follow only [IntroTimeline.HALO_RISE] of it). */
+        val liftPx = side * IntroTimeline.LIFT
 
         // The opening's extras (none on the still mark, none before the splash hands over).
         /** A light from the top on each pad, for relief. */
@@ -164,6 +173,7 @@ object BrandMark {
             val p = pads[i]
             Brush.verticalGradient(0f to Color.White.copy(alpha = 0.2f), 1f to Color.Transparent, startY = p.top, endY = p.top + p.height * 0.48f)
         }
+        /** The shadow's drop under each pad at rest ([IntroTimeline.shadowLift] stretches it on the beats and the rise). */
         val shadowDrop = 1.6f * u
         /** The beat's own glow over the halo: hot, small. */
         val hotHalo = Brush.radialGradient(
@@ -190,9 +200,10 @@ object BrandMark {
 
 /**
  * The mark drawn in a square box ([size] stands for the icon's 108 units: the pads take about
- * half of it). With [time] (ms on [IntroTimeline]), the pads pop in, flash on the beats, the halo
- * comes up and pulses, the pads take relief and a light runs over them; read while drawing only,
- * so an animation redraws without composing again (and allocates nothing).
+ * half of it). With [time] (ms on [IntroTimeline]), the pads pop in, sink and flash on the beats,
+ * the halo comes up and pulses, the pads take relief (their shadow follows the punch) and a light
+ * runs over them; as the mark rises the halo gives back part of the lift (parallax). Read while
+ * drawing only, so an animation redraws without composing again (and allocates nothing).
  */
 @Composable
 fun BenStudioMark(size: Dp, modifier: Modifier = Modifier, glow: Boolean = true, time: (() -> Float)? = null) {
@@ -201,30 +212,46 @@ fun BenStudioMark(size: Dp, modifier: Modifier = Modifier, glow: Boolean = true,
             val kit = BrandMark.Kit(this.size.minDimension)
             onDrawBehind {
                 val t = time?.invoke()
+                val rise = if (t == null) 0f else IntroTimeline.rise(t)
                 if (glow) {
                     val haloAlpha = if (t == null) 1f else IntroTimeline.halo(t)
                     val haloScale = if (t == null) 1f else IntroTimeline.haloScale(t)
-                    scale(haloScale, pivot = kit.haloCenter) {
-                        drawCircle(kit.halo, 44f * kit.u, kit.haloCenter, alpha = haloAlpha)
-                        val hot = if (t == null) 0f else IntroTimeline.beatGlow(t)
-                        if (hot > 0.002f) drawCircle(kit.hotHalo, 34f * kit.u, kit.haloCenter, alpha = hot.coerceAtMost(1f))
+                    // Parallax: the box rises with the pads; the halo gives back (1 - HALO_RISE) of that lift.
+                    translate(top = kit.liftPx * (1f - IntroTimeline.HALO_RISE) * rise) {
+                        scale(haloScale, pivot = kit.haloCenter) {
+                            drawCircle(kit.halo, 44f * kit.u, kit.haloCenter, alpha = haloAlpha)
+                            val hot = if (t == null) 0f else IntroTimeline.beatGlow(t)
+                            if (hot > 0.002f) drawCircle(kit.hotHalo, 34f * kit.u, kit.haloCenter, alpha = hot.coerceAtMost(1f))
+                        }
                     }
                 }
                 val relief = if (t == null) 0f else IntroTimeline.relief(t)
                 val sheen = if (t == null) -1f else IntroTimeline.sheen(t)
+                // The four shadows first, under every pad (they lengthen as the mark punches out, come back on the spring).
+                val shadowA = if (t == null) 0f else IntroTimeline.shadowAlpha(t)
+                if (shadowA > 0.002f && t != null) {
+                    val drop = kit.shadowDrop * IntroTimeline.shadowLift(t)
+                    for (i in 0 until BrandMark.PADS) {
+                        val pop = IntroTimeline.pop(i, t)
+                        if (pop <= 0.001f) continue
+                        scale(pop * IntroTimeline.press(i, t), pivot = BrandMark.mid(kit.pads[i])) {
+                            translate(top = drop) { drawPath(kit.paths[i], Color.Black, alpha = shadowA) }
+                        }
+                    }
+                }
                 for (i in 0 until BrandMark.PADS) {
                     val pop = if (t == null) 1f else IntroTimeline.pop(i, t)
                     if (pop <= 0.001f) continue
+                    val press = if (t == null) 1f else IntroTimeline.press(i, t)
                     val p = kit.pads[i]
-                    scale(pop, pivot = BrandMark.mid(p)) {
-                        if (relief > 0f) translate(top = kit.shadowDrop) { drawPath(kit.paths[i], Color.Black, alpha = 0.32f * relief) }
+                    scale(pop * press, pivot = BrandMark.mid(p)) {
                         if (i == BrandMark.LIT) drawCircle(kit.lit, kit.litRadius, kit.litCenter)
                         drawPath(kit.paths[i], kit.fills[i])
                         drawPath(kit.paths[i], kit.inner[i])
                         drawPath(kit.edges[i], kit.edgeLight[i], style = kit.edgeStroke)
                         if (relief > 0f) drawPath(kit.paths[i], kit.gloss[i], alpha = relief)
                         val flash = if (t == null) 0f else IntroTimeline.flash(i, t)
-                        if (flash > 0f) drawPath(kit.paths[i], Color.White, alpha = flash)
+                        if (flash > 0f) drawPath(kit.paths[i], BrandMark.FlashTint, alpha = flash)
                         if (sheen in 0f..1f) {
                             val x = kit.sheenFrom + (kit.sheenTo - kit.sheenFrom) * sheen
                             clipPath(kit.paths[i]) {
@@ -239,9 +266,11 @@ fun BenStudioMark(size: Dp, modifier: Modifier = Modifier, glow: Boolean = true,
 }
 
 /**
- * What goes out of the mark on each heartbeat (same box as [BenStudioMark]): a soft shock wave of
- * light, a fine ring, and a few sparks. Everything is made once per size; nothing is allocated
- * while it draws.
+ * What goes out of the mark on the heartbeats (same box as [BenStudioMark]): a soft shock wave
+ * of light on each beat, the one ring (struck by the first beat, taut, plucked by the second, let
+ * go as the mark rises) and the dust of light that lives in the halo until the end. Everything is
+ * made once per size; nothing is allocated while it draws. Not clipped: the ring and the dust
+ * overflow the box on purpose.
  */
 @Composable
 private fun BeatBurst(size: Dp, modifier: Modifier, time: () -> Float) {
@@ -256,8 +285,7 @@ private fun BeatBurst(size: Dp, modifier: Modifier, time: () -> Float) {
                 0.94f to BrandMark.Orange.copy(alpha = 0.16f), 1f to BrandMark.Orange.copy(alpha = 0f),
                 center = center, radius = shockRadius,
             )
-            val sparkFrom = 30f * u
-            val sparks = IntroTimeline.Sparks
+            val dust = IntroTimeline.Dust
             onDrawBehind {
                 val t = time()
                 for (k in 0 until IntroTimeline.BEAT_COUNT) {
@@ -266,26 +294,21 @@ private fun BeatBurst(size: Dp, modifier: Modifier, time: () -> Float) {
                         val s = 0.7f + 1.2f * IntroTimeline.easeOut(w)
                         scale(s, pivot = center) { drawCircle(shock, shockRadius, center, alpha = IntroTimeline.shockAlpha(k) * (1f - w) * (1f - w)) }
                     }
-                    val x = IntroTimeline.ringProgress(k, t)
-                    if (x > 0f && x < 1f) {
-                        val s = 0.85f + 1.05f * IntroTimeline.easeOut(x)
-                        drawCircle(BrandMark.Ring, 31f * u * s, center, alpha = IntroTimeline.ringAlpha(k) * (1f - x), style = kit.ringStroke)
-                    }
-                    for (j in 0 until sparks.count(k)) {
-                        val q = sparks.progress(k, j, t)
-                        if (q <= 0f || q >= 1f) continue
-                        val travel = sparkFrom + sparks.reach(k, j) * u * IntroTimeline.easeOut(q)
-                        val trail = sparks.length(k, j) * u * (1f - q)
-                        val dx = sparks.dx(k, j)
-                        val dy = sparks.dy(k, j)
-                        drawLine(
-                            sparks.color(j),
-                            Offset(center.x + dx * (travel - trail), center.y + dy * (travel - trail)),
-                            Offset(center.x + dx * travel, center.y + dy * travel),
-                            strokeWidth = sparks.width(j) * u * (1f - 0.5f * q),
-                            cap = StrokeCap.Round,
-                            alpha = IntroTimeline.sparkAlpha(k) * (1f - q) * (1f - q),
-                        )
+                }
+                // The one ring: struck, taut, plucked, let go.
+                val ra = IntroTimeline.ringAlpha(t)
+                if (ra > 0.003f) {
+                    drawCircle(BrandMark.Ring, IntroTimeline.ringRadius(t) * u, center, alpha = ra, style = kit.ringStroke(IntroTimeline.ringWidth(t)))
+                }
+                // The dust lives in the halo: it follows the halo's lesser rise (this box rises with the pads).
+                val back = kit.liftPx * (1f - IntroTimeline.HALO_RISE) * IntroTimeline.rise(t)
+                val up = dust.lift(t) * u
+                translate(top = back) {
+                    for (j in 0 until IntroTimeline.Dust.COUNT) {
+                        val a = dust.alpha(j, t)
+                        if (a <= 0.003f) continue
+                        val r = dust.radius(j, t) * u
+                        drawCircle(dust.color(j), dust.size(j) * u, Offset(center.x + dust.dx(j) * r, center.y + dust.dy(j) * r - up), alpha = a)
                     }
                 }
             }
@@ -319,13 +342,19 @@ object Intro {
 }
 
 /**
- * The opening's timeline, in ms from the splash's start (scripts/brand/render_brand.py has the
- * same, scripts/brand/render_heartbeat.py the sound's times). The splash (at most [SPLASH_MS])
- * pops the pads in and draws a breath in; then, drawn by the app, in step with its sound: a double
- * heartbeat (the mark punches out on a spring, a shock wave of light, a ring and sparks on each
- * beat, the pads flashing in turn, the whole screen warming), a light over the pads, the mark
- * rises, « BenStudio » comes in under it and a light runs over it; the halo breathes; a fade.
- * 4.7 s of timeline, played 30 % slower after a 0.3 s hold: about 6.4 s from the tap on the icon (2026-11-04).
+ * The opening's timeline, in ms from the splash's start (scripts/brand/render_brand.py keeps its
+ * own copy of the first second for its SVG preview; the truth of the whole opening is
+ * BrandTest.previewFrames). The splash (at most [SPLASH_MS]) pops the pads in and draws a breath
+ * in; then, drawn by the app, in step with its felt beats: a double heartbeat (the mark punches
+ * out on a spring, the struck pads sink and flash in turn, their shadow follows the punch, a shock
+ * wave of light; the first beat strikes one ring of light that tautens around the mark, the
+ * second plucks it; a dust of light wakes in the halo; the screen warms and its corners darken),
+ * a light runs over the pads, the mark rises (the halo and the dust less: parallax) and the ring
+ * lets go, « BenStudio » is set down under it and a light runs over it, a line signs it; the halo
+ * breathes; then we go into the app (a fade with a slight zoom). 5 s of timeline, played 30 %
+ * slower after a 0.3 s hold: about 6.5 s from the tap on the icon (2026-11-04). After the first
+ * beat, every later time sits on a 240 ms grid (1100 + n × 240): the tempo is felt, nothing more
+ * is drawn.
  */
 object IntroTimeline {
     const val POP_STAGGER = 60f
@@ -342,11 +371,10 @@ object IntroTimeline {
     const val BEAT_COUNT = 2
     private val BEAT_START = floatArrayOf(1100f, 1340f)
     private val BEAT_SWELL = floatArrayOf(0.15f, 0.085f)
-    private val BEAT_FLASH = floatArrayOf(0.6f, 0.38f)
+    private val BEAT_FLASH = floatArrayOf(0.5f, 0.32f)
     private val BEAT_GLOW = floatArrayOf(1f, 0.62f)
-    private val RING_ALPHA = floatArrayOf(0.9f, 0.6f)
-    private val SHOCK_ALPHA = floatArrayOf(0.85f, 0.5f)
-    private val SPARK_ALPHA = floatArrayOf(0.85f, 0.6f)
+    private val SHOCK_ALPHA = floatArrayOf(0.7f, 0.4f)
+    private val SHOCK_MS = floatArrayOf(480f, 420f)
 
     /** The punch: up in [BEAT_UP], then a damped spring (period [SPRING_MS], decay [SPRING_DECAY]). */
     const val BEAT_UP = 55f
@@ -355,30 +383,95 @@ object IntroTimeline {
     const val SPRING_END = 700f
     const val GLOW_UP = 40f
     const val GLOW_DECAY = 240f
-    const val RING_MS = 480f
-    const val SHOCK_MS = 480f
     const val FLASH_STAGGER = 35f
     const val FLASH_UP = 40f
     const val FLASH_DOWN = 240f
+    /** The lit pad (the one being hit) flashes a little brighter: the eye ends on it. */
+    const val FLASH_LIT_BOOST = 1.2f
+
+    /** A struck pad sinks (the app's own pad gesture), in the flash's cascade, and comes back. */
+    const val PRESS_DEPTH = 0.05f
+    const val PRESS_UP = 40f
+    const val PRESS_DOWN = 200f
+
+    /** The pads' shadow: longer on the punch, a little longer on the rise, a little lighter on the punch. */
+    const val SHADOW_PUNCH = 2.2f
+    const val SHADOW_RISE = 0.5f
+    const val SHADOW_ALPHA = 0.32f
+    const val SHADOW_DIM = 0.3f
 
     /** The pads take relief once the app draws (the splash's pads are flat: no jump at the hand-over). */
     const val RELIEF_START = 1000f
-    const val RELIEF_END = 1300f
+    const val RELIEF_END = 1200f
     const val AMBIENT_END = 1500f
+
+    /** The screen's corners darken (a spot on a dark stage); 0 as VIGNETTE_MAX: no vignette. */
+    const val VIGNETTE_START = 1000f
+    const val VIGNETTE_END = 1580f
+    const val VIGNETTE_MAX = 0.25f
+
+    /** The one ring, in icon units: born on the first beat, taut at [RING_TAUT] after [RING_OUT_MS]. */
+    const val RING_BASE = 31f
+    const val RING_TAUT = 40f
+    const val RING_OUT_MS = 420f
+    const val RING_ALPHA_BORN = 0.9f
+    const val RING_ALPHA_TAUT = 0.30f
+    const val RING_WIDTH_BORN = 1.8f
+    const val RING_WIDTH_TAUT = 0.8f
+
+    /** The second beat plucks it: a damped radial vibration (0 as PLUCK_AMP: none), a flare of alpha and width. */
+    const val PLUCK_AMP = 0.04f
+    const val PLUCK_MS = 120f
+    const val PLUCK_DECAY = 170f
+    const val PLUCK_FLARE = 0.45f
+    const val PLUCK_FLARE_DECAY = 200f
+    const val PLUCK_WIDTH = 0.5f
+
+    /** Let go as the mark rises: a little wider, gone. */
+    const val RING_RELEASE_START = 1820f
+    const val RING_RELEASE_END = 2180f
+    const val RING_RELEASE_GROW = 3f
+
     const val SHEEN_START = 1480f
     const val SHEEN_END = 1980f
-    const val RISE_START = 1650f
-    const val RISE_END = 2050f
-    const val NAME_START = 1750f
-    const val NAME_END = 2850f
-    const val NAME_SHINE_START = 2350f
-    const val NAME_SHINE_END = 3050f
-    const val LINE_START = 2550f
-    const val LINE_END = 3150f
-    const val BREATH_START = 2050f
-    const val BREATH_MS = 1800f
-    const val FADE_START = 4400f
-    const val TOTAL = 4700f
+    const val RISE_START = 1820f
+    const val RISE_END = 2300f
+
+    /** Parallax of the rise: the halo (and the dust in it) and the ambient light rise less than the pads. */
+    const val HALO_RISE = 0.6f
+    const val AMBIENT_RISE = 0.35f
+
+    /** The name: lit by [NAME_ALPHA_END], set down (from [NAME_DROP_DP] below, a little stretched) by [NAME_END]. */
+    const val NAME_START = 2060f
+    const val NAME_ALPHA_END = 2540f
+    const val NAME_END = 2780f
+    const val NAME_DROP_DP = 10f
+    const val NAME_STRETCH_X = 0.045f
+    const val NAME_STRETCH_Y = 0.01f
+    const val NAME_SHINE_START = 2540f
+    const val NAME_SHINE_END = 3260f
+    const val NAME_SHINE_ALPHA = 0.7f
+    const val LINE_START = 2780f
+    const val LINE_END = 3260f
+    const val BREATH_START = 2300f
+    const val BREATH_MS = 2400f
+
+    /** The dust of light in the halo: lit on the first beat, pushed by both, twinkling, drifting up, half gone at the end. */
+    const val DUST_IGNITE_MS = 60f
+    /** Icon units per ms. */
+    const val DUST_DRIFT = 0.0035f
+    const val DUST_GLOW = 0.6f
+    /** Its brightest grain, ever; 0: no dust. */
+    const val DUST_MAX = 0.6f
+    const val DUST_DIM_START = 3980f
+    const val DUST_DIM_END = 4700f
+    private val DUST_PUSH = floatArrayOf(7f, 3f)
+    private val DUST_PUSH_MS = floatArrayOf(600f, 560f)
+
+    /** The fade into the app, with this much zoom: we go into it, the screen does not switch off. */
+    const val FADE_START = 4700f
+    const val TOTAL = 5000f
+    const val ZOOM = 0.04f
 
     /**
      * Benjamin (2026-11-04): at the hand-over the app is still loading and the first frames
@@ -388,8 +481,11 @@ object IntroTimeline {
     const val HOLD_MS = 300f
     const val SLOW = 1.3f
 
-    /** Wall-clock ms after the intro's first frame at which timeline time [t] is drawn (started at [from]). */
-    fun wallMs(t: Float, from: Float = 0f): Float = HOLD_MS + (t - from).coerceAtLeast(0f) * SLOW
+    /**
+     * Wall-clock ms after the intro's start at which timeline time [t] is drawn (started at [from]).
+     * The hold only plays at the splash's hand-over ([from] > 0): from 0 nothing is on screen yet to hold.
+     */
+    fun wallMs(t: Float, from: Float = 0f): Float = (if (from > 0f) HOLD_MS else 0f) + (t - from).coerceAtLeast(0f) * SLOW
 
     /** The splash's longest time on screen: the intro takes over by then at the latest. */
     const val SPLASH_MS = 1000L
@@ -432,6 +528,13 @@ object IntroTimeline {
     /** Android's accelerate_decelerate interpolator, as the splash's breath. */
     fun easeCos(x: Float): Float = (1f - cos(PI.toFloat() * x)) / 2f
 
+    /** Out fast, then a long settle (1 - (1-x)^5): the ring, the dust, the name, the line. */
+    fun easeOutQuint(x: Float): Float {
+        val p = 1f - x
+        val p2 = p * p
+        return 1f - p2 * p2 * p
+    }
+
     /** Android's overshoot interpolator (tension 2), as the splash's. */
     private fun overshoot(x: Float): Float {
         val y = x - 1f
@@ -469,6 +572,31 @@ object IntroTimeline {
         return s * (1f + 0.006f * breath(t))
     }
 
+    /** The beats as one number: 1 at the first beat's height, 0.57 at the second's, 0 before and once settled. */
+    fun punch(t: Float): Float {
+        var v = 0f
+        for (k in 0 until BEAT_COUNT) v += BEAT_SWELL[k] * spring(t - BEAT_START[k])
+        return v / BEAT_SWELL[0]
+    }
+
+    /** Pad [i]'s scale when struck: it sinks by [PRESS_DEPTH] (the app's own pad gesture), in the flash's cascade; 1 otherwise. */
+    fun press(i: Int, t: Float): Float {
+        var v = 0f
+        for (k in 0 until BEAT_COUNT) {
+            val u = t - BEAT_START[k] - i * FLASH_STAGGER
+            val depth = PRESS_DEPTH * BEAT_FLASH[k] / BEAT_FLASH[0]
+            v = max(
+                v,
+                when {
+                    u < 0f -> 0f
+                    u < PRESS_UP -> depth * easeOut(u / PRESS_UP)
+                    else -> depth * (1f - ease(ramp(u, PRESS_UP, PRESS_UP + PRESS_DOWN)))
+                },
+            )
+        }
+        return 1f - v
+    }
+
     /** How much the beats light things up (halo, screen): a flare on each, the second softer. */
     fun beatGlow(t: Float): Float {
         var v = 0f
@@ -494,18 +622,40 @@ object IntroTimeline {
 
     fun relief(t: Float): Float = ease(ramp(t, RELIEF_START, RELIEF_END))
 
-    /** The light over the pads: 0..1 across them while it runs, -1 otherwise. */
-    fun sheen(t: Float): Float = if (t <= SHEEN_START || t >= SHEEN_END) -1f else ease(ramp(t, SHEEN_START, SHEEN_END))
+    /** The mark's rise (0..1): the pads go up by [LIFT] of the box, the halo and the ambient light less. */
+    fun rise(t: Float): Float = ease(ramp(t, RISE_START, RISE_END))
+
+    /** The pads' shadow: longer as the mark punches out, a little longer as it rises (× the Kit's shadowDrop). */
+    fun shadowLift(t: Float): Float = 1f + SHADOW_PUNCH * punch(t).coerceAtLeast(0f) + SHADOW_RISE * rise(t)
+
+    fun shadowAlpha(t: Float): Float = SHADOW_ALPHA * relief(t) * (1f - SHADOW_DIM * punch(t).coerceAtLeast(0f))
+
+    /** The screen's vignette (0..1 of [VIGNETTE_MAX]): with the relief, a little slower. */
+    fun vignette(t: Float): Float = ease(ramp(t, VIGNETTE_START, VIGNETTE_END))
+
+    /** The fade into the app (0..1): a touch jumps into it. */
+    fun fade(t: Float): Float = ease(ramp(t, FADE_START, TOTAL))
+
+    /** The light over the pads: 0..1 across them while it runs (at a constant speed, as a play head), -1 otherwise. */
+    fun sheen(t: Float): Float = if (t <= SHEEN_START || t >= SHEEN_END) -1f else ramp(t, SHEEN_START, SHEEN_END)
 
     /** The light over the name: 0..1 across it while it runs, -1 otherwise. */
     fun nameShine(t: Float): Float = if (t <= NAME_SHINE_START || t >= NAME_SHINE_END) -1f else ease(ramp(t, NAME_SHINE_START, NAME_SHINE_END))
 
-    /** How lit pad [i] is: struck in turn on each beat, the second softer. */
+    fun nameAlpha(t: Float): Float = ease(ramp(t, NAME_START, NAME_ALPHA_END))
+
+    /** The name's settle (0..1): from a little below and a little stretched to its place. */
+    fun nameSettle(t: Float): Float = easeOutQuint(ramp(t, NAME_START, NAME_END))
+
+    /** The line under the name (0..1 of its width, from the centre). */
+    fun line(t: Float): Float = easeOutQuint(ramp(t, LINE_START, LINE_END))
+
+    /** How lit pad [i] is: struck in turn on each beat, the second softer, the lit pad a little brighter. */
     fun flash(i: Int, t: Float): Float {
         var v = 0f
         for (k in 0 until BEAT_COUNT) {
             val u = t - BEAT_START[k] - i * FLASH_STAGGER
-            val peak = BEAT_FLASH[k]
+            val peak = BEAT_FLASH[k] * (if (i == BrandMark.LIT) FLASH_LIT_BOOST else 1f)
             v = when {
                 u < 0f -> v
                 u < FLASH_UP -> max(v, peak * u / FLASH_UP)
@@ -516,67 +666,96 @@ object IntroTimeline {
         return v
     }
 
-    fun ringProgress(k: Int, t: Float): Float = ramp(t, BEAT_START[k], BEAT_START[k] + RING_MS)
-
-    fun ringAlpha(k: Int): Float = RING_ALPHA[k]
-
-    fun shockProgress(k: Int, t: Float): Float = ramp(t, BEAT_START[k], BEAT_START[k] + SHOCK_MS)
+    fun shockProgress(k: Int, t: Float): Float = ramp(t, BEAT_START[k], BEAT_START[k] + SHOCK_MS[k])
 
     fun shockAlpha(k: Int): Float = SHOCK_ALPHA[k]
 
-    fun sparkAlpha(k: Int): Float = SPARK_ALPHA[k]
+    private fun ringOut(t: Float): Float = easeOutQuint(ramp(t, BEAT_START[0], BEAT_START[0] + RING_OUT_MS))
+
+    private fun ringRelease(t: Float): Float = ease(ramp(t, RING_RELEASE_START, RING_RELEASE_END))
+
+    /** The one ring, in icon units: born on the first beat, taut at [RING_TAUT], plucked by the second, let go as the mark rises; 0 outside. */
+    fun ringRadius(t: Float): Float {
+        if (t <= BEAT_START[0] || t >= RING_RELEASE_END) return 0f
+        var r = RING_BASE + (RING_TAUT - RING_BASE) * ringOut(t) + RING_RELEASE_GROW * ringRelease(t)
+        val v = t - BEAT_START[1]
+        if (v > 0f) r *= 1f + PLUCK_AMP * sin(2f * PI.toFloat() * v / PLUCK_MS) * exp(-v / PLUCK_DECAY)
+        return r
+    }
+
+    /** Its light: bright when struck, faint once taut, flaring on the pluck, gone when let go. */
+    fun ringAlpha(t: Float): Float {
+        if (t <= BEAT_START[0] || t >= RING_RELEASE_END) return 0f
+        var a = RING_ALPHA_BORN - (RING_ALPHA_BORN - RING_ALPHA_TAUT) * ringOut(t)
+        val v = t - BEAT_START[1]
+        if (v > 0f) a += PLUCK_FLARE * exp(-v / PLUCK_FLARE_DECAY)
+        return (a * (1f - ringRelease(t))).coerceAtMost(1f)
+    }
+
+    /** Its stroke, in icon units (quantised to the Kit's 12 strokes when drawn). */
+    fun ringWidth(t: Float): Float {
+        var w = RING_WIDTH_BORN - (RING_WIDTH_BORN - RING_WIDTH_TAUT) * ringOut(t)
+        val v = t - BEAT_START[1]
+        if (v > 0f) w += PLUCK_WIDTH * exp(-v / PLUCK_FLARE_DECAY)
+        return w
+    }
 
     /**
-     * The sparks of each beat, laid out once (a fixed seed: the same every time): a direction,
-     * a reach, a trail, a width, a small delay; fewer and shorter on the second beat.
+     * Grains of light in the halo, laid out once (a fixed seed): on the upper arc only, lit by the
+     * first beat, pushed by both, twinkling and drifting up until the end. Never under the name.
      */
-    object Sparks {
-        private val COUNT = intArrayOf(12, 7)
-        private val LIFE = floatArrayOf(560f, 440f)
-        private const val MAX = 12
-        private val dx = FloatArray(BEAT_COUNT * MAX)
-        private val dy = FloatArray(BEAT_COUNT * MAX)
-        private val reach = FloatArray(BEAT_COUNT * MAX)
-        private val length = FloatArray(BEAT_COUNT * MAX)
-        private val delay = FloatArray(BEAT_COUNT * MAX)
-        private val widths = FloatArray(MAX)
-        private val colors = arrayOf(Color(0xFFFFE09A), Color(0xFFFFB35C), Color(0xFFFFF4E0), Color(0xFFFF8C5A))
+    object Dust {
+        const val COUNT = 18
+        private val dx = FloatArray(COUNT)
+        private val dy = FloatArray(COUNT)
+        private val r0 = FloatArray(COUNT)
+        private val sizes = FloatArray(COUNT)
+        private val peaks = FloatArray(COUNT)
+        private val periods = FloatArray(COUNT)
+        private val phases = FloatArray(COUNT)
+        private val Warm = Color(0xFFFFE09A)
+        private val Amber = Color(0xFFFFB35C)
 
         init {
             val r = java.util.Random(0xB3A7L)
-            for (k in 0 until BEAT_COUNT) for (j in 0 until COUNT[k]) {
-                val n = k * MAX + j
-                // All around but uneven (sparks, not a clock's ticks).
-                val a = (j + 0.5f + (r.nextFloat() - 0.5f) * 0.95f) / COUNT[k] * 2f * PI.toFloat() + k * 0.4f
-                dx[n] = cos(a)
-                dy[n] = sin(a)
-                reach[n] = (if (k == 0) 10f else 7f) + r.nextFloat() * (if (k == 0) 20f else 12f)
-                length[n] = 2f + r.nextFloat() * 3.5f
-                delay[n] = r.nextFloat() * 60f
+            for (j in 0 until COUNT) {
+                // -190° → +10°: the upper arc and the sides, uneven (dust, not a clock's ticks).
+                val a = (-190f + 200f * (j + 0.5f + (r.nextFloat() - 0.5f) * 0.9f) / COUNT) * PI.toFloat() / 180f
+                dx[j] = cos(a)
+                dy[j] = sin(a)
+                r0[j] = 33f + r.nextFloat() * 17f          // 33..50 u from the centre: outside the pads, in the halo
+                sizes[j] = 0.6f + r.nextFloat() * 0.4f     // 0.6..1.0 u (never under 1.5 dp: no shimmer)
+                peaks[j] = 0.18f + r.nextFloat() * 0.24f   // 0.18..0.42
+                periods[j] = 900f + r.nextFloat() * 800f
+                phases[j] = r.nextFloat() * 2f * PI.toFloat()
             }
-            for (j in 0 until MAX) widths[j] = 0.6f + r.nextFloat() * 0.6f
         }
 
-        fun count(k: Int): Int = COUNT[k]
+        fun dx(j: Int): Float = dx[j]
 
-        /** 0..1 over the spark's life (outside: not drawn). */
-        fun progress(k: Int, j: Int, t: Float): Float {
-            val from = BEAT_START[k] + delay[k * MAX + j]
-            return ramp(t, from, from + LIFE[k])
+        fun dy(j: Int): Float = dy[j]
+
+        /** Its radius, in icon units. */
+        fun size(j: Int): Float = sizes[j]
+
+        /** Two warm tones only. */
+        fun color(j: Int): Color = if (j % 2 == 0) Warm else Amber
+
+        /** Distance from the centre, in icon units: pushed by each beat. */
+        fun radius(j: Int, t: Float): Float = r0[j] +
+            DUST_PUSH[0] * easeOutQuint(ramp(t, BEAT_START[0], BEAT_START[0] + DUST_PUSH_MS[0])) +
+            DUST_PUSH[1] * easeOutQuint(ramp(t, BEAT_START[1], BEAT_START[1] + DUST_PUSH_MS[1]))
+
+        /** How far up they have drifted, in icon units. */
+        fun lift(t: Float): Float = DUST_DRIFT * (t - BEAT_START[0]).coerceAtLeast(0f)
+
+        fun alpha(j: Int, t: Float): Float {
+            if (t <= BEAT_START[0]) return 0f
+            val twinkle = 0.65f + 0.35f * sin(2f * PI.toFloat() * t / periods[j] + phases[j])
+            val a = peaks[j] * ramp(t, BEAT_START[0], BEAT_START[0] + DUST_IGNITE_MS) * twinkle *
+                (1f + DUST_GLOW * beatGlow(t)) * (1f - 0.5f * ramp(t, DUST_DIM_START, DUST_DIM_END))
+            return a.coerceAtMost(DUST_MAX)
         }
-
-        fun dx(k: Int, j: Int): Float = dx[k * MAX + j]
-
-        fun dy(k: Int, j: Int): Float = dy[k * MAX + j]
-
-        /** How far it flies, in icon units, beyond the pads. */
-        fun reach(k: Int, j: Int): Float = reach[k * MAX + j]
-
-        fun length(k: Int, j: Int): Float = length[k * MAX + j]
-
-        fun width(j: Int): Float = widths[j]
-
-        fun color(j: Int): Color = colors[j % colors.size]
     }
 }
 
@@ -587,12 +766,15 @@ fun animationsOff(context: android.content.Context): Boolean =
 /**
  * The opening, after the system splash (the same pads, at the same place, on the same colour,
  * on the same timeline: it goes on from where the splash was, [Intro.splashElapsedMs]): the pads
- * pop in and draw a breath, beat twice like a heart (a shock wave of light, a ring and sparks on
- * each beat, the pads flashing in turn, the screen warming), a light runs over the pads, the mark
- * rises and « BenStudio » comes in under it, a light over it, the halo breathes, and everything
- * fades into the app. 4.7 s from the tap on the icon; a touch skips it. [cue] hears (or feels)
- * the two beats, in step ([IntroCue], decided by MainActivity). It is drawn over the app, which
- * starts underneath meanwhile (the project loads, the audio engine starts): nothing waits for it.
+ * pop in and draw a breath, beat twice like a heart (the struck pads sink and flash in turn,
+ * their shadow follows the punch, a shock wave of light on each beat; the first beat strikes one
+ * ring of light that tautens around the mark, the second plucks it; a dust of light wakes in the
+ * halo; the screen warms, its corners darken), a light runs over the pads, the mark rises and
+ * the ring lets go, « BenStudio » is set down under it, a light over it, a line signs it, the halo
+ * breathes, and we go into the app (a fade with a slight zoom). About 6.5 s from the tap on the
+ * icon (a 0.3 s hold, then 30 % slower); a touch skips it. [cue] feels the two beats, in step
+ * ([IntroCue], decided by MainActivity). It is drawn over the app, which starts underneath
+ * meanwhile (the project loads, the audio engine starts): nothing waits for it.
  * With the phone's animations off: the mark and the name, still, then a short fade, silent.
  */
 @Composable
@@ -614,18 +796,18 @@ fun BrandIntro(onDone: () -> Unit, reducedMotion: Boolean = animationsOff(LocalC
         }
     } else {
         // Started again from where the splash handed over, when it says so after the first frame.
-        var held by remember { mutableStateOf(false) }
         LaunchedEffect(Intro.splashElapsedMs) {
             val from = max(clock.value, Intro.splashElapsedMs.toFloat().coerceAtMost(IntroTimeline.FADE_START))
             clock.snapTo(from)
-            // Still on the hand-over's frame while the app finishes loading underneath (once).
-            if (!held) {
-                held = true
-                delay(IntroTimeline.HOLD_MS.toLong())
-            }
-            // A touch during the hold already started the fade: it is not taken over.
+            // A touch already started the fade: it is not taken over.
             if (skipped) return@LaunchedEffect
-            clock.animateTo(IntroTimeline.TOTAL, tween(((IntroTimeline.TOTAL - from) * IntroTimeline.SLOW).toInt(), easing = LinearEasing))
+            // At the splash's hand-over, still on its frame while the app finishes loading underneath:
+            // the hold is the animation's own start delay (a coroutine delay stalls under test clocks).
+            val hold = if (from > 0f) IntroTimeline.HOLD_MS.toInt() else 0
+            clock.animateTo(
+                IntroTimeline.TOTAL,
+                tween(((IntroTimeline.TOTAL - from) * IntroTimeline.SLOW).toInt(), delayMillis = hold, easing = LinearEasing),
+            )
         }
         LaunchedEffect(Unit) {
             snapshotFlow { clock.value >= IntroTimeline.TOTAL }.first { it }
@@ -661,7 +843,16 @@ fun BrandIntro(onDone: () -> Unit, reducedMotion: Boolean = animationsOff(LocalC
     BoxWithConstraints(
         Modifier.fillMaxSize()
             .graphicsLayer {
-                alpha = if (reducedMotion) stillAlpha else 1f - IntroTimeline.ease(IntroTimeline.ramp(clock.value, IntroTimeline.FADE_START, IntroTimeline.TOTAL))
+                if (reducedMotion) {
+                    alpha = stillAlpha
+                } else {
+                    val f = IntroTimeline.fade(clock.value)
+                    alpha = 1f - f
+                    // We go into the app, the screen does not switch off (the background zooms with the scene).
+                    val z = 1f + IntroTimeline.ZOOM * f
+                    scaleX = z
+                    scaleY = z
+                }
             }
             .background(BrandMark.Background)
             .pointerInput(Unit) { detectTapGestures { skip() } }
@@ -672,9 +863,10 @@ fun BrandIntro(onDone: () -> Unit, reducedMotion: Boolean = animationsOff(LocalC
         // The splash draws its icon on 288 dp: the same here, so the hand-over does not jump.
         // Smaller when the window is (a phone lying down).
         val box = minOf(288.dp, maxHeight * 0.75f, maxWidth * 0.8f)
-        val lift = { box.value * IntroTimeline.LIFT * IntroTimeline.ease(IntroTimeline.ramp(clock.value, IntroTimeline.RISE_START, IntroTimeline.RISE_END)) }
+        val lift = { box.value * IntroTimeline.LIFT * IntroTimeline.rise(clock.value) }
         if (!reducedMotion) {
-            // The warm light over the whole screen, behind the mark (none before the first beat).
+            // The warm light over the whole screen, behind the mark (none before the first beat), and the
+            // screen's own vignette (it does not rise: it is the screen's, not the mark's).
             Box(
                 Modifier.fillMaxSize().drawWithCache {
                     val c = Offset(size.width / 2, size.height / 2)
@@ -683,9 +875,16 @@ fun BrandIntro(onDone: () -> Unit, reducedMotion: Boolean = animationsOff(LocalC
                         0f to BrandMark.Orange.copy(alpha = 0.26f), 0.35f to Color(0xFFFF5E7A).copy(alpha = 0.09f), 1f to Color.Transparent,
                         center = c, radius = r,
                     )
+                    val vignette = Brush.radialGradient(
+                        0f to Color.Transparent, 0.55f to Color.Transparent, 1f to Color.Black.copy(alpha = IntroTimeline.VIGNETTE_MAX),
+                        center = c, radius = sqrt(size.width * size.width + size.height * size.height) / 2f,   // the corners are at 1
+                    )
                     onDrawBehind {
-                        val a = IntroTimeline.ambient(clock.value)
-                        if (a > 0.002f) translate(top = -lift().dp.toPx()) { drawCircle(light, r, c, alpha = a) }
+                        val t = clock.value
+                        val a = IntroTimeline.ambient(t)
+                        if (a > 0.002f) translate(top = -lift().dp.toPx() * IntroTimeline.AMBIENT_RISE) { drawCircle(light, r, c, alpha = a) }
+                        val v = IntroTimeline.vignette(t)
+                        if (v > 0.002f && IntroTimeline.VIGNETTE_MAX > 0f) drawRect(vignette, alpha = v)
                     }
                 },
             )
@@ -701,15 +900,16 @@ fun BrandIntro(onDone: () -> Unit, reducedMotion: Boolean = animationsOff(LocalC
             },
             time = if (reducedMotion) null else time,
         )
-        // The name under the mark, centred: it fades in and settles, a light runs over it; then a short line grows under it.
+        // The name under the mark, centred: the light sets it down (it comes up from a little below, a little
+        // stretched), a light runs over it; then a short line grows under it from the centre.
         Column(
             Modifier.align(Alignment.TopCenter).padding(top = maxHeight / 2 + box * IntroTimeline.NAME_TOP).graphicsLayer {
-                val show = IntroTimeline.ease(IntroTimeline.ramp(clock.value, IntroTimeline.NAME_START, IntroTimeline.NAME_END))
-                alpha = show
-                translationY = (1f - show) * 18.dp.toPx()
-                val s = 0.96f + 0.04f * show
-                scaleX = s
-                scaleY = s
+                val t = clock.value
+                val q = IntroTimeline.nameSettle(t)
+                alpha = IntroTimeline.nameAlpha(t)
+                translationY = (1f - q) * IntroTimeline.NAME_DROP_DP.dp.toPx()
+                scaleX = 1f + IntroTimeline.NAME_STRETCH_X * (1f - q)
+                scaleY = 1f + IntroTimeline.NAME_STRETCH_Y * (1f - q)
             },
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -718,9 +918,9 @@ fun BrandIntro(onDone: () -> Unit, reducedMotion: Boolean = animationsOff(LocalC
                     // Its own layer, so the light paints over the letters only.
                     .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
                     .drawWithCache {
-                        val band = size.height * 1.4f
+                        val band = size.height
                         val shine = Brush.linearGradient(
-                            0f to Color.Transparent, 0.5f to Color.White.copy(alpha = 0.85f), 1f to Color.Transparent,
+                            0f to Color.Transparent, 0.5f to Color.White.copy(alpha = IntroTimeline.NAME_SHINE_ALPHA), 1f to Color.Transparent,
                             start = Offset(-band / 2, -band * 0.15f), end = Offset(band / 2, band * 0.15f),
                         )
                         onDrawWithContent {
@@ -735,7 +935,7 @@ fun BrandIntro(onDone: () -> Unit, reducedMotion: Boolean = animationsOff(LocalC
             )
             Box(
                 Modifier.offset(y = 6.dp).width(64.dp).height(3.dp).graphicsLayer {
-                    scaleX = IntroTimeline.ease(IntroTimeline.ramp(clock.value, IntroTimeline.LINE_START, IntroTimeline.LINE_END))
+                    scaleX = IntroTimeline.line(clock.value)
                 }.background(BrandMark.line, androidx.compose.foundation.shape.RoundedCornerShape(2.dp)),
             )
         }

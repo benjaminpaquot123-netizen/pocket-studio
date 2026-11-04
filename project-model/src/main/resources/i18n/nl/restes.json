@@ -60,5 +60,6 @@
   "D'autres sons pour le même pad, selon la force du coup : les coups doux gardent le son du pad, les coups forts en jouent un autre. La batterie sonne plus vivante.": "Andere geluiden voor dezelfde pad, afhankelijk van hoe hard je slaat: zachte slagen houden het geluid van de pad, harde spelen een ander. De drums klinken levendiger.",
   "%1$s LUFS au lieu de %2$s : plus fort, le son s'écraserait.": "%1$s LUFS in plaats van %2$s: luider zou de klank geplet worden.",
   "Le master s'arrête avant d'écraser les coups : le morceau garde son punch, un peu moins fort que la cible.": "De master stopt voordat hij de klappen plet: het nummer houdt zijn punch, iets zachter dan het doel.",
-  "Gros pads": "Grote pads"
+  "Gros pads": "Grote pads",
+  "Projets retrouvés dans la sauvegarde du téléphone : %d. Leurs sons n'y étaient pas : choisis-les à nouveau sur les pads et les pistes.": "Projecten teruggevonden in de back-up van de telefoon: %d. Hun geluiden zaten er niet in: kies ze opnieuw op de pads en sporen."
 }

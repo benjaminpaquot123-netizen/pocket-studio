@@ -60,5 +60,6 @@
   "D'autres sons pour le même pad, selon la force du coup : les coups doux gardent le son du pad, les coups forts en jouent un autre. La batterie sonne plus vivante.": "أصوات أخرى للـPad نفسه حسب قوة الضربة: الضربات الخفيفة تبقي صوت الـPad، والقوية تعزف صوتًا آخر. تبدو الطبول أكثر حيوية.",
   "%1$s LUFS au lieu de %2$s : plus fort, le son s'écraserait.": "%1$s LUFS بدل %2$s: لو ارتفع أكثر لانسحق الصوت.",
   "Le master s'arrête avant d'écraser les coups : le morceau garde son punch, un peu moins fort que la cible.": "يتوقف الماستر قبل أن يسحق الضربات: تحتفظ الأغنية بقوتها، أخفض قليلًا من الهدف.",
-  "Gros pads": "Pads كبيرة"
+  "Gros pads": "Pads كبيرة",
+  "Projets retrouvés dans la sauvegarde du téléphone : %d. Leurs sons n'y étaient pas : choisis-les à nouveau sur les pads et les pistes.": "مشاريع استُعيدت من النسخة الاحتياطية للهاتف: %d. لم تكن أصواتها فيها: اخترها من جديد على الوسائد والمسارات."
 }

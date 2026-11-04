@@ -60,5 +60,6 @@
   "D'autres sons pour le même pad, selon la force du coup : les coups doux gardent le son du pad, les coups forts en jouent un autre. La batterie sonne plus vivante.": "Inne dźwięki dla tego samego pada, zależnie od siły uderzenia: delikatne uderzenia zostają przy dźwięku pada, mocne grają inny. Perkusja brzmi żywiej.",
   "%1$s LUFS au lieu de %2$s : plus fort, le son s'écraserait.": "%1$s LUFS zamiast %2$s: głośniej dźwięk by się zgniótł.",
   "Le master s'arrête avant d'écraser les coups : le morceau garde son punch, un peu moins fort que la cible.": "Master zatrzymuje się, zanim zgniecie uderzenia: utwór zachowuje swój punch, trochę ciszej niż cel.",
-  "Gros pads": "Duże pady"
+  "Gros pads": "Duże pady",
+  "Projets retrouvés dans la sauvegarde du téléphone : %d. Leurs sons n'y étaient pas : choisis-les à nouveau sur les pads et les pistes.": "Projekty odzyskane z kopii zapasowej telefonu: %d. Nie było w niej ich dźwięków: wybierz je ponownie na padach i ścieżkach."
 }

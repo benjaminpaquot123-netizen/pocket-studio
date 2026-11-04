@@ -60,5 +60,6 @@
   "D'autres sons pour le même pad, selon la force du coup : les coups doux gardent le son du pad, les coups forts en jouent un autre. La batterie sonne plus vivante.": "Vuruşun gücüne göre aynı pad için başka sesler: hafif vuruşlar pad'in sesini korur, sert vuruşlar başka bir ses çalar. Davul daha canlı duyulur.",
   "%1$s LUFS au lieu de %2$s : plus fort, le son s'écraserait.": "%2$s yerine %1$s LUFS: daha yüksek olsa ses ezilirdi.",
   "Le master s'arrête avant d'écraser les coups : le morceau garde son punch, un peu moins fort que la cible.": "Master vuruşları ezmeden önce durur: şarkı gücünü korur, hedefin biraz altında kalır.",
-  "Gros pads": "Büyük pad'ler"
+  "Gros pads": "Büyük pad'ler",
+  "Projets retrouvés dans la sauvegarde du téléphone : %d. Leurs sons n'y étaient pas : choisis-les à nouveau sur les pads et les pistes.": "Telefonun yedeğinden bulunan projeler: %d. Sesleri yedekte yoktu: pad'lerde ve kanallarda yeniden seç."
 }

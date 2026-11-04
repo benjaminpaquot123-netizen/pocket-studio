@@ -517,9 +517,12 @@ abstract class HumanTester(private val seat: String) {
         }
         if (kind == "attends" || NativeEngine.sink == null) return
         // The Remix page's own controls keep it: none of them opens another screen.
-        if ((kind == "touche" || kind == "appui-long" || kind == "glisse") && remixPage() && touchesRemixControl(x, y)) return
+        if ((kind == "touche" || kind == "appui-long" || kind == "glisse") && stemPages() && touchesRemixControl(x, y)) return
         val v = lastVm
         if (v?.export?.value?.running == true) return
+        // Audit ultra tour 0 (seat b): a stretch on its way to a pad or a Live cell, a voice being cut into
+        // phrases, a sound being prepared go on with the engine (a phone's never goes away under them).
+        if (engineWorkRunning(v)) return
         // Step 5b: the song played from the Remix page (no « Boucler ») goes on too, as on a phone (it
         // never stopped there): stopped here only while the bench lets its engine go, then played again.
         val song = v != null && songPlaying(v)
@@ -548,8 +551,9 @@ abstract class HumanTester(private val seat: String) {
 
     private fun engineDone() {
         val v = lastVm
-        // The Remix page on screen: the engine holds the stems (« Écouter », « Jouer avec le projet », « → Pad »).
-        if (remixPage()) {
+        // The Remix page (its cut screen, its stem board) on screen: the engine holds the stems (« Écouter »,
+        // « Jouer avec le projet », « → Pad », « → Live »).
+        if (stemPages()) {
             val was = NativeEngine.sink
             NativeEngine.sink = was ?: engine
             startPollers()
@@ -560,13 +564,15 @@ abstract class HumanTester(private val seat: String) {
             // (Whenever it is still missing, not only as the engine comes back: the song may enter the project a
             // touch after the engine did. Once a song: a load under way is left to finish.)
             val song = v?.project?.value?.remix?.setId
-            if (v != null && song != null && song != syncedFor && v.stemOverview.value == null && !v.remixLoading.value) {
+            // Audit ultra tour 0: and again each time the engine comes back to a page without the song's stems (the
+            // stem board needs them; a phone's engine never let them go).
+            if (v != null && song != null && (song != syncedFor || was == null) && v.stemOverview.value == null && !v.remixLoading.value) {
                 syncedFor = song
                 v.syncEngine()
             }
             return
         }
-        if (NativeEngine.sink != null && v?.export?.value?.running != true && (v == null || !songPlaying(v))) {
+        if (NativeEngine.sink != null && v?.export?.value?.running != true && (v == null || !songPlaying(v)) && !engineWorkRunning(v)) {
             stopPollers()
             NativeEngine.sink = null
         }
@@ -575,6 +581,24 @@ abstract class HumanTester(private val seat: String) {
     /** The song whose stems the bench last asked the view model to load (see [engineDone]). */
     private var syncedFor: String? = null
 
+    /**
+     * Work of the app's that needs the engine until it ends (audit ultra tour 0, seat b: « Voix vers le pad… »
+     * forever, the bench had let its engine go under it): the stem board's (a stretch to a pad, a track, a Live
+     * cell; phrases), a pad's sound being made.
+     */
+    internal fun engineWorkRunning(v: RhythmViewModel? = lastVm): Boolean {
+        if (v == null) return false
+        return v.stemBoard.state.value.busy != null || v.sampleTask.value is com.pocketstudio.app.rhythm.SampleTask.Busy
+    }
+
+    /** The Remix page, its cut screen or its stem board on screen: the stems' screens. */
+    protected fun stemPages(): Boolean = remixPage() || shownOnScreen("board") || shownOnScreen("cut_screen")
+
+    private fun shownOnScreen(tag: String): Boolean = runCatching {
+        val width = app.resources.displayMetrics.widthPixels
+        compose.onAllNodesWithTag(tag).fetchSemanticsNodes().any { it.positionOnScreen.x in 0f..(width - 1f) }
+    }.getOrDefault(false)
+
     /** The Remix page is on screen (not only composed beside it). */
     protected fun remixPage(): Boolean = runCatching {
         val width = app.resources.displayMetrics.widthPixels
@@ -582,7 +606,7 @@ abstract class HumanTester(private val seat: String) {
     }.getOrDefault(false)
 
     /** The Remix page's buttons that use the engine, by their tags' start. */
-    private val remixControls = listOf("use_", "import_", "listen_", "stem_", "remix_play", "remix_bar_next", "remix_bar_prev", "waveform_", "remix_follow_tempo", "remix_clear")
+    private val remixControls = listOf("use_", "import_", "listen_", "stem_", "remix_play", "remix_bar_next", "remix_bar_prev", "waveform_", "remix_follow_tempo", "remix_clear", "remix_open_", "board_", "cut_")
 
     private fun touchesRemixControl(x: Float, y: Float): Boolean = runCatching {
         compose.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsProperties.TestTag)).fetchSemanticsNodes().any { n ->

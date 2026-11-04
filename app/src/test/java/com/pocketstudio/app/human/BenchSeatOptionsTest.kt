@@ -45,6 +45,19 @@ class BenchSeatOptionsTest : HumanTester("seat-options") {
         assertTrue(I18n.lang.rtl)
     }
 
+    /**
+     * Audit ultra tour 0 (seat b): in English the libraries' own words (Material's « Drag handle ») came wrapped
+     * in the en-XC pseudo-locale's invisible marks; a phone in English has a region, and the plain words.
+     */
+    @Test
+    fun anEnglishSeatReadsTheLibrariesPlainWords() {
+        assumeTrue("not while the bench runs seats", System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("lang" to "en")).first)
+        val app = ApplicationProvider.getApplicationContext<android.app.Application>()
+        assertEquals("en", app.resources.configuration.locales[0].language)
+        assertEquals("Drag handle", app.getString(androidx.compose.material3.R.string.m3c_bottom_sheet_drag_handle_description))
+    }
+
     @Test
     fun aSeatThatDoesNotReadSeesBarsAndNoNames() {
         assumeTrue("not while the bench runs seats", System.getProperty("ps.human.dir").isNullOrBlank())

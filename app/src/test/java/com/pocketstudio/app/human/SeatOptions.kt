@@ -77,6 +77,8 @@ internal data class SeatOptions(
             Lang.PT_BR -> "pt-rBR"
             Lang.ZH_CN -> "zh-rCN"
             Lang.ID -> "in"
+            // A phone always has a region: « en » alone took the libraries' en-rXC strings (audit ultra tour 0, seat b: « Drag handle » wrapped in markers).
+            Lang.EN -> "en-rUS"
             else -> lang.code
         }
 

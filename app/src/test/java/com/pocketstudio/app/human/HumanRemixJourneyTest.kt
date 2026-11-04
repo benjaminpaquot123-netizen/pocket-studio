@@ -190,6 +190,56 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         assertNotNull(centerOf("mixer"))
         assertTrue("the screen failed: $problems", problems.isEmpty())
         shot(File(System.getProperty("java.io.tmpdir"), "remix-journey-end.png"))
+
+        // Audit ultra tour 0 (seat b): the stem board's work goes on with the engine when its page is left at once,
+        // as a phone's engine never goes away (the bench let its engine go: « Voix vers le pad… » forever, then a crash).
+        tap(centerOf("tab_Sons"), "Sons")
+        // Stopped from the Remix page itself (its own control keeps the bench's engine).
+        tap(reach("remix_play"), "Arrêter")
+        waitFor("the song's waveforms") { rhythm()!!.stemOverview.value != null }
+        val opened = tap(reach("remix_open_board"), "Ouvrir le tableau des pistes")
+        if (centerOf("board") == null) act("attends 1")
+        if (centerOf("board") == null) runCatching { shot(File("build/remix-journey-board.png")) }
+        assertNotNull("the stem board is not there: $opened ${remixState()} playing=${rhythm()!!.transport.value.playing}", centerOf("board"))
+        val vm = rhythm()!!
+        fun boardDone(what: String) = waitFor(what) { vm.stemBoard.state.value.busy == null }
+        fun pickVoice() {
+            val (x, y) = reach("board_track_3")
+            act("glisse ${x - 120f} $y ${x + 120f} $y")
+            act("attends 1")
+            assertNotNull("no stretch chosen", centerOf("board_to_pad"))
+        }
+        fun backToBoard() {
+            tap(centerOf("tab_Sons"), "Sons")
+            centerOf("sons_Remix")?.let { tap(it, "the song's chip") }
+            if (centerOf("board") == null) tap(reach("remix_open_board"), "Ouvrir le tableau des pistes")
+        }
+        val padsBefore = project()!!.drums.lanes.count { it.sample != null }
+        pickVoice()
+        tap(reach("board_to_pad"), "→ Pad")
+        tap(centerOf("tab_Mix"), "Mix, at once")
+        boardDone("the stretch on a pad")
+        assertTrue("${vm.stemBoard.state.value.message}", project()!!.drums.lanes.count { it.sample != null } == padsBefore + 1)
+        backToBoard()
+        tap(reach("board_chop"), "Découper la voix en phrases")
+        tap(centerOf("tab_Mix"), "Mix, at once")
+        boardDone("the phrases")
+        assertTrue("${vm.stemBoard.state.value.message}", project()!!.drums.lanes.count { it.sample != null } > padsBefore + 1)
+        backToBoard()
+        pickVoice()
+        tap(reach("board_to_live"), "→ Live")
+        tap(centerOf("tab_Mix"), "Mix, at once")
+        boardDone("the stretch in a Live cell")
+        val live = vm.stemBoard.state.value.message
+        assertTrue("$live", live != null && !live.contains("Ça n'a pas marché"))
+        assertTrue("the screen failed: $problems", problems.isEmpty())
+        // As it was: the board closed, the loop played again, the page left.
+        tap(centerOf("tab_Sons"), "Sons")
+        centerOf("sons_Remix")?.let { tap(it, "the song's chip") }
+        centerOf("board_close")?.let { tap(it, "close the board") }
+        tap(reach("remix_play"), "Jouer")
+        tap(centerOf("tab_Mix"), "Mix")
+
         // Step 5b (Benjamin): played without « Boucler », the song goes on when the page is left too.
         tap(centerOf("tab_Sons"), "Sons")
         tap(reach("remix_play"), "Arrêter")

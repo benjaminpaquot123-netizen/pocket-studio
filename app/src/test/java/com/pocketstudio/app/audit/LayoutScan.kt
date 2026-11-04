@@ -52,17 +52,18 @@ object LayoutScan {
             val roots = rule.onAllNodes(androidx.compose.ui.test.isRoot(), useUnmergedTree = true)
             val rootNodes = roots.fetchSemanticsNodes(atLeastOneRootRequired = false)
             val pixels = HashMap<Int, androidx.compose.ui.graphics.PixelMap>()
-            rootNodes.forEachIndexed { i, r -> pixels[r.id] = roots[i].captureToImage().toPixelMap() }
+            rootNodes.forEachIndexed { i, r -> if (r.size.width > 0 && r.size.height > 0) pixels[r.id] = roots[i].captureToImage().toPixelMap() }
             texts.forEach { t -> pixels[top(t.node).id]?.let { px -> contrast(t, px, density)?.let(out::add) } }
         }
         if (Kind.TARGET in checks || Kind.LABEL in checks) {
-            val merged = rule.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsActions.OnClick), useUnmergedTree = false)
-                .fetchSemanticsNodes(atLeastOneRootRequired = false)
+            // Audit ultra §1: LABEL reads every control TalkBack can act on (a touch, a long press, a slider, a switch);
+            // TARGET stays on what is touched.
+            val merged = rule.onAllNodes(CONTROL, useUnmergedTree = false).fetchSemanticsNodes(atLeastOneRootRequired = false)
             for (n in merged) {
                 if (hidden(n)) continue
                 val name = nameOf(n)
-                if (Kind.LABEL in checks && name.isBlank()) out += Finding(Kind.LABEL, tagOf(n), "touchable without text nor description")
-                if (Kind.TARGET in checks) {
+                if (Kind.LABEL in checks && name.isBlank()) out += Finding(Kind.LABEL, tagOf(n), "${controlKind(n)} without text nor description")
+                if (Kind.TARGET in checks && n.config.contains(SemanticsActions.OnClick)) {
                     // Its touch area, as TalkBack is given it (Material's minimumInteractiveComponentSize
                     // widens a 32 dp chip's to 48 dp; a size forced on the button itself does not).
                     // Two rules: the touch area 48 dp (Android), and what is seen at least 24 x 24 dp (WCAG 2.2
@@ -83,6 +84,20 @@ object LayoutScan {
         return out.distinctBy { it.toString() }
     }
 
+    /** Something TalkBack can act on: a touch, a long press, a slider, a switch or a box to tick. */
+    val CONTROL = SemanticsMatcher("a control") { n ->
+        n.config.contains(SemanticsActions.OnClick) || n.config.contains(SemanticsActions.OnLongClick) ||
+            n.config.contains(SemanticsActions.SetProgress) || n.config.contains(SemanticsProperties.ToggleableState)
+    }
+
+    /** What kind of control [n] is, in the findings' words. */
+    fun controlKind(n: SemanticsNode): String = when {
+        n.config.contains(SemanticsActions.SetProgress) -> "slider"
+        n.config.contains(SemanticsProperties.ToggleableState) -> "toggle"
+        n.config.contains(SemanticsActions.OnClick) -> "touchable"
+        else -> "long press"
+    }
+
     private fun top(n: SemanticsNode): SemanticsNode {
         var p = n
         while (true) p = p.parent ?: return p
@@ -99,10 +114,10 @@ object LayoutScan {
         return if (get(list)) list.firstOrNull() else null
     }
 
-    private fun tagOf(n: SemanticsNode): String =
+    fun tagOf(n: SemanticsNode): String =
         n.config.getOrNull(SemanticsProperties.TestTag) ?: "#${n.id}"
 
-    private fun nameOf(n: SemanticsNode): String = listOfNotNull(
+    fun nameOf(n: SemanticsNode): String = listOfNotNull(
         n.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString(" "),
         n.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text },
         n.config.getOrNull(SemanticsProperties.EditableText)?.text,
@@ -110,7 +125,7 @@ object LayoutScan {
         n.config.getOrNull(SemanticsProperties.StateDescription),
     ).joinToString(" ").trim()
 
-    private fun hidden(n: SemanticsNode): Boolean {
+    fun hidden(n: SemanticsNode): Boolean {
         var p: SemanticsNode? = n
         while (p != null) {
             if (p.config.contains(SemanticsProperties.HideFromAccessibility) || p.config.contains(SemanticsProperties.InvisibleToUser)) return true

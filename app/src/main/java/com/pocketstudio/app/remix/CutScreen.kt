@@ -426,7 +426,8 @@ private fun SpanRow(model: CutModel, actions: StemBoardActions, work: State<Stem
                     color = Neon.TextPrimary, maxLines = 2)
                 Text(
                     sp?.let { spanLength(model, it.frames) } ?: "…",
-                    style = MonoStyle.copy(fontSize = MaterialTheme.typography.labelMedium.fontSize), color = Neon.TextSecondary, maxLines = 2,
+                    // TextSecondary on the tinted card read 4.19:1 (census): the primary text, a touch dimmer.
+                    style = MonoStyle.copy(fontSize = MaterialTheme.typography.labelMedium.fontSize), color = Neon.TextPrimary.copy(alpha = 0.85f), maxLines = 2,
                     modifier = Modifier.testTag("cut_span_length"),
                 )
             }

@@ -69,7 +69,7 @@ object RealUse {
             if (System.currentTimeMillis() >= until) {
                 // What the app went through says why (the sound opened or not, the project opened…):
                 // the CI emulator cannot be watched, only read afterwards.
-                val why = "waited too long ($seconds s) for $what\n${describeStream()}\ncurrent step ${NativeEngine.currentStep()}\n" +
+                val why = "waited too long ($seconds s) for $what\n${describeStream()}\ncurrent step ${NativeEngine.currentStep()}, commands dropped ${NativeEngine.droppedCommands}\n" +
                     "app log:\n${com.pocketstudio.app.report.AppLog.dump(40)}"
                 log(why)
                 throw IllegalStateException(why)

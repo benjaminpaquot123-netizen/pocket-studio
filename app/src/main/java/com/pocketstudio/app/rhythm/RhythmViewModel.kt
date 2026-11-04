@@ -9044,6 +9044,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * « ⟳ Partie » loops the scene shown ([listensToSong]); without a song, the scene shown.
      */
     fun togglePlay() {
+        // A few lines a minute at most: what ▶ found, for a bug report saying « ▶ does nothing ».
+        AppLog.add(if (_transport.value.playing) "■ (arrêt)" else "▶ (moteur ${if (NativeEngine.isNative) "natif, pas ${NativeEngine.currentStep()}" else if (NativeEngine.isAvailable) "de test" else "absent"})")
         if (_transport.value.playing) toggleTransport(songStep = aloneSongStep()) else startPlaying(null)
     }
 

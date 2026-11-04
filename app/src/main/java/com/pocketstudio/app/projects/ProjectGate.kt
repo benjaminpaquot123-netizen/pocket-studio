@@ -53,8 +53,13 @@ class ProjectOpeningViewModel(app: Application) : AndroidViewModel(app) {
 
     init {
         viewModelScope.launch {
+            // The steps of an opening in the app's log (bug reports; the CI emulator once stalled here).
+            val started = android.os.SystemClock.elapsedRealtime()
+            AppLog.add("Ouverture du projet : début")
             opened = try {
-                ProjectOpening.prepare(app)
+                ProjectOpening.prepare(app).also {
+                    AppLog.add("Ouverture du projet : lu en ${android.os.SystemClock.elapsedRealtime() - started} ms")
+                }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {

@@ -37,4 +37,19 @@ class MainThreadIoTest {
         assertTrue("the save is seen: $seen; raw: ${MainThreadIo.lastRaw.take(12).joinToString("\n")}", seen.any { it.site == "ProjectStore.save" && it.kind == "disk" })
         assertTrue("only the app's: $seen", seen.all { it.site.startsWith("ProjectStore.") })
     }
+
+    @Test
+    fun theAppsCodeReachedThroughComposeIsTheAppsAndTheTestsStraightCallIsNot() {
+        val io = "java.io.FileOutputStream" to "write"
+        val save = "com.pocketstudio.model.ProjectStore" to "save"
+        val vm = "com.pocketstudio.app.rhythm.RhythmViewModel" to "rename"
+        val compose = "androidx.compose.foundation.ClickableNode" to "onClick"
+        val test = "com.pocketstudio.app.MainThreadIoTest" to "run"
+        assertTrue(MainThreadIo.classify(listOf(io, save, vm, compose, test), "disk")?.site == "ProjectStore.save")
+        assertTrue(MainThreadIo.classify(listOf(io, save, vm, test, compose), "disk") == null)
+        assertTrue(MainThreadIo.classify(listOf(io, "org.robolectric.res.Fs" to "read", save, compose), "disk") == null)
+        assertTrue(MainThreadIo.classify(listOf(io, "com.pocketstudio.model.Hit\$\$serializer" to "deserialize", save, compose), "disk")?.site == "ProjectStore.save")
+        // A stack cut before any test frame: the app's.
+        assertTrue(MainThreadIo.classify(listOf(io, save, vm), "disk")?.site == "ProjectStore.save")
+    }
 }

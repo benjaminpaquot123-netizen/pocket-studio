@@ -155,7 +155,11 @@ object MainThreadIo {
     private fun violation(e: Event): Violation? {
         if (e.thread != main) return null
         val kind = EVENTS[e.type] ?: return null
-        val frames = e.frames
+        return classify(e.frames, kind)
+    }
+
+    /** [frames] (type, method; the I/O first) judged: the app's violation, or null (not the app's). */
+    internal fun classify(frames: List<Pair<String, String>>, kind: String): Violation? {
         for ((i, f) in frames.withIndex()) {
             val type = f.first
             if (type == "java.lang.Class" || NOT_OURS.any { type.startsWith(it) }) return null

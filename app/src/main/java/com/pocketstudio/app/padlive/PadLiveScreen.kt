@@ -483,8 +483,10 @@ private fun PadLivePad(
         ) {
             Text(
                 modeWord(PadLive.modeOf(clip)) + if (clip.group > 0) " · ${clip.group}" else "",
-                style = MaterialTheme.typography.labelSmall, color = Neon.TextPrimary.copy(alpha = 0.7f), maxLines = 1,
-                modifier = Modifier.padding(top = 6.dp, end = 8.dp),
+                style = MaterialTheme.typography.labelSmall, color = Neon.TextPrimary, maxLines = 1,
+                modifier = Modifier.padding(top = 5.dp, end = 6.dp).clip(RoundedCornerShape(6.dp))
+                    .background(com.pocketstudio.ui.PadWordScrim).padding(horizontal = 5.dp, vertical = 1.dp)
+                    .testTag("padlive_word_$pad"),
             )
         }
         // A short pad (a small phone with « Plus » open): its name a little smaller, clear of the corner's word.
@@ -675,7 +677,7 @@ private fun MoreRow(ui: PadLiveUi, actions: PadLiveActions, party: () -> Unit) {
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             MoreButton(Icons.Filled.Tune, tr("Effets"), "padlive_effects", Modifier.weight(1f), actions.effects)
-            MoreButton(Icons.Filled.Celebration, tr("Fête"), "padlive_party_open", Modifier.weight(1f), party)
+            MoreButton(Icons.Filled.Celebration, tr("Gros pads"), "padlive_party_open", Modifier.weight(1f), party)
             MoreButton(Icons.Filled.IosShare, tr("Partager"), "padlive_share", Modifier.weight(1f), actions.share)
             com.pocketstudio.ui.HelpDot(
                 com.pocketstudio.app.help.ScreenHelp.PADLIVE_MORE, Modifier.align(Alignment.CenterVertically),

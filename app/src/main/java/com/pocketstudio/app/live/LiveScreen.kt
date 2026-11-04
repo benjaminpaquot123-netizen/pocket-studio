@@ -140,7 +140,8 @@ import com.pocketstudio.ui.liveGlow
 import com.pocketstudio.ui.padLight
 import com.pocketstudio.ui.trackColor
 import com.pocketstudio.ui.fadingEdges
-import com.pocketstudio.ui.fadingHorizontalScroll
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import com.pocketstudio.ui.fadingVerticalEdges
 
 /** The drums' colour: an indigo no instrument track can have (TrackColors), so the columns never look alike. */
@@ -745,6 +746,7 @@ internal fun RecordButton(take: TakeUi, record: () -> Unit) {
  * countdown, « REC 0:42 · mesure 21 », then « Morceau écrit » with Annuler and Écouter. Without
  * [showReady] (lying down, full screen) the line waits for ●: armed, it offers the same choice.
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun TakeBanner(ui: LiveScreenUi, actions: LiveActions, showReady: Boolean = true, openVersions: () -> Unit = {}) {
     val take = ui.take
@@ -796,12 +798,17 @@ internal fun TakeBanner(ui: LiveScreenUi, actions: LiveActions, showReady: Boole
             else -> {
                 // Ready or armed: where the take goes, while it can still change.
                 val armed = take is TakeUi.Armed
+                // Audit stage 5: the short « La prise : » takes only its width and the choices wrap to a
+                // second line rather than hide « Ajouter à la suite » behind a fade (cut at 400 dp in French).
                 Text(
                     if (armed) tr("Prêt : l'enregistrement part au prochain lancement.") else tr("La prise :"),
-                    Modifier.weight(1f, fill = false), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 2,
+                    if (armed) Modifier.weight(1f, fill = false) else Modifier, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 2,
                 )
                 if (parts > 0) {
-                    Row(Modifier.weight(1f, fill = false).fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    FlowRow(
+                        Modifier.weight(1f, fill = false).testTag("live_take_choices"),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
                         TakeChoice(tr("Nouvelle version"), !ui.takeAppend, "live_take_replace") { actions.setTakeAppend(false) }
                         TakeChoice(tr("Ajouter à la suite"), ui.takeAppend, "live_take_append") { actions.setTakeAppend(true) }
                         // The songs earlier takes put aside: one touch away (the song is never lost).

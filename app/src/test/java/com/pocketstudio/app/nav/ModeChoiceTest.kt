@@ -230,6 +230,22 @@ class ModeChoiceTest {
     }
 
     /**
+     * Audit stage 5 (designer: « a button that moves from one screen to the next »): in the Pro, the
+     * bar has the same lines on a tab with the part chip (Sons) and on one without (Structure, Mix):
+     * the folder, ↶, ● and ▶ stay where the thumb left them, at every width.
+     */
+    @Test
+    fun theProBarKeepsItsLinesFromTabToTab() {
+        for (w in 280..900 step 2) for (simple in listOf(true, false)) {
+            val chip = com.pocketstudio.app.ui.modeChipRoom(simple)
+            val withPart = topBarLayout(w.dp, true, modeChip = chip, sceneElsewhere = true)
+            val without = topBarLayout(w.dp, false, modeChip = chip, sceneElsewhere = true)
+            assertEquals("$w dp: same lines", withPart.projectName, without.projectName)
+            assertEquals("$w dp: the chip at the same place", withPart.modeInRow, without.modeInRow)
+        }
+    }
+
+    /**
      * In the app: a mode chosen for a new song that is not made after all (the assistant closed)
      * never sticks to the open project; the chip changes it, kept with the project.
      */

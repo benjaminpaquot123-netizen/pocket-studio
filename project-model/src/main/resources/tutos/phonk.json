@@ -142,7 +142,7 @@
         {
           "id": "bass_pump",
           "levels": "p",
-          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste 808 : elle se baisse à chaque kick, et le kick passe devant.",
+          "text": "À toi : dans Mix, mets l'effet « Pompe » sur la piste 808 : elle se baisse à chaque kick, et le kick passe devant.",
           "check": "insert:PUMP",
           "spot": "mixer.strip",
           "target": "bass",
@@ -341,7 +341,7 @@
         {
           "id": "hat_ott",
           "levels": "p",
-          "text": "À toi : au Mixeur, mets l'effet « OTT multibande » sur le pad « Charley » : il écrase et fait briller les charleys, comme dans les beats de drift.",
+          "text": "À toi : dans Mix, mets l'effet « OTT multibande » sur le pad « Charley » : il écrase et fait briller les charleys, comme dans les beats de drift.",
           "check": "insert:OTT",
           "spot": "mixer.strip",
           "target": "hat",
@@ -367,7 +367,7 @@
         {
           "id": "levels",
           "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
-          "textPro": "À toi : au Mixeur, baisse un peu « Accords » et « Mélodie » : la 808 et le kick devant, la cowbell juste derrière.",
+          "textPro": "À toi : dans Mix, baisse un peu « Accords » et « Mélodie » : la 808 et le kick devant, la cowbell juste derrière.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
           "target": "pad",

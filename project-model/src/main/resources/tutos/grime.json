@@ -324,7 +324,7 @@
         {
           "id": "delay",
           "levels": "p",
-          "text": "À toi : au Mixeur, sur la piste « Mélodie », monte « Envoi écho » : le lead chiptune rebondit.",
+          "text": "À toi : dans Mix, sur la piste « Mélodie », monte « Envoi écho » : le lead chiptune rebondit.",
           "check": "send:1",
           "spot": "mixer.strip",
           "target": "lead",
@@ -350,7 +350,7 @@
         {
           "id": "levels",
           "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
-          "textPro": "À toi : au Mixeur, baisse un peu « Accords » et « Mélodie » : la basse, le sub et le clap devant.",
+          "textPro": "À toi : dans Mix, baisse un peu « Accords » et « Mélodie » : la basse, le sub et le clap devant.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
           "target": "pad",

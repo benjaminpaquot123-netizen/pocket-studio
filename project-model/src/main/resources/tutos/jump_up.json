@@ -174,7 +174,7 @@
       "steps": [
         {
           "id": "bass_knobs",
-          "text": "À toi : sous le piano roll, touche « Régler le son de la piste », puis monte la « Coupure » et la « Résonance » d'au moins 15 chacune : la basse s'ouvre et grogne. Sa distorsion et son OTT (un compresseur qui fait ressortir le grain) sont déjà sur sa tranche, au Mixeur : l'effet « Growl », posé avec la piste.",
+          "text": "À toi : sous le piano roll, touche « Régler le son de la piste », puis monte la « Coupure » et la « Résonance » d'au moins 15 chacune : la basse s'ouvre et grogne. Sa distorsion et son OTT (un compresseur qui fait ressortir le grain) sont déjà sur sa tranche, dans Mix : l'effet « Growl », posé avec la piste.",
           "check": "changed:synth:bass:CUTOFF+RESONANCE",
           "spot": "sounds.track",
           "target": "bass",
@@ -190,7 +190,7 @@
         },
         {
           "id": "bass_pump",
-          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste Sub, puis sur la piste Basse : elles se baissent à chaque kick (sidechain). C'est surtout la Sub qui se bat avec le kick dans le grave.",
+          "text": "À toi : dans Mix, mets l'effet « Pompe » sur la piste Sub, puis sur la piste Basse : elles se baissent à chaque kick (sidechain). C'est surtout la Sub qui se bat avec le kick dans le grave.",
           "check": "insert:PUMP",
           "spot": "mixer.strip",
           "target": "sub,bass",
@@ -248,7 +248,7 @@
         {
           "id": "lead_ott",
           "levels": "p",
-          "text": "À toi : au Mixeur, mets l'effet « OTT multibande » sur la piste « Mélodie » : il fait ressortir le grain du hoover. On le met sur ces sons-là (la basse en a déjà un), pas sur le master : il y écraserait l'attaque du kick.",
+          "text": "À toi : dans Mix, mets l'effet « OTT multibande » sur la piste « Mélodie » : il fait ressortir le grain du hoover. On le met sur ces sons-là (la basse en a déjà un), pas sur le master : il y écraserait l'attaque du kick.",
           "check": "insert:OTT",
           "spot": "mixer.strip",
           "target": "lead",
@@ -471,7 +471,7 @@
         {
           "id": "reverb",
           "levels": "p",
-          "text": "À toi : au Mixeur, touche le nom de la piste « Accords », puis dans « Réverbe et écho », monte « Envoi réverbe ». Fais pareil sur la tranche du pad « Caisse ».",
+          "text": "À toi : dans Mix, touche le nom de la piste « Accords », puis dans « Réverbe et écho », monte « Envoi réverbe ». Fais pareil sur la tranche du pad « Caisse ».",
           "check": "send:0",
           "spot": "mixer.strip",
           "target": "pad",
@@ -480,7 +480,7 @@
         {
           "id": "delay",
           "levels": "p",
-          "text": "À toi : au Mixeur, touche le nom de la piste « Mélodie », puis monte « Envoi écho » : chaque note se répète en rythme.",
+          "text": "À toi : dans Mix, touche le nom de la piste « Mélodie », puis monte « Envoi écho » : chaque note se répète en rythme.",
           "check": "send:1",
           "spot": "mixer.strip",
           "target": "lead",
@@ -513,7 +513,7 @@
         {
           "id": "levels",
           "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
-          "textPro": "À toi : au Mixeur, baisse un peu le fader de la piste « Accords » et celui de la piste « Mélodie ».",
+          "textPro": "À toi : dans Mix, baisse un peu le fader de la piste « Accords » et celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
           "target": "pad",

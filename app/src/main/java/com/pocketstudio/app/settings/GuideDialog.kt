@@ -62,7 +62,7 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
             tr("En bas de l'écran, ou à gauche quand l'écran est couché :"),
             tr("Structure : les parties du morceau sur la ligne du temps ; deux touches sur un bloc l'ouvrent."),
             tr("Sons : la batterie, l'Acid 303, la voix et chaque piste d'instrument, en puces en haut."),
-            tr("Mix : la console (les volumes côte à côte), les effets, l'automation et l'export."),
+            tr("Mix : les volumes côte à côte, les effets, les courbes et l'export."),
             tr("Live : jouer les parties en direct, avec les pads et les effets."),
             tr("Plus : tes projets, l'aide, les réglages, le clavier MIDI."),
             tr("Le Mode simple (Réglages) n'en garde que quatre : Mon morceau, Rythme, Clavier, Envoyer."),

@@ -145,7 +145,7 @@
         {
           "id": "bass_pump",
           "levels": "p",
-          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste 808 : le kick passe devant à chaque coup.",
+          "text": "À toi : dans Mix, mets l'effet « Pompe » sur la piste 808 : le kick passe devant à chaque coup.",
           "check": "insert:PUMP",
           "spot": "mixer.strip",
           "target": "bass",
@@ -326,7 +326,7 @@
         {
           "id": "delay",
           "levels": "p",
-          "text": "À toi : au Mixeur, sur la piste « Mélodie », monte « Envoi écho ».",
+          "text": "À toi : dans Mix, sur la piste « Mélodie », monte « Envoi écho ».",
           "check": "send:1",
           "spot": "mixer.strip",
           "target": "lead",
@@ -343,7 +343,7 @@
         {
           "id": "levels",
           "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie » (les voix). Le nombre en « dB » dit le volume : plus bas, moins fort.",
-          "textPro": "À toi : au Mixeur, baisse un peu « Mélodie » : les kicks et la 808 devant, les voix juste derrière.",
+          "textPro": "À toi : dans Mix, baisse un peu « Mélodie » : les kicks et la 808 devant, les voix juste derrière.",
           "check": "changed:volumes:lead",
           "spot": "mixer.strip",
           "target": "lead",

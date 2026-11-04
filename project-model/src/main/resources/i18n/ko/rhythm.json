@@ -31,7 +31,7 @@
   "Base plus aiguë": "루트 높이기",
   "Base plus grave": "루트 낮추기",
   "Bibliothèque de sons": "사운드 라이브러리",
-  "Bouge tout seul (courbe d'automation) : %s. Garde le doigt dessus pour le reprendre.": "저절로 움직여요 (오토메이션 곡선): %s. 손가락을 대고 있으면 직접 조절해요.",
+  "Bouge tout seul (courbe) : %s. Garde le doigt dessus pour le reprendre.": "저절로 움직여요 (곡선): %s. 손가락을 대고 있으면 직접 조절해요.",
   "Caisse": "스네어",
   "Caisse 2": "스네어 2",
   "Calé au tempo : %d temps à %d BPM, sans changer la hauteur": "템포에 맞춤: %d박, %d BPM, 음높이 그대로",

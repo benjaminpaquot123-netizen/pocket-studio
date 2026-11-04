@@ -188,7 +188,7 @@
         {
           "id": "bass_sat",
           "levels": "p",
-          "text": "À toi : au Mixeur, mets l'effet « Saturation » sur la piste Basse : un peu de grain, et la 808 s'entend même sur un petit haut-parleur.",
+          "text": "À toi : dans Mix, mets l'effet « Saturation » sur la piste Basse : un peu de grain, et la 808 s'entend même sur un petit haut-parleur.",
           "check": "insert:SATURATION",
           "spot": "mixer.strip",
           "target": "bass",
@@ -435,7 +435,7 @@
         {
           "id": "reverb",
           "levels": "p",
-          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur la piste « Accords » seulement. Pas sur la caisse claire : le dembow doit rester net.",
+          "text": "À toi : dans Mix, monte « Envoi réverbe » sur la piste « Accords » seulement. Pas sur la caisse claire : le dembow doit rester net.",
           "check": "send:0",
           "spot": "mixer.strip",
           "target": "pad",
@@ -444,7 +444,7 @@
         {
           "id": "delay",
           "levels": "p",
-          "text": "À toi : au Mixeur, monte « Envoi écho » sur la piste « Mélodie » : le riff se répète en rythme, derrière.",
+          "text": "À toi : dans Mix, monte « Envoi écho » sur la piste « Mélodie » : le riff se répète en rythme, derrière.",
           "check": "send:1",
           "spot": "mixer.strip",
           "target": "lead",

@@ -24,7 +24,7 @@
   "Effets de scène": "씬 이펙트",
   "Garde le doigt sur un effet : il joue tant que tu appuies, puis tout revient. Filtre et Roulement : monte le doigt pour régler le son ou la vitesse des coups. Avec « Plus » : Montée (un souffle qui monte), Chute (la musique freine), Bégaie (le son se hache).": "이펙트에 손가락을 대고 있으면 누르는 동안만 걸리고, 떼면 원래대로 돌아와요. 필터와 롤: 손가락을 위로 밀어 소리나 연타 속도를 조절해요. “더보기”에서는 빌드업(올라가는 바람 소리), 드롭(음악이 느려짐), 스터터(소리가 잘게 끊김).",
   "Enregistre ce que tu joues sur les pads, en mesures entières, puis pose-le sur un pad libre ou dans une brique du Live. REC, en haut, enregistre toute ta perf pour en faire un morceau.": "패드로 연주한 걸 마디 단위로 녹음해서 빈 패드나 Live의 블록에 놓아요. 위쪽의 REC는 공연 전체를 녹음해 곡으로 만들어요.",
-  "Tout couper arrête tous les pads. Briques ouvre le Live complet (pistes, notes, Acid 303). Effets règle les effets des pads. Fête met les pads en grand pour jouer à plusieurs. Partager envoie ta perf.": "“모두 정지”는 모든 패드를 멈춰요. “블록”은 Live 전체(트랙, 노트, Acid 303)를 열어요. “이펙트”는 패드 이펙트를 조절해요. “파티”는 패드를 크게 보여 줘 여럿이 연주할 수 있어요. “공유”는 공연을 보내요.",
+  "Tout couper arrête tous les pads. Briques ouvre le Live complet (pistes, notes, Acid 303). Effets règle les effets des pads. Gros pads met les pads sur tout l'écran pour jouer à plusieurs. Partager envoie ta perf.": "“모두 정지”는 모든 패드를 멈춰요. “블록”은 Live 전체(트랙, 노트, Acid 303)를 열어요. “이펙트”는 패드 이펙트를 조절해요. “큰 패드”는 패드를 크게 보여 줘 여럿이 연주할 수 있어요. “공유”는 공연을 보내요.",
   "L'appli joue un petit rythme sur les pads « coup » de la page : écoute, puis refais-le. Tu gagnes jusqu'à 3 étoiles selon ta précision.": "앱이 페이지의 “원샷” 패드로 짧은 리듬을 연주해요. 듣고 나서 똑같이 쳐 보세요. 정확도에 따라 별을 최대 3개까지 받아요.",
   "Coup, boucle, tenir": "원샷, 루프, 홀드",
   "Coup : le son joue une fois à chaque toucher. Boucle : un toucher le lance en rythme, un autre l'arrête. Tenir : il joue tant que ton doigt reste sur le pad.": "원샷: 터치할 때마다 소리가 한 번 나요. 루프: 한 번 터치하면 박자에 맞춰 시작하고, 다시 터치하면 멈춰요. 홀드: 손가락이 패드에 있는 동안만 소리가 나요.",
@@ -59,5 +59,6 @@
   "Avec les envois, chaque piste garde sa réverbe et son écho. Sans, ils sont dans des fichiers à part : tu les règles toi-même dans l'autre logiciel.": "센드를 포함하면 트랙마다 리버브와 에코가 그대로 남아요. 빼면 따로 파일로 나와서 다른 프로그램에서 직접 조절해요.",
   "D'autres sons pour le même pad, selon la force du coup : les coups doux gardent le son du pad, les coups forts en jouent un autre. La batterie sonne plus vivante.": "치는 세기에 따라 같은 패드에서 다른 소리를 내요. 약하게 치면 패드 소리 그대로, 세게 치면 다른 소리가 나요. 드럼이 더 생생하게 들려요.",
   "%1$s LUFS au lieu de %2$s : plus fort, le son s'écraserait.": "%2$s 대신 %1$s LUFS: 더 키우면 소리가 뭉개져요.",
-  "Le master s'arrête avant d'écraser les coups : le morceau garde son punch, un peu moins fort que la cible.": "마스터는 타격음을 뭉개기 전에 멈춰요. 곡은 펀치를 지키고, 목표보다 조금 작아요."
+  "Le master s'arrête avant d'écraser les coups : le morceau garde son punch, un peu moins fort que la cible.": "마스터는 타격음을 뭉개기 전에 멈춰요. 곡은 펀치를 지키고, 목표보다 조금 작아요.",
+  "Gros pads": "큰 패드"
 }

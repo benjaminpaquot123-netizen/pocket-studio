@@ -119,7 +119,7 @@ class AcidLanesTest {
             }
         }
         compose.onNodeWithTag("acid_automated").performScrollTo()
-            .assert(hasText("Bouge tout seul (courbe d'automation) : Coupure. Garde le doigt dessus pour le reprendre."))
+            .assert(hasText("Bouge tout seul (courbe) : Coupure. Garde le doigt dessus pour le reprendre."))
         // A lane without a point moves nothing.
         assertTrue(Project().copy(automation = listOf(AutomationLane(AutoTarget.acid(1)))).automatedAcidKnobs.isEmpty())
     }

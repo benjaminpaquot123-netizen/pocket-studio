@@ -413,7 +413,7 @@ private fun SoundCard(
                 modifier = Modifier.testTag("acid_record"),
             )
             Text(
-                if (recording) tr("Lance la lecture et tourne un bouton : son mouvement s'enregistre (Mix › Automation).")
+                if (recording) tr("Lance la lecture et tourne un bouton : son mouvement s'enregistre (Mix › Courbes).")
                 else tr("Enregistre tes mouvements de bouton pendant la lecture."),
                 Modifier.weight(1f), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
             )
@@ -450,7 +450,7 @@ private fun AutomatedHint(automated: Set<Int>) {
     if (automated.isEmpty()) return
     val names = automated.sorted().mapNotNull { SOUND_LABELS.getOrNull(it) }.joinToString(", ")
     Text(
-        tr("Bouge tout seul (courbe d'automation) : %s. Garde le doigt dessus pour le reprendre.", names),
+        tr("Bouge tout seul (courbe) : %s. Garde le doigt dessus pour le reprendre.", names),
         style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("acid_automated"),
     )
 }

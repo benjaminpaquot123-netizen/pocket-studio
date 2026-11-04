@@ -168,7 +168,7 @@ fun PartyScreen(
     ) {
         Column(Modifier.fillMaxSize().padding(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                RoundButton(Icons.Filled.Close, tr("Quitter la fête"), "padlive_party_leave", Neon.SurfaceHigh, Neon.TextPrimary, leave)
+                RoundButton(Icons.Filled.Close, tr("Quitter les gros pads"), "padlive_party_leave", Neon.SurfaceHigh, Neon.TextPrimary, leave)
                 Spacer(Modifier.weight(1f))
                 PadLive.PAGE_NAMES.forEachIndexed { i, letter ->
                     val chosen = i == page

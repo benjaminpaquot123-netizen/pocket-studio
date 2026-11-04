@@ -24,3 +24,7 @@ Branche `fx-s5` (worktree `/home/user/fx-s5`, depuis fx-int après l'aide revue)
 - Parcours TalkBack et accès par contacteur complets, daltonismes simulés : pas faits sur appareil (pas d'émulateur ici) ; les tests Robolectric existants couvrent les cibles et les libellés.
 - Relecture « locuteur natif » : les 14 langues suivent le français mot pour mot ; une relecture humaine reste à faire (étage 7).
 - Tablette à dix doigts, clavier physique, souris, stylet : couverts par les tests existants (`TenFingersTest`, `KeyActionsGestureTest`), rien de nouveau.
+
+## 4. Vérification (2026-11-04)
+- Contrôle complet (`:project-model:test :app:testDebugUnitTest :app:verifyRoborazziDebug`) après fusion de fx-int : 7 005 tests, 11 échecs, tous des tests lents connus pour être instables sous charge (`TutoJourneyTest` ×3, `HumanRemixJourneyTest`, `Tuto*` emportés par un exécuteur tombé à court de mémoire, deux captures dont « Sauvegardé » apparaît ou non). Relancés seuls : tous verts.
+- Captures réenregistrées et regardées une à une : seuls les changements voulus (Volumes, Gros pads, voile du mot du pad, flèches de l'accueil, choix de la prise entiers, corrections en contour).

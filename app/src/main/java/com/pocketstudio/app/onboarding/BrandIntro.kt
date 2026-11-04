@@ -481,8 +481,11 @@ object IntroTimeline {
     const val HOLD_MS = 300f
     const val SLOW = 1.3f
 
-    /** Wall-clock ms after the intro's first frame at which timeline time [t] is drawn (started at [from]). */
-    fun wallMs(t: Float, from: Float = 0f): Float = HOLD_MS + (t - from).coerceAtLeast(0f) * SLOW
+    /**
+     * Wall-clock ms after the intro's start at which timeline time [t] is drawn (started at [from]).
+     * The hold only plays at the splash's hand-over ([from] > 0): from 0 nothing is on screen yet to hold.
+     */
+    fun wallMs(t: Float, from: Float = 0f): Float = (if (from > 0f) HOLD_MS else 0f) + (t - from).coerceAtLeast(0f) * SLOW
 
     /** The splash's longest time on screen: the intro takes over by then at the latest. */
     const val SPLASH_MS = 1000L
@@ -793,18 +796,18 @@ fun BrandIntro(onDone: () -> Unit, reducedMotion: Boolean = animationsOff(LocalC
         }
     } else {
         // Started again from where the splash handed over, when it says so after the first frame.
-        var held by remember { mutableStateOf(false) }
         LaunchedEffect(Intro.splashElapsedMs) {
             val from = max(clock.value, Intro.splashElapsedMs.toFloat().coerceAtMost(IntroTimeline.FADE_START))
             clock.snapTo(from)
-            // Still on the hand-over's frame while the app finishes loading underneath (once).
-            if (!held) {
-                held = true
-                delay(IntroTimeline.HOLD_MS.toLong())
-            }
-            // A touch during the hold already started the fade: it is not taken over.
+            // A touch already started the fade: it is not taken over.
             if (skipped) return@LaunchedEffect
-            clock.animateTo(IntroTimeline.TOTAL, tween(((IntroTimeline.TOTAL - from) * IntroTimeline.SLOW).toInt(), easing = LinearEasing))
+            // At the splash's hand-over, still on its frame while the app finishes loading underneath:
+            // the hold is the animation's own start delay (a coroutine delay stalls under test clocks).
+            val hold = if (from > 0f) IntroTimeline.HOLD_MS.toInt() else 0
+            clock.animateTo(
+                IntroTimeline.TOTAL,
+                tween(((IntroTimeline.TOTAL - from) * IntroTimeline.SLOW).toInt(), delayMillis = hold, easing = LinearEasing),
+            )
         }
         LaunchedEffect(Unit) {
             snapshotFlow { clock.value >= IntroTimeline.TOTAL }.first { it }

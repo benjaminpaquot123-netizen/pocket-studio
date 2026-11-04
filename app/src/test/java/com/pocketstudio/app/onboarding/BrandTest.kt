@@ -225,6 +225,23 @@ class BrandTest {
     }
 
     @Test
+    fun theHoldPlaysAtTheRealHandOver() {
+        // On a phone the intro first runs under the splash (0), then the splash says 1000 ms.
+        intro(reduced = false)
+        compose.mainClock.advanceTimeByFrame()
+        try {
+            Intro.splashElapsedMs = IntroTimeline.SPLASH_MS
+            compose.mainClock.advanceTimeByFrame()
+            compose.mainClock.advanceTimeBy(IntroTimeline.HOLD_MS.toLong() - 50)
+            assertFalse("a beat during the hold: $cues", cues.contains("beat0"))
+            compose.mainClock.advanceTimeBy(50 + ((IntroTimeline.beatStart(0) - IntroTimeline.SPLASH_MS) * IntroTimeline.SLOW).toLong() + 50)
+            assertTrue("no beat after the hold: $cues", cues.contains("beat0"))
+        } finally {
+            Intro.splashElapsedMs = 0L
+        }
+    }
+
+    @Test
     fun aTouchSkipsIt() {
         intro(reduced = false)
         compose.mainClock.advanceTimeBy(100)

@@ -18,6 +18,7 @@ Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues 
 - Messages pour lui : français, courts, sans jargon, écoutables en audio. Humour Kaamelott bienvenu dans les changelogs.
 - Interface en français. Code, commentaires et commits en anglais.
 - Rappels et tâches planifiées (nom et message) : toujours en français.
+- Une minuterie par audit, par lot et par étape (Benjamin, 2026-11-04) : tâche planifiée toutes les 2 h, nommée « <étape> (partie le <jour> à <heure de Paris>) », qui vérifie que l'équipe tourne, relance ce qui est tombé, se renomme à chaque relance et se désactive quand l'étape est finie. La créer au lancement de chaque étape.
 - Design : moderne mais pas trop, facile à prendre en main, façon FL Studio Mobile en plus clair. Règles dans `docs/DESIGN.md`. Benjamin a délégué les choix de design : décider sans lui demander, montrer les captures dans la PR.
 - Tout changement de design validé s'applique partout dans l'appli (raccord sur tous les écrans), pas seulement là où il a été demandé.
 - Captures envoyées à Benjamin (maquettes, captures de PR, APK) : sans la pastille flottante de retours « ● REC · Noter · ⋯ » (il ne s'en sert pas). Le bouton REC du Live, lui, reste.

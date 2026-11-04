@@ -225,6 +225,8 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
         assertTrue("$style $level: no target checked", seen.isNotEmpty())
         val hidden = seen.filter { it.second != null }
         assertTrue("$style $level: targets not seen: $hidden", hidden.isEmpty())
+        // Audit ultra §2, « Cible visible »: the dotted cells and the folded button, whole, above the panel.
+        assertTrue("$style $level$langTag: targets hidden: $unseen", unseen.isEmpty())
         // Only a step a former one already did may be ticked before it is reached.
         assertTrue("ticked before reached: $early", early.size <= 2)
         // Every step with something to show showed it, every example was played.
@@ -276,6 +278,7 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
                     await("the ring goes by itself") { !has("tuto_spot_ring") }
                     assertTrue("the dotted cells stay", has("tuto_hint"))
                 }
+                seen(s, "tuto_hint")
                 val (lane, cells) = TutoHints.cells!!
                 assertEquals(lane, h.vm.transport.value.selectedPad)
                 for (cell in cells.sorted()) {
@@ -411,10 +414,42 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
     private fun copy(s: TutoStep) {
         await("${s.id}: its copy button") { s.id in progress().done || h.vm.project.value.let { TutoChecks.need(s, it, target) } != null }
         if (s.id in progress().done) return
-        unfold()
-        await("${s.id}: the button") { has("tuto_need") }
-        click("tuto_need")
+        // Clara (2026-10-28, n° 2): the button was hidden in the folded panel; it is on the folded line itself now.
+        await("${s.id}: the button") { has("tuto_need") || has("tuto_need_folded") }
+        val tag = if (has("tuto_need_folded")) "tuto_need_folded" else "tuto_need"
+        seen(s, tag)
+        click(tag)
     }
+
+    /**
+     * Audit ultra §2, « Cible visible » (Clara's n° 2 and n° 5): what the step asks to touch now, whole
+     * inside the window and not under the tuto's panel, folded or not (its own buttons excepted), without
+     * the user scrolling: the step's dotted cells ([tag] « tuto_hint », each one), its folded button.
+     */
+    private fun seen(s: TutoStep, tag: String) {
+        idle(500)
+        compose.waitForIdle()
+        val window = compose.onAllNodes(androidx.compose.ui.test.isRoot(), useUnmergedTree = true).fetchSemanticsNodes().first().size
+        val panel = compose.onAllNodesWithTag("tuto_panel", useUnmergedTree = true).fetchSemanticsNodes().firstOrNull()
+        val panelTop = panel?.boundsInRoot?.top ?: window.height.toFloat()
+        val nodes = compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes()
+        if (nodes.isEmpty()) { unseen += "${s.id}: $tag absent"; return }
+        for (n in nodes) {
+            val whole = androidx.compose.ui.geometry.Rect(n.positionInRoot, androidx.compose.ui.geometry.Size(n.size.width.toFloat(), n.size.height.toFloat()))
+            val shown = n.boundsInRoot
+            val inPanel = panel != null && generateSequence(n.parent) { it.parent }.any { it.id == panel.id }
+            val why = when {
+                whole.left < -1f || whole.top < -1f || whole.right > window.width + 1f || whole.bottom > window.height + 1f -> "outside the window ($whole)"
+                shown.width * shown.height < 0.9f * whole.width * whole.height -> "partly scrolled away ($shown of $whole)"
+                !inPanel && whole.bottom > panelTop + 1f -> "under the tuto's panel ($whole, panel at $panelTop)"
+                else -> null
+            }
+            if (why != null) { unseen += "${s.id}: $tag $why"; return }
+        }
+    }
+
+    /** What « Cible visible » found hidden, by step. */
+    private val unseen = ArrayList<String>()
 
     private fun closeSheetIfAny() {
         compose.waitForIdle()

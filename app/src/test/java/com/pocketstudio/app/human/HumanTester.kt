@@ -411,6 +411,9 @@ abstract class HumanTester(private val seat: String) {
 
     private var padsHooked: RhythmViewModel? = null
 
+    /** Audit ultra tour 0 (seat a): the downloaded packs' FLAC sounds are read as on a phone ([BenchFlac]). */
+    private val flac by lazy { BenchFlac(app, com.pocketstudio.app.library.PackStore.dir(app)) }
+
     /** The bench's own tests: Pad Live's pads sound as on a seat. */
     internal var padsAsOnASeat = false
     private fun seatPads() = seatDir != null || padsAsOnASeat
@@ -845,6 +848,7 @@ abstract class HumanTester(private val seat: String) {
         val words = cmd.split(Regex("\\s+"))
         val kind = words[0].lowercase()
         playingBefore = lastVm?.transport?.value?.playing == true
+        flac.register()
         engineBefore(kind, words.getOrNull(1)?.replace(',', '.')?.toFloatOrNull() ?: -1f, words.getOrNull(2)?.replace(',', '.')?.toFloatOrNull() ?: -1f)
         val padsBefore = stemPads()
         try {
@@ -963,6 +967,7 @@ abstract class HumanTester(private val seat: String) {
         vm()
         picker()
         services()
+        flac.register()
         engineDone()
         padsAfterStop(playingBefore)
         playingBefore = lastVm?.transport?.value?.playing == true

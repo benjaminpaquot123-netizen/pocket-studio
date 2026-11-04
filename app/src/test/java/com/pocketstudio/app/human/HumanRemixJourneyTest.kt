@@ -149,7 +149,8 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         // The voice alone (S), then ▶.
         tap(reach("stem_solo_3"), "S of Voix")
         val playing = tap(reach("remix_play"), "Jouer")
-        assertTrue(playing, playing.contains("la musique du projet joue en boucle") && playing.contains("avec la voix seule de « Ma chanson préférée » (solo)"))
+        // Audit ultra tour 0: the Remix page's ▶ plays the song from its part, and the ear says so (not « en boucle »).
+        assertTrue(playing, playing.contains("le morceau joue (partie « A »)") && playing.contains("avec la voix seule de « Ma chanson préférée » (solo)"))
         assertNotNull("the button does not say Arrêter", centerOfText("Arrêter", substring = true))
 
         // Stopped (■), its first phrase onto a pad: from bar 3, two bars.
@@ -245,9 +246,10 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         tap(reach("remix_play"), "Arrêter")
         tap(centerOf("top_loop_part"), "Boucler (off)")
         val once = tap(reach("remix_play"), "Jouer")
-        assertTrue(once, once.contains("la musique du projet joue"))
+        // The song from its part (audit ultra tour 0: said as the song, not as a loop).
+        assertTrue(once, once.contains("le morceau joue (partie"))
         val left = tap(centerOf("tab_Mix"), "Mix")
-        assertTrue(left, left.contains("la musique du projet joue") && left.contains("la voix seule de « Ma chanson préférée »"))
+        assertTrue(left, (left.contains("le morceau joue") || left.contains("la musique du projet joue")) && left.contains("la voix seule de « Ma chanson préférée »"))
     }
 
     private fun rms(stereo: FloatArray, rate: Int, from: Double, to: Double): Double {

@@ -1331,7 +1331,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             val fromPack = sound.packFile?.first
             if (read == null && fromPack != null && replaced != null) {
                 AppLog.add("Assistant : son de pack illisible (${sound.name}), son intégré à la place")
-                replaced += sound.name + " · " + packName(fromPack)
+                // Audit ultra tour 0 (seat a): a part's sound is already named « Basse 1 · Roland Juno-106 »: the pack once.
+                replaced += sound.name.substringBefore(" · ") + " · " + packName(fromPack)
                 sound = StarterWizard.soundsFor(part, style, emptyList()).first()
                 if (sound.packFile == null && sound.kitVoice == null) return@mapValues sound
                 read = packPartSound(sound)

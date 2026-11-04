@@ -174,14 +174,14 @@ class HumanLucasBugsTest : HumanTester("lucas-bugs") {
     /**
      * c/19-40 (and Sarah, run3r/e/12-33): the « Drum & bass » pack downloaded, « Créer le morceau »
      * and « Créer tout de suite avec les choix conseillés » did nothing, an error hidden under the
-     * step. Its FLAC sounds are real ones (as the phone gets them) but Robolectric has no FLAC
-     * decoder: each of them is unreadable on the bench. The song is made all the same, those lines
-     * on the built-in sounds, and the new project says so in plain words.
+     * step. Its sounds are damaged here (since audit ultra tour 0 the bench reads a real FLAC as a
+     * phone does, [BenchFlac]): each of them is unreadable. The song is made all the same, those
+     * lines on the built-in sounds, and the new project says so in plain words.
      */
     @Test
     fun anUnreadablePackSoundGivesWayToTheBuiltInOne() {
-        val files = installDrumAndBassPack()
-        // On the bench, a pack's FLAC cannot be read (no decoder): what Lucas and Sarah hit.
+        val files = installDrumAndBassPack(damaged = true)
+        // A damaged pack sound cannot be read: what Lucas and Sarah hit (on the bench of then, every FLAC).
         assertTrue(runCatching { AudioDecoder.decode(app, Uri.fromFile(File(File(PackStore.dir(app), "dnb"), files.first()))) }.isFailure)
         begin()
         wizardOnJumpUp()
@@ -196,6 +196,8 @@ class HumanLucasBugsTest : HumanTester("lucas-bugs") {
         val said = centerOfText("n'a pas pu être lu", substring = true) ?: centerOfText("n'ont pas pu être lus", substring = true)
         assertNotNull("nothing said about the pack", said)
         assertNotNull(centerOfText("Drum & bass", substring = true))
+        // Audit ultra tour 0 (seat a: « Roland TR-909, Roland Juno-106 · Roland Juno-106 »): each pack named once.
+        assertNull(centerOfText("Drum & bass · Drum & bass", substring = true))
         tap(centerOfText("Compris"), "Compris")
         assertNull(centerOfText("n'ont pas pu être lus", substring = true))
     }
@@ -203,21 +205,60 @@ class HumanLucasBugsTest : HumanTester("lucas-bugs") {
     /** The notes of the project's instrument tracks (the first one's and the added ones'). */
     private fun notes(): Int = project()!!.let { p -> p.synthNotes.notes.size + p.tracks.sumOf { it.notes.notes.size } }
 
-    /** A « Drum & bass » pack (id dnb) as downloaded: its pack.json and real FLAC files. */
-    private fun installDrumAndBassPack(): List<String> {
-        val dir = File(PackStore.dir(app), "dnb").apply { deleteRecursively(); mkdirs() }
+    /**
+     * Audit ultra tour 0 (seat a: « Des sons du pack… n'ont pas pu être lus » after a download): a pack's real FLAC
+     * sounds are read on the bench as on a phone, and the song is made with them.
+     */
+    @Test
+    fun aDownloadedPacksSoundsAreRead() {
+        installDrumAndBassPack()
+        begin()
+        wizardOnJumpUp()
+        tap(centerOf("wizard_next"), "Suivant")
+        tap(centerOf("wizard_create_now"), "Créer tout de suite avec les choix conseillés")
+        act("attends 3")
+        assertNull("still in the assistant", centerOf("wizard"))
+        assertNull(screenLines().joinToString("\n"), centerOfText("pas pu être lu", substring = true))
+        assertEquals("Jump up DnB", project()!!.name)
+    }
+
+    /**
+     * Audit ultra tour 0 (seat a: « Des sons du pack « Roland TR-909, Roland Juno-106 · Roland Juno-106 » n'ont pas pu
+     * être lus »): a part's pack sound is named « Basse 1 · Roland Juno-106 », and the pack was added again. Boom bap
+     * takes its bass from its own pack: each pack is named once.
+     */
+    @Test
+    fun aPackIsNamedOnceWhenItsSoundsCannotBeRead() {
+        installDrumAndBassPack(damaged = true, id = "boom_bap", name = "Boom bap", family = "Hip-hop")
+        begin()
+        tap(centerOfText("Créer mon premier morceau", substring = true), "the big orange button")
+        tap(centerOf("mode_card_simple"), "Simple")
+        tap(reach("wizard_family_Hip-hop"), "Hip-hop")
+        tap(reach("wizard_style_boom_bap"), "the Boom bap card")
+        tap(reach("wizard_style_choose_boom_bap"), "Choisir ce style")
+        tap(reach("wizard_create_now"), "Créer tout de suite avec les choix conseillés")
+        act("attends 3")
+        val said = screenLines().joinToString("\n")
+        assertTrue(said, "pas pu être lu" in said && "Bass 1" in said)
+        assertTrue(said, "Boom bap · Boom bap" !in said)
+    }
+
+    /** A « Drum & bass » pack (id dnb) as downloaded: its pack.json and real FLAC files ([damaged]: no FLAC any more). */
+    private fun installDrumAndBassPack(damaged: Boolean = false, id: String = "dnb", name: String = "Drum & bass", family: String = "Bass music"): List<String> {
+        val dir = File(PackStore.dir(app), id).apply { deleteRecursively(); mkdirs() }
         val kinds = listOf("kick", "snare", "clap", "hat", "perc", "bass")
         val files = kinds.flatMap { k -> (1..2).map { i -> "$k-$i.flac" } }
         val wav = File(app.cacheDir, "pack-src.wav")
         FloatWav.write(wav, Pcm(FloatArray(2 * 4800) { k -> 0.4f * kotlin.math.sin(k * 0.05f) * (1f - k / 9600f) }, 2, 48_000))
         files.forEach { FlacEncoder.encode(wav, File(dir, it)) }
+        if (damaged) files.forEach { f -> java.io.RandomAccessFile(File(dir, f), "rw").use { it.write("XXXX".toByteArray()) } }
         val sounds = files.joinToString(",") { f ->
             val kind = f.substringBefore('-')
             val name = kind.replaceFirstChar { it.uppercase() } + " " + f.substringAfter('-').substringBefore('.')
             """{"file":"$f","kind":"$kind","name":"$name"}"""
         }
-        File(dir, "pack.json").writeText("""{"id":"dnb","name":"Drum & bass","family":"Bass music","bpm":174.0,"sounds":[$sounds],"version":1}""")
-        assertEquals(listOf("dnb"), PackStore.installed(app).map { it.id })
+        File(dir, "pack.json").writeText("""{"id":"$id","name":"$name","family":"$family","bpm":174.0,"sounds":[$sounds],"version":1}""")
+        assertEquals(listOf(id), PackStore.installed(app).map { it.id })
         return files
     }
 }

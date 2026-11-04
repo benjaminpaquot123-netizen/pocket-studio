@@ -107,6 +107,14 @@ bool machineOverloaded() {
     return avg[0] > static_cast<double>(std::max(1u, std::thread::hardware_concurrency()));
 }
 
+// Under AddressSanitizer every memory access is checked (several times slower): CPU budgets mean
+// nothing there, they are proven by the normal build.
+#if defined(__SANITIZE_ADDRESS__)
+#define CHECK_TIMING(cond)                                                                        \
+    do {                                                                                          \
+        if (!(cond)) std::printf("  timing missed under AddressSanitizer (not counted): %s\n", #cond); \
+    } while (0)
+#else
 #define CHECK_TIMING(cond)                                                                        \
     do {                                                                                          \
         if (!(cond)) {                                                                            \
@@ -117,6 +125,7 @@ bool machineOverloaded() {
             }                                                                                     \
         }                                                                                         \
     } while (0)
+#endif
 
 constexpr int kRate = 48000;
 constexpr int kChannels = 2;

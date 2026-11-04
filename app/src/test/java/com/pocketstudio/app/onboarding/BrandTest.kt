@@ -130,30 +130,33 @@ class BrandTest {
         // The app is there from the first frame, under the intro: nothing waits for it.
         assertTrue(shown("app_under"))
         assertTrue(shown("intro"))
-        // Key frames: the pads popping in, the two heartbeats (shock wave, ring, sparks), the
-        // light over the pads as the mark rises, the light over the name, the fade.
+        // Key frames: the pads popping in, the two heartbeats (the first strikes the ring, the
+        // second plucks it), the light over the pads on the taut ring, the light over the name, the fade.
         to(130)
         shot("intro_0_pop")
-        to(1150)  // the first beat at its height
+        to(1150)  // the first beat at its height: the pads sink and flash, their shadow stretches, the ring is struck
         shot("intro_1_beat")
-        to(1400)  // the second, softer, the sparks of the first still out
+        to(1380)  // the second, softer: one ring, plucked
         shot("intro_2_beat")
-        to(1800)  // the light runs over the pads, the mark rises
+        to(1800)  // the light runs over the pads (64 % across), the ring taut, the shadows back
         shot("intro_3_rise")
-        to(2750)  // « BenStudio » under the mark, a light over it
+        to(2900)  // « BenStudio » set down under the risen mark, the light over its middle, the line at 76 %
         assertTrue(shown("intro"))
         compose.onNodeWithTag("intro_name", useUnmergedTree = true).assertTextContains("BenStudio")
         shot("intro_4_name")
         assertEquals(0, ended)
-        to(4600)  // fading
+        to(4850)  // going into the app (half faded, zooming)
         assertTrue(shown("intro"))
         assertEquals(0, ended)
-        // 4.7 s of timeline in all, after the hold and 30 % slower.
+        // 5 s of timeline in all, after the hold and 30 % slower.
         to(IntroTimeline.TOTAL.toLong() + 100)
         compose.waitForIdle()
         assertFalse(shown("intro"))
         assertEquals(1, ended)
         assertTrue(shown("app_under"))
+        // Benjamin (2026-11-04): 6 to 7 s from the tap on the icon (the splash's second, then the hold and the rest slowed down).
+        val fromIcon = IntroTimeline.SPLASH_MS + IntroTimeline.wallMs(IntroTimeline.TOTAL, from = IntroTimeline.SPLASH_MS.toFloat())
+        assertTrue("$fromIcon ms", fromIcon in 6000f..7000f)
     }
 
     /**

@@ -7,9 +7,7 @@
 
 ## Prochaine étape exacte
 
-**Arrêt demandé par Benjamin (2026-11-03, en fin de journée)** : A1 à A3, B (Pad Live complet), C (Remix découpe), D 1re partie (sans moteur) et E (Master pro) faits et rangés dans fx-int. Reprise au prochain « continue » : finir D avec la case Remix du Live (atelier /home/user/fx-rc, branche fx-rc, lot arrêté en cours : relire `git log fx-int..fx-rc` et `docs/lots/D2.md` s'il existe, sinon repartir de la consigne D2), puis grande vérification et `:app:assembleRelease` (arrêtées en cours), puis E2, F, G selon PLAN-REPRISE.
-
-**« continue » = la première case non cochée de « L'ordre » dans `docs/PLAN-REPRISE.md` (la seule liste à cocher), avec la méthode de CLAUDE.md « Méthode de travail ». État : lot fin-8 fait sur fx-fin (7d synthés, n° 18 à 23), pas encore rangé (5 tests rouges). Dernière APK envoyée : 234 (faite en local ; la CI n'en est qu'à 223) ; dès l'étape G, APK et AAB par la CI seule, numéro de la CI + 100.**
+**Audit ultra en cours (2026-11-04).** Tour 0 joué (3 éclaireurs, sièges dans scratchpad/ultra/tour-0, compte rendu `docs/audits/ultra/tour-0.md`). Benjamin : « J'ai déjà une APK utilisable, commence l'audit ultra dès que tout est prêt » : **pas d'APK à faire** avant sa demande. Reprise : attendre la fin des trois équipes dans fx-int (corrections du tour 0 + banc ; lot Benjamin : appui long pad → Changer le son, Supprimer la piste en Simple, chasse aux « impossible à supprimer » ; audit esthétique de la découpe « Un bout »), tests ciblés, push sur ccr-80af1a1b-mn0wec, CI ; puis **tour 1** (8 sièges neufs en 2 lots de 4, profils et missions de AUDIT-ULTRA §3.2-3.3, jamais deux fois le même profil, 2 sièges non francophones, `fresh=reel` ×2, `lit=non` ×2), fusion, équipes de correction, relecture neuve, une suite complète, étiquette `ultra-1`. En file : règle « boutons trop proches » (LayoutScan) et données pire cas ; boîte noire automatique des testeurs humains (avant le bug bash) ; « le programme voyage tout seul » : à voir plus tard (Benjamin).
 
 ## Historique de la reprise (listes closes, ne pas suivre)
 

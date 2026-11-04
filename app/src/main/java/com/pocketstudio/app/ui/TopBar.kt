@@ -247,7 +247,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             if (ui.recordInto != null) {
                 Text(tr("REC dans %s", ui.recordInto), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp), color = Neon.RedText, maxLines = 1, modifier = Modifier.testTag("top_record_into"))
             } else if (ui.saved) {
-                Icon(Icons.Filled.Check, contentDescription = tr("Sauvegardé"), tint = Neon.Acid, modifier = Modifier.size(12.dp).testTag("top_saved"))
+                Icon(Icons.Filled.Check, contentDescription = tr("Sauvegardé"), tint = Neon.Acid, modifier = Modifier.size(16.dp).testTag("top_saved"))
             }
             if (ui.mode != null && !layout.modeInRow) ModeChip(ui.mode, actions.mode)
         }
@@ -289,11 +289,12 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                 } else if (ui.saved) {
                     // Nothing to save by hand: said where the project is named, quietly.
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("top_saved")) {
-                        Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(12.dp))
+                        Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(16.dp))
+                    // Audit ultra round 1, n° 26 (seat B b: « une minuscule coche »): the tick and its word larger, in the accent.
                         // Too narrow for the word (a small phone): the tick alone, never "E…".
                         var cut by remember { mutableStateOf(false) }
                         Text(
-                            tr("Sauvegardé"), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp), color = Neon.TextSecondary,
+                            tr("Sauvegardé"), style = MaterialTheme.typography.labelMedium.copy(letterSpacing = 0.sp, fontWeight = FontWeight.Bold), color = Neon.Acid,
                             maxLines = 1, softWrap = false, overflow = TextOverflow.Clip, onTextLayout = { cut = it.hasVisualOverflow },
                             modifier = Modifier.padding(start = 2.dp).graphicsLayer { alpha = if (cut) 0f else 1f },
                         )

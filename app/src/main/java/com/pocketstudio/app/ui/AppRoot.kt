@@ -1274,9 +1274,9 @@ fun AppRoot() {
         }
     }
     val navEntries: List<NavEntry> = if (simple) {
-        SimpleTab.entries.map { st -> NavEntry("simple_${st.name}", st.label, st.hint, st.icon, selected = SimpleTab.of(tab) == st) { go(st.tab) } }
+        SimpleTab.entries.map { st -> NavEntry("simple_${st.name}", st.label, st.hint, st.icon, selected = SimpleTab.of(tab) == st) { guideOpen = false; go(st.tab) } }
     } else {
-        Space.entries.map { sp -> NavEntry(sp.name, sp.label, sp.hint, sp.icon, selected = tab.space == sp && tab != AppTab.Envoyer) { goSpace(sp) } }
+        Space.entries.map { sp -> NavEntry(sp.name, sp.label, sp.hint, sp.icon, selected = tab.space == sp && tab != AppTab.Envoyer) { guideOpen = false; goSpace(sp) } }
     }
     androidx.activity.compose.BackHandler(enabled = showLive) { closeLive() }
     // The live pads on the whole screen (from Morceau or the Live page), above everything. Leaving
@@ -1297,6 +1297,8 @@ fun AppRoot() {
         val home = projectsVm.state.value.projects.firstOrNull { it.padLive && !it.unreadable }
         when {
             home == null -> projectsVm.create(com.pocketstudio.model.PadLive.newProject()) { id -> openProject(id) }
+    // Audit ultra round 1, n° 25 (seats B b, C c): a tab touched by hand folds the Guide's panel (it stayed over
+    // half of « Envoyer », over « Enregistrer » of Ma voix); its bar stays, one touch from it.
             noProject || home.id != rhythmVm.projectId -> openProject(home.id)
         }
     }
@@ -2101,6 +2103,27 @@ fun AppRoot() {
             // On the Audio tracks screen (or during a take) the ● is the microphone's.
             val micMode = (tab == AppTab.Audio && audioPage == 0) || topTake != null
             TopBar(
+    // Mode simple: « Envoyer » is a tab; the rest of the app in « ⋯ » (the top bar's, and the thumb's bar's, n° 21).
+    val simpleMore: List<TopMenuItem>? = if (!simple) null else listOf(
+        TopMenuItem(tr("Live : jouer en direct"), "more_live", openLive),
+        // Audit final (03 G4): the voice has its own way in the Mode simple.
+        TopMenuItem(tr("Enregistrer ma voix"), "more_voice", openVoice),
+        // Audit stage 2 (NavigationMapTest): the sound library in 3 touches from home on a small phone
+        // (Rythme's button is below the fold there: a scroll made it 4).
+        TopMenuItem(tr("Bibliothèque de sons"), "more_library") {
+            libraryLive = -1; libraryMine = false; libraryCell = null; libraryTrack = false; showLibrary = true
+        },
+        // Owner (2026-10-29): « Remix », its name everywhere else.
+        TopMenuItem(tr("Remix"), "more_remix", openRemix),
+        // Audit final (05): the long press on the name was the only way to rename the song.
+        TopMenuItem(tr("Renommer le morceau"), "more_rename") { renamingProject = true },
+        TopMenuItem(tr("Accueil"), "more_home", goHome),
+        TopMenuItem(tr("Mes projets"), "more_projects") { showProjects = true },
+        TopMenuItem(tr("Réglages"), "more_settings") { toolPage = ToolPage.Reglages; go(AppTab.Outils) },
+        TopMenuItem(tr("Aide et premiers pas"), "more_help") { toolPage = ToolPage.Aide; go(AppTab.Outils) },
+        TopMenuItem(tr("Passer en mode Pro"), "more_full") { SettingsStore.update(context) { it.copy(simpleMode = false) } },
+        TopMenuItem(tr("Signaler un bug"), "more_bug") { reportBug("menu ⋯") },
+    )
                 TopBarUi(
                     com.pocketstudio.model.DefaultNames.shown(topProject.name), topTransport.playing, topUndo && undoable, topRedo && undoable, topRecording || topTake != null,
                     micTake = micMode,
@@ -2109,7 +2132,8 @@ fun AppRoot() {
                     // header picks the part), no redo (↶ stays).
                     // Lying down the editors' header gives its line to the editor: the chip stays there.
                     scene = if ((!simple || landscape) && (tab in SCENE_TABS || (tab == AppTab.Audio && audioPage == 0))) sceneChip(topProject) else null,
-                    redo = !simple,
+                    // Audit ultra round 1 (n° 26): the Mode simple too, once ↶ was used (« Rétablir » was nowhere).
+                    redo = !simple || (topRedo && undoable),
                     mode = simple,
                     saved = saveError == null && !topUnsaved,
                     recordInto = topRecordInto?.let { topProject.sceneTitle(it) },
@@ -2143,26 +2167,7 @@ fun AppRoot() {
                     share = shareSong,
                     mode = { modeSwitchOpen = true },
                     // Mode simple: « Envoyer » is a tab; the rest of the app in « ⋯ ».
-                    more = if (!simple) null else listOf(
-                        TopMenuItem(tr("Live : jouer en direct"), "more_live", openLive),
-                        // Audit final (03 G4): the voice has its own way in the Mode simple.
-                        TopMenuItem(tr("Enregistrer ma voix"), "more_voice", openVoice),
-                        // Audit stage 2 (NavigationMapTest): the sound library in 3 touches from home on a small phone
-                        // (Rythme's button is below the fold there: a scroll made it 4).
-                        TopMenuItem(tr("Bibliothèque de sons"), "more_library") {
-                            libraryLive = -1; libraryMine = false; libraryCell = null; libraryTrack = false; showLibrary = true
-                        },
-                        // Owner (2026-10-29): « Remix », its name everywhere else.
-                        TopMenuItem(tr("Remix"), "more_remix", openRemix),
-                        // Audit final (05): the long press on the name was the only way to rename the song.
-                        TopMenuItem(tr("Renommer le morceau"), "more_rename") { renamingProject = true },
-                        TopMenuItem(tr("Accueil"), "more_home", goHome),
-                        TopMenuItem(tr("Mes projets"), "more_projects") { showProjects = true },
-                        TopMenuItem(tr("Réglages"), "more_settings") { toolPage = ToolPage.Reglages; go(AppTab.Outils) },
-                        TopMenuItem(tr("Aide et premiers pas"), "more_help") { toolPage = ToolPage.Aide; go(AppTab.Outils) },
-                        TopMenuItem(tr("Passer en mode Pro"), "more_full") { SettingsStore.update(context) { it.copy(simpleMode = false) } },
-                        TopMenuItem(tr("Signaler un bug"), "more_bug") { reportBug("menu ⋯") },
-                    ),
+                    more = simpleMore,
                 ),
             )
             // The rename bar (a long press on the name), the tempo, where the song is and « ⟳ Partie », the solo banner; the tempo sheet.
@@ -2366,6 +2371,34 @@ fun AppRoot() {
         if (showLive) {
             Row(Modifier.padding(padding).fillMaxSize()) {
             if (landscape && !liveImmersive) SpaceRail(navEntries)
+                // Audit ultra round 1 (n° 21): ▶, ↶, ↷, the tempo and Partager / « ⋯ » at the thumb, above the tabs (the top
+                // bar keeps them); upright only (lying down the phone is held with two hands) and on a screen tall enough.
+                if (!landscape && !liveImmersive && !showTimeline && !showLivePads && !showLive && LocalConfiguration.current.screenHeightDp >= THUMB_BAR_MIN_HEIGHT_DP) {
+                    val thumbProject by rhythmVm.project.collectAsStateWithLifecycle()
+                    val thumbTransport by rhythmVm.transport.collectAsStateWithLifecycle()
+                    val thumbUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
+                    val thumbRedo by rhythmVm.session.canRedo.collectAsStateWithLifecycle()
+                    val thumbRecording by rhythmVm.recording.collectAsStateWithLifecycle()
+                    val thumbTake by rhythmVm.audioRecording.collectAsStateWithLifecycle()
+                    val thumbSaving by rhythmVm.takeSaving.collectAsStateWithLifecycle()
+                    val thumbPerformance by rhythmVm.take.collectAsStateWithLifecycle()
+                    // As the top bar's: no undo during a take (or while it is written).
+                    val thumbUndoable = !thumbRecording && thumbTake == null && !thumbSaving && !thumbPerformance.running
+                    ThumbBar(
+                        ThumbBarUi(
+                            playing = thumbTransport.playing, canUndo = thumbUndo && thumbUndoable, canRedo = thumbRedo && thumbUndoable,
+                            tempoBpm = thumbProject.tempoBpm.roundToInt(), redoAlways = !simple,
+                        ),
+                        ThumbBarActions(
+                            undo = { com.pocketstudio.app.report.Journal.action("↶ Annuler"); rhythmVm.undo() },
+                            redo = { com.pocketstudio.app.report.Journal.action("↷ Rétablir"); rhythmVm.redo() },
+                            togglePlay = rhythmVm::togglePlay,
+                            tempo = { tempoSheetOpen = true },
+                            more = simpleMore,
+                            share = shareSong,
+                        ),
+                    )
+                }
             Box(Modifier.weight(1f).fillMaxHeight()) {
                 LiveRoute(
                     rhythmVm, lifecycleOwner, close = closeLive, onTab = { liveTab = it.name },
@@ -2548,6 +2581,7 @@ fun AppRoot() {
                                         is SampleTask.Busy -> t.message
                                         is SampleTask.Failed -> t.message
                                         else -> if (liveStarting) tr("Préparation des pads prêts à jouer…") else null
+                                    newPart = rhythmVm::newSongPart,
                                     },
                                 ),
                                 liveActions = LivePadsActions(
@@ -4178,7 +4212,10 @@ private fun WithPartHeader(vm: RhythmViewModel, simple: Boolean, content: @Compo
     Column(Modifier.fillMaxSize()) {
         // Audit final (20 M16): the Mode simple's top bar has no part chip; the part is chosen here.
         if (!lying || header.note != null) {
-            if (simple && !lying) PartHeader(header, parts = project.allScenes.indices.map { project.sceneTitle(it) }, current = project.scene, pick = vm::selectScene)
+            if (simple && !lying) PartHeader(
+                header, parts = project.allScenes.indices.map { project.sceneTitle(it) }, current = project.scene, pick = vm::selectScene,
+                newPart = { vm.newSongPart(copy = true) },
+            )
             else PartHeader(header)
         }
         content(Modifier.weight(1f))
@@ -4475,6 +4512,9 @@ private fun ControllerOverlays(
     var legendOpen by rememberSaveable { mutableStateOf(false) }
     // The small legend: while a controller is connected, outside its own settings page.
     if (controller != null && knobSettings.legend && !onMidiPage) {
+
+/** Below this screen height (dp) the thumb's bar gives its room to the screen (the top bar has the same actions). */
+private const val THUMB_BAR_MIN_HEIGHT_DP = 600
         val project by rhythmVm.project.collectAsStateWithLifecycle()
         val rows = remember(controllerScreen, project, knobSettings, controller) { knobsVm.legend(controllerScreen) }
         com.pocketstudio.app.midi.ControllerLegendOverlay(

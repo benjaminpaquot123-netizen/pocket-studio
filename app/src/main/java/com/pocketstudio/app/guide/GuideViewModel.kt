@@ -148,6 +148,11 @@ class GuideViewModel(
     private val canMeasure: () -> Boolean = { true },
     /** The song is playing: no measure starts by itself then (G5 review). */
     private val playing: () -> Boolean = { false },
+    /**
+     * Audit ultra round 1, n° 25 (seat B b: the big button seemed to do nothing, the next card looks alike): what a
+     * choice did, said a moment with « Annuler » beside it (the app's « Fait : … »), never a line more in the panel.
+     */
+    private val said: (String) -> Unit = {},
 ) {
     private val _ui = MutableStateFlow(GuideUi())
     val ui: StateFlow<GuideUi> = _ui.asStateFlow()
@@ -245,11 +250,11 @@ class GuideViewModel(
                     if (!measureNow()) return@launch
                 }
                 // The faders moved: the song's loudness, its sections and mono are measured again, as any measure.
-                edit(cardId, "apply:$optionId", after = { measure() }) { GuideActions.tryApply(it, cardId, optionId, clock()) }
+                edit(cardId, "apply:$optionId", after = { measure() }, done = tr("C'est fait : %s.", option.labelFor(report?.simple ?: false))) { GuideActions.tryApply(it, cardId, optionId, clock()) }
             }
             return
         }
-        edit(cardId, "apply:$optionId") { GuideActions.tryApply(it, cardId, optionId, clock()) }
+        edit(cardId, "apply:$optionId", done = tr("C'est fait : %s.", option.labelFor(report?.simple ?: false))) { GuideActions.tryApply(it, cardId, optionId, clock()) }
     }
 
     /** The song's measures are those of the song as it is. */
@@ -307,10 +312,11 @@ class GuideViewModel(
         private set
 
     /** « Sauter »; [forever]: refused, never offered again. */
-    fun skip(cardId: String, forever: Boolean = false) = edit(cardId, if (forever) "refuse" else "skip") { GuideOutcome(GuideActions.skip(it, cardId, clock(), forever)) }
+    fun skip(cardId: String, forever: Boolean = false) = edit(cardId, if (forever) "refuse" else "skip",
+        done = if (forever) tr("Le Guide ne le proposera plus.") else tr("Sauté : le Guide passe à la suite.")) { GuideOutcome(GuideActions.skip(it, cardId, clock(), forever)) }
 
     /** « Plus tard ». */
-    fun later(cardId: String) = edit(cardId, "later") { GuideOutcome(GuideActions.later(it, cardId, clock())) }
+    fun later(cardId: String) = edit(cardId, "later", done = tr("Mis de côté : tu y reviendras plus tard.")) { GuideOutcome(GuideActions.later(it, cardId, clock())) }
 
     /** One option of a card refused (the others stay). */
     fun refuseOption(cardId: String, optionId: String) = edit(cardId, "refuse:$optionId") { GuideOutcome(GuideActions.refuseOption(it, cardId, optionId, clock())) }
@@ -370,7 +376,7 @@ class GuideViewModel(
      * session's thread as one undo step: again on the project as it is when it changed meanwhile. A
      * problem it gives is said ([notices]); [onEdited] gets the project from before the step.
      */
-    private fun edit(cardId: String, what: String, after: (suspend () -> Unit)? = null, transform: (Project) -> GuideOutcome) {
+    private fun edit(cardId: String, what: String, after: (suspend () -> Unit)? = null, done: String? = null, transform: (Project) -> GuideOutcome) {
         scope.launch {
             val before = session.project.value
             val worked = withContext(worker) { transform(before) }
@@ -380,6 +386,7 @@ class GuideViewModel(
             if (out.project == now) return@launch
             session.edit(tag = GuideEdit(cardId, what)) { cur -> if (cur === now) out.project else cur }
             if (session.project.value !== now) onEdited(now)
+            done?.let(said)
             edits++
             after?.invoke()
         }

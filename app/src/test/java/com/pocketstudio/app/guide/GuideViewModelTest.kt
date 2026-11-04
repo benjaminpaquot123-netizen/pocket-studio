@@ -173,6 +173,9 @@ class GuideViewModelTest {
         val job = kotlinx.coroutines.MainScope().launch(kotlinx.coroutines.Dispatchers.Main.immediate) { guide.notices.collect { notices += it } }
         guide.apply("fx.sub", "light")
         await("applied") { vm.project.value.guide.history.isNotEmpty() }
+        // Audit ultra round 1, n° 25: the choice itself is said apart (« Fait : … » with « Annuler »), not as a notice.
+        assertTrue(notices.toString(), notices.isEmpty())
+        assertTrue(vm.done.value.orEmpty(), vm.done.value?.startsWith("C'est fait") == true)
         // The same effect changed by hand since.
         val ch = InstrumentTrack.mixerChannel(vm.project.value.instrumentTracks.first { it.name == "Sub" }.id)
         vm.session.edit { p -> p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.mapIndexed { i, c ->

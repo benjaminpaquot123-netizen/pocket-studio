@@ -183,7 +183,7 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
             )
             Choice(
                 Icons.Filled.Add, tr("Partir de zéro"),
-                tr("Un projet vide : à toi de jouer."),
+                tr("Aucune note : une batterie, une basse acide et un synthé attendent les tiennes."),
                 Neon.TextSecondary, onClick = actions.empty, tag = "welcome_empty",
             )
             // Remix testers (Sarah installed the app for this and found it nowhere): one way in, under the others.

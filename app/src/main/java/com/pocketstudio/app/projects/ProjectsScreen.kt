@@ -224,7 +224,8 @@ fun ProjectsScreen(
             onDismissRequest = { renamingId = null },
             title = { Text(tr("Renommer")) },
             text = {
-                OutlinedTextField(value = name, onValueChange = { name = it.take(40) }, singleLine = true, label = { Text(tr("Nom du projet")) },
+                // n° 26: the name selected to be typed over, its limit said before it cuts.
+                com.pocketstudio.app.ui.NameField(name, { name = it }, com.pocketstudio.model.ProjectCatalog.MAX_NAME, tr("Nom du projet"),
                     modifier = Modifier.testTag("project_name_field"))
             },
             confirmButton = {
@@ -298,8 +299,8 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                     listOfNotNull(
                         whenText(p.modified, now),
                         if (p.tempoBpm > 0) "${p.tempoBpm.toInt()} BPM" else null,
-                        if (p.bars > 0) com.pocketstudio.app.ui.barsShort(p.bars) else null,
-                        if (p.scenes > 1) tr("%d parties", p.scenes) else null,
+                        // n° 23: the song's length as the home and the studio count it (SongLength).
+                        com.pocketstudio.app.ui.lengthWords(com.pocketstudio.model.SongLength(p.bars, p.seconds, p.parts)),
                         if (p.hasRemix) "remix" else null,
                     ).joinToString(" · "),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,

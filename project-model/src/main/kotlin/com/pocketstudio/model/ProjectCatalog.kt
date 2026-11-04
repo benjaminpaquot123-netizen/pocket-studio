@@ -12,7 +12,7 @@ data class ProjectInfo(
     /** Last save, in milliseconds since 1970. */
     val modified: Long,
     val tempoBpm: Double,
-    /** Length of the longest part of the current scene, in bars. */
+    /** The song's length in bars ([SongLength]: the loop shown when there is no song yet). */
     val bars: Int,
     val scenes: Int,
     val hasRemix: Boolean,
@@ -22,6 +22,9 @@ data class ProjectInfo(
     val hasOpening: Boolean = false,
     /** Pad Live (n° 25): the home's « Live » project ([PadLiveSet.home]). */
     val padLive: Boolean = false,
+    /** Audit ultra round 1, n° 23: the song's seconds and parts, as the home and the studio count them ([SongLength]). */
+    val seconds: Int = 0,
+    val parts: Int = 0,
 )
 
 /** A project .zip brought in: the new project's [id], and the sounds it named but did not hold (left out). */
@@ -44,10 +47,11 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
             ?: return null
         val p = runCatching { store.load(id) }.getOrNull()
             ?: return ProjectInfo(id, tr("Projet illisible"), modified, 0.0, 0, 0, false, unreadable = true)
-        val scene = p.currentSceneContent()
+        val length = SongLength.of(p)
         return ProjectInfo(
-            id, p.name, modified, p.tempoBpm, scene.stepsFor(p.stepsPerBar) / p.stepsPerBar, p.allScenes.size, p.remix.setId != null,
+            id, p.name, modified, p.tempoBpm, length.bars, p.allScenes.size, p.remix.setId != null,
             hasOpening = File(dir, ProjectStore.OPENING).isFile, padLive = p.padLive.home,
+            seconds = length.seconds, parts = length.parts,
         )
     }
 
@@ -399,6 +403,19 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
         return generateSequence(1) { it + 1 }.map { "$prefix $it" }.first { DefaultNames.shown(it) !in names }
     }
 
+    /**
+     * Audit ultra round 1, n° 26 (seat F d): a copy's name, « [name] (copie) », then « (copie 2) »… for a copy of a
+     * copy; the name is shortened to keep the word whole within [MAX_NAME] (« … (copie) (copie) » was cut to « (copie) »).
+     */
+    fun copyName(name: String): String {
+        val names = list().map { it.name }.toSet()
+        val base = name.replace(COPY_SUFFIX, "").trimEnd()
+        return generateSequence(1) { it + 1 }.map { n ->
+            val suffix = if (n == 1) " (copie)" else " (copie $n)"
+            base.take(MAX_NAME - suffix.length).trimEnd() + suffix
+        }.first { it !in names }
+    }
+
     /** [name], or « [name] 2 », « 3 »… when a project already has it (as shown): never two songs alike in the list. */
     fun freeName(name: String): String {
         val names = list().map { DefaultNames.shown(it.name) }.toSet()
@@ -424,6 +441,8 @@ class ProjectCatalog(private val root: File, private val trash: File, private va
         const val SAMPLES = "samples"
         const val STEMS = "stems"
         const val MAX_NAME = 40
+        /** « (copie) » or « (copie 3) » at the end of a name ([copyName]). */
+        private val COPY_SUFFIX = Regex("""( \(copie(?: \d+)?\))+$""")
         const val TRASH_DAYS = 30L
         /** A 7-minute stem (the longest song separated) is about 150 MB. */
         const val MAX_ZIP_ENTRY = 256L * 1024 * 1024

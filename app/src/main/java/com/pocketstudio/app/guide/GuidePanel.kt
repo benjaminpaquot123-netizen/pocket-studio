@@ -251,7 +251,7 @@ private fun NoticeLine(text: String, dismiss: () -> Unit) {
             .semantics { liveRegion = LiveRegionMode.Polite },
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(text, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, modifier = Modifier.weight(1f).padding(vertical = 8.dp))
+        Text(text, style = MaterialTheme.typography.bodyLarge, color = Neon.TextPrimary, modifier = Modifier.weight(1f).padding(vertical = 8.dp))
         Box(
             Modifier.size(48.dp).clickable(role = Role.Button, onClickLabel = tr("Fermer"), onClick = dismiss).testTag("guide_notice_close"),
             contentAlignment = Alignment.Center,
@@ -339,7 +339,9 @@ fun GuideCard(
                 )
             }
         }
-        Text(card.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
+        // Audit ultra round 1, n° 25 (seats B b, C c: « tout en petit texte »): the card's title a size larger (its
+        // choices stay in the panel's height without a scroll: GuideJourneyTest's budget).
+        Text(card.title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
         if (card.why.isNotBlank()) Text(card.why, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
         // G4: what the Guide hears in the song about this card (its measures, its analysis).
         if (measuring && card.stage == 6) {
@@ -366,8 +368,8 @@ fun GuideCard(
             ) {
                 if (step != null) {
                     Row(Modifier.weight(1f).testTag("guide_next_step"), verticalAlignment = Alignment.Top) {
-                        Text("→", color = Neon.Acid, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.width(22.dp))
-                        Text(step, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold, color = Neon.TextPrimary)
+                        Text("→", color = Neon.Acid, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.width(26.dp))
+                        Text(step, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = Neon.TextPrimary)
                     }
                 } else {
                     Spacer(Modifier.weight(1f))

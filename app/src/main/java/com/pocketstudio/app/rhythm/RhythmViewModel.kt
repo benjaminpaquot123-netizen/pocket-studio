@@ -532,6 +532,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         afterGuideEdit(before)
     }
 
+            // n° 25: what a Guide's choice did, in « Fait : … » with « Annuler ».
+            said = { _done.value = it },
     /** Engine updates the Guide's edits asked for (tests). */
     internal var guideSyncs = 0
         private set
@@ -3229,6 +3231,40 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** « Annuler » beside « Fait : … »: the intention undone (it was one step). */
+    /**
+     * Audit ultra round 1, n° 24 (seat B b: « seulement A », no way to a part B in the Mode simple): a new part at
+     * place [at] of the song (null: at its end), on a scene of its own: a copy of the scene shown ([copy], the usual
+     * way to a variation) or an empty one, which the screens then show to change it. One undo step.
+     */
+    fun newSongPart(copy: Boolean, at: Int? = null) {
+        val p = project.value
+        if (p.song.size >= SongPart.MAX_PARTS) {
+            _notice.value = tr("Le morceau a déjà %d parties : retires-en une pour en ajouter une autre.", SongPart.MAX_PARTS)
+            return
+        }
+        val scenes = p.allScenes
+        val target = (if (copy) scenes.indices.firstOrNull { it != p.scene && scenes[it].isEmpty } ?: scenes.size.takeIf { it < Scene.MAX } else p.firstEmptyScene())
+        if (target == null) {
+            _notice.value = tr("Les %d parties sont déjà prises : vide-en une pour recommencer.", Scene.MAX)
+            return
+        }
+        val place = (at ?: p.song.size).coerceIn(0, p.song.size)
+        val following = songPlaying()
+        // The new scene made (a copy, or an empty one) and placed in the song while it is the one shown (an empty scene
+        // at the end that nothing uses yet is dropped by any other step), then the scene shown before.
+        fun made(q: Project): Project = (if (copy) q.copySceneTo(target) else q).switchScene(target).insertSongPart(place, target).switchScene(q.scene)
+        if (!_transport.value.playing || !NativeEngine.isAvailable || (!_followSong.value && songPlaying())) {
+            if (!_transport.value.playing || !NativeEngine.isAvailable) _sessionUi.value = SessionUi()
+            session.edit { made(it).switchScene(target) }
+            syncEngine()
+            return
+        }
+        // Playing: the song plays on (a part placed before the one on now moves it on); the screens show the new part at the next bar.
+        session.edit { made(it) }
+        if (following) followSongEdit { i, explicit -> if (if (explicit) place <= i else place < i) i + 1 else i }
+        selectScene(target)
+    }
+
     fun undoDone() {
         _done.value = null
         undo()

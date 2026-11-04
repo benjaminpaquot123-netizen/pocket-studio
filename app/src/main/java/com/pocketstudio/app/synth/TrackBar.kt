@@ -240,8 +240,8 @@ fun TrackBar(
             onDismissRequest = { renamingId = null },
             title = { Text(tr("Renommer la piste")) },
             text = {
-                OutlinedTextField(value = name, onValueChange = { name = it.take(InstrumentTrack.MAX_NAME) }, singleLine = true,
-                    label = { Text(tr("Nom")) }, modifier = Modifier.testTag("track_name_field"))
+                // n° 26 (seat E b): the name selected, so what is typed replaces it; its limit said before it cuts.
+                com.pocketstudio.app.ui.NameField(name, { name = it }, InstrumentTrack.MAX_NAME, tr("Nom"), modifier = Modifier.testTag("track_name_field"))
             },
             confirmButton = { TextButton(onClick = { ui.rename(t.id, name); renamingId = null }, enabled = name.isNotBlank()) { Text(tr("OK")) } },
             dismissButton = { TextButton(onClick = { renamingId = null }) { Text(tr("Annuler")) } },

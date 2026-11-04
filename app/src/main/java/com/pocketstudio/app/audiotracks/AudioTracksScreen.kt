@@ -368,7 +368,8 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
         ScaledAlertDialog(
             onDismissRequest = { renaming = false },
             title = { Text(tr("Renommer la piste")) },
-            text = { OutlinedTextField(value = name, onValueChange = { name = it.take(24) }, singleLine = true, label = { Text(tr("Nom")) }) },
+            // n° 26 (seat E b: « Audio 1Chitarra »): the name selected, so what is typed replaces it; its limit said.
+            text = { com.pocketstudio.app.ui.NameField(name, { name = it }, 24, tr("Nom"), modifier = Modifier.testTag("audio_name_field")) },
             confirmButton = { TextButton(onClick = { actions.rename(t.id, name); renaming = false }, enabled = name.isNotBlank()) { Text("OK") } },
             dismissButton = { TextButton(onClick = { renaming = false }) { Text(tr("Annuler")) } },
         )

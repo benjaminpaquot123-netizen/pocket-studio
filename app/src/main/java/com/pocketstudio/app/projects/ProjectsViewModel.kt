@@ -118,7 +118,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     fun duplicate(info: ProjectInfo, saveFirst: suspend () -> Boolean = { true }) = io(tr("Copie du projet")) {
         if (!saved(saveFirst)) return@io
         // Saved in French, shown translated (DefaultNames).
-        val copy = catalog.duplicate(info.id, "${info.name} (copie)".take(ProjectCatalog.MAX_NAME))
+        val copy = catalog.duplicate(info.id, catalog.copyName(info.name))
         ProjectModes.copy(getApplication(), info.id, copy)
         refreshNow()
     }

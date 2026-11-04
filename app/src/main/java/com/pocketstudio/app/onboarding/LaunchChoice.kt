@@ -59,15 +59,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.pocketstudio.app.export.shareSeconds
 import com.pocketstudio.app.projects.whenText
-import com.pocketstudio.app.ui.barsShort
 import com.pocketstudio.model.DefaultNames
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectInfo
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.i18n.tr
-import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.app.ui.IconMedallion
 import com.pocketstudio.app.ui.showcasePanel
@@ -169,11 +166,8 @@ data class LaunchUi(
 /** [p] as « Continuer » shows it; [info]: its entry in the projects' list (its last save), when read. */
 fun launchUi(p: Project, info: ProjectInfo?, now: Long, simple: Boolean, missionsActive: Boolean): LaunchUi {
     val style = (p.style ?: com.pocketstudio.app.library.styleOfProject(p.name))?.let(StarterWizard::style)
-    val length = when {
-        p.song.isNotEmpty() -> clock(shareSeconds(p, 1)) + " · " + trCount(p.song.size, "1 partie", "%d parties")
-        info != null && info.bars > 0 -> tr("Boucle de %s", barsShort(info.bars))
-        else -> null
-    }
+    // n° 23: the same length as « Mes projets » and the studio (SongLength).
+    val length = com.pocketstudio.app.ui.lengthWords(com.pocketstudio.model.SongLength.of(p))
     return LaunchUi(
         name = DefaultNames.shown(p.name),
         style = style?.let { tr(it.name) },
@@ -184,7 +178,6 @@ fun launchUi(p: Project, info: ProjectInfo?, now: Long, simple: Boolean, mission
     )
 }
 
-private fun clock(seconds: Int) = "%d:%02d".format(seconds / 60, seconds % 60)
 
 /**
  * « Que veux-tu faire ? » wired to the app: remembers when the app is left and asks again at

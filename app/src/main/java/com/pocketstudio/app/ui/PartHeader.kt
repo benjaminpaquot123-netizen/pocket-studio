@@ -58,11 +58,13 @@ fun partHeader(p: Project, playing: Boolean, songPlaying: Boolean, loopPart: Boo
  * to edit another ([pick]); [current] is the one shown.
  */
 @Composable
-fun PartHeader(ui: PartHeaderUi, modifier: Modifier = Modifier, parts: List<String>? = null, current: Int = 0, pick: (Int) -> Unit = {}) {
+fun PartHeader(ui: PartHeaderUi, modifier: Modifier = Modifier, parts: List<String>? = null, current: Int = 0, pick: (Int) -> Unit = {}, newPart: (() -> Unit)? = null) {
     var open by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf(false) }
+    // Audit ultra round 1, n° 24 (seat B b looked here for a part B): the menu also makes a new part, so it shows with one part too.
+    val menu = parts != null && (parts.size > 1 || newPart != null)
     Column(modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp).testTag("part_header")) {
         Row(
-            if (parts != null && parts.size > 1) {
+            if (menu) {
                 Modifier.heightIn(min = 40.dp).clickable(role = androidx.compose.ui.semantics.Role.Button, onClickLabel = tr("Changer de partie")) { open = true }.testTag("part_header_pick")
             } else Modifier,
             verticalAlignment = Alignment.CenterVertically,
@@ -74,7 +76,7 @@ fun PartHeader(ui: PartHeaderUi, modifier: Modifier = Modifier, parts: List<Stri
                 ui.title, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Cyan,
                 maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false).testTag("part_header_title"),
             )
-            if (parts != null && parts.size > 1) {
+            if (menu && parts != null) {
                 Icon(Icons.Filled.ArrowDropDown, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(20.dp))
                 ScaledDropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.testTag("part_header_menu")) {
                     Text(tr("Partie à modifier"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp))
@@ -83,6 +85,14 @@ fun PartHeader(ui: PartHeaderUi, modifier: Modifier = Modifier, parts: List<Stri
                             text = { Text(t, fontWeight = if (i == current) FontWeight.Bold else FontWeight.Normal, color = if (i == current) Neon.Cyan else Neon.TextPrimary) },
                             onClick = { open = false; if (i != current) pick(i) },
                             modifier = Modifier.testTag("part_pick_$i"),
+                        )
+                    }
+                    if (newPart != null) {
+                        androidx.compose.material3.HorizontalDivider(color = Neon.Outline.copy(alpha = 0.45f))
+                        androidx.compose.material3.DropdownMenuItem(
+                            text = { Text(tr("+ Nouvelle partie (copie de %s)", parts.getOrElse(current) { "" })) },
+                            onClick = { open = false; newPart() },
+                            modifier = Modifier.testTag("part_new"),
                         )
                     }
                 }

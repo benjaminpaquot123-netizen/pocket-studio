@@ -195,6 +195,8 @@ class SessionActions(
     val addPart: (Int) -> Unit = {},
     /** A part playing scene (second) inserted at place (first). */
     val insertPart: (Int, Int) -> Unit = { _, _ -> },
+    /** n° 24: a new part on a scene of its own (first: a copy of the scene shown, else empty), at place (second; null: the end). */
+    val newPart: (Boolean, Int?) -> Unit = { _, _ -> },
     val duplicatePart: (Int) -> Unit = {},
     /** Part (first) moved to place (second). */
     val movePart: (Int, Int) -> Unit = { _, _ -> },
@@ -417,6 +419,7 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
                     Text("+ ${ui.title(i)}", maxLines = 1, softWrap = false)
                 }
             }
+            NewPartButtons(ui, enabled = ui.song.size < SongPart.MAX_PARTS) { copy -> added = true; actions.newPart(copy, null) }
         }
         // ▶ in the top bar plays the song (a part touched above plays from it): no second button here.
         // Everything acting on the sound (effects, sends, curves), each with a way to where it is set.
@@ -458,6 +461,7 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
             title = tr("Insérer après la partie %d", after + 1),
             ui = ui,
             onPick = { scene -> actions.insertPart(after + 1, scene); inserting = null },
+            onNew = { copy -> actions.newPart(copy, after + 1); inserting = null },
             onDismiss = { inserting = null },
         )
     }
@@ -465,6 +469,22 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
 
 /** "1:05" from seconds. */
 private fun clock(seconds: Int) = "%d:%02d".format(seconds / 60, seconds % 60)
+
+/**
+ * Audit ultra round 1, n° 24 (seat B b gave up: « je ne trouvais nulle part comment créer une deuxième partie »):
+ * « + Nouvelle partie » beside the parts already there: a copy of the part shown to change (the usual way to
+ * a variation), or an empty one. The screens then show it.
+ */
+@Composable
+private fun NewPartButtons(ui: SessionScreenUi, enabled: Boolean, onNew: (Boolean) -> Unit) {
+    val free = ui.scenes.count { it == null || it.isEmpty } > 0 || ui.scenes.size < Scene.MAX
+    OutlinedButton(onClick = { onNew(true) }, enabled = enabled && free, modifier = Modifier.heightIn(min = 48.dp).testTag("add_part_new_copy")) {
+        Text(tr("+ Nouvelle partie (copie de %s)", ui.title(ui.current)), maxLines = 1, softWrap = false)
+    }
+    OutlinedButton(onClick = { onNew(false) }, enabled = enabled && free, modifier = Modifier.heightIn(min = 48.dp).testTag("add_part_new_empty")) {
+        Text(tr("+ Nouvelle partie vide"), maxLines = 1, softWrap = false)
+    }
+}
 
 /**
  * Where the song is: the time gone and the whole length, the bar and beat, and a line over the
@@ -476,7 +496,8 @@ private fun SongClock(ui: SessionScreenUi, totalBars: Int) {
     val spb = ui.stepsPerBar
     val totalSteps = ui.partStarts.last().coerceAtLeast(1)
     val beatSeconds = 60.0 / ui.tempoBpm
-    val total = (totalSteps / 4 * beatSeconds).toInt()
+    // n° 23: rounded as the home and « Mes projets » round it (SongLength), not cut (« 0:04 » here, « 0:05 » there).
+    val total = com.pocketstudio.model.SongLength.seconds(totalSteps.toLong(), ui.tempoBpm)
     val beat by remember(ui.songStep) { derivedStateOf { ui.songStep().let { if (it < 0) -1 else it / 4 } } }
     val playing = ui.playing && beat >= 0
     Row(Modifier.fillMaxWidth().testTag("song_clock"), verticalAlignment = Alignment.CenterVertically) {
@@ -885,10 +906,8 @@ internal fun RenameSceneDialog(index: Int, current: String, onDone: (String) -> 
                         )
                     }
                 }
-                OutlinedTextField(
-                    value = name, onValueChange = { name = it.take(Scene.MAX_LABEL) }, singleLine = true,
-                    label = { Text(tr("Ou un autre nom")) }, modifier = Modifier.fillMaxWidth().testTag("scene_name_field"),
-                )
+                // n° 26: the name selected to be typed over, its limit said before it cuts.
+                com.pocketstudio.app.ui.NameField(name, { name = it }, Scene.MAX_LABEL, tr("Ou un autre nom"), modifier = Modifier.fillMaxWidth().testTag("scene_name_field"))
             }
         },
         confirmButton = { TextButton(onClick = { onDone(name) }, modifier = Modifier.testTag("scene_name_ok")) { Text(tr("Valider")) } },
@@ -903,7 +922,7 @@ internal fun RenameSceneDialog(index: Int, current: String, onDone: (String) -> 
 
 /** Picks one of the scenes in use (to insert it in the song). */
 @Composable
-private fun ScenePickerDialog(title: String, ui: SessionScreenUi, onPick: (Int) -> Unit, onDismiss: () -> Unit) {
+private fun ScenePickerDialog(title: String, ui: SessionScreenUi, onPick: (Int) -> Unit, onNew: (Boolean) -> Unit, onDismiss: () -> Unit) {
     ScaledAlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(title) },
@@ -914,6 +933,8 @@ private fun ScenePickerDialog(title: String, ui: SessionScreenUi, onPick: (Int) 
                         Text(ui.title(i), maxLines = 1, softWrap = false)
                     }
                 }
+                // n° 24 (seat B b: « seule la partie A est proposée »): a new part, here too.
+                NewPartButtons(ui, enabled = true, onNew)
             }
         },
         confirmButton = {},

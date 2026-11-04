@@ -33,6 +33,7 @@ import com.pocketstudio.app.learn.spot
 import kotlin.math.roundToInt
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import kotlinx.coroutines.launch
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -399,8 +400,11 @@ fun TutoPanel(
             // The step's words, or in their place « Bravo » or « Montre-moi »'s caption: never one more block.
             // At least a line and a half of room (the « Bravo » banner fits where a one-line step was).
             val most = if (chapter.map && map.isNotEmpty()) 290.dp else 240.dp
+            val words = rememberScrollState()
+            // Audit ultra (« le panneau tient »): words longer than the room scroll, and say so at the bottom.
+            Box((if (holding) Modifier.weight(1f) else Modifier.heightIn(min = 52.dp, max = most))) {
             Column(
-                (if (holding) Modifier.weight(1f) else Modifier.heightIn(min = 52.dp, max = most)).verticalScroll(rememberScrollState()),
+                Modifier.verticalScroll(words),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 when {
@@ -420,8 +424,24 @@ fun TutoPanel(
                     }
                 }
             }
+            if (words.canScrollForward) MoreWords(Modifier.align(Alignment.BottomCenter)) { words.animateScrollTo(minOf(words.maxValue, words.value + words.viewportSize * 3 / 4)) }
+            }
             ActionBar(ui, canShow, actions, mine, minePlaying, mineFirst)
         }
+    }
+}
+
+/** The bottom of the step's words when more of them is below: a fade and « Lire la suite », a touch scrolls down. */
+@Composable
+private fun MoreWords(modifier: Modifier, more: suspend () -> Unit) {
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    Row(
+        modifier.fillMaxWidth().background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(Color.Transparent, panelColor(), panelColor())))
+            .clickable(onClickLabel = tr("Lire la suite"), role = androidx.compose.ui.semantics.Role.Button) { scope.launch { more() } }.heightIn(min = 32.dp).testTag("tuto_text_more"),
+        horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.Bottom,
+    ) {
+        Text(tr("Lire la suite"), style = MaterialTheme.typography.labelMedium, color = Neon.Cyan, fontWeight = FontWeight.Bold)
+        Icon(Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
     }
 }
 

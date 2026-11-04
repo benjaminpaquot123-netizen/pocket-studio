@@ -131,7 +131,7 @@ private const val SAVED = MINE
 
 /** A ready-made sound as a browser option: its name, and its few words in small. */
 private fun presetOption(ref: SoundRef, s: NamedSound<*>, ui: SoundBrowserUi): SoundOption =
-    SoundOption(ref, ui.describe(s)?.takeIf { it.isNotBlank() }?.let { "${s.name} · $it" } ?: s.name)
+    SoundOption(ref, ui.describe(s)?.takeIf { it.isNotBlank() }?.let { "${s.name} · $it" } ?: s.name, SoundLooks.waveOf(s.sound))
 
 /** One folder per family, in the browser's order, its sounds in the library's order. */
 internal fun presetShelves(ui: SoundBrowserUi): List<SoundShelf> = ui.categories.mapNotNull { c ->

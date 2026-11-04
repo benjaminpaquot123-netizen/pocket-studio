@@ -60,5 +60,6 @@
   "D'autres sons pour le même pad, selon la force du coup : les coups doux gardent le son du pad, les coups forts en jouent un autre. La batterie sonne plus vivante.": "Suara lain untuk pad yang sama, tergantung kerasnya pukulan: pukulan pelan tetap memakai suara pad, pukulan keras memainkan suara lain. Drumnya terdengar lebih hidup.",
   "%1$s LUFS au lieu de %2$s : plus fort, le son s'écraserait.": "%1$s LUFS, bukan %2$s: lebih keras lagi, suaranya bakal tergencet.",
   "Le master s'arrête avant d'écraser les coups : le morceau garde son punch, un peu moins fort que la cible.": "Master berhenti sebelum menggencet pukulan: lagunya tetap bertenaga, sedikit lebih pelan dari target.",
-  "Gros pads": "Pad besar"
+  "Gros pads": "Pad besar",
+  "Projets retrouvés dans la sauvegarde du téléphone : %d. Leurs sons n'y étaient pas : choisis-les à nouveau sur les pads et les pistes.": "Proyek yang ditemukan di cadangan ponsel: %d. Suaranya tidak ikut: pilih lagi di pad dan trek."
 }

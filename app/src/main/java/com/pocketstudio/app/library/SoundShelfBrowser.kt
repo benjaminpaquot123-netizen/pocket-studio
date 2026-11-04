@@ -431,6 +431,7 @@ private fun Sounds(options: List<SoundOption>, ui: ShelfBrowserUi, actions: Shel
             accent = look.color, selected = playing || chosen,
             onClick = { if (ui.pickOnTap) actions.choose(option) else actions.preview(option) },
             subtitle = if (playing) tr("En écoute…") else source,
+            wave = option.wave,
             trailing = {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (key != null) {

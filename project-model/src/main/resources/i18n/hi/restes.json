@@ -60,5 +60,6 @@
   "D'autres sons pour le même pad, selon la force du coup : les coups doux gardent le son du pad, les coups forts en jouent un autre. La batterie sonne plus vivante.": "एक ही पैड के लिए दूसरी आवाज़ें, हिट की ताक़त के हिसाब से: हल्के हिट पैड की आवाज़ रखते हैं, ज़ोरदार हिट दूसरी आवाज़ बजाते हैं। ड्रम ज़्यादा जीवंत लगते हैं।",
   "%1$s LUFS au lieu de %2$s : plus fort, le son s'écraserait.": "%2$s की जगह %1$s LUFS: इससे तेज़ करने पर आवाज़ पिचक जाती।",
   "Le master s'arrête avant d'écraser les coups : le morceau garde son punch, un peu moins fort que la cible.": "मास्टर हिट्स को पिचकाने से पहले रुक जाता है: गाना अपना पंच रखता है, टारगेट से थोड़ा धीमा।",
-  "Gros pads": "बड़े पैड्स"
+  "Gros pads": "बड़े पैड्स",
+  "Projets retrouvés dans la sauvegarde du téléphone : %d. Leurs sons n'y étaient pas : choisis-les à nouveau sur les pads et les pistes.": "फ़ोन के बैकअप में मिले प्रोजेक्ट: %d. उनकी आवाज़ें उसमें नहीं थीं: पैड और ट्रैक पर उन्हें फिर से चुनो."
 }

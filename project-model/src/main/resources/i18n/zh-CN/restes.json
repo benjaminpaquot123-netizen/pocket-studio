@@ -60,5 +60,6 @@
   "D'autres sons pour le même pad, selon la force du coup : les coups doux gardent le son du pad, les coups forts en jouent un autre. La batterie sonne plus vivante.": "按击打力度为同一个打击垫换不同的声音：轻击保留打击垫原声，重击播放另一个声音。鼓听起来更有生气。",
   "%1$s LUFS au lieu de %2$s : plus fort, le son s'écraserait.": "%1$s LUFS，而不是 %2$s：再响，声音就会被压扁。",
   "Le master s'arrête avant d'écraser les coups : le morceau garde son punch, un peu moins fort que la cible.": "母带在压扁打击声之前就停下：曲子保留冲击力，只比目标稍微小一点。",
-  "Gros pads": "大打击垫"
+  "Gros pads": "大打击垫",
+  "Projets retrouvés dans la sauvegarde du téléphone : %d. Leurs sons n'y étaient pas : choisis-les à nouveau sur les pads et les pistes.": "从手机备份中找回的项目：%d 个。其中没有声音：请在打击垫和音轨上重新选择。"
 }

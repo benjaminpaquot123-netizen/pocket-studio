@@ -127,7 +127,7 @@ object ProjectOpening {
         if (!TakeVault.app.awaitIdle(WAIT_MS)) AppLog.add("Ouverture : une prise s'écrit encore")
         if (!ClosingSaves.awaitIdle(WAIT_MS)) AppLog.add("Ouverture : une sauvegarde s'écrit encore")
         val opened = withContext(Dispatchers.IO) {
-            restoreFromBackupOnce(app)
+            val restored = restoreFromBackupOnce(app)
             val id = CurrentProject.get(app)
             if (!CurrentProject.isNone(id) && markOpening(app, id) > RESCUE_AFTER) {
                 AppLog.add("Ouverture sautée : le projet a fermé l'appli deux fois")
@@ -141,7 +141,10 @@ object ProjectOpening {
                     rescued = true,
                 )
             } else {
-                ProjectOpener(id, projectStore(app), LiveTakeJournals.of(app)).open()
+                ProjectOpener(id, projectStore(app), LiveTakeJournals.of(app)).open().let { o ->
+                    // Audit ultra §5 bis: a phone set up again says once that its projects came back without their sounds.
+                    if (restored > 0 && o.notice == null) OpenedProject(o.id, o.project, restoredNotice(restored), o.rescued) else o
+                }
             }
         }
         prepared = opened
@@ -182,14 +185,20 @@ object ProjectOpening {
      * Once per install (this mark is never backed up): the projects Android's cloud backup brought
      * back as compact copies alone (a phone set up again) are written back, without their sounds.
      */
-    private fun restoreFromBackupOnce(app: Context) {
+    /** What a phone set up again says once, at its first opening ([restoreFromBackupOnce] brought [n] projects back). */
+    fun restoredNotice(n: Int): String =
+        tr("Projets retrouvés dans la sauvegarde du téléphone : %d. Leurs sons n'y étaient pas : choisis-les à nouveau sur les pads et les pistes.", n)
+
+    /** Returns how many projects came back (0: none, or already done on this install). */
+    private fun restoreFromBackupOnce(app: Context): Int {
         val prefs = app.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-        if (prefs.getBoolean(KEY_SET_UP, false)) return
+        if (prefs.getBoolean(KEY_SET_UP, false)) return 0
         val catalog = com.pocketstudio.app.projects.projectCatalog(app)
         val n = runCatching { catalog.restoreFromBackup() }.getOrDefault(0)
         // An app updated from a version without the copies: every project gets one now.
         runCatching { catalog.mirrorMissing() }
         if (n > 0) AppLog.add("Projets retrouvés dans la sauvegarde Android : $n")
         prefs.edit().putBoolean(KEY_SET_UP, true).commit()
+        return n
     }
 }

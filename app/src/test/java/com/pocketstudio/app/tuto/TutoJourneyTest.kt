@@ -15,6 +15,7 @@ import com.pocketstudio.model.Project
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.SynthPatch
 import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.i18n.Lang
 import com.pocketstudio.model.track
 import com.pocketstudio.model.tuto.TutoChecks
 import com.pocketstudio.model.tuto.TutoCourse
@@ -47,12 +48,24 @@ import kotlin.math.abs
  */
 @RunWith(ParameterizedRobolectricTestRunner::class)
 @Config(qualifiers = "w360dp-h780dp")
-class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
+class TutoJourneyTest(private val style: String, private val level: TutoLevel, private val langTag: String) {
     companion object {
+        /**
+         * Audit ultra (§2): French on every run; German (the longest texts) and Arabic (right to left) at
+         * the rounds that ask for them: `-Ptuto.langs=de,ar` adds those languages (`fr` alone by default).
+         */
+        val LANGS: List<Lang> get() = (listOf(Lang.FR) + System.getProperty("ps.tuto.langs").orEmpty().split(',')
+            .map { it.trim() }.filter { it.isNotEmpty() }.map { c -> Lang.entries.first { it.code == c } }).distinct()
+
+        // The French case keeps its old name (« jump_up Pro »); another language says its code after it.
         @JvmStatic
-        @ParameterizedRobolectricTestRunner.Parameters(name = "{0} {1}")
-        fun courses(): List<Array<Any>> = TutoCourse.STYLES.flatMap { s -> TutoLevel.entries.map { arrayOf<Any>(s, it) } }
+        @ParameterizedRobolectricTestRunner.Parameters(name = "{0} {1}{2}")
+        fun courses(): List<Array<Any>> = LANGS.flatMap { l ->
+            TutoCourse.STYLES.flatMap { s -> TutoLevel.entries.map { arrayOf<Any>(s, it, if (l == Lang.FR) "" else " ${l.code}") } }
+        }
     }
+
+    private val lang: Lang = Lang.of(langTag.trim().ifEmpty { "fr" })
 
     @get:Rule
     val compose = createAndroidComposeRule<ComponentActivity>()
@@ -126,7 +139,7 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
         com.pocketstudio.app.learn.SpotChecks.log = mutableListOf()
         // Offline, whatever the catalogue: the built-in kit (the offer is TutoKitTest's).
         TutoTestHooks.kitOffer = false
-        h.start(simple = level == TutoLevel.Facile, build = {
+        h.start(simple = level == TutoLevel.Facile, lang = lang, build = {
             // « J'apprends » › level › Jump up: the tutorial's own empty project.
             session.edit { target.blank() }
             PrefsTutoStore(h.app).save(projectId, TutoProgress(style, level))
@@ -134,6 +147,7 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
         // A short tone stands for the engine's render (Robolectric has none).
         h.vm.guideRenderForTest = { a, _ -> FloatArray(OfflineExport.SAMPLE_RATE * 2) { 0.3f * kotlin.math.sin(it * 0.05f) } to FloatArray(2) }
         await("panel") { has("tuto_panel") }
+        assertEquals("the interface's language", lang, com.pocketstudio.model.i18n.I18n.lang)
         // Truly empty: no hit, no note, the first track hidden (no « Synthé » in « Mes pistes »).
         assertTrue(p().drums.lanes.all { it.hits.isEmpty() })
         assertTrue(TutoChecks.blankFirst(p()))
@@ -211,6 +225,8 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
         assertTrue("$style $level: no target checked", seen.isNotEmpty())
         val hidden = seen.filter { it.second != null }
         assertTrue("$style $level: targets not seen: $hidden", hidden.isEmpty())
+        // Audit ultra §2, « Cible visible »: the dotted cells and the folded button, whole, above the panel.
+        assertTrue("$style $level$langTag: targets hidden: $unseen", unseen.isEmpty())
         // Only a step a former one already did may be ticked before it is reached.
         assertTrue("ticked before reached: $early", early.size <= 2)
         // Every step with something to show showed it, every example was played.
@@ -262,6 +278,7 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
                     await("the ring goes by itself") { !has("tuto_spot_ring") }
                     assertTrue("the dotted cells stay", has("tuto_hint"))
                 }
+                seen(s, "tuto_hint")
                 val (lane, cells) = TutoHints.cells!!
                 assertEquals(lane, h.vm.transport.value.selectedPad)
                 for (cell in cells.sorted()) {
@@ -397,10 +414,42 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
     private fun copy(s: TutoStep) {
         await("${s.id}: its copy button") { s.id in progress().done || h.vm.project.value.let { TutoChecks.need(s, it, target) } != null }
         if (s.id in progress().done) return
-        unfold()
-        await("${s.id}: the button") { has("tuto_need") }
-        click("tuto_need")
+        // Clara (2026-10-28, n° 2): the button was hidden in the folded panel; it is on the folded line itself now.
+        await("${s.id}: the button") { has("tuto_need") || has("tuto_need_folded") }
+        val tag = if (has("tuto_need_folded")) "tuto_need_folded" else "tuto_need"
+        seen(s, tag)
+        click(tag)
     }
+
+    /**
+     * Audit ultra §2, « Cible visible » (Clara's n° 2 and n° 5): what the step asks to touch now, whole
+     * inside the window and not under the tuto's panel, folded or not (its own buttons excepted), without
+     * the user scrolling: the step's dotted cells ([tag] « tuto_hint », each one), its folded button.
+     */
+    private fun seen(s: TutoStep, tag: String) {
+        idle(500)
+        compose.waitForIdle()
+        val window = compose.onAllNodes(androidx.compose.ui.test.isRoot(), useUnmergedTree = true).fetchSemanticsNodes().first().size
+        val panel = compose.onAllNodesWithTag("tuto_panel", useUnmergedTree = true).fetchSemanticsNodes().firstOrNull()
+        val panelTop = panel?.boundsInRoot?.top ?: window.height.toFloat()
+        val nodes = compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes()
+        if (nodes.isEmpty()) { unseen += "${s.id}: $tag absent"; return }
+        for (n in nodes) {
+            val whole = androidx.compose.ui.geometry.Rect(n.positionInRoot, androidx.compose.ui.geometry.Size(n.size.width.toFloat(), n.size.height.toFloat()))
+            val shown = n.boundsInRoot
+            val inPanel = panel != null && generateSequence(n.parent) { it.parent }.any { it.id == panel.id }
+            val why = when {
+                whole.left < -1f || whole.top < -1f || whole.right > window.width + 1f || whole.bottom > window.height + 1f -> "outside the window ($whole)"
+                shown.width * shown.height < 0.9f * whole.width * whole.height -> "partly scrolled away ($shown of $whole)"
+                !inPanel && whole.bottom > panelTop + 1f -> "under the tuto's panel ($whole, panel at $panelTop)"
+                else -> null
+            }
+            if (why != null) { unseen += "${s.id}: $tag $why"; return }
+        }
+    }
+
+    /** What « Cible visible » found hidden, by step. */
+    private val unseen = ArrayList<String>()
 
     private fun closeSheetIfAny() {
         compose.waitForIdle()

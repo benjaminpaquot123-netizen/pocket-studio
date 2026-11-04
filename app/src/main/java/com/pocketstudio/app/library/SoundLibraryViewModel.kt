@@ -77,7 +77,11 @@ sealed interface SoundRef {
     data class Preset(val index: Int, val saved: Boolean = false) : SoundRef
 }
 
-data class SoundOption(val ref: SoundRef, val name: String)
+data class SoundOption(
+    val ref: SoundRef, val name: String,
+    /** A synth's or the 303's wave, drawn beside the sound (decision of 2026-11-04); null: not a wave sound. */
+    val wave: com.pocketstudio.ui.WaveShape? = null,
+)
 
 /** "Kicks · House" (a pack's sounds of one kind), or the built-in kit's voices for that line. */
 data class SoundCategory(val id: String, val title: String, val options: List<SoundOption>)

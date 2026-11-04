@@ -60,5 +60,6 @@
   "D'autres sons pour le même pad, selon la force du coup : les coups doux gardent le son du pad, les coups forts en jouent un autre. La batterie sonne plus vivante.": "Other sounds for the same pad, depending on how hard you hit: soft hits keep the pad's sound, hard hits play another. The drums sound more alive.",
   "%1$s LUFS au lieu de %2$s : plus fort, le son s'écraserait.": "%1$s LUFS instead of %2$s: any louder, the sound would get crushed.",
   "Le master s'arrête avant d'écraser les coups : le morceau garde son punch, un peu moins fort que la cible.": "The master stops before crushing the hits: the song keeps its punch, a little quieter than the target.",
-  "Gros pads": "Big pads"
+  "Gros pads": "Big pads",
+  "Projets retrouvés dans la sauvegarde du téléphone : %d. Leurs sons n'y étaient pas : choisis-les à nouveau sur les pads et les pistes.": "Projects found in the phone's backup: %d. Their sounds were not in it: choose them again on the pads and tracks."
 }

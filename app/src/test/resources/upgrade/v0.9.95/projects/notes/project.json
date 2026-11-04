@@ -1,0 +1,1979 @@
+{
+    "formatVersion": 1,
+    "name": "Ma mélodie",
+    "tempoBpm": 128.0,
+    "swing": 0.2,
+    "drums": {
+        "steps": 16,
+        "lanes": [
+            {
+                "hits": {
+                    "0": {
+                        "velocity": 1.0,
+                        "repeats": 1
+                    },
+                    "4": {
+                        "velocity": 1.0,
+                        "repeats": 1
+                    },
+                    "8": {
+                        "velocity": 1.0,
+                        "repeats": 1
+                    },
+                    "12": {
+                        "velocity": 1.0,
+                        "repeats": 1
+                    }
+                },
+                "sample": null
+            },
+            {
+                "hits": {
+                    "4": {
+                        "velocity": 0.8,
+                        "repeats": 1
+                    },
+                    "12": {
+                        "velocity": 0.8,
+                        "repeats": 1
+                    }
+                },
+                "sample": null
+            },
+            {
+                "hits": {},
+                "sample": null
+            },
+            {
+                "hits": {},
+                "sample": null
+            },
+            {
+                "hits": {},
+                "sample": null
+            },
+            {
+                "hits": {},
+                "sample": null
+            },
+            {
+                "hits": {},
+                "sample": null
+            },
+            {
+                "hits": {},
+                "sample": null
+            },
+            {
+                "hits": {},
+                "sample": null
+            },
+            {
+                "hits": {},
+                "sample": null
+            },
+            {
+                "hits": {},
+                "sample": null
+            },
+            {
+                "hits": {},
+                "sample": null
+            },
+            {
+                "hits": {},
+                "sample": null
+            },
+            {
+                "hits": {},
+                "sample": null
+            },
+            {
+                "hits": {},
+                "sample": null
+            },
+            {
+                "hits": {},
+                "sample": null
+            }
+        ]
+    },
+    "mixer": {
+        "channels": [
+            {
+                "volume": 0.65,
+                "pan": 0.0,
+                "mute": false,
+                "solo": false,
+                "inserts": [
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ],
+                "sends": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "volume": 0.8,
+                "pan": 0.0,
+                "mute": true,
+                "solo": false,
+                "inserts": [
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ],
+                "sends": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "volume": 0.8,
+                "pan": 0.0,
+                "mute": false,
+                "solo": false,
+                "inserts": [
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ],
+                "sends": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "volume": 0.8,
+                "pan": 0.0,
+                "mute": false,
+                "solo": false,
+                "inserts": [
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ],
+                "sends": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "volume": 0.8,
+                "pan": 0.0,
+                "mute": false,
+                "solo": false,
+                "inserts": [
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ],
+                "sends": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "volume": 0.8,
+                "pan": 0.0,
+                "mute": false,
+                "solo": false,
+                "inserts": [
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ],
+                "sends": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "volume": 0.8,
+                "pan": 0.0,
+                "mute": false,
+                "solo": false,
+                "inserts": [
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ],
+                "sends": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "volume": 0.8,
+                "pan": 0.0,
+                "mute": false,
+                "solo": false,
+                "inserts": [
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ],
+                "sends": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "volume": 0.8,
+                "pan": 0.0,
+                "mute": false,
+                "solo": false,
+                "inserts": [
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ],
+                "sends": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "volume": 0.8,
+                "pan": 0.0,
+                "mute": false,
+                "solo": false,
+                "inserts": [
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ],
+                "sends": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "volume": 0.8,
+                "pan": 0.0,
+                "mute": false,
+                "solo": false,
+                "inserts": [
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ],
+                "sends": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "volume": 0.8,
+                "pan": 0.0,
+                "mute": false,
+                "solo": false,
+                "inserts": [
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ],
+                "sends": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "volume": 0.8,
+                "pan": 0.0,
+                "mute": false,
+                "solo": false,
+                "inserts": [
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ],
+                "sends": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "volume": 0.8,
+                "pan": 0.0,
+                "mute": false,
+                "solo": false,
+                "inserts": [
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ],
+                "sends": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "volume": 0.8,
+                "pan": 0.0,
+                "mute": false,
+                "solo": false,
+                "inserts": [
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ],
+                "sends": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "volume": 0.8,
+                "pan": 0.0,
+                "mute": false,
+                "solo": false,
+                "inserts": [
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "params": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                ],
+                "sends": [
+                    0.0,
+                    0.0
+                ]
+            }
+        ],
+        "master": [
+            {
+                "type": 0,
+                "params": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "type": 0,
+                "params": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "type": 0,
+                "params": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "type": 0,
+                "params": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            }
+        ],
+        "buses": [
+            [
+                0.6,
+                0.5,
+                1.0,
+                0.1
+            ],
+            [
+                0.33,
+                0.4,
+                1.0,
+                0.6
+            ]
+        ]
+    },
+    "acid": {
+        "length": 16,
+        "root": 36,
+        "steps": [
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            },
+            {
+                "note": 0,
+                "octave": 0,
+                "accent": false,
+                "slide": false,
+                "gate": false
+            }
+        ],
+        "sound": {
+            "cutoff": 0.35,
+            "resonance": 0.7,
+            "envMod": 0.5,
+            "decay": 0.3,
+            "accent": 0.6,
+            "tuning": 0.5,
+            "waveform": 0.0,
+            "drive": 0.3,
+            "level": 0.7
+        },
+        "locked": [],
+        "density": 0.8
+    },
+    "synth": {
+        "values": [
+            0.0,
+            0.0,
+            0.3,
+            0.5,
+            0.5,
+            0.2,
+            0.0,
+            0.0,
+            0.55,
+            0.3,
+            0.4,
+            0.0,
+            0.3,
+            0.3,
+            0.3,
+            0.05,
+            0.3,
+            0.8,
+            0.35,
+            0.5,
+            0.0,
+            0.3,
+            0.0,
+            0.6
+        ]
+    },
+    "synthNotes": {
+        "steps": 16,
+        "notes": [
+            {
+                "start": 0,
+                "length": 4,
+                "pitch": 60,
+                "velocity": 0.85
+            },
+            {
+                "start": 4,
+                "length": 4,
+                "pitch": 63,
+                "velocity": 0.85
+            },
+            {
+                "start": 8,
+                "length": 4,
+                "pitch": 67,
+                "velocity": 0.85
+            },
+            {
+                "start": 12,
+                "length": 4,
+                "pitch": 70,
+                "velocity": 0.85
+            }
+        ],
+        "performance": {
+            "arp": "Off",
+            "arpRate": 24,
+            "strum": 0
+        }
+    },
+    "harmony": {
+        "root": 0,
+        "scale": "Off"
+    },
+    "instrument": null,
+    "remix": {
+        "setId": null,
+        "name": "",
+        "songBpm": 0.0,
+        "firstBeat": 0.0,
+        "startBar": 0,
+        "stems": [
+            {
+                "volume": 0.8,
+                "mute": false,
+                "solo": false
+            },
+            {
+                "volume": 0.8,
+                "mute": false,
+                "solo": false
+            },
+            {
+                "volume": 0.8,
+                "mute": false,
+                "solo": false
+            },
+            {
+                "volume": 0.8,
+                "mute": false,
+                "solo": false
+            }
+        ],
+        "followTempo": false
+    },
+    "automation": [],
+    "scenes": [],
+    "scene": 0,
+    "song": [],
+    "synthEngine": 0,
+    "plaits": {
+        "model": 8,
+        "harmonics": 0.5,
+        "timbre": 0.5,
+        "morph": 0.5,
+        "decay": 0.5,
+        "colour": 0.5,
+        "release": 0.3,
+        "level": 0.8
+    },
+    "live": {
+        "size": 8,
+        "clips": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ]
+    },
+    "synthTrackName": "Synthé",
+    "synthTrackColor": 0,
+    "tracks": [],
+    "audioTracks": [],
+    "beatsPerBar": 4,
+    "midiMap": []
+}

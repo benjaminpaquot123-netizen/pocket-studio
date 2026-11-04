@@ -63,6 +63,8 @@ fun SoundTile(
     trailing: (@Composable () -> Unit)? = null,
     /** A short word in a pill after the name (« À moi »: a sound the user kept), or none. */
     badge: String? = null,
+    /** The sound's wave, drawn before the subtitle (a synth's, the 303's), or none. */
+    wave: WaveShape? = null,
 ) {
     val shape = RoundedCornerShape(14.dp)
     val interaction = remember { MutableInteractionSource() }
@@ -109,11 +111,14 @@ fun SoundTile(
                     )
                 }
             }
-            if (subtitle != null) {
-                Text(
-                    subtitle, style = MaterialTheme.typography.labelSmall, letterSpacing = 0.2.sp,
-                    color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                )
+            if (subtitle != null || wave != null) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    if (wave != null) WaveGlyph(wave, tint = accent, size = 16.dp)
+                    if (subtitle != null) Text(
+                        subtitle, style = MaterialTheme.typography.labelSmall, letterSpacing = 0.2.sp,
+                        color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
         }
         if (trailing != null) trailing()

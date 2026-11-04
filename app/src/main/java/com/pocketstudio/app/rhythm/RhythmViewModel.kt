@@ -5867,8 +5867,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun setStemVolume(stem: Int, v: Float) = editRemix("stem-$stem-vol") { it.withStem(stem) { s -> s.copy(volume = v) } }
-    fun toggleStemMute(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(mute = !s.mute) } }
-    fun toggleStemSolo(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(solo = !s.solo) } }
+    // Muted and alone at once means nothing (Benjamin, 2026-11-04): lighting one puts the other out.
+    fun toggleStemMute(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(mute = !s.mute, solo = s.solo && s.mute) } }
+    fun toggleStemSolo(stem: Int) = editRemix(null) { it.withStem(stem) { s -> s.copy(solo = !s.solo, mute = s.mute && s.solo) } }
     fun setRemixStartBar(bar: Int) = editRemix("remix-start") { it.copy(startBar = bar.coerceIn(0, Remix.MAX_START_BAR)) }
 
     // Step 5b: the song's stems edited in the Structure, on the bars (song step [step], a bar's
@@ -7732,8 +7733,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         editChannel(ch, "pan") { it.copy(pan = pan) }
         recordAutomation(AutoTarget(AutoTarget.PAN, ch), (pan + 1f) / 2f)
     }
-    fun toggleMute(ch: Int) = editChannel(ch, null) { it.copy(mute = !it.mute) }
-    fun toggleSolo(ch: Int) = editChannel(ch, null) { it.copy(solo = !it.solo) }
+    // Muted and alone at once means nothing (Benjamin, 2026-11-04): lighting one puts the other out.
+    fun toggleMute(ch: Int) = editChannel(ch, null) { it.copy(mute = !it.mute, solo = it.solo && it.mute) }
+    fun toggleSolo(ch: Int) = editChannel(ch, null) { it.copy(solo = !it.solo, mute = it.mute && it.solo) }
 
     /** « Solo actif : tout désactiver »: every track heard again, in one undo step. */
     fun clearSolos() {
@@ -9433,7 +9435,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Pad [lane] silent or heard again (« Couper ce pad »); its hits stay. */
     fun togglePadMute(lane: Int) {
         if (lane !in 0 until DrumPattern.PAD_COUNT) return
-        editChannel(Mixer.padChannel(lane), null) { it.copy(mute = !it.mute) }
+        editChannel(Mixer.padChannel(lane), null) { it.copy(mute = !it.mute, solo = it.solo && it.mute) }
     }
 
     /** Pad [lane] back to the kit's own voice (« Son d'origine »). */

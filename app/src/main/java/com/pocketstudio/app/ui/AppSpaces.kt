@@ -349,7 +349,8 @@ fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions, li
         val word = with(density) { tracks.flatMap { it.name.split(' ') }.maxOfOrNull { measurer.measure(it, nameStyle).size.width }?.toDp() } ?: 0.dp
         val label = with(density) { measurer.measure(tr("Écouter seule"), labelStyle).size.width.toDp() }
         val narrow = maxWidth < ALONE_ROW_ROOM + word + label
-        Column {
+        // The card's own spacing between the rows (NeonCard: 8 dp).
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         tracks.forEachIndexed { i, t ->
             if (i > 0) HorizontalDivider(color = Neon.Outline.copy(alpha = 0.5f))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) {

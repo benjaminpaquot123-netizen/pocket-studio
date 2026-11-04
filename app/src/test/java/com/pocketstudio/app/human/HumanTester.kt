@@ -506,9 +506,46 @@ abstract class HumanTester(private val seat: String) {
         }
     }
 
+    /**
+     * Flaky fix (audit stage 1): « attends 2 » passes 2 s of the main thread's clock at once, but the work the
+     * app runs off the main thread (a project created, a pack read, on Dispatchers.IO / Default) needs real
+     * time, and a loaded machine (the whole suite) gave it less than the 160 ms below: the screen was read
+     * before it came (HumanLucasBugsTest « still in the assistant », « nothing to touch: Aide et premiers pas »).
+     * Waits, in real time, until no coroutine worker is running and the main thread has caught up, as a
+     * phone's seconds would have let it. The cap only stops a worker that never rests (it is not a timeout).
+     */
+    private fun backgroundQuiet(capMs: Long = 5_000) {
+        val until = System.currentTimeMillis() + capMs
+        var quiet = 0
+        while (quiet < 2 && System.currentTimeMillis() < until) {
+            Thread.sleep(10)
+            shadowOf(Looper.getMainLooper()).idle()
+            if (coroutineWorkersBusy()) quiet = 0 else quiet++
+        }
+    }
+
+    /** A coroutine worker thread (Dispatchers.Default and IO share them) is running, not parked waiting for work. */
+    private fun coroutineWorkersBusy(): Boolean {
+        var root = Thread.currentThread().threadGroup
+        while (root.parent != null) root = root.parent
+        val threads = arrayOfNulls<Thread>(root.activeCount() + 16)
+        val n = root.enumerate(threads, true)
+        return (0 until n).any { i ->
+            val t = threads[i] ?: return@any false
+            t.name.startsWith("DefaultDispatcher-worker") && t.state == Thread.State.RUNNABLE && !waitsOnTheNetwork(t)
+        }
+    }
+
+    /** A worker reading a socket (the model's download from the bench's server) waits for the network, as on a phone: not work to wait for. */
+    private fun waitsOnTheNetwork(t: Thread): Boolean = t.stackTrace.take(12).any { f ->
+        f.className == "sun.nio.ch.NioSocketImpl" || f.className == "sun.nio.ch.SocketDispatcher" || f.className == "sun.nio.ch.Net" ||
+            f.className.startsWith("java.net.Socket") || f.className.startsWith("sun.net.www.")
+    }
+
     /** Time goes by, then the screen is let settle (the work off the main thread too, a rebuilt activity). */
     private fun settle(ms: Long) {
         pass(ms)
+        backgroundQuiet()
         repeat(4) {
             Thread.sleep(40)
             shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(50))
@@ -658,7 +695,9 @@ abstract class HumanTester(private val seat: String) {
     /** What the Remix's song is waiting for, for a failure's message. */
     protected fun remixState(): String = lastVm?.let { v ->
         "engine=${NativeEngine.sink != null} setId=${v.project.value.remix.setId} overview=${v.stemOverview.value != null} " +
-            "loading=${v.remixLoading.value} remixPage=${remixPage()}"
+            "loading=${v.remixLoading.value} stretching=${v.remixStretching.value} remixPage=${remixPage()} " +
+            "lifecycle=${scenario?.state} waves=${runCatching { compose.onAllNodesWithTag("waveform_3", useUnmergedTree = true).fetchSemanticsNodes().size }.let { r -> r.getOrNull() ?: r.exceptionOrNull()?.let { "${it.javaClass.simpleName}: ${it.message?.take(200)}" } }} " +
+            "problems=${problems.size}${problems.lastOrNull()?.let { ": " + it.take(400) }.orEmpty()}"
     } ?: "no view model"
     /** Failures of the screen's own work since the start (a frozen screen), for the report. */
     protected val problems = mutableListOf<String>()

@@ -1,5 +1,6 @@
 package com.pocketstudio.app.synth
 
+import com.pocketstudio.ui.named
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.ui.layout.onSizeChanged
 import com.pocketstudio.model.i18n.inSentence
@@ -350,11 +351,14 @@ fun PianoRoll(
             // one line the whole step (the grid never moves under a finger), a touch shows the next one.
             // Testers (lot « tuto 5 »): the tutorial's line, the bar numbers and the grid brought into view together
             // (the line and the bar number were left above the screen).
+            // n° 34: the grid's vertical scroll, read by the tutorial's line too (« plus haut ↑ »).
+            val rollV = rememberScrollState()
             Column(gridModifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 if (hints.isNotEmpty()) {
                     TutoNotesLeft(
                         hints.filter { h -> clip.notes.none { n -> n.pitch == h.pitch && n.start == h.start } }, hScroll, stepWidth, barSteps,
                         bars = ((clip.steps + barSteps - 1) / barSteps).coerceAtLeast(1), trackName = trackName, copy = copyMotif,
+                        vScroll = rollV, rowHeight = rowHeight, high = maxOf(HIGH, clip.notes.maxOfOrNull { it.pitch } ?: HIGH),
                     )
                 }
                 BarRuler(clip, hScroll, stepWidth, keysWidth, if (selection.isNotEmpty() || selectMode) targetBar else -1, barSteps) { bar ->
@@ -366,7 +370,7 @@ fun PianoRoll(
                     clip, if (showGhosts) ghosts else emptyList(), stepOf, newSteps * TICK, actions, gridHeight, harmony, chordMode,
                     hScroll, stepWidth, grid, selectMode, selection, select = { selection = it }, apply = apply,
                     rowHeight = rowHeight, keysWidth = keysWidth, allNames = tablet, keyOn = keyOn, keyOff = keyOff,
-                    locked = frozen, barSteps = barSteps, hints = hints, zoomBy = zoomBy, fitAll = fitAll,
+                    locked = frozen, barSteps = barSteps, hints = hints, zoomBy = zoomBy, fitAll = fitAll, vScroll = rollV,
                 )
             }
             VelocityLane(clip, selection, hScroll, stepWidth, apply, keysWidth)
@@ -599,8 +603,8 @@ private fun Grid(
     zoomBy: (Float, Float) -> Unit = { _, _ -> },
     /** « Tout voir » touched: the lowest to the highest note framed, from the first bar. */
     fitAll: Int = 0,
+    vScroll: androidx.compose.foundation.ScrollState = rememberScrollState(),
 ) {
-    val vScroll = rememberScrollState()
     val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
     val english = com.pocketstudio.app.settings.englishNotes()
     val density = LocalDensity.current
@@ -729,7 +733,7 @@ private fun Grid(
     ) {
         Column(Modifier.width(keysWidth).testTag("roll_keys")) {
             // Zoomed far out the rows are too small to carry a name: the C's lines stay.
-            for (p in high downTo low) RollKey(p, rowHeight, keysWidth, english, named = rowHeight.value >= NAMED_ROW && (allNames || p % 12 == 0), keyOn, keyOff)
+            for (p in high downTo low) RollKey(p, rowHeight, keysWidth, english, named = rowHeight.value >= NAMED_ROW && (allNames || p % 12 == 0), keyOn, keyOff, harmony)
         }
         Box(Modifier.weight(1f).horizontalScroll(hScroll)) {
             Canvas(
@@ -1031,6 +1035,7 @@ private fun RollKey(
     named: Boolean,
     keyOn: ((Int, Float) -> Unit)?,
     keyOff: ((Int) -> Unit)?,
+    harmony: Harmony = Harmony(),
 ) {
     val black = pitch % 12 in BLACK
     var down by remember { mutableStateOf(false) }
@@ -1044,7 +1049,8 @@ private fun RollKey(
             .then(
                 if (keyOn == null) Modifier
                 else Modifier.playable(
-                    com.pocketstudio.model.NoteNames.withOctave(pitch, english),
+                    if (harmony.scale != Scale.Off) harmony.noteName(pitch, english) + com.pocketstudio.model.NoteNames.octave(pitch, english)
+                    else com.pocketstudio.model.NoteNames.withOctave(pitch, english),
                     start = { currentOn?.invoke(pitch, 0.8f) }, stop = { currentOff?.invoke(pitch) },
                 ).pointerInput(pitch) {
                     awaitEachGesture {
@@ -1077,7 +1083,10 @@ private fun RollKey(
         }
         if (named) {
             // The C's carry their octave (where am I?); the others just their name, a black key's on it.
+            // Audit ultra round 1, n° 34 (seat B d): spelt as the key is (Sol♭ in a flat key, as the tutorial and the
+            // chords say), not always with sharps; no key set: sharps as before.
             val name = if (pitch % 12 == 0) com.pocketstudio.model.NoteNames.withOctave(pitch, english)
+            else if (harmony.scale != Scale.Off) harmony.noteName(pitch, english)
             else com.pocketstudio.model.NoteNames.pitchClass(pitch, english, sharp = "♯")
             Text(
                 name,
@@ -1133,7 +1142,7 @@ fun HarmonyPanel(harmony: Harmony, clip: NoteClip, actions: PianoRollActions, to
                 Text(tr("Le clavier, les pads d'accords et le MIDI ne jouent que les notes de la gamme : pas de fausse note."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
-            Switch(checked = harmony.lock, onCheckedChange = { actions.setHarmony(harmony.copy(lock = it)) }, modifier = Modifier.testTag("scale_lock"))
+            Switch(checked = harmony.lock, onCheckedChange = { actions.setHarmony(harmony.copy(lock = it)) }, modifier = Modifier.testTag("scale_lock").named(tr("Verrouiller la gamme")))
         }
         // A scale guides, it does not rewrite: the notes already placed stay where they are, unless asked.
         Text(tr("Changer de gamme ne déplace pas les notes déjà posées."),
@@ -1228,8 +1237,25 @@ internal fun rollAccessibleActions(notes: List<Note>, english: Boolean, actions:
 private fun TutoNotesLeft(
     left: List<Note>, hScroll: androidx.compose.foundation.ScrollState, stepWidth: androidx.compose.ui.unit.Dp, barSteps: Int, bars: Int,
     trackName: String?, copy: (() -> Unit)?,
+    vScroll: androidx.compose.foundation.ScrollState? = null, rowHeight: androidx.compose.ui.unit.Dp = 0.dp, high: Int = HIGH,
 ) {
     val stepPx = with(LocalDensity.current) { stepWidth.toPx() }
+    val rowPx = with(LocalDensity.current) { rowHeight.toPx() }
+    // Audit ultra round 1, n° 34 (seat B d): the notes left above or below the rows in sight said so, as « plus loin → » is.
+    val above by remember(left, rowPx, high, vScroll) {
+        androidx.compose.runtime.derivedStateOf {
+            val v = vScroll ?: return@derivedStateOf null
+            val from = v.value.toFloat()
+            val to = from + v.viewportSize
+            fun y(n: Note) = (high - n.pitch + 0.5f) * rowPx
+            when {
+                left.isEmpty() || v.viewportSize == 0 || rowPx <= 0f || left.any { y(it) in from..to } -> null
+                left.all { y(it) < from } -> true
+                left.all { y(it) > to } -> false
+                else -> null
+            }
+        }
+    }
     // Read where it is drawn: a scroll recomposes this line only.
     val ahead by remember(left, stepPx) {
         androidx.compose.runtime.derivedStateOf {
@@ -1262,7 +1288,7 @@ private fun TutoNotesLeft(
             Text(where, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1,
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.testTag("tuto_roll_where"))
             Text(
-                if (copy != null) com.pocketstudio.app.tuto.tutoMotifDone() else com.pocketstudio.app.tuto.tutoNotesLeft(left.size, ahead),
+                if (copy != null) com.pocketstudio.app.tuto.tutoMotifDone() else com.pocketstudio.app.tuto.tutoNotesLeft(left.size, ahead, above),
                 style = MaterialTheme.typography.labelLarge,
                 color = if (left.isEmpty() || copy != null) Neon.Acid else Neon.Amber, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 modifier = Modifier.testTag("tuto_notes_left_text"),

@@ -502,7 +502,7 @@ private fun DubPage(ui: LiveScreenUi, actions: LiveActions, state: LiveFxState, 
 private fun ReturnSlider(label: String, value: Float, modifier: Modifier, tag: String, change: (Float) -> Unit) {
     Column(modifier) {
         Text(tr("%1\$s : %2\$s", label, percent((value * 200).roundToInt())), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1)
-        ProSlider(value, change, Modifier.fillMaxWidth().height(48.dp).testTag(tag), accent = Neon.Magenta)
+        ProSlider(value, change, Modifier.fillMaxWidth().height(48.dp).testTag(tag), accent = Neon.Magenta, label = label, valueText = percent((value * 200).roundToInt()))
     }
 }
 
@@ -729,7 +729,7 @@ private fun TrackFx(ui: LiveScreenUi, c: LiveColumn, actions: LiveActions, state
             val v = channel.sends.getOrElse(bus) { 0f }
             Column(Modifier.weight(1f)) {
                 Text(tr("%1\$s : %2\$s", label, percent((v * 100).roundToInt())), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1)
-                ProSlider(v, { actions.setSend(c.channel, bus, it) }, Modifier.fillMaxWidth().height(48.dp).testTag("live_send_${c.key}_$bus"), accent = Neon.Magenta)
+                ProSlider(v, { actions.setSend(c.channel, bus, it) }, Modifier.fillMaxWidth().height(48.dp).testTag("live_send_${c.key}_$bus"), accent = Neon.Magenta, label = label, valueText = percent((v * 100).roundToInt()))
             }
         }
     }

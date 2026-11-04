@@ -273,7 +273,7 @@ private fun PadEditor(pad: Int, clip: LiveClip?, drumSounds: List<Pair<Int, Stri
                 }
             }
             Text(tr("Volume"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-            ProSlider(value = clip.gain / 2f, onValueChange = { actions.setGain(pad, it * 2f) })
+            ProSlider(value = clip.gain / 2f, onValueChange = { actions.setGain(pad, it * 2f) }, label = tr("Volume"), valueText = com.pocketstudio.model.i18n.percent(kotlin.math.round(clip.gain * 100).toInt()))
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             if (clip != null) {

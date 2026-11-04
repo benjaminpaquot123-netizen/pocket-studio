@@ -774,7 +774,9 @@ object TutoChecks {
         val hits = HashMap<Int, Hit>()
         lanes.forEach { l -> d.lanes.getOrNull(l)?.hits?.forEach { (s, h) -> if (s < d.steps) hits[s] = h } }
         val mine = hits.keys
-        if (!(mine.containsAll(wanted.keys) && (mine - wanted.keys).size <= maxOf(1, wanted.size / 2))) return false
+        // Audit ultra round 1, n° 34 (seat B d: « Bravo » with steps 1, 3 and 11 for a two-step on 1 and 11): no hit
+        // more than the dotted cells; one there is crossed out on the grid ([toErase]) until it is taken away.
+        if (!(mine.containsAll(wanted.keys) && (mine - wanted.keys).isEmpty())) return false
         // "lane:hat:rolls": each roll of the line (trap's hats, a « 3 »: three hits in one cell) rolled there too.
         return !rolls || wanted.all { (s, h) -> (h.repeats < 2 || (hits[s]?.repeats ?: 1) == h.repeats) && (hits[s]?.span ?: 1) == h.span }
     }
@@ -959,6 +961,23 @@ object TutoChecks {
     /** The scenes of [p] named [label] as they are now; every scene when [label] is null. */
     private fun scenesOf(p: Project, label: String?): List<Scene> =
         p.allScenes.indices.filter { label == null || labelIs(p.allScenes[it].label, label) }.map { sceneAt(p, it) }
+
+    /**
+     * The hits of a "lane:" step's role in the part shown that no dotted cell asks for (n° 34: a hit too many
+     * on the two-step), by lane; null when there is none, or when the part shown is not the step's.
+     */
+    private fun laneExtras(step: TutoStep, p: Project, target: TutoTarget): Map<Int, Set<Int>>? {
+        val role = argOf(step.check)
+        val part = partOf(step)
+        val shown = sceneAt(p, p.scene)
+        if (part != null && !labelIs(shown.label, part)) return null
+        val line = target.line(role, part) ?: return null
+        val d = shown.drums
+        val wanted = StarterWizard.hits(line, d.steps).keys.ifEmpty { return null }
+        return lanesOf(role, target).mapNotNull { l ->
+            d.lanes.getOrNull(l)?.hits?.keys?.filter { it < d.steps && it !in wanted }?.toSet()?.takeIf { it.isNotEmpty() }?.let { l to it }
+        }.toMap().ifEmpty { null }
+    }
 
     /** The pad a fill rolls on: its [TutoStep.target] when it is a drum role, else the snare. */
     fun fillRole(step: TutoStep): String = step.target.takeIf { it in DRUM_ROLES } ?: "snare"
@@ -1243,7 +1262,7 @@ object TutoChecks {
                 val type = EffectType.entries.firstOrNull { it.name == arg } ?: return null
                 channelsToDo(step, p).fold(p) { q, ch -> withInsert(q, ch, Insert(type.ordinal, type.defaults)) ?: q }
             }
-            c.startsWith("loudness:") -> LoudnessTarget.entries.firstOrNull { it.name == arg }?.let { p.copy(mixer = p.mixer.copy(target = it)) } ?: return null
+            c.startsWith("loudness:") -> LoudnessTarget.entries.firstOrNull { it.name == arg }?.let { p.copy(mixer = com.pocketstudio.model.LoudnessTargets.withTarget(p.mixer, it)) } ?: return null
             c.startsWith("changed:drums:") -> inScene(p, c.removePrefix("changed:drums:")) { q ->
                 // A variation: an open hat on an empty cell near the end (the second to last first), else a percussion's.
                 val n = q.drums.steps
@@ -2223,6 +2242,7 @@ object TutoChecks {
      * that takes nothing away. For the screen to mark them (and show their bar).
      */
     fun toErase(step: TutoStep, p: Project, target: TutoTarget? = null): Map<Int, Set<Int>>? {
+        if (step.check.startsWith("lane:")) return target?.let { laneExtras(step, p, it) }
         if (step.check != "gap") return null
         val d = p.drums
         val cut = target?.let { gapCells(step, it) } ?: step.length.takeIf { it > 0 } ?: GAP_CELLS

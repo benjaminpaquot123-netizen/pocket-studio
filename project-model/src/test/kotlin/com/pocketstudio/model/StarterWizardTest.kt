@@ -404,6 +404,25 @@ class StarterWizardTest {
     }
 
     @Test
+    fun theShortVersionLastsUnderAMinuteWithItsDropAndSaysSo() {
+        // Audit ultra round 1, n° 33 (seats C a, D b): « je voulais 30 s », the song made 3 min 12.
+        for (style in StarterWizard.STYLES) for (melody in listOf(false, true)) {
+            val short = style.copy(short = true)
+            val lines = style.lines.associate { it.role to null as PadSample? }
+            val parts = if (melody) P.entries.associateWith { StarterWizard.soundsFor(it, style).first() } else emptyMap()
+            val p = StarterWizard.build(short, lines, StarterWizard.Mood.Dark.takeIf { melody }, parts)
+            val seconds = p.songBars * p.beatsPerBar * 60.0 / p.tempoBpm
+            // Under a minute and a quarter at the slowest sung tempos (the chords' bars added to the layout's), most under 50 s.
+            assertTrue("${style.name} $melody: $seconds s", seconds in 20.0..75.0)
+            assertEquals(style.name, SongShape.SHORT_SECONDS, StarterWizard.maxSongSeconds(short), 0.0)
+            // It still drops (the section the song is made for), and the summary says what is built.
+            val plan = StarterWizard.planFor(short, lines.keys, parts.keys, acid = melody && style.melody.acid != null)
+            assertEquals(style.name, seconds, StarterWizard.songSeconds(short, plan), 0.01)
+            assertTrue(style.name, p.song.any { it.scene == 2 } || plan.sceneCount < 3)
+        }
+    }
+
+    @Test
     fun theSongLastsFiveToSixMinutesInTechnoAndBassMusicAndAboutThreeElsewhere() {
         for (style in StarterWizard.STYLES) for (melody in listOf(false, true)) {
             val lines = style.lines.associate { it.role to null as PadSample? }

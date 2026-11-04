@@ -636,6 +636,7 @@ private fun StepGrid(
             com.pocketstudio.app.tuto.TutoGridLine(
                 bar = bar, bars = bars, pad = padName(project, lane),
                 here = tutoLeft.count { it / per == bar },
+                erasing = tutoLeft.isNotEmpty() && com.pocketstudio.app.tuto.TutoHints.erase?.get(lane)?.containsAll(tutoLeft) == true,
                 elsewhere = tutoLeft.firstOrNull { it / per != bar }?.let { it / per to tutoLeft.count { s -> s / per == it / per } },
                 go = { b -> chosenBar = b; follow = false },
                 copy = com.pocketstudio.app.tuto.TutoHints.copy.takeIf { com.pocketstudio.app.tuto.TutoHints.copyOnGrid },
@@ -770,7 +771,15 @@ private fun StepGrid(
                             // Audit final (22): TalkBack says the step and what is on it.
                             .semantics(mergeDescendants = true) {
                                 contentDescription = tr("Pas %d", step % per + 1)
-                                stateDescription = if (ownerHit != null) tr("dans le triolet") else stepState(hit)
+                                // Audit ultra round 1, n° 34 (seat B d): the tutorial's dotted cells said « vide » like the others.
+                                stateDescription = when {
+                                    ownerHit != null -> tr("dans le triolet")
+                                    hit == null && com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) -> l == lane && step in cells } == true ->
+                                        tr("vide, en pointillé : à toucher")
+                                    hit != null && com.pocketstudio.app.tuto.TutoHints.erase?.get(lane)?.contains(step) == true ->
+                                        stepState(hit) + ", " + tr("barré : à enlever")
+                                    else -> stepState(hit)
+                                }
                             }
                             .testTag("step_$step"),
                         contentAlignment = Alignment.BottomCenter,
@@ -944,6 +953,7 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
         ProSlider(
             value = (project.swing / Project.MAX_SWING).toFloat(),
             onValueChange = { actions.setSwing(it * Project.MAX_SWING) },
+            label = tr("Swing"), valueText = percent((project.swing / Project.MAX_SWING * 100).roundToInt()),
         )
     }
 }

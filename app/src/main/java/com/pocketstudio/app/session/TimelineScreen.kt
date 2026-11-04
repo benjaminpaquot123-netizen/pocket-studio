@@ -677,7 +677,7 @@ private fun TimelineTopBar(
             TimelineClock(ui, Modifier.padding(start = 6.dp).weight(1f))
         }
         IconButton(onClick = actions.undo, enabled = ui.canUndo, modifier = Modifier.testTag("timeline_undo")) {
-            Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = tr("Annuler"))
+            Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = tr("Annuler (défaire)"))
         }
         IconButton(onClick = actions.redo, enabled = ui.canRedo, modifier = Modifier.testTag("timeline_redo")) {
             Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = tr("Rétablir"))

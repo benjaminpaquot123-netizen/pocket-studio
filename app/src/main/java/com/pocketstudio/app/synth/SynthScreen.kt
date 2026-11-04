@@ -518,7 +518,9 @@ private fun SimpleSoundCard(tracks: TracksUi) {
     val t = tracks.tracks.firstOrNull { it.id == tracks.selected } ?: return
     NeonCard(modifier = Modifier.testTag("simple_sound")) {
         SectionLabel(tr("Le son"), foldKey = "Le son (mode simple)")
-        Text(tr(t.soundLabel), style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+        // Audit ultra round 1, n° 36 (seat F a): the sound's own name (« Orgue »), not its kind (« Synthé ») once it is changed.
+        Text(com.pocketstudio.model.guide.GuideSheets.soundName(t), style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            modifier = Modifier.testTag("simple_sound_name"))
         tracks.changeSound?.let { change ->
             androidx.compose.material3.Button(onClick = { change(t.id) }, modifier = Modifier.pressScale().fillMaxWidth().heightIn(min = 48.dp).testTag("simple_change_sound")) {
                 Text(tr("Changer le son"))
@@ -723,7 +725,7 @@ private fun ParamSliderBody(label: String, value: Float, help: Help?, shown: Str
             Text(shown ?: "${(value * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
         }
     }
-    ProSlider(value = value, onValueChange = onChange)
+    ProSlider(value = value, onValueChange = onChange, label = label, valueText = shown ?: com.pocketstudio.model.i18n.percent((value * 100).roundToInt()))
 }
 
 private val BLACK_KEY_AFTER_WHITE = setOf(0, 1, 3, 4, 5)  // C# D# F# G# A# sit after C D F G A

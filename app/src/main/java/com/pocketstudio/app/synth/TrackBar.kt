@@ -161,7 +161,7 @@ fun TrackBar(
                             when {
                                 ui.freezing == t.id -> tr("Gel en cours…")
                                 t.id in ui.frozen -> "❄ " + tr("Gelée")
-                                else -> tr(t.soundLabel)
+                                else -> com.pocketstudio.model.guide.GuideSheets.soundName(t)
                             },
                             style = MaterialTheme.typography.labelSmall, color = if (t.id in ui.frozen) Neon.Cyan else Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis,
                             modifier = if (t.id in ui.frozen) Modifier.testTag("track_frozen_${t.id}") else Modifier,

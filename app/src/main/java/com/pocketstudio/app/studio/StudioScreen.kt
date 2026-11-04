@@ -98,13 +98,13 @@ fun StudioScreen(
                         color = Neon.Cyan,
                     )
                 }
-                ProSlider(value = hzToSlider(state.frequencyHz), onValueChange = { onFrequency(sliderToHz(it)) })
+                ProSlider(value = hzToSlider(state.frequencyHz), onValueChange = { onFrequency(sliderToHz(it)) }, label = "Fréquence", valueText = "${state.frequencyHz.roundToInt()} Hz")
 
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Text("Volume", Modifier.weight(1f))
                     Text(com.pocketstudio.model.i18n.percent((state.volume * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
                 }
-                ProSlider(value = state.volume, onValueChange = onVolume)
+                ProSlider(value = state.volume, onValueChange = onVolume, label = "Volume", valueText = com.pocketstudio.model.i18n.percent((state.volume * 100).roundToInt()))
             }
 
             NeonCard {

@@ -101,7 +101,7 @@ internal fun SampledPanel(ui: InstrumentUi) {
         Text(tr("Volume"), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
         Text(com.pocketstudio.model.i18n.percent((s.gain * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
     }
-    ProSlider(value = s.gain / 2f, onValueChange = { v -> ui.editSampled("gain") { it.copy(gain = v * 2f) } }, modifier = Modifier.testTag("sampled_gain"))
+    ProSlider(value = s.gain / 2f, onValueChange = { v -> ui.editSampled("gain") { it.copy(gain = v * 2f) } }, label = tr("Volume"), valueText = com.pocketstudio.model.i18n.percent((s.gain * 100).roundToInt()), modifier = Modifier.testTag("sampled_gain"))
 }
 
 @Composable
@@ -110,5 +110,5 @@ private fun Seconds(label: String, value: Float, range: ClosedFloatingPointRange
         Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
         Text(tr("%.2f s", value), style = MonoStyle, color = Neon.Cyan)
     }
-    ProSlider(value = value.coerceIn(range), onValueChange = onChange, valueRange = range, modifier = Modifier.testTag(tag))
+    ProSlider(value = value.coerceIn(range), onValueChange = onChange, valueRange = range, label = label, valueText = tr("%.2f s", value), modifier = Modifier.testTag(tag))
 }

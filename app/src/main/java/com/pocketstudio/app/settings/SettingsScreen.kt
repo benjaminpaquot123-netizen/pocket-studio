@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.settings
 
+import com.pocketstudio.ui.named
 import com.pocketstudio.ui.pressScale
 import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -80,7 +81,7 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
             }
             Text(tr("Noms des notes"), style = MaterialTheme.typography.bodyMedium)
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                FilterChip(selected = !s.englishNotes, onClick = { actions.update { it.copy(englishNotes = false) } }, label = { Text("Do Ré Mi") }, colors = chip)
+                FilterChip(selected = !s.englishNotes, onClick = { actions.update { it.copy(englishNotes = false) } }, label = { Text(tr("Do Ré Mi")) }, colors = chip)
                 FilterChip(selected = s.englishNotes, onClick = { actions.update { it.copy(englishNotes = true) } }, label = { Text("C D E") }, colors = chip)
             }
         }
@@ -101,7 +102,7 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
                 actions.update { it.copy(introSound = v) }
             }
             Text(tr("Volume du métronome : %d %%", (s.metronomeLevel * 100).roundToInt()), style = MaterialTheme.typography.bodyMedium)
-            ProSlider(value = s.metronomeLevel, onValueChange = { v -> actions.update { it.copy(metronomeLevel = v) } }, modifier = Modifier.testTag("metronome_level"))
+            ProSlider(value = s.metronomeLevel, onValueChange = { v -> actions.update { it.copy(metronomeLevel = v) } }, label = tr("Volume du métronome"), valueText = com.pocketstudio.model.i18n.percent((s.metronomeLevel * 100).roundToInt()), modifier = Modifier.testTag("metronome_level"))
             Text(tr("Décompte avant d'enregistrer"), style = MaterialTheme.typography.bodyMedium)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 listOf(0 to tr("Aucun"), 1 to tr("1 mesure"), 2 to tr("2 mesures")).forEach { (bars, label) ->
@@ -168,7 +169,7 @@ private fun Toggle(title: String, hint: String, checked: Boolean, tag: String, o
             Text(title, style = MaterialTheme.typography.bodyLarge)
             Text(hint, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
-        Switch(checked = checked, onCheckedChange = onChange, modifier = Modifier.testTag(tag))
+        Switch(checked = checked, onCheckedChange = onChange, modifier = Modifier.testTag(tag).named(title))
     }
 }
 

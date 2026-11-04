@@ -1,5 +1,6 @@
 package com.pocketstudio.app.audiotracks
 
+import com.pocketstudio.ui.named
 import com.pocketstudio.ui.ScaledAlertDialog
 import com.pocketstudio.ui.ScaledDropdownMenu
 
@@ -463,7 +464,7 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
     // The bar lines over the sound: where each bar of the song (or the part) falls in the take.
     info?.let { Waveform(it.peaks, color, region = range.start to range.endInclusive, bars = clipBarMarks(clip, ui.tempoBpm, per)) }
     // Cut: keep the part between the two handles.
-    RangeSlider(value = range, onValueChange = { rangeStart = it.start; rangeEnd = it.endInclusive }, modifier = Modifier.testTag("audio_trim_$id"))
+    RangeSlider(value = range, onValueChange = { rangeStart = it.start; rangeEnd = it.endInclusive }, modifier = Modifier.testTag("audio_trim_$id").named(tr("Garder la sélection")))
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fadingHorizontalScroll()) {
         OutlinedButton(onClick = { actions.trim(id, range.start, range.endInclusive) }, enabled = range.start > 0.001f || range.endInclusive < 0.999f) {
             Text(tr("Garder la sélection"))

@@ -345,7 +345,7 @@ private fun AutoRow(model: CutModel, finding: Boolean, onAuto: (AutoCut) -> Unit
         Spacer(Modifier.weight(0.01f))
         // The arrow alone: both menus keep their words on a phone.
         IconButton(onClick = model::undo, enabled = model.canUndo, modifier = Modifier.testTag("cut_undo")) {
-            Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = tr("Annuler"), tint = if (model.canUndo) Neon.Cyan else Neon.TextSecondary)
+            Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = tr("Annuler (défaire)"), tint = if (model.canUndo) Neon.Cyan else Neon.TextSecondary)
         }
     }
 }

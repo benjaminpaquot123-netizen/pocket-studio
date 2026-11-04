@@ -178,7 +178,7 @@ fun TutoBanner(modifier: Modifier = Modifier) {
  * Nothing of it over the cells.
  */
 @Composable
-fun TutoGridLine(bar: Int, bars: Int, pad: String, here: Int, elsewhere: Pair<Int, Int>?, go: (Int) -> Unit, copy: (() -> Unit)?) {
+fun TutoGridLine(bar: Int, bars: Int, pad: String, here: Int, elsewhere: Pair<Int, Int>?, go: (Int) -> Unit, copy: (() -> Unit)?, erasing: Boolean = false) {
     val said = TutoHints.banner
     androidx.compose.runtime.LaunchedEffect(said) { if (said != null) { kotlinx.coroutines.delay(TUTO_BANNER_MS); if (TutoHints.banner == said) TutoHints.banner = null } }
     Row(
@@ -194,6 +194,8 @@ fun TutoGridLine(bar: Int, bars: Int, pad: String, here: Int, elsewhere: Pair<In
             )
             val status = when {
                 said != null -> said
+                // n° 34: a hit too many (crossed out) is said as such, not as a dotted cell to touch.
+                here > 0 && erasing -> trCount(here, "%d coup en trop ici (barré)", "%d coups en trop ici (barrés)")
                 here > 0 -> trCount(here, "Encore %d case en pointillé ici", "Encore %d cases en pointillé ici")
                 else -> null
             }
@@ -220,8 +222,10 @@ fun tutoRollWhere(track: String?, bar: Int, bars: Int): String =
 fun tutoMotifDone(): String = tr("Motif posé ! La suite se copie :")
 
 /** « Encore 3 notes en pointillé » over the piano roll ([ahead]: some of them out of sight, that way). */
-fun tutoNotesLeft(left: Int, ahead: Boolean?): String = when {
+fun tutoNotesLeft(left: Int, ahead: Boolean?, above: Boolean? = null): String = when {
     left <= 0 -> tr("Toutes les notes en pointillé sont posées")
+    above == true -> trCount(left, "Encore %d note en pointillé, plus haut ↑", "Encore %d notes en pointillé, plus haut ↑")
+    above == false -> trCount(left, "Encore %d note en pointillé, plus bas ↓", "Encore %d notes en pointillé, plus bas ↓")
     ahead == true -> trCount(left, "Encore %d note en pointillé, plus loin →", "Encore %d notes en pointillé, plus loin →")
     ahead == false -> trCount(left, "← Encore %d note en pointillé, plus tôt", "← Encore %d notes en pointillé, plus tôt")
     else -> trCount(left, "Encore %d note en pointillé à toucher", "Encore %d notes en pointillé à toucher")
@@ -416,6 +420,8 @@ fun TutoPanel(
                             if (done) Icon(Icons.Filled.CheckCircle, contentDescription = tr("Fait"), tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp).size(20.dp).testTag("tuto_step_done"))
                             Text(tutoText(step.textFor(ui.progress.level)), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.testTag("tuto_text"))
                         }
+                        // n° 37: in the Mode simple, each word of the trade of the step (kick, Drop, phrygienne…) said in plain words under it.
+                        com.pocketstudio.app.library.PlainWordsLines(step.textFor(ui.progress.level))
                         // « Pourquoi ? » opened by the user: the panel takes its new height (the user's own touch, on the panel).
                         Why(step.why ?: chapter.why.takeIf { it.isNotEmpty() }) { held = 0 }
                         if (chapter.map && map.isNotEmpty()) SongMap(map, focus = mapFocus(step.listen))
@@ -480,8 +486,13 @@ private fun DemoCaption(phase: TutoDemoPhase) {
 }
 
 // Testers (lot « tuto 4 »): « Voilà ce qu'il fallait faire — à toi ma… » was cut on the folded line.
-private fun demoWords(phase: TutoDemoPhase): String =
-    if (phase == TutoDemoPhase.SHOWING) tr("Regarde, je le fais…") else tr("Voilà ! À toi maintenant.")
+// Audit ultra round 1, n° 34 (seat B d): « À toi maintenant » was said while the shown value (174 BPM) was still set;
+// now said once it is put back as it was, « Je remets comme avant » meanwhile.
+private fun demoWords(phase: TutoDemoPhase): String = when (phase) {
+    TutoDemoPhase.SHOWING -> tr("Regarde, je le fais…")
+    TutoDemoPhase.HOLDING -> tr("Voilà. Je remets comme avant…")
+    TutoDemoPhase.FADING -> tr("Voilà ! À toi maintenant.")
+}
 
 /**
  * The folded panel's line, always [FOLDED_LINE] high: « Montre-moi »'s caption (« Arrêter » beside

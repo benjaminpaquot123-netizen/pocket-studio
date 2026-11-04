@@ -172,10 +172,10 @@ internal fun ExportOptionsPanel(export: com.pocketstudio.app.rhythm.ExportUi, ha
             val total = export.songBars.coerceAtLeast(1).toFloat()
             androidx.compose.material3.Text(tr("Début : mesure %d", o.fromBar), style = small)
             com.pocketstudio.ui.ProSlider(value = o.fromBar.toFloat(), onValueChange = { v -> val f = v.toInt().coerceAtLeast(1); set(o.copy(fromBar = f, toBar = maxOf(f, o.toBar ?: f))) },
-                valueRange = 1f..total, modifier = Modifier.testTag("export_range_from"))
+                valueRange = 1f..total, label = tr("Début"), valueText = tr("Début : mesure %d", o.fromBar), modifier = Modifier.testTag("export_range_from"))
             androidx.compose.material3.Text(tr("Fin : mesure %d", o.toBar ?: o.fromBar), style = small)
             com.pocketstudio.ui.ProSlider(value = (o.toBar ?: o.fromBar).toFloat(), onValueChange = { v -> set(o.copy(toBar = maxOf(o.fromBar, v.toInt()))) },
-                valueRange = 1f..total, modifier = Modifier.testTag("export_range_to"))
+                valueRange = 1f..total, label = tr("Fin"), valueText = tr("Fin : mesure %d", o.toBar ?: o.fromBar), modifier = Modifier.testTag("export_range_to"))
         }
     }
     if (!stems) {

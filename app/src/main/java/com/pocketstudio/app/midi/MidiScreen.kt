@@ -1,5 +1,6 @@
 package com.pocketstudio.app.midi
 
+import com.pocketstudio.ui.named
 import com.pocketstudio.ui.ScaledDropdownMenu
 
 import com.pocketstudio.model.i18n.tr
@@ -118,7 +119,7 @@ fun MidiScreen(
                         Text(tr("Tempo, départ et arrêt viennent de l'autre machine (boîte à rythmes, ordinateur…)."),
                             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                     }
-                    Switch(checked = ui.followClock, onCheckedChange = actions.setFollowClock, modifier = Modifier.testTag("midi_follow"))
+                    Switch(checked = ui.followClock, onCheckedChange = actions.setFollowClock, modifier = Modifier.testTag("midi_follow").named(tr("Suivre l'horloge MIDI")))
                 }
                 ui.clockBpm?.let { Text(tr("Tempo reçu : %.1f BPM", it), style = MonoStyle, color = Neon.Cyan) }
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -127,7 +128,7 @@ fun MidiScreen(
                         Text(tr("L'appareil branché suit ton tempo, ton départ et ton arrêt."),
                             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                     }
-                    Switch(checked = ui.sendClock, onCheckedChange = actions.setSendClock, modifier = Modifier.testTag("midi_send_clock"))
+                    Switch(checked = ui.sendClock, onCheckedChange = actions.setSendClock, modifier = Modifier.testTag("midi_send_clock").named(tr("Envoyer l'horloge MIDI")))
                 }
             }
             // The automatic knobs first (phase 39): MIDI learn is for whoever wants more.

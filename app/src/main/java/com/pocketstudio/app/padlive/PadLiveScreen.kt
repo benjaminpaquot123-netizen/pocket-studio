@@ -674,7 +674,7 @@ private fun MoreRow(ui: PadLiveUi, actions: PadLiveActions, party: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             MoreButton(Icons.Filled.StopCircle, tr("Tout couper"), "padlive_stop_all", Modifier.weight(1f), actions.stopAll)
-            MoreButton(Icons.AutoMirrored.Filled.Undo, tr("Annuler"), "padlive_undo", Modifier.weight(1f), actions.undo, enabled = ui.canUndo)
+            MoreButton(Icons.AutoMirrored.Filled.Undo, tr("Annuler (défaire)"), "padlive_undo", Modifier.weight(1f), actions.undo, enabled = ui.canUndo)
             MoreButton(Icons.Filled.GridView, tr("Briques"), "padlive_live", Modifier.weight(1f), actions.openLive)
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {

@@ -27,6 +27,16 @@ internal object PlainWords {
         Term(Regex("""(?i)\bhoovers?\b""")) { tr("Hoover : un gros synthé qui hurle, le son des raves.") },
         Term(Regex("""(?i)\bsub\b""")) { tr("Sub : la basse la plus grave, celle qu'on sent dans le ventre.") },
         Term(Regex("""(?i)\boctaves?\b""")) { tr("Octave : la même note, plus grave ou plus aiguë.") },
+        // Audit ultra round 1, n° 37 (seats A b, D b, D d): the words of the trade the Mode simple still showed bare.
+        Term(Regex("""(?i)\bkicks?\b""")) { tr("Kick : la grosse caisse, le « boum » grave de la batterie.") },
+        Term(Regex("""(?i)\bcharleys?\b|\bhi-hats?\b""")) { tr("Charley : la petite cymbale qui fait « tss », le tic-tac du rythme.") },
+        Term(Regex("""(?i)\btriolets?\b""")) { tr("Triolet : trois coups serrés dans la place de deux.") },
+        Term(Regex("""(?i)\broulements?\b""")) { tr("Roulement : des coups très rapides à la suite, comme un tambour qui roule.") },
+        Term(Regex("""\bDrops?\b""")) { tr("Drop : le moment fort du morceau, quand tout revient d'un coup.") },
+        Term(Regex("""(?i)\bpenta(tonique)?\b""")) { tr("Penta : une gamme de cinq notes, faciles à jouer ensemble.") },
+        Term(Regex("""(?i)\bphrygien(ne)?\b""")) { tr("Phrygienne : une gamme sombre, un peu inquiétante.") },
+        Term(Regex("""(?i)\bcontretemps\b""")) { tr("Contretemps : entre deux temps, là où on ne tape pas du pied.") },
+        Term(Regex("""\b808\b""")) { tr("808 : une basse grave qui sonne comme un kick long.") },
     )
 
     /** The plain lines for the words of the trade in [french] (French keys), each once, in the list's order. */

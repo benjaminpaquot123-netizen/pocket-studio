@@ -82,7 +82,8 @@ class VideoFrameRenderer(
         c.drawRect(0f, 0f, width.toFloat(), height.toFloat(), p)
         p.shader = null
         // The app's sign: three level bars in orange, then its name.
-        val name = "POCKET STUDIO"
+        // Audit ultra round 1, n° 40 (seat C a): the app is BenStudio (the launcher's name), not its old code name.
+        val name = "BENSTUDIO"
         text.typeface = bold
         text.textSize = 30f * k
         text.letterSpacing = 0.18f

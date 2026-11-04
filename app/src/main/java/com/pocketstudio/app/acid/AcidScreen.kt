@@ -166,7 +166,7 @@ fun AcidScreen(
                 Text(if (simple) tr("Nombre de notes") else tr("Densité"), Modifier.weight(1f))
                 Text(com.pocketstudio.model.i18n.percent((acid.density * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
             }
-            ProSlider(value = acid.density, onValueChange = actions.setDensity)
+            ProSlider(value = acid.density, onValueChange = actions.setDensity, label = if (simple) tr("Nombre de notes") else tr("Densité"), valueText = com.pocketstudio.model.i18n.percent((acid.density * 100).roundToInt()))
         }
         StepGrid(acid, playing, currentStep, selected, actions, english, setEnglish, simple)
     }, second = {
@@ -201,7 +201,7 @@ private fun StepGrid(
             SectionLabel(tr("Ligne de basse · base %s", noteName(acid.root, english)), Modifier.weight(1f), help = Glossary.ACID, foldKey = "Ligne de basse")
             FilterChip(
                 selected = english, onClick = { setEnglish(!english) },
-                label = { Text(if (english) "C D E" else "Do Ré Mi") },
+                label = { Text(if (english) "C D E" else tr("Do Ré Mi")) },
                 colors = chipColors,
                 modifier = Modifier.testTag("acid_notation"),
             )
@@ -433,6 +433,7 @@ private fun SoundCard(
                 ProSlider(
                     value = values[i],
                     onValueChange = { actions.setSound(i, it) },
+                    label = label, valueText = "${(values[i] * 100).roundToInt()}",
                     modifier = Modifier.holding { actions.holdSound(i, it) }.testTag("acid_sound_$i"),
                 )
             }

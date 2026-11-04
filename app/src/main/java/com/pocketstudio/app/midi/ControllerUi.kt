@@ -1,5 +1,6 @@
 package com.pocketstudio.app.midi
 
+import com.pocketstudio.ui.named
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -133,7 +134,7 @@ fun ControllerCard(ui: ControllerCardUi, actions: ControllerCardActions) {
                 Text(tr("Aide à l'écran"), style = MaterialTheme.typography.bodyLarge)
                 Text(tr("Un petit rappel de ce que fait ton contrôleur sur l'écran affiché."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
-            Switch(checked = ui.legendOn, onCheckedChange = actions.setLegend, modifier = Modifier.testTag("controller_legend_switch"))
+            Switch(checked = ui.legendOn, onCheckedChange = actions.setLegend, modifier = Modifier.testTag("controller_legend_switch").named(tr("Aide à l'écran")))
         }
         if (c != null) {
             // « Apprendre »: the pads, then a fader or a button.

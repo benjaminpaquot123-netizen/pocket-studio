@@ -62,7 +62,9 @@ object LayoutScan {
             for (n in merged) {
                 if (hidden(n)) continue
                 val name = nameOf(n)
-                if (Kind.LABEL in checks && name.isBlank()) out += Finding(Kind.LABEL, tagOf(n), "${controlKind(n)} without text nor description")
+                // A slider's or a switch's value (« 0.0 », « on ») is not its name: TalkBack reads « 0.0, slider » (round 1, item 30b).
+                val unnamed = if (valued(n)) controlName(n).isBlank() else name.isBlank()
+                if (Kind.LABEL in checks && unnamed) out += Finding(Kind.LABEL, tagOf(n), "${controlKind(n)} without text nor description")
                 if (Kind.TARGET in checks && n.config.contains(SemanticsActions.OnClick)) {
                     // Its touch area, as TalkBack is given it (Material's minimumInteractiveComponentSize
                     // widens a 32 dp chip's to 48 dp; a size forced on the button itself does not).
@@ -123,6 +125,17 @@ object LayoutScan {
         n.config.getOrNull(SemanticsProperties.EditableText)?.text,
         n.config.getOrNull(SemanticsActions.OnClick)?.label,
         n.config.getOrNull(SemanticsProperties.StateDescription),
+    ).joinToString(" ").trim()
+
+    /** A control whose state TalkBack reads as a value (a slider, a switch, a box to tick): it needs a name besides. */
+    fun valued(n: SemanticsNode): Boolean =
+        n.config.contains(SemanticsActions.SetProgress) || n.config.contains(SemanticsProperties.ToggleableState)
+
+    /** What TalkBack reads as a control's name: its words and its description, not its value nor its action's label. */
+    fun controlName(n: SemanticsNode): String = listOfNotNull(
+        n.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString(" "),
+        n.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text },
+        n.config.getOrNull(SemanticsProperties.EditableText)?.text,
     ).joinToString(" ").trim()
 
     fun hidden(n: SemanticsNode): Boolean {

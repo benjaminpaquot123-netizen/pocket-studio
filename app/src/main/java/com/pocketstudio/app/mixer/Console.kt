@@ -284,7 +284,7 @@ private fun StripSheet(
                 Text(tr("Volume"), Modifier.weight(1f))
                 Text(faderDb(c.volume), style = MonoStyle, color = Neon.Cyan)
             }
-            ProSlider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, modifier = Modifier.testTag("sheet_volume_$index"))
+            ProSlider(value = c.volume, onValueChange = { actions.setVolume(index, it) }, label = tr("Volume"), valueText = faderDb(c.volume), modifier = Modifier.testTag("sheet_volume_$index"))
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text(tr("Place"))
                 HelpDot(Glossary.PAN)

@@ -94,7 +94,7 @@ internal fun PadSettingsSheet(pad: Int, clip: LiveClip, actions: PadLiveActions,
                 }
             }
             Text(tr("Volume"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
-            ProSlider(clip.gain, { actions.setGain(pad, it) }, valueRange = 0f..2f, modifier = Modifier.testTag("padlive_gain"))
+            ProSlider(clip.gain, { actions.setGain(pad, it) }, valueRange = 0f..2f, label = tr("Volume"), valueText = com.pocketstudio.model.i18n.percent(kotlin.math.round(clip.gain * 100).toInt()), modifier = Modifier.testTag("padlive_gain"))
             PadSoundSettings(pad, clip, actions)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(onClick = { close(); actions.browse(pad) }, modifier = Modifier.weight(1f).testTag("padlive_change_sound")) {
@@ -140,9 +140,9 @@ private fun PadSoundSettings(pad: Int, clip: LiveClip, actions: PadLiveActions) 
     com.pocketstudio.ui.WithHelp(com.pocketstudio.app.help.ScreenHelp.PADLIVE_SHAPE, about = listOf("padlive_attack", "padlive_release")) {
         Text(tr("Attaque : %s", secondsWords(clip.attack)), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
     }
-    ProSlider(clip.attack, { actions.setAttack(pad, it) }, valueRange = 0f..1f, modifier = Modifier.testTag("padlive_attack"))
+    ProSlider(clip.attack, { actions.setAttack(pad, it) }, valueRange = 0f..1f, label = tr("Attaque"), valueText = secondsWords(clip.attack), modifier = Modifier.testTag("padlive_attack"))
     Text(tr("Fin : %s", secondsWords(clip.release)), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
-    ProSlider(clip.release, { actions.setRelease(pad, it) }, valueRange = 0f..2f, modifier = Modifier.testTag("padlive_release"))
+    ProSlider(clip.release, { actions.setRelease(pad, it) }, valueRange = 0f..2f, label = tr("Fin"), valueText = secondsWords(clip.release), modifier = Modifier.testTag("padlive_release"))
 }
 
 /** « +3 », « −5 », « 0 » demi-tons. */

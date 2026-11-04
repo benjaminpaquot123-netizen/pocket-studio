@@ -696,6 +696,7 @@ fun AppRoot() {
                         acidFromStyle = libraryVm::acidFromStyle,
                         chooseAcidSound = libraryVm::chooseAcidSound,
                         setAcidKnob = libraryVm::setAcidKnob,
+                        setShort = libraryVm::setShort,
                         choosePartSound = libraryVm::choosePartSound,
                         chooseBassGrid = libraryVm::chooseBassGrid,
                         preview = libraryVm::preview,
@@ -2812,7 +2813,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 notes = NotesUi(
                                     stepsPerBar = project.stepsPerBar,
                                     clip = project.synthNotes,
-                                    ghosts = NoteClip.ghostsOf(project.acid, project.synthNotes.steps),
+                                    ghosts = ghostNotes(fullProject, shownTrack),
                                     playStep = -1,
                                     // Read where the play line is drawn, not here (audit 16: the tab redrawn at each step).
                                     playStepOf = { liveState.value.absoluteStep },
@@ -2884,7 +2885,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 ),
                                 // Phase 36: the tracks are the Sons space's chips, above (none here).
                                 tracks = tracksUiOf(fullProject, shownTrack, freezing, bar = false),
-                                browser = trackSoundBrowser(rhythmVm, project, favorites),
+                                browser = trackSoundBrowser(rhythmVm, project, favorites, trackName = fullProject.tracks.firstOrNull { it.id == shownTrack }?.name),
                                 simple = simple,
                             )
                             }
@@ -3706,9 +3707,12 @@ fun timelineRows(
     p: Project, info: Map<String, com.pocketstudio.app.rhythm.SampleInfo> = emptyMap(),
     stems: com.pocketstudio.app.rhythm.StemOverview? = null,
 ): List<com.pocketstudio.app.session.TimelineRow> =
-    listOf(
+    listOfNotNull(
         com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.DRUMS, "Batterie", com.pocketstudio.app.live.DRUMS_COLOR),
-        com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.ACID, com.pocketstudio.model.DefaultNames.ACID, com.pocketstudio.app.acid.AcidLook.Track),
+        // Audit ultra round 1, n° 32: an Acid 303 that plays nowhere is not shown (the assistant's Boom bap
+        // seemed to add a track it never offered), as in « Mes pistes »; its tab is still in Sons.
+        com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.ACID, com.pocketstudio.model.DefaultNames.ACID, com.pocketstudio.app.acid.AcidLook.Track)
+            .takeIf { acidPlays(p) },
     ) + p.instrumentTracks.map { t ->
         com.pocketstudio.app.session.TimelineRow(com.pocketstudio.model.SongPart.inst(t.id), t.name, com.pocketstudio.ui.trackColor(t.color))
     } + p.audioTracks.map { t ->
@@ -4185,7 +4189,7 @@ private fun WithPartHeader(vm: RhythmViewModel, simple: Boolean, content: @Compo
  * The sounds of the instrument track [project] is the view of (see [com.pocketstudio.model.viewOfTrack]):
  * the synth's presets, or Plaits' when the track plays that engine; the favourites; a touch applies one.
  */
-private fun trackSoundBrowser(vm: RhythmViewModel, project: com.pocketstudio.model.Project, favorites: com.pocketstudio.model.Favorites, afterPick: () -> Unit = {}): SoundBrowserUi =
+private fun trackSoundBrowser(vm: RhythmViewModel, project: com.pocketstudio.model.Project, favorites: com.pocketstudio.model.Favorites, afterPick: () -> Unit = {}, trackName: String? = null): SoundBrowserUi =
     if (project.synthEngine == 1) {
         SoundBrowserUi(
             SoundCategories.PLAITS, SoundLibrary.PLAITS, favorites.plaits,
@@ -4269,7 +4273,7 @@ internal fun SoundChooserSheet(vm: RhythmViewModel, track: Int, close: () -> Uni
                 }
                 TextButton(onClick = close, modifier = Modifier.testTag("sound_chooser_close")) { Text(tr("Fermer")) }
             }
-            com.pocketstudio.app.sounds.SoundBrowser(trackSoundBrowser(vm, project, favorites, afterPick = close))
+            com.pocketstudio.app.sounds.SoundBrowser(trackSoundBrowser(vm, project, favorites, afterPick = close, trackName = fullProject.tracks.firstOrNull { it.id == track }?.name))
             real?.let { com.pocketstudio.app.instruments.RealInstruments(it) }
             com.pocketstudio.app.library.MySoundsOnKeys(vm, track, close)
         }
@@ -4294,6 +4298,7 @@ private fun acidSoundBrowser(vm: RhythmViewModel, project: Project, favorites: c
 
 /** Phase 36: « Changer le son » of the acid from its name (Structure, Mon morceau): its sounds in a sheet. */
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+            family = trackName?.let { com.pocketstudio.app.sounds.familyOfTrack(it) },
 @Composable
 internal fun AcidSoundSheet(vm: RhythmViewModel, close: () -> Unit) {
     val project by vm.project.collectAsStateWithLifecycle()
@@ -4327,7 +4332,7 @@ internal fun simpleTracks(p: Project, hideFirst: Boolean = false): List<SimpleTr
         // Every track can go but the Batterie (docs/DECISIONS.md, 2026-11-04).
         return SimpleTrack(key, ch, name, color, c.volume, c.mute, c.solo, pads, deletable = key != com.pocketstudio.model.SongPart.DRUMS)
     }
-    val acidPlays = p.allScenes.any { s -> s.acid.steps.take(s.acid.length.coerceAtLeast(0)).any { it.gate } }
+    val acidPlays = acidPlays(p)
     // The drums' own sounds (the pads with hits), each heard alone from the Batterie's line.
     val pads = p.guideTracks().filter { it.key.startsWith("pad:") }.mapNotNull { t ->
         t.key.removePrefix("pad:").toIntOrNull()?.let { SimplePad(it, com.pocketstudio.model.DefaultNames.shown(t.name)) }
@@ -4401,6 +4406,25 @@ private fun SimpleMixTab(vm: RhythmViewModel) {
 
 /** How long « Voir le réglage » keeps a control lit (it also goes at a touch on « Compris »). */
 private const val GUIDE_SPOT_MS = 8000L
+/**
+ * « Basse en fantôme » under track [shown]: the Acid 303's line, or (no 303 line) the notes of the project's bass
+ * track (audit ultra round 1, n° 35, seat D c: a Synthé over a « Basse » track showed no ghost at all).
+ */
+internal fun ghostNotes(p: Project, shown: Int): List<com.pocketstudio.model.Note> {
+    val steps = p.track(shown).notes.steps
+    NoteClip.ghostsOf(p.acid, steps).takeIf { it.isNotEmpty() }?.let { return it }
+    val bass = p.instrumentTracks.firstOrNull { it.id != shown && com.pocketstudio.app.sounds.familyOfTrack(it.name) == "Basses" && it.notes.notes.isNotEmpty() } ?: return emptyList()
+    val length = bass.notes.steps * com.pocketstudio.model.NoteClip.TICKS_PER_STEP
+    if (length <= 0) return emptyList()
+    // Its loop repeated over the shown track's.
+    return (0 until (steps * com.pocketstudio.model.NoteClip.TICKS_PER_STEP + length - 1) / length).flatMap { k ->
+        bass.notes.notes.map { it.copy(start = it.start + k * length) }
+    }.filter { it.start < steps * com.pocketstudio.model.NoteClip.TICKS_PER_STEP }
+}
+
+/** The project's Acid 303 plays somewhere (a step on in one of its parts): its row is shown. */
+internal fun acidPlays(p: Project): Boolean = p.allScenes.any { s -> s.acid.steps.take(s.acid.length.coerceAtLeast(0)).any { it.gate } }
+
 /** At most this long a plain background stands in for the project while another one opens. */
 private const val SWITCH_COVER_MS = 5000L
 /** « Je le fais »'s ring stays this long, then goes by itself. */

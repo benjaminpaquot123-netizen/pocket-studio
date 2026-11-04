@@ -79,7 +79,7 @@
   "trop bas de %d cents": "%d セント低い",
   "trop haut de %d cents": "%d セント高い",
   "une fois par partie": "パートごとに1回",
-  "« − » : plus tôt, « + » : plus tard (en millisecondes).": "「−」：早く、「＋」：遅く（ミリ秒）。",
+  "« − » : plus tôt, « + » : plus tard (en millisecondes).": "「−」：早める、「＋」：遅らせる（ミリ秒）。",
   "À partir de la partie": "開始パート",
   "Écouteurs Bluetooth : ils ajoutent du retard. Des écouteurs filaires sont plus précis ; sinon, recale la prise avec « Décaler la prise ».": "Bluetooth イヤホンは遅延が出ます。有線のほうが正確です。無理なら「テイクをずらす」で合わせてね。",
   "à chaque mesure": "毎小節",

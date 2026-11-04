@@ -197,6 +197,11 @@ object StarterWizard {
          * drum fill, and the whole mix's low-pass closes over it, open again on the Drop ([SongShape], [LIGHT_SWEEP_LOW]).
          */
         val lightBuild: Boolean = false,
+        /**
+         * The short version the assistant offers first (audit ultra round 1, n° 33: « je voulais 30 s »):
+         * an Intro, the Montée and one Drop, under [SongShape.SHORT_SECONDS], instead of the 3 to 6 minutes.
+         */
+        val short: Boolean = false,
     ) {
         /** Packs that make this style sound right: its machines, its melodic sources, its own pack. */
         val packs: List<String> get() =
@@ -1901,7 +1906,7 @@ object StarterWizard {
 
     /** The bars of the first section of [style]'s song with [plan] (a song's Intro: 4 or 8). */
     private fun introBarsOf(style: Style, plan: ScenePlan): Int =
-        SongShape.layout(plan.form, style.bpm, plan.hasBreak, SongShape.isLong(style), style.fakeDrop).first().bars
+        SongShape.layout(plan.form, style.bpm, plan.hasBreak, SongShape.isLong(style), style.fakeDrop, short = style.short).first().bars
 
     /** [plan] with the variants of [style]'s song (a plan made without its style has none). */
     private fun withVariants(style: Style, plan: ScenePlan): ScenePlan =
@@ -1920,7 +1925,7 @@ object StarterWizard {
     }
 
     /** The longest song the assistant makes for [style]: 6 minutes in techno and bass music, else [MAX_SONG_SECONDS]. */
-    fun maxSongSeconds(style: Style): Double = SongShape.maxSeconds(SongShape.isLong(style))
+    fun maxSongSeconds(style: Style): Double = if (style.short) SongShape.SHORT_SECONDS else SongShape.maxSeconds(SongShape.isLong(style))
 
     /** The names of the song's sections in order ("Intro", "Groove", "Montée", "Drop"…), translated: a variant shows as its section. */
     fun songSectionTitles(style: Style, plan: ScenePlan): List<String> {

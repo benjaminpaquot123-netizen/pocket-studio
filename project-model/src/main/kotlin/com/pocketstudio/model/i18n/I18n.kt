@@ -115,6 +115,8 @@ object I18n {
         "restes",
         // Owner (2026-11-04): « Un bout », the cut screen's two bars.
         "remixbout",
+        // Audit ultra round 1, zones 5 and 6: the assistant's length, the tutorial's hints, the plain words, the controls' names.
+        "audit1z56",
     )
 
     @Volatile
@@ -159,10 +161,16 @@ object I18n {
     @Volatile
     var pseudo: ((String) -> String)? = null
 
+    /**
+     * Keys whose French is a word another key already is, shown in French as their value (audit ultra round 1,
+     * n° 40: « Annuler » is both « Cancel » and « Undo »; the undo arrow said « Cancel » in English).
+     */
+    val FRENCH_SHOWN: Map<String, String> = mapOf("Annuler (défaire)" to "Annuler")
+
     fun t(fr: String): String {
         val text = if (everyday) EVERYDAY[fr] ?: fr else fr
-        pseudo?.let { return it(text) }
-        return if (lang == Lang.FR) text else table(lang)[text]?.takeIf { it.isNotEmpty() } ?: text
+        pseudo?.let { return it(FRENCH_SHOWN[text] ?: text) }
+        return if (lang == Lang.FR) FRENCH_SHOWN[text] ?: text else table(lang)[text]?.takeIf { it.isNotEmpty() } ?: FRENCH_SHOWN[text] ?: text
     }
 
     private val reverse = ConcurrentHashMap<Lang, Map<String, String>>()

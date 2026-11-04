@@ -386,7 +386,7 @@ private fun SimpleTrackSheet(t: SimpleTrack, alone: Boolean, actions: SimpleTrac
                 Text(tr("Volume"), Modifier.weight(1f))
                 Text(com.pocketstudio.app.mixer.faderDb(t.volume), style = MonoStyle, color = Neon.Cyan)
             }
-            ProSlider(value = t.volume, onValueChange = { actions.setVolume(t.ch, it) }, modifier = Modifier.testTag("simple_track_volume"))
+            ProSlider(value = t.volume, onValueChange = { actions.setVolume(t.ch, it) }, label = tr("Volume de %s", t.name), valueText = com.pocketstudio.app.mixer.faderDb(t.volume), modifier = Modifier.testTag("simple_track_volume"))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 // « Écouter seule » plays at once (the loop of the part, the track alone): no ▶ to find first.
                 com.pocketstudio.app.rhythm.AloneButton(alone, tr("Écouter seule"), t.name, "simple_track_solo") { actions.listenAlone(t.key) }

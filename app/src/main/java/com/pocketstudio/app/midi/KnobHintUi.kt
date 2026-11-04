@@ -1,5 +1,6 @@
 package com.pocketstudio.app.midi
 
+import com.pocketstudio.ui.named
 import com.pocketstudio.ui.ScaledBottomSheet
 import com.pocketstudio.ui.ScaledDropdownMenu
 import com.pocketstudio.ui.ScaledPopup
@@ -161,7 +162,7 @@ fun KnobPanel(hint: KnobHint, candidates: List<KnobSlot>, enabled: Boolean, acti
                 Text(tr("Ils suivent l'écran affiché : l'Acid 303 sur son écran, le son sur une piste de Sons, les volumes dans Mix, les effets en Live."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
-            Switch(checked = enabled, onCheckedChange = actions.setEnabled, modifier = Modifier.testTag("knob_enabled"))
+            Switch(checked = enabled, onCheckedChange = actions.setEnabled, modifier = Modifier.testTag("knob_enabled").named(tr("Potards automatiques")))
         }
         TextButton(onClick = actions.reset, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("knob_reset")) { Text(tr("Remettre comme au départ")) }
     }
@@ -235,7 +236,7 @@ fun AutoKnobsCard(enabled: Boolean, setEnabled: (Boolean) -> Unit, open: () -> U
                 tr("Les 8 premiers potards de ton contrôleur règlent tout seuls l'écran affiché : l'Acid 303 sur son écran, le son sur une piste de Sons, les volumes dans Mix, les effets en Live."),
                 style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f),
             )
-            Switch(checked = enabled, onCheckedChange = setEnabled, modifier = Modifier.testTag("midi_auto_knobs_switch"))
+            Switch(checked = enabled, onCheckedChange = setEnabled, modifier = Modifier.testTag("midi_auto_knobs_switch").named(tr("Potards automatiques")))
         }
         OutlinedButton(onClick = open, enabled = enabled, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("midi_auto_knobs_open")) {
             Text(tr("Voir et changer les potards"))

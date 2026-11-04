@@ -192,6 +192,7 @@ private fun PromptCard(ui: GenerateUi, actions: GenerateActions) {
         Text(tr("Durée : %d s", ui.seconds.roundToInt()), style = MaterialTheme.typography.bodyMedium)
         ProSlider(
             value = ui.seconds, onValueChange = { actions.setSeconds(it.roundToInt().toFloat()) },
+            label = tr("Durée"), valueText = tr("%d s", ui.seconds.roundToInt()),
             valueRange = 1f..StableAudio.MAX_SECONDS, steps = StableAudio.MAX_SECONDS.toInt() - 2, enabled = !busy,
             modifier = Modifier.testTag("generate_seconds"),
         )

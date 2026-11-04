@@ -82,6 +82,17 @@ object SongShape {
         "I8 D16 V8 L8 D16 V16 B8 D16 O8", "I8 D8 V8 L8 D8 V16 B8 D16 O8", "I4 D8 V8 L8 D8 V8 L8 D8 O4", "I4 D8 V8 L8 D8 O4",
     )
 
+    /**
+     * The short versions (audit ultra round 1, n° 33): an Intro, the Montée and one Drop, then the end; the
+     * first that fits under [SHORT_SECONDS] at the style's tempo.
+     */
+    private val SHORT = listOf("I4 L4 D8 O4", "I4 L4 D8", "I4 D8", "I2 D4")
+    private val SHORT_SONG = listOf("I4 V4 L4 D8 O4", "I4 V4 D8 O4", "I4 D8", "I2 D4")
+    private val SHORT_RAP = listOf("I4 D8 V8 O4", "I4 D8 O4", "I4 D8", "I2 D4")
+
+    /** The short version's longest length: under a minute, the time of a story or a short video. */
+    const val SHORT_SECONDS = 60.0
+
     /** The longest song of a family: techno and bass music 6 minutes, the others 3 min 30 (Benjamin, 2026-10-23). */
     fun maxSeconds(long: Boolean): Double = if (long) LONG_SECONDS else StarterWizard.MAX_SONG_SECONDS
 
@@ -100,8 +111,12 @@ object SongShape {
      * song's first Refrain within [FIRST_CHORUS_SECONDS]). Without a Break ([hasBreak] false) club
      * music grooves on instead and a song has no Pont; [fakeDrop] puts a fake drop before the first Drop.
      */
-    fun layout(form: SongForm, bpm: Double, hasBreak: Boolean, long: Boolean = false, fakeDrop: Boolean = false, beatsPerBar: Int = 4): List<Span> {
-        val list = when (form) {
+    fun layout(form: SongForm, bpm: Double, hasBreak: Boolean, long: Boolean = false, fakeDrop: Boolean = false, beatsPerBar: Int = 4, short: Boolean = false): List<Span> {
+        val list = if (short) when (form) {
+            SongForm.Song -> SHORT_SONG
+            SongForm.Rap -> SHORT_RAP
+            else -> SHORT
+        }.map { adapt(parse(it), form, hasBreak, fakeDrop) } else when (form) {
             SongForm.Song -> SONG
             SongForm.Rap -> RAP
             SongForm.Club -> if (long) CLUB_LONG else CLUB
@@ -109,7 +124,7 @@ object SongShape {
             SongForm.Build -> if (long) BUILD_LONG else BUILD
         }.map { adapt(parse(it), form, hasBreak, fakeDrop) }
         fun seconds(bars: Int) = bars * beatsPerBar * 60.0 / bpm
-        val max = maxSeconds(long)
+        val max = if (short) SHORT_SECONDS else maxSeconds(long)
         fun fits(l: List<Span>) = seconds(l.sumOf { it.bars }) <= max
         fun early(l: List<Span>) = !form.sung || seconds(l.takeWhile { it.sec != Sec.Drop }.sumOf { it.bars }) <= FIRST_CHORUS_SECONDS
         return list.firstOrNull { fits(it) && early(it) } ?: list.firstOrNull { fits(it) } ?: list.last()
@@ -266,7 +281,7 @@ object SongShape {
     fun shape(style: Style?, plan: ScenePlan, bpm: Double = style?.bpm ?: 120.0, beatsPerBar: Int = 4): Shape {
         val long = style != null && isLong(style)
         val form = plan.form
-        val spans = layout(form, bpm, plan.hasBreak, long, fakeDrop = style?.fakeDrop == true, beatsPerBar = beatsPerBar)
+        val spans = layout(form, bpm, plan.hasBreak, long, fakeDrop = style?.fakeDrop == true, beatsPerBar = beatsPerBar, short = style?.short == true)
         fun content(i: Int) = Content(
             plan.lines.filterValues { i in it }.keys, plan.parts.filterValues { i in it }.keys, i in plan.acid,
         )

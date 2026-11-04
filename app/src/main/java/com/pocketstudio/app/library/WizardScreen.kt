@@ -1,5 +1,6 @@
 package com.pocketstudio.app.library
 
+import com.pocketstudio.ui.named
 import com.pocketstudio.ui.pressScale
 import com.pocketstudio.model.i18n.inSentence
 import androidx.compose.foundation.layout.heightIn
@@ -93,6 +94,8 @@ class WizardActions(
     val setCategory: (Role, String) -> Unit = { _, _ -> },
     val choose: (Role, SoundOption) -> Unit = { _, _ -> },
     val setMood: (StarterWizard.Mood?) -> Unit = {},
+    /** n° 33: the short version (true) or the whole song. */
+    val setShort: (Boolean) -> Unit = {},
     val setPartEnabled: (StarterWizard.Part, Boolean) -> Unit = { _, _ -> },
     val setAcidEnabled: (Boolean) -> Unit = {},
     /** The 303's step editor: a touch (next note), a long touch (accent, slide). */
@@ -206,7 +209,10 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
                 }
                 when (val current = ui.current) {
                     StarterWizard.Step.Style -> StyleStep(ui.styleId, packs, actions)
-                    StarterWizard.Step.Mood -> MoodStep(style!!, ui.mood, packs, actions)
+                    StarterWizard.Step.Mood -> {
+                        LengthChoice(ui, style!!, actions)
+                        MoodStep(style, ui.mood, packs, actions)
+                    }
                     is StarterWizard.Step.Drum -> LineStep(style!!, current.line, ui.rows[current.line.role], ui.plan, packs, playing, actions)
                     StarterWizard.Step.Acid -> AcidStep(style!!, ui, actions)
                     is StarterWizard.Step.Melodic -> PartStep(style!!, ui, packs, current.part, playing, actions)
@@ -373,7 +379,7 @@ private fun LineStep(
         PatternPreview(line.pattern, color)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(tr("Utiliser cette ligne"), modifier = Modifier.weight(1f))
-            Switch(checked = row?.enabled ?: false, onCheckedChange = { actions.setEnabled(role, it) }, modifier = Modifier.testTag("wizard_enabled"))
+            Switch(checked = row?.enabled ?: false, onCheckedChange = { actions.setEnabled(role, it) }, modifier = Modifier.testTag("wizard_enabled").named(tr("Utiliser cette ligne")))
         }
         plan.lines[role]?.let { SceneBadge(it, plan) }
     }
@@ -561,7 +567,7 @@ private fun AcidStep(style: StarterWizard.Style, ui: WizardUi, actions: WizardAc
             style = MaterialTheme.typography.bodyLarge)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(tr("Utiliser la ligne acide"), modifier = Modifier.weight(1f))
-            Switch(checked = ui.acid, onCheckedChange = actions.setAcidEnabled, modifier = Modifier.testTag("wizard_acid_enabled"))
+            Switch(checked = ui.acid, onCheckedChange = actions.setAcidEnabled, modifier = Modifier.testTag("wizard_acid_enabled").named(tr("Utiliser la ligne acide")))
         }
         if (!ui.acid) {
             Text(tr("Pas de ligne acide : l'Acid 303 restera libre pour la tienne."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
@@ -630,7 +636,7 @@ private fun AcidLineCard(line: com.pocketstudio.model.AcidPattern, ui: WizardUi,
             Text(tr("Densité"), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
             Text(com.pocketstudio.model.i18n.percent((ui.acidDensity * 100).roundToInt()), style = com.pocketstudio.ui.MonoStyle, color = Neon.Cyan)
         }
-        com.pocketstudio.ui.ProSlider(value = ui.acidDensity, onValueChange = actions.setAcidDensity, modifier = Modifier.testTag("wizard_acid_density"))
+        com.pocketstudio.ui.ProSlider(value = ui.acidDensity, onValueChange = actions.setAcidDensity, label = tr("Densité"), valueText = com.pocketstudio.model.i18n.percent((ui.acidDensity * 100).roundToInt()), modifier = Modifier.testTag("wizard_acid_density"))
         OutlinedButton(onClick = actions.acidFromStyle, enabled = ui.acidNotes != null, modifier = Modifier.fillMaxWidth().testTag("wizard_acid_style")) {
             Text(tr("Celle du style"))
         }
@@ -851,6 +857,38 @@ private fun MoodStep(style: StarterWizard.Style, mood: StarterWizard.Mood?, pack
     }
 }
 
+/**
+ * Audit ultra round 1, n° 33 (seats C a, D b: « je voulais 30 s », the song made 3 min 12): the song's
+ * length, chosen at the start, each choice with its duration at the style's tempo.
+ */
+@Composable
+private fun LengthChoice(ui: WizardUi, style: StarterWizard.Style, actions: WizardActions) {
+    NeonCard(modifier = Modifier.testTag("wizard_length")) {
+        SectionLabel(tr("Durée du morceau"))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+            listOf(true, false).forEach { isShort ->
+                val selected = ui.short == isShort
+                val words = if (isShort) tr("Court") else tr("Complet")
+                val time = ui.copy(short = isShort).let { u -> duration(StarterWizard.songSeconds(u.style ?: style, u.plan)) }
+                NeonCard(
+                    accent = if (selected) Neon.Cyan else Neon.Outline,
+                    modifier = Modifier.weight(1f)
+                        .selectable(selected, role = androidx.compose.ui.semantics.Role.RadioButton) { actions.setShort(isShort) }
+                        .testTag(if (isShort) "wizard_length_short" else "wizard_length_full"),
+                ) {
+                    Text(words, style = MaterialTheme.typography.titleMedium, color = if (selected) Neon.Cyan else Neon.TextPrimary)
+                    Text(tr("environ %s", time), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                }
+            }
+        }
+        Text(
+            if (ui.short) tr("Une intro, la montée et le moment fort : de quoi faire une vidéo ou essayer vite.")
+            else tr("Le morceau entier, avec ses parties qui reviennent, comme un vrai titre."),
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+        )
+    }
+}
+
 /** One melodic part: what it does, use it or not, and its sound from the library (heard on its first bar). */
 @Composable
 private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, part: StarterWizard.Part, playing: SoundRef?, actions: WizardActions) {
@@ -872,7 +910,7 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, p
         PlainWordsLines(part.explanation, style.melody.tips[part])
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(tr("Créer cette piste"), modifier = Modifier.weight(1f))
-            Switch(checked = row?.enabled ?: false, onCheckedChange = { actions.setPartEnabled(part, it) }, modifier = Modifier.testTag("wizard_part_enabled"))
+            Switch(checked = row?.enabled ?: false, onCheckedChange = { actions.setPartEnabled(part, it) }, modifier = Modifier.testTag("wizard_part_enabled").named(tr("Créer cette piste")))
         }
         ui.plan.parts[part]?.let { SceneBadge(it, ui.plan) }
         if (row != null && !row.enabled && part !in StarterWizard.defaultParts(style)) {

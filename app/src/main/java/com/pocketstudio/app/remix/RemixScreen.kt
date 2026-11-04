@@ -2,6 +2,7 @@
 
 package com.pocketstudio.app.remix
 
+import com.pocketstudio.ui.named
 import com.pocketstudio.ui.ScaledAlertDialog
 
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -394,7 +395,7 @@ private fun InProject(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit,
                 )
                 // Remix testers (Mehdi): the switch had no name until it was on.
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(start = 8.dp)) {
-                    Switch(checked = r.followTempo, onCheckedChange = actions.setFollowTempo, modifier = Modifier.testTag("remix_follow_tempo"))
+                    Switch(checked = r.followTempo, onCheckedChange = actions.setFollowTempo, modifier = Modifier.testTag("remix_follow_tempo").named(tr("Caler au tempo")))
                     Text(tr("Caler au tempo"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, modifier = Modifier.testTag("remix_follow_tempo_label"))
                 }
             }
@@ -452,7 +453,7 @@ private fun InProject(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit,
                     modifier = Modifier.testTag("waveform_$i"),
                 )
             }
-            ProSlider(value = m.volume, onValueChange = { actions.setStemVolume(i, it) }, modifier = Modifier.testTag("stem_volume_$i"))
+            ProSlider(value = m.volume, onValueChange = { actions.setStemVolume(i, it) }, label = tr("Volume de %s", StemStore.label(Demucs.STEMS[i])), valueText = com.pocketstudio.model.i18n.percent((m.volume * 100).roundToInt()), modifier = Modifier.testTag("stem_volume_$i"))
         }
         // n° 23: « Dans un nouveau projet » keeps the song silent (a store of sounds): said, not a mystery.
         if (r.stems.all { it.mute }) {
@@ -827,7 +828,7 @@ fun SongTracksCard(
                 com.pocketstudio.app.ui.MuteToggle(m.mute, StemStore.label(Demucs.STEMS[i]), "song_stem_mute_$i") { toggleMute(i) }
                 com.pocketstudio.app.ui.SoloToggle(m.solo, StemStore.label(Demucs.STEMS[i]), "song_stem_solo_$i", color = Neon.Acid) { toggleSolo(i) }
             }
-            ProSlider(value = m.volume, onValueChange = { setVolume(i, it) }, modifier = Modifier.testTag("song_stem_volume_$i"))
+            ProSlider(value = m.volume, onValueChange = { setVolume(i, it) }, label = tr("Volume de %s", StemStore.label(Demucs.STEMS[i])), valueText = com.pocketstudio.model.i18n.percent((m.volume * 100).roundToInt()), modifier = Modifier.testTag("song_stem_volume_$i"))
         }
     }
 }

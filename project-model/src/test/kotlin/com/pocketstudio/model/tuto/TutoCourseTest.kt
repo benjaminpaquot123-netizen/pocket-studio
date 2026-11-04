@@ -68,8 +68,10 @@ class TutoCourseTest {
             p.copy(drums = p.drums.copy(lanes = p.drums.lanes.mapIndexed { i, l -> if (i == 0) l.copy(hits = at.associate { it to Hit(1f) }) else l }))
         }
         assertTrue(TutoChecks.done(step, with(0, 10), target))
-        // One extra hit is tolerated; half the hits wrong are not.
-        assertTrue(TutoChecks.done(step, with(0, 10, 14), target))
+        // Audit ultra round 1, n° 34: a hit too many is not « réussi » (it was tolerated); it is crossed out to take away.
+        assertFalse(TutoChecks.done(step, with(0, 10, 14), target))
+        assertEquals(mapOf(0 to setOf(14)), TutoChecks.toErase(step, with(0, 10, 14), target))
+        assertEquals(null, TutoChecks.toErase(step, with(0, 10), target))
         assertFalse(TutoChecks.done(step, with(0), target))
         assertFalse(TutoChecks.done(step, with(2, 6, 12), target))
         assertFalse(TutoChecks.done(step, with(), target))

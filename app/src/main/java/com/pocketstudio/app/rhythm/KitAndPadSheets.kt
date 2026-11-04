@@ -278,7 +278,7 @@ private fun PadLayers(ui: PadSheetUi, actions: PadSheetActions) {
         }
         ProSlider(
             value = from.toFloat(), valueRange = com.pocketstudio.model.PadLayer.FROM_RANGE.first.toFloat()..com.pocketstudio.model.PadLayer.FROM_RANGE.last.toFloat(),
-            onValueChange = { actions.setLayerFrom(i, it.roundToInt()) }, modifier = Modifier.testTag("pad_layer_slider_$i"),
+            onValueChange = { actions.setLayerFrom(i, it.roundToInt()) }, label = name, valueText = tr("dès %s", percent((from * 100f / 127f).roundToInt())), modifier = Modifier.testTag("pad_layer_slider_$i"),
         )
     }
     if (ui.layers.size < com.pocketstudio.model.PadLayer.MAX && ui.sounds.isNotEmpty()) {

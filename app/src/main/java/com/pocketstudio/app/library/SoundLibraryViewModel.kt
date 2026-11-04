@@ -147,11 +147,13 @@ data class WizardUi(
     val acidDensity: Float = AcidPattern().density,
     /** « Motifs de basse »: the grid the bass plays ([com.pocketstudio.model.BassPatterns] id; null: the style's own line). */
     val bassGrid: String? = null,
+    /** Audit ultra round 1, n° 33: the short version (under a minute) chosen at the start instead of the whole song. */
+    val short: Boolean = false,
 ) {
-    /** The chosen style, its bass on the chosen grid (the previews and the song hear it). */
+    /** The chosen style, its bass on the chosen grid (the previews and the song hear it), short if chosen. */
     val style: StarterWizard.Style? get() = styleId?.let(StarterWizard::style)?.let {
         com.pocketstudio.model.BassPatterns.styled(it, com.pocketstudio.model.BassPatterns.byId(bassGrid))
-    }
+    }?.let { if (short) it.copy(short = true) else it }
     /** Without a melody ([mood] null) the melodic parts' steps are left out; the mood is chosen before them, so [step] stays put. */
     val steps: List<StarterWizard.Step> get() = StarterWizard.steps(style, melody = mood != null)
     val lastStep: Int get() = steps.size - 1
@@ -1021,6 +1023,11 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     /** null: the beat only, no melodic tracks. */
     fun setMood(mood: StarterWizard.Mood?) {
         _wizard.update { w ->
+    /** n° 33: the song's length, chosen at the start (« Court » under a minute, « Complet » the whole song). */
+    fun setShort(short: Boolean) {
+        _wizard.update { it.copy(short = short) }
+    }
+
             // A 303 line written before (the 303 step comes after the mood's) moves into the new
             // key's scale, so that the song's 303 stays in tune with its chords.
             val style = w.style

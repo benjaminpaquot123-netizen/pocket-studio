@@ -72,7 +72,25 @@ class SoundBrowserUi(
     val describe: (NamedSound<*>) -> String? = { null },
     /** « Au hasard » and « Garder ce son » under the tiles (false: a sound only picked, a layer's). */
     val extras: Boolean = true,
+    /** The family to open on when the sound playing is none of these (n° 35: a lead track opened on « Basses »). */
+    val family: String? = null,
 )
+
+/**
+ * The sound family a track's name asks for (« Lead », « Mélodie » → Leads; « Basse » → Basses; « Accords »
+ * → Nappes…), null when its name says none (audit ultra round 1, n° 35).
+ */
+fun familyOfTrack(name: String): String? {
+    val n = name.lowercase()
+    return when {
+        "808" in n || "bass" in n -> "Basses"
+        "accord" in n || "nappe" in n || "chord" in n || n.startsWith("pad") -> "Nappes"
+        "arp" in n || "pluck" in n -> "Pluck"
+        "lead" in n || "mélod" in n || "melod" in n || "riff" in n || "contre" in n -> "Leads"
+        "piano" in n || "clavier" in n || "orgue" in n || "keys" in n -> "Claviers"
+        else -> null
+    }
+}
 
 /**
  * Ready-made sounds (settings, not files) in the app's one sound browser ([ShelfBrowser], 7d):
@@ -89,8 +107,8 @@ fun SoundBrowser(ui: SoundBrowserUi) {
     // sound chosen elsewhere): never the folder left open for the previous track.
     val start = when (current) {
         is SoundRef.Preset -> if (current.saved) SAVED else ui.sounds[current.index].category
-        // A sound of its own (not one of these): the first family open, its sounds one touch away.
-        else -> ui.categories.firstOrNull()
+        // A sound of its own (not one of these): the track's family (n° 35), else the first one, its sounds one touch away.
+        else -> ui.family?.takeIf { it in ui.categories } ?: ui.categories.firstOrNull()
     }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag(ui.tag)) {
         ShelfBrowser(

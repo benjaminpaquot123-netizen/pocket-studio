@@ -61,7 +61,7 @@ internal fun PlaitsPanel(ui: InstrumentUi) {
                     Text("${(values[param] * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
                 }
             }
-            ProSlider(value = values[param], onValueChange = { ui.setPlaitsParam(param, it) }, modifier = Modifier.testTag("plaits_param_$param"))
+            ProSlider(value = values[param], onValueChange = { ui.setPlaitsParam(param, it) }, label = tr(label), valueText = "${(values[param] * 100).roundToInt()}", modifier = Modifier.testTag("plaits_param_$param"))
         }
         if (asked != null) {
             // Dashed and found by the step's ring and « Montre-moi », as the synth's own knob would be.

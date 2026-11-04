@@ -32,6 +32,12 @@ class ProjectOpener(private val id: String, private val store: ProjectStore, pri
         try {
             val loaded = store.load(id)
             if (loaded != null) return withWaitingLiveTake(withWaitingTakes(loaded))
+            // Audit ultra round 1, n° 22 (seats A c, C e, F d): the project the home offers (« Continuer Mon premier
+            // rythme ») is on the phone from its first opening: « Mes projets » lists it, and opening another one
+            // (Pad Live's « Live ») never loses it. Not written (a full phone): the session saves it at its first change.
+            return RhythmViewModel.starterProject().also { starter ->
+                runCatching { store.save(id, starter.sanitized()) }.onFailure { AppLog.add("Premier projet non écrit : ${it.message}") }
+            }
         } catch (e: Exception) {
             AppLog.add("Projet illisible : ${e.message} / ${e.cause?.message}")
             // Never let the first autosave overwrite files we could not read: move them aside.

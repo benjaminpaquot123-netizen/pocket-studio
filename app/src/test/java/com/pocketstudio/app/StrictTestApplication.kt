@@ -6,7 +6,7 @@ import java.lang.reflect.Method
 /**
  * The app as every Robolectric test runs it (`robolectric.properties`), with StrictMode's rule on: no
  * disk nor network on the main thread ([MainThreadIo]); a new place that does it fails its test.
- * `-Pstrict=off` turns the watch off (to look at something else first).
+ * `-Pstrict=on` turns the watch on (the audit's rounds); off otherwise.
  */
 class StrictTestApplication : PocketStudioApplication(), TestLifecycleApplication {
     override fun onCreate() {

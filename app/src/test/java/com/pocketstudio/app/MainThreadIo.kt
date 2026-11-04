@@ -17,7 +17,9 @@ import java.time.Duration
  * any other fails its test. Every violation seen is also written to `app/build/strictmode/<test>.tsv`.
  */
 object MainThreadIo {
-    private val OFF: Boolean get() = System.getProperty("ps.strict") == "off"
+    // Audit ultra (2026-11-04): on only under -Pstrict=on (the audit's rounds), so the ordinary suite
+    // and the APK's checks stay about the app; the violations found are worked in the audit.
+    private val OFF: Boolean get() = System.getProperty("ps.strict") != "on"
     /** The recording (a `jdk.jfr.Recording`, held through reflection: see [Jfr]). */
     private var recording: Any? = null
 

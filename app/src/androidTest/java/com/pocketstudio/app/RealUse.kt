@@ -71,7 +71,7 @@ object RealUse {
                 // What the app went through says why (the sound opened or not, the project opened…):
                 // the CI emulator cannot be watched, only read afterwards.
                 val why = "waited too long ($seconds s) for $what\n${describeStream()}\ncurrent step ${NativeEngine.currentStep()}, commands dropped ${NativeEngine.droppedCommands}\n" +
-                    "app log:\n${com.pocketstudio.app.report.AppLog.dump(40)}"
+                    "app log:\n${com.pocketstudio.app.report.AppLog.dump(40)}\nwarnings and errors of the process:\n${processLogcat()}"
                 log(why)
                 throw IllegalStateException(why)
             }
@@ -94,7 +94,7 @@ object RealUse {
         compose.onAllNodes(androidx.compose.ui.test.isRoot()).fetchSemanticsNodes().joinToString("\n--- window ---\n") { root ->
             buildString {
                 fun walk(n: androidx.compose.ui.semantics.SemanticsNode, depth: Int) {
-                    if (length > 6000) return
+                    if (length > 20000) return
                     val c = n.config
                     val tag = c.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.TestTag)
                     val text = c.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.Text)?.joinToString(" ")
@@ -105,6 +105,12 @@ object RealUse {
             }
         }
     }.getOrElse { "(no tree: ${it.message})" }
+
+    /** The last warnings and errors this process wrote to logcat (an exception swallowed, a lifecycle out of order…). */
+    fun processLogcat(lines: Int = 60): String = runCatching {
+        val p = Runtime.getRuntime().exec(arrayOf("logcat", "-d", "-t", "1500", "--pid=${android.os.Process.myPid()}", "*:W"))
+        p.inputStream.bufferedReader().readLines().takeLast(lines).joinToString("\n")
+    }.getOrElse { "(no logcat: ${it.message})" }
 
     fun db(x: Float) = if (x > 1e-9f) 20 * log10(x.toDouble()) else -200.0
 

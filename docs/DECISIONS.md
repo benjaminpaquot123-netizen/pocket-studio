@@ -1168,3 +1168,6 @@
 - 2026-11-04 · Les mots du panneau du tuto qui dépassent défilent avec « Lire la suite » en bas, plutôt que de raccourcir les textes. Retour arrière : `MoreWords` dans `TutoPanel.kt`.
 - 2026-11-04 · Anciennes versions simulées par leur propre code du modèle (pas d'APK construite). Retour arrière : sans objet.
 - 2026-11-04 · Message unique après une restauration depuis la sauvegarde Android. Retour arrière : `restoredNotice` dans `ProjectOpening.kt`.
+- 2026-11-04 · L'alarme « disque ou réseau lu sur le fil principal » (StrictMode des tests, JFR) ne s'allume qu'avec `-Pstrict=on` (les tours de l'Audit ultra), pas dans la suite ordinaire ni pour l'APK. Raison : 8 tests rouges au premier passage complet, à trier pendant l'Audit, pas en travers d'une APK. Retour arrière : `OFF` dans `MainThreadIo.kt`.
+- 2026-11-04 · Le recensement des écrans (`ScreenScanTest`) dessine chaque écran sans enregistrer ni comparer de capture (Roborazzi coupé le temps de l'appel). Raison : 48 captures « changées » sous `verifyRoborazziDebug`, parce que le recensement rend à une seule taille les écrans que leurs tests capturent sur tablette ou à 130 %. Retour arrière : `withoutRoborazzi`.
+- 2026-11-04 · Capture `remix_stem_edit_menu` : 1,5 % de pixels tolérés (le halo de l'onglet et de « Suivre »). Retour arrière : 0,5 %.

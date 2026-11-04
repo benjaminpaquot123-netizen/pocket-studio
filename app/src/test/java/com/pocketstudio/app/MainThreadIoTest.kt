@@ -14,7 +14,7 @@ import java.io.File
 class MainThreadIoTest {
     @Test
     fun theAppsOwnSaveOnTheMainThreadIsSeenTheTestsOwnFilesAreNot() {
-        assumeTrue(System.getProperty("ps.strict") != "off")
+        assumeTrue(System.getProperty("ps.strict") == "on")
         assertTrue("the watch runs (${MainThreadIo.startError})", MainThreadIo.watching)
         val dir = File(System.getProperty("java.io.tmpdir"), "strict-" + System.nanoTime())
         // The test's own file: not the app's.

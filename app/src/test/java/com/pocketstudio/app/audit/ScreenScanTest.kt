@@ -77,6 +77,17 @@ class ScreenScanTest(private val screen: String) {
         com.pocketstudio.model.i18n.I18n.everyday = false
     }
 
+    private fun <T> withoutRoborazzi(block: () -> T): T {
+        val keys = listOf("roborazzi.test.record", "roborazzi.test.compare", "roborazzi.test.verify")
+        val saved = keys.associateWith { System.getProperty(it) }
+        keys.forEach { System.setProperty(it, "false") }
+        try {
+            return block()
+        } finally {
+            saved.forEach { (k, v) -> if (v == null) System.clearProperty(k) else System.setProperty(k, v) }
+        }
+    }
+
     @Test
     fun census() {
         val s = SCREENS.getValue(screen)
@@ -92,7 +103,10 @@ class ScreenScanTest(private val screen: String) {
             override fun evaluate() {
                 tc.getAnnotatedMethods(Before::class.java).forEach { it.invokeExplosively(target) }
                 try {
-                    try { ScreenRegistry.method(cls, s).invoke(target) } catch (e: InvocationTargetException) { throw e.targetException }
+                    // The screen is drawn for the scan only: its captureRoboImage must neither record nor
+                    // compare (the scan runs at one size; the test's own @Config may differ, 2026-11-04:
+                    // 48 « changed » captures under verifyRoborazziDebug).
+                    withoutRoborazzi { try { ScreenRegistry.method(cls, s).invoke(target) } catch (e: InvocationTargetException) { throw e.targetException } }
                     found = scan(compose!!)
                 } finally {
                     tc.getAnnotatedMethods(After::class.java).forEach { it.invokeExplosively(target) }

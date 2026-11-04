@@ -123,7 +123,8 @@ class TutoKitTest {
             session.edit { target.blank() }
             PrefsTutoStore(h.app).save(projectId, TutoProgress(style, TutoLevel.Pro, done = done))
         })
-        await("panel") { has("tuto_panel") }
+        // The kit's card stands in the panel's place while it asks (round 1, n° 34).
+        await("panel") { has("tuto_panel") || has("tuto_kit") }
         // Once the app is up (it opens its audio first): the pads' sounds are prepared through it.
         com.pocketstudio.engine.NativeEngine.sink = Sink()
     }

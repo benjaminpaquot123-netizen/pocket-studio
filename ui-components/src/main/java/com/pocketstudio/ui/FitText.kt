@@ -26,7 +26,8 @@ import androidx.compose.ui.unit.sp
 class WholeWordsAutoSize(private val min: TextUnit, private val max: TextUnit, private val step: TextUnit = 0.5.sp) : TextAutoSize {
     override fun TextAutoSizeLayoutScope.getFontSize(constraints: Constraints, text: AnnotatedString): TextUnit {
         val top = if (max.isSp) max.value else 14f
-        val bottom = if (min.isSp) min.value.coerceAtMost(top) else top
+        // n° 38: past 130 %, its floor as at 130 % (a floor in sp grows with the phone's font: « Sim… » at 200 %).
+        val bottom = if (min.isSp) (min.value / (fontScale / BIG_FONT_FROM).coerceAtLeast(1f)).coerceAtMost(top) else top
         var size = top
         while (size > bottom) {
             if (fits(performLayout(constraints, text, size.sp), text.text)) return size.sp

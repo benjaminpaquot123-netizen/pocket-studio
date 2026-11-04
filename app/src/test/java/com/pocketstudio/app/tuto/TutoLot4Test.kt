@@ -355,7 +355,8 @@ class TutoLot4Test {
 
     @Test
     fun theFoldedDemoCaptionIsWhole() {
-        val u = ui(TutoLevel.Facile, "lead_do").copy(open = false, demo = TutoDemoPhase.HOLDING)
+        // Round 1 (n° 34): « À toi maintenant » once the value is put back (FADING); HOLDING says « Je remets comme avant ».
+        val u = ui(TutoLevel.Facile, "lead_do").copy(open = false, demo = TutoDemoPhase.FADING)
         compose.setContent { PocketStudioTheme { TutoPanel(u, canShow = true, actions = TutoActions(), reducedMotion = true) } }
         compose.onNodeWithText("Voilà ! À toi maintenant.").assertIsDisplayed()
     }

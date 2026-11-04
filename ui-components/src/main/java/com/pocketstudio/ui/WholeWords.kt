@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.isSpecified
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 
 /**
@@ -34,7 +35,14 @@ fun WholeWordsText(
     maxLines: Int = 2,
     minScale: Float = 0.72f,
 ) {
-    val resolved = LocalTextStyle.current.merge(style)
+    val merged = LocalTextStyle.current.merge(style)
+    // Audit ultra round 1, n° 38 (200 %: « Char… » on a 56 dp pad): a line height in sp stayed as tall when the words
+    // shrank, two lines never fitted; as a share of the size it shrinks with them (the same at full size).
+    // Past 130 % only (below, the words shrink little and the screens stay as they were).
+    val big = androidx.compose.ui.platform.LocalDensity.current.fontScale > BIG_FONT_FROM
+    val resolved = if (big && merged.lineHeight.isSp && merged.fontSize.isSp && merged.fontSize.value > 0f) {
+        merged.copy(lineHeight = (merged.lineHeight.value / merged.fontSize.value).em)
+    } else merged
     Text(
         text, modifier, color = color, fontWeight = fontWeight, textAlign = textAlign, style = resolved,
         maxLines = maxLines, overflow = TextOverflow.Ellipsis,
@@ -46,7 +54,9 @@ fun WholeWordsText(
 class WholeWords(private val maxFontSize: TextUnit, private val minScale: Float) : TextAutoSize {
     override fun TextAutoSizeLayoutScope.getFontSize(constraints: Constraints, text: AnnotatedString): TextUnit {
         val max = maxFontSize.value
-        val min = max * minScale
+        // Audit ultra round 1, n° 38 (200 %: « Char… », « Écouter l'exempl »): past 130 % the words may shrink as far as
+        // they would at 130 %, never further (a size in sp grows with the phone's font, its floor with it).
+        val min = max * minScale / (fontScale / BIG_FONT_FROM).coerceAtLeast(1f)
         var size = max
         while (size > min) {
             val layout = performLayout(constraints, text, size.sp)
@@ -69,3 +79,6 @@ fun splitsAWord(layout: TextLayoutResult, text: String): Boolean {
     }
     return false
 }
+
+/** The phone's font size from which [WholeWords] and [WholeWordsAutoSize] let the words shrink further (130 %). */
+internal const val BIG_FONT_FROM = 1.3f

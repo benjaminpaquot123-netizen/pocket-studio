@@ -58,6 +58,8 @@ import com.pocketstudio.model.currentSceneContent
 import com.pocketstudio.model.withFx
 import com.pocketstudio.model.longFxLimitNotice
 import com.pocketstudio.model.longFxOverLimit
+import com.pocketstudio.model.keptFx
+import com.pocketstudio.model.withKeptFx
 import com.pocketstudio.model.withoutStaleInsertLanes
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SongPart
@@ -1313,22 +1315,134 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun saveFavoriteOf(id: Int) {
         if (!hasTrack(id)) return
         val t = project.value.track(id)
-        val f = _favorites.value
         when (t.engine) {
-            InstrumentTrack.ENGINE_SYNTH -> if (t.instrument == null) {
-                val name = Favorites.nextName(f.synth.map { it.name })
-                addFavorite(f.synth) { f.copy(synth = f.synth + NamedSound(name, SoundCategories.FAVORITES, t.synth.sanitized())) }
-                if (_favorites.value.synth.size > f.synth.size) _notice.value = tr("Son gardé dans tes favoris : « %s ».", name)
-                return
-            }
-            InstrumentTrack.ENGINE_PLAITS -> {
-                val name = Favorites.nextName(f.plaits.map { it.name })
-                addFavorite(f.plaits) { f.copy(plaits = f.plaits + NamedSound(name, SoundCategories.FAVORITES, t.plaits)) }
-                if (_favorites.value.plaits.size > f.plaits.size) _notice.value = tr("Son gardé dans tes favoris : « %s ».", name)
-                return
-            }
+            InstrumentTrack.ENGINE_SYNTH -> if (t.instrument == null) { keepSynthSound(id); return }
+            InstrumentTrack.ENGINE_PLAITS -> { keepPlaitsSound(id); return }
         }
         _notice.value = tr("Seuls les sons du synthé et de Plaits se gardent en favori.")
+    }
+
+    // --- Audit ultra round 1, n° 35 (seat D c): a kept sound with its effects, a name of its own, never twice ---
+
+    /** Track [id]'s effects, as a kept sound takes them along (null: none). */
+    private fun keptFxOf(id: Int): com.pocketstudio.model.Channel? =
+        project.value.mixer.channels.getOrNull(InstrumentTrack.mixerChannel(id))?.keptFx()
+
+    /** The name of the kept synth sound that is track [id]'s sound with its effects now (null: none is). */
+    fun keptSynthName(id: Int = track): String? {
+        if (!hasTrack(id)) return null
+        val t = project.value.track(id)
+        val fx = keptFxOf(id)
+        return _favorites.value.synth.firstOrNull { k -> k.fx == fx && SoundLibrary.synthNameOf(t.synth, listOf(k)) != null }?.name
+    }
+
+    /** The name of the kept Plaits sound that is track [id]'s sound with its effects now (null: none is). */
+    fun keptPlaitsName(id: Int = track): String? {
+        if (!hasTrack(id)) return null
+        val t = project.value.track(id)
+        val fx = keptFxOf(id)
+        return _favorites.value.plaits.firstOrNull { k -> k.fx == fx && k.sound.sanitized() == t.plaits.sanitized() }?.name
+    }
+
+    /** The name of the kept 303 sound that is the acid's now (null: none is). */
+    fun keptAcidName(): String? = _favorites.value.acid.firstOrNull { it.sound.sanitized() == project.value.acid.sound.sanitized() }?.name
+
+    /** A name typed for a kept sound of [names], or the next « Mon son N »; null (said) when another one has it. */
+    private fun keptNameFrom(typed: String?, names: List<String>): String? {
+        val clean = typed?.let(Favorites::cleanName) ?: return Favorites.nextName(names)
+        if (clean in names) {
+            _notice.value = tr("Un son gardé s'appelle déjà « %s » : choisis un autre nom.", clean)
+            return null
+        }
+        return clean
+    }
+
+    /** « Garder ce son » for track [id]'s synth sound, its effects with it, named [name] (else « Mon son N »); twice: said. */
+    fun keepSynthSound(id: Int = track, name: String? = null) {
+        if (!hasTrack(id)) return
+        keptSynthName(id)?.let { _notice.value = tr("Ce son est déjà dans tes favoris : « %s ».", it); return }
+        val f = _favorites.value
+        val named = keptNameFrom(name, f.synth.map { it.name }) ?: return
+        addFavorite(f.synth) { f.copy(synth = f.synth + NamedSound(named, SoundCategories.FAVORITES, project.value.track(id).synth.sanitized(), keptFxOf(id))) }
+        if (_favorites.value.synth.size > f.synth.size) _notice.value = keptSaid(named, keptFxOf(id) != null)
+    }
+
+    /** « Garder ce son » for track [id]'s Plaits sound, as [keepSynthSound]. */
+    fun keepPlaitsSound(id: Int = track, name: String? = null) {
+        if (!hasTrack(id)) return
+        keptPlaitsName(id)?.let { _notice.value = tr("Ce son est déjà dans tes favoris : « %s ».", it); return }
+        val f = _favorites.value
+        val named = keptNameFrom(name, f.plaits.map { it.name }) ?: return
+        addFavorite(f.plaits) { f.copy(plaits = f.plaits + NamedSound(named, SoundCategories.FAVORITES, project.value.track(id).plaits, keptFxOf(id))) }
+        if (_favorites.value.plaits.size > f.plaits.size) _notice.value = keptSaid(named, keptFxOf(id) != null)
+    }
+
+    /** « Garder ce son » for the acid's sound, as [keepSynthSound] (its effects stay on its own strip). */
+    fun keepAcidSound(name: String? = null) {
+        keptAcidName()?.let { _notice.value = tr("Ce son est déjà dans tes favoris : « %s ».", it); return }
+        val f = _favorites.value
+        val named = keptNameFrom(name, f.acid.map { it.name }) ?: return
+        addFavorite(f.acid) { f.copy(acid = f.acid + NamedSound(named, SoundCategories.FAVORITES, project.value.acid.sound)) }
+        if (_favorites.value.acid.size > f.acid.size) _notice.value = keptSaid(named, false)
+    }
+
+    private fun keptSaid(name: String, fx: Boolean): String =
+        if (fx) tr("Son gardé dans tes favoris avec ses effets : « %s ».", name) else tr("Son gardé dans tes favoris : « %s ».", name)
+
+    /** « Renommer » kept sound [i] of [list] ([kind]: "synth", "plaits", "acid"): said when the name is taken or blank. */
+    private fun renameKept(kind: String, i: Int, typed: String) {
+        val f = _favorites.value
+        val list = when (kind) { "synth" -> f.synth; "plaits" -> f.plaits; else -> f.acid }
+        val old = list.getOrNull(i) ?: return
+        val clean = Favorites.cleanName(typed) ?: return
+        if (clean == old.name) return
+        if (list.withIndex().any { (k, it) -> k != i && it.name == clean }) {
+            _notice.value = tr("Un son gardé s'appelle déjà « %s » : choisis un autre nom.", clean)
+            return
+        }
+        editFavorites {
+            when (kind) {
+                "synth" -> it.copy(synth = it.synth.mapIndexed { k, s -> if (k == i) s.copy(name = clean) else s })
+                "plaits" -> it.copy(plaits = it.plaits.mapIndexed { k, s -> if (k == i) s.copy(name = clean) else s })
+                else -> it.copy(acid = it.acid.mapIndexed { k, s -> if (k == i) s.copy(name = clean) else s })
+            }
+        }
+        _notice.value = tr("Son renommé : « %s ».", clean)
+    }
+    fun renameSynthFavorite(i: Int, name: String) = renameKept("synth", i, name)
+    fun renamePlaitsFavorite(i: Int, name: String) = renameKept("plaits", i, name)
+    fun renameAcidFavorite(i: Int, name: String) = renameKept("acid", i, name)
+
+    /** Kept sound [fx]'s effects on track [id]'s strip, in the undo step [key] of its sound (said when the engine has no room). */
+    private fun putKeptFx(id: Int, fx: com.pocketstudio.model.Channel?, key: String) {
+        fx ?: return
+        val ch = InstrumentTrack.mixerChannel(id)
+        val before = project.value
+        val c = before.mixer.channels.getOrNull(ch) ?: return
+        val next = c.withKeptFx(fx)
+        if (next == c) return
+        val edited = before.copy(mixer = before.mixer.copy(channels = before.mixer.channels.mapIndexed { k, o -> if (k == ch) next else o })).withoutStaleInsertLanes(before)
+        edited.mixer.longFxOverLimit(before.mixer)?.let { _notice.value = longFxLimitNotice(it); return }
+        session.edit(key) { edited }
+        pushMixer()
+        pushAutomation()
+    }
+
+    /** Kept synth sound [i] on the track shown: its sound and its effects, one undo step. */
+    fun applySynthFavorite(i: Int) {
+        val k = _favorites.value.synth.getOrNull(i) ?: return
+        val key = "kept:" + System.nanoTime()
+        applySynthPreset(k.sound, key)
+        putKeptFx(track, k.fx, key)
+    }
+
+    /** Kept Plaits sound [i] on the track shown: its sound and its effects, one undo step. */
+    fun applyPlaitsFavorite(i: Int) {
+        val k = _favorites.value.plaits.getOrNull(i) ?: return
+        val key = "kept:" + System.nanoTime()
+        editTrack(key) { it.copy(plaits = k.sound.sanitized()) }
+        pushPlaits()
+        putKeptFx(track, k.fx, key)
     }
 
     /** A new layer of [sound] on track [id] for [role] ([com.pocketstudio.model.LayerRole]): one undo step. False when it has three. */
@@ -8615,9 +8729,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * file, a pack's instrument, the 808 or a General MIDI instrument goes to the synth too (in
      * the same undo step), or the sound chosen would never be heard.
      */
-    fun applySynthPreset(patch: SynthPatch) {
+    fun applySynthPreset(patch: SynthPatch, key: String? = null) {
         val other = currentTrack.engine != InstrumentTrack.ENGINE_SYNTH || currentTrack.instrument != null
-        editTrack { it.copy(synth = patch, engine = InstrumentTrack.ENGINE_SYNTH, instrument = null) }
+        editTrack(key) { it.copy(synth = patch, engine = InstrumentTrack.ENGINE_SYNTH, instrument = null) }
         pushSynth(currentTrack.synth)
         if (other) {
             pushInstrument()
@@ -9033,15 +9147,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         editFavorites { add() }
     }
 
-    fun saveSynthFavorite() = _favorites.value.let { f ->
-        addFavorite(f.synth) { f.copy(synth = f.synth + NamedSound(Favorites.nextName(f.synth.map { it.name }), SoundCategories.FAVORITES, currentTrack.synth.sanitized())) }
-    }
-    fun savePlaitsFavorite() = _favorites.value.let { f ->
-        addFavorite(f.plaits) { f.copy(plaits = f.plaits + NamedSound(Favorites.nextName(f.plaits.map { it.name }), SoundCategories.FAVORITES, currentTrack.plaits)) }
-    }
-    fun saveAcidFavorite() = _favorites.value.let { f ->
-        addFavorite(f.acid) { f.copy(acid = f.acid + NamedSound(Favorites.nextName(f.acid.map { it.name }), SoundCategories.FAVORITES, project.value.acid.sound)) }
-    }
+    fun saveSynthFavorite(name: String? = null) = keepSynthSound(track, name)
+    fun savePlaitsFavorite(name: String? = null) = keepPlaitsSound(track, name)
+    fun saveAcidFavorite(name: String? = null) = keepAcidSound(name)
 
     private fun deleteFavorite(name: String, transform: (Favorites) -> Favorites) {
         favoritesBeforeDelete = _favorites.value

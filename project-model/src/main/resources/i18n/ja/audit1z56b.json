@@ -1,0 +1,17 @@
+{
+  "Lire": "読む",
+  "Bravo, chapitre fini !": "よくできました、章クリア！",
+  "Écoute ton morceau tel qu'il est maintenant, puis passe au chapitre suivant : « %s ».": "今の曲を聴いてから、次の章へ進もう：「%s」。",
+  "Chapitre suivant : « %s ».": "次の章：「%s」。",
+  "Chapitre suivant": "次の章",
+  "Écouter mon morceau": "自分の曲を聴く",
+  "Un son gardé s'appelle déjà « %s » : choisis un autre nom.": "「%s」という名前の保存済みサウンドがすでにあります。別の名前にしてください。",
+  "Ce son est déjà dans tes favoris : « %s ».": "このサウンドはすでにお気に入りにあります：「%s」。",
+  "Son gardé dans tes favoris avec ses effets : « %s ».": "エフェクトごとお気に入りに保存しました：「%s」。",
+  "Son renommé : « %s ».": "サウンドの名前を変更しました：「%s」。",
+  "Déjà dans tes favoris": "お気に入りに登録済み",
+  "Renommer « %s »": "「%s」の名前を変更",
+  "Renommer le son": "サウンドの名前を変更",
+  "Nom du son": "サウンド名",
+  "%d ms": "%d ms"
+}

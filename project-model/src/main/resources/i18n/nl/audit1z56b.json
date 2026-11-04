@@ -1,0 +1,17 @@
+{
+  "Lire": "Lees",
+  "Bravo, chapitre fini !": "Goed gedaan, hoofdstuk klaar!",
+  "Écoute ton morceau tel qu'il est maintenant, puis passe au chapitre suivant : « %s ».": "Luister naar je nummer zoals het nu is en ga dan naar het volgende hoofdstuk: ‘%s’.",
+  "Chapitre suivant : « %s ».": "Volgend hoofdstuk: ‘%s’.",
+  "Chapitre suivant": "Volgend hoofdstuk",
+  "Écouter mon morceau": "Mijn nummer beluisteren",
+  "Un son gardé s'appelle déjà « %s » : choisis un autre nom.": "Er is al een bewaard geluid met de naam ‘%s’: kies een andere naam.",
+  "Ce son est déjà dans tes favoris : « %s ».": "Dit geluid staat al in je favorieten: ‘%s’.",
+  "Son gardé dans tes favoris avec ses effets : « %s ».": "Geluid met zijn effecten bewaard in je favorieten: ‘%s’.",
+  "Son renommé : « %s ».": "Geluid hernoemd: ‘%s’.",
+  "Déjà dans tes favoris": "Al in je favorieten",
+  "Renommer « %s »": "‘%s’ hernoemen",
+  "Renommer le son": "Geluid hernoemen",
+  "Nom du son": "Naam van het geluid",
+  "%d ms": "%d ms"
+}

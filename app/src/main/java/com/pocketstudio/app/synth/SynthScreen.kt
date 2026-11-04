@@ -591,7 +591,7 @@ internal fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boole
                 if (index == SynthPatch.UNISON) {
                     ParamSlider(label, patch.get(index), Glossary.UNISON, com.pocketstudio.app.ui.voicesLabel(1 + (patch.get(index) * 6).roundToInt()), knob(actions, index), index) { actions.setParam(index, it) }
                 } else {
-                    ParamSlider(label, patch.get(index), automate = knob(actions, index), index = index) { actions.setParam(index, it) }
+                    ParamSlider(label, patch.get(index), shown = synthUnit(index, patch.get(index)), automate = knob(actions, index), index = index) { actions.setParam(index, it) }
                 }
             }
         }, minCellWidth = 260.dp, maxColumns = 3)
@@ -609,7 +609,7 @@ internal fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boole
                 Text(tr("Type de filtre"), style = MaterialTheme.typography.bodyMedium)
                 ChoiceRow(FILTERS, patch.get(SynthPatch.FILTER_TYPE)) { actions.setParam(SynthPatch.FILTER_TYPE, it) }
                 com.pocketstudio.ui.AdaptiveColumns(
-                    ADVANCED.map { (index, label) -> @Composable { ParamSlider(label, patch.get(index), automate = knob(actions, index), index = index) { actions.setParam(index, it) } } },
+                    ADVANCED.map { (index, label) -> @Composable { ParamSlider(label, patch.get(index), shown = synthUnit(index, patch.get(index)), automate = knob(actions, index), index = index) { actions.setParam(index, it) } } },
                     minCellWidth = 260.dp, maxColumns = 3, spacing = 4.dp,
                 )
             }
@@ -726,6 +726,26 @@ private fun ParamSliderBody(label: String, value: Float, help: Help?, shown: Str
         }
     }
     ProSlider(value = value, onValueChange = onChange, label = label, valueText = shown ?: com.pocketstudio.model.i18n.percent((value * 100).roundToInt()))
+}
+
+/**
+ * Audit ultra round 1, n° 35 (seat D c: « valeurs 0 à 100 sans unité »): a synth knob's value in the engine's own
+ * units (engine/src/main/cpp/core/Synth.cpp): the cutoff in Hz (20 Hz × 900^v), the envelopes' times in ms or s
+ * (1 ms × 5000^v), the glide in s (0,5 × v²); null for a knob without a unit (shown in %).
+ */
+internal fun synthUnit(index: Int, v: Float): String? {
+    fun seconds(s: Float): String = if (s < 1f) tr("%d ms", (s * 1000f).roundToInt().coerceAtLeast(1))
+        else tr("%s s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", s))
+    return when (index) {
+        SynthPatch.CUTOFF -> {
+            val hz = 20f * Math.pow(900.0, v.toDouble()).toFloat()
+            if (hz >= 1000f) tr("%s kHz", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", hz / 1000f)) else tr("%d Hz", hz.roundToInt())
+        }
+        SynthPatch.A_ATTACK, SynthPatch.A_DECAY, SynthPatch.A_RELEASE, SynthPatch.F_ATTACK, SynthPatch.F_DECAY, SynthPatch.F_RELEASE ->
+            seconds(0.001f * Math.pow(5000.0, v.toDouble()).toFloat())
+        SynthPatch.GLIDE -> if (v <= 0f) tr("Aucun") else seconds(0.5f * v * v)
+        else -> null
+    }
 }
 
 private val BLACK_KEY_AFTER_WHITE = setOf(0, 1, 3, 4, 5)  // C# D# F# G# A# sit after C D F G A

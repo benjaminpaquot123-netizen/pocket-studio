@@ -2294,7 +2294,8 @@ fun AppRoot() {
                     val kitMissing = (tutoKitOffer as? com.pocketstudio.model.tuto.TutoKit.Offer.Download)?.missing.orEmpty()
                     val kitLoading = kitMissing.mapNotNull { tutoPacks.downloading[it.id] }
                     // Folded with the panel while the user works on the screen (the grid had 160 dp left under it at 780 dp).
-                    if (kitTarget != null && (tutoNow.open || kitLoading.isNotEmpty()) && (kitMissing.isNotEmpty() || tutoKitOffer == com.pocketstudio.model.tuto.TutoKit.Offer.Ask)) {
+                    val kitCard = kitTarget != null && (tutoNow.open || kitLoading.isNotEmpty()) && (kitMissing.isNotEmpty() || tutoKitOffer == com.pocketstudio.model.tuto.TutoKit.Offer.Ask)
+                    if (kitCard) {
                         val loading = kitLoading
                         com.pocketstudio.app.tuto.TutoKitCard(
                             style = com.pocketstudio.app.tuto.tutoText(kitTarget.style.name),
@@ -2307,9 +2308,11 @@ fun AppRoot() {
                             },
                             later = { tuto.setKit(com.pocketstudio.model.tuto.TutoProgress.KIT_BUILT_IN) },
                             onPhone = kitMissing.isEmpty(),
+                            // n° 34 (seat A b, 200 %): over the open panel it went past the top bar; in its place now, a part of the screen high at most.
+                            modifier = Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.6f).dp),
                         )
                     }
-                    com.pocketstudio.app.tuto.TutoPanel(
+                    if (!kitCard) com.pocketstudio.app.tuto.TutoPanel(
                         tutoNow, tuto.canShow(),
                         com.pocketstudio.app.tuto.TutoActions(
                             listen = tuto::listen, doIt = tuto::doIt, showMe = { tuto.showMe() }, stopDemo = tuto::stopDemo,
@@ -4252,24 +4255,29 @@ private fun trackSoundBrowser(vm: RhythmViewModel, project: com.pocketstudio.mod
             SoundCategories.PLAITS, SoundLibrary.PLAITS, favorites.plaits,
             current = (SoundLibrary.PLAITS + favorites.plaits).firstOrNull { it.sound == project.plaits.copy(level = it.sound.level, gain = it.sound.gain) }?.name,
             pick = { vm.applyPlaits(SoundLibrary.PLAITS[it].sound.copy(level = project.plaits.level)); afterPick() },
-            pickFavorite = { vm.applyPlaits(favorites.plaits[it].sound); afterPick() },
+            // Round 1, n° 35: a kept sound comes back with its effects, named, renamed, never kept twice.
+            pickFavorite = { vm.applyPlaitsFavorite(it); afterPick() },
             deleteFavorite = vm::deletePlaitsFavorite,
             random = vm::randomPlaits,
-            save = vm::savePlaitsFavorite,
+            save = { vm.savePlaitsFavorite() },
             tag = "plaits_sounds",
             describe = { (it.sound as? PlaitsPatch)?.let(SoundLooks::describe) },
+            saveNamed = { vm.savePlaitsFavorite(it) }, nextName = com.pocketstudio.model.Favorites.nextName(favorites.plaits.map { it.name }),
+            keptAs = vm.keptPlaitsName(), rename = vm::renamePlaitsFavorite,
         )
     } else {
         SoundBrowserUi(
             SoundCategories.SYNTH, SoundLibrary.SYNTH, favorites.synth,
             current = SoundLibrary.synthNameOf(project.synth, SoundLibrary.SYNTH + favorites.synth),
             pick = { vm.applySynthPreset(SoundLibrary.SYNTH[it].sound); afterPick() },
-            pickFavorite = { vm.applySynthPreset(favorites.synth[it].sound); afterPick() },
+            pickFavorite = { vm.applySynthFavorite(it); afterPick() },
             deleteFavorite = vm::deleteSynthFavorite,
             random = vm::randomSynth,
-            save = vm::saveSynthFavorite,
+            save = { vm.saveSynthFavorite() },
             tag = "synth_sounds",
             describe = { (it.sound as? SynthPatch)?.let(SoundLooks::describe) },
+            saveNamed = { vm.saveSynthFavorite(it) }, nextName = com.pocketstudio.model.Favorites.nextName(favorites.synth.map { it.name }),
+            keptAs = vm.keptSynthName(), rename = vm::renameSynthFavorite,
         )
     }
 
@@ -4348,9 +4356,11 @@ private fun acidSoundBrowser(vm: RhythmViewModel, project: Project, favorites: c
     pickFavorite = { vm.applyAcidSound(favorites.acid[it].sound); afterPick() },
     deleteFavorite = vm::deleteAcidFavorite,
     random = vm::randomAcid,
-    save = vm::saveAcidFavorite,
+    save = { vm.saveAcidFavorite() },
     tag = "acid_sounds",
     describe = { (it.sound as? AcidSound)?.let(SoundLooks::describe) },
+    saveNamed = { vm.saveAcidFavorite(it) }, nextName = com.pocketstudio.model.Favorites.nextName(favorites.acid.map { it.name }),
+    keptAs = vm.keptAcidName(), rename = vm::renameAcidFavorite,
 )
 
 /** Phase 36: « Changer le son » of the acid from its name (Structure, Mon morceau): its sounds in a sheet. */

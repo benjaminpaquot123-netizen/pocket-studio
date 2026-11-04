@@ -197,3 +197,14 @@ class TutoPanelFitsTablet11LandTest(lang: String, rank: Int, font: String) : Tut
         fun cases() = casesOf("tablet11Land")
     }
 }
+
+/** Audit ultra round 1, n° 38 (seat A b): the panel in French at 200 % on a small phone (« Écouter l'exempl » was cut). */
+@RunWith(ParameterizedRobolectricTestRunner::class)
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
+@Config(qualifiers = "w360dp-h780dp-xxhdpi")
+class TutoPanelFitsBigFontTest(rank: Int) : TutoPanelFitsTest("fr", rank, "2.0", "phone360") {
+    companion object {
+        @JvmStatic @ParameterizedRobolectricTestRunner.Parameters(name = "fr_{0}_2.0")
+        fun cases() = (0 until RANKS).map { arrayOf<Any>(it) }
+    }
+}

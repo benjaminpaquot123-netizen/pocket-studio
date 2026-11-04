@@ -1,0 +1,17 @@
+{
+  "Lire": "اقرأ",
+  "Bravo, chapitre fini !": "أحسنت، انتهى الفصل!",
+  "Écoute ton morceau tel qu'il est maintenant, puis passe au chapitre suivant : « %s ».": "استمع إلى أغنيتك كما هي الآن، ثم انتقل إلى الفصل التالي: «%s».",
+  "Chapitre suivant : « %s ».": "الفصل التالي: «%s».",
+  "Chapitre suivant": "الفصل التالي",
+  "Écouter mon morceau": "استمع إلى أغنيتي",
+  "Un son gardé s'appelle déjà « %s » : choisis un autre nom.": "يوجد صوت محفوظ باسم «%s» بالفعل: اختر اسمًا آخر.",
+  "Ce son est déjà dans tes favoris : « %s ».": "هذا الصوت موجود بالفعل في مفضلتك: «%s».",
+  "Son gardé dans tes favoris avec ses effets : « %s ».": "حُفظ الصوت في مفضلتك مع مؤثراته: «%s».",
+  "Son renommé : « %s ».": "أُعيدت تسمية الصوت: «%s».",
+  "Déjà dans tes favoris": "موجود بالفعل في المفضلة",
+  "Renommer « %s »": "إعادة تسمية «%s»",
+  "Renommer le son": "إعادة تسمية الصوت",
+  "Nom du son": "اسم الصوت",
+  "%d ms": "%d م ث"
+}

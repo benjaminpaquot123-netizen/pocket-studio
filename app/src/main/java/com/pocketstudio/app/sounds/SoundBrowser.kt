@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.size
@@ -74,6 +75,16 @@ class SoundBrowserUi(
     val extras: Boolean = true,
     /** The family to open on when the sound playing is none of these (n° 35: a lead track opened on « Basses »). */
     val family: String? = null,
+    /**
+     * Audit ultra round 1, n° 35 (seat D c): « Garder ce son » asks for a name ([nextName] offered) and keeps it under
+     * it; null: kept at once under « Mon son N » ([save]).
+     */
+    val saveNamed: ((String) -> Unit)? = null,
+    val nextName: String = "",
+    /** The kept sound that is this sound now (null: none): « Garder ce son » says it is there already. */
+    val keptAs: String? = null,
+    /** « Renommer » a kept sound (its index in [favorites], the new name); null: not offered. */
+    val rename: ((Int, String) -> Unit)? = null,
 )
 
 /**
@@ -110,6 +121,7 @@ fun SoundBrowser(ui: SoundBrowserUi) {
         // A sound of its own (not one of these): the track's family (n° 35), else the first one, its sounds one touch away.
         else -> ui.family?.takeIf { it in ui.categories } ?: ui.categories.firstOrNull()
     }
+    var naming by androidx.compose.runtime.saveable.rememberSaveable(stateSaver = NameAsk.Saver) { mutableStateOf<NameAsk?>(null) }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag(ui.tag)) {
         ShelfBrowser(
             ShelfBrowserUi(
@@ -133,15 +145,77 @@ fun SoundBrowser(ui: SoundBrowserUi) {
                 Icon(Icons.Filled.Casino, contentDescription = null)
                 com.pocketstudio.ui.WholeWordsText(tr("Au hasard"), Modifier.padding(start = 6.dp), textAlign = androidx.compose.ui.text.style.TextAlign.Center)
             }
-            OutlinedButton(onClick = ui.save, contentPadding = tight, modifier = Modifier.weight(1f).fillMaxHeight().testTag("${ui.tag}_save")) {
+            OutlinedButton(
+                // Kept already: said (the save says so), never a second « Mon son 2 » the same.
+                onClick = { if (ui.saveNamed != null && ui.keptAs == null) naming = NameAsk(-1, ui.nextName) else ui.save() },
+                contentPadding = tight, modifier = Modifier.weight(1f).fillMaxHeight().testTag("${ui.tag}_save"),
+            ) {
                 Icon(Icons.Filled.Star, contentDescription = null)
-                com.pocketstudio.ui.WholeWordsText(tr("Garder ce son"), Modifier.padding(start = 6.dp), textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                com.pocketstudio.ui.WholeWordsText(
+                    if (ui.keptAs != null) tr("Déjà dans tes favoris") else tr("Garder ce son"), Modifier.padding(start = 6.dp),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                )
             }
+        }
+        // The kept sound playing now: « Renommer » it, its name in the button.
+        val keptIndex = ui.favorites.indexOfFirst { it.name == ui.current }
+        if (ui.extras && ui.rename != null && keptIndex >= 0) {
+            androidx.compose.material3.TextButton(
+                onClick = { naming = NameAsk(keptIndex, ui.favorites[keptIndex].name) },
+                modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("${ui.tag}_rename"),
+            ) { Text(tr("Renommer « %s »", ui.favorites[keptIndex].name), textAlign = androidx.compose.ui.text.style.TextAlign.Center) }
+        }
+        naming?.let { ask ->
+            KeptNameDialog(
+                title = if (ask.index < 0) tr("Garder ce son") else tr("Renommer le son"),
+                start = ask.name, tag = ui.tag,
+                done = { name ->
+                    naming = null
+                    if (ask.index < 0) ui.saveNamed?.invoke(name) else ui.rename?.invoke(ask.index, name)
+                },
+                cancel = { naming = null },
+            )
         }
         if (ui.extras && ui.favorites.isEmpty()) {
             Text(tr("« Garder ce son » le range dans tes favoris, pour tous tes projets."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
     }
+}
+
+/** The name being asked for a kept sound: [index] -1 for a new one, else the one renamed. */
+private data class NameAsk(val index: Int, val name: String) {
+    companion object {
+        val Saver = androidx.compose.runtime.saveable.Saver<NameAsk?, List<Any>>(
+            save = { a -> a?.let { listOf(it.index, it.name) } ?: emptyList() },
+            restore = { l -> if (l.size == 2) NameAsk(l[0] as Int, l[1] as String) else null },
+        )
+    }
+}
+
+/** « Garder ce son » / « Renommer le son »: its name, typed (n° 35), « Garder » or « Annuler ». */
+@Composable
+private fun KeptNameDialog(title: String, start: String, tag: String, done: (String) -> Unit, cancel: () -> Unit) {
+    var text by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(start) }
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = cancel,
+        title = { Text(title) },
+        text = {
+            androidx.compose.material3.OutlinedTextField(
+                value = text, onValueChange = { text = it.take(com.pocketstudio.model.Favorites.NAME_MAX) }, singleLine = true,
+                label = { Text(tr("Nom du son")) }, modifier = Modifier.fillMaxWidth().testTag("${tag}_name_field"),
+            )
+        },
+        confirmButton = {
+            androidx.compose.material3.TextButton(
+                onClick = { done(text) }, enabled = com.pocketstudio.model.Favorites.cleanName(text) != null,
+                modifier = Modifier.heightIn(min = 48.dp).testTag("${tag}_name_ok"),
+            ) { Text(tr("Garder")) }
+        },
+        dismissButton = {
+            androidx.compose.material3.TextButton(onClick = cancel, modifier = Modifier.heightIn(min = 48.dp).testTag("${tag}_name_cancel")) { Text(tr("Annuler")) }
+        },
+        modifier = Modifier.testTag("${tag}_name_dialog"),
+    )
 }
 
 /** The kept sounds' folder (« Favoris » here). */

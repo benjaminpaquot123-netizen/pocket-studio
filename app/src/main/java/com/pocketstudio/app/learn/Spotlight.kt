@@ -87,6 +87,11 @@ class SpotRegistry {
     fun hidden(ids: List<String>): String? {
         val rect = ids.firstNotNullOfOrNull { find(it) } ?: return "absent (carte repliée ou pas à l'écran)"
         if (windowHeight > 0f && (rect.top < 0f || rect.bottom > windowHeight + 1f)) return "hors écran ($rect)"
+        // n° 34: its top scrolled under what stays fixed over the page (« Partie : A »), when it would fit whole between that
+        // and the panel (a mixer's strip or a whole card taller than the room shows a part of itself, as it must).
+        val node = ids.firstNotNullOfOrNull { id -> spots[id]?.takeIf { it.rect.width > 1f && it.rect.height > 1f }?.owner as? SpotNode }
+        val room = minOf(coverTop, if (windowHeight > 0f) windowHeight else Float.MAX_VALUE) - rect.top
+        if (node != null && rect.top > node.windowTop + 2f && node.fullHeight + node.fadePx <= room) return "coupé en haut, sous l'en-tête ($rect, haut à ${node.windowTop})"
         if (rect.center.y > coverTop) return "sous le panneau du tuto ($rect, panneau à $coverTop)"
         return null
     }
@@ -166,6 +171,12 @@ internal class SpotNode(var id: String, var label: String?, var revealFrom: List
     /** Its top in the window, not cut by what scrolls around it (its rect is). */
     internal var windowTop = 0f
 
+    /** Its whole height (its rect shows only what is not scrolled away). */
+    internal val fullHeight: Float get() = height
+
+    /** [REVEAL_TOP] in pixels: what a reveal keeps free over it. */
+    internal val fadePx: Float get() = if (isAttached) with(currentValueOf(androidx.compose.ui.platform.LocalDensity)) { REVEAL_TOP.toPx() } else 0f
+
     override fun onGloballyPositioned(coordinates: androidx.compose.ui.layout.LayoutCoordinates) {
         width = coordinates.size.width.toFloat()
         height = coordinates.size.height.toFloat()
@@ -185,7 +196,16 @@ internal class SpotNode(var id: String, var label: String?, var revealFrom: List
      */
     fun reveal(below: Float = 0f, above: Float = 0f) {
         if (isAttached) coroutineScope.launch {
-            runCatching { if (width > 0f && height > 0f) bringIntoView { Rect(0f, -above, width, height + below) } else bringIntoView() }
+            runCatching {
+                if (width > 0f && height > 0f) {
+                    // Audit ultra round 1, n° 34 (seat A b, 200 %): the room asked for (what is above, the tuto's panel
+                    // below) taller than the page left it where it was, its first row half under « Partie : A » and in the
+                    // page's fading top: then the control itself, whole, under the fade (its top first when it is taller).
+                    val fade = with(currentValueOf(androidx.compose.ui.platform.LocalDensity)) { REVEAL_TOP.toPx() }
+                    bringIntoView { Rect(0f, -above - fade, width, height + below) }
+                    bringIntoView { Rect(0f, -fade, width, height) }
+                } else bringIntoView()
+            }
         }
     }
 
@@ -391,6 +411,9 @@ private const val REVEAL_TRIES = 10
 
 /** Room kept under a revealed control besides the cover (px): a finger's worth. */
 private const val REVEAL_MARGIN_PX = 48f
+
+/** Kept free over a control revealed: the fading top of the page that scrolls ([com.pocketstudio.ui.fadingTopEdge]) and a little air. */
+private val REVEAL_TOP = 32.dp
 
 /** Tests (n° 19–20): each target a tuto step, the Guide or « Montre-moi » showed, and why it could not be seen (null: it could). */
 object SpotChecks {

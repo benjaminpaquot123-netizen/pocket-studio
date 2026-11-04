@@ -148,8 +148,11 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, si
 /** The choice screen itself: the guided song first and biggest, then the demo, then the empty project. */
 @Composable
 fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
-    // Steps to read: centred at a comfortable width on a tablet.
-    com.pocketstudio.ui.ReadingWidth(maxWidth = 600.dp) {
+    // Steps to read: centred at a comfortable width on a tablet. Audit ultra round 1, n° 41 (seat D b, a tablet lying
+    // down): a narrow column with « Pad Live » under the fold and the sides empty; there the choices go two by two.
+    androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxSize()) {
+    val wide = maxWidth >= com.pocketstudio.ui.EXPANDED_FROM && maxWidth > maxHeight
+    com.pocketstudio.ui.ReadingWidth(maxWidth = if (wide) 1040.dp else 600.dp) {
         Column(
             Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 28.dp).testTag("welcome"),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -166,34 +169,38 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
                 }
             }
             Text(tr("Bienvenue ! Fais ta musique sur ton appareil. Par quoi on commence ?"), style = MaterialTheme.typography.bodyLarge)
-            Choice(
+            val choices = listOf<@Composable () -> Unit>(
+            { Choice(
                 Icons.Filled.AutoAwesome, tr("Créer mon premier morceau (guidé)"),
                 tr("Choisis un style, je t'aide pas à pas, du début à la fin du morceau."),
                 Neon.Cyan, primary = true, onClick = actions.guided, tag = "welcome_guided",
-            )
-            Choice(
+            ) },
+            { Choice(
                 Icons.Filled.School, tr("J'apprends"),
                 tr("Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie."),
                 Neon.Acid, onClick = actions.learn, tag = "welcome_learn",
-            )
-            Choice(
+            ) },
+            { Choice(
                 Icons.Filled.Headphones, tr("Écouter une démo"),
                 tr("Un morceau déjà prêt, pour découvrir ce qu'on peut faire."),
                 Color(0xFF5BB8F5), onClick = actions.demo, tag = "welcome_demo",  // sky blue: green means "playing"
-            )
-            Choice(
+            ) },
+            { Choice(
                 Icons.Filled.Add, tr("Partir de zéro"),
                 tr("Aucune note : une batterie, une basse acide et un synthé attendent les tiennes."),
                 Neon.TextSecondary, onClick = actions.empty, tag = "welcome_empty",
-            )
+            ) },
             // Remix testers (Sarah installed the app for this and found it nowhere): one way in, under the others.
-            Choice(
+            { Choice(
                 Icons.Filled.RecordVoiceOver, tr("Extraire la voix d'une chanson"),
                 tr("Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste."),
                 com.pocketstudio.app.ui.REMIX_COLOR, onClick = actions.remix, tag = "welcome_remix",
-            )
+            ) },
             // Lot B3 (persona Léo, 8): Pad Live was only on « Que veux-tu faire ? », never on the first launch.
-            PadLiveCard(actions.padLive)
+            { PadLiveCard(actions.padLive) },
+            )
+            if (wide) com.pocketstudio.ui.AdaptiveColumns(choices, minCellWidth = 380.dp, maxColumns = 2, spacing = 16.dp)
+            else choices.forEach { it() }
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 TextButton(onClick = actions.later, modifier = Modifier.heightIn(min = 48.dp).testTag("welcome_later")) {
                     Text(tr("Plus tard : voir le rythme de départ"), color = Neon.TextSecondary)
@@ -202,6 +209,7 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
             Text(if (simple) tr("Le guide des premiers pas reste dans ⋮ › Aide et premiers pas.") else tr("Le guide des premiers pas reste dans Plus › Aide."), style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary, modifier = Modifier.align(Alignment.CenterHorizontally))
         }
+    }
     }
 }
 

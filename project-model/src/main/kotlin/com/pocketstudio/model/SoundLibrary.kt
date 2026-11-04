@@ -4,9 +4,22 @@ import com.pocketstudio.model.i18n.tr
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
-/** A ready-made or saved sound: [category] groups it in the browser. */
+/**
+ * A ready-made or saved sound: [category] groups it in the browser. A kept one (« Garder ce son ») also keeps
+ * [fx], the effects of its track then (audit ultra round 1, n° 35): they come back with it.
+ */
 @Serializable
-data class NamedSound<T>(val name: String, val category: String, val sound: T)
+data class NamedSound<T>(val name: String, val category: String, val sound: T, val fx: Channel? = null)
+
+/**
+ * n° 35: the effects a kept sound brings with it: its track's effects, sends and quick controls (its volume
+ * and place stay the track's own); null when the strip has none.
+ */
+fun Channel.keptFx(): Channel? = Channel(inserts = inserts, sends = sends, macros = macros).sanitized()
+    .takeIf { c -> c.inserts.any { it.type != 0 } || c.sends.any { it > 0f } || c.macros != Macros.DEFAULTS }
+
+/** This strip with a kept sound's effects ([keptFx]) in place of its own, its volume and place kept. */
+fun Channel.withKeptFx(fx: Channel): Channel = copy(inserts = fx.inserts, sends = fx.sends, macros = fx.macros).sanitized()
 
 /** Families shown in the browsers, in this order ("Favoris" holds the user's own). */
 object SoundCategories {
@@ -243,13 +256,19 @@ data class Favorites(
     val acid: List<NamedSound<AcidSound>> = emptyList(),
 ) {
     fun sanitized() = Favorites(
-        synth.take(MAX).map { it.copy(name = it.name.take(30), category = SoundCategories.FAVORITES, sound = it.sound.sanitized()) },
-        plaits.take(MAX).map { it.copy(name = it.name.take(30), category = SoundCategories.FAVORITES, sound = it.sound.sanitized()) },
-        acid.take(MAX).map { it.copy(name = it.name.take(30), category = SoundCategories.FAVORITES, sound = it.sound.sanitized()) },
+        synth.take(MAX).map { it.copy(name = it.name.take(NAME_MAX), category = SoundCategories.FAVORITES, sound = it.sound.sanitized(), fx = it.fx?.sanitized()) },
+        plaits.take(MAX).map { it.copy(name = it.name.take(NAME_MAX), category = SoundCategories.FAVORITES, sound = it.sound.sanitized(), fx = it.fx?.sanitized()) },
+        acid.take(MAX).map { it.copy(name = it.name.take(NAME_MAX), category = SoundCategories.FAVORITES, sound = it.sound.sanitized(), fx = it.fx?.sanitized()) },
     )
 
     companion object {
         const val MAX = 48
+
+        /** A kept sound's name at most (« Renommer »). */
+        const val NAME_MAX = 30
+
+        /** n° 35: a name typed for a kept sound, trimmed and cut to [NAME_MAX]; null when blank. */
+        fun cleanName(typed: String): String? = typed.replace('\n', ' ').trim().take(NAME_MAX).trim().takeIf { it.isNotEmpty() }
 
         /** "Mon son 3": the first number not taken in [names]. */
         fun nextName(names: List<String>, prefix: String = tr("Mon son")): String =

@@ -295,8 +295,13 @@ private fun SectionTitle(text: String, color: Color, folded: Boolean?, subtle: B
         if (subtle) Box(Modifier.size(8.dp).clip(CircleShape).background(color))
         else Box(Modifier.width(3.dp).height(12.dp).clip(RoundedCornerShape(2.dp)).background(color))
         // Audit final (22): a title TalkBack can jump to.
-        Text(text.upperShown(), style = if (subtle) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelSmall.merge(SectionCaps), color = if (subtle) Neon.TextSecondary else lerp(color, Neon.TextPrimary, 0.25f),
-            modifier = Modifier.weight(1f, fill = false).semantics { heading() })
+        val titleStyle = if (subtle) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelSmall.merge(SectionCaps)
+        val titleColor = if (subtle) Neon.TextSecondary else lerp(color, Neon.TextPrimary, 0.25f)
+        // Audit ultra round 1, n° 38 (200 %: « PAS : KICK DE MA V/OIX » beside « Tous les pads »): past 130 %, a little
+        // smaller rather than a word split.
+        if (androidx.compose.ui.platform.LocalDensity.current.fontScale > BIG_FONT_FROM) {
+            WholeWordsText(text.upperShown(), Modifier.weight(1f, fill = false).semantics { heading() }, style = titleStyle, color = titleColor, maxLines = Int.MAX_VALUE)
+        } else Text(text.upperShown(), style = titleStyle, color = titleColor, modifier = Modifier.weight(1f, fill = false).semantics { heading() })
         if (folded != null) {
             // A small open "v", turned to ">" when folded: there, not shouting.
             Canvas(Modifier.size(12.dp).rotate(turn)) {

@@ -112,7 +112,12 @@ fun HoldAlone(active: Boolean, hold: () -> (() -> Unit)) {
  * was. [label]: « Écouter seul » or « Écouter seule »; [name]: what is heard, for TalkBack.
  */
 @Composable
-fun AloneButton(on: Boolean, label: String, name: String, tag: String, modifier: Modifier = Modifier, compact: Boolean = false, toggle: () -> Unit) {
+fun AloneButton(
+    on: Boolean, label: String, name: String, tag: String, modifier: Modifier = Modifier, compact: Boolean = false,
+    /** Its icon alone (its words for TalkBack): a narrow row keeps its room for the track's name (round 1, n° 41). */
+    iconOnly: Boolean = false,
+    toggle: () -> Unit,
+) {
     val shape = RoundedCornerShape(24.dp)
     Row(
         modifier.heightIn(min = 48.dp).clip(shape)
@@ -123,13 +128,13 @@ fun AloneButton(on: Boolean, label: String, name: String, tag: String, modifier:
                 selected = on
                 contentDescription = if (on) tr("Arrêter") else tr("Écouter « %s » seul, en boucle", name)
             }
-            .padding(horizontal = if (compact) 10.dp else 16.dp)
+            .padding(horizontal = if (iconOnly) 12.dp else if (compact) 10.dp else 16.dp)
             .testTag(tag),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         val ink = if (on) Color.Black else Neon.Acid
         Icon(if (on) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = ink, modifier = Modifier.size(20.dp))
-        Text(if (on) tr("Arrêter") else label, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = ink, maxLines = 1)
+        if (!iconOnly) Text(if (on) tr("Arrêter") else label, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = ink, maxLines = 1)
     }
 }

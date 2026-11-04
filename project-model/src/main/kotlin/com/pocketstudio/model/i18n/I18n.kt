@@ -121,6 +121,8 @@ object I18n {
         "tour1nav",
         // Audit ultra round 1, zones 5 and 6: the assistant's length, the tutorial's hints, the plain words, the controls' names.
         "audit1z56",
+        // Audit ultra round 1, zones 5 and 6 (team 4b): the tutorial's chapter end, kept sounds named and renamed.
+        "audit1z56b",
     )
 
     @Volatile

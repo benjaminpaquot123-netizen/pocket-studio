@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -270,7 +271,9 @@ private fun PositionLabel(ui: PlayStripUi, actions: PlayStripActions, modifier: 
             }
             // The part's name over the bar: both stay readable on a narrow phone or a big text size.
             Row(
-                Modifier.control().widthIn(min = POSITION_MIN).clip(RoundedCornerShape(8.dp))
+                // Audit ultra round 1, n° 38 (seat F a, 200 %): its second line « mes. 1/8 » was cut at a 48 dp height; the strip
+                // grows with the font, the position with it (48 dp of touch at least).
+                Modifier.widthIn(min = TOUCH_HEIGHT).requiredHeightIn(min = TOUCH_HEIGHT).widthIn(min = POSITION_MIN).clip(RoundedCornerShape(8.dp))
                     .clickable(enabled = pickable, role = Role.Button, onClickLabel = tr("Jouer depuis une partie")) { open = true }
                     .padding(horizontal = 6.dp, vertical = 2.dp)
                     .spot("top_position", tr("Jouer d'une partie"))

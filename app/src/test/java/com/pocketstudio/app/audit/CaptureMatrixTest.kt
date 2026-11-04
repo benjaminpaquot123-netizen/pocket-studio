@@ -189,7 +189,8 @@ object Allowed {
         Rule("acid|library|live_pads|live_pads_full|mixer|piano_roll|projects|session|timeline_screen|guide", "CONTRAST",
             "known, listed as Moyen in docs/lots/AUDIT-1.md (secondary words on coloured cells, dialog buttons): a design pass of its own"),
         Rule(".*", "CUT « \\? » ", "the « ? » of a help button: its glyph a few dp over its own text box, drawn whole in its circle"),
-        Rule("rhythm", "« (Los pads suenan|Os pads soam)[^»]* » ellipsized", "the drum grid's one-line hint, shortened with « … » on purpose (its whole text is in « ? »)"),
+        Rule("rhythm", "« (Los pads suenan|Os pads soam|Les pads sonnent)[^»]* » ellipsized", "the drum grid's one-line hint, shortened with « … » on purpose (its whole text is in « ? »)"),
+        Rule("top_bar", "CUT « [A-Z] » ellipsized", "round 1 n° 38, 200 % only: the part's letter (Pro) on the test's 300 dp bar; Moyen kept (tour-1-zone5-6-suite.md)"),
         Rule("projects", "« Importer un projet \\(\\.zip\\) » drawn past its parent's edge \\(down", "the list's last button at the screen's bottom edge (the list scrolls)"),
         Rule("session|remix|live_pads_full|rhythm", "CUT « [^»]*\\[[^»]* » (ellipsized|lines dropped)", "the pseudo-language (+40 %) only: shortened with « … » or a hint's end, no real language does it"),
     )
@@ -260,5 +261,22 @@ class AccessibilityScanTest(screen: String) :
     companion object {
         @JvmStatic @ParameterizedRobolectricTestRunner.Parameters(name = "{0}")
         fun cases() = SCREEN_NAMES.map { arrayOf<Any>(it) }
+    }
+}
+
+/**
+ * Audit ultra round 1, n° 38: the screens the testers read cut at 200 % (« Sim… », « Char… », « mes. 1/8 » under the
+ * tracks, « Écouter l'exempl »), on a small phone in French at the phone's largest font: no word cut, nothing over another.
+ */
+@RunWith(ParameterizedRobolectricTestRunner::class)
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
+@Config(qualifiers = "w360dp-h780dp-xxhdpi")
+class CaptureMatrixBigFontTest(screen: String) : CaptureMatrixTest(Case(screen, "fr", "phone360", "2.0")) {
+    companion object {
+        // « tracks » (the keyboard at 200 %: its chips and « Octave 3 ») is not yet whole: tour-1-zone5-6-suite.md.
+        val BIG = listOf("top_bar", "play_strip", "rhythm", "session", "welcome", "sound_browser")
+
+        @JvmStatic @ParameterizedRobolectricTestRunner.Parameters(name = "{0}")
+        fun cases() = BIG.map { arrayOf<Any>(it) }
     }
 }

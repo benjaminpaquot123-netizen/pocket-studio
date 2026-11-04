@@ -338,6 +338,18 @@ fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions, li
     NeonCard(Modifier.testTag("simple_tracks")) {
         SectionLabel(tr("Mes pistes"))
         Text(tr("Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        // Audit ultra round 1, n° 41 (seat D b, a tablet lying down: « Tegenmel/odie »): in a narrow card « ▶ Écouter seule »
+        // keeps its icon alone, the name its room, never split mid-word.
+        androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxWidth()) {
+        val measurer = androidx.compose.ui.text.rememberTextMeasurer()
+        val density = androidx.compose.ui.platform.LocalDensity.current
+        val nameStyle = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
+        val labelStyle = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+        // The longest word of the names, and the button's words: both on the row, or the button keeps its icon alone.
+        val word = with(density) { tracks.flatMap { it.name.split(' ') }.maxOfOrNull { measurer.measure(it, nameStyle).size.width }?.toDp() } ?: 0.dp
+        val label = with(density) { measurer.measure(tr("Écouter seule"), labelStyle).size.width.toDp() }
+        val narrow = maxWidth < ALONE_ROW_ROOM + word + label
+        Column {
         tracks.forEachIndexed { i, t ->
             if (i > 0) HorizontalDivider(color = Neon.Outline.copy(alpha = 0.5f))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) {
@@ -350,20 +362,22 @@ fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions, li
                         .testTag("simple_track_${t.key}"),
                     verticalArrangement = Arrangement.Center,
                 ) {
-                    // Remix testers (Sarah): « Souffle mont… » cut short; a long name on two lines.
-                    Text(t.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    // Remix testers (Sarah): « Souffle mont… » cut short; a long name on two lines, never split mid-word.
+                    com.pocketstudio.ui.WholeWordsText(t.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 2)
                     // Testers (lot « tuto 3 »): « Changer le … » cut short; whole, on a second line if it must.
                     Text(
                         if (t.mute) tr("coupée") else tr("Changer le son"), style = MaterialTheme.typography.labelMedium,
                         color = if (t.mute) Neon.Amber else Neon.Cyan, maxLines = 2, overflow = TextOverflow.Ellipsis,
                     )
                 }
-                com.pocketstudio.app.rhythm.AloneButton(trackAlone(t), tr("Écouter seule"), t.name, "simple_alone_${t.key}", compact = true) { actions.listenAlone(t.key) }
+                com.pocketstudio.app.rhythm.AloneButton(trackAlone(t), tr("Écouter seule"), t.name, "simple_alone_${t.key}", compact = true, iconOnly = narrow) { actions.listenAlone(t.key) }
                 // A fader, not a loudspeaker (owner, APK 224: the 🔊 looked like « play » and stayed silent).
                 IconButton(onClick = { sheetFor = t.key }, modifier = Modifier.spot("simple_volume_${t.key}").testTag("simple_volume_${t.key}")) {
                     Icon(Icons.Filled.Tune, contentDescription = tr("Volume de %s", t.name), tint = if (t.mute) Neon.Amber else Neon.TextPrimary)
                 }
             }
+        }
+        }
         }
     }
     sheetFor?.let { key ->
@@ -420,3 +434,6 @@ private fun SimpleTrackSheet(t: SimpleTrack, alone: Boolean, actions: SimpleTrac
         }
     }
 }
+
+/** « Mes pistes »: a row's room besides a name's word and « Écouter seule »'s words (dot, gaps, paddings, ▶, the fader). */
+private val ALONE_ROW_ROOM = 12.dp + 12.dp + 12.dp + 46.dp + 48.dp + 8.dp

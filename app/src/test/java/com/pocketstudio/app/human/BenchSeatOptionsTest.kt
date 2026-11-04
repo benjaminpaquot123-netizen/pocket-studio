@@ -58,6 +58,15 @@ class BenchSeatOptionsTest : HumanTester("seat-options") {
         assertEquals("Drag handle", app.getString(androidx.compose.material3.R.string.m3c_bottom_sheet_drag_handle_description))
     }
 
+    /** Audit ultra tour 0 (seat c): a seat in Pro stayed in Mode simple (the app's first opening set it). */
+    @Test
+    fun aProSeatIsInPro() {
+        assumeTrue("not while the bench runs seats", System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("mode" to "pro")).first)
+        act("attends 1")
+        assertFalse("Mode simple", com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode)
+    }
+
     @Test
     fun aSeatThatDoesNotReadSeesBarsAndNoNames() {
         assumeTrue("not while the bench runs seats", System.getProperty("ps.human.dir").isNullOrBlank())

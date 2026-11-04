@@ -59,4 +59,74 @@ class BenchAmeneesTest : HumanTester("amenees") {
         assertEquals("padlive", screenRoute().substringBefore('/'))
         assertTrue(lines.joinToString("\n"), lines.any { "Klaxon" in it } && lines.none { "Tom médium" in it })
     }
+
+    /**
+     * Audit ultra tour 0 (seat c): on a phone the engine lights a pad that plays, ■ silences the pads, the
+     * performance take starts on its line and « Enregistrer ce que je joue » records; the bench had none of it
+     * (« Prêt » for good, « Pas assez de mémoire », a dark pad, loops going on after ■).
+     */
+    @Test
+    fun padLiveLightsStopsAndRecordsAsOnAPhone() {
+        padsAsOnASeat = true
+        bring(AMENEE_PADLIVE, SeatOptions())
+        val vm = rhythm()!!
+        fun tap(tag: String): String = act("touche ${centerOf(tag)!!.first} ${centerOf(tag)!!.second}")
+        fun waitFor(what: String, done: () -> Boolean) {
+            val until = System.currentTimeMillis() + 60_000
+            while (!done()) {
+                assertTrue("$what never came", System.currentTimeMillis() < until)
+                act("attends 0.5")
+            }
+        }
+        val loop = (0 until 16).first { project()!!.live.at(it)?.oneShot == false }
+        val heard = tap("padlive_pad_$loop")
+        assertTrue(heard, "joue en boucle" in heard)
+        assertEquals("the pad that plays is lit", 2, vm.liveStates.value[loop])
+        tap("padlive_play")
+        assertTrue(vm.transport.value.playing)
+        val stopped = tap("padlive_play")
+        assertTrue("■ silences the pads: $stopped", "pad live" !in stopped && "pads live" !in stopped)
+        assertEquals(0, vm.liveStates.value[loop])
+
+        // « Enregistrer la performance »: armed, then recording on its line, then written into the song.
+        tap("live_record")
+        tap("padlive_pad_$loop")
+        waitFor("the take recording") { vm.take.value is com.pocketstudio.app.live.TakeUi.Recording }
+        act("attends 2")
+        tap("live_record")
+        waitFor("the take written") { vm.take.value is com.pocketstudio.app.live.TakeUi.Done }
+        assertTrue("the song got the take: ${project()!!.song.size}", project()!!.song.isNotEmpty())
+        if (vm.transport.value.playing) tap("padlive_play")
+
+        // « Enregistrer ce que je joue »: a pad on, recorded, ended on a bar line.
+        tap("padlive_pad_$loop")
+        tap("padlive_played")
+        assertEquals(null, vm.padLive.played.message.value)
+        waitFor("the played take recording") { vm.padLive.played.ui.value is com.pocketstudio.app.padlive.PlayedTakeUi.Recording }
+        act("attends 2")
+        tap("padlive_played")
+        waitFor("the played take done") { vm.padLive.played.ui.value is com.pocketstudio.app.padlive.PlayedTakeUi.Done }
+    }
+
+    /** Audit ultra tour 0 (seat c): « Pack… › Techno » on page B left it « vide » (the phone's engine makes the pack). */
+    @Test
+    fun aPackFillsThePageShown() {
+        padsAsOnASeat = true
+        bring(AMENEE_PADLIVE, SeatOptions())
+        fun tap(tag: String) = act("touche ${centerOf(tag)!!.first} ${centerOf(tag)!!.second}")
+        tap("padlive_page_B")
+        tap("padlive_pack")
+        tap("padlive_pack_techno")
+        val until = System.currentTimeMillis() + 60_000
+        while (rhythm()!!.padLive.busy.value != null) {
+            assertTrue("the pack never came", System.currentTimeMillis() < until)
+            act("attends 0.5")
+        }
+        act("attends 0.5")
+        val pageB = (0 until com.pocketstudio.model.PadLive.PAGE_SIZE).mapNotNull { project()!!.live.at(com.pocketstudio.model.PadLive.pad(1, it)) }
+        assertTrue("page B is empty", pageB.size >= 4)
+        assertEquals("techno", project()!!.padLive.packOf(1))
+        assertTrue(screenLines().joinToString("\n"), screenLines().none { "Page B · vide" in it })
+        assertEquals("the bench let its engine go once the pack was made", null, com.pocketstudio.engine.NativeEngine.sink)
+    }
 }

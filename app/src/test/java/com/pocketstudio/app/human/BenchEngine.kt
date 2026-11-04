@@ -177,6 +177,16 @@ internal class BenchEngine : CommandSink {
         return if (pos in 0 until s.frames) pos else -1L  // before the song comes in (R2): not heard yet
     }
 
+    /**
+     * The transport's sixteenths since ▶ as the bench's play head counts them (-1 stopped), set by the bench.
+     * Audit ultra tour 0 (seat c): a Pad Live take kept with this engine reads where the transport is from it
+     * (the app's no-engine path reads [com.pocketstudio.app.rhythm.RhythmViewModel.takeClockForTest]).
+     */
+    @Volatile var transportSteps = -1
+
+    override fun transportStep(): Int = transportSteps
+    override fun transportPosition(): Double = if (transportSteps >= 0) transportSteps.toDouble() else -1.0
+
     /** « Écouter » on the Remix page: from the top, until its end. */
     override fun previewPosition(): Long {
         val since = previewSince

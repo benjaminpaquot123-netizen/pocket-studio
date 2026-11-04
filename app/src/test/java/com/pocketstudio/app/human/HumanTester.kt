@@ -69,7 +69,10 @@ import java.time.Duration
  * phone's file picker gives « Ma chanson préférée.wav » ([BenchSong]) when the Remix asks for a
  * song, the separation service runs for real with a stand-in for the model ([BenchSeparation]),
  * and the bench's engine ([BenchEngine]) holds the stems while the Remix page is on screen.
+ *
+ * Audit ultra tour 0: Android's player takes the app's float previews as a phone's does ([BenchAudioTrack]).
  */
+@Config(shadows = [BenchAudioTrack::class])
 abstract class HumanTester(private val seat: String) {
     @get:Rule
     val compose = createEmptyComposeRule()
@@ -362,7 +365,9 @@ abstract class HumanTester(private val seat: String) {
             app.getSharedPreferences("settings", 0).edit().apply {
                 putString("language", o.lang.code)
                 if (o.lang != com.pocketstudio.model.i18n.Lang.FR) putBoolean("englishNotes", !o.lang.solfege)
-                o.simple?.let { putBoolean("simpleMode", it) }
+                // Audit ultra tour 0 (seat c, mode=pro): the app's first opening sets Mode simple until its guide was
+                // seen; a person who chose Pro has gone past it.
+                o.simple?.let { putBoolean("simpleMode", it); if (!it) putBoolean("guideSeen", true) }
                 o.theme?.let { putString("theme", it.name) }
             }.commit()
         }
@@ -395,14 +400,41 @@ abstract class HumanTester(private val seat: String) {
             }
         }
         lastVm = v
-        if (seatDir != null && v != null && v !== padsHooked) {
+        if (seatPads() && v != null && v !== padsHooked) {
             padsHooked = v
             v.padLive.toggleForTest = { pad -> padToggled(v, pad) }
+            v.padLive.played.sourceForTest = BenchResample(v)
+            v.padLive.makerForTest = BenchPackMaker(engine)
         }
         return v
     }
 
     private var padsHooked: RhythmViewModel? = null
+
+    /** The bench's own tests: Pad Live's pads sound as on a seat. */
+    internal var padsAsOnASeat = false
+    private fun seatPads() = seatDir != null || padsAsOnASeat
+
+    /**
+     * Audit ultra tour 0 (seat c): a phone's ■ silences the live pads too (« Stop means silence », the engine's
+     * toggleClip(-1)); the bench's pads went on. Their lights follow what the bench's pads do, as the
+     * engine's clip states would light them (a loop on: 2).
+     */
+    private fun padsAfterStop(playingBefore: Boolean) {
+        val v = lastVm ?: return
+        if (!seatPads() || v.livePadsSoundingForTest == null) return
+        if (playingBefore && !v.transport.value.playing) v.livePadsSoundingForTest = emptySet()
+        lightPads(v)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    internal fun lightPads(v: RhythmViewModel) {
+        val on = v.livePadsSoundingForTest ?: return
+        val f = RhythmViewModel::class.java.getDeclaredField("_liveStates").apply { isAccessible = true }
+        val flow = f.get(v) as kotlinx.coroutines.flow.MutableStateFlow<List<Int>>
+        val now = flow.value.indices.map { if (it in on) 2 else 0 }
+        if (now != flow.value) flow.value = now
+    }
 
     /**
      * A live pad touched on a seat: the app's own toggle, and the pad sounds as the phone's engine would
@@ -415,6 +447,7 @@ abstract class HumanTester(private val seat: String) {
         val on = v.livePadsSoundingForTest ?: emptySet()
         if (clip.oneShot) say("Le pad ${pad + 1} (« ${clip.name} ») joue une fois.")
         else v.livePadsSoundingForTest = if (pad in on) on - pad else on + pad
+        lightPads(v)
     }
 
     /**
@@ -511,11 +544,13 @@ abstract class HumanTester(private val seat: String) {
      * gesture (one that may open such a screen) first stops the song it played and lets it go.
      */
     private fun engineBefore(kind: String, x: Float, y: Float) {
-        if (kind == "touche" && (touches("share_go", x, y) || touches("share_listen", x, y))) {
+        if (kind == "touche" && (touches("share_go", x, y) || touches("share_listen", x, y) || playsTheSong(x, y))) {
             NativeEngine.sink = NativeEngine.sink ?: engine
             return
         }
         if (kind == "attends" || NativeEngine.sink == null) return
+        // Audit ultra tour 0 (seat a): the assistant's « Écouter » are rendered by the engine, as on a phone.
+        if (previewsWanted()) return
         // The Remix page's own controls keep it: none of them opens another screen.
         if ((kind == "touche" || kind == "appui-long" || kind == "glisse") && stemPages() && touchesRemixControl(x, y)) return
         val v = lastVm
@@ -550,7 +585,8 @@ abstract class HumanTester(private val seat: String) {
     }
 
     private fun engineDone() {
-        val v = lastVm
+        // The project the gesture may have opened (its activity is a new one): its ViewModel's work counts.
+        val v = vm() ?: lastVm
         // The Remix page (its cut screen, its stem board) on screen: the engine holds the stems (« Écouter »,
         // « Jouer avec le projet », « → Pad », « → Live »).
         if (stemPages()) {
@@ -572,9 +608,44 @@ abstract class HumanTester(private val seat: String) {
             }
             return
         }
-        if (NativeEngine.sink != null && v?.export?.value?.running != true && (v == null || !songPlaying(v)) && !engineWorkRunning(v)) {
+        if (NativeEngine.sink != null && v?.export?.value?.running != true && (v == null || !songPlaying(v)) && !engineWorkRunning(v) && !previewsWanted()) {
             stopPollers()
             NativeEngine.sink = null
+        }
+        // Audit ultra tour 0 (seat c): a Pad Live take (the performance, « Enregistrer ce que je joue ») is written
+        // with the engine (its pads bounced to a track, the take put on a pad): the bench's engine comes for it and
+        // stays until it is written, before the gesture that ends it. (Seat a) The assistant on screen: its
+        // « Écouter » are rendered by the engine, which is there before the touch.
+        if (NativeEngine.sink == null && (takeUnderWay(v) || previewsWanted())) NativeEngine.sink = engine
+    }
+
+    /**
+     * Audit ultra tour 0 (seat a): the guide's « Écouter » and ▶ play the song from a part on a phone (« Montée
+     * mes. 25 »), through the engine; without it the app only moved its « from » and the loop of the first part
+     * played. The bench's engine comes for the touch and stays while the song plays ([engineDone]).
+     */
+    private fun playsTheSong(x: Float, y: Float): Boolean {
+        if (lastVm?.project?.value?.song.isNullOrEmpty()) return false
+        return touches("top_play", x, y) || touchesStart("guide_option_", x, y)
+    }
+
+    /** The assistant on screen, or a sound of the library being made to be heard. */
+    private fun previewsWanted(): Boolean = shownOnScreen("wizard") || library()?.preparing?.value != null
+
+    /** The sound library's ViewModel (the assistant's and the library's « Écouter »). */
+    private fun library(): com.pocketstudio.app.library.SoundLibraryViewModel? {
+        var lib: com.pocketstudio.app.library.SoundLibraryViewModel? = null
+        runCatching { scenario?.onActivity { lib = ViewModelProvider(it)[com.pocketstudio.app.library.SoundLibraryViewModel::class.java] } }
+        return lib
+    }
+
+    /** What the library plays (« Écouter » of the assistant or of a sound), as the ear would name it. */
+    private fun libraryHeard(): String? {
+        val ref = library()?.playing?.value ?: return null
+        return when (ref) {
+            is com.pocketstudio.app.library.SoundRef.StyleDemo -> "l'assistant fait écouter un extrait du style « ${com.pocketstudio.model.StarterWizard.style(ref.styleId)?.name ?: ref.styleId} »"
+            is com.pocketstudio.app.library.SoundRef.MoodDemo -> "l'assistant fait écouter les accords de l'ambiance « ${ref.mood.label} » sur le rythme du style"
+            else -> "un son de la bibliothèque joue (écoute)"
         }
     }
 
@@ -588,7 +659,26 @@ abstract class HumanTester(private val seat: String) {
      */
     internal fun engineWorkRunning(v: RhythmViewModel? = lastVm): Boolean {
         if (v == null) return false
-        return v.stemBoard.state.value.busy != null || v.sampleTask.value is com.pocketstudio.app.rhythm.SampleTask.Busy
+        return v.stemBoard.state.value.busy != null || v.sampleTask.value is com.pocketstudio.app.rhythm.SampleTask.Busy || takeUnderWay(v) ||
+            v.padLive.busy.value != null || liveFillRunning(v)
+    }
+
+    /**
+     * Audit ultra tour 0 (seat a): a song made by the assistant gets its live pads made with the engine once it is
+     * open (`fillLivePads`, its loops rendered then stored): the bench's engine, there when it started, stays
+     * until it ends (a phone's never goes away under it).
+     */
+    private fun liveFillRunning(v: RhythmViewModel): Boolean = runCatching {
+        val f = RhythmViewModel::class.java.getDeclaredField("liveFill").apply { isAccessible = true }
+        (f.get(v) as? Job)?.isActive == true
+    }.getOrDefault(false)
+
+    /** A Pad Live take armed, recording, being written, or recorded and waiting for its place ([engineDone]). */
+    private fun takeUnderWay(v: RhythmViewModel?): Boolean {
+        if (v == null) return false
+        val take = v.take.value
+        val performance = take !is com.pocketstudio.app.live.TakeUi.Ready && take !is com.pocketstudio.app.live.TakeUi.Done
+        return performance || v.padLive.played.ui.value !is com.pocketstudio.app.padlive.PlayedTakeUi.Ready
     }
 
     /** The Remix page, its cut screen or its stem board on screen: the stems' screens. */
@@ -713,6 +803,15 @@ abstract class HumanTester(private val seat: String) {
         }
     }.getOrDefault(false)
 
+    /** A node whose tag starts with [prefix] is under the finger at ([x], [y]). */
+    private fun touchesStart(prefix: String, x: Float, y: Float): Boolean = runCatching {
+        compose.onAllNodes(SemanticsMatcher("tag $prefix…") { n -> n.config.getOrElse(SemanticsProperties.TestTag) { "" }.startsWith(prefix) })
+            .fetchSemanticsNodes(atLeastOneRootRequired = false).any { n ->
+                val at = BenchWindows.drawnPosition(n, app.resources.displayMetrics)
+                x >= at.x && x <= at.x + n.size.width && y >= at.y && y <= at.y + n.size.height
+            }
+    }.getOrDefault(false)
+
     /** Android's share menu, as a phone shows it once the song is ready: the apps to send it with. */
     private fun shareMenu() {
         val started = shadowOf(app).peekNextStartedActivity() ?: return
@@ -739,9 +838,13 @@ abstract class HumanTester(private val seat: String) {
     }
 
     /** One gesture: « touche X Y », « appui-long X Y », « glisse X1 Y1 X2 Y2 », « ecris … », « retour », « attends S ». */
+    /** The transport played before the gesture under way ([padsAfterStop]). */
+    private var playingBefore = false
+
     private fun play(cmd: String) {
         val words = cmd.split(Regex("\\s+"))
         val kind = words[0].lowercase()
+        playingBefore = lastVm?.transport?.value?.playing == true
         engineBefore(kind, words.getOrNull(1)?.replace(',', '.')?.toFloatOrNull() ?: -1f, words.getOrNull(2)?.replace(',', '.')?.toFloatOrNull() ?: -1f)
         val padsBefore = stemPads()
         try {
@@ -803,7 +906,10 @@ abstract class HumanTester(private val seat: String) {
             shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(d))
             runCatching { compose.mainClock.advanceTimeBy(d) }
             ears.tick()
-            lastVm?.let { playhead.tick(it, SystemClock.uptimeMillis()) }
+            lastVm?.let {
+                playhead.tick(it, SystemClock.uptimeMillis())
+                engine.transportSteps = it.takeClockForTest
+            }
             left -= d
         }
     }
@@ -858,6 +964,8 @@ abstract class HumanTester(private val seat: String) {
         picker()
         services()
         engineDone()
+        padsAfterStop(playingBefore)
+        playingBefore = lastVm?.transport?.value?.playing == true
         shareMenu()
         permissions()
         toasts()
@@ -979,13 +1087,16 @@ abstract class HumanTester(private val seat: String) {
         if (ears.playing) add("l'exemple du tuto joue (encore ${(ears.frames - ears.heard()) / OfflineExport.SAMPLE_RATE + 1} s)")
         val v = vm()
         if (v?.transport?.value?.playing == true) {
-            add("la musique du projet joue en boucle")
+            // Audit ultra tour 0 (seat a): the song from a part (the guide's « Écouter »), not the loop of a part.
+            val part = v.sessionUi.value.songIndex.takeIf { it >= 0 }?.let { v.project.value.song.getOrNull(it) }
+            add(part?.let { "le morceau joue (partie « ${v.project.value.scenes.getOrNull(it.scene)?.name ?: "?"} »)" } ?: "la musique du projet joue en boucle")
             remixHeard(v)?.let(::add)
             stemPads().filter { it.value.second }.forEach { (pad, s) -> add("le pad ${pad + 1} (« ${s.first} ») sonne dans la boucle") }
         }
         previewHeard()?.let(::add)
+        libraryHeard()?.let(::add)
         // Live pads on a seat (padToggled): heard with the transport stopped too.
-        v?.livePadsSoundingForTest?.takeIf { seatDir != null && it.isNotEmpty() }?.let { on ->
+        v?.livePadsSoundingForTest?.takeIf { seatPads() && it.isNotEmpty() }?.let { on ->
             add(if (on.size == 1) "le pad live ${on.first() + 1} joue en boucle" else "les pads live ${on.sorted().joinToString(", ") { "${it + 1}" }} jouent en boucle")
         }
     }.let { if (it.isEmpty()) "Son : rien ne joue." else "Son : " + it.joinToString(" ; ") + "." }

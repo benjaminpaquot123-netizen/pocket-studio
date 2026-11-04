@@ -19,12 +19,16 @@ internal class BenchPlayhead {
     fun tick(vm: RhythmViewModel, nowMs: Long) {
         if (!vm.transport.value.playing) {
             since = -1L
+            vm.takeClockForTest = -1
             return
         }
         if (since < 0) since = nowMs
         val p = vm.project.value
         val spb = p.stepsPerBar.coerceAtLeast(1)
         val steps = ((nowMs - since) * p.tempoBpm / 15_000.0).toInt()  // a sixteenth = 15/bpm s
+        // Audit ultra tour 0 (seat c): « Enregistrer la performance » reads the transport's steps since ▶ to start
+        // on its launch line; without them it stayed « Prêt » for good.
+        vm.takeClockForTest = steps
         val songIndex = vm.sessionUi.value.songIndex
         if (songIndex >= 0 && songIndex < p.song.size) {
             val songStep = (p.songStepOf(songIndex) + steps).coerceAtMost(p.songBars.coerceAtLeast(1) * spb - 1)

@@ -40,7 +40,7 @@ class CutZoomGestureTest {
     private fun setUp(): Triple<CutModel, StemBoardView, MutableList<SongCuts>> {
         val bars = (0 until song / bar).map { CutPiece(it * bar, (it + 1) * bar) }
         val saved = mutableListOf<SongCuts>()
-        val m = CutModel("song", song, 120.0, 0.0, SongCuts("song", listOf(StemCuts(VOCALS_STEM, bars))), onChange = { saved += it })
+        val m = CutModel("song", song, 120.0, 0.0, SongCuts("song", listOf(StemCuts(VOCALS_STEM, bars))), onChange = { saved += it }, mode = com.pocketstudio.model.AutoCut.Phrases)
         val v = StemBoardView(song)
         compose.setContent {
             PocketStudioTheme {

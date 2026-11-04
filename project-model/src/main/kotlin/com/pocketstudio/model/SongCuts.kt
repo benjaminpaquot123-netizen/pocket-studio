@@ -31,6 +31,8 @@ data class StemCuts(
     val chosen: List<Int> = emptyList(),
     /** The auto cuts last asked for ([AutoCut] name), empty: none. */
     val auto: String = "",
+    /** « Un bout » (Benjamin, 2026-11-04): the one piece between « Début » and « Fin »; null: not placed yet. */
+    val span: CutPiece? = null,
 )
 
 /** The cuts of separated song [setId], one [StemCuts] per stem that was cut. */
@@ -48,7 +50,10 @@ data class SongCuts(val setId: String? = null, val stems: List<StemCuts> = empty
         if (this.setId != setId || frames <= 0) return SongCuts(setId)
         return SongCuts(setId, stems.filter { it.stem in 0 until STEMS }.distinctBy { it.stem }.map { s ->
             val pieces = Cuts.ordered(s.pieces.map { CutPiece(it.start.coerceIn(0, frames), it.end.coerceIn(0, frames), it.loop) })
-            s.copy(pieces = pieces, chosen = s.chosen.filter { it in pieces.indices }.distinct().sorted(), auto = s.auto.take(16))
+            s.copy(
+                pieces = pieces, chosen = s.chosen.filter { it in pieces.indices }.distinct().sorted(), auto = s.auto.take(16),
+                span = s.span?.let { Cuts.span(it.start, it.end, frames) },
+            )
         })
     }
 
@@ -57,8 +62,12 @@ data class SongCuts(val setId: String? = null, val stems: List<StemCuts> = empty
     }
 }
 
-/** The auto cuts offered: the voice's phrases, the attacks (drums), every bar (needs the tempo). */
-enum class AutoCut { Phrases, Attacks, Bars }
+/**
+ * The cut modes of the « Coupes » menu: [Selection] (« Un bout », first and the default: two bars,
+ * « Début » and « Fin », around the one piece to send), then the auto cuts into many pieces: the
+ * voice's phrases, the attacks (drums), every bar (needs the tempo).
+ */
+enum class AutoCut { Selection, Phrases, Attacks, Bars }
 
 /** What a cut sticks to when moved or made: the beats, the bars, nothing. */
 enum class CutMagnet { Beat, Bar, Free }
@@ -70,6 +79,40 @@ object Cuts {
 
     /** Pieces a stem holds at most (the screen lists them all). */
     const val MAX_PIECES = 64
+
+    // --- « Un bout »: one piece between two bars ----------------------------------------------
+
+    /** [start] until [end] as « Un bout » inside a stem of [frames]: at least [MIN_FRAMES] long; null when the stem is shorter. */
+    fun span(start: Long, end: Long, frames: Long): CutPiece? {
+        if (frames < MIN_FRAMES) return null
+        val s = start.coerceIn(0L, frames - MIN_FRAMES)
+        return CutPiece(s, end.coerceIn(s + MIN_FRAMES, frames))
+    }
+
+    /** « Début » moved to [at]: never past « Fin » less [MIN_FRAMES], never before the stem. */
+    fun spanStart(span: CutPiece, at: Long): CutPiece = span.copy(start = at.coerceIn(0L, max(0L, span.end - MIN_FRAMES)), loop = false)
+
+    /** « Fin » moved to [at]: never before « Début » plus [MIN_FRAMES], never past the stem's [frames]. */
+    fun spanEnd(span: CutPiece, at: Long, frames: Long): CutPiece =
+        span.copy(end = at.coerceIn(span.start + MIN_FRAMES, max(span.start + MIN_FRAMES, frames)), loop = false)
+
+    /** Seconds « Un bout » takes without a tempo (its bars cannot be counted). */
+    const val SPAN_SECONDS = 4
+
+    /**
+     * Where « Un bout » is first placed, to be useful at once: around the first of the auto cuts
+     * [found] (the first phrase of a voice), else the first two bars from [from] (the part shown;
+     * [SPAN_SECONDS] without a tempo), inside the stem's [frames] at [rate].
+     */
+    fun firstSpan(found: List<LongRange>, from: Long, frames: Long, beat: Double, firstBeat: Long, rate: Int = 48_000, beatsPerBar: Int = 4): CutPiece? {
+        found.firstOrNull { it.last + 1 - it.first >= MIN_FRAMES }?.let { return span(it.first, it.last + 1, frames) }
+        if (beat <= 0.0) return span(from, from + SPAN_SECONDS.toLong() * rate, frames)
+        val bar = beat * beatsPerBar.coerceAtLeast(1)
+        // The first bar line at or after [from] (the song's first beat may come late).
+        var s = firstBeat + Math.ceil((from - firstBeat) / bar) * bar
+        if (s + 2 * bar > frames) s = max(0.0, frames - 2 * bar)
+        return span(s.roundToLong(), (s + 2 * bar).roundToLong(), frames)
+    }
 
     /** [pieces] sorted, without empty or too short ones, without overlaps (a later one starts where the earlier ends), at most [MAX_PIECES]. */
     fun ordered(pieces: List<CutPiece>): List<CutPiece> {

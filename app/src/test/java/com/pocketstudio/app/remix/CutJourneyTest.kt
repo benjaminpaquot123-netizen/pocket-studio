@@ -165,6 +165,15 @@ class CutJourneyTest {
         }
         assertEquals(m.cuts, host.p.songCuts)
 
+        // It opens on « Un bout »; « Coupes › Phrases » shows those phrases as pieces (not cut again), the whole song in view.
+        assertTrue(m.single)
+        compose.onNodeWithTag("cut_auto").performClick()
+        compose.onNodeWithTag("cut_auto_1").performClick()
+        compose.waitForIdle()
+        assertEquals(com.pocketstudio.model.AutoCut.Phrases, m.mode)
+        assertEquals(3, m.pieces.size)
+        compose.runOnIdle { v.fit() }
+
         // A touch inside the second phrase puts the play head there; « Couper ici » cuts it on the beat.
         compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(v.x(Math.round(4.45 * BOARD_RATE)), centerY)) }
         compose.waitForIdle()

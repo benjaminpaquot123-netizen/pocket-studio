@@ -108,7 +108,7 @@ class A11yTargetsFixTest {
         lateinit var model: CutModel
         compose.setContent {
             PocketStudioTheme {
-                model = androidx.compose.runtime.remember { CutModel("s", frames, 120.0, 0.0, cuts) }
+                model = androidx.compose.runtime.remember { CutModel("s", frames, 120.0, 0.0, cuts, mode = com.pocketstudio.model.AutoCut.Phrases) }
                 CutScreen(ui, androidx.compose.runtime.remember { Shown(cuts) }, onClose = {}, model = model, view = rememberStemBoardView(ui))
             }
         }

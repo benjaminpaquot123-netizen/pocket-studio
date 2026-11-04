@@ -1,0 +1,12 @@
+{
+  "Un bout": "Tek parça",
+  "Début du bout": "Parçanın başlangıcı",
+  "Fin du bout": "Parçanın bitişi",
+  "Avancer d'un temps": "Bir vuruş ileri",
+  "Reculer d'un temps": "Bir vuruş geri",
+  "Avancer un peu": "Biraz ileri",
+  "Reculer un peu": "Biraz geri",
+  "Écouter le bout": "Parçayı dinle",
+  "Place Début et Fin, puis envoie ce bout.": "Başlangıç ve Bitiş'i yerleştir, sonra bu parçayı gönder.",
+  "Coupes : « Un bout » (au départ) donne deux barres, Début et Fin, à glisser ; ce qui est entre elles part tel quel. Phrases, Attaques ou Mesures coupent la piste en plein de bouts. Aimant : les barres et les coupes se posent sur le temps ou la mesure ; « Libre » les laisse où tu touches.": "Kesim: “Tek parça” (başlangıçta) kaydırılacak iki çubuk verir, Başlangıç ve Bitiş; aralarında kalan olduğu gibi gider. Cümleler, Transient'ler ya da Ölçüler kanalı birçok parçaya böler. Mıknatıs: çubuklar ve kesimler vuruşa ya da ölçüye oturur; “Serbest” onları dokunduğun yerde bırakır."
+}

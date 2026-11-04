@@ -27,7 +27,8 @@ import kotlin.math.sqrt
 /**
  * The cut screen's state for song [setId] ([frames] long at [BOARD_RATE], [bpm] 0: tempo unknown,
  * first beat [firstBeatSeconds]), starting from the cuts [saved]; every change is handed to
- * [onChange] (the project keeps it) and can be undone.
+ * [onChange] (the project keeps it) and can be undone. It opens in cut mode [mode]: « Un bout »
+ * (Benjamin, 2026-11-04: « propre et sans fioriture », two bars only) unless told otherwise.
  */
 @Stable
 class CutModel(
@@ -37,6 +38,7 @@ class CutModel(
     firstBeatSeconds: Double,
     saved: SongCuts,
     private val onChange: (SongCuts) -> Unit = {},
+    mode: AutoCut = AutoCut.Selection,
 ) {
     /** One beat in frames (0: no tempo, no magnet, no bars). */
     val beat: Double = Cuts.beatFrames(bpm, BOARD_RATE)
@@ -54,8 +56,14 @@ class CutModel(
 
     var magnet by mutableStateOf(if (beat > 0.0) CutMagnet.Beat else CutMagnet.Free)
 
-    /** The auto cuts the menu shows (the last asked for this stem, else the stem's own). */
-    val auto: AutoCut get() = cuts.of(stem)?.auto?.let { a -> AutoCut.entries.firstOrNull { it.name == a } } ?: defaultAuto(stem)
+    /** The cut mode the menu shows: « Un bout » (two bars) or the pieces of the auto cuts. */
+    var mode by mutableStateOf(mode)
+
+    /** « Un bout »: the two bars « Début » and « Fin », no numbered pieces. */
+    val single: Boolean get() = mode == AutoCut.Selection
+
+    /** The auto cuts the pieces were last made with (the last asked for this stem, else the stem's own). */
+    val auto: AutoCut get() = cuts.of(stem)?.auto?.let { a -> AutoCut.entries.firstOrNull { it.name == a && it != AutoCut.Selection } } ?: defaultAuto(stem)
 
     private val history = ArrayDeque<SongCuts>()
     var undoCount by mutableIntStateOf(0)
@@ -65,8 +73,14 @@ class CutModel(
     /** The pieces of the stem shown: the whole stem as one piece while it was never cut. */
     val pieces: List<CutPiece> get() = cuts.of(stem)?.pieces ?: Cuts.whole(frames)
 
-    /** Whether the stem shown was ever cut (else its auto cuts are made when it is first shown). */
-    val cutYet: Boolean get() = cuts.of(stem) != null
+    /**
+     * Whether the stem shown was ever cut (else its auto cuts are made when it is first shown): auto
+     * cuts asked for, or pieces other than the whole stem (« Un bout » placed alone is no cut).
+     */
+    val cutYet: Boolean get() = cuts.of(stem)?.let { it.auto.isNotEmpty() || it.pieces != Cuts.whole(frames) } == true
+
+    /** « Un bout » of the stem shown, null until placed. */
+    val span: CutPiece? get() = cuts.of(stem)?.span
 
     val chosen: List<Int> get() = cuts.of(stem)?.chosen.orEmpty()
 
@@ -119,14 +133,16 @@ class CutModel(
     /** « Couper ici »: a cut at [at] (the play head, or where the music plays), stuck by the magnet. */
     fun cutHere(at: Long = cursor): Boolean = edit { s -> withPieces(s, Cuts.split(s.pieces, stuck(at))) }
 
-    /** « Début »: the piece under the play head starts there. */
+    /** « Début »: the piece under the play head starts there (« Un bout »: its « Début » goes to the play head). */
     fun setStart(): Boolean {
+        if (single) return setSpanEdge(end = false, at = cursor)
         val i = current.takeIf { it >= 0 } ?: return false
         return edit { s -> withPieces(s, Cuts.setStart(s.pieces, i, stuck(cursor))) }
     }
 
-    /** « Fin »: the piece under the play head ends there. */
+    /** « Fin »: the piece under the play head ends there (« Un bout »: its « Fin » goes to the play head). */
     fun setEnd(): Boolean {
+        if (single) return setSpanEdge(end = true, at = cursor)
         val i = current.takeIf { it >= 0 } ?: return false
         return edit { s -> withPieces(s, Cuts.setEnd(s.pieces, i, stuck(cursor), frames)) }
     }
@@ -143,6 +159,49 @@ class CutModel(
         val i = current.takeIf { it >= 0 } ?: chosen.firstOrNull() ?: return -1
         edit { s -> withPieces(s, Cuts.loopPiece(s.pieces, i, beat, firstBeat, frames)) }
         return i
+    }
+
+    /**
+     * The first auto cuts of a stem, made by the screen when it is first shown (no act of the
+     * user's: no undo step), and « Un bout » placed around the first of them when it was not yet
+     * (else the first two bars from [shownFrom]).
+     */
+    fun firstCuts(mode: AutoCut, from: Long, to: Long, found: List<LongRange>, shownFrom: Long = 0L) {
+        val s = stemCuts()
+        val pieces = if (found.isEmpty()) s.pieces else Cuts.replaceIn(s.pieces, from, to, found)
+        val auto = if (found.isEmpty()) s.auto else mode.name
+        val span = s.span ?: Cuts.firstSpan(found, shownFrom, frames, beat, firstBeat, BOARD_RATE)
+        cuts = cuts.with(s.copy(pieces = pieces, chosen = keepChoice(s, pieces), auto = auto, span = span))
+        onChange(cuts)
+    }
+
+    /** « Un bout » placed when a stem cut before has none (a project of before): on its first piece, else two bars from [shownFrom]. */
+    fun ensureSpan(shownFrom: Long = 0L) {
+        if (span != null) return
+        val s = stemCuts()
+        val first = s.pieces.takeIf { it != Cuts.whole(frames) }.orEmpty().map { it.start until it.end }
+        val placed = Cuts.firstSpan(first, shownFrom, frames, beat, firstBeat, BOARD_RATE) ?: return
+        cuts = cuts.with(s.copy(span = placed))
+        onChange(cuts)
+    }
+
+    /** « Début » (or « Fin », [end]) of « Un bout » at [at], stuck by the magnet: one undo step. */
+    fun setSpanEdge(end: Boolean, at: Long): Boolean {
+        val now = span ?: return false
+        val f = stuck(at)
+        return edit { s -> s.copy(span = if (end) Cuts.spanEnd(now, f, frames) else Cuts.spanStart(now, f)) }
+    }
+
+    /**
+     * TalkBack's « avancer / reculer d'un temps » on « Début » (or « Fin », [end]): [beats] beats
+     * later (earlier when negative), on the beats; a quarter of a second each without a tempo.
+     */
+    fun nudgeSpan(end: Boolean, beats: Int): Boolean {
+        val now = span ?: return false
+        val edge = if (end) now.end else now.start
+        val to = if (hasGrid) Cuts.magnet(Math.round(edge + beats * beat), CutMagnet.Beat, beat, firstBeat)
+        else edge + beats.toLong() * BOARD_RATE / 4
+        return edit { s -> s.copy(span = if (end) Cuts.spanEnd(now, to, frames) else Cuts.spanStart(now, to)) }
     }
 
     /** Auto cuts [mode] found between [from] and [to] ([found]) in place of the pieces there. */
@@ -171,6 +230,10 @@ class CutModel(
     private var moving: Cuts.Line? = null
     private var movingFrom: List<CutPiece>? = null
 
+    /** « Un bout »: the bar moving (false « Début », true « Fin »), null when none; the span before the move. */
+    private var movingEdge: Boolean? = null
+    private var spanFrom: CutPiece? = null
+
     /** Whether the moving cut really moved yet: the undo step and the save wait for that. */
     private var moved = false
 
@@ -180,11 +243,33 @@ class CutModel(
      * a touch places the play head, the lines are grabbed once zoomed in).
      */
     fun beginMove(frame: Long, slop: Long): Boolean {
+        if (single) {
+            val edge = spanEdgeNear(frame, slop) ?: return false
+            movingEdge = edge
+            spanFrom = span
+            moved = false
+            return true
+        }
         val line = grabbable(frame, slop) ?: return false
         moving = line
         movingFrom = pieces
         moved = false
         return true
+    }
+
+    /**
+     * « Un bout »: the bar a finger at [frame] grabs within [slop] frames (false « Début », true
+     * « Fin »), the nearer one; both within reach (a short piece): the one on the finger's side.
+     */
+    fun spanEdgeNear(frame: Long, slop: Long): Boolean? {
+        val sp = span ?: return null
+        val toStart = abs(frame - sp.start)
+        val toEnd = abs(frame - sp.end)
+        return when {
+            toStart > slop && toEnd > slop -> null
+            toStart <= slop && toEnd <= slop -> if (frame > sp.end) true else if (frame < sp.start) false else toEnd < toStart
+            else -> toEnd <= slop
+        }
     }
 
     /** The line a finger at [frame] grabs with a zone of [slop] frames, null when none (or too crowded). */
@@ -201,6 +286,18 @@ class CutModel(
         private set
 
     fun moveTo(frame: Long) {
+        movingEdge?.let { end ->
+            val from = spanFrom ?: return
+            val now = if (end) Cuts.spanEnd(from, stuck(frame), frames) else Cuts.spanStart(from, stuck(frame))
+            movedTo = if (end) now.end else now.start
+            if (!moved) {
+                if (now == from) return
+                pushUndo()
+                moved = true
+            }
+            cuts = cuts.with(stemCuts().copy(span = now))
+            return
+        }
         val line = moving ?: return
         val from = movingFrom ?: return
         val now = Cuts.moveLine(from, line, stuck(frame), frames)
@@ -216,8 +313,10 @@ class CutModel(
 
     /** The finger lifted (or a second one came): saved once when the cut really moved. */
     fun endMove() {
-        if (moving == null) return
+        if (moving == null && movingEdge == null) return
         moving = null
+        movingEdge = null
+        spanFrom = null
         movingFrom = null
         movedTo = null
         if (moved) onChange(cuts)
@@ -235,6 +334,13 @@ class CutModel(
 
     fun selection(i: Int, fade: BoardFade = BoardFade.Small): StemSelection? =
         pieces.getOrNull(i)?.let { StemSelection(setId, stem, it.start, it.end, fade.inMs, fade.outMs) }
+
+    /** « Un bout » as the actions take it. */
+    fun spanSelection(fade: BoardFade = BoardFade.Small): StemSelection? =
+        span?.let { StemSelection(setId, stem, it.start, it.end, fade.inMs, fade.outMs) }
+
+    /** What the send buttons send: « Un bout » by itself, else the ticked pieces. */
+    fun toSend(): List<StemSelection> = if (single) listOfNotNull(spanSelection()) else chosenSelections()
 
     /** The ticked pieces, in time order. */
     fun chosenSelections(): List<StemSelection> = chosen.sorted().mapNotNull { selection(it) }
@@ -261,6 +367,8 @@ object SongCutFinder {
         if (z - a < Cuts.MIN_FRAMES) return emptyList()
         val beat = Cuts.beatFrames(src.songBpm, StemSelection.SAMPLE_RATE)
         return when (mode) {
+            // « Un bout » is placed, not found.
+            AutoCut.Selection -> emptyList()
             AutoCut.Bars -> Cuts.bars(a, z, beat, src.firstBeatFrame)
             AutoCut.Phrases -> {
                 val energy = energyIn(src, stem, a, z)

@@ -203,7 +203,7 @@ abstract class SizeClassShots {
     fun cutAndStructure() = shoot("cut_structure") {
         val ui = StemBoardUi("boys", "ADÉLA - Boys", frames, bpm, 0.0, peaks, peaksContext = EmptyCoroutineContext)
         val actions = remember { Shown(cuts) }
-        val model = remember { CutModel("boys", frames, bpm, 0.0, cuts) }
+        val model = remember { CutModel("boys", frames, bpm, 0.0, cuts, mode = com.pocketstudio.model.AutoCut.Phrases) }
         val view = rememberStemBoardView(ui)
         CutWithStructure(structure = { Structure() }) { CutScreen(ui, actions, onClose = {}, model = model, view = view) }
         LaunchedEffect(view.width) {

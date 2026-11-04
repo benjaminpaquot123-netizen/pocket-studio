@@ -71,7 +71,7 @@ class CutScreenshotTest : ScreenshotTest() {
     @androidx.compose.runtime.Composable
     private fun screen(moving: Boolean) {
         val actions = remember { Shown(cuts) }
-        val model = remember { CutModel("boys", frames, bpm, 0.0, cuts) }
+        val model = remember { CutModel("boys", frames, bpm, 0.0, cuts, mode = com.pocketstudio.model.AutoCut.Phrases) }
         val view = rememberStemBoardView(ui())
         CutScreen(ui(), actions, onClose = {}, model = model, view = view)
         LaunchedEffect(view.width) {
@@ -94,6 +94,27 @@ class CutScreenshotTest : ScreenshotTest() {
     @Test
     fun cutScreenMagnifier() = shoot("cut_screen_magnifier") { screen(moving = true) }
 
+    /**
+     * « Un bout » (Benjamin, 2026-11-04: « propre et sans fioriture », two bars only): the screen as
+     * it opens on his 411 dp phone, the two bars around the voice's first phrase, nothing else.
+     */
+    @androidx.compose.runtime.Composable
+    private fun bout() {
+        val actions = remember { Shown(cuts) }
+        val model = remember { CutModel("boys", frames, bpm, 0.0, cuts) }
+        CutScreen(ui(), actions, onClose = {}, model = model, view = rememberStemBoardView(ui()))
+        LaunchedEffect(model.span) { model.span?.let { model.cursor = it.start + it.frames / 3 } }
+    }
+
+    @Test
+    @Config(qualifiers = "w411dp-h891dp-xxhdpi")
+    fun cutScreenOnePiece() = shoot("cut_bout") { bout() }
+
+    /** The same at 130 % text: both menus read in full. */
+    @Test
+    @Config(qualifiers = "w411dp-h891dp-xxhdpi", fontScale = 1.3f)
+    fun cutScreenOnePieceBigText() = shoot("cut_bout_130") { bout() }
+
     /** « Ma bibliothèque » of the one browser: a folder per song the sounds were kept from. */
     @Test
     fun libraryMineFolders() = shoot("library_mine_folders") {
@@ -108,6 +129,6 @@ class CutScreenshotTest : ScreenshotTest() {
     }
 
     companion object {
-        val SHOTS = setOf("cut_screen", "cut_screen_magnifier", "library_mine_folders")
+        val SHOTS = setOf("cut_screen", "cut_screen_magnifier", "library_mine_folders", "cut_bout", "cut_bout_130")
     }
 }

@@ -60,6 +60,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -135,8 +136,45 @@ fun CutScreen(
         }
     }
 
-    // A stem never cut gets its own auto cuts the first time it is shown (the voice in phrases).
-    LaunchedEffect(model.stem) { if (!model.cutYet) autoCut(model.defaultAuto(model.stem), whole = true) }
+    /** A stem never cut: its own auto cuts on the whole song (the voice in phrases), « Un bout » around the first. */
+    fun firstCuts() {
+        val stem = model.stem
+        val mode = model.defaultAuto(stem)
+        finding = true
+        note = null
+        scope.launch {
+            val found = try { actions.autoCuts(ui.setId, stem, mode, 0L, ui.frames) } finally { finding = false }
+            if (model.stem != stem) return@launch
+            when {
+                found == null -> note = tr("Les pistes de ce morceau ne sont plus sur l'appareil : sépare-le à nouveau.")
+                found.isEmpty() -> note = tr("Aucune coupe trouvée ici : la piste est presque muette.")
+            }
+            model.firstCuts(mode, 0L, ui.frames, found.orEmpty(), view.start.toLong())
+        }
+    }
+
+    // A stem never cut gets its own auto cuts the first time it is shown (the voice in phrases);
+    // one cut before (a project of before « Un bout ») gets its « Un bout » on its first piece.
+    LaunchedEffect(model.stem) { if (!model.cutYet) firstCuts() else model.ensureSpan(view.start.toLong()) }
+
+    // « Un bout » brought into view (the whole song small would put its two bars together).
+    val placed = model.span
+    LaunchedEffect(model.stem, placed != null, view.width > 0f, model.single) {
+        if (model.single && placed != null && view.width > 0f && !view.zoomedIn) view.show(placed.start, placed.end, minFrames = 4L * BOARD_RATE)
+    }
+
+    /** The « Coupes » menu: « Un bout », or the pieces of [mode] (made again, unless they are what « Un bout » left). */
+    fun pick(mode: AutoCut) {
+        if (mode == AutoCut.Selection) {
+            model.mode = mode
+            model.ensureSpan(view.start.toLong())
+            return
+        }
+        if (mode == AutoCut.Bars && !model.hasGrid) return autoCut(mode)
+        val back = model.single && model.cutYet && model.auto == mode
+        model.mode = mode
+        if (!back) autoCut(mode)
+    }
 
     CompositionLocalProvider(LocalFolding provides false) {
         Column(modifier.fillMaxSize().background(Neon.Background).testTag("cut_screen")) {
@@ -148,10 +186,14 @@ fun CutScreen(
                     SectionLabel(shownPart(model, view), modifier = Modifier.weight(1f).testTag("cut_part"))
                     Text(tr("Pince pour zoomer"), style = MaterialTheme.typography.labelLarge, color = Neon.Cyan)
                 }
-                CutZoom(model, view, levels, work, onTouched = { note = null }, modifier = Modifier.fillMaxWidth().height(210.dp))
-                AutoRow(model, finding, onAuto = { autoCut(it) })
-                ToolRow(model, actions, work)
-                PieceList(model, actions, work, Modifier.weight(1f))
+                // « Un bout »: no list of pieces, the curve takes the room (taller bars to grab).
+                val zoom = if (model.single) Modifier.fillMaxWidth().weight(1f).heightIn(min = 210.dp) else Modifier.fillMaxWidth().height(210.dp)
+                CutZoom(model, view, levels, work, onTouched = { note = null }, modifier = zoom)
+                AutoRow(model, finding, onAuto = { pick(it) })
+                if (model.single) SpanRow(model, actions, work) else {
+                    ToolRow(model, actions, work)
+                    PieceList(model, actions, work, Modifier.weight(1f))
+                }
             }
             SendBar(model, actions, work, note) { note = null }
         }
@@ -173,7 +215,7 @@ private fun CutHeader(ui: StemBoardUi, model: CutModel, actions: StemBoardAction
                 Text(tr("Découper la chanson"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f, fill = false))
                 // Lot « Aide à jour »: how to cut, by the title (the rows under it keep their height).
-                com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.ScreenHelp.CUT_TOOLS, about = listOf("cut_here", "cut_start", "cut_end", "cut_remove", "cut_loop"))
+                com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.ScreenHelp.CUT_TOOLS, about = listOf("cut_here", "cut_start", "cut_end", "cut_remove", "cut_loop", "cut_span_play"))
             }
             Text(
                 listOf(ui.name, boardClock(ui.frames).substringBefore('.')).filter { it.isNotBlank() }.joinToString(" · "),
@@ -206,19 +248,12 @@ private fun StemChips(model: CutModel, onChange: () -> Unit) {
                 selected = model.stem == stem,
                 onClick = { if (model.stem != stem) { onChange(); model.stem = stem } },
                 label = { Text(StemStore.label(name), style = MaterialTheme.typography.titleSmall) },
-                leadingIcon = { Box(Modifier.size(10.dp).background(stemDot(name), CircleShape)) },
+                leadingIcon = { Box(Modifier.size(10.dp).background(cutStemColor(stem), CircleShape)) },
                 colors = pillColors(),
                 modifier = Modifier.testTag("cut_stem_$stem"),
             )
         }
     }
-}
-
-private fun stemDot(stem: String): Color = when (stem) {
-    "vocals" -> Color(0xFF8BC34A)
-    "drums" -> Color(0xFF7986CB)
-    "bass" -> Color(0xFFFF7043)
-    else -> Color(0xFF29B6F6)
 }
 
 /** « Mes. 13 à 21 » (the bars on screen), or the seconds without a tempo. */
@@ -233,6 +268,7 @@ private fun shownPart(model: CutModel, view: StemBoardView): String {
 }
 
 private fun autoName(a: AutoCut): String = when (a) {
+    AutoCut.Selection -> tr("Un bout")
     AutoCut.Phrases -> tr("Phrases")
     AutoCut.Attacks -> tr("Attaques")
     AutoCut.Bars -> tr("Mesures")
@@ -244,16 +280,19 @@ private fun magnetName(m: CutMagnet): String = when (m) {
     CutMagnet.Free -> tr("Libre")
 }
 
-/** « Coupes auto : Phrases ▾ », « Aimant : Temps ▾ », « ↶ Annuler ». */
+/**
+ * « ✂ Un bout ▾ », « 🧲 Au temps ▾ », « ↶ Annuler »: an icon says what each menu is (TalkBack says
+ * « Coupes : », « Aimant : »), so that both values read in full on a phone, at 130 % too.
+ */
 @Composable
 private fun AutoRow(model: CutModel, finding: Boolean, onAuto: (AutoCut) -> Unit) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
         Menu(
-            label = tr("Coupes :"), value = if (finding) "…" else autoName(model.auto), tag = "cut_auto",
+            icon = Icons.Filled.ContentCut, label = tr("Coupes :"), value = if (finding) "…" else autoName(if (model.single) AutoCut.Selection else model.mode), tag = "cut_auto",
             options = AutoCut.entries.map { autoName(it) to { onAuto(it) } }, modifier = Modifier.weight(1f, fill = false),
         )
         Menu(
-            label = tr("Aimant :"), value = magnetName(model.magnet), tag = "cut_magnet",
+            icon = MagnetIcon, label = tr("Aimant :"), value = magnetName(model.magnet), tag = "cut_magnet",
             options = (if (model.hasGrid) CutMagnet.entries else listOf(CutMagnet.Free)).map { m -> magnetName(m) to { model.magnet = m } },
             modifier = Modifier.weight(1f, fill = false),
         )
@@ -267,7 +306,7 @@ private fun AutoRow(model: CutModel, finding: Boolean, onAuto: (AutoCut) -> Unit
 }
 
 @Composable
-private fun Menu(label: String, value: String, tag: String, options: List<Pair<String, () -> Unit>>, modifier: Modifier) {
+private fun Menu(icon: ImageVector, label: String, value: String, tag: String, options: List<Pair<String, () -> Unit>>, modifier: Modifier) {
     var open by remember { mutableStateOf(false) }
     Box(modifier) {
         Row(
@@ -275,10 +314,10 @@ private fun Menu(label: String, value: String, tag: String, options: List<Pair<S
                 .clickable(role = Role.Button) { open = true }.padding(start = 10.dp, end = 4.dp).testTag(tag),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // The value is what matters: the label gives way first on a narrow phone.
-            Text(label + " ", style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, maxLines = 1,
-                overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
-            Text(value, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1)
+            // The icon names the menu (its words for TalkBack): the value reads in full, on two lines if it must.
+            Icon(icon, contentDescription = label, tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))
+            Spacer(Modifier.size(6.dp))
+            Text(value, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 2, modifier = Modifier.weight(1f, fill = false))
             Icon(Icons.Filled.ArrowDropDown, contentDescription = null, modifier = Modifier.size(18.dp))
         }
         ScaledDropdownMenu(expanded = open, onDismissRequest = { open = false }) {
@@ -309,6 +348,65 @@ private fun ToolRow(model: CutModel, actions: StemBoardActions, work: State<Stem
             if (p != null && p.loop) model.selection(i)?.let { actions.play(it, loop = true) } else actions.stop()
         }
     }
+}
+
+/**
+ * « Un bout »: « Début » and « Fin » brought to the play head (or to what is heard), then the
+ * piece itself: ▶ to hear just it, its length (« 0:03.2 · 2 mesures »).
+ */
+@Composable
+private fun SpanRow(model: CutModel, actions: StemBoardActions, work: State<StemBoardState>) {
+    fun here(): Long = work.value.playing?.takeIf { it.stem == model.stem && work.value.playFrame >= 0 }?.let { work.value.playFrame } ?: model.cursor
+    val sp = model.span
+    val sel = model.spanSelection()
+    val heard = work.value.playing?.let { p -> sel != null && p.stem == sel.stem && p.startFrame == sel.startFrame && p.endFrame == sel.endFrame } == true
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Tool(Icons.Filled.FirstPage, tr("Début"), "cut_start", modifier = Modifier.weight(1f)) { model.cursor = here(); model.setStart() }
+        Tool(Icons.Filled.LastPage, tr("Fin"), "cut_end", modifier = Modifier.weight(1f)) { model.cursor = here(); model.setEnd() }
+        val shape = RoundedCornerShape(14.dp)
+        val color = cutStemColor(model.stem)
+        Row(
+            Modifier.weight(2f).heightIn(min = 64.dp).clip(shape).background(androidx.compose.ui.graphics.lerp(Neon.Surface, color, 0.22f))
+                .clickable(enabled = sel != null, role = Role.Button) { if (heard) actions.stop() else sel?.let { actions.play(it) } }
+                .padding(horizontal = 10.dp, vertical = 8.dp).testTag("cut_span_play"),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(if (heard) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = if (heard) tr("Arrêter") else tr("Écouter le bout"),
+                tint = if (heard) Neon.Acid else Neon.TextPrimary, modifier = Modifier.size(28.dp))
+            Spacer(Modifier.size(8.dp))
+            Text(
+                sp?.let { spanLength(model, it.frames) } ?: "…",
+                style = MonoStyle.copy(fontSize = MaterialTheme.typography.titleSmall.fontSize), color = Neon.TextPrimary, maxLines = 2,
+                modifier = Modifier.testTag("cut_span_length"),
+            )
+        }
+    }
+}
+
+/** « 0:03.2 · 2 mesures » (or « · 3 temps »): the length of « Un bout », its bars when it holds whole ones. */
+internal fun spanLength(model: CutModel, frames: Long): String {
+    val time = boardClock(frames)
+    if (!model.hasGrid) return time
+    val beats = frames / model.beat
+    val whole = Math.round(beats).toInt()
+    if (whole < 1 || kotlin.math.abs(beats - whole) > 0.05) return time
+    val count = if (whole % 4 == 0) trCount(whole / 4, "1 mesure", "%d mesures") else trCount(whole, "1 temps", "%d temps")
+    return "$time · $count"
+}
+
+/** A magnet (the « Aimant » menu): a U, its two poles apart. */
+private val MagnetIcon: ImageVector by lazy {
+    ImageVector.Builder("Pocket.Magnet", 24.dp, 24.dp, 24f, 24f).apply {
+        path(fill = androidx.compose.ui.graphics.SolidColor(Color.Black)) {
+            moveTo(4f, 2f); horizontalLineToRelative(5f); verticalLineToRelative(5f); horizontalLineToRelative(-5f); close()
+            moveTo(15f, 2f); horizontalLineToRelative(5f); verticalLineToRelative(5f); horizontalLineToRelative(-5f); close()
+            moveTo(4f, 8.5f); horizontalLineToRelative(5f); verticalLineTo(14f)
+            arcToRelative(3f, 3f, 0f, false, false, 6f, 0f)
+            verticalLineTo(8.5f); horizontalLineToRelative(5f); verticalLineTo(14f)
+            arcToRelative(8f, 8f, 0f, false, true, -16f, 0f)
+            close()
+        }
+    }.build()
 }
 
 @Composable
@@ -394,7 +492,7 @@ private fun PieceTile(i: Int, frames: Long, loop: Boolean, ticked: Boolean, hear
 /** At the bottom: how many pieces are ticked and how long, then where they go; what was done, or why not. */
 @Composable
 private fun SendBar(model: CutModel, actions: StemBoardActions, work: State<StemBoardState>, note: String?, dismissNote: () -> Unit) {
-    val sels = model.chosenSelections()
+    val sels = model.toSend()
     val busy = work.value.busy
     val message = work.value.message
     Column(
@@ -410,9 +508,10 @@ private fun SendBar(model: CutModel, actions: StemBoardActions, work: State<Stem
             }
         }
         Text(
-            if (sels.isEmpty()) tr("Coche des bouts pour les envoyer.")
+            if (model.single) tr("Place Début et Fin, puis envoie ce bout.")
+            else if (sels.isEmpty()) tr("Coche des bouts pour les envoyer.")
             else trCount(sels.size, "1 bout choisi · %2\$s au total", "%1\$d bouts choisis · %2\$s au total", sels.size, boardClock(model.chosenFrames).substringBefore('.')),
-            style = MaterialTheme.typography.titleSmall, color = if (sels.isEmpty()) Neon.TextSecondary else Neon.Cyan,
+            style = MaterialTheme.typography.titleSmall, color = if (sels.isEmpty() || model.single) Neon.TextSecondary else Neon.Cyan,
             modifier = Modifier.testTag("cut_chosen"),
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

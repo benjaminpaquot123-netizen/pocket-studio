@@ -66,7 +66,8 @@ object ScreenHelp {
     // --- « Découper la chanson » ---
     val CUT_AUTO: Help get() = Help(
         tr("Coupes et aimant"),
-        tr("Coupes : l'appli coupe la piste toute seule, aux phrases, aux attaques ou à chaque mesure. Aimant : tes coupes se posent sur le temps ou la mesure la plus proche ; « Libre » les laisse où tu touches."),
+        // « Un bout » first (Benjamin, 2026-11-04), then the auto cuts into many pieces.
+        tr("Coupes : « Un bout » (au départ) donne deux barres, Début et Fin, à glisser ; ce qui est entre elles part tel quel. Phrases, Attaques ou Mesures coupent la piste en plein de bouts. Aimant : les barres et les coupes se posent sur le temps ou la mesure ; « Libre » les laisse où tu touches."),
     )
     val CUT_TOOLS: Help get() = Help(
         tr("Outils de coupe"),

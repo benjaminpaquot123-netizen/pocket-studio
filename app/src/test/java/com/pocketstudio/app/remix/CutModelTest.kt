@@ -22,7 +22,7 @@ class CutModelTest {
     private val beat = 24_000L  // 120 BPM
 
     private fun model(saved: SongCuts = SongCuts("song"), into: MutableList<SongCuts> = mutableListOf()) =
-        CutModel("song", frames, 120.0, 0.0, saved, onChange = { into += it })
+        CutModel("song", frames, 120.0, 0.0, saved, onChange = { into += it }, mode = com.pocketstudio.model.AutoCut.Phrases)
 
     @Test
     fun aStemNeverCutIsOnePieceAndCutHereSnapsToTheBeat() {
@@ -101,7 +101,7 @@ class CutModelTest {
         val bar = 4 * beat
         val bars = (0 until song / bar).map { CutPiece(it * bar, (it + 1) * bar) }
         val saved = mutableListOf<SongCuts>()
-        val m = CutModel("song", song, 120.0, 0.0, SongCuts("song", listOf(StemCuts(VOCALS_STEM, bars))), onChange = { saved += it })
+        val m = CutModel("song", song, 120.0, 0.0, SongCuts("song", listOf(StemCuts(VOCALS_STEM, bars))), onChange = { saved += it }, mode = com.pocketstudio.model.AutoCut.Phrases)
         val wholeSong = song / 1080.0  // frames per px
         fun zone(fpp: Double) = (12 * 3 * fpp).toLong()  // 12 dp at xxhdpi
         // The whole song shown: no line is grabbed, wherever the finger lands (on a line or between two).

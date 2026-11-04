@@ -40,7 +40,6 @@
   "Case Remix": "Remix のマス",
   "Cette case joue un passage de la chanson séparée : choisis la piste (voix, batterie…), la mesure où il commence et sa longueur. Il part sur la mesure et suit le tempo.": "このマスは分離した曲の一部分を鳴らします：トラック（ボーカル、ドラム…）、始まる小節、長さを選んでください。小節の頭で始まり、テンポに合わせます。",
   "Coupes et aimant": "カットとマグネット",
-  "Coupes : l'appli coupe la piste toute seule, aux phrases, aux attaques ou à chaque mesure. Aimant : tes coupes se posent sur le temps ou la mesure la plus proche ; « Libre » les laisse où tu touches.": "カット：アプリがトラックを自動で、フレーズごと、トランジェントごと、または小節ごとに切ります。マグネット：カットが最寄りの拍や小節に吸い付きます。「フリー」ならタッチした位置のままです。",
   "Outils de coupe": "カットの道具",
   "Place la tête orange ou écoute, puis : Couper ici coupe à cet endroit, Début et Fin raccourcissent le bout, Enlever le retire, Boucle le fait tourner. Pince la vue pour zoomer.": "オレンジの再生位置を置くか再生して聴き、「ここで切る」でその位置をカット、「開始」と「終了」で切れ端を短く、「消す」で取り除き、「ループ」で繰り返します。ピンチでズームできます。",
   "Envoyer les bouts": "切れ端を送る",

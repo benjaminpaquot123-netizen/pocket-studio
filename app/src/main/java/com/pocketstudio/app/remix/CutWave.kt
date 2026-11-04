@@ -10,6 +10,7 @@ import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,6 +36,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChanged
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
@@ -54,7 +60,9 @@ import kotlin.math.min
  * Lot C (n° 24): the curves of « Découper la chanson » (mockup docs/maquettes/decoupe-deux.png):
  * the whole stem small with the part shown framed, then that part big, each piece in its colour
  * with its number, the cut lines and their handles, the orange play head; a cut moved by a finger
- * shows a magnifier with its time and whether it sits on the beat.
+ * shows a magnifier with its time and whether it sits on the beat. « Un bout » (Benjamin,
+ * 2026-11-04: « propre et sans fioriture ») draws none of that: the stem, the one piece lit in the
+ * stem's colour between its two bars « Début » and « Fin » (big handles), the rest dimmed.
  */
 
 /** The pieces' colours, in turn (1 green, 2 blue, 3 purple, 4 orange, 5 yellow, 6 indigo). */
@@ -126,6 +134,13 @@ internal fun CutOverview(model: CutModel, view: StemBoardView, levels: BoardPeak
                             drawLine(muted, Offset(c * column, mid - h), Offset(c * column, mid + h), strokeWidth = max(1f, column * 0.7f))
                         }
                     }
+                    // « Un bout », in the stem's colour.
+                    val sp = if (model.single) model.span else null
+                    if (sp != null && view.frames > 0) {
+                        val a = (sp.start.toDouble() / view.frames * size.width).toFloat()
+                        val z = (sp.end.toDouble() / view.frames * size.width).toFloat()
+                        drawRect(cutStemColor(stem).copy(alpha = 0.7f), Offset(a, 0f), Size(max(2f, z - a), size.height))
+                    }
                     // The part shown, framed and lit.
                     if (view.frames > 0 && view.framesPerPx > 0) {
                         val x0 = (view.start / view.frames * size.width).toFloat()
@@ -172,7 +187,7 @@ internal fun CutZoom(
                         val slop = viewConfiguration.touchSlop
                         // A small zone, and only a line standing alone in it (see [CutModel.beginMove]):
                         // the whole song cut every bar leaves the touches to the play head and the pinch.
-                        val grab = (CUT_GRAB.toPx() * view.framesPerPx).toLong()
+                        val grab = ((if (model.single) SPAN_GRAB else CUT_GRAB).toPx() * view.framesPerPx).toLong()
                         val grabbing = model.beginMove(view.frameAt(down.position.x), grab)
                         if (grabbing) onTouched()
                         var moved = false
@@ -220,12 +235,55 @@ internal fun CutZoom(
                     val knob = 7.dp.toPx()
                     val badge = 10.dp.toPx()
                     val tri = Path()
+                    val barW = 3.dp.toPx()
+                    val handleW = 16.dp.toPx()
+                    val handleH = 44.dp.toPx()
+                    val edge = 6.dp.toPx()
                     onDrawBehind {
                         drawRect(lane)
                         val fpp = view.framesPerPx
                         if (fpp <= 0.0) return@onDrawBehind
                         val pieces = model.pieces
                         val stem = model.stem
+                        if (model.single) {
+                            // « Un bout »: the stem, its one piece lit between the two bars, the rest dimmed.
+                            val sp = model.span
+                            val color = cutStemColor(stem)
+                            val a = sp?.let { view.x(it.start) } ?: 0f
+                            val z = sp?.let { view.x(it.end) } ?: 0f
+                            if (sp != null && z > 0f && a < size.width) {
+                                drawRect(color.copy(alpha = 0.14f), Offset(max(0f, a), 0f), Size(min(size.width, z) - max(0f, a), size.height))
+                            }
+                            val peaks = if (levels.ready > stem) levels.of(stem) else null
+                            val mid = size.height / 2
+                            val amp = mid - edge * 2
+                            if (peaks != null) {
+                                val from = view.start.toLong()
+                                peaks.fill(from, from + (columns * column * fpp).toLong(), heights)
+                                val scale = levels.scale(stem)
+                                var c = 0
+                                while (c < columns) {
+                                    val x = c * column
+                                    val f = view.frameAt(x)
+                                    val h = max(0.5f, min(amp, heights[c] * scale * amp))
+                                    drawLine(if (sp != null && f in sp) color else grey, Offset(x, mid - h), Offset(x, mid + h), strokeWidth = column)
+                                    c++
+                                }
+                            }
+                            if (sp != null) {
+                                // Outside the piece: a veil; the piece framed top and bottom.
+                                if (a > 0f) drawRect(DIM, Offset.Zero, Size(min(a, size.width), size.height))
+                                if (z < size.width) drawRect(DIM, Offset(max(0f, z), 0f), Size(size.width - max(0f, z), size.height))
+                                val l = max(0f, a)
+                                val r = min(size.width, z)
+                                if (r > l) {
+                                    drawLine(Color.White, Offset(l, barW / 2), Offset(r, barW / 2), strokeWidth = barW)
+                                    drawLine(Color.White, Offset(l, size.height - barW / 2), Offset(r, size.height - barW / 2), strokeWidth = barW)
+                                }
+                                drawSpanBar(a, inward = 1f, barW, handleW, handleH)
+                                drawSpanBar(z, inward = -1f, barW, handleW, handleH)
+                            }
+                        } else {
                         // Each piece's ground, in its colour.
                         pieces.forEachIndexed { i, p ->
                             val x0 = view.x(p.start)
@@ -267,6 +325,7 @@ internal fun CutZoom(
                                 drawCircle(Color.White.copy(alpha = 0.85f), 3.dp.toPx(), Offset(x0 + badge, margin / 2 + 2f))
                             }
                         }
+                        }
                         // The play head the tools act at: an orange line, a small triangle on top.
                         val hx = view.x(model.cursor)
                         if (hx in 0f..size.width) {
@@ -290,9 +349,76 @@ internal fun CutZoom(
                     }
                 },
         )
+        if (model.single) model.span?.let { sp ->
+            SpanBarNode(model, view, end = false, at = sp.start)
+            SpanBarNode(model, view, end = true, at = sp.end)
+        }
         model.movedTo?.let { at -> CutMagnifier(model, view, levels, at, Modifier.align(Alignment.TopStart)) }
     }
 }
+
+/** Outside « Un bout »: the song dimmed. */
+private val DIM = Color(0x8C0B0C10)
+
+/** The colour of stem [stem] (0 drums, 1 bass, 2 other, 3 voice), as its chip's dot. */
+internal fun cutStemColor(stem: Int): Color = when (stem) {
+    VOCALS_STEM -> Color(0xFF8BC34A)
+    0 -> Color(0xFF7986CB)
+    1 -> Color(0xFFFF7043)
+    else -> Color(0xFF29B6F6)
+}
+
+/** A bar of « Un bout » at [x]: white, full height, its grip handle on the piece's side ([inward] +1 right, -1 left). */
+private fun DrawScope.drawSpanBar(x: Float, inward: Float, width: Float, handleW: Float, handleH: Float) {
+    if (x < -handleW || x > size.width + handleW) return
+    drawLine(Color.White, Offset(x, 0f), Offset(x, size.height), strokeWidth = width)
+    val left = if (inward > 0) x - width / 2 else x - handleW + width / 2
+    val top = (size.height - handleH) / 2
+    drawRoundRect(Color.White, Offset(left, top), Size(handleW, handleH), androidx.compose.ui.geometry.CornerRadius(handleW / 3))
+    val grip = Color(0xFF4B5160)
+    val cx = left + handleW / 2
+    val g = handleW * 0.18f
+    for (dx in listOf(-g, g)) drawLine(grip, Offset(cx + dx, top + handleH * 0.3f), Offset(cx + dx, top + handleH * 0.7f), strokeWidth = width * 0.6f)
+}
+
+/**
+ * TalkBack's « Début du bout » (or « Fin du bout », [end]): a 48 dp node over the bar at frame
+ * [at], its time said, moved one beat at a time by its custom actions (the finger drags the bar on
+ * the curve underneath: this node takes no touch).
+ */
+@Composable
+private fun SpanBarNode(model: CutModel, view: StemBoardView, end: Boolean, at: Long) {
+    val name = if (end) tr("Fin du bout") else tr("Début du bout")
+    val later = if (model.hasGrid) tr("Avancer d'un temps") else tr("Avancer un peu")
+    val earlier = if (model.hasGrid) tr("Reculer d'un temps") else tr("Reculer un peu")
+    Box(
+        Modifier
+            .layout { measurable, constraints ->
+                val w = SPAN_NODE.roundToPx()
+                val placeable = measurable.measure(constraints.copy(minWidth = w, maxWidth = w))
+                // The node sits on the piece's side of its bar, as the handle.
+                val bar = view.x(at)
+                val left = (if (end) bar - w + w / 4f else bar - w / 4f).toInt()
+                layout(constraints.maxWidth, placeable.height) { placeable.place(IntOffset(left, 0)) }
+            }
+            .fillMaxHeight()
+            .semantics {
+                contentDescription = name
+                stateDescription = cutClock(at)
+                customActions = listOf(
+                    CustomAccessibilityAction(later) { model.nudgeSpan(end, 1) },
+                    CustomAccessibilityAction(earlier) { model.nudgeSpan(end, -1) },
+                )
+            }
+            .testTag(if (end) "cut_span_end" else "cut_span_start"),
+    )
+}
+
+/** TalkBack's node over a bar of « Un bout ». */
+private val SPAN_NODE = 48.dp
+
+/** « Un bout »: each side of a bar, the zone a finger grabs it in (48 dp in all). */
+internal val SPAN_GRAB = 24.dp
 
 /** A cut line at [x]: white, with its round handle at the bottom. */
 private fun DrawScope.drawCutLine(x: Float, width: Float, knob: Float, bottom: Float) {
@@ -337,7 +463,13 @@ private fun CutMagnifier(model: CutModel, view: StemBoardView, levels: BoardPeak
                             val f = from + span * c / columns
                             val i = pieceIndexAt(model.pieces, f)
                             val h = max(1f, min(mid, heights[c] * scale * mid))
-                            drawLine(if (i >= 0) pieceColor(i) else Color.Gray, Offset(c * col + col / 2, mid - h), Offset(c * col + col / 2, mid + h), strokeWidth = col * 0.75f)
+                            val sp = model.span
+                            val tint = when {
+                                model.single -> if (sp != null && f in sp) cutStemColor(model.stem) else Color.Gray
+                                i >= 0 -> pieceColor(i)
+                                else -> Color.Gray
+                            }
+                            drawLine(tint, Offset(c * col + col / 2, mid - h), Offset(c * col + col / 2, mid + h), strokeWidth = col * 0.75f)
                         }
                     }
                     drawLine(Color.White, Offset(size.width / 2, 0f), Offset(size.width / 2, size.height), strokeWidth = 2.dp.toPx())

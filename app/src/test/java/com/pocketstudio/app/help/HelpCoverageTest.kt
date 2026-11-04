@@ -256,7 +256,7 @@ class HelpCoverageTest {
         }
         compose.setContent {
             PocketStudioTheme {
-                val model = remember { CutModel("boys", frames, 113.0, 0.0, cuts) }
+                val model = remember { CutModel("boys", frames, 113.0, 0.0, cuts, mode = com.pocketstudio.model.AutoCut.Phrases) }
                 CutScreen(ui, actions, onClose = {}, model = model, view = rememberStemBoardView(ui))
             }
         }

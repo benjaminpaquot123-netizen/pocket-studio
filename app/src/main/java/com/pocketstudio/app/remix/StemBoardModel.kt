@@ -160,6 +160,15 @@ class StemBoardView(val frames: Long) {
         start = 0.0
     }
 
+    /** [from] until [to] brought into view, in the middle of the board, as much again around it (at least [minFrames] shown). */
+    fun show(from: Long, to: Long, minFrames: Long = 0L) {
+        if (width <= 0f || to <= from) return
+        val shown = max(2.0 * (to - from), minFrames.toDouble())
+        framesPerPx = (shown / width).coerceIn(MIN_FRAMES_PER_PX, fitFramesPerPx)
+        start = (from + to) / 2.0 - width * framesPerPx / 2
+        clamp()
+    }
+
     /** Pinch: [factor] > 1 zooms in, the frame under [focusX] stays under the fingers. */
     fun zoomBy(factor: Float, focusX: Float) {
         if (width <= 0f || factor <= 0f || !factor.isFinite()) return

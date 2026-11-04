@@ -113,6 +113,8 @@ object I18n {
         "masterpro",
         // Lot D (« Restes »): the Live's remix cell (a passage of the song per brick), the small leftovers.
         "restes",
+        // Owner (2026-11-04): « Un bout », the cut screen's two bars.
+        "remixbout",
     )
 
     @Volatile

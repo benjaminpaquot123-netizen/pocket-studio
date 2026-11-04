@@ -191,6 +191,7 @@ jobs:
           TOOLS: ${{ github.workspace }}/build/live-bench/tools
         run: |
           python3 -I scripts/bench/test_cpu_report.py
+          python3 -I scripts/bench/test_ultra_bench.py
           ./scripts/real-projects.sh
       # Endurance on Linux, short: a 2-minute song looped for 10 minutes (parts staged by the app
       # each time round), no flag, no heap call, no loop drifting from another; the drift alert's

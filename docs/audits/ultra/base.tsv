@@ -1,0 +1,2 @@
+# Base des clés connues (Audit ultra §3.4) : route|cible|symptôme, état (nouveau, confirmé, corrigé, voulu, idée), tour où elle est vue, note. Une ligne par clé, séparée par des tabulations ; scripts/bench/fuse-reports.py --maj-base y ajoute les nouvelles.
+cle	etat	vu	note

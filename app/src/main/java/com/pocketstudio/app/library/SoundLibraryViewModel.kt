@@ -372,6 +372,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         if (_packs.value.queue != null) return
         val stop = AtomicBoolean(false).also { cancelled[id] = it }
         markSeen(listOf(id))
+        if (_packs.value.downloading.isEmpty()) arrivedTogether.clear()
         _packs.update { it.copy(downloading = it.downloading + (id to 0f), message = null, readyNote = null) }
         viewModelScope.launch {
             val app = getApplication<Application>()
@@ -382,6 +383,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             }
             cancelled.remove(id)
             val installed = withContext(Dispatchers.IO) { PackStore.installed(app) }
+            if (error == null) arrivedTogether += entry.name
+            val ready = readyWords(arrivedTogether)
             _packs.update {
                 it.copy(
                     installed = installed,
@@ -391,7 +394,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                         is VerifiedDownload.CancelledException -> null
                         else -> tr("Le pack « %s » n'a pas pu être téléchargé : %s.", entry.name, error.forUser()).also { m -> AppLog.add(m) }
                     },
-                    readyNote = if (error == null) tr("C'est prêt : le pack « %s » est sur ton téléphone.", entry.name) else it.readyNote,
+                    readyNote = if (error == null) ready else it.readyNote,
                 )
             }
             if (error == null) {
@@ -400,6 +403,16 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
     }
+
+    /**
+     * The packs that came while others were still downloading (main thread). Audit ultra tour 0 (seat a: « Télécharger
+     * les sons du style », four packs, « C'est prêt : le pack « Roland Juno-106 » » only): one note names them all.
+     */
+    private val arrivedTogether = ArrayList<String>()
+
+    private fun readyWords(names: List<String>): String =
+        if (names.size <= 1) tr("C'est prêt : le pack « %s » est sur ton téléphone.", names.firstOrNull().orEmpty())
+        else tr("C'est prêt : ces packs sont sur ton téléphone : %s.", names.joinToString(", "))
 
     fun cancelDownload(id: String) {
         cancelled[id]?.set(true)

@@ -1,5 +1,5 @@
-Le grand Live, « c'est pas faux ! »
-- Live tout neuf : grille des briques, pads carrés qui rétrécissent, case vide qui demande quoi y mettre, tempo − + toujours là et calé tout seul.
-- Remix : la chanson entre dans le projet avec ses 4 pistes à retoucher, un écran d'import, kit, basse et voix en notes.
-- Un seul navigateur de sons rangé par familles, dossier Fête, pads prêts à jouer ; MiniLab et claviers branchés partout.
-- Kick vérifié dans les 37 styles, moteur sans craquement aux changements de tempo, Acid 303 plus discrète.
+La corde tendue, « Sire, on en a gros ! »
+- Nouvelle ouverture BenStudio : un anneau de lumière se tend autour du logo à chaque battement, les pads s'enfoncent, la poussière de lumière danse.
+- L'ouverture attend que l'appli ait fini de charger avant de bouger : plus de petit à-coup au début, et elle dure un peu plus.
+- Le son de l'appli se rouvre bien au premier lancement et après une restauration ; journal plus précis pour les testeurs.
+- Préparation du grand audit ultra : banc d'essai renforcé, nombreuses vérifications automatiques.

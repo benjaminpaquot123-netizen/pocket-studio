@@ -84,7 +84,9 @@ internal fun Modifier.launchOnPress(
                 }
             }
         }
-    }.semantics {
+    // One node for TalkBack with the words inside it (audit stage 1: a row's « A » and its name, « ■ Tout »,
+    // were read as a nameless button).
+    }.semantics(mergeDescendants = true) {
         role = Role.Button
         onClick {
             if (!onPress()) onTap()

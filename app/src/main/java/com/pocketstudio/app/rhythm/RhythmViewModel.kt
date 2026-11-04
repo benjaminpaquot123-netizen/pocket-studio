@@ -2825,7 +2825,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (waitsFor(LiveSlots.DRUMS)) return  // another scene plays: this one goes to the engine on its turn
         NativeEngine.setPatternSteps(drums.steps)
         drums.lanes.forEachIndexed { lane, l ->
-            for (step in 0 until drums.engineReach) pushHit(lane, step, l.hits[step])
+            for (step in 0 until drums.engineReach) pushHit(lane, step, l.hits[step], loopOf(drums, lane))
             NativeEngine.setDrumLaneSteps(lane, l.length)
         }
     }
@@ -8433,7 +8433,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (playsNow(LiveSlots.DRUMS, scene) && NativeEngine.isAvailable) {
             val drums = project.value.sceneView(scene).drums
             val hits = drums.lanes[lane].hits
-            for (s in 0 until drums.engineReach) pushHitNow(lane, s, hits[s])
+            for (s in 0 until drums.engineReach) pushHitNow(lane, s, hits[s], loopOf(drums, lane))
         }
     }
 
@@ -8727,7 +8727,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             (hits.map { it.first } + replacedHits.keys.map { it.first }).distinct().forEach { scene ->
                 if (playsNow(LiveSlots.DRUMS, scene) || scene == project.value.scene) {
                     val drums = project.value.sceneView(scene).drums
-                    drums.lanes.forEachIndexed { lane, l -> for (s in 0 until drums.engineReach) pushHitNow(lane, s, l.hits[s]) }
+                    drums.lanes.forEachIndexed { lane, l -> for (s in 0 until drums.engineReach) pushHitNow(lane, s, l.hits[s], loopOf(drums, lane)) }
                 }
             }
         }
@@ -9707,12 +9707,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** A hit and its roll (rolls only travel with hits: an empty step needs nothing more). */
-    private fun pushHit(lane: Int, step: Int, hit: Hit?) {
+    private fun pushHit(lane: Int, step: Int, written: Hit?, loop: Int = loopOf(project.value.drums, lane)) {
         if (waitsFor(LiveSlots.DRUMS)) return
-        pushHitNow(lane, step, hit)
+        pushHitNow(lane, step, written, loop)
     }
 
-    private fun pushHitNow(lane: Int, step: Int, hit: Hit?) {
+    /** The steps pad [lane] of [drums] loops over (its own loop, else the pattern's). */
+    private fun loopOf(drums: DrumPattern, lane: Int): Int = drums.lanes[lane].loopSteps(drums.steps)
+
+    /** [written] as the pad's loop of [loop] steps plays it ([Hit.within]: a triplet never spills past the loop's end). */
+    private fun pushHitNow(lane: Int, step: Int, written: Hit?, loop: Int = loopOf(project.value.drums, lane)) {
+        val hit = written?.within(step, loop)
         NativeEngine.setDrumHit(lane, step, hit?.velocity ?: 0f, hit?.repeats ?: 1, hit?.ramp ?: 0)
         if (hit == null) return
         // A triplet (its hits spread over several steps): the roll command after the hit.

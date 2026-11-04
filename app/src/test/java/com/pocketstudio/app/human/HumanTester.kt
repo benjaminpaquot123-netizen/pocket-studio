@@ -273,8 +273,20 @@ abstract class HumanTester(private val seat: String) {
         val v = lastVm
         // The Remix page on screen: the engine holds the stems (« Écouter », « Jouer avec le projet », « → Pad »).
         if (remixPage()) {
-            NativeEngine.sink = NativeEngine.sink ?: engine
+            val was = NativeEngine.sink
+            NativeEngine.sink = was ?: engine
             startPollers()
+            // Flaky fix (audit stage 1, HumanRemixJourneyTest « the waveforms never came », 1 run in 3): a song put
+            // in the project while the bench had let its engine go (« Mettre dans mon projet » is not the Remix
+            // page) was never loaded: the view model only loads stems for an engine that is there. The bench's
+            // engine comes back as a phone's engine (re)starts: the view model syncs it, the song's stems with it.
+            // (Whenever it is still missing, not only as the engine comes back: the song may enter the project a
+            // touch after the engine did. Once a song: a load under way is left to finish.)
+            val song = v?.project?.value?.remix?.setId
+            if (v != null && song != null && song != syncedFor && v.stemOverview.value == null && !v.remixLoading.value) {
+                syncedFor = song
+                v.syncEngine()
+            }
             return
         }
         if (NativeEngine.sink != null && v?.export?.value?.running != true && (v == null || !songPlaying(v))) {
@@ -283,8 +295,11 @@ abstract class HumanTester(private val seat: String) {
         }
     }
 
+    /** The song whose stems the bench last asked the view model to load (see [engineDone]). */
+    private var syncedFor: String? = null
+
     /** The Remix page is on screen (not only composed beside it). */
-    private fun remixPage(): Boolean = runCatching {
+    protected fun remixPage(): Boolean = runCatching {
         val width = app.resources.displayMetrics.widthPixels
         compose.onAllNodesWithTag("remix_start").fetchSemanticsNodes().any { it.positionOnScreen.x in 0f..(width - 1f) }
     }.getOrDefault(false)
@@ -639,6 +654,12 @@ abstract class HumanTester(private val seat: String) {
 
     protected fun project() = lastVm?.project?.value
     protected fun rhythm() = lastVm
+
+    /** What the Remix's song is waiting for, for a failure's message. */
+    protected fun remixState(): String = lastVm?.let { v ->
+        "engine=${NativeEngine.sink != null} setId=${v.project.value.remix.setId} overview=${v.stemOverview.value != null} " +
+            "loading=${v.remixLoading.value} remixPage=${remixPage()}"
+    } ?: "no view model"
     /** Failures of the screen's own work since the start (a frozen screen), for the report. */
     protected val problems = mutableListOf<String>()
     protected val screenHeight: Int get() = app.resources.displayMetrics.heightPixels

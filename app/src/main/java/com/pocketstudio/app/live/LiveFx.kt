@@ -139,10 +139,10 @@ private fun Scrolled(content: @Composable () -> Unit) {
 internal fun SectionTitle(text: String, modifier: Modifier = Modifier) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         Box(Modifier.size(3.dp, 14.dp).clip(RoundedCornerShape(2.dp)).background(Neon.Cyan))
-        Text(
-            text.uppercase(), Modifier.padding(start = 8.dp), style = MaterialTheme.typography.labelMedium,
-            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, color = Neon.TextSecondary, maxLines = 1,
-            letterSpacing = 1.sp,
+        // Audit stage 1: smaller before a word is lost (« THE » for « THE EFFECT » at a big font size).
+        com.pocketstudio.ui.FitText(
+            text.uppercase(), Modifier.padding(start = 8.dp), MaterialTheme.typography.labelMedium.copy(letterSpacing = 1.sp),
+            color = Neon.TextSecondary, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
         )
     }
 }
@@ -205,8 +205,8 @@ private fun PlayRow(state: LiveFxState) {
             ) {
                 val style = MaterialTheme.typography.labelLarge
                 Text(
-                    label, color = if (selected) Neon.TextPrimary else Neon.TextSecondary, style = style, maxLines = 1, softWrap = false,
-                    autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
+                    label, color = if (selected) Neon.TextPrimary else Neon.TextSecondary, style = style, maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                    autoSize = com.pocketstudio.ui.WholeWordsAutoSize(9.sp, style.fontSize),
                 )
             }
         }

@@ -268,9 +268,9 @@ private fun AutomationEntry(lanes: Int, show: () -> Unit, overview: () -> Unit) 
             androidx.compose.material3.Button(
                 onClick = show, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("automation_entry_open"),
                 colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Neon.Amber, contentColor = Neon.OnAccent),
-            ) { Text(if (lanes == 0) tr("Automatiser") else tr("Voir les courbes"), maxLines = 1) }
+            ) { com.pocketstudio.ui.FitText(if (lanes == 0) tr("Automatiser") else tr("Voir les courbes"), style = androidx.compose.material3.LocalTextStyle.current) }
             androidx.compose.material3.OutlinedButton(onClick = overview, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("automation_entry_overview")) {
-                Text(tr("Ce qui joue"), maxLines = 1)
+                com.pocketstudio.ui.FitText(tr("Ce qui joue"), style = androidx.compose.material3.LocalTextStyle.current)
             }
         }
     }

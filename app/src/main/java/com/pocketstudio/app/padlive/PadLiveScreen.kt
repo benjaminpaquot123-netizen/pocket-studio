@@ -481,12 +481,13 @@ private fun PadLivePad(
                 .testTag("padlive_mode_$pad"),
             contentAlignment = Alignment.TopEnd,
         ) {
-            Text(
+            // Audit stage 1: one line that gets smaller (« przytrzymaj », « uderzenie · 1 » lost their end, word by word).
+            com.pocketstudio.ui.FitText(
                 modeWord(PadLive.modeOf(clip)) + if (clip.group > 0) " · ${clip.group}" else "",
-                style = MaterialTheme.typography.labelSmall, color = Neon.TextPrimary, maxLines = 1,
-                modifier = Modifier.padding(top = 5.dp, end = 6.dp).clip(RoundedCornerShape(6.dp))
-                    .background(com.pocketstudio.ui.PadWordScrim).padding(horizontal = 5.dp, vertical = 1.dp)
-                    .testTag("padlive_word_$pad"),
+                // On a dark veil: readable (WCAG AA) over the pad's light top too (audit stages 1 and 5: 2.2 to 3.4:1 before).
+                Modifier.padding(top = 4.dp, end = 6.dp).clip(RoundedCornerShape(6.dp)).background(com.pocketstudio.ui.PadWordScrim)
+                    .padding(horizontal = 4.dp).testTag("padlive_word_$pad"),
+                MaterialTheme.typography.labelSmall, color = Neon.TextPrimary, min = 8.sp, textAlign = androidx.compose.ui.text.style.TextAlign.End,
             )
         }
         // A short pad (a small phone with « Plus » open): its name a little smaller, clear of the corner's word.
@@ -495,8 +496,9 @@ private fun PadLivePad(
             // Lot D2: a word is never split over two lines (« Monté/e »): smaller first.
             com.pocketstudio.ui.FitText(
                 name.orEmpty(),
-                Modifier.align(Alignment.BottomStart).heightIn(max = (maxHeight - 26.dp).coerceAtLeast(16.dp))
-                    .padding(horizontal = 10.dp).padding(bottom = 6.dp).testTag("padlive_name_$pad"),
+                // (Audit stage 1: room for its second line on a short pad; 24 dp keeps it clear of the corner word in tall scripts, Arabic at 360 dp.)
+                Modifier.align(Alignment.BottomStart).heightIn(max = (maxHeight - 24.dp).coerceAtLeast(16.dp))
+                    .padding(horizontal = 10.dp).padding(bottom = 4.dp).testTag("padlive_name_$pad"),
                 style, color = Neon.TextPrimary, fontWeight = FontWeight.Bold, maxLines = 2, min = 9.sp,
             )
         }
@@ -725,7 +727,7 @@ private fun MoreButton(icon: androidx.compose.ui.graphics.vector.ImageVector, la
         Spacer(Modifier.width(6.dp))
         Text(
             label, style = MaterialTheme.typography.labelMedium, color = tint, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis,
-            autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = MaterialTheme.typography.labelMedium.fontSize, stepSize = 0.5.sp),
+            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(9.sp, MaterialTheme.typography.labelMedium.fontSize),
         )
     }
 }

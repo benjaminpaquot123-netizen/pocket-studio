@@ -5,7 +5,6 @@ import com.pocketstudio.ui.ScaledDropdownMenu
 
 import com.pocketstudio.model.i18n.tr
 
-import com.pocketstudio.ui.fadingHorizontalScroll
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -39,6 +38,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import com.pocketstudio.ui.fadingEdges
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.composed
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -116,8 +120,18 @@ fun TrackBar(
     val renaming = renamingId?.let { id -> ui.tracks.firstOrNull { it.id == id } }
     val colouring = colouringId?.let { id -> ui.tracks.firstOrNull { it.id == id } }
     var choosing by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
+    val scroll = androidx.compose.foundation.rememberScrollState()
+    val reveal = remember { RowReveal() }
+    LaunchedEffect(reveal.target, scroll.viewportSize) {
+        val t = reveal.target ?: return@LaunchedEffect
+        val seen = scroll.viewportSize
+        if (seen <= 0) return@LaunchedEffect
+        if (t.first < scroll.value) scroll.animateScrollTo(t.first)
+        else if (t.last > scroll.value + seen) scroll.animateScrollTo(t.last - seen)
+    }
+    androidx.compose.runtime.CompositionLocalProvider(LocalRowReveal provides reveal) {
     Row(
-        modifier.fadingHorizontalScroll().testTag("track_bar"),
+        modifier.fadingEdges(scroll).horizontalScroll(scroll).testTag("track_bar"),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -125,7 +139,7 @@ fun TrackBar(
         ui.tracks.forEach { t ->
             val selected = t.id == ui.selected
             val color = trackColor(t.color)
-            Box {
+            Box(Modifier.shownWhen(selected)) {
                 Row(
                     Modifier
                         .height(44.dp)
@@ -214,6 +228,7 @@ fun TrackBar(
             }
         }
     }
+    }
     if (choosing) {
         TrackAddDialog(onDismiss = { choosing = false }, voice = ui.addVoice?.let { v -> { choosing = false; v() } }, simple = ui.simple, acid = ui.addAcid?.let { a -> { choosing = false; a() } }) { kind, write ->
             choosing = false
@@ -251,5 +266,25 @@ fun TrackBar(
             },
             confirmButton = { TextButton(onClick = { colouringId = null }) { Text(tr("Fermer")) } },
         )
+    }
+}
+
+/** APK 228: where the lit chip of a [TrackBar] sits in its row, to scroll it into view. */
+internal class RowReveal {
+    var target by mutableStateOf<IntRange?>(null)
+}
+
+internal val LocalRowReveal = androidx.compose.runtime.staticCompositionLocalOf<RowReveal?> { null }
+
+/**
+ * APK 228: the chip of the track opened (or of the editor shown) is scrolled into the row's view when
+ * it is lit from elsewhere (a track sheet, « + Piste », Remix): past the screen's edge it was lit unseen.
+ * On a direct child of the [TrackBar]'s row; only that row scrolls (never the page around it).
+ */
+internal fun Modifier.shownWhen(selected: Boolean): Modifier = if (!selected) this else composed {
+    val reveal = LocalRowReveal.current
+    if (reveal == null) this else onPlaced { c ->
+        val x = c.positionInParent().x.toInt()
+        reveal.target = x..(x + c.size.width)
     }
 }

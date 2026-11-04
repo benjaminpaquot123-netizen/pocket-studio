@@ -201,12 +201,12 @@ internal fun CasesStepper(rows: Int, setRows: (Int) -> Unit, modifier: Modifier 
         Text(tr("Cases"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary, maxLines = 1)
         val less = LiveCells.stepRows(rows, up = false)
         val more = LiveCells.stepRows(rows, up = true)
-        IconButton(onClick = { setRows(less) }, enabled = less != rows, modifier = Modifier.size(44.dp).testTag("live_cases_less")) {
+        IconButton(onClick = { setRows(less) }, enabled = less != rows, modifier = Modifier.size(48.dp).testTag("live_cases_less")) {
             Icon(Icons.Filled.Remove, contentDescription = tr("Moins de cases"))
         }
         Text("$rows", style = MonoStyle.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold), color = Neon.TextPrimary, maxLines = 1,
             modifier = Modifier.testTag("live_cases_count"))
-        IconButton(onClick = { setRows(more) }, enabled = more != rows, modifier = Modifier.size(44.dp).testTag("live_cases_more")) {
+        IconButton(onClick = { setRows(more) }, enabled = more != rows, modifier = Modifier.size(48.dp).testTag("live_cases_more")) {
             Icon(Icons.Filled.Add, contentDescription = tr("Plus de cases"))
         }
     }

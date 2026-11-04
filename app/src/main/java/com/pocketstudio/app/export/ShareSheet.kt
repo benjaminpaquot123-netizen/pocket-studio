@@ -373,7 +373,10 @@ fun ShareSheetContent(
             Icon(Icons.Filled.Movie, contentDescription = null, modifier = Modifier.size(18.dp))
             Text("  " + tr("Vidéo pour les réseaux · 30 s"), maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
         }
-        TextButton(onClick = actions.otherExports, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("share_other")) {
+        // The formats' « ? » sits here, at the end of the line about the other formats: beside the M4A / WAV
+        // chips it did not fit a 360 dp phone and fell alone on a line of its own.
+        Row(verticalAlignment = Alignment.CenterVertically) {
+        TextButton(onClick = actions.otherExports, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("share_other")) {
             Column(Modifier.weight(1f)) {
                 Text(tr("Autres exports"), color = Neon.Cyan)
                 // Lot 2: the Mode simple has no Mix (the button takes it to the full mode).
@@ -381,6 +384,8 @@ fun ShareSheetContent(
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("share_other_where"))
             }
             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan)
+        }
+            com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.Glossary.FORMATS, about = listOf("share_format_*"))
         }
     }
         // Testers (lot « tuto 4 »): M4A or WAV stays in sight with « Partager » (a short page, the tutorial's
@@ -396,7 +401,6 @@ fun ShareSheetContent(
                     colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("share_format_${format.name}"),
                 )
             }
-            com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.Glossary.FORMATS, about = listOf("share_format_*"))
         }
         ui.rightsProject?.let { com.pocketstudio.app.remix.RightsLine(it, Modifier.padding(horizontal = 20.dp, vertical = 4.dp)) }
         Button(

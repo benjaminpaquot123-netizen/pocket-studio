@@ -5,6 +5,7 @@ import androidx.compose.foundation.text.modifiers.TextAutoSizeLayoutScope
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
@@ -53,9 +54,13 @@ class WholeWordsAutoSize(private val min: TextUnit, private val max: TextUnit, p
             return true
         }
 
-        /** Chinese and Japanese go to the next line between any two characters (no spaces between words). */
+        /**
+         * Chinese and Japanese go to the next line between any two characters (no spaces between words);
+         * so does Korean on Android (its line breaker splits between syllables: audit stage 1, Korean
+         * texts were made smaller for a break Korean readers expect).
+         */
         private fun breaksAnywhere(c: Char): Boolean = when (Character.UnicodeScript.of(c.code)) {
-            Character.UnicodeScript.HAN, Character.UnicodeScript.HIRAGANA, Character.UnicodeScript.KATAKANA -> true
+            Character.UnicodeScript.HAN, Character.UnicodeScript.HIRAGANA, Character.UnicodeScript.KATAKANA, Character.UnicodeScript.HANGUL -> true
             else -> c.code in 0x3000..0x30FF || c.code in 0xFF00..0xFFEF
         }
     }
@@ -87,3 +92,21 @@ fun FitText(
         overflow = TextOverflow.Ellipsis, textAlign = textAlign, autoSize = WholeWordsAutoSize(min, style.fontSize),
     )
 }
+
+/**
+ * Audit stage 1: content taller than the room it is given (a small tile with three lines, a big
+ * font size) is drawn whole and smaller, centred, instead of losing its last line under the edge.
+ * Content that fits is untouched.
+ */
+fun Modifier.shrinkToFit(): Modifier = this.then(
+    Modifier.layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints.copy(minHeight = 0, maxHeight = Constraints.Infinity))
+        val room = if (constraints.hasBoundedHeight) constraints.maxHeight else placeable.height
+        val scale = if (placeable.height > room && placeable.height > 0) room.toFloat() / placeable.height else 1f
+        val height = minOf(placeable.height, room).coerceAtLeast(constraints.minHeight)
+        layout(placeable.width, height) {
+            if (scale == 1f) placeable.place(0, (height - placeable.height) / 2)
+            else placeable.placeWithLayer(0, (height - placeable.height) / 2) { scaleX = scale; scaleY = scale }
+        }
+    },
+)

@@ -15,6 +15,7 @@ import com.pocketstudio.model.Project
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.SynthPatch
 import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.i18n.Lang
 import com.pocketstudio.model.track
 import com.pocketstudio.model.tuto.TutoChecks
 import com.pocketstudio.model.tuto.TutoCourse
@@ -47,12 +48,24 @@ import kotlin.math.abs
  */
 @RunWith(ParameterizedRobolectricTestRunner::class)
 @Config(qualifiers = "w360dp-h780dp")
-class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
+class TutoJourneyTest(private val style: String, private val level: TutoLevel, private val langTag: String) {
     companion object {
+        /**
+         * Audit ultra (§2): French on every run; German (the longest texts) and Arabic (right to left) at
+         * the rounds that ask for them: `-Ptuto.langs=de,ar` adds those languages (`fr` alone by default).
+         */
+        val LANGS: List<Lang> get() = (listOf(Lang.FR) + System.getProperty("ps.tuto.langs").orEmpty().split(',')
+            .map { it.trim() }.filter { it.isNotEmpty() }.map { c -> Lang.entries.first { it.code == c } }).distinct()
+
+        // The French case keeps its old name (« jump_up Pro »); another language says its code after it.
         @JvmStatic
-        @ParameterizedRobolectricTestRunner.Parameters(name = "{0} {1}")
-        fun courses(): List<Array<Any>> = TutoCourse.STYLES.flatMap { s -> TutoLevel.entries.map { arrayOf<Any>(s, it) } }
+        @ParameterizedRobolectricTestRunner.Parameters(name = "{0} {1}{2}")
+        fun courses(): List<Array<Any>> = LANGS.flatMap { l ->
+            TutoCourse.STYLES.flatMap { s -> TutoLevel.entries.map { arrayOf<Any>(s, it, if (l == Lang.FR) "" else " ${l.code}") } }
+        }
     }
+
+    private val lang: Lang = Lang.of(langTag.trim().ifEmpty { "fr" })
 
     @get:Rule
     val compose = createAndroidComposeRule<ComponentActivity>()
@@ -126,7 +139,7 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
         com.pocketstudio.app.learn.SpotChecks.log = mutableListOf()
         // Offline, whatever the catalogue: the built-in kit (the offer is TutoKitTest's).
         TutoTestHooks.kitOffer = false
-        h.start(simple = level == TutoLevel.Facile, build = {
+        h.start(simple = level == TutoLevel.Facile, lang = lang, build = {
             // « J'apprends » › level › Jump up: the tutorial's own empty project.
             session.edit { target.blank() }
             PrefsTutoStore(h.app).save(projectId, TutoProgress(style, level))
@@ -134,6 +147,7 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
         // A short tone stands for the engine's render (Robolectric has none).
         h.vm.guideRenderForTest = { a, _ -> FloatArray(OfflineExport.SAMPLE_RATE * 2) { 0.3f * kotlin.math.sin(it * 0.05f) } to FloatArray(2) }
         await("panel") { has("tuto_panel") }
+        assertEquals("the interface's language", lang, com.pocketstudio.model.i18n.I18n.lang)
         // Truly empty: no hit, no note, the first track hidden (no « Synthé » in « Mes pistes »).
         assertTrue(p().drums.lanes.all { it.hits.isEmpty() })
         assertTrue(TutoChecks.blankFirst(p()))

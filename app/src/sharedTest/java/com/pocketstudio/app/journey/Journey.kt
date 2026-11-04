@@ -113,6 +113,8 @@ class Journey(private val compose: ComposeTestRule, private val log: (String) ->
      * mode chip when not [simple]).
      */
     fun firstLaunch(simple: Boolean, guided: Boolean) {
+        // The welcome waits for the opening (about 6.5 s since 2026-11-04): its end first, on its own cap.
+        awaitGone("intro", 60_000)
         await("welcome", 30_000)
         if (guided) {
             tap("welcome_guided")

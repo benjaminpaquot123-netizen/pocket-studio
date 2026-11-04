@@ -201,6 +201,13 @@ class I18nCatalogTest {
         }
     }
 
+    /** Audit ultra tour 0 (seat b): a « brique » of the song is a « block » in English, never a « brick » here and a « block » there. */
+    @Test
+    fun englishSaysBlockForABrique() {
+        val brick = I18n.table(Lang.EN).filter { (k, v) -> "brique" in k.lowercase() && Regex("""\b[Bb]ricks?\b""").containsMatchIn(v) }
+        assertTrue("« brick »:\n" + brick.values.joinToString("\n"), brick.isEmpty())
+    }
+
     /** A file of the areas whose translations wait ([PENDING_TRANSLATION_AREAS]): its folder is named after the area. */
     private fun pending(f: File): Boolean = f.parentFile?.name in PENDING_TRANSLATION_AREAS
 

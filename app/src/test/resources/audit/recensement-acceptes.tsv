@@ -418,7 +418,6 @@ ScreenshotTest.wizardKickPacks	LABEL	1	premier passage 2026-11-04 : contrôle sa
 ScreenshotTest.wizardKickPacks	HELP	8	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 ScreenshotTest.wizardLead	LABEL	1	premier passage 2026-11-04 : contrôle sans nom ni description, à nommer (visé : 0, AUDIT-ULTRA §7)
 ScreenshotTest.wizardLead	HELP	4	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
-ScreenshotTest.wizardMood	LABEL	5	premier passage 2026-11-04 : contrôle sans nom ni description, à nommer (visé : 0, AUDIT-ULTRA §7)
 ScreenshotTest.wizardMood	HELP	12	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 ScreenshotTest.wizardMood	CONTRAST	1	premier passage 2026-11-04 : texte sous WCAG AA, à revoir (plusieurs déjà listés Moyen dans AUDIT-1)
 ScreenshotTest.wizardPad	LABEL	1	premier passage 2026-11-04 : contrôle sans nom ni description, à nommer (visé : 0, AUDIT-ULTRA §7)

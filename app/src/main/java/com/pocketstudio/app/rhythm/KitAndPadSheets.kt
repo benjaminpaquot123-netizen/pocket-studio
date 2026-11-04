@@ -38,6 +38,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -241,7 +243,9 @@ fun PadSheetContent(ui: PadSheetUi, actions: PadSheetActions, close: () -> Unit)
             Text(tr("Volume du pad"), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
             Text(percent((ui.volume / 0.8f * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
         }
-        ProSlider(value = ui.volume, onValueChange = actions.setVolume, modifier = Modifier.testTag("pad_volume"))
+        // Audit ultra tour 0 (seat b): the slider is named as its line says (TalkBack read « curseur » alone).
+        val volumeName = tr("Volume du pad")
+        ProSlider(value = ui.volume, onValueChange = actions.setVolume, modifier = Modifier.semantics { contentDescription = volumeName }.testTag("pad_volume"))
         // Safe at the edge: a back swipe from the side closes the sheet, it never pans the pad.
         PanRow(tr("Place du pad"), ui.pan, onChange = actions.setPan, onEnd = actions.panDone, tag = "pad_pan")
         FilterChip(

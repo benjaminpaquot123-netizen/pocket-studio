@@ -65,7 +65,7 @@
   "Rien n'a changé : les 16 courbes sont prises. Retires-en une dans Mix.": "変更なし：16本のカーブが全部使用中です。ミックスで1つ外してね。",
   "Rien à étiqueter sur cet écran.": "この画面にラベルを付けるものはありません。",
   "Simple": "シンプル",
-  "Simple : 4 onglets": "シンプル：4タブ",
+  "Simple : %d onglets": "シンプル：%dタブ",
   "Son court": "短い音",
   "Sons": "サウンド",
   "Sons : la batterie, l'Acid 303, la voix et chaque piste d'instrument, en puces en haut.": "サウンド：ドラム、Acid 303、ボーカル、各楽器トラックを上のチップで切り替え。",

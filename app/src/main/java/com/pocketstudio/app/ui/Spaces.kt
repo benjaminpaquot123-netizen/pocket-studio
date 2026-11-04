@@ -164,6 +164,8 @@ fun SpaceBar(entries: List<NavEntry>) = BoxWithConstraints {
     val tight = perTab < 64.dp
     val iconsOnly = perTab < 52.dp
     val light = rememberTabLight(entries, vertical = false)
+    // Never under 11 sp as seen at 100 %: with a bigger text size, a word may go down to that size on screen.
+    val minLabel = (11f / androidx.compose.ui.platform.LocalDensity.current.fontScale.coerceAtLeast(1f)).sp
     NavigationBar(
         containerColor = lerp(Neon.Background, Color.Black, 0.12f),
         modifier = light.modifier.testTag("space_bar"),
@@ -176,11 +178,13 @@ fun SpaceBar(entries: List<NavEntry>) = BoxWithConstraints {
                 alwaysShowLabel = !iconsOnly,
                 label = {
                     // Narrow (a big text size, long Dutch words): two short lines rather than « Mijn num… ».
+                    // Audit ultra tour 0 (seat b, 130 %): never a word over two lines (« Keyboar / d »): smaller first, down to 11 sp.
+                    val style = if (tight) MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp, letterSpacing = 0.sp, lineHeight = 12.sp)
+                    else MaterialTheme.typography.labelMedium.copy(lineHeight = 14.sp)
                     Text(
                         e.label, maxLines = 2, softWrap = true, overflow = TextOverflow.Ellipsis,
                         textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                        style = if (tight) MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp, letterSpacing = 0.sp, lineHeight = 12.sp)
-                        else MaterialTheme.typography.labelMedium.copy(lineHeight = 14.sp),
+                        style = style, autoSize = com.pocketstudio.ui.WholeWordsAutoSize(minLabel, style.fontSize),
                     )
                 },
                 modifier = light.entry(i).testTag("tab_${e.key}").spot("tab_${e.key}", e.hint),
@@ -207,7 +211,7 @@ fun SpaceRail(entries: List<NavEntry>) {
                     selected = e.selected,
                     onClick = e.onClick,
                     icon = { Icon(e.icon, contentDescription = null) },
-                    label = { Text(e.label, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis) },
+                    label = { Text(e.label, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis, autoSize = com.pocketstudio.ui.WholeWordsAutoSize(11.sp, MaterialTheme.typography.labelMedium.fontSize)) },
                     modifier = light.entry(i).testTag("tab_${e.key}").spot("tab_${e.key}", e.hint),
                     colors = NavigationRailItemDefaults.colors(
                         selectedIconColor = Neon.OnAccent,

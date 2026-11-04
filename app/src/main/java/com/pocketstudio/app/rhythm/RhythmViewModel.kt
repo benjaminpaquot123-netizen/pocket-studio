@@ -10713,7 +10713,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     // Lot 1: what this render may still spend on its M4A check (a new render of the
                     // song, a further lowering); each stem its own, counted once the sounds are in.
                     val budget = com.pocketstudio.app.export.ExportBudget()
-                    val fileLabel = if (stems) "%02d-%s".format(java.util.Locale.ROOT, index + 1, label) else label
+                    val fileLabel = if (stems) "%02d-%s".format(java.util.Locale.ROOT, index + 1, fileWord(label)) else fileWord(label)
                     val wav = runCatching { WavExporter.newFile(app, "${com.pocketstudio.model.DefaultNames.shown(p.name).take(28)}-$fileLabel") }.getOrElse { throw UserMessage(tr("Impossible de préparer le fichier d'export.")) }
                     _export.value = _export.value.copy(stage = if (renders.size > 1) "${stageName(label)} (${index + 1}/${renders.size})" else null)
                     // The mix into [wav], its limiter at [ceiling] dBTP (an M4A's; null: the default −1). Again
@@ -10971,7 +10971,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             try {
                 val file = withContext(Dispatchers.IO) {
-                    val wav = WavExporter.newFile(app, com.pocketstudio.model.DefaultNames.shown(p.name) + if (p.song.isNotEmpty()) "-morceau" else "")
+                    val wav = WavExporter.newFile(app, com.pocketstudio.model.DefaultNames.shown(p.name) + if (p.song.isNotEmpty()) "-" + fileWord("morceau") else "")
                     val mid = File(wav.parentFile, wav.nameWithoutExtension + ".mid")
                     mid.writeBytes(com.pocketstudio.model.MidiFile.export(p))
                     mid
@@ -11157,6 +11157,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         private const val DRUMS_STEM = 0
         private const val BASS_STEM = 1
         private const val VOICE_LABEL = "Voix"
+
+        /**
+         * An export file's label in the file's name, in the app's language (audit ultra tour 0, seat b, English:
+         * « Remix-morceau-….m4a »): the app's own words translated, a track's name as it is.
+         */
+        internal fun fileWord(label: String): String =
+            if (label in FILE_WORDS && com.pocketstudio.model.i18n.I18n.lang != com.pocketstudio.model.i18n.Lang.FR) stageName(label).lowercase(java.util.Locale.ROOT) else label
+
+        private val FILE_WORDS = setOf("morceau", "boucle", "batterie", "acide", "synthe", LIVE_FX_STEM_LABEL, "reverbe", "echo")
 
         /** An export file's label ("batterie", "piste2-basse"…) as the progress line shows it. */
         private fun stageName(label: String): String = when (label) {

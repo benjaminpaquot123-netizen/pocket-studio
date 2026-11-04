@@ -144,4 +144,20 @@ class PackCatalogTest {
             assertTrue(kind, kind in SoundPacks.KIND_LABELS)
         }
     }
+
+    /**
+     * Audit ultra tour 0 (seat b, English): « 808 modernes » in the English library. Each generated pack's
+     * name is translated in every language, but a machine's or a genre's own name, the same everywhere.
+     */
+    @Test
+    fun theGeneratedPacksNamesAreTranslated() {
+        val proper = setOf(
+            "Roland TR-808", "Roland TR-909", "Roland TR-707", "Roland TR-606", "Roland CR-78", "LinnDrum", "E-mu SP-1200",
+            "Akai MPC60", "Roland Juno-106", "Roland Jupiter-8", "Yamaha DX7", "Minimoog", "Roland TB-303", "Hyperpop", "Future bass",
+        )
+        val styles = Json.parseToJsonElement(File("../scripts/packs/styles.json").readText()).jsonObject
+        val missing = styles["styles"]!!.jsonArray.map { it.jsonObject["name"]!!.jsonPrimitive.content }.filter { it !in proper }
+            .flatMap { name -> (Lang.entries - Lang.FR).filter { I18n.table(it)[name].isNullOrEmpty() }.map { "$name ($it)" } }
+        assertTrue("$missing", missing.isEmpty())
+    }
 }

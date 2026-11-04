@@ -65,7 +65,7 @@
   "Rien n'a changé : les 16 courbes sont prises. Retires-en une dans Mix.": "没有任何改变：16 条曲线都已占用。在混音里删掉一条。",
   "Rien à étiqueter sur cet écran.": "这个界面没有可标注的内容。",
   "Simple": "简单",
-  "Simple : 4 onglets": "简单：4 个标签页",
+  "Simple : %d onglets": "简单：%d 个标签页",
   "Son court": "短音色",
   "Sons": "音色",
   "Sons : la batterie, l'Acid 303, la voix et chaque piste d'instrument, en puces en haut.": "音色：鼓、Acid 303、人声和每条乐器音轨，以标签形式排在顶部。",

@@ -65,7 +65,7 @@
   "Rien n'a changé : les 16 courbes sont prises. Retires-en une dans Mix.": "바뀐 게 없어요. 곡선 16개가 모두 차 있어요. 믹스에서 하나를 빼세요.",
   "Rien à étiqueter sur cet écran.": "이 화면에는 이름표 붙일 게 없어요.",
   "Simple": "간단",
-  "Simple : 4 onglets": "간단: 탭 4개",
+  "Simple : %d onglets": "간단: 탭 %d개",
   "Son court": "짧은 소리",
   "Sons": "사운드",
   "Sons : la batterie, l'Acid 303, la voix et chaque piste d'instrument, en puces en haut.": "사운드: 드럼, Acid 303, 보컬, 악기 트랙마다 위쪽 칩으로.",

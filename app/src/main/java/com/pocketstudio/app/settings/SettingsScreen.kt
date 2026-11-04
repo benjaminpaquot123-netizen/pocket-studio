@@ -58,7 +58,7 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
             // Owner (2026-10-29): it is the open project's mode (each project keeps its own).
             Text(tr("Mode de ce projet"), style = MaterialTheme.typography.bodyMedium)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                FilterChip(selected = s.simpleMode, onClick = { actions.update { it.copy(simpleMode = true) } }, label = { Text(tr("Simple : 4 onglets")) },
+                FilterChip(selected = s.simpleMode, onClick = { actions.update { it.copy(simpleMode = true) } }, label = { Text(tr("Simple : %d onglets", com.pocketstudio.app.ui.SimpleTab.entries.size)) },
                     colors = chip, modifier = Modifier.testTag("mode_simple"))
                 FilterChip(selected = !s.simpleMode, onClick = { actions.update { it.copy(simpleMode = false) } }, label = { Text(tr("Pro : tous les outils")) },
                     colors = chip, modifier = Modifier.testTag("mode_full"))

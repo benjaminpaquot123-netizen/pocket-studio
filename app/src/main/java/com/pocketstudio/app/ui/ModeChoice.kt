@@ -46,6 +46,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.app.settings.ProjectModes
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.Neon
@@ -56,6 +57,9 @@ internal val SIMPLE_COLOR = Color(0xFF5BB8F5)
 
 /** The mode's name as the interface says it: « Simple » or « Pro » (inside, Pro is the full mode). */
 fun modeName(simple: Boolean): String = if (simple) tr("Simple") else tr("Pro")
+
+/** Simple mode in a few words, with its tabs counted (audit ultra tour 0, seat b: it said 4, the bar shows [SimpleTab]'s 5). */
+fun simpleModeBlurb(): String = tr("Pour débuter : %d onglets, de gros boutons et des mots de tous les jours.", SimpleTab.entries.size)
 
 /**
  * The step every new project goes through (owner, 2026-10-29): « Simple ou Pro ? », two big
@@ -98,7 +102,7 @@ fun ModeStep(choose: (simple: Boolean) -> Unit, back: () -> Unit, tuto: Boolean 
 fun ModeCards(mark: Pair<Boolean, String>?, tuto: Boolean = false, wide: Boolean = false, choose: (Boolean) -> Unit) {
     val simple: @Composable (Modifier) -> Unit = { m ->
         ModeCard(
-            true, tr("Simple"), tr("Pour débuter : 4 onglets, de gros boutons et des mots de tous les jours."),
+            true, tr("Simple"), simpleModeBlurb(),
             if (tuto) tr("Avec le tuto Facile") else null, mark?.takeIf { it.first }?.second, m,
         ) { choose(true) }
     }
@@ -224,7 +228,9 @@ fun ModeChip(simple: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier
     ) {
         Text(
             name, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = color, maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+            overflow = TextOverflow.Ellipsis, softWrap = false,
+            // Audit ultra tour 0 (seat b, 130 %): « Si… »; the word smaller, whole, in the chip's budget.
+            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(9.sp, MaterialTheme.typography.labelLarge.fontSize),
             modifier = Modifier.widthIn(max = modeChipMax(simple)).clip(RoundedCornerShape(15.dp)).background(color.copy(alpha = 0.12f))
                 .border(1.dp, color.copy(alpha = 0.55f), RoundedCornerShape(15.dp))
                 .padding(horizontal = 10.dp, vertical = 5.dp).testTag("top_mode_text"),

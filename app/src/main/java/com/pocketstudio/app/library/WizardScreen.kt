@@ -11,6 +11,7 @@ import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.runtime.collectAsState
@@ -815,7 +816,9 @@ private fun MoodStep(style: StarterWizard.Style, mood: StarterWizard.Mood?, pack
     var details by rememberSaveable { mutableStateOf(false) }
     StarterWizard.Mood.entries.forEach { m ->
         val selected = m == mood
-        NeonCard(accent = if (selected) Neon.Cyan else Neon.Outline, modifier = Modifier.clickable { actions.setMood(m) }.testTag("wizard_mood_${m.id}")) {
+        // Audit ultra tour 0 (seat a, « choix sans nom »): the card is the choice (named by its words), its
+        // radio only shows it; a radio of its own was a second, nameless control for TalkBack.
+        NeonCard(accent = if (selected) Neon.Cyan else Neon.Outline, modifier = Modifier.selectable(selected, role = androidx.compose.ui.semantics.Role.RadioButton) { actions.setMood(m) }.testTag("wizard_mood_${m.id}")) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ListenButton(SoundRef.MoodDemo(m), { actions.preview(SoundRef.MoodDemo(m)) }, Modifier.testTag("wizard_mood_listen_${m.id}"))
                 Column(Modifier.weight(1f)) {
@@ -827,17 +830,17 @@ private fun MoodStep(style: StarterWizard.Style, mood: StarterWizard.Mood?, pack
                             style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("wizard_mood_theory"))
                     }
                 }
-                RadioButton(selected = selected, onClick = { actions.setMood(m) })
+                RadioButton(selected = selected, onClick = null)
             }
         }
     }
-    NeonCard(modifier = Modifier.clickable { actions.setMood(null) }.testTag("wizard_mood_none")) {
+    NeonCard(modifier = Modifier.selectable(mood == null, role = androidx.compose.ui.semantics.Role.RadioButton) { actions.setMood(null) }.testTag("wizard_mood_none")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(tr("Pas de mélodie pour l'instant"), style = MaterialTheme.typography.titleMedium, color = if (mood == null) Neon.Cyan else Neon.TextPrimary)
                 Text(tr("Juste la batterie : tu ajouteras les notes plus tard."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
-            RadioButton(selected = mood == null, onClick = { actions.setMood(null) })
+            RadioButton(selected = mood == null, onClick = null)
         }
     }
     if (style.melody.mood == mood) Text(tr("C'est l'ambiance conseillée pour %s.", tr(style.name)), style = MaterialTheme.typography.bodySmall, color = Neon.Acid)

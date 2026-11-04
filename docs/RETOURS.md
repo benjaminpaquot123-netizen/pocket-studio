@@ -196,3 +196,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - « Tous les boutons avec ? en petit qui donnent des infos : est-ce bien à jour ? Il y a eu beaucoup de modifications. Et les traductions aussi. » → vérifié : pas à jour (aucun « ? » dans les nouveaux écrans). Lot « Aide à jour » prévu (REVIEW).
 - Club qui n'atteint pas sa cible : « A » → dire le volume atteint et proposer de couper les infra-basses.
 - Club, suite (couper les infra-basses mesuré sans effet) : « A » → laisser tel quel, le message suffit.
+- 2026-11-04 · Benjamin demande des conseils de publicité et de visibilité. Conseillé : vidéos courtes (TikTok, Reels, Shorts), fiche Play Store soignée, communautés, presse tech française, pub payante plus tard. Réponse : « Ok on verra ça après » (après l'Audit et le Play Store).

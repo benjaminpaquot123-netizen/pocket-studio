@@ -13,14 +13,17 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -29,7 +32,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -55,7 +57,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -63,7 +64,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
@@ -80,7 +80,6 @@ import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pocketstudio.app.export.WavExporter
@@ -97,7 +96,7 @@ import java.io.File
 import kotlin.math.roundToInt
 
 /**
- * « Mode retours » over the whole app ([content]): while [show], a small floating bubble
+ * « Mode retours » around the whole app ([content]): while [show], a strip of its own under it
  * (● REC / ■, ✎ Note, ⋯) and the taps logged; « Envoyer mes retours » and the notes' sheet.
  */
 @Composable
@@ -121,18 +120,33 @@ fun RetoursHost(show: Boolean, content: @Composable () -> Unit) {
         }.onFailure { Retours.recordingEnded(tr("L'enregistrement n'a pas pu démarrer.")) }
         Unit
     }
+    // Audit ultra round 1 (n° 20, six seats): floating, the bubble sat on ▶, ■, the tempo, « ? », Partager, the tabs…
+    // It now has a strip of its own under the app (above the system's bar): the app is laid out above it, so nothing
+    // a finger needs can be under it, on any screen, size or text size (RetoursClearOfControlsTest).
     Box(Modifier.fillMaxSize().then(if (show) Modifier.tapLog(view) else Modifier)) {
-        content()
-        if (show) {
-            RetoursBubble(
-                record = startRecording,
-                stop = { RetoursService.stop(context) },
-                note = { note = NoteDraft(captureScreen(view)) },
-                hide = {
-                    SettingsStore.update(context) { it.copy(retoursMode = false) }
-                    Retours.message.value = tr("Le Mode retours se rallume dans Aide.")
-                },
-            )
+        Column(Modifier.fillMaxSize()) {
+            val density = LocalDensity.current
+            var stripHeight by remember { mutableStateOf(0.dp) }
+            Box(
+                Modifier.weight(1f).fillMaxWidth().then(
+                    // The strip holds the system bar's room at the bottom (its height counts it): the app's own bottom
+                    // padding, and the keyboard's, take it as already given.
+                    if (show) Modifier.consumeWindowInsets(WindowInsets(bottom = stripHeight))
+                    else Modifier,
+                ),
+            ) { content() }
+            if (show) {
+                RetoursBubble(
+                    record = startRecording,
+                    stop = { RetoursService.stop(context) },
+                    note = { note = NoteDraft(captureScreen(view)) },
+                    hide = {
+                        SettingsStore.update(context) { it.copy(retoursMode = false) }
+                        Retours.message.value = tr("Le Mode retours se rallume dans Aide.")
+                    },
+                    modifier = Modifier.onGloballyPositioned { c -> with(density) { c.size.height.toDp() }.let { if (it != stripHeight) stripHeight = it } },
+                )
+            }
         }
         note?.let { draft ->
             RetoursNoteSheet(
@@ -201,103 +215,57 @@ object RetoursTaps {
 }
 
 /**
- * The floating bubble: a small pill (● REC, ✎ Noter, ⋯) dragged anywhere with a finger. Testers (lot
- * « tuto 3 »): on the right side it hid the tutorial's fold arrow, the grid's last column and notes;
- * it now starts in the top bar's second line, between the tempo and « ? », where nothing is touched.
+ * The Mode retours' strip (● REC, ✎ Noter, ⋯), under the app and above the system's bar (n° 20): never over a
+ * control. Its height is its own (the app's screens are laid out above it), its buttons at the side of the thumb.
  */
 @Composable
-private fun RetoursBubble(record: () -> Unit, stop: () -> Unit, note: () -> Unit, hide: () -> Unit) {
+private fun RetoursBubble(record: () -> Unit, stop: () -> Unit, note: () -> Unit, hide: () -> Unit, modifier: Modifier = Modifier) {
     val rec by Retours.rec.collectAsState()
-    val density = LocalDensity.current
-    // Where this box is in the window (below the status bar): the controls to keep clear are in window pixels.
-    var origin by remember { mutableStateOf(Offset.Zero) }
-    val keepClear by Retours.keepClear.collectAsState()
-    // Dragged by the user: their place is kept, whatever is under it.
-    var placedByHand by rememberSaveable { mutableStateOf(false) }
-    BoxWithConstraints(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().onGloballyPositioned { origin = it.positionInWindow() }) {
-        val maxW = with(density) { maxWidth.toPx() }
-        val maxH = with(density) { maxHeight.toPx() }
-        val bw = with(density) { (BUTTON_WIDTH * 2 + MORE_WIDTH + 8.dp).toPx() }
-        val bh = with(density) { BUBBLE_HEIGHT.toPx() }
-        val margin = with(density) { 4.dp.toPx() }
-        // Physical place (px from the top left): first left of « ? », on the tempo's line.
-        var x by rememberSaveable { mutableStateOf(Float.NaN) }
-        var y by rememberSaveable { mutableStateOf(Float.NaN) }
-        if (x.isNaN() || !placedByHand) {
-            // Worked out apart, then written once (a state written twice in one pass would recompose for ever).
-            val startX = maxW - bw - with(density) { START_FROM_RIGHT.toPx() }
-            var startY = with(density) { START_FROM_TOP.toPx() }
-            // Not over a control (« Boucler » in the full app): just under it instead.
-            keepClear.values.forEach { r ->
-                val local = r.translate(-origin)
-                if (startX < local.right && startX + bw > local.left && startY < local.bottom && startY + bh > local.top) startY = local.bottom + margin
+    var menu by remember { mutableStateOf(false) }
+    Row(
+        modifier.fillMaxWidth()
+            .background(Neon.Surface)
+            .border(width = 0.5.dp, color = if (rec is RecState.Recording) Neon.Red else Neon.Outline.copy(alpha = 0.6f))
+            .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal))
+            .heightIn(min = BUBBLE_HEIGHT)
+            .padding(horizontal = 8.dp)
+            .testTag("retours_bubble"),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(tr("Mode retours"), fontSize = 11.sp, lineHeight = 12.sp, color = Neon.TextSecondary, maxLines = 1,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+        when (val r = rec) {
+            is RecState.Recording -> {
+                var now by remember { mutableLongStateOf(System.nanoTime()) }
+                val since = remember { System.nanoTime() }
+                LaunchedEffect(Unit) { while (true) { delay(1000); now = System.nanoTime() } }
+                BubbleButton("■", Retours.clock((now - since) / 1_000_000).substringBefore('.') + if (r.segment > 1) " · ${r.segment}" else "",
+                    tr("Arrêter l'enregistrement"), "retours_stop", Neon.Red, onClick = stop)
             }
-            val toX = startX.coerceIn(margin, (maxW - bw - margin).coerceAtLeast(margin))
-            val toY = startY.coerceIn(margin, (maxH - bh - margin).coerceAtLeast(margin))
-            if (x != toX) x = toX
-            if (y != toY) y = toY
-        } else {
-            x = x.coerceIn(margin, (maxW - bw - margin).coerceAtLeast(margin))
-            y = y.coerceIn(margin, (maxH - bh - margin).coerceAtLeast(margin))
+            RecState.Idle -> BubbleButton("●", "REC", tr("Filmer l'écran avec le son"), "retours_rec", Neon.Red, onClick = record)
+            else -> BubbleButton("…", "", tr("Patiente…"), "retours_wait", Neon.TextSecondary) {}
         }
-        var menu by remember { mutableStateOf(false) }
-        val active = rec !is RecState.Idle
-        Row(
-            Modifier.align(AbsoluteAlignment.TopLeft)
-                .absoluteOffset { IntOffset(x.roundToInt(), y.roundToInt()) }
-                .height(BUBBLE_HEIGHT)
-                .alpha(if (active) 0.92f else 0.78f)
-                .background(Neon.Surface, RoundedCornerShape(BUBBLE_HEIGHT / 2))
-                .border(1.dp, if (rec is RecState.Recording) Neon.Red else Neon.Outline, RoundedCornerShape(BUBBLE_HEIGHT / 2))
-                .pointerInput(maxW, maxH) {
-                    detectDragGestures { change, drag ->
-                        change.consume()
-                        placedByHand = true
-                        x = (x + drag.x).coerceIn(margin, maxW - bw - margin)
-                        y = (y + drag.y).coerceIn(margin, maxH - bh - margin)
-                    }
-                }
-                .padding(horizontal = 4.dp)
-                .testTag("retours_bubble"),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            when (val r = rec) {
-                is RecState.Recording -> {
-                    var now by remember { mutableLongStateOf(System.nanoTime()) }
-                    val since = remember { System.nanoTime() }
-                    LaunchedEffect(Unit) { while (true) { delay(1000); now = System.nanoTime() } }
-                    BubbleButton("■", Retours.clock((now - since) / 1_000_000).substringBefore('.') + if (r.segment > 1) " · ${r.segment}" else "",
-                        tr("Arrêter l'enregistrement"), "retours_stop", Neon.Red, onClick = stop)
-                }
-                RecState.Idle -> BubbleButton("●", "REC", tr("Filmer l'écran avec le son"), "retours_rec", Neon.Red, onClick = record)
-                else -> BubbleButton("…", "", tr("Patiente…"), "retours_wait", Neon.TextSecondary) {}
-            }
-            BubbleButton("✎", tr("Noter"), tr("Écrire une note"), "retours_note", Neon.Cyan, onClick = note)
-            Box {
-                BubbleButton("⋯", "", tr("Mode retours"), "retours_more", Neon.TextSecondary, width = MORE_WIDTH) { menu = true }
-                com.pocketstudio.ui.ScaledDropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                    DropdownMenuItem(text = { Text(tr("Envoyer mes retours")) }, onClick = { menu = false; Retours.exportOpen.value = true },
-                        modifier = Modifier.testTag("retours_menu_send"))
-                    DropdownMenuItem(text = { Text(tr("Masquer la bulle")) }, onClick = { menu = false; hide() },
-                        modifier = Modifier.testTag("retours_menu_hide"))
-                }
+        BubbleButton("✎", tr("Noter"), tr("Écrire une note"), "retours_note", Neon.Cyan, onClick = note)
+        Box {
+            BubbleButton("⋯", "", tr("Mode retours"), "retours_more", Neon.TextSecondary, width = MORE_WIDTH) { menu = true }
+            com.pocketstudio.ui.ScaledDropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                DropdownMenuItem(text = { Text(tr("Envoyer mes retours")) }, onClick = { menu = false; Retours.exportOpen.value = true },
+                    modifier = Modifier.testTag("retours_menu_send"))
+                DropdownMenuItem(text = { Text(tr("Masquer la bulle")) }, onClick = { menu = false; hide() },
+                    modifier = Modifier.testTag("retours_menu_hide"))
             }
         }
     }
 }
 
-// Testers (lot « tuto 4 »): narrower, so that it clears the song position's ▾ (« Intro mes. 1/144 ») on its line.
-private val BUTTON_WIDTH = 42.dp
-private val MORE_WIDTH = 30.dp
-private val BUBBLE_HEIGHT = 36.dp
-/** Where the bubble first sits: left of the top bar's « ? », on the tempo's line. */
-private val START_FROM_RIGHT = 60.dp
-private val START_FROM_TOP = 60.dp
+private val BUTTON_WIDTH = 64.dp
+private val MORE_WIDTH = 48.dp
+private val BUBBLE_HEIGHT = 40.dp
 
 @Composable
 private fun BubbleButton(symbol: String, label: String, description: String, tag: String, tint: Color, width: androidx.compose.ui.unit.Dp = BUTTON_WIDTH, onClick: () -> Unit) {
     Row(
-        Modifier.height(BUBBLE_HEIGHT).widthIn(min = width).clickable(onClick = onClick)
+        Modifier.heightIn(min = BUBBLE_HEIGHT).widthIn(min = width).clickable(onClick = onClick)
             .semantics { contentDescription = description }.padding(horizontal = 3.dp).testTag(tag),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -312,6 +280,8 @@ private fun BubbleButton(symbol: String, label: String, description: String, tag
 fun RetoursNoteSheet(save: (String) -> Unit, cancel: () -> Unit) {
     var text by rememberSaveable { mutableStateOf("") }
     val focus = remember { FocusRequester() }
+    // Audit ultra round 1, n° 26 (seat F d): Retour closes the note only (it closed the studio behind it).
+    androidx.activity.compose.BackHandler(onBack = cancel)
     Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.35f)).pointerInput(Unit) { detectTapGestures { cancel() } }.imePadding(), contentAlignment = Alignment.BottomCenter) {
         Surface(
             color = Neon.Background, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp), shadowElevation = 8.dp,
@@ -346,6 +316,7 @@ fun RetoursExportPanel(close: () -> Unit) {
     var sent by remember { mutableStateOf(false) }
     var confirm by remember { mutableStateOf(false) }
     val recording = Retours.rec.collectAsState().value !is RecState.Idle
+    androidx.activity.compose.BackHandler(onBack = close)
     LaunchedEffect(reload) { files = withContext(Dispatchers.IO) { Retours.exportFiles() } }
     Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.45f)).pointerInput(Unit) { detectTapGestures { close() } }, contentAlignment = Alignment.Center) {
         Surface(

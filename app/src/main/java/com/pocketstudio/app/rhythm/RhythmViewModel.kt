@@ -534,6 +534,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             pauseMusic = { if (transport.value.playing) togglePlay() },
             canMeasure = { !recording.value && audioRecording.value == null },
             playing = { transport.value.playing },
+            // n° 25: what a Guide's choice did, in « Fait : … » with « Annuler ».
+            said = { _done.value = it },
         )
     }
 
@@ -544,8 +546,6 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         afterGuideEdit(before)
     }
 
-            // n° 25: what a Guide's choice did, in « Fait : … » with « Annuler ».
-            said = { _done.value = it },
     /** Engine updates the Guide's edits asked for (tests). */
     internal var guideSyncs = 0
         private set
@@ -3345,30 +3345,6 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Scene [scene] added at the end of the song. */
     fun addSongPart(scene: Int) = insertSongPart(project.value.song.size, scene)
 
-    /** Scene [scene] played once at place [at] of the song (one undo step). */
-    fun insertSongPart(at: Int, scene: Int) {
-        if (project.value.song.size >= SongPart.MAX_PARTS) {
-            _notice.value = tr("Le morceau a déjà %d parties : retires-en une pour en ajouter une autre.", SongPart.MAX_PARTS)
-            return
-        }
-        val place = at.coerceIn(0, project.value.song.size)
-        val following = songPlaying()
-        val before = project.value.song
-        session.edit { it.insertSongPart(place, scene) }
-        if (project.value.song == before) return  // refused (a scene no longer there): nothing moved
-        // Playing: the part on now keeps playing; one inserted right after it comes next.
-        if (following) followSongEdit { i, explicit -> if (if (explicit) place <= i else place < i) i + 1 else i }
-    }
-
-    private val _done = MutableStateFlow<String?>(null)
-    /** « Fait : … » after an intention (the part sheet, a kit): said with « Annuler » beside it; null: nothing. */
-    val done: StateFlow<String?> = _done.asStateFlow()
-
-    fun dismissDone() {
-        _done.value = null
-    }
-
-    /** « Annuler » beside « Fait : … »: the intention undone (it was one step). */
     /**
      * Audit ultra round 1, n° 24 (seat B b: « seulement A », no way to a part B in the Mode simple): a new part at
      * place [at] of the song (null: at its end), on a scene of its own: a copy of the scene shown ([copy], the usual
@@ -3403,6 +3379,30 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         selectScene(target)
     }
 
+    /** Scene [scene] played once at place [at] of the song (one undo step). */
+    fun insertSongPart(at: Int, scene: Int) {
+        if (project.value.song.size >= SongPart.MAX_PARTS) {
+            _notice.value = tr("Le morceau a déjà %d parties : retires-en une pour en ajouter une autre.", SongPart.MAX_PARTS)
+            return
+        }
+        val place = at.coerceIn(0, project.value.song.size)
+        val following = songPlaying()
+        val before = project.value.song
+        session.edit { it.insertSongPart(place, scene) }
+        if (project.value.song == before) return  // refused (a scene no longer there): nothing moved
+        // Playing: the part on now keeps playing; one inserted right after it comes next.
+        if (following) followSongEdit { i, explicit -> if (if (explicit) place <= i else place < i) i + 1 else i }
+    }
+
+    private val _done = MutableStateFlow<String?>(null)
+    /** « Fait : … » after an intention (the part sheet, a kit): said with « Annuler » beside it; null: nothing. */
+    val done: StateFlow<String?> = _done.asStateFlow()
+
+    fun dismissDone() {
+        _done.value = null
+    }
+
+    /** « Annuler » beside « Fait : … »: the intention undone (it was one step). */
     fun undoDone() {
         _done.value = null
         undo()
@@ -6194,7 +6194,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun confirmStemPad(lane: Int? = null) {
         val ask = _stemPadAsk.value ?: return
         _stemPadAsk.value = null
-        cutToPad(ask.stem, ask.bars, ask.lane)
+        cutToPad(ask.stem, ask.bars, lane?.takeIf { it in 0 until DrumPattern.PAD_COUNT } ?: ask.lane)
     }
 
     fun dismissStemPadAsk() {

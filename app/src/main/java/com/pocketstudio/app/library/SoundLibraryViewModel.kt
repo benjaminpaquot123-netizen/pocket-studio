@@ -1023,13 +1023,13 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** null: the beat only, no melodic tracks. */
-    fun setMood(mood: StarterWizard.Mood?) {
-        _wizard.update { w ->
     /** n° 33: the song's length, chosen at the start (« Court » under a minute, « Complet » the whole song). */
     fun setShort(short: Boolean) {
         _wizard.update { it.copy(short = short) }
     }
 
+    fun setMood(mood: StarterWizard.Mood?) {
+        _wizard.update { w ->
             // A 303 line written before (the 303 step comes after the mood's) moves into the new
             // key's scale, so that the song's 303 stays in tune with its chords.
             val style = w.style

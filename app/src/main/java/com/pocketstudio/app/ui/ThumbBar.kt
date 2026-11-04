@@ -82,7 +82,7 @@ fun ThumbBar(ui: ThumbBarUi, actions: ThumbBarActions) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        ThumbButton(Icons.AutoMirrored.Filled.Undo, tr("Annuler"), tr("Annuler la dernière action"), ui.canUndo, "thumb_undo", actions.undo)
+        ThumbButton(Icons.AutoMirrored.Filled.Undo, tr("Annuler (défaire)"), tr("Annuler la dernière action"), ui.canUndo, "thumb_undo", actions.undo)
         if (ui.redoAlways || ui.canRedo) {
             ThumbButton(Icons.AutoMirrored.Filled.Redo, tr("Rétablir"), tr("Rétablir"), ui.canRedo, "thumb_redo", actions.redo)
         }

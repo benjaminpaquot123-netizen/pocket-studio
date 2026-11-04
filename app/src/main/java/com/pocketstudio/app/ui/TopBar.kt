@@ -290,9 +290,9 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                     )
                 } else if (ui.saved) {
                     // Nothing to save by hand: said where the project is named, quietly.
+                    // Audit ultra round 1, n° 26 (seat B b: « une minuscule coche »): the tick and its word larger, in the accent.
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("top_saved")) {
                         Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(16.dp))
-                    // Audit ultra round 1, n° 26 (seat B b: « une minuscule coche »): the tick and its word larger, in the accent.
                         // Too narrow for the word (a small phone): the tick alone, never "E…".
                         var cut by remember { mutableStateOf(false) }
                         Text(

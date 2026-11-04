@@ -424,10 +424,10 @@ private fun MasterGain(db: Float, setDb: (Float) -> Unit) {
     }
     ProSlider(
         value = db,
+        label = tr("Volume général"), valueText = masterDbLabel(db),
         // Snaps to 0 dB near the middle, as the pan snaps to the centre.
         onValueChange = { v -> setDb(if (kotlin.math.abs(v) < 0.4f) 0f else (v * 2).roundToInt() / 2f) },
         valueRange = com.pocketstudio.model.Mixer.MASTER_MIN_DB..com.pocketstudio.model.Mixer.MASTER_MAX_DB,
-        label = tr("Volume général"), valueText = masterDbLabel(db),
         modifier = Modifier.testTag("master_gain"),
     )
 }

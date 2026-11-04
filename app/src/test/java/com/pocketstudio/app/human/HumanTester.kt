@@ -561,27 +561,31 @@ abstract class HumanTester(private val seat: String) {
         // Audit ultra tour 0 (seat b): a stretch on its way to a pad or a Live cell, a voice being cut into
         // phrases, a sound being prepared go on with the engine (a phone's never goes away under them).
         if (engineWorkRunning(v)) return
-        // Step 5b: the song played from the Remix page (no « Boucler ») goes on too, as on a phone (it
-        // never stopped there): stopped here only while the bench lets its engine go, then played again.
-        val song = v != null && songPlaying(v)
-        if (song) v!!.toggleSong()
-        // The loop played with the bench's engine (▶ on the Remix page) goes on without it: stopped
-        // and started again, so that the screen's polls of the engine start again without it too.
-        val replay = !song && v != null && v.transport.value.playing
-        if (replay) {
-            v!!.togglePlay()
+        letTheEngineGo(v)
+    }
+
+    /**
+     * The bench lets its engine go. What plays with it goes on without it (step 5b: the song played from the
+     * Remix page, the loop of its ▶; since round 0, the song of ▶ and of the guide's « Écouter » anywhere): stopped,
+     * the stop COMPOSED, then the engine let go and ▶ again (the loop the app plays with no engine). The screen's
+     * polls of the engine stop with the transport and start again without it: the position under the top bar
+     * ([RhythmViewModel.pollPosition], keyed on the transport playing) looks for an engine once, as it starts.
+     * Audit ultra round 1 (lot A, seats a and d): the song was stopped and played again in the same frame, so that
+     * poll never stopped; its next read went to the native library Robolectric has not (UnsatisfiedLinkError),
+     * which ended the screen's updates: every touch after it (tabs, « Retour », ■) left the screen as it was.
+     * A phone's engine never goes: nothing like it there (PlayThenTabsTest).
+     */
+    private fun letTheEngineGo(v: RhythmViewModel?) {
+        val playing = v != null && v.transport.value.playing
+        if (playing) {
+            if (songPlaying(v!!)) v.toggleSong() else v.togglePlay()
             pass(100)
             runCatching { compose.waitForIdle() }
         }
         stopPollers()
         settleLooper()
         NativeEngine.sink = null
-        if (replay) {
-            v!!.togglePlay()
-            pass(100)
-        }
-        if (song) {
-            // ▶ as the Remix page has it (the song from its part, as on the phone).
+        if (playing) {
             v!!.togglePlay()
             pass(100)
         }
@@ -611,9 +615,10 @@ abstract class HumanTester(private val seat: String) {
             }
             return
         }
+        // Audit ultra round 1: a loop that plays with it (a take written while it plays) goes on without it as in
+        // [engineBefore]: the stop composed first, so that no poll of the screen reads the engine once gone.
         if (NativeEngine.sink != null && v?.export?.value?.running != true && (v == null || !songPlaying(v)) && !engineWorkRunning(v) && !previewsWanted()) {
-            stopPollers()
-            NativeEngine.sink = null
+            letTheEngineGo(v)
         }
         // Audit ultra tour 0 (seat c): a Pad Live take (the performance, « Enregistrer ce que je joue ») is written
         // with the engine (its pads bounced to a track, the take put on a pad): the bench's engine comes for it and

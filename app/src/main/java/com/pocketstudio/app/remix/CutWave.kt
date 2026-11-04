@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -167,6 +168,7 @@ internal fun CutZoom(
     work: State<StemBoardState>,
     onTouched: () -> Unit,
     modifier: Modifier,
+    onLetGo: (end: Boolean) -> Unit = {},
 ) {
     val measurer = rememberTextMeasurer()
     val lane = Neon.SurfaceHigh.copy(alpha = 0.55f)
@@ -174,6 +176,9 @@ internal fun CutZoom(
     val head = Neon.Cyan
     val play = Neon.Acid
     val numberStyle = TextStyle(color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+    val rulerStyle = MonoStyle.copy(color = Neon.TextSecondary, fontSize = 11.sp)
+    val tick = Neon.Outline
+    val grid = remember(model.bpm, model.firstBeat) { BeatGrid.of(model.bpm, model.firstBeat / BOARD_RATE.toDouble(), BOARD_RATE) }
     Box(modifier) {
         Spacer(
             Modifier
@@ -191,9 +196,29 @@ internal fun CutZoom(
                         val grabbing = model.beginMove(view.frameAt(down.position.x), grab)
                         if (grabbing) onTouched()
                         var moved = false
+                        var lastX = down.position.x
+                        val edgeZone = EDGE_ZONE.toPx()
+                        val edgeStep = EDGE_STEP.toPx()
+                        // A bar held near an edge of the curve: the song scrolls under it, the bar follows.
+                        fun pushAtEdge() {
+                            val push = when {
+                                lastX < edgeZone -> (edgeZone - lastX) / edgeZone
+                                lastX > size.width - edgeZone -> -(lastX - (size.width - edgeZone)) / edgeZone
+                                else -> 0f
+                            }
+                            if (push == 0f) return
+                            view.scrollBy(push.coerceIn(-1f, 1f) * edgeStep)
+                            model.moveTo(view.frameAt(lastX))
+                        }
+                        var letGo: Boolean? = null
                         try {
                             while (true) {
-                                val e = awaitPointerEvent()
+                                val held = grabbing && moved
+                                val e = if (held) withTimeoutOrNull(EDGE_TICK_MS) { awaitPointerEvent() } else awaitPointerEvent()
+                                if (e == null) {
+                                    pushAtEdge()
+                                    continue
+                                }
                                 if (e.changes.count { it.pressed } > 1) {
                                     // A second finger: the pinch wins, even over a cut being moved.
                                     model.endMove()
@@ -205,7 +230,9 @@ internal fun CutZoom(
                                 if (!moved && (c.position - down.position).getDistance() > slop) moved = true
                                 if (moved) {
                                     if (grabbing) {
+                                        lastX = c.position.x
                                         if (c.positionChanged()) model.moveTo(view.frameAt(c.position.x))
+                                        pushAtEdge()
                                     } else {
                                         val dx = c.position.x - c.previousPosition.x
                                         if (dx != 0f) view.scrollBy(dx)
@@ -214,8 +241,9 @@ internal fun CutZoom(
                                 }
                             }
                         } finally {
-                            model.endMove()
+                            letGo = model.endMove()
                         }
+                        letGo?.let(onLetGo)
                         if (!moved) {
                             onTouched()
                             model.cursor = view.frameAt(down.position.x)
@@ -235,10 +263,18 @@ internal fun CutZoom(
                     val knob = 7.dp.toPx()
                     val badge = 10.dp.toPx()
                     val tri = Path()
-                    val barW = 3.dp.toPx()
-                    val handleW = 16.dp.toPx()
-                    val handleH = 44.dp.toPx()
+                    val barW = 2.5f.dp.toPx()
+                    val handleW = 20.dp.toPx()
+                    val handleH = 56.dp.toPx()
                     val edge = 6.dp.toPx()
+                    val ruler = RULER.toPx()
+                    // « Un bout »'s ruler: one measured bar number per bar, made the first time it shows.
+                    val barLabels = arrayOfNulls<TextLayoutResult>(if (grid != null) ((model.frames / grid.bar).toInt() + 2).coerceIn(1, 100_000) else 0)
+                    fun barLabel(n: Int): TextLayoutResult? = if (n !in barLabels.indices) null
+                    else barLabels[n] ?: measurer.measure(n.toString(), rulerStyle).also { barLabels[n] = it }
+                    val minLabel = 32.dp.toPx()
+                    val minTick = 6.dp.toPx()
+                    val hair = 1.dp.toPx()
                     onDrawBehind {
                         drawRect(lane)
                         val fpp = view.framesPerPx
@@ -246,17 +282,19 @@ internal fun CutZoom(
                         val pieces = model.pieces
                         val stem = model.stem
                         if (model.single) {
-                            // « Un bout »: the stem, its one piece lit between the two bars, the rest dimmed.
+                            // « Un bout »: a ruler of bars and beats on top (what the magnet sticks to), the
+                            // stem under it, its one piece lit between the two bars, the rest dimmed.
                             val sp = model.span
                             val color = cutStemColor(stem)
                             val a = sp?.let { view.x(it.start) } ?: 0f
                             val z = sp?.let { view.x(it.end) } ?: 0f
                             if (sp != null && z > 0f && a < size.width) {
-                                drawRect(color.copy(alpha = 0.14f), Offset(max(0f, a), 0f), Size(min(size.width, z) - max(0f, a), size.height))
+                                drawRect(color.copy(alpha = 0.14f), Offset(max(0f, a), ruler), Size(min(size.width, z) - max(0f, a), size.height - ruler))
                             }
+                            if (grid != null) drawBarRuler(view, grid, ruler, tick, hair, minLabel, minTick, ::barLabel)
                             val peaks = if (levels.ready > stem) levels.of(stem) else null
-                            val mid = size.height / 2
-                            val amp = mid - edge * 2
+                            val mid = (size.height + ruler) / 2
+                            val amp = (size.height - ruler) / 2 - edge * 2
                             if (peaks != null) {
                                 val from = view.start.toLong()
                                 peaks.fill(from, from + (columns * column * fpp).toLong(), heights)
@@ -271,17 +309,18 @@ internal fun CutZoom(
                                 }
                             }
                             if (sp != null) {
-                                // Outside the piece: a veil; the piece framed top and bottom.
-                                if (a > 0f) drawRect(DIM, Offset.Zero, Size(min(a, size.width), size.height))
-                                if (z < size.width) drawRect(DIM, Offset(max(0f, z), 0f), Size(size.width - max(0f, z), size.height))
+                                // Outside the piece: a veil; the piece edged by a fine line top and bottom.
+                                if (a > 0f) drawRect(DIM, Offset(0f, ruler), Size(min(a, size.width), size.height - ruler))
+                                if (z < size.width) drawRect(DIM, Offset(max(0f, z), ruler), Size(size.width - max(0f, z), size.height - ruler))
                                 val l = max(0f, a)
                                 val r = min(size.width, z)
                                 if (r > l) {
-                                    drawLine(Color.White, Offset(l, barW / 2), Offset(r, barW / 2), strokeWidth = barW)
-                                    drawLine(Color.White, Offset(l, size.height - barW / 2), Offset(r, size.height - barW / 2), strokeWidth = barW)
+                                    val edgeLine = Color.White.copy(alpha = 0.45f)
+                                    drawLine(edgeLine, Offset(l, ruler + hair), Offset(r, ruler + hair), strokeWidth = 1.5f * hair)
+                                    drawLine(edgeLine, Offset(l, size.height - hair), Offset(r, size.height - hair), strokeWidth = 1.5f * hair)
                                 }
-                                drawSpanBar(a, inward = 1f, barW, handleW, handleH)
-                                drawSpanBar(z, inward = -1f, barW, handleW, handleH)
+                                drawSpanBar(a, outward = -1f, barW, handleW, handleH, ruler)
+                                drawSpanBar(z, outward = 1f, barW, handleW, handleH, ruler)
                             }
                         } else {
                         // Each piece's ground, in its colour.
@@ -329,7 +368,7 @@ internal fun CutZoom(
                         // The play head the tools act at: an orange line, a small triangle on top.
                         val hx = view.x(model.cursor)
                         if (hx in 0f..size.width) {
-                            drawLine(head, Offset(hx, 0f), Offset(hx, size.height - bottom), strokeWidth = lineW)
+                            drawLine(head, Offset(hx, 0f), Offset(hx, if (model.single) size.height else size.height - bottom), strokeWidth = lineW)
                             tri.rewind()
                             tri.moveTo(hx - 7.dp.toPx(), 0f)
                             tri.lineTo(hx + 7.dp.toPx(), 0f)
@@ -342,7 +381,8 @@ internal fun CutZoom(
                         if (heard >= 0) {
                             val px = view.x(heard)
                             if (px in 0f..size.width) {
-                                drawLine(play.copy(alpha = 0.25f), Offset(px, 0f), Offset(px, size.height), strokeWidth = 6.dp.toPx())
+                                // A dark edge first: the green line reads on the voice's green too.
+                                drawLine(Color(0xCC0B0C10), Offset(px, 0f), Offset(px, size.height), strokeWidth = 5.dp.toPx())
                                 drawLine(play, Offset(px, 0f), Offset(px, size.height), strokeWidth = lineW)
                             }
                         }
@@ -368,18 +408,62 @@ internal fun cutStemColor(stem: Int): Color = when (stem) {
     else -> Color(0xFF29B6F6)
 }
 
-/** A bar of « Un bout » at [x]: white, full height, its grip handle on the piece's side ([inward] +1 right, -1 left). */
-private fun DrawScope.drawSpanBar(x: Float, inward: Float, width: Float, handleW: Float, handleH: Float) {
+/**
+ * A bar of « Un bout » at [x]: white, under the ruler, its grip tab outside the piece ([outward] -1
+ * left for « Début », +1 right for « Fin »), so that it never hides the attack being placed.
+ */
+private fun DrawScope.drawSpanBar(x: Float, outward: Float, width: Float, handleW: Float, handleH: Float, top: Float) {
     if (x < -handleW || x > size.width + handleW) return
-    drawLine(Color.White, Offset(x, 0f), Offset(x, size.height), strokeWidth = width)
-    val left = if (inward > 0) x - width / 2 else x - handleW + width / 2
-    val top = (size.height - handleH) / 2
-    drawRoundRect(Color.White, Offset(left, top), Size(handleW, handleH), androidx.compose.ui.geometry.CornerRadius(handleW / 3))
+    drawLine(Color.White, Offset(x, top), Offset(x, size.height), strokeWidth = width)
+    val left = if (outward < 0) x - handleW + width / 2 else x - width / 2
+    val y = top + (size.height - top - handleH) / 2
+    drawRoundRect(Color.White, Offset(left, y), Size(handleW, handleH), androidx.compose.ui.geometry.CornerRadius(handleW / 3))
     val grip = Color(0xFF4B5160)
     val cx = left + handleW / 2
-    val g = handleW * 0.18f
-    for (dx in listOf(-g, g)) drawLine(grip, Offset(cx + dx, top + handleH * 0.3f), Offset(cx + dx, top + handleH * 0.7f), strokeWidth = width * 0.6f)
+    val g = handleW * 0.16f
+    for (dx in listOf(-g, g)) drawLine(grip, Offset(cx + dx, y + handleH * 0.3f), Offset(cx + dx, y + handleH * 0.7f), strokeWidth = width * 0.6f)
 }
+
+/**
+ * « Un bout »'s ruler, [height] tall on top of the curve: the bar numbers (every 2, 4… when they
+ * would touch), a tick on each beat once they are [minTick] apart, a faint line down each bar.
+ */
+private fun DrawScope.drawBarRuler(
+    view: StemBoardView, grid: BeatGrid, height: Float, tick: Color, hair: Float, minLabel: Float, minTick: Float,
+    label: (Int) -> TextLayoutResult?,
+) {
+    val fpp = view.framesPerPx
+    val barPx = (grid.bar / fpp).toFloat()
+    val beatPx = (grid.beat / fpp).toFloat()
+    var every = 1
+    while (every < (1 shl 16) && every * barPx < minLabel) every *= 2
+    var i = grid.firstBeatFrom(view.start).coerceAtLeast(0L)
+    i -= i % BeatGrid.BEATS_PER_BAR
+    while (true) {
+        val x = view.x(grid.beatFrame(i))
+        if (x > size.width) break
+        val bar = grid.barOpenedBy(i)
+        if (bar > 0) {
+            val big = (bar - 1) % every == 0
+            if (big || barPx >= minTick) {
+                drawLine(tick, Offset(x, height * 0.45f), Offset(x, height), strokeWidth = hair)
+                drawLine(Color.White.copy(alpha = 0.07f), Offset(x, height), Offset(x, size.height), strokeWidth = hair)
+            }
+            if (big) label(bar)?.let { drawText(it, topLeft = Offset(x + 3 * hair, 0f)) }
+        } else if (beatPx >= minTick) {
+            drawLine(tick, Offset(x, height * 0.75f), Offset(x, height), strokeWidth = hair)
+        }
+        i += if (beatPx >= minTick) 1 else BeatGrid.BEATS_PER_BAR.toLong()
+    }
+}
+
+/** « Un bout »'s ruler on top of the curve. */
+internal val RULER = 18.dp
+
+/** A bar held this near an edge of the curve scrolls the song, at most [EDGE_STEP] each [EDGE_TICK_MS]. */
+private val EDGE_ZONE = 32.dp
+private val EDGE_STEP = 10.dp
+private const val EDGE_TICK_MS = 16L
 
 /**
  * TalkBack's « Début du bout » (or « Fin du bout », [end]): a 48 dp node over the bar at frame
@@ -396,9 +480,9 @@ private fun SpanBarNode(model: CutModel, view: StemBoardView, end: Boolean, at: 
             .layout { measurable, constraints ->
                 val w = SPAN_NODE.roundToPx()
                 val placeable = measurable.measure(constraints.copy(minWidth = w, maxWidth = w))
-                // The node sits on the piece's side of its bar, as the handle.
+                // The node sits outside the piece, over its handle.
                 val bar = view.x(at)
-                val left = (if (end) bar - w + w / 4f else bar - w / 4f).toInt()
+                val left = (if (end) bar - w / 4f else bar - w + w / 4f).toInt()
                 layout(constraints.maxWidth, placeable.height) { placeable.place(IntOffset(left, 0)) }
             }
             .fillMaxHeight()

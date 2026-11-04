@@ -115,6 +115,11 @@ class CutScreenshotTest : ScreenshotTest() {
     @Config(qualifiers = "w411dp-h891dp-xxhdpi", fontScale = 1.3f)
     fun cutScreenOnePieceBigText() = shoot("cut_bout_130") { bout() }
 
+    /** The phone turned: the curve keeps its room, the buttons stay on screen. */
+    @Test
+    @Config(qualifiers = "w891dp-h411dp-xxhdpi")
+    fun cutScreenOnePieceLandscape() = shoot("cut_bout_landscape") { bout() }
+
     /** « Ma bibliothèque » of the one browser: a folder per song the sounds were kept from. */
     @Test
     fun libraryMineFolders() = shoot("library_mine_folders") {
@@ -129,6 +134,6 @@ class CutScreenshotTest : ScreenshotTest() {
     }
 
     companion object {
-        val SHOTS = setOf("cut_screen", "cut_screen_magnifier", "library_mine_folders", "cut_bout", "cut_bout_130")
+        val SHOTS = setOf("cut_screen", "cut_screen_magnifier", "library_mine_folders", "cut_bout", "cut_bout_130", "cut_bout_landscape")
     }
 }

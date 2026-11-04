@@ -73,6 +73,10 @@ object ScreenHelp {
         tr("Outils de coupe"),
         tr("Place la tête orange ou écoute, puis : Couper ici coupe à cet endroit, Début et Fin raccourcissent le bout, Enlever le retire, Boucle le fait tourner. Pince la vue pour zoomer."),
     )
+    val CUT_BOUT: Help get() = Help(
+        tr("Un bout"),
+        tr("Glisse les barres Début et Fin, ou touche la courbe puis « Début ici » ou « Fin ici » : l'aimant les pose sur les temps de la règle. Le gros ▶ joue la piste depuis la ligne orange, « Écouter le bout » juste le bout. Puis envoie-le. Coupes › Phrases, Attaques ou Mesures : plein de bouts."),
+    )
     val CUT_SEND: Help get() = Help(
         tr("Envoyer les bouts"),
         tr("Coche les bouts que tu veux, puis envoie-les : sur les pads (un par pad), dans le Live, dans « Garder » (ta bibliothèque) ou sur une piste du morceau."),
@@ -117,7 +121,7 @@ object ScreenHelp {
     /** Every one (the test checks their length and that each is shown somewhere). */
     val ALL: List<Help> get() = listOf(
         PADLIVE_PAGES, PADLIVE_EFFECTS, PADLIVE_PLAYED, PADLIVE_MORE, PADLIVE_CHALLENGE, PADLIVE_MODES, PADLIVE_GROUPS, PADLIVE_SHAPE, TEMPO_SET,
-        LIVE_GRID, LIVE_LAUNCH, REMIX_CELL, CUT_AUTO, CUT_TOOLS, CUT_SEND,
+        LIVE_GRID, LIVE_LAUNCH, REMIX_CELL, CUT_AUTO, CUT_TOOLS, CUT_BOUT, CUT_SEND,
         MASTER_TARGET, MASTER_CEILING, MASTER_CHAIN, MASTER_AB, PRO_READINGS, FINAL_FILE, STEMS_SENDS, LAYERS,
     )
 }

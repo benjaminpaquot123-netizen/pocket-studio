@@ -170,7 +170,7 @@ class CutModel(
         val s = stemCuts()
         val pieces = if (found.isEmpty()) s.pieces else Cuts.replaceIn(s.pieces, from, to, found)
         val auto = if (found.isEmpty()) s.auto else mode.name
-        val span = s.span ?: Cuts.firstSpan(found, shownFrom, frames, beat, firstBeat, BOARD_RATE)
+        val span = s.span ?: Cuts.firstSpan(found, shownFrom, frames, beat, firstBeat, BOARD_RATE)?.let(::onGrid)
         cuts = cuts.with(s.copy(pieces = pieces, chosen = keepChoice(s, pieces), auto = auto, span = span))
         onChange(cuts)
     }
@@ -180,16 +180,32 @@ class CutModel(
         if (span != null) return
         val s = stemCuts()
         val first = s.pieces.takeIf { it != Cuts.whole(frames) }.orEmpty().map { it.start until it.end }
-        val placed = Cuts.firstSpan(first, shownFrom, frames, beat, firstBeat, BOARD_RATE) ?: return
+        val placed = Cuts.firstSpan(first, shownFrom, frames, beat, firstBeat, BOARD_RATE)?.let(::onGrid) ?: return
         cuts = cuts.with(s.copy(span = placed))
         onChange(cuts)
     }
 
-    /** « Début » (or « Fin », [end]) of « Un bout » at [at], stuck by the magnet: one undo step. */
+    /** « Un bout » first placed: on the magnet's beats, so that its length reads in beats or bars. */
+    private fun onGrid(p: CutPiece): CutPiece = Cuts.spanOnGrid(p, magnet, beat, firstBeat, frames)
+
+    /**
+     * « Début ici » (or « Fin ici », [end]) of « Un bout » at [at], stuck by the magnet: one undo
+     * step; past the other bar the piece moves there whole (see [Cuts.spanStartHere]).
+     */
     fun setSpanEdge(end: Boolean, at: Long): Boolean {
         val now = span ?: return false
         val f = stuck(at)
-        return edit { s -> s.copy(span = if (end) Cuts.spanEnd(now, f, frames) else Cuts.spanStart(now, f)) }
+        return edit { s -> s.copy(span = if (end) Cuts.spanEndHere(now, f, frames) else Cuts.spanStartHere(now, f, frames)) }
+    }
+
+    /**
+     * What is heard when a bar of « Un bout » is let go (Début: [end] false, the piece from its new
+     * start; Fin: its last [PREVIEW_SECONDS] up to the new end), so each move is judged by ear at once.
+     */
+    fun previewAfter(end: Boolean, fade: BoardFade = BoardFade.Small): StemSelection? {
+        val sp = span ?: return null
+        val from = if (end) max(sp.start, sp.end - PREVIEW_SECONDS * BOARD_RATE) else sp.start
+        return StemSelection(setId, stem, from, sp.end, fade.inMs, fade.outMs)
     }
 
     /**
@@ -311,9 +327,13 @@ class CutModel(
         cuts = cuts.with(withPieces(s.copy(pieces = from), now))
     }
 
-    /** The finger lifted (or a second one came): saved once when the cut really moved. */
-    fun endMove() {
-        if (moving == null && movingEdge == null) return
+    /**
+     * The finger lifted (or a second one came): saved once when the cut really moved. Returns the
+     * bar of « Un bout » that really moved (false « Début », true « Fin »), null otherwise.
+     */
+    fun endMove(): Boolean? {
+        if (moving == null && movingEdge == null) return null
+        val edge = movingEdge.takeIf { moved }
         moving = null
         movingEdge = null
         spanFrom = null
@@ -321,6 +341,7 @@ class CutModel(
         movedTo = null
         if (moved) onChange(cuts)
         moved = false
+        return edge
     }
 
     fun undo() {
@@ -350,6 +371,9 @@ class CutModel(
 
     companion object {
         const val MAX_UNDO = 50
+
+        /** « Fin » let go: this many seconds before it are heard. */
+        const val PREVIEW_SECONDS = 2L
     }
 }
 

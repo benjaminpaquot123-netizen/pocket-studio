@@ -96,6 +96,34 @@ object Cuts {
     fun spanEnd(span: CutPiece, at: Long, frames: Long): CutPiece =
         span.copy(end = at.coerceIn(span.start + MIN_FRAMES, max(span.start + MIN_FRAMES, frames)), loop = false)
 
+    /**
+     * « Début ici » at [at] (the play head): as [spanStart], but at or past « Fin » the piece moves
+     * there whole, its length kept, instead of shrinking to a 50 ms sliver nobody sees.
+     */
+    fun spanStartHere(span: CutPiece, at: Long, frames: Long): CutPiece =
+        if (at <= span.end - MIN_FRAMES) spanStart(span, at) else span(at, at + span.frames, frames) ?: span
+
+    /** « Fin ici » at [at]: as [spanEnd], but at or before « Début » the piece moves there whole (it ends at [at]). */
+    fun spanEndHere(span: CutPiece, at: Long, frames: Long): CutPiece {
+        if (at >= span.start + MIN_FRAMES) return spanEnd(span, at, frames)
+        val end = at.coerceIn(MIN_FRAMES, max(MIN_FRAMES, frames))
+        return span(max(0L, end - span.frames), end, frames) ?: span
+    }
+
+    /**
+     * [span] with both bars on the [magnet]'s grid (beats of [beat] frames from [firstBeat]): what
+     * « Un bout » is first placed on, so that its length reads in beats or bars; never shorter than
+     * one beat (nor than [MIN_FRAMES]); as it is without a tempo or with the magnet « Libre ».
+     */
+    fun spanOnGrid(span: CutPiece, magnet: CutMagnet, beat: Double, firstBeat: Long, frames: Long): CutPiece {
+        if (magnet == CutMagnet.Free || beat <= 0.0) return span
+        val unit = if (magnet == CutMagnet.Bar) beat * 4 else beat
+        val s = magnet(span.start, magnet, beat, firstBeat).coerceIn(0L, frames)
+        var e = magnet(span.end, magnet, beat, firstBeat).coerceAtMost(frames)
+        if (e - s < max(MIN_FRAMES, Math.round(unit))) e = min(frames, s + Math.round(unit))
+        return span(s, e, frames) ?: span
+    }
+
     /** Seconds « Un bout » takes without a tempo (its bars cannot be counted). */
     const val SPAN_SECONDS = 4
 

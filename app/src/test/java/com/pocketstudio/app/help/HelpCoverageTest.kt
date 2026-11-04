@@ -267,6 +267,31 @@ class HelpCoverageTest {
         )
     }
 
+    /** « Un bout » (its default): one « ? » by the title explains the bars, both listens, the menus and where it goes. */
+    @Test
+    fun cutScreenOnePiece() {
+        val frames = 145L * BOARD_RATE
+        val bar = 4 * 60.0 / 113.0 * BOARD_RATE
+        val peaks = StemPeakSource { _ -> StemPeaks.of(frames, 1) { _, count -> FloatArray(count) { 0.4f } } }
+        val ui = StemBoardUi("boys", "Boys", frames, 113.0, 0.0, peaks, peaksContext = kotlin.coroutines.EmptyCoroutineContext)
+        val cuts = SongCuts("boys", listOf(StemCuts(3, listOf(CutPiece(0, Math.round(2 * bar))), auto = "Phrases", span = CutPiece(0, Math.round(2 * bar)))))
+        val actions = object : StemBoardActions by NoStemBoardActions {
+            override val state = MutableStateFlow(StemBoardState())
+            override fun savedCuts(setId: String, frames: Long) = cuts
+        }
+        compose.setContent {
+            PocketStudioTheme {
+                val model = remember { CutModel("boys", frames, 113.0, 0.0, cuts) }
+                CutScreen(ui, actions, onClose = {}, model = model, view = rememberStemBoardView(ui))
+            }
+        }
+        check(
+            "Découper la chanson › Un bout", listOf("cut_"),
+            listOf("cut_close", "cut_stem_#", "cut_undo", "cut_message_ok", "cut_zoom", "cut_overview"),
+            must = listOf("cut_play", "cut_auto", "cut_magnet", "cut_start", "cut_end", "cut_span_play", "cut_to_pads", "cut_to_live", "cut_to_library", "cut_to_track"),
+        )
+    }
+
     // --- Master pro, the file, the readings, sharing, « Couches » ----------------------------------
 
     private fun masterActions(): MasterProActions {

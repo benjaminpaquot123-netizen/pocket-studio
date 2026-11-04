@@ -61,4 +61,33 @@ class CutSpanRulesTest {
         assertEquals(listOf(0), s.chosen)
         assertNull(s.span)
     }
+
+    /** « Début ici » past « Fin » (or « Fin ici » before « Début »): the piece moves there whole, never a sliver. */
+    @Test
+    fun hereButtonsPastTheOtherBarMoveThePieceWhole() {
+        val sp = CutPiece(96_000, 192_000)
+        // Inside the piece: just that bar moves.
+        assertEquals(CutPiece(120_000, 192_000), Cuts.spanStartHere(sp, 120_000, frames))
+        assertEquals(CutPiece(96_000, 150_000), Cuts.spanEndHere(sp, 150_000, frames))
+        // Past the other bar: the same length, starting (or ending) at the play head.
+        assertEquals(CutPiece(300_000, 396_000), Cuts.spanStartHere(sp, 300_000, frames))
+        assertEquals(CutPiece(0, 50_000), Cuts.spanEndHere(sp, 50_000, frames))
+        assertEquals(CutPiece(4_000, 100_000), Cuts.spanEndHere(CutPiece(200_000, 296_000), 100_000, frames))
+        // Near the song's end: kept inside, still long enough.
+        val late = Cuts.spanStartHere(sp, frames - 1_000, frames)
+        assertEquals(frames, late.end)
+        assertEquals(true, late.frames >= Cuts.MIN_FRAMES)
+    }
+
+    /** The first « Un bout » is put on the magnet's grid: its length reads in beats; « Libre » leaves it. */
+    @Test
+    fun theFirstPieceSitsOnTheBeats() {
+        val phrase = CutPiece(50_000, 213_000)
+        assertEquals(CutPiece(48_000, 216_000), Cuts.spanOnGrid(phrase, CutMagnet.Beat, beat, 0, frames))
+        assertEquals(CutPiece(96_000, 192_000), Cuts.spanOnGrid(phrase, CutMagnet.Bar, beat, 0, frames))
+        assertEquals(phrase, Cuts.spanOnGrid(phrase, CutMagnet.Free, beat, 0, frames))
+        assertEquals(phrase, Cuts.spanOnGrid(phrase, CutMagnet.Beat, 0.0, 0, frames))
+        // A blip shorter than a beat: one beat long, from its beat.
+        assertEquals(CutPiece(48_000, 72_000), Cuts.spanOnGrid(CutPiece(50_000, 53_000), CutMagnet.Beat, beat, 0, frames))
+    }
 }

@@ -200,4 +200,90 @@ class CutSpanJourneyTest {
         assertTrue(again.single)
         assertEquals(3, again.pieces.size)
     }
+
+    /**
+     * The audit of « Un bout » (2026-11-04): a bar let go is heard at once (Début: the piece, Fin: its
+     * last two seconds), « Début ici » past « Fin » moves the piece whole instead of a sliver, a bar
+     * held at the curve's edge scrolls the song, the ▶ on top says it plays from the orange line.
+     */
+    @OptIn(androidx.compose.ui.test.ExperimentalTestApi::class)
+    @Test
+    fun aBarLetGoIsHeardTheHereButtonsKeepTheLengthAndTheEdgeScrolls() {
+        val song = Song()
+        val host = Host(project(), song)
+        val router = StemBoardRouter(scope, host, StemEditor, Silent)
+        lateinit var m: CutModel
+        lateinit var v: StemBoardView
+        compose.setContent {
+            PocketStudioTheme {
+                m = rememberCutModel(ui(song), router)
+                v = rememberStemBoardView(ui(song))
+                CutScreen(ui(song), router, onClose = {}, model = m, view = v)
+            }
+        }
+        compose.waitForIdle()
+        val first = m.span!!
+        // Opened with the orange line on « Début », in view: ▶ starts there.
+        assertEquals(first.start, m.cursor)
+        compose.onNodeWithContentDescription("Écouter depuis la ligne orange").assertExists()
+        compose.onNodeWithTag("cut_start").assertTextEquals("Début ici")
+        compose.onNodeWithTag("cut_end").assertTextEquals("Fin ici")
+
+        // « Fin » let go one beat later: its last two seconds are heard, up to the new end.
+        compose.onNodeWithTag("cut_wave").performTouchInput {
+            down(Offset(v.x(first.end) + 6f, centerY))
+            moveTo(Offset(v.x(first.end + beat), centerY))
+            up()
+        }
+        compose.waitForIdle()
+        val longer = m.span!!
+        assertEquals(first.end + beat, longer.end)
+        val heard = router.state.value.playing!!
+        assertEquals(longer.end, heard.endFrame)
+        assertEquals(maxOf(longer.start, longer.end - 2L * BOARD_RATE), heard.startFrame)
+        // The piece's card says it is heard (■ Arrêter).
+        compose.onNodeWithTag("cut_span_play").assertTextEquals("Arrêter", spanLength(m, longer.frames))
+
+        // « Début » let go one beat earlier: the piece is heard from its new start.
+        compose.onNodeWithTag("cut_wave").performTouchInput {
+            down(Offset(v.x(longer.start) - 6f, centerY))
+            moveTo(Offset(v.x(longer.start - beat), centerY))
+            up()
+        }
+        compose.waitForIdle()
+        assertEquals(longer.start - beat, m.span!!.start)
+        assertEquals(m.spanSelection(), router.state.value.playing)
+        router.stop()
+
+        // « Début ici » with the orange line past « Fin »: the piece moves there whole.
+        val before = m.span!!
+        m.cursor = before.end + 4 * beat
+        compose.onNodeWithTag("cut_start").performClick()
+        compose.waitForIdle()
+        assertEquals(before.end + 4 * beat, m.span!!.start)
+        assertEquals(before.frames, m.span!!.frames)
+
+        // « Fin » held at the right edge: the song scrolls under it, the bar goes past what was shown.
+        router.stop()
+        val sp = m.span!!
+        compose.runOnIdle { v.show(sp.start, sp.end) }
+        compose.waitForIdle()
+        assertTrue("Fin on screen", v.x(sp.end) in 0f..v.width)
+        val startBefore = v.start
+        val shownEnd = (v.start + v.width * v.framesPerPx).toLong()
+        m.magnet = com.pocketstudio.model.CutMagnet.Free
+        // A finger held still keeps the song moving: the clock is stepped by hand meanwhile.
+        val wave = compose.onNodeWithTag("cut_wave")
+        compose.mainClock.autoAdvance = false
+        wave.performTouchInput {
+            down(Offset(v.x(sp.end) + 6f, centerY))
+            moveTo(Offset(width - 2f, centerY))
+        }
+        compose.mainClock.advanceTimeBy(600)
+        wave.performTouchInput { up() }
+        compose.mainClock.autoAdvance = true
+        compose.waitForIdle()
+        assertTrue("scrolled: ${v.start} > $startBefore", v.start > startBefore)
+        assertTrue("past the edge: ${m.span!!.end} > $shownEnd", m.span!!.end > shownEnd)
+    }
 }

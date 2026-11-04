@@ -104,8 +104,6 @@ class TopBarUi(
     val redo: Boolean = true,
     /** The project's mode chip (« Simple » or « Pro », owner 2026-10-29): true Simple, false Pro, null not shown. */
     val mode: Boolean? = null,
-    /** Another tab of this bar shows the scene chip (the Pro): the bar keeps the same lines everywhere. */
-    val sceneElsewhere: Boolean = false,
 )
 
 class TopBarActions(
@@ -148,16 +146,12 @@ data class TopBarLayout(val showRedo: Boolean, val scene: SceneChipMode, val sce
  * name), undo, record, play and share. Then, while there is room, by priority: the scene's letter, the
  * scene's section name, redo.
  */
-fun topBarLayout(width: Dp, hasScene: Boolean, modeChip: Dp? = null, sceneElsewhere: Boolean = false): TopBarLayout {
+fun topBarLayout(width: Dp, hasScene: Boolean, modeChip: Dp? = null): TopBarLayout {
     // The mode chip (owner, 2026-10-29): in the row when it leaves the project's name a few letters
     // and the scene its letter; else on the name's own line above the buttons (a narrow phone).
     if (modeChip != null) {
         val inRow = topBarLayout(width - modeChip, hasScene)
-        // Audit stage 5: one or two lines is decided as if the scene chip were there whenever another
-        // tab of the same bar shows it ([sceneElsewhere]): the buttons never jump from tab to tab.
-        val worst = if (sceneElsewhere && !hasScene) topBarLayout(width - modeChip, true) else inRow
-        val fits = width - modeChip - ALWAYS_SHOWN >= PROJECT_ROOM && inRow.projectName && worst.projectName &&
-            (!(hasScene || sceneElsewhere) || worst.scene != SceneChipMode.Hidden)
+        val fits = width - modeChip - ALWAYS_SHOWN >= PROJECT_ROOM && inRow.projectName && (!hasScene || inRow.scene != SceneChipMode.Hidden)
         return if (fits) inRow.copy(modeInRow = true) else topBarLayout(width, hasScene).copy(projectName = false)
     }
     // No scene shown (Morceau, Outils…): redo gives way below this width (48 dp more since ⤴ joined the bar).
@@ -233,7 +227,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
 ) {
     // Narrow (a small phone, a big text size): redo, then the scene's name give their room to the
     // project name; the projects button, the scene's letter and play never go.
-    val layout = topBarLayout(maxWidth, ui.scene != null, modeChip = ui.mode?.let(::modeChipRoom), sceneElsewhere = ui.sceneElsewhere)
+    val layout = topBarLayout(maxWidth, ui.scene != null, modeChip = ui.mode?.let(::modeChipRoom))
     val showRedo = layout.showRedo && ui.redo
     androidx.compose.foundation.layout.Column {
     // Squeezed (a small phone with a big text size): the project's name gets a line of its own

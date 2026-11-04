@@ -2102,7 +2102,6 @@ fun AppRoot() {
                     scene = if ((!simple || landscape) && (tab in SCENE_TABS || (tab == AppTab.Audio && audioPage == 0))) sceneChip(topProject) else null,
                     redo = !simple,
                     mode = simple,
-                    sceneElsewhere = !simple || landscape,
                     saved = saveError == null && !topUnsaved,
                     recordInto = topRecordInto?.let { topProject.sceneTitle(it) },
                 ),

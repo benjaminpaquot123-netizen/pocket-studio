@@ -100,6 +100,16 @@ open class ScreenshotTest {
     /** Called once the screen is drawn and touched as [shoot]'s `prepare` asked, before the image (audit: [com.pocketstudio.app.audit.LayoutScan]). */
     protected open fun inspect(name: String) {}
 
+    /**
+     * False: the screen is drawn and inspected but no image is kept (the audit's capture matrix keeps
+     * its images only when recording: nothing committed to compare them with under verify).
+     */
+    protected open val keepImage: Boolean get() = true
+
+    private fun snap(name: String) {
+        if (keepImage) compose.onRoot().captureRoboImage("screenshots/$prefix$name.png")
+    }
+
     /** [prepare]: touches made before the image (a switch that only the screen itself holds). */
     protected fun shoot(
         name: String, palette: Palette = Palettes.Studio, prepare: () -> Unit = {}, fullScreen: Boolean = false, content: @Composable () -> Unit,
@@ -121,7 +131,7 @@ open class ScreenshotTest {
         }
         prepare()
         inspect(name)
-        compose.onRoot().captureRoboImage("screenshots/$prefix$name.png")
+        snap(name)
     }
 
     @Test
@@ -199,7 +209,7 @@ open class ScreenshotTest {
         // An empty cell gets no hit from this tool.
         compose.onNodeWithTag("step_1").performTouchInput { click(center) }
         org.junit.Assert.assertNull(project.drums.lanes[0].hits[1])
-        compose.onRoot().captureRoboImage("screenshots/${prefix}rhythm_velocity.png")
+        snap("rhythm_velocity")
     }
 
     /**
@@ -234,7 +244,7 @@ open class ScreenshotTest {
         }
         compose.onNodeWithTag("step_cells").performScrollTo()
         compose.waitForIdle()
-        compose.onRoot().captureRoboImage("screenshots/${prefix}rhythm_triplets.png")
+        snap("rhythm_triplets")
         // The hit on cell 9 held: « 3 sur 2 cases » makes it a triplet, cell 10's hit goes.
         compose.onNodeWithTag("step_8").performTouchInput { longClick() }
         compose.onNodeWithTag("roll_triplet").performClick()

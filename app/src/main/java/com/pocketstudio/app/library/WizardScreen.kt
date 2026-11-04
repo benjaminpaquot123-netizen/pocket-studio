@@ -192,6 +192,17 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
                 Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 6.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
+                // The details are for whoever wants them: the advised choices are already made.
+                // Lot 2: a real button (a thin orange link was missed by every beginner). Benjamin
+                // (2026-11-04): at the top of the step, far from « Suivant » (once just above it, one
+                // slip made the whole song at once).
+                if (style != null && ui.step > 0 && ui.step < ui.lastStep) {
+                    androidx.compose.material3.FilledTonalButton(
+                        onClick = actions.create, enabled = !ui.creating,
+                        colors = androidx.compose.material3.ButtonDefaults.filledTonalButtonColors(containerColor = Neon.Cyan.copy(alpha = 0.2f), contentColor = Neon.Cyan),
+                        modifier = Modifier.pressScale(enabled = !ui.creating).fillMaxWidth().heightIn(min = 48.dp).testTag("wizard_create_now"),
+                    ) { Text(if (ui.creating) tr("Préparation…") else tr("Créer tout de suite avec les choix conseillés"), textAlign = TextAlign.Center) }
+                }
                 when (val current = ui.current) {
                     StarterWizard.Step.Style -> StyleStep(ui.styleId, packs, actions)
                     StarterWizard.Step.Mood -> MoodStep(style!!, ui.mood, packs, actions)
@@ -200,15 +211,6 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
                     is StarterWizard.Step.Melodic -> PartStep(style!!, ui, packs, current.part, playing, actions)
                     StarterWizard.Step.Summary -> SummaryStep(ui, style!!)
                 }
-            }
-            if (style != null && ui.step > 0 && ui.step < ui.lastStep) {
-                // The details are for whoever wants them: the advised choices are already made.
-                // Lot 2: a real button (a thin orange link was missed by every beginner).
-                androidx.compose.material3.FilledTonalButton(
-                    onClick = actions.create, enabled = !ui.creating,
-                    colors = androidx.compose.material3.ButtonDefaults.filledTonalButtonColors(containerColor = Neon.Cyan.copy(alpha = 0.2f), contentColor = Neon.Cyan),
-                    modifier = Modifier.pressScale(enabled = !ui.creating).fillMaxWidth().heightIn(min = 48.dp).padding(horizontal = 12.dp).testTag("wizard_create_now"),
-                ) { Text(if (ui.creating) tr("Préparation…") else tr("Créer tout de suite avec les choix conseillés"), textAlign = TextAlign.Center) }
             }
             if (style != null && ui.step > 0) {
                 Row(Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, bottom = 12.dp, top = 4.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {

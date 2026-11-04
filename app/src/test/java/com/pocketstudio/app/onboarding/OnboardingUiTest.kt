@@ -30,6 +30,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
+import androidx.compose.ui.test.onRoot
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -232,6 +233,11 @@ class OnboardingUiTest {
         var created = 0
         var ui by androidx.compose.runtime.mutableStateOf(houseUi(1))
         compose.setContent { PocketStudioTheme { WizardScreen(ui, PacksUi(IndexState.Unavailable), null, WizardActions(create = { created++ })) } }
+        // Benjamin (2026-11-04): never next to « Suivant » (one slip made the whole song): at the step's top.
+        val now = compose.onNodeWithTag("wizard_create_now").fetchSemanticsNode().boundsInRoot
+        val next = compose.onNodeWithTag("wizard_next").fetchSemanticsNode().boundsInRoot
+        val gapDp = (next.top - now.bottom) / compose.onRoot().fetchSemanticsNode().layoutInfo.density.density
+        assertTrue("« Créer tout de suite » only ${gapDp} dp above « Suivant »", gapDp >= 120f)
         compose.onNodeWithTag("wizard_create_now").assertTextEquals("Créer tout de suite avec les choix conseillés").performClick()
         assertEquals(1, created)
         compose.onNodeWithText("Étape 2 sur ${ui.lastStep + 1} · House").assertExists()

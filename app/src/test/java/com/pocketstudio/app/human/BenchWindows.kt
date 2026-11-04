@@ -64,6 +64,19 @@ internal object BenchWindows {
         return Offset(at.x + shift.first, at.y + shift.second)
     }
 
+    /** The window [node] is drawn in (null: not found). */
+    fun windowOf(node: SemanticsNode): Win? = runCatching {
+        val owner = field(field(node, "layoutNode")!!, "owner") as View
+        windows().firstOrNull { it.view === owner.rootView }
+    }.getOrNull()
+
+    /** The part of [node] the screen shows (clipped by its parents), in the screen's pixels. */
+    fun drawnBounds(node: SemanticsNode, screen: DisplayMetrics): androidx.compose.ui.geometry.Rect {
+        val b = node.boundsInWindow
+        val origin = windowOf(node)?.drawn(screen)
+        return if (origin == null) b else b.translate(origin.left.toFloat(), origin.top.toFloat())
+    }
+
     private fun field(of: Any, name: String): Any? {
         var c: Class<*>? = of.javaClass
         while (c != null) {

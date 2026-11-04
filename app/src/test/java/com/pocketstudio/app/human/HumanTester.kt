@@ -137,29 +137,119 @@ abstract class HumanTester(private val seat: String) {
         com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.FR
     }
 
+    /** The seat's folder while the bench runs a seat (null in the bench's own tests). */
+    private var seatDir: File? = null
+    /** The turn being played (the journal's « #N »). */
+    private var turnNow = 0
+    private lateinit var options: SeatOptions
+    private var watchdog: BenchWatchdog? = null
+    private val layoutSeen = HashSet<String>()
+
     @Test
     fun drive() {
         val root = System.getProperty("ps.human.dir")?.takeIf { it.isNotBlank() }?.let(::File)
         assumeTrue("only with -Phuman.dir", root != null)
         val dir = File(root, seat)
         assumeTrue("no seat $seat", File(dir, "start.txt").isFile)
-        val start = File(dir, "start.txt").readLines().mapNotNull { l -> l.split('=', limit = 2).takeIf { it.size == 2 }?.let { it[0].trim() to it[1].trim() } }.toMap()
-        begin()
+        val (o, warnings) = SeatOptions.read(File(dir, "start.txt"))
         val journal = File(dir, "journal.txt")
+        seatDir = dir
+        journal.appendText("#0 SIEGE ${o.describe()}\n")
+        warnings.forEach { journal.appendText("#0 OPTION ? $it\n") }
+        val dog = BenchWatchdog(Thread.currentThread()).start()
+        watchdog = dog
+        try {
+            begin(o)
+            o.amenee?.let { amenee(it, journal) }
+            stalls(journal, 0)
+            seatLoop(dir, o, journal)
+        } finally {
+            dog.stop()
+            stalls(journal, turnNow)
+            runCatching { SeatState.save(app, lastVm, dir, shared) }.onFailure { journal.appendText("#$turnNow ETAT ? ${it.message}\n") }
+        }
+    }
+
+    /** The turns of a seat: a screen (image, text, sound), a gesture, until the end. */
+    private fun seatLoop(dir: File, o: SeatOptions, journal: File) {
         var n = 1
-        val timeoutMs = (start["timeout.minutes"]?.toLongOrNull() ?: 20L) * 60_000
+        var gestures = 0
+        var same = 0
+        var lastPrint: String? = null
+        var afterWait = false
+        val source = o.replayOf
+        val timeoutMs = o.timeoutMinutes * 60_000
+        fun end(why: String) {
+            journal.appendText("#$n FIN : $why\n")
+            File(dir, "fin.txt").writeText(why)
+        }
         while (true) {
-            show(dir, n)
-            journal.appendText("#$n ${inside()}\n")
+            turnNow = n
+            val snap = capture(dir, n)
+            val notes = mutableListOf<String>()
+            // « Rien ne change » (the screens after « attends » neither count nor reset it).
+            if (!afterWait) {
+                same = if (snap.fingerprint == lastPrint) same + 1 else 1
+                if (same == 3) notes += "Rien ne change à l'écran depuis 3 gestes."
+            }
+            lastPrint = snap.fingerprint
+            val sound = publish(dir, n, notes)
+            journal.appendText("#$n ROUTE ${snap.route} | MODE ${if (SettingsStore.state.value.simpleMode) "simple" else "pro"} | EMPREINTE ${snap.fingerprint} | ${inside()}\n")
+            journal.appendText("#$n SON ${sound.lineSequence().first()}\n")
+            layout(journal, n, snap)
+            if (source != null) {
+                val was = File(source, "screen-$n.txt").takeIf { it.isFile }?.readLines()?.drop(1)?.let(ScreenText::fingerprintOf)
+                if (was != snap.fingerprint) {
+                    val verdict = "divergé au pas ${n - 1}" + if (was == null) " (pas d'écran-texte $n à l'origine)" else ""
+                    File(dir, "rejeu.txt").writeText(verdict); end("rejeu : $verdict"); return
+                }
+                if (n > o.replayN) { File(dir, "rejeu.txt").writeText("reproduit"); end("rejeu : reproduit"); return }
+            }
+            if (same >= 5) { journal.appendText("#$n RIEN NE CHANGE (5 écrans identiques)\n"); end("rien ne change (5 écrans identiques)"); return }
+            if (same == 3) journal.appendText("#$n RIEN NE CHANGE (3 écrans identiques)\n")
             val cmdFile = File(dir, "cmd-$n.txt")
+            if (source != null) {
+                val from = File(source, "cmd-$n.txt")
+                if (!from.isFile) { File(dir, "rejeu.txt").writeText("divergé au pas $n (pas de geste $n à l'origine)"); end("rejeu : pas de geste $n"); return }
+                cmdFile.writeText(from.readText())
+            }
             val waitEnd = System.currentTimeMillis() + timeoutMs
             while (!cmdFile.isFile) {
-                if (System.currentTimeMillis() > waitEnd) { journal.appendText("#$n no gesture for too long: end\n"); return }
+                if (System.currentTimeMillis() > waitEnd) { journal.appendText("#$n no gesture for too long: end\n"); end("abandon : plus de geste"); return }
                 Thread.sleep(100)
             }
             val cmd = cmdFile.readText().trim()
+            val words = cmd.split(Regex("\\s+"))
+            val kind = words[0].lowercase()
+            fun num(i: Int) = words.getOrNull(i)?.replace(',', '.')?.toFloatOrNull()
+            if (kind != "attends" && kind != "fin") {
+                // The budget: this gesture is not played once it is spent (an image looked at counts half).
+                val max = o.maxGestures
+                val images = File(source ?: dir, "images.txt").takeIf { it.isFile }?.readLines()?.count { it.isNotBlank() } ?: 0
+                if (max != null && gestures + images / 2.0 >= max) { end("abandon : budget ($max gestes, $gestures faits, $images images)"); return }
+                gestures++
+            }
             journal.appendText("#$n > $cmd\n")
-            if (cmd == "fin") return
+            if (cmd == "fin") { end("fin"); return }
+            afterWait = kind == "attends"
+            val points = when (kind) {
+                "touche", "appui-long" -> listOfNotNull(num(1)?.let { x -> num(2)?.let { x to it } })
+                "glisse" -> listOfNotNull(num(1)?.let { x -> num(2)?.let { x to it } }, num(3)?.let { x -> num(4)?.let { x to it } })
+                else -> emptyList()
+            }
+            val m = app.resources.displayMetrics
+            if (points.any { (x, y) -> !SeatOptions.reachable(o.hand, x, y, m.widthPixels, m.heightPixels, m.density) }) {
+                journal.appendText("#$n REFUS hors de portée du pouce (${o.hand.word})\n")
+                say("Ce point est trop loin de ton pouce (tu tiens l'appareil ${o.hand.word}) : rien ne s'est passé.")
+                n++
+                continue
+            }
+            points.firstOrNull()?.let { (x, y) ->
+                val under = screenText().under(x, y)
+                journal.appendText("#$n DOIGT $under\n")
+                Regex("(?:^|dans:|désactivé )(help_[A-Za-z0-9_]*)").find(under)?.let { journal.appendText("#$n AIDE ${it.groupValues[1]}\n") }
+            }
+            if (kind == "retour") journal.appendText("#$n RETOUR\n")
             try {
                 play(cmd)
                 problems.forEach { journal.appendText("#$n SCREEN ERROR $it\n") }
@@ -167,16 +257,68 @@ abstract class HumanTester(private val seat: String) {
             } catch (e: Throwable) {
                 journal.appendText("#$n CRASH ${e.javaClass.name}: ${e.message?.take(400)}\n${e.stackTrace.take(12).joinToString("\n") { "    at $it" }}\n")
                 File(dir, "sound-${n + 1}.txt").writeText("⚠ L'appli s'est arrêtée (plantage).")
-                runCatching { show(dir, n + 1) }
+                runCatching { capture(dir, n + 1); publish(dir, n + 1, emptyList()) }
+                n++
+                end("plantage")
                 return
             }
+            stalls(journal, n)
             n++
         }
     }
 
+    /** The stalls the watchdog saw since the last turn, into the journal. */
+    private fun stalls(journal: File, n: Int) {
+        val dog = watchdog ?: return
+        while (true) { val s = dog.stalls.poll() ?: break; journal.appendText("#$n GEL ${s.removePrefix("gel ")}\n") }
+    }
+
+    /** LayoutScan on the screen as it is (the findings not seen earlier in the seat). */
+    private fun layout(journal: File, n: Int, snap: ScreenText.Snapshot) {
+        watchdog?.paused = true
+        try {
+            val found = runCatching { com.pocketstudio.app.audit.LayoutScan.scan(compose, app.resources.displayMetrics.density) }
+            found.onFailure { journal.appendText("#$n LAYOUT ? ${it.javaClass.simpleName}: ${it.message?.take(200)}\n") }
+            found.getOrNull()?.filter { shownFinding(it, snap) }?.forEach { f -> if (layoutSeen.add(f.toString())) journal.appendText("#$n LAYOUT $f\n") }
+        } finally {
+            watchdog?.paused = false
+        }
+    }
+
+    /**
+     * A finding about what a person sees: LayoutScan reads every node composed, also a page covered by
+     * another (the project under « Que veux-tu faire ? ») or an activity left behind.
+     */
+    private fun shownFinding(f: com.pocketstudio.app.audit.LayoutScan.Finding, snap: ScreenText.Snapshot): Boolean {
+        if (f.kind == com.pocketstudio.app.audit.LayoutScan.Kind.TARGET || f.kind == com.pocketstudio.app.audit.LayoutScan.Kind.LABEL) return true
+        if (f.what !in snap.texts) return false
+        if (f.kind != com.pocketstudio.app.audit.LayoutScan.Kind.OVERLAP) return true
+        if ("over the touchable «  »" in f.detail) return false
+        val other = Regex("^over « (.*) » \\(").find(f.detail)?.groupValues?.get(1) ?: return true
+        return other in snap.texts
+    }
+
+    private fun screenText(): ScreenText = ScreenText(
+        compose, app.resources.displayMetrics, reads = !::options.isInitialized || options.reads, rtl = com.pocketstudio.model.i18n.I18n.lang.rtl,
+    )
+
+    /** What a person who only sees the screen has of it now, as text (the bench's own tests). */
+    internal fun screenLines(): List<String> = screenText().read().lines
+
     /** The app opened on a phone as just installed, with the bench's stand-ins in place. */
-    protected fun begin() {
-        freshInstall()
+    protected fun begin() = begin(null)
+
+    /**
+     * The same on the seat's phone ([o]: its screen, locale, font size, settings; null: the bench's
+     * phone in French, as the bench's own tests always had it).
+     */
+    internal fun begin(o: SeatOptions?) {
+        options = o ?: SeatOptions()
+        if (o != null) {
+            org.robolectric.RuntimeEnvironment.setQualifiers(o.qualifiers)
+            org.robolectric.RuntimeEnvironment.setFontScale(o.fontScale)
+        }
+        freshInstall(options)
         TutoTestHooks.player = ears
         // The phone's AAC encoder (« Partager » in M4A): the shadow codec copies the sound through.
         ShadowMediaCodec.addEncoder(MediaFormat.MIMETYPE_AUDIO_AAC, ShadowMediaCodec.CodecConfig(16 * 1024, 16 * 1024, passThrough))
@@ -193,17 +335,32 @@ abstract class HumanTester(private val seat: String) {
     /** How long the model's download and the separation take (1: as the testers see them). */
     protected open val remixTimeScale: Double = 1.0
 
-    /** The phone as just installed, in French (as GuideJourneyTest.freshInstall). */
-    private fun freshInstall() {
+    /**
+     * The phone as just installed (as GuideJourneyTest.freshInstall), in the seat's language with its
+     * settings and the permissions granted; with `fresh=reel` nothing at all: the app takes the
+     * phone's language and asks for each permission (the bench shows the system's question).
+     */
+    private fun freshInstall(o: SeatOptions) {
         for (d in listOf("projects", "projects-trash", "stems", "models", "separation")) File(app.filesDir, d).deleteRecursively()
         File(app.filesDir, "stems-pinned.txt").delete()
         File(app.filesDir, "../shared_prefs").listFiles()?.forEach { app.getSharedPreferences(it.name.removeSuffix(".xml"), 0).edit().clear().commit() }
-        app.getSharedPreferences("settings", 0).edit().putString("language", "fr").commit()
+        if (!o.fresh) {
+            app.getSharedPreferences("settings", 0).edit().apply {
+                putString("language", o.lang.code)
+                if (o.lang != com.pocketstudio.model.i18n.Lang.FR) putBoolean("englishNotes", !o.lang.solfege)
+                o.simple?.let { putBoolean("simpleMode", it) }
+                o.theme?.let { putString("theme", it.name) }
+            }.commit()
+        }
         SettingsStore.forgetForTests()
         LaunchRule.askAtStartForTest = true
-        shadowOf(app).grantPermissions(android.Manifest.permission.RECORD_AUDIO)
-        // Notifications allowed, as a person answers the question (the bench cannot show it).
-        shadowOf(app).grantPermissions(android.Manifest.permission.POST_NOTIFICATIONS)
+        if (o.fresh) {
+            shadowOf(app).denyPermissions(android.Manifest.permission.RECORD_AUDIO, android.Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            shadowOf(app).grantPermissions(android.Manifest.permission.RECORD_AUDIO)
+            // Notifications allowed, as a person answers the question (the bench cannot show it).
+            shadowOf(app).grantPermissions(android.Manifest.permission.POST_NOTIFICATIONS)
+        }
         // The app's ViewModels with this test's application (the default factory keeps the first one).
         ViewModelProvider.AndroidViewModelFactory::class.java.getDeclaredField("_instance").apply { isAccessible = true }.set(null, null)
     }
@@ -224,7 +381,113 @@ abstract class HumanTester(private val seat: String) {
             }
         }
         lastVm = v
+        if (seatDir != null && v != null && v !== padsHooked) {
+            padsHooked = v
+            v.padLive.toggleForTest = { pad -> padToggled(v, pad) }
+        }
         return v
+    }
+
+    private var padsHooked: RhythmViewModel? = null
+
+    /**
+     * A live pad touched on a seat: the app's own toggle, and the pad sounds as the phone's engine would
+     * have it (a loop on until touched again, a hit once), heard on the sound line. Robolectric has no
+     * engine: without this the pads never sounded (lot P0-A).
+     */
+    private fun padToggled(v: RhythmViewModel, pad: Int) {
+        val clip = v.project.value.live.at(pad) ?: return
+        v.toggleLive(pad)
+        val on = v.livePadsSoundingForTest ?: emptySet()
+        if (clip.oneShot) say("Le pad ${pad + 1} (« ${clip.name} ») joue une fois.")
+        else v.livePadsSoundingForTest = if (pad in on) on - pad else on + pad
+    }
+
+    /**
+     * The phone's engine renders the ready-to-play set (loops of the style, party sounds) when Pad
+     * Live opens; Robolectric has none, so the bench puts the same pads there with a short tone
+     * each (a stand-in engine only while they are stored), as [HumanTester] stands in for the kit.
+     */
+    protected fun standInForTheStarter() {
+        val vm = rhythm() ?: error("no project")
+        if (vm.project.value.live.at(4) != null) return
+        com.pocketstudio.engine.NativeEngine.sink = BenchEngine()
+        try {
+            vm.fillLiveStarter { _ ->
+                com.pocketstudio.model.LiveStarter.PADS.indices.associateWith { i ->
+                    val pad = com.pocketstudio.model.LiveStarter.PADS[i]
+                    val frames = if (pad.oneShot) 9_600 else 48_000
+                    com.pocketstudio.app.audio.Pcm(FloatArray(frames * 2) { k -> 0.3f * kotlin.math.sin(k * (0.01f + i * 0.002f)) * kotlin.math.exp(-(k / 2) / 12_000f) }, 2, 48_000) to
+                        (if (pad.oneShot) 1 else pad.beats)
+                }
+            }
+            val until = System.currentTimeMillis() + 30_000
+            while (vm.project.value.live.at(4) == null && System.currentTimeMillis() < until) {
+                shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(50))
+                Thread.sleep(10)
+            }
+        } finally {
+            com.pocketstudio.engine.NativeEngine.sink = null
+        }
+    }
+
+    /**
+     * Amenées (Audit ultra §3.1): the app brought to a mission's start by script before the tester gets
+     * the seat (the gestures are the bench's, not counted, said in the journal as « #0 AMENEE »).
+     */
+    internal fun amenee(name: String, journal: File) {
+        journal.appendText("#0 AMENEE $name\n")
+        fun tap(tag: String) {
+            val at = reachTag(tag) ?: error("amenée $name : « $tag » introuvable")
+            journal.appendText("#0 AMENEE > touche ${at.first.toInt()} ${at.second.toInt()} ($tag)\n")
+            play("touche ${at.first} ${at.second}")
+        }
+        fun waitFor(what: String, done: () -> Boolean) {
+            val until = System.currentTimeMillis() + 120_000
+            while (!done()) {
+                if (System.currentTimeMillis() > until) error("amenée $name : $what n'est jamais venu")
+                play("attends 0.5")
+            }
+        }
+        when (name) {
+            AMENEE_SONG -> {
+                tap("welcome_empty")
+                waitFor("le choix du mode") { centerOf("mode_card_simple") != null || tabsShown() }
+                if (centerOf("mode_card_simple") != null) tap(if (options.simple == false) "mode_card_pro" else "mode_card_simple")
+                waitFor("le projet") { tabsShown() && centerOf("mode_card_simple") == null }
+            }
+            AMENEE_REMIX -> {
+                tap("welcome_remix")
+                waitFor("le Remix") { centerOf("remix_pick") != null || centerOf("mode_card_simple") != null }
+                if (centerOf("mode_card_simple") != null) tap(if (options.simple == true) "mode_card_simple" else "mode_card_pro")
+                waitFor("la page du Remix") { centerOf("remix_pick") != null }
+            }
+            AMENEE_PADLIVE -> {
+                tap("launch_padlive")
+                waitFor("Pad Live") { centerOf("padlive") != null }
+                standInForTheStarter()
+                waitFor("les pads prêts") { centerOf("padlive_busy") == null && project()?.live?.at(4) != null }
+            }
+        }
+        journal.appendText("#0 AMENEE prête (${screenText().read().route})\n")
+    }
+
+    /** The project's tabs are on screen (the welcome and the mode's choice gone). */
+    private fun tabsShown(): Boolean = runCatching {
+        compose.onAllNodes(SemanticsMatcher("a tab") { n -> n.config.getOrElse(SemanticsProperties.TestTag) { "" }.startsWith("tab_") })
+            .fetchSemanticsNodes(atLeastOneRootRequired = false).isNotEmpty()
+    }.getOrDefault(false) && centerOf("welcome") == null
+
+    /** Brings the node tagged [tag] into the screen's middle part (a swipe on the margin at a time), then its middle. */
+    private fun reachTag(tag: String): Pair<Float, Float>? {
+        repeat(8) {
+            val at = centerOf(tag) ?: return null
+            if (at.second in 0.2f * screenHeight..0.8f * screenHeight) return at
+            val dy = (at.second - screenHeight / 2f).coerceIn(-500f, 500f)
+            play("glisse 10 ${screenHeight / 2f + dy / 2} 10 ${screenHeight / 2f - dy / 2}")
+            play("attends 1")
+        }
+        return centerOf(tag)
     }
 
     /**
@@ -422,6 +685,7 @@ abstract class HumanTester(private val seat: String) {
             send.getParcelableExtra<android.net.Uri>(Intent.EXTRA_STREAM) ?: send.getParcelableArrayListExtra<android.net.Uri>(Intent.EXTRA_STREAM)?.firstOrNull()
         }
         val file = stream?.lastPathSegment?.substringAfterLast('/') ?: "?"
+        keepShared(file)
         val apps = arrayOf("WhatsApp", "Messages", "Gmail", "Drive", "Enregistrer dans Fichiers")
         scenario?.onActivity { a ->
             android.app.AlertDialog.Builder(a)
@@ -557,6 +821,7 @@ abstract class HumanTester(private val seat: String) {
         services()
         engineDone()
         shareMenu()
+        permissions()
         toasts()
     }
 
@@ -570,14 +835,106 @@ abstract class HumanTester(private val seat: String) {
 
     private var toastsSeen = 0
 
-    private fun show(dir: File, n: Int) {
-        val shot = File(dir, "screen-$n.png")
-        captureScreenRoboImage(shot.path, RoborazziOptions(taskType = RoborazziTaskType.Record, captureType = RoborazziOptions.CaptureType.Screenshot()))
+    /**
+     * The screen [n] for the tester: its image (screen-N.png, with grey bars over the small texts for
+     * `lit=non`) and its text (screen-N.txt, see [ScreenText]). The bench's own work: not a stall.
+     */
+    private fun capture(dir: File, n: Int): ScreenText.Snapshot {
+        watchdog?.paused = true
+        try {
+            val shot = File(dir, "screen-$n.png")
+            captureScreenRoboImage(shot.path, RoborazziOptions(taskType = RoborazziTaskType.Record, captureType = RoborazziOptions.CaptureType.Screenshot()))
+            val snap = screenText().read()
+            if (!options.reads) greyOut(shot, snap.small)
+            val m = app.resources.displayMetrics
+            File(dir, "screen-$n.txt").writeText((listOf("Écran $n (${m.widthPixels}x${m.heightPixels})") + snap.lines).joinToString("\n", postfix = "\n"))
+            val routes = File(dir, "routes.txt")
+            val seen = routes.takeIf { it.isFile }?.readLines().orEmpty()
+            File(dir, "meta-$n.txt").writeText("route=${snap.route}\nnouvelle=${if (snap.route in seen) 0 else 1}\n")
+            if (snap.route !in seen) routes.appendText(snap.route + "\n")
+            return snap
+        } finally {
+            watchdog?.paused = false
+        }
+    }
+
+    /** The sound of screen [n] (with the bench's [notes]) and the turn: the tester's script waits for it. */
+    private fun publish(dir: File, n: Int, notes: List<String>): String {
         val sound = File(dir, "sound-$n.txt")
         if (!sound.isFile) sound.writeText(heard())
+        if (notes.isNotEmpty()) sound.appendText("\n" + notes.joinToString("\n"))
         File(dir, "turn.tmp").writeText("$n")
         File(dir, "turn.tmp").renameTo(File(dir, "turn"))
+        return sound.readText()
     }
+
+    /** `lit=non`: the texts under 18 sp as grey bars, as a person who cannot read them sees them. */
+    private fun greyOut(png: File, rects: List<androidx.compose.ui.geometry.Rect>) {
+        if (rects.isEmpty()) return
+        val img = javax.imageio.ImageIO.read(png) ?: return
+        val g = img.createGraphics()
+        g.color = java.awt.Color(0x9E, 0x9E, 0x9E)
+        for (r in rects) g.fillRect(r.left.toInt(), r.top.toInt(), r.width.toInt().coerceAtLeast(1), r.height.toInt().coerceAtLeast(1))
+        g.dispose()
+        javax.imageio.ImageIO.write(img, "png", png)
+    }
+
+    /** The files Android's share menu was given (their names), kept with the seat's state. */
+    private val shared = mutableListOf<String>()
+
+    /** The shared file, copied into the seat's state (etat/partage/) for the mission's oracle. */
+    private fun keepShared(name: String) {
+        shared += name
+        val dir = seatDir ?: return
+        File(dir, "journal.txt").appendText("#$turnNow PARTAGE $name\n")
+        val found = listOf(app.cacheDir, app.filesDir, app.getExternalFilesDir(null)).filterNotNull()
+            .firstNotNullOfOrNull { root -> root.walkTopDown().firstOrNull { it.isFile && it.name == name } }
+        found?.copyTo(File(dir, "etat/partage/$name"), overwrite = true)
+    }
+
+    /**
+     * `fresh=reel`: the system's question when the app asks for a permission, as a phone shows it (in
+     * French or English, as the phone's language): the answer is given to the app as Android does.
+     */
+    private fun permissions() {
+        if (!options.fresh) return
+        scenario?.onActivity { a ->
+            val req = shadowOf(a).lastRequestedPermission ?: return@onActivity
+            if (req === permissionAsked) return@onActivity
+            permissionAsked = req
+            val perms = req.requestedPermissions
+            val fr = options.lang == com.pocketstudio.model.i18n.Lang.FR
+            val name = a.applicationInfo.loadLabel(a.packageManager)
+            val mic = perms.any { it == android.Manifest.permission.RECORD_AUDIO }
+            val title = when {
+                mic && fr -> "Autoriser $name à enregistrer des contenus audio ?"
+                mic -> "Allow $name to record audio?"
+                fr -> "Autoriser $name à vous envoyer des notifications ?"
+                else -> "Allow $name to send you notifications?"
+            }
+            val choices = when {
+                mic && fr -> arrayOf("Lorsque vous utilisez l'appli", "Uniquement cette fois-ci", "Ne pas autoriser")
+                mic -> arrayOf("While using the app", "Only this time", "Don't allow")
+                fr -> arrayOf("Autoriser", "Ne pas autoriser")
+                else -> arrayOf("Allow", "Don't allow")
+            }
+            fun answer(granted: Boolean) {
+                if (granted) shadowOf(app).grantPermissions(*perms) else shadowOf(app).denyPermissions(*perms)
+                val results = IntArray(perms.size) { if (granted) android.content.pm.PackageManager.PERMISSION_GRANTED else android.content.pm.PackageManager.PERMISSION_DENIED }
+                seatDir?.let { File(it, "journal.txt").appendText("#$turnNow PERMISSION ${perms.joinToString { p -> p.substringAfterLast('.') }} ${if (granted) "accordée" else "refusée"}\n") }
+                @Suppress("DEPRECATION")
+                a.onRequestPermissionsResult(req.requestCode, perms, results)
+            }
+            android.app.AlertDialog.Builder(a)
+                .setTitle(title)
+                .setItems(choices) { d, which -> d.dismiss(); answer(which < choices.size - 1) }
+                .setOnCancelListener { answer(false) }
+                .show()
+        }
+        shadowOf(Looper.getMainLooper()).idle()
+    }
+
+    private var permissionAsked: Any? = null
 
     /** What a person would hear now (the pads' own sounds are not heard here, but the Remix's parts are). */
     protected fun heard(): String = buildList {
@@ -589,6 +946,10 @@ abstract class HumanTester(private val seat: String) {
             stemPads().filter { it.value.second }.forEach { (pad, s) -> add("le pad ${pad + 1} (« ${s.first} ») sonne dans la boucle") }
         }
         previewHeard()?.let(::add)
+        // Live pads on a seat (padToggled): heard with the transport stopped too.
+        v?.livePadsSoundingForTest?.takeIf { seatDir != null && it.isNotEmpty() }?.let { on ->
+            add("les pads live ${on.sorted().joinToString(", ") { "${it + 1}" }} jouent en boucle")
+        }
     }.let { if (it.isEmpty()) "Son : rien ne joue." else "Son : " + it.joinToString(" ; ") + "." }
         .let { s -> note?.let { n -> note = null; "$s\n$n" } ?: s }
 
@@ -716,6 +1077,10 @@ abstract class HumanTester(private val seat: String) {
     companion object {
         /** A phone like the owner's (Honor), at 1.5 px a dp: images small enough to read quickly. */
         const val PHONE = "w392dp-h852dp-hdpi"
+
+        const val AMENEE_SONG = "premier-morceau"
+        const val AMENEE_REMIX = "remix"
+        const val AMENEE_PADLIVE = "padlive"
 
         /** A stem's name on a pad (DefaultNames.stemPad, kept in French whatever the language). */
         private val STEM_NAMES = listOf("Batterie", "Basse", "Reste", "Voix")

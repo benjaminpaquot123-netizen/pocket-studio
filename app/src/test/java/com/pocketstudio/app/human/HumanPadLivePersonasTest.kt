@@ -71,34 +71,6 @@ class HumanPadLivePersonasTest : HumanTester("padlive-personas") {
         return centerOf(tag)!!
     }
 
-    /**
-     * The phone's engine renders the ready-to-play set (loops of the style, party sounds) when Pad
-     * Live opens; Robolectric has none, so the bench puts the same pads there with a short tone
-     * each (a stand-in engine only while they are stored), as [HumanTester] stands in for the kit.
-     */
-    private fun standInForTheStarter() {
-        val vm = rhythm() ?: error("no project")
-        if (vm.project.value.live.at(4) != null) return
-        com.pocketstudio.engine.NativeEngine.sink = BenchEngine()
-        try {
-            vm.fillLiveStarter { _ ->
-                com.pocketstudio.model.LiveStarter.PADS.indices.associateWith { i ->
-                    val pad = com.pocketstudio.model.LiveStarter.PADS[i]
-                    val frames = if (pad.oneShot) 9_600 else 48_000
-                    com.pocketstudio.app.audio.Pcm(FloatArray(frames * 2) { k -> 0.3f * kotlin.math.sin(k * (0.01f + i * 0.002f)) * kotlin.math.exp(-(k / 2) / 12_000f) }, 2, 48_000) to
-                        (if (pad.oneShot) 1 else pad.beats)
-                }
-            }
-            val until = System.currentTimeMillis() + 30_000
-            while (vm.project.value.live.at(4) == null && System.currentTimeMillis() < until) {
-                org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(50))
-                Thread.sleep(10)
-            }
-        } finally {
-            com.pocketstudio.engine.NativeEngine.sink = null
-        }
-    }
-
     /** Home › « Pad Live »: the pads ready to play, on the whole screen. */
     private fun openPadLive() {
         begin()

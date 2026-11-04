@@ -876,7 +876,13 @@ abstract class HumanTester(private val seat: String) {
                 touch(MotionEvent.ACTION_UP, x2, y2, d)
                 settle(900)
             }
-            "ecris" -> { compose.onNode(isFocused()).performTextInput(cmd.substringAfter(' ')); settle(500) }
+            // Round 1 (lot D, seat d): typing with no field focused threw the test API's AssertionError,
+            // which the bench told the tester was an app crash. On a phone the keys go nowhere: say so.
+            "ecris" -> {
+                val typed = runCatching { compose.onNode(isFocused()).performTextInput(cmd.substringAfter(' ')) }
+                if (typed.isFailure) say("Rien ne s'écrit : aucun champ n'attend le texte (touche d'abord le champ).")
+                settle(500)
+            }
             "retour" -> { androidx.test.espresso.Espresso.pressBackUnconditionally(); settle(900) }
             "attends" -> settle(((words.getOrNull(1)?.replace(',', '.')?.toFloatOrNull() ?: 2f) * 1000).toLong().coerceIn(100, 30_000))
             else -> error("unknown gesture: $cmd")

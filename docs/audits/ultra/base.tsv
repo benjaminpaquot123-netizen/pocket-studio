@@ -1,2 +1,31 @@
 # Base des clés connues (Audit ultra §3.4) : route|cible|symptôme, état (nouveau, confirmé, corrigé, voulu, idée), tour où elle est vue, note. Une ligne par clé, séparée par des tabulations ; scripts/bench/fuse-reports.py --maj-base y ajoute les nouvelles.
 cle	etat	vu	note
+board/tab_Sons|pad|bloque	corrigé	tour-0	banc : moteur gardé pendant le travail du tableau (34d56bb)
+padlive|enregistrer ce que je joue|bloque	corrigé	tour-0	banc : BenchResample, prise posée avec le moteur du banc (1b38738)
+padlive|rec enregistrer la performance|bloque	corrigé	tour-0	banc : horloge de la prise, pads rebondis avec le moteur du banc (1b38738)
+?|vocals remix simple mode|sans-aide	nouveau	tour-0	appli, à confirmer au tour 1 par un 2e siège Simple (§4.4)
+board/tab_Sons|cut the vocals into phrases|bloque	corrigé	tour-0	banc : même cause que la ligne → Pad (34d56bb)
+board/tab_Sons|live|bloque	corrigé	tour-0	banc : même cause que la ligne → Pad (34d56bb)
+cut_screen/tab_Sons|pieces 1 to 6 cut up the song|sans-nom	nouveau	tour-0	écran refait (3056251, b9069ac) : à revoir au tour 1
+dialogue:share_sheet|partager mon morceau|perdu	corrigé	tour-0	banc : conséquence de la prise REC (1b38738)
+dialogue:wizard|ecouter carte house|rien	corrigé	tour-0	banc : moteur du banc dans l'assistant, AudioTrack float (1b38738)
+dialogue:wizard|ecouter joyeux / energique|rien	corrigé	tour-0	banc : idem (1b38738)
+padlive|boucle de kick pad a1|incompris	corrigé	tour-0	banc : lumières des pads (1b38738)
+padlive|pack > techno page b|rien	corrigé	tour-0	banc : BenchPackMaker (1b38738) ; appli muette sur un pack sans son : reste mineur
+tab_simple_Morceau|ecouter guide ton morceau est pret|rien	corrigé	tour-0	banc : le morceau joue depuis sa partie (1b38738)
+?|splitting ma chanson preferee|lent	voulu	tour-0	banc : vitesse de séparation voulue
+board/tab_Sons|stem board lanes|perdu	nouveau	tour-0	appli
+cut_screen/tab_Sons|rec / note / overlay|incompris	nouveau	tour-0	appli
+dialogue:share_sheet|autres exports passe en mode pro|mauvais-ecran	corrigé	tour-0	banc : siège Pro remis en Simple au premier lancement (1b38738)
+dialogue:wizard|choix a droite de chaque ambiance|sans-nom	corrigé	tour-0	appli (aa5fc52)
+dialogue:wizard|telecharger les sons du style|incompris	corrigé	tour-0	appli : les packs arrivés ensemble nommés ensemble (d1b8d60)
+dialogue:« Des sons du pack « Roland TR-9 »|creer tout de suite avec les choix conseilles|incompris	corrigé	tour-0	banc : FLAC lus (BenchFlac) ; appli : chaque pack nommé une fois (1551290)
+padlive|arreter|incompris	corrigé	tour-0	banc : ■ coupe les pads (1b38738)
+padlive|boucle de kick pad a1|sans-aide	idée	tour-0	
+padlive|filtre grave aigu|rien	nouveau	tour-0	appli
+padlive|jouer transport|incompris	nouveau	tour-0	appli, voulu à trancher (pads seuls)
+?|simple / keyboard|coupe	corrigé	tour-0	appli (aa5fc52)
+dialogue:mode_switch|simple mode description|incompris	corrigé	tour-0	appli (aa5fc52)
+dialogue:pad_sheet|drag handle / close sheet|sans-nom	corrigé	tour-0	banc en-rUS (34d56bb) ; curseur nommé (aa5fc52)
+dialogue:« Partager « Remix-morceau-20261 »|808 modernes / remix-morceau- m4a / brick a|incompris	corrigé	tour-0	appli (aa5fc52)
+tab_simple_Morceau|jouer|incompris	corrigé	tour-0	banc : idem (1b38738)

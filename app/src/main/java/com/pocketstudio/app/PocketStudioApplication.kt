@@ -4,7 +4,7 @@ import com.pocketstudio.app.report.AppLog
 import android.app.Application
 import com.pocketstudio.app.report.CrashReporter
 
-class PocketStudioApplication : Application() {
+open class PocketStudioApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         CrashReporter.install(this)

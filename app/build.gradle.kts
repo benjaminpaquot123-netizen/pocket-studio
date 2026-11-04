@@ -88,6 +88,8 @@ android {
                 it.jvmArgs(
                     "--add-exports=java.base/jdk.internal.access=ALL-UNNAMED",
                     "--add-opens=java.base/java.io=ALL-UNNAMED",
+                    // StrictMode in the tests (MainThreadIo): stacks deep enough to reach the app's frame under Compose.
+                    "-XX:FlightRecorderOptions:stackdepth=512",
                 )
                 // The song bench (scripts/song-bench.sh): SongBenchExport records only when given -Pbench.out
                 // (LiveSongRecorder, scripts/live-bench.sh: with -Pbench.live; -Pbench.loop for the soak).

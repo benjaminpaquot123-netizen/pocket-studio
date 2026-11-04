@@ -166,7 +166,7 @@
         {
           "id": "bass_pump",
           "levels": "p",
-          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste Basse : elle se baisse un peu à chaque kick (3 à 4 dB suffisent).",
+          "text": "À toi : dans Mix, mets l'effet « Pompe » sur la piste Basse : elle se baisse un peu à chaque kick (3 à 4 dB suffisent).",
           "check": "insert:PUMP",
           "spot": "mixer.strip",
           "target": "bass",
@@ -410,7 +410,7 @@
         {
           "id": "reverb",
           "levels": "p",
-          "text": "À toi : au Mixeur, monte un peu « Envoi réverbe » sur la piste « Accords ».",
+          "text": "À toi : dans Mix, monte un peu « Envoi réverbe » sur la piste « Accords ».",
           "check": "send:0",
           "spot": "mixer.strip",
           "target": "pad",
@@ -419,7 +419,7 @@
         {
           "id": "delay",
           "levels": "p",
-          "text": "À toi : au Mixeur, monte « Envoi écho » sur la piste « Mélodie », peu (15 à 20 %) : la guitare des disques a toujours ce petit écho.",
+          "text": "À toi : dans Mix, monte « Envoi écho » sur la piste « Mélodie », peu (15 à 20 %) : la guitare des disques a toujours ce petit écho.",
           "check": "send:1",
           "spot": "mixer.strip",
           "target": "lead",
@@ -428,7 +428,7 @@
         {
           "id": "chorus",
           "levels": "p",
-          "text": "À toi : au Mixeur, mets l'effet « Chorus » sur la piste « Mélodie », léger (vitesse lente, peu de mélange) : elle s'élargit et brille, comme une guitare claire.",
+          "text": "À toi : dans Mix, mets l'effet « Chorus » sur la piste « Mélodie », léger (vitesse lente, peu de mélange) : elle s'élargit et brille, comme une guitare claire.",
           "check": "insert:CHORUS",
           "spot": "mixer.strip",
           "target": "lead",

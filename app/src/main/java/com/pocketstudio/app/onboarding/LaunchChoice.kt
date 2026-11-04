@@ -421,7 +421,7 @@ internal fun PadLiveCard(onClick: () -> Unit) {
                 style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, maxLines = 3, overflow = TextOverflow.Ellipsis,
             )
         }
-        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = color)
+        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = color, modifier = Modifier.testTag("launch_padlive_arrow"))
     }
 }
 
@@ -452,7 +452,7 @@ private fun RemixCard(onClick: () -> Unit) {
                 style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, maxLines = 2, overflow = TextOverflow.Ellipsis,
             )
         }
-        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = color)
+        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = color, modifier = Modifier.testTag("launch_remix_arrow"))
     }
 }
 
@@ -503,5 +503,7 @@ private fun Choice(icon: ImageVector, title: String, line: String, color: Color,
             Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
             Text(line, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
         }
+        // Audit stage 5: every card of the home ends with the same arrow (two had none: « is it a button? »).
+        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = color, modifier = Modifier.testTag("${tag}_arrow"))
     }
 }

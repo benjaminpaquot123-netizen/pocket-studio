@@ -130,7 +130,7 @@ fun PartIntent.doneText(title: String): String = when (this) {
 /** Why [intent] changed nothing (no room for a scene, a part or a curve). */
 fun PartIntent.refusal(): String = when (this) {
     is PartIntent.BuildUp, PartIntent.FadeIn, PartIntent.FadeOut ->
-        tr("Rien n'a changé : les 16 courbes d'automation sont prises. Retires-en une dans Mix.")
+        tr("Rien n'a changé : les 16 courbes sont prises. Retires-en une dans Mix.")
     else -> tr("Rien n'a changé : il n'y a plus de place pour une partie (24 au plus, 128 dans le morceau). Vide-en une pour continuer.")
 }
 

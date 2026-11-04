@@ -718,7 +718,7 @@ private fun StemCard(set: StemSet, preview: StemPreview?, inProject: Boolean, ac
             val clockText = when {
                 preview?.loading == true -> tr("Chargement…")
                 playing && preview.frames > 0 -> "${clock(preview.position.coerceAtLeast(0))} / ${clock(preview.frames)}"
-                else -> tr("Allume ou coupe chaque partie, même en pleine lecture.")
+                else -> tr("Allume ou coupe chaque piste, même en pleine lecture.")
             }
             Text(clockText, style = if (playing) MonoStyle else MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.weight(1f))
         }

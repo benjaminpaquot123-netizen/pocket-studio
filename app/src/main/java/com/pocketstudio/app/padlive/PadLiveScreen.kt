@@ -484,9 +484,9 @@ private fun PadLivePad(
             // Audit stage 1: one line that gets smaller (« przytrzymaj », « uderzenie · 1 » lost their end, word by word).
             com.pocketstudio.ui.FitText(
                 modeWord(PadLive.modeOf(clip)) + if (clip.group > 0) " · ${clip.group}" else "",
-                // On a dark veil: readable (WCAG AA) over the pad's light top too (audit stage 1: 2.2 to 3.4:1 before).
-                Modifier.padding(top = 4.dp, end = 6.dp).clip(RoundedCornerShape(6.dp)).background(Color.Black.copy(alpha = 0.45f))
-                    .padding(horizontal = 4.dp),
+                // On a dark veil: readable (WCAG AA) over the pad's light top too (audit stages 1 and 5: 2.2 to 3.4:1 before).
+                Modifier.padding(top = 4.dp, end = 6.dp).clip(RoundedCornerShape(6.dp)).background(com.pocketstudio.ui.PadWordScrim)
+                    .padding(horizontal = 4.dp).testTag("padlive_word_$pad"),
                 MaterialTheme.typography.labelSmall, color = Neon.TextPrimary, min = 8.sp, textAlign = androidx.compose.ui.text.style.TextAlign.End,
             )
         }
@@ -679,7 +679,7 @@ private fun MoreRow(ui: PadLiveUi, actions: PadLiveActions, party: () -> Unit) {
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             MoreButton(Icons.Filled.Tune, tr("Effets"), "padlive_effects", Modifier.weight(1f), actions.effects)
-            MoreButton(Icons.Filled.Celebration, tr("Fête"), "padlive_party_open", Modifier.weight(1f), party)
+            MoreButton(Icons.Filled.Celebration, tr("Gros pads"), "padlive_party_open", Modifier.weight(1f), party)
             MoreButton(Icons.Filled.IosShare, tr("Partager"), "padlive_share", Modifier.weight(1f), actions.share)
             com.pocketstudio.ui.HelpDot(
                 com.pocketstudio.app.help.ScreenHelp.PADLIVE_MORE, Modifier.align(Alignment.CenterVertically),

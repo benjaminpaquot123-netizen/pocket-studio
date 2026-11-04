@@ -205,7 +205,7 @@
         },
         {
           "id": "lead_dist",
-          "text": "À toi : au Mixeur, mets l'effet « Distorsion » sur la piste « Mélodie » : il gagne du grain et passe au-dessus du kick.",
+          "text": "À toi : dans Mix, mets l'effet « Distorsion » sur la piste « Mélodie » : il gagne du grain et passe au-dessus du kick.",
           "why": "En hard techno, la saturation se met sur les sons, pas sur le master.",
           "levels": "p",
           "check": "insert:DISTORTION",
@@ -423,7 +423,7 @@
         },
         {
           "id": "reverb",
-          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur la tranche du pad « Clap ».",
+          "text": "À toi : dans Mix, monte « Envoi réverbe » sur la tranche du pad « Clap ».",
           "levels": "p",
           "check": "send:0",
           "spot": "mixer.strip",
@@ -459,7 +459,7 @@
         {
           "id": "levels",
           "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
-          "textPro": "À toi : au Mixeur, baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ».",
+          "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
           "target": "pad",

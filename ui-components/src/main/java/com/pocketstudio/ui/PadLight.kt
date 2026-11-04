@@ -180,3 +180,9 @@ fun padLightFollow(level: Float): Float {
 
 /** The dimmest a playing pad's inner light gets (lot B3). */
 const val PAD_LIGHT_FLOOR = 0.3f
+
+/**
+ * Audit stage 5 (WCAG 1.4.3): a small word written on a pad's colour (« coup », « boucle »…) sits on
+ * this dark veil, so it reads at 4.5:1 on the lightest pad colour (2.2:1 before, at 70 % white).
+ */
+val PadWordScrim = Color.Black.copy(alpha = 0.55f)

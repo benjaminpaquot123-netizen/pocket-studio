@@ -31,7 +31,7 @@
   "Base plus aiguë": "ルートを上げる",
   "Base plus grave": "ルートを下げる",
   "Bibliothèque de sons": "サウンドライブラリ",
-  "Bouge tout seul (courbe d'automation) : %s. Garde le doigt dessus pour le reprendre.": "自動で動いています（オートメーション）：%s。指で押さえていると手動で操作できます。",
+  "Bouge tout seul (courbe) : %s. Garde le doigt dessus pour le reprendre.": "自動で動いています（カーブ）：%s。指で押さえていると手動で操作できます。",
   "Caisse": "スネア",
   "Caisse 2": "スネア 2",
   "Calé au tempo : %d temps à %d BPM, sans changer la hauteur": "テンポに合わせる：%d 拍・%d BPM、ピッチはそのまま",

@@ -31,7 +31,7 @@
   "Base plus aiguë": "Higher root",
   "Base plus grave": "Lower root",
   "Bibliothèque de sons": "Sound library",
-  "Bouge tout seul (courbe d'automation) : %s. Garde le doigt dessus pour le reprendre.": "Moves on its own (automation curve): %s. Keep your finger on it to take over.",
+  "Bouge tout seul (courbe) : %s. Garde le doigt dessus pour le reprendre.": "Moves on its own (curve): %s. Keep your finger on it to take over.",
   "Caisse": "Snare",
   "Caisse 2": "Snare 2",
   "Calé au tempo : %d temps à %d BPM, sans changer la hauteur": "Fit to tempo: %d beats at %d BPM, pitch unchanged",

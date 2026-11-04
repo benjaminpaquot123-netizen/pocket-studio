@@ -31,7 +31,7 @@
   "Base plus aiguë": "根音升高",
   "Base plus grave": "根音降低",
   "Bibliothèque de sons": "音色库",
-  "Bouge tout seul (courbe d'automation) : %s. Garde le doigt dessus pour le reprendre.": "自动移动（自动化曲线）：%s。按住它就能接手控制。",
+  "Bouge tout seul (courbe) : %s. Garde le doigt dessus pour le reprendre.": "自动移动（曲线）：%s。按住它就能接手控制。",
   "Caisse": "军鼓",
   "Caisse 2": "军鼓 2",
   "Calé au tempo : %d temps à %d BPM, sans changer la hauteur": "对齐速度：%d 拍 @ %d BPM，音高不变",

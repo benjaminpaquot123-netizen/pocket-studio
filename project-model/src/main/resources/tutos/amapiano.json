@@ -156,7 +156,7 @@
         {
           "id": "lead_delay",
           "levels": "p",
-          "text": "À toi : au Mixeur, sur la piste « Mélodie », monte « Envoi écho » : les notes se répètent dans les trous.",
+          "text": "À toi : dans Mix, sur la piste « Mélodie », monte « Envoi écho » : les notes se répètent dans les trous.",
           "check": "send:1",
           "spot": "mixer.strip",
           "target": "lead",
@@ -330,7 +330,7 @@
         {
           "id": "reverb",
           "levels": "p",
-          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur la piste « Accords ». Garde le kick, les percussions et le log drum secs.",
+          "text": "À toi : dans Mix, monte « Envoi réverbe » sur la piste « Accords ». Garde le kick, les percussions et le log drum secs.",
           "check": "send:0",
           "spot": "mixer.strip",
           "target": "pad",
@@ -347,7 +347,7 @@
         {
           "id": "levels",
           "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords ».",
-          "textPro": "À toi : au Mixeur, baisse un peu le fader des Accords.",
+          "textPro": "À toi : dans Mix, baisse un peu le fader des Accords.",
           "check": "changed:volumes:pad",
           "spot": "mixer.strip",
           "target": "pad",

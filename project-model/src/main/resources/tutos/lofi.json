@@ -320,7 +320,7 @@
         {
           "id": "reverb",
           "levels": "p",
-          "text": "À toi : au Mixeur, sur la piste « Accords », monte « Envoi réverbe ».",
+          "text": "À toi : dans Mix, sur la piste « Accords », monte « Envoi réverbe ».",
           "check": "send:0",
           "spot": "mixer.strip",
           "target": "pad",
@@ -356,7 +356,7 @@
         {
           "id": "levels",
           "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
-          "textPro": "À toi : au Mixeur, baisse un peu « Accords » et « Mélodie » : en lo-fi tout est doux, rien ne dépasse.",
+          "textPro": "À toi : dans Mix, baisse un peu « Accords » et « Mélodie » : en lo-fi tout est doux, rien ne dépasse.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
           "target": "pad",

@@ -179,7 +179,7 @@
         },
         {
           "id": "bass_pump",
-          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste Sub, puis sur la piste Basse : elles se baissent à chaque kick (sidechain).",
+          "text": "À toi : dans Mix, mets l'effet « Pompe » sur la piste Sub, puis sur la piste Basse : elles se baissent à chaque kick (sidechain).",
           "check": "insert:PUMP",
           "spot": "mixer.strip",
           "target": "sub,bass",
@@ -232,7 +232,7 @@
         {
           "id": "lead_delay",
           "levels": "p",
-          "text": "À toi : au Mixeur, sur la piste « Mélodie », monte « Envoi écho » : chaque note se répète en rythme et la boucle s'élargit.",
+          "text": "À toi : dans Mix, sur la piste « Mélodie », monte « Envoi écho » : chaque note se répète en rythme et la boucle s'élargit.",
           "check": "send:1",
           "spot": "mixer.strip",
           "target": "lead",
@@ -452,7 +452,7 @@
         {
           "id": "reverb",
           "levels": "p",
-          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur le pad « Clap », puis sur la piste « Accords ». Une réverbe un peu sale, pas trop longue : celle des disques de 1990.",
+          "text": "À toi : dans Mix, monte « Envoi réverbe » sur le pad « Clap », puis sur la piste « Accords ». Une réverbe un peu sale, pas trop longue : celle des disques de 1990.",
           "check": "send:0",
           "spot": "mixer.strip",
           "target": "clap,pad",
@@ -486,7 +486,7 @@
         {
           "id": "levels",
           "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ».",
-          "textPro": "À toi : au Mixeur, baisse un peu le fader des Accords et celui de la Mélodie.",
+          "textPro": "À toi : dans Mix, baisse un peu le fader des Accords et celui de la Mélodie.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
           "target": "pad",

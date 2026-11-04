@@ -213,7 +213,7 @@
         {
           "id": "lead_delay",
           "levels": "p",
-          "text": "À toi : au Mixeur, sur la piste « Mélodie », monte « Envoi écho » : les syllabes rebondissent en croches.",
+          "text": "À toi : dans Mix, sur la piste « Mélodie », monte « Envoi écho » : les syllabes rebondissent en croches.",
           "check": "send:1",
           "spot": "mixer.strip",
           "target": "lead",
@@ -380,7 +380,7 @@
         {
           "id": "reverb",
           "levels": "p",
-          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur la piste « Accords », puis sur le pad « Rim ».",
+          "text": "À toi : dans Mix, monte « Envoi réverbe » sur la piste « Accords », puis sur le pad « Rim ».",
           "check": "send:0",
           "spot": "mixer.strip",
           "target": "pad,snare",
@@ -397,7 +397,7 @@
         {
           "id": "levels",
           "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords ».",
-          "textPro": "À toi : au Mixeur, baisse un peu le fader des Accords.",
+          "textPro": "À toi : dans Mix, baisse un peu le fader des Accords.",
           "check": "changed:volumes:pad",
           "spot": "mixer.strip",
           "target": "pad",

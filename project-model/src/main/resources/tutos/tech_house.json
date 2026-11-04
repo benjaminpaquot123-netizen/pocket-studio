@@ -167,7 +167,7 @@
         },
         {
           "id": "bass_pump",
-          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la Sub, puis sur la Basse.",
+          "text": "À toi : dans Mix, mets l'effet « Pompe » sur la Sub, puis sur la Basse.",
           "check": "insert:PUMP",
           "spot": "mixer.strip",
           "target": "sub,bass",
@@ -192,7 +192,7 @@
         {
           "id": "lead_ott",
           "levels": "p",
-          "text": "À toi : au Mixeur, mets l'effet « OTT multibande » sur la piste « Mélodie » : la voix devient criarde et dense, comme sur les disques.",
+          "text": "À toi : dans Mix, mets l'effet « OTT multibande » sur la piste « Mélodie » : la voix devient criarde et dense, comme sur les disques.",
           "check": "insert:OTT",
           "spot": "mixer.strip",
           "target": "lead",
@@ -428,7 +428,7 @@
         {
           "id": "reverb",
           "levels": "p",
-          "text": "À toi : au Mixeur, monte un peu « Envoi réverbe » sur le pad « Clap ».",
+          "text": "À toi : dans Mix, monte un peu « Envoi réverbe » sur le pad « Clap ».",
           "check": "send:0",
           "spot": "mixer.strip",
           "target": "clap",
@@ -445,7 +445,7 @@
         {
           "id": "levels",
           "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords ».",
-          "textPro": "À toi : au Mixeur, baisse un peu le fader des Accords.",
+          "textPro": "À toi : dans Mix, baisse un peu le fader des Accords.",
           "check": "changed:volumes:pad",
           "spot": "mixer.strip",
           "target": "pad",

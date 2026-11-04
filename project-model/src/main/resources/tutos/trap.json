@@ -175,7 +175,7 @@
         {
           "id": "bass_pump",
           "levels": "p",
-          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste 808 : elle se baisse une fraction de seconde à chaque kick (le sidechain). Le kick claque, la 808 tremble juste après.",
+          "text": "À toi : dans Mix, mets l'effet « Pompe » sur la piste 808 : elle se baisse une fraction de seconde à chaque kick (le sidechain). Le kick claque, la 808 tremble juste après.",
           "check": "insert:PUMP",
           "spot": "mixer.strip",
           "target": "bass",
@@ -385,7 +385,7 @@
         {
           "id": "reverb",
           "levels": "p",
-          "text": "À toi : au Mixeur, touche le nom de la piste « Accords », puis dans « Réverbe et écho », monte « Envoi réverbe ». Fais pareil sur la tranche du pad « Clap ».",
+          "text": "À toi : dans Mix, touche le nom de la piste « Accords », puis dans « Réverbe et écho », monte « Envoi réverbe ». Fais pareil sur la tranche du pad « Clap ».",
           "check": "send:0",
           "spot": "mixer.strip",
           "target": "pad,clap",
@@ -394,7 +394,7 @@
         {
           "id": "delay",
           "levels": "p",
-          "text": "À toi : au Mixeur, sur la piste « Mélodie », monte « Envoi écho » : chaque note de cloche se répète, comme dans les beats de Metro Boomin.",
+          "text": "À toi : dans Mix, sur la piste « Mélodie », monte « Envoi écho » : chaque note de cloche se répète, comme dans les beats de Metro Boomin.",
           "check": "send:1",
           "spot": "mixer.strip",
           "target": "lead",
@@ -411,7 +411,7 @@
         {
           "id": "levels",
           "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
-          "textPro": "À toi : au Mixeur, baisse un peu les faders « Accords » et « Mélodie » : le kick et la 808 devant, les cordes loin derrière.",
+          "textPro": "À toi : dans Mix, baisse un peu les faders « Accords » et « Mélodie » : le kick et la 808 devant, les cordes loin derrière.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
           "target": "pad",

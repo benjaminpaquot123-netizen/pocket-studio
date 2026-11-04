@@ -808,11 +808,11 @@ private fun TimelineHelp(close: () -> Unit) {
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.testTag("timeline_help_text")) {
                 listOf(
-                    tr("Toucher un clip : couper ou remettre la piste dans cette partie."),
-                    tr("Deux touches sur un clip : l'ouvrir dans son éditeur, sur cette partie."),
+                    tr("Toucher une case : couper ou remettre la piste dans cette partie."),
+                    tr("Deux touches sur une case : l'ouvrir dans son éditeur, sur cette partie."),
                     tr("Toucher le nom d'une piste : changer son son (le kit pour la batterie)."),
                     tr("Appui long sur un drapeau de partie : sa feuille (Fill, Break, Montée…)."),
-                    tr("Appui long sur un clip : l'ouvrir, changer de partie, répéter, couper, dupliquer."),
+                    tr("Appui long sur une case : l'ouvrir, changer de partie, répéter, couper, dupliquer."),
                     tr("Toucher la règle : jouer depuis cette partie."),
                     tr("Appui long puis glisser : sur un drapeau, déplacer la partie ; sur les mesures, boucler."),
                     tr("Deux doigts : zoomer. Un doigt qui fait défiler arrête « Suivre », Lecture le remet."),

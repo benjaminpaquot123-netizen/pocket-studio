@@ -471,7 +471,13 @@ private fun FixButton(text: String, tag: String, onClick: () -> Unit, outlined: 
     if (outlined) {
         OutlinedButton(onClick = onClick, modifier = Modifier.heightIn(min = 48.dp).testTag(tag)) { Text(text, maxLines = 1) }
     } else {
-        androidx.compose.material3.FilledTonalButton(onClick = onClick, modifier = Modifier.heightIn(min = 48.dp).testTag(tag)) { Text(text, maxLines = 1) }
+        // Audit stage 5 (one main action per screen): a fix is outlined in the accent, never filled
+        // like « Partager » (the tonal button wore the same orange: three orange buttons, which first?).
+        OutlinedButton(
+            onClick = onClick, modifier = Modifier.heightIn(min = 48.dp).testTag(tag),
+            border = androidx.compose.foundation.BorderStroke(1.5.dp, Neon.Cyan),
+            colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(contentColor = Neon.Cyan),
+        ) { Text(text, maxLines = 1) }
     }
 }
 

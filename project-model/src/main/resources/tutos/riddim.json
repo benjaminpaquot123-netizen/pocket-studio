@@ -179,7 +179,7 @@
         },
         {
           "id": "sub_tremolo",
-          "text": "À toi : au Mixeur, mets l'effet « Trémolo » sur la piste Sub : son volume monte et descend en rythme, et le grave hache avec la basse.",
+          "text": "À toi : dans Mix, mets l'effet « Trémolo » sur la piste Sub : son volume monte et descend en rythme, et le grave hache avec la basse.",
           "check": "insert:TREMOLO",
           "spot": "mixer.strip",
           "target": "sub",
@@ -187,7 +187,7 @@
         },
         {
           "id": "bass_pump",
-          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste Basse : elle se baisse à chaque kick (sidechain), le « clac » passe devant.",
+          "text": "À toi : dans Mix, mets l'effet « Pompe » sur la piste Basse : elle se baisse à chaque kick (sidechain), le « clac » passe devant.",
           "check": "insert:PUMP",
           "spot": "mixer.strip",
           "target": "bass",
@@ -434,7 +434,7 @@
         },
         {
           "id": "reverb",
-          "text": "À toi : au Mixeur, touche le nom de la piste « Accords », puis dans « Réverbe et écho », monte « Envoi réverbe ». Fais pareil sur la tranche du pad « Caisse ». En riddim, le clap et la nappe ont de la réverbe ; la basse reste sèche au milieu.",
+          "text": "À toi : dans Mix, touche le nom de la piste « Accords », puis dans « Réverbe et écho », monte « Envoi réverbe ». Fais pareil sur la tranche du pad « Caisse ». En riddim, le clap et la nappe ont de la réverbe ; la basse reste sèche au milieu.",
           "levels": "p",
           "check": "send:0",
           "spot": "mixer.strip",
@@ -443,7 +443,7 @@
         },
         {
           "id": "delay",
-          "text": "À toi : au Mixeur, touche le nom de la piste Basse, puis monte « Envoi écho » : la basse rebondit sur les côtés, large, pendant que le centre reste net. Fais pareil sur la tranche du pad « Clap ».",
+          "text": "À toi : dans Mix, touche le nom de la piste Basse, puis monte « Envoi écho » : la basse rebondit sur les côtés, large, pendant que le centre reste net. Fais pareil sur la tranche du pad « Clap ».",
           "why": "Les échos larges sur la basse sont une signature du riddim.",
           "levels": "p",
           "check": "send:1",
@@ -478,7 +478,7 @@
         {
           "id": "levels",
           "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
-          "textPro": "À toi : au Mixeur, baisse un peu le fader de la piste « Accords » : la nappe doit rester une ombre.",
+          "textPro": "À toi : dans Mix, baisse un peu le fader de la piste « Accords » : la nappe doit rester une ombre.",
           "check": "changed:volumes:pad",
           "spot": "mixer.strip",
           "target": "pad",

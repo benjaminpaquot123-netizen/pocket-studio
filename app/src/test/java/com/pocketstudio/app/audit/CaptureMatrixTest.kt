@@ -66,6 +66,9 @@ abstract class CaptureMatrixTest(private val case: Case, private val checks: Set
 
     companion object {
         const val PSEUDO = "pseudo"
+
+        /** Images only when recording: under verify there is no committed image to compare with (they would all fail). */
+        val RECORDING: Boolean get() = System.getProperty("roborazzi.test.record") == "true"
         val LANGS = Lang.entries.map { it.code } + PSEUDO
         val FONTS = listOf("1.0", "1.3")
 
@@ -124,6 +127,7 @@ abstract class CaptureMatrixTest(private val case: Case, private val checks: Set
                 override val fontScale = font
                 override val findings = mutableListOf<LayoutScan.Finding>()
                 override fun inspect(name: String) { findings += scanNow(checks) }
+                override val keepImage get() = RECORDING
             } else object : ScreenshotTest(), Audited {
                 override val prefix = prefix
                 override fun wanted(name: String) = true
@@ -133,6 +137,7 @@ abstract class CaptureMatrixTest(private val case: Case, private val checks: Set
                 override val fontScale = font
                 override val findings = mutableListOf<LayoutScan.Finding>()
                 override fun inspect(name: String) { findings += scanNow(checks) }
+                override val keepImage get() = RECORDING
             }
         }
 

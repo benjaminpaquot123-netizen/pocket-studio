@@ -747,7 +747,7 @@ private fun MoveSceneDialog(from: Int, to: Int, ui: SessionScreenUi, onChoose: (
         title = { Text(tr("Déplacer %s sur %s", ui.title(from), ui.title(to))) },
         text = {
             Text(
-                tr("La partie %s n'est pas vide.", Scene.NAMES[to]) + " " + tr("La remplacer efface aussi son automation et ses prises audio (Annuler les rend)."),
+                tr("La partie %s n'est pas vide.", Scene.NAMES[to]) + " " + tr("La remplacer efface aussi ses courbes et ses prises audio (Annuler les rend)."),
                 style = MaterialTheme.typography.bodyMedium,
             )
         },

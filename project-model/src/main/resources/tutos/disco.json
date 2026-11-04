@@ -181,7 +181,7 @@
         {
           "id": "lead_reverb",
           "levels": "p",
-          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur la piste « Mélodie » : les cordes remplissent la salle.",
+          "text": "À toi : dans Mix, monte « Envoi réverbe » sur la piste « Mélodie » : les cordes remplissent la salle.",
           "check": "send:0",
           "spot": "mixer.strip",
           "target": "lead",
@@ -341,7 +341,7 @@
         {
           "id": "reverb",
           "levels": "p",
-          "text": "À toi : au Mixeur, monte un peu « Envoi réverbe » sur le pad « Caisse » : une plaque courte, comme en 1978.",
+          "text": "À toi : dans Mix, monte un peu « Envoi réverbe » sur le pad « Caisse » : une plaque courte, comme en 1978.",
           "check": "send:0",
           "spot": "mixer.strip",
           "target": "snare",
@@ -358,7 +358,7 @@
         {
           "id": "levels",
           "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie » (les cordes).",
-          "textPro": "À toi : au Mixeur, baisse un peu le fader des cordes.",
+          "textPro": "À toi : dans Mix, baisse un peu le fader des cordes.",
           "check": "changed:volumes:lead",
           "spot": "mixer.strip",
           "target": "lead",

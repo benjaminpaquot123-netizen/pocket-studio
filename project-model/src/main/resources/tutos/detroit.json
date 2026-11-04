@@ -385,7 +385,7 @@
         },
         {
           "id": "reverb",
-          "text": "À toi : au Mixeur, monte « Envoi réverbe » sur la tranche du pad « Caisse ».",
+          "text": "À toi : dans Mix, monte « Envoi réverbe » sur la tranche du pad « Caisse ».",
           "levels": "p",
           "check": "send:0",
           "spot": "mixer.strip",
@@ -414,7 +414,7 @@
         {
           "id": "levels",
           "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie », puis celui de la piste « Accords ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
-          "textPro": "À toi : au Mixeur, baisse un peu le curseur de la piste « Mélodie », puis celui de la piste « Accords ».",
+          "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Mélodie », puis celui de la piste « Accords ».",
           "check": "changed:volumes:lead,pad",
           "spot": "mixer.strip",
           "target": "lead",

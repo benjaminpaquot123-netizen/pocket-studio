@@ -206,7 +206,7 @@
         },
         {
           "id": "bass_pump",
-          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste Sub, puis sur la piste Basse : elles se baissent à chaque kick (sidechain). C'est surtout la Sub qui se bat avec le kick dans le grave.",
+          "text": "À toi : dans Mix, mets l'effet « Pompe » sur la piste Sub, puis sur la piste Basse : elles se baissent à chaque kick (sidechain). C'est surtout la Sub qui se bat avec le kick dans le grave.",
           "check": "insert:PUMP",
           "spot": "mixer.strip",
           "target": "sub,bass",
@@ -232,7 +232,7 @@
         },
         {
           "id": "pad_chorus",
-          "text": "À toi : au Mixeur, mets l'effet « Chorus » sur la piste « Accords » : le piano ondule doucement, comme un vieux Rhodes.",
+          "text": "À toi : dans Mix, mets l'effet « Chorus » sur la piste « Accords » : le piano ondule doucement, comme un vieux Rhodes.",
           "levels": "p",
           "check": "insert:CHORUS",
           "spot": "mixer.strip",
@@ -264,7 +264,7 @@
         },
         {
           "id": "lead_echo",
-          "text": "À toi : au Mixeur, touche le nom de la piste « Mélodie », puis monte « Envoi écho » : chaque note de cloche se répète, comme des gouttes.",
+          "text": "À toi : dans Mix, touche le nom de la piste « Mélodie », puis monte « Envoi écho » : chaque note de cloche se répète, comme des gouttes.",
           "levels": "p",
           "check": "send:1",
           "spot": "mixer.strip",
@@ -485,7 +485,7 @@
         },
         {
           "id": "reverb",
-          "text": "À toi : au Mixeur, touche le nom de la piste « Accords », puis dans « Réverbe et écho », monte « Envoi réverbe ». Fais pareil sur la tranche du pad « Caisse ». En liquid, la réverbe est sur la musique, à peine sur la batterie : le piano flotte, la batterie reste nette.",
+          "text": "À toi : dans Mix, touche le nom de la piste « Accords », puis dans « Réverbe et écho », monte « Envoi réverbe ». Fais pareil sur la tranche du pad « Caisse ». En liquid, la réverbe est sur la musique, à peine sur la batterie : le piano flotte, la batterie reste nette.",
           "levels": "p",
           "check": "send:0",
           "spot": "mixer.strip",
@@ -519,7 +519,7 @@
         {
           "id": "levels",
           "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie », puis celui de la piste « Accords ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
-          "textPro": "À toi : au Mixeur, baisse un peu le fader de la cloche (« Mélodie ») et celui du piano (« Accords »), juste assez pour que la basse respire.",
+          "textPro": "À toi : dans Mix, baisse un peu le fader de la cloche (« Mélodie ») et celui du piano (« Accords »), juste assez pour que la basse respire.",
           "check": "changed:volumes:lead,pad",
           "spot": "mixer.strip",
           "target": "lead",

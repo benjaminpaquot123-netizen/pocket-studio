@@ -177,7 +177,7 @@
         {
           "id": "bass_pump",
           "levels": "p",
-          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste Basse : elle se baisse à chaque kick et respire avec lui, comme sur les disques du style.",
+          "text": "À toi : dans Mix, mets l'effet « Pompe » sur la piste Basse : elle se baisse à chaque kick et respire avec lui, comme sur les disques du style.",
           "check": "insert:PUMP",
           "spot": "mixer.strip",
           "target": "bass",
@@ -445,7 +445,7 @@
         {
           "id": "gated_reverb",
           "levels": "p",
-          "text": "À toi : au Mixeur, sur le pad « Caisse », ajoute l'effet « Réverbe » (Taille vers 75 %, Mélange vers 45 %) : la caisse résonne comme dans un hangar.",
+          "text": "À toi : dans Mix, sur le pad « Caisse », ajoute l'effet « Réverbe » (Taille vers 75 %, Mélange vers 45 %) : la caisse résonne comme dans un hangar.",
           "check": "insert:REVERB",
           "spot": "mixer.strip",
           "target": "snare",
@@ -464,7 +464,7 @@
         {
           "id": "delay",
           "levels": "p",
-          "text": "À toi : au Mixeur, monte « Envoi écho » sur la piste « Mélodie » : chaque note se répète en rythme, comme sur les disques du style.",
+          "text": "À toi : dans Mix, monte « Envoi écho » sur la piste « Mélodie » : chaque note se répète en rythme, comme sur les disques du style.",
           "check": "send:1",
           "spot": "mixer.strip",
           "target": "lead",

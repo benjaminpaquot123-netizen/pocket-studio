@@ -209,7 +209,7 @@
         },
         {
           "id": "bass_pump",
-          "text": "À toi : au Mixeur, mets l'effet « Pompe » sur la piste Sub, puis sur la piste Basse : elles se baissent à chaque kick (sidechain). C'est surtout la Sub qui se bat avec le kick dans le grave.",
+          "text": "À toi : dans Mix, mets l'effet « Pompe » sur la piste Sub, puis sur la piste Basse : elles se baissent à chaque kick (sidechain). C'est surtout la Sub qui se bat avec le kick dans le grave.",
           "check": "insert:PUMP",
           "spot": "mixer.strip",
           "target": "sub,bass",
@@ -258,7 +258,7 @@
         },
         {
           "id": "lead_echo",
-          "text": "À toi : au Mixeur, touche le nom de la piste « Mélodie », puis monte « Envoi écho » : chaque note se répète en rythme, le riff paraît plus large.",
+          "text": "À toi : dans Mix, touche le nom de la piste « Mélodie », puis monte « Envoi écho » : chaque note se répète en rythme, le riff paraît plus large.",
           "levels": "p",
           "check": "send:1",
           "spot": "mixer.strip",
@@ -480,7 +480,7 @@
         },
         {
           "id": "reverb",
-          "text": "À toi : au Mixeur, touche le nom de la piste « Accords », puis dans « Réverbe et écho », monte « Envoi réverbe ». Fais pareil sur la tranche du pad « Caisse ». Une réverbe courte sur la caisse : elle claque plus large sans traîner.",
+          "text": "À toi : dans Mix, touche le nom de la piste « Accords », puis dans « Réverbe et écho », monte « Envoi réverbe ». Fais pareil sur la tranche du pad « Caisse ». Une réverbe courte sur la caisse : elle claque plus large sans traîner.",
           "levels": "p",
           "check": "send:0",
           "spot": "mixer.strip",
@@ -514,7 +514,7 @@
         {
           "id": "levels",
           "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
-          "textPro": "À toi : au Mixeur, baisse un peu le fader de la piste « Accords » et celui de la piste « Mélodie ».",
+          "textPro": "À toi : dans Mix, baisse un peu le fader de la piste « Accords » et celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
           "target": "pad",

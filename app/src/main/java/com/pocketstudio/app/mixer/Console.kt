@@ -107,7 +107,7 @@ internal fun Console(
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Row(Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(tr("Console"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.weight(1f))
+            Text(tr("Volumes"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.weight(1f))
             HelpDot(Glossary.MUTE_SOLO)
         }
         if (faderHeight >= CONSOLE_FADER_H) Text(

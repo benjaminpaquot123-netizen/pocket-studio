@@ -1,91 +1,126 @@
 {
-  "id": "lot2-retours-audit35",
-  "milestone": "Lot 2 : Remix en vitrine, tablette à 130 %, pan du kick protégé",
+  "id": "ultra-0",
+  "milestone": "Audit ultra : la liste du téléphone (chaque point finit par un chiffre ou une capture à recopier)",
   "items": [
     {
-      "id": "launch_choice",
-      "title": "« Que veux-tu faire ? »",
-      "hint": "Ferme l'appli, attends 30 min (ou redémarre le téléphone), rouvre-la : « Continuer » en grand, « Nouveau morceau », « Mes projets », « Remixer une chanson ». Rien ne joue avant ton choix ; le geste retour vaut « Continuer »."
+      "id": "padlive_chrono",
+      "title": "Pad Live chronométré",
+      "hint": "Depuis « Que veux-tu faire ? », touche Pad Live avec un chrono. À recopier : les secondes jusqu'au premier son (visé : moins de 5) et jusqu'au premier rythme qui tourne (visé : moins de 30)."
     },
     {
-      "id": "zero_projects",
-      "title": "Zéro projet",
-      "hint": "Mes projets : supprime tous les projets, vide la corbeille. L'écran dit « Aucun projet pour l'instant » ; « Que veux-tu faire ? » n'a plus de « Continuer »."
+      "id": "oboetester",
+      "title": "OboeTester : 1, 2 et 4 rafales",
+      "hint": "Dans OboeTester, mesure la latence en sortie à 1, 2 puis 4 rafales (guide envoyé avec l'APK). À recopier : les trois latences en millisecondes et le nombre de glitchs de chacune."
     },
     {
-      "id": "bug_report",
-      "title": "Signaler un bug",
-      "hint": "Appui long sur « ? » (ou ⋯ › Signaler un bug en Mode simple) : écris une phrase, regarde « Ce qui sera envoyé » (« 1 erreur » au singulier), puis Partager. Rien ne part tout seul."
+      "id": "bt_live",
+      "title": "Casque Bluetooth pendant le Live",
+      "hint": "Lance le Live, connecte le casque Bluetooth, joue 1 min, déconnecte-le, joue encore. À recopier : les « Décrochages audio » de l'écran Recette avant et après (Plus › Son), et si le son a coupé (oui ou non)."
     },
     {
-      "id": "export_steps",
-      "title": "Les étapes de l'export",
-      "hint": "⤴ › M4A › Partager sur un long morceau (Jump up) : la boîte dit chaque étape (« Compression M4A », « Vérification », parfois « Réglage du volume final 2/3 ») avec une barre, « Annuler » marche, et ça ne reste jamais bloqué."
+      "id": "usb_headset",
+      "title": "Casque USB-C",
+      "hint": "Branche un casque USB-C pendant la lecture, puis débranche-le. À recopier : les « Décrochages audio » de l'écran Recette avant et après."
     },
     {
-      "id": "remix_two",
-      "title": "Le Remix en deux gestes",
-      "hint": "Depuis « Que veux-tu faire ? » : « Remixer une chanson » (1 toucher). Depuis n'importe quel espace : Sons › « Remix » (2). Mode simple : ⋯ › « Remixer une chanson » (2), « ← Mon morceau » pour revenir. Sépare une chanson de ton téléphone."
+      "id": "call_take",
+      "title": "Appel pendant une prise",
+      "hint": "Enregistre au micro, fais-toi appeler, raccroche. À recopier : une capture de la piste après l'appel (la prise est gardée ?) et les « Décrochages audio » de l'écran Recette."
     },
     {
-      "id": "kick_pan",
-      "title": "Le kick reste au centre",
-      "hint": "Sons › Batterie : fais plusieurs gestes retour depuis le bord gauche, à la hauteur de « Pan du pad ». Le kick reste au centre (aucun « G 100 » sur le pad). Puis glisse le rond du pan : « G 30 » s'affiche sur le pad ; deux touches sur le curseur le remettent au centre."
+      "id": "screen_off",
+      "title": "10 min écran éteint",
+      "hint": "Lance un morceau, éteins l'écran 10 min, rallume. À recopier : le temps écoulé affiché sur la barre de lecture et les « Décrochages audio » de l'écran Recette."
     },
     {
-      "id": "tablet_130",
-      "title": "Tablette à 130 %",
-      "hint": "Galaxy Tab, Réglages › Taille de l'interface 130 %, debout puis couchée : « Que veux-tu faire ? », la feuille d'un pad, « Prêt à partager ? », la boîte d'export et Signaler un bug sont à la même taille que l'écran derrière."
+      "id": "battery_saver",
+      "title": "Économie de batterie en lecture",
+      "hint": "Active l'économie de batterie pendant la lecture, écoute 2 min. À recopier : les « Décrochages audio » de l'écran Recette avant et après,."
     },
     {
-      "id": "tablet_keys",
-      "title": "Clavier sur la tablette couchée",
-      "hint": "Tablette couchée, 100 % puis 130 %, Mode simple › Clavier : ● Enregistrer ma mélodie, joue, ■. Le clavier reste entier, la carte de la prise (Garder, Remettre en rythme, Refaire) est à côté."
+      "id": "two_hours_bt",
+      "title": "Le projet de 2 h au casque Bluetooth",
+      "hint": "Ouvre le plus long projet, écoute-le en entier au casque Bluetooth (tu peux faire autre chose). À recopier : la durée écoutée en minutes et les « Décrochages audio » de l'écran Recette à la fin."
     },
     {
-      "id": "tablet_pads",
-      "title": "Pads sur la tablette couchée",
-      "hint": "Tablette couchée, Sons › Batterie : les 4 rangées de pads et « Kit ▾ » tiennent sans défiler."
+      "id": "live_30_bt",
+      "title": "30 min de Live au casque Bluetooth",
+      "hint": "Joue 30 min de Live au casque Bluetooth. À recopier : le pourcentage de batterie avant et après, et si le téléphone est chaud (oui ou non)."
     },
     {
-      "id": "simple_melody",
-      "title": "Ma mélodie dans « Mélodie »",
-      "hint": "Mode simple › Clavier : la puce « Mélodie » est choisie d'office ; la prise y va (pas dans « Synthé »). La ligne dit « Tu as 4 mesures pour jouer ta mélodie »."
+      "id": "separate_4min",
+      "title": "Séparer une chanson de 4 min",
+      "hint": "Remix › une chanson de 4 min, éteins l'écran pendant la séparation. À recopier : la durée en minutes, si le téléphone a chauffé (oui ou non), et une capture des 4 pistes à la fin."
     },
     {
-      "id": "help_labels",
-      "title": "Les « ? » lisibles",
-      "hint": "Touche « ? » sur Mon morceau, Mix et Live : aucune étiquette ne se pose sur un autre bouton ; « Masquer les étiquettes » et « Signaler un bug » sont en bas."
+      "id": "generate_sound",
+      "title": "Générer un son",
+      "hint": "Voix › Générer : un son de 5 s. À recopier : la durée en secondes jusqu'au son prêt."
     },
     {
-      "id": "kits_808",
-      "title": "Kits Trap et Drill",
-      "hint": "Sons › Batterie › « Kit ▾ » : « Trap (808) » et « Drill (808) » sans téléchargement ; la 808 joue sur le pad « Kick 2 » et glisse. Annuler remet l'ancien kit."
+      "id": "perfetto",
+      "title": "Une trace Perfetto",
+      "hint": "Suis le guide « Trace Perfetto » envoyé avec l'APK pendant 30 s de Live. À recopier : le nom du fichier de trace envoyé."
     },
     {
-      "id": "briques",
-      "title": "Briques et parties",
-      "hint": "Structure › Parties : la liste du morceau s'appelle « Parties », la grille A à H « Briques » (aussi dans le Lexique)."
+      "id": "stretch",
+      "title": "Boucle et chanson étirées",
+      "hint": "Change le tempo d'un morceau avec une boucle et une chanson du Remix, de 120 à 128. À recopier : une note sur 5 pour le son étiré, et une capture si quelque chose grésille."
     },
     {
-      "id": "wizard_words",
-      "title": "L'assistant en mots simples",
-      "hint": "Nouveau morceau guidé : « Étape 1 : choisis un style » (sans « sur 13 »), puis plus de « Gamme Fa phrygienne » sous les ambiances (« Pour les curieux » les montre) et un vrai bouton « Créer tout de suite avec les choix conseillés »."
+      "id": "voice_notes",
+      "title": "La voix en notes",
+      "hint": "Remix › Voix en notes sur une chanson chantée. À recopier : une note sur 5 pour la justesse."
     },
     {
-      "id": "live_full",
-      "title": "Pads live plein écran",
-      "hint": "Live › Pads › Plein écran, tablette debout et téléphone : « Tout couper » a son mot à côté de REC."
+      "id": "masters",
+      "title": "Masters Spotify et club",
+      "hint": "Exporte un de tes morceaux en master Spotify puis en master club. À recopier : les deux volumes en LUFS affichés sous l'export."
     },
     {
-      "id": "song_sound",
-      "title": "Le son (à l'oreille)",
-      "hint": "Crée un morceau Techno puis Trap et écoute du début à la fin : rien ne baisse tout seul, la Montée monte, le Drop frappe, la 808 glisse."
+      "id": "tablet",
+      "title": "Un passage sur la tablette",
+      "hint": "Sur la tablette couchée : Live (briques et pads côte à côte), Découper la chanson (Structure à droite), Pad Live couché, dix doigts sur les pads. À recopier : une capture de chaque écran."
     },
     {
-      "id": "headphones",
-      "title": "Casque et Bluetooth",
-      "hint": "Branche puis débranche un casque pendant la lecture : le son passe de l'un à l'autre sans planter ; le rapport de bug dit la sortie."
+      "id": "keyboard",
+      "title": "Clavier physique",
+      "hint": "Branche un clavier : espace (lecture), Ctrl+Z, Ctrl+Maj+Z. À recopier : le nombre de raccourcis qui marchent, sur 3."
+    },
+    {
+      "id": "rotation",
+      "title": "Rotation en pleine lecture",
+      "hint": "Tourne le téléphone, puis passe en écran partagé, pendant la lecture. À recopier : les « Décrochages audio » de l'écran Recette, et si la musique a continué (oui ou non)."
+    },
+    {
+      "id": "challenge",
+      "title": "Un défi « refais ce rythme »",
+      "hint": "Pad Live › Défi. À recopier : le nombre d'étoiles obtenu."
+    },
+    {
+      "id": "colour_correction",
+      "title": "Correction des couleurs d'Android",
+      "hint": "Réglages d'Android › Accessibilité › Correction des couleurs, chaque mode 2 min sur le Pad Live qui joue. À recopier : une capture par mode (les pads qui jouent se distinguent-ils ?)."
+    },
+    {
+      "id": "export_zip",
+      "title": "Exporter tes projets en .zip",
+      "hint": "Avant le passage au Play Store : Mes projets › chaque projet › Envoyer en .zip, garde-les sur ton ordinateur. À recopier : le nombre de projets exportés."
+    },
+    {
+      "id": "minilab_take",
+      "title": "MiniLab débranché en pleine prise",
+      "hint": "Reporté à l'achat d'un clavier MIDI (décision du 2026-11-04) : ne rien faire pour l'instant. Plus tard : débrancher le MiniLab 3 pendant une prise, le rebrancher ; recopier les « Décrochages audio » de l'écran Recette."
+    },
+    {
+      "id": "minilab_acid",
+      "title": "Case Acid 303 au MiniLab",
+      "hint": "Reporté à l'achat d'un clavier MIDI (décision du 2026-11-04) : ne rien faire pour l'instant. Plus tard : enregistrer une case Acid 303 du Live au MiniLab 3 ; recopier une capture de la case."
+    },
+    {
+      "id": "minilab_lights",
+      "title": "Lumières des pads du MiniLab",
+      "hint": "Reporté à l'achat d'un clavier MIDI (décision du 2026-11-04) : ne rien faire pour l'instant. Plus tard : mode DAW, les pads s'allument comme à l'écran ; recopier une photo."
     }
   ]
 }

@@ -15,7 +15,7 @@ class CarteFonctionsTest {
     private val map = File("../docs/audits/CARTE-FONCTIONS.md").readText()
 
     /** The cells « VIDE » when the map was made (2026-11-03); lower it as they are filled, never raise it. */
-    private val emptyCellsAtMost = 40
+    private val emptyCellsAtMost = 25
 
     private fun rows(): List<List<String>> = map.lines()
         .filter { it.startsWith("| ") && !it.startsWith("| Fonction") && !it.startsWith("|---") }

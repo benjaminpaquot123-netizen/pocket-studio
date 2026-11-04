@@ -123,6 +123,8 @@ object I18n {
         "audit1z56",
         // Audit ultra round 1, zones 5 and 6 (team 4b): the tutorial's chapter end, kept sounds named and renamed.
         "audit1z56b",
+        // Audit ultra round 1, zone 1: the song's « Découper ce que je veux », the pad picker, the challenges' list.
+        "ultra1z1",
     )
 
     @Volatile

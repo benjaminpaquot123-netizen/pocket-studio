@@ -89,24 +89,36 @@ class RemixVoiceTest {
 
     @Test
     fun aCutNeverCoversAPadTheBeatPlays() {
-        // The kick (pad 1) plays in the drop only, the snare has a sound of its own, pad 4 an 808.
-        val drop = Scene("B", DrumPattern(steps = 16).toggle(0, 0))
+        // The tom (pad 9) plays in the drop only, pad 10 has a sound of its own, pad 12 an 808.
+        val drop = Scene("B", DrumPattern(steps = 16).toggle(8, 0))
         var p = Project(scenes = listOf(Scene("A", DrumPattern(steps = 16)), drop), scene = 0).sanitized()
-        p = p.copy(drums = p.drums.withSample(1, PadSample("a.wav", "Caisse")), padVoices = mapOf(3 to PadVoice(PadVoice.BASS_808)))
-        assertFalse("the kick plays in another scene", RemixVoice.padIsFree(p, 0))
-        assertFalse(RemixVoice.padIsFree(p, 1))
-        assertFalse(RemixVoice.padIsFree(p, 3))
-        assertTrue(RemixVoice.padIsFree(p, 2))
+        p = p.copy(drums = p.drums.withSample(9, PadSample("a.wav", "Caisse")), padVoices = mapOf(11 to PadVoice(PadVoice.BASS_808)))
+        assertFalse("the tom plays in another scene", RemixVoice.padIsFree(p, 8))
+        assertFalse(RemixVoice.padIsFree(p, 9))
+        assertFalse(RemixVoice.padIsFree(p, 11))
+        assertTrue(RemixVoice.padIsFree(p, 10))
         // The kick selected: the cut goes to the first free pad, not on it.
-        assertEquals(2, RemixVoice.padFor(p, 0))
+        assertEquals(10, RemixVoice.padFor(p, 0))
         // A free pad selected: that one.
-        assertEquals(9, RemixVoice.padFor(p, 9))
-        assertEquals((0 until 16).toList() - listOf(0, 1, 3), RemixVoice.freePads(p))
+        assertEquals(13, RemixVoice.padFor(p, 13))
+        assertEquals((10 until 16).toList() - listOf(11), RemixVoice.freePads(p))
         // Every pad used: no pad (the screen asks first).
         var full = p
         for (lane in 0 until 16) full = full.copy(drums = full.drums.toggle(lane, 4))
         assertNull(RemixVoice.padFor(full, 0))
         assertTrue(RemixVoice.freePads(full).isEmpty())
+    }
+
+    /**
+     * Audit ultra round 1, n° 2 (three testers): in a new project no pad is played yet, and « Sur les
+     * pads » took the Kick, Kick 2 and Caisse. The kit's first eight are never free: pad 9 first.
+     */
+    @Test
+    fun theKitsMainPadsAreNeverTakenEvenUnplayed() {
+        val p = Project().sanitized()
+        (0 until RemixVoice.SPARE_FROM).forEach { assertFalse("pad ${it + 1}", RemixVoice.padIsFree(p, it)) }
+        assertEquals(8, RemixVoice.padFor(p, 0))
+        assertEquals((8 until 16).toList(), RemixVoice.freePads(p))
     }
 
     @Test

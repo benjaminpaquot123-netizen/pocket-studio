@@ -205,8 +205,7 @@ class StemBoardRouter(
         }
         when (dest) {
             is StemDestination.Pad -> {
-                val lane = StemRouting.padFor(p, dest.pad)
-                    ?: return say(tr("Tous les pads ont déjà un son : choisis le pad à remplacer, ou vide-en un dans Batterie."))
+                val lane = StemRouting.padFor(p, dest.pad) ?: return ask(listOf(sel))
                 val name = StemRouting.nextName(p.drums.lanes.mapNotNull { it.sample?.name }, french)
                 val replaced = p.drums.lanes[lane].sample?.name
                 launchWork(tr("%s vers le pad…", label)) {
@@ -315,17 +314,8 @@ class StemBoardRouter(
         when (dest) {
             is StemDestination.Pad -> {
                 val free = StemRouting.freePads(p)
-                if (free.isEmpty()) return say(tr("Tous les pads ont déjà un son : vide un pad dans Batterie, puis recommence."))
-                val first = StemRouting.nextNumber(p.drums.lanes.mapNotNull { it.sample?.name }, french)
-                val placed = pieces.take(free.size)
-                launchWork(tr("%s vers les pads…", label)) {
-                    val cuts = placed.mapIndexedNotNull { k, sel -> cut(sel, fitted = true)?.let { PadCut(free[k], it, "$french ${first + k}") } }
-                    if (cuts.isEmpty()) return@launchWork null
-                    host.putOnPads(cuts)
-                    val left = pieces.size - placed.size
-                    trCount(cuts.size, "1 bout sur le pad %2\$s.", "%1\$d bouts sur les pads %2\$s.", cuts.size, StemRouting.padsText(cuts.map { it.lane })) +
-                        if (left > 0) " " + trCount(left, "Plus de pad libre pour le dernier bout.", "Plus de pad libre pour les %d derniers bouts.", left) else ""
-                }
+                if (free.isEmpty()) return ask(pieces)
+                putPiecesOn(pieces, free)
             }
             is StemDestination.Track -> {
                 val span = pieces.last().endFrame - pieces.first().startFrame
@@ -387,6 +377,39 @@ class StemBoardRouter(
             }
         }
     }
+
+    /** [pieces] (one stem) on [lanes] in order, one undo step; those past the last lane are said, not placed. */
+    private fun putPiecesOn(pieces: List<StemSelection>, lanes: List<Int>) {
+        val p = host.project()
+        val french = StemRouting.stemFrench(pieces.first().stem)
+        val label = StemRouting.stemLabel(pieces.first().stem)
+        val first = StemRouting.nextNumber(p.drums.lanes.mapNotNull { it.sample?.name }, french)
+        val placed = pieces.take(lanes.size)
+        launchWork(tr("%s vers les pads…", label)) {
+            val cuts = placed.mapIndexedNotNull { k, sel -> cut(sel, fitted = true)?.let { PadCut(lanes[k], it, "$french ${first + k}") } }
+            if (cuts.isEmpty()) return@launchWork null
+            host.putOnPads(cuts)
+            val left = pieces.size - placed.size
+            trCount(cuts.size, "1 bout sur le pad %2\$s.", "%1\$d bouts sur les pads %2\$s.", cuts.size, StemRouting.padsText(cuts.map { it.lane })) +
+                if (left > 0) " " + trCount(left, "Plus de pad libre pour le dernier bout.", "Plus de pad libre pour les %d derniers bouts.", left) else ""
+        }
+    }
+
+    /** No pad free for [pieces]: the user is asked which pad they go on ([pickPad]). */
+    private fun ask(pieces: List<StemSelection>) {
+        val p = host.project()
+        _state.update { it.copy(message = null, pick = PadPick(pieces, List(DrumPattern.PAD_COUNT) { lane -> com.pocketstudio.app.rhythm.padName(p, lane) })) }
+    }
+
+    override fun pickPad(lane: Int) {
+        val pick = _state.value.pick ?: return
+        _state.update { it.copy(pick = null) }
+        if (lane !in 0 until DrumPattern.PAD_COUNT || refusedBusy()) return
+        if (pick.sels.size == 1) route(pick.sels.single(), StemDestination.Pad(lane))
+        else putPiecesOn(pick.sels, (lane until DrumPattern.PAD_COUNT).toList())
+    }
+
+    override fun dismissPick() = _state.update { it.copy(pick = null) }
 
     /**
      * [pieces] of one stem as one sound from the first's start to the last's end, each at its own

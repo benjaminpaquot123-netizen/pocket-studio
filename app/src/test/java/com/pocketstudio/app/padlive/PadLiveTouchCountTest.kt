@@ -49,7 +49,7 @@ class PadLiveTouchCountTest {
     /** Page A as a new « Live » project gets it: the ready-to-play set (its loops, its hits). */
     private val pads: LivePads = PadLive.placed(LivePads(), 0, LiveStarter.PADS.mapIndexed { i, p ->
         LiveClip("s$i.wav", p.name, if (p.oneShot) 1 else p.beats, p.oneShot, p.gain)
-    })
+    }).withAt(15, null)  // audit ultra round 1, n° 5: the set fills the page; its last pad emptied by the user
 
     private var openedFromHome = false
     private var open by mutableStateOf(false)

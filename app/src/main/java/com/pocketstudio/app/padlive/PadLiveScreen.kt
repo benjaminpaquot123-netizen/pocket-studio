@@ -71,6 +71,7 @@ import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.onLongClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -118,6 +119,8 @@ class PadLiveUi(
     /** Lot B3: the challenge (« Défi ») and the pad its example lights now (null: none). */
     val challenge: ChallengeUi = ChallengeUi.Off,
     val challengeLit: Int? = null,
+    /** Audit ultra round 1, n° 9: the best stars of each challenge (the panel's list). */
+    val challengeStars: List<Int> = emptyList(),
     /** Lot B3: a Live take (● REC) just kept: « Perf gardée » with Écouter and Partager; its song lasts [perfSeconds]. */
     val takeDone: Boolean = false,
     val perfSeconds: Int = 0,
@@ -341,7 +344,7 @@ private fun PadsGrid(
 /** Under (upright) or beside (lying down) the pads: the effects or the challenge, « Plus », the big red button. */
 @Composable
 private fun PadLiveControls(ui: PadLiveUi, actions: PadLiveActions, more: Boolean, toggleMore: () -> Unit, held: HeldFx, party: () -> Unit) {
-    if (ui.challenge != ChallengeUi.Off) ChallengePanel(ui.challenge, ui.pads, actions.challengeActions)
+    if (ui.challenge != ChallengeUi.Off) ChallengePanel(ui.challenge, ui.pads, actions.challengeActions, best = ui.challengeStars)
     else SceneEffects(ui, actions, more, held)
     AnimatedVisibility(more) { MoreRow(ui, actions, party = party) }
     Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -422,6 +425,7 @@ private fun PadLivePad(
     val shape = RoundedCornerShape(14.dp)
     val touchNow by rememberUpdatedState(touch)
     val emptyNow by rememberUpdatedState(empty)
+    val settingsNow by rememberUpdatedState(settings)
     val has by rememberUpdatedState(clip != null)
     val loops = clip != null && !clip.oneShot
     val beats = clip?.beats ?: 4
@@ -441,9 +445,16 @@ private fun PadLivePad(
             )
             .pointerInput(pad) {
                 awaitEachGesture {
-                    awaitFirstDown()
+                    val down = awaitFirstDown()
                     if (!has) {
                         if (waitForUpOrCancellation() != null) emptyNow()
+                        return@awaitEachGesture
+                    }
+                    // The corner's word (its settings) is read here, from the pad's own touch: a small
+                    // clickable there got the 48 dp touch room of its own and reached the pad's middle.
+                    val corner = padCorner(size.width.toDp(), size.height.toDp())
+                    if (down.position.x >= size.width - corner.first.toPx() && down.position.y <= corner.second.toPx()) {
+                        if (waitForUpOrCancellation() != null) settingsNow()
                         return@awaitEachGesture
                     }
                     // The pad pressed, kept: a page switch restarts this with another index, and
@@ -474,10 +485,14 @@ private fun PadLivePad(
             Text("+", Modifier.align(Alignment.Center), color = Neon.TextSecondary.copy(alpha = 0.55f), fontSize = 26.sp, fontWeight = FontWeight.Light)
             return@Box
         }
-        // How it plays, in the corner: a touch there opens its settings.
+        // How it plays, in the corner: a touch there opens its settings (read by the pad's own touch above).
+        // Audit ultra round 1, n° 7: on a phone lying down the pads are low, and the corner reached their
+        // middle (a touch to play opened the settings): at most a third of the pad's height ([padCorner]).
+        BoxWithConstraints(Modifier.matchParentSize()) {
+        val corner = padCorner(maxWidth, maxHeight)
         Box(
-            Modifier.align(Alignment.TopEnd).size(width = 64.dp, height = 36.dp)
-                .clickable(role = Role.Button, onClickLabel = tr("Réglages du pad"), onClick = settings)
+            Modifier.align(Alignment.TopEnd).size(width = corner.first, height = corner.second)
+                .semantics { role = Role.Button; onClick(tr("Réglages du pad")) { settings(); true } }
                 .testTag("padlive_mode_$pad"),
             contentAlignment = Alignment.TopEnd,
         ) {
@@ -489,6 +504,7 @@ private fun PadLivePad(
                     .padding(horizontal = 4.dp).testTag("padlive_word_$pad"),
                 MaterialTheme.typography.labelSmall, color = Neon.TextPrimary, min = 8.sp, textAlign = androidx.compose.ui.text.style.TextAlign.End,
             )
+        }
         }
         // A short pad (a small phone with « Plus » open): its name a little smaller, clear of the corner's word.
         BoxWithConstraints(Modifier.matchParentSize()) {
@@ -504,6 +520,10 @@ private fun PadLivePad(
         }
     }
 }
+
+/** The corner of a pad [w] × [h] whose touch opens its settings: never down to its middle (audit ultra round 1, n° 7). */
+internal fun padCorner(w: androidx.compose.ui.unit.Dp, h: androidx.compose.ui.unit.Dp): Pair<androidx.compose.ui.unit.Dp, androidx.compose.ui.unit.Dp> =
+    minOf(64.dp, w * 0.6f) to minOf(36.dp, h * 0.32f)
 
 /** A pad's mode in one small word (the mockup's « boucle », « coup », « tenir »). */
 internal fun modeWord(mode: PadMode): String = when (mode) {
@@ -550,8 +570,29 @@ private fun SceneEffects(ui: PadLiveUi, actions: PadLiveActions, more: Boolean, 
             HeldEffect(tr("Roulement"), HeldFx.divisionWords(held.division), "roll", Modifier.weight(1f), track = { at, x -> heldMove(HeldKind.ROLL, at, x) }) {}
         }
         if (more) {
+            // Audit ultra round 1, n° 8: the Montée goes on for its bars once the finger is up: its button
+            // stays lit, the bar under its words emptying as the bars go by (nothing showed it before).
+            var riserFrom by remember { mutableStateOf(-1L) }
+            var riserLeft by remember { mutableStateOf(0f) }
+            val riserMs = (ui.riserBars * ui.beatsPerBar * 60_000.0 / ui.tempoBpm.coerceAtLeast(1.0)).toLong().coerceAtLeast(1L)
+            LaunchedEffect(riserFrom) {
+                if (riserFrom < 0) return@LaunchedEffect
+                var start = -1L
+                riserLeft = 1f
+                while (riserLeft > 0f) {
+                    androidx.compose.runtime.withFrameMillis { t ->
+                        if (start < 0) start = t
+                        riserLeft = (1f - (t - start).toFloat() / riserMs).coerceIn(0f, 1f)
+                    }
+                }
+                riserFrom = -1L
+            }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                HeldEffect(tr("Montée"), riserWords(ui.riserBars), "riser", Modifier.weight(1f), hold = { if (it) actions.riser() })
+                HeldEffect(
+                    tr("Montée"), riserWords(ui.riserBars), "riser", Modifier.weight(1f),
+                    lit = riserLeft > 0f, progress = riserLeft.takeIf { it > 0f },
+                    hold = { if (it) { actions.riser(); riserFrom = System.nanoTime() } },
+                )
                 HeldEffect(tr("Chute"), tr("freinage"), "brake", Modifier.weight(1f), hold = actions.brake)
                 HeldEffect(tr("Bégaie"), HeldFx.divisionWords(ui.chop), "stutter", Modifier.weight(1f), hold = actions.stutter)
             }
@@ -573,16 +614,20 @@ private fun HeldEffect(
     tag: String,
     modifier: Modifier,
     track: ((androidx.compose.ui.geometry.Offset?, Float) -> Unit)? = null,
+    /** Audit ultra round 1, n° 8: lit as if held (the Montée going on after the finger left), with what is [progress] left (1..0). */
+    lit: Boolean = false,
+    progress: Float? = null,
     hold: (Boolean) -> Unit,
 ) {
     var held by remember { mutableStateOf(false) }
+    val on = held || lit
     val holdNow by rememberUpdatedState(hold)
     val trackNow by rememberUpdatedState(track)
     var coords by remember { mutableStateOf<androidx.compose.ui.layout.LayoutCoordinates?>(null) }
     val shape = RoundedCornerShape(14.dp)
     Column(
-        modifier.heightIn(min = 60.dp).clip(shape).background(if (held) Neon.Amber.copy(alpha = 0.22f) else Neon.Surface)
-            .border(if (held) 2.dp else 1.dp, if (held) Neon.Amber else Color.White.copy(alpha = 0.06f), shape)
+        modifier.heightIn(min = 60.dp).clip(shape).background(if (on) Neon.Amber.copy(alpha = 0.22f) else Neon.Surface)
+            .border(if (on) 2.dp else 1.dp, if (on) Neon.Amber else Color.White.copy(alpha = 0.06f), shape)
             .onGloballyPositioned { coords = it }
             .pointerInput(Unit) {
                 awaitEachGesture {
@@ -612,6 +657,7 @@ private fun HeldEffect(
             .semantics {
                 contentDescription = "$title · $line"
                 role = Role.Button
+                if (on) stateDescription = tr("en cours")
                 onClick {
                     trackNow?.invoke(null, 0.5f)
                     holdNow(true); holdNow(false); true
@@ -625,6 +671,12 @@ private fun HeldEffect(
         // (lot B2: « souffle qui monte » and « grave ↔ aigu » were, StillFitsTest-style check in PadLiveSceneTest).
         FitText(title, MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold), Neon.TextPrimary, "padlive_fx_${tag}_title")
         FitText(line, MaterialTheme.typography.labelSmall, Neon.TextSecondary, "padlive_fx_${tag}_line")
+        progress?.let { left ->
+            Box(
+                Modifier.padding(top = 4.dp).fillMaxWidth().height(3.dp).clip(RoundedCornerShape(2.dp)).background(Neon.SurfaceHigh)
+                    .testTag("padlive_fx_${tag}_progress"),
+            ) { Box(Modifier.fillMaxWidth(left).height(3.dp).background(Neon.Amber)) }
+        }
     }
 }
 
@@ -698,9 +750,10 @@ private fun PerfLine(ui: PadLiveUi, actions: PadLiveActions) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        Text(
-            tr("Perf gardée · %s", "%d:%02d".format(ui.perfSeconds / 60, ui.perfSeconds % 60)), style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold, color = Neon.Acid, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f),
+        // Audit ultra round 1, n° 10: « Performan… » was cut (pt-BR, 360 dp): two lines that get smaller before any cut.
+        com.pocketstudio.ui.FitText(
+            tr("Perf gardée · %s", "%d:%02d".format(ui.perfSeconds / 60, ui.perfSeconds % 60)), Modifier.weight(1f).testTag("padlive_perf_text"),
+            MaterialTheme.typography.bodyMedium, color = Neon.Acid, fontWeight = FontWeight.Bold, maxLines = 2,
         )
         androidx.compose.material3.TextButton(onClick = actions.listenTake, modifier = Modifier.heightIn(min = 48.dp).testTag("padlive_perf_listen")) {
             Text(tr("Écouter"), maxLines = 1)

@@ -92,6 +92,41 @@ class PadLiveSaveUndoTest {
         NativeEngine.sink = null
     }
 
+    /**
+     * Audit ultra round 1, n° 5 (four testers met pages of « + »): in the home's « Live » project a page
+     * shown empty for the first time gets its pack on its own, not an undo step; a page the user filled,
+     * or one that had its pack once, is left as it is; another project's pages are never filled.
+     */
+    @Test
+    fun anEmptyPageShownFirstGetsItsPackOnItsOwn() {
+        val vm = liveVm()
+        vm.session.edit { asLive(it) }
+        val undoable = vm.session.canUndo.value
+        vm.padLive.setPage(2)
+        vm.padLive.fillShownPage { emptyMap() }
+        waitFor("page C's pack") { vm.project.value.live.at(32) != null && vm.padLive.busy.value == null }
+        assertEquals(PadLive.FIRST_PACKS[2], vm.project.value.padLive.packOf(2))
+        assertEquals("not an undo step", undoable, vm.session.canUndo.value)
+        // Emptied by the user: shown again, not filled again.
+        vm.clearLive(32)
+        vm.clearLive(PadLive.pad(2, PadLive.HITS_FROM))
+        vm.padLive.setPage(0)
+        vm.padLive.setPage(2)
+        vm.padLive.fillShownPage { emptyMap() }
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(200))
+        assertNull(vm.project.value.live.at(32))
+        // Page A is the ready-to-play set's; a project that is not the home's « Live » keeps its pages empty.
+        vm.padLive.setPage(0)
+        vm.padLive.fillShownPage { emptyMap() }
+        assertNull(vm.padLive.busy.value)
+        vm.session.edit { it.copy(padLive = it.padLive.copy(home = false)) }
+        vm.padLive.setPage(3)
+        vm.padLive.fillShownPage { emptyMap() }
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(200))
+        assertNull(vm.project.value.live.at(48))
+        assertNull(vm.padLive.busy.value)
+    }
+
     @Test
     fun aPackOnPageBIsOneUndoStepAndEverythingIsSavedAndReadBack() {
         val vm = liveVm()

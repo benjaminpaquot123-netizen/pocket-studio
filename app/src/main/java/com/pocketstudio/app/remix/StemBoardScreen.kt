@@ -156,6 +156,7 @@ fun StemBoard(
     val grid = remember(ui.bpm, ui.firstBeat) { BeatGrid.of(ui.bpm, ui.firstBeat, BOARD_RATE) }
     // What plays and what the actions said: read while drawing (the play head) or in the bar only.
     val work = actions.state.collectAsState()
+    PadPickHost(work.value, actions)
     val song = (ui.songFrame ?: StemBoardState.NO_SONG).collectAsState()
     // Cards stay open here: the board's panels have no title to fold.
     CompositionLocalProvider(LocalFolding provides false, LocalBoardSongFrame provides song) {

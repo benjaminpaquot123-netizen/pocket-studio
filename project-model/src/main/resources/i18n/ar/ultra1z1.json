@@ -1,0 +1,17 @@
+{
+  "Plus de pad libre : sur quel pad ?": "لا يوجد pad فارغ: على أي pad؟",
+  "Le son du pad touché est remplacé (la flèche retour le remet).": "يُستبدل صوت الـpad الذي تلمسه (سهم الرجوع يعيده).",
+  "Découper ce que je veux": "اقطع ما أريد",
+  "Choisis des bouts de chaque piste et mets-les sur tes pads, dans le Live ou sur une piste.": "اختر مقاطع من كل مسار وضعها على الـpads أو في Live أو على مسار.",
+  "L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste). Sous la chanson, « Découper ce que je veux » : choisis des bouts et mets-les sur tes pads, ton Live ou une piste. Ou joue des passages dans les cases Remix du Live.": "يفصل التطبيق الأغنية إلى 4 مسارات (الإيقاع، الباص، الغناء، الباقي). تحت الأغنية، «اقطع ما أريد»: اختر مقاطع وضعها على الـpads أو في Live أو على مسار. أو اعزف مقاطع في خانات Remix في Live.",
+  "Tes chansons séparées": "أغانيك المفصولة",
+  "Leurs pistes (voix, batterie, basse, le reste) se découpent en bouts pour tes pads ; « Garder » les range ici.": "مساراتها (الغناء، الإيقاع، الباص، الباقي) تُقطع إلى مقاطع للـpads؛ «احتفظ» يضعها هنا.",
+  "Découper « %s »": "اقطع «%s»",
+  "À télécharger pour « %s » :": "للتنزيل من أجل «%s»:",
+  "Rythme · coups : %1$d · réussis : %2$d": "الإيقاع · الضربات: %1$d · الصحيحة: %2$d",
+  "Rythme · coups : %1$d · joués : %2$d": "الإيقاع · الضربات: %1$d · المعزوفة: %2$d",
+  "Rythme · coups : %d": "الإيقاع · الضربات: %d",
+  "Ton record : %d sur 3": "رقمك القياسي: %d من 3",
+  "%1$s · étoiles : %2$d sur 3": "%1$s · النجوم: %2$d من 3",
+  "en cours": "جارٍ"
+}

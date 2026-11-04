@@ -54,6 +54,9 @@ fun PadLiveRoute(
         }
     }
     val busy by vm.padLive.busy.collectAsStateWithLifecycle()
+    // Audit ultra round 1, n° 5: a page B to D shown empty for the first time gets its pack (page A: the set above).
+    val shownPage = live.project.padLive.shownPage
+    LaunchedEffect(shownPage) { vm.padLive.fillShownPage(fete) }
     // Fix 2, n° 3: a sound put on a pad from the library (any page): its line while it is stored, why it was not.
     val sampleTask by vm.sampleTask.collectAsStateWithLifecycle()
     val starting by vm.liveStarting.collectAsStateWithLifecycle()
@@ -64,6 +67,7 @@ fun PadLiveRoute(
     // Lot B3: the challenge, « Partager ma perf ».
     val challenge by vm.padLive.challenge.ui.collectAsStateWithLifecycle()
     val stems by vm.padLive.perf.stems.collectAsStateWithLifecycle()
+    LaunchedEffect(live.project.live, live.project.padLive.shownPage) { vm.padLive.challenge.refresh() }
     val export by vm.export.collectAsStateWithLifecycle()
     val context = androidx.compose.ui.platform.LocalContext.current
     val sharePrefs = androidx.compose.runtime.remember { com.pocketstudio.app.export.SharePrefs(context) }
@@ -99,6 +103,7 @@ fun PadLiveRoute(
         message = message ?: (sampleTask as? com.pocketstudio.app.rhythm.SampleTask.Failed)?.message,
         challenge = challenge,
         challengeLit = (challenge as? ChallengeUi.Listening)?.let { u -> u.c.hits.getOrNull(u.at)?.pad },
+        challengeStars = p.padLive.stars,
         takeDone = live.take is com.pocketstudio.app.live.TakeUi.Done,
         perfSeconds = perfSeconds(p),
     )
@@ -116,7 +121,7 @@ fun PadLiveRoute(
                 openTempo = { tempoOpen = true },
                 touch = vm.padLive::touch,
                 setPage = vm.padLive::setPage,
-                choosePack = { vm.padLive.loadPack(it, fete) },
+                choosePack = { vm.padLive.loadPack(it, fete = fete) },
                 browse = browse,
                 setMode = vm.padLive::setMode,
                 setGroup = vm.padLive::setGroup,
@@ -152,6 +157,7 @@ fun PadLiveRoute(
                     again = vm.padLive.challenge::again,
                     next = vm.padLive.challenge::next,
                     close = vm.padLive.challenge::close,
+                    pick = { level -> vm.padLive.challenge.open(level) },
                 ),
                 share = { perfOpen = true },
                 listenTake = vm::listenPerformance,

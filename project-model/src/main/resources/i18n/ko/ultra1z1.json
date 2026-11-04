@@ -1,0 +1,17 @@
+{
+  "Plus de pad libre : sur quel pad ?": "빈 패드가 없어요: 어느 패드에?",
+  "Le son du pad touché est remplacé (la flèche retour le remet).": "누른 패드의 소리가 바뀌어요(뒤로 화살표로 되돌릴 수 있어요).",
+  "Découper ce que je veux": "원하는 부분 자르기",
+  "Choisis des bouts de chaque piste et mets-les sur tes pads, dans le Live ou sur une piste.": "각 트랙에서 조각을 골라 패드, Live 또는 트랙에 놓아 보세요.",
+  "L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste). Sous la chanson, « Découper ce que je veux » : choisis des bouts et mets-les sur tes pads, ton Live ou une piste. Ou joue des passages dans les cases Remix du Live.": "앱이 곡을 4개 트랙(드럼, 베이스, 보컬, 나머지)으로 나눠요. 곡 아래 “원하는 부분 자르기”에서 조각을 골라 패드, Live 또는 트랙에 놓으세요. 또는 Live의 Remix 칸에서 구간을 연주하세요.",
+  "Tes chansons séparées": "분리한 곡",
+  "Leurs pistes (voix, batterie, basse, le reste) se découpent en bouts pour tes pads ; « Garder » les range ici.": "그 트랙(보컬, 드럼, 베이스, 나머지)을 패드용 조각으로 자를 수 있어요. “보관”하면 여기에 정리돼요.",
+  "Découper « %s »": "“%s” 자르기",
+  "À télécharger pour « %s » :": "“%s” 관련 다운로드:",
+  "Rythme · coups : %1$d · réussis : %2$d": "리듬 · 타수: %1$d · 성공: %2$d",
+  "Rythme · coups : %1$d · joués : %2$d": "리듬 · 타수: %1$d · 친 수: %2$d",
+  "Rythme · coups : %d": "리듬 · 타수: %d",
+  "Ton record : %d sur 3": "최고 기록: 3개 중 %d",
+  "%1$s · étoiles : %2$d sur 3": "%1$s · 별: 3개 중 %2$d",
+  "en cours": "진행 중"
+}

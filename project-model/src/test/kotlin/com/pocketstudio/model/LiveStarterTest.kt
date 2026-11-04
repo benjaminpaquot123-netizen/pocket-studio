@@ -10,8 +10,10 @@ import java.io.File
 /** The ready-to-play live pads and the party sounds (Benjamin's list n° 12). */
 class LiveStarterTest {
     @Test
-    fun eightPadsLoopsAndPartyHits() {
-        assertEquals(8, LiveStarter.PADS.size)
+    fun aWholePageLoopsKitAndPartyHits() {
+        // Audit ultra round 1, n° 5: the page's 16 pads (it was 8: two rows of « + » under them).
+        assertEquals(PadLive.PAGE_SIZE, LiveStarter.PADS.size)
+        LiveStarter.PADS.filter { it.source == LiveStarter.Source.Kit }.forEach { assertTrue(it.name, it.kit in 0 until DrumPattern.PAD_COUNT) }
         val sources = LiveStarter.PADS.map { it.source }
         assertEquals(listOf(LiveStarter.Source.KickLoop, LiveStarter.Source.Clap, LiveStarter.Source.AcidLoop, LiveStarter.Source.BassLoop), sources.take(4))
         // The loops loop, the hits play once; every party hit is a sound of the app.

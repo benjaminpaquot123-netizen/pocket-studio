@@ -143,8 +143,8 @@ class SongPlan(val parts: List<Pair<String, Int>>, val stepsPerBar: Int, val pla
 /** The last cut on a pad: its pad, what is said of it, its sound and the sound's length (seconds) and outline. */
 class RemixCutUi(val lane: Int, val message: String, val sample: com.pocketstudio.model.PadSample?, val seconds: Double, val peaks: FloatArray)
 
-/** « → Pad » with every pad used: pad [lane] (named [name]) would be covered. */
-class PadAsk(val lane: Int, val name: String)
+/** « → Pad » with no pad free: pad [lane] (named [name]) proposed; [names]: the 16 pads' names, for the picker. */
+class PadAsk(val lane: Int, val name: String, val names: List<String> = emptyList())
 
 class RemixActions(
     val downloadModel: () -> Unit = {},
@@ -161,6 +161,11 @@ class RemixActions(
     val delete: (StemSet) -> Unit = {},
     /** The project plays the song along, at its tempo and in its key. */
     val useSong: (StemSet) -> Unit = {},
+    /**
+     * Audit ultra round 1, n° 1: « Découper ce que je veux » on a song's card: the song goes into the
+     * project behind the scenes (silent, a store of sounds, when it is not there yet), then its cut screen opens.
+     */
+    val cutSong: (StemSet) -> Unit = {},
     val clearRemix: () -> Unit = {},
     val togglePlay: () -> Unit = {},
     val setStartBar: (Int) -> Unit = {},
@@ -186,8 +191,8 @@ class RemixActions(
     val bassToNotes: (Boolean) -> Unit = {},
     /** Step 7f: « Rejouer la voix en notes ». */
     val voiceToNotes: () -> Unit = {},
-    /** The question of [RemixUi.padAsk]: cover the pad, or not. */
-    val confirmPad: () -> Unit = {},
+    /** The question of [RemixUi.padAsk]: the pad picked (its sound covered), or not. */
+    val confirmPad: (Int) -> Unit = {},
     val dismissPadAsk: () -> Unit = {},
     /** The last cut's start, end, fades (a key per drag: one undo step). */
     val editCut: (String?, (com.pocketstudio.model.PadSample) -> com.pocketstudio.model.PadSample) -> Unit = { _, _ -> },
@@ -224,6 +229,9 @@ fun RemixScreen(
     actions: RemixActions,
     /** Lot D: the project's Structure, beside the cut screen on an expanded width (null: never). */
     structure: (@Composable () -> Unit)? = null,
+    /** Audit ultra round 1, n° 3: a song whose cut screen was asked for elsewhere (the library), handled once ([cutAskHandled]). */
+    cutAsked: String? = null,
+    cutAskHandled: () -> Unit = {},
 ) {
     // The stem board takes the whole page while it is open (« ← » or Back closes it).
     var boardOpen by rememberSaveable { mutableStateOf(false) }
@@ -240,6 +248,64 @@ fun RemixScreen(
     }
     val openBoard = { boardOpen = true }
     val openCut = { cutOpen = true }
+    // Audit ultra round 1, n° 1: a card's « Découper ce que je veux »: the cut screen opens once the song's stems are in.
+    var cutFor by rememberSaveable { mutableStateOf<String?>(null) }
+    androidx.compose.runtime.LaunchedEffect(cutFor, ui.board?.setId) {
+        if (cutFor != null && ui.board?.setId == cutFor) {
+            cutFor = null
+            cutOpen = true
+        }
+    }
+    val cutSong: (StemSet) -> Unit = { set ->
+        if (ui.board?.setId == set.id) cutOpen = true
+        else {
+            cutFor = set.id
+            actions.cutSong(set)
+        }
+    }
+    androidx.compose.runtime.LaunchedEffect(cutAsked) {
+        val asked = cutAsked ?: return@LaunchedEffect
+        ui.sets.firstOrNull { it.id == asked }?.let(cutSong)
+        cutAskHandled()
+    }
+    // Audit ultra round 1 (n° 21, a left thumb on a phone): the page's first gesture (the model, a song) at
+    // the bottom too, as the studio's thumb bar; the cards above keep theirs.
+    Column(Modifier.fillMaxSize()) {
+        androidx.compose.foundation.layout.Box(Modifier.weight(1f)) { RemixPanes(ui, actions, openBoard, openCut, cutSong, cutFor) }
+        RemixThumbRow(ui, actions, cut = openCut.takeIf { ui.board != null && !ui.home && ui.remix.setId != null })
+    }
+}
+
+/** The model's download, « Choisir une chanson » or (a song in the project) « Découper la chanson », at the bottom, while nothing is under way. */
+@Composable
+private fun RemixThumbRow(ui: RemixUi, actions: RemixActions, cut: (() -> Unit)? = null) {
+    val idle = ui.state !is SeparationState.DownloadingModel && ui.state !is SeparationState.Decoding &&
+        ui.state !is SeparationState.Separating && ui.state !is SeparationState.Analysing
+    if (!idle || ui.memoryProblem != null) return
+    androidx.compose.foundation.layout.Box(
+        Modifier.fillMaxWidth().background(Neon.Surface).padding(horizontal = 12.dp, vertical = 8.dp).testTag("remix_thumb"),
+    ) {
+        // A song in the project: its cutting, the page's next gesture.
+        if (cut != null) {
+            Button(onClick = cut, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("remix_cut_thumb")) {
+                Icon(Icons.Filled.ContentCut, contentDescription = null)
+                Text(" " + tr("Découper la chanson"), maxLines = 1)
+            }
+        } else if (!ui.modelInstalled) {
+            Button(onClick = actions.downloadModel, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("remix_download_thumb")) {
+                Text(tr("Télécharger le modèle (%s)", SeparationModel.SPEC.sizeLabel), maxLines = 1)
+            }
+        } else {
+            Button(onClick = actions.pickSong, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("remix_pick_thumb")) {
+                Icon(Icons.Filled.Add, contentDescription = null)
+                Text(" " + tr("Choisir une chanson"), maxLines = 1)
+            }
+        }
+    }
+}
+
+@Composable
+private fun RemixPanes(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit, openCut: () -> Unit, cutSong: (StemSet) -> Unit, cutFor: String?) {
     // On a tablet: the remix in the project and a new separation on the left, the separated songs on the right.
     // Nothing separated yet: one column at a reading width.
     if (ui.sets.isEmpty()) {
@@ -255,7 +321,11 @@ fun RemixScreen(
             first = { RemixStart(ui, actions, openBoard, openCut) },
             second = {
                 ui.sets.forEach { set ->
-                    StemCard(set, ui.preview?.takeIf { it.setId == set.id }, !ui.home && ui.remix.setId == set.id, actions, projectLine(ui).takeIf { !ui.home }, ui.home)
+                    StemCard(
+                        set, ui.preview?.takeIf { it.setId == set.id }, !ui.home && ui.remix.setId == set.id, actions, projectLine(ui).takeIf { !ui.home }, ui.home,
+                        cut = { cutSong(set) }.takeIf { !ui.home },
+                        cutWaiting = cutFor == set.id && ui.remix.setId == set.id,
+                    )
                 }
             },
         )
@@ -487,17 +557,9 @@ private fun InProject(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit,
         )
         TextButton(onClick = actions.clearRemix, modifier = Modifier.testTag("remix_clear")) { Text(tr("Retirer du projet")) }
     }
+    // Audit ultra round 1, n° 2: no pad free: the user picks it (never « replace the selected pad? »).
     ui.padAsk?.let { ask ->
-        ScaledAlertDialog(
-            onDismissRequest = actions.dismissPadAsk,
-            title = { Text(tr("Tous les pads servent déjà")) },
-            text = { Text(tr("Remplacer le son du pad %1\$d (« %2\$s ») par ce passage ? Partout où ton rythme joue ce pad, on entendra la chanson.", ask.lane + 1, ask.name)) },
-            confirmButton = {
-                TextButton(onClick = actions.confirmPad, modifier = Modifier.testTag("remix_pad_replace")) { Text(tr("Remplacer"), color = Neon.RedText) }
-            },
-            dismissButton = { TextButton(onClick = actions.dismissPadAsk, modifier = Modifier.testTag("remix_pad_keep")) { Text(tr("Annuler")) } },
-            modifier = Modifier.testTag("remix_pad_ask"),
-        )
+        PadPickDialog(ask.names.ifEmpty { List(16) { if (it == ask.lane) ask.name else "" } }, actions.confirmPad, actions.dismissPadAsk)
     }
 }
 
@@ -679,7 +741,13 @@ private fun projectLine(ui: RemixUi): String =
     tr("Ton projet : %s", listOfNotNull("%.0f BPM".format(ui.projectBpm), ui.projectKey).joinToString(" · "))
 
 @Composable
-private fun StemCard(set: StemSet, preview: StemPreview?, inProject: Boolean, actions: RemixActions, project: String? = null, home: Boolean = false) {
+private fun StemCard(
+    set: StemSet, preview: StemPreview?, inProject: Boolean, actions: RemixActions, project: String? = null, home: Boolean = false,
+    /** Audit ultra round 1, n° 1: « Découper ce que je veux », right under the song (null: not here, the home's Remix). */
+    cut: (() -> Unit)? = null,
+    /** The song is going into the project for [cut]: its stems are loading. */
+    cutWaiting: Boolean = false,
+) {
     var confirmDelete by rememberSaveable(set.id) { mutableStateOf(false) }
     NeonCard(modifier = Modifier.testTag("stems_${set.id}")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -701,10 +769,22 @@ private fun StemCard(set: StemSet, preview: StemPreview?, inProject: Boolean, ac
         if (!inProject && project != null) {
             Text(project, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("song_project_${set.id}"))
         }
-        if (!inProject) {
-            Button(onClick = { actions.useSong(set) }, modifier = Modifier.fillMaxWidth().testTag("use_${set.id}")) {
-                Text(if (home) tr("Utiliser cette chanson") else tr("Jouer avec le projet"))
+        // Audit ultra round 1, n° 1 (three testers went to the Mode pro for nothing): cutting the song into
+        // pieces for the pads is right here, first, in the Mode simple too, with no « Jouer avec le projet » before.
+        if (cut != null) {
+            Button(onClick = cut, enabled = !cutWaiting, modifier = Modifier.fillMaxWidth().testTag("cut_song_${set.id}")) {
+                Icon(Icons.Filled.ContentCut, contentDescription = null)
+                Text(" " + if (cutWaiting) tr("Chargement des pistes…") else tr("Découper ce que je veux"))
             }
+            Text(
+                tr("Choisis des bouts de chaque piste et mets-les sur tes pads, dans le Live ou sur une piste."),
+                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("cut_song_hint_${set.id}"),
+            )
+        }
+        if (!inProject) {
+            val use: @Composable () -> Unit = { Text(if (home) tr("Utiliser cette chanson") else tr("Jouer avec le projet")) }
+            if (cut != null) OutlinedButton(onClick = { actions.useSong(set) }, modifier = Modifier.fillMaxWidth().testTag("use_${set.id}")) { use() }
+            else Button(onClick = { actions.useSong(set) }, modifier = Modifier.fillMaxWidth().testTag("use_${set.id}")) { use() }
         }
         val playing = preview?.playing == true
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {

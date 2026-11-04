@@ -11,7 +11,6 @@ import com.pocketstudio.model.LivePadPlan
 import com.pocketstudio.model.LivePads
 import com.pocketstudio.model.LiveStarter
 import com.pocketstudio.model.PadLive
-import com.pocketstudio.model.StarterWizard
 import kotlin.math.exp
 import kotlin.math.sin
 
@@ -31,8 +30,8 @@ internal class BenchPackMaker(private val engine: CommandSink) : PackMaker {
                 LiveClip(file, pad.name, beats, pad.oneShot, pad.gain, bpm = if (pad.oneShot) 0.0 else bpm)
             }
         }
-        val recipe = StarterWizard.style(style) ?: return emptyList()
-        val song = StarterWizard.build(recipe.copy(bpm = bpm), emptyMap())
+        // The app's own song for the pack (audit ultra round 1, n° 5).
+        val song = PadLive.packSong(pack, bpm) ?: return emptyList()
         val loops = LivePadPlan.of(song, max = PadLive.MAX_LOOPS).mapIndexed { slot, spec ->
             val beats = (spec.bars * song.beatsPerBar).coerceAtMost(LivePads.MAX_BEATS)
             val frames = if (spec.oneShot) HIT_FRAMES else OfflineExport.framesFor(spec.bars, song.tempoBpm, song.beatsPerBar).toInt()

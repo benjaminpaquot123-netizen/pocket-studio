@@ -1,0 +1,17 @@
+{
+  "Plus de pad libre : sur quel pad ?": "Brak wolnego pada: na który pad?",
+  "Le son du pad touché est remplacé (la flèche retour le remet).": "Dźwięk dotkniętego pada zostanie zastąpiony (strzałka wstecz go przywróci).",
+  "Découper ce que je veux": "Wytnij, co chcę",
+  "Choisis des bouts de chaque piste et mets-les sur tes pads, dans le Live ou sur une piste.": "Wybierz kawałki każdej ścieżki i połóż je na padach, w Live albo na ścieżce.",
+  "L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste). Sous la chanson, « Découper ce que je veux » : choisis des bouts et mets-les sur tes pads, ton Live ou une piste. Ou joue des passages dans les cases Remix du Live.": "Aplikacja dzieli utwór na 4 ścieżki (perkusja, bas, wokal, reszta). Pod utworem: „Wytnij, co chcę”: wybierz kawałki i połóż je na padach, w Live albo na ścieżce. Albo graj fragmenty w polach Remix w Live.",
+  "Tes chansons séparées": "Twoje rozdzielone utwory",
+  "Leurs pistes (voix, batterie, basse, le reste) se découpent en bouts pour tes pads ; « Garder » les range ici.": "Ich ścieżki (wokal, perkusja, bas, reszta) tniesz na kawałki do padów; „Zachowaj” odkłada je tutaj.",
+  "Découper « %s »": "Wytnij „%s”",
+  "À télécharger pour « %s » :": "Do pobrania dla „%s”:",
+  "Rythme · coups : %1$d · réussis : %2$d": "Rytm · uderzenia: %1$d · trafione: %2$d",
+  "Rythme · coups : %1$d · joués : %2$d": "Rytm · uderzenia: %1$d · zagrane: %2$d",
+  "Rythme · coups : %d": "Rytm · uderzenia: %d",
+  "Ton record : %d sur 3": "Twój rekord: %d na 3",
+  "%1$s · étoiles : %2$d sur 3": "%1$s · gwiazdki: %2$d na 3",
+  "en cours": "trwa"
+}

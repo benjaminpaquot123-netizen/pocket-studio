@@ -234,6 +234,10 @@ class ShelfBrowserUi(
     val mineGroupOf: ((SoundOption) -> String?)? = null,
     /** What a folder of « Ma bibliothèque » shows of its sounds (null: [mineContent]'s tiles, or the plain ones). */
     val mineContentOf: (@Composable (List<SoundOption>) -> Unit)? = null,
+    /** Audit ultra round 1, n° 11: under the search's sounds, what else answers the words (packs to download). */
+    val searchMore: (@Composable (String) -> Unit)? = null,
+    /** Audit ultra round 1, n° 12: words put in the search from outside (a pack's « Voir ses sons »), each new one once. */
+    val searchAsked: String? = null,
 )
 
 /** A folder of « Ma bibliothèque »: the song (or project) its sounds came from. */
@@ -289,6 +293,9 @@ private const val PAGE = 30
 fun ShelfBrowser(ui: ShelfBrowserUi, actions: ShelfBrowserActions, modifier: Modifier = Modifier) {
     var at by rememberSaveable(ui.stateKey) { mutableStateOf(ui.start.orEmpty()) }
     var query by rememberSaveable(ui.stateKey) { mutableStateOf("") }
+    androidx.compose.runtime.LaunchedEffect(ui.searchAsked) {
+        ui.searchAsked?.let { query = it.take(60); at = "" }
+    }
     val all = remember(ui.shelves, ui.mine) {
         val map = LinkedHashMap<String, SoundOption>()
         (ui.shelves.flatMap { it.all } + ui.mine.orEmpty()).forEach { o -> keyOf(o.ref)?.let { map.putIfAbsent(it, o) } }
@@ -329,6 +336,7 @@ fun ShelfBrowser(ui: ShelfBrowserUi, actions: ShelfBrowserActions, modifier: Mod
                         if (hits.isEmpty()) Text(tr("Aucun son trouvé : essaie un autre mot, ou télécharge d'autres packs ci-dessous."),
                             style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
                         Sounds(hits, ui, actions, favoriteKeys, "${ui.tag}_result")
+                        ui.searchMore?.invoke(query.trim())
                     }
                     here.isEmpty() -> {
                         if (recents.isNotEmpty()) FolderRow(RECENTS, tr("Récents"), recents.size, "${ui.tag}_recents") { at = RECENTS }

@@ -11,7 +11,6 @@
   "La chanson part de la mesure choisie (trait vert) : touche une forme d'onde pour partir de là.": "歌曲从所选小节（绿线）开始：点一下波形即可从那里开始。",
   "Partir de la mesure %d de la chanson": "从歌曲的第 %d 小节开始",
   "Remplacer": "替换",
-  "Remplacer le son du pad %1$d (« %2$s ») par ce passage ? Partout où ton rythme joue ce pad, on entendra la chanson.": "要把打击垫 %1$d（“%2$s”）的声音替换成这一段吗？你的节奏在哪里敲这个打击垫，就会听到这首歌。",
   "Tous les pads servent déjà": "所有打击垫都已被使用",
   "Tous les pads servent déjà : vide un pad dans Batterie, puis recommence.": "所有打击垫都已被使用：先在“鼓”里清空一个打击垫，再试一次。",
   "Une mesure plus tard": "晚一小节",

@@ -8,6 +8,7 @@ import androidx.compose.ui.test.click
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -116,19 +117,21 @@ class RemixPlacementScreenTest {
 
     @Test
     fun everyPadUsedAsksBeforeCoveringOne() {
-        var asked by mutableStateOf<PadAsk?>(PadAsk(0, "Kick"))
-        var confirmed = 0
+        var asked by mutableStateOf<PadAsk?>(PadAsk(0, "Kick", List(16) { "Son ${it + 1}" }))
+        var confirmed = -1
         rule.setContent {
             PocketStudioTheme {
                 RemixScreen(
                     RemixUi(true, SeparationState.Idle, emptyList(), remix = remix, padAsk = asked),
-                    RemixActions(confirmPad = { confirmed++; asked = null }, dismissPadAsk = { asked = null }),
+                    RemixActions(confirmPad = { confirmed = it; asked = null }, dismissPadAsk = { asked = null }),
                 )
             }
         }
-        rule.onNodeWithText("Remplacer le son du pad 1 (« Kick ») par ce passage ? Partout où ton rythme joue ce pad, on entendra la chanson.").assertIsDisplayed()
-        rule.onNodeWithTag("remix_pad_replace").performClick()
-        assertEquals(1, confirmed)
-        rule.onNodeWithTag("remix_pad_ask").assertDoesNotExist()
+        // Audit ultra round 1, n° 2: a pad picker, each pad with its name; the one touched takes it.
+        rule.onNodeWithText("Plus de pad libre : sur quel pad ?").assertIsDisplayed()
+        rule.onNodeWithContentDescription("Pad 12 : Son 12").assertIsDisplayed()
+        rule.onNodeWithTag("pad_pick_11").performClick()
+        assertEquals(11, confirmed)
+        rule.onNodeWithTag("pad_pick").assertDoesNotExist()
     }
 }

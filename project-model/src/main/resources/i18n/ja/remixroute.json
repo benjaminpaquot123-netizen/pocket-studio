@@ -18,7 +18,6 @@
   "Plus de pad libre pour la dernière.": "最後の1つに空きパッドがありません。",
   "Plus de pad libre pour les %d dernières.": "最後の%d個に空きパッドがありません。",
   "Replier %s": "%s を閉じる",
-  "Tous les pads ont déjà un son : choisis le pad à remplacer, ou vide-en un dans Batterie.": "全部のパッドにもう音があります。置き換えるパッドを選ぶか、ドラムで1つ空にしてね。",
   "Tous les pads ont déjà un son : vide un pad dans Batterie, puis recommence.": "全部のパッドにもう音があります。ドラムでパッドを1つ空にしてから、もう一度試してね。",
   "Trop long pour un pad : %d secondes au plus. Choisis un morceau plus court.": "パッドには長すぎます：最大%d秒。もっと短い部分を選んでね。",
   "Trop long pour une piste : %d minutes au plus. Choisis un morceau plus court.": "トラックには長すぎます：最大%d分。もっと短い部分を選んでね。",

@@ -499,6 +499,8 @@ fun AppRoot() {
     var libraryCell by rememberSaveable { mutableStateOf<String?>(null) }
     // ... or for the selected instrument track's sampled sound.
     var libraryTrack by rememberSaveable { mutableStateOf(false) }
+    // Audit ultra round 1, n° 3: « Découper « Boys » » touched in the library: that song's cut screen (the Remix opens on it).
+    var libraryCutAsk by rememberSaveable { mutableStateOf<String?>(null) }
     if (showLibrary) {
         val packsUi by libraryVm.packs.collectAsStateWithLifecycle()
         val previewing by libraryVm.playing.collectAsStateWithLifecycle()
@@ -550,6 +552,9 @@ fun AppRoot() {
                         recents = soundRecents,
                         favorites = soundFavorites,
                         startMine = libraryMine,
+                        songs = remixVm.sets.collectAsStateWithLifecycle().value.let { all ->
+                            all.sortedByDescending { it.id == libProject.remix.setId }.map { it.id to it.name }
+                        },
                     ),
                     com.pocketstudio.app.library.LibraryActions(
                         close = close,
@@ -584,6 +589,7 @@ fun AppRoot() {
                         setMineKind = libraryVm::setMineKind,
                         deleteMine = libraryVm::deleteMine,
                         toggleFavorite = libraryVm::toggleFavorite,
+                        cutSong = { id -> close(); libraryCutAsk = id },
                     ),
                 )
             }
@@ -1308,6 +1314,13 @@ fun AppRoot() {
     var padLiveWelcome by rememberSaveable(key = "pad_live_welcome") { mutableStateOf(false) }
     // Lot B3: Pad Live chosen at the first launch: its « Live » project made and opened, as the home's card does.
     LaunchedEffect(padLiveFromWelcome) {
+    // Audit ultra round 1, n° 3: the library's « Découper « Boys » »: the Remix of this project, over Pad Live too.
+    LaunchedEffect(libraryCutAsk) {
+        if (libraryCutAsk == null) return@LaunchedEffect
+        showPadLive = false
+        showLivePads = false
+        openRemix()
+    }
         if (!padLiveFromWelcome) return@LaunchedEffect
         padLiveFromWelcome = false
         padLiveWelcome = true
@@ -3358,7 +3371,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                         val info = sample?.let { remixSampleInfo[it.file] }
                                         com.pocketstudio.app.remix.RemixCutUi(c.lane, c.message, sample, info?.seconds ?: 0.0, info?.peaks ?: FloatArray(0))
                                     },
-                                    padAsk = stemPadAsk?.let { com.pocketstudio.app.remix.PadAsk(it.lane, com.pocketstudio.app.rhythm.padName(project, it.lane)) },
+                                    padAsk = stemPadAsk?.let { com.pocketstudio.app.remix.PadAsk(it.lane, com.pocketstudio.app.rhythm.padName(project, it.lane), List(16) { l -> com.pocketstudio.app.rhythm.padName(project, l) }) },
                                     projectKey = com.pocketstudio.app.remix.keyLabel(project.harmony, SettingsStore.state.value.englishNotes),
                                     board = overview?.let { ov ->
                                         project.remix.setId?.let { id ->
@@ -3395,6 +3408,17 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                     },
                                     clearRemix = rhythmVm::clearRemix,
                                     // The project's ▶ and « Écouter » never sound together.
+                                    // Audit ultra round 1, n° 1: « Découper ce que je veux »: the song in the project behind the
+                                    // scenes, silent (a store of sounds), the safe choices; another song there: the usual choices first.
+                                    cutSong = { set ->
+                                        remixVm.pause()
+                                        val now = rhythmVm.project.value
+                                        when (now.remix.setId) {
+                                            set.id -> Unit
+                                            null -> rhythmVm.useSong(set, choice = com.pocketstudio.model.SongImport.defaults(now).copy(bricks = false), asSource = true)
+                                            else -> songImport = set to (preview?.takeIf { it.setId == set.id }?.on ?: remixVm.heardFor(set.id))
+                                        }
+                                    },
                                     togglePlay = { remixVm.pause(); stemBoard.stop(); rhythmVm.togglePlay() },
                                     board = stemBoard,
                                     retry = remixVm::retry,
@@ -3424,6 +3448,8 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 },
                             )
                             }
+                                cutAsked = libraryCutAsk,
+                                cutAskHandled = { libraryCutAsk = null },
                         }
                         AppTab.Outils -> PlusSpace(
                             plusEntries(

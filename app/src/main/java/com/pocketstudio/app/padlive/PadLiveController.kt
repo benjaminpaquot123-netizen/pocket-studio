@@ -19,7 +19,6 @@ import com.pocketstudio.model.PadLive
 import com.pocketstudio.model.PadMode
 import com.pocketstudio.model.PadTouch
 import com.pocketstudio.model.PartySounds
-import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.stemView
 import kotlinx.coroutines.CancellationException
@@ -181,7 +180,7 @@ class PadLiveController(private val vm: RhythmViewModel) {
      * one undo step (the page's sounds before come back with « Annuler »). [fete]: the ready-to-play
      * set ([LiveStarter], « Fête »), made by the sound library.
      */
-    fun loadPack(id: String, fete: suspend (Double) -> Map<Int, Pair<Pcm, Int>>) {
+    fun loadPack(id: String, quiet: Boolean = false, fete: suspend (Double) -> Map<Int, Pair<Pcm, Int>>) {
         val pack = PadLive.pack(id) ?: return
         if (packJob?.isActive == true) return
         val page = vm.project.value.padLive.shownPage
@@ -205,7 +204,9 @@ class PadLiveController(private val vm: RhythmViewModel) {
                 // The page's pads that sound stop: their sounds are being replaced.
                 val sounding = vm.padsSoundingNow()
                 (0 until PadLive.PAGE_SIZE).map { PadLive.pad(page, it) }.filter { it in sounding }.forEach(::toggle)
-                vm.session.edit { q -> q.copy(live = PadLive.placed(q.live, page, clips.toList()), padLive = q.padLive.withPack(page, id)) }
+                // A page filled on its own ([fillShownPage]) is not an undo step, as the ready-to-play set.
+                val put = { q: com.pocketstudio.model.Project -> q.copy(live = PadLive.placed(q.live, page, clips.toList()), padLive = q.padLive.withPack(page, id)) }
+                if (quiet) vm.session.editQuietly(put) else vm.session.edit(transform = put)
                 vm.pushLive()
                 AppLog.add("Pack ${pack.id} sur la page ${PadLive.PAGE_NAMES[page]} : ${sounds.size} sons")
             } catch (e: CancellationException) {
@@ -218,6 +219,18 @@ class PadLiveController(private val vm: RhythmViewModel) {
                 _busy.value = null
             }
         }
+    }
+
+    /**
+     * Audit ultra round 1, n° 5 (four testers met pages of « + »): in the home's « Live » project, a
+     * page B to D shown empty for the first time gets its pack ([PadLive.FIRST_PACKS]), not an undo
+     * step. A page the user emptied keeps its pack's name: it is not filled again.
+     */
+    fun fillShownPage(fete: suspend (Double) -> Map<Int, Pair<Pcm, Int>>) {
+        val p = vm.project.value
+        val page = p.padLive.shownPage
+        if (!p.padLive.home || page == 0 || PadLive.filled(p.live, page) > 0 || p.padLive.packOf(page).isNotEmpty()) return
+        PadLive.FIRST_PACKS.getOrNull(page)?.let { loadPack(it, quiet = true, fete = fete) }
     }
 
     private var welcomeJob: Job? = null
@@ -268,8 +281,8 @@ private class EnginePackMaker(private val vm: RhythmViewModel, private val fete:
             }
         }
         val out = ArrayList<PackSound>()
-        val recipe = StarterWizard.style(style) ?: return out
-        val song = StarterWizard.build(recipe.copy(bpm = bpm), emptyMap())
+        // Audit ultra round 1, n° 5: the style with its kit and its parts (built empty, a pack had only its hits).
+        val song = PadLive.packSong(pack, bpm) ?: return out
         val plan = LivePadPlan.of(song, max = PadLive.MAX_LOOPS)
         for (spec in plan) {
             val view = song.stemView(spec.key, spec.scene)

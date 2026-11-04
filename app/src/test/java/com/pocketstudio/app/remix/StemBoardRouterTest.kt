@@ -119,10 +119,10 @@ class StemBoardRouterTest {
         override fun heard(): Long = heard
     }
 
-    /** The kick on pad 1 and the snare on pad 3 play; a second scene plays pad 6. */
+    /** The kick on pad 1 and the snare on pad 3 play; a second scene plays pad 9 (a tom). */
     private fun beat(): Project {
         val drums = DrumPattern(steps = 16).toggle(0, 0).toggle(0, 8).toggle(2, 4)
-        val drop = DrumPattern(steps = 16).toggle(0, 0).toggle(5, 2)
+        val drop = DrumPattern(steps = 16).toggle(0, 0).toggle(8, 2)
         return Project(
             tempoBpm = 120.0, drums = drums,
             scenes = listOf(Scene("A", drums), Scene("B", drop)), scene = 0,
@@ -143,31 +143,32 @@ class StemBoardRouterTest {
         r.send(sel(), StemDestination.Pad())
         assertEquals(1, host.pads.size)
         val cut = host.pads.single().single()
-        // Pad 1 (the kick) and pad 3 (the snare) play: pad 2 is the first free one.
-        assertEquals(1, cut.lane)
+        // The kit's first eight are never taken (audit ultra round 1, n° 2), pad 9 plays in the drop: pad 10.
+        assertEquals(9, cut.lane)
         assertEquals("Voix 1", cut.name)
         // Exactly the stretch, fitted to the project's tempo, its fades kept for the cut.
         assertEquals(24_000, cut.pcm.frames)
         assertEquals(((3 * 1_000_000 + 96_000) * 1e-7).toFloat(), cut.pcm.data[0], 1e-6f)
         assertEquals(StemSelection(sel().setId, 3, 0, 24_000), edits.cuts.single())
         assertEquals("3:96000:24000:true", host.source!!.reads.single())
-        assertEquals("« Voix 1 » est sur le pad 2.", r.state.value.message)
+        assertEquals("« Voix 1 » est sur le pad 10.", r.state.value.message)
         assertNull(r.state.value.busy)
-        // The next one is « Voix 2 », on the next free pad (pad 2 now has a sound).
-        host.p = host.p.copy(drums = host.p.drums.withSample(1, PadSample("a.wav", "Voix 1")))
+        // The next one is « Voix 2 », on the next free pad (pad 10 now has a sound).
+        host.p = host.p.copy(drums = host.p.drums.withSample(9, PadSample("a.wav", "Voix 1")))
         r.send(sel(), StemDestination.Pad())
-        assertEquals(3, host.pads.last().single().lane)
+        assertEquals(10, host.pads.last().single().lane)
         assertEquals("Voix 2", host.pads.last().single().name)
     }
 
     @Test
     fun aPadPlayedInAnotherSceneOrHoldingASoundIsNotFree() {
         var p = beat()
-        p = p.copy(drums = (1 until 5).fold(p.drums) { d, lane -> if (lane == 2) d else d.withSample(lane, PadSample("s$lane.wav", "Son $lane")) })
-        // Pads 1-5 used here, pad 6 by the other scene: pad 7 is the first free one.
-        assertEquals(6, StemRouting.padFor(p, null))
-        assertFalse(StemRouting.padIsFree(p, 5))
-        assertEquals((6 until DrumPattern.PAD_COUNT).toList(), StemRouting.freePads(p))
+        p = p.copy(drums = listOf(9, 10, 12).fold(p.drums) { d, lane -> d.withSample(lane, PadSample("s$lane.wav", "Son $lane")) })
+        // Pad 9 played by the other scene, pads 10, 11 and 13 with a sound: pad 12 is the first free one.
+        assertEquals(11, StemRouting.padFor(p, null))
+        assertFalse(StemRouting.padIsFree(p, 8))
+        assertFalse("the kit's Caisse 2, unplayed, is not free", StemRouting.padIsFree(p, 3))
+        assertEquals(listOf(11, 13, 14, 15), StemRouting.freePads(p))
         // A pad the user names is taken, even with a sound.
         assertEquals(0, StemRouting.padFor(p, 0))
     }
@@ -179,11 +180,28 @@ class StemBoardRouterTest {
         val r = router(host)
         r.send(sel(), StemDestination.Pad())
         assertTrue(host.pads.isEmpty())
-        assertTrue(r.state.value.message!!.startsWith("Tous les pads ont déjà un son"))
-        // Named by the user: replaced, and said, with the way back.
-        r.send(sel(), StemDestination.Pad(4))
+        // Audit ultra round 1, n° 2: the user is asked which pad, with the 16 pads' names.
+        val pick = r.state.value.pick!!
+        assertEquals(listOf(sel()), pick.sels)
+        assertEquals(16, pick.names.size)
+        assertEquals("Son 5", pick.names[5])
+        // « Annuler »: nothing sent, nothing asked.
+        r.dismissPick()
+        assertNull(r.state.value.pick)
+        assertTrue(host.pads.isEmpty())
+        // Pad 5 picked: replaced, and said, with the way back.
+        r.send(sel(), StemDestination.Pad())
+        r.pickPad(4)
+        assertNull(r.state.value.pick)
         assertEquals(4, host.pads.single().single().lane)
         assertEquals("« Voix 1 » remplace « Son 4 » sur le pad 5 (la flèche retour le remet).", r.state.value.message)
+        // Several pieces with no pad free: asked once, they go on the pad picked and the next ones.
+        r.dismissMessage()
+        r.sendPieces(listOf(sel(), sel(start = 200_000, end = 210_000)), StemDestination.Pad())
+        assertEquals(2, r.state.value.pick!!.sels.size)
+        r.pickPad(14)
+        assertEquals(listOf(14, 15), host.pads.last().map { it.lane })
+        assertEquals("2 bouts sur les pads 15 à 16.", r.state.value.message)
     }
 
     @Test
@@ -292,19 +310,19 @@ class StemBoardRouterTest {
     fun theVoiceCutIntoItsPhrasesOnFreePadsInOneStep() {
         // In the energy's frames (6 kHz): 1 s, 2 s and 0.5 s long.
         val edits = Edits(listOf(6_000L until 12_000L, 30_000L until 42_000L, 60_000L until 63_000L))
-        val host = Host(beat().let { it.copy(drums = it.drums.withSample(3, PadSample("v.wav", "Voix 4"))) }, Source(firstBeatFrame = 4_000))
+        val host = Host(beat().let { it.copy(drums = it.drums.withSample(10, PadSample("v.wav", "Voix 4"))) }, Source(firstBeatFrame = 4_000))
         val r = router(host, edits)
         r.chop("song", 3, max = 8)
         // One call: one undo step for every pad.
         assertEquals(1, host.pads.size)
         val cuts = host.pads.single()
-        // Pads 1, 3 (beat), 4 (a sound), 6 (the other scene) are never covered.
-        assertEquals(listOf(1, 4, 6), cuts.map { it.lane })
+        // The kit's first eight, pad 9 (the other scene), pad 11 (a sound) are never covered.
+        assertEquals(listOf(9, 11, 12), cuts.map { it.lane })
         assertEquals(listOf("Voix 5", "Voix 6", "Voix 7"), cuts.map { it.name })
         assertEquals(listOf(48_000, 96_000, 24_000), cuts.map { it.pcm.frames })
         // The second phrase starts 5 s into the song (30 000 × 8 frames).
         assertEquals(((3 * 1_000_000 + 240_000) * 1e-7).toFloat(), cuts[1].pcm.data[0], 1e-6f)
-        assertEquals("3 phrases sur les pads 2, 5 et 7.", r.state.value.message)
+        assertEquals("3 phrases sur les pads 10, 12 et 13.", r.state.value.message)
         // The energy: mono at 6 kHz, the whole song; the beat grid in its frames (120 BPM, first beat at frame 4000).
         assertEquals("[6000, 1, 180000, 3000, 8, 500]", edits.asked.toString())
     }
@@ -312,14 +330,14 @@ class StemBoardRouterTest {
     @Test
     fun morePhrasesThanFreePadsTheLongestGo() {
         val edits = Edits(listOf(0L until 1_000L, 2_000L until 9_000L, 10_000L until 14_000L))
-        val p = beat().let { q -> q.copy(drums = (0 until 16).filter { it !in listOf(7, 9) }.fold(q.drums) { d, i -> d.withSample(i, PadSample("s$i.wav", "Son $i")) }) }
+        val p = beat().let { q -> q.copy(drums = (0 until 16).filter { it !in listOf(11, 13) }.fold(q.drums) { d, i -> d.withSample(i, PadSample("s$i.wav", "Son $i")) }) }
         val host = Host(p)
         val r = router(host, edits)
         r.chop("song", 3)
-        // The two longest, in song order, on pads 8 and 10.
-        assertEquals(listOf(7, 9), host.pads.single().map { it.lane })
+        // The two longest, in song order, on pads 12 and 14.
+        assertEquals(listOf(11, 13), host.pads.single().map { it.lane })
         assertEquals(listOf(56_000, 32_000), host.pads.single().map { it.pcm.frames })
-        assertEquals("2 phrases sur les pads 8 et 10. Plus de pad libre pour la dernière.", r.state.value.message)
+        assertEquals("2 phrases sur les pads 12 et 14. Plus de pad libre pour la dernière.", r.state.value.message)
         // None found: said.
         val none = Host(beat())
         router(none, Edits()).let {

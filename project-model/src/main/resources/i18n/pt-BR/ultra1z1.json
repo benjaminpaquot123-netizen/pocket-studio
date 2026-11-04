@@ -1,0 +1,17 @@
+{
+  "Plus de pad libre : sur quel pad ?": "Nenhum pad livre: em qual pad?",
+  "Le son du pad touché est remplacé (la flèche retour le remet).": "O som do pad tocado é substituído (a seta de voltar o devolve).",
+  "Découper ce que je veux": "Cortar o que eu quiser",
+  "Choisis des bouts de chaque piste et mets-les sur tes pads, dans le Live ou sur une piste.": "Escolha pedaços de cada faixa e coloque nos seus pads, no Live ou numa faixa.",
+  "L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste). Sous la chanson, « Découper ce que je veux » : choisis des bouts et mets-les sur tes pads, ton Live ou une piste. Ou joue des passages dans les cases Remix du Live.": "O app separa uma música em 4 faixas (bateria, baixo, voz, o resto). Embaixo da música, “Cortar o que eu quiser”: escolha pedaços e coloque nos seus pads, no seu Live ou numa faixa. Ou toque trechos nas casas Remix do Live.",
+  "Tes chansons séparées": "Suas músicas separadas",
+  "Leurs pistes (voix, batterie, basse, le reste) se découpent en bouts pour tes pads ; « Garder » les range ici.": "As faixas delas (voz, bateria, baixo, o resto) viram pedaços para os seus pads; “Guardar” os deixa aqui.",
+  "Découper « %s »": "Cortar “%s”",
+  "À télécharger pour « %s » :": "Para baixar para “%s”:",
+  "Rythme · coups : %1$d · réussis : %2$d": "Ritmo · batidas: %1$d · acertos: %2$d",
+  "Rythme · coups : %1$d · joués : %2$d": "Ritmo · batidas: %1$d · tocadas: %2$d",
+  "Rythme · coups : %d": "Ritmo · batidas: %d",
+  "Ton record : %d sur 3": "Seu recorde: %d de 3",
+  "%1$s · étoiles : %2$d sur 3": "%1$s · estrelas: %2$d de 3",
+  "en cours": "em andamento"
+}

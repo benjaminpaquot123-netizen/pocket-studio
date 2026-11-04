@@ -10,10 +10,13 @@ object LiveStarter {
     /** The style the loops are rendered from: four on the floor, a 303 line, a rolling bass. */
     const val STYLE = "acid_techno"
 
-    enum class Source { KickLoop, Clap, AcidLoop, BassLoop, Party }
+    enum class Source { KickLoop, Clap, AcidLoop, BassLoop, Party, Kit }
 
-    /** One pad: its [name] (French, shown translated), what makes it, played [oneShot] or looped every [beats]. */
-    data class Pad(val name: String, val source: Source, val oneShot: Boolean, val beats: Int, val party: String? = null, val gain: Float = 1f)
+    /**
+     * One pad: its [name] (French, shown translated), what makes it, played [oneShot] or looped every
+     * [beats]; [kit]: the kit's voice of a [Source.Kit] pad (its pad in Batterie).
+     */
+    data class Pad(val name: String, val source: Source, val oneShot: Boolean, val beats: Int, val party: String? = null, val gain: Float = 1f, val kit: Int = -1)
 
     val PADS: List<Pad> = listOf(
         Pad("Boucle de kick", Source.KickLoop, oneShot = false, beats = 4),
@@ -24,6 +27,16 @@ object LiveStarter {
         Pad("Laser", Source.Party, oneShot = true, beats = 1, party = "laser", gain = 0.8f),
         Pad("Sirène", Source.Party, oneShot = true, beats = 1, party = "siren_dub", gain = 0.7f),
         Pad("Cri « Go go go! »", Source.Party, oneShot = true, beats = 1, party = "voice_go_go_go"),
+        // Audit ultra round 1, n° 5 (four testers): the home's card promises pads ready to play, the
+        // page's 16 pads sound: the kit's hits under the thumb, then four effects.
+        Pad("Kick", Source.Kit, oneShot = true, beats = 1, kit = 0),
+        Pad("Caisse", Source.Kit, oneShot = true, beats = 1, kit = 2),
+        Pad("Charley", Source.Kit, oneShot = true, beats = 1, kit = 5),
+        Pad("Charley ouvert", Source.Kit, oneShot = true, beats = 1, kit = 6),
+        Pad("Montée", Source.Party, oneShot = true, beats = 1, party = "riser", gain = 0.8f),
+        Pad("Impact", Source.Party, oneShot = true, beats = 1, party = "impact", gain = 0.8f),
+        Pad("Chute", Source.Party, oneShot = true, beats = 1, party = "drop", gain = 0.8f),
+        Pad("« Go! »", Source.Party, oneShot = true, beats = 1, party = "voice_go"),
     )
 
     /**

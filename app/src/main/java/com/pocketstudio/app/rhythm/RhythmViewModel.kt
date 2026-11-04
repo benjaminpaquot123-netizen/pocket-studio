@@ -6055,6 +6055,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun useSong(
         set: StemSet, heard: List<Boolean>? = null,
         choice: com.pocketstudio.model.SongImport? = null, sections: List<com.pocketstudio.model.SongSection> = emptyList(),
+        /** Audit ultra round 1, n° 1: « Découper ce que je veux »: every part muted (a store of sounds, as « Dans un nouveau projet »). */
+        asSource: Boolean = false,
     ): Boolean {
         val info = set.info
         val before = project.value
@@ -6066,7 +6068,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val lead = if (adopts) com.pocketstudio.model.AutoTempo.leadFor(before.copy(remix = Remix()), set.name, info.bpm) else null
         // Everything in one undo step (« Annuler » takes it all back).
         session.edit("remix") { p ->
-            val stems = if (place == com.pocketstudio.model.SongPlace.VoiceOnly) Remix.stemsHeard(listOf(false, false, false, true)) else Remix.stemsHeard(heard)
+            val stems = when {
+                asSource -> List(Remix.STEMS) { com.pocketstudio.model.StemMix(mute = true) }
+                place == com.pocketstudio.model.SongPlace.VoiceOnly -> Remix.stemsHeard(listOf(false, false, false, true))
+                else -> Remix.stemsHeard(heard)
+            }
             var remix = Remix(set.id, set.name, info.bpm, info.firstBeat, seconds = set.seconds, stems = stems)
             if (place == com.pocketstudio.model.SongPlace.Passage && choice != null) remix = remix.onlyPassage(choice.fromBar, choice.bars)
             val keyed = if (setKey) info.root?.let { p.copy(harmony = Harmony(it, if (info.minor) Scale.Minor else Scale.Major)) } ?: p else p
@@ -6181,8 +6187,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         cutToPad(stem, bars, lane)
     }
 
-    /** « Remplacer » in the question: the cut goes on the selected pad after all. */
-    fun confirmStemPad() {
+    /**
+     * The pad picked in the question (audit ultra round 1, n° 2: a pad picker, not « replace the
+     * selected pad? »): the cut goes on pad [lane] after all (null: the one first proposed).
+     */
+    fun confirmStemPad(lane: Int? = null) {
         val ask = _stemPadAsk.value ?: return
         _stemPadAsk.value = null
         cutToPad(ask.stem, ask.bars, ask.lane)

@@ -683,6 +683,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
                         groove(style, emptyList(), listOf(StarterWizard.Part.Bass to sound), mood, bars = 2, acid = null, loop = true)?.let { it to 8 }
                     }
                     com.pocketstudio.model.LiveStarter.Source.Party -> pad.party?.let { partySound(it) }?.let { it to 1 }
+                    // Audit ultra round 1, n° 5: the kit's hits fill the page's lower rows.
+                    com.pocketstudio.model.LiveStarter.Source.Kit -> kitVoice(pad.kit)?.let { it to 1 }
                 }
             } catch (e: CancellationException) {
                 throw e

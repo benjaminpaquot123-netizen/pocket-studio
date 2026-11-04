@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.PlayArrow
@@ -50,6 +51,7 @@ import com.pocketstudio.app.sounds.SoundLooks
 import com.pocketstudio.ui.FamilyChip
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.NeonCard
+import kotlinx.coroutines.launch
 import com.pocketstudio.ui.SectionLabel
 import com.pocketstudio.ui.SoundTile
 import com.pocketstudio.ui.TileGrid
@@ -76,6 +78,8 @@ class LibraryUi(
     val favorites: List<String> = emptyList(),
     /** Lot 4a: opened on « Ma bibliothèque » (the family of the user's latest sound first). */
     val startMine: Boolean = false,
+    /** Audit ultra round 1, n° 3: the songs separated on the phone (id, name), the project's first: their stems are cut from here. */
+    val songs: List<Pair<String, String>> = emptyList(),
 )
 
 class LibraryActions(
@@ -95,6 +99,8 @@ class LibraryActions(
     val deleteMine: (String) -> Unit = {},
     /** ☆ on a sound: in « Favoris » or out. */
     val toggleFavorite: (SoundRef) -> Unit = {},
+    /** Audit ultra round 1, n° 3: « Découper « Boys » »: the Remix's cut screen of that song (the library closes). */
+    val cutSong: (String) -> Unit = {},
 )
 
 /**
@@ -122,7 +128,11 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                 }
                 IconButton(onClick = actions.close, modifier = Modifier.testTag("library_close")) { Icon(Icons.Filled.Close, contentDescription = tr("Fermer")) }
             }
-            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            val scroll = rememberScrollState()
+            val scope = androidx.compose.runtime.rememberCoroutineScope()
+            // Audit ultra round 1, n° 12: a pack's « Voir ses sons » puts its name in the search.
+            var searchAsked by rememberSaveable { mutableStateOf<String?>(null) }
+            Column(Modifier.weight(1f).verticalScroll(scroll).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 // Errors and notices at the top, where they are seen (the pack list can be far below).
                 ui.packs.message?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("library_message")) }
                 ui.packs.readyNote?.let { ReadyLine(it, Modifier.testTag("library_ready")) }
@@ -130,6 +140,9 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                 AllPacksNews(ui, actions)
                 // Without its pack, a style has one or two kicks to offer: the pack is proposed first.
                 StylePackOffer(ui, actions)
+                // Audit ultra round 1, n° 3 (two testers looked here for their song's voice): the songs separated
+                // on the phone, each one touch from its cut screen (the pieces then come back as sounds).
+                if (ui.songs.isNotEmpty()) SeparatedSongs(ui.songs, actions.cutSong)
                 // The family of sounds (the pad's own first), then the shared browser: folders by
                 // meaning, « Récents », « Favoris », « Ma bibliothèque » and the search at the top.
                 Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -143,7 +156,7 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                     shelvesOf(libraryChoices(kind, ui.packs.installed, ui.styleId), ui.packs.installed, ui.styleId, party = true)
                 }
                 val mine = ui.mine.filter { it.kind == kind }
-                NeonCard {
+                NeonCard(modifier = Modifier.testTag("library_sounds")) {
                     SectionLabel(tr("Sons"), foldKey = "Sons de la bibliothèque")
                     ShelfBrowser(
                         ShelfBrowserUi(
@@ -161,6 +174,8 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                                 MySoundsCard(mine.filter { it.id in ids }, kind, ui, actions)
                             },
                             search = { q -> librarySearch(q, ui) },
+                            searchMore = { q -> PackOffers(q, ui, actions) },
+                            searchAsked = searchAsked,
                             kindOf = { o -> soundKind(o.ref, ui.mine) },
                         ),
                         ShelfBrowserActions(
@@ -176,7 +191,59 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                     Text(tr("Touche un son pour l'écouter, « Poser » pour le mettre sur %s.", ui.target),
                         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
-                PackList(ui, actions)
+                PackList(ui, actions, show = { name ->
+                    // Audit ultra round 1, n° 12: a pack on the phone shows its sounds (the search, at the top).
+                    searchAsked = name
+                    scope.launch { scroll.animateScrollTo(0) }
+                })
+            }
+        }
+    }
+}
+
+/**
+ * Audit ultra round 1, n° 11: « funk » found nothing while the « Disco / funk » pack was one download
+ * away: the packs not on the phone whose name holds the words, each with its « Télécharger ».
+ */
+@Composable
+private fun PackOffers(query: String, ui: LibraryUi, actions: LibraryActions) {
+    val words = com.pocketstudio.model.PackSearch.fold(query).split(' ').filter { it.isNotBlank() }
+    if (words.isEmpty()) return
+    val index = (ui.packs.index as? IndexState.Ready)?.index ?: return
+    val offers = index.packs.filter { entry ->
+        ui.packs.installed.none { it.id == entry.id } &&
+            words.all { w -> listOf(entry.name, tr(entry.name), entry.id).any { w in com.pocketstudio.model.PackSearch.fold(it) } }
+    }
+    if (offers.isEmpty()) return
+    Text(tr("À télécharger pour « %s » :", query), style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("library_offers"))
+    offers.forEach { entry ->
+        val progress = ui.packs.downloading[entry.id]
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(tr(entry.name))
+                Text(tr("%d sons · %s", entry.sounds, entry.sizeLabel), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                if (progress != null) LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth(), color = Neon.Cyan)
+            }
+            if (progress == null) {
+                OutlinedButton(onClick = { actions.download(entry.id) }, modifier = Modifier.testTag("library_offer_${entry.id}")) { Text(tr("Télécharger")) }
+            }
+        }
+    }
+}
+
+/** « Tes chansons séparées »: each song's « Découper », its stems' pieces then go on the pads or are kept here. */
+@Composable
+private fun SeparatedSongs(songs: List<Pair<String, String>>, cut: (String) -> Unit) {
+    NeonCard(accent = com.pocketstudio.app.remix.SONG_COLOR, modifier = Modifier.testTag("library_songs")) {
+        SectionLabel(tr("Tes chansons séparées"), color = com.pocketstudio.app.remix.SONG_COLOR)
+        Text(
+            tr("Leurs pistes (voix, batterie, basse, le reste) se découpent en bouts pour tes pads ; « Garder » les range ici."),
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+        )
+        songs.forEach { (id, name) ->
+            androidx.compose.material3.OutlinedButton(onClick = { cut(id) }, modifier = Modifier.fillMaxWidth().testTag("library_cut_$id")) {
+                Icon(Icons.Filled.ContentCut, contentDescription = null)
+                Text(" " + tr("Découper « %s »", name), maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
             }
         }
     }
@@ -356,7 +423,7 @@ private fun StylePackOffer(ui: LibraryUi, actions: LibraryActions) {
 
 /** Every pack of the index: installed (its size, delete), downloading, or to download. */
 @Composable
-private fun PackList(ui: LibraryUi, actions: LibraryActions) {
+private fun PackList(ui: LibraryUi, actions: LibraryActions, show: (String) -> Unit = {}) {
     val packs = ui.packs
     var deleting by rememberSaveable { mutableStateOf<String?>(null) }
     // The confirmation of « Tout télécharger » (null: closed).
@@ -401,8 +468,12 @@ private fun PackList(ui: LibraryUi, actions: LibraryActions) {
                             outdated && packs.queue == null -> OutlinedButton(onClick = { actions.download(entry.id) }, modifier = Modifier.testTag("library_update_${entry.id}")) {
                                 Text(tr("Mettre à jour"))
                             }
-                            installed -> TextButton(onClick = { deleting = entry.id }, modifier = Modifier.testTag("library_delete_${entry.id}")) {
-                                Text(tr("Supprimer"), color = Neon.RedText)
+                            installed -> Row {
+                                // Audit ultra round 1, n° 12: a pack downloaded was nowhere to be found (« Supprimer » only).
+                                TextButton(onClick = { show(entry.name) }, modifier = Modifier.testTag("library_show_${entry.id}")) { Text(tr("Voir ses sons")) }
+                                TextButton(onClick = { deleting = entry.id }, modifier = Modifier.testTag("library_delete_${entry.id}")) {
+                                    Text(tr("Supprimer"), color = Neon.RedText)
+                                }
                             }
                             else -> OutlinedButton(onClick = { actions.download(entry.id) }, modifier = Modifier.testTag("library_download_${entry.id}")) {
                                 Text(tr("Télécharger"))

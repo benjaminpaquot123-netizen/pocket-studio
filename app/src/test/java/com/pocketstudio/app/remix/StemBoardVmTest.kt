@@ -146,15 +146,16 @@ class StemBoardVmTest {
         val before = vm.project.value
         val depth = vm.session.undoDepth
         vm.stemBoard.chop(set.id, 3)
-        assertEquals("3 phrases sur les pads 2, 4 et 5.", said(vm))
+        // Audit ultra round 1, n° 2: the kit's first eight are never taken: pads 9 to 11.
+        assertEquals("3 phrases sur les pads 9 à 11.", said(vm))
         val p = vm.project.value
         // The kick and the snare as they were.
         assertNull(p.drums.lanes[0].sample)
         assertNull(p.drums.lanes[2].sample)
         assertEquals(before.drums.lanes[0].hits, p.drums.lanes[0].hits)
-        assertEquals(listOf("Voix 1", "Voix 2", "Voix 3"), listOf(1, 3, 4).map { p.drums.lanes[it].sample?.name })
+        assertEquals(listOf("Voix 1", "Voix 2", "Voix 3"), listOf(8, 9, 10).map { p.drums.lanes[it].sample?.name })
         // Each phrase as sung: 2.5 s, 3 s, 2 s.
-        val seconds = listOf(1, 3, 4).map { vm.padSamples.info.value[p.drums.lanes[it].sample!!.file]!!.seconds }
+        val seconds = listOf(8, 9, 10).map { vm.padSamples.info.value[p.drums.lanes[it].sample!!.file]!!.seconds }
         listOf(2.5, 3.0, 2.0).zip(seconds).forEach { (want, got) -> assertEquals(want, got, 0.05) }
         // The project's tempo and key never move; one undo step takes all three away.
         assertEquals(before.tempoBpm, p.tempoBpm, 0.0)
@@ -198,11 +199,12 @@ class StemBoardVmTest {
         vm.selectPad(0)  // the kick, selected: the stretch still never goes there
         val depth = vm.session.undoDepth
         vm.stemBoard.send(StemSelection(set.id, 3, 96_000, 144_000), StemDestination.Pad())
-        assertEquals("« Voix 1 » est sur le pad 2.", said(vm))
+        assertEquals("« Voix 1 » est sur le pad 9.", said(vm))
         val p = vm.project.value
         assertNull(p.drums.lanes[0].sample)
-        assertEquals("Voix 1", p.drums.lanes[1].sample?.name)
-        assertEquals(1.0, vm.padSamples.info.value[p.drums.lanes[1].sample!!.file]!!.seconds, 0.01)
+        assertNull("the kit's Kick 2, unplayed, stays (audit ultra round 1, n° 2)", p.drums.lanes[1].sample)
+        assertEquals("Voix 1", p.drums.lanes[8].sample?.name)
+        assertEquals(1.0, vm.padSamples.info.value[p.drums.lanes[8].sample!!.file]!!.seconds, 0.01)
         assertEquals(depth + 1, vm.session.undoDepth)
         // Read from the song the project plays (its own copy, no second load).
         assertEquals(1, sink.loaded.size)

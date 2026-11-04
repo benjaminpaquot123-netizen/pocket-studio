@@ -114,6 +114,7 @@ fun CutScreen(
     val levels = remember(ui.setId, ui.frames, ui.peaks) { BoardPeaks(Demucs.STEMS.size) }
     LaunchedEffect(levels) { levels.load(ui.peaks, ui.peaksContext) }
     val work = actions.state.collectAsState()
+    PadPickHost(work.value, actions)
     val scope = rememberCoroutineScope()
     var finding by remember { mutableStateOf(false) }
     var note by remember { mutableStateOf<String?>(null) }

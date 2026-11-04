@@ -7,14 +7,21 @@ package com.pocketstudio.model
  */
 object RemixVoice {
     /**
-     * Pad [lane] is free for a cut of the song: no sound of its own, no studio voice (an 808), and
-     * no hit in any scene. A kit's sound nobody plays (a cowbell, a conga) may go.
+     * Pad [lane] is free for a cut of the song: one of the kit's spare pads (9 to 16, from
+     * [SPARE_FROM]), no sound of its own, no studio voice (an 808), and no hit in any scene. A
+     * spare kit sound nobody plays (a cowbell, a conga) may go; the kit's first eight (Kick,
+     * Kick 2, Caisse, Clap, Charley…) never go without asking (audit ultra round 1, n° 2: three
+     * testers lost their Kick, Kick 2 or Caisse to « Sur les pads »).
      */
     fun padIsFree(p: Project, lane: Int): Boolean {
+        if (lane < SPARE_FROM) return false
         val own = p.drums.lanes.getOrNull(lane) ?: return false
         if (own.sample != null || own.hits.isNotEmpty() || p.padVoices.containsKey(lane)) return false
         return p.scenes.withIndex().none { (i, s) -> i != p.scene && s.drums.lanes.getOrNull(lane)?.hits?.isNotEmpty() == true }
     }
+
+    /** The first of the kit's spare pads (pad 9): the ones before are its main sounds. */
+    const val SPARE_FROM = 8
 
     /** The free pads ([padIsFree]), in pad order. */
     fun freePads(p: Project): List<Int> = (0 until DrumPattern.PAD_COUNT).filter { padIsFree(p, it) }

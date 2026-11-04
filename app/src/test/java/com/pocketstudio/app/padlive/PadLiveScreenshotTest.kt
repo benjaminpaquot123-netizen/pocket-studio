@@ -30,16 +30,13 @@ import org.robolectric.annotation.GraphicsMode
 open class PadLiveScreenshotTest : ScreenshotTest() {
     override fun wanted(name: String) = name in SHOTS
 
-    /** Page A as a new « Live » project gets it, and four more hits. */
+    /** Page A as a new « Live » project gets it (audit ultra round 1, n° 5: its 16 pads), the Montée held, two hits in a group. */
     private val pads: LivePads = PadLive.placed(
         LivePads(), 0,
-        LiveStarter.PADS.mapIndexed { i, p -> LiveClip("s$i.wav", p.name, if (p.oneShot) 1 else p.beats, p.oneShot, p.gain) } +
-            listOf(
-                PadLive.withMode(LiveClip("m.wav", "Montée", 1, oneShot = true), PadMode.HOLD),
-                LiveClip("i.wav", "Impact", 1, oneShot = true),
-                LiveClip("c.wav", "Chute", 1, oneShot = true, group = 1),
-                LiveClip("w.wav", "Sifflet", 1, oneShot = true, group = 1),
-            ),
+        LiveStarter.PADS.mapIndexed { i, p ->
+            val clip = LiveClip("s$i.wav", p.name, if (p.oneShot) 1 else p.beats, p.oneShot, p.gain, group = if (i == 14 || i == 15) 1 else 0)
+            if (p.name == "Montée") PadLive.withMode(clip, PadMode.HOLD) else clip
+        },
     )
 
     /** The kick's and the 303's loops play, the bass waits for its beat. */
@@ -151,7 +148,7 @@ open class PadLiveScreenshotTest : ScreenshotTest() {
         val result = com.pocketstudio.model.PadChallenge.Result(5, 6, 1, 2, listOf(true, true, true, false, true, true), -1)
         PadLiveScreen(
             PadLiveUi(pads, List(LivePads.ALL) { 0 }, page = 0, pack = "fete", playing = false, tempoBpm = 124.0, beatsPerBar = 4,
-                challenge = ChallengeUi.Done(challenge, result)),
+                challenge = ChallengeUi.Done(challenge, result), challengeStars = listOf(3, 2, 3)),
             PadLiveActions(), clockOf = { -1 }, record = { RecordDot() }, still = true,
         )
     }

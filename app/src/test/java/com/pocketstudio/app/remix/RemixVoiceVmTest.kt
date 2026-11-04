@@ -192,29 +192,31 @@ class RemixVoiceVmTest {
         vm.stemToPad(3, 2)
         waitUntil("the cut never landed") { vm.remixCut.value != null }
         val p = vm.project.value
-        // The kick and the snare are as they were; the cut is on pad 2, the first one the beat never plays.
+        // The kick and the snare are as they were, and the kit's Kick 2 too (audit ultra round 1, n° 2):
+        // the cut is on pad 9, the kit's first spare pad.
         assertNull(p.drums.lanes[0].sample)
         assertEquals(2, p.drums.lanes[0].hits.size)
+        assertNull(p.drums.lanes[1].sample)
         assertNull(p.drums.lanes[2].sample)
-        val cut = p.drums.lanes[1].sample
+        val cut = p.drums.lanes[8].sample
         assertNotNull(cut)
         assertEquals("Voix 1", cut!!.name)
         assertEquals(RemixVoice.CUT_RELEASE, cut.release)
-        assertEquals(1, vm.transport.value.selectedPad)
-        assertEquals(1, vm.remixCut.value!!.lane)
-        assertTrue(vm.remixCut.value!!.message, vm.remixCut.value!!.message.contains("pad 2"))
+        assertEquals(8, vm.transport.value.selectedPad)
+        assertEquals(8, vm.remixCut.value!!.lane)
+        assertTrue(vm.remixCut.value!!.message, vm.remixCut.value!!.message.contains("pad 9"))
         // Two bars from bar 2 of the song.
         assertEquals(96_000L to 192_000L, sink.extracted.last())
         // The kit keeps its name (no « Kit : Voix »).
         assertEquals(kitName(beat()), kitName(p))
         // A second cut: the next free pad, the next number.
         vm.stemToPad(3, 1)
-        waitUntil("the second cut never landed") { vm.project.value.drums.lanes[3].sample != null }
-        assertEquals("Voix 2", vm.project.value.drums.lanes[3].sample!!.name)
+        waitUntil("the second cut never landed") { vm.project.value.drums.lanes[9].sample != null }
+        assertEquals("Voix 2", vm.project.value.drums.lanes[9].sample!!.name)
         // Its start, end and fade, from the Remix page.
         vm.editCut("start") { it.copy(start = 0.25f) }
         vm.editCut(null) { it.copy(attack = 0.05f, release = 0.3f) }
-        val trimmed = vm.project.value.drums.lanes[3].sample!!
+        val trimmed = vm.project.value.drums.lanes[9].sample!!
         assertEquals(0.25f, trimmed.start)
         assertEquals(0.3f, trimmed.release)
     }
@@ -236,11 +238,12 @@ class RemixVoiceVmTest {
         vm.dismissStemPadAsk()
         assertNull(vm.stemPadAsk.value)
         assertNull(vm.project.value.drums.lanes[0].sample)
-        // « Remplacer »: on the selected pad after all.
+        // A pad picked (audit ultra round 1, n° 2): on that one.
         vm.stemToPad(3, 1)
-        vm.confirmStemPad()
-        waitUntil("the cut never landed") { vm.project.value.drums.lanes[0].sample != null }
-        assertEquals("Voix 1", vm.project.value.drums.lanes[0].sample!!.name)
+        vm.confirmStemPad(12)
+        waitUntil("the cut never landed") { vm.project.value.drums.lanes[12].sample != null }
+        assertEquals("Voix 1", vm.project.value.drums.lanes[12].sample!!.name)
+        assertNull(vm.project.value.drums.lanes[0].sample)
         // And « Découper la voix en phrases » says why it cannot.
         vm.splitVoice()
         waitUntil("no word") { vm.sampleTask.value is SampleTask.Failed }
@@ -255,11 +258,10 @@ class RemixVoiceVmTest {
         vm.splitVoice()
         waitUntil("the phrases never landed") { vm.remixCut.value != null }
         val lanes = vm.project.value.drums.lanes
-        // Three phrases on pads 2, 4, 5 (pads 1 and 3 play the beat), named Voix 1..3.
-        assertEquals(listOf("Voix 1", "Voix 2", "Voix 3"), listOf(1, 3, 4).map { lanes[it].sample?.name })
-        assertNull(lanes[0].sample)
-        assertNull(lanes[2].sample)
-        assertNull(lanes[5].sample)
+        // Three phrases on pads 9, 10, 11 (the kit's first eight are never taken), named Voix 1..3.
+        assertEquals(listOf("Voix 1", "Voix 2", "Voix 3"), listOf(8, 9, 10).map { lanes[it].sample?.name })
+        (0 until 8).forEach { assertNull(lanes[it].sample) }
+        assertNull(lanes[11].sample)
         // Each cut holds its phrase: from just before it starts to just after it ends.
         val cuts = sink.extracted.takeLast(3)
         sink.phrases.zip(cuts).forEach { (phrase, cut) ->

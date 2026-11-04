@@ -93,6 +93,12 @@ interface StemBoardActions {
     /** The board showed [StemBoardState.message]: it goes. */
     fun dismissMessage() {}
 
+    /** The question of [StemBoardState.pick]: its pieces go on pad [lane] (and the next ones), covering their sounds. */
+    fun pickPad(lane: Int) {}
+
+    /** The question of [StemBoardState.pick] answered « Annuler »: nothing is sent. */
+    fun dismissPick() {}
+
     // --- Lot C (n° 24): « Découper la chanson » (CutScreen.kt) ---------------------------------
 
     /** [play], round and round until [stop] when [loop] (« Boucle »). */
@@ -117,6 +123,12 @@ interface StemBoardActions {
 }
 
 /** What the board shows of its actions' work (B3). */
+/**
+ * Audit ultra round 1, n° 2: no pad is free for [sels] (the kit's first eight are never taken
+ * unasked): the user picks one; [names] are the 16 pads' names as the drums show them.
+ */
+data class PadPick(val sels: List<StemSelection>, val names: List<String>)
+
 data class StemBoardState(
     /** The stretch heard alone ([StemBoardActions.play]), null when nothing plays. */
     val playing: StemSelection? = null,
@@ -126,6 +138,8 @@ data class StemBoardState(
     val busy: String? = null,
     /** What the last send or chop did (« 6 phrases sur les pads 9 à 14. ») or why not, until read. */
     val message: String? = null,
+    /** No pad free for [PadPick.sels]: the user picks the pad they go on ([StemBoardActions.pickPad]). */
+    val pick: PadPick? = null,
 ) {
     companion object {
         /** Nothing playing, nothing said. */

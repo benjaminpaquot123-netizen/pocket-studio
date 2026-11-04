@@ -18,7 +18,6 @@
   "Plus de pad libre pour la dernière.": "Sonuncusu için boş pad kalmadı.",
   "Plus de pad libre pour les %d dernières.": "Son %d tanesi için boş pad kalmadı.",
   "Replier %s": "%s daralt",
-  "Tous les pads ont déjà un son : choisis le pad à remplacer, ou vide-en un dans Batterie.": "Bütün pad'lerde zaten bir ses var: değiştirilecek pad'i seç ya da Davul'da birini boşalt.",
   "Tous les pads ont déjà un son : vide un pad dans Batterie, puis recommence.": "Bütün pad'lerde zaten bir ses var: Davul'da bir pad'i boşalt, sonra yeniden dene.",
   "Trop long pour un pad : %d secondes au plus. Choisis un morceau plus court.": "Bir pad için fazla uzun: en fazla %d saniye. Daha kısa bir parça seç.",
   "Trop long pour une piste : %d minutes au plus. Choisis un morceau plus court.": "Bir kanal için fazla uzun: en fazla %d dakika. Daha kısa bir parça seç.",

@@ -308,7 +308,8 @@ object Glossary {
     )
     val REMIX: Help get() = Help(
         tr("Remix"),
-        tr("L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste). Découpe-les en bouts pour tes pads, ton Live ou une piste, ou joue des passages dans les cases Remix du Live."),
+        // Audit ultra round 1, n° 1: the help says where the cutting is (the song's card), as it is.
+        tr("L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste). Sous la chanson, « Découper ce que je veux » : choisis des bouts et mets-les sur tes pads, ton Live ou une piste. Ou joue des passages dans les cases Remix du Live."),
     )
     val AUDIO_TRACK: Help get() = Help(
         tr("Piste audio"),

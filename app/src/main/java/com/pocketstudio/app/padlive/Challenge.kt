@@ -110,6 +110,11 @@ class ChallengeController(private val vm: RhythmViewModel) {
         AppLog.add(if (c == null) "Défi : aucun pad « coup » sur la page" else "Défi ${c.level} prêt")
     }
 
+    /** Audit ultra round 1, n° 9: « il faut des pads coup » stayed after a pack brought them: asked again as the pads change. */
+    fun refresh() {
+        if (_ui.value == ChallengeUi.NoShots) open()
+    }
+
     fun close() {
         stopExample()
         taps.clear()
@@ -160,11 +165,9 @@ class ChallengeController(private val vm: RhythmViewModel) {
             }
             // The pads light where the example is heard (read from what really went out).
             val rate = pcm.sampleRate
-            val starts = c.hits.indices.map { PadChallenge.frameOf(c, it, rate) }
-            val lit = (rate * LIT_MS / 1000).toLong()
+            val starts = c.hits.indices.map { PadChallenge.frameOf(c, it, rate).toLong() }
             while (!ended.get()) {
-                val heard = play.heard()
-                val at = if (heard < 0) -1 else starts.indexOfLast { it <= heard }.takeIf { it >= 0 && heard - starts[it] < lit } ?: -1
+                val at = litHit(starts, play.heard(), rate)
                 if ((_ui.value as? ChallengeUi.Listening)?.at != at) _ui.value = ChallengeUi.Listening(c, at)
                 delay(FRAME_MS)
             }
@@ -265,9 +268,26 @@ class ChallengeController(private val vm: RhythmViewModel) {
     }
 
     companion object {
-        /** How long a pad stays lit for a hit of the example. */
+        /** How long a pad stays lit for a hit of the example, at least. */
         const val LIT_MS = 180
+        /** The dark gap before the next hit, so that a pad hit twice in a row flashes twice. */
+        const val GAP_MS = 70
         private const val FRAME_MS = 30L
+
+        /**
+         * The hit of the example lit when [heard] frames went out ([starts]: each hit's frame), -1
+         * before the first, past the last's [LIT_MS], or in the short gap before the next. Audit ultra
+         * round 1, n° 9: lit for 180 ms only, the pads were dark most of the example (« regarde les
+         * pads s'allumer », none was): a hit's pad now stays lit until just before the next one.
+         */
+        fun litHit(starts: List<Long>, heard: Long, rate: Int): Int {
+            if (heard < 0) return -1
+            val at = starts.indexOfLast { it <= heard }.takeIf { it >= 0 } ?: return -1
+            val minLit = rate.toLong() * LIT_MS / 1000
+            val gap = rate.toLong() * GAP_MS / 1000
+            val until = starts.getOrNull(at + 1)?.let { maxOf(it - gap, starts[at] + minLit) } ?: (starts[at] + minLit)
+            return if (heard < until) at else -1
+        }
     }
 }
 
@@ -290,7 +310,11 @@ internal fun levelName(level: Int): String = when (level) {
  * player plays, green or red once scored), and at most two buttons.
  */
 @Composable
-internal fun ChallengePanel(ui: ChallengeUi, pads: com.pocketstudio.model.LivePads, actions: ChallengeActions) {
+internal fun ChallengePanel(
+    ui: ChallengeUi, pads: com.pocketstudio.model.LivePads, actions: ChallengeActions,
+    /** The best stars of each level ([com.pocketstudio.model.PadLiveSet.stars]). */
+    best: List<Int> = emptyList(),
+) {
     val shape = RoundedCornerShape(16.dp)
     Column(
         Modifier.fillMaxWidth().clip(shape).background(Neon.Surface).border(1.dp, Neon.Amber.copy(alpha = 0.45f), shape)
@@ -309,7 +333,7 @@ internal fun ChallengePanel(ui: ChallengeUi, pads: com.pocketstudio.model.LivePa
                 c?.let { challengeTitle(it) } ?: tr("Défi"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold,
                 color = Neon.Amber, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f).testTag("padlive_challenge_title"),
             )
-            com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.ScreenHelp.PADLIVE_CHALLENGE, about = listOf("padlive_challenge_listen", "padlive_challenge_go", "padlive_challenge_finish", "padlive_challenge_again", "padlive_challenge_next"))
+            com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.ScreenHelp.PADLIVE_CHALLENGE, about = listOf("padlive_challenge_listen", "padlive_challenge_go", "padlive_challenge_finish", "padlive_challenge_again", "padlive_challenge_next") + (1..PadChallenge.LEVELS.size).map { "padlive_challenge_level_$it" })
             IconButton(onClick = actions.close, modifier = Modifier.size(48.dp).testTag("padlive_challenge_close")) {
                 Icon(Icons.Filled.Close, contentDescription = tr("Fermer le défi"), tint = Neon.TextSecondary)
             }
@@ -326,8 +350,20 @@ internal fun ChallengePanel(ui: ChallengeUi, pads: com.pocketstudio.model.LivePa
             line, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, maxLines = 2, overflow = TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth().semantics { liveRegion = LiveRegionMode.Polite }.testTag("padlive_challenge_line"),
         )
+        // Audit ultra round 1, n° 9: every challenge with its best stars, one touch to play it (it went back
+        // to challenge 1 with no list, and a try worse than the best seemed to wipe it).
+        if (c != null && (ui is ChallengeUi.Ready || ui is ChallengeUi.Done)) LevelList(c.level, best, actions.pick)
         if (c != null) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+            // The rhythm's dots, said as one (TalkBack had a row of nameless dots).
+            val said = when (ui) {
+                is ChallengeUi.Done -> tr("Rythme · coups : %1\$d · réussis : %2\$d", c.hits.size, ui.result.right)
+                is ChallengeUi.YourTurn -> tr("Rythme · coups : %1\$d · joués : %2\$d", c.hits.size, ui.taps)
+                else -> tr("Rythme · coups : %d", c.hits.size)
+            }
+            Row(
+                Modifier.fillMaxWidth().semantics(mergeDescendants = true) { contentDescription = said }.testTag("padlive_challenge_dots"),
+                horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically,
+            ) {
                 if (ui is ChallengeUi.Done) Stars(ui.result.stars)
                 c.hits.forEachIndexed { i, h ->
                     val color = pads.at(h.pad)?.let { livePadColor(it.name, h.pad % PadLive.PAGE_SIZE) } ?: Neon.TextSecondary
@@ -339,6 +375,13 @@ internal fun ChallengePanel(ui: ChallengeUi, pads: com.pocketstudio.model.LivePa
                     }
                     Box(Modifier.size(14.dp).clip(CircleShape).background(fill).border(1.5.dp, color, CircleShape))
                 }
+            }
+        }
+        // The best stays, said when this try did less (on its own line: the buttons keep their words).
+        if (ui is ChallengeUi.Done) {
+            val record = best.getOrElse(ui.c.level - 1) { 0 }
+            if (record > ui.result.stars) {
+                Text(tr("Ton record : %d sur 3", record), style = MaterialTheme.typography.labelMedium, color = Neon.Amber, modifier = Modifier.testTag("padlive_challenge_record"))
             }
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -372,7 +415,39 @@ class ChallengeActions(
     val again: () -> Unit = {},
     val next: () -> Unit = {},
     val close: () -> Unit = {},
+    /** Audit ultra round 1, n° 9: a challenge of the list (its level, 1-based). */
+    val pick: (Int) -> Unit = {},
 )
+
+/** Every challenge, its number and its best stars; the one shown is outlined. */
+@Composable
+private fun LevelList(shown: Int, best: List<Int>, pick: (Int) -> Unit) {
+    Row(Modifier.fillMaxWidth().testTag("padlive_challenge_levels"), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        for (level in 1..PadChallenge.LEVELS.size) {
+            val stars = best.getOrElse(level - 1) { 0 }
+            val here = level == shown
+            val said = tr("%1\$s · étoiles : %2\$d sur 3", tr("Défi %1\$d · %2\$s", level, levelName(level)), stars)
+            Column(
+                Modifier.weight(1f).heightIn(min = 48.dp).clip(RoundedCornerShape(10.dp))
+                    .background(if (here) Neon.Amber.copy(alpha = 0.22f) else Neon.SurfaceHigh)
+                    .border(1.dp, if (here) Neon.Amber else Color.Transparent, RoundedCornerShape(10.dp))
+                    .clickable(role = Role.Button) { pick(level) }
+                    .semantics(mergeDescendants = true) { contentDescription = said }
+                    .padding(vertical = 4.dp).testTag("padlive_challenge_level_$level"),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Text("$level", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = if (here) Neon.Amber else Neon.TextPrimary)
+                Row {
+                    for (i in 0 until 3) {
+                        Icon(if (i < stars) Icons.Filled.Star else Icons.Filled.StarBorder, contentDescription = null,
+                            tint = if (i < stars) Neon.Amber else Neon.TextSecondary, modifier = Modifier.size(10.dp))
+                    }
+                }
+            }
+        }
+    }
+}
 
 /** The score in plain words (said by TalkBack as it comes). */
 internal fun resultWords(r: PadChallenge.Result): String {

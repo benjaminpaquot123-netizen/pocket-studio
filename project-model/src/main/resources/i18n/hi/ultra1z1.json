@@ -1,0 +1,17 @@
+{
+  "Plus de pad libre : sur quel pad ?": "कोई पैड खाली नहीं: किस पैड पर?",
+  "Le son du pad touché est remplacé (la flèche retour le remet).": "छुए गए पैड की आवाज़ बदल जाएगी (वापस वाला तीर उसे लौटा देगा)।",
+  "Découper ce que je veux": "जो चाहूँ वो काटूँ",
+  "Choisis des bouts de chaque piste et mets-les sur tes pads, dans le Live ou sur une piste.": "हर ट्रैक के टुकड़े चुनो और उन्हें अपने पैड, Live या किसी ट्रैक पर रखो।",
+  "L'appli sépare une chanson en 4 pistes (batterie, basse, voix, le reste). Sous la chanson, « Découper ce que je veux » : choisis des bouts et mets-les sur tes pads, ton Live ou une piste. Ou joue des passages dans les cases Remix du Live.": "ऐप एक गाने को 4 ट्रैक में अलग करता है (ड्रम, बेस, आवाज़, बाकी)। गाने के नीचे, “जो चाहूँ वो काटूँ”: टुकड़े चुनो और उन्हें अपने पैड, अपने Live या किसी ट्रैक पर रखो। या Live के Remix खानों में हिस्से बजाओ।",
+  "Tes chansons séparées": "तुम्हारे अलग किए गाने",
+  "Leurs pistes (voix, batterie, basse, le reste) se découpent en bouts pour tes pads ; « Garder » les range ici.": "उनके ट्रैक (आवाज़, ड्रम, बेस, बाकी) तुम्हारे पैड के लिए टुकड़ों में कटते हैं; “रखो” उन्हें यहाँ रखता है।",
+  "Découper « %s »": "“%s” काटो",
+  "À télécharger pour « %s » :": "“%s” के लिए डाउनलोड:",
+  "Rythme · coups : %1$d · réussis : %2$d": "रिदम · चोटें: %1$d · सही: %2$d",
+  "Rythme · coups : %1$d · joués : %2$d": "रिदम · चोटें: %1$d · बजाईं: %2$d",
+  "Rythme · coups : %d": "रिदम · चोटें: %d",
+  "Ton record : %d sur 3": "तुम्हारा रिकॉर्ड: 3 में से %d",
+  "%1$s · étoiles : %2$d sur 3": "%1$s · सितारे: 3 में से %2$d",
+  "en cours": "चल रहा है"
+}

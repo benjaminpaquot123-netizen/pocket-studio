@@ -220,7 +220,10 @@ object PadLive {
      */
     data class Pack(val id: String, val name: String, val style: String?, val hits: List<Hit>)
 
-    /** Where a pack's hits start on its page: the third row (the loops above, under the thumb lower down). */
+    /**
+     * Where a pack's hits start on its page: the third row (the loops above, under the thumb lower
+     * down); audit ultra round 1, n° 5: eight of them, the page's last two rows full.
+     */
     const val HITS_FROM = 8
 
     /** At most this many loops of the style (two rows). */
@@ -230,21 +233,50 @@ object PadLive {
         Pack("fete", "Fête", null, emptyList()),
         Pack(
             "techno", "Techno", "techno",
-            listOf(Hit("Laser", "laser"), Hit("Montée", "riser"), Hit("Impact", "impact"), Hit("Sirène", "siren_dub", PadMode.HOLD, 0.7f)),
+            listOf(
+                Hit("Laser", "laser"), Hit("Montée", "riser"), Hit("Impact", "impact"), Hit("Triple laser", "laser_triple"),
+                Hit("Zap électrique", "zap"), Hit("Chute", "drop"), Hit("« Level up! »", "voice_level_up", gain = 1f), Hit("Sirène", "siren_dub", PadMode.HOLD, 0.7f),
+            ),
         ),
         Pack(
             "trap", "Trap", "trap",
-            listOf(Hit("Klaxon", "air_horn"), Hit("« Go! »", "voice_go", gain = 1f), Hit("Chute", "drop"), Hit("Sirène", "siren_yelp", PadMode.HOLD, 0.7f)),
+            listOf(
+                Hit("Klaxon", "air_horn"), Hit("« Go! »", "voice_go", gain = 1f), Hit("Chute", "drop"), Hit("Klaxon long", "air_horn_long"),
+                Hit("Impact", "impact"), Hit("Laser", "laser"), Hit("« Go go go! »", "voice_go_go_go", gain = 1f), Hit("Sirène", "siren_yelp", PadMode.HOLD, 0.7f),
+            ),
         ),
         Pack(
             "house", "House", "house",
-            listOf(Hit("Sifflet", "whistle"), Hit("« Ready »", "voice_ready", gain = 1f), Hit("Montée", "riser_short"), Hit("Impact", "impact")),
+            listOf(
+                Hit("Sifflet", "whistle"), Hit("« Ready »", "voice_ready", gain = 1f), Hit("Montée", "riser_short"), Hit("Klaxon dancehall", "air_horn_dancehall"),
+                Hit("Laser", "laser"), Hit("Chute", "drop"), Hit("« Power up! »", "voice_power_up", gain = 1f), Hit("Impact", "impact"),
+            ),
         ),
         Pack(
             "dnb", "Drum & bass", "dnb",
-            listOf(Hit("Zap électrique", "zap"), Hit("Montée", "riser"), Hit("« Fire in the hole! »", "voice_fire", gain = 1f), Hit("Sirène", "siren_wail", PadMode.HOLD, 0.7f)),
+            listOf(
+                Hit("Zap électrique", "zap"), Hit("Montée", "riser"), Hit("« Fire in the hole! »", "voice_fire", gain = 1f), Hit("Triple laser", "laser_triple"),
+                Hit("Impact", "impact"), Hit("Chute", "drop"), Hit("« Hurry up! »", "voice_hurry_up", gain = 1f), Hit("Sirène", "siren_wail", PadMode.HOLD, 0.7f),
+            ),
         ),
     )
+
+    /**
+     * The song a style's [pack] renders its loops from, at [bpm]: the style built with the kit on every
+     * line of its beat, its melody's mood and the first sound of each part the assistant plays by
+     * default (bass, chords, lead), as the assistant would. Null: no style.
+     * Audit ultra round 1, n° 5: built with no sound for any line and no mood, the song was empty and a
+     * pack put only its four hits on the page.
+     */
+    fun packSong(pack: Pack, bpm: Double): Project? {
+        val recipe = pack.style?.let(StarterWizard::style) ?: return null
+        val style = recipe.copy(bpm = bpm)
+        val parts = StarterWizard.Part.entries.filter { it.byDefault }.mapNotNull { part -> StarterWizard.soundsFor(part, style).firstOrNull()?.let { part to it } }.toMap()
+        return StarterWizard.build(style, style.lines.associate { it.role to null }, style.melody.mood, parts)
+    }
+
+    /** Audit ultra round 1, n° 5: the pack each page of the home's « Live » project gets the first time it shows (A: the ready-to-play set). */
+    val FIRST_PACKS = listOf("fete", "house", "trap", "techno")
 
     /** The pack a new « Live » project starts with. */
     val DEFAULT_PACK: Pack get() = PACKS.first()

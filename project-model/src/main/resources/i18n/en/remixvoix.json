@@ -11,7 +11,6 @@
   "La chanson part de la mesure choisie (trait vert) : touche une forme d'onde pour partir de là.": "The song starts from the chosen bar (green line): touch a waveform to start from there.",
   "Partir de la mesure %d de la chanson": "Start from bar %d of the song",
   "Remplacer": "Replace",
-  "Remplacer le son du pad %1$d (« %2$s ») par ce passage ? Partout où ton rythme joue ce pad, on entendra la chanson.": "Replace the sound of pad %1$d (“%2$s”) with this passage? Wherever your beat plays this pad, you will hear the song.",
   "Tous les pads servent déjà": "All pads are already in use",
   "Tous les pads servent déjà : vide un pad dans Batterie, puis recommence.": "All pads are already in use: empty a pad in Drums, then try again.",
   "Une mesure plus tard": "One bar later",

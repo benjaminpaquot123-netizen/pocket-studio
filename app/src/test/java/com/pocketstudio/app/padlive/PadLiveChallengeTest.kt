@@ -79,7 +79,11 @@ class PadLiveChallengeTest {
         idle()
         assertTrue(c.ui.value is ChallengeUi.Listening)
         assertEquals(8, c.litPad())
-        ears.heard = 48_000L * 3 / 10  // 0.3 s in: past the light of the first hit (beat = 0.6 s)
+        // Audit ultra round 1, n° 9: lit until just before the next hit (it was 180 ms, the pads looked dark).
+        ears.heard = 48_000L * 3 / 10  // 0.3 s in (beat = 0.6 s): still the first hit's light
+        idle()
+        assertEquals(8, c.litPad())
+        ears.heard = 48_000L * 55 / 100  // 0.55 s: the short dark gap before the second hit
         idle()
         assertEquals(null, c.litPad())
         ears.heard = 48_000L * 6 / 10 + 10  // the second hit

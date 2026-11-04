@@ -171,6 +171,10 @@ static void withoutAllocating() {
     CHECK(g_allocations.load() == 0);
     CHECK(!engine.hasNonFinite());
     engine.collectGarbage();
+    // The copies the loop never installed are still the test's (LeakSanitizer found the 8th).
+    for (size_t k = next; k < copies.size(); ++k) {
+        if (copies[k]->release()) delete copies[k];
+    }
 }
 
 }  // namespace liveremix

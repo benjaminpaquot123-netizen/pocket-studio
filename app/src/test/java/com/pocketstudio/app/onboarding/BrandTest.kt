@@ -118,7 +118,8 @@ class BrandTest {
     private var base = -1L
     private fun to(ms: Long) {
         if (base < 0) base = compose.mainClock.currentTime
-        val left = base + ms - compose.mainClock.currentTime
+        // [ms] is timeline time: drawn after the hold, 30 % slower (IntroTimeline.wallMs).
+        val left = base + IntroTimeline.wallMs(ms.toFloat()).toLong() - compose.mainClock.currentTime
         if (left > 0) compose.mainClock.advanceTimeBy(left)
     }
 
@@ -147,7 +148,7 @@ class BrandTest {
         to(4600)  // fading
         assertTrue(shown("intro"))
         assertEquals(0, ended)
-        // 4.7 s in all, from the splash's start.
+        // 4.7 s of timeline in all, after the hold and 30 % slower.
         to(IntroTimeline.TOTAL.toLong() + 100)
         compose.waitForIdle()
         assertFalse(shown("intro"))
@@ -207,10 +208,10 @@ class BrandTest {
             intro(reduced = false)
             compose.mainClock.advanceTimeByFrame()
             // 900 ms already played by the splash: the rest only, the sound still on time.
-            compose.mainClock.advanceTimeBy(130)
+            compose.mainClock.advanceTimeBy(IntroTimeline.wallMs(1030f, from = 900f).toLong())
             assertEquals("start", cues.first())
             assertTrue("at $soundAt", soundAt >= IntroTimeline.SOUND_START && soundAt <= IntroTimeline.SOUND_LATEST)
-            compose.mainClock.advanceTimeBy((IntroTimeline.TOTAL - 900 - 130 + 100).toLong())
+            compose.mainClock.advanceTimeBy(((IntroTimeline.TOTAL - 1030) * IntroTimeline.SLOW + 100).toLong())
             compose.waitForIdle()
             assertFalse(shown("intro"))
             assertEquals(1, ended)

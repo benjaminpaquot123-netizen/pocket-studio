@@ -325,7 +325,7 @@ object Intro {
  * heartbeat (the mark punches out on a spring, a shock wave of light, a ring and sparks on each
  * beat, the pads flashing in turn, the whole screen warming), a light over the pads, the mark
  * rises, « BenStudio » comes in under it and a light runs over it; the halo breathes; a fade.
- * 4.7 s from the tap on the icon (3.8 s before 2026-10-29).
+ * 4.7 s of timeline, played 30 % slower after a 0.3 s hold: about 6.4 s from the tap on the icon (2026-11-04).
  */
 object IntroTimeline {
     const val POP_STAGGER = 60f
@@ -379,6 +379,17 @@ object IntroTimeline {
     const val BREATH_MS = 1800f
     const val FADE_START = 4400f
     const val TOTAL = 4700f
+
+    /**
+     * Benjamin (2026-11-04): at the hand-over the app is still loading and the first frames
+     * stuttered. The intro now waits [HOLD_MS] on the splash's frame before moving, then plays its
+     * timeline [SLOW] times slower (30 % longer). The times above stay the timeline's own.
+     */
+    const val HOLD_MS = 300f
+    const val SLOW = 1.3f
+
+    /** Wall-clock ms after the intro's first frame at which timeline time [t] is drawn (started at [from]). */
+    fun wallMs(t: Float, from: Float = 0f): Float = HOLD_MS + (t - from).coerceAtLeast(0f) * SLOW
 
     /** The splash's longest time on screen: the intro takes over by then at the latest. */
     const val SPLASH_MS = 1000L
@@ -603,10 +614,18 @@ fun BrandIntro(onDone: () -> Unit, reducedMotion: Boolean = animationsOff(LocalC
         }
     } else {
         // Started again from where the splash handed over, when it says so after the first frame.
+        var held by remember { mutableStateOf(false) }
         LaunchedEffect(Intro.splashElapsedMs) {
             val from = max(clock.value, Intro.splashElapsedMs.toFloat().coerceAtMost(IntroTimeline.FADE_START))
             clock.snapTo(from)
-            clock.animateTo(IntroTimeline.TOTAL, tween((IntroTimeline.TOTAL - from).toInt(), easing = LinearEasing))
+            // Still on the hand-over's frame while the app finishes loading underneath (once).
+            if (!held) {
+                held = true
+                delay(IntroTimeline.HOLD_MS.toLong())
+            }
+            // A touch during the hold already started the fade: it is not taken over.
+            if (skipped) return@LaunchedEffect
+            clock.animateTo(IntroTimeline.TOTAL, tween(((IntroTimeline.TOTAL - from) * IntroTimeline.SLOW).toInt(), easing = LinearEasing))
         }
         LaunchedEffect(Unit) {
             snapshotFlow { clock.value >= IntroTimeline.TOTAL }.first { it }

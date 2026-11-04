@@ -41,10 +41,7 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         val lines = mutableListOf<String>()
         val small = mutableListOf<Rect>()
         val smallTexts = HashSet<String>()
-        walked.clear()
-        stopped.clear()
-        // First the nodes a person can see (the windows shown, not what they hide), then their texts' sizes.
-        for (w in wins) roots.filter { BenchWindows.windowOf(it)?.view === w.view }.forEach { walk(it, null, emptySet()) }
+        mark(wins, roots)
         val texts = unmergedTexts().filter { it.window == null || seen(it.node) }
         wins.forEachIndexed { i, w ->
             val head = when {
@@ -106,8 +103,45 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
     }
 
     /** The screen's lines in reading order ([out] null: only marks what is seen). */
+    /** The nodes under a page drawn over them on the whole screen (Pad Live over the project): never seen. */
+    private val covered = HashSet<Int>()
+    /** The tag of the page drawn over the others on the whole screen, if any (the route's page). */
+    private var cover: String? = null
+
+    /**
+     * Marks what a person can see: the windows shown, without what they hide. In a window, the last
+     * tagged page over half the screen or more (in the tree's order, the order of drawing) hides what was
+     * drawn before it inside its bounds (its parents aside), as Pad Live hides the project under it.
+     */
+    private fun mark(wins: List<BenchWindows.Win>, roots: List<SemanticsNode>) {
+        walked.clear()
+        stopped.clear()
+        covered.clear()
+        cover = null
+        val area = screen.widthPixels.toFloat() * screen.heightPixels
+        val whole = Rect(0f, 0f, screen.widthPixels.toFloat(), screen.heightPixels.toFloat())
+        for (w in wins) {
+            val mine = roots.filter { BenchWindows.windowOf(it)?.view === w.view }
+            val order = mutableListOf<SemanticsNode>()
+            fun pre(n: SemanticsNode) { if (hidden(n)) return; order += n; n.children.forEach(::pre) }
+            mine.forEach(::pre)
+            val last = order.indexOfLast { n ->
+                val r = drawn(n).intersect(whole)
+                n.config.contains(SemanticsProperties.TestTag) && n.parent != null && r.width * r.height >= 0.5f * area
+            }
+            if (last > 0) {
+                val top = order[last]
+                val box = drawn(top)
+                val above = generateSequence(top.parent) { it.parent }.mapTo(HashSet()) { it.id }
+                for (i in 0 until last) if (order[i].id !in above && box.contains(drawn(order[i]).center)) covered += order[i].id
+                if (covered.isNotEmpty() && w === wins.first()) cover = top.config.getOrNull(SemanticsProperties.TestTag)
+            }
+            mine.forEach { walk(it, null, emptySet()) }
+        }
+    }
+
     private fun walk(n: SemanticsNode, out: MutableList<String>?, smallTexts: Set<String>) {
-        if (hidden(n)) { stopped += n.id; return }
+        if (hidden(n) || n.id in covered) { stopped += n.id; return }
         walked += n.id
         val r = drawn(n)
         if (out == null) { n.children.forEach { walk(it, null, smallTexts) }; return }
@@ -236,7 +270,7 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
             return "dialogue:${first ?: "?"}"
         }
         val area = screen.widthPixels.toFloat() * screen.heightPixels
-        val page = inTop.filter { val r = drawn(it); r.width * r.height >= 0.5f * area }
+        val page = cover ?: inTop.filter { val r = drawn(it); r.width * r.height >= 0.5f * area }
             .minByOrNull { val r = drawn(it); r.width * r.height }?.config?.getOrNull(SemanticsProperties.TestTag)
         val tab = inTop.firstOrNull { (it.config.getOrNull(SemanticsProperties.TestTag) ?: "").startsWith("tab_") && it.config.getOrNull(SemanticsProperties.Selected) == true }
             ?.config?.getOrNull(SemanticsProperties.TestTag)
@@ -262,11 +296,7 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
      * window that gets the touch (« tag « words » », « désactivé tag … »), or « rien » (and the words there).
      */
     fun under(x: Float, y: Float): String {
-        if (walked.isEmpty()) {
-            val wins = shownWindows()
-            val roots = composeRoots()
-            for (w in wins) roots.filter { BenchWindows.windowOf(it)?.view === w.view }.forEach { walk(it, null, emptySet()) }
-        }
+        if (walked.isEmpty()) mark(shownWindows(), composeRoots())
         val win = runCatching { BenchWindows.windows().filter { it.touchable }.firstOrNull { w -> w.touchModal || w.drawn(screen).contains(x.toInt(), y.toInt()) } }.getOrNull()
             ?: return "rien"
         val nodes = runCatching {
@@ -279,8 +309,8 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
             return "rien" + (words?.let { " (texte « ${it.take(40)} »)" } ?: "")
         }
         val tag = hit.config.getOrNull(SemanticsProperties.TestTag) ?: generateSequence(hit.parent) { it.parent }.firstNotNullOfOrNull { it.config.getOrNull(SemanticsProperties.TestTag) }?.let { "dans:$it" } ?: "#${hit.id}"
-        val words = (hit.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text } ?: textBelow(hit))
-            ?: hit.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString(" ")
+        val words = hit.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString(" ")
+            ?: hit.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text } ?: textBelow(hit)
         val off = generateSequence(hit) { it.parent }.any { it.config.contains(SemanticsProperties.Disabled) }
         return (if (off) "désactivé " else "") + tag + (words?.let { " « ${it.take(40)} »" } ?: "")
     }

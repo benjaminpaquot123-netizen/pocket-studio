@@ -187,19 +187,23 @@ abstract class HumanTester(private val seat: String) {
             turnNow = n
             val snap = capture(dir, n)
             val notes = mutableListOf<String>()
+            // The screen's fingerprint: what is seen and the sound line (a pad that starts is a change).
+            val heardNow = heard()
+            File(dir, "sound-$n.txt").let { if (!it.isFile) it.writeText(heardNow) }
+            val print = fingerprint(File(dir, "screen-$n.txt"), File(dir, "sound-$n.txt"))
             // « Rien ne change » (the screens after « attends » neither count nor reset it).
             if (!afterWait) {
-                same = if (snap.fingerprint == lastPrint) same + 1 else 1
+                same = if (print == lastPrint) same + 1 else 1
                 if (same == 3) notes += "Rien ne change à l'écran depuis 3 gestes."
             }
-            lastPrint = snap.fingerprint
+            lastPrint = print
             val sound = publish(dir, n, notes)
-            journal.appendText("#$n ROUTE ${snap.route} | MODE ${if (SettingsStore.state.value.simpleMode) "simple" else "pro"} | EMPREINTE ${snap.fingerprint} | ${inside()}\n")
+            journal.appendText("#$n ROUTE ${snap.route} | MODE ${if (SettingsStore.state.value.simpleMode) "simple" else "pro"} | EMPREINTE $print | ${inside()}\n")
             journal.appendText("#$n SON ${sound.lineSequence().first()}\n")
             layout(journal, n, snap)
             if (source != null) {
-                val was = File(source, "screen-$n.txt").takeIf { it.isFile }?.readLines()?.drop(1)?.let(ScreenText::fingerprintOf)
-                if (was != snap.fingerprint) {
+                val was = File(source, "screen-$n.txt").takeIf { it.isFile }?.let { fingerprint(it, File(source, "sound-$n.txt")) }
+                if (was != print) {
                     val verdict = "divergé au pas ${n - 1}" + if (was == null) " (pas d'écran-texte $n à l'origine)" else ""
                     File(dir, "rejeu.txt").writeText(verdict); end("rejeu : $verdict"); return
                 }
@@ -267,6 +271,13 @@ abstract class HumanTester(private val seat: String) {
         }
     }
 
+    /**
+     * A screen's fingerprint: its text (the title line aside) and what is heard (the bench's own note aside), clock times and
+     * percentages left out. The same for a seat and its replay (scripts/human-replay.sh).
+     */
+    private fun fingerprint(text: File, sound: File): String =
+        ScreenText.fingerprintOf(text.readLines().drop(1) + sound.takeIf { it.isFile }?.readLines().orEmpty().filterNot { it.startsWith("Rien ne change") })
+
     /** The stalls the watchdog saw since the last turn, into the journal. */
     private fun stalls(journal: File, n: Int) {
         val dog = watchdog ?: return
@@ -304,6 +315,9 @@ abstract class HumanTester(private val seat: String) {
 
     /** What a person who only sees the screen has of it now, as text (the bench's own tests). */
     internal fun screenLines(): List<String> = screenText().read().lines
+
+    /** The screen's route, as the journal says it (the bench's own tests). */
+    internal fun screenRoute(): String = screenText().read().route
 
     /** The app opened on a phone as just installed, with the bench's stand-ins in place. */
     protected fun begin() = begin(null)
@@ -948,7 +962,7 @@ abstract class HumanTester(private val seat: String) {
         previewHeard()?.let(::add)
         // Live pads on a seat (padToggled): heard with the transport stopped too.
         v?.livePadsSoundingForTest?.takeIf { seatDir != null && it.isNotEmpty() }?.let { on ->
-            add("les pads live ${on.sorted().joinToString(", ") { "${it + 1}" }} jouent en boucle")
+            add(if (on.size == 1) "le pad live ${on.first() + 1} joue en boucle" else "les pads live ${on.sorted().joinToString(", ") { "${it + 1}" }} jouent en boucle")
         }
     }.let { if (it.isEmpty()) "Son : rien ne joue." else "Son : " + it.joinToString(" ; ") + "." }
         .let { s -> note?.let { n -> note = null; "$s\n$n" } ?: s }

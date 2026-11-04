@@ -1,5 +1,5 @@
 La corde tendue, « Sire, on en a gros ! »
 - Nouvelle ouverture BenStudio : un anneau de lumière se tend autour du logo à chaque battement, les pads s'enfoncent, la poussière de lumière danse.
 - L'ouverture attend que l'appli ait fini de charger avant de bouger : plus de petit à-coup au début, et elle dure un peu plus.
-- Le son de l'appli se rouvre bien au premier lancement et après une restauration ; journal plus précis pour les testeurs.
+- Le son de l’appli s’ouvre bien dès le premier lancement ; journal plus précis pour les testeurs.
 - Préparation du grand audit ultra : banc d'essai renforcé, nombreuses vérifications automatiques.

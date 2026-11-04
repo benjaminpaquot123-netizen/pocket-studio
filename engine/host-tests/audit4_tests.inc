@@ -111,6 +111,7 @@ void testSaturatorBlockSizesAgree() {
 void testBiquadPairMatchesScalar() {
     const auto a = driveInput(kRate, 31u), b = driveInput(kRate, 32u);
     int mismatches = 0, filters = 0;
+    float worst = 0.0f;
     for (int shape = 0; shape < 5; ++shape) {
         for (float hz : {40.0f, 120.0f, 2500.0f, 15000.0f}) {
             ps::Biquad c;
@@ -127,13 +128,18 @@ void testBiquadPairMatchesScalar() {
             both.reset();
             for (size_t i = 0; i < a.size(); ++i) {
                 const ps::Float2 y = both.process(ps::Float2(a[i], b[i]));
-                if (y.v[0] != left.process(a[i]) || y.v[1] != right.process(b[i])) ++mismatches;
+                const float l = left.process(a[i]), r = right.process(b[i]);
+                if (y.v[0] != l || y.v[1] != r) ++mismatches;
+                worst = std::max(worst, std::max(std::fabs(y.v[0] - l) / (1.0f + std::fabs(l)),
+                                                 std::fabs(y.v[1] - r) / (1.0f + std::fabs(r))));
             }
             ++filters;
         }
     }
-    std::printf("  Biquad2 == two Biquads, bit for bit: %d filters, %d frames apart\n", filters, mismatches);
-    CHECK(mismatches == 0);
+    // Built with -ffast-math, the compiler may round the pair and the scalar differently (GCC 15 on CI
+    // does, GCC 13 does not): bit for bit is reported, the check is an error far below hearing (-80 dB; a 40 Hz pole near 1 grows rounding a few hundred times).
+    std::printf("  Biquad2 == two Biquads: %d filters, %d frames not bit for bit, worst error %.2e\n", filters, mismatches, worst);
+    CHECK(worst < 1e-4f);
 }
 
 // KWeighting2 (the loudness meters' K-weighting, both sides in one register) is two KWeightings,

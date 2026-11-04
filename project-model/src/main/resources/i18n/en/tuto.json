@@ -123,5 +123,6 @@
   "Recommencer le tuto (nouveau projet vide)": "Restart the tutorial (new empty project)",
   "aucune": "none",
   "Tonalité du morceau : %s": "Song key: %s",
-  "Tonalité du morceau": "Song key"
+  "Tonalité du morceau": "Song key",
+  "Lire la suite": "Read on"
 }

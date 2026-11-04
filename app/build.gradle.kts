@@ -84,6 +84,8 @@ android {
             isIncludeAndroidResources = true
             all {
                 it.systemProperty("robolectric.pixelCopyRenderMode", "hardware")
+                // Audit ultra round 1 (n° 17): file names in UTF-8 as on a phone (a POSIX locale made « ó » a « ? » on the bench).
+                it.environment("LC_ALL", "C.UTF-8")
                 // SDK 36 Robolectric needs JDK internals on JDK 21+.
                 it.jvmArgs(
                     "--add-exports=java.base/jdk.internal.access=ALL-UNNAMED",

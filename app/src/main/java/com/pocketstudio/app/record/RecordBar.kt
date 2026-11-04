@@ -115,6 +115,8 @@ private fun IdleBar(ui: RecordBarUi, actions: RecordBarActions, modifier: Modifi
             Icon(Icons.Filled.FiberManualRecord, contentDescription = null, Modifier.size(18.dp))
             WholeWordsText(" " + ui.label, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
         }
+        // Audit ultra round 1 (n° 31): the count-in beside « Enregistrer » (it was at the bottom of Réglages), on the same line.
+        CountInChoice(compact = true, modifier = Modifier.heightIn(min = if (compact) 48.dp else 56.dp))
         if (ui.canKeepPlayed) {
             OutlinedButton(
                 onClick = actions.keepPlayed, enabled = ui.enabled,
@@ -259,5 +261,5 @@ fun recordBarActions(
     melody: Boolean = false,
 ) = RecordBarActions(
     record = { if (melody) vm.recordMelodyTake() else vm.recordTake(source) }, keep = vm::keepNoteTake, inTime = vm::takeInTime, asPlayed = vm::takeAsPlayed,
-    redo = vm::redoTake, keepPlayed = vm::keepPlayed,
+    redo = vm::redoTake, keepPlayed = { vm.keepPlayed(source) },
 )

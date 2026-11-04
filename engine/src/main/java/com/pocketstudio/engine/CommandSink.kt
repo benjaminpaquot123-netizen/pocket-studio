@@ -88,6 +88,15 @@ interface CommandSink {
     fun stemPosition(): Long? = null
     fun previewPosition(): Long? = null
 
+    /**
+     * Audit ultra round 1 (n° 29): the microphone ([NativeEngine.micStart], [NativeEngine.micStatus],
+     * [NativeEngine.micFinish]). A sink has none unless it says so: its take cannot open (0), as a
+     * phone's when the microphone is busy or its stream closed.
+     */
+    fun micStart(onStart: Boolean, seconds: Int, prerollFrames: Int): Long = 0L
+    fun micStatus(handle: Long): FloatArray = floatArrayOf(2f, 0f, 0f)
+    fun micFinish(handle: Long): FloatArray? = null
+
     enum class Install {
         PadSample, TrackSample, AudioClip, Stems, Instrument, LiveClip, PreviewStems,
         /** Lot D2: a remix cell's passage; index = cell | refit (0x100) | loop steps << 12. */

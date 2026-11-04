@@ -311,12 +311,12 @@ class HelpCoverageTest {
     @Test
     fun masterPro() {
         val actions = masterActions()
-        compose.setContent { PocketStudioTheme { Column(Modifier.verticalScroll(rememberScrollState())) { MasterProPanel(-8f, actions) {} } } }
+        compose.setContent { PocketStudioTheme { Column(Modifier.verticalScroll(rememberScrollState())) { MasterProPanel(actions) } } }
         compose.onNodeWithTag("master_pro").performClick()
         check(
             "Master pro", listOf("pro_", "master_pro"), listOf("master_pro"),
             must = listOf(
-                "pro_target_CLUB", "pro_target_free", "pro_target_slider", "pro_ceiling_-1.0", "pro_mono_120", "pro_attack", "pro_release", "pro_chain",
+                "pro_ceiling_-1.0", "pro_mono_120", "pro_attack", "pro_release", "pro_chain",
                 "pro_listen_${com.pocketstudio.engine.NativeEngine.LISTEN_WITHOUT}", "pro_compare", "pro_reference",
             ),
         )

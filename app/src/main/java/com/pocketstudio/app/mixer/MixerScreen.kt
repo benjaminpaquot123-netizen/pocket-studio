@@ -104,6 +104,8 @@ data class MixerActions(
     val setMasterDb: (Float) -> Unit = {},
     /** The master's « Cible » (loudness target). */
     val setLoudnessTarget: (com.pocketstudio.model.LoudnessTarget) -> Unit = {},
+    /** « Volume visé », the one loudness target of the app (with a free value for [com.pocketstudio.model.TargetChoice.FREE]). */
+    val chooseTarget: (com.pocketstudio.model.TargetChoice, Float?) -> Unit = { _, _ -> },
     /** Exports at 44.1 kHz (true) or 48 kHz; in 16 bits (true) or 24. */
     val setExportCdRate: (Boolean) -> Unit = {},
     val setExportBits16: (Boolean) -> Unit = {},
@@ -175,8 +177,9 @@ fun MixerScreen(
     onFocused: () -> Unit = {},
     /** The master's loudness and true peak (NativeEngine.LOUDNESS_*): read only when shown. */
     loudness: () -> FloatArray = { FloatArray(0) },
-    /** The master's « Cible », and the loudness « Auto » aims at for this project's style. */
-    target: com.pocketstudio.model.LoudnessTarget = com.pocketstudio.model.LoudnessTarget.OFF,
+    /** The master's one loudness target (« Volume visé »), its free value, and the loudness « Auto » aims at for this project's style. */
+    target: com.pocketstudio.model.TargetChoice = com.pocketstudio.model.TargetChoice.OFF,
+    freeLufs: Float? = null,
     styleLufs: Float = com.pocketstudio.model.LoudnessTargets.DEFAULT_LUFS,
     /** Phase 36: a strip's sheet › « Courbes »: that strip first in « Automatiser un réglage ». */
     preferChannel: (Int) -> Unit = {},
@@ -230,9 +233,9 @@ fun MixerScreen(
             MasterGain(masterDb, actions.setMasterDb)
             LimiterLine { meters().getOrElse(LIMITER_METER) { 1f } }
             // With a target the limiter works on purpose: lowering the master would only raise its gain.
-            if (target == com.pocketstudio.model.LoudnessTarget.OFF) LimiterHint({ meters().getOrElse(LIMITER_METER) { 1f } }, masterDb, actions.setMasterDb)
-            MasterLoudnessPanel(loudness, target, styleLufs, actions.setLoudnessTarget)
-            MasterProPanel(styleLufs, actions.pro) { actions.setLoudnessTarget(com.pocketstudio.model.LoudnessTarget.AUTO) }
+            if (target == com.pocketstudio.model.TargetChoice.OFF) LimiterHint({ meters().getOrElse(LIMITER_METER) { 1f } }, masterDb, actions.setMasterDb)
+            MasterLoudnessPanel(loudness, target, freeLufs, styleLufs, actions.chooseTarget)
+            MasterProPanel(actions.pro) { meters().getOrElse(LIMITER_METER) { 1f } }
             var open by rememberSaveable { mutableStateOf(false) }
             EffectsToggle(effectsSummary(master), open, Modifier.testTag("master_effects")) { open = !open }
             if (open) InsertChain(MASTER_CHANNEL, master, actions)
@@ -594,7 +597,13 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                 }
             }
         }
-        if (export.files.isNotEmpty()) {
+        // Audit ultra round 1 (n° 16, seats A c, E d, F c): the file and its report came under the button, off the
+        // screen (« Exporter » seemed to do nothing): once made, they are brought into view.
+        val resultInView = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+        androidx.compose.runtime.LaunchedEffect(export.files) {
+            if (export.files.isNotEmpty()) { kotlinx.coroutines.delay(60); resultInView.bringIntoView() }
+        }
+        if (export.files.isNotEmpty()) Column(Modifier.bringIntoViewRequester(resultInView).testTag("export_result"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
                 export.files.joinToString(", ") { it.name }.let { names ->
                     if (export.savedInMusic) tr("Sauvegardé dans Musique › BenStudio : %s", names) else tr("Prêt : %s", names)

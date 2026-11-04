@@ -305,21 +305,28 @@ data class MasterProActions(
     val setExportOptions: (com.pocketstudio.app.export.ExportOptions) -> Unit = {},
 )
 
-/** « Avancé » under the master (Pro mode). */
+/** « Avancé » under the master (Pro mode). [limiterGain]: the limiter's gain now (linear, the meters' [LIMITER_METER]). */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-internal fun MasterProPanel(styleLufs: Float, actions: MasterProActions, onStyleTarget: () -> Unit) {
+internal fun MasterProPanel(actions: MasterProActions, limiterGain: () -> Float = { 1f }) {
     val c = actions.controller ?: return
     val project by c.project.collectAsState()
-    MasterProPanel(project.mixer.pro, project.mixer.master, project.mixer.monoBassHz, styleLufs, actions, onStyleTarget)
+    MasterProPanel(project.mixer.pro, project.mixer.master, project.mixer.monoBassHz, actions, limiterGain)
 }
 
-/** Where « Libre » starts from the style's target (none in LUFS yet). */
-private const val FREE_START_LUFS = -11f
+/** « Relâchement : 150 ms (30 ms après une crête brève) »: MasterChain's release times (150 ms in the music, 30 after a short peak) scaled by [scale]. */
+internal fun releaseText(scale: Float): String =
+    tr("Relâchement : %1\$d ms (%2\$d ms après une crête brève)", (150 * scale).roundToInt(), (30 * scale).roundToInt())
+
+/** « Réduction de gain : −2,4 dB » (the limiter's gain now, linear), « Réduction de gain : 0 dB » when it does nothing. */
+internal fun gainReductionText(gain: Float): String {
+    val db = if (gain > 0f && gain < 1f) 20.0 * kotlin.math.log10(gain.toDouble()) else 0.0
+    return if (db <= -0.05) tr("Réduction de gain : %s dB", LoudnessTargets.format(db)) else tr("Réduction de gain : 0 dB")
+}
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-internal fun MasterProPanel(pro: MasterPro?, master: List<Insert>, monoBassHz: Float, styleLufs: Float, actions: MasterProActions, onStyleTarget: () -> Unit) {
+internal fun MasterProPanel(pro: MasterPro?, master: List<Insert>, monoBassHz: Float, actions: MasterProActions, limiterGain: () -> Float = { 1f }) {
     val c = actions.controller ?: return
     var open by rememberSaveable { mutableStateOf(false) }
     TextButton(onClick = { open = !open }, modifier = Modifier.fillMaxWidth().testTag("master_pro")) {
@@ -334,40 +341,7 @@ internal fun MasterProPanel(pro: MasterPro?, master: List<Insert>, monoBassHz: F
     val colors = pillColors(Neon.Cyan)
     val small = MaterialTheme.typography.bodySmall
     Column(Modifier.testTag("master_pro_panel"), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        // 1. The target: in integrated LUFS, or the style's (the « Volume visé » above).
-        com.pocketstudio.ui.WithHelp(com.pocketstudio.app.help.ScreenHelp.MASTER_TARGET, about = listOf("pro_target_*", "pro_target_slider")) {
-            Text(tr("Cible de volume (morceau entier)"), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f, fill = false))
-        }
-        // « Libre » chosen: its slider stays, even from a preset's value and while it slides over
-        // one (fix 2, n° 4: it did nothing from a preset, and the slider went away at -14 or -16).
-        var freeMode by rememberSaveable { mutableStateOf(false) }
-        val free = freeMode || (p.targetLufs != null && MasterPro.presetOf(p.targetLufs) == null)
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            MasterPro.Preset.entries.forEach { preset ->
-                val label = when (preset) {
-                    MasterPro.Preset.SPOTIFY -> tr("Spotify, YouTube · −14")
-                    MasterPro.Preset.APPLE -> tr("Apple Music · −16")
-                    MasterPro.Preset.CLUB -> tr("Club · −9")
-                    MasterPro.Preset.STYLE -> tr("Comme le style · %s", LoudnessTargets.formatTarget(styleLufs))
-                }
-                val selected = !free && if (preset == MasterPro.Preset.STYLE) p.targetLufs == null else p.targetLufs == preset.lufs
-                FilterChip(selected = selected, onClick = {
-                    freeMode = false
-                    c.setTarget(preset.lufs)
-                    if (preset == MasterPro.Preset.STYLE) onStyleTarget()
-                }, label = { Text(label) }, colors = colors, modifier = Modifier.testTag("pro_target_${preset.name}"))
-            }
-            FilterChip(selected = free, onClick = {
-                freeMode = true
-                if (p.targetLufs == null) c.setTarget(FREE_START_LUFS)
-            }, label = { Text(tr("Libre")) }, colors = colors, modifier = Modifier.testTag("pro_target_free"))
-        }
-        if (free) {
-            val freeLufs = p.targetLufs ?: FREE_START_LUFS
-            Text(tr("%s LUFS", LoudnessTargets.formatTarget(freeLufs)), style = small, color = Neon.Cyan)
-            ProSlider(value = freeLufs, onValueChange = { c.setTarget((it * 2).roundToInt() / 2f) },
-                valueRange = MasterPro.MIN_LUFS..MasterPro.MAX_LUFS, modifier = Modifier.testTag("pro_target_slider"))
-        }
+        // 1. The target is « Volume visé » above, the one of the app (audit ultra round 1: two rows disagreed there).
         com.pocketstudio.ui.WithHelp(com.pocketstudio.app.help.ScreenHelp.MASTER_CEILING, about = listOf("pro_ceiling_*")) {
             Text(tr("Plafond de crête (mesuré après compression)"), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f, fill = false))
         }
@@ -396,10 +370,13 @@ internal fun MasterProPanel(pro: MasterPro?, master: List<Insert>, monoBassHz: F
             }
         }
         Text("5. " + tr("Limiteur : look-ahead 1 ms"), style = small, color = Neon.Acid)
+        // Audit ultra round 1 (n° 19): what the limiter takes off now, beside its settings.
+        val reduction by androidx.compose.runtime.remember(limiterGain) { androidx.compose.runtime.derivedStateOf { gainReductionText(limiterGain()) } }
+        Text(reduction, style = small, color = Neon.Cyan, modifier = Modifier.testTag("pro_gain_reduction"))
         Text(tr("Attaque : %d %% du look-ahead", (p.attack * 100).roundToInt()), style = small)
-        ProSlider(value = p.attack, onValueChange = { c.setAttack((it * 20).roundToInt() / 20f) }, valueRange = 0.2f..1f, modifier = Modifier.testTag("pro_attack"))
-        Text(tr("Relâchement : ×%s", LoudnessTargets.format(p.release.toDouble())), style = small)
-        ProSlider(value = p.release, onValueChange = { c.setRelease((it * 4).roundToInt() / 4f) }, valueRange = 0.25f..4f, modifier = Modifier.testTag("pro_release"))
+        ProSlider(value = p.attack, onValueChange = { c.setAttack((it * 20).roundToInt() / 20f) }, valueRange = 0.2f..1f, label = tr("Attaque"), valueText = tr("Attaque : %d %% du look-ahead", (p.attack * 100).roundToInt()), modifier = Modifier.testTag("pro_attack"))
+        Text(releaseText(p.release), style = small)
+        ProSlider(value = p.release, onValueChange = { c.setRelease((it * 4).roundToInt() / 4f) }, valueRange = 0.25f..4f, label = tr("Relâchement"), valueText = releaseText(p.release), modifier = Modifier.testTag("pro_release"))
         OutlinedButton(onClick = c::putChain, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("pro_chain")) {
             Text(tr("Mettre la chaîne pro (réglages dans « Effets »)"))
         }

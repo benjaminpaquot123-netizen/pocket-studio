@@ -44,7 +44,6 @@
   "Place la tête orange ou écoute, puis : Couper ici coupe à cet endroit, Début et Fin raccourcissent le bout, Enlever le retire, Boucle le fait tourner. Pince la vue pour zoomer.": "नारंगी प्लेहेड रखो या सुनो, फिर: “यहाँ काटो” उसी जगह काटता है, “शुरुआत” और “अंत” टुकड़े को छोटा करते हैं, “हटाओ” उसे निकालता है, “लूप” उसे घुमाता है। ज़ूम के लिए व्यू पर पिंच करो।",
   "Envoyer les bouts": "टुकड़े भेजना",
   "Coche les bouts que tu veux, puis envoie-les : sur les pads (un par pad), dans le Live, dans « Garder » (ta bibliothèque) ou sur une piste du morceau.": "जो टुकड़े चाहिए उन पर टिक करो, फिर भेजो: पैड्स पर (हर पैड पर एक), Live में, “रखो” में (तुम्हारी लाइब्रेरी) या गाने के किसी ट्रैक पर।",
-  "Le volume moyen visé pour tout le morceau, en LUFS : plus près de 0, plus fort. Spotify et YouTube ramènent tout à −14, un club joue vers −9. Si le son devait s'écraser, l'appli s'arrête avant et te le dit.": "पूरे गाने के लिए चाही गई औसत लाउडनेस, LUFS में: 0 के जितना पास, उतना तेज़। Spotify और YouTube सबको −14 पर लाते हैं, क्लब में करीब −9 बजता है। अगर आवाज़ पिचकने वाली हो, तो ऐप पहले ही रुककर बता देता है।",
   "Plafond de crête": "पीक की सीमा",
   "Le point le plus haut que le son a le droit de toucher. −1 dBTP garde une marge : le fichier ne grésille pas une fois compressé (M4A, streaming).": "सबसे ऊँचा बिंदु जिसे आवाज़ छू सकती है। −1 dBTP थोड़ी जगह छोड़ता है: कंप्रेस होने के बाद फ़ाइल चटकती नहीं (M4A, स्ट्रीमिंग)।",
   "La chaîne du master": "मास्टर की चेन",

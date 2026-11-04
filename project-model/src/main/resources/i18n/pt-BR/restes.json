@@ -44,7 +44,6 @@
   "Place la tête orange ou écoute, puis : Couper ici coupe à cet endroit, Début et Fin raccourcissent le bout, Enlever le retire, Boucle le fait tourner. Pince la vue pour zoomer.": "Coloque o cursor laranja ou escute, e então: Cortar aqui corta nesse ponto, Início e Fim encurtam o pedaço, Tirar o remove, Loop o faz repetir. Faça pinça na tela para dar zoom.",
   "Envoyer les bouts": "Enviar os pedaços",
   "Coche les bouts que tu veux, puis envoie-les : sur les pads (un par pad), dans le Live, dans « Garder » (ta bibliothèque) ou sur une piste du morceau.": "Marque os pedaços que quiser e envie: nos pads (um por pad), no Live, em “Guardar” (sua biblioteca) ou numa faixa da música.",
-  "Le volume moyen visé pour tout le morceau, en LUFS : plus près de 0, plus fort. Spotify et YouTube ramènent tout à −14, un club joue vers −9. Si le son devait s'écraser, l'appli s'arrête avant et te le dit.": "O volume médio buscado para a música inteira, em LUFS: mais perto de 0, mais alto. Spotify e YouTube levam tudo a −14, um clube toca perto de −9. Se o som fosse ser esmagado, o app para antes e te avisa.",
   "Plafond de crête": "Teto de pico",
   "Le point le plus haut que le son a le droit de toucher. −1 dBTP garde une marge : le fichier ne grésille pas une fois compressé (M4A, streaming).": "O ponto mais alto que o som pode tocar. −1 dBTP deixa uma margem: o arquivo não chia depois de comprimido (M4A, streaming).",
   "La chaîne du master": "A cadeia do master",

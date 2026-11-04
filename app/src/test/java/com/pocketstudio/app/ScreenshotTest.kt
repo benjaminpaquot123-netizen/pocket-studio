@@ -409,7 +409,7 @@ open class ScreenshotTest {
             hasSong = true,
             // The master's loudness while it plays, its target following the style (house: −8 LUFS).
             loudness = { floatArrayOf(-7.9f, -8.1f, -8.4f, -1.2f, -1.3f, 3.2f) },
-            target = com.pocketstudio.model.LoudnessTarget.AUTO,
+            target = com.pocketstudio.model.TargetChoice.AUTO,
             styleLufs = -8f,
         )
     }
@@ -428,7 +428,7 @@ open class ScreenshotTest {
             export = com.pocketstudio.app.rhythm.ExportUi(bars = 4).forProject(sceneBars = 4, hasSong = true),
             hasSong = true,
             loudness = { floatArrayOf(-7.9f, -8.1f, -8.4f, -1.2f, -1.3f, 3.2f) },
-            target = com.pocketstudio.model.LoudnessTarget.AUTO,
+            target = com.pocketstudio.model.TargetChoice.AUTO,
             styleLufs = -8f,
         )
     }

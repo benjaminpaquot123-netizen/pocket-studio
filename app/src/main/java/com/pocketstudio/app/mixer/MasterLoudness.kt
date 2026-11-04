@@ -25,6 +25,8 @@ import com.pocketstudio.app.rhythm.ExportUi
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.model.LoudnessTarget
 import com.pocketstudio.model.LoudnessTargets
+import com.pocketstudio.model.TargetChoice
+import com.pocketstudio.ui.ProSlider
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
@@ -84,13 +86,39 @@ internal fun shownLufs(target: LoudnessTarget, styleLufs: Float): Float? = when 
     else -> LoudnessTargets.lufs(target, null)
 }
 
+/** The chips of « Volume visé », in the order shown: the one target of the app (audit ultra round 1). */
+internal val TARGET_CHOICES = listOf(TargetChoice.AUTO, TargetChoice.CLUB, TargetChoice.STREAMING, TargetChoice.APPLE, TargetChoice.FREE, TargetChoice.OFF)
+
+/** What « Volume visé » says under its chips, for [choice] at [lufs]. */
+internal fun targetHint(choice: TargetChoice, lufs: Float?): String {
+    val v = LoudnessTargets.formatTarget(lufs ?: 0f)
+    return when (choice) {
+        TargetChoice.AUTO -> tr("Le volume des morceaux de ce style (%s LUFS), mesuré sur le Drop. La sortie monte ou baisse doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.", v)
+        TargetChoice.CLUB -> tr("Fort, comme en club (%s LUFS), mesuré sur le Drop. La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.", v)
+        TargetChoice.STREAMING -> tr("%s LUFS sur tout le morceau : le volume où Spotify et YouTube ramènent tous les morceaux.", v)
+        TargetChoice.APPLE -> tr("%s LUFS sur tout le morceau : le volume où Apple Music ramène les morceaux.", v)
+        TargetChoice.FREE -> tr("%s LUFS sur tout le morceau, la valeur que tu choisis.", v)
+        TargetChoice.OFF -> tr("Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation.")
+    }
+}
+
 /**
- * The master's loudness in full (now, over 3 s, since ▶) and its « Cible »: the style's loudness,
- * a club's, streaming's, or none. [styleLufs]: what « Auto » aims at for this project.
+ * The master's loudness in full (now, over 3 s, since ▶) and « Volume visé »: the one loudness
+ * target of the app (audit ultra round 1, n° 13-15: the master pro's own row is gone): the style's,
+ * a club's, streaming's, Apple Music's, a free value, or none. [styleLufs]: what « Auto » aims at
+ * for this project; [freeLufs]: the free value when [choice] is [TargetChoice.FREE].
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-internal fun MasterLoudnessPanel(values: () -> FloatArray, target: LoudnessTarget, styleLufs: Float, setTarget: (LoudnessTarget) -> Unit) {
+internal fun MasterLoudnessPanel(
+    values: () -> FloatArray, choice: TargetChoice, freeLufs: Float?, styleLufs: Float, choose: (TargetChoice, Float?) -> Unit,
+) {
+    val target = when (choice) {
+        TargetChoice.OFF -> LoudnessTarget.OFF
+        TargetChoice.AUTO -> LoudnessTarget.AUTO
+        TargetChoice.CLUB -> LoudnessTarget.CLUB
+        else -> LoudnessTarget.STREAMING
+    }
     val readings by remember(values) {
         derivedStateOf {
             val v = values()
@@ -126,28 +154,32 @@ internal fun MasterLoudnessPanel(values: () -> FloatArray, target: LoudnessTarge
             }
         }
     }
-    Text(tr("Volume visé"), style = MaterialTheme.typography.bodyMedium)
+    WithHelp(com.pocketstudio.app.help.ScreenHelp.MASTER_TARGET, about = listOf("loudness_target_*", "pro_target_slider")) {
+        Text(tr("Volume visé"), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f, fill = false))
+    }
     val colors = pillColors(Neon.Cyan)
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        listOf(LoudnessTarget.AUTO, LoudnessTarget.CLUB, LoudnessTarget.STREAMING, LoudnessTarget.OFF).forEach { t ->
-            val lufs = shownLufs(t, styleLufs)
+        TARGET_CHOICES.forEach { c ->
+            // « Libre » reads its value only once chosen (until then, the name alone).
+            val lufs = if (c == TargetChoice.FREE && choice != TargetChoice.FREE) null else LoudnessTargets.shown(c, styleLufs, freeLufs)
             FilterChip(
-                selected = target == t, onClick = { setTarget(t) },
-                label = { Text(if (lufs == null) t.label else "${t.label} · ${LoudnessTargets.formatTarget(lufs)}") },
-                colors = colors, modifier = Modifier.testTag("loudness_target_${t.name}"),
+                selected = choice == c, onClick = { choose(c, if (c == TargetChoice.FREE) freeLufs else null) },
+                label = { Text(LoudnessTargets.label(c, lufs)) },
+                colors = colors, modifier = Modifier.testTag(if (c == TargetChoice.FREE) "pro_target_free" else "loudness_target_${c.name}"),
             )
         }
     }
-    val lufs = LoudnessTargets.formatTarget(shownLufs(target, styleLufs) ?: 0f)
-    Text(
-        when (target) {
-            LoudnessTarget.AUTO -> tr("Le volume des morceaux de ce style (%s). La sortie monte ou baisse doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.", lufs)
-            LoudnessTarget.CLUB -> tr("Fort, comme en club (%s). La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.", lufs)
-            LoudnessTarget.STREAMING -> tr("%s : le volume où Spotify et YouTube ramènent tous les morceaux.", lufs)
-            LoudnessTarget.OFF -> tr("Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation.")
-        },
-        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
-    )
+    if (choice == TargetChoice.FREE) {
+        val v = freeLufs ?: LoudnessTargets.FREE_START_LUFS
+        ProSlider(
+            value = v, onValueChange = { choose(TargetChoice.FREE, (it * 2).roundToInt() / 2f) },
+            valueRange = com.pocketstudio.model.MasterPro.MIN_LUFS..com.pocketstudio.model.MasterPro.MAX_LUFS,
+            label = tr("Volume visé"), valueText = tr("%s LUFS", LoudnessTargets.formatTarget(v)),
+            modifier = Modifier.testTag("pro_target_slider"),
+        )
+    }
+    Text(targetHint(choice, LoudnessTargets.shown(choice, styleLufs, freeLufs)), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+        modifier = Modifier.testTag("loudness_target_hint"))
     // No reading yet (the engine not playing, a test without one) reads −100: never « −100 dB », as if the song were silenced.
     if (target != LoudnessTarget.OFF && drive != 0f && drive.isFinite() && kotlin.math.abs(drive) < 40f) {
         Text(
@@ -188,7 +220,7 @@ internal fun durationText(seconds: Double): String {
  */
 @Composable
 internal fun ExportReportLine(export: ExportUi) {
-    val lufs = export.loudness ?: return
+    if (export.loudness == null) return
     val summary = export.summary ?: return
     Column(Modifier.testTag("export_summary"), verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Text(
@@ -200,24 +232,18 @@ internal fun ExportReportLine(export: ExportUi) {
             Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
     }
-    // The pro readings (the decoded M4A's peak when it was checked).
-    val peak = summary.truePeakDb
-    WithHelp(Glossary.LUFS) {
-        Text(
-            tr("%s LUFS · crête %s dBTP", LoudnessTargets.format(lufs), peak?.takeIf { it > -100.0 }?.let { LoudnessTargets.format(it) } ?: "—"),
-            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
-            modifier = Modifier.weight(1f, fill = false).testTag("export_report"),
-        )
-    }
-    export.lossDb?.takeIf { it >= 0.1 }?.let { LossLine(it, Modifier.testTag("export_loss")) }
-    // Decision 1A: under its target because louder would crush it: said, with the loudness reached (never forced).
-    val target = export.targetLufs
-    com.pocketstudio.app.export.TargetReach.short(target, lufs, export.proReport?.loudLufs, export.lossDb)?.let { reached ->
-        Text(
-            com.pocketstudio.app.export.TargetReach.words(reached, target!!), style = MaterialTheme.typography.bodySmall,
-            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, color = Neon.Amber, modifier = Modifier.testTag("export_short"),
-        )
-        Text(com.pocketstudio.app.export.TargetReach.why(), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+    // Audit ultra round 1 (n° 15): the numbers (LUFS, dBTP), the target and why the loudness differs from it.
+    export.bilan?.let { b ->
+        WithHelp(Glossary.LUFS) {
+            Text(b.levelLine(), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+                modifier = Modifier.weight(1f, fill = false).testTag("export_report"))
+        }
+        Text(b.targetLine(), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("export_target"))
+        export.lossDb?.takeIf { it >= 0.1 }?.let { LossLine(it, Modifier.testTag("export_loss")) }
+        b.whyLine()?.let {
+            Text(it, style = MaterialTheme.typography.bodySmall, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, color = Neon.Amber,
+                modifier = Modifier.testTag("export_short"))
+        }
     }
     // Lot E: the pro readings (LRA, maxima, PLR, correlation, mono), under a touch.
     export.proReport?.let { r ->

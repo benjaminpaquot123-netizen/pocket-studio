@@ -66,6 +66,23 @@ class TruePeakMeter(private val channels: Int) {
             }.let { c -> val s = c.sum(); DoubleArray(TAPS) { c[it] / s } }
         }
 
+        /**
+         * The true peak (dBTP) and length (s) of a WAV: the export's report when the engine gave none
+         * (audit ultra round 1, n° 15: « crête — dBTP » after an export). Background thread.
+         */
+        fun ofWav(file: File): Pair<Double, Double> = WavPcm.open(file).use { pcm ->
+            val meter = TruePeakMeter(pcm.channels)
+            val buf = FloatArray(8192 * pcm.channels)
+            var frames = 0L
+            while (true) {
+                val n = pcm.readFloat(buf, 8192)
+                if (n == 0) break
+                for (i in 0 until n * pcm.channels) meter.add(buf[i])
+                frames += n
+            }
+            meter.peakDb to frames.toDouble() / pcm.sampleRate
+        }
+
         /** The true peak (dBTP) of raw interleaved little-endian floats (what [com.pocketstudio.app.audio.AudioDecoder.decodeToFile] writes). */
         fun ofRawFloats(file: File, channels: Int): Double {
             val meter = TruePeakMeter(channels)

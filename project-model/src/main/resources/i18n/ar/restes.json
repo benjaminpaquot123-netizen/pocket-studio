@@ -44,7 +44,6 @@
   "Place la tête orange ou écoute, puis : Couper ici coupe à cet endroit, Début et Fin raccourcissent le bout, Enlever le retire, Boucle le fait tourner. Pince la vue pour zoomer.": "ضع رأس التشغيل البرتقالي أو استمع، ثم: «اقطع هنا» يقطع في هذا الموضع، «البداية» و«النهاية» تقصّران القطعة، «حذف» يزيلها، «Loop» يكرّرها. اقرص العرض للتكبير.",
   "Envoyer les bouts": "إرسال القطع",
   "Coche les bouts que tu veux, puis envoie-les : sur les pads (un par pad), dans le Live, dans « Garder » (ta bibliothèque) ou sur une piste du morceau.": "ضع علامة على القطع التي تريدها ثم أرسلها: إلى الـPads (قطعة لكل Pad)، أو إلى Live، أو إلى «حفظ» (مكتبتك)، أو إلى مسار في الأغنية.",
-  "Le volume moyen visé pour tout le morceau, en LUFS : plus près de 0, plus fort. Spotify et YouTube ramènent tout à −14, un club joue vers −9. Si le son devait s'écraser, l'appli s'arrête avant et te le dit.": "متوسط علوّ الصوت المستهدف للأغنية كلها بوحدة LUFS: كلما اقترب من 0 كان أعلى. Spotify وYouTube يعيدان كل شيء إلى −14، والنادي يعزف قرب −9. إذا كان الصوت سينسحق، يتوقف التطبيق قبل ذلك ويخبرك.",
   "Plafond de crête": "سقف الذروة",
   "Le point le plus haut que le son a le droit de toucher. −1 dBTP garde une marge : le fichier ne grésille pas une fois compressé (M4A, streaming).": "أعلى نقطة يُسمح للصوت ببلوغها. −1 dBTP يترك هامشًا: لا يطقطق الملف بعد ضغطه (M4A، البث).",
   "La chaîne du master": "سلسلة الماستر",

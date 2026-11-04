@@ -22,9 +22,18 @@ enum class LoudnessTarget {
     }
 }
 
+/**
+ * Audit ultra round 1 (n° 13-15): the one loudness target the whole app shows and sends, whatever
+ * screen sets it (« Volume visé », the Guide, a tutorial). [AUTO], [CLUB], [STREAMING] and [OFF] are
+ * [Mixer.target]; [APPLE] (−16) and [FREE] (a value) are a pro target in [MasterPro.targetLufs], which
+ * wins over [Mixer.target] (a project saved with « Spotify −14 » there reads [STREAMING]).
+ */
+enum class TargetChoice { AUTO, CLUB, STREAMING, APPLE, FREE, OFF }
+
 object LoudnessTargets {
     const val CLUB_LUFS = -8f
     const val STREAMING_LUFS = -14f
+    const val APPLE_LUFS = -16f
     /** A project made by hand (no style): between club and streaming. */
     const val DEFAULT_LUFS = -9f
 
@@ -71,6 +80,85 @@ object LoudnessTargets {
         // Final audit (report 04): « Club » never quieter than the style's own (drum & bass at −7.5, hard techno at −6).
         LoudnessTarget.CLUB -> clubLufs(forStyle(style, mixVersion))
         LoudnessTarget.STREAMING -> STREAMING_LUFS
+    }
+
+    /** The one target of [mixer] (see [TargetChoice]). */
+    fun choiceOf(mixer: Mixer): TargetChoice = mixer.pro?.targetLufs?.let { v ->
+        when {
+            mixer.pro.free -> TargetChoice.FREE
+            v == STREAMING_LUFS -> TargetChoice.STREAMING
+            v == APPLE_LUFS -> TargetChoice.APPLE
+            else -> TargetChoice.FREE
+        }
+    } ?: when (mixer.target) {
+        LoudnessTarget.OFF -> TargetChoice.OFF
+        LoudnessTarget.AUTO -> TargetChoice.AUTO
+        LoudnessTarget.CLUB -> TargetChoice.CLUB
+        LoudnessTarget.STREAMING -> TargetChoice.STREAMING
+    }
+
+    /** The LUFS [p] is brought to (null: no target): what the engine gets, the export reports and every screen shows. */
+    fun of(p: Project): Float? = p.mixer.pro?.targetLufs ?: lufs(p.mixer.target, p.style, p.mixVersion)
+
+    /**
+     * The target is the whole song's integrated loudness (what Spotify, YouTube and Apple Music
+     * measure), not its Drop's: « Streaming » and every pro value. « Auto » and « Club » aim at the
+     * Drop from mix version 2 (a club hears the loud part).
+     */
+    fun wholeSong(mixer: Mixer): Boolean = mixer.pro?.targetLufs != null || mixer.target == LoudnessTarget.STREAMING
+
+    /**
+     * [mixer] with [choice] as its one target: the others cleared ([FREE]: at [freeLufs]). A pro value
+     * keeps [Mixer.target] on [LoudnessTarget.STREAMING] (a whole-song target, as the platforms
+     * measure): screens that only ask « is there a target? » read it right.
+     */
+    fun choose(mixer: Mixer, choice: TargetChoice, freeLufs: Float? = null): Mixer {
+        fun pro(lufs: Float?, free: Boolean = false): MasterPro? = (mixer.pro ?: MasterPro()).copy(targetLufs = lufs, free = free).takeUnless { it.isDefault }
+        return when (choice) {
+            TargetChoice.AUTO -> mixer.copy(target = LoudnessTarget.AUTO, pro = pro(null))
+            TargetChoice.CLUB -> mixer.copy(target = LoudnessTarget.CLUB, pro = pro(null))
+            TargetChoice.STREAMING -> mixer.copy(target = LoudnessTarget.STREAMING, pro = pro(null))
+            TargetChoice.OFF -> mixer.copy(target = LoudnessTarget.OFF, pro = pro(null))
+            TargetChoice.APPLE -> mixer.copy(target = LoudnessTarget.STREAMING, pro = pro(APPLE_LUFS))
+            TargetChoice.FREE -> mixer.copy(
+                target = LoudnessTarget.STREAMING,
+                pro = pro((freeLufs ?: mixer.pro?.targetLufs ?: FREE_START_LUFS).coerceIn(MasterPro.MIN_LUFS, MasterPro.MAX_LUFS), free = true),
+            )
+        }
+    }
+
+    /** [mixer] with [target] (the Guide, a tutorial): the pro value cleared, so that it is the one target. */
+    fun withTarget(mixer: Mixer, target: LoudnessTarget): Mixer = choose(mixer, when (target) {
+        LoudnessTarget.OFF -> TargetChoice.OFF
+        LoudnessTarget.AUTO -> TargetChoice.AUTO
+        LoudnessTarget.CLUB -> TargetChoice.CLUB
+        LoudnessTarget.STREAMING -> TargetChoice.STREAMING
+    })
+
+    /** Where « Libre » starts when no value was given yet. */
+    const val FREE_START_LUFS = -11f
+
+    /** What [choice] aims at in a project whose « Auto » is [styleLufs] ([FREE]: [freeLufs]); null: none. */
+    fun shown(choice: TargetChoice, styleLufs: Float, freeLufs: Float? = null): Float? = when (choice) {
+        TargetChoice.AUTO -> styleLufs
+        TargetChoice.CLUB -> clubLufs(styleLufs)
+        TargetChoice.STREAMING -> STREAMING_LUFS
+        TargetChoice.APPLE -> APPLE_LUFS
+        TargetChoice.FREE -> freeLufs ?: FREE_START_LUFS
+        TargetChoice.OFF -> null
+    }
+
+    /** « Club · −8 LUFS », « Streaming · −14 LUFS », « Désactivée »: the target's one name, everywhere. */
+    fun label(choice: TargetChoice, lufs: Float?): String {
+        val name = when (choice) {
+            TargetChoice.AUTO -> tr("Auto (style)")
+            TargetChoice.CLUB -> tr("Club")
+            TargetChoice.STREAMING -> tr("Streaming")
+            TargetChoice.APPLE -> tr("Apple Music")
+            TargetChoice.FREE -> tr("Libre")
+            TargetChoice.OFF -> return tr("Désactivée")
+        }
+        return lufs?.let { tr("%1\$s · %2\$s LUFS", name, formatTarget(it)) } ?: name
     }
 
     /** « Club » for a project whose « Auto » aims at [styleLufs]: [CLUB_LUFS], or the style's own when louder. */

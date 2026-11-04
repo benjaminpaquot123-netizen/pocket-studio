@@ -63,7 +63,8 @@ class NavigationMapProTest(private val name: String, private val root: String, p
             p("Tempo", listOf("launch_continue", "top_tempo"), listOf("tempo_sheet")),
             p("Partager (export, master)", listOf("launch_continue", "top_share"), listOf("share_sheet", "share_go")),
             p("Annuler", listOf("launch_continue"), listOf("top_undo")),
-            p("Enregistrer", listOf("launch_continue", "top_record"), listOf("record_running", "record_stop", "record_bar")),
+            // Audit ultra round 1 (n° 30): the ● asks what to record (keys, pads, the microphone).
+            p("Enregistrer", listOf("launch_continue", "top_record", "record_choice_pads"), listOf("record_running", "record_stop", "record_bar")),
             p("Mes projets (accueil)", listOf("launch_projects"), listOf("projects")),
             p("Remix", listOf("launch_remix"), listOf("remix_start")),
             p("Nouveau morceau (assistant)", listOf("launch_new", "starter_wizard"), listOf("wizard", "mode_step")),

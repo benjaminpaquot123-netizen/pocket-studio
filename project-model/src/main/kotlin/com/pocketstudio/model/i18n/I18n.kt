@@ -115,6 +115,8 @@ object I18n {
         "restes",
         // Owner (2026-11-04): « Un bout », the cut screen's two bars.
         "remixbout",
+        // Audit ultra round 1, zones 2 and 4: one loudness target, the export's report, what the ● records.
+        "ultra1_export",
         // Audit ultra round 1, zone 3: names' limits, the Guide's « C'est fait », a new part in the Mode simple.
         "tour1nav",
         // Audit ultra round 1, zones 5 and 6: the assistant's length, the tutorial's hints, the plain words, the controls' names.

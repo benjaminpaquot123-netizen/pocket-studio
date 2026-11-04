@@ -133,6 +133,8 @@ class BenchPlayThenTabsTest : HumanTester("play-tabs") {
         val heard = tap("top_play")
         assertTrue(heard, "le morceau joue (partie" in heard)
         tap("top_record")
+        // Audit ultra round 1 (n° 30): the ● asks what to record; the pads, as seat d's take.
+        tap("record_choice_pads")
         alive("« Enregistrer ce que je joue » (seat d, #17)")
         goesTo("tab_Plus", "then « Plus » (seat d, #18)")
         goesTo("tab_Sons", "then « Sons »")

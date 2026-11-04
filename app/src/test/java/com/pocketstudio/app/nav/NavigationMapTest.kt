@@ -46,7 +46,9 @@ class NavigationMapTest(private val name: String, private val path: List<String>
             Triple("Mix et effets", listOf("launch_continue", "tab_simple_Mix"), listOf("simple_mix")),
             Triple("Export (Envoyer)", listOf("launch_continue", "tab_simple_Envoyer"), listOf("share_name", "share_go")),
             Triple("Tempo", listOf("launch_continue", "top_tempo"), listOf("tempo_sheet")),
-            Triple("Enregistrer", listOf("launch_continue", "top_record"), listOf("tab_simple_Clavier")),
+            // Audit ultra round 1 (n° 30): the ● asks what to record (keys, pads, the microphone).
+            Triple("Enregistrer", listOf("launch_continue", "top_record", "record_choice_keys"), listOf("tab_simple_Clavier")),
+            Triple("Enregistrer au micro", listOf("launch_continue", "top_record", "record_choice_mic"), listOf("audio_tracks")),
             Triple("Annuler", listOf("launch_continue"), listOf("top_undo")),
             Triple("Live (cases, briques)", listOf("launch_continue", "top_more", "more_live"), listOf("live_screen")),
             Triple("Ma voix", listOf("launch_continue", "top_more", "more_voice"), listOf("audio_tracks")),

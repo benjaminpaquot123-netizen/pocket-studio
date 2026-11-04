@@ -831,10 +831,14 @@ abstract class HumanTester(private val seat: String) {
         }
         val file = stream?.lastPathSegment?.substringAfterLast('/') ?: "?"
         keepShared(file)
-        val apps = arrayOf("WhatsApp", "Messages", "Gmail", "Drive", "Enregistrer dans Fichiers")
+        // Audit ultra round 1 (n° 18, seats A c, C a, D b, E b, B b): a phone's share menu speaks the phone's language
+        // (the seat's, as the app): its title is the one the app gives (translated), its apps by their names, never French words.
+        @Suppress("DEPRECATION")
+        val title = started.getCharSequenceExtra(Intent.EXTRA_TITLE)?.toString() ?: com.pocketstudio.model.i18n.tr("Partager le morceau")
+        val apps = arrayOf("WhatsApp", "Messages", "Gmail", "Drive", "Files")
         scenario?.onActivity { a ->
             android.app.AlertDialog.Builder(a)
-                .setTitle("Partager « $file »")
+                .setTitle("$title · $file")
                 .setItems(apps) { d, which ->
                     note = "Ton morceau « $file » part avec ${apps[which]} (ici rien ne part vraiment : c'est la fin du partage)."
                     d.dismiss()

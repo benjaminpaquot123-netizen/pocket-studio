@@ -66,7 +66,7 @@ class MasterProScreenshotTest : ScreenshotTest() {
             compose.onNodeWithTag("master_pro").performClick()
             compose.waitForIdle()
         }) {
-            Column(Modifier.verticalScroll(rememberScrollState())) { NeonCard { MasterProPanel(-8f, actions()) {} } }
+            Column(Modifier.verticalScroll(rememberScrollState())) { NeonCard { MasterProPanel(actions()) } }
         }
     }
 

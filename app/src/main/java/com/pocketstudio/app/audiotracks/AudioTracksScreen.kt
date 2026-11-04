@@ -353,6 +353,8 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
             OutlinedButton(onClick = { actions.import(t.id) }, enabled = !busy, modifier = Modifier.weight(1f)) { com.pocketstudio.ui.WholeWordsText(tr("Fichier son"), textAlign = androidx.compose.ui.text.style.TextAlign.Center) }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fadingHorizontalScroll()) {
+            // Audit ultra round 1 (n° 31, seat E b): the count-in beside « Enregistrer » (it was at the bottom of Réglages).
+            com.pocketstudio.app.record.CountInChoice()
             TextButton(onClick = { actions.effects(t.id) }, modifier = Modifier.testTag("audio_effects_${t.id}")) { Text(tr("Effets de cette piste")) }
             if (t.previous != null) {
                 // One touch brings back the take the last one replaced (a second one swaps back).

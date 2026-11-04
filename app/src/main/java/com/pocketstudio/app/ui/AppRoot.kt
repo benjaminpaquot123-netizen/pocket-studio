@@ -206,6 +206,10 @@ import kotlinx.coroutines.delay
 /** The tabs with their own record bar (« ● Enregistrer », then the take's card). */
 private val RECORD_BAR_TABS = setOf(AppTab.Rythme, AppTab.Acide, AppTab.Synthe)
 
+/** What the top bar's ● says it records on [tab] (audit ultra round 1, n° 30): its source there, the microphone, or « ask ». */
+private fun recordLabelOf(tab: AppTab, mic: Boolean, recording: Boolean): String =
+    com.pocketstudio.app.record.recordLabelFor(if (tab in RECORD_BAR_TABS) takeSourceOf(tab) else null, mic, recording)
+
 /** What the top bar's ● records on [tab] (outside the Audio tab, where it is the microphone's). */
 fun takeSourceOf(tab: AppTab): com.pocketstudio.app.record.TakeSource = when (tab) {
     AppTab.Synthe -> com.pocketstudio.app.record.TakeSource.KEYS
@@ -1012,6 +1016,8 @@ fun AppRoot() {
 
     // A permission refused (twice, Android stops asking): say why nothing happens and where to allow it.
     var permissionHelp by rememberSaveable { mutableStateOf<String?>(null) }
+    // Audit ultra round 1 (n° 30): the top bar's ● where nothing is played asks what to record (keys, pads, the microphone).
+    var recordChoice by rememberSaveable { mutableStateOf(false) }
     permissionHelp?.let { text ->
         ScaledAlertDialog(
             onDismissRequest = { permissionHelp = null },
@@ -1252,6 +1258,18 @@ fun AppRoot() {
         if (rhythmVm.project.value.audioTracks.isEmpty()) rhythmVm.addAudioTrack()
         audioPage = 0
         go(AppTab.Audio)
+    }
+    // A take of the microphone on its track (made when there is none), the permission asked first.
+    val startMicTake: () -> Unit = {
+        rhythmVm.micTakeTrack()?.let { id ->
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                rhythmVm.recordAudio(id)
+            } else {
+                audioRecordTrack = id
+                audioPunch = null
+                audioMicPermission.launch(Manifest.permission.RECORD_AUDIO)
+            }
+        }
     }
     // Lot 2: the Mode simple's Clavier records « ma mélodie » into the song's melody track (the
     // first track, « Synthé », was shown before), once per visit: a track chosen there stays.
@@ -2127,6 +2145,7 @@ fun AppRoot() {
                 TopBarUi(
                     com.pocketstudio.model.DefaultNames.shown(topProject.name), topTransport.playing, topUndo && undoable, topRedo && undoable, topRecording || topTake != null,
                     micTake = micMode,
+                    recordLabel = recordLabelOf(tab, micMode, topRecording || topTake != null),
                     // The Audio tracks screen records on the scene shown: it can be changed from there.
                     // Audit final (20 M16): the Mode simple's bar is lighter: no part chip (the editors'
                     // header picks the part), no redo (↶ stays).
@@ -2146,21 +2165,14 @@ fun AppRoot() {
                     toggleRecord = {
                         when {
                             // From the synth the take is a played phrase (a one-bar loop grows to four first);
-                            // from the 303, its knobs; elsewhere what is played (pads, keys, MIDI).
-                            // Audit final (05 #11): the Mode simple's ● where nothing is played (Mon morceau,
-                            // Envoyer, the Remix…) records « ma mélodie » on the Clavier, not an empty take of pads.
-                            !micMode && simple && tab !in RECORD_BAR_TABS && !topRecording -> { go(AppTab.Synthe); rhythmVm.recordMelodyTake() }
+                            // from the 303, its knobs; from Rythme the pads.
+                            // Audit ultra round 1 (n° 30, seats A d, C c): where nothing is played (Mon morceau,
+                            // Mixeur, Envoyer…) the ● asks what to record: a melody on the keys, the pads, or the
+                            // microphone (a voice, a guitar): it opened the keys when a guitar was meant.
+                            !micMode && tab !in RECORD_BAR_TABS && !topRecording -> recordChoice = true
                             !micMode -> rhythmVm.recordTake(takeSourceOf(tab))
                             topTake != null -> rhythmVm.stopAudioRecording()
-                            !topSaving -> rhythmVm.micTakeTrack()?.let { id ->
-                                if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-                                    rhythmVm.recordAudio(id)
-                                } else {
-                                    audioRecordTrack = id
-                                    audioPunch = null
-                                    audioMicPermission.launch(Manifest.permission.RECORD_AUDIO)
-                                }
-                            }
+                            !topSaving -> startMicTake()
                         }
                     },
                     selectScene = rhythmVm::selectScene, newScene = rhythmVm::newScene,
@@ -2170,6 +2182,14 @@ fun AppRoot() {
                     more = simpleMore,
                 ),
             )
+            if (recordChoice) {
+                com.pocketstudio.app.record.RecordChoiceDialog(
+                    keys = { go(AppTab.Synthe); if (simple) rhythmVm.recordMelodyTake() else rhythmVm.recordTake(com.pocketstudio.app.record.TakeSource.KEYS) },
+                    pads = { go(AppTab.Rythme); rhythmVm.recordTake(com.pocketstudio.app.record.TakeSource.PADS) },
+                    mic = { openVoice(); startMicTake() },
+                    dismiss = { recordChoice = false },
+                )
+            }
             // The rename bar (a long press on the name), the tempo, where the song is and « ⟳ Partie », the solo banner; the tempo sheet.
             UnderTopBar(
                 rhythmVm, tempoOpen = tempoSheetOpen, setTempoOpen = { tempoSheetOpen = it },
@@ -2548,6 +2568,7 @@ fun AppRoot() {
                                     moveScene = rhythmVm::moveScene,
                                     addPart = rhythmVm::addSongPart,
                                     insertPart = rhythmVm::insertSongPart,
+                                    newPart = rhythmVm::newSongPart,
                                     duplicatePart = rhythmVm::duplicateSongPart,
                                     movePart = rhythmVm::moveSongPart,
                                     removePart = rhythmVm::removeSongPart,
@@ -2581,7 +2602,6 @@ fun AppRoot() {
                                         is SampleTask.Busy -> t.message
                                         is SampleTask.Failed -> t.message
                                         else -> if (liveStarting) tr("Préparation des pads prêts à jouer…") else null
-                                    newPart = rhythmVm::newSongPart,
                                     },
                                 ),
                                 liveActions = LivePadsActions(

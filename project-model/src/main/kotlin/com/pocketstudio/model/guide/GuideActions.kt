@@ -7,6 +7,7 @@ import com.pocketstudio.model.Channel
 import com.pocketstudio.model.EffectType
 import com.pocketstudio.model.Insert
 import com.pocketstudio.model.LoudnessTarget
+import com.pocketstudio.model.LoudnessTargets
 import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.MusicBus
 import com.pocketstudio.model.Project
@@ -297,7 +298,7 @@ object GuideActions {
             GuideAction.INSERT, GuideAction.NUDGE, GuideAction.CHAIN, GuideAction.BYPASS, GuideAction.SEND, GuideAction.VOLUME ->
                 targets.fold(p) { q, t -> onStrip(q, t, a) }
             GuideAction.PAN -> targets.fold(p) { q, t -> withPan(q, t, a.value ?: 0f) }
-            GuideAction.TARGET -> runCatching { LoudnessTarget.valueOf(a.name) }.getOrNull()?.let { p.copy(mixer = p.mixer.copy(target = it)) } ?: p
+            GuideAction.TARGET -> runCatching { LoudnessTarget.valueOf(a.name) }.getOrNull()?.let { p.copy(mixer = LoudnessTargets.withTarget(p.mixer, it)) } ?: p
             GuideAction.DUCK -> duck(p, a.value ?: 0.55f)
             GuideAction.LOW_CUT -> lowCuts(p)
             GuideAction.PANS -> pans(p)

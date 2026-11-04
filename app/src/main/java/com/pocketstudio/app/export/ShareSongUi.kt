@@ -14,6 +14,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -35,6 +36,8 @@ fun ShareSongProgress(rhythmVm: RhythmViewModel, wav: Boolean = false) {
     val context = LocalContext.current
     val export by rhythmVm.export.collectAsStateWithLifecycle()
     val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
+    // Audit ultra round 1 (n° 15): what was shared, in numbers, waiting under the share menu (null: nothing to say).
+    var done by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf<List<String>?>(null) }
     LaunchedEffect(rhythmVm, lifecycle) {
         shareWhileShown(lifecycle, rhythmVm.shareRequests) { files ->
             // The song is exported and the share sheet is open: the last step of the card is done
@@ -42,12 +45,33 @@ fun ShareSongProgress(rhythmVm: RhythmViewModel, wav: Boolean = false) {
             if (WavExporter.share(context, files, tr("Partager mon morceau"))) {
                 // G5: the Guide's « Prêt à partager ? » is decided (« C'est partagé »).
                 rhythmVm.guide.markDone("share.ready", "keep")
-                // Remix testers (Mehdi): the share ended with no word from the app; the file is said ready, and where its copy is.
-                android.widget.Toast.makeText(context, shareReadyText(files, rhythmVm.export.value.savedInMusic), android.widget.Toast.LENGTH_LONG).show()
+                // Remix testers (Mehdi): the share ended with no word from the app; the file is said ready, and where its copy is,
+                // and (audit ultra round 1) its loudness, peak, format, length and target, seen when the share menu closes.
+                val now = rhythmVm.export.value
+                done = listOf(shareReadyText(files, now.savedInMusic)) + now.bilan?.lines().orEmpty()
             }
         }
     }
     if (export.sharing) ShareProgressDialog(export, cancel = rhythmVm::cancelExport, dismiss = rhythmVm::dismissShare, wav = wav)
+    else done?.let { lines -> ShareBilanDialog(lines) { done = null } }
+}
+
+/** « C'est prêt » after « Partager »: the file, then its report in numbers (audit ultra round 1, n° 15). */
+@Composable
+internal fun ShareBilanDialog(lines: List<String>, dismiss: () -> Unit) {
+    ScaledAlertDialog(
+        onDismissRequest = dismiss,
+        title = { Text(tr("C'est prêt")) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.testTag("share_bilan")) {
+                lines.forEachIndexed { i, line ->
+                    Text(line, style = if (i == 0) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
+                        color = if (i == 0) Neon.TextPrimary else Neon.TextSecondary)
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = dismiss, modifier = Modifier.testTag("share_bilan_ok")) { Text("OK") } },
+    )
 }
 
 /** « C'est prêt » once the song is made and its share menu open: its file, and its copy in Musique when there is one. */

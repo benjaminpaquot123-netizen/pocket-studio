@@ -85,7 +85,7 @@ object ScreenHelp {
     // --- Master pro and the file ---
     val MASTER_TARGET: Help get() = Help(
         tr("Cible de volume"),
-        tr("Le volume moyen visé pour tout le morceau, en LUFS : plus près de 0, plus fort. Spotify et YouTube ramènent tout à −14, un club joue vers −9. Si le son devait s'écraser, l'appli s'arrête avant et te le dit."),
+        tr("Le volume visé, en LUFS : plus près de 0, plus fort. Une seule cible pour toute l'appli. Club (−8 LUFS) et Auto se mesurent sur le Drop ; Streaming (−14 LUFS, Spotify et YouTube), Apple Music (−16) et Libre sur tout le morceau. Si le son devait s'écraser, l'appli s'arrête avant et te le dit."),
     )
     val MASTER_CEILING: Help get() = Help(
         tr("Plafond de crête"),

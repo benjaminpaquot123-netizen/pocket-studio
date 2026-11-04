@@ -25,13 +25,32 @@ object WavExporter {
         return File(dir, fileName(projectName, LocalDateTime.now()))
     }
 
+    /**
+     * The file's name: the project's, its letters kept in every script (ó, ę, テクノ, हिंदी's vowel
+     * signs: audit ultra round 1, n° 17), « & » kept, the rest dropped, one « - » between words.
+     */
     fun fileName(projectName: String, time: LocalDateTime): String {
         val safe = projectName.trim()
-            .replace(Regex("[^\\p{L}\\p{N} _-]"), "")
-            .replace(' ', '-')
+            .replace(Regex("[^\\p{L}\\p{M}\\p{N}&_\\s-]"), "")
+            .replace(Regex("\\s+"), "-")
+            .replace(Regex("-{2,}"), "-")
+            .trim('-')
             .take(40)
             .ifEmpty { "pocket-studio" }
         return "$safe-${time.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"))}.wav"
+    }
+
+    /**
+     * « Ma chanson » with the words after it (« morceau », « club »…), each left out when the name
+     * already holds it (audit ultra round 1, B b: « Mon-morceau-morceau »).
+     */
+    fun nameWith(name: String, vararg words: String?): String {
+        val have = name.lowercase().split(Regex("[^\\p{L}\\p{M}\\p{N}]+")).toMutableSet()
+        val extra = words.filterNotNull().filter { it.isNotBlank() }.filter { w ->
+            val parts = w.lowercase().split(Regex("[^\\p{L}\\p{M}\\p{N}]+")).filter { it.isNotEmpty() }
+            (parts.isEmpty() || !have.containsAll(parts)).also { have += parts }
+        }
+        return (listOf(name) + extra).joinToString("-")
     }
 
     /** Copies [file] into the shared Music folder (no permission needed). Blocking: call off the main thread. */

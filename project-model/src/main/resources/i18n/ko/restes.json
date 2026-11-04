@@ -44,7 +44,6 @@
   "Place la tête orange ou écoute, puis : Couper ici coupe à cet endroit, Début et Fin raccourcissent le bout, Enlever le retire, Boucle le fait tourner. Pince la vue pour zoomer.": "주황색 재생 헤드를 놓거나 들으면서: “여기서 자르기”는 그 자리를 자르고, “시작”과 “끝”은 조각을 줄이고, “빼기”는 없애고, “루프”는 반복시켜요. 화면을 집어서 확대해요.",
   "Envoyer les bouts": "조각 보내기",
   "Coche les bouts que tu veux, puis envoie-les : sur les pads (un par pad), dans le Live, dans « Garder » (ta bibliothèque) ou sur une piste du morceau.": "원하는 조각에 체크하고 보내세요: 패드에(패드마다 하나씩), Live로, “저장”(내 라이브러리)으로, 또는 곡의 트랙으로.",
-  "Le volume moyen visé pour tout le morceau, en LUFS : plus près de 0, plus fort. Spotify et YouTube ramènent tout à −14, un club joue vers −9. Si le son devait s'écraser, l'appli s'arrête avant et te le dit.": "곡 전체에서 노리는 평균 음량(LUFS)이에요. 0에 가까울수록 커요. Spotify와 YouTube는 모두 −14로 맞추고, 클럽은 −9 정도로 틀어요. 소리가 뭉개질 것 같으면 앱이 그 전에 멈추고 알려 줘요.",
   "Plafond de crête": "피크 한계",
   "Le point le plus haut que le son a le droit de toucher. −1 dBTP garde une marge : le fichier ne grésille pas une fois compressé (M4A, streaming).": "소리가 닿아도 되는 가장 높은 지점이에요. −1 dBTP면 여유가 있어서 압축해도(M4A, 스트리밍) 파일이 지직거리지 않아요.",
   "La chaîne du master": "마스터 체인",

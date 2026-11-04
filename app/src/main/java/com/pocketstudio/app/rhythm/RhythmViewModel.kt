@@ -341,6 +341,9 @@ data class ExportUi(
     val proReport: com.pocketstudio.engine.ExportReport? = null,
     /** Decision 1A: the loudness the last mix aimed at (LUFS; null without a target), to say when it stayed under it. */
     val targetLufs: Double? = null,
+    /** Audit ultra round 1 (n° 15): which target that was (its name in the report), and whether it aimed at the whole song (else the Drop). */
+    val targetChoice: com.pocketstudio.model.TargetChoice = com.pocketstudio.model.TargetChoice.OFF,
+    val targetWholeSong: Boolean = true,
     /** Lot E: the song's parts and bars (« Plage exportée »). */
     val parts: Int = 0,
     val songBars: Int = 0,
@@ -353,6 +356,13 @@ data class ExportUi(
             seconds, it, decodedPeakDb ?: truePeakDb, checkedAfterCompression = decodedPeakDb != null,
             sampleRate = writtenRate, bits = writtenBits,
             format = when (writtenFormat ?: format) { ExportFormat.M4a -> "M4A"; ExportFormat.Flac -> "FLAC"; ExportFormat.Wav -> "WAV" },
+        )
+    }
+
+    /** Audit ultra round 1 (n° 15): the short report in numbers (LUFS, dBTP, format, length, target and why), for the mix. */
+    val bilan: com.pocketstudio.app.export.ExportBilan? get() = summary?.let { s ->
+        com.pocketstudio.app.export.ExportBilan(
+            loudness, decodedPeakDb ?: truePeakDb, s.formatLine(), seconds, targetChoice, targetLufs, targetWholeSong, proReport?.loudLufs, lossDb,
         )
     }
 
@@ -2031,7 +2041,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun recordAudio(id: Int) = recordAudio(id, null)
 
     private fun recordAudio(id: Int, punch: Punch?) {
-        if (!NativeEngine.isAvailable || _audioRecording.value != null) return
+        if (_audioRecording.value != null) return
+        // Audit ultra round 1 (n° 29): never a silent « Enregistrer »: why, and what to do.
+        if (!NativeEngine.isAvailable) {
+            _notice.value = tr("Le moteur audio n'est pas prêt : réessaie dans un instant.")
+            return
+        }
         if (_recording.value) stopRecordingTake()
         if (_transport.value.playing) togglePlay()
         val p = project.value
@@ -2060,9 +2075,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             // Two beats of the count-in kept in front of the take: a word sung ahead of the « 1 »
             // (03 M1). A punch keeps only its own bars.
             val preroll = if (punch == null) prerollFrames(p.tempoBpm) else 0
-            val handle = finishOrRelease(Dispatchers.IO, { h: Long -> TakeVault.app.discard(h) }) {
-                NativeEngine.recordStart(onStart = true, seconds = seconds, prerollFrames = preroll)
-            } ?: 0L
+            // A microphone that throws (its stream closed under it) is one that did not open: said, never a take stuck « waiting ».
+            val handle = try {
+                finishOrRelease(Dispatchers.IO, { h: Long -> TakeVault.app.discard(h) }) {
+                    NativeEngine.micStart(onStart = true, seconds = seconds, prerollFrames = preroll)
+                } ?: 0L
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                AppLog.add("Micro : ouverture impossible (${e.javaClass.simpleName}: ${e.message})")
+                0L
+            }
             if (_audioRecording.value?.track != id) {  // cancelled meanwhile
                 TakeVault.app.discard(handle)
                 return@launch
@@ -2070,6 +2093,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             if (handle == 0L) {
                 _audioRecording.value = null
                 takePlan = null
+                AppLog.add("Micro : la prise n'a pas pu commencer")
                 _notice.value = tr("Le micro n'a pas pu être ouvert. Vérifie l'autorisation du micro et qu'aucune autre appli ne l'utilise.")
                 return@launch
             }
@@ -2103,7 +2127,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             AppLog.add("Prise audio sur la piste ${id + 1}" + if (songPart >= 0) " (morceau, partie ${songPart + 1})" else "")
             recordPoll = launch {
                 while (true) {
-                    val st = NativeEngine.recordStatus(handle)
+                    val st = NativeEngine.micStatus(handle)
                     val ui = _audioRecording.value ?: break
                     // Headphones unplugged (or the choice changed): the voice in the headphones follows.
                     updateMonitor(id)
@@ -8615,8 +8639,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     val noteTake: StateFlow<com.pocketstudio.app.record.NoteTakeUi?> = _noteTake.asStateFlow()
 
     private val _takeEmpty = MutableStateFlow(false)
-    /** The last take ended with nothing played: « Rien n'a été joué » under its button, until the next one. */
+    /** The last take ended with nothing played: « Rien n'a été joué » under its button, for [TAKE_EMPTY_MS] or until the next one. */
     val takeEmpty: StateFlow<Boolean> = _takeEmpty.asStateFlow()
+    private var takeEmptyJob: kotlinx.coroutines.Job? = null
 
     /** The notes the last take wrote, by (scene, track), as they are now in the project. */
     private var takeNotes: MutableMap<Pair<Int, Int>, List<Note>> = HashMap()
@@ -8722,6 +8747,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             // Nothing played: no card to answer, a short line where the take was (not a window).
             _noteTake.value = null
             _takeEmpty.value = true
+            // Audit ultra round 1 (n° 31, seat C c): said a moment, then gone (it stayed on every screen).
+            takeEmptyJob?.cancel()
+            takeEmptyJob = viewModelScope.launch { kotlinx.coroutines.delay(TAKE_EMPTY_MS); _takeEmpty.value = false }
             com.pocketstudio.app.report.Journal.action(if (takeKeys == 0) "Prise vide : rien n'a été joué" else "Prise vide : $takeKeys touches non gardées")
             return
         }
@@ -8908,11 +8936,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * played on the keys and pads (recorded or not) go into the shown part, each note on the track
      * it was played on, as it was played (one undo step); the card then offers « Remettre en rythme ».
      */
-    fun keepPlayed() {
+    fun keepPlayed() = keepPlayed(null)
+
+    /**
+     * Audit ultra round 1 (n° 31, seat F a): from an editor's record bar only what is played there
+     * is kept: the Clavier's keys ([com.pocketstudio.app.record.TakeSource.KEYS]) without a pad hit
+     * touched on Rythme before, Rythme's pads without the keys; null: both.
+     */
+    fun keepPlayed(source: com.pocketstudio.app.record.TakeSource?) {
         if (_recording.value || _audioRecording.value != null || performanceTaking) return
         keepNoteTake()
         val p = project.value
-        val capture = played.capture(playedClock(), com.pocketstudio.model.PlayedMemory.BARS, p.stepsPerBar)
+        val keys = source != com.pocketstudio.app.record.TakeSource.PADS
+        val pads = source != com.pocketstudio.app.record.TakeSource.KEYS && source != com.pocketstudio.app.record.TakeSource.ACID
+        val capture = played.capture(playedClock(), com.pocketstudio.model.PlayedMemory.BARS, p.stepsPerBar, keys = keys, pads = pads)
         if (capture.isEmpty) {
             _canKeepPlayed.value = false
             _notice.value = tr("Rien à garder : joue quelques notes d'abord.")
@@ -10281,7 +10318,18 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** The master's « Cible » (saved with the project): the engine brings the mix to its loudness. */
     fun setLoudnessTarget(target: com.pocketstudio.model.LoudnessTarget) {
-        session.edit("mix-loudness-target") { p -> p.copy(mixer = p.mixer.copy(target = target)) }
+        session.edit("mix-loudness-target") { p -> p.copy(mixer = com.pocketstudio.model.LoudnessTargets.withTarget(p.mixer, target)) }
+        if (NativeEngine.isAvailable) NativeEngine.setLoudnessTarget(loudnessLufs(project.value))
+    }
+
+    /**
+     * Audit ultra round 1 (n° 13-15): « Volume visé », the one loudness target of the app (Auto, Club,
+     * Streaming, Apple Music, a free value, none): every screen, the engine and the export read it.
+     */
+    fun chooseLoudnessTarget(choice: com.pocketstudio.model.TargetChoice, freeLufs: Float? = null) {
+        session.edit(if (choice == com.pocketstudio.model.TargetChoice.FREE) "pro-target" else "mix-loudness-target") { p ->
+            p.copy(mixer = com.pocketstudio.model.LoudnessTargets.choose(p.mixer, choice, freeLufs))
+        }
         if (NativeEngine.isAvailable) NativeEngine.setLoudnessTarget(loudnessLufs(project.value))
     }
 
@@ -10289,13 +10337,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // Lot E: syncEngine sends the target from here (live, or into an export being described): the
         // master pro's settings go with it, to the same engine.
         pushMasterPro(p)
-        return p.mixer.pro?.targetLufs ?: com.pocketstudio.model.LoudnessTargets.lufs(p.mixer.target, p.style, p.mixVersion)
+        return com.pocketstudio.model.LoudnessTargets.of(p)
     }
 
     /** Lot E: the pro target's mode, the ceiling and the limiter's settings (the defaults: the master as before). */
     private fun pushMasterPro(p: Project) {
         val pro = p.mixer.pro ?: com.pocketstudio.model.MasterPro()
-        NativeEngine.setTargetWholeSong(pro.targetLufs != null)
+        // « Streaming » and the pro values aim at the whole song (as the platforms measure it), « Auto » and « Club » at the Drop.
+        NativeEngine.setTargetWholeSong(com.pocketstudio.model.LoudnessTargets.wholeSong(p.mixer))
         NativeEngine.setMasterCeiling(pro.ceilingDb)
         NativeEngine.setLimiterAttack(pro.attack)
         NativeEngine.setLimiterRelease(pro.release)
@@ -10521,7 +10570,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val mixBands = if (out.extension == "wav") com.pocketstudio.app.export.Bands.of(out) else null
             com.pocketstudio.app.export.ProReport.write(
                 out, tags.title, settings.format.name.uppercase(), rate, bits,
-                p.mixer.pro?.targetLufs ?: com.pocketstudio.model.LoudnessTargets.lufs(p.mixer.target, p.style, p.mixVersion), ceilingDb, report, decodedPeak,
+                com.pocketstudio.model.LoudnessTargets.of(p), ceilingDb, report, decodedPeak,
                 mixBands, masterPro.referenceBands(), p.mixer.pro?.referenceName,
             )
         }.onFailure { AppLog.add("Export : rapport impossible (${it.message})") }.getOrNull()
@@ -10818,7 +10867,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     // song, a further lowering); each stem its own, counted once the sounds are in.
                     val budget = com.pocketstudio.app.export.ExportBudget()
                     val fileLabel = if (stems) "%02d-%s".format(java.util.Locale.ROOT, index + 1, fileWord(label)) else fileWord(label)
-                    val wav = runCatching { WavExporter.newFile(app, "${com.pocketstudio.model.DefaultNames.shown(p.name).take(28)}-$fileLabel") }.getOrElse { throw UserMessage(tr("Impossible de préparer le fichier d'export.")) }
+                    // Audit ultra round 1 (n° 17): the mix's file says its target (« -club », « -streaming »), never a word twice.
+                    val targetWord = if (solo == null && !stems && settings.limited) targetFileWord(p) else null
+                    val wav = runCatching {
+                        WavExporter.newFile(app, WavExporter.nameWith(com.pocketstudio.model.DefaultNames.shown(p.name).take(28), fileLabel, targetWord))
+                    }.getOrElse { throw UserMessage(tr("Impossible de préparer le fichier d'export.")) }
                     _export.value = _export.value.copy(stage = if (renders.size > 1) "${stageName(label)} (${index + 1}/${renders.size})" else null)
                     // The mix into [wav], its limiter at [ceiling] dBTP (an M4A's; null: the default −1). Again
                     // for an M4A that went over −1 dBTP once decoded (M4aGuard): the limiter, lower, takes the peaks down.
@@ -10893,8 +10946,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     // as written; read again here only if it is missing).
                     if (solo == null) {
                         loudness = report?.lufs ?: withContext(Dispatchers.IO) { runCatching { Loudness.integrated(wav) }.getOrNull() }
-                        truePeak = report?.truePeakDb
-                        seconds = report?.seconds
+                        // Audit ultra round 1 (n° 15): never « crête — »: without the engine's report, read on the file.
+                        val measured = if (report == null) withContext(Dispatchers.IO) { runCatching { com.pocketstudio.app.export.TruePeakMeter.ofWav(wav) }.getOrNull() } else null
+                        truePeak = report?.truePeakDb ?: measured?.first
+                        seconds = report?.seconds ?: measured?.second
                         proReport = report
                         loss = report?.takeIf { it.driveDb != 0.0 }?.lossDb
                         // S5: the live target settles on the drive the whole song needed.
@@ -11017,7 +11072,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, stage = null, loudness = loudness,
                     truePeakDb = truePeak, seconds = seconds, lossDb = loss, decodedPeakDb = decodedPeak, writtenRate = writtenRate,
                     writtenBits = writtenBits, writtenFormat = settings.format, sharing = false, proReport = proReport,
-                    targetLufs = (p.mixer.pro?.targetLufs ?: com.pocketstudio.model.LoudnessTargets.lufs(p.mixer.target, p.style, p.mixVersion))?.toDouble())
+                    targetLufs = com.pocketstudio.model.LoudnessTargets.of(p)?.toDouble(),
+                    targetChoice = com.pocketstudio.model.LoudnessTargets.choiceOf(p.mixer),
+                    targetWholeSong = com.pocketstudio.model.LoudnessTargets.wholeSong(p.mixer) || p.mixVersion < Project.MIX_V2)
                 ending = tr("Export terminé : %s", done.joinToString(", ") { it.name })
                 AppLog.add("Export ${settings.what} ${settings.format} : ${done.size} fichier(s), ${frames / OfflineExport.SAMPLE_RATE} s" +
                     if (share) " (partage)" else "")
@@ -11048,6 +11105,15 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 com.pocketstudio.app.export.ExportRun.end(ending)
             }
         }
+    }
+
+    /** The word an export's file name gets for [p]'s target: « club », « streaming », « apple-music », « -11lufs »; null for « Auto » or none. */
+    private fun targetFileWord(p: Project): String? = when (com.pocketstudio.model.LoudnessTargets.choiceOf(p.mixer)) {
+        com.pocketstudio.model.TargetChoice.CLUB -> "club"
+        com.pocketstudio.model.TargetChoice.STREAMING -> "streaming"
+        com.pocketstudio.model.TargetChoice.APPLE -> "apple-music"
+        com.pocketstudio.model.TargetChoice.FREE -> com.pocketstudio.model.LoudnessTargets.of(p)?.let { "${Math.round(-it)}lufs" }
+        else -> null
     }
 
     /**
@@ -11239,6 +11305,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         /** Longest microphone take (34 MB of memory). */
         /** A take lasts 5 minutes at most (a whole song: 57 MB of mono float in memory). */
         const val MAX_AUDIO_SECONDS = 300
+        /** Audit ultra round 1 (n° 31): how long « Rien n'a été joué pendant la prise » stays. */
+        const val TAKE_EMPTY_MS = 6000L
         const val MAX_EXPORT_BARS = 64
         /** A loop export may run on to the end of an audio clip or of the remix's song, up to this. */
         const val MAX_LONG_EXPORT_BARS = 1024

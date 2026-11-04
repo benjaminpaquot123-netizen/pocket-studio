@@ -152,7 +152,7 @@ class TakeVault(
 
     companion object {
         /** The app's vault (the engine's recordings). */
-        val app: TakeVault by lazy { TakeVault({ com.pocketstudio.engine.NativeEngine.recordFinish(it) }) }
+        val app: TakeVault by lazy { TakeVault({ com.pocketstudio.engine.NativeEngine.micFinish(it) }) }
 
         /**
          * The frames of a recording of [size] kept: after the [prerollFrames], the [latencyFrames]

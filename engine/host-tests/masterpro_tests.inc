@@ -387,6 +387,30 @@ static void testIntegratedTargetOnADropAimedSong() {
     }
 }
 
+// Audit ultra round 1 (n° 13, seats A c, E d, F c): a club export and a streaming export of the same
+// song, as the app describes them (mix version 4: « Club » aims at the Drop, -8 LUFS; « Streaming »
+// at the whole song, -14 LUFS), are two different files: 6 LU apart, each at its target, both under -1 dBTP.
+static void testClubAndStreamingExportsDiffer() {
+    double club = 0.0, streaming = 0.0;
+    for (bool wholeSong : {false, true}) {
+        ps::OfflineRenderer r(kRate);
+        prepareLoudLoop(r, 0.5f);
+        r.post({ps::CommandType::SetMixVersion, 4.0f, 0});
+        r.post({ps::CommandType::SetMasterPro, wholeSong ? 1.0f : 0.0f, ps::ProForceSong});
+        r.post({ps::CommandType::SetMaster, wholeSong ? -14.0f : -8.0f, 4});
+        const auto out = r.renderToBuffer(kRate * 12, 0);
+        const auto& rep = r.report();
+        const double reached = wholeSong ? rep.lufs : (rep.loudLufs > -100.0 ? rep.loudLufs : rep.lufs);
+        std::printf("  %s: %.2f LUFS (loud part %.2f), %.2f dBTP, mode %d\n", wholeSong ? "streaming" : "club", rep.lufs, rep.loudLufs, toDb(rep.truePeak), rep.mode);
+        CHECK(rep.mode == (wholeSong ? 0 : 1));
+        CHECK(std::fabs(reached - (wholeSong ? -14.0 : -8.0)) <= 0.5);
+        CHECK(toDb(independentTruePeak(out)) <= -1.0);
+        CHECK(finiteAndUnclipped(out));
+        (wholeSong ? streaming : club) = rep.lufs;
+    }
+    CHECK(club - streaming >= 5.0);
+}
+
 // Master pro on a live engine: A/B measured and switched, a reference playing, the limiter's settings
 // and a stem mode changed, nothing allocated on the audio thread.
 static void testMasterProWithoutAllocating() {
@@ -430,4 +454,5 @@ static void testMasterProWithoutAllocating() {
     {"mp_high_rate_and_shaped_dither", masterpro::testHighRateAndShapedDither},                 \
     {"mp_limiter_settings_hold_the_ceiling", masterpro::testLimiterSettingsHoldTheCeiling},     \
     {"mp_integrated_target_on_a_drop_aimed_song", masterpro::testIntegratedTargetOnADropAimedSong}, \
+    {"mp_club_and_streaming_exports_differ", masterpro::testClubAndStreamingExportsDiffer},     \
     {"mp_master_pro_without_allocating", masterpro::testMasterProWithoutAllocating},

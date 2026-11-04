@@ -94,6 +94,8 @@ class TopBarUi(
     val recording: Boolean = false,
     /** The ● records the microphone on an audio track (the Audio tracks screen, or a take on). */
     val micTake: Boolean = false,
+    /** Audit ultra round 1 (n° 30): what the ● records, in words (null: the words of before). */
+    val recordLabel: String? = null,
     /** The scene chip, on the screens that edit a scene (null: not shown). */
     val scene: SceneChipUi? = null,
     /** The project is saved (on its own, after each change): a small "✓ Enregistré" under its name. */
@@ -327,7 +329,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             ) {
                 Icon(
                     Icons.Filled.FiberManualRecord,
-                    contentDescription = when {
+                    contentDescription = ui.recordLabel ?: when {
                         ui.micTake && ui.recording -> tr("Arrêter la prise et la garder")
                         ui.micTake -> tr("Enregistrer le micro sur la piste audio")
                         ui.recording -> tr("Arrêter l'enregistrement")

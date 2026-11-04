@@ -894,6 +894,12 @@ object NativeEngine {
     /** Stops, frees the recording and returns it (mono, 48 kHz); null if the engine did not let go. */
     external fun recordFinish(handle: Long): FloatArray?
 
+    /** [recordStart], [recordStatus], [recordFinish] through the [sink] when there is one (tests, the bench: no native library). */
+    fun micStart(onStart: Boolean, seconds: Int, prerollFrames: Int): Long =
+        sink?.micStart(onStart, seconds, prerollFrames) ?: recordStart(onStart, seconds, prerollFrames)
+    fun micStatus(handle: Long): FloatArray = sink?.micStatus(handle) ?: recordStatus(handle)
+    fun micFinish(handle: Long): FloatArray? = sink.let { if (it != null) it.micFinish(handle) else recordFinish(handle) }
+
     /**
      * Lot B2, « Enregistrer ce que je joue »: what the output plays from the next bar line of the
      * live pads' clock ([waitForSound]: the first one where a pad plays or the transport runs), at

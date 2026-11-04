@@ -81,6 +81,8 @@ class SimpleModeAuditTest {
         compose.onNodeWithTag("tab_simple_Morceau").assertIsSelected()
         h.vm.playingForTest = true
         tap("top_record")
+        // Audit ultra round 1 (n° 30): the ● asks what to record; « Une mélodie au clavier ».
+        tap("record_choice_keys")
         compose.onNodeWithTag("tab_simple_Clavier").assertIsSelected()
         assertTrue(h.vm.recording.value)
         assertEquals(SimpleMelody.trackOf(h.vm.project.value), h.vm.selectedTrack.value)

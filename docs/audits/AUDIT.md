@@ -187,6 +187,7 @@ Chaque étage doit être vert avant de passer au suivant, sauf les découvertes 
 - **Chasse au jargon** : chaque texte noté par un « débutant » ; même mot pour la même idée, dans les 15 langues.
 
 ### Étage 6 : testeurs IA à personnalités (tours)
+**Révision du 2026-11-04 : cet étage n'est pas joué à part. Il devient le tour 0 de l'Audit ultra (`AUDIT-ULTRA.md`, §7), qui porte seul les critères d'arrêt des testeurs IA ; ce qui suit est gardé pour mémoire.**
 - **Chaque tour : 6 sièges neufs** (8 si la machine suit), seuls sur la machine pendant le tour (exception à la règle des deux équipes). Personnalités :
   - enfant de 8 ans ;
   - ado trap ;
@@ -227,6 +228,7 @@ Chaque étage doit être vert avant de passer au suivant, sauf les découvertes 
 - **Chaque défaut reçoit une cause racine** (oubli de branchement, état non sauvegardé, texte, mise en page, son, performance, plateforme…). Trois défauts de la même cause = une correction de fond, pas trois rustines.
 
 ## 6. La boucle et les critères d'arrêt
+**Révision du 2026-11-04 : à partir de l'étage 6, la boucle et l'arrêt sont ceux de l'Audit ultra (`AUDIT-ULTRA.md` §7 : deux tours cumulés, réussite constatée par un oracle programme, ≤ 3 Moyens nouveaux par tour, courbe < 20 %, 0 Bloquant ni Grave, carte sans case vide, son, langues, accessibilité, mise à jour). SUS et SEQ sont mesurés à l'étage 7 seulement.**
 1. Les étages 0 à 5 sont verts.
 2. Tour de l'étage 6, puis synthèse : dédoublonnage, tri, reproduction par un test.
 3. Corrections du plus grave au plus léger (deux équipes au plus, méthode de CLAUDE.md), avec la règle « partout ».

@@ -1,137 +1,214 @@
-# Deuxième audit « ultra » de BenStudio (plan du 2026-11-03)
+# Deuxième audit « ultra » de BenStudio (plan révisé du 2026-11-04)
 
 **Demande de Benjamin (2026-11-03)** : « Il faut que l'application soit testée par énormément d'utilisateurs qui n'y connaissent rien, qui connaissent un peu, ou qui connaissent beaucoup ; que tous les boutons soient connectés partout dans les tutos ; que le programme soit idéalement parfait. »
 
-**Validé par Benjamin le 2026-11-03** (il gère lui-même la limite de la semaine ; le prévenir dès qu'il peut passer en mode extra, c'est-à-dire à la fin du premier Audit).
-**Quand :** après le premier Audit (`AUDIT.md`, étages 0 à 6 verts), sur le signal de Benjamin, en mode ultra (beaucoup d'agents). Le Play Store vient après (consigne du 2026-11-03).
-**Différence avec le premier Audit :** le premier vérifie que tout marche ; l'ultra vérifie que **tout le monde y arrive**, partout, et que **chaque bouton est relié, expliqué et utile**. Méthode différente : une foule de testeurs, des contradicteurs pour chaque défaut, une équipe rouge, et la comparaison avec la concurrence.
+**Validé par Benjamin le 2026-11-03** (il gère lui-même la limite de la semaine). **Révisé le 2026-11-04** à sa demande (« revois-le, ajoute ce qu'il faut ») : relu par un panel de six experts IA (méthode utilisateurs, outillage de test, quota, équipe rouge, son, accessibilité et langues) puis par un critique neuf ; 84 constats, 15 changements retenus, 9 ajouts qu'aucun des six n'avait vus. La version du 2026-11-03 est dans l'historique git.
+**Quand :** après les étages 0 à 5 du premier Audit (`AUDIT.md`), sur le signal de Benjamin (« Audit ultra »). **L'étage 6 du premier Audit n'est pas joué à part : il devient le tour 0 de l'ultra** (un seul instrument, un seul jeu de critères d'arrêt, §7). L'étage 7 (les vrais humains) vient après l'arrêt de l'ultra. Le Play Store vient après (consigne du 2026-11-03).
+**Différence avec le premier Audit :** le premier vérifie que tout marche ; l'ultra vérifie que **tout le monde y arrive**, partout, et que **chaque bouton est relié, expliqué et utile**.
+
+**Le principe qui a tout changé à la relecture :** tout ce qu'un programme peut mesurer est écrit une fois et ne coûte plus rien ensuite ; les agents IA ne font que ce qu'aucun programme ne juge (hésiter, se perdre, trouver un mot qui ne colle pas, dire si un « ? » explique vraiment). Le plan du 3 novembre, lu au pied de la lettre, coûtait 160 à 200 agents lourds (80 passages de testeurs à 150 images chacun, 3 contradicteurs par défaut, 1 110 passages de tutos). Celui-ci vise **60 agents lourds et 40 légers au plus**, pour une couverture plus large.
 
 ---
 
-## 1. Le recensement de chaque bouton (avant la foule)
-Un programme parcourt **tous les écrans** (machine à états de l'étage 2), en Simple et en Pro, et liste **chaque élément touchable** (bouton, puce, curseur, pad, case, menu, geste). Pour chacun, une fiche automatique :
-- **ce qu'il fait** (changement mesuré du projet, du son ou de l'écran) : un bouton sans effet = défaut ;
-- **annulable**, **sauvegardé**, **exporté** quand ça a un sens ;
-- **libellé lisible** par TalkBack, cible de 48 dp, texte entier dans les 15 langues ;
-- **expliqué** : l'aide « ? » le décrit, et au moins un tuto, le Guide ou « Montre-moi » le montre (sinon : soit on l'ajoute au tuto, soit on se demande si le bouton est utile) ;
-- **même mot et même icône** qu'ailleurs (Lexique).
+## 0. Ce qui change par rapport au plan du 3 novembre
+1. L'étage 6 du premier Audit et la foule de l'ultra fusionnent (tour 0) ; un seul jeu de critères d'arrêt, mesurables (§7).
+2. Avant tout tour, le **banc 2** : le banc « testeur humain » sait donner à chaque siège sa langue, son appareil, sa police, son mode, son thème, un premier lancement réel, un budget de gestes, et rend l'écran **en texte** (l'image seulement en cas de doute). Aujourd'hui tous les sièges sont « téléphone 392 dp, français, police 100 %, micro déjà accordé » (`HumanTester.kt`) : sans ce lot, la jambe « partout » du plan serait vide sans que personne ne s'en aperçoive.
+3. Les tutos (§2) sont des **programmes** : plus « 37 × 2 × 15 parcourus par des débutants IA » (1 110 passages). Les agents ne jouent que 2 tutos par tour, pris dans les sièges.
+4. Volume : **8 sièges par tour en 2 lots de 4** (6 à partir du tour 3), 3 tours au minimum, 5 au maximum puis point avec Benjamin ; missions découpées en buts courts avec un budget de gestes tenu par le banc ; éclaireurs avant la foule ; coupe-circuit par lot.
+5. **Rapport court à champs fermés** (`GABARIT-RAPPORT-TESTEUR.md`) : le banc écrit les chiffres, le testeur ne rend que ses défauts et 3 hésitations ; la fusion des doublons et « mission réussie » sont des programmes.
+6. Les contradicteurs (§4) deviennent un **rejeu déterministe** des gestes, puis un test de reproduction ; un seul juge léger seulement quand ni l'un ni l'autre n'est possible ; un défaut d'ergonomie n'est jamais « réfuté » par la lecture du code.
+7. Le recensement des boutons (§1) **étend les programmes existants** (LayoutScan, HelpCoverage, NavigationMap, CarteFonctions) au lieu d'un nouveau parcours ; il remplit aussi les 40 cases vides de la carte des fonctions.
+8. L'équipe rouge (§5) devient un tableau « cas · où ça tourne · oracle » ; 6 lignes sur 9 étaient déjà faites à l'étage 3 ; le neuf est ailleurs (coupure sur les sons écrits, troisième copie jamais relue, projet de 2 h, clics des 30 effets, Android 12 à 16).
+9. L'émulateur d'audit (`audit-emulator.yml`), jamais lancé, tourne **avant le tour 1** puis à chaque fin de tour ; StrictMode et LeakCanary entrent dans le projet (le tableau de bord les exigeait sans qu'ils existent).
+10. Nouveau §5 bis : **mise à jour depuis chaque ancienne version, réinstallation, changement de téléphone, premier lancement réel** : les moments où un vrai utilisateur perd son travail, hors de portée d'une foule qui part toujours d'une installation vierge.
+11. Profils : liste fixe de 16, tirés 8 par tour ; l'accessibilité par **réglages du banc et programmes** (écran-texte, bruit sur les gestes, simulation daltonienne), pas par des personas qu'une IA ne peut pas jouer ; règle écrite : **aucun testeur IA ne juge le son**.
+12. Langues et accessibilité par programmes : paquet par langue relu une seule fois par un lecteur natif IA, pluriels polonais et arabes, icônes miroir, police 200 %, thème daltonien dans la matrice, parcours TalkBack sur l'arbre sémantique.
+13. §9 réécrit : une question groupée à Benjamin **maintenant** (téléphones de sa fille et de son ami), un kit bug bash d'une page, et `recette.json` comme liste téléphone unique.
+14. Un critère d'arrêt **son** (§6 bis), avec des chiffres, rempli par un programme ; deux restes « de justesse » tranchés.
+15. La concurrence (§6) : un seul agent léger met à jour les deux grilles qui existent déjà ; les ajouts vont dans le lot « après l'arrêt » (gel).
 
-Sortie : `docs/audits/RECENSEMENT-BOUTONS.md` (une ligne par bouton) et un test qui échoue si un bouton nouveau n'a pas sa fiche. **Objectif : 100 % des boutons reliés, testés et expliqués.**
+Faits corrigés : « 200 pads » → 16 pads par page × 4 pages = 64 (`LivePads.kt`) ; « Android 10 à 16 » → Android 12 à 16 (`minSdk 31`) ; « une seule construction de l'appli partagée » → une seule compilation de l'atelier `fx-int`, que les équipes de correction ne touchent pas (le banc est Robolectric en debug, pas une APK) ; « LeakCanary » dans le tableau de bord → absent du projet, à ajouter.
 
-## 2. Les tutos au peigne fin
-- **Les 37 tutos × Facile et Pro × 15 langues**, parcourus par des débutants IA qui ne lisent que l'écran (banc « testeur humain »).
-- À chaque étape :
-  - le bouton désigné est visible sans chercher ;
-  - « Montre-moi » montre le bon geste au bon endroit ;
-  - le geste réel fait ce que le texte promet, et le son change comme annoncé ;
-  - « Étape suivante » n'arrive que quand c'est fait.
-- **Croisement avec le recensement** : chaque bouton important apparaît au moins une fois dans un tuto, le Guide ou l'aide.
-- **Le Guide** : chaque conseil mène au bon bouton en un toucher.
+---
 
-## 3. La foule de testeurs (cœur de l'ultra)
-**Trois niveaux, chacun avec plusieurs profils :**
-- **N'y connaît rien** :
-  - enfant de 6 et 8 ans ;
-  - senior qui découvre le tactile ;
-  - ado qui veut « faire un son TikTok » ;
-  - parent pressé ;
-  - personne qui ne lit pas bien.
-- **Connaît un peu** :
-  - joueur de GarageBand ou Koala ;
-  - DJ amateur ;
-  - guitariste qui veut enregistrer ;
-  - fan de remix ;
-  - utilisateur du MiniLab 3 ou d'un autre clavier.
-- **Connaît beaucoup** :
-  - producteur FL Studio ou Ableton ;
-  - ingénieur du son ;
-  - beatmaker trap ;
-  - DJ club ;
-  - prof de musique ;
-  - testeur QA professionnel.
-- **Plus, à chaque tour** :
-  - une personne malvoyante (TalkBack) ;
-  - une personne daltonienne ;
-  - une personne avec un tremblement (touchers imprécis) ;
-  - un non-francophone par langue tournante.
+## 1. Le recensement de chaque bouton (programmes, avant la foule)
+But : 100 % des éléments touchables reliés, testés et expliqués, en Simple et en Pro. Le recensement n'est pas un nouveau parcours : c'est l'extension des programmes qui existent.
 
-**Volume :**
-- des tours de **12 à 16 testeurs neufs** (jamais deux fois le même), au moins **6 tours**, soit **environ 80 passages** au total ;
-- chacun avec son appareil (petit téléphone, Honor, tablette, pliable), sa langue, son mode Simple ou Pro et sa mission.
+| Exigence de la fiche | Outil existant | Ce qui manque (à écrire, programme) |
+|---|---|---|
+| Ce qu'il fait (effet mesuré) | rien (`BenchEngine` ignore presque toutes les commandes ; `GestureFuzzTest` ne vérifie que « pas de plantage ») | **Marcheur de recensement** : `RecordingSink` (garde chaque commande envoyée au moteur) + parcours de chaque écran du registre depuis 3 projets de référence (vide, petit, énorme), chaque nœud touchable touché une fois ; effet classé : projet, annulation, écran, moteur, réglage, fichier, intent, message, vibration, rien. « Sans effet » seulement si « rien » depuis les 3 projets, contrôle non désactivé, aucun dialogue ouvert ; liste `Allowed` avec raison. Un agent léger ne lit que « rien partout » (quelques dizaines de lignes). |
+| Annulable, sauvegardé, exporté | `CARTE-FONCTIONS.md` (23 fonctions × 13) | rien de nouveau : la fiche du bouton pointe vers sa ligne de la carte |
+| Lisible TalkBack, cible, contraste | `LayoutScan` (LABEL, TARGET, CONTRAST) sur `CaptureMatrix` | `AccessibilityScan` sur **tous** les écrans (29 aujourd'hui sur ≈ 130), LABEL étendu aux curseurs, interrupteurs et appuis longs ; règle des cibles telle que décidée le 2026-11-03 : toucher ≥ 48 dp **et** visible ≥ 24 dp |
+| Texte entier dans les 15 langues | `CaptureMatrix` (465 cas, 100 et 130 %) | **registre unique des écrans** (réflexion sur toutes les classes `*ScreenshotTest`) → matrice étendue (≈ 1 500 cas, en tâche d'audit `-Paudit`, pas sur chaque PR) ; **police 200 %** comme 3e valeur |
+| Expliqué (« ? », tuto, Guide) | `HelpCoverageTest` (8 écrans), `CarteFonctionsTest` (Lexique) | `HelpCoverage` généralisé à tous les écrans ; au premier passage, un agent léger décide une fois « évident / à expliquer » par écran, puis le programme garde |
+| Atteignable (≤ 3 touchers, retour) | `NavigationMapTest` (22 chemins, Mode simple) | **`NavigationMapProTest`** : la machine à états n'existe qu'en Simple ; en Pro, les 5 espaces, leurs feuilles et menus n'ont ni carte ni test « Retour ramène à l'accueil » |
+| Même mot | `LexiconWordsTest`, `I18nCatalogTest`, `MuteSoloEverywhereTest`, `ArchitectureRulesTest` | rien de plus que la relecture par langue (§6 ter) |
+| Même icône | **aucun test** | **`IconLexiconTest`** : une icône = un mot, un mot = une icône (exceptions avec raison) ; variantes `AutoMirrored` imposées aux icônes directionnelles |
+| Gestes bruts (glisser, pincer, peindre, tourner) | invisibles à tout recensement sémantique (17 fichiers lisent les doigts directement) | **`GESTES.md`** (20 à 30 lignes : geste, écran, test qui le prouve) avec un test garde : la liste des fichiers à `pointerInput` ne grandit pas sans une ligne |
 
-**Missions** (tirées par paires pour tout couvrir) :
-- faire son premier morceau en 10 minutes ;
-- remixer une chanson et découper la voix ;
-- jouer au Pad Live avec un enfant ;
-- refaire un défi ;
-- enregistrer sa voix ;
-- exporter pour Spotify et pour le club ;
-- reprendre un projet trois jours après ;
-- brancher le MiniLab ;
-- travailler sur tablette au clavier ;
-- tout faire en Mode simple sans jamais passer en Pro.
+Sortie : le recensement complet est **généré sous `app/build`** (≈ 1 400 étiquettes), jamais commité ; seuls sont commités le résumé par écran (boutons, « rien partout », « sans ? », « sans nom ») et la liste des acceptés avec raison. Garde : un test qui échoue si une étiquette nouvelle apparaît sans fiche ni acceptation, et si un compteur monte (comme `CarteFonctionsTest`).
 
-**Ce que chaque testeur rend :**
-- ce qu'il a voulu faire, où il a hésité (temps et touchers), où il a abandonné ;
-- ce qui l'a surpris, et sa note sur 10 ;
-- « l'œil » compare l'écran attendu à l'écran obtenu (bugs qui ne plantent pas) ;
-- **mesures** : réussite par mission, temps, touchers, retours en arrière, appels à l'aide.
+Ce qu'un programme ne jugera jamais, et qui reste aux agents (légers, sur des listes courtes) : si un « ? » explique vraiment ; si un bouton « rien partout » est un bug ou un choix ; si un texte de tuto se comprend sans le lire deux fois ; si une icône veut dire ce qu'elle montre.
 
-## 4. Chaque défaut passe par des contradicteurs
-- **Trois relecteurs indépendants** essaient de **prouver qu'il n'existe pas** (reproduction, lecture du code). Un défaut est gardé si au moins deux sur trois échouent à le réfuter. Fin des fausses alertes.
-- Un défaut gardé est **corrigé à la racine, partout** (règle « partout »), avec un test qui le reproduit. Un défaut d'ergonomie est noté par **au moins deux profils différents** avant de changer le design.
+## 2. Les tutos : des programmes, plus deux passages d'agent par tour
+Le contenu d'un cours ne dépend pas de la langue (`tutos/*.json`, 2 138 étapes, textes par `tr()`). Ce qui change avec la langue, c'est seulement : le texte tient-il dans le panneau, et ce que TalkBack lit.
+- **`TutoJourneyTest`** (existe : 37 cours × Facile et Pro, cible visible, « Montre-moi », étape cochée par son détecteur, rien n'avance seul) : en français à chaque tour ; en allemand (textes les plus longs) et en arabe (droite à gauche) au tour 1 et au tour final.
+- **« Le panneau tient »** (nouveau) : pour chaque langue, les 8 à 10 textes d'étape et titres les plus longs dessinés dans le panneau du tuto, par paires avec les appareils, passés à `LayoutScan` (≈ 100 cas).
+- **« Cible visible sans défiler ni panneau devant »** (nouveau) : à chaque étape, la cible désignée est dans la zone visible et n'est pas sous le panneau replié (défaut n° 2 de Clara au tour du 28 octobre).
+- **Oracles de geste** (nouveau) : `TutoJourneyTest` écrit dans le ViewModel pour la moitié des familles d'étapes (tempo, cases, roulements, triolets, vélocité, 303, notes, potards, partage, transitions) : il prouve que le détecteur coche, pas que le geste à l'écran produit ce que le texte promet. Un test par famille, sur un seul cours chacun, fait l'étape **uniquement par l'écran** et vérifie le même détecteur.
+- **`tuto-bench`** (nouveau, la nuit) : les 74 morceaux que « Montre-moi » fabrique (37 × Facile et Pro) sont rendus et mesurés avec les critères bloquants du banc des 37 styles plus l'écart au morceau de l'assistant du même style (≥ −3 dB par bande) et Drop − Montée ≥ +2 dB. Aucun n'est rendu aujourd'hui ; `TutoMidsBench` n'en mesure qu'une bande sur 6 cours Pro (D-1-16 : liquid −8,5 dB, jungle −4,6 dB). ≈ 2,5 h de machine par tour, zéro quota ; un agent léger ne lit que les lignes en échec.
+- **`TutoSoundsExistTest`** (nouveau) : chaque son nommé par un cours, une fiche de style ou le Guide existe dans la bibliothèque ou un pack, sinon le texte nomme le remplaçant (décision du 2026-11-04 sur les sons manquants).
+- **`GuideTipsReachTest`** (nouveau) : chaque conseil du Guide met sa cible visible en ≤ 1 toucher (la vérification G6 avait trouvé 4 gestes pour 2 visés).
+- **Agents** : 2 passages de tuto par tour (1 Facile, 1 Pro, 5 chapitres au plus, cours choisis par le programme : le plus long, le plus manuel, celui qui a cassé au tour d'avant), **pris dans les 8 sièges du tour**, pas en plus. Ce sont eux qui trouvent les notes cachées hors écran et le jargon, que les programmes ne voient pas.
+- **La promesse sonore** (« le son change comme annoncé ») est tenue par les programmes (`tuto-bench`, `song-bench.sh`, tests moteur, direct = export) et par l'oreille de Benjamin ; un testeur IA ne vérifie que la ligne de son du banc (« après ▶, la ligne dit que ça joue »).
 
-## 5. L'équipe rouge (casser exprès)
-- appuyer partout très vite, dix doigts ;
-- couper pendant une sauvegarde, un export ou une séparation ;
-- remplir le téléphone ;
-- fichiers piégés ;
-- tempo extrême ;
-- 200 pads ;
-- un projet de 2 heures ;
-- débrancher le MiniLab en jouant ;
-- changer de langue en pleine lecture.
+## 3. La foule de testeurs
+### 3.1 Prérequis : le banc 2 (programme, avant le tour 1)
+`start.txt` lit : `lang=` (15 codes), `device=` (les 5 profils de `CaptureMatrixTest` + pliable), `font=100|130|200`, `mode=simple|pro`, `theme=studio|night|daltonien`, `fresh=reel` (rien d'accordé d'avance, langue = celle du téléphone, accueil et dialogues de permission joués), `gestes.max=` (budget tenu par le banc : il écrit « abandon : budget » et ferme), `lit=non` (les textes sous 18 sp masqués par des barres grises : l'enfant, la personne qui lit mal et le non-francophone deviennent un seul mécanisme qui teste icônes, tailles et disposition), `main=une|gauche` (touchers refusés hors de la zone du pouce). Un test refuse un tour où tous les sièges ont la même langue.
+- **L'écran en texte** : `screen-N.txt` = arbre sémantique visible (texte, nom TalkBack, rôle, état, centre, « sans nom » pour une icône muette), dans l'ordre de lecture. Le testeur lit le texte et demande l'image (`regarde image`) seulement au premier écran d'une route nouvelle ou quand le texte ne suffit pas ; plafond 1 image pour 5 gestes. C'est exactement ce qu'entend une personne malvoyante, et ça divise la dépense principale par 4 à 5.
+- **`LayoutScan` appelé à chaque écran** par le banc (`#N LAYOUT …` dans le journal) : les « captures signalées » deviennent automatiques, plus d'« œil » agent.
+- **Journal enrichi** : route de l'écran, nœud sous le doigt (ou « rien », ou « désactivé »), empreinte de l'écran, retours, touchers sur un « ? », ligne de son, gels du fil principal (chien de garde : trou > 700 ms = « gel », avec la pile). Le banc dit « rien ne change » après 3 écrans identiques de suite et force la fin au 5e.
+- **Rejeu** : `scripts/human-replay.sh <siège> <n>` rejoue `cmd-1..n` sur un siège neuf aux mêmes options et dit « reproduit / divergé au pas k ».
+- **Amenées scriptées** : pour chaque mission, un script place l'appli au point de départ (ouvrir, créer, arriver au Remix…) avant de rendre le siège à l'agent : 30 à 50 % de gestes d'agent en moins.
 
-**Objectif :** aucun plantage, aucun projet perdu, aucun craquement.
+### 3.2 Profils (liste fixe de 16, tirés 8 par tour, jamais deux fois le même)
+- **N'y connaît rien** : enfant de 8 ans ; ado qui veut « faire un son TikTok » ; parent pressé ; senior qui découvre le tactile (police 200 %, animations coupées) ; **explorateur** qui n'ouvre jamais un tuto ; **anxieux** qui a peur de casser ou de perdre (éprouve Annuler, « Quitter sans créer ? », la sauvegarde).
+- **Connaît un peu** : joueur de GarageBand ou Koala ; DJ amateur ; guitariste qui veut enregistrer ; fan de remix ; utilisateur du MiniLab 3 ou d'un autre clavier.
+- **Connaît beaucoup** : producteur FL Studio ou Ableton ; ingénieur du son ; beatmaker trap ; DJ club ; testeur QA professionnel.
+- **Variantes par réglage du banc, pas par persona** (une IA ne voit pas en daltonien, ne tremble pas, lit tout) : `lit=non` (2 sièges par tour, dont l'enfant), `main=une` ou `gauche` (le pouce), `font=200`, `fresh=reel` (2 sièges par tour), 2 sièges non francophones par tour (langues tirées par paires avec les appareils et la police, `Pairwise.kt`). Le daltonisme et le tremblement sont des programmes (§6 ter : simulation sur les captures, rejeu bruité des journaux). **Un siège TalkBack** (écran-texte seul, gestes `suivant / précédent / activer / lire-depuis-le-haut`) au tour 1 et au tour final seulement ; `TalkBackWalk` (§6 ter) à chaque tour.
+- **Règle écrite** : aucun testeur IA ne juge le son (le banc n'a pas de moteur : `HumanTester.heard()` fabrique une phrase). Un rapport qui contient un jugement sonore est rejeté au dédoublonnage. Les profils « connaissent beaucoup » reçoivent le rapport chiffré du banc du tour (LUFS, crête, Drop − Montée, kick) et jugent ce que l'appli **affiche et promet** contre ces chiffres (« Volume visé », « Fort et propre », mesures du Master pro).
 
-## 6. La comparaison avec la concurrence
-Des experts comparent, fonction par fonction, BenStudio à FL Studio Mobile, Koala Sampler, Remixlive, Groovepad, BandLab et GarageBand :
-- ce qui manque ;
-- ce qui demande plus de touchers chez nous ;
-- ce que les avis négatifs de ces applis reprochent, et que nous évitons ou pas.
+### 3.3 Missions (découpées en buts courts, budget de gestes tenu par le banc)
+Débutant 60 gestes, connaisseur 90, QA 120 ; « regarde image » compte un demi-geste. Une mission = 2 ou 3 buts (le premier son, puis une partie, puis le partage) : un abandon au but 2 reste une information. Affectation écrite dans le tableau de bord : niveau × mission × mode × langue × appareil × zone de l'appli, tirés par paires ; jamais deux sièges d'un tour avec mission + mode + zone identiques. La liste des défauts connus n'est jamais donnée aux testeurs.
+- Missions générales : premier morceau (Simple, ≤ 40 gestes jusqu'au fichier partagé) ; remixer une chanson et découper la voix ; jouer au Pad Live (premier son en 1 toucher) ; refaire un défi ; enregistrer sa voix ; exporter pour Spotify et pour le club et lire ce que l'appli affiche ; reprendre un projet 3 jours après (le banc avance l'horloge) ; brancher le MiniLab ; travailler sur tablette au clavier ; tout faire en Mode simple sans jamais passer en Pro.
+- **Missions musicales** (connaisseurs, tour 1 seulement, puis si leur zone a changé) : faire un son de A à Z au Synthé et le poser sur deux pistes ; chanter sur le beat et caler la voix ; jouer 45 min au MiniLab, enregistrer la perf et l'exporter ; découper la chanson et faire un beat avec les bouts ; sortir le même morceau pour Spotify et le club et comparer ce que l'appli affiche ; reproduire un style depuis une fiche. Leurs rapports sont des faits (bouton absent, geste impossible), pas des avis sur le son.
+- **Oracle de mission (programme, `scripts/bench/seat-metrics.py`)** : « réussie » est lu dans l'état, jamais déclaré par le testeur (Léa : « à moitié fait, mais validé ») : premier morceau = projet avec ≥ 3 parties et ≥ 2 min et un fichier partagé ; Remix = chanson séparée et un pad « Voix » ; défi = ≥ 1 étoile ; exports = deux fichiers aux cibles (`ffprobe` + mesure) ; reprendre 3 jours après = projet rouvert avec son contenu en ≤ 3 gestes ; Mode simple = jamais passé en Pro. Le banc écrit `mission=reussie|partielle|non`.
 
-Sortie : une liste courte « à ajouter » ou « à simplifier », proposée à Benjamin (il tranche, un seul lot de questions).
+### 3.4 Ce que chaque testeur rend
+`docs/audits/GABARIT-RAPPORT-TESTEUR.md` : un bloc à champs fermés, ≤ 40 lignes, 12 défauts au plus, 3 hésitations (écran n°, ce que je cherchais, où j'ai regardé), une surprise, « j'aurais abandonné à … ». Les chiffres (gestes, retours, « ? », premier son, abandon, mission) viennent du banc. Pas de note sur 10, pas de SUS ni de SEQ d'une IA (aucune vérité terrain : réservés à l'étage 7, à 3 smileys).
+- **Mesures calculées par programme** : gestes jusqu'au premier son (cible : 1 au Pad Live, ≤ 3 depuis l'accueil) ; gestes jusqu'au premier résultat partageable (≤ 40 en Simple) ; touchers à vide ou sur un contrôle désactivé ; retours immédiats ; écrans revisités ; défilements sans toucher ; appels à l'aide ; abandons ; gels.
+- **Fusion des doublons (programme, avant qu'un agent lise quoi que ce soit)** : clé = route + cible + symptôme ; base `docs/audits/ultra/base.tsv` de toutes les clés connues (tours précédents et étages 0 à 5) avec leur état ; `clusters.md` ≤ 60 lignes, seule lecture d'un agent. « Nouveau » = clé absente de la base.
+- **Test des 5 secondes** : une seule fois, sur 10 écrans clés (une capture, « que peux-tu faire ici ? », comparé à l'action principale), agent léger.
 
-## 7. La boucle et l'arrêt
-- **Tour** : foule, contradicteurs, corrections, relecture neuve des corrections, puis tour suivant avec des testeurs neufs.
-- **Arrêt** quand **deux tours de suite** finissent avec :
-  - zéro Bloquant, zéro Grave, aucun Moyen nouveau ;
-  - **au moins 90 % de missions réussies chez les débutants et 100 % chez les connaisseurs** ;
-  - un recensement des boutons à 100 % ;
-  - tous les tutos verts dans toutes les langues.
-- **Garde-fou** : au 8e tour sans arrêt, point avec Benjamin.
+## 4. Chaque défaut passe par le rejeu, pas par trois relecteurs
+1. **Rejeu déterministe** (`human-replay.sh`) : reproduit = le défaut existe, zéro agent.
+2. **Test de reproduction** écrit par l'équipe de correction : rouge sur le code courant = confirmé (le gabarit de fiche l'exige déjà).
+3. **Un seul juge léger** par grappe, seulement sans rejeu possible : lit la grappe (≤ 15 lignes) et 2 images, tranche « défaut / voulu / idée » avec la gravité. Une grappe vue par ≥ 2 sièges saute même ce juge (la fréquence est la preuve). Trois lecteurs seulement si l'équipe de correction conteste.
+4. **Un défaut d'ergonomie n'est jamais réfuté par la lecture du code** (« il est là, sous le pli » est précisément le défaut) : confirmé par deux profils différents, ou par un second siège neuf qui échoue au même pas en ≤ 20 gestes.
+5. Un défaut gardé est corrigé à la racine, partout (règle « partout »), avec un test qui le reproduit.
 
-## 8. Coût et rythme
-- Mode ultra : beaucoup d'agents **en lecture et en jeu** (les testeurs ne compilent pas : ils pilotent l'appli déjà construite).
-- **Deux équipes au plus** qui modifient le code (corrections), pour ne pas surcharger la machine.
-- Les testeurs passent par lots de 4 à 6 en même temps. Les tests lourds tournent seuls.
-- Chaque tour livre un tableau de bord (`docs/audits/GABARIT-TABLEAU-DE-BORD.md`) et un résumé de 5 lignes à Benjamin.
+## 5. L'équipe rouge : un tableau, pas une liste d'idées
+Définitions : **plantage** = FATAL / ANR / signal fatal dans le journal ou `ApplicationExitInfo` ; **projet perdu** = un changement montré « Sauvegardé » absent à la réouverture, ou un projet qui s'ouvre en projet neuf ; **craquement** = `xruns`, `restarts` ou `nonFinite` > 0 dans `EngineHealth` pendant le scénario (lu par le programme, pas par une oreille).
 
-## 8 bis. Mode ultra mais économe (consigne de Benjamin, 2026-11-03)
-Toujours le modèle le plus fort (consigne 1B), mais sans gaspiller :
-- **Une seule construction de l'appli par tour**, partagée par tous les testeurs. Les testeurs ne compilent pas et ne lancent pas la suite de tests.
-- **Le recensement des boutons (§1) et les tutos (§2) sont des programmes**, pas des agents. Un agent ne lit que les lignes en échec.
-- **Missions bornées** : chaque testeur a un nombre de touchers et de minutes au plus. Il rend un rapport court (gabarit), pas de récit.
-- **Captures** : l'« œil » ne regarde que les captures signalées par les contrôles automatiques et un écran clé par langue. Jamais toutes.
-- **Doublons d'abord** : les défauts de tous les testeurs d'un tour sont regroupés **avant** les contradicteurs. Un défaut vu cinq fois ne coûte qu'une vérification.
-- **Contradicteurs selon la gravité** : trois pour un Grave ou un Bloquant, un seul pour un Moyen, aucun pour un Mineur (corrigé s'il est simple, sinon listé).
-- **Corrections groupées par zone** : une équipe par zone de code, jamais un agent par défaut.
-- **Tours qui rapetissent** : un parcours vert deux tours de suite sort de la rotation. Les tours suivants se concentrent sur ce qui a cassé.
-- **Équipe rouge et concurrence une seule fois**, au premier tour, puis seulement sur ce qui a changé.
-- **Journaux** : seuls les résumés sont lus, comme d'habitude.
-- **Arrêt dès que les critères du §7 sont atteints.** Pas de tour « pour voir ».
+| Cas | Où ça tourne | Oracle |
+|---|---|---|
+| Appuyer partout très vite, dix doigts | déjà couvert (étage 3 : `GestureFuzzTest`, `TenFingersTest`) ; **neuf** : deuxième doigt sur un pad déjà tenu | un seul son, le pad reste allumé tant qu'un doigt reste |
+| Couper pendant sauvegarde, export, séparation | déjà couvert (`AtomicSaveTest`, `AtomicExportTest`, `SeparationServiceTest`) ; **neuf** : coupure à chaque pas sur **toutes les écritures** (prise micro, prise Live, son sur un pad, « Garder », import .zip, séparation : la séquence WAV → `project.json` n'a aucun test de coupure entre les deux) | sur chaque instantané, le projet s'ouvre, tout fichier cité existe ou est dit « son manquant », jamais un projet neuf ; retirer un `renameTo` fait tomber le test |
+| Projet corrompu | **neuf** : `project.open.json` (copie intacte du début de séance) devient le troisième candidat de la lecture, après `project.json` et `.bak` | main et bak corrompus → la version du début de séance est rétablie avec son message, pas un projet neuf |
+| Remplir le téléphone | émulateur (étape 4b corrigée : remplir jusqu'à 0 octet, pas 30 Mo) et test instrumenté `ChaosDeviceTest` | message « appareil plein », projet relu = projet édité une fois la place libérée ; idem séparation et export |
+| Fichiers piégés | déjà couvert (`TrappedProjectFilesTest`, `TrappedSoundFilesTest`) | — |
+| Tempo extrême | déjà couvert (`EditFuzzTest`) + bornes 40/300 par le modèle et le moteur | — |
+| 64 pads (16 × 4 pages, le maximum réel) et projet de 2 h | **neuf** : `SyntheticSongs.twoHours` (24 parties, 8 pistes audio longues, 64 pads chargés, 16 pads à 3 couches), figé | sauvegarde < 1 s, ouverture < 5 s, mémoire, annulation, export en flux (le WAV de 2 h fait 1,4 Go : pas gardé), `droppedCommands = 0`, direct = export |
+| Changer de langue en lecture | déjà couvert (`PairwiseInteractionsTest`) | — |
+| Appel pendant une prise micro ; micro refusé puis accordé | **neuf** : 2 tests dans `ChaosAndroidTest` | la prise se termine proprement (gardée ou jetée avec message), rien de coincé ; « Autoriser le micro » puis l'enregistrement marche sans redémarrer |
+| Clics des 30 effets, des effets tenus, de la 303, du mixeur | **neuf** : test hôte `fx_sweep_has_no_clicks` (chaque réglage balayé, sauté, allumé au milieu d'une note) + détecteur de discontinuité dans `ps_measure` sur export et pistes séparées | pas inter-échantillon ≤ 2 × l'entrée, énergie ajoutée > 12 kHz ≤ −50 dB, DC ≤ 1e-3, aucun NaN |
+| Rafale MIDI | **neuf, borné** : test hôte de la file SPSC saturée (producteur 1 000/s, consommateur toutes les 40 ms : cas Bluetooth) ; le glissando dix doigts au MiniLab va sur le téléphone | ce qui tombe est compté et borné, aucune note sans son « off » |
+| Police 200 %, Android 12 à 16 | `CaptureMatrix` (3e police) ; `audit-emulator.yml` sur API 31 et 34 en plus de 35 (Android 13 : notifications à l'exécution ; 14 : services de premier plan ; 15 : plafond des services de données, concerne la séparation et l'export) | — |
+| Chauffe, économie d'énergie | **neuf** : état thermique et mode économie dans `HealthSample` (Santé du son, rapport de bug) ; pas de test automatique possible (noté dans DECISIONS) | lu par Benjamin après 30 min de Live |
+| Bluetooth, USB, appel, MiniLab à chaud, écran éteint sous MagicOS, économie de batterie | **téléphone de Benjamin uniquement** (§9), 7 points, chacun se termine par un chiffre à recopier (xruns, flux rouverts) | un agent léger lit les 7 chiffres |
+
+- **`audit-emulator.yml`** (la seule vérification de la version release R8 : démarrage à froid, `monkey`, chaos, images par seconde, mémoire, plantages et ANR) est lancé **une fois sur `audit-1` avant le tour 1**, puis sur `ultra-N` à chaque fin de tour (minutes de CI, zéro quota, en parallèle du tour suivant) ; il écrit un résumé de 30 lignes qu'un agent léger lit ; personne ne lit logcat. D'abord fermer le ▶ qui n'avance pas (`EnduranceTest`) et remplacer `play()` par une vérification que le transport avance avant chaque chaos « en lecture ».
+- **StrictMode** (disque et réseau sur le fil principal = échec du test) dans l'application de test Robolectric et en debug ; **LeakCanary** en debug pour l'endurance sur l'émulateur ; violations du premier passage acceptées avec raison, comme `Allowed`. Le défaut n° 1 de Clara (« Je prépare ton morceau… » figé 8 min) est un gel que ni le banc ni un test ne voyaient.
+- **Séparation et génération sur le vrai téléphone** : absentes de toute liste et impossibles à mesurer sur un banc (le banc remplace la séparation par un serveur, l'émulateur ne dit rien de la chauffe). Deux lignes dans la liste téléphone (§9) et un test Robolectric « séparation en cours, appli en arrière-plan, service tué : au retour, l'appli dit où elle en est et propose de reprendre » ; sur l'émulateur API 34, la même chose avec `am kill`.
+- Les 5 verbes « chaos » dans le banc (casque, appel, tue, tourne, langue) ne sont pas écrits : `ChaosAndroidTest` fait déjà ces gestes en programme.
+
+## 5 bis. Mise à jour, réinstallation, premier lancement, partage entrant
+Les moments où un vrai utilisateur perd son travail ou abandonne, hors de portée d'une foule qui part toujours d'une installation vierge.
+- **`UpgradeFromReleasesTest`** : 45 étiquettes de Release existent, zéro fichier d'ancienne version dans les tests (`FormatMigrationTest` ne teste qu'un fichier d'aujourd'hui sans un de ses champs). Pour 5 étiquettes (la première avec projets, v0.9, les deux dernières APK envoyées, `audit-1`), un atelier git à l'étiquette fabrique un `filesDir` synthétique complet (projets, réglages, pads, prises, bibliothèque : public, rien de Benjamin), figé comme fixture ; le code d'aujourd'hui l'ouvre : chaque projet s'ouvre tel quel, réglages gardés, annulation vivante. Sur l'émulateur : installer l'APK précédente puis celle d'audit par-dessus, test de fumée.
+- **`RestoredPhoneTest`** : la sauvegarde Android ne ramène que les projets compressés sans leurs sons (`data_extraction_rules.xml`) ; personne ne le joue. `filesDir` réduit à la sauvegarde → chaque projet s'ouvre, dit « sons manquants » une fois, rien d'autre n'est perdu. Sur l'émulateur : `bmgr backupnow` → `pm clear` → `bmgr restore` → fumée. Liste de Benjamin : « exporter tes projets en .zip avant le passage Play ».
+- **`FirstLaunchTest`** : le banc force le français et accorde le micro d'avance ; au premier démarrage réel l'appli prend la langue du téléphone (cas tordus : pt-PT, zh-TW, en-IN, in-ID), montre l'accueil et son choix de langue, puis la question des notifications, l'économie de batterie, le premier téléchargement de modèle. Pour chaque langue et 4 locales voisines : premier écran dans la langue attendue ; sur l'émulateur : `pm clear` + locale + capture des 3 premiers écrans. Banc : `fresh=reel` sur 2 sièges par tour.
+- **Partage entrant** : aucune autre appli ne peut envoyer une chanson, un projet .zip ou un .mid à BenStudio (le seul `intent-filter` est MAIN/LAUNCHER) : « Partager vers BenStudio » depuis WhatsApp ou Fichiers est impossible, alors que c'est le geste le plus naturel d'un ami qui veut remixer une chanson reçue. **Ajout dans le lot « après l'arrêt »** (gel) : `intent-filter` SEND/VIEW audio, zip, MIDI → l'écran d'import existant, test Robolectric (bon écran, fichier piégé refusé) et une ligne dans `audit-emulator.sh`. D'ici là, une ligne dans §6 pour que la comparaison le compte.
+- **« Tout sauvegarder / Tout restaurer »** (.zip de tout) : ajout après l'arrêt, avec son test.
+
+## 6. La comparaison avec la concurrence (un agent léger, une fois)
+`docs/COMPARAISON.md` (7 applis, 2026-10-20) et `docs/etudes/PAD-LIVE-COMPARATIF.md` (7 applis de pads, avis des magasins) existent déjà ; aucun agent ne peut installer ces applis. Donc : **un seul agent léger** avec recherche web, avant le tour 1, sans Gradle : ce qui a changé depuis le 20 octobre ; Remixlive, Groovepad et GarageBand (colonne « idées », iPhone seulement) ajoutés ; BandLab comparé sur les tâches ; chaque case avec sa source datée ou « non vérifié » ; les 5 reproches les plus fréquents des avis 1 et 2 étoiles de chaque appli, en une ligne, avec « nous : évité / pas évité / sans objet » ; le partage entrant compté. Nos touchers sur 10 tâches de référence sont comptés par `NavigationMapTest` et `GestureBudgetTest` ; les leurs sont « estimés d'après le manuel », jamais présentés comme mesurés. Sortie ≤ 30 lignes + **au plus 5 questions** pour Benjamin au format de CLAUDE.md. Règle : les « ajouts » vont dans le lot après l'arrêt (gel) ; seules les simplifications entrent dans la boucle. Pas de refaite au tour suivant.
+
+## 6 bis. Le son dans l'ultra (programmes ; l'oreille, c'est Benjamin)
+Le §7 du 3 novembre n'avait aucun critère son. Ligne « son, deux tours de suite » (§7), remplie par `scripts/bench/dashboard.py` (lit `bench.json`, les rapports de `live-bench`, `export-matrix`, clics ; écrit la section Son du tableau de bord ; l'agent ne lit que les KO) :
+- `song-bench` 37/37 et `tuto-bench` 74/74 verts ; `live-bench` 0 alerte ;
+- direct = export à ±1 LU par partie, pour les 37 morceaux de l'assistant, les 74 des tutos, les 3 projets de référence, et une « séquence de retouches » rejouée (fader, insert, solo, tempo 120 → 128) ; écart par bande ≤ 2 dB au Drop ;
+- banc de clics (§5) : 0 ; `cpu-bench --cpu-scale 3` : 0 bloc hors budget à 192 trames ;
+- 0 XRun en 30 min de Live sur le Honor (compteur de Santé du son, recopié par Benjamin) ;
+- latence : toucher → son ≤ 20 ms, MIDI → son ≤ 15 ms, gigue ≤ 2 ms (AAudio exclusif, 2 rafales) : test hôte `live_hit_latency_and_jitter` (notes postées à des instants connus → attaque trouvée dans la sortie), et OboeTester sur le Honor (chiffres recopiés) ; l'horodatage MIDI par `scheduleFrom` est décidé après la mesure sur le Honor, pas avant ;
+- résidu au rendu maître ≤ −60 dBFS crête ; kick ≥ +2 dB par partie (chiffres mis dans le gabarit du tableau de bord) ;
+- masterisation par cible : Spotify et Club ramenés à −14 LUFS, le Spotify ne perd jamais face au Club en PLR (≥ 6) ni en Drop − Break (≥ +4) ; même lecture pour Apple −16.
+- **Deux restes tranchés** (décision du 2026-11-04) : perte au haut-parleur : bloquant au-delà de 5 LU, listé entre 4 et 5 (18 styles sur 37 tiennent 4 LU, médiane 4,1) ; Intro de riddim et jersey club : bloquant au-delà de 2 LU d'écart direct = export, listé entre 1 et 2.
+- Dans le lot « son » après l'arrêt, pas dans l'ultra : courbes de référence par famille (titres CC-BY/CC0 hors dépôt), `stretch_keeps_transients`, « Sensibilité des pads » du MiniLab (après la séance de Benjamin). L'écoute en aveugle (« lequel est le nôtre ? », 3 styles, 20 s) se fait au bug bash avec sa fille et son ami.
+
+## 6 ter. Langues et accessibilité (programmes ; un lecteur natif IA par langue, une fois)
+- **`lang-packet`** (programme, 2 min par langue) : textes identiques au français ≥ 12 lettres, textes > 140 % avec leur écran, mots français qui fuient, 40 impératifs pour la cohérence tu/vous, pluriels manquants, les 23 mots de fonction de la carte, 3 captures clés. **Un agent léger par langue, 14, une seule fois, jamais par tour** : « faux / maladroit / ok » + formulation ; une seule équipe « textes » corrige ; puis seul le programme est relancé. Les 14 traductions suivent le français mot pour mot et n'auront jamais d'autre relecture que celle-ci.
+- **Pluriels polonais et arabes** : `trCount` retombe sur « other » en silence pour ≈ 15 clés en polonais et ≈ 17 en arabe : test dans `I18nCatalogTest`, traductions manquantes dans le paquet du lecteur natif.
+- **Icônes miroir** : les 3 icônes non `AutoMirrored` de l'étage 0 (onglet Morceau, son de test, outil « Fin » de la découpe, qui pointe du mauvais côté en arabe) corrigées, règle dans `ArchitectureRulesTest`, écran de découpe ajouté aux captures pseudo-RTL.
+- **Police 200 %** : 3e valeur de `CaptureMatrix` (≈ +55 cas) ; le siège « senior » joue à 200 %.
+- **Daltonisme (programmes)** : le thème (Studio, Night, Daltonien) devient la 5e dimension de la matrice (≈ +40 cas) ; simulation de Machado (protan, deutan, tritan) sur les captures puis la règle de contraste de `LayoutScan` ; test « pas seulement la couleur » : pour chaque état à deux faces (joue / ne joue pas, pad allumé, coup / boucle / tenir, muet, solo, bout choisi), écart de couleur ΔE > 10 ou un autre signe. Sur le téléphone, 2 min de Benjamin : correction des couleurs d'Android activée, les pads qui jouent se distinguent encore.
+- **Tremblement (programme)** : `ReplayShaky` rejoue chaque journal de siège avec du bruit (±6 dp par toucher, petits déplacements pendant l'appui, durées de 60 à 450 ms, double toucher occasionnel) ; oracle : même suite d'écrans et même projet final ; toute divergence = cible trop petite ou trop serrée, ou fonction accessible seulement à l'appui long.
+- **`TalkBackWalk`** (Robolectric, arbre d'accessibilité réel) sur les 29 écrans clés × Simple/Pro, fichier de référence commité par écran (un diff = une relecture) : titre en `heading` lu en premier ; chaque OnClick a un nom et un rôle ; chaque bascule un état ; chaque appui long une action ; « Étape suivante », « Bravo », « Sauvegardé » et les erreurs en `liveRegion` ; parcours au clavier seul dans l'ordre visuel. « Ordre de lecture TalkBack » était annoncé couvert par un outil que l'étage 1 a remplacé ; rien ne le lisait.
+- **Lisibilité** (programme) : score par texte (mots par phrase, mots longs, négations) sur les textes du Mode simple et des étapes de tuto ; les 50 pires sortent ; un seul siège `lit=non` joue une mission dessus ; le même score par langue repère les traductions qui allongent (DE, PL).
+
+## 7. La boucle et l'arrêt (un seul jeu de critères, mesurable)
+**Tours** : tour 0 = programmes verts + 3 éclaireurs (un par niveau) sur les 3 missions les plus fréquentes ; les Bloquants sont corrigés avant la foule. Tours 1 et 2 = 8 sièges neufs en 2 lots de 4 ; tour 3 et suivants = 6 sièges. **3 tours au minimum** (trouver, vérifier, confirmer), **5 au maximum**, puis point avec Benjamin (A : continuer, B : accepter les Moyens restants et passer à l'étage 7).
+**Coupe-circuit** (programme) : après le lot A, si 0 clé nouvelle et 0 clé corrigée qui réapparaît, le lot B est réduit à 2 sièges ciblés ; si le lot A ne rapporte que des Mineurs, le lot B saute ; un Bloquant ou un Grave vu par un lot sort la mission du tour jusqu'à correction ; une mission dont les 3 derniers passages n'ont rien trouvé de nouveau sort de la rotation. **Zones changées** = fichiers du diff depuis l'étiquette du tour précédent → zone de `CARTE-CODE` → missions qui la touchent : c'est le script qui tire les missions du tour suivant.
+
+**On s'arrête quand tout est vrai en même temps, sur deux tours cumulés** :
+- 0 Bloquant, 0 Grave ; ≤ 3 Moyens nouveaux par tour et aucun vu par deux profils ; courbe des découvertes < 20 % du tour 1 ;
+- missions (oracle programme) : débutants ≥ 9 passages réussis sur 10, aucune mission échouée deux fois, aucun abandon avant le premier son ; connaisseurs : tous, ou 1 échec expliqué par un défaut déjà fiché et corrigé ;
+- recensement : 0 « rien partout » non accepté, 0 « sans ? » non accepté, 0 « sans nom » ; carte des fonctions : 0 case vide (les 40 d'aujourd'hui sont remplies par les programmes du §1 ; `CarteFonctionsTest` baisse son plafond à chaque tour) ;
+- tutos : `TutoJourneyTest` (FR, DE, AR), « le panneau tient », cibles visibles, oracles de geste, `tuto-bench` 74/74, `TutoSoundsExistTest`, `GuideTipsReachTest` : verts ;
+- son : la ligne du §6 bis ;
+- langues et accessibilité : paquets des 14 lecteurs natifs traités, pluriels, icônes miroir, 200 %, daltonisme, `ReplayShaky`, `TalkBackWalk` : verts ;
+- mise à jour depuis chaque étiquette, réinstallation, premier lancement : verts ;
+- émulateur : résumé d'`ultra-N` sans plantage ni ANR, démarrage à froid < 1,5 s, 0 fuite, StrictMode propre ; les 7 chiffres du téléphone de Benjamin relevés une fois.
+SUS, SEQ, note sur 10, plaisir : à l'étage 7 seulement (Benjamin, sa fille, l'ami), à 3 smileys. L'étage 7 ne rouvre la boucle que pour un Bloquant ou un Grave.
+
+## 8. Coût, calendrier, plafonds
+- **Plafond écrit : 60 agents lourds et 40 légers tout compris** (préparation, tours, corrections, relectures) ; au-delà, arrêt et point avec Benjamin. Compteur tenu dans le tableau de bord de chaque tour.
+- **Estimation** : préparation P0 ≈ 7 sessions lourdes de code (2 équipes) + 2 légers ; programmes P1 ≈ 13 sessions lourdes de code + 14 légers (lecteurs natifs) ; tour 1 = 8 sièges + 2 équipes de correction + 1 relecture = 11 lourds, ≈ 8 légers ; tour 2 = 11 lourds, 6 légers ; tour 3 = 8 lourds, 4 légers ; tours 4 et 5 seulement si les critères ne sont pas tenus. Sur 3 tours : ≈ 55 lourds et 35 légers ; 25 sièges × ≤ 70 écrans ≈ 1 750 images lues (contre 12 000 à 24 000 dans le plan du 3 novembre). Durée : P0 ≈ 4 à 5 jours (2 équipes), puis 3 tours en ≈ 5 à 6 jours, soit ≈ 2 semaines ; 3 semaines si 5 tours.
+- **Calendrier d'un tour (≈ 6 à 8 h)**, autour de la serrure Gradle (un seul Gradle à la fois ; un lot de sièges le prend 45 à 60 min) : [1] lot A de 4 sièges → fusion → coupe-circuit ; [2] lot B ; [3] juges légers (sans Gradle) pendant que les 2 équipes de correction lisent leurs grappes et écrivent code et tests dans leurs ateliers (sans Gradle) ; [4] fenêtre Gradle en série : tests ciblés équipe 1, puis équipe 2 ; [5] relecture neuve (1 agent, lit le diff) ; [6] **une seule suite complète pour le tour**, puis étiquette `ultra-N` et émulateur sur la CI. Jamais la suite complète « par correction ». La nuit : `tuto-bench` (≈ 2,5 h), `live-bench` (15 min), matrice étendue (≈ 1 h).
+- **Machine** : 4 cœurs, 15 Go, disque serré. ≥ 2 Go libres avant chaque lot (ménage automatique : voir le contrôle horaire) ; seuls les PNG cités dans un rapport sont gardés ; `gradle clean` des ateliers entre deux tours ; au plus 2 ateliers de correction vivants.
+- **Plafonds de lecture** : rapport de testeur ≤ 40 lignes ; synthèse de tour ≤ 60 lignes ; un juge lit ≤ 2 images ; personne ne lit `journal.txt` brut ni logcat ; tableau de bord rempli par le script sauf la ligne « En une ligne ».
+
+## 8 bis. Mode ultra mais économe (consigne de Benjamin, 2026-11-03, tenue)
+Toujours le modèle le plus fort, sans gaspiller : une seule compilation partagée par tour (l'atelier `fx-int`, que les équipes de correction ne touchent pas) ; le recensement, les tutos, les langues, l'accessibilité et le son sont des programmes, un agent ne lit que les lignes en échec ; missions bornées par le banc ; captures signalées par `LayoutScan`, jamais toutes ; doublons fusionnés par programme avant toute lecture ; contradicteurs remplacés par le rejeu ; corrections groupées par zone (une équipe par zone, jamais un agent par défaut) ; tours qui rapetissent ; équipe rouge et concurrence une seule fois ; journaux jamais lus bruts ; arrêt dès les critères, pas de tour « pour voir ».
 
 ## 9. Ce que Benjamin fera
-- Dire « Audit ultra » quand il veut le lancer.
-- Trancher le lot de questions de la comparaison (§6).
-- À la fin : le bug bash d'une heure avec sa fille et son ami (étage 7 du premier Audit), sur la version qu'il demandera.
+- **Dire « Audit ultra »** quand il veut lancer la préparation (P0) ; dire « tour » n'est pas nécessaire : l'agent enchaîne.
+- **Répondre maintenant à une question groupée** (pas à la fin) : modèles et versions Android des téléphones de sa fille et de son ami (Android 12 au moins : en dessous, et sur iPhone, l'APK ne s'installe pas) ; accord pour filmer l'écran pendant le bug bash ; clavier MIDI chez eux ou non.
+- **Trancher le lot de questions de la concurrence** (§6, ≤ 5 questions).
+- **Sa liste téléphone unique = `recette.json`** (réécrite pour l'ultra, lisible dans l'appli), chaque point finissant par un chiffre ou une capture à recopier : le moment 1 de `PLAN-REPRISE.md` ; les 7 points de l'équipe rouge (casque Bluetooth connecté puis déconnecté pendant le Live ; casque USB-C ; appel reçu pendant une prise, puis raccroché ; MiniLab débranché en pleine prise, rebranché ; 10 min écran éteint ; économie de batterie en lecture ; le projet de 2 h au casque Bluetooth), avec les compteurs de Santé du son avant et après ; OboeTester à 1, 2 et 4 rafales ; séparer une chanson de 4 min (durée, chauffe, écran éteint pendant, le résultat est là) et générer un son (durée) ; 30 min de Live au casque Bluetooth puis l'état thermique et le % de batterie ; correction des couleurs d'Android (2 min) ; exporter ses projets en .zip avant le passage Play.
+- **Le bug bash d'une heure** avec sa fille et son ami, à l'étage 7, avec un **kit d'une page** : 3 missions × 3 smileys, lien de l'APK, « Mode retours » en 3 gestes (le rapport de bug de l'appli ouvre GitHub, qui demande un compte : pas pour eux), « envoie le zip à Benjamin par WhatsApp » ; plus l'écoute en aveugle (§6 bis).
+
+## 10. L'ordre de préparation (programmes d'abord) et le lot « après l'arrêt »
+**P0, avant le tour 0 (2 équipes de code au plus + 2 légers ; ≈ 4 à 5 jours)** :
+- Équipe A (banc 2) : options de siège, écran en texte, `LayoutScan` par écran, journal enrichi et chien de garde, budget de gestes, `fresh=reel`, `lit=non`, `main=`, rejeu, amenées scriptées, `seat-metrics.py` (oracles de mission, mesures), script de fusion + `base.tsv`, `GABARIT-RAPPORT-TESTEUR.md` (fait).
+- Équipe B (programmes de tour 0) : `TutoJourneyTest` DE + AR, « le panneau tient », cibles visibles, registre des écrans + `HelpCoverage` et `AccessibilityScan` généralisés, `NavigationMapProTest`, StrictMode, `recette.json`, textes « Scie / Triangle / Carré » + dessin de l'onde (décision du 2026-11-04 : ce sont les mots que la foule doit juger, aucun son touché), `UpgradeFromReleasesTest`, `RestoredPhoneTest`, `FirstLaunchTest`.
+- Légers : concurrence (§6) ; synthèse des questions.
+- CI : `audit-emulator.yml` sur `audit-1` (après avoir fermé le ▶ qui n'avance pas et l'étape 4b), puis API 31 et 34.
+- Puis une suite complète, étiquette `ultra-0`.
+
+**P1, pendant les tours (fenêtres sans Gradle ; la nuit pour les bancs ; ≈ 13 sessions)** : marcheur de recensement + `RecordingSink`, `IconLexiconTest`, `GESTES.md`, oracles de geste, `tuto-bench`, `TutoSoundsExistTest`, `GuideTipsReachTest`, `fx_sweep_has_no_clicks` + détecteur de discontinuité, coupure toutes écritures + `project.open.json`, `SyntheticSongs.twoHours`, 2 tests chaos (prise + focus ; micro refusé puis accordé), deuxième doigt sur un pad, file SPSC saturée, `live_hit_latency_and_jitter`, direct = export étendu, `dashboard.py`, `lang-packet` + 14 lecteurs natifs (légers), pluriels, icônes miroir, police 200 %, thème + Machado + « pas seulement la couleur », `ReplayShaky`, `TalkBackWalk`, lisibilité, LeakCanary, état thermique.
+
+**Lot « après l'arrêt » (gel levé ; suivi d'une relance des programmes et d'un mini-tour de 4 sièges sur les zones touchées)** : lot « sons » (break échantillonné, log drum, stabs, orgue M1, effets, décision du 2026-11-04) ; écran Licences et E2 (Play) ; partage entrant ; « Tout sauvegarder / Tout restaurer » ; « Sensibilité des pads » et lumières du MiniLab ; horodatage MIDI `scheduleFrom` si la mesure sur le Honor le demande ; courbes de référence par famille ; `stretch_keeps_transients` ; les « ajouts » venus de la concurrence (§6).
+
+## 11. Ce qui est écarté, et pourquoi (pour ne pas y revenir)
+- 1 110 passages de tutos par des agents : programme (`TutoJourneyTest`) ; le contenu d'un cours ne dépend pas de la langue.
+- Trois contradicteurs lourds par défaut : le rejeu est déterministe ; la lecture du code réfuterait les défauts d'ergonomie.
+- Sièges « malvoyante », « daltonienne », « tremblement », « enfant de 6 ans », « non-francophone par langue tournante » : une IA ne voit pas en daltonien, ne tremble pas, lit tout ; 15 langues tournantes forceraient 15 tours. Remplacés par des réglages du banc et des programmes.
+- « Des experts » comparant 6 applis : aucun agent ne peut les installer ; les grilles existent.
+- Six lignes sur neuf de l'équipe rouge : déjà couvertes par l'étage 3.
+- Note sur 10, SUS, SEQ, « avis store », « plaisir », mémorisation J+3 par un agent neuf, test des 5 secondes à chaque tour : aucune vérité terrain, ou déjà couverts (`GuidePanelTest`, `GuideJourneyTest`) ; étage 7.
+- AAB et `bundletool` avant le tour 1 : c'est E2 (Play après l'Audit, décision du 2026-11-03).
+- `RECENSEMENT-BOUTONS.md` à une ligne par bouton, commité : ≈ 1 400 lignes régénérées à chaque correction, conflits ; généré sous `app/build`.
+- Rafale MIDI à 1 000 notes/s en test JVM : débit irréaliste pour un clavier ; seule la file saturée est testée.
+- « Au moins 6 tours, ≈ 80 passages », garde-fou au 8e tour : contredit « arrêt dès les critères » ; 3 à 5 tours de 8 puis 6 sièges.
+
+Sources : le plan du 3 novembre (historique git), `AUDIT.md`, `CARTE-FONCTIONS.md`, les notes `docs/lots/AUDIT-0.md` à `AUDIT-5.md`, les rapports `docs/testeur-humain/2026-10-28-*.md` (Léa, Karim, Yanis, Clara, Inès), `HumanTester.kt`, `TutoJourneyTest.kt`, `CaptureMatrixTest.kt`, `LayoutScan.kt`, `audit-emulator.yml`.

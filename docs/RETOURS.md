@@ -198,3 +198,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - Club, suite (couper les infra-basses mesuré sans effet) : « A » → laisser tel quel, le message suffit.
 - 2026-11-04 · Benjamin demande des conseils de publicité et de visibilité. Conseillé : vidéos courtes (TikTok, Reels, Shorts), fiche Play Store soignée, communautés, presse tech française, pub payante plus tard. Réponse : « Ok on verra ça après » (après l'Audit et le Play Store).
 - 2026-11-04 · « C'est pas mieux de dessiner la forme de l'onde ? » → oui : dessin de l'onde + mot (Brillant / Doux / Creux en Simple), au prochain lot de textes.
+- 2026-11-04 · « Je viens de te mettre en Fable 5.1 ultracode… cet audit ultra, tu vas uniquement faire ça maintenant… Tu vas l'analyser et le corriger. Et tu me feras un compte rendu. S'il faut ajouter des choses, n'hésite pas. » → plan relu par un panel de 6 experts + critique, réécrit (docs/audits/AUDIT-ULTRA.md), compte rendu envoyé.

@@ -897,6 +897,7 @@ private fun PartStep(style: StarterWizard.Style, ui: WizardUi, packs: PacksUi, p
                     com.pocketstudio.app.settings.observedSettings().simpleMode -> SoundLooks.describePlain(sound.synth)
                     else -> SoundLooks.describe(sound.synth)
                 },
+                wave = if (sound.sampled == null && sound.plaits == null) SoundLooks.waveOf(sound.synth) else null,
                 modifier = m.testTag("wizard_part_sound_$i"),
             )
         }

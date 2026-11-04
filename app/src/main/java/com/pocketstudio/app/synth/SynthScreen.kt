@@ -143,7 +143,8 @@ private val ADVANCED: List<Pair<Int, String>> get() = listOf(
     SynthPatch.LFO2_SYNC to tr("Balayage calé sur le tempo"), SynthPatch.GLIDE to tr("Glissé entre les notes"),
 )
 
-private val WAVES: List<Pair<Float, String>> get() = listOf(0f to tr("Scie"), 0.5f to tr("Carré"), 1f to tr("Triangle"))
+/** The oscillator's waves, each with its drawing and its word (an ear word in the Mode simple, the wave's name in the Pro). */
+private val WAVES: List<Pair<Float, String>> get() = listOf(0f, 0.5f, 1f).map { it to com.pocketstudio.app.sounds.SoundLooks.waveWord(com.pocketstudio.ui.WaveShape.ofSynth(it)) }
 private val FILTERS: List<Pair<Float, String>> get() = listOf(0f to "Ladder", 0.3f to tr("Passe-bas"), 0.6f to tr("Passe-haut"), 0.9f to tr("Passe-bande"))
 
 /** The piano roll's data, when the screen shows it (null: keyboard only, e.g. in tests). */
@@ -578,7 +579,7 @@ internal fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boole
     NeonCard(modifier = Modifier.spot(com.pocketstudio.app.ui.SYNTH_SETTINGS_SPOT)) {
         SectionLabel(tr("Réglages du son"), foldKey = "Réglages du son")
         Text(tr("Forme d'onde"), style = MaterialTheme.typography.bodyMedium)
-        ChoiceRow(WAVES, patch.get(SynthPatch.OSC1_WAVE)) { v ->
+        ChoiceRow(WAVES, patch.get(SynthPatch.OSC1_WAVE), waves = true) { v ->
             actions.setParam(SynthPatch.OSC1_WAVE, v)
             actions.setParam(SynthPatch.OSC2_WAVE, v)
         }
@@ -599,7 +600,7 @@ internal fun SoundCard(patch: SynthPatch, actions: SynthActions, advanced: Boole
         AnimatedVisibility(visible = advanced) {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(tr("Oscillateur 2"), style = MaterialTheme.typography.bodyMedium)
-                ChoiceRow(WAVES, patch.get(SynthPatch.OSC2_WAVE)) { actions.setParam(SynthPatch.OSC2_WAVE, it) }
+                ChoiceRow(WAVES, patch.get(SynthPatch.OSC2_WAVE), waves = true) { actions.setParam(SynthPatch.OSC2_WAVE, it) }
                 ChoiceRow(listOf(0f to tr("Octave −1"), 0.5f to tr("Même octave"), 1f to tr("Octave +1")), patch.get(SynthPatch.OSC2_OCTAVE)) {
                     actions.setParam(SynthPatch.OSC2_OCTAVE, it)
                 }
@@ -680,11 +681,15 @@ private fun chipColors() = pillColors()
 
 /** Picks the option whose stored value is closest to [current]. */
 @Composable
-private fun ChoiceRow(options: List<Pair<Float, String>>, current: Float, onPick: (Float) -> Unit) {
+private fun ChoiceRow(options: List<Pair<Float, String>>, current: Float, waves: Boolean = false, onPick: (Float) -> Unit) {
     val selected = options.minBy { kotlin.math.abs(it.first - current) }
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         options.forEach { option ->
-            FilterChip(selected = option == selected, onClick = { onPick(option.first) }, label = { Text(option.second, maxLines = 1, softWrap = false) }, colors = chipColors())
+            FilterChip(
+                selected = option == selected, onClick = { onPick(option.first) }, label = { Text(option.second, maxLines = 1, softWrap = false) }, colors = chipColors(),
+                // The wave's drawing beside its word (decorative: TalkBack reads the word).
+                leadingIcon = if (waves) { { com.pocketstudio.ui.WaveGlyph(com.pocketstudio.ui.WaveShape.ofSynth(option.first), tint = if (option == selected) Neon.OnAccent else Neon.TextSecondary) } } else null,
+            )
         }
     }
 }

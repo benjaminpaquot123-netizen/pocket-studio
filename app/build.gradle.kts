@@ -100,7 +100,10 @@ android {
                 }
                 if (providers.gradleProperty("human.dir").isPresent) it.maxParallelForks = 4
                 // Every style's song in one run (or every preview, PreviewLevelBench): more room than the tests need.
-                if (listOf("bench.live", "bench.out", "bench.render").any { k -> providers.gradleProperty(k).isPresent }) it.maxHeapSize = "3g"
+                // The suite itself (audit stage 1, flaky tests): a worker runs hundreds of Robolectric classes, more than one
+                // sandbox at a time; at Gradle's default 512 MB its old generation filled up (99.9 %, 500 full GCs): tests
+                // ran out of heap or out of their wall-clock waits, and the last worker crawled on for half an hour.
+                it.maxHeapSize = if (listOf("bench.live", "bench.out", "bench.render").any { k -> providers.gradleProperty(k).isPresent }) "3g" else "2g"
             }
         }
     }

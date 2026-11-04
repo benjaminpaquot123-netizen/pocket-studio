@@ -79,7 +79,8 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel) {
 
     private fun idle(ms: Long = 50) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
 
-    private fun await(what: String, timeoutMs: Long = 30_000, ok: () -> Boolean) {
+    // On the real condition (renders and loads run off the main thread): the cap only stops a hang, never a loaded machine.
+    private fun await(what: String, timeoutMs: Long = 120_000, ok: () -> Boolean) {
         val end = System.currentTimeMillis() + timeoutMs
         while (!ok()) {
             idle(50)

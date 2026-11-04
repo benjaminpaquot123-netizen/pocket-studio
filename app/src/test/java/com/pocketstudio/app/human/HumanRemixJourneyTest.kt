@@ -56,7 +56,11 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
     private fun waitFor(what: String, done: () -> Boolean) {
         val until = System.currentTimeMillis() + 300_000
         while (!done()) {
-            assertTrue("$what never came (${remixState()})", System.currentTimeMillis() < until)
+            if (System.currentTimeMillis() >= until) {
+                // What the screen showed then, for the failure (never committed: under build/).
+                runCatching { shot(File("build/remix-journey-timeout.png")) }
+                assertTrue("$what never came (${remixState()})", false)
+            }
             act("attends 1")
         }
     }
@@ -73,6 +77,22 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         assertNotNull("the Remix page is not there", centerOf("remix_pick"))
 
         // « Choisir une chanson »: the phone's picker gives the song of the test.
+        // Each state the separation goes through, read every 5 ms in real time (the work runs off the main thread: a
+        // reading between two touches only, after the screen settled, could miss a short one on a loaded machine).
+        val states = java.util.concurrent.ConcurrentHashMap.newKeySet<String>()
+        val sampling = java.util.concurrent.atomic.AtomicBoolean(true)
+        val sampler = Thread {
+            while (sampling.get()) {
+                when (SeparationJob.state.value) {
+                    is SeparationState.DownloadingModel -> states += "download"
+                    is SeparationState.Decoding -> states += "decode"
+                    is SeparationState.Separating -> states += "separate"
+                    is SeparationState.Analysing -> states += "analyse"
+                    else -> Unit
+                }
+                Thread.sleep(5)
+            }
+        }.apply { isDaemon = true; start() }
         val picked = tap(centerOf("remix_pick"), "Choisir une chanson")
         assertTrue(picked, picked.contains("« Ma chanson préférée.wav »"))
 
@@ -81,16 +101,13 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         val until = System.currentTimeMillis() + 300_000
         while (SeparationJob.state.value.busy || SeparationJob.state.value == SeparationState.Idle && seen.isEmpty()) {
             assertTrue("the separation never ended", System.currentTimeMillis() < until)
-            when (SeparationJob.state.value) {
-                is SeparationState.DownloadingModel -> seen += "download"
-                is SeparationState.Decoding -> seen += "decode"
-                is SeparationState.Separating -> seen += "separate"
-                is SeparationState.Analysing -> seen += "analyse"
-                else -> Unit
-            }
+            if (states.isNotEmpty()) seen += states
             if (centerOf("remix_progress") != null) seen += "progress shown"
             act("attends 1")
         }
+        sampling.set(false)
+        sampler.join()
+        seen += states
         assertTrue("no progress: $seen", seen.containsAll(listOf("download", "separate", "progress shown")))
         val done = SeparationJob.state.value
         assertTrue("$done", done is SeparationState.Done)

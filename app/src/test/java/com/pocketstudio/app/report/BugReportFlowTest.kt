@@ -75,7 +75,8 @@ class BugReportFlowTest {
 
     private fun exists(tag: String) = compose.onAllNodes(SemanticsMatcher.expectValue(SemanticsProperties.TestTag, tag)).fetchSemanticsNodes().isNotEmpty()
 
-    private fun waitFor(what: String, timeout: Long = 10_000, ok: () -> Boolean) {
+    // On the real condition: a loaded machine only makes it slower (the zip is written off the main thread). The cap only stops a hang.
+    private fun waitFor(what: String, timeout: Long = 60_000, ok: () -> Boolean) {
         val until = System.currentTimeMillis() + timeout
         while (!ok()) {
             check(System.currentTimeMillis() < until) { "timed out waiting for $what: ${if (::bug.isInitialized) bug.state.value else null}, errors ${Journal.errors.snapshot()}" }

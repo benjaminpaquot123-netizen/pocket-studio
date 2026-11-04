@@ -1142,3 +1142,4 @@
 - 2026-11-03 · Contrôles d'écran par la mise en page Compose (`LayoutScan`) plutôt que l'outil de Google. Raison : aucune dépendance nouvelle, et il voit les textes coupés. Retour arrière : ajouter `roborazzi-accessibility-check`.
 - 2026-11-03 · Matrice de captures par paires (465 cas) dans la suite JVM, défauts acceptés listés avec leur raison (`Allowed`). Retour arrière : supprimer `app/src/test/.../audit/`.
 - 2026-11-03 · `Text(maxLines = 1)` qui peut être long → `FitText` ; `TextAutoSize.StepBased` → `WholeWordsAutoSize` + « … ». Raison : aucun mot perdu en silence. Retour arrière : l'ancien `Text`.
+- 2026-11-04 · Consigne de Benjamin : « Si une équipe s'arrête cette nuit, relance-la ». Une équipe arrêtée pendant la nuit du 4 au 5 novembre est relancée sur la même mission, notée ici et signalée au réveil. Retour arrière : il le retire.

@@ -46,6 +46,13 @@
 - « Rien ne change » ignore les écrans après « attends » (attendre une séparation n'est pas tourner en rond). L'empreinte compte le son : un pad qui démarre est un changement.
 - Sur un siège, les pads du Pad Live « sonnent » : le banc tient l'état des pads à la place du moteur (une boucle jusqu'au toucher suivant, un coup une fois).
 
+## Tour 1 (équipe du banc, `docs/audits/ultra/tour-1-banc.md`)
+- Les amenées partent de l'accueil ou de « Que veux-tu faire ? » (Mode Pro) et font défiler jusqu'à la cible ; `BenchAmeneesProfilesTest` les joue sur 10 profils.
+- Un micro : `BenchMic` (voix de test au rythme du banc) pour les pads et les notes chantées, le moteur du banc pour les pistes audio (décompte, puis la voix).
+- Le moteur du banc vient aussi pour « Exporter » (Mix), « Créer la vidéo », « Écouter » d'une performance, « Montre-moi » ; la ligne de son dit « Écouter le bout » et les pads joués par le moteur ; mesures en direct pendant la lecture (−14 LUFS fixes).
+- « regarde » écrit comme geste n'est qu'un regard ; « Rien ne change » ne compte pas pendant un long travail.
+- Oracles `tuto-facile`, `tuto-pro`, `synthe`, `libre` ; `defi` partiel quand un défi est ouvert sans étoile.
+
 ## Restes
 - Questions de permission traduites en français et en anglais seulement (les autres langues voient l'anglais).
 - Oracle « reprendre 3 jours après » à écrire (le banc n'avance pas encore l'horloge) ; « exports » compte les fichiers partagés, sans `ffprobe` ni mesure des cibles.

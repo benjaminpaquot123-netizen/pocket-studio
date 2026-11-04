@@ -36,10 +36,79 @@ internal class BenchEngine : CommandSink {
     override fun post(target: Long, type: Int, value: Float, a: Int, b: Int) {
         if (target != 0L) return
         when (type) {
-            CMD_SET_TRANSPORT -> transportSince = if (value > 0f) SystemClock.uptimeMillis() else -1L
+            CMD_SET_TRANSPORT -> {
+                if (value <= 0f) freezeTakes()
+                transportSince = if (value > 0f) SystemClock.uptimeMillis() else -1L
+            }
             CMD_STEM_START -> stemStart = a.toLong()
             CMD_PLAY_PREVIEW -> previewSince = if (value > 0f) SystemClock.uptimeMillis() else -1L
+            // Round 1 (lot banc, « Montre-moi » silent): the pads and notes the app plays through the engine, heard by the bench.
+            CMD_TRIGGER_PAD -> hits.add(a)
+            CMD_SYNTH_NOTE_ON -> notesOn.incrementAndGet()
         }
+    }
+
+    /** The pads triggered since the last [heardHits] (lanes, in order). */
+    private val hits = java.util.concurrent.ConcurrentLinkedQueue<Int>()
+    private val notesOn = java.util.concurrent.atomic.AtomicInteger()
+
+    /** What the app played on the engine since the last call: the pads' lanes, and how many synth notes. */
+    fun heardHits(): Pair<List<Int>, Int> {
+        val lanes = generateSequence { hits.poll() }.toList()
+        return lanes to notesOn.getAndSet(0)
+    }
+
+    // --- The microphone of the audio tracks (round 1, lot banc; NativeEngine.micStart & co. through the sink) ----
+
+    /** A take armed: how long it may last, the count-in frames kept in front, what it recorded once the transport stopped. */
+    private class Take(val seconds: Int, val preroll: Int) {
+        @Volatile var frozen = -1L
+    }
+
+    private val takes = ConcurrentHashMap<Long, Take>()
+
+    /** How long the count-in lasts before the take records (ms; set by the bench from the project's tempo). */
+    @Volatile var countInMs = 2_000L
+
+    /** Takes recorded (tests). */
+    @Volatile var micTakes = 0
+        private set
+
+    @Synchronized override fun micStart(onStart: Boolean, seconds: Int, prerollFrames: Int): Long =
+        (next++).also { takes[it] = Take(seconds, prerollFrames) }
+
+    /** Frames the take has recorded: from the end of the count-in after ▶, as long as the transport runs. */
+    private fun recorded(t: Take): Long {
+        if (t.frozen >= 0) return t.frozen
+        val since = transportSince
+        if (since < 0) return 0L
+        val ms = SystemClock.uptimeMillis() - since - countInMs
+        return (ms * RATE / 1000).coerceIn(0L, t.seconds.toLong() * RATE)
+    }
+
+    override fun micStatus(handle: Long): FloatArray {
+        val t = takes[handle] ?: return floatArrayOf(2f, 0f, 0f)
+        val frames = recorded(t)
+        val state = when {
+            // The transport stopped after it started (or the take is full): over, as the engine's.
+            t.frozen >= 0 || frames >= t.seconds.toLong() * RATE -> 2f
+            // Before ▶, then the count-in: waiting for the « 1 ».
+            transportSince < 0 || SystemClock.uptimeMillis() - transportSince < countInMs -> 0f
+            else -> 1f
+        }
+        return floatArrayOf(state, frames.toFloat(), if (state == 1f) BenchMic.PEAK else 0.01f)
+    }
+
+    override fun micFinish(handle: Long): FloatArray? {
+        val t = takes.remove(handle) ?: return null
+        val frames = recorded(t).toInt()
+        micTakes++
+        return FloatArray(t.preroll + frames) { i -> if (i < t.preroll) 0f else BenchMic.voice((i - t.preroll).toLong()) }
+    }
+
+    /** The transport stops: each take keeps what it recorded until then. */
+    private fun freezeTakes() {
+        if (transportSince >= 0) takes.values.forEach { if (it.frozen < 0) it.frozen = recorded(it) }
     }
 
     override fun scheduleFrom(target: Long, frame: Long) = Unit
@@ -273,6 +342,8 @@ internal class BenchEngine : CommandSink {
         private const val CMD_SET_TRANSPORT = 5
         private const val CMD_STEM_START = 32
         private const val CMD_PLAY_PREVIEW = 47
+        private const val CMD_TRIGGER_PAD = 11
+        private const val CMD_SYNTH_NOTE_ON = 16
 
         /** [frames] of a quiet 220 Hz tone, stereo interleaved (−12 dBFS: no limiter needed). */
         fun tone(frames: Int, rate: Int): FloatArray = FloatArray(2 * frames) { i -> (0.25 * sin(2 * PI * 220.0 * (i / 2) / rate)).toFloat() }

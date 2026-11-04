@@ -10,10 +10,13 @@ import android.os.SystemClock
 import android.view.InputDevice
 import android.view.MotionEvent
 import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
+import com.pocketstudio.model.allScenes
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.isFocused
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -115,6 +118,8 @@ abstract class HumanTester(private val seat: String) {
     // The Remix (2026-10-28): one engine for the seat (the stems it holds outlive a screen), the
     // separation's stand-in, the service the app started, the bench's own polls of the engine.
     private val engine = BenchEngine()
+    /** The bench's engine (its own tests). */
+    internal val benchEngine: BenchEngine get() = engine
     private var separation: BenchSeparation? = null
     private var service: ServiceController<SeparationService>? = null
     private var servicesSeen = 0
@@ -134,6 +139,7 @@ abstract class HumanTester(private val seat: String) {
         TutoTestHooks.player = null
         NativeEngine.sink = null
         ShadowMediaCodec.clearCodecs()
+        BenchMic.unplug()
         LaunchRule.askAtStartForTest = true
         SettingsStore.forgetForTests()
         com.pocketstudio.model.i18n.I18n.everyday = false
@@ -173,8 +179,27 @@ abstract class HumanTester(private val seat: String) {
         }
     }
 
+    /**
+     * A long work under way that the screen shows (round 1, lot banc): the app's own long works (a separation, an export,
+     * the video, a sound or a pack being made, the tutorial's kit downloading) or a spinning ring on screen. Not any
+     * progress bar: the tutorial's course bar and the sliders are ones too, and stay.
+     */
+    internal fun longWorkShown(): Boolean {
+        val v = lastVm
+        if (SeparationJob.state.value.busy || v?.export?.value?.running == true || engineWorkRunning(v) || shownOnScreen("tuto_kit_progress")) return true
+        return runCatching {
+            val m = app.resources.displayMetrics
+            compose.onAllNodes(SemanticsMatcher("a spinning ring") { n ->
+                n.config.getOrNull(SemanticsProperties.ProgressBarRangeInfo) == androidx.compose.ui.semantics.ProgressBarRangeInfo.Indeterminate
+            }).fetchSemanticsNodes(atLeastOneRootRequired = false).any { n ->
+                val at = BenchWindows.drawnPosition(n, m)
+                n.size.width > 0 && at.x < m.widthPixels && at.y < m.heightPixels && at.x + n.size.width > 0 && at.y + n.size.height > 0
+            }
+        }.getOrDefault(false)
+    }
+
     /** The turns of a seat: a screen (image, text, sound), a gesture, until the end. */
-    private fun seatLoop(dir: File, o: SeatOptions, journal: File) {
+    internal fun seatLoop(dir: File, o: SeatOptions, journal: File) {
         var n = 1
         var gestures = 0
         var same = 0
@@ -194,8 +219,12 @@ abstract class HumanTester(private val seat: String) {
             val heardNow = heard()
             File(dir, "sound-$n.txt").let { if (!it.isFile) it.writeText(heardNow) }
             val print = fingerprint(File(dir, "screen-$n.txt"), File(dir, "sound-$n.txt"))
-            // « Rien ne change » (the screens after « attends » neither count nor reset it).
-            if (!afterWait) {
+            // « Rien ne change » (the screens after « attends » or « regarde » neither count nor reset it). Round 1 (lot banc):
+            // nor while a long work shows its progress (a separation, an export, a pack being made): the screen waits
+            // for it, the tester is not going round in circles; the count starts again once it is over.
+            if (longWorkShown()) {
+                same = 0
+            } else if (!afterWait) {
                 same = if (print == lastPrint) same + 1 else 1
                 if (same == 3) notes += "Rien ne change à l'écran depuis 3 gestes."
             }
@@ -229,7 +258,7 @@ abstract class HumanTester(private val seat: String) {
             val words = cmd.split(Regex("\\s+"))
             val kind = words[0].lowercase()
             fun num(i: Int) = words.getOrNull(i)?.replace(',', '.')?.toFloatOrNull()
-            if (kind != "attends" && kind != "fin") {
+            if (kind != "attends" && kind != "fin" && kind != "regarde") {
                 // The budget: this gesture is not played once it is spent (an image looked at counts half).
                 val max = o.maxGestures
                 val images = File(source ?: dir, "images.txt").takeIf { it.isFile }?.readLines()?.count { it.isNotBlank() } ?: 0
@@ -238,7 +267,7 @@ abstract class HumanTester(private val seat: String) {
             }
             journal.appendText("#$n > $cmd\n")
             if (cmd == "fin") { end("fin"); return }
-            afterWait = kind == "attends"
+            afterWait = kind == "attends" || kind == "regarde"
             val points = when (kind) {
                 "touche", "appui-long" -> listOfNotNull(num(1)?.let { x -> num(2)?.let { x to it } })
                 "glisse" -> listOfNotNull(num(1)?.let { x -> num(2)?.let { x to it } }, num(3)?.let { x -> num(4)?.let { x to it } })
@@ -339,12 +368,16 @@ abstract class HumanTester(private val seat: String) {
         TutoTestHooks.player = ears
         // The phone's AAC encoder (« Partager » in M4A): the shadow codec copies the sound through.
         ShadowMediaCodec.addEncoder(MediaFormat.MIMETYPE_AUDIO_AAC, ShadowMediaCodec.CodecConfig(16 * 1024, 16 * 1024, passThrough))
+        // Round 1 (lot banc): the phone's video encoder too (« Créer la vidéo », 720 x 1280 pictures in YUV 4:2:0).
+        ShadowMediaCodec.addEncoder(MediaFormat.MIMETYPE_VIDEO_AVC, ShadowMediaCodec.CodecConfig(720 * 1280 * 3 / 2, 720 * 1280 * 3 / 2, passThrough))
         // The Remix: a phone like the owner's (8 GB, enough free), the model from a local server.
         shadowOf(app.getSystemService(ActivityManager::class.java)).setMemoryInfo(
             ActivityManager.MemoryInfo().apply { totalMem = 8_000_000_000L; availMem = 4_200_000_000L },
         )
         SeparationJob.set(SeparationState.Idle)
         separation = BenchSeparation(app, remixTimeScale)
+        // Round 1 (lot banc): a microphone that hears someone sing ([BenchMic]).
+        BenchMic.plugIn()
         scenario = ActivityScenario.launch(MainActivity::class.java)
         settle(1500)
     }
@@ -484,6 +517,9 @@ abstract class HumanTester(private val seat: String) {
     /**
      * Amenées (Audit ultra §3.1): the app brought to a mission's start by script before the tester gets
      * the seat (the gestures are the bench's, not counted, said in the journal as « #0 AMENEE »).
+     * Audit ultra round 1 (lot B seat c, lot E seat c): the bench's gestures are not the tester's (no thumb rule:
+     * [play] never applies it), each way in is the welcome's (first opening, Mode simple) or « Que veux-tu faire ? »'s
+     * (Mode Pro: its guide seen), and the target is scrolled into view where it is (BenchAmeneesProfilesTest).
      */
     internal fun amenee(name: String, journal: File) {
         journal.appendText("#0 AMENEE $name\n")
@@ -492,6 +528,12 @@ abstract class HumanTester(private val seat: String) {
             journal.appendText("#0 AMENEE > touche ${at.first.toInt()} ${at.second.toInt()} ($tag)\n")
             play("touche ${at.first} ${at.second}")
         }
+        /** The first of [tags] the screen has (the welcome's, then « Que veux-tu faire ? »'s), touched. */
+        fun tapFirst(vararg tags: String): String {
+            val tag = tags.firstOrNull { centerOf(it) != null } ?: error("amenée $name : ${tags.joinToString(" ou ") { "« $it »" }} introuvable")
+            tap(tag)
+            return tag
+        }
         fun waitFor(what: String, done: () -> Boolean) {
             val until = System.currentTimeMillis() + 120_000
             while (!done()) {
@@ -499,15 +541,22 @@ abstract class HumanTester(private val seat: String) {
                 play("attends 0.5")
             }
         }
+        fun chooseMode() {
+            if (centerOf("mode_card_simple") != null) tap(if (options.simple == false) "mode_card_pro" else "mode_card_simple")
+        }
         when (name) {
             AMENEE_SONG -> {
-                tap("welcome_empty")
-                waitFor("le choix du mode") { centerOf("mode_card_simple") != null || tabsShown() }
-                if (centerOf("mode_card_simple") != null) tap(if (options.simple == false) "mode_card_pro" else "mode_card_simple")
-                waitFor("le projet") { tabsShown() && centerOf("mode_card_simple") == null }
+                if (tapFirst("welcome_empty", "launch_new") == "launch_new") {
+                    // « Nouveau morceau » of « Que veux-tu faire ? »: its page, then « Je pars de zéro ».
+                    waitFor("« Je pars de zéro »") { centerOf("start_empty") != null }
+                    tap("start_empty")
+                }
+                waitFor("le choix du mode") { centerOf("mode_card_simple") != null || projectShown() }
+                chooseMode()
+                waitFor("le projet") { projectShown() }
             }
             AMENEE_REMIX -> {
-                tap("welcome_remix")
+                tapFirst("welcome_remix", "launch_remix")
                 waitFor("le Remix") { centerOf("remix_pick") != null || centerOf("mode_card_simple") != null }
                 if (centerOf("mode_card_simple") != null) tap(if (options.simple == true) "mode_card_simple" else "mode_card_pro")
                 waitFor("la page du Remix") { centerOf("remix_pick") != null }
@@ -528,17 +577,33 @@ abstract class HumanTester(private val seat: String) {
             .fetchSemanticsNodes(atLeastOneRootRequired = false).isNotEmpty()
     }.getOrDefault(false) && centerOf("welcome") == null
 
-    /** Brings the node tagged [tag] into the screen's middle part (a swipe on the margin at a time), then its middle. */
-    private fun reachTag(tag: String): Pair<Float, Float>? {
+    /** The project itself, with nothing over it (« Que veux-tu faire ? » is drawn over the studio, its tabs under it). */
+    private fun projectShown(): Boolean = tabsShown() && centerOf("mode_card_simple") == null && centerOf("launch_page") == null && centerOf("new_project") == null
+
+    /**
+     * Brings the node tagged [tag] into the screen's middle part, then its middle. Round 1 (lot E seat c): the swipes
+     * went on the screen's left margin, outside the welcome's column centred on a tablet: nothing scrolled, and
+     * « Pad Live » was touched below the screen. The bench scrolls its container to it (as a swipe on it would),
+     * then swipes on the target's own column if it is still at an edge.
+     */
+    internal fun reachTag(tag: String): Pair<Float, Float>? {
+        val first = centerOf(tag) ?: return null
+        if (!inMiddle(first)) {
+            runCatching { compose.onAllNodesWithTag(tag)[0].performScrollTo() }
+            play("attends 0.5")
+        }
         repeat(8) {
             val at = centerOf(tag) ?: return null
-            if (at.second in 0.2f * screenHeight..0.8f * screenHeight) return at
+            if (inMiddle(at)) return at
+            val x = at.first.coerceIn(10f, app.resources.displayMetrics.widthPixels - 10f)
             val dy = (at.second - screenHeight / 2f).coerceIn(-500f, 500f)
-            play("glisse 10 ${screenHeight / 2f + dy / 2} 10 ${screenHeight / 2f - dy / 2}")
+            play("glisse $x ${screenHeight / 2f + dy / 2} $x ${screenHeight / 2f - dy / 2}")
             play("attends 1")
         }
         return centerOf(tag)
     }
+
+    private fun inMiddle(at: Pair<Float, Float>) = at.second in 0.2f * screenHeight..0.8f * screenHeight
 
     /**
      * The bench's engine stands in for a touch on « Partager » or « Écouter » of « Prêt à partager ? »,
@@ -547,7 +612,17 @@ abstract class HumanTester(private val seat: String) {
      * gesture (one that may open such a screen) first stops the song it played and lets it go.
      */
     private fun engineBefore(kind: String, x: Float, y: Float) {
-        if (kind == "touche" && (touches("share_go", x, y) || touches("share_listen", x, y) || playsTheSong(x, y))) {
+        if (kind == "touche" && (touches("share_go", x, y) || touches("share_listen", x, y) || playsTheSong(x, y) || needsTheEngine(x, y))) {
+            NativeEngine.sink = NativeEngine.sink ?: engine
+            return
+        }
+        // Round 1 (lot banc): « Enregistrer » of an audio track (or ● in its microphone mode) opens the engine's microphone:
+        // the bench's engine has one ([BenchEngine.micStart]), its count-in as long as the project's.
+        if (kind == "touche" && audioTakeTouched(x, y)) {
+            lastVm?.project?.value?.let { p ->
+                val bars = SettingsStore.state.value.recordCountIn.coerceAtLeast(1)
+                engine.countInMs = (bars * p.beatsPerBar * 60_000.0 / p.tempoBpm.coerceAtLeast(30.0)).toLong()
+            }
             NativeEngine.sink = NativeEngine.sink ?: engine
             return
         }
@@ -561,6 +636,11 @@ abstract class HumanTester(private val seat: String) {
         // Audit ultra tour 0 (seat b): a stretch on its way to a pad or a Live cell, a voice being cut into
         // phrases, a sound being prepared go on with the engine (a phone's never goes away under them).
         if (engineWorkRunning(v)) return
+        // Round 1 (zone 3, n° 27; seats D b, C a): the song playing went back to its part's loop (« Intro » in a loop) at
+        // any other gesture, a sound changed for instance: the bench stopped it, let its engine go and played ▶ again,
+        // the loop the app plays without one. A phone's song goes on: the engine stays while the song plays (the
+        // screens' own reads of the engine go through it, the meters are the native engine's only).
+        if (v != null && songPlaying(v)) return
         letTheEngineGo(v)
     }
 
@@ -624,7 +704,9 @@ abstract class HumanTester(private val seat: String) {
         // with the engine (its pads bounced to a track, the take put on a pad): the bench's engine comes for it and
         // stays until it is written, before the gesture that ends it. (Seat a) The assistant on screen: its
         // « Écouter » are rendered by the engine, which is there before the touch.
-        if (NativeEngine.sink == null && (takeUnderWay(v) || previewsWanted())) NativeEngine.sink = engine
+        // Round 1 (lot banc): a sound recorded at the microphone for a pad (« Enregistrer ma voix », a live pad) becomes the
+        // engine's sample when it ends (NativeSample.create): the bench's engine comes while it records.
+        if (NativeEngine.sink == null && (takeUnderWay(v) || previewsWanted() || padTakeRecording(v))) NativeEngine.sink = engine
     }
 
     /**
@@ -636,6 +718,15 @@ abstract class HumanTester(private val seat: String) {
         if (lastVm?.project?.value?.song.isNullOrEmpty()) return false
         return touches("top_play", x, y) || touchesStart("guide_option_", x, y)
     }
+
+    /**
+     * Audit ultra round 1 (lot banc): touches that a phone's engine answers and the bench's had not: « Exporter » of the
+     * Mix tab (export_*, the app's render returns at once with no engine: 3 seats saw it do nothing), « Créer la vidéo »
+     * (« Le moteur audio n'est pas prêt »), « Écouter » of a performance kept (the song from its part), « Montre-moi »
+     * (each gesture's sound is the engine's pad or note).
+     */
+    private fun needsTheEngine(x: Float, y: Float): Boolean =
+        ENGINE_TAGS.any { touches(it, x, y) }
 
     /** The assistant on screen, or a sound of the library being made to be heard. */
     private fun previewsWanted(): Boolean = shownOnScreen("wizard") || library()?.preparing?.value != null
@@ -668,7 +759,11 @@ abstract class HumanTester(private val seat: String) {
     internal fun engineWorkRunning(v: RhythmViewModel? = lastVm): Boolean {
         if (v == null) return false
         return v.stemBoard.state.value.busy != null || v.sampleTask.value is com.pocketstudio.app.rhythm.SampleTask.Busy || takeUnderWay(v) ||
-            v.padLive.busy.value != null || liveFillRunning(v)
+            v.padLive.busy.value != null || liveFillRunning(v) ||
+            // Round 1 (lot banc): the video being made, « Montre-moi » under way (its finger on screen).
+            v.videoBusy || shownOnScreen("tuto_finger") ||
+            // A take of an audio track recording or being written (the bench's microphone is its engine's).
+            v.audioRecording.value != null || v.takeSaving.value || padTakeRecording(v)
     }
 
     /**
@@ -680,6 +775,8 @@ abstract class HumanTester(private val seat: String) {
         val f = RhythmViewModel::class.java.getDeclaredField("liveFill").apply { isAccessible = true }
         (f.get(v) as? Job)?.isActive == true
     }.getOrDefault(false)
+
+    private fun padTakeRecording(v: RhythmViewModel?): Boolean = v?.sampleTask?.value is com.pocketstudio.app.rhythm.SampleTask.Recording
 
     /** A Pad Live take armed, recording, being written, or recorded and waiting for its place ([engineDone]). */
     private fun takeUnderWay(v: RhythmViewModel?): Boolean {
@@ -860,12 +957,28 @@ abstract class HumanTester(private val seat: String) {
         flac.register()
         engineBefore(kind, words.getOrNull(1)?.replace(',', '.')?.toFloatOrNull() ?: -1f, words.getOrNull(2)?.replace(',', '.')?.toFloatOrNull() ?: -1f)
         val padsBefore = stemPads()
+        val x = words.getOrNull(1)?.replace(',', '.')?.toFloatOrNull() ?: -1f
+        val y = words.getOrNull(2)?.replace(',', '.')?.toFloatOrNull() ?: -1f
+        val micTake = kind == "touche" && audioTakeTouched(x, y)
         try {
             gesture(kind, words, cmd)
         } finally {
             padNotes(padsBefore)
+            // Nothing started though the bench's engine was there (a refusal of the app's own): said, never silent.
+            if (micTake && lastVm?.audioRecording?.value == null && !NativeEngine.isAvailable) {
+                say("Sur ce banc, le micro des pistes audio ne s'est pas ouvert : sur un téléphone, le décompte puis la prise commenceraient ici.")
+            }
         }
     }
+
+    /**
+     * Round 1 (lot banc): « Enregistrer » of an audio track, the top bar's ● in its microphone mode, or « Le micro » of its
+     * choice (round 1, n° 30). The engine opens
+     * the microphone for these (NativeEngine.micStart): the bench gives its engine, whose microphone hears [BenchMic]'s voice.
+     */
+    private fun audioTakeTouched(x: Float, y: Float): Boolean =
+        touchesStart("audio_record_", x, y) || touches("record_choice_mic", x, y) ||
+            (touches("top_record", x, y) && "micro" in screenText().under(x, y).lowercase())
 
     private fun gesture(kind: String, words: List<String>, cmd: String) {
         fun f(i: Int) = words.getOrNull(i)?.replace(',', '.')?.toFloatOrNull() ?: error("bad gesture: $cmd")
@@ -889,6 +1002,8 @@ abstract class HumanTester(private val seat: String) {
             }
             "retour" -> { androidx.test.espresso.Espresso.pressBackUnconditionally(); settle(900) }
             "attends" -> settle(((words.getOrNull(1)?.replace(',', '.')?.toFloatOrNull() ?: 2f) * 1000).toLong().coerceIn(100, 30_000))
+            // Only looking (scripts/human-act.py answers « regarde » itself; written as a gesture, nothing is touched).
+            "regarde" -> settle(100)
             else -> error("unknown gesture: $cmd")
         }
     }
@@ -980,6 +1095,7 @@ abstract class HumanTester(private val seat: String) {
             runCatching { compose.waitForIdle() }.onFailure { e -> problems += "${e.javaClass.name}: ${e.message?.take(300)}\n${e.stackTrace.take(8).joinToString("\n") { "    at $it" }}" }
         }
         vm()
+        meters(lastVm)
         picker()
         services()
         flac.register()
@@ -989,6 +1105,49 @@ abstract class HumanTester(private val seat: String) {
         shareMenu()
         permissions()
         toasts()
+    }
+
+    /**
+     * Audit ultra round 1 (lot banc, « mesures en direct : que des tirets », E d and F c): the mixer's meters and the
+     * master's loudness are the native engine's only ([RhythmViewModel.pollMeters] returns without it). While the music
+     * plays the bench shows what a phone's engine would read on a mix at the streaming level: the channels that have
+     * something to play move, the master at −14 LUFS short-term, its true peak at −1,2 dBTP. Fixed values (a replay
+     * reads the same screens); stopped, the momentary and short-term readings go, the integrated one and the peak stay.
+     */
+    private var metersPlaying = false
+
+    private fun meters(v: RhythmViewModel?) {
+        if (v == null) return
+        val playing = v.transport.value.playing
+        if (playing == metersPlaying && !playing) return
+        metersPlaying = playing
+        val l = FloatArray(NativeEngine.LOUDNESS) { NativeEngine.LOUDNESS_NONE }
+        val m = FloatArray(NativeEngine.METERS).also { it[NativeEngine.METER_LIMITER] = 1f }
+        if (playing) {
+            val p = v.project.value
+            val on = buildSet {
+                if ((p.allScenes.map { it.drums } + p.drums).any { d -> d.lanes.any { it.hits.isNotEmpty() } }) add(0)
+                if (p.acid.steps.any { it.gate }) add(1)
+                if (p.synthNotes.notes.isNotEmpty()) add(2)
+                if (p.remix.setId != null) add(3)
+                p.tracks.filter { it.notes.notes.isNotEmpty() }.forEach { add(com.pocketstudio.model.InstrumentTrack.mixerChannel(it.id)) }
+                p.audioTracks.filter { it.clip != null }.forEach { add(com.pocketstudio.model.AudioTrack.mixerChannel(it.id)) }
+            }
+            on.filter { it in 0 until NativeEngine.MIXER_CHANNELS }.forEach { m[it] = 0.42f }
+            if (on.isNotEmpty()) { m[NativeEngine.MASTER] = 0.71f; m[NativeEngine.METER_MASTER_IN] = 0.71f }
+            l[NativeEngine.LOUDNESS_MOMENTARY] = if (on.isEmpty()) NativeEngine.LOUDNESS_NONE else -13.6f
+            l[NativeEngine.LOUDNESS_SHORT_TERM] = if (on.isEmpty()) NativeEngine.LOUDNESS_NONE else -14.0f
+            l[NativeEngine.LOUDNESS_INTEGRATED] = if (on.isEmpty()) NativeEngine.LOUDNESS_NONE else -14.2f
+            l[NativeEngine.LOUDNESS_TRUE_PEAK] = if (on.isEmpty()) NativeEngine.LOUDNESS_NONE else -1.2f
+            l[NativeEngine.LOUDNESS_RECENT_PEAK] = l[NativeEngine.LOUDNESS_TRUE_PEAK]
+            l[NativeEngine.LOUDNESS_DRIVE] = 0f
+            l[NativeEngine.LOUDNESS_LOSS] = 0f
+        } else {
+            val was = v.loudness.value
+            l[NativeEngine.LOUDNESS_INTEGRATED] = was.getOrElse(NativeEngine.LOUDNESS_INTEGRATED) { NativeEngine.LOUDNESS_NONE }
+            l[NativeEngine.LOUDNESS_TRUE_PEAK] = was.getOrElse(NativeEngine.LOUDNESS_TRUE_PEAK) { NativeEngine.LOUDNESS_NONE }
+        }
+        v.showMetersForTest(m, l)
     }
 
     /** A Toast is on the phone's screen for a few seconds but in no screenshot: the bench says what it reads (lot « remix 1 »). */
@@ -1086,6 +1245,8 @@ abstract class HumanTester(private val seat: String) {
             }
             fun answer(granted: Boolean) {
                 if (granted) shadowOf(app).grantPermissions(*perms) else shadowOf(app).denyPermissions(*perms)
+                // Round 1 (lot banc): the microphone granted, an audio track's take starts now: on the engine's microphone.
+                if (granted && mic) NativeEngine.sink = NativeEngine.sink ?: engine
                 val results = IntArray(perms.size) { if (granted) android.content.pm.PackageManager.PERMISSION_GRANTED else android.content.pm.PackageManager.PERMISSION_DENIED }
                 seatDir?.let { File(it, "journal.txt").appendText("#$turnNow PERMISSION ${perms.joinToString { p -> p.substringAfterLast('.') }} ${if (granted) "accordée" else "refusée"}\n") }
                 @Suppress("DEPRECATION")
@@ -1115,12 +1276,37 @@ abstract class HumanTester(private val seat: String) {
         }
         previewHeard()?.let(::add)
         libraryHeard()?.let(::add)
+        // Round 1 (lot banc): « Écouter le bout » of the cut screen (and the stem board's « Écouter ») plays through Android's
+        // player on the bench (the engine's preview player falls back to it): heard, as on a phone.
+        v?.let { pieceHeard(it) }?.let(::add)
+        // The pads and notes the app sent to the bench's engine (« Montre-moi », each of its gestures heard).
+        v?.let { engineHitsHeard(it) }?.let(::add)
         // Live pads on a seat (padToggled): heard with the transport stopped too.
         v?.livePadsSoundingForTest?.takeIf { seatPads() && it.isNotEmpty() }?.let { on ->
             add(if (on.size == 1) "le pad live ${on.first() + 1} joue en boucle" else "les pads live ${on.sorted().joinToString(", ") { "${it + 1}" }} jouent en boucle")
         }
     }.let { if (it.isEmpty()) "Son : rien ne joue." else "Son : " + it.joinToString(" ; ") + "." }
         .let { s -> note?.let { n -> note = null; "$s\n$n" } ?: s }
+
+    /** « Écouter le bout »: the stretch of one part of the song that plays, and how long it is. */
+    private fun pieceHeard(v: RhythmViewModel): String? {
+        val sel = runCatching { v.stemBoard.state.value.playing }.getOrNull() ?: return null
+        val part = sel.stem.takeIf { it in Demucs.STEMS.indices }?.let { parts(listOf(it)) } ?: "une partie de la chanson"
+        val seconds = sel.frames.toDouble() / OfflineExport.SAMPLE_RATE
+        return "un bout de la chanson joue : $part, ${"%.1f".format(seconds).replace('.', ',')} s"
+    }
+
+    /** Pads and notes played through the bench's engine since the last screen, as the ear tells them. */
+    private fun engineHitsHeard(v: RhythmViewModel): String? {
+        val (lanes, notes) = engine.heardHits()
+        if (lanes.isEmpty() && notes == 0) return null
+        val p = v.project.value
+        val pads = lanes.distinct().joinToString(", ") { "« ${com.pocketstudio.app.rhythm.padName(p, it)} »" }
+        return listOfNotNull(
+            pads.takeIf { lanes.isNotEmpty() }?.let { "le pad $it sonne" + if (lanes.size > 1) " (${lanes.size} coups)" else "" },
+            notes.takeIf { it > 0 }?.let { "$it note${if (it > 1) "s" else ""} du synthé" },
+        ).joinToString(" ; ")
+    }
 
     /** The song of the Remix along the project: which of its parts are heard. */
     private fun remixHeard(v: RhythmViewModel): String? {
@@ -1250,6 +1436,9 @@ abstract class HumanTester(private val seat: String) {
         const val AMENEE_SONG = "premier-morceau"
         const val AMENEE_REMIX = "remix"
         const val AMENEE_PADLIVE = "padlive"
+
+        /** See [needsTheEngine]. */
+        private val ENGINE_TAGS = listOf("export", "video_create", "padlive_perf_listen", "live_take_listen", "tuto_show")
 
         /** A stem's name on a pad (DefaultNames.stemPad, kept in French whatever the language). */
         private val STEM_NAMES = listOf("Batterie", "Basse", "Reste", "Voix")

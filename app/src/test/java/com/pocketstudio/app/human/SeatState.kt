@@ -59,5 +59,23 @@ internal object SeatState {
             .put("stars", JSONArray(p.padLive.stars))
             .put("audio_clips", p.audioTracks.count { it.clip != null })
             .put("tracks", p.tracks.size)
+            .put("synth_tracks", synthTracks(p))
+    }
+
+    /**
+     * Round 1 (lot banc, mission « synthe »): each synth track (the Synth and the instrument tracks on the synth
+     * engine), its sound (a key: the same sound on two tracks has the same), its notes, and whether the sound was
+     * made (neither the synth's default nor a ready-made sound as it comes).
+     */
+    private fun synthTracks(p: Project): JSONArray {
+        val out = JSONArray()
+        val ready = com.pocketstudio.model.SynthPatch.PRESETS.map { it.second.values } + listOf(com.pocketstudio.model.SynthPatch.DEFAULTS)
+        fun put(name: String, patch: com.pocketstudio.model.SynthPatch, notes: Int) {
+            out.put(JSONObject().put("name", name).put("sound", patch.values.joinToString(",") { "%.4f".format(java.util.Locale.ROOT, it) })
+                .put("notes", notes).put("edited", ready.none { it == patch.values }))
+        }
+        if (p.synthEngine == 0) put(p.synthTrackName, p.synth, p.synthNotes.notes.size)
+        p.tracks.filter { it.engine == 0 }.forEach { put(it.name, it.synth, it.notes.notes.size) }
+        return out
     }
 }

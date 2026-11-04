@@ -185,7 +185,62 @@ def main():
             f.write(JOURNAL_B.replace("#2 ROUTE tab_Sons", "#2 ROUTE padlive"))
         text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base)
         check("×2 (a#4, b#2) padlive · « klaxon » · rien" in text and "1 vue(s) par ≥ 2 sièges" in text, "the same key fused:\n" + text)
+        missions_of_round_1(d)
     print("ultra bench scripts: OK")
+
+
+def missions_of_round_1(d):
+    """Round 1 (lot banc): the oracles of tuto-facile, tuto-pro, synthe, libre and a challenge opened without stars."""
+    c = os.path.join(d, "c")
+    write(os.path.join(c, "start.txt"), "mission=tuto-pro\n")
+    write(os.path.join(c, "journal.txt"), JOURNAL_B)
+    # jump_up's first three chapters done in Pro (bases, kick, snare), the store's JSON escaped as Android writes it.
+    done = ["ref", "tempo", "key", "ready", "kick_hear", "kick_do", "kick_sound", "snare_do", "clap_do"]
+    prefs = json.dumps({"style": "jump_up", "level": "Pro", "done": done, "current": "hat_do"}).replace('"', "&quot;")
+    write(os.path.join(c, "etat", "prefs", "tuto.xml"), f"<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n<map>\n    <string name=\"p-3\">{prefs}</string>\n</map>\n")
+    write(os.path.join(c, "etat", "resume.json"), json.dumps({"projects": [], "shared": [], "prefs": {"simpleMode": False}}))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c)
+    check("mission=reussie" in out and "3 chapitre(s) entier(s)" in out, "three whole chapters in Pro:\n" + out)
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "tuto-facile")
+    check("mission=partielle" in out and "niveau demandé : Facile" in out, "the course done in Pro is not the Facile one:\n" + out)
+    # Two steps only, Facile (the store leaves the default level out): partial.
+    prefs = json.dumps({"style": "jump_up", "done": ["ref", "tempo"], "current": "key"}).replace('"', "&quot;")
+    write(os.path.join(c, "etat", "prefs", "tuto.xml"), f"<map><string name=\"p-3\">{prefs}</string></map>")
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "tuto-facile")
+    check("mission=partielle" in out and "en Facile : 2 étape(s), 0 chapitre(s)" in out, "two steps of the first chapter:\n" + out)
+
+    # synthe, from the projects' files (round 1's states): the same sound on the Synth and on « Basse », both with notes.
+    sound = {"values": [0.5, 0.1, 0.3]}
+    project = {"name": "Mon projet 1", "synthEngine": 0, "synth": sound, "synthNotes": {"notes": [{"start": 0}]},
+               "tracks": [{"name": "Basse", "engine": 0, "synth": sound, "notes": {"notes": [{"start": 0}, {"start": 8}]}}]}
+    write(os.path.join(c, "etat", "projects", "p-3", "project.json"), json.dumps(project))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "synthe")
+    check("mission=reussie" in out and "Synthé, Basse" in out, "one sound on two tracks:\n" + out)
+    project["tracks"][0]["synth"] = {"values": [0.0, 0.0, 0.3]}
+    write(os.path.join(c, "etat", "projects", "p-3", "project.json"), json.dumps(project))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "synthe")
+    check("mission=partielle" in out, "two different sounds: partial:\n" + out)
+    # SeatState's facts (round 2 on): an untouched sound does not count.
+    write(os.path.join(c, "etat", "resume.json"), json.dumps({"projects": [{"name": "P", "synth_tracks": [
+        {"name": "Synthé", "sound": "x", "notes": 3, "edited": False}, {"name": "Basse", "sound": "x", "notes": 2, "edited": False}]}], "shared": []}))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "synthe")
+    check("mission=non" in out, "the default sound on two tracks is not a sound made:\n" + out)
+
+    # libre: ended by the tester on 3 screens or more; a crash fails it.
+    free = JOURNAL_B.replace("#2 FIN : fin", "#2 > touche 2 2\n#3 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3333 | project=p-2 no tuto\n#3 SON Son : rien ne joue.\n#3 > touche 3 3\n"
+                             "#4 ROUTE padlive | MODE pro | EMPREINTE 4444 | project=p-2 no tuto\n#4 SON Son : rien ne joue.\n#4 FIN : fin")
+    write(os.path.join(c, "journal.txt"), free)
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
+    check("mission=reussie" in out and "3 écrans différents" in out, "free play ended by the tester:\n" + out)
+    write(os.path.join(c, "journal.txt"), free.replace("#4 FIN : fin", "#4 CRASH java.lang.IllegalStateException: x\n#4 FIN : plantage"))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
+    check("mission=non" in out, "a crash fails it:\n" + out)
+
+    # defi: a challenge opened, no star kept: partial (lot F seat e), never « aucun défi joué ».
+    write(os.path.join(c, "journal.txt"), JOURNAL_B.replace("#1 > touche 1 1", "#1 > touche 1 1\n#1 DOIGT padlive_challenge_go « Jouer le défi »"))
+    write(os.path.join(c, "etat", "resume.json"), json.dumps({"projects": [{"name": "Live", "stars": []}], "shared": []}))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "defi")
+    check("mission=partielle" in out and "défi ouvert" in out, "a challenge opened:\n" + out)
 
 
 if __name__ == "__main__":

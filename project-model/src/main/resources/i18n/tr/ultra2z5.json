@@ -1,0 +1,15 @@
+{
+  "Copier la note": "Notayı kopyala",
+  "Copier ces %d notes": "Bu %d notayı kopyala",
+  "Supprimer la note": "Notayı sil",
+  "Supprimer ces %d notes": "Bu %d notayı sil",
+  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : son menu (copier, supprimer…). Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "Bir kutuya dokun: nota ekler. Bir notaya dokun: seçer. Uzun bas: menüsü (kopyala, sil…). Sürükle: taşır, ucu: uzatır. Üstteki numaralar: tüm ölçü. Alt şerit: gücü ayarlamak için sürükle.",
+  "%s demi-ton": "%s yarım ton",
+  "Régler le son (filtre, enveloppe…)": "Sesi ayarla (filtre, zarf…)",
+  "Un passe-bas à %s : il garde le grave et adoucit l'aigu.": "%s'de alçak geçiren: bası tutar, tizleri yumuşatır.",
+  "Un passe-bande autour de %s : il ne garde que cette zone du son.": "%s civarında bant geçiren: sesin yalnızca bu bölgesini tutar.",
+  "Un passe-haut à %s : il enlève le grave en dessous.": "%s'de yüksek geçiren: altındaki bası alır.",
+  "Un égaliseur : %1$s vers %2$s.": "Bir ekolayzer: %2$s'de %1$s.",
+  "Réussi ! La couleur du morceau est choisie.": "Başardın! Parçanın rengi seçildi.",
+  "Revenir au tuto": "Eğitime dön"
+}

@@ -1,0 +1,15 @@
+{
+  "Copier la note": "Note kopieren",
+  "Copier ces %d notes": "Diese %d Noten kopieren",
+  "Supprimer la note": "Note löschen",
+  "Supprimer ces %d notes": "Diese %d Noten löschen",
+  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : son menu (copier, supprimer…). Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "Kästchen antippen: Note hinzufügen. Note antippen: auswählen. Lang drücken: ihr Menü (kopieren, löschen…). Ziehen: verschieben, am Ende: verlängern. Zahlen oben: ein ganzer Takt. Untere Leiste: ziehen, um die Velocity einzustellen.",
+  "%s demi-ton": "%s Halbton",
+  "Régler le son (filtre, enveloppe…)": "Klang einstellen (Filter, Hüllkurve…)",
+  "Un passe-bas à %s : il garde le grave et adoucit l'aigu.": "Ein Tiefpass bei %s: Er behält die Tiefen und macht die Höhen weicher.",
+  "Un passe-bande autour de %s : il ne garde que cette zone du son.": "Ein Bandpass um %s: Er behält nur diesen Bereich des Klangs.",
+  "Un passe-haut à %s : il enlève le grave en dessous.": "Ein Hochpass bei %s: Er entfernt die Tiefen darunter.",
+  "Un égaliseur : %1$s vers %2$s.": "Ein Equalizer: %1$s bei %2$s.",
+  "Réussi ! La couleur du morceau est choisie.": "Geschafft! Die Farbe des Songs ist gewählt.",
+  "Revenir au tuto": "Zurück zum Tutorial"
+}

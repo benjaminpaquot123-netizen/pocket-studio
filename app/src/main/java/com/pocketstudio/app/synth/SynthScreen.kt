@@ -81,6 +81,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
@@ -231,15 +232,23 @@ fun SynthScreen(
     var soundsInView by remember(showNotes) { mutableStateOf(false) }
     var floatFolded by rememberSaveable { mutableStateOf(false) }
     val minSoundsPx = with(LocalDensity.current) { 64.dp.toPx() }
-    val trackKeyboard = Modifier.onGloballyPositioned { keyboardInView = it.boundsInWindow().height >= it.size.height * 0.5f }
-    val trackSounds = Modifier.onGloballyPositioned { soundsInView = it.boundsInWindow().height >= minOf(minSoundsPx, it.size.height * 0.5f) && it.size.height > 0 }
+    // Audit ultra round 2, n° 25 (seat B c): the floating keyboard has its own room under the page now (it covered the
+    // presets and « Unisson »'s value): what is in view is read against the whole screen's box, not the page's shorter
+    // window with the keyboard (it would hide itself, then come back, at a sound half in view).
+    val box = remember { floatArrayOf(0f, Float.MAX_VALUE) }
+    fun seen(c: androidx.compose.ui.layout.LayoutCoordinates): Float {
+        val top = c.positionInWindow().y
+        return minOf(top + c.size.height, box[1]) - maxOf(top, box[0])
+    }
+    val trackKeyboard = Modifier.onGloballyPositioned { keyboardInView = seen(it) >= it.size.height * 0.5f }
+    val trackSounds = Modifier.onGloballyPositioned { soundsInView = it.size.height > 0 && seen(it) >= minOf(minSoundsPx, it.size.height * 0.5f) }
     // A tablet by the device (its smaller side at least 600 dp), whatever the rounding of the width given.
     val tablet = isTablet()
     // « Gamme et accords » can send the user down to the track's sound (it is not set note by note).
     val soundRequester = remember { BringIntoViewRequester() }
     val scope = rememberCoroutineScope()
     val deviceLandscape = androidx.compose.ui.platform.LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
-    BoxWithConstraints(modifier.fillMaxSize().testTag("synth")) {
+    BoxWithConstraints(modifier.fillMaxSize().testTag("synth").onGloballyPositioned { c -> box[0] = c.positionInWindow().y; box[1] = box[0] + c.size.height }) {
         val keyboardHeight = (maxHeight * 0.45f).coerceIn(110.dp, 220.dp)
         // Audit final (09): the device lying down, not only the box wider than high. An A11 upright
         // at 130 %, or any phone upright with the Guide's panel open, gave a box wider than high and
@@ -251,8 +260,10 @@ fun SynthScreen(
         val rollHeight = when {
             // Audit final (09): lying down, the grid takes the height (the tools above scroll away).
             landscape -> (maxHeight - 64.dp).coerceAtLeast(160.dp)
-            // Room left for the keyboard under it (once the tools above are scrolled away).
-            tabletUpright -> (maxHeight - 480.dp).coerceIn(300.dp, 640.dp)
+            // Room left for the keyboard under it (once the tools above are scrolled away)…
+            // Audit ultra round 2, n° 27 (seat B c, a foldable opened: 300 dp of grid, about 450 px of 1243): … when both
+            // fit; else the grid takes the screen as lying down (the keyboard under it, a scroll away).
+            tabletUpright -> if (maxHeight - 480.dp >= 300.dp) (maxHeight - 480.dp).coerceAtMost(640.dp) else (maxHeight - 64.dp).coerceAtLeast(300.dp)
             else -> 380.dp
         }
         // A wide tablet held upright: a wider keyboard (three octaves, like lying down).
@@ -263,8 +274,18 @@ fun SynthScreen(
         // following keyboard came over that very button once the thumb's bar made the page shorter.
         val follows = hasSounds && ((notes != null && showNotes) || (!landscape && !simple))
         val floatKeys = if (landscape) 96.dp else 120.dp
-        // Room under the last settings so the floating keyboard never hides them.
-        val floatRoom = if (follows) floatKeys + 72.dp else 0.dp
+        // Round 2, n° 25: the floating keyboard is under the page, never over it: no room to keep for it in the page.
+        val floatRoom = 0.dp
+        // n° 27: the app gives the notes its thumb's bar's room on a big screen ([NotesView]).
+        androidx.compose.runtime.DisposableEffect(notes != null && showNotes) {
+            NotesView.shown = notes != null && showNotes
+            onDispose { NotesView.shown = false }
+        }
+        // The whole box's size, read inside the page's own box below.
+        val screenHigh = maxHeight
+        val screenWide = maxWidth
+        Column(Modifier.fillMaxSize()) {
+        Box(Modifier.weight(1f).fillMaxWidth()) {
         if (notes != null && showNotes) {
             Column(
                 Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(if (landscape) 8.dp else 12.dp),
@@ -339,13 +360,13 @@ fun SynthScreen(
             // Landscape: one compact line (mode, octave), the sound sections scroll (the same ones,
             // in the same order, as upright), and a wide three-octave keyboard stays under the
             // thumbs. A tablet lying down also has the room for the keyboard's layouts.
-            val tall = maxHeight >= TALL_LANDSCAPE
+            val tall = screenHigh >= TALL_LANDSCAPE
             // Lot 2 (audit 35, the Tab A11 lying down): the record bar and the take's card stand
             // beside the keyboard, never above it: after a take they pushed the keys down to 60 dp,
             // off the screen at 130 %. The keyboard keeps its height; two octaves when it is narrower.
             val beside = record != null
-            val recordWidth = (maxWidth * 0.32f).coerceIn(240.dp, 340.dp)
-            val keysWidth = maxWidth - 16.dp - if (beside) recordWidth + 8.dp else 0.dp
+            val recordWidth = (screenWide * 0.32f).coerceIn(240.dp, 340.dp)
+            val keysWidth = screenWide - 16.dp - if (beside) recordWidth + 8.dp else 0.dp
             val landOctaves = if (keysWidth >= LANDSCAPE_THREE_OCTAVES) 3 else 2
             Column(Modifier.fillMaxSize().padding(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 tracks?.takeIf { it.showBar }?.let { TrackBar(it) }
@@ -403,6 +424,7 @@ fun SynthScreen(
                 Spacer(Modifier.height(floatRoom))
             }
         }
+        }
         // Testers (lot « tuto 4 »): it opened by itself over the settings the tutorial rings; while the tutorial
         // runs, its panel has the bottom of the screen (the keyboard stays in « Clavier »).
         if (follows && !com.pocketstudio.app.tuto.TutoHints.active) {
@@ -413,9 +435,10 @@ fun SynthScreen(
             FloatingKeyboard(
                 visible = wanted, folded = floatFolded, onFold = { floatFolded = it },
                 octave = octave, octaves = if (landscape || wide) 3 else 2, keysHeight = floatKeys, actions = actions, harmony = harmony,
-                chordPads = chordPads, keyOn = keyOn, keyOff = keyOff, modifier = Modifier.align(Alignment.BottomCenter),
+                chordPads = chordPads, keyOn = keyOn, keyOff = keyOff,
                 keyLayout = keyLayout, english = english,
             )
+        }
         }
     }
 }
@@ -426,7 +449,8 @@ fun SynthScreen(
  */
 @Composable
 private fun SoundArea(track: Modifier, content: @Composable () -> Unit) {
-    Column(track, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    // Round 2, n° 25: « Réglages du son » of the track's menu brings it into view (the synth's settings first when there).
+    Column(track.spot(SOUND_AREA_SPOT), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text(
             tr("Le son de la piste (le même pour toutes ses notes)"),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
@@ -572,6 +596,17 @@ private fun PresetsCard(patch: SynthPatch, actions: SynthActions, browser: Sound
         // Chips go to a second line rather than squeeze (« Pluck » cut in two on a narrow screen).
         else androidx.compose.foundation.layout.FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) { PresetChips(patch, actions) }
     }
+}
+
+/**
+ * Audit ultra round 2, n° 27 (seat B c, a foldable): the piano roll is on the screen. On a big screen the
+ * top bar has every button of the thumb's bar: that one then gives the grid its room.
+ */
+/** The track's sound on the synth screen ([SoundArea]), as a spot. */
+const val SOUND_AREA_SPOT = "sound_area"
+
+object NotesView {
+    var shown by mutableStateOf(false)
 }
 
 @Composable
@@ -724,7 +759,8 @@ private fun ParamSliderBody(label: String, value: Float, help: Help?, shown: Str
             Text(label, style = MaterialTheme.typography.bodyMedium)
             if (help != null) HelpDot(help)
             Box(Modifier.weight(1f))
-            Text(shown ?: "${(value * 100).roundToInt()}", style = MonoStyle, color = Neon.Cyan)
+            // Audit ultra round 2, n° 25 (seat B c): « Résonance 35 » beside « Coupure 265 Hz »: a knob without a unit says « 35 % ».
+            Text(shown ?: com.pocketstudio.model.i18n.percent((value * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
         }
     }
     ProSlider(value = value, onValueChange = onChange, label = label, valueText = shown ?: com.pocketstudio.model.i18n.percent((value * 100).roundToInt()))

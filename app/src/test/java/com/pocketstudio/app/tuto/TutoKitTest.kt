@@ -129,12 +129,19 @@ class TutoKitTest {
         com.pocketstudio.engine.NativeEngine.sink = Sink()
     }
 
+    /** The kit's card there, and past the moment it takes no touch (round 2, n° 22: it came by itself in the panel's place). */
+    private fun cardShown() {
+        await("the kit's card") { has("tuto_kit") }
+        compose.mainClock.advanceTimeBy(com.pocketstudio.app.ui.ARRIVAL_GUARD_MS + 100)
+        compose.waitForIdle()
+    }
+
     private fun ready(installed: List<PackManifest> = emptyList()) = PacksUi(IndexState.Ready(PackIndex(entries)), installed)
 
     @Test
     fun theOfferShowsWhileThePackIsNotOnThePhoneAndPlusTardKeepsTheBuiltInKit() {
         open(ready())
-        await("the kit's card") { has("tuto_kit") }
+        cardShown()
         assertTrue(has("tuto_kit_download"))
         assertEquals("", progress().kit)
         click("tuto_kit_later")
@@ -159,7 +166,7 @@ class TutoKitTest {
         assertTrue(padsWithSamples().isEmpty())
         // The catalogue back later: the offer then.
         packs.value = ready()
-        await("the kit's card") { has("tuto_kit") }
+        cardShown()
     }
 
     @Test
@@ -180,7 +187,7 @@ class TutoKitTest {
     fun onACourseUnderWayThePackIsOfferedNotPutInSilence() {
         val first = TutoCourse.of(style)!!.chaptersFor(TutoLevel.Pro).first().steps.first().id
         open(ready(installed), done = setOf(first))
-        await("the kit's card") { has("tuto_kit") }
+        cardShown()
         idle(500)
         // Nothing replaced by itself.
         assertTrue("the pads' sounds replaced in silence", padsWithSamples().isEmpty())
@@ -196,7 +203,7 @@ class TutoKitTest {
     fun aKitDownloadedFromTheCardGoesOnThePadsOnACourseUnderWay() {
         val first = TutoCourse.of(style)!!.chaptersFor(TutoLevel.Pro).first().steps.first().id
         open(ready(), done = setOf(first))
-        await("the kit's card") { has("tuto_kit") }
+        cardShown()
         click("tuto_kit_download")
         // The download ends: the user asked for it, its sounds go on the pads.
         packs.value = ready(installed)

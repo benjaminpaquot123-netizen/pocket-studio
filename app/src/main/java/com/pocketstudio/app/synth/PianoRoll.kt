@@ -371,12 +371,13 @@ fun PianoRoll(
                     hScroll, stepWidth, grid, selectMode, selection, select = { selection = it }, apply = apply,
                     rowHeight = rowHeight, keysWidth = keysWidth, allNames = tablet, keyOn = keyOn, keyOff = keyOff,
                     locked = frozen, barSteps = barSteps, hints = hints, zoomBy = zoomBy, fitAll = fitAll, vScroll = rollV,
+                    copyNotes = { chosen -> NoteEdits.toClipboard(chosen, barTicks)?.let(copyNotes) },
                 )
             }
             VelocityLane(clip, selection, hScroll, stepWidth, apply, keysWidth)
             Text(
                 if (selectMode) tr("Touche des notes ou trace un cadre pour les choisir ; glisse une note choisie pour tout déplacer. Couloir du bas : la force de chaque note.")
-                else tr("Touche une case : ajoute une note. Touche une note : la choisit. Appui long : l'enlève. Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force."),
+                else tr("Touche une case : ajoute une note. Touche une note : la choisit. Appui long : son menu (copier, supprimer…). Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force."),
                 style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary,
             )
@@ -604,8 +605,13 @@ private fun Grid(
     /** « Tout voir » touched: the lowest to the highest note framed, from the first bar. */
     fitAll: Int = 0,
     vScroll: androidx.compose.foundation.ScrollState = rememberScrollState(),
+    /** The notes given copied (« Copier » of a note's long press). */
+    copyNotes: (Set<Note>) -> Unit = {},
 ) {
     val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
+    // Audit ultra round 2, n° 27 (seat B c): a long press on a note deleted it without a word (a reflex from other
+    // apps is a menu there): it chooses the note and opens its menu, « Supprimer » in it said in words.
+    var menu by remember { mutableStateOf<Pair<Note, Offset>?>(null) }
     val english = com.pocketstudio.app.settings.englishNotes()
     val density = LocalDensity.current
     val rowPx = with(density) { rowHeight.toPx() }
@@ -805,11 +811,11 @@ private fun Grid(
                                 groupMove = null
                                 if (!moved) {
                                     val held = currentEvent.changes.firstOrNull()?.uptimeMillis?.minus(down.uptimeMillis) ?: 0L
-                                    if (!selectMode && held > 450) {
-                                        // Draw mode: a long press deletes, as everywhere in the roll.
+                                    if (held > 450) {
+                                        // n° 27: a long press opens the note's menu (it deleted it in silence).
                                         haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                                        actions.remove(found)
-                                        select(selection - found)
+                                        select(selection + found)
+                                        menu = found to down.position
                                     } else {
                                         select(if (found in selection) selection - found else selection + found)
                                     }
@@ -870,7 +876,8 @@ private fun Grid(
                             }
                             drag = null
                             val held = currentEvent.changes.firstOrNull()?.uptimeMillis?.minus(down.uptimeMillis) ?: 0L
-                            // Phase 37 (FL Studio Mobile): a touch chooses the note, a long press deletes it.
+                            // Phase 37: a touch chooses the note; round 2 (n° 27): a long press chooses it and opens its menu
+                            // (Copier, Dupliquer, Supprimer), it never deletes it without a word.
                             when {
                                 moved -> {
                                     if (result != note) actions.change(note, result)
@@ -878,8 +885,8 @@ private fun Grid(
                                 }
                                 held > 450 -> {
                                     haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                                    actions.remove(note)
-                                    select(selection - note)
+                                    select(selection + note)
+                                    menu = note to down.position
                                 }
                                 else -> select(if (note in selection) selection - note else selection + note)
                             }
@@ -962,6 +969,27 @@ private fun Grid(
                     }
                 },
             )
+            // n° 27: the long-pressed note's menu, at the finger.
+            menu?.let { (n, at) ->
+                val chosen = if (n in selection) selection else setOf(n)
+                Box(Modifier.offset { androidx.compose.ui.unit.IntOffset(at.x.roundToInt(), at.y.roundToInt()) }.size(1.dp)) {
+                    com.pocketstudio.ui.ScaledDropdownMenu(expanded = true, onDismissRequest = { menu = null }, modifier = Modifier.testTag("roll_note_menu")) {
+                        androidx.compose.material3.DropdownMenuItem(
+                            text = { Text(if (chosen.size > 1) tr("Copier ces %d notes", chosen.size) else tr("Copier la note")) },
+                            onClick = { menu = null; copyNotes(chosen) }, modifier = Modifier.testTag("roll_note_copy"),
+                        )
+                        androidx.compose.material3.DropdownMenuItem(
+                            text = { Text(tr("Dupliquer")) },
+                            onClick = { menu = null; NoteEdits.duplicate(clip, chosen).takeIf { it.selection.isNotEmpty() }?.let { apply(it, null) } },
+                            modifier = Modifier.testTag("roll_note_duplicate"),
+                        )
+                        androidx.compose.material3.DropdownMenuItem(
+                            text = { Text(if (chosen.size > 1) tr("Supprimer ces %d notes", chosen.size) else tr("Supprimer la note"), color = Neon.Red) },
+                            onClick = { menu = null; apply(NoteEdits.delete(clip, chosen), null) }, modifier = Modifier.testTag("roll_note_delete"),
+                        )
+                    }
+                }
+            }
         }
     }
 }

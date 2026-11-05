@@ -677,36 +677,54 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
         }
         Primary.NONE -> Unit
     }
+    // The secondary buttons' words (what [besideFits] measures), each with its button.
+    val words = ArrayList<String>()
     val secondaries = buildList<@Composable RowScope.() -> Unit> {
         // A step done: the user's own result first, then the example to compare.
-        if (primary == Primary.NEXT && mine && (!step.listening || mineFirst || chapterEnd)) add {
-            OutlinedButton(onClick = actions.playMine, contentPadding = SECONDARY_PADDING, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_play_mine")) {
-                Icon(if (minePlaying) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(18.dp))
-                com.pocketstudio.ui.WholeWordsText(" " + if (minePlaying) tr("Arrêter") else if (chapterEnd) tr("Écouter mon morceau") else tr("Écouter ton résultat"), textAlign = TextAlign.Center)
+        if (primary == Primary.NEXT && mine && (!step.listening || mineFirst || chapterEnd)) {
+            val label = if (minePlaying) tr("Arrêter") else if (chapterEnd) tr("Écouter mon morceau") else tr("Écouter ton résultat")
+            words += label
+            add {
+                OutlinedButton(onClick = actions.playMine, contentPadding = SECONDARY_PADDING, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_play_mine")) {
+                    Icon(if (minePlaying) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(18.dp))
+                    com.pocketstudio.ui.WholeWordsText(" $label", textAlign = TextAlign.Center)
+                }
             }
         }
-        if (step.listen.isNotEmpty() && primary != Primary.LISTEN) add {
-            OutlinedButton(onClick = actions.listen, contentPadding = SECONDARY_PADDING, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_listen")) { ListenContent(ui, busy) }
-        }
-        if (step.manual && primary != Primary.MARK) add {
-            OutlinedButton(onClick = actions.markDone, contentPadding = SECONDARY_PADDING, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_mark")) {
-                Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
-                com.pocketstudio.ui.WholeWordsText(" " + tr("C'est fait"), textAlign = TextAlign.Center)
+        if (step.listen.isNotEmpty() && primary != Primary.LISTEN) {
+            words += if (busy) tr("Arrêter l'écoute") else tr("Écouter l'exemple")
+            add {
+                OutlinedButton(onClick = actions.listen, contentPadding = SECONDARY_PADDING, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_listen")) { ListenContent(ui, busy) }
             }
-        } else if (canShow && primary != Primary.NEXT) add {
+        }
+        if (step.manual && primary != Primary.MARK) {
+            words += tr("C'est fait")
+            add {
+                OutlinedButton(onClick = actions.markDone, contentPadding = SECONDARY_PADDING, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_mark")) {
+                    Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
+                    com.pocketstudio.ui.WholeWordsText(" " + tr("C'est fait"), textAlign = TextAlign.Center)
+                }
+            }
+        } else if (canShow && primary != Primary.NEXT) {
             val showing = ui.demo != null
-            OutlinedButton(
-                onClick = if (showing) actions.stopDemo else actions.showMe, contentPadding = SECONDARY_PADDING,
-                modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_show"),
-            ) {
-                Icon(if (showing) Icons.Filled.Stop else Icons.Filled.Visibility, contentDescription = null, modifier = Modifier.size(18.dp))
-                com.pocketstudio.ui.WholeWordsText(" " + if (showing) tr("Arrêter") else tr("Montre-moi"), textAlign = TextAlign.Center)
+            words += if (showing) tr("Arrêter") else tr("Montre-moi")
+            add {
+                OutlinedButton(
+                    onClick = if (showing) actions.stopDemo else actions.showMe, contentPadding = SECONDARY_PADDING,
+                    modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_show"),
+                ) {
+                    Icon(if (showing) Icons.Filled.Stop else Icons.Filled.Visibility, contentDescription = null, modifier = Modifier.size(18.dp))
+                    com.pocketstudio.ui.WholeWordsText(" " + if (showing) tr("Arrêter") else tr("Montre-moi"), textAlign = TextAlign.Center)
+                }
             }
         }
     }
     // Testers (lot « tuto 4 »): a step done had one more row of buttons than when it began, in the same held
-    // height: its words went under the green button. Done, its other buttons share « Précédent »'s row.
-    val beside = primary == Primary.NEXT
+    // height: its words went under the green button. Done, its other buttons share « Précédent »'s row…
+    // Audit ultra round 2, n° 23 (seat A a, 200 %): … when their words fit there whole; else (a big font, a long
+    // language) they get a row of their own, « ← Précédent » and « Suivant → » in words under them (it was « Éco… »
+    // twice and an arrow).
+    val beside = primary == Primary.NEXT && besideFits(words)
     if (secondaries.isNotEmpty() && !beside) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
         secondaries.forEach { it() }
     }
@@ -730,8 +748,9 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
             Text(" " + tr("Précédent"), maxLines = 1)
         }
         Box(Modifier.weight(1f))
-        // Testers: two ways on (« Étape suivante » and « Suivant → ») puzzled them; the step done has only the big one.
-        if (primary != Primary.NEXT) TextButton(onClick = actions.next, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_next")) {
+        // Testers: two ways on (« Étape suivante » and « Suivant → ») puzzled them; the step done has only the big one
+        // (n° 23: « Suivant → » stays where it was when its row is the secondary buttons' own on a big font).
+        if (primary != Primary.NEXT || secondaries.isNotEmpty()) TextButton(onClick = actions.next, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_next")) {
             Text(tr("Suivant") + " ", maxLines = 1)
             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(18.dp))
         }
@@ -782,6 +801,35 @@ private fun EndCard(ui: TutoUi, actions: TutoActions) {
         if (ui.atEnd) TextButton(onClick = actions.leaveEnd, modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_end_back")) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, modifier = Modifier.size(18.dp))
             Text(" " + tr("Revenir à l'étape"), maxLines = 1)
+        }
+    }
+}
+
+/**
+ * Whether « ← », the secondary buttons ([words]) and « Suivant → » fit on one row with each button's
+ * longest word whole at the smallest size [com.pocketstudio.ui.WholeWordsText] would shrink it to.
+ */
+@Composable
+private fun besideFits(words: List<String>): Boolean {
+    if (words.isEmpty()) return true
+    val measurer = androidx.compose.ui.text.rememberTextMeasurer()
+    val style = MaterialTheme.typography.labelLarge
+    val density = LocalDensity.current
+    val width = androidx.compose.ui.platform.LocalConfiguration.current.screenWidthDp.dp
+    return remember(words, style, density, width) {
+        // The words' floor: 72 % of their size, as far as they would shrink at 130 % (WholeWords).
+        val floor = 0.72f * minOf(1f, 1.3f / density.fontScale.coerceAtLeast(0.1f))
+        fun px(text: String) = measurer.measure(text, style).size.width.toFloat()
+        with(density) {
+            val buttons = words.sumOf { label ->
+                val longest = label.split(' ', '\u00A0').filter { it.isNotBlank() }.maxOfOrNull { px(it) } ?: 0f
+                // Its icon, a space, its padding and border.
+                (longest * floor + (18.dp + 6.dp + 10.dp * 2 + 2.dp).toPx()).toDouble()
+            }.toFloat()
+            val next = px(tr("Suivant") + " ") + (18.dp + 12.dp * 2).toPx()
+            // The panel's padding (14 dp each side), « ← » (48 dp), the gaps (6 dp).
+            val room = (width - 28.dp - 48.dp - 6.dp * (words.size + 1)).toPx()
+            buttons + next <= room
         }
     }
 }
@@ -1054,6 +1102,22 @@ fun TutoKeySheetContent(harmony: com.pocketstudio.model.Harmony, wanted: com.poc
                     set(harmony.copy(root = i, scale = if (harmony.scale == com.pocketstudio.model.Scale.Off) wanted.scale else harmony.scale, lock = true))
                 }
             }
+        }
+        // Audit ultra round 2, n° 24 (seat A a, screen 22): « Phrygienne » then « Fa » touched, the sheet stayed as it was and
+        // « Fermer » had to be guessed: the key asked for is said reached, and the way back to the course is one big button.
+        if (harmony.scale == wanted.scale && harmony.root == wanted.root) {
+            Row(
+                Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Neon.Acid.copy(alpha = 0.14f)).border(1.dp, Neon.Acid, RoundedCornerShape(12.dp))
+                    .padding(horizontal = 12.dp, vertical = 8.dp).testTag("tuto_key_done"),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(22.dp))
+                Text(tr("Réussi ! La couleur du morceau est choisie."), color = Neon.Acid, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 8.dp))
+            }
+            Button(
+                onClick = close, colors = ButtonDefaults.buttonColors(containerColor = Neon.Acid, contentColor = Neon.OnAccent),
+                modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("tuto_key_continue"),
+            ) { Text(tr("Revenir au tuto"), fontWeight = FontWeight.Bold) }
         }
     }
 }

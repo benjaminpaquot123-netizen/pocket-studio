@@ -32,7 +32,6 @@
   "Touche pour changer les accords de tout le morceau.": "タップで曲全体のコードを変更。",
   "Accords du morceau (toutes les parties)": "曲のコード（全パート）",
   "Piste gelée : elle joue son rendu audio dans le morceau. « Dégeler » (menu de la piste) pour modifier ses notes.": "フリーズ中のトラック：曲の中ではオーディオ化した音を再生します。ノートを変えるには「フリーズ解除」（トラックメニュー）。",
-  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : l'enlève. Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "マスをタップ：ノートを追加。ノートをタップ：選択。長押し：削除。ドラッグ：移動、端をドラッグ：長さ。上の数字：1小節まるごと。下のレーン：ドラッグでベロシティ。",
   "Coller mes. %d": "%d 小節目に貼り付け",
   "Copié : %1$s (%2$s)": "コピー：%1$s（%2$s）",
   "Copié : %s": "コピー：%s",

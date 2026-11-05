@@ -9,6 +9,9 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.click
 import com.pocketstudio.app.audit.LayoutScan
 import com.pocketstudio.app.library.IndexState
 import com.pocketstudio.app.library.PacksUi
@@ -138,7 +141,45 @@ class TutoBigFontTest {
             }
         }
         problems += hidden
+        // Round 2, n° 23 (seat A a, screens 31, 38): the tutorial's line over the cells (« Mesure · Clap », « Encore 4 cases
+        // en pointillé ici ») was under « Partie : A »: it says which pad and how many are left, it comes into sight with them.
+        val gridLine = compose.onAllNodesWithTag("tuto_grid_line", useUnmergedTree = true).fetchSemanticsNodes().firstOrNull()
+        if (gridLine == null) problems += "no tutorial line over the cells"
+        else {
+            val whole = androidx.compose.ui.geometry.Rect(gridLine.positionInRoot, androidx.compose.ui.geometry.Size(gridLine.size.width.toFloat(), gridLine.size.height.toFloat()))
+            if (whole.top < line.bottom - 1f) problems += "the tutorial's line under « Partie : A » ($whole, line at ${line.bottom})"
+        }
         assertTrue("at 200 %: $problems", problems.isEmpty())
+    }
+
+    /**
+     * Round 2, n° 23 (seat A a, screens 29 to 38): the kick's cells done by hand, « Réussi », then the rumble's « Je le fais »:
+     * the tutorial's line (« Rumble », « Encore 4 cases ») was under « Partie : A », the cells alone in sight.
+     */
+    @Test
+    fun theNextStepsLineComesIntoSightWithItsCells() {
+        open("kick_do")
+        if (has("tuto_need")) click("tuto_need")
+        await("« Je le fais »") { has("tuto_do") }
+        click("tuto_do")
+        await("the kick's cells") { TutoHints.cells != null }
+        TutoHints.cells!!.second.sorted().forEach { h.vm.toggleStep(it) }
+        await("ticked") { "kick_do" in progress().done }
+        idle(600)
+        compose.mainClock.advanceTimeBy(1_000)
+        compose.waitForIdle()
+        if (has("tuto_next_folded")) click("tuto_next_folded") else click("tuto_next_big")
+        await("the rumble's step") { has("tuto_do") && progress().current == "rumble_do" }
+        click("tuto_do")
+        await("the rumble's cells") { has("rhythm") && has("tuto_hint") && TutoHints.cells?.first != null }
+        idle(600)
+        compose.mainClock.advanceTimeBy(3_000)
+        compose.waitForIdle()
+        idle(600)
+        val line = bounds("part_header")
+        val gridLine = compose.onAllNodesWithTag("tuto_grid_line", useUnmergedTree = true).fetchSemanticsNodes().first()
+        val whole = androidx.compose.ui.geometry.Rect(gridLine.positionInRoot, androidx.compose.ui.geometry.Size(gridLine.size.width.toFloat(), gridLine.size.height.toFloat()))
+        assertTrue("the tutorial's line under « Partie : A » ($whole, line at ${line.bottom})", whole.top >= line.bottom - 1f)
     }
 
     @Test
@@ -162,6 +203,11 @@ class TutoBigFontTest {
         await("« Bravo », the chapter done") { has("tuto_chapter_done") }
         assertTrue("« Écouter mon morceau »", has("tuto_play_mine"))
         assertTrue("« Chapitre suivant »", has("tuto_next_big"))
+        // Round 2, n° 23 (seat A a, screen 43): at 200 % the two « Écouter… » were « Éco… » twice and « Précédent » an arrow.
+        val density = h.app.resources.displayMetrics.density
+        val cut = LayoutScan.scan(compose, density, setOf(LayoutScan.Kind.CUT)).filter { f -> listOf("Écouter", "Précédent", "Suivant").any { it in f.toString() } }
+        assertTrue("at 200 %: $cut", cut.isEmpty())
+        assertTrue("« Précédent » in words", compose.onAllNodes(androidx.compose.ui.test.hasText("Précédent", substring = true), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty())
         click("tuto_next_big")
         await("the next chapter") { progress().current == chapters[2].steps.first().id }
     }
@@ -180,6 +226,8 @@ class TutoBigFontTest {
         // The catalogue comes a moment later (as on the phone): the card then.
         packs.value = PacksUi(IndexState.Ready(PackIndex(ids.map { PackEntry(it, "Pack $it", "$it.zip", "a".repeat(64), 1_500_000, 12) })))
         await("the kit's card") { has("tuto_kit") }
+        // Round 2, n° 22: the card came by itself: it takes touches a moment later only.
+        compose.mainClock.advanceTimeBy(com.pocketstudio.app.ui.ARRIVAL_GUARD_MS + 100)
         idle(300)
         compose.waitForIdle()
         val bar = bounds("top_bar")
@@ -190,5 +238,47 @@ class TutoBigFontTest {
         await("the card gone") { !has("tuto_kit") }
         assertFalse(has("tuto_kit"))
         assertTrue("the course's panel back", has("tuto_panel"))
+    }
+
+    /**
+     * Audit ultra round 2, n° 22 (seat A a, screen 7, back from round 1): « Lire la suite » touched as the catalogue
+     * came opened « Le kit Techno… 0 % »: the card took the panel's place under the finger. What comes by itself
+     * there takes no touch for a moment; then it does.
+     */
+    @Test
+    fun theKitsCardThatComesUnderTheFingerTakesNoTouchAtOnce() {
+        val packs = MutableStateFlow(PacksUi())
+        TutoTestHooks.packs = packs
+        val s = target.style
+        val ids = (s.lines.filter { it.voice == null }.mapNotNull { s.kit[it.role] } + s.id).distinct()
+        h.start(simple = true, build = {
+            session.edit { target.blank() }
+            PrefsTutoStore(h.app).save(projectId, TutoProgress(style, TutoLevel.Facile))
+        })
+        await("panel") { has("tuto_panel") && has("tuto_text_more") }
+        val more = bounds("tuto_text_more")
+        // The finger on its way to « Lire la suite » when the catalogue comes.
+        compose.mainClock.autoAdvance = false
+        try {
+            packs.value = PacksUi(IndexState.Ready(PackIndex(ids.map { PackEntry(it, "Pack $it", "$it.zip", "a".repeat(64), 1_500_000, 12) })))
+            repeat(4) { idle(20); compose.mainClock.advanceTimeByFrame() }
+            assertTrue("the kit's card", has("tuto_kit"))
+            compose.onRoot().performTouchInput { click(more.center) }
+            compose.onNodeWithTag("tuto_kit_later").performClick()
+            repeat(4) { idle(20); compose.mainClock.advanceTimeByFrame() }
+            assertEquals("a touch meant for « Lire la suite » taken by the card that came under it", "", progress().kit)
+            assertTrue("the card still there", has("tuto_kit"))
+            // A moment later the card is the user's to touch.
+            compose.mainClock.advanceTimeBy(com.pocketstudio.app.ui.ARRIVAL_GUARD_MS + 100)
+            idle(50)
+        } finally {
+            compose.mainClock.autoAdvance = true
+        }
+        compose.waitForIdle()
+        click("tuto_kit_later")
+        await("« Plus tard » kept") { progress().kit == TutoProgress.KIT_BUILT_IN }
+        await("the panel back") { has("tuto_panel") }
+        // Back by the user's own touch: the panel takes a touch at once.
+        assertFalse(has("arrival_guard"))
     }
 }

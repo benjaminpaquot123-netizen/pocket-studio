@@ -1,0 +1,15 @@
+{
+  "Copier la note": "노트 복사",
+  "Copier ces %d notes": "이 노트 %d개 복사",
+  "Supprimer la note": "노트 삭제",
+  "Supprimer ces %d notes": "이 노트 %d개 삭제",
+  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : son menu (copier, supprimer…). Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "칸 탭: 노트 추가. 노트 탭: 선택. 길게 누르기: 메뉴(복사, 삭제…). 드래그: 이동, 끝부분: 길이 늘리기. 위쪽 숫자: 마디 전체. 아래 레인: 드래그해서 벨로시티 조절.",
+  "%s demi-ton": "%s 반음",
+  "Régler le son (filtre, enveloppe…)": "소리 조절(필터, 엔벨로프…)",
+  "Un passe-bas à %s : il garde le grave et adoucit l'aigu.": "%s 로우패스: 저음은 남기고 고음은 부드럽게 해요.",
+  "Un passe-bande autour de %s : il ne garde que cette zone du son.": "%s 근처 밴드패스: 소리의 그 대역만 남겨요.",
+  "Un passe-haut à %s : il enlève le grave en dessous.": "%s 하이패스: 그 아래 저음을 없애요.",
+  "Un égaliseur : %1$s vers %2$s.": "이퀄라이저: %2$s에서 %1$s.",
+  "Réussi ! La couleur du morceau est choisie.": "성공! 곡의 색깔을 골랐어요.",
+  "Revenir au tuto": "튜토리얼로 돌아가기"
+}

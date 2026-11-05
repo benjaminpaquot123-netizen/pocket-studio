@@ -32,7 +32,6 @@
   "Touche pour changer les accords de tout le morceau.": "Dotknij, żeby zmienić akordy całego utworu.",
   "Accords du morceau (toutes les parties)": "Akordy utworu (wszystkie części)",
   "Piste gelée : elle joue son rendu audio dans le morceau. « Dégeler » (menu de la piste) pour modifier ses notes.": "Zamrożona ścieżka: w utworze gra swój render audio. „Odmroź” (menu ścieżki), żeby zmienić jej nuty.",
-  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : l'enlève. Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "Dotknij komórki: dodaje nutę. Dotknij nuty: zaznacza ją. Przytrzymaj: usuwa. Przeciągnij: przesuwa, koniec: wydłuża. Liczby u góry: cały takt. Dolny pas: przeciągnij, żeby ustawić velocity.",
   "Coller mes. %d": "Wklej takt %d",
   "Copié : %1$s (%2$s)": "Skopiowano: %1$s (%2$s)",
   "Copié : %s": "Skopiowano: %s",

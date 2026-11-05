@@ -32,7 +32,6 @@
   "Touche pour changer les accords de tout le morceau.": "Tocca per cambiare gli accordi di tutto il brano.",
   "Accords du morceau (toutes les parties)": "Accordi del brano (tutte le parti)",
   "Piste gelée : elle joue son rendu audio dans le morceau. « Dégeler » (menu de la piste) pour modifier ses notes.": "Traccia congelata: suona il suo render audio nel brano. “Scongela” (menu della traccia) per modificare le sue note.",
-  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : l'enlève. Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "Tocca una casella: aggiunge una nota. Tocca una nota: la seleziona. Pressione lunga: la toglie. Trascina: sposta, la fine: allunga. Numeri in alto: tutta una battuta. Corsia in basso: trascina per regolare la velocity.",
   "Coller mes. %d": "Incolla batt. %d",
   "Copié : %1$s (%2$s)": "Copiato: %1$s (%2$s)",
   "Copié : %s": "Copiato: %s",

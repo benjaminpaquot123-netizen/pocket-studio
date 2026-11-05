@@ -79,6 +79,11 @@ class TracksUi(
     val scene: String = "",
     /** « Changer le son » of track (id): its sounds in a sheet (null: not offered). */
     val changeSound: ((Int) -> Unit)? = null,
+    /**
+     * Audit ultra round 2, n° 25 (seat B c): « Réglages du son » of track (id): its filter, envelopes… brought into
+     * view and ringed on the synth screen (null: not offered; the Mode simple changes a sound, it does not set one).
+     */
+    val soundSettings: ((Int) -> Unit)? = null,
     /** G3: « Fiche de la piste » of track (id): its five columns, its layers, its history (null: not offered). */
     val sheet: ((Int) -> Unit)? = null,
     /** Phase 37: « Geler la piste » / « Dégeler » (null: not offered), the frozen tracks and the one being frozen. */
@@ -175,6 +180,9 @@ fun TrackBar(
                     }
                     ui.changeSound?.let { change ->
                         DropdownMenuItem(text = { Text(tr("Changer le son")) }, onClick = { menuFor = null; change(t.id) }, modifier = Modifier.testTag("track_menu_sound"))
+                    }
+                    ui.soundSettings?.let { settings ->
+                        DropdownMenuItem(text = { Text(tr("Régler le son (filtre, enveloppe…)")) }, onClick = { menuFor = null; settings(t.id) }, modifier = Modifier.testTag("track_menu_settings"))
                     }
                     DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menuFor = null; renamingId = t.id })
                     DropdownMenuItem(text = { Text(tr("Couleur")) }, onClick = { menuFor = null; colouringId = t.id })

@@ -32,7 +32,6 @@
   "Touche pour changer les accords de tout le morceau.": "Tippe, um die Akkorde des ganzen Songs zu ändern.",
   "Accords du morceau (toutes les parties)": "Song-Akkorde (alle Teile)",
   "Piste gelée : elle joue son rendu audio dans le morceau. « Dégeler » (menu de la piste) pour modifier ses notes.": "Eingefrorene Spur: Sie spielt ihr Audio-Rendering im Song. „Auftauen“ (Spurmenü), um ihre Noten zu ändern.",
-  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : l'enlève. Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "Kästchen antippen: Note hinzufügen. Note antippen: auswählen. Lang drücken: entfernen. Ziehen: verschieben, am Ende: verlängern. Zahlen oben: ein ganzer Takt. Untere Leiste: ziehen, um die Velocity einzustellen.",
   "Coller mes. %d": "Takt %d einfügen",
   "Copié : %1$s (%2$s)": "Kopiert: %1$s (%2$s)",
   "Copié : %s": "Kopiert: %s",

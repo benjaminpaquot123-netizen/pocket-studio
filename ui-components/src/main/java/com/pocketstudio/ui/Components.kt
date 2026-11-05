@@ -82,6 +82,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.i18n.tr
+import kotlin.math.roundToInt
 
 /**
  * Where folded cards are remembered, by title. The app gives one that lasts (its preferences);
@@ -428,10 +429,14 @@ fun ProSlider(
         // A few steps (a choice of 2 to 24): a light tick at each one, like a notched control.
         onValueChange = if (steps in 1..NOTCHED_STEPS_MAX) { v -> if (v != value) haptics.notch(); onValueChange(v) } else onValueChange,
         modifier = modifier.then(
-            if (label == null && valueText == null) Modifier
-            else Modifier.semantics {
-                label?.let { contentDescription = it }
-                valueText?.let { stateDescription = it }
+            // Audit ultra round 2, n° 25 (seat B c: « Modul. » said « 0.0 »): a 0 to 1 slider without words of its own
+            // says its share, in the language's way (« 35 % »).
+            (valueText ?: if (valueRange == 0f..1f && steps == 0) com.pocketstudio.model.i18n.percent((value * 100).roundToInt()) else null).let { state ->
+                if (label == null && state == null) Modifier
+                else Modifier.semantics {
+                    label?.let { contentDescription = it }
+                    state?.let { stateDescription = it }
+                }
             },
         ),
         enabled = enabled,

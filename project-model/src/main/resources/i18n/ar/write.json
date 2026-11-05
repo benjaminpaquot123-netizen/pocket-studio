@@ -32,7 +32,6 @@
   "Touche pour changer les accords de tout le morceau.": "اضغط لتغيير كوردات الأغنية كلها.",
   "Accords du morceau (toutes les parties)": "كوردات الأغنية (كل الأجزاء)",
   "Piste gelée : elle joue son rendu audio dans le morceau. « Dégeler » (menu de la piste) pour modifier ses notes.": "مسار مجمَّد: يعزف نسخته الصوتية في الأغنية. «إلغاء التجميد» (قائمة المسار) لتغيير نوتاته.",
-  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : l'enlève. Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "اضغط خانة: تضيف نوتة. اضغط نوتة: تحددها. ضغطة مطوّلة: تحذفها. اسحب: تحرّكها، ومن طرفها: تطيلها. الأرقام في الأعلى: مازورة كاملة. الشريط السفلي: اسحب لضبط القوة (velocity).",
   "Coller mes. %d": "لصق المازورة %d",
   "Copié : %1$s (%2$s)": "تم النسخ: %1$s (%2$s)",
   "Copié : %s": "تم النسخ: %s",

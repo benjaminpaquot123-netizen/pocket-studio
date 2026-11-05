@@ -2444,6 +2444,7 @@ fun AppRoot() {
                         map = remember(tutoNow.progress.style) { com.pocketstudio.app.tuto.tutoMap(tutoNow.progress.style) },
                         mine = mine, minePlaying = tutoTransport.playing, mineFirst = mineFirst,
                     )
+                    }
                 } else if (tuto.resumable && !showLive && !showLivePads && !showTimeline) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         TextButton(onClick = tuto::resume, modifier = Modifier.weight(1f).heightIn(min = 40.dp).testTag("tuto_resume")) {
@@ -3129,6 +3130,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 target = com.pocketstudio.model.LoudnessTargets.choiceOf(project.mixer),
                                 freeLufs = project.mixer.pro?.targetLufs,
                                 styleLufs = com.pocketstudio.model.LoudnessTargets.forStyle(project.style, project.mixVersion),
+                                styleName = com.pocketstudio.app.mixer.shownStyleName(project.style),
                                 buses = project.mixer.buses,
                                 // Tutorial testers (lot « tuto 4 », b/139): no silent « Basse acide » strip in the tutorial's project.
                                 strips = mixerStrips(project).let { all ->
@@ -3218,7 +3220,6 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                         AppTab.Audio -> Column {
                             if (simpleRemix) {
                                 // Audit final (03 G4, 05, 08): the page asked for (« Ma voix » too, it used to be
-                                styleName = com.pocketstudio.app.mixer.shownStyleName(project.style),
                                 // forced to the Remix), alone, and back to the song.
                                 androidx.activity.compose.BackHandler { go(AppTab.Morceau) }
                                 Row(Modifier.fillMaxWidth().background(Neon.Surface).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {

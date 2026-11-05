@@ -1,0 +1,15 @@
+{
+  "Copier la note": "Salin not",
+  "Copier ces %d notes": "Salin %d not ini",
+  "Supprimer la note": "Hapus not",
+  "Supprimer ces %d notes": "Hapus %d not ini",
+  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : son menu (copier, supprimer…). Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "Sentuh kotak: menambah not. Sentuh not: memilihnya. Tekan lama: menunya (salin, hapus…). Geser: memindah, ujungnya: memanjangkan. Angka di atas: satu bar penuh. Lajur bawah: geser untuk mengatur velocity.",
+  "%s demi-ton": "%s semiton",
+  "Régler le son (filtre, enveloppe…)": "Atur suara (filter, envelope…)",
+  "Un passe-bas à %s : il garde le grave et adoucit l'aigu.": "Low-pass di %s: menjaga bas dan melembutkan treble.",
+  "Un passe-bande autour de %s : il ne garde que cette zone du son.": "Band-pass sekitar %s: hanya menjaga bagian suara itu.",
+  "Un passe-haut à %s : il enlève le grave en dessous.": "High-pass di %s: membuang bas di bawahnya.",
+  "Un égaliseur : %1$s vers %2$s.": "Equalizer: %1$s di %2$s.",
+  "Réussi ! La couleur du morceau est choisie.": "Berhasil! Warna lagu sudah dipilih.",
+  "Revenir au tuto": "Kembali ke tutorial"
+}

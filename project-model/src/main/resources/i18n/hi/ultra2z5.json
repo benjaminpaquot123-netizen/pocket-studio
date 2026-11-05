@@ -1,0 +1,15 @@
+{
+  "Copier la note": "नोट कॉपी करो",
+  "Copier ces %d notes": "ये %d नोट कॉपी करो",
+  "Supprimer la note": "नोट हटाओ",
+  "Supprimer ces %d notes": "ये %d नोट हटाओ",
+  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : son menu (copier, supprimer…). Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "खाने पर टैप: नोट जोड़ता है। नोट पर टैप: उसे चुनता है। लॉन्ग प्रेस: उसका मेन्यू (कॉपी, हटाओ…)। ड्रैग: खिसकाता है, सिरा: लंबा करता है। ऊपर के नंबर: पूरा bar। नीचे की लेन: वेलोसिटी के लिए ड्रैग करो।",
+  "%s demi-ton": "%s सेमीटोन",
+  "Régler le son (filtre, enveloppe…)": "आवाज़ सेट करो (फ़िल्टर, एनवेलप…)",
+  "Un passe-bas à %s : il garde le grave et adoucit l'aigu.": "%s पर लो-पास: बेस रखता है, ऊँची आवाज़ नरम करता है।",
+  "Un passe-bande autour de %s : il ne garde que cette zone du son.": "%s के आसपास बैंड-पास: आवाज़ का सिर्फ़ यही हिस्सा रखता है।",
+  "Un passe-haut à %s : il enlève le grave en dessous.": "%s पर हाई-पास: उससे नीचे का बेस हटाता है।",
+  "Un égaliseur : %1$s vers %2$s.": "इक्वलाइज़र: %2$s पर %1$s।",
+  "Réussi ! La couleur du morceau est choisie.": "हो गया! गाने का रंग चुन लिया गया।",
+  "Revenir au tuto": "ट्यूटोरियल पर वापस जाओ"
+}

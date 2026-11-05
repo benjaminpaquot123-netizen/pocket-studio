@@ -1,0 +1,24 @@
+# Audit ultra, tour 2 : zone 5 (tutos, synthé, notes)
+
+N° de la synthèse `tour-2/synthese.md`. « appli » = vrai défaut corrigé ; tests Robolectric ; « échoue avant » vérifié en remettant l'ancien code quand c'est écrit.
+
+| N° | Verdict | Gravité | Test | Fait | Reste |
+|---|---|---|---|---|---|
+| 22 « Lire la suite » → « Le kit Techno… 0 % » (A a 7) | appli, revient | Grave | TutoBigFontTest.theKitsCardThatComesUnderTheFinger… | Pourquoi le tour 1 n'a pas tenu : le catalogue arrive après l'ouverture du tuto (réseau, jusqu'à 25 s) ; le tour 1 a mis la carte *à la place* du panneau, donc son bouton tombe pile sous le doigt qui allait sur « Lire la suite » (le journal du siège : DOIGT tuto_kit_download). Racine : `ArrivalGuard` : ce qui remplace l'autre tout seul ne prend aucun toucher pendant 1 s ; « Plus tard » / « Télécharger » ramènent le panneau sans attente | — |
+| 22 « Lire la suite » coupe (A a 19) | pas un défaut | Mineur | — | Le texte défile par ¾ d'écran ; « mots » est suivi des mots expliqués du Mode simple, d'où « Lire la suite » encore là | Agrandir la zone de texte à 200 % (le panneau prend déjà l'écran) |
+| 23 deux « Éco… », « Précédent » en flèche (A a 43) | appli, revient | Grave | TutoBigFontTest.aChaptersLastStep… (LayoutScan CUT, échoue avant : « Écouter mon morceau » et « Écouter l'exemple » ellipsés) | Racine : la rangée « ← · 2 boutons · Suivant → » d'une étape réussie n'était testée qu'à 100 %. Elle est gardée seulement si le plus long mot de chaque bouton y tient entier (mesuré, toutes langues) ; sinon les boutons ont leur rangée et « ← Précédent / Suivant → » en mots dessous | — |
+| 23 « Encore 4 cases » sous « Partie : A » (A a 31, 38) | non reproduit sous Robolectric | Moyen | TutoBigFontTest : la ligne du tuto entière sous « Partie : A » (clap) et parcours du siège kick → Réussi → rumble (nouveau test), verts avant et après | Garde-fous en place ; la ligne dit le pad (« Rumble ») quand elle est vue | Piste : `SpotRegistry.roomBelow` ajoute la hauteur du panneau alors que la page s'arrête déjà au-dessus (bottomBar) ; à vérifier sur appareil avant de toucher |
+| 24 fiche Tonalité sans « Réussi » (A a 22) | appli | Mineur | TutoKeySheetDoneTest | « Réussi ! La couleur du morceau est choisie. » + « Revenir au tuto » | — |
+| 24 « mes. 1/1 » (A a 44) | appli | Mineur | — | « mesure 1/1 » en Mode simple (bandeau de lecture) | — |
+| 24 écran vide à « Je le fais », onglets « Mon morceau » / « Mix » | non fait | Mineur | — | — | Écran vide : route `tuto_spot_ring` capturée pendant la transition (probablement banc) ; onglets : une taille commune pour les 5 libellés (Spaces.kt, zone navigation) |
+| 25 réglages du son introuvables depuis « Options de Synthé » (B c 6) | appli | Moyen | — | « Régler le son (filtre, enveloppe…) » dans le menu d'une piste (Pro) : ouvre le synthé, amène et entoure « Réglages du son » | — |
+| 25 « Résonance 35 », Bend « 0.0 » (B c 23) | appli | Mineur | — | Valeur sans unité = « 35 % » ; Bend en demi-tons avec la virgule de la langue ; tout curseur 0-1 sans mots dit son pourcentage à TalkBack (ProSlider) | — |
+| 25 « passe-haut vers 80 Hz » sur un passe-bas à 364 Hz (B c 14) | appli | Moyen | GuideEffectWhyTest (project-model) | Racine : la fiche lisait le texte du style, pas l'effet. Un filtre est décrit tel qu'il est réglé (type, coupure) ; un égaliseur dont le texte donne des chiffres, par sa bande. Vaut aussi pour la liste des effets du Guide | — |
+| 25 clavier flottant sur les presets et « Unisson » (B c 20, 23) | appli | Moyen | FloatingKeyboardRoomTest | Le clavier qui suit a sa place sous la page (plus par-dessus) ; ce qui est « à l'écran » se mesure sur la boîte entière (pas d'aller-retour du clavier) | — |
+| 26 renommer ajoute au texte (B c 34) | appli, revient | Moyen ×2 | KeptNameFieldTest (échoue avant : « Mon son 1Pluie »), NameFieldTest | Le tour 1 n'avait couvert que `NameField` ; le « Nom du son » était un champ à part. `SelectAllTextField` partout : son gardé, Mon son, nom du morceau à partager, artiste, mesures d'une partie | — |
+| 27 grille ≈ 450 px sur 1243 (pliable, B c 66) | appli | Grave | PianoRollFoldableTest (w690dp-h829dp) | Grand écran debout trop court pour grille + clavier : la grille prend l'écran (clavier à un défilement) ; la barre du pouce s'efface sur les notes d'un grand écran (la barre du haut a les mêmes boutons) | Barre du Guide et « Mode retours » restent (une ligne chacune) |
+| 27 appui long efface sans message (B c 71) | appli | Grave | PianoRollRound2Test | Appui long = la note choisie + son menu (Copier, Dupliquer, Supprimer en mots) ; aide mise à jour | — |
+| 17 nom de piste « Synthé » (B c 46) | zone 3 | — | — | — | — |
+
+Textes nouveaux : `ultra2z5.json` dans les 14 catalogues ; l'ancienne aide du piano roll retirée de `write.json`.
+Tests lancés : voir la réponse finale.

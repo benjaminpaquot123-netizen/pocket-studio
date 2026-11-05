@@ -1,0 +1,15 @@
+{
+  "Copier la note": "Noot kopiëren",
+  "Copier ces %d notes": "Deze %d noten kopiëren",
+  "Supprimer la note": "Noot verwijderen",
+  "Supprimer ces %d notes": "Deze %d noten verwijderen",
+  "Touche une case : ajoute une note. Touche une note : la choisit. Appui long : son menu (copier, supprimer…). Glisse : déplace, le bout : allonge. Numéros en haut : toute une mesure. Couloir du bas : glisse pour régler la force.": "Tik op een vak: voegt een noot toe. Tik op een noot: selecteert die. Lang drukken: het menu ervan (kopiëren, verwijderen…). Slepen: verplaatst, het eind: verlengt. Nummers bovenaan: een hele maat. Onderste baan: sleep om de kracht te zetten.",
+  "%s demi-ton": "%s halve toon",
+  "Régler le son (filtre, enveloppe…)": "Klank instellen (filter, envelope…)",
+  "Un passe-bas à %s : il garde le grave et adoucit l'aigu.": "Een laagdoorlaat op %s: houdt het laag en maakt het hoog zachter.",
+  "Un passe-bande autour de %s : il ne garde que cette zone du son.": "Een banddoorlaat rond %s: houdt alleen dat deel van de klank.",
+  "Un passe-haut à %s : il enlève le grave en dessous.": "Een hoogdoorlaat op %s: haalt het laag eronder weg.",
+  "Un égaliseur : %1$s vers %2$s.": "Een equalizer: %1$s op %2$s.",
+  "Réussi ! La couleur du morceau est choisie.": "Gelukt! De kleur van het nummer is gekozen.",
+  "Revenir au tuto": "Terug naar de tutorial"
+}

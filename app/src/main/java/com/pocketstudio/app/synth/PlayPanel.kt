@@ -2,6 +2,7 @@ package com.pocketstudio.app.synth
 
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.i18n.trCount
+import kotlin.math.roundToInt
 
 import com.pocketstudio.ui.fadingHorizontalScroll
 import androidx.compose.foundation.horizontalScroll
@@ -53,11 +54,14 @@ fun PlayPanel(
             value = play.bend, onValueChange = actions.setBend, valueRange = -1f..1f,
             onValueChangeFinished = { actions.setBend(0f) },  // a pitch wheel springs back
             modifier = Modifier.weight(1f).testTag("bend"), label = tr("Bend"),
+            // Audit ultra round 2, n° 25 (seat B c): TalkBack said « 0.0 »; in semitones, the language's comma.
+            valueText = bendText(play.bend),
         )
     }
     val mod: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit = {
         Text(tr("Modul."), style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(52.dp))
-        ProSlider(value = play.mod, onValueChange = actions.setMod, modifier = Modifier.weight(1f).testTag("mod"), label = tr("Modul."))
+        ProSlider(value = play.mod, onValueChange = actions.setMod, modifier = Modifier.weight(1f).testTag("mod"), label = tr("Modul."),
+            valueText = com.pocketstudio.model.i18n.percent((play.mod * 100).roundToInt()))
     }
     val toggles: @Composable () -> Unit = {
         FilterChip(selected = play.sustain, onClick = { actions.setSustain(!play.sustain) }, label = { Text(tr("Sustain")) },
@@ -103,4 +107,11 @@ fun PlayPanel(
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
     }
+}
+
+/** The bend in semitones (the wheel's ±1 is ±[com.pocketstudio.app.midi.MidiViewModel.BEND_RANGE]): « 0,0 demi-ton », « +1,5 demi-ton ». */
+internal fun bendText(bend: Float): String {
+    val semis = bend * com.pocketstudio.app.midi.MidiViewModel.BEND_RANGE
+    val shown = String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", kotlin.math.abs(semis)).let { if (semis >= 0.05f) "+$it" else if (semis <= -0.05f) "−$it" else it }
+    return if (kotlin.math.abs(semis) >= 1.95f) tr("%s demi-tons", shown) else tr("%s demi-ton", shown)
 }

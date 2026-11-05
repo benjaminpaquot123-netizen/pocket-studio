@@ -157,6 +157,8 @@ class TutoKickSoundTest {
         assertEquals(before.padVoices, p().padVoices)
         // Round 1 (n° 34): the style's kit card takes the panel's place (no longer stacked on it): « Plus tard ».
         if (has("tuto_kit")) {
+            // Round 2 (n° 22): a card that came by itself takes no touch for a moment.
+            compose.mainClock.advanceTimeBy(com.pocketstudio.app.ui.ARRIVAL_GUARD_MS + 100)
             click("tuto_kit_later")
             await("the panel back") { has("tuto_mark") }
         }

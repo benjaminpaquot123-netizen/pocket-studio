@@ -763,9 +763,9 @@ object TutoChecks {
     }
 
     /**
-     * The hits of a drum role in [d]: EVERY dotted cell (the target's line over the whole loop,
-     * as « Je le fais » shows it) holds a hit, a few more tolerated (testers, 2026-10-28: the hats
-     * ticked at 7 cells of 9, the last two never made). The loop must be as long as the line first
+     * The hits of a drum role in [d], over all its pads ([lanesOf]): EVERY dotted cell (the
+     * target's line over the whole loop, as « Je le fais » shows it) holds a hit, and no other cell
+     * does (n° 34; « Montre-moi » clears the role's other pads too). The loop must be as long as the line first
      * (« Passer à 2 mesures »), in Facile as in Pro: its second bar's cells are cells to fill too.
      */
     private fun laneMatches(d: DrumPattern, lanes: Set<Int>, line: StarterWizard.Line, perBar: Int, rolls: Boolean = false): Boolean {
@@ -1234,7 +1234,17 @@ object TutoChecks {
                 val line = target.line(arg, partOf(step)) ?: return null
                 val wide = withSteps(p, line.pattern.length)
                 val lane = laneOf(arg)
-                wide.copy(drums = wide.drums.copy(lanes = wide.drums.lanes.mapIndexed { i, l -> if (i == lane) l.copy(hits = StarterWizard.hits(line, wide.drums.steps)) else l }))
+                // Relecture tour 1, M4: the check asks for no hit more on any pad of the role (Kick 2,
+                // the open hat…): their hits inside the loop go too, or « Montre-moi » never ticks.
+                val others = lanesOf(arg, target) - lane
+                val steps = wide.drums.steps
+                wide.copy(drums = wide.drums.copy(lanes = wide.drums.lanes.mapIndexed { i, l ->
+                    when (i) {
+                        lane -> l.copy(hits = StarterWizard.hits(line, steps))
+                        in others -> l.copy(hits = l.hits.filterKeys { it >= steps })
+                        else -> l
+                    }
+                }))
             }
             c == "velocity:hat" -> {
                 val line = target.line("hat") ?: return null

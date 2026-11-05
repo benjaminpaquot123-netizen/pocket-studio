@@ -79,6 +79,21 @@ class TutoCourseTest {
         assertEquals(0 to setOf(0, 10, 16, 26), TutoChecks.hint(step, target, 32))
     }
 
+    /** Relecture tour 1, M4: a stray hit on another pad of the role (Kick 2) no longer keeps « Montre-moi » from ticking. */
+    @Test
+    fun showMeClearsTheRolesOtherPads() {
+        val step = course.chapters.flatMap { it.steps }.first { it.id == "kick_do" }
+        val others = TutoChecks.lanesOf("kick", target) - TutoChecks.laneOf("kick")
+        assertTrue("the kick has a second pad here", others.isNotEmpty())
+        val p = Project(name = "").let { p ->
+            p.copy(drums = p.drums.copy(lanes = p.drums.lanes.mapIndexed { i, l -> if (i in others) l.copy(hits = mapOf(5 to Hit(1f))) else l }))
+        }
+        assertFalse(TutoChecks.done(step, p, target))
+        val shown = TutoChecks.show(step, p, target)!!
+        assertTrue(TutoChecks.done(step, shown, target))
+        assertNull(TutoChecks.toErase(step, shown, target))
+    }
+
     @Test
     fun aChangedStepWaitsForAChangeSinceItBegan() {
         val step = TutoStep("v", "", check = "changed:volumes")

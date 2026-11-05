@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -494,17 +495,18 @@ private fun PadLivePad(
             Modifier.align(Alignment.TopEnd).size(width = corner.first, height = corner.second)
                 .semantics { role = Role.Button; onClick(tr("Réglages du pad")) { settings(); true } }
                 .testTag("padlive_mode_$pad"),
-            contentAlignment = Alignment.TopEnd,
-        ) {
-            // Audit stage 1: one line that gets smaller (« przytrzymaj », « uderzenie · 1 » lost their end, word by word).
-            com.pocketstudio.ui.FitText(
-                modeWord(PadLive.modeOf(clip)) + if (clip.group > 0) " · ${clip.group}" else "",
-                // On a dark veil: readable (WCAG AA) over the pad's light top too (audit stages 1 and 5: 2.2 to 3.4:1 before).
-                Modifier.padding(top = 4.dp, end = 6.dp).clip(RoundedCornerShape(6.dp)).background(com.pocketstudio.ui.PadWordScrim)
-                    .padding(horizontal = 4.dp).testTag("padlive_word_$pad"),
-                MaterialTheme.typography.labelSmall, color = Neon.TextPrimary, min = 8.sp, textAlign = androidx.compose.ui.text.style.TextAlign.End,
-            )
-        }
+        )
+        // Audit stage 1: one line that gets smaller (« przytrzymaj », « uderzenie · 1 » lost their end, word by word).
+        // Relecture tour 1 (intégration): drawn over the pad's width, not the touch corner's alone (« coup · 1 » was « coup… »);
+        // the corner (its touch, read above) stays where it was, under the word's end.
+        com.pocketstudio.ui.FitText(
+            modeWord(PadLive.modeOf(clip)) + if (clip.group > 0) " · ${clip.group}" else "",
+            // On a dark veil: readable (WCAG AA) over the pad's light top too (audit stages 1 and 5: 2.2 to 3.4:1 before).
+            Modifier.align(Alignment.TopEnd).widthIn(max = (maxWidth - 12.dp).coerceAtLeast(corner.first))
+                .padding(top = 4.dp, end = 6.dp).clip(RoundedCornerShape(6.dp)).background(com.pocketstudio.ui.PadWordScrim)
+                .padding(horizontal = 4.dp).testTag("padlive_word_$pad"),
+            MaterialTheme.typography.labelSmall, color = Neon.TextPrimary, min = 8.sp, textAlign = androidx.compose.ui.text.style.TextAlign.End,
+        )
         }
         // A short pad (a small phone with « Plus » open): its name a little smaller, clear of the corner's word.
         BoxWithConstraints(Modifier.matchParentSize()) {

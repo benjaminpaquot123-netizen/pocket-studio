@@ -1,5 +1,5 @@
-La corde tendue, « Sire, on en a gros ! »
-- Nouvelle ouverture BenStudio : un anneau de lumière se tend autour du logo à chaque battement, les pads s'enfoncent, la poussière de lumière danse.
-- L'ouverture attend que l'appli ait fini de charger avant de bouger : plus de petit à-coup au début, et elle dure un peu plus.
-- Le son de l’appli s’ouvre bien dès le premier lancement ; journal plus précis pour les testeurs.
-- Préparation du grand audit ultra : banc d'essai renforcé, nombreuses vérifications automatiques.
+Le grand audit, premier tour : « C'est pas faux ! »
+- Streaming : le volume vise maintenant tout le morceau, comme Spotify et YouTube. Un ancien projet réexporté en Streaming sort un peu plus fort (1 à 2 dB) : c'est voulu.
+- Pad Live : les pages B à D se remplissent toutes seules et « Annuler » ne les vide plus ; un pack choisi pendant ce temps passe en premier.
+- Découpe d'une chanson : les bouts choisis ne remplacent plus Kick, Caisse et compagnie, et le projet en boucle reste une boucle.
+- Tuto, morceau et Live : nombreuses petites corrections trouvées par les testeurs.

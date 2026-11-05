@@ -106,6 +106,11 @@ class TopBarUi(
     val redo: Boolean = true,
     /** The project's mode chip (« Simple » or « Pro », owner 2026-10-29): true Simple, false Pro, null not shown. */
     val mode: Boolean? = null,
+    /**
+     * Relecture tour 1 (intégration): redo has nowhere else to be (the thumb's bar gave its room to the
+     * Guide's panel on a phone under 820 dp): it keeps its place here before the extras and the name.
+     */
+    val redoFirst: Boolean = false,
 )
 
 class TopBarActions(
@@ -148,7 +153,12 @@ data class TopBarLayout(val showRedo: Boolean, val scene: SceneChipMode, val sce
  * name), undo, record, play and share. Then, while there is room, by priority: the scene's letter, the
  * scene's section name, redo.
  */
-fun topBarLayout(width: Dp, hasScene: Boolean, modeChip: Dp? = null): TopBarLayout {
+fun topBarLayout(width: Dp, hasScene: Boolean, modeChip: Dp? = null, redoFirst: Boolean = false): TopBarLayout {
+    // Redo nowhere else ([TopBarUi.redoFirst]): its 48 dp taken first, the rest laid out as usual.
+    if (redoFirst) {
+        val plain = topBarLayout(width, hasScene, modeChip)
+        return if (plain.showRedo) plain else topBarLayout(width - BUTTON, hasScene, modeChip).copy(showRedo = true)
+    }
     // The mode chip (owner, 2026-10-29): in the row when it leaves the project's name a few letters
     // and the scene its letter; else on the name's own line above the buttons (a narrow phone).
     if (modeChip != null) {
@@ -229,7 +239,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
 ) {
     // Narrow (a small phone, a big text size): redo, then the scene's name give their room to the
     // project name; the projects button, the scene's letter and play never go.
-    val layout = topBarLayout(maxWidth, ui.scene != null, modeChip = ui.mode?.let(::modeChipRoom))
+    val layout = topBarLayout(maxWidth, ui.scene != null, modeChip = ui.mode?.let(::modeChipRoom), redoFirst = ui.redoFirst)
     val showRedo = layout.showRedo && ui.redo
     androidx.compose.foundation.layout.Column {
     // Squeezed (a small phone with a big text size): the project's name gets a line of its own

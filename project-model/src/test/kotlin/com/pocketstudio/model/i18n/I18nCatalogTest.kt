@@ -50,6 +50,8 @@ class I18nCatalogTest {
                 when (val n = s[i + 1]) {
                     'n' -> append('\n')
                     't' -> append('\t')
+                    // « Acid\u00A0303 »: a name never cut at the line's end (relecture tour 1).
+                    'u' -> if (i + 6 <= s.length) { append(s.substring(i + 2, i + 6).toInt(16).toChar()); i += 4 } else append(n)
                     else -> append(n)
                 }
                 i += 2
@@ -167,7 +169,8 @@ class I18nCatalogTest {
         val where = HashMap<String, MutableSet<Int>>()
         sources.forEachIndexed { i, text -> word.findAll(text).forEach { where.getOrPut(it.value) { HashSet() }.add(i) } }
         fun written(key: String): Boolean {
-            val forms = setOf(key, key.replace("$", "\\$"), key.replace("\"", "\\\"").replace("\n", "\\n"))
+            // « Acid\u00A0303 »: a non-breaking space is written escaped in the code.
+            val forms = setOf(key, key.replace("$", "\\$"), key.replace("\"", "\\\"").replace("\n", "\\n"), key.replace("\u00A0", "\\u00A0"))
             val words = word.findAll(key).map { it.value }.toList()
             val candidates = if (words.isEmpty()) sources.indices.toSet()
             else words.map { where[it].orEmpty() }.minByOrNull { it.size }.orEmpty()
@@ -381,6 +384,19 @@ class I18nCatalogTest {
             "I18n.kt: one",
             "I18n.kt: other",  // « Que veux-tu faire ? »: the project's style (StarterWizard.STYLES, checked by ModelTextsTest)
         )
+    }
+
+    /** Relecture tour 1 (intégration): the welcome card cut « Acid / 303 » over two lines; in every language it stays whole. */
+    @Test
+    fun theWelcomeLineKeepsAcid303Whole() {
+        val key = "Aucune note : une batterie, une Acid\u00A0303 et un synthé attendent les tiennes."
+        assertTrue(key in keys())
+        for (lang in Lang.entries) {
+            I18n.lang = lang
+            val shown = tr(key)
+            assertTrue("$lang: $shown", "Acid\u00A0303" in shown && "Acid 303" !in shown)
+        }
+        I18n.lang = Lang.FR
     }
 
     @Test

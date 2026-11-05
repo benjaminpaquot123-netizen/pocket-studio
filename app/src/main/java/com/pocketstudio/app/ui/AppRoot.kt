@@ -1924,6 +1924,9 @@ fun AppRoot() {
     // (§3.1); lying down, its panel opens on the side ([guideSide]).
     val guideShown = !showLive && !liveImmersive && !showTimeline && !showLivePads && !guideQuietRec && !guideQuietTaking && !(landscape && tab == AppTab.Synthe)
     val guideSide = guideShown && guideOpen && landscape
+    // The thumb's bar shown (see its place in the bottom bar); relecture tour 1: when it is not, the top bar keeps « Rétablir ».
+    val thumbBarUp = !landscape && !liveImmersive && !showTimeline && !showLivePads && !showLive &&
+        thumbBarFits(LocalConfiguration.current.screenHeightDp, LocalConfiguration.current.fontScale, guideShown && !guideSide && tutoUi == null && guideOpen)
     LaunchedEffect(guideQuietRec, guideQuietTaking, showLive, guideQuietPlaying) {
         if (guideQuietRec || guideQuietTaking || showLive || guideQuietPlaying) {
             guideListen.stop()
@@ -2167,6 +2170,9 @@ fun AppRoot() {
                     // Audit ultra round 1 (n° 26): the Mode simple too, once ↶ was used (« Rétablir » was nowhere).
                     redo = !simple || (topRedo && undoable),
                     mode = simple,
+                    // Relecture tour 1 (intégration): no thumb's bar (the Guide's panel open on a phone under 820 dp):
+                    // « Rétablir » keeps its place here, in Simple as in Pro, once there is something to redo.
+                    redoFirst = !thumbBarUp && topRedo && undoable,
                     saved = saveError == null && !topUnsaved,
                     recordInto = topRecordInto?.let { topProject.sceneTitle(it) },
                 ),
@@ -2382,8 +2388,7 @@ fun AppRoot() {
                 // bar keeps them); upright only (lying down the phone is held with two hands) and on a screen tall enough.
                 // Round 1 integration: under the Guide's open panel (40 % of the height) on a short phone, the bar gives its
                 // room to the page (with both, a 780 dp phone's timeline lost the row the key actions reach in one gesture).
-                val guidePanelUp = guideShown && !guideSide && tutoNow == null && guideOpen
-                if (!landscape && !liveImmersive && !showTimeline && !showLivePads && !showLive && thumbBarFits(LocalConfiguration.current.screenHeightDp, LocalConfiguration.current.fontScale, guidePanelUp)) {
+                if (thumbBarUp) {
                     val thumbProject by rhythmVm.project.collectAsStateWithLifecycle()
                     val thumbTransport by rhythmVm.transport.collectAsStateWithLifecycle()
                     val thumbUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()

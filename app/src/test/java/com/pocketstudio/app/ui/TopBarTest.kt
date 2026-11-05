@@ -109,6 +109,26 @@ class TopBarTest {
         assertEquals(1, renamed)
     }
 
+    /**
+     * Relecture tour 1 (intégration): the Mode simple on a phone under 820 dp with the Guide's panel open (no thumb's
+     * bar): « Rétablir » was nowhere. With nowhere else to be, it keeps its place in the bar, the essentials too.
+     */
+    @Test
+    fun redoWithNowhereElseKeepsItsPlace() {
+        for (w in listOf(360, 392, 412)) assertTrue("$w dp", topBarLayout(w.dp, false, modeChipRoom(true), redoFirst = true).showRedo)
+        compose.setContent {
+            PocketStudioTheme {
+                Box(Modifier.width(360.dp)) {
+                    TopBar(TopBarUi("Mon morceau de dubstep", playing = false, canUndo = true, canRedo = true, mode = true, redoFirst = true), TopBarActions())
+                }
+            }
+        }
+        compose.onNodeWithTag("top_redo").assertIsDisplayed()
+        for (tag in listOf("top_projects", "top_undo", "top_record", "top_play", "top_share")) compose.onNodeWithTag(tag).assertIsDisplayed()
+        val share = compose.onNodeWithTag("top_share").getBoundsInRoot()
+        assertTrue("share ends at ${share.right}", share.right <= 360.dp + 0.5.dp)
+    }
+
     @Test
     fun theLayoutGivesUpExtrasBeforeTheEssentials() {
         // Every width from a tiny phone to a tablet: what is shown never overflows the bar.

@@ -351,7 +351,29 @@ data class ExportUi(
     /** Lot E: the song's parts and bars (« Plage exportée »). */
     val parts: Int = 0,
     val songBars: Int = 0,
+    /** Audit ultra round 3 (n° 13): the name typed in « Prêt à partager ? » for this file (the project keeps its own); null: the project's. */
+    val fileTitle: String? = null,
+    /** Audit ultra round 3 (n° 12, seat F d 48): the project the files were made from ([madeHash]); null: no files. */
+    val madeFrom: Int? = null,
 ) {
+    /**
+     * Audit ultra round 3 (n° 11): these settings with the result of [earlier] (its files still there, its report):
+     * a cancelled run gives back what the one before it made.
+     */
+    fun withResultOf(earlier: ExportUi): ExportUi {
+        val kept = earlier.files.filter { it.exists() }
+        if (kept.isEmpty()) return this
+        return copy(
+            files = kept, savedInMusic = earlier.savedInMusic, reportInDocuments = earlier.reportInDocuments, loudness = earlier.loudness,
+            truePeakDb = earlier.truePeakDb, seconds = earlier.seconds, lossDb = earlier.lossDb, decodedPeakDb = earlier.decodedPeakDb,
+            writtenRate = earlier.writtenRate, writtenBits = earlier.writtenBits, writtenFormat = earlier.writtenFormat, proReport = earlier.proReport,
+            targetLufs = earlier.targetLufs, targetChoice = earlier.targetChoice, targetWholeSong = earlier.targetWholeSong, madeFrom = earlier.madeFrom,
+        )
+    }
+
+    /** Audit ultra round 3 (n° 12): the files were made from another state of the project than [now]: never offered to share as they are. */
+    fun staleFor(now: Project): Boolean = files.isNotEmpty() && madeFrom != null && madeFrom != madeHash(now)
+
     val file: File? get() = files.firstOrNull()
 
     /** The end-of-export report in plain words (phase 38), for the mix (null for separate tracks). */
@@ -372,11 +394,13 @@ data class ExportUi(
 
     /**
      * These settings for a scene [sceneBars] long whose audio clips and remix end on bar [audioBars]:
-     * the longer of the two is the default (a remix is exported to its end, not cut after the scene).
+     * the loop « Partager » sends is the default (audit ultra round 3, n° 14, seats A d 3, F d 7: Mix said
+     * « 1 mesure » where « Prêt à partager ? » said 8 bars, 0:16): the scene repeated up to 8 bars, or up to
+     * where the audio clips and the remix end ([com.pocketstudio.app.export.ShareSong.loopBars]).
      */
     fun forScene(sceneBars: Int, audioBars: Int = 0): ExportUi = copy(
         sceneBars = sceneBars, audioBars = audioBars,
-        bars = if (barsChosen) bars else maxOf(sceneBars, audioBars.coerceAtMost(RhythmViewModel.MAX_LONG_EXPORT_BARS)),
+        bars = if (barsChosen) bars else com.pocketstudio.app.export.ShareSong.loopBars(sceneBars, audioBars),
     )
 
     /** These settings for a project: the scene's length, the song if there is one, the fade that goes with it. */
@@ -408,6 +432,9 @@ data class ExportUi(
 
     companion object {
         fun defaultFade(what: ExportWhat) = if (what == ExportWhat.Song) ExportFade.Short else ExportFade.None
+
+        /** What [madeFrom] keeps of a project: all that is heard (its name only names the file). */
+        fun madeHash(p: Project): Int = p.copy(name = "").hashCode()
     }
 }
 
@@ -10632,7 +10659,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * (or WAV, as « Prêt à partager ? » chose), with a short fade, then the share sheet. The
      * export card's own choices stay as they were.
      */
-    fun shareSong(format: ExportFormat = ExportFormat.M4a) {
+    fun shareSong(format: ExportFormat = ExportFormat.M4a, title: String? = null) {
         val p = project.value
         // Testers (lot « tuto 5 »): « Partager » touched twice in a row makes one song, one share menu.
         if (_export.value.running || exportJobLive || shareWaiting) return
@@ -10643,14 +10670,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // A take just stopped may still be being written: the song waits for it.
         shareWaiting = true
         viewModelScope.launch {
-            try { shareAfterTake(format) } finally { shareWaiting = false }
+            try { shareAfterTake(format, title) } finally { shareWaiting = false }
         }
     }
 
     /** « Partager mon morceau » waiting for a take being written (one at a time, see [shareSong]). */
     private var shareWaiting = false
 
-    private suspend fun shareAfterTake(format: ExportFormat) {
+    private suspend fun shareAfterTake(format: ExportFormat, title: String? = null) {
         if (_takeSaving.value) {
             _export.value = _export.value.copy(sharing = true, running = true, progress = 0f, stage = tr("Écriture de la prise…"), error = null, files = emptyList())
             takeJob?.join()
@@ -10663,7 +10690,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
         val now = project.value
-        startExport(com.pocketstudio.app.export.ShareSong.settings(now.song.isNotEmpty(), sceneBars(now), exportEnd(now), format), share = true)
+        startExport(com.pocketstudio.app.export.ShareSong.settings(now.song.isNotEmpty(), sceneBars(now), exportEnd(now), format).copy(fileTitle = title), share = true)
     }
 
     /** Closes the « Partager mon morceau » window after an error. */
@@ -10710,6 +10737,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             if (soloChannel != null) NativeEngine.setLoudnessTarget(null)
             // The Live page's own sounds (riser, build-up noise): only in the « Effets live » file.
             if (soloChannel != null) NativeEngine.setLiveNoises(if (soloChannel == LIVE_FX_STEM) NativeEngine.LIVE_NOISES_ONLY else NativeEngine.LIVE_NOISES_OFF)
+            // Audit ultra round 3 (n° 12): a remix stem's file is the remix strip with that stem alone.
+            val stem = remixStemOf(soloChannel)
+            if (stem != null) {
+                val alone = p.copy(remix = p.remix.copy(stems = p.remix.stems.mapIndexed { i, s -> s.copy(mute = i != stem, solo = false) }))
+                describeInto(job, alone, song, Remix.STRIP, limited, masterFx)
+                if (dry) NativeEngine.captureInto(job) { NativeEngine.setStemMode(NativeEngine.STEM_DRY) }
+                return
+            }
             // Lot E: a project's own ceiling and limiter (Master pro), as live.
             pushMasterPro(p)
             if (soloChannel != null && soloChannel != LIVE_FX_STEM && returnStemBus(soloChannel) == null) {
@@ -11048,7 +11083,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         exportCancelled = false
         val app = getApplication<Application>()
-        val p = project.value
+        val made = project.value
+        // Audit ultra round 3 (n° 13): a version's own name (typed when sharing) names the file and its tags, not the project.
+        val p = settings.fileTitle?.trim()?.takeIf { it.isNotEmpty() }?.let { made.copy(name = it) } ?: made
         // The card keeps its own choices; only the run's state (progress, files, error) is shown.
         val shown = _export.value.copy(sharing = share)
         val song = settings.what == ExportWhat.Song || (settings.what == ExportWhat.Stems && p.song.isNotEmpty())
@@ -11099,6 +11136,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val m4aCeiling = ceilingDb + (AacEncoder.CEILING_DBTP - MASTER_CEILING_DBTP)
             // Stems wait for one length (the longest), then are packed.
             val held = ArrayList<HeldStem>()
+        // Audit ultra round 3 (n° 11, seat A d 57): the last result, given back if this run is cancelled (« Sauvegardé dans… » vanished).
+        val before = _export.value
             var proReport: com.pocketstudio.engine.ExportReport? = null
             try {
                 // Just after the project opened, its sounds, banks and song may still be loading: the
@@ -11313,7 +11352,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, reportInDocuments = reportOk, stage = null, loudness = loudness,
                     truePeakDb = truePeak, seconds = seconds, lossDb = loss, decodedPeakDb = decodedPeak, writtenRate = writtenRate,
-                    writtenBits = writtenBits, writtenFormat = settings.format, sharing = false, proReport = proReport,
+                    writtenBits = writtenBits, writtenFormat = settings.format, sharing = false, proReport = proReport, madeFrom = ExportUi.madeHash(made),
                     targetLufs = com.pocketstudio.model.LoudnessTargets.of(p)?.toDouble(),
                     targetChoice = com.pocketstudio.model.LoudnessTargets.choiceOf(p.mixer),
                     targetWholeSong = com.pocketstudio.model.LoudnessTargets.wholeSong(p.mixer) || p.mixVersion < Project.MIX_V2)
@@ -11325,7 +11364,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             } catch (e: kotlinx.coroutines.CancellationException) {
                 done.forEach { it.delete() }
                 held.forEach { it.wav.delete() }
-                _export.value = _export.value.copy(running = false, files = emptyList(), stage = null, sharing = false)
+                _export.value = _export.value.copy(running = false, files = emptyList(), stage = null, sharing = false).withResultOf(before)
             } catch (e: Exception) {
                 done.forEach { it.delete() }
                 held.forEach { it.wav.delete() }
@@ -11584,7 +11623,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         internal fun fileWord(label: String): String =
             if (label in FILE_WORDS && com.pocketstudio.model.i18n.I18n.lang != com.pocketstudio.model.i18n.Lang.FR) stageName(label).lowercase(java.util.Locale.ROOT) else label
 
-        private val FILE_WORDS = setOf("morceau", "boucle", "batterie", "acide", "synthe", LIVE_FX_STEM_LABEL, "reverbe", "echo")
+        private val FILE_WORDS = setOf("morceau", "boucle", "batterie", "acide", "synthe", LIVE_FX_STEM_LABEL, "reverbe", "echo") + REMIX_STEM_LABELS.values
 
         /** An export file's label ("batterie", "piste2-basse"…) as the progress line shows it. */
         private fun stageName(label: String): String = when (label) {
@@ -11596,7 +11635,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             LIVE_FX_STEM_LABEL -> tr("Effets live")
             "reverbe" -> tr("Réverbe")
             "echo" -> tr("Écho")
-            else -> label.replaceFirstChar { it.uppercase() }
+            // Audit ultra round 3 (n° 12): « Remix · Voix », said and named in the language of the app.
+            else -> REMIX_STEM_LABELS.entries.firstOrNull { it.value == label }?.let { tr("Remix · %s", com.pocketstudio.app.remix.StemRouting.stemLabel(it.key)) }
+                ?: label.replaceFirstChar { it.uppercase() }
         }
         private const val OVERVIEW_BUCKETS = 400
         /** Insert "channel" index of the master. */

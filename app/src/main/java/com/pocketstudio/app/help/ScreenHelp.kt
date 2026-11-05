@@ -95,7 +95,7 @@ object ScreenHelp {
         Help(
             tr("Volume visé"),
             tr(
-                "Le volume visé, en LUFS : plus près de 0, plus fort. Une seule cible pour toute l'appli. Auto (%1\$s LUFS, le volume de ton style) et Club (%2\$s LUFS) se mesurent sur le Drop ; Streaming (−14 LUFS, Spotify et YouTube), Apple Music (−16) et Libre sur tout le morceau. Si le son devait s'écraser, l'appli s'arrête avant et te le dit.",
+                "Le volume visé, en LUFS : plus près de 0, plus fort. Une cible par projet, la même dans Mix et au partage. Auto (%1\$s LUFS, ton style) et Club (%2\$s LUFS) se mesurent sur le passage le plus fort ; Streaming (−14 LUFS), Apple Music (−16) et Libre sur tout le morceau. Si le son devait s'écraser, l'appli s'arrête avant et le dit.",
                 t.formatTarget(styleLufs), t.formatTarget(t.clubLufs(styleLufs)),
             ),
         )

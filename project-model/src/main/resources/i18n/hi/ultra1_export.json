@@ -15,10 +15,7 @@
   "Enregistrer ce que je joue au clavier": "कीबोर्ड पर जो बजाऊँ उसे रिकॉर्ड करो",
   "Enregistrer ce que je joue aux pads": "पैड पर जो बजाऊँ उसे रिकॉर्ड करो",
   "Enregistrer ce que je joue sur la 303": "303 पर जो बजाऊँ उसे रिकॉर्ड करो",
-  "Fort, comme en club (%s LUFS), mesuré sur le Drop. La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.": "ज़ोरदार, जैसे क्लब में (%s LUFS), ड्रॉप पर मापी जाती है। आउटपुट धीरे-धीरे बढ़कर वहाँ पहुँचता है; एक्सपोर्ट आवाज़ को दबाए बिना जितना हो सके पास आता है।",
-  "La cible se mesure sur le Drop (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "लक्ष्य ड्रॉप पर मापा जाता है (%1$s LUFS); शांत हिस्सों समेत पूरा गाना %2$s LUFS है।",
   "Le micro : ta voix, une guitare, un instrument": "माइक: तुम्हारी आवाज़, गिटार, कोई वाद्य",
-  "Le volume des morceaux de ce style (%s LUFS), mesuré sur le Drop. La sortie monte ou baisse doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.": "इस स्टाइल के गानों की लाउडनेस (%s LUFS), ड्रॉप पर मापी जाती है। आउटपुट धीरे-धीरे ऊपर या नीचे जाकर वहाँ पहुँचता है; एक्सपोर्ट आवाज़ को दबाए बिना जितना हो सके पास आता है।",
   "Les pads (la batterie)": "पैड (ड्रम)",
   "Que veux-tu enregistrer ?": "क्या रिकॉर्ड करना है?",
   "Relâchement : %1$d ms (%2$d ms après une crête brève)": "रिलीज़: %1$d ms (छोटे पीक के बाद %2$d ms)",
@@ -36,8 +33,5 @@
   "Pas copié dans Musique › BenStudio : touche « Partager » pour l'envoyer ou l'enregistrer (%s).": "Music › BenStudio में कॉपी नहीं हुआ: भेजने या सेव करने के लिए “शेयर करो” दबाओ (%s)।",
   "Rapport dans Documents › BenStudio : %s": "रिपोर्ट Documents › BenStudio में: %s",
   "Fabrication du son": "साउंड बन रहा है",
-  "Volume visé : %s (se règle dans Mix)": "टारगेट लाउडनेस: %s (मिक्स में सेट होता है)",
-  "Auto (%s)": "ऑटो (%s)",
-  "Fort, comme en club (%s LUFS), mesuré sur le Drop. Ton style sonne déjà aussi fort : ici, Club et Auto visent le même volume.": "ज़ोरदार, जैसे क्लब में (%s LUFS), ड्रॉप पर मापी जाती है। तुम्हारी स्टाइल पहले से इतनी तेज़ है: यहाँ क्लब और ऑटो एक ही लाउडनेस पर निशाना रखते हैं।",
-  "Le volume visé, en LUFS : plus près de 0, plus fort. Une seule cible pour toute l'appli. Auto (%1$s LUFS, le volume de ton style) et Club (%2$s LUFS) se mesurent sur le Drop ; Streaming (−14 LUFS, Spotify et YouTube), Apple Music (−16) et Libre sur tout le morceau. Si le son devait s'écraser, l'appli s'arrête avant et te le dit.": "लक्ष्य लाउडनेस, LUFS में: 0 के जितना पास, उतना तेज़। पूरी ऐप के लिए एक ही लक्ष्य। ऑटो (%1$s LUFS, तुम्हारी स्टाइल की लाउडनेस) और क्लब (%2$s LUFS) ड्रॉप पर मापे जाते हैं; स्ट्रीमिंग (−14 LUFS, Spotify और YouTube), Apple Music (−16) और फ़्री पूरे गाने पर। अगर आवाज़ दबने लगे, तो ऐप पहले ही रुककर तुम्हें बताती है।"
+  "Auto (%s)": "ऑटो (%s)"
 }

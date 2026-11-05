@@ -15,7 +15,5 @@
   "Volume : —": "Volume: —",
   "Volume %1$s · %2$s": "Volume %1$s · %2$s",
   "Détails": "Detalhes",
-  "Masquer les détails": "Esconder os detalhes",
-  "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le Drop perd de son punch.": "Para soar tão alto, os picos são achatados em %s dB: é muito, o Drop perde punch.",
-  "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le Drop garde son punch).": "Para soar tão alto, os picos são achatados em %s dB (no máximo 3: o Drop mantém o punch)."
+  "Masquer les détails": "Esconder os detalhes"
 }

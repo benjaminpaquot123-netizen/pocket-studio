@@ -283,6 +283,19 @@ data class ExportSummary(
         else -> tr("%1\$s, %2\$s kHz, %3\$d bits", format, if (sampleRate == 44100) "44,1" else "48", bits)
     }
 
+    /**
+     * Audit ultra round 3 (n° 14, seats A c 47, C c 46, D c 60): the report in everyday words for the Mode simple,
+     * no LUFS, dBTP, kHz or kb/s: how long, how loud, whether it may crackle, what kind of file.
+     */
+    fun plainLines(): List<String> = listOfNotNull(
+        durationLine(), levelLine(),
+        truePeakDb?.takeIf { it > -100.0 }?.let { if (saturates) tr("Trop fort par endroits : ça risque de grésiller.") else tr("Pas de saturation.") },
+        when (format) {
+            "M4A" -> tr("Fichier M4A : léger, lu par tous les appareils.")
+            else -> tr("Fichier %s : qualité studio.", format)
+        },
+    )
+
     fun verdict(): String = when {
         ready -> tr("Prêt à partager")
         saturates -> tr("À revoir : baisse un peu le volume général avant de partager")

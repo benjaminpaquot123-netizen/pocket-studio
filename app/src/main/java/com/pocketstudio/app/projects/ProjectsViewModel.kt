@@ -198,13 +198,16 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** The project and its sounds as a .zip in the export folder; [then] gets the file (to share it). [saveFirst]: see [duplicate]. */
-    fun exportZip(info: ProjectInfo, saveFirst: suspend () -> Boolean = { true }, then: (File) -> Unit) = io(tr("Export du projet")) {
+    fun exportZip(info: ProjectInfo, saveFirst: suspend () -> Boolean = { true }, then: (File) -> Unit) = exportZip(info.id, info.name, saveFirst, then = then)
+
+    /** [exportZip] by the project's [id] and [name] (audit ultra round 3, n° 13: from « Prêt à partager ? », the open project). */
+    fun exportZip(id: String, name: String, saveFirst: suspend () -> Boolean = { true }, failed: (String) -> Unit = {}, then: (File) -> Unit) = io(tr("Export du projet"), failed) {
         if (!saved(saveFirst)) return@io
         val app = getApplication<Application>()
         // Dated like the audio exports (old ones cleaned): a share still reading an earlier export is never overwritten.
-        val file = com.pocketstudio.app.export.WavExporter.newFile(app, com.pocketstudio.model.DefaultNames.shown(info.name).ifBlank { "projet" })
+        val file = com.pocketstudio.app.export.WavExporter.newFile(app, com.pocketstudio.model.DefaultNames.shown(name).ifBlank { "projet" })
             .let { File(it.parentFile, it.name.removeSuffix(".wav") + ".pocketstudio.zip") }
-        val missing = file.outputStream().use { catalog.exportZip(info.id, it) }
+        val missing = file.outputStream().use { catalog.exportZip(id, it) }
         AppLog.add("Projet exporté : ${file.length() / 1024} Ko, sons absents : $missing")
         if (missing > 0) _state.value = _state.value.copy(message = tr("%d son(s) du projet ne sont plus sur l'appareil : le .zip part sans eux.", missing), messageOk = false)
         withContext(Dispatchers.Main) { then(file) }

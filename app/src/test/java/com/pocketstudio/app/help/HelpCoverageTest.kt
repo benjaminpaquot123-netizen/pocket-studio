@@ -358,7 +358,7 @@ class HelpCoverageTest {
         }
         check(
             "Partager", listOf("share_"),
-            listOf("share_close", "share_name", "share_listen", "share_video", "share_other", "share_go", "share_fix_*"),
+            listOf("share_close", "share_name", "share_listen", "share_video", "share_other", "share_go", "share_fix_*", "share_project", "share_my_exports"),
             must = listOf("share_format_M4a", "share_format_Wav", "share_details"),
         )
     }

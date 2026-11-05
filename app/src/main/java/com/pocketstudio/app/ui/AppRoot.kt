@@ -436,7 +436,7 @@ fun AppRoot() {
     var layersTrack by rememberSaveable { mutableStateOf<Int?>(null) }
     var songChordsOpen by rememberSaveable { mutableStateOf(false) }
     val shareSong: () -> Unit = { showShare = true }
-    com.pocketstudio.app.export.ShareSongProgress(rhythmVm, wav = sharePrefs.format == com.pocketstudio.app.rhythm.ExportFormat.Wav)
+    com.pocketstudio.app.export.ShareSongProgress(rhythmVm, wav = sharePrefs.format == com.pocketstudio.app.rhythm.ExportFormat.Wav, simple = simple)
     val projectsVm: ProjectsViewModel = viewModel()
     val pickProjectZip = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) projectsVm.importZip(uri)
@@ -1725,6 +1725,7 @@ fun AppRoot() {
     if (showVideo) com.pocketstudio.app.export.video.VideoExportRoute(rhythmVm, close = { showVideo = false })
     // The timeline (in Structure or on the whole screen): two touches on a clip open its editor on
     // that part (the track's scene there, in Sons); a curve opens in Mix.
+            sendProject = rememberSendProject(rhythmVm),
     val openFromTimeline: (Int, String) -> Unit = { i, key ->
         val part = rhythmVm.project.value.song.getOrNull(i)
         if (part != null) {
@@ -3163,6 +3164,12 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 buses = project.mixer.buses,
                                 // Tutorial testers (lot « tuto 4 », b/139): no silent « Basse acide » strip in the tutorial's project.
                                 strips = mixerStrips(project).let { all ->
+                                // Audit ultra round 3 (n° 12): a file made before the song changed is not offered; the tracks without a file said.
+                                exportStale = remember(export, project) { export.staleFor(project) },
+                                stemSkips = remember(project, export.what) {
+                                    if (export.what != com.pocketstudio.app.rhythm.ExportWhat.Stems) emptyList()
+                                    else com.pocketstudio.app.rhythm.stemSkips(project, project.song.isNotEmpty(), mixerStrips(project).associate { it.ch to com.pocketstudio.model.DefaultNames.shown(it.name) })
+                                },
                                     if (tutoUi != null && project.allScenes.none { s -> s.acid.steps.take(s.acid.length.coerceAtLeast(0)).any { it.gate } }) all.filter { it.ch != com.pocketstudio.model.AutoTarget.ACID_CHANNEL } else all
                                 },
                                 // Step 5a: the song's four stems under the console (its strip is the group fader).
@@ -3743,6 +3750,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
             // Audit final: lying down, the Guide's panel on the side (the screen keeps its height), not half of it under.
             if (guideSide) {
                 val sideUi by guideVm.ui.collectAsStateWithLifecycle()
+                                sendProject = rememberSendProject(rhythmVm),
                 val sideListening by guideListen.state.collectAsStateWithLifecycle()
                 com.pocketstudio.app.guide.GuidePanel(
                     sideUi, guideSelected, sideListening, guideNotice, guideActions, height = null,
@@ -3905,6 +3913,25 @@ fun effectsActions(vm: RhythmViewModel): MixerActions = MixerActions(
     moveInsert = vm::moveInsert,
     kindOf = { ch -> vm.project.value.soundKindOf(ch) },
     longFxCount = { type -> vm.project.value.mixer.longFxCount(type) },
+/**
+ * Audit ultra round 3 (n° 13, seat F d 22, 61): « Envoyer le projet » from « Prêt à partager ? »: the open project
+ * saved, then packed with its sounds (.zip) and given to Android's share menu, as Mes projets › ⋯ does.
+ */
+@Composable
+fun rememberSendProject(rhythmVm: RhythmViewModel): () -> Unit {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val projectsVm: com.pocketstudio.app.projects.ProjectsViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    return remember(rhythmVm, projectsVm) {
+        {
+            val p = rhythmVm.project.value
+            projectsVm.exportZip(rhythmVm.projectId, p.name, saveFirst = { rhythmVm.flushNow() },
+                failed = { android.widget.Toast.makeText(context, it, android.widget.Toast.LENGTH_LONG).show() }) { file ->
+                WavExporter.share(context, listOf(file), tr("Envoyer le projet"))
+            }
+        }
+    }
+}
+
     cpuBusy = vm.cpuBusy,
     setInsertScenes = vm::setInsertScenes,
     scenes = vm.sceneLabels,

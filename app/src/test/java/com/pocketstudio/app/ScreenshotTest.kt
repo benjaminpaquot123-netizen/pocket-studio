@@ -1821,8 +1821,8 @@ open class ScreenshotTest {
                     com.pocketstudio.app.export.ShareCheck.Saturation,
                 ),
                 playing = true,
-                // Audit ultra round 2 (n° 10): the target the file aims at (Pro).
-                target = "Club · −8 LUFS",
+                // Audit ultra round 3 (n° 10): the target chosen where the song leaves (Pro).
+                target = com.pocketstudio.app.mixer.TargetPick(com.pocketstudio.model.TargetChoice.CLUB, styleLufs = -8f),
             ),
             com.pocketstudio.app.export.ShareSheetActions(),
             Modifier.background(Neon.Surface).padding(top = 16.dp),

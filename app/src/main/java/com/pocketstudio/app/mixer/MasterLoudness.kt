@@ -106,14 +106,64 @@ internal val TARGET_CHOICES = listOf(TargetChoice.AUTO, TargetChoice.CLUB, Targe
 internal fun targetHint(choice: TargetChoice, lufs: Float?, styleLufs: Float? = null): String {
     val v = LoudnessTargets.formatTarget(lufs ?: 0f)
     return when (choice) {
-        TargetChoice.AUTO -> tr("Le volume des morceaux de ce style (%s LUFS), mesuré sur le Drop. La sortie monte ou baisse doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.", v)
+        TargetChoice.AUTO -> tr("Le volume des morceaux de ce style (%s LUFS), mesuré sur le passage le plus fort. La sortie monte ou baisse doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.", v)
         TargetChoice.CLUB -> if (styleLufs != null && lufs == styleLufs)
-            tr("Fort, comme en club (%s LUFS), mesuré sur le Drop. Ton style sonne déjà aussi fort : ici, Club et Auto visent le même volume.", v)
-        else tr("Fort, comme en club (%s LUFS), mesuré sur le Drop. La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.", v)
+            tr("Fort, comme en club (%s LUFS), mesuré sur le passage le plus fort. Ton style sonne déjà aussi fort : ici, Club et Auto visent le même volume.", v)
+        else tr("Fort, comme en club (%s LUFS), mesuré sur le passage le plus fort. La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.", v)
         TargetChoice.STREAMING -> tr("%s LUFS sur tout le morceau : le volume où Spotify et YouTube ramènent tous les morceaux.", v)
         TargetChoice.APPLE -> tr("%s LUFS sur tout le morceau : le volume où Apple Music ramène les morceaux.", v)
         TargetChoice.FREE -> tr("%s LUFS sur tout le morceau, la valeur que tu choisis.", v)
         TargetChoice.OFF -> tr("Le volume reste celui que tu règles ; la sortie est seulement protégée contre la saturation.")
+    }
+}
+
+/**
+ * Audit ultra round 3 (n° 10, seats A d 3-4, F b 26): « Volume visé » where the song is exported (« Prêt à
+ * partager ? », the export card), the project's one target, the same as in Mix: [choice] as it is set,
+ * [styleLufs] what « Auto » aims at, [freeLufs] the free value, [styleName] the style shown.
+ */
+data class TargetPick(val choice: TargetChoice, val styleLufs: Float = LoudnessTargets.DEFAULT_LUFS, val freeLufs: Float? = null, val styleName: String? = null) {
+    companion object {
+        /** The project's target as Mix shows it. */
+        fun of(p: com.pocketstudio.model.Project): TargetPick = TargetPick(
+            LoudnessTargets.choiceOf(p.mixer), LoudnessTargets.forStyle(p.style, p.mixVersion), p.mixer.pro?.targetLufs, shownStyleName(p.style),
+        )
+    }
+}
+
+/** The chips offered where one exports: the common targets, and the one set in Mix when it is another (Apple Music, Libre). */
+internal fun quickTargets(choice: TargetChoice): List<TargetChoice> =
+    QUICK_TARGETS.let { if (choice in it) it else it.dropLast(1) + choice + it.last() }
+
+private val QUICK_TARGETS = listOf(TargetChoice.STREAMING, TargetChoice.CLUB, TargetChoice.AUTO, TargetChoice.OFF)
+
+/**
+ * « Volume visé » in short, where one exports: its chips (tagged « [tag]_<choice> ») and what the one chosen
+ * does. Choosing changes the project's target, the one of Mix ([MasterLoudnessPanel]): one setting, never two.
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun TargetPicker(pick: TargetPick, choose: (TargetChoice) -> Unit, tag: String, enabled: Boolean = true, note: String? = null) {
+    Column(Modifier.testTag(tag), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        WithHelp(
+            if (pick.styleLufs == LoudnessTargets.DEFAULT_LUFS) com.pocketstudio.app.help.ScreenHelp.MASTER_TARGET else com.pocketstudio.app.help.ScreenHelp.masterTarget(pick.styleLufs),
+            about = listOf("${tag}_*"),
+        ) {
+            Text(tr("Volume visé"), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f, fill = false))
+        }
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            quickTargets(pick.choice).forEach { c ->
+                FilterChip(
+                    selected = pick.choice == c, onClick = { if (c != pick.choice) choose(c) }, enabled = enabled,
+                    label = { Text(targetChipLabel(c, LoudnessTargets.shown(c, pick.styleLufs, pick.freeLufs), pick.styleName)) },
+                    colors = pillColors(Neon.Cyan), modifier = Modifier.testTag("${tag}_${c.name}"),
+                )
+            }
+        }
+        Text(
+            listOfNotNull(targetHint(pick.choice, LoudnessTargets.shown(pick.choice, pick.styleLufs, pick.freeLufs), pick.styleLufs), note).joinToString(" "),
+            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("${tag}_hint"),
+        )
     }
 }
 
@@ -224,8 +274,8 @@ internal fun LossLine(lossDb: Double, modifier: Modifier = Modifier) {
 
 /** « Pour sonner aussi fort, les crêtes sont tassées de 2,1 dB (3 au plus, le Drop garde son punch). » */
 internal fun lossText(lossDb: Double): String =
-    if (lossDb > 3.05) tr("Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le Drop perd de son punch.", LoudnessTargets.format(lossDb))
-    else tr("Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le Drop garde son punch).", LoudnessTargets.format(lossDb))
+    if (lossDb > 3.05) tr("Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le son perd de son punch.", LoudnessTargets.format(lossDb))
+    else tr("Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le son garde son punch).", LoudnessTargets.format(lossDb))
 
 /** "3 min 12 s" (or "48 s"). */
 internal fun durationText(seconds: Double): String {

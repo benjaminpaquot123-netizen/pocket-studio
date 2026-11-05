@@ -15,7 +15,5 @@
   "Volume : —": "المستوى: —",
   "Volume %1$s · %2$s": "المستوى %1$s · %2$s",
   "Détails": "التفاصيل",
-  "Masquer les détails": "إخفاء التفاصيل",
-  "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le Drop perd de son punch.": "ليبدو بهذا العلوّ، تُضغط الذروات بـ%s dB: هذا كثير، الـDrop يفقد قوته.",
-  "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le Drop garde son punch).": "ليبدو بهذا العلوّ، تُضغط الذروات بـ%s dB (3 كحد أقصى: الـDrop يحافظ على قوته)."
+  "Masquer les détails": "إخفاء التفاصيل"
 }

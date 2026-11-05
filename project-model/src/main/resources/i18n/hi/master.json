@@ -15,7 +15,5 @@
   "Volume : —": "वॉल्यूम: —",
   "Volume %1$s · %2$s": "वॉल्यूम %1$s · %2$s",
   "Détails": "डिटेल्स",
-  "Masquer les détails": "डिटेल्स छिपाओ",
-  "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le Drop perd de son punch.": "इतना तेज़ बजाने के लिए पीक्स %s dB दबाई गई हैं: ये बहुत है, Drop का punch कम हो जाता है।",
-  "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le Drop garde son punch).": "इतना तेज़ बजाने के लिए पीक्स %s dB दबाई गई हैं (ज़्यादा से ज़्यादा 3: Drop का punch बना रहता है)।"
+  "Masquer les détails": "डिटेल्स छिपाओ"
 }

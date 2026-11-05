@@ -154,12 +154,14 @@ class ExportTargetRound2Test {
         compose.onNodeWithTag("export_progress").assert(SemanticsMatcher.expectValue(SemanticsProperties.ContentDescription, listOf("Fabrication du son · 42 %")))
     }
 
-    /** Seat A d, screen 41: « Prêt à partager ? » said nothing of the target the file aims at. */
+    /** Seat A d, screen 41: « Prêt à partager ? » said nothing of the target the file aims at (round 3, n° 10: it is chosen there). */
     @Test
     fun theShareSheetSaysTheTarget() {
-        val ui = ShareSheetUi(name = "Techno", seconds = 320, parts = 34, checks = emptyList(), target = "Club · −7,5 LUFS")
+        val ui = ShareSheetUi(name = "Techno", seconds = 320, parts = 34, checks = emptyList(),
+            target = com.pocketstudio.app.mixer.TargetPick(com.pocketstudio.model.TargetChoice.CLUB, styleLufs = -7.5f, styleName = "Techno"))
         compose.setContent { PocketStudioTheme { ShareSheetContent(ui, ShareSheetActions()) } }
-        compose.onNodeWithTag("share_target").assertIsDisplayed().assertTextEquals("Volume visé : Club · −7,5 LUFS (se règle dans Mix)")
+        compose.onNodeWithTag("share_target").assertIsDisplayed()
+        compose.onNodeWithTag("share_target_CLUB").assertIsDisplayed().assertTextEquals("Club · −7,5 LUFS")
         assertNotEquals(null, ui.target)
     }
 }

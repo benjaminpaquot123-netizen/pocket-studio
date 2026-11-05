@@ -15,7 +15,5 @@
   "Volume : —": "Ses: —",
   "Volume %1$s · %2$s": "Ses %1$s · %2$s",
   "Détails": "Ayrıntılar",
-  "Masquer les détails": "Ayrıntıları gizle",
-  "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le Drop perd de son punch.": "Bu kadar yüksek duyulmak için tepeler %s dB sıkıştırılıyor: bu çok, Drop gücünü kaybeder.",
-  "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le Drop garde son punch).": "Bu kadar yüksek duyulmak için tepeler %s dB sıkıştırılıyor (en fazla 3: Drop gücünü korur)."
+  "Masquer les détails": "Ayrıntıları gizle"
 }

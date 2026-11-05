@@ -24,7 +24,8 @@ class ShareSongTest {
         val loop = ExportUi().forProject(sceneBars = 2, hasSong = false)
         assertEquals(ExportWhat.Loop, loop.what)
         assertEquals(ExportFade.None, loop.fade)
-        assertEquals(2, loop.bars)
+        // Audit ultra round 3 (n° 14): the loop « Partager » sends, the 2 bars four times.
+        assertEquals(8, loop.bars)
     }
 
     @Test

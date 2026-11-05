@@ -15,7 +15,5 @@
   "Volume : —": "音量：—",
   "Volume %1$s · %2$s": "音量 %1$s · %2$s",
   "Détails": "详情",
-  "Masquer les détails": "隐藏详情",
-  "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le Drop perd de son punch.": "为了这么响，峰值被压了 %s dB：太多了，Drop 会失去冲击力。",
-  "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le Drop garde son punch).": "为了这么响，峰值被压了 %s dB（最多 3：Drop 能保住冲击力）。"
+  "Masquer les détails": "隐藏详情"
 }

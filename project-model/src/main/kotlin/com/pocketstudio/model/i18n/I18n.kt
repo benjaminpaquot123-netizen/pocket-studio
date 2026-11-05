@@ -136,6 +136,8 @@ object I18n {
         "ultra2z5",
         // Audit ultra round 2, zone 6: the Mode simple's pad names and tempo in everyday words, the Remix model asked first.
         "ultra2z6",
+        // Audit ultra round 3, zone 2: the target where one exports, the remix's stems, a stale export, sending the project, « Mes exports ».
+        "ultra3z2",
         // Audit ultra round 3, zone 3: the tutorial under way taken up again, a name field's ✕.
         "ultra3z3",
         // Audit ultra round 3, zone 1: a Live column cut in Mix, the pad asked before a drum sound is covered, a piece touched.

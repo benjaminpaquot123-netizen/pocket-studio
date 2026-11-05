@@ -71,6 +71,7 @@ import com.pocketstudio.model.LoudnessTarget
 import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectCatalog
+import com.pocketstudio.model.Remix
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.app.learn.spot
@@ -162,8 +163,8 @@ sealed class ShareCheck {
     /** A warning (amber), or a hint (grey) the user may well want as it is. */
     open val warning: Boolean get() = false
 
-    /** Tracks soloed ([names]): nothing else would be heard. Fix: « Tout réactiver ». */
-    data class Solo(val names: List<String>) : ShareCheck() {
+    /** Tracks soloed ([names]; the remix's own stems soloed: [stems]): nothing else would be heard. Fix: « Tout réactiver ». */
+    data class Solo(val names: List<String>, val stems: List<Int> = emptyList()) : ShareCheck() {
         override val warning get() = true
     }
 
@@ -171,7 +172,7 @@ sealed class ShareCheck {
      * Tracks muted in the mixer although they play in the song ([names], their strips [chs]): said,
      * not changed by itself (it may be wanted); « Tout réentendre » brings them back.
      */
-    data class Muted(val names: List<String>, val chs: List<Int> = emptyList()) : ShareCheck()
+    data class Muted(val names: List<String>, val chs: List<Int> = emptyList(), val stems: List<Int> = emptyList()) : ShareCheck()
 
     /** Nothing to hear at all. */
     data object Empty : ShareCheck() {
@@ -210,10 +211,18 @@ fun shareChecks(p: Project, strips: List<StripInfo>, levels: ShareLevels, loopBa
     val channels = p.mixer.channels
     fun name(s: StripInfo) = DefaultNames.shown(s.name)
     val soloed = strips.filter { channels.getOrNull(it.ch)?.solo == true }
-    if (soloed.isNotEmpty()) add(ShareCheck.Solo(soloed.map(::name)))
     val sounding = stripSounds(p, song = p.song.isNotEmpty()).filter { it.second }.map { it.first.second }.toSet()
+    // Audit ultra round 3 (n° 12, seat F b 58): the remix's song is four stems, each muted or soloed on its own
+    // (a « MR » version without the voice): « aucune piste coupée » was said over a muted voice.
+    val remixHeard = Remix.STRIP in sounding && channels.getOrNull(Remix.STRIP)?.mute != true
+    val remixName = strips.firstOrNull { it.ch == Remix.STRIP }?.let(::name) ?: "Remix"
+    fun stemName(stem: Int) = com.pocketstudio.app.remix.StemRouting.stemLabel(stem) + " (" + remixName + ")"
+    val stems = if (remixHeard) Remix.SHOWN_ORDER.filter { it < p.remix.stems.size } else emptyList()
+    val soloStems = stems.filter { p.remix.stems[it].solo }
+    if (soloed.isNotEmpty() || soloStems.isNotEmpty()) add(ShareCheck.Solo(soloed.map(::name) + soloStems.map(::stemName), soloStems))
     val muted = strips.filter { it.ch in sounding && channels.getOrNull(it.ch)?.mute == true }
-    if (muted.isNotEmpty()) add(ShareCheck.Muted(muted.map(::name), muted.map { it.ch }))
+    val mutedStems = stems.filter { p.remix.stems[it].mute }
+    if (muted.isNotEmpty() || mutedStems.isNotEmpty()) add(ShareCheck.Muted(muted.map(::name) + mutedStems.map(::stemName), muted.map { it.ch }, mutedStems))
     when {
         sounding.isEmpty() -> add(ShareCheck.Empty)
         p.song.isEmpty() -> add(ShareCheck.NoSong(loopBars))
@@ -222,9 +231,22 @@ fun shareChecks(p: Project, strips: List<StripInfo>, levels: ShareLevels, loopBa
     if (levels.saturates) add(ShareCheck.Saturation)
 }
 
-/** What the name field starts with: the project's own name, or a suggestion when the app gave it one. */
+/**
+ * What the name field starts with: the project's own name as the app shows it (audit ultra round 3, n° 13, seat
+ * F d 71: « Beat for Tom (copie) » in the English app), or a suggestion when the app gave it one.
+ */
 fun initialShareName(name: String): String =
-    if (ShareSong.isDefaultName(name)) ShareSong.suggestedName(DefaultNames.shown(name)) else name.trim()
+    if (ShareSong.isDefaultName(name)) ShareSong.suggestedName(DefaultNames.shown(name)) else DefaultNames.shown(name).trim()
+
+/**
+ * Audit ultra round 3 (n° 13, seat F b 41): the name typed for the shared song renames the project only while
+ * the project still has a name the app gave it (« Mon projet 3 »): a version named « Spring night (MR) » leaves
+ * the project « Spring night » as it is (it was renamed at each export).
+ */
+fun shareRenamesProject(projectName: String, typed: String): Boolean {
+    val clean = typed.trim()
+    return clean.isNotEmpty() && ShareSong.isDefaultName(projectName) && clean != DefaultNames.shown(projectName).trim() && clean != projectName.trim()
+}
 
 /** "2:38" from seconds. */
 fun shareClock(seconds: Int): String = "%d:%02d".format(seconds / 60, seconds % 60)
@@ -249,8 +271,11 @@ data class ShareSheetUi(
     val rightsProject: com.pocketstudio.model.Project? = null,
     /** S5: how much the loudest moments are tassés for the volume ([ShareLevels.lossDb]). */
     val lossDb: Double? = null,
-    /** Audit ultra round 2 (n° 10): the loudness target the file will aim at (« Club · −7,5 LUFS »); null: not said (Mode simple). */
-    val target: String? = null,
+    /**
+     * Audit ultra round 3 (n° 10): the loudness target the file will aim at, chosen here (the project's one target,
+     * the same as in Mix); null: not offered (Mode simple: no jargon).
+     */
+    val target: com.pocketstudio.app.mixer.TargetPick? = null,
 )
 
 class ShareSheetActions(
@@ -268,6 +293,10 @@ class ShareSheetActions(
     val toMixer: (() -> Unit)? = {},
     /** « Tout réentendre »: the muted strips given heard again. */
     val unmute: (List<Int>) -> Unit = {},
+    /** Audit ultra round 3 (n° 12): the remix's stems muted ([com.pocketstudio.model.Remix.stems] indices) heard again. */
+    val unmuteStems: (List<Int>) -> Unit = {},
+    /** The remix's soloed stems back to normal. */
+    val unsoloStems: (List<Int>) -> Unit = {},
     /** « Modifier le morceau »: the song's parts (the Morceau tab, which the button is named after). */
     val toStructure: () -> Unit = {},
     /** « Autres exports »: separate tracks, MIDI, FLAC… (Mixeur › Exporter). */
@@ -275,6 +304,10 @@ class ShareSheetActions(
     /** « Vidéo pour les réseaux »: 30 s of the song in 9:16 (phase 39). */
     val video: () -> Unit = {},
     val close: () -> Unit = {},
+    /** Audit ultra round 3 (n° 10): « Volume visé » chosen here (the project's target, as in Mix). */
+    val chooseTarget: (com.pocketstudio.model.TargetChoice) -> Unit = {},
+    /** Audit ultra round 3 (n° 13, seat F d 22, 61): the project itself (.zip), to go on with it on another device; null: not offered. */
+    val sendProject: (() -> Unit)? = null,
 )
 
 /** « Prêt à partager ? » as a bottom sheet above the tab it was opened from. */
@@ -317,15 +350,18 @@ fun ShareSheetContent(
         }
         // « Partager » renames the project too (a default « Mon projet 3 » becomes the name typed): the label says so.
         // Round 2, n° 26: the name selected at the touch, what is typed replaces it.
+        val renames = ui.projectName?.let { shareRenamesProject(it, ui.name) || ShareSong.isDefaultName(it) } ?: true
         com.pocketstudio.app.ui.SelectAllTextField(
-            value = ui.name, onValueChange = actions.setName, label = { Text(tr("Nom du morceau (et du projet)")) },
+            value = ui.name, onValueChange = actions.setName, label = { Text(if (renames) tr("Nom du morceau (et du projet)") else tr("Nom du morceau envoyé")) },
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
             modifier = Modifier.fillMaxWidth().testTag("share_name"),
         )
         // Testers (lot « tuto 4 »): « Mon projet 1 » became « Mon morceau » without a word.
         ui.projectName?.let { DefaultNames.shown(it).trim() }?.takeIf { it.isNotEmpty() && it != ui.name.trim() }?.let { old ->
-            Text(tr("« Partager » renomme aussi le projet « %s ».", old), style = MaterialTheme.typography.bodySmall,
+            if (renames) Text(tr("« Partager » renomme aussi le projet « %s ».", old), style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary, modifier = Modifier.testTag("share_renames"))
+            else Text(tr("Le projet garde son nom « %s ».", old), style = MaterialTheme.typography.bodySmall,
+                color = Neon.TextSecondary, modifier = Modifier.testTag("share_keeps_name"))
         }
         // How long it lasts, and one last listen (the saturation is checked while it plays).
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -342,23 +378,25 @@ fun ShareSheetContent(
                     // Plain words first; the units (LUFS, dBTP) under « détails », for whoever knows them.
                     var details by rememberSaveable { mutableStateOf(false) }
                     Row(verticalAlignment = Alignment.CenterVertically) {
+                        // Audit ultra round 3 (n° 14): the Mode simple reads the words alone (no number, no LUFS under « détails »).
                         Text(
-                            tr("Volume : %s, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), Loudness.describe(lufs)),
+                            if (simple) tr("Niveau : %s", Loudness.describe(lufs))
+                            else tr("Volume : %s, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), Loudness.describe(lufs)),
                             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.weight(1f).testTag("share_loudness"),
                         )
-                        Text(
+                        if (!simple) Text(
                             if (details) tr("masquer") else tr("détails"), style = MaterialTheme.typography.labelSmall, color = Neon.Cyan,
                             modifier = Modifier.clickable(role = Role.Button) { details = !details }.padding(6.dp).testTag("share_details"),
                         )
-                        com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.Glossary.LUFS, about = listOf("share_details"))
+                        if (!simple) com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.Glossary.LUFS, about = listOf("share_details"))
                     }
-                    if (details) {
+                    if (details && !simple) {
                         Text(
                             tr("%s LUFS · crête %s dBTP", LoudnessTargets.format(lufs), ui.truePeakDb?.let { LoudnessTargets.format(it) } ?: "—"),
                             style = MonoStyle.copy(fontSize = 12.sp), color = Neon.TextSecondary, modifier = Modifier.testTag("share_loudness_details"),
                         )
                     }
-                    ui.lossDb?.let { com.pocketstudio.app.mixer.LossLine(it, Modifier.testTag("share_loss")) }
+                    if (!simple) ui.lossDb?.let { com.pocketstudio.app.mixer.LossLine(it, Modifier.testTag("share_loss")) }
                 }
             }
             OutlinedButton(onClick = actions.listen, modifier = Modifier.heightIn(min = 48.dp).testTag("share_listen")) {
@@ -366,11 +404,9 @@ fun ShareSheetContent(
                 Text(" " + if (ui.playing) tr("Arrêter") else tr("Écouter"), maxLines = 1)
             }
         }
-        // Audit ultra round 2 (n° 10, seat A d): the target the shared file aims at, in sight before « Partager ».
-        ui.target?.let {
-            Text(tr("Volume visé : %s (se règle dans Mix)", it), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
-                modifier = Modifier.testTag("share_target"))
-        }
+        // Audit ultra round 3 (n° 10, seats A d 3, F b 26): the target chosen here, where the song leaves (it was only
+        // said, « se règle dans Mix », and only once set there). The same setting as Mix's.
+        ui.target?.let { com.pocketstudio.app.mixer.TargetPicker(it, actions.chooseTarget, "share_target", enabled = !ui.running, note = tr("Le même réglage que dans Mix.")) }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("share_checks")) {
             if (ui.checks.isEmpty()) {
                 CheckLine(Icons.Filled.CheckCircle, Neon.Acid, tr("Tout est prêt : aucun solo oublié, aucune piste coupée."), "share_check_ok")
@@ -395,6 +431,20 @@ fun ShareSheetContent(
         }
             com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.Glossary.FORMATS, about = listOf("share_format_*"))
         }
+        // Audit ultra round 3 (n° 13, seat F d 22, 61): the project itself, to go on with it elsewhere, where one sends
+        // (it was only in Mes projets › ⋯).
+        actions.sendProject?.let { send ->
+            TextButton(onClick = send, enabled = !ui.running, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("share_project")) {
+                Column(Modifier.weight(1f)) {
+                    Text(tr("Envoyer le projet"), color = Neon.Cyan)
+                    Text(tr("Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer."),
+                        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                }
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan)
+            }
+        }
+        // Audit ultra round 3 (n° 11): the files made before, to find and send again.
+        MyExportsButton("share_my_exports")
     }
         // Testers (lot « tuto 4 »): M4A or WAV stays in sight with « Partager » (a short page, the tutorial's
         // panel under it, cut the chips in half at the scroll's edge).
@@ -429,7 +479,7 @@ private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetAct
     when (check) {
         is ShareCheck.Solo -> {
             CheckLine(icon, color, tr("Solo actif sur %s : les autres pistes ne s'entendront pas.", check.names.joinToString(", ")), "share_check_solo")
-            Fixes { FixButton(tr("Tout réactiver"), "share_fix_solo", actions.unsolo) }
+            Fixes { FixButton(tr("Tout réactiver"), "share_fix_solo", onClick = { actions.unsolo(); if (check.stems.isNotEmpty()) actions.unsoloStems(check.stems) }) }
         }
         is ShareCheck.Muted -> {
             val names = check.names.joinToString(", ")
@@ -438,7 +488,9 @@ private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetAct
                 if (simple) tr("Coupé dans Mes pistes, donc absent du fichier : %s.", names) else tr("Coupé (muet), donc absent du fichier : %s.", names),
                 "share_check_muted",
             )
-            if (check.chs.isNotEmpty()) Fixes { FixButton(tr("Tout réentendre"), "share_fix_muted", onClick = { actions.unmute(check.chs) }) }
+            if (check.chs.isNotEmpty() || check.stems.isNotEmpty()) Fixes {
+                FixButton(tr("Tout réentendre"), "share_fix_muted", onClick = { actions.unmute(check.chs); if (check.stems.isNotEmpty()) actions.unmuteStems(check.stems) })
+            }
         }
         ShareCheck.Empty ->
             CheckLine(icon, color, tr("Rien à entendre pour l'instant : pose un rythme ou quelques notes d'abord."), "share_check_empty")
@@ -511,6 +563,8 @@ fun ShareSheetRoute(
     page: Boolean = false,
     /** The Mode simple's words and fixes (the « Envoyer » page always is). */
     simple: Boolean = page,
+    /** Audit ultra round 3 (n° 13): « Envoyer le projet » (.zip, to go on elsewhere); null: not offered. */
+    sendProject: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val project by rhythmVm.project.collectAsStateWithLifecycle()
@@ -543,9 +597,7 @@ fun ShareSheetRoute(
             name = name, seconds = shareSeconds(project, loopBars), parts = project.song.size, checks = checks, projectName = project.name, rightsProject = project,
             format = prefs.format, playing = transport.playing, running = export.running, canLower = levels.canLower, lufs = levels.lufs,
             truePeakDb = levels.truePeakDb, lossDb = levels.lossDb,
-            // No target (« Désactivée »): nothing aimed at, nothing said (« Volume visé : Désactivée » read wrong).
-            target = LoudnessTargets.choiceOf(project.mixer).takeIf { !simple && it != com.pocketstudio.model.TargetChoice.OFF }
-                ?.let { LoudnessTargets.label(it, LoudnessTargets.of(project)) },
+            target = if (simple) null else com.pocketstudio.app.mixer.TargetPick.of(project),
         )
     )
     val actions = (
@@ -557,10 +609,10 @@ fun ShareSheetRoute(
                     Toast.makeText(context, tr("Un export est déjà en cours : attends qu'il finisse."), Toast.LENGTH_SHORT).show()
                 } else {
                     val clean = name.trim()
-                    if (clean != project.name.trim()) rhythmVm.renameProject(clean)
+                    if (shareRenamesProject(project.name, clean)) rhythmVm.renameProject(clean)
                     edited = null
                     if (!page) close()
-                    rhythmVm.shareSong(prefs.format)
+                    rhythmVm.shareSong(prefs.format, title = clean)
                 }
             },
             listen = { if (project.song.isNotEmpty()) rhythmVm.toggleSong() else rhythmVm.togglePlay() },
@@ -572,16 +624,20 @@ fun ShareSheetRoute(
             },
             toMixer = toMixer?.let { go -> { if (!page) close(); go() } },
             unmute = rhythmVm::unmuteChannels,
+            unmuteStems = { stems -> stems.forEach { if (project.remix.stems.getOrNull(it)?.mute == true) rhythmVm.toggleStemMute(it) } },
+            unsoloStems = { stems -> stems.forEach { if (project.remix.stems.getOrNull(it)?.solo == true) rhythmVm.toggleStemSolo(it) } },
             toStructure = { if (!page) close(); toStructure() },
             otherExports = { if (!page) close(); otherExports() },
             video = {
                 val clean = name.trim()
-                if (clean.isNotEmpty() && clean != project.name.trim()) rhythmVm.renameProject(clean)
+                if (shareRenamesProject(project.name, clean)) rhythmVm.renameProject(clean)
                 edited = null
                 if (!page) close()
                 video()
             },
             close = close,
+            chooseTarget = { rhythmVm.chooseLoudnessTarget(it) },
+            sendProject = sendProject,
         )
     )
     if (page) ShareSheetContent(ui, actions, page = true, simple = simple) else ShareSheet(ui, actions, simple)

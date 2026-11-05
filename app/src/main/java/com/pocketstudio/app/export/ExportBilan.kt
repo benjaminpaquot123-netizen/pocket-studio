@@ -54,7 +54,7 @@ data class ExportBilan(
         val drop = loudLufs
         if (!wholeSong && drop != null && abs(drop - target) <= TOLERANCE_LU && abs(song - target) > TOLERANCE_LU) {
             return tr(
-                "La cible se mesure sur le Drop (%1\$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2\$s LUFS.",
+                "La cible se mesure sur le passage le plus fort (%1\$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2\$s LUFS.",
                 LoudnessTargets.format(drop), LoudnessTargets.format(song),
             )
         }

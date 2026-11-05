@@ -15,7 +15,5 @@
   "Volume : —": "音量：—",
   "Volume %1$s · %2$s": "音量 %1$s · %2$s",
   "Détails": "詳細",
-  "Masquer les détails": "詳細を隠す",
-  "Pour sonner aussi fort, les crêtes sont tassées de %s dB : c'est beaucoup, le Drop perd de son punch.": "この大きさにするため、ピークを %s dB つぶしています。多すぎて Drop のパンチが弱くなります。",
-  "Pour sonner aussi fort, les crêtes sont tassées de %s dB (3 au plus : le Drop garde son punch).": "この大きさにするため、ピークを %s dB つぶしています（最大3：Drop のパンチは残ります）。"
+  "Masquer les détails": "詳細を隠す"
 }

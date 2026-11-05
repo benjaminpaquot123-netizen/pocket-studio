@@ -32,7 +32,7 @@ import com.pocketstudio.model.i18n.tr
  * out as a WAV (no compression step to announce).
  */
 @Composable
-fun ShareSongProgress(rhythmVm: RhythmViewModel, wav: Boolean = false) {
+fun ShareSongProgress(rhythmVm: RhythmViewModel, wav: Boolean = false, simple: Boolean = false) {
     val context = LocalContext.current
     val export by rhythmVm.export.collectAsStateWithLifecycle()
     val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
@@ -48,7 +48,7 @@ fun ShareSongProgress(rhythmVm: RhythmViewModel, wav: Boolean = false) {
                 // Remix testers (Mehdi): the share ended with no word from the app; the file is said ready, and where its copy is,
                 // and (audit ultra round 1) its loudness, peak, format, length and target, seen when the share menu closes.
                 val now = rhythmVm.export.value
-                done = listOf(shareReadyText(files, now.savedInMusic)) + now.bilan?.lines().orEmpty()
+                done = listOf(shareReadyText(files, now.savedInMusic)) + shareReportLines(now, simple)
             }
         }
     }
@@ -73,6 +73,14 @@ internal fun ShareBilanDialog(lines: List<String>, dismiss: () -> Unit) {
         confirmButton = { TextButton(onClick = dismiss, modifier = Modifier.testTag("share_bilan_ok")) { Text("OK") } },
     )
 }
+
+/**
+ * What « C'est prêt » says under the file: the report in numbers (audit ultra round 1, n° 15), or in everyday
+ * words in the Mode simple (audit ultra round 3, n° 14: LUFS, dBTP, kHz and kb/s were shown there).
+ */
+internal fun shareReportLines(export: ExportUi, simple: Boolean): List<String> =
+    if (simple) export.summary?.plainLines().orEmpty() + listOfNotNull(export.bilan?.levelWords())
+    else export.bilan?.lines().orEmpty()
 
 /** « C'est prêt » once the song is made and its share menu open: its file, and its copy in Musique when there is one. */
 internal fun shareReadyText(files: List<java.io.File>, savedInMusic: Boolean): String {

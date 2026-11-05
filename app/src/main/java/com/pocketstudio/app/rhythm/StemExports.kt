@@ -15,6 +15,9 @@ import com.pocketstudio.model.partView
  */
 internal fun stemExports(p: Project, song: Boolean): List<Pair<String, Int>> {
     val tracks = stripSounds(p, song).filter { (stem, sounds) -> sounds && p.mixer.channels.getOrNull(stem.second)?.mute != true }.map { it.first }
+        // Audit ultra round 3 (n° 12, seat F b 53): the remix's song is four separated stems: one file each
+        // (« remix-voix », « remix-batterie »…), a stem muted in the remix left out like a muted strip.
+        .flatMap { stem -> if (stem.second == com.pocketstudio.model.Remix.STRIP) remixStemExports(p) else listOf(stem) }
     // The Live page's own sounds (riser, downlifter, the build-up's noise) come from no track: each
     // track's file leaves them out, and they get a file of their own, so the files add up to the mix.
     return if (tracks.isNotEmpty() && hasLiveNoises(p, song)) tracks + (LIVE_FX_STEM_LABEL to LIVE_FX_STEM) else tracks
@@ -43,6 +46,47 @@ internal fun stripSounds(p: Project, song: Boolean): List<Pair<Pair<String, Int>
     } + p.audioTracks.map { t ->
         "audio${t.id + 1}-${slug(t.name)}" to AudioTrack.mixerChannel(t.id) to
             (t.clip != null && (!song || p.song.isEmpty() || p.song.any { it.plays(SongPart.audio(t.id)) }))
+    }
+}
+
+/**
+ * Audit ultra round 3 (n° 12): a remix stem's render in [stemExports], as a channel of its own:
+ * [REMIX_STEM_BASE] − stem (the engine's stem index). The export renders the remix strip with that stem alone.
+ */
+internal const val REMIX_STEM_BASE = -20
+
+/** The remix stem a [stemExports] channel stands for (0..3), or null. */
+internal fun remixStemOf(ch: Int?): Int? = ch?.let { REMIX_STEM_BASE - it }?.takeIf { it in 0 until com.pocketstudio.model.Remix.STEMS }
+
+/** The file labels of the remix's stems, in the order shown (Voix, Batterie, Basse, Reste). */
+internal val REMIX_STEM_LABELS = mapOf(3 to "remix-voix", 0 to "remix-batterie", 1 to "remix-basse", 2 to "remix-reste")
+
+/** The remix's stems heard (not muted in the remix), one file each, in the order shown. */
+private fun remixStemExports(p: Project): List<Pair<String, Int>> =
+    com.pocketstudio.model.Remix.SHOWN_ORDER.filter { p.remix.stems.getOrNull(it)?.mute != true }.map { REMIX_STEM_LABELS.getValue(it) to REMIX_STEM_BASE - it }
+
+/**
+ * Audit ultra round 3 (n° 12, seat F d 54): the tracks a « Piste par piste » export gives no file, and why, in
+ * words (« Synthé (vide) », « Voix (coupée) »): a track missing from the files is never left unexplained.
+ * [names]: each strip's shown name by mixer channel.
+ */
+internal fun stemSkips(p: Project, song: Boolean, names: Map<Int, String>): List<String> {
+    val made = stemExports(p, song).map { it.second }.toSet()
+    val strips = stripSounds(p, song).filter { it.first.second in names }
+    return strips.flatMap { (stem, sounds) ->
+        val ch = stem.second
+        val name = names.getValue(ch)
+        val muted = p.mixer.channels.getOrNull(ch)?.mute == true
+        when {
+            ch == com.pocketstudio.model.Remix.STRIP && sounds && !muted ->
+                com.pocketstudio.model.Remix.SHOWN_ORDER.filter { REMIX_STEM_BASE - it !in made }
+                    .map { com.pocketstudio.model.i18n.tr("%s (coupée)", com.pocketstudio.app.remix.StemRouting.stemLabel(it)) }
+            ch in made -> emptyList()
+            // An empty remix strip (no song in the project) is no track of the user's.
+            ch == com.pocketstudio.model.Remix.STRIP && !sounds -> emptyList()
+            muted && sounds -> listOf(com.pocketstudio.model.i18n.tr("%s (coupée)", name))
+            else -> listOf(com.pocketstudio.model.i18n.tr("%s (vide)", name))
+        }
     }
 }
 

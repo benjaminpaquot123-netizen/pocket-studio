@@ -15,10 +15,7 @@
   "Enregistrer ce que je joue au clavier": "سجّل ما أعزفه على لوحة المفاتيح",
   "Enregistrer ce que je joue aux pads": "سجّل ما أعزفه على الأزرار",
   "Enregistrer ce que je joue sur la 303": "سجّل ما أعزفه على الـ303",
-  "Fort, comme en club (%s LUFS), mesuré sur le Drop. La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.": "مرتفع، كما في النادي (%s LUFS)، يُقاس على الـDrop. يرتفع الخرج بهدوء للوصول إليه؛ ويقترب التصدير منه قدر الإمكان دون سحق الصوت.",
-  "La cible se mesure sur le Drop (%1$s LUFS) ; le morceau entier, avec ses passages calmes, mesure %2$s LUFS.": "يُقاس الهدف على الـDrop (%1$s LUFS)؛ والأغنية كلها، بمقاطعها الهادئة، تقيس %2$s LUFS.",
   "Le micro : ta voix, une guitare, un instrument": "الميكروفون: صوتك، غيتار، آلة",
-  "Le volume des morceaux de ce style (%s LUFS), mesuré sur le Drop. La sortie monte ou baisse doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.": "مستوى صوت أغاني هذا الأسلوب (%s LUFS)، يُقاس على الـDrop. يرتفع الخرج أو ينخفض بهدوء للوصول إليه؛ ويقترب التصدير منه قدر الإمكان دون سحق الصوت.",
   "Les pads (la batterie)": "الأزرار (الإيقاع)",
   "Que veux-tu enregistrer ?": "ماذا تريد أن تسجّل؟",
   "Relâchement : %1$d ms (%2$d ms après une crête brève)": "التحرير: %1$d مللي ثانية (%2$d مللي ثانية بعد ذروة قصيرة)",
@@ -36,8 +33,5 @@
   "Pas copié dans Musique › BenStudio : touche « Partager » pour l'envoyer ou l'enregistrer (%s).": "لم يُنسخ إلى Music › BenStudio: المس «مشاركة» لإرساله أو حفظه (%s).",
   "Rapport dans Documents › BenStudio : %s": "التقرير في Documents › BenStudio: %s",
   "Fabrication du son": "صنع الصوت",
-  "Volume visé : %s (se règle dans Mix)": "علوّ الصوت المستهدف: %s (يُضبط في المكس)",
-  "Auto (%s)": "تلقائي (%s)",
-  "Fort, comme en club (%s LUFS), mesuré sur le Drop. Ton style sonne déjà aussi fort : ici, Club et Auto visent le même volume.": "مرتفع، كما في النادي (%s LUFS)، يُقاس على الـDrop. نمطك مرتفع بهذا القدر أصلًا: هنا يستهدف Club والتلقائي العلوّ نفسه.",
-  "Le volume visé, en LUFS : plus près de 0, plus fort. Une seule cible pour toute l'appli. Auto (%1$s LUFS, le volume de ton style) et Club (%2$s LUFS) se mesurent sur le Drop ; Streaming (−14 LUFS, Spotify et YouTube), Apple Music (−16) et Libre sur tout le morceau. Si le son devait s'écraser, l'appli s'arrête avant et te le dit.": "مستوى الصوت المستهدف بالـLUFS: كلما اقترب من 0 كان أعلى. هدف واحد للتطبيق كله. التلقائي (%1$s LUFS، علوّ نمطك) وClub (%2$s LUFS) يُقاسان على الـDrop؛ وStreaming (−14 LUFS، Spotify وYouTube) وApple Music (−16) وحر على الأغنية كلها. إذا كان الصوت سيُسحق، يتوقف التطبيق قبل ذلك ويخبرك."
+  "Auto (%s)": "تلقائي (%s)"
 }

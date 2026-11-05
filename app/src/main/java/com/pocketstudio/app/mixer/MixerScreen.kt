@@ -187,6 +187,10 @@ fun MixerScreen(
     styleName: String? = null,
     /** Phase 36: a strip's sheet › « Courbes »: that strip first in « Automatiser un réglage ». */
     preferChannel: (Int) -> Unit = {},
+    /** Audit ultra round 3 (n° 12): the last export's files were made before the song changed. */
+    exportStale: Boolean = false,
+    /** Audit ultra round 3 (n° 12): the tracks a « Piste par piste » export gives no file, and why (« Synthé (vide) »). */
+    stemSkips: List<String> = emptyList(),
 ) {
     val exportCard = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
     val automationCard = androidx.compose.runtime.remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
@@ -248,7 +252,8 @@ fun MixerScreen(
             if (analyserOpen) com.pocketstudio.app.analysis.SpectrumView(spectrum)
         }
         androidx.compose.foundation.layout.Box(Modifier.bringIntoViewRequester(busesCard)) { BusesCard(buses, actions) }
-        ExportCard(export, actions, hasSong, Modifier.bringIntoViewRequester(exportCard))
+        ExportCard(export, actions, hasSong, Modifier.bringIntoViewRequester(exportCard),
+            target = TargetPick(target, styleLufs, freeLufs, styleName), stale = exportStale, stemSkips = stemSkips)
     })
     }
 }
@@ -449,7 +454,15 @@ private fun EffectsToggle(summary: String, open: Boolean, modifier: Modifier = M
 }
 
 @Composable
-internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolean = true, modifier: Modifier = Modifier) {
+internal fun ExportCard(
+    export: ExportUi, actions: MixerActions, hasSong: Boolean = true, modifier: Modifier = Modifier,
+    /** Audit ultra round 3 (n° 10): « Volume visé » chosen where one exports (the master's own target); null: not shown. */
+    target: TargetPick? = null,
+    /** Audit ultra round 3 (n° 12, seat F d 48): the files shown were made before the song changed: not offered to share. */
+    stale: Boolean = false,
+    /** Audit ultra round 3 (n° 12, seat F d 54): the tracks « Piste par piste » gives no file, and why. */
+    stemSkips: List<String> = emptyList(),
+) {
     val chipColors = pillColors(Neon.Acid)
     NeonCard(modifier, accent = Neon.Acid) {
         SectionLabel(tr("Exporter"), color = Neon.Acid)
@@ -474,6 +487,10 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
             },
             style = MaterialTheme.typography.bodySmall, color = if (export.what == ExportWhat.Song && !hasSong) Neon.Amber else Neon.TextSecondary,
         )
+        if (export.what == ExportWhat.Stems && stemSkips.isNotEmpty()) {
+            Text(tr("Sans fichier : %s.", stemSkips.joinToString(", ")), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+                modifier = Modifier.testTag("export_stem_skips"))
+        }
         WithHelp(Glossary.FORMATS) { Text(tr("Format"), style = MaterialTheme.typography.bodyMedium) }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             listOf(ExportFormat.M4a to tr("M4A · pour partager"), ExportFormat.Wav to tr("WAV · qualité max")).forEach { (format, label) ->
@@ -491,6 +508,8 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
+        // Audit ultra round 3 (n° 10, seats A d 4, F b 26): the target chosen here too, not five swipes away in the master's card.
+        if (export.what != ExportWhat.Stems) target?.let { TargetPicker(it, { c -> actions.chooseTarget(c, null) }, "export_target", enabled = !export.running) }
         if (export.what != ExportWhat.Stems) {
             Text(tr("Fondu de fin"), style = MaterialTheme.typography.bodyMedium)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -554,7 +573,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     // Up to where the voice or the remix's song ends, when that is longer than the scene.
                     val toTheEnd = export.audioBars.coerceAtMost(com.pocketstudio.app.rhythm.RhythmViewModel.MAX_LONG_EXPORT_BARS).takeIf { it > export.sceneBars }
-                    (EXPORT_BARS + export.sceneBars + listOfNotNull(toTheEnd)).distinct().sorted().forEach { bars ->
+                    (EXPORT_BARS + export.sceneBars + export.bars + listOfNotNull(toTheEnd)).distinct().sorted().forEach { bars ->
                         FilterChip(
                             selected = export.bars == bars,
                             onClick = { actions.setExportBars(bars) },
@@ -616,13 +635,20 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
             exportSavedLines(export).forEach {
                 Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("export_saved"))
             }
-            ExportReportLine(export)
-            OutlinedButton(onClick = actions.share, modifier = Modifier.fillMaxWidth().testTag("share")) {
-                Text(if (export.files.size > 1) tr("Partager les %d fichiers", export.files.size) else tr("Partager"))
-
+            // Audit ultra round 3 (n° 12, seat F d 48): made before the song changed, the file is never offered as the song.
+            if (stale) {
+                Text(tr("Le morceau a changé depuis cet export : exporte à nouveau pour envoyer la nouvelle version."),
+                    style = MaterialTheme.typography.bodyMedium, color = Neon.Amber, modifier = Modifier.testTag("export_stale"))
+            } else {
+                ExportReportLine(export)
+                OutlinedButton(onClick = actions.share, modifier = Modifier.fillMaxWidth().testTag("share")) {
+                    Text(if (export.files.size > 1) tr("Partager les %d fichiers", export.files.size) else tr("Partager"))
+                }
             }
         }
         export.error?.let { Text(it, color = Neon.RedText, style = MaterialTheme.typography.bodySmall) }
+        // Audit ultra round 3 (n° 11, seat A d 45): every file made so far, to find and send again.
+        if (!export.running) com.pocketstudio.app.export.MyExportsButton("export_my_exports")
     }
 }
 

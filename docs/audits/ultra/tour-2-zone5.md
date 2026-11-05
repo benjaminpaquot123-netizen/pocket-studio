@@ -21,4 +21,6 @@ N° de la synthèse `tour-2/synthese.md`. « appli » = vrai défaut corrigé ; 
 | 17 nom de piste « Synthé » (B c 46) | zone 3 | — | — | — | — |
 
 Textes nouveaux : `ultra2z5.json` dans les 14 catalogues ; l'ancienne aide du piano roll retirée de `write.json`.
-Tests lancés : voir la réponse finale.
+Commits : `d6e2dfc` (n° 26), `c494208` (le reste ; une partie d'AppRoot, I18n et PlayStrip est partie dans `de9d32e` de la zone 1, l'index étant partagé).
+Tests lancés (verts) : TutoBigFontTest 5/5, TutoKitTest 5/5, TutoKickSoundTest 3/3, TutoKeySheetDoneTest, NameFieldTest 4/4, KeptNameFieldTest, tout `app.synth.*` (16 classes dont PianoRollRound2Test, PianoRollFoldableTest, FloatingKeyboardRoomTest), GuideEffectWhyTest, I18nCatalogTest (mes clés).
+Captures ré-enregistrées et regardées : `synth`, `synth_effects`, `synth_chord_pads`, `tracks` (« 35 % »), `piano_roll` (nouvelle aide). `tuto_app_bass` diffère par la barre du haut (zones 3 et 6), laissé.

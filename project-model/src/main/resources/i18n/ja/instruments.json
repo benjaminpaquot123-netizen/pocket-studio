@@ -28,7 +28,6 @@
   "Crête : trop haute (%s dBTP), ça risque de grésiller": "ピーク：高すぎ（%s dBTP）、ノイズが出るかも",
   "Crête : sous la limite, vérifiée après la compression": "ピーク：上限以下、圧縮後もチェック済み",
   "Crête : sous la limite, pas de saturation": "ピーク：上限以下、クリップなし",
-  "M4A, %s kHz": "M4A、%s kHz",
   "%1$s, %2$s kHz, %3$d bits": "%1$s、%2$s kHz、%3$d bit",
   "Prêt à partager": "シェアの準備OK",
   "À revoir : baisse un peu le volume général avant de partager": "要チェック：シェア前にマスター音量を少し下げてね",

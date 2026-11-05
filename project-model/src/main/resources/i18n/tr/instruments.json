@@ -28,7 +28,6 @@
   "Crête : trop haute (%s dBTP), ça risque de grésiller": "Tepe: fazla yüksek (%s dBTP), cızırdayabilir",
   "Crête : sous la limite, vérifiée après la compression": "Tepe: sınırın altında, kompresyondan sonra kontrol edildi",
   "Crête : sous la limite, pas de saturation": "Tepe: sınırın altında, clipping yok",
-  "M4A, %s kHz": "M4A, %s kHz",
   "%1$s, %2$s kHz, %3$d bits": "%1$s, %2$s kHz, %3$d bit",
   "Prêt à partager": "Paylaşmaya hazır",
   "À revoir : baisse un peu le volume général avant de partager": "Gözden geçir: paylaşmadan önce genel sesi biraz kıs",

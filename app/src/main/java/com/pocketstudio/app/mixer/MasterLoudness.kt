@@ -86,15 +86,30 @@ internal fun shownLufs(target: LoudnessTarget, styleLufs: Float): Float? = when 
     else -> LoudnessTargets.lufs(target, null)
 }
 
+/** The project's style as the assistant shows it (« Techno »), null without one. */
+internal fun shownStyleName(style: String?): String? = style?.let { com.pocketstudio.model.StarterWizard.style(it) }?.let { s -> tr(s.name) }
+
+/** A chip of « Volume visé »: « Auto (Techno) · −7,5 LUFS » names the style, « Club · −7,5 LUFS » (audit ultra round 2, n° 9). */
+internal fun targetChipLabel(choice: TargetChoice, lufs: Float?, styleName: String?): String =
+    if (choice == TargetChoice.AUTO && styleName != null) {
+        val name = tr("Auto (%s)", styleName)
+        lufs?.let { tr("%1\$s · %2\$s LUFS", name, LoudnessTargets.formatTarget(it)) } ?: name
+    } else LoudnessTargets.label(choice, lufs)
+
 /** The chips of « Volume visé », in the order shown: the one target of the app (audit ultra round 1). */
 internal val TARGET_CHOICES = listOf(TargetChoice.AUTO, TargetChoice.CLUB, TargetChoice.STREAMING, TargetChoice.APPLE, TargetChoice.FREE, TargetChoice.OFF)
 
-/** What « Volume visé » says under its chips, for [choice] at [lufs]. */
-internal fun targetHint(choice: TargetChoice, lufs: Float?): String {
+/**
+ * What « Volume visé » says under its chips, for [choice] at [lufs]. [styleLufs]: « Auto »'s; a style already
+ * as loud as a club makes « Club » aim at the same volume, and its hint says so (audit ultra round 2, n° 9).
+ */
+internal fun targetHint(choice: TargetChoice, lufs: Float?, styleLufs: Float? = null): String {
     val v = LoudnessTargets.formatTarget(lufs ?: 0f)
     return when (choice) {
         TargetChoice.AUTO -> tr("Le volume des morceaux de ce style (%s LUFS), mesuré sur le Drop. La sortie monte ou baisse doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.", v)
-        TargetChoice.CLUB -> tr("Fort, comme en club (%s LUFS), mesuré sur le Drop. La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.", v)
+        TargetChoice.CLUB -> if (styleLufs != null && lufs == styleLufs)
+            tr("Fort, comme en club (%s LUFS), mesuré sur le Drop. Ton style sonne déjà aussi fort : ici, Club et Auto visent le même volume.", v)
+        else tr("Fort, comme en club (%s LUFS), mesuré sur le Drop. La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son.", v)
         TargetChoice.STREAMING -> tr("%s LUFS sur tout le morceau : le volume où Spotify et YouTube ramènent tous les morceaux.", v)
         TargetChoice.APPLE -> tr("%s LUFS sur tout le morceau : le volume où Apple Music ramène les morceaux.", v)
         TargetChoice.FREE -> tr("%s LUFS sur tout le morceau, la valeur que tu choisis.", v)
@@ -112,6 +127,8 @@ internal fun targetHint(choice: TargetChoice, lufs: Float?): String {
 @Composable
 internal fun MasterLoudnessPanel(
     values: () -> FloatArray, choice: TargetChoice, freeLufs: Float?, styleLufs: Float, choose: (TargetChoice, Float?) -> Unit,
+    /** The project's style, shown (« Techno »): « Auto (Techno) », told apart from « Club » (audit ultra round 2, n° 9); null: « Auto (style) ». */
+    styleName: String? = null,
 ) {
     val target = when (choice) {
         TargetChoice.OFF -> LoudnessTarget.OFF
@@ -154,7 +171,10 @@ internal fun MasterLoudnessPanel(
             }
         }
     }
-    WithHelp(com.pocketstudio.app.help.ScreenHelp.MASTER_TARGET, about = listOf("loudness_target_*", "pro_target_slider")) {
+    WithHelp(
+        // A project without a style: the generic help (the same values).
+        if (styleLufs == LoudnessTargets.DEFAULT_LUFS) com.pocketstudio.app.help.ScreenHelp.MASTER_TARGET else com.pocketstudio.app.help.ScreenHelp.masterTarget(styleLufs),
+        about = listOf("loudness_target_*", "pro_target_slider")) {
         Text(tr("Volume visé"), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f, fill = false))
     }
     val colors = pillColors(Neon.Cyan)
@@ -164,7 +184,7 @@ internal fun MasterLoudnessPanel(
             val lufs = if (c == TargetChoice.FREE && choice != TargetChoice.FREE) null else LoudnessTargets.shown(c, styleLufs, freeLufs)
             FilterChip(
                 selected = choice == c, onClick = { choose(c, if (c == TargetChoice.FREE) freeLufs else null) },
-                label = { Text(LoudnessTargets.label(c, lufs)) },
+                label = { Text(targetChipLabel(c, lufs, styleName)) },
                 colors = colors, modifier = Modifier.testTag(if (c == TargetChoice.FREE) "pro_target_free" else "loudness_target_${c.name}"),
             )
         }
@@ -178,7 +198,7 @@ internal fun MasterLoudnessPanel(
             modifier = Modifier.testTag("pro_target_slider"),
         )
     }
-    Text(targetHint(choice, LoudnessTargets.shown(choice, styleLufs, freeLufs)), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+    Text(targetHint(choice, LoudnessTargets.shown(choice, styleLufs, freeLufs), styleLufs), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         modifier = Modifier.testTag("loudness_target_hint"))
     // No reading yet (the engine not playing, a test without one) reads −100: never « −100 dB », as if the song were silenced.
     if (target != LoudnessTarget.OFF && drive != 0f && drive.isFinite() && kotlin.math.abs(drive) < 40f) {
@@ -222,13 +242,16 @@ internal fun durationText(seconds: Double): String {
 internal fun ExportReportLine(export: ExportUi) {
     if (export.loudness == null) return
     val summary = export.summary ?: return
+    // Audit ultra round 2 (n° 9, seat A d): never a green « Prêt » above a gap from the target, and the level
+    // said against the target it aimed at (a club export read « comme la musique en streaming »).
+    val (verdict, green) = com.pocketstudio.app.export.exportVerdict(summary, export.bilan)
     Column(Modifier.testTag("export_summary"), verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Text(
-            (if (summary.ready) "✓ " else "") + summary.verdict(),
+            (if (green) "✓ " else "") + verdict,
             style = MaterialTheme.typography.titleSmall, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-            color = if (summary.ready) Neon.Acid else Neon.Amber, modifier = Modifier.testTag("export_verdict"),
+            color = if (green) Neon.Acid else Neon.Amber, modifier = Modifier.testTag("export_verdict"),
         )
-        listOfNotNull(summary.durationLine(), summary.levelLine(), summary.peakLine(), summary.formatLine()).forEach {
+        listOfNotNull(summary.durationLine(), export.bilan?.levelWords() ?: summary.levelLine(), summary.peakLine(), summary.formatLine()).forEach {
             Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         }
     }

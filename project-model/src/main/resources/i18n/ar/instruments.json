@@ -28,7 +28,6 @@
   "Crête : trop haute (%s dBTP), ça risque de grésiller": "الذروة: عالية جدًا (%s dBTP)، قد يطقطق",
   "Crête : sous la limite, vérifiée après la compression": "الذروة: تحت الحد، تم التحقق بعد الضغط",
   "Crête : sous la limite, pas de saturation": "الذروة: تحت الحد، بلا تشويه",
-  "M4A, %s kHz": "M4A، %s kHz",
   "%1$s, %2$s kHz, %3$d bits": "%1$s، %2$s kHz، %3$d-bit",
   "Prêt à partager": "جاهز للمشاركة",
   "À revoir : baisse un peu le volume général avant de partager": "تحقّق: اخفض مستوى الصوت الرئيسي قليلًا قبل المشاركة",

@@ -66,6 +66,8 @@ import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.log10
 import kotlin.math.roundToInt
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import com.pocketstudio.model.i18n.tr
 
 /** A strip on screen: its mixer channel, its name and, for an instrument track, its colour. */
@@ -181,6 +183,8 @@ fun MixerScreen(
     target: com.pocketstudio.model.TargetChoice = com.pocketstudio.model.TargetChoice.OFF,
     freeLufs: Float? = null,
     styleLufs: Float = com.pocketstudio.model.LoudnessTargets.DEFAULT_LUFS,
+    /** The project's style, shown (« Techno »), for « Auto (Techno) »; null: none. */
+    styleName: String? = null,
     /** Phase 36: a strip's sheet › « Courbes »: that strip first in « Automatiser un réglage ». */
     preferChannel: (Int) -> Unit = {},
 ) {
@@ -234,7 +238,7 @@ fun MixerScreen(
             LimiterLine { meters().getOrElse(LIMITER_METER) { 1f } }
             // With a target the limiter works on purpose: lowering the master would only raise its gain.
             if (target == com.pocketstudio.model.TargetChoice.OFF) LimiterHint({ meters().getOrElse(LIMITER_METER) { 1f } }, masterDb, actions.setMasterDb)
-            MasterLoudnessPanel(loudness, target, freeLufs, styleLufs, actions.chooseTarget)
+            MasterLoudnessPanel(loudness, target, freeLufs, styleLufs, actions.chooseTarget, styleName)
             MasterProPanel(actions.pro) { meters().getOrElse(LIMITER_METER) { 1f } }
             var open by rememberSaveable { mutableStateOf(false) }
             EffectsToggle(effectsSummary(master), open, Modifier.testTag("master_effects")) { open = !open }
@@ -571,10 +575,14 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
         }
         when {
             export.running -> {
-                export.stage?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary) }
+                // Audit ultra round 2 (n° 10, seat A d): a long export says what it does and how far it is, in
+                // words and for TalkBack (a thin bar alone, for one or two minutes, looked stuck).
+                val line = exportProgressText(export)
+                Text(line, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("export_progress_text"))
                 LinearProgressIndicator(
                     progress = { export.progress },
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp).testTag("export_progress")
+                        .semantics { contentDescription = line },
                     color = Neon.Acid,
                     trackColor = Neon.SurfaceHigh,
                 )
@@ -604,13 +612,10 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
             if (export.files.isNotEmpty()) { kotlinx.coroutines.delay(60); resultInView.bringIntoView() }
         }
         if (export.files.isNotEmpty()) Column(Modifier.bringIntoViewRequester(resultInView).testTag("export_result"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(
-                export.files.joinToString(", ") { it.name }.let { names ->
-                    if (export.savedInMusic) tr("Sauvegardé dans Musique › BenStudio : %s", names) else tr("Prêt : %s", names)
-                },
-                style = MaterialTheme.typography.bodySmall,
-                color = Neon.TextSecondary,
-            )
+            // Audit ultra round 2 (n° 10): where the file is, in every report (a WAV said « Prêt : » alone).
+            exportSavedLines(export).forEach {
+                Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("export_saved"))
+            }
             ExportReportLine(export)
             OutlinedButton(onClick = actions.share, modifier = Modifier.fillMaxWidth().testTag("share")) {
                 Text(if (export.files.size > 1) tr("Partager les %d fichiers", export.files.size) else tr("Partager"))
@@ -619,6 +624,30 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
         }
         export.error?.let { Text(it, color = Neon.RedText, style = MaterialTheme.typography.bodySmall) }
     }
+}
+
+/** « Fabrication du son · 42 % », « Compression M4A · 80 % »: what a running export does, and how far. */
+internal fun exportProgressText(export: ExportUi): String {
+    val stage = export.stage ?: tr("Fabrication du son")
+    // A step that counts its own (« Conversion FLAC 40 % ») is not given a second percentage.
+    if (stage.any { it == '%' }) return stage
+    return tr("%1\$s · %2\$s", stage, com.pocketstudio.model.i18n.percent((export.progress.coerceIn(0f, 1f) * 100).roundToInt()))
+}
+
+/**
+ * Where the export's files are: the sound in Musique › BenStudio (or, when the copy failed, how to keep it),
+ * the text report in Documents › BenStudio (audit ultra round 2, n° 10).
+ */
+internal fun exportSavedLines(export: ExportUi): List<String> {
+    val (reports, sounds) = export.files.partition { it.extension == "txt" }
+    val names = sounds.joinToString(", ") { it.name }
+    return listOfNotNull(
+        names.takeIf { it.isNotEmpty() }?.let {
+            if (export.savedInMusic) tr("Sauvegardé dans Musique › BenStudio : %s", it)
+            else tr("Pas copié dans Musique › BenStudio : touche « Partager » pour l'envoyer ou l'enregistrer (%s).", it)
+        },
+        reports.takeIf { it.isNotEmpty() && export.reportInDocuments }?.let { r -> tr("Rapport dans Documents › BenStudio : %s", r.joinToString(", ") { it.name }) },
+    )
 }
 
 /** How many times a mixer strip was composed (tests: a meter reading must not compose it again). */

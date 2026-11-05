@@ -430,6 +430,8 @@ open class ScreenshotTest {
             loudness = { floatArrayOf(-7.9f, -8.1f, -8.4f, -1.2f, -1.3f, 3.2f) },
             target = com.pocketstudio.model.TargetChoice.AUTO,
             styleLufs = -8f,
+            // Audit ultra round 2 (n° 9): « Auto (House) », told apart from « Club ».
+            styleName = "House",
         )
     }
 
@@ -1819,6 +1821,8 @@ open class ScreenshotTest {
             ),
             com.pocketstudio.app.export.ShareSheetActions(),
             Modifier.background(Neon.Surface).padding(top = 16.dp),
+                // Audit ultra round 2 (n° 10): the target the file aims at (Pro).
+                target = "Club · −8 LUFS",
         )
     }
 

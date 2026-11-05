@@ -3130,6 +3130,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                         AppTab.Audio -> Column {
                             if (simpleRemix) {
                                 // Audit final (03 G4, 05, 08): the page asked for (« Ma voix » too, it used to be
+                                styleName = com.pocketstudio.app.mixer.shownStyleName(project.style),
                                 // forced to the Remix), alone, and back to the song.
                                 androidx.activity.compose.BackHandler { go(AppTab.Morceau) }
                                 Row(Modifier.fillMaxWidth().background(Neon.Surface).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {

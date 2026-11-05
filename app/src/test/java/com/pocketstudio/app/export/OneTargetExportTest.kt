@@ -112,12 +112,18 @@ class OneTargetExportTest {
         assertTrue(clubBilan.levelLine(), "LUFS intégrés · crête −" in clubBilan.levelLine() && "dBTP" in clubBilan.levelLine())
         assertTrue(clubBilan.fileLine(), clubBilan.fileLine().startsWith("WAV") && " s" in clubBilan.fileLine())
         val clubFile = vm.export.value.files.single().name
+        // Audit ultra round 2 (n° 8): the bench's engine honours the target as the native one does (host test
+        // mp_club_and_streaming_exports_differ measures the real file): the club file reads about −8 LUFS.
+        assertEquals(-8.0, clubBilan.lufs!!, 0.5)
+        // Audit ultra round 2 (n° 10): the WAV reaches Musique › BenStudio (the media store refused « audio/wav »: « Prêt : » alone).
+        assertTrue(vm.export.value.savedInMusic)
 
         vm.chooseLoudnessTarget(TargetChoice.STREAMING)
         val streaming = export()
         assertEquals(-14f, sink.target[streaming]!!, 0f)
         assertEquals(true, sink.wholeSong[streaming])
         assertEquals("Cible : Streaming · −14 LUFS", vm.export.value.bilan!!.targetLine())
+        assertEquals(-14.0, vm.export.value.bilan!!.lufs!!, 0.5)
         // The two files say which is which.
         val streamingFile = vm.export.value.files.single().name
         assertTrue(clubFile, "-club-" in clubFile)

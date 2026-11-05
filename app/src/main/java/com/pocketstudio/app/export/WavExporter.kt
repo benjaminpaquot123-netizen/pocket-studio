@@ -54,20 +54,37 @@ object WavExporter {
         return (listOf(name) + extra).joinToString("-")
     }
 
-    /** Copies [file] into the shared Music folder (no permission needed). Blocking: call off the main thread. */
-    fun copyToMusic(context: Context, file: File, mime: String = "audio/wav"): Boolean = runCatching {
+    /** Where a text report goes (Musique only takes sound: MediaStore refuses text/plain there). */
+    const val DOCUMENTS_FOLDER = "Documents/BenStudio"
+
+    /**
+     * Copies [file] into the shared Music folder (no permission needed). Blocking: call off the main thread.
+     * Audit ultra round 2 (n° 10): the media store checks the MIME type against its own table (« audio/wav »
+     * is « audio/x-wav » there): the platform's type for the file's extension is tried first, then [mime].
+     */
+    fun copyToMusic(context: Context, file: File, mime: String = "audio/wav"): Boolean =
+        mimesFor(file, mime).any { copyInto(context, file, it, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MUSIC_FOLDER) }
+
+    /** A text file (an export's report) into Documents › BenStudio. Blocking. */
+    fun copyToDocuments(context: Context, file: File, mime: String = "text/plain"): Boolean =
+        mimesFor(file, mime).any { copyInto(context, file, it, MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), DOCUMENTS_FOLDER) }
+
+    private fun mimesFor(file: File, mime: String): List<String> =
+        listOfNotNull(android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension.lowercase()), mime).distinct()
+
+    private fun copyInto(context: Context, file: File, mime: String, collection: android.net.Uri, folder: String): Boolean = runCatching {
         val resolver = context.contentResolver
         val values = ContentValues().apply {
-            put(MediaStore.Audio.Media.DISPLAY_NAME, file.name)
-            put(MediaStore.Audio.Media.MIME_TYPE, mime)
-            put(MediaStore.Audio.Media.RELATIVE_PATH, MUSIC_FOLDER)
-            put(MediaStore.Audio.Media.IS_PENDING, 1)
+            put(MediaStore.MediaColumns.DISPLAY_NAME, file.name)
+            put(MediaStore.MediaColumns.MIME_TYPE, mime)
+            put(MediaStore.MediaColumns.RELATIVE_PATH, folder)
+            put(MediaStore.MediaColumns.IS_PENDING, 1)
         }
-        val uri = resolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values) ?: return false
+        val uri = resolver.insert(collection, values) ?: return false
         try {
             resolver.openOutputStream(uri)!!.use { out -> file.inputStream().use { it.copyTo(out) } }
             values.clear()
-            values.put(MediaStore.Audio.Media.IS_PENDING, 0)
+            values.put(MediaStore.MediaColumns.IS_PENDING, 0)
             resolver.update(uri, values, null, null)
             true
         } catch (e: Exception) {

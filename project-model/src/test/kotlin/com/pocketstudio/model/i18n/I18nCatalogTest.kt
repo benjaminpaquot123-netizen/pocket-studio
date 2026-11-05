@@ -379,6 +379,8 @@ class I18nCatalogTest {
             "WizardScreen.kt: s.name",
             "WizardScreen.kt: sound.name",
             "WizardScreen.kt: style.name",
+            // Audit ultra round 2 (n° 9): « Auto (Techno) » in « Volume visé », the style's name (ModelTextsTest).
+            "MasterLoudness.kt: s.name",
             "LaunchChoice.kt: it.name",
             // trCount's two keys: literals at each call, checked by everyTextHasItsTranslations (countCall).
             "I18n.kt: one",

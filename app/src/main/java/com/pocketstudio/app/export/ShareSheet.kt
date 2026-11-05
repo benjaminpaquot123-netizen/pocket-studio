@@ -249,6 +249,8 @@ data class ShareSheetUi(
     val rightsProject: com.pocketstudio.model.Project? = null,
     /** S5: how much the loudest moments are tassés for the volume ([ShareLevels.lossDb]). */
     val lossDb: Double? = null,
+    /** Audit ultra round 2 (n° 10): the loudness target the file will aim at (« Club · −7,5 LUFS »); null: not said (Mode simple). */
+    val target: String? = null,
 )
 
 class ShareSheetActions(
@@ -364,6 +366,11 @@ fun ShareSheetContent(
             }
         }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("share_checks")) {
+        // Audit ultra round 2 (n° 10, seat A d): the target the shared file aims at, in sight before « Partager ».
+        ui.target?.let {
+            Text(tr("Volume visé : %s (se règle dans Mix)", it), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+                modifier = Modifier.testTag("share_target"))
+        }
             if (ui.checks.isEmpty()) {
                 CheckLine(Icons.Filled.CheckCircle, Neon.Acid, tr("Tout est prêt : aucun solo oublié, aucune piste coupée."), "share_check_ok")
             }
@@ -536,6 +543,7 @@ fun ShareSheetRoute(
             format = prefs.format, playing = transport.playing, running = export.running, canLower = levels.canLower, lufs = levels.lufs,
             truePeakDb = levels.truePeakDb, lossDb = levels.lossDb,
         )
+            target = if (simple) null else LoudnessTargets.label(LoudnessTargets.choiceOf(project.mixer), LoudnessTargets.of(project)),
     )
     val actions = (
         ShareSheetActions(

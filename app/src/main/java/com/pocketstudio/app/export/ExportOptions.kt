@@ -130,7 +130,7 @@ internal fun ExportOptionsPanel(export: com.pocketstudio.app.rhythm.ExportUi, ha
             "export_artist", "export_cover", "export_report"),
     ) {
         androidx.compose.material3.TextButton(onClick = { openState.value = !open }, modifier = Modifier.weight(1f, fill = false).testTag("export_final")) {
-            androidx.compose.material3.Text(tr("Fichier final : %s", summary(export)), color = com.pocketstudio.ui.Neon.Cyan)
+            androidx.compose.material3.Text(tr("Fichier final : %s", finalFileSummary(export)), color = com.pocketstudio.ui.Neon.Cyan)
         }
     }
     if (!open) return
@@ -209,8 +209,9 @@ internal fun ExportOptionsPanel(export: com.pocketstudio.app.rhythm.ExportUi, ha
         )
     }
     androidx.compose.material3.Text(tr("Infos du fichier"), style = title)
-    androidx.compose.material3.OutlinedTextField(
-        value = o.artist, onValueChange = { set(o.copy(artist = it.take(60))) }, singleLine = true, enabled = enabled,
+    // Round 2, n° 26: the name selected at the touch, what is typed replaces it.
+    com.pocketstudio.app.ui.SelectAllTextField(
+        value = o.artist, onValueChange = { set(o.copy(artist = it.take(60))) }, enabled = enabled,
         label = { androidx.compose.material3.Text(tr("Artiste")) },
         modifier = Modifier.fillMaxWidth().testTag("export_artist"),
     )
@@ -231,8 +232,10 @@ private fun rateLabel(r: Int): String = if (r == OfflineExport.CD_RATE) tr("44,1
 private fun seconds(ms: Int): String = if (ms % 1000 == 0) "${ms / 1000}" else String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", ms / 1000.0)
 
 /** « 48 kHz · 24 bits », the card's line before it is opened. */
-private fun summary(export: com.pocketstudio.app.rhythm.ExportUi): String {
+internal fun finalFileSummary(export: com.pocketstudio.app.rhythm.ExportUi): String {
     val rate = export.pro.rateFor(export.format, export.cdRate)
     val bits = export.pro.bitsFor(export.format, export.limited, export.bits16)
+    // Audit ultra round 2 (n° 10, seat A d): an M4A says its bit rate, never « 16 bits » (AAC has no bits per sample).
+    if (export.format == ExportFormat.M4a) return rateLabel(rate) + " · " + tr("%d kb/s", AacEncoder.BIT_RATE / 1000)
     return rateLabel(rate) + " · " + if (bits == 32) tr("32 bits flottants") else tr("%d bits", bits)
 }

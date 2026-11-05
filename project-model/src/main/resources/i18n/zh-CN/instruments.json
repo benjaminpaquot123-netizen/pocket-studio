@@ -28,7 +28,6 @@
   "Crête : trop haute (%s dBTP), ça risque de grésiller": "峰值：太高（%s dBTP），可能会有杂音",
   "Crête : sous la limite, vérifiée après la compression": "峰值：低于上限，压缩后已检查",
   "Crête : sous la limite, pas de saturation": "峰值：低于上限，没有削波",
-  "M4A, %s kHz": "M4A，%s kHz",
   "%1$s, %2$s kHz, %3$d bits": "%1$s，%2$s kHz，%3$d 位",
   "Prêt à partager": "可以分享了",
   "À revoir : baisse un peu le volume général avant de partager": "需要调整：分享前把总音量调低一点",

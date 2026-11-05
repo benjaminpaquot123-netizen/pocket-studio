@@ -278,7 +278,8 @@ data class ExportSummary(
     }
 
     fun formatLine(): String = when {
-        format == "M4A" -> tr("M4A, %s kHz", if (sampleRate == 44100) "44,1" else "48")
+        // Audit ultra round 2 (n° 10): an M4A's quality is its bit rate (AAC has no bits per sample).
+        format == "M4A" -> tr("M4A, %1\$s kHz, %2\$d kb/s", if (sampleRate == 44100) "44,1" else "48", AacEncoder.BIT_RATE / 1000)
         else -> tr("%1\$s, %2\$s kHz, %3\$d bits", format, if (sampleRate == 44100) "44,1" else "48", bits)
     }
 

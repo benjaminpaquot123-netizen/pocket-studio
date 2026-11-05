@@ -28,7 +28,6 @@
   "Crête : trop haute (%s dBTP), ça risque de grésiller": "피크: 너무 높아요 (%s dBTP), 지직거릴 수 있어요",
   "Crête : sous la limite, vérifiée après la compression": "피크: 한계 아래, 압축 후 확인됨",
   "Crête : sous la limite, pas de saturation": "피크: 한계 아래, 클리핑 없음",
-  "M4A, %s kHz": "M4A, %s kHz",
   "%1$s, %2$s kHz, %3$d bits": "%1$s, %2$s kHz, %3$d비트",
   "Prêt à partager": "공유 준비 완료",
   "À revoir : baisse un peu le volume général avant de partager": "확인 필요: 공유 전에 마스터 볼륨을 조금 낮추세요",

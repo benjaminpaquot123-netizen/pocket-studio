@@ -28,7 +28,6 @@
   "Crête : trop haute (%s dBTP), ça risque de grésiller": "Pico: alto demais (%s dBTP), pode chiar",
   "Crête : sous la limite, vérifiée après la compression": "Pico: abaixo do limite, verificado depois da compressão",
   "Crête : sous la limite, pas de saturation": "Pico: abaixo do limite, sem saturação",
-  "M4A, %s kHz": "M4A, %s kHz",
   "%1$s, %2$s kHz, %3$d bits": "%1$s, %2$s kHz, %3$d bits",
   "Prêt à partager": "Pronto para compartilhar",
   "À revoir : baisse un peu le volume général avant de partager": "Revise: baixe um pouco o volume master antes de compartilhar",

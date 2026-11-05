@@ -28,7 +28,6 @@
   "Crête : trop haute (%s dBTP), ça risque de grésiller": "Spitze: zu hoch (%s dBTP), es könnte knistern",
   "Crête : sous la limite, vérifiée après la compression": "Spitze: unter dem Limit, nach der Komprimierung geprüft",
   "Crête : sous la limite, pas de saturation": "Spitze: unter dem Limit, keine Übersteuerung",
-  "M4A, %s kHz": "M4A, %s kHz",
   "%1$s, %2$s kHz, %3$d bits": "%1$s, %2$s kHz, %3$d Bit",
   "Prêt à partager": "Bereit zum Teilen",
   "À revoir : baisse un peu le volume général avant de partager": "Prüfen: Senk die Master-Lautstärke etwas vor dem Teilen",

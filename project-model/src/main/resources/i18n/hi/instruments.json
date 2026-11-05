@@ -28,7 +28,6 @@
   "Crête : trop haute (%s dBTP), ça risque de grésiller": "पीक: बहुत ऊँची (%s dBTP), खरखरा सकता है",
   "Crête : sous la limite, vérifiée après la compression": "पीक: लिमिट से नीचे, कंप्रेशन के बाद चेक की गई",
   "Crête : sous la limite, pas de saturation": "पीक: लिमिट से नीचे, कोई क्लिपिंग नहीं",
-  "M4A, %s kHz": "M4A, %s kHz",
   "%1$s, %2$s kHz, %3$d bits": "%1$s, %2$s kHz, %3$d-bit",
   "Prêt à partager": "शेयर करने को तैयार",
   "À revoir : baisse un peu le volume général avant de partager": "देख लो: शेयर करने से पहले मास्टर वॉल्यूम थोड़ा कम करो",

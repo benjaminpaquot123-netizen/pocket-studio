@@ -83,10 +83,21 @@ object ScreenHelp {
     )
 
     // --- Master pro and the file ---
-    val MASTER_TARGET: Help get() = Help(
-        tr("Cible de volume"),
-        tr("Le volume visé, en LUFS : plus près de 0, plus fort. Une seule cible pour toute l'appli. Club (−8 LUFS) et Auto se mesurent sur le Drop ; Streaming (−14 LUFS, Spotify et YouTube), Apple Music (−16) et Libre sur tout le morceau. Si le son devait s'écraser, l'appli s'arrête avant et te le dit."),
-    )
+    val MASTER_TARGET: Help get() = masterTarget(com.pocketstudio.model.LoudnessTargets.DEFAULT_LUFS)
+
+    /**
+     * Audit ultra round 2 (n° 9, seat A d: the chip said « Club · −7,5 », this help « Club (−8 LUFS) »): the
+     * values of this project, the chips' own ([com.pocketstudio.model.LoudnessTargets.shown]), named as the panel names it.
+     */
+    fun masterTarget(styleLufs: Float): Help = com.pocketstudio.model.LoudnessTargets.let { t ->
+        Help(
+            tr("Volume visé"),
+            tr(
+                "Le volume visé, en LUFS : plus près de 0, plus fort. Une seule cible pour toute l'appli. Auto (%1\$s LUFS, le volume de ton style) et Club (%2\$s LUFS) se mesurent sur le Drop ; Streaming (−14 LUFS, Spotify et YouTube), Apple Music (−16) et Libre sur tout le morceau. Si le son devait s'écraser, l'appli s'arrête avant et te le dit.",
+                t.formatTarget(styleLufs), t.formatTarget(t.clubLufs(styleLufs)),
+            ),
+        )
+    }
     val MASTER_CEILING: Help get() = Help(
         tr("Plafond de crête"),
         tr("Le point le plus haut que le son a le droit de toucher. −1 dBTP garde une marge : le fichier ne grésille pas une fois compressé (M4A, streaming)."),

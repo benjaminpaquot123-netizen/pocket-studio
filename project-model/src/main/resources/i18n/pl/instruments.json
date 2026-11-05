@@ -28,7 +28,6 @@
   "Crête : trop haute (%s dBTP), ça risque de grésiller": "Szczyt: za wysoko (%s dBTP), może trzeszczeć",
   "Crête : sous la limite, vérifiée après la compression": "Szczyt: poniżej limitu, sprawdzony po kompresji",
   "Crête : sous la limite, pas de saturation": "Szczyt: poniżej limitu, bez przesterowania",
-  "M4A, %s kHz": "M4A, %s kHz",
   "%1$s, %2$s kHz, %3$d bits": "%1$s, %2$s kHz, %3$d bit",
   "Prêt à partager": "Gotowe do udostępnienia",
   "À revoir : baisse un peu le volume général avant de partager": "Sprawdź: przed udostępnieniem ścisz trochę głośność główną",

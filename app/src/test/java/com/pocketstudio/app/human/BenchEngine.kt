@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.floor
+import kotlin.math.pow
 import kotlin.math.sin
 
 /**
@@ -34,7 +35,12 @@ internal class BenchEngine : CommandSink {
         private set
 
     override fun post(target: Long, type: Int, value: Float, a: Int, b: Int) {
-        if (target != 0L) return
+        if (target != 0L) {
+            // Audit ultra round 2 (n° 8): a private engine's loudness target (NativeEngine.setLoudnessTarget, 0: none),
+            // honoured by its render as the native engine's two-pass master does (host test mp_club_and_streaming_exports_differ).
+            if (type == CMD_MASTER && a == MASTER_TARGET) targets[target] = value
+            return
+        }
         when (type) {
             CMD_SET_TRANSPORT -> {
                 if (value <= 0f) freezeTakes()
@@ -125,7 +131,20 @@ internal class BenchEngine : CommandSink {
     override fun sampleFrames(handle: Long): Long = OfflineExport.SAMPLE_RATE.toLong()
     override fun sampleRelease(handle: Long) = Unit
     @Synchronized override fun exportCreate(): Long = next++
-    override fun exportDestroy(target: Long) = Unit
+    override fun exportDestroy(target: Long) { targets.remove(target) }
+
+    /** Each private engine's loudness target (LUFS), as described to it. */
+    private val targets = ConcurrentHashMap<Long, Float>()
+
+    /**
+     * The gain that brings the bench's tone to [target]'s loudness target (1 without one), its peak kept
+     * under −1 dBTP as the master's limiter would: a club and a streaming export no longer read the same.
+     */
+    private fun targetGain(target: Long): Float {
+        val lufs = targets[target]?.takeIf { it < 0f } ?: return 1f
+        val gain = 10.0.pow((lufs - TONE_LUFS) / 20.0)
+        return minOf(gain, 10.0.pow(-1.0 / 20.0) / TONE_AMPLITUDE).toFloat()
+    }
 
     /** Each render's progress (lot « tuto 5 »: the bar moves as on a phone) and its « Annuler ». */
     private val progress = java.util.concurrent.ConcurrentHashMap<Long, Float>()
@@ -146,15 +165,19 @@ internal class BenchEngine : CommandSink {
             progress[target] = k / STEPS.toFloat()
         }
         val n = SECONDS * sampleRate
-        FloatWav.write(File(path), tone(n, sampleRate), 0, n, 2, sampleRate)
+        val g = targetGain(target)
+        FloatWav.write(File(path), tone(n, sampleRate).also { t -> for (i in t.indices) t[i] *= g }, 0, n, 2, sampleRate)
         return ExportResult.Ok
     }
 
     /** How long a render takes here (real time), [RENDER_MS] unless a test wants it longer. */
     @Volatile var renderMs = RENDER_MS
 
-    override fun exportRenderFloat(target: Long, frames: Long, tailFrames: Long): FloatArray =
-        tone(minOf(frames + tailFrames, (SECONDS * OfflineExport.SAMPLE_RATE).toLong()).toInt().coerceAtLeast(1), OfflineExport.SAMPLE_RATE)
+    override fun exportRenderFloat(target: Long, frames: Long, tailFrames: Long): FloatArray {
+        val g = targetGain(target)
+        return tone(minOf(frames + tailFrames, (SECONDS * OfflineExport.SAMPLE_RATE).toLong()).toInt().coerceAtLeast(1), OfflineExport.SAMPLE_RATE)
+            .also { t -> if (g != 1f) for (i in t.indices) t[i] *= g }
+    }
 
     // --- The Remix's stems ---------------------------------------------------------------------
 
@@ -345,7 +368,17 @@ internal class BenchEngine : CommandSink {
         private const val CMD_TRIGGER_PAD = 11
         private const val CMD_SYNTH_NOTE_ON = 16
 
+        private const val CMD_MASTER = 67
+        private const val MASTER_TARGET = 4
+        private const val TONE_AMPLITUDE = 0.25
+
         /** [frames] of a quiet 220 Hz tone, stereo interleaved (−12 dBFS: no limiter needed). */
-        fun tone(frames: Int, rate: Int): FloatArray = FloatArray(2 * frames) { i -> (0.25 * sin(2 * PI * 220.0 * (i / 2) / rate)).toFloat() }
+        fun tone(frames: Int, rate: Int): FloatArray = FloatArray(2 * frames) { i -> (TONE_AMPLITUDE * sin(2 * PI * 220.0 * (i / 2) / rate)).toFloat() }
+
+        /** The tone's own integrated loudness (about −12,9 LUFS), read once by the app's meter. */
+        private val TONE_LUFS: Double by lazy {
+            val t = tone(RATE * 3, RATE)
+            com.pocketstudio.app.export.Loudness.Meter(RATE, 2).apply { add(t, RATE * 3) }.integrated() ?: -12.9
+        }
     }
 }

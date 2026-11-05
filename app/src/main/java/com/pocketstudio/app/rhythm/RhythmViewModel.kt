@@ -318,6 +318,8 @@ data class ExportUi(
     val stage: String? = null,
     val files: List<File> = emptyList(),
     val savedInMusic: Boolean = false,
+    /** Audit ultra round 2 (n° 10): the text report (« Rapport avec le fichier ») was copied to Documents › BenStudio. */
+    val reportInDocuments: Boolean = false,
     /** Integrated loudness of the exported mix in LUFS (null for stems or silence). */
     val loudness: Double? = null,
     /** The exported mix's true peak (dBTP) and length (seconds), measured on the file; null for stems. */
@@ -11035,6 +11037,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                                     val done = job.progress
                                     _export.value = _export.value.copy(progress = (index + done) / renders.size)
                                     com.pocketstudio.app.export.ExportRun.progress(_export.value.progress, _export.value.stage)
+            // Audit ultra round 2 (n° 10): the text report goes to Documents (Musique takes sound only): its copy never
+            // makes the song's own « Sauvegardé dans Musique » line disappear.
+            var reportOk = false
                                     // « Annuler » touched before this render began: it stops at once.
                                     if (exportCancelled) job.cancel()
                                     if (!stalled && watch.stalled(done)) {
@@ -11191,7 +11196,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     if (exportCancelled) throw kotlinx.coroutines.CancellationException("annulé")
                     // Lot E: the file's title, artist, BPM, key (and the report beside it, from « Avancé »).
                     tagAndReport(p, out, if (solo == null) report else null, if (solo == null) decodedPeak else null, settings, writtenRate, writtenBits, ceilingDb, share)
-                        ?.let { done += it; musicOk = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, it, "text/plain") } && musicOk }
+                        ?.let { done += it; reportOk = withContext(Dispatchers.IO) { WavExporter.copyToDocuments(app, it, "text/plain") } }
                     musicOk = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, out, settings.format.mime) } && musicOk
                 }
                 // Lot E: the separate tracks at one length from frame 0, then packed (FLAC, M4A) one by one.
@@ -11206,7 +11211,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         musicOk = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, out, settings.format.mime) } && musicOk
                     }
                 }
-                _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, stage = null, loudness = loudness,
+                _export.value = _export.value.copy(running = false, files = done, savedInMusic = musicOk, reportInDocuments = reportOk, stage = null, loudness = loudness,
                     truePeakDb = truePeak, seconds = seconds, lossDb = loss, decodedPeakDb = decodedPeak, writtenRate = writtenRate,
                     writtenBits = writtenBits, writtenFormat = settings.format, sharing = false, proReport = proReport,
                     targetLufs = com.pocketstudio.model.LoudnessTargets.of(p)?.toDouble(),

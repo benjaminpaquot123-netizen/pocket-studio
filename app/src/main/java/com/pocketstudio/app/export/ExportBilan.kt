@@ -63,6 +63,36 @@ data class ExportBilan(
         else tr("Écart avec la cible : %s LU.", (if (gap > 0) "+" else "") + LoudnessTargets.format(gap))
     }
 
+    /**
+     * Audit ultra round 2 (n° 9): how far the file is from its target (LU, reached − target) when that is
+     * worth a word (over [TOLERANCE_LU]); null when it is reached, without a target, or when only the
+     * quiet passages of a Drop-aimed song make the whole song softer (the Drop itself is there).
+     */
+    fun gapLu(): Double? {
+        val target = targetLufs?.takeIf { choice != TargetChoice.OFF } ?: return null
+        val song = lufs ?: return null
+        TargetReach.short(target, song, if (wholeSong) null else loudLufs, lossDb)?.let { return it - target }
+        val drop = loudLufs
+        if (!wholeSong && drop != null && abs(drop - target) <= TOLERANCE_LU) return null
+        val gap = (reached ?: song) - target
+        return gap.takeIf { abs(it) > TOLERANCE_LU }
+    }
+
+    /**
+     * « Niveau : à la cible (Club) »: the file's level said against the target it aimed at (audit ultra
+     * round 2, n° 9: a club export's report said « comme la musique en streaming »); null without a target.
+     */
+    fun levelWords(): String? {
+        if (targetLufs == null || choice == TargetChoice.OFF) return null
+        val name = LoudnessTargets.label(choice, null)
+        val gap = gapLu()
+        return when {
+            gap == null -> tr("Niveau : à la cible (%s)", name)
+            gap < 0 -> tr("Niveau : moins fort que la cible (%s)", name)
+            else -> tr("Niveau : plus fort que la cible (%s)", name)
+        }
+    }
+
     /** Every line, in the order shown. */
     fun lines(): List<String> = listOfNotNull(levelLine(), fileLine(), targetLine(), whyLine())
 
@@ -70,4 +100,16 @@ data class ExportBilan(
         /** Within this (LU) the target is reached (the export's own tolerance, host tests). */
         const val TOLERANCE_LU = 0.5
     }
+}
+
+/**
+ * The export's verdict over its report (audit ultra round 2, n° 9): « Prêt à partager » in green only
+ * when nothing is to fix and the target is reached; a file far from its target says so in amber
+ * (« Prêt, mais moins fort que la cible (−5,4 LU) »). Second: green or not.
+ */
+fun exportVerdict(summary: ExportSummary, bilan: ExportBilan?): Pair<String, Boolean> {
+    val gap = bilan?.gapLu()
+    if (!summary.ready || gap == null) return summary.verdict() to summary.ready
+    val lu = (if (gap > 0) "+" else "") + LoudnessTargets.format(gap)
+    return (if (gap < 0) tr("Prêt, mais moins fort que la cible (%s LU)", lu) else tr("Prêt, mais plus fort que la cible (%s LU)", lu)) to false
 }

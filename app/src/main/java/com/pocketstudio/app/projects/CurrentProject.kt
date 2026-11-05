@@ -62,14 +62,32 @@ object CurrentProject {
      * The install's first project once another one is open, if it is still exactly as it was made (nobody used it): its
      * id, once; null while it is open, or when it was used (it is then a project like the others, kept). Blocking (reads it).
      */
-    fun takeUnusedStarter(context: Context, load: (String) -> com.pocketstudio.model.Project?): String? {
+    fun takeUnusedStarter(
+        context: Context,
+        load: (String) -> com.pocketstudio.model.Project?,
+        /** Its folder on the phone (null: not looked at). */
+        folder: (String) -> File? = { null },
+        /** A Live take's journal waits for it (written into the song at its next opening). */
+        journaled: (String) -> Boolean = { false },
+    ): String? {
         val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
         val id = prefs.getString(STARTER_ID, null) ?: return null
         if (id == get(context)) return null
         val made = prefs.getString(STARTER, null)
         prefs.edit().remove(STARTER_ID).remove(STARTER).commit()
         val now = runCatching { load(id) }.getOrNull() ?: return null
-        return id.takeIf { made != null && com.pocketstudio.model.ProjectJson.encode(now) == made }
+        if (made == null || com.pocketstudio.model.ProjectJson.encode(now) != made) return null
+        // Relecture tour 2: work not in project.json yet (a take written but not yet on its track, in takes/ and samples/;
+        // a Live take cut short) is work: the project is kept, its next opening puts it in.
+        if (runCatching { journaled(id) }.getOrDefault(true)) return null
+        if (folder(id)?.let(::holdsMoreThanItsFile) == true) return null
+        return id
+    }
+
+    /** [dir] holds a file besides the project's own (project.json, its backup, its opening copy): a sound, a take. */
+    internal fun holdsMoreThanItsFile(dir: File): Boolean {
+        val own = setOf(com.pocketstudio.model.ProjectStore.MAIN, com.pocketstudio.model.ProjectStore.BACKUP, com.pocketstudio.model.ProjectStore.OPENING)
+        return dir.walkTopDown().any { it.isFile && it.relativeTo(dir).invariantSeparatorsPath !in own }
     }
 
     /** The project to trash now, once (never the one open). */

@@ -71,8 +71,13 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
             CurrentProject.takeDeleteLater(app)?.let { id -> catalog.info(id)?.let(::delete) }
             // Audit ultra round 2 (n° 14): the install's first project, left unused for another one at once, goes for
             // good (never a project the person did not make in their list); once its screen's last save is written.
-            if (com.pocketstudio.app.rhythm.ClosingSaves.awaitIdle(CLOSING_WAIT_MS)) {
-                CurrentProject.takeUnusedStarter(app) { id -> com.pocketstudio.app.rhythm.ProjectOpening.projectStore(app).load(id) }?.let { id ->
+            // Relecture tour 2: after the takes being written too (a take of the first project lands in its folder).
+            if (com.pocketstudio.app.rhythm.ClosingSaves.awaitIdle(CLOSING_WAIT_MS) && com.pocketstudio.app.rhythm.TakeVault.app.awaitIdle(CLOSING_WAIT_MS)) {
+                val store = com.pocketstudio.app.rhythm.ProjectOpening.projectStore(app)
+                CurrentProject.takeUnusedStarter(
+                    app, load = { id -> store.load(id) }, folder = { id -> store.folder(id) },
+                    journaled = { id -> com.pocketstudio.app.rhythm.LiveTakeJournals.of(app).file(id).exists() },
+                )?.let { id ->
                     runCatching { catalog.deleteForever(catalog.delete(id)) }.onSuccess { AppLog.add("Premier projet inutilisé effacé") }
                     forgetGoneJournals()
                 }

@@ -436,6 +436,8 @@ abstract class HumanTester(private val seat: String) {
         if (seatPads() && v != null && v !== padsHooked) {
             padsHooked = v
             v.padLive.toggleForTest = { pad -> padToggled(v, pad) }
+            v.liveToggledForTest = { pad -> padFollowed(v, pad) }
+            v.liveStoppedForTest = { allPadsCut() }
             v.padLive.rowForTest = { first, starting, stopping -> rowLaunched(v, first, starting, stopping) }
             v.padLive.played.sourceForTest = BenchResample(v)
             v.padLive.makerForTest = BenchPackMaker(engine)
@@ -479,8 +481,17 @@ abstract class HumanTester(private val seat: String) {
      * engine: without this the pads never sounded (lot P0-A).
      */
     private fun padToggled(v: RhythmViewModel, pad: Int) {
-        val clip = v.project.value.live.at(pad) ?: return
+        // The bench's pads follow through RhythmViewModel.liveToggledForTest ([padFollowed]).
         v.toggleLive(pad)
+    }
+
+    /**
+     * Audit ultra round 3 (zone 1, n° 5): any live pad toggled (Pad Live, and Live › Pads, which call the view model's
+     * toggleLive directly), and every pad cut (stopLive: « Écouter » of a challenge, headphones out): the bench's pads do
+     * what the phone's engine would.
+     */
+    private fun padFollowed(v: RhythmViewModel, pad: Int) {
+        val clip = v.project.value.live.at(pad) ?: return
         val on = v.livePadsSoundingForTest ?: emptySet()
         if (clip.oneShot) say("Le pad ${pad + 1} (« ${clip.name} ») joue une fois.")
         else v.livePadsSoundingForTest = if (pad in on) on - pad else on + pad
@@ -687,7 +698,7 @@ abstract class HumanTester(private val seat: String) {
         if (playing) {
             if (songPlaying(v!!)) v.toggleSong() else v.togglePlay()
             pass(100)
-            runCatching { compose.waitForIdle() }
+            runCatching { idleScreen() }
         }
         stopPollers()
         settleLooper()
@@ -967,11 +978,14 @@ abstract class HumanTester(private val seat: String) {
         if (started.action != Intent.ACTION_CHOOSER) return
         shadowOf(app).nextStartedActivity
         @Suppress("DEPRECATION")
-        val stream = started.getParcelableExtra<Intent>(Intent.EXTRA_INTENT)?.let { send ->
-            send.getParcelableExtra<android.net.Uri>(Intent.EXTRA_STREAM) ?: send.getParcelableArrayListExtra<android.net.Uri>(Intent.EXTRA_STREAM)?.firstOrNull()
-        }
-        val file = stream?.lastPathSegment?.substringAfterLast('/') ?: "?"
-        keepShared(file)
+        // Audit ultra round 3 (zone 2, « Partager les 2 fichiers »): every file sent (ACTION_SEND_MULTIPLE), not the first only.
+        val streams = started.getParcelableExtra<Intent>(Intent.EXTRA_INTENT)?.let { send ->
+            send.getParcelableArrayListExtra<android.net.Uri>(Intent.EXTRA_STREAM)
+                ?: runCatching { listOfNotNull(send.getParcelableExtra<android.net.Uri>(Intent.EXTRA_STREAM)) }.getOrDefault(emptyList())
+        }.orEmpty()
+        val names = streams.mapNotNull { it.lastPathSegment?.substringAfterLast('/') }
+        names.forEach(::keepShared)
+        val file = names.joinToString(", ").ifEmpty { "?" }
         // Audit ultra round 1 (n° 18, seats A c, C a, D b, E b, B b): a phone's share menu speaks the phone's language
         // (the seat's, as the app): its title is the one the app gives (translated), its apps by their names, never French words.
         @Suppress("DEPRECATION")
@@ -995,6 +1009,7 @@ abstract class HumanTester(private val seat: String) {
     private var playingBefore = false
 
     private fun play(cmd: String) {
+        followTextDialogs()
         val words = cmd.split(Regex("\\s+"))
         val kind = words[0].lowercase()
         playingBefore = lastVm?.transport?.value?.playing == true
@@ -1064,7 +1079,8 @@ abstract class HumanTester(private val seat: String) {
             // Round 1 (lot D, seat d): typing with no field focused threw the test API's AssertionError,
             // which the bench told the tester was an app crash. On a phone the keys go nowhere: say so.
             "ecris" -> {
-                val typed = runCatching { compose.onNode(isFocused()).performTextInput(cmd.substringAfter(' ')) }
+                val text = cmd.substringAfter(' ')
+                val typed = runCatching { if (textDialog) typeInDialog(text) else compose.onNode(isFocused()).performTextInput(text) }
                 if (typed.isFailure) say("Rien ne s'écrit : aucun champ n'attend le texte (touche d'abord le champ).")
                 settle(500)
             }
@@ -1111,6 +1127,8 @@ abstract class HumanTester(private val seat: String) {
             lastVm?.let {
                 playhead.tick(it, SystemClock.uptimeMillis())
                 engine.transportSteps = it.takeClockForTest
+                engine.tempo = it.project.value.tempoBpm
+                engine.beatsPerBar = it.project.value.beatsPerBar
             }
             left -= d
         }
@@ -1152,6 +1170,45 @@ abstract class HumanTester(private val seat: String) {
             f.className.startsWith("java.net.Socket") || f.className.startsWith("sun.net.www.")
     }
 
+    /**
+     * Audit ultra round 3 (n° 16, seats B a and E c, « gel en tapant un nom »; Zone3DialogDiagTest): under Robolectric a Compose
+     * dialog holding a text field never comes back to rest, without one line of the app (a phone's does). The bench waited for
+     * that rest (each look at the screen does by default) and froze in every rename window. While such a window is open, the
+     * looks at the screen do not wait for rest ([followTextDialogs]) and the screen is let settle by frames, a bounded wait.
+     */
+    private var textDialog = false
+
+    private fun followTextDialogs() {
+        textDialog = BenchWindows.textFieldInADialog()
+        runCatching {
+            val env = compose.javaClass.getDeclaredField("environment").apply { isAccessible = true }.get(compose)
+            val owner = env.javaClass.getDeclaredField("testOwner").apply { isAccessible = true }.get(env)
+            owner.javaClass.getMethod("setImplicitWaitSuppressed", Boolean::class.javaPrimitiveType).apply { isAccessible = true }.invoke(owner, textDialog)
+        }
+    }
+
+    /** The screen let come to rest: Compose's rest, or with a text field's dialog open, a few frames (bounded). */
+    private fun idleScreen() {
+        followTextDialogs()
+        if (!textDialog) {
+            compose.waitForIdle()
+        } else {
+            repeat(4) {
+                runCatching { compose.mainClock.advanceTimeByFrame() }
+                shadowOf(Looper.getMainLooper()).idle()
+            }
+        }
+        followTextDialogs()
+    }
+
+    /** « ecris » in a dialog's field: the text put at the cursor of the focused field, as the keyboard does (no wait for rest). */
+    private fun typeInDialog(text: String) {
+        val node = compose.onAllNodes(isFocused()).fetchSemanticsNodes(atLeastOneRootRequired = false).firstOrNull() ?: error("no focused field")
+        val insert = node.config.getOrNull(androidx.compose.ui.semantics.SemanticsActions.InsertTextAtCursor)?.action ?: error("not a text field")
+        compose.runOnUiThread { insert(androidx.compose.ui.text.AnnotatedString(text)) }
+        shadowOf(Looper.getMainLooper()).idle()
+    }
+
     /** Time goes by, then the screen is let settle (the work off the main thread too, a rebuilt activity). */
     private fun settle(ms: Long) {
         pass(ms)
@@ -1160,7 +1217,7 @@ abstract class HumanTester(private val seat: String) {
             Thread.sleep(40)
             shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(50))
             // A failure in the screen's work stops its updates (a frozen screen): kept for the report.
-            runCatching { compose.waitForIdle() }.onFailure { e -> problems += "${e.javaClass.name}: ${e.message?.take(300)}\n${e.stackTrace.take(8).joinToString("\n") { "    at $it" }}" }
+            runCatching { idleScreen() }.onFailure { e -> problems += "${e.javaClass.name}: ${e.message?.take(300)}\n${e.stackTrace.take(8).joinToString("\n") { "    at $it" }}" }
         }
         vm()
         meters(lastVm)
@@ -1505,6 +1562,12 @@ abstract class HumanTester(private val seat: String) {
         const val AMENEE_REMIX = "remix"
         const val AMENEE_PADLIVE = "padlive"
 
+        /** Touches that play the song from a part, from its start or from a take (round 3), by their tags' start. */
+        private val SONG_STARTS = listOf("part_play_", "play_from_", "audio_play_from_")
+
+        /** « Tout couper » of Pad Live, the Live page's pads and their full screen (RhythmViewModel.stopLive). */
+        private val STOP_ALL_TAGS = listOf("padlive_stop_all", "live_stop_all", "live_pads_full_stop")
+
         /** See [needsTheEngine]. */
         private val ENGINE_TAGS = listOf("export", "video_create", "padlive_perf_listen", "live_take_listen", "tuto_show")
 
@@ -1518,12 +1581,6 @@ abstract class HumanTester(private val seat: String) {
 
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-        /** Touches that play the song from a part, from its start or from a take (round 3), by their tags' start. */
-        private val SONG_STARTS = listOf("part_play_", "play_from_", "audio_play_from_")
-
-        /** « Tout couper » of Pad Live, the Live page's pads and their full screen (RhythmViewModel.stopLive). */
-        private val STOP_ALL_TAGS = listOf("padlive_stop_all", "live_stop_all", "live_pads_full_stop")
-
 @Config(qualifiers = HumanTester.PHONE)
 class HumanTesterA : HumanTester("a")
 

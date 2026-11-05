@@ -48,7 +48,10 @@ internal class BenchEngine : CommandSink {
             CMD_SET_TRANSPORT -> {
                 if (value <= 0f) freezeTakes()
                 transportSince = if (value > 0f) SystemClock.uptimeMillis() else -1L
+                countInBars = if (value > 0f) a.coerceAtLeast(0) else 0
             }
+            CMD_SET_TEMPO -> if (value > 0f) tempo = value.toDouble()
+            CMD_BEATS_PER_BAR -> if (a > 0) beatsPerBar = a
             CMD_STEM_START -> stemStart = a.toLong()
             CMD_PLAY_PREVIEW -> previewSince = if (value > 0f) SystemClock.uptimeMillis() else -1L
             // Round 1 (lot banc, « Montre-moi » silent): the pads and notes the app plays through the engine, heard by the bench.
@@ -398,6 +401,23 @@ internal class BenchEngine : CommandSink {
      */
     @Volatile var transportSteps = -1
 
+    /** The project's tempo and bar (the bench keeps them as the project's: the app sets them before the engine came). */
+    @Volatile var tempo = 120.0
+    @Volatile var beatsPerBar = 4
+    @Volatile private var countInBars = 0
+
+    /**
+     * Audit ultra round 3 (zone 4, n° 23): where the engine plays, in sixteenths since ▶ with the fraction, negative during
+     * the count-in (as NativeEngine.playPosition). Stuck at -1 before, the count-in showed « 1… » for good and a keyboard's
+     * notes were never recorded (the app records at this position).
+     */
+    override fun playPosition(): Double {
+        val since = transportSince
+        if (since < 0) return -1.0
+        val steps = (SystemClock.uptimeMillis() - since) * tempo / 15_000.0
+        return steps - countInBars * beatsPerBar * 4.0
+    }
+
     override fun transportStep(): Int = transportSteps
     override fun transportPosition(): Double = if (transportSteps >= 0) transportSteps.toDouble() else -1.0
 
@@ -489,6 +509,7 @@ internal class BenchEngine : CommandSink {
         private const val RATE = OfflineExport.SAMPLE_RATE
         // NativeEngine's own command numbers (its private CMD_… constants).
         private const val CMD_SET_TRANSPORT = 5
+        private const val CMD_BEATS_PER_BAR = 57
         private const val CMD_STEM_START = 32
         private const val CMD_PLAY_PREVIEW = 47
         private const val CMD_TRIGGER_PAD = 11

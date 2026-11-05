@@ -48,6 +48,25 @@ internal object BenchWindows {
         }.sortedWith(compareByDescending<Win> { it.params.type }.thenByDescending { it.index })
     }
 
+    /**
+     * Audit ultra round 3 (n° 16, Zone3DialogDiagTest): a window over the activity (a dialog) holding a text field. Under
+     * Robolectric, Compose never comes back to rest while one is open (no line of the app needed): the bench waits there by
+     * frames, a bounded wait. Read from the windows' own semantics, never through the test rule (which would wait for rest).
+     */
+    fun textFieldInADialog(): Boolean = runCatching {
+        windows().filter { it.params.type != WindowManager.LayoutParams.TYPE_BASE_APPLICATION }.any { w ->
+            composeRoots(w.view).any { root -> hasTextField(root.semanticsOwner.unmergedRootSemanticsNode) }
+        }
+    }.getOrDefault(false)
+
+    private fun composeRoots(v: View): List<androidx.compose.ui.node.RootForTest> = buildList {
+        if (v is androidx.compose.ui.node.RootForTest) add(v)
+        if (v is android.view.ViewGroup) for (i in 0 until v.childCount) addAll(composeRoots(v.getChildAt(i)))
+    }
+
+    private fun hasTextField(n: SemanticsNode): Boolean =
+        androidx.compose.ui.semantics.SemanticsActions.SetText in n.config || n.children.any(::hasTextField)
+
     /** The gap of the window a phone gives a touch at ([x], [y]) (the screen's pixels) to. */
     fun shiftAt(x: Float, y: Float, screen: DisplayMetrics): Pair<Float, Float> = runCatching {
         windows().filter { it.touchable }.firstOrNull { w -> w.touchModal || w.drawn(screen).contains(x.toInt(), y.toInt()) }?.shift(screen)

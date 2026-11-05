@@ -1,6 +1,13 @@
 package com.pocketstudio.app.human
 
 import android.app.Application
+import android.os.Looper
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.text.AnnotatedString
+import org.robolectric.Shadows.shadowOf
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
@@ -18,6 +25,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.pocketstudio.app.MainActivity
 import com.pocketstudio.app.settings.SettingsStore
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -29,11 +37,10 @@ import java.io.File
 
 /**
  * Audit ultra round 3 (lot banc, seat B a: Mode simple, night theme): after « ecris » in « Nom du projet » (Mes projets ›
- * ⋮ › Renommer) the bench never came back, Compose never idle (scratchpad jstack-B-a.txt). App or bench? The same
- * touches without the bench (no HumanTester, no BenchEngine): the app as the seat had it, the name typed, then idle.
- * Verdict: the app. Both Simple tests (night and studio theme) never come back to rest, already at the finger's touch on
- * « Nom du projet » (performTouchInput click, line of the touch: AppNotIdleException after 60 s), before any typing.
- * The same field alone (Tour3NameFieldIdleTest) rests: the loop comes from the field inside the app's window.
+ * ⋮ › Renommer) the bench never came back. Verdict of zone 3 (Zone3DialogDiagTest): Robolectric, not the app: a text
+ * field in any Compose dialog never lets Compose rest there. What a person does is checked here, without waiting for that
+ * rest while the window is open (frames instead): the name typed in the window, « OK », the project renamed on the list,
+ * and once the window is closed the screen comes back to rest. To check on a phone too (recette: rename a project).
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -48,6 +55,9 @@ class Tour3RenameIdleTest {
     @After
     fun close() {
         scenario?.close()
+        com.pocketstudio.app.rhythm.ClosingSaves.awaitIdleBlocking(15_000)
+        com.pocketstudio.app.onboarding.LaunchRule.askAtStartForTest = true
+        SettingsStore.forgetForTests()
     }
 
     private val projectMenu = androidx.compose.ui.test.SemanticsMatcher("a project's ⋮") { n ->
@@ -57,35 +67,58 @@ class Tour3RenameIdleTest {
     private fun shown(tag: String) = compose.onAllNodesWithTag(tag).fetchSemanticsNodes(atLeastOneRootRequired = false).isNotEmpty()
 
     @Test
-    @org.junit.Ignore("Round 3, zone 3 verdict: the bench, not the app. Any text field in a Compose Dialog never idles under Robolectric, without one line of the app (Zone3DialogDiagTest).")
-    fun typingAProjectNameInSimpleModeAtNightLetsTheScreenRest() = typeAProjectName(simple = true, theme = "Night")
+    fun aProjectRenamedInSimpleModeAtNightKeepsItsNewName() = renameAProject(simple = true, theme = "Night")
 
     @Test
-    @org.junit.Ignore("Round 3, zone 3 verdict: the bench, not the app. Any text field in a Compose Dialog never idles under Robolectric, without one line of the app (Zone3DialogDiagTest).")
-    fun typingAProjectNameInSimpleModeInStudioLetsTheScreenRest() = typeAProjectName(simple = true, theme = "Studio")
+    fun aProjectRenamedInSimpleModeInStudioKeepsItsNewName() = renameAProject(simple = true, theme = "Studio")
 
-    private fun typeAProjectName(simple: Boolean, theme: String) {
-        for (d in listOf("projects", "projects-trash")) File(app.filesDir, d).deleteRecursively()
-        app.getSharedPreferences("settings", 0).edit().clear()
+    private fun renameAProject(simple: Boolean, theme: String) {
+        // A phone just set up (as ForegroundSoundTest): no project, no preference left by a test before.
+        for (d in listOf("projects", "projects-trash", "stems")) File(app.filesDir, d).deleteRecursively()
+        File(app.filesDir, "../shared_prefs").listFiles()?.forEach { app.getSharedPreferences(it.name.removeSuffix(".xml"), 0).edit().clear().commit() }
+        app.getSharedPreferences("settings", 0).edit()
             .putString("language", "fr").putBoolean("simpleMode", simple).putBoolean("guideSeen", !simple).putString("theme", theme).commit()
         SettingsStore.forgetForTests()
+        androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory::class.java.getDeclaredField("_instance").apply { isAccessible = true }.set(null, null)
         scenario = ActivityScenario.launch(MainActivity::class.java)
         compose.waitForIdle()
         // The seat's way: the welcome's « Plus tard », the project's name on top, its ⋮, « Renommer », the field.
         if (shown("welcome_later")) compose.onNodeWithTag("welcome_later").performClick()
         compose.waitUntil(20_000) { shown("top_projects") }
         compose.onNodeWithTag("top_projects").performClick()
-        compose.waitUntil(20_000) { compose.onAllNodes(projectMenu).fetchSemanticsNodes().isNotEmpty() }
+        runCatching { compose.waitUntil(20_000) { compose.onAllNodes(projectMenu).fetchSemanticsNodes().isNotEmpty() } }.onFailure {
+            val tags = compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("tagged") { n -> androidx.compose.ui.semantics.SemanticsProperties.TestTag in n.config })
+                .fetchSemanticsNodes(atLeastOneRootRequired = false).map { n -> n.config[androidx.compose.ui.semantics.SemanticsProperties.TestTag] }
+            error("no project's ⋮ in Mes projets; tags: $tags")
+        }
         compose.onAllNodes(projectMenu)[0].performClick()
         compose.onNodeWithText("Renommer").performClick()
-        compose.onNodeWithTag("project_name_field").performTouchInput { click() }
-        compose.onNodeWithTag("project_name_field").performTextInput(" exam")
-        val at = System.currentTimeMillis()
+        // The window is open: no wait for Compose's rest (Robolectric's limit), frames go by instead.
+        compose.runWithoutImplicitWait {
+            frames()
+            val field = node("project_name_field")
+            assertTrue("the field shows the project's name", field.config.getOrNull(SemanticsProperties.EditableText)?.text?.isNotBlank() == true)
+            compose.runOnUiThread { field.config[SemanticsActions.RequestFocus].action!!() }
+            frames()
+            compose.runOnUiThread { node("project_name_field").config[SemanticsActions.SetText].action!!(AnnotatedString("Révisions lofi")) }
+            frames()
+            assertEquals("Révisions lofi", node("project_name_field").config.getOrNull(SemanticsProperties.EditableText)?.text)
+            compose.runOnUiThread { node("project_rename_ok").config[SemanticsActions.OnClick].action!!() }
+            frames()
+        }
+        // The window closed: the screen rests again, the project has its new name.
+        compose.waitUntil(20_000) { !shown("project_name_field") }
         compose.waitForIdle()
-        compose.onNodeWithTag("project_name_field").performTextInput("Révisions lofi")
-        compose.waitForIdle()
-        assertTrue("idle again in ${System.currentTimeMillis() - at} ms", System.currentTimeMillis() - at < 30_000)
-        assertTrue(compose.onAllNodes(hasText(" examRévisions lofi", substring = true)).fetchSemanticsNodes().isNotEmpty())
+        compose.waitUntil(20_000) { compose.onAllNodes(hasText("Révisions lofi")).fetchSemanticsNodes().isNotEmpty() }
+    }
+
+    private fun node(tag: String): SemanticsNode =
+        compose.onAllNodesWithTag(tag).fetchSemanticsNodes(atLeastOneRootRequired = false).firstOrNull() ?: error("$tag absent")
+
+    /** A few frames of the test clock and the main looper (a bounded wait, see the class). */
+    private fun frames() = repeat(6) {
+        compose.mainClock.advanceTimeByFrame()
+        shadowOf(Looper.getMainLooper()).idle()
     }
 }
 
@@ -136,14 +169,18 @@ class Tour3NameFieldIdleTest {
         }
         typeAndRest("[ examRévisions lofi]")
     }
-    /** The project rename's own window (ScaledAlertDialog, its field rescaled), at night, without the app around it. */
+    /**
+     * The project rename's own window (ScaledAlertDialog, its field rescaled), at night, without the app around it: the name
+     * typed is the one the window confirms. No wait for Compose's rest while it is open (Robolectric's limit, Zone3DialogDiagTest).
+     */
     @Test
-    @org.junit.Ignore("Round 3, zone 3 verdict: the bench, not the app. Any text field in a Compose Dialog never idles under Robolectric, without one line of the app (Zone3DialogDiagTest).")
-    fun aNameFieldInTheRenameWindowTouchedThenTypedInRests() {
+    fun aNameFieldInTheRenameWindowTakesTheNameTyped() {
+        // The window opens after setContent (whose own wait for rest would never end with it open).
+        val open = androidx.compose.runtime.mutableStateOf(false)
         compose.setContent {
             com.pocketstudio.ui.PocketStudioTheme(com.pocketstudio.ui.Palettes.Dark) {
                 var name by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf("Mon premier rythme") }
-                com.pocketstudio.ui.ScaledAlertDialog(
+                if (open.value) com.pocketstudio.ui.ScaledAlertDialog(
                     onDismissRequest = {},
                     title = { androidx.compose.material3.Text("Renommer") },
                     text = { com.pocketstudio.app.ui.NameField(name, { name = it }, max = 40, label = "Nom du projet", modifier = androidx.compose.ui.Modifier.testTag("field")) },
@@ -151,6 +188,16 @@ class Tour3NameFieldIdleTest {
                 )
             }
         }
-        typeAndRest("[ examRévisions lofi]")
+        compose.runWithoutImplicitWait {
+            fun frames() = repeat(6) { compose.mainClock.advanceTimeByFrame(); shadowOf(Looper.getMainLooper()).idle() }
+            fun field() = compose.onAllNodesWithTag("field").fetchSemanticsNodes(atLeastOneRootRequired = false).firstOrNull() ?: error("field absent")
+            compose.runOnUiThread { open.value = true }
+            frames()
+            compose.runOnUiThread { field().config[SemanticsActions.RequestFocus].action!!() }
+            frames()
+            compose.runOnUiThread { field().config[SemanticsActions.SetText].action!!(AnnotatedString("Révisions lofi")) }
+            frames()
+            assertTrue(compose.onAllNodes(hasText("[Révisions lofi]")).fetchSemanticsNodes(atLeastOneRootRequired = false).isNotEmpty())
+        }
     }
 }

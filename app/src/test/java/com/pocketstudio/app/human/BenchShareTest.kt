@@ -116,10 +116,11 @@ class BenchShareTest {
             if (next.action != Intent.ACTION_CHOOSER) continue
             @Suppress("DEPRECATION")
             val send = next.getParcelableExtra<Intent>(Intent.EXTRA_INTENT)
+            // Every file the menu sends (« Partager les 2 fichiers »: ACTION_SEND_MULTIPLE), one entry per menu.
             @Suppress("DEPRECATION")
-            val uri = send?.getParcelableExtra<android.net.Uri>(Intent.EXTRA_STREAM)
-                ?: send?.getParcelableArrayListExtra<android.net.Uri>(Intent.EXTRA_STREAM)?.firstOrNull()
-            add(uri?.lastPathSegment ?: "?")
+            val uris = send?.getParcelableArrayListExtra<android.net.Uri>(Intent.EXTRA_STREAM)
+                ?: listOfNotNull(runCatching { send?.getParcelableExtra<android.net.Uri>(Intent.EXTRA_STREAM) }.getOrNull())
+            add(uris.mapNotNull { it.lastPathSegment }.joinToString(", ").ifEmpty { "?" })
         }
     }
 

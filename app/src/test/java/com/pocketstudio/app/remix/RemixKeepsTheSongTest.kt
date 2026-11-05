@@ -83,4 +83,21 @@ class RemixKeepsTheSongTest {
         assertEquals(1.0, p.remix.stretchFor(p.tempoBpm), 0.0)
         assertEquals(song.name, p.tempoLead?.name)
     }
+
+    /** Relecture tour 1, M2: « Découper ce que je veux » never turns a project in a loop into a 1-part song. */
+    @Test
+    fun aSongTakenToCutLeavesTheLoopALoop() {
+        val made = WhatPlaysTest.wizard("jump_up").copy(song = emptyList())
+        val vm = open(made)
+        vm.useSong(song, choice = com.pocketstudio.model.SongImport.defaults(vm.project.value).copy(bricks = false), asSource = true)
+        val p = vm.project.value
+        assertEquals(song.id, p.remix.setId)
+        assertTrue("the song is never placed later on either", p.remix.placed)
+        assertEquals(emptyList<com.pocketstudio.model.SongPart>(), p.song)
+        assertTrue(p.remix.stems.all { it.mute })
+        // « Mettre dans mon projet » still makes the part as long as the song.
+        val vm2 = open(made)
+        vm2.useSong(song)
+        assertEquals(1, vm2.project.value.song.size)
+    }
 }

@@ -145,7 +145,7 @@
   "Le morceau dépasse la mesure %d : à la suite, seuls les lancements seront enregistrés, pas les effets.": "Lagu melewati bar %d: setelahnya, hanya peluncuran yang direkam, bukan efek.",
   "Le morceau est plein (%d parties) : la fin de la prise n'a pas été écrite.": "Lagu penuh (%d bagian): akhir take tidak ditulis.",
   "Le morceau n'a pas pu être calé au tempo (mémoire insuffisante) : il garde son tempo.": "Lagu tidak bisa disesuaikan ke tempo (memori kurang): tetap di temponya sendiri.",
-  "Le moteur audio n'est pas prêt : réessaie dans un instant.": "Mesin audio belum siap: coba lagi sebentar lagi.",
+  "Le moteur audio n'a pas démarré : ferme l'appli puis rouvre-la.": "Mesin audio tidak berjalan: tutup aplikasi lalu buka lagi.",
   "Le pack n'a pas pu être lu (%s).": "Pack tidak bisa dibaca (%s).",
   "Le projet n'a pas pu être relu ; un nouveau projet commence.": "Proyek tidak bisa dibaca; proyek baru dimulai.",
   "Le projet n'a pas pu être relu. Il est mis de côté (%s) et un nouveau projet commence.": "Proyek tidak bisa dibaca. Proyek disisihkan (%s) dan proyek baru dimulai.",

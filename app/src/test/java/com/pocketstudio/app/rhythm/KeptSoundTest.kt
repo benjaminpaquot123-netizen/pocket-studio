@@ -22,6 +22,7 @@ import com.pocketstudio.model.guide.GuideChange
 import com.pocketstudio.model.guide.GuideHistory
 import com.pocketstudio.model.guide.GuideTrack
 import com.pocketstudio.model.layersOf
+import com.pocketstudio.model.longFxCount
 import com.pocketstudio.model.track
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -138,5 +139,34 @@ class KeptSoundTest {
         vm.renameSynthFavorite(vm.favorites.value.synth.indexOfFirst { it.name == "Lead" }, "Basse ronde")
         assertTrue(vm.favorites.value.synth.any { it.name == "Lead" })
         assertTrue(vm.notice.value!!.contains("déjà"))
+    }
+
+    /** Relecture tour 1 (mineur): its effects past the long effects' limit: the kept sound is refused whole, said. */
+    @Test
+    fun aKeptSoundWhoseEffectsAreRefusedLeavesTheTrackAsItIs() {
+        val made = song().let { p -> p.copy(tracks = p.tracks.map { if (it.id == 1) it.copy(synth = it.synth.with(0, 0.91f)) else it }) }
+        val vm = open(made)
+        vm.selectTrack(1)
+        waitUntil("the bass shown") { vm.selectedTrack.value == 1 }
+        val bassCh = InstrumentTrack.mixerChannel(1)
+        val leadCh = InstrumentTrack.mixerChannel(2)
+        vm.setInsertType(bassCh, 1, EffectType.ECHO)
+        vm.saveSynthFavorite("Basse écho")
+        val limit = EffectType.longLimit(EffectType.ECHO)
+        val chans = vm.project.value.mixer.channels.indices.filter { it != leadCh && it != bassCh }
+        loop@ for (ch in chans) for (slot in 0 until com.pocketstudio.model.Mixer.INSERTS) {
+            if (vm.project.value.mixer.longFxCount(EffectType.ECHO) >= limit) break@loop
+            vm.setInsertType(ch, slot, EffectType.ECHO)
+        }
+        assertEquals(limit, vm.project.value.mixer.longFxCount(EffectType.ECHO))
+        vm.dismissNotice()
+        vm.selectTrack(2)
+        waitUntil("the lead shown") { vm.selectedTrack.value == 2 }
+        val before = vm.project.value
+        assertTrue("a sound of its own", before.track(2).synth.sanitized() != vm.favorites.value.synth.first { it.name == "Basse écho" }.sound)
+        vm.applySynthFavorite(vm.favorites.value.synth.indexOfFirst { it.name == "Basse écho" })
+        assertEquals("the lead's sound stays", before.track(2).synth, vm.project.value.track(2).synth)
+        assertEquals(before.mixer.channels[leadCh], vm.project.value.mixer.channels[leadCh])
+        assertEquals(com.pocketstudio.model.longFxLimitNotice(EffectType.ECHO), vm.notice.value)
     }
 }

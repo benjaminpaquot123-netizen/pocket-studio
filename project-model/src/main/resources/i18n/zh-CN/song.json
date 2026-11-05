@@ -145,7 +145,7 @@
   "Le morceau dépasse la mesure %d : à la suite, seuls les lancements seront enregistrés, pas les effets.": "这首歌超过了第 %d 小节：在它之后只会录下触发，不录效果。",
   "Le morceau est plein (%d parties) : la fin de la prise n'a pas été écrite.": "歌曲已满（%d 个段落）：录音的结尾没有被写入。",
   "Le morceau n'a pas pu être calé au tempo (mémoire insuffisante) : il garde son tempo.": "无法让歌曲对齐速度（内存不足）：它保持原来的速度。",
-  "Le moteur audio n'est pas prêt : réessaie dans un instant.": "音频引擎还没准备好：请稍后再试。",
+  "Le moteur audio n'a pas démarré : ferme l'appli puis rouvre-la.": "音频引擎没有启动：请关闭应用后重新打开。",
   "Le pack n'a pas pu être lu (%s).": "无法读取音色包（%s）。",
   "Le projet n'a pas pu être relu ; un nouveau projet commence.": "无法读取项目；开始一个新项目。",
   "Le projet n'a pas pu être relu. Il est mis de côté (%s) et un nouveau projet commence.": "无法读取项目。它已被另存（%s），开始一个新项目。",

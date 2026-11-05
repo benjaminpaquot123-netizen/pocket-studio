@@ -47,4 +47,13 @@ class SceneLabelTest {
         assertEquals(2, ProjectJson.decode(ProjectJson.encode(p)).sanitized().allScenes.size)
         assertEquals(2, p.firstEmptyScene())
     }
+
+    /** Relecture tour 1, M5: an empty scene the song plays is not free (a new part there played it twice). */
+    @Test
+    fun anEmptySceneInTheSongIsNotFree() {
+        var p = Project().sanitized().copy(drums = DrumPattern().toggle(0, 0)).sanitized()
+        p = p.switchScene(1).insertSongPart(0, 1).switchScene(0).insertSongPart(0, 0)
+        assertTrue(p.allScenes[1].isEmpty)
+        assertEquals(2, p.firstEmptyScene())
+    }
 }

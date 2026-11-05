@@ -145,7 +145,7 @@
   "Le morceau dépasse la mesure %d : à la suite, seuls les lancements seront enregistrés, pas les effets.": "गाना bar %d से आगे जाता है: उसके बाद सिर्फ़ लॉन्च रिकॉर्ड होंगे, इफ़ेक्ट्स नहीं।",
   "Le morceau est plein (%d parties) : la fin de la prise n'a pas été écrite.": "गाना भर गया है (%d पार्ट): टेक का आख़िरी हिस्सा नहीं लिखा गया।",
   "Le morceau n'a pas pu être calé au tempo (mémoire insuffisante) : il garde son tempo.": "गाने को टेम्पो पर फ़िट नहीं किया जा सका (मेमोरी कम है): वो अपना टेम्पो रखेगा।",
-  "Le moteur audio n'est pas prêt : réessaie dans un instant.": "ऑडियो इंजन तैयार नहीं है: थोड़ी देर में फिर कोशिश करो।",
+  "Le moteur audio n'a pas démarré : ferme l'appli puis rouvre-la.": "ऑडियो इंजन शुरू नहीं हुआ: ऐप बंद करो और फिर से खोलो।",
   "Le pack n'a pas pu être lu (%s).": "पैक पढ़ा नहीं जा सका (%s)।",
   "Le projet n'a pas pu être relu ; un nouveau projet commence.": "प्रोजेक्ट पढ़ा नहीं जा सका; एक नया प्रोजेक्ट शुरू होता है।",
   "Le projet n'a pas pu être relu. Il est mis de côté (%s) et un nouveau projet commence.": "प्रोजेक्ट पढ़ा नहीं जा सका। इसे अलग रख दिया गया है (%s) और एक नया प्रोजेक्ट शुरू होता है।",

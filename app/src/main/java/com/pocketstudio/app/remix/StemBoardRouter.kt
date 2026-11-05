@@ -406,7 +406,9 @@ class StemBoardRouter(
         _state.update { it.copy(pick = null) }
         if (lane !in 0 until DrumPattern.PAD_COUNT || refusedBusy()) return
         if (pick.sels.size == 1) route(pick.sels.single(), StemDestination.Pad(lane))
-        else putPiecesOn(pick.sels, (lane until DrumPattern.PAD_COUNT).toList())
+        // Relecture tour 1, M1: only the pad touched is replaced (as the question says), the other
+        // pieces take the pads freed since, the rest is said, never the kit's next pads overwritten.
+        else putPiecesOn(pick.sels, listOf(lane) + StemRouting.freePads(host.project()).filter { it != lane })
     }
 
     override fun dismissPick() = _state.update { it.copy(pick = null) }

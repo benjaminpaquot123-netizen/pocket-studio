@@ -145,7 +145,7 @@
   "Le morceau dépasse la mesure %d : à la suite, seuls les lancements seront enregistrés, pas les effets.": "The song goes past bar %d: added after it, only launches will be recorded, not effects.",
   "Le morceau est plein (%d parties) : la fin de la prise n'a pas été écrite.": "The song is full (%d parts): the end of the take was not written.",
   "Le morceau n'a pas pu être calé au tempo (mémoire insuffisante) : il garde son tempo.": "The song couldn't be matched to the tempo (not enough memory): it keeps its own tempo.",
-  "Le moteur audio n'est pas prêt : réessaie dans un instant.": "The audio engine isn't ready: try again in a moment.",
+  "Le moteur audio n'a pas démarré : ferme l'appli puis rouvre-la.": "The audio engine didn't start: close the app and open it again.",
   "Le pack n'a pas pu être lu (%s).": "The pack couldn't be read (%s).",
   "Le projet n'a pas pu être relu ; un nouveau projet commence.": "The project couldn't be read; a new project starts.",
   "Le projet n'a pas pu être relu. Il est mis de côté (%s) et un nouveau projet commence.": "The project couldn't be read. It's been set aside (%s) and a new project starts.",

@@ -83,6 +83,8 @@ class RecordZone4Test {
         val vm = vm()
         vm.recordAudio(0)
         assertTrue(vm.notice.value!!, "moteur audio" in vm.notice.value!!)
+        // Relecture tour 1 (mineur): the library never loads later on, « réessaie dans un instant » misled.
+        assertEquals("Le moteur audio n'a pas démarré : ferme l'appli puis rouvre-la.", vm.notice.value)
         assertNull(vm.audioRecording.value)
     }
 

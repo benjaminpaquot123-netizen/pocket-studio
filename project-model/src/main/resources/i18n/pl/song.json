@@ -145,7 +145,7 @@
   "Le morceau dépasse la mesure %d : à la suite, seuls les lancements seront enregistrés, pas les effets.": "Utwór wychodzi poza takt %d: po nim nagrywane będą tylko odpalenia, nie efekty.",
   "Le morceau est plein (%d parties) : la fin de la prise n'a pas été écrite.": "Utwór jest pełny (części: %d): koniec nagrania nie został zapisany.",
   "Le morceau n'a pas pu être calé au tempo (mémoire insuffisante) : il garde son tempo.": "Nie udało się dopasować utworu do tempa (za mało pamięci): zachowuje własne tempo.",
-  "Le moteur audio n'est pas prêt : réessaie dans un instant.": "Silnik audio nie jest gotowy: spróbuj za chwilę.",
+  "Le moteur audio n'a pas démarré : ferme l'appli puis rouvre-la.": "Silnik audio się nie uruchomił: zamknij aplikację i otwórz ją ponownie.",
   "Le pack n'a pas pu être lu (%s).": "Nie udało się odczytać paczki (%s).",
   "Le projet n'a pas pu être relu ; un nouveau projet commence.": "Nie udało się odczytać projektu; zaczyna się nowy projekt.",
   "Le projet n'a pas pu être relu. Il est mis de côté (%s) et un nouveau projet commence.": "Nie udało się odczytać projektu. Odłożono go na bok (%s) i zaczyna się nowy projekt.",

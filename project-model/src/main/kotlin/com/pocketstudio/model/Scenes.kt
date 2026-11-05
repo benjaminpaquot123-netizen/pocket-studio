@@ -394,11 +394,16 @@ fun Project.copyOf(index: Int): Int? {
     return all.indices.firstOrNull { it != index && all[it].copy(name = "", label = "") == s.copy(name = "", label = "") }
 }
 
-/** The first empty scene slot other than the one shown (a new scene to fill), or null when all 24 are taken. */
+/**
+ * The first empty scene slot other than the one shown (a new scene to fill), or null when all 24
+ * are taken. A scene holding an audio take, or already played by the song, is not empty (relecture
+ * tour 1, M5: a new part of the song took one, the song then played the same scene twice).
+ */
 fun Project.firstEmptyScene(): Int? {
     val all = allScenes
     val takes = scenesWithTakes()
-    return all.indices.firstOrNull { it != scene && all[it].isEmpty && it !in takes } ?: all.size.takeIf { it < Scene.MAX }
+    val inSong = song.mapTo(HashSet()) { it.scene }
+    return all.indices.firstOrNull { it != scene && all[it].isEmpty && it !in takes && it !in inSong } ?: all.size.takeIf { it < Scene.MAX }
 }
 
 /** Scenes an audio take belongs to (its clip, or the previous take kept to bring back). */

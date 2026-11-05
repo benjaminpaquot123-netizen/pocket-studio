@@ -195,13 +195,14 @@ class StemBoardRouterTest {
         assertNull(r.state.value.pick)
         assertEquals(4, host.pads.single().single().lane)
         assertEquals("« Voix 1 » remplace « Son 4 » sur le pad 5 (la flèche retour le remet).", r.state.value.message)
-        // Several pieces with no pad free: asked once, they go on the pad picked and the next ones.
+        // Several pieces with no pad free: asked once, only the pad picked is replaced (relecture
+        // tour 1, M1: the next pads, Kick, Kick 2, Caisse…, are never overwritten), the rest is said.
         r.dismissMessage()
         r.sendPieces(listOf(sel(), sel(start = 200_000, end = 210_000)), StemDestination.Pad())
         assertEquals(2, r.state.value.pick!!.sels.size)
-        r.pickPad(14)
-        assertEquals(listOf(14, 15), host.pads.last().map { it.lane })
-        assertEquals("2 bouts sur les pads 15 à 16.", r.state.value.message)
+        r.pickPad(0)
+        assertEquals(listOf(0), host.pads.last().map { it.lane })
+        assertEquals("1 bout sur le pad 1. Plus de pad libre pour le dernier bout.", r.state.value.message)
     }
 
     @Test

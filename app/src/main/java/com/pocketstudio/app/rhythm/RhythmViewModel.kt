@@ -1414,14 +1414,31 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun renameAcidFavorite(i: Int, name: String) = renameKept("acid", i, name)
 
     /** Kept sound [fx]'s effects on track [id]'s strip, in the undo step [key] of its sound (said when the engine has no room). */
-    private fun putKeptFx(id: Int, fx: com.pocketstudio.model.Channel?, key: String) {
-        fx ?: return
+    /** Track [id]'s project with kept effects [fx] on its strip; null when nothing changes. */
+    private fun withKeptFx(id: Int, fx: com.pocketstudio.model.Channel?): Project? {
+        fx ?: return null
         val ch = InstrumentTrack.mixerChannel(id)
         val before = project.value
-        val c = before.mixer.channels.getOrNull(ch) ?: return
+        val c = before.mixer.channels.getOrNull(ch) ?: return null
         val next = c.withKeptFx(fx)
-        if (next == c) return
-        val edited = before.copy(mixer = before.mixer.copy(channels = before.mixer.channels.mapIndexed { k, o -> if (k == ch) next else o })).withoutStaleInsertLanes(before)
+        if (next == c) return null
+        return before.copy(mixer = before.mixer.copy(channels = before.mixer.channels.mapIndexed { k, o -> if (k == ch) next else o })).withoutStaleInsertLanes(before)
+    }
+
+    /**
+     * Relecture tour 1 (mineur): kept effects past the long effects' limit refuse the whole kept
+     * sound, said, before its sound goes on (it went on alone: half a kept sound).
+     */
+    private fun keptFxRefused(id: Int, fx: com.pocketstudio.model.Channel?): Boolean {
+        val edited = withKeptFx(id, fx) ?: return false
+        val over = edited.mixer.longFxOverLimit(project.value.mixer) ?: return false
+        _notice.value = longFxLimitNotice(over)
+        return true
+    }
+
+    private fun putKeptFx(id: Int, fx: com.pocketstudio.model.Channel?, key: String) {
+        val before = project.value
+        val edited = withKeptFx(id, fx) ?: return
         edited.mixer.longFxOverLimit(before.mixer)?.let { _notice.value = longFxLimitNotice(it); return }
         session.edit(key) { edited }
         pushMixer()
@@ -1431,6 +1448,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Kept synth sound [i] on the track shown: its sound and its effects, one undo step. */
     fun applySynthFavorite(i: Int) {
         val k = _favorites.value.synth.getOrNull(i) ?: return
+        if (keptFxRefused(track, k.fx)) return
         val key = "kept:" + System.nanoTime()
         applySynthPreset(k.sound, key)
         putKeptFx(track, k.fx, key)
@@ -1439,6 +1457,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Kept Plaits sound [i] on the track shown: its sound and its effects, one undo step. */
     fun applyPlaitsFavorite(i: Int) {
         val k = _favorites.value.plaits.getOrNull(i) ?: return
+        if (keptFxRefused(track, k.fx)) return
         val key = "kept:" + System.nanoTime()
         editTrack(key) { it.copy(plaits = k.sound.sanitized()) }
         pushPlaits()
@@ -2158,7 +2177,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (_audioRecording.value != null) return
         // Audit ultra round 1 (n° 29): never a silent « Enregistrer »: why, and what to do.
         if (!NativeEngine.isAvailable) {
-            _notice.value = tr("Le moteur audio n'est pas prêt : réessaie dans un instant.")
+            _notice.value = tr("Le moteur audio n'a pas démarré : ferme l'appli puis rouvre-la.")
             return
         }
         if (_recording.value) stopRecordingTake()
@@ -3295,9 +3314,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Copies the current scene to the first empty slot and shows it (one undo step): the usual way to make a variation. */
     fun duplicateScene() {
-        val p = project.value
-        val scenes = p.allScenes
-        val target = scenes.indices.firstOrNull { it != p.scene && scenes[it].isEmpty } ?: scenes.size.takeIf { it < Scene.MAX }
+        // Relecture tour 1, M5: never onto a scene holding an audio take or played by the song.
+        val target = project.value.firstEmptyScene()
         if (target == null) {
             _notice.value = tr("Les %d parties sont déjà prises : plus de place pour une copie.", Scene.MAX)
             return
@@ -3356,8 +3374,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _notice.value = tr("Le morceau a déjà %d parties : retires-en une pour en ajouter une autre.", SongPart.MAX_PARTS)
             return
         }
-        val scenes = p.allScenes
-        val target = (if (copy) scenes.indices.firstOrNull { it != p.scene && scenes[it].isEmpty } ?: scenes.size.takeIf { it < Scene.MAX } else p.firstEmptyScene())
+        // Relecture tour 1, M5: a copy too goes on a scene really free (no audio take, not in the song).
+        val target = p.firstEmptyScene()
         if (target == null) {
             _notice.value = tr("Les %d parties sont déjà prises : vide-en une pour recommencer.", Scene.MAX)
             return
@@ -6085,7 +6103,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             )
             // Step 5a: in the song's structure too (a part as long as it when the song has none);
             // step 5c: or its parts as bricks.
-            val placed = put.withRemixPlaced()
+            // Relecture tour 1, M2: « Découper ce que je veux » only keeps the song as a store of sounds,
+            // a project in a loop stays a loop (no 90-bar part made for it).
+            val placed = if (asSource) put.copy(remix = put.remix.copy(placed = true)) else put.withRemixPlaced()
             if (choice?.bricks == true && place != com.pocketstudio.model.SongPlace.Passage) placed.withSongSections(sections) ?: placed else placed
         }
         if (lead != null && kotlin.math.abs(lead.bpm - before.tempoBpm) >= 0.05) _tempoSet.value = TempoSet(lead.name, lead.bpm, before.tempoBpm)
@@ -10515,7 +10535,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // Testers (lot « tuto 5 »): « Partager » touched twice in a row makes one song, one share menu.
         if (_export.value.running || exportJobLive || shareWaiting) return
         if (!NativeEngine.isAvailable) {
-            _export.value = _export.value.copy(sharing = true, error = tr("Le moteur audio n'est pas prêt : réessaie dans un instant."))
+            _export.value = _export.value.copy(sharing = true, error = tr("Le moteur audio n'a pas démarré : ferme l'appli puis rouvre-la."))
             return
         }
         // A take just stopped may still be being written: the song waits for it.

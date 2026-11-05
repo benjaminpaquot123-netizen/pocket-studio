@@ -145,7 +145,7 @@
   "Le morceau dépasse la mesure %d : à la suite, seuls les lancements seront enregistrés, pas les effets.": "曲が %d 小節を超えています。その後は起動だけが録音され、エフェクトは録音されません。",
   "Le morceau est plein (%d parties) : la fin de la prise n'a pas été écrite.": "曲がいっぱいです（%d パート）。テイクの最後は書き込まれませんでした。",
   "Le morceau n'a pas pu être calé au tempo (mémoire insuffisante) : il garde son tempo.": "曲をテンポに合わせられませんでした（メモリ不足）。元のテンポのままです。",
-  "Le moteur audio n'est pas prêt : réessaie dans un instant.": "オーディオエンジンの準備ができていません。少し待ってからもう一度試してね。",
+  "Le moteur audio n'a pas démarré : ferme l'appli puis rouvre-la.": "オーディオエンジンが起動しませんでした。アプリを閉じて、もう一度開いてね。",
   "Le pack n'a pas pu être lu (%s).": "パックを読み込めませんでした（%s）。",
   "Le projet n'a pas pu être relu ; un nouveau projet commence.": "プロジェクトを読み込めませんでした。新しいプロジェクトを始めます。",
   "Le projet n'a pas pu être relu. Il est mis de côté (%s) et un nouveau projet commence.": "プロジェクトを読み込めませんでした。別に保管して（%s）、新しいプロジェクトを始めます。",

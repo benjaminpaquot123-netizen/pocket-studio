@@ -115,7 +115,7 @@ class VideoExportViewModel(app: Application) : AndroidViewModel(app) {
     fun start(rhythmVm: RhythmViewModel) {
         if (job?.isActive == true) return
         if (!NativeEngine.isAvailable) {
-            _state.value = VideoExportUi(error = tr("Le moteur audio n'est pas prêt : réessaie dans un instant."))
+            _state.value = VideoExportUi(error = tr("Le moteur audio n'a pas démarré : ferme l'appli puis rouvre-la."))
             return
         }
         if (rhythmVm.exportBusy) {

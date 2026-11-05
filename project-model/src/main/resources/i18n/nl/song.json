@@ -145,7 +145,7 @@
   "Le morceau dépasse la mesure %d : à la suite, seuls les lancements seront enregistrés, pas les effets.": "Het nummer gaat voorbij maat %d: erachter worden alleen lanceringen opgenomen, geen effecten.",
   "Le morceau est plein (%d parties) : la fin de la prise n'a pas été écrite.": "Het nummer is vol (%d delen): het einde van de opname is niet geschreven.",
   "Le morceau n'a pas pu être calé au tempo (mémoire insuffisante) : il garde son tempo.": "Het nummer kon niet op tempo worden gezet (te weinig geheugen): het houdt zijn eigen tempo.",
-  "Le moteur audio n'est pas prêt : réessaie dans un instant.": "De audio-engine is nog niet klaar: probeer het zo opnieuw.",
+  "Le moteur audio n'a pas démarré : ferme l'appli puis rouvre-la.": "De audio-engine is niet gestart: sluit de app en open hem opnieuw.",
   "Le pack n'a pas pu être lu (%s).": "Het pack kon niet worden gelezen (%s).",
   "Le projet n'a pas pu être relu ; un nouveau projet commence.": "Het project kon niet worden gelezen; er begint een nieuw project.",
   "Le projet n'a pas pu être relu. Il est mis de côté (%s) et un nouveau projet commence.": "Het project kon niet worden gelezen. Het is apart gezet (%s) en er begint een nieuw project.",

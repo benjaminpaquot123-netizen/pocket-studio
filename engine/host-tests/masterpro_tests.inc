@@ -390,23 +390,40 @@ static void testIntegratedTargetOnADropAimedSong() {
 // Audit ultra round 1 (n° 13, seats A c, E d, F c): a club export and a streaming export of the same
 // song, as the app describes them (mix version 4: « Club » aims at the Drop, -8 LUFS; « Streaming »
 // at the whole song, -14 LUFS), are two different files: 6 LU apart, each at its target, both under -1 dBTP.
+// Audit ultra round 2 (n° 8): the target's gain is in the FILE written (renderToWav, as the app's export),
+// measured here on the file's own samples by an independent meter, not only in the engine's report.
 static void testClubAndStreamingExportsDiffer() {
     double club = 0.0, streaming = 0.0;
+    const char* dir = std::getenv("TMPDIR") ? std::getenv("TMPDIR") : "/tmp";
     for (bool wholeSong : {false, true}) {
         ps::OfflineRenderer r(kRate);
         prepareLoudLoop(r, 0.5f);
         r.post({ps::CommandType::SetMixVersion, 4.0f, 0});
         r.post({ps::CommandType::SetMasterPro, wholeSong ? 1.0f : 0.0f, ps::ProForceSong});
         r.post({ps::CommandType::SetMaster, wholeSong ? -14.0f : -8.0f, 4});
-        const auto out = r.renderToBuffer(kRate * 12, 0);
+        r.setOutputFormat(kRate, 16);
+        const std::string path = std::string(dir) + (wholeSong ? "/ps_mp_streaming.wav" : "/ps_mp_club.wav");
+        CHECK(r.renderToWav(path.c_str(), kRate * 12, 0) == ps::OfflineRenderer::Result::Ok);
+        int rate = 0;
+        const auto out = readWav16(path, rate);
+        std::remove(path.c_str());
+        CHECK(rate == kRate && out.size() > size_t(kRate) * 2 * 11);
+        ps::LoudnessMeter m;
+        m.prepare(kRate);
+        for (size_t i = 0; i + 1 < out.size(); i += 2) m.add(out[i], out[i + 1]);
+        const double file = m.integratedLufs();
         const auto& rep = r.report();
         const double reached = wholeSong ? rep.lufs : (rep.loudLufs > -100.0 ? rep.loudLufs : rep.lufs);
-        std::printf("  %s: %.2f LUFS (loud part %.2f), %.2f dBTP, mode %d\n", wholeSong ? "streaming" : "club", rep.lufs, rep.loudLufs, toDb(rep.truePeak), rep.mode);
+        std::printf("  %s: file %.2f LUFS (report %.2f, loud part %.2f), %.2f dBTP, mode %d\n", wholeSong ? "streaming" : "club", file, rep.lufs,
+                    rep.loudLufs, toDb(independentTruePeak(out)), rep.mode);
         CHECK(rep.mode == (wholeSong ? 0 : 1));
         CHECK(std::fabs(reached - (wholeSong ? -14.0 : -8.0)) <= 0.5);
-        CHECK(toDb(independentTruePeak(out)) <= -1.0);
+        // The file itself: at the target (the loop is the same all along: its whole equals its Drop).
+        CHECK(std::fabs(file - (wholeSong ? -14.0 : -8.0)) <= 0.6);
+        CHECK(std::fabs(file - rep.lufs) < 0.1);
+        CHECK(toDb(independentTruePeak(out)) <= -1.0 + 0.1);  // 16-bit rounding of a -1 dBTP ceiling
         CHECK(finiteAndUnclipped(out));
-        (wholeSong ? streaming : club) = rep.lufs;
+        (wholeSong ? streaming : club) = file;
     }
     CHECK(club - streaming >= 5.0);
 }

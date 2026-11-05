@@ -1,0 +1,21 @@
+{
+  "Ligne du temps : %1$s, %2$s": "Tijdlijn: %1$s, %2$s",
+  "Morceau écrit : %1$s, %2$s": "Nummer geschreven: %1$s, %2$s",
+  "Grille des notes : %s": "Notenraster: %s",
+  "1 pas": "1 stap",
+  "1 piste": "1 spoor",
+  "1 réglage": "1 instelling",
+  "%d réglages": "%d instellingen",
+  "Fait : break de 1 mesure après %2$s": "Klaar: een break van 1 maat na %2$s",
+  "Fait : montée de 1 mesure avant %2$s": "Klaar: een opbouw van 1 maat voor %2$s",
+  "Pas encore de morceau : ta partie part en boucle (1 mesure).": "Nog geen nummer: je deel gaat mee als loop (1 maat).",
+  "Ta prise Live a été gardée : elle est dans le morceau (1 partie).": "Je Live-opname is bewaard: ze staat in het nummer (1 deel).",
+  "Ton texte (1 caractère)": "Je tekst (1 teken)",
+  "trop bas de 1 cent": "1 cent te laag",
+  "trop haut de 1 cent": "1 cent te hoog",
+  "−%d demi-ton": "−%d halve toon",
+  "%d min": "%d min",
+  "%1$d min %2$d": "%1$d min %2$d",
+  "Hors de la gamme du morceau": "Buiten de toonladder van het nummer",
+  "Poignée : glisse vers le bas pour fermer": "Greep: veeg omlaag om te sluiten"
+}

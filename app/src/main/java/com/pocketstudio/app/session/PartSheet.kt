@@ -118,8 +118,8 @@ fun PartIntent.doneText(title: String): String = when (this) {
     PartIntent.Variation -> tr("Fait : variation de %s, à modifier seule", title)
     PartIntent.EditAll -> title
     PartIntent.Fill -> tr("Fait : fill à la fin de %s", title)
-    is PartIntent.Break -> tr("Fait : break de %1\$d mesures après %2\$s", bars, title)
-    is PartIntent.BuildUp -> tr("Fait : montée de %1\$d mesures avant %2\$s", bars, title)
+    is PartIntent.Break -> com.pocketstudio.model.i18n.trCount(bars, "Fait : break de 1 mesure après %2\$s", "Fait : break de %1\$d mesures après %2\$s", bars, title)
+    is PartIntent.BuildUp -> com.pocketstudio.model.i18n.trCount(bars, "Fait : montée de 1 mesure avant %2\$s", "Fait : montée de %1\$d mesures avant %2\$s", bars, title)
     PartIntent.FadeIn -> tr("Fait : fondu d'entrée sur %s", title)
     PartIntent.FadeOut -> tr("Fait : fondu de sortie sur %s", title)
     PartIntent.Ending -> tr("Fait : une fin de 4 mesures, le morceau s'arrête là")

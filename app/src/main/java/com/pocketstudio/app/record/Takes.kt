@@ -50,10 +50,8 @@ data class NoteTakeUi(
             trCount(notes, "1 note", "%d notes"),
             trCount(hits, "1 coup", "%d coups"),
         )
-        notes > 1 -> tr("Ta prise : %d notes", notes)
-        notes == 1 -> tr("Ta prise : 1 note")
-        hits > 1 -> tr("Ta prise : %d coups", hits)
-        hits == 1 -> tr("Ta prise : 1 coup")
+        notes > 0 -> trCount(notes, "Ta prise : 1 note", "Ta prise : %d notes")
+        hits > 0 -> trCount(hits, "Ta prise : 1 coup", "Ta prise : %d coups")
         moves -> tr("Ta prise : les mouvements des boutons")
         else -> tr("Rien n'a été enregistré")
     }

@@ -603,7 +603,7 @@ private fun SceneEffects(ui: PadLiveUi, actions: PadLiveActions, more: Boolean, 
 }
 
 /** The riser's length in words that fit its button on a phone (« 4 mesures »; the B1 « souffle qui monte » was cut). */
-internal fun riserWords(bars: Int): String = if (bars == 1) tr("1 mesure") else tr("%d mesures", bars)
+internal fun riserWords(bars: Int): String = com.pocketstudio.model.i18n.trCount(bars, "1 mesure", "%d mesures")
 
 /**
  * A held effect's button: on while the finger stays ([hold]); [track]: also where the finger is

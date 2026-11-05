@@ -46,12 +46,13 @@ enum class Lang(val code: String, val nativeName: String, val flag: String, val 
 
     /**
      * Whether musicians of this language name notes Do Ré Mi (French, Spanish, Portuguese, Italian,
-     * Turkish) rather than C D E: the notation chosen with the language, and the one its texts write.
+     * Turkish, Arabic) rather than C D E: the notation chosen with the language, and the one its texts write.
      */
     val solfege: Boolean get() = this in SOLFEGE
 
     companion object {
-        private val SOLFEGE = setOf(FR, ES, PT_BR, IT, TR)
+        // Arabic too (round 3, n° 38): دو ري مي, as taught in the Arab world.
+        private val SOLFEGE = setOf(FR, ES, PT_BR, IT, TR, AR)
 
         fun of(code: String?): Lang = entries.firstOrNull { it.code == code } ?: FR
 
@@ -135,6 +136,8 @@ object I18n {
         "ultra2z5",
         // Audit ultra round 2, zone 6: the Mode simple's pad names and tempo in everyday words, the Remix model asked first.
         "ultra2z6",
+        // Audit ultra round 3, zone 6: counts said with their plural in every language, units and words put in.
+        "ultra3z6",
     )
 
     @Volatile
@@ -251,7 +254,16 @@ object I18n {
 fun tr(fr: String): String = I18n.t(fr)
 
 /** [fr] in the interface's language, its `%s` / `%d` / `%1$s` filled with [args] (numbers in the language's format). */
-fun tr(fr: String, vararg args: Any?): String = String.format(I18n.lang.locale, I18n.t(fr), *args)
+fun tr(fr: String, vararg args: Any?): String {
+    val lang = I18n.lang
+    val text = String.format(lang.locale, I18n.t(fr), *args)
+    // Round 3, n° 38: what a filled-in word changes around it (« “%s”을(를) », « em %s » with « a parte A »).
+    return when (lang) {
+        Lang.KO -> KoreanParticles.resolve(text)
+        Lang.PT_BR, Lang.ES -> Contractions.join(lang, text, args)
+        else -> text
+    }
+}
 
 /**
  * "50 %" in French, German and Spanish (a space before the sign), "%50" in Turkish (the sign

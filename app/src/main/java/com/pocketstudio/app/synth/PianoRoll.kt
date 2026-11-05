@@ -405,7 +405,7 @@ private fun SelectionBar(
     var noRoom by rememberSaveable { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         ToolRow(wrap, spacing = 2.dp) {
-            Text(if (!any) tr("Rien de choisi") else if (selection.size > 1) tr("%d notes", selection.size) else tr("%d note", selection.size),
+            Text(if (!any) tr("Rien de choisi") else trCount(selection.size, "%d note", "%d notes"),
                 style = MaterialTheme.typography.bodySmall, color = Neon.Cyan, modifier = Modifier.testTag("selection_count"))
             TextButton(onClick = { select(clip.notes.toSet()) }, modifier = Modifier.testTag("select_all")) { Text(tr("Tout")) }
             TextButton(onClick = { select(emptySet()) }, enabled = any) { Text(tr("Aucune")) }
@@ -460,7 +460,7 @@ private fun SelectionBar(
 private fun PasteRow(board: com.pocketstudio.model.NoteClipboard, pasteBar: Int, paste: () -> NoteEdits.Result?) {
     var noRoom by rememberSaveable { mutableStateOf(false) }
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.testTag("paste_row")) {
-        val what = if (board.notes.size > 1) tr("%d notes", board.notes.size) else tr("%d note", board.notes.size)
+        val what = trCount(board.notes.size, "%d note", "%d notes")
         Text(
             if (board.from.isNotBlank()) tr("Copié : %1\$s (%2\$s)", what, board.from) else tr("Copié : %s", what),
             Modifier.weight(1f), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 2,
@@ -748,7 +748,7 @@ private fun Grid(
                     .testTag("piano_roll")
                     // Audit final (22): the notes within TalkBack's reach (the grid is drawn).
                     .semantics {
-                        contentDescription = tr("Grille des notes : %d notes", clip.notes.size)
+                        contentDescription = tr("Grille des notes : %s", trCount(clip.notes.size, "1 note", "%d notes"))
                         if (!locked) customActions = rollAccessibleActions(clip.notes, english, actions)
                     }
                     .pointerInput(clip, newLength, harmony, chordMode, selectMode, selection, grid, stepPx, locked, hints) {

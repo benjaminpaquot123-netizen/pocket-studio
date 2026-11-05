@@ -919,7 +919,7 @@ private fun PadLoopRow(padLoop: Int, patternSteps: Int, ownLoop: Boolean, set: (
         Text(tr("Ce pad boucle sur"), style = MaterialTheme.typography.bodyMedium)
         Row(verticalAlignment = Alignment.CenterVertically) {
             TextButton(onClick = { set((padLoop - 1).coerceAtLeast(1)) }, enabled = padLoop > 1, modifier = Modifier.testTag("pad_len_minus")) { Text("−") }
-            Text(tr("%d pas", padLoop), style = MonoStyle, color = if (ownLoop) Neon.Cyan else Neon.TextSecondary, modifier = Modifier.testTag("pad_len_value"))
+            Text(trCount(padLoop, "1 pas", "%d pas"), style = MonoStyle, color = if (ownLoop) Neon.Cyan else Neon.TextSecondary, modifier = Modifier.testTag("pad_len_value"))
             TextButton(onClick = { set((padLoop + 1).coerceAtMost(patternSteps)) }, enabled = padLoop < patternSteps, modifier = Modifier.testTag("pad_len_plus")) { Text("+") }
         }
         if (ownLoop) TextButton(onClick = { set(0) }, modifier = Modifier.testTag("pad_len_reset")) { Text(tr("Comme la boucle")) }
@@ -1336,8 +1336,8 @@ private fun panShort(pan: Float) = if (pan < 0f) tr("G") else tr("D")
 
 private fun semitones(n: Int) = when {
     n == 0 -> "0"
-    n > 0 -> if (n > 1) tr("+%d demi-tons", n) else tr("+%d demi-ton", n)
-    else -> if (n < -1) tr("%d demi-tons", n) else tr("%d demi-ton", n)
+    n > 0 -> trCount(n, "+%d demi-ton", "+%d demi-tons")
+    else -> trCount(-n, "%d demi-ton", "%d demi-tons", n)
 }
 
 private fun ms(seconds: Float) =

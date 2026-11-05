@@ -25,10 +25,11 @@ fun songSummary(style: StarterWizard.Style, plan: StarterWizard.ScenePlan): Stri
 fun duration(seconds: Double): String {
     val total = (Math.round(seconds / 10) * 10).toInt()
     val (m, s) = total / 60 to total % 60
+    // Round 3, n° 38: the units in the app's language (« 1 min » stayed in Indonesian, « menit »).
     return when {
-        m == 0 -> "$s s"
-        s == 0 -> "$m min"
-        else -> "$m min $s"
+        m == 0 -> tr("%d s", s)
+        s == 0 -> tr("%d min", m)
+        else -> tr("%1\$d min %2\$d", m, s)
     }
 }
 

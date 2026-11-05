@@ -4,14 +4,14 @@
   "Écoute ton morceau tel qu'il est maintenant, puis passe au chapitre suivant : « %s ».": "अपना गाना अभी जैसा है वैसा सुनो, फिर अगले अध्याय पर जाओ: “%s”।",
   "Chapitre suivant : « %s ».": "अगला अध्याय: “%s”।",
   "Chapitre suivant": "अगला अध्याय",
-  "Écouter mon morceau": "मेरा गाना सुनें",
+  "Écouter mon morceau": "मेरा गाना सुनो",
   "Un son gardé s'appelle déjà « %s » : choisis un autre nom.": "“%s” नाम की सहेजी हुई आवाज़ पहले से है: कोई दूसरा नाम चुनो।",
   "Ce son est déjà dans tes favoris : « %s ».": "यह आवाज़ पहले से तुम्हारे पसंदीदा में है: “%s”।",
   "Son gardé dans tes favoris avec ses effets : « %s ».": "आवाज़ अपने इफ़ेक्ट्स के साथ पसंदीदा में सहेजी गई: “%s”।",
   "Son renommé : « %s ».": "आवाज़ का नाम बदला: “%s”।",
   "Déjà dans tes favoris": "पहले से पसंदीदा में",
-  "Renommer « %s »": "“%s” का नाम बदलें",
-  "Renommer le son": "आवाज़ का नाम बदलें",
+  "Renommer « %s »": "“%s” का नाम बदलो",
+  "Renommer le son": "आवाज़ का नाम बदलो",
   "Nom du son": "आवाज़ का नाम",
   "%d ms": "%d मिलीसेकंड"
 }

@@ -18,7 +18,6 @@
   "Versions du morceau (%d)": "곡 버전 (%d)",
   "Mise de côté à %s": "%s에 보관됨",
   "Avant la prise de %s": "%s 테이크 전",
-  "%1$d parties · %2$d mes.": "파트 %1$d개 · %2$d마디",
   "Versions du morceau": "곡 버전",
   "Chaque prise Live crée une nouvelle version : l'ancienne reste ici. « Ramener » la remet et garde celle en cours à sa place.": "Live 테이크마다 새 버전이 생기고, 이전 버전은 여기 남아요. “되돌리기”를 누르면 그 버전이 돌아오고, 지금 버전은 대신 여기 보관돼요.",
   "Le morceau en cours": "현재 곡",

@@ -13,7 +13,7 @@
   "Tempo : %d battements par minute": "टेम्पो: %d थाप प्रति मिनट",
   "D'abord le modèle de séparation": "पहले अलग करने वाला मॉडल",
   "Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.": "गाना अलग करने के लिए ऐप पहले अपना मॉडल डाउनलोड करता है: %s, सिर्फ़ एक बार।",
-  "Tu es en Wi-Fi.": "आप Wi-Fi पर हैं।",
-  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "आप Wi-Fi पर नहीं हैं: ये %s आपके मोबाइल डेटा से जाएँगे।",
-  "Télécharger, puis choisir la chanson": "डाउनलोड करें, फिर गाना चुनें"
+  "Tu es en Wi-Fi.": "तुम Wi-Fi पर हो।",
+  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "तुम Wi-Fi पर नहीं हो: ये %s तुम्हारे मोबाइल डेटा से जाएँगे।",
+  "Télécharger, puis choisir la chanson": "डाउनलोड करो, फिर गाना चुनो"
 }

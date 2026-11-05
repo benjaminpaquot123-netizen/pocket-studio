@@ -118,8 +118,7 @@ internal fun SonsHeader(
                         tr("Voix"),
                         when (audioTracks) {
                             0 -> tr("Micro")
-                            1 -> tr("%d piste", 1)
-                            else -> tr("%d pistes", audioTracks)
+                            else -> com.pocketstudio.model.i18n.trCount(audioTracks, "%d piste", "%d pistes")
                         },
                         Color(0xFFE57373), voiceShown, "sons_Audio",
                     ) { go(AppTab.Audio) }

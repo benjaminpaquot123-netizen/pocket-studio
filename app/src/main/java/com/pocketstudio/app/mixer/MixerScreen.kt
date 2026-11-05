@@ -265,7 +265,7 @@ private fun AutomationEntry(lanes: Int, show: () -> Unit, overview: () -> Unit) 
                     when (lanes) {
                         0 -> tr("Rien ne bouge encore : fais s'ouvrir un filtre, monter un volume…")
                         1 -> tr("1 réglage bouge tout seul.")
-                        else -> tr("%d réglages bougent tout seuls.", lanes)
+                        else -> com.pocketstudio.model.i18n.trCount(lanes, "1 réglage bouge tout seul.", "%d réglages bougent tout seuls.")
                     },
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                 )
@@ -463,7 +463,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                 )
             }
         }
-        val bars = if (export.bars > 1) tr("%d mesures", export.bars) else tr("%d mesure", export.bars)
+        val bars = com.pocketstudio.model.i18n.trCount(export.bars, "%d mesure", "%d mesures")
         Text(
             when (export.what) {
                 ExportWhat.Loop -> tr("La partie en cours, jouée sur %s (la longueur se règle dans « Avancé »).", bars)
@@ -597,7 +597,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                 ) {
                     Text(
                         when (export.what) {
-                            ExportWhat.Loop -> if (export.bars > 1) tr("Exporter %d mesures", export.bars) else tr("Exporter %d mesure", export.bars)
+                            ExportWhat.Loop -> com.pocketstudio.model.i18n.trCount(export.bars, "Exporter %d mesure", "Exporter %d mesures")
                             ExportWhat.Song -> tr("Exporter le morceau")
                             ExportWhat.Stems -> tr("Exporter les pistes")
                         },

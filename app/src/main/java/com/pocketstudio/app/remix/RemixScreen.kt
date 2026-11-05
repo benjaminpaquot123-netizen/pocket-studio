@@ -801,7 +801,7 @@ private fun StemCard(
     NeonCard(modifier = Modifier.testTag("stems_${set.id}")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                SectionLabel(set.name)
+                SectionLabel(set.name, asWritten = true)
                 val total = set.seconds.roundToInt()
                 val details = listOfNotNull(
                     "%d:%02d".format(total / 60, total % 60),

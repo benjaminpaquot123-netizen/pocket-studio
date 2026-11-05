@@ -18,7 +18,6 @@
   "Versions du morceau (%d)": "歌曲版本（%d）",
   "Mise de côté à %s": "%s 时另存",
   "Avant la prise de %s": "%s 录音之前",
-  "%1$d parties · %2$d mes.": "%1$d 个段落 · %2$d 小节",
   "Versions du morceau": "歌曲版本",
   "Chaque prise Live crée une nouvelle version : l'ancienne reste ici. « Ramener » la remet et garde celle en cours à sa place.": "每次 Live 录音都会创建一个新版本：旧版本留在这里。“恢复”会把它找回来，并把当前版本保存在它的位置。",
   "Le morceau en cours": "当前歌曲",

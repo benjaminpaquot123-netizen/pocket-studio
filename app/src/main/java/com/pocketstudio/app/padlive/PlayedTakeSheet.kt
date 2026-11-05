@@ -43,7 +43,7 @@ internal fun PlayedButton(state: PlayedTakeUi, press: () -> Unit, modifier: Modi
     val words = when (state) {
         PlayedTakeUi.Ready, is PlayedTakeUi.Done -> tr("Enregistrer ce que je joue")
         PlayedTakeUi.Armed -> tr("Prêt : ça part à la mesure")
-        is PlayedTakeUi.Recording -> if (state.bars == 1) tr("1 mesure · touche pour finir") else tr("%d mesures · touche pour finir", state.bars)
+        is PlayedTakeUi.Recording -> com.pocketstudio.model.i18n.trCount(state.bars, "1 mesure · touche pour finir", "%d mesures · touche pour finir")
         PlayedTakeUi.Ending -> tr("Ça finit à la mesure…")
     }
     val on = state is PlayedTakeUi.Recording || state == PlayedTakeUi.Ending
@@ -77,7 +77,7 @@ internal fun PlayedTakeSheet(bars: Int, emptyPad: String?, actions: PadLiveActio
     ScaledBottomSheet(onDismissRequest = actions.dropTake, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("padlive_take_sheet")) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(
-                if (bars == 1) tr("Ta prise : 1 mesure") else tr("Ta prise : %d mesures", bars),
+                com.pocketstudio.model.i18n.trCount(bars, "Ta prise : 1 mesure", "Ta prise : %d mesures"),
                 style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary,
             )
             Text(tr("Où la mettre ? Elle tourne en boucle au tempo du projet."), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)

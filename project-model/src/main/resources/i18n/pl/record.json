@@ -18,7 +18,6 @@
   "Versions du morceau (%d)": "Wersje utworu (%d)",
   "Mise de côté à %s": "Odłożona o %s",
   "Avant la prise de %s": "Przed nagraniem z %s",
-  "%1$d parties · %2$d mes.": "Części: %1$d · takty: %2$d",
   "Versions du morceau": "Wersje utworu",
   "Chaque prise Live crée une nouvelle version : l'ancienne reste ici. « Ramener » la remet et garde celle en cours à sa place.": "Każde nagranie w Live tworzy nową wersję: stara zostaje tutaj. „Przywróć” ją przywraca, a bieżącą zachowuje na jej miejscu.",
   "Le morceau en cours": "Bieżący utwór",
@@ -35,9 +34,9 @@
   "Enlever": "Usuń",
   "Refaire": "Powtórz",
   "Comme joué": "Jak zagrane",
-  "Ta prise : %d notes": "Twoje nagranie, nuty: %d",
+  "Ta prise : %d notes": "Twoje nagranie: %d nut",
   "Ta prise : 1 note": "Twoje nagranie: 1 nuta",
-  "Ta prise : %d coups": "Twoje nagranie, uderzenia: %d",
+  "Ta prise : %d coups": "Twoje nagranie: %d uderzeń",
   "Ta prise : 1 coup": "Twoje nagranie: 1 uderzenie",
   "Ta prise : les mouvements des boutons": "Twoje nagranie: ruchy gałek",
   "Rien n'a été enregistré": "Nic nie zostało nagrane",
@@ -61,5 +60,5 @@
   "Ta prise : %1$s et %2$s": "Twoje nagranie: %1$s i %2$s",
   "1 note": "1 nuta",
   "1 coup": "1 uderzenie",
-  "%d coups": "uderzenia: %d"
+  "%d coups": "%d uderzeń"
 }

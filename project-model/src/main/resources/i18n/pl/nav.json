@@ -1,6 +1,6 @@
 {
   "%d piste": "%d ścieżka",
-  "%d pistes": "ścieżki: %d",
+  "%d pistes": "%d ścieżek",
   "%d réglages bougent déjà : retires-en un dans Mix pour en automatiser un autre.": "Ustawienia, które już się ruszają: %d. Usuń jedno w Miksie, żeby zautomatyzować inne.",
   "16 pads": "16 padów",
   "Accords courts": "Krótkie akordy",
@@ -158,7 +158,7 @@
   "Durée": "Długość",
   "Fait : kit %s sur les 16 pads. Ta piste Basse 808 joue aussi : coupe-la si tu n'en veux qu'une.": "Gotowe: zestaw %s na 16 padach. Twoja ścieżka Bas 808 też gra: wycisz ją, jeśli chcesz tylko jedno.",
   "Rien n'a été joué pendant la prise.": "Podczas nagrania nic nie zostało zagrane.",
-  "%d étapes de plus": "Jeszcze kroki: %d",
+  "%d étapes de plus": "Jeszcze %d kroków",
   "Ailleurs ?": "Gdzie indziej?",
   "Aller plus loin": "Idź dalej",
   "Annuler mon choix": "Cofnij mój wybór",

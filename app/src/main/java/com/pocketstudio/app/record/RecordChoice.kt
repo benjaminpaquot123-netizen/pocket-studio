@@ -108,8 +108,7 @@ fun CountInChoice(modifier: Modifier = Modifier, compact: Boolean = false) {
 /** « Décompte : aucun », « Décompte : 1 mesure », « Décompte : 2 mesures ». */
 fun countInLabel(bars: Int): String = when (bars) {
     0 -> tr("Décompte : aucun")
-    1 -> tr("Décompte : 1 mesure")
-    else -> tr("Décompte : %d mesures", bars)
+    else -> com.pocketstudio.model.i18n.trCount(bars, "Décompte : 1 mesure", "Décompte : %d mesures")
 }
 
 /** The next count-in a touch gives: none, 1, 2, then none again. */

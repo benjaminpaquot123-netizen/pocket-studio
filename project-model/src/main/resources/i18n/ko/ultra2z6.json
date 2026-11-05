@@ -14,6 +14,6 @@
   "D'abord le modèle de séparation": "먼저 분리 모델이 필요해요",
   "Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.": "노래를 나누려면 앱이 먼저 모델을 내려받아요: %s, 한 번만요.",
   "Tu es en Wi-Fi.": "지금 Wi-Fi에 연결되어 있어요.",
-  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "Wi-Fi가 아니에요: 이 %s는 모바일 데이터에서 나가요.",
+  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "Wi-Fi가 아니에요: 이 %s은(는) 모바일 데이터에서 나가요.",
   "Télécharger, puis choisir la chanson": "내려받고 노래 고르기"
 }

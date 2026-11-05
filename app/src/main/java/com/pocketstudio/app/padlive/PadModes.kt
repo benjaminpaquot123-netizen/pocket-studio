@@ -87,7 +87,7 @@ internal fun PadSettingsSheet(pad: Int, clip: LiveClip, actions: PadLiveActions,
                     LivePads.BEATS.forEach { b ->
                         FilterChip(
                             selected = clip.beats == b, onClick = { actions.setBeats(pad, b) },
-                            label = { Text(if (b < 4) (if (b == 1) tr("1 temps") else tr("%d temps", b)) else barsShort(b / 4)) }, colors = chips,
+                            label = { Text(if (b < 4) com.pocketstudio.model.i18n.trCount(b, "1 temps", "%d temps") else barsShort(b / 4)) }, colors = chips,
                             modifier = Modifier.testTag("padlive_beats_$b"),
                         )
                     }
@@ -147,8 +147,8 @@ private fun PadSoundSettings(pad: Int, clip: LiveClip, actions: PadLiveActions) 
 
 /** « +3 », « −5 », « 0 » demi-tons. */
 internal fun pitchWords(semitones: Int): String = when {
-    semitones > 0 -> tr("+%d demi-tons", semitones)
-    semitones < 0 -> tr("−%d demi-tons", -semitones)
+    semitones > 0 -> com.pocketstudio.model.i18n.trCount(semitones, "+%d demi-ton", "+%d demi-tons")
+    semitones < 0 -> com.pocketstudio.model.i18n.trCount(-semitones, "−%d demi-ton", "−%d demi-tons")
     else -> tr("normale")
 }
 

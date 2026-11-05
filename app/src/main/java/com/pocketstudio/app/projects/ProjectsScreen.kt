@@ -301,7 +301,8 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                         if (p.tempoBpm > 0) "${p.tempoBpm.toInt()} BPM" else null,
                         // n° 23: the song's length as the home and the studio count it (SongLength).
                         com.pocketstudio.app.ui.lengthWords(com.pocketstudio.model.SongLength(p.bars, p.seconds, p.parts)),
-                        if (p.hasRemix) "remix" else null,
+                        // Round 3, n° 38: in the app's language (« remix » stayed English in Korean).
+                        if (p.hasRemix) tr("Remix").lowercase(com.pocketstudio.model.i18n.I18n.lang.locale) else null,
                     ).joinToString(" · "),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                 )

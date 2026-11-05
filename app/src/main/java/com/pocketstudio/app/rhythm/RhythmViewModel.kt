@@ -11305,8 +11305,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** The word an export's file name gets for [p]'s target: « club », « streaming », « apple-music », « -11lufs »; null for « Auto » or none. */
     private fun targetFileWord(p: Project): String? = when (com.pocketstudio.model.LoudnessTargets.choiceOf(p.mixer)) {
-        com.pocketstudio.model.TargetChoice.CLUB -> "club"
-        com.pocketstudio.model.TargetChoice.STREAMING -> "streaming"
+        // Round 3, n° 38: in the app's language, as the other words of the name (« 클럽 », « 스트리밍 », not « streaming »).
+        com.pocketstudio.model.TargetChoice.CLUB -> fileWordOf("club", tr("Club"))
+        com.pocketstudio.model.TargetChoice.STREAMING -> fileWordOf("streaming", tr("Streaming"))
         com.pocketstudio.model.TargetChoice.APPLE -> "apple-music"
         com.pocketstudio.model.TargetChoice.FREE -> com.pocketstudio.model.LoudnessTargets.of(p)?.let { "${Math.round(-it)}lufs" }
         else -> null
@@ -11530,6 +11531,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
          * An export file's label in the file's name, in the app's language (audit ultra tour 0, seat b, English:
          * « Remix-morceau-….m4a »): the app's own words translated, a track's name as it is.
          */
+        /** [french] in a file's name, or [shown] (its word in the app's language) in another language, lower case as [fileWord] does. */
+        internal fun fileWordOf(french: String, shown: String): String =
+            if (com.pocketstudio.model.i18n.I18n.lang == com.pocketstudio.model.i18n.Lang.FR) french else shown.lowercase(java.util.Locale.ROOT)
+
         internal fun fileWord(label: String): String =
             if (label in FILE_WORDS && com.pocketstudio.model.i18n.I18n.lang != com.pocketstudio.model.i18n.Lang.FR) stageName(label).lowercase(java.util.Locale.ROOT) else label
 

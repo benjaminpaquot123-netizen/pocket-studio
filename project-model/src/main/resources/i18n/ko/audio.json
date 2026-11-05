@@ -37,7 +37,7 @@
   "Joue ou chante une note près de l'appareil.": "기기 가까이에서 음 하나를 연주하거나 불러 보세요.",
   "La prise s'est arrêtée toute seule : elle a atteint sa durée maximale (%d s). Elle est gardée.": "테이크가 저절로 멈췄어요. 최대 길이 (%d초)에 도달했어요. 저장됐어요.",
   "La partie %s": "파트 %s",
-  "La partie %s tourne en boucle ; ta prise joue une fois à chaque passage de cette partie.": "파트 %s는 루프돼요. 테이크는 이 파트가 돌아올 때마다 한 번씩 재생돼요.",
+  "La partie %s tourne en boucle ; ta prise joue une fois à chaque passage de cette partie.": "파트 %s은(는) 루프돼요. 테이크는 이 파트가 돌아올 때마다 한 번씩 재생돼요.",
   "Le micro n'a pas pu être ouvert (autorisation, ou une prise est en cours).": "마이크를 열 수 없었어요 (권한 문제, 또는 다른 테이크가 진행 중).",
   "Le morceau démarre après le décompte ; ta prise se pose à sa place dans le morceau et joue une seule fois.": "카운트인 후 곡이 시작돼요. 테이크는 곡 안의 제자리에 놓여 한 번만 재생돼요.",
   "Lecture": "재생",

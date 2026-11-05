@@ -1,0 +1,21 @@
+{
+  "Ligne du temps : %1$s, %2$s": "Timeline: %1$s, %2$s",
+  "Morceau écrit : %1$s, %2$s": "Brano scritto: %1$s, %2$s",
+  "Grille des notes : %s": "Griglia delle note: %s",
+  "1 pas": "1 step",
+  "1 piste": "1 traccia",
+  "1 réglage": "1 parametro",
+  "%d réglages": "%d parametri",
+  "Fait : break de 1 mesure après %2$s": "Fatto: break di 1 battuta dopo %2$s",
+  "Fait : montée de 1 mesure avant %2$s": "Fatto: build-up di 1 battuta prima di %2$s",
+  "Pas encore de morceau : ta partie part en boucle (1 mesure).": "Ancora nessun brano: la tua parte esce come loop (1 battuta).",
+  "Ta prise Live a été gardée : elle est dans le morceau (1 partie).": "La tua take Live è stata conservata: è nel brano (1 parte).",
+  "Ton texte (1 caractère)": "Il tuo testo (1 carattere)",
+  "trop bas de 1 cent": "troppo basso di 1 cent",
+  "trop haut de 1 cent": "troppo alto di 1 cent",
+  "−%d demi-ton": "−%d semitono",
+  "%d min": "%d min",
+  "%1$d min %2$d": "%1$d min %2$d",
+  "Hors de la gamme du morceau": "Fuori dalla scala del brano",
+  "Poignée : glisse vers le bas pour fermer": "Maniglia: scorri verso il basso per chiudere"
+}

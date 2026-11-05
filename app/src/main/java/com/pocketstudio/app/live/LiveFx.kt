@@ -594,10 +594,9 @@ internal fun Modifier.countdownBar(left: () -> Float?, color: Color): Modifier =
 
 /** A length in beats: « 1/4 temps », « 1 temps », « 2 temps ». */
 internal fun beatsLabel(beats: Double): String = when {
-    beats == 1.0 -> tr("1 temps")
     beats == 0.25 -> tr("%s temps", "1/4")
     beats == 0.5 -> tr("%s temps", "1/2")
-    else -> tr("%d temps", beats.roundToInt())
+    else -> trCount(beats.roundToInt(), "1 temps", "%d temps")
 }
 
 /** The effects' settings (⚙): when held effects start, how they end, their lengths. */

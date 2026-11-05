@@ -709,8 +709,7 @@ val LIVE_QUANTUM_CYCLE = listOf(1, 2, 4, -1, -2)
 fun liveQuantumLabel(code: Int): String = when (code) {
     -1 -> tr("1 temps")
     -2 -> tr("½ mesure")
-    1 -> tr("1 mesure")
-    else -> tr("%d mesures", code)
+    else -> com.pocketstudio.model.i18n.trCount(code, "1 mesure", "%d mesures")
 }
 
 /** Below this width the Live bar's ← loses its word. */
@@ -795,7 +794,7 @@ internal fun TakeBanner(ui: LiveScreenUi, actions: LiveActions, showReady: Boole
             is TakeUi.Writing -> Text(tr("Écriture du morceau…"), Modifier.weight(1f), style = style)
             is TakeUi.Done -> {
                 Text(
-                    tr("Morceau écrit : %1\$d parties, %2\$d réglages", take.parts, take.settings),
+                    tr("Morceau écrit : %1\$s, %2\$s", com.pocketstudio.model.i18n.trCount(take.parts, "1 partie", "%d parties"), com.pocketstudio.model.i18n.trCount(take.settings, "1 réglage", "%d réglages")),
                     Modifier.weight(1f).testTag("live_take_done"), style = style, maxLines = 2,
                 )
                 // Annuler undoes the take only: once something else changed, it is gone (↶ in the top bar then).

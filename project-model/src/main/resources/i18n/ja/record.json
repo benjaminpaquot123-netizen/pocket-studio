@@ -18,7 +18,6 @@
   "Versions du morceau (%d)": "曲のバージョン（%d）",
   "Mise de côté à %s": "%s に保存",
   "Avant la prise de %s": "%s のテイクの前",
-  "%1$d parties · %2$d mes.": "%1$d パート · %2$d 小節",
   "Versions du morceau": "曲のバージョン",
   "Chaque prise Live crée une nouvelle version : l'ancienne reste ici. « Ramener » la remet et garde celle en cours à sa place.": "Live でテイクを録るたびに新しいバージョンができ、古いものはここに残ります。「戻す」でそれを復元し、今のものは代わりにここに残ります。",
   "Le morceau en cours": "今の曲",

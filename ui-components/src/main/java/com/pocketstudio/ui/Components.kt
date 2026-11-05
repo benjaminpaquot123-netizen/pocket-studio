@@ -245,7 +245,11 @@ fun Modifier.panelFinish(surface: Color, accent: Color? = null, corner: Dp = 16.
  * opens it, and the app remembers it under [foldKey] (the title by default).
  */
 @Composable
-fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neon.Cyan, help: Help? = null, foldKey: String? = null, helpAbout: List<String> = emptyList()) {
+fun SectionLabel(
+    text: String, modifier: Modifier = Modifier, color: Color = Neon.Cyan, help: Help? = null, foldKey: String? = null, helpAbout: List<String> = emptyList(),
+    /** A name the person gave (a song's title): shown as written, never in capitals (round 3, n° 38). */
+    asWritten: Boolean = false,
+) {
     val fold = LocalCardFold.current.takeIf { LocalFolding.current }
     val me = remember { Any() }
     val isHeader = fold != null && (fold.header == null || fold.header === me)
@@ -269,7 +273,7 @@ fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neo
         fold.key = key
         if (fold.headerBottom == 0f) fold.headerBottom = headerBottoms[key] ?: 0f
     }
-    val label: @Composable () -> Unit = { SectionTitle(text, color, folded.takeIf { isHeader }) }
+    val label: @Composable () -> Unit = { SectionTitle(text, color, folded.takeIf { isHeader }, asWritten = asWritten) }
     val headerModifier = if (isHeader) {
         modifier
             .onGloballyPositioned { c ->
@@ -289,7 +293,7 @@ fun SectionLabel(text: String, modifier: Modifier = Modifier, color: Color = Neo
  * chevron. [subtle]: a dot and grey text instead, for a group inside a card ([TileSection]'s look).
  */
 @Composable
-private fun SectionTitle(text: String, color: Color, folded: Boolean?, subtle: Boolean = false) {
+private fun SectionTitle(text: String, color: Color, folded: Boolean?, subtle: Boolean = false, asWritten: Boolean = false) {
     val turn by animateFloatAsState(if (folded == true) -90f else 0f, StudioMotion.spatial(), label = "fold-chevron")
     val chevron = Neon.TextSecondary.copy(alpha = 0.45f)
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -301,8 +305,8 @@ private fun SectionTitle(text: String, color: Color, folded: Boolean?, subtle: B
         // Audit ultra round 1, n° 38 (200 %: « PAS : KICK DE MA V/OIX » beside « Tous les pads »): past 130 %, a little
         // smaller rather than a word split.
         if (androidx.compose.ui.platform.LocalDensity.current.fontScale > BIG_FONT_FROM) {
-            WholeWordsText(text.upperShown(), Modifier.weight(1f, fill = false).semantics { heading() }, style = titleStyle, color = titleColor, maxLines = Int.MAX_VALUE)
-        } else Text(text.upperShown(), style = titleStyle, color = titleColor, modifier = Modifier.weight(1f, fill = false).semantics { heading() })
+            WholeWordsText(if (asWritten) text else text.upperShown(), Modifier.weight(1f, fill = false).semantics { heading() }, style = titleStyle, color = titleColor, maxLines = Int.MAX_VALUE)
+        } else Text(if (asWritten) text else text.upperShown(), style = titleStyle, color = titleColor, modifier = Modifier.weight(1f, fill = false).semantics { heading() })
         if (folded != null) {
             // A small open "v", turned to ">" when folded: there, not shouting.
             Canvas(Modifier.size(12.dp).rotate(turn)) {

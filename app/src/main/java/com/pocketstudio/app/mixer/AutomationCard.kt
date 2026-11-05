@@ -526,7 +526,7 @@ internal fun LaneBlock(
         val loopSteps = actions.setLoopSteps
         val part = ui.partSteps.coerceAtMost(AutomationLane.STEPS)
         if (!song && loopSteps != null && (part > ui.steps || own)) {
-            fun length(steps: Int) = if (ui.stepsPerBar > 0 && steps % ui.stepsPerBar == 0) com.pocketstudio.app.ui.barsShort(steps / ui.stepsPerBar) else tr("%d pas", steps)
+            fun length(steps: Int) = if (ui.stepsPerBar > 0 && steps % ui.stepsPerBar == 0) com.pocketstudio.app.ui.barsShort(steps / ui.stepsPerBar) else com.pocketstudio.model.i18n.trCount(steps, "1 pas", "%d pas")
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 FilterChip(selected = !own, onClick = { loopSteps(i, 0) }, label = { Text(tr("Sur la batterie · %s", length(ui.steps))) },
                     modifier = Modifier.testTag("auto_len_drums_$i"))

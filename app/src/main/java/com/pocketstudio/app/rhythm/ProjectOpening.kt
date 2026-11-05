@@ -98,7 +98,7 @@ class ProjectOpener(private val id: String, private val store: ProjectStore, pri
             journals.drop(id, journal.takeId.ifEmpty { null })
             if (written.parts > 0) {
                 AppLog.add("Prise Live récupérée : ${written.parts} parties")
-                notice = tr("Ta prise Live a été gardée : elle est dans le morceau (%d parties).", written.parts)
+                notice = com.pocketstudio.model.i18n.trCount(written.parts, "Ta prise Live a été gardée : elle est dans le morceau (1 partie).", "Ta prise Live a été gardée : elle est dans le morceau (%d parties).")
                 written.project
             } else {
                 if (written.already) AppLog.add("Prise Live déjà dans le morceau : journal effacé")

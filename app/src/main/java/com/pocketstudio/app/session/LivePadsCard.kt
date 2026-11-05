@@ -112,10 +112,9 @@ class LivePadsActions(
 )
 
 private fun beatsLabel(beats: Int) = when {
-    beats == 1 -> tr("1 temps")
-    beats < 4 -> tr("%d temps", beats)
+    beats < 4 -> com.pocketstudio.model.i18n.trCount(beats, "1 temps", "%d temps")
     beats % 4 == 0 -> com.pocketstudio.app.ui.barsShort(beats / 4)
-    else -> tr("%d temps", beats)
+    else -> com.pocketstudio.model.i18n.trCount(beats, "1 temps", "%d temps")
 }
 
 /** Live pads: a tap switches a sound on (in time), the next tap switches it off. */

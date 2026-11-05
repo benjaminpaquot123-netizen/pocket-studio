@@ -443,7 +443,7 @@ private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetAct
         ShareCheck.Empty ->
             CheckLine(icon, color, tr("Rien à entendre pour l'instant : pose un rythme ou quelques notes d'abord."), "share_check_empty")
         is ShareCheck.NoSong -> {
-            CheckLine(icon, color, tr("Pas encore de morceau : ta partie part en boucle (%d mesures).", check.bars), "share_check_no_song")
+            CheckLine(icon, color, trCount(check.bars, "Pas encore de morceau : ta partie part en boucle (1 mesure).", "Pas encore de morceau : ta partie part en boucle (%d mesures)."), "share_check_no_song")
             Fixes { FixButton(tr("Modifier le morceau"), "share_fix_structure", actions.toStructure) }
         }
         is ShareCheck.Short -> {

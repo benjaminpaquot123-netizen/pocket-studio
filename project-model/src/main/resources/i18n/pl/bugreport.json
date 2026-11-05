@@ -23,7 +23,7 @@
   "Revenir au rapport": "Wróć do zgłoszenia",
   "L'appli s'est fermée d'un coup : envoyer le rapport ?": "Aplikacja nagle się zamknęła: wysłać zgłoszenie?",
   "Ton texte : rien d'écrit pour l'instant (dis ce que tu faisais et ce qui a cloché).": "Twój tekst: jeszcze pusty (opisz, co się działo i co poszło nie tak).",
-  "Ton texte (%d caractères)": "Twój tekst (znaki: %d)",
+  "Ton texte (%d caractères)": "Twój tekst (%d znaków)",
   "La version de l'appli, le modèle du téléphone, sa version d'Android et la sortie du son": "Wersja aplikacji, model telefonu, jego wersja Androida i wyjście dźwięku",
   "Le son de la dernière minute : niveau, décrochages (%1$d), son rouvert (%2$d)": "Dźwięk z ostatniej minuty: poziom, przerwy (%1$d), ponowne otwarcia dźwięku (%2$d)",
   "Les %1$d derniers écrans et gestes, et %2$d erreurs": "Ostatnie ekrany i gesty (%1$d) oraz błędy (%2$d)",

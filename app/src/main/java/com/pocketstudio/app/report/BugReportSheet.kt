@@ -366,7 +366,7 @@ fun captureScreen(view: View): Bitmap? = runCatching {
 
 /** « Ce qui sera envoyé », in the interface's language. */
 fun bugSummary(s: BugReportState, projectName: String?): List<String> = buildList {
-    add(if (s.text.isBlank()) tr("Ton texte : rien d'écrit pour l'instant (dis ce que tu faisais et ce qui a cloché).") else tr("Ton texte (%d caractères)", s.text.length))
+    add(if (s.text.isBlank()) tr("Ton texte : rien d'écrit pour l'instant (dis ce que tu faisais et ce qui a cloché).") else com.pocketstudio.model.i18n.trCount(s.text.length, "Ton texte (1 caractère)", "Ton texte (%d caractères)"))
     add(tr("La version de l'appli, le modèle du téléphone, sa version d'Android et la sortie du son"))
     val stream = Metrics.streamInfo.value
     add(tr("Le son de la dernière minute : niveau, décrochages (%1\$d), son rouvert (%2\$d)", stream.xruns, stream.restarts))

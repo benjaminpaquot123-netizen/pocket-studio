@@ -1,0 +1,21 @@
+{
+  "Ligne du temps : %1$s, %2$s": "Zaman çizelgesi: %1$s, %2$s",
+  "Morceau écrit : %1$s, %2$s": "Şarkı yazıldı: %1$s, %2$s",
+  "Grille des notes : %s": "Nota ızgarası: %s",
+  "1 pas": "1 adım",
+  "1 piste": "1 kanal",
+  "1 réglage": "1 ayar",
+  "%d réglages": "%d ayar",
+  "Fait : break de 1 mesure après %2$s": "Tamam: %2$s sonrasına 1 ölçülük break",
+  "Fait : montée de 1 mesure avant %2$s": "Tamam: %2$s öncesine 1 ölçülük yükseliş",
+  "Pas encore de morceau : ta partie part en boucle (1 mesure).": "Henüz şarkı yok: bölümün döngü olarak gidiyor (1 ölçü).",
+  "Ta prise Live a été gardée : elle est dans le morceau (1 partie).": "Live kaydın saklandı: şarkıda (1 bölüm).",
+  "Ton texte (1 caractère)": "Metnin (1 karakter)",
+  "trop bas de 1 cent": "1 sent pes",
+  "trop haut de 1 cent": "1 sent tiz",
+  "−%d demi-ton": "−%d yarım ton",
+  "%d min": "%d dk",
+  "%1$d min %2$d": "%1$d dk %2$d sn",
+  "Hors de la gamme du morceau": "Şarkının gamı dışında",
+  "Poignée : glisse vers le bas pour fermer": "Tutamaç: kapatmak için aşağı kaydır"
+}

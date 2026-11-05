@@ -1341,7 +1341,7 @@ private fun TimelineGrid(
                 .spot("timeline_grid", tr("2 touches : ouvrir"))
                 .testTag("timeline_grid")
                 .semantics {
-                    contentDescription = tr("Ligne du temps : %1\$d parties, %2\$d pistes", p.song.size, ui.rows.size)
+                    contentDescription = tr("Ligne du temps : %1\$s, %2\$s", trCount(p.song.size, "1 partie", "%d parties"), trCount(ui.rows.size, "1 piste", "%d pistes"))
                     // Audit final (22): each clip within TalkBack's reach (the grid is drawn, not made of nodes).
                     customActions = timelineActions(ui.rows.filter { Remix.stemOfKey(it.key) == null }, p.song.size, latestActions)
                 },

@@ -717,8 +717,7 @@ private fun PadFace(clip: LiveClip?, state: Int, color: Color, big: Boolean) {
 }
 
 private fun loopLabel(beats: Int) = when {
-    beats == 1 -> tr("1 temps")
-    beats < 4 || beats % 4 != 0 -> tr("%d temps", beats)
+    beats < 4 || beats % 4 != 0 -> com.pocketstudio.model.i18n.trCount(beats, "1 temps", "%d temps")
     else -> com.pocketstudio.app.ui.barsShort(beats / 4)
 }
 

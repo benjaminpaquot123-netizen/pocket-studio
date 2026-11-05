@@ -262,8 +262,9 @@ fun PartSheetContent(ui: PartSheetUi, onIntent: (PartIntent) -> Unit, close: () 
             }
             var typed by rememberSaveable(ui.index, ui.bars) { mutableStateOf(ui.bars.toString()) }
             val n = typed.toIntOrNull()?.takeIf { it in 1..SongPart.MAX_BARS }
-            OutlinedTextField(
-                typed, { typed = it.filter(Char::isDigit).take(3) }, singleLine = true,
+            // Round 2, n° 26: « 4 » selected at the touch, « 8 » typed gives 8 (not 48).
+            com.pocketstudio.app.ui.SelectAllTextField(
+                typed, { typed = it.filter(Char::isDigit).take(3) },
                 label = { Text(tr("mesures")) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 keyboardActions = KeyboardActions(onDone = { n?.let { onIntent(PartIntent.Bars(it)) } }),

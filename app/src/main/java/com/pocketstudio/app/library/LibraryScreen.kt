@@ -326,8 +326,9 @@ internal fun MySoundEditor(s: com.pocketstudio.model.MySound, actions: LibraryAc
     var deleting by rememberSaveable(s.id) { mutableStateOf(false) }
     NeonCard(accent = SoundLooks.of(kind).color, modifier = Modifier.testTag("library_mine_editor")) {
         SectionLabel(tr("Mon son"))
-        androidx.compose.material3.OutlinedTextField(
-            value = name, onValueChange = { name = it.take(com.pocketstudio.model.MySounds.MAX_NAME) }, singleLine = true,
+        // Round 2, n° 26: the name selected at the touch, what is typed replaces it.
+        com.pocketstudio.app.ui.SelectAllTextField(
+            value = name, onValueChange = { name = it.take(com.pocketstudio.model.MySounds.MAX_NAME) },
             label = { Text(tr("Nom")) }, modifier = Modifier.fillMaxWidth().testTag("library_mine_name"),
         )
         Text(tr("Famille"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)

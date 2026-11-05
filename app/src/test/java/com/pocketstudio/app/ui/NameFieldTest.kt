@@ -60,6 +60,21 @@ class NameFieldTest {
         compose.onNodeWithText("20 caractères au plus").assertExists()
     }
 
+    /** The same for every other name or number to type over (my sound, the song to share, a part's bars). */
+    @Test
+    fun aSelectAllFieldIsReplacedByWhatIsTyped() {
+        compose.setContent {
+            PocketStudioTheme {
+                var bars by remember { mutableStateOf("4") }
+                SelectAllTextField(bars, { bars = it }, modifier = Modifier.testTag("field"))
+                Text("[$bars]", modifier = Modifier.testTag("shown"))
+            }
+        }
+        compose.onNodeWithTag("field").performClick()
+        compose.onNodeWithTag("field").performTextInput("8")
+        compose.onNodeWithText("[8]").assertExists()
+    }
+
     /** Relecture tour 1 (mineur): the limit never cuts an emoji in half. */
     @Test
     fun theLimitKeepsLettersWhole() {

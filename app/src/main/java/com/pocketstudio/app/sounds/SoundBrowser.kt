@@ -201,10 +201,7 @@ private fun KeptNameDialog(title: String, start: String, tag: String, done: (Str
         onDismissRequest = cancel,
         title = { Text(title) },
         text = {
-            androidx.compose.material3.OutlinedTextField(
-                value = text, onValueChange = { text = it.take(com.pocketstudio.model.Favorites.NAME_MAX) }, singleLine = true,
-                label = { Text(tr("Nom du son")) }, modifier = Modifier.fillMaxWidth().testTag("${tag}_name_field"),
-            )
+            KeptNameField(text, { text = it }, tag)
         },
         confirmButton = {
             androidx.compose.material3.TextButton(
@@ -216,6 +213,15 @@ private fun KeptNameDialog(title: String, start: String, tag: String, done: (Str
             androidx.compose.material3.TextButton(onClick = cancel, modifier = Modifier.heightIn(min = 48.dp).testTag("${tag}_name_cancel")) { Text(tr("Annuler")) }
         },
         modifier = Modifier.testTag("${tag}_name_dialog"),
+    )
+}
+
+/** « Nom du son »: round 2, n° 26 (seat B c): « Mon son 1 » selected at the touch, what is typed replaces it. */
+@Composable
+internal fun KeptNameField(text: String, onText: (String) -> Unit, tag: String) {
+    com.pocketstudio.app.ui.SelectAllTextField(
+        value = text, onValueChange = { onText(it.take(com.pocketstudio.model.Favorites.NAME_MAX)) },
+        label = { Text(tr("Nom du son")) }, modifier = Modifier.fillMaxWidth().testTag("${tag}_name_field"),
     )
 }
 

@@ -316,8 +316,9 @@ fun ShareSheetContent(
             }
         }
         // « Partager » renames the project too (a default « Mon projet 3 » becomes the name typed): the label says so.
-        OutlinedTextField(
-            value = ui.name, onValueChange = actions.setName, singleLine = true, label = { Text(tr("Nom du morceau (et du projet)")) },
+        // Round 2, n° 26: the name selected at the touch, what is typed replaces it.
+        com.pocketstudio.app.ui.SelectAllTextField(
+            value = ui.name, onValueChange = actions.setName, label = { Text(tr("Nom du morceau (et du projet)")) },
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
             modifier = Modifier.fillMaxWidth().testTag("share_name"),
         )

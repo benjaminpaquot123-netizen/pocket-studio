@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -132,8 +133,10 @@ private fun IconToggle(
                 modifier = Modifier.size(minOf(size.width, size.height) * 0.62f))
         }
         if (caption != null) {
+            // Audit ultra round 3 (n° 27, seat E c: « Mute », « off » was read on a muted track): the word under the icon is
+            // for the eyes only; TalkBack says the switch's own name and state (« Son de Voix », « désactivé »), true in every language.
             Text(caption, style = MaterialTheme.typography.labelSmall, fontSize = 10.sp, lineHeight = 11.sp, color = if (on) color else Neon.TextSecondary,
-                maxLines = 1, textAlign = TextAlign.Center)
+                maxLines = 1, textAlign = TextAlign.Center, modifier = Modifier.clearAndSetSemantics { })
         }
     }
 }

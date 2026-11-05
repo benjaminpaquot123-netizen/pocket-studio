@@ -1109,15 +1109,21 @@ fun AppRoot() {
         if (granted && liveMicPad >= 0) rhythmVm.startLiveRecording(liveMicPad) else if (!granted) permissionHelp = MIC_REFUSED
     }
     // The "REC" live activity is a notification: without the permission (Android 13+), the phone
-    // hides it. Asked once per launch, at the first recording, where it makes sense.
+    // hides it. Asked once per launch, once the first recording is over (audit ultra round 3, n° 26,
+    // seat C c: asked as the first take began, the system's window came over it and the take was lost).
     val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
     var notificationsAsked by rememberSaveable { mutableStateOf(false) }
+    var recordedOnce by rememberSaveable { mutableStateOf(false) }
     val anyRecording by rhythmVm.recording.collectAsStateWithLifecycle()
     // Revue neuve (MOYEN 7): whether a take runs, not its level every 50 ms.
     val anyTake by remember(rhythmVm) { rhythmVm.audioRecording.map { it != null }.distinctUntilChanged() }
         .collectAsStateWithLifecycle(rhythmVm.audioRecording.value != null)
     LaunchedEffect(anyRecording || anyTake) {
-        if (!(anyRecording || anyTake) || notificationsAsked || android.os.Build.VERSION.SDK_INT < 33) return@LaunchedEffect
+        if (anyRecording || anyTake) {
+            recordedOnce = true
+            return@LaunchedEffect
+        }
+        if (!recordedOnce || notificationsAsked || android.os.Build.VERSION.SDK_INT < 33) return@LaunchedEffect
         notificationsAsked = true
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -3365,6 +3371,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 val listening by com.pocketstudio.app.audio.Headphones.state.collectAsStateWithLifecycle()
                                 val recordTarget by rhythmVm.recordTarget.collectAsStateWithLifecycle()
                                 val takeSaving by rhythmVm.takeSaving.collectAsStateWithLifecycle()
+                                val takesAlone by rhythmVm.alone.collectAsStateWithLifecycle()
 WithPartHeader(rhythmVm, simple) { partModifier ->
                                                                 AudioTracksScreen(
                                     AudioTracksUi(
@@ -3387,6 +3394,9 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                         sceneTitles = project.allScenes.indices.map { project.sceneTitle(it) },
                                         partStarts = project.song.indices.map { project.songStepOf(it) },
                                         monitor = settings.monitorVoice,
+                                        aloneTrack = project.audioTracks.firstOrNull { t ->
+                                            takesAlone?.target == com.pocketstudio.app.rhythm.AloneTarget.ofSongKey(com.pocketstudio.model.SongPart.audio(t.id))
+                                        }?.id,
                                     ),
                                     AudioTracksActions(
                                         add = rhythmVm::addAudioTrack,
@@ -3435,6 +3445,9 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                             }
                                         },
                                         setMonitor = { on -> com.pocketstudio.app.settings.SettingsStore.update(context) { it.copy(monitorVoice = on) } },
+                                        hearTake = rhythmVm::hearTake,
+                                        listenAlone = rhythmVm::listenToTakesAlone,
+                                        holdAlone = rhythmVm::holdAlone,
                                     ),
                                     modifier = partModifier,
                                 )

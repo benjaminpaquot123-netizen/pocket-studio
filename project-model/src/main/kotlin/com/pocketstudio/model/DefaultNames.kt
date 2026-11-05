@@ -138,6 +138,21 @@ object DefaultNames {
     /** The French of a whole default name given in any language ("Bass", "Bas" → "Basse"), or null for any other name. */
     fun french(name: String): String? = if (name in EXACT) name else RENAMED[name] ?: fromTranslation[name]
 
+    /**
+     * Audit ultra round 3 (n° 26, seat C c: « Mélodie » became « FM piano », then « Ma mélodie » no longer found the
+     * melody and came with another sound): names that say what a track does in the song. A new sound never renames them.
+     */
+    private val ROLES: Set<String> by lazy {
+        setOf(
+            TrackKind.Melody.trackName, TrackKind.Chords.trackName, TrackKind.Bass.trackName, TrackKind.Arp.trackName,
+            "Lead", "Nappe", "Batterie", "Voix", SimpleMelody.NAME, StarterWizard.COUNTER_TRACK,
+            StarterWizard.RISER_TRACK, StarterWizard.OLD_RISER_TRACK, StarterWizard.SUB_TRACK, StarterWizard.SUB_DROP_TRACK,
+        )
+    }
+
+    /** [name] (in any language) says the track's role in the song (« Mélodie », « Basse »), not its sound. */
+    fun isRole(name: String): Boolean = french(name)?.let { it in ROLES } == true
+
     /** True when [name] is one of the app's own names (in any language). */
     fun isDefault(name: String): Boolean =
         name in EXACT || name in RENAMED || name in fromTranslation || numbered.any { it.first.matches(name) } || timed.any { it.first.matches(name) }

@@ -60,29 +60,33 @@ class RecordRound2Zone4Test {
         return Project(audioTracks = listOf(AudioTrack(0, "Audio 1", clip = second, previous = first)))
     }
 
-    private fun left(text: String): Float =
-        compose.onNode(hasText(text), useUnmergedTree = true).fetchSemanticsNode().boundsInRoot.left
+    private fun left(tag: String): Float =
+        compose.onNodeWithTag(tag).fetchSemanticsNode().boundsInRoot.left
+
+    /** Round 3 (n° 25): a take's length is written as under the waveform (one decimal), chip and title alike. */
+    private val six = "Prise 1 · ${String.format(Lang.FR.locale, "%.1f", 6.2)} s"
+    private val seven = "Prise 2 · ${String.format(Lang.FR.locale, "%.1f", 7.0)} s"
 
     @Test
     fun takesAreNumberedAndStayInTheirPlaceWhenOneIsChosen() {
         var p by mutableStateOf(twoTakes())
         compose.setContent { PocketStudioTheme { AudioTracksScreen(AudioTracksUi(p.audioTracks), AudioTracksActions()) } }
         compose.waitForIdle()
-        assertTrue("Prise 1 before Prise 2", left("Prise 1 · 6 s") < left("Prise 2 · 7 s"))
+        assertTrue("Prise 1 before Prise 2", left("audio_take_0_1") < left("audio_take_0_2"))
         compose.onNodeWithTag("audio_take_0_2").assertIsSelected()
         compose.onNodeWithTag("audio_take_0_1").assertIsNotSelected()
         // Only a take not playing can go, said « Supprimer » (it said « Retirer », « 빼기 » in Korean).
-        compose.onNode(hasContentDescription("Supprimer Prise 1 · 6 s")).assertExists()
-        compose.onNode(hasContentDescription("Supprimer Prise 2 · 7 s")).assertDoesNotExist()
+        compose.onNode(hasContentDescription("Supprimer $six")).assertExists()
+        compose.onNode(hasContentDescription("Supprimer $seven")).assertDoesNotExist()
 
         p = p.chooseTake(0, 0)
         compose.waitForIdle()
-        assertTrue("the order did not move", left("Prise 1 · 6 s") < left("Prise 2 · 7 s"))
+        assertTrue("the order did not move", left("audio_take_0_1") < left("audio_take_0_2"))
         compose.onNodeWithTag("audio_take_0_1").assertIsSelected()
         compose.onNodeWithTag("audio_take_0_2").assertIsNotSelected()
-        compose.onNode(hasContentDescription("Supprimer Prise 2 · 7 s")).assertExists()
-        // The take playing under the waveform: its number too.
-        compose.onNodeWithText("Prise 1 · ${String.format(Lang.FR.locale, "%.1f", 6.2)} s").assertExists()
+        compose.onNode(hasContentDescription("Supprimer $seven")).assertExists()
+        // The take playing under the waveform: its number too, and the same length as its chip.
+        assertEquals(2, compose.onAllNodes(hasText(six), useUnmergedTree = true).fetchSemanticsNodes().size)
     }
 
     @Test
@@ -90,9 +94,9 @@ class RecordRound2Zone4Test {
         I18n.lang = Lang.KO
         compose.setContent { PocketStudioTheme { AudioTracksScreen(AudioTracksUi(twoTakes().audioTracks), AudioTracksActions()) } }
         compose.waitForIdle()
-        compose.onNode(hasText("테이크 1 · 6초"), useUnmergedTree = true).assertExists()
-        compose.onNode(hasText("테이크 2 · 7.0초"), useUnmergedTree = true).assertExists()
-        compose.onNode(hasContentDescription("테이크 1 · 6초 삭제")).assertExists()
+        compose.onNode(hasText("테이크 1 · 6.2초"), useUnmergedTree = true).assertExists()
+        assertTrue(compose.onAllNodes(hasText("테이크 2 · 7.0초"), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty())
+        compose.onNode(hasContentDescription("테이크 1 · 6.2초 삭제")).assertExists()
         // The fades too: no « s » left alone on the Korean screen.
         val texts = compose.onAllNodes(hasText(" s", substring = true), useUnmergedTree = true).fetchSemanticsNodes()
             .mapNotNull { it.config.getOrNull(SemanticsProperties.Text)?.joinToString() }

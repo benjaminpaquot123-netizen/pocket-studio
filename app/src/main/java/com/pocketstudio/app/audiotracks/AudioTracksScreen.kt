@@ -49,12 +49,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.audio.Listening
@@ -108,6 +110,8 @@ class AudioTracksUi(
     val partStarts: List<Int> = emptyList(),
     /** « M'entendre dans le casque » is chosen (it works with wired headphones only). */
     val monitor: Boolean = false,
+    /** The audio track heard alone in a loop (its take picker's « Écouter seule »), or null. */
+    val aloneTrack: Int? = null,
 )
 
 class AudioTracksActions(
@@ -155,6 +159,15 @@ class AudioTracksActions(
     val punch: (Int, Int, Int) -> Unit = { _, _, _ -> },
     /** « M'entendre dans le casque » on or off. */
     val setMonitor: (Boolean) -> Unit = {},
+    /**
+     * Audit ultra round 3 (n° 25, seat C a: « Take 1 » touched, nothing heard): a take touched (track, its index in
+     * [AudioTrack.otherTakes], null for the one playing) plays on its track, and the track is heard alone to compare.
+     */
+    val hearTake: (Int, Int?) -> Unit = { _, _ -> },
+    /** « ▶ Écouter seule » of a track's takes: the track alone in a loop, or everything again. */
+    val listenAlone: (Int) -> Unit = {},
+    /** Keeps the track heard alone going while this screen shows (see [com.pocketstudio.app.rhythm.HoldAlone]). */
+    val holdAlone: () -> (() -> Unit) = { {} },
 )
 
 private val LOOP_BARS = listOf(1, 2, 4, 8, 16)
@@ -166,7 +179,10 @@ fun AudioTracksScreen(ui: AudioTracksUi, actions: AudioTracksActions, modifier: 
         modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp).testTag("audio_tracks"),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        ui.recording?.let { RecordingCard(it, ui.tracks.firstOrNull { t -> t.id == it.track }, ui, actions) }
+        com.pocketstudio.app.rhythm.HoldAlone(ui.aloneTrack != null, actions.holdAlone)
+        // Audit ultra round 3 (n° 24, seat E c): the take's state is in the card of the track that records (below);
+        // here only for a track not (yet) in the list.
+        ui.recording?.let { rec -> if (ui.tracks.none { it.id == rec.track }) RecordingCard(rec, null, ui, actions) }
         ui.task?.let { Text(it, color = Neon.Amber, style = MaterialTheme.typography.bodySmall) }
         if (ui.tracks.isEmpty()) {
             NeonCard {
@@ -276,7 +292,13 @@ private fun TargetCard(ui: AudioTracksUi, actions: AudioTracksActions) {
 @Composable
 private fun RecordingCard(rec: AudioRecordingUi, track: AudioTrack?, ui: AudioTracksUi, actions: AudioTracksActions) {
     var confirm by rememberSaveable { mutableStateOf(false) }
-    NeonCard(accent = Neon.Red, modifier = Modifier.testTag("audio_recording")) {
+    // n° 24 (seat E c): brought into sight as the take starts (the second track's take was off screen, at the page's top).
+    val inSight = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+    androidx.compose.runtime.LaunchedEffect(rec.track) {
+        androidx.compose.runtime.withFrameNanos { }  // placed first (the cards are laid out by a subcomposition)
+        inSight.bringIntoView()
+    }
+    NeonCard(accent = Neon.Red, modifier = Modifier.testTag("audio_recording").bringIntoViewRequester(inSight)) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Icon(Icons.Filled.FiberManualRecord, contentDescription = null, tint = Neon.Red)
             Text(
@@ -343,6 +365,8 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
             }
         }
         val busy = ui.recording != null || ui.saving
+        // n° 24 (seat E c): count-in, level and « Arrêter et garder » right in the card of the track that records.
+        ui.recording?.takeIf { it.track == t.id }?.let { RecordingCard(it, t, ui, actions) }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(
                 onClick = { actions.record(t.id) }, enabled = !busy,
@@ -358,12 +382,10 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
             // Audit ultra round 1 (n° 31, seat E b): the count-in beside « Enregistrer » (it was at the bottom of Réglages).
             com.pocketstudio.app.record.CountInChoice()
             TextButton(onClick = { actions.effects(t.id) }, modifier = Modifier.testTag("audio_effects_${t.id}")) { Text(tr("Effets de cette piste")) }
-            if (t.previous != null) {
-                // One touch brings back the take the last one replaced (a second one swaps back).
-                TextButton(onClick = { actions.restorePrevious(t.id) }, enabled = !busy, modifier = Modifier.testTag("audio_previous_${t.id}")) { Text(tr("Prise précédente")) }
-            }
+            // Audit ultra round 3 (n° 25, seat E c): no « Prise précédente » any more: it swapped two takes back and forth
+            // (« précédente » then the next one); the take picker below numbers them all, one touch each.
         }
-        if (t.clip != null && t.otherTakes.isNotEmpty()) TakePicker(t, busy, actions)
+        if (t.clip != null && t.otherTakes.isNotEmpty()) TakePicker(t, busy, ui.aloneTrack == t.id, actions)
         val clip = t.clip ?: return@NeonCard
         ClipEditor(t.id, clip, ui.info[clip.file], color, actions, ui, t.takesInOrder().firstOrNull { it.first.file == clip.file }?.second ?: 1)
     }
@@ -405,10 +427,14 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
  * deleted (Annuler brings it back).
  */
 @Composable
-private fun TakePicker(t: AudioTrack, busy: Boolean, actions: AudioTracksActions) {
+private fun TakePicker(t: AudioTrack, busy: Boolean, alone: Boolean, actions: AudioTracksActions) {
     val chip = pillColors()
     val takes = t.takesInOrder()
-    Text(tr("Prises (%d)", takes.size), style = MaterialTheme.typography.bodyMedium)
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(tr("Prises (%d)", takes.size), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+        // n° 25 (seat C a): the track alone in a loop: each take touched is heard there, one after the other.
+        com.pocketstudio.app.rhythm.AloneButton(alone, tr("Écouter seule"), com.pocketstudio.model.DefaultNames.shown(t.name), "audio_alone_${t.id}", compact = true, toggle = { if (!busy || alone) actions.listenAlone(t.id) })
+    }
     // On several lines rather than scrolled: every take in sight, the one playing (often the last) too.
     @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
     androidx.compose.foundation.layout.FlowRow(
@@ -419,11 +445,12 @@ private fun TakePicker(t: AudioTrack, busy: Boolean, actions: AudioTracksActions
             val playing = take.file == t.clip?.file
             // Its place among the takes not playing (what « choose » and « delete » are given).
             val other = t.otherTakes.indexOfFirst { it.file == take.file }
-            val label = takeLabel(take, number)
+            // n° 25 (seat E c: « Take 2 · 8 s » here, « Take 2 · 8.5 s » under it): the same length as the editor's.
+            val label = takeLabel(take, number, decimals = 1)
             // A take and its ✕ together: a line break never parts them.
             Row(verticalAlignment = Alignment.CenterVertically) {
                 FilterChip(
-                    selected = playing, enabled = playing || !busy, onClick = { if (!playing && other >= 0) actions.chooseTake(t.id, other) },
+                    selected = playing, enabled = playing || !busy, onClick = { if (!busy) actions.hearTake(t.id, other.takeIf { !playing && it >= 0 }) },
                     label = { Text(label) }, colors = chip, modifier = Modifier.testTag("audio_take_${t.id}_$number"),
                 )
                 if (!playing && other >= 0) {

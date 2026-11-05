@@ -503,8 +503,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * a track still under a name the app gave it (« Synthé », « Piste 2 », a sound's name) takes its new sound's; a name
      * the user typed stays.
      */
+    // Round 3 (n° 26, seat C c): a role's name (« Mélodie », « Basse ») stays: the melody is still found as the melody.
     private fun followingName(current: String, sound: String): String =
-        if (sound.isNotBlank() && (com.pocketstudio.model.DefaultNames.isDefault(current) || current in keptSoundNames())) sound.take(40) else current
+        if (sound.isNotBlank() && !com.pocketstudio.model.DefaultNames.isRole(current) &&
+            (com.pocketstudio.model.DefaultNames.isDefault(current) || current in keptSoundNames())) sound.take(40) else current
 
     private fun keptSoundNames(): Set<String> = _favorites.value.let { f -> (f.synth.map { it.name } + f.plaits.map { it.name }).toSet() }
     fun dismissNotice() {
@@ -1015,7 +1017,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * one; null when the song has none (the track shown stays).
      */
     fun melodyTrackId(): Int? =
-        com.pocketstudio.model.SimpleMelody.trackOf(project.value) ?: project.value.tracks.lastOrNull { isMelodyName(it.name) }?.id
+        com.pocketstudio.model.SimpleMelody.trackOf(project.value) ?: project.value.instrumentTracks.lastOrNull { isMelodyName(it.name) }?.id
 
     /**
      * Audit final (01 M3, 05 #5): the Mode simple's melody goes on « Ma mélodie », made at its first
@@ -1025,7 +1027,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun simpleMelodyTrack(): Int? {
         val p = project.value
         com.pocketstudio.model.SimpleMelody.trackOf(p)?.let { selectTrack(it); return it }
-        val like = p.tracks.lastOrNull { isMelodyName(it.name) }?.id
+        // Round 3 (n° 26): the first track (« Synthé », the style's melody at times) counts too.
+        val like = p.instrumentTracks.lastOrNull { isMelodyName(it.name) }?.id
         val style = com.pocketstudio.app.library.styleOfProject(p.name)?.let(com.pocketstudio.model.StarterWizard::style)
         val next = com.pocketstudio.model.SimpleMelody.add(p, like, style) ?: run {
             _notice.value = tr("Huit pistes d'instruments au maximum : supprime-en une pour en ajouter une autre.")
@@ -1918,6 +1921,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * newer one becomes the previous (a second touch swaps them back).
      */
     fun restorePreviousTake(id: Int) = chooseTake(id, 0)
+
+    /**
+     * Audit ultra round 3 (n° 25, seat C a: a take touched was chosen in silence): take [other] of audio track [id]'s
+     * other takes (null: the one playing) plays on it, and the track is heard alone in a loop, to compare takes.
+     */
+    fun hearTake(id: Int, other: Int?) {
+        if (other != null) chooseTake(id, other)
+        val target = com.pocketstudio.app.rhythm.AloneTarget.ofSongKey(com.pocketstudio.model.SongPart.audio(id))
+        if (_alone.value?.target != target) toggleAlone(target, from = "audio_takes")
+    }
+
+    /** « Écouter seule » of audio track [id]'s takes: alone in a loop, or everything again. */
+    fun listenToTakesAlone(id: Int) =
+        toggleAlone(com.pocketstudio.app.rhythm.AloneTarget.ofSongKey(com.pocketstudio.model.SongPart.audio(id)), from = "audio_takes")
 
     /**
      * The take picker: take [index] of the track's other takes ([AudioTrack.otherTakes], newest

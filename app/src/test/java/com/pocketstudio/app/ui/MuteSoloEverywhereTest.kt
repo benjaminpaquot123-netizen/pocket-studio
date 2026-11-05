@@ -66,14 +66,17 @@ class MuteSoloEverywhereTest {
         // « Son de Voix » is on while the track sounds; what a touch does is its action's words.
         compose.onNodeWithTag("m").assertIsOn().assertContentDescriptionEquals("Son de Voix")
         org.junit.Assert.assertEquals("Couper le son de Voix", compose.onNodeWithTag("m").fetchSemanticsNode().config[androidx.compose.ui.semantics.SemanticsActions.OnClick].label)
-        compose.onNodeWithText("Son").assertExists()
+        // Round 3 (n° 27): the word « Son » is drawn for the eyes; TalkBack reads the name and state only.
+        assertTrue(compose.onAllNodes(androidx.compose.ui.test.hasText("Son")).fetchSemanticsNodes().isEmpty())
         compose.onNodeWithTag("m").performClick()
         compose.onNodeWithTag("m").assertIsOff().assertContentDescriptionEquals("Son de Voix")
         org.junit.Assert.assertEquals("Remettre le son de Voix", compose.onNodeWithTag("m").fetchSemanticsNode().config[androidx.compose.ui.semantics.SemanticsActions.OnClick].label)
-        compose.onNodeWithText("Muet").assertExists()
+        // Round 3 (n° 27): the word « Muet » is drawn for the eyes; TalkBack reads the name and state only.
+        assertTrue(compose.onAllNodes(androidx.compose.ui.test.hasText("Muet")).fetchSemanticsNodes().isEmpty())
         compose.onNodeWithTag("s").assertContentDescriptionEquals("Écouter la piste Voix seule").performClick()
         compose.onNodeWithTag("s").assertIsOn()
-        compose.onNodeWithText("Seule").assertExists()
+        // Round 3 (n° 27): the word « Seule » is drawn for the eyes; TalkBack reads the name and state only.
+        assertTrue(compose.onAllNodes(androidx.compose.ui.test.hasText("Seule")).fetchSemanticsNodes().isEmpty())
         assertEquals(MuteSolo.muteIcon(true), MuteSolo.muteIcon(true)); org.junit.Assert.assertNotEquals(MuteSolo.muteIcon(true), MuteSolo.muteIcon(false))
     }
 }

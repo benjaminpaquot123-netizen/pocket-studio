@@ -1024,7 +1024,19 @@ abstract class HumanTester(private val seat: String) {
      */
     private fun audioTakeTouched(x: Float, y: Float): Boolean =
         touchesStart("audio_record_", x, y) || touches("record_choice_mic", x, y) ||
-            (touches("top_record", x, y) && "micro" in screenText().under(x, y).lowercase())
+            (touches("top_record", x, y) && topRecordIsTheMicrophones())
+
+    /**
+     * Audit ultra round 3 (zone 4, n° 23, seats E c, F a): the top ● in its microphone mode. Its name is its icon's
+     * description, which [ScreenText.under] does not read (« micro » was never found there): the bench kept no engine
+     * and the app said « Le moteur audio n'a pas démarré » where a phone records (the card's « Enregistrer » worked).
+     */
+    private fun topRecordIsTheMicrophones(): Boolean = runCatching {
+        val mic = com.pocketstudio.model.i18n.tr("Enregistrer le micro sur la piste audio")
+        compose.onAllNodesWithTag("top_record").fetchSemanticsNodes().any { n ->
+            n.config.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.ContentDescription).orEmpty().any { it == mic }
+        }
+    }.getOrDefault(false)
 
     private fun gesture(kind: String, words: List<String>, cmd: String) {
         fun f(i: Int) = words.getOrNull(i)?.replace(',', '.')?.toFloatOrNull() ?: error("bad gesture: $cmd")

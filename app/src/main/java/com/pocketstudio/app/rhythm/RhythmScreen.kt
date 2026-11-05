@@ -490,6 +490,9 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: Boolean,
             style = if (ratio) MaterialTheme.typography.labelLarge else MaterialTheme.typography.labelLarge.copy(lineHeight = 16.sp),
             color = lerp(Neon.TextPrimary, Color(0xFF1E2023), glow),
             maxLines = 2,
+            // Round 2 integration: the Mode simple's everyday names (« Claquement de mains », « Grondement grave ») have
+            // a 10-letter word: at 130 % it broke as « Claqueme nt » at the usual floor; a pad's name may shrink a little more.
+            minScale = PAD_NAME_MIN_SCALE,
             modifier = Modifier.padding(horizontal = if (ratio) 4.dp else 8.dp, vertical = 2.dp).padding(bottom = if (ratio) 0.dp else 4.dp)
                 .padding(top = if (badged) BADGE_ROOM else 0.dp),
         )
@@ -1442,3 +1445,5 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
     }
 }
 
+/** How far a pad's name may shrink to keep its words whole ([com.pocketstudio.ui.WholeWordsText]'s floor is 0.72). */
+private const val PAD_NAME_MIN_SCALE = 0.6f

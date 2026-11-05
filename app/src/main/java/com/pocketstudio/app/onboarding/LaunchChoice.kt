@@ -384,6 +384,15 @@ private fun OtherChoices(actions: LaunchActions) {
         Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir un autre morceau, le copier ou le renommer."),
         Color(0xFF5BB8F5), actions.projects, "launch_projects",  // sky blue: green means "playing"
     )
+    // Benjamin (2026-10-24, then 2026-10-29): the Remix « mis en avant », one touch from here, a
+    // showcase card of its own for those who come for it.
+    RemixCard(actions.remix)
+    // Benjamin (n° 25, 2026-11-01): « Pad Live » right under the Remix, like an app of its own.
+    PadLiveCard(actions.padLive)
+    // Audit ultra round 2, zone 1, n° 3 (a child of 6 who cannot read looked for « une étoile ou un jeu »).
+    ChallengeCard(actions.challenges)
+    // Round 2 integration: after the Remix and Pad Live (Benjamin's « mis en avant », one touch on a 360 × 780 phone,
+    // RemixFindableTest), the voice and « J'apprends » below them.
     // Audit ultra round 2, n° 21 (seat B b: « rien sur l'accueil pour enregistrer ma voix ou ma guitare »).
     actions.voice?.let { voice ->
         Choice(
@@ -397,13 +406,6 @@ private fun OtherChoices(actions: LaunchActions) {
             Neon.Acid, learn, "launch_learn",
         )
     }
-    // Benjamin (2026-10-24, then 2026-10-29): the Remix « mis en avant », one touch from here, a
-    // showcase card of its own for those who come for it.
-    RemixCard(actions.remix)
-    // Benjamin (n° 25, 2026-11-01): « Pad Live » right under the Remix, like an app of its own.
-    PadLiveCard(actions.padLive)
-    // Audit ultra round 2, zone 1, n° 3 (a child of 6 who cannot read looked for « une étoile ou un jeu »).
-    ChallengeCard(actions.challenges)
 }
 
 /**

@@ -142,6 +142,9 @@ object LayoutScan {
         var p: SemanticsNode? = n
         while (p != null) {
             if (p.config.contains(SemanticsProperties.HideFromAccessibility) || p.config.contains(SemanticsProperties.InvisibleToUser)) return true
+            // Cleared to nothing (`clearAndSetSemantics {}`): what a screen drawn over it covers (the studio under « Que veux-tu
+            // faire ? », round 2 integration): neither seen nor read; its texts under the cover's pixels read as false contrasts.
+            if (p.config.isClearingSemantics && p.config.none()) return true
             p = p.parent
         }
         return n.boundsInRoot.width <= 0f || n.boundsInRoot.height <= 0f

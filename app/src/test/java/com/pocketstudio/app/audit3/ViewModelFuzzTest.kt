@@ -11,7 +11,7 @@ import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectJson
 import com.pocketstudio.model.ProjectStore
 import com.pocketstudio.model.switchScene
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -124,7 +124,14 @@ class ViewModelFuzzTest {
         }
         assertTrue("seed $seed: too few changes ($changes)", changes > steps / 5)
         if (vm.transport.value.playing) vm.togglePlay()
-        assertTrue(runBlocking { vm.flushNow() })
+        // Not runBlocking on this (main) thread: an autosave under way holds the save lock and resumes on the main
+        // thread, which runBlocking would hold: the flush then waited for ever (round 2 integration, the whole suite hung).
+        var flushed: Boolean? = null
+        @OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
+        kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.Main) { flushed = vm.flushNow() }
+        val until = System.currentTimeMillis() + 30_000
+        while (flushed == null && System.currentTimeMillis() < until) shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(20))
+        assertEquals("seed $seed: the last save", true, flushed)
         assertEquals("seed $seed: the file is the project", vm.project.value, store.load(id))
     }
 

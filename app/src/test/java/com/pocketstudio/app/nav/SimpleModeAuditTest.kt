@@ -183,6 +183,10 @@ class SimpleModeAuditTest {
         tap("more_remix")
         compose.onNodeWithTag("remix_download").performScrollTo().performClick()
         compose.waitForIdle()
+        // Audit ultra round 2, n° 31: on mobile data (Robolectric's network) the 174 MB are asked first; nothing yet.
+        assertTrue(requested().toString(), android.Manifest.permission.POST_NOTIFICATIONS !in requested())
+        compose.onNodeWithTag("remix_model_ask_ok").performClick()
+        compose.waitForIdle()
         assertTrue(requested().toString(), android.Manifest.permission.POST_NOTIFICATIONS in requested())
     }
 

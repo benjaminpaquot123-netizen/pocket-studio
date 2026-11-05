@@ -91,6 +91,7 @@ Débutant 60 gestes, connaisseur 90, QA 120 ; « regarde image » compte un demi
 - **Test des 5 secondes** : une seule fois, sur 10 écrans clés (une capture, « que peux-tu faire ici ? », comparé à l'action principale), agent léger.
 
 ## 4. Chaque défaut passe par le rejeu, pas par trois relecteurs
+> **Remplacé en partie par le §12 (méthode v2, 2026-11-06)** : verdicts banc/appli (§12.3), tests de rejeu (§12.5), liste des chemins (§12.6).
 1. **Rejeu déterministe** (`human-replay.sh`) : reproduit = le défaut existe, zéro agent.
 2. **Test de reproduction** écrit par l'équipe de correction : rouge sur le code courant = confirmé (le gabarit de fiche l'exige déjà).
 3. **Un seul juge léger** par grappe, seulement sans rejeu possible : lit la grappe (≤ 15 lignes) et 2 images, tranche « défaut / voulu / idée » avec la gravité. Une grappe vue par ≥ 2 sièges saute même ce juge (la fréquence est la preuve). Trois lecteurs seulement si l'équipe de correction conteste.
@@ -156,6 +157,7 @@ Le §7 du 3 novembre n'avait aucun critère son. Ligne « son, deux tours de sui
 - **Lisibilité** (programme) : score par texte (mots par phrase, mots longs, négations) sur les textes du Mode simple et des étapes de tuto ; les 50 pires sortent ; un seul siège `lit=non` joue une mission dessus ; le même score par langue repère les traductions qui allongent (DE, PL).
 
 ## 7. La boucle et l'arrêt (un seul jeu de critères, mesurable)
+> **Critère d'arrêt remplacé par le §12.10 (méthode v2)** : 9 conditions calculées par `scripts/bench/tableau-de-bord.py`. Le reste du §7 (tours, coupe-circuit) tient.
 **Tours** : tour 0 = programmes verts + 3 éclaireurs (un par niveau) sur les 3 missions les plus fréquentes ; les Bloquants sont corrigés avant la foule. Tours 1 et 2 = 8 sièges neufs en 2 lots de 4 ; tour 3 et suivants = 6 sièges. **3 tours au minimum** (trouver, vérifier, confirmer), **5 au maximum**, puis point avec Benjamin (A : continuer, B : accepter les Moyens restants et passer à l'étage 7).
 **Coupe-circuit** (programme) : après le lot A, si 0 clé nouvelle et 0 clé corrigée qui réapparaît, le lot B est réduit à 2 sièges ciblés ; si le lot A ne rapporte que des Mineurs, le lot B saute ; un Bloquant ou un Grave vu par un lot sort la mission du tour jusqu'à correction ; une mission dont les 3 derniers passages n'ont rien trouvé de nouveau sort de la rotation. **Zones changées** = fichiers du diff depuis l'étiquette du tour précédent → zone de `CARTE-CODE` → missions qui la touchent : c'est le script qui tire les missions du tour suivant.
 
@@ -171,6 +173,7 @@ Le §7 du 3 novembre n'avait aucun critère son. Ligne « son, deux tours de sui
 SUS, SEQ, note sur 10, plaisir : à l'étage 7 seulement (Benjamin, sa fille, l'ami), à 3 smileys. L'étage 7 ne rouvre la boucle que pour un Bloquant ou un Grave.
 
 ## 8. Coût, calendrier, plafonds
+> **Organisation des équipes et Gradle remplacés par les §12.7 et §12.8 (méthode v2).**
 - **Plafond écrit : 60 agents lourds et 40 légers tout compris** (préparation, tours, corrections, relectures) ; au-delà, arrêt et point avec Benjamin. Compteur tenu dans le tableau de bord de chaque tour.
 - **Estimation** : préparation P0 ≈ 7 sessions lourdes de code (2 équipes) + 2 légers ; programmes P1 ≈ 13 sessions lourdes de code + 14 légers (lecteurs natifs) ; tour 1 = 8 sièges + 2 équipes de correction + 1 relecture = 11 lourds, ≈ 8 légers ; tour 2 = 11 lourds, 6 légers ; tour 3 = 8 lourds, 4 légers ; tours 4 et 5 seulement si les critères ne sont pas tenus. Sur 3 tours : ≈ 55 lourds et 35 légers ; 25 sièges × ≤ 70 écrans ≈ 1 750 images lues (contre 12 000 à 24 000 dans le plan du 3 novembre). Durée : P0 ≈ 4 à 5 jours (2 équipes), puis 3 tours en ≈ 5 à 6 jours, soit ≈ 2 semaines ; 3 semaines si 5 tours.
 - **Calendrier d'un tour (≈ 6 à 8 h)**, autour de la serrure Gradle (un seul Gradle à la fois ; un lot de sièges le prend 45 à 60 min) : [1] lot A de 4 sièges → fusion → coupe-circuit ; [2] lot B ; [3] juges légers (sans Gradle) pendant que les 2 équipes de correction lisent leurs grappes et écrivent code et tests dans leurs ateliers (sans Gradle) ; [4] fenêtre Gradle en série : tests ciblés équipe 1, puis équipe 2 ; [5] relecture neuve (1 agent, lit le diff) ; [6] **une seule suite complète pour le tour**, puis étiquette `ultra-N` et émulateur sur la CI. Jamais la suite complète « par correction ». La nuit : `tuto-bench` (≈ 2,5 h), `live-bench` (15 min), matrice étendue (≈ 1 h).
@@ -212,3 +215,55 @@ Toujours le modèle le plus fort, sans gaspiller : une seule compilation partag�
 - « Au moins 6 tours, ≈ 80 passages », garde-fou au 8e tour : contredit « arrêt dès les critères » ; 3 à 5 tours de 8 puis 6 sièges.
 
 Sources : le plan du 3 novembre (historique git), `AUDIT.md`, `CARTE-FONCTIONS.md`, les notes `docs/lots/AUDIT-0.md` à `AUDIT-5.md`, les rapports `docs/testeur-humain/2026-10-28-*.md` (Léa, Karim, Yanis, Clara, Inès), `HumanTester.kt`, `TutoJourneyTest.kt`, `CaptureMatrixTest.kt`, `LayoutScan.kt`, `audit-emulator.yml`.
+
+## 12. Méthode v2 (méta-audit du 2026-11-05, appliquée le 2026-11-06)
+
+Source : `docs/audits/ultra/META-AUDIT.md` (7 analyses des tours 0 à 4, « 10 changements les plus rentables »). Ce paragraphe prime sur les §3 à §8 quand ils se contredisent. Rien de ce qui suit ne lance un tour : **un tour ne démarre que sur l'accord de Benjamin**.
+
+### 12.1 Auto-tests du banc avant chaque lot (changement 1)
+`scripts/bench/selftest.sh <dossier du lot>` : disque ≥ 2 Go, mémoire, scripts du banc (`test_ultra_bench.py`), puis tous les `Bench*Test`, `Tour*AppProofTest` et `Tour*RenameIdleTest`, par la file Gradle unique. Vert : il écrit `selftest.ok` (commit et état de l'arbre). `scripts/human-tester.sh` **refuse de lancer un lot** sans ce tampon pour le code exact du lot (contournement seulement avec `PS_SKIP_SELFTEST=<raison>`, noté dans le lot). Pourquoi : 100 % des bloquants du tour 0, 10 sur 13 au tour 1 et 3 sur 4 au tour 3 étaient le banc, et ses gardes ne tournaient qu'en CI (rouge pendant tout l'audit).
+
+### 12.2 Le moteur du banc est toujours là (changement 2)
+Le banc ne prête plus son moteur bouton par bouton (listes `SONG_STARTS`, `STOP_ALL_TAGS`, `ENGINE_TAGS` tenues à la main : chaque oubli = un « rien ne joue » classé grave) : il le pose avant l'ouverture de l'appli et ne le retire jamais, comme un téléphone. Côté appli, les derniers appels directs à la bibliothèque native (analyseur, accordeur, recalage d'une prise, écoute du Guide, tempo de la séparation) passent par `NativeEngine.isNative` ou `previewPositionNow()`. Retour arrière : `-Phuman.moteur=liste`.
+
+### 12.3 Verdict « banc » ou « appli » : une procédure, un fichier (changement 3)
+- Tout défaut ≥ moyen dont la cause peut être le banc (symptôme `rien`, `plantage`, `lent`, un chiffre, un dialogue à champ de texte, une fiche `banc?` ≠ non) est **« ? »** : il ne compte ni comme grave ni comme banc tant qu'il n'a pas ses preuves.
+- **Trois preuves avant un verdict** : (a) un test de l'appli **sans banc** qui vérifie l'état visible attendu par le testeur ; (b) pour « banc », une garde `Bench*Test` rouge avant la correction du banc, verte après ; (c) si le symptôme touche le temps, le son, le repos de Compose ou une permission : une ligne dans `app/src/main/assets/recette.json`, et le défaut reste ouvert jusqu'au retour de Benjamin.
+- **Un seul fichier** : `docs/audits/ultra/verdicts.tsv`, écrit par l'agent banc seulement. Un verdict ne se conteste que par un test, jamais par une lecture du code. Un verdict ne s'étend pas à un autre chemin (Pad Live ≠ vue Live ; « Jouer depuis une partie » ≠ ▶) sans sa propre preuve.
+- Quand une clé classée « banc » revient, la fusion la marque **`[banc contredit]`** d'elle-même : elle repart en « ? ».
+
+### 12.4 « Revient » détecté par programme (changement 4)
+`scripts/bench/fuse-reports.py` à la fin de **chaque lot** (dossier du lot) et de **chaque tour** (dossier du tour entier, avec `--maj-base --tour tour-N`). Il garde les écritures non latines, rapproche deux sièges de langues différentes par le bouton touché (gabarit v2), marque `[revient]` une clé « corrigé » de `base.tsv` et `[banc contredit]` une clé « banc » ; il écrit aussi `clusters-complet.md` (rien n'est jeté en silence), `promesses.tsv` et `incidents-banc.tsv`. Après les corrections, le coordinateur passe dans `base.tsv` l'état des clés corrigées à « corrigé » (ou « banc », « voulu »).
+
+### 12.5 Un test de rejeu par défaut corrigé (changement 5)
+Avant de corriger un défaut ≥ grave : `scripts/bench/rejeu-nouveau.sh <siège> <n> <id> 'attendu=…'|'absent=…'` copie les options et les gestes 1 à n du siège dans `docs/audits/ultra/rejeux/<id>/` avec l'oracle (ce que l'écran doit montrer, ou ne plus montrer). `scripts/bench/rejeu-defauts.sh` les rejoue tous (6 par passage de Gradle) : le rejeu doit dire « oracle non tenu » avant la correction et « oracle tenu » après. Il tourne avant chaque fusion d'équipe. En plus, le test unitaire de la correction vérifie **ce que le testeur lisait à l'écran** (pas une somme de notes de toutes les parties).
+
+### 12.6 La liste des chemins avant le correctif (changement 6)
+Avant de coder, l'équipe écrit dans son rapport la liste de **tous** les endroits qui lisent ou montrent la même donnée (tuto, Guide, chapitres, tuto Pro, Mode simple, Pro, Live, Pad Live, Remix, langues) et coche chacun avec son test. Une équipe ne touche que les fichiers de sa zone d'après `docs/CARTE-CODE.md` ; un fichier partagé (`AppRoot.kt`, `RhythmViewModel.kt`, catalogues i18n) a **un seul propriétaire par tour**, nommé dans les consignes ; les autres lui demandent par sa note.
+
+### 12.7 Une branche et un atelier par équipe ; relecture avant fusion (changement 7)
+`scripts/bench/equipe-atelier.sh cree tour-N <zone>` : un atelier `/home/user/eq-tour-N-<zone>` et une branche `eq/tour-N-<zone>` par équipe, **3 équipes au plus** par tour (machine : 4 cœurs, 15 Go). La relecture neuve se fait **par branche, avant la fusion** (`docs/audits/ultra/tour-N-<zone>-relecture.md`). Puis l'agent de fusion lance `scripts/bench/fusion-equipes.sh tour-N <zones dans l'ordre>` : une branche à la fois, rejeux et tests ciblés après chacune, retour en arrière automatique si rouge. Jamais deux équipes dans le même dossier, jamais de commit « par morceaux ».
+
+### 12.8 Une seule file Gradle, un budget mémoire (changement 8)
+Tout Gradle passe par `scripts/bench/gradle-file.sh` : une serrure unique, les démons Gradle **et Kotlin** arrêtés avant (le démon Kotlin survivait à `./gradlew --stop` : c'était la seconde grosse JVM de l'OOM du 5 nov. à 14:03), au moins 6 Go de mémoire disponibles sinon attente puis refus, et un Gradle sans sortie depuis 20 min est tué. Pourquoi : deux OOM, six sièges perdus, 1 h 30 de suite gelée au tour 2.
+
+### 12.9 Gabarit et brief v2 (changement 9)
+Rapport : `docs/audits/GABARIT-RAPPORT-TESTEUR.md` (v2 : `geste:` = n° du geste fautif, cible copiée de l'écran, une ligne par promesse avec son id, `banc?:`, `revu:`, `incidents-banc:`, gravité par conséquence, 10 défauts et 60 lignes au plus). Consignes : `docs/audits/ultra/GABARIT-CONSIGNES-TESTEUR-V2.md` (tableau des limites du banc, « le banc ne répond plus » n'est jamais un défaut, revoir avant de ficher grave). Chaque brief de siège donne la mission, ses 3 buts (ids) et 1 à 5 promesses avec leur id (`docs/audits/ultra/meta/lectures/lecture-promesses.md` en donne 120).
+
+### 12.10 Le tableau de bord et le critère d'arrêt (changement 10)
+`scripts/bench/tableau-de-bord.py <tour…>` écrit `tableau-de-bord.md` dans le dossier du dernier tour, à partir des rapports, de `base.tsv`, `verdicts.tsv`, des `mesures.json` et d'un `hors-banc.tsv` rempli par le coordinateur (relecture, CI, recette du téléphone, couverture). Un chiffre manquant = condition non remplie. **On s'arrête quand les 9 conditions sont remplies sur chacun des deux derniers tours complets** (≥ 16 sièges joués, ≤ 3 coupés par le banc) :
+
+| | Condition | Seuil |
+|---|---|---|
+| A | Items ≥ grave côté appli, non tranchés ou non faits | 0 |
+| B | Items ≥ grave classés banc | ≤ 2, chacun avec garde `Bench*Test` et preuve sans banc |
+| C | Revient ou banc contredit | 0 ≥ moyen ; ≤ 2 mineurs |
+| D | Promesses (par id) | ≥ 90 % des promesses vues par ≥ 2 sièges tenues, et ≥ 80 % des 120 vues au moins une fois sur les deux tours |
+| E | Missions (oracle `mesures.json`) | ≥ 90 % réussies |
+| F | Moyens nouveaux | ≤ 5 par tour, aucun vu par 2 sièges |
+| G | Qualité du tour | relecture : 0 bloquant, 0 grave ; 0 correction sans test ; 0 fichier non commité |
+| H | Hors banc | CI build et émulateur verts ; recette du téléphone de Benjamin sans point rouge (les « banc » ≥ grave y sont listés) |
+| I | Couverture | 0 case vide de la carte, 0 lot prévu non joué |
+
+Coupe-circuit : si A = 0 mais F > 5, pas de tour complet de 24 : 8 sièges ciblés sur les zones de F, plus des sièges « chasseurs de promesses ». Point avec Benjamin tous les 2 tours, le tableau en une page.
+

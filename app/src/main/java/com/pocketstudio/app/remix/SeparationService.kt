@@ -375,7 +375,7 @@ class SeparationService : Service() {
 
         // Tempo from the drums alone, key from bass + other: each is cleaner than the full mix.
         override fun analyse(dir: File): SongInfo {
-            if (!NativeEngine.isAvailable) return SongInfo()
+            if (!NativeEngine.isNative) return SongInfo()
             val tempo = NativeEngine.analyzeTempo(File(dir, "drums.wav").absolutePath)
             val key = NativeEngine.analyzeKey(arrayOf(File(dir, "bass.wav").absolutePath, File(dir, "other.wav").absolutePath))
             val root = key[0].toInt().takeIf { it in 0..11 }

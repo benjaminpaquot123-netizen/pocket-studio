@@ -2579,7 +2579,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun realignTake(id: Int) {
         val clip = project.value.audioTracks.firstOrNull { it.id == id }?.clip ?: return
         val bpm = project.value.tempoBpm
-        if (!clip.tempoDiffers(bpm) || !NativeEngine.isAvailable || _audioRecording.value != null) return
+        // The stretch is the native library's (a test's command sink has none).
+        if (!clip.tempoDiffers(bpm) || !NativeEngine.isNative || _audioRecording.value != null) return
         val ratio = clip.bpm / bpm
         audioJob(tr("Recalage sur le tempo…")) {
             val pcm = withContext(Dispatchers.Default) { padSamples.read(clip.file) }
@@ -8082,7 +8083,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Spectrum of the output about 15 times a second while the analyser is shown. */
     suspend fun pollSpectrum() {
-        if (!NativeEngine.isAvailable) return
+        // The scope is the native engine's only (a test's command sink has none, as for the meters).
+        if (!NativeEngine.isNative) return
         val buf = FloatArray(NativeEngine.SCOPE_FRAMES)
         var smooth: FloatArray? = null
         try {
@@ -8108,7 +8110,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Listens to the microphone while the tuner is shown (needs the permission). */
     suspend fun runTuner() {
-        if (!NativeEngine.isAvailable || _audioRecording.value != null) {
+        // The tuner's microphone is the native engine's only (a test's command sink has none).
+        if (!NativeEngine.isNative || _audioRecording.value != null) {
             _tunerMic.value = false
             return
         }

@@ -1,0 +1,6 @@
+lang=fr
+device=phone
+font=200
+mode=simple
+gestes.max=60
+mission=tuto-facile

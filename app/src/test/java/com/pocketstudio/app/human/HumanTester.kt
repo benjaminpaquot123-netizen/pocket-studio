@@ -111,6 +111,7 @@ abstract class HumanTester(private val seat: String) {
     }
     // Lot « tuto 4 » (É0): the play head moves as on a phone, and « Partager » exports.
     private val playhead = BenchPlayhead()
+    private val launchLines = BenchLaunchLines()
     private var lastVm: RhythmViewModel? = null
     /** Said once in the next sound-N.txt (what Android's share menu did). */
     private var note: String? = null
@@ -234,12 +235,24 @@ abstract class HumanTester(private val seat: String) {
             journal.appendText("#$n SON ${sound.lineSequence().first()}\n")
             layout(journal, n, snap)
             if (source != null) {
+                // Audit method v2: a replay test of a fixed defect plays the gestures without comparing screens (the fix
+                // changes them), then reads the last screen and sound against its oracle.
+                val oracle = o.replayExpect != null || o.replayAbsent != null
                 val was = File(source, "screen-$n.txt").takeIf { it.isFile }?.let { fingerprint(it, File(source, "sound-$n.txt")) }
-                if (was != print) {
+                if (!oracle && was != print) {
                     val verdict = "divergé au pas ${n - 1}" + if (was == null) " (pas d'écran-texte $n à l'origine)" else ""
                     File(dir, "rejeu.txt").writeText(verdict); end("rejeu : $verdict"); return
                 }
-                if (n > o.replayN) { File(dir, "rejeu.txt").writeText("reproduit"); end("rejeu : reproduit"); return }
+                if (n > o.replayN) {
+                    val seen = File(dir, "screen-$n.txt").takeIf { it.isFile }?.readText().orEmpty() + "\n" + sound
+                    val verdict = when {
+                        !oracle -> "reproduit"
+                        o.replayExpect != null && !seen.contains(o.replayExpect) -> "oracle non tenu : « ${o.replayExpect} » absent"
+                        o.replayAbsent != null && seen.contains(o.replayAbsent) -> "oracle non tenu : « ${o.replayAbsent} » encore là"
+                        else -> "oracle tenu"
+                    }
+                    File(dir, "rejeu.txt").writeText(verdict); end("rejeu : $verdict"); return
+                }
             }
             if (same >= 5) { journal.appendText("#$n RIEN NE CHANGE (5 écrans identiques)\n"); end("rien ne change (5 écrans identiques)"); return }
             if (same == 3) journal.appendText("#$n RIEN NE CHANGE (3 écrans identiques)\n")
@@ -378,6 +391,8 @@ abstract class HumanTester(private val seat: String) {
         separation = BenchSeparation(app, remixTimeScale)
         // Round 1 (lot banc): a microphone that hears someone sing ([BenchMic]).
         BenchMic.plugIn()
+        // Audit method v2: the engine is there before the app opens, as a phone's (see ENGINE_ALWAYS).
+        if (ENGINE_ALWAYS) NativeEngine.sink = engine
         scenario = ActivityScenario.launch(MainActivity::class.java)
         settle(1500)
     }
@@ -534,6 +549,14 @@ abstract class HumanTester(private val seat: String) {
         val before = com.pocketstudio.engine.NativeEngine.sink
         com.pocketstudio.engine.NativeEngine.sink = before ?: BenchEngine()
         try {
+            // Audit method v2 (engine always there): the app starts its own set as Pad Live opens, rendered by a phone's
+            // engine; the bench's renders nothing and that set ends empty. Its end awaited, the bench's stand-in comes.
+            val appOwn = System.currentTimeMillis() + 30_000
+            while (vm.liveStarting.value && System.currentTimeMillis() < appOwn) {
+                shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(50))
+                Thread.sleep(10)
+            }
+            if (vm.project.value.live.at(4) != null) return
             vm.fillLiveStarter { _ ->
                 com.pocketstudio.model.LiveStarter.PADS.indices.associateWith { i ->
                     val pad = com.pocketstudio.model.LiveStarter.PADS[i]
@@ -650,6 +673,20 @@ abstract class HumanTester(private val seat: String) {
      * gesture (one that may open such a screen) first stops the song it played and lets it go.
      */
     private fun engineBefore(kind: String, x: Float, y: Float) {
+        // Audit method v2 (META-AUDIT change 2): the engine is there all the time, as a phone's. Lending it touch by touch, from
+        // lists of tags kept by hand, made most of the bench's false alarms in rounds 0 to 4 (each tag forgotten = « nothing plays »).
+        if (ENGINE_ALWAYS) {
+            if (kind == "touche" && audioTakeTouched(x, y)) countInLikeTheProject()
+            NativeEngine.sink = engine
+            return
+        }
+        // Audit ultra round 4 (seats A b, C b, C d, D a, D d: « Rien n'a été joué pendant la prise »): a keyboard take is written
+        // at the engine's play position (Tour4AppProofTest); the bench never gave its engine to one, and let it go during it
+        // (stopped, then ▶ again without it: the stop ended the take at once). The engine comes before the touch that starts it.
+        if (kind == "touche" && noteTakeTouched(x, y)) {
+            engineForANoteTake(lastVm)
+            return
+        }
         if (kind == "touche" && (touches("share_go", x, y) || touches("share_listen", x, y) || playsTheSong(x, y) || needsTheEngine(x, y))) {
             NativeEngine.sink = NativeEngine.sink ?: engine
             return
@@ -657,10 +694,7 @@ abstract class HumanTester(private val seat: String) {
         // Round 1 (lot banc): « Enregistrer » of an audio track (or ● in its microphone mode) opens the engine's microphone:
         // the bench's engine has one ([BenchEngine.micStart]), its count-in as long as the project's.
         if (kind == "touche" && audioTakeTouched(x, y)) {
-            lastVm?.project?.value?.let { p ->
-                val bars = SettingsStore.state.value.recordCountIn.coerceAtLeast(1)
-                engine.countInMs = (bars * p.beatsPerBar * 60_000.0 / p.tempoBpm.coerceAtLeast(30.0)).toLong()
-            }
+            countInLikeTheProject()
             NativeEngine.sink = NativeEngine.sink ?: engine
             return
         }
@@ -680,6 +714,14 @@ abstract class HumanTester(private val seat: String) {
         // screens' own reads of the engine go through it, the meters are the native engine's only).
         if (v != null && songPlaying(v)) return
         letTheEngineGo(v)
+    }
+
+    /** The bench's microphone counts in as long as the project's count-in (an audio take). */
+    private fun countInLikeTheProject() {
+        lastVm?.project?.value?.let { p ->
+            val bars = SettingsStore.state.value.recordCountIn.coerceAtLeast(1)
+            engine.countInMs = (bars * p.beatsPerBar * 60_000.0 / p.tempoBpm.coerceAtLeast(30.0)).toLong()
+        }
     }
 
     /**
@@ -709,6 +751,30 @@ abstract class HumanTester(private val seat: String) {
         }
     }
 
+    /** « ● Enregistrer » of an editor (« Enregistrer ma mélodie ») or the top bar's ● in its notes mode: a take of notes. */
+    private fun noteTakeTouched(x: Float, y: Float): Boolean =
+        touches("record_start", x, y) || (touches("top_record", x, y) && !topRecordIsTheMicrophones())
+
+    /**
+     * The bench's engine under a take of notes, as a phone's always is. Music already playing without it (the loop ▶ plays
+     * once the bench let its engine go): stopped, the engine given, ▶ again, so that its play position runs from that ▶
+     * (an engine joining a transport it never started would say « stopped », and every key would be dropped).
+     */
+    private fun engineForANoteTake(v: RhythmViewModel?) {
+        if (NativeEngine.sink != null) return
+        val playing = v != null && v.transport.value.playing
+        if (playing && !v!!.recording.value) {
+            v.togglePlay()
+            pass(100)
+            runCatching { idleScreen() }
+        }
+        NativeEngine.sink = engine
+        if (playing && !v!!.transport.value.playing) {
+            v.togglePlay()
+            pass(100)
+        }
+    }
+
     private fun engineDone() {
         // The project the gesture may have opened (its activity is a new one): its ViewModel's work counts.
         val v = vm() ?: lastVm
@@ -731,6 +797,11 @@ abstract class HumanTester(private val seat: String) {
                 syncedFor = song
                 v.syncEngine()
             }
+            return
+        }
+        if (ENGINE_ALWAYS) {
+            NativeEngine.sink = engine
+            if (v != null && padLiveAwaitsItsSet(v)) standInForTheStarter()
             return
         }
         // Audit ultra round 1: a loop that plays with it (a take written while it plays) goes on without it as in
@@ -818,7 +889,9 @@ abstract class HumanTester(private val seat: String) {
             // Round 1 (lot banc): the video being made, « Montre-moi » under way (its finger on screen).
             v.videoBusy || shownOnScreen("tuto_finger") ||
             // A take of an audio track recording or being written (the bench's microphone is its engine's).
-            v.audioRecording.value != null || v.takeSaving.value || padTakeRecording(v)
+            v.audioRecording.value != null || v.takeSaving.value || padTakeRecording(v) ||
+            // Audit ultra round 4: a take of notes (keyboard, pads, 303) records at the engine's position until it ends.
+            v.recording.value
     }
 
     /**
@@ -1127,6 +1200,7 @@ abstract class HumanTester(private val seat: String) {
             ears.tick()
             lastVm?.let {
                 playhead.tick(it, SystemClock.uptimeMillis())
+                launchLines.tick(it)
                 engine.transportSteps = it.takeClockForTest
                 engine.tempo = it.project.value.tempoBpm
                 engine.beatsPerBar = it.project.value.beatsPerBar
@@ -1396,7 +1470,10 @@ abstract class HumanTester(private val seat: String) {
         if (v?.transport?.value?.playing == true) {
             // Audit ultra tour 0 (seat a): the song from a part (the guide's « Écouter »), not the loop of a part.
             val part = v.sessionUi.value.songIndex.takeIf { it >= 0 }?.let { v.project.value.song.getOrNull(it) }
-            add(part?.let { "le morceau joue (partie « ${v.project.value.scenes.getOrNull(it.scene)?.name ?: "?"} »)" } ?: "la musique du projet joue en boucle")
+            // Audit ultra round 4 (seats B c, C c): every Live block stopped (« ■ Tout »): the tempo goes on, nothing sounds.
+            val allStopped = v.liveGrid.value?.let { g -> (0 until com.pocketstudio.model.LiveSlots.COUNT).all { g.slot(it).playing < 0 } } == true
+            if (allStopped) add("le tempo tourne mais tous les blocs Live sont arrêtés : la musique du projet ne sonne plus")
+            else add(part?.let { "le morceau joue (partie « ${v.project.value.scenes.getOrNull(it.scene)?.name ?: "?"} »)" } ?: "la musique du projet joue en boucle")
             remixHeard(v)?.let(::add)
             stemPads().filter { it.value.second }.forEach { (pad, s) -> add("le pad ${pad + 1} (« ${s.first} ») sonne dans la boucle") }
         }
@@ -1562,6 +1639,12 @@ abstract class HumanTester(private val seat: String) {
         const val AMENEE_SONG = "premier-morceau"
         const val AMENEE_REMIX = "remix"
         const val AMENEE_PADLIVE = "padlive"
+
+        /**
+         * Audit method v2 (META-AUDIT change 2): the bench's engine stays from the first gesture to the last, as a phone's.
+         * `-Phuman.moteur=liste` brings back the old lending by lists of tags (way back, docs/DECISIONS.md 2026-11-06).
+         */
+        internal val ENGINE_ALWAYS: Boolean get() = System.getProperty("ps.human.moteur", "toujours") != "liste"
 
         /** Touches that play the song from a part, from its start or from a take (round 3), by their tags' start. */
         private val SONG_STARTS = listOf("part_play_", "play_from_", "audio_play_from_")

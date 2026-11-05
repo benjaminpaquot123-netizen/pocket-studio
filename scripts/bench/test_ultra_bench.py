@@ -170,11 +170,11 @@ def main():
         text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--maj-base")
         lines = text.splitlines()
         check(len(lines) <= 60, "60 lines at most")
-        check("c (jugement sonore)" in text, "the sound judgment rejected:\n" + text)
+        check("c#1 (jugement sonore)" in text, "the sound judgment set aside, that defect only:\n" + text)
         check(any("[nouveau] bloquant bloque ×1 (b#2) tab_Sons · « klaxon » · rien" in l for l in lines), "b's blocking key first:\n" + text)
         check(any("[nouveau] grave ×1 (a#4) padlive · « klaxon » · rien" in l for l in lines), "a's key:\n" + text)
         check(any("[voulu]" in l and "« rec »" in l for l in lines), "a known key keeps its state:\n" + text)
-        check("2 siège(s), 3 grappe(s), 2 nouvelle(s)" in text, "the summary:\n" + text)
+        check("3 siège(s), 3 grappe(s), 2 nouvelle(s)" in text, "the summary:\n" + text)
         with open(base, encoding="utf-8") as f:
             added = f.read()
         check("tab_Sons|klaxon|rien\tnouveau" in added and added.count("\n") == 4, "the new keys added to the base:\n" + added)
@@ -186,7 +186,65 @@ def main():
         text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base)
         check("×2 (a#4, b#2) padlive · « klaxon » · rien" in text and "1 vue(s) par ≥ 2 sièges" in text, "the same key fused:\n" + text)
         missions_of_round_1(d)
+    with tempfile.TemporaryDirectory() as d:
+        fusion_v2(d)
     print("ultra bench scripts: OK")
+
+
+REPORT_V2 = """siege: a | profil: ado-ko | lang: ko | device: phone | font: 100 | mode: simple
+mission: padlive | buts: son,partie,partage
+promesse: id=padlive_hint | texte: 한 번 터치로 소리가 나요 | ecran: 2 | tenue: non | pourquoi: rien ne sonne
+hesitations:
+  - ecran: 1 | cherchais: la cible du jeu | regarde: en haut
+incidents-banc:
+  - geste: 5 | attente: 70 | vu: le banc n'a pas rendu d'écran
+defauts:
+  - geste: 2 | ecran.vu: 3 | cible: 경적 | geste.type: touche
+    attendu: un son | obtenu: rien
+    symptome: promesse
+    gravite: grave | revu: non | banc?: non | promesse: padlive_hint
+  - geste: 1 | ecran.vu: 2 | cible: 全部止める | geste.type: touche
+    attendu: tout s'arrête | obtenu: rien
+    symptome: rien
+    gravite: grave | revu: oui: ecran 6 | banc?: non | promesse: -
+"""
+
+REPORT_V2_FR = """siege: b | profil: parent | lang: fr | device: phone | font: 100 | mode: simple
+defauts:
+  - geste: 2 | ecran.vu: 3 | cible: Klaxon | geste.type: touche
+    attendu: un son | obtenu: rien
+    symptome: rien
+    gravite: grave | revu: oui: ecran 4 | banc?: non | promesse: -
+"""
+
+
+def fusion_v2(d):
+    """Template v2: the key is the journal's tag at the gesture cited, the same for a Korean and a French seat; non-Latin
+    targets are kept; a hesitation that says « cible » is no defect; promises and bench incidents are listed; a key
+    « corrigé » in the base comes back as [revient], a « banc » verdict seen again as [banc contredit]."""
+    for seat, report in (("a", REPORT_V2), ("b", REPORT_V2_FR)):
+        write(os.path.join(d, "lotA", seat, "journal.txt"), JOURNAL_A)
+        write(os.path.join(d, "lotA", seat, "rapport.md"), report)
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\npadlive|padlive_pad_4|rien\tcorrigé\ttour-3\t\n")
+    verdicts = os.path.join(d, "verdicts.tsv")
+    write(verdicts, "tour\titem\tcle\tverdict\tpreuve_appli\tgarde_banc\ttelephone\tcommit\n"
+                    "tour-3\t2\tpadlive|全部止める|rien\tbanc\tX\tY\t-\tabc\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--verdicts", verdicts)
+    check("[revient] grave ×2 (A/a#2, A/b#2) padlive · « padlive_pad_4 » · rien" in text, "a Korean and a French seat, one key, back:\n" + text)
+    check("« 全部止める »" in text and "[banc contredit]" in text, "non-Latin target kept, bench verdict contradicted:\n" + text)
+    check("2 siège(s), 2 grappe(s)" in text, "the hesitation saying « cible » is no defect:\n" + text)
+    promises = open(os.path.join(d, "promesses.tsv"), encoding="utf-8").read()
+    check("A/a\tpadlive_hint\t" in promises and "\tnon\t" in promises, "the promise listed:\n" + promises)
+    incidents = open(os.path.join(d, "incidents-banc.tsv"), encoding="utf-8").read()
+    check("A/a\t5\t70" in incidents, "the bench incident listed:\n" + incidents)
+    check(os.path.isfile(os.path.join(d, "clusters-complet.md")), "every cluster kept in clusters-complet.md")
+    # The dashboard: computed from the same files; a missing number never meets a condition.
+    write(os.path.join(d, "hors-banc.tsv"), "ci_build\tvert\nci_emulateur\trouge\nrecette_points_rouges\t0\n")
+    board = run(os.path.join(HERE, "tableau-de-bord.py"), d, "--base", base, "--verdicts", verdicts)
+    check("| A | Items ≥ grave côté appli, non tranchés ou non faits | 2 | 0 | non |" in board, "A counts the two graves without a verdict of this round:\n" + board)
+    check("| H |" in board and "vert/rouge, 0" in board and "| G |" in board and "?, ?, ?, ?" in board, "H read, G unknown:\n" + board)
+    check("Arrêt de l'audit possible : non" in board, "no stop on one round:\n" + board)
 
 
 def missions_of_round_1(d):

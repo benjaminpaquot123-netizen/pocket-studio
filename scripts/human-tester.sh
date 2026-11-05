@@ -18,5 +18,15 @@ if [ ${#seats[@]} -eq 0 ]; then
   echo "No seat: put a start.txt in $dir/<a-f>/." >&2
   exit 2
 fi
+# Audit method v2 (META-AUDIT changes 1 and 8): no lot without a green self-test of the bench on this very code
+# (scripts/bench/selftest.sh <lot folder>), and Gradle only through the one queue (scripts/bench/gradle-file.sh).
+stamp="$dir/selftest.ok"
+if [ "${PS_SKIP_SELFTEST:-}" != "" ]; then
+  echo "selftest skipped: $PS_SKIP_SELFTEST" | tee -a "$dir/selftest-skipped.txt" >&2
+elif [ ! -f "$stamp" ] || [ "$(sed -n 1p "$stamp")" != "$(git rev-parse HEAD)" ] || \
+     [ "$(sed -n 2p "$stamp")" != "$(git diff HEAD --stat -- app scripts | tail -1)" ]; then
+  echo "No green self-test for this code: run scripts/bench/selftest.sh $dir first (or PS_SKIP_SELFTEST=<reason>)." >&2
+  exit 3
+fi
 # shellcheck disable=SC2086
-./gradlew ${GRADLE_ARGS:-} :app:testDebugUnitTest "${seats[@]}" -Phuman.dir="$dir" --rerun
+PS_GRADLE_LOG="$dir/bench.log" scripts/bench/gradle-file.sh ${GRADLE_ARGS:-} :app:testDebugUnitTest "${seats[@]}" -Phuman.dir="$dir" --rerun

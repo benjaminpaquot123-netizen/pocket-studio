@@ -23,6 +23,9 @@ import kotlin.math.hypot
  *   mission's starting point before the tester gets it;
  * - `timeout.minutes=` how long the bench waits for a gesture (20);
  * - `rejeu=<seat folder>` and `rejeu.n=` (scripts/human-replay.sh): the gestures of another seat;
+ * - `rejeu.attendu=` / `rejeu.absent=` (audit method v2, scripts/bench/rejeu-defauts.sh): a replay test of a fixed defect:
+ *   the gestures are played without comparing screens (the fix changes them), then the screen and sound after the last one
+ *   must hold the « attendu » text and not the « absent » one;
  * - `mission=`, `profil=`, `niveau=`: for the oracle and the dashboard (scripts/bench/seat-metrics.py), not read here.
  */
 internal data class SeatOptions(
@@ -40,6 +43,8 @@ internal data class SeatOptions(
     val timeoutMinutes: Long = 20,
     val replayOf: File? = null,
     val replayN: Int = 0,
+    val replayExpect: String? = null,
+    val replayAbsent: String? = null,
 ) {
     enum class Hand(val word: String) { BOTH("à deux mains"), RIGHT("d'une main, la droite"), LEFT("d'une main, la gauche") }
 
@@ -115,6 +120,8 @@ internal data class SeatOptions(
                     "mission", "profil", "niveau" -> Unit
                     "rejeu" -> o = o.copy(replayOf = File(raw))
                     "rejeu.n" -> v.toIntOrNull()?.let { o = o.copy(replayN = it) }
+                    "rejeu.attendu" -> o = o.copy(replayExpect = raw)
+                    "rejeu.absent" -> o = o.copy(replayAbsent = raw)
                     else -> warn.add("option inconnue : $k")
                 }
             }

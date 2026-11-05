@@ -14,7 +14,7 @@ out="$(dirname "$src")/rejeu-$seat-$n-$(date +%H%M%S)"
 mkdir -p "$out/$seat"
 grep -v -E '^(rejeu|rejeu\.n)=' "$src/start.txt" > "$out/$seat/start.txt" || true
 printf 'rejeu=%s\nrejeu.n=%s\n' "$src" "$n" >> "$out/$seat/start.txt"
-"$(dirname "$0")/human-tester.sh" "$out" > "$out/gradle.log" 2>&1 || true
+PS_SKIP_SELFTEST="${PS_SKIP_SELFTEST:-rejeu}" "$(dirname "$0")/human-tester.sh" "$out" > "$out/gradle.log" 2>&1 || true
 if [ -f "$out/$seat/rejeu.txt" ]; then
   cat "$out/$seat/rejeu.txt"; echo
 else

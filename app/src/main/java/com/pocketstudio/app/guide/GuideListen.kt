@@ -111,7 +111,7 @@ class EnginePcmPlayer(
             var started = false
             while (true) {
                 delay(POLL_MS)
-                val pos = NativeEngine.previewPosition()
+                val pos = NativeEngine.previewPositionNow()
                 when {
                     pos >= 0 -> { started = true; heardFrames = maxOf(heardFrames, pos) }
                     started -> { heardFrames = frames; break }  // played to its end

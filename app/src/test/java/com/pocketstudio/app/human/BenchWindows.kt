@@ -54,10 +54,20 @@ internal object BenchWindows {
      * frames, a bounded wait. Read from the windows' own semantics, never through the test rule (which would wait for rest).
      */
     fun textFieldInADialog(): Boolean = runCatching {
-        windows().filter { it.params.type != WindowManager.LayoutParams.TYPE_BASE_APPLICATION }.any { w ->
-            composeRoots(w.view).any { root -> hasTextField(root.semanticsOwner.unmergedRootSemanticsNode) }
+        val dialogs = windows().filter { it.params.type != WindowManager.LayoutParams.TYPE_BASE_APPLICATION }
+        val found = dialogs.firstOrNull { w ->
+            // Audit ultra round 4 (seats C a, E a: « Renommer » › ✕ « Effacer », 5 min without answer): read in the middle of
+            // a change (the ✕ just went with the text), a window's semantics may throw; the bench then took the window for
+            // one without a field, waited for Compose's rest and never came back. The window that held a field still does.
+            runCatching { composeRoots(w.view).any { root -> hasTextField(root.semanticsOwner.unmergedRootSemanticsNode) } }
+                .getOrElse { w.view === lastFieldWindow?.get() }
         }
-    }.getOrDefault(false)
+        lastFieldWindow = found?.view?.let { java.lang.ref.WeakReference(it) }
+        found != null
+    }.getOrDefault(lastFieldWindow?.get()?.isAttachedToWindow == true)
+
+    /** The dialog window last seen holding a text field (see [textFieldInADialog]). */
+    private var lastFieldWindow: java.lang.ref.WeakReference<View>? = null
 
     private fun composeRoots(v: View): List<androidx.compose.ui.node.RootForTest> = buildList {
         if (v is androidx.compose.ui.node.RootForTest) add(v)

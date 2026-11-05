@@ -47,6 +47,23 @@ class AtomicSaveTest {
         },
     )
 
+    /**
+     * Relecture tour 1 (mineur): the app killed during a project's FIRST save, before its rename,
+     * leaves only the temporary file: it is the project (not « no project », which the starter
+     * project was then written over); half of one is unreadable (moved aside), never « none ».
+     */
+    @Test
+    fun aFirstSaveCutBeforeItsRenameIsStillTheProject() {
+        val root = tmp.newFolder()
+        val store = ProjectStore(root)
+        File(root, "p").mkdirs()
+        File(root, "p/${ProjectStore.TMP}").writeBytes(bytes(after))
+        assertEquals(after, store.load("p"))
+        File(root, "q").mkdirs()
+        File(root, "q/${ProjectStore.TMP}").writeBytes(bytes(after).copyOf(bytes(after).size / 2))
+        assertTrue(runCatching { store.load("q") }.exceptionOrNull() is IOException)
+    }
+
     @Test
     fun aKillAtAnyStepLeavesTheProjectBeforeAndTheNextSaveIsClean() {
         for ((step, kill) in killedAt) {

@@ -2,6 +2,7 @@ package com.pocketstudio.app
 
 import com.pocketstudio.app.export.WavExporter
 import com.pocketstudio.engine.OfflineExport
+import com.pocketstudio.model.takeWhole
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.LocalDateTime
@@ -32,6 +33,15 @@ class WavExporterTest {
         assertEquals("My song", WavExporter.nameWith("My song", "song"))
         assertEquals("Ma Mix-morceau-club", WavExporter.nameWith("Ma Mix", "morceau", "club"))
         assertEquals("Club night-morceau", WavExporter.nameWith("Club night", "morceau", "club", null))
+    }
+
+    /** Relecture tour 1 (mineur): the 40 chars kept never cut a letter from its sign, nor a surrogate pair. */
+    @Test
+    fun theCutKeepsLettersWhole() {
+        val a39 = "a".repeat(39)
+        assertEquals("$a39-20261018-221503.wav", WavExporter.fileName(a39 + "e\u0301xyz", time))
+        assertEquals("$a39-20261018-221503.wav", WavExporter.fileName(a39 + "\uD840\uDC00xyz", time))
+        assertEquals("ab", "ab\uD840\uDC00".takeWhole(3))
     }
 
     /** The bench runs with LC_ALL=C.UTF-8 (app/build.gradle.kts): a file written with « ó » is listed with it, as on a phone. */

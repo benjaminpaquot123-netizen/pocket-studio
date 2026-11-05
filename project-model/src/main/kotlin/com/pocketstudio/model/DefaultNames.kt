@@ -139,3 +139,16 @@ object DefaultNames {
     fun isDefault(name: String): Boolean =
         name in EXACT || name in RENAMED || name in fromTranslation || numbered.any { it.first.matches(name) } || timed.any { it.first.matches(name) }
 }
+
+/**
+ * At most [max] chars of this name, never cutting a letter in two (relecture tour 1, mineur): an
+ * emoji's surrogate pair, a letter and its combining sign (« é » typed as e + ´, Hindi's vowel signs)
+ * stay whole or go together.
+ */
+fun String.takeWhole(max: Int): String {
+    if (length <= max) return this
+    val it = java.text.BreakIterator.getCharacterInstance()
+    it.setText(this)
+    val end = it.preceding(max + 1).coerceAtLeast(0)
+    return substring(0, end)
+}

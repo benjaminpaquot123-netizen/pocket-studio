@@ -106,11 +106,15 @@ class ProjectStore(private val root: File, private val backup: File? = null) {
         return runCatching { ProjectJson.decode(f.readText(Charsets.UTF_8)) }.getOrNull()
     }
 
-    /** Loads a project, or null if it does not exist. Throws only if every copy is unreadable. */
+    /**
+     * Loads a project, or null if it does not exist. Throws only if every copy is unreadable. A
+     * save cut before its rename (only `project.json.tmp` there) is a copy too (relecture tour 1,
+     * mineur: read as « no project », the starter project was written over it).
+     */
     @Throws(IOException::class)
     fun load(id: String): Project? {
         val dir = folder(id)
-        val candidates = listOf(File(dir, MAIN), File(dir, BACKUP)).filter { it.exists() }
+        val candidates = listOf(File(dir, MAIN), File(dir, BACKUP), File(dir, TMP)).filter { it.exists() }
         if (candidates.isEmpty()) return null
         var lastError: Exception? = null
         for (file in candidates) {

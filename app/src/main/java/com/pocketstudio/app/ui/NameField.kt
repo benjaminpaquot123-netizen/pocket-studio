@@ -16,6 +16,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.takeWhole
 import com.pocketstudio.ui.Neon
 
 /**
@@ -41,13 +42,16 @@ fun NameField(
     OutlinedTextField(
         value = field,
         onValueChange = { v ->
-            if (focusing && v.text == field.text) {
+            // The touch's cursor only (relecture tour 1, mineur: a CJK or Korean keyboard's first
+            // composition, same text, was swallowed with it).
+            if (focusing && v.text == field.text && v.composition == null) {
                 focusing = false
                 return@OutlinedTextField
             }
             focusing = false
             full = v.text.length >= max
-            val kept = if (v.text.length > max) TextFieldValue(v.text.take(max), TextRange(max)) else v
+            // Cut on whole letters (an emoji's pair, a letter and its sign never split).
+            val kept = if (v.text.length > max) v.text.takeWhole(max).let { TextFieldValue(it, TextRange(it.length)) } else v
             field = kept
             if (kept.text != name) onName(kept.text)
         },

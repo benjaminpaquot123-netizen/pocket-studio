@@ -59,4 +59,19 @@ class NameFieldTest {
         compose.onNodeWithTag("field").performTextInput("Un nom bien trop long pour la limite")
         compose.onNodeWithText("20 caractères au plus").assertExists()
     }
+
+    /** Relecture tour 1 (mineur): the limit never cuts an emoji in half. */
+    @Test
+    fun theLimitKeepsLettersWhole() {
+        compose.setContent {
+            PocketStudioTheme {
+                var name by remember { mutableStateOf("") }
+                NameField(name, { name = it }, max = 3, label = "Nom", modifier = Modifier.testTag("field"))
+                Text("[$name]", modifier = Modifier.testTag("shown"))
+            }
+        }
+        compose.onNodeWithTag("field").performClick()
+        compose.onNodeWithTag("field").performTextInput("ab\uD83D\uDE00")
+        compose.onNodeWithText("[ab]").assertExists()
+    }
 }

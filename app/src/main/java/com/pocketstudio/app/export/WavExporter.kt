@@ -9,6 +9,7 @@ import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import com.pocketstudio.model.i18n.tr
+import com.pocketstudio.model.takeWhole
 
 /** Where exported files go and how they leave the app. */
 object WavExporter {
@@ -35,7 +36,7 @@ object WavExporter {
             .replace(Regex("\\s+"), "-")
             .replace(Regex("-{2,}"), "-")
             .trim('-')
-            .take(40)
+            .takeWhole(40)
             .ifEmpty { "pocket-studio" }
         return "$safe-${time.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"))}.wav"
     }

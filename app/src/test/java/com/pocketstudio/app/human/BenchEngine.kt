@@ -47,10 +47,18 @@ internal class BenchEngine : CommandSink {
         when (type) {
             CMD_SET_TRANSPORT -> {
                 if (value <= 0f) freezeTakes()
+                // A stop ends a mark the take was waiting for (a phone's engine drops it with its song position).
+                if (value <= 0f && markAsked > 0) markAsked = -1
                 transportSince = if (value > 0f) SystemClock.uptimeMillis() else -1L
                 countInBars = if (value > 0f) a.coerceAtLeast(0) else 0
             }
             CMD_SET_TEMPO -> if (value > 0f) tempo = value.toDouble()
+            // Audit method v2 (engine always there): « Enregistrer la performance » marks the song on the next launch line and
+            // waits for the engine to say it did (NativeEngine.songMarkStep); the bench's never said it, the take stayed « Prêt ».
+            CMD_MARK_SONG -> {
+                markQuantum = a.coerceAtLeast(0)
+                markAsked = transportSteps.coerceAtLeast(-1).let { if (it < 0) 0 else it + 1 }
+            }
             CMD_BEATS_PER_BAR -> if (a > 0) beatsPerBar = a
             CMD_STEM_START -> stemStart = a.toLong()
             CMD_PLAY_PREVIEW -> previewSince = if (value > 0f) SystemClock.uptimeMillis() else -1L
@@ -419,6 +427,19 @@ internal class BenchEngine : CommandSink {
     }
 
     override fun transportStep(): Int = transportSteps
+
+    /** Where the song was marked (a transport step), once the transport has reached that launch line; -1 before or with none. */
+    override fun songMarkStep(): Int {
+        val asked = markAsked
+        if (asked < 0) return -1
+        val q = markQuantum
+        val line = if (q <= 0 || asked == 0) asked else ((asked + q - 1) / q) * q
+        return if (transportSteps >= line) line else -1
+    }
+
+    /** The transport step from which the next launch line counts (0: marked before ▶), -1 when nothing is asked. */
+    @Volatile private var markAsked = -1
+    @Volatile private var markQuantum = 0
     override fun transportPosition(): Double = if (transportSteps >= 0) transportSteps.toDouble() else -1.0
 
     /** « Écouter » on the Remix page: from the top, until its end. */
@@ -512,6 +533,7 @@ internal class BenchEngine : CommandSink {
         private const val CMD_BEATS_PER_BAR = 57
         private const val CMD_STEM_START = 32
         private const val CMD_PLAY_PREVIEW = 47
+        private const val CMD_MARK_SONG = 75
         private const val CMD_TRIGGER_PAD = 11
         private const val CMD_SYNTH_NOTE_ON = 16
         private const val CMD_SET_TEMPO = 6

@@ -233,6 +233,8 @@ abstract class HumanTester(private val seat: String) {
             val sound = publish(dir, n, notes)
             journal.appendText("#$n ROUTE ${snap.route} | MODE ${if (SettingsStore.state.value.simpleMode) "simple" else "pro"} | EMPREINTE $print | ${inside()}\n")
             journal.appendText("#$n SON ${sound.lineSequence().first()}\n")
+            // Audit method v2: the bench's own stalls, apart from the app's (seat-metrics counts them as « banc »).
+            if (benchStalls > stallsSaid) { journal.appendText("#$n BANC repos non venu en $IDLE_CAP_S s (${benchStalls - stallsSaid} fois)\n"); stallsSaid = benchStalls }
             layout(journal, n, snap)
             if (source != null) {
                 // Audit method v2: a replay test of a fixed defect plays the gestures without comparing screens (the fix
@@ -354,7 +356,7 @@ abstract class HumanTester(private val seat: String) {
         return other in snap.texts
     }
 
-    private fun screenText(): ScreenText = ScreenText(
+    internal fun screenText(): ScreenText = ScreenText(
         compose, app.resources.displayMetrics, reads = !::options.isInitialized || options.reads, rtl = com.pocketstudio.model.i18n.I18n.lang.rtl,
     )
 
@@ -391,6 +393,8 @@ abstract class HumanTester(private val seat: String) {
         separation = BenchSeparation(app, remixTimeScale)
         // Round 1 (lot banc): a microphone that hears someone sing ([BenchMic]).
         BenchMic.plugIn()
+        // Audit method v2: the party sounds a phone decodes (Pad Live's ready set, the library's « Fête »).
+        BenchPartySounds(app).register()
         // Audit method v2: the engine is there before the app opens, as a phone's (see ENGINE_ALWAYS).
         if (ENGINE_ALWAYS) NativeEngine.sink = engine
         scenario = ActivityScenario.launch(MainActivity::class.java)
@@ -1252,13 +1256,44 @@ abstract class HumanTester(private val seat: String) {
      * looks at the screen do not wait for rest ([followTextDialogs]) and the screen is let settle by frames, a bounded wait.
      */
     private var textDialog = false
+    private var suppressSaid = false
+    /** A text field was seen in the dialog open now (until no dialog is open). */
+    private var fieldDialog = false
+
+    /** How many times Compose's rest did not come within [IDLE_CAP_S] seconds (journal: « BANC »). */
+    internal var benchStalls = 0
+    private var stallsSaid = 0
 
     private fun followTextDialogs() {
-        textDialog = BenchWindows.textFieldInADialog()
+        // Audit method v2 (round 4, « Renommer » › ✕ « Effacer », 240 s): the field's window is read again and again while
+        // the dialog lives; one look that misses it (the window being redrawn) made the bench wait for a rest that never
+        // comes (its cursor blinks), 60 s a look. A dialog that held a field holds it until it closes.
+        val dialog = BenchWindows.dialogOpen()
+        if (!dialog) fieldDialog = false
+        if (BenchWindows.textFieldInADialog()) fieldDialog = true
+        textDialog = (dialog && fieldDialog) || BenchWindows.focusedTextField()
+        // Audit method v2: a screen that did not rest within IDLE_CAP_S is read as it is too (no wait), until it rests again.
+        val noWait = textDialog || restless
         runCatching {
             val env = compose.javaClass.getDeclaredField("environment").apply { isAccessible = true }.get(compose)
-            val owner = env.javaClass.getDeclaredField("testOwner").apply { isAccessible = true }.get(env)
-            owner.javaClass.getMethod("setImplicitWaitSuppressed", Boolean::class.javaPrimitiveType).apply { isAccessible = true }.invoke(owner, textDialog)
+            // The environment is a subclass (Robolectric's): the field is its parent's. Looked up the class chain; until
+            // 2026-11-06 it was looked up on the subclass only, failed in silence, and no look was ever left unwaited.
+            val holder = generateSequence<Class<*>>(env.javaClass) { it.superclass }.first { c -> c.declaredFields.any { it.name == "testOwner" } }
+            val owner = holder.getDeclaredField("testOwner").apply { isAccessible = true }.get(env)
+            owner.javaClass.getMethod("setImplicitWaitSuppressed", Boolean::class.javaPrimitiveType).apply { isAccessible = true }.invoke(owner, noWait)
+        }.onFailure { e -> if (!suppressSaid) { suppressSaid = true; println("BENCH implicit waits not suppressed: $e (${compose.javaClass.name})") } }
+    }
+
+    /** The last wait for Compose's rest gave up (see [idleScreen]): the screen's looks do not wait for it. */
+    private var restless = false
+
+    /** [block] with Compose's rest awaited [IDLE_CAP_S] seconds at most (Espresso's master policy), then 60 s again. */
+    private fun <T> idleCapped(block: () -> T): T {
+        androidx.test.espresso.IdlingPolicies.setMasterPolicyTimeout(IDLE_CAP_S, java.util.concurrent.TimeUnit.SECONDS)
+        try {
+            return block()
+        } finally {
+            androidx.test.espresso.IdlingPolicies.setMasterPolicyTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
         }
     }
 
@@ -1266,7 +1301,24 @@ abstract class HumanTester(private val seat: String) {
     private fun idleScreen() {
         followTextDialogs()
         if (!textDialog) {
-            compose.waitForIdle()
+            // Audit method v2 (META-AUDIT Q2, A4/C2; round 4 « Effacer » 240 s = 4 waits of 60 s): Compose's rest is awaited
+            // at most [IDLE_CAP_S] seconds (Espresso's master policy); past that, the bench says it is the bench's and lets
+            // the screen settle by frames, never a « frozen app » for the tester.
+            try {
+                restless = false
+                idleCapped { compose.waitForIdle() }
+            } catch (e: Throwable) {
+                if (e.javaClass.simpleName !in NOT_IDLE) throw e
+                restless = true
+                benchStalls++
+                if (benchStalls == 1 || benchStalls % 10 == 0) {
+                    say("Banc : l'écran ne s'est pas posé en ${IDLE_CAP_S} s sous le banc (Robolectric) ; il continue image par image. Ce n'est pas un défaut de l'appli.")
+                }
+                repeat(4) {
+                    runCatching { compose.mainClock.advanceTimeByFrame() }
+                    shadowOf(Looper.getMainLooper()).idle()
+                }
+            }
         } else {
             repeat(4) {
                 runCatching { compose.mainClock.advanceTimeByFrame() }
@@ -1644,6 +1696,10 @@ abstract class HumanTester(private val seat: String) {
          * Audit method v2 (META-AUDIT change 2): the bench's engine stays from the first gesture to the last, as a phone's.
          * `-Phuman.moteur=liste` brings back the old lending by lists of tags (way back, docs/DECISIONS.md 2026-11-06).
          */
+        /** Compose's rest awaited this long at most (Espresso's default, 60 s, made 4 × 60 s frozen gestures in round 4). */
+        const val IDLE_CAP_S = 8L
+        private val NOT_IDLE = setOf("AppNotIdleException", "ComposeNotIdleException", "IdlingResourceTimeoutException")
+
         internal val ENGINE_ALWAYS: Boolean get() = System.getProperty("ps.human.moteur", "toujours") != "liste"
 
         /** Touches that play the song from a part, from its start or from a take (round 3), by their tags' start. */

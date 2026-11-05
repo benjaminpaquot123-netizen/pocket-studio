@@ -66,6 +66,26 @@ internal object BenchWindows {
         found != null
     }.getOrDefault(lastFieldWindow?.get()?.isAttachedToWindow == true)
 
+    /**
+     * Audit method v2 (round 4, « Renommer » › ✕ « Effacer », 240 s; a test thread's stack proved it): a text field holding
+     * the cursor, in any window. Its cursor blinks for ever, so Compose never rests under Robolectric (a phone has no such
+     * wait); the bench reads such a screen without waiting for rest, as for a dialog's field.
+     */
+    fun focusedTextField(): Boolean = runCatching {
+        windows().any { w ->
+            runCatching { composeRoots(w.view).any { root -> hasFocusedField(root.semanticsOwner.unmergedRootSemanticsNode) } }.getOrDefault(false)
+        }
+    }.getOrDefault(false)
+
+    private fun hasFocusedField(n: SemanticsNode): Boolean =
+        (androidx.compose.ui.semantics.SemanticsActions.SetText in n.config &&
+            n.config.getOrElse(androidx.compose.ui.semantics.SemanticsProperties.Focused) { false }) || n.children.any(::hasFocusedField)
+
+    /** A window over the activity (a dialog, a popup) is open. */
+    fun dialogOpen(): Boolean = runCatching {
+        windows().any { it.params.type != WindowManager.LayoutParams.TYPE_BASE_APPLICATION }
+    }.getOrDefault(true)
+
     /** The dialog window last seen holding a text field (see [textFieldInADialog]). */
     private var lastFieldWindow: java.lang.ref.WeakReference<View>? = null
 

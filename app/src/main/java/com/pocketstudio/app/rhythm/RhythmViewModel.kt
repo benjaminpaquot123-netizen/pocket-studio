@@ -9043,6 +9043,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         _noteTake.value = ui.copy(phase = com.pocketstudio.app.record.TakePhase.DONE, beatsLeft = 0, notes = notes, hits = takeHits.size, moves = moves)
+        showTheTakesPart()
+    }
+
+    /**
+     * Audit ultra round 4 (T4-26, CI 243 JourneyTest « the take's notes: [] »): the notes go to the part heard (the song
+     * playing another part than the one shown), and the screen kept showing the part without them: « 4 notes » said,
+     * none seen. The part that got them all is shown (the song plays on; its edits wait for that part's turn as when
+     * staying on a part). Notes spread over several parts (the take crossed a part change): the screen stays.
+     */
+    private fun showTheTakesPart() {
+        val scenes = takeNotes.filterValues { it.isNotEmpty() }.keys.map { it.first }.toSet()
+        val only = scenes.singleOrNull() ?: return
+        if (only != project.value.scene && only in project.value.allScenes.indices) showSceneToEdit(only)
     }
 
     /** « Garder »: the take stays as it is (it already is in the project); the card goes. */

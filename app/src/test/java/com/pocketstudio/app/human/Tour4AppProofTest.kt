@@ -101,8 +101,10 @@ class Tour4AppProofTest {
         CurrentProject.set(app, id)
         val vm = RhythmViewModel(app)
         val until = System.currentTimeMillis() + 10_000
-        while (vm.project.value.instrumentTracks.size != p.instrumentTracks.size) {
-            assertTrue("the project never opened", System.currentTimeMillis() < until)
+        // The project read from disk (its song too: a default project has the same tracks and no song).
+        while (vm.project.value.instrumentTracks.size != p.instrumentTracks.size || vm.project.value.song.size != p.song.size) {
+            assertTrue("the project never opened: song ${vm.project.value.song.size}/${p.song.size}, scenes ${vm.project.value.allScenes.size}/${p.allScenes.size}, " +
+                "tracks ${vm.project.value.instrumentTracks.size}/${p.instrumentTracks.size}", System.currentTimeMillis() < until)
             idle(); Thread.sleep(5)
         }
         return vm
@@ -172,12 +174,17 @@ class Tour4AppProofTest {
     @Test
     fun aMelodyTakeDuringTheSongGoesToThePartHeard() {
         NativeEngine.sink = PhoneEngine()
-        val two = Project().switchScene(1).switchScene(0)
+        // Two parts that are not empty (an empty part is dropped as the project is read): a kick on each.
+        val two = Project().let { it.copy(drums = it.drums.toggle(0, 0)) }.switchScene(1)
+            .let { it.copy(drums = it.drums.toggle(0, 4)) }.switchScene(0)
             .copy(song = listOf(com.pocketstudio.model.SongPart(0), com.pocketstudio.model.SongPart(1)))
         val vm = open(two)
         vm.playSongPart(1)
+        // The song starts once its sounds are loaded (off the main thread): awaited, as a phone's ▶ is.
+        val until = System.currentTimeMillis() + 10_000
+        while (!vm.transport.value.playing && System.currentTimeMillis() < until) { idle(); Thread.sleep(5) }
         idle(500)
-        assertTrue(vm.transport.value.playing)
+        assertTrue("the song plays from its second part", vm.transport.value.playing)
         val shown = vm.project.value.scene
         vm.recordMelodyTake()
         idle(100)
@@ -191,10 +198,11 @@ class Tour4AppProofTest {
         val facts = "song part ${vm.sessionUi.value.songIndex}, shown before $shown, during $shownDuring, after ${p.scene}; " +
             "notes per scene $perScene; ${vm.lastTakeReport}; empty=${vm.takeEmpty.value}"
         println("TOUR4 several parts: $facts")
-        // The take is not « Rien n'a été joué »: its notes are counted wherever they went. (Which part they go to, the
-        // shown one, is the app's open defect T4-26: docs/audits/ultra/verdicts.tsv and rejeux/t4-26-prise-clavier.)
+        // The take is not « Rien n'a été joué », and its notes are where the screen looks (T4-26, CI 243: they went to the
+        // part heard while the screen showed another one, « 4 notes » said and none seen).
         assertFalse(facts, vm.takeEmpty.value)
         assertTrue(facts, perScene.sum() >= 3)
+        assertTrue("the notes are in the part shown: $facts", perScene[p.scene] >= 3)
     }
 
     /**

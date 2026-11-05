@@ -100,6 +100,9 @@ class TutoAppScreenshotTest {
         compose.onNodeWithTag("tuto_need").performClick()
         await("piano roll") { has("piano_roll") && TutoHints.notes != null }
         compose.waitForIdle()
+        // The first note's pulsing ring gone (it lasts 2.6 s): the capture was one of two (round 1 integration).
+        compose.mainClock.advanceTimeBy(3_000)
+        await("the ring gone") { !has("tuto_spot_ring") }
         settle()
         compose.onRoot().captureRoboImage("screenshots/tuto_app_bass.png")
     }

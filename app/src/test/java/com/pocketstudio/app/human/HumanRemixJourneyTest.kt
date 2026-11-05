@@ -1,5 +1,6 @@
 package com.pocketstudio.app.human
 
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.core.app.ApplicationProvider
 import com.pocketstudio.app.audio.FloatWav
 import com.pocketstudio.app.remix.SeparationJob
@@ -38,9 +39,14 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
 
     /** Brings the node tagged [tag] into the screen's middle part (a swipe up at a time), then its middle. */
     private fun reach(tag: String): Pair<Float, Float> {
+        // Its list scrolled to it first, as a swipe on the list would (round 1 integration: the thumb's bar, n° 21, raised
+        // the screen's middle onto the sticky « Choisir une chanson », the swipes started there and nothing moved).
+        runCatching { compose.onAllNodes(androidx.compose.ui.test.hasTestTag(tag))[0].performScrollTo() }
+        act("attends 0.5")
         repeat(8) {
             val at = centerOf(tag) ?: error("no $tag")
-            if (at.second in 320f..(screenHeight - 260f)) return at
+            // Above the bars at the bottom (the Guide's, the thumb's, the tabs).
+            if (at.second in 320f..(screenHeight - 380f)) return at
             val dy = (at.second - screenHeight / 2f).coerceIn(-500f, 500f)
             // On the page's margin (not on a slider or a waveform), then the scroll comes to rest.
             act("glisse 10 ${screenHeight / 2f + dy / 2} 10 ${screenHeight / 2f - dy / 2}")
@@ -132,7 +138,7 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         assertTrue(heardVoice, heardVoice.contains("le Remix fait écouter « Ma chanson préférée » : la voix seule") && heardVoice.contains(" — la voix "))
         // Remix lot 1 (Sarah, e/80): the project's ▶ stops « Écouter », never two voices at once.
         val both = tap(centerOf("top_play"), "▶ of the project")
-        assertTrue(both, both.contains("la musique du projet") && !both.contains("le Remix fait écouter"))
+        assertTrue(both + "\n" + screenLines().joinToString("\n"), both.contains("la musique du projet") && !both.contains("le Remix fait écouter"))
         tap(centerOf("top_play"), "■ of the project")
 
         // « Jouer avec le projet »: the song plays along the project.
@@ -157,13 +163,16 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         tap(reach("remix_play"), "Arrêter")
         tap(reach("remix_bar_next"), "+")
         tap(reach("remix_bar_next"), "+")
-        tap(centerOfText("2 mes."), "2 mes.")
+        tap(reach("remix_pad_bars_2"), "2 mes.")
         val padded = tap(reach("stem_pad_3"), "→ Pad of Voix")
         // The phrase is cut and written off the main thread: waited for as a person waits for the pad to light up.
-        waitFor("the voice on pad 1") { project()?.drums?.lanes?.get(0)?.sample != null && rhythm()?.sampleTask?.value !is com.pocketstudio.app.rhythm.SampleTask.Busy }
-        val lane = project()!!.drums.lanes[0]
-        assertTrue("${project()!!.drums.lanes.map { it.sample?.name }} ${rhythm()?.sampleTask?.value} ${project()!!.live.clips.map { it?.name }} sel=${rhythm()?.transport?.value?.selectedPad}", lane.sample?.name == "Voix 1")
-        assertTrue(padded, padded.contains("Le pad 1 reçoit « Voix 1 »"))
+        // Round 1 (n° 2): on a free pad from 9 on, never over one of the kit's first 8 unasked.
+        fun voicePad() = project()?.drums?.lanes?.indexOfFirst { it.sample?.name == "Voix 1" } ?: -1
+        waitFor("the voice on a pad") { voicePad() >= 0 && rhythm()?.sampleTask?.value !is com.pocketstudio.app.rhythm.SampleTask.Busy }
+        val at = voicePad()
+        val lane = project()!!.drums.lanes[at]
+        assertTrue("${project()!!.drums.lanes.map { it.sample?.name }} ${rhythm()?.sampleTask?.value} sel=${rhythm()?.transport?.value?.selectedPad}", at >= com.pocketstudio.model.RemixVoice.SPARE_FROM)
+        assertTrue(padded, padded.contains("Le pad ${at + 1} reçoit « Voix 1 »"))
         // Two bars from bar 3: the first phrase, sung (4 s at 120 BPM).
         val file = app.filesDir.walk().first { it.name == lane.sample!!.file }
         val pad = FloatWav.read(file)
@@ -171,9 +180,10 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         assertTrue("the pad is silent", rms(pad.data, pad.sampleRate, 0.2, 2.8) > 0.02)
         // The pad in the beat: two steps on the Batterie page, then ▶ back on the Remix page.
         tap(centerOfText("16 pads", substring = true), "the Batterie chip")
-        tap(centerOf("step_0"), "step 1")
-        tap(centerOf("step_8"), "step 9")
-        assertTrue("no hits on pad 1", project()!!.drums.lanes[0].hits.size == 2)
+        if (rhythm()?.transport?.value?.selectedPad != at) tap(reach("pad_$at"), "the voice's pad")
+        tap(reach("step_0"), "step 1")
+        tap(reach("step_8"), "step 9")
+        assertTrue("no hits on pad ${at + 1}", project()!!.drums.lanes[at].hits.size == 2)
         // Step 5a: the chip now bears the song's name (« Ma chanson préférée · Chanson »).
         // Past the screen's edge with a long name: the chips are swiped aside first, as a person does.
         val width = app.resources.displayMetrics.widthPixels
@@ -182,7 +192,7 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         // The song is in the project's structure now (step 5a): « Boucler » keeps the part going round, as before.
         tap(centerOf("top_loop_part"), "Boucler")
         val loop = tap(reach("remix_play"), "Jouer")
-        assertTrue(loop, loop.contains("le pad 1 (« Voix 1 ») sonne dans la boucle"))
+        assertTrue(loop, loop.contains("le pad ${at + 1} (« Voix 1 ») sonne dans la boucle"))
         assertTrue(loop, loop.contains("avec la voix seule de « Ma chanson préférée », depuis sa mesure 3 (solo)"))
         // Leaving the page while it plays (the song's chip swiped the chips aside: Structure, at the bottom): the loop
         // goes on, the screen still follows.

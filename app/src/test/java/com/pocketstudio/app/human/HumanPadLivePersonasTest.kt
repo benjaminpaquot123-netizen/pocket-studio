@@ -107,7 +107,9 @@ class HumanPadLivePersonasTest : HumanTester("padlive-personas") {
         ready.c.hits.forEach { _ -> tap(centerOf("padlive_pad_$pad"), "the rhythm's pad") }
         waitFor("his score") { c.ui.value is ChallengeUi.Done }
         look("resultat")
-        assertNotNull(centerOf("padlive_challenge_stars"))
+        // Round 1 (n° 9): the stars are said with the rhythm's dots, one node for TalkBack (« … Étoiles : 1 sur 3 »).
+        assertNotNull("the stars shown\n" + screenLines().joinToString("\n"), centerOf("padlive_challenge_dots"))
+        assertTrue("the stars said\n" + screenLines().joinToString("\n"), screenLines().any { "Étoiles :" in it })
         tap(centerOf("padlive_challenge_close"), "close the challenge")
         // « Plus » › « Fête »: the pads big on the whole screen, then out.
         tap(centerOf("padlive_more"), "Plus")

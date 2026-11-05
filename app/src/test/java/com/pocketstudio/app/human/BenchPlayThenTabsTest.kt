@@ -77,6 +77,14 @@ class BenchPlayThenTabsTest : HumanTester("play-tabs") {
         act("retour")
         alive("« Retour »")
         assertNotEquals("« Retour » changes the screen", before, screenRoute())
+        // Audit ultra round 1 (n° 25): a tab touched folds the Guide's panel, so « Retour » now leaves the project for
+        // « Que veux-tu faire ? » (which stops the music); « Continuer » brings the song back, its ▶ and tabs working.
+        if (centerOf("launch_continue") != null) {
+            assertFalse("the home screen plays nothing", playing())
+            tap("launch_continue")
+            alive("« Continuer »")
+            waitFor("the song again") { centerOf("top_play") != null }
+        }
         if (!playing()) tap("top_play")
         assertTrue(playing())
         tap("top_play")

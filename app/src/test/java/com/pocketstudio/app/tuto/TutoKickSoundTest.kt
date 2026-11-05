@@ -155,6 +155,11 @@ class TutoKickSoundTest {
         await("demo over", 60_000) { !has("tuto_demo_caption") }
         idle(400)
         assertEquals(before.padVoices, p().padVoices)
+        // Round 1 (n° 34): the style's kit card takes the panel's place (no longer stacked on it): « Plus tard ».
+        if (has("tuto_kit")) {
+            click("tuto_kit_later")
+            await("the panel back") { has("tuto_mark") }
+        }
         // « J'ai compris »: ticked, on to the next step.
         click("tuto_mark")
         await("ticked") { "kick_sound" in progress().done }

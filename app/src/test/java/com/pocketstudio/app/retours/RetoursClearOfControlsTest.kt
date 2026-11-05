@@ -121,6 +121,8 @@ class RetoursClearOfControlsTest : HumanTester("retours-clear") {
     /** The Pro's spaces. */
     private fun proTour(o: SeatOptions) {
         begin(o.copy(simple = false))
+        // The home's choices once the project behind it is read (« Ouverture du projet… » first on a loaded machine).
+        waitFor("the home's choices") { centerOf("launch_new") != null }
         tap("launch_new")
         tap("starter_wizard")
         if (centerOf("mode_card_pro") != null) tap("mode_card_pro")

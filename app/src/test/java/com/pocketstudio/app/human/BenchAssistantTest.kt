@@ -24,8 +24,9 @@ class BenchAssistantTest : HumanTester("assistant") {
     @Before
     fun notOnTheBench() = assumeTrue("not while the bench runs seats", System.getProperty("ps.human.dir").isNullOrBlank())
 
+    /** Scrolled to first, as a person would (n° 33: the song's length above the moods put « Joyeux »'s ▶ under « Suivant »). */
     private fun tap(tag: String): String {
-        val at = centerOf(tag)
+        val at = reachTag(tag)
         assertNotNull("nothing to touch: $tag\n" + screenLines().joinToString("\n"), at)
         return act("touche ${at!!.first} ${at.second}")
     }
@@ -49,7 +50,7 @@ class BenchAssistantTest : HumanTester("assistant") {
         tap("wizard_style_house")
         tap("wizard_style_choose_house")
         val mood = tap("wizard_mood_listen_happy").let { if ("ambiance" in it) it else act("attends 1") }
-        assertTrue(mood, "les accords de l'ambiance" in mood)
+        assertTrue(mood + "\n" + screenLines().joinToString("\n"), "les accords de l'ambiance" in mood)
         assertTrue(screenLines().joinToString("\n"), !failed())
 
         tap("wizard_create_now")

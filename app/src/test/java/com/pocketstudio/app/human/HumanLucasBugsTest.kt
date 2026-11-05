@@ -161,9 +161,8 @@ class HumanLucasBugsTest : HumanTester("lucas-bugs") {
         val need = centerOf("tuto_need")
         assertNotNull("no « Créer la piste Basse »", centerOfText("Créer la piste Basse", substring = true))
         assertNotNull("no « Créer la piste Basse »", need)
-        // His two touches, at the button's place.
-        act("touche ${need!!.first} ${need.second}")
-        act("touche ${need.first} ${need.second}")
+        // His two touches, at the button's place: a double tap (two « touche » in a row are a second apart on the bench).
+        act("double-touche ${need!!.first} ${need.second}")
         assertEquals("a stray note under the second touch", 0, notes())
         // A touch there later is the user's own: it reaches the grid.
         act("attends 2")

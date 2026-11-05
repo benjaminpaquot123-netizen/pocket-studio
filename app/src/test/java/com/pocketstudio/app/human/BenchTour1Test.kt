@@ -211,9 +211,16 @@ class BenchTour1Test : HumanTester("tour-1") {
         val video = com.pocketstudio.app.export.video.VideoExportViewModel(ApplicationProvider.getApplicationContext())
         NativeEngine.sink = benchEngine
         video.start(rhythm()!!)
-        waitFor("the video", seconds = 300) { video.state.value.file != null || video.state.value.error != null }
+        // Its sound rendered by the bench's engine, then its pictures begun: enough. Robolectric's MediaCodec does not
+        // compress (raw frames: a 30 s video grew past 3 GB and filled the disk, round 1 integration), so it stops there.
+        waitFor("the video's pictures", seconds = 300) {
+            video.state.value.stage == com.pocketstudio.app.export.video.VideoExportUi.Stage.Pictures && video.state.value.progress > 0f ||
+                video.state.value.file != null || video.state.value.error != null
+        }
         assertEquals("no error", null, video.state.value.error)
-        assertTrue(video.state.value.file!!.length() > 0)
+        video.cancel()
+        waitFor("the video stopped", seconds = 60) { !video.state.value.running }
+        assertEquals("no error once stopped", null, video.state.value.error)
         NativeEngine.sink = null
     }
 }

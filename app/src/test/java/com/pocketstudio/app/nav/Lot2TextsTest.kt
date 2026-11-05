@@ -1,6 +1,7 @@
 package com.pocketstudio.app.nav
 
 import androidx.activity.ComponentActivity
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -94,7 +95,9 @@ class Lot2TextsTest {
         tap("top_more")
         tap("more_help")
         compose.onNodeWithTag("plus_back").assertTextContains("Retour", substring = true)
-        compose.onNodeWithText("Plus").assertDoesNotExist()
+        // No « Plus » for the way back (the thumb's bar's « ⋯ Plus », round 1 n° 21, is the app's menu, not this page's).
+        compose.onAllNodes(androidx.compose.ui.test.hasText("Plus") and !androidx.compose.ui.test.hasAnyAncestor(androidx.compose.ui.test.hasTestTag("thumb_bar")))
+            .assertCountEquals(0)
         tap("plus_back")
         compose.onNodeWithTag("tab_simple_Morceau").assertExists()
         assertTrue(compose.onNodeWithTag("plus_back").let { runCatching { it.assertExists() }.isFailure })

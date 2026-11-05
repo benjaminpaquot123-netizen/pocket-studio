@@ -269,7 +269,7 @@ abstract class HumanTester(private val seat: String) {
             if (cmd == "fin") { end("fin"); return }
             afterWait = kind == "attends" || kind == "regarde"
             val points = when (kind) {
-                "touche", "appui-long" -> listOfNotNull(num(1)?.let { x -> num(2)?.let { x to it } })
+                "touche", "appui-long", "double-touche" -> listOfNotNull(num(1)?.let { x -> num(2)?.let { x to it } })
                 "glisse" -> listOfNotNull(num(1)?.let { x -> num(2)?.let { x to it } }, num(3)?.let { x -> num(4)?.let { x to it } })
                 else -> emptyList()
             }
@@ -984,6 +984,16 @@ abstract class HumanTester(private val seat: String) {
         fun f(i: Int) = words.getOrNull(i)?.replace(',', '.')?.toFloatOrNull() ?: error("bad gesture: $cmd")
         when (kind) {
             "touche" -> { val d = SystemClock.uptimeMillis(); touch(MotionEvent.ACTION_DOWN, f(1), f(2), d); pass(80); touch(MotionEvent.ACTION_UP, f(1), f(2), d); settle(900) }
+            // Round 1 integration: two touches at one place as a finger does them (a « touche » settles ~1 s, more while
+            // the screen animates: two of them in a row were no double tap, past [com.pocketstudio.app.ui.DoubleTouchGuard]'s window).
+            "double-touche" -> {
+                for (i in 0..1) {
+                    val d = SystemClock.uptimeMillis()
+                    touch(MotionEvent.ACTION_DOWN, f(1), f(2), d); pass(80); touch(MotionEvent.ACTION_UP, f(1), f(2), d)
+                    if (i == 0) pass(150)
+                }
+                settle(900)
+            }
             "appui-long" -> { val d = SystemClock.uptimeMillis(); touch(MotionEvent.ACTION_DOWN, f(1), f(2), d); pass(900); touch(MotionEvent.ACTION_UP, f(1), f(2), d); settle(900) }
             "glisse" -> {
                 val d = SystemClock.uptimeMillis()

@@ -51,7 +51,8 @@ class WizardPlainWordsTest {
     @Test
     fun theWordsOfTheTradeAreFoundInTheFrenchTexts() {
         val kick = jumpUp.lines.first { it.role == StarterWizard.Role.Kick }.tip
-        assertTrue(PlainWords.of(kick).single().startsWith("Two-step :"))
+        // Its « kick » is explained too since round 1 (n° 37): two lines, the two-step's first.
+        assertEquals(listOf("Two-step", "Kick"), PlainWords.of(kick).map { it.substringBefore(" :") })
         val sub = PlainWords.of("Une piste « Sub » la double une octave plus bas, pour le hoover.")
         assertEquals(listOf("Hoover", "Sub", "Octave"), sub.map { it.substringBefore(" :") })
         assertEquals(listOf("BPM"), PlainWords.of("Bass music · 174 BPM").map { it.substringBefore(" :") })

@@ -84,8 +84,34 @@ class GestureFuzzTest {
 
     private fun idle() {
         org.robolectric.shadows.ShadowLooper.idleMainLooper()
+        closeTextWindows()
         compose.waitForIdle()
     }
+
+    /**
+     * Round 3 (Zone3DialogDiagTest): a window holding a text field (« Renommer ») never lets Compose rest under
+     * Robolectric, without one line of the app. The finger met one: it is closed with Retour, as a person who
+     * does not want to type, and the run goes on (counted at the end).
+     */
+    private fun closeTextWindows() {
+        // A window just opened is composed on the next frames: looked at once they are drawn.
+        repeat(3) {
+            runCatching { compose.mainClock.advanceTimeByFrame() }
+            org.robolectric.shadows.ShadowLooper.idleMainLooper()
+        }
+        repeat(3) {
+            val w = com.pocketstudio.app.human.BenchWindows.windows()
+                .firstOrNull { it.params.type != android.view.WindowManager.LayoutParams.TYPE_BASE_APPLICATION } ?: return
+            if (!com.pocketstudio.app.human.BenchWindows.textFieldInADialog()) return
+            for (action in listOf(android.view.KeyEvent.ACTION_DOWN, android.view.KeyEvent.ACTION_UP)) {
+                w.view.dispatchKeyEvent(android.view.KeyEvent(action, android.view.KeyEvent.KEYCODE_BACK))
+            }
+            textWindowsClosed++
+            org.robolectric.shadows.ShadowLooper.idleMainLooper()
+        }
+    }
+
+    private var textWindowsClosed = 0
 
     /** Native readings the stand-in engine does not answer, met on the way (printed at the end). */
     private val standInLimits = HashSet<String>()
@@ -178,7 +204,7 @@ class GestureFuzzTest {
                 }
             }
         }
-        System.err.println("GestureFuzzTest seed $seed: $done gestures made of $steps")
+        System.err.println("GestureFuzzTest seed $seed: $done gestures made of $steps ($textWindowsClosed text windows closed with Retour)")
         assertTrue("seed $seed: too few gestures made ($done)", done > steps / 2)
         val vm = ViewModelProvider(controller.get())[RhythmViewModel::class.java]
         runCatching { idle() }.exceptionOrNull()?.let { if (!standIn(it)) throw it }

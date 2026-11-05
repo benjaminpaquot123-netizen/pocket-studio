@@ -51,7 +51,8 @@ class BenchPlaceAndPadLiveTest : HumanTester("place-padlive") {
         act("appui-long ${pad!!.first} ${pad.second}")
         waitFor("the library") { centerOf("library") != null }
         tap("library_folder_Sons intégrés")
-        tap("library_sound_use_2")
+        // Round 3, n° 33: « Sons intégrés » holds the family's own sounds only (two kicks): the second one, not on the pad yet.
+        tap("library_sound_use_1")
         waitFor("the sound on the pad") { rhythm()?.project?.value?.drums?.lanes?.get(0)?.sample != null }
         alive("« Poser » (seat B d, #3)")
         assertTrue("« Annuler » takes it back", rhythm()!!.session.canUndo.value)

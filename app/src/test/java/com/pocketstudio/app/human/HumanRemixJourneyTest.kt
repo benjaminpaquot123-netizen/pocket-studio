@@ -166,7 +166,11 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         tap(reach("remix_bar_next"), "+")
         tap(reach("remix_bar_next"), "+")
         tap(reach("remix_pad_bars_2"), "2 mes.")
-        val padded = tap(reach("stem_pad_3"), "→ Pad of Voix")
+        // Round 3, zone 1, n° 4: every drum pad holds a kit sound: the pads are shown first, the person picks the free one.
+        val proposed = com.pocketstudio.model.RemixVoice.padFor(project()!!, rhythm()!!.transport.value.selectedPad) ?: com.pocketstudio.model.RemixVoice.SPARE_FROM
+        tap(reach("stem_pad_3"), "→ Pad of Voix")
+        waitFor("the pads to pick from") { centerOf("pad_pick_$proposed") != null }
+        val padded = tap(centerOf("pad_pick_$proposed")!!, "Pad ${proposed + 1}")
         // The phrase is cut and written off the main thread: waited for as a person waits for the pad to light up.
         // Round 1 (n° 2): on a free pad from 9 on, never over one of the kit's first 8 unasked.
         fun voicePad() = project()?.drums?.lanes?.indexOfFirst { it.sample?.name == "Voix 1" } ?: -1
@@ -228,16 +232,19 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
             if (centerOf("board") == null) tap(reach("remix_open_board"), "Ouvrir le tableau des pistes")
         }
         val padsBefore = project()!!.drums.lanes.count { it.sample != null }
+        val livePadsBefore = project()!!.live.clips.count { it != null }
         pickVoice()
         tap(reach("board_to_pad"), "→ Pad")
         tap(centerOf("tab_Mix"), "Mix, at once")
         boardDone("the stretch on a pad")
-        assertTrue("${vm.stemBoard.state.value.message}", project()!!.drums.lanes.count { it.sample != null } == padsBefore + 1)
+        // Round 3, zone 1, n° 4: on the first empty pad, a live pad: no drum sound covered.
+        assertTrue("${vm.stemBoard.state.value.message}", project()!!.live.clips.count { it != null } == livePadsBefore + 1)
+        assertEquals(padsBefore, project()!!.drums.lanes.count { it.sample != null })
         backToBoard()
         tap(reach("board_chop"), "Découper la voix en phrases")
         tap(centerOf("tab_Mix"), "Mix, at once")
         boardDone("the phrases")
-        assertTrue("${vm.stemBoard.state.value.message}", project()!!.drums.lanes.count { it.sample != null } > padsBefore + 1)
+        assertTrue("${vm.stemBoard.state.value.message}", project()!!.drums.lanes.count { it.sample != null } > padsBefore)
         backToBoard()
         pickVoice()
         tap(reach("board_to_live"), "→ Live")

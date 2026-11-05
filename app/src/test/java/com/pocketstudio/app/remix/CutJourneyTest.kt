@@ -10,6 +10,7 @@ import androidx.compose.ui.test.click
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
 import com.pocketstudio.app.audio.Pcm
 import com.pocketstudio.app.guide.GuideListenPlayer
@@ -196,16 +197,19 @@ class CutJourneyTest {
         assertEquals(5L * BOARD_RATE, m.pieces[2].start)
 
         // Three pieces ticked, then on the pads: one undo step, free pads only (never the kick's).
-        listOf(0, 1, 2).forEach { compose.onNodeWithTag("cut_piece_$it").performClick() }
-        compose.waitForIdle()
+        // (Round 3, zone 1, n° 9: a touch on a piece of the curve ticks it too: the touches above that placed the cursor
+        // ticked theirs. The ones not ticked yet are touched in the list, scrolled into view first on a short screen.)
+        listOf(0, 1, 2).filter { it !in m.chosen }.forEach {
+            compose.onNodeWithTag("cut_piece_$it").performScrollTo().performClick()
+            compose.waitForIdle()
+        }
         assertEquals(listOf(0, 1, 2), m.chosen)
         compose.onNodeWithTag("cut_to_pads").performClick()
         compose.waitForIdle()
-        assertEquals(1, host.pads.size)
-        val cuts = host.pads.single()
-        assertEquals(listOf("Voix 1", "Voix 2", "Voix 3"), cuts.map { it.name })
-        assertTrue(cuts.none { it.lane == 0 })
-        assertEquals(m.pieces.take(3).map { it.frames }, cuts.map { it.pcm.frames.toLong() })
+        // Round 3, zone 1, n° 4: the empty live pads, one piece each, never a drum sound (the kick's or any other).
+        assertTrue(host.pads.isEmpty())
+        assertEquals(listOf(0, 1, 2), host.live)
+        assertEquals(listOf("Voix 1", "Voix 2", "Voix 3"), host.live.map { host.p.live.at(it)!!.name })
 
         // « Annuler »: the moved cut goes back to 4.5 s.
         compose.onNodeWithTag("cut_undo").performClick()

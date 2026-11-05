@@ -598,7 +598,7 @@ private fun StepGrid(
             SectionLabel(
                 (if (allPads) tr("Pas : tous les pads") else tr("Pas : %s", padName(project, lane))) + section, Modifier.weight(1f),
                 // Round 3, n° 34 (seat D d): in the Mode simple the « ? » spoke of rolls, place and pitch it has not.
-                color = if (allPads) Neon.Cyan else color, help = if (simple) Glossary.STEP_SIMPLE else Glossary.STEP, foldKey = "Pas",
+                color = if (allPads) Neon.Cyan else color, help = Glossary.stepFor(simple), foldKey = "Pas",
             )
             FilterChip(selected = allPads, onClick = { allPads = !allPads }, label = { Text(tr("Tous les pads"), maxLines = 1, softWrap = false) }, colors = chipColors,
                 modifier = Modifier.testTag("all_pads"))

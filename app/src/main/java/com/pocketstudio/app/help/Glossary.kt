@@ -44,8 +44,11 @@ object Glossary {
         tr("Une case de la grille : un seizième de mesure. Allumer un pas fait sonner le son à ce moment-là. Coups : allumer ou éteindre. Roulements : plusieurs coups rapides dans la case. Place : à gauche ou à droite. Hauteur (sons importés) : plus aigu ou plus grave. Force : plus fort ou plus doux."),
     )
 
-    /** The Mode simple's « Pas » (round 3, n° 34: no rolls, place or pitch modes there). */
-    val STEP_SIMPLE: Help get() = Help(
+    /**
+     * « Pas » as the screen has it: the Mode simple's (round 3, n° 34: no rolls, place or pitch modes there), else [STEP].
+     * A variant of one term, not a second entry of the lexicon (which lists « Pas » once).
+     */
+    fun stepFor(simple: Boolean): Help = if (!simple) STEP else Help(
         tr("Pas"),
         tr("Une case de la grille : un seizième de mesure. Touche une case pour y mettre un coup, touche-la encore pour l'enlever ; glisse le doigt pour en mettre plusieurs. Appui long sur un coup : sa force et ses roulements."),
     )

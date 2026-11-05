@@ -79,6 +79,10 @@ class Tour3RenameIdleTest {
         app.getSharedPreferences("settings", 0).edit()
             .putString("language", "fr").putBoolean("simpleMode", simple).putBoolean("guideSeen", !simple).putString("theme", theme).commit()
         SettingsStore.forgetForTests()
+        // The project to rename, on the phone and open (as GestureFuzzTest): the list never waits for the starter's first write.
+        val id = "renommer-" + System.nanoTime()
+        com.pocketstudio.model.ProjectStore(File(app.filesDir, "projects")).save(id, com.pocketstudio.model.Project(name = "Mon premier rythme").sanitized())
+        com.pocketstudio.app.projects.CurrentProject.set(app, id)
         androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory::class.java.getDeclaredField("_instance").apply { isAccessible = true }.set(null, null)
         scenario = ActivityScenario.launch(MainActivity::class.java)
         compose.waitForIdle()

@@ -856,14 +856,15 @@ abstract class HumanTester(private val seat: String) {
     }.getOrDefault(false)
 
     /** The Remix page's buttons that use the engine, by their tags' start. */
-    private val remixControls = listOf("use_", "import_", "listen_", "stem_", "remix_play", "remix_bar_next", "remix_bar_prev", "waveform_", "remix_follow_tempo", "remix_clear", "remix_open_", "board_", "cut_")
+    // Round 3 (zone 1, n° 4): « → Pad » asks which pad first (« Sur quel pad ? », pad_pick_*): its answer cuts the stem with the engine.
+    private val remixControls = listOf("use_", "import_", "listen_", "stem_", "remix_play", "remix_bar_next", "remix_bar_prev", "waveform_", "remix_follow_tempo", "remix_clear", "remix_open_", "board_", "cut_", "pad_pick_")
 
     private fun touchesRemixControl(x: Float, y: Float): Boolean = runCatching {
         compose.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsProperties.TestTag)).fetchSemanticsNodes().any { n ->
             val tag = n.config[SemanticsProperties.TestTag]
             // The part of it on screen (a row scrolled away under the tabs is not under the finger).
             // The import screen (step 5c) is a dialog: its window is not at the screen's corner.
-            val bounds = if (tag.startsWith("import_")) {
+            val bounds = if (tag.startsWith("import_") || tag.startsWith("pad_pick_")) {
                 androidx.compose.ui.geometry.Rect(BenchWindows.drawnPosition(n, app.resources.displayMetrics), androidx.compose.ui.geometry.Size(n.size.width.toFloat(), n.size.height.toFloat()))
             } else {
                 n.boundsInWindow

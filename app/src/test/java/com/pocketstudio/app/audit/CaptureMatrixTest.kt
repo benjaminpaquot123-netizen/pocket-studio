@@ -183,7 +183,8 @@ object Allowed {
         Rule("acid", "OVERLAP « [A-G]# » over the touchable", "the keyboard's black keys lie over the white ones, their names with them"),
         // Accessibility (AccessibilityScanTest).
         Rule("synth|tracks|piano_roll|acid", "TARGET « [^»]*Jouer »", "a musical keyboard's keys (two octaves on a phone): WCAG 2.5.8's « essential » exception, each key's touch is 48 dp high"),
-        Rule("live_grid|live_fx", "TARGET « Replier » 411 x 18", "the panel's full-width handle: 18 dp seen, 48 dp to touch, nothing beside it"),
+        // Round 3 (n° 37): the handle has its name now (« Replier », then its action's label « Replier »): the same handle.
+        Rule("live_grid|live_fx", "TARGET « Replier( Replier)? » 411 x 18", "the panel's full-width handle: 18 dp seen, 48 dp to touch, nothing beside it"),
         Rule("live_pads", "TARGET « [^»]* » 83 x 3 dp", "the last row of pads cut by the test's frame (the card scrolls in the app)"),
         Rule("live_grid|live_fx", "CONTRAST « (← |↑ |↓ )?[^»]*( →)? » 1\\.[0-9]+:1", "the pad's end names under the frame's bottom edge (drawn on the test's black bar)"),
         Rule("acid|library|live_pads|live_pads_full|mixer|piano_roll|projects|session|timeline_screen|guide", "CONTRAST",

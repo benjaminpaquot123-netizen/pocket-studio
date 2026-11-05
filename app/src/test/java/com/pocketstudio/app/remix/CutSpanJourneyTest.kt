@@ -88,7 +88,11 @@ class CutSpanJourneyTest {
         }
         override suspend fun putOnNewInstrument(pcm: Pcm, name: String): Int? = null
         override suspend fun putOnNewAudioTrack(pcm: Pcm, name: String, atStep: Int, bpm: Double): Int? = null
-        override suspend fun putOnLivePad(pcm: Pcm, name: String, pad: Int, bpm: Double) = Unit
+        val live = ArrayList<Pair<Int, Pcm>>()
+        override suspend fun putOnLivePad(pcm: Pcm, name: String, pad: Int, bpm: Double) {
+            live += pad to pcm
+            p = p.copy(live = p.live.with(pad, com.pocketstudio.model.LiveClip("$name.wav", name, 4)))
+        }
         override suspend fun keepInLibrary(pcm: Pcm, name: String, kind: String, bpm: Double, setId: String): MySound =
             MySound("id", name, kind, "id.wav", pcm.seconds)
         override suspend fun putInRemixCell(pcm: Pcm, name: String, scene: Int, bpm: Double, stem: Int, fromSeconds: Double) = Unit
@@ -180,9 +184,11 @@ class CutSpanJourneyTest {
         val sent = m.span!!
         compose.onNodeWithTag("cut_to_pads").performClick()
         compose.waitForIdle()
-        val pad = host.pads.single().single()
-        assertEquals(sent.frames, pad.pcm.frames.toLong())
-        assertTrue(pad.lane != 0)
+        // Round 3, zone 1, n° 4: on the first empty live pad, never over a drum sound.
+        assertTrue(host.pads.isEmpty())
+        val (pad, pcm) = host.live.single()
+        assertEquals(0, pad)
+        assertEquals(sent.frames, pcm.frames.toLong())
 
         // « Annuler »: « Début » back where it was.
         compose.onNodeWithTag("cut_undo").performClick()

@@ -43,9 +43,14 @@ class BenchAssistantTest : HumanTester("assistant") {
         val heard = if ("extrait du style" in style) style else act("attends 1")
         assertTrue(heard + "\n" + screenLines().joinToString("\n"), "l'assistant fait écouter un extrait du style « House »" in heard)
         assertTrue(screenLines().joinToString("\n"), !failed())
-        // It ends as the sound does (the button is « Écouter » again).
-        act("attends 5")
-        assertTrue(act("attends 1"), "extrait du style" !in act("attends 0.5"))
+        // It ends as the sound does (the button is « Écouter » again). Since round 3 the bench renders as long as asked: the
+        // excerpt's 4 bars (about 8 s at the style's tempo), not a short stand-in; waited for, at most 20 s.
+        val excerptEnd = System.currentTimeMillis() + 20_000
+        var now = act("attends 1")
+        while ("extrait du style" in now) {
+            assertTrue("the excerpt never ended: $now", System.currentTimeMillis() < excerptEnd)
+            now = act("attends 1")
+        }
 
         tap("wizard_style_house")
         tap("wizard_style_choose_house")

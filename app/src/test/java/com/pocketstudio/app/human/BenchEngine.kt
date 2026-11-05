@@ -1,7 +1,6 @@
 package com.pocketstudio.app.human
 
 import android.os.SystemClock
-import com.pocketstudio.app.audio.FloatWav
 import com.pocketstudio.engine.CommandSink
 import com.pocketstudio.engine.ExportResult
 import com.pocketstudio.engine.OfflineExport
@@ -14,14 +13,16 @@ import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.pow
+import kotlin.math.roundToInt
 import kotlin.math.sin
 
 /**
  * The phone's engine as far as the « testeur humain » can tell, for « Partager » (lot « tuto 4 »,
  * É0): Robolectric has no native engine, so the share said « le moteur audio n'est pas prêt »
  * where a phone exports. While the bench sets it as [com.pocketstudio.engine.NativeEngine.sink],
- * each render writes [SECONDS] s of a soft tone (a WAV the app then compresses, checks and shares
- * as it would a song), and the live engine's commands are let go. Never in the app.
+ * each render writes the length asked (the song, its tail) of a sound made from what the app described
+ * to that private engine ([Voice]: its notes, levels and tempo; a WAV the app then compresses, checks,
+ * measures and shares as it would a song), and the live engine's commands are let go. Never in the app.
  *
  * The Remix (2026-10-28): a separated song's stems are read from their WAVs when asked (a piece
  * for « → Pad », the waveforms), and where the song is while it plays along the project or alone
@@ -39,6 +40,8 @@ internal class BenchEngine : CommandSink {
             // Audit ultra round 2 (n° 8): a private engine's loudness target (NativeEngine.setLoudnessTarget, 0: none),
             // honoured by its render as the native engine's two-pass master does (host test mp_club_and_streaming_exports_differ).
             if (type == CMD_MASTER && a == MASTER_TARGET) targets[target] = value
+            // Audit ultra round 3 (lot A d): what the project is, heard in its render (two projects never read the same).
+            described.getOrPut(target) { Described() }.add(type, value, a, b)
             return
         }
         when (type) {
@@ -120,7 +123,10 @@ internal class BenchEngine : CommandSink {
     override fun scheduleFrom(target: Long, frame: Long) = Unit
 
     override fun install(target: Long, kind: CommandSink.Install, index: Int, sample: Long) {
-        if (target != 0L) return
+        if (target != 0L) {
+            if (sample != 0L) described.getOrPut(target) { Described() }.add(INSTALL + kind.ordinal, 1f, index, 0)
+            return
+        }
         when (kind) {
             CommandSink.Install.Stems -> playedStems = sample
             CommandSink.Install.PreviewStems -> previewStems = sample
@@ -131,19 +137,103 @@ internal class BenchEngine : CommandSink {
     override fun sampleFrames(handle: Long): Long = OfflineExport.SAMPLE_RATE.toLong()
     override fun sampleRelease(handle: Long) = Unit
     @Synchronized override fun exportCreate(): Long = next++
-    override fun exportDestroy(target: Long) { targets.remove(target) }
+    override fun exportDestroy(target: Long) {
+        targets.remove(target)
+        described.remove(target)
+    }
 
     /** Each private engine's loudness target (LUFS), as described to it. */
     private val targets = ConcurrentHashMap<Long, Float>()
 
+    /** What the app described to each private engine (its project), see [Described]. */
+    private val described = ConcurrentHashMap<Long, Described>()
+
     /**
-     * The gain that brings the bench's tone to [target]'s loudness target (1 without one), its peak kept
-     * under −1 dBTP as the master's limiter would: a club and a streaming export no longer read the same.
+     * A project as its description reaches a private engine: how many notes and hits, its channels' levels, its
+     * tempo, and a print of every command (two projects, or a loop of 1 bar and a song of 4, never sound the same).
      */
-    private fun targetGain(target: Long): Float {
+    private class Described {
+        private var notes = 0
+        private var levels = 0.0
+        private var channels = 0
+        private var print = 1469598103934665603L
+        var bpm = 120.0
+            private set
+
+        @Synchronized fun add(type: Int, value: Float, a: Int, b: Int) {
+            for (x in intArrayOf(type, a, b, value.toBits())) print = (print xor x.toLong()) * 1099511628211L
+            when (type) {
+                CMD_SET_DRUM_HIT, CMD_SYNTH_NOTE, CMD_SET_ACID_STEP -> if (value > 0f || type == CMD_SET_ACID_STEP && b != 0) notes++
+                CMD_CHANNEL_VOLUME -> { levels += value.coerceIn(0f, 2f); channels++ }
+                CMD_SET_TEMPO -> if (value in 20f..400f) bpm = value.toDouble()
+            }
+        }
+
+        /** The sound it gives: louder the more it plays (−24 to −9 dBFS), its pitch and colour from its print. */
+        @Synchronized fun voice(rate: Int): Voice {
+            val level = if (channels == 0) 0.8 else levels / channels
+            val busy = 1.0 - kotlin.math.exp(-notes / 40.0)
+            val amp = (0.063 + 0.29 * busy) * (level / 0.8).coerceIn(0.25, 1.25)
+            val h = (print ushr 17).toInt() and 0x7FFFFFFF
+            return Voice(rate, amp.coerceAtMost(0.35), 110.0 * 2.0.pow((h % 25) / 12.0), 0.1 + (h / 25 % 20) / 100.0, bpm)
+        }
+    }
+
+    /**
+     * A tone at [freq] Hz with its second harmonic ([colour]), pulsing on each beat at [bpm] (stereo, the right
+     * a little quieter). Made from two tables (a cycle, a beat): minutes of it cost little.
+     */
+    internal class Voice(val rate: Int, val amp: Double, freq: Double, colour: Double, bpm: Double) {
+        private val cycle = FloatArray((rate / freq).roundToInt().coerceAtLeast(8)) { i ->
+            val t = 2 * PI * i / ((rate / freq).roundToInt().coerceAtLeast(8))
+            (amp * (sin(t) + colour * sin(2 * t + 0.7)) / (1 + colour)).toFloat()
+        }
+        private val beat = FloatArray((rate * 60.0 / bpm).roundToInt().coerceAtLeast(1)) { i -> (0.78 + 0.22 * kotlin.math.exp(-i / (0.09 * rate))).toFloat() }
+
+        /** The sound at frame [i] (left; the right is 0.9 of it). */
+        fun at(i: Long): Float = cycle[(i % cycle.size).toInt()] * beat[(i % beat.size).toInt()]
+    }
+
+    /**
+     * [count] frames from [from] of a render [total] frames long, its sound [sound] frames then dying away (the
+     * tail), the last [fade] frames fading to silence; stereo interleaved into [out].
+     */
+    private fun fill(v: Voice, out: FloatArray, from: Long, count: Int, sound: Long, total: Long, fade: Long, gain: Float) {
+        val tail = 0.05 * v.rate
+        for (k in 0 until count) {
+            val i = from + k
+            var x = v.at(i) * gain
+            if (i >= sound) x *= kotlin.math.exp(-(i - sound) / tail).toFloat()
+            if (fade > 0 && i >= total - fade) x *= ((total - i).toFloat() / fade).coerceIn(0f, 1f)
+            out[2 * k] = x
+            out[2 * k + 1] = 0.9f * x
+        }
+    }
+
+    /** What [target]'s render plays: its project's [Voice] at [rate] (a project described to no one: a quiet one). */
+    private fun voiceOf(target: Long, rate: Int): Voice = (described[target] ?: Described()).voice(rate)
+
+    /**
+     * The gain that brings [target]'s render to its loudness target (1 without one), measured with the app's own meter
+     * over the whole of it, its peak kept under −1 dBFS as the master's limiter would: a club and a streaming export
+     * read their own targets (round 2), each project with its own peak.
+     */
+    private fun targetGain(target: Long, v: Voice, total: Long, sound: Long, fade: Long): Float {
         val lufs = targets[target]?.takeIf { it < 0f } ?: return 1f
-        val gain = 10.0.pow((lufs - TONE_LUFS) / 20.0)
-        return minOf(gain, 10.0.pow(-1.0 / 20.0) / TONE_AMPLITUDE).toFloat()
+        val meter = com.pocketstudio.app.export.Loudness.Meter(v.rate, 2)
+        val piece = FloatArray(2 * CHUNK)
+        var peak = 0f
+        var at = 0L
+        while (at < total) {
+            val n = minOf(CHUNK.toLong(), total - at).toInt()
+            fill(v, piece, at, n, sound, total, fade, 1f)
+            for (k in 0 until 2 * n) peak = maxOf(peak, abs(piece[k]))
+            meter.add(piece, n)
+            at += n
+        }
+        val measured = meter.integrated() ?: return 1f
+        val gain = 10.0.pow((lufs - measured) / 20.0)
+        return minOf(gain, 10.0.pow(-1.0 / 20.0) / peak.coerceAtLeast(1e-6f)).toFloat()
     }
 
     /** Each render's progress (lot « tuto 5 »: the bar moves as on a phone) and its « Annuler ». */
@@ -164,9 +254,16 @@ internal class BenchEngine : CommandSink {
             Thread.sleep(renderMs / STEPS)
             progress[target] = k / STEPS.toFloat()
         }
-        val n = SECONDS * sampleRate
-        val g = targetGain(target)
-        FloatWav.write(File(path), tone(n, sampleRate).also { t -> for (i in t.indices) t[i] *= g }, 0, n, 2, sampleRate)
+        // The length asked (round 3, lot A d: always « 3 s » before): the song, then its tail (with autoTail, the engine
+        // stops once the sound has died away: 0,5 s here), at the file's own rate.
+        val tail = if (autoTail) minOf(tailFrames, RATE / 2L) else tailFrames
+        val scale = sampleRate.toDouble() / RATE
+        val total = Math.round(minOf(frames + tail, MAX_SECONDS * RATE) * scale).coerceAtLeast(1L)
+        val sound = Math.round(frames * scale)
+        val fade = Math.round(fadeOutFrames * scale)
+        val v = voiceOf(target, sampleRate)
+        val g = targetGain(target, v, total, sound, fade)
+        writeWav(File(path), total, sampleRate) { out, from, n -> fill(v, out, from, n, sound, total, fade, g) }
         return ExportResult.Ok
     }
 
@@ -174,9 +271,34 @@ internal class BenchEngine : CommandSink {
     @Volatile var renderMs = RENDER_MS
 
     override fun exportRenderFloat(target: Long, frames: Long, tailFrames: Long): FloatArray {
-        val g = targetGain(target)
-        return tone(minOf(frames + tailFrames, (SECONDS * OfflineExport.SAMPLE_RATE).toLong()).toInt().coerceAtLeast(1), OfflineExport.SAMPLE_RATE)
-            .also { t -> if (g != 1f) for (i in t.indices) t[i] *= g }
+        val total = minOf(frames + tailFrames, MAX_SECONDS * RATE).coerceAtLeast(1L)
+        val v = voiceOf(target, RATE)
+        val g = targetGain(target, v, total, frames, 0L)
+        return FloatArray(2 * total.toInt()).also { fill(v, it, 0L, total.toInt(), frames, total, 0L, g) }
+    }
+
+    /** A 32-bit float stereo WAV of [frames] frames, written a piece at a time ([piece] fills each one). */
+    private fun writeWav(file: File, frames: Long, rate: Int, piece: (FloatArray, Long, Int) -> Unit) {
+        val bytes = frames * 8
+        val head = ByteBuffer.allocate(44).order(ByteOrder.LITTLE_ENDIAN).apply {
+            put("RIFF".toByteArray()); putInt((36 + bytes).toInt()); put("WAVE".toByteArray())
+            put("fmt ".toByteArray()); putInt(16); putShort(3); putShort(2); putInt(rate); putInt(rate * 8); putShort(8); putShort(32)
+            put("data".toByteArray()); putInt(bytes.toInt())
+        }
+        val samples = FloatArray(2 * CHUNK)
+        val buf = ByteBuffer.allocate(8 * CHUNK).order(ByteOrder.LITTLE_ENDIAN)
+        java.io.FileOutputStream(file).use { out ->
+            out.write(head.array())
+            var at = 0L
+            while (at < frames) {
+                val n = minOf(CHUNK.toLong(), frames - at).toInt()
+                piece(samples, at, n)
+                buf.clear()
+                buf.asFloatBuffer().put(samples, 0, 2 * n)
+                out.write(buf.array(), 0, 8 * n)
+                at += n
+            }
+        }
     }
 
     // --- The Remix's stems ---------------------------------------------------------------------
@@ -357,7 +479,11 @@ internal class BenchEngine : CommandSink {
     }
 
     companion object {
-        const val SECONDS = 3
+        /** The longest render the bench makes (10 minutes): never reached by a song a tester makes. */
+        const val MAX_SECONDS = 600L
+        private const val CHUNK = 8192
+        /** [install]'s kinds, counted in a project's print after the commands. */
+        private const val INSTALL = 1000
         const val RENDER_MS = 1_200L
         private const val STEPS = 24
         private const val RATE = OfflineExport.SAMPLE_RATE
@@ -367,18 +493,13 @@ internal class BenchEngine : CommandSink {
         private const val CMD_PLAY_PREVIEW = 47
         private const val CMD_TRIGGER_PAD = 11
         private const val CMD_SYNTH_NOTE_ON = 16
+        private const val CMD_SET_TEMPO = 6
+        private const val CMD_SET_DRUM_HIT = 10
+        private const val CMD_SET_ACID_STEP = 12
+        private const val CMD_CHANNEL_VOLUME = 20
+        private const val CMD_SYNTH_NOTE = 26
 
         private const val CMD_MASTER = 67
         private const val MASTER_TARGET = 4
-        private const val TONE_AMPLITUDE = 0.25
-
-        /** [frames] of a quiet 220 Hz tone, stereo interleaved (−12 dBFS: no limiter needed). */
-        fun tone(frames: Int, rate: Int): FloatArray = FloatArray(2 * frames) { i -> (TONE_AMPLITUDE * sin(2 * PI * 220.0 * (i / 2) / rate)).toFloat() }
-
-        /** The tone's own integrated loudness (about −12,9 LUFS), read once by the app's meter. */
-        private val TONE_LUFS: Double by lazy {
-            val t = tone(RATE * 3, RATE)
-            com.pocketstudio.app.export.Loudness.Meter(RATE, 2).apply { add(t, RATE * 3) }.integrated() ?: -12.9
-        }
     }
 }

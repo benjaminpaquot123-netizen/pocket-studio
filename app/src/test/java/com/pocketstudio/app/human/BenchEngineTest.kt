@@ -11,6 +11,7 @@ import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectStore
 import com.pocketstudio.model.SongPart
+import com.pocketstudio.model.partSteps
 import com.pocketstudio.model.sceneSteps
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -92,11 +93,71 @@ class BenchEngineTest {
 
     @Test
     fun aWavIsMadeAndShared() {
-        val (_, files) = share(ExportFormat.Wav)
+        val (vm, files) = share(ExportFormat.Wav)
         val f = files.single()
         assertEquals("wav", f.extension)
-        // The tone, 3 s of float stereo at 48 kHz.
-        assertTrue(f.length() >= BenchEngine.SECONDS * 48_000L * 2 * 4)
+        // Audit ultra round 3 (lot A d, « Length: 3 s » for any song): the song's own length, float stereo at 48 kHz
+        // (its tail cut once the sound died away: at most 0,5 s more).
+        val p = vm.project.value
+        val song = p.song.sumOf { p.partSteps(it) } * 15.0 / p.tempoBpm
+        val seconds = (f.length() - 44) / 8.0 / 48_000
+        assertTrue("$seconds s for a song of $song s", song > 3.5 && seconds in song - 0.01..song + 0.51)
+    }
+
+    /** A render of [frames] (and [tail]) by [engine], its project described by [describe] (round 3, lot A d). */
+    private fun render(engine: BenchEngine, frames: Long, tail: Long = 0L, autoTail: Boolean = false, describe: (Long) -> Unit): File {
+        val t = engine.exportCreate()
+        describe(t)
+        val f = File(app.cacheDir, "render-$t-${System.nanoTime()}.wav")
+        assertEquals(com.pocketstudio.engine.ExportResult.Ok, engine.exportRender(t, f.path, frames, tail, 0L, autoTail, true, 48_000, 32))
+        engine.exportDestroy(t)
+        return f
+    }
+
+    private fun seconds(f: File) = (f.length() - 44) / 8.0 / 48_000
+
+    /** A 1-bar loop: 4 kicks at 120 BPM. */
+    private fun loop(e: BenchEngine, t: Long) {
+        e.post(t, 6, 120f, 0, 0)
+        for (s in 0 until 4) e.post(t, 10, 1f, 0, s * 4)
+    }
+
+    /** A 4-bar song: the drums busier, a bass, its channels a little lower. */
+    private fun song(e: BenchEngine, t: Long) {
+        e.post(t, 6, 120f, 0, 0)
+        for (part in 0 until 4) for (s in 0 until 16) e.post(t, 10, 0.9f, s % 3, s)
+        for (ch in 0 until 4) e.post(t, 20, 0.7f, ch, 0)
+    }
+
+    /**
+     * Audit ultra round 3 (lot A d): every export said « 3 s » and the same LUFS, a loop of 1 bar as a song of 4.
+     * The bench's render lasts what the app asks (its tail cut once the sound died away) and sounds like the project
+     * described to it: two projects measure differently with the app's own meter; a target still brings them to it.
+     */
+    @Test
+    fun aRenderLastsWhatIsAskedAndSoundsLikeItsProject() {
+        val e = BenchEngine().apply { renderMs = 0L }
+        val bar = 96_000L  // 2 s at 120 BPM
+        val a = render(e, bar) { loop(e, it) }
+        val b = render(e, 4 * bar) { song(e, it) }
+        assertEquals(2.0, seconds(a), 0.01)
+        assertEquals(8.0, seconds(b), 0.01)
+        val la = com.pocketstudio.app.export.Loudness.integrated(a)!!
+        val lb = com.pocketstudio.app.export.Loudness.integrated(b)!!
+        assertTrue("the loop $la LUFS, the song $lb LUFS", kotlin.math.abs(la - lb) > 1.0)
+        assertEquals("the same project, the same sound", la, com.pocketstudio.app.export.Loudness.integrated(render(e, bar) { loop(e, it) })!!, 0.05)
+        // A song's tail: at most 0,5 s once the sound died away (autoTail), the whole tail asked without it.
+        assertEquals(2.5, seconds(render(e, bar, tail = 10 * 48_000L, autoTail = true) { loop(e, it) }), 0.01)
+        assertEquals(3.0, seconds(render(e, bar, tail = 48_000L) { loop(e, it) }), 0.01)
+        // Round 2's targets, each project brought to them (the master's two passes): club −8, streaming −14.
+        for (target in listOf(-8f, -14f)) for (describe in listOf<(Long) -> Unit>({ loop(e, it) }, { song(e, it) })) {
+            val f = render(e, 4 * bar) { t -> describe(t); e.post(t, 67, target, 4, 0) }
+            assertEquals("target $target", target.toDouble(), com.pocketstudio.app.export.Loudness.integrated(f)!!, 0.5)
+        }
+        // Rendered to memory (a frozen track, a pad's loop): the length asked too.
+        val t = e.exportCreate()
+        loop(e, t)
+        assertEquals(2 * (bar + 4_800), e.exportRenderFloat(t, bar, 4_800L).size.toLong())
     }
 
     @Test

@@ -436,6 +436,7 @@ abstract class HumanTester(private val seat: String) {
         if (seatPads() && v != null && v !== padsHooked) {
             padsHooked = v
             v.padLive.toggleForTest = { pad -> padToggled(v, pad) }
+            v.padLive.rowForTest = { first, starting, stopping -> rowLaunched(v, first, starting, stopping) }
             v.padLive.played.sourceForTest = BenchResample(v)
             v.padLive.makerForTest = BenchPackMaker(engine)
         }
@@ -483,6 +484,30 @@ abstract class HumanTester(private val seat: String) {
         val on = v.livePadsSoundingForTest ?: emptySet()
         if (clip.oneShot) say("Le pad ${pad + 1} (« ${clip.name} ») joue une fois.")
         else v.livePadsSoundingForTest = if (pad in on) on - pad else on + pad
+        lightPads(v)
+    }
+
+    /**
+     * Audit ultra round 3 (seat C b, « la ligne ne part pas », « les boucles continuent »): a row's ▶ / ■ of Pad Live goes to
+     * the engine as one command (NativeEngine.launchClipRow), which the bench's pads never heard: nothing lit, nothing
+     * stopped. The app's own row (its take writes it), and the bench's pads do what the engine does: the row's loops
+     * start (on the next bar line on a phone; the bench's pads have no bar line, as for one pad), or stop; a hit plays once.
+     */
+    private fun rowLaunched(v: RhythmViewModel, first: Int, starting: List<Int>, stopping: List<Int>) {
+        v.launchLiveRow(first, com.pocketstudio.model.PadLive.ROW_SIZE, starting, stopping)
+        val pads = v.project.value.live
+        val loops = starting.filter { pads.at(it)?.oneShot == false }
+        val hits = starting - loops.toSet()
+        v.livePadsSoundingForTest = ((v.livePadsSoundingForTest ?: emptySet()) - stopping.toSet()) + loops
+        if (hits.isNotEmpty()) say("Les pads ${hits.joinToString(", ") { "${it + 1}" }} jouent une fois.")
+        lightPads(v)
+    }
+
+    /** Audit ultra round 3 (seat C b): « Tout couper » (the engine's toggleClip(-1)) silences the bench's pads too. */
+    private fun allPadsCut() {
+        val v = lastVm ?: return
+        if (!seatPads() || v.livePadsSoundingForTest.isNullOrEmpty()) return
+        v.livePadsSoundingForTest = emptySet()
         lightPads(v)
     }
 
@@ -725,6 +750,10 @@ abstract class HumanTester(private val seat: String) {
      * played. The bench's engine comes for the touch and stays while the song plays ([engineDone]).
      */
     private fun playsTheSong(x: Float, y: Float): Boolean {
+        // Audit ultra round 3 (seats A b, C a): a part touched (« Touche une partie pour écouter le morceau à partir d'elle »),
+        // « Jouer depuis… › Tout le morceau, du début » or a part, « ▶ Depuis ma prise »: the app plays the song only with an
+        // engine (Tour3AppProofTest); the bench's had gone, nothing played and ▶ then played the part's loop alone.
+        if (SONG_STARTS.any { touchesStart(it, x, y) }) return true
         if (lastVm?.project?.value?.song.isNullOrEmpty()) return false
         return touches("top_play", x, y) || touchesStart("guide_option_", x, y)
     }
@@ -975,9 +1004,11 @@ abstract class HumanTester(private val seat: String) {
         val x = words.getOrNull(1)?.replace(',', '.')?.toFloatOrNull() ?: -1f
         val y = words.getOrNull(2)?.replace(',', '.')?.toFloatOrNull() ?: -1f
         val micTake = kind == "touche" && audioTakeTouched(x, y)
+        val cutsAll = kind == "touche" && STOP_ALL_TAGS.any { touches(it, x, y) }
         try {
             gesture(kind, words, cmd)
         } finally {
+            if (cutsAll) allPadsCut()
             padNotes(padsBefore)
             // Nothing started though the bench's engine was there (a refusal of the app's own): said, never silent.
             if (micTake && lastVm?.audioRecording?.value == null && !NativeEngine.isAvailable) {
@@ -1475,6 +1506,12 @@ abstract class HumanTester(private val seat: String) {
 
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
+        /** Touches that play the song from a part, from its start or from a take (round 3), by their tags' start. */
+        private val SONG_STARTS = listOf("part_play_", "play_from_", "audio_play_from_")
+
+        /** « Tout couper » of Pad Live, the Live page's pads and their full screen (RhythmViewModel.stopLive). */
+        private val STOP_ALL_TAGS = listOf("padlive_stop_all", "live_stop_all", "live_pads_full_stop")
+
 @Config(qualifiers = HumanTester.PHONE)
 class HumanTesterA : HumanTester("a")
 

@@ -1,0 +1,36 @@
+{
+  "siege": "d",
+  "options": {
+    "lang": "fr",
+    "device": "phone411",
+    "font": "100",
+    "mode": "simple",
+    "main": "gauche",
+    "gestes.max": "90",
+    "mission": "remix-voix",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 74,
+    "images": 9,
+    "gestes_premier_son": 28,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 7,
+    "touchers_desactives": 0,
+    "retours": 9,
+    "retours_immediats": 4,
+    "ecrans": 87,
+    "ecrans_revisites": 27,
+    "defilements_sans_toucher": 4,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "refus_pouce": 9,
+    "constats_layout": 200,
+    "plantage": false,
+    "fin": "fin"
+  },
+  "mission": "remix-voix",
+  "resultat": "reussie",
+  "pourquoi": "chanson séparée et un pad « Voix »"
+}

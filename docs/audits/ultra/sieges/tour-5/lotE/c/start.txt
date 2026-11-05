@@ -1,0 +1,8 @@
+lang=ko
+device=tablet8
+font=100
+mode=pro
+amenee=remix
+gestes.max=90
+mission=exports
+timeout.minutes=30

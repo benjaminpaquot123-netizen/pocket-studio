@@ -1,0 +1,91 @@
+siege	id	promesse	ecran	tenue	pourquoi
+A/a	t5-Aa-1	मेरी मेलोडी रिकॉर्ड करो	40	oui	je regardais « पार्ट: A · इंट्रो », la grille de A montre « नोट ग्रिड: 3 नोट्स » (mais je ne peux regarder aucune autre partie, voir défaut #27)
+A/a	t5-Aa-2	रिकॉर्डिंग रोको	35	oui	la demande « Allow BenStudio to send you notifications? » n'arrive qu'après « रोको » (fin de la prise), rien pendant la prise
+A/a	t5-Aa-3	मेलोडी Marimba	31	non	la piste « मेलोडी » est bien en Marimba, mais « मेरी मेलोडी रिकॉर्ड करो » crée une piste « मेरी मेलोडी FM पियानो » : ma mélodie ne joue pas le Marimba choisi
+A/a	t5-Aa-4	सिंपल शुरुआत के लिए: 5 टैब, बड़े बटन और रोज़ के शब्द।	10	non	en Simple, mots anglais en lettres latines : SNARE, Kick, groove, Hi-hat, Octave, Crash, Solo (voir mots-faux)
+A/b	t5-Ab-1	Toque numa parte para ouvir a música a partir dela.	21	oui	▶ part de 0:00 et va jusqu'à comp. 7.3/7 (écrans 15-17), toucher « B » joue depuis 0:04 jusqu'à comp. 6.3 (21-22) ; Áudio 1 est « ligado » dans Mix (le banc ne dit pas si la voix sonne)
+A/b	t5-Ab-2	A compasso 1/7	16	non	le compteur du haut reste « A compasso 1/7 » pendant toute la lecture ; seul « comp. 3.4 / 7 » (page Minha música) avance, et sur la page Minha voz où je rappe rien n'avance
+A/b	t5-Ab-3	Take 1 · 10,8 s	32	non	toucher une prise lance une boucle « A compasso 1/1 (em loop) », même si le morceau entier jouait ; pour comparer sur tout le morceau il faut Parar puis Tocar
+A/c	t5-Ac-1	Renommer	8	oui	champ touché, ✕ Effacer, texte tapé, OK : chaque écran revient tout de suite, nom pris (écrans 8-12, puis 24-28 et 50-54), jamais figé
+A/c	t5-Ac-2	Projet final Léa OUVERT à l'instant · 120 BPM · Boucle de 1 mes.	67	oui	après Retour puis Accueil › Mes projets, la carte porte le nouveau nom (déjà vu avec « Devoir musique L1 » écran 12)
+A/c	t5-Ac-3	Mélodie refrain Changer le son	69	oui	la piste « Synthé » renommée garde son nom en Pro, en Simple (Mix, Clavier, Mes pistes) et après sortie/réouverture ; Annuler sur un 2e renommage ne l'abîme pas
+A/c	accueil-mes-projets	Mes projets Ouvrir un autre morceau, le copier ou le renommer.	13	oui	Options › Renommer présent et fonctionne
+A/d	t5-Ad-1	■ 全部	28	oui	en pleine prise, ■ 全部 arrête tous les blocs (prise continue, voulu : « ブレイクには ■を使ってね ») ; ■ ドラム n'arrête que la piste batterie (écran 27)
+A/d	t5-Ad-2	1 行目を小節頭でスタート	3	oui	rien ne tournait, la ligne 1 est partie tout de suite (pads 1, 3, 4 en boucle)
+A/d	t5-Ad-3	Pad Live	44	non	en rouvrant Pad Live depuis l'accueil, « Le pad 2 (Clap) joue une fois » sans que je touche rien (revu écran 47) ; à la toute 1re ouverture, rien
+A/d	t5-Ad-4	キャンセル	32	non	« キャンセル » du bandeau « 曲を書き込みました » efface la prise (piste Pads live disparue) sans aucune question
+B/a	t5-Ba-1	Aucun bandeau « Nouveau son / C'est fait » ni panneau du Guide ne cache le clavier ou les cases	84	non	pas de bandeau « Nouveau son / C'est fait » vu, mais le panneau du tuto (même replié) laisse 2 à 4 rangées de la grille des notes à 200 % et a caché la dernière note en pointillé (écrans 73, 84, 90)
+B/a	t5-Ba-2	À toi : sur le pad « Perc » (un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.	49	non	aucun pad « Perc » à l'écran ; la grille ouverte est « PAS : BORD DE CAISSE » (pad « Bord de caisse FX D 50 ») ; les autres pads (Grosse caisse studio, Grondement grave, Claquement de mains, Charley ouvert) collent à l'écran
+B/a	t5-Ba-3	Bravo, ton morceau est fini ! (non vu ; vu à la place : « Bravo, chapitre fini ! »)	36	pas	budget épuisé au chapitre 7/15 ; seuls « Bravo, chapitre fini ! » et « Écouter mon morceau » vus, lisibles à 200 % ; « Bravo, ton morceau est fini ! » jamais atteint
+B/b	t5-Bb-1	« Jedno z pól A, B, C… w Struktura › Części: pętla perkusji, basu i nut. »	37	non	en mode Prosty il n'y a ni « Struktura » ni « Części » (onglets : Mój utwór, Rytm, Klawiatura, Miks, Wyślij) ; l'aide « Pady live » cite aussi « 4 strony po 16 padów w Pad Live » (ni pages ni bouton « Pad Live »)
+B/b	t5-Bb-2	« Twoja kolej: dotknij „Dźwięk melodii”. »	11	oui	Słuchaj, Zmień dźwięk, Nagraj melodię n'ont avancé qu'après mon geste ; seul doute : passage en Pro, 27 % → 29 % sans avoir gardé le kick
+B/b	t5-Bb-3	« „?” na końcu paska pod górnym paskiem podpisuje ekran: jedno dotknięcie pokazuje, drugie ukrywa. »	42	non	« Graj część » et « Zatrzymaj tę ścieżkę » posées l'une sur l'autre tout en haut, loin de leurs boutons ; « Więcej opcji » idem écran 12
+B/b	t5-Bb-4	(pas trouvé de « Strony i paczki » / pages et packs)	-	pas	cherché dans Pomoc, Live, Pady, Biblioteka dźwięków (Prosty puis Pro) ; seule phrase vue sur « Anuluj » : « „Anuluj” usuwa je od razu; poprzedni utwór zostaje w „Wersje”. » (écran 37, fiche « Nagraj mój występ »)
+B/c	t5-Bc-1	Du baust den ganzen Track selbst, Schritt für Schritt: Ich erkläre und prüfe.	50	oui	après « Zeig's mir » le tempo revient à 120 et l'étape reste 2/4 (écran 9) ; « alles » sur la Kick affiche « 12 Schläge zu viel hier (durchgestrichen) », rien n'est validé
+B/c	t5-Bc-2	Zeig's mir	49	oui	la démo ne coche rien (« Noch 4 gestrichelte Kästchen hier ») et ma frappe en trop revient, marquée « durchgestrichen: wegnehmen »
+B/c	t5-Bc-3	Grundton … B♭ … B	17	non	notation anglaise (B♭/B) au lieu de l'allemande (B/H) ; la 303 ne propose que « C D E » ou « Do Re Mi »
+B/c	ecran-pruefe	der Clap auf 2 und 4, mit seinem Ghost-Schlag kurz vor dem nächsten Takt (auf „Sanft“).	67	non	Ghost-Schlag laissé à « Stärke 100 % » et pourtant « Bravo, Kapitel geschafft! »
+B/d	t5-Bd-1	بسيط للبداية: 5 تبويبات وأزرار كبيرة وكلمات يومية.	2	non	en Simple restent « Sub bass », « Loop », « Pads », « Kick », « Snare », « Mix », « Bridge », « Groove ».
+B/d	t5-Bd-2	الأغنية: Intro → لازمة → مقطع → لازمة → مقطع → لازمة → النهاية: نحو 3 د.	18	non	flèches → à l'envers dans la phrase arabe, moins collé après le chiffre au mixeur (« 12− »), grille de pas tantôt de droite à gauche tantôt de gauche à droite.
+B/d	t5-Bd-3	إعادة	24	non	après un « تراجع », « إعادة » s'affiche pile à 261,42 et « تراجع » glisse à 333,42 : mon 2e appui a rétabli.
+C/a	t5-Ca-1	(je ne lis pas) cadre « Écoute le rythme, puis refais-le sur les pads. »	3	oui	à la 1re ouverture (écran 2) pads vides « + » et cadre presque vide quelques secondes, puis tout rempli seul sans rien toucher (écran 3) ; 2e ouverture remplie tout de suite (écran 39)
+C/a	t5-Ca-2	(je ne lis pas) points jaunes et rouges dans le cadre du niveau 2	15	non	les ronds rouges = le pad 2 qui s'allume dans l'exemple, mais les ronds jaunes ne disent pas quel pad ; aucun pad n'est marqué hors exemple, 4 pads sont jaunes
+C/a	t5-Ca-3	(je ne lis pas) cadre du défi	3	pas	aucun chiffre visible dans le cadre ; le seul « 124 » est en haut, hors du cadre ; textes du cadre masqués pour moi
+C/a	t5-Ca-4	(je ne lis pas) ☆☆☆ sous les ronds	37	pas	3 essais, au mieux 1 rond vert sur 4 et 0 étoile ; le banc ne tape pas en vrai rythme (banc rythme)
+C/b	t5-Cb-1	“Voz” está en la casilla Remix del bloque A.	33	non	envoyée « En el Live », la colonne « Ma chanson préférée » est coupée d'office ; la case dit « suena » alors que toutes les parties sont coupées
+C/b	t5-Cb-2	Cancelar	63	oui	après Cancelar (puis Atrás, Continuar), le projet n'a ni nouvelle piste ni nouveau projet ; idem à l'écran 15
+C/b	t5-Cb-3	“Voz 3” está en el pad live 3.	44	non	le même bout renvoyé 3 fois donne Voz 1, Voz 2, Voz 3 identiques sur 3 pads, sans aucun avertissement
+C/b	t5-Cb-4	Cortes: Frases	36	non	mode Frases (puis Transitorios) choisi, au retour sur la découpe il est revenu à « Un trozo »
+C/c	t5-Cc-1	The song has changed since this export: export again to send the new version.	68	non	Undo juste après l'export Club remet la cible sur Off (écran 22) puis Streaming (écran 68) ; et l'alerte « changed » est sortie une fois juste après un export Share sans aucun changement (écran 31)
+C/c	t5-Cc-2	No song yet: your part goes out as a loop (8 bars).	27	non	format M4A et cible bien repris de Mix, mais la longueur reste 8 mesures (0:16, fichier 16 s) alors que Mix est sur 16 puis sur 4 mesures
+C/c	t5-Cc-3	In Music › BenStudio on this phone. Newest first.	54	non	les deux .pocketstudio.zip envoyés n'y sont pas, aucune marque de version, chaque fichier affiche 1 KB (WAV de 33 s)
+C/c	t5-Cc-4	To pick up your song on another device: “Share” › “Send the project” (a .zip with all its sounds), then, on the other device, My projects › “Import a project (.zip)”.	45	oui	« ? » du bandeau, Share › Send the project, My projects › Import a project (.zip), Apple Music et Free dans Mix : tout existe
+C/d	t5-Cd-1	Reprendre ton morceau sur un autre appareil : « Partager » › « Envoyer le projet » (un .zip avec tous ses sons) / « Autres exports Piste par piste, MIDI, FLAC… dans Mix »	30	oui	le .zip part bien depuis Partager › Envoyer le projet (écran 23), le MIDI est dans Mix, mais caché sous « Avancé » replié (écran 26)
+C/d	t5-Cd-2	Mes exports : retrouver et renvoyer un fichier	69	non	le .mid, le .wav club et le .m4a streaming y sont, mais aucun des 3 .zip du projet envoyés n'y apparaît
+C/d	t5-Cd-3	Cet appareil ne gère pas le MIDI. / Aucun contrôleur branché. Branche ton clavier en USB : il est reconnu tout seul.	47	non	les deux phrases se suivent sur la même page et se contredisent
+C/d	-	C'est prêt : Démo-Acid-house-morceau-streaming-20261105-211501.m4a, une copie est aussi dans Musique › BenStudio.	10	oui	le fichier est bien listé ensuite dans Mes exports (écran 69)
+D/a	t5-Da-1	« Note grid: 1 note » / « Son : 1 note du synthé »	6	oui	note posée = un son part tout de suite, et en tirant son bord droit elle s'allonge (vu sur l'image écran 6)
+D/a	t5-Da-1	« ✏ Draw »	88	non	en Draw, glisser le doigt sur une ligne vide ne trace rien (3 essais, 3 lignes), seul le toucher pose une note
+D/a	t5-Da-1	« Paste bar 1 »	42	non	le collage se pose par-dessus des notes de même hauteur et en supprime une sans rien dire
+D/a	t5-Da-1	« Scale » / « Chords »	60	oui	Chords pose des accords de la gamme (C-E-G, E-G-B en do majeur), Scale n'affiche que les notes de la gamme
+D/a	t5-Da-1	« Loop − 16 bars + »	56	non	le « + » ajoute une mesure par toucher (appui long aussi) : 1 → 16 mesures = 15 touchers, plus 2 pour ouvrir la grille
+D/b	t5-Db-1	已有名为“明亮Reese”的保存音色：请换个名字。	35	non	même nom refusé (pas de « mettre à jour »), et le nom tapé disparaît (retour à « 我的声音 1 », écran 37)
+D/b	t5-Db-2	点声音上的 ☆，就能在“收藏”里找到它。	39	non	aucune ☆ sur les tuiles des dossiers 贝斯 (écran 4) et Lead (écran 40)
+D/b	t5-Db-3	明亮Reese 合成器	59	non	la puce suit un son choisi dans la liste (écran 5, 45), mais pas un son qu'on vient de garder : « 明亮Reese 2 » coché, la puce dit « 明亮Reese »
+D/b	t5-Db-4	播放	9	non	dans l'éditeur, transport en double (en haut 撤销/重做/播放/分享/BPM, en bas encore 撤销/重做/播放/速度/分享) ; il reste environ 300 px pour les réglages, 2 rangées de curseurs
+D/c	t5-Dc-1	Salvato proprio ora	62	oui	l'accueil dit « Salvato proprio ora » et I miei progetti liste « Notte a Napoli APERTO proprio ora · 90 batt. · 3:00 · 5 parti » (aussi la copie, écran 82)
+D/c	t5-Dc-2	Duplica	35	non	« Duplica » d'une parte ajoute une 2e « C · Ritornello » sans aucun avertissement de copie liée ; seul le toast périmé « Fatto: nuova lunghezza per B · Strofa » s'affiche (refait écran 37 et depuis la timeline écran 67 : rien non plus)
+D/c	t5-Dc-3	Vedi tutto il brano	52	non	brano de 90 battute, la règle s'arrête vers 81-85, la dernière « C · Ritornello » sort à droite ; « A · Int » coupé, la parte de 2 batt. sans étiquette (refait écrans 54 et 56)
+D/c	t5-Dc-4	Schermo intero	56	non	en plein écran la timeline laisse ~280 px vides sous les pistes (y 900-1180) alors que le brano ne tient pas en largeur ; ailleurs (Suoni, Mix, Parti) les deux colonnes servent bien
+D/d	t5-Dd-1	« الجُمل » / « قطعتان مختارتان · المجموع 0:05 » / « قطعة واحدة »	35	oui	en mode الجُمل, toucher la tuile « 2 » la coche (#34), « على مسار » s'allume et pose 2 bouts ; repasser sur « قطعة واحدة » (#38) ramène début/fin et l'envoi
+D/d	t5-Dd-2	« أغنيتي » (fil « أغنيتي ريمكس » en haut du Remix)	40	non	dans l'onglet أغنيتي, rien ne mène au Remix (vu pendant la séparation, écran 11, et après la découpe, écrans 40 et 43) ; il faut passer par « المزيد » puis « ريمكس »
+D/d	t5-Dd-3	« →  أغنيتي  ريمكس »	34	oui	tout est en miroir (onglets, flèche retour à droite, tuiles 1→6 de droite à gauche, OK à gauche) ; seule la forme d'onde reste de gauche à droite, ce qui est normal pour une timeline
+E/a	t5-Ea-1	« Que veux-tu faire ? »	27	oui	projet ouvert supprimé depuis Mes projets puis Retour → accueil « Que veux-tu faire ? » ; refait écran 55 (Live) et 103 (Techno, via le menu Plus)
+E/a	t5-Ea-2	« Enregistrer ma mélodie »	20	oui	Retour pendant la prise puis Continuer : « Ta prise : 3 notes » + Garder/Refaire, gardées (grille 5 notes écran 70) ; refait écran 141
+E/a	t5-Ea-2	« Enregistrer ma mélodie »	125	non	Retour pendant la prise, puis Pad Live, puis Mes projets > Techno : la prise a disparu, piste Mélodie vide (« Grille des notes : 0 notes ») ; refait écran 149
+E/a	t5-Ea-3	(brief) jamais d'écran vide ni coincé	149	oui	~40 Retour en tout genre, toujours un écran utilisable, la musique s'arrête en sortant
+E/b	t5-Eb-1	Chaque bouton a un nom (barre du haut, ▶, réglages de piste, touches, coins des pads)	4	non	le ▶ « écouter le style » de l'assistant (#4) et le ⋮ d'une partie (#25) n'ont aucun nom ; les touches du clavier, elles, en ont un (« F 4 », #36)
+E/b	t5-Eb-2	un premier morceau possible sans lire les petits textes	32	oui	son, 2e partie et partage faits aux icônes et aux gros titres (étoiles, éclair, ▶ orange, +, avion), mais la 2e partie a demandé de deviner longtemps
+E/c	t5-Ec-1	리믹스 · 보컬 (1/4) … 파일 4개 공유	52	oui	« 트랙별로 » sur le remix sort 4 fichiers (보컬, 드럼, 베이스, 나머지) et propose « 파일 4개 공유 »
+E/c	t5-Ec-2	준비 완료: 켜진 솔로도, 뮤트된 트랙도 없어요.	29	non	chanson de 0:40 décalée en mesure 2 (« 곡이 2마디, “A” 중간에서 들어와요. »), export toujours 40초 et « 준비 완료 » sans dire que la fin est coupée
+E/c	t5-Ec-3	-	-	pas	aucun bouton « 2개 파일 공유 » trouvé (partage, Mes exports, Mix, vidéo SNS) ; seulement « 파일 4개 공유 » et des envois un par un
+E/c	t5-Ec-4	내 곡 공유 · 봄밤-리믹스-스트리밍-곡-20261105-213323.m4a	25	oui	le coréen tapé reste intact (espaces → tirets), idem 봄밤-리믹스-클럽-곡 dans 내 내보내기
+E/c	t5-Ec-5	프로젝트 이름은 “Ma chanson préférée” 그대로예요.	20	oui	après deux exports au nom coréen, l'en-tête reste « Ma chanson préférée 저장됨 » (écrans 27, 38)
+E/d	t5-Ed-1	Laser, coup, prêt, pad A6	18	non	toucher le haut d'un pad (bande du badge « coup ») ouvre « Pad A6 : Laser » au lieu de le jouer ; au centre ça joue bien (#1)
+E/d	t5-Ed-2	EFFETS DE SCÈNE / 124 BPM / REC	1	oui	effets, tempo et REC sont là dès l'arrivée, sans passer par « Gros pads »
+E/d	t5-Ed-3	Tout couper	12	non	caché derrière « Plus », libellé « Tout cou… », et le morceau continue de jouer après (3 essais)
+E/d	t5-Ed-4	Lancer la ligne 1 à la mesure	4	oui	les boucles 1, 3, 4 partent, le bouton devient « Arrêter la ligne 1 »
+F/a	t5-Fa-1	Un style en une touche, ou pas à pas avec l'assistant.	19	oui	carte « House » choisie puis un seul toucher « Créer et écouter » : « le morceau joue » (écran 6) ; refait avec « Techno de Detroit » (écran 26)
+F/a	t5-Fa-2	C'est prêt : House-morceau-20261105-214347.m4a, une copie est aussi dans Musique › BenStudio.	12	oui	fichier partagé (WhatsApp) au geste #11, bien sous 40 gestes
+F/a	t5-Fa-3	(brief) tout lisible à 130 % sur le pliable	28	non	« Sauvegardé » réduit à une coche, noms de parties cassés sur 3 lignes, Guide et barre Partager qui cachent du contenu
+F/b	t5-Fb-1	Lass eine Einstellung sich von selbst bewegen: Wähl sie aus und zeichne ihre Kurve (mit dem Finger oder eine Linie mit zwei Taps).	23	non	la courbe se dessine (rampe visible, « 1 Einstellung bewegt sich von selbst ») mais pendant la lecture le curseur Cutoff reste figé à 1,6 kHz (écrans 21-23)
+F/b	t5-Fb-2	Ein Effekt kann nur in bestimmten Teilen spielen: Tippe auf ihre Buchstaben.	41	oui	Filter sur B, Sättigung sur A ; « Was spielt » par partie le confirme (« Spielt nur in: A/B ») et c'est gardé après Retour
+F/b	t5-Fb-3	A · mit dem Master / B · ohne den Master (+ « Gleich laut »)	52	oui	bascule A/B présente et sélectionnable pendant la lecture, avec mise à niveau ; son non jugé
+F/b	t5-Fb-4	18,0 kHz / 849 Hz / 40 Hz (axe de la courbe)	11	non	à 200 % les unités de l'axe sont coupées (« 18,0 », « 40 H », « Sch »), et « Lautstärke −14,0 » n'a pas d'unité
+F/c	t5-Fc-1	(aucun message « デモの準備ができました » ou équivalent vu ; seul « デモを聴く 完成済みの曲。何ができるか体験しよう。 »)	6	pas	après « 作って聴く » le morceau joue mais la guide affiche seulement « ガイドが曲を読んでいます… », aucun « ta démo est prête » ni écran 6, 7, 22, 33
+F/c	t5-Fc-2	このプロジェクトをどう表示する？上のバッジでいつでも変えられます。	14	oui	la pastille « シンプル » en haut ouvre « このプロジェクトのモード » avec Simple/Pro, fermée sans rien changer
+F/c	t5-Fc-3	シンプル はじめての人に：5つのタブ、大きなボタン、ふだんの言葉。	2	oui	son qui joue et 2e partie ajoutée deux fois (Lo-fi et projet vide) sans jamais passer en Pro
+F/c	t5-Fc-ecran-1	ふだんの言葉	11	non	en Simple, « ミックス » sur les parties, « 後にブレイク »/« 前にビルドアップ »/« フィル », « 未決定 18 件 » : pas du japonais de tous les jours pour une débutante
+F/d	t5-Fd-1	Remix et découpe faisables au pouce gauche	50	non	séparé, découpé et posé, mais Simple/Pro, « Faire un morceau… », « Utiliser cette chanson », poignées du bout et Remix du menu Plus sont hors du pouce : il a fallu passer par Pad Live, Retour et refaire l'import
+F/d	t5-Fd-2	→ Pad jamais sur un son que ton rythme joue	85	pas	phrase jamais affichée ; « Sur quel pad ? » propose les 16 pads sans marque, dont « 1 Grosse caisse 1 » alors que j'avais mis un coup au pas 1 (#69), et les rangées du haut sont hors du pouce
+F/d	t5-Fd-3	Garder / Sur une piste	68	oui	« est dans ta bibliothèque (Voix) » (écran 67) puis « « Voix 1 » est sur une nouvelle piste audio, à la mesure 1. » (écran 68)

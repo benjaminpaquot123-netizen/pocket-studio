@@ -1,0 +1,35 @@
+{
+  "siege": "c",
+  "options": {
+    "lang": "ja",
+    "device": "tablet8",
+    "font": "100",
+    "fresh": "reel",
+    "gestes.max": "60",
+    "mission": "simple",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 36,
+    "images": 4,
+    "gestes_premier_son": 5,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 2,
+    "touchers_desactives": 0,
+    "retours": 3,
+    "retours_immediats": 3,
+    "ecrans": 38,
+    "ecrans_revisites": 11,
+    "defilements_sans_toucher": 0,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "refus_pouce": 0,
+    "constats_layout": 119,
+    "plantage": false,
+    "fin": "fin"
+  },
+  "mission": "simple",
+  "resultat": "reussie",
+  "pourquoi": "toujours en Mode simple"
+}

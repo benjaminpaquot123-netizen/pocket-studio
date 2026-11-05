@@ -1,0 +1,10 @@
+ci_build	?
+ci_emulateur	?
+recette_points_rouges	?
+cases_vides	?
+lots_non_joues	0
+sieges_coupes_par_le_banc	0
+relecture_bloquants	?
+relecture_graves	?
+corrections_sans_test	?
+fichiers_non_commites	?

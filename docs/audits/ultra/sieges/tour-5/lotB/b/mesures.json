@@ -1,0 +1,35 @@
+{
+  "siege": "b",
+  "options": {
+    "lang": "pl",
+    "device": "phone",
+    "font": "100",
+    "mode": "simple",
+    "gestes.max": "90",
+    "mission": "libre",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 77,
+    "images": 9,
+    "gestes_premier_son": 9,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 5,
+    "touchers_desactives": 0,
+    "retours": 3,
+    "retours_immediats": 3,
+    "ecrans": 81,
+    "ecrans_revisites": 25,
+    "defilements_sans_toucher": 3,
+    "appels_aide": 9,
+    "abandon": null,
+    "gels": 0,
+    "refus_pouce": 0,
+    "constats_layout": 297,
+    "plantage": false,
+    "fin": "fin"
+  },
+  "mission": "libre",
+  "resultat": "reussie",
+  "pourquoi": "fini par le testeur, 30 écrans différents, premier son en 9 geste(s)"
+}

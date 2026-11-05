@@ -206,9 +206,13 @@ import kotlinx.coroutines.delay
 /** The tabs with their own record bar (« ● Enregistrer », then the take's card). */
 private val RECORD_BAR_TABS = setOf(AppTab.Rythme, AppTab.Acide, AppTab.Synthe)
 
-/** What the top bar's ● says it records on [tab] (audit ultra round 1, n° 30): its source there, the microphone, or « ask ». */
+/**
+ * What the top bar's ● says it records on [tab] (audit ultra round 1, n° 30): the microphone, or « ask »
+ * (round 2, n° 21: on Rythme, the Clavier and the 303 too, the microphone among the choices).
+ */
+@Suppress("UNUSED_PARAMETER")
 private fun recordLabelOf(tab: AppTab, mic: Boolean, recording: Boolean): String =
-    com.pocketstudio.app.record.recordLabelFor(if (tab in RECORD_BAR_TABS) takeSourceOf(tab) else null, mic, recording)
+    com.pocketstudio.app.record.recordLabelFor(null, mic, recording)
 
 /** What the top bar's ● records on [tab] (outside the Audio tab, where it is the microphone's). */
 fun takeSourceOf(tab: AppTab): com.pocketstudio.app.record.TakeSource = when (tab) {
@@ -919,6 +923,8 @@ fun AppRoot() {
     LaunchedEffect(Unit) { if (!SettingsStore.state.value.guideSeen && !SettingsStore.state.value.simpleMode) SettingsStore.update(context) { it.copy(simpleMode = true) } }
     // Lot B3: « Pad Live » chosen at the first launch: opened as the home's card opens it (below).
     var padLiveFromWelcome by rememberSaveable(key = "pad_live_from_welcome") { mutableStateOf(false) }
+    // Audit ultra round 2, n° 21: « Enregistrer ma voix ou ma guitare » chosen at the first launch (opened below).
+    var voiceFromWelcome by rememberSaveable(key = "voice_from_welcome") { mutableStateOf(false) }
     com.pocketstudio.app.onboarding.FirstLaunch(
         // After the opening (BrandIntro): a window would cover it.
         show = !settings.guideSeen && !com.pocketstudio.app.onboarding.Intro.playing,
@@ -941,6 +947,7 @@ fun AppRoot() {
             },
             later = firstLaunchSeen,
             padLive = { firstLaunchSeen(); padLiveFromWelcome = true },
+            voice = { firstLaunchSeen(); voiceFromWelcome = true },
         ),
         playDemo = { if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.toggleSong() else rhythmVm.togglePlay() },
     )
@@ -1335,6 +1342,11 @@ fun AppRoot() {
         openRemix()
     }
     // Lot B3: Pad Live chosen at the first launch: its « Live » project made and opened, as the home's card does.
+    LaunchedEffect(voiceFromWelcome) {
+        if (!voiceFromWelcome) return@LaunchedEffect
+        voiceFromWelcome = false
+        openVoice()
+    }
     LaunchedEffect(padLiveFromWelcome) {
         if (!padLiveFromWelcome) return@LaunchedEffect
         padLiveFromWelcome = false
@@ -1502,6 +1514,11 @@ fun AppRoot() {
                 launch.choose()
                 modeAsk = if (noProject) START_MISSIONS_NEW else START_MISSIONS
             },
+            // Audit ultra round 2, n° 21 (seat B b, a guitarist): the microphone's page of the project, one touch away.
+            voice = if (noProject) null else ({
+                launch.choose()
+                openVoice()
+            }),
             // Audit ultra round 2 (n° 16): the welcome's « J'apprends » here too (« Simple ou Pro ? » gives its level).
             learn = {
                 launch.choose()
@@ -2216,7 +2233,9 @@ fun AppRoot() {
                             // Audit ultra round 1 (n° 30, seats A d, C c): where nothing is played (Mon morceau,
                             // Mixeur, Envoyer…) the ● asks what to record: a melody on the keys, the pads, or the
                             // microphone (a voice, a guitar): it opened the keys when a guitar was meant.
-                            !micMode && tab !in RECORD_BAR_TABS && !topRecording -> recordChoice = true
+                            // Round 2, n° 21 (seat B b, a guitarist: on Rythme it recorded the pads only): asked
+                            // on every tab, the tab's own source first, the microphone always there.
+                            !micMode && !topRecording -> recordChoice = true
                             !micMode -> rhythmVm.recordTake(takeSourceOf(tab))
                             topTake != null -> rhythmVm.stopAudioRecording()
                             !topSaving -> startMicTake()
@@ -2235,6 +2254,8 @@ fun AppRoot() {
                     pads = { go(AppTab.Rythme); rhythmVm.recordTake(com.pocketstudio.app.record.TakeSource.PADS) },
                     mic = { openVoice(); startMicTake() },
                     dismiss = { recordChoice = false },
+                    first = if (tab in RECORD_BAR_TABS) takeSourceOf(tab) else null,
+                    acid = if (tab == AppTab.Acide) ({ rhythmVm.recordTake(com.pocketstudio.app.record.TakeSource.ACID) }) else null,
                 )
             }
             // The rename bar (a long press on the name), the tempo, where the song is and « ⟳ Partie », the solo banner; the tempo sheet.

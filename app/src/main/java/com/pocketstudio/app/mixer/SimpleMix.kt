@@ -213,6 +213,7 @@ fun SimpleMixScreen(ui: SimpleMixUi, meters: () -> FloatArray, loudness: () -> F
             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(Neon.Cyan.copy(alpha = 0.12f))
                 .drawStartBar(Neon.Cyan).padding(start = 12.dp, end = 8.dp, top = 6.dp, bottom = 6.dp).testTag("mix_hint"),
         )
+        androidx.compose.runtime.CompositionLocalProvider(LocalAloneResumes provides (ui.listening?.resume == true)) {
         Row(Modifier.fillMaxWidth().fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             ui.tracks.forEach { t ->
                 val trackAlone = alone != null && alone == AloneTarget.ofSongKey(t.key)
@@ -223,6 +224,7 @@ fun SimpleMixScreen(ui: SimpleMixUi, meters: () -> FloatArray, loudness: () -> F
                 }
             }
             OutputStrip(ui.masterDb, meters, loudness, actions.setMasterDb)
+        }
         }
         TipCard(ui.tip, actions.applyTip)
     }
@@ -383,14 +385,18 @@ private fun TipCard(tip: MixTip?, apply: (MixTip) -> Unit) {
     }
 }
 
-/** ▶ « Écouter seul » in a strip: the sound alone in a loop at once; ■ everything back. */
+/** The sound heard alone began while the music played: its ■ gives the whole mix back, playing (round 2, n° 19). */
+private val LocalAloneResumes = androidx.compose.runtime.compositionLocalOf { false }
+
+/** ▶ « Écouter seul » in a strip: the sound alone in a loop at once; ■ everything back (still playing when it played before). */
 @Composable
 private fun PlayAlone(on: Boolean, name: String, tag: String, toggle: () -> Unit) {
+    val back = if (LocalAloneResumes.current) tr("Réécouter toutes les pistes") else tr("Arrêter")
     Box(
         Modifier.size(width = 34.dp, height = 40.dp).clip(RoundedCornerShape(8.dp))
             .background(if (on) Neon.Acid else Neon.Acid.copy(alpha = 0.18f))
             .clickable(role = Role.Button, onClick = toggle)
-            .semantics { selected = on; contentDescription = if (on) tr("Arrêter") else tr("Écouter « %s » seul, en boucle", name) }
+            .semantics { selected = on; contentDescription = if (on) back else tr("Écouter « %s » seul, en boucle", name) }
             .testTag(tag),
         contentAlignment = Alignment.Center,
     ) {

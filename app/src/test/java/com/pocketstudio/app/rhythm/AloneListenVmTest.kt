@@ -151,6 +151,34 @@ class AloneListenVmTest {
         assertFalse(sink.playing)
     }
 
+    /**
+     * Audit ultra round 2, n° 19 (seat B b, Mix): the music played, « ▶ Audio 1 seul » then « ■ »:
+     * the whole playback stopped. Touched off, the sound alone gives back the whole mix and the music
+     * goes on when it was playing before (stopped before: it stops, as the first test says).
+     */
+    @Test
+    fun turningTheSoundAloneOffWhileTheMusicPlayedKeepsItPlaying() {
+        val vm = open(song())
+        vm.togglePlay()
+        idle()
+        assertTrue(sink.playing)
+        vm.toggleAlone(AloneTarget.ofSongKey("inst:1"), from = "mix")
+        idle()
+        assertTrue(sink.playing && vm.transport.value.playing)
+        vm.toggleAlone(AloneTarget.ofSongKey("inst:1"), from = "mix")
+        idle()
+        assertNull(vm.alone.value)
+        assertTrue("the music goes on", sink.playing && vm.transport.value.playing)
+        // Everything as the project says: the bass soloed by the project, the snare cut, no pad strip left soloed.
+        assertEquals(true, sink.solo[bassCh])
+        assertEquals(true, sink.mute[Mixer.padChannel(2)])
+        assertTrue(sink.solo[Mixer.padChannel(0)] != true)
+        // ■ still stops it.
+        vm.togglePlay()
+        idle()
+        assertFalse(sink.playing)
+    }
+
     @Test
     fun leavingEveryScreenThatHoldsItStopsIt() {
         val vm = open(song())

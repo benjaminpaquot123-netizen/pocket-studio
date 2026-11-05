@@ -57,6 +57,20 @@ data class AudioTrack(
         )
     }
 
+    /**
+     * Every take the track keeps (the one playing included) in a fixed order, oldest first, each with
+     * the number it is shown with (« Prise 2 »): choosing one never moves them. Takes without a
+     * number (saved before numbers, an imported sound) come first, by name then file.
+     */
+    fun takesInOrder(): List<Pair<AudioClip, Int>> {
+        val all = (listOfNotNull(clip) + otherTakes).distinctBy { it.file }
+        val unnumbered = all.filter { it.take <= 0 }.sortedWith(compareBy({ it.name }, { it.file }))
+        return unnumbered.mapIndexed { i, c -> c to i + 1 } + all.filter { it.take > 0 }.sortedBy { it.take }.map { it to it.take }
+    }
+
+    /** The number of the next take recorded on this track: after every number shown ([takesInOrder]). */
+    fun nextTake(): Int = ((takesInOrder().maxOfOrNull { it.second } ?: 0) + 1).coerceAtMost(AudioClip.MAX_TAKE_NUMBER)
+
     /** [transform] on the clip and every take kept. */
     fun mapTakes(transform: (AudioClip) -> AudioClip?): AudioTrack =
         copy(clip = clip?.let(transform), previous = previous?.let(transform), older = older.mapNotNull(transform))
@@ -118,6 +132,13 @@ data class AudioClip(
      * speed (a take: « Recaler sur le tempo »).
      */
     @EncodeDefault(EncodeDefault.Mode.NEVER) val fit: Boolean = false,
+    /**
+     * Audit ultra round 2 (n° 18, seat B b: two « Prise 03:37 » whose order changed at each touch):
+     * its number among its track's takes (« Prise 2 »), given once when it is recorded and never
+     * changed ([AudioTrack.nextTake]); 0 (left out of the file): an imported sound, or a take saved
+     * before numbers ([AudioTrack.takesInOrder] numbers those by their name).
+     */
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val take: Int = 0,
 ) {
     /** It is stretched to the project's tempo. */
     val follows: Boolean get() = fit && !song && bpm > 0.0
@@ -143,6 +164,7 @@ data class AudioClip(
         bpm = bpm.takeIf { it.isFinite() && it in 20.0..400.0 } ?: 0.0,
         scene = scene?.takeIf { !song && it in 0 until Scene.MAX },
         nudgeMs = nudgeMs?.takeIf { it.isFinite() }?.coerceIn(-MAX_OFFSET_MS, MAX_OFFSET_MS),
+        take = take.coerceIn(0, MAX_TAKE_NUMBER),
     )
 
     /** It sounds in the parts of [scene] (a song clip: wherever the song is). */
@@ -197,6 +219,8 @@ data class AudioClip(
 
     companion object {
         const val MAX_START = 1023
+        /** A take's number at most ([take]). */
+        const val MAX_TAKE_NUMBER = 9999
         /** A song clip may start anywhere in the longest song (256 bars of 7/4). */
         const val MAX_SONG_START = 256 * 28
         /** 64 bars. */

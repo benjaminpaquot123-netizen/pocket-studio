@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.Icon
@@ -235,6 +236,8 @@ class LaunchActions(
     /** Pad Live (n° 25): the pads ready to play, in the « Live » project created or resumed. */
     val padLive: () -> Unit = {},
     val missions: () -> Unit = {},
+    /** Audit ultra round 2, n° 21 (seat B b, a guitarist): « Enregistrer ma voix ou ma guitare » (null: not offered, no project). */
+    val voice: (() -> Unit)? = null,
     /**
      * Audit ultra round 2 (n° 16, seat A c, a child who does not read: « la carte chapeau vert a disparu »): « J'apprends »,
      * the welcome's green hat, here too (null: not offered).
@@ -376,6 +379,13 @@ private fun OtherChoices(actions: LaunchActions) {
         Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir un autre morceau, le copier ou le renommer."),
         Color(0xFF5BB8F5), actions.projects, "launch_projects",  // sky blue: green means "playing"
     )
+    // Audit ultra round 2, n° 21 (seat B b: « rien sur l'accueil pour enregistrer ma voix ou ma guitare »).
+    actions.voice?.let { voice ->
+        Choice(
+            Icons.Filled.Mic, tr("Enregistrer ma voix ou ma guitare"), tr("Le micro enregistre par-dessus ta musique, pile en rythme."),
+            Neon.Red, voice, "launch_voice",
+        )
+    }
     actions.learn?.let { learn ->
         Choice(
             Icons.Filled.School, tr("J'apprends"), tr("Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie."),

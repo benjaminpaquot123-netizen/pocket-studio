@@ -40,7 +40,8 @@ object DefaultNames {
     }
 
     /** Names with a number. */
-    private val NUMBERED = listOf("Piste %d", "Canal %d", "Morceau %d mesures")
+    // « Audio %d »: an audio track's own name (audit ultra round 2, n° 20: « Audio 1 » in every language).
+    private val NUMBERED = listOf("Piste %d", "Canal %d", "Morceau %d mesures", "Audio %d")
 
     /** Names with a time of day: a microphone take ("Prise 21:14"), a pad recorded at the mic ("Micro 21:14:05"). */
     private val TIMED = listOf("Prise %s", "Micro %s")

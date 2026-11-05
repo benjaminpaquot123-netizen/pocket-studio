@@ -497,7 +497,7 @@ internal fun ExportCard(export: ExportUi, actions: MixerActions, hasSong: Boolea
                 ExportFade.entries.forEach { fade ->
                     FilterChip(
                         selected = export.fade == fade, onClick = { actions.setExportFade(fade) }, enabled = !export.running,
-                        label = { Text(if (fade == ExportFade.None) fade.label else "${fade.label} (${fade.seconds} s)") },
+                        label = { Text(if (fade == ExportFade.None) fade.label else "${fade.label} (${tr("%d s", fade.seconds)})") },
                         colors = chipColors, modifier = Modifier.testTag("export_fade_${fade.name}"),
                     )
                 }

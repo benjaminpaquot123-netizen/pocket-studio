@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Piano
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -39,17 +40,37 @@ import com.pocketstudio.ui.WholeWordsText
  * morceau, Mixeur, Envoyer…) asks what to record: a melody on the keys, the pads, or the
  * microphone (a voice, a guitar, any instrument): it opened the keys when a guitar was meant, and the
  * microphone was only « Enregistrer ma voix » in ⋮. The count-in is chosen right there.
+ * Round 2 (n° 21, seat B b, a guitarist on Rythme: the ● recorded the pads only): asked on every tab,
+ * the tab's own source ([first]) on top, the microphone always offered; on the 303, its knobs ([acid]).
  */
 @Composable
-fun RecordChoiceDialog(keys: () -> Unit, pads: () -> Unit, mic: () -> Unit, dismiss: () -> Unit) {
+fun RecordChoiceDialog(
+    keys: () -> Unit, pads: () -> Unit, mic: () -> Unit, dismiss: () -> Unit,
+    first: TakeSource? = null, acid: (() -> Unit)? = null,
+) {
     ScaledAlertDialog(
         onDismissRequest = dismiss,
         title = { Text(tr("Que veux-tu enregistrer ?")) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("record_choice")) {
-                Choice(Icons.Filled.Mic, tr("Le micro : ta voix, une guitare, un instrument"), "record_choice_mic") { dismiss(); mic() }
-                Choice(Icons.Filled.Piano, tr("Une mélodie au clavier"), "record_choice_keys") { dismiss(); keys() }
-                Choice(Icons.Filled.GridView, tr("Les pads (la batterie)"), "record_choice_pads") { dismiss(); pads() }
+                val micChoice: @Composable () -> Unit = {
+                    Choice(Icons.Filled.Mic, tr("Le micro : ta voix, une guitare, un instrument"), "record_choice_mic") { dismiss(); mic() }
+                }
+                val keysChoice: @Composable () -> Unit = {
+                    Choice(Icons.Filled.Piano, tr("Une mélodie au clavier"), "record_choice_keys") { dismiss(); keys() }
+                }
+                val padsChoice: @Composable () -> Unit = {
+                    Choice(Icons.Filled.GridView, tr("Les pads (la batterie)"), "record_choice_pads") { dismiss(); pads() }
+                }
+                val acidChoice: @Composable () -> Unit = {
+                    if (acid != null) Choice(Icons.Filled.Tune, tr("Enregistrer ce que je joue sur la 303"), "record_choice_acid") { dismiss(); acid() }
+                }
+                when (first) {
+                    TakeSource.PADS -> listOf(padsChoice, micChoice, keysChoice)
+                    TakeSource.KEYS -> listOf(keysChoice, micChoice, padsChoice)
+                    TakeSource.ACID -> listOf(acidChoice, micChoice, keysChoice, padsChoice)
+                    else -> listOf(micChoice, keysChoice, padsChoice)
+                }.forEach { it() }
                 CountInChoice()
             }
         },

@@ -38,7 +38,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.pocketstudio.model.PadSample
-import com.pocketstudio.ui.LevelMeter
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material3.CircularProgressIndicator
@@ -1143,7 +1142,8 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
             }
             is SampleTask.Recording -> {
                 Text(tr("Enregistrement… %.1f s / 30 s", task.seconds), color = Neon.RedText)
-                LevelMeter(task.level)
+                // n° 20 (round 2): the microphone's level named, with its word, as on the voice's take.
+                com.pocketstudio.app.record.InputLevel(task.level)
                 Button(
                     onClick = actions.stopRecording,
                     modifier = Modifier.fillMaxWidth().testTag("record_stop"),

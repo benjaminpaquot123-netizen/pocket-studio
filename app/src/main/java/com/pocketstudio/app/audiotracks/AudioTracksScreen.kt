@@ -64,7 +64,6 @@ import com.pocketstudio.app.rhythm.SampleInfo
 import com.pocketstudio.app.rhythm.Waveform
 import com.pocketstudio.model.AudioClip
 import com.pocketstudio.model.AudioTrack
-import com.pocketstudio.ui.LevelMeter
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.pillColors
@@ -291,7 +290,8 @@ private fun RecordingCard(rec: AudioRecordingUi, track: AudioTrack?, ui: AudioTr
         }
         val where = if (rec.song) tr("tout le morceau") else tr("la partie %s", ui.sceneTitle)
         Text(listOfNotNull(track?.name?.let { com.pocketstudio.model.DefaultNames.shown(it) }, tr("sur %s", where)).joinToString(" · "), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-        LevelMeter(rec.level)
+        // n° 20 (round 2, seat B b: a thin green line, no word, nothing for TalkBack): named, thick, with a word.
+        com.pocketstudio.app.record.InputLevel(rec.level)
         ListeningAdvice(ui.listening)
         MonitorChoice(ui, actions)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -322,6 +322,8 @@ private const val CONFIRM_CANCEL_SECONDS = 10f
 @Composable
 private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActions) {
     val color = trackColor(t.color)
+    // n° 20 (round 2): « Audio 1 » in the interface's language, wherever the track is named.
+    val shownName = com.pocketstudio.model.DefaultNames.shown(t.name)
     // Kept when a tablet turns (the activity is recreated).
     var menu by rememberSaveable(t.id) { mutableStateOf(false) }
     var renaming by rememberSaveable(t.id) { mutableStateOf(false) }
@@ -329,9 +331,9 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
     NeonCard(modifier = Modifier.testTag("audio_track_${t.id}")) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Box(Modifier.size(12.dp).background(color, CircleShape))
-            Text(com.pocketstudio.model.DefaultNames.shown(t.name), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(shownName, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
             Box {
-                IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", t.name)) }
+                IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", shownName)) }
                 ScaledDropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menu = false; renaming = true })
                     DropdownMenuItem(text = { Text(tr("Couleur")) }, onClick = { menu = false; colouring = true })
@@ -363,10 +365,10 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
         }
         if (t.clip != null && t.otherTakes.isNotEmpty()) TakePicker(t, busy, actions)
         val clip = t.clip ?: return@NeonCard
-        ClipEditor(t.id, clip, ui.info[clip.file], color, actions, ui)
+        ClipEditor(t.id, clip, ui.info[clip.file], color, actions, ui, t.takesInOrder().firstOrNull { it.first.file == clip.file }?.second ?: 1)
     }
     if (renaming) {
-        var name by rememberSaveable(t.id) { mutableStateOf(t.name) }
+        var name by rememberSaveable(t.id) { mutableStateOf(shownName) }
         ScaledAlertDialog(
             onDismissRequest = { renaming = false },
             title = { Text(tr("Renommer la piste")) },
@@ -379,7 +381,7 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
     if (colouring) {
         ScaledAlertDialog(
             onDismissRequest = { colouring = false },
-            title = { Text(tr("Couleur de « %s »", t.name)) },
+            title = { Text(tr("Couleur de « %s »", shownName)) },
             text = {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TrackColors.forEachIndexed { i, c ->
@@ -397,33 +399,57 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
 }
 
 /**
- * « Prises » : every take the track keeps, the one playing first (lit), the others newest first;
- * a touch plays that one instead (one undo step, the one it replaces stays in the list).
+ * « Prises » : every take the track keeps, numbered (« Prise 1 », « Prise 2 »…) in a fixed order,
+ * the one playing lit; a touch plays that one instead (one undo step) and nothing moves (n° 18,
+ * round 2, seat B b: two « 테이크 03:37 » swapped places at each touch). A take not playing can be
+ * deleted (Annuler brings it back).
  */
 @Composable
 private fun TakePicker(t: AudioTrack, busy: Boolean, actions: AudioTracksActions) {
     val chip = pillColors()
-    Text(tr("Prises (%d)", t.otherTakes.size + 1), style = MaterialTheme.typography.bodyMedium)
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fadingHorizontalScroll().testTag("audio_takes_${t.id}")) {
-        t.clip?.let { now ->
-            FilterChip(selected = true, onClick = {}, label = { Text(takeLabel(now)) }, colors = chip, modifier = Modifier.testTag("audio_take_now_${t.id}"))
-        }
-        t.otherTakes.forEachIndexed { i, take ->
-            FilterChip(
-                selected = false, enabled = !busy, onClick = { actions.chooseTake(t.id, i) }, label = { Text(takeLabel(take)) }, colors = chip,
-                modifier = Modifier.testTag("audio_take_${t.id}_$i"),
-            )
-            // Owner (2026-11-04): an unwanted take can go (Annuler brings it back).
-            IconButton(onClick = { actions.forgetTake(t.id, i) }, enabled = !busy, modifier = Modifier.testTag("audio_take_forget_${t.id}_$i")) {
-                Icon(Icons.Filled.Close, contentDescription = tr("Retirer %s", takeLabel(take)), tint = Neon.TextSecondary)
+    val takes = t.takesInOrder()
+    Text(tr("Prises (%d)", takes.size), style = MaterialTheme.typography.bodyMedium)
+    // On several lines rather than scrolled: every take in sight, the one playing (often the last) too.
+    @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+    androidx.compose.foundation.layout.FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp),
+        itemVerticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().testTag("audio_takes_${t.id}"),
+    ) {
+        takes.forEach { (take, number) ->
+            val playing = take.file == t.clip?.file
+            // Its place among the takes not playing (what « choose » and « delete » are given).
+            val other = t.otherTakes.indexOfFirst { it.file == take.file }
+            val label = takeLabel(take, number)
+            // A take and its ✕ together: a line break never parts them.
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                FilterChip(
+                    selected = playing, enabled = playing || !busy, onClick = { if (!playing && other >= 0) actions.chooseTake(t.id, other) },
+                    label = { Text(label) }, colors = chip, modifier = Modifier.testTag("audio_take_${t.id}_$number"),
+                )
+                if (!playing && other >= 0) {
+                    // Owner (2026-11-04): an unwanted take can go (Annuler brings it back).
+                    IconButton(onClick = { actions.forgetTake(t.id, other) }, enabled = !busy, modifier = Modifier.testTag("audio_take_forget_${t.id}_$number")) {
+                        Icon(Icons.Filled.Close, contentDescription = tr("Supprimer %s", label), tint = Neon.TextSecondary)
+                    }
+                }
             }
         }
     }
 }
 
-/** A take as the picker names it: its name (« Prise 21:14 ») and its length. */
-private fun takeLabel(c: AudioClip): String =
-    "${com.pocketstudio.model.DefaultNames.shownSample(c.name)} · ${String.format(I18n.lang.locale, "%.0f", c.seconds)} s"
+/** [seconds] in the interface's language (« 7 s », « 7초 »), with [decimals] decimals. */
+private fun secondsText(seconds: Number, decimals: Int): String =
+    tr("%s s", String.format(I18n.lang.locale, "%.${decimals}f", seconds.toDouble()))
+
+/**
+ * A take as the picker names it: « Prise 2 » (its [number], [AudioTrack.takesInOrder]) and its length;
+ * a sound brought from a file keeps its own name.
+ */
+private fun takeLabel(c: AudioClip, number: Int, decimals: Int = 0): String {
+    val name = if (c.take > 0 || com.pocketstudio.model.DefaultNames.isDefault(c.name)) tr("Prise %d", number)
+    else com.pocketstudio.model.DefaultNames.shownSample(c.name)
+    return "$name · ${secondsText(c.seconds, decimals)}"
+}
 
 /**
  * Where each bar line falls in [clip]'s sound, as (fraction of the sound, bar number from 1): of
@@ -446,14 +472,14 @@ fun clipBarMarks(clip: AudioClip, tempoBpm: Double, stepsPerBar: Int): List<Pair
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: androidx.compose.ui.graphics.Color, actions: AudioTracksActions, ui: AudioTracksUi) {
+private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: androidx.compose.ui.graphics.Color, actions: AudioTracksActions, ui: AudioTracksUi, number: Int) {
     val per = ui.stepsPerBar
     val chip = pillColors()
     // The cut's handles, kept when a tablet turns.
     var rangeStart by rememberSaveable(clip.file) { mutableStateOf(0f) }
     var rangeEnd by rememberSaveable(clip.file) { mutableStateOf(1f) }
     val range = rangeStart..rangeEnd
-    Text("${com.pocketstudio.model.DefaultNames.shownSample(clip.name)} · ${String.format(I18n.lang.locale, "%.1f", clip.seconds)} s", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+    Text(takeLabel(clip, number, decimals = 1), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     if (clip.tempoDiffers(ui.tempoBpm)) {
         Text(
             tr("Enregistrée à %1\$d BPM, le morceau est à %2\$d BPM : elle ne tombe plus pile sur le temps.", clip.bpm.roundToInt(), ui.tempoBpm.roundToInt()),
@@ -545,8 +571,8 @@ private fun ClipEditor(id: Int, clip: AudioClip, info: SampleInfo?, color: andro
     LabeledSlider(tr("Volume"), percent((clip.gain * 100).roundToInt()), kotlin.math.sqrt(clip.gain / AudioClip.MAX_GAIN)) {
         actions.setGain(id, AudioClip.MAX_GAIN * it * it)
     }
-    LabeledSlider(tr("Fondu au début"), "${String.format(I18n.lang.locale, "%.2f", clip.fadeIn)} s", clip.fadeIn / 2f) { actions.setFadeIn(id, it * 2f) }
-    LabeledSlider(tr("Fondu à la fin"), "${String.format(I18n.lang.locale, "%.2f", clip.fadeOut)} s", clip.fadeOut / 2f) { actions.setFadeOut(id, it * 2f) }
+    LabeledSlider(tr("Fondu au début"), secondsText(clip.fadeIn, 2), clip.fadeIn / 2f) { actions.setFadeIn(id, it * 2f) }
+    LabeledSlider(tr("Fondu à la fin"), secondsText(clip.fadeOut, 2), clip.fadeOut / 2f) { actions.setFadeOut(id, it * 2f) }
     // « Décaler la prise »: a fine nudge (5 ms) or a big one (50 ms, a Bluetooth delay) when
     // the voice is early or late; a touch on the value puts it back to 0.
     Row(verticalAlignment = Alignment.CenterVertically) {

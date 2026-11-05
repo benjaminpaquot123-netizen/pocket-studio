@@ -95,8 +95,12 @@ data class AloneTarget(val pads: Set<Int> = emptySet(), val channels: Set<Int> =
     }
 }
 
-/** What is being heard alone, and from where it was asked ([from]: "card:<id>" for a Guide card, else ""). */
-data class AloneListen(val target: AloneTarget, val from: String = "")
+/**
+ * What is being heard alone, and from where it was asked ([from]: "card:<id>" for a Guide card, else "").
+ * [resume]: the music was playing when it began, so it goes on (the whole mix) when it ends (audit
+ * ultra round 2, n° 19, seat B b: « ■ » of a track heard alone stopped everything).
+ */
+data class AloneListen(val target: AloneTarget, val from: String = "", val resume: Boolean = false)
 
 /** Keeps « Écouter seul » going while this screen shows ([active]); once no screen holds it any more, it stops. */
 @Composable

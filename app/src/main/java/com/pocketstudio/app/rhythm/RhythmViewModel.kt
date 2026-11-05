@@ -2470,7 +2470,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val t = p.audioTracks.firstOrNull { it.id == id } ?: return@edit p
             if (t.clip?.file != old.file) return@edit p
             val kept = listOf(old) + t.otherTakes
-            p.withAudioTrack(t.copy(clip = old.copy(file = sample.file, seconds = spliced.seconds), previous = kept.first(), older = kept.drop(1)))
+            // Round 2, n° 18: the passage sung again is a take of its own, numbered after the others.
+            p.withAudioTrack(t.copy(clip = old.copy(file = sample.file, seconds = spliced.seconds, take = t.nextTake()), previous = kept.first(), older = kept.drop(1)))
         }
         AppLog.add("Prise audio : mesures ${punch.from / project.value.stepsPerBar + 1} à ${punch.until / project.value.stepsPerBar} refaites")
         if (withContext(NonCancellable) { session.flush() }) {
@@ -9488,19 +9489,21 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (target.isEmpty) return
         if (now != null) {
             // Another sound: the same loop goes on, heard through the new one.
-            _alone.value = AloneListen(target, from)
+            _alone.value = AloneListen(target, from, resume = now.resume)
             releaseAlone(now)
             if (NativeEngine.isAvailable) pushMixer()
             return
         }
-        if (_transport.value.playing) toggleTransport()
+        // Round 2, n° 19: the music playing now goes on once the sound alone ends.
+        val resume = _transport.value.playing
+        if (resume) toggleTransport()
         val scene = target.sceneIn(project.value)
         // The loop is the scene where the sound plays: shown, as a touch on a part would (not an edit).
         if (scene != project.value.scene) {
             session.showQuietly { it.switchScene(scene) }
             if (NativeEngine.isAvailable) syncEngine()
         }
-        _alone.value = AloneListen(target, from)
+        _alone.value = AloneListen(target, from, resume)
         applyAlone()
         heardScene = project.value.scene
         if (NativeEngine.isAvailable) applySongCurves(project.value, project.value.scene)
@@ -9508,14 +9511,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         toggleTransport(songStep = aloneSongStep())
     }
 
-    /** « ■ Arrêter »: the loop stops and the engine hears the project's own mutes and solos again. */
+    /**
+     * « ■ » of the sound alone (or its screen left): the engine hears the project's own mutes and
+     * solos again, and everything is as it was: the music that was playing when it began goes on,
+     * the whole mix heard (audit ultra round 2, n° 19, seat B b: it stopped everything); begun
+     * from silence, the loop stops. The top bar's ■ stops everything (toggleTransport).
+     */
     fun stopAlone() {
         val a = _alone.value ?: return
         _alone.value = null
         aloneCheck?.cancel()
         releaseAlone(a)
-        // Stopping syncs the engine with the project (its mixer included); stopped already: the mixer alone.
-        if (_transport.value.playing) toggleTransport() else if (NativeEngine.isAvailable) pushMixer()
+        // Stopping syncs the engine with the project (its mixer included); otherwise the mixer alone.
+        if (_transport.value.playing && !a.resume) toggleTransport() else if (NativeEngine.isAvailable) pushMixer()
     }
 
     /**

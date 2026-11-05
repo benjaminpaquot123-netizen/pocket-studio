@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Headphones
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.RecordVoiceOver
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -69,6 +70,11 @@ class WelcomeActions(
     val chooseMode: (Boolean) -> Unit = {},
     /** Pad Live (lot B3: the child persona installed the app and found no Pad Live): the pads ready to play, straight away. */
     val padLive: () -> Unit = {},
+    /**
+     * Audit ultra round 2, n° 21 (seat B b, a guitarist: nothing here to record a voice or a guitar):
+     * the first project's beat, on the microphone's page (no « Simple ou Pro ? », as « Plus tard »).
+     */
+    val voice: () -> Unit = {},
 )
 
 /**
@@ -117,6 +123,7 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, si
                         remix = { if (!leaving) asking = "remix" },
                         // No « Simple ou Pro ? » for Pad Live: it has its own simple level.
                         padLive = { if (!leaving) actions.padLive() },
+                        voice = { if (!leaving) { demoReady = false; actions.voice() } },
                         later = { leaving = false; demoReady = false; actions.later() },
                     ),
                     simple = simple,
@@ -198,6 +205,12 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
             ) },
             // Lot B3 (persona Léo, 8): Pad Live was only on « Que veux-tu faire ? », never on the first launch.
             { PadLiveCard(actions.padLive) },
+            // Audit ultra round 2, n° 21 (seat B b, a guitarist: « aucune carte ne parle d'enregistrer »).
+            { Choice(
+                Icons.Filled.Mic, tr("Enregistrer ma voix ou ma guitare"),
+                tr("Le micro enregistre par-dessus ta musique, pile en rythme."),
+                Neon.Red, onClick = actions.voice, tag = "welcome_voice",
+            ) },
             )
             if (wide) com.pocketstudio.ui.AdaptiveColumns(choices, minCellWidth = 380.dp, maxColumns = 2, spacing = 16.dp)
             else choices.forEach { it() }

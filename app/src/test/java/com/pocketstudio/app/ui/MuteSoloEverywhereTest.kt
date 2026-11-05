@@ -62,10 +62,14 @@ class MuteSoloEverywhereTest {
                 }
             }
         }
-        compose.onNodeWithTag("m").assertIsOff().assertContentDescriptionEquals("Couper le son de Voix")
+        // Audit ultra round 2, n° 19 (seat B b: « Son », « désactivé » while the track played): the switch
+        // « Son de Voix » is on while the track sounds; what a touch does is its action's words.
+        compose.onNodeWithTag("m").assertIsOn().assertContentDescriptionEquals("Son de Voix")
+        org.junit.Assert.assertEquals("Couper le son de Voix", compose.onNodeWithTag("m").fetchSemanticsNode().config[androidx.compose.ui.semantics.SemanticsActions.OnClick].label)
         compose.onNodeWithText("Son").assertExists()
         compose.onNodeWithTag("m").performClick()
-        compose.onNodeWithTag("m").assertIsOn().assertContentDescriptionEquals("Remettre le son de Voix")
+        compose.onNodeWithTag("m").assertIsOff().assertContentDescriptionEquals("Son de Voix")
+        org.junit.Assert.assertEquals("Remettre le son de Voix", compose.onNodeWithTag("m").fetchSemanticsNode().config[androidx.compose.ui.semantics.SemanticsActions.OnClick].label)
         compose.onNodeWithText("Muet").assertExists()
         compose.onNodeWithTag("s").assertContentDescriptionEquals("Écouter la piste Voix seule").performClick()
         compose.onNodeWithTag("s").assertIsOn()

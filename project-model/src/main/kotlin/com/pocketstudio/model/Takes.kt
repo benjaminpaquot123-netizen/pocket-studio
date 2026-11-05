@@ -75,6 +75,8 @@ fun Project.withTake(take: PendingTake): Project {
         // old take left in its offset belonged to that recording only.
         offsetMs = previous?.manualOffsetMs ?: 0f,
         nudgeMs = null,
+        // n° 18 (round 2): « Prise 3 », after every take the track keeps.
+        take = track.nextTake(),
     )
     // The take it replaces stays one touch away (« Prise précédente »), the older ones in the take picker.
     val kept = if (previous != null) listOf(previous) + track.otherTakes else track.otherTakes

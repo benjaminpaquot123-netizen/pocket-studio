@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeOff
@@ -27,6 +27,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.semantics.toggleableState
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -63,7 +65,9 @@ private fun captions(caption: Boolean?): Boolean {
 
 /**
  * Cut track [name] or give it back: [muted] lights it ([color], the crossed speaker). [size] is the
- * button's own (Compose widens the touch to 48 dp around it).
+ * button's own (Compose widens the touch to 48 dp around it). For TalkBack it is the switch « Son de
+ * [name] », on while the track sounds (audit ultra round 2, n° 19, seat B b: « Son », « désactivé »
+ * was read while the track played); what a touch does is its action's words.
  */
 @Composable
 fun MuteToggle(
@@ -78,8 +82,9 @@ fun MuteToggle(
     toggle: () -> Unit,
 ) = IconToggle(
     on = muted, icon = MuteSolo.muteIcon(muted), color = color, size = size, tag = tag, modifier = modifier,
-    description = description ?: if (muted) tr("Remettre le son de %s", name) else tr("Couper le son de %s", name),
+    description = description ?: tr("Son de %s", name),
     caption = if (captions(caption)) MuteSolo.muteCaption(muted) else null, toggle = toggle,
+    checked = !muted, action = if (muted) tr("Remettre le son de %s", name) else tr("Couper le son de %s", name),
 )
 
 /** Hear track [name] alone ([solo] lights it, headphones), or every track again. */
@@ -99,14 +104,22 @@ fun SoloToggle(
     caption = if (captions(caption)) MuteSolo.soloCaption() else null, toggle = toggle,
 )
 
+/**
+ * [on]: lit; [checked]: the switch's state for TalkBack (a mute switch is « Son », on while the track
+ * sounds, so not lit); [action]: what a touch does, said by TalkBack (« Couper le son de Voix »).
+ */
 @Composable
 private fun IconToggle(
     on: Boolean, icon: ImageVector, color: Color, size: DpSize, tag: String, modifier: Modifier,
-    description: String, caption: String?, toggle: () -> Unit,
+    description: String, caption: String?, toggle: () -> Unit, checked: Boolean = on, action: String? = null,
 ) {
     Column(
-        modifier.toggleable(value = on, role = Role.Switch, onValueChange = { toggle() })
-            .semantics(mergeDescendants = true) { contentDescription = description; stateDescription = if (on) tr("activé") else tr("désactivé") }
+        modifier.clickable(role = Role.Switch, onClickLabel = action, onClick = toggle)
+            .semantics(mergeDescendants = true) {
+                contentDescription = description
+                toggleableState = ToggleableState(checked)
+                stateDescription = if (checked) tr("activé") else tr("désactivé")
+            }
             .testTag(tag),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(1.dp),

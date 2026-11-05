@@ -51,7 +51,10 @@ object RealUse {
         instrumentation.runOnMainSync { if (NativeEngine.isAvailable) NativeEngine.stop() }
         // A save still running from the screen just closed would bring a project folder back.
         com.pocketstudio.app.rhythm.ClosingSaves.awaitIdleBlocking(15_000)
-        for (dir in listOf("projects", "projects-trash", "stems")) File(app.filesDir, dir).deleteRecursively()
+        // projects-backup too: the compact copies for Android's cloud backup. Left there, the next
+        // start « restores » them (ProjectOpening.restoreFromBackupOnce: its once-per-install mark is
+        // in the prefs cleared below) and its notice covers the first launch the tests then tap on.
+        for (dir in listOf("projects", "projects-trash", "stems", "projects-backup")) File(app.filesDir, dir).deleteRecursively()
         File(app.cacheDir, "exports").deleteRecursively()
         File(app.filesDir, "../shared_prefs").listFiles()?.forEach { f ->
             val name = f.name.removeSuffix(".xml")
@@ -64,9 +67,16 @@ object RealUse {
         com.pocketstudio.app.onboarding.LaunchRule.askAtStartForTest = true
     }
 
-    fun waitFor(what: String, seconds: Int, condition: () -> Boolean) {
+    /**
+     * Waits for [condition], calling [tick] between two looks. Under a compose test rule the screens
+     * recompose only when the test's clock moves ([ComposeTestRule.mainClock]): a test that holds one
+     * passes a tick that moves it, or a screen waiting on a state (« Ouverture du projet… ») never
+     * gives way to the app, and the sound it opens never starts.
+     */
+    fun waitFor(what: String, seconds: Int, tick: () -> Unit = {}, condition: () -> Boolean) {
         val until = System.currentTimeMillis() + seconds * 1000L
         while (!condition()) {
+            tick()
             if (System.currentTimeMillis() >= until) {
                 // What the app went through says why (the sound opened or not, the project opened…):
                 // the CI emulator cannot be watched, only read afterwards.

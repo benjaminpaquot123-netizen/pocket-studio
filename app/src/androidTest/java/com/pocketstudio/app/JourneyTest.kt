@@ -12,7 +12,6 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
 import com.pocketstudio.app.RealUse.log
-import com.pocketstudio.app.RealUse.waitFor
 import com.pocketstudio.app.journey.Journey
 import com.pocketstudio.app.record.TakePhase
 import com.pocketstudio.app.rhythm.RhythmViewModel
@@ -52,6 +51,18 @@ class JourneyTest {
     val compose = createEmptyComposeRule()
 
     private val j = Journey(compose) { log(it) }
+
+    /**
+     * One frame of the compose test clock. Under [createEmptyComposeRule] the activity recomposes only
+     * when that clock moves: a plain sleep left the screens frozen on « Ouverture du projet… » (the
+     * sound, opened by the app's screens, never started; a tap's effect never followed).
+     */
+    private fun frame() {
+        if (compose.mainClock.autoAdvance) compose.mainClock.advanceTimeByFrame()
+    }
+
+    /** [RealUse.waitFor] with the compose clock moving, as [androidx.compose.ui.test.junit4.ComposeTestRule.waitUntil] does. */
+    private fun waitFor(what: String, seconds: Int, condition: () -> Boolean) = RealUse.waitFor(what, seconds, ::frame, condition)
 
     /** The next test class finds the app as just installed too (SmokeTest expects a first launch or its own project). */
     @After
@@ -306,7 +317,7 @@ class JourneyTest {
      */
     private fun uiOrVm(tag: String, done: () -> Boolean, viaVm: () -> Unit) {
         val end = System.currentTimeMillis() + 3_000
-        while (!done() && System.currentTimeMillis() < end) Thread.sleep(50)
+        while (!done() && System.currentTimeMillis() < end) { frame(); Thread.sleep(50) }
         if (done()) return
         log("tap on $tag did not land: through the ViewModel")
         androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().runOnMainSync { viaVm() }

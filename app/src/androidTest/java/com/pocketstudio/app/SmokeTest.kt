@@ -169,7 +169,8 @@ class SmokeTest {
         compose.onNodeWithTag("export").performScrollTo().performClick()
         compose.waitUntil(60_000) { compose.onAllNodesWithTag("share").fetchSemanticsNodes().isNotEmpty() }
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val wav = File(context.cacheDir, "exports").listFiles()!!.maxBy { it.lastModified() }
+        // The WAV itself: its « -rapport.txt » (Rapport avec le fichier, on by default) is written after it.
+        val wav = File(context.cacheDir, "exports").listFiles()!!.filter { it.extension == "wav" }.maxBy { it.lastModified() }
         val bytes = wav.readBytes()
         assertEquals("RIFF", String(bytes, 0, 4))
         assertEquals(24, bytes[34].toInt())

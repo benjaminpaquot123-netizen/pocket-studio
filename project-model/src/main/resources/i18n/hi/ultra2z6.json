@@ -1,0 +1,19 @@
+{
+  "Grosse caisse 1": "बड़ा ढोल 1",
+  "Grosse caisse 2": "बड़ा ढोल 2",
+  "Grosse caisse studio": "स्टूडियो बड़ा ढोल",
+  "Grosse caisse sèche": "सूखा बड़ा ढोल",
+  "Grondement grave": "गहरी गड़गड़ाहट",
+  "Claquement de mains": "ताली",
+  "Claquements de mains": "तालियाँ",
+  "Bord de caisse": "ढोल का किनारा",
+  "Grosses caisses": "बड़े ढोल",
+  "Volume au max": "पूरी आवाज़",
+  "BPM": "BPM",
+  "Tempo : %d battements par minute": "टेम्पो: %d थाप प्रति मिनट",
+  "D'abord le modèle de séparation": "पहले अलग करने वाला मॉडल",
+  "Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.": "गाना अलग करने के लिए ऐप पहले अपना मॉडल डाउनलोड करता है: %s, सिर्फ़ एक बार।",
+  "Tu es en Wi-Fi.": "आप Wi-Fi पर हैं।",
+  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "आप Wi-Fi पर नहीं हैं: ये %s आपके मोबाइल डेटा से जाएँगे।",
+  "Télécharger, puis choisir la chanson": "डाउनलोड करें, फिर गाना चुनें"
+}

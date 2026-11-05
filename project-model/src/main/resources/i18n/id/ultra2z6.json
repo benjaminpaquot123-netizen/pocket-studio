@@ -1,0 +1,19 @@
+{
+  "Grosse caisse 1": "Drum bas 1",
+  "Grosse caisse 2": "Drum bas 2",
+  "Grosse caisse studio": "Drum bas studio",
+  "Grosse caisse sèche": "Drum bas kering",
+  "Grondement grave": "Gemuruh rendah",
+  "Claquement de mains": "Tepuk tangan",
+  "Claquements de mains": "Tepuk tangan",
+  "Bord de caisse": "Pinggir drum",
+  "Grosses caisses": "Drum bas",
+  "Volume au max": "Volume maksimal",
+  "BPM": "BPM",
+  "Tempo : %d battements par minute": "Tempo: %d ketukan per menit",
+  "D'abord le modèle de séparation": "Model pemisah dulu",
+  "Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.": "Untuk memisahkan lagu, aplikasi mengunduh modelnya dulu: %s, sekali saja.",
+  "Tu es en Wi-Fi.": "Kamu sedang pakai Wi-Fi.",
+  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "Kamu tidak pakai Wi-Fi: %s ini akan memakai kuota selulermu.",
+  "Télécharger, puis choisir la chanson": "Unduh, lalu pilih lagunya"
+}

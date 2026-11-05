@@ -1,0 +1,19 @@
+{
+  "Grosse caisse 1": "큰북 1",
+  "Grosse caisse 2": "큰북 2",
+  "Grosse caisse studio": "스튜디오 큰북",
+  "Grosse caisse sèche": "단단한 큰북",
+  "Grondement grave": "낮은 울림",
+  "Claquement de mains": "손뼉",
+  "Claquements de mains": "손뼉 소리",
+  "Bord de caisse": "북 테두리",
+  "Grosses caisses": "큰북들",
+  "Volume au max": "최대 음량",
+  "BPM": "BPM",
+  "Tempo : %d battements par minute": "템포: 분당 %d박",
+  "D'abord le modèle de séparation": "먼저 분리 모델이 필요해요",
+  "Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.": "노래를 나누려면 앱이 먼저 모델을 내려받아요: %s, 한 번만요.",
+  "Tu es en Wi-Fi.": "지금 Wi-Fi에 연결되어 있어요.",
+  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "Wi-Fi가 아니에요: 이 %s는 모바일 데이터에서 나가요.",
+  "Télécharger, puis choisir la chanson": "내려받고 노래 고르기"
+}

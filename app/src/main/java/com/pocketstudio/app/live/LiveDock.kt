@@ -67,7 +67,7 @@ internal fun LiveTempo(bpm: Double, actions: LiveActions) = BoxWithConstraints(M
             verticalArrangement = Arrangement.Center,
         ) {
             Text("${bpm.roundToInt()}", style = MonoStyle.copy(fontSize = 18.sp, fontWeight = FontWeight.Bold, lineHeight = 20.sp), color = Neon.Amber, maxLines = 1)
-            Text("BPM", style = MaterialTheme.typography.labelSmall.copy(lineHeight = 12.sp), color = Neon.TextSecondary, maxLines = 1)
+            Text(tr("BPM"), style = MaterialTheme.typography.labelSmall.copy(lineHeight = 12.sp), color = Neon.TextSecondary, maxLines = 1)
         }
         if (steps) {
             RepeatingIconButton({ actions.nudgeTempo(+1) }, Modifier.size(48.dp).testTag("live_tempo_plus")) {

@@ -248,6 +248,19 @@ fun RemixScreen(
     }
     val openBoard = { boardOpen = true }
     val openCut = { cutOpen = true }
+    // Audit ultra round 2, n° 31: « Choisir une chanson » with no model started its 174 MB download unasked.
+    // Asked first, with its size and whether the phone is on Wi-Fi; the download button asks on mobile data only.
+    var modelAsk by rememberSaveable { mutableStateOf<String?>(null) }
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val pick: () -> Unit = { if (ui.modelInstalled) actions.pickSong() else modelAsk = MODEL_ASK_PICK }
+    val download: () -> Unit = { if (onMobileData(context)) modelAsk = MODEL_ASK_DOWNLOAD else actions.downloadModel() }
+    modelAsk?.let { asked ->
+        ModelAskDialog(
+            pick = asked == MODEL_ASK_PICK, mobileData = onMobileData(context),
+            confirm = { modelAsk = null; if (asked == MODEL_ASK_PICK) actions.pickSong() else actions.downloadModel() },
+            dismiss = { modelAsk = null },
+        )
+    }
     // Audit ultra round 1, n° 1: a card's « Découper ce que je veux »: the cut screen opens once the song's stems are in.
     var cutFor by rememberSaveable { mutableStateOf<String?>(null) }
     androidx.compose.runtime.LaunchedEffect(cutFor, ui.board?.setId) {
@@ -271,14 +284,14 @@ fun RemixScreen(
     // Audit ultra round 1 (n° 21, a left thumb on a phone): the page's first gesture (the model, a song) at
     // the bottom too, as the studio's thumb bar; the cards above keep theirs.
     Column(Modifier.fillMaxSize()) {
-        androidx.compose.foundation.layout.Box(Modifier.weight(1f)) { RemixPanes(ui, actions, openBoard, openCut, cutSong, cutFor) }
-        RemixThumbRow(ui, actions, cut = openCut.takeIf { ui.board != null && !ui.home && ui.remix.setId != null })
+        androidx.compose.foundation.layout.Box(Modifier.weight(1f)) { RemixPanes(ui, actions, openBoard, openCut, cutSong, cutFor, pick, download) }
+        RemixThumbRow(ui, pick, download, cut = openCut.takeIf { ui.board != null && !ui.home && ui.remix.setId != null })
     }
 }
 
 /** The model's download, « Choisir une chanson » or (a song in the project) « Découper la chanson », at the bottom, while nothing is under way. */
 @Composable
-private fun RemixThumbRow(ui: RemixUi, actions: RemixActions, cut: (() -> Unit)? = null) {
+private fun RemixThumbRow(ui: RemixUi, pick: () -> Unit, download: () -> Unit, cut: (() -> Unit)? = null) {
     val idle = ui.state !is SeparationState.DownloadingModel && ui.state !is SeparationState.Decoding &&
         ui.state !is SeparationState.Separating && ui.state !is SeparationState.Analysing
     if (!idle || ui.memoryProblem != null) return
@@ -292,11 +305,11 @@ private fun RemixThumbRow(ui: RemixUi, actions: RemixActions, cut: (() -> Unit)?
                 Text(" " + tr("Découper la chanson"), maxLines = 1)
             }
         } else if (!ui.modelInstalled) {
-            Button(onClick = actions.downloadModel, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("remix_download_thumb")) {
+            Button(onClick = download, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("remix_download_thumb")) {
                 Text(tr("Télécharger le modèle (%s)", SeparationModel.SPEC.sizeLabel), maxLines = 1)
             }
         } else {
-            Button(onClick = actions.pickSong, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("remix_pick_thumb")) {
+            Button(onClick = pick, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("remix_pick_thumb")) {
                 Icon(Icons.Filled.Add, contentDescription = null)
                 Text(" " + tr("Choisir une chanson"), maxLines = 1)
             }
@@ -305,7 +318,10 @@ private fun RemixThumbRow(ui: RemixUi, actions: RemixActions, cut: (() -> Unit)?
 }
 
 @Composable
-private fun RemixPanes(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit, openCut: () -> Unit, cutSong: (StemSet) -> Unit, cutFor: String?) {
+private fun RemixPanes(
+    ui: RemixUi, actions: RemixActions, openBoard: () -> Unit, openCut: () -> Unit, cutSong: (StemSet) -> Unit, cutFor: String?,
+    pick: () -> Unit, download: () -> Unit,
+) {
     // On a tablet: the remix in the project and a new separation on the left, the separated songs on the right.
     // Nothing separated yet: one column at a reading width.
     if (ui.sets.isEmpty()) {
@@ -313,12 +329,12 @@ private fun RemixPanes(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit
             Column(
                 Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) { RemixStart(ui, actions, openBoard, openCut) }
+            ) { RemixStart(ui, actions, openBoard, openCut, pick, download) }
         }
     } else {
         com.pocketstudio.ui.AdaptivePanes(
             spacing = 12.dp,
-            first = { RemixStart(ui, actions, openBoard, openCut) },
+            first = { RemixStart(ui, actions, openBoard, openCut, pick, download) },
             second = {
                 ui.sets.forEach { set ->
                     StemCard(
@@ -333,7 +349,7 @@ private fun RemixPanes(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit
 }
 
 @Composable
-private fun RemixStart(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit, openCut: () -> Unit) {
+private fun RemixStart(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit, openCut: () -> Unit, pick: () -> Unit, download: () -> Unit) {
     if (ui.remix.setId != null && !ui.home) InProject(ui, actions, openBoard, openCut)
     NeonCard(modifier = Modifier.testTag("remix_start")) {
         SectionLabel(tr("Séparer une chanson"), help = Glossary.REMIX)
@@ -378,7 +394,7 @@ private fun RemixStart(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit
                         tr("Il faut d'abord le modèle de séparation (%s, une seule fois, Wi-Fi conseillé).", SeparationModel.SPEC.sizeLabel),
                         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                     )
-                    OutlinedButton(onClick = actions.downloadModel, modifier = Modifier.fillMaxWidth().testTag("remix_download")) {
+                    OutlinedButton(onClick = download, modifier = Modifier.fillMaxWidth().testTag("remix_download")) {
                         Text(tr("Télécharger le modèle (%s)", SeparationModel.SPEC.sizeLabel))
                     }
                 }
@@ -388,7 +404,7 @@ private fun RemixStart(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit
                         Text(tr("C'est prêt : le modèle est sur ton téléphone. Choisis une chanson."), color = Neon.Acid, style = MaterialTheme.typography.bodyMedium)
                     }
                 }
-                Button(onClick = actions.pickSong, modifier = Modifier.fillMaxWidth().testTag("remix_pick")) {
+                Button(onClick = pick, modifier = Modifier.fillMaxWidth().testTag("remix_pick")) {
                     Text(tr("Choisir une chanson"))
                 }
                 Text(
@@ -398,6 +414,39 @@ private fun RemixStart(ui: RemixUi, actions: RemixActions, openBoard: () -> Unit
             }
         }
     }
+}
+
+private const val MODEL_ASK_PICK = "pick"
+private const val MODEL_ASK_DOWNLOAD = "download"
+
+/** The phone's data goes through a metered network (mobile data, a phone's hotspot): the model's download costs. */
+private fun onMobileData(context: android.content.Context): Boolean {
+    val cm = context.getSystemService(android.net.ConnectivityManager::class.java) ?: return false
+    return cm.activeNetwork != null && cm.isActiveNetworkMetered
+}
+
+/** « D'abord le modèle de séparation »: its size, Wi-Fi or mobile data, then the download (and the song's choice). */
+@Composable
+private fun ModelAskDialog(pick: Boolean, mobileData: Boolean, confirm: () -> Unit, dismiss: () -> Unit) {
+    val size = SeparationModel.SPEC.sizeLabel
+    ScaledAlertDialog(
+        onDismissRequest = dismiss,
+        modifier = Modifier.testTag("remix_model_ask"),
+        title = { Text(tr("D'abord le modèle de séparation")) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(tr("Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.", size))
+                if (mobileData) Text(tr("Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.", size), color = Neon.Amber)
+                else Text(tr("Tu es en Wi-Fi."), color = Neon.TextSecondary)
+            }
+        },
+        confirmButton = {
+            Button(onClick = confirm, modifier = Modifier.testTag("remix_model_ask_ok")) {
+                Text(if (pick) tr("Télécharger, puis choisir la chanson") else tr("Télécharger"))
+            }
+        },
+        dismissButton = { TextButton(onClick = dismiss, modifier = Modifier.testTag("remix_model_ask_later")) { Text(tr("Plus tard")) } },
+    )
 }
 
 @Composable

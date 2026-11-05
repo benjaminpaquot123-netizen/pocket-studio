@@ -391,7 +391,7 @@ private fun PadLiveBar(ui: PadLiveUi, actions: PadLiveActions, record: @Composab
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text("${ui.tempoBpm.toInt()}", style = MonoStyle.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold), color = Neon.Amber)
-                Text("BPM", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
+                Text(tr("BPM"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
             }
             IconButton(onClick = { actions.nudgeTempo(1) }, modifier = Modifier.size(44.dp).testTag("padlive_tempo_more")) {
                 Icon(Icons.Filled.Add, contentDescription = tr("Plus vite"))

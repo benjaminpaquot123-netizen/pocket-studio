@@ -476,7 +476,7 @@ private fun BeatCounter(tempoBpm: Double, beatsPerBar: Int, clock: PadClock, tem
         } else {
             Column(horizontalAlignment = Alignment.End) {
                 Text(shown, style = MonoStyle.copy(fontSize = 18.sp), color = Neon.TextPrimary, maxLines = 1)
-                Text("BPM", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1)
+                Text(tr("BPM"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1)
             }
         }
         if (showBar) Text(
@@ -523,7 +523,7 @@ private fun TempoStepper(shown: String, tempo: StageTempo) {
             verticalArrangement = Arrangement.Center,
         ) {
             Text(shown, style = MonoStyle.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold), color = Neon.Amber, maxLines = 1)
-            Text("BPM", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1)
+            Text(tr("BPM"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1)
         }
         com.pocketstudio.app.ui.RepeatingIconButton({ tempo.nudge(+1) }, Modifier.size(48.dp).testTag("live_pads_tempo_plus")) {
             Icon(Icons.Filled.Add, contentDescription = tr("Tempo plus"), modifier = Modifier.size(20.dp))

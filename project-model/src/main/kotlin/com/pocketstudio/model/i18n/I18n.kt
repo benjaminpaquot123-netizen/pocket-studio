@@ -125,6 +125,8 @@ object I18n {
         "audit1z56b",
         // Audit ultra round 1, zone 1: the song's « Découper ce que je veux », the pad picker, the challenges' list.
         "ultra1z1",
+        // Audit ultra round 2, zone 6: the Mode simple's pad names and tempo in everyday words, the Remix model asked first.
+        "ultra2z6",
     )
 
     @Volatile
@@ -159,6 +161,12 @@ object I18n {
         "Sub" to "Basse profonde", "Sub drop" to "Chute grave", "Quantifier" to "Remettre en rythme",
         "Lead qui crie" to "Mélodie qui crie", "Lead chiptune" to "Mélodie chiptune", "Lead filtré" to "Mélodie filtrée",
         "Lead hyperpop" to "Mélodie hyperpop", "Lead / mélodie" to "Mélodie", "Lead 2 (sawtooth)" to "Mélodie 2 (dents de scie)",
+        // Audit ultra round 2, n° 28 (seats A a, B b): the pads, the tempo and the takes' tools said in the person's words.
+        "Kick" to "Grosse caisse 1", "Kick 2" to "Grosse caisse 2", "Kick studio" to "Grosse caisse studio", "Kick dur" to "Grosse caisse sèche",
+        "Rumble" to "Grondement grave", "Clap" to "Claquement de mains", "Rim" to "Bord de caisse", "Cowbell" to "Cloche",
+        "Shaker" to "Maracas", "Zap" to "Laser", "Kicks" to "Grosses caisses", "Claps" to "Claquements de mains",
+        "BPM" to "Tempo", "Tempo : %d BPM" to "Tempo : %d battements par minute",
+        "Normaliser" to "Volume au max", "Inverser" to "À l'envers",
     )
 
     /**
@@ -178,7 +186,42 @@ object I18n {
     fun t(fr: String): String {
         val text = if (everyday) EVERYDAY[fr] ?: fr else fr
         pseudo?.let { return it(FRENCH_SHOWN[text] ?: text) }
-        return if (lang == Lang.FR) FRENCH_SHOWN[text] ?: text else table(lang)[text]?.takeIf { it.isNotEmpty() } ?: FRENCH_SHOWN[text] ?: text
+        val shown = shown(lang, text)
+        return if (everyday) everydayQuoted(shown) else shown
+    }
+
+    private fun shown(lang: Lang, text: String): String =
+        if (lang == Lang.FR) FRENCH_SHOWN[text] ?: text else table(lang)[text]?.takeIf { it.isNotEmpty() } ?: FRENCH_SHOWN[text] ?: text
+
+    /** The quotes a name is written between, in every language (« », “ ”, „ “, 「 」…). */
+    private const val OPEN = "«“„「『\"‘"
+    private const val CLOSE = "»”“」』\"’"
+
+    /** Per language: the app's word of each [EVERYDAY] entry between quotes → its everyday word, longest first. */
+    private val quotedNames = ConcurrentHashMap<Lang, Pair<Regex, Map<String, String>>?>()
+    private val quotedDone = ConcurrentHashMap<String, String>()
+
+    /**
+     * Audit ultra round 2, n° 28: a text that names a pad or a button between quotes (« sur le pad « Rumble » »,
+     * « touche « Normaliser » ») says the name the Mode simple shows (« Grondement grave », « Volume au max »);
+     * in Korean, the particle after it follows the new word (« “클랩”을 » → « “손뼉”을 »).
+     */
+    private fun everydayQuoted(text: String): String {
+        if (text.none { it in OPEN }) return text
+        val lang = lang
+        val (regex, names) = quotedNames.computeIfAbsent(lang) { l ->
+            val names = EVERYDAY.entries.associate { (pro, plain) -> shown(l, pro) to shown(l, plain) }.filter { (a, b) -> a != b && a.isNotBlank() }
+            if (names.isEmpty()) null
+            else {
+                val space = "[\\s\u00A0\u202F]?"
+                val alternatives = names.keys.sortedByDescending { it.length }.joinToString("|") { Regex.escape(it) }
+                Regex("(?<=[$OPEN]$space)(?:$alternatives)(?=$space[$CLOSE])") to names
+            }
+        } ?: return text
+        return quotedDone.getOrPut(lang.code + "\u0000" + text) {
+            val replaced = regex.replace(text) { m -> names.getValue(m.value) }
+            if (lang == Lang.KO && replaced != text) KoreanParticles.follow(replaced, names.values.toSet()) else replaced
+        }
     }
 
     private val reverse = ConcurrentHashMap<Lang, Map<String, String>>()

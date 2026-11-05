@@ -1,0 +1,19 @@
+{
+  "Grosse caisse 1": "Grancassa 1",
+  "Grosse caisse 2": "Grancassa 2",
+  "Grosse caisse studio": "Grancassa da studio",
+  "Grosse caisse sèche": "Grancassa secca",
+  "Grondement grave": "Rombo grave",
+  "Claquement de mains": "Battimani",
+  "Claquements de mains": "Battimani",
+  "Bord de caisse": "Bordo del tamburo",
+  "Grosses caisses": "Grancasse",
+  "Volume au max": "Volume al massimo",
+  "BPM": "BPM",
+  "Tempo : %d battements par minute": "Tempo: %d battiti al minuto",
+  "D'abord le modèle de séparation": "Prima il modello di separazione",
+  "Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.": "Per separare una canzone, l'app scarica prima il suo modello: %s, una sola volta.",
+  "Tu es en Wi-Fi.": "Sei in Wi-Fi.",
+  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "Non sei in Wi-Fi: questi %s verranno presi dal tuo traffico dati.",
+  "Télécharger, puis choisir la chanson": "Scarica, poi scegli la canzone"
+}

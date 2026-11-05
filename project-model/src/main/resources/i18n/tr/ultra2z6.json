@@ -1,0 +1,19 @@
+{
+  "Grosse caisse 1": "Büyük davul 1",
+  "Grosse caisse 2": "Büyük davul 2",
+  "Grosse caisse studio": "Stüdyo büyük davulu",
+  "Grosse caisse sèche": "Kuru büyük davul",
+  "Grondement grave": "Derin gümbürtü",
+  "Claquement de mains": "El çırpma",
+  "Claquements de mains": "El çırpmalar",
+  "Bord de caisse": "Davul kenarı",
+  "Grosses caisses": "Büyük davullar",
+  "Volume au max": "Sesi en yükseğe",
+  "BPM": "BPM",
+  "Tempo : %d battements par minute": "Tempo: dakikada %d vuruş",
+  "D'abord le modèle de séparation": "Önce ayırma modeli",
+  "Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.": "Bir şarkıyı ayırmak için uygulama önce modelini indirir: %s, yalnızca bir kez.",
+  "Tu es en Wi-Fi.": "Wi-Fi'desin.",
+  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "Wi-Fi'de değilsin: bu %s mobil verinden gidecek.",
+  "Télécharger, puis choisir la chanson": "İndir, sonra şarkıyı seç"
+}

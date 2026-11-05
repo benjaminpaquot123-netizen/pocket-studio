@@ -249,7 +249,7 @@ private fun TempoButton(bpm: Double, open: () -> Unit) {
             verticalAlignment = Alignment.Bottom,
         ) {
             RollingText("${Math.round(bpm)}", style = MonoStyle.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold), color = Neon.Cyan)
-            Text(" BPM", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
+            Text(" " + tr("BPM"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
         }
     }
 }

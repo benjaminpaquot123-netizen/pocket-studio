@@ -99,7 +99,9 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
                 Thread.sleep(5)
             }
         }.apply { isDaemon = true; start() }
-        val picked = tap(centerOf("remix_pick"), "Choisir une chanson")
+        // Audit ultra round 2, n° 31: no model yet, its download (size, Wi-Fi) is asked before the phone's picker.
+        tap(centerOf("remix_pick"), "Choisir une chanson")
+        val picked = tap(centerOf("remix_model_ask_ok"), "Télécharger, puis choisir la chanson")
         assertTrue(picked, picked.contains("« Ma chanson préférée.wav »"))
 
         // The model comes down, the song is read and separated: each state is on the screen.

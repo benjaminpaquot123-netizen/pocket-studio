@@ -1,0 +1,19 @@
+{
+  "Grosse caisse 1": "Große Trommel 1",
+  "Grosse caisse 2": "Große Trommel 2",
+  "Grosse caisse studio": "Große Trommel Studio",
+  "Grosse caisse sèche": "Große Trommel trocken",
+  "Grondement grave": "Tiefes Grollen",
+  "Claquement de mains": "Händeklatschen",
+  "Claquements de mains": "Händeklatschen",
+  "Bord de caisse": "Trommelrand",
+  "Grosses caisses": "Große Trommeln",
+  "Volume au max": "Volle Lautstärke",
+  "BPM": "BPM",
+  "Tempo : %d battements par minute": "Tempo: %d Schläge pro Minute",
+  "D'abord le modèle de séparation": "Zuerst das Trennmodell",
+  "Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.": "Um einen Song zu trennen, lädt die App zuerst ihr Modell herunter: %s, nur einmal.",
+  "Tu es en Wi-Fi.": "Du bist im WLAN.",
+  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "Du bist nicht im WLAN: Diese %s gehen von deinem mobilen Datenvolumen ab.",
+  "Télécharger, puis choisir la chanson": "Herunterladen, dann Song wählen"
+}

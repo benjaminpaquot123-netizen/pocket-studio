@@ -1,0 +1,19 @@
+{
+  "Grosse caisse 1": "バスドラム 1",
+  "Grosse caisse 2": "バスドラム 2",
+  "Grosse caisse studio": "スタジオのバスドラム",
+  "Grosse caisse sèche": "硬いバスドラム",
+  "Grondement grave": "低いうなり",
+  "Claquement de mains": "手拍子",
+  "Claquements de mains": "手拍子たち",
+  "Bord de caisse": "太鼓のふち",
+  "Grosses caisses": "バスドラム類",
+  "Volume au max": "音量を最大に",
+  "BPM": "BPM",
+  "Tempo : %d battements par minute": "テンポ：1分間に%d拍",
+  "D'abord le modèle de séparation": "まず分離モデルを",
+  "Pour séparer une chanson, l'appli télécharge d'abord son modèle : %s, une seule fois.": "曲を分けるには、アプリが先にモデルをダウンロードします：%s、1回だけです。",
+  "Tu es en Wi-Fi.": "Wi-Fi につながっています。",
+  "Tu n'es pas en Wi-Fi : ces %s seront pris sur ton forfait mobile.": "Wi-Fi ではありません：この %s はモバイルデータを使います。",
+  "Télécharger, puis choisir la chanson": "ダウンロードしてから曲を選ぶ"
+}

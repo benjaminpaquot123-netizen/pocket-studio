@@ -45,6 +45,8 @@ class RemixThumbReachTest {
         }
         lowThird("remix_download_thumb")
         compose.onNodeWithTag("remix_download_thumb").performClick()
+        // Round 2, n° 31: on mobile data (Robolectric's network) the 174 MB are asked first.
+        compose.onNodeWithTag("remix_model_ask_ok").performClick()
         assertEquals(1, downloads)
         installed = true
         compose.waitForIdle()

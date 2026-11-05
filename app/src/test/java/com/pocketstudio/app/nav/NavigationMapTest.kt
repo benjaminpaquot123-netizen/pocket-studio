@@ -49,7 +49,8 @@ class NavigationMapTest(private val name: String, private val path: List<String>
             // Audit ultra round 1 (n° 30): the ● asks what to record (keys, pads, the microphone).
             Triple("Enregistrer", listOf("launch_continue", "top_record", "record_choice_keys"), listOf("tab_simple_Clavier")),
             Triple("Enregistrer au micro", listOf("launch_continue", "top_record", "record_choice_mic"), listOf("audio_tracks")),
-            Triple("Annuler", listOf("launch_continue"), listOf("top_undo")),
+            // Audit ultra round 2 (n° 15): with the thumb's bar, the Mode simple's ↶ is there only.
+            Triple("Annuler", listOf("launch_continue"), listOf("top_undo", "thumb_undo")),
             Triple("Live (cases, briques)", listOf("launch_continue", "top_more", "more_live"), listOf("live_screen")),
             Triple("Ma voix", listOf("launch_continue", "top_more", "more_voice"), listOf("audio_tracks")),
             Triple("Réglages (MIDI, MiniLab)", listOf("launch_continue", "top_more", "more_settings"), listOf("settings")),

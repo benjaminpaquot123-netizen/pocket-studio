@@ -69,6 +69,14 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
             forgetGoneJournals()
             // The open project deleted from the list: trashed now that another one is open.
             CurrentProject.takeDeleteLater(app)?.let { id -> catalog.info(id)?.let(::delete) }
+            // Audit ultra round 2 (n° 14): the install's first project, left unused for another one at once, goes for
+            // good (never a project the person did not make in their list); once its screen's last save is written.
+            if (com.pocketstudio.app.rhythm.ClosingSaves.awaitIdle(CLOSING_WAIT_MS)) {
+                CurrentProject.takeUnusedStarter(app) { id -> com.pocketstudio.app.rhythm.ProjectOpening.projectStore(app).load(id) }?.let { id ->
+                    runCatching { catalog.deleteForever(catalog.delete(id)) }.onSuccess { AppLog.add("Premier projet inutilisé effacé") }
+                    forgetGoneJournals()
+                }
+            }
         }
     }
 

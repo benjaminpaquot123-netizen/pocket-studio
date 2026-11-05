@@ -13,4 +13,13 @@ object PendingNotice {
     }
 
     fun take(projectId: String): String? = waiting.remove(projectId)
+
+    private val toPlay = java.util.concurrent.ConcurrentHashMap.newKeySet<String>()
+
+    /** Audit ultra round 2 (n° 12): the song made by « Créer et écouter » plays as soon as its screens are up ([takePlay]). */
+    fun playOnOpen(projectId: String) {
+        toPlay.add(projectId)
+    }
+
+    fun takePlay(projectId: String): Boolean = toPlay.remove(projectId)
 }

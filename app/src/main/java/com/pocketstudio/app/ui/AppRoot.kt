@@ -670,6 +670,28 @@ fun AppRoot() {
     val wizardUi by libraryVm.wizard.collectAsStateWithLifecycle()
     // Closed without a song (G5 review): the next song is not « Mon premier morceau » by mistake.
     val closeWizard: () -> Unit = { firstSongNext = false; libraryVm.closeWizard() }
+    // Audit ultra round 2 (n° 12): « Créer et écouter »'s song plays as soon as it is open (from about 8 bars before its
+    // first Drop, as « Écouter » of « Ton morceau est prêt »): a beat two touches after the style.
+    LaunchedEffect(rhythmVm.projectId) {
+        if (com.pocketstudio.app.rhythm.PendingNotice.takePlay(rhythmVm.projectId) && !rhythmVm.transport.value.playing) {
+            com.pocketstudio.app.report.Journal.action("▶ Morceau créé : il joue")
+            if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.listenFromDrop() else rhythmVm.togglePlay()
+        }
+    }
+    // The assistant's song written, then opened on « Mon morceau »; [play]: it starts playing there (PendingNotice.playOnOpen).
+    val wizardCreate: (Boolean) -> Unit = { play ->
+        libraryVm.create { project, sounds, guide ->
+            projectsVm.create(songMade(project, guide), sounds, failed = libraryVm::createFailed) { id ->
+                com.pocketstudio.app.rhythm.PendingNotice.put(id, libraryVm.takeCreatedNotice())
+                if (play) com.pocketstudio.app.rhythm.PendingNotice.playOnOpen(id)
+                guideOpen = true
+                libraryVm.closeWizard()
+                tab = AppTab.Morceau  // the song is ready to hear: land on it (kept across the rebuild)
+                tabAsked = true
+                openProject(id)
+            }
+        }
+    }
     if (wizardUi.open) {
         val packsUi by libraryVm.packs.collectAsStateWithLifecycle()
         val previewing by libraryVm.playing.collectAsStateWithLifecycle()
@@ -713,18 +735,9 @@ fun AppRoot() {
                         download = libraryVm::downloadPack,
                         cancelDownload = libraryVm::cancelDownload,
                         deletePack = libraryVm::deletePack,
-                        create = {
-                            libraryVm.create { project, sounds, guide ->
-                                projectsVm.create(songMade(project, guide), sounds, failed = libraryVm::createFailed) { id ->
-                                    com.pocketstudio.app.rhythm.PendingNotice.put(id, libraryVm.takeCreatedNotice())
-                                    guideOpen = true
-                                    libraryVm.closeWizard()
-                                    tab = AppTab.Morceau  // the song is ready to hear: land on it (kept across the rebuild)
-                                    tabAsked = true
-                                    openProject(id)
-                                }
-                            }
-                        },
+                        create = { wizardCreate(false) },
+                        // Audit ultra round 2 (n° 12): the style's song with the advised choices, playing as it opens.
+                        playNow = { id -> libraryVm.chooseStyle(id); wizardCreate(true) },
                     ),
                     preparing = preparing,
                 )
@@ -1458,8 +1471,14 @@ fun AppRoot() {
                     launch.choose()
                 }
             },
-            // The project, then this screen, then out of the app (owner, 2026-10-29).
-            back = leaveApp,
+            // The project, then this screen, then out of the app (owner, 2026-10-29). Audit ultra round 2 (n° 15, seat B d:
+            // « un message tout est sauvegardé en quittant »): said as the app goes, when it is true.
+            back = {
+                if (!noProject && rhythmVm.session.lastSaveError.value == null && !rhythmVm.session.unsaved.value) {
+                    Toast.makeText(context, tr("Ton morceau est sauvegardé."), Toast.LENGTH_SHORT).show()
+                }
+                leaveApp()
+            },
             newSong = { launch.choose(comeBack = true); projectsNewOnly = true; showProjects = true },
             projects = { launch.choose(comeBack = true); projectsNewOnly = false; showProjects = true },
             padLive = {
@@ -1482,6 +1501,11 @@ fun AppRoot() {
             missions = {
                 launch.choose()
                 modeAsk = if (noProject) START_MISSIONS_NEW else START_MISSIONS
+            },
+            // Audit ultra round 2 (n° 16): the welcome's « J'apprends » here too (« Simple ou Pro ? » gives its level).
+            learn = {
+                launch.choose()
+                modeAsk = START_TUTO
             },
         ),
     ) }
@@ -1925,8 +1949,10 @@ fun AppRoot() {
     val guideShown = !showLive && !liveImmersive && !showTimeline && !showLivePads && !guideQuietRec && !guideQuietTaking && !(landscape && tab == AppTab.Synthe)
     val guideSide = guideShown && guideOpen && landscape
     // The thumb's bar shown (see its place in the bottom bar); relecture tour 1: when it is not, the top bar keeps « Rétablir ».
+    // Audit ultra round 2 (n° 11, seat B a: « Jouer » out of the thumb's reach, the bar hidden under the Guide): the Guide's
+    // open panel never takes it away; the panel is the bar's height lower instead ([guidePanelHeightDp]).
     val thumbBarUp = !landscape && !liveImmersive && !showTimeline && !showLivePads && !showLive &&
-        thumbBarFits(LocalConfiguration.current.screenHeightDp, LocalConfiguration.current.fontScale, guideShown && !guideSide && tutoUi == null && guideOpen)
+        thumbBarFits(LocalConfiguration.current.screenHeightDp, LocalConfiguration.current.fontScale)
     LaunchedEffect(guideQuietRec, guideQuietTaking, showLive, guideQuietPlaying) {
         if (guideQuietRec || guideQuietTaking || showLive || guideQuietPlaying) {
             guideListen.stop()
@@ -2173,6 +2199,8 @@ fun AppRoot() {
                     // Relecture tour 1 (intégration): no thumb's bar (the Guide's panel open on a phone under 820 dp):
                     // « Rétablir » keeps its place here, in Simple as in Pro, once there is something to redo.
                     redoFirst = !thumbBarUp && topRedo && undoable,
+                    // Audit ultra round 2 (n° 15): the Mode simple's ↶ at the thumb only, its room to the name and « Sauvegardé ».
+                    undo = !(simple && thumbBarUp),
                     saved = saveError == null && !topUnsaved,
                     recordInto = topRecordInto?.let { topProject.sceneTitle(it) },
                 ),
@@ -2369,10 +2397,9 @@ fun AppRoot() {
                     if (guideOpen) {
                         val listening by guideListen.state.collectAsStateWithLifecycle()
                         val config = LocalConfiguration.current
-                        val share = if (config.smallestScreenWidthDp >= 600) 0.5f else 0.4f
                         com.pocketstudio.app.guide.GuidePanel(
                             guideUi, guideSelected, listening, guideNotice, guideActions,
-                            height = (config.screenHeightDp * share).dp.coerceAtLeast(200.dp),
+                            height = guidePanelHeightDp(config.screenHeightDp, config.smallestScreenWidthDp, thumbBarUp, guideUi.loading).dp,
                             modifier = if (landscape) Modifier.navigationBarsPadding() else Modifier,
                             reference = guideReference?.name,
                             aloneCard = aloneCard,
@@ -2386,8 +2413,7 @@ fun AppRoot() {
                 }
                 // Audit ultra round 1 (n° 21): ▶, ↶, ↷, the tempo and Partager / « ⋯ » at the thumb, above the tabs (the top
                 // bar keeps them); upright only (lying down the phone is held with two hands) and on a screen tall enough.
-                // Round 1 integration: under the Guide's open panel (40 % of the height) on a short phone, the bar gives its
-                // room to the page (with both, a 780 dp phone's timeline lost the row the key actions reach in one gesture).
+                // Audit ultra round 2 (n° 11): under the Guide's open panel too (the panel gives the bar its room).
                 if (thumbBarUp) {
                     val thumbProject by rhythmVm.project.collectAsStateWithLifecycle()
                     val thumbTransport by rhythmVm.transport.collectAsStateWithLifecycle()
@@ -4295,7 +4321,7 @@ private fun trackSoundBrowser(vm: RhythmViewModel, project: com.pocketstudio.mod
         SoundBrowserUi(
             SoundCategories.PLAITS, SoundLibrary.PLAITS, favorites.plaits,
             current = (SoundLibrary.PLAITS + favorites.plaits).firstOrNull { it.sound == project.plaits.copy(level = it.sound.level, gain = it.sound.gain) }?.name,
-            pick = { vm.applyPlaits(SoundLibrary.PLAITS[it].sound.copy(level = project.plaits.level)); afterPick() },
+            pick = { vm.applyPlaits(SoundLibrary.PLAITS[it].sound.copy(level = project.plaits.level), SoundLibrary.PLAITS[it].name); afterPick() },
             // Round 1, n° 35: a kept sound comes back with its effects, named, renamed, never kept twice.
             pickFavorite = { vm.applyPlaitsFavorite(it); afterPick() },
             deleteFavorite = vm::deletePlaitsFavorite,
@@ -4310,7 +4336,7 @@ private fun trackSoundBrowser(vm: RhythmViewModel, project: com.pocketstudio.mod
         SoundBrowserUi(
             SoundCategories.SYNTH, SoundLibrary.SYNTH, favorites.synth,
             current = SoundLibrary.synthNameOf(project.synth, SoundLibrary.SYNTH + favorites.synth),
-            pick = { vm.applySynthPreset(SoundLibrary.SYNTH[it].sound); afterPick() },
+            pick = { vm.applySynthPreset(SoundLibrary.SYNTH[it].sound, name = SoundLibrary.SYNTH[it].name); afterPick() },
             pickFavorite = { vm.applySynthFavorite(it); afterPick() },
             deleteFavorite = vm::deleteSynthFavorite,
             random = vm::randomSynth,
@@ -4542,12 +4568,30 @@ private const val SWITCH_COVER_MS = 5000L
  * room for its keys (0 dp under the Guide's bar) and pushed an upright tablet's second row of steps below the fold.
  */
 private const val THUMB_BAR_MIN_HEIGHT_DP = 720
-/** The same with the Guide's panel open over the bottom of the screen. */
-private const val THUMB_BAR_UNDER_GUIDE_MIN_HEIGHT_DP = 820
+/** The thumb's bar's height ([ThumbBar]: its ▶ of 52 dp). */
+internal const val THUMB_BAR_HEIGHT_DP = 52
+/** The Guide's panel while it reads the song: its bar and the line « Le Guide lit ton morceau… », nothing more. */
+internal const val GUIDE_PANEL_READING_DP = 96
+private const val GUIDE_PANEL_MIN_DP = 200
+/** From this screen height the Guide's panel and the thumb's bar always fitted together, at the panel's full height. */
+private const val THUMB_BAR_BESIDE_GUIDE_DP = 820
 
 /** The thumb's bar is shown: the screen, read at the text's size, tall enough for it and the page above it. */
-internal fun thumbBarFits(screenHeightDp: Int, fontScale: Float, guidePanelOpen: Boolean = false): Boolean =
-    screenHeightDp / fontScale.coerceAtLeast(1f) >= if (guidePanelOpen) THUMB_BAR_UNDER_GUIDE_MIN_HEIGHT_DP else THUMB_BAR_MIN_HEIGHT_DP
+internal fun thumbBarFits(screenHeightDp: Int, fontScale: Float): Boolean =
+    screenHeightDp / fontScale.coerceAtLeast(1f) >= THUMB_BAR_MIN_HEIGHT_DP
+
+/**
+ * The Guide's open panel, upright: 40 % of a phone's height (half a tablet's). Audit ultra round 2 (n° 11, seat B a): the
+ * thumb's bar stays under it, the panel the bar's height lower (the page above keeps the room it had); while the Guide
+ * reads the song, only its bar and that line (an empty panel took the thumb's half of the screen).
+ */
+internal fun guidePanelHeightDp(screenHeightDp: Int, smallestWidthDp: Int, thumbBar: Boolean, loading: Boolean): Int {
+    if (loading) return GUIDE_PANEL_READING_DP
+    val share = if (smallestWidthDp >= 600) 0.5f else 0.4f
+    // A tall screen had room for both already (round 1): only a shorter one gives the bar's height.
+    val bar = if (thumbBar && screenHeightDp < THUMB_BAR_BESIDE_GUIDE_DP) THUMB_BAR_HEIGHT_DP else 0
+    return ((screenHeightDp * share).toInt() - bar).coerceAtLeast(GUIDE_PANEL_MIN_DP)
+}
 /** « Je le fais »'s ring stays this long, then goes by itself. */
 private const val TUTO_SPOT_MS = 2600L
 /** The user's own music heard this long ticks a listening step about it (« Écoute toute ta batterie »). */

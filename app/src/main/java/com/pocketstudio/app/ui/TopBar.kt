@@ -111,6 +111,11 @@ class TopBarUi(
      * Guide's panel on a phone under 820 dp): it keeps its place here before the extras and the name.
      */
     val redoFirst: Boolean = false,
+    /**
+     * ↶ here; false: it is at the thumb, in the thumb's bar right under the page (audit ultra round 2, n° 15, the Mode
+     * simple: its 48 dp go to the project's name and « ✓ Sauvegardé », cut to « Mon pr… » and a lone tick before).
+     */
+    val undo: Boolean = true,
 )
 
 class TopBarActions(
@@ -239,7 +244,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
 ) {
     // Narrow (a small phone, a big text size): redo, then the scene's name give their room to the
     // project name; the projects button, the scene's letter and play never go.
-    val layout = topBarLayout(maxWidth, ui.scene != null, modeChip = ui.mode?.let(::modeChipRoom), redoFirst = ui.redoFirst)
+    val layout = topBarLayout(if (ui.undo) maxWidth else maxWidth + BUTTON, ui.scene != null, modeChip = ui.mode?.let(::modeChipRoom), redoFirst = ui.redoFirst)
     val showRedo = layout.showRedo && ui.redo
     androidx.compose.foundation.layout.Column {
     // Squeezed (a small phone with a big text size): the project's name gets a line of its own
@@ -318,7 +323,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
         if (ui.scene != null && layout.scene != SceneChipMode.Hidden) {
             SceneChip(ui.scene, layout.scene == SceneChipMode.Full, layout.sceneMaxWidth, actions)
         }
-        IconButton(onClick = actions.undo, enabled = ui.canUndo, modifier = Modifier.spot("top_undo", tr("Annuler")).testTag("top_undo")) {
+        if (ui.undo) IconButton(onClick = actions.undo, enabled = ui.canUndo, modifier = Modifier.spot("top_undo", tr("Annuler")).testTag("top_undo")) {
             Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = tr("Annuler la dernière action"))
         }
         if (showRedo) {

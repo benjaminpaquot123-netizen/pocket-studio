@@ -374,7 +374,8 @@ fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions, li
                 com.pocketstudio.app.rhythm.AloneButton(trackAlone(t), tr("Écouter seule"), t.name, "simple_alone_${t.key}", compact = true, iconOnly = narrow) { actions.listenAlone(t.key) }
                 // A fader, not a loudspeaker (owner, APK 224: the 🔊 looked like « play » and stayed silent).
                 IconButton(onClick = { sheetFor = t.key }, modifier = Modifier.spot("simple_volume_${t.key}").testTag("simple_volume_${t.key}")) {
-                    Icon(Icons.Filled.Tune, contentDescription = tr("Volume de %s", t.name), tint = if (t.mute) Neon.Amber else Neon.TextPrimary)
+                    // Audit ultra round 2 (n° 17, seat B d): « Supprimer » was behind a button named « Volume »: named for all it holds.
+                    Icon(Icons.Filled.Tune, contentDescription = if (t.deletable) tr("Réglages de %s : volume, couper, supprimer", t.name) else tr("Réglages de %s : volume, couper", t.name), tint = if (t.mute) Neon.Amber else Neon.TextPrimary)
                 }
             }
         }

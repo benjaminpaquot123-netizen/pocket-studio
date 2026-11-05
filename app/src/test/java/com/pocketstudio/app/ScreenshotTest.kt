@@ -1070,9 +1070,9 @@ open class ScreenshotTest {
 
     @Test
     fun wizardStyleOpen() = shoot("wizard_style_open") {
-        // A card touched: its whole description, every reference, ▶ and "Choisir ce style".
+        // A card touched: its whole description, « Créer et écouter », « Choisir ce style, pas à pas », every reference.
         com.pocketstudio.app.library.WizardScreen(com.pocketstudio.app.library.WizardUi(open = true, styleId = "trap"),
-            com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable), null, com.pocketstudio.app.library.WizardActions())
+            com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Unavailable), null, com.pocketstudio.app.library.WizardActions(playNow = {}))
     }
 
     @Test

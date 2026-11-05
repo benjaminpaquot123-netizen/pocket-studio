@@ -15,7 +15,11 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 /** A project read from disk: what the screens open on, and what to tell the user (null: nothing). */
-class OpenedProject(val id: String, val project: Project, val notice: String? = null, val rescued: Boolean = false)
+class OpenedProject(
+    val id: String, val project: Project, val notice: String? = null, val rescued: Boolean = false,
+    /** The install's first project was made and written just now (audit ultra round 2, n° 14: [CurrentProject.rememberStarter]). */
+    val starterMade: Boolean = false,
+)
 
 /**
  * Reading the project to open, with what waited for it (takes finished while the app closed, a
@@ -24,8 +28,9 @@ class OpenedProject(val id: String, val project: Project, val notice: String? = 
  */
 class ProjectOpener(private val id: String, private val store: ProjectStore, private val journals: TakeJournalStore) {
     private var notice: String? = null
+    private var starterMade = false
 
-    fun open(): OpenedProject = OpenedProject(id, loadOrCreate(), notice)
+    fun open(): OpenedProject = loadOrCreate().let { OpenedProject(id, it, notice, starterMade = starterMade) }
 
     private fun loadOrCreate(): Project {
         if (CurrentProject.isNone(id)) return RhythmViewModel.starterProject()
@@ -37,6 +42,7 @@ class ProjectOpener(private val id: String, private val store: ProjectStore, pri
             // (Pad Live's « Live ») never loses it. Not written (a full phone): the session saves it at its first change.
             return RhythmViewModel.starterProject().also { starter ->
                 runCatching { store.save(id, starter.sanitized()) }.onFailure { AppLog.add("Premier projet non écrit : ${it.message}") }
+                    .onSuccess { starterMade = true }
             }
         } catch (e: Exception) {
             AppLog.add("Projet illisible : ${e.message} / ${e.cause?.message}")
@@ -147,7 +153,10 @@ object ProjectOpening {
                     rescued = true,
                 )
             } else {
-                ProjectOpener(id, projectStore(app), LiveTakeJournals.of(app)).open().let { o ->
+                ProjectOpener(id, projectStore(app), LiveTakeJournals.of(app)).open().also { o ->
+                    // Audit ultra round 2 (n° 14): the first project as written, to know later whether anyone used it.
+                    if (o.starterMade) runCatching { projectStore(app).load(o.id) }.getOrNull()?.let { com.pocketstudio.app.projects.CurrentProject.rememberStarter(app, o.id, it) }
+                }.let { o ->
                     // Audit ultra §5 bis: a phone set up again says once that its projects came back without their sounds.
                     if (restored > 0 && o.notice == null) OpenedProject(o.id, o.project, restoredNotice(restored), o.rescued) else o
                 }

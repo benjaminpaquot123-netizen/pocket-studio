@@ -163,6 +163,9 @@ class SpacesTest {
         assertTrue(h.vm.recording.value)
         h.vm.recordTake(com.pocketstudio.app.record.TakeSource.KEYS)
         compose.waitForIdle()
+        // Audit ultra round 2 (n° 17): « ✓ Nouveau son : … · Annuler » said over the bottom of the page goes after 6 s.
+        h.vm.dismissDone()
+        compose.waitForIdle()
         compose.withinGestures("Partager (Mode simple)", 2) {
             tap("tab_simple_Envoyer")
             tap("share_go")

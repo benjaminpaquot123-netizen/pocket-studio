@@ -120,7 +120,8 @@ class Zone3JourneysTest : HumanTester("zone3") {
         assertTrue(centerOf("retours_note_sheet") != null)
         act("retour")
         assertTrue("the note closed", centerOf("retours_note_sheet") == null)
-        assertEquals("the studio stays", route, screenRoute())
+        // The tab (the page's biggest card changes with the Guide's panel once it has read the song: round 2, n° 11).
+        assertEquals("the studio stays", route.substringAfterLast('/'), screenRoute().substringAfterLast('/'))
     }
 
     /** n° 26 (seat F d): ↶ in the Mode simple, then ↷ Rétablir brings it back (top bar and the thumb's bar). */
@@ -131,7 +132,8 @@ class Zone3JourneysTest : HumanTester("zone3") {
         val before = project()!!.tempoBpm
         vm.setTempo(before + 7)
         act("attends 0.5")
-        tap("top_undo")
+        // Audit ultra round 2 (n° 15): the Mode simple's ↶ is at the thumb when its bar is there.
+        tap(if (centerOf("top_undo") != null) "top_undo" else "thumb_undo")
         assertEquals(before, project()!!.tempoBpm, 0.01)
         assertNotNull("« Rétablir » offered\n" + screenLines().joinToString("\n"), centerOf("top_redo") ?: centerOf("thumb_redo"))
         tap(if (centerOf("thumb_redo") != null) "thumb_redo" else "top_redo")

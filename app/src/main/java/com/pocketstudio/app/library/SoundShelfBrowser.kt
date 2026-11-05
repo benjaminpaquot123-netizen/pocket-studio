@@ -415,7 +415,8 @@ private fun FolderRow(family: String, title: String, count: Int, tag: String, op
 private fun Header(title: String, tag: String, back: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         IconButton(onClick = back, modifier = Modifier.testTag(tag)) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Retour"))
+            // Audit ultra round 2 (n° 13, seat B a: two « Retour » on the assistant's step): this one goes up a folder.
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Dossier précédent"))
         }
         Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f))

@@ -34,6 +34,8 @@ import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -172,7 +174,8 @@ fun launchUi(p: Project, info: ProjectInfo?, now: Long, simple: Boolean, mission
         name = DefaultNames.shown(p.name),
         style = style?.let { tr(it.name) },
         length = length,
-        edited = info?.takeIf { it.modified > 0 }?.let { tr("modifié %s", whenText(it.modified, now)) },
+        // Audit ultra round 2 (n° 15, seat B d: « aucun mot sauvegardé » coming back here): the last save, said as one.
+        edited = info?.takeIf { it.modified > 0 }?.let { tr("Sauvegardé %s", whenText(it.modified, now)) },
         simple = simple,
         missionsActive = missionsActive,
     )
@@ -232,6 +235,11 @@ class LaunchActions(
     /** Pad Live (n° 25): the pads ready to play, in the « Live » project created or resumed. */
     val padLive: () -> Unit = {},
     val missions: () -> Unit = {},
+    /**
+     * Audit ultra round 2 (n° 16, seat A c, a child who does not read: « la carte chapeau vert a disparu »): « J'apprends »,
+     * the welcome's green hat, here too (null: not offered).
+     */
+    val learn: (() -> Unit)? = null,
     /**
      * The system's Retour on this screen. Owner (2026-10-29): the project, then this home screen,
      * then out of the app; null: « Continuer » (a screen shown on its own, the tests of gestures).
@@ -347,7 +355,12 @@ private fun ContinueCard(ui: LaunchUi, onClick: () -> Unit, modifier: Modifier) 
             listOfNotNull(ui.style, ui.length).takeIf { it.isNotEmpty() }?.let {
                 Text(it.joinToString(" · "), style = MaterialTheme.typography.bodyLarge, color = Neon.TextPrimary.copy(alpha = 0.85f), modifier = Modifier.testTag("launch_details"))
             }
-            ui.edited?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("launch_edited")) }
+            ui.edited?.let {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(18.dp))
+                    Text(it, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = Neon.Acid, modifier = Modifier.padding(start = 4.dp).testTag("launch_edited"))
+                }
+            }
         }
         IconMedallion(Icons.AutoMirrored.Filled.ArrowForward, color, 56.dp, 30.dp, filled = true)
     }
@@ -363,6 +376,12 @@ private fun OtherChoices(actions: LaunchActions) {
         Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir un autre morceau, le copier ou le renommer."),
         Color(0xFF5BB8F5), actions.projects, "launch_projects",  // sky blue: green means "playing"
     )
+    actions.learn?.let { learn ->
+        Choice(
+            Icons.Filled.School, tr("J'apprends"), tr("Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie."),
+            Neon.Acid, learn, "launch_learn",
+        )
+    }
     // Benjamin (2026-10-24, then 2026-10-29): the Remix « mis en avant », one touch from here, a
     // showcase card of its own for those who come for it.
     RemixCard(actions.remix)

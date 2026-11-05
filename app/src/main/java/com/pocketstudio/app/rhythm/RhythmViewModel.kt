@@ -462,6 +462,24 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** A one-off message for the user (e.g. an unreadable project was set aside). Declared before `session`. */
     private val _notice = MutableStateFlow<String?>(null)
     val notice: StateFlow<String?> = _notice.asStateFlow()
+
+    /**
+     * Audit ultra round 2 (n° 17, seat B d: a track's sound changed or a track deleted said nothing): said as « Fait : … »
+     * is, with « Annuler » beside it ([done], [com.pocketstudio.app.ui.DoneBar]).
+     */
+    private fun saidDone(text: String) {
+        _done.value = text
+    }
+
+    /**
+     * Audit ultra round 2 (n° 17, seats B d and B c: « Synthé » after « Basse sub », « Piste 2 » after « Sub House Ben »):
+     * a track still under a name the app gave it (« Synthé », « Piste 2 », a sound's name) takes its new sound's; a name
+     * the user typed stays.
+     */
+    private fun followingName(current: String, sound: String): String =
+        if (sound.isNotBlank() && (com.pocketstudio.model.DefaultNames.isDefault(current) || current in keptSoundNames())) sound.take(40) else current
+
+    private fun keptSoundNames(): Set<String> = _favorites.value.let { f -> (f.synth.map { it.name } + f.plaits.map { it.name }).toSet() }
     fun dismissNotice() {
         _notice.value = null
         favoritesBeforeDelete = null
@@ -1098,6 +1116,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushAutomation()
         releaseUnusedFonts()
         AppLog.add("Piste supprimée : $name")
+        saidDone(tr("Piste « %s » supprimée.", com.pocketstudio.model.DefaultNames.shown(name)))
     }
 
     /**
@@ -1115,6 +1134,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         pushAutomation()
         releaseUnusedFonts()
         AppLog.add("Première piste supprimée : $name")
+        saidDone(tr("Piste « %s » supprimée.", com.pocketstudio.model.DefaultNames.shown(name)))
     }
 
     /** « Supprimer la piste » of any instrument track: the first one emptied and hidden ([removeFirstTrack]). */
@@ -1131,6 +1151,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         }
         pushAcid(project.value.acid)
         AppLog.add("Acid 303 vidée dans tout le morceau")
+        saidDone(tr("Piste « %s » supprimée.", com.pocketstudio.model.DefaultNames.shown(com.pocketstudio.model.DefaultNames.ACID)))
     }
 
     fun renameTrack(id: Int, name: String) {
@@ -1452,8 +1473,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val k = _favorites.value.synth.getOrNull(i) ?: return
         if (keptFxRefused(track, k.fx)) return
         val key = "kept:" + System.nanoTime()
-        applySynthPreset(k.sound, key)
+        applySynthPreset(k.sound, key, k.name, say = false)
         putKeptFx(track, k.fx, key)
+        saidDone(tr("Nouveau son : %s", k.name))
     }
 
     /** Kept Plaits sound [i] on the track shown: its sound and its effects, one undo step. */
@@ -1461,9 +1483,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val k = _favorites.value.plaits.getOrNull(i) ?: return
         if (keptFxRefused(track, k.fx)) return
         val key = "kept:" + System.nanoTime()
-        editTrack(key) { it.copy(plaits = k.sound.sanitized()) }
+        editTrack(key) { it.copy(plaits = k.sound.sanitized(), name = followingName(it.name, k.name)) }
         pushPlaits()
         putKeptFx(track, k.fx, key)
+        saidDone(tr("Nouveau son : %s", k.name))
     }
 
     /** A new layer of [sound] on track [id] for [role] ([com.pocketstudio.model.LayerRole]): one undo step. False when it has three. */
@@ -1788,10 +1811,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun removeAudioTrack(id: Int) {
         if (_audioRecording.value?.track == id) cancelAudioRecording()
+        val name = project.value.audioTracks.firstOrNull { it.id == id }?.name
         session.edit { it.removeAudioTrack(id) }
         pushAudio()
         pushMixer()
         pushAutomation()
+        name?.let { saidDone(tr("Piste « %s » supprimée.", com.pocketstudio.model.DefaultNames.shown(it))) }
     }
 
     fun renameAudioTrack(id: Int, name: String) {
@@ -2988,6 +3013,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (!hasTrack(id)) return
         editTrack(id = id) {
             it.copy(
+                name = followingName(it.name, name),
                 engine = InstrumentTrack.ENGINE_MULTI, instrument = null,
                 multi = com.pocketstudio.model.MultiPatch(pack, name),
                 synth = com.pocketstudio.model.MultiInstruments.fallbackSynth(fallback),
@@ -3001,6 +3027,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         releaseUnusedMulti()
         loadMultiBanks()
         AppLog.add("Piste ${id + 1} : instrument « $name »")
+        saidDone(tr("Nouveau son : %s", com.pocketstudio.model.DefaultNames.shown(name)))
     }
 
     /** Track [id] plays the 808 (glide on). One undo step. */
@@ -8760,9 +8787,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * file, a pack's instrument, the 808 or a General MIDI instrument goes to the synth too (in
      * the same undo step), or the sound chosen would never be heard.
      */
-    fun applySynthPreset(patch: SynthPatch, key: String? = null) {
+    /** [name]: the sound's (a library preset's in French, or a kept sound's), which a track named by the app takes. */
+    fun applySynthPreset(patch: SynthPatch, key: String? = null, name: String? = null, say: Boolean = name != null) {
         val other = currentTrack.engine != InstrumentTrack.ENGINE_SYNTH || currentTrack.instrument != null
-        editTrack(key) { it.copy(synth = patch, engine = InstrumentTrack.ENGINE_SYNTH, instrument = null) }
+        editTrack(key) { it.copy(synth = patch, engine = InstrumentTrack.ENGINE_SYNTH, instrument = null, name = name?.let { n -> followingName(it.name, n) } ?: it.name) }
         pushSynth(currentTrack.synth)
         if (other) {
             pushInstrument()
@@ -8772,6 +8800,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             releaseUnusedFonts()
             releaseUnusedMulti()
         }
+        if (say && name != null) saidDone(tr("Nouveau son : %s", com.pocketstudio.model.DefaultNames.shown(name)))
     }
 
     // --- Phase 35: « ● Enregistrer » in each editor, what comes after a take, the last bars played --
@@ -9201,8 +9230,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     fun randomSynth() = applySynthPreset(SoundLibrary.randomSynth())
 
-    fun applyPlaits(patch: PlaitsPatch) {
-        editTrack { it.copy(plaits = patch.sanitized()) }
+    fun applyPlaits(patch: PlaitsPatch, name: String? = null) {
+        editTrack { it.copy(plaits = patch.sanitized(), name = name?.let { n -> followingName(it.name, n) } ?: it.name) }
         pushPlaits()
         if (NativeEngine.isAvailable && !_transport.value.playing) {
             viewModelScope.launch {
@@ -9210,6 +9239,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 previewNote(60)  // hear it right away
             }
         }
+        if (name != null) saidDone(tr("Nouveau son : %s", com.pocketstudio.model.DefaultNames.shown(name)))
     }
 
     fun randomPlaits() = applyPlaits(SoundLibrary.randomPlaits().copy(level = currentTrack.plaits.level))

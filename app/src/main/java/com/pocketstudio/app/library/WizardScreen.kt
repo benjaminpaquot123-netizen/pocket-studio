@@ -88,6 +88,11 @@ import kotlin.math.roundToInt
 class WizardActions(
     val close: () -> Unit = {},
     val chooseStyle: (String) -> Unit = {},
+    /**
+     * Audit ultra round 2 (n° 12, seats B a and A c: ten steps, about sixteen screens before a sound): the style's song made
+     * at once with the advised choices, and it plays as soon as it opens (null: not offered).
+     */
+    val playNow: ((String) -> Unit)? = null,
     val next: () -> Unit = {},
     val back: () -> Unit = {},
     val setEnabled: (Role, Boolean) -> Unit = { _, _ -> },
@@ -192,8 +197,12 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
             // Lot « tuto 5 » (Lucas): what went wrong is said at the top, never under the step's
             // long content, with the way out next to it.
             ui.error?.let { message -> WizardError(message, retry = if (style != null && ui.step > 0) actions.create else null, busy = ui.creating) }
+            // Audit ultra round 2 (n° 13, seat B a): each step opens at its top (its title, « Créer tout de suite »), never
+            // scrolled as far as the step before was.
+            val stepScroll = rememberScrollState()
+            androidx.compose.runtime.LaunchedEffect(ui.step, style?.id) { stepScroll.scrollTo(0) }
             Column(
-                Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 6.dp),
+                Modifier.weight(1f).verticalScroll(stepScroll).padding(horizontal = 12.dp, vertical = 6.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 // The details are for whoever wants them: the advised choices are already made.
@@ -325,6 +334,20 @@ private fun StyleCard(s: StarterWizard.Style, chosen: Boolean, expanded: Boolean
             }
             Text(tr(s.description), style = MaterialTheme.typography.bodySmall, color = if (expanded) Neon.TextPrimary else Neon.TextSecondary,
                 maxLines = if (expanded) Int.MAX_VALUE else 2, overflow = TextOverflow.Ellipsis)
+            if (expanded) {
+                // Audit ultra round 2 (n° 12, n° 13, seat B a): the choice right under the description (the references
+                // pushed it below the fold), and first the song made and played at once; the steps for whoever wants them.
+                actions.playNow?.let { playNow ->
+                    Button(onClick = { playNow(s.id) }, modifier = Modifier.pressScale().fillMaxWidth().heightIn(min = 52.dp).padding(top = 6.dp).testTag("wizard_style_play_${s.id}")) {
+                        Icon(Icons.Filled.PlayArrow, contentDescription = null)
+                        Text(" " + tr("Créer et écouter"), textAlign = TextAlign.Center)
+                    }
+                }
+                val choose: @Composable () -> Unit = { Text(if (actions.playNow != null) tr("Choisir ce style, pas à pas") else tr("Choisir ce style"), textAlign = TextAlign.Center) }
+                val chooseModifier = Modifier.pressScale().fillMaxWidth().padding(top = 6.dp).testTag("wizard_style_choose_${s.id}")
+                if (actions.playNow != null) OutlinedButton(onClick = { actions.chooseStyle(s.id) }, modifier = chooseModifier) { choose() }
+                else Button(onClick = { actions.chooseStyle(s.id) }, modifier = chooseModifier) { choose() }
+            }
             if (s.references.isNotEmpty() && !expanded) {
                 Text(tr("Pour l'idée :") + " " + s.references.first(), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp),
                     color = Neon.TextSecondary.copy(alpha = 0.8f), fontStyle = FontStyle.Italic, maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -336,10 +359,6 @@ private fun StyleCard(s: StarterWizard.Style, chosen: Boolean, expanded: Boolean
                     s.references.forEach { r ->
                         Text("• $r", style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, fontStyle = FontStyle.Italic)
                     }
-                }
-                // ▶ stays at the card's left: one wide button to choose, readable in every language.
-                Button(onClick = { actions.chooseStyle(s.id) }, modifier = Modifier.pressScale().fillMaxWidth().padding(top = 6.dp).testTag("wizard_style_choose_${s.id}")) {
-                    Text(tr("Choisir ce style"), textAlign = TextAlign.Center)
                 }
             }
         }
@@ -390,9 +409,6 @@ private fun LineStep(
     }
     val categories = soundCategories(role, style.id, packs.installed)
     val look = SoundLooks.of(role.id)
-    // Benjamin's list n° 7: the style's packs offered right where its sounds are chosen (the
-    // Acidcore kick's Gabber first), not only on the mood's step.
-    StylePacks(style, packs, actions, first = role, readyNote = false)
     NeonCard {
         Row(verticalAlignment = Alignment.CenterVertically) {
             // Folded or not for this line only (the same title in every step).
@@ -419,6 +435,10 @@ private fun LineStep(
         Text(tr("Touche un son pour l'écouter et le choisir ; « Avec le rythme » le fait entendre avec les lignes déjà choisies."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
     }
+    // Benjamin's list n° 7: the style's packs offered right where its sounds are chosen (the
+    // Acidcore kick's Gabber first), not only on the mood's step. Audit ultra round 2 (n° 13, seat B a: the same card
+    // at the top of every step pushed the step's choice down): under the sounds.
+    StylePacks(style, packs, actions, first = role, readyNote = false)
     PackOffer(style, packs, actions, offer = false)
 }
 

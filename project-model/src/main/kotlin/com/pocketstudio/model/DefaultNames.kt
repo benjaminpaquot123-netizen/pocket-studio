@@ -33,7 +33,9 @@ object DefaultNames {
                 StarterWizard.COUNTER_TRACK,
             ) + TrackKind.entries.map { it.trackName } + StarterWizard.CHORD_TRACK_NAMES + Demos.ALL.map { it.first } + StarterWizard.STYLES.map { it.name } +
                 // The ready-to-play live pads and the party sounds put on a pad (Benjamin's list n° 12).
-                LiveStarter.PADS.map { it.name } + PartySounds.ALL.map { it.name }
+                LiveStarter.PADS.map { it.name } + PartySounds.ALL.map { it.name } +
+                // Audit ultra round 2 (n° 17): a track named after the library sound it plays (« Basse sub »).
+                SoundLibrary.SYNTH.map { it.name } + SoundLibrary.PLAITS.map { it.name } + MultiInstruments.KNOWN.map { it.name }
             ).toSet()
     }
 

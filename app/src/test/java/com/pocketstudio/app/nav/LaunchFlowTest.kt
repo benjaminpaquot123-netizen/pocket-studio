@@ -60,7 +60,7 @@ class LaunchFlowTest {
         compose.onNodeWithTag("launch_name", useUnmergedTree = true).assertTextEquals(DefaultNames.shown(before.name))
         // When it was last changed, from its last save.
         h.awaitTag("launch_edited")
-        compose.onNodeWithTag("launch_edited", useUnmergedTree = true).assertTextEquals("modifié à l'instant")
+        compose.onNodeWithTag("launch_edited", useUnmergedTree = true).assertTextEquals("Sauvegardé à l'instant")
         // Nothing plays, nothing changed, the project not shown yet.
         assertFalse(h.vm.transport.value.playing)
         compose.withinGestures("Continuer après l'ouverture", 1) { tap("launch_continue") }

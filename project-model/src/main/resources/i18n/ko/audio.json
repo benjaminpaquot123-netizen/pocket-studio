@@ -20,7 +20,7 @@
   "Elle dure %d s et ne sera pas gardée.": "길이가 %d초라서 저장되지 않아요.",
   "Elle montre que le studio joue, avec un bouton Arrêter.": "스튜디오가 재생 중임을 보여 주고, 정지 버튼이 있어요.",
   "Elle rejoue": "재생 범위",
-  "Enregistre ta voix, une guitare, des claquements de mains… par-dessus ta musique, ou ajoute un fichier son.": "음악 위에 목소리, 기타, 박수 소리… 를 녹음하거나 사운드 파일을 추가해요.",
+  "Enregistre ta voix, une guitare, des claquements de mains… par-dessus ta musique, ou ajoute un fichier son.": "음악 위에 목소리, 기타, 박수 소리…를 녹음하거나 사운드 파일을 추가해요.",
   "Enregistrement : %.1f s": "녹음: %.1f초",
   "Enregistrer sur": "녹음 위치",
   "Enregistrée à %1$d BPM, le morceau est à %2$d BPM : elle ne tombe plus pile sur le temps.": "%1$d BPM으로 녹음했는데 곡은 %2$d BPM이에요. 이제 박에 딱 맞지 않아요.",

@@ -29,4 +29,4 @@ Sièges A d, A c, C c, D c, F b, F d. Tests : `app/src/test/.../export/Round3Zon
 - « Mes exports » ne voit que les fichiers copiés par l'appli dans Musique (pas les rapports .txt de Documents) ; à vérifier sur téléphone (MediaStore réel).
 - « (copie 2) » n'est pas traduit (`DefaultNames` ne connaît que « (copie) ») ; mots « remix/streaming » dans les noms de fichiers coréens : zone 6.
 - En mode Simple, pas de choix de volume visé (pas de jargon) ; la puce reste dans Pro.
-- Captures non ré-enregistrées (`share_sheet`, `mixer_export` changent) : à faire à l'intégration.
+- Captures ré-enregistrées et regardées : `share_sheet` (puces Volume visé), `share_sheet_ok` (« Mes exports ») ; `mixer_export`, `export_report` inchangées.

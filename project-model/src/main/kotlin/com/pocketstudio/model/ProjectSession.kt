@@ -92,6 +92,18 @@ class ProjectSession(
     }
 
     /**
+     * Like [editQuietly], and in every undo and redo step too (relecture tour 1, M3: Pad Live's
+     * page filled on its own came off with an « Annuler » of an older step). [transform] leaves a
+     * step it does not apply to as it is (the page there already has sounds).
+     */
+    fun editEverywhere(transform: (Project) -> Project) {
+        val before = history.current
+        history.rebase { clean(transform(it)) }
+        if (history.current == before) return
+        publish()
+    }
+
+    /**
      * Like [editQuietly], for a change of what is shown alone (the part the screens follow while
      * the song plays): not written on its own (audit 16: a whole save each time a part came
      * round); the next save, or [flush] (the app in the background), takes it with it.

@@ -59,6 +59,19 @@ class History<T>(initial: T, private val coalesceWindowMs: Long = 600) {
     }
 
     /**
+     * [transform] on the current value and on every step's value, undo and redo (relecture tour 1,
+     * M3): something the app adds on its own, as if it had always been there, so that undoing an
+     * older step never takes it away. [transform] leaves a value it does not apply to as it is.
+     */
+    fun rebase(transform: (T) -> T) {
+        current = transform(current)
+        for (stack in listOf(undoStack, redoStack)) {
+            for (i in stack.indices) stack[i] = stack[i].let { (v, tag) -> transform(v) to tag }
+        }
+        lastKey = null
+    }
+
+    /**
      * After quiet changes ([replace]) made since [before] (a live recording), makes the whole
      * change one undo step back to [before]. [depth]: [undoDepth] when the take started; the
      * steps recorded since (an edit made during the take) are folded into it, or undoing them

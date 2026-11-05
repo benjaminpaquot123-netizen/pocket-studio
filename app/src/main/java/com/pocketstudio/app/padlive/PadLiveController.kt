@@ -24,6 +24,7 @@ import com.pocketstudio.model.stemView
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,6 +55,9 @@ class PadLiveController(private val vm: RhythmViewModel) {
     val busy: StateFlow<String?> = _busy.asStateFlow()
 
     private var packJob: Job? = null
+
+    /** [packJob] fills a page on its own ([fillShownPage]): a pack the user touches goes first. */
+    private var packQuiet = false
 
     /** Lot B2: « Enregistrer ce que je joue ». */
     val played = PlayedTake(vm)
@@ -182,9 +186,14 @@ class PadLiveController(private val vm: RhythmViewModel) {
      */
     fun loadPack(id: String, quiet: Boolean = false, fete: suspend (Double) -> Map<Int, Pair<Pcm, Int>>) {
         val pack = PadLive.pack(id) ?: return
-        if (packJob?.isActive == true) return
+        // Relecture tour 1, M3: a pack touched while a page fills on its own is taken (that filling
+        // stops), never dropped; one touched while another of the user's is made waits for nothing.
+        val before = packJob?.takeIf { it.isActive }
+        if (before != null && (quiet || !packQuiet)) return
         val page = vm.project.value.padLive.shownPage
+        packQuiet = quiet
         packJob = vm.viewModelScope.launch {
+            before?.cancelAndJoin()
             _busy.value = tr("Préparation du pack %s…", packName(pack))
             try {
                 val p = vm.project.value
@@ -204,9 +213,12 @@ class PadLiveController(private val vm: RhythmViewModel) {
                 // The page's pads that sound stop: their sounds are being replaced.
                 val sounding = vm.padsSoundingNow()
                 (0 until PadLive.PAGE_SIZE).map { PadLive.pad(page, it) }.filter { it in sounding }.forEach(::toggle)
-                // A page filled on its own ([fillShownPage]) is not an undo step, as the ready-to-play set.
                 val put = { q: com.pocketstudio.model.Project -> q.copy(live = PadLive.placed(q.live, page, clips.toList()), padLive = q.padLive.withPack(page, id)) }
-                if (quiet) vm.session.editQuietly(put) else vm.session.edit(transform = put)
+                // A page filled on its own ([fillShownPage]) is not an undo step: it is put in every
+                // step (relecture tour 1, M3: « Annuler » of an older step took it away), wherever the
+                // page is still empty and never had a pack.
+                if (quiet) vm.session.editEverywhere { q -> if (PadLive.filled(q.live, page) > 0 || q.padLive.packOf(page).isNotEmpty()) q else put(q) }
+                else vm.session.edit(transform = put)
                 vm.pushLive()
                 AppLog.add("Pack ${pack.id} sur la page ${PadLive.PAGE_NAMES[page]} : ${sounds.size} sons")
             } catch (e: CancellationException) {

@@ -127,6 +127,40 @@ class PadLiveSaveUndoTest {
         assertNull(vm.padLive.busy.value)
     }
 
+    /**
+     * Relecture tour 1, M3: the page filled on its own stays when an older step is undone (it was
+     * only in the current step), and a pack the user touches while it fills is taken, not dropped.
+     */
+    @Test
+    fun aPageFilledOnItsOwnSurvivesUndoAndGivesWayToTheUsersPack() {
+        val vm = liveVm()
+        vm.session.edit { asLive(it) }
+        val tempo = vm.project.value.tempoBpm
+        vm.session.edit { it.copy(tempoBpm = tempo + 7) }
+        vm.padLive.setPage(2)
+        vm.padLive.fillShownPage { emptyMap() }
+        waitFor("page C's pack") { vm.project.value.live.at(32) != null && vm.padLive.busy.value == null }
+        vm.undo()
+        assertEquals("the older step undone", tempo, vm.project.value.tempoBpm, 0.0)
+        assertTrue("page C kept its sounds", vm.project.value.live.at(32) != null)
+        assertEquals(PadLive.FIRST_PACKS[2], vm.project.value.padLive.packOf(2))
+        vm.redo()
+        assertTrue(vm.project.value.live.at(32) != null)
+
+        // Page D fills on its own, slowly; the user's pack touched meanwhile is the one put there.
+        val gate = kotlinx.coroutines.CompletableDeferred<Unit>()
+        vm.padLive.makerForTest = PackMaker { pack, bpm, beats -> if (pack.id == PadLive.FIRST_PACKS[3]) gate.await(); maker.make(pack, bpm, beats) }
+        vm.padLive.setPage(3)
+        vm.padLive.fillShownPage { emptyMap() }
+        waitFor("the filling under way") { vm.padLive.busy.value != null }
+        val user = PadLive.PACKS.first { it.id != PadLive.FIRST_PACKS[3] && it.style != null }.id
+        vm.padLive.loadPack(user) { emptyMap() }
+        waitFor("the user's pack on page D") { vm.project.value.padLive.packOf(3) == user && vm.padLive.busy.value == null }
+        gate.complete(Unit)
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(200))
+        assertEquals(user, vm.project.value.padLive.packOf(3))
+    }
+
     @Test
     fun aPackOnPageBIsOneUndoStepAndEverythingIsSavedAndReadBack() {
         val vm = liveVm()

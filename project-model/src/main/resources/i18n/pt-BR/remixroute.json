@@ -22,7 +22,6 @@
   "Trop long pour un pad : %d secondes au plus. Choisis un morceau plus court.": "Longo demais para um pad: no máximo %d segundos. Escolha um trecho mais curto.",
   "Trop long pour une piste : %d minutes au plus. Choisis un morceau plus court.": "Longo demais para uma faixa: no máximo %d minutos. Escolha um trecho mais curto.",
   "chanson · 4 pistes": "música · 4 faixas",
-  "« %1$s » est sur le pad %2$d.": "“%1$s” está no pad %2$d.",
   "« %1$s » est sur le pad live %2$d.": "“%1$s” está no pad live %2$d.",
   "« %1$s » est sur une nouvelle piste audio, à la mesure %2$d.": "“%1$s” está numa nova faixa de áudio, no compasso %2$d.",
   "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet).": "“%1$s” substitui “%2$s” no pad %3$d (a seta de desfazer traz de volta).",

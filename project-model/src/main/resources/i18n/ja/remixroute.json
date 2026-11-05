@@ -22,7 +22,6 @@
   "Trop long pour un pad : %d secondes au plus. Choisis un morceau plus court.": "パッドには長すぎます：最大%d秒。もっと短い部分を選んでね。",
   "Trop long pour une piste : %d minutes au plus. Choisis un morceau plus court.": "トラックには長すぎます：最大%d分。もっと短い部分を選んでね。",
   "chanson · 4 pistes": "曲 · 4トラック",
-  "« %1$s » est sur le pad %2$d.": "「%1$s」はパッド%2$dにあります。",
   "« %1$s » est sur le pad live %2$d.": "「%1$s」はライブパッド%2$dにあります。",
   "« %1$s » est sur une nouvelle piste audio, à la mesure %2$d.": "「%1$s」は新しいオーディオトラックの%2$d小節目にあります。",
   "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet).": "「%1$s」がパッド%3$dの「%2$s」と入れ替わりました（戻る矢印で元に戻せます）。",

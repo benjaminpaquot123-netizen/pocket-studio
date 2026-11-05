@@ -1,6 +1,7 @@
 package com.pocketstudio.app.padlive
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.TrackChanges
 import com.pocketstudio.ui.ScaledDropdownMenu
@@ -95,18 +97,24 @@ internal fun PageRow(ui: PadLiveUi, actions: PadLiveActions) {
     }
 }
 
-/** Lot B3: « 🎯 Défi » (the mockup's), lit while a challenge is open. */
+/**
+ * Lot B3: « Défi », lit while a challenge is open. Audit ultra round 2, zone 1, n° 3 (a child of 6 who cannot read
+ * touched a red target and got a box of text): a big gold star, the challenges' own picture (the home's « Défis »
+ * card, the stars won).
+ */
 @Composable
 private fun ChallengeButton(ui: PadLiveUi, actions: PadLiveActions, compact: Boolean) {
     val on = ui.challenge != ChallengeUi.Off
+    val gold = com.pocketstudio.app.onboarding.STAR_GOLD
     Row(
-        Modifier.heightIn(min = 52.dp).clip(RoundedCornerShape(14.dp)).background(if (on) Neon.Amber.copy(alpha = 0.22f) else Neon.Surface)
+        Modifier.heightIn(min = 52.dp).clip(RoundedCornerShape(14.dp)).background(if (on) gold.copy(alpha = 0.26f) else Neon.Surface)
+            .border(1.dp, gold.copy(alpha = if (on) 0.9f else 0.45f), RoundedCornerShape(14.dp))
             .clickable(role = Role.Button, onClick = actions.challenge)
             .semantics { contentDescription = tr("Défi : refais ce rythme") }
             .padding(horizontal = if (compact) 10.dp else 14.dp).testTag("padlive_challenge_open"),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(androidx.compose.material.icons.Icons.Filled.TrackChanges, contentDescription = null, tint = Neon.Red, modifier = Modifier.size(20.dp))
+        Icon(androidx.compose.material.icons.Icons.Filled.Star, contentDescription = null, tint = gold, modifier = Modifier.size(28.dp))
         if (!compact) Text(" " + tr("Défi"), style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, maxLines = 1)
     }
 }

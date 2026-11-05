@@ -22,7 +22,6 @@
   "Trop long pour un pad : %d secondes au plus. Choisis un morceau plus court.": "पैड के लिए बहुत लंबा: ज़्यादा से ज़्यादा %d सेकंड। छोटा हिस्सा चुनो।",
   "Trop long pour une piste : %d minutes au plus. Choisis un morceau plus court.": "ट्रैक के लिए बहुत लंबा: ज़्यादा से ज़्यादा %d मिनट। छोटा हिस्सा चुनो।",
   "chanson · 4 pistes": "गाना · 4 ट्रैक",
-  "« %1$s » est sur le pad %2$d.": "“%1$s” पैड %2$d पर है।",
   "« %1$s » est sur le pad live %2$d.": "“%1$s” लाइव पैड %2$d पर है।",
   "« %1$s » est sur une nouvelle piste audio, à la mesure %2$d.": "“%1$s” एक नए ऑडियो ट्रैक पर है, बार %2$d से।",
   "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet).": "“%1$s” ने पैड %3$d पर “%2$s” की जगह ली (वापस वाला तीर उसे लौटा देता है)।",

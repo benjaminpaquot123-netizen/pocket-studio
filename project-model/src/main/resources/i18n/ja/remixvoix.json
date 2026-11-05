@@ -16,7 +16,6 @@
   "Une mesure plus tard": "1小節後ろへ",
   "Une mesure plus tôt": "1小節前へ",
   "Une mesure plus tôt ou plus tard": "1小節前へ、または後ろへ",
-  "« %1$s » est sur le pad %2$d. Pose-le dans Batterie, sur la partie de ton choix.": "「%1$s」はパッド%2$dにあります。ドラムで好きなパートに置いてね。",
   "« → Pad » copie les mesures choisies sur un pad libre (jamais sur un son que ton rythme joue), « → Live » sur un pad live libre (Live › Pads) pour lancer et couper chaque partie en rythme.": "「→ Pad」は選んだ小節を空きパッドにコピーします（ビートが鳴らしている音には決して上書きしません）。「→ Live」は空きライブパッド（Live › Pads）にコピーし、各パートをタイミングよく開始・停止できます。",
   "Écouter le pad": "パッドを聴く",
   "Reste": "残り",

@@ -151,7 +151,8 @@ class StemBoardRouterTest {
         assertEquals(((3 * 1_000_000 + 96_000) * 1e-7).toFloat(), cut.pcm.data[0], 1e-6f)
         assertEquals(StemSelection(sel().setId, 3, 0, 24_000), edits.cuts.single())
         assertEquals("3:96000:24000:true", host.source!!.reads.single())
-        assertEquals("« Voix 1 » est sur le pad 10.", r.state.value.message)
+        // Audit ultra round 2, zone 1, n° 5: the kit sound it replaces is said too.
+        assertEquals("« Voix 1 » remplace « Tom aigu » sur le pad 10 (la flèche retour le remet).", r.state.value.message)
         assertNull(r.state.value.busy)
         // The next one is « Voix 2 », on the next free pad (pad 10 now has a sound).
         host.p = host.p.copy(drums = host.p.drums.withSample(9, PadSample("a.wav", "Voix 1")))

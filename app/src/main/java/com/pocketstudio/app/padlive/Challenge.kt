@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Star
@@ -388,12 +390,12 @@ internal fun ChallengePanel(
             when (ui) {
                 is ChallengeUi.Ready -> {
                     ChallengeButton(Icons.AutoMirrored.Filled.VolumeUp, tr("Écouter"), "padlive_challenge_listen", Modifier.weight(1f), main = true, onClick = actions.listen)
-                    ChallengeButton(null, tr("À moi !"), "padlive_challenge_go", Modifier.weight(1f), onClick = actions.yourTurn)
+                    ChallengeButton(androidx.compose.material.icons.Icons.Filled.TouchApp, tr("À moi !"), "padlive_challenge_go", Modifier.weight(1f), onClick = actions.yourTurn)
                 }
-                is ChallengeUi.Listening -> ChallengeButton(null, tr("À moi !"), "padlive_challenge_go", Modifier.weight(1f), onClick = actions.yourTurn)
+                is ChallengeUi.Listening -> ChallengeButton(androidx.compose.material.icons.Icons.Filled.TouchApp, tr("À moi !"), "padlive_challenge_go", Modifier.weight(1f), onClick = actions.yourTurn)
                 is ChallengeUi.YourTurn -> {
                     ChallengeButton(Icons.AutoMirrored.Filled.VolumeUp, tr("Réécouter"), "padlive_challenge_listen", Modifier.weight(1f), onClick = actions.listen)
-                    ChallengeButton(null, tr("J'ai fini"), "padlive_challenge_finish", Modifier.weight(1f), main = true, onClick = actions.finish)
+                    ChallengeButton(androidx.compose.material.icons.Icons.Filled.Check, tr("J'ai fini"), "padlive_challenge_finish", Modifier.weight(1f), main = true, onClick = actions.finish)
                 }
                 is ChallengeUi.Done -> {
                     ChallengeButton(Icons.Filled.Refresh, tr("Rejouer"), "padlive_challenge_again", Modifier.weight(1f), main = !ui.result.won, onClick = actions.again)
@@ -485,7 +487,8 @@ private fun ChallengeButton(icon: ImageVector?, label: String, tag: String, modi
         horizontalArrangement = Arrangement.Center,
     ) {
         val tint = if (main) Color.Black else Neon.TextPrimary
-        icon?.let { Icon(it, contentDescription = null, tint = tint, modifier = Modifier.size(18.dp).padding(end = 4.dp)) }
+        // Audit ultra round 2, zone 1, n° 3: each button has its picture (ear, hand, tick, arrow), big enough to read without words.
+        icon?.let { Icon(it, contentDescription = null, tint = tint, modifier = Modifier.size(24.dp).padding(end = 4.dp)) }
         Text(label, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = tint, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }

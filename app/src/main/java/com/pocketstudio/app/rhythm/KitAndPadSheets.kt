@@ -20,6 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -39,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -229,8 +231,8 @@ fun PadSheetContent(ui: PadSheetUi, actions: PadSheetActions, close: () -> Unit)
         if (ui.alone) Text(tr("Joue en boucle, tout seul : change le son pour comparer."), style = MaterialTheme.typography.bodySmall, color = Neon.Acid)
         Text(tr("Son"), style = MaterialTheme.typography.titleSmall)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp), maxItemsInEachRow = 2) {
-            if (ui.hasSample) SoundTile(tr("Son d'origine"), "pad_sound_origin", Modifier.weight(1f), actions.origin)
-            ui.sounds.forEachIndexed { i, name -> SoundTile(name, "pad_sound_$i", Modifier.weight(1f)) { actions.pickSound(i) } }
+            if (ui.hasSample) SoundTile(tr("Son d'origine"), "pad_sound_origin", Modifier.weight(1f), onClick = actions.origin)
+            ui.sounds.forEachIndexed { i, name -> SoundTile(name, "pad_sound_$i", Modifier.weight(1f), current = name == ui.name || name.substringBefore(" · ") == ui.name) { actions.pickSound(i) } }
             OutlinedButton(onClick = actions.more, modifier = Modifier.weight(1f).heightIn(min = 56.dp).testTag("pad_sound_more")) {
                 Icon(Icons.Filled.LibraryMusic, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(6.dp))
@@ -238,10 +240,10 @@ fun PadSheetContent(ui: PadSheetUi, actions: PadSheetActions, close: () -> Unit)
                 Text(tr("Tous les sons…"), maxLines = 2, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
             }
         }
-        // Volume: 0.8 is the kit's own level (100 %).
+        // Audit ultra round 2, zone 1, n° 6: the number is where the slider is (« 100 % » stood over a slider at 80 %).
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(tr("Volume du pad"), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-            Text(percent((ui.volume / 0.8f * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
+            Text(padVolumeWords(ui.volume), style = MonoStyle, color = Neon.Cyan)
         }
         // Audit ultra tour 0 (seat b): the slider is named as its line says (TalkBack read « curseur » alone).
         val volumeName = tr("Volume du pad")
@@ -292,8 +294,25 @@ private fun PadLayers(ui: PadSheetUi, actions: PadSheetActions) {
 }
 
 @Composable
-private fun SoundTile(name: String, tag: String, modifier: Modifier, onClick: () -> Unit) {
+private fun SoundTile(name: String, tag: String, modifier: Modifier, current: Boolean = false, onClick: () -> Unit) {
+    if (current) {
+        // Audit ultra round 2, zone 1, n° 6: the sound on the pad now, marked (filled, ✓, said « sur le pad »).
+        val said = tr("%s, sur le pad", name)
+        androidx.compose.material3.Button(
+            onClick = onClick,
+            colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Neon.Cyan, contentColor = androidx.compose.ui.graphics.Color.Black),
+            modifier = modifier.heightIn(min = 56.dp).semantics(mergeDescendants = true) { contentDescription = said; selected = true }.testTag(tag),
+        ) {
+            Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
+            Spacer(Modifier.width(4.dp))
+            Text(name, maxLines = 2, overflow = TextOverflow.Ellipsis)
+        }
+        return
+    }
     OutlinedButton(onClick = onClick, modifier = modifier.heightIn(min = 56.dp).testTag(tag)) {
         Text(name, maxLines = 2, overflow = TextOverflow.Ellipsis)
     }
 }
+
+/** A pad's volume as its slider shows it (0 to 100 % of its track; the kit's own level is 80 %). */
+internal fun padVolumeWords(volume: Float): String = percent((volume.coerceIn(0f, 1f) * 100).roundToInt())

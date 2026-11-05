@@ -598,8 +598,9 @@ open class ScreenshotTest {
     fun padSheet() = shoot("pad_sheet") {
         Box(Modifier.background(Neon.Surface).padding(top = 12.dp)) {
             com.pocketstudio.app.rhythm.PadSheetContent(
+                // Audit ultra round 2, zone 1, n° 6: the pad's sound now marked (« Kick 2 »), its volume where its slider is.
                 com.pocketstudio.app.rhythm.PadSheetUi(
-                    0, "Kick de ma voix", volume = 0.7f, pan = -0.2f, muted = false, hasSample = true,
+                    0, "Kick 2", volume = 0.7f, pan = -0.2f, muted = false, hasSample = false,
                     sounds = listOf("Kick", "Kick 2", "Kick rond", "Kick sec", "Kick 808"),
                 ),
                 com.pocketstudio.app.rhythm.PadSheetActions(), close = {},
@@ -1205,6 +1206,8 @@ open class ScreenshotTest {
             com.pocketstudio.app.library.LibraryUi(
                 com.pocketstudio.app.library.PacksUi(com.pocketstudio.app.library.IndexState.Ready(index), installed, mapOf("uk_garage" to 0.4f)),
                 target = "le pad 1 (Kick)", sizes = mapOf("retro_techno" to 1_380_000L),
+                // Audit ultra round 2, zone 1, n° 6: a pad held opens it as « Changer le son ».
+                title = "Changer le son", current = "Kick",
             ),
             com.pocketstudio.app.library.LibraryActions(),
         )

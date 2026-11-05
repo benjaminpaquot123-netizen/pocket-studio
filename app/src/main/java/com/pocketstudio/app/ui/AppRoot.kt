@@ -55,6 +55,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.widget.Toast
+import com.pocketstudio.model.hasMusicOfItsOwn
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -505,6 +506,8 @@ fun AppRoot() {
     var libraryTrack by rememberSaveable { mutableStateOf(false) }
     // Audit ultra round 1, n° 3: « Découper « Boys » » touched in the library: that song's cut screen (the Remix opens on it).
     var libraryCutAsk by rememberSaveable { mutableStateOf<String?>(null) }
+    // Audit ultra round 2, zone 1, n° 6: opened from ⋮ › « Bibliothèque de sons » (its own name), not as a pad's « Changer le son ».
+    var libraryFromMenu by rememberSaveable { mutableStateOf(false) }
     if (showLibrary) {
         val packsUi by libraryVm.packs.collectAsStateWithLifecycle()
         val previewing by libraryVm.playing.collectAsStateWithLifecycle()
@@ -524,7 +527,7 @@ fun AppRoot() {
             }
         }
         // A sound still loading when the library closed lands nowhere (libraryVm.closed()).
-        val close = { libraryVm.closed(); showLibrary = false; libraryLive = -1; libraryTrack = false; libraryMine = false; libraryCell = null }
+        val close = { libraryVm.closed(); showLibrary = false; libraryLive = -1; libraryTrack = false; libraryMine = false; libraryCell = null; libraryFromMenu = false }
         val live = libraryLive
         val cell = com.pocketstudio.app.live.LiveCell.read(libraryCell)
         val forTrack = libraryTrack
@@ -558,6 +561,17 @@ fun AppRoot() {
                         startMine = libraryMine,
                         songs = remixVm.sets.collectAsStateWithLifecycle().value.let { all ->
                             all.sortedByDescending { it.id == libProject.remix.setId }.map { it.id to it.name }
+                        },
+                        // Audit ultra round 2, zone 1, n° 6: a pad's « Changer le son », its sound now marked.
+                        title = when {
+                            libraryFromMenu && libraryMine -> tr("Ma bibliothèque")
+                            libraryFromMenu || forTrack || cell != null -> null
+                            else -> tr("Changer le son")
+                        },
+                        current = when {
+                            forTrack || cell != null -> null
+                            live >= 0 -> libProject.live.at(live)?.name
+                            else -> com.pocketstudio.app.rhythm.padName(libProject, lane)
                         },
                     ),
                     com.pocketstudio.app.library.LibraryActions(
@@ -925,6 +939,8 @@ fun AppRoot() {
     var padLiveFromWelcome by rememberSaveable(key = "pad_live_from_welcome") { mutableStateOf(false) }
     // Audit ultra round 2, n° 21: « Enregistrer ma voix ou ma guitare » chosen at the first launch (opened below).
     var voiceFromWelcome by rememberSaveable(key = "voice_from_welcome") { mutableStateOf(false) }
+    // Audit ultra round 2, zone 1, n° 3: « Défis » (the stars) touched: Pad Live opens on its challenges.
+    var padLiveChallenge by rememberSaveable(key = "pad_live_challenge") { mutableStateOf(false) }
     com.pocketstudio.app.onboarding.FirstLaunch(
         // After the opening (BrandIntro): a window would cover it.
         show = !settings.guideSeen && !com.pocketstudio.app.onboarding.Intro.playing,
@@ -948,6 +964,7 @@ fun AppRoot() {
             later = firstLaunchSeen,
             padLive = { firstLaunchSeen(); padLiveFromWelcome = true },
             voice = { firstLaunchSeen(); voiceFromWelcome = true },
+            challenges = { firstLaunchSeen(); padLiveChallenge = true; padLiveFromWelcome = true },
         ),
         playDemo = { if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.toggleSong() else rhythmVm.togglePlay() },
     )
@@ -1468,6 +1485,22 @@ fun AppRoot() {
     var remixHome by rememberSaveable(key = "remix_home") { mutableStateOf(false) }
     var remixWay by rememberSaveable(key = "remix_way") { mutableStateOf<String?>(null) }
     val startMissions: () -> Unit = { modeAsk = START_MISSIONS }
+    val openPadLiveHome: () -> Unit = {
+        // Pad Live (n° 25): the « Live » project created the first time, then resumed (in Mes projets too).
+        launch.choose(comeBack = true)
+        padLiveWelcome = true
+        showPadLive = true
+        val home = projectsVm.state.value.projects.firstOrNull { it.padLive && !it.unreadable }
+        // Audit ultra round 2, zone 1, n° 4 (seat A b: « Remix » left behind in silence): Pad Live has its own project, said.
+        val left = rhythmVm.project.value.takeIf { p -> !noProject && !p.padLive.home && (home == null || home.id != rhythmVm.projectId) && (p.remix.setId != null || p.hasMusicOfItsOwn()) }
+        if (left != null) {
+            Toast.makeText(context, tr("Pad Live a son propre projet « Live » : « %s » t'attend dans Mes projets.", com.pocketstudio.model.DefaultNames.shown(left.name)), Toast.LENGTH_LONG).show()
+        }
+        when {
+            home == null -> projectsVm.create(com.pocketstudio.model.PadLive.newProject()) { id -> openProject(id) }
+            noProject || home.id != rhythmVm.projectId -> openProject(home.id)
+        }
+    }
     com.pocketstudio.app.onboarding.LaunchWatch(launch, rhythmVm)
     // Drawn last, over the studio (see the end of the screen below).
     val launchChooser: @Composable () -> Unit = { com.pocketstudio.app.onboarding.LaunchChooser(rhythmVm, projectsVm, show = launchShown, simple = simple,
@@ -1493,17 +1526,8 @@ fun AppRoot() {
             },
             newSong = { launch.choose(comeBack = true); projectsNewOnly = true; showProjects = true },
             projects = { launch.choose(comeBack = true); projectsNewOnly = false; showProjects = true },
-            padLive = {
-                // Pad Live (n° 25): the « Live » project created the first time, then resumed (in Mes projets too).
-                launch.choose(comeBack = true)
-                padLiveWelcome = true
-                showPadLive = true
-                val home = projectsVm.state.value.projects.firstOrNull { it.padLive && !it.unreadable }
-                when {
-                    home == null -> projectsVm.create(com.pocketstudio.model.PadLive.newProject()) { id -> openProject(id) }
-                    noProject || home.id != rhythmVm.projectId -> openProject(home.id)
-                }
-            },
+            padLive = { openPadLiveHome() },
+            challenges = { padLiveChallenge = true; openPadLiveHome() },
             remix = {
                 // Owner (2026-10-29): the song is separated first, outside any project; then it goes into a
                 // project already there, a new one (« Simple ou Pro ? » first) or a song built on it.
@@ -2157,7 +2181,11 @@ fun AppRoot() {
         // Audit stage 2 (NavigationMapTest): the sound library in 3 touches from home on a small phone
         // (Rythme's button is below the fold there: a scroll made it 4).
         TopMenuItem(tr("Bibliothèque de sons"), "more_library") {
-            libraryLive = -1; libraryMine = false; libraryCell = null; libraryTrack = false; showLibrary = true
+            libraryLive = -1; libraryMine = false; libraryCell = null; libraryTrack = false; libraryFromMenu = true; showLibrary = true
+        },
+        // Audit ultra round 2, zone 1, n° 7 (seat A b looked for « Ma bibliothèque » by its name): the sounds kept, one touch away.
+        TopMenuItem(tr("Ma bibliothèque"), "more_mine") {
+            libraryLive = -1; libraryMine = true; libraryCell = null; libraryTrack = false; libraryFromMenu = true; showLibrary = true
         },
         // Owner (2026-10-29): « Remix », its name everywhere else.
         TopMenuItem(tr("Remix"), "more_remix", openRemix),
@@ -3475,7 +3503,11 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                         val now = rhythmVm.project.value
                                         when (now.remix.setId) {
                                             set.id -> Unit
-                                            null -> rhythmVm.useSong(set, choice = com.pocketstudio.model.SongImport.defaults(now).copy(bricks = false), asSource = true)
+                                            null -> {
+                                                rhythmVm.useSong(set, choice = com.pocketstudio.model.SongImport.defaults(now).copy(bricks = false), asSource = true)
+                                                // Audit ultra round 2, zone 1, n° 7 (seat A b: « Annuler » lit up, nothing said): what came in, said.
+                                                Toast.makeText(context, tr("« %s » est dans ton projet, muette, pour la découper (la flèche retour l'enlève).", set.name), Toast.LENGTH_LONG).show()
+                                            }
                                             else -> songImport = set to (preview?.takeIf { it.setId == set.id }?.on ?: remixVm.heardFor(set.id))
                                         }
                                     },
@@ -3726,6 +3758,8 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
     com.pocketstudio.app.report.BugReportHost(bugVm, com.pocketstudio.model.DefaultNames.shown(bugProject.name))
 }
 
+                challengeAsked = padLiveChallenge,
+                challengeOpened = { padLiveChallenge = false },
 @Composable
 private fun LaunchPrompts(vm: MainViewModel) {
     val context = LocalContext.current

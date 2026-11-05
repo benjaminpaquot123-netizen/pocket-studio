@@ -22,7 +22,6 @@
   "Trop long pour un pad : %d secondes au plus. Choisis un morceau plus court.": "Bir pad için fazla uzun: en fazla %d saniye. Daha kısa bir parça seç.",
   "Trop long pour une piste : %d minutes au plus. Choisis un morceau plus court.": "Bir kanal için fazla uzun: en fazla %d dakika. Daha kısa bir parça seç.",
   "chanson · 4 pistes": "şarkı · 4 kanal",
-  "« %1$s » est sur le pad %2$d.": "“%1$s”, %2$d. pad'de.",
   "« %1$s » est sur le pad live %2$d.": "“%1$s”, %2$d. canlı pad'de.",
   "« %1$s » est sur une nouvelle piste audio, à la mesure %2$d.": "“%1$s” yeni bir ses kanalında, %2$d. ölçüden itibaren.",
   "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet).": "“%1$s”, %3$d. pad'de “%2$s” yerine geçti (geri al oku eskisini getirir).",

@@ -22,7 +22,6 @@
   "Trop long pour un pad : %d secondes au plus. Choisis un morceau plus court.": "패드에 넣기엔 너무 길어요: 최대 %d초. 더 짧은 구간을 고르세요.",
   "Trop long pour une piste : %d minutes au plus. Choisis un morceau plus court.": "트랙에 넣기엔 너무 길어요: 최대 %d분. 더 짧은 구간을 고르세요.",
   "chanson · 4 pistes": "노래 · 트랙 4개",
-  "« %1$s » est sur le pad %2$d.": "“%1$s”은(는) 패드 %2$d에 있어요.",
   "« %1$s » est sur le pad live %2$d.": "“%1$s”은(는) 라이브 패드 %2$d에 있어요.",
   "« %1$s » est sur une nouvelle piste audio, à la mesure %2$d.": "“%1$s”은(는) 새 오디오 트랙의 %2$d마디부터 있어요.",
   "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet).": "“%1$s”이(가) 패드 %3$d의 “%2$s”을(를) 대신해요 (되돌리기 화살표로 복구돼요).",

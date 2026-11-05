@@ -207,15 +207,12 @@ class StemBoardRouter(
             is StemDestination.Pad -> {
                 val lane = StemRouting.padFor(p, dest.pad) ?: return ask(listOf(sel))
                 val name = StemRouting.nextName(p.drums.lanes.mapNotNull { it.sample?.name }, french)
-                val replaced = p.drums.lanes[lane].sample?.name
+                // Audit ultra round 2, zone 1, n° 5: the kit's own sound it replaces said too (« Tom médium »), not only a sample.
+                val replaced = com.pocketstudio.app.rhythm.padName(p, lane)
                 launchWork(tr("%s vers le pad…", label)) {
                     val pcm = cut(sel, fitted = true) ?: return@launchWork null
                     host.putOnPads(listOf(PadCut(lane, pcm, name)))
-                    if (replaced != null) {
-                        tr("« %1\$s » remplace « %2\$s » sur le pad %3\$d (la flèche retour le remet).", DefaultNames.shownSample(name), DefaultNames.shownSample(replaced), lane + 1)
-                    } else {
-                        tr("« %1\$s » est sur le pad %2\$d.", DefaultNames.shownSample(name), lane + 1)
-                    }
+                    tr("« %1\$s » remplace « %2\$s » sur le pad %3\$d (la flèche retour le remet).", DefaultNames.shownSample(name), replaced, lane + 1)
                 }
             }
             is StemDestination.Instrument -> {

@@ -2076,10 +2076,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                 AppLog.add("Pads prêts à jouer : ${made.size} sons posés")
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
-            } catch (e: Exception) {
-                AppLog.add("Pads prêts à jouer : échec (${e.message ?: e.javaClass.simpleName})")
             } catch (e: OutOfMemoryError) {
                 AppLog.add("Pads prêts à jouer : mémoire insuffisante")
+            } catch (e: Throwable) {
+                // Audit ultra round 2, zone 1: an engine that cannot take a sound ends the set here, never the app.
+                AppLog.add("Pads prêts à jouer : échec (${e.message ?: e.javaClass.simpleName})")
             } finally {
                 _liveStarting.value = false
             }
@@ -6264,7 +6265,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val french = STEM_LABELS.getOrElse(stem) { "Piste" }
         val name = RemixVoice.cutName(project.value, french)
         _remixCut.value = null
-        sampleJob(tr("%s vers le pad…", tr(STEM_LABELS.getOrElse(stem) { "Piste" })), lane = lane, done = { cutDone(lane) }) {
+        // Audit ultra round 2, zone 1, n° 5: the drum sound the cut takes the place of, said with it.
+        val replaced = padName(project.value, lane)
+        sampleJob(tr("%s vers le pad…", tr(STEM_LABELS.getOrElse(stem) { "Piste" })), lane = lane, done = { cutDone(lane, replaced) }) {
             val audio = source.extract(stem, r.startFrame(OfflineExport.SAMPLE_RATE), count)
             if (audio.isEmpty()) throw UserMessage(tr("Ce passage est après la fin du morceau."))
             val (sample, prepared) = padSamples.add(Pcm(audio, 2, OfflineExport.SAMPLE_RATE), name)  // French, shown translated
@@ -6273,10 +6276,11 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** The cut is on pad [lane]: selected (the drums open on it), and said on the Remix page. */
-    private fun cutDone(lane: Int) {
+    private fun cutDone(lane: Int, replaced: String) {
         selectPad(lane)
         val name = project.value.drums.lanes.getOrNull(lane)?.sample?.name ?: return
-        _remixCut.value = RemixCut(lane, tr("« %1\$s » est sur le pad %2\$d. Pose-le dans Batterie, sur la partie de ton choix.", com.pocketstudio.model.DefaultNames.shownSample(name), lane + 1))
+        _remixCut.value = RemixCut(lane, tr("« %1\$s » remplace « %2\$s » sur le pad %3\$d (la flèche retour le remet). Pose-le dans Batterie, sur la partie de ton choix.",
+            com.pocketstudio.model.DefaultNames.shownSample(name), replaced, lane + 1))
     }
 
     /**
@@ -7811,7 +7815,17 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private class UserMessage(message: String) : Exception(message)
 
     /** What a sound that could not be put in place says (pads and audio tracks alike). */
-    private fun failedWords(e: Exception): String = when (e) {
+    /**
+     * A sound that could not go on its pad: the pad's own line says why (Pad Live, the Live page, the pad's card in
+     * Pro) and, for a drum pad, a word over the screen too (Audit ultra round 2, zone 1, n° 1: the Mode simple's pad
+     * shows no such line, « Poser » looked like it did nothing).
+     */
+    private fun failedPlacing(words: String, live: Int?) {
+        _sampleTask.value = SampleTask.Failed(words)
+        if (live == null) _notice.value = tr("Le son n'a pas pu être posé sur le pad : %s", words)
+    }
+
+    private fun failedWords(e: Throwable): String = when (e) {
         is UserMessage -> e.message!!
         // Fix 2, n° 3: the sound could not be written (a full phone, most likely), in plain words.
         is java.io.IOException -> tr("Le son n'a pas pu être rangé sur le téléphone : il manque peut-être de la place.")
@@ -7862,11 +7876,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             } catch (e: OutOfMemoryError) {
                 recorder = null
                 AppLog.add("Son du pad : mémoire insuffisante")
-                _sampleTask.value = SampleTask.Failed(tr("Pas assez de mémoire pour ce son : essaie plus court."))
-            } catch (e: Exception) {
+                failedPlacing(tr("Pas assez de mémoire pour ce son : essaie plus court."), live)
+            } catch (e: Throwable) {
+                // Audit ultra round 2, zone 1, n° 1: any failure (an engine that cannot take the sound too) is said and
+                // ends here: the coroutine never dies with the pad left « busy » for good and nothing said.
                 recorder = null
-                AppLog.add("Son du pad : échec (${e.message})")
-                _sampleTask.value = SampleTask.Failed(failedWords(e))
+                AppLog.add("Son du pad : échec (${e.message ?: e.javaClass.simpleName})")
+                failedPlacing(failedWords(e), live)
             }
         }
         if (cancellable) resampleJob = job

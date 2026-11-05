@@ -42,11 +42,23 @@ fun PadLiveRoute(
     fete: suspend (Double) -> Map<Int, Pair<Pcm, Int>>,
     welcome: Boolean,
     welcomed: () -> Unit,
+    /** Audit ultra round 2, zone 1, n° 3: opened from the home's « Défis » (the star): the challenge's panel opens. */
+    challengeAsked: Boolean = false,
+    challengeOpened: () -> Unit = {},
 ) = LiveStateHost(vm, lifecycleOwner, liveEditing = null) { live, _ ->
     HideSystemBars(true)
     androidx.activity.compose.BackHandler(onBack = close)
-    // An empty « Live » project: the ready-to-play set on page A (once, as the Live page does).
-    LaunchedEffect(Unit) { vm.fillLiveStarter(fete) }
+    // An empty « Live » project: the ready-to-play set on page A (once, as the Live page does). Audit ultra round 2,
+    // zone 1, n° 2: only on the « Live » project itself (Pad Live shows the project left a moment while it opens).
+    val home = live.project.padLive.home
+    LaunchedEffect(home) { if (home) vm.fillLiveStarter(fete) }
+    LaunchedEffect(home, challengeAsked) {
+        if (home && challengeAsked) {
+            // No « coup » pad yet (the set being made): the panel asks again as the pads come ([ChallengeController.refresh]).
+            if (!vm.padLive.challenge.open) vm.padLive.challenge.open()
+            challengeOpened()
+        }
+    }
     LaunchedEffect(welcome) {
         if (welcome) {
             vm.padLive.welcome()

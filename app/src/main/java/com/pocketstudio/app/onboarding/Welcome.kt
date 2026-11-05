@@ -70,6 +70,8 @@ class WelcomeActions(
     val chooseMode: (Boolean) -> Unit = {},
     /** Pad Live (lot B3: the child persona installed the app and found no Pad Live): the pads ready to play, straight away. */
     val padLive: () -> Unit = {},
+    /** Audit ultra round 2, zone 1, n° 3: « Défis » (three stars): Pad Live opened on its challenges, straight away. */
+    val challenges: () -> Unit = {},
     /**
      * Audit ultra round 2, n° 21 (seat B b, a guitarist: nothing here to record a voice or a guitar):
      * the first project's beat, on the microphone's page (no « Simple ou Pro ? », as « Plus tard »).
@@ -123,6 +125,7 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, si
                         remix = { if (!leaving) asking = "remix" },
                         // No « Simple ou Pro ? » for Pad Live: it has its own simple level.
                         padLive = { if (!leaving) actions.padLive() },
+                        challenges = { if (!leaving) actions.challenges() },
                         voice = { if (!leaving) { demoReady = false; actions.voice() } },
                         later = { leaving = false; demoReady = false; actions.later() },
                     ),
@@ -211,6 +214,8 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
                 tr("Le micro enregistre par-dessus ta musique, pile en rythme."),
                 Neon.Red, onClick = actions.voice, tag = "welcome_voice",
             ) },
+            // Audit ultra round 2, zone 1, n° 3: the challenges as a picture (a child who cannot read looks for a star).
+            { ChallengeCard(actions.challenges) },
             )
             if (wide) com.pocketstudio.ui.AdaptiveColumns(choices, minCellWidth = 380.dp, maxColumns = 2, spacing = 16.dp)
             else choices.forEach { it() }

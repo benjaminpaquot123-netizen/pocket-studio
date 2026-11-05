@@ -22,7 +22,6 @@
   "Trop long pour un pad : %d secondes au plus. Choisis un morceau plus court.": "Zu lang für ein Pad: höchstens %d Sekunden. Wähl einen kürzeren Ausschnitt.",
   "Trop long pour une piste : %d minutes au plus. Choisis un morceau plus court.": "Zu lang für eine Spur: höchstens %d Minuten. Wähl einen kürzeren Ausschnitt.",
   "chanson · 4 pistes": "Song · 4 Spuren",
-  "« %1$s » est sur le pad %2$d.": "„%1$s“ liegt auf Pad %2$d.",
   "« %1$s » est sur le pad live %2$d.": "„%1$s“ liegt auf Live-Pad %2$d.",
   "« %1$s » est sur une nouvelle piste audio, à la mesure %2$d.": "„%1$s“ liegt auf einer neuen Audiospur, ab Takt %2$d.",
   "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet).": "„%1$s“ ersetzt „%2$s“ auf Pad %3$d (der Zurück-Pfeil holt es wieder).",

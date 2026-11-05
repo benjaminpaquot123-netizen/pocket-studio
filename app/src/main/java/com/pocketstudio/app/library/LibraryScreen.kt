@@ -80,6 +80,10 @@ class LibraryUi(
     val startMine: Boolean = false,
     /** Audit ultra round 1, n° 3: the songs separated on the phone (id, name), the project's first: their stems are cut from here. */
     val songs: List<Pair<String, String>> = emptyList(),
+    /** Audit ultra round 2, zone 1, n° 6: the screen's title (null: « Bibliothèque de sons »); a pad held says « Changer le son ». */
+    val title: String? = null,
+    /** The sound on the target now (« Kick »), marked in the list where it is (null: none). */
+    val current: String? = null,
 )
 
 class LibraryActions(
@@ -115,7 +119,7 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
         Column(Modifier.fillMaxSize().background(Neon.Background).testTag("library")) {
             Row(Modifier.fillMaxWidth().padding(start = 16.dp, end = 4.dp, top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
-                    com.pocketstudio.ui.WholeWordsText(tr("Bibliothèque de sons"), style = MaterialTheme.typography.titleLarge)
+                    com.pocketstudio.ui.WholeWordsText(ui.title ?: tr("Bibliothèque de sons"), style = MaterialTheme.typography.titleLarge, modifier = Modifier.testTag("library_title"))
                     Text(tr("Pour %s", ui.target), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 }
                 // The song's Play/Stop, as discreet as in the top bar: stop it to hear the sounds alone.
@@ -156,11 +160,21 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                     shelvesOf(libraryChoices(kind, ui.packs.installed, ui.styleId), ui.packs.installed, ui.styleId, party = true)
                 }
                 val mine = ui.mine.filter { it.kind == kind }
+                // Audit ultra round 2, zone 1, n° 6: the sound on the pad now, marked where it is in the list.
+                val current = androidx.compose.runtime.remember(shelves, mine, ui.current) {
+                    ui.current?.let { now ->
+                        // A sound's name as stored on the pad (the kit's are already in the language shown).
+                        (shelves.flatMap { it.all } + mine.map { SoundOption(SoundRef.Mine(it.id), it.name) }).firstOrNull { o ->
+                            o.name.substringBefore(" · ") == now || o.name == now
+                        }?.ref
+                    }
+                }
                 NeonCard(modifier = Modifier.testTag("library_sounds")) {
                     SectionLabel(tr("Sons"), foldKey = "Sons de la bibliothèque")
                     ShelfBrowser(
                         ShelfBrowserUi(
                             shelves, kind, recents = ui.recents, favorites = ui.favorites, playing = ui.playing, tag = "library",
+                            chosen = current, chosenNote = tr("✓ Sur le pad maintenant"),
                             // The user's own sounds of this family found at once, as before (« À moi » first).
                             // « Ma bibliothèque » asked for (a live pad): there even when it is empty, to say so.
                             start = MINE.takeIf { mine.isNotEmpty() || ui.startMine }, stateKey = "library_$kind",

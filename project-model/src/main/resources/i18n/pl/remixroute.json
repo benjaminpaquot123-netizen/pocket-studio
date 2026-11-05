@@ -22,7 +22,6 @@
   "Trop long pour un pad : %d secondes au plus. Choisis un morceau plus court.": "Za długie na pad: najwyżej %d sekund. Wybierz krótszy fragment.",
   "Trop long pour une piste : %d minutes au plus. Choisis un morceau plus court.": "Za długie na ścieżkę: najwyżej %d minut. Wybierz krótszy fragment.",
   "chanson · 4 pistes": "piosenka · 4 ścieżki",
-  "« %1$s » est sur le pad %2$d.": "„%1$s” jest na padzie %2$d.",
   "« %1$s » est sur le pad live %2$d.": "„%1$s” jest na padzie live %2$d.",
   "« %1$s » est sur une nouvelle piste audio, à la mesure %2$d.": "„%1$s” jest na nowej ścieżce audio, od taktu %2$d.",
   "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet).": "„%1$s” zastępuje „%2$s” na padzie %3$d (strzałka cofania go przywraca).",

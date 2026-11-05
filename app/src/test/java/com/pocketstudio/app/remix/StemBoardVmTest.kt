@@ -199,7 +199,8 @@ class StemBoardVmTest {
         vm.selectPad(0)  // the kick, selected: the stretch still never goes there
         val depth = vm.session.undoDepth
         vm.stemBoard.send(StemSelection(set.id, 3, 96_000, 144_000), StemDestination.Pad())
-        assertEquals("« Voix 1 » est sur le pad 9.", said(vm))
+        // Audit ultra round 2, zone 1, n° 5: the kit sound it replaces is said too.
+        assertEquals("« Voix 1 » remplace « Tom médium » sur le pad 9 (la flèche retour le remet).", said(vm))
         val p = vm.project.value
         assertNull(p.drums.lanes[0].sample)
         assertNull("the kit's Kick 2, unplayed, stays (audit ultra round 1, n° 2)", p.drums.lanes[1].sample)

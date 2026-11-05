@@ -22,7 +22,6 @@
   "Trop long pour un pad : %d secondes au plus. Choisis un morceau plus court.": "Demasiado largo para un pad: %d segundos como máximo. Elige un fragmento más corto.",
   "Trop long pour une piste : %d minutes au plus. Choisis un morceau plus court.": "Demasiado largo para una pista: %d minutos como máximo. Elige un fragmento más corto.",
   "chanson · 4 pistes": "canción · 4 pistas",
-  "« %1$s » est sur le pad %2$d.": "“%1$s” está en el pad %2$d.",
   "« %1$s » est sur le pad live %2$d.": "“%1$s” está en el pad live %2$d.",
   "« %1$s » est sur une nouvelle piste audio, à la mesure %2$d.": "“%1$s” está en una nueva pista de audio, en el compás %2$d.",
   "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet).": "“%1$s” reemplaza a “%2$s” en el pad %3$d (la flecha de deshacer lo devuelve).",

@@ -265,12 +265,10 @@ fun RhythmScreen(
     var kitSheet by rememberSaveable { mutableStateOf(false) }
     val sheetOf: (Int) -> Unit = { lane -> actions.selectPad(lane); padSheet = lane }
     // Owner (2026-11-04): a pad held goes straight to « Changer le son » (the library, for that pad), as the
-    // pad card's button does; its sheet (volume, pan, layers…) is the card's « Réglages du pad ». While the
-    // sampler is busy (the library's button is off then), the sheet as before.
-    val busySampler = padSound.task is SampleTask.Busy || padSound.task is SampleTask.Recording
-    val hold: (Int) -> Unit = { lane ->
-        if (busySampler) sheetOf(lane) else { actions.selectPad(lane); actions.dismissSampleError(); actions.openLibrary() }
-    }
+    // pad card's button does; its sheet (volume, pan, layers…) is the card's « Réglages du pad ». Audit ultra
+    // round 2, zone 1, n° 6 (owner: « toujours le même »): always, a sound still being put on a pad too (the
+    // library's « Poser » then says to wait); it showed the pad's sheet then, a pad stuck « busy » for good.
+    val hold: (Int) -> Unit = { lane -> actions.selectPad(lane); actions.dismissSampleError(); actions.openLibrary() }
     androidx.compose.runtime.LaunchedEffect(openPad) {
         openPad?.takeIf { it in project.drums.lanes.indices }?.let(sheetOf)
         if (openPad != null) padOpened()
@@ -1077,7 +1075,7 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
         val volume = project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(lane))?.volume ?: 0.8f
         if (simple) {
             // The Mode simple: another sound and its volume (its own sound can go back to the kit's).
-            LabeledSlider(tr("Volume du pad"), percent((volume / 0.8f * 100).roundToInt()), volume, 0f..1f) { actions.setPadVolume(lane, it) }
+            LabeledSlider(tr("Volume du pad"), padVolumeWords(volume), volume, 0f..1f) { actions.setPadVolume(lane, it) }
             if (sample != null && !busy) {
                 KeepInLibraryButton(actions)
                 TextButton(onClick = actions.removeSample, modifier = Modifier.testTag("remove_sample")) { Text(tr("Revenir au son %s", DrumKitInfo.names[lane])) }
@@ -1095,7 +1093,7 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
                 com.pocketstudio.ui.WholeWordsText(tr("Toute la batterie"), textAlign = TextAlign.Center)
             }
         }
-        LabeledSlider(tr("Volume du pad"), percent((volume / 0.8f * 100).roundToInt()), volume, 0f..1f) { actions.setPadVolume(lane, it) }
+        LabeledSlider(tr("Volume du pad"), padVolumeWords(volume), volume, 0f..1f) { actions.setPadVolume(lane, it) }
         val pan = project.drums.lanes[lane].pan
         PanRow(tr("Place du pad"), pan, onChange = { actions.setPadPanOf(lane, it) }, onEnd = { actions.padPanDone(lane) }, tag = "pad_sound_pan")
         val info = sample?.let { ui.info[it.file] }

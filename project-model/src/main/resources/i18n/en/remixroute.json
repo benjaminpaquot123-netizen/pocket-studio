@@ -22,7 +22,6 @@
   "Trop long pour un pad : %d secondes au plus. Choisis un morceau plus court.": "Too long for a pad: %d seconds at most. Choose a shorter stretch.",
   "Trop long pour une piste : %d minutes au plus. Choisis un morceau plus court.": "Too long for a track: %d minutes at most. Choose a shorter stretch.",
   "chanson · 4 pistes": "song · 4 tracks",
-  "« %1$s » est sur le pad %2$d.": "“%1$s” is on pad %2$d.",
   "« %1$s » est sur le pad live %2$d.": "“%1$s” is on live pad %2$d.",
   "« %1$s » est sur une nouvelle piste audio, à la mesure %2$d.": "“%1$s” is on a new audio track, at bar %2$d.",
   "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet).": "“%1$s” replaces “%2$s” on pad %3$d (the undo arrow brings it back).",

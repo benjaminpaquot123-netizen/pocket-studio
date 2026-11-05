@@ -355,13 +355,17 @@ private fun AutoRow(model: CutModel, finding: Boolean, onAuto: (AutoCut) -> Unit
 private fun Menu(icon: ImageVector, label: String, value: String, tag: String, options: List<Pair<String, () -> Unit>>, modifier: Modifier) {
     var open by remember { mutableStateOf(false) }
     Box(modifier) {
+        // Audit ultra round 2, zone 1, n° 7 (TalkBack said « Coupes : » alone): the menu and its value said as one.
+        val said = "$label $value"
         Row(
             Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(24.dp)).background(Neon.SurfaceHigh)
-                .clickable(role = Role.Button) { open = true }.padding(start = 10.dp, end = 4.dp).testTag(tag),
+                .clickable(role = Role.Button) { open = true }
+                .semantics(mergeDescendants = true) { contentDescription = said }
+                .padding(start = 10.dp, end = 4.dp).testTag(tag),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // The icon names the menu (its words for TalkBack): the value reads in full, on two lines if it must.
-            Icon(icon, contentDescription = label, tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))
+            // The icon names the menu (its words for TalkBack, with the value): the value reads in full, on two lines if it must.
+            Icon(icon, contentDescription = null, tint = Neon.TextSecondary, modifier = Modifier.size(18.dp))
             Spacer(Modifier.size(6.dp))
             Text(value, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 2, modifier = Modifier.weight(1f, fill = false))
             Icon(Icons.Filled.ArrowDropDown, contentDescription = null, modifier = Modifier.size(18.dp))

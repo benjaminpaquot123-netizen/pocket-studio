@@ -204,6 +204,8 @@ class ShelfBrowserUi(
     /** The sound heard now, and the one chosen (the assistant's line). */
     val playing: SoundRef? = null,
     val chosen: SoundRef? = null,
+    /** Audit ultra round 2, zone 1, n° 6: the chosen sound's line in its tile (« ✓ Sur le pad maintenant »); null: its pack. */
+    val chosenNote: String? = null,
     /** Prefix of the test tags. */
     val tag: String = "shelf",
     /** The words of the button that puts the sound in place, translated (« Poser »). */
@@ -439,7 +441,7 @@ private fun Sounds(options: List<SoundOption>, ui: ShelfBrowserUi, actions: Shel
             title = tr(option.name.substringBefore(" · ")), icon = if (playing) Icons.Filled.GraphicEq else look.icon,
             accent = look.color, selected = playing || chosen,
             onClick = { if (ui.pickOnTap) actions.choose(option) else actions.preview(option) },
-            subtitle = if (playing) tr("En écoute…") else source,
+            subtitle = if (playing) tr("En écoute…") else if (chosen && ui.chosenNote != null) ui.chosenNote else source,
             wave = option.wave,
             trailing = {
                 Row(verticalAlignment = Alignment.CenterVertically) {

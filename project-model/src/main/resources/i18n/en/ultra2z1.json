@@ -1,0 +1,11 @@
+{
+  "Le son n'a pas pu être posé sur le pad : %s": "The sound could not go on the pad: %s",
+  "Défis : écoute un rythme, refais-le sur les pads, gagne des étoiles.": "Challenges: listen to a rhythm, play it back on the pads, win stars.",
+  "Défis": "Challenges",
+  "Écoute un rythme, refais-le sur les pads : gagne des étoiles.": "Listen to a rhythm, play it back on the pads: win stars.",
+  "%s, sur le pad": "%s, on the pad",
+  "✓ Sur le pad maintenant": "✓ On the pad now",
+  "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet). Pose-le dans Batterie, sur la partie de ton choix.": "“%1$s” replaces “%2$s” on pad %3$d (the undo arrow brings it back). Place it in Drums, in the part you want.",
+  "« %s » est dans ton projet, muette, pour la découper (la flèche retour l'enlève).": "“%s” is in your project, muted, to be cut (the undo arrow takes it out).",
+  "Pad Live a son propre projet « Live » : « %s » t'attend dans Mes projets.": "Pad Live has its own “Live” project: “%s” waits for you in My projects."
+}

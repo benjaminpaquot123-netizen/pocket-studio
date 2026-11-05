@@ -494,7 +494,9 @@ abstract class HumanTester(private val seat: String) {
     protected fun standInForTheStarter() {
         val vm = rhythm() ?: error("no project")
         if (vm.project.value.live.at(4) != null) return
-        com.pocketstudio.engine.NativeEngine.sink = BenchEngine()
+        // Round 2 (zone 1, n° 2): also during a seat (the engine the bench kept stays once the set is made).
+        val before = com.pocketstudio.engine.NativeEngine.sink
+        com.pocketstudio.engine.NativeEngine.sink = before ?: BenchEngine()
         try {
             vm.fillLiveStarter { _ ->
                 com.pocketstudio.model.LiveStarter.PADS.indices.associateWith { i ->
@@ -510,7 +512,7 @@ abstract class HumanTester(private val seat: String) {
                 Thread.sleep(10)
             }
         } finally {
-            com.pocketstudio.engine.NativeEngine.sink = null
+            com.pocketstudio.engine.NativeEngine.sink = before
         }
     }
 
@@ -707,7 +709,15 @@ abstract class HumanTester(private val seat: String) {
         // Round 1 (lot banc): a sound recorded at the microphone for a pad (« Enregistrer ma voix », a live pad) becomes the
         // engine's sample when it ends (NativeSample.create): the bench's engine comes while it records.
         if (NativeEngine.sink == null && (takeUnderWay(v) || previewsWanted() || padTakeRecording(v))) NativeEngine.sink = engine
+        // Audit ultra round 2 (zone 1, n° 2, seat A c): Pad Live opened by the tester's own touch (not an amenée) showed 16
+        // empty pads: a phone makes its ready-to-play set with the engine as it opens (PadLiveReadyEveryWayTest), the
+        // bench's had gone. The bench makes it as for the amenée.
+        if (v != null && padLiveAwaitsItsSet(v)) standInForTheStarter()
     }
+
+    /** Pad Live on screen, its « Live » project still waiting for its ready-to-play set (nothing making it). */
+    private fun padLiveAwaitsItsSet(v: RhythmViewModel): Boolean =
+        shownOnScreen("padlive") && v.project.value.padLive.home && com.pocketstudio.model.LiveStarter.wanted(v.project.value) && !v.liveStarting.value
 
     /**
      * Audit ultra tour 0 (seat a): the guide's « Écouter » and ▶ play the song from a part on a phone (« Montée
@@ -729,7 +739,12 @@ abstract class HumanTester(private val seat: String) {
         ENGINE_TAGS.any { touches(it, x, y) }
 
     /** The assistant on screen, or a sound of the library being made to be heard. */
-    private fun previewsWanted(): Boolean = shownOnScreen("wizard") || library()?.preparing?.value != null
+    private fun previewsWanted(): Boolean = shownOnScreen("wizard") || library()?.preparing?.value != null ||
+        // Audit ultra round 2 (zone 1, n° 1, seats A c and B d): the sound library open: its « Poser » makes the pad's sound
+        // with the engine (NativeSample.create, after the sound is read): the bench let its engine go before the touch, the
+        // sound went to the native library Robolectric has not (UnsatisfiedLinkError), the pad kept its sound. A phone's
+        // engine never goes (PlaceFromLibraryTest).
+        shownOnScreen("library")
 
     /** The sound library's ViewModel (the assistant's and the library's « Écouter »). */
     private fun library(): com.pocketstudio.app.library.SoundLibraryViewModel? {
@@ -759,7 +774,7 @@ abstract class HumanTester(private val seat: String) {
     internal fun engineWorkRunning(v: RhythmViewModel? = lastVm): Boolean {
         if (v == null) return false
         return v.stemBoard.state.value.busy != null || v.sampleTask.value is com.pocketstudio.app.rhythm.SampleTask.Busy || takeUnderWay(v) ||
-            v.padLive.busy.value != null || liveFillRunning(v) ||
+            v.padLive.busy.value != null || liveFillRunning(v) || v.liveStarting.value ||
             // Round 1 (lot banc): the video being made, « Montre-moi » under way (its finger on screen).
             v.videoBusy || shownOnScreen("tuto_finger") ||
             // A take of an audio track recording or being written (the bench's microphone is its engine's).

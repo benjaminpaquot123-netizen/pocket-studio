@@ -1,0 +1,11 @@
+{
+  "Le son n'a pas pu être posé sur le pad : %s": "사운드를 패드에 놓지 못했어요: %s",
+  "Défis : écoute un rythme, refais-le sur les pads, gagne des étoiles.": "도전: 리듬을 듣고, 패드로 따라 치고, 별을 모으세요.",
+  "Défis": "도전",
+  "Écoute un rythme, refais-le sur les pads : gagne des étoiles.": "리듬을 듣고 패드로 따라 치세요: 별을 모아요.",
+  "%s, sur le pad": "%s, 패드에 있음",
+  "✓ Sur le pad maintenant": "✓ 지금 이 패드에",
+  "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet). Pose-le dans Batterie, sur la partie de ton choix.": "“%1$s”이(가) 패드 %3$d의 “%2$s”을(를) 대신해요 (되돌리기 화살표로 복구돼요). 드럼에서 원하는 파트에 놓으세요.",
+  "« %s » est dans ton projet, muette, pour la découper (la flèche retour l'enlève).": "“%s”이(가) 자르기용으로 음소거된 채 프로젝트에 들어왔어요 (되돌리기 화살표로 빼요).",
+  "Pad Live a son propre projet « Live » : « %s » t'attend dans Mes projets.": "Pad Live는 자체 “Live” 프로젝트가 있어요: “%s”은(는) 내 프로젝트에서 기다려요."
+}

@@ -22,7 +22,6 @@
   "Trop long pour un pad : %d secondes au plus. Choisis un morceau plus court.": "أطول من اللازم لـPad: %d ثانية على الأكثر. اختر جزءًا أقصر.",
   "Trop long pour une piste : %d minutes au plus. Choisis un morceau plus court.": "أطول من اللازم لمسار: %d دقيقة على الأكثر. اختر جزءًا أقصر.",
   "chanson · 4 pistes": "أغنية · 4 مسارات",
-  "« %1$s » est sur le pad %2$d.": "«%1$s» على الـPad %2$d.",
   "« %1$s » est sur le pad live %2$d.": "«%1$s» على الـPad الحي %2$d.",
   "« %1$s » est sur une nouvelle piste audio, à la mesure %2$d.": "«%1$s» على مسار صوتي جديد، من المازورة %2$d.",
   "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet).": "«%1$s» يحل محل «%2$s» على الـPad %3$d (سهم التراجع يعيده).",

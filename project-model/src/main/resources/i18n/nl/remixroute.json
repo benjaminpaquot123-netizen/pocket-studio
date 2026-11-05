@@ -22,7 +22,6 @@
   "Trop long pour un pad : %d secondes au plus. Choisis un morceau plus court.": "Te lang voor een pad: hoogstens %d seconden. Kies een korter stuk.",
   "Trop long pour une piste : %d minutes au plus. Choisis un morceau plus court.": "Te lang voor een spoor: hoogstens %d minuten. Kies een korter stuk.",
   "chanson · 4 pistes": "nummer · 4 sporen",
-  "« %1$s » est sur le pad %2$d.": "‘%1$s’ staat op pad %2$d.",
   "« %1$s » est sur le pad live %2$d.": "‘%1$s’ staat op live-pad %2$d.",
   "« %1$s » est sur une nouvelle piste audio, à la mesure %2$d.": "‘%1$s’ staat op een nieuw audiospoor, in maat %2$d.",
   "« %1$s » remplace « %2$s » sur le pad %3$d (la flèche retour le remet).": "‘%1$s’ vervangt ‘%2$s’ op pad %3$d (de terugpijl zet het terug).",

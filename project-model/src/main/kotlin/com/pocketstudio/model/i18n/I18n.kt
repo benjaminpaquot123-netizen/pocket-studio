@@ -125,6 +125,8 @@ object I18n {
         "audit1z56b",
         // Audit ultra round 1, zone 1: the song's « Découper ce que je veux », the pad picker, the challenges' list.
         "ultra1z1",
+        // Audit ultra round 2, zone 1: a sound that could not go on its pad said, « Défis » as stars, the pad's sound marked.
+        "ultra2z1",
         // Audit ultra round 2, zone 4: takes numbered, « Audio 1 » named, the microphone's level, the voice from home.
         "ultra2z4",
         // Audit ultra round 2, zone 3: « Créer et écouter », « Sauvegardé », a track's new sound or deletion said.

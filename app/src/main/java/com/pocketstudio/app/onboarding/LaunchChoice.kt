@@ -29,6 +29,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.AutoAwesome
@@ -57,6 +58,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -235,6 +238,8 @@ class LaunchActions(
     val remix: () -> Unit = {},
     /** Pad Live (n° 25): the pads ready to play, in the « Live » project created or resumed. */
     val padLive: () -> Unit = {},
+    /** Audit ultra round 2, zone 1, n° 3: « Défis » (the stars): Pad Live opened on its challenges. */
+    val challenges: () -> Unit = {},
     val missions: () -> Unit = {},
     /** Audit ultra round 2, n° 21 (seat B b, a guitarist): « Enregistrer ma voix ou ma guitare » (null: not offered, no project). */
     val voice: (() -> Unit)? = null,
@@ -397,7 +402,58 @@ private fun OtherChoices(actions: LaunchActions) {
     RemixCard(actions.remix)
     // Benjamin (n° 25, 2026-11-01): « Pad Live » right under the Remix, like an app of its own.
     PadLiveCard(actions.padLive)
+    // Audit ultra round 2, zone 1, n° 3 (a child of 6 who cannot read looked for « une étoile ou un jeu »).
+    ChallengeCard(actions.challenges)
 }
+
+/**
+ * Audit ultra round 2, zone 1, n° 3: « Défis », a picture before any word (three gold stars, the game's own
+ * reward): Pad Live opens on its challenges (listen to a rhythm, play it back, win stars). For a child who
+ * cannot read, the stars say « a game » where the words cannot.
+ */
+@Composable
+internal fun ChallengeCard(onClick: () -> Unit) {
+    val shape = RoundedCornerShape(18.dp)
+    val said = tr("Défis : écoute un rythme, refais-le sur les pads, gagne des étoiles.")
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = 88.dp).showcasePanel(shape, accent = STAR_GOLD, edge = 1.5.dp, wash = 0.12f)
+            .clickable(role = Role.Button, onClick = onClick)
+            .semantics(mergeDescendants = true) { contentDescription = said }
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .testTag("launch_challenges"),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        StarsMedallion(56.dp)
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(tr("Défis"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
+            Text(
+                tr("Écoute un rythme, refais-le sur les pads : gagne des étoiles."),
+                style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, maxLines = 3, overflow = TextOverflow.Ellipsis,
+            )
+        }
+        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = STAR_GOLD)
+    }
+}
+
+/** Three gold stars, the middle one big, on a dark rounded square: the challenges' picture. */
+@Composable
+internal fun StarsMedallion(size: androidx.compose.ui.unit.Dp) {
+    Box(
+        Modifier.size(size).clip(RoundedCornerShape(16.dp))
+            .background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Color(0xFF3A2A06), Color(0xFF241A04)))),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(androidx.compose.material.icons.Icons.Filled.Star, contentDescription = null, tint = STAR_GOLD, modifier = Modifier.size(size * 0.62f))
+        Icon(androidx.compose.material.icons.Icons.Filled.Star, contentDescription = null, tint = STAR_GOLD,
+            modifier = Modifier.align(Alignment.TopStart).padding(start = size * 0.06f, top = size * 0.06f).size(size * 0.26f))
+        Icon(androidx.compose.material.icons.Icons.Filled.Star, contentDescription = null, tint = STAR_GOLD,
+            modifier = Modifier.align(Alignment.BottomEnd).padding(end = size * 0.06f, bottom = size * 0.06f).size(size * 0.26f))
+    }
+}
+
+/** The stars' gold (the challenges' stars, their card and Pad Live's « Défi » button). */
+internal val STAR_GOLD = Color(0xFFFFC83D)
 
 /**
  * « Pad Live · NOUVEAU »: the pads ready to play, in the mockup's orange (docs/maquettes/padlive-trois.png),

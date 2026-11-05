@@ -17,10 +17,12 @@ class I18nCatalogTest {
     }
 
     private val roots = listOf("src/main", "../app/src/main", "../ui-components/src/main").map(::File).filter { it.isDirectory }
-    private val call = Regex("""(?<![A-Za-z0-9_.])tr\(\s*"((?:[^"\\]|\\.)*)"""")
+    // Audit ultra round 3, n° 32 (seat B d): « Cette étape n'est pas encore faite. Touche encore « Suivant »… » in French in
+    // the German app: written com.pocketstudio.model.i18n.tr("…"), the call escaped this list. Qualified calls count too.
+    private val call = Regex("""(?:(?<![A-Za-z0-9_.])|(?<=i18n\.))tr\(\s*"((?:[^"\\]|\\.)*)"""")
 
     /** trCount(n, "1 mesure", "%d mesures"…): both keys. */
-    private val countCall = Regex("""(?<![A-Za-z0-9_.])trCount\([^,"]+,\s*"((?:[^"\\]|\\.)*)"\s*,\s*"((?:[^"\\]|\\.)*)"""")
+    private val countCall = Regex("""(?:(?<![A-Za-z0-9_.])|(?<=i18n\.))trCount\([^,"]+,\s*"((?:[^"\\]|\\.)*)"\s*,\s*"((?:[^"\\]|\\.)*)"""")
 
     /** Every language but French (the keys). */
     private val translated = Lang.entries - Lang.FR
@@ -283,6 +285,9 @@ class I18nCatalogTest {
             "SoundShelfBrowser.kt: pack",
             "SoundShelfBrowser.kt: option.name.substringBefore(\" · \")",
             "LibraryScreen.kt: s.name",
+            // Round 3, n° 33: the search reads a sound's name (the kit's, « Fête »'s: both lists checked) and its everyday word (I18n.EVERYDAY's values).
+            "LibraryScreen.kt: name",
+            "LibraryScreen.kt: it",
             "LibraryScreen.kt: s.group",
             "LibraryScreen.kt: com.pocketstudio.model.PartySounds.FAMILY",
             "MySoundLibrary.kt: label",  // a family of sounds (SoundPacks.KIND_LABELS, checked by ModelTextsTest)

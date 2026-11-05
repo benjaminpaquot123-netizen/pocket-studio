@@ -187,7 +187,7 @@ fun LibraryScreen(ui: LibraryUi, actions: LibraryActions) {
                                 val ids = some.mapNotNull { (it.ref as? SoundRef.Mine)?.id }.toSet()
                                 MySoundsCard(mine.filter { it.id in ids }, kind, ui, actions)
                             },
-                            search = { q -> librarySearch(q, ui) },
+                            search = { q -> librarySearch(q, ui, shelves) },
                             searchMore = { q -> PackOffers(q, ui, actions) },
                             searchAsked = searchAsked,
                             kindOf = { o -> soundKind(o.ref, ui.mine) },
@@ -603,16 +603,31 @@ private fun DownloadAllDialog(ui: LibraryUi, complete: Boolean, onDismiss: () ->
  * The sounds that match [query]: the user's own (name or family), the party sounds, then the
  * downloaded packs' (name, tags, kind, pack), to hear and place.
  */
-internal fun librarySearch(query: String, ui: LibraryUi): List<SoundOption> {
+internal fun librarySearch(query: String, ui: LibraryUi, shelves: List<SoundShelf> = emptyList()): List<SoundOption> {
     val q = query.trim().lowercase()
     if (q.isEmpty()) return emptyList()
     val mine = ui.mine.filter { matches(it, query) }.map { SoundOption(SoundRef.Mine(it.id), it.name) }
+    // Audit ultra round 3, n° 33 (seats F a, D b): « caisse », « conga », « davul », « trampet » found nothing while the
+    // built-in kit has them: the kit's sounds are searched too, by every name they show (Pro and everyday words).
+    val kit = shelves.flatMap { it.all }.filter { it.ref is SoundRef.Kit }.distinctBy { it.ref }.filter { nameFound(query, it.name) }
     val party = com.pocketstudio.model.PartySounds.ALL
-        .filter { s -> listOf(s.name, tr(s.name), s.group, tr(s.group), com.pocketstudio.model.PartySounds.FAMILY, tr(com.pocketstudio.model.PartySounds.FAMILY)).any { q in it.lowercase() } }
+        .filter { s -> listOf(s.name, s.group, com.pocketstudio.model.PartySounds.FAMILY).any { nameFound(query, it) } }
         .map { SoundOption(SoundRef.Party(it.id), it.name) }
     val packs = com.pocketstudio.model.PackSearch.find(query, ui.packs.installed)
         .map { hit -> SoundOption(SoundRef.Pack(hit.pack.id, hit.sound), "${hit.sound.name} · ${hit.pack.name}") }
-    return mine + party + packs
+    return mine + kit + party + packs
+}
+
+/**
+ * A name (in French, as stored) found by [query] as it is written, as the app shows it in the language, or as its
+ * everyday word (« grosse caisse » finds « Kick » in Pro too); accents and capitals do not count.
+ */
+internal fun nameFound(query: String, name: String): Boolean {
+    val words = com.pocketstudio.model.PackSearch.fold(query).split(' ').filter { it.isNotBlank() }
+    if (words.isEmpty()) return false
+    val plain = com.pocketstudio.model.i18n.I18n.EVERYDAY[name]
+    val text = listOfNotNull(name, tr(name), plain, plain?.let { tr(it) }).joinToString(" ") { com.pocketstudio.model.PackSearch.fold(it) }
+    return words.all { it in text }
 }
 
 /** The kind of a sound, for its tile's colour in a mixed list. */

@@ -119,4 +119,31 @@ class HelpLabelsTest {
         }
         assertLabelsClear("Live")
     }
+
+    /**
+     * Audit ultra round 3, n° 34 (seat D d, pl, Pro, phone, screen 17; seats E c and D c the same): « Volumes » and
+     * « Projets, aide » went off to the top, Mix and More had no label; the undo arrow said « Anuluj » (Cancel); the
+     * Stop square said « Écouter ». Each tab of the bar is labelled next to itself, the words say what the button does.
+     */
+    @Test
+    @Config(qualifiers = "w360dp-h780dp")
+    fun everyTabOfTheBarIsLabelledBesideItAndTheWordsAreTheButtons() {
+        h.start(lang = com.pocketstudio.model.i18n.Lang.PL)
+        tap("tab_Sons")
+        tap("help_labels_button")
+        compose.mainClock.advanceTimeBy(500)
+        compose.waitForIdle()
+        val shown = labels().toMap()
+        for (tab in listOf("Structure", "Sons", "Mix", "Live", "Plus")) {
+            val r = boundsOf("tab_$tab")!!
+            val label = shown["tab_$tab"]
+            assertTrue("« $tab » without a label: ${shown.keys}", label != null)
+            label!!
+            assertTrue("« $tab »'s label at $label, far from its tab $r", label.bottom >= r.top - 2 * label.height && label.top <= r.bottom)
+        }
+        val words = { id: String -> compose.onAllNodesWithTag("help_label_$id", useUnmergedTree = true).fetchSemanticsNodes().first()
+            .config.getOrNull(SemanticsProperties.Text)?.joinToString { it.text } }
+        assertTrue("the undo arrow: ${words("top_undo")}", words("top_undo") == com.pocketstudio.model.i18n.tr("Annuler (défaire)"))
+        assertTrue("the play button: ${words("top_play")}", words("top_play") == com.pocketstudio.model.i18n.tr("Jouer"))
+    }
 }

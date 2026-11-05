@@ -597,7 +597,8 @@ private fun StepGrid(
             val section = if (project.allScenes.size > 1) " · " + com.pocketstudio.model.Scene.shownLabel(project.sceneLabel(project.scene)).ifBlank { com.pocketstudio.model.Scene.NAMES.getOrElse(project.scene) { "?" } } else ""
             SectionLabel(
                 (if (allPads) tr("Pas : tous les pads") else tr("Pas : %s", padName(project, lane))) + section, Modifier.weight(1f),
-                color = if (allPads) Neon.Cyan else color, help = Glossary.STEP, foldKey = "Pas",
+                // Round 3, n° 34 (seat D d): in the Mode simple the « ? » spoke of rolls, place and pitch it has not.
+                color = if (allPads) Neon.Cyan else color, help = if (simple) Glossary.STEP_SIMPLE else Glossary.STEP, foldKey = "Pas",
             )
             FilterChip(selected = allPads, onClick = { allPads = !allPads }, label = { Text(tr("Tous les pads"), maxLines = 1, softWrap = false) }, colors = chipColors,
                 modifier = Modifier.testTag("all_pads"))
@@ -878,17 +879,23 @@ private fun StepGrid(
             TextButton(onClick = actions.clearPad, enabled = hits.isNotEmpty(), contentPadding = tight, modifier = small.testTag("clear_pad")) { Text(tr("Effacer"), maxLines = 1, softWrap = false) }
         }
         val pickedHit = hits[picked]?.takeIf { tool >= 2 }
-        if (pickedHit != null && tool == 2) {
+        // Audit ultra round 3, n° 34 (seat D d): the hit's slider came under the Guide's bar, out of sight: a hit
+        // touched brings it into view.
+        val hitSlider = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+        LaunchedEffect(picked, tool, pickedHit != null) {
+            if (pickedHit != null) { kotlinx.coroutines.delay(60); runCatching { hitSlider.bringIntoView() } }
+        }
+        if (pickedHit != null && tool == 2) Box(Modifier.bringIntoViewRequester(hitSlider)) {
             PanRow(tr("Place du coup %d", picked % per + 1), pickedHit.pan, onChange = { actions.setHitPan(picked, it) }, tag = "hit_pan")
         }
-        if (pickedHit != null && tool == 4) {
+        if (pickedHit != null && tool == 4) Column(Modifier.bringIntoViewRequester(hitSlider)) {
             LabeledSlider(tr("Force du coup %d", picked % per + 1), percent((pickedHit.velocity * 100).roundToInt()), pickedHit.velocity,
                 com.pocketstudio.model.DrumPattern.MIN_VELOCITY..1f) { actions.setHitVelocity(picked, it) }
             // The hit early or late (the lo-fi's lazy snare): a few ms off its cell.
             LabeledSlider(tr("Décalage du coup %d", picked % per + 1), "%+d ms".format(pickedHit.offset.roundToInt()), pickedHit.offset,
                 -com.pocketstudio.model.Hit.MAX_OFFSET_MS..com.pocketstudio.model.Hit.MAX_OFFSET_MS) { actions.setHitOffset(picked, it) }
         }
-        if (pickedHit != null && tool == 3 && ownSound) {
+        if (pickedHit != null && tool == 3 && ownSound) Box(Modifier.bringIntoViewRequester(hitSlider)) {
             LabeledSlider(tr("Hauteur du coup %d", picked % per + 1), semitones(pickedHit.pitch), pickedHit.pitch.toFloat(), -12f..12f, steps = 23) {
                 actions.setHitPitch(picked, it.roundToInt())
             }
@@ -896,8 +903,9 @@ private fun StepGrid(
         Text(
             when (tool) {
                 1 -> tr("Roulements : touche un coup pour le doubler, tripler, quadrupler (×2, ×3, ×4), puis revenir à un seul.")
-                2 -> tr("Pan : touche un coup, puis glisse pour l'envoyer à gauche ou à droite (en plus du pan du pad).")
-                3 -> if (ownSound) tr("Hauteur : touche un coup, puis glisse pour le monter ou le descendre (en demi-tons).")
+                // Round 3, n° 34 (seat D d): no slide on the hit does it; its slider below does (the chip says « Place »).
+                2 -> tr("Place : touche un coup, puis règle le curseur « Place du coup » juste en dessous pour l'envoyer à gauche ou à droite (en plus de la place du pad).")
+                3 -> if (ownSound) tr("Hauteur : touche un coup, puis règle le curseur « Hauteur du coup » juste en dessous pour le monter ou le descendre (en demi-tons).")
                 else tr("Hauteur : seulement pour un son importé, enregistré ou généré (pas pour les sons synthétisés).")
                 4 -> tr("Force : touche un coup, plus haut pour plus fort, plus bas pour plus doux, puis règle-le avec le curseur.")
                 else -> tr("Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8).")
@@ -1054,7 +1062,8 @@ internal fun PadSoundCard(project: Project, lane: Int, ui: PadSoundUi, actions: 
         // Owner (2026-11-04, « Tom aigu (sy… »): the sound's name on its own line, the card's whole width
         // (beside the title it had half the room left and was cut).
         Text(
-            sample?.name?.let { com.pocketstudio.model.DefaultNames.shownSample(it) } ?: tr("%s (synthétisé)", DrumKitInfo.names[lane]),
+            // Round 3, n° 29 (seat E b: pad « Studiobasdrum », its sound « Basdrum 1 (gesynthetiseerd) »): the pad's own name.
+            sample?.name?.let { com.pocketstudio.model.DefaultNames.shownSample(it) } ?: tr("%s (synthétisé)", padName(project, lane)),
             style = MaterialTheme.typography.bodyMedium, maxLines = 2,
             overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth().testTag("pad_sound_name"),

@@ -62,8 +62,10 @@ class LibraryChoicesTest {
         compose.onNodeWithTag("library_style_packs").assertExists()
         compose.onNodeWithTag("library_style_packs_download").performClick()
         assertEquals(style.packs, downloads)
-        // The kit's other sounds are a source too: all sixteen in « Sons intégrés ».
-        compose.onNodeWithTag("library_folder_$KIT_FAMILY").assertTextContains("16 sons", substring = true)
+        // The kit's other sounds are a source too, in their own folder (round 3, n° 33: « Grosses caisses › Sons
+        // intégrés » holds the kicks only).
+        compose.onNodeWithTag("library_folder_$KIT_FAMILY").assertTextContains("2 sons", substring = true)
+        compose.onNodeWithTag("library_folder_$KIT_OTHER_FAMILY").assertTextContains("14 sons", substring = true)
     }
 
     @Test

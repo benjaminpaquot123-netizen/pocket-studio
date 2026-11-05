@@ -246,7 +246,6 @@
   "%.2f Go": "%.2f GB",
   "%1$d packs, %2$s en tout. Ils arrivent l'un après l'autre ; si la connexion coupe, ça reprend où ça s'était arrêté.": "%1$d 个音色包，共 %2$s。它们会一个接一个下载；如果断网，会从中断的地方继续。",
   "Aucun son trouvé : essaie un autre mot, ou télécharge d'autres packs ci-dessous.": "没找到音色：换个词试试，或者在下面下载更多音色包。",
-  "Chercher un son (doigts, verre, conga…)": "搜索音色（响指、玻璃、康加鼓…）",
   "Conseil : en Wi-Fi, c'est plus rapide et ça ne touche pas ton forfait.": "提示：用 Wi-Fi 更快，而且不耗流量。",
   "Mettre à jour": "更新",
   "Nouveaux sons": "新音色",

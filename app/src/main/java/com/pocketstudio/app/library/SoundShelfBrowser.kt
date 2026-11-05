@@ -77,6 +77,9 @@ typealias SoundShelf = SoundShelves.Shelf<SoundOption>
 /** The built-in sounds' folder (always first or second, however small). */
 internal const val KIT_FAMILY = "Sons intégrés"
 
+/** The kit's sounds of the other families (round 3, n° 33): their own folder, after the family's own. */
+internal const val KIT_OTHER_FAMILY = "Autres sons du kit"
+
 /** The project's style packs (its machine, its own pack): first, however small. */
 internal const val STYLE_FAMILY = "Pour ce style"
 
@@ -130,9 +133,16 @@ fun shelvesOf(categories: List<SoundCategory>, installed: List<PackManifest>, st
     fun pin(family: String) { if (family !in pinned) pinned += family }
     for (c in categories) {
         when {
-            c.id == KIT_CATEGORY || c.id == KIT_OTHER_CATEGORY -> {
+            c.id == KIT_CATEGORY -> {
                 pin(KIT_FAMILY)
                 c.options.forEach { items += SoundShelves.Item(it, KIT_FAMILY) }
+            }
+            // Audit ultra round 3, n° 33 (seat F a): « Caisses claires › Sons intégrés » showed kicks, hats and toms too:
+            // the kit's other sounds (a tom can make a kick) in their own folder, the family's folder only its family.
+            c.id == KIT_OTHER_CATEGORY -> {
+                pin(KIT_FAMILY)
+                pin(KIT_OTHER_FAMILY)
+                c.options.forEach { items += SoundShelves.Item(it, KIT_OTHER_FAMILY) }
             }
             c.id.startsWith("pack:") -> {
                 val id = c.id.removePrefix("pack:")
@@ -178,6 +188,7 @@ internal fun shelfTitle(title: String): String = when (title) {
 @Composable
 internal fun shelfLook(family: String): Pair<ImageVector, Color> = when (family) {
     KIT_FAMILY -> Icons.Filled.Apps to Color(0xFF81C784)
+    KIT_OTHER_FAMILY -> Icons.Filled.Apps to Color(0xFF90A4AE)
     STYLE_FAMILY -> Icons.Filled.Star to Neon.Cyan
     PartySounds.FAMILY -> Icons.Filled.Celebration to Color(0xFFFF6E9C)
     "Machines" -> Icons.Filled.Memory to Color(0xFFFF8A65)
@@ -270,7 +281,8 @@ internal fun shelfSearch(shelves: List<SoundShelf>, query: String): List<SoundOp
     return shelves.flatMap { it.all }.distinct().filter { o ->
         val name = o.name.substringBefore(" · ")
         val pack = o.name.substringAfter(" · ", "")
-        listOf(name, tr(name), pack).any { q in it.lowercase() }
+        // Round 3, n° 33: as the app shows it, its everyday word too, accents not counted.
+        nameFound(q, name) || listOf(pack, tr(pack)).any { q in it.lowercase() }
     }
 }
 
@@ -326,7 +338,7 @@ fun ShelfBrowser(ui: ShelfBrowserUi, actions: ShelfBrowserActions, modifier: Mod
                 value = query, onValueChange = { query = it.take(60) }, singleLine = true,
                 leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
                 trailingIcon = { if (query.isNotEmpty()) IconButton(onClick = { query = "" }) { Icon(Icons.Filled.Close, contentDescription = tr("Effacer")) } },
-                placeholder = { Text(tr("Chercher un son (doigts, verre, conga…)")) },
+                placeholder = { Text(tr("Chercher un son (caisse, conga, sirène…)")) },
                 modifier = Modifier.fillMaxWidth().testTag("${ui.tag}_search"),
             )
         }

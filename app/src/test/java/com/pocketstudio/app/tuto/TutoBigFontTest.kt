@@ -82,6 +82,8 @@ class TutoBigFontTest {
 
     private fun has(tag: String) = compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
     private fun click(tag: String) {
+        // Round 3, n° 28: the kit's offer is at the end of the step's words: read down to it, as a person does.
+        if (tag.startsWith("tuto_kit")) readToTheEnd()
         val node = compose.onNodeWithTag(tag)
         runCatching { node.performScrollTo() }
         node.performClick()
@@ -227,9 +229,10 @@ class TutoBigFontTest {
         packs.value = PacksUi(IndexState.Ready(PackIndex(ids.map { PackEntry(it, "Pack $it", "$it.zip", "a".repeat(64), 1_500_000, 12) })))
         await("the kit's card") { has("tuto_kit") }
         // Round 2, n° 22: the card came by itself: it takes touches a moment later only.
-        compose.mainClock.advanceTimeBy(com.pocketstudio.app.ui.ARRIVAL_GUARD_MS + 100)
+        compose.mainClock.advanceTimeBy(1_100L)
         idle(300)
         compose.waitForIdle()
+        readToTheEnd()
         val bar = bounds("top_bar")
         val card = bounds("tuto_kit")
         assertTrue("the kit's card over the top bar ($card, bar ends at ${bar.bottom})", card.top >= bar.bottom - 1f)
@@ -240,45 +243,16 @@ class TutoBigFontTest {
         assertTrue("the course's panel back", has("tuto_panel"))
     }
 
-    /**
-     * Audit ultra round 2, n° 22 (seat A a, screen 7, back from round 1): « Lire la suite » touched as the catalogue
-     * came opened « Le kit Techno… 0 % »: the card took the panel's place under the finger. What comes by itself
-     * there takes no touch for a moment; then it does.
-     */
-    @Test
-    fun theKitsCardThatComesUnderTheFingerTakesNoTouchAtOnce() {
-        val packs = MutableStateFlow(PacksUi())
-        TutoTestHooks.packs = packs
-        val s = target.style
-        val ids = (s.lines.filter { it.voice == null }.mapNotNull { s.kit[it.role] } + s.id).distinct()
-        h.start(simple = true, build = {
-            session.edit { target.blank() }
-            PrefsTutoStore(h.app).save(projectId, TutoProgress(style, TutoLevel.Facile))
-        })
-        await("panel") { has("tuto_panel") && has("tuto_text_more") }
-        val more = bounds("tuto_text_more")
-        // The finger on its way to « Lire la suite » when the catalogue comes.
-        compose.mainClock.autoAdvance = false
-        try {
-            packs.value = PacksUi(IndexState.Ready(PackIndex(ids.map { PackEntry(it, "Pack $it", "$it.zip", "a".repeat(64), 1_500_000, 12) })))
-            repeat(4) { idle(20); compose.mainClock.advanceTimeByFrame() }
-            assertTrue("the kit's card", has("tuto_kit"))
-            compose.onRoot().performTouchInput { click(more.center) }
-            compose.onNodeWithTag("tuto_kit_later").performClick()
-            repeat(4) { idle(20); compose.mainClock.advanceTimeByFrame() }
-            assertEquals("a touch meant for « Lire la suite » taken by the card that came under it", "", progress().kit)
-            assertTrue("the card still there", has("tuto_kit"))
-            // A moment later the card is the user's to touch.
-            compose.mainClock.advanceTimeBy(com.pocketstudio.app.ui.ARRIVAL_GUARD_MS + 100)
-            idle(50)
-        } finally {
-            compose.mainClock.autoAdvance = true
+    // Audit ultra round 2, n° 22 (the kit's card that came under the finger, a 1 s guard): replaced in round 3, n° 28,
+    // by the offer inside the panel, never in its place (TutoKitUnderFingerTest).
+
+    /** « Lire la suite » until the step's words are read to their end. */
+    private fun readToTheEnd() {
+        repeat(12) {
+            if (compose.onAllNodesWithTag("tuto_text_more", useUnmergedTree = true).fetchSemanticsNodes().isEmpty()) return
+            compose.onNodeWithTag("tuto_text_more").performClick()
+            compose.mainClock.advanceTimeBy(600)
+            compose.waitForIdle()
         }
-        compose.waitForIdle()
-        click("tuto_kit_later")
-        await("« Plus tard » kept") { progress().kit == TutoProgress.KIT_BUILT_IN }
-        await("the panel back") { has("tuto_panel") }
-        // Back by the user's own touch: the panel takes a touch at once.
-        assertFalse(has("arrival_guard"))
     }
 }

@@ -99,6 +99,17 @@ import com.pocketstudio.ui.Neon
 internal fun tutoText(fr: String): String = tr(fr)
 
 /**
+ * Audit ultra round 3, n° 29 (third time): a step names a pad by the kit's name (« Kick », shown « Grosse caisse 1 »
+ * in the Mode simple, « Basdrum 1 » in Dutch) while the pad shows the sound on it (« Kick studio », a pack's
+ * sound): the step says the pad's own name, as its pad shows it, in every language and mode.
+ */
+fun tutoPadNames(text: String, project: com.pocketstudio.model.Project): String {
+    val kit = com.pocketstudio.app.rhythm.DrumKitInfo.names
+    val names = kit.indices.associate { lane -> kit[lane] to com.pocketstudio.app.rhythm.padName(project, lane) }
+    return com.pocketstudio.model.i18n.QuotedNames.rename(text, names)
+}
+
+/**
  * What the tutorial draws on the screens: dotted cells of a drum step (pad, steps), dotted notes of
  * a melodic step (track, notes), the cells « Montre-moi » lit fading away (pad, steps, how much they
  * show), the send it asks for in an effects box (channel, bus); [focus] goes up when « Je le fais »
@@ -257,7 +268,10 @@ class TutoActions(
 /**
  * Socle 2 (owner: every tutorial on its style's box of sounds): at the tutorial's start, when the
  * style's pack is not on the phone, « Télécharger le kit <style> (taille) » in one touch, or
- * « Plus tard » to go on with the built-in sounds. [progress]: the download under way (0..1),
+ * « Plus tard » to go on with the built-in sounds. Audit ultra round 3, n° 28 (third time): it is a
+ * block at the end of the step's words in [TutoPanel] ([TutoPanel]'s `kit`), never the panel's
+ * stand-in: it came with the catalogue while the user read, and the touch meant for « Lire la suite »
+ * or « Écouter l'exemple » seconds later landed on it. [progress]: the download under way (0..1),
  * [error]: why it did not come (the built-in sounds stay).
  */
 @Composable
@@ -266,10 +280,11 @@ fun TutoKitCard(
     /** The kit is on the phone already, the course under way: « Mettre ces sons » ([download]) rather than a download. */
     onPhone: Boolean = false,
 ) {
-    val shape = RoundedCornerShape(14.dp)
+    val shape = RoundedCornerShape(12.dp)
+    // Round 3, n° 28: inside the panel, at the end of the step's words (the panel's own scroll): never in its place.
     Column(
-        modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp).clip(shape).background(panelColor()).border(1.5.dp, Neon.Amber, shape)
-            .verticalScroll(rememberScrollState()).padding(12.dp).testTag("tuto_kit"),
+        modifier.fillMaxWidth().padding(top = 4.dp).clip(shape).background(Neon.Amber.copy(alpha = 0.08f)).border(1.dp, Neon.Amber, shape)
+            .padding(10.dp).testTag("tuto_kit"),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Text(tr("Le kit %s", style), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
@@ -294,6 +309,15 @@ fun TutoKitCard(
             }
         }
         TextButton(onClick = later, modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp).testTag("tuto_kit_later")) { Text(tr("Plus tard"), color = Neon.TextSecondary) }
+    }
+}
+
+/** « Écouter mon morceau » at the course's end (round 3, n° 30). */
+@Composable
+private fun PlayMineButton(actions: TutoActions, playing: Boolean) {
+    Button(onClick = actions.playMine, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_end_play")) {
+        Icon(if (playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(18.dp))
+        Text(" " + if (playing) tr("Arrêter") else tr("Écouter mon morceau"), maxLines = 1)
     }
 }
 
@@ -343,6 +367,10 @@ fun TutoPanel(
     ui: TutoUi, canShow: Boolean, actions: TutoActions, modifier: Modifier = Modifier, map: List<TutoMapBlock> = emptyList(),
     mine: Boolean = false, minePlaying: Boolean = false, mineFirst: Boolean = false,
     reducedMotion: Boolean = com.pocketstudio.app.onboarding.animationsOff(androidx.compose.ui.platform.LocalContext.current),
+    /** The style's kit offer ([TutoKitCard]), at the end of the step's words (round 3, n° 28: never in the panel's place). */
+    kit: (@Composable () -> Unit)? = null,
+    /** Round 3, n° 29: the step's words with each pad named as it shows on the screen ([tutoPadNames]). */
+    names: (String) -> String = { it },
 ) {
     val step = ui.current
     val chapter = ui.chapters[ui.chapter]
@@ -393,13 +421,13 @@ fun TutoPanel(
                 modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)).testTag("tuto_progress"),
             )
             if (!ui.open) {
-                FoldedLine(ui, done, actions)
+                FoldedLine(ui, done, actions, names)
                 return@Column
             }
             // Testers (lot « tuto 4 »): the end said nothing (or sent back to chapter 5): « Bravo » when all is
             // done, else the steps left, each one touch away; never « Je le fais » after the end.
             if (end) {
-                EndCard(ui, actions)
+                EndCard(ui, actions, names, mine, minePlaying)
                 return@Column
             }
             // The step's words, or in their place « Bravo » or « Montre-moi »'s caption: never one more block.
@@ -414,12 +442,12 @@ fun TutoPanel(
             ) {
                 when {
                     ui.demo != null -> DemoCaption(ui.demo)
-                    ui.bravo -> BravoBanner(mine, ui.made, nextChapter = ui.chapterDoneNext())
+                    ui.bravo -> BravoBanner(mine, ui.made, nextChapter = ui.chapterDoneNext(), missing = ui.chapterLeft())
                     else -> {
                         ui.made?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.Acid, modifier = Modifier.testTag("tuto_made")) }
                         Row(verticalAlignment = Alignment.Top) {
                             if (done) Icon(Icons.Filled.CheckCircle, contentDescription = tr("Fait"), tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp).size(20.dp).testTag("tuto_step_done"))
-                            Text(tutoText(step.textFor(ui.progress.level)), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.testTag("tuto_text"))
+                            Text(names(tutoText(step.textFor(ui.progress.level))), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.testTag("tuto_text"))
                         }
                         // n° 37: in the Mode simple, each word of the trade of the step (kick, Drop, phrygienne…) said in plain words under it.
                         com.pocketstudio.app.library.PlainWordsLines(step.textFor(ui.progress.level))
@@ -430,6 +458,7 @@ fun TutoPanel(
                             style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("tuto_failed"))
                     }
                 }
+                kit?.invoke()
             }
             if (words.canScrollForward) MoreWords(Modifier.align(Alignment.BottomCenter)) { words.animateScrollTo(minOf(words.maxValue, words.value + words.viewportSize * 3 / 4)) }
             }
@@ -454,7 +483,7 @@ private fun MoreWords(modifier: Modifier, more: suspend () -> Unit) {
 
 /** « Bravo, c'est réussi ! » in the step's text's place ([made]: what the step's button made, said instead of the hint). */
 @Composable
-private fun BravoBanner(mine: Boolean, made: String? = null, nextChapter: String? = null) {
+private fun BravoBanner(mine: Boolean, made: String? = null, nextChapter: String? = null, missing: Int? = null) {
     Row(
         Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Neon.Acid.copy(alpha = 0.14f)).border(1.dp, Neon.Acid, RoundedCornerShape(12.dp))
             .padding(horizontal = 12.dp, vertical = 8.dp).testTag("tuto_bravo"),
@@ -479,6 +508,11 @@ private fun BravoBanner(mine: Boolean, made: String? = null, nextChapter: String
                 made ?: if (mine) tr("Écoute ton résultat, puis touche « Étape suivante » quand tu veux.") else tr("Touche « Étape suivante » quand tu veux."),
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextPrimary, modifier = if (made != null) Modifier.testTag("tuto_made") else Modifier,
             )
+            // n° 30 (round 3): the chapter's last step done, an earlier one not: said, not « chapitre fini ».
+            if (missing != null) Text(
+                tr("Ce chapitre n'est pas fini : il reste l'étape %d. Touche « Chapitres » pour y revenir.", missing),
+                style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("tuto_chapter_left"),
+            )
         }
     }
 }
@@ -488,7 +522,18 @@ private fun BravoBanner(mine: Boolean, made: String? = null, nextChapter: String
 private fun TutoUi.chapterDoneNext(): String? {
     val c = chapters[chapter]
     if (step != c.steps.lastIndex || current.id !in progress.done || chapter >= chapters.lastIndex || finished || atEnd) return null
+    // Audit ultra round 3, n° 30 (seats A c, E b): « Bravo, chapitre fini ! » while the chapters' list said 2/3 (the
+    // example left before it was heard): the chapter is finished only when each of its steps is.
+    if (chapterLeft() != null) return null
     return tutoText(chapters[chapter + 1].title)
+}
+
+/** The first step of the shown chapter still to do (its number from 1), the last one shown done (null: none). */
+internal fun TutoUi.chapterLeft(): Int? {
+    val c = chapters[chapter]
+    if (step != c.steps.lastIndex || current.id !in progress.done) return null
+    val leftIds = left.map { it.id }.toSet()
+    return c.steps.indexOfFirst { it.id in leftIds }.takeIf { it >= 0 }?.plus(1)
 }
 
 /** « Montre-moi »'s caption: it shows, then « à toi maintenant ». */
@@ -521,7 +566,7 @@ private fun demoWords(phase: TutoDemoPhase): String = when (phase) {
  * touch unfolds them).
  */
 @Composable
-private fun FoldedLine(ui: TutoUi, done: Boolean, actions: TutoActions) {
+private fun FoldedLine(ui: TutoUi, done: Boolean, actions: TutoActions, names: (String) -> String = { it }) {
     val shape = RoundedCornerShape(12.dp)
     val line = Modifier.fillMaxWidth().height(foldedLineHeight()).clip(shape)
     when {
@@ -586,7 +631,7 @@ private fun FoldedLine(ui: TutoUi, done: Boolean, actions: TutoActions) {
             line.clickable(onClickLabel = tr("Lire la suite"), onClick = actions.toggle).testTag("tuto_folded_text"),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(tutoText(ui.current.textFor(ui.progress.level)), style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis,
+            Text(names(tutoText(ui.current.textFor(ui.progress.level))), style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f))
             Row(Modifier.padding(start = 6.dp).testTag("tuto_folded_more"), verticalAlignment = Alignment.CenterVertically) {
                 Text(tr("Lire"), style = MaterialTheme.typography.labelMedium, color = Neon.Cyan, fontWeight = FontWeight.Bold, maxLines = 1)
@@ -762,7 +807,7 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
  * done; else the steps left (in Pro an example not listened to is not one), each one touch away.
  */
 @Composable
-private fun EndCard(ui: TutoUi, actions: TutoActions) {
+private fun EndCard(ui: TutoUi, actions: TutoActions, names: (String) -> String = { it }, mine: Boolean = false, minePlaying: Boolean = false) {
     val left = ui.left
     Column(Modifier.fillMaxWidth().heightIn(max = 360.dp).verticalScroll(rememberScrollState()).testTag("tuto_end"), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         if (left.isEmpty()) {
@@ -771,6 +816,7 @@ private fun EndCard(ui: TutoUi, actions: TutoActions) {
                 Text(tr("Bravo, ton morceau est fini ! Tu peux tout réécouter et continuer à le changer."), color = Neon.Acid, style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 8.dp).testTag("tuto_finished"))
             }
+            if (mine) PlayMineButton(actions, minePlaying)
             OutlinedButton(onClick = actions.restart, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_restart_finished")) {
                 Icon(Icons.Filled.Replay, contentDescription = null, modifier = Modifier.size(18.dp))
                 Text(" " + restartTutoLabel(), maxLines = 1)
@@ -781,6 +827,8 @@ private fun EndCard(ui: TutoUi, actions: TutoActions) {
             return@Column
         }
         Text(tr("Presque fini !"), color = Neon.Amber, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        // n° 30 (round 3, seat A c): the last chapter's end had no way to hear the song made.
+        if (mine) PlayMineButton(actions, minePlaying)
         Text(trCount(left.size, "Il te reste %d étape. Touche-la pour y aller :", "Il te reste %d étapes. Touche-en une pour y aller :"), style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.testTag("tuto_left_count"))
         left.take(END_LIST).forEach { s ->
@@ -792,7 +840,7 @@ private fun EndCard(ui: TutoUi, actions: TutoActions) {
             ) {
                 Column(Modifier.weight(1f)) {
                     Text(tr("Chapitre %1\$d/%2\$d · %3\$s", c + 1, ui.chapters.size, tutoText(ui.chapters[c].title)), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text(tutoText(s.textFor(ui.progress.level)), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(names(tutoText(s.textFor(ui.progress.level))), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
                 Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
             }

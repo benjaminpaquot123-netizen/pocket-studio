@@ -557,6 +557,7 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
     val start = ui.partStarts.getOrElse(i) { 0 }
     val length = ui.partLengths.getOrElse(i) { 1 }.coerceAtLeast(1)
     var sheetOpen by rememberSaveable { mutableStateOf(false) }
+    var renamePart by rememberSaveable { mutableStateOf(false) }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth().clip(shape)
@@ -627,10 +628,13 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
                     duplicate = if (!full) ({ actions.duplicatePart(i) }) else null,
                     insertAfter = if (!full) ({ insertAfter(i) }) else null,
                     remove = { actions.removePart(i) },
+                    rename = { renamePart = true },
                 ),
             )
         }
     }
+    // Round 3, n° 35: the part's name, from its own sheet (its brick's name: every part of that brick is renamed).
+    if (renamePart) RenameSceneDialog(part.scene, ui.label(part.scene), onDone = { label -> actions.rename(part.scene, label); renamePart = false }, onDismiss = { renamePart = false })
 }
 
 @Composable

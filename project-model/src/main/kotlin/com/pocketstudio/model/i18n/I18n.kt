@@ -142,6 +142,8 @@ object I18n {
         "ultra3z3",
         // Audit ultra round 3, zone 1: a Live column cut in Mix, the pad asked before a drum sound is covered, a piece touched.
         "ultra3z1",
+        // Audit ultra round 3, zone 5: the sound search's examples found, the tutorial's words.
+        "ultra3z5",
         // Audit ultra round 3, zone 6: counts said with their plural in every language, units and words put in.
         "ultra3z6",
     )

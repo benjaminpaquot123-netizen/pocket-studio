@@ -1867,8 +1867,6 @@ fun AppRoot() {
     val tutoKitChoice = tutoKitUi?.progress?.kit
     // The user asked for the kit here (« Télécharger », « Mettre ces sons »): it goes on the pads once on the phone.
     var tutoKitAsked by rememberSaveable(tutoKitStyle) { mutableStateOf(false) }
-    // n° 22 (round 2): the kit's card left by the user's own touch (« Plus tard », « Télécharger »): the panel back takes touches at once.
-    val tutoKitTouched = remember { booleanArrayOf(false) }
     LaunchedEffect(tutoKitStyle) {
         if (tutoKitStyle != null && com.pocketstudio.app.tuto.TutoTestHooks.kitOffer && com.pocketstudio.app.tuto.TutoTestHooks.packs == null) libraryVm.refreshPacks()
     }
@@ -2434,12 +2432,12 @@ fun AppRoot() {
                     val kitTarget = com.pocketstudio.model.tuto.TutoTarget.of(tutoNow.progress.style)
                     val kitMissing = (tutoKitOffer as? com.pocketstudio.model.tuto.TutoKit.Offer.Download)?.missing.orEmpty()
                     val kitLoading = kitMissing.mapNotNull { tutoPacks.downloading[it.id] }
-                    // Folded with the panel while the user works on the screen (the grid had 160 dp left under it at 780 dp).
-                    val kitCard = kitTarget != null && (tutoNow.open || kitLoading.isNotEmpty()) && (kitMissing.isNotEmpty() || tutoKitOffer == com.pocketstudio.model.tuto.TutoKit.Offer.Ask)
-                    // n° 22 (round 2, seat A a at 200 %): the card comes when the catalogue does, often while a finger goes to
-                    // « Lire la suite »: whatever takes the other's place by itself takes no touch for a moment.
-                    com.pocketstudio.app.ui.ArrivalGuard(kitCard, asked = { tutoKitTouched[0].also { tutoKitTouched[0] = false } }) {
-                    if (kitCard) {
+                    // Audit ultra round 3, n° 28 (third time; rounds 1 and 2 put a 1 s guard on it): the card came with the
+                    // catalogue while the user read and took the panel's place; the touch meant for « Lire la suite » or
+                    // « Écouter l'exemple » seconds later landed on it. It is now a block at the end of the step's words,
+                    // inside the panel: the panel, its words and its buttons never move or go away for it.
+                    val kitCard = kitTarget != null && (kitMissing.isNotEmpty() || tutoKitOffer == com.pocketstudio.model.tuto.TutoKit.Offer.Ask)
+                    val kitBlock: (@Composable () -> Unit)? = if (!kitCard) null else { {
                         val loading = kitLoading
                         com.pocketstudio.app.tuto.TutoKitCard(
                             style = com.pocketstudio.app.tuto.tutoText(kitTarget.style.name),
@@ -2448,16 +2446,13 @@ fun AppRoot() {
                             error = tutoPacks.message?.takeIf { loading.isEmpty() },
                             download = {
                                 tutoKitAsked = true
-                                tutoKitTouched[0] = true
                                 kitMissing.forEach { libraryVm.downloadPack(it.id) }
                             },
-                            later = { tutoKitTouched[0] = true; tuto.setKit(com.pocketstudio.model.tuto.TutoProgress.KIT_BUILT_IN) },
+                            later = { tuto.setKit(com.pocketstudio.model.tuto.TutoProgress.KIT_BUILT_IN) },
                             onPhone = kitMissing.isEmpty(),
-                            // n° 34 (seat A b, 200 %): over the open panel it went past the top bar; in its place now, a part of the screen high at most.
-                            modifier = Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.6f).dp),
                         )
-                    }
-                    if (!kitCard) com.pocketstudio.app.tuto.TutoPanel(
+                    } }
+                    com.pocketstudio.app.tuto.TutoPanel(
                         tutoNow, tuto.canShow(),
                         com.pocketstudio.app.tuto.TutoActions(
                             listen = tuto::listen, doIt = tuto::doIt, showMe = { tuto.showMe() }, stopDemo = tuto::stopDemo,
@@ -2479,8 +2474,10 @@ fun AppRoot() {
                             .onGloballyPositioned { spots.coverTop = if (landscape) Float.MAX_VALUE else it.boundsInWindow().top },
                         map = remember(tutoNow.progress.style) { com.pocketstudio.app.tuto.tutoMap(tutoNow.progress.style) },
                         mine = mine, minePlaying = tutoTransport.playing, mineFirst = mineFirst,
+                        kit = kitBlock,
+                        // n° 29 (round 3): each pad the step names, by the name its pad shows.
+                        names = { com.pocketstudio.app.tuto.tutoPadNames(it, tutoProject) },
                     )
-                    }
                 } else if (tuto.resumable && !showLive && !showLivePads && !showTimeline) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         TextButton(onClick = tuto::resume, modifier = Modifier.weight(1f).heightIn(min = 40.dp).testTag("tuto_resume")) {

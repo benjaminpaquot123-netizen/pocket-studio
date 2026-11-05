@@ -56,7 +56,7 @@ class ShelfBrowserTest {
         assertEquals("the old way: one chip per pack", installed.count { it.ofKind("kick").isNotEmpty() } + 1, soundCategories(kick, null, installed).size)
         val shelves = shelvesOf(libraryChoices("kick", installed, null), installed, null, party = true)
         val families = shelves.map { it.id }
-        assertEquals(listOf(KIT_FAMILY, PartySounds.FAMILY, "Machines", "Techno", "House", "Hip-hop", "Bass music", "Sons actuels", "Autres"), families)
+        assertEquals(listOf(KIT_FAMILY, KIT_OTHER_FAMILY, PartySounds.FAMILY, "Machines", "Techno", "House", "Hip-hop", "Bass music", "Sons actuels", "Autres"), families)
         // Two levels: the machine inside « Machines », the measured character in a style family.
         assertEquals(listOf("Roland TR-909", "Roland TR-808", "LinnDrum"), shelves.first { it.id == "Machines" }.children.map { it.title })
         val techno = shelves.first { it.id == "Techno" }
@@ -64,7 +64,7 @@ class ShelfBrowserTest {
         val labels = com.pocketstudio.model.SoundCharacter.LABELS.values
         assertTrue(techno.children.all { it.title in labels && it.items.size >= SoundShelves.MIN_FOLDER })
         // Nothing lost: every kick of every pack is somewhere.
-        assertEquals(installed.sumOf { it.ofKind("kick").size }, shelves.filter { it.id != KIT_FAMILY && it.id != PartySounds.FAMILY }.sumOf { it.count })
+        assertEquals(installed.sumOf { it.ofKind("kick").size }, shelves.filter { it.id != KIT_FAMILY && it.id != KIT_OTHER_FAMILY && it.id != PartySounds.FAMILY }.sumOf { it.count })
         // The best of every pack first: the first five of « Autres » come from both its packs.
         val first = shelves.first { it.id == "Autres" }.all.take(2).map { (it.ref as SoundRef.Pack).packId }.toSet()
         assertEquals(setOf("pop", "afrobeats"), first)

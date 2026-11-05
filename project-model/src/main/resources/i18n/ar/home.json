@@ -246,7 +246,6 @@
   "%.2f Go": "%.2f GB",
   "%1$d packs, %2$s en tout. Ils arrivent l'un après l'autre ; si la connexion coupe, ça reprend où ça s'était arrêté.": "الحزم: %1$d، والإجمالي %2$s. تأتي واحدة تلو الأخرى؛ وإن انقطع الاتصال تستأنف من حيث توقفت.",
   "Aucun son trouvé : essaie un autre mot, ou télécharge d'autres packs ci-dessous.": "لم يُعثر على صوت: جرّب كلمة أخرى، أو نزّل حزمًا أخرى في الأسفل.",
-  "Chercher un son (doigts, verre, conga…)": "ابحث عن صوت (snap، glass، conga…)",
   "Conseil : en Wi-Fi, c'est plus rapide et ça ne touche pas ton forfait.": "نصيحة: على Wi-Fi أسرع ولا يمسّ باقة بياناتك.",
   "Mettre à jour": "تحديث",
   "Nouveaux sons": "أصوات جديدة",

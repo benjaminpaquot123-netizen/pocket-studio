@@ -83,6 +83,8 @@ class TutoKickSoundTest {
 
     private fun has(tag: String) = compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
     private fun click(tag: String) {
+        // Round 3, n° 28: the kit's offer is at the end of the step's words: read down to it, as a person does.
+        if (tag.startsWith("tuto_kit")) readToTheEnd()
         val node = compose.onNodeWithTag(tag)
         runCatching { node.performScrollTo() }
         node.performClick()
@@ -158,7 +160,7 @@ class TutoKickSoundTest {
         // Round 1 (n° 34): the style's kit card takes the panel's place (no longer stacked on it): « Plus tard ».
         if (has("tuto_kit")) {
             // Round 2 (n° 22): a card that came by itself takes no touch for a moment.
-            compose.mainClock.advanceTimeBy(com.pocketstudio.app.ui.ARRIVAL_GUARD_MS + 100)
+            compose.mainClock.advanceTimeBy(1_100L)
             click("tuto_kit_later")
             await("the panel back") { has("tuto_mark") }
         }
@@ -183,5 +185,15 @@ class TutoKickSoundTest {
         assertEquals("Drum & bass", kitName(p()))
         h.vm.undo()
         assertFalse(StudioDrums.isDnbKick(p().padVoices[0]))
+    }
+
+    /** « Lire la suite » until the step's words are read to their end. */
+    private fun readToTheEnd() {
+        repeat(12) {
+            if (compose.onAllNodesWithTag("tuto_text_more", useUnmergedTree = true).fetchSemanticsNodes().isEmpty()) return
+            compose.onNodeWithTag("tuto_text_more").performClick()
+            compose.mainClock.advanceTimeBy(600)
+            compose.waitForIdle()
+        }
     }
 }

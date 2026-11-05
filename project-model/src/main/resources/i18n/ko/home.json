@@ -246,7 +246,6 @@
   "%.2f Go": "%.2f GB",
   "%1$d packs, %2$s en tout. Ils arrivent l'un après l'autre ; si la connexion coupe, ça reprend où ça s'était arrêté.": "팩 %1$d개, 총 %2$s. 하나씩 차례로 받아요. 연결이 끊기면 멈춘 곳부터 이어서 받아요.",
   "Aucun son trouvé : essaie un autre mot, ou télécharge d'autres packs ci-dessous.": "사운드를 찾지 못했어요. 다른 단어로 찾거나 아래에서 팩을 더 받으세요.",
-  "Chercher un son (doigts, verre, conga…)": "사운드 찾기 (스냅, 유리, 콩가…)",
   "Conseil : en Wi-Fi, c'est plus rapide et ça ne touche pas ton forfait.": "팁: Wi-Fi가 더 빠르고 데이터 요금이 안 나가요.",
   "Mettre à jour": "업데이트",
   "Nouveaux sons": "새 사운드",

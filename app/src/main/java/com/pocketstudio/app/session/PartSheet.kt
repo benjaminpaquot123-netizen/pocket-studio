@@ -190,6 +190,8 @@ class PartMoreActions(
     val duplicate: (() -> Unit)? = null,
     val insertAfter: (() -> Unit)? = null,
     val remove: () -> Unit = {},
+    /** Audit ultra round 3, n° 35 (seat E a): the part's own name (« Drop », « Outro »), where the part is. */
+    val rename: (() -> Unit)? = null,
 )
 
 /**
@@ -209,6 +211,7 @@ fun PartSheet(ui: PartSheetUi, onIntent: (PartIntent) -> Unit, close: () -> Unit
                 duplicate = m.duplicate?.let { f -> { close(); f() } },
                 insertAfter = m.insertAfter?.let { f -> { close(); f() } },
                 remove = { close(); m.remove() },
+                rename = m.rename?.let { f -> { close(); f() } },
             )
         })
     }
@@ -275,6 +278,7 @@ fun PartSheetContent(ui: PartSheetUi, onIntent: (PartIntent) -> Unit, close: () 
         if (more != null) {
             Text(tr("Partie"), style = MaterialTheme.typography.titleSmall)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                more.rename?.let { SmallAction(Icons.Filled.Edit, tr("Renommer"), "part_rename_${ui.index}", true, it) }
                 SmallAction(Icons.Filled.Tune, tr("Ce qui joue"), "part_what_plays_${ui.index}", true, more.whatPlays)
                 SmallAction(Icons.Filled.ArrowUpward, tr("Monter"), "part_up_${ui.index}", more.moveUp != null) { more.moveUp?.invoke() }
                 SmallAction(Icons.Filled.ArrowDownward, tr("Descendre"), "part_down_${ui.index}", more.moveDown != null) { more.moveDown?.invoke() }

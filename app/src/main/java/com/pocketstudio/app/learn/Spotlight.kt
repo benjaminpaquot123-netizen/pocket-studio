@@ -313,7 +313,13 @@ fun HelpLabelsOverlay(registry: SpotRegistry, hide: () -> Unit, reportBug: (() -
             val others = allSpots.filter { (id, _) -> id !in ownIds }.map { it.second }
             val gap = 2.dp.toPx()
             fun onScreen(c: Rect) = c.left >= 0f && c.top >= 0f && c.right <= width && c.bottom <= height
-            val positions = placeables.mapIndexed { i, pl ->
+            // Audit ultra round 3, n° 34 (seats D d, E c, D c: « Volumes », « Projets, aide » off at the top, Mix without a
+            // label): the bar's tabs have the fewest places (nothing below them), so they are labelled first; the
+            // controls over them then find their places around what is left.
+            val barFirst = barTop?.let { top -> controls.indices.sortedBy { j -> if (controls[j].top >= top - 1f) 0 else 1 } } ?: controls.indices.toList()
+            val positions = arrayOfNulls<Pair<Int, Int>>(placeables.size)
+            for (i in barFirst) positions[i] = run {
+                val pl = placeables[i]
                 val r = controls[i]
                 val w = pl.width.toFloat()
                 val h = pl.height.toFloat()

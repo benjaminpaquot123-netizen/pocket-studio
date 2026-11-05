@@ -40,7 +40,14 @@ object Glossary {
     )
     val STEP: Help get() = Help(
         tr("Pas"),
-        tr("Une case de la grille : un seizième de mesure. Allumer un pas fait sonner le son à ce moment-là. Coups : allumer ou éteindre. Roulements : plusieurs coups rapides dans la case. Place : à gauche ou à droite. Hauteur : plus aigu ou plus grave."),
+        // Audit ultra round 3, n° 34 (seat D d): « Hauteur » only for a sound of one's own, as its mode says; « Force » too.
+        tr("Une case de la grille : un seizième de mesure. Allumer un pas fait sonner le son à ce moment-là. Coups : allumer ou éteindre. Roulements : plusieurs coups rapides dans la case. Place : à gauche ou à droite. Hauteur (sons importés) : plus aigu ou plus grave. Force : plus fort ou plus doux."),
+    )
+
+    /** The Mode simple's « Pas » (round 3, n° 34: no rolls, place or pitch modes there). */
+    val STEP_SIMPLE: Help get() = Help(
+        tr("Pas"),
+        tr("Une case de la grille : un seizième de mesure. Touche une case pour y mettre un coup, touche-la encore pour l'enlever ; glisse le doigt pour en mettre plusieurs. Appui long sur un coup : sa force et ses roulements."),
     )
     val SWING: Help get() = Help(
         tr("Swing"),
@@ -254,7 +261,8 @@ object Glossary {
     )
     val FX_PRESET: Help get() = Help(
         tr("Ambiance d'effets"),
-        tr("Un réglage tout prêt (Sous l'eau, Lo-Fi Tape, Grande cathédrale…) qui pose plusieurs effets d'un coup."),
+        // Round 3, n° 34 (seat D d): « Sous l'eau » left « 0 effets sur 8 »: what an ambiance really sets.
+        tr("Un réglage tout prêt (Sous l'eau, Lo-Fi Tape, Grande cathédrale…) : il règle d'un coup les boutons Couleur, Saleté, Mouvement et Espace, et certaines ajoutent aussi des effets à la liste."),
     )
     val AUTOMATION: Help get() = Help(
         tr("Courbes (automation)"),

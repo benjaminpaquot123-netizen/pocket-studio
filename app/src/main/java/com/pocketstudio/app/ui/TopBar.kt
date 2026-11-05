@@ -323,7 +323,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
         if (ui.scene != null && layout.scene != SceneChipMode.Hidden) {
             SceneChip(ui.scene, layout.scene == SceneChipMode.Full, layout.sceneMaxWidth, actions)
         }
-        if (ui.undo) IconButton(onClick = actions.undo, enabled = ui.canUndo, modifier = Modifier.spot("top_undo", tr("Annuler")).testTag("top_undo")) {
+        if (ui.undo) IconButton(onClick = actions.undo, enabled = ui.canUndo, modifier = Modifier.spot("top_undo", tr("Annuler (défaire)")).testTag("top_undo")) {
             Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = tr("Annuler la dernière action"))
         }
         if (showRedo) {
@@ -361,7 +361,8 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             // While it plays, a soft green glow around the disc, breathing on the beat.
             Modifier.requiredSize(48.dp).liveGlow(ui.playing, Neon.Acid, inset = 3.dp).clip(CircleShape)
                 .clickable(role = Role.Button, onClickLabel = if (ui.playing) tr("Arrêter") else tr("Jouer"), onClick = actions.togglePlay)
-                .spot("top_play", tr("Écouter"))
+                // Round 3, n° 34 (seats D c, E c): « Écouter » labelled the Stop square; the label says what a touch does now.
+                .spot("top_play", if (ui.playing) tr("Arrêter") else tr("Jouer"))
                 .testTag("top_play"),
             contentAlignment = Alignment.Center,
         ) {

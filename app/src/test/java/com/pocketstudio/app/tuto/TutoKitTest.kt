@@ -100,6 +100,8 @@ class TutoKitTest {
 
     private fun has(tag: String) = compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
     private fun click(tag: String) {
+        // Round 3, n° 28: the kit's offer is at the end of the step's words: read down to it, as a person does.
+        if (tag.startsWith("tuto_kit")) readToTheEnd()
         val node = compose.onNodeWithTag(tag)
         runCatching { node.performScrollTo() }
         node.performClick()
@@ -132,7 +134,7 @@ class TutoKitTest {
     /** The kit's card there, and past the moment it takes no touch (round 2, n° 22: it came by itself in the panel's place). */
     private fun cardShown() {
         await("the kit's card") { has("tuto_kit") }
-        compose.mainClock.advanceTimeBy(com.pocketstudio.app.ui.ARRIVAL_GUARD_MS + 100)
+        compose.mainClock.advanceTimeBy(1_100L)
         compose.waitForIdle()
     }
 
@@ -209,5 +211,15 @@ class TutoKitTest {
         packs.value = ready(installed)
         await("the pack on the pads") { progress().kit == TutoProgress.KIT_PACK }
         assertEquals(packPads, padsWithSamples())
+    }
+
+    /** « Lire la suite » until the step's words are read to their end. */
+    private fun readToTheEnd() {
+        repeat(12) {
+            if (compose.onAllNodesWithTag("tuto_text_more", useUnmergedTree = true).fetchSemanticsNodes().isEmpty()) return
+            compose.onNodeWithTag("tuto_text_more").performClick()
+            compose.mainClock.advanceTimeBy(600)
+            compose.waitForIdle()
+        }
     }
 }

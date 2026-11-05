@@ -14,7 +14,7 @@ object ScreenHelp {
     // --- Pad Live ---
     val PADLIVE_PAGES: Help get() = Help(
         tr("Pages et packs"),
-        tr("Pad Live a 4 pages de 16 pads, A à D : touche une lettre pour changer de page. « Pack » remplit la page affichée avec les sons d'un style ; « Annuler » la remet comme avant. La cible lance un défi."),
+        tr("Pad Live a 4 pages de 16 pads, A à D : touche une lettre pour changer de page. « Pack » remplit la page affichée avec les sons d'un style ; « Annuler » la remet comme avant. L'étoile « Défi » lance un défi."),
     )
     val PADLIVE_EFFECTS: Help get() = Help(
         tr("Effets de scène"),
@@ -50,9 +50,13 @@ object ScreenHelp {
     )
 
     // --- The Live's grid ---
-    val LIVE_GRID: Help get() = Help(
+    val LIVE_GRID: Help get() = liveGrid(remix = true)
+
+    /** Round 3, n° 34 (seat D d): the Remix column spoken of only where the grid has one (a project with a remix). */
+    fun liveGrid(remix: Boolean): Help = Help(
         tr("Briques et cases"),
-        tr("Chaque ligne est une brique (A, B, C…), chaque colonne une piste. Touche une case pour la lancer, la lettre pour lancer toute la ligne, ■ pour arrêter. La colonne Remix joue un passage de la chanson : appui long pour le choisir."),
+        tr("Chaque ligne est une brique (A, B, C…), chaque colonne une piste. Touche une case pour la lancer, la lettre pour lancer toute la ligne, ■ pour arrêter.") +
+            if (remix) " " + tr("La colonne Remix joue un passage de la chanson : appui long sur une de ses cases pour le choisir.") else "",
     )
     val LIVE_LAUNCH: Help get() = Help(
         tr("Lancer à et Cases"),

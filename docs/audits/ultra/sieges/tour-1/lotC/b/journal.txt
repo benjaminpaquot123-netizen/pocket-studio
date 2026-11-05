@@ -1,0 +1,496 @@
+#0 SIEGE lang=en device=tablet8 font=100 mode=simple theme=- fresh=non gestes.max=90 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 5fb753f8bc | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « Your music studio, in your pocket. » 3.44:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Make my first song (guided) » 2.24:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « You make the whole song yourself, step by step: I explain and I check. » 3.52:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Listen to a demo » 2.65:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « Pick a song on your phone: the app separates the vocals, drums, bass and the rest. » 4.38:1 (needs 4.5:1, 14 sp)
+#1 > touche 450 1222
+#1 DOIGT launch_padlive « Pad Live »
+#2 ROUTE padlive | MODE simple | EMPREINTE 35d6ca1c3e | project=p-7f02ea40 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT OVERLAP « 124 » over « A » (12 x 8 dp)
+#2 LAYOUT OVERLAP « ? » over «  Challenge » (8 x 10 dp)
+#2 LAYOUT OVERLAP « ? » over the touchable « empty, pad A10 » (7 x 15 dp)
+#2 LAYOUT OVERLAP « 124 » over the touchable « Page A · empty » (32 x 18 dp)
+#2 LAYOUT OVERLAP « ? » over the touchable « Challenge: play this rhythm back » (9 x 24 dp)
+#2 LAYOUT OVERLAP « A » over the touchable « Tempo: 124 BPM Change the tempo » (12 x 22 dp)
+#2 LAYOUT OVERLAP « B » over the touchable « Tempo: 124 BPM Change the tempo » (11 x 22 dp)
+#2 LAYOUT OVERLAP «  Challenge » over the touchable « Label the screen » (28 x 22 dp)
+#2 LAYOUT OVERLAP « + » over the touchable « Step 9 Add or remove empty » (17 x 32 dp)
+#2 LAYOUT OVERLAP « + » over the touchable « Step 11 Add or remove empty » (17 x 32 dp)
+#2 LAYOUT OVERLAP « + » over the touchable « Step 13 Add or remove empty » (17 x 32 dp)
+#2 LAYOUT OVERLAP « + » over the touchable « Step 15 Add or remove empty » (17 x 32 dp)
+#2 LAYOUT OVERLAP « Filter » over the touchable « Open the Guide folded » (36 x 20 dp)
+#2 LAYOUT OVERLAP « low ↔ high » over the touchable « Open the Guide folded » (74 x 16 dp)
+#2 LAYOUT OVERLAP « Echo » over the touchable « Open the Guide folded » (34 x 20 dp)
+#2 LAYOUT OVERLAP « on the way out » over the touchable « Open the Guide folded » (96 x 16 dp)
+#2 LAYOUT OVERLAP « Roll » over the touchable « Open the Guide folded » (26 x 20 dp)
+#2 LAYOUT OVERLAP « 1/16 » over the touchable « Open the Guide folded » (26 x 16 dp)
+#2 LAYOUT OVERLAP « ● » over the touchable « empty, pad A4 » (11 x 17 dp)
+#2 LAYOUT OVERLAP «  REC » over the touchable « empty, pad A4 » (23 x 13 dp)
+#2 LAYOUT OVERLAP « ✎ » over the touchable « empty, pad A4 » (13 x 18 dp)
+#2 LAYOUT OVERLAP «  Note » over the touchable « empty, pad A4 » (25 x 13 dp)
+#2 LAYOUT OVERLAP « ⋯ » over the touchable « empty, pad A4 » (13 x 22 dp)
+#2 LAYOUT CONTRAST « 124 » 2.13:1 (needs 3.0:1, 16 sp)
+#2 LAYOUT CONTRAST « ● » 2.69:1 (needs 4.5:1, 13 sp)
+#2 LAYOUT CONTRAST « ✎ » 3.50:1 (needs 4.5:1, 13 sp)
+#2 > touche 784 135
+#2 DOIGT padlive_challenge_open « Challenge: play this rhythm back »
+#3 ROUTE padlive | MODE simple | EMPREINTE 0b363908dc | project=p-7f02ea40 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT OVERLAP « This page needs “hit” pads: pick a pack or another page. » over the touchable « Open the Guide folded » (377 x 20 dp)
+#3 > touche 405 135
+#3 DOIGT padlive_pack « Pack… »
+#4 ROUTE dialogue:padlive_pack_fete | MODE simple | EMPREINTE 754bebe0bb | project=p-7f02ea40 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « Trap » 1.34:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « House » 1.20:1 (needs 4.5:1, 14 sp)
+#4 > touche 399 438
+#4 DOIGT padlive_pack_house « House »
+#5 ROUTE padlive | MODE simple | EMPREINTE da1d24468e | project=p-7f02ea40 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « ? » over « “Ready” » (5 x 12 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « “Ready”, hit, ready, pad A10 » (7 x 15 dp)
+#5 LAYOUT OVERLAP « 124 » over the touchable « Page A » (32 x 18 dp)
+#5 LAYOUT OVERLAP « Whistle » over the touchable « Collapse Expanded » (48 x 19 dp)
+#5 LAYOUT OVERLAP « “Ready” » over the touchable « Collapse Expanded » (58 x 19 dp)
+#5 LAYOUT OVERLAP « “Ready” » over the touchable « What is “Step”? » (16 x 19 dp)
+#5 LAYOUT OVERLAP « Build-up » over the touchable « Collapse Expanded » (59 x 19 dp)
+#5 LAYOUT OVERLAP « Impact » over the touchable « Collapse Expanded » (47 x 19 dp)
+#5 > attends 2
+#6 ROUTE padlive | MODE simple | EMPREINTE da1d24468e | project=p-7f02ea40 no tuto
+#6 SON Son : rien ne joue.
+#6 > touche 828 1299
+#6 DOIGT padlive_challenge_close
+#7 ROUTE padlive | MODE simple | EMPREINTE e73adcdc0d | project=p-7f02ea40 no tuto
+#7 SON Son : rien ne joue.
+#7 > touche 784 135
+#7 DOIGT padlive_challenge_open « Challenge: play this rhythm back »
+#8 ROUTE padlive | MODE simple | EMPREINTE 0556dd779c | project=p-7f02ea40 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « Listen » over the touchable « Open the Guide folded » (43 x 20 dp)
+#8 LAYOUT OVERLAP « My turn! » over the touchable « Open the Guide folded » (59 x 20 dp)
+#8 > touche 240 1353
+#8 DOIGT padlive_challenge_listen « Listen »
+#9 ROUTE padlive | MODE simple | EMPREINTE ecdde61bbf | project=p-7f02ea40 no tuto
+#9 SON Son : l'exemple du tuto joue (encore 2 s).
+#9 > touche 450 1353
+#9 DOIGT padlive_challenge_go « My turn! »
+#10 ROUTE padlive | MODE simple | EMPREINTE 931682fc54 | project=p-7f02ea40 no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « Listen again » over the touchable « Open the Guide folded » (83 x 20 dp)
+#10 LAYOUT OVERLAP « I'm done » over the touchable « Open the Guide folded » (59 x 20 dp)
+#10 > touche 116 770
+#10 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#11 ROUTE padlive | MODE simple | EMPREINTE ceb2b99240 | project=p-7f02ea40 no tuto
+#11 SON Son : rien ne joue.
+#11 > touche 116 770
+#11 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#12 ROUTE padlive | MODE simple | EMPREINTE be1fb93b71 | project=p-7f02ea40 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 116 770
+#12 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#13 ROUTE padlive | MODE simple | EMPREINTE d8267cad6f | project=p-7f02ea40 no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 116 770
+#13 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#14 ROUTE padlive | MODE simple | EMPREINTE ff636721f1 | project=p-7f02ea40 no tuto
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « Play again » over the touchable « Open the Guide folded » (70 x 20 dp)
+#14 LAYOUT OVERLAP « Next challenge » over the touchable « Open the Guide folded » (103 x 20 dp)
+#14 > touche 694 45
+#14 DOIGT padlive_tempo « 124 »
+#15 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE a3c18c7d2a | project=p-7f02ea40 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « 1 » over the touchable « empty, pad A13 » (5 x 16 dp)
+#15 LAYOUT OVERLAP « 2 » over the touchable « empty, pad A15 » (7 x 16 dp)
+#15 LAYOUT OVERLAP « 3 » over the touchable « empty, pad A13 » (8 x 16 dp)
+#15 LAYOUT OVERLAP « 4 » over the touchable « empty, pad A15 » (8 x 16 dp)
+#15 LAYOUT OVERLAP «  BPM » over the touchable « Page A » (12 x 16 dp)
+#15 LAYOUT OVERLAP «  BPM » over the touchable « Page B · empty » (18 x 16 dp)
+#15 LAYOUT OVERLAP « Tempo » over the touchable « Close sheet » (73 x 28 dp)
+#15 LAYOUT OVERLAP « ? » over the touchable « Close sheet » (7 x 15 dp)
+#15 LAYOUT OVERLAP « Close » over the touchable « Close sheet » (39 x 20 dp)
+#15 LAYOUT OVERLAP « 124 » over the touchable « Close sheet » (86 x 53 dp)
+#15 LAYOUT OVERLAP «  BPM » over the touchable « Close sheet » (39 x 24 dp)
+#15 LAYOUT OVERLAP « 70 » over the touchable « Close sheet » (21 x 19 dp)
+#15 LAYOUT OVERLAP « 90 » over the touchable « Close sheet » (21 x 19 dp)
+#15 LAYOUT OVERLAP « 120 » over the touchable « Close sheet » (32 x 19 dp)
+#15 LAYOUT OVERLAP « 140 » over the touchable « Close sheet » (32 x 19 dp)
+#15 LAYOUT OVERLAP « 174 » over the touchable « Close sheet » (32 x 19 dp)
+#15 LAYOUT OVERLAP « ½ » over the touchable « Close sheet » (14 x 24 dp)
+#15 LAYOUT OVERLAP « ×2 » over the touchable « Close sheet » (21 x 24 dp)
+#15 LAYOUT OVERLAP « 1 » over the touchable « Close sheet » (14 x 27 dp)
+#15 LAYOUT OVERLAP « 2 » over the touchable « Close sheet » (14 x 27 dp)
+#15 LAYOUT OVERLAP « 3 » over the touchable « Close sheet » (14 x 27 dp)
+#15 LAYOUT OVERLAP « 4 » over the touchable « Close sheet » (14 x 27 dp)
+#15 LAYOUT OVERLAP « 5 » over the touchable « Close sheet » (14 x 27 dp)
+#15 LAYOUT OVERLAP « 6 » over the touchable « Close sheet » (14 x 27 dp)
+#15 LAYOUT OVERLAP « 7 » over the touchable « Close sheet » (14 x 27 dp)
+#15 LAYOUT OVERLAP « 8 » over the touchable « Close sheet » (14 x 27 dp)
+#15 LAYOUT OVERLAP « 9 » over the touchable « Close sheet » (14 x 27 dp)
+#15 LAYOUT OVERLAP « 0 » over the touchable « Close sheet » (14 x 27 dp)
+#15 LAYOUT OVERLAP « OK » over the touchable « Close sheet » (33 x 27 dp)
+#15 LAYOUT OVERLAP « Tap in time » over the touchable « Close sheet » (84 x 24 dp)
+#15 LAYOUT OVERLAP « Tap here on each beat: the tempo follows. » over the touchable « Close sheet » (253 x 18 dp)
+#15 LAYOUT CONTRAST «  BPM » 1.28:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « Close » 1.93:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST «  BPM » 1.22:1 (needs 4.5:1, 16 sp)
+#15 LAYOUT CONTRAST « ×2 » 1.23:1 (needs 4.5:1, 16 sp)
+#15 LAYOUT CONTRAST « Tap in time » 2.27:1 (needs 4.5:1, 16 sp)
+#15 LAYOUT LABEL « #1126 » long press without text nor description
+#15 > touche 64 990
+#15 DOIGT tempo_preset_70 « 70 »
+#16 ROUTE padlive | MODE simple | EMPREINTE 032f5ad9a3 | project=p-7f02ea40 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « 70 » over « A » (5 x 8 dp)
+#16 LAYOUT OVERLAP « 70 » over the touchable « Page A » (21 x 18 dp)
+#16 LAYOUT OVERLAP « A » over the touchable « Tempo: 70 BPM Change the tempo » (12 x 22 dp)
+#16 LAYOUT CONTRAST « 70 » 1.29:1 (needs 3.0:1, 16 sp)
+#16 > touche 240 1353
+#16 DOIGT padlive_challenge_again « Play again »
+#17 ROUTE padlive | MODE simple | EMPREINTE a6b900821b | project=p-7f02ea40 no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 660 1353
+#17 DOIGT padlive_challenge_go « My turn! »
+#18 ROUTE padlive | MODE simple | EMPREINTE 7dc75d3fa6 | project=p-7f02ea40 no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 116 770
+#18 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#19 ROUTE padlive | MODE simple | EMPREINTE 699bfe28a0 | project=p-7f02ea40 no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 116 770
+#19 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#20 ROUTE padlive | MODE simple | EMPREINTE d1701f1d2c | project=p-7f02ea40 no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 116 770
+#20 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#21 ROUTE padlive | MODE simple | EMPREINTE 2f5c7d9c1c | project=p-7f02ea40 no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 116 770
+#21 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#22 ROUTE padlive | MODE simple | EMPREINTE d8318db5ea | project=p-7f02ea40 no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 240 1353
+#22 DOIGT padlive_challenge_again « Play again »
+#23 ROUTE padlive | MODE simple | EMPREINTE a6b900821b | project=p-7f02ea40 no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 240 1353
+#23 DOIGT padlive_challenge_listen « Listen »
+#24 ROUTE padlive | MODE simple | EMPREINTE 43e4182f29 | project=p-7f02ea40 no tuto
+#24 SON Son : l'exemple du tuto joue (encore 2 s).
+#24 > touche 450 1353
+#24 DOIGT padlive_challenge_go « My turn! »
+#25 ROUTE padlive | MODE simple | EMPREINTE 7dc75d3fa6 | project=p-7f02ea40 no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 734 770
+#25 DOIGT padlive_pad_11 « Impact, hit, ready, pad A12 »
+#26 ROUTE padlive | MODE simple | EMPREINTE 4b4200f9ec | project=p-7f02ea40 no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 734 770
+#26 DOIGT padlive_pad_11 « Impact, hit, ready, pad A12 »
+#27 ROUTE padlive | MODE simple | EMPREINTE 762aebbe8e | project=p-7f02ea40 no tuto
+#27 SON Son : rien ne joue.
+#27 > touche 734 770
+#27 DOIGT padlive_pad_11 « Impact, hit, ready, pad A12 »
+#28 ROUTE padlive | MODE simple | EMPREINTE ea8659b429 | project=p-7f02ea40 no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 734 770
+#28 DOIGT padlive_pad_11 « Impact, hit, ready, pad A12 »
+#29 ROUTE padlive | MODE simple | EMPREINTE 16509085ea | project=p-7f02ea40 no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 700 45
+#29 DOIGT padlive_tempo « 70 »
+#30 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE e4e9dbf6ae | project=p-7f02ea40 no tuto
+#30 SON Son : rien ne joue.
+#30 LAYOUT OVERLAP «  BPM » over the touchable « Page A » (23 x 16 dp)
+#30 LAYOUT OVERLAP «  BPM » over the touchable « Page B · empty » (8 x 16 dp)
+#30 LAYOUT OVERLAP « 70 » over the touchable « Close sheet » (57 x 53 dp)
+#30 LAYOUT CONTRAST «  BPM » 1.30:1 (needs 4.5:1, 12 sp)
+#30 LAYOUT LABEL « #1288 » long press without text nor description
+#30 > touche 153 990
+#30 DOIGT tempo_preset_90 « 90 »
+#31 ROUTE padlive | MODE simple | EMPREINTE 3d83cf7ff4 | project=p-7f02ea40 no tuto
+#31 SON Son : rien ne joue.
+#31 LAYOUT OVERLAP « 90 » over « A » (5 x 8 dp)
+#31 LAYOUT OVERLAP « 90 » over the touchable « Page A » (21 x 18 dp)
+#31 LAYOUT OVERLAP « A » over the touchable « Tempo: 90 BPM Change the tempo » (12 x 22 dp)
+#31 LAYOUT CONTRAST « 90 » 1.29:1 (needs 3.0:1, 16 sp)
+#31 > touche 240 1353
+#31 DOIGT padlive_challenge_again « Play again »
+#32 ROUTE padlive | MODE simple | EMPREINTE ff06084911 | project=p-7f02ea40 no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 660 1353
+#32 DOIGT padlive_challenge_go « My turn! »
+#33 ROUTE padlive | MODE simple | EMPREINTE ecb8446436 | project=p-7f02ea40 no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 116 770
+#33 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#34 ROUTE padlive | MODE simple | EMPREINTE 7c473eec84 | project=p-7f02ea40 no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 116 770
+#34 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#35 ROUTE padlive | MODE simple | EMPREINTE a552f850d2 | project=p-7f02ea40 no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 116 770
+#35 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#36 ROUTE padlive | MODE simple | EMPREINTE 9e3148c098 | project=p-7f02ea40 no tuto
+#36 SON Son : rien ne joue.
+#36 > touche 116 770
+#36 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#37 ROUTE padlive | MODE simple | EMPREINTE 15d9b632bd | project=p-7f02ea40 no tuto
+#37 SON Son : rien ne joue.
+#37 > touche 770 1185
+#37 DOIGT help_Challenge « What is “Challenge”? »
+#37 AIDE help_Challenge
+#38 ROUTE dialogue:« Challenge » | MODE simple | EMPREINTE a0da404d19 | project=p-7f02ea40 no tuto
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « Got it » 3.73:1 (needs 4.5:1, 14 sp)
+#38 > touche 788 838
+#38 DOIGT #1427 « Got it »
+#39 ROUTE padlive | MODE simple | EMPREINTE acc7bcc9c5 | project=p-7f02ea40 no tuto
+#39 SON Son : rien ne joue.
+#39 > touche 700 45
+#39 DOIGT padlive_tempo « 90 »
+#40 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE a545025b6e | project=p-7f02ea40 no tuto
+#40 SON Son : rien ne joue.
+#40 LAYOUT OVERLAP « 90 » over the touchable « Close sheet » (57 x 53 dp)
+#40 LAYOUT LABEL « #1438 » long press without text nor description
+#40 > touche 250 990
+#40 DOIGT tempo_preset_120 « 120 »
+#41 ROUTE padlive | MODE simple | EMPREINTE da6bd66f9e | project=p-7f02ea40 no tuto
+#41 SON Son : rien ne joue.
+#41 LAYOUT OVERLAP « 120 » over « A » (12 x 8 dp)
+#41 LAYOUT OVERLAP « 120 » over the touchable « Page A » (32 x 18 dp)
+#41 LAYOUT OVERLAP « A » over the touchable « Tempo: 120 BPM Change the tempo » (12 x 22 dp)
+#41 LAYOUT OVERLAP « B » over the touchable « Tempo: 120 BPM Change the tempo » (11 x 22 dp)
+#41 LAYOUT CONTRAST « 120 » 2.13:1 (needs 3.0:1, 16 sp)
+#41 > touche 240 1353
+#41 DOIGT padlive_challenge_again « Play again »
+#42 ROUTE padlive | MODE simple | EMPREINTE 34f0b95c47 | project=p-7f02ea40 no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 660 1353
+#42 DOIGT padlive_challenge_go « My turn! »
+#43 ROUTE padlive | MODE simple | EMPREINTE d6b3971315 | project=p-7f02ea40 no tuto
+#43 SON Son : rien ne joue.
+#43 > touche 116 770
+#43 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#44 ROUTE padlive | MODE simple | EMPREINTE cfd5e1beb8 | project=p-7f02ea40 no tuto
+#44 SON Son : rien ne joue.
+#44 > touche 116 770
+#44 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#45 ROUTE padlive | MODE simple | EMPREINTE ac491b7aec | project=p-7f02ea40 no tuto
+#45 SON Son : rien ne joue.
+#45 > touche 116 770
+#45 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#46 ROUTE padlive | MODE simple | EMPREINTE c6de15e3ae | project=p-7f02ea40 no tuto
+#46 SON Son : rien ne joue.
+#46 > touche 116 770
+#46 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#47 ROUTE padlive | MODE simple | EMPREINTE 8fd0476f75 | project=p-7f02ea40 no tuto
+#47 SON Son : rien ne joue.
+#47 > touche 803 1458
+#47 DOIGT padlive_more « More »
+#48 ROUTE padlive | MODE simple | EMPREINTE 634b338475 | project=p-7f02ea40 no tuto
+#48 SON Son : rien ne joue.
+#48 LAYOUT OVERLAP « ? » over the touchable « empty, pad A14 » (7 x 15 dp)
+#48 LAYOUT OVERLAP « + » over the touchable « Collapse Expanded » (17 x 25 dp)
+#48 LAYOUT OVERLAP « Challenge 1 · Boom boom » over the touchable « Step 9 Add or remove empty » (64 x 20 dp)
+#48 LAYOUT OVERLAP « Challenge 1 · Boom boom » over the touchable « Step 10 Add or remove empty » (64 x 20 dp)
+#48 LAYOUT OVERLAP « Challenge 1 · Boom boom » over the touchable « Step 11 Add or remove empty » (32 x 20 dp)
+#48 LAYOUT OVERLAP « ? » over the touchable « Step 16 Add or remove empty » (7 x 15 dp)
+#48 LAYOUT OVERLAP « Effects » over the touchable « Open the Guide folded » (44 x 18 dp)
+#48 LAYOUT OVERLAP « Big pads » over the touchable « Open the Guide folded » (55 x 18 dp)
+#48 LAYOUT OVERLAP « Share » over the touchable « Open the Guide folded » (37 x 18 dp)
+#48 LAYOUT OVERLAP « ? » over the touchable « Open the Guide folded » (7 x 15 dp)
+#48 LAYOUT CONTRAST « ● » 2.72:1 (needs 4.5:1, 13 sp)
+#48 > touche 660 1185
+#48 DOIGT padlive_challenge_next « Next challenge »
+#49 ROUTE padlive | MODE simple | EMPREINTE 287387ede4 | project=p-7f02ea40 no tuto
+#49 SON Son : rien ne joue.
+#49 LAYOUT OVERLAP « + » over the touchable « Collapse Expanded » (17 x 19 dp)
+#49 LAYOUT OVERLAP « Challenge 2 · Ping-pong » over the touchable « Step 9 Add or remove empty » (64 x 20 dp)
+#49 LAYOUT OVERLAP « Challenge 2 · Ping-pong » over the touchable « Step 10 Add or remove empty » (64 x 20 dp)
+#49 LAYOUT OVERLAP « Challenge 2 · Ping-pong » over the touchable « Step 11 Add or remove empty » (25 x 20 dp)
+#49 > touche 660 1185
+#49 DOIGT padlive_challenge_go « My turn! »
+#50 ROUTE padlive | MODE simple | EMPREINTE c04a929e05 | project=p-7f02ea40 no tuto
+#50 SON Son : rien ne joue.
+#50 > touche 116 680
+#50 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#51 ROUTE padlive | MODE simple | EMPREINTE e22e362d9c | project=p-7f02ea40 no tuto
+#51 SON Son : rien ne joue.
+#51 > touche 322 680
+#51 DOIGT padlive_pad_9 « “Ready”, hit, ready, pad A10 »
+#52 ROUTE padlive | MODE simple | EMPREINTE 6c24b531c5 | project=p-7f02ea40 no tuto
+#52 SON Son : rien ne joue.
+#52 > touche 116 680
+#52 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#53 ROUTE padlive | MODE simple | EMPREINTE d896f8638e | project=p-7f02ea40 no tuto
+#53 SON Son : rien ne joue.
+#53 > touche 322 680
+#53 DOIGT padlive_pad_9 « “Ready”, hit, ready, pad A10 »
+#54 ROUTE padlive | MODE simple | EMPREINTE 36826cfee4 | project=p-7f02ea40 no tuto
+#54 SON Son : rien ne joue.
+#54 > touche 694 45
+#54 DOIGT padlive_tempo « 120 »
+#55 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 24f6603cbd | project=p-7f02ea40 no tuto
+#55 SON Son : rien ne joue.
+#55 LAYOUT OVERLAP « 120 » over the touchable « Close sheet » (86 x 53 dp)
+#55 LAYOUT CONTRAST « 2 » 2.02:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « 3 » 2.02:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « 4 » 2.02:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « Close » 1.27:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « 7 » 2.02:1 (needs 3.0:1, 22 sp)
+#55 LAYOUT CONTRAST « 8 » 2.02:1 (needs 3.0:1, 22 sp)
+#55 LAYOUT CONTRAST « 9 » 2.02:1 (needs 3.0:1, 22 sp)
+#55 LAYOUT CONTRAST « 0 » 2.04:1 (needs 3.0:1, 22 sp)
+#55 LAYOUT LABEL « #1632 » long press without text nor description
+#55 > touche 64 990
+#55 DOIGT tempo_preset_70 « 70 »
+#56 ROUTE padlive | MODE simple | EMPREINTE 296de04a42 | project=p-7f02ea40 no tuto
+#56 SON Son : rien ne joue.
+#56 > touche 240 1185
+#56 DOIGT padlive_challenge_again « Play again »
+#57 ROUTE padlive | MODE simple | EMPREINTE f27fa63570 | project=p-7f02ea40 no tuto
+#57 SON Son : rien ne joue.
+#57 > touche 660 1185
+#57 DOIGT padlive_challenge_go « My turn! »
+#58 ROUTE padlive | MODE simple | EMPREINTE 4ea3686852 | project=p-7f02ea40 no tuto
+#58 SON Son : rien ne joue.
+#58 > touche 116 680
+#58 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#59 ROUTE padlive | MODE simple | EMPREINTE 4e66a6f14b | project=p-7f02ea40 no tuto
+#59 SON Son : rien ne joue.
+#59 > touche 322 680
+#59 DOIGT padlive_pad_9 « “Ready”, hit, ready, pad A10 »
+#60 ROUTE padlive | MODE simple | EMPREINTE 45992d793c | project=p-7f02ea40 no tuto
+#60 SON Son : rien ne joue.
+#60 > touche 116 680
+#60 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#61 ROUTE padlive | MODE simple | EMPREINTE 249468dd54 | project=p-7f02ea40 no tuto
+#61 SON Son : rien ne joue.
+#61 > touche 322 680
+#61 DOIGT padlive_pad_9 « “Ready”, hit, ready, pad A10 »
+#62 ROUTE padlive | MODE simple | EMPREINTE c749d96e70 | project=p-7f02ea40 no tuto
+#62 SON Son : rien ne joue.
+#62 > touche 828 1017
+#62 DOIGT padlive_challenge_close
+#63 ROUTE padlive | MODE simple | EMPREINTE 54979ecace | project=p-7f02ea40 no tuto
+#63 SON Son : rien ne joue.
+#63 LAYOUT OVERLAP « + » over the touchable « Collapse Expanded » (17 x 12 dp)
+#63 LAYOUT OVERLAP « STAGE EFFECTS » over the touchable « Step 9 Add or remove empty » (64 x 18 dp)
+#63 LAYOUT OVERLAP « STAGE EFFECTS » over the touchable « Step 10 Add or remove empty » (20 x 18 dp)
+#63 LAYOUT OVERLAP « ? » over the touchable « Step 10 Add or remove empty » (7 x 15 dp)
+#63 LAYOUT OVERLAP « Press and hold » over the touchable « Step 15 Add or remove empty » (10 x 18 dp)
+#63 LAYOUT OVERLAP « Press and hold » over the touchable « Step 16 Add or remove empty » (65 x 18 dp)
+#63 > touche 784 135
+#63 DOIGT padlive_challenge_open « Challenge: play this rhythm back »
+#64 ROUTE padlive | MODE simple | EMPREINTE c0378913b6 | project=p-7f02ea40 no tuto
+#64 SON Son : rien ne joue.
+#64 > touche 660 1185
+#64 DOIGT padlive_challenge_go « My turn! »
+#65 ROUTE padlive | MODE simple | EMPREINTE fb3b2ceb8c | project=p-7f02ea40 no tuto
+#65 SON Son : rien ne joue.
+#65 > touche 116 680
+#65 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#66 ROUTE padlive | MODE simple | EMPREINTE 888228b802 | project=p-7f02ea40 no tuto
+#66 SON Son : rien ne joue.
+#66 > touche 116 680
+#66 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#67 ROUTE padlive | MODE simple | EMPREINTE 470adb516f | project=p-7f02ea40 no tuto
+#67 SON Son : rien ne joue.
+#67 > touche 116 680
+#67 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#68 ROUTE padlive | MODE simple | EMPREINTE ad339019ef | project=p-7f02ea40 no tuto
+#68 SON Son : rien ne joue.
+#68 > touche 116 680
+#68 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#69 ROUTE padlive | MODE simple | EMPREINTE 2357469847 | project=p-7f02ea40 no tuto
+#69 SON Son : rien ne joue.
+#69 > touche 700 45
+#69 DOIGT padlive_tempo « 70 »
+#70 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE e4e9dbf6ae | project=p-7f02ea40 no tuto
+#70 SON Son : rien ne joue.
+#70 LAYOUT LABEL « #1832 » long press without text nor description
+#70 > touche 450 1443
+#70 DOIGT tempo_tap « Tap in time »
+#71 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE e4e9dbf6ae | project=p-7f02ea40 no tuto
+#71 SON Son : rien ne joue.
+#71 > touche 450 1443
+#71 DOIGT tempo_tap « Tap in time »
+#72 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 29f4b70349 | project=p-7f02ea40 no tuto
+#72 SON Son : rien ne joue.
+#72 LAYOUT OVERLAP « 89 » over the touchable « Page A » (21 x 18 dp)
+#72 LAYOUT OVERLAP « 89 » over the touchable « Close sheet » (57 x 53 dp)
+#72 LAYOUT CONTRAST « 89 » 1.29:1 (needs 3.0:1, 16 sp)
+#72 > touche 450 1443
+#72 DOIGT tempo_tap « Tap in time »
+#73 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE a545025b6e | project=p-7f02ea40 no tuto
+#73 SON Son : rien ne joue.
+#73 > touche 450 1443
+#73 DOIGT tempo_tap « Tap in time »
+#74 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 29f4b70349 | project=p-7f02ea40 no tuto
+#74 SON Son : rien ne joue.
+#74 > touche 828 802
+#74 DOIGT tempo_close « Close »
+#75 ROUTE padlive | MODE simple | EMPREINTE 3080556cd7 | project=p-7f02ea40 no tuto
+#75 SON Son : rien ne joue.
+#75 LAYOUT OVERLAP « 89 » over « A » (5 x 8 dp)
+#75 LAYOUT OVERLAP « A » over the touchable « Tempo: 89 BPM Change the tempo » (12 x 22 dp)
+#75 > touche 240 1185
+#75 DOIGT padlive_challenge_again « Play again »
+#76 ROUTE padlive | MODE simple | EMPREINTE 7d868c3249 | project=p-7f02ea40 no tuto
+#76 SON Son : rien ne joue.
+#76 > touche 660 1185
+#76 DOIGT padlive_challenge_go « My turn! »
+#77 ROUTE padlive | MODE simple | EMPREINTE 9d7bc0d056 | project=p-7f02ea40 no tuto
+#77 SON Son : rien ne joue.
+#77 > touche 116 680
+#77 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#78 ROUTE padlive | MODE simple | EMPREINTE aee942edcd | project=p-7f02ea40 no tuto
+#78 SON Son : rien ne joue.
+#78 > touche 116 680
+#78 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#79 ROUTE padlive | MODE simple | EMPREINTE 7af934e677 | project=p-7f02ea40 no tuto
+#79 SON Son : rien ne joue.
+#79 > touche 116 680
+#79 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#80 ROUTE padlive | MODE simple | EMPREINTE 3ca3fa0fa7 | project=p-7f02ea40 no tuto
+#80 SON Son : rien ne joue.
+#80 > touche 116 680
+#80 DOIGT padlive_pad_8 « Whistle, hit, ready, pad A9 »
+#81 ROUTE padlive | MODE simple | EMPREINTE b130dd5d5e | project=p-7f02ea40 no tuto
+#81 SON Son : rien ne joue.
+#81 > touche 51 45
+#81 DOIGT padlive_back
+#82 ROUTE launch | MODE simple | EMPREINTE 90b685ceec | project=p-7f02ea40 no tuto
+#82 SON Son : rien ne joue.
+#82 LAYOUT OVERLAP « Live » over « BenStudio » (26 x 4 dp)
+#82 LAYOUT OVERLAP « BenStudio » over the touchable « Tempo: 89 BPM Change the tempo » (21 x 16 dp)
+#82 LAYOUT OVERLAP « What do you want to do? » over the touchable « Tempo: 89 BPM Change the tempo » (61 x 30 dp)
+#82 LAYOUT OVERLAP « Pad Live » over the touchable « Step 2 Add or remove empty » (60 x 22 dp)
+#82 LAYOUT OVERLAP « Pad Live » over the touchable « Step 3 Add or remove empty » (25 x 22 dp)
+#82 LAYOUT OVERLAP « NEW » over the touchable « Step 3 Add or remove empty » (25 x 16 dp)
+#82 LAYOUT OVERLAP « Pads ready to play, your sounds, stage effects. It sounds right away. » over the touchable « Step 2 Add or remove empty » (60 x 26 dp)
+#82 LAYOUT OVERLAP « Pads ready to play, your sounds, stage effects. It sounds right away. » over the touchable « Step 3 Add or remove empty » (65 x 26 dp)
+#82 LAYOUT OVERLAP « Pads ready to play, your sounds, stage effects. It sounds right away. » over the touchable « Step 4 Add or remove empty » (65 x 26 dp)
+#82 LAYOUT OVERLAP « Pads ready to play, your sounds, stage effects. It sounds right away. » over the touchable « Step 5 Add or remove empty » (65 x 26 dp)
+#82 LAYOUT OVERLAP « Pads ready to play, your sounds, stage effects. It sounds right away. » over the touchable « Step 6 Add or remove empty » (65 x 26 dp)
+#82 LAYOUT OVERLAP « Pads ready to play, your sounds, stage effects. It sounds right away. » over the touchable « Step 7 Add or remove empty » (65 x 26 dp)
+#82 LAYOUT OVERLAP « Pads ready to play, your sounds, stage effects. It sounds right away. » over the touchable « Step 10 Add or remove empty » (60 x 10 dp)
+#82 LAYOUT OVERLAP « Pads ready to play, your sounds, stage effects. It sounds right away. » over the touchable « Step 11 Add or remove empty » (65 x 10 dp)
+#82 LAYOUT OVERLAP « Pads ready to play, your sounds, stage effects. It sounds right away. » over the touchable « Step 12 Add or remove empty » (65 x 10 dp)
+#82 LAYOUT OVERLAP « Pads ready to play, your sounds, stage effects. It sounds right away. » over the touchable « Step 13 Add or remove empty » (65 x 10 dp)
+#82 LAYOUT OVERLAP « Pads ready to play, your sounds, stage effects. It sounds right away. » over the touchable « Step 14 Add or remove empty » (65 x 10 dp)
+#82 LAYOUT OVERLAP « Pads ready to play, your sounds, stage effects. It sounds right away. » over the touchable « Step 15 Add or remove empty » (65 x 10 dp)
+#82 LAYOUT CONTRAST « ● » 2.66:1 (needs 4.5:1, 13 sp)
+#82 LAYOUT CONTRAST « ✎ » 3.51:1 (needs 4.5:1, 13 sp)
+#82 > touche 450 633
+#82 DOIGT launch_projects « My projects »
+#83 ROUTE dialogue:projects | MODE simple | EMPREINTE 4dd50872ed | project=p-7f02ea40 no tuto
+#83 SON Son : rien ne joue.
+#83 > fin
+#83 FIN : fin

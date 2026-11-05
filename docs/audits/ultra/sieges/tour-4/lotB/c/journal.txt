@@ -1,0 +1,617 @@
+#0 SIEGE lang=ja device=tablet11Land font=100 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=padlive
+#0 AMENEE padlive
+#0 AMENEE > touche 1334 712 (launch_padlive)
+#0 AMENEE prête (padlive_pads_side)
+#1 ROUTE padlive_pads_side | MODE pro | EMPREINTE 87267a5c22 | project=p-399eb622 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « パック: パーティー » ellipsized (« … »)
+#1 LAYOUT OVERLAP « その他 » over « エアホーン » (36 x 10 dp)
+#1 LAYOUT OVERLAP « スネア » over « Acid 303 のループ » (43 x 19 dp)
+#1 LAYOUT OVERLAP « ? » over « フィルター » (7 x 3 dp)
+#1 LAYOUT OVERLAP « ? » over « 低 ↔ 高 » (7 x 12 dp)
+#1 LAYOUT OVERLAP « ? » over «  チャレンジ » (8 x 12 dp)
+#1 LAYOUT OVERLAP « その他 » over the touchable « エアホーン, ショット, 準備OK, パッド A5 » (38 x 19 dp)
+#1 LAYOUT OVERLAP « キック » over the touchable « キックのループ, ループ, 準備OK, パッド A1 » (43 x 21 dp)
+#1 LAYOUT OVERLAP « スネア » over the touchable « Acid 303 のループ, ループ, 準備OK, パッド A3 » (43 x 21 dp)
+#1 LAYOUT OVERLAP « クラップ » over the touchable « エアホーン, ショット, 準備OK, パッド A5 » (57 x 21 dp)
+#1 LAYOUT OVERLAP « ハイハット » over the touchable « レーザー, ショット, 準備OK, パッド A6 » (71 x 21 dp)
+#1 LAYOUT OVERLAP « オープンハイハット » over the touchable « サイレン, ショット, 準備OK, パッド A7 » (121 x 20 dp)
+#1 LAYOUT OVERLAP « ? » over the touchable « フィルター · 低 ↔ 高 » (7 x 15 dp)
+#1 LAYOUT OVERLAP « ロール » over the touchable « 3 行目を小節頭でスタート 行をスタート » (7 x 21 dp)
+#1 LAYOUT OVERLAP « 124 » over the touchable « キックのループ, ループ, 準備OK, パッド A1 » (32 x 19 dp)
+#1 LAYOUT OVERLAP « ? » over the touchable « チャレンジ：このリズムをまねしよう » (9 x 24 dp)
+#1 LAYOUT OVERLAP « ループ » over the touchable « パッドの設定, パッド A1 パッドの設定 » (37 x 19 dp)
+#1 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド A2 パッドの設定 » (50 x 19 dp)
+#1 LAYOUT OVERLAP « ループ » over the touchable « パッドの設定, パッド A3 パッドの設定 » (37 x 19 dp)
+#1 LAYOUT OVERLAP « ループ » over the touchable « パッドの設定, パッド A4 パッドの設定 » (37 x 19 dp)
+#1 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド A5 パッドの設定 » (50 x 19 dp)
+#1 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド A6 パッドの設定 » (50 x 19 dp)
+#1 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド A7 パッドの設定 » (50 x 19 dp)
+#1 LAYOUT OVERLAP « ショット » over the touchable « ステップ 1 置く/外す 空 » (50 x 19 dp)
+#1 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド A8 パッドの設定 » (50 x 19 dp)
+#1 LAYOUT OVERLAP « 掛け声「Go go go!」 » over the touchable « ステップ 9 置く/外す 空 » (30 x 16 dp)
+#1 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド A9 パッドの設定 » (50 x 19 dp)
+#1 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド A10 パッドの設定 » (50 x 19 dp)
+#1 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド A11 パッドの設定 » (50 x 19 dp)
+#1 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド A12 パッドの設定 » (50 x 19 dp)
+#1 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド A13 パッドの設定 » (50 x 19 dp)
+#1 LAYOUT OVERLAP « ビルドアップ » over the touchable « ガイドを開く 折りたたみ » (84 x 21 dp)
+#1 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド A14 パッドの設定 » (50 x 19 dp)
+#1 LAYOUT OVERLAP « インパクト » over the touchable « ガイドを開く 折りたたみ » (70 x 21 dp)
+#1 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド A15 パッドの設定 » (50 x 19 dp)
+#1 LAYOUT OVERLAP « ドロップ » over the touchable « ガイドを開く 折りたたみ » (56 x 21 dp)
+#1 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド A16 パッドの設定 » (50 x 19 dp)
+#1 LAYOUT OVERLAP « 「Go!」 » over the touchable « ガイドを開く 折りたたみ » (52 x 21 dp)
+#1 LAYOUT OVERLAP «  チャレンジ » over the touchable « 画面にラベルを表示 » (28 x 24 dp)
+#1 LAYOUT OVERLAP « フィルター » over the touchable « 閉じる 開いた状態 » (70 x 10 dp)
+#1 LAYOUT OVERLAP « フィルター » over the touchable « 「ステップ」って何？ » (29 x 10 dp)
+#1 LAYOUT OVERLAP « 低 ↔ 高 » over the touchable « 閉じる 開いた状態 » (49 x 19 dp)
+#1 LAYOUT OVERLAP « 低 ↔ 高 » over the touchable « 「ステップ」って何？ » (29 x 19 dp)
+#1 LAYOUT OVERLAP « エコー » over the touchable « 閉じる 開いた状態 » (42 x 10 dp)
+#1 LAYOUT OVERLAP « 抜けぎわに » over the touchable « 閉じる 開いた状態 » (63 x 19 dp)
+#1 LAYOUT OVERLAP « ロール » over the touchable « 閉じる 開いた状態 » (30 x 11 dp)
+#1 LAYOUT OVERLAP « 1/16 » over the touchable « 閉じる 開いた状態 » (26 x 16 dp)
+#1 LAYOUT OVERLAP « 演奏を録音 » over the touchable « ステップ 3 置く/外す 空 » (51 x 24 dp)
+#1 LAYOUT OVERLAP « 演奏を録音 » over the touchable « ステップ 4 置く/外す 空 » (25 x 24 dp)
+#1 LAYOUT OVERLAP « ? » over the touchable « ステップ 7 置く/外す 空 » (7 x 15 dp)
+#1 LAYOUT OVERLAP « その他 » over the touchable « ステップ 8 置く/外す 空 » (48 x 24 dp)
+#1 LAYOUT CONTRAST « ロール » 2.26:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 1186 218
+#1 DOIGT padlive_row_0 « 1 行目を小節頭でスタート »
+#2 ROUTE padlive_pads_side | MODE pro | EMPREINTE 3e5d939f18 | project=p-399eb622 no tuto
+#2 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#2 LAYOUT OVERLAP « キック » over the touchable « キックのループ, ループ, 再生中, パッド A1 » (43 x 21 dp)
+#2 LAYOUT OVERLAP « スネア » over the touchable « Acid 303 のループ, ループ, 再生中, パッド A3 » (43 x 21 dp)
+#2 LAYOUT OVERLAP « 124 » over the touchable « キックのループ, ループ, 再生中, パッド A1 » (32 x 19 dp)
+#2 LAYOUT CONTRAST « キック » 1.21:1 (needs 4.5:1, 14 sp)
+#2 > touche 1445 385
+#2 DOIGT padlive_played « 演奏を録音 »
+#3 ROUTE padlive_pads_side | MODE pro | EMPREINTE aa73bdf717 | project=p-399eb622 no tuto
+#3 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#3 LAYOUT OVERLAP « 1小節 · タップで終了 » over the touchable « ステップ 3 置く/外す 空 » (51 x 24 dp)
+#3 LAYOUT OVERLAP « 1小節 · タップで終了 » over the touchable « ステップ 4 置く/外す 空 » (65 x 24 dp)
+#3 LAYOUT OVERLAP « 1小節 · タップで終了 » over the touchable « ステップ 5 置く/外す 空 » (23 x 24 dp)
+#3 > touche 1186 480
+#3 DOIGT padlive_row_1 « 2 行目を小節頭でスタート »
+#4 ROUTE padlive_pads_side | MODE pro | EMPREINTE 504827d88a | project=p-399eb622 no tuto
+#4 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#4 LAYOUT OVERLAP « 2 小節 · タップで終了 » over the touchable « ステップ 3 置く/外す 空 » (51 x 24 dp)
+#4 LAYOUT OVERLAP « 2 小節 · タップで終了 » over the touchable « ステップ 4 置く/外す 空 » (65 x 24 dp)
+#4 LAYOUT OVERLAP « 2 小節 · タップで終了 » over the touchable « ステップ 5 置く/外す 空 » (31 x 24 dp)
+#4 > appui-long 1333 286
+#4 DOIGT padlive_fx_filter « フィルター · 低 ↔ 高 »
+#5 ROUTE padlive_pads_side | MODE pro | EMPREINTE ea7c0c439f | project=p-399eb622 no tuto
+#5 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#5 LAYOUT OVERLAP « 3 小節 · タップで終了 » over the touchable « ステップ 3 置く/外す 空 » (51 x 24 dp)
+#5 LAYOUT OVERLAP « 3 小節 · タップで終了 » over the touchable « ステップ 4 置く/外す 空 » (65 x 24 dp)
+#5 LAYOUT OVERLAP « 3 小節 · タップで終了 » over the touchable « ステップ 5 置く/外す 空 » (31 x 24 dp)
+#5 > touche 1419 207
+#5 DOIGT help_ステージエフェクト « 「ステージエフェクト」って何？ »
+#5 AIDE help_
+#6 ROUTE dialogue:« ステージエフェクト » | MODE pro | EMPREINTE 69eb69bb6c | project=p-399eb622 no tuto
+#6 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#6 LAYOUT CONTRAST « エフェクトに指を置いたままにすると、押している間だけかかり、離すと元に戻ります。フィルターとロール：指を上にずらすと音や連打の速さを調整できます。「その他」では：ビルドアップ（上がっていくノイズ）、ドロップ（音楽が減速）、スタッター（音が細かく刻まれる）。 » 3.83:1 (needs 4.5:1, 14 sp)
+#6 LAYOUT CONTRAST « OK » 3.77:1 (needs 4.5:1, 14 sp)
+#6 > touche 1300 717
+#6 DOIGT #1696 « OK »
+#7 ROUTE padlive_pads_side | MODE pro | EMPREINTE 916217f1c0 | project=p-399eb622 no tuto
+#7 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#7 LAYOUT OVERLAP « 5 小節 · タップで終了 » over the touchable « ステップ 3 置く/外す 空 » (51 x 24 dp)
+#7 LAYOUT OVERLAP « 5 小節 · タップで終了 » over the touchable « ステップ 4 置く/外す 空 » (65 x 24 dp)
+#7 LAYOUT OVERLAP « 5 小節 · タップで終了 » over the touchable « ステップ 5 置く/外す 空 » (31 x 24 dp)
+#7 > touche 1818 385
+#7 DOIGT padlive_more « その他 »
+#8 ROUTE padlive_pads_side | MODE pro | EMPREINTE bffb87c1e6 | project=p-399eb622 no tuto
+#8 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#8 LAYOUT OVERLAP « ビルドアップ » over the touchable « ステップ 2 置く/外す 空 » (10 x 21 dp)
+#8 LAYOUT OVERLAP « ビルドアップ » over the touchable « ステップ 3 置く/外す 空 » (65 x 21 dp)
+#8 LAYOUT OVERLAP « 4 小節 » over the touchable « ステップ 2 置く/外す 空 » (10 x 19 dp)
+#8 LAYOUT OVERLAP « 4 小節 » over the touchable « ステップ 3 置く/外す 空 » (23 x 19 dp)
+#8 LAYOUT OVERLAP « ドロップ » over the touchable « ステップ 5 置く/外す 空 » (56 x 21 dp)
+#8 LAYOUT OVERLAP « ブレーキ » over the touchable « ステップ 5 置く/外す 空 » (50 x 19 dp)
+#8 LAYOUT OVERLAP « スタッター » over the touchable « ステップ 7 置く/外す 空 » (50 x 21 dp)
+#8 LAYOUT OVERLAP « スタッター » over the touchable « ステップ 8 置く/外す 空 » (16 x 21 dp)
+#8 LAYOUT OVERLAP « 1/16 » over the touchable « ステップ 7 置く/外す 空 » (26 x 16 dp)
+#8 LAYOUT OVERLAP « 全部止める » over the touchable « ステップ 11 置く/外す 空 » (37 x 18 dp)
+#8 LAYOUT OVERLAP « 全部止める » over the touchable « ステップ 12 置く/外す 空 » (23 x 18 dp)
+#8 LAYOUT OVERLAP « 元に戻す » over the touchable « ステップ 13 置く/外す 空 » (16 x 18 dp)
+#8 LAYOUT OVERLAP « 元に戻す » over the touchable « ステップ 14 置く/外す 空 » (31 x 18 dp)
+#8 LAYOUT OVERLAP « ブロック » over the touchable « ステップ 16 置く/外す 空 » (45 x 18 dp)
+#8 LAYOUT OVERLAP « エフェクト » over the touchable « ステップ 11 置く/外す 空 » (43 x 19 dp)
+#8 LAYOUT OVERLAP « エフェクト » over the touchable « ステップ 12 置く/外す 空 » (17 x 19 dp)
+#8 LAYOUT OVERLAP « 大きいパッド » over the touchable « ステップ 13 置く/外す 空 » (47 x 19 dp)
+#8 LAYOUT OVERLAP « 大きいパッド » over the touchable « ステップ 14 置く/外す 空 » (26 x 19 dp)
+#8 LAYOUT OVERLAP « シェア » over the touchable « ステップ 15 置く/外す 空 » (25 x 19 dp)
+#8 LAYOUT OVERLAP « シェア » over the touchable « ステップ 16 置く/外す 空 » (10 x 19 dp)
+#8 LAYOUT CONTRAST « ロール » 4.07:1 (needs 4.5:1, 14 sp)
+#8 > appui-long 1793 388
+#8 DOIGT padlive_fx_stutter « スタッター · 1/16 »
+#9 ROUTE padlive_pads_side | MODE pro | EMPREINTE 9c5021edc4 | project=p-399eb622 no tuto
+#9 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#9 > touche 1334 484
+#9 DOIGT padlive_stop_all « 全部止める »
+#10 ROUTE padlive_pads_side | MODE pro | EMPREINTE ba50807c74 | project=p-399eb622 no tuto
+#10 SON Son : rien ne joue.
+#10 > touche 1186 742
+#10 DOIGT padlive_row_2 « 3 行目を小節頭でスタート »
+#11 ROUTE padlive_pads_side | MODE pro | EMPREINTE d1e4734db7 | project=p-399eb622 no tuto
+#11 SON Son : rien ne joue.
+#11 > attends 3
+#12 ROUTE padlive_pads_side | MODE pro | EMPREINTE 6c86430136 | project=p-399eb622 no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 1186 218
+#12 DOIGT padlive_row_0 « 1 行目を小節頭でスタート »
+#13 ROUTE padlive_pads_side | MODE pro | EMPREINTE d4aecae9c8 | project=p-399eb622 no tuto
+#13 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#13 > touche 1186 742
+#13 DOIGT padlive_row_2 « 3 行目を小節頭でスタート »
+#14 ROUTE padlive_pads_side | MODE pro | EMPREINTE eeb7b2d5d1 | project=p-399eb622 no tuto
+#14 SON Son : les pads live 1, 3, 4 jouent en boucle.
+#14 > touche 1186 218
+#14 DOIGT padlive_row_0 « 1 行目を停止 »
+#15 ROUTE padlive_pads_side | MODE pro | EMPREINTE 57c6dc7598 | project=p-399eb622 no tuto
+#15 SON Son : rien ne joue.
+#15 > touche 730 218
+#15 DOIGT padlive_pad_2 « Acid 303 のループ, ループ, 準備OK, パッド A3 »
+#16 ROUTE padlive_pads_side | MODE pro | EMPREINTE a8bb8d32b2 | project=p-399eb622 no tuto
+#16 SON Son : le pad live 3 joue en boucle.
+#16 > touche 156 218
+#16 DOIGT padlive_pad_0 « キックのループ, ループ, 準備OK, パッド A1 »
+#17 ROUTE padlive_pads_side | MODE pro | EMPREINTE 7e1c31fb0c | project=p-399eb622 no tuto
+#17 SON Son : les pads live 1, 3 jouent en boucle.
+#17 > touche 1473 655
+#17 DOIGT padlive_played « 17 小節 · タップで終了 »
+#18 ROUTE dialogue:padlive_take_sheet | MODE pro | EMPREINTE 3b15d9b6fb | project=p-399eb622 no tuto
+#18 SON Son : les pads live 1, 3 jouent en boucle.
+#18 LAYOUT OVERLAP « テイク: 16 小節 » over the touchable « シートを閉じる » (148 x 33 dp)
+#18 LAYOUT OVERLAP « どこに置く？ プロジェクトのテンポでループします。 » over the touchable « シートを閉じる » (337 x 21 dp)
+#18 LAYOUT OVERLAP « 空きパッド B1 に » over the touchable « シートを閉じる » (107 x 21 dp)
+#18 LAYOUT OVERLAP « Live のブロックに » over the touchable « シートを閉じる » (116 x 21 dp)
+#18 LAYOUT OVERLAP « 捨てる » over the touchable « シートを閉じる » (42 x 21 dp)
+#18 LAYOUT CONTRAST « Live のブロックに » 2.84:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « 捨てる » 4.21:1 (needs 4.5:1, 14 sp)
+#18 > touche 960 1044
+#18 DOIGT padlive_take_brick « Live のブロックに »
+#19 ROUTE padlive_pads_side | MODE pro | EMPREINTE 7c707692a4 | project=p-399eb622 no tuto
+#19 SON Son : les pads live 1, 3 jouent en boucle.
+#19 LAYOUT OVERLAP « スネア » over « Acid 303 のループ » (43 x 6 dp)
+#19 LAYOUT OVERLAP « ? » over « ビルドアップ » (7 x 9 dp)
+#19 LAYOUT OVERLAP « 124 » over « テイクは Live のブロックにあります（その他 › ブロック）。 » (32 x 16 dp)
+#19 LAYOUT OVERLAP « キック » over the touchable « キックのループ, ループ, 再生中, パッド A1 » (43 x 10 dp)
+#19 LAYOUT OVERLAP « キック » over the touchable « エアホーン, ショット, 準備OK, パッド A5 » (43 x 3 dp)
+#19 LAYOUT OVERLAP « キック » over the touchable « パッドの設定, パッド A5 パッドの設定 » (43 x 3 dp)
+#19 LAYOUT OVERLAP « スネア » over the touchable « Acid 303 のループ, ループ, 再生中, パッド A3 » (43 x 10 dp)
+#19 LAYOUT OVERLAP « スネア » over the touchable « サイレン, ショット, 準備OK, パッド A7 » (43 x 3 dp)
+#19 LAYOUT OVERLAP « ? » over the touchable « ビルドアップ · 4 小節 » (7 x 15 dp)
+#19 LAYOUT OVERLAP « テイクは Live のブロックにあります（その他 › ブロック）。 » over the touchable « テンポ：124 BPM テンポを変更 » (79 x 21 dp)
+#19 LAYOUT OVERLAP « ショット » over the touchable « ステップ 1 置く/外す 空 » (50 x 9 dp)
+#19 LAYOUT OVERLAP « 掛け声「Go go go!」 » over the touchable « ステップ 9 置く/外す 空 » (30 x 21 dp)
+#19 LAYOUT OVERLAP « ショット » over the touchable « ステップ 9 置く/外す 空 » (50 x 9 dp)
+#19 LAYOUT OVERLAP « 押し続けて » over the touchable « キャンセル » (64 x 5 dp)
+#19 LAYOUT OVERLAP « ビルドアップ » over the touchable « 閉じる 開いた状態 » (84 x 15 dp)
+#19 LAYOUT OVERLAP « ビルドアップ » over the touchable « 「ステップ」って何？ » (29 x 15 dp)
+#19 LAYOUT OVERLAP « 4 小節 » over the touchable « ステップ 2 置く/外す 空 » (10 x 7 dp)
+#19 LAYOUT OVERLAP « 4 小節 » over the touchable « ステップ 3 置く/外す 空 » (23 x 7 dp)
+#19 LAYOUT OVERLAP « ドロップ » over the touchable « 閉じる 開いた状態 » (56 x 15 dp)
+#19 LAYOUT OVERLAP « ブレーキ » over the touchable « ステップ 5 置く/外す 空 » (50 x 7 dp)
+#19 LAYOUT OVERLAP « スタッター » over the touchable « 閉じる 開いた状態 » (30 x 14 dp)
+#19 LAYOUT OVERLAP « 1/16 » over the touchable « ステップ 7 置く/外す 空 » (26 x 5 dp)
+#19 LAYOUT OVERLAP « 全部止める » over the touchable « ステップ 3 置く/外す 空 » (37 x 19 dp)
+#19 LAYOUT OVERLAP « 全部止める » over the touchable « ステップ 4 置く/外す 空 » (23 x 19 dp)
+#19 LAYOUT OVERLAP « 元に戻す » over the touchable « ステップ 5 置く/外す 空 » (16 x 19 dp)
+#19 LAYOUT OVERLAP « 元に戻す » over the touchable « ステップ 6 置く/外す 空 » (31 x 19 dp)
+#19 LAYOUT OVERLAP « ブロック » over the touchable « ステップ 8 置く/外す 空 » (45 x 19 dp)
+#19 LAYOUT OVERLAP « 演奏を録音 » over the touchable « ステップ 11 置く/外す 空 » (51 x 15 dp)
+#19 LAYOUT OVERLAP « 演奏を録音 » over the touchable « ステップ 12 置く/外す 空 » (25 x 15 dp)
+#19 LAYOUT OVERLAP « 閉じる » over the touchable « ステップ 16 置く/外す 空 » (48 x 15 dp)
+#19 LAYOUT CONTRAST « ロール » 2.28:1 (needs 4.5:1, 14 sp)
+#19 > touche 1792 484
+#19 DOIGT padlive_live « ブロック »
+#20 ROUTE live_side_by_side/tab_Live | MODE pro | EMPREINTE 04f0e5cf75 | project=p-399eb622 no tuto
+#20 SON Son : les pads live 1, 3 jouent en boucle.
+#20 LAYOUT CONTRAST « Acid 303 » 4.27:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « エフェクト » 4.37:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST «  全部止める » 4.37:1 (needs 4.5:1, 14 sp)
+#20 > touche 918 443
+#20 DOIGT live_pad_audio:0_0 « オーディオ 1 · A · 準備OK »
+#21 ROUTE live_side_by_side/tab_Live | MODE pro | EMPREINTE e44d269d2a | project=p-399eb622 no tuto
+#21 SON Son : la musique du projet joue en boucle ; les pads live 1, 3 jouent en boucle.
+#21 LAYOUT OVERLAP « 最初のループが鳴っています。点をタップすると、そこに音を追加できます。 » over the touchable « ドラム · D · 空 » (69 x 7 dp)
+#21 LAYOUT OVERLAP « 最初のループが鳴っています。点をタップすると、そこに音を追加できます。 » over the touchable « Acid 303 · D · 空 » (120 x 7 dp)
+#21 LAYOUT OVERLAP « 最初のループが鳴っています。点をタップすると、そこに音を追加できます。 » over the touchable « シンセ · D · 空 » (120 x 7 dp)
+#21 LAYOUT OVERLAP « 最初のループが鳴っています。点をタップすると、そこに音を追加できます。 » over the touchable « オーディオ 1 · D · 空 » (120 x 7 dp)
+#21 LAYOUT OVERLAP « 最初のループが鳴っています。点をタップすると、そこに音を追加できます。 » over the touchable « ドラム · E · 空 » (69 x 7 dp)
+#21 LAYOUT OVERLAP « 最初のループが鳴っています。点をタップすると、そこに音を追加できます。 » over the touchable « Acid 303 · E · 空 » (120 x 7 dp)
+#21 LAYOUT OVERLAP « 最初のループが鳴っています。点をタップすると、そこに音を追加できます。 » over the touchable « シンセ · E · 空 » (120 x 7 dp)
+#21 LAYOUT OVERLAP « 最初のループが鳴っています。点をタップすると、そこに音を追加できます。 » over the touchable « オーディオ 1 · E · 空 » (120 x 7 dp)
+#21 > touche 192 1084
+#21 DOIGT live_stop_all « ■ 全部 »
+#22 ROUTE live_side_by_side/tab_Live | MODE pro | EMPREINTE 3c38dfb7c4 | project=p-399eb622 no tuto
+#22 SON Son : la musique du projet joue en boucle.
+#22 > attends 4
+#23 ROUTE live_side_by_side/tab_Live | MODE pro | EMPREINTE 3c38dfb7c4 | project=p-399eb622 no tuto
+#23 SON Son : la musique du projet joue en boucle.
+#23 > touche 192 1084
+#23 DOIGT live_stop_all « ■ 全部 »
+#24 ROUTE live_side_by_side/tab_Live | MODE pro | EMPREINTE 3c38dfb7c4 | project=p-399eb622 no tuto
+#24 SON Son : la musique du projet joue en boucle.
+#24 > touche 918 1084
+#24 DOIGT live_stop_audio:0 « トラックを停止 »
+#25 ROUTE live_side_by_side/tab_Live | MODE pro | EMPREINTE 3c38dfb7c4 | project=p-399eb622 no tuto
+#25 SON Son : la musique du projet joue en boucle.
+#25 RIEN NE CHANGE (3 écrans identiques)
+#25 > touche 1789 417
+#25 DOIGT live_stop_all «  全部止める »
+#26 ROUTE live_side_by_side/tab_Live | MODE pro | EMPREINTE d8838fd7ad | project=p-399eb622 no tuto
+#26 SON Son : la musique du projet joue en boucle.
+#26 LAYOUT CONTRAST «  全部止める » 3.65:1 (needs 4.5:1, 14 sp)
+#26 > attends 30
+#27 ROUTE live_side_by_side/tab_Live | MODE pro | EMPREINTE d8838fd7ad | project=p-399eb622 no tuto
+#27 SON Son : la musique du projet joue en boucle.
+#27 > touche 243 36
+#27 DOIGT live_play « 停止 »
+#28 ROUTE live_side_by_side/tab_Live | MODE pro | EMPREINTE 3ff8ba4b7a | project=p-399eb622 no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 162 36
+#28 DOIGT live_back
+#29 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 51dd852550 | project=p-399eb622 no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 704 42
+#29 DOIGT top_projects « Live »
+#30 ROUTE dialogue:projects | MODE pro | EMPREINTE 7998d8acb2 | project=p-399eb622 no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 960 440
+#30 DOIGT project_p-399eb622 « Live »
+#31 ROUTE session/tab_Structure | MODE pro | EMPREINTE 292aa4969b | project=p-399eb622 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 60 457
+#31 DOIGT tab_Live « Live »
+#32 ROUTE live_side_by_side/tab_Live | MODE pro | EMPREINTE 3ff8ba4b7a | project=p-399eb622 no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 1794 252
+#32 DOIGT live_fullscreen
+#33 ROUTE live_grid | MODE pro | EMPREINTE d4b392ee8f | project=p-399eb622 no tuto
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « Acid 303 » 3.23:1 (needs 4.5:1, 12 sp)
+#33 > retour
+#33 RETOUR
+#34 ROUTE session/tab_Structure | MODE pro | EMPREINTE 292aa4969b | project=p-399eb622 no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 60 545
+#34 DOIGT tab_Plus « その他 »
+#35 ROUTE plus/tab_Plus | MODE pro | EMPREINTE f4a92ce959 | project=p-399eb622 no tuto
+#35 SON Son : rien ne joue.
+#35 > touche 375 210
+#35 DOIGT plus_home « ホーム »
+#36 ROUTE launch | MODE pro | EMPREINTE 9dff5eba4b | project=p-399eb622 no tuto
+#36 SON Son : rien ne joue.
+#36 > touche 1334 712
+#36 DOIGT launch_padlive « Pad Live »
+#37 ROUTE padlive_pads_side | MODE pro | EMPREINTE 110cbce1f0 | project=p-399eb622 no tuto
+#37 SON Son : rien ne joue.
+#37 LAYOUT OVERLAP « フィードバックモード » over « ショット » (39 x 2 dp)
+#37 LAYOUT OVERLAP « フィードバックモード » over the touchable « ハイハット, ショット, 準備OK, パッド A11 » (49 x 5 dp)
+#37 LAYOUT OVERLAP « フィードバックモード » over the touchable « オープンハイハット, ショット, 準備OK, パッド A12 » (72 x 5 dp)
+#37 LAYOUT OVERLAP « フィードバックモード » over the touchable « ドロップ, ショット, 準備OK, パッド A15 » (49 x 6 dp)
+#37 LAYOUT OVERLAP « フィードバックモード » over the touchable « パッドの設定, パッド A15 パッドの設定 » (49 x 6 dp)
+#37 LAYOUT OVERLAP « フィードバックモード » over the touchable « 「Go!」, ショット, 準備OK, パッド A16 » (72 x 6 dp)
+#37 LAYOUT OVERLAP « オープンハイハット » over the touchable « 閉じる 開いた状態 » (83 x 3 dp)
+#37 LAYOUT OVERLAP « ショット » over the touchable « 閉じる 開いた状態 » (50 x 5 dp)
+#37 > touche 1860 45
+#37 DOIGT live_record « パフォーマンスを録音 »
+#38 ROUTE padlive_pads_side | MODE pro | EMPREINTE 5bbc781871 | project=p-399eb622 no tuto
+#38 SON Son : la musique du projet joue en boucle.
+#38 LAYOUT OVERLAP « A » over « テイクは Live のブロックにあります（その他 › ブロック）。 » (11 x 12 dp)
+#38 LAYOUT OVERLAP « テイクは Live のブロックにあります（その他 › ブロック）。 » over the touchable « パートから再生 » (96 x 21 dp)
+#38 LAYOUT OVERLAP « ループ » over the touchable « パートから再生 » (37 x 5 dp)
+#38 > touche 156 255
+#38 DOIGT padlive_pad_0 « キックのループ, ループ, 準備OK, パッド A1 »
+#39 ROUTE padlive_pads_side | MODE pro | EMPREINTE 6f5fb6a861 | project=p-399eb622 no tuto
+#39 SON Son : la musique du projet joue en boucle ; le pad live 1 joue en boucle.
+#39 LAYOUT OVERLAP « フィードバックモード » over « ショット » (39 x 9 dp)
+#39 LAYOUT OVERLAP « フィードバックモード » over the touchable « ドロップ, ショット, 準備OK, パッド A15 » (49 x 13 dp)
+#39 LAYOUT OVERLAP « フィードバックモード » over the touchable « パッドの設定, パッド A15 パッドの設定 » (49 x 13 dp)
+#39 LAYOUT OVERLAP « フィードバックモード » over the touchable « 「Go!」, ショット, 準備OK, パッド A16 » (72 x 13 dp)
+#39 LAYOUT OVERLAP « A » over the touchable « キックのループ, ループ, 再生中, パッド A1 » (11 x 12 dp)
+#39 LAYOUT OVERLAP « ループ » over the touchable « パートから再生 » (37 x 19 dp)
+#39 LAYOUT OVERLAP « ショット » over the touchable « 閉じる 開いた状態 » (50 x 11 dp)
+#39 > touche 1860 45
+#39 DOIGT live_record « テイクを終えて曲に書き込む »
+#40 ROUTE dialogue:« テイクのライブパッドはオーディオトラック「Pads live » | MODE pro | EMPREINTE ec941ea90f | project=p-399eb622 no tuto
+#40 SON Son : la musique du projet joue en boucle ; le pad live 1 joue en boucle.
+#40 > touche 1273 633
+#40 DOIGT #4608 « OK »
+#41 ROUTE padlive | MODE pro | EMPREINTE f6d01789db | project=p-399eb622 no tuto
+#41 SON Son : la musique du projet joue en boucle ; le pad live 1 joue en boucle.
+#41 LAYOUT OVERLAP « フィードバックモード » over « オープンハイハット » (62 x 8 dp)
+#41 LAYOUT OVERLAP « 124 » over « パフォーマンス保存 · 0:03 » (24 x 10 dp)
+#41 LAYOUT OVERLAP « ループ » over «  チャレンジ » (37 x 11 dp)
+#41 LAYOUT OVERLAP « フィードバックモード » over the touchable « ハイハット, ショット, 準備OK, パッド A11 » (49 x 12 dp)
+#41 LAYOUT OVERLAP « フィードバックモード » over the touchable « オープンハイハット, ショット, 準備OK, パッド A12 » (72 x 12 dp)
+#41 LAYOUT OVERLAP « ループ » over the touchable « チャレンジ：このリズムをまねしよう » (41 x 21 dp)
+#41 LAYOUT OVERLAP « パフォーマンス保存 · 0:03 » over the touchable « テンポ：124 BPM テンポを変更 » (67 x 21 dp)
+#41 LAYOUT OVERLAP « パフォーマンス保存 · 0:03 » over the touchable « パートから再生 » (96 x 21 dp)
+#41 LAYOUT OVERLAP « ループ » over the touchable « 閉じる 開いた状態 » (37 x 17 dp)
+#41 LAYOUT OVERLAP « オープンハイハット » over the touchable « 閉じる 開いた状態 » (83 x 11 dp)
+#41 LAYOUT OVERLAP «  チャレンジ » over the touchable « 曲を再生せずパートをループ オフ » (50 x 24 dp)
+#41 LAYOUT CONTRAST « A » 2.26:1 (needs 3.0:1, 14 sp)
+#41 LAYOUT CONTRAST « 試聴 » 3.63:1 (needs 4.5:1, 14 sp)
+#41 > touche 983 129
+#41 DOIGT padlive_perf_listen « 試聴 »
+#42 ROUTE padlive_pads_side | MODE pro | EMPREINTE fa321432e7 | project=p-399eb622 no tuto
+#42 SON Son : le morceau joue (partie « A ») ; le pad live 1 joue en boucle.
+#42 > touche 1572 45
+#42 DOIGT padlive_play « 停止 »
+#43 ROUTE padlive_pads_side | MODE pro | EMPREINTE ade644b3f9 | project=p-399eb622 no tuto
+#43 SON Son : rien ne joue.
+#43 LAYOUT OVERLAP « A » over the touchable « キックのループ, ループ, 準備OK, パッド A1 » (11 x 12 dp)
+#43 > touche 1573 132
+#43 DOIGT padlive_pack « パック: パーティー »
+#44 ROUTE dialogue:padlive_pack_fete | MODE pro | EMPREINTE 840c998fa3 | project=p-399eb622 no tuto
+#44 SON Son : rien ne joue.
+#44 LAYOUT CONTRAST « テクノ » 1.49:1 (needs 4.5:1, 14 sp)
+#44 LAYOUT CONTRAST « トラップ » 1.20:1 (needs 4.5:1, 14 sp)
+#44 LAYOUT CONTRAST « ハウス » 1.27:1 (needs 4.5:1, 14 sp)
+#44 > touche 1613 291
+#44 DOIGT padlive_pack_techno « テクノ »
+#45 ROUTE padlive_pads_side | MODE pro | EMPREINTE cfc737f76e | project=p-399eb622 no tuto
+#45 SON Son : rien ne joue.
+#45 LAYOUT CUT « パック: テクノ » ellipsized (« … »)
+#45 LAYOUT OVERLAP « その他 » over « サブドロップ » (36 x 10 dp)
+#45 LAYOUT OVERLAP « その他 » over the touchable « サブドロップ, ループ, 準備OK, パッド A5 » (38 x 19 dp)
+#45 LAYOUT OVERLAP « フィードバックモード » over the touchable « 「Level up!」, ショット, 準備OK, パッド A15 » (49 x 13 dp)
+#45 LAYOUT OVERLAP « フィードバックモード » over the touchable « サイレン, ホールド, 準備OK, パッド A16 » (72 x 13 dp)
+#45 LAYOUT OVERLAP « 124 » over the touchable « ドラム, ループ, 準備OK, パッド A1 » (32 x 19 dp)
+#45 LAYOUT OVERLAP « A » over the touchable « ドラム, ループ, 準備OK, パッド A1 » (11 x 12 dp)
+#45 LAYOUT OVERLAP « ループ » over the touchable « パッドの設定, パッド A2 パッドの設定 » (37 x 19 dp)
+#45 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド A4 パッドの設定 » (50 x 19 dp)
+#45 LAYOUT OVERLAP « ループ » over the touchable « パッドの設定, パッド A5 パッドの設定 » (37 x 19 dp)
+#45 LAYOUT OVERLAP « ループ » over the touchable « パッドの設定, パッド A6 パッドの設定 » (37 x 19 dp)
+#45 LAYOUT OVERLAP « 電撃ザップ » over the touchable « ガイドを開く 折りたたみ » (70 x 21 dp)
+#45 LAYOUT OVERLAP « 「Level up!」 » over the touchable « ガイドを開く 折りたたみ » (91 x 21 dp)
+#45 LAYOUT OVERLAP « ホールド » over the touchable « パッドの設定, パッド A16 パッドの設定 » (50 x 19 dp)
+#45 LAYOUT OVERLAP « サイレン » over the touchable « ガイドを開く 折りたたみ » (56 x 21 dp)
+#45 > touche 1186 218
+#45 DOIGT padlive_row_0 « 1 行目を小節頭でスタート »
+#46 ROUTE padlive_pads_side | MODE pro | EMPREINTE 566aa7f968 | project=p-399eb622 no tuto
+#46 SON Son : les pads live 1, 2, 3 jouent en boucle.
+#46 LAYOUT OVERLAP « 124 » over the touchable « ドラム, ループ, 再生中, パッド A1 » (32 x 19 dp)
+#46 LAYOUT OVERLAP « A » over the touchable « ドラム, ループ, 再生中, パッド A1 » (11 x 12 dp)
+#46 > touche 1186 480
+#46 DOIGT padlive_row_1 « 2 行目を小節頭でスタート »
+#47 ROUTE padlive_pads_side | MODE pro | EMPREINTE 308854fb7e | project=p-399eb622 no tuto
+#47 SON Son : les pads live 1, 2, 3, 5, 6 jouent en boucle.
+#47 LAYOUT OVERLAP « その他 » over the touchable « サブドロップ, ループ, 再生中, パッド A5 » (38 x 19 dp)
+#47 > appui-long 1017 1003
+#47 DOIGT padlive_pad_15 « サイレン, ホールド, 準備OK, パッド A16 »
+#48 ROUTE padlive_pads_side | MODE pro | EMPREINTE 308854fb7e | project=p-399eb622 no tuto
+#48 SON Son : les pads live 1, 2, 3, 5, 6 jouent en boucle.
+#48 > touche 1776 45
+#48 DOIGT padlive_tempo_more
+#49 ROUTE padlive_pads_side | MODE pro | EMPREINTE 7c613e1327 | project=p-399eb622 no tuto
+#49 SON Son : les pads live 1, 2, 3, 5, 6 jouent en boucle.
+#49 LAYOUT OVERLAP « 125 » over the touchable « ドラム, ループ, 再生中, パッド A1 » (32 x 19 dp)
+#49 > touche 1332 132
+#49 DOIGT padlive_page_B « ページ B · 空 »
+#50 ROUTE padlive_pads_side | MODE pro | EMPREINTE 009554b3a9 | project=p-399eb622 no tuto
+#50 SON Son : les pads live 1, 2, 3, 5, 6 jouent en boucle.
+#50 LAYOUT CUT « パック: ハウス » ellipsized (« … »)
+#50 LAYOUT OVERLAP « その他 » over the touchable « サブドロップ, ループ, 準備OK, パッド B5 » (38 x 19 dp)
+#50 LAYOUT OVERLAP « フィードバックモード » over the touchable « 「Power up!」, ショット, 準備OK, パッド B15 » (49 x 13 dp)
+#50 LAYOUT OVERLAP « フィードバックモード » over the touchable « パッドの設定, パッド B15 パッドの設定 » (49 x 13 dp)
+#50 LAYOUT OVERLAP « フィードバックモード » over the touchable « インパクト, ショット, 準備OK, パッド B16 » (72 x 13 dp)
+#50 LAYOUT OVERLAP « 125 » over the touchable « ドラム, ループ, 準備OK, パッド B1 » (32 x 19 dp)
+#50 LAYOUT OVERLAP « A » over the touchable « ドラム, ループ, 準備OK, パッド B1 » (11 x 12 dp)
+#50 LAYOUT OVERLAP « ループ » over the touchable « パッドの設定, パッド B1 パッドの設定 » (37 x 19 dp)
+#50 LAYOUT OVERLAP « ループ » over the touchable « パッドの設定, パッド B2 パッドの設定 » (37 x 19 dp)
+#50 LAYOUT OVERLAP « ループ » over the touchable « パッドの設定, パッド B3 パッドの設定 » (37 x 19 dp)
+#50 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド B4 パッドの設定 » (50 x 19 dp)
+#50 LAYOUT OVERLAP « ループ » over the touchable « パッドの設定, パッド B5 パッドの設定 » (37 x 19 dp)
+#50 LAYOUT OVERLAP « ループ » over the touchable « パッドの設定, パッド B6 パッドの設定 » (37 x 19 dp)
+#50 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド B9 パッドの設定 » (50 x 19 dp)
+#50 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド B10 パッドの設定 » (50 x 19 dp)
+#50 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド B11 パッドの設定 » (50 x 19 dp)
+#50 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド B12 パッドの設定 » (50 x 19 dp)
+#50 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド B13 パッドの設定 » (50 x 19 dp)
+#50 LAYOUT OVERLAP « レーザー » over the touchable « ガイドを開く 折りたたみ » (56 x 21 dp)
+#50 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド B14 パッドの設定 » (50 x 19 dp)
+#50 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド B15 パッドの設定 » (50 x 19 dp)
+#50 LAYOUT OVERLAP « 「Power up!」 » over the touchable « ガイドを開く 折りたたみ » (98 x 21 dp)
+#50 LAYOUT OVERLAP « ショット » over the touchable « パッドの設定, パッド B16 パッドの設定 » (50 x 19 dp)
+#50 > touche 1186 218
+#50 DOIGT padlive_row_0 « 1 行目を小節頭でスタート »
+#51 ROUTE padlive_pads_side | MODE pro | EMPREINTE 4c52d86a78 | project=p-399eb622 no tuto
+#51 SON Son : les pads live 1, 2, 3, 5, 6, 17, 18, 19 jouent en boucle.
+#51 LAYOUT OVERLAP « 125 » over the touchable « ドラム, ループ, 再生中, パッド B1 » (32 x 19 dp)
+#51 LAYOUT OVERLAP « A » over the touchable « ドラム, ループ, 再生中, パッド B1 » (11 x 12 dp)
+#51 > touche 1818 385
+#51 DOIGT padlive_more « その他 »
+#52 ROUTE padlive_pads_side | MODE pro | EMPREINTE 46db15e5d6 | project=p-399eb622 no tuto
+#52 SON Son : les pads live 1, 2, 3, 5, 6, 17, 18, 19 jouent en boucle.
+#52 > touche 1536 565
+#52 DOIGT padlive_party_open « 大きいパッド »
+#53 ROUTE padlive_party | MODE pro | EMPREINTE c845045779 | project=p-399eb622 no tuto
+#53 SON Son : les pads live 1, 2, 3, 5, 6, 17, 18, 19 jouent en boucle.
+#53 LAYOUT OVERLAP « フィードバックモード » over the touchable « ドロップ, ショット, 準備OK, パッド B14 » (105 x 11 dp)
+#53 LAYOUT OVERLAP « フィードバックモード » over the touchable « 「Power up!」, ショット, 準備OK, パッド B15 » (14 x 11 dp)
+#53 > touche 1866 54
+#53 DOIGT padlive_party_play « 再生 »
+#54 ROUTE padlive_party | MODE pro | EMPREINTE 7fe09c1e94 | project=p-399eb622 no tuto
+#54 SON Son : la musique du projet joue en boucle ; les pads live 1, 2, 3, 5, 6, 17, 18, 19 jouent en boucle.
+#54 > touche 1866 54
+#54 DOIGT padlive_party_play « 停止 »
+#55 ROUTE padlive_party | MODE pro | EMPREINTE ceacbbb836 | project=p-399eb622 no tuto
+#55 SON Son : rien ne joue.
+#55 > touche 54 54
+#55 DOIGT padlive_party_leave « 大きいパッドを終了 »
+#56 ROUTE padlive_pads_side | MODE pro | EMPREINTE 3e2579286b | project=p-399eb622 no tuto
+#56 SON Son : rien ne joue.
+#56 > touche 1186 480
+#56 DOIGT padlive_row_1 « 2 行目を小節頭でスタート »
+#57 ROUTE padlive_pads_side | MODE pro | EMPREINTE 0c67712203 | project=p-399eb622 no tuto
+#57 SON Son : les pads live 21, 22 jouent en boucle.
+#57 LAYOUT OVERLAP « その他 » over the touchable « サブドロップ, ループ, 再生中, パッド B5 » (38 x 19 dp)
+#57 > touche 1445 385
+#57 DOIGT padlive_played « 演奏を録音 »
+#58 ROUTE padlive_pads_side | MODE pro | EMPREINTE 2c9a873551 | project=p-399eb622 no tuto
+#58 SON Son : les pads live 21, 22 jouent en boucle.
+#58 > appui-long 1563 286
+#58 DOIGT padlive_fx_echo « エコー · 抜けぎわに »
+#59 ROUTE padlive_pads_side | MODE pro | EMPREINTE bdbef0ad96 | project=p-399eb622 no tuto
+#59 SON Son : les pads live 21, 22 jouent en boucle.
+#59 > touche 156 742
+#59 DOIGT padlive_pad_24 « ホイッスル, ショット, 準備OK, パッド B9 »
+#60 ROUTE padlive_pads_side | MODE pro | EMPREINTE def5dd7e13 | project=p-399eb622 no tuto
+#60 SON Son : les pads live 21, 22 jouent en boucle.
+#60 > attends 4
+#61 ROUTE padlive_pads_side | MODE pro | EMPREINTE b063515281 | project=p-399eb622 no tuto
+#61 SON Son : les pads live 21, 22 jouent en boucle.
+#61 > touche 1445 385
+#61 DOIGT padlive_played « 6 小節 · タップで終了 »
+#62 ROUTE dialogue:padlive_take_sheet | MODE pro | EMPREINTE 2358852c98 | project=p-399eb622 no tuto
+#62 SON Son : les pads live 21, 22 jouent en boucle.
+#62 LAYOUT OVERLAP « テイク: 6 小節 » over the touchable « シートを閉じる » (139 x 33 dp)
+#62 LAYOUT OVERLAP « 空きパッド B7 に » over the touchable « シートを閉じる » (109 x 21 dp)
+#62 LAYOUT CONTRAST « 空きパッド B7 に » 1.23:1 (needs 4.5:1, 14 sp)
+#62 > touche 960 954
+#62 DOIGT padlive_take_pad « 空きパッド B7 に »
+#63 ROUTE padlive_pads_side | MODE pro | EMPREINTE 7799c36fb8 | project=p-399eb622 no tuto
+#63 SON Son : les pads live 21, 22 jouent en boucle.
+#63 LAYOUT OVERLAP « 125 » over « テイクはパッド B7 にあります。 » (32 x 16 dp)
+#63 LAYOUT OVERLAP « A » over « テイクはパッド B7 にあります。 » (11 x 12 dp)
+#63 LAYOUT OVERLAP « フィードバックモード » over the touchable « ビルドアップ, ショット, 準備OK, パッド B11 » (49 x 5 dp)
+#63 LAYOUT OVERLAP « フィードバックモード » over the touchable « ダンスホール・ホーン, ショット, 準備OK, パッド B12 » (72 x 5 dp)
+#63 LAYOUT OVERLAP « フィードバックモード » over the touchable « 「Power up!」, ショット, 準備OK, パッド B15 » (49 x 6 dp)
+#63 LAYOUT OVERLAP « フィードバックモード » over the touchable « パッドの設定, パッド B15 パッドの設定 » (49 x 6 dp)
+#63 LAYOUT OVERLAP « フィードバックモード » over the touchable « インパクト, ショット, 準備OK, パッド B16 » (72 x 6 dp)
+#63 LAYOUT OVERLAP « テイクはパッド B7 にあります。 » over the touchable « テンポ：125 BPM テンポを変更 » (79 x 21 dp)
+#63 LAYOUT OVERLAP « テイクはパッド B7 にあります。 » over the touchable « パートから再生 » (96 x 21 dp)
+#63 LAYOUT OVERLAP « ループ » over the touchable « パッドの設定, パッド B7 パッドの設定 » (37 x 19 dp)
+#63 LAYOUT OVERLAP « ダンスホール・ホーン » over the touchable « 閉じる 開いた状態 » (83 x 3 dp)
+#63 > touche 730 506
+#63 DOIGT padlive_pad_22 « マイテイク 1, ループ, 準備OK, パッド B7 »
+#64 ROUTE padlive_pads_side | MODE pro | EMPREINTE 8bf936aa0c | project=p-399eb622 no tuto
+#64 SON Son : les pads live 21, 22, 23 jouent en boucle.
+#64 > touche 1818 385
+#64 DOIGT padlive_more « その他 »
+#65 ROUTE padlive_pads_side | MODE pro | EMPREINTE 7eab83d3e7 | project=p-399eb622 no tuto
+#65 SON Son : les pads live 21, 22, 23 jouent en boucle.
+#65 > touche 1334 484
+#65 DOIGT padlive_stop_all « 全部止める »
+#66 ROUTE padlive_pads_side | MODE pro | EMPREINTE a360e1a4b3 | project=p-399eb622 no tuto
+#66 SON Son : rien ne joue.
+#66 > touche 1563 484
+#66 DOIGT padlive_undo « 元に戻す »
+#67 ROUTE padlive_pads_side | MODE pro | EMPREINTE 7323aa8b2c | project=p-399eb622 no tuto
+#67 SON Son : rien ne joue.
+#67 > touche 1792 484
+#67 DOIGT padlive_live « ブロック »
+#68 ROUTE live_side_by_side/tab_Live | MODE pro | EMPREINTE 4e5caf07bf | project=p-399eb622 no tuto
+#68 SON Son : rien ne joue.
+#68 > touche 162 36
+#68 DOIGT live_back
+#69 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 9460cbfd56 | project=p-399eb622 no tuto
+#69 SON Son : rien ne joue.
+#69 > touche 60 194
+#69 DOIGT tab_Structure « 構成 »
+#70 ROUTE timeline_grid/tab_Structure | MODE pro | EMPREINTE 59c330f727 | project=p-399eb622 no tuto
+#70 SON Son : rien ne joue.
+#70 LAYOUT CONTRAST « 追従 » 4.06:1 (needs 4.5:1, 14 sp)
+#70 > touche 1659 42
+#70 DOIGT top_redo
+#71 ROUTE timeline_grid/tab_Structure | MODE pro | EMPREINTE 7202dd2971 | project=p-399eb622 no tuto
+#71 SON Son : rien ne joue.
+#71 > touche 60 545
+#71 DOIGT tab_Plus « その他 »
+#72 ROUTE plus/tab_Plus | MODE pro | EMPREINTE d06148dbba | project=p-399eb622 no tuto
+#72 SON Son : rien ne joue.
+#72 > touche 375 210
+#72 DOIGT plus_home « ホーム »
+#73 ROUTE launch | MODE pro | EMPREINTE ffea5c8f15 | project=p-399eb622 no tuto
+#73 SON Son : rien ne joue.
+#73 > touche 1334 712
+#73 DOIGT launch_padlive « Pad Live »
+#74 ROUTE padlive_pads_side | MODE pro | EMPREINTE 74a29ea4f7 | project=p-399eb622 no tuto
+#74 SON Son : rien ne joue.
+#74 > touche 1186 218
+#74 DOIGT padlive_row_0 « 1 行目を小節頭でスタート »
+#75 ROUTE padlive_pads_side | MODE pro | EMPREINTE 8c1ba50ea7 | project=p-399eb622 no tuto
+#75 SON Son : les pads live 17, 18, 19 jouent en boucle.
+#75 > glisse 1333 300 1333 150
+#75 DOIGT padlive_fx_filter « フィルター · 低 ↔ 高 »
+#76 ROUTE padlive_pads_side | MODE pro | EMPREINTE 1d99829f80 | project=p-399eb622 no tuto
+#76 SON Son : les pads live 17, 18, 19 jouent en boucle.
+#76 > touche 820 382
+#76 DOIGT padlive_mode_22 « パッドの設定, パッド B7 »
+#77 ROUTE dialogue:padlive_settings | MODE pro | EMPREINTE 848dc0f27c | project=p-399eb622 no tuto
+#77 SON Son : les pads live 17, 18, 19 jouent en boucle.
+#77 LAYOUT OVERLAP « パッド B7: マイテイク 1 » over the touchable « シートを閉じる » (232 x 33 dp)
+#77 LAYOUT OVERLAP « パッドに触れたとき » over the touchable « シートを閉じる » (127 x 21 dp)
+#77 LAYOUT OVERLAP « ? » over the touchable « シートを閉じる » (7 x 15 dp)
+#77 LAYOUT OVERLAP « ワンショット: 1回鳴る » over the touchable « シートを閉じる » (140 x 21 dp)
+#77 LAYOUT OVERLAP « ループ: タッチで開始、もう一度で停止 » over the touchable « シートを閉じる » (246 x 21 dp)
+#77 LAYOUT OVERLAP « ホールド: 押している間鳴る » over the touchable « シートを閉じる » (176 x 21 dp)
+#77 LAYOUT OVERLAP « 同時に1つだけ » over the touchable « シートを閉じる » (91 x 21 dp)
+#77 LAYOUT OVERLAP « 同じグループのパッドは互いに止め合います (オープンとクローズのハイハット)。 » over the touchable « シートを閉じる » (516 x 21 dp)
+#77 LAYOUT OVERLAP « なし » over the touchable « シートを閉じる » (28 x 21 dp)
+#77 LAYOUT OVERLAP « グループ 1 » over the touchable « シートを閉じる » (65 x 21 dp)
+#77 LAYOUT OVERLAP « グループ 2 » over the touchable « シートを閉じる » (68 x 21 dp)
+#77 LAYOUT OVERLAP « グループ 3 » over the touchable « シートを閉じる » (68 x 21 dp)
+#77 LAYOUT OVERLAP « グループ 4 » over the touchable « シートを閉じる » (68 x 21 dp)
+#77 LAYOUT OVERLAP « ループの長さ » over the touchable « シートを閉じる » (84 x 21 dp)
+#77 LAYOUT OVERLAP « 1拍 » over the touchable « シートを閉じる » (20 x 21 dp)
+#77 LAYOUT OVERLAP « 2 拍 » over the touchable « シートを閉じる » (26 x 21 dp)
+#77 LAYOUT OVERLAP « 1小節 » over the touchable « シートを閉じる » (34 x 21 dp)
+#77 LAYOUT OVERLAP « 2 小節 » over the touchable « シートを閉じる » (40 x 21 dp)
+#77 LAYOUT OVERLAP « 4 小節 » over the touchable « シートを閉じる » (41 x 21 dp)
+#77 LAYOUT OVERLAP « 8 小節 » over the touchable « シートを閉じる » (40 x 21 dp)
+#77 LAYOUT OVERLAP « 音量 » over the touchable « シートを閉じる » (28 x 21 dp)
+#77 LAYOUT OVERLAP « ピッチ » over the touchable « シートを閉じる » (42 x 21 dp)
+#77 LAYOUT OVERLAP « − » over the touchable « シートを閉じる » (9 x 20 dp)
+#77 LAYOUT OVERLAP « ノーマル » over the touchable « シートを閉じる » (64 x 24 dp)
+#77 LAYOUT OVERLAP « + » over the touchable « シートを閉じる » (9 x 20 dp)
+#77 LAYOUT OVERLAP « 逆再生 » over the touchable « シートを閉じる » (42 x 21 dp)
+#77 LAYOUT OVERLAP « アタック: くっきり » over the touchable « シートを閉じる » (120 x 21 dp)
+#77 LAYOUT OVERLAP « リリース: くっきり » over the touchable « シートを閉じる » (120 x 11 dp)
+#77 LAYOUT CONTRAST « ループ: タッチで開始、もう一度で停止 » 2.69:1 (needs 4.5:1, 14 sp)
+#77 LAYOUT CONTRAST « ホールド: 押している間鳴る » 3.79:1 (needs 4.5:1, 14 sp)
+#77 LAYOUT CONTRAST « 同時に1つだけ » 3.86:1 (needs 4.5:1, 14 sp)
+#77 LAYOUT CONTRAST « 同じグループのパッドは互いに止め合います (オープンとクローズのハイハット)。 » 3.49:1 (needs 4.5:1, 14 sp)
+#77 LAYOUT CONTRAST « グループ 2 » 2.95:1 (needs 4.5:1, 14 sp)
+#77 LAYOUT CONTRAST « グループ 4 » 1.93:1 (needs 4.5:1, 14 sp)
+#77 LAYOUT CONTRAST « ループの長さ » 4.01:1 (needs 4.5:1, 14 sp)
+#77 LAYOUT CONTRAST « 1拍 » 2.73:1 (needs 4.5:1, 14 sp)
+#77 LAYOUT CONTRAST « 8 小節 » 2.45:1 (needs 4.5:1, 14 sp)
+#77 LAYOUT CONTRAST « − » 2.36:1 (needs 4.5:1, 14 sp)
+#77 LAYOUT CONTRAST « 逆再生 » 3.77:1 (needs 4.5:1, 14 sp)
+#77 LAYOUT CONTRAST « アタック: くっきり » 3.01:1 (needs 4.5:1, 14 sp)
+#77 LAYOUT CONTRAST « リリース: くっきり » 2.04:1 (needs 4.5:1, 14 sp)
+#77 > glisse 960 900 960 300
+#77 DOIGT rien (texte « ピッチ »)
+#78 ROUTE dialogue:padlive_settings | MODE pro | EMPREINTE 74ff0f85a2 | project=p-399eb622 no tuto
+#78 SON Son : les pads live 17, 18, 19 jouent en boucle.
+#78 LAYOUT OVERLAP « リリース: くっきり » over the touchable « シートを閉じる » (120 x 21 dp)
+#78 LAYOUT OVERLAP « 音を変更 » over the touchable « シートを閉じる » (56 x 21 dp)
+#78 LAYOUT OVERLAP « 空にする » over the touchable « シートを閉じる » (56 x 21 dp)
+#78 LAYOUT CONTRAST « グループ 1 » 1.24:1 (needs 4.5:1, 14 sp)
+#78 LAYOUT CONTRAST « グループ 2 » 4.34:1 (needs 4.5:1, 14 sp)
+#78 LAYOUT CONTRAST « グループ 4 » 1.83:1 (needs 4.5:1, 14 sp)
+#78 LAYOUT CONTRAST « 2 小節 » 4.02:1 (needs 4.5:1, 14 sp)
+#78 LAYOUT CONTRAST « ピッチ » 2.73:1 (needs 4.5:1, 14 sp)
+#78 LAYOUT CONTRAST « − » 1.95:1 (needs 4.5:1, 14 sp)
+#78 LAYOUT CONTRAST « 逆再生 » 3.52:1 (needs 4.5:1, 14 sp)
+#78 LAYOUT CONTRAST « アタック: くっきり » 4.11:1 (needs 4.5:1, 14 sp)
+#78 LAYOUT CONTRAST « リリース: くっきり » 3.74:1 (needs 4.5:1, 14 sp)
+#78 LAYOUT CONTRAST « 音を変更 » 4.21:1 (needs 4.5:1, 14 sp)
+#78 LAYOUT CONTRAST « 空にする » 4.21:1 (needs 4.5:1, 14 sp)
+#78 > retour
+#78 RETOUR
+#79 ROUTE padlive_pads_side | MODE pro | EMPREINTE 1d99829f80 | project=p-399eb622 no tuto
+#79 SON Son : les pads live 17, 18, 19 jouent en boucle.
+#79 > retour
+#79 RETOUR
+#80 ROUTE launch | MODE pro | EMPREINTE ffea5c8f15 | project=p-399eb622 no tuto
+#80 SON Son : rien ne joue.
+#80 > fin
+#80 FIN : fin

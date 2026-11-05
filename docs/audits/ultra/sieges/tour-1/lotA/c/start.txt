@@ -1,0 +1,8 @@
+lang=de
+device=phone360
+font=100
+mode=pro
+main=une
+gestes.max=90
+mission=exports
+timeout.minutes=25

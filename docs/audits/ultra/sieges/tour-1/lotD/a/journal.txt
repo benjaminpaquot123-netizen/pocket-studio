@@ -1,0 +1,412 @@
+#0 SIEGE lang=fr device=phone411 font=100 mode=simple theme=- fresh=non gestes.max=90 lit=oui main=both amenee=remix
+#0 AMENEE remix
+#0 AMENEE > touche 308 846 (welcome_remix)
+#0 AMENEE > touche 308 297 (mode_card_simple)
+#0 AMENEE prête (?)
+#1 ROUTE ? | MODE simple | EMPREINTE 88b49fdf6a | project=p-5a1559c0 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 2.67:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT CONTRAST « ✎ » 3.49:1 (needs 4.5:1, 13 sp)
+#1 > touche 308 601
+#1 DOIGT remix_pick « Choisir une chanson »
+#2 ROUTE ? | MODE simple | EMPREINTE 9de564d73d | project=p-5a1559c0 no tuto
+#2 SON Son : rien ne joue.
+#2 > attends 30
+#3 ROUTE ? | MODE simple | EMPREINTE 4be633d093 | project=p-5a1559c0 no tuto
+#3 SON Son : rien ne joue.
+#3 > attends 30
+#4 ROUTE ? | MODE simple | EMPREINTE bb3a42782c | project=p-5a1559c0 no tuto
+#4 SON Son : rien ne joue.
+#4 > attends 60
+#5 ROUTE ? | MODE simple | EMPREINTE 5b06c7b7db | project=p-5a1559c0 no tuto
+#5 SON Son : rien ne joue.
+#5 > attends 180
+#6 ROUTE ? | MODE simple | EMPREINTE 6efe6d4226 | project=p-5a1559c0 no tuto
+#6 SON Son : rien ne joue.
+#6 > attends 300
+#7 ROUTE ? | MODE simple | EMPREINTE 6efe6d4226 | project=p-5a1559c0 no tuto
+#7 SON Son : rien ne joue.
+#7 > attends 500
+#8 ROUTE ? | MODE simple | EMPREINTE 6efe6d4226 | project=p-5a1559c0 no tuto
+#8 SON Son : rien ne joue.
+#8 > attends 20
+#9 ROUTE ? | MODE simple | EMPREINTE 6efe6d4226 | project=p-5a1559c0 no tuto
+#9 SON Son : rien ne joue.
+#9 > attends 20
+#10 ROUTE ? | MODE simple | EMPREINTE 4204bb7f29 | project=p-5a1559c0 no tuto
+#10 SON Son : rien ne joue.
+#10 > appui-long 511 952
+#10 DOIGT stem_3a02635f77d71cd9a979f25b_vocals « Voix »
+#11 ROUTE ? | MODE simple | EMPREINTE 69649b2425 | project=p-5a1559c0 no tuto
+#11 SON Son : le Remix fait écouter « Ma chanson préférée » : la voix seule (0:01 / 0:40) — la voix ne chante pas à cet instant.
+#11 > touche 364 279
+#11 DOIGT help_Remix « Qu'est-ce que « Remix » ? »
+#11 AIDE help_Remix
+#12 ROUTE dialogue:« Remix » | MODE simple | EMPREINTE c12b998482 | project=p-5a1559c0 no tuto
+#12 SON Son : le Remix fait écouter « Ma chanson préférée » : la voix seule (0:02 / 0:40) — la voix ne chante pas à cet instant.
+#12 > touche 517 799
+#12 DOIGT #957 « Compris »
+#13 ROUTE ? | MODE simple | EMPREINTE e1e1331682 | project=p-5a1559c0 no tuto
+#13 SON Son : le Remix fait écouter « Ma chanson préférée » : la voix seule (0:04 / 0:40) — la voix chante en ce moment.
+#13 > glisse 308 1000 308 500
+#13 DOIGT rien
+#14 ROUTE ? | MODE simple | EMPREINTE e1e1331682 | project=p-5a1559c0 no tuto
+#14 SON Son : le Remix fait écouter « Ma chanson préférée » : la voix seule (0:06 / 0:40) — la voix chante en ce moment.
+#14 > touche 308 778
+#14 DOIGT use_3a02635f77d71cd9a979f25b « Jouer avec le projet »
+#15 ROUTE dialogue:song_import | MODE simple | EMPREINTE 4dcddf02ad | project=p-5a1559c0 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « Mon projet prend le tempo de Ma chanson préférée (120 BPM) » 1.66:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « Toute la chanson, à partir de la brique A » 1.91:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « Parties » 1.74:1 (needs 3.0:1, 14 sp)
+#15 LAYOUT CONTRAST « Refrain » 3.34:1 (needs 4.5:1, 13 sp)
+#15 LAYOUT CONTRAST « Annuler » 3.50:1 (needs 4.5:1, 14 sp)
+#15 > touche 308 835
+#15 DOIGT import_passage « Seulement un passage »
+#16 ROUTE dialogue:song_import | MODE simple | EMPREINTE 99000b3ecb | project=p-5a1559c0 no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « − » 1.74:1 (needs 4.5:1, 14 sp)
+#16 LAYOUT CONTRAST « Juste la voix sur mon beat » 3.10:1 (needs 4.5:1, 14 sp)
+#16 > touche 199 1225
+#16 DOIGT import_cancel « Annuler »
+#17 ROUTE ? | MODE simple | EMPREINTE 4204bb7f29 | project=p-5a1559c0 no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 181 1311
+#17 DOIGT tab_simple_Rythme « Rythme »
+#18 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 0b039a644b | project=p-5a1559c0 no tuto
+#18 SON Son : rien ne joue.
+#18 > appui-long 529 516
+#18 DOIGT pad_15 « Zap »
+#19 ROUTE dialogue:library | MODE simple | EMPREINTE a87f94dd18 | project=p-5a1559c0 no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « Caisses claires » 2.25:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « SONS » 1.41:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « Fête » 1.92:1 (needs 4.5:1, 16 sp)
+#19 LAYOUT CONTRAST « 22 sons » 4.01:1 (needs 4.5:1, 13 sp)
+#19 > touche 308 306
+#19 DOIGT library_search « Chercher un son (doigts, verre, conga…) »
+#20 ROUTE dialogue:library | MODE simple | EMPREINTE ccb79bb08f | project=p-5a1559c0 no tuto
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « À télécharger seulement si tu veux ; chaque pack se supprime d'un geste pour libérer la place. » 1.37:1 (needs 4.5:1, 13 sp)
+#20 LAYOUT CONTRAST «  Tout télécharger (68 packs, 288,4 Mo) » 1.37:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Télécharger » 2.18:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Acid house » 2.21:1 (needs 4.5:1, 16 sp)
+#20 LAYOUT CONTRAST « 100 sons · 2 Mo » 1.23:1 (needs 4.5:1, 13 sp)
+#20 > ecris voix
+#21 ROUTE dialogue:library | MODE simple | EMPREINTE 287ff8b4c8 | project=p-5a1559c0 no tuto
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « « Go go go! » » 2.49:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Poser » 2.09:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « « Go! » » 2.37:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Poser » 2.70:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « « Power up! » » 1.38:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Poser » 1.38:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « « Fire in the hole! » » 1.34:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Poser » 1.34:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « « You win! » » 1.23:1 (needs 4.5:1, 14 sp)
+#21 > touche 538 288
+#21 DOIGT dans:library_search
+#22 ROUTE dialogue:library | MODE simple | EMPREINTE ccb79bb08f | project=p-5a1559c0 no tuto
+#22 SON Son : rien ne joue.
+#22 > glisse 500 129 100 129
+#22 DOIGT library_kind_clap « Claps »
+#23 ROUTE dialogue:library | MODE simple | EMPREINTE 078c02e01e | project=p-5a1559c0 no tuto
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « Charleys fermés » 3.76:1 (needs 4.5:1, 14 sp)
+#23 LAYOUT CONTRAST « Charleys ouverts » 4.43:1 (needs 4.5:1, 14 sp)
+#23 > glisse 600 129 10 129
+#23 DOIGT rien
+#24 ROUTE dialogue:library | MODE simple | EMPREINTE 078c02e01e | project=p-5a1559c0 no tuto
+#24 SON Son : rien ne joue.
+#24 > glisse 560 129 40 129
+#24 DOIGT library_kind_open_hat « Charleys ouverts »
+#25 ROUTE dialogue:library | MODE simple | EMPREINTE 381ea08e77 | project=p-5a1559c0 no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 574 48
+#25 DOIGT library_close
+#26 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE add7041b4e | project=p-5a1559c0 no tuto
+#26 SON Son : rien ne joue.
+#26 > glisse 308 1100 308 300
+#26 DOIGT rien (texte « Touche une case pour ajouter un coup, gl »)
+#27 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 263ace7fcc | project=p-5a1559c0 no tuto
+#27 SON Son : rien ne joue.
+#27 LAYOUT CONTRAST « Remplir » 3.29:1 (needs 4.5:1, 13 sp)
+#27 LAYOUT CONTRAST « tout » 2.29:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « 1/2 » 2.36:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « 1/4 » 2.21:1 (needs 4.5:1, 14 sp)
+#27 > touche 308 761
+#27 DOIGT pad_settings «  Réglages du pad »
+#28 ROUTE dialogue:pad_sheet | MODE simple | EMPREINTE 90998b804f | project=p-5a1559c0 no tuto
+#28 SON Son : rien ne joue.
+#28 LAYOUT OVERLAP « Pad 16 · Zap » over the touchable « Fermer la feuille » (126 x 28 dp)
+#28 LAYOUT OVERLAP « Fermer » over the touchable « Fermer la feuille » (48 x 20 dp)
+#28 LAYOUT OVERLAP « Écouter seul » over the touchable « Fermer la feuille » (88 x 20 dp)
+#28 LAYOUT OVERLAP « Son » over the touchable « Fermer la feuille » (27 x 20 dp)
+#28 LAYOUT OVERLAP « Rim » over the touchable « Fermer la feuille » (26 x 20 dp)
+#28 LAYOUT OVERLAP « Cowbell » over the touchable « Fermer la feuille » (56 x 20 dp)
+#28 LAYOUT OVERLAP « Conga » over the touchable « Fermer la feuille » (44 x 20 dp)
+#28 LAYOUT OVERLAP « Shaker » over the touchable « Fermer la feuille » (48 x 20 dp)
+#28 LAYOUT OVERLAP « Tom grave » over the touchable « Fermer la feuille » (71 x 20 dp)
+#28 LAYOUT OVERLAP « Tom médium » over the touchable « Fermer la feuille » (88 x 20 dp)
+#28 LAYOUT OVERLAP « Tom aigu » over the touchable « Fermer la feuille » (63 x 20 dp)
+#28 LAYOUT OVERLAP « Zap » over the touchable « Fermer la feuille » (26 x 20 dp)
+#28 LAYOUT OVERLAP « Tous les sons… » over the touchable « Fermer la feuille » (11 x 20 dp)
+#28 LAYOUT OVERLAP « Volume du pad » over the touchable « Fermer la feuille » (99 x 20 dp)
+#28 LAYOUT OVERLAP « 100 % » over the touchable « Fermer la feuille » (46 x 17 dp)
+#28 LAYOUT OVERLAP « Place du pad » over the touchable « Fermer la feuille » (86 x 20 dp)
+#28 LAYOUT OVERLAP « Centre » over the touchable « Fermer la feuille » (45 x 17 dp)
+#28 LAYOUT OVERLAP « Couper ce pad » over the touchable « Fermer la feuille » (99 x 20 dp)
+#28 LAYOUT CONTRAST « Tom grave » 2.42:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « Tous les sons… » 1.67:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « Centre » 1.37:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT LABEL « #1980 » long press without text nor description
+#28 > touche 537 333
+#28 DOIGT pad_sheet_close « Fermer »
+#29 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 263ace7fcc | project=p-5a1559c0 no tuto
+#29 SON Son : rien ne joue.
+#29 > touche 239 565
+#29 DOIGT help_Sample du pad « Qu'est-ce que « Sample du pad » ? »
+#29 AIDE help_Sample
+#30 ROUTE dialogue:« Sample du pad » | MODE simple | EMPREINTE 383135bfaa | project=p-5a1559c0 no tuto
+#30 SON Son : rien ne joue.
+#30 LAYOUT CONTRAST « Le son que joue le pad quand on le touche. Un « sample » (échantillon en français), c'est un son enregistré qu'on rejoue : un kick, une voix, un bout de morceau. Prends-le dans la bibliothèque, importe-le ou enregistre-le au micro ; sans sample, le pad joue le son de la boîte à rythmes. » 2.93:1 (needs 4.5:1, 14 sp)
+#30 > touche 517 829
+#30 DOIGT #2056 « Compris »
+#31 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 263ace7fcc | project=p-5a1559c0 no tuto
+#31 SON Son : rien ne joue.
+#31 > touche 56 1311
+#31 DOIGT tab_simple_Morceau « Mon morceau »
+#32 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE ad9470d98d | project=p-5a1559c0 no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 571 42
+#32 DOIGT top_more
+#33 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE 6c610d984d | project=p-5a1559c0 no tuto
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « Accueil » 1.88:1 (needs 4.5:1, 14 sp)
+#33 > touche 473 126
+#33 DOIGT more_live « Live : jouer en direct »
+#34 ROUTE live_grid | MODE simple | EMPREINTE 30582beb08 | project=p-5a1559c0 no tuto
+#34 SON Son : rien ne joue.
+#34 LAYOUT CONTRAST « Acid 303 » 3.23:1 (needs 4.5:1, 13 sp)
+#34 > touche 150 1197
+#34 DOIGT live_tab_Pads « Pads »
+#35 ROUTE live_pads_grid | MODE simple | EMPREINTE a45c68f96a | project=p-5a1559c0 no tuto
+#35 SON Son : rien ne joue.
+#35 LAYOUT OVERLAP « REC » over « Tout couper » (22 x 16 dp)
+#35 LAYOUT OVERLAP « Pads » over «  REC » (13 x 5 dp)
+#35 LAYOUT OVERLAP « Pads » over « ✎ » (13 x 7 dp)
+#35 LAYOUT OVERLAP « 8 » over « ⋯ » (4 x 10 dp)
+#35 LAYOUT OVERLAP « REC » over the touchable « Tout couper Tout couper » (26 x 16 dp)
+#35 LAYOUT OVERLAP « 8 » over the touchable « Pad 2 · vide » (11 x 7 dp)
+#35 LAYOUT OVERLAP « Tout couper » over the touchable « Enregistrer la performance » (37 x 23 dp)
+#35 LAYOUT OVERLAP « Tout couper » over the touchable « Étiqueter l'écran » (31 x 9 dp)
+#35 LAYOUT OVERLAP « Pads » over the touchable « Filmer l'écran avec le son » (17 x 16 dp)
+#35 LAYOUT OVERLAP « Pads » over the touchable « Écrire une note » (18 x 16 dp)
+#35 LAYOUT OVERLAP « 8 » over the touchable « Mode retours » (11 x 17 dp)
+#35 LAYOUT OVERLAP « + » over the touchable « Couper le son de Batterie désactivé » (24 x 37 dp)
+#35 LAYOUT OVERLAP « + » over the touchable « Couper le son de Synthé désactivé » (19 x 37 dp)
+#35 LAYOUT OVERLAP « + » over the touchable « Batterie · C · vide » (24 x 43 dp)
+#35 LAYOUT OVERLAP « + » over the touchable « Synthé · C · vide » (23 x 43 dp)
+#35 LAYOUT OVERLAP « + » over the touchable « Batterie · E · vide » (24 x 17 dp)
+#35 LAYOUT OVERLAP « + » over the touchable « Batterie · F · vide » (24 x 21 dp)
+#35 LAYOUT OVERLAP « + » over the touchable « Synthé · E · vide » (23 x 17 dp)
+#35 LAYOUT OVERLAP « + » over the touchable « Synthé · F · vide » (23 x 21 dp)
+#35 LAYOUT OVERLAP « + » over the touchable « Batterie · H · vide » (24 x 39 dp)
+#35 LAYOUT OVERLAP « + » over the touchable « Synthé · H · vide » (23 x 39 dp)
+#35 LAYOUT CONTRAST « 120 » 1.80:1 (needs 3.0:1, 18 sp)
+#35 LAYOUT CONTRAST « BPM » 1.80:1 (needs 4.5:1, 12 sp)
+#35 LAYOUT CONTRAST « 8 » 2.09:1 (needs 3.0:1, 16 sp)
+#35 LAYOUT CONTRAST « Pads » 3.30:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT CONTRAST « ● » 2.71:1 (needs 4.5:1, 13 sp)
+#35 LAYOUT CONTRAST « ✎ » 3.39:1 (needs 4.5:1, 13 sp)
+#35 > touche 158 316
+#35 DOIGT live_full_pad_0 « Pad 1 · vide »
+#36 ROUTE dialogue:live_pad_chooser | MODE simple | EMPREINTE d4f13d1ffe | project=p-5a1559c0 no tuto
+#36 SON Son : rien ne joue.
+#36 LAYOUT OVERLAP « Pad 1 : qu'est-ce que tu mets dessus ? » over the touchable « Fermer la feuille » (304 x 56 dp)
+#36 LAYOUT OVERLAP « Ma bibliothèque » over the touchable « Fermer la feuille » (88 x 40 dp)
+#36 LAYOUT OVERLAP « Sons de l'appli » over the touchable « Fermer la feuille » (103 x 20 dp)
+#36 LAYOUT OVERLAP « Enregistrer » over the touchable « Fermer la feuille » (80 x 20 dp)
+#36 LAYOUT CONTRAST « Ma bibliothèque » 2.94:1 (needs 3.0:1, 14 sp)
+#36 LAYOUT CONTRAST « Sons de l'appli » 2.90:1 (needs 3.0:1, 14 sp)
+#36 LAYOUT CONTRAST « Enregistrer » 2.90:1 (needs 3.0:1, 14 sp)
+#36 LAYOUT LABEL « #2409 » long press without text nor description
+#36 > touche 115 1267
+#36 DOIGT live_chooser_mine « Ma bibliothèque »
+#37 ROUTE dialogue:library | MODE simple | EMPREINTE a9a16e80ef | project=p-5a1559c0 no tuto
+#37 SON Son : rien ne joue.
+#37 LAYOUT OVERLAP « ? » over the touchable « Pad 1 · vide » (7 x 5 dp)
+#37 LAYOUT OVERLAP « ? » over the touchable « Pad 1 · vide » (7 x 15 dp)
+#37 LAYOUT CONTRAST « ? » 2.09:1 (needs 4.5:1, 12 sp)
+#37 LAYOUT CONTRAST « Pour le pad live 1 » 1.82:1 (needs 4.5:1, 13 sp)
+#37 LAYOUT CONTRAST « Chercher un son (doigts, verre, conga…) » 1.29:1 (needs 4.5:1, 16 sp)
+#37 LAYOUT CONTRAST « Touche ☆ sur un son pour le retrouver dans « Favoris ». » 1.57:1 (needs 4.5:1, 13 sp)
+#37 LAYOUT CONTRAST « Touche un son pour l'écouter, « Poser » pour le mettre sur le pad live 1. » 1.20:1 (needs 4.5:1, 13 sp)
+#37 LAYOUT CONTRAST « À télécharger seulement si tu veux ; chaque pack se supprime d'un geste pour libérer la place. » 1.80:1 (needs 4.5:1, 13 sp)
+#37 LAYOUT CONTRAST «  Tout télécharger (68 packs, 288,4 Mo) » 1.39:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « Akai MPC60 » 2.94:1 (needs 4.5:1, 16 sp)
+#37 LAYOUT CONTRAST « Télécharger » 2.90:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « Amapiano » 2.20:1 (needs 4.5:1, 16 sp)
+#37 > touche 574 48
+#37 DOIGT library_close
+#38 ROUTE live_pads_grid | MODE simple | EMPREINTE a45c68f96a | project=p-5a1559c0 no tuto
+#38 SON Son : rien ne joue.
+#38 > touche 45 48
+#38 DOIGT live_pads_full_close
+#39 ROUTE live_grid | MODE simple | EMPREINTE 30582beb08 | project=p-5a1559c0 no tuto
+#39 SON Son : rien ne joue.
+#39 > touche 42 42
+#39 DOIGT live_back
+#40 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE ad9470d98d | project=p-5a1559c0 no tuto
+#40 SON Son : rien ne joue.
+#40 > touche 571 42
+#40 DOIGT top_more
+#41 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE 6c610d984d | project=p-5a1559c0 no tuto
+#41 SON Son : rien ne joue.
+#41 > touche 473 342
+#41 DOIGT more_remix « Remix »
+#42 ROUTE ? | MODE simple | EMPREINTE 4204bb7f29 | project=p-5a1559c0 no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 267 42
+#42 DOIGT top_mode « Mode Simple. Toucher pour changer de mod »
+#43 ROUTE dialogue:mode_switch | MODE simple | EMPREINTE 7a98e29b42 | project=p-5a1559c0 no tuto
+#43 SON Son : rien ne joue.
+#43 LAYOUT CONTRAST « En ce moment » 4.28:1 (needs 4.5:1, 13 sp)
+#43 LAYOUT CONTRAST « Pour aller loin : tous les outils, structure, sons, mix et live. » 1.60:1 (needs 4.5:1, 16 sp)
+#43 > touche 308 850
+#43 DOIGT mode_card_pro « Pro »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE cd27324bc3 | project=p-5a1559c0 no tuto
+#44 SON Son : rien ne joue.
+#44 > glisse 308 1100 308 400
+#44 DOIGT rien
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE a88e47af80 | project=p-5a1559c0 no tuto
+#45 SON Son : rien ne joue.
+#45 > touche 98 330
+#45 DOIGT audio_page_0 « Pistes audio »
+#46 ROUTE audio_tracks/tab_Sons | MODE pro | EMPREINTE 6e6a5cb6f5 | project=p-5a1559c0 no tuto
+#46 SON Son : rien ne joue.
+#46 LAYOUT CUT « Sauvegardé » wider than its box (by 28.8 dp)
+#46 > touche 252 258
+#46 DOIGT audio_page_1 « Remix »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE cd27324bc3 | project=p-5a1559c0 no tuto
+#47 SON Son : rien ne joue.
+#47 > touche 308 928
+#47 DOIGT use_3a02635f77d71cd9a979f25b « Jouer avec le projet »
+#48 ROUTE dialogue:song_import | MODE pro | EMPREINTE 4dcddf02ad | project=p-5a1559c0 no tuto
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « Mon projet prend le tempo de Ma chanson préférée (120 BPM) » 4.14:1 (needs 4.5:1, 14 sp)
+#48 LAYOUT CONTRAST « La tonalité » 1.89:1 (needs 3.0:1, 14 sp)
+#48 > touche 308 913
+#48 DOIGT import_voice « Juste la voix sur mon beat »
+#49 ROUTE dialogue:song_import | MODE pro | EMPREINTE 6002bd6764 | project=p-5a1559c0 no tuto
+#49 SON Son : rien ne joue.
+#49 > touche 425 1147
+#49 DOIGT import_go « Mettre dans mon projet »
+#50 ROUTE remix_project/tab_Sons | MODE pro | EMPREINTE 10c77aa082 | project=p-5a1559c0 no tuto
+#50 SON Son : rien ne joue.
+#50 LAYOUT CUT « Ma chanson préférée » ellipsized (« … »)
+#50 LAYOUT OVERLAP « Voix » over « ✎ » (13 x 11 dp)
+#50 LAYOUT OVERLAP « Voix » over «  Noter » (7 x 8 dp)
+#50 LAYOUT OVERLAP « Micro » over « ✎ » (13 x 7 dp)
+#50 LAYOUT OVERLAP « Micro » over «  Noter » (16 x 5 dp)
+#50 LAYOUT OVERLAP « Voix » over the touchable « Filmer l'écran avec le son » (5 x 20 dp)
+#50 LAYOUT OVERLAP « Voix » over the touchable « Écrire une note » (23 x 20 dp)
+#50 LAYOUT OVERLAP « Micro » over the touchable « Filmer l'écran avec le son » (5 x 16 dp)
+#50 LAYOUT OVERLAP « Micro » over the touchable « Écrire une note » (32 x 16 dp)
+#50 LAYOUT OVERLAP « Ma chanson préférée » over the touchable « Mode retours » (4 x 20 dp)
+#50 LAYOUT OVERLAP « Chanson » over the touchable « Mode retours » (4 x 16 dp)
+#50 LAYOUT CONTRAST « Voix » 3.99:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « Micro » 3.43:1 (needs 4.5:1, 12 sp)
+#50 LAYOUT CONTRAST « CHANSON : MA CHANSON PRÉFÉRÉE » 3.36:1 (needs 4.5:1, 12 sp)
+#50 LAYOUT CONTRAST « Effets » 4.44:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « Partir de la mesure 1 de la chanson » 2.89:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « ● » 3.57:1 (needs 4.5:1, 13 sp)
+#50 LAYOUT CONTRAST « ✎ » 3.43:1 (needs 4.5:1, 13 sp)
+#50 > touche 308 615
+#50 DOIGT remix_open_cut «  Découper la chanson »
+#51 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 6f7685aa77 | project=p-5a1559c0 no tuto
+#51 SON Son : rien ne joue.
+#51 > touche 99 1101
+#51 DOIGT cut_to_pads « Sur les pads »
+#52 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 0f0a501de4 | project=p-5a1559c0 no tuto
+#52 SON Son : rien ne joue.
+#52 > touche 79 183
+#52 DOIGT sons_Rythme « Batterie »
+#53 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE c8fcca3d8d | project=p-5a1559c0 no tuto
+#53 SON Son : rien ne joue.
+#53 LAYOUT OVERLAP « Voix » over «  Noter » (10 x 8 dp)
+#53 LAYOUT OVERLAP « Micro » over «  Noter » (19 x 5 dp)
+#53 LAYOUT OVERLAP « Voix » over the touchable « Écrire une note » (26 x 20 dp)
+#53 LAYOUT OVERLAP « Micro » over the touchable « Écrire une note » (35 x 16 dp)
+#53 LAYOUT CONTRAST « Voix » 4.28:1 (needs 4.5:1, 14 sp)
+#53 LAYOUT CONTRAST « Micro » 3.68:1 (needs 4.5:1, 12 sp)
+#53 > touche 235 324
+#53 DOIGT pad_1 « Kick 2 »
+#54 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE bfb8f41567 | project=p-5a1559c0 no tuto
+#54 SON Son : rien ne joue.
+#54 LAYOUT CONTRAST «  Enregistrer mes pads » 2.78:1 (needs 4.5:1, 14 sp)
+#54 > touche 73 978
+#54 DOIGT step_0 « Pas 1 »
+#55 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 89cab0ebd4 | project=p-5a1559c0 no tuto
+#55 SON Son : rien ne joue.
+#55 > touche 342 977
+#55 DOIGT step_4 « Pas 5 »
+#56 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 9e689aa585 | project=p-5a1559c0 no tuto
+#56 SON Son : rien ne joue.
+#56 > touche 73 1062
+#56 DOIGT step_8 « Pas 9 »
+#57 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 0c8bc2dd3c | project=p-5a1559c0 no tuto
+#57 SON Son : rien ne joue.
+#57 > touche 342 1061
+#57 DOIGT step_12 « Pas 13 »
+#58 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 15a57c2fd4 | project=p-5a1559c0 no tuto
+#58 SON Son : rien ne joue.
+#58 > touche 499 42
+#58 DOIGT top_play
+#59 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 2ac3353134 | project=p-5a1559c0 no tuto
+#59 SON Son : le morceau joue (partie « A ») ; avec la voix seule de « Ma chanson préférée ».
+#59 > touche 87 378
+#59 DOIGT pad_0 « Voix 1 »
+#60 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 680f168742 | project=p-5a1559c0 no tuto
+#60 SON Son : la musique du projet joue en boucle ; avec la voix seule de « Ma chanson préférée ».
+#60 LAYOUT CONTRAST « Clap » 3.86:1 (needs 4.5:1, 14 sp)
+#60 > touche 87 324
+#60 DOIGT pad_0 « Voix 1 »
+#61 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 28d4a3bda2 | project=p-5a1559c0 no tuto
+#61 SON Son : la musique du projet joue en boucle ; avec la voix seule de « Ma chanson préférée ».
+#61 > touche 73 978
+#61 DOIGT step_0 « Pas 1 »
+#62 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE fdb796f19e | project=p-5a1559c0 no tuto
+#62 SON Son : la musique du projet joue en boucle ; avec la voix seule de « Ma chanson préférée » ; le pad 1 (« Voix 1 ») sonne dans la boucle.
+#62 > touche 499 42
+#62 DOIGT top_play
+#63 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 3e8a6340fa | project=p-5a1559c0 no tuto
+#63 SON Son : rien ne joue.
+#63 > touche 205 42
+#63 DOIGT top_mode « Mode Pro. Toucher pour changer de mode. »
+#64 ROUTE dialogue:mode_switch | MODE pro | EMPREINTE a66d770744 | project=p-5a1559c0 no tuto
+#64 SON Son : rien ne joue.
+#64 LAYOUT CONTRAST « En ce moment » 4.21:1 (needs 4.5:1, 13 sp)
+#64 > touche 308 637
+#64 DOIGT mode_card_simple « Simple »
+#65 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 586e76705e | project=p-5a1559c0 no tuto
+#65 SON Son : rien ne joue.
+#65 LAYOUT CONTRAST « ◀ » 2.21:1 (needs 4.5:1, 14 sp)
+#65 LAYOUT CONTRAST « ▶ » 2.24:1 (needs 4.5:1, 14 sp)
+#65 LAYOUT CONTRAST « ? » 1.38:1 (needs 4.5:1, 12 sp)
+#65 > touche 571 42
+#65 DOIGT top_more
+#66 ROUTE dialogue:top_more_menu | MODE simple | EMPREINTE 6c610d984d | project=p-5a1559c0 no tuto
+#66 SON Son : rien ne joue.
+#66 LAYOUT CONTRAST « Bibliothèque de sons » 2.45:1 (needs 4.5:1, 14 sp)
+#66 > touche 473 342
+#66 DOIGT more_remix « Remix »
+#67 ROUTE remix_project | MODE simple | EMPREINTE 25effff1d0 | project=p-5a1559c0 no tuto
+#67 SON Son : rien ne joue.
+#67 > touche 412 1177
+#67 DOIGT stem_pad_3 « → Pad »
+#68 ROUTE remix_project | MODE simple | EMPREINTE 6d9cecee59 | project=p-5a1559c0 no tuto
+#68 SON Son : rien ne joue.
+#68 LAYOUT CONTRAST « Effets » 4.37:1 (needs 4.5:1, 14 sp)
+#68 > fin
+#68 FIN : fin

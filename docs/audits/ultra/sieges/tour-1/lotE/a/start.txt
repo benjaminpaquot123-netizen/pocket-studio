@@ -1,0 +1,6 @@
+lang=pt-BR
+device=phone360
+fresh=reel
+gestes.max=60
+mission=padlive
+timeout.minutes=25

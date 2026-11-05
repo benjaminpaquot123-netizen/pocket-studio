@@ -1,0 +1,379 @@
+#0 SIEGE lang=fr device=phone font=200 mode=simple theme=- fresh=non gestes.max=60 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE cc1ee3cc1c | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > glisse 294 1000 294 400
+#1 DOIGT welcome_guided « Créer mon premier morceau (guidé) »
+#2 ROUTE dialogue:welcome | MODE simple | EMPREINTE b564909cff | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > glisse 294 1000 294 400
+#2 DOIGT welcome_learn « J'apprends »
+#3 ROUTE dialogue:welcome | MODE simple | EMPREINTE d57cd6b14e | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > glisse 294 1000 294 400
+#3 DOIGT welcome_empty « Partir de zéro »
+#4 ROUTE dialogue:welcome | MODE simple | EMPREINTE c0da4a3ada | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « NOUVEAU » a word split over two lines
+#4 LAYOUT CUT « Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite. » ellipsized (« … »)
+#4 > glisse 294 1000 294 400
+#4 DOIGT welcome_remix « Extraire la voix d'une chanson »
+#5 ROUTE dialogue:welcome | MODE simple | EMPREINTE e468c2a2fd | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 > glisse 294 300 294 1100
+#5 DOIGT welcome_remix « Extraire la voix d'une chanson »
+#6 ROUTE dialogue:welcome | MODE simple | EMPREINTE c3d01f68e0 | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « Écouter une démo » 1.41:1 (needs 3.0:1, 22 sp)
+#6 > touche 294 120
+#6 DOIGT rien
+#7 ROUTE dialogue:welcome | MODE simple | EMPREINTE c3d01f68e0 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 > attends 2
+#8 ROUTE dialogue:welcome | MODE simple | EMPREINTE c3d01f68e0 | project=projet-1 no tuto
+#8 SON Son : rien ne joue.
+#8 > touche 294 54
+#8 DOIGT welcome_learn « J'apprends »
+#9 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 4c1db34760 | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT CUT « Simple » ellipsized (« … »)
+#9 LAYOUT CONTRAST « Pro » 1.36:1 (needs 3.0:1, 24 sp)
+#9 > touche 294 686
+#9 DOIGT mode_card_simple « Simple »
+#10 ROUTE dialogue:tuto_chooser | MODE simple | EMPREINTE 2bc4524c80 | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « Acid techno » 1.94:1 (needs 3.0:1, 16 sp)
+#10 > touche 294 522
+#10 DOIGT tuto_style_techno « Techno »
+#11 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f179cc3686 | project=p-4a9d0352 tuto=techno/Facile active=true step=ref done=0 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT CUT « Kick studio » ellipsized (« … »)
+#11 LAYOUT CUT « Rumble » ellipsized (« … »)
+#11 LAYOUT CUT « Mon projet 1 » ellipsized (« … »)
+#11 LAYOUT CUT « Sauvegardé » wider than its box (by 91.0 dp)
+#11 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#11 LAYOUT CUT « La vitesse et la couleur du morceau » ellipsized (« … »)
+#11 LAYOUT OVERLAP « Kick studio » over « FX » (24 x 9 dp)
+#11 LAYOUT OVERLAP « Rumble » over « FX » (22 x 9 dp)
+#11 LAYOUT OVERLAP « ? » over «  Noter » (16 x 11 dp)
+#11 LAYOUT OVERLAP « Écoute un extrait de techno finie : l'Intro (la batterie pour le DJ), l'arrivée de la basse, puis le Drop. Un kick sur chaque temps qui ne s'arrête jamais : c'est ce que tu vas construire. » over « Lire la suite » (134 x 35 dp)
+#11 LAYOUT OVERLAP « ? » over the touchable « Écrire une note » (16 x 16 dp)
+#11 LAYOUT OVERLAP « Écoute un extrait de techno finie : l'Intro (la batterie pour le DJ), l'arrivée de la basse, puis le Drop. Un kick sur chaque temps qui ne s'arrête jamais : c'est ce que tu vas construire. » over the touchable « Lire la suite » (338 x 35 dp)
+#11 LAYOUT OVERLAP «  Noter » over the touchable « Étiqueter l'écran » (36 x 19 dp)
+#11 LAYOUT OVERLAP « ⋯ » over the touchable « Étiqueter l'écran » (5 x 24 dp)
+#11 LAYOUT CONTRAST « ● » 2.67:1 (needs 4.5:1, 13 sp)
+#11 LAYOUT CONTRAST « ✎ » 3.53:1 (needs 4.5:1, 13 sp)
+#11 > touche 432 918
+#11 DOIGT rien (texte « Écoute un extrait de techno finie : l'In »)
+#12 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2f76883490 | project=p-4a9d0352 tuto=techno/Facile active=true step=ref done=0 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « Mon projet 1 » over « Le kit Techno » (50 x 25 dp)
+#12 LAYOUT OVERLAP « Sauvegardé » over « Le kit Techno » (50 x 7 dp)
+#12 LAYOUT OVERLAP « Simple » over « Le kit Techno » (52 x 31 dp)
+#12 LAYOUT OVERLAP « 120 » over « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » (46 x 34 dp)
+#12 LAYOUT OVERLAP «  BPM » over « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » (65 x 32 dp)
+#12 LAYOUT OVERLAP « ? » over « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » (14 x 32 dp)
+#12 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over « ● » (23 x 30 dp)
+#12 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over «  REC » (45 x 25 dp)
+#12 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over « ✎ » (25 x 34 dp)
+#12 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over «  Noter » (52 x 25 dp)
+#12 LAYOUT OVERLAP « Le kit Techno » over the touchable « Mode Simple. Toucher pour changer de mod » (70 x 36 dp)
+#12 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over the touchable « Tempo : 120 BPM Changer le tempo » (122 x 48 dp)
+#12 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over the touchable « Étiqueter l'écran » (30 x 48 dp)
+#12 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over the touchable « Filmer l'écran avec le son » (74 x 35 dp)
+#12 LAYOUT OVERLAP « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » over the touchable « Écrire une note » (80 x 35 dp)
+#12 LAYOUT CONTRAST « ● » 3.93:1 (needs 4.5:1, 13 sp)
+#12 > touche 294 546
+#12 DOIGT tuto_kit_later « Plus tard »
+#13 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f179cc3686 | project=p-4a9d0352 tuto=techno/Facile active=true step=ref done=0 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 432 918
+#13 DOIGT tuto_text_more « Lire la suite »
+#14 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE e8879b304a | project=p-4a9d0352 tuto=techno/Facile active=true step=ref done=0 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 294 993
+#14 DOIGT tuto_listen «  Écouter l'exemple »
+#15 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f0ef81b0f0 | project=p-4a9d0352 tuto=techno/Facile active=true step=ref done=0 playing=false
+#15 SON Son : l'exemple du tuto joue (encore 7 s).
+#15 > attends 8
+#16 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9b3bbf8bbd | project=p-4a9d0352 tuto=techno/Facile active=true step=ref done=1 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT CUT «  Écouter l'exemple » lines dropped (more lines than room)
+#16 LAYOUT OVERLAP « Écoute un extrait de techno finie : l'Intro (la batterie pour le DJ), l'arrivée de la basse, puis le Drop. Un kick sur chaque temps qui ne s'arrête jamais : c'est ce que tu vas construire. » over « Lire la suite » (142 x 25 dp)
+#16 LAYOUT OVERLAP « Écoute un extrait de techno finie : l'Intro (la batterie pour le DJ), l'arrivée de la basse, puis le Drop. Un kick sur chaque temps qui ne s'arrête jamais : c'est ce que tu vas construire. » over the touchable « Lire la suite » (338 x 25 dp)
+#16 LAYOUT OVERLAP « ▸ Pourquoi ? » over the touchable « Lire la suite » (151 x 4 dp)
+#16 > touche 294 943
+#16 DOIGT tuto_next_big « Étape suivante   »
+#17 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 8c6c63797d | project=p-4a9d0352 tuto=techno/Facile active=true step=tempo done=1 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT CUT «  Montre-moi » lines dropped (more lines than room)
+#17 > touche 294 854
+#17 DOIGT tuto_do «   Je le fais »
+#18 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE ab21e2c2e6 | project=p-4a9d0352 tuto=techno/Facile active=true step=tempo done=1 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CUT « ? » lines cut (taller than its box)
+#18 LAYOUT OVERLAP « Tempo » over the touchable « Fermer la feuille » (114 x 45 dp)
+#18 LAYOUT OVERLAP « ? » over the touchable « Fermer la feuille » (13 x 18 dp)
+#18 LAYOUT OVERLAP « Fermer » over the touchable « Fermer la feuille » (90 x 37 dp)
+#18 LAYOUT OVERLAP « 120 » over the touchable « Fermer la feuille » (96 x 61 dp)
+#18 LAYOUT OVERLAP «  BPM » over the touchable « Fermer la feuille » (70 x 42 dp)
+#18 LAYOUT OVERLAP « 70 » over the touchable « Fermer la feuille » (36 x 34 dp)
+#18 LAYOUT OVERLAP « 90 » over the touchable « Fermer la feuille » (36 x 34 dp)
+#18 LAYOUT OVERLAP « 120 » over the touchable « Fermer la feuille » (54 x 34 dp)
+#18 LAYOUT OVERLAP « 140 » over the touchable « Fermer la feuille » (54 x 34 dp)
+#18 LAYOUT OVERLAP « 174 » over the touchable « Fermer la feuille » (54 x 34 dp)
+#18 LAYOUT OVERLAP « ½ » over the touchable « Fermer la feuille » (25 x 42 dp)
+#18 LAYOUT OVERLAP « ×2 » over the touchable « Fermer la feuille » (36 x 42 dp)
+#18 LAYOUT OVERLAP « 1 » over the touchable « Fermer la feuille » (23 x 43 dp)
+#18 LAYOUT OVERLAP « 2 » over the touchable « Fermer la feuille » (23 x 43 dp)
+#18 LAYOUT OVERLAP « 3 » over the touchable « Fermer la feuille » (23 x 43 dp)
+#18 LAYOUT OVERLAP « 4 » over the touchable « Fermer la feuille » (23 x 43 dp)
+#18 LAYOUT OVERLAP « 5 » over the touchable « Fermer la feuille » (23 x 43 dp)
+#18 LAYOUT OVERLAP « 6 » over the touchable « Fermer la feuille » (23 x 43 dp)
+#18 LAYOUT OVERLAP « 7 » over the touchable « Fermer la feuille » (23 x 43 dp)
+#18 LAYOUT OVERLAP « 8 » over the touchable « Fermer la feuille » (23 x 43 dp)
+#18 LAYOUT OVERLAP « 9 » over the touchable « Fermer la feuille » (23 x 43 dp)
+#18 LAYOUT OVERLAP « 0 » over the touchable « Fermer la feuille » (23 x 43 dp)
+#18 LAYOUT OVERLAP « OK » over the touchable « Fermer la feuille » (51 x 43 dp)
+#18 LAYOUT OVERLAP « Taper en rythme » over the touchable « Fermer la feuille » (225 x 42 dp)
+#18 LAYOUT OVERLAP « Touche ici à chaque temps : le tempo suit. » over the touchable « Fermer la feuille » (254 x 69 dp)
+#18 LAYOUT CONTRAST « ½ » 3.51:1 (needs 4.5:1, 16 sp)
+#18 LAYOUT LABEL « #1096 » long press without text nor description
+#18 > touche 111 769
+#18 DOIGT tempo_key_1 « 1 »
+#19 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 7a2132f318 | project=p-4a9d0352 tuto=techno/Facile active=true step=tempo done=1 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT OVERLAP « 1 » over the touchable « Fermer la feuille » (32 x 61 dp)
+#19 LAYOUT OVERLAP « Entre 40 et 300 » over the touchable « Fermer la feuille » (193 x 37 dp)
+#19 > touche 477 769
+#19 DOIGT tempo_key_3 « 3 »
+#20 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 62e4dac92c | project=p-4a9d0352 tuto=techno/Facile active=true step=tempo done=1 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT OVERLAP « 13 » over the touchable « Fermer la feuille » (64 x 61 dp)
+#20 > touche 294 769
+#20 DOIGT tempo_key_2 « 2 »
+#21 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 5464083b19 | project=p-4a9d0352 tuto=techno/Facile active=true step=tempo done=1 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT OVERLAP « 132 » over the touchable « Fermer la feuille » (96 x 61 dp)
+#21 LAYOUT CONTRAST « OK » 1.60:1 (needs 3.0:1, 22 sp)
+#21 > touche 477 1030
+#21 DOIGT tempo_key_ok « OK »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 80dd8eaf67 | project=p-4a9d0352 tuto=techno/Facile active=true step=tempo done=2 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CUT « Charley » ellipsized (« … »)
+#22 LAYOUT CUT « Charley ouvert » ellipsized (« … »)
+#22 LAYOUT CUT « Tom grave » ellipsized (« … »)
+#22 LAYOUT CUT « Tom médium » ellipsized (« … »)
+#22 LAYOUT CUT « Tom aigu » ellipsized (« … »)
+#22 LAYOUT CUT « D 50 » lines dropped (more lines than room)
+#22 LAYOUT CUT « Cowbell » ellipsized (« … »)
+#22 LAYOUT CUT « Cymbale » ellipsized (« … »)
+#22 LAYOUT CUT « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » ellipsized (« … »)
+#22 LAYOUT OVERLAP « Clap » over « FX » (19 x 9 dp)
+#22 LAYOUT OVERLAP « Charley » over « G 30 » (44 x 9 dp)
+#22 LAYOUT OVERLAP « Charley ouvert » over « D 30 » (44 x 9 dp)
+#22 LAYOUT OVERLAP « Tom médium » over « D 45 » (45 x 9 dp)
+#22 LAYOUT OVERLAP « Rim » over « FX » (14 x 9 dp)
+#22 LAYOUT OVERLAP « Rim » over « D 50 » (13 x 9 dp)
+#22 LAYOUT OVERLAP « Cymbale » over « D 40 » (44 x 9 dp)
+#22 LAYOUT OVERLAP « Shaker » over « G 50 » (45 x 9 dp)
+#22 LAYOUT CONTRAST « Kick studio » 2.95:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « Rumble » 3.45:1 (needs 4.5:1, 14 sp)
+#22 > touche 380 1086
+#22 DOIGT tuto_next_folded « Réussi »
+#23 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 36b929adae | project=p-4a9d0352 tuto=techno/Facile active=true step=key done=2 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT OVERLAP « À toi : choisis la couleur du morceau, sombre comme la techno. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Phrygienne » (une gamme sombre) puis « Fa » (la note de départ). Pas besoin de retenir ces mots. » over « Lire la suite » (142 x 35 dp)
+#23 LAYOUT OVERLAP « À toi : choisis la couleur du morceau, sombre comme la techno. « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés, « Phrygienne » (une gamme sombre) puis « Fa » (la note de départ). Pas besoin de retenir ces mots. » over the touchable « Lire la suite » (356 x 35 dp)
+#23 > touche 294 854
+#23 DOIGT tuto_do «   Je le fais »
+#24 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 0daec26c1d | project=p-4a9d0352 tuto=techno/Facile active=true step=key done=2 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT OVERLAP « Tonalité du morceau » over the touchable « Fermer la feuille » (182 x 89 dp)
+#24 LAYOUT OVERLAP « Tonalité du morceau : aucune » over the touchable « Fermer la feuille » (264 x 75 dp)
+#24 LAYOUT OVERLAP « Gamme » over the touchable « Fermer la feuille » (96 x 37 dp)
+#24 LAYOUT OVERLAP « Majeure » over the touchable « Fermer la feuille » (107 x 42 dp)
+#24 LAYOUT OVERLAP « Mineure » over the touchable « Fermer la feuille » (108 x 42 dp)
+#24 LAYOUT OVERLAP « Dorienne » over the touchable « Fermer la feuille » (120 x 42 dp)
+#24 LAYOUT OVERLAP « Penta mineure » over the touchable « Fermer la feuille » (191 x 42 dp)
+#24 LAYOUT OVERLAP « Penta majeure » over the touchable « Fermer la feuille » (190 x 42 dp)
+#24 LAYOUT OVERLAP « Blues » over the touchable « Fermer la feuille » (72 x 42 dp)
+#24 LAYOUT OVERLAP « Phrygienne » over the touchable « Fermer la feuille » (157 x 42 dp)
+#24 LAYOUT OVERLAP « Mineure harmonique » over the touchable « Fermer la feuille » (274 x 42 dp)
+#24 LAYOUT OVERLAP « Tonique » over the touchable « Fermer la feuille » (101 x 37 dp)
+#24 LAYOUT OVERLAP « Do » over the touchable « Fermer la feuille » (37 x 42 dp)
+#24 LAYOUT OVERLAP « Do♯ » over the touchable « Fermer la feuille » (52 x 42 dp)
+#24 LAYOUT OVERLAP « Ré » over the touchable « Fermer la feuille » (34 x 42 dp)
+#24 LAYOUT OVERLAP « Mi♭ » over the touchable « Fermer la feuille » (42 x 42 dp)
+#24 LAYOUT OVERLAP « Mi » over the touchable « Fermer la feuille » (32 x 42 dp)
+#24 LAYOUT OVERLAP « Fa » over the touchable « Fermer la feuille » (32 x 42 dp)
+#24 LAYOUT OVERLAP « Fa♯ » over the touchable « Fermer la feuille » (47 x 42 dp)
+#24 LAYOUT OVERLAP « Sol » over the touchable « Fermer la feuille » (41 x 42 dp)
+#24 LAYOUT OVERLAP « La♭ » over the touchable « Fermer la feuille » (42 x 42 dp)
+#24 LAYOUT OVERLAP « La » over the touchable « Fermer la feuille » (32 x 42 dp)
+#24 LAYOUT OVERLAP « Si♭ » over the touchable « Fermer la feuille » (35 x 42 dp)
+#24 LAYOUT OVERLAP « Si » over the touchable « Fermer la feuille » (25 x 42 dp)
+#24 LAYOUT CONTRAST « Fermer » 3.50:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « Do♯ » 1.60:1 (needs 4.5:1, 16 sp)
+#24 LAYOUT CONTRAST « Ré » 1.60:1 (needs 4.5:1, 16 sp)
+#24 LAYOUT CONTRAST « Mi♭ » 1.60:1 (needs 4.5:1, 16 sp)
+#24 LAYOUT CONTRAST « Mi » 1.60:1 (needs 4.5:1, 16 sp)
+#24 LAYOUT LABEL « #1244 » long press without text nor description
+#24 > touche 159 805
+#24 DOIGT tuto_scale_Phrygian « Phrygienne »
+#25 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE a1344c68b3 | project=p-4a9d0352 tuto=techno/Facile active=true step=key done=2 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT OVERLAP « Tonalité du morceau : Do · Phrygienne » over the touchable « Fermer la feuille » (320 x 75 dp)
+#25 > touche 66 1125
+#25 DOIGT tuto_root_5 « Fa »
+#26 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE e496b253aa | project=p-4a9d0352 tuto=techno/Facile active=true step=key done=3 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT OVERLAP « Tonalité du morceau : Fa · Phrygienne » over the touchable « Fermer la feuille » (316 x 75 dp)
+#26 > touche 478 165
+#26 DOIGT tuto_key_close « Fermer »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e1d77a087d | project=p-4a9d0352 tuto=techno/Facile active=true step=key done=3 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 380 1086
+#27 DOIGT tuto_next_folded « Réussi »
+#28 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE fbe95882c9 | project=p-4a9d0352 tuto=techno/Facile active=true step=ready done=3 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT OVERLAP « Avant de commencer : ton kit est déjà celui de la techno (une boîte à rythmes 909), avec ses effets. Sur un pad, « FX » veut dire qu'un effet y est déjà posé. Tu n'as rien à régler. » over « Lire la suite » (142 x 35 dp)
+#28 LAYOUT OVERLAP « Avant de commencer : ton kit est déjà celui de la techno (une boîte à rythmes 909), avec ses effets. Sur un pad, « FX » veut dire qu'un effet y est déjà posé. Tu n'as rien à régler. » over the touchable « Lire la suite » (348 x 35 dp)
+#28 > touche 294 993
+#28 DOIGT tuto_mark «   J'ai compris »
+#29 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a8cec31702 | project=p-4a9d0352 tuto=techno/Facile active=true step=kick_hear done=4 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 294 993
+#29 DOIGT tuto_listen «  Écouter l'exemple »
+#30 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 6c33988b9f | project=p-4a9d0352 tuto=techno/Facile active=true step=kick_hear done=4 playing=false
+#30 SON Son : l'exemple du tuto joue (encore 3 s).
+#30 > attends 4
+#31 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE ae7ccdb50a | project=p-4a9d0352 tuto=techno/Facile active=true step=kick_hear done=5 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT OVERLAP « Écoute le kick de la techno, seul : un coup sec et grave sur chaque temps. » over « Lire la suite » (142 x 35 dp)
+#31 LAYOUT OVERLAP « Écoute le kick de la techno, seul : un coup sec et grave sur chaque temps. » over the touchable « Lire la suite » (320 x 35 dp)
+#31 > touche 294 943
+#31 DOIGT tuto_next_big « Étape suivante   »
+#32 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 88469845f1 | project=p-4a9d0352 tuto=techno/Facile active=true step=kick_do done=5 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT OVERLAP « À toi : sur le pad « Kick » (le bouton qui joue le kick), touche les cases en pointillé : une sur chaque temps. Chaque case est un moment de la boucle. » over « Lire la suite » (142 x 35 dp)
+#32 LAYOUT OVERLAP « À toi : sur le pad « Kick » (le bouton qui joue le kick), touche les cases en pointillé : une sur chaque temps. Chaque case est un moment de la boucle. » over the touchable « Lire la suite » (361 x 35 dp)
+#32 > touche 294 854
+#32 DOIGT tuto_do «   Je le fais »
+#33 ROUTE tuto_spot_ring | MODE simple | EMPREINTE cd90209646 | project=p-4a9d0352 tuto=techno/Facile active=true step=kick_do done=5 playing=false
+#33 SON Son : rien ne joue.
+#33 > attends 2
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d8cf9ea7a6 | project=p-4a9d0352 tuto=techno/Facile active=true step=kick_do done=5 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT CUT « À toi : sur le pad « Kick » (le bouton qui joue le kick), touche les cases en pointillé : une sur chaque temps. Chaque case est un moment de la boucle. » ellipsized (« … »)
+#34 > touche 70 307
+#34 DOIGT step_0 « Pas 1 »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 03b4633599 | project=p-4a9d0352 tuto=techno/Facile active=true step=kick_do done=5 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 325 308
+#35 DOIGT step_4 « Pas 5 »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 62f0c6c3ea | project=p-4a9d0352 tuto=techno/Facile active=true step=kick_do done=5 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 70 386
+#36 DOIGT step_8 « Pas 9 »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fff2a623b5 | project=p-4a9d0352 tuto=techno/Facile active=true step=kick_do done=5 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 325 387
+#37 DOIGT step_12 « Pas 13 »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1513ca2203 | project=p-4a9d0352 tuto=techno/Facile active=true step=kick_do done=6 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « 1 » 2.87:1 (needs 4.5:1, 12 sp)
+#38 > touche 380 1086
+#38 DOIGT tuto_next_folded « Réussi »
+#39 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 169f8af2f3 | project=p-4a9d0352 tuto=techno/Facile active=true step=rumble_do done=6 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT OVERLAP « À toi : sur le pad « Rumble » (le grondement), touche les mêmes cases que le kick : il gronde juste après chaque coup, comme un écho sale et grave. » over « Lire la suite » (142 x 35 dp)
+#39 LAYOUT OVERLAP « À toi : sur le pad « Rumble » (le grondement), touche les mêmes cases que le kick : il gronde juste après chaque coup, comme un écho sale et grave. » over the touchable « Lire la suite » (348 x 35 dp)
+#39 > touche 294 854
+#39 DOIGT tuto_do «   Je le fais »
+#40 ROUTE tuto_spot_ring | MODE simple | EMPREINTE cd90209646 | project=p-4a9d0352 tuto=techno/Facile active=true step=rumble_do done=6 playing=false
+#40 SON Son : rien ne joue.
+#40 > attends 2
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9d5e643234 | project=p-4a9d0352 tuto=techno/Facile active=true step=rumble_do done=6 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CUT « À toi : sur le pad « Rumble » (le grondement), touche les mêmes cases que le kick : il gronde juste après chaque coup, comme un écho sale et grave. » ellipsized (« … »)
+#41 LAYOUT CONTRAST « 1 » 2.99:1 (needs 4.5:1, 12 sp)
+#41 LAYOUT CONTRAST « 2 » 3.87:1 (needs 4.5:1, 12 sp)
+#41 > touche 70 283
+#41 DOIGT step_0 « Pas 1 »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 360ea0bf2c | project=p-4a9d0352 tuto=techno/Facile active=true step=rumble_do done=6 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT CONTRAST « 1 » 1.80:1 (needs 4.5:1, 12 sp)
+#42 > touche 325 284
+#42 DOIGT step_4 « Pas 5 »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e3970cacfd | project=p-4a9d0352 tuto=techno/Facile active=true step=rumble_do done=6 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT CONTRAST « 1 » 2.14:1 (needs 4.5:1, 12 sp)
+#43 LAYOUT CONTRAST « 2 » 3.54:1 (needs 4.5:1, 12 sp)
+#43 > touche 70 338
+#43 DOIGT step_8 « Pas 9 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5a034b93a9 | project=p-4a9d0352 tuto=techno/Facile active=true step=rumble_do done=6 playing=false
+#44 SON Son : rien ne joue.
+#44 LAYOUT CONTRAST « 2 » 3.81:1 (needs 4.5:1, 12 sp)
+#44 > touche 325 339
+#44 DOIGT step_12 « Pas 13 »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bd246b26b9 | project=p-4a9d0352 tuto=techno/Facile active=true step=rumble_do done=7 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 380 1086
+#45 DOIGT tuto_next_folded « Réussi »
+#46 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE dc6d46a94f | project=p-4a9d0352 tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CUT « Partie : A » lines cut (taller than its box)
+#46 LAYOUT OVERLAP « À toi : sur le pad « Clap », touche les cases en pointillé des 2 mesures : sur les temps 2 et 4, plus un petit coup doux juste avant la mesure suivante. Touche d'abord « Passer à 2 mesures » si on te le propose. » over « Lire la suite » (142 x 35 dp)
+#46 LAYOUT OVERLAP « À toi : sur le pad « Clap », touche les cases en pointillé des 2 mesures : sur les temps 2 et 4, plus un petit coup doux juste avant la mesure suivante. Touche d'abord « Passer à 2 mesures » si on te le propose. » over the touchable « Lire la suite » (355 x 35 dp)
+#46 > touche 471 42
+#46 DOIGT top_play
+#47 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 01b92919b4 | project=p-4a9d0352 tuto=techno/Facile active=true step=clap_do done=7 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 LAYOUT CUT « mes. 1/1 » lines cut (taller than its box)
+#47 LAYOUT OVERLAP « ● » over the touchable « Jouer depuis une partie » (23 x 21 dp)
+#47 LAYOUT OVERLAP «  REC » over the touchable « Jouer depuis une partie » (33 x 19 dp)
+#47 > touche 471 42
+#47 DOIGT top_play
+#48 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE dc6d46a94f | project=p-4a9d0352 tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 294 854
+#48 DOIGT tuto_do «   Je le fais »
+#49 ROUTE tuto_spot_ring | MODE simple | EMPREINTE cd90209646 | project=p-4a9d0352 tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#49 SON Son : rien ne joue.
+#49 > attends 2
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 958566aac1 | project=p-4a9d0352 tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CUT « À toi : sur le pad « Clap », touche les cases en pointillé des 2 mesures : sur les temps 2 et 4, plus un petit coup doux juste avant la mesure suivante. Touche d'abord « Passer à 2 mesures » si on te le propose. » ellipsized (« … »)
+#50 LAYOUT CONTRAST « 1 » 1.50:1 (needs 4.5:1, 12 sp)
+#50 LAYOUT CONTRAST « 2 » 3.26:1 (needs 4.5:1, 12 sp)
+#50 > touche 325 339
+#50 DOIGT step_12 « Pas 13 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 259cad5ec7 | project=p-4a9d0352 tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 325 284
+#51 DOIGT step_4 « Pas 5 »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 42cc7f3170 | project=p-4a9d0352 tuto=techno/Facile active=true step=clap_do done=7 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT CONTRAST « 2 » 3.60:1 (needs 4.5:1, 12 sp)
+#52 > touche 517 339
+#52 DOIGT step_15 « Pas 16 »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4e3736bbbc | project=p-4a9d0352 tuto=techno/Facile active=true step=clap_do done=8 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT CONTRAST « 2 » 1.63:1 (needs 4.5:1, 14 sp)
+#53 > touche 380 1086
+#53 DOIGT tuto_next_folded « Réussi »
+#54 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f7e0ed7633 | project=p-4a9d0352 tuto=techno/Facile active=true step=open_hat_do done=8 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT OVERLAP « À toi : sur le pad « Charley ouvert » (un « tsss » plus long), touche les cases en pointillé : juste entre les kicks, sur les contretemps. » over « Lire la suite » (142 x 5 dp)
+#54 LAYOUT OVERLAP « À toi : sur le pad « Charley ouvert » (un « tsss » plus long), touche les cases en pointillé : juste entre les kicks, sur les contretemps. » over the touchable « Lire la suite » (354 x 5 dp)
+#54 LAYOUT OVERLAP « ▸ Pourquoi ? » over the touchable « Lire la suite » (151 x 24 dp)
+#54 > touche 471 42
+#54 DOIGT top_play
+#55 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 8cfa511bd6 | project=p-4a9d0352 tuto=techno/Facile active=true step=open_hat_do done=8 playing=true
+#55 SON Son : la musique du projet joue en boucle.
+#55 > touche 471 42
+#55 DOIGT top_play
+#56 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f7e0ed7633 | project=p-4a9d0352 tuto=techno/Facile active=true step=open_hat_do done=8 playing=false
+#56 SON Son : rien ne joue.
+#56 > fin
+#56 FIN : fin

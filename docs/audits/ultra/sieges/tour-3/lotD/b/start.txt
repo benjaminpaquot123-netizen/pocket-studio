@@ -1,0 +1,7 @@
+lang=tr
+device=phoneLand
+font=100
+mode=simple
+gestes.max=90
+mission=libre
+timeout.minutes=25

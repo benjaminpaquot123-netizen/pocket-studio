@@ -1,0 +1,10 @@
+Tour 2, notes banc (à vérifier par les équipes, test sans banc à l'appui) :
+- Export « Length: 3 s » et mêmes LUFS club/streaming (lot A d) : le banc rend 3 s d'un son doux fixe (BenchEngine.SECONDS, exportRenderFloat).
+  La durée est donc un artefact du banc. Les LUFS identiques : à trancher — le gain de master (cible club/streaming) est-il appliqué
+  dans le moteur natif (alors banc) ou après le rendu en Kotlin (alors l'appli a un défaut) ? Test sans banc obligatoire.
+- Le chiffre club −7,5 (puce) vs −8 (aide) : défaut appli, pas banc.
+- Lot B, siège d : le test HumanTesterD échoue sur UnsatisfiedLinkError NativeEngine.sampleCreate (PadSamples.prepare ← RhythmViewModel.placeOnPad,
+  RhythmViewModel.kt:1999 via sampleJob:7806). NativeSample.create passe au natif quand NativeEngine.sink est null. Le défaut « Poser ne change pas
+  le pad » (lot A c écran 4, lot B d écran 4) peut donc venir du banc (sink absent ou retiré trop tôt pendant le siège). À prouver d'abord :
+  test sans banc de placeOnPad (bibliothèque → Poser → nom du pad + Annuler actif). Côté appli quand même : si le chargement échoue, le dire
+  (pas d'échec muet) et ne pas faire tomber la coroutine.

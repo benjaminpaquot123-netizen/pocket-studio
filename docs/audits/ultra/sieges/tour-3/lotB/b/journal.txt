@@ -1,0 +1,155 @@
+#0 SIEGE lang=fr device=phone font=130 mode=simple theme=- fresh=non gestes.max=80 lit=non main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE dd7ad03474 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 🇫🇷 » 1.23:1 (needs 3.0:1, 20 sp)
+#1 LAYOUT CONTRAST « BenStudio » 1.41:1 (needs 3.0:1, 28 sp)
+#1 > touche 294 558
+#1 DOIGT welcome_guided « Créer mon premier morceau (guidé) »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 6abd57ff91 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 294 380
+#2 DOIGT mode_card_simple « Simple »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE ef5de4527b | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Bass music » 1.92:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 7 styles » 1.36:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Autres » 1.38:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 4 styles » 1.38:1 (needs 4.5:1, 13 sp)
+#3 > touche 294 467
+#3 DOIGT wizard_family_calm « Calme (Chill, Lo-fi) »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 3b10624d56 | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « Le hip-hop tout doux des vidéos « Lofi Girl », parfait pour réviser : des accords jazz au piano électrique, une batterie feutrée et le craquement d'un vieux vinyle. » ellipsized (« … »)
+#4 LAYOUT CUT « Pour l'idée : Nujabes – Aruarian Dance (2004) » ellipsized (« … »)
+#4 LAYOUT CUT « La house douce et chaude : piano électrique feutré, basse ronde, ambiance coucher de soleil. » ellipsized (« … »)
+#4 LAYOUT CUT « Pour l'idée : Mr. Fingers – Can You Feel It (1986) » ellipsized (« … »)
+#4 LAYOUT CUT « La house sud-africaine plus lente : une basse qui rebondit comme un tambour de bois (le « log drum ») et un piano jazzy. » ellipsized (« … »)
+#4 LAYOUT CUT « Le son des années 80 remis à la mode (Stranger Things, Blinding Lights) : une caisse claire énorme qui résonne, une basse qui pulse sans arrêt et des notes de synthé qui tournent en boucle. » ellipsized (« … »)
+#4 LAYOUT CUT « Pour l'idée : The Weeknd – Blinding Lights (2019) » ellipsized (« … »)
+#4 LAYOUT CONTRAST « Deep house » 1.55:1 (needs 4.5:1, 16 sp)
+#4 LAYOUT CONTRAST « House · 112 BPM » 1.36:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « Pour l'idée : The Weeknd – Blinding Lights (2019) » 2.04:1 (needs 4.5:1, 12 sp)
+#4 > touche 57 566
+#4 DOIGT wizard_style_listen_lofi
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE 43429d1b39 | project=projet-1 no tuto
+#5 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#5 > touche 294 614
+#5 DOIGT wizard_style_lofi « Lo-fi hip-hop »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE 3675444704 | project=projet-1 no tuto
+#6 SON Son : l'assistant fait écouter un extrait du style « Lo-fi hip-hop ».
+#6 > touche 322 816
+#6 DOIGT wizard_style_play_lofi «  Créer et écouter »
+#7 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE f14b77d3f1 | project=p-7552f896 no tuto
+#7 SON Son : le morceau joue (partie « A »).
+#7 LAYOUT CUT « Lo-fi hip-hop » ellipsized (« … »)
+#7 LAYOUT CONTRAST « ? » 4.33:1 (needs 4.5:1, 12 sp)
+#7 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#7 > touche 471 42
+#7 DOIGT top_play
+#8 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 732660a245 | project=p-7552f896 no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT CUT « Sauvegardé » wider than its box (by 52.6 dp)
+#8 LAYOUT CONTRAST « POUR COMMENCER » 4.37:1 (needs 4.5:1, 12 sp)
+#8 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST « Le son de la mélodie » 3.91:1 (needs 4.5:1, 14 sp)
+#8 > touche 294 1071
+#8 DOIGT guide_open_melody « Voir le réglage : Le son de la mélodie »
+#9 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE e82fb30acf | project=p-7552f896 no tuto
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « Son de : Mélodie » over the touchable « Fermer la feuille » (195 x 32 dp)
+#9 LAYOUT OVERLAP « Touche un son : il remplace celui de cette piste dans tout le morceau. » over the touchable « Fermer la feuille » (262 x 72 dp)
+#9 LAYOUT OVERLAP « Fermer » over the touchable « Fermer la feuille » (65 x 27 dp)
+#9 LAYOUT OVERLAP « Son court » over the touchable « Fermer la feuille » (95 x 31 dp)
+#9 LAYOUT OVERLAP « Piano FM » over the touchable « Fermer la feuille » (83 x 23 dp)
+#9 LAYOUT OVERLAP « FM 6 op. · banque 2 » over the touchable « Fermer la feuille » (151 x 21 dp)
+#9 LAYOUT OVERLAP « Rhodes FM » over the touchable « Fermer la feuille » (100 x 23 dp)
+#9 LAYOUT OVERLAP « Vibraphone FM » over the touchable « Fermer la feuille » (136 x 23 dp)
+#9 LAYOUT OVERLAP « Cloche FM » over the touchable « Fermer la feuille » (96 x 23 dp)
+#9 LAYOUT OVERLAP « Marimba » over the touchable « Fermer la feuille » (79 x 23 dp)
+#9 LAYOUT OVERLAP « Modal (percussion) » over the touchable « Fermer la feuille » (150 x 21 dp)
+#9 LAYOUT OVERLAP « Cloche » over the touchable « Fermer la feuille » (63 x 23 dp)
+#9 LAYOUT OVERLAP « Au hasard » over the touchable « Fermer la feuille » (92 x 27 dp)
+#9 LAYOUT OVERLAP « Garder ce son » over the touchable « Fermer la feuille » (90 x 55 dp)
+#9 LAYOUT OVERLAP « « Garder ce son » le range dans tes favoris, pour tous tes projets. » over the touchable « Fermer la feuille » (348 x 48 dp)
+#9 LAYOUT OVERLAP « INSTRUMENTS RÉELS » over the touchable « Fermer la feuille » (185 x 21 dp)
+#9 LAYOUT OVERLAP « Enregistrés note par note. À télécharger une seule fois (Wi-Fi conseillé) ; en attendant, la piste joue un son de synthé. » over the touchable « Fermer la feuille » (353 x 56 dp)
+#9 LAYOUT CONTRAST « Fermer » 1.68:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « FM 6 op. · banque 2 » 4.17:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT LABEL « #1246 » long press without text nor description
+#9 > touche 294 475
+#9 DOIGT plaits_sounds_11 « Rhodes FM »
+#10 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 86a3465931 | project=p-7552f896 no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT CUT «  · Enregistre une mélodie » ellipsized (« … »)
+#10 LAYOUT OVERLAP « Basse » over « Nouveau son : Rhodes FM » (50 x 2 dp)
+#10 LAYOUT OVERLAP « Changer le son » over « Nouveau son : Rhodes FM » (118 x 24 dp)
+#10 LAYOUT OVERLAP « Piano » over « Nouveau son : Rhodes FM » (45 x 7 dp)
+#10 LAYOUT OVERLAP « Nouveau son : Rhodes FM » over the touchable « Changer le son de Basse » (200 x 26 dp)
+#10 LAYOUT OVERLAP « Nouveau son : Rhodes FM » over the touchable « Changer le son de Piano » (200 x 7 dp)
+#10 LAYOUT OVERLAP « Annuler » over the touchable « Écouter « Basse » seul, en boucle Écoute » (21 x 10 dp)
+#10 LAYOUT CONTRAST « Annuler » 3.63:1 (needs 4.5:1, 14 sp)
+#10 > glisse 294 1050 294 750
+#10 DOIGT rien (texte « À toi : touche « Ouvrir le clavier ». »)
+#11 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE af3839287c | project=p-7552f896 no tuto
+#11 SON Son : rien ne joue.
+#11 LAYOUT CUT « Les notes qui vont bien ensemble dans un morceau, rangées de la plus grave à la plus aiguë. Ici, La mineur. » ellipsized (« … »)
+#11 LAYOUT CONTRAST « Touche « ● Enregistrer ma mélodie » et joue quelques notes : le clavier reste dans la gamme, aucune fausse note. » 3.40:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « ↗ » 3.42:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « Ouvrir le clavier » 3.95:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « ↗ » 3.44:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST « Voir les notes » 4.02:1 (needs 4.5:1, 14 sp)
+#11 > touche 294 887
+#11 DOIGT guide_open_keys « Voir le réglage : Ouvrir le clavier »
+#12 ROUTE mission_overlay | MODE simple | EMPREINTE 725b768c60 | project=p-7552f896 no tuto
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « Le réglage est ici. Le Guide t'attend dans sa barre, en bas. » over the touchable « Ouvrir le Guide replié » (286 x 40 dp)
+#12 LAYOUT TARGET « Do 4 Do Jouer » 21 x 150 dp (touch 48 x 150)
+#12 LAYOUT TARGET « Ré 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#12 LAYOUT TARGET « Mi 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#12 LAYOUT TARGET « Fa 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#12 LAYOUT TARGET « Sol 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#12 LAYOUT TARGET « La 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#12 LAYOUT TARGET « Do 5 Do Jouer » 21 x 150 dp (touch 48 x 150)
+#12 LAYOUT TARGET « Ré 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#12 LAYOUT TARGET « Mi 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#12 LAYOUT TARGET « Fa 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#12 LAYOUT TARGET « Sol 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#12 LAYOUT TARGET « La 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#12 LAYOUT TARGET « La# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#12 LAYOUT TARGET « La# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#12 > touche 453 1134
+#12 DOIGT guide_spot_close « Compris »
+#13 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE ef6fd5771b | project=p-7552f896 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CUT « Basse ronde » drawn past its parent's edge (down, 17 dp shown of 21)
+#13 LAYOUT CUT « Rhodes FM » drawn past its parent's edge (down, 17 dp shown of 21)
+#13 LAYOUT CUT « Do » lines dropped (more lines than room)
+#13 LAYOUT OVERLAP « 2 octaves » over « Nouveau son : Rhodes FM » (76 x 27 dp)
+#13 LAYOUT OVERLAP « 1 octave » over « Nouveau son : Rhodes FM » (74 x 27 dp)
+#13 LAYOUT CONTRAST «  Enregistrer ma mélodie » 2.78:1 (needs 4.5:1, 14 sp)
+#13 > touche 244 465
+#13 DOIGT record_start «  Enregistrer ma mélodie »
+#14 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 4c29b4a4a5 | project=p-7552f896 no tuto
+#14 SON Son : la musique du projet joue en boucle.
+#14 LAYOUT CUT « Ma mélodie » ellipsized (« … »)
+#14 LAYOUT CUT « Piano FM » drawn past its parent's edge (down, 17 dp shown of 21)
+#14 LAYOUT CONTRAST «  Arrêter » 2.78:1 (needs 4.5:1, 14 sp)
+#14 > touche 60 760
+#14 DOIGT key_60 « Do 4 »
+#15 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 4c29b4a4a5 | project=p-7552f896 no tuto
+#15 SON Son : la musique du projet joue en boucle.
+#15 > touche 132 760
+#15 DOIGT key_64 « Mi 4 »
+#16 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 4c29b4a4a5 | project=p-7552f896 no tuto
+#16 SON Son : la musique du projet joue en boucle.
+#16 RIEN NE CHANGE (3 écrans identiques)
+#16 > touche 204 760
+#16 DOIGT key_67 « Sol 4 »
+#17 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 4c29b4a4a5 | project=p-7552f896 no tuto
+#17 SON Son : la musique du projet joue en boucle.
+#17 > touche 312 760
+#17 DOIGT key_72 « Do 5 »
+#18 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 4c29b4a4a5 | project=p-7552f896 no tuto
+#18 SON Son : la musique du projet joue en boucle.
+#18 RIEN NE CHANGE (5 écrans identiques)
+#18 FIN : rien ne change (5 écrans identiques)

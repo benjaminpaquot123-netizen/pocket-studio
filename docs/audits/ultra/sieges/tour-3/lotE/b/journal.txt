@@ -1,0 +1,429 @@
+#0 SIEGE lang=nl device=tablet8 font=100 mode=simple theme=- fresh=non gestes.max=80 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 768ff9cca0 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 🇳🇱 » 1.35:1 (needs 3.0:1, 20 sp)
+#1 LAYOUT CONTRAST « Welkom! Maak je eigen muziek op je apparaat. Waar beginnen we mee? » 2.18:1 (needs 4.5:1, 16 sp)
+#1 LAYOUT CONTRAST « Mijn eerste nummer maken (begeleid) » 2.43:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « Ik leer » 2.01:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « Je maakt het hele nummer zelf, stap voor stap: ik leg uit en ik controleer. » 2.25:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Een demo beluisteren » 2.17:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « Kies een nummer op je telefoon: de app scheidt zang, drums, bas en de rest. » 4.38:1 (needs 4.5:1, 14 sp)
+#1 > touche 450 570
+#1 DOIGT welcome_learn « Ik leer »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE e63d6b6c32 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Om te beginnen: 5 tabbladen, grote knoppen en gewone woorden. » 3.64:1 (needs 4.5:1, 16 sp)
+#2 LAYOUT CONTRAST « Met de makkelijke tutorial » 4.27:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « Om verder te gaan: alle gereedschappen, structuur, klanken, mix en live. » 2.29:1 (needs 4.5:1, 16 sp)
+#2 > touche 229 333
+#2 DOIGT mode_card_simple « Eenvoudig »
+#3 ROUTE dialogue:tuto_chooser | MODE simple | EMPREINTE 88699bac98 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « Techno » 2.71:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « Detroit techno » 2.63:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « Acid techno » 2.76:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 138 BPM » 1.35:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Hard techno » 2.44:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 150 BPM » 2.11:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « Industriële techno » 1.93:1 (needs 3.0:1, 16 sp)
+#3 LAYOUT CONTRAST « 122 BPM » 1.63:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « 120 BPM » 1.92:1 (needs 4.5:1, 13 sp)
+#3 > touche 450 1165
+#3 DOIGT tuto_style_house « House »
+#4 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a70ad9be3b | project=p-36d0c6ce tuto=house/Facile active=true step=ref done=0 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#4 > touche 450 1119
+#4 DOIGT tuto_kit_download « Kit House downloaden (4 MB) »
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9003ca1637 | project=p-36d0c6ce tuto=house/Facile active=true step=ref done=0 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 450 1188
+#5 DOIGT tuto_kit_later « Later »
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a70ad9be3b | project=p-36d0c6ce tuto=house/Facile active=true step=ref done=0 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT TARGET « ▸ Waarom? » 572 x 20 dp (touch 572 x 48)
+#6 > touche 450 1119
+#6 DOIGT tuto_listen «  Luister naar het voorbeeld »
+#7 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 93c3810ada | project=p-36d0c6ce tuto=house/Facile active=true step=ref done=0 playing=false
+#7 SON Son : l'exemple du tuto joue (encore 7 s).
+#7 > touche 796 1203
+#7 DOIGT tuto_next « Volgende  »
+#8 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 94b157e6da | project=p-36d0c6ce tuto=house/Facile active=true step=tempo done=0 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 450 1038
+#8 DOIGT tuto_do «   Ik doe het »
+#9 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE cc0b1b90ae | project=p-36d0c6ce tuto=house/Facile active=true step=tempo done=0 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « Tempo » over the touchable « Blad sluiten » (73 x 28 dp)
+#9 LAYOUT OVERLAP « ? » over the touchable « Blad sluiten » (7 x 15 dp)
+#9 LAYOUT OVERLAP « Sluiten » over the touchable « Blad sluiten » (48 x 20 dp)
+#9 LAYOUT OVERLAP « 100 » over the touchable « Blad sluiten » (86 x 53 dp)
+#9 LAYOUT OVERLAP «  BPM » over the touchable « Blad sluiten » (39 x 24 dp)
+#9 LAYOUT OVERLAP « 70 » over the touchable « Blad sluiten » (21 x 19 dp)
+#9 LAYOUT OVERLAP « 90 » over the touchable « Blad sluiten » (21 x 19 dp)
+#9 LAYOUT OVERLAP « 120 » over the touchable « Blad sluiten » (32 x 19 dp)
+#9 LAYOUT OVERLAP « 140 » over the touchable « Blad sluiten » (32 x 19 dp)
+#9 LAYOUT OVERLAP « 174 » over the touchable « Blad sluiten » (32 x 19 dp)
+#9 LAYOUT OVERLAP « ½ » over the touchable « Blad sluiten » (14 x 24 dp)
+#9 LAYOUT OVERLAP « ×2 » over the touchable « Blad sluiten » (21 x 24 dp)
+#9 LAYOUT OVERLAP « 1 » over the touchable « Blad sluiten » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 2 » over the touchable « Blad sluiten » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 3 » over the touchable « Blad sluiten » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 4 » over the touchable « Blad sluiten » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 5 » over the touchable « Blad sluiten » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 6 » over the touchable « Blad sluiten » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 7 » over the touchable « Blad sluiten » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 8 » over the touchable « Blad sluiten » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 9 » over the touchable « Blad sluiten » (14 x 27 dp)
+#9 LAYOUT OVERLAP « 0 » over the touchable « Blad sluiten » (14 x 27 dp)
+#9 LAYOUT OVERLAP « OK » over the touchable « Blad sluiten » (33 x 27 dp)
+#9 LAYOUT OVERLAP « Tik in de maat » over the touchable « Blad sluiten » (108 x 24 dp)
+#9 LAYOUT OVERLAP « Tik hier op elke tel: het tempo volgt. » over the touchable « Blad sluiten » (215 x 18 dp)
+#9 LAYOUT CONTRAST « Tempo » 1.23:1 (needs 3.0:1, 22 sp)
+#9 LAYOUT CONTRAST « Sluiten » 1.79:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « 100 » 1.70:1 (needs 3.0:1, 44 sp)
+#9 LAYOUT CONTRAST «  BPM » 1.23:1 (needs 4.5:1, 16 sp)
+#9 LAYOUT CONTRAST « 70 » 1.23:1 (needs 3.0:1, 16 sp)
+#9 LAYOUT CONTRAST « 90 » 1.35:1 (needs 3.0:1, 16 sp)
+#9 LAYOUT CONTRAST « 120 » 1.35:1 (needs 3.0:1, 16 sp)
+#9 LAYOUT CONTRAST « 140 » 1.35:1 (needs 3.0:1, 16 sp)
+#9 LAYOUT CONTRAST « 174 » 1.23:1 (needs 3.0:1, 16 sp)
+#9 LAYOUT CONTRAST « ½ » 1.34:1 (needs 4.5:1, 16 sp)
+#9 LAYOUT CONTRAST « ×2 » 1.35:1 (needs 4.5:1, 16 sp)
+#9 LAYOUT CONTRAST « Tik hier op elke tel: het tempo volgt. » 2.04:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT LABEL « #1155 » long press without text nor description
+#9 > touche 163 1083
+#9 DOIGT tempo_key_1 « 1 »
+#10 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 37e12d4863 | project=p-36d0c6ce tuto=house/Facile active=true step=tempo done=0 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 1 » over the touchable « Blad sluiten » (29 x 53 dp)
+#10 LAYOUT OVERLAP « Tussen 40 en 300 » over the touchable « Blad sluiten » (120 x 20 dp)
+#10 LAYOUT CONTRAST « 1 » 1.23:1 (needs 3.0:1, 44 sp)
+#10 LAYOUT CONTRAST « Tussen 40 en 300 » 1.37:1 (needs 4.5:1, 14 sp)
+#10 > touche 450 1083
+#10 DOIGT tempo_key_2 « 2 »
+#11 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE e589639929 | project=p-36d0c6ce tuto=house/Facile active=true step=tempo done=0 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « 12 » over the touchable « Blad sluiten » (57 x 53 dp)
+#11 LAYOUT CONTRAST « 12 » 1.23:1 (needs 3.0:1, 44 sp)
+#11 > touche 450 1083
+#11 DOIGT tempo_key_2 « 2 »
+#12 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE ec95744a74 | project=p-36d0c6ce tuto=house/Facile active=true step=tempo done=0 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « 122 » over the touchable « Blad sluiten » (86 x 53 dp)
+#12 LAYOUT CONTRAST « 122 » 1.70:1 (needs 3.0:1, 44 sp)
+#12 > touche 737 1344
+#12 DOIGT tempo_key_ok « OK »
+#13 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE cfccc1a707 | project=p-36d0c6ce tuto=house/Facile active=true step=tempo done=1 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 450 1203
+#13 DOIGT tuto_next_folded « Gelukt »
+#14 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f90897da4b | project=p-36d0c6ce tuto=house/Facile active=true step=key done=1 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 450 1038
+#14 DOIGT tuto_do «   Ik doe het »
+#15 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 964672d218 | project=p-36d0c6ce tuto=house/Facile active=true step=key done=1 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « Toonsoort van het nummer » over the touchable « Blad sluiten » (286 x 28 dp)
+#15 LAYOUT OVERLAP « Toonsoort van het nummer: geen » over the touchable « Blad sluiten » (219 x 20 dp)
+#15 LAYOUT OVERLAP « Toonladder » over the touchable « Blad sluiten » (77 x 20 dp)
+#15 LAYOUT OVERLAP « Majeur » over the touchable « Blad sluiten » (52 x 24 dp)
+#15 LAYOUT OVERLAP « Mineur » over the touchable « Blad sluiten » (53 x 24 dp)
+#15 LAYOUT OVERLAP « Dorisch » over the touchable « Blad sluiten » (61 x 24 dp)
+#15 LAYOUT OVERLAP « Mineur-penta » over the touchable « Blad sluiten » (102 x 24 dp)
+#15 LAYOUT OVERLAP « Majeur-penta » over the touchable « Blad sluiten » (101 x 24 dp)
+#15 LAYOUT OVERLAP « Blues » over the touchable « Blad sluiten » (42 x 24 dp)
+#15 LAYOUT OVERLAP « Frygisch » over the touchable « Blad sluiten » (65 x 24 dp)
+#15 LAYOUT OVERLAP « Harmonisch mineur » over the touchable « Blad sluiten » (148 x 24 dp)
+#15 LAYOUT OVERLAP « Grondtoon » over the touchable « Blad sluiten » (72 x 20 dp)
+#15 LAYOUT OVERLAP « C » over the touchable « Blad sluiten » (12 x 24 dp)
+#15 LAYOUT OVERLAP « C♯ » over the touchable « Blad sluiten » (21 x 24 dp)
+#15 LAYOUT OVERLAP « D » over the touchable « Blad sluiten » (11 x 24 dp)
+#15 LAYOUT OVERLAP « E♭ » over the touchable « Blad sluiten » (15 x 24 dp)
+#15 LAYOUT OVERLAP « E » over the touchable « Blad sluiten » (9 x 24 dp)
+#15 LAYOUT OVERLAP « F » over the touchable « Blad sluiten » (9 x 24 dp)
+#15 LAYOUT OVERLAP « F♯ » over the touchable « Blad sluiten » (18 x 24 dp)
+#15 LAYOUT OVERLAP « G » over the touchable « Blad sluiten » (12 x 24 dp)
+#15 LAYOUT OVERLAP « A♭ » over the touchable « Blad sluiten » (17 x 24 dp)
+#15 LAYOUT OVERLAP « A » over the touchable « Blad sluiten » (12 x 24 dp)
+#15 LAYOUT OVERLAP « B♭ » over the touchable « Blad sluiten » (16 x 24 dp)
+#15 LAYOUT OVERLAP « B » over the touchable « Blad sluiten » (11 x 24 dp)
+#15 LAYOUT CONTRAST « Toonsoort van het nummer » 1.38:1 (needs 3.0:1, 22 sp)
+#15 LAYOUT CONTRAST « Sluiten » 1.35:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « Toonsoort van het nummer: geen » 1.39:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « Mineur » 1.60:1 (needs 4.5:1, 16 sp)
+#15 LAYOUT CONTRAST « Dorisch » 1.60:1 (needs 3.0:1, 16 sp)
+#15 LAYOUT CONTRAST « Mineur-penta » 1.60:1 (needs 4.5:1, 16 sp)
+#15 LAYOUT CONTRAST « Majeur-penta » 1.60:1 (needs 4.5:1, 16 sp)
+#15 LAYOUT CONTRAST « B♭ » 3.26:1 (needs 4.5:1, 16 sp)
+#15 LAYOUT CONTRAST « B » 3.26:1 (needs 4.5:1, 16 sp)
+#15 LAYOUT LABEL « #1306 » long press without text nor description
+#15 > touche 335 1143
+#15 DOIGT tuto_scale_Dorian « Dorisch »
+#16 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 35024973da | project=p-36d0c6ce tuto=house/Facile active=true step=key done=1 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « Toonsoort van het nummer: C · Dorisch » over the touchable « Blad sluiten » (259 x 20 dp)
+#16 LAYOUT CONTRAST « Toonsoort van het nummer: C · Dorisch » 1.35:1 (needs 4.5:1, 14 sp)
+#16 > touche 63 1437
+#16 DOIGT tuto_root_9 « A »
+#17 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 505096fc22 | project=p-36d0c6ce tuto=house/Facile active=true step=key done=2 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP « Toonsoort van het nummer: A · Dorisch » over the touchable « Blad sluiten » (259 x 20 dp)
+#17 LAYOUT OVERLAP « Gelukt! De kleur van het nummer is gekozen. » over the touchable « Blad sluiten » (350 x 24 dp)
+#17 LAYOUT OVERLAP « Terug naar de tutorial » over the touchable « Blad sluiten » (150 x 20 dp)
+#17 LAYOUT CONTRAST « Toonsoort van het nummer » 1.21:1 (needs 3.0:1, 22 sp)
+#17 LAYOUT CONTRAST « Toonladder » 1.22:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « Majeur » 1.23:1 (needs 4.5:1, 16 sp)
+#17 LAYOUT CONTRAST « Mineur » 1.35:1 (needs 4.5:1, 16 sp)
+#17 LAYOUT CONTRAST « Dorisch » 1.35:1 (needs 3.0:1, 16 sp)
+#17 LAYOUT CONTRAST « Mineur-penta » 1.23:1 (needs 4.5:1, 16 sp)
+#17 LAYOUT CONTRAST « Majeur-penta » 1.35:1 (needs 4.5:1, 16 sp)
+#17 LAYOUT CONTRAST « Frygisch » 3.64:1 (needs 4.5:1, 16 sp)
+#17 LAYOUT CONTRAST « Harmonisch mineur » 3.64:1 (needs 4.5:1, 16 sp)
+#17 > touche 450 1434
+#17 DOIGT tuto_key_continue « Terug naar de tutorial »
+#18 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 06c52d57c1 | project=p-36d0c6ce tuto=house/Facile active=true step=key done=2 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 450 1203
+#18 DOIGT tuto_chapter_end_folded « Goed gedaan, hoofdstuk klaar! »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d3167d0913 | project=p-36d0c6ce tuto=house/Facile active=true step=key done=2 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 450 1119
+#19 DOIGT tuto_next_big « Volgend hoofdstuk   »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7d926c8134 | project=p-36d0c6ce tuto=house/Facile active=true step=ready done=2 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 450 1119
+#20 DOIGT tuto_mark «   Begrepen »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2a28c51153 | project=p-36d0c6ce tuto=house/Facile active=true step=kick_do done=3 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « STAPPEN: STUDIOBASDRUM » 1.22:1 (needs 4.5:1, 12 sp)
+#21 LAYOUT CONTRAST « ? » 1.36:1 (needs 4.5:1, 12 sp)
+#21 LAYOUT CONTRAST « Alle pads » 1.34:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Lengte » 1.58:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « 1 maat » 2.16:1 (needs 4.5:1, 14 sp)
+#21 > touche 450 1038
+#21 DOIGT tuto_need «   Naar 2 maten »
+#22 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 59faac4e52 | project=p-36d0c6ce tuto=house/Facile active=true step=kick_do done=3 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CUT « Nu jij: de drumloop is 2 maten lang (een maat = een rondje van 4 tellen). Tik op ‘Naar 2 maten’ en dan op de pad ‘Basdrum 1’ de gestippelde vakjes aan: één slag op elke tel, en een extra slagje vlak voor het eind van maat 2. » ellipsized (« … »)
+#22 LAYOUT CONTRAST « ? » 1.42:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « Alle pads » 1.28:1 (needs 4.5:1, 14 sp)
+#22 > touche 90 469
+#22 DOIGT step_0 « Stap 1 »
+#23 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 07945ae49e | project=p-36d0c6ce tuto=house/Facile active=true step=kick_do done=3 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 500 469
+#23 DOIGT step_4 « Stap 5 »
+#24 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE fef8beef37 | project=p-36d0c6ce tuto=house/Facile active=true step=kick_do done=3 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 90 550
+#24 DOIGT step_8 « Stap 9 »
+#25 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 6928c257de | project=p-36d0c6ce tuto=house/Facile active=true step=kick_do done=3 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 500 550
+#25 DOIGT step_12 « Stap 13 »
+#26 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE e22d97d32d | project=p-36d0c6ce tuto=house/Facile active=true step=kick_do done=3 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 733 384
+#26 DOIGT tuto_bar_go « Maat 2 · 5 vakjes → »
+#27 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 7572b92d57 | project=p-36d0c6ce tuto=house/Facile active=true step=kick_do done=3 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 809 550
+#27 DOIGT step_31 « Stap 16 »
+#28 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 9e3938f931 | project=p-36d0c6ce tuto=house/Facile active=true step=kick_do done=3 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 90 469
+#28 DOIGT step_16 « Stap 1 »
+#29 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE f7072d6409 | project=p-36d0c6ce tuto=house/Facile active=true step=kick_do done=3 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 500 469
+#29 DOIGT step_20 « Stap 5 »
+#30 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE f4865ad073 | project=p-36d0c6ce tuto=house/Facile active=true step=kick_do done=3 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 90 550
+#30 DOIGT step_24 « Stap 9 »
+#31 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 469eab70aa | project=p-36d0c6ce tuto=house/Facile active=true step=kick_do done=3 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 500 550
+#31 DOIGT step_28 « Stap 13 »
+#32 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE f3de0f220c | project=p-36d0c6ce tuto=house/Facile active=true step=kick_do done=3 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 706 550
+#32 DOIGT step_30 « Stap 15 »
+#33 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 2e6629a1be | project=p-36d0c6ce tuto=house/Facile active=true step=kick_do done=3 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 809 550
+#33 DOIGT step_31 « Stap 16 »
+#34 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 99d8622538 | project=p-36d0c6ce tuto=house/Facile active=true step=kick_do done=4 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 771 1104
+#34 DOIGT tuto_chapters
+#35 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE 7744ea7ae1 | project=p-36d0c6ce tuto=house/Facile active=true step=kick_do done=4 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST « 1 » 1.41:1 (needs 4.5:1, 16 sp)
+#35 LAYOUT CONTRAST « De snelheid en de kleur van het nummer » 1.41:1 (needs 4.5:1, 16 sp)
+#35 LAYOUT CONTRAST « 2/3 » 3.59:1 (needs 4.5:1, 16 sp)
+#35 LAYOUT CONTRAST « 2 » 1.34:1 (needs 4.5:1, 16 sp)
+#35 LAYOUT CONTRAST « De kick » 1.23:1 (needs 4.5:1, 16 sp)
+#35 LAYOUT CONTRAST « De clap » 2.23:1 (needs 4.5:1, 16 sp)
+#35 LAYOUT CONTRAST « 0/2 » 1.23:1 (needs 4.5:1, 16 sp)
+#35 LAYOUT CONTRAST « 10 » 1.97:1 (needs 4.5:1, 16 sp)
+#35 LAYOUT CONTRAST « Bouw je delen » 1.97:1 (needs 4.5:1, 16 sp)
+#35 LAYOUT CONTRAST « 0/6 » 1.97:1 (needs 4.5:1, 16 sp)
+#35 LAYOUT CONTRAST « Tutorial stoppen (je kunt hem hervatten) » 3.26:1 (needs 4.5:1, 14 sp)
+#35 > touche 450 306
+#35 DOIGT tuto_chapter_2 « 3 »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 92bc8e0ee0 | project=p-36d0c6ce tuto=house/Facile active=true step=clap_do done=4 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST « Maat » 1.76:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « 1 » 1.42:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « 2 » 1.86:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « Volgen » 1.51:1 (needs 4.5:1, 14 sp)
+#36 > touche 667 1122
+#36 DOIGT tuto_show «  Laat zien »
+#37 ROUTE tuto_finger | MODE simple | EMPREINTE 43b63dfd85 | project=p-36d0c6ce tuto=house/Facile active=true step=clap_do done=4 playing=false
+#37 SON Son : rien ne joue.
+#37 > attends 8
+#38 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE b17dd65b23 | project=p-36d0c6ce tuto=house/Facile active=true step=clap_do done=4 playing=false
+#38 SON Son : le pad « Handklap » sonne (4 coups).
+#38 LAYOUT CONTRAST « STAPPEN: HANDKLAP » 1.32:1 (needs 4.5:1, 12 sp)
+#38 > touche 500 469
+#38 DOIGT step_20 « Stap 5 »
+#39 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE b127fbc778 | project=p-36d0c6ce tuto=house/Facile active=true step=clap_do done=4 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 500 550
+#39 DOIGT step_28 « Stap 13 »
+#40 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 74c84c5755 | project=p-36d0c6ce tuto=house/Facile active=true step=clap_do done=4 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 747 384
+#40 DOIGT tuto_bar_go « Maat 1 · 2 vakjes »
+#41 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 73e29de7b6 | project=p-36d0c6ce tuto=house/Facile active=true step=clap_do done=4 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 500 469
+#41 DOIGT step_4 « Stap 5 »
+#42 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE ad2ceb4c34 | project=p-36d0c6ce tuto=house/Facile active=true step=clap_do done=4 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 500 550
+#42 DOIGT step_12 « Stap 13 »
+#43 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 774bb60c29 | project=p-36d0c6ce tuto=house/Facile active=true step=clap_do done=5 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 383 1290
+#43 DOIGT thumb_play
+#44 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE b9b38ed597 | project=p-36d0c6ce tuto=house/Facile active=true step=clap_do done=5 playing=true
+#44 SON Son : la musique du projet joue en boucle.
+#44 > retour
+#44 RETOUR
+#45 ROUTE launch | MODE simple | EMPREINTE df6d749ac5 | project=p-36d0c6ce tuto=house/Facile active=true step=clap_do done=5 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 450 1393
+#45 DOIGT launch_learn « Ik leer »
+#46 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 9eef3feada | project=p-36d0c6ce tuto=house/Facile active=true step=clap_do done=5 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CUT « Je laatste keuze » ellipsized (« … »)
+#46 LAYOUT CONTRAST « Je laatste keuze » 2.08:1 (needs 4.5:1, 13 sp)
+#46 LAYOUT CONTRAST « Met de makkelijke tutorial » 3.78:1 (needs 4.5:1, 14 sp)
+#46 LAYOUT CONTRAST « Met de Pro-tutorial » 2.12:1 (needs 4.5:1, 14 sp)
+#46 > touche 229 333
+#46 DOIGT mode_card_simple « Eenvoudig »
+#47 ROUTE dialogue:tuto_chooser | MODE simple | EMPREINTE 88699bac98 | project=p-36d0c6ce tuto=house/Facile active=true step=clap_do done=5 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT CONTRAST « Detroit techno » 1.75:1 (needs 3.0:1, 16 sp)
+#47 LAYOUT CONTRAST « 126 BPM » 3.66:1 (needs 4.5:1, 13 sp)
+#47 LAYOUT CONTRAST « 150 BPM » 2.64:1 (needs 4.5:1, 13 sp)
+#47 LAYOUT CONTRAST « Trance » 1.37:1 (needs 3.0:1, 16 sp)
+#47 LAYOUT CONTRAST « 138 BPM » 3.64:1 (needs 4.5:1, 13 sp)
+#47 LAYOUT CONTRAST « 120 BPM » 3.01:1 (needs 4.5:1, 13 sp)
+#47 > touche 450 1165
+#47 DOIGT tuto_style_house « House »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 246f585b45 | project=p-dee61723 tuto=house/Facile active=true step=ref done=0 playing=false
+#48 SON Son : rien ne joue.
+#48 > retour
+#48 RETOUR
+#49 ROUTE launch | MODE simple | EMPREINTE 889a21b751 | project=p-dee61723 tuto=house/Facile active=true step=ref done=0 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 450 633
+#49 DOIGT launch_projects « Mijn projecten »
+#50 ROUTE dialogue:projects | MODE simple | EMPREINTE 274c683fd3 | project=p-dee61723 tuto=house/Facile active=true step=ref done=0 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 400 612
+#50 DOIGT project_p-36d0c6ce « Mijn project 1 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9c662f68e4 | project=p-36d0c6ce tuto=house/Facile active=true step=clap_do done=5 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 450 1112
+#51 DOIGT tuto_next_big « Volgend hoofdstuk   »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c8cb72b0dc | project=p-36d0c6ce tuto=house/Facile active=true step=ohat_do done=5 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT CONTRAST « STAPPEN: OPEN HI-HAT » 1.29:1 (needs 4.5:1, 12 sp)
+#52 LAYOUT CONTRAST « ? » 1.34:1 (needs 4.5:1, 12 sp)
+#52 > touche 450 1038
+#52 DOIGT tuto_do «   Ik doe het »
+#53 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 43b63dfd85 | project=p-36d0c6ce tuto=house/Facile active=true step=ohat_do done=5 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 294 550
+#53 DOIGT rien
+#54 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 43b63dfd85 | project=p-36d0c6ce tuto=house/Facile active=true step=ohat_do done=5 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 706 550
+#54 DOIGT rien
+#55 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 95114d6831 | project=p-36d0c6ce tuto=house/Facile active=true step=ohat_do done=5 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 294 630
+#55 DOIGT step_10 « Stap 11 »
+#56 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 06b7d3150e | project=p-36d0c6ce tuto=house/Facile active=true step=ohat_do done=5 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 706 630
+#56 DOIGT step_14 « Stap 15 »
+#57 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 9ef1fb327b | project=p-36d0c6ce tuto=house/Facile active=true step=ohat_do done=5 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 732 464
+#57 DOIGT tuto_bar_go « Maat 2 · 4 vakjes → »
+#58 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 96f22fbb4e | project=p-36d0c6ce tuto=house/Facile active=true step=ohat_do done=5 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 294 549
+#58 DOIGT step_18 « Stap 3 »
+#59 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 3d2763175d | project=p-36d0c6ce tuto=house/Facile active=true step=ohat_do done=5 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 706 549
+#59 DOIGT step_22 « Stap 7 »
+#60 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE cf3784d8e7 | project=p-36d0c6ce tuto=house/Facile active=true step=ohat_do done=5 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 294 630
+#60 DOIGT step_26 « Stap 11 »
+#61 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 6e21a5000c | project=p-36d0c6ce tuto=house/Facile active=true step=ohat_do done=5 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 706 630
+#61 DOIGT step_30 « Stap 15 »
+#62 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 7599ef3340 | project=p-36d0c6ce tuto=house/Facile active=true step=ohat_do done=6 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 450 1203
+#62 DOIGT tuto_next_folded « Gelukt »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 439b5f5589 | project=p-36d0c6ce tuto=house/Facile active=true step=hat_do done=6 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT CONTRAST « STAPPEN: HI-HAT » 1.29:1 (needs 4.5:1, 12 sp)
+#63 LAYOUT CONTRAST « Alle pads » 1.26:1 (needs 4.5:1, 14 sp)
+#63 > touche 450 975
+#63 DOIGT tuto_why « ▸ Waarom? »
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fdd447c3c0 | project=p-36d0c6ce tuto=house/Facile active=true step=hat_do done=6 playing=false
+#64 SON Son : rien ne joue.
+#64 LAYOUT CONTRAST « STAPPEN: HI-HAT » 1.32:1 (needs 4.5:1, 12 sp)
+#64 LAYOUT CONTRAST « ? » 1.39:1 (needs 4.5:1, 12 sp)
+#64 > touche 855 114
+#64 DOIGT help_labels_button « Het scherm labelen »
+#64 AIDE help_labels_button
+#65 ROUTE help_labels | MODE simple | EMPREINTE d5156d31ae | project=p-36d0c6ce tuto=house/Facile active=true step=hat_do done=6 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT OVERLAP « Luisteren » over the touchable « Afspelen » (48 x 18 dp)
+#65 LAYOUT OVERLAP « Tempo » over the touchable « Ander deel kiezen » (43 x 18 dp)
+#65 LAYOUT OVERLAP « Delen en sporen » over the touchable « Ongedaan maken » (42 x 18 dp)
+#65 LAYOUT OVERLAP « Drums » over the touchable « Ongedaan maken » (7 x 18 dp)
+#65 LAYOUT OVERLAP « Spelen, opnemen » over the touchable « Afspelen » (36 x 18 dp)
+#65 LAYOUT OVERLAP « Spelen, opnemen » over the touchable « Tempo: 122 tellen per minuut Tempo wijzi » (9 x 18 dp)
+#65 LAYOUT OVERLAP « Volumes » over the touchable « Tempo: 122 tellen per minuut Tempo wijzi » (17 x 18 dp)
+#65 LAYOUT OVERLAP « Delen » over the touchable « Meer keuzes » (7 x 18 dp)
+#65 > touche 323 1226
+#65 DOIGT help_labels_hide « De labels verbergen »
+#65 AIDE help_labels_hide
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fdd447c3c0 | project=p-36d0c6ce tuto=house/Facile active=true step=hat_do done=6 playing=false
+#66 SON Son : rien ne joue.
+#66 > fin
+#66 FIN : fin

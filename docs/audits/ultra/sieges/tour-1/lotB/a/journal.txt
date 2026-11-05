@@ -1,0 +1,301 @@
+#0 SIEGE lang=ar device=foldable font=100 mode=- theme=- fresh=reel gestes.max=60 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE bbc90e60fd | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 🇸🇦 » 1.23:1 (needs 3.0:1, 20 sp)
+#1 LAYOUT CONTRAST « استوديو الموسيقى الخاص بك، في جيبك. » 3.58:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « أهلًا بك! اصنع موسيقاك على جهازك. من أين نبدأ؟ » 3.00:1 (needs 4.5:1, 16 sp)
+#1 LAYOUT CONTRAST « اختر نمطًا، وسأساعدك خطوة خطوة، من بداية الأغنية إلى نهايتها. » 3.09:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « تصنع المقطوعة كلها بنفسك، خطوة بخطوة: أنا أشرح وأتحقق. » 2.49:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « استمع إلى عرض تجريبي » 1.83:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « البدء من الصفر » 1.39:1 (needs 3.0:1, 22 sp)
+#1 LAYOUT CONTRAST « اختر أغنية من هاتفك: يفصل التطبيق الصوت والطبول والباص والباقي. » 1.39:1 (needs 4.5:1, 14 sp)
+#1 > touche 518 1087
+#1 DOIGT welcome_remix « استخراج الصوت من أغنية »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE ffd287c8c3 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « محترف » 1.67:1 (needs 3.0:1, 24 sp)
+#2 > touche 263 259
+#2 DOIGT mode_card_pro « محترف »
+#3 ROUTE tab_Sons | MODE pro | EMPREINTE fd26b7da84 | project=p-019171af no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT OVERLAP «  BPM » over « ● » (11 x 16 dp)
+#3 LAYOUT OVERLAP «  BPM » over «  REC » (2 x 13 dp)
+#3 LAYOUT OVERLAP «  BPM » over the touchable « سجّل الشاشة مع الصوت » (17 x 16 dp)
+#3 LAYOUT OVERLAP « ● » over the touchable « السرعة: 120 BPM تغيير السرعة » (11 x 17 dp)
+#3 LAYOUT OVERLAP «  REC » over the touchable « السرعة: 120 BPM تغيير السرعة » (12 x 13 dp)
+#3 LAYOUT CONTRAST « ● » 4.38:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « ✎ » 3.49:1 (needs 4.5:1, 13 sp)
+#3 > touche 517 604
+#3 DOIGT remix_pick « اختر أغنية »
+#4 ROUTE dialogue:« Allow BenStudio to send you no » | MODE pro | EMPREINTE c0218d9246 | project=p-019171af no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 517 619
+#4 DOIGT vue « Allow »
+#4 PERMISSION POST_NOTIFICATIONS accordée
+#5 ROUTE tab_Sons | MODE pro | EMPREINTE cbb9215fcf | project=p-019171af no tuto
+#5 SON Son : rien ne joue.
+#5 > attends 30
+#6 ROUTE tab_Sons | MODE pro | EMPREINTE c6393cd6f5 | project=p-019171af no tuto
+#6 SON Son : rien ne joue.
+#6 > attends 120
+#7 ROUTE tab_Sons | MODE pro | EMPREINTE 45eab7c70d | project=p-019171af no tuto
+#7 SON Son : rien ne joue.
+#7 > attends 420
+#8 ROUTE tab_Sons | MODE pro | EMPREINTE d55bc2d7a2 | project=p-019171af no tuto
+#8 SON Son : rien ne joue.
+#8 > attends 540
+#9 ROUTE tab_Sons | MODE pro | EMPREINTE d6155089a2 | project=p-019171af no tuto
+#9 SON Son : rien ne joue.
+#9 > attends 540
+#10 ROUTE tab_Sons | MODE pro | EMPREINTE d55bc2d7a2 | project=p-019171af no tuto
+#10 SON Son : rien ne joue.
+#10 > attends 540
+#11 ROUTE tab_Sons | MODE pro | EMPREINTE d6155089a2 | project=p-019171af no tuto
+#11 SON Son : rien ne joue.
+#11 > attends 300
+#12 ROUTE tab_Sons | MODE pro | EMPREINTE a3654a9c5e | project=p-019171af no tuto
+#12 SON Son : rien ne joue.
+#12 > attends 60
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE 185f849006 | project=p-019171af no tuto
+#13 SON Son : rien ne joue.
+#13 > appui-long 94 675
+#13 DOIGT stem_3a02635f77d71cd9a979f25b_vocals « الغناء »
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE 37af55f3f5 | project=p-019171af no tuto
+#14 SON Son : le Remix fait écouter « Ma chanson préférée » : la voix seule (0:01 / 0:40) — la voix ne chante pas à cet instant.
+#14 > touche 307 1183
+#14 DOIGT tab_Live « Live »
+#15 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 9073a59bcf | project=p-019171af no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « Acid 303 » 3.23:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « ● » 2.67:1 (needs 4.5:1, 13 sp)
+#15 > touche 42 267
+#15 DOIGT live_rail_Pads « فتح Pads »
+#16 ROUTE live_pads_full | MODE pro | EMPREINTE 44b9391eeb | project=p-019171af no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « 120 » over « –.– » (26 x 13 dp)
+#16 LAYOUT OVERLAP « BPM » over « –.– » (24 x 13 dp)
+#16 LAYOUT OVERLAP « REC » over « إيقاف الكل » (24 x 11 dp)
+#16 LAYOUT OVERLAP « لمسة: تشغيل · ضغط مطوّل: تغيير » over « ● » (11 x 9 dp)
+#16 LAYOUT OVERLAP « لمسة: تشغيل · ضغط مطوّل: تغيير » over «  REC » (23 x 7 dp)
+#16 LAYOUT OVERLAP « لمسة: تشغيل · ضغط مطوّل: تغيير » over « ✎ » (13 x 9 dp)
+#16 LAYOUT OVERLAP « لمسة: تشغيل · ضغط مطوّل: تغيير » over «  دوّن » (17 x 9 dp)
+#16 LAYOUT OVERLAP « لمسة: تشغيل · ضغط مطوّل: تغيير » over « ⋯ » (13 x 11 dp)
+#16 LAYOUT OVERLAP « REC » over the touchable « إيقاف الكل إيقاف الكل » (27 x 16 dp)
+#16 LAYOUT OVERLAP « الـPads الحية » over the touchable « تشغيل » (46 x 28 dp)
+#16 LAYOUT OVERLAP « –.– » over the touchable « السرعة: 120 BPM تغيير السرعة » (29 x 27 dp)
+#16 LAYOUT OVERLAP « إيقاف الكل » over the touchable « تسجيل الأداء » (39 x 24 dp)
+#16 LAYOUT OVERLAP « لمسة: تشغيل · ضغط مطوّل: تغيير » over the touchable « سجّل الشاشة مع الصوت » (42 x 18 dp)
+#16 LAYOUT OVERLAP « لمسة: تشغيل · ضغط مطوّل: تغيير » over the touchable « اكتب ملاحظة » (42 x 18 dp)
+#16 LAYOUT OVERLAP « لمسة: تشغيل · ضغط مطوّل: تغيير » over the touchable « وضع الملاحظات » (30 x 18 dp)
+#16 LAYOUT OVERLAP « + » over the touchable « كتم Acid 303 متوقف » (24 x 41 dp)
+#16 LAYOUT OVERLAP « + » over the touchable « كتم Synth متوقف » (23 x 41 dp)
+#16 LAYOUT OVERLAP « + » over the touchable « Acid 303 · B · فارغ » (24 x 5 dp)
+#16 LAYOUT OVERLAP « + » over the touchable « Acid 303 · C · فارغ » (24 x 33 dp)
+#16 LAYOUT OVERLAP « + » over the touchable « Synth · B · فارغ » (24 x 5 dp)
+#16 LAYOUT OVERLAP « + » over the touchable « Synth · C · فارغ » (24 x 33 dp)
+#16 LAYOUT OVERLAP « + » over the touchable « Acid 303 · E · فارغ » (24 x 17 dp)
+#16 LAYOUT OVERLAP « + » over the touchable « Acid 303 · F · فارغ » (24 x 21 dp)
+#16 LAYOUT OVERLAP « + » over the touchable « Synth · E · فارغ » (24 x 17 dp)
+#16 LAYOUT OVERLAP « + » over the touchable « Synth · F · فارغ » (24 x 21 dp)
+#16 LAYOUT OVERLAP « + » over the touchable « Acid 303 · H · فارغ » (24 x 28 dp)
+#16 LAYOUT OVERLAP « + » over the touchable « إيقاف المسار » (24 x 10 dp)
+#16 LAYOUT OVERLAP « + » over the touchable « Synth · H · فارغ » (24 x 28 dp)
+#16 LAYOUT CONTRAST « 8 » 1.84:1 (needs 3.0:1, 16 sp)
+#16 LAYOUT CONTRAST « ● » 2.71:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST « ✎ » 3.52:1 (needs 4.5:1, 13 sp)
+#16 > touche 677 300
+#16 DOIGT live_full_pad_0 « Pad 1 · فارغ »
+#17 ROUTE dialogue:live_pad_chooser | MODE pro | EMPREINTE c2e68b15d5 | project=p-019171af no tuto
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP « Pad 1: ماذا تضع عليه؟ » over the touchable « إغلاق الورقة » (189 x 37 dp)
+#17 LAYOUT OVERLAP « مكتبتي » over the touchable « إغلاق الورقة » (39 x 24 dp)
+#17 LAYOUT OVERLAP « أصوات التطبيق » over the touchable « إغلاق الورقة » (83 x 24 dp)
+#17 LAYOUT OVERLAP « تسجيل » over the touchable « إغلاق الورقة » (39 x 24 dp)
+#17 LAYOUT LABEL « #2365 » long press without text nor description
+#17 > touche 826 1147
+#17 DOIGT live_chooser_mine « مكتبتي »
+#18 ROUTE dialogue:library | MODE pro | EMPREINTE 02b8875aa4 | project=p-019171af no tuto
+#18 SON Son : rien ne joue.
+#18 LAYOUT OVERLAP « ? » over the touchable « Pad 1 · فارغ » (7 x 5 dp)
+#18 LAYOUT CONTRAST « ? » 2.09:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « لـالـPad الحي 1 » 2.82:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « المس ☆ على صوت لتجده في «المفضّلات». » 1.50:1 (needs 4.5:1, 13 sp)
+#18 > glisse 200 146 900 146
+#18 DOIGT library_kind_open_hat « Hi-hats مفتوحة »
+#19 ROUTE dialogue:library | MODE pro | EMPREINTE b61c49a4a6 | project=p-019171af no tuto
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « نزّل فقط إن أردت؛ يمكن حذف كل حزمة بنقرة لتحرير المساحة. » 1.80:1 (needs 4.5:1, 13 sp)
+#19 LAYOUT CONTRAST «  تنزيل كل شيء (الحزم: 68، 288.4 MB) » 1.28:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Afrobeats » 2.92:1 (needs 4.5:1, 16 sp)
+#19 LAYOUT CONTRAST « تنزيل » 2.90:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Akai MPC60 » 2.26:1 (needs 4.5:1, 16 sp)
+#19 LAYOUT CONTRAST « تنزيل » 2.10:1 (needs 4.5:1, 14 sp)
+#19 > glisse 200 146 900 146
+#19 DOIGT library_kind_808 « 808 Basses »
+#20 ROUTE dialogue:library | MODE pro | EMPREINTE 596e9fa10a | project=p-019171af no tuto
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « Leads » 3.71:1 (needs 4.5:1, 14 sp)
+#20 > touche 517 308
+#20 DOIGT library_search « ابحث عن صوت (snap، glass، conga…) »
+#21 ROUTE dialogue:library | MODE pro | EMPREINTE 596e9fa10a | project=p-019171af no tuto
+#21 SON Son : rien ne joue.
+#21 > ecris غناء
+#22 ROUTE dialogue:library | MODE pro | EMPREINTE 2e56ff4d2b | project=p-019171af no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « اضغط على صوت لسماعه، و«استخدام» لوضعه على الـPad الحي 1. » 1.83:1 (needs 4.5:1, 13 sp)
+#22 LAYOUT CONTRAST «  تنزيل كل شيء (الحزم: 68، 288.4 MB) » 2.02:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « Akai MPC60 » 2.92:1 (needs 4.5:1, 16 sp)
+#22 LAYOUT CONTRAST « Amapiano » 2.24:1 (needs 4.5:1, 16 sp)
+#22 > touche 42 57
+#22 DOIGT library_close
+#23 ROUTE live_pads_full | MODE pro | EMPREINTE 44b9391eeb | project=p-019171af no tuto
+#23 SON Son : rien ne joue.
+#23 > touche 990 48
+#23 DOIGT live_pads_full_close
+#24 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE 9073a59bcf | project=p-019171af no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 726 1183
+#24 DOIGT tab_Sons « الأصوات »
+#25 ROUTE tab_Sons | MODE pro | EMPREINTE 185f849006 | project=p-019171af no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 263 501
+#25 DOIGT use_3a02635f77d71cd9a979f25b « تشغيل مع المشروع »
+#26 ROUTE dialogue:song_import | MODE pro | EMPREINTE c36289f12c | project=p-019171af no tuto
+#26 SON Son : rien ne joue.
+#26 LAYOUT CONTRAST « وضع Ma chanson préférée في مشروعي » 2.19:1 (needs 3.0:1, 24 sp)
+#26 > touche 517 763
+#26 DOIGT import_passage « مقطع فقط »
+#27 ROUTE dialogue:song_import | MODE pro | EMPREINTE 44f98a3657 | project=p-019171af no tuto
+#27 SON Son : rien ne joue.
+#27 LAYOUT CONTRAST « + » 1.62:1 (needs 4.5:1, 14 sp)
+#27 > touche 517 919
+#27 DOIGT import_voice « الصوت فقط على إيقاعي »
+#28 ROUTE dialogue:song_import | MODE pro | EMPREINTE 9832c96b67 | project=p-019171af no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 241 1081
+#28 DOIGT import_go « ضعها في مشروعي »
+#29 ROUTE tab_Sons | MODE pro | EMPREINTE 9e7339922a | project=p-019171af no tuto
+#29 SON Son : rien ne joue.
+#29 LAYOUT CUT « Ma chanson préférée » ellipsized (« … »)
+#29 LAYOUT CUT « 0:00 / 0:40 · البداية » lines dropped (more lines than room)
+#29 LAYOUT CUT « المازورة 1/20 » drawn past its parent's edge (down, 20 dp shown of 23)
+#29 LAYOUT OVERLAP « لازمة » over « ✎ » (13 x 9 dp)
+#29 LAYOUT OVERLAP « لازمة » over «  دوّن » (6 x 9 dp)
+#29 LAYOUT OVERLAP « المازورة 1/20 » over « ✎ » (13 x 9 dp)
+#29 LAYOUT OVERLAP « المازورة 1/20 » over «  دوّن » (17 x 9 dp)
+#29 LAYOUT OVERLAP « المازورة 1/20 » over « ⋯ » (13 x 11 dp)
+#29 LAYOUT OVERLAP « لازمة » over the touchable « اكتب ملاحظة » (25 x 18 dp)
+#29 LAYOUT OVERLAP « المازورة 1/20 » over the touchable « اكتب ملاحظة » (42 x 18 dp)
+#29 LAYOUT OVERLAP « المازورة 1/20 » over the touchable « وضع الملاحظات » (30 x 18 dp)
+#29 LAYOUT OVERLAP «  REC » over the touchable « التشغيل من جزء » (5 x 13 dp)
+#29 LAYOUT OVERLAP « ✎ » over the touchable « التشغيل من جزء » (13 x 18 dp)
+#29 LAYOUT OVERLAP «  دوّن » over the touchable « التشغيل من جزء » (17 x 18 dp)
+#29 LAYOUT OVERLAP « ⋯ » over the touchable « التشغيل من جزء » (13 x 22 dp)
+#29 LAYOUT CONTRAST « الأغنية: MA CHANSON PRÉFÉRÉE » 3.36:1 (needs 4.5:1, 12 sp)
+#29 LAYOUT CONTRAST « المؤثرات » 4.44:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « المازورة 1/20 » 4.03:1 (needs 4.5:1, 14 sp)
+#29 > touche 772 549
+#29 DOIGT remix_open_cut «  قطّع الأغنية »
+#30 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE a5cdc90b26 | project=p-019171af no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 139 542
+#30 DOIGT cut_span_play « استمع إلى القطعة »
+#31 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE e331329766 | project=p-019171af no tuto
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « 6 نبضات · 0:03.0 » 4.17:1 (needs 4.5:1, 13 sp)
+#31 > attends 1
+#32 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE e331329766 | project=p-019171af no tuto
+#32 SON Son : rien ne joue.
+#32 > touche 450 716
+#32 DOIGT cut_to_pads « على الـPads »
+#33 ROUTE cut_screen/tab_Sons | MODE pro | EMPREINTE 539a638890 | project=p-019171af no tuto
+#33 SON Son : rien ne joue.
+#33 > touche 964 183
+#33 DOIGT sons_Rythme « الطبول »
+#34 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 786571327e | project=p-019171af no tuto
+#34 SON Son : rien ne joue.
+#34 > touche 835 336
+#34 DOIGT pad_1 « Kick 2 »
+#35 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 1560881501 | project=p-019171af no tuto
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST «  سجّل الـPads » 2.78:1 (needs 4.5:1, 14 sp)
+#35 > touche 259 662
+#35 DOIGT fill_4 « 1/4 »
+#36 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 1185e0c86f | project=p-019171af no tuto
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST « 1/4 » 3.95:1 (needs 4.5:1, 14 sp)
+#36 > touche 835 442
+#36 DOIGT pad_5 « Hi-hat »
+#37 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 8956dbde40 | project=p-019171af no tuto
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « Hi-hat » 4.34:1 (needs 4.5:1, 14 sp)
+#37 > touche 184 662
+#37 DOIGT fill_2 « 1/2 »
+#38 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE f6e288a87e | project=p-019171af no tuto
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « 1/2 » 3.95:1 (needs 4.5:1, 14 sp)
+#38 > touche 117 42
+#38 DOIGT top_play
+#39 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 889f641aab | project=p-019171af no tuto
+#39 SON Son : le morceau joue (partie « A ») ; avec la voix seule de « Ma chanson préférée ».
+#39 LAYOUT CONTRAST « المازورة 1/20 » 3.97:1 (needs 4.5:1, 14 sp)
+#39 > touche 959 369
+#39 DOIGT pad_0 « الغناء 1 »
+#40 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE b290e793c1 | project=p-019171af no tuto
+#40 SON Son : la musique du projet joue en boucle ; avec la voix seule de « Ma chanson préférée ».
+#40 LAYOUT CUT « المازورة 1/1 » drawn past its parent's edge (down, 20 dp shown of 23)
+#40 LAYOUT OVERLAP « لازمة » over « ✎ » (4 x 9 dp)
+#40 LAYOUT OVERLAP « لازمة » over «  دوّن » (17 x 9 dp)
+#40 LAYOUT OVERLAP « المازورة 1/1 » over « ✎ » (13 x 9 dp)
+#40 LAYOUT OVERLAP « المازورة 1/1 » over «  دوّن » (17 x 9 dp)
+#40 LAYOUT OVERLAP « المازورة 1/1 » over « ⋯ » (13 x 11 dp)
+#40 LAYOUT OVERLAP « لازمة » over the touchable « اكتب ملاحظة » (27 x 18 dp)
+#40 LAYOUT OVERLAP « المازورة 1/1 » over the touchable « اكتب ملاحظة » (42 x 18 dp)
+#40 LAYOUT OVERLAP « المازورة 1/1 » over the touchable « وضع الملاحظات » (25 x 18 dp)
+#40 LAYOUT CONTRAST « المازورة 1/1 » 3.53:1 (needs 4.5:1, 14 sp)
+#40 > touche 307 1183
+#40 DOIGT tab_Live « Live »
+#41 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE d1ed12a173 | project=p-019171af no tuto
+#41 SON Son : la musique du projet joue en boucle ; avec la voix seule de « Ma chanson préférée ».
+#41 LAYOUT OVERLAP « المازورة 1/1 » over « ● » (11 x 9 dp)
+#41 LAYOUT OVERLAP « المازورة 1/1 » over «  REC » (2 x 7 dp)
+#41 LAYOUT OVERLAP « المازورة 1/1 » over the touchable « سجّل الشاشة مع الصوت » (17 x 18 dp)
+#41 LAYOUT OVERLAP « ● » over the touchable « التشغيل من جزء » (11 x 17 dp)
+#41 LAYOUT OVERLAP «  REC » over the touchable « التشغيل من جزء » (23 x 13 dp)
+#41 LAYOUT CONTRAST « نسخة جديدة » 3.34:1 (needs 4.5:1, 13 sp)
+#41 > touche 42 351
+#41 DOIGT live_rail_Pads « فتح Pads »
+#42 ROUTE live_pads_full | MODE pro | EMPREINTE 9ee061d74a | project=p-019171af no tuto
+#42 SON Son : la musique du projet joue en boucle ; avec la voix seule de « Ma chanson préférée ».
+#42 LAYOUT OVERLAP « الـPads الحية » over the touchable « إيقاف » (46 x 28 dp)
+#42 LAYOUT OVERLAP « لمسة: تشغيل · ضغط مطوّل: تغيير » over the touchable « التشغيل من جزء » (86 x 22 dp)
+#42 LAYOUT OVERLAP « + » over the touchable « Acid 303 · A · لازمة · يُعزف » (24 x 6 dp)
+#42 LAYOUT OVERLAP « + » over the touchable « Acid 303 · B · فارغ » (24 x 32 dp)
+#42 LAYOUT OVERLAP « + » over the touchable « Synth · A · لازمة · يُعزف » (24 x 6 dp)
+#42 LAYOUT OVERLAP « + » over the touchable « Synth · B · فارغ » (24 x 32 dp)
+#42 LAYOUT OVERLAP « + » over the touchable « Acid 303 · D · فارغ » (24 x 23 dp)
+#42 LAYOUT OVERLAP « + » over the touchable « Acid 303 · E · فارغ » (24 x 15 dp)
+#42 LAYOUT OVERLAP « + » over the touchable « Synth · D · فارغ » (24 x 23 dp)
+#42 LAYOUT OVERLAP « + » over the touchable « Synth · E · فارغ » (24 x 15 dp)
+#42 LAYOUT OVERLAP « + » over the touchable « Acid 303 · G · فارغ » (24 x 41 dp)
+#42 LAYOUT OVERLAP « + » over the touchable « Synth · G · فارغ » (24 x 41 dp)
+#42 LAYOUT OVERLAP « المؤثرات المباشرة » over the touchable « إيقاف المسار » (41 x 24 dp)
+#42 LAYOUT OVERLAP « المؤثرات المباشرة » over the touchable « إيقاف المسار » (45 x 24 dp)
+#42 > retour
+#42 RETOUR
+#43 ROUTE live_grid/tab_Live | MODE pro | EMPREINTE d1ed12a173 | project=p-019171af no tuto
+#43 SON Son : la musique du projet joue en boucle ; avec la voix seule de « Ma chanson préférée ».
+#43 > touche 726 1183
+#43 DOIGT tab_Sons « الأصوات »
+#44 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE b290e793c1 | project=p-019171af no tuto
+#44 SON Son : la musique du projet joue en boucle ; avec la voix seule de « Ma chanson préférée ».
+#44 > touche 959 336
+#44 DOIGT pad_0 « الغناء 1 »
+#45 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE b290e793c1 | project=p-019171af no tuto
+#45 SON Son : la musique du projet joue en boucle ; avec la voix seule de « Ma chanson préférée ».
+#45 > touche 67 428
+#45 DOIGT step_0 « الخطوة 1 »
+#46 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 542d70f9e9 | project=p-019171af no tuto
+#46 SON Son : la musique du projet joue en boucle ; avec la voix seule de « Ma chanson préférée » ; le pad 1 (« Voix 1 ») sonne dans la boucle.
+#46 > fin
+#46 FIN : fin

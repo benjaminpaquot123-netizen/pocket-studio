@@ -1,0 +1,7 @@
+lang=fr
+device=tablet11Land
+fresh=reel
+lit=non
+gestes.max=60
+mission=defi
+timeout.minutes=25

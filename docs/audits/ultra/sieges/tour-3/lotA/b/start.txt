@@ -1,0 +1,8 @@
+lang=fr
+device=phone360
+font=100
+fresh=reel
+main=une
+gestes.max=60
+mission=premier-morceau
+timeout.minutes=25

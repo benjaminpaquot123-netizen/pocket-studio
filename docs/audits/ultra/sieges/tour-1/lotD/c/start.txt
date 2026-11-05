@@ -1,0 +1,7 @@
+lang=fr
+device=foldable
+font=100
+mode=pro
+gestes.max=120
+mission=synthe
+timeout.minutes=25

@@ -1,0 +1,465 @@
+#0 SIEGE lang=id device=phone font=100 mode=simple theme=- fresh=non gestes.max=80 lit=oui main=both amenee=-
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 884e677894 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « Kamu membuat seluruh lagu sendiri, langkah demi langkah: aku menjelaskan dan memeriksa. » 2.26:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « Pilih lagu di ponselmu: aplikasi memisahkan vokal, drum, bass, dan sisanya. » 3.42:1 (needs 4.5:1, 14 sp)
+#1 > touche 294 663
+#1 DOIGT welcome_learn « Aku belajar »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 9746d71461 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Dengan tutorial Pro » 3.64:1 (needs 4.5:1, 14 sp)
+#2 > touche 294 297
+#2 DOIGT mode_card_simple « Simpel »
+#3 ROUTE dialogue:tuto_chooser | MODE simple | EMPREINTE 1274447e0d | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « 138 BPM » 2.75:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « 150 BPM » 1.89:1 (needs 4.5:1, 13 sp)
+#3 LAYOUT CONTRAST « House » 2.04:1 (needs 3.0:1, 16 sp)
+#3 > touche 294 1225
+#3 DOIGT tuto_style_house « House »
+#4 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0d03af8d47 | project=p-79a7da0a tuto=house/Facile active=true step=ref done=0 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT TARGET « ▸ Kenapa? » 364 x 20 dp (touch 364 x 48)
+#4 > touche 294 888
+#4 DOIGT tuto_listen «  Dengar contohnya »
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7ef7ff9c74 | project=p-79a7da0a tuto=house/Facile active=true step=ref done=0 playing=false
+#5 SON Son : l'exemple du tuto joue (encore 7 s).
+#5 > touche 294 825
+#5 DOIGT tuto_why « ▸ Kenapa? »
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cf7da6a227 | project=p-79a7da0a tuto=house/Facile active=true step=ref done=1 playing=false
+#6 SON Son : l'exemple du tuto joue (encore 5 s).
+#6 LAYOUT OVERLAP « Unduh kit House (4 MB) » over « Baca selanjutnya » (28 x 3 dp)
+#6 LAYOUT OVERLAP « Suara drum asli gaya ini, untuk lagumu dan untuk contoh-contohnya. Tanpa itu, tutorial tetap jalan dengan suara bawaan. » over the touchable « Baca selanjutnya » (339 x 9 dp)
+#6 > touche 460 826
+#6 DOIGT tuto_kit_download « Unduh kit House (4 MB) »
+#7 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7cd847c5b1 | project=p-79a7da0a tuto=house/Facile active=true step=ref done=1 playing=false
+#7 SON Son : l'exemple du tuto joue (encore 3 s).
+#7 > touche 294 789
+#7 DOIGT tuto_kit_later « Nanti »
+#8 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cd3507041e | project=p-79a7da0a tuto=house/Facile active=true step=ref done=1 playing=false
+#8 SON Son : l'exemple du tuto joue (encore 2 s).
+#8 > touche 80 825
+#8 DOIGT tuto_why « ▸ Kenapa? »
+#9 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 668fb025db | project=p-79a7da0a tuto=house/Facile active=true step=ref done=1 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 294 888
+#9 DOIGT tuto_next_big « Langkah berikutnya   »
+#10 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 85cf2efb6f | project=p-79a7da0a tuto=house/Facile active=true step=tempo done=1 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 83 114
+#10 DOIGT top_tempo « Tempo: 100 ketukan per menit »
+#11 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 43f8420da8 | project=p-79a7da0a tuto=house/Facile active=true step=tempo done=1 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « Tempo » over the touchable « Tutup sheet » (73 x 28 dp)
+#11 LAYOUT OVERLAP « ? » over the touchable « Tutup sheet » (7 x 15 dp)
+#11 LAYOUT OVERLAP « Tutup » over the touchable « Tutup sheet » (39 x 20 dp)
+#11 LAYOUT OVERLAP « 100 » over the touchable « Tutup sheet » (86 x 53 dp)
+#11 LAYOUT OVERLAP «  BPM » over the touchable « Tutup sheet » (39 x 24 dp)
+#11 LAYOUT OVERLAP « 70 » over the touchable « Tutup sheet » (21 x 19 dp)
+#11 LAYOUT OVERLAP « 90 » over the touchable « Tutup sheet » (21 x 19 dp)
+#11 LAYOUT OVERLAP « 120 » over the touchable « Tutup sheet » (32 x 19 dp)
+#11 LAYOUT OVERLAP « 140 » over the touchable « Tutup sheet » (32 x 19 dp)
+#11 LAYOUT OVERLAP « 174 » over the touchable « Tutup sheet » (32 x 19 dp)
+#11 LAYOUT OVERLAP « ½ » over the touchable « Tutup sheet » (14 x 24 dp)
+#11 LAYOUT OVERLAP « ×2 » over the touchable « Tutup sheet » (21 x 24 dp)
+#11 LAYOUT OVERLAP « 1 » over the touchable « Tutup sheet » (14 x 27 dp)
+#11 LAYOUT OVERLAP « 2 » over the touchable « Tutup sheet » (14 x 27 dp)
+#11 LAYOUT OVERLAP « 3 » over the touchable « Tutup sheet » (14 x 27 dp)
+#11 LAYOUT OVERLAP « 4 » over the touchable « Tutup sheet » (14 x 27 dp)
+#11 LAYOUT OVERLAP « 5 » over the touchable « Tutup sheet » (14 x 27 dp)
+#11 LAYOUT OVERLAP « 6 » over the touchable « Tutup sheet » (14 x 27 dp)
+#11 LAYOUT OVERLAP « 7 » over the touchable « Tutup sheet » (14 x 27 dp)
+#11 LAYOUT OVERLAP « 8 » over the touchable « Tutup sheet » (14 x 27 dp)
+#11 LAYOUT OVERLAP « 9 » over the touchable « Tutup sheet » (14 x 27 dp)
+#11 LAYOUT OVERLAP « 0 » over the touchable « Tutup sheet » (14 x 27 dp)
+#11 LAYOUT OVERLAP « OK » over the touchable « Tutup sheet » (33 x 27 dp)
+#11 LAYOUT OVERLAP « Tap sesuai irama » over the touchable « Tutup sheet » (131 x 24 dp)
+#11 LAYOUT OVERLAP « Sentuh di sini tiap ketukan: temponya ikut. » over the touchable « Tutup sheet » (254 x 18 dp)
+#11 LAYOUT CONTRAST « ? » 1.60:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « Tutup » 1.60:1 (needs 4.5:1, 14 sp)
+#11 LAYOUT CONTRAST «  BPM » 1.38:1 (needs 4.5:1, 16 sp)
+#11 LAYOUT CONTRAST « 4 » 1.90:1 (needs 3.0:1, 22 sp)
+#11 LAYOUT CONTRAST « 6 » 1.90:1 (needs 3.0:1, 22 sp)
+#11 LAYOUT CONTRAST « Sentuh di sini tiap ketukan: temponya ikut. » 2.04:1 (needs 4.5:1, 13 sp)
+#11 > touche 111 852
+#11 DOIGT tempo_key_1 « 1 »
+#12 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 73a0469ab6 | project=p-79a7da0a tuto=house/Facile active=true step=tempo done=1 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « 1 » over the touchable « Tutup sheet » (29 x 53 dp)
+#12 LAYOUT OVERLAP « Antara 40 dan 300 » over the touchable « Tutup sheet » (125 x 20 dp)
+#12 > touche 294 852
+#12 DOIGT tempo_key_2 « 2 »
+#13 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 6d58569c65 | project=p-79a7da0a tuto=house/Facile active=true step=tempo done=1 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « 12 » over the touchable « Tutup sheet » (57 x 53 dp)
+#13 > touche 294 852
+#13 DOIGT tempo_key_2 « 2 »
+#14 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE ae5c4c6e4e | project=p-79a7da0a tuto=house/Facile active=true step=tempo done=1 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « 122 » over the touchable « Tutup sheet » (86 x 53 dp)
+#14 > touche 477 1113
+#14 DOIGT tempo_key_ok « OK »
+#15 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 125a5544dc | project=p-79a7da0a tuto=house/Facile active=true step=tempo done=2 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 294 888
+#15 DOIGT tuto_next_big « Langkah berikutnya   »
+#16 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9154e017dc | project=p-79a7da0a tuto=house/Facile active=true step=key done=2 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 433 891
+#16 DOIGT tuto_show «  Tunjukkan »
+#17 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 3341cbb9e0 | project=p-79a7da0a tuto=house/Facile active=true step=key done=2 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP « Kunci nada lagu » over the touchable « Tutup sheet » (170 x 28 dp)
+#17 LAYOUT OVERLAP « Nada dasar lagu: tidak ada » over the touchable « Tutup sheet » (178 x 20 dp)
+#17 LAYOUT OVERLAP « Tangga nada » over the touchable « Tutup sheet » (87 x 20 dp)
+#17 LAYOUT OVERLAP « Mayor » over the touchable « Tutup sheet » (47 x 24 dp)
+#17 LAYOUT OVERLAP « Minor » over the touchable « Tutup sheet » (43 x 24 dp)
+#17 LAYOUT OVERLAP « Dorian » over the touchable « Tutup sheet » (52 x 24 dp)
+#17 LAYOUT OVERLAP « Penta minor » over the touchable « Tutup sheet » (90 x 24 dp)
+#17 LAYOUT OVERLAP « Penta mayor » over the touchable « Tutup sheet » (93 x 24 dp)
+#17 LAYOUT OVERLAP « Blues » over the touchable « Tutup sheet » (42 x 24 dp)
+#17 LAYOUT OVERLAP « Frigia » over the touchable « Tutup sheet » (42 x 24 dp)
+#17 LAYOUT OVERLAP « Minor harmonik » over the touchable « Tutup sheet » (118 x 24 dp)
+#17 LAYOUT OVERLAP « Kunci nada » over the touchable « Tutup sheet » (76 x 20 dp)
+#17 LAYOUT OVERLAP « C » over the touchable « Tutup sheet » (12 x 24 dp)
+#17 LAYOUT OVERLAP « C♯ » over the touchable « Tutup sheet » (21 x 24 dp)
+#17 LAYOUT OVERLAP « D » over the touchable « Tutup sheet » (11 x 24 dp)
+#17 LAYOUT OVERLAP « E♭ » over the touchable « Tutup sheet » (15 x 24 dp)
+#17 LAYOUT OVERLAP « E » over the touchable « Tutup sheet » (9 x 24 dp)
+#17 LAYOUT OVERLAP « F » over the touchable « Tutup sheet » (9 x 24 dp)
+#17 LAYOUT OVERLAP « F♯ » over the touchable « Tutup sheet » (18 x 24 dp)
+#17 LAYOUT OVERLAP « G » over the touchable « Tutup sheet » (12 x 24 dp)
+#17 LAYOUT OVERLAP « A♭ » over the touchable « Tutup sheet » (17 x 24 dp)
+#17 LAYOUT OVERLAP « A » over the touchable « Tutup sheet » (12 x 24 dp)
+#17 LAYOUT OVERLAP « B♭ » over the touchable « Tutup sheet » (16 x 24 dp)
+#17 LAYOUT OVERLAP « B » over the touchable « Tutup sheet » (11 x 24 dp)
+#17 LAYOUT CONTRAST « Penta minor » 3.64:1 (needs 4.5:1, 16 sp)
+#17 LAYOUT CONTRAST « Blues » 1.60:1 (needs 4.5:1, 16 sp)
+#17 LAYOUT CONTRAST « Frigia » 1.60:1 (needs 4.5:1, 16 sp)
+#17 LAYOUT CONTRAST « G » 3.26:1 (needs 4.5:1, 16 sp)
+#17 LAYOUT CONTRAST « A♭ » 3.26:1 (needs 4.5:1, 16 sp)
+#17 LAYOUT CONTRAST « B♭ » 3.26:1 (needs 4.5:1, 16 sp)
+#17 LAYOUT CONTRAST « B » 3.26:1 (needs 4.5:1, 16 sp)
+#17 > touche 324 1206
+#17 DOIGT tuto_root_9 « A »
+#18 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 3fb5acf746 | project=p-79a7da0a tuto=house/Facile active=true step=key done=2 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT OVERLAP « Nada dasar lagu: C · Dorian » over the touchable « Tutup sheet » (182 x 20 dp)
+#18 > touche 307 831
+#18 DOIGT tuto_scale_Dorian « Dorian »
+#19 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 3fb5acf746 | project=p-79a7da0a tuto=house/Facile active=true step=key done=2 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 324 1206
+#19 DOIGT tuto_root_9 « A »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4280f0599b | project=p-79a7da0a tuto=house/Facile active=true step=key done=2 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « Stop » 3.91:1 (needs 4.5:1, 14 sp)
+#20 > attends 5
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 861131c776 | project=p-79a7da0a tuto=house/Facile active=true step=key done=2 playing=false
+#21 SON Son : rien ne joue.
+#21 > attends 5
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0e9825c7e1 | project=p-79a7da0a tuto=house/Facile active=true step=key done=2 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CUT « Giliranmu: pilih warna lagu. “Aku yang buat” membuka lembar Nada: sentuh “Dorian” (tangga nada minor dengan satu not cerah yang bikin senyum), lalu “A”. » ellipsized (« … »)
+#22 > touche 531 873
+#22 DOIGT tuto_fold
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9154e017dc | project=p-79a7da0a tuto=house/Facile active=true step=key done=2 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 294 807
+#23 DOIGT tuto_do «   Aku yang buat »
+#24 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 3fb5acf746 | project=p-79a7da0a tuto=house/Facile active=true step=key done=2 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 307 831
+#24 DOIGT tuto_scale_Dorian « Dorian »
+#25 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 3fb5acf746 | project=p-79a7da0a tuto=house/Facile active=true step=key done=2 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 324 1206
+#25 DOIGT tuto_root_9 « A »
+#26 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 64b41db057 | project=p-79a7da0a tuto=house/Facile active=true step=key done=3 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT OVERLAP « Nada dasar lagu: A · Dorian » over the touchable « Tutup sheet » (181 x 20 dp)
+#26 LAYOUT OVERLAP « Berhasil! Warna lagu sudah dipilih. » over the touchable « Tutup sheet » (273 x 24 dp)
+#26 LAYOUT OVERLAP « Kembali ke tutorial » over the touchable « Tutup sheet » (130 x 20 dp)
+#26 LAYOUT CONTRAST « Tutup » 2.20:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Tangga nada » 3.45:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « Mayor » 3.39:1 (needs 4.5:1, 16 sp)
+#26 LAYOUT CONTRAST « Minor » 3.39:1 (needs 4.5:1, 16 sp)
+#26 LAYOUT CONTRAST « Penta minor » 3.39:1 (needs 4.5:1, 16 sp)
+#26 > touche 294 1203
+#26 DOIGT tuto_key_continue « Kembali ke tutorial »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0b9354eb09 | project=p-79a7da0a tuto=house/Facile active=true step=key done=3 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 531 873
+#27 DOIGT tuto_fold
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bd15fcf5f6 | project=p-79a7da0a tuto=house/Facile active=true step=key done=3 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 294 888
+#28 DOIGT tuto_next_big « Bab berikutnya   »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 54f7e9f9c5 | project=p-79a7da0a tuto=house/Facile active=true step=ready done=3 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « Marakas » 3.99:1 (needs 4.5:1, 14 sp)
+#29 > touche 294 888
+#29 DOIGT tuto_mark «   Paham »
+#30 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE df5301fa63 | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#30 SON Son : rien ne joue.
+#30 LAYOUT CONTRAST « Masih 4 kotak bergaris putus di sini » 2.90:1 (needs 3.0:1, 14 sp)
+#30 > touche 294 807
+#30 DOIGT tuto_need «   Ubah ke 2 bar »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 474c624d08 | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CUT « Giliranmu: loop drum-nya 2 bar (satu bar = satu putaran 4 ketukan). Sentuh “Ubah ke 2 bar”, lalu di pad “Drum bas”, sentuh kotak bergaris putus: satu pukulan di tiap ketukan, dan satu pukulan kecil tambahan tepat sebelum akhir bar 2. » ellipsized (« … »)
+#31 LAYOUT CONTRAST « Bar » 1.45:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « 1 » 1.94:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « 2 » 1.36:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « Ikuti » 1.26:1 (needs 4.5:1, 14 sp)
+#31 > touche 70 383
+#31 DOIGT step_0 « Step 1 »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 06f08bb3f7 | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 325 383
+#32 DOIGT step_4 « Step 5 »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8d1d80feb9 | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#33 SON Son : rien ne joue.
+#33 > retour
+#33 RETOUR
+#34 ROUTE launch | MODE simple | EMPREINTE 0306d4ba2c | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#34 SON Son : rien ne joue.
+#34 > glisse 294 1000 294 400
+#34 DOIGT launch_padlive « Pad Live »
+#35 ROUTE launch | MODE simple | EMPREINTE e9c8833bc3 | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 294 1045
+#35 DOIGT launch_learn « Aku belajar »
+#36 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 8047416026 | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST « Pilihan terakhirmu » 3.58:1 (needs 4.5:1, 13 sp)
+#36 LAYOUT CONTRAST « Dengan tutorial Pro » 3.74:1 (needs 4.5:1, 14 sp)
+#36 > touche 294 297
+#36 DOIGT mode_card_simple « Simpel »
+#37 ROUTE dialogue:tuto_chooser | MODE simple | EMPREINTE 1274447e0d | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « Kamu membuat seluruh lagu sendiri, langkah demi langkah: aku menjelaskan dan memeriksa. » 4.45:1 (needs 4.5:1, 16 sp)
+#37 LAYOUT CONTRAST « 132 BPM » 3.28:1 (needs 4.5:1, 13 sp)
+#37 LAYOUT CONTRAST « 150 BPM » 1.91:1 (needs 4.5:1, 13 sp)
+#37 LAYOUT CONTRAST « 185 BPM » 4.42:1 (needs 4.5:1, 13 sp)
+#37 > touche 294 1225
+#37 DOIGT tuto_style_house « House »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c21aea3154 | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#38 SON Son : rien ne joue.
+#38 > glisse 294 780 294 300
+#38 DOIGT rien
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 26795c63d9 | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « Sentuh kotak untuk menambah pukulan, geser jari untuk mengecat beberapa. Tekan lama pukulan: kekuatan dan roll (×2 sampai ×8). » 1.33:1 (needs 4.5:1, 13 sp)
+#39 > touche 70 612
+#39 DOIGT step_8 « Step 9 »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1773d265d1 | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 325 613
+#40 DOIGT step_12 « Step 13 »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0c09114bf5 | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 435 450
+#41 DOIGT tuto_bar_go « Bar 2 · 5 kotak → »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c059987047 | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 133 533
+#42 DOIGT step_17 « Step 2 »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 13bdc63a14 | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 70 533
+#43 DOIGT step_16 « Step 1 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c503aae488 | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 325 534
+#44 DOIGT step_20 « Step 5 »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b11061ffd9 | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 70 612
+#45 DOIGT step_24 « Step 9 »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d35071d8d3 | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 325 613
+#46 DOIGT step_28 « Step 13 »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 419578099f | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 453 613
+#47 DOIGT step_30 « Step 15 »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 65865d0fbd | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=4 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 133 533
+#48 DOIGT step_17 « Step 2 »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7a48300801 | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=5 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 459 873
+#49 DOIGT tuto_chapters
+#50 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE f69d4270ce | project=p-79a7da0a tuto=house/Facile active=true step=kick_do done=5 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CONTRAST « 1 » 1.41:1 (needs 4.5:1, 16 sp)
+#50 LAYOUT CONTRAST « Kecepatan dan warna lagu » 1.41:1 (needs 4.5:1, 16 sp)
+#50 LAYOUT CONTRAST « 2 » 1.27:1 (needs 4.5:1, 16 sp)
+#50 LAYOUT CONTRAST « Kick » 1.27:1 (needs 4.5:1, 16 sp)
+#50 LAYOUT CONTRAST « 3 » 3.07:1 (needs 4.5:1, 16 sp)
+#50 LAYOUT CONTRAST « 0/1 » 1.79:1 (needs 4.5:1, 16 sp)
+#50 LAYOUT CONTRAST « 5 » 1.25:1 (needs 4.5:1, 16 sp)
+#50 LAYOUT CONTRAST « 0/2 » 1.24:1 (needs 4.5:1, 16 sp)
+#50 LAYOUT CONTRAST « 6 » 2.94:1 (needs 4.5:1, 16 sp)
+#50 LAYOUT CONTRAST « 0/2 » 1.23:1 (needs 4.5:1, 16 sp)
+#50 LAYOUT CONTRAST « 0/1 » 1.25:1 (needs 4.5:1, 16 sp)
+#50 LAYOUT CONTRAST « Keluar dari tutorial (bisa dilanjutkan nanti) » 3.26:1 (needs 4.5:1, 14 sp)
+#50 > touche 294 468
+#50 DOIGT tuto_chapter_4 « 5 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 689739a2a3 | project=p-79a7da0a tuto=house/Facile active=true step=bass_hear done=5 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 477 972
+#51 DOIGT tuto_next « Berikutnya  »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 530ee6204c | project=p-79a7da0a tuto=house/Facile active=true step=bass_do done=5 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 294 807
+#52 DOIGT tuto_need «   Buat trek Bass »
+#53 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c0fc4633f5 | project=p-79a7da0a tuto=house/Facile active=true step=bass_do done=5 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT CUT « Giliranmu: sentuh “Buat trek Bass”, lalu not bergaris putus di bar 1 (A rendah, A tinggi). “Salin ke bar berikutnya” membuat bar 2, lalu hal yang sama di D di bar 3. Terakhir, tulis bar 4: berakhir di E dan G untuk kembali ke A. » ellipsized (« … »)
+#53 LAYOUT TARGET « E3 Putar » 36 x 20 dp (touch 48 x 48)
+#53 LAYOUT TARGET « D♯3 Putar » 36 x 20 dp (touch 48 x 48)
+#53 LAYOUT TARGET « D3 Putar » 36 x 20 dp (touch 48 x 48)
+#53 LAYOUT TARGET « C♯3 Putar » 36 x 20 dp (touch 48 x 48)
+#53 LAYOUT TARGET « C3 C3 Putar » 36 x 20 dp (touch 48 x 48)
+#53 LAYOUT TARGET « B2 Putar » 36 x 20 dp (touch 48 x 48)
+#53 LAYOUT TARGET « A♯2 Putar » 36 x 20 dp (touch 48 x 48)
+#53 LAYOUT TARGET « A2 Putar » 36 x 20 dp (touch 48 x 48)
+#53 LAYOUT TARGET « G♯2 Putar » 36 x 20 dp (touch 48 x 48)
+#53 > touche 459 872
+#53 DOIGT tuto_chapters
+#54 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE f69d4270ce | project=p-79a7da0a tuto=house/Facile active=true step=bass_do done=5 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT CONTRAST « 2 » 3.10:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « Kick » 3.10:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « 3 » 1.40:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « Clap » 1.40:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « 0/1 » 1.40:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « 4 » 1.68:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « Hi-hat dan tamborin » 1.31:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « 0/4 » 3.76:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « Bass » 1.31:1 (needs 4.5:1, 16 sp)
+#54 LAYOUT CONTRAST « 0/2 » 1.31:1 (needs 4.5:1, 16 sp)
+#54 > touche 294 1218
+#54 DOIGT tuto_quit « Keluar dari tutorial (bisa dilanjutkan n »
+#55 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5bfdae3502 | project=p-79a7da0a tuto=house/Facile active=false step=bass_do done=5 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT TARGET « G2 Putar » 36 x 20 dp (touch 48 x 48)
+#55 LAYOUT TARGET « F♯2 Putar » 36 x 20 dp (touch 48 x 48)
+#55 LAYOUT TARGET « F2 Putar » 36 x 20 dp (touch 48 x 48)
+#55 LAYOUT TARGET « E2 Putar » 36 x 20 dp (touch 48 x 48)
+#55 LAYOUT TARGET « D♯2 Putar » 36 x 20 dp (touch 48 x 48)
+#55 > touche 294 984
+#55 DOIGT guide_bar « Panduan »
+#56 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2f53f8edae | project=p-79a7da0a tuto=house/Facile active=false step=bass_do done=5 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « UNTUK MULAI » 4.24:1 (needs 4.5:1, 12 sp)
+#56 LAYOUT CONTRAST « ↗ » 3.38:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « Buat baris Acid 303 » 3.89:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « ↗ » 3.43:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « Mainkan bass di keyboard » 3.95:1 (needs 4.5:1, 14 sp)
+#56 > retour
+#56 RETOUR
+#57 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5bfdae3502 | project=p-79a7da0a tuto=house/Facile active=false step=bass_do done=5 playing=false
+#57 SON Son : rien ne joue.
+#57 > retour
+#57 RETOUR
+#58 ROUTE launch | MODE simple | EMPREINTE 1220b43567 | project=p-79a7da0a tuto=house/Facile active=false step=bass_do done=5 playing=false
+#58 SON Son : rien ne joue.
+#58 > glisse 294 1000 294 400
+#58 DOIGT launch_padlive « Pad Live »
+#59 ROUTE launch | MODE simple | EMPREINTE e9c8833bc3 | project=p-79a7da0a tuto=house/Facile active=false step=bass_do done=5 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 294 1045
+#59 DOIGT launch_learn « Aku belajar »
+#60 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 8047416026 | project=p-79a7da0a tuto=house/Facile active=false step=bass_do done=5 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT CONTRAST « Dengan tutorial Pro » 1.91:1 (needs 4.5:1, 14 sp)
+#60 > touche 294 297
+#60 DOIGT mode_card_simple « Simpel »
+#61 ROUTE dialogue:tuto_chooser | MODE simple | EMPREINTE 1274447e0d | project=p-79a7da0a tuto=house/Facile active=false step=bass_do done=5 playing=false
+#61 SON Son : rien ne joue.
+#61 LAYOUT CONTRAST « Acid techno » 2.78:1 (needs 3.0:1, 16 sp)
+#61 > touche 294 325
+#61 DOIGT tuto_style_techno « Techno »
+#62 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ee3275a7a7 | project=p-b4fd02e9 tuto=techno/Facile active=true step=ref done=0 playing=false
+#62 SON Son : rien ne joue.
+#62 > retour
+#62 RETOUR
+#63 ROUTE launch | MODE simple | EMPREINTE 36fdb256bb | project=p-b4fd02e9 tuto=techno/Facile active=true step=ref done=0 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 294 694
+#63 DOIGT launch_projects « Proyekku »
+#64 ROUTE dialogue:projects | MODE simple | EMPREINTE 1ee2f8f1dc | project=p-b4fd02e9 tuto=techno/Facile active=true step=ref done=0 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 250 612
+#64 DOIGT project_p-79a7da0a « Proyekku 1 »
+#65 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 87fb986340 | project=p-79a7da0a tuto=house/Facile active=false step=bass_do done=5 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 147 912
+#65 DOIGT tuto_resume « Lanjutkan tutorial »
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ed650931f6 | project=p-79a7da0a tuto=house/Facile active=true step=bass_do done=5 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 459 477
+#66 DOIGT tuto_chapters
+#67 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE f69d4270ce | project=p-79a7da0a tuto=house/Facile active=true step=bass_do done=5 playing=false
+#67 SON Son : rien ne joue.
+#67 LAYOUT CONTRAST « 0/1 » 2.81:1 (needs 4.5:1, 16 sp)
+#67 LAYOUT CONTRAST « 0/6 » 1.90:1 (needs 4.5:1, 16 sp)
+#67 LAYOUT CONTRAST « Susun bagian-bagianmu » 3.44:1 (needs 4.5:1, 16 sp)
+#67 > touche 294 306
+#67 DOIGT tuto_chapter_2 « 3 »
+#68 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d3b7c6ef11 | project=p-79a7da0a tuto=house/Facile active=true step=clap_do done=5 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 294 807
+#68 DOIGT tuto_do «   Aku yang buat »
+#69 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 8c0df4892f | project=p-79a7da0a tuto=house/Facile active=true step=clap_do done=5 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 325 420
+#69 DOIGT rien
+#70 ROUTE tuto_spot_ring | MODE simple | EMPREINTE 8c0df4892f | project=p-79a7da0a tuto=house/Facile active=true step=clap_do done=5 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 325 500
+#70 DOIGT rien
+#71 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d2c87f036a | project=p-79a7da0a tuto=house/Facile active=true step=clap_do done=5 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT CUT « Giliranmu: di pad “Tepuk tangan”, sentuh kotak bergaris putus di 2 bar, di ketukan 2 dan 4. » ellipsized (« … »)
+#71 > touche 435 337
+#71 DOIGT tuto_bar_go « Bar 2 · 2 kotak → »
+#72 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 893a269c45 | project=p-79a7da0a tuto=house/Facile active=true step=clap_do done=5 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 325 420
+#72 DOIGT step_20 « Step 5 »
+#73 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8d20c5957b | project=p-79a7da0a tuto=house/Facile active=true step=clap_do done=5 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 325 500
+#73 DOIGT step_28 « Step 13 »
+#74 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 20a202bf26 | project=p-79a7da0a tuto=house/Facile active=true step=clap_do done=6 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 531 873
+#74 DOIGT tuto_fold
+#75 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 13a1334e2e | project=p-79a7da0a tuto=house/Facile active=true step=clap_do done=6 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 459 588
+#75 DOIGT tuto_chapters
+#76 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE 1570dffbe5 | project=p-79a7da0a tuto=house/Facile active=true step=clap_do done=6 playing=false
+#76 SON Son : rien ne joue.
+#76 LAYOUT CONTRAST « 2 » 1.21:1 (needs 4.5:1, 16 sp)
+#76 LAYOUT CONTRAST « Kick » 1.40:1 (needs 4.5:1, 16 sp)
+#76 LAYOUT CONTRAST « 3 » 1.23:1 (needs 4.5:1, 16 sp)
+#76 LAYOUT CONTRAST « Clap » 1.23:1 (needs 4.5:1, 16 sp)
+#76 LAYOUT CONTRAST « 4 » 1.24:1 (needs 4.5:1, 16 sp)
+#76 LAYOUT CONTRAST « 0/4 » 1.69:1 (needs 4.5:1, 16 sp)
+#76 LAYOUT CONTRAST « 5 » 1.23:1 (needs 4.5:1, 16 sp)
+#76 LAYOUT CONTRAST « Bass » 1.38:1 (needs 4.5:1, 16 sp)
+#76 LAYOUT CONTRAST « 0/2 » 1.34:1 (needs 4.5:1, 16 sp)
+#76 LAYOUT CONTRAST « 6 » 3.64:1 (needs 4.5:1, 16 sp)
+#76 LAYOUT CONTRAST « Piano » 3.64:1 (needs 4.5:1, 16 sp)
+#76 LAYOUT CONTRAST « 0/2 » 3.64:1 (needs 4.5:1, 16 sp)
+#76 LAYOUT CONTRAST « 0/1 » 1.60:1 (needs 4.5:1, 16 sp)
+#76 > fin
+#76 FIN : fin

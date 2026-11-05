@@ -1,0 +1,3 @@
+#0 SIEGE lang=fr device=tablet11Land font=100 mode=simple theme=- fresh=non gestes.max=60 lit=non main=both amenee=padlive
+#0 AMENEE padlive
+#0 AMENEE > touche 960 1222 (launch_padlive)

@@ -1,0 +1,8 @@
+lang=fr
+device=phoneLand
+font=100
+mode=pro
+amenee=padlive
+gestes.max=90
+mission=padlive
+timeout.minutes=25

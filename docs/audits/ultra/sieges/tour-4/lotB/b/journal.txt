@@ -1,0 +1,437 @@
+#0 SIEGE lang=en device=tablet11Land font=100 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=-
+#1 ROUTE launch | MODE pro | EMPREINTE 5bc24c6153 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 1334 229
+#1 DOIGT launch_new « New song »
+#2 ROUTE dialogue:new_project | MODE pro | EMPREINTE b0c6c00907 | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > touche 960 486
+#2 DOIGT start_empty « I'll start from scratch »
+#3 ROUTE dialogue:mode_step | MODE pro | EMPREINTE b80159291a | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 > touche 1225 261
+#3 DOIGT mode_card_pro « Pro »
+#4 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 9dd7eacf2a | project=p-8428f09d no tuto
+#4 SON Son : rien ne joue.
+#4 > touche 782 180
+#4 DOIGT track_0 « Synth »
+#5 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e03c1867fc | project=p-8428f09d no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST «  Record my melody » 2.78:1 (needs 4.5:1, 14 sp)
+#5 > touche 343 270
+#5 DOIGT mode_notes « Notes »
+#6 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 30fa36ffbf | project=p-8428f09d no tuto
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « − » 4.37:1 (needs 4.5:1, 14 sp)
+#6 > touche 391 648
+#6 DOIGT loop_plus « + »
+#7 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 17acf10883 | project=p-8428f09d no tuto
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « + » 4.37:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST « + » 3.92:1 (needs 4.5:1, 14 sp)
+#7 > touche 407 648
+#7 DOIGT loop_plus « + »
+#8 ROUTE synth/tab_Sons | MODE pro | EMPREINTE afc53203af | project=p-8428f09d no tuto
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « + » 4.28:1 (needs 4.5:1, 14 sp)
+#8 > touche 407 648
+#8 DOIGT loop_plus « + »
+#9 ROUTE synth/tab_Sons | MODE pro | EMPREINTE da865b10f5 | project=p-8428f09d no tuto
+#9 SON Son : rien ne joue.
+#9 > touche 408 648
+#9 DOIGT loop_plus « + »
+#10 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 694dd73010 | project=p-8428f09d no tuto
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « + » 3.87:1 (needs 4.5:1, 14 sp)
+#10 > appui-long 407 648
+#10 DOIGT loop_plus « + »
+#11 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 691e16bdc8 | project=p-8428f09d no tuto
+#11 SON Son : rien ne joue.
+#11 > touche 407 648
+#11 DOIGT loop_plus « + »
+#12 ROUTE synth/tab_Sons | MODE pro | EMPREINTE a57cad57e0 | project=p-8428f09d no tuto
+#12 SON Son : rien ne joue.
+#12 > touche 407 648
+#12 DOIGT loop_plus « + »
+#13 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7fcac9d50a | project=p-8428f09d no tuto
+#13 SON Son : rien ne joue.
+#13 > touche 407 648
+#13 DOIGT loop_plus « + »
+#14 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 6727b9e565 | project=p-8428f09d no tuto
+#14 SON Son : rien ne joue.
+#14 > touche 407 648
+#14 DOIGT loop_plus « + »
+#15 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7cde7643ea | project=p-8428f09d no tuto
+#15 SON Son : rien ne joue.
+#15 > touche 407 648
+#15 DOIGT loop_plus « + »
+#16 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 6f7864517f | project=p-8428f09d no tuto
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « + » 3.88:1 (needs 4.5:1, 14 sp)
+#16 > touche 407 648
+#16 DOIGT loop_plus « + »
+#17 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 285bc85224 | project=p-8428f09d no tuto
+#17 SON Son : rien ne joue.
+#17 > touche 407 648
+#17 DOIGT loop_plus « + »
+#18 ROUTE synth/tab_Sons | MODE pro | EMPREINTE cc58a77117 | project=p-8428f09d no tuto
+#18 SON Son : rien ne joue.
+#18 > touche 407 648
+#18 DOIGT loop_plus « + »
+#19 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7f847715ed | project=p-8428f09d no tuto
+#19 SON Son : rien ne joue.
+#19 > touche 407 648
+#19 DOIGT loop_plus « + »
+#20 ROUTE synth/tab_Sons | MODE pro | EMPREINTE f525df2247 | project=p-8428f09d no tuto
+#20 SON Son : rien ne joue.
+#20 > touche 407 648
+#20 DOIGT loop_plus « + »
+#21 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 3bd05e8f43 | project=p-8428f09d no tuto
+#21 SON Son : rien ne joue.
+#21 > touche 265 1020
+#21 DOIGT rien
+#22 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 168366e138 | project=p-8428f09d no tuto
+#22 SON Son : rien ne joue.
+#22 > touche 425 936
+#22 DOIGT rien
+#23 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 9e5f8fd06f | project=p-8428f09d no tuto
+#23 SON Son : rien ne joue.
+#23 > glisse 605 852 870 852
+#23 DOIGT rien
+#24 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 9e5f8fd06f | project=p-8428f09d no tuto
+#24 SON Son : rien ne joue.
+#24 > touche 605 852
+#24 DOIGT rien
+#25 ROUTE synth/tab_Sons | MODE pro | EMPREINTE b9826131c7 | project=p-8428f09d no tuto
+#25 SON Son : rien ne joue.
+#25 > touche 850 648
+#25 DOIGT dans:synth « 1/2 »
+#26 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 013e456ebc | project=p-8428f09d no tuto
+#26 SON Son : rien ne joue.
+#26 > touche 785 1020
+#26 DOIGT rien
+#27 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 5b4b84b86d | project=p-8428f09d no tuto
+#27 SON Son : rien ne joue.
+#27 > appui-long 280 1020
+#27 DOIGT rien
+#28 ROUTE dialogue:roll_note_menu | MODE pro | EMPREINTE c8f355b19a | project=p-8428f09d no tuto
+#28 SON Son : rien ne joue.
+#28 > touche 375 903
+#28 DOIGT roll_note_copy « Copy the note »
+#29 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 8913efcd71 | project=p-8428f09d no tuto
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « Delete » 3.42:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « 2 » 3.58:1 (needs 4.5:1, 14 sp)
+#29 > touche 362 567
+#29 DOIGT mode_select « ⬚ Select »
+#30 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 92e156cfd7 | project=p-8428f09d no tuto
+#30 SON Son : rien ne joue.
+#30 > touche 255 729
+#30 DOIGT select_all « All »
+#31 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 00154a72c8 | project=p-8428f09d no tuto
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « All » 3.78:1 (needs 4.5:1, 14 sp)
+#31 > touche 338 804
+#31 DOIGT sel_copy « Copy »
+#32 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 988a01e238 | project=p-8428f09d no tuto
+#32 SON Son : rien ne joue.
+#32 LAYOUT CONTRAST « Copy » 3.93:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « 3 » 3.58:1 (needs 4.5:1, 14 sp)
+#32 > touche 464 804
+#32 DOIGT sel_paste « Paste bar 3 »
+#33 ROUTE synth/tab_Sons | MODE pro | EMPREINTE f3353f9d6a | project=p-8428f09d no tuto
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « Paste bar 5 » 3.84:1 (needs 4.5:1, 14 sp)
+#33 > touche 464 804
+#33 DOIGT sel_paste « Paste bar 5 »
+#34 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 4456939145 | project=p-8428f09d no tuto
+#34 SON Son : rien ne joue.
+#34 LAYOUT CONTRAST « Paste bar 7 » 3.84:1 (needs 4.5:1, 14 sp)
+#34 > touche 464 804
+#34 DOIGT sel_paste « Paste bar 7 »
+#35 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 129e906e67 | project=p-8428f09d no tuto
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST « Paste bar 9 » 3.75:1 (needs 4.5:1, 14 sp)
+#35 > touche 464 804
+#35 DOIGT sel_paste « Paste bar 9 »
+#36 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 45bea444d5 | project=p-8428f09d no tuto
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST « Paste bar 11 » 3.82:1 (needs 4.5:1, 14 sp)
+#36 > touche 464 804
+#36 DOIGT sel_paste « Paste bar 11 »
+#37 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 0cad0db45e | project=p-8428f09d no tuto
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « Paste bar 13 » 3.77:1 (needs 4.5:1, 14 sp)
+#37 > touche 464 804
+#37 DOIGT sel_paste « Paste bar 13 »
+#38 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 5033cf5edf | project=p-8428f09d no tuto
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « Paste bar 15 » 3.75:1 (needs 4.5:1, 14 sp)
+#38 > touche 464 804
+#38 DOIGT sel_paste « Paste bar 15 »
+#39 ROUTE synth/tab_Sons | MODE pro | EMPREINTE ca0bc9a203 | project=p-8428f09d no tuto
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « Paste bar 16 » 3.82:1 (needs 4.5:1, 14 sp)
+#39 > touche 468 804
+#39 DOIGT sel_paste « Paste bar 16 »
+#40 ROUTE synth/tab_Sons | MODE pro | EMPREINTE f41c3a2b65 | project=p-8428f09d no tuto
+#40 SON Son : rien ne joue.
+#40 LAYOUT CONTRAST « Paste bar 16 » 3.84:1 (needs 4.5:1, 14 sp)
+#40 > touche 497 567
+#40 DOIGT roll_fit « See all »
+#41 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 62d526fed8 | project=p-8428f09d no tuto
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « See all » 4.14:1 (needs 4.5:1, 14 sp)
+#41 > glisse 1000 620 1000 250
+#41 DOIGT rien
+#42 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 4f63d98d8a | project=p-8428f09d no tuto
+#42 SON Son : rien ne joue.
+#42 > touche 1587 42
+#42 DOIGT top_undo
+#43 ROUTE synth/tab_Sons | MODE pro | EMPREINTE d0afdb85cc | project=p-8428f09d no tuto
+#43 SON Son : rien ne joue.
+#43 > touche 1587 42
+#43 DOIGT top_undo
+#44 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 35f63f321c | project=p-8428f09d no tuto
+#44 SON Son : rien ne joue.
+#44 > touche 1659 42
+#44 DOIGT top_redo
+#45 ROUTE synth/tab_Sons | MODE pro | EMPREINTE d0afdb85cc | project=p-8428f09d no tuto
+#45 SON Son : rien ne joue.
+#45 > touche 804 236
+#45 DOIGT zoom_in « + »
+#46 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 6b4d1da8cc | project=p-8428f09d no tuto
+#46 SON Son : rien ne joue.
+#46 LAYOUT CONTRAST « + » 3.82:1 (needs 4.5:1, 14 sp)
+#46 > touche 804 236
+#46 DOIGT zoom_in « + »
+#47 ROUTE synth/tab_Sons | MODE pro | EMPREINTE f9560dcf3b | project=p-8428f09d no tuto
+#47 SON Son : rien ne joue.
+#47 LAYOUT CONTRAST « + » 3.81:1 (needs 4.5:1, 14 sp)
+#47 > touche 804 236
+#47 DOIGT zoom_in « + »
+#48 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 09f4562c2f | project=p-8428f09d no tuto
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « + » 3.75:1 (needs 4.5:1, 14 sp)
+#48 > touche 221 233
+#48 DOIGT mode_draw « ✏ Draw »
+#49 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 338aac01a3 | project=p-8428f09d no tuto
+#49 SON Son : rien ne joue.
+#49 > touche 1301 302
+#49 DOIGT grid_12 « 1/32 »
+#50 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7eab4d44d0 | project=p-8428f09d no tuto
+#50 SON Son : rien ne joue.
+#50 > touche 577 302
+#50 DOIGT dans:synth « 1/16 »
+#51 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 4502e93204 | project=p-8428f09d no tuto
+#51 SON Son : rien ne joue.
+#51 > touche 604 950
+#51 DOIGT rien
+#52 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 94b2c6fe9f | project=p-8428f09d no tuto
+#52 SON Son : rien ne joue.
+#52 > touche 1091 302
+#52 DOIGT grid_24 « 1/16 »
+#53 ROUTE synth/tab_Sons | MODE pro | EMPREINTE a0593b9e2d | project=p-8428f09d no tuto
+#53 SON Son : rien ne joue.
+#53 > touche 362 233
+#53 DOIGT mode_select « ⬚ Select »
+#54 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e37f593649 | project=p-8428f09d no tuto
+#54 SON Son : rien ne joue.
+#54 > touche 606 950
+#54 DOIGT rien
+#55 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 34ffa5451b | project=p-8428f09d no tuto
+#55 SON Son : rien ne joue.
+#55 > touche 625 458
+#55 DOIGT dans:synth « Put in time »
+#56 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 523ec418bc | project=p-8428f09d no tuto
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « Put in time » 3.87:1 (needs 4.5:1, 14 sp)
+#56 > glisse 1000 480 1000 120
+#56 DOIGT dans:synth « Humanize »
+#57 ROUTE piano_roll/tab_Sons | MODE pro | EMPREINTE 3253ff7ee9 | project=p-8428f09d no tuto
+#57 SON Son : rien ne joue.
+#57 > glisse 1000 1000 1000 600
+#57 DOIGT rien
+#58 ROUTE piano_roll/tab_Sons | MODE pro | EMPREINTE d1ec03fd51 | project=p-8428f09d no tuto
+#58 SON Son : rien ne joue.
+#58 > glisse 614 1080 614 1120
+#58 DOIGT rien
+#59 ROUTE piano_roll/tab_Sons | MODE pro | EMPREINTE d1ec03fd51 | project=p-8428f09d no tuto
+#59 SON Son : rien ne joue.
+#59 > touche 1803 42
+#59 DOIGT top_play
+#60 ROUTE piano_roll/tab_Sons | MODE pro | EMPREINTE e7a910713c | project=p-8428f09d no tuto
+#60 SON Son : la musique du projet joue en boucle.
+#60 > touche 1803 42
+#60 DOIGT top_play
+#61 ROUTE piano_roll/tab_Sons | MODE pro | EMPREINTE d1ec03fd51 | project=p-8428f09d no tuto
+#61 SON Son : rien ne joue.
+#61 > glisse 1000 300 1000 1100
+#61 DOIGT rien
+#62 ROUTE piano_roll/tab_Sons | MODE pro | EMPREINTE 706d259cde | project=p-8428f09d no tuto
+#62 SON Son : rien ne joue.
+#62 > glisse 145 300 145 1000
+#62 DOIGT rien
+#63 ROUTE synth/tab_Sons | MODE pro | EMPREINTE c8c39180f4 | project=p-8428f09d no tuto
+#63 SON Son : rien ne joue.
+#63 > touche 464 798
+#63 DOIGT sel_paste « Paste bar 2 »
+#64 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 93bac90048 | project=p-8428f09d no tuto
+#64 SON Son : rien ne joue.
+#64 LAYOUT CONTRAST « Paste bar 2 » 3.91:1 (needs 4.5:1, 14 sp)
+#64 LAYOUT CONTRAST « 4 » 3.58:1 (needs 4.5:1, 14 sp)
+#64 > glisse 1000 1100 1000 920
+#64 DOIGT rien
+#65 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 289080c5f1 | project=p-8428f09d no tuto
+#65 SON Son : rien ne joue.
+#65 > glisse 145 1000 145 380
+#65 DOIGT rien
+#66 ROUTE piano_roll/tab_Sons | MODE pro | EMPREINTE 7f7978c194 | project=p-8428f09d no tuto
+#66 SON Son : rien ne joue.
+#66 LAYOUT CONTRAST « Velocity » 1.33:1 (needs 4.5:1, 12 sp)
+#66 > glisse 1000 300 1000 750
+#66 DOIGT rien
+#67 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 3f6554df6c | project=p-8428f09d no tuto
+#67 SON Son : rien ne joue.
+#67 > glisse 145 400 145 1000
+#67 DOIGT rien
+#68 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 2e4e0890c8 | project=p-8428f09d no tuto
+#68 SON Son : rien ne joue.
+#68 > touche 205 270
+#68 DOIGT mode_keyboard « Keyboard »
+#69 ROUTE synth/tab_Sons | MODE pro | EMPREINTE ce76063cb6 | project=p-8428f09d no tuto
+#69 SON Son : rien ne joue.
+#69 > touche 890 270
+#69 DOIGT key_layout_Scale « Scale »
+#70 ROUTE synth/tab_Sons | MODE pro | EMPREINTE c4421028f8 | project=p-8428f09d no tuto
+#70 SON Son : rien ne joue.
+#70 LAYOUT CONTRAST « 1 » 3.41:1 (needs 4.5:1, 12 sp)
+#70 LAYOUT CONTRAST « 2 » 3.73:1 (needs 4.5:1, 12 sp)
+#70 LAYOUT CONTRAST « 3 » 3.68:1 (needs 4.5:1, 12 sp)
+#70 LAYOUT CONTRAST « 4 » 3.63:1 (needs 4.5:1, 12 sp)
+#70 LAYOUT CONTRAST « 5 » 3.73:1 (needs 4.5:1, 12 sp)
+#70 LAYOUT CONTRAST « 6 » 3.67:1 (needs 4.5:1, 12 sp)
+#70 LAYOUT CONTRAST « 7 » 3.67:1 (needs 4.5:1, 12 sp)
+#70 LAYOUT CONTRAST « 8 » 3.41:1 (needs 4.5:1, 12 sp)
+#70 > appui-long 890 270
+#70 DOIGT key_layout_Scale « Scale »
+#71 ROUTE synth/tab_Sons | MODE pro | EMPREINTE c4421028f8 | project=p-8428f09d no tuto
+#71 SON Son : rien ne joue.
+#71 > touche 60 541
+#71 DOIGT tab_Plus « More »
+#72 ROUTE plus/tab_Plus | MODE pro | EMPREINTE a08bc9761d | project=p-8428f09d no tuto
+#72 SON Son : rien ne joue.
+#72 > touche 60 193
+#72 DOIGT tab_Structure « Structure »
+#73 ROUTE session/tab_Structure | MODE pro | EMPREINTE da8490b8f4 | project=p-8428f09d no tuto
+#73 SON Son : rien ne joue.
+#73 > touche 60 280
+#73 DOIGT tab_Sons « Sounds »
+#74 ROUTE synth/tab_Sons | MODE pro | EMPREINTE c4421028f8 | project=p-8428f09d no tuto
+#74 SON Son : rien ne joue.
+#74 > touche 343 270
+#74 DOIGT mode_notes « Notes »
+#75 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 71c4ab992d | project=p-8428f09d no tuto
+#75 SON Son : rien ne joue.
+#75 > touche 362 567
+#75 DOIGT mode_select « ⬚ Select »
+#76 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e0eff87eee | project=p-8428f09d no tuto
+#76 SON Son : rien ne joue.
+#76 LAYOUT CONTRAST « 1 » 3.58:1 (needs 4.5:1, 14 sp)
+#76 > touche 358 729
+#76 DOIGT select_all « All »
+#77 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 505d26a3ec | project=p-8428f09d no tuto
+#77 SON Son : rien ne joue.
+#77 LAYOUT CONTRAST « All » 3.81:1 (needs 4.5:1, 14 sp)
+#77 > touche 1138 804
+#77 DOIGT sel_delete « Delete »
+#78 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 2aff248e95 | project=p-8428f09d no tuto
+#78 SON Son : rien ne joue.
+#78 > touche 1587 42
+#78 DOIGT top_undo
+#79 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e6eef67521 | project=p-8428f09d no tuto
+#79 SON Son : rien ne joue.
+#79 > glisse 145 1000 145 380
+#79 DOIGT rien
+#80 ROUTE piano_roll/tab_Sons | MODE pro | EMPREINTE 50fde28baa | project=p-8428f09d no tuto
+#80 SON Son : rien ne joue.
+#80 > glisse 685 330 870 330
+#80 DOIGT rien
+#81 ROUTE piano_roll/tab_Sons | MODE pro | EMPREINTE 629650e420 | project=p-8428f09d no tuto
+#81 SON Son : rien ne joue.
+#81 > glisse 866 330 1050 330
+#81 DOIGT rien
+#82 ROUTE piano_roll/tab_Sons | MODE pro | EMPREINTE 629650e420 | project=p-8428f09d no tuto
+#82 SON Son : rien ne joue.
+#82 > glisse 145 400 145 900
+#82 DOIGT rien
+#83 ROUTE synth/tab_Sons | MODE pro | EMPREINTE c3718977d2 | project=p-8428f09d no tuto
+#83 SON Son : rien ne joue.
+#83 > touche 850 528
+#83 DOIGT dans:synth « 1/2 »
+#84 ROUTE synth/tab_Sons | MODE pro | EMPREINTE bf53b0095a | project=p-8428f09d no tuto
+#84 SON Son : rien ne joue.
+#84 > touche 745 683
+#84 DOIGT dans:synth « Legato »
+#85 ROUTE synth/tab_Sons | MODE pro | EMPREINTE bf53b0095a | project=p-8428f09d no tuto
+#85 SON Son : rien ne joue.
+#85 LAYOUT CONTRAST « Legato » 3.85:1 (needs 4.5:1, 14 sp)
+#85 > touche 1587 42
+#85 DOIGT top_undo
+#86 ROUTE synth/tab_Sons | MODE pro | EMPREINTE f734c05a89 | project=p-8428f09d no tuto
+#86 SON Son : rien ne joue.
+#86 > touche 1587 42
+#86 DOIGT top_undo
+#87 ROUTE synth/tab_Sons | MODE pro | EMPREINTE f734c05a89 | project=p-8428f09d no tuto
+#87 SON Son : rien ne joue.
+#87 > touche 1587 42
+#87 DOIGT top_undo
+#88 ROUTE synth/tab_Sons | MODE pro | EMPREINTE f734c05a89 | project=p-8428f09d no tuto
+#88 SON Son : rien ne joue.
+#88 RIEN NE CHANGE (3 écrans identiques)
+#88 > touche 705 42
+#88 DOIGT top_projects « My project 1 »
+#89 ROUTE dialogue:projects | MODE pro | EMPREINTE 5c9161129c | project=p-8428f09d no tuto
+#89 SON Son : rien ne joue.
+#89 > retour
+#89 RETOUR
+#90 ROUTE launch | MODE pro | EMPREINTE b781e9a844 | project=p-8428f09d no tuto
+#90 SON Son : rien ne joue.
+#90 > touche 633 649
+#90 DOIGT launch_continue « Keep going »
+#91 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 263554b2e2 | project=p-8428f09d no tuto
+#91 SON Son : rien ne joue.
+#91 > touche 782 180
+#91 DOIGT track_0 « Synth »
+#92 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 1b835c88fd | project=p-8428f09d no tuto
+#92 SON Son : rien ne joue.
+#92 > touche 343 270
+#92 DOIGT mode_notes « Notes »
+#93 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7386330959 | project=p-8428f09d no tuto
+#93 SON Son : rien ne joue.
+#93 > touche 363 810
+#93 DOIGT quantize_50 « In time 50% »
+#94 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 71c4ab992d | project=p-8428f09d no tuto
+#94 SON Son : rien ne joue.
+#94 LAYOUT CONTRAST « In time 50% » 3.87:1 (needs 4.5:1, 14 sp)
+#94 > touche 1875 114
+#94 DOIGT help_labels_button « Label the screen »
+#94 AIDE help_labels_button
+#95 ROUTE help_labels | MODE pro | EMPREINTE 62fe1f23d8 | project=p-8428f09d no tuto
+#95 SON Son : rien ne joue.
+#95 > touche 850 1098
+#95 DOIGT help_labels_hide « Hide the labels »
+#95 AIDE help_labels_hide
+#96 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 71c4ab992d | project=p-8428f09d no tuto
+#96 SON Son : rien ne joue.
+#96 > touche 218 810
+#96 DOIGT chord_mode « Chords »
+#97 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 2f79fd32bb | project=p-8428f09d no tuto
+#97 SON Son : rien ne joue.
+#97 > touche 1705 1059
+#97 DOIGT rien
+#98 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 18da766309 | project=p-8428f09d no tuto
+#98 SON Son : rien ne joue.
+#98 > fin
+#98 FIN : fin

@@ -354,6 +354,8 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Box(Modifier.size(12.dp).background(color, CircleShape))
             Text(shownName, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            // Audit ultra round 3 (integration): the track's « ? » for its controls (takes, count-in, alone, recording), which had none.
+            com.pocketstudio.ui.HelpDot(Glossary.AUDIO_TRACK, about = listOf("audio_*", "record_count_in"))
             Box {
                 IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", shownName)) }
                 ScaledDropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {

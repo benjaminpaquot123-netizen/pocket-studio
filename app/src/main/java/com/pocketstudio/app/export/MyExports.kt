@@ -87,8 +87,15 @@ object MyExports {
 @Composable
 fun MyExportsButton(tag: String, modifier: Modifier = Modifier) {
     var open by rememberSaveable { mutableStateOf(false) }
-    TextButton(onClick = { open = true }, modifier = modifier.fillMaxWidth().heightIn(min = 48.dp).testTag(tag)) {
-        Text(tr("Mes exports : retrouver et renvoyer un fichier"), color = Neon.Cyan, modifier = Modifier.weight(1f))
+    androidx.compose.foundation.layout.Row(modifier.fillMaxWidth(), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+        TextButton(onClick = { open = true }, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag(tag)) {
+            Text(tr("Mes exports : retrouver et renvoyer un fichier"), color = Neon.Cyan, modifier = Modifier.weight(1f))
+        }
+        // Round 3 integration: where these files are, in its « ? ».
+        com.pocketstudio.ui.HelpDot(
+            com.pocketstudio.ui.Help(tr("Mes exports"), tr("Dans Musique › BenStudio sur ce téléphone. Les plus récents d'abord.")),
+            about = listOf(tag),
+        )
     }
     if (open) MyExportsDialog { open = false }
 }

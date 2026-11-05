@@ -334,6 +334,8 @@ internal fun ChallengePanel(
     ui: ChallengeUi, pads: com.pocketstudio.model.LivePads, actions: ChallengeActions,
     /** The best stars of each level ([com.pocketstudio.model.PadLiveSet.stars]). */
     best: List<Int> = emptyList(),
+    /** The tempo the screen shows (the project's), see [TempoLight]. */
+    screenBpm: Double? = null,
 ) {
     val shape = RoundedCornerShape(16.dp)
     Column(
@@ -385,7 +387,7 @@ internal fun ChallengePanel(
             // that stays (each hit where it falls in the bar, in its pad's colour), the tempo as a light beating, the
             // stars won big.
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                TempoLight(c.bpm, on = ui !is ChallengeUi.Done)
+                TempoLight(c.bpm, on = ui !is ChallengeUi.Done, screenBpm = screenBpm)
                 RhythmStrip(c, ui, pads, said, Modifier.weight(1f))
             }
             Stars(if (ui is ChallengeUi.Done) ui.result.stars else best.getOrElse(c.level - 1) { 0 }, big = ui is ChallengeUi.Done)
@@ -497,7 +499,7 @@ private fun Stars(stars: Int, big: Boolean = true) {
  * try is scored.
  */
 @Composable
-private fun TempoLight(bpm: Double, on: Boolean) {
+private fun TempoLight(bpm: Double, on: Boolean, screenBpm: Double? = null) {
     val beatMs = (60_000.0 / bpm.coerceIn(30.0, 300.0)).toInt()
     val pulse = androidx.compose.animation.core.rememberInfiniteTransition(label = "tempo")
     val level by pulse.animateFloat(
@@ -510,7 +512,12 @@ private fun TempoLight(bpm: Double, on: Boolean) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(Modifier.size(22.dp).clip(CircleShape).background(Neon.Amber.copy(alpha = if (on) level else 0.25f)).border(1.5.dp, Neon.Amber, CircleShape))
-        Text("♩ ${kotlin.math.round(bpm).toInt()}", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1)
+        // Audit ultra round 3 (zone 1 note, CI 242 n° 9): « ♩ 120 » beside the screen's 124. The challenge is played at the
+        // project's tempo kept between 80 and 120 (PadChallenge.MAX_BPM, a child keeps up): slowed, its number would contradict
+        // the tempo on screen. The number shows only when it is the screen's; the light beats what is played, TalkBack says it.
+        if (screenBpm == null || screenBpm.toInt() == kotlin.math.round(bpm).toInt()) {
+            Text("♩ ${kotlin.math.round(bpm).toInt()}", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1)
+        }
     }
 }
 

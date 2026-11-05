@@ -939,7 +939,9 @@ private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveA
                 // Lot « Aide à jour »: the empty corner over the bricks' letters holds the grid's « ? ».
                 Box(Modifier.width(sceneWidth).height(header), contentAlignment = Alignment.Center) {
                     com.pocketstudio.ui.HelpDot(
-                        com.pocketstudio.app.help.ScreenHelp.liveGrid(remix = columns.any { it.key == com.pocketstudio.model.SongPart.REMIX }),
+                        // The grid's help with its Remix line (LIVE_GRID) where the grid has a Remix column, without it elsewhere.
+                        if (columns.any { it.key == com.pocketstudio.model.SongPart.REMIX }) com.pocketstudio.app.help.ScreenHelp.LIVE_GRID
+                        else com.pocketstudio.app.help.ScreenHelp.liveGrid(remix = false),
                         about = listOf("live_row_*", "live_pad_*", "live_stop_*", "live_stop_all", "live_mute_*", "live_columns_more"),
                     )
                 }

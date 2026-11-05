@@ -434,13 +434,20 @@ fun ShareSheetContent(
         // Audit ultra round 3 (n° 13, seat F d 22, 61): the project itself, to go on with it elsewhere, where one sends
         // (it was only in Mes projets › ⋯).
         actions.sendProject?.let { send ->
-            TextButton(onClick = send, enabled = !ui.running, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("share_project")) {
-                Column(Modifier.weight(1f)) {
-                    Text(tr("Envoyer le projet"), color = Neon.Cyan)
-                    Text(tr("Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer."),
-                        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = send, enabled = !ui.running, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("share_project")) {
+                    Column(Modifier.weight(1f)) {
+                        Text(tr("Envoyer le projet"), color = Neon.Cyan)
+                        Text(tr("Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer."),
+                            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                    }
+                    Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan)
                 }
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan)
+                // Round 3 integration: its « ? », as the other exports' line has one (what a project file is, where it opens).
+                com.pocketstudio.ui.HelpDot(
+                    com.pocketstudio.ui.Help(tr("Envoyer le projet"), tr("Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.")),
+                    about = listOf("share_project"),
+                )
             }
         }
         // Audit ultra round 3 (n° 11): the files made before, to find and send again.

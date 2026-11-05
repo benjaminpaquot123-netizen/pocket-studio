@@ -345,7 +345,7 @@ private fun PadsGrid(
 /** Under (upright) or beside (lying down) the pads: the effects or the challenge, « Plus », the big red button. */
 @Composable
 private fun PadLiveControls(ui: PadLiveUi, actions: PadLiveActions, more: Boolean, toggleMore: () -> Unit, held: HeldFx, party: () -> Unit) {
-    if (ui.challenge != ChallengeUi.Off) ChallengePanel(ui.challenge, ui.pads, actions.challengeActions, best = ui.challengeStars)
+    if (ui.challenge != ChallengeUi.Off) ChallengePanel(ui.challenge, ui.pads, actions.challengeActions, best = ui.challengeStars, screenBpm = ui.tempoBpm)
     else SceneEffects(ui, actions, more, held)
     AnimatedVisibility(more) { MoreRow(ui, actions, party = party) }
     Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {

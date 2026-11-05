@@ -1358,12 +1358,13 @@ fun AppRoot() {
         showLivePads = false
         openRemix()
     }
-    // Lot B3: Pad Live chosen at the first launch: its « Live » project made and opened, as the home's card does.
+    // Audit ultra round 2, n° 21: « Enregistrer ma voix ou ma guitare » chosen at the first launch: the microphone's page.
     LaunchedEffect(voiceFromWelcome) {
         if (!voiceFromWelcome) return@LaunchedEffect
         voiceFromWelcome = false
         openVoice()
     }
+    // Lot B3: Pad Live chosen at the first launch: its « Live » project made and opened, as the home's card does.
     LaunchedEffect(padLiveFromWelcome) {
         if (!padLiveFromWelcome) return@LaunchedEffect
         padLiveFromWelcome = false

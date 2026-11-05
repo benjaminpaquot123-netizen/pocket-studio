@@ -11037,6 +11037,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             var ending: String? = null
             val done = ArrayList<File>()
             var musicOk = true
+            // Audit ultra round 2 (n° 10): the text report goes to Documents (Musique takes sound only): its copy never
+            // makes the song's own « Sauvegardé dans Musique » line disappear.
+            var reportOk = false
             var loudness: Double? = null
             var truePeak: Double? = null
             var seconds: Double? = null
@@ -11091,9 +11094,6 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                                     val done = job.progress
                                     _export.value = _export.value.copy(progress = (index + done) / renders.size)
                                     com.pocketstudio.app.export.ExportRun.progress(_export.value.progress, _export.value.stage)
-            // Audit ultra round 2 (n° 10): the text report goes to Documents (Musique takes sound only): its copy never
-            // makes the song's own « Sauvegardé dans Musique » line disappear.
-            var reportOk = false
                                     // « Annuler » touched before this render began: it stops at once.
                                     if (exportCancelled) job.cancel()
                                     if (!stalled && watch.stalled(done)) {

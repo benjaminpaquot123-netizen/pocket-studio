@@ -1821,11 +1821,11 @@ open class ScreenshotTest {
                     com.pocketstudio.app.export.ShareCheck.Saturation,
                 ),
                 playing = true,
+                // Audit ultra round 2 (n° 10): the target the file aims at (Pro).
+                target = "Club · −8 LUFS",
             ),
             com.pocketstudio.app.export.ShareSheetActions(),
             Modifier.background(Neon.Surface).padding(top = 16.dp),
-                // Audit ultra round 2 (n° 10): the target the file aims at (Pro).
-                target = "Club · −8 LUFS",
         )
     }
 

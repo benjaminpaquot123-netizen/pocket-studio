@@ -131,13 +131,13 @@ fun ThumbBar(ui: ThumbBarUi, actions: ThumbBarActions) {
     }
 }
 
-/** An icon over its word, 48 dp at least each way. */
 /**
  * A switched-off thumb button (↶ with nothing to undo): still dimmed, but its word stays readable
  * (audit ultra round 2, n° 30, night theme: « Annuler » at 0.38 was 2.1:1, now 3.5:1 at night, 4.2:1 in Studio).
  */
 internal const val THUMB_OFF_ALPHA = 0.6f
 
+/** An icon over its word, 48 dp at least each way. */
 @Composable
 private fun ThumbButton(icon: ImageVector, label: String, description: String, enabled: Boolean, tag: String, onClick: () -> Unit) {
     Column(

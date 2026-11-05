@@ -598,13 +598,13 @@ private fun PresetsCard(patch: SynthPatch, actions: SynthActions, browser: Sound
     }
 }
 
+/** The track's sound on the synth screen ([SoundArea]), as a spot. */
+const val SOUND_AREA_SPOT = "sound_area"
+
 /**
  * Audit ultra round 2, n° 27 (seat B c, a foldable): the piano roll is on the screen. On a big screen the
  * top bar has every button of the thumb's bar: that one then gives the grid its room.
  */
-/** The track's sound on the synth screen ([SoundArea]), as a spot. */
-const val SOUND_AREA_SPOT = "sound_area"
-
 object NotesView {
     var shown by mutableStateOf(false)
 }

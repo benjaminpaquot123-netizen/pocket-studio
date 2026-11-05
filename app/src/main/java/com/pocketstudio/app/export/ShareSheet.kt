@@ -366,12 +366,12 @@ fun ShareSheetContent(
                 Text(" " + if (ui.playing) tr("Arrêter") else tr("Écouter"), maxLines = 1)
             }
         }
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("share_checks")) {
         // Audit ultra round 2 (n° 10, seat A d): the target the shared file aims at, in sight before « Partager ».
         ui.target?.let {
             Text(tr("Volume visé : %s (se règle dans Mix)", it), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                 modifier = Modifier.testTag("share_target"))
         }
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.testTag("share_checks")) {
             if (ui.checks.isEmpty()) {
                 CheckLine(Icons.Filled.CheckCircle, Neon.Acid, tr("Tout est prêt : aucun solo oublié, aucune piste coupée."), "share_check_ok")
             }
@@ -543,8 +543,10 @@ fun ShareSheetRoute(
             name = name, seconds = shareSeconds(project, loopBars), parts = project.song.size, checks = checks, projectName = project.name, rightsProject = project,
             format = prefs.format, playing = transport.playing, running = export.running, canLower = levels.canLower, lufs = levels.lufs,
             truePeakDb = levels.truePeakDb, lossDb = levels.lossDb,
+            // No target (« Désactivée »): nothing aimed at, nothing said (« Volume visé : Désactivée » read wrong).
+            target = LoudnessTargets.choiceOf(project.mixer).takeIf { !simple && it != com.pocketstudio.model.TargetChoice.OFF }
+                ?.let { LoudnessTargets.label(it, LoudnessTargets.of(project)) },
         )
-            target = if (simple) null else LoudnessTargets.label(LoudnessTargets.choiceOf(project.mixer), LoudnessTargets.of(project)),
     )
     val actions = (
         ShareSheetActions(

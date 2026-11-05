@@ -1,5 +1,6 @@
 package com.pocketstudio.app.human
 
+import com.pocketstudio.app.human.HumanTester.Companion.ENGINE_ALWAYS
 import com.pocketstudio.app.settings.SettingsStore
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -136,6 +137,8 @@ class BenchAmeneesTest : HumanTester("amenees") {
         assertTrue("page B is empty", pageB.size >= 4)
         assertEquals("techno", project()!!.padLive.packOf(1))
         assertTrue(screenLines().joinToString("\n"), screenLines().none { "Page B · vide" in it })
-        assertEquals("the bench let its engine go once the pack was made", null, com.pocketstudio.engine.NativeEngine.sink)
+        // Audit method v2: the bench's engine stays, as a phone's (the old lending let it go here).
+        if (ENGINE_ALWAYS) assertTrue("the engine stays", com.pocketstudio.engine.NativeEngine.sink != null)
+        else assertEquals("the bench let its engine go once the pack was made", null, com.pocketstudio.engine.NativeEngine.sink)
     }
 }

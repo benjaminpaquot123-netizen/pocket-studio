@@ -550,12 +550,12 @@ abstract class HumanTester(private val seat: String) {
         com.pocketstudio.engine.NativeEngine.sink = before ?: BenchEngine()
         try {
             // Audit method v2 (engine always there): the app starts its own set as Pad Live opens, rendered by a phone's
-            // engine; the bench's renders nothing and that set ends empty. Its end awaited, the bench's stand-in comes.
-            val appOwn = System.currentTimeMillis() + 30_000
-            while (vm.liveStarting.value && System.currentTimeMillis() < appOwn) {
-                shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(50))
-                Thread.sleep(10)
+            // engine; the bench's cannot render it (it waits forever). That job is cancelled, the bench's stand-in made.
+            runCatching {
+                val f = RhythmViewModel::class.java.getDeclaredField("liveStarterJob").apply { isAccessible = true }
+                (f.get(vm) as? Job)?.cancel()
             }
+            shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(100))
             if (vm.project.value.live.at(4) != null) return
             vm.fillLiveStarter { _ ->
                 com.pocketstudio.model.LiveStarter.PADS.indices.associateWith { i ->

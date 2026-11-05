@@ -10,6 +10,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
@@ -57,6 +59,7 @@ fun NameField(
         },
         singleLine = true,
         label = { Text(label) },
+        trailingIcon = clearButton(field.text) { field = TextFieldValue(""); full = false; onName("") },
         supportingText = {
             Text(
                 if (full) tr("%d caractères au plus", max) else "${field.text.length}/$max",
@@ -111,6 +114,7 @@ fun SelectAllTextField(
         enabled = enabled,
         singleLine = singleLine,
         label = label,
+        trailingIcon = if (enabled) clearButton(field.text) { field = TextFieldValue(""); onValueChange("") } else null,
         supportingText = supportingText,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
@@ -122,3 +126,15 @@ fun SelectAllTextField(
         },
     )
 }
+
+/**
+ * Audit ultra round 3, n° 16 (seat D b, « Proje adı »: a second touch on the field put the cursor after the name, the new
+ * one went behind it, « aucun moyen simple d'effacer »): ✕ at the end of every name field empties it in one touch.
+ */
+private fun clearButton(text: String, clear: () -> Unit): (@Composable () -> Unit)? =
+    if (text.isEmpty()) null else ({
+        androidx.compose.material3.IconButton(onClick = clear, modifier = Modifier.testTag("name_clear")) {
+            androidx.compose.material3.Icon(androidx.compose.material.icons.Icons.Filled.Clear, contentDescription = tr("Effacer"))
+        }
+    })
+

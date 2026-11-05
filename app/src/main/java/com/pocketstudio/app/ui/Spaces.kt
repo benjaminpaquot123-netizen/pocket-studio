@@ -3,6 +3,10 @@ package com.pocketstudio.app.ui
 import android.content.Context
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.background
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -200,12 +204,22 @@ fun SpaceBar(entries: List<NavEntry>) = BoxWithConstraints {
     }
 }
 
-/** The same entries on the side, lying down (the screen keeps its height); it scrolls if the phone is very low. */
+/**
+ * The same entries on the side, lying down (the screen keeps its height). Audit ultra round 3, n° 21 (seat D b, a phone
+ * lying down: « Mix » cut, « Envoyer » out of sight): where Material's items (56 dp each) do not all fit, each entry
+ * takes an equal share of the rail's height (40 dp at least, its icon over its name): all five whole, nothing to scroll.
+ */
 @Composable
 fun SpaceRail(entries: List<NavEntry>) {
     val light = rememberTabLight(entries, vertical = true)
     NavigationRail(containerColor = lerp(Neon.Background, Color.Black, 0.12f), modifier = light.modifier.testTag("space_rail")) {
-        Column(Modifier.verticalScroll(rememberScrollState())) {
+      BoxWithConstraints(Modifier.weight(1f)) {
+        val share = maxHeight / entries.size.coerceAtLeast(1)
+        if (share < RAIL_ITEM_ROOM) {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                entries.forEachIndexed { i, e -> CompactRailItem(e, share.coerceAtLeast(40.dp), light.entry(i)) }
+            }
+        } else Column(Modifier.verticalScroll(rememberScrollState())) {
             entries.forEachIndexed { i, e ->
                 NavigationRailItem(
                     selected = e.selected,
@@ -223,6 +237,32 @@ fun SpaceRail(entries: List<NavEntry>) {
                 )
             }
         }
+      }
+    }
+}
+
+/** What a Material rail item needs to be whole (56 dp and the 4 dp between items). */
+private val RAIL_ITEM_ROOM = 60.dp
+
+/** A rail entry in [height]: its icon in the chosen pill, its name under it, as Material's but lower. */
+@Composable
+private fun CompactRailItem(e: NavEntry, height: androidx.compose.ui.unit.Dp, place: Modifier) {
+    val color = if (e.selected) Neon.Cyan else Neon.TextSecondary
+    Column(
+        place.width(80.dp).height(height)
+            .selectable(selected = e.selected, role = androidx.compose.ui.semantics.Role.Tab, onClick = e.onClick)
+            .testTag("tab_${e.key}").spot("tab_${e.key}", e.hint),
+        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+        verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+    ) {
+        androidx.compose.foundation.layout.Box(
+            Modifier.height(24.dp).width(48.dp).then(
+                if (e.selected) Modifier.background(Neon.Cyan, androidx.compose.foundation.shape.RoundedCornerShape(12.dp)) else Modifier,
+            ),
+            contentAlignment = androidx.compose.ui.Alignment.Center,
+        ) { Icon(e.icon, contentDescription = null, tint = if (e.selected) Neon.OnAccent else Neon.TextSecondary, modifier = Modifier.height(20.dp)) }
+        Text(e.label, color = color, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis,
+            autoSize = com.pocketstudio.ui.WholeWordsAutoSize(11.sp, MaterialTheme.typography.labelMedium.fontSize))
     }
 }
 

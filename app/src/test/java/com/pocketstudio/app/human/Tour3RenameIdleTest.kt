@@ -57,11 +57,11 @@ class Tour3RenameIdleTest {
     private fun shown(tag: String) = compose.onAllNodesWithTag(tag).fetchSemanticsNodes(atLeastOneRootRequired = false).isNotEmpty()
 
     @Test
-    @org.junit.Ignore("Round 3 proof, an app defect (not the bench): Compose never idle once the rename field is touched (AppNotIdleException at the touch). For the round-3 correction team: remove this once fixed.")
+    @org.junit.Ignore("Round 3, zone 3 verdict: the bench, not the app. Any text field in a Compose Dialog never idles under Robolectric, without one line of the app (Zone3DialogDiagTest).")
     fun typingAProjectNameInSimpleModeAtNightLetsTheScreenRest() = typeAProjectName(simple = true, theme = "Night")
 
     @Test
-    @org.junit.Ignore("Round 3 proof, an app defect (not the bench): Compose never idle once the rename field is touched (AppNotIdleException at the touch). For the round-3 correction team: remove this once fixed.")
+    @org.junit.Ignore("Round 3, zone 3 verdict: the bench, not the app. Any text field in a Compose Dialog never idles under Robolectric, without one line of the app (Zone3DialogDiagTest).")
     fun typingAProjectNameInSimpleModeInStudioLetsTheScreenRest() = typeAProjectName(simple = true, theme = "Studio")
 
     private fun typeAProjectName(simple: Boolean, theme: String) {
@@ -138,7 +138,7 @@ class Tour3NameFieldIdleTest {
     }
     /** The project rename's own window (ScaledAlertDialog, its field rescaled), at night, without the app around it. */
     @Test
-    @org.junit.Ignore("Round 3 proof, an app defect: NameField inside ScaledAlertDialog never lets Compose rest (AppNotIdleException already at setContent, before any touch). For the round-3 correction team: remove this once fixed.")
+    @org.junit.Ignore("Round 3, zone 3 verdict: the bench, not the app. Any text field in a Compose Dialog never idles under Robolectric, without one line of the app (Zone3DialogDiagTest).")
     fun aNameFieldInTheRenameWindowTouchedThenTypedInRests() {
         compose.setContent {
             com.pocketstudio.ui.PocketStudioTheme(com.pocketstudio.ui.Palettes.Dark) {

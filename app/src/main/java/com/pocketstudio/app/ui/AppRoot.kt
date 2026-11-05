@@ -764,8 +764,23 @@ fun AppRoot() {
             }
         }
     }
+    // Audit ultra round 3, n° 19: the course under way in the project open, taken up once its controller is there.
+    var tutoResumeHere by remember { mutableStateOf(false) }
     // « Tuto de A à Z »: an empty project whose tutorial starts at once (its level sets the Mode simple or not).
-    val startTuto: (String, com.pocketstudio.model.tuto.TutoLevel) -> Unit = { style, level ->
+    val startTuto: (String, com.pocketstudio.model.tuto.TutoLevel) -> Unit = start@{ style, level ->
+        // Audit ultra round 3, n° 19 (seat E b): that course already under way in a project: taken up there, said.
+        val tutoStore = com.pocketstudio.app.tuto.PrefsTutoStore(context)
+        com.pocketstudio.app.tuto.TutoResume.pick(projectsVm.state.value.projects, tutoStore::load, style, level)?.let { (id, progress) ->
+            tutoStore.save(id, progress.copy(active = true))
+            SettingsStore.update(context) { it.copy(simpleMode = level == com.pocketstudio.model.tuto.TutoLevel.Facile) }
+            Toast.makeText(context, tr("Ton tuto reprend là où tu l'avais laissé."), Toast.LENGTH_LONG).show()
+            showProjects = false
+            projectsNewOnly = false
+            tab = AppTab.Rythme
+            tabAsked = true
+            if (id == rhythmVm.projectId) tutoResumeHere = true else { rhythmVm.stop(); openProject(id) }
+            return@start
+        }
         // Only the tutorial's project is seen: from now on, a plain background until it opens.
         switching = true
         rhythmVm.stop()
@@ -815,8 +830,10 @@ fun AppRoot() {
         val closeProjects = {
             showProjects = false
             projectsNewOnly = false
-            // With no project there is nothing under it: « Que veux-tu faire ? » when it came from there, else out of the app.
-            if (!launch.returned()) { if (noProject) leaveApp() else goHome() }
+            // With no project: « Que veux-tu faire ? » (its no-project state) all the same. Audit ultra round 3, n° 18 (seat D a:
+            // the open project deleted, « ← » and Retour sent the app behind, « rien ne bouge »); out of the app from there.
+            // Before the guide is seen there is no home screen to show: out of the app.
+            if (!launch.returned()) { if (noProject && !navSettings.guideSeen) leaveApp() else goHome() }
             Unit
         }
         androidx.activity.compose.BackHandler { closeProjects() }
@@ -1543,7 +1560,16 @@ fun AppRoot() {
             // Audit ultra round 2, n° 21 (seat B b, a guitarist): the microphone's page of the project, one touch away.
             voice = if (noProject) null else ({
                 launch.choose()
-                openVoice()
+                // Audit ultra round 3, n° 19 (seat D a): after Pad Live the project open is its « Live »: the microphone goes
+                // over the last song instead (its Audio page, kept across the rebuild), when there is one.
+                val song = if (!rhythmVm.project.value.padLive.home) null
+                    else projectsVm.state.value.projects.firstOrNull { !it.padLive && !it.unreadable && it.id != rhythmVm.projectId }
+                if (song == null) openVoice() else {
+                    audioPage = 0
+                    tab = AppTab.Audio
+                    tabAsked = true
+                    openProject(song.id)
+                }
             }),
             // Audit ultra round 2 (n° 16): the welcome's « J'apprends » here too (« Simple ou Pro ? » gives its level).
             learn = {
@@ -1826,6 +1852,7 @@ fun AppRoot() {
         )
     }
     DisposableEffect(tuto) { onDispose { tuto.stopListening(); tuto.stopDemo(); rhythmVm.tutoDemo(null) } }
+    LaunchedEffect(tutoResumeHere) { if (tutoResumeHere) { tuto.resume(); tutoResumeHere = false } }
     // Socle 2 (owner: every tutorial on its style's box of sounds): the style's pack, once on the phone, on the pads.
     val tutoKitUi by tuto.ui.collectAsStateWithLifecycle()
     val tutoPacks by (com.pocketstudio.app.tuto.TutoTestHooks.packs ?: libraryVm.packs).collectAsStateWithLifecycle()

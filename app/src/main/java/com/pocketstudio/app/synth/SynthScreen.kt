@@ -259,7 +259,9 @@ fun SynthScreen(
         val wide = maxWidth >= com.pocketstudio.ui.TWO_PANES_FROM
         val uprightOctaves = if (wide) 3 else 2
         val hasSounds = instrument != null || browser != null
-        val follows = hasSounds && ((notes != null && showNotes) || !landscape)
+        // Round 1 integration: not on the Mode simple's Clavier, whose sound is one « Changer le son » (a sheet): the
+        // following keyboard came over that very button once the thumb's bar made the page shorter.
+        val follows = hasSounds && ((notes != null && showNotes) || (!landscape && !simple))
         val floatKeys = if (landscape) 96.dp else 120.dp
         // Room under the last settings so the floating keyboard never hides them.
         val floatRoom = if (follows) floatKeys + 72.dp else 0.dp

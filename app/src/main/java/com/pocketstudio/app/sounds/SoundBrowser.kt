@@ -196,7 +196,8 @@ private data class NameAsk(val index: Int, val name: String) {
 @Composable
 private fun KeptNameDialog(title: String, start: String, tag: String, done: (String) -> Unit, cancel: () -> Unit) {
     var text by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(start) }
-    androidx.compose.material3.AlertDialog(
+    // At the interface's size, as every window (ScaledWindowsTest).
+    com.pocketstudio.ui.ScaledAlertDialog(
         onDismissRequest = cancel,
         title = { Text(title) },
         text = {

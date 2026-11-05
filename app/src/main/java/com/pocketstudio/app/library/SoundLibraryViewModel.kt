@@ -1022,12 +1022,12 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         _wizard.update { withStyle(it, style, installed) }
     }
 
-    /** null: the beat only, no melodic tracks. */
     /** n° 33: the song's length, chosen at the start (« Court » under a minute, « Complet » the whole song). */
     fun setShort(short: Boolean) {
         _wizard.update { it.copy(short = short) }
     }
 
+    /** null: the beat only, no melodic tracks. */
     fun setMood(mood: StarterWizard.Mood?) {
         _wizard.update { w ->
             // A 303 line written before (the 303 step comes after the mood's) moves into the new

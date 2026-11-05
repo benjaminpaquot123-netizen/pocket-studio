@@ -126,7 +126,7 @@ internal fun NewProjectPage(
                 Neon.Acid, !busy, "start_learn") { pending = START_LEARN }
             BigChoice(Icons.Filled.Bolt, tr("Fais-moi un morceau"), tr("Choisis un style : l'assistant fait le morceau, le Guide t'aide à le finir."),
                 Neon.Cyan, !busy, "starter_wizard") { pending = START_WIZARD }
-            BigChoice(Icons.Filled.Edit, tr("Je pars de zéro"), tr("Aucune note : une batterie, une basse acide et un synthé attendent les tiennes."),
+            BigChoice(Icons.Filled.Edit, tr("Je pars de zéro"), tr("Aucune note : une batterie, une Acid 303 et un synthé attendent les tiennes."),
                 Neon.Amber, !busy, "start_empty") {
                 starters.indexOfFirst { it.group == StarterGroup.Empty }.takeIf { it >= 0 }?.let { pending = START_STARTER + it }
             }

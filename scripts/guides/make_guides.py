@@ -868,10 +868,17 @@ def stage5(s):
 
 # --- Stage 6: levels and master ---------------------------------------------------------------------
 
+# The style's first reference as said outside French (n° 40: « référence du boom bap neutre hors français »).
+NEUTRAL_REF = {"Nekfeu – On verra (2015)": "Nas – N.Y. State of Mind (1994)"}
+
+
 def stage6(s):
     peak = PEAK[s.club]
     brk = T("Break", "Break", "Break") if s.club else T("pont", "bridge", "brug")
+    # Audit ultra round 1 (n° 40): outside French, a reference most listeners know (a French rap title says little).
     ref = s.refs[0] if s.refs else ""
+    if ref:
+        ref = T(ref, NEUTRAL_REF.get(ref, ref), NEUTRAL_REF.get(ref, ref))
     out = [card(
         "mix.balance", 6,
         T("La balance : kick, basse, batterie, lead, le reste", "The balance: kick, bass, drums, lead, the rest", "De balans: kick, bas, drums, lead, de rest"),

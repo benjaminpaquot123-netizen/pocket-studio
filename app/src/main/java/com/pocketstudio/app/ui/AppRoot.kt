@@ -2329,7 +2329,11 @@ fun AppRoot() {
                         tutoNow, tuto.canShow(),
                         com.pocketstudio.app.tuto.TutoActions(
                             listen = tuto::listen, doIt = tuto::doIt, showMe = { tuto.showMe() }, stopDemo = tuto::stopDemo,
-                            need = tuto::fulfilNeed, markDone = tuto::markDone,
+                            // « Créer la piste Basse » brings another screen: the guard is armed at once, at the touch that
+                            // did it (armed by the tab's change only, it came more than CAUSE_MS after the touch on the bench
+                            // in round 1's integration, and Lucas's second touch wrote a note again).
+                            need = { tuto.fulfilNeed(); DoubleTouchGuard.screenChanged(android.os.SystemClock.uptimeMillis()) },
+                            markDone = tuto::markDone,
                             toggle = tuto::toggleOpen, next = tuto::next, previous = tuto::previous,
                             chapters = { tutoChapters = true }, quit = tuto::quit, restart = restartTuto,
                             playMine = {
@@ -2376,7 +2380,10 @@ fun AppRoot() {
                 }
                 // Audit ultra round 1 (n° 21): ▶, ↶, ↷, the tempo and Partager / « ⋯ » at the thumb, above the tabs (the top
                 // bar keeps them); upright only (lying down the phone is held with two hands) and on a screen tall enough.
-                if (!landscape && !liveImmersive && !showTimeline && !showLivePads && !showLive && LocalConfiguration.current.screenHeightDp >= THUMB_BAR_MIN_HEIGHT_DP) {
+                // Round 1 integration: under the Guide's open panel (40 % of the height) on a short phone, the bar gives its
+                // room to the page (with both, a 780 dp phone's timeline lost the row the key actions reach in one gesture).
+                val guidePanelUp = guideShown && !guideSide && tutoNow == null && guideOpen
+                if (!landscape && !liveImmersive && !showTimeline && !showLivePads && !showLive && thumbBarFits(LocalConfiguration.current.screenHeightDp, LocalConfiguration.current.fontScale, guidePanelUp)) {
                     val thumbProject by rhythmVm.project.collectAsStateWithLifecycle()
                     val thumbTransport by rhythmVm.transport.collectAsStateWithLifecycle()
                     val thumbUndo by rhythmVm.session.canUndo.collectAsStateWithLifecycle()
@@ -4523,8 +4530,18 @@ private const val GUIDE_SPOT_MS = 8000L
 /** At most this long a plain background stands in for the project while another one opens. */
 private const val SWITCH_COVER_MS = 5000L
 
-/** Below this screen height (dp) the thumb's bar gives its room to the screen (the top bar has the same actions). */
-private const val THUMB_BAR_MIN_HEIGHT_DP = 600
+/**
+ * Below this screen height (dp as the interface draws them, divided by the text's size) the thumb's bar gives its room
+ * to the screen (the top bar has the same actions). Round 1 integration: at 130 % it left a 780 dp phone's Clavier no
+ * room for its keys (0 dp under the Guide's bar) and pushed an upright tablet's second row of steps below the fold.
+ */
+private const val THUMB_BAR_MIN_HEIGHT_DP = 720
+/** The same with the Guide's panel open over the bottom of the screen. */
+private const val THUMB_BAR_UNDER_GUIDE_MIN_HEIGHT_DP = 820
+
+/** The thumb's bar is shown: the screen, read at the text's size, tall enough for it and the page above it. */
+internal fun thumbBarFits(screenHeightDp: Int, fontScale: Float, guidePanelOpen: Boolean = false): Boolean =
+    screenHeightDp / fontScale.coerceAtLeast(1f) >= if (guidePanelOpen) THUMB_BAR_UNDER_GUIDE_MIN_HEIGHT_DP else THUMB_BAR_MIN_HEIGHT_DP
 /** « Je le fais »'s ring stays this long, then goes by itself. */
 private const val TUTO_SPOT_MS = 2600L
 /** The user's own music heard this long ticks a listening step about it (« Écoute toute ta batterie »). */

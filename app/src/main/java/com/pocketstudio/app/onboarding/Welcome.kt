@@ -187,7 +187,7 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
             ) },
             { Choice(
                 Icons.Filled.Add, tr("Partir de zéro"),
-                tr("Aucune note : une batterie, une basse acide et un synthé attendent les tiennes."),
+                tr("Aucune note : une batterie, une Acid 303 et un synthé attendent les tiennes."),
                 Neon.TextSecondary, onClick = actions.empty, tag = "welcome_empty",
             ) },
             // Remix testers (Sarah installed the app for this and found it nowhere): one way in, under the others.

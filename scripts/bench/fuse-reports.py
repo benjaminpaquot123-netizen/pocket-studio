@@ -17,7 +17,7 @@ import sys
 import unicodedata
 
 GRAVITY = {"bloquant": 0, "grave": 1, "moyen": 2, "mineur": 3}
-SYMPTOMS = {"rien", "mauvais-ecran", "plantage", "incompris", "coupe", "lent", "perdu", "bloque", "sans-nom", "sans-aide"}
+SYMPTOMS = {"rien", "mauvais-ecran", "plantage", "incompris", "coupe", "lent", "perdu", "bloque", "sans-nom", "sans-aide", "promesse"}
 MAX_DEFECTS = 12
 MAX_LINES = 60
 # Sound judged by ear: rejected (§3.2, « aucun testeur IA ne juge le son »).

@@ -77,7 +77,7 @@ object ScreenHelp {
         tr("Outils de coupe"),
         tr("Place la tête orange ou écoute, puis : Couper ici coupe à cet endroit, Début et Fin raccourcissent le bout, Enlever le retire, Boucle le fait tourner. Pince la vue pour zoomer.") +
             // Audit ultra round 3, zone 1, n° 9: how a piece is chosen, said where the tools are.
-            " " + tr("Touche un bout de la courbe pour le choisir, puis envoie-le."),
+            " " + tr("Touche le numéro d'un bout, en haut de la courbe, pour le choisir, puis envoie-le."),
     )
     val CUT_BOUT: Help get() = Help(
         tr("Un bout"),

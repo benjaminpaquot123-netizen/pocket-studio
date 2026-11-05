@@ -66,35 +66,51 @@ class CutZoomGestureTest {
         assertEquals(v.frameAt(x).toDouble(), m.cursor.toDouble(), v.framesPerPx * 2)
         assertEquals(before, m.pieces)
         assertFalse(m.canUndo)
-        // Audit ultra round 3, zone 1, n° 9: the piece touched is ticked (a choice, no cut: nothing to undo).
-        assertEquals(listOf(com.pocketstudio.model.Cuts.pieceAt(before, m.cursor)), m.chosen)
-        assertTrue(saved.all { it.of(VOCALS_STEM)?.pieces == before })
+        // Round 3 review: a touch on the curve places the play head only; it ticked the piece under it too.
+        assertEquals(emptyList<Int>(), m.chosen)
+        assertTrue(saved.isEmpty())
     }
 
     /**
      * Audit ultra round 3, zone 1, n° 9 (seat B c, Arabic, « Phrases »): touching piece 4 chose nothing, the send buttons
-     * stayed grey. A touch ticks the piece under the finger, again unticks it; right to left as left to right.
+     * stayed grey. Round 3 review: the touch that ticks is on the piece's number (the band on top of the curve), again
+     * unticks it, and leaves the play head where it was; right to left as left to right.
      */
     @Test
-    fun aTouchOnAPieceChoosesItLeftToRight() {
+    fun aTouchOnAPiecesNumberChoosesItLeftToRight() {
         val (m, v, _) = setUp()
         val x = v.x(3 * bar + bar / 2)
-        compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
+        val head = m.cursor
+        compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, 12.dp.toPx())) }
         compose.waitForIdle()
         assertEquals(listOf(3), m.chosen)
         assertEquals(1, m.chosenSelections().size)
-        compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
+        assertEquals("the play head stays", head, m.cursor)
+        compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, 12.dp.toPx())) }
         compose.waitForIdle()
         assertEquals(emptyList<Int>(), m.chosen)
     }
 
     @Test
-    fun aTouchOnAPieceChoosesItRightToLeft() {
+    fun aTouchOnAPiecesNumberChoosesItRightToLeft() {
         val (m, v, _) = setUp(rtl = true)
         val x = v.x(3 * bar + bar / 2)
-        compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
+        compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, 12.dp.toPx())) }
         compose.waitForIdle()
         assertEquals(listOf(3), m.chosen)
+    }
+
+    /** Round 3 review: placing the play head on a piece, then again on another, ticks neither (the gesture was both). */
+    @Test
+    fun placingThePlayHeadTicksNothing() {
+        val (m, v, _) = setUp()
+        listOf(3, 7).forEach { piece ->
+            val x = v.x(piece * bar + bar / 2)
+            compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
+            compose.waitForIdle()
+            assertEquals(piece, com.pocketstudio.model.Cuts.pieceAt(m.pieces, m.cursor))
+        }
+        assertEquals(emptyList<Int>(), m.chosen)
     }
 
     @Test

@@ -246,9 +246,13 @@ internal fun CutZoom(
                         letGo?.let(onLetGo)
                         if (!moved) {
                             onTouched()
-                            model.cursor = view.frameAt(down.position.x)
-                            // Round 3, zone 1, n° 9: the piece touched is chosen (« Phrases », « Attaques », « Mesures »).
-                            if (!grabbing) model.touchPiece(model.cursor)
+                            val at = view.frameAt(down.position.x)
+                            // Round 3, zone 1, n° 9, made unambiguous (round 3 review): a touch on a piece's number (the
+                            // band on top of the curve) ticks it or unticks it and leaves the play head; a touch on the
+                            // curve itself only places the play head (it ticked the piece under it too: every « place
+                            // the head, then Couper ici » chose pieces nobody meant to send).
+                            val onNumber = !grabbing && down.position.y < PIECE_NUMBER_ZONE.toPx()
+                            if (!onNumber || !model.touchPiece(at)) model.cursor = at
                         }
                     }
                 }
@@ -359,7 +363,10 @@ internal fun CutZoom(
                             lastEnd = p.end
                             val cx = (max(0f, x0) + min(size.width, x1)) / 2
                             if (x1 - x0 > badge * 2.2f && cx in 0f..size.width) {
-                                drawCircle(Color(0xCC111318), badge, Offset(cx, margin / 2 + 2f))
+                                // A piece chosen: its number filled with its colour (the touch on it is the tick).
+                                val ticked = i in model.chosen
+                                drawCircle(if (ticked) pieceColor(i) else Color(0xCC111318), badge, Offset(cx, margin / 2 + 2f))
+                                if (ticked) drawCircle(Color.White, badge, Offset(cx, margin / 2 + 2f), style = androidx.compose.ui.graphics.drawscope.Stroke(1.5f * hair))
                                 label(i + 1)?.let { drawText(it, topLeft = Offset(cx - it.size.width / 2f, margin / 2 + 2f - it.size.height / 2f)) }
                             }
                             if (p.loop && x1 - x0 > badge * 4) {
@@ -464,6 +471,12 @@ internal val RULER = 18.dp
 
 /** A bar held this near an edge of the curve scrolls the song, at most [EDGE_STEP] each [EDGE_TICK_MS]. */
 private val EDGE_ZONE = 32.dp
+
+/**
+ * The band on top of the curve where the pieces' numbers are: a touch there ticks the piece (round 3 review); below it, a
+ * touch places the play head only. Wider than the numbers' row (26 dp) for a finger.
+ */
+internal val PIECE_NUMBER_ZONE = 40.dp
 private val EDGE_STEP = 10.dp
 private const val EDGE_TICK_MS = 16L
 

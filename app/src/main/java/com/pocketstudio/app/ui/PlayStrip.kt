@@ -293,9 +293,10 @@ private fun PositionLabel(ui: PlayStripUi, actions: PlayStripActions, modifier: 
                             maxLines = 1, overflow = TextOverflow.Ellipsis,
                         )
                     }
-                    // The bar rolls to the next one, as on a studio display.
+                    // The bar rolls to the next one, as on a studio display. Audit ultra round 2, n° 24 (seat A a): « mes. » said
+                    // in a whole word in the Mode simple.
                     RollingText(
-                        tr("mes. %1\$d/%2\$d", pos.bar, pos.bars), style = MonoStyle.copy(fontSize = 14.sp, lineHeight = 16.sp), color = color,
+                        if (com.pocketstudio.model.i18n.I18n.everyday) tr("mesure %1\$d/%2\$d", pos.bar, pos.bars) else tr("mes. %1\$d/%2\$d", pos.bar, pos.bars), style = MonoStyle.copy(fontSize = 14.sp, lineHeight = 16.sp), color = color,
                         maxLines = 1, softWrap = false, modifier = Modifier.testTag("top_position_bar"),
                     )
                 }

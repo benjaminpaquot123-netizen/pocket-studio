@@ -127,10 +127,12 @@ object I18n {
         "ultra1z1",
         // Audit ultra round 2, zone 1: a sound that could not go on its pad said, « Défis » as stars, the pad's sound marked.
         "ultra2z1",
-        // Audit ultra round 2, zone 4: takes numbered, « Audio 1 » named, the microphone's level, the voice from home.
-        "ultra2z4",
         // Audit ultra round 2, zone 3: « Créer et écouter », « Sauvegardé », a track's new sound or deletion said.
         "ultra2z3",
+        // Audit ultra round 2, zone 4: takes numbered, « Audio 1 » named, the microphone's level, the voice from home.
+        "ultra2z4",
+        // Audit ultra round 2, zone 5: a note's menu in the piano roll, the synth's units, the track's sound settings, a filter said as set.
+        "ultra2z5",
         // Audit ultra round 2, zone 6: the Mode simple's pad names and tempo in everyday words, the Remix model asked first.
         "ultra2z6",
     )

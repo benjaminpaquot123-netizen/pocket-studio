@@ -1720,6 +1720,8 @@ fun AppRoot() {
     // The instrument tracks for the Sons space's chips ([bar]) or for the synth screen's own use.
     // « Tuto de A à Z »: the first track hidden while it is still blank (set below, once the tutorial is known).
     var tutoHidesFirst by remember { mutableStateOf(false) }
+    // Round 2, n° 25: « Réglages du son » of a track's menu, asked (each touch rings the settings once more).
+    var soundSettingsAsked by remember { mutableIntStateOf(0) }
     fun tracksUiOf(fp: Project, selected: Int, freezing: Int?, bar: Boolean): TracksUi {
         val frozen = com.pocketstudio.model.Freeze.frozenIds(fp)
         return TracksUi(
@@ -1738,6 +1740,7 @@ fun AppRoot() {
             clear = rhythmVm::clearTrackNotes,
             scene = fp.sceneTitle(fp.scene),
             changeSound = { id -> rhythmVm.selectTrack(id); soundChooserTrack = id },
+            soundSettings = if (simple) null else ({ id -> rhythmVm.selectTrack(id); go(AppTab.Synthe); soundSettingsAsked++ }),
             sheet = if (simple) null else ({ id -> trackSheetKey = com.pocketstudio.app.guide.sheetKeyOf(id) }),
             freeze = if (simple) null else rhythmVm::freezeTrack,
             unfreeze = rhythmVm::unfreezeTrack,
@@ -1828,6 +1831,8 @@ fun AppRoot() {
     val tutoKitChoice = tutoKitUi?.progress?.kit
     // The user asked for the kit here (« Télécharger », « Mettre ces sons »): it goes on the pads once on the phone.
     var tutoKitAsked by rememberSaveable(tutoKitStyle) { mutableStateOf(false) }
+    // n° 22 (round 2): the kit's card left by the user's own touch (« Plus tard », « Télécharger »): the panel back takes touches at once.
+    val tutoKitTouched = remember { booleanArrayOf(false) }
     LaunchedEffect(tutoKitStyle) {
         if (tutoKitStyle != null && com.pocketstudio.app.tuto.TutoTestHooks.kitOffer && com.pocketstudio.app.tuto.TutoTestHooks.packs == null) libraryVm.refreshPacks()
     }
@@ -1859,6 +1864,8 @@ fun AppRoot() {
     var tutoKeySheet by rememberSaveable { mutableStateOf(false) }
     var tutoSpot by remember { mutableStateOf<List<String>?>(null) }
     LaunchedEffect(tutoSpot) { if (tutoSpot != null) { kotlinx.coroutines.delay(TUTO_SPOT_MS); tutoSpot = null } }
+    // Round 2, n° 25 (seat B c): the track's menu sent to its sound's settings: brought into view and ringed.
+    LaunchedEffect(soundSettingsAsked) { if (soundSettingsAsked > 0) tutoSpot = listOf(SYNTH_SETTINGS_SPOT, com.pocketstudio.app.synth.SOUND_AREA_SPOT) }
     // Testers (lot « tuto 3 »): the step's control brought into view, ringed or not (its screen may take a few frames).
     var tutoReveal by remember { mutableStateOf<List<String>?>(null) }
     // n° 20: the place of the step last brought into view, where « Montre-moi »'s finger goes.
@@ -1992,7 +1999,9 @@ fun AppRoot() {
     // The thumb's bar shown (see its place in the bottom bar); relecture tour 1: when it is not, the top bar keeps « Rétablir ».
     // Audit ultra round 2 (n° 11, seat B a: « Jouer » out of the thumb's reach, the bar hidden under the Guide): the Guide's
     // open panel never takes it away; the panel is the bar's height lower instead ([guidePanelHeightDp]).
+    // Audit ultra round 2, n° 27 (seat B c, a foldable): on a big screen the top bar has them all; on the notes, the grid takes that room.
     val thumbBarUp = !landscape && !liveImmersive && !showTimeline && !showLivePads && !showLive &&
+        !(tab == AppTab.Synthe && com.pocketstudio.app.synth.NotesView.shown && LocalConfiguration.current.smallestScreenWidthDp >= 600) &&
         thumbBarFits(LocalConfiguration.current.screenHeightDp, LocalConfiguration.current.fontScale)
     LaunchedEffect(guideQuietRec, guideQuietTaking, showLive, guideQuietPlaying) {
         if (guideQuietRec || guideQuietTaking || showLive || guideQuietPlaying) {
@@ -2391,6 +2400,9 @@ fun AppRoot() {
                     val kitLoading = kitMissing.mapNotNull { tutoPacks.downloading[it.id] }
                     // Folded with the panel while the user works on the screen (the grid had 160 dp left under it at 780 dp).
                     val kitCard = kitTarget != null && (tutoNow.open || kitLoading.isNotEmpty()) && (kitMissing.isNotEmpty() || tutoKitOffer == com.pocketstudio.model.tuto.TutoKit.Offer.Ask)
+                    // n° 22 (round 2, seat A a at 200 %): the card comes when the catalogue does, often while a finger goes to
+                    // « Lire la suite »: whatever takes the other's place by itself takes no touch for a moment.
+                    com.pocketstudio.app.ui.ArrivalGuard(kitCard, asked = { tutoKitTouched[0].also { tutoKitTouched[0] = false } }) {
                     if (kitCard) {
                         val loading = kitLoading
                         com.pocketstudio.app.tuto.TutoKitCard(
@@ -2400,9 +2412,10 @@ fun AppRoot() {
                             error = tutoPacks.message?.takeIf { loading.isEmpty() },
                             download = {
                                 tutoKitAsked = true
+                                tutoKitTouched[0] = true
                                 kitMissing.forEach { libraryVm.downloadPack(it.id) }
                             },
-                            later = { tuto.setKit(com.pocketstudio.model.tuto.TutoProgress.KIT_BUILT_IN) },
+                            later = { tutoKitTouched[0] = true; tuto.setKit(com.pocketstudio.model.tuto.TutoProgress.KIT_BUILT_IN) },
                             onPhone = kitMissing.isEmpty(),
                             // n° 34 (seat A b, 200 %): over the open panel it went past the top bar; in its place now, a part of the screen high at most.
                             modifier = Modifier.heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.6f).dp),
@@ -3744,6 +3757,8 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                 fete = libraryVm::liveStarter,
                 welcome = padLiveWelcome,
                 welcomed = { padLiveWelcome = false },
+                challengeAsked = padLiveChallenge,
+                challengeOpened = { padLiveChallenge = false },
             )
         }
     }
@@ -3758,8 +3773,6 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
     com.pocketstudio.app.report.BugReportHost(bugVm, com.pocketstudio.model.DefaultNames.shown(bugProject.name))
 }
 
-                challengeAsked = padLiveChallenge,
-                challengeOpened = { padLiveChallenge = false },
 @Composable
 private fun LaunchPrompts(vm: MainViewModel) {
     val context = LocalContext.current

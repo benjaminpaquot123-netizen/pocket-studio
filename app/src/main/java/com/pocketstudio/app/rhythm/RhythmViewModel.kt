@@ -902,6 +902,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         val v = velocity.takeIf { it.isFinite() && it > 0f }?.coerceAtMost(1f) ?: 1f
         if (NativeEngine.isAvailable) NativeEngine.toggleClip(pad, v)
         livePadTapped(pad, v)
+        liveToggledForTest?.invoke(pad)
         if (starts) watchPadsAlone()
     }
 
@@ -958,6 +959,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     fun stopLive() {
         if (NativeEngine.isAvailable) NativeEngine.toggleClip(-1)
         livePadTapped(-1)
+        liveStoppedForTest?.invoke()
     }
 
     fun setLiveSize(size: Int) = session.edit { p -> p.copy(live = p.live.copy(size = size)) }
@@ -5422,6 +5424,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     /** Tests: the pads sounding as the engine says (null: [liveStates]). */
     internal var livePadsSoundingForTest: Set<Int>? = null
 
+    /** Tests (the bench's stand-in engine): a live pad toggled, from Pad Live or from Live › Pads ([toggleLive]). */
+    internal var liveToggledForTest: ((Int) -> Unit)? = null
+
+    /** Tests (the bench's stand-in engine): every live pad cut ([stopLive]). */
+    internal var liveStoppedForTest: (() -> Unit)? = null
+
     private fun livePadTapped(pad: Int, velocity: Float = 1f, bar: Boolean = false) {
         if (performance == null || !_take.value.running) return
         performancePadTaps += com.pocketstudio.model.LivePadTake.Tap(pad, takePosition(), velocity, bar)
@@ -9565,10 +9573,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (playing) PlaybackService.start(app) else PlaybackService.stopAfterTakes(app)
     }
 
-    /** Stops the transport if it plays (opening the assistant: its previews must not play over the song). */
     /**
-     * Silence: the song stops, and live pads looping on their own too (audit ultra round 3, zone 1, n° 1: ← out of
-     * Pad Live left its loops playing on the home screen, Défis, Remix, with no ■ anywhere there).
+     * Silence: the transport stops if it plays (opening the assistant: its previews must not play over the song), and live
+     * pads looping on their own too (audit ultra round 3, zone 1, n° 1: ← out of Pad Live left its loops playing on the
+     * home screen, Défis, Remix, with no ■ anywhere there).
      */
     fun stop() {
         if (_transport.value.playing) togglePlay()
@@ -10055,6 +10063,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         warnLongFxOverLimit(before)
         loadTrackFonts()
         reloadMissingSamples()
+        // Audit ultra round 3, zone 1, n° 4 (seat E d 22): « “Voix 2” remplace “Tom aigu”… » stayed on screen once undone.
+        stemBoardMade?.dismissMessage()
+        _remixCut.value = null
     }
 
     fun redo() {
@@ -10071,9 +10082,6 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         warnLongFxOverLimit(before)
         loadTrackFonts()
         reloadMissingSamples()
-        // Audit ultra round 3, zone 1, n° 4 (seat E d 22): « “Voix 2” remplace “Tom aigu”… » stayed on screen once undone.
-        stemBoardMade?.dismissMessage()
-        _remixCut.value = null
     }
 
     /** Tests (no engine there): behave as while playing, for what follows the scene heard. */
@@ -10737,6 +10745,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // The remix's song comes in where the song has it (the song plays from its first step).
         captureSongStep = if (song) 0 else NativeEngine.OUTSIDE_SONG
         try {
+            // Audit ultra round 3 (n° 12): a remix stem's file is the remix strip with that stem alone.
+            val stem = remixStemOf(soloChannel)
+            if (stem != null) {
+                val alone = p.copy(remix = p.remix.copy(stems = p.remix.stems.mapIndexed { i, s -> s.copy(mute = i != stem, solo = false) }))
+                describeInto(job, alone, song, Remix.STRIP, limited, masterFx)
+                if (dry) NativeEngine.captureInto(job) { NativeEngine.setStemMode(NativeEngine.STEM_DRY) }
+                return
+            }
             describeInto(job, p, song, soloChannel, limited, masterFx)
             // Lot E: separate tracks without their sends (each strip dry), and each send's return alone.
             val returnBus = returnStemBus(soloChannel)
@@ -10762,14 +10778,6 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             if (soloChannel != null) NativeEngine.setLoudnessTarget(null)
             // The Live page's own sounds (riser, build-up noise): only in the « Effets live » file.
             if (soloChannel != null) NativeEngine.setLiveNoises(if (soloChannel == LIVE_FX_STEM) NativeEngine.LIVE_NOISES_ONLY else NativeEngine.LIVE_NOISES_OFF)
-            // Audit ultra round 3 (n° 12): a remix stem's file is the remix strip with that stem alone.
-            val stem = remixStemOf(soloChannel)
-            if (stem != null) {
-                val alone = p.copy(remix = p.remix.copy(stems = p.remix.stems.mapIndexed { i, s -> s.copy(mute = i != stem, solo = false) }))
-                describeInto(job, alone, song, Remix.STRIP, limited, masterFx)
-                if (dry) NativeEngine.captureInto(job) { NativeEngine.setStemMode(NativeEngine.STEM_DRY) }
-                return
-            }
             // Lot E: a project's own ceiling and limiter (Master pro), as live.
             pushMasterPro(p)
             if (soloChannel != null && soloChannel != LIVE_FX_STEM && returnStemBus(soloChannel) == null) {
@@ -11136,6 +11144,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             _export.value = shown.copy(error = tr("Rien à exporter : chaque piste est vide ou coupée dans le mixeur."), files = emptyList())
             return
         }
+        // Audit ultra round 3 (n° 11, seat A d 57): the last result, given back if this run is cancelled (« Sauvegardé dans… » vanished).
+        val before = _export.value
         _export.value = shown.copy(running = true, progress = 0f, files = emptyList(), error = null, stage = null, loudness = null,
             truePeakDb = null, seconds = null, lossDb = null, decodedPeakDb = null)
         // A foreground service keeps a long export going while the screen is elsewhere (notification, « Annuler »).
@@ -11161,8 +11171,6 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             val m4aCeiling = ceilingDb + (AacEncoder.CEILING_DBTP - MASTER_CEILING_DBTP)
             // Stems wait for one length (the longest), then are packed.
             val held = ArrayList<HeldStem>()
-        // Audit ultra round 3 (n° 11, seat A d 57): the last result, given back if this run is cancelled (« Sauvegardé dans… » vanished).
-        val before = _export.value
             var proReport: com.pocketstudio.engine.ExportReport? = null
             try {
                 // Just after the project opened, its sounds, banks and song may still be loading: the
@@ -11637,14 +11645,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         private const val BASS_STEM = 1
         private const val VOICE_LABEL = "Voix"
 
-        /**
-         * An export file's label in the file's name, in the app's language (audit ultra tour 0, seat b, English:
-         * « Remix-morceau-….m4a »): the app's own words translated, a track's name as it is.
-         */
         /** [french] in a file's name, or [shown] (its word in the app's language) in another language, lower case as [fileWord] does. */
         internal fun fileWordOf(french: String, shown: String): String =
             if (com.pocketstudio.model.i18n.I18n.lang == com.pocketstudio.model.i18n.Lang.FR) french else shown.lowercase(java.util.Locale.ROOT)
 
+        /**
+         * An export file's label in the file's name, in the app's language (audit ultra tour 0, seat b, English:
+         * « Remix-morceau-….m4a »): the app's own words translated, a track's name as it is.
+         */
         internal fun fileWord(label: String): String =
             if (label in FILE_WORDS && com.pocketstudio.model.i18n.I18n.lang != com.pocketstudio.model.i18n.Lang.FR) stageName(label).lowercase(java.util.Locale.ROOT) else label
 

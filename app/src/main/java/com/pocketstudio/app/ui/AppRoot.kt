@@ -1725,13 +1725,13 @@ fun AppRoot() {
             },
             video = { showVideo = true },
             simple = simple,
+            sendProject = rememberSendProject(rhythmVm),
         )
     }
     // « Vidéo pour les réseaux » (from « Prêt à partager ? »): 30 s of the song in 9:16.
     if (showVideo) com.pocketstudio.app.export.video.VideoExportRoute(rhythmVm, close = { showVideo = false })
     // The timeline (in Structure or on the whole screen): two touches on a clip open its editor on
     // that part (the track's scene there, in Sons); a curve opens in Mix.
-            sendProject = rememberSendProject(rhythmVm),
     val openFromTimeline: (Int, String) -> Unit = { i, key ->
         val part = rhythmVm.project.value.song.getOrNull(i)
         if (part != null) {
@@ -3164,15 +3164,15 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 freeLufs = project.mixer.pro?.targetLufs,
                                 styleLufs = com.pocketstudio.model.LoudnessTargets.forStyle(project.style, project.mixVersion),
                                 styleName = com.pocketstudio.app.mixer.shownStyleName(project.style),
-                                buses = project.mixer.buses,
-                                // Tutorial testers (lot « tuto 4 », b/139): no silent « Basse acide » strip in the tutorial's project.
-                                strips = mixerStrips(project).let { all ->
                                 // Audit ultra round 3 (n° 12): a file made before the song changed is not offered; the tracks without a file said.
                                 exportStale = remember(export, project) { export.staleFor(project) },
                                 stemSkips = remember(project, export.what) {
                                     if (export.what != com.pocketstudio.app.rhythm.ExportWhat.Stems) emptyList()
                                     else com.pocketstudio.app.rhythm.stemSkips(project, project.song.isNotEmpty(), mixerStrips(project).associate { it.ch to com.pocketstudio.model.DefaultNames.shown(it.name) })
                                 },
+                                buses = project.mixer.buses,
+                                // Tutorial testers (lot « tuto 4 », b/139): no silent « Basse acide » strip in the tutorial's project.
+                                strips = mixerStrips(project).let { all ->
                                     if (tutoUi != null && project.allScenes.none { s -> s.acid.steps.take(s.acid.length.coerceAtLeast(0)).any { it.gate } }) all.filter { it.ch != com.pocketstudio.model.AutoTarget.ACID_CHANNEL } else all
                                 },
                                 // Step 5a: the song's four stems under the console (its strip is the group fader).
@@ -3750,6 +3750,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 otherExports = { SettingsStore.update(context) { it.copy(simpleMode = false) }; go(AppTab.Mixeur); mixerFocus = com.pocketstudio.app.mixer.Where.Export },
                                 video = { showVideo = true },
                                 page = true,
+                                sendProject = rememberSendProject(rhythmVm),
                             )
                         }
                     }
@@ -3760,7 +3761,6 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
             // Audit final: lying down, the Guide's panel on the side (the screen keeps its height), not half of it under.
             if (guideSide) {
                 val sideUi by guideVm.ui.collectAsStateWithLifecycle()
-                                sendProject = rememberSendProject(rhythmVm),
                 val sideListening by guideListen.state.collectAsStateWithLifecycle()
                 com.pocketstudio.app.guide.GuidePanel(
                     sideUi, guideSelected, sideListening, guideNotice, guideActions, height = null,
@@ -3913,16 +3913,6 @@ fun mixerStrips(p: com.pocketstudio.model.Project): List<com.pocketstudio.app.mi
                 ?: com.pocketstudio.app.mixer.StripInfo(3, "Remix")
         )
 
-/** What the effects box does, wherever it shows (one box for every sound). */
-fun effectsActions(vm: RhythmViewModel): MixerActions = MixerActions(
-    setInsertType = vm::setInsertType,
-    setInsertParam = vm::setInsertParam,
-    setSend = vm::setSend,
-    quick = quickFxActions(vm),
-    setInsertBypass = vm::setInsertBypass,
-    moveInsert = vm::moveInsert,
-    kindOf = { ch -> vm.project.value.soundKindOf(ch) },
-    longFxCount = { type -> vm.project.value.mixer.longFxCount(type) },
 /**
  * Audit ultra round 3 (n° 13, seat F d 22, 61): « Envoyer le projet » from « Prêt à partager ? »: the open project
  * saved, then packed with its sounds (.zip) and given to Android's share menu, as Mes projets › ⋯ does.
@@ -3942,6 +3932,16 @@ fun rememberSendProject(rhythmVm: RhythmViewModel): () -> Unit {
     }
 }
 
+/** What the effects box does, wherever it shows (one box for every sound). */
+fun effectsActions(vm: RhythmViewModel): MixerActions = MixerActions(
+    setInsertType = vm::setInsertType,
+    setInsertParam = vm::setInsertParam,
+    setSend = vm::setSend,
+    quick = quickFxActions(vm),
+    setInsertBypass = vm::setInsertBypass,
+    moveInsert = vm::moveInsert,
+    kindOf = { ch -> vm.project.value.soundKindOf(ch) },
+    longFxCount = { type -> vm.project.value.mixer.longFxCount(type) },
     cpuBusy = vm.cpuBusy,
     setInsertScenes = vm::setInsertScenes,
     scenes = vm.sceneLabels,

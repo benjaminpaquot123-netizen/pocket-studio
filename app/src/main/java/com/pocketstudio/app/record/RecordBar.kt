@@ -156,6 +156,13 @@ private fun RunningBar(ui: RecordBarUi, take: NoteTakeUi, actions: RecordBarActi
             Column(Modifier.weight(1f)) {
                 Text(tr("Enregistrement"), style = MaterialTheme.typography.titleMedium, color = Neon.RedText)
                 Counter(ui.counter)
+                // Round 3, n° 37 (seat B b, TalkBack): each note kept is said and seen as it is played.
+                if (take.notes > 0 || take.hits > 0) {
+                    Text(
+                        take.summary(), style = MaterialTheme.typography.bodySmall, color = Neon.TextPrimary, maxLines = 2,
+                        modifier = Modifier.testTag("record_kept").semantics { liveRegion = LiveRegionMode.Polite },
+                    )
+                }
             }
         }
         Button(

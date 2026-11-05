@@ -1414,7 +1414,9 @@ private fun LivePanel(
         if (!tight && !sideways) {
             // The sheet's handle: a touch folds it.
             Box(
-                Modifier.fillMaxWidth().height(18.dp).clickable(onClickLabel = tr("Replier"), onClick = fold).testTag("live_panel_handle"),
+                Modifier.fillMaxWidth().height(18.dp).clickable(onClickLabel = tr("Replier"), onClick = fold)
+                    // Round 3, n° 37: a name, not only the action's hint.
+                    .semantics { contentDescription = tr("Replier") }.testTag("live_panel_handle"),
                 contentAlignment = Alignment.Center,
             ) { Box(Modifier.size(40.dp, 4.dp).clip(CircleShape).background(Neon.TextSecondary.copy(alpha = 0.5f))) }
         } else {

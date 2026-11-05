@@ -493,7 +493,12 @@ private fun PadLivePad(
         val corner = padCorner(maxWidth, maxHeight)
         Box(
             Modifier.align(Alignment.TopEnd).size(width = corner.first, height = corner.second)
-                .semantics { role = Role.Button; onClick(tr("Réglages du pad")) { settings(); true } }
+                // Round 3, n° 7: a spoken name, not only an action label (TalkBack read « bouton », 16 times a page).
+                .semantics {
+                    contentDescription = tr("Réglages du pad") + ", " + tr("pad %s", padName(pad))
+                    role = Role.Button
+                    onClick(tr("Réglages du pad")) { settings(); true }
+                }
                 .testTag("padlive_mode_$pad"),
         )
         // Audit stage 1: one line that gets smaller (« przytrzymaj », « uderzenie · 1 » lost their end, word by word).

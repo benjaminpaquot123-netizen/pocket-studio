@@ -40,6 +40,8 @@ import com.pocketstudio.model.LiveCells
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.Neon
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 
 /** The empty cell recording what is played (« Jouer et enregistrer ici »): track [key], brick [scene]. */
 data class CellRecording(val key: String, val scene: Int)
@@ -71,7 +73,9 @@ internal fun EmptyCellMenu(
     val canRecord = LiveCells.canRecord(cell.key)
     Box(
         Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.35f))
-            .clickable(remember { MutableInteractionSource() }, indication = null, onClick = cancel).testTag("live_cell_scrim"),
+            .clickable(remember { MutableInteractionSource() }, indication = null, onClick = cancel)
+            // Round 3, n° 37: the scrim closes the menu; TalkBack says so.
+            .semantics { contentDescription = tr("Fermer") }.testTag("live_cell_scrim"),
         contentAlignment = Alignment.BottomCenter,
     ) {
         Column(

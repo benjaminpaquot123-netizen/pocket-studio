@@ -82,7 +82,9 @@ internal fun RemixCellMenu(
     val last = (remix.songBars - 1).coerceAtLeast(0)
     Box(
         Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.35f))
-            .clickable(remember { MutableInteractionSource() }, indication = null, onClick = cancel).testTag("remix_cell_scrim"),
+            .clickable(remember { MutableInteractionSource() }, indication = null, onClick = cancel)
+            // Round 3, n° 37: the scrim closes the menu; TalkBack says so.
+            .semantics { contentDescription = tr("Fermer") }.testTag("remix_cell_scrim"),
         contentAlignment = Alignment.BottomCenter,
     ) {
         Column(

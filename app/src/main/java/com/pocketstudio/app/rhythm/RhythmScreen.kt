@@ -124,6 +124,7 @@ import com.pocketstudio.ui.pillColors
 import com.pocketstudio.ui.NeonCard
 import com.pocketstudio.ui.SectionLabel
 import kotlin.math.roundToInt
+import androidx.compose.ui.semantics.selected
 
 data class RhythmActions(
     val togglePlay: () -> Unit = {},
@@ -1437,6 +1438,11 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
                             .padLight(light, color, playing = sounds, corner = 3.dp)
                             .border(if (sounds) 2.dp else 0.5.dp, if (sounds) Neon.TextPrimary else Neon.Outline, RoundedCornerShape(3.dp))
                             .clickable { actions.toggleHit(lane, step) }
+                            // Round 3, n° 37: each cell named (its pad, its step) and on or off, as the step grid's cells.
+                            .semantics {
+                                contentDescription = DrumKitInfo.names[lane] + ", " + tr("Pas %d", col + 1)
+                                selected = hit != null
+                            }
                             .testTag("cell_${lane}_$step"),
                     )
                 }

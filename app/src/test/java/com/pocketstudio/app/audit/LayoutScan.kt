@@ -63,7 +63,9 @@ object LayoutScan {
                 if (hidden(n)) continue
                 val name = nameOf(n)
                 // A slider's or a switch's value (« 0.0 », « on ») is not its name: TalkBack reads « 0.0, slider » (round 1, item 30b).
-                val unnamed = if (valued(n)) controlName(n).isBlank() else name.isBlank()
+                // Nor is an action's label (« Réglages du pad ») or a state: TalkBack says « bouton » and the label only later,
+                // as a hint (round 3, n° 7 and 37: 16 pad corners a page and the drag handles read « bouton » on the bench).
+                val unnamed = controlName(n).isBlank()
                 if (Kind.LABEL in checks && unnamed) out += Finding(Kind.LABEL, tagOf(n), "${controlKind(n)} without text nor description")
                 if (Kind.TARGET in checks && n.config.contains(SemanticsActions.OnClick)) {
                     // Its touch area, as TalkBack is given it (Material's minimumInteractiveComponentSize

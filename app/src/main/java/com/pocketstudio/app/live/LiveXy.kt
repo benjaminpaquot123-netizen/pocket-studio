@@ -517,6 +517,8 @@ internal fun LatchButton(
             .then(if (wait != null) Modifier.countdownRing({ wait.left() }, if (lit) Neon.Background else glow) else Modifier)
             .testTag(tag)
             .semantics {
+                // Round 3, n° 37: its name, not only its action (« Activer »): the label drawn inside is not merged here.
+                contentDescription = label
                 selected = lit
                 if (latched) stateDescription = tr("verrouillé")
                 // Without a finger to hold it (TalkBack, switch access): a touch turns it on and

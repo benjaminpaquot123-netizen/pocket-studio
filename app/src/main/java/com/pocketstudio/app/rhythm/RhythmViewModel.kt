@@ -9156,12 +9156,20 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         if (_noteTake.value == null) return
         val key = scene to id
         takeNotes[key] = (takeNotes[key] ?: emptyList()) + note
+        takeCounted()
+    }
+
+    /** Round 3, n° 37: the take says what it has written so far (« Ta prise : 3 notes »), seen and heard while it records. */
+    private fun takeCounted() {
+        val ui = _noteTake.value?.takeIf { it.running } ?: return
+        _noteTake.value = ui.copy(notes = takeNotes.values.sumOf { it.size }, hits = takeHits.size)
     }
 
     /** A hit added by the take recording now (see [recordPad]). */
     private fun hitTaken(scene: Int, lane: Int, step: Int) {
         if (_noteTake.value == null) return
         takeHits += Triple(scene, lane, step)
+        takeCounted()
     }
 
     // « Garder ce que je viens de jouer »: the keys and pads played lately, recording or not.

@@ -124,11 +124,12 @@ class ScreenScanTest(private val screen: String) {
         // A margin for the test order: the cards folded by an earlier test stay folded (LocalFoldStore's default
         // store is shared by the whole JVM), which hides or shows a few controls. A screen not accepted: none.
         val margin = if (accepted.isEmpty()) 0 else ORDER_MARGIN
-        // A slider or a switch without a name: never accepted, on any screen (round 1, item 30b: TalkBack reads
-        // « 0.0, slider » or « switch, on » and nothing says what it sets).
-        val valued = found.filter { it.first == "LABEL" && (" slider without " in it.second || " toggle without " in it.second) }
-        assertTrue("$screen: sliders or switches without a name (give each its label as contentDescription):\n" +
-            valued.joinToString("\n") { it.second }, valued.isEmpty())
+        // A control without a name: never accepted, on any screen, with no margin (round 1, item 30b: TalkBack reads
+        // « 0.0, slider » or « switch, on » and nothing says what it sets; round 3, n° 37: « bouton » alone, 16 times on a
+        // page of pads, over every sheet).
+        val unnamed = found.filter { it.first == "LABEL" }
+        assertTrue("$screen: controls without a spoken name (give each its words or a contentDescription; an action's label is not a name):\n" +
+            unnamed.joinToString("\n") { it.second }, unnamed.isEmpty())
         val over = KINDS.filter { (counts[it] ?: 0) > (accepted[it] ?: 0) + margin }
         assertTrue(
             "$screen: more than accepted (${over.joinToString { "$it ${counts[it]} > ${accepted[it] ?: 0}" }}); fix them, or accept them with a reason " +

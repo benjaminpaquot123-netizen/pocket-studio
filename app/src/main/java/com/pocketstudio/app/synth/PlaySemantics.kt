@@ -9,6 +9,7 @@ import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import com.pocketstudio.model.i18n.tr
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -37,6 +38,8 @@ internal fun Modifier.playable(name: String, enabled: Boolean = true, start: () 
                 true
             }
         } else {
+            // Round 3, n° 37: why it does not play (TalkBack said « désactivé » alone).
+            stateDescription = tr("Hors de la gamme du morceau")
             disabled()
         }
     }

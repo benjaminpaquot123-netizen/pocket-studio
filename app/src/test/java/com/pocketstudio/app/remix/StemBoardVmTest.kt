@@ -199,14 +199,17 @@ class StemBoardVmTest {
         vm.selectPad(0)  // the kick, selected: the stretch still never goes there
         val depth = vm.session.undoDepth
         vm.stemBoard.send(StemSelection(set.id, 3, 96_000, 144_000), StemDestination.Pad())
-        // Audit ultra round 2, zone 1, n° 5: the kit sound it replaces is said too.
-        assertEquals("« Voix 1 » remplace « Tom médium » sur le pad 9 (la flèche retour le remet).", said(vm))
+        // Audit ultra round 3, zone 1, n° 4 (seat E d, back from round 2: Tom médium then Tom aigu replaced): never a drum
+        // sound, the first empty pad: a live pad.
+        assertEquals("« Voix 1 » est sur le pad live 1.", said(vm))
         val p = vm.project.value
-        assertNull(p.drums.lanes[0].sample)
-        assertNull("the kit's Kick 2, unplayed, stays (audit ultra round 1, n° 2)", p.drums.lanes[1].sample)
-        assertEquals("Voix 1", p.drums.lanes[8].sample?.name)
-        assertEquals(1.0, vm.padSamples.info.value[p.drums.lanes[8].sample!!.file]!!.seconds, 0.01)
+        assertTrue("no drum pad touched", p.drums.lanes.all { it.sample == null })
+        assertEquals("Voix 1", p.live.at(0)?.name)
+        assertEquals(1.0, vm.padSamples.info.value[p.live.at(0)!!.file]!!.seconds, 0.01)
         assertEquals(depth + 1, vm.session.undoDepth)
+        // Undone: the line that said it goes too (seat E d 22: it stayed on screen).
+        vm.undo()
+        assertNull(vm.stemBoard.state.value.message)
         // Read from the song the project plays (its own copy, no second load).
         assertEquals(1, sink.loaded.size)
         assertTrue(sink.extracted.any { it.second == 96_000L && it.third == 48_000L })

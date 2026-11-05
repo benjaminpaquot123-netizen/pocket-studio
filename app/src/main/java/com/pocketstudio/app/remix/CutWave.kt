@@ -247,6 +247,8 @@ internal fun CutZoom(
                         if (!moved) {
                             onTouched()
                             model.cursor = view.frameAt(down.position.x)
+                            // Round 3, zone 1, n° 9: the piece touched is chosen (« Phrases », « Attaques », « Mesures »).
+                            if (!grabbing) model.touchPiece(model.cursor)
                         }
                     }
                 }

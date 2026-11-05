@@ -190,6 +190,10 @@ class RemixVoiceVmTest {
         vm.selectPad(0)  // the kick, selected
         vm.setRemixStartBar(1)
         vm.stemToPad(3, 2)
+        // Audit ultra round 3, zone 1, n° 4: pad 9 holds the kit's Tom médium: asked first (the free one proposed).
+        assertEquals(8, vm.stemPadAsk.value?.lane)
+        assertNull(vm.project.value.drums.lanes[8].sample)
+        vm.confirmStemPad()
         waitUntil("the cut never landed") { vm.remixCut.value != null }
         val p = vm.project.value
         // The kick and the snare are as they were, and the kit's Kick 2 too (audit ultra round 1, n° 2):
@@ -211,6 +215,8 @@ class RemixVoiceVmTest {
         assertEquals(kitName(beat()), kitName(p))
         // A second cut: the next free pad, the next number.
         vm.stemToPad(3, 1)
+        assertEquals(9, vm.stemPadAsk.value?.lane)
+        vm.confirmStemPad()
         waitUntil("the second cut never landed") { vm.project.value.drums.lanes[9].sample != null }
         assertEquals("Voix 2", vm.project.value.drums.lanes[9].sample!!.name)
         // Its start, end and fade, from the Remix page.

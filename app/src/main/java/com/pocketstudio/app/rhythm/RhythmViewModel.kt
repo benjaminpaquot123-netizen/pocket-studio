@@ -4151,12 +4151,52 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         armSlots(LiveSlots.ALL, -1)
     }
 
+    /**
+     * Audit ultra round 3, zone 1, n° 3 (seat E d): the Live columns cut outside the Live page: their strip muted in Mix,
+     * or the remix with all its parts muted (a song put in « muette, pour la découper »). Their blocks said « joue » and
+     * the column's speaker « Son », but nothing was heard: the Live page shows them muted.
+     */
+    fun liveCutElsewhere(p: Project = project.value): Set<String> = (0 until LiveSlots.COUNT).mapNotNullTo(HashSet()) { slot ->
+        val key = LiveSlots.key(slot)
+        val strip = liveChannel(key)?.let { p.mixer.channels.getOrNull(it) }?.mute == true
+        val parts = slot == LiveSlots.REMIX && p.remix.setId != null && p.remix.stems.isNotEmpty() && p.remix.stems.all { it.mute }
+        key.takeIf { strip || parts }
+    }
+
     /** M: track [key] silent at once, or heard again (not written in the project). */
     fun toggleLiveMute(key: String) {
+        // Round 3, zone 1, n° 3: shown muted because Mix cuts it: the touch gives it back there (one undo step), and says so.
+        if (key !in _liveMuted.value && key in liveCutElsewhere()) return soundBackFromMix(key)
         val ch = liveChannel(key) ?: return
         val muted = _liveMuted.value.let { if (key in it) it - key else it + key }
         _liveMuted.value = muted
         if (NativeEngine.isAvailable) NativeEngine.setChannelMute(ch, key in muted || project.value.mixer.channels.getOrNull(ch)?.mute == true)
+    }
+
+    private fun soundBackFromMix(key: String) {
+        val ch = liveChannel(key) ?: return
+        val before = project.value
+        val strip = before.mixer.channels.getOrNull(ch)?.mute == true
+        val parts = LiveSlots.of(key) == LiveSlots.REMIX && before.remix.stems.all { it.mute }
+        session.edit { p ->
+            var q = p
+            if (strip) q = q.copy(mixer = q.mixer.copy(channels = q.mixer.channels.mapIndexed { i, c -> if (i == ch) c.copy(mute = false) else c }))
+            if (parts) q = q.copy(remix = q.remix.copy(stems = q.remix.stems.map { it.copy(mute = false) }))
+            q
+        }
+        if (strip) pushStrip(ch, before.mixer.channels[ch])
+        if (parts) pushRemix()
+        val name = if (LiveSlots.of(key) == LiveSlots.REMIX) before.remix.name.ifBlank { tr("Remix") } else liveColumnName(before, key)
+        _notice.value = tr("« %s » était coupé dans Mix : il joue de nouveau.", name)
+    }
+
+    /** A Live column's name as Mix shows it. */
+    private fun liveColumnName(p: Project, key: String): String = when (val slot = LiveSlots.of(key)) {
+        LiveSlots.DRUMS -> tr("Batterie")
+        LiveSlots.ACID -> "Acid 303"
+        null -> key
+        else -> (LiveSlots.audioOf(slot)?.let { id -> p.audioTracks.firstOrNull { it.id == id }?.name }
+            ?: p.tracks.firstOrNull { it.id == slot - LiveSlots.INST }?.name)?.let(com.pocketstudio.model.DefaultNames::shown) ?: key
     }
 
     /** The mixer channel of a grid column. */
@@ -6230,12 +6270,10 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * before covering the selected one ([stemPadAsk]). Never a kick silently replaced.
      */
     fun stemToPad(stem: Int, bars: Int) {
+        // Audit ultra round 3, zone 1, n° 4: every drum pad holds a kit sound (a free one is a Tom médium nobody plays):
+        // never covered unasked, the pads' names shown first, the free one proposed.
         val lane = RemixVoice.padFor(project.value, _transport.value.selectedPad)
-        if (lane == null) {
-            _stemPadAsk.value = StemPadAsk(stem, bars, _transport.value.selectedPad)
-            return
-        }
-        cutToPad(stem, bars, lane)
+        _stemPadAsk.value = StemPadAsk(stem, bars, lane ?: _transport.value.selectedPad)
     }
 
     /**
@@ -9476,8 +9514,13 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** Stops the transport if it plays (opening the assistant: its previews must not play over the song). */
+    /**
+     * Silence: the song stops, and live pads looping on their own too (audit ultra round 3, zone 1, n° 1: ← out of
+     * Pad Live left its loops playing on the home screen, Défis, Remix, with no ■ anywhere there).
+     */
     fun stop() {
         if (_transport.value.playing) togglePlay()
+        else if (_padsAlone.value || padsSoundingNow().isNotEmpty()) stopLive()
     }
 
     // --- « Écouter seul » (bug report, APK 224): one sound alone, in a loop ------------------------
@@ -9976,6 +10019,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         warnLongFxOverLimit(before)
         loadTrackFonts()
         reloadMissingSamples()
+        // Audit ultra round 3, zone 1, n° 4 (seat E d 22): « “Voix 2” remplace “Tom aigu”… » stayed on screen once undone.
+        stemBoardMade?.dismissMessage()
+        _remixCut.value = null
     }
 
     /** Tests (no engine there): behave as while playing, for what follows the scene heard. */

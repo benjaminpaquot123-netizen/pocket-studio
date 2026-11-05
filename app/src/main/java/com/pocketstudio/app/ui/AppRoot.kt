@@ -607,7 +607,8 @@ fun AppRoot() {
                         setMineKind = libraryVm::setMineKind,
                         deleteMine = libraryVm::deleteMine,
                         toggleFavorite = libraryVm::toggleFavorite,
-                        cutSong = { id -> close(); libraryCutAsk = id },
+                        // Audit ultra round 3, zone 1, n° 4: opened « pour le pad live N », « Dans le Live » puts the piece there.
+                        cutSong = { id -> rhythmVm.stemBoard.liveTarget = live.takeIf { it >= 0 }; close(); libraryCutAsk = id },
                     ),
                 )
             }
@@ -4230,7 +4231,8 @@ internal fun LiveStateHost(
     androidx.compose.runtime.CompositionLocalProvider(com.pocketstudio.app.live.LocalSpectrumUsers provides spectrumUsers) {
         content(
             com.pocketstudio.app.live.LiveScreenUi(
-                project, grid, playing = transport.playing, muted = muted, acid = acid, returns = returns, take = take, takeAppend = takeAppend,
+                // Audit ultra round 3, zone 1, n° 3: a column cut in Mix shows muted here too.
+                project, grid, playing = transport.playing, muted = muted + remember(project) { vm.liveCutElsewhere(project) }, acid = acid, returns = returns, take = take, takeAppend = takeAppend,
                 chops = chops, takeUndoable = vm.canUndoPerformance(), clockOf = clockOf,
                 spectrum = spectrumOf, beatHaptics = settings.liveBeatHaptics, fxOf = liveFxOf, cellRecording = cellRecording,
                 selectedTrack = selectedTrack, remixBusy = remixBusy,

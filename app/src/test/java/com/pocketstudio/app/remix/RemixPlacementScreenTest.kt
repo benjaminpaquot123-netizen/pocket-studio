@@ -128,7 +128,7 @@ class RemixPlacementScreenTest {
             }
         }
         // Audit ultra round 1, n° 2: a pad picker, each pad with its name; the one touched takes it.
-        rule.onNodeWithText("Plus de pad libre : sur quel pad ?").assertIsDisplayed()
+        rule.onNodeWithText("Sur quel pad ?").assertIsDisplayed()
         rule.onNodeWithContentDescription("Pad 12 : Son 12").assertIsDisplayed()
         rule.onNodeWithTag("pad_pick_11").performClick()
         assertEquals(11, confirmed)

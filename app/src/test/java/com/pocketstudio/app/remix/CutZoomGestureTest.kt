@@ -37,14 +37,18 @@ class CutZoomGestureTest {
     private val song = 180L * BOARD_RATE
     private val bar = 4 * 24_000L  // 120 BPM
 
-    private fun setUp(): Triple<CutModel, StemBoardView, MutableList<SongCuts>> {
+    private fun setUp(rtl: Boolean = false): Triple<CutModel, StemBoardView, MutableList<SongCuts>> {
         val bars = (0 until song / bar).map { CutPiece(it * bar, (it + 1) * bar) }
         val saved = mutableListOf<SongCuts>()
         val m = CutModel("song", song, 120.0, 0.0, SongCuts("song", listOf(StemCuts(VOCALS_STEM, bars))), onChange = { saved += it }, mode = com.pocketstudio.model.AutoCut.Phrases)
         val v = StemBoardView(song)
         compose.setContent {
             PocketStudioTheme {
-                CutZoom(m, v, BoardPeaks(), mutableStateOf(StemBoardState()), onTouched = {}, modifier = Modifier.fillMaxWidth().height(210.dp))
+                androidx.compose.runtime.CompositionLocalProvider(
+                    androidx.compose.ui.platform.LocalLayoutDirection provides if (rtl) androidx.compose.ui.unit.LayoutDirection.Rtl else androidx.compose.ui.unit.LayoutDirection.Ltr,
+                ) {
+                    CutZoom(m, v, BoardPeaks(), mutableStateOf(StemBoardState()), onTouched = {}, modifier = Modifier.fillMaxWidth().height(210.dp))
+                }
             }
         }
         compose.waitForIdle()
@@ -62,7 +66,35 @@ class CutZoomGestureTest {
         assertEquals(v.frameAt(x).toDouble(), m.cursor.toDouble(), v.framesPerPx * 2)
         assertEquals(before, m.pieces)
         assertFalse(m.canUndo)
-        assertTrue(saved.isEmpty())
+        // Audit ultra round 3, zone 1, n° 9: the piece touched is ticked (a choice, no cut: nothing to undo).
+        assertEquals(listOf(com.pocketstudio.model.Cuts.pieceAt(before, m.cursor)), m.chosen)
+        assertTrue(saved.all { it.of(VOCALS_STEM)?.pieces == before })
+    }
+
+    /**
+     * Audit ultra round 3, zone 1, n° 9 (seat B c, Arabic, « Phrases »): touching piece 4 chose nothing, the send buttons
+     * stayed grey. A touch ticks the piece under the finger, again unticks it; right to left as left to right.
+     */
+    @Test
+    fun aTouchOnAPieceChoosesItLeftToRight() {
+        val (m, v, _) = setUp()
+        val x = v.x(3 * bar + bar / 2)
+        compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
+        compose.waitForIdle()
+        assertEquals(listOf(3), m.chosen)
+        assertEquals(1, m.chosenSelections().size)
+        compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
+        compose.waitForIdle()
+        assertEquals(emptyList<Int>(), m.chosen)
+    }
+
+    @Test
+    fun aTouchOnAPieceChoosesItRightToLeft() {
+        val (m, v, _) = setUp(rtl = true)
+        val x = v.x(3 * bar + bar / 2)
+        compose.onNodeWithTag("cut_wave").performTouchInput { click(Offset(x, centerY)) }
+        compose.waitForIdle()
+        assertEquals(listOf(3), m.chosen)
     }
 
     @Test

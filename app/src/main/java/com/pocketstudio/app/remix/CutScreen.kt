@@ -194,10 +194,14 @@ fun CutScreen(
         androidx.compose.foundation.layout.BoxWithConstraints(modifier.fillMaxSize().background(Neon.Background).testTag("cut_screen")) {
             // The phone turned (little height): the curve on the left, the buttons on the right.
             val wide = maxWidth > maxHeight && maxHeight < 560.dp
+            // Audit ultra round 3, zone 1, n° 9 (seat B c, Mode simple, phone): under the app's bars the curve had ~250 dp;
+            // the curve's fixed 210 dp pushed « Coupes », the tools and the pieces' list out (no way back to « Un bout », no
+            // piece to tick). Little room: everything stays, the curve shorter, the column scrolls.
+            val tight = !wide && !model.single && maxHeight < 700.dp
             Column(Modifier.fillMaxSize()) {
                 CutHeader(ui, model, actions, work) { actions.stop(); onClose() }
                 @Composable
-                fun curve(m: Modifier) = Column(m, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                fun curve(m: Modifier) = Column(if (tight) m.verticalScroll(rememberScrollState()) else m, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     StemChips(model) { actions.stop() }
                     CutOverview(model, view, levels, Modifier.fillMaxWidth().height(40.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -207,13 +211,17 @@ fun CutScreen(
                         Text(tr("Pince pour zoomer"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
                     }
                     // « Un bout »: no list of pieces, the curve takes the room (taller bars to grab).
-                    val zoom = if (model.single || wide) Modifier.fillMaxWidth().weight(1f).heightIn(min = 120.dp) else Modifier.fillMaxWidth().height(210.dp)
+                    val zoom = when {
+                        tight -> Modifier.fillMaxWidth().height(140.dp)
+                        model.single || wide -> Modifier.fillMaxWidth().weight(1f).heightIn(min = 120.dp)
+                        else -> Modifier.fillMaxWidth().weight(1.3f)
+                    }
                     CutZoom(model, view, levels, work, onTouched = { note = null }, modifier = zoom, onLetGo = ::letGo)
                     if (!wide) {
                         AutoRow(model, finding, onAuto = { pick(it) })
                         if (model.single) SpanRow(model, actions, work) else {
                             ToolRow(model, actions, work)
-                            PieceList(model, actions, work, Modifier.weight(1f))
+                            PieceList(model, actions, work, if (tight) Modifier.heightIn(max = 240.dp) else Modifier.weight(1f))
                         }
                     }
                 }

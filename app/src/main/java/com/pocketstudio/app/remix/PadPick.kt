@@ -37,7 +37,8 @@ import com.pocketstudio.ui.ScaledAlertDialog
 fun PadPickDialog(names: List<String>, onPick: (Int) -> Unit, onDismiss: () -> Unit) {
     ScaledAlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(tr("Plus de pad libre : sur quel pad ?")) },
+        // Audit ultra round 3, zone 1, n° 4: asked before every drum sound covered (a « free » kit pad holds a Tom médium too).
+        title = { Text(tr("Sur quel pad ?")) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(

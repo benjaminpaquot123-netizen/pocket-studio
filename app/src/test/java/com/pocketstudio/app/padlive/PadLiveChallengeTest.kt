@@ -104,6 +104,10 @@ class PadLiveChallengeTest {
         assertEquals(listOf(3), vm.project.value.padLive.stars)
         assertEquals(2, vm.project.value.padLive.nextChallenge)
         assertEquals("the stars are not an edit to undo", depth, vm.session.undoDepth)
+        // Audit ultra round 3, zone 1, n° 5: the score shows a moment before « Défi suivant » answers.
+        c.next()
+        assertEquals(done, c.ui.value)
+        clock += ChallengeController.SCORE_SHOWN_MS
         c.next()
         val second = c.ui.value as ChallengeUi.Ready
         assertEquals(2, second.c.level)
@@ -128,6 +132,7 @@ class PadLiveChallengeTest {
         assertTrue(resultWords(done.result).isNotBlank())
         assertEquals("nothing won, nothing kept", emptyList<Int>(), vm.project.value.padLive.stars)
         assertEquals("the first one still to win", 1, vm.project.value.padLive.nextChallenge)
+        clock += ChallengeController.SCORE_SHOWN_MS
         c.again()
         assertEquals(2, (c.ui.value as ChallengeUi.Ready).c.level)
         c.close()

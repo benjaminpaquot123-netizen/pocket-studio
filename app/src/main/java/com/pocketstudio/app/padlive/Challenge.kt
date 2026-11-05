@@ -28,6 +28,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -102,8 +104,19 @@ class ChallengeController(private val vm: RhythmViewModel) {
     private val taps = ArrayList<PadChallenge.Tap>()
     private var job: Job? = null
 
+    /** When the last try was scored ([now]'s clock), for [justScored]. */
+    private var scoredAt = Long.MIN_VALUE
+
+    /**
+     * Audit ultra round 3, zone 1, n° 5 (seats A a 9, F a 41): the last hit scores the try at once, and the finger's next
+     * touch landed on what came under it (« Défi suivant », the level list's 5): the result was never seen. For a moment
+     * after the score, the panel's buttons wait.
+     */
+    fun justScored(): Boolean = _ui.value is ChallengeUi.Done && now() - scoredAt < SCORE_SHOWN_MS
+
     /** « Défi »: the panel opens on the next challenge to win (or [level]). */
     fun open(level: Int? = null) {
+        if (level != null && justScored()) return
         stopExample()
         taps.clear()
         val p = vm.project.value
@@ -199,18 +212,21 @@ class ChallengeController(private val vm: RhythmViewModel) {
         val result = PadChallenge.score(c, taps)
         taps.clear()
         _ui.value = ChallengeUi.Done(c, result)
+        scoredAt = now()
         vm.session.editQuietly { it.copy(padLive = it.padLive.withStars(c.level, result.stars)) }
         AppLog.add("Défi ${c.level} : ${result.right}/${result.total}, ${result.stars} étoile(s)")
     }
 
     /** « Rejouer » the same challenge. */
     fun again() {
+        if (justScored()) return
         val c = current() ?: return
         open(c.level)
     }
 
     /** « Défi suivant ». */
     fun next() {
+        if (justScored()) return
         val c = current() ?: return
         open((c.level + 1).coerceAtMost(PadChallenge.LEVELS.size))
     }
@@ -272,6 +288,8 @@ class ChallengeController(private val vm: RhythmViewModel) {
     companion object {
         /** How long a pad stays lit for a hit of the example, at least. */
         const val LIT_MS = 180
+        /** How long the score shows before the panel's buttons answer again. */
+        const val SCORE_SHOWN_MS = 1_200L
         /** The dark gap before the next hit, so that a pad hit twice in a row flashes twice. */
         const val GAP_MS = 70
         private const val FRAME_MS = 30L
@@ -354,7 +372,8 @@ internal fun ChallengePanel(
         )
         // Audit ultra round 1, n° 9: every challenge with its best stars, one touch to play it (it went back
         // to challenge 1 with no list, and a try worse than the best seemed to wipe it).
-        if (c != null && (ui is ChallengeUi.Ready || ui is ChallengeUi.Done)) LevelList(c.level, best, actions.pick)
+        // Round 3, zone 1, n° 5: shown in every state, so that nothing moves under the finger as the try is scored.
+        if (c != null) LevelList(c.level, best, actions.pick)
         if (c != null) {
             // The rhythm's dots, said as one (TalkBack had a row of nameless dots).
             val said = when (ui) {
@@ -362,22 +381,14 @@ internal fun ChallengePanel(
                 is ChallengeUi.YourTurn -> tr("Rythme · coups : %1\$d · joués : %2\$d", c.hits.size, ui.taps)
                 else -> tr("Rythme · coups : %d", c.hits.size)
             }
-            Row(
-                Modifier.fillMaxWidth().semantics(mergeDescendants = true) { contentDescription = said }.testTag("padlive_challenge_dots"),
-                horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically,
-            ) {
-                if (ui is ChallengeUi.Done) Stars(ui.result.stars)
-                c.hits.forEachIndexed { i, h ->
-                    val color = pads.at(h.pad)?.let { livePadColor(it.name, h.pad % PadLive.PAGE_SIZE) } ?: Neon.TextSecondary
-                    val fill = when (ui) {
-                        is ChallengeUi.Listening -> if (i == ui.at) color else color.copy(alpha = 0.25f)
-                        is ChallengeUi.YourTurn -> if (i < ui.taps) color else Color.Transparent
-                        is ChallengeUi.Done -> if (ui.result.matched.getOrElse(i) { false }) Neon.Acid else Neon.Red
-                        else -> color.copy(alpha = 0.25f)
-                    }
-                    Box(Modifier.size(14.dp).clip(CircleShape).background(fill).border(1.5.dp, color, CircleShape))
-                }
+            // Audit ultra round 3, zone 1, n° 5 (seat A a, a child who cannot read): the rhythm to play back as a picture
+            // that stays (each hit where it falls in the bar, in its pad's colour), the tempo as a light beating, the
+            // stars won big.
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                TempoLight(c.bpm, on = ui !is ChallengeUi.Done)
+                RhythmStrip(c, ui, pads, said, Modifier.weight(1f))
             }
+            Stars(if (ui is ChallengeUi.Done) ui.result.stars else best.getOrElse(c.level - 1) { 0 }, big = ui is ChallengeUi.Done)
         }
         // The best stays, said when this try did less (on its own line: the buttons keep their words).
         if (ui is ChallengeUi.Done) {
@@ -468,11 +479,72 @@ internal fun resultWords(r: PadChallenge.Result): String {
 }
 
 @Composable
-private fun Stars(stars: Int) {
-    Row(Modifier.semantics { contentDescription = tr("Étoiles : %d sur 3", stars) }.testTag("padlive_challenge_stars")) {
+private fun Stars(stars: Int, big: Boolean = true) {
+    // Always the same room (three stars): the buttons under them never move.
+    Row(
+        Modifier.fillMaxWidth().semantics { contentDescription = tr("Étoiles : %d sur 3", stars) }.testTag(if (big) "padlive_challenge_stars" else "padlive_challenge_best"),
+        horizontalArrangement = Arrangement.Center,
+    ) {
         for (i in 0 until 3) {
             Icon(if (i < stars) Icons.Filled.Star else Icons.Filled.StarBorder, contentDescription = null,
-                tint = if (i < stars) Neon.Amber else Neon.TextSecondary, modifier = Modifier.size(20.dp))
+                tint = if (i < stars) Neon.Amber else Neon.TextSecondary.copy(alpha = if (big) 1f else 0.5f), modifier = Modifier.size(36.dp))
+        }
+    }
+}
+
+/**
+ * The tempo, without a word: a light that beats with the rhythm's beat ([bpm]), and the number under it. Still once the
+ * try is scored.
+ */
+@Composable
+private fun TempoLight(bpm: Double, on: Boolean) {
+    val beatMs = (60_000.0 / bpm.coerceIn(30.0, 300.0)).toInt()
+    val pulse = androidx.compose.animation.core.rememberInfiniteTransition(label = "tempo")
+    val level by pulse.animateFloat(
+        initialValue = 1f, targetValue = 0.15f,
+        animationSpec = androidx.compose.animation.core.infiniteRepeatable(androidx.compose.animation.core.tween<Float>(beatMs, easing = androidx.compose.animation.core.LinearEasing)),
+        label = "beat",
+    )
+    Column(
+        Modifier.semantics(mergeDescendants = true) { contentDescription = tr("Tempo : %d BPM", kotlin.math.round(bpm).toInt()) }.testTag("padlive_challenge_tempo"),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Box(Modifier.size(22.dp).clip(CircleShape).background(Neon.Amber.copy(alpha = if (on) level else 0.25f)).border(1.5.dp, Neon.Amber, CircleShape))
+        Text("♩ ${kotlin.math.round(bpm).toInt()}", style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1)
+    }
+}
+
+/**
+ * The rhythm as a picture: the bar's four beats (a line each), each hit a round of its pad's colour where it falls. Lit as
+ * the example plays, filled as the player plays, green or red once scored.
+ */
+@Composable
+private fun RhythmStrip(c: PadChallenge.Challenge, ui: ChallengeUi, pads: com.pocketstudio.model.LivePads, said: String, modifier: Modifier) {
+    val first = c.hits.first().beat
+    val beats = kotlin.math.ceil(c.hits.maxOf { it.beat } - first + 1.0).coerceAtLeast(1.0)
+    val dot = 26.dp
+    androidx.compose.foundation.layout.BoxWithConstraints(
+        modifier.heightIn(min = 40.dp).clip(RoundedCornerShape(10.dp)).background(Neon.SurfaceHigh)
+            .semantics(mergeDescendants = true) { contentDescription = said }.testTag("padlive_challenge_dots"),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        val room = maxWidth - dot - 8.dp
+        for (b in 0 until beats.toInt()) {
+            Box(Modifier.padding(start = 4.dp + dot / 2 + room * (b / beats).toFloat()).size(width = 2.dp, height = 30.dp).background(Neon.Outline))
+        }
+        c.hits.forEachIndexed { i, h ->
+            val color = pads.at(h.pad)?.let { livePadColor(it.name, h.pad % PadLive.PAGE_SIZE) } ?: Neon.TextSecondary
+            val fill = when (ui) {
+                is ChallengeUi.Listening -> if (i == ui.at) color else color.copy(alpha = 0.45f)
+                is ChallengeUi.YourTurn -> if (i < ui.taps) color else color.copy(alpha = 0.3f)
+                is ChallengeUi.Done -> if (ui.result.matched.getOrElse(i) { false }) Neon.Acid else Neon.Red
+                else -> color.copy(alpha = 0.75f)
+            }
+            val x = 4.dp + room * ((h.beat - first) / beats).toFloat()
+            val lit = ui is ChallengeUi.Listening && i == ui.at
+            Box(
+                Modifier.padding(start = x).size(if (lit) dot + 4.dp else dot).clip(CircleShape).background(fill).border(2.dp, color, CircleShape),
+            )
         }
     }
 }

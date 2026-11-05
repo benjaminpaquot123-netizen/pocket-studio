@@ -204,6 +204,13 @@ class StemBoardRouter(
             return say(tr("Trop long pour une piste : %d minutes au plus. Choisis un morceau plus court.", TRACK_MAX_SECONDS / 60))
         }
         when (dest) {
+            // Audit ultra round 3, zone 1, n° 4 (seat E d, back from round 2): « Sur les pads » took Tom médium, then Tom
+            // aigu, while eight live pads were empty. A drum pad always holds a kit sound: a piece goes on an EMPTY pad (a
+            // live pad, Pad Live and Live › Pads play it), never over a drum sound unasked; none empty: which drum pad, asked.
+            is StemDestination.Pad if dest.pad == null -> {
+                val pad = freeLivePad(p) ?: return ask(listOf(sel))
+                toLivePad(sel, pad, p)
+            }
             is StemDestination.Pad -> {
                 val lane = StemRouting.padFor(p, dest.pad) ?: return ask(listOf(sel))
                 val name = StemRouting.nextName(p.drums.lanes.mapNotNull { it.sample?.name }, french)
@@ -254,6 +261,12 @@ class StemBoardRouter(
             }
             // Lot D2: a passage of the project's own song goes in the Live grid's remix column, the
             // first brick without a passage (a song of another set still goes on a live pad).
+            // Round 3, zone 1, n° 4 (seat E d 33): the cut screen opened from the library « pour le pad live 1 »: that pad.
+            is StemDestination.Live if liveTarget?.let { p.live.at(it) == null } == true -> {
+                val pad = liveTarget!!
+                liveTarget = null
+                toLivePad(sel, pad, p)
+            }
             is StemDestination.Live if p.remix.setId != null && p.remix.setId == sel.setId -> {
                 val scene = p.firstFreeRemixCell()
                     ?: return say(tr("Chaque brique a déjà un passage dans la colonne Remix : enlèves-en un dans Live."))
@@ -266,16 +279,31 @@ class StemBoardRouter(
                 }
             }
             is StemDestination.Live -> {
-                val pad = p.live.clips.indexOfFirst { it == null }.takeIf { it in 0 until LivePads.MAX }
-                    ?: return say(tr("Les 16 pads live sont pris : vides-en un dans Live › Pads."))
-                val name = StemRouting.nextName(p.live.clips.mapNotNull { it?.name }, french)
-                launchWork(tr("%1\$s vers le pad live %2\$d…", label, pad + 1)) {
-                    var bpm = 0.0
-                    val pcm = cut(sel, fitted = true) { bpm = it } ?: return@launchWork null
-                    host.putOnLivePad(pcm, name, pad, bpm)
-                    tr("« %1\$s » est sur le pad live %2\$d.", DefaultNames.shownSample(name), pad + 1)
-                }
+                val pad = freeLivePad(p) ?: return say(tr("Les 16 pads live sont pris : vides-en un dans Live › Pads."))
+                toLivePad(sel, pad, p)
             }
+        }
+    }
+
+    /**
+     * Round 3, zone 1, n° 4: the live pad the cut screen was opened for (« Ma bibliothèque » of live pad N › « Découper »):
+     * « Dans le Live » puts the piece there (it went to the remix column's brick A, the whole song playing there).
+     */
+    var liveTarget: Int? = null
+
+    /** The first empty live pad, or null. */
+    private fun freeLivePad(p: Project): Int? = (0 until LivePads.MAX).firstOrNull { p.live.at(it) == null }
+
+    /** [sel] on live pad [pad] (empty), said. */
+    private fun toLivePad(sel: StemSelection, pad: Int, p: Project) {
+        val french = StemRouting.stemFrench(sel.stem)
+        val label = StemRouting.stemLabel(sel.stem)
+        val name = StemRouting.nextName(p.live.clips.mapNotNull { it?.name }, french)
+        launchWork(tr("%1\$s vers le pad live %2\$d…", label, pad + 1)) {
+            var bpm = 0.0
+            val pcm = cut(sel, fitted = true) { bpm = it } ?: return@launchWork null
+            host.putOnLivePad(pcm, name, pad, bpm)
+            tr("« %1\$s » est sur le pad live %2\$d.", DefaultNames.shownSample(name), pad + 1)
         }
     }
 
@@ -309,11 +337,8 @@ class StemBoardRouter(
             return say(tr("Trop long pour un pad : %d secondes au plus. Choisis un morceau plus court.", PAD_MAX_SECONDS))
         }
         when (dest) {
-            is StemDestination.Pad -> {
-                val free = StemRouting.freePads(p)
-                if (free.isEmpty()) return ask(pieces)
-                putPiecesOn(pieces, free)
-            }
+            // Round 3, zone 1, n° 4: the empty live pads, one piece each (by the batch below); none empty: asked.
+            is StemDestination.Pad if freeLivePad(p) == null -> ask(pieces)
             is StemDestination.Track -> {
                 val span = pieces.last().endFrame - pieces.first().startFrame
                 if (span / StemSelection.SAMPLE_RATE.toDouble() > TRACK_MAX_SECONDS) {
@@ -405,7 +430,8 @@ class StemBoardRouter(
         if (pick.sels.size == 1) route(pick.sels.single(), StemDestination.Pad(lane))
         // Relecture tour 1, M1: only the pad touched is replaced (as the question says), the other
         // pieces take the pads freed since, the rest is said, never the kit's next pads overwritten.
-        else putPiecesOn(pick.sels, listOf(lane) + StemRouting.freePads(host.project()).filter { it != lane })
+        // Round 3, zone 1, n° 4: only that one (a « free » kit pad still holds a drum sound): the rest is said.
+        else putPiecesOn(pick.sels, listOf(lane))
     }
 
     override fun dismissPick() = _state.update { it.copy(pick = null) }

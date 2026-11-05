@@ -234,6 +234,17 @@ class CutModel(
         onChange(cuts)
     }
 
+    /**
+     * Audit ultra round 3, zone 1, n° 9 (seat B c): a touch on a piece of the curve ticks it (or unticks it), as its line in
+     * the list does: the pieces of « Phrases » could not be chosen where they are seen. Outside a piece: nothing.
+     */
+    fun touchPiece(at: Long): Boolean {
+        if (single) return false
+        val i = Cuts.pieceAt(pieces, at).takeIf { it in pieces.indices } ?: return false
+        toggleChosen(i)
+        return true
+    }
+
     /** « Tout choisir », or none when all are. */
     fun chooseAll() {
         val all = pieces.indices.toList()

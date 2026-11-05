@@ -75,7 +75,9 @@ class StemBoardRouterTest {
             return 0
         }
         override suspend fun putOnLivePad(pcm: Pcm, name: String, pad: Int, bpm: Double) {
+            fail?.let { throw it }
             live += Triple(pcm, name, pad)
+            p = p.copy(live = p.live.withAt(pad, LiveClip("l$pad.wav", name)))
         }
         val cells = ArrayList<List<Any>>()
         override suspend fun putInRemixCell(pcm: Pcm, name: String, scene: Int, bpm: Double, stem: Int, fromSeconds: Double) {
@@ -141,24 +143,24 @@ class StemBoardRouterTest {
         val edits = Edits()
         val r = router(host, edits)
         r.send(sel(), StemDestination.Pad())
-        assertEquals(1, host.pads.size)
-        val cut = host.pads.single().single()
-        // The kit's first eight are never taken (audit ultra round 1, n° 2), pad 9 plays in the drop: pad 10.
-        assertEquals(9, cut.lane)
-        assertEquals("Voix 1", cut.name)
+        // Audit ultra round 3, zone 1, n° 4 (seat E d, back from round 2): never a drum sound (it took Tom aigu, a kit
+        // sound nobody played): the first EMPTY pad, a live pad.
+        assertTrue(host.pads.isEmpty())
+        val (pcm, name, pad) = host.live.single()
+        assertEquals(0, pad)
+        assertEquals("Voix 1", name)
         // Exactly the stretch, fitted to the project's tempo, its fades kept for the cut.
-        assertEquals(24_000, cut.pcm.frames)
-        assertEquals(((3 * 1_000_000 + 96_000) * 1e-7).toFloat(), cut.pcm.data[0], 1e-6f)
+        assertEquals(24_000, pcm.frames)
+        assertEquals(((3 * 1_000_000 + 96_000) * 1e-7).toFloat(), pcm.data[0], 1e-6f)
         assertEquals(StemSelection(sel().setId, 3, 0, 24_000), edits.cuts.single())
         assertEquals("3:96000:24000:true", host.source!!.reads.single())
-        // Audit ultra round 2, zone 1, n° 5: the kit sound it replaces is said too.
-        assertEquals("« Voix 1 » remplace « Tom aigu » sur le pad 10 (la flèche retour le remet).", r.state.value.message)
+        assertEquals("« Voix 1 » est sur le pad live 1.", r.state.value.message)
         assertNull(r.state.value.busy)
-        // The next one is « Voix 2 », on the next free pad (pad 10 now has a sound).
-        host.p = host.p.copy(drums = host.p.drums.withSample(9, PadSample("a.wav", "Voix 1")))
+        // The next one is « Voix 2 », on the next empty pad.
         r.send(sel(), StemDestination.Pad())
-        assertEquals(10, host.pads.last().single().lane)
-        assertEquals("Voix 2", host.pads.last().single().name)
+        assertEquals(1, host.live.last().third)
+        assertEquals("Voix 2", host.live.last().second)
+        assertTrue(host.pads.isEmpty())
     }
 
     @Test
@@ -176,7 +178,16 @@ class StemBoardRouterTest {
 
     @Test
     fun everyPadUsedNothingIsCoveredWithoutAsking() {
-        val full = beat().let { p -> p.copy(drums = (0 until 16).fold(p.drums) { d, i -> d.withSample(i, PadSample("s$i.wav", "Son $i")) }) }
+        val liveFull = LivePads(clips = List(LivePads.MAX) { LiveClip("l$it.wav", "x") })
+        // Round 3, zone 1, n° 4: the live pads all taken, the kit's spare pads (Tom médium…, nobody plays them) are
+        // still drum sounds: asked, never covered.
+        router(Host(beat().copy(live = liveFull))).let { r ->
+            r.send(sel(), StemDestination.Pad())
+            assertTrue(r.state.value.pick != null)
+            r.sendPieces(listOf(sel(), sel(start = 200_000, end = 210_000)), StemDestination.Pad())
+            assertEquals(2, r.state.value.pick!!.sels.size)
+        }
+        val full = beat().let { p -> p.copy(live = liveFull, drums = (0 until 16).fold(p.drums) { d, i -> d.withSample(i, PadSample("s$i.wav", "Son $i")) }) }
         val host = Host(full)
         val r = router(host)
         r.send(sel(), StemDestination.Pad())
@@ -204,6 +215,22 @@ class StemBoardRouterTest {
         r.pickPad(0)
         assertEquals(listOf(0), host.pads.last().map { it.lane })
         assertEquals("1 bout sur le pad 1. Plus de pad libre pour le dernier bout.", r.state.value.message)
+    }
+
+    @Test
+    fun theCutScreenOpenedForALivePadSendsThere() {
+        // Round 3, zone 1, n° 4 (seat E d 33): « Ma bibliothèque » of live pad 3 › « Découper », then « Dans le Live »:
+        // that pad, not the remix column's brick A (where the whole song played).
+        val host = Host(beat())
+        val r = router(host)
+        r.liveTarget = 2
+        r.send(sel(), StemDestination.Live)
+        assertEquals(2, host.live.single().third)
+        assertTrue(host.cells.isEmpty())
+        assertEquals("« Voix 1 » est sur le pad live 3.", r.state.value.message)
+        // Once: the next piece goes as before.
+        r.send(sel(), StemDestination.Live)
+        assertEquals(1, host.cells.size)
     }
 
     @Test

@@ -147,6 +147,16 @@ class Round3Zone2Test {
         assertEquals(0, compose.onAllNodesWithTag("share").fetchSemanticsNodes().size)
     }
 
+    /** Round 3 review: a star won in Pad Live, or another Pad Live page shown, is no change of the song's sound. */
+    @Test
+    fun aChallengesStarLeavesTheExportFresh() {
+        val file = File(app.cacheDir, "fresh.m4a").apply { writeText("x") }
+        val made = ExportUi(files = listOf(file), madeFrom = ExportUi.madeHash(beat))
+        assertFalse(made.staleFor(beat.copy(padLive = beat.padLive.withStars(1, 3))))
+        assertFalse(made.staleFor(beat.copy(padLive = beat.padLive.copy(page = 1))))
+        assertTrue("a beat changed still is", made.staleFor(beat.copy(tempoBpm = 90.0)))
+    }
+
     /** n° 11 (A d 57): « Annuler » on a new export took away the last one's « Sauvegardé dans… ». */
     @Test
     fun aCancelledRunGivesBackTheLastResult() {

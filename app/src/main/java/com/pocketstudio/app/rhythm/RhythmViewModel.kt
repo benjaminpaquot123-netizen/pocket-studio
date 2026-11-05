@@ -433,8 +433,13 @@ data class ExportUi(
     companion object {
         fun defaultFade(what: ExportWhat) = if (what == ExportWhat.Song) ExportFade.Short else ExportFade.None
 
-        /** What [madeFrom] keeps of a project: all that is heard (its name only names the file). */
-        fun madeHash(p: Project): Int = p.copy(name = "").hashCode()
+        /**
+         * What [madeFrom] keeps of a project: all that is heard (its name only names the file). Round 3 review: never what
+         * no export plays (a challenge's stars, the Pad Live page shown, the MIDI map, the song's versions kept aside):
+         * a star won in Pad Live called the song « changé depuis cet export » and took its « Partager » away.
+         */
+        fun madeHash(p: Project): Int =
+            p.copy(name = "", midiMap = emptyList(), songVersions = emptyList(), padLive = p.padLive.copy(stars = emptyList(), page = 0)).hashCode()
     }
 }
 

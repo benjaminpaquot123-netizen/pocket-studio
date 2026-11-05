@@ -2,8 +2,8 @@
 
 | N° | Verdict | Gravité | Test (rouge avant, vert après) | Commit |
 |---|---|---|---|---|
-| 7 coins des pads | appli | grave | `TalkBackNamesTest.padLivesCornersSayWhatTheyOpen` | a11y (2e commit) |
-| 37 noms parlés | appli en partie, banc en partie | grave | `TalkBackNamesTest` (4 cas), `ScreenScanTest` (LABEL 0 sur les 300 écrans) | a11y |
+| 7 coins des pads | appli | grave | `TalkBackNamesTest.padLivesCornersSayWhatTheyOpen` | 4d8f967 |
+| 37 noms parlés | appli en partie, banc en partie | grave | `TalkBackNamesTest` (4 cas), `ScreenScanTest` (LABEL 0 sur les 300 écrans) | 4d8f967 |
 | 37 contraste (gris pâles) | banc | — | `SeatOptions` : `lit=non` grise tout texte < 18 sp | — |
 | 38 pluriels | appli | moyen | `CountWordsTest` (sources + formes), `Round3LanguagesTest` | 2ce48c3 |
 | 38 langues | appli | moyen | `Round3LanguagesTest`, `I18nCatalogTest` | 2ce48c3 |
@@ -53,3 +53,5 @@
   zones (clés inutilisées, « %s (vide) » pt-BR, « «» » espagnol, variables de LibraryScreen).
 - `:app:testDebugUnitTest` : `CountWordsTest`, `TalkBackNamesTest`, `SongGuideTest` verts ; `ScreenScanTest` : LABEL 0
   partout ; 3 rouges HELP d'autres zones (pistes audio, partage).
+- Captures : poignée des feuilles au pixel près (`NavScreenshotTest`, `TrackSheetScreenshotTest` : feuilles vertes) ;
+  les écarts restants (étiquettes d'aide, partage) viennent des zones 2 et 5. Aucune capture ré-enregistrée.

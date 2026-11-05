@@ -113,7 +113,16 @@ class BenchAmeneesTest : HumanTester("amenees") {
     fun aPackFillsThePageShown() {
         padsAsOnASeat = true
         bring(AMENEE_PADLIVE, SeatOptions())
-        fun tap(tag: String) = act("touche ${centerOf(tag)!!.first} ${centerOf(tag)!!.second}")
+        // The ready pads are made on entering (padLive.busy): the pack's chip waits for them; each tag waited for (CI 242: an NPE).
+        fun tap(tag: String) {
+            val until = System.currentTimeMillis() + 60_000
+            while (rhythm()!!.padLive.busy.value != null || centerOf(tag) == null) {
+                if (System.currentTimeMillis() > until) error("$tag absent after 60 s (busy ${rhythm()!!.padLive.busy.value}):\n" + screenLines().joinToString("\n"))
+                act("attends 0.5")
+            }
+            val (x, y) = centerOf(tag) ?: error("$tag absent:\n" + screenLines().joinToString("\n"))
+            act("touche $x $y")
+        }
         tap("padlive_page_B")
         tap("padlive_pack")
         tap("padlive_pack_techno")

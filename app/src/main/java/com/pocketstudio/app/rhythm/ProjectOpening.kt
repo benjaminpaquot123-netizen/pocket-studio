@@ -136,9 +136,12 @@ object ProjectOpening {
      */
     suspend fun prepare(context: Context): OpenedProject {
         val app = context.applicationContext
-        if (!TakeVault.app.awaitIdle(WAIT_MS)) AppLog.add("Ouverture : une prise s'écrit encore")
-        if (!ClosingSaves.awaitIdle(WAIT_MS)) AppLog.add("Ouverture : une sauvegarde s'écrit encore")
         val opened = withContext(Dispatchers.IO) {
+            // Waited for off the main thread (CI 242, ForegroundSoundTest): on the main dispatcher these waits' clock is the
+            // main looper's, which a test (Robolectric, a paused looper) or a stalled frame may never move: the opening
+            // stayed at « début » for good after a save of the test before. Here they wait on real time, at most WAIT_MS.
+            if (!TakeVault.app.awaitIdle(WAIT_MS)) AppLog.add("Ouverture : une prise s'écrit encore")
+            if (!ClosingSaves.awaitIdle(WAIT_MS)) AppLog.add("Ouverture : une sauvegarde s'écrit encore")
             val restored = restoreFromBackupOnce(app)
             val id = CurrentProject.get(app)
             if (!CurrentProject.isNone(id) && markOpening(app, id) > RESCUE_AFTER) {

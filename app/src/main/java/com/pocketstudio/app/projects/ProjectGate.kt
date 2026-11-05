@@ -52,7 +52,10 @@ class ProjectOpeningViewModel(app: Application) : AndroidViewModel(app) {
     private var opened: OpenedProject? = null
 
     init {
-        viewModelScope.launch {
+        // Off the main thread from start to end (CI 242, ForegroundSoundTest: the read done, its way back to the main
+        // dispatcher was never run after an earlier activity of the same process, and « Ouverture du projet… » stayed;
+        // on a phone, a busy main thread delayed it the same way). [ready] is a StateFlow: set from any thread.
+        viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
             // The steps of an opening in the app's log (bug reports; the CI emulator once stalled here).
             val started = android.os.SystemClock.elapsedRealtime()
             AppLog.add("Ouverture du projet : début")

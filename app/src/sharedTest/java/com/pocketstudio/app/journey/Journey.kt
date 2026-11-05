@@ -51,6 +51,9 @@ class Journey(private val compose: ComposeTestRule, private val log: (String) ->
         val end = System.currentTimeMillis() + ms
         do {
             Thread.sleep(minOf(50L, ms))
+            // Under createEmptyComposeRule the activity's frames come from the test clock: moved by one frame
+            // (as JourneyTest.frame does), so frame-driven waits (the opening's still hold) go on (CI 242).
+            runCatching { if (compose.mainClock.autoAdvance) compose.mainClock.advanceTimeByFrame() }
             runCatching { compose.waitForIdle() }
         } while (System.currentTimeMillis() < end)
     }

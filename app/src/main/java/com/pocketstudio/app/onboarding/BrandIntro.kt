@@ -58,7 +58,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.math.PI
@@ -786,9 +785,13 @@ fun BrandIntro(onDone: () -> Unit, reducedMotion: Boolean = animationsOff(LocalC
     val scope = rememberCoroutineScope()
     if (reducedMotion) {
         LaunchedEffect(Unit) {
-            delay(IntroTimeline.STILL_MS)
+            // The still hold counted in frames, not with a delay: under a test clock (CI's emulator runs with
+            // animations off) a coroutine delay never ends, and the intro stayed on screen (CI 242).
+            val shown = withFrameNanos { it }
+            var now = shown
+            while ((now - shown) / 1_000_000L < IntroTimeline.STILL_MS) now = withFrameNanos { it }
             // A fade by hand: the phone's animation scale (0) would make an animate* instant.
-            val start = withFrameNanos { it }
+            val start = now
             while (stillAlpha > 0f) {
                 withFrameNanos { now -> stillAlpha = 1f - ((now - start) / 1e6f / IntroTimeline.STILL_FADE_MS).coerceIn(0f, 1f) }
             }

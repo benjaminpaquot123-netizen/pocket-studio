@@ -1,0 +1,19 @@
+Écran 6 (1920x1200)
+texte « أغنية جديدة، خطوة خطوة » @ 1310,40
+bouton « إغلاق » @ 462,57
+texte « الخطوة 1: اختر نمطًا » @ 1405,84
+texte « اختر نمطًا: سأجهّز الطبول، ثم أجزاء الأغنية. يمكنك تغيير كل شيء لاحقًا. اضغط على بطاقة لقراءتها، و▶ لسماعها. » @ 1062,128
+texte « • BPM: سرعة المقطوعة، بعدد النبضات في الدقيقة. » @ 1300,180
+bouton « هادئ (Chill، Lo-fi) الأنماط: 6 » [état « مفتوح »] @ 960,257
+touchable « Lo-fi hip-hop Hip-hop · 84 BPM الـHip-hop اللطيف في فيديوهات «Lofi Girl»، مثالي للمذاكرة: كوردات جاز على بيانو كهربائي، طبول ناعمة وطقطقة أسطوانة قديمة. للمرجع: • Nujabes – Aruarian Dance (2004) • Nujabes feat. Cise Starr & Akin – Feather (2005) • J Dilla – Don't Cry (2006) » @ 960,512
+bouton « إيقاف الاستماع » @ 1443,356
+bouton «  أنشئ واستمع » @ 931,449
+bouton « اختر هذا النمط، خطوة بخطوة » @ 931,533
+touchable « Deep house House · 120 BPM House ناعم ودافئ: بيانو كهربائي رقيق، باص مستدير، أجواء غروب. للمرجع: Mr. Fingers – Can You Feel It (1986) » @ 960,792
+bouton « استمع » @ 1443,770
+touchable « Amapiano House · 112 BPM House جنوب أفريقي أبطأ: باص يرتد كطبلة خشبية (الـ«Log drum») وبيانو جازي. للمرجع: Tyla – Water (2023) » @ 960,939
+bouton « استمع » @ 1443,917
+touchable « Synthwave 105 BPM صوت الثمانينيات العائد إلى الموضة (Stranger Things، Blinding Lights): سنير ضخم بصدى، باص ينبض بلا توقف ونوتات Synth تدور في حلقة. للمرجع: The Weeknd – Blinding Lights (2019) » @ 960,1100
+bouton « استمع » @ 1443,1064
+touchable « Boom bap Hip-hop · 92 BPM راب نيويورك القديم: Loop بيانو جازي، Kick مستدير، سنير حاد وGroove متمايل. للمرجع: Nekfeu – On verra (2015) » @ 960,1196
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

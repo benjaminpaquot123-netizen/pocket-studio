@@ -1,0 +1,27 @@
+Écran 14 (588x1278)
+texte « Poignée : glisse vers le bas pour fermer » @ 294,62
+texte « Tonalité du morceau » @ 208,165
+bouton « Fermer » @ 478,165
+texte « Tonalité du morceau : Do · Phrygienne » @ 294,303
+texte « Gamme » @ 96,402
+touchable « Majeure » @ 122,481
+touchable « Mineure » @ 329,481
+touchable « Dorienne » @ 132,562
+touchable « Penta mineure » @ 185,643
+touchable « Penta majeure » @ 185,724
+touchable « Blues » @ 427,724
+touchable « Phrygienne » @ 159,805
+touchable « Mineure harmonique » @ 247,886
+texte « Tonique » @ 100,965
+touchable « Do » @ 70,1044
+touchable « Do♯ » @ 182,1044
+touchable « Ré » @ 291,1044
+touchable « Mi♭ » @ 393,1044
+touchable « Mi » @ 494,1044
+touchable « Fa » @ 66,1125
+touchable « Fa♯ » @ 171,1125
+touchable « Sol » @ 283,1125
+touchable « La♭ » @ 390,1125
+touchable « La » @ 491,1125
+touchable « Si♭ » @ 68,1206
+touchable « Si » @ 160,1206

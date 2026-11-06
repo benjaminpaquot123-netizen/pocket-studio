@@ -1,0 +1,43 @@
+Écran 71 (616x1371)
+touchable « Live Sauvegardé » (nom « Mes projets ») @ 148,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 339,42
+bouton « Enregistrer : micro, clavier ou pads » @ 427,42
+bouton « Jouer » @ 499,42
+bouton « Plus de choix » @ 571,42
+bouton « 120  Tempo » (nom « Tempo : 120 battements par minute ») @ 83,114
+bouton « Refrain mesure 1/20 » @ 255,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 571,114
+bouton « MES PISTES » [état « Déplié »] @ 128,204
+texte « Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule. » @ 308,261
+bouton « Batterie Changer le son » @ 170,342
+bouton « Écouter seule » (nom « Écouter « Batterie » seul, en boucle ») @ 388,342
+bouton « Réglages de Batterie : volume, couper » @ 538,342
+bouton « Voix 1 Changer le son » @ 170,452
+bouton « Écouter seule » (nom « Écouter « Voix 1 » seul, en boucle ») @ 388,452
+bouton « Réglages de Voix 1 : volume, couper, supprimer » @ 538,452
+bouton « LE MORCEAU » [état « Déplié »] @ 154,581
+bouton « ? » (nom « Qu'est-ce que « Morceau » ? ») @ 245,581
+texte « Touche une partie pour écouter le morceau à partir d'elle. » @ 304,628
+texte « 20 mesures · 0:40 » @ 308,666
+bouton « Accords du morceau A · Refrain La m Touche pour changer les accords de tout le morceau. » @ 308,788
+bouton « A · Refrain 20 mes. » @ 200,907
+bouton « Une fois de moins » [désactivé] @ 394,907
+bouton « Une fois de plus » [désactivé] @ 466,907
+bouton « Plus d'actions » @ 538,907
+texte « Ajouter à la fin : » @ 119,976
+bouton « + A · Refrain » @ 141,1025
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Ajoute une basse 25 % » [état « replié »] @ 308,1077
+bouton « Jouer » @ 234,1152
+bouton « Annuler » (nom « Annuler la dernière action ») @ 100,1152
+bouton « 120 Tempo » (nom « Tempo : 120 battements par minute ») @ 373,1152
+bouton « Plus » (nom « Plus de choix ») @ 516,1152
+onglet « Mon morceau » [sélectionné] @ 56,1251
+onglet « Rythme » @ 181,1251
+onglet « Clavier » @ 307,1251
+onglet « Mix » @ 433,1251
+onglet « Envoyer » @ 559,1251
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 388,1341
+touchable « ✎  Noter » (nom « Écrire une note ») @ 484,1341
+touchable « ⋯ » (nom « Mode retours ») @ 568,1341
+texte « Mode retours » @ 176,1341

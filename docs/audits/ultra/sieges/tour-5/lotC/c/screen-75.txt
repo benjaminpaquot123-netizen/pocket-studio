@@ -1,0 +1,26 @@
+Écran 75 (588x1278)
+texte « Handle: swipe down to close » @ 294,36
+texte « Ready to share? » @ 258,108
+bouton « Close » @ 522,108
+champ « Song name (and the project's) » contenu « My first beat » @ 294,211
+bouton « Clear » @ 522,218
+bouton «  Listen » @ 474,314
+texte « 0:16 » @ 66,314
+texte «   a looping part » @ 177,319
+texte « Target loudness » @ 110,390
+bouton « ? » (nom « What is “Target loudness”? ») @ 211,389
+case « Streaming · −14 LUFS » @ 164,453
+case « Club · −8 LUFS » [sélectionné] @ 407,453
+case « Auto (style) · −9 LUFS » @ 166,534
+case « Off » @ 352,534
+texte « Loud, like in a club (−8 LUFS), measured on the loudest passage. The output rises gently to get there; the export gets as close as it can without crushing the sound. The same setting as in Mix. » @ 294,630
+texte « No song yet: your part goes out as a loop (8 bars). » @ 316,732
+bouton « Edit the song » @ 178,810
+bouton «   Video for social media · 30 s » @ 294,900
+bouton « More exports Track by track, MIDI, FLAC… in Mix » @ 272,994
+bouton « ? » (nom « What is “WAV, FLAC, M4A”? ») @ 536,994
+bouton « Send the project To pick it up on another device: a .zip file with all its sounds, to open there in My projects › Import. » @ 272,1060
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+case « M4A · for sharing » [sélectionné] @ 144,1122
+case « WAV · max quality » @ 387,1122
+bouton «   Share » @ 294,1218

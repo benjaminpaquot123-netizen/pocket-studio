@@ -1,0 +1,62 @@
+Écran 2 (588x1278)
+touchable « My first beat » (nom « Saved ») @ 298,36
+bouton « Pro » (nom « Pro mode. Touch to change mode. ») @ 543,36
+touchable « My projects » @ 111,114
+bouton « A » (nom « Current part: A. Tap to change part. ») @ 252,114
+bouton « Undo » [désactivé] @ 327,114
+bouton « Record: microphone, keys or pads » @ 399,114
+bouton « Play » @ 471,114
+bouton « Share my song » @ 543,114
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,186
+interrupteur « ? » (nom « Label the screen ») [non coché] @ 543,186
+onglet « Drums 16 pads » [sélectionné] @ 76,255
+onglet « Acid 303 Bass line » @ 223,255
+onglet « Vocals Microphone » @ 391,255
+onglet « Remix Split » @ 531,255
+  → la suite sur le côté (glisse pour la voir)
+texte « Part: A » @ 55,315
+touchable « Kick » @ 84,396
+touchable « Kick 2 » @ 224,396
+touchable « Snare » @ 364,396
+touchable « Snare 2 » @ 504,396
+touchable « Clap » @ 84,486
+touchable « Hi-hat » @ 224,486
+touchable « Open hi-hat » @ 364,486
+touchable « Low tom » @ 504,486
+touchable « Mid tom » @ 84,576
+touchable « High tom » @ 224,576
+touchable « Rim » @ 364,576
+touchable « Cowbell » @ 504,576
+touchable « Cymbal » @ 84,666
+touchable « Shaker » @ 224,666
+touchable « Conga » @ 364,666
+touchable « Zap » @ 504,666
+bouton « Kit: Classic » @ 114,750
+texte « Tap a pad to hear it; its cells hold the hits. Long press: change the sound. » @ 396,750
+bouton « STEPS: KICK » [état « Expanded »] @ 227,858
+bouton « ? » (nom « What is “Step”? ») @ 242,858
+case « All pads » @ 479,858
+touchable « 1 » (nom « Step 1 ») [état « hit, strength 100 % »] @ 70,927
+touchable « Step 2 » [état « empty »] @ 133,927
+touchable « Step 3 » [état « empty »] @ 197,927
+touchable « Step 4 » [état « empty »] @ 261,927
+touchable « 2 » (nom « Step 5 ») [état « hit, strength 100 % »] @ 325,927
+touchable « Step 6 » [état « empty »] @ 389,927
+touchable « Step 7 » [état « empty »] @ 453,927
+touchable « Step 8 » [état « empty »] @ 517,927
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Add a melody 23 % » [état « folded »] @ 294,984
+bouton « Undo » [désactivé] @ 73,1059
+bouton « Redo » [désactivé] @ 182,1059
+bouton « Play » @ 288,1059
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 400,1059
+bouton « Share » (nom « Share my song ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sounds » [sélectionné] @ 174,1158
+onglet « Mix » @ 294,1158
+onglet « Live » @ 414,1158
+onglet « More » @ 534,1158
+touchable « ●  REC » (nom « Record the screen with sound ») @ 360,1248
+touchable « ✎  Note » (nom « Write a note ») @ 456,1248
+touchable « ⋯ » (nom « Feedback mode ») @ 540,1248
+texte « Feedback mode » @ 162,1248

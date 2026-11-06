@@ -1,0 +1,6 @@
+Écran 21 (616x1371)
+texte « D'abord le modèle de séparation » @ 308,553
+texte « Pour séparer une chanson, l'appli télécharge d'abord son modèle : 174 Mo, une seule fois. » @ 308,655
+texte « Tu n'es pas en Wi-Fi : ces 174 Mo seront pris sur ton forfait mobile. » @ 308,727
+bouton « Plus tard » @ 309,829
+bouton « Télécharger » @ 482,829

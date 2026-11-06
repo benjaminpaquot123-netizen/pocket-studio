@@ -1,0 +1,37 @@
+Écran 30 (588x1278)
+touchable « Démo · Acid house Sauvegardé » (nom « Mes projets ») @ 114,42
+bouton « Pro » (nom « Mode Pro. Toucher pour changer de mode. ») @ 255,42
+bouton « Annuler la dernière action » @ 327,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Jouer » @ 471,42
+bouton « Partager mon morceau » @ 543,42
+bouton « 126  BPM » (nom « Tempo : 126 BPM ») @ 73,114
+bouton « A mes. 1/7 » @ 218,114
+interrupteur « Boucler la partie au lieu de jouer le morceau » [non coché, état « désactivé »] @ 462,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,114
+bouton « Plus  · Aide » (nom « Revenir à Plus ») @ 294,180
+bouton « AIDE » [état « Déplié »] @ 89,276
+bouton « J'apprends Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie. » @ 294,360
+bouton « Mon premier morceau, avec le Guide » @ 294,462
+bouton « Revoir le guide des premiers pas » @ 294,546
+bouton « Ouvrir le Guide de mon morceau » @ 294,630
+bouton «   Les mots de la musique, à écouter » @ 294,714
+texte « Le « ? » au bout du bandeau sous la barre du haut étiquette l'écran : un toucher pour voir, un autre pour cacher. » @ 294,802
+texte « Partout dans l'appli, le petit « ? » à côté d'un mot l'explique aussi. » @ 294,882
+texte « Reprendre ton morceau sur un autre appareil : « Partager » › « Envoyer le projet » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ». » @ 294,934
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Ajoute une mélodie 38 % » [état « replié »] @ 294,984
+bouton « Annuler » (nom « Annuler la dernière action ») @ 73,1059
+bouton « Rétablir » [désactivé] @ 182,1059
+bouton « Jouer » @ 288,1059
+bouton « 126 Tempo » (nom « Tempo : 126 BPM ») @ 400,1059
+bouton « Partager » (nom « Partager mon morceau ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sons » @ 174,1158
+onglet « Mix » @ 294,1158
+onglet « Live » @ 414,1158
+onglet « Plus » [sélectionné] @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

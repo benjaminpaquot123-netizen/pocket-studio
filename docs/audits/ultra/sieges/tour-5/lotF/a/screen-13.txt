@@ -1,0 +1,36 @@
+Écran 13 (1035x1243)
+touchable « House Sauvegardé » (nom « Mes projets ») @ 319,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 684,42
+bouton « Annuler la dernière action » [désactivé] @ 774,42
+bouton « Enregistrer : micro, clavier ou pads » @ 846,42
+bouton « Arrêter » @ 918,42
+bouton « Plus de choix » @ 990,42
+bouton « 122  Tempo » (nom « Tempo : 122 battements par minute ») @ 98,123
+bouton « Montée mesure 25/96 » @ 315,123
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 990,123
+texte « Fini ? Envoie ton morceau » @ 518,204
+champ « Nom du morceau (et du projet) » contenu « House » @ 518,301
+bouton « Effacer » @ 932,309
+texte « 3:09 » @ 109,396
+texte «   19 parties » @ 222,398
+bouton «  Arrêter » @ 865,415
+texte « Niveau : comme la musique en streaming (−14) » @ 409,437
+texte « Tout est prêt : aucun solo oublié, aucune piste coupée. » @ 540,493
+bouton «   Vidéo pour les réseaux · 30 s » @ 518,568
+bouton « Autres exports Piste par piste, MIDI, FLAC… (passe en mode Pro) » @ 496,672
+bouton « ? » (nom « Qu'est-ce que « WAV, FLAC, M4A » ? ») @ 946,672
+bouton « Envoyer le projet Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer. » @ 496,761
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+case « M4A · pour partager » [sélectionné] @ 231,835
+case « WAV · qualité max » @ 554,835
+bouton «   Partager » @ 518,931
+bouton « Guide  · Change un son 19 % » [état « replié »] @ 517,1027
+onglet « Mon morceau » @ 99,1123
+onglet « Rythme » @ 309,1123
+onglet « Clavier » @ 518,1123
+onglet « Mix » @ 727,1123
+onglet « Envoyer » [sélectionné] @ 936,1123
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 807,1213
+touchable « ✎  Noter » (nom « Écrire une note ») @ 903,1213
+touchable « ⋯ » (nom « Mode retours ») @ 987,1213
+texte « Mode retours » @ 385,1213

@@ -1,0 +1,5 @@
+Écran 8 (588x1278)
+texte « Je prépare ton morceau… » @ 258,520
+texte « Vérification » @ 92,583
+texte « Ensuite, choisis l'appli pour l'envoyer. » @ 207,659
+bouton « Annuler » @ 493,745

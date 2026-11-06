@@ -1,0 +1,6 @@
+Écran 84 (1035x1243)
+texte « Rinomina » @ 388,490
+champ « Nome del progetto 12/40 » contenu « Napoli Remix » @ 517,603
+bouton « Cancella » @ 691,594
+bouton « Annulla » @ 570,741
+bouton « OK » @ 683,741

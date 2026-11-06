@@ -1,0 +1,89 @@
+Écran 32 (616x1371)
+bouton « Atrás » @ 42,42
+touchable « Reproducir » @ 123,42
+bouton « Tempo menos » @ 230,42
+bouton « 120 BPM » (nom « Tempo: 120 BPM ») @ 302,42
+bouton « Tempo más » @ 374,42
+texte « – » @ 481,42
+touchable « REC » (nom « Grabar la actuación ») @ 568,42
+bouton « A comp. 1/20 » [désactivé] @ 81,114
+interrupteur « ? » (nom « Etiquetar la pantalla ») [non coché] @ 571,114
+touchable « Nueva versión » (nom « Nueva versión ✓ ») @ 192,186
+touchable « Añadir a continuación » @ 412,186
+texte « La toma: » @ 54,186
+touchable « Lanzar en 1 compás » @ 131,268
+bouton « ? » (nom « ¿Qué es “Lanzar en y Casillas”? ») @ 272,268
+bouton « Menos casillas » @ 480,269
+bouton « Más casillas » @ 568,269
+texte « Casillas » @ 402,269
+texte « 8 » @ 524,268
+texte « Batería » @ 158,335
+interrupteur « Sonido de Batería » [coché, état « activado »] @ 158,390
+texte « Acid 303 » @ 286,335
+interrupteur « Sonido de Acid 303 » [coché, état « activado »] @ 286,390
+texte « Sinte » @ 414,335
+interrupteur « Sonido de Sinte » [coché, état « activado »] @ 414,390
+texte « Ma chanson préférée » @ 542,335
+interrupteur « Sonido de Ma chanson préférée » [non coché, état « desactivado »] @ 542,390
+bouton « ? » (nom « ¿Qué es “Bloques y casillas”? ») @ 51,369
+bouton « A » @ 51,468
+bouton « Batería · A · vacío » @ 158,468
+bouton « Acid 303 · A · vacío » @ 286,468
+bouton « Sinte · A · vacío » @ 414,468
+bouton « Voz · 2 » (nom « Ma chanson préférée · A · listo ») @ 542,468
+bouton « B » @ 51,537
+bouton « Batería · B · vacío » @ 158,537
+bouton « Acid 303 · B · vacío » @ 286,537
+bouton « Sinte · B · vacío » @ 414,537
+bouton « Ma chanson préférée · B · vacío » @ 542,537
+bouton « C » @ 51,606
+bouton « Batería · C · vacío » @ 158,606
+bouton « Acid 303 · C · vacío » @ 286,606
+bouton « Sinte · C · vacío » @ 414,606
+bouton « Ma chanson préférée · C · vacío » @ 542,606
+bouton « D » @ 51,675
+bouton « Batería · D · vacío » @ 158,675
+bouton « Acid 303 · D · vacío » @ 286,675
+bouton « Sinte · D · vacío » @ 414,675
+bouton « Ma chanson préférée · D · vacío » @ 542,675
+bouton « E » @ 51,744
+bouton « Batería · E · vacío » @ 158,744
+bouton « Acid 303 · E · vacío » @ 286,744
+bouton « Sinte · E · vacío » @ 414,744
+bouton « Ma chanson préférée · E · vacío » @ 542,744
+bouton « F » @ 51,813
+bouton « Batería · F · vacío » @ 158,813
+bouton « Acid 303 · F · vacío » @ 286,813
+bouton « Sinte · F · vacío » @ 414,813
+bouton « Ma chanson préférée · F · vacío » @ 542,813
+bouton « G » @ 51,882
+bouton « Batería · G · vacío » @ 158,882
+bouton « Acid 303 · G · vacío » @ 286,882
+bouton « Sinte · G · vacío » @ 414,882
+bouton « Ma chanson préférée · G · vacío » @ 542,882
+bouton « H » @ 51,951
+bouton « Batería · H · vacío » @ 158,951
+bouton « Acid 303 · H · vacío » @ 286,951
+bouton « Sinte · H · vacío » @ 414,951
+bouton « Ma chanson préférée · H · vacío » @ 542,951
+bouton « ■ Todo » @ 51,1026
+bouton « ■ » (nom « Detener la pista ») @ 158,1026
+bouton « ■ » (nom « Detener la pista ») @ 286,1026
+bouton « ■ » (nom « Detener la pista ») @ 414,1026
+bouton « ■ » (nom « Detener la pista ») @ 542,1026
+touchable « Bloques » [sélectionné] @ 64,1137
+touchable « Pads » @ 150,1137
+touchable « Efectos » @ 236,1137
+touchable « Notas » @ 322,1137
+touchable « Acid 303 » @ 408,1137
+bouton « Pantalla completa » @ 487,1137
+bouton « Desplegar » @ 559,1137
+onglet « Estructura » @ 56,1251
+onglet « Sonidos » @ 181,1251
+onglet « Mix » @ 307,1251
+onglet « Live » [sélectionné] @ 433,1251
+onglet « Más » @ 559,1251
+touchable « ●  REC » (nom « Grabar la pantalla con sonido ») @ 388,1341
+touchable « ✎  Anotar » (nom « Escribir una nota ») @ 484,1341
+touchable « ⋯ » (nom « Modo comentarios ») @ 568,1341
+texte « Modo comentarios » @ 176,1341

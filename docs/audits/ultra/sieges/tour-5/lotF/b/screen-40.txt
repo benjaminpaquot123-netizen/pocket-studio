@@ -1,0 +1,15 @@
+Écran 40 (1920x1200)
+texte « Was spielt » @ 664,126
+texte « Alles, was auf den Sound wirkt: Effekte, Sends, bewegte Kurven. „Bearbeiten“ bringt dich dahin, wo man es einstellt. » @ 960,264
+case « Ganzer Song » [sélectionné] @ 678,393
+case « A » @ 872,393
+case « B » @ 957,393
+texte « Drums » @ 900,475
+texte « 1 Kurve » @ 1320,476
+texte « Bewegt: Filter Cutoff » @ 792,553
+texte « Öffnet (hell) oder schließt (dumpf) den Sound: der Filter-Sweep. Bei jedem Loop-Durchlauf. Steigt von 15 % auf 84 %. » @ 839,715
+bouton « Bearbeiten » @ 1242,684
+texte « Effekte und Sends » @ 769,900
+bouton « Bearbeiten » @ 1242,927
+texte « Filter · Sättigung » @ 735,958
+bouton « Schließen » @ 1275,1069

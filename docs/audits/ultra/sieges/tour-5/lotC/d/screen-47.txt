@@ -1,0 +1,47 @@
+Écran 47 (588x1278)
+touchable « Démo · Acid house Sauvegardé » (nom « Mes projets ») @ 114,42
+bouton « Pro » (nom « Mode Pro. Toucher pour changer de mode. ») @ 255,42
+bouton « Annuler la dernière action » @ 327,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Jouer » @ 471,42
+bouton « Partager mon morceau » @ 543,42
+bouton « 126  BPM » (nom « Tempo : 126 BPM ») @ 73,114
+bouton « A mes. 1/7 » @ 218,114
+interrupteur « Boucler la partie au lieu de jouer le morceau » [non coché, état « désactivé »] @ 462,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,114
+bouton « Plus  · MIDI » (nom « Revenir à Plus ») @ 294,180
+bouton « CLAVIER MIDI » [état « Déplié »] @ 157,279
+bouton « ? » (nom « Qu'est-ce que « MIDI » ? ») @ 250,279
+texte « Cet appareil ne gère pas le MIDI. » @ 228,331
+bouton « CONTRÔLEUR MIDI » [état « Déplié »] @ 163,433
+texte « Aucun contrôleur branché. Branche ton clavier en USB : il est reconnu tout seul. » @ 294,493
+texte « Ce que fait chaque commande » @ 197,550
+case « Rythme » [sélectionné] @ 106,613
+case « Acid 303 » @ 249,613
+case « Synthé » @ 389,613
+case « Mixeur » @ 502,613
+  → la suite sur le côté (glisse pour la voir)
+texte « Clavier » @ 135,676
+texte « Joue la piste choisie, avec la force de frappe ; bandes ou molettes : hauteur et modulation ; pédale : tenue » @ 393,721
+texte « Pads 1 à 8 » @ 135,808
+texte « Jouent les pads de batterie 1 à 8 » @ 393,823
+texte « Pads 9 à 16 (banque B) » @ 135,895
+texte « Jouent les pads de batterie 9 à 16 » @ 393,895
+texte « Potards 1 à 8 » @ 135,942
+texte « Volume · Gauche / droite · Couleur · Saleté · Mouvement · Espace · Envoi réverbe · Envoi écho » @ 393,942
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Ajoute une mélodie 38 % » [état « replié »] @ 294,984
+bouton « Annuler » (nom « Annuler la dernière action ») @ 73,1059
+bouton « Rétablir » [désactivé] @ 182,1059
+bouton « Jouer » @ 288,1059
+bouton « 126 Tempo » (nom « Tempo : 126 BPM ») @ 400,1059
+bouton « Partager » (nom « Partager mon morceau ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sons » @ 174,1158
+onglet « Mix » @ 294,1158
+onglet « Live » @ 414,1158
+onglet « Plus » [sélectionné] @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

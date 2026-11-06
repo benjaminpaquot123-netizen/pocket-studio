@@ -1,0 +1,11 @@
+Écran 85 (1035x1243)
+bouton « Indietro » @ 54,54
+texte « I miei progetti » @ 553,54
+bouton «   Nuovo brano guidato » @ 517,147
+bouton «   Nuovo progetto: stile, demo o vuoto » @ 517,243
+bouton « Importa un progetto (.zip) » @ 517,333
+touchable « Napoli Remix APERTO proprio ora · 120 BPM · 90 batt. · 3:00 · 5 parti » @ 517,466
+bouton « Opzioni di Napoli Remix » @ 981,467
+bouton « Condividi il mio brano » @ 192,498
+touchable « Notte a Napoli 1 min fa · 120 BPM · 90 batt. · 3:00 · 5 parti » @ 517,612
+bouton « Opzioni di Notte a Napoli » @ 981,612

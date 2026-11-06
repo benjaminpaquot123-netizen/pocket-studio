@@ -1,0 +1,19 @@
+Écran 16 (588x1278)
+texte « Poignée : glisse vers le bas pour fermer » @ 294,36
+texte « Son de : Synthé » @ 150,93
+bouton « Fermer » @ 509,120
+texte « Touche un son : il remplace celui de cette piste dans tout le morceau. » @ 239,141
+bouton « Dossier précédent » @ 60,219
+texte « Basses » @ 330,219
+bouton « Basse ronde Brillant · tenu » @ 294,310
+bouton « Basse sub Doux · tenu » @ 294,409
+bouton « Basse reese Brillant · tenu » @ 294,508
+bouton « Reese moderne Brillant · 5 voix · tenu » @ 294,607
+bouton « Basse wobble Brillant · tenu » @ 294,706
+bouton « Basse qui parle Brillant · tenu » @ 294,805
+bouton « Basse growl Brillant · 3 voix · tenu » @ 294,904
+bouton « Reese DnB Brillant · 3 voix · tenu » @ 294,1003
+bouton « Basse riddim Creux · tenu » @ 294,1102
+bouton « Basse neuro Brillant · 3 voix · tenu » @ 294,1201
+bouton « Sub pur Doux · tenu » @ 294,1267
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

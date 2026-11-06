@@ -1,0 +1,43 @@
+Écran 15 (588x1278)
+touchable « Acid techno Zapisano » (nom « Moje projekty ») @ 135,42
+bouton « Prosty » (nom « Tryb Prosty. Dotknij, aby zmienić tryb. ») @ 312,42
+bouton « Nagraj: mikrofon, klawiatura lub pady » @ 399,42
+bouton « Stop » @ 471,42
+bouton « Więcej opcji » @ 543,42
+bouton « 138  Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 83,114
+bouton « Build-up takt 57/176 » @ 251,114
+interrupteur « ? » (nom « Podpisz ekran ») [non coché] @ 543,114
+bouton « MOJE ŚCIEŻKI » [état « Rozwinięte »] @ 139,204
+texte « Dotknij nazwy ścieżki, aby zmienić jej brzmienie; ▶, aby posłuchać jej osobno. » @ 294,261
+bouton « Perkusja Zmień dźwięk » @ 165,342
+bouton « Słuchaj solo » (nom « Słuchaj „Perkusja” osobno, w pętli ») @ 369,342
+bouton « Ustawienia: Perkusja – głośność, wycisz » @ 510,342
+bouton « Acid 303 Zmień dźwięk » @ 165,452
+bouton « Słuchaj solo » (nom « Słuchaj „Acid 303” osobno, w pętli ») @ 369,452
+bouton « Ustawienia: Acid 303 – głośność, wycisz, usuń » @ 510,452
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Anuluj » @ 512,456
+texte « Nowy dźwięk: Bas reese » @ 264,456
+bouton « Przewodnik  · Zmień dźwięk 14 % » [état « otwarte »] @ 294,546
+texte « NA POCZĄTEK » @ 294,624
+texte « Zmień dźwięk » @ 154,669
+texte « Zrób go po swojemu: inny dźwięk melodii albo perkusji. » @ 294,732
+texte « → » @ 61,798
+texte « Twoja kolej: dotknij „Dźwięk melodii”. » @ 297,795
+texte « POKAŻ USTAWIENIE » @ 141,849
+bouton « ↗ Dźwięk melodii » (nom « Zobacz ustawienie: Dźwięk melodii ») @ 294,909
+bouton « ↗ Inna perkusja » (nom « Zobacz ustawienie: Inna perkusja ») @ 294,988
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Cofnij » @ 95,1059
+bouton « Stop » @ 223,1059
+bouton « 138 Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 356,1059
+bouton « Więcej » (nom « Więcej opcji ») @ 493,1059
+onglet « Mój utwór » [sélectionné] @ 54,1158
+onglet « Rytm » @ 174,1158
+onglet « Klawiatura » @ 294,1158
+onglet « Miks » @ 414,1158
+onglet « Wyślij » @ 534,1158
+touchable « ●  REC » (nom « Nagraj ekran z dźwiękiem ») @ 360,1248
+touchable « ✎  Zanotuj » (nom « Napisz notatkę ») @ 456,1248
+touchable « ⋯ » (nom « Tryb uwag ») @ 540,1248
+texte « Tryb uwag » @ 162,1248

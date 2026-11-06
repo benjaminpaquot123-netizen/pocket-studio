@@ -1,0 +1,43 @@
+Écran 38 (900x1509)
+touchable « Mein Projekt 1 Gespeichert » (nom « Meine Projekte ») @ 234,42
+bouton « Pro » (nom « Modus Pro. Tippen, um den Modus zu wechseln. ») @ 495,42
+bouton « Rückgängig » @ 567,42
+bouton « Wiederholen » [désactivé] @ 639,42
+bouton « Aufnehmen: Mikrofon, Tastatur oder Pads » @ 711,42
+bouton « Spielen » @ 783,42
+bouton « Meinen Song teilen » @ 855,42
+bouton « 132  BPM » (nom « Tempo: 132 BPM ») @ 73,114
+interrupteur « ? » (nom « Bildschirm beschriften ») [non coché] @ 855,114
+bouton « Start Weiter, neuer Song, Remix… » @ 450,210
+bouton « Meine Projekte Projekt öffnen, erstellen, duplizieren, senden » @ 450,315
+bouton « Hilfe Erste Schritte, der Guide, das Glossar » @ 450,420
+bouton « Mein erster Song, mit dem Guide Seine ersten Karten, vom Stil bis zum Teilen » @ 450,525
+bouton « Musikbegriffe zum Anhören Jedes Wort mit einem Klangbeispiel » @ 450,630
+bouton « Einstellungen Sprache, Design, Größe, Sound, einfacher Modus » @ 450,727
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « Tempo und Tonart Kapitel 1/16 · Schritt 4/4 · Pro » @ 400,816
+bouton « Kapitel » @ 771,816
+bouton « Zuklappen » @ 843,816
+texte « Dieser Schritt ist noch nicht erledigt. Tippe noch einmal auf „Weiter“, um ihn trotzdem zu überspringen. » @ 450,909
+texte « Du bist dran: Gib ein ganz kleines bisschen Swing dazu (5 %): Die kleinen Hi-Hats schleppen kaum merklich, der Groove atmet, ohne zu hinken. » @ 450,969
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Weiterlesen » @ 450,966
+bouton «   Ich mach's » @ 450,1038
+bouton «  Beispiel anhören » @ 232,1122
+bouton «  Zeig's mir » @ 667,1122
+bouton «  Zurück » @ 92,1203
+bouton « Weiter  » @ 811,1203
+bouton « Rückgängig » @ 126,1290
+bouton « Wiederholen » [désactivé] @ 301,1290
+bouton « Spielen » @ 464,1290
+bouton « 132 Tempo » (nom « Tempo: 132 BPM ») @ 622,1290
+bouton « Teilen » (nom « Meinen Song teilen ») @ 782,1290
+onglet « Struktur » @ 85,1389
+onglet « Sounds » @ 268,1389
+onglet « Mix » @ 451,1389
+onglet « Live » @ 633,1389
+onglet « Mehr » [sélectionné] @ 815,1389
+touchable « ●  REC » (nom « Bildschirm mit Ton aufnehmen ») @ 672,1479
+touchable « ✎  Notieren » (nom « Notiz schreiben ») @ 768,1479
+touchable « ⋯ » (nom « Feedback-Modus ») @ 852,1479
+texte « Feedback-Modus » @ 318,1479

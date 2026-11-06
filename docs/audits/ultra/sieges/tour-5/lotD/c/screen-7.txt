@@ -1,0 +1,5 @@
+Écran 7 (1035x1243)
+texte « Rinomina » @ 388,490
+champ « Nome del progetto 0/40 » contenu «  » @ 517,603
+bouton « Annulla » @ 570,741
+bouton « OK » [désactivé] @ 683,741

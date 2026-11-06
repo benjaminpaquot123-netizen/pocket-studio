@@ -1,0 +1,14 @@
+Écran 79 (1035x1243)
+texte « BenStudio » @ 224,72
+texte « Cosa vuoi fare? » @ 253,132
+bouton « Continua Pro Notte a Napoli (copia) 90 batt. · 3:00 · 5 parti Salvato proprio ora » @ 518,294
+bouton « Nuovo brano Uno stile con un tocco, o passo passo con l'assistente. » @ 518,489
+bouton « I miei progetti Apri un altro brano, copialo o rinominalo. » @ 518,633
+bouton « Remix Separazione delle tracce: batteria, basso, voce e il resto. » @ 518,783
+bouton « Pad Live NUOVO Pad pronti da suonare, i tuoi suoni, effetti da palco. Suona subito. » @ 518,943
+bouton « Sfide Ascolta un ritmo, rifallo sui pad: vinci stelle. » (nom « Sfide: ascolta un ritmo, rifallo sui pad, vinci stelle. ») @ 518,1104
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « ●  REC » (nom « Registra lo schermo con il suono ») @ 807,1213
+touchable « ✎  Annota » (nom « Scrivi una nota ») @ 903,1213
+touchable « ⋯ » (nom « Modalità feedback ») @ 987,1213
+texte « Modalità feedback » @ 385,1213

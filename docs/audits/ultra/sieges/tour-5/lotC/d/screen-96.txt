@@ -1,0 +1,13 @@
+Écran 96 (588x1278)
+texte « Mes exports » @ 144,409
+texte « Dans Musique › BenStudio sur ce téléphone. Les plus récents d'abord. » @ 294,484
+texte « Démo-Acid-house-morceau-20261105-211600.mid » @ 234,553
+bouton « Envoyer » @ 492,567
+texte « 5 nov. 2026 21:16 · 1 Ko » @ 142,596
+texte « Démo-Acid-house-morceau-club-20261105-211523.wav » @ 234,640
+bouton « Envoyer » @ 492,654
+texte « 5 nov. 2026 21:15 · 1 Ko » @ 141,683
+texte « Démo-Acid-house-morceau-streaming-20261105-211501.m4a » @ 234,727
+bouton « Envoyer » @ 492,741
+texte « 5 nov. 2026 21:15 · 1 Ko » @ 141,770
+bouton « Fermer » @ 497,856

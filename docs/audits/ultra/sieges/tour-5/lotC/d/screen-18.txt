@@ -1,0 +1,7 @@
+Écran 18 (588x1278)
+texte « C'est prêt » @ 121,463
+texte « C'est prêt : Démo-Acid-house-morceau-club-20261105-211523.wav, une copie est aussi dans Musique › BenStudio. » @ 294,571
+texte « −8,0 LUFS intégrés · crête −3,6 dBTP » @ 204,650
+texte « WAV, 48 kHz, 24 bits · 13 s » @ 157,683
+texte « Cible : Club · −8 LUFS » @ 137,716
+bouton « OK » @ 508,802

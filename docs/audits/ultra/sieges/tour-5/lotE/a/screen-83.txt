@@ -1,0 +1,12 @@
+Écran 83 (588x1278)
+texte « Nouveau morceau, pas à pas » @ 254,35
+bouton « Fermer » @ 546,48
+texte « Étape 1 : choisis un style » @ 135,69
+texte « Choisis un style : je prépare la batterie, puis les parties du morceau. Tu pourras tout changer. Touche une carte pour lire sa description, ▶ pour l'écouter. » @ 294,138
+texte « • BPM : la vitesse du morceau, en battements par minute. » @ 279,214
+bouton « Calme (Chill, Lo-fi) 6 styles » [état « fermé »] @ 294,288
+bouton « Techno 10 styles » [état « fermé »] @ 294,384
+bouton « House 9 styles » [état « fermé »] @ 294,480
+bouton « Bass music 7 styles » [état « fermé »] @ 294,576
+bouton « Hip-hop 7 styles » [état « fermé »] @ 294,672
+bouton « Autres 4 styles » [état « fermé »] @ 294,768

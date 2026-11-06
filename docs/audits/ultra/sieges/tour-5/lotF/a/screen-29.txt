@@ -1,0 +1,66 @@
+Écran 29 (1035x1243)
+touchable « Techno de Detroit Sauvegardé » (nom « Mes projets ») @ 319,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 684,42
+bouton « Annuler la dernière action » [désactivé] @ 774,42
+bouton « Enregistrer : micro, clavier ou pads » @ 846,42
+bouton « Arrêter » @ 918,42
+bouton « Plus de choix » @ 990,42
+bouton « 126  Tempo » (nom « Tempo : 126 battements par minute ») @ 98,123
+bouton « Montée mesure 57/176 » @ 324,123
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 990,123
+bouton « E · Intro 2 × 1  ·  8 mes. » @ 155,217
+bouton « Une fois de moins » [désactivé] @ 304,216
+bouton « Une fois de plus » @ 376,216
+bouton « Plus d'actions » @ 448,216
+bouton « F · Intro 3 × 1  ·  8 mes. » @ 155,340
+bouton « Une fois de moins » [désactivé] @ 304,340
+bouton « Une fois de plus » @ 376,340
+bouton « Plus d'actions » @ 448,340
+bouton « G · Intro 4 × 1  ·  8 mes. » @ 155,464
+bouton « Une fois de moins » [désactivé] @ 304,464
+bouton « Une fois de plus » @ 376,464
+bouton « Plus d'actions » @ 448,464
+bouton « A · Intro 7 mes. » @ 155,574
+bouton « Une fois de moins » [désactivé] @ 304,574
+bouton « Une fois de plus » [désactivé] @ 376,574
+bouton « Plus d'actions » @ 448,574
+bouton « A · Intro 1 mes.  ·  mélange » @ 155,684
+bouton « Une fois de moins » [désactivé] @ 304,684
+bouton « Une fois de plus » [désactivé] @ 376,684
+bouton « Plus d'actions » @ 448,684
+bouton « H · Groove 2 7 mes. » @ 155,813
+bouton « Une fois de moins » [désactivé] @ 304,813
+bouton « Une fois de plus » [désactivé] @ 376,813
+bouton « Plus d'actions » @ 448,813
+bouton « H · Groove 2 1 mes.  ·  mélange » @ 155,938
+bouton « Une fois de moins » [désactivé] @ 304,962
+bouton « Une fois de plus » [désactivé] @ 376,962
+bouton « Plus d'actions » @ 448,962
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « MES PISTES » [état « Déplié »] @ 651,222
+texte « Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule. » @ 771,306
+bouton « Batterie Changer le son » @ 708,414
+bouton « Écouter « Batterie » seul, en boucle » @ 882,414
+bouton « Réglages de Batterie : volume, couper » @ 957,414
+bouton « Basse Changer le son » @ 708,524
+bouton « Écouter « Basse » seul, en boucle » @ 882,524
+bouton « Réglages de Basse : volume, couper, supprimer » @ 957,524
+bouton « Nappe Changer le son » @ 708,634
+bouton « Écouter « Nappe » seul, en boucle » @ 882,634
+bouton « Réglages de Nappe : volume, couper, supprimer » @ 957,634
+bouton « Mélodie Changer le son » @ 708,744
+bouton « Écouter « Mélodie » seul, en boucle » @ 882,744
+bouton « Réglages de Mélodie : volume, couper, supprimer » @ 957,744
+bouton « Contre-chant Changer le son » @ 708,854
+bouton « Écouter « Contre-chant » seul, en boucle » @ 882,854
+bouton « Réglages de Contre-chant : volume, couper, supprimer » @ 957,854
+bouton « Guide  · Le kick (le « boum ») 19 % » [état « replié »] @ 517,1027
+onglet « Mon morceau » [sélectionné] @ 99,1123
+onglet « Rythme » @ 309,1123
+onglet « Clavier » @ 518,1123
+onglet « Mix » @ 727,1123
+onglet « Envoyer » @ 936,1123
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 807,1213
+touchable « ✎  Noter » (nom « Écrire une note ») @ 903,1213
+touchable « ⋯ » (nom « Mode retours ») @ 987,1213
+texte « Mode retours » @ 385,1213

@@ -1,0 +1,44 @@
+Écran 4 (588x1278)
+touchable « My first beat Saved » (nom « My projects ») @ 114,42
+bouton « Pro » (nom « Pro mode. Touch to change mode. ») @ 255,42
+bouton « Undo » [désactivé] @ 327,42
+bouton « Record: microphone, keys or pads » @ 399,42
+bouton « Play » @ 471,42
+bouton « Share my song » @ 543,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Label the screen ») [non coché] @ 543,114
+curseur « Volume of Drums » [état « +0.0 dB », à 80 %] @ 84,194
+texte « +0.0 » @ 84,264
+curseur « Volume of Acid 303 » [état « +0.0 dB », à 80 %] @ 204,194
+texte « +0.0 » @ 204,264
+curseur « Volume of Synth » [état « +0.0 dB », à 80 %] @ 324,194
+texte « +0.0 » @ 324,264
+curseur « Volume of Remix » [état « +0.0 dB », à 80 %] @ 444,194
+texte « +0.0 » @ 444,264
+texte « Curves and effects » @ 203,362
+texte « Nothing moves yet: open a filter, raise a volume… » @ 317,393
+bouton « Automate » @ 165,455
+bouton « What's playing » @ 423,455
+bouton « CURVES » [état « Expanded »] @ 215,590
+bouton « ? » (nom « What is “Curves (automation)”? ») @ 193,590
+case « Record » @ 467,590
+texte « Make a setting move on its own: pick it, then draw its curve (with your finger, or a line in two taps). » @ 294,665
+bouton «  Automate a setting » @ 195,740
+bouton «  What's playing » @ 171,821
+texte « Nothing moves yet. Idea: a pad's filter opening over 8 bars. » @ 294,896
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Add a melody 23 % » [état « folded »] @ 294,984
+bouton « Undo » [désactivé] @ 73,1059
+bouton « Redo » [désactivé] @ 182,1059
+bouton « Play » @ 288,1059
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 400,1059
+bouton « Share » (nom « Share my song ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sounds » @ 174,1158
+onglet « Mix » [sélectionné] @ 294,1158
+onglet « Live » @ 414,1158
+onglet « More » @ 534,1158
+touchable « ●  REC » (nom « Record the screen with sound ») @ 360,1248
+touchable « ✎  Note » (nom « Write a note ») @ 456,1248
+touchable « ⋯ » (nom « Feedback mode ») @ 540,1248
+texte « Feedback mode » @ 162,1248

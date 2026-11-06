@@ -1,0 +1,22 @@
+Écran 42 (588x1278)
+texte « Graj część » @ 50,13
+texte « Zatrzymaj tę ścieżkę » @ 99,13
+texte « Wróć » @ 37,42
+texte « Nagrywaj » @ 531,42
+texte « Tempo » @ 288,99
+texte « Graj od części » @ 79,114
+texte « Gdzie trafia twoje nagranie » @ 460,257
+texte « Kiedy rusza » @ 136,321
+texte « Wycisz » @ 155,444
+texte « Zatrzymaj wszystko » @ 108,887
+touchable « Ukryj podpisy » @ 196,968
+touchable « 🐞 Zgłoś błąd » @ 394,968
+texte « Części i ścieżki » @ 85,1076
+texte « Graj, nagrywaj » @ 294,1076
+texte « Udostępnij » @ 524,1076
+texte « Perkusja » @ 174,1196
+texte « Głośności » @ 414,1196
+touchable « ●  REC » (nom « Nagraj ekran z dźwiękiem ») @ 360,1248
+touchable « ✎  Zanotuj » (nom « Napisz notatkę ») @ 456,1248
+touchable « ⋯ » (nom « Tryb uwag ») @ 540,1248
+texte « Tryb uwag » @ 162,1248

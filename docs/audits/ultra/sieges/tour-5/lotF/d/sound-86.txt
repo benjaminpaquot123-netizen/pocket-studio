@@ -1,0 +1,2 @@
+Son : rien ne joue.
+Le pad 13 reçoit « Voix 1 » et le joue une fois : on entend cette partie de la chanson, seule.

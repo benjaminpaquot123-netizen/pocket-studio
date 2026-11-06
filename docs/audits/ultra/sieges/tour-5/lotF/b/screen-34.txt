@@ -1,0 +1,31 @@
+Écran 34 (1920x1200)
+texte « Griff: zum Schließen nach unten wischen » @ 960,36
+texte « Drums » @ 855,112
+bouton « Schließen » @ 1302,112
+case « Stumm » @ 596,203
+case « Solo » @ 766,203
+texte « Lautstärke » @ 887,285
+texte « +0,0 dB » @ 1343,285
+curseur « Lautstärke » [état « +0,0 dB », à 80 %] @ 960,368
+texte « Panorama » @ 605,450
+bouton « ? » (nom « Was ist „Panorama (Pan)“? ») @ 727,450
+texte « Mitte » @ 1367,450
+curseur « Panorama » [état « Mitte », à 50 %] @ 960,533
+bouton «  Was sich bewegt (1) » @ 729,624
+bouton «  Kurven » @ 1191,624
+texte « Effekte » @ 571,707
+texte « Aktive Effekte: 1 von 8 » @ 716,778
+case « 1. Filter » @ 816,848
+bouton « Effekt ausschalten » @ 1164,848
+bouton « Effekt nach oben » [désactivé] @ 1236,848
+bouton « Effekt nach unten » [désactivé] @ 1308,848
+bouton « Effekt entfernen » @ 1380,848
+case « Alles » @ 740,926
+case « A » @ 859,926
+case « B » [sélectionné] @ 944,926
+texte « Spielt in: » @ 582,926
+texte « Ein Effekt kann nur in bestimmten Teilen spielen: Tippe auf ihre Buchstaben. » @ 960,1020
+bouton «   Effekt hinzufügen » @ 960,1118
+texte « Fertige Vibes » @ 630,1186
+bouton « ? » (nom « Was ist „Effekt-Vibe“? ») @ 778,1190
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

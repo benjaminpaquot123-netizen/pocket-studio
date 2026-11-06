@@ -1,0 +1,20 @@
+Écran 73 (1035x1243)
+texte « Dai un nome alla parte B » @ 340,355
+texte « Che momento del brano è? » @ 266,418
+case « Intro » @ 181,481
+case « Strofa » @ 294,481
+case « Pre-ritornello » @ 452,481
+case « Ritornello » @ 629,481
+case « Post-ritornello » @ 232,553
+case « Bridge » @ 399,553
+case « Groove » @ 527,553
+case « Build-up » @ 667,553
+case « Falso drop » @ 211,625
+case « Break » @ 353,625
+case « Drop » @ 465,625
+case « Fine » @ 569,625
+case « Fill » @ 665,625
+champ « Oppure un altro nome 0/20 » contenu «  » @ 517,738
+bouton « Senza nome » @ 604,876
+bouton « Annulla » @ 744,876
+bouton « OK » @ 857,876

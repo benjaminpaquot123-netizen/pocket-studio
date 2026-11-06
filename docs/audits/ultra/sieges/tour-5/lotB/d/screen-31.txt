@@ -1,0 +1,87 @@
+Écran 31 (1920x1200)
+touchable « Lo-fi hip-hop تم الحفظ » (nom « مشاريعي ») @ 1213,42
+bouton « بسيط » (nom « الوضع بسيط. المس لتغيير الوضع. ») @ 477,42
+bouton « A · Intro » (nom « الجزء الحالي: A · Intro. اضغط لتغيير الجزء. ») @ 367,42
+bouton « تراجع » @ 261,42
+bouton « تسجيل: الميكروفون أو لوحة المفاتيح أو الأزرار » @ 189,42
+bouton « تشغيل » @ 117,42
+bouton « خيارات أكثر » @ 45,42
+bouton « 84  السرعة » (nom « السرعة: 84 نبضة في الدقيقة ») @ 1853,114
+bouton « Intro المازورة 1/4 » (nom « تكرار ») @ 1712,114
+interrupteur « Loop » (nom « كرّر الجزء بدل تشغيل الأغنية ») [coché, état « يعمل »] @ 148,114
+interrupteur « ? » (nom « تسمية الشاشة ») [non coché] @ 45,114
+onglet « أغنيتي » @ 1860,196
+onglet « الإيقاع » [sélectionné] @ 1860,289
+onglet « لوحة المفاتيح » @ 1860,382
+onglet « المكس » @ 1860,475
+onglet « إرسال » @ 1860,568
+image « تكرار » @ 1770,168
+texte « الجزء: A · Intro » @ 1683,168
+texte « في تكرار (⟳ Loop). ▶ يشغّل هذا الجزء وحده. » @ 1612,202
+touchable « الطبل الكبير 1 FX » @ 1676,329
+touchable « الطبل الكبير 2 » @ 1456,329
+touchable « Snare FX » @ 1236,329
+touchable « Snare 2 » @ 1015,329
+touchable « تصفيق » @ 1676,510
+touchable « هاي هات L 30 » @ 1456,510
+touchable « هاي هات مفتوح R 30 » @ 1236,510
+touchable « Tom منخفض » @ 1015,510
+touchable « Tom متوسط R 45 » @ 1676,691
+touchable « Tom عالٍ » @ 1456,691
+touchable « Maracas R 50 » @ 1236,691
+touchable « جرس » @ 1015,691
+touchable « صنج FX R 40 » @ 1676,872
+touchable « Maracas L 50 » @ 1456,872
+touchable « Conga » @ 1236,872
+touchable « ليزر » @ 1015,872
+bouton « الطقم: مخصّص » @ 1681,1003
+texte « الـPads تُصدر الصوت، والخانات تحفظ الضربات. ضغطة مطوّلة: تغيير الصوت. » @ 1238,1003
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+case « كل الـPads » @ 795,303
+bouton « الخطوات: الطبل الكبير 1 · INTRO » [état « موسَّع »] @ 383,303
+bouton « ? » (nom « ما معنى «خطوة»؟ ») @ 367,303
+case « تتبّع » @ 465,387
+case « 4 » [sélectionné] @ 380,387
+case « 3 » @ 299,387
+case « 2 » @ 218,387
+case « 1 » @ 137,387
+texte « مازورة » @ 67,387
+touchable « الخطوة 8 » [état « فارغ »] @ 818,496
+touchable « الخطوة 7 » [état « فارغ »] @ 714,496
+touchable « الخطوة 6 » [état « فارغ »] @ 610,496
+touchable « 2 » (nom « الخطوة 5 ») [état « فارغ »] @ 506,496
+touchable « الخطوة 4 » [état « فارغ »] @ 402,496
+touchable « الخطوة 3 » [état « فارغ »] @ 298,496
+touchable « الخطوة 2 » [état « فارغ »] @ 194,496
+touchable « 1 » (nom « الخطوة 1 ») [état « ضربة، القوة 100 % »] @ 90,495
+touchable « الخطوة 16 » [état « فارغ »] @ 818,625
+touchable « الخطوة 15 » [état « فارغ »] @ 714,625
+touchable « الخطوة 14 » [état « فارغ »] @ 610,625
+touchable « 4 » (nom « الخطوة 13 ») [état « فارغ »] @ 506,625
+touchable « الخطوة 12 » [état « فارغ »] @ 402,625
+touchable « الخطوة 11 » [état « فارغ »] @ 298,625
+touchable « الخطوة 10 » [état « فارغ »] @ 194,625
+touchable « 3 » (nom « الخطوة 9 ») [état « فارغ »] @ 90,624
+bouton « مسح » @ 484,735
+bouton « ▶ » @ 409,735
+bouton « ◀ » @ 334,735
+bouton « 1/4 » @ 259,735
+bouton « 1/2 » @ 184,735
+bouton « الكل » @ 109,735
+texte « Fill » @ 56,735
+texte « اضغط خانة لإضافة ضربة، ومرّر إصبعك لرسم عدة ضربات. ضغطة مطوّلة على ضربة: القوة والـRolls (×2 إلى ×8). » @ 435,799
+case « 4 » [sélectionné] @ 460,864
+case « 3 » @ 379,864
+case « 2 » @ 298,864
+case « مازورة واحدة » @ 174,864
+texte « الطول » @ 64,864
+bouton « صوت الـPAD » [état « موسَّع »] @ 772,981
+bouton « ? » (nom « ما معنى «Sample الـPad»؟ ») @ 698,981
+texte « الطبل الكبير 1 (مُركَّب) » @ 454,1033
+bouton «  تغيير الصوت » @ 454,1065
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « المرشد  · تغيير صوت 22 % » [état « مطويّ »] @ 960,1104
+touchable « ●  REC » (nom « سجّل الشاشة مع الصوت ») @ 228,1170
+touchable « ✎  دوّن » (nom « اكتب ملاحظة ») @ 132,1170
+touchable « ⋯ » (nom « وضع الملاحظات ») @ 48,1170
+texte « وضع الملاحظات » @ 1092,1170

@@ -1,0 +1,66 @@
+Écran 78 (900x1509)
+touchable « Mein Projekt 1 Gespeichert » (nom « Meine Projekte ») @ 195,42
+bouton « Pro » (nom « Modus Pro. Tippen, um den Modus zu wechseln. ») @ 417,42
+bouton « A » (nom « Aktueller Teil: A. Tippen, um den Teil zu wechseln. ») @ 492,42
+bouton « Rückgängig » @ 567,42
+bouton « Wiederholen » [désactivé] @ 639,42
+bouton « Aufnehmen: Mikrofon, Tastatur oder Pads » @ 711,42
+bouton « Spielen » @ 783,42
+bouton « Meinen Song teilen » @ 855,42
+bouton « 132  BPM » (nom « Tempo: 132 BPM ») @ 73,114
+interrupteur « ? » (nom « Bildschirm beschriften ») [non coché] @ 855,114
+onglet « Drums 16 Pads » @ 76,183
+onglet « Acid 303 Bassline » [sélectionné] @ 225,183
+onglet « Vocals Mikrofon » @ 380,183
+onglet « Remix Trennen » @ 527,183
+bouton «  Spur » @ 681,183
+texte « Teil: A » @ 52,243
+texte « Acid 303 » @ 96,303
+bouton « Erzeug mir ein Pattern » @ 450,405
+texte « Dichte » @ 422,477
+texte « 80 % » @ 830,477
+curseur « Dichte » [état « 80 % », à 80 %] @ 450,543
+bouton « BASSLINE · GRUNDTON C » [état « Aufgeklappt »] @ 398,678
+bouton « ? » (nom « Was ist „Acid 303“? ») @ 371,678
+case « C D E » [sélectionné] @ 806,678
+texte « Länge » @ 71,762
+case « 1 Takt » [sélectionné] @ 163,762
+case « 2 » @ 262,762
+case « 3 » @ 343,762
+case « 4 » @ 424,762
+case « 8 » @ 505,762
+touchable « – » @ 90,867
+touchable « – » @ 192,867
+touchable « – » @ 294,867
+touchable « – » @ 397,867
+touchable « – » @ 500,867
+touchable « – » @ 603,867
+touchable « – » @ 706,867
+touchable « – » @ 809,867
+touchable « – » @ 90,993
+touchable « – » @ 192,993
+touchable « – » @ 294,993
+touchable « – » @ 397,993
+touchable « – » @ 500,993
+touchable « – » @ 603,993
+touchable « – » @ 706,993
+touchable « – » @ 809,993
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « Tempo und Tonart Kapitel 1/16 · Schritt 4/4 · Pro » @ 400,1104
+bouton « Kapitel » @ 771,1104
+bouton « Aufklappen » @ 843,1104
+touchable « Du bist dran: Gib ein ganz kleines bisschen Swing dazu (5 %): Die kleinen Hi-Hats schleppen kaum merklich, der Groove atmet, ohne zu hinken. Lesen » @ 450,1203
+bouton « Rückgängig » @ 126,1290
+bouton « Wiederholen » [désactivé] @ 301,1290
+bouton « Spielen » @ 464,1290
+bouton « 132 Tempo » (nom « Tempo: 132 BPM ») @ 622,1290
+bouton « Teilen » (nom « Meinen Song teilen ») @ 782,1290
+onglet « Struktur » @ 85,1389
+onglet « Sounds » [sélectionné] @ 268,1389
+onglet « Mix » @ 451,1389
+onglet « Live » @ 633,1389
+onglet « Mehr » @ 815,1389
+touchable « ●  REC » (nom « Bildschirm mit Ton aufnehmen ») @ 672,1479
+touchable « ✎  Notieren » (nom « Notiz schreiben ») @ 768,1479
+touchable « ⋯ » (nom « Feedback-Modus ») @ 852,1479
+texte « Feedback-Modus » @ 318,1479

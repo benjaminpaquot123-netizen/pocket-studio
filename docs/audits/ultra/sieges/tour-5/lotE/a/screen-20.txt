@@ -1,0 +1,48 @@
+Écran 20 (588x1278)
+touchable « Mon projet 1 Sauvegardé » (nom « Mes projets ») @ 134,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 311,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Jouer » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « 120  Tempo » (nom « Tempo : 120 battements par minute ») @ 83,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,114
+texte « Tu as 4 mesures pour jouer ta mélodie, puis elle recommence. » @ 237,180
+bouton « Compris » @ 519,180
+bouton « Partie : A » @ 82,252
+touchable « Grosse caisse 1 » @ 84,348
+touchable « Grosse caisse 2 » @ 224,348
+touchable « Caisse » @ 364,348
+touchable « Caisse 2 » @ 504,348
+touchable « Claquement de mains » @ 84,438
+touchable « Charley » @ 224,438
+touchable « Charley ouvert » @ 364,438
+touchable « Tom grave » @ 504,438
+touchable « Tom médium » @ 84,528
+touchable « Tom aigu » @ 224,528
+touchable « Bord de caisse » @ 364,528
+touchable « Cloche » @ 504,528
+touchable « Cymbale » @ 84,618
+touchable « Maracas » @ 224,618
+touchable « Conga » @ 364,618
+touchable « Laser » @ 504,618
+bouton « Kit : Classique » @ 130,707
+texte « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » @ 412,706
+texte « Ta prise : 3 notes » @ 119,789
+bouton « Garder » @ 108,858
+bouton « Remettre en rythme » @ 294,858
+bouton « Refaire » @ 479,858
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Ajoute une basse 25 % » [état « replié »] @ 294,984
+bouton « Annuler » (nom « Annuler la dernière action ») @ 95,1059
+bouton « Jouer » @ 223,1059
+bouton « 120 Tempo » (nom « Tempo : 120 battements par minute ») @ 356,1059
+bouton « Plus » (nom « Plus de choix ») @ 493,1059
+onglet « Mon morceau » @ 54,1158
+onglet « Rythme » [sélectionné] @ 174,1158
+onglet « Clavier » @ 294,1158
+onglet « Mix » @ 414,1158
+onglet « Envoyer » @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

@@ -1,0 +1,18 @@
+Écran 16 (540x1170)
+texte « नया गाना, स्टेप बाय स्टेप » @ 198,38
+bouton « बंद करो » @ 498,56
+texte « स्टेप 9 / 10 · Lo-fi hip-hop » @ 170,82
+texte « ये ट्रैक बनाओ » @ 231,141
+interrupteur « ये ट्रैक बनाओ » [coché] @ 459,141
+texte « हर पार्ट में बजता है » @ 141,200
+bouton « साउंड चुनो » [état « खुला हुआ »] @ 115,305
+bouton « FM पियानो सुझाया गया » [sélectionné] @ 270,382
+bouton « मेलोडी ब्राइट · लंबा खिंचा » @ 270,489
+bouton « Square मेलोडी खोखला · लंबा खिंचा » @ 270,596
+bouton « एसिड मेलोडी ब्राइट · लंबा खिंचा » @ 270,703
+bouton « Supersaw ब्राइट · भारी » @ 270,808
+bouton « Trance मेलोडी ब्राइट · भारी » @ 270,913
+bouton « Hoover ब्राइट · भारी » @ 270,1018
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « वापस » @ 139,1116
+bouton « अगला » @ 400,1116

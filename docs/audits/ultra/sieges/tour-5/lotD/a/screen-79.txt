@@ -1,0 +1,3 @@
+Écran 79 (1920x1200)
+texte « Melody written: 4 bars in the song's key, in part A. Undo removes it. » @ 959,546
+bouton « Got it » @ 1250,633

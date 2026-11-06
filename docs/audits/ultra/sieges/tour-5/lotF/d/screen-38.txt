@@ -1,0 +1,19 @@
+Écran 38 (616x1371)
+bouton «  Retour » @ 74,36
+texte « Remix » @ 179,36
+bouton « SÉPARER UNE CHANSON » [état « Déplié »] @ 214,135
+bouton « ? » (nom « Qu'est-ce que « Remix » ? ») @ 364,135
+texte « Choisis un morceau de l'appareil : l'appli le découpe en batterie, basse, voix et le reste. Compte quelques minutes ; tu peux éteindre l'écran. » @ 308,214
+bouton « Choisir une chanson » @ 308,307
+texte « 7 minutes au maximum. Les 3 derniers morceaux séparés sont gardés, et ceux qu'un projet utilise. » @ 308,382
+bouton « Ma chanson préférée » [état « Déplié »] @ 174,498
+bouton « Supprimer » @ 538,511
+texte « 0:40 · 120 BPM · La mineur » @ 163,529
+bouton « Utiliser cette chanson » @ 308,595
+bouton «  Écouter » @ 138,679
+texte « Allume ou coupe chaque piste, même en pleine lecture. » @ 410,679
+bouton « Batterie » @ 105,769
+bouton « Basse » @ 241,769
+bouton « Reste » @ 376,769
+bouton « Voix » @ 511,769
+bouton «  Choisir une chanson » @ 308,1320

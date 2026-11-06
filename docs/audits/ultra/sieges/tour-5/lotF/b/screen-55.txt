@@ -1,0 +1,4 @@
+Écran 55 (1920x1200)
+texte « A/B hören » @ 705,362
+texte « A mit dem Master, B ohne, zum Vergleichen. „Gleich laut“ bringt beide auf denselben Pegel: Du beurteilst den Klang, nicht die Lautstärke. Eine Referenz ist ein Song, den du magst, gleich laut zum Vergleich. » @ 960,590
+bouton « Verstanden » @ 1216,834

@@ -1,0 +1,28 @@
+Écran 7 (588x1278)
+texte « Nowy utwór, krok po kroku » @ 236,35
+bouton « Zamknij » @ 546,48
+texte « Krok 3 z 12 · Acid techno » @ 137,69
+bouton « Utwórz od razu z polecanymi wyborami » @ 294,156
+bouton « KICK (STOPA) » [état « Rozwinięte »] @ 137,252
+texte « Fundament utworu: głębokie bicie serca, za którym wszyscy idą, tupiąc nogą. » @ 294,318
+texte « W Acid techno: lekko przesterowany kick 909 na każdą ćwierćnutę, łomoczący bez przerwy. » @ 294,396
+texte « • Kick: stopa, niski „bum” perkusji. » @ 199,451
+texte « 1 » @ 105,531
+texte « 2 » @ 231,531
+texte « 3 » @ 357,531
+texte « 4 » @ 483,531
+texte « Użyj tej linii » @ 255,591
+interrupteur « Użyj tej linii » [coché] @ 507,591
+texte « Gra w Intro, Groove i Drop » @ 179,654
+bouton « WYBIERZ DŹWIĘK » [état « Rozwinięte »] @ 185,771
+bouton «   Z rytmem » (nom « Słuchaj ») @ 437,771
+bouton « Poprzedni folder » @ 78,855
+texte « Wbudowane dźwięki » @ 330,855
+bouton « Bęben basowy 1 » [sélectionné] @ 294,951
+bouton « Dodaj do ulubionych » @ 498,951
+bouton « Bęben basowy 2 » @ 294,1059
+bouton « Dodaj do ulubionych » @ 498,1059
+texte « Dotknij dźwięku, żeby go usłyszeć i wybrać; „Z rytmem” gra go z już wybranymi liniami. » @ 294,1146
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Wstecz » @ 151,1224
+bouton « Dalej » @ 436,1224

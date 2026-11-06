@@ -1,0 +1,1 @@
+Son : le tempo tourne mais tous les blocs Live sont arrêtés : la musique du projet ne sonne plus.

@@ -1,0 +1,43 @@
+Écran 39 (588x1278)
+texte « Poignée : glisse vers le bas pour fermer » @ 294,36
+texte « Ambiances toutes prêtes » @ 152,90
+bouton « ? » (nom « Qu'est-ce que « Ambiance d'effets » ? ») @ 301,91
+case « Pour : Lead » [sélectionné] @ 106,159
+case « Favoris » @ 272,159
+case « Ambiance » @ 431,159
+case « Couleur » @ 540,159
+  → la suite sur le côté (glisse pour la voir)
+texte « Style : » @ 53,243
+case « Acide » @ 145,243
+case « Techno » @ 271,243
+case « DnB » @ 389,243
+case « Dubstep » @ 504,243
+  → la suite sur le côté (glisse pour la voir)
+case « Lead qui crie » @ 114,327
+case « Large et vivant » @ 313,327
+case « Dub profond » @ 112,399
+case « Rêve » @ 259,399
+case « Distorsion » @ 396,399
+case « Lointain » @ 90,471
+case « Sans effet » [sélectionné] @ 242,471
+texte « Le son tel quel : plus d'effets, macros au repos. » @ 294,546
+texte « Garde le doigt sur une ambiance pour l'écouter ; lâche, le son revient. » @ 294,612
+texte « Pad XY, haut-bas : » @ 109,672
+bouton « ? » (nom « Qu'est-ce que « Pad XY » ? ») @ 224,672
+case « Espace » [sélectionné] @ 86,742
+case « Saleté » @ 213,742
+case « Mouvement » @ 364,742
+texte « ↑ Lointain » @ 294,802
+texte « ← Sombre » @ 142,1087
+texte « ↓ Sec » @ 294,1087
+texte « Brillant → » @ 445,1087
+texte « Glisse le doigt pour triturer le son en direct. Deux touchers : retour au son de départ. » @ 294,1138
+curseur « Couleur » [état « Neutre », à 50 %] @ 92,1216
+texte « Couleur » @ 91,1266
+curseur « Saleté » [état « 0 », à 0 %] @ 227,1216
+texte « Saleté » @ 226,1266
+curseur « Mouvement » [état « 0 », à 0 %] @ 362,1216
+texte « Mouvement » @ 361,1266
+curseur « Espace » [état « 0 », à 0 %] @ 497,1216
+texte « Espace » @ 497,1266
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

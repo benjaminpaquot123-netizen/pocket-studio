@@ -1,0 +1,72 @@
+Écran 54 (588x1278)
+touchable « Projet final Léa » (nom « Sauvegardé ») @ 298,36
+bouton « Pro » (nom « Mode Pro. Toucher pour changer de mode. ») @ 543,36
+touchable « Mes projets » @ 111,114
+bouton « A » (nom « Partie en cours : A. Toucher pour changer de partie. ») @ 252,114
+bouton « Annuler la dernière action » @ 327,114
+bouton « Enregistrer : micro, clavier ou pads » @ 399,114
+bouton « Jouer » @ 471,114
+bouton « Partager mon morceau » @ 543,114
+bouton « 120  BPM » (nom « Tempo : 120 BPM ») @ 73,186
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,186
+onglet « Acid 303 Ligne de basse » @ 18,258
+onglet « Voix Micro » @ 89,258
+onglet « Remix Séparer » @ 219,258
+touchable « Mélodie refrain Synthé » (nom « Options de Mélodie refrain ») @ 414,258
+bouton « Changer le son de Mélodie refrain » @ 562,258
+  → la suite sur le côté (glisse pour la voir)
+texte « Partie : A » @ 67,321
+case « Clavier » [sélectionné] @ 78,396
+case « Notes » @ 203,396
+bouton «  Vider » (nom « Vider cette piste dans la partie A ») [désactivé] @ 508,396
+bouton «  Enregistrer ma mélodie » @ 244,489
+bouton «  1 » (nom « Décompte : 1 mesure ») @ 526,489
+bouton « Octave plus bas » @ 347,606
+bouton « Octave plus haut » @ 510,606
+texte « Octave 3 » @ 428,606
+bouton « CLAVIER » [état « Déplié »] @ 109,606
+case « Accords » @ 109,690
+case « Pads » @ 236,690
+case « 2 octaves » [sélectionné] @ 116,774
+case « 1 octave » @ 265,774
+case « Gamme » @ 404,774
+bouton « Do » (nom « Do 4 ») @ 60,885
+bouton « Do# 4 » @ 77,885
+bouton « Ré 4 » @ 96,885
+bouton « Ré# 4 » @ 113,885
+bouton « Mi 4 » @ 132,885
+bouton « Fa 4 » @ 168,885
+bouton « Fa# 4 » @ 185,885
+bouton « Sol 4 » @ 204,885
+bouton « Sol# 4 » @ 221,885
+bouton « La 4 » @ 240,885
+bouton « La# 4 » @ 257,885
+bouton « Si 4 » @ 276,885
+bouton « Do » (nom « Do 5 ») @ 312,885
+bouton « Do# 5 » @ 329,885
+bouton « Ré 5 » @ 348,885
+bouton « Ré# 5 » @ 365,885
+bouton « Mi 5 » @ 384,885
+bouton « Fa 5 » @ 420,885
+bouton « Fa# 5 » @ 437,885
+bouton « Sol 5 » @ 456,885
+bouton « Sol# 5 » @ 473,885
+bouton « La 5 » @ 492,885
+bouton « La# 5 » @ 509,885
+bouton « Si 5 » @ 528,885
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Ajoute une basse 14 % » [état « replié »] @ 294,984
+bouton « Annuler » (nom « Annuler la dernière action ») @ 73,1059
+bouton « Rétablir » [désactivé] @ 182,1059
+bouton « Jouer » @ 288,1059
+bouton « 120 Tempo » (nom « Tempo : 120 BPM ») @ 400,1059
+bouton « Partager » (nom « Partager mon morceau ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sons » [sélectionné] @ 174,1158
+onglet « Mix » @ 294,1158
+onglet « Live » @ 414,1158
+onglet « Plus » @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

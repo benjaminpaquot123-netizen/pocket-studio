@@ -1,0 +1,102 @@
+Écran 6 (1200x540)
+bouton « Retour » @ 51,45
+bouton « Arrêter » @ 852,45
+bouton « Moins vite » @ 933,45
+bouton « 124 BPM » @ 994,45
+bouton « Plus vite » @ 1056,45
+touchable « Fin » (nom « Finir la prise et écrire le morceau ») @ 1140,45
+texte « Pad Live » @ 450,45
+bouton « Boucle de kick, boucle, joue, pad A1 » @ 167,135
+texte « boucle » @ 175,111
+bouton « Réglages du pad, pad A1 » @ 190,106
+texte « Boucle de kick » @ 167,151
+bouton « Clap, coup, prêt, pad A2 » @ 293,135
+bouton « Réglages du pad, pad A2 » @ 316,106
+texte « coup » @ 310,111
+texte « Clap » @ 274,157
+bouton « Boucle Acid 303, boucle, joue, pad A3 » @ 419,135
+texte « boucle » @ 427,111
+bouton « Réglages du pad, pad A3 » @ 442,106
+texte « Boucle Acid 303 » @ 419,151
+bouton « Boucle de basse, boucle, joue, pad A4 » @ 545,135
+texte « boucle » @ 553,111
+bouton « Réglages du pad, pad A4 » @ 568,106
+texte « Boucle de basse » @ 545,151
+bouton « Arrêter la ligne 1 » @ 633,135
+bouton « Klaxon, coup, prêt, pad A5 » @ 167,232
+bouton « Réglages du pad, pad A5 » @ 190,203
+texte « coup » @ 184,208
+texte « Klaxon » @ 160,254
+bouton « Laser, coup, prêt, pad A6 » @ 293,232
+bouton « Réglages du pad, pad A6 » @ 316,203
+texte « coup » @ 310,208
+texte « Laser » @ 280,254
+bouton « Sirène, coup, prêt, pad A7 » @ 419,232
+bouton « Réglages du pad, pad A7 » @ 442,203
+texte « coup » @ 436,208
+texte « Sirène » @ 411,254
+bouton « Cri « Go go go! », coup, prêt, pad A8 » @ 545,232
+bouton « Réglages du pad, pad A8 » @ 568,203
+texte « coup » @ 562,208
+texte « Cri « Go go go! » » @ 545,248
+bouton « Lancer la ligne 2 à la mesure » @ 633,232
+bouton « Kick, coup, prêt, pad A9 » @ 167,329
+bouton « Réglages du pad, pad A9 » @ 190,300
+texte « coup » @ 184,305
+texte « Kick » @ 148,351
+bouton « Caisse, coup, prêt, pad A10 » @ 293,329
+bouton « Réglages du pad, pad A10 » @ 316,300
+texte « coup » @ 310,305
+texte « Caisse » @ 286,351
+bouton « Charley, coup, prêt, pad A11 » @ 419,329
+bouton « Réglages du pad, pad A11 » @ 442,300
+texte « coup » @ 436,305
+texte « Charley » @ 418,351
+bouton « Charley ouvert, coup, prêt, pad A12 » @ 545,329
+bouton « Réglages du pad, pad A12 » @ 568,300
+texte « coup » @ 562,305
+texte « Charley ouvert » @ 545,345
+bouton « Lancer la ligne 3 à la mesure » @ 633,329
+bouton « Montée, coup, prêt, pad A13 » @ 167,426
+bouton « Réglages du pad, pad A13 » @ 190,397
+texte « coup » @ 184,402
+texte « Montée » @ 165,447
+bouton « Impact, coup, prêt, pad A14 » @ 293,426
+bouton « Réglages du pad, pad A14 » @ 316,397
+texte « coup » @ 310,402
+texte « Impact » @ 286,447
+bouton « Chute, coup, prêt, pad A15 » @ 419,426
+bouton « Réglages du pad, pad A15 » @ 442,397
+texte « coup » @ 436,402
+texte « Chute » @ 408,447
+bouton « « Go! », coup, prêt, pad A16 » @ 545,426
+bouton « Réglages du pad, pad A16 » @ 568,397
+texte « coup » @ 562,402
+texte « « Go! » » @ 540,447
+bouton « Lancer la ligne 4 à la mesure » @ 633,426
+onglet « A » (nom « Page A ») [sélectionné] @ 796,132
+onglet « B » (nom « Page B · vide ») @ 853,132
+onglet « C » (nom « Page C · vide ») @ 910,132
+onglet « D » (nom « Page D · vide ») @ 967,132
+bouton « Fête » @ 1027,132
+bouton « Défi : refais ce rythme » @ 1146,132
+bouton « ? » (nom « Qu'est-ce que « Pages et packs » ? ») @ 1076,132
+texte « EFFETS DE SCÈNE » @ 851,207
+bouton « ? » (nom « Qu'est-ce que « Effets de scène » ? ») @ 961,207
+texte « Appuie et maintiens » @ 1086,207
+bouton « Filtre · grave ↔ aigu » @ 828,286
+texte « Filtre » @ 828,277
+texte « grave ↔ aigu » @ 828,301
+bouton « Écho · en sortie » @ 972,286
+texte « Écho » @ 972,274
+texte « en sortie » @ 972,301
+bouton « Roulement · 1/16 » @ 1116,286
+texte « Roulement » @ 1116,274
+texte « 1/16 » @ 1116,300
+bouton « Enregistrer ce que je joue » @ 866,385
+bouton « Plus » @ 1109,385
+bouton « ? » (nom « Qu'est-ce que « Enregistrer ce que je joue » ? ») @ 1003,385
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 972,510
+touchable « ✎  Noter » (nom « Écrire une note ») @ 1068,510
+touchable « ⋯ » (nom « Mode retours ») @ 1152,510
+texte « Mode retours » @ 468,510

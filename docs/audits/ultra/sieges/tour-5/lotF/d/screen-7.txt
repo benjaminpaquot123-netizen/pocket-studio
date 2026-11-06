@@ -1,0 +1,12 @@
+Écran 7 (616x1371)
+bouton « 🇫🇷   Français » (nom « Choisis ta langue ») @ 486,78
+texte « BenStudio » @ 242,168
+texte « Ton studio de musique, dans ta poche. » @ 330,213
+texte « Bienvenue ! Fais ta musique sur ton appareil. Par quoi on commence ? » @ 308,288
+bouton « Créer mon premier morceau (guidé) Choisis un style, je t'aide pas à pas, du début à la fin du morceau. » @ 308,447
+bouton « J'apprends Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie. » @ 308,648
+bouton « Écouter une démo Un morceau déjà prêt, pour découvrir ce qu'on peut faire. » @ 308,828
+bouton « Partir de zéro Aucune note : une batterie, une Acid 303 et un synthé attendent les tiennes. » @ 308,1008
+bouton « Extraire la voix d'une chanson Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste. » @ 308,1224
+bouton « Pad Live NOUVEAU Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite. » @ 308,1366
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

@@ -1,0 +1,61 @@
+Écran 37 (540x1170)
+touchable « Lo-fi hip-hop सेव हो गया » (nom « मेरे प्रोजेक्ट ») @ 77,42
+bouton « सिंपल » (nom « सिंपल मोड। मोड बदलने के लिए छुओ। ») @ 194,42
+bouton « अनडू » @ 279,42
+bouton « रिकॉर्ड: माइक, कीबोर्ड या पैड » @ 351,42
+bouton « रोको » @ 423,42
+bouton « और ऑप्शन » @ 495,42
+bouton « 84  टेम्पो » (nom « टेम्पो: 84 थाप प्रति मिनट ») @ 67,123
+bouton « इंट्रो बार 1/4 » (nom « लूप में ») @ 206,123
+interrupteur « लूप » (nom « पूरा गाना नहीं, सिर्फ़ ये पार्ट लूप करो ») [coché, état « ऑन »] @ 399,123
+interrupteur « ? » (nom « स्क्रीन पर लेबल लगाओ ») [non coché] @ 495,123
+touchable « पियानो FM Rhodes » @ 83,204
+touchable « मेलोडी Marimba » @ 240,204
+touchable « मेरी मेलोडी FM पियानो » (nom « मेरी मेलोडी के ऑप्शन ») @ 427,204
+  → la suite sur le côté (glisse pour la voir)
+bouton « पार्ट: A · इंट्रो » (nom « लूप में ») @ 117,282
+texte « जब तक तुम इसे एडिट करते हो, ये लूप में चलता है। गाना वापस पाने के लिए ऊपर ⟳ लूप दबाओ। » @ 270,348
+bouton «  खाली करो » (nom « पार्ट A · इंट्रो में ये ट्रैक खाली करो ») @ 430,444
+case « कीबोर्ड » [sélectionné] @ 80,444
+case « नोट्स » @ 206,444
+bouton «  मेरी मेलोडी रिकॉर्ड करो » @ 220,537
+bouton «  1 » (nom « काउंट-इन: 1 बार ») @ 478,537
+bouton « ऑक्टेव नीचे » @ 283,654
+bouton « ऑक्टेव ऊपर » @ 462,654
+texte « ऑक्टेव 4 » @ 372,654
+bouton « कीबोर्ड » [état « खुला हुआ »] @ 97,654
+bouton « C » (nom « C 4 ») @ 58,810
+bouton « C# 4 » [désactivé, état « गाने के स्केल से बाहर »] @ 74,770
+bouton « D 4 » @ 91,810
+bouton « D# 4 » [désactivé, état « गाने के स्केल से बाहर »] @ 107,770
+bouton « E 4 » @ 124,810
+bouton « F 4 » @ 157,810
+bouton « F# 4 » [désactivé, état « गाने के स्केल से बाहर »] @ 172,770
+bouton « G 4 » @ 190,810
+bouton « G# 4 » [désactivé, état « गाने के स्केल से बाहर »] @ 204,770
+bouton « A 4 » @ 223,810
+bouton « A# 4 » @ 237,770
+bouton « B 4 » [désactivé, état « गाने के स्केल से बाहर »] @ 256,810
+bouton « C » (nom « C 5 ») @ 289,810
+bouton « C# 5 » [désactivé, état « गाने के स्केल से बाहर »] @ 302,770
+bouton « D 5 » @ 322,810
+bouton « D# 5 » [désactivé, état « गाने के स्केल से बाहर »] @ 335,770
+bouton « E 5 » @ 355,810
+bouton « F 5 » @ 388,810
+bouton « F# 5 » [désactivé, état « गाने के स्केल से बाहर »] @ 400,770
+bouton « G 5 » @ 421,810
+bouton « G# 5 » [désactivé, état « गाने के स्केल से बाहर »] @ 432,770
+bouton « A 5 » @ 454,810
+bouton « A# 5 » @ 465,770
+bouton « B 5 » [désactivé, état « गाने के स्केल से बाहर »] @ 484,810
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « गाइड  · Kick (“बूम”) 35 % » [état « समेटा हुआ »] @ 270,954
+onglet « मेरा गाना » @ 49,1050
+onglet « रिदम » @ 160,1050
+onglet « कीबोर्ड » [sélectionné] @ 271,1050
+onglet « मिक्स » @ 381,1050
+onglet « भेजो » @ 491,1050
+touchable « ●  REC » (nom « स्क्रीन को आवाज़ के साथ रिकॉर्ड करो ») @ 310,1140
+touchable « ✎  नोट करो » (nom « नोट लिखो ») @ 407,1140
+touchable « ⋯ » (nom « प्रतिक्रिया मोड ») @ 492,1140
+texte « प्रतिक्रिया मोड » @ 137,1140

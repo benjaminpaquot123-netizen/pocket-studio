@@ -1,0 +1,45 @@
+Écran 41 (1920x1200)
+touchable « Live 保存しました » (nom « マイプロジェクト ») @ 743,42
+bouton « プロ » (nom « プロモード。タップでモードを変更。 ») @ 1514,42
+bouton « 最後の操作を取り消す » @ 1587,42
+bouton « やり直す » [désactivé] @ 1659,42
+bouton « 録音：マイク、鍵盤、パッド » @ 1731,42
+bouton « 停止 » @ 1803,42
+bouton « 曲をシェア » @ 1875,42
+bouton « 124  BPM » (nom « テンポ：124 BPM ») @ 73,114
+bouton « A 小節 1/1 » (nom « ループ中 ») @ 218,114
+interrupteur « ループ » (nom « 曲を再生せずパートをループ ») [non coché, état « オフ »] @ 1766,114
+interrupteur « ? » (nom « 画面にラベルを表示 ») [non coché] @ 1875,114
+onglet « 構成 » [sélectionné] @ 60,194
+onglet « サウンド » @ 60,282
+onglet « ミックス » @ 60,370
+onglet « Live » @ 60,457
+onglet « その他 » @ 60,545
+onglet « タイムライン » [sélectionné] @ 216,183
+onglet « パート » @ 354,183
+touchable « 追従 » [sélectionné] @ 475,183
+touchable « ループ » @ 601,183
+bouton « トラックを高く » @ 708,183
+bouton « ズームイン » @ 1596,183
+bouton « ズームアウト » @ 1668,183
+bouton « 曲全体を表示 » @ 1740,183
+bouton « タイムラインのヘルプ » @ 1812,183
+bouton « 全画面 » @ 1884,183
+texte « パート » @ 167,245
+texte « 小節 » @ 157,285
+texte « 小節ルーラー：タップでパートから再生 » @ 1161,262
+bouton « ドラム » @ 178,374
+interrupteur « ドラムの音 » [coché, état « オン »] @ 176,431
+interrupteur « トラック ドラム をソロ » [non coché, état « オフ »] @ 245,431
+bouton « シンセ » @ 178,572
+interrupteur « シンセの音 » [coché, état « オン »] @ 176,629
+interrupteur « トラック シンセ をソロ » [non coché, état « オフ »] @ 245,629
+bouton « Pads live » @ 193,770
+interrupteur « Pads liveの音 » [coché, état « オン »] @ 176,827
+interrupteur « トラック Pads live をソロ » [non coché, état « オフ »] @ 245,827
+texte « タイムライン：1 パート、3 トラック » @ 1161,600
+bouton « ガイド  · ビートを置こう 5 % » [état « 折りたたみ »] @ 960,1104
+touchable « ●  REC » (nom « 画面を音声付きで録画 ») @ 1692,1170
+touchable « ✎  メモ » (nom « メモを書く ») @ 1788,1170
+touchable « ⋯ » (nom « フィードバックモード ») @ 1872,1170
+texte « フィードバックモード » @ 828,1170

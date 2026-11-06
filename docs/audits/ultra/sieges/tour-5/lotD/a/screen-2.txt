@@ -1,0 +1,90 @@
+Écran 2 (1920x1200)
+touchable « My first beat Saved » (nom « My projects ») @ 705,42
+bouton « Pro » (nom « Pro mode. Touch to change mode. ») @ 1437,42
+bouton « A » (nom « Current part: A. Tap to change part. ») @ 1512,42
+bouton « Undo » [désactivé] @ 1587,42
+bouton « Redo » [désactivé] @ 1659,42
+bouton « Record: microphone, keys or pads » @ 1731,42
+bouton « Play » @ 1803,42
+bouton « Share my song » @ 1875,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Label the screen ») [non coché] @ 1875,114
+onglet « Structure » @ 60,193
+onglet « Sounds » [sélectionné] @ 60,280
+onglet « Mix » @ 60,367
+onglet « Live » @ 60,454
+onglet « More » @ 60,541
+onglet « Drums 16 pads » [sélectionné] @ 196,180
+onglet « Acid 303 Bass line » @ 343,180
+onglet « Vocals Microphone » @ 511,180
+onglet « Remix Split » @ 664,180
+touchable « Synth Synth » @ 782,180
+bouton «  Track » @ 924,180
+touchable « Kick » @ 243,321
+touchable « Kick 2 » @ 463,321
+touchable « Snare » @ 684,321
+touchable « Snare 2 » @ 905,321
+touchable « Clap » @ 243,504
+touchable « Hi-hat » @ 463,504
+touchable « Open hi-hat » @ 684,504
+touchable « Low tom » @ 905,504
+touchable « Mid tom » @ 243,687
+touchable « High tom » @ 463,687
+touchable « Rim » @ 684,687
+touchable « Cowbell » @ 905,687
+touchable « Cymbal » @ 243,870
+touchable « Shaker » @ 463,870
+touchable « Conga » @ 684,870
+touchable « Zap » @ 905,870
+bouton « Kit: Classic » @ 234,1002
+texte « Tap a pad to hear it; its cells hold the hits. Long press: change the sound. » @ 677,1002
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « STEPS: KICK » [état « Expanded »] @ 1399,294
+bouton « ? » (nom « What is “Step”? ») @ 1253,294
+case « All pads » @ 1811,294
+touchable « 1 » (nom « Step 1 ») [état « hit, strength 100 % »] @ 1101,402
+touchable « Step 2 » [état « empty »] @ 1205,403
+touchable « Step 3 » [état « empty »] @ 1309,403
+touchable « Step 4 » [état « empty »] @ 1413,403
+touchable « 2 » (nom « Step 5 ») [état « hit, strength 100 % »] @ 1517,403
+touchable « Step 6 » [état « empty »] @ 1621,403
+touchable « Step 7 » [état « empty »] @ 1725,403
+touchable « Step 8 » [état « empty »] @ 1829,403
+touchable « 3 » (nom « Step 9 ») [état « hit, strength 100 % »] @ 1101,531
+touchable « Step 10 » [état « empty »] @ 1205,532
+touchable « Step 11 » [état « empty »] @ 1309,532
+touchable « Step 12 » [état « empty »] @ 1413,532
+touchable « 4 » (nom « Step 13 ») [état « hit, strength 100 % »] @ 1517,532
+touchable « Step 14 » [état « empty »] @ 1621,532
+touchable « Step 15 » [état « empty »] @ 1725,532
+touchable « Step 16 » [état « empty »] @ 1829,532
+case « Hits » [sélectionné] @ 1098,642
+case « Rolls » @ 1200,642
+case « Pan » @ 1301,642
+case « Pitch » @ 1403,642
+case « Velocity » @ 1526,642
+bouton « all » @ 1120,726
+bouton « 1/2 » @ 1195,726
+bouton « 1/4 » @ 1270,726
+bouton « ◀ » @ 1345,726
+bouton « ▶ » @ 1420,726
+bouton « Clear » @ 1498,726
+texte « Fill » @ 1067,726
+texte « Tap a cell to add a hit, slide your finger to paint several. Long press on a hit: strength and rolls (×2 to ×8). » @ 1465,801
+texte « Length » @ 1087,876
+case « 1 bar » [sélectionné] @ 1178,876
+case « 2 » @ 1272,876
+case « 3 » @ 1353,876
+case « 4 » @ 1434,876
+bouton « − » @ 1303,960
+bouton « + » [désactivé] @ 1480,960
+texte « This pad loops over » @ 1152,960
+texte « 16 steps » @ 1392,960
+bouton « PAD SOUND » [état « Expanded »] @ 1159,1062
+bouton « ? » (nom « What is “Pad sample”? ») @ 1243,1062
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Add a melody 23 % » [état « folded »] @ 960,1104
+touchable « ●  REC » (nom « Record the screen with sound ») @ 1692,1170
+touchable « ✎  Note » (nom « Write a note ») @ 1788,1170
+touchable « ⋯ » (nom « Feedback mode ») @ 1872,1170
+texte « Feedback mode » @ 828,1170

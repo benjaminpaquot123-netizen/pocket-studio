@@ -1,0 +1,5 @@
+Écran 64 (616x1371)
+touchable « Un bout » @ 102,870
+touchable « Phrases » @ 102,942
+touchable « Attaques » @ 102,1014
+touchable « Mesures » @ 102,1086

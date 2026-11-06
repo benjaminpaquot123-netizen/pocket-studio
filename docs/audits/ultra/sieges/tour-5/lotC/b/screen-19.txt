@@ -1,0 +1,53 @@
+Écran 19 (616x1371)
+touchable « Remix Guardado » (nom « Mis proyectos ») @ 128,42
+bouton « Pro » (nom « Modo Pro. Toca para cambiar de modo. ») @ 283,42
+bouton « Deshacer » [désactivé] @ 355,42
+bouton « Grabar: micrófono, teclado o pads » @ 427,42
+bouton « Reproducir » @ 499,42
+bouton « Compartir mi canción » @ 571,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+bouton « A comp. 1/20 » @ 228,114
+interrupteur « Bucle » (nom « Repetir la parte en vez de tocar la canción ») [non coché, état « desactivado »] @ 464,114
+interrupteur « ? » (nom « Etiquetar la pantalla ») [non coché] @ 571,114
+onglet « Batería 16 pads » @ 76,183
+onglet « Acid 303 Línea de bajo » @ 242,183
+onglet « Voz Micro » @ 398,183
+onglet « Ma chanson préférée Canción » [sélectionné] @ 533,183
+  → la suite sur le côté (glisse pour la voir)
+onglet « Pistas de audio » @ 114,258
+onglet « Remix » [sélectionné] @ 283,258
+onglet « Afinador » @ 419,258
+onglet « Generar » @ 552,258
+  → la suite sur le côté (glisse pour la voir)
+bouton « CANCIÓN: MA CHANSON PRÉFÉRÉE » [état « Desplegado »] @ 249,354
+bouton «  Reproducir » @ 155,420
+bouton « Efectos » @ 516,420
+texte « La canción entra en el compás 1, al inicio de “A”. » @ 279,483
+texte « Arrastra la canción sobre tu tema, o colócala al inicio de: » @ 300,619
+case « Inicio » [sélectionné] @ 95,681
+bouton « Un compás antes » [désactivé] @ 466,765
+bouton « Un compás después » @ 538,765
+texte « Un compás antes o después » @ 236,765
+texte « Empezar desde el compás 1 de la canción » @ 236,849
+bouton « Compás anterior » [désactivé] @ 466,849
+bouton « Compás siguiente » @ 538,849
+case « 1 comp. » [sélectionné] @ 236,924
+case « 2 comp. » @ 375,924
+texte « Hacia el pad: » @ 102,929
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton «  Elegir una canción » @ 308,990
+bouton « Guía  · Pon un ritmo 5 % » [état « plegado »] @ 308,1077
+bouton « Reproducir » @ 300,1152
+bouton « Deshacer » [désactivé] @ 77,1152
+bouton « Rehacer » [désactivé] @ 190,1152
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 415,1152
+bouton « Compartir » (nom « Compartir mi canción ») @ 536,1152
+onglet « Estructura » @ 56,1251
+onglet « Sonidos » [sélectionné] @ 181,1251
+onglet « Mix » @ 307,1251
+onglet « Live » @ 433,1251
+onglet « Más » @ 559,1251
+touchable « ●  REC » (nom « Grabar la pantalla con sonido ») @ 388,1341
+touchable « ✎  Anotar » (nom « Escribir una nota ») @ 484,1341
+touchable « ⋯ » (nom « Modo comentarios ») @ 568,1341
+texte « Modo comentarios » @ 176,1341

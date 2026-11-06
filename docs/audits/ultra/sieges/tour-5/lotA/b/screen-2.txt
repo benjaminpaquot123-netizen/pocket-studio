@@ -1,0 +1,6 @@
+Écran 2 (616x1371)
+bouton « Voltar » @ 54,48
+texte « Simples ou Pro? » @ 344,48
+texte « Como você quer ver este projeto? Dá para mudar quando quiser com a etiqueta no alto. » @ 308,138
+bouton « Simples Para começar: 5 abas, botões grandes e palavras do dia a dia. » @ 308,282
+bouton « Pro Para ir mais longe: todas as ferramentas, estrutura, sons, mixagem e ao vivo. » @ 308,495

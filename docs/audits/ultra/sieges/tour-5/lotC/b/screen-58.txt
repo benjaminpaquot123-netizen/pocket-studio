@@ -1,0 +1,9 @@
+Écran 58 (616x1371)
+bouton « Atrás » @ 54,54
+texte « Mis proyectos » @ 344,54
+bouton «   Nueva canción guiada » @ 308,147
+bouton «   Nuevo proyecto: estilo, demo o vacío » @ 308,243
+bouton « Importar un proyecto (.zip) » @ 308,333
+touchable « Remix ABIERTO ahora mismo · 120 BPM · 20 comp. · 0:40 · 1 parte · remix » @ 308,480
+bouton « Opciones de Remix » @ 562,480
+bouton « Compartir mi canción » @ 190,525

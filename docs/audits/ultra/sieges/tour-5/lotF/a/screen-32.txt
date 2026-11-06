@@ -1,0 +1,6 @@
+Écran 32 (1035x1243)
+texte « Je prépare ton morceau… » @ 373,484
+texte « Fabrication du son en WAV, qualité studio. » @ 413,555
+texte «   33 % » @ 857,608
+texte « Ensuite, choisis l'appli pour l'envoyer. » @ 358,659
+bouton « Annuler » @ 828,749

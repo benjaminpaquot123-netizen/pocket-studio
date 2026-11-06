@@ -1,0 +1,3 @@
+Son : rien ne joue.
+Le pad 5 (« Impact ») joue une fois.
+Un petit message s'affiche quelques secondes en bas de l'écran : « Pad Live a son propre projet « Live » : « Techno » t'attend dans Mes projets. ».

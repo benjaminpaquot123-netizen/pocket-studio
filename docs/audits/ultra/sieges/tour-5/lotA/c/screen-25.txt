@@ -1,0 +1,45 @@
+Écran 25 (588x1278)
+— au-dessus : dialogue —
+— dessous —
+touchable « Devoir musique L1 Sauvegardé » (nom « Mes projets ») @ 134,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 311,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Jouer » @ 471,42
+bouton « Plus de choix » @ 543,42
+champ « Nom du projet 17/40 » contenu « Devoir musique L1 » @ 205,155
+bouton « Effacer » @ 357,146
+bouton « Annuler » @ 435,156
+bouton « OK » @ 529,156
+bouton « 120  Tempo » (nom « Tempo : 120 battements par minute ») @ 83,263
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,263
+bouton « ▶ Partie en boucle » @ 422,341
+texte « Mix » @ 48,341
+texte «  · Devoir musique L1 » @ 178,341
+bouton « ↺ Tout à zéro » @ 110,422
+texte « À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule. » @ 297,512
+bouton « Batterie ▸ » [état « fermé »] @ 75,605
+curseur « Volume de Batterie » [état « +0,0 dB », à 80 %] @ 84,782
+texte « +0,0 dB » @ 84,938
+texte « Synthé » @ 216,593
+curseur « Volume de Synthé » [état « +0,0 dB », à 80 %] @ 216,759
+texte « +0,0 dB » @ 216,916
+interrupteur « Son de Synthé » [coché, état « activé »] @ 190,942
+bouton « Écouter « Synthé » seul, en boucle » @ 241,942
+texte « Sortie » @ 345,593
+curseur « Volume de sortie » [état « −6,0 dB », à 60 %] @ 345,759
+texte « Lance ▶ » @ 345,927
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Ajoute une basse 13 % » [état « replié »] @ 294,984
+bouton « Annuler » (nom « Annuler la dernière action ») @ 95,1059
+bouton « Jouer » @ 223,1059
+bouton « 120 Tempo » (nom « Tempo : 120 battements par minute ») @ 356,1059
+bouton « Plus » (nom « Plus de choix ») @ 493,1059
+onglet « Mon morceau » @ 54,1158
+onglet « Rythme » @ 174,1158
+onglet « Clavier » @ 294,1158
+onglet « Mix » [sélectionné] @ 414,1158
+onglet « Envoyer » @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

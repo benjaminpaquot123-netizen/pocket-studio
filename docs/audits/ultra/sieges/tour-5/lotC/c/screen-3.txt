@@ -1,0 +1,52 @@
+Écran 3 (588x1278)
+touchable « My first beat Saved » (nom « My projects ») @ 114,42
+bouton « Pro » (nom « Pro mode. Touch to change mode. ») @ 255,42
+bouton « Undo » [désactivé] @ 327,42
+bouton « Record: microphone, keys or pads » @ 399,42
+bouton « Play » @ 471,42
+bouton « Share my song » @ 543,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Label the screen ») [non coché] @ 543,114
+bouton « ? » (nom « What is “Mute and solo”? ») @ 530,195
+texte « Volumes » @ 272,196
+texte « Slide a fader for the volume; tap a track's name for its effects and curves. » @ 294,250
+bouton « Drums » @ 84,343
+interrupteur « Drums sound » [coché, état « on »] @ 57,418
+interrupteur « Solo track Drums » [non coché, état « off »] @ 111,418
+curseur « Volume of Drums » [état « +0.0 dB », à 80 %] @ 84,589
+texte « +0.0 » @ 84,740
+bouton « Acid 303 » @ 204,343
+interrupteur « Acid 303 sound » [coché, état « on »] @ 177,418
+interrupteur « Solo track Acid 303 » [non coché, état « off »] @ 231,418
+curseur « Volume of Acid 303 » [état « +0.0 dB », à 80 %] @ 204,589
+texte « +0.0 » @ 204,740
+bouton « Synth » @ 324,343
+interrupteur « Synth sound » [coché, état « on »] @ 297,418
+interrupteur « Solo track Synth » [non coché, état « off »] @ 351,418
+curseur « Volume of Synth » [état « +0.0 dB », à 80 %] @ 324,589
+texte « +0.0 » @ 324,740
+bouton « Remix » @ 444,343
+interrupteur « Remix sound » [coché, état « on »] @ 417,418
+interrupteur « Solo track Remix » [non coché, état « off »] @ 471,418
+curseur « Volume of Remix » [état « +0.0 dB », à 80 %] @ 444,589
+texte « +0.0 » @ 444,740
+texte « Curves and effects » @ 203,838
+texte « Nothing moves yet: open a filter, raise a volume… » @ 317,869
+bouton « Automate » @ 165,921
+bouton « What's playing » @ 423,921
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide  · Add a melody 23 % » [état « folded »] @ 294,984
+bouton « Undo » [désactivé] @ 73,1059
+bouton « Redo » [désactivé] @ 182,1059
+bouton « Play » @ 288,1059
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 400,1059
+bouton « Share » (nom « Share my song ») @ 515,1059
+onglet « Structure » @ 54,1158
+onglet « Sounds » @ 174,1158
+onglet « Mix » [sélectionné] @ 294,1158
+onglet « Live » @ 414,1158
+onglet « More » @ 534,1158
+touchable « ●  REC » (nom « Record the screen with sound ») @ 360,1248
+touchable « ✎  Note » (nom « Write a note ») @ 456,1248
+touchable « ⋯ » (nom « Feedback mode ») @ 540,1248
+texte « Feedback mode » @ 162,1248

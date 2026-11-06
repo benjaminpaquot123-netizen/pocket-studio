@@ -1,0 +1,6 @@
+Écran 18 (616x1371)
+bouton « Atrás » @ 54,48
+texte « ¿Simple o Pro? » @ 344,48
+texte « ¿Cómo quieres ver este proyecto? Puedes cambiarlo cuando quieras con la etiqueta de arriba. » @ 308,156
+bouton « Simple Para empezar: 5 pestañas, botones grandes y palabras de todos los días. » @ 308,333
+bouton « Pro Para ir más lejos: todas las herramientas, estructura, sonidos, mezcla y directo. » @ 308,561

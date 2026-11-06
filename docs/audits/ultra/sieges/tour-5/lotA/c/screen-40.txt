@@ -1,0 +1,46 @@
+Écran 40 (588x1278)
+texte « Poignée : glisse vers le bas pour fermer » @ 294,36
+case « Pour : Lead » [sélectionné] @ 106,99
+case « Favoris » @ 272,99
+case « Ambiance » @ 431,99
+case « Couleur » @ 540,99
+  → la suite sur le côté (glisse pour la voir)
+case « Acide » @ 145,183
+case « Techno » @ 271,183
+case « DnB » @ 389,183
+case « Dubstep » @ 504,183
+texte « Style : » @ 53,183
+  → la suite sur le côté (glisse pour la voir)
+case « Lead qui crie » @ 114,267
+case « Large et vivant » @ 313,267
+case « Dub profond » @ 112,339
+case « Rêve » @ 259,339
+case « Distorsion » @ 396,339
+case « Lointain » @ 90,411
+case « Sans effet » @ 242,411
+texte « Touche une ambiance pour l'essayer : tu peux toujours revenir avec Annuler. » @ 294,486
+texte « Garde le doigt sur une ambiance pour l'écouter ; lâche, le son revient. » @ 294,552
+bouton « ? » (nom « Qu'est-ce que « Pad XY » ? ») @ 224,612
+texte « Pad XY, haut-bas : » @ 109,612
+case « Espace » [sélectionné] @ 86,682
+case « Saleté » @ 213,682
+case « Mouvement » @ 364,682
+texte « ↑ Lointain » @ 294,742
+texte « ← Sombre » @ 142,1027
+texte « ↓ Sec » @ 294,1027
+texte « Brillant → » @ 445,1027
+texte « Glisse le doigt pour triturer le son en direct. Deux touchers : retour au son de départ. » @ 294,1078
+curseur « Couleur » [état « Neutre », à 50 %] @ 92,1156
+texte « Couleur » @ 91,1213
+texte « Neutre » @ 91,1241
+curseur « Saleté » [état « 0 », à 0 %] @ 227,1156
+texte « Saleté » @ 226,1213
+texte « 0 » @ 227,1241
+curseur « Mouvement » [état « 0 », à 0 %] @ 362,1156
+texte « Mouvement » @ 361,1213
+texte « 0 » @ 362,1241
+curseur « Espace » [état « 100 % », à 100 %] @ 497,1156
+texte « Espace » @ 497,1213
+texte « 100 % » @ 496,1241
+texte « Réverbe et écho communs » @ 160,1272
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

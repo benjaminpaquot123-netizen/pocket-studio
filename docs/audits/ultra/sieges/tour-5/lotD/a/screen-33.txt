@@ -1,0 +1,77 @@
+Écran 33 (1920x1200)
+touchable « My first beat Saved » (nom « My projects ») @ 705,42
+bouton « Pro » (nom « Pro mode. Touch to change mode. ») @ 1437,42
+bouton « A » (nom « Current part: A. Tap to change part. ») @ 1512,42
+bouton « Undo » @ 1587,42
+bouton « Redo » [désactivé] @ 1659,42
+bouton « Record: microphone, keys or pads » @ 1731,42
+bouton « Play » @ 1803,42
+bouton « Share my song » @ 1875,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Label the screen ») [non coché] @ 1875,114
+onglet « Structure » @ 60,193
+onglet « Sounds » [sélectionné] @ 60,280
+onglet « Mix » @ 60,367
+onglet « Live » @ 60,454
+onglet « More » @ 60,541
+onglet « Drums 16 pads » @ 196,183
+onglet « Acid 303 Bass line » @ 343,183
+onglet « Vocals Microphone » @ 511,183
+onglet « Remix Split » @ 664,183
+touchable « Synth Synth » (nom « Options for Synth ») @ 803,183
+bouton « Change the sound of Synth » @ 920,183
+bouton « Effects » @ 1037,183
+bouton «  Track » @ 1200,183
+case « Keyboard » @ 205,270
+case « Notes » [sélectionné] @ 343,270
+bouton «  Clear » (nom « Clear this track in part A ») @ 1846,270
+bouton « Set the track's sound ↓ » @ 271,357
+bouton «  Record my melody » @ 970,450
+bouton «  1 » (nom « Count-in: 1 bar ») @ 1864,450
+bouton « − » @ 671,567
+bouton « + » @ 818,567
+case « ✏ Draw » [sélectionné] @ 221,567
+case « ⬚ Select » @ 362,567
+case « See all » @ 497,567
+texte «   Zoom » @ 596,567
+texte « 100% » @ 745,567
+bouton « − » @ 255,648
+bouton « + » @ 407,648
+case « 1/16 » @ 567,648
+case « 1/8 » [sélectionné] @ 661,648
+case « 1/4 » @ 750,648
+case « 1/2 » @ 840,648
+case « 1/8 » @ 988,648
+case « 1/16 » [sélectionné] @ 1081,648
+case « 1/16 t » @ 1185,648
+case « 1/32 » @ 1291,648
+texte « Loop » @ 179,648
+texte « 6 bars » @ 331,648
+texte «   Note » @ 487,648
+texte «   Grid » @ 914,648
+bouton « Paste bar 1 » @ 1810,729
+texte « Copied: 5 notes (Synth · A) » @ 941,729
+case « Chords » @ 218,810
+bouton « In time 50% » @ 363,810
+bouton « 100% » @ 494,810
+case « Ghost bass » [sélectionné] @ 628,810
+bouton « Clear » @ 759,810
+texte « bar » @ 198,867
+touchable « 1 » @ 600,879
+touchable « 2 » @ 1320,879
+touchable « 3 » @ 1783,879
+  → la suite sur le côté (glisse pour la voir)
+bouton « E » (nom « E5 ») @ 198,933
+bouton « D♯ » (nom « D#5 ») @ 198,975
+bouton « D » (nom « D5 ») @ 198,1017
+bouton « C♯ » (nom « C#5 ») @ 198,1059
+bouton « C5 » @ 198,1101
+bouton « B » (nom « B4 ») @ 198,1131
+texte « Note grid: 15 notes » @ 1062,1026
+  → la suite sur le côté (glisse pour la voir)
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « ●  REC » (nom « Record the screen with sound ») @ 1692,1170
+touchable « ✎  Note » (nom « Write a note ») @ 1788,1170
+touchable « ⋯ » (nom « Feedback mode ») @ 1872,1170
+texte « Feedback mode » @ 828,1170

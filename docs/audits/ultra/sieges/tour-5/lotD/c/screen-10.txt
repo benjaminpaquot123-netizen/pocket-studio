@@ -1,0 +1,96 @@
+Écran 10 (1035x1243)
+touchable « Notte a Napoli Salvato » (nom « I miei progetti ») @ 262,42
+bouton « Pro » (nom « Modalità Pro. Tocca per cambiare modalità. ») @ 552,42
+bouton « A » (nom « Parte attuale: A. Tocca per cambiare parte. ») @ 627,42
+bouton « Annulla l'ultima azione » @ 702,42
+bouton « Ripristina » [désactivé] @ 774,42
+bouton « Registra: microfono, tastiera o pad » @ 846,42
+bouton « Suona » @ 918,42
+bouton « Condividi il mio brano » @ 990,42
+bouton « 120  BPM » (nom « Tempo: 120 BPM ») @ 73,114
+interrupteur « ? » (nom « Etichetta la schermata ») [non coché] @ 990,114
+onglet « Batteria 16 pad » [sélectionné] @ 81,183
+onglet « Acid 303 Linea di basso » @ 256,183
+onglet « Voce Microfono » @ 439,183
+onglet « Remix Separa » @ 587,183
+touchable « Synth Synth » @ 708,183
+bouton «  Traccia » @ 859,183
+texte « Parte: A » @ 61,243
+touchable « Kick » @ 75,330
+touchable « Kick 2 » @ 200,330
+touchable « Rullante » @ 325,330
+touchable « Rullante 2 » @ 450,330
+touchable « Clap » @ 75,436
+touchable « Hi-hat » @ 200,436
+touchable « Hi-hat aperto » @ 325,436
+touchable « Tom grave » @ 450,436
+touchable « Tom medio » @ 75,542
+touchable « Tom acuto » @ 200,542
+touchable « Rim » @ 325,542
+touchable « Cowbell » @ 450,542
+touchable « Piatto » @ 75,648
+touchable « Shaker » @ 200,648
+touchable « Conga » @ 325,648
+touchable « Zap » @ 450,648
+bouton « Kit: Classico » @ 121,747
+texte « I pad suonano, le caselle tengono i colpi. Pressione lunga: cambia il suono. » @ 372,746
+case « Metronomo » @ 125,859
+case « Conteggio » @ 298,859
+bouton « ? » (nom « Cos'è “Metronomo e conteggio”? ») @ 409,859
+bouton « Effetti » @ 464,859
+texte « Swing » @ 77,912
+bouton « ? » (nom « Cos'è “Swing”? ») @ 133,910
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « STEP: KICK » [état « Espanso »] @ 696,342
+bouton « ? » (nom « Cos'è “Step”? ») @ 736,342
+case « Tutti i pad » @ 917,342
+touchable « 1 » (nom « Step 1 ») [état « colpo, forza 100 % »] @ 575,422
+touchable « Step 2 » [état « vuoto »] @ 632,421
+touchable « Step 3 » [état « vuoto »] @ 688,421
+touchable « Step 4 » [état « vuoto »] @ 744,421
+touchable « 2 » (nom « Step 5 ») [état « colpo, forza 100 % »] @ 800,421
+touchable « Step 6 » [état « vuoto »] @ 856,421
+touchable « Step 7 » [état « vuoto »] @ 912,421
+touchable « Step 8 » [état « vuoto »] @ 968,421
+touchable « 3 » (nom « Step 9 ») [état « colpo, forza 100 % »] @ 575,492
+touchable « Step 10 » [état « vuoto »] @ 632,491
+touchable « Step 11 » [état « vuoto »] @ 688,491
+touchable « Step 12 » [état « vuoto »] @ 744,491
+touchable « 4 » (nom « Step 13 ») [état « colpo, forza 100 % »] @ 800,491
+touchable « Step 14 » [état « vuoto »] @ 856,491
+touchable « Step 15 » [état « vuoto »] @ 912,491
+touchable « Step 16 » [état « vuoto »] @ 968,491
+case « Colpi » [sélectionné] @ 601,572
+case « Rullate » @ 719,572
+case « Pan » @ 829,572
+case « Pitch » @ 931,572
+case « Velocity » @ 990,572
+  → la suite sur le côté (glisse pour la voir)
+bouton « tutto » @ 653,656
+bouton « 1/2 » @ 729,656
+bouton « 1/4 » @ 804,656
+bouton « ◀ » @ 879,656
+bouton « ▶ » @ 954,656
+texte « Riempi » @ 582,656
+bouton « Cancella » @ 607,728
+texte « Tocca una casella per aggiungere un colpo, fai scorrere il dito per dipingerne diversi. Pressione lunga su un colpo: forza e rullate (×2 a ×8). » @ 771,816
+case « 1 battuta » [sélectionné] @ 736,897
+case « 2 » @ 849,897
+case « 3 » @ 930,897
+texte « Lunghezza » @ 604,901
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guida  · Aggiungi una melodia 23 % » [état « chiuso »] @ 517,949
+bouton « Annulla » (nom « Annulla l'ultima azione ») @ 148,1024
+bouton « Ripristina » [désactivé] @ 331,1024
+bouton « Suona » @ 512,1024
+bouton « 120 Tempo » (nom « Tempo: 120 BPM ») @ 698,1024
+bouton « Condividi » (nom « Condividi il mio brano ») @ 888,1024
+onglet « Struttura » @ 99,1123
+onglet « Suoni » [sélectionné] @ 309,1123
+onglet « Mix » @ 518,1123
+onglet « Live » @ 727,1123
+onglet « Altro » @ 936,1123
+touchable « ●  REC » (nom « Registra lo schermo con il suono ») @ 807,1213
+touchable « ✎  Annota » (nom « Scrivi una nota ») @ 903,1213
+touchable « ⋯ » (nom « Modalità feedback ») @ 987,1213
+texte « Modalità feedback » @ 385,1213

@@ -1,0 +1,96 @@
+Écran 47 (588x1278)
+bouton « رجوع » @ 546,42
+touchable « تشغيل » @ 465,42
+bouton « إبطاء السرعة » @ 372,42
+bouton « 120 السرعة » (nom « السرعة: 120 نبضة في الدقيقة ») @ 300,42
+bouton « تسريع السرعة » @ 228,42
+texte « – » @ 135,42
+touchable « REC » (nom « تسجيل الأداء ») @ 48,42
+interrupteur « ? » (nom « تسمية الشاشة ») [non coché] @ 45,114
+touchable « الإطلاق على مازورة واحدة » @ 453,186
+bouton « خانات أقل » @ 136,186
+bouton « خانات أكثر » @ 48,186
+texte « الخانات » @ 202,186
+texte « 8 » @ 92,186
+bouton « ? » (nom « ما معنى «الإطلاق على والخانات»؟ ») @ 309,186
+texte « الطبول » @ 457,251
+interrupteur « صوت الطبول » [coché, état « يعمل »] @ 457,306
+texte « Acid 303 » @ 358,251
+interrupteur « صوت Acid 303 » [coché, état « يعمل »] @ 358,306
+texte « Synth » @ 259,251
+interrupteur « صوت Synth » [coché, état « يعمل »] @ 259,306
+texte « الغناء 1 » @ 160,251
+interrupteur « صوت الغناء 1 » [coché, état « يعمل »] @ 160,306
+texte « Ma chanson préférée » @ 61,251
+interrupteur « صوت Ma chanson préférée » [non coché, état « متوقف »] @ 61,306
+bouton « ? » (nom « ما معنى «الكتل والخانات»؟ ») @ 543,285
+bouton « A » @ 543,382
+bouton « الطبول · A · فارغ » @ 457,382
+bouton « Acid 303 · A · فارغ » @ 358,382
+bouton « Synth · A · فارغ » @ 259,382
+bouton « الغناء 1 · A · جاهز » @ 160,382
+bouton « Ma chanson préférée · A · جاهز » @ 61,382
+bouton « B » @ 543,451
+bouton « الطبول · B · فارغ » @ 457,451
+bouton « Acid 303 · B · فارغ » @ 358,451
+bouton « Synth · B · فارغ » @ 259,451
+bouton « الغناء 1 · B · فارغ » @ 160,451
+bouton « Ma chanson préférée · B · فارغ » @ 61,451
+bouton « C » @ 543,520
+bouton « الطبول · C · فارغ » @ 457,520
+bouton « Acid 303 · C · فارغ » @ 358,520
+bouton « Synth · C · فارغ » @ 259,520
+bouton « الغناء 1 · C · فارغ » @ 160,520
+bouton « Ma chanson préférée · C · فارغ » @ 61,520
+bouton « D » @ 543,589
+bouton « الطبول · D · فارغ » @ 457,589
+bouton « Acid 303 · D · فارغ » @ 358,589
+bouton « Synth · D · فارغ » @ 259,589
+bouton « الغناء 1 · D · فارغ » @ 160,589
+bouton « Ma chanson préférée · D · فارغ » @ 61,589
+bouton « E » @ 543,658
+bouton « الطبول · E · فارغ » @ 457,658
+bouton « Acid 303 · E · فارغ » @ 358,658
+bouton « Synth · E · فارغ » @ 259,658
+bouton « الغناء 1 · E · فارغ » @ 160,658
+bouton « Ma chanson préférée · E · فارغ » @ 61,658
+bouton « F » @ 543,727
+bouton « الطبول · F · فارغ » @ 457,727
+bouton « Acid 303 · F · فارغ » @ 358,727
+bouton « Synth · F · فارغ » @ 259,727
+bouton « الغناء 1 · F · فارغ » @ 160,727
+bouton « Ma chanson préférée · F · فارغ » @ 61,727
+bouton « G » @ 543,796
+bouton « الطبول · G · فارغ » @ 457,796
+bouton « Acid 303 · G · فارغ » @ 358,796
+bouton « Synth · G · فارغ » @ 259,796
+bouton « الغناء 1 · G · فارغ » @ 160,796
+bouton « Ma chanson préférée · G · فارغ » @ 61,796
+bouton « H » @ 543,865
+bouton « الطبول · H · فارغ » @ 457,865
+bouton « Acid 303 · H · فارغ » @ 358,865
+bouton « Synth · H · فارغ » @ 259,865
+bouton « الغناء 1 · H · فارغ » @ 160,865
+bouton « Ma chanson préférée · H · فارغ » @ 61,865
+bouton « ■ الكل » @ 543,939
+bouton « ■ » (nom « إيقاف المسار ») @ 457,939
+bouton « ■ » (nom « إيقاف المسار ») @ 358,939
+bouton « ■ » (nom « إيقاف المسار ») @ 259,939
+bouton « ■ » (nom « إيقاف المسار ») @ 160,939
+bouton « ■ » (nom « إيقاف المسار ») @ 61,939
+touchable « الكتل » [sélectionné] @ 526,1044
+touchable « Pads » @ 445,1044
+touchable « المؤثرات » @ 365,1044
+touchable « النوتات » @ 285,1044
+touchable « Acid 303 » @ 205,1044
+bouton « ملء الشاشة » @ 129,1044
+bouton « توسيع » @ 57,1044
+onglet « أغنيتي » @ 534,1158
+onglet « الإيقاع » @ 414,1158
+onglet « لوحة المفاتيح » @ 294,1158
+onglet « المكس » @ 174,1158
+onglet « إرسال » @ 54,1158
+touchable « ●  REC » (nom « سجّل الشاشة مع الصوت ») @ 228,1248
+touchable « ✎  دوّن » (nom « اكتب ملاحظة ») @ 132,1248
+touchable « ⋯ » (nom « وضع الملاحظات ») @ 48,1248
+texte « وضع الملاحظات » @ 426,1248

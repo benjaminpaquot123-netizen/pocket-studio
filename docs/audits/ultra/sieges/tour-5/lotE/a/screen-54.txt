@@ -1,0 +1,14 @@
+Écran 54 (588x1278)
+bouton « Retour » @ 54,54
+texte « Mes projets » @ 330,54
+bouton «   Nouveau morceau guidé » @ 294,147
+bouton «   Nouveau projet : style, démo ou vide » @ 294,243
+bouton « Importer un projet (.zip) » @ 294,333
+texte « « Live » est dans la corbeille (30 jours). » @ 200,420
+bouton « Annuler » @ 424,420
+bouton « OK » @ 526,420
+touchable « Mon projet 1 OUVERT à l'instant · 120 BPM · Boucle de 4 mes. » @ 294,553
+bouton « Options de Mon projet 1 » @ 534,554
+bouton « Partager mon morceau » @ 196,585
+bouton « ▸ Corbeille (1) gardés 30 jours » @ 166,688
+bouton « Vider la corbeille » @ 442,689

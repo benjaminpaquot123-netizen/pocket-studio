@@ -1,0 +1,7 @@
+Écran 61 (588x1278)
+touchable « Zamknij arkusz » @ 294,639
+texte « Uchwyt: przesuń w dół, aby zamknąć » @ 294,1005
+texte « Pad 5: co na nim położysz? » @ 238,1062
+bouton « Moja biblioteka » @ 110,1174
+bouton « Dźwięki aplikacji » @ 294,1174
+bouton « Nagraj » @ 478,1174

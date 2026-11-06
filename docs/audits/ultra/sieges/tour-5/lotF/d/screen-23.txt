@@ -1,0 +1,8 @@
+Écran 23 (616x1371)
+bouton «  Retour » @ 74,36
+texte « Remix » @ 179,36
+bouton « SÉPARER UNE CHANSON » [état « Déplié »] @ 214,135
+bouton « ? » (nom « Qu'est-ce que « Remix » ? ») @ 364,135
+texte « Choisis un morceau de l'appareil : l'appli le découpe en batterie, basse, voix et le reste. Compte quelques minutes ; tu peux éteindre l'écran. » @ 308,214
+texte « Téléchargement du modèle… 53 % » @ 241,289
+bouton « Annuler » @ 308,385

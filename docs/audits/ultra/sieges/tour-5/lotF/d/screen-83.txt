@@ -1,0 +1,40 @@
+Écran 83 (616x1371)
+touchable « Live Sauvegardé » (nom « Mes projets ») @ 148,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 339,42
+bouton « Enregistrer : micro, clavier ou pads » @ 427,42
+bouton « Jouer » @ 499,42
+bouton « Plus de choix » @ 571,42
+bouton « 120  Tempo » (nom « Tempo : 120 battements par minute ») @ 83,114
+bouton « Refrain mesure 1/20 » @ 255,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 571,114
+bouton «  Mon morceau » @ 111,180
+texte « Remix » @ 252,180
+bouton « CHANSON : MA CHANSON PRÉFÉRÉE » [état « Déplié »] @ 256,276
+bouton «  Jouer » @ 128,342
+bouton « Effets » @ 525,342
+texte « 0:00 / 0:40 · départ » @ 346,342
+texte « Tonalité : projet en La mineur, chanson en La mineur » @ 278,403
+bouton «  Découper la chanson » @ 308,465
+bouton «  Ouvrir le tableau des pistes » @ 308,549
+texte « La chanson entre à la mesure 1, au début de « Refrain ». » @ 308,627
+texte « Glisse la chanson sur ton morceau, ou place-la au début de : » @ 308,792
+case « Début » [sélectionné] @ 97,867
+bouton « Une mesure plus tôt » [désactivé] @ 466,930
+bouton « Une mesure plus tard » @ 538,930
+texte « Une mesure plus tôt ou plus tard » @ 236,938
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton «  Découper la chanson » @ 308,990
+bouton « Guide  · Ajoute une basse 25 % » [état « replié »] @ 308,1077
+bouton « Jouer » @ 234,1152
+bouton « Annuler » (nom « Annuler la dernière action ») @ 100,1152
+bouton « 120 Tempo » (nom « Tempo : 120 battements par minute ») @ 373,1152
+bouton « Plus » (nom « Plus de choix ») @ 516,1152
+onglet « Mon morceau » @ 56,1251
+onglet « Rythme » @ 181,1251
+onglet « Clavier » @ 307,1251
+onglet « Mix » @ 433,1251
+onglet « Envoyer » @ 559,1251
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 388,1341
+touchable « ✎  Noter » (nom « Écrire une note ») @ 484,1341
+touchable « ⋯ » (nom « Mode retours ») @ 568,1341
+texte « Mode retours » @ 176,1341

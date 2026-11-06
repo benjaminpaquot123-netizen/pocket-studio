@@ -1,0 +1,26 @@
+Écran 27 (588x1278)
+texte « Insert after part 9 » @ 188,117
+bouton « ▭▭▭ » @ 114,201
+bouton « ▭▭▭ » @ 292,201
+bouton « ▭▭▭ » @ 471,201
+bouton « ▭▭▭ » @ 120,285
+bouton « ▭▭▭ » @ 299,285
+bouton « ▭▭▭ » @ 122,369
+bouton « ▭▭▭ » @ 318,369
+bouton « ▭▭▭ » @ 137,453
+bouton « ▭▭▭ » @ 342,453
+bouton « ▭▭▭ » @ 143,537
+bouton « ▭▭▭ » @ 346,537
+bouton « ▭▭▭ » @ 123,621
+bouton « ▭▭▭ » @ 309,621
+bouton « ▭▭▭ » @ 479,621
+bouton « ▭▭▭ » @ 107,705
+bouton « ▭▭▭ » @ 256,705
+bouton « ▭▭▭ » @ 405,705
+bouton « ▭▭▭ » @ 106,789
+bouton « ▭▭▭ » @ 254,789
+bouton « ▭▭▭ » @ 402,789
+bouton « ▭▭▭ » @ 106,873
+bouton « ▭▭▭ » @ 238,957
+bouton « ▭▭▭ » @ 165,1041
+bouton « ▭▭▭ » @ 495,1149

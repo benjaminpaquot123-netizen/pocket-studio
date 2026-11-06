@@ -1,0 +1,103 @@
+Écran 25 (1920x1200)
+onglet « 構成 » @ 60,50
+onglet « サウンド » @ 60,138
+onglet « ミックス » @ 60,226
+onglet « Live » [sélectionné] @ 60,313
+onglet « その他 » @ 60,401
+bouton « 戻る » @ 162,36
+touchable « 再生 » @ 243,36
+bouton « テンポを下げる » @ 942,36
+bouton « 124 BPM » (nom « テンポ：124 BPM ») @ 1014,36
+bouton « テンポを上げる » @ 1086,36
+texte « – » @ 1785,36
+touchable « REC » (nom « パフォーマンスを録音 ») @ 1872,36
+interrupteur « ? » (nom « 画面にラベルを表示 ») [non coché] @ 1875,102
+touchable « 起動タイミング 1小節 » @ 252,172
+bouton « マスを減らす » @ 1028,173
+bouton « マスを増やす » @ 1116,173
+texte « マス » @ 970,172
+texte « 8 » @ 1072,172
+bouton « ? » (nom « 「起動タイミングとマス」って何？ ») @ 394,172
+texte « ドラム » @ 351,239
+interrupteur « ドラムの音 » [coché, état « オン »] @ 351,294
+texte « Acid 303 » @ 540,239
+interrupteur « Acid 303の音 » [coché, état « オン »] @ 540,294
+texte « シンセ » @ 729,239
+interrupteur « シンセの音 » [coché, état « オン »] @ 729,294
+bouton « ? » (nom « 「ブロックとマス」って何？ ») @ 192,273
+bouton « A » @ 192,382
+bouton « ドラム · A · 空 » @ 351,382
+bouton « Acid 303 · A · 空 » @ 540,382
+bouton « シンセ · A · 空 » @ 729,382
+bouton « B » @ 192,471
+bouton « ドラム · B · 空 » @ 351,471
+bouton « Acid 303 · B · 空 » @ 540,471
+bouton « シンセ · B · 空 » @ 729,471
+bouton « C » @ 192,560
+bouton « ドラム · C · 空 » @ 351,560
+bouton « Acid 303 · C · 空 » @ 540,560
+bouton « シンセ · C · 空 » @ 729,560
+bouton « D » @ 192,649
+bouton « ドラム · D · 空 » @ 351,649
+bouton « Acid 303 · D · 空 » @ 540,649
+bouton « シンセ · D · 空 » @ 729,649
+bouton « E » @ 192,738
+bouton « ドラム · E · 空 » @ 351,738
+bouton « Acid 303 · E · 空 » @ 540,738
+bouton « シンセ · E · 空 » @ 729,738
+bouton « F » @ 192,827
+bouton « ドラム · F · 空 » @ 351,827
+bouton « Acid 303 · F · 空 » @ 540,827
+bouton « シンセ · F · 空 » @ 729,827
+bouton « G » @ 192,916
+bouton « ドラム · G · 空 » @ 351,916
+bouton « Acid 303 · G · 空 » @ 540,916
+bouton « シンセ · G · 空 » @ 729,916
+bouton « H » @ 192,1005
+bouton « ドラム · H · 空 » @ 351,1005
+bouton « Acid 303 · H · 空 » @ 540,1005
+bouton « シンセ · H · 空 » @ 729,1005
+bouton « ■ 全部 » @ 192,1090
+bouton « ■ » (nom « トラックを停止 ») @ 351,1090
+bouton « ■ » (nom « トラックを停止 ») @ 540,1090
+bouton « ■ » (nom « トラックを停止 ») @ 729,1090
+touchable « ブロック » @ 1246,177
+touchable « パッド » [sélectionné] @ 1371,177
+touchable « エフェクト » @ 1504,177
+touchable « ノート » @ 1638,177
+touchable « Acid 303 » @ 1800,177
+bouton « 全画面 » @ 1794,252
+bouton « 閉じる » @ 1875,252
+texte « パッド » @ 1229,252
+bouton « エフェクト » @ 1625,351
+bouton «  全部止める » @ 1789,351
+bouton « ライブパッド » [état « 開いた状態 »] @ 1378,351
+bouton « ? » (nom « 「ライブパッド」って何？ ») @ 1389,351
+texte « パッドをタップで音がスタート、もう一度タップで停止。全部拍に合ったままです。 » @ 1542,426
+case « 4 » [désactivé] @ 1332,502
+case « 6 » [désactivé] @ 1413,502
+case « 8 » [désactivé] @ 1494,502
+case « 12 » [désactivé] @ 1575,502
+case « 16 » [sélectionné] @ 1656,502
+texte « パッド： » @ 1245,502
+touchable « キックのループ 1小節 » @ 1283,622
+touchable « クラップ 1回 » @ 1455,622
+touchable « Acid 303 のループ 2 小節 » @ 1627,622
+touchable « ベースのループ 2 小節 » @ 1800,622
+touchable « エアホーン 1回 » @ 1283,778
+touchable « レーザー 1回 » @ 1455,778
+touchable « サイレン 1回 » @ 1627,778
+touchable « 掛け声「Go go go!」 1回 » @ 1800,778
+touchable « キック 1回 » @ 1283,934
+touchable « スネア 1回 » @ 1455,934
+touchable « ハイハット 1回 » @ 1627,934
+touchable « オープンハイハット 1回 » @ 1800,934
+touchable « ビルドアップ 1回 » @ 1283,1074
+touchable « インパクト 1回 » @ 1455,1074
+touchable « ドロップ 1回 » @ 1627,1074
+touchable « 「Go!」 1回 » @ 1800,1074
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « ●  REC » (nom « 画面を音声付きで録画 ») @ 1692,1170
+touchable « ✎  メモ » (nom « メモを書く ») @ 1788,1170
+touchable « ⋯ » (nom « フィードバックモード ») @ 1872,1170
+texte « フィードバックモード » @ 828,1170

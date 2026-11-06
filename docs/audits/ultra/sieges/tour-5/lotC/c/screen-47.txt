@@ -1,0 +1,9 @@
+Écran 47 (588x1278)
+bouton « Back » @ 54,54
+texte « My projects » @ 330,54
+bouton «   New guided song » @ 294,147
+bouton «   New project: style, demo or empty » @ 294,243
+bouton « Import a project (.zip) » @ 294,333
+touchable « My first beat OPEN 1 min ago · 120 BPM · Loop of 1 bar » @ 294,466
+bouton « Options for My first beat » @ 534,467
+bouton « Share my song » @ 156,498

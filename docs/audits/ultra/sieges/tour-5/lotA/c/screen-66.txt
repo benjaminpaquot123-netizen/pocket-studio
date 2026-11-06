@@ -1,0 +1,14 @@
+Écran 66 (588x1278)
+texte « BenStudio » @ 156,72
+texte « Que veux-tu faire ? » @ 220,132
+bouton « Continuer Simple Projet final Léa Boucle de 1 mes. Sauvegardé à l'instant » @ 294,294
+bouton « Nouveau morceau Un style en une touche, ou pas à pas avec l'assistant. » @ 294,499
+bouton « Mes projets Ouvrir un autre morceau, le copier ou le renommer. » @ 294,664
+bouton « Remix Séparation des pistes : batterie, basse, voix et le reste. » @ 294,829
+bouton « Pad Live NOUVEAU Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite. » @ 294,1009
+bouton « Défis Écoute un rythme, refais-le sur les pads : gagne des étoiles. » (nom « Défis : écoute un rythme, refais-le sur les pads, gagne des étoiles. ») @ 294,1168
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

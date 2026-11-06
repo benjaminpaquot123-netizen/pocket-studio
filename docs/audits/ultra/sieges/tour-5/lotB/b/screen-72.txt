@@ -1,0 +1,24 @@
+Écran 72 (588x1278)
+texte « Biblioteka dźwięków » @ 187,35
+bouton « Zatrzymaj utwór » @ 474,48
+bouton « Zamknij » @ 546,48
+texte « Dla: pad 1 (Bęben basowy studyjny) » @ 188,69
+bouton « PRAWDZIWE DŹWIĘKI STYLU » [état « Rozwinięte »] @ 214,144
+texte « Więcej dźwięków Acid techno: Roland TR-909, Acid techno (4,5 MB), do pobrania tylko, jeśli chcesz. » @ 294,219
+bouton « Pobierz dźwięki stylu » @ 294,312
+onglet « Bębny basowe » [sélectionné] @ 128,417
+onglet « Werble » @ 318,417
+onglet « Klaskanie » @ 484,417
+  → la suite sur le côté (glisse pour la voir)
+bouton « DŹWIĘKI » [état « Rozwinięte »] @ 109,504
+champ « Szukaj dźwięku (werbel, conga, syrena…) » contenu «  » @ 294,594
+bouton « Wbudowane dźwięki 2 dźwięki » @ 294,708
+bouton « Inne dźwięki zestawu 14 dźwięków » @ 294,810
+bouton « Impreza 22 dźwięki » @ 294,912
+texte « Dotknij ☆ przy dźwięku, aby znaleźć go w „Ulubionych”. » @ 294,993
+texte « Dotknij dźwięku, żeby go usłyszeć, „Użyj”, żeby dać go na pad 1 (Bęben basowy studyjny). » @ 294,1059
+bouton « PACZKI DŹWIĘKÓW » [état « Rozwinięte »] @ 186,1173
+bouton « ? » (nom « Co to jest „Paczka dźwięków”? ») @ 308,1173
+texte « Pobieraj tylko, jeśli chcesz; każdą paczkę usuniesz jednym dotknięciem, żeby zwolnić miejsce. » @ 294,1234
+bouton «  Pobierz wszystko (paczki: 68, 288,4 MB) » @ 294,1275
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

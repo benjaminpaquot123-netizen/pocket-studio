@@ -1,0 +1,7 @@
+Écran 59 (588x1278)
+touchable « Changer le son » @ 392,267
+touchable « Renommer » @ 392,339
+touchable « Couleur » @ 392,411
+touchable « Dupliquer » @ 392,483
+touchable « Vider dans la partie A » [désactivé] @ 392,555
+touchable « Supprimer (Annuler possible) » @ 392,627

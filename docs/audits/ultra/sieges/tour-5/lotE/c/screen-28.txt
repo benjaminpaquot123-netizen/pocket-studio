@@ -1,0 +1,56 @@
+Écran 28 (900x1509)
+touchable « Ma chanson préférée 저장됨 » (nom « 내 프로젝트 ») @ 234,42
+bouton « 프로 » (nom « 프로 모드. 눌러서 모드를 바꾸세요. ») @ 495,42
+bouton « 실행 취소 » @ 567,42
+bouton « 다시 실행 » [désactivé] @ 639,42
+bouton « 녹음: 마이크, 건반 또는 패드 » @ 711,42
+bouton « 재생 » @ 783,42
+bouton « 내 곡 공유 » @ 855,42
+bouton « 120  BPM » (nom « 템포: 120 BPM ») @ 73,114
+bouton « A 마디 1/20 » @ 218,114
+interrupteur « 루프 » (nom « 곡 대신 파트를 루프 ») [non coché, état « 꺼짐 »] @ 758,114
+interrupteur « ? » (nom « 화면 이름표 ») [non coché] @ 855,114
+onglet « 드럼 16패드 » @ 68,183
+onglet « Acid 303 베이스 라인 » @ 209,183
+onglet « 보컬 마이크 » @ 348,183
+onglet « Ma chanson préférée 노래 » [sélectionné] @ 532,183
+touchable « 신스 신스 » @ 703,183
+bouton «  트랙 » @ 821,183
+  → la suite sur le côté (glisse pour la voir)
+onglet « 오디오 트랙 » @ 86,258
+onglet « 리믹스 » [sélectionné] @ 227,258
+onglet « 튜너 » @ 362,258
+onglet « 생성 » @ 497,258
+bouton « 노래: MA CHANSON PRÉFÉRÉE » [état « 펼쳐짐 »] @ 218,354
+bouton «  재생 » @ 118,420
+bouton « 이펙트 » @ 810,420
+texte « 0:00 / 0:40 · 시작 » @ 479,420
+texte « 조성: 프로젝트는 A 마이너, 노래는 A 마이너 » @ 213,482
+bouton «  곡 자르기 » @ 450,544
+bouton «  트랙 보드 열기 » @ 450,628
+texte « 곡이 2마디, “A” 중간에서 들어와요. » @ 194,691
+texte « 곡을 내 트랙 위로 끌거나, 다음의 시작에 놓으세요: » @ 237,829
+case « 시작 » @ 86,891
+bouton « 한 마디 앞으로 » @ 750,975
+bouton « 한 마디 뒤로 » @ 822,975
+texte « 한 마디 앞 또는 뒤로 » @ 378,975
+bouton « 이전 마디 » [désactivé] @ 750,1053
+bouton « 다음 마디 » @ 822,1053
+texte « 곡의 1마디부터 시작 » @ 378,1059
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton «  곡 자르기 » @ 450,1128
+bouton « 가이드  · 비트 넣기 14 % » [état « 접힘 »] @ 450,1215
+bouton « 실행 취소 » @ 125,1290
+bouton « 다시 실행 » [désactivé] @ 286,1290
+bouton « 재생 » @ 444,1290
+bouton « 120 템포 » (nom « 템포: 120 BPM ») @ 608,1290
+bouton « 공유 » (nom « 내 곡 공유 ») @ 775,1290
+onglet « 구성 » @ 85,1389
+onglet « 사운드 » [sélectionné] @ 268,1389
+onglet « 믹스 » @ 451,1389
+onglet « Live » @ 633,1389
+onglet « 더보기 » @ 815,1389
+touchable « ●  REC » (nom « 소리와 함께 화면 녹화 ») @ 672,1479
+touchable « ✎  메모 » (nom « 메모 쓰기 ») @ 768,1479
+touchable « ⋯ » (nom « 피드백 모드 ») @ 852,1479
+texte « 피드백 모드 » @ 318,1479

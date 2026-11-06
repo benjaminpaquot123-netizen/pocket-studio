@@ -1,0 +1,44 @@
+Écran 146 (588x1278)
+touchable « Techno Sauvegardé » (nom « Mes projets ») @ 134,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 311,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Jouer » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « 132  Tempo » (nom « Tempo : 132 battements par minute ») @ 83,114
+bouton « Intro 2 mesure 1/176 » @ 262,114
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,114
+bouton « MES PISTES » [état « Déplié »] @ 128,204
+texte « Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule. » @ 294,261
+bouton « Batterie Changer le son » @ 156,342
+bouton « Écouter seule » (nom « Écouter « Batterie » seul, en boucle ») @ 360,342
+bouton « Réglages de Batterie : volume, couper » @ 510,342
+bouton « Basse Changer le son » @ 156,452
+bouton « Écouter seule » (nom « Écouter « Basse » seul, en boucle ») @ 360,452
+bouton « Réglages de Basse : volume, couper, supprimer » @ 510,452
+bouton « Accords courts Changer le son » @ 156,562
+bouton « Écouter seule » (nom « Écouter « Accords courts » seul, en boucle ») @ 360,562
+bouton « Réglages de Accords courts : volume, couper, supprimer » @ 510,562
+bouton « Mélodie Changer le son » @ 156,672
+bouton « Écouter seule » (nom « Écouter « Mélodie » seul, en boucle ») @ 360,672
+bouton « Réglages de Mélodie : volume, couper, supprimer » @ 510,672
+bouton « Souffle montant Changer le son » @ 156,783
+bouton « Écouter seule » (nom « Écouter « Souffle montant » seul, en boucle ») @ 360,784
+bouton « Réglages de Souffle montant : volume, couper, supprimer » @ 510,784
+bouton « Chute grave Changer le son » @ 156,895
+bouton « Écouter seule » (nom « Écouter « Chute grave » seul, en boucle ») @ 360,895
+bouton « Réglages de Chute grave : volume, couper, supprimer » @ 510,895
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Guide » [état « replié »] @ 294,984
+bouton « Annuler » (nom « Annuler la dernière action ») [désactivé] @ 95,1059
+bouton « Jouer » @ 223,1059
+bouton « 132 Tempo » (nom « Tempo : 132 battements par minute ») @ 356,1059
+bouton « Plus » (nom « Plus de choix ») @ 493,1059
+onglet « Mon morceau » [sélectionné] @ 54,1158
+onglet « Rythme » @ 174,1158
+onglet « Clavier » @ 294,1158
+onglet « Mix » @ 414,1158
+onglet « Envoyer » @ 534,1158
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

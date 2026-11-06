@@ -1,0 +1,3 @@
+Écran 34 (616x1371)
+texte « “Ma chanson préférée” estaba silenciado en Mezcla: vuelve a sonar. » @ 308,631
+bouton « Entendido » @ 509,733

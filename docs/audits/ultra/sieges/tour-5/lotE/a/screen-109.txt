@@ -1,0 +1,17 @@
+Écran 109 (588x1278)
+bouton « Retour » @ 54,54
+texte « Mes projets » @ 330,54
+bouton «   Nouveau morceau guidé » @ 294,147
+bouton «   Nouveau projet : style, démo ou vide » @ 294,243
+bouton « Importer un projet (.zip) » @ 294,333
+touchable « Techno à l'instant · 132 BPM · 176 mes. · 5:20 · 34 parties » @ 294,435
+bouton « Options de Techno » @ 534,435
+touchable « Mon projet 1 OUVERT il y a 2 min · 120 BPM · Boucle de 4 mes. » @ 294,580
+bouton « Options de Mon projet 1 » @ 534,581
+bouton « Partager mon morceau » @ 196,612
+bouton « ▾ Corbeille (1) gardés 30 jours » @ 166,715
+bouton « Vider la corbeille » @ 442,716
+texte « Live » @ 63,797
+bouton « Restaurer » @ 430,810
+bouton « Supprimer définitivement » @ 534,810
+texte « supprimé il y a 3 min » @ 135,828

@@ -1,0 +1,4 @@
+Écran 48 (588x1278)
+texte « Klocki i pola » @ 141,528
+texte « Każdy wiersz to klocek (A, B, C…), każda kolumna to ścieżka. Dotknij pola, by je odpalić, litery, by odpalić cały wiersz, ■, by zatrzymać. » @ 294,621
+bouton « Jasne » @ 502,738

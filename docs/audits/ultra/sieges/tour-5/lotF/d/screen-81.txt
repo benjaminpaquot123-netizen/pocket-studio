@@ -1,0 +1,4 @@
+Écran 81 (616x1371)
+texte « Dans quel projet ? » @ 190,552
+touchable « Live projet ouvert · 120 BPM · a déjà une chanson : elle sera remplacée » @ 308,667
+bouton «  Retour » @ 511,807

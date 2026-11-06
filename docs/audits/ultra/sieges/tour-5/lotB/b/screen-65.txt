@@ -1,0 +1,9 @@
+Écran 65 (588x1278)
+bouton « Wstecz » @ 54,54
+texte « Moje projekty » @ 330,54
+bouton «   Nowy utwór z przewodnikiem » @ 294,147
+bouton «   Nowy projekt: styl, demo albo pusty » @ 294,243
+bouton « Importuj projekt (.zip) » @ 294,333
+touchable « Acid techno OTWARTE przed chwilą · 138 BPM · 572 takty · 16:35 · 33 części » @ 294,480
+bouton « Opcje: Acid techno » @ 534,480
+bouton « Udostępnij mój utwór » @ 190,525

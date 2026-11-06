@@ -1,0 +1,40 @@
+Écran 38 (588x1278)
+texte « Poignée : glisse vers le bas pour fermer » @ 294,36
+texte « Synthé » @ 248,108
+bouton « Fermer » @ 509,108
+case « Muet » @ 74,195
+case « Solo » @ 185,195
+texte « Volume » @ 253,264
+texte « +0,0 dB » @ 523,264
+curseur « Volume » [état « +0,0 dB », à 80 %] @ 294,333
+texte « Place » @ 55,406
+bouton « ? » (nom « Qu'est-ce que « Place (pan) » ? ») @ 107,405
+texte « Centre » @ 530,405
+curseur « Place » [état « Centre », à 50 %] @ 294,478
+bouton «  Ce qui joue » @ 156,565
+bouton «  Courbes » @ 432,565
+texte « Effets » @ 53,631
+texte « Effets en place : 0 sur 8 » @ 144,676
+texte « Aucun pour l'instant : ajoute un effet, ou touche une ambiance toute prête. » @ 294,724
+bouton «   Ajouter un effet » @ 294,793
+bouton « ? » (nom « Qu'est-ce que « Ambiance d'effets » ? ») @ 301,865
+texte « Ambiances toutes prêtes » @ 152,866
+case « Pour : Lead » [sélectionné] @ 106,935
+case « Favoris » @ 272,935
+case « Ambiance » @ 431,935
+case « Couleur » @ 540,935
+  → la suite sur le côté (glisse pour la voir)
+texte « Style : » @ 53,1019
+case « Acide » @ 145,1019
+case « Techno » @ 271,1019
+case « DnB » @ 389,1019
+case « Dubstep » @ 504,1019
+  → la suite sur le côté (glisse pour la voir)
+case « Lead qui crie » @ 114,1103
+case « Large et vivant » @ 313,1103
+case « Dub profond » @ 112,1175
+case « Rêve » @ 259,1175
+case « Distorsion » @ 396,1175
+case « Lointain » @ 90,1247
+case « Sans effet » [sélectionné] @ 242,1247
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

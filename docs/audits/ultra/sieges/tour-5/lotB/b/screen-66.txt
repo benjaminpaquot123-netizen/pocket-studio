@@ -1,0 +1,45 @@
+Écran 66 (588x1278)
+touchable « Acid techno Zapisano » (nom « Moje projekty ») @ 135,42
+bouton « Prosty » (nom « Tryb Prosty. Dotknij, aby zmienić tryb. ») @ 312,42
+bouton « Nagraj: mikrofon, klawiatura lub pady » @ 399,42
+bouton « Stop » @ 471,42
+bouton « Więcej opcji » @ 543,42
+bouton « 138  Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 83,114
+bouton « Groove takt 1/4 » (nom « w pętli ») @ 241,114
+interrupteur « Pętla » (nom « Zapętl część zamiast grać utwór ») [coché, état « wł. »] @ 439,114
+interrupteur « ? » (nom « Podpisz ekran ») [non coché] @ 543,114
+bouton « MOJE ŚCIEŻKI » [état « Rozwinięte »] @ 139,204
+texte « Dotknij nazwy ścieżki, aby zmienić jej brzmienie; ▶, aby posłuchać jej osobno. » @ 294,261
+bouton « Perkusja Zmień dźwięk » @ 165,342
+bouton « Słuchaj solo » (nom « Słuchaj „Perkusja” osobno, w pętli ») @ 369,342
+bouton « Ustawienia: Perkusja – głośność, wycisz » @ 510,342
+bouton « Acid 303 Zmień dźwięk » @ 165,452
+bouton « Słuchaj solo » (nom « Słuchaj „Acid 303” osobno, w pętli ») @ 369,452
+bouton « Ustawienia: Acid 303 – głośność, wycisz, usuń » @ 510,452
+bouton « Riser Zmień dźwięk » @ 165,562
+bouton « Słuchaj solo » (nom « Słuchaj „Riser” osobno, w pętli ») @ 369,562
+bouton « Ustawienia: Riser – głośność, wycisz, usuń » @ 510,562
+bouton « Moja melodia Zmień dźwięk » @ 165,672
+bouton « Słuchaj solo » (nom « Słuchaj „Moja melodia” osobno, w pętli ») @ 369,672
+bouton « Ustawienia: Moja melodia – głośność, wycisz, usuń » @ 510,672
+bouton « UTWÓR » [état « Rozwinięte »] @ 125,801
+bouton « ? » (nom « Co to jest „Utwór”? ») @ 187,801
+texte « Dotknij części, żeby posłuchać utworu od niej. » @ 253,848
+texte « 572 takty · 16:35 » @ 294,886
+bouton « Akordy utworu E · Intro 2 Am  Am  Am  Am A · Intro Am  Am  Am  Am F · Groove 2 Am  Am  Am  Am B · Groove Am  Am  Am  Am G · Build-up Am  C  C  C H · Build-up 2 Am  Am  Am  Am … i jeszcze 5 części Dotknij, żeby zmienić akordy całego utworu. » @ 294,946
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+bouton « Przewodnik  · Kick (to „bum”) 27 % » [état « zwinięte »] @ 294,984
+bouton « Cofnij » @ 73,1059
+bouton « Ponów » @ 182,1059
+bouton « Stop » @ 288,1059
+bouton « 138 Tempo » (nom « Tempo: 138 uderzeń na minutę ») @ 400,1059
+bouton « Więcej » (nom « Więcej opcji ») @ 515,1059
+onglet « Mój utwór » [sélectionné] @ 54,1158
+onglet « Rytm » @ 174,1158
+onglet « Klawiatura » @ 294,1158
+onglet « Miks » @ 414,1158
+onglet « Wyślij » @ 534,1158
+touchable « ●  REC » (nom « Nagraj ekran z dźwiękiem ») @ 360,1248
+touchable « ✎  Zanotuj » (nom « Napisz notatkę ») @ 456,1248
+touchable « ⋯ » (nom « Tryb uwag ») @ 540,1248
+texte « Tryb uwag » @ 162,1248

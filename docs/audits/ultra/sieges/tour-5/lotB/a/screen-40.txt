@@ -1,0 +1,48 @@
+Écran 40 (588x1278)
+touchable « Mon projet 1 Sauvegardé » (nom « Mes projets ») @ 97,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 238,42
+bouton « Annuler la dernière action » @ 327,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Jouer » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « 132  Tempo » (nom « Tempo : 132 battements par minute ») @ 136,144
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,144
+bouton « Partie : A » @ 121,240
+touchable « 1 » (nom « Pas 1 ») [état « vide »] @ 70,319
+touchable « Pas 2 » [état « vide »] @ 133,319
+touchable « Pas 3 » [état « coup, force 100 % »] @ 197,320
+touchable « Pas 4 » [état « vide »] @ 261,320
+touchable « 2 » (nom « Pas 5 ») [état « vide »] @ 325,320
+touchable « Pas 6 » [état « vide »] @ 389,320
+touchable « Pas 7 » [état « coup, force 100 % »] @ 453,320
+touchable « Pas 8 » [état « vide »] @ 517,320
+touchable « 3 » (nom « Pas 9 ») [état « vide »] @ 70,398
+touchable « Pas 10 » [état « vide »] @ 133,398
+touchable « Pas 11 » [état « vide, en pointillé : à toucher »] @ 197,399
+touchable « Pas 12 » [état « vide »] @ 261,399
+touchable « 4 » (nom « Pas 13 ») [état « vide »] @ 325,399
+touchable « Pas 14 » [état « vide »] @ 389,399
+touchable « Pas 15 » [état « vide, en pointillé : à toucher »] @ 453,399
+touchable « Pas 16 » [état « vide »] @ 517,399
+texte « Remplir » @ 110,484
+bouton « tout » @ 232,484
+bouton « 1/2 » @ 326,484
+bouton « 1/4 » @ 411,484
+bouton « ◀ » @ 492,484
+bouton « ▶ » @ 78,556
+bouton « Effacer » @ 198,556
+texte « Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8). » @ 294,671
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « Les charleys Chapitre 4/15 · Étape 1/3 · Facile » @ 244,831
+bouton « Chapitres » @ 459,831
+bouton « Déplier » @ 531,831
+touchable « À toi : sur le pad « Charley ouvert » (un « tsss » plus long), touche les cases en pointillé : juste entre les kicks, sur les contretemps. Lire » @ 294,1000
+onglet « Mon morceau » @ 54,1146
+onglet « Rythme » [sélectionné] @ 174,1146
+onglet « Clavier » @ 294,1146
+onglet « Mix » @ 414,1146
+onglet « Envoyer » @ 534,1146
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 314,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 437,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 135,1248

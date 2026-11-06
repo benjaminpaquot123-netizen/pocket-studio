@@ -1,0 +1,9 @@
+Écran 2 (1035x1243)
+bouton « Indietro » @ 54,54
+texte « I miei progetti » @ 553,54
+bouton «   Nuovo brano guidato » @ 517,147
+bouton «   Nuovo progetto: stile, demo o vuoto » @ 517,243
+bouton « Importa un progetto (.zip) » @ 517,333
+touchable « Il mio primo ritmo APERTO proprio ora · 120 BPM · Loop di 1 batt. » @ 517,466
+bouton « Opzioni di Il mio primo ritmo » @ 981,467
+bouton « Condividi il mio brano » @ 192,498

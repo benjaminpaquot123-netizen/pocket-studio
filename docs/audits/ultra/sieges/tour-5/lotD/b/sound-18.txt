@@ -1,0 +1,2 @@
+Son : rien ne joue.
+Rien ne s'écrit : aucun champ n'attend le texte (touche d'abord le champ).

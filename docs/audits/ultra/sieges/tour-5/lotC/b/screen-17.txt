@@ -1,0 +1,6 @@
+Écran 17 (616x1371)
+texte « ¿Qué hacer con “Ma chanson préférée”? » @ 308,412
+touchable « Hacer un tema a partir de esta canción Un proyecto nuevo a su tempo y en su tonalidad (120 BPM, La menor), con sus pistas listas. » @ 308,551
+touchable « En un proyecto nuevo Un proyecto vacío; la canción te espera en el Remix para que tomes trozos. » @ 308,698
+touchable « En un proyecto existente Elige cuál: la canción llega a su Remix. » @ 308,838
+bouton « Cancelar » @ 515,970

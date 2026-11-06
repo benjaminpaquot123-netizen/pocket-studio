@@ -1,0 +1,4 @@
+Écran 74 (588x1278)
+texte « WAV, FLAC, M4A » @ 185,513
+texte « WAV: studio quality, plays everywhere, but heavy. FLAC: exactly the same quality, much lighter (often half the size). M4A: about ten times lighter, for sharing. » @ 294,621
+bouton « Got it » @ 506,753

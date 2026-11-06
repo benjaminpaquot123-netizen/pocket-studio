@@ -1,0 +1,67 @@
+Écran 46 (588x1278)
+bouton « Retour » @ 51,45
+bouton « Jouer » @ 231,45
+bouton « Moins vite » @ 312,45
+bouton « 124 Tempo » @ 378,45
+bouton « Plus vite » @ 444,45
+touchable « REC » (nom « Enregistrer la performance ») @ 528,45
+texte « Pad Live » @ 139,45
+onglet « A » (nom « Page A · vide ») [sélectionné] @ 51,135
+onglet « B » (nom « Page B · vide ») @ 108,135
+onglet « C » (nom « Page C · vide ») @ 165,135
+onglet « D » (nom « Page D · vide ») @ 222,135
+bouton « Pack… » [désactivé] @ 346,135
+bouton « Défi : refais ce rythme » @ 534,135
+bouton « ? » (nom « Qu'est-ce que « Pages et packs » ? ») @ 464,135
+texte « Préparation des pads prêts à jouer… » @ 198,204
+bouton « vide, pad A1 » @ 77,301
+texte « + » @ 77,301
+bouton « vide, pad A2 » @ 205,301
+texte « + » @ 205,301
+bouton « vide, pad A3 » @ 333,301
+texte « + » @ 333,301
+bouton « vide, pad A4 » @ 461,301
+texte « + » @ 461,301
+bouton « vide, pad A5 » @ 77,447
+texte « + » @ 77,447
+bouton « vide, pad A6 » @ 205,447
+texte « + » @ 205,447
+bouton « vide, pad A7 » @ 333,447
+texte « + » @ 333,447
+bouton « vide, pad A8 » @ 461,447
+texte « + » @ 461,447
+bouton « vide, pad A9 » @ 77,593
+texte « + » @ 77,593
+bouton « vide, pad A10 » @ 205,593
+texte « + » @ 205,593
+bouton « vide, pad A11 » @ 333,593
+texte « + » @ 333,593
+bouton « vide, pad A12 » @ 461,593
+texte « + » @ 461,593
+bouton « vide, pad A13 » @ 77,739
+texte « + » @ 77,739
+bouton « vide, pad A14 » @ 205,739
+texte « + » @ 205,739
+bouton « vide, pad A15 » @ 333,739
+texte « + » @ 333,739
+bouton « vide, pad A16 » @ 461,739
+texte « + » @ 461,739
+bouton « ? » (nom « Qu'est-ce que « Effets de scène » ? ») @ 216,989
+texte « EFFETS DE SCÈNE » @ 106,989
+texte « Appuie et maintiens » @ 474,989
+bouton « Filtre · grave ↔ aigu » @ 106,1068
+texte « Filtre » @ 106,1056
+texte « grave ↔ aigu » @ 106,1083
+bouton « Écho · en sortie » @ 294,1068
+texte « Écho » @ 294,1056
+texte « en sortie » @ 294,1083
+bouton « Roulement · 1/16 » @ 482,1068
+texte « Roulement » @ 482,1056
+texte « 1/16 » @ 482,1083
+bouton « Enregistrer ce que je joue » @ 188,1167
+bouton « Plus » @ 497,1167
+bouton « ? » (nom « Qu'est-ce que « Enregistrer ce que je joue » ? ») @ 391,1167
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 360,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 456,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 162,1248

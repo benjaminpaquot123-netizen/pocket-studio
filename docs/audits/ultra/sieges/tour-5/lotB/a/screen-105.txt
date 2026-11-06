@@ -1,0 +1,35 @@
+Écran 105 (588x1278)
+touchable « Mon projet 1 Sauvegardé » (nom « Mes projets ») @ 97,42
+bouton « Simple » (nom « Mode Simple. Toucher pour changer de mode. ») @ 238,42
+bouton « Annuler la dernière action » @ 327,42
+bouton « Enregistrer : micro, clavier ou pads » @ 399,42
+bouton « Arrêter » @ 471,42
+bouton « Plus de choix » @ 543,42
+bouton « A mesure 1/8 » (nom « en boucle ») [désactivé] @ 385,144
+bouton « 132  Tempo » (nom « Tempo : 132 battements par minute ») @ 136,144
+interrupteur « ? » (nom « Étiqueter l'écran ») [non coché] @ 543,144
+bouton « Partie : A » @ 121,240
+touchable « Cymbale D 40 » @ 84,301
+touchable « Maracas G 50 » @ 224,301
+touchable « Conga » @ 364,301
+touchable « Laser » @ 504,301
+texte « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » @ 442,410
+bouton « Kit : Studio » @ 160,410
+bouton « PAS : BORD DE CAISSE » [état « Déplié »] @ 139,584
+bouton « ? » (nom « Qu'est-ce que « Pas » ? ») @ 214,584
+case « Tous les pads » @ 391,584
+texte « Bord de caisse » @ 193,692
+  ↓ la suite plus bas (glisse vers le haut pour la voir)
+touchable « Le stab Chapitre 6/15 · Étape 1/1 · Facile » @ 244,831
+bouton « Chapitres » @ 459,831
+bouton « Déplier » @ 531,831
+touchable « Bravo, chapitre fini ! » (nom « Déplier ») @ 294,1000
+onglet « Mon morceau » @ 54,1146
+onglet « Rythme » [sélectionné] @ 174,1146
+onglet « Clavier » @ 294,1146
+onglet « Mix » @ 414,1146
+onglet « Envoyer » @ 534,1146
+touchable « ●  REC » (nom « Filmer l'écran avec le son ») @ 314,1248
+touchable « ✎  Noter » (nom « Écrire une note ») @ 437,1248
+touchable « ⋯ » (nom « Mode retours ») @ 540,1248
+texte « Mode retours » @ 135,1248

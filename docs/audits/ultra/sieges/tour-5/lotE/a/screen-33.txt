@@ -1,0 +1,7 @@
+Écran 33 (588x1278)
+texte « Que veux-tu enregistrer ? » @ 255,399
+bouton «   Une mélodie au clavier » @ 294,486
+bouton «   Le micro : ta voix, une guitare, un instrument » @ 294,579
+bouton «   Les pads (la batterie) » @ 294,672
+bouton «   Décompte : 1 mesure » (nom « Décompte : 1 mesure ») @ 179,759
+bouton « Annuler » @ 493,867

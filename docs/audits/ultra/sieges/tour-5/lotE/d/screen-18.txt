@@ -1,0 +1,17 @@
+Écran 18 (1200x540)
+texte « Poignée : glisse vers le bas pour fermer » @ 600,36
+texte « Pad A6 : Laser » @ 258,93
+texte « Quand je touche le pad » @ 262,154
+bouton « ? » (nom « Qu'est-ce que « Coup, boucle, tenir » ? ») @ 401,153
+case « Coup : il joue une fois » [sélectionné] @ 279,229
+case « Boucle : un toucher lance, un autre arrête » @ 662,229
+case « Tenir : il joue tant que j'appuie » @ 323,313
+texte « Un seul à la fois » @ 225,389
+bouton « ? » (nom « Qu'est-ce que « Un seul à la fois » ? ») @ 328,388
+texte « Les pads d'un même groupe se coupent entre eux (charley ouvert et fermé). » @ 521,443
+case « Aucun » [sélectionné] @ 202,512
+case « Groupe 1 » @ 341,512
+case « Groupe 2 » @ 494,512
+case « Groupe 3 » @ 649,512
+case « Groupe 4 » @ 805,512
+  ↓ la suite plus bas (glisse vers le haut pour la voir)

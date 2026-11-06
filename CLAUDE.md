@@ -57,6 +57,7 @@ Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vér
 - `./scripts/live-bench.sh` : « écoute en direct », les morceaux joués comme sur le téléphone (moteur temps réel, mêmes commandes que l'appli), niveau seconde par seconde, alerte fondu / silence / saut. Benjamin (2026-10-24) : chaque audit et chaque écoute de vérification passent aussi par ce chemin, jamais seulement par l'export.
 - APK : Benjamin (2026-10-24) : n'en construire et n'en envoyer que sur sa demande explicite. Déjà demandée : l'APK d'audit (étape G de `docs/PLAN-REPRISE.md`, consigne du 2026-10-31) et les versions release de l'Audit.
 - CI rouge : lire les journaux, corriger, relancer. N'en parler que si réglé ou vraiment bloqué.
+- Audits (leçon des tours 0 à 5, 2026-11-06) : **l'outil de mesure se vérifie avant de mesurer**. Aucun lot de testeurs sans `scripts/bench/selftest.sh` vert et sans dérogation ; une réparation du banc se prouve par un test rouge avant, vert après ; un verdict « c'est le banc » se prouve par un test sans banc, jamais par une impression. Plan : `docs/audits/ultra/PLAN-BANC-FIABLE.md`.
 
 ## Revue de fin de phase (obligatoire)
 À la fin de chaque phase, AVANT de demander le feu vert : faire relire par un sous-agent neuf qui n'a pas écrit le code.

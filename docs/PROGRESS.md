@@ -7,6 +7,8 @@
 
 ## Prochaine étape exacte
 
+**Prochaine étape, sur le message « fais le banc » de Benjamin : le chantier « banc fiable », `docs/audits/ultra/PLAN-BANC-FIABLE.md`, 3 séances (portail et rejeux ; mémoire et tableau de bord ; tri des « banc? », préalables P3/P1, tour de fumée, relecture, fusion). Aucune correction de l'appli pendant ce chantier. Journal d'avancement à tenir dans `docs/audits/ultra/banc-fiable-journal.md` ; « continue » = première étape non cochée.**
+
 **Méta-audit 2 fait (2026-11-06, Fable 5.1, allégé : 7 agents, 62 affirmations vérifiées) : `docs/audits/ultra/META-AUDIT-2.md`, 5 changements pour le tour 6. Gestes et écrans des 24 sièges du tour 5 sauvés dans le dépôt (rejeux possibles). Prochaine étape, sur feu vert de Benjamin : les 5 changements dans l'ordre (portail d'auto-tests réparé, rejeu depuis journal.txt, base.tsv remplie des tours 1-5, tableau de bord G/H/I calculés, tri des 23 « banc? » dans verdicts.tsv), PUIS corrections des 3 bloquants et des graves du tour 5 avec l'organisation v2.**
 
 **Tour 5 de l'audit ultra fait avec la méthode v2 (2026-11-06) : 24 testeurs, 0 gel, 20 missions sur 24 réussies ; rapport : docs/audits/ultra/tour-5-synthese.md (défauts par zone, contre-vérifiés) et tour-5-plus-value-fable.md (apport du méta-audit). ARRÊT demandé par Benjamin avant toute correction : attendre son feu vert. Prochaine étape quand il le donne : trier les fiches « banc? », remplir base.tsv (tours 1-4), relier les promesses aux 120 ids, raccourcis privés par siège, test Tour3RenameIdleTest à réparer, puis corrections des 3 bloquants et des graves (équipes v2, une branche chacune).**

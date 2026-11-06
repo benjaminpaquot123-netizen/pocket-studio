@@ -4,6 +4,6 @@
 # telephone = ligne de app/src/main/assets/recette.json (obligatoire si le symptôme touche le temps, le son, le repos de Compose ou une permission) ; « - » = absent.
 tour	item	cle	gravite	verdict	etat	preuve_appli	garde_banc	telephone	commit	note
 tour-4	T4-26	tab_simple_Clavier|record_start|rien	grave	appli	ouvert	JourneyTest.aFirstSongInTheModeSimple (émulateur, CI 243)	-	-	-	prise rangée dans la partie jouée, pas la partie affichée ; rejeu docs/audits/ultra/rejeux/t4-26-prise-clavier ; vu ×6 au tour 4
-tour-4	T4-19	dialogue:project_name_field|name_clear|rien	grave	non-tranché	ouvert	-	-	renommer un projet avec ✕ Effacer	-	4 verdicts contradictoires au tour 3 ; gel ×2 au tour 4 (C a #63, E a #7) ; à essayer sur le téléphone de Benjamin
+tour-4	T4-19	dialogue:project_name_field|name_clear|rien	grave	banc	corrigé	BenchTour4Test#renameAfterTheClearButton (11 s)	BenchTour4Test#renameAfterTheClearButton (240 s avant d3eccff)	OK sur le téléphone de Benjamin, APK 339, vidéo du 2026-11-06 20:35 (renommé « Jump up DnB » → « Ezdrt » sans gel)	d3eccff	4 verdicts contradictoires au tour 3 ; gel ×2 au tour 4 (C a #63, E a #7) ; à essayer sur le téléphone de Benjamin
 tour-4	T4-16	tab_simple_Pistes|thumb_play|rien	grave	non-tranché	ouvert	-	-	-	-	« Jouer » ne joue qu'une boucle ; verdict « banc » du tour 3 étendu sans preuve ; banc v2 (moteur toujours là) à rejouer
 tour-4	T4-01	live_grid/tab_Live|live_stop_all|rien	grave	non-tranché	ouvert	-	-	-	-	■ Tout de la vue Live ; verdict « banc » du tour 3 prouvé pour Pad Live seulement

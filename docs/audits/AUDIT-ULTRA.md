@@ -267,3 +267,10 @@ Rapport : `docs/audits/GABARIT-RAPPORT-TESTEUR.md` (v2 : `geste:` = n° du geste
 
 Coupe-circuit : si A = 0 mais F > 5, pas de tour complet de 24 : 8 sièges ciblés sur les zones de F, plus des sièges « chasseurs de promesses ». Point avec Benjamin tous les 2 tours, le tableau en une page.
 
+### 12.11 Tout analysé : la passe « œil neuf » à chaque tour (Benjamin, 2026-11-06)
+Leçon : les icônes dépareillées de l'accueil (rondes et carrées, Défis plus grosse, titre décalé) ont traversé cinq tours : les testeurs cherchent leur mission, les programmes cherchent les chevauchements, personne ne regardait l'écran **entier**. Désormais, à chaque tour :
+- **Chaque écran de `docs/CARTE-CODE.md`** (et chacune de ses fenêtres) est capturé en entier, sur petit téléphone, grand téléphone et tablette, police 100 % et 130 %, avec des données « pire cas » (noms longs, projet vide, projet plein).
+- Un agent neuf, qui n'a écrit aucun code du tour, analyse **chaque capture** avec la grille : formes et tailles des icônes entre voisins (DESIGN.md, principe 11), alignements des titres et des flèches, marges et coins, couleurs (vert réservé à « ça joue »), textes coupés ou débordants, indice de défilement quand la page continue sous l'écran, boutons trop proches, cohérence entre écrans semblables (mêmes cartes, mêmes mots, même ordre), ordre logique des éléments.
+- Chaque écart est une fiche du rapport (symptôme `finition` ou plus si on ne trouve plus le bouton), avec la capture et l'élément voisin qui sert de modèle.
+- Couverture : la liste des écrans analysés est jointe au tour ; un écran non analysé = condition I non remplie (`tableau-de-bord.py` doit compter ces écrans : à ajouter avec le chantier « banc fiable »).
+

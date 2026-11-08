@@ -200,6 +200,7 @@ def main():
         fusion_v2(d)
     with tempfile.TemporaryDirectory() as d:
         bench_guards(d)
+        chantier(d)
     with tempfile.TemporaryDirectory() as d:
         seats_from_ids(d)
     with tempfile.TemporaryDirectory() as d:
@@ -400,6 +401,39 @@ def fusion_v2(d):
     board = run(os.path.join(HERE, "tableau-de-bord.py"), d, "--base", base, "--verdicts", verdicts)
     check("| A | Items ≥ grave côté appli, non tranchés ou non faits | 2 | 0 | non |" in board, "the judged « banc? » counts in A:\n" + board)
     check("; 0 | ≤ 2, prouvés ; 0 |" in board, "and no longer waits for a verdict in B:\n" + board)
+
+
+def chantier(d):
+    """verifie-chantier.py (PLAN-RESTE 4.0): a « banc » line without a Bench* guard, a Bench* test given as
+    the app's proof, a missing method, a @KnownDefect nobody cites and a checklist item nobody cites are gaps."""
+    root = os.path.join(d, "chantier")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    write(os.path.join(tests, "BenchFooTest.kt"), "class BenchFooTest {\n  fun guardsIt() {}\n}\n")
+    write(os.path.join(tests, "AppProofTest.kt"),
+          'class AppProofTest {\n  @KnownDefect("K1", "m")\n  @Test\n  fun provesIt() {}\n}\nclass Other {\n  fun elsewhere() {}\n}\n')
+    write(os.path.join(root, "app", "src", "main", "assets", "recette.json"),
+          json.dumps({"id": "r", "milestone": "m", "items": [{"id": "tel-01", "title": "t"}, {"id": "tel-02", "title": "t"}]}))
+    ultra = os.path.join(root, "docs", "audits", "ultra")
+    write(os.path.join(ultra, "base.tsv"), "cle\tetat\tvu\tnote\tcorrige_au\n")
+    head = "tour\titem\tcle\tgravite\tverdict\tetat\tpreuve_appli\tgarde_banc\ttelephone\tcommit\tnote\n"
+    good = (head + "t\tA\tk1\tm\tappli\touvert\tAppProofTest#provesIt\t-\trecette tel-01\t-\tn\n"
+            "t\tB\tk2\tm\tbanc\touvert\t-\tBenchFooTest#guardsIt\trecette tel-02\t-\tn\n")
+    write(os.path.join(ultra, "verdicts.tsv"), good)
+    script = os.path.join(HERE, "verifie-chantier.py")
+    out = run(script, "--root", root)
+    check("chantier : 0 écarts" in out, "a clean work: 0 gap\n" + out)
+    bad = (head + "t\tA\tk1\tm\tappli\touvert\tBenchFooTest#guardsIt\t-\trecette tel-01\t-\tn\n"
+           "t\tB\tk2\tm\tbanc\touvert\t-\t-\t-\t-\tn\n"
+           "t\tC\tk3\tm\tappli\touvert\tOther#provesIt\t-\t-\t-\tn\n")
+    write(os.path.join(ultra, "verdicts.tsv"), bad)
+    r = subprocess.run([sys.executable, "-I", script, "--root", root], capture_output=True, text=True)
+    out = r.stdout
+    check(r.returncode == 1, "gaps fail the run")
+    check("A : preuve d'appli BenchFooTest#guardsIt est un test du banc" in out, out)
+    check("B : verdict « banc » sans garde Bench*" in out, out)
+    check("C : preuve d'appli Other#provesIt introuvable" in out, "a method of another class of the same file is not this class's\n" + out)
+    check("@KnownDefect K1 (AppProofTest#provesIt) sans ligne" in out, out)
+    check("tel-02 de recette.json cité par aucune ligne" in out, out)
 
 
 def missions_of_round_1(d):

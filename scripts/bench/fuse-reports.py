@@ -121,13 +121,24 @@ def route_of(journal, n):
     return line.split("|")[0].strip() if line else "?"
 
 
+# Banc fiable 2.1/2.4: a navigation tag says where the finger went, not what failed (round 5: 148 « wizard_next », 39
+# « guide_bar », every tab): never a key's target; the target the tester copied is kept instead.
+NAV_TAGS = re.compile(r"^(tab_|wizard_next$|wizard_back$|guide_bar$|rien$|vue$|bouton$|retour$)")
+
+
+# Buttons that do a different thing at each step (the tutorial's « Je le fais », the help labels, « Continuer »):
+# the same tag at two rounds says nothing about the same defect.
+GENERIC_BUTTONS = re.compile(r"^(tuto_(do|show|listen|need|next)|help_labels_button|launch_continue|remix_back|.*_back)$")
+
+
 def tag_of(journal, n):
-    """The tag the finger touched at gesture n (« #N DOIGT [désactivé] <tag> « label » »)."""
+    """The tag the finger touched at gesture n (« #N DOIGT [désactivé] <tag> « label » »), unless a navigation one."""
     line = journal_line(journal, n, "DOIGT")
     if not line or line == "rien":
         return None
     words = [w for w in line.split() if w != "désactivé"]
-    return words[0] if words and not words[0].startswith("«") else None
+    tag = words[0] if words and not words[0].startswith("«") else None
+    return None if tag is None or NAV_TAGS.match(tag) else tag
 
 
 def seat_of(report_path, round_dir, head):
@@ -174,8 +185,20 @@ def gravity_of(d):
     return g
 
 
-def fuse(round_dir, base_path, verdicts_path=None):
-    base = {r["cle"]: r.get("etat", "?") for r in load_tsv(base_path) if r.get("cle")}
+def fuse(round_dir, base_path, verdicts_path=None, tour=None):
+    rows = [r for r in load_tsv(base_path) if r.get("cle")]
+    base = {r["cle"]: r.get("etat", "?") for r in rows}
+    seen_in = {r["cle"]: [t for t in r.get("vu", "").split(",") if t.strip()] for r in rows}
+    # Banc fiable 2.4: the same real button reported at an earlier round under another route or symptom (round 5:
+    # « padlive_stop_all » rien in padlive at round 1, incompris in padlive_pads_side at round 5): a candidate, not fused.
+    button_seen = {}
+    for r in rows:
+        parts = r["cle"].split("|")
+        if len(parts) == 3 and re.fullmatch(r"[a-z][a-z0-9_]*_[a-z0-9_]+", parts[1]) and not NAV_TAGS.match(parts[1]) \
+                and not GENERIC_BUTTONS.match(parts[1]):
+            for t in seen_in.get(r["cle"], []):
+                button_seen.setdefault(parts[1], set()).add(t)
+    tour = tour or os.path.basename(os.path.normpath(round_dir))
     banc = {r["cle"] for r in load_tsv(verdicts_path or "") if r.get("cle") and r.get("verdict", "").startswith("banc")}
     clusters, rejected, seats, promises, incidents = {}, [], [], [], []
     for f in reports(round_dir):
@@ -202,13 +225,17 @@ def fuse(round_dir, base_path, verdicts_path=None):
                 symptom = d.get("symptome", "?").strip().lower()
                 symptom = FAMILY.get(symptom, symptom) if symptom in SYMPTOMS else "?" + symptom
                 gesture = re.sub(r"\D", "", d.get("geste", "")) if "ecran.vu" in d else ""
+                cited = gesture or screen  # what the tester cited (v2: the gesture; v1: the screen)
+                if not gesture and screen.isdigit() and int(screen) > 1:
+                    # Template v1 (rounds 1-4): the screen where the defect was seen came from gesture screen - 1.
+                    gesture = str(int(screen) - 1)
                 tag = tag_of(journal, gesture) if gesture else None
                 route = route_of(journal, gesture if gesture else screen)
                 key = f"{route}|{tag or norm(d.get('cible'))}|{symptom}"
                 c = clusters.setdefault(key, {"key": key, "seats": set(), "where": [], "gravities": [], "blocks": False,
                                               "said": [], "bench": [], "tag": tag})
                 c["seats"].add(seat)
-                c["where"].append(f"{seat}#{gesture or screen}")
+                c["where"].append(f"{seat}#{cited}")
                 c["gravities"].append(gravity_of(d))
                 c["blocks"] = c["blocks"] or d.get("bloque", "").strip().lower() == "oui"
                 c["bench"].append(d.get("banc?", "non").strip().lower() not in ("", "non"))
@@ -224,6 +251,11 @@ def fuse(round_dir, base_path, verdicts_path=None):
             state = "banc contredit"
         elif state == "corrigé":
             state = "revient"
+        elif state in ("nouveau", "confirmé") and [t for t in seen_in.get(c["key"], []) if t != tour]:
+            # Banc fiable 2.1: seen at an earlier round and never fixed: said so, not « nouveau » again.
+            state = f"déjà vu ({[t for t in seen_in[c['key']] if t != tour][0]})"
+        elif state == "nouveau" and c["tag"] and sorted(t for t in button_seen.get(c["tag"], ()) if t != tour):
+            state = f"même bouton ({sorted(t for t in button_seen[c['tag']] if t != tour)[0]})"
         c["state"] = state
         c["bench_doubt"] = all(c["bench"]) or bool(c["tag"] and BENCH_LIMIT_TAGS.match(c["tag"]))
     ordered = sorted(clusters.values(), key=lambda c: (c["bench_doubt"], c["gravity"], -len(c["seats"]), not c["new"], c["key"]))
@@ -243,10 +275,11 @@ def render(round_dir, clusters, rejected, seats, limit=MAX_LINES):
     new = sum(1 for c in clusters if c["new"])
     confirmed = sum(1 for c in clusters if len(c["seats"]) >= 2)
     back = sum(1 for c in clusters if c["state"] in ("revient", "banc contredit"))
+    again = sum(1 for c in clusters if c["state"].startswith(("déjà vu", "même bouton")))
     head = [
         f"# Grappes du tour « {os.path.basename(os.path.normpath(round_dir))} »",
         f"{len(seats)} siège(s), {len(clusters)} grappe(s), {new} nouvelle(s), {confirmed} vue(s) par ≥ 2 sièges (confirmées sans juge), "
-        f"{back} qui revien(nen)t." + (f" Écartés : {', '.join(rejected)}." if rejected else ""),
+        f"{back} qui revien(nen)t, {again} déjà vue(s) à un tour d'avant (même clé ou même bouton)." + (f" Écartés : {', '.join(rejected)}." if rejected else ""),
         "",
     ]
     if limit is None:
@@ -265,6 +298,30 @@ def write_tsv(path, head, rows):
             f.write("\t".join(str(x).replace("\t", " ") for x in r) + "\n")
 
 
+def update_base(base, clusters, tour):
+    """Banc fiable 2.1: new keys are added with the round; a known key gets the round added to its « vu » column
+    (it was ignored before: the base never learned that a defect came back unfixed). Comments and order are kept."""
+    lines = read(base).splitlines() if os.path.isfile(base) else ["cle\tetat\tvu\tnote"]
+    index = {}
+    for i, line in enumerate(lines):
+        parts = line.split("\t")
+        if parts and not line.startswith("#") and parts[0] not in ("cle", ""):
+            index[parts[0]] = i
+    for c in clusters:
+        i = index.get(c["key"])
+        if i is None:
+            lines.append(f"{c['key']}\tnouveau\t{tour}\t")
+            index[c["key"]] = len(lines) - 1
+            continue
+        parts = (lines[i].split("\t") + ["", "", "", ""])[:max(4, len(lines[i].split("\t")))]
+        seen = [t for t in parts[2].split(",") if t]
+        if tour not in seen:
+            parts[2] = ",".join(seen + [tour])
+            lines[i] = "\t".join(parts)
+    with open(base, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+
+
 def main(argv):
     if not argv or argv[0] in ("-h", "--help"):
         print(__doc__)
@@ -278,7 +335,7 @@ def main(argv):
     verdicts = opt("--verdicts", os.path.join(docs, "verdicts.tsv"))
     out = opt("--out", os.path.join(round_dir, "clusters.md"))
     tour = opt("--tour", os.path.basename(os.path.normpath(round_dir)))
-    clusters, rejected, seats, promises, incidents = fuse(round_dir, base, verdicts)
+    clusters, rejected, seats, promises, incidents = fuse(round_dir, base, verdicts, tour)
     text = render(round_dir, clusters, rejected, seats)
     with open(out, "w", encoding="utf-8") as f:
         f.write(text)
@@ -288,13 +345,7 @@ def main(argv):
     write_tsv(os.path.join(folder, "promesses.tsv"), ["siege", "id", "promesse", "ecran", "tenue", "pourquoi"], promises)
     write_tsv(os.path.join(folder, "incidents-banc.tsv"), ["siege", "geste", "attente", "vu"], incidents)
     if "--maj-base" in argv:
-        exists = os.path.isfile(base)
-        with open(base, "a", encoding="utf-8") as f:
-            if not exists:
-                f.write("cle\tetat\tvu\tnote\n")
-            for c in clusters:
-                if c["new"]:
-                    f.write(f"{c['key']}\tnouveau\t{tour}\t\n")
+        update_base(base, clusters, tour)
     print(text, end="")
     return 0
 

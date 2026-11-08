@@ -182,9 +182,17 @@ def main():
         text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base)
         check("0 nouvelle(s)" in text, "the keys are known now:\n" + text)
         with open(os.path.join(d, "b", "journal.txt"), "w", encoding="utf-8") as f:
-            f.write(JOURNAL_B.replace("#2 ROUTE tab_Sons", "#2 ROUTE padlive"))
+            f.write(JOURNAL_B.replace("#1 ROUTE tab_Sons", "#1 ROUTE padlive"))
         text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base)
         check("×2 (a#4, b#2) padlive · « klaxon » · rien" in text and "1 vue(s) par ≥ 2 sièges" in text, "the same key fused:\n" + text)
+        # Banc fiable 2.1: --maj-base adds the round to a known key; the next round sees it « déjà vu ».
+        run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--maj-base", "--tour", "tour-7")
+        with open(base, encoding="utf-8") as f:
+            text_base = f.read()
+        check("padlive|klaxon|rien\tnouveau\ttour-0," in text_base or "padlive|klaxon|rien\tnouveau\t" in text_base, "the key is in the base:\n" + text_base)
+        check("tour-7" in [l for l in text_base.splitlines() if l.startswith("padlive|klaxon|rien")][0], "its round added:\n" + text_base)
+        text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-8")
+        check("[déjà vu (" in text and "padlive · « klaxon »" in text, "seen at an earlier round, never fixed: « déjà vu »:\n" + text)
         missions_of_round_1(d)
     with tempfile.TemporaryDirectory() as d:
         fusion_v2(d)

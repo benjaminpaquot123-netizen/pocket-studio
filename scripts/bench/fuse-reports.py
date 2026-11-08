@@ -213,6 +213,11 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
                     head = p.get("texte", "")
                 promises.append([seat, p.get("id", ""), head, p.get("ecran", ""),
                                  p.get("tenue", "").split(" ")[0], p.get("pourquoi", "")])
+            # Banc fiable 2.3: a promise said kept (« oui ») while a defect of the same report cites it: contradicted.
+            cited = {d.get("promesse", "").strip() for d in b["defects"]} - {"", "-"}
+            for row in promises:
+                if row[0] == seat and len(row) == 6:
+                    row.append("contredite" if row[4] == "oui" and row[1] in cited else "")
             for i in b["incidents"]:
                 rest = [v for k, v in i.items() if k not in ("geste", "attente")]
                 incidents.append([seat, i.get("geste", ""), i.get("attente", ""), rest[0] if rest else ""])
@@ -245,7 +250,8 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
         g = sorted(c["gravities"])
         c["gravity"] = g[(len(g) - 1) // 2]
         c["worst"] = g[0]
-        c["new"] = c["key"] not in base
+        # New for THIS round: unknown, or known from this round only (the base may already hold it after --maj-base).
+        c["new"] = c["key"] not in base or (base[c["key"]] == "nouveau" and not [t for t in seen_in.get(c["key"], []) if t != tour])
         state = base.get(c["key"], "nouveau")
         if c["key"] in banc or state == "banc":
             state = "banc contredit"
@@ -342,7 +348,7 @@ def main(argv):
     folder = os.path.dirname(os.path.abspath(out))
     with open(os.path.join(folder, "clusters-complet.md"), "w", encoding="utf-8") as f:
         f.write(render(round_dir, clusters, rejected, seats, limit=None))
-    write_tsv(os.path.join(folder, "promesses.tsv"), ["siege", "id", "promesse", "ecran", "tenue", "pourquoi"], promises)
+    write_tsv(os.path.join(folder, "promesses.tsv"), ["siege", "id", "promesse", "ecran", "tenue", "pourquoi", "contredite"], promises)
     write_tsv(os.path.join(folder, "incidents-banc.tsv"), ["siege", "geste", "attente", "vu"], incidents)
     if "--maj-base" in argv:
         update_base(base, clusters, tour)

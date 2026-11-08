@@ -1,0 +1,122 @@
+# Catalogue des 120 promesses de l'appli (banc fiable 2.3), tiré de meta/lectures/lecture-promesses.md : id, partie (A-M), zone, texte à l'écran, fichier:ligne, déjà vue par un siège avant le tour 5.
+id	partie	zone	texte	fichier	avant_tour5
+P001	A	Z3	« Choisis un style, je t'aide pas à pas, du début à la fin du morceau. »	onboarding/Welcome.kt:185	vue
+P002	A	Z5	« Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie. »	Welcome.kt:190 (aussi LaunchChoice.kt:405, projects/NewProjectPage.kt:125, settings/SettingsScreen.kt:207, tuto/TutoPanel.kt:1044)	vue
+P003	A	Z3	« Écouter une démo : un morceau déjà prêt, pour découvrir ce qu'on peut faire. » puis « Ta démo est prête. Écoute-la en entier, puis va voir dans Mon morceau comment elle est construite : tu peux tout changer. »	Welcome.kt:195, :139-143	jamais
+P004	A	Z3	« Partir de zéro : aucune note : une batterie, une Acid 303 et un synthé attendent les tiennes. »	Welcome.kt:200, NewProjectPage.kt:129	vue
+P005	A	Z1	« Choisis une chanson du téléphone : l'appli sépare la voix, la batterie, la basse et le reste. » / « Remix : séparation des pistes : batterie, basse, voix et le reste. »	Welcome.kt:206, LaunchChoice.kt:531	vue
+P006	A	Z1	« Pad Live · NOUVEAU : des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite. »	LaunchChoice.kt:500	vue
+P007	A	Z4	« Enregistrer ma voix ou ma guitare : le micro enregistre par-dessus ta musique, pile en rythme. »	Welcome.kt:214, LaunchChoice.kt:399	vue
+P008	A	Z1	« Défis : écoute un rythme, refais-le sur les pads, gagne des étoiles. »	LaunchChoice.kt:419, :433	vue
+P009	A	Z3	« Nouveau morceau : un style en une touche, ou pas à pas avec l'assistant. »	LaunchChoice.kt:380	vue
+P010	A	Z3	« Mes projets : ouvrir un autre morceau, le copier ou le renommer. »	LaunchChoice.kt:384	vue
+P011	A	Z3	« Continuer » + « Sauvegardé il y a … »	LaunchChoice.kt:182, :351	vue
+P012	A	Z3	« Pad Live a son propre projet « Live » : « %s » t'attend dans Mes projets. » (toast)	ui/AppRoot.kt:1522	vue
+P013	A	Z3	« Le guide des premiers pas reste dans ⋮ › Aide et premiers pas. »	Welcome.kt:227, settings/GuideDialog.kt:113	vue
+P014	A	Z3	« Aucun projet pour l'instant : commence un nouveau morceau. »	LaunchChoice.kt:313	jamais
+P015	A	Z6	« Simple : pour débuter : 4 onglets, de gros boutons et des mots de tous les jours. »	ui/ModeChoice.kt:62	vue
+P016	A	Z3	« Ton morceau ne change pas : seuls les écrans et les mots changent. Ce projet garde le mode choisi. » / « Changer de façon de travailler ne change rien à tes morceaux. »	ModeChoice.kt:261, SettingsScreen.kt:67	vue
+P017	A	Z3	« Tu pourras changer de mode à tout moment avec la pastille en haut. »	ModeChoice.kt:87-88	jamais
+P018	A	Z3	« Plus tard : voir le rythme de départ » → « Un rythme et une ligne d'acide prêts à tourner. »	Welcome.kt:224, AppRoot.kt:286	jamais
+P019	B	Z3	« Tout est sauvegardé tout seul, à chaque geste. » / « Pas besoin de sauvegarder : tout est gardé tout seul. »	GuideDialog.kt:46, library/SongGuide.kt:70	vue
+P020	B	Z3	« ↶ ↷ Annuler et rétablir : on peut toujours revenir en arrière. » / « Une erreur ? ↶ répare tout, autant de fois que tu veux. »	GuideDialog.kt:53, :76	vue
+P021	B	Z4	« ● Enregistrer : ce que tu joues (clavier, pads, clavier MIDI) s'écrit en rythme. »	GuideDialog.kt:54	vue
+P022	B	Z3	« ▶ Jouer et arrêter, sur tous les écrans. » / « ▶ joue tout le morceau ; « ⟳ Boucler » boucle la partie affichée. » / « ▶ joue tout le morceau, de l'Intro à la fin, sur tous les écrans. »	GuideDialog.kt:55-56, SongGuide.kt:76	vue
+P023	B	Z3	« Touche une partie pour écouter le morceau à partir d'elle. »	session/SessionScreen.kt:385	vue
+P024	B	Z3	« Structure : les parties du morceau sur la ligne du temps ; deux touches sur un bloc l'ouvrent. »	GuideDialog.kt:63	jamais
+P025	B	Z3	« Le Mode simple n'en garde que quatre : Mon morceau, Rythme, Clavier, Envoyer. »	GuideDialog.kt:68	vue
+P026	B	Z1	« Appui long sur un pas ou une note : plus fort ou plus doux. » / « Sur un potard : glisse vers le haut ou le bas ; deux touchers le remettent à zéro. »	GuideDialog.kt:74, :75	jamais
+P027	B	Z2	« Pour partager : ⤴ tout en haut à droite, sur chaque écran. »	GuideDialog.kt:83	vue
+P028	B	Z5	« Clavier : joue et enregistre ta mélodie, toujours dans la gamme. » / « Le clavier : joue, il reste dans la gamme du morceau : aucune fausse note possible. »	GuideDialog.kt:102, SongGuide.kt:85	vue
+P029	B	Z3	« Ce guide se retrouve dans Plus › Aide. » (Pro)	GuideDialog.kt:84	jamais
+P030	C	Z3	« L'appli écrit tout le morceau pour toi : rythme, basse, accords et mélodie. Ensuite, tu le fais tien. »	guides/common.json:13	vue
+P031	C	Z3	« Un style, une ambiance : le morceau est prêt en une minute. »	guides/common.json:25	vue
+P032	C	Z3	« Écouter : juste avant le premier grand moment : le meilleur passage, tout de suite. »	guides/common.json:58	vue
+P033	C	Z3	« Depuis le début : tout le morceau, de la première mesure. »	guides/common.json:67	vue
+P034	C	Z1	« Changer un son : le son de la mélodie, en un toucher. » / « Touche-en un : tu l'entends tout de suite. »	guides/common.json:87, :133	vue
+P035	C	Z5	« Enregistre une mélodie : touche « ● Enregistrer ma mélodie » et joue quelques notes : le clavier reste dans la gamme, aucune fausse note. »	guides/common.json:158	vue
+P036	C	Z5	« Générer une ligne Acid 303 : une ligne 303, en un toucher. »	guides/common.json:278-279	vue
+P037	C	Z3	« Arrange les parties : appui long sur une partie : ajoute un Fill, un Break ou une Montée. »	guides/common.json:196	vue
+P038	C	Z3	« Duplique ta partie et change-la : un couplet, un refrain. Donne-leur un nom pour t'y retrouver. »	guides/common.json:342	vue
+P039	C	Z2	« Partager : les vérifications, puis le fichier. » / « Tout est fait : ton morceau est prêt à partager. »	guides/common.json:105, model/guide/GuideAnalyzer.kt:151	vue
+P040	C	Z1	« Remixer un morceau : l'appli sépare une chanson… » / « Il t'attend dans Sons › Remix, quand tu veux. »	guides/common.json:412, :429	jamais
+P041	C	Z2	« Compare avec [morceau du style], au même volume : plus fort paraît toujours mieux, alors on égalise d'abord. » → « les deux jouent maintenant au même volume »	guides/techno.json:… (36 styles), guide/GuideListen.kt:307-309	vue
+P042	C	Z5	« Ça sonne déjà juste » (carte du Guide)	guides/acid_techno.json:1527, dnb.json:1605, jungle.json:1498, phonk.json:1515	vue
+P043	C	Z1	« ▶ Écouter l'exemple » / « Joue en boucle, tout seul : change le son pour comparer. »	guide/GuidePanel.kt:383, rhythm/KitAndPadSheets.kt:231	vue
+P044	C	Z2	« Écouter sans puis avec » / « D'abord sans, puis avec l'écho. »	GuidePanel.kt:514, :617, model/learn/SoundGlossary.kt:121	jamais
+P045	C	Z3	« Rien encore : chaque choix fait ici ou par le Guide s'inscrit ici, et se ramène d'un geste. »	guide/TrackSheet.kt:361	jamais
+P046	D	Z3	« Une touche, un morceau complet de 2 à 6 minutes selon le style, prêt à écouter. »	projects/NewProjectPage.kt:207	vue
+P047	D	Z3	« Créer tout de suite avec les choix conseillés »	library/WizardScreen.kt:217	jamais
+P048	D	Z5	« Pour que ça sonne vraiment [style] : [kit]. L'assistant prendra ses sons dedans. »	WizardScreen.kt:462	jamais
+P049	D	Z3	« Tes choix seront perdus. Tu pourras le relancer depuis Mes projets › « Nouveau morceau guidé ». »	WizardScreen.kt:190	vue
+P050	D	Z3	« Ton morceau [style] est prêt. Il est fait de quatre briques, comme un vrai morceau de club : la Montée fait monter la tension sans kick, tout tombe au Drop… »	SongGuide.kt:58-68	vue
+P051	D	Z5	« Acide : ta ligne 303 joue dans … La coupure s'ouvre toute seule le long du morceau » / « Filtres : certains sons s'ouvrent et se ferment tout seuls » / « Souffle montant : on ne l'entend qu'en jouant tout le morceau »	SongGuide.kt:89, :109, :98-99	jamais
+P052	D	Z4	« Ta voix : enregistre-la par-dessus le morceau (mets des écouteurs, sinon le micro entend la musique). »	SongGuide.kt:110	vue
+P053	D	Z5	« Écris-moi une ligne » / « Génère-moi un pattern » / « Génère-moi une ligne » / « Écrire une mélodie pour moi » (boutons magiques)	acid/AcidScreen.kt:160, WizardScreen.kt:653, synth/TrackAdd.kt:66	jamais
+P054	D	Z5	Descriptions des styles : ce que le morceau généré contient (« Le kick tape chaque temps sans jamais s'arrêter », « Peu de coups de kick, jamais au même endroit », ~20 phrases)	model/StyleRecipes.kt:521, guides/techno.json:128, i18n model.json	jamais
+P055	E	Z5	« Avant de commencer : ton kit est déjà celui de [style]… Tu n'as rien à régler. » (dans les 36 tutos)	tutos/acid_techno.json:53, detroit.json:73, uk_garage.json:61, hard_techno.json:63…	vue
+P056	E	Z5	« Déjà prêt pour toi, pour que ça sonne drum & bass tout de suite : le kit, des effets sur plusieurs pads (badge FX)… » (tuto Pro)	tutos/dnb.json:64 (et jump_up, jungle, liquid, neurofunk, dubstep, riddim)	vue
+P057	E	Z5	« Les vrais sons de batterie du style… Sans eux, le tuto marche avec les sons intégrés. »	tuto/TutoPanel.kt:293	vue
+P058	E	Z5	« « Accords » pose la triade d'un toucher » / « « Copier sur les mesures suivantes » : les accords suivent tout seuls »	tutos/dnb.json:228, :227, jungle.json:223, trap.json:194	jamais
+P059	E	Z5	« Bravo, c'est réussi ! » / « Réussi » / « Fait » (le tuto dit que l'étape est bonne)	TutoPanel.kt:506, :610	vue
+P060	E	Z5	« Écouter mon morceau » à la fin du tuto (ajouté au tour 3, n° 30, commit `b3ee0d6`)	TutoPanel.kt:320	vue
+P061	E	Z5	« Bravo, ton morceau est fini ! Tu peux tout réécouter et continuer à le changer. »	TutoPanel.kt:816	vue
+P062	E	Z5	« Montre-moi » (l'appli fait le geste à ta place)	TutoPanel.kt:755	jamais
+P063	E	Z3	« Le mode choisit aussi le niveau du tuto. » / « Avec le tuto Facile »	ModeChoice.kt:87, :106	vue
+P064	F	Z1	« « Pack » remplit la page affichée avec les sons d'un style ; « Annuler » la remet comme avant. L'étoile « Défi » lance un défi. »	help/ScreenHelp.kt:17	vue
+P065	F	Z1	« Garde le doigt sur un effet : il joue tant que tu appuies, puis tout revient. » / « Lâche : tout revient. »	ScreenHelp.kt:21, session/LivePad.kt:71	vue
+P066	F	Z1	« Enregistre ce que tu joues sur les pads, en mesures entières, puis pose-le sur un pad libre ou dans une brique du Live. REC enregistre toute ta perf pour en faire un morceau. »	ScreenHelp.kt:25	vue
+P067	F	Z1	« Tout couper arrête tous les pads. Briques ouvre le Live complet. Gros pads met les pads sur tout l'écran pour jouer à plusieurs. Partager envoie ta perf. »	ScreenHelp.kt:29	jamais
+P068	F	Z1	« L'appli joue un petit rythme… écoute, puis refais-le. Tu gagnes jusqu'à 3 étoiles selon ta précision. »	ScreenHelp.kt:33	vue
+P069	F	Z1	« Coup : le son joue une fois à chaque toucher. Boucle : un toucher le lance en rythme, un autre l'arrête. Tenir : il joue tant que ton doigt reste sur le pad. »	ScreenHelp.kt:37, padlive/PadModes.kt:61	jamais
+P070	F	Z1	« Un seul à la fois : les pads d'un même groupe se coupent entre eux » / « Attaque et fin : le son arrive en douceur… s'éteint doucement »	ScreenHelp.kt:41, :45	jamais
+P071	F	Z1	« Prêt : ça part à la mesure » (prise posée sur un pad)	padlive/PlayedTakeSheet.kt:45	vue
+P072	F	Z1	« Glisse sur le pad : à gauche ça coupe les aigus, à droite les graves, en haut ça résonne. » / « Garde le doigt sur un pad : ça répète en rythme. » / « les boucles restent calées sur le tempo, comme chez un DJ »	LivePad.kt:71, live/LiveFx.kt:432, help/Glossary.kt:27	vue
+P073	F	Z1	« Préparation des pads prêts à jouer… » (puis les pads pleins)	AppRoot.kt:2754, padlive/PadLiveRoute.kt:108	vue
+P074	F	Z2	« Un seul fichier avec tes effets, prêt à envoyer. » (partager la perf)	padlive/PerfShare.kt:264	jamais
+P075	G	Z1	« Touche une case pour la lancer, la lettre pour lancer toute la ligne, ■ pour arrêter. »	ScreenHelp.kt:58	vue
+P076	G	Z1	« La colonne Remix joue un passage de la chanson : appui long sur une de ses cases pour le choisir. » (depuis `b3ee0d6`, dite seulement si la colonne existe)	ScreenHelp.kt:59, Glossary.kt:345	vue
+P077	G	Z1	« Ce que tu lances part au prochain départ choisi… tout reste en rythme. » / option « Tout de suite » / « D'un coup »	ScreenHelp.kt:63, LiveFx.kt:606, :614	jamais
+P078	G	Z1	« Case Remix : … Il part sur la mesure et suit le tempo. »	ScreenHelp.kt:67	vue
+P079	G	Z1	« Ta première boucle tourne. Touche un point pour y ajouter un son. »	live/LiveScreen.kt:971	vue
+P080	G	Z1	« Prêt : l'enregistrement part au prochain lancement. » / « REC enregistre tout ce que tu joues… « Annuler » la retire d'un coup ; l'ancien morceau reste dans « Versions ». »	LiveScreen.kt:818, Glossary.kt:349	jamais
+P081	G	Z1	« Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure. »	live/LiveCellMenu.kt:97	jamais
+P082	H	Z1	« Les pads sonnent, les cases gardent les coups. Appui long : changer le son. »	rhythm/RhythmScreen.kt:283	vue
+P083	H	Z1	« Couches : … La batterie sonne plus vivante. »	ScreenHelp.kt:135	jamais
+P084	H	Z1	« Calé au tempo : N temps à N BPM, sans changer la hauteur » / « la chanson s'y cale, sans changer de hauteur » / « suit le tempo du projet, sans changer de hauteur »	RhythmScreen.kt:1249, AppRoot.kt:1304, remix/RemixScreen.kt:510	vue
+P085	H	Z1	« Chercher un son (caisse, conga, sirène…) » (le champ promet que ses exemples se trouvent ; au tour 3 il disait « doigts, verre, conga », corrigé `b3ee0d6`)	library/SoundShelfBrowser.kt:341	vue
+P086	H	Z5	« « %s » est dans ta bibliothèque : tu le retrouves dans « Changer le son », pour tous tes projets. »	library/MySoundLibrary.kt:91	jamais
+P087	H	Z5	« Touche ☆ sur un son pour le retrouver dans « Favoris ». »	SoundShelfBrowser.kt:360	vue
+P088	H	Z1	« À télécharger seulement si tu veux ; chaque pack se supprime d'un geste pour libérer la place. »	library/LibraryScreen.kt:453	vue
+P089	H	Z1	« C'est prêt : le pack « %s » est sur ton téléphone. »	library/SoundLibraryViewModel.kt:416	vue
+P090	H	Z5	« Le son est créé sur l'appareil, sans internet. » / « Elle glisse d'une note à l'autre, rien à télécharger »	generate/GenerateScreen.kt:136, instruments/RealInstruments.kt:89	jamais
+P091	H	Z1	« Aucun pack à télécharger : les sons intégrés sont tous là, prêts à servir. »	LibraryScreen.kt:450	jamais
+P092	I	Z2	« Ambiances toutes prêtes : touche une ambiance pour l'essayer : tu peux toujours revenir avec Annuler. » / « Un réglage tout prêt… certaines ajoutent aussi des effets à la liste »	mixer/QuickFx.kt:102, :154, Glossary.kt:268	vue
+P093	I	Z2	« Dessine la courbe du réglage au doigt… : il bouge tout seul pendant le morceau. » / « Lance la lecture et bouge un réglage : il s'enregistre pas à pas sur la boucle. » / « 1 réglage bouge tout seul. »	mixer/AutomateSheet.kt:101, mixer/AutomationCard.kt:412-413, mixer/MixerScreen.kt:272	vue
+P094	I	Z2	« Un effet branché directement sur une piste… Jusqu'à huit par piste, et chacun peut ne jouer que dans certaines parties. » / « Ne joue dans aucune partie : touche une lettre ou « Tout ». »	Glossary.kt:235, mixer/EffectsBox.kt:254	jamais
+P095	I	Z2	« Le volume visé… Une cible par projet, la même dans Mix et au partage… Si le son devait s'écraser, l'appli s'arrête avant et le dit. »	ScreenHelp.kt:102	jamais
+P096	I	Z2	« Fort, comme en club (N LUFS)… La sortie monte doucement pour y arriver ; l'export s'en approche autant qu'il peut sans écraser le son. »	mixer/MasterLoudness.kt:109-112	vue
+P097	I	Z2	« Mesures pro : LUFS, LRA, crête vraie, PLR » (des mesures qui bougent)	ScreenHelp.kt:121, export/ExportBilan.kt	vue
+P098	I	Z2	« Plafond de crête : −1 dBTP garde une marge : le fichier ne grésille pas une fois compressé » / « A avec le master, B sans… « Au même volume » les met au même niveau »	ScreenHelp.kt:109, :117, mixer/MasterPro.kt:404-405	jamais
+P099	I	Z2	« Fichier final : … la partie exportée, les fondus et silences au début et à la fin… »	ScreenHelp.kt:125	vue
+P100	I	Z2	« Avec les envois, chaque piste garde sa réverbe et son écho. Sans, ils sont dans des fichiers à part » / « remises ensemble, les pistes redonnent le mix »	ScreenHelp.kt:129, MixerScreen.kt:566	jamais
+P101	I	Z2	« En M4A et en FLAC, le limiteur reste en place : sans lui, les pointes seraient écrêtées. Choisis WAV pour t'en passer. » / « En WAV, fichier 32 bits flottants : rien n'est écrêté. »	MixerScreen.kt:564, :567	jamais
+P102	I	Z2	« Le Mix et ses effets : chaque réglage a un nom et une unité » (promesse implicite des aides « ? » du Mix)	mixer/* (aides)	vue
+P103	J	Z2	« Prêt à partager » / « Tout est prêt : aucun solo oublié, aucune piste coupée. »	export/ShareSheet.kt:412, export/ExportCheck.kt:300	vue
+P104	J	Z2	« C'est prêt : [fichier], une copie est aussi dans Musique › BenStudio. »	export/ShareSongUi.kt:88, MixerScreen.kt:672	vue
+P105	J	Z2	« Mes exports : retrouver et renvoyer un fichier »	export/MyExports.kt:92	vue
+P106	J	Z3	« Envoyer / sauvegarder (.zip) » puis « Projet importé : « %s » »	projects/ProjectsScreen.kt:330, projects/ProjectsViewModel.kt:252	vue
+P107	J	Z2	« Vidéo prête : touche pour la partager. »	export/video/VideoExport.kt:212	vue
+P108	J	Z2	« Rien ne part tout seul : « Partager » ouvre le menu d'Android et tu choisis à qui l'envoyer. » / « Ce fichier ne peut pas être relu. Envoie-le tel quel pour le faire réparer : il n'est jamais effacé tout seul. »	report/BugReportSheet.kt:229, ProjectsScreen.kt:295	jamais
+P109	J	Z3	« Projets retrouvés dans la sauvegarde du téléphone : N. Leurs sons n'y étaient pas… »	rhythm/ProjectOpening.kt:208	jamais
+P110	K	Z4	« Remettre en rythme » / « Remise en rythme » (recaler une prise)	record/RecordBar.kt:219, synth/PianoRoll.kt:438	vue
+P111	K	Z4	« Décompte » (une mesure de clics avant le départ) / « Prêt ? »	record/RecordChoice.kt:110, RecordBar.kt:151, Glossary.kt:61	jamais
+P112	K	Z4	« Rien n'a été joué pendant la prise. » → « Garder ce que je viens de jouer »	RecordBar.kt:104, :127, AppRoot.kt:2395	vue
+P113	L	Z3	« Branche un clavier en USB (il se connecte tout seul) ou cherche-le en Bluetooth. » / « il est reconnu tout seul »	midi/MidiScreen.kt:89, midi/ControllerUi.kt:107	vue
+P114	L	Z3	« Profil : [contrôleur] — prêt à jouer, rien à régler » / « [clavier] connecté — prêt à jouer »	ControllerUi.kt:114, midi/MidiViewModel.kt:610-612	jamais
+P115	L	Z3	« Potards automatiques : les 8 premiers potards règlent tout seuls l'écran affiché… » / « le son ne saute jamais »	midi/KnobHintUi.kt:236, :156	jamais
+P116	L	Z3	« Branché à une autre machine en MIDI, l'appli peut suivre son tempo : page MIDI, « Suivre l'horloge MIDI ». » / « Taper en rythme »	ScreenHelp.kt:49, ui/TempoSheet.kt:215	jamais
+P117	L	Z3	« « Rapide » répond au doigt sans délai. Si le son craque, passe à « Sûr »… fini les craquements. » / « Écran toujours allumé pendant la lecture »	SettingsScreen.kt:127, :94	vue
+P118	L	Z6	« Le « ? » au bout du bandeau étiquette l'écran : un toucher pour voir, un autre pour cacher. »	SettingsScreen.kt:219	vue
+P119	L	?	« Une nouvelle version est prête. » / « Mise à jour prête : touche pour l'installer. »	AppRoot.kt:3841, update/InstallResultReceiver.kt:67	jamais
+P120	M	Z1	« « → Pad » copie les mesures choisies sur un pad libre (jamais sur un son que ton rythme joue), « → Live » sur un pad live libre… » / « Coche les bouts… envoie-les sur les pads (un par pad), dans le Live, dans « Garder » ou sur une piste »	remix/RemixScreen.kt:604, ScreenHelp.kt:88, :78-80	vue

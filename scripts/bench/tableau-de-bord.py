@@ -68,12 +68,17 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises):
     back = [c for c in clusters if c["state"] in ("revient", "banc contredit")]
     back_medium = [c for c in back if c["gravity"] <= 2]
     back_minor = [c for c in back if c["gravity"] > 2]
+    # Banc fiable 2.3: one verdict per seat and promise (a seat citing it twice counts once; « contredite » counts « non »);
+    # « checked » = seen by ≥ 2 distinct seats; the 120 of the catalogue are counted by their ids (P001-P120) only.
     by_promise = {}
-    for seat, pid, text, screen, kept, why in promises:
-        by_promise.setdefault(pid or text, []).append(kept)
-    checked = {p: k for p, k in by_promise.items() if len(k) >= 2}
+    for row in promises:
+        seat, pid, text, screen, kept_said = row[:5]
+        verdict = "non" if (row[6:7] or [""])[0] == "contredite" else kept_said
+        by_promise.setdefault(pid or text, {}).setdefault(seat, verdict)
+    contradicted = sum(1 for row in promises if (row[6:7] or [""])[0] == "contredite")
+    checked = {p: list(k.values()) for p, k in by_promise.items() if len(k) >= 2}
     kept = [p for p, k in checked.items() if all(x == "oui" for x in k)]
-    seen_once = len(by_promise)
+    seen_once = len([p for p in by_promise if re.fullmatch(r"P\d{3}", p)])
     missions, succeeded = 0, 0
     for root, _, files in os.walk(tour_dir):
         if "mesures.json" in files:
@@ -101,7 +106,7 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises):
          yes(None if doubt_unjudged else len(bench) <= 2 and bench_proven)),
         ("C", "Revient / banc contredit (≥ moyen ; mineurs)", f"{len(back_medium)} ; {len(back_minor)}", "0 ; ≤ 2", yes(not back_medium and len(back_minor) <= 2)),
         ("D", "Promesses tenues (vérifiées par ≥ 2 sièges) ; vues au moins une fois",
-         f"{len(kept)}/{len(checked)} ; {seen_once}/{total_promises}", "≥ 90 % ; ≥ 80 %",
+         f"{len(kept)}/{len(checked)} ; {seen_once}/{total_promises}" + (f" ; {contradicted} contredite(s)" if contradicted else ""), "≥ 90 % ; ≥ 80 %",
          yes(bool(checked) and len(kept) >= 0.9 * len(checked) and seen_once >= 0.8 * total_promises)),
         ("E", "Missions réussies (oracle mesures.json)", f"{succeeded}/{missions}", "≥ 90 %", yes(None if not missions else succeeded >= 0.9 * missions)),
         ("F", "Moyens nouveaux (dont vus par ≥ 2 sièges)", f"{len(new_medium)} ({sum(1 for c in new_medium if len(c['seats']) >= 2)})", "≤ 5 (0)",

@@ -179,8 +179,10 @@ def main():
             added = f.read()
         check("tab_Sons|klaxon|rien\tnouveau" in added and added.count("\n") == 4, "the new keys added to the base:\n" + added)
         # A second run: nothing new any more, and the two seats' same key (when on the same route) fuses.
+        text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-suivant")
+        check("0 nouvelle(s)" in text, "the keys are known now, at the next round:\n" + text)
         text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base)
-        check("0 nouvelle(s)" in text, "the keys are known now:\n" + text)
+        check("2 nouvelle(s)" in text, "fused again, the same round still calls them new:\n" + text)
         with open(os.path.join(d, "b", "journal.txt"), "w", encoding="utf-8") as f:
             f.write(JOURNAL_B.replace("#1 ROUTE tab_Sons", "#1 ROUTE padlive"))
         text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base)
@@ -198,7 +200,25 @@ def main():
         fusion_v2(d)
     with tempfile.TemporaryDirectory() as d:
         bench_guards(d)
+    with tempfile.TemporaryDirectory() as d:
+        seats_from_ids(d)
     print("ultra bench scripts: OK")
+
+
+def seats_from_ids(d):
+    """Banc fiable 2.3: a seat's promises from catalogue ids and free texts; an id twice is refused."""
+    tour = os.path.join(d, "tour-9")
+    os.makedirs(tour)
+    write(os.path.join(tour, "sieges-proposes.tsv"),
+          "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP006 ; libre: le pad 2 sonne\n")
+    out = run(os.path.join(HERE, "fabrique-sieges.py"), tour)
+    check("1 sièges" in out, out)
+    brief = open(os.path.join(tour, "briefs", "Aa.txt"), encoding="utf-8").read()
+    check("id=P006 | « Pad Live · NOUVEAU" in brief and "id=t9-Aa-1 | le pad 2 sonne" in brief, "ids resolved:\n" + brief)
+    check("P006 ; t9-Aa-1" in open(os.path.join(tour, "sieges.tsv"), encoding="utf-8").read(), "sieges.tsv keeps the ids")
+    write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP006 ; P6\n")
+    r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "fabrique-sieges.py"), tour], capture_output=True, text=True)
+    check(r.returncode != 0 and "twice" in (r.stdout + r.stderr), "the same id twice is refused")
 
 
 def bench_guards(d):

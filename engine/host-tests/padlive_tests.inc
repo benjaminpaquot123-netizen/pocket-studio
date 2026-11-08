@@ -384,10 +384,84 @@ static void resampleStopTargetsItsTake() {
     CHECK(second.state.load() == 2 && second.written.load() > 0);
 }
 
+
+// KNOWN DEFECT T5-PADRETRIG (plan 4.1, recette tel-17, Benjamin's phone 2026-11-08: « tant que le clap n'était pas fini il
+// n'acceptait pas mon appui suivant »). Transport stopped, a « coup » pad (one-shot, 1 beat) touched again while its sound
+// still plays: ClipLauncher::toggle puts it Waiting for the next beat line of the PROJECT's grid (the clock started at the
+// first touch; the challenge's pulse is the tempo kept in 80-120 BPM, the grid is not), and a touch during that wait cancels
+// it (Waiting -> Off). Once Off, the next touch restarts the clock and sounds at once. This test asserts TODAY's behaviour:
+// when the engine is fixed (a « coup » hit again plays at once, transport stopped), INVERT this test (and set T5-PADRETRIG
+// to « corrigé » in docs/audits/ultra/verdicts.tsv).
+static void knownDefectPadRetriggerWaitsForTheGrid() {
+    struct Pad {
+        ps::ClipLauncher clips;
+        std::vector<float> l = std::vector<float>(48), r = std::vector<float>(48);
+        int64_t frame = 0;
+        Pad(double bpm, int clapFrames) {
+            clips.prepare(kRate);
+            clips.setBeatFrames(kRate * 60.0 / bpm);
+            std::vector<float> clap(static_cast<size_t>(clapFrames), 0.5f);
+            clips.install(0, ps::Sample::create(clap.data(), int64_t(clap.size()), 1, kRate, kRate));
+            clips.setParam(0, ps::ClipLauncher::Beats, 1.0f);
+            clips.setParam(0, ps::ClipLauncher::OneShot, 1.0f);
+        }
+        // Renders up to [to] frames from the first touch, in 1 ms blocks.
+        void until(int64_t to) {
+            while (frame + 48 <= to) { clips.render(l.data(), r.data(), 48); frame += 48; }
+        }
+        int state() const { return clips.state(0); }
+        ~Pad() { clips.collectGarbage(); }
+    };
+    const int ms = kRate / 1000;
+    {
+        // 90 BPM (a beat: 32000 frames), a clap of 800 ms: the second touch a hair after beat 1 (667 ms).
+        Pad pad(90.0, 800 * ms);
+        pad.clips.toggle(0, true);
+        pad.until(48);
+        CHECK(pad.state() == ps::ClipLauncher::Playing);  // the first touch sounds at once
+        pad.until(667 * ms);
+        pad.clips.toggle(0, true);
+        CHECK(pad.state() == ps::ClipLauncher::Waiting);  // KNOWN DEFECT: should sound now
+        pad.until(64000 - 96);
+        CHECK(pad.state() == ps::ClipLauncher::Waiting);  // KNOWN DEFECT: still silent ~0.67 s later
+        pad.until(64000 + 96);
+        CHECK(pad.state() == ps::ClipLauncher::Playing);  // heard a whole beat late, on beat 2 (1333 ms)
+    }
+    {
+        // 90 BPM, eighth notes (333 ms) with a 400 ms clap: the 2nd touch waits, the 3rd cancels it, the 4th sounds at once.
+        Pad pad(90.0, 400 * ms);
+        pad.clips.toggle(0, true);
+        pad.until(333 * ms);
+        pad.clips.toggle(0, true);
+        CHECK(pad.state() == ps::ClipLauncher::Waiting);  // KNOWN DEFECT: waits for beat 1 (667 ms)
+        pad.until(666 * ms);
+        pad.clips.toggle(0, true);
+        CHECK(pad.state() == ps::ClipLauncher::Off);  // KNOWN DEFECT: the waiting hit is cancelled, never heard
+        pad.until(999 * ms);
+        pad.clips.toggle(0, true);
+        pad.until(999 * ms + 48);
+        CHECK(pad.state() == ps::ClipLauncher::Playing);  // everything Off: the clock restarts, this one sounds at once
+    }
+    {
+        // 140 BPM project (a beat: 20571 frames, 429 ms): the wait follows the project's grid, not the challenge's pulse
+        // (140 kept to 120 BPM: 500 ms). Retouched at 100 ms, the hit comes at 429 ms.
+        Pad pad(140.0, 800 * ms);
+        pad.clips.toggle(0, true);
+        pad.until(100 * ms);
+        pad.clips.toggle(0, true);
+        CHECK(pad.state() == ps::ClipLauncher::Waiting);  // KNOWN DEFECT
+        pad.until(20571 - 96);
+        CHECK(pad.state() == ps::ClipLauncher::Waiting);
+        pad.until(20571 + 96);
+        CHECK(pad.state() == ps::ClipLauncher::Playing);  // on the project's beat 1 (429 ms), before 500 ms
+    }
+}
+
 }  // namespace padlive
 
 #define PS_PADLIVE_TESTS \
     {"padlive_page_d_plays_with_page_a", padlive::pageDPlaysWithPageA}, \
+    {"padlive_known_defect_t5_padretrig", padlive::knownDefectPadRetriggerWaitsForTheGrid}, \
     {"padlive_64_pads_without_allocating", padlive::sixtyFourPadsWithoutAllocating}, \
     {"padlive_row_starts_on_the_bar", padlive::rowStartsOnTheBar}, \
     {"padlive_pad_pitch_reverse_attack_release", padlive::padPitchReverseAttackRelease}, \

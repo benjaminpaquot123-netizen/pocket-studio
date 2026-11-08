@@ -39,7 +39,20 @@ run_tests() {
   cp "$results"/TEST-*.xml "$junit/" 2>/dev/null || true
 }
 rm -f "$lot/selftest-gradle-echecs.txt"
-run_tests banc --tests 'com.pocketstudio.app.human.Bench*' --tests 'com.pocketstudio.app.human.Tour*AppProofTest'
+# Banc fiable 3.2 (control 13): the amenées are checked on the profiles of THIS lot's seats (their start.txt, the
+# bench's own keys), not only on round 1's ten.
+profiles=()
+for st in "$lot"/*/start.txt; do
+  [ -f "$st" ] || continue
+  line="$(grep -E '^(lang|device|font|mode|main|lit|theme)=' "$st" | tr '\n' ' ' | sed 's/ *$//')"
+  [ -n "$line" ] && profiles+=("$line")
+done
+profile_arg=()
+if [ ${#profiles[@]} -gt 0 ]; then
+  printf '%s\n' "${profiles[@]}" | sort -u > "$lot/selftest-profils.txt"
+  profile_arg=("-Pbench.profiles=$lot/selftest-profils.txt")
+fi
+run_tests banc "${profile_arg[@]}" --tests 'com.pocketstudio.app.human.Bench*' --tests 'com.pocketstudio.app.human.Tour*AppProofTest'
 run_tests renommage --tests 'com.pocketstudio.app.human.Tour*RenameIdleTest'
 
 python3 -I scripts/bench/selftest-verdict.py "$junit" scripts/bench/selftest-quarantaine.txt "$lot/selftest-resume.txt" \

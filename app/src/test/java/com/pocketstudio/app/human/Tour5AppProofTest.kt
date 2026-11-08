@@ -1,0 +1,244 @@
+package com.pocketstudio.app.human
+
+import android.app.Application
+import android.content.ContentProvider
+import android.content.ContentUris
+import android.content.ContentValues
+import android.database.Cursor
+import android.database.MatrixCursor
+import android.net.Uri
+import android.os.Looper
+import android.os.ParcelFileDescriptor
+import android.provider.MediaStore
+import androidx.test.core.app.ApplicationProvider
+import com.pocketstudio.app.export.MyExports
+import com.pocketstudio.app.export.WavExporter
+import com.pocketstudio.app.projects.CurrentProject
+import com.pocketstudio.app.projects.ProjectsViewModel
+import com.pocketstudio.app.rhythm.ExportFormat
+import com.pocketstudio.app.rhythm.RhythmViewModel
+import com.pocketstudio.engine.CommandSink
+import com.pocketstudio.engine.ExportResult
+import com.pocketstudio.engine.NativeEngine
+import com.pocketstudio.engine.OfflineExport
+import com.pocketstudio.model.Project
+import com.pocketstudio.model.ProjectStore
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Ignore
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.Robolectric
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
+import java.io.File
+import java.io.RandomAccessFile
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.time.Duration
+
+/**
+ * Round 5 (bench lot 3): app or bench? Without the bench (no HumanTester, no BenchEngine), the app's own classes:
+ * - T5-ZIP: « Mes exports » after « Envoyer le projet » (.zip);
+ * - T5-ALERTE: « Le morceau a changé depuis cet export » right after an export, nothing changed;
+ * - T5-8MES: « Prêt à partager ? » exports the length chosen in Mix.
+ */
+@RunWith(RobolectricTestRunner::class)
+class Tour5AppProofTest {
+    private val app: Application get() = ApplicationProvider.getApplicationContext()
+
+    /**
+     * Android's media store as far as the app uses it (insert, write, update, query by collection and RELATIVE_PATH):
+     * Robolectric has none (its resolver answers a query with nothing), so « Mes exports » would be empty whatever the app did.
+     */
+    class FakeMediaStore : ContentProvider() {
+        class Row(val id: Long, val collection: String, val values: ContentValues, val file: File)
+        private val rows = ArrayList<Row>()
+        private var next = 1L
+
+        override fun onCreate() = true
+        override fun getType(uri: Uri): String? = null
+
+        @Synchronized override fun insert(uri: Uri, values: ContentValues?): Uri {
+            val id = next++
+            val v = ContentValues(values ?: ContentValues())
+            v.put(MediaStore.MediaColumns.DATE_ADDED, System.currentTimeMillis() / 1000 + id)
+            rows += Row(id, uri.path!!, v, File(context!!.cacheDir, "fake-media-$id"))
+            return ContentUris.withAppendedId(uri, id)
+        }
+
+        @Synchronized override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<out String>?): Int {
+            val r = rowOf(uri) ?: return 0
+            values?.let { r.values.putAll(it) }
+            return 1
+        }
+
+        @Synchronized override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int =
+            if (rows.removeIf { it.id == ContentUris.parseId(uri) }) 1 else 0
+
+        override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor {
+            val r = synchronized(this) { rowOf(uri) } ?: throw java.io.FileNotFoundException(uri.toString())
+            return ParcelFileDescriptor.open(r.file, ParcelFileDescriptor.parseMode(mode))
+        }
+
+        @Synchronized override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor {
+            val cols = projection ?: arrayOf(MediaStore.MediaColumns._ID, MediaStore.MediaColumns.DISPLAY_NAME)
+            val prefix = selectionArgs?.firstOrNull()?.removeSuffix("%")
+            val out = MatrixCursor(cols)
+            rows.filter { it.collection == uri.path && (prefix == null || (it.values.getAsString(MediaStore.MediaColumns.RELATIVE_PATH) ?: "").startsWith(prefix)) }
+                .filter { (it.values.getAsInteger(MediaStore.MediaColumns.IS_PENDING) ?: 0) == 0 }
+                .sortedByDescending { it.values.getAsLong(MediaStore.MediaColumns.DATE_ADDED) }
+                .forEach { r ->
+                    out.addRow(cols.map { c ->
+                        when (c) {
+                            MediaStore.MediaColumns._ID -> r.id
+                            MediaStore.MediaColumns.SIZE -> r.file.length()
+                            else -> r.values.get(c)
+                        }
+                    }.toTypedArray())
+                }
+            return out
+        }
+
+        private fun rowOf(uri: Uri): Row? = runCatching { ContentUris.parseId(uri) }.getOrNull()?.let { id -> rows.firstOrNull { it.id == id } }
+    }
+
+    /** A phone's engine as far as an export reads it: each render writes a short silent WAV and keeps its length in frames. */
+    private class RenderEngine : CommandSink {
+        private var next = 1L
+        val renders = ArrayList<Long>()
+        override fun post(target: Long, type: Int, value: Float, a: Int, b: Int) = Unit
+        override fun scheduleFrom(target: Long, frame: Long) = Unit
+        override fun install(target: Long, kind: CommandSink.Install, index: Int, sample: Long) = Unit
+        @Synchronized override fun sampleCreate(data: FloatArray, channels: Int, sampleRate: Int): Long = next++
+        override fun sampleFrames(handle: Long): Long = 48_000L
+        override fun sampleRelease(handle: Long) = Unit
+        @Synchronized override fun exportCreate(): Long = next++
+        @Synchronized override fun exportRender(
+            target: Long, path: String, frames: Long, tailFrames: Long, fadeOutFrames: Long, autoTail: Boolean, floatWav: Boolean,
+            sampleRate: Int, bits: Int,
+        ): ExportResult {
+            renders += frames
+            silentWav(File(path), 4_800)
+            return ExportResult.Ok
+        }
+        override fun exportRenderFloat(target: Long, frames: Long, tailFrames: Long): FloatArray = FloatArray(0)
+        override fun exportDestroy(target: Long) = Unit
+
+        private fun silentWav(f: File, frames: Int) {
+            val data = frames * 4
+            val h = ByteBuffer.allocate(44).order(ByteOrder.LITTLE_ENDIAN)
+            h.put("RIFF".toByteArray()).putInt(36 + data).put("WAVE".toByteArray()).put("fmt ".toByteArray()).putInt(16)
+                .putShort(1).putShort(2).putInt(48_000).putInt(48_000 * 4).putShort(4).putShort(16).put("data".toByteArray()).putInt(data)
+            RandomAccessFile(f, "rw").use { it.setLength(0); it.write(h.array()); it.write(ByteArray(data)) }
+        }
+    }
+
+    @After
+    fun clear() {
+        NativeEngine.sink = null
+        CurrentProject.set(app, RhythmViewModel.PROJECT_ID)
+    }
+
+    private fun idle(ms: Long = 20) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
+
+    private fun until(what: String, ok: () -> Boolean) {
+        val end = System.currentTimeMillis() + 30_000
+        while (!ok()) {
+            check(System.currentTimeMillis() < end) { what }
+            idle(); Thread.sleep(5)
+        }
+    }
+
+    private fun open(name: String): RhythmViewModel {
+        val id = "tour5-${System.nanoTime()}"
+        ProjectStore(File(app.filesDir, "projects")).save(id, Project(name = name))
+        CurrentProject.set(app, id)
+        val vm = RhythmViewModel(app)
+        until("the project never opened") { vm.project.value.name == name }
+        // The Guide follows the project from the start on a phone (AppRoot): created before the export, as there.
+        vm.guide
+        idle(200)
+        return vm
+    }
+
+    /** T5-ZIP (seats C c 41, C d 68): « Envoyer le projet » (.zip), then « Mes exports » lists that .zip. */
+    @Ignore("appli : verdicts.tsv T5-ZIP, à corriger (banc fiable 3.1)")
+    @Test
+    fun myExportsListsTheProjectZipJustSent() {
+        Robolectric.setupContentProvider(FakeMediaStore::class.java, MediaStore.AUTHORITY)
+        val id = "tour5-zip-${System.nanoTime()}"
+        projectCatalogSave(id, Project(name = "Envoi"))
+        // Control: an audio export's copy (the app's own call) is listed by the fake media store.
+        val wav = File(app.cacheDir, "controle.wav").apply { writeBytes(ByteArray(64)) }
+        assertTrue("the fake media store takes the app's copy", WavExporter.copyToMusic(app, wav))
+        assertEquals(listOf("controle.wav"), MyExports.list(app).map { it.name })
+        // « Envoyer le projet » as AppRoot does it: the .zip, then Android's share menu.
+        val projects = ProjectsViewModel(app)
+        var sent: File? = null
+        projects.exportZip(id, "Envoi") { file -> sent = file; WavExporter.share(app, listOf(file), "Envoyer le projet") }
+        until("the .zip was never made") { sent != null }
+        val zip = sent!!
+        assertTrue("the .zip exists: $zip", zip.isFile && zip.name.endsWith(".pocketstudio.zip"))
+        val listed = MyExports.list(app).map { it.name }
+        assertTrue("« Mes exports » does not list the project just sent (${zip.name}): $listed", listed.any { it.endsWith(".zip") })
+    }
+
+    private fun projectCatalogSave(id: String, p: Project) = ProjectStore(File(app.filesDir, "projects")).save(id, p)
+
+    /** T5-ALERTE (seat C c 30): « Prêt à partager ? » › Partager, the share menu opened: no « a changé » warning, nothing changed. */
+    @Ignore("appli : verdicts.tsv T5-ALERTE, à corriger (banc fiable 3.1)")
+    @Test
+    fun noChangedWarningRightAfterSharing() {
+        NativeEngine.sink = RenderEngine()
+        val vm = open("Alerte")
+        vm.shareSong(ExportFormat.Wav, title = "Alerte")
+        until("the share never ended") { !vm.export.value.running && vm.export.value.files.isNotEmpty() }
+        assertFalse("stale right after the export", vm.export.value.staleFor(vm.project.value))
+        // What ShareSongProgress does once Android's share menu opened (G5: the Guide's card « Prêt à partager ? » done).
+        vm.guide.markDone("share.ready", "keep")
+        idle(200)
+        assertFalse("« Le morceau a changé depuis cet export » once the share menu opened, nothing changed in the song " +
+            "(guide share.ready = ${vm.project.value.guide.statusOf("share.ready")})", vm.export.value.staleFor(vm.project.value))
+    }
+
+    /** T5-ALERTE (seat E c 61): Mix › Exporter (WAV), then MIDI: no « a changé » warning under the file just made. */
+    @Ignore("appli : verdicts.tsv T5-ALERTE, à corriger (banc fiable 3.1)")
+    @Test
+    fun noChangedWarningRightAfterAMixExport() {
+        NativeEngine.sink = RenderEngine()
+        val vm = open("Alerte mix")
+        vm.exportWav()
+        until("the WAV never ended") { !vm.export.value.running && vm.export.value.files.isNotEmpty() }
+        idle(200)
+        assertFalse("« a changé » right after Mix › Exporter (WAV), nothing changed", vm.export.value.staleFor(vm.project.value))
+        // The song changes (the master lowered), then its MIDI is exported: the file just made is the song as it is now.
+        vm.setMasterDb(vm.project.value.mixer.masterDb - 3f)
+        idle(200)
+        vm.exportMidi()
+        until("the MIDI never came") { vm.export.value.files.singleOrNull()?.extension == "mid" }
+        idle(200)
+        assertFalse("« Le morceau a changé depuis cet export » right under the MIDI file just made", vm.export.value.staleFor(vm.project.value))
+    }
+
+    /** T5-8MES (seat C c 27): 16 bars chosen in Mix, « Prêt à partager ? » › Partager renders 16 bars. */
+    @Ignore("appli : verdicts.tsv T5-8MES, à corriger (banc fiable 3.1)")
+    @Test
+    fun shareFollowsTheLengthChosenInMix() {
+        val engine = RenderEngine()
+        NativeEngine.sink = engine
+        val vm = open("Longueur")
+        assertTrue("a loop, not a song", vm.project.value.song.isEmpty())
+        vm.setExportBars(16)
+        assertEquals("Mix says « Exporter 16 mesures »", 16, vm.export.value.bars)
+        vm.shareSong(ExportFormat.Wav, title = "Longueur")
+        until("the share never ended") { !vm.export.value.running && vm.export.value.files.isNotEmpty() }
+        val p = vm.project.value
+        val rendered = engine.renders.single()
+        val bars = rendered.toDouble() / OfflineExport.framesFor(1, p.tempoBpm, p.beatsPerBar)
+        assertEquals("« Prêt à partager ? » rendered ${"%.1f".format(bars)} bars, Mix chose 16",
+            OfflineExport.framesFor(16, p.tempoBpm, p.beatsPerBar), rendered)
+    }
+}

@@ -291,6 +291,22 @@ def fusion_v2(d):
     check("| A | Items ≥ grave côté appli, non tranchés ou non faits | 2 | 0 | non |" in board, "A counts the two graves without a verdict of this round:\n" + board)
     check("| H |" in board and "vert/rouge, 0" in board and "| G |" in board and "?, ?, ?, ?" in board, "H read, G unknown:\n" + board)
     check("Arrêt de l'audit possible : non" in board, "no stop on one round:\n" + board)
+    # Banc fiable 1.6: an item « corrigé » in verdicts.tsv no longer counts in A; a « banc? » card ≥ medium without its
+    # verdict line makes B « ? ».
+    name = os.path.basename(os.path.normpath(d))
+    with open(verdicts, "a", encoding="utf-8") as f:
+        f.write(f"{name}\tx\tpadlive|padlive_pad_4|rien\tappli\tT\t-\t-\tdef\tcorrigé\n")
+    lines = open(verdicts, encoding="utf-8").read().splitlines()
+    lines[0] += "\tetat"
+    lines[1] += "\touvert"
+    write(verdicts, "\n".join(lines) + "\n")
+    board = run(os.path.join(HERE, "tableau-de-bord.py"), d, "--base", base, "--verdicts", verdicts)
+    check("| A | Items ≥ grave côté appli, non tranchés ou non faits | 1 | 0 | non |" in board, "the fixed item left A:\n" + board)
+    check("; 0 | ≤ 2, prouvés ; 0 |" in board, "no « banc? » card yet:\n" + board)
+    write(os.path.join(d, "lotA", "c", "journal.txt"), JOURNAL_A)
+    write(os.path.join(d, "lotA", "c", "rapport.md"), REPORT_V2_FR.replace("siege: b", "siege: c").replace("Klaxon", "Pad Live").replace("geste: 2", "geste: 4").replace("banc?: non", "banc?: son"))
+    board = run(os.path.join(HERE, "tableau-de-bord.py"), d, "--base", base, "--verdicts", verdicts)
+    check("; 1 | ≤ 2, prouvés ; 0 | ? |" in board, "a « banc? » card without verdict: B unknown:\n" + board)
 
 
 def missions_of_round_1(d):

@@ -5,8 +5,8 @@
 # « <id> : oracle tenu » or « <id> : oracle non tenu … »; exits 1 when one is not held.
 set -euo pipefail
 root="$(cd "$(dirname "$0")/../.." && pwd)"
-dir="$root/docs/audits/ultra/rejeux"
-if [ $# -gt 0 ]; then ids=("$@"); else mapfile -t ids < <(find "$dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort); fi
+dir="${PS_REJEUX_DIR:-$root/docs/audits/ultra/rejeux}"
+if [ $# -gt 0 ]; then ids=("$@"); else mapfile -t ids < <(find "$dir" -mindepth 1 -maxdepth 1 -type d ! -name '_*' -printf '%f\n' | sort); fi
 [ ${#ids[@]} -gt 0 ] || { echo "No replay test in $dir."; exit 0; }
 work="$(mktemp -d)"
 trap 'rm -rf "${work:?}"' EXIT
@@ -32,7 +32,15 @@ for ((start = 0; start < ${#ids[@]}; start += 6)); do
     id="$(cat "$run/$s/id.txt")"
     verdict="$(cat "$run/$s/rejeu.txt" 2>/dev/null || echo "pas de verdict (banc)")"
     echo "$id : $verdict"
-    [ "$verdict" = "oracle tenu" ] || failed=1
+    if [ "$verdict" != "oracle tenu" ]; then
+      failed=1
+      # Banc fiable 1.5: a red replay is kept (its journal, screens as text, verdict) and its end shown.
+      keep="$dir/_echecs/$(date +%F)/$id"
+      mkdir -p "$keep"
+      cp "$run/$s/"*.txt "$keep/" 2>/dev/null || true
+      echo "  gardé : ${keep#"$root"/}"
+      tail -10 "$run/$s/journal.txt" 2>/dev/null | sed 's/^/  | /'
+    fi
   done
 done
 exit "$failed"

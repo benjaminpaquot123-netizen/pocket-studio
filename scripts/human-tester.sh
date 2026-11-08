@@ -28,8 +28,7 @@ if [ "${PS_SKIP_SELFTEST:-}" != "" ]; then
     exit 3
   fi
   echo "selftest skipped: $PS_SKIP_SELFTEST (quarantined)" | tee -a "$dir/selftest-skipped.txt" >&2
-elif [ ! -f "$stamp" ] || [ "$(sed -n 1p "$stamp")" != "$(git rev-parse HEAD)" ] || \
-     [ "$(sed -n 2p "$stamp")" != "$(git diff HEAD --stat -- app scripts | tail -1)" ]; then
+elif ! scripts/bench/tampon.sh verifie "$dir"; then
   echo "No green self-test for this code: run scripts/bench/selftest.sh $dir first (or PS_SKIP_SELFTEST=<a quarantined test>)." >&2
   exit 3
 fi

@@ -32,5 +32,6 @@ PS_GRADLE_LOG="$lot/selftest-gradle.log" scripts/bench/gradle-file.sh :app:testD
 python3 -I scripts/bench/selftest-verdict.py "$results" scripts/bench/selftest-quarantaine.txt "$lot/selftest-resume.txt" \
   || fail "tests du banc (voir $lot/selftest-resume.txt et $lot/selftest-gradle.log)"
 
-{ git rev-parse HEAD; git diff HEAD --stat -- app scripts | tail -1; date -u +%FT%TZ; sed -n 's/^quarantaine rouge : //p' "$lot/selftest-resume.txt"; } >"$lot/selftest.ok"
+mapfile -t held < <(sed -n 's/^quarantaine rouge : \([^ ]*\) :.*/\1/p' "$lot/selftest-resume.txt")
+scripts/bench/tampon.sh ecris "$lot" "${held[@]}"
 echo "Selftest vert : $lot/selftest.ok ($(head -1 "$lot/selftest-resume.txt"))"

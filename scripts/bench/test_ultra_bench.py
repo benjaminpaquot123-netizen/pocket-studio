@@ -209,6 +209,14 @@ def bench_guards(d):
     r = subprocess.run([sys.executable, "-I", act, stray, "regarde"], capture_output=True, text=True)
     check(r.returncode == 2 and "Siège refusé" in r.stdout, "a folder outside …/lot<X>/<a-f>/ is refused:\n" + r.stdout)
 
+    # The stamp written by selftest.sh is the one human-tester.sh recognises (clean tree: the empty diff line kept).
+    tampon = os.path.join(HERE, "tampon.sh")
+    subprocess.run([tampon, "ecris", d], check=True)
+    check(subprocess.run([tampon, "verifie", d]).returncode == 0, "a fresh stamp fits this code:\n" + open(os.path.join(d, "selftest.ok")).read())
+    with open(os.path.join(d, "selftest.ok"), "w") as f:
+        f.write("0000000000000000000000000000000000000000\n\n")
+    check(subprocess.run([tampon, "verifie", d]).returncode != 0, "a stamp of another commit does not")
+
     verdict = os.path.join(HERE, "selftest-verdict.py")
     res = os.path.join(d, "results")
     os.makedirs(res)

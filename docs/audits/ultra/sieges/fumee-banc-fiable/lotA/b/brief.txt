@@ -1,0 +1,11 @@
+First read and follow /tmp/claude-0/-home-user-pocket-studio/2ed29bda-5e9a-5850-a6a7-bbf3293c7a09/scratchpad/ultra/fumee/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/tmp/claude-0/-home-user-pocket-studio/2ed29bda-5e9a-5850-a6a7-bbf3293c7a09/scratchpad/ultra/fumee/lotA/b (seat b, lot A; lang ja, device tablet11Land, font 100, mode pro, options amenee=padlive, mission padlive, budget 40 gestures).
+Profile (id t5-Ad): Performeur live japonais, tablette couchée (rejeu T4 B c : T4-01, T4-02, T4-05). Act as this person (habits, patience, vocabulary).
+Mission padlive; its 3 goals (ids, the bench checks them): son (un pad sonne au 1er toucher), stop (tout s'arrête quand tu le demandes), prise (une performance est enregistrée).
+Promises to check, one « promesse: » line each in your report, with its id:
+  - id=t5-Ad-1 | « ■ Tout » et « ■ piste » de la vue Live arrêtent ce qui joue (prise comprise)
+  - id=t5-Ad-2 | « ligne à la mesure » part même sans boucle qui tourne
+  - id=t5-Ad-3 | rien ne sonne tout seul en ouvrant Pad Live
+  - id=t5-Ad-4 | « Annuler » prévient avant d'effacer la prise
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.
+Smoke round of the repaired bench: play your mission normally; everything the bench says about itself goes in « incidents-banc: ».

@@ -287,14 +287,16 @@ abstract class HumanTester(private val seat: String) {
             // the app; it is the bench's: said, not played, not counted.
             val malformed = when (kind) {
                 "touche", "appui-long", "double-touche" -> num(1) == null || num(2) == null
-                "glisse", "tape" -> (1..4).any { num(it) == null }
+                "glisse" -> (1..4).any { num(it) == null }
+                // Plan 4.1: « tape X Y N tempo », the open challenge's pulse as the interval.
+                "tape" -> (1..3).any { num(it) == null } || (num(4) == null && words.getOrNull(4)?.lowercase() != "tempo")
                 "ecris" -> words.size < 2
                 "retour", "attends", "regarde" -> false
                 else -> true
             }
             if (malformed) {
                 journal.appendText("#$n BANC geste mal écrit : $cmd\n")
-                say("Banc : geste mal écrit (« $cmd ») : rien n'a été fait. Les gestes : touche X Y, appui-long X Y, double-touche X Y, glisse X1 Y1 X2 Y2, tape X Y N MS, ecris TEXTE, retour, attends S.")
+                say("Banc : geste mal écrit (« $cmd ») : rien n'a été fait. Les gestes : touche X Y, appui-long X Y, double-touche X Y, glisse X1 Y1 X2 Y2, tape X Y N MS (ou tape X Y N tempo : la pulsation du défi), ecris TEXTE, retour, attends S.")
                 if (kind != "attends" && kind != "regarde") gestures--
                 n++
                 continue
@@ -1195,13 +1197,31 @@ abstract class HumanTester(private val seat: String) {
             // Banc fiable 3.3 (P3, the challenges: round 5 C a #32, no star in 3 tries): « tape X Y N INTERVALLE_MS », N touches
             // of 60 ms at one place, one every INTERVALLE_MS of the bench's clock (the app's and the engine's), as a finger
             // keeping time does; one gesture. N 1 to 32, interval 100 to 4000 ms.
+            // Plan 4.1 (P3, the testers' 0 or 1 star): the challenge's touches count from « À toi ! » only (cause c': those
+            // while its example plays are not counted, by design); a « tape » given while it plays waits for the player's turn
+            // as a person does, and « tempo » as the interval is the challenge's pulse (the project's tempo, 80 to 120 BPM:
+            // cause d, a fixed 500 ms was 33 % too fast at 90 BPM).
             "tape" -> {
                 val n = f(3).toInt().coerceIn(1, 32)
-                val every = f(4).toLong().coerceIn(100, 4_000)
+                if (challengeNow() is com.pocketstudio.app.padlive.ChallengeUi.Listening) {
+                    say("Banc : l'exemple du défi joue encore : « tape » attend « À toi ! » (un toucher pendant l'exemple ne compte pas).")
+                    var waited = 0L
+                    while (challengeNow() is com.pocketstudio.app.padlive.ChallengeUi.Listening && waited < 20_000) { pass(50); waited += 50 }
+                }
+                val pulse = challengePulse()
+                if (words.getOrNull(4)?.lowercase() == "tempo" && pulse == null) {
+                    say("Banc : « tape … tempo » : aucun défi ouvert, rien n'a été tapé (écris l'intervalle en ms).")
+                    return
+                }
+                val every = (if (words.getOrNull(4)?.lowercase() == "tempo") Math.round(pulse!!.beatMs) else f(4).toLong()).coerceIn(100, 4_000)
+                // Plan 4.1: each touch on its own place of the clock (start + i × interval). `pass(every - 60)` after a touch
+                // let the frames' own time add up: 500 ms asked gave touches ~590 ms apart (2 of 4 at 120 BPM, the bench's
+                // own 1 star), so the time is now passed in small steps up to each touch's place.
+                val start = SystemClock.uptimeMillis()
                 for (i in 0 until n) {
+                    passUntil(start + i * every)
                     val d = SystemClock.uptimeMillis()
-                    touch(MotionEvent.ACTION_DOWN, f(1), f(2), d); pass(60); touch(MotionEvent.ACTION_UP, f(1), f(2), d)
-                    if (i < n - 1) pass(every - 60)
+                    touch(MotionEvent.ACTION_DOWN, f(1), f(2), d); passUntil(d + 60); touch(MotionEvent.ACTION_UP, f(1), f(2), d)
                 }
                 settle(900)
             }
@@ -1436,6 +1456,15 @@ abstract class HumanTester(private val seat: String) {
         shadowOf(Looper.getMainLooper()).idle()
     }
 
+    /** Time goes by up to [at] ([SystemClock.uptimeMillis]), in steps short enough not to pass it by more than a few ms. */
+    private fun passUntil(at: Long) {
+        while (true) {
+            val left = at - SystemClock.uptimeMillis()
+            if (left <= 0) return
+            pass(minOf(left, 8L))
+        }
+    }
+
     /** Time goes by, then the screen is let settle (the work off the main thread too, a rebuilt activity). */
     private fun settle(ms: Long) {
         pass(ms)
@@ -1636,12 +1665,27 @@ abstract class HumanTester(private val seat: String) {
         v?.let { pieceHeard(it) }?.let(::add)
         // The pads and notes the app sent to the bench's engine (« Montre-moi », each of its gestures heard).
         v?.let { engineHitsHeard(it) }?.let(::add)
+        // Plan 4.1 (P3): the challenge's pulse, what its example and its tempo light beat (the project's tempo kept between 80
+        // and 120 BPM), so that a tester taps at the right interval (« tape X Y N M » or « tape X Y N tempo »).
+        challengePulse()?.let { c -> add("défi « ${c.name} » : pulsation ${Math.round(c.bpm)} BPM = ${Math.round(c.beatMs)} ms entre deux temps") }
         // Live pads on a seat (padToggled): heard with the transport stopped too.
         v?.livePadsSoundingForTest?.takeIf { seatPads() && it.isNotEmpty() }?.let { on ->
             add(if (on.size == 1) "le pad live ${on.first() + 1} joue en boucle" else "les pads live ${on.sorted().joinToString(", ") { "${it + 1}" }} jouent en boucle")
         }
     }.let { if (it.isEmpty()) "Son : rien ne joue." else "Son : " + it.joinToString(" ; ") + "." }
         .let { s -> note?.let { n -> note = null; "$s\n$n" } ?: s }
+
+    /** Pad Live's challenge as its panel shows it (null: no app yet). */
+    private fun challengeNow(): com.pocketstudio.app.padlive.ChallengeUi? = runCatching { lastVm?.padLive?.challenge?.ui?.value }.getOrNull()
+
+    /** The challenge shown on the panel (null: closed, or no « coup » pad). */
+    private fun challengePulse(): com.pocketstudio.model.PadChallenge.Challenge? = when (val u = challengeNow()) {
+        is com.pocketstudio.app.padlive.ChallengeUi.Ready -> u.c
+        is com.pocketstudio.app.padlive.ChallengeUi.Listening -> u.c
+        is com.pocketstudio.app.padlive.ChallengeUi.YourTurn -> u.c
+        is com.pocketstudio.app.padlive.ChallengeUi.Done -> u.c
+        else -> null
+    }
 
     /** « Écouter le bout »: the stretch of one part of the song that plays, and how long it is. */
     private fun pieceHeard(v: RhythmViewModel): String? {

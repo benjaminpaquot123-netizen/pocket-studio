@@ -103,6 +103,7 @@ class BenchAmeneesTest : HumanTester("amenees") {
         val c = openChallenge()
         val listen = centerOf("padlive_challenge_listen") ?: error("no « Écouter »\n" + screenLines().joinToString("\n"))
         act("touche ${listen.first} ${listen.second}")
+        assertTrue("the example plays: ${rhythm()!!.padLive.challenge.ui.value}", rhythm()!!.padLive.challenge.ui.value is com.pocketstudio.app.padlive.ChallengeUi.Listening)
         val pad = centerOf("padlive_pad_${c.hits.first().pad}") ?: error("pad ${c.hits.first().pad} not on screen\n" + screenLines().joinToString("\n"))
         act("tape ${pad.first} ${pad.second} ${c.hits.size} tempo")
         act("attends 1")

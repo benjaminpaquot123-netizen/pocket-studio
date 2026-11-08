@@ -2,6 +2,7 @@ package com.pocketstudio.app.human
 
 import com.pocketstudio.app.rhythm.LiveUi
 import com.pocketstudio.app.rhythm.RhythmViewModel
+import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.model.sceneSteps
 import com.pocketstudio.model.songBars
 import com.pocketstudio.model.songStepOf
@@ -30,7 +31,15 @@ internal class BenchPlayhead {
         // on its launch line; without them it stayed « Prêt » for good.
         vm.takeClockForTest = steps
         val songIndex = vm.sessionUi.value.songIndex
-        if (songIndex >= 0 && songIndex < p.song.size) {
+        val engine = NativeEngine.sink
+        if (songIndex >= 0 && songIndex < p.song.size && engine != null) {
+            // PLAN-RESTE R.1 (tel-09; T4-16, T5-Ab-14): the song's position is the engine's own (as the app's pollLive reads
+            // it on a phone). Counted here from ▶ plus the start of the part playing, the first part was counted twice once
+            // the song moved on (73 beats shown for 41 played), and the clamp held it on the song's last beat.
+            val songStep = engine.songStep()
+            set(vm, "_playBar", if (songStep < 0) -1 else songStep / spb)
+            set(vm, "_live", LiveUi(currentStep = if (songStep < 0) -1 else (songStep - p.songStepOf(songIndex)).coerceAtLeast(0), absoluteStep = engine.absoluteStep(), songStep = songStep))
+        } else if (songIndex >= 0 && songIndex < p.song.size) {
             val songStep = (p.songStepOf(songIndex) + steps).coerceAtMost(p.songBars.coerceAtLeast(1) * spb - 1)
             set(vm, "_playBar", songStep / spb)
             set(vm, "_live", LiveUi(currentStep = songStep - p.songStepOf(songIndex), absoluteStep = songStep, songStep = songStep))

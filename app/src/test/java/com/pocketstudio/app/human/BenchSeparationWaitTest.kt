@@ -31,11 +31,13 @@ class BenchSeparationWaitTest : HumanTester("attente") {
         tap("remix_pick")
         assertNotNull(screenLines().joinToString("\n"), centerOf("remix_model_ask_ok"))
         tap("remix_model_ask_ok")
+        // What the person reads once the song is separated: its card, with its length, tempo and key (and no progress line).
+        fun separated() = screenLines().any { "0:40 · 120 BPM" in it } && screenLines().none { "Séparation de" in it }
         var waits = 0
-        while (centerOf("remix_open_board") == null && waits < 2) {
+        while (!separated() && waits < 2) {
             act("attends 30")
             waits++
         }
-        assertTrue("separated after $waits « attends 30 »:\n" + screenLines().joinToString("\n"), centerOf("remix_open_board") != null)
+        assertTrue("separated after $waits « attends 30 »:\n" + screenLines().joinToString("\n"), separated())
     }
 }

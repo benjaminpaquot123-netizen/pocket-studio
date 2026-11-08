@@ -1243,7 +1243,8 @@ abstract class HumanTester(private val seat: String) {
     private fun slowWorkDone() {
         val until = System.currentTimeMillis() + SLOW_WORK_CAP_MS
         var waited = false
-        while (slowBenchWorkBusy()) {
+        // The separation's own flag too: between two of its steps (or before its service ran) no thread is in the stand-in.
+        while (slowBenchWorkBusy() || SeparationJob.state.value.busy) {
             if (System.currentTimeMillis() >= until) {
                 say("Banc : le travail en cours (téléchargement ou séparation simulés) n'est pas fini après ${SLOW_WORK_CAP_MS / 1000} s ; attends encore. Ce n'est pas un défaut de l'appli.")
                 return
@@ -1252,6 +1253,9 @@ abstract class HumanTester(private val seat: String) {
             Thread.sleep(50)
             shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(50))
             runCatching { compose.mainClock.advanceTimeBy(50) }
+            // What a phone does meanwhile: the file picker answered, a service started (the separation after the download).
+            picker()
+            services()
         }
         if (waited) settle(200)
     }

@@ -26,7 +26,11 @@ for zone in "${zones[@]}"; do
   read_sha="$(printf '%s\n' "$text" | sed -n 's/^.*[Rr]elu *: *\([0-9a-f]\{7,40\}\).*$/\1/p' | head -1)"
   [ -n "$read_sha" ] && git cat-file -e "$read_sha^{commit}" 2>/dev/null \
     || { echo "$zone: the review does not name the commit it read (« relu : <sha> »): not merged." >&2; exit 3; }
-  after="$(git diff --name-only "$read_sha" "eq/$tour-$zone" | grep -vxF "$review" || true)"
+  # (A file changed after the review only because the team merged fx-int in, i.e. now equal to fx-int's, is not the team's.)
+  after=""
+  for f in $(git diff --name-only "$read_sha" "eq/$tour-$zone" | grep -vxF "$review" || true); do
+    git diff --quiet HEAD "eq/$tour-$zone" -- "$f" || after="$after $f"
+  done
   [ -z "$after" ] || { echo "$zone: changed after the review ($read_sha): $after: not merged." >&2; exit 3; }
   printf '%s\n' "$text" | grep -Eq 'Verdict *: *0 bloquant, *0 grave' \
     || { echo "$zone: the review's verdict is not « 0 bloquant, 0 grave »: not merged." >&2; exit 3; }

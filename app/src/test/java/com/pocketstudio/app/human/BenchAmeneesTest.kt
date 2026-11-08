@@ -73,41 +73,84 @@ class BenchAmeneesTest : HumanTester("amenees") {
         return stars
     }
 
+    /** The pulse the sound line states while a challenge is open (« pulsation ~N BPM »), in BPM. */
+    private fun pulseOf(sound: String): Long {
+        val pulse = Regex("pulsation ~(\\d+) BPM").find(sound)
+        assertNotNull("the sound line states the challenge's pulse\n$sound", pulse)
+        return pulse!!.groupValues[1].toLong()
+    }
+
+    /** Taps challenge [c]'s pad [n] times every [everyMs] (the bench's hand: ± HumanTester.TAPE_JITTER_MS). */
+    private fun tapPad(c: com.pocketstudio.model.PadChallenge.Challenge, every: String) {
+        val pad = centerOf("padlive_pad_${c.hits.first().pad}") ?: error("pad ${c.hits.first().pad} not on screen\n" + screenLines().joinToString("\n"))
+        act("tape ${pad.first} ${pad.second} ${c.hits.size} $every")
+    }
+
     /**
-     * Banc fiable 3.3 (P3; round 5 C a #32: no star in 3 tries), plan 4.1: the tester taps « Boum boum » at the challenge's
-     * pulse, which the sound line states (« pulsation N BPM = M ms »: the challenge's tempo is the project's, 80 to 120 BPM,
-     * not a fixed 500 ms), after « À moi ! »: 3 stars, as the app gives them (ChallengeControllerTest).
+     * Banc fiable 3.3 (P3; round 5 C a #32: no star in 3 tries), plan 4.1: the tester taps « Boum boum » at the pulse the
+     * sound line states (« pulsation ~N BPM », as the ear gets it), after « À moi ! », with a hand's error (±30 ms): 3 stars,
+     * as the app gives them (ChallengeControllerTest). Project at 120 BPM: 500 ms.
      */
     @Test
     fun aTappedRhythmIsScored() {
         val c = openChallenge()
         val go = centerOf("padlive_challenge_go")!!
         val sound = act("touche ${go.first} ${go.second}")
-        val pulse = Regex("pulsation (\\d+) BPM = (\\d+) ms").find(sound)
-        assertNotNull("the sound line states the challenge's pulse\n$sound", pulse)
-        assertEquals(sound, Math.round(c.bpm), pulse!!.groupValues[1].toLong())
-        assertEquals(sound, Math.round(c.beatMs), pulse.groupValues[2].toLong())
-        val pad = centerOf("padlive_pad_${c.hits.first().pad}") ?: error("pad ${c.hits.first().pad} not on screen\n" + screenLines().joinToString("\n"))
-        act("tape ${pad.first} ${pad.second} ${c.hits.size} ${pulse.groupValues[2]}")
+        val bpm = pulseOf(sound)
+        assertEquals(sound, Math.round(c.bpm), bpm)
+        tapPad(c, "${Math.round(60_000.0 / bpm)}")
         act("attends 1")
         assertEquals("challenge 1 tapped at its pulse after « À moi ! »", 3, stars(c, "at the pulse"))
     }
 
     /**
-     * Plan 4.1, cause (c'): touches while the example plays are not counted (by design: « Écoute bien… »). « tape » given
-     * right after « Écouter » waits for the player's turn as a person waits for « À toi ! », then taps at the pulse
-     * (« tape X Y N tempo »): 3 stars.
+     * Plan 4.1, cause (d) on the bench: the project at 90 BPM, the challenge's pulse is 90 (667 ms), not the 500 ms the bench
+     * used to tap: read from the sound line, tapped with « tempo » after « À moi ! »: 3 stars.
      */
     @Test
-    fun aTapRightAfterListeningWaitsForTheTurn() {
+    fun aTappedRhythmAtNinetyBpmIsScored() {
+        openChallenge()
+        rhythm()!!.setTempo(90.0)
+        act("attends 1")
+        // The challenge made again at the project's new tempo, as its level's button does.
+        val level = centerOf("padlive_challenge_level_1") ?: error("no level 1\n" + screenLines().joinToString("\n"))
+        act("touche ${level.first} ${level.second}")
+        val p = project()!!
+        assertEquals(90.0, p.tempoBpm, 0.0)
+        val c = com.pocketstudio.model.PadChallenge.make(1, com.pocketstudio.model.PadChallenge.shotsOf(p.live, p.padLive.shownPage), p.tempoBpm)!!
+        assertEquals(90.0, c.bpm, 0.0)
+        val go = centerOf("padlive_challenge_go") ?: error("no « À moi ! »\n" + screenLines().joinToString("\n"))
+        val sound = act("touche ${go.first} ${go.second}")
+        assertEquals(sound, 90L, pulseOf(sound))
+        tapPad(c, "tempo")
+        act("attends 1")
+        assertEquals("challenge 1 at 90 BPM tapped at its pulse", 3, stars(c, "at 90 BPM"))
+    }
+
+    /**
+     * Plan 4.1, cause (c') on the bench (review: the bench no longer waits for the tester): « tape » right after « Écouter »
+     * taps during the example, the sound line saying « exemple en cours »: the app counts none of those touches (by design,
+     * and T5-DEFI-ECOUTE at its edge). Once « À toi ! » shows, the same « tape » gives 3 stars.
+     */
+    @Test
+    fun aTapDuringTheExampleIsNotCounted() {
         val c = openChallenge()
         val listen = centerOf("padlive_challenge_listen") ?: error("no « Écouter »\n" + screenLines().joinToString("\n"))
-        act("touche ${listen.first} ${listen.second}")
-        assertTrue("the example plays: ${rhythm()!!.padLive.challenge.ui.value}", rhythm()!!.padLive.challenge.ui.value is com.pocketstudio.app.padlive.ChallengeUi.Listening)
-        val pad = centerOf("padlive_pad_${c.hits.first().pad}") ?: error("pad ${c.hits.first().pad} not on screen\n" + screenLines().joinToString("\n"))
-        act("tape ${pad.first} ${pad.second} ${c.hits.size} tempo")
+        val sound = act("touche ${listen.first} ${listen.second}")
+        val ctl = rhythm()!!.padLive.challenge
+        assertTrue("the example plays: ${ctl.ui.value}", ctl.ui.value is com.pocketstudio.app.padlive.ChallengeUi.Listening)
+        assertTrue(sound, "exemple en cours" in sound)
+        tapPad(c, "tempo")
+        val until = System.currentTimeMillis() + 30_000
+        while (ctl.ui.value is com.pocketstudio.app.padlive.ChallengeUi.Listening) {
+            assertTrue("the example never ends", System.currentTimeMillis() < until)
+            act("attends 1")
+        }
+        assertEquals("touches during the example are not counted", com.pocketstudio.app.padlive.ChallengeUi.YourTurn(c, 0), ctl.ui.value)
+        assertEquals(0, stars(c, "during the example"))
+        tapPad(c, "tempo")
         act("attends 1")
-        assertEquals("challenge 1 tapped at « tempo » right after « Écouter »", 3, stars(c, "after listening"))
+        assertEquals("challenge 1 tapped at « tempo » once it is the player's turn", 3, stars(c, "after the example"))
     }
 
     /**

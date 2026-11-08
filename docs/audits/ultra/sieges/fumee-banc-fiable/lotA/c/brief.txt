@@ -1,0 +1,10 @@
+First read and follow /tmp/claude-0/-home-user-pocket-studio/2ed29bda-5e9a-5850-a6a7-bbf3293c7a09/scratchpad/ultra/fumee/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/tmp/claude-0/-home-user-pocket-studio/2ed29bda-5e9a-5850-a6a7-bbf3293c7a09/scratchpad/ultra/fumee/lotA/c (seat c, lot A; lang fr, device phone, font 100, mode -, options -, mission exports, budget 40 gestures).
+Profile (id t5-Cd): Musicien qui échange : exporte le projet (.zip) et le MIDI (sans import : le banc n'a pas de sélecteur de fichiers hors Remix). Act as this person (habits, patience, vocabulary).
+Mission exports; its 3 goals (ids, the bench checks them): spotify (un fichier « streaming »), club (un fichier « club »), retrouve (retrouvés dans Mes exports).
+Promises to check, one « promesse: » line each in your report, with its id:
+  - id=t5-Cd-1 | L'export du projet (.zip) et du MIDI se trouvent là où l'aide le dit
+  - id=t5-Cd-2 | « Mes exports » les liste
+  - id=t5-Cd-3 | la page MIDI ne dit pas « ne gère pas le MIDI » sous « reconnu tout seul »
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.
+Smoke round of the repaired bench: play your mission normally; everything the bench says about itself goes in « incidents-banc: ».

@@ -105,6 +105,29 @@ class BenchPlayThenTabsTest : HumanTester("play-tabs") {
         backStopAndATab("tab_simple_Rythme")
     }
 
+    /**
+     * Banc fiable 3.2 (T4-17, round 5 A b, F a, F b #63, F c #8): the top bar's « mesure N/… » stayed on its first bar while
+     * the song played (the bench's engine never said where the song was); on Benjamin's phone it goes on (trial 2,
+     * 2026-11-06: 57 → 63 in 13 s). The counter read on the screen changes between two waits.
+     */
+    @Test
+    fun theBarCounterGoesOnWhileTheSongPlays() {
+        simpleSong("Techno", "techno")
+        tap("top_play")
+        // « mesure N/T » read on the screen: N goes forward and never past T (review of 3.2: « different » was not enough).
+        fun counter(): Pair<Int, Int> {
+            val line = screenLines().firstOrNull { "mesure " in it } ?: error("no bar counter\n" + screenLines().joinToString("\n"))
+            val m = Regex("""mesure (\d+)/(\d+)""").find(line) ?: error("no « mesure N/T » in « $line »")
+            return m.groupValues[1].toInt() to m.groupValues[2].toInt()
+        }
+        act("attends 1")
+        val (first, total) = counter()
+        act("attends 4")
+        val (later, total2) = counter()
+        assertTrue("still playing", playing())
+        assertTrue("the counter went on: $first → $later (of $total)", later > first && later <= total && total2 == total)
+    }
+
     @Test
     fun theGuidesListenThenATab() {
         simpleSong("House", "house")

@@ -5,6 +5,7 @@
     human-act.py <seat folder> regarde image            its image (with a grid), counted half a gesture
     human-act.py <seat folder> touche X Y               a tap at (X, Y), the screen's pixels
     human-act.py <seat folder> appui-long X Y           a long press
+    human-act.py <seat folder> tape X Y N MS            N touches at (X, Y), one every MS ms (a rhythm: the challenges)
     human-act.py <seat folder> glisse X1 Y1 X2 Y2       a swipe (scroll, slider)
     human-act.py <seat folder> ecris TEXTE              typing in the field that has the focus
     human-act.py <seat folder> retour                   the phone's back gesture

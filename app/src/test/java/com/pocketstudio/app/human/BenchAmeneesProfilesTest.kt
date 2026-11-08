@@ -59,8 +59,18 @@ class BenchAmeneesProfilesTest(private val amenee: String, private val start: St
             "lang=ja device=phone411 font=100 mode=simple theme=night",
         )
 
+        /**
+         * Banc fiable 3.2 (control 13): the profiles of the lot about to be played, when scripts/bench/selftest.sh passes
+         * its seats' start.txt (-Pbench.profiles=<file>, one « k=v k=v » line per seat, the bench's own keys only);
+         * the round-1 list above otherwise.
+         */
+        private fun lotProfiles(): List<String> {
+            val file = System.getProperty("ps.bench.profiles")?.takeIf { it.isNotBlank() }?.let(::File) ?: return PROFILES
+            return file.readLines().map { it.trim() }.filter { it.isNotEmpty() }.distinct().ifEmpty { PROFILES }
+        }
+
         @JvmStatic
         @ParameterizedRobolectricTestRunner.Parameters(name = "{0} {1}")
-        fun cases(): List<Array<Any>> = SeatOptions.AMENEES.flatMap { a -> PROFILES.map { arrayOf<Any>(a, it) } }
+        fun cases(): List<Array<Any>> = lotProfiles().let { profiles -> SeatOptions.AMENEES.flatMap { a -> profiles.map { arrayOf<Any>(a, it) } } }
     }
 }

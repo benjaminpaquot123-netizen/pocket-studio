@@ -680,7 +680,7 @@ tab_simple_Morceau|titre ayara git / ayar burada|incompris	nouveau	tour-4
 tab_simple_Rythme|carte kit house / unduh kit house 4 mb|affichage	nouveau	tour-4	
 timeline_grid|appui-long sur la partie f · strofa 2 dans la timeline|incompris	nouveau	tour-4	
 timeline_screen/tab_Structure|thumb_share|incompris	nouveau	tour-4	
-dialogue:project_name_field|name_clear|rien	banc	tour-4	tour-4 T4-19 d3eccff	tour-4
+dialogue:project_name_field|name_clear|rien	corrigé	tour-4	tour-4 T4-19 d3eccff ; banc fiable 3.2 (verdicts.tsv)	tour-4
 dialogue:song_import|import_cancel|mauvais-ecran	nouveau	tour-4	
 mixer/tab_Mix|analyser|rien	nouveau	tour-4	
 dialogue:part_header_menu|part_pick_2|rien	nouveau	tour-5	
@@ -844,7 +844,7 @@ dialogue:welcome|launch_challenges|lent	nouveau	tour-5
 dialogue:wizard|wizard_style_play_house|incompris	nouveau	tour-5	
 dialogue:« Partager mon morceau · House-m »|niveau tres fort les plateformes le baisseront|incompris	nouveau	tour-5	
 dialogue:« मेरा गाना शेयर करो · Lo-fi-hip »|लेवल तेज कलब मयूजिक जैसा|texte-faux	nouveau	tour-5	
-guide_panel/tab_simple_Morceau|イントロ 小節 1/64|texte-faux	nouveau	tour-5	
+guide_panel/tab_simple_Morceau|イントロ 小節 1/64|texte-faux	corrigé	tour-5	banc fiable 3.2 (verdicts.tsv)	tour-5
 live_grid/tab_Live|live_mute_remix|texte-faux	nouveau	tour-5	
 live_grid|live_take_undo|incompris	nouveau	tour-5	
 mixer/tab_Mix|auto_show_0|rien	nouveau	tour-5	

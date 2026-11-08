@@ -209,6 +209,9 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
     rows = [r for r in load_tsv(base_path) if r.get("cle")]
     base = {r["cle"]: r.get("etat", "?") for r in rows}
     tour = tour or os.path.basename(os.path.normpath(round_dir))
+    # External audit: a « banc » verdict contradicts only at a LATER round (one given at this round is this round's).
+    banc = {r["cle"] for r in load_tsv(verdicts_path or "") if r.get("cle") and r.get("verdict", "").startswith("banc")
+            and earlier(r.get("tour", ""), tour)}
     seen_in = {r["cle"]: sorted((t for t in r.get("vu", "").split(",") if t.strip()), key=lambda t: (tour_no(t) is None, tour_no(t) or 0))
                for r in rows}
     fixed_at = {r["cle"]: r.get("corrige_au", "").strip() for r in rows}
@@ -226,7 +229,6 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
             for t in seen_in.get(r["cle"], []):
                 if earlier(t, tour):
                     button_seen.setdefault(parts[1], set()).add(t)
-    banc = {r["cle"] for r in load_tsv(verdicts_path or "") if r.get("cle") and r.get("verdict", "").startswith("banc")}
     clusters, rejected, seats, promises, incidents = {}, [], [], [], []
     for f in reports(round_dir):
         for b in blocks(read(f)):

@@ -283,8 +283,24 @@ abstract class HumanTester(private val seat: String) {
             journal.appendText("#$n > $cmd\n")
             if (cmd == "fin") { end("fin"); return }
             afterWait = kind == "attends" || kind == "regarde"
+            // External audit: a gesture written wrong (« tape 10 20 4 ») threw inside the app's turn and read as a crash of
+            // the app; it is the bench's: said, not played, not counted.
+            val malformed = when (kind) {
+                "touche", "appui-long", "double-touche" -> num(1) == null || num(2) == null
+                "glisse", "tape" -> (1..4).any { num(it) == null }
+                "ecris" -> words.size < 2
+                "retour", "attends", "regarde" -> false
+                else -> true
+            }
+            if (malformed) {
+                journal.appendText("#$n BANC geste mal écrit : $cmd\n")
+                say("Banc : geste mal écrit (« $cmd ») : rien n'a été fait. Les gestes : touche X Y, appui-long X Y, double-touche X Y, glisse X1 Y1 X2 Y2, tape X Y N MS, ecris TEXTE, retour, attends S.")
+                if (kind != "attends" && kind != "regarde") gestures--
+                n++
+                continue
+            }
             val points = when (kind) {
-                "touche", "appui-long", "double-touche" -> listOfNotNull(num(1)?.let { x -> num(2)?.let { x to it } })
+                "touche", "appui-long", "double-touche", "tape" -> listOfNotNull(num(1)?.let { x -> num(2)?.let { x to it } })
                 "glisse" -> listOfNotNull(num(1)?.let { x -> num(2)?.let { x to it } }, num(3)?.let { x -> num(4)?.let { x to it } })
                 else -> emptyList()
             }
@@ -996,14 +1012,44 @@ abstract class HumanTester(private val seat: String) {
                         "(dossier Musique, 0:${BenchSong.SECONDS}, ${"%.1f".format(file.length() / 1e6).replace('.', ',')} Mo) : " +
                         "ta chanson préférée, avec une batterie, une basse, une voix qui chante et une nappe.",
                 )
+            } else if ((types.contains("application/zip") && projectImportShown()) || (types.contains("audio/midi") && !types.contains("application/zip"))) {
+                // Banc fiable 3.3 (P1; round 5 C d, the import of a .zip or a .mid out of reach): the bench gives a file
+                // made here from the project open now (never one of Benjamin's), as a friend would send it.
+                val zip = types.contains("application/zip")
+                val name = if (zip) "Le-morceau-de-Sam.pocketstudio.zip" else "Le-morceau-de-Sam.mid"
+                val file = File(app.cacheDir, "Téléchargements/$name").also { it.parentFile?.mkdirs() }
+                val made = runCatching {
+                    if (zip) {
+                        val catalog = com.pocketstudio.model.ProjectCatalog(File(app.filesDir, "projects"), File(app.filesDir, "projects-trash"))
+                        file.outputStream().use { catalog.exportZip(com.pocketstudio.app.projects.CurrentProject.get(app), it) }
+                    } else {
+                        file.writeBytes(com.pocketstudio.model.MidiFile.export(lastVm?.project?.value ?: error("no project")))
+                    }
+                }.isSuccess && file.length() > 0
+                if (made) {
+                    val uri = android.net.Uri.Builder().scheme("content").authority("com.android.providers.downloads.documents")
+                        .appendPath("Téléchargements").appendPath(name).build()
+                    shadowOf(app.contentResolver).registerInputStreamSupplier(uri) { file.inputStream() }
+                    shadowOf(a).receiveResult(intent, Activity.RESULT_OK, Intent().setData(uri).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION))
+                    say("Le sélecteur de fichiers du téléphone s'est ouvert ; tu y as choisi « $name » (dossier Téléchargements, ${"%.1f".format(file.length() / 1e3).replace('.', ',')} Ko), envoyé par un ami.")
+                } else {
+                    shadowOf(a).receiveResult(intent, Activity.RESULT_CANCELED, null)
+                    say("Le sélecteur de fichiers s'est ouvert, mais le banc n'a pas pu fabriquer de fichier à proposer : rien n'a été choisi (banc).")
+                }
             } else {
                 shadowOf(a).receiveResult(intent, Activity.RESULT_CANCELED, null)
-                say("Le sélecteur de fichiers s'est ouvert, mais sur ce banc il ne propose une chanson que pour le Remix : rien n'a été choisi.")
+                say("Le sélecteur de fichiers s'est ouvert, mais sur ce banc il ne propose une chanson que pour le Remix, et un projet (.zip) ou un MIDI (.mid) quand l'appli les demande : rien n'a été choisi.")
             }
             answered = true
         }
         if (answered) settle(900)
     }
+
+    /**
+     * Review of 3.3: the sound packs' import asks the same types as a project's (.zip); a project given there made a false
+     * « Aucun son dans ce .zip ». The bench gives a project only where a project is imported (Mes projets, a new project).
+     */
+    private fun projectImportShown(): Boolean = shownOnScreen("starter_import") || shownOnScreen("project_new")
 
     /**
      * The services the app started: the separation (and its model's download, from the bench's
@@ -1146,6 +1192,19 @@ abstract class HumanTester(private val seat: String) {
                 settle(900)
             }
             "appui-long" -> { val d = SystemClock.uptimeMillis(); touch(MotionEvent.ACTION_DOWN, f(1), f(2), d); pass(900); touch(MotionEvent.ACTION_UP, f(1), f(2), d); settle(900) }
+            // Banc fiable 3.3 (P3, the challenges: round 5 C a #32, no star in 3 tries): « tape X Y N INTERVALLE_MS », N touches
+            // of 60 ms at one place, one every INTERVALLE_MS of the bench's clock (the app's and the engine's), as a finger
+            // keeping time does; one gesture. N 1 to 32, interval 100 to 4000 ms.
+            "tape" -> {
+                val n = f(3).toInt().coerceIn(1, 32)
+                val every = f(4).toLong().coerceIn(100, 4_000)
+                for (i in 0 until n) {
+                    val d = SystemClock.uptimeMillis()
+                    touch(MotionEvent.ACTION_DOWN, f(1), f(2), d); pass(60); touch(MotionEvent.ACTION_UP, f(1), f(2), d)
+                    if (i < n - 1) pass(every - 60)
+                }
+                settle(900)
+            }
             "glisse" -> {
                 val d = SystemClock.uptimeMillis()
                 val (x1, y1, x2, y2) = listOf(f(1), f(2), f(3), f(4))
@@ -1246,7 +1305,7 @@ abstract class HumanTester(private val seat: String) {
         // The separation's own flag too: between two of its steps (or before its service ran) no thread is in the stand-in.
         while (slowBenchWorkBusy() || SeparationJob.state.value.busy) {
             if (System.currentTimeMillis() >= until) {
-                say("Banc : le travail en cours (téléchargement ou séparation simulés) n'est pas fini après ${SLOW_WORK_CAP_MS / 1000} s ; attends encore. Ce n'est pas un défaut de l'appli.")
+                say("Banc : le travail en cours (téléchargement ou séparation) n'est pas fini après ${SLOW_WORK_CAP_MS / 1000} s d'attente réelle ; attends encore. Si cela dure, note-le dans « incidents-banc » avec banc?: temps : ce peut être le banc ou l'appli.")
                 return
             }
             waited = true

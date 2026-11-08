@@ -1,126 +1,96 @@
 {
-  "id": "ultra-0",
-  "milestone": "Audit ultra : la liste du téléphone (chaque point finit par un chiffre ou une capture à recopier)",
+  "id": "banc-fiable",
+  "milestone": "Banc fiable : 18 essais pour trancher ce que le banc ne peut pas dire (chaque point finit par une réponse à recopier)",
   "items": [
     {
-      "id": "padlive_chrono",
-      "title": "Pad Live chronométré",
-      "hint": "Depuis « Que veux-tu faire ? », touche Pad Live avec un chrono. À recopier : les secondes jusqu'au premier son (visé : moins de 5) et jusqu'au premier rythme qui tourne (visé : moins de 30)."
+      "id": "tel-01",
+      "title": "Renommer après ✕ Effacer",
+      "hint": "Mes projets › ⋮ › Renommer : touche le champ, touche ✕ Effacer, puis tape un nom SANS retoucher le champ. À recopier : « les lettres s'écrivent » ou « il a fallu retoucher le champ »."
     },
     {
-      "id": "oboetester",
-      "title": "OboeTester : 1, 2 et 4 rafales",
-      "hint": "Dans OboeTester, mesure la latence en sortie à 1, 2 puis 4 rafales (guide envoyé avec l'APK). À recopier : les trois latences en millisecondes et le nombre de glitchs de chacune."
+      "id": "tel-03",
+      "title": "Le projet envoyé dans « Mes exports »",
+      "hint": "Dans un projet : Partager › Envoyer le projet (.zip), puis ouvre « Mes exports ». À recopier : « le .zip est dans la liste » ou « absent »."
     },
     {
-      "id": "bt_live",
-      "title": "Casque Bluetooth pendant le Live",
-      "hint": "Lance le Live, connecte le casque Bluetooth, joue 1 min, déconnecte-le, joue encore. À recopier : les « Décrochages audio » de l'écran Recette avant et après (Plus › Son), et si le son a coupé (oui ou non)."
+      "id": "tel-04",
+      "title": "Taille d'un export WAV",
+      "hint": "Mix › exporte un WAV d'au moins 30 secondes, puis ouvre « Mes exports ». À recopier : la taille affichée (en Mo ou Ko)."
     },
     {
-      "id": "usb_headset",
-      "title": "Casque USB-C",
-      "hint": "Branche un casque USB-C pendant la lecture, puis débranche-le. À recopier : les « Décrochages audio » de l'écran Recette avant et après."
+      "id": "tel-05",
+      "title": "Pad Live s'ouvre en silence ?",
+      "hint": "Depuis « Que veux-tu faire ? », touche Pad Live et ne touche plus rien pendant 5 secondes. À recopier : « silence » ou « un son est parti tout seul »."
     },
     {
-      "id": "call_take",
-      "title": "Appel pendant une prise",
-      "hint": "Enregistre au micro, fais-toi appeler, raccroche. À recopier : une capture de la piste après l'appel (la prise est gardée ?) et les « Décrochages audio » de l'écran Recette."
+      "id": "tel-06",
+      "title": "Longueur de « Prêt à partager ? »",
+      "hint": "Mix : règle la longueur sur 16 mesures, puis Partager › Prêt à partager ? et exporte. À recopier : la durée du fichier obtenu (en secondes)."
     },
     {
-      "id": "screen_off",
-      "title": "10 min écran éteint",
-      "hint": "Lance un morceau, éteins l'écran 10 min, rallume. À recopier : le temps écoulé affiché sur la barre de lecture et les « Décrochages audio » de l'écran Recette."
+      "id": "tel-07",
+      "title": "Alerte après un export",
+      "hint": "Juste après un export (WAV ou MIDI), sans rien toucher d'autre : l'alerte « le morceau a changé » apparaît-elle ? À recopier : oui ou non."
     },
     {
-      "id": "battery_saver",
-      "title": "Économie de batterie en lecture",
-      "hint": "Active l'économie de batterie pendant la lecture, écoute 2 min. À recopier : les « Décrochages audio » de l'écran Recette avant et après,."
+      "id": "tel-08",
+      "title": "« Tout couper » de Pad Live",
+      "hint": "Lance le morceau (▶), ouvre Pad Live, touche « Tout couper ». À recopier : « tout s'arrête » ou « la musique du projet continue »."
     },
     {
-      "id": "two_hours_bt",
-      "title": "Le projet de 2 h au casque Bluetooth",
-      "hint": "Ouvre le plus long projet, écoute-le en entier au casque Bluetooth (tu peux faire autre chose). À recopier : la durée écoutée en minutes et les « Décrochages audio » de l'écran Recette à la fin."
+      "id": "tel-09",
+      "title": "« Jouer » en Mode simple",
+      "hint": "En Mode simple, onglet Mon morceau, touche « Jouer » sur un morceau de plusieurs parties. À recopier : « tout le morceau » ou « une boucle de la même partie »."
     },
     {
-      "id": "live_30_bt",
-      "title": "30 min de Live au casque Bluetooth",
-      "hint": "Joue 30 min de Live au casque Bluetooth. À recopier : le pourcentage de batterie avant et après, et si le téléphone est chaud (oui ou non)."
+      "id": "tel-10",
+      "title": "Mélodie après un passage par Pad Live",
+      "hint": "Enregistre une mélodie au clavier (3 ou 4 notes), touche Retour pendant la prise, va dans Pad Live, reviens au projet. À recopier : le nombre de notes encore là."
     },
     {
-      "id": "separate_4min",
-      "title": "Séparer une chanson de 4 min",
-      "hint": "Remix › une chanson de 4 min, éteins l'écran pendant la séparation. À recopier : la durée en minutes, si le téléphone a chauffé (oui ou non), et une capture des 4 pistes à la fin."
+      "id": "tel-11",
+      "title": "Glisser sur les effets de Pad Live",
+      "hint": "Dans Pad Live, glisse le doigt de haut en bas sur la colonne des effets. À recopier : « la colonne défile » ou « un effet s'est déclenché »."
     },
     {
-      "id": "generate_sound",
-      "title": "Générer un son",
-      "hint": "Voix › Générer : un son de 5 s. À recopier : la durée en secondes jusqu'au son prêt."
+      "id": "tel-12",
+      "title": "« ■ Tout » de la vue Live",
+      "hint": "Pro › Live (la grille des briques) : lance deux briques, puis touche « ■ Tout ». À recopier : « tout s'arrête » ou « quelque chose joue encore »."
     },
     {
-      "id": "perfetto",
-      "title": "Une trace Perfetto",
-      "hint": "Suis le guide « Trace Perfetto » envoyé avec l'APK pendant 30 s de Live. À recopier : le nom du fichier de trace envoyé."
+      "id": "tel-13",
+      "title": "Changer de partie pendant la lecture",
+      "hint": "Pro : pendant que le morceau joue, choisis la partie B dans le menu des parties. À recopier : « on passe sur B » ou « on reste sur A »."
     },
     {
-      "id": "stretch",
-      "title": "Boucle et chanson étirées",
-      "hint": "Change le tempo d'un morceau avec une boucle et une chanson du Remix, de 120 à 128. À recopier : une note sur 5 pour le son étiré, et une capture si quelque chose grésille."
+      "id": "tel-14",
+      "title": "Le curseur d'une courbe pendant la lecture",
+      "hint": "Mix › une courbe (ex. Filtre) › « Voir le réglage » pendant que le morceau joue. À recopier : « le curseur bouge avec la courbe » ou « il reste figé »."
     },
     {
-      "id": "voice_notes",
-      "title": "La voix en notes",
-      "hint": "Remix › Voix en notes sur une chanson chantée. À recopier : une note sur 5 pour la justesse."
+      "id": "tel-15",
+      "title": "Fin du Remix annoncée coupée ?",
+      "hint": "Place une chanson du Remix dans un projet plus long qu'elle, puis Partager › « Prêt ». À recopier : « fin coupée » annoncé ou non, et si c'est vrai à l'écoute."
     },
     {
-      "id": "masters",
-      "title": "Masters Spotify et club",
-      "hint": "Exporte un de tes morceaux en master Spotify puis en master club. À recopier : les deux volumes en LUFS affichés sous l'export."
+      "id": "tel-16",
+      "title": "La démo s'arrête quand on la quitte ?",
+      "hint": "Nouveau morceau : écoute une démo de style, puis quitte la liste sans rien choisir. À recopier : « le son s'arrête » ou « il continue »."
     },
     {
-      "id": "tablet",
-      "title": "Un passage sur la tablette",
-      "hint": "Sur la tablette couchée : Live (briques et pads côte à côte), Découper la chanson (Structure à droite), Pad Live couché, dix doigts sur les pads. À recopier : une capture de chaque écran."
+      "id": "tel-17",
+      "title": "Défi 1 en rythme",
+      "hint": "Défis › Défi 1 (« Boum boum ») : tape 4 fois en rythme sur le bon pad. À recopier : le nombre d'étoiles (0 à 3)."
     },
     {
-      "id": "keyboard",
-      "title": "Clavier physique",
-      "hint": "Branche un clavier : espace (lecture), Ctrl+Z, Ctrl+Maj+Z. À recopier : le nombre de raccourcis qui marchent, sur 3."
+      "id": "tel-18",
+      "title": "Prise micro à la fin du morceau",
+      "hint": "Enregistre ta voix sur une piste audio jusqu'après la fin du morceau. À recopier : « la prise s'arrête à la fin » ou « elle continue »."
     },
     {
-      "id": "rotation",
-      "title": "Rotation en pleine lecture",
-      "hint": "Tourne le téléphone, puis passe en écran partagé, pendant la lecture. À recopier : les « Décrochages audio » de l'écran Recette, et si la musique a continué (oui ou non)."
-    },
-    {
-      "id": "challenge",
-      "title": "Un défi « refais ce rythme »",
-      "hint": "Pad Live › Défi. À recopier : le nombre d'étoiles obtenu."
-    },
-    {
-      "id": "colour_correction",
-      "title": "Correction des couleurs d'Android",
-      "hint": "Réglages d'Android › Accessibilité › Correction des couleurs, chaque mode 2 min sur le Pad Live qui joue. À recopier : une capture par mode (les pads qui jouent se distinguent-ils ?)."
-    },
-    {
-      "id": "export_zip",
-      "title": "Exporter tes projets en .zip",
-      "hint": "Avant le passage au Play Store : Mes projets › chaque projet › Envoyer en .zip, garde-les sur ton ordinateur. À recopier : le nombre de projets exportés."
-    },
-    {
-      "id": "minilab_take",
-      "title": "MiniLab débranché en pleine prise",
-      "hint": "Reporté à l'achat d'un clavier MIDI (décision du 2026-11-04) : ne rien faire pour l'instant. Plus tard : débrancher le MiniLab 3 pendant une prise, le rebrancher ; recopier les « Décrochages audio » de l'écran Recette."
-    },
-    {
-      "id": "minilab_acid",
-      "title": "Case Acid 303 au MiniLab",
-      "hint": "Reporté à l'achat d'un clavier MIDI (décision du 2026-11-04) : ne rien faire pour l'instant. Plus tard : enregistrer une case Acid 303 du Live au MiniLab 3 ; recopier une capture de la case."
-    },
-    {
-      "id": "minilab_lights",
-      "title": "Lumières des pads du MiniLab",
-      "hint": "Reporté à l'achat d'un clavier MIDI (décision du 2026-11-04) : ne rien faire pour l'instant. Plus tard : mode DAW, les pads s'allument comme à l'écran ; recopier une photo."
+      "id": "tel-19",
+      "title": "Annuler une prise du Live",
+      "hint": "Pro › Live : enregistre une courte performance, puis « Annuler ». À recopier : la durée du morceau avant et après (en mesures ou minutes)."
     }
   ]
 }

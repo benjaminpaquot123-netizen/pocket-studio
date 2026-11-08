@@ -264,8 +264,19 @@ def bench_guards(d):
 
     # The stamp written by selftest.sh is the one human-tester.sh recognises (clean tree: the empty diff line kept).
     tampon = os.path.join(HERE, "tampon.sh")
-    subprocess.run([tampon, "ecris", d], check=True)
+    fp = os.path.join(d, "fp.txt")
+    write(fp, subprocess.run([tampon, "empreinte"], capture_output=True, text=True, check=True).stdout)
+    subprocess.run([tampon, "ecris", d, fp], check=True)
     check(subprocess.run([tampon, "verifie", d]).returncode == 0, "a fresh stamp fits this code:\n" + open(os.path.join(d, "selftest.ok")).read())
+    other = os.path.join(d, "autre-lot")
+    os.makedirs(other)
+    import shutil
+    shutil.copy(os.path.join(d, "selftest.ok"), other)
+    check(subprocess.run([tampon, "verifie", other]).returncode != 0, "a stamp copied to another lot is refused (external audit)")
+    os.makedirs(os.path.join(d, "z"))
+    write(os.path.join(d, "z", "start.txt"), "lang=de\n")
+    check(subprocess.run([tampon, "verifie", d]).returncode != 0, "a lot whose seats changed is refused")
+    os.remove(os.path.join(d, "z", "start.txt"))
     with open(os.path.join(d, "selftest.ok"), "w") as f:
         f.write("0000000000000000000000000000000000000000\n\n")
     check(subprocess.run([tampon, "verifie", d]).returncode != 0, "a stamp of another commit does not")

@@ -48,6 +48,62 @@ class BenchAmeneesTest : HumanTester("amenees") {
         assertNotNull("« Choisir une chanson »", centerOf("remix_pick"))
     }
 
+    /**
+     * Banc fiable 3.3 (P3; round 5 C a #32: no star in 3 tries): « tape » reaches the challenge and is scored. NOT a proof that
+     * the bench keeps time: tapped exactly at the tempo (500 ms at 120 BPM) it scores 2 of 4 (1 star), as 4 separate
+     * « touche » do; why is unknown (journal 3.3, external audit). P3 stays open.
+     */
+    @Test
+    fun aTappedRhythmIsScored() {
+        begin(SeatOptions(simple = true))
+        // The welcome's « Défis » card, lower down on a phone: scrolled to as a person does.
+        repeat(4) { if ((centerOf("launch_challenges")?.second ?: Float.MAX_VALUE) > 1100f) act("glisse 294 900 294 350") }
+        val home = centerOf("launch_challenges") ?: error("no « Défis » on the welcome\n" + screenLines().joinToString("\n"))
+        act("touche ${home.first} ${home.second}")
+        val until = System.currentTimeMillis() + 60_000
+        while (centerOf("padlive_challenge_go") == null) {
+            assertTrue("no « À moi ! »\n" + screenLines().joinToString("\n"), System.currentTimeMillis() < until)
+            act("attends 1")
+        }
+        val p = project()!!
+        val c = com.pocketstudio.model.PadChallenge.make(1, com.pocketstudio.model.PadChallenge.shotsOf(p.live, p.padLive.shownPage), p.tempoBpm)!!
+        assertTrue("challenge 1 is one pad", c.hits.map { it.pad }.distinct().size == 1)
+        act("touche ${centerOf("padlive_challenge_go")!!.first} ${centerOf("padlive_challenge_go")!!.second}")
+        val pad = centerOf("padlive_pad_${c.hits.first().pad}") ?: error("pad ${c.hits.first().pad} not on screen\n" + screenLines().joinToString("\n"))
+        act("tape ${pad.first} ${pad.second} ${c.hits.size} ${c.beatMs.toLong()}")
+        act("attends 1")
+        val stars = project()!!.padLive.stars.getOrElse(0) { 0 }
+        val log = com.pocketstudio.app.report.AppLog.dump(20).lines().filter { "Défi" in it }.joinToString("\n")
+        assertTrue("challenge 1 tapped in time: $stars star(s) (bpm ${c.bpm}, every ${c.beatMs.toLong()} ms)\n$log", stars >= 1)
+    }
+
+    /**
+     * Banc fiable 3.3 (P1; round 5 C d: « Importer un projet (.zip) » out of reach, the picker gave nothing outside the Remix):
+     * the picker answers a project's .zip (made here from the open project), and the import adds a project.
+     */
+    @Test
+    fun aZipImportedOutsideRemixAddsAProject() {
+        bring(AMENEE_SONG, SeatOptions(simple = false))
+        val projects = java.io.File(androidx.test.core.app.ApplicationProvider.getApplicationContext<android.app.Application>().filesDir, "projects")
+        fun count() = projects.listFiles()?.count { it.isDirectory || it.name.endsWith(".json") } ?: 0
+        act("attends 2")
+        val before = count()
+        fun tap(tag: String) {
+            val at = centerOf(tag) ?: error("nothing to touch: $tag\n" + screenLines().joinToString("\n"))
+            act("touche ${at.first} ${at.second}")
+        }
+        tap("top_projects")
+        tap("project_new")
+        // « ▸ Autres façons de commencer » unfolds the import (round 5 C d looked for it there).
+        centerOfText("Autres façons de commencer", substring = true)?.let { act("touche ${it.first} ${it.second}") }
+        repeat(3) { if ((centerOf("starter_import")?.second ?: Float.MAX_VALUE) > 1100f) act("glisse 294 900 294 350") }
+        val at = centerOf("starter_import") ?: error("no « Importer un projet »\n" + screenLines().joinToString("\n"))
+        val said = act("touche ${at.first} ${at.second}")
+        act("attends 3")
+        assertTrue("the picker gave a .zip: $said", "Le-morceau-de-Sam.pocketstudio.zip" in said)
+        assertTrue("a project more: $before → ${count()}\n" + screenLines().joinToString("\n"), count() > before)
+    }
+
     @Test
     fun padLiveStartsWithItsPadsReady() {
         val j = bring(AMENEE_PADLIVE, SeatOptions())

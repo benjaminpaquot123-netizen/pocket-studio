@@ -48,3 +48,25 @@ BenchPlayThenTabsTest 4/4 (plus `drive` ignoré dans chaque classe HumanTester, 
 - **Verdict proposé** : T5-Fc-31 = **appli** (mineur), sur le chemin « démo › un départ › Simple ou Pro ? » ; tel-16
   ✅ ne le contredit pas (autre chemin). Correction possible côté appli : `stopDemo()` quand `pending` passe à non nul.
   Ou vérifier sur le téléphone : lancer une démo, toucher « Le beat de départ », écouter sur « Simple ou Pro ? ».
+
+## Après la relecture (`fb130e6`) : commit `3d5f335`
+
+- **G1 corrigé.** Les deux gardes « la démo s'arrête » ne prouvaient rien : la démo finissait toute seule. Deux causes côté
+  banc. (1) Le `tap()` du test passait par `reachTag`, qui fait glisser tout ce qui n'est pas au milieu de l'écran :
+  « Retour », en haut, coûtait 8 glissés, soit environ 26 s d'horloge du banc, et la démo de 15 s était finie avant la touche.
+  Un élément visible est maintenant touché là où il est. (2) « Plus entendue » ne distingue pas un arrêt d'une fin.
+  `BenchAudioTrack` note chaque son arrêté par l'appli avant sa fin, avec sa cause (la pile). Les gardes exigent un arrêt
+  passé par `stopDemoPreview`. Le `ViewModel` de la bibliothèque, effacé à l'ouverture du nouveau projet, coupe aussi la
+  démo : c'est une deuxième sécurité de l'appli, qui n'est pas comptée.
+  Les deux chemins partent maintenant d'un projet ouvert, comme le siège F c et Benjamin.
+- **Mutation** (`actions.stopDemo()` retiré du `DisposableEffect` de `NewProjectPage`, puis remis par `git checkout`) :
+  `theDemoStopsWhenTheNewProjectListIsLeft` passe au **rouge**, et `theDemoGoesOnUnderTheModeStepUntilAModeIsChosen` aussi.
+  Une fois le code remis, les deux sont vertes.
+- **Constat en passant** (non tranché, à vérifier) : **sans aucun projet**, « Nouveau morceau » › démo › « Retour » ne
+  coupe pas la démo. `newOnly` ferme l'écran, mais la liste reste dessous sous « Que veux-tu faire ? », donc la page n'est
+  pas retirée. Vu au banc avec la sonde. Ce n'est pas le chemin de tel-16 (Benjamin avait des projets).
+- **M2** : `BenchRecetteTest#simpleSongPlaysToItsEndAndStopsThere`. Le morceau Simple de l'assistant est réduit à 2 parties,
+  sans boucle, et joué jusqu'au bout depuis `thumb_play`. Le compteur ne dépasse jamais « / T », atteint la dernière mesure,
+  et la lecture s'arrête. Rouge avec le `BenchEngine` du round 5 (`d3eccff` : « still playing 35 s into a 29 s song »).
+  Vert maintenant. Avec seulement l'ancien `BenchPlayhead`, elle reste verte, car le plafond cachait le dépassement.
+- Suites : BenchRecetteTest 5/5, BenchSongClockTest 5/5, BenchEngineTest 4/4, BenchPlayThenTabsTest 4/4.

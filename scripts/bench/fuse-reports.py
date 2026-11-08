@@ -11,13 +11,15 @@ cible: ») are both read. Each defect gets a key:
     route | target | symptom family
 
 - v2: route and target are the journal's own (#N ROUTE, #N DOIGT <tag>) at the gesture n° the tester cites, the
-  same in every language; v1: the route at the screen n°, the target as the tester wrote it, normalised without
+  same in every language; v1: for a gesture's symptom (rien, incompris, mauvais-ecran, bloque, plantage) the route and
+  button of gesture « screen − 1 », otherwise the route at the screen n°; the target as the tester wrote it, normalised without
   losing non-Latin letters (NFKC + casefold: « 全部止める » stays itself, it was « ? » before).
 - symptom families: « promesse » and « bloque » count as « rien », « coupe »/« texte-coupe »/« cache »/« hors-pouce » as
   « affichage » (one defect, five spellings in round 3).
 
 States, from the base of known keys (base.tsv) and the verdicts (verdicts.tsv):
-  [nouveau] never seen; [revient] the key was « corrigé »; [banc contredit] the key had a « banc » verdict and is seen
+  [nouveau] never seen; [revient ?] the key was « corrigé » at an earlier round (a candidate: a reader confirms it in
+  revient.tsv, then [revient]); [banc contredit ?] the key had a « banc » verdict and is seen
   again; otherwise the base's own state. [banc?] marks a cluster every tester of which said « banc?: <not non> », or
   whose tag is one of the bench's known limits.
 Gravity of a cluster: the median of its defects (the worst in brackets); a v2 defect « revu: non » counts « moyen » at most.
@@ -185,10 +187,35 @@ def gravity_of(d):
     return g
 
 
+def tour_no(t):
+    """« tour-12 » -> 12; any other name (a scratch folder) -> None, read as « after every numbered round »."""
+    m = re.fullmatch(r"tour-(\d+)", (t or "").strip())
+    return int(m.group(1)) if m else None
+
+
+def earlier(t, tour):
+    """Round t came strictly before round « tour » (numeric order: tour-10 after tour-2)."""
+    a, b = tour_no(t), tour_no(tour)
+    return a is not None and (b is None or a < b)
+
+
+# Symptoms of a gesture (the finger did something and got the wrong answer): only these take the button of the gesture
+# before a v1 card's screen; a state seen on the screen (cut text, no name, no help, a promise) is the screen's own
+# (review of session 2: 310 of 489 v1 cards got an unrelated button).
+GESTURE_SYMPTOMS = {"rien", "incompris", "mauvais-ecran", "bloque", "plantage"}
+
+
 def fuse(round_dir, base_path, verdicts_path=None, tour=None):
     rows = [r for r in load_tsv(base_path) if r.get("cle")]
     base = {r["cle"]: r.get("etat", "?") for r in rows}
-    seen_in = {r["cle"]: [t for t in r.get("vu", "").split(",") if t.strip()] for r in rows}
+    tour = tour or os.path.basename(os.path.normpath(round_dir))
+    seen_in = {r["cle"]: sorted((t for t in r.get("vu", "").split(",") if t.strip()), key=lambda t: (tour_no(t) is None, tour_no(t) or 0))
+               for r in rows}
+    fixed_at = {r["cle"]: r.get("corrige_au", "").strip() for r in rows}
+    # A « revient ? » candidate is confirmed (or not) by a reader in revient.tsv: tour, cle, oui|non (review of session 2:
+    # 6 of 7 automatic « revient » were other defects under the same button).
+    confirmed = {(r.get("tour"), r.get("cle")): r.get("revient", "").strip() for r in load_tsv(os.path.join(os.path.dirname(os.path.abspath(base_path)), "revient.tsv"))
+                 if r.get("cle")}
     # Banc fiable 2.4: the same real button reported at an earlier round under another route or symptom (round 5:
     # « padlive_stop_all » rien in padlive at round 1, incompris in padlive_pads_side at round 5): a candidate, not fused.
     button_seen = {}
@@ -197,8 +224,8 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
         if len(parts) == 3 and re.fullmatch(r"[a-z][a-z0-9_]*_[a-z0-9_]+", parts[1]) and not NAV_TAGS.match(parts[1]) \
                 and not GENERIC_BUTTONS.match(parts[1]):
             for t in seen_in.get(r["cle"], []):
-                button_seen.setdefault(parts[1], set()).add(t)
-    tour = tour or os.path.basename(os.path.normpath(round_dir))
+                if earlier(t, tour):
+                    button_seen.setdefault(parts[1], set()).add(t)
     banc = {r["cle"] for r in load_tsv(verdicts_path or "") if r.get("cle") and r.get("verdict", "").startswith("banc")}
     clusters, rejected, seats, promises, incidents = {}, [], [], [], []
     for f in reports(round_dir):
@@ -227,15 +254,18 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
                 if SOUND.search(said):
                     rejected.append(f"{seat}#{screen} (jugement sonore)")
                     continue
-                symptom = d.get("symptome", "?").strip().lower()
-                symptom = FAMILY.get(symptom, symptom) if symptom in SYMPTOMS else "?" + symptom
+                raw = d.get("symptome", "?").strip().lower()
+                symptom = FAMILY.get(raw, raw) if raw in SYMPTOMS else "?" + raw
                 gesture = re.sub(r"\D", "", d.get("geste", "")) if "ecran.vu" in d else ""
                 cited = gesture or screen  # what the tester cited (v2: the gesture; v1: the screen)
-                if not gesture and screen.isdigit() and int(screen) > 1:
-                    # Template v1 (rounds 1-4): the screen where the defect was seen came from gesture screen - 1.
-                    gesture = str(int(screen) - 1)
-                tag = tag_of(journal, gesture) if gesture else None
-                route = route_of(journal, gesture if gesture else screen)
+                if gesture:
+                    tag, route = tag_of(journal, gesture), route_of(journal, gesture)
+                elif screen.isdigit() and int(screen) > 1 and raw in GESTURE_SYMPTOMS:
+                    # Template v1 (rounds 1-4), a gesture's symptom: the screen seen came from gesture screen - 1.
+                    tag, route = tag_of(journal, str(int(screen) - 1)), route_of(journal, str(int(screen) - 1))
+                else:
+                    # v1, a state of the screen itself: its own route and the target as the tester copied it.
+                    tag, route = None, route_of(journal, screen)
                 key = f"{route}|{tag or norm(d.get('cible'))}|{symptom}"
                 c = clusters.setdefault(key, {"key": key, "seats": set(), "where": [], "gravities": [], "blocks": False,
                                               "said": [], "bench": [], "tag": tag})
@@ -250,18 +280,26 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
         g = sorted(c["gravities"])
         c["gravity"] = g[(len(g) - 1) // 2]
         c["worst"] = g[0]
-        # New for THIS round: unknown, or known from this round only (the base may already hold it after --maj-base).
-        c["new"] = c["key"] not in base or (base[c["key"]] == "nouveau" and not [t for t in seen_in.get(c["key"], []) if t != tour])
+        before = [t for t in seen_in.get(c["key"], []) if earlier(t, tour)]
+        # New for THIS round: unknown, or never seen at an earlier round (the base may hold it after --maj-base).
+        c["new"] = c["key"] not in base or not before
         state = base.get(c["key"], "nouveau")
-        if c["key"] in banc or state == "banc":
-            state = "banc contredit"
-        elif state == "corrigé":
-            state = "revient"
-        elif state in ("nouveau", "confirmé") and [t for t in seen_in.get(c["key"], []) if t != tour]:
+        fixed_before = state in ("corrigé", "banc") and (not fixed_at.get(c["key"]) or earlier(fixed_at[c["key"]], tour))
+        if c["key"] in banc or (state == "banc" and fixed_before):
+            state = "banc contredit ?"
+        elif state == "corrigé" and fixed_before:
+            state = "revient ?"
+        elif state in ("corrigé", "banc"):
+            state = "nouveau"  # fixed at this round or later: this round's own defect
+        elif state in ("nouveau", "confirmé") and before:
             # Banc fiable 2.1: seen at an earlier round and never fixed: said so, not « nouveau » again.
-            state = f"déjà vu ({[t for t in seen_in[c['key']] if t != tour][0]})"
-        elif state == "nouveau" and c["tag"] and sorted(t for t in button_seen.get(c["tag"], ()) if t != tour):
-            state = f"même bouton ({sorted(t for t in button_seen[c['tag']] if t != tour)[0]})"
+            state = f"déjà vu ({before[0]})"
+        elif state == "nouveau" and c["tag"] and button_seen.get(c["tag"]):
+            state = f"même bouton ({sorted(button_seen[c['tag']], key=tour_no)[0]})"
+        # A candidate confirmed by a reader (revient.tsv) is a comeback; refused, it is this round's own defect.
+        if state.endswith(" ?"):
+            said = confirmed.get((tour, c["key"]))
+            state = state[:-2] if said == "oui" else ("nouveau" if said == "non" else state)
         c["state"] = state
         c["bench_doubt"] = all(c["bench"]) or bool(c["tag"] and BENCH_LIMIT_TAGS.match(c["tag"]))
     ordered = sorted(clusters.values(), key=lambda c: (c["bench_doubt"], c["gravity"], -len(c["seats"]), not c["new"], c["key"]))
@@ -281,11 +319,12 @@ def render(round_dir, clusters, rejected, seats, limit=MAX_LINES):
     new = sum(1 for c in clusters if c["new"])
     confirmed = sum(1 for c in clusters if len(c["seats"]) >= 2)
     back = sum(1 for c in clusters if c["state"] in ("revient", "banc contredit"))
+    maybe = sum(1 for c in clusters if c["state"].endswith(" ?"))
     again = sum(1 for c in clusters if c["state"].startswith(("déjà vu", "même bouton")))
     head = [
         f"# Grappes du tour « {os.path.basename(os.path.normpath(round_dir))} »",
         f"{len(seats)} siège(s), {len(clusters)} grappe(s), {new} nouvelle(s), {confirmed} vue(s) par ≥ 2 sièges (confirmées sans juge), "
-        f"{back} qui revien(nen)t, {again} déjà vue(s) à un tour d'avant (même clé ou même bouton)." + (f" Écartés : {', '.join(rejected)}." if rejected else ""),
+        f"{back} qui revien(nen)t (confirmé par un lecteur), {maybe} candidat(s) « revient ? » à confirmer dans revient.tsv, {again} déjà vue(s) à un tour d'avant (même clé ou même bouton)." + (f" Écartés : {', '.join(rejected)}." if rejected else ""),
         "",
     ]
     if limit is None:

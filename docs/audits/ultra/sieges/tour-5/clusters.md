@@ -1,15 +1,15 @@
 # Grappes du tour « tour-5 »
-24 siège(s), 182 grappe(s), 164 nouvelle(s), 3 vue(s) par ≥ 2 sièges (confirmées sans juge), 7 qui revien(nen)t, 44 déjà vue(s) à un tour d'avant (même clé ou même bouton).
+24 siège(s), 182 grappe(s), 172 nouvelle(s), 3 vue(s) par ≥ 2 sièges (confirmées sans juge), 0 qui revien(nen)t (confirmé par un lecteur), 1 candidat(s) « revient ? » à confirmer dans revient.tsv, 33 déjà vue(s) à un tour d'avant (même clé ou même bouton).
 
 - [nouveau] bloquant ×1 (A/a#27) dialogue:part_header_menu · « part_pick_2 » · rien — l'éditeur passe sur « पार्ट: C · मुखड़ा » / reste « पार्ट: A · इंट्रो » ; pareil avec B (#49), et avec la nouvelle partie M (#53)
+- [même bouton (tour-1)] bloquant ×1 (E/a#117) launch · « launch_padlive » · perdu — ma prise de 4 notes (Retour pendant « Enregistrer ma mélodie ») m'attend encore (Garder/Refaire) quand je rouvre Techno après un passag
 - [nouveau] bloquant ×1 (B/c#23) tab_Sons · « tuto_do » · mauvais-ecran — « Ich mach's » ouvre ou montre le réglage Swing / anneau sur la grille de pas de la Studio-Kick ; aucun réglage Swing dans Sounds, Struktur, Mix, 
-- [revient] bloquant ×1 (E/a#117) launch · « launch_padlive » · perdu — ma prise de 4 notes (Retour pendant « Enregistrer ma mélodie ») m'attend encore (Garder/Refaire) quand je rouvre Techno après un passage par Pad Liv
 - [nouveau] grave ×1 (F/d#51) cut_screen · « texte fin du bout etat 0 07 00 » · affichage — tirer la poignée de fin du bout / poignées et forme d'onde hors du pouce ; découpe seulement avec Début ici / Fin ici après avoi
 - [nouveau] grave ×1 (F/d#2) dialogue:mode_step · « bouton simple pour debuter 5 onglets de gros boutons et des mots de tous les jours » · affichage — choisir le mode au pouce gauche / Simple et Pro tout en haut, hors de
 - [nouveau] grave ×1 (F/d#34) dialogue:remix_dest · « remix_dest_new » · affichage — un nouveau projet avec la chanson / retombe sur « Simple ou Pro ? » inaccessible ; Retour obligatoire
 - [nouveau] grave ×1 (D/b#39) dialogue:sound_chooser · « synth_sounds_folder_Leads » · affichage — une ☆ sur chaque tuile, comme le dit « 点声音上的 ☆ » / aucune ☆ (ni en texte ni sur l'image) ; l'appui long choisit juste le 
 - [nouveau] grave ×1 (C/d#50) share_sheet/tab_simple_Envoyer · « ↓ la suite plus bas glisse vers le haut pour la voir » · affichage — l'onglet Envoyer (mode Simple) défile et montre « Mes exports » comme en Pro / rien ne
-- [même bouton (tour-3)] moyen ×2 (C/b#22, F/d#58) dialogue:cut_auto_0 · « cut_auto_1 » · affichage — les boutons Frases / En el tiempo entiers et lisibles / en mode Frases ils sont à moitié cachés sous la carte « Marca 
+- [nouveau] moyen ×2 (C/b#22, F/d#58) dialogue:cut_auto_0 · « cut_auto_1 » · affichage — les boutons Frases / En el tiempo entiers et lisibles / en mode Frases ils sont à moitié cachés sous la carte « Marca trozos para e
 - [nouveau] moyen ×2 (A/c#12, E/a#105) dialogue:projects · « bouton retour » · mauvais-ecran — Retour depuis Mes projets (ouvert par le nom du projet) me ramène dans mon morceau / je tombe sur l'Accueil « Que veux-tu fai
 - [nouveau] moyen ×1 (F/d#52) cut_screen · « cut_end » · incompris — seule la fin bouge, la durée affichée suit / le début saute aussi (0:01 à 0:04), « Écouter le bout 6 temps · 0:03.0 » ne change pas, puis « Ce morceau 
 - [nouveau] moyen ×1 (D/d#39) cut_screen · « remix_back » · perdu — depuis أغنيتي, une carte ou un bouton qui ramène au Remix en cours / aucune trace du Remix, seulement مساراتي et الأغنية ; il faut المزيد → ريمكس
@@ -54,7 +54,7 @@
 - [nouveau] moyen ×1 (B/c#21) tab_Sons · « tuto_kit_later » · rien — la carte « Das Kit Techno » se ferme / la carte reste (elle bouge seulement), il faut retoucher « Später » une 2e fois
 - [nouveau] moyen ×1 (B/a#83) tab_simple_Clavier · « chord_mode » · affichage — à 200 % la grille des notes reste lisible au-dessus du panneau du tuto replié / 4 rangées seulement, les notes en pointillé collées au bord 
 - [même bouton (tour-3)] moyen ×1 (A/a#30) tab_simple_Clavier · « record_start » · perdu — ma mélodie enregistrée joue le Marimba choisi pour la mélodie à l'étape 9 / nouvelle piste « मेरी मेलोडी » en FM पियानो
-- [même bouton (tour-1)] moyen ×1 (B/a#89) tab_simple_Clavier · « top_undo » · affichage — annuler ne bouge pas l'écran / une 2e ligne d'en-tête apparaît (« Mon projet 1 », « Rétablir »), la grille descend sous le pannea
+- [nouveau] moyen ×1 (B/a#89) tab_simple_Clavier · « top_undo » · affichage — annuler ne bouge pas l'écran / une 2e ligne d'en-tête apparaît (« Mon projet 1 », « Rétablir »), la grille descend sous le panneau du tuto (1 
 - [même bouton (tour-1)] moyen ×1 (B/a#72) tab_simple_Clavier · « tuto_notes_left » · affichage — la flèche amène la note en pointillé à la vue / la grille défile mais la note reste invisible (sous l'en-tête ou le pannea
 - [même bouton (tour-1)] moyen ×1 (B/b#13) tab_simple_Morceau · « guide_open_melody » · mauvais-ecran — ouvrir le son de la piste mélodie (Acid 303) et cocher l'étape « Zmień dźwięk » / feuille « Dźwięk: Synth » (aucune 
 - … et 126 grappe(s) de plus : voir clusters-complet.md.

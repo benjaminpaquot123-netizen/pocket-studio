@@ -167,7 +167,7 @@ def main():
         base = os.path.join(d, "base.tsv")
         with open(base, "w", encoding="utf-8") as f:
             f.write("cle\tetat\tvu\tnote\npadlive|rec|incompris\tvoulu\ttour-0\t\n")
-        text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--maj-base")
+        text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--maj-base", "--tour", "tour-1")
         lines = text.splitlines()
         check(len(lines) <= 60, "60 lines at most")
         check("c#1 (jugement sonore)" in text, "the sound judgment set aside, that defect only:\n" + text)
@@ -179,9 +179,9 @@ def main():
             added = f.read()
         check("tab_Sons|klaxon|rien\tnouveau" in added and added.count("\n") == 4, "the new keys added to the base:\n" + added)
         # A second run: nothing new any more, and the two seats' same key (when on the same route) fuses.
-        text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-suivant")
+        text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-2")
         check("0 nouvelle(s)" in text, "the keys are known now, at the next round:\n" + text)
-        text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base)
+        text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-1")
         check("2 nouvelle(s)" in text, "fused again, the same round still calls them new:\n" + text)
         with open(os.path.join(d, "b", "journal.txt"), "w", encoding="utf-8") as f:
             f.write(JOURNAL_B.replace("#1 ROUTE tab_Sons", "#1 ROUTE padlive"))
@@ -202,7 +202,32 @@ def main():
         bench_guards(d)
     with tempfile.TemporaryDirectory() as d:
         seats_from_ids(d)
+    with tempfile.TemporaryDirectory() as d:
+        comebacks(d)
     print("ultra bench scripts: OK")
+
+
+def comebacks(d):
+    """Review of session 2: « revient ? » only at a round after the fix, confirmed by a reader in revient.tsv; a v1 card
+    whose symptom is a state of the screen keeps the screen's route and its own target (not the previous gesture's button)."""
+    tour = os.path.join(d, "tour-4", "lotA", "a")
+    os.makedirs(tour)
+    write(os.path.join(tour, "journal.txt"), JOURNAL_A)
+    write(os.path.join(tour, "rapport.md"), REPORT_A.replace("symptome: incompris", "symptome: texte-coupe"))
+    rnd = os.path.dirname(os.path.dirname(tour))
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\tcorrige_au\npadlive|klaxon|rien\tcorrigé\ttour-2\tn° 1\ttour-3\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--tour", "tour-4")
+    check("[revient ?] grave ×1 (A/a#4) padlive · « klaxon » · rien" in text, "fixed at round 3, seen at round 4: a candidate:\n" + text)
+    check("padlive · « rec » · affichage" in text, "a screen's state keeps the screen and its target, not the previous button:\n" + text)
+    text = run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--tour", "tour-3")
+    check("[nouveau] grave ×1 (A/a#4) padlive · « klaxon »" in text, "fixed at round 3, seen at round 3: that round's own defect:\n" + text)
+    write(os.path.join(d, "revient.tsv"), "tour\tcle\trevient\ntour-4\tpadlive|klaxon|rien\toui\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--tour", "tour-4")
+    check("[revient] grave ×1 (A/a#4)" in text and "1 qui revien(nen)t" in text, "confirmed by a reader:\n" + text)
+    write(os.path.join(d, "revient.tsv"), "tour\tcle\trevient\ntour-4\tpadlive|klaxon|rien\tnon\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--tour", "tour-4")
+    check("[nouveau] grave ×1 (A/a#4)" in text, "refused by a reader: another defect:\n" + text)
 
 
 def seats_from_ids(d):
@@ -328,8 +353,8 @@ def fusion_v2(d):
     write(verdicts, "tour\titem\tcle\tverdict\tpreuve_appli\tgarde_banc\ttelephone\tcommit\n"
                     "tour-3\t2\tpadlive|全部止める|rien\tbanc\tX\tY\t-\tabc\n")
     text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--verdicts", verdicts)
-    check("[revient] grave ×2 (A/a#2, A/b#2) padlive · « padlive_pad_4 » · rien" in text, "a Korean and a French seat, one key, back:\n" + text)
-    check("« 全部止める »" in text and "[banc contredit]" in text, "non-Latin target kept, bench verdict contradicted:\n" + text)
+    check("[revient ?] grave ×2 (A/a#2, A/b#2) padlive · « padlive_pad_4 » · rien" in text, "a Korean and a French seat, one key, back (a candidate):\n" + text)
+    check("« 全部止める »" in text and "[banc contredit ?]" in text, "non-Latin target kept, bench verdict contradicted (a candidate):\n" + text)
     check("2 siège(s), 2 grappe(s)" in text, "the hesitation saying « cible » is no defect:\n" + text)
     promises = open(os.path.join(d, "promesses.tsv"), encoding="utf-8").read()
     check("A/a\tpadlive_hint\t" in promises and "\tnon\t" in promises, "the promise listed:\n" + promises)

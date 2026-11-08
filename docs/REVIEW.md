@@ -1151,3 +1151,10 @@ Restes :
 Détail : `docs/audits/ultra/tour-5-banc-relecture.md`. Graves corrigés (portail vert sur un passage vide ; grappe « banc? » jugée appli sortie de A). Restent :
 - `HumanTester.slowWorkDone` : pile de tous les fils toutes les 50 ms ; si la séparation reste « occupée » pendant qu'elle attend la personne, chaque « attends » coûte 120 s réelles. À surveiller au tour de fumée (séance 3).
 - Fuite d'état entre classes de test : `Tour3*RenameIdleTest` rouge 3 fois sur 5 au milieu des Bench*, vert 8 fois sur 8 seul ; isolé dans un Gradle à part en attendant de trouver le test fautif (bissection, séance 3).
+
+## Banc fiable, séance 2 : relecture neuve (2026-11-08)
+Détail : `docs/audits/ultra/tour-5-banc2-relecture.md`. 4 graves corrigés (le « 7 revient » annoncé était faux : 1 seul vrai). Restent :
+- 43 citations de `corrections.tsv` ambiguës (deux fiches sur un écran) : ajouter la cible pour les appliquer.
+- 1 candidat « revient ? » du tour 5 à lire (E d #11, « ■ Tout » de Pad Live) ; un vrai retour (A d #21, T1-22) n'apparaît plus qu'en « même bouton » depuis la règle des fiches v1.
+- `fabrique-sieges.py` tronque au-delà de 5 promesses sans prévenir ; pas de test pour `measured()` ni pour « même bouton ».
+- Reste de 2.4 (clé de dialogue, champ `element:`), échelle v1/v2 et oracle « libre » durci : reportés.

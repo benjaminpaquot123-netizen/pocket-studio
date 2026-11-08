@@ -62,8 +62,11 @@ def measured(tour_dir, name):
         return r.stdout if r.returncode == 0 else None
     status = git("status", "--porcelain")
     if status is not None:
-        out["fichiers_non_commites"] = sum(1 for l in status.splitlines() if l.strip() and not l.startswith(" T"))
-    reviews = [os.path.join(DOCS, f) for f in sorted(os.listdir(DOCS)) if f.startswith(name + "-") and f.endswith("-relecture.md")] if os.path.isdir(DOCS) else []
+        # The audit's own outputs (this round's folder, the base) are written by the fusion just before: not « work left ».
+        out["fichiers_non_commites"] = sum(1 for l in status.splitlines() if l.strip() and not l.startswith(" T")
+                                           and "docs/audits/ultra/sieges/" not in l and not l.endswith("docs/audits/ultra/base.tsv"))
+    reviews = [os.path.join(DOCS, f) for f in sorted(os.listdir(DOCS)) if f.startswith(name + "-") and f.endswith("-relecture.md")
+               and "-banc" not in f]  # the bench's own reviews are not the app's if os.path.isdir(DOCS) else []
     if reviews:
         rows = [l for f in reviews for l in read(f).splitlines() if l.startswith("|") and "corrigé" not in l.lower()]
         out["relecture_bloquants"] = sum(1 for l in rows if re.search(r"\|\s*bloquant\s*\|", l, re.I))
@@ -74,13 +77,16 @@ def measured(tour_dir, name):
         for b in branches.split():
             created = (git("reflog", "show", "--format=%H", b) or "").split()
             if not created:
-                continue
+                untested = None  # no reflog (a fresh clone): unknown, never a silent 0
+                break
             for c in (git("rev-list", "--no-merges", f"{created[-1]}..{b}") or "").split():
                 files = (git("show", "--name-only", "--format=", c) or "").split()
                 if any(f.startswith("app/src/main/") for f in files) and not any(f.startswith("app/src/test/") for f in files):
                     untested += 1
-        out["corrections_sans_test"] = untested
-    planned = [l.split("\t")[:2] for l in read(os.path.join(tour_dir, "sieges.tsv")).splitlines()[1:] if l.strip()]
+        if untested is not None:
+            out["corrections_sans_test"] = untested
+    planned = [l.split("\t")[:2] for l in read(os.path.join(tour_dir, "sieges.tsv")).splitlines()
+               if l.strip() and not l.startswith(("lot\t", "#"))]
     played, cut = 0, 0
     for lot, seat in planned:
         m = os.path.join(tour_dir, f"lot{lot}", seat, "mesures.json")
@@ -93,7 +99,7 @@ def measured(tour_dir, name):
             end = None
         if not end or re.match(r"(banc|délai|delai|timeout|temps)", str(end), re.I):
             cut += 1
-    if planned:
+    if planned and played:
         out["lots_non_joues"] = len({lot for lot, seat in planned} - {lot for lot, seat in planned if os.path.isfile(os.path.join(tour_dir, f"lot{lot}", seat, "mesures.json"))})
         out["sieges_joues"] = played
         out["sieges_coupes_par_le_banc"] = cut
@@ -120,6 +126,8 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises):
                        verdict_of[c["key"]].get("preuve_appli", "-") not in ("", "-") for c in bench)
     doubt_unjudged = [c for c in clusters if c.get("bench_doubt") and c["gravity"] <= 2 and c["key"] not in verdict_of]
     back = [c for c in clusters if c["state"] in ("revient", "banc contredit")]
+    # « revient ? » candidates (not yet read by a reader, revient.tsv): C cannot be « oui » while one ≥ medium waits.
+    maybe = [c for c in clusters if c["state"].endswith(" ?") and c["gravity"] <= 2]
     back_medium = [c for c in back if c["gravity"] <= 2]
     back_minor = [c for c in back if c["gravity"] > 2]
     # Banc fiable 2.3: one verdict per seat and promise (a seat citing it twice counts once; « contredite » counts « non »);
@@ -161,10 +169,12 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises):
         ("B", "Items ≥ grave classés banc (garde + preuve sans banc) ; « banc? » ≥ moyen sans verdict",
          f"{len(bench)}{'' if bench_proven else ' (sans preuve)'} ; {len(doubt_unjudged)}", "≤ 2, prouvés ; 0",
          yes(None if doubt_unjudged else len(bench) <= 2 and bench_proven)),
-        ("C", "Revient / banc contredit (≥ moyen ; mineurs)", f"{len(back_medium)} ; {len(back_minor)}", "0 ; ≤ 2", yes(not back_medium and len(back_minor) <= 2)),
+        ("C", "Revient / banc contredit (≥ moyen ; mineurs) ; candidats à lire", f"{len(back_medium)} ; {len(back_minor)} ; {len(maybe)}", "0 ; ≤ 2 ; 0",
+         yes(None if maybe else not back_medium and len(back_minor) <= 2)),
         ("D", "Promesses tenues (vérifiées par ≥ 2 sièges) ; vues au moins une fois",
          f"{len(kept)}/{len(checked)} ; {seen_once}/{total_promises}" + (f" ; {contradicted} contredite(s)" if contradicted else ""), "≥ 90 % ; ≥ 80 %",
-         yes(bool(checked) and len(kept) >= 0.9 * len(checked) and seen_once >= 0.8 * total_promises)),
+         # No promise with a catalogue id (round 5 used its own ids): not measurable, « ? », never a « non » that looks measured.
+         yes(None if not seen_once else bool(checked) and len(kept) >= 0.9 * len(checked) and seen_once >= 0.8 * total_promises)),
         ("E", "Missions réussies (oracle mesures.json)", f"{succeeded}/{missions}", "≥ 90 %", yes(None if not missions else succeeded >= 0.9 * missions)),
         ("F", "Moyens nouveaux (dont vus par ≥ 2 sièges)", f"{len(new_medium)} ({sum(1 for c in new_medium if len(c['seats']) >= 2)})", "≤ 5 (0)",
          yes(len(new_medium) <= 5 and not any(len(c["seats"]) >= 2 for c in new_medium))),

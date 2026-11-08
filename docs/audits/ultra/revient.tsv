@@ -1,0 +1,5 @@
+# Lecture des candidats « revient ? » (banc fiable 2.2) : un lecteur compare le défaut du tour au défaut corrigé ; oui = le même défaut revenu, non = un autre défaut sous le même bouton. Sans ligne : à lire.
+tour	cle	revient	siege	pourquoi
+tour-5	dialogue:record_choice|record_choice_mic|incompris	non	A/b#5	aide de la page voix incomprise ≠ vumètre / nom anglais corrigés (n° 20a/20b) (relecture neuve, séance 2)
+tour-5	dialogue:sound_chooser|synth_sounds_save|incompris	non	D/b#52	nom proposé au lieu du son en cours ≠ doublon créé (T1-35) (relecture neuve, séance 2)
+tour-5	audio_tracks|audio_record_0|rien	non	A/b#27	la prise ne s'arrête pas en fin de morceau ≠ micro absent du banc (T1-29) (relecture neuve, séance 2)

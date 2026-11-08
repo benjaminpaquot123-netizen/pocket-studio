@@ -268,7 +268,7 @@ object LayoutScan {
         if (shown.isEmpty && axes != 0) return null
         if (cutX || cutY) {
             return Finding(Kind.CUT, t.text, "drawn past its parent's edge (%s, %.0f dp shown of %.0f)".format(
-                if (cutX) "across" else "down", (if (cutX) shown.width else shown.height) / density, (if (cutX) ink.width else ink.height) / density))
+                if (cutX) "across" else if (ink.bottom > shown.bottom + tol) "down" else "up", (if (cutX) shown.width else shown.height) / density, (if (cutX) ink.width else ink.height) / density))
         }
         return null
     }

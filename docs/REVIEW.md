@@ -1161,3 +1161,8 @@ Détail : `docs/audits/ultra/tour-5-banc2-relecture.md`. 4 graves corrigés (le 
 
 ## Banc fiable, séance 3 : relecture neuve et deux audits extérieurs (2026-11-08)
 Corrigé : `docs/audits/ultra/banc-fiable-journal.md` (3.5a). **Tout ce qui reste (banc et équipes de correction) est centralisé dans `docs/audits/ultra/PLAN-RESTE.md` (v2, relu par deux auditeurs du plan)** : cette section et la liste de la séance 2 n'en sont plus la référence.
+
+## Tour 5, scan r3 : pastilles de Sons coupées en bas (2026-11-08)
+- Défaut de l'app, à corriger (vu par Benjamin sur la Galaxy Tab A11) : les pastilles à deux lignes de hauteur fixe 44 dp (`EditorChip` dans `ui/AppSpaces.kt`, `AcidChip` dans `acid/AcidLook.kt`, les pistes dans `synth/TrackBar.kt`) rognent leur deuxième ligne dès une police d'environ 1,22 (20 sp + 16 sp de lignes dans 44 dp). Détail : `docs/audits/ultra/tour-5-scan-r3-rapport.md`.
+- Une fois corrigé : retirer la règle « tracks » d'`Allowed` (`CaptureMatrixTest.kt`) et inverser la vérification de `SonsChipsTabletScanTest` (rien de coupé à aucune taille).
+- LayoutScan : un texte à la fois ellipsé et coupé ne remonte que « ellipsized » ; l'axe horizontal reste non jugé dans une rangée qui défile.

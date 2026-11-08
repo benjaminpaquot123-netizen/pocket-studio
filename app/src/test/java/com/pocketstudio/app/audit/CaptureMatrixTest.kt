@@ -195,7 +195,7 @@ object Allowed {
         Rule("projects", "« Importer un projet \\(\\.zip\\) » drawn past its parent's edge \\(down", "the list's last button at the screen's bottom edge (the list scrolls)"),
         // Round 5 (scan r3): what the scan reads since it judges a cut down inside a row that scrolls sideways in a page that scrolls down.
         Rule("acid", "CUT « (\uD83D\uDD12|↑|↓|⌒) » drawn past its parent's edge \\(down", "looked at (phone411 en 1.3): the step's symbol is whole, only its fallback font's tall line box runs past the cell"),
-        Rule("tracks", "CUT « [^»]+ » drawn past its parent's edge \\(down", "REAL defect, not accepted: the track chips' second line cut at font 1.3 (owner's Galaxy Tab A11, " +
+        Rule("tracks", "CUT « (Synth|Plaits|Strings) » drawn past its parent's edge \\(down", "REAL defect, not accepted: the track chips' second line cut at font 1.3 (owner's Galaxy Tab A11, " +
             "docs/audits/ultra/tour-5-scan-r3-rapport.md); held here only until the correction team fixes the chips, then remove this rule"),
         Rule("session|remix|live_pads_full|rhythm", "CUT « [^»]*\\[[^»]* » (ellipsized|lines dropped)", "the pseudo-language (+40 %) only: shortened with « … » or a hint's end, no real language does it"),
     )

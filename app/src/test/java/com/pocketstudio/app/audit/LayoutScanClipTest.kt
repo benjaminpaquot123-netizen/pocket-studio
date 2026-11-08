@@ -88,6 +88,25 @@ class LayoutScanClipTest {
         }
     }
 
+    /**
+     * The same in a page that really scrolls (its content far taller than its window), the chips in view: a
+     * page that can scroll excuses only what lies past its own window, not a cut made inside it.
+     */
+    @Test
+    fun aChipsCutInAPageThatReallyScrollsIsFound() {
+        show(1.3f) {
+            Column(Modifier.height(300.dp).verticalScroll(rememberScrollState())) {
+                Spacer(Modifier.height(40.dp))
+                Chips()
+                Spacer(Modifier.height(1000.dp))
+            }
+        }
+        val found = cuts()
+        for (sub in listOf("16 pads", "Micro", "Séparer")) {
+            assertTrue("« $sub » cut at its bottom, not found: $found", found.any { it.what == sub && "down" in it.detail })
+        }
+    }
+
     @Test
     fun theSameChipsAtFont1AreWhole() {
         show(1.0f) { Column(Modifier.verticalScroll(rememberScrollState())) { Chips() } }

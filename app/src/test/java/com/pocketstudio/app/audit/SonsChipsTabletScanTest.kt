@@ -14,6 +14,7 @@ import com.pocketstudio.app.nav.AppHarness
 import com.pocketstudio.app.nav.songWithTracks
 import com.pocketstudio.model.TrackKind
 import org.junit.After
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,8 +27,8 @@ import java.io.File
 /**
  * Round 5 (scan r3): the owner's Galaxy Tab A11, upright, Mode Pro, Sons: the track chips' second line cut at
  * its bottom. The real Sons screen on a tablet, at font 1.0 and 1.3, read by [LayoutScan] (CUT): what it finds
- * there is written to `app/build/sons-chips-scan/` for the round's report. A record, not a gate: it never fails
- * on a finding (the chips are the correction teams' to fix), only when the chips are not on the screen.
+ * there is written to `app/build/sons-chips-scan/` for the round's report. It holds the known defect in place:
+ * nothing cut up to font 1.15, at least one chip cut from 1.25 (until the correction team fixes the chips).
  */
 abstract class SonsChipsTabletScanTest(private val device: String, private val font: Float) {
     companion object {
@@ -83,6 +84,14 @@ abstract class SonsChipsTabletScanTest(private val device: String, private val f
         val dir = File("build/sons-chips-scan").apply { mkdirs() }
         File(dir, "${device}_$font.txt").writeText(out.toString())
         println(out)
+        val cuts = found.filter { it.what in barTexts }
+        if (font < 1.2f) assertTrue("$device font $font: the chips fit at this size, nothing may be cut:\n$out", cuts.isEmpty())
+        // The known defect (tour-5-scan-r3-rapport.md, docs/REVIEW.md): fixed 44 dp two-line chips cut from font ~1.22.
+        if (font >= 1.25f) assertTrue(
+            "$device font $font: no chip cut any more. If the chips were fixed: remove the « tracks » rule of Allowed " +
+                "(CaptureMatrixTest.kt) and invert this check (nothing cut at any size).\n$out",
+            cuts.isNotEmpty(),
+        )
     }
 
     private fun under(n: SemanticsNode, a: SemanticsNode): Boolean {

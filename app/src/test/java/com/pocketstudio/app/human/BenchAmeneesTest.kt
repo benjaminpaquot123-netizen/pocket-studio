@@ -75,6 +75,33 @@ class BenchAmeneesTest : HumanTester("amenees") {
         assertTrue("challenge 1 tapped in time: $stars star(s)\n" + screenLines().joinToString("\n"), stars >= 1)
     }
 
+    /**
+     * Banc fiable 3.3 (P1; round 5 C d: « Importer un projet (.zip) » out of reach, the picker gave nothing outside the Remix):
+     * the picker answers a project's .zip (made here from the open project), and the import adds a project.
+     */
+    @Test
+    fun aZipImportedOutsideRemixAddsAProject() {
+        bring(AMENEE_SONG, SeatOptions(simple = false))
+        val projects = java.io.File(androidx.test.core.app.ApplicationProvider.getApplicationContext<android.app.Application>().filesDir, "projects")
+        fun count() = projects.listFiles()?.count { it.isDirectory || it.name.endsWith(".json") } ?: 0
+        act("attends 2")
+        val before = count()
+        fun tap(tag: String) {
+            val at = centerOf(tag) ?: error("nothing to touch: $tag\n" + screenLines().joinToString("\n"))
+            act("touche ${at.first} ${at.second}")
+        }
+        tap("top_projects")
+        tap("project_new")
+        // « ▸ Autres façons de commencer » unfolds the import (round 5 C d looked for it there).
+        centerOfText("Autres façons de commencer", substring = true)?.let { act("touche ${it.first} ${it.second}") }
+        repeat(3) { if ((centerOf("starter_import")?.second ?: Float.MAX_VALUE) > 1100f) act("glisse 294 900 294 350") }
+        val at = centerOf("starter_import") ?: error("no « Importer un projet »\n" + screenLines().joinToString("\n"))
+        val said = act("touche ${at.first} ${at.second}")
+        act("attends 3")
+        assertTrue("the picker gave a .zip: $said", "Le-morceau-de-Sam.pocketstudio.zip" in said)
+        assertTrue("a project more: $before → ${count()}\n" + screenLines().joinToString("\n"), count() > before)
+    }
+
     @Test
     fun padLiveStartsWithItsPadsReady() {
         val j = bring(AMENEE_PADLIVE, SeatOptions())

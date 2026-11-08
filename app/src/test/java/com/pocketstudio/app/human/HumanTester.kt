@@ -996,9 +996,33 @@ abstract class HumanTester(private val seat: String) {
                         "(dossier Musique, 0:${BenchSong.SECONDS}, ${"%.1f".format(file.length() / 1e6).replace('.', ',')} Mo) : " +
                         "ta chanson préférée, avec une batterie, une basse, une voix qui chante et une nappe.",
                 )
+            } else if (types.any { it == "application/zip" || it == "audio/midi" }) {
+                // Banc fiable 3.3 (P1; round 5 C d, the import of a .zip or a .mid out of reach): the bench gives a file
+                // made here from the project open now (never one of Benjamin's), as a friend would send it.
+                val zip = types.contains("application/zip")
+                val name = if (zip) "Le-morceau-de-Sam.pocketstudio.zip" else "Le-morceau-de-Sam.mid"
+                val file = File(app.cacheDir, "Téléchargements/$name").also { it.parentFile?.mkdirs() }
+                val made = runCatching {
+                    if (zip) {
+                        val catalog = com.pocketstudio.model.ProjectCatalog(File(app.filesDir, "projects"), File(app.filesDir, "projects-trash"))
+                        file.outputStream().use { catalog.exportZip(com.pocketstudio.app.projects.CurrentProject.get(app), it) }
+                    } else {
+                        file.writeBytes(com.pocketstudio.model.MidiFile.export(lastVm?.project?.value ?: error("no project")))
+                    }
+                }.isSuccess && file.length() > 0
+                if (made) {
+                    val uri = android.net.Uri.Builder().scheme("content").authority("com.android.providers.downloads.documents")
+                        .appendPath("Téléchargements").appendPath(name).build()
+                    shadowOf(app.contentResolver).registerInputStreamSupplier(uri) { file.inputStream() }
+                    shadowOf(a).receiveResult(intent, Activity.RESULT_OK, Intent().setData(uri).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION))
+                    say("Le sélecteur de fichiers du téléphone s'est ouvert ; tu y as choisi « $name » (dossier Téléchargements, ${"%.1f".format(file.length() / 1e3).replace('.', ',')} Ko), envoyé par un ami.")
+                } else {
+                    shadowOf(a).receiveResult(intent, Activity.RESULT_CANCELED, null)
+                    say("Le sélecteur de fichiers s'est ouvert, mais le banc n'a pas pu fabriquer de fichier à proposer : rien n'a été choisi (banc).")
+                }
             } else {
                 shadowOf(a).receiveResult(intent, Activity.RESULT_CANCELED, null)
-                say("Le sélecteur de fichiers s'est ouvert, mais sur ce banc il ne propose une chanson que pour le Remix : rien n'a été choisi.")
+                say("Le sélecteur de fichiers s'est ouvert, mais sur ce banc il ne propose une chanson que pour le Remix, et un projet (.zip) ou un MIDI (.mid) quand l'appli les demande : rien n'a été choisi.")
             }
             answered = true
         }

@@ -19,7 +19,7 @@ How to play: `python3 /home/user/fx-int/scripts/human-act.py $SEAT regarde` (scr
 | rythme | `tape` keeps time on one pad; a rhythm on several pads is still a series of gestures | `banc?: rythme` when the rhythm needs several pads |
 | micro | the microphone hears a fixed voice | `banc?: micro` |
 | clavier | `ecris` types a whole text at once, no keyboard suggestions | `banc?: clavier` |
-| fichier | only the Remix page has a file picker; no import from the phone | `banc?: fichier` |
+| fichier | the phone's file picker offers a song on the Remix page, and a friend's project (.zip) or MIDI (.mid) where the app asks for one; nothing else | `banc?: fichier` for any other file |
 | horloge | no « three days later » | missions that need it are not given |
 | temps | splitting a song, downloads, video: durations unlike a phone; dialogs with a text field can take up to 1 min a gesture | `attends`, then `banc?: temps` |
 | gel | the bench gives no screen back | NOT a defect: see below |

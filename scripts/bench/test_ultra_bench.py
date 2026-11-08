@@ -167,7 +167,7 @@ def main():
         base = os.path.join(d, "base.tsv")
         with open(base, "w", encoding="utf-8") as f:
             f.write("cle\tetat\tvu\tnote\npadlive|rec|incompris\tvoulu\ttour-0\t\n")
-        text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--maj-base")
+        text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--maj-base", "--tour", "tour-1")
         lines = text.splitlines()
         check(len(lines) <= 60, "60 lines at most")
         check("c#1 (jugement sonore)" in text, "the sound judgment set aside, that defect only:\n" + text)
@@ -179,18 +179,71 @@ def main():
             added = f.read()
         check("tab_Sons|klaxon|rien\tnouveau" in added and added.count("\n") == 4, "the new keys added to the base:\n" + added)
         # A second run: nothing new any more, and the two seats' same key (when on the same route) fuses.
-        text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base)
-        check("0 nouvelle(s)" in text, "the keys are known now:\n" + text)
+        text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-2")
+        check("0 nouvelle(s)" in text, "the keys are known now, at the next round:\n" + text)
+        text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-1")
+        check("2 nouvelle(s)" in text, "fused again, the same round still calls them new:\n" + text)
         with open(os.path.join(d, "b", "journal.txt"), "w", encoding="utf-8") as f:
-            f.write(JOURNAL_B.replace("#2 ROUTE tab_Sons", "#2 ROUTE padlive"))
+            f.write(JOURNAL_B.replace("#1 ROUTE tab_Sons", "#1 ROUTE padlive"))
         text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base)
         check("×2 (a#4, b#2) padlive · « klaxon » · rien" in text and "1 vue(s) par ≥ 2 sièges" in text, "the same key fused:\n" + text)
+        # Banc fiable 2.1: --maj-base adds the round to a known key; the next round sees it « déjà vu ».
+        run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--maj-base", "--tour", "tour-7")
+        with open(base, encoding="utf-8") as f:
+            text_base = f.read()
+        check("padlive|klaxon|rien\tnouveau\ttour-0," in text_base or "padlive|klaxon|rien\tnouveau\t" in text_base, "the key is in the base:\n" + text_base)
+        check("tour-7" in [l for l in text_base.splitlines() if l.startswith("padlive|klaxon|rien")][0], "its round added:\n" + text_base)
+        text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-8")
+        check("[déjà vu (" in text and "padlive · « klaxon »" in text, "seen at an earlier round, never fixed: « déjà vu »:\n" + text)
         missions_of_round_1(d)
     with tempfile.TemporaryDirectory() as d:
         fusion_v2(d)
     with tempfile.TemporaryDirectory() as d:
         bench_guards(d)
+    with tempfile.TemporaryDirectory() as d:
+        seats_from_ids(d)
+    with tempfile.TemporaryDirectory() as d:
+        comebacks(d)
     print("ultra bench scripts: OK")
+
+
+def comebacks(d):
+    """Review of session 2: « revient ? » only at a round after the fix, confirmed by a reader in revient.tsv; a v1 card
+    whose symptom is a state of the screen keeps the screen's route and its own target (not the previous gesture's button)."""
+    tour = os.path.join(d, "tour-4", "lotA", "a")
+    os.makedirs(tour)
+    write(os.path.join(tour, "journal.txt"), JOURNAL_A)
+    write(os.path.join(tour, "rapport.md"), REPORT_A.replace("symptome: incompris", "symptome: texte-coupe"))
+    rnd = os.path.dirname(os.path.dirname(tour))
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\tcorrige_au\npadlive|klaxon|rien\tcorrigé\ttour-2\tn° 1\ttour-3\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--tour", "tour-4")
+    check("[revient ?] grave ×1 (A/a#4) padlive · « klaxon » · rien" in text, "fixed at round 3, seen at round 4: a candidate:\n" + text)
+    check("padlive · « rec » · affichage" in text, "a screen's state keeps the screen and its target, not the previous button:\n" + text)
+    text = run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--tour", "tour-3")
+    check("[nouveau] grave ×1 (A/a#4) padlive · « klaxon »" in text, "fixed at round 3, seen at round 3: that round's own defect:\n" + text)
+    write(os.path.join(d, "revient.tsv"), "tour\tcle\trevient\ntour-4\tpadlive|klaxon|rien\toui\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--tour", "tour-4")
+    check("[revient] grave ×1 (A/a#4)" in text and "1 qui revien(nen)t" in text, "confirmed by a reader:\n" + text)
+    write(os.path.join(d, "revient.tsv"), "tour\tcle\trevient\ntour-4\tpadlive|klaxon|rien\tnon\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--tour", "tour-4")
+    check("[nouveau] grave ×1 (A/a#4)" in text, "refused by a reader: another defect:\n" + text)
+
+
+def seats_from_ids(d):
+    """Banc fiable 2.3: a seat's promises from catalogue ids and free texts; an id twice is refused."""
+    tour = os.path.join(d, "tour-9")
+    os.makedirs(tour)
+    write(os.path.join(tour, "sieges-proposes.tsv"),
+          "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP006 ; libre: le pad 2 sonne\n")
+    out = run(os.path.join(HERE, "fabrique-sieges.py"), tour)
+    check("1 sièges" in out, out)
+    brief = open(os.path.join(tour, "briefs", "Aa.txt"), encoding="utf-8").read()
+    check("id=P006 | « Pad Live · NOUVEAU" in brief and "id=t9-Aa-1 | le pad 2 sonne" in brief, "ids resolved:\n" + brief)
+    check("P006 ; t9-Aa-1" in open(os.path.join(tour, "sieges.tsv"), encoding="utf-8").read(), "sieges.tsv keeps the ids")
+    write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP006 ; P6\n")
+    r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "fabrique-sieges.py"), tour], capture_output=True, text=True)
+    check(r.returncode != 0 and "twice" in (r.stdout + r.stderr), "the same id twice is refused")
 
 
 def bench_guards(d):
@@ -300,8 +353,8 @@ def fusion_v2(d):
     write(verdicts, "tour\titem\tcle\tverdict\tpreuve_appli\tgarde_banc\ttelephone\tcommit\n"
                     "tour-3\t2\tpadlive|全部止める|rien\tbanc\tX\tY\t-\tabc\n")
     text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--verdicts", verdicts)
-    check("[revient] grave ×2 (A/a#2, A/b#2) padlive · « padlive_pad_4 » · rien" in text, "a Korean and a French seat, one key, back:\n" + text)
-    check("« 全部止める »" in text and "[banc contredit]" in text, "non-Latin target kept, bench verdict contradicted:\n" + text)
+    check("[revient ?] grave ×2 (A/a#2, A/b#2) padlive · « padlive_pad_4 » · rien" in text, "a Korean and a French seat, one key, back (a candidate):\n" + text)
+    check("« 全部止める »" in text and "[banc contredit ?]" in text, "non-Latin target kept, bench verdict contradicted (a candidate):\n" + text)
     check("2 siège(s), 2 grappe(s)" in text, "the hesitation saying « cible » is no defect:\n" + text)
     promises = open(os.path.join(d, "promesses.tsv"), encoding="utf-8").read()
     check("A/a\tpadlive_hint\t" in promises and "\tnon\t" in promises, "the promise listed:\n" + promises)
@@ -312,7 +365,7 @@ def fusion_v2(d):
     write(os.path.join(d, "hors-banc.tsv"), "ci_build\tvert\nci_emulateur\trouge\nrecette_points_rouges\t0\n")
     board = run(os.path.join(HERE, "tableau-de-bord.py"), d, "--base", base, "--verdicts", verdicts)
     check("| A | Items ≥ grave côté appli, non tranchés ou non faits | 2 | 0 | non |" in board, "A counts the two graves without a verdict of this round:\n" + board)
-    check("| H |" in board and "vert/rouge, 0" in board and "| G |" in board and "?, ?, ?, ?" in board, "H read, G unknown:\n" + board)
+    check("| H |" in board and "vert/rouge, 0" in board and "| G |" in board and "?, ?, ?, " in board, "H read, G unknown but the uncommitted files (measured):\n" + board)
     check("Arrêt de l'audit possible : non" in board, "no stop on one round:\n" + board)
     # Banc fiable 1.6: an item « corrigé » in verdicts.tsv no longer counts in A; a « banc? » card ≥ medium without its
     # verdict line makes B « ? ».

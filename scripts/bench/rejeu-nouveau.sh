@@ -5,18 +5,26 @@
 # its gestures cmd-1..n and oracle.txt. scripts/bench/rejeu-defauts.sh plays every such folder; the fix is done when
 # its replay says « oracle tenu », and it must say « oracle non tenu » before the fix (red before, green after).
 # <id> names the round and the item: t4-26-clavier, t5-03-…
+# Banc fiable 1.5: a defect not fixed yet waits in docs/audits/ultra/rejeux-attente/ (PS_REJEUX_DIR=…): rejeu-defauts.sh
+# plays rejeux/ before every merge and must find it held there; the team moves it to rejeux/ with its fix.
 set -euo pipefail
 src="$(cd "${1:?usage: rejeu-nouveau.sh <seat folder> <n> <id> attendu=… [absent=…]}" && pwd)"
 n="${2:?n}"; id="${3:?id}"; shift 3
 root="$(cd "$(dirname "$0")/../.." && pwd)"
-out="$root/docs/audits/ultra/rejeux/$id"
+out="${PS_REJEUX_DIR:-$root/docs/audits/ultra/rejeux}/$id"
 [ -e "$out" ] && { echo "$out exists already." >&2; exit 2; }
 [ -f "$src/start.txt" ] || { echo "No start.txt in $src." >&2; exit 2; }
 mkdir -p "$out"
 grep -v -E '^(rejeu|rejeu\.[a-z]+|timeout\.minutes)=' "$src/start.txt" > "$out/start.txt" || true
 for i in $(seq 1 "$n"); do
-  [ -f "$src/cmd-$i.txt" ] || { echo "No cmd-$i.txt in $src." >&2; rm -rf "${out:?}"; exit 2; }
-  cp "$src/cmd-$i.txt" "$out/"
+  if [ -f "$src/cmd-$i.txt" ]; then
+    cp "$src/cmd-$i.txt" "$out/"
+  else
+    # Banc fiable 1.5: a seat kept in the repository has its journal only (« #i > touche 308 457 »): the gesture from there.
+    cmd="$(sed -n "s/^#$i > //p" "$src/journal.txt" 2>/dev/null | head -1)"
+    [ -n "$cmd" ] || { echo "No cmd-$i.txt and no « #$i > … » line in $src/journal.txt." >&2; rm -rf "${out:?}"; exit 2; }
+    printf '%s' "$cmd" > "$out/cmd-$i.txt"
+  fi
 done
 {
   echo "source=${src#"$root"/}"

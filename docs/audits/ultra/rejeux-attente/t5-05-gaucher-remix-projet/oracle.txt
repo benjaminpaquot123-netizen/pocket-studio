@@ -1,0 +1,3 @@
+source=docs/audits/ultra/sieges/tour-5/lotF/d
+rejeu.n=34
+rejeu.absent=Simple Pour débuter : 5 onglets, de gros boutons et des mots de tous les jours. » @ 308,

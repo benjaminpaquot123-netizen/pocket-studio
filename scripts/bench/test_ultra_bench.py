@@ -188,7 +188,76 @@ def main():
         missions_of_round_1(d)
     with tempfile.TemporaryDirectory() as d:
         fusion_v2(d)
+    with tempfile.TemporaryDirectory() as d:
+        bench_guards(d)
     print("ultra bench scripts: OK")
+
+
+def bench_guards(d):
+    """Banc fiable 1.2 and 1.3: the self-test's verdict test by test, and every bench answer naming its seat."""
+    act = os.path.join(HERE, "..", "human-act.py")
+    seat = os.path.join(d, "lotE", "c")
+    os.makedirs(seat)
+    write(os.path.join(seat, "start.txt"), "lang=fr\n")
+    write(os.path.join(seat, "turn"), "1")
+    write(os.path.join(seat, "screen-1.txt"), "Écran 1 : Que veux-tu faire ?")
+    out = run(act, seat, "regarde")
+    check(out.startswith("Siège lotE/c · écran 1\n"), "the answer names its seat first:\n" + out)
+    stray = os.path.join(d, "helper", "c")
+    os.makedirs(stray)
+    write(os.path.join(stray, "start.txt"), "lang=fr\n")
+    r = subprocess.run([sys.executable, "-I", act, stray, "regarde"], capture_output=True, text=True)
+    check(r.returncode == 2 and "Siège refusé" in r.stdout, "a folder outside …/lot<X>/<a-f>/ is refused:\n" + r.stdout)
+
+    # The stamp written by selftest.sh is the one human-tester.sh recognises (clean tree: the empty diff line kept).
+    tampon = os.path.join(HERE, "tampon.sh")
+    subprocess.run([tampon, "ecris", d], check=True)
+    check(subprocess.run([tampon, "verifie", d]).returncode == 0, "a fresh stamp fits this code:\n" + open(os.path.join(d, "selftest.ok")).read())
+    with open(os.path.join(d, "selftest.ok"), "w") as f:
+        f.write("0000000000000000000000000000000000000000\n\n")
+    check(subprocess.run([tampon, "verifie", d]).returncode != 0, "a stamp of another commit does not")
+
+    verdict = os.path.join(HERE, "selftest-verdict.py")
+    res = os.path.join(d, "results")
+    os.makedirs(res)
+    quarantine = os.path.join(d, "q.txt")
+    write(quarantine, "# none\n")
+    summary = os.path.join(d, "resume.txt")
+
+    def results(cases):
+        write(os.path.join(res, "TEST-x.xml"), "<testsuite>" + cases + "</testsuite>")
+        r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary], capture_output=True, text=True)
+        with open(summary, encoding="utf-8") as f:
+            return r.returncode, f.read()
+
+    green = '<testcase classname="a.BenchOneTest" name="plays"/>'
+    red = '<testcase classname="a.Tour3RenameIdleTest" name="renames"><failure message="timeout"/></testcase>'
+    skipped = '<testcase classname="a.BenchTwoTest" name="mic"><skipped message="no microphone on Robolectric"/></testcase>'
+    code, text = results(green + skipped)
+    check(code == 0 and text.startswith("1 verts, 0 rouges, 0 en quarantaine, 1 sautés"), "green with a skip:\n" + text)
+    check("sauté : BenchTwoTest#mic : no microphone on Robolectric" in text, "the skip's reason is listed:\n" + text)
+    code, text = results(green + red)
+    check(code == 1 and "rouge : Tour3RenameIdleTest#renames : timeout" in text, "one red forbids the lot:\n" + text)
+    write(quarantine, "Tour3RenameIdleTest#renames | order-dependent | 2026-11-08 | banc\n")
+    code, text = results(green + red)
+    check(code == 0 and "quarantaine rouge : Tour3RenameIdleTest#renames" in text, "a quarantined red lets it pass, named:\n" + text)
+    code, text = results("")
+    check(code == 1, "no test run at all is never green")
+    # Review of session 1: a class expected but without results (its run never ran) is red; so is a failed Gradle run
+    # with no red test to show.
+    expected = os.path.join(d, "attendus.txt")
+    write(expected, "BenchOneTest\nTour3RenameIdleTest\n")
+    write(quarantine, "# none\n")
+    write(os.path.join(res, "TEST-x.xml"), "<testsuite>" + green + "</testsuite>")
+    r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary, expected], capture_output=True, text=True)
+    text = open(summary, encoding="utf-8").read()
+    check(r.returncode == 1 and "rouge : Tour3RenameIdleTest#* : aucun résultat" in text, "an expected class that never ran:\n" + text)
+    write(expected, "BenchOneTest\n")
+    failed = os.path.join(d, "echecs.txt")
+    write(failed, "renommage\n")
+    r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary, expected, failed], capture_output=True, text=True)
+    text = open(summary, encoding="utf-8").read()
+    check(r.returncode == 1 and "gradle:renommage" in text, "a failed Gradle run without a red test:\n" + text)
 
 
 REPORT_V2 = """siege: a | profil: ado-ko | lang: ko | device: phone | font: 100 | mode: simple
@@ -245,6 +314,28 @@ def fusion_v2(d):
     check("| A | Items ≥ grave côté appli, non tranchés ou non faits | 2 | 0 | non |" in board, "A counts the two graves without a verdict of this round:\n" + board)
     check("| H |" in board and "vert/rouge, 0" in board and "| G |" in board and "?, ?, ?, ?" in board, "H read, G unknown:\n" + board)
     check("Arrêt de l'audit possible : non" in board, "no stop on one round:\n" + board)
+    # Banc fiable 1.6: an item « corrigé » in verdicts.tsv no longer counts in A; a « banc? » card ≥ medium without its
+    # verdict line makes B « ? ».
+    name = os.path.basename(os.path.normpath(d))
+    with open(verdicts, "a", encoding="utf-8") as f:
+        f.write(f"{name}\tx\tpadlive|padlive_pad_4|rien\tappli\tT\t-\t-\tdef\tcorrigé\n")
+    lines = open(verdicts, encoding="utf-8").read().splitlines()
+    lines[0] += "\tetat"
+    lines[1] += "\touvert"
+    write(verdicts, "\n".join(lines) + "\n")
+    board = run(os.path.join(HERE, "tableau-de-bord.py"), d, "--base", base, "--verdicts", verdicts)
+    check("| A | Items ≥ grave côté appli, non tranchés ou non faits | 1 | 0 | non |" in board, "the fixed item left A:\n" + board)
+    check("; 0 | ≤ 2, prouvés ; 0 |" in board, "no « banc? » card yet:\n" + board)
+    write(os.path.join(d, "lotA", "c", "journal.txt"), JOURNAL_A)
+    write(os.path.join(d, "lotA", "c", "rapport.md"), REPORT_V2_FR.replace("siege: b", "siege: c").replace("Klaxon", "Pad Live").replace("geste: 2", "geste: 4").replace("banc?: non", "banc?: son"))
+    board = run(os.path.join(HERE, "tableau-de-bord.py"), d, "--base", base, "--verdicts", verdicts)
+    check("; 1 | ≤ 2, prouvés ; 0 | ? |" in board, "a « banc? » card without verdict: B unknown:\n" + board)
+    # Judged « appli » by the bench team, that « banc? » cluster counts in A again (review of session 1).
+    with open(verdicts, "a", encoding="utf-8") as f:
+        f.write(f"{name}\ty\tpadlive|help_padlive|rien\tappli\tT\t-\t-\t-\touvert\n")
+    board = run(os.path.join(HERE, "tableau-de-bord.py"), d, "--base", base, "--verdicts", verdicts)
+    check("| A | Items ≥ grave côté appli, non tranchés ou non faits | 2 | 0 | non |" in board, "the judged « banc? » counts in A:\n" + board)
+    check("; 0 | ≤ 2, prouvés ; 0 |" in board, "and no longer waits for a verdict in B:\n" + board)
 
 
 def missions_of_round_1(d):

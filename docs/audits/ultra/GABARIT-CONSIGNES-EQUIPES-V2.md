@@ -6,7 +6,8 @@ Méthode d'audit v2 (`docs/audits/AUDIT-ULTRA.md` §12). Remplace les consignes 
 - **Fichiers** : ceux de ta zone d'après `docs/CARTE-CODE.md`. Les fichiers partagés de ce tour ont un propriétaire nommé ci-dessous ; si tu dois y toucher, demande-le dans ton rapport (section « Demandes ») au lieu de modifier.
   - Propriétaires du tour N : `AppRoot.kt` → zone …, `RhythmViewModel.kt` → zone …, catalogues i18n → zone … (rempli par le coordinateur).
 - **Avant de coder, pour chaque défaut ≥ grave** :
-  1. le rejeu du siège : `scripts/bench/rejeu-nouveau.sh <siège> <n> <id> 'absent=…'|'attendu=…'` (§12.5), puis `scripts/bench/rejeu-defauts.sh <id>` : il doit dire « oracle non tenu » ;
+  0. si l'agent banc l'a déjà écrit, le rejeu attend dans `docs/audits/ultra/rejeux-attente/<id>/` (banc fiable 1.5) : il doit dire « non tenu » avant ta correction (`PS_REJEUX_DIR=…/rejeux-attente scripts/bench/rejeu-defauts.sh <id>`) ; avec ta correction, tu le déplaces dans `rejeux/` (sur ta branche, jamais dans fx-int avant la correction : `rejeux/` doit toujours être tout « tenu ») ; un rejeu rouge est gardé dans `rejeux/_echecs/<date>/<id>/` ;
+  1. sinon, le rejeu du siège : `scripts/bench/rejeu-nouveau.sh <siège> <n> <id> 'absent=…'|'attendu=…'` (§12.5), puis `scripts/bench/rejeu-defauts.sh <id>` : il doit dire « oracle non tenu » ;
   2. la **liste des chemins** (§12.6) : tous les endroits qui lisent ou montrent la même donnée, chacun avec le test qui le couvrira ;
   3. si la cause peut être le banc : pas de verdict sans les trois preuves du §12.3 ; tu proposes, l'agent banc écrit la ligne de `docs/audits/ultra/verdicts.tsv`.
 - **Tests** : un test qui échoue avant la correction et vérifie ce que le testeur lisait à l'écran (pas un total). Gradle **uniquement** par `scripts/bench/gradle-file.sh :app:testDebugUnitTest --tests …` (tests ciblés ; jamais la suite complète ; jamais `./gradlew` en direct).

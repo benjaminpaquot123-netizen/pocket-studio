@@ -1,0 +1,5 @@
+lang=fr
+device=phone
+font=100
+gestes.max=120
+mission=exports

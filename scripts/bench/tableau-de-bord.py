@@ -54,11 +54,17 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises):
     verdicts = [r for r in fuse_mod.load_tsv(verdicts_path) if r.get("tour") == name]
     verdict_of = {r.get("cle"): r for r in verdicts}
     serious = [c for c in clusters if c["gravity"] <= 1]
-    appli = [c for c in serious if verdict_of.get(c["key"], {}).get("verdict", "?") not in ("banc",)
-             and verdict_of.get(c["key"], {}).get("etat", "") != "voulu"]
+    # Banc fiable 1.6: an item fixed (etat « corrigé », set by the coordinator after the merge) or wanted no longer counts
+    # in A, nor a « banc? » cluster (it waits for its verdict, counted in B); B is « ? » while a « banc? » card ≥ medium
+    # has no verdict line (written by the bench team only).
+    def settled(c):
+        return verdict_of.get(c["key"], {}).get("etat", "") in ("voulu", "corrigé")
+    appli = [c for c in serious if verdict_of.get(c["key"], {}).get("verdict", "?") != "banc"
+             and not settled(c) and not (c.get("bench_doubt") and c["key"] not in verdict_of)]
     bench = [c for c in serious if verdict_of.get(c["key"], {}).get("verdict") == "banc"]
     bench_proven = all(verdict_of[c["key"]].get("garde_banc", "-") not in ("", "-") and
                        verdict_of[c["key"]].get("preuve_appli", "-") not in ("", "-") for c in bench)
+    doubt_unjudged = [c for c in clusters if c.get("bench_doubt") and c["gravity"] <= 2 and c["key"] not in verdict_of]
     back = [c for c in clusters if c["state"] in ("revient", "banc contredit")]
     back_medium = [c for c in back if c["gravity"] <= 2]
     back_minor = [c for c in back if c["gravity"] > 2]
@@ -90,7 +96,9 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises):
     ci_ok = None if not hb.get("ci_build") or not hb.get("ci_emulateur") else (hb["ci_build"] == "vert" and hb["ci_emulateur"] == "vert")
     rows = [
         ("A", "Items ≥ grave côté appli, non tranchés ou non faits", len(appli), "0", yes(len(appli) == 0)),
-        ("B", "Items ≥ grave classés banc (garde + preuve sans banc)", f"{len(bench)}{'' if bench_proven else ' (sans preuve)'}", "≤ 2, prouvés", yes(len(bench) <= 2 and bench_proven)),
+        ("B", "Items ≥ grave classés banc (garde + preuve sans banc) ; « banc? » ≥ moyen sans verdict",
+         f"{len(bench)}{'' if bench_proven else ' (sans preuve)'} ; {len(doubt_unjudged)}", "≤ 2, prouvés ; 0",
+         yes(None if doubt_unjudged else len(bench) <= 2 and bench_proven)),
         ("C", "Revient / banc contredit (≥ moyen ; mineurs)", f"{len(back_medium)} ; {len(back_minor)}", "0 ; ≤ 2", yes(not back_medium and len(back_minor) <= 2)),
         ("D", "Promesses tenues (vérifiées par ≥ 2 sièges) ; vues au moins une fois",
          f"{len(kept)}/{len(checked)} ; {seen_once}/{total_promises}", "≥ 90 % ; ≥ 80 %",

@@ -5,12 +5,16 @@
 # « <id> : oracle tenu » or « <id> : oracle non tenu … »; exits 1 when one is not held.
 set -euo pipefail
 root="$(cd "$(dirname "$0")/../.." && pwd)"
-dir="$root/docs/audits/ultra/rejeux"
-if [ $# -gt 0 ]; then ids=("$@"); else mapfile -t ids < <(find "$dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort); fi
+dir="${PS_REJEUX_DIR:-$root/docs/audits/ultra/rejeux}"
+if [ $# -gt 0 ]; then ids=("$@"); else mapfile -t ids < <(find "$dir" -mindepth 1 -maxdepth 1 -type d ! -name '_*' -printf '%f\n' | sort); fi
 [ ${#ids[@]} -gt 0 ] || { echo "No replay test in $dir."; exit 0; }
 work="$(mktemp -d)"
 trap 'rm -rf "${work:?}"' EXIT
 failed=0
+# Banc fiable 1.2: the replays go through the self-test gate like any lot (no default bypass any more), once for all.
+mkdir -p "$work/gate"
+"$root/scripts/bench/selftest.sh" "$work/gate" > "$work/gate/selftest.log" 2>&1 || {
+  echo "selftest rouge : rejeux non joués"; cat "$work/gate/selftest-resume.txt" 2>/dev/null || tail -5 "$work/gate/selftest.log"; exit 1; }
 seats=(a b c d e f)
 for ((start = 0; start < ${#ids[@]}; start += 6)); do
   run="$work/run-$start"
@@ -21,13 +25,26 @@ for ((start = 0; start < ${#ids[@]}; start += 6)); do
     { cat "$dir/$id/start.txt"; echo "rejeu=$dir/$id"; grep -v '^source=' "$dir/$id/oracle.txt"; } > "$run/$s/start.txt"
     echo "$id" > "$run/$s/id.txt"
   done
-  PS_SKIP_SELFTEST="${PS_SKIP_SELFTEST:-rejeu des défauts corrigés}" "$root/scripts/human-tester.sh" "$run" > "$run/gradle.log" 2>&1 || true
+  cp "$work/gate/selftest.ok" "$run/"
+  "$root/scripts/human-tester.sh" "$run" > "$run/gradle.log" 2>&1 || true
   for s in "${seats[@]}"; do
     [ -f "$run/$s/id.txt" ] || continue
     id="$(cat "$run/$s/id.txt")"
     verdict="$(cat "$run/$s/rejeu.txt" 2>/dev/null || echo "pas de verdict (banc)")"
     echo "$id : $verdict"
-    [ "$verdict" = "oracle tenu" ] || failed=1
+    if [ "$verdict" != "oracle tenu" ]; then
+      failed=1
+      # Banc fiable 1.5: a red replay is kept (its journal, screens as text, verdict) and its end shown.
+      # (Not for the waiting replays of rejeux-attente/: their « non tenu » is the expected one.)
+      [ "$(basename "$dir")" != "rejeux-attente" ] || continue
+      keep="$dir/_echecs/$(date +%F)/$id"
+      mkdir -p "$keep"
+      cp "$run/$s/"*.txt "$keep/" 2>/dev/null || true
+      # No journal: the seat never started; the bench's own log says why.
+      [ -f "$run/$s/journal.txt" ] || tail -40 "$run/gradle.log" > "$keep/gradle-fin.log" 2>/dev/null || true
+      echo "  gardé : ${keep#"$root"/}"
+      tail -10 "$run/$s/journal.txt" 2>/dev/null | sed 's/^/  | /'
+    fi
   done
 done
 exit "$failed"

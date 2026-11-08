@@ -1,0 +1,4 @@
+# Bench self-tests in quarantine (banc fiable 1.2): a test here may be red without forbidding a lot, and only a test
+# here may be named by PS_SKIP_SELFTEST. One line: <Class#method> | <why> | <date> | <who>. Empty = none (the goal).
+Tour3RenameIdleTest#aProjectRenamedInSimpleModeKeepsItsNewName | rouge 4 fois sur ~20 au milieu d'autres tests (« no project's ⋮ », resté sur les pads), vert 20 fois sur 20 seul ; renommage OK sur le téléphone (essai 1, APK 339) et gardé par BenchTour4Test#renameAfterTheClearButton ; coupable (état laissé par un autre test) à trouver en séance 3 | 2026-11-08 | équipe banc
+Tour3StudioRenameIdleTest#aProjectRenamedInSimpleModeKeepsItsNewName | même cause que la ligne du dessus | 2026-11-08 | équipe banc

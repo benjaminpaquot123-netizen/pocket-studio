@@ -243,6 +243,21 @@ def bench_guards(d):
     check(code == 0 and "quarantaine rouge : Tour3RenameIdleTest#renames" in text, "a quarantined red lets it pass, named:\n" + text)
     code, text = results("")
     check(code == 1, "no test run at all is never green")
+    # Review of session 1: a class expected but without results (its run never ran) is red; so is a failed Gradle run
+    # with no red test to show.
+    expected = os.path.join(d, "attendus.txt")
+    write(expected, "BenchOneTest\nTour3RenameIdleTest\n")
+    write(quarantine, "# none\n")
+    write(os.path.join(res, "TEST-x.xml"), "<testsuite>" + green + "</testsuite>")
+    r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary, expected], capture_output=True, text=True)
+    text = open(summary, encoding="utf-8").read()
+    check(r.returncode == 1 and "rouge : Tour3RenameIdleTest#* : aucun résultat" in text, "an expected class that never ran:\n" + text)
+    write(expected, "BenchOneTest\n")
+    failed = os.path.join(d, "echecs.txt")
+    write(failed, "renommage\n")
+    r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary, expected, failed], capture_output=True, text=True)
+    text = open(summary, encoding="utf-8").read()
+    check(r.returncode == 1 and "gradle:renommage" in text, "a failed Gradle run without a red test:\n" + text)
 
 
 REPORT_V2 = """siege: a | profil: ado-ko | lang: ko | device: phone | font: 100 | mode: simple
@@ -315,6 +330,12 @@ def fusion_v2(d):
     write(os.path.join(d, "lotA", "c", "rapport.md"), REPORT_V2_FR.replace("siege: b", "siege: c").replace("Klaxon", "Pad Live").replace("geste: 2", "geste: 4").replace("banc?: non", "banc?: son"))
     board = run(os.path.join(HERE, "tableau-de-bord.py"), d, "--base", base, "--verdicts", verdicts)
     check("; 1 | ≤ 2, prouvés ; 0 | ? |" in board, "a « banc? » card without verdict: B unknown:\n" + board)
+    # Judged « appli » by the bench team, that « banc? » cluster counts in A again (review of session 1).
+    with open(verdicts, "a", encoding="utf-8") as f:
+        f.write(f"{name}\ty\tpadlive|help_padlive|rien\tappli\tT\t-\t-\t-\touvert\n")
+    board = run(os.path.join(HERE, "tableau-de-bord.py"), d, "--base", base, "--verdicts", verdicts)
+    check("| A | Items ≥ grave côté appli, non tranchés ou non faits | 2 | 0 | non |" in board, "the judged « banc? » counts in A:\n" + board)
+    check("; 0 | ≤ 2, prouvés ; 0 |" in board, "and no longer waits for a verdict in B:\n" + board)
 
 
 def missions_of_round_1(d):

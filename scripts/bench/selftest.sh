@@ -26,16 +26,25 @@ junit="$lot/junit"
 rm -rf "$junit"; mkdir -p "$junit"
 # Banc fiable 1.2: the rename tests run in a Gradle run (a JVM) of their own: alone they pass 8 times out of 8, among
 # the Bench* tests they went red 3 times out of 5 (state left by an earlier test; culprit still to find, journal 1.2).
+# Review of session 1: a run that produced nothing must not read as green: every test class of the patterns is expected
+# (read from the sources), and a Gradle that failed with no red test in its results is red.
+grep -rhoE '^class (Bench[A-Za-z0-9]*Test|Tour[A-Za-z0-9]*AppProofTest|Tour[A-Za-z0-9]*RenameIdleTest)\b' app/src/test/java/com/pocketstudio/app/human \
+  | awk '{print $2}' | sort -u > "$lot/selftest-attendus.txt"
+gradle_failed=0
 run_tests() {
+  local name="$1"; shift
   rm -rf "$results"
-  PS_GRADLE_LOG="$lot/selftest-gradle.log" scripts/bench/gradle-file.sh :app:testDebugUnitTest "$@" --rerun --continue >/dev/null || true
+  PS_GRADLE_LOG="$lot/selftest-gradle-$name.log" scripts/bench/gradle-file.sh :app:testDebugUnitTest "$@" --rerun --continue >/dev/null \
+    || echo "$name" >> "$lot/selftest-gradle-echecs.txt"
   cp "$results"/TEST-*.xml "$junit/" 2>/dev/null || true
 }
-run_tests --tests 'com.pocketstudio.app.human.Bench*' --tests 'com.pocketstudio.app.human.Tour*AppProofTest'
-run_tests --tests 'com.pocketstudio.app.human.Tour*RenameIdleTest'
+rm -f "$lot/selftest-gradle-echecs.txt"
+run_tests banc --tests 'com.pocketstudio.app.human.Bench*' --tests 'com.pocketstudio.app.human.Tour*AppProofTest'
+run_tests renommage --tests 'com.pocketstudio.app.human.Tour*RenameIdleTest'
 
 python3 -I scripts/bench/selftest-verdict.py "$junit" scripts/bench/selftest-quarantaine.txt "$lot/selftest-resume.txt" \
-  || fail "tests du banc (voir $lot/selftest-resume.txt et $lot/selftest-gradle.log)"
+    "$lot/selftest-attendus.txt" "$lot/selftest-gradle-echecs.txt" \
+  || fail "tests du banc (voir $lot/selftest-resume.txt et $lot/selftest-gradle-*.log)"
 
 mapfile -t held < <(sed -n 's/^quarantaine rouge : \([^ ]*\) :.*/\1/p' "$lot/selftest-resume.txt")
 scripts/bench/tampon.sh ecris "$lot" "${held[@]}"

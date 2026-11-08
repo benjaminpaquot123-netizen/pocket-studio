@@ -36,7 +36,7 @@ for ((start = 0; start < ${#ids[@]}; start += 6)); do
       failed=1
       # Banc fiable 1.5: a red replay is kept (its journal, screens as text, verdict) and its end shown.
       # (Not for the waiting replays of rejeux-attente/: their « non tenu » is the expected one.)
-      [ -z "${PS_REJEUX_DIR:-}" ] || continue
+      [ "$(basename "$dir")" != "rejeux-attente" ] || continue
       keep="$dir/_echecs/$(date +%F)/$id"
       mkdir -p "$keep"
       cp "$run/$s/"*.txt "$keep/" 2>/dev/null || true

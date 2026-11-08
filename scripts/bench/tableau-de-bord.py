@@ -60,7 +60,7 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises):
     def settled(c):
         return verdict_of.get(c["key"], {}).get("etat", "") in ("voulu", "corrigé")
     appli = [c for c in serious if verdict_of.get(c["key"], {}).get("verdict", "?") != "banc"
-             and not settled(c) and not c.get("bench_doubt")]
+             and not settled(c) and not (c.get("bench_doubt") and c["key"] not in verdict_of)]
     bench = [c for c in serious if verdict_of.get(c["key"], {}).get("verdict") == "banc"]
     bench_proven = all(verdict_of[c["key"]].get("garde_banc", "-") not in ("", "-") and
                        verdict_of[c["key"]].get("preuve_appli", "-") not in ("", "-") for c in bench)

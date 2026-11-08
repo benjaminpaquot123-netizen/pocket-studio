@@ -91,6 +91,8 @@ abstract class Tour3RenameIdleBase(private val theme: String) {
             compose.onNodeWithTag("top_projects").performClick()
             val opened = runCatching { compose.waitUntil(7_000) { compose.onAllNodes(projectMenu).fetchSemanticsNodes().isNotEmpty() } }.isSuccess
             if (opened) break
+            // Review of session 1: a retry is said, never silent (a start window taking the touch could be a phone's issue too).
+            println("Tour3RenameIdleTest: « Mes projets » touched again (attempt ${attempt + 1}): the start's window took the touch")
         }
         runCatching { compose.waitUntil(1_000) { compose.onAllNodes(projectMenu).fetchSemanticsNodes().isNotEmpty() } }.onFailure {
             val tags = compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("tagged") { n -> androidx.compose.ui.semantics.SemanticsProperties.TestTag in n.config })

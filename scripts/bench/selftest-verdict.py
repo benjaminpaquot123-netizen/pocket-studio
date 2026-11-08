@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Banc fiable 1.2: the self-test's verdict, test by test, from the JUnit XML results.
-   selftest-verdict.py <results dir> <quarantine file> <summary out>
-Exit 0 when every test ran green or is a quarantined red; 1 otherwise (and when no test ran at all).
+   selftest-verdict.py <results dir> <quarantine file> <summary out> [<expected classes file> [<failed Gradle runs file>]]
+Exit 0 when every test ran green or is a quarantined red; 1 otherwise: no test at all, an expected class without
+results (a run that never ran: memory, stall, crash), or a Gradle run that failed with no red test to show for it.
 The summary: first line « N verts, R rouges, Q en quarantaine, S sautés », then one line per red, quarantined and
 skipped test (with the skip's reason, so a skip is never silent)."""
 import pathlib
@@ -16,6 +17,11 @@ def quarantine(path):
         if line and not line.startswith("#"):
             names.add(line.split("|")[0].strip())
     return names
+
+
+def optional_lines(path):
+    p = pathlib.Path(path)
+    return [l.strip() for l in p.read_text(encoding="utf-8").splitlines() if l.strip()] if p.is_file() else []
 
 
 def verdict(results, quarantined):
@@ -40,6 +46,12 @@ def verdict(results, quarantined):
 def main(argv):
     results, qfile, out = argv[1:4]
     green, red, held, skipped = verdict(results, quarantine(qfile))
+    ran = {n.split("#")[0] for n, *_ in [(g,) for g in green] + red + held + skipped}
+    expected = optional_lines(argv[4]) if len(argv) > 4 else []
+    red += [(f"{c}#*", "aucun résultat : la classe n'a pas tourné") for c in expected if c not in ran]
+    failed_runs = optional_lines(argv[5]) if len(argv) > 5 else []
+    if failed_runs and not red and not held:
+        red += [(f"gradle:{r}", "Gradle en échec sans test rouge (compilation, mémoire, blocage ?)") for r in failed_runs]
     lines = [f"{len(green)} verts, {len(red)} rouges, {len(held)} en quarantaine, {len(skipped)} sautés"]
     lines += [f"rouge : {n} : {w}" for n, w in red]
     lines += [f"quarantaine rouge : {n} : {w}" for n, w in held]

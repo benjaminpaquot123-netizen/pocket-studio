@@ -71,6 +71,7 @@ Réutiliser l'open source éprouvé (GPL/AGPL acceptées, usage personnel). Vér
 - Chaque fusion sur main publie une Release ; `releases/latest/download/pocket-studio.apk` = dernière version stable.
 - versionCode = numéro d'exécution de la CI + 100 (dès l'étape G de `docs/PLAN-REPRISE.md` : l'APK 234 avait été faite en local quand la CI en était à 223). Toute APK envoyée et tout AAB pour Play viennent de la CI, jamais d'une construction locale (le mot de passe ne survit pas d'une session à l'autre) : une seule suite de numéros, toujours croissante, donc chaque version s'installe par-dessus la précédente et Play l'accepte. Changelog français de 5 lignes max dans `app/src/main/assets/changelog.txt`.
 - Liste de recette du jalon en cours : `app/src/main/assets/recette.json` (à réécrire à chaque jalon).
+- Benjamin (2026-11-08) : un test important à lui faire faire se demande **ici, dans la conversation**, un à la fois, avec le mode, les gestes et la réponse attendue (chemin vérifié dans le code avant). La page Recette n'est plus le canal principal.
 - Signature : keystore chiffré `signing/release.p12` dans le dépôt, mot de passe dans le secret GitHub `SIGNING_PASSWORD`.
 
 ## Plan et suivi

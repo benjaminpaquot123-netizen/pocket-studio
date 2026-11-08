@@ -188,7 +188,53 @@ def main():
         missions_of_round_1(d)
     with tempfile.TemporaryDirectory() as d:
         fusion_v2(d)
+    with tempfile.TemporaryDirectory() as d:
+        bench_guards(d)
     print("ultra bench scripts: OK")
+
+
+def bench_guards(d):
+    """Banc fiable 1.2 and 1.3: the self-test's verdict test by test, and every bench answer naming its seat."""
+    act = os.path.join(HERE, "..", "human-act.py")
+    seat = os.path.join(d, "lotE", "c")
+    os.makedirs(seat)
+    write(os.path.join(seat, "start.txt"), "lang=fr\n")
+    write(os.path.join(seat, "turn"), "1")
+    write(os.path.join(seat, "screen-1.txt"), "Écran 1 : Que veux-tu faire ?")
+    out = run(act, seat, "regarde")
+    check(out.startswith("Siège lotE/c · écran 1\n"), "the answer names its seat first:\n" + out)
+    stray = os.path.join(d, "helper", "c")
+    os.makedirs(stray)
+    write(os.path.join(stray, "start.txt"), "lang=fr\n")
+    r = subprocess.run([sys.executable, "-I", act, stray, "regarde"], capture_output=True, text=True)
+    check(r.returncode == 2 and "Siège refusé" in r.stdout, "a folder outside …/lot<X>/<a-f>/ is refused:\n" + r.stdout)
+
+    verdict = os.path.join(HERE, "selftest-verdict.py")
+    res = os.path.join(d, "results")
+    os.makedirs(res)
+    quarantine = os.path.join(d, "q.txt")
+    write(quarantine, "# none\n")
+    summary = os.path.join(d, "resume.txt")
+
+    def results(cases):
+        write(os.path.join(res, "TEST-x.xml"), "<testsuite>" + cases + "</testsuite>")
+        r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary], capture_output=True, text=True)
+        with open(summary, encoding="utf-8") as f:
+            return r.returncode, f.read()
+
+    green = '<testcase classname="a.BenchOneTest" name="plays"/>'
+    red = '<testcase classname="a.Tour3RenameIdleTest" name="renames"><failure message="timeout"/></testcase>'
+    skipped = '<testcase classname="a.BenchTwoTest" name="mic"><skipped message="no microphone on Robolectric"/></testcase>'
+    code, text = results(green + skipped)
+    check(code == 0 and text.startswith("1 verts, 0 rouges, 0 en quarantaine, 1 sautés"), "green with a skip:\n" + text)
+    check("sauté : BenchTwoTest#mic : no microphone on Robolectric" in text, "the skip's reason is listed:\n" + text)
+    code, text = results(green + red)
+    check(code == 1 and "rouge : Tour3RenameIdleTest#renames : timeout" in text, "one red forbids the lot:\n" + text)
+    write(quarantine, "Tour3RenameIdleTest#renames | order-dependent | 2026-11-08 | banc\n")
+    code, text = results(green + red)
+    check(code == 0 and "quarantaine rouge : Tour3RenameIdleTest#renames" in text, "a quarantined red lets it pass, named:\n" + text)
+    code, text = results("")
+    check(code == 1, "no test run at all is never green")
 
 
 REPORT_V2 = """siege: a | profil: ado-ko | lang: ko | device: phone | font: 100 | mode: simple

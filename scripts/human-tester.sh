@@ -22,10 +22,15 @@ fi
 # (scripts/bench/selftest.sh <lot folder>), and Gradle only through the one queue (scripts/bench/gradle-file.sh).
 stamp="$dir/selftest.ok"
 if [ "${PS_SKIP_SELFTEST:-}" != "" ]; then
-  echo "selftest skipped: $PS_SKIP_SELFTEST" | tee -a "$dir/selftest-skipped.txt" >&2
+  # Banc fiable 1.2: a bypass names a test of the quarantine list (scripts/bench/selftest-quarantaine.txt), else refused.
+  if ! grep -v '^#' scripts/bench/selftest-quarantaine.txt | cut -d'|' -f1 | sed 's/ *$//' | grep -qxF "$PS_SKIP_SELFTEST"; then
+    echo "PS_SKIP_SELFTEST='$PS_SKIP_SELFTEST' is not a quarantined test (scripts/bench/selftest-quarantaine.txt): refused." >&2
+    exit 3
+  fi
+  echo "selftest skipped: $PS_SKIP_SELFTEST (quarantined)" | tee -a "$dir/selftest-skipped.txt" >&2
 elif [ ! -f "$stamp" ] || [ "$(sed -n 1p "$stamp")" != "$(git rev-parse HEAD)" ] || \
      [ "$(sed -n 2p "$stamp")" != "$(git diff HEAD --stat -- app scripts | tail -1)" ]; then
-  echo "No green self-test for this code: run scripts/bench/selftest.sh $dir first (or PS_SKIP_SELFTEST=<reason>)." >&2
+  echo "No green self-test for this code: run scripts/bench/selftest.sh $dir first (or PS_SKIP_SELFTEST=<a quarantined test>)." >&2
   exit 3
 fi
 # shellcheck disable=SC2086

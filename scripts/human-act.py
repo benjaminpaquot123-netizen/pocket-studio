@@ -17,6 +17,7 @@ route, or one image for 5 gestures (Audit ultra §3.1); with lit=non (texts unre
 When the bench ends the seat (budget, nothing changes, the end), says why (fin.txt).
 """
 import os
+import re
 import sys
 import time
 
@@ -115,8 +116,21 @@ def image_allowed(seat, n):
 
 
 def show_text(seat, n):
+    print(f"Siège {seat_label(seat)} · écran {n}")
     print(read(os.path.join(seat, f"screen-{n}.txt"), f"Écran {n} : pas de texte.").rstrip())
     print(read(os.path.join(seat, f"sound-{n}.txt")).strip())
+
+
+SEAT_PATH = re.compile(r"/(lot[A-Z][^/]*)/([a-f])/?$")
+
+
+def seat_label(seat):
+    """Banc fiable 1.3: « lotE/c » for a seat folder …/lotE/c, None for any other path (refused: round 5's E a → E c
+    contamination came from a shared script driving another seat's folder without anything showing it)."""
+    m = SEAT_PATH.search(os.path.abspath(seat))
+    if not m or not os.path.isfile(os.path.join(seat, "start.txt")):
+        return None
+    return f"{m.group(1)}/{m.group(2)}"
 
 
 def main():
@@ -124,6 +138,10 @@ def main():
         print(__doc__)
         sys.exit(2)
     seat, words = sys.argv[1], sys.argv[2:]
+    label = seat_label(seat)
+    if label is None:
+        print(f"Siège refusé : « {seat} » n'est pas un dossier de siège …/lot<X>/<a-f>/ avec son start.txt.")
+        sys.exit(2)
     n = wait_beyond(seat, 0, 900, "L'appli ne s'est pas ouverte (15 min).")
     if words[0] == "regarde":
         if len(words) > 1 and words[1] == "image":
@@ -136,7 +154,7 @@ def main():
                 with open(os.path.join(seat, "images.txt"), "a") as f:
                     f.write(f"{n}\n")
             out, (w, h) = gridded(seat, n)
-            print(f"Écran {n} ({w}x{h}) : {out}")
+            print(f"Siège {label} · écran {n} ({w}x{h}) : {out}")
             return
         show_text(seat, n)
         return

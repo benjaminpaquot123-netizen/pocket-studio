@@ -1,0 +1,2 @@
+# Bench self-tests in quarantine (banc fiable 1.2): a test here may be red without forbidding a lot, and only a test
+# here may be named by PS_SKIP_SELFTEST. One line: <Class#method> | <why> | <date> | <who>. Empty = none (the goal).

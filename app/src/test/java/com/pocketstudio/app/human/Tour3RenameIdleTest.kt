@@ -42,10 +42,7 @@ import java.io.File
  * rest while the window is open (frames instead): the name typed in the window, « OK », the project renamed on the list,
  * and once the window is closed the screen comes back to rest. To check on a phone too (recette: rename a project).
  */
-@RunWith(RobolectricTestRunner::class)
-@GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(qualifiers = HumanTester.PHONE)
-class Tour3RenameIdleTest {
+abstract class Tour3RenameIdleBase(private val theme: String) {
     @get:Rule
     val compose = createEmptyComposeRule()
 
@@ -67,10 +64,7 @@ class Tour3RenameIdleTest {
     private fun shown(tag: String) = compose.onAllNodesWithTag(tag).fetchSemanticsNodes(atLeastOneRootRequired = false).isNotEmpty()
 
     @Test
-    fun aProjectRenamedInSimpleModeAtNightKeepsItsNewName() = renameAProject(simple = true, theme = "Night")
-
-    @Test
-    fun aProjectRenamedInSimpleModeInStudioKeepsItsNewName() = renameAProject(simple = true, theme = "Studio")
+    fun aProjectRenamedInSimpleModeKeepsItsNewName() = renameAProject(simple = true, theme = theme)
 
     private fun renameAProject(simple: Boolean, theme: String) {
         // A phone just set up (as ForegroundSoundTest): no project, no preference left by a test before.
@@ -125,6 +119,18 @@ class Tour3RenameIdleTest {
         shadowOf(Looper.getMainLooper()).idle()
     }
 }
+
+/** The night theme (seat B a of round 3). Banc fiable 1.2: one test, one activity a class (two in one class went red by order). */
+@RunWith(RobolectricTestRunner::class)
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
+@Config(qualifiers = HumanTester.PHONE)
+class Tour3RenameIdleTest : Tour3RenameIdleBase("Night")
+
+/** The studio theme, in a class of its own (banc fiable 1.2). */
+@RunWith(RobolectricTestRunner::class)
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
+@Config(qualifiers = HumanTester.PHONE)
+class Tour3StudioRenameIdleTest : Tour3RenameIdleBase("Studio")
 
 /**
  * Round 3 (coordinator: seat E c, a track's « Name » field, the first typing unanswered for 5 min): the field the

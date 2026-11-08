@@ -1163,7 +1163,10 @@ abstract class HumanTester(private val seat: String) {
                 settle(500)
             }
             "retour" -> { androidx.test.espresso.Espresso.pressBackUnconditionally(); settle(900) }
-            "attends" -> settle(((words.getOrNull(1)?.replace(',', '.')?.toFloatOrNull() ?: 2f) * 1000).toLong().coerceIn(100, 30_000))
+            "attends" -> {
+                settle(((words.getOrNull(1)?.replace(',', '.')?.toFloatOrNull() ?: 2f) * 1000).toLong().coerceIn(100, 30_000))
+                slowWorkDone()
+            }
             // Only looking (scripts/human-act.py answers « regarde » itself; written as a gesture, nothing is touched).
             "regarde" -> settle(100)
             else -> error("unknown gesture: $cmd")
@@ -1228,6 +1231,40 @@ abstract class HumanTester(private val seat: String) {
             Thread.sleep(10)
             shadowOf(Looper.getMainLooper()).idle()
             if (coroutineWorkersBusy()) quiet = 0 else quiet++
+        }
+    }
+
+    /**
+     * Banc fiable 1.4 (round 5, seat C b: « attends 30, 60, 120, 300, 500 », 13 min and 6 gestures, the model never came):
+     * the bench's stand-ins for slow work (the model's download, the separation, BenchSeparation) sleep in REAL time, but
+     * « attends N » only moved the simulated clock. Now « attends » pumps the main thread in real time while that work runs,
+     * [SLOW_WORK_CAP_MS] at most; past it, a « BANC » line says the work is still going (not the app's fault).
+     */
+    private fun slowWorkDone() {
+        val until = System.currentTimeMillis() + SLOW_WORK_CAP_MS
+        var waited = false
+        while (slowBenchWorkBusy()) {
+            if (System.currentTimeMillis() >= until) {
+                say("Banc : le travail en cours (téléchargement ou séparation simulés) n'est pas fini après ${SLOW_WORK_CAP_MS / 1000} s ; attends encore. Ce n'est pas un défaut de l'appli.")
+                return
+            }
+            waited = true
+            Thread.sleep(50)
+            shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(50))
+            runCatching { compose.mainClock.advanceTimeBy(50) }
+        }
+        if (waited) settle(200)
+    }
+
+    /** A thread runs (or sleeps in) the bench's slow stand-ins: BenchSeparation's server, decoding, separating, analysing. */
+    private fun slowBenchWorkBusy(): Boolean {
+        var root = Thread.currentThread().threadGroup
+        while (root.parent != null) root = root.parent
+        val threads = arrayOfNulls<Thread>(root.activeCount() + 16)
+        val n = root.enumerate(threads, true)
+        return (0 until n).any { i ->
+            val t = threads[i] ?: return@any false
+            t !== Thread.currentThread() && t.stackTrace.any { f -> f.className.startsWith(BenchSeparation::class.java.name) }
         }
     }
 
@@ -1698,6 +1735,8 @@ abstract class HumanTester(private val seat: String) {
          */
         /** Compose's rest awaited this long at most (Espresso's default, 60 s, made 4 × 60 s frozen gestures in round 4). */
         const val IDLE_CAP_S = 8L
+        /** The real time one « attends » may give the bench's slow stand-ins (banc fiable 1.4). */
+        const val SLOW_WORK_CAP_MS = 120_000L
         private val NOT_IDLE = setOf("AppNotIdleException", "ComposeNotIdleException", "IdlingResourceTimeoutException")
 
         internal val ENGINE_ALWAYS: Boolean get() = System.getProperty("ps.human.moteur", "toujours") != "liste"

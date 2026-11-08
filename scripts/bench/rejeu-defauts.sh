@@ -11,6 +11,10 @@ if [ $# -gt 0 ]; then ids=("$@"); else mapfile -t ids < <(find "$dir" -mindepth 
 work="$(mktemp -d)"
 trap 'rm -rf "${work:?}"' EXIT
 failed=0
+# Banc fiable 1.2: the replays go through the self-test gate like any lot (no default bypass any more), once for all.
+mkdir -p "$work/gate"
+"$root/scripts/bench/selftest.sh" "$work/gate" > "$work/gate/selftest.log" 2>&1 || {
+  echo "selftest rouge : rejeux non joués"; cat "$work/gate/selftest-resume.txt" 2>/dev/null || tail -5 "$work/gate/selftest.log"; exit 1; }
 seats=(a b c d e f)
 for ((start = 0; start < ${#ids[@]}; start += 6)); do
   run="$work/run-$start"
@@ -21,7 +25,8 @@ for ((start = 0; start < ${#ids[@]}; start += 6)); do
     { cat "$dir/$id/start.txt"; echo "rejeu=$dir/$id"; grep -v '^source=' "$dir/$id/oracle.txt"; } > "$run/$s/start.txt"
     echo "$id" > "$run/$s/id.txt"
   done
-  PS_SKIP_SELFTEST="${PS_SKIP_SELFTEST:-rejeu des défauts corrigés}" "$root/scripts/human-tester.sh" "$run" > "$run/gradle.log" 2>&1 || true
+  cp "$work/gate/selftest.ok" "$run/"
+  "$root/scripts/human-tester.sh" "$run" > "$run/gradle.log" 2>&1 || true
   for s in "${seats[@]}"; do
     [ -f "$run/$s/id.txt" ] || continue
     id="$(cat "$run/$s/id.txt")"

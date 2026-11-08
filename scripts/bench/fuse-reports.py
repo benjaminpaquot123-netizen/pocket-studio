@@ -390,6 +390,14 @@ def main(argv):
     with open(os.path.join(folder, "clusters-complet.md"), "w", encoding="utf-8") as f:
         f.write(render(round_dir, clusters, rejected, seats, limit=None))
     write_tsv(os.path.join(folder, "promesses.tsv"), ["siege", "id", "promesse", "ecran", "tenue", "pourquoi", "contredite"], promises)
+    # PLAN-RESTE 4.2: files written outside the seats (sortie-de-siege.py), at the lot's level.
+    for root, _, names in os.walk(round_dir):
+        if "incidents-lot.tsv" in names:
+            lot = os.path.relpath(root, round_dir)
+            for line in read(os.path.join(root, "incidents-lot.tsv")).splitlines()[1:]:
+                cells = line.split("\t")
+                if len(cells) >= 4:
+                    incidents.append([f"{lot} (lot)", cells[1], cells[2], cells[3]])
     write_tsv(os.path.join(folder, "incidents-banc.tsv"), ["siege", "geste", "attente", "vu"], incidents)
     if "--maj-base" in argv:
         update_base(base, clusters, tour)

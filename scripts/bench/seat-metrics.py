@@ -58,6 +58,9 @@ class Journal:
         self.layout = 0
         self.crash = False
         self.end = None
+        # PLAN-RESTE 5.9 (control 10, a round's measure): the engine missing on the bench (a call into the native library
+        # Robolectric has not, or the bench's own « moteur absent »), anywhere in the journal, stacks included.
+        self.native = sum(1 for raw in text.splitlines() if "UnsatisfiedLinkError" in raw or "moteur absent" in raw)
         for raw in text.splitlines():
             m = self.LINE.match(raw)
             if not m:
@@ -148,6 +151,7 @@ def measures(seat):
         "appels_aide": len(j.helps),
         "abandon": abandon,
         "gels": j.stalls,
+        "moteur_absent": j.native,
         "refus_pouce": j.refused,
         "constats_layout": j.layout,
         "plantage": j.crash,

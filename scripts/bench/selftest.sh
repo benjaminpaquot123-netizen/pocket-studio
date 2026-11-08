@@ -22,10 +22,18 @@ scripts/bench/tampon.sh empreinte > "$lot/selftest-empreinte.txt"
 
 free_gb=$(df -BG --output=avail / | tail -1 | tr -dc 0-9)
 [ "$free_gb" -ge 2 ] || fail "disque : ${free_gb} Go libres (< 2)"
+# PLAN-RESTE 5.12 (control 14): the machine, checked and written in the summary. Memory ≥ 4 GB available; at most one
+# Gradle daemon; orphans = Gradle test workers whose parent is init (PPID 1) only: a live lot's 4 forks are not orphans.
+mem_gb=$(awk '/MemAvailable/ {printf "%d", $2 / 1048576}' /proc/meminfo)
+[ "$mem_gb" -ge 4 ] || fail "mémoire : ${mem_gb} Go disponibles (< 4)"
+daemons=$(pgrep -fc 'GradleDaemon' || true)
+[ "${daemons:-0}" -le 1 ] || fail "démons Gradle : $daemons (1 au plus)"
+orphans=$(ps -eo ppid=,args= | awk '$1 == 1 && /GradleWorkerMain/' | wc -l)
+[ "$orphans" -eq 0 ] || fail "workers Gradle orphelins : $orphans (pkill -f GradleWorkerMain)"
+machine="machine : ${free_gb} Go disque, ${mem_gb} Go mémoire, ${daemons:-0} démon(s), 0 orphelin"
 
 python3 -I scripts/bench/test_ultra_bench.py >"$lot/selftest-scripts.log" 2>&1 || fail "scripts du banc (voir $lot/selftest-scripts.log)"
 
-results=app/build/test-results/testDebugUnitTest
 junit="$lot/junit"
 rm -rf "$junit"; mkdir -p "$junit"
 # Banc fiable 1.2: the rename tests run in a Gradle run (a JVM) of their own: alone they pass 8 times out of 8, among
@@ -36,11 +44,13 @@ grep -rhoE '^class (Bench[A-Za-z0-9]*Test|Tour[A-Za-z0-9]*AppProofTest|Tour[A-Za
   | awk '{print $2}' | sort -u > "$lot/selftest-attendus.txt"
 gradle_failed=0
 run_tests() {
+  # PLAN-RESTE 4.3: each pass writes its XML straight into $junit/<pass>/ (never the shared build/test-results that
+  # another self-test may wipe between its Gradle run and its copy).
   local name="$1"; shift
-  rm -rf "$results"
-  PS_GRADLE_LOG="$lot/selftest-gradle-$name.log" scripts/bench/gradle-file.sh :app:testDebugUnitTest "$@" --rerun --continue >/dev/null \
+  mkdir -p "$junit/$name"
+  PS_GRADLE_LOG="$lot/selftest-gradle-$name.log" scripts/bench/gradle-file.sh :app:testDebugUnitTest "$@" \
+      "-Ptest.results.dir=$junit/$name" --rerun --continue >/dev/null \
     || echo "$name" >> "$lot/selftest-gradle-echecs.txt"
-  cp "$results"/TEST-*.xml "$junit/" 2>/dev/null || true
 }
 rm -f "$lot/selftest-gradle-echecs.txt"
 # Banc fiable 3.2 (control 13): the amenées are checked on the profiles of THIS lot's seats (their start.txt, the
@@ -59,9 +69,11 @@ fi
 run_tests banc "${profile_arg[@]}" --tests 'com.pocketstudio.app.human.Bench*' --tests 'com.pocketstudio.app.human.Tour*AppProofTest'
 run_tests renommage --tests 'com.pocketstudio.app.human.Tour*RenameIdleTest'
 
+verdict_ok=0
 python3 -I scripts/bench/selftest-verdict.py "$junit" scripts/bench/selftest-quarantaine.txt "$lot/selftest-resume.txt" \
-    "$lot/selftest-attendus.txt" "$lot/selftest-gradle-echecs.txt" \
-  || fail "tests du banc (voir $lot/selftest-resume.txt et $lot/selftest-gradle-*.log)"
+    "$lot/selftest-attendus.txt" "$lot/selftest-gradle-echecs.txt" || verdict_ok=1
+echo "$machine" >> "$lot/selftest-resume.txt"
+[ "$verdict_ok" -eq 0 ] || fail "tests du banc (voir $lot/selftest-resume.txt et $lot/selftest-gradle-*.log)"
 
 mapfile -t held < <(sed -n 's/^quarantaine rouge : \([^ ]*\) :.*/\1/p' "$lot/selftest-resume.txt")
 [ "$(scripts/bench/tampon.sh empreinte)" = "$(cat "$lot/selftest-empreinte.txt")" ] || fail "le code a changé pendant le selftest : relancer"

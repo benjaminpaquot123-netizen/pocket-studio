@@ -53,3 +53,15 @@ Une ligne par étape : [x] fait / [ ] à faire, preuve, commit. « continue » r
   - Les « rouges avant » de la séance 3 ne sont gardés que dans ce journal (test et réparation dans le même commit) : à l'avenir, commiter le test rouge d'abord.
 - [ ] 3.5b Fusion (portail vert sur ce code), CI, tag `audit-5`.
 - [ ] 3.6 Clôture : AUDIT-ULTRA §12, PROGRESS, DECISIONS, message à Benjamin.
+
+## Séance 4 (2026-11-08 soir, après la recette de Benjamin)
+
+- [x] Recette saisie : 16 essais sur 18 (tablette + téléphone) → `verdicts.tsv` (8 appli, 8 banc), `hors-banc.tsv` ; plan complété (PLAN-RESTE §1 bis).
+- [x] 4.0 (a, c) `verifie-chantier.py` + tests (12 écarts au départ, réels : gardes « banc » à écrire, T4-17 hors base, T4-19 preuve Bench*, tel-10 sans ligne) ; `marque-corrige.sh` ; `fusion-equipes.sh` exige « Relu : <sha> » et « Verdict : 0 bloquant, 0 grave », tolère une remise à jour sur fx-int après relecture. (b) paires rouge/vert : pas encore vérifiées par le programme.
+- [x] tel-15 / tel-19 (atelier `recette2`, relu, fusionné 1f4f293) : T5-Ec-28 appli (`@KnownDefect T5-REMIXFIN`) ; T5-Bb-58 : l'annulation est juste, les 572 mesures viennent sans doute d'une mélodie de 4 mesures qui a triplé le morceau avant la prise (non tranché, à prouver).
+- [x] 4.2 sortie de siège (`sortie-de-siege.py`, `human-tester.sh`, `fuse-reports.py`, test).
+- [x] 4.3 un dossier JUnit par passe (`-Ptest.results.dir`), verdict par passe (rouge avant / vert après dans `test_ultra_bench.py`).
+- [ ] R.1 (atelier `banc-r1`, en relecture) : compteur Simple = banc (réparé) ; changement de partie = banc déjà réparé ; démo = **appli** sur le chemin « style touché › Simple ou Pro ? » (Benjamin était sorti par Retour).
+- [ ] R.3 (atelier `scan-r3`) : textes rognés des pastilles non vus par `LayoutScan`.
+- [ ] 4.1 (atelier `banc41`) : défi, causes réelles + remarque de Benjamin (appui ignoré tant que le clap sonne).
+- [ ] 4.4, 4.5, 4.6, 4.7, R.4.

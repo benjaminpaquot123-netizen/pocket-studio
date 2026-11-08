@@ -153,6 +153,7 @@ def main():
         check(m["ecrans_revisites"] == 1, f"padlive revisited once after the help: {m['ecrans_revisites']}")
         check(m["defilements_sans_toucher"] == 0, "the swipe was followed by a touch")
         check(m["appels_aide"] == 1 and m["gels"] == 1, f"one help, one stall: {m}")
+        check(m["moteur_absent"] == 0, f"no native call missing in a's journal: {m}")
         check(m["abandon"].startswith("abandon : budget"), f"abandoned on the budget: {m['abandon']}")
         check(a["mission"] == "padlive" and a["resultat"] == "partielle", f"padlive: first sound in 2 gestures, not 1: {a['resultat']} {a['pourquoi']}")
         out = run(os.path.join(HERE, "seat-metrics.py"), os.path.join(d, "a"), "--mission", "defi")
@@ -201,6 +202,8 @@ def main():
     with tempfile.TemporaryDirectory() as d:
         bench_guards(d)
         chantier(d)
+        seat_exit(d)
+        native_missing(d)
     with tempfile.TemporaryDirectory() as d:
         seats_from_ids(d)
     with tempfile.TemporaryDirectory() as d:
@@ -323,6 +326,15 @@ def bench_guards(d):
     r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary, expected, failed], capture_output=True, text=True)
     text = open(summary, encoding="utf-8").read()
     check(r.returncode == 1 and "gradle:renommage" in text, "a failed Gradle run without a red test:\n" + text)
+    # PLAN-RESTE 4.3: judged pass by pass: the « renommage » pass failed in Gradle with no red of its own while the
+    # « banc » pass has a quarantined red: still red (the quarantine of one pass never covers another).
+    os.remove(os.path.join(res, "TEST-x.xml"))
+    write(os.path.join(res, "banc", "TEST-b.xml"), "<testsuite>" + green + red + "</testsuite>")
+    os.makedirs(os.path.join(res, "renommage"))
+    write(quarantine, "Tour3RenameIdleTest#renames | order-dependent | 2026-11-08 | banc\n")
+    r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary, expected, failed], capture_output=True, text=True)
+    text = open(summary, encoding="utf-8").read()
+    check(r.returncode == 1 and "gradle:renommage" in text, "a failed pass is red even with a quarantined red elsewhere:\n" + text)
 
 
 REPORT_V2 = """siege: a | profil: ado-ko | lang: ko | device: phone | font: 100 | mode: simple
@@ -434,6 +446,37 @@ def chantier(d):
     check("C : preuve d'appli Other#provesIt introuvable" in out, "a method of another class of the same file is not this class's\n" + out)
     check("@KnownDefect K1 (AppProofTest#provesIt) sans ligne" in out, out)
     check("tel-02 de recette.json cité par aucune ligne" in out, out)
+
+
+def native_missing(d):
+    """PLAN-RESTE 5.9: an UnsatisfiedLinkError or « moteur absent » in a seat's journal is counted."""
+    seat = os.path.join(d, "native", "a")
+    write(os.path.join(seat, "journal.txt"), JOURNAL_A.replace("    at com.pocketstudio.app.Foo.bar(Foo.kt:1)",
+          "    java.lang.UnsatisfiedLinkError: no pocketstudio\n#5 SON (banc : moteur absent)"))
+    run(os.path.join(HERE, "seat-metrics.py"), seat)
+    with open(os.path.join(seat, "mesures.json"), encoding="utf-8") as f:
+        m = json.load(f)["mesures"]
+    check(m["moteur_absent"] == 2, f"two lines: {m['moteur_absent']}")
+
+
+def seat_exit(d):
+    """sortie-de-siege.py (PLAN-RESTE 4.2): a file written beside the seats during the lot is counted at the lot's
+    level; a seat's own files and the white list (selftest.ok, *.tsv…) are not."""
+    lot = os.path.join(d, "lotX")
+    write(os.path.join(lot, "a", "start.txt"), "x")
+    script = os.path.join(HERE, "sortie-de-siege.py")
+    run(script, "avant", lot)
+    write(os.path.join(lot, "a", "journal.txt"), "x")
+    write(os.path.join(lot, "c-out.txt"), "x")
+    write(os.path.join(lot, "selftest.ok"), "x")
+    write(os.path.join(lot, "notes", "idee.txt"), "x")
+    out = run(script, "apres", lot)
+    check("2 fichier(s) hors des sièges" in out, out)
+    with open(os.path.join(lot, "lot.json"), encoding="utf-8") as f:
+        check(json.load(f)["fichiers_hors_lot"] == ["c-out.txt", "notes/idee.txt"], "the two foreign files")
+    with open(os.path.join(lot, "incidents-lot.tsv"), encoding="utf-8") as f:
+        text = f.read()
+    check("lot\t-\t-\tfichier écrit hors des sièges : c-out.txt" in text, text)
 
 
 def missions_of_round_1(d):

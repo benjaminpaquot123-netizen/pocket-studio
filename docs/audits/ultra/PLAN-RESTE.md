@@ -27,6 +27,18 @@ Objectif fixé par Benjamin : **tout ce que le banc promet est prouvé par un pr
 
 Fin de séance 4 : `verifie-chantier.py` à 0 écart, relecture neuve, fusion, push, 5 lignes à Benjamin.
 
+## 1 bis. Leçons de la recette du 8 novembre (APK 340-341, tablette et téléphone de Benjamin)
+
+Benjamin a fait 16 essais sur 18 : **8 défauts du banc confirmés**, **3 faux défauts** (le banc se trompait), et **des défauts que le banc n'a pas vus du tout** (visuels). Ces lignes passent **avant** 4.1 : elles visent la cause des 3 erreurs et les angles morts.
+
+| # | Quoi | Preuve | Durée |
+|---|---|---|---|
+| R.1 | **Les 3 faux défauts du banc** : tel-09 « Jouer » en Simple (T4-16, T5-Ab-14 : compteur bloqué à 0:12), tel-13 changer de partie pendant la lecture (T5-Fb-73 : « reste sur A »), tel-16 la démo continue après la liste (T5-Fc-31). Les trois marchent sur l'appareil. Trouver pour chacun la cause dans le banc (horloge `SongClock`, armement de partie, arrêt de l'aperçu de démo dans `BenchEngine`), la réparer, une garde `Bench*` rouge avant / verte après, verdict « banc » | 3 gardes ; `verdicts.tsv` : 3 lignes « banc » avec garde | 5 h |
+| R.2 | **Verdicts de la recette** saisis dans `verdicts.tsv` et `hors-banc.tsv` (H2) : appli confirmée (zip, 8 mesures, pad joué à l'ouverture de Pad Live, transport qui continue après « Tout couper » et « ■ Tout », glissé qui déclenche Montée, curseur de courbe figé, appuis ignorés au Défi 1) ; banc (les 3 de R.1) ; tel-15 et tel-19 par preuve d'appli (atelier `recette2`) | 0 « à trancher » dont l'essai est fait | 1 h |
+| R.3 | **Angles morts visuels** (vus par Benjamin, jamais par le banc) : texte rogné dans les pastilles à deux lignes, lien qui ressemble à du texte (« Mes exports »), repli « Avancé » invisible, deux ▶ identiques, menu des parties orange décrit « bleu ». Ajouter à `LayoutScan` une détection « texte rogné » (hauteur du texte > hauteur visible du parent) et à la passe « œil neuf » une liste de contrôle (bouton ou texte ? deux boutons même action ? réglage clé caché ?) | `LayoutScan` rouge sur les pastilles de l'APK 341 ; liste dans les consignes | 3 h |
+| R.4 | **Consignes de recette vérifiées dans le code** avant envoi (4 erreurs le 8 nov. : mode Simple sans export, colonne d'effets seulement à l'horizontale, tel-15 à l'envers, couleur de la pastille) : chaque consigne cite les `testTag` du chemin et un test sans banc parcourt ce chemin ; **5 essais au plus** par fournée, réservés au son, au toucher, aux fichiers et au rendu | `RecetteChecklistTest` : chaque essai nomme des tags qui existent | 2 h |
+| R.5 | **Boîte noire** (tâche reportée) : l'appli enregistre les gestes de Benjamin au format du banc, il envoie le fichier, le banc rejoue sa séance. Reportée après le plan, mais notée ici : c'est le chemin vers un banc « au plus près du téléphone » | — | — |
+
 ## 2. Séance 5 : les 14 contrôles du selftest (13 contrôles + 1 mesure de tour)
 
 Faits : 2 (compteur), 13 (amenées sur les profils du lot). Chaque ligne = un test `Bench*`/`BenchSelfTest` lancé par `selftest.sh`, **rouge sur le banc cassé exprès** (commit jetable) puis vert. Les seuils en secondes réelles ne sont jamais des assertions sèches : mesurés, journalisés, médiane de 3 passages si on en fait un seuil.

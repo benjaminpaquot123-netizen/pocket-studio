@@ -153,6 +153,7 @@ def main():
         check(m["ecrans_revisites"] == 1, f"padlive revisited once after the help: {m['ecrans_revisites']}")
         check(m["defilements_sans_toucher"] == 0, "the swipe was followed by a touch")
         check(m["appels_aide"] == 1 and m["gels"] == 1, f"one help, one stall: {m}")
+        check(m["moteur_absent"] == 0, f"no native call missing in a's journal: {m}")
         check(m["abandon"].startswith("abandon : budget"), f"abandoned on the budget: {m['abandon']}")
         check(a["mission"] == "padlive" and a["resultat"] == "partielle", f"padlive: first sound in 2 gestures, not 1: {a['resultat']} {a['pourquoi']}")
         out = run(os.path.join(HERE, "seat-metrics.py"), os.path.join(d, "a"), "--mission", "defi")
@@ -202,6 +203,7 @@ def main():
         bench_guards(d)
         chantier(d)
         seat_exit(d)
+        native_missing(d)
     with tempfile.TemporaryDirectory() as d:
         seats_from_ids(d)
     with tempfile.TemporaryDirectory() as d:
@@ -444,6 +446,17 @@ def chantier(d):
     check("C : preuve d'appli Other#provesIt introuvable" in out, "a method of another class of the same file is not this class's\n" + out)
     check("@KnownDefect K1 (AppProofTest#provesIt) sans ligne" in out, out)
     check("tel-02 de recette.json cité par aucune ligne" in out, out)
+
+
+def native_missing(d):
+    """PLAN-RESTE 5.9: an UnsatisfiedLinkError or « moteur absent » in a seat's journal is counted."""
+    seat = os.path.join(d, "native", "a")
+    write(os.path.join(seat, "journal.txt"), JOURNAL_A.replace("    at com.pocketstudio.app.Foo.bar(Foo.kt:1)",
+          "    java.lang.UnsatisfiedLinkError: no pocketstudio\n#5 SON (banc : moteur absent)"))
+    run(os.path.join(HERE, "seat-metrics.py"), seat)
+    with open(os.path.join(seat, "mesures.json"), encoding="utf-8") as f:
+        m = json.load(f)["mesures"]
+    check(m["moteur_absent"] == 2, f"two lines: {m['moteur_absent']}")
 
 
 def seat_exit(d):

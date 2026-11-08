@@ -50,6 +50,9 @@ internal class BenchEngine : CommandSink {
                 // A stop ends a mark the take was waiting for (a phone's engine drops it with its song position).
                 if (value <= 0f && markAsked > 0) markAsked = -1
                 transportSince = if (value > 0f) SystemClock.uptimeMillis() else -1L
+                // ▶ in the song (NativeEngine.play's songStep, [b] ≥ 0): that song step at the first step after the count-in;
+                // a scene alone (OUTSIDE_SONG, -1) or ■: outside the song.
+                songAnchors = if (value > 0f && b >= 0) listOf(b to 0) else emptyList()
                 countInBars = if (value > 0f) a.coerceAtLeast(0) else 0
             }
             CMD_SET_TEMPO -> if (value > 0f) tempo = value.toDouble()
@@ -58,6 +61,16 @@ internal class BenchEngine : CommandSink {
             CMD_MARK_SONG -> {
                 markQuantum = a.coerceAtLeast(0)
                 markAsked = transportSteps.coerceAtLeast(-1).let { if (it < 0) 0 else it + 1 }
+            }
+            // Banc fiable 3.2 (T4-17): where the song is. A swap that (re)starts the song anchors song step [value] on the
+            // transport step it takes effect at (now + [a] steps while playing, the start before ▶); leaving the song or ■
+            // forgets it. The engine's song position is then the anchor plus the transport's steps since.
+            CMD_ARM_SCENE_SWAP -> when (b) {
+                1 -> {
+                    val now = stepsNow()
+                    songAnchors = songAnchors + (value.toInt() to (if (now < 0) 0 else now + a.coerceAtLeast(0)))
+                }
+                3 -> songAnchors = emptyList()
             }
             CMD_BEATS_PER_BAR -> if (a > 0) beatsPerBar = a
             CMD_STEM_START -> stemStart = a.toLong()
@@ -428,6 +441,26 @@ internal class BenchEngine : CommandSink {
 
     override fun transportStep(): Int = transportSteps
 
+    /**
+     * Song steps anchored on transport steps (▶ in the song, then each swap that restarts it, armed ahead: it takes over
+     * only when the transport reaches it); empty outside the song.
+     */
+    @Volatile private var songAnchors: List<Pair<Int, Int>> = emptyList()
+
+    /** Whole sixteenths since ▶ from the bench's clock (count-in excluded), -1 stopped or counting in. */
+    private fun stepsNow(): Int = playPosition().let { if (it < 0) -1 else it.toInt() }
+
+    /** Banc fiable 3.2: the steps since ▶ (the position of a part that loops); -1 stopped. Was always -1: counter frozen. */
+    override fun absoluteStep(): Int = stepsNow()
+
+    /** Banc fiable 3.2: steps since the song (re)started, as the top bar's « mesure N/… » reads them; -1 outside the song. */
+    override fun songStep(): Int {
+        val now = stepsNow()
+        if (now < 0) return -1
+        val anchor = songAnchors.lastOrNull { it.second <= now } ?: return -1
+        return anchor.first + now - anchor.second
+    }
+
     /** Where the song was marked (a transport step), once the transport has reached that launch line; -1 before or with none. */
     override fun songMarkStep(): Int {
         val asked = markAsked
@@ -534,6 +567,7 @@ internal class BenchEngine : CommandSink {
         private const val CMD_STEM_START = 32
         private const val CMD_PLAY_PREVIEW = 47
         private const val CMD_MARK_SONG = 75
+        private const val CMD_ARM_SCENE_SWAP = 40
         private const val CMD_TRIGGER_PAD = 11
         private const val CMD_SYNTH_NOTE_ON = 16
         private const val CMD_SET_TEMPO = 6

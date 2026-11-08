@@ -22,3 +22,4 @@ Une ligne par retour : date, APK, écran, ce qu’il a vu, ce qu’il faudrait.
   - tel-08 ❌ **« Tout couper » de Pad Live coupe le son mais le transport continue** (temps et mesures défilent en haut).
   - tel-09 ✅ « Jouer » en Simple joue tout le morceau (T4-16 / T5-Ab-14 : horloge du banc, pas l'appli).
   - Mesure vue : buffer 192 sur le téléphone (≤ 256 visé, OK).
+- 2026-11-08, APK 341, tablette, tel-10 : arrivé au bout, Benjamin **ne savait pas où regarder** les notes : le Synthé s'ouvre sur « Clavier », les notes enregistrées ne se voient que dans « Notes ». À corriger : la consigne tel-10 (« touche Notes et compte les barres ») et, côté appli, un retour visible des notes prises depuis la vue Clavier (le compteur « 1 » à côté du bouton rouge n'est pas expliqué).

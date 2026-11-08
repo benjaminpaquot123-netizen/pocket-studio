@@ -20,7 +20,8 @@ import kotlin.math.pow
  * instead of by eye, so that only the flagged captures need a look.
  *
  * - [Kind.CUT]: a text ellipsized or overflowing its own box (the words did not fit), or drawn past a
- *   clipping parent (a button, a card, the screen) along an axis that does not scroll;
+ *   clipping parent (a button, a card, the screen): across, along an axis that does not scroll; down, unless only
+ *   a scroller's own window hides it (scrolled away);
  * - [Kind.OVERLAP]: two texts whose letters are drawn over each other;
  * - [Kind.TARGET]: something to touch smaller than 48 x 48 dp (its touch area, as TalkBack is given it);
  * - [Kind.LABEL]: something to touch that TalkBack would read as nothing (an icon without a description);
@@ -164,6 +165,22 @@ object LayoutScan {
         return axes
     }
 
+    /**
+     * The windows of the ancestors that scroll along [axis] (1: horizontal, 2: vertical) and have something to
+     * scroll (a scroller whose content fits hides nothing scrolled away), in root pixels.
+     */
+    private fun scrollWindows(n: SemanticsNode, axis: Int): List<Rect> {
+        val key = if (axis == 1) SemanticsProperties.HorizontalScrollAxisRange else SemanticsProperties.VerticalScrollAxisRange
+        val out = mutableListOf<Rect>()
+        var p = n.parent
+        while (p != null) {
+            val range = p.config.getOrNull(key)
+            if (range != null && range.maxValue() > 0f) out += p.boundsInRoot
+            p = p.parent
+        }
+        return out
+    }
+
     private fun clippedByScroll(n: SemanticsNode): Boolean {
         val full = Rect(n.positionInRoot, androidx.compose.ui.geometry.Size(n.size.width.toFloat(), n.size.height.toFloat()))
         val shown = n.boundsInRoot
@@ -239,12 +256,19 @@ object LayoutScan {
         val shown = t.node.boundsInRoot
         val axes = scrollAxes(t.node)
         val tol = 2f * density
+        // Down: past a scroller's window, letters are only scrolled away, not cut; letters hidden inside every
+        // window are cut by something else (round 5, scan r3: a chip's second line cut by its own 44 dp, in a row
+        // that scrolls sideways inside a page that scrolls down, was never judged). Across, a row that scrolls
+        // sideways is still not judged (a text there has all the width it wants; a right-to-left chip's line
+        // misread as wider than its box, tablet8 ar rhythm).
+        fun scrolledAway(past: (Rect) -> Boolean) = scrollWindows(t.node, 2).any(past)
         val cutX = axes and 1 == 0 && (ink.left < shown.left - tol || ink.right > shown.right + tol)
-        val cutY = axes and 2 == 0 && (ink.top < shown.top - tol || ink.bottom > shown.bottom + tol)
+        val cutY = (ink.top < shown.top - tol && !scrolledAway { ink.top < it.top - tol }) ||
+            (ink.bottom > shown.bottom + tol && !scrolledAway { ink.bottom > it.bottom + tol })
         if (shown.isEmpty && axes != 0) return null
         if (cutX || cutY) {
             return Finding(Kind.CUT, t.text, "drawn past its parent's edge (%s, %.0f dp shown of %.0f)".format(
-                if (cutX) "across" else "down", (if (cutX) shown.width else shown.height) / density, (if (cutX) ink.width else ink.height) / density))
+                if (cutX) "across" else if (ink.bottom > shown.bottom + tol) "down" else "up", (if (cutX) shown.width else shown.height) / density, (if (cutX) ink.width else ink.height) / density))
         }
         return null
     }

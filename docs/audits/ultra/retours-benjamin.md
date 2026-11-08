@@ -34,3 +34,14 @@ Une ligne par retour : date, APK, écran, ce qu’il a vu, ce qu’il faudrait.
 - 2026-11-08, tel-15 : **abandonné par Benjamin (« trop compliqué »)**, à juste titre (séparation d'une chanson, longueur à comparer, pose, export). À trancher sans lui : le code n'a aucun avertissement « fin de la chanson coupée » dans la feuille Partager ; écrire une preuve au banc (chanson plus longue que le morceau → la feuille doit le dire) au lieu de le redemander.
 - 2026-11-08, APK 341, tablette, **recette tel-18 = ✅ « la prise s'arrête à la fin »** (vidéo 11 s, image par image) : projet Tech house, Pro › Sons › Voix › Pistes audio, prise « sur tout le morceau ». Compteur 130,8 s → 136,7 s pendant que la barre passe mes. 93 → 96/96 ; à la fin du morceau la prise s'arrête toute seule (« Prise 1 · 137,0 s », bouton « Nouvelle prise ») et la tête revient à mes. 1/96. Vu aussi : « Niveau du micro : Trop faible » pendant toute la prise.
 - 2026-11-08, capture (Tech house, Sons) : **texte coupé dans les pastilles de pistes** en haut : la 2e ligne est rognée par le bas (« 16 pads », « Ligne de bas… », « Micro », « Séparer », « Basse 1 · Tec… », « Orgue ») et la dernière pastille est coupée sur le côté (« Le… / Vo… »). À corriger : hauteur des pastilles à deux lignes (tablette, grande police).
+- 2026-11-08, APK 341, **téléphone, recette 8/10** (enregistrement d'écran) :
+  - tel-10 ✅ les notes sont toutes encore là dans Notes.
+  - tel-11 ❌ un effet s'est déclenché (Montée).
+  - tel-12 ✅ « ■ Tout » coupe le son, **mais les mesures et le temps continuent** (même défaut que tel-08 Pad Live : transport non arrêté). À compter comme défaut partiel.
+  - tel-13 ✅ on passe sur la partie choisie.
+  - tel-14 ❌ curseur figé.
+  - tel-16 ✅ la démo s'arrête quand on la quitte (T5-Fc-31 : le banc se trompait).
+  - tel-17 ❌ « j'arrive pas à tenir le rythme, comme si tant que le clap n'était pas fini il n'acceptait pas mon appui suivant » : taps ignorés pendant le son (rejoint la cause trouvée par l'auditeur, PLAN-RESTE 4.1).
+  - tel-18 ✅ la prise s'arrête à la fin du morceau.
+  - tel-15 et tel-19 **non faits : Benjamin demande que je les tranche moi-même** (banc, preuves d'appli).
+  - Mesure vue : buffer 384 sur ce téléphone (> 256 visé ; 192 lors de l'essai précédent).

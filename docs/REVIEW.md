@@ -1160,12 +1160,4 @@ Détail : `docs/audits/ultra/tour-5-banc2-relecture.md`. 4 graves corrigés (le 
 - Reste de 2.4 (clé de dialogue, champ `element:`), échelle v1/v2 et oracle « libre » durci : reportés.
 
 ## Banc fiable, séance 3 : relecture neuve et deux audits extérieurs (2026-11-08)
-Corrigé : voir `docs/audits/ultra/banc-fiable-journal.md` (3.5a). Restent, à faire avant le tour 6 :
-- 12 des 14 contrôles du selftest (Q2 §5 du 1er méta-audit) : prise dans la partie affichée, dialogue < 5 s, ■ Tout (vue Live, colonne), partage de N fichiers, micro par ●, pads remplis partout, exception de test → « BANC », mesures « (banc) », machine, `UnsatisfiedLinkError` sur un tour.
-- P3 « tape » : 2 bonnes sur 4 au tempo exact, cause inconnue. P1 : .mid sans test. P2 (horloge +3 jours), P4 (TalkBack) : tour 7.
-- Quarantaine des 2 tests de renommage : coupable non cherché ; `Tour3NameFieldIdleTest` ne correspond à aucun motif du selftest.
-- `selftest-verdict.py` : un Gradle en échec est ignoré dès qu'un rouge en quarantaine existe (par passe, pas global) ; deux selftests dans un même atelier se marchent dessus (results hors du verrou).
-- `slowWorkDone` : jusqu'à 120 s réelles par « attends » si l'appli reste « occupée ».
-- Sortie d'un testeur hors de son siège non détectée par le lanceur ; écran vide 15 s au démarrage (déjà vu D b, F a, F c) ; export de 4 pistes en ~4 min (faux encodeur, fichiers de 1 KB).
-- 43 citations ambiguës de `corrections.tsv` ; 1 candidat « revient ? » (tour 5) et 2 (fumée) non lus ; en-tête de fusion « N nouvelles » qui compte aussi les « même bouton » ; reste de 2.4, échelle v1/v2, oracle « libre ».
-- Verdicts à trancher par un test sans banc : Ca-14, Ad-13, Fa-11, Aa-43, Cc-23, Ca-1, Cb-67 ; Fa-5 (▶ de l'assistant, départ en mesure 25).
+Corrigé : `docs/audits/ultra/banc-fiable-journal.md` (3.5a). **Tout ce qui reste (banc et équipes de correction) est centralisé dans `docs/audits/ultra/PLAN-RESTE.md` (v2, relu par deux auditeurs du plan)** : cette section et la liste de la séance 2 n'en sont plus la référence.

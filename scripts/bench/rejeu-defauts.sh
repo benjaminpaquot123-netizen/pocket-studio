@@ -38,6 +38,8 @@ for ((start = 0; start < ${#ids[@]}; start += 6)); do
       keep="$dir/_echecs/$(date +%F)/$id"
       mkdir -p "$keep"
       cp "$run/$s/"*.txt "$keep/" 2>/dev/null || true
+      # No journal: the seat never started; the bench's own log says why.
+      [ -f "$run/$s/journal.txt" ] || tail -40 "$run/gradle.log" > "$keep/gradle-fin.log" 2>/dev/null || true
       echo "  gardé : ${keep#"$root"/}"
       tail -10 "$run/$s/journal.txt" 2>/dev/null | sed 's/^/  | /'
     fi

@@ -81,10 +81,18 @@ abstract class Tour3RenameIdleBase(private val theme: String) {
         scenario = ActivityScenario.launch(MainActivity::class.java)
         compose.waitForIdle()
         // The seat's way: the welcome's « Plus tard », the project's name on top, its ⋮, « Renommer », the field.
-        if (shown("welcome_later")) compose.onNodeWithTag("welcome_later").performClick()
-        compose.waitUntil(20_000) { shown("top_projects") }
-        compose.onNodeWithTag("top_projects").performClick()
-        runCatching { compose.waitUntil(20_000) { compose.onAllNodes(projectMenu).fetchSemanticsNodes().isNotEmpty() } }.onFailure {
+        // Banc fiable 1.2 (red twice by luck, 2026-11-08: « no project's ⋮ », still on the pads): a window of the start
+        // (the welcome, the launch's choice) can come just after the first look and take the touch. As a person does, look
+        // again and touch « Mes projets » again, three times at most; the screen's rest is awaited before each touch.
+        for (attempt in 1..3) {
+            compose.waitForIdle()
+            if (shown("welcome_later")) compose.onNodeWithTag("welcome_later").performClick()
+            compose.waitUntil(20_000) { shown("top_projects") }
+            compose.onNodeWithTag("top_projects").performClick()
+            val opened = runCatching { compose.waitUntil(7_000) { compose.onAllNodes(projectMenu).fetchSemanticsNodes().isNotEmpty() } }.isSuccess
+            if (opened) break
+        }
+        runCatching { compose.waitUntil(1_000) { compose.onAllNodes(projectMenu).fetchSemanticsNodes().isNotEmpty() } }.onFailure {
             val tags = compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("tagged") { n -> androidx.compose.ui.semantics.SemanticsProperties.TestTag in n.config })
                 .fetchSemanticsNodes(atLeastOneRootRequired = false).map { n -> n.config[androidx.compose.ui.semantics.SemanticsProperties.TestTag] }
             error("no project's ⋮ in Mes projets; tags: $tags")

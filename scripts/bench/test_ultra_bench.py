@@ -340,7 +340,7 @@ def fusion_v2(d):
     write(os.path.join(d, "hors-banc.tsv"), "ci_build\tvert\nci_emulateur\trouge\nrecette_points_rouges\t0\n")
     board = run(os.path.join(HERE, "tableau-de-bord.py"), d, "--base", base, "--verdicts", verdicts)
     check("| A | Items ≥ grave côté appli, non tranchés ou non faits | 2 | 0 | non |" in board, "A counts the two graves without a verdict of this round:\n" + board)
-    check("| H |" in board and "vert/rouge, 0" in board and "| G |" in board and "?, ?, ?, ?" in board, "H read, G unknown:\n" + board)
+    check("| H |" in board and "vert/rouge, 0" in board and "| G |" in board and "?, ?, ?, " in board, "H read, G unknown but the uncommitted files (measured):\n" + board)
     check("Arrêt de l'audit possible : non" in board, "no stop on one round:\n" + board)
     # Banc fiable 1.6: an item « corrigé » in verdicts.tsv no longer counts in A; a « banc? » card ≥ medium without its
     # verdict line makes B « ? ».

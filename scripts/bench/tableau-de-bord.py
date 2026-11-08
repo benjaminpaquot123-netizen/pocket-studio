@@ -17,9 +17,11 @@ complete rounds. Standard library only.
 import json
 import os
 import re
+import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+DOCS = os.path.join(HERE, "..", "..", "docs", "audits", "ultra")
 sys.path.insert(0, HERE)
 fuse_mod = __import__("fuse-reports")
 
@@ -44,6 +46,58 @@ def kv(path):
 def num(d, k):
     v = d.get(k, "?")
     return int(v) if re.fullmatch(r"-?\d+", v) else None
+
+
+def measured(tour_dir, name):
+    """Banc fiable 2.5: what a program can know itself (hors-banc.tsv still wins when it gives a number):
+    fichiers_non_commites (git status, submodule type changes aside), relecture_bloquants/graves (the round's
+    *-relecture.md tables, rows not « corrigé »), corrections_sans_test (commits of the round's eq/<tour>-* branches
+    touching app/src/main without app/src/test), lots_non_joues (sieges.tsv seats without mesures.json),
+    sieges_joues and sieges_coupes_par_le_banc (mesures.json: no end, or an end that is the bench's)."""
+    out = {}
+    root = os.path.abspath(os.path.join(HERE, "..", ".."))
+
+    def git(*a):
+        r = subprocess.run(["git", "-C", root, *a], capture_output=True, text=True)
+        return r.stdout if r.returncode == 0 else None
+    status = git("status", "--porcelain")
+    if status is not None:
+        out["fichiers_non_commites"] = sum(1 for l in status.splitlines() if l.strip() and not l.startswith(" T"))
+    reviews = [os.path.join(DOCS, f) for f in sorted(os.listdir(DOCS)) if f.startswith(name + "-") and f.endswith("-relecture.md")] if os.path.isdir(DOCS) else []
+    if reviews:
+        rows = [l for f in reviews for l in read(f).splitlines() if l.startswith("|") and "corrigé" not in l.lower()]
+        out["relecture_bloquants"] = sum(1 for l in rows if re.search(r"\|\s*bloquant\s*\|", l, re.I))
+        out["relecture_graves"] = sum(1 for l in rows if re.search(r"\|\s*grave\s*\|", l, re.I))
+    branches = git("for-each-ref", "--format=%(refname:short)", f"refs/heads/eq/{name}-*")
+    if branches is not None and branches.strip():
+        untested = 0
+        for b in branches.split():
+            created = (git("reflog", "show", "--format=%H", b) or "").split()
+            if not created:
+                continue
+            for c in (git("rev-list", "--no-merges", f"{created[-1]}..{b}") or "").split():
+                files = (git("show", "--name-only", "--format=", c) or "").split()
+                if any(f.startswith("app/src/main/") for f in files) and not any(f.startswith("app/src/test/") for f in files):
+                    untested += 1
+        out["corrections_sans_test"] = untested
+    planned = [l.split("\t")[:2] for l in read(os.path.join(tour_dir, "sieges.tsv")).splitlines()[1:] if l.strip()]
+    played, cut = 0, 0
+    for lot, seat in planned:
+        m = os.path.join(tour_dir, f"lot{lot}", seat, "mesures.json")
+        if not os.path.isfile(m):
+            continue
+        played += 1
+        try:
+            end = (json.loads(read(m)).get("mesures") or {}).get("fin")
+        except ValueError:
+            end = None
+        if not end or re.match(r"(banc|délai|delai|timeout|temps)", str(end), re.I):
+            cut += 1
+    if planned:
+        out["lots_non_joues"] = len({lot for lot, seat in planned} - {lot for lot, seat in planned if os.path.isfile(os.path.join(tour_dir, f"lot{lot}", seat, "mesures.json"))})
+        out["sieges_joues"] = played
+        out["sieges_coupes_par_le_banc"] = cut
+    return out
 
 
 def round_numbers(tour_dir, base, verdicts_path, total_promises):
@@ -91,6 +145,9 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises):
                 succeeded += m.get("resultat") == "reussie"
     new_medium = [c for c in clusters if c["new"] and c["gravity"] == 2]
     hb = kv(os.path.join(tour_dir, "hors-banc.tsv"))
+    for k, v in measured(tour_dir, name).items():
+        if hb.get(k, "?") in ("", "?") and v is not None:
+            hb[k] = str(v)
 
     def yes(cond):
         return "?" if cond is None else ("oui" if cond else "non")
@@ -115,9 +172,11 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises):
          "0, 0, 0, 0", yes(all_zero("relecture_bloquants", "relecture_graves", "corrections_sans_test", "fichiers_non_commites"))),
         ("H", "Hors banc : CI build + émulateur, points rouges de la recette téléphone", f"{hb.get('ci_build', '?')}/{hb.get('ci_emulateur', '?')}, {hb.get('recette_points_rouges', '?')}",
          "vert/vert, 0", yes(None if ci_ok is None or num(hb, "recette_points_rouges") is None else ci_ok and num(hb, "recette_points_rouges") == 0)),
-        ("I", "Couverture : cases vides, lots non joués, sièges coupés par le banc", ", ".join(hb.get(k, "?") for k in ("cases_vides", "lots_non_joues", "sieges_coupes_par_le_banc")),
-         "0, 0, ≤ 3", yes(None if any(num(hb, k) is None for k in ("cases_vides", "lots_non_joues", "sieges_coupes_par_le_banc"))
-                          else num(hb, "cases_vides") == 0 and num(hb, "lots_non_joues") == 0 and num(hb, "sieges_coupes_par_le_banc") <= 3)),
+        ("I", "Couverture : cases vides, lots non joués, sièges joués / coupés par le banc",
+         f"{hb.get('cases_vides', '?')}, {hb.get('lots_non_joues', '?')}, {hb.get('sieges_joues', '?')} / {hb.get('sieges_coupes_par_le_banc', '?')}",
+         "0, 0, ≥ 16 / ≤ 3", yes(None if any(num(hb, k) is None for k in ("cases_vides", "lots_non_joues", "sieges_joues", "sieges_coupes_par_le_banc"))
+                          else num(hb, "cases_vides") == 0 and num(hb, "lots_non_joues") == 0 and num(hb, "sieges_joues") >= 16
+                          and num(hb, "sieges_coupes_par_le_banc") <= 3)),
     ]
     curve = {"tour": name, "sieges": len(seats), "fiches": defects, "fiches_par_siege": round(defects / max(1, len(seats)), 1),
              "graves_declares_par_siege": round(declared_grave / max(1, len(seats)), 2), "grappes": len(clusters),

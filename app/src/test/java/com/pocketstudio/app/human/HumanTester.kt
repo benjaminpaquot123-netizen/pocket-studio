@@ -1146,6 +1146,19 @@ abstract class HumanTester(private val seat: String) {
                 settle(900)
             }
             "appui-long" -> { val d = SystemClock.uptimeMillis(); touch(MotionEvent.ACTION_DOWN, f(1), f(2), d); pass(900); touch(MotionEvent.ACTION_UP, f(1), f(2), d); settle(900) }
+            // Banc fiable 3.3 (P3, the challenges: round 5 C a #32, no star in 3 tries): « tape X Y N INTERVALLE_MS », N touches
+            // of 60 ms at one place, one every INTERVALLE_MS of the bench's clock (the app's and the engine's), as a finger
+            // keeping time does; one gesture. N 1 to 32, interval 100 to 4000 ms.
+            "tape" -> {
+                val n = f(3).toInt().coerceIn(1, 32)
+                val every = f(4).toLong().coerceIn(100, 4_000)
+                for (i in 0 until n) {
+                    val d = SystemClock.uptimeMillis()
+                    touch(MotionEvent.ACTION_DOWN, f(1), f(2), d); pass(60); touch(MotionEvent.ACTION_UP, f(1), f(2), d)
+                    if (i < n - 1) pass(every - 60)
+                }
+                settle(900)
+            }
             "glisse" -> {
                 val d = SystemClock.uptimeMillis()
                 val (x1, y1, x2, y2) = listOf(f(1), f(2), f(3), f(4))

@@ -48,6 +48,33 @@ class BenchAmeneesTest : HumanTester("amenees") {
         assertNotNull("« Choisir une chanson »", centerOf("remix_pick"))
     }
 
+    /**
+     * Banc fiable 3.3 (P3; round 5 C a #32: no star in 3 tries, every touch a separate gesture of ~1 s): « tape » keeps time.
+     * Challenge 1 (« Boum boum »: one pad, four beats) tapped at its tempo wins a star.
+     */
+    @Test
+    fun aTappedRhythmEarnsAStar() {
+        begin(SeatOptions(simple = true))
+        // The welcome's « Défis » card, lower down on a phone: scrolled to as a person does.
+        repeat(4) { if ((centerOf("launch_challenges")?.second ?: Float.MAX_VALUE) > 1100f) act("glisse 294 900 294 350") }
+        val home = centerOf("launch_challenges") ?: error("no « Défis » on the welcome\n" + screenLines().joinToString("\n"))
+        act("touche ${home.first} ${home.second}")
+        val until = System.currentTimeMillis() + 60_000
+        while (centerOf("padlive_challenge_go") == null) {
+            assertTrue("no « À moi ! »\n" + screenLines().joinToString("\n"), System.currentTimeMillis() < until)
+            act("attends 1")
+        }
+        val p = project()!!
+        val c = com.pocketstudio.model.PadChallenge.make(1, com.pocketstudio.model.PadChallenge.shotsOf(p.live, p.padLive.shownPage), p.tempoBpm)!!
+        assertTrue("challenge 1 is one pad", c.hits.map { it.pad }.distinct().size == 1)
+        act("touche ${centerOf("padlive_challenge_go")!!.first} ${centerOf("padlive_challenge_go")!!.second}")
+        val pad = centerOf("padlive_pad_${c.hits.first().pad}") ?: error("pad ${c.hits.first().pad} not on screen\n" + screenLines().joinToString("\n"))
+        act("tape ${pad.first} ${pad.second} ${c.hits.size} ${c.beatMs.toLong()}")
+        act("attends 1")
+        val stars = project()!!.padLive.stars.getOrElse(0) { 0 }
+        assertTrue("challenge 1 tapped in time: $stars star(s)\n" + screenLines().joinToString("\n"), stars >= 1)
+    }
+
     @Test
     fun padLiveStartsWithItsPadsReady() {
         val j = bring(AMENEE_PADLIVE, SeatOptions())

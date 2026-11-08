@@ -1,5 +1,4 @@
-Le grand audit, premier tour : « C'est pas faux ! »
-- Streaming : le volume vise maintenant tout le morceau, comme Spotify et YouTube. Un ancien projet réexporté en Streaming sort un peu plus fort (1 à 2 dB) : c'est voulu.
-- Pad Live : les pages B à D se remplissent toutes seules et « Annuler » ne les vide plus ; un pack choisi pendant ce temps passe en premier.
-- Découpe d'une chanson : les bouts choisis ne remplacent plus Kick, Caisse et compagnie, et le projet en boucle reste une boucle.
-- Tuto, morceau et Live : nombreuses petites corrections trouvées par les testeurs.
+Recette, deuxième fournée : « On en a gros ! »
+- La liste Recette ne garde que les 10 essais restants (les 8 premiers sont faits, merci).
+- Chaque essai dit maintenant le mode (Simple ou Pro), les gestes un par un et la réponse à recopier.
+- Rien d'autre ne change dans l'appli : les défauts trouvés sont notés pour les équipes de correction.

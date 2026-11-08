@@ -1,96 +1,56 @@
 {
   "id": "banc-fiable",
-  "milestone": "Banc fiable : 18 essais pour trancher ce que le banc ne peut pas dire (chaque point finit par une réponse à recopier)",
+  "milestone": "Banc fiable : les 10 essais restants (8 faits sur le téléphone, merci). Chaque point dit le mode, les gestes un par un, et la réponse à recopier.",
   "items": [
-    {
-      "id": "tel-01",
-      "title": "Renommer après ✕ Effacer",
-      "hint": "Mes projets › ⋮ › Renommer : touche le champ, touche ✕ Effacer, puis tape un nom SANS retoucher le champ. À recopier : « les lettres s'écrivent » ou « il a fallu retoucher le champ »."
-    },
-    {
-      "id": "tel-03",
-      "title": "Le projet envoyé dans « Mes exports »",
-      "hint": "Dans un projet : Partager › Envoyer le projet (.zip), puis ouvre « Mes exports ». À recopier : « le .zip est dans la liste » ou « absent »."
-    },
-    {
-      "id": "tel-04",
-      "title": "Taille d'un export WAV",
-      "hint": "Mix › exporte un WAV d'au moins 30 secondes, puis ouvre « Mes exports ». À recopier : la taille affichée (en Mo ou Ko)."
-    },
-    {
-      "id": "tel-05",
-      "title": "Pad Live s'ouvre en silence ?",
-      "hint": "Depuis « Que veux-tu faire ? », touche Pad Live et ne touche plus rien pendant 5 secondes. À recopier : « silence » ou « un son est parti tout seul »."
-    },
-    {
-      "id": "tel-06",
-      "title": "Longueur de « Prêt à partager ? »",
-      "hint": "Mix : règle la longueur sur 16 mesures, puis Partager › Prêt à partager ? et exporte. À recopier : la durée du fichier obtenu (en secondes)."
-    },
-    {
-      "id": "tel-07",
-      "title": "Alerte après un export",
-      "hint": "Juste après un export (WAV ou MIDI), sans rien toucher d'autre : l'alerte « le morceau a changé » apparaît-elle ? À recopier : oui ou non."
-    },
-    {
-      "id": "tel-08",
-      "title": "« Tout couper » de Pad Live",
-      "hint": "Lance le morceau (▶), ouvre Pad Live, touche « Tout couper ». À recopier : « tout s'arrête » ou « la musique du projet continue »."
-    },
-    {
-      "id": "tel-09",
-      "title": "« Jouer » en Mode simple",
-      "hint": "En Mode simple, onglet Mon morceau, touche « Jouer » sur un morceau de plusieurs parties. À recopier : « tout le morceau » ou « une boucle de la même partie »."
-    },
     {
       "id": "tel-10",
       "title": "Mélodie après un passage par Pad Live",
-      "hint": "Enregistre une mélodie au clavier (3 ou 4 notes), touche Retour pendant la prise, va dans Pad Live, reviens au projet. À recopier : le nombre de notes encore là."
+      "hint": "Mode : Pro.\n1. Onglet Sons › Synthé (le clavier).\n2. Lance l'enregistrement (rond rouge) et joue 3 ou 4 notes.\n3. Pendant que ça enregistre encore, touche la flèche Retour du téléphone.\n4. ⋮ › Accueil › Pad Live, puis reviens à ton projet (Continuer ou Mes projets).\n5. Retourne dans Synthé et compte les notes.\nRéponse : le nombre de notes encore là (0 à 4)."
     },
     {
       "id": "tel-11",
       "title": "Glisser sur les effets de Pad Live",
-      "hint": "Dans Pad Live, glisse le doigt de haut en bas sur la colonne des effets. À recopier : « la colonne défile » ou « un effet s'est déclenché »."
+      "hint": "Mode : peu importe.\n1. Accueil › Pad Live.\n2. Trouve la colonne des effets (les grosses cases d'effets sur le côté).\n3. Pose le doigt en haut de la colonne et glisse vers le bas, sans lever le doigt.\nRéponse : « la colonne défile » ou « un effet s'est déclenché »."
     },
     {
       "id": "tel-12",
       "title": "« ■ Tout » de la vue Live",
-      "hint": "Pro › Live (la grille des briques) : lance deux briques, puis touche « ■ Tout ». À recopier : « tout s'arrête » ou « quelque chose joue encore »."
+      "hint": "Mode : Pro.\n1. Ouvre un projet avec plusieurs pistes remplies.\n2. Onglet « Live » en bas (la grille de cases).\n3. Touche deux cases pour lancer deux briques ; attends qu'elles jouent.\n4. Touche « ■ Tout » (en bas de la grille).\nRéponse : « tout s'arrête » ou « quelque chose joue encore »."
     },
     {
       "id": "tel-13",
       "title": "Changer de partie pendant la lecture",
-      "hint": "Pro : pendant que le morceau joue, choisis la partie B dans le menu des parties. À recopier : « on passe sur B » ou « on reste sur A »."
+      "hint": "Mode : Pro.\n1. Ouvre un projet qui a au moins deux parties, A et B, différentes.\n2. Lance la musique sur la partie A (gros ▶).\n3. Pendant que ça joue, ouvre le menu des parties (en haut, le nom de la partie) et choisis B.\nRéponse : « on passe sur B » (le son change) ou « on reste sur A »."
     },
     {
       "id": "tel-14",
       "title": "Le curseur d'une courbe pendant la lecture",
-      "hint": "Mix › une courbe (ex. Filtre) › « Voir le réglage » pendant que le morceau joue. À recopier : « le curseur bouge avec la courbe » ou « il reste figé »."
+      "hint": "Mode : Pro.\n1. Mix › carte « Courbes » : crée une courbe (ex. Filtre) avec « Automatiser » si tu n'en as pas, et dessine-la qui monte et descend.\n2. Lance la musique (gros ▶).\n3. Sur la courbe, touche « Voir le réglage ».\nRéponse : « le curseur bouge avec la courbe » ou « il reste figé »."
     },
     {
       "id": "tel-15",
       "title": "Fin du Remix annoncée coupée ?",
-      "hint": "Place une chanson du Remix dans un projet plus long qu'elle, puis Partager › « Prêt ». À recopier : « fin coupée » annoncé ou non, et si c'est vrai à l'écoute."
+      "hint": "Mode : Pro.\n1. Accueil › Remix : sépare une chanson courte (moins d'une minute si possible).\n2. Mets-la dans un projet plus long qu'elle (le morceau dure plus que la chanson).\n3. Partager (en haut à droite) › « Prêt à partager ? » : lis ce qui est annoncé.\n4. Exporte et écoute la fin.\nRéponse : « fin coupée » est-il annoncé (oui/non), et à l'écoute, est-ce vraiment coupé (oui/non)."
     },
     {
       "id": "tel-16",
       "title": "La démo s'arrête quand on la quitte ?",
-      "hint": "Nouveau morceau : écoute une démo de style, puis quitte la liste sans rien choisir. À recopier : « le son s'arrête » ou « il continue »."
+      "hint": "Mode : peu importe.\n1. Accueil › « Nouveau morceau ».\n2. Dans la liste des styles, touche le bouton d'écoute (▶) d'un style : la démo joue.\n3. Quitte la liste SANS choisir de style (flèche Retour ou croix).\nRéponse : « le son s'arrête » ou « il continue »."
     },
     {
       "id": "tel-17",
       "title": "Défi 1 en rythme",
-      "hint": "Défis › Défi 1 (« Boum boum ») : tape 4 fois en rythme sur le bon pad. À recopier : le nombre d'étoiles (0 à 3)."
+      "hint": "Mode : peu importe.\n1. Accueil › carte « Défis » › Défi 1 « Boum boum ».\n2. Touche « Écouter » pour entendre le rythme.\n3. Tape 4 fois en rythme sur le pad montré, en suivant la musique.\nRéponse : le nombre d'étoiles obtenues (0 à 3). Si tu as bien tapé en rythme et que tu as 1 étoile, dis-le."
     },
     {
       "id": "tel-18",
       "title": "Prise micro à la fin du morceau",
-      "hint": "Enregistre ta voix sur une piste audio jusqu'après la fin du morceau. À recopier : « la prise s'arrête à la fin » ou « elle continue »."
+      "hint": "Mode : peu importe. Il faut des écouteurs ou le haut-parleur, et autoriser le micro.\n1. Accueil › « Enregistrer ma voix ou ma guitare » (ou Pro › Sons › Audio).\n2. Lance la prise et parle ou chante jusqu'APRÈS la fin du morceau.\nRéponse : « la prise s'arrête à la fin du morceau » ou « elle continue »."
     },
     {
       "id": "tel-19",
       "title": "Annuler une prise du Live",
-      "hint": "Pro › Live : enregistre une courte performance, puis « Annuler ». À recopier : la durée du morceau avant et après (en mesures ou minutes)."
+      "hint": "Mode : Pro.\n1. Note la durée du morceau (dans Structure, en mesures ou minutes).\n2. Onglet « Live » : touche le rond rouge pour enregistrer la performance, lance quelques cases pendant 10-20 s, puis arrête.\n3. Touche « Annuler » (en bas, à gauche du ▶).\n4. Regarde de nouveau la durée du morceau.\nRéponse : la durée avant et après (elle doit redevenir comme avant)."
     }
   ]
 }

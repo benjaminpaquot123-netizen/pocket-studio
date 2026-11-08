@@ -12,3 +12,13 @@ Une ligne par retour : date, APK, écran, ce qu’il a vu, ce qu’il faudrait.
 - 2026-11-08, APK 340, recette tel-06 : Benjamin est **perdu pour régler la longueur** : elle est cachée dans Mix › export › « La partie en boucle » › « Avancé » › « Longueur de la boucle », loin de « Prêt à partager ? », qui ne la montre pas et ne permet pas de la changer. Et la consigne tel-06 oublie de dire qu'il faut un projet **sans parties dans Structure** (sinon c'est le morceau entier qui part). À corriger : la consigne de recette, et la longueur visible et réglable depuis « Prêt à partager ? » (lié à T5-8MES).
 - 2026-11-08, APK 340, tablette, tel-06 (photo, Mix en Simple) : en mode Simple, l'onglet Mix (`SimpleMixTab`) **n'a pas de partie export**, donc pas de « Longueur de la boucle » : la consigne tel-06 doit dire « en mode Pro ». Précision sur la note « menu Plus seulement en Pro » : en Simple, le « ⋮ » en haut à droite ouvre déjà Accueil, Mes projets, Réglages, Aide, Passer en mode Pro, mais **pas la page Recette** ; c'est elle qui manque en Simple.
 - 2026-11-08, APK 340, tablette, **recette tel-06 = 16 s** (photo) : 120 BPM, Pro, Mix › « La partie en boucle » › Avancé › 16 choisi, puis Prêt à partager ? › WAV : « Durée : 16 s » = 8 mesures. Confirme sur l'appareil le défaut **T5-8MES**. Remarque : le repli **« Avancé » n'est pas assez voyant** (petit mot orange, flèche minuscule) ; il cache pourtant un réglage dont dépend l'export.
+- 2026-11-08, APK 340, **téléphone (Honor), recette 8/18** (captures) :
+  - tel-01 ✅ les lettres s'écrivent après ✕ Effacer.
+  - tel-03 ❌ (.zip absent, comme sur la tablette : T5-ZIP).
+  - tel-04 ✅ WAV 2 min 26 = 42,05 Mo (cohérent avec du 24 bits stéréo 48 kHz, pas de taille faussée).
+  - tel-05 ❌ **un pad se joue à chaque ouverture de Pad Live**.
+  - tel-06 ❌ (8 mesures au lieu de 16 : T5-8MES).
+  - tel-07 ✅ pas d'alerte « le morceau a changé » après l'export.
+  - tel-08 ❌ **« Tout couper » de Pad Live coupe le son mais le transport continue** (temps et mesures défilent en haut).
+  - tel-09 ✅ « Jouer » en Simple joue tout le morceau (T4-16 / T5-Ab-14 : horloge du banc, pas l'appli).
+  - Mesure vue : buffer 192 sur le téléphone (≤ 256 visé, OK).

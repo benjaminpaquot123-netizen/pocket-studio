@@ -1,6 +1,6 @@
 {
   "id": "banc-fiable",
-  "milestone": "Banc fiable : 10 essais pour trancher ce que le banc ne peut pas dire (chaque point finit par une réponse à recopier)",
+  "milestone": "Banc fiable : 18 essais pour trancher ce que le banc ne peut pas dire (chaque point finit par une réponse à recopier)",
   "items": [
     {
       "id": "tel-01",
@@ -51,6 +51,46 @@
       "id": "tel-11",
       "title": "Glisser sur les effets de Pad Live",
       "hint": "Dans Pad Live, glisse le doigt de haut en bas sur la colonne des effets. À recopier : « la colonne défile » ou « un effet s'est déclenché »."
+    },
+    {
+      "id": "tel-12",
+      "title": "« ■ Tout » de la vue Live",
+      "hint": "Pro › Live (la grille des briques) : lance deux briques, puis touche « ■ Tout ». À recopier : « tout s'arrête » ou « quelque chose joue encore »."
+    },
+    {
+      "id": "tel-13",
+      "title": "Changer de partie pendant la lecture",
+      "hint": "Pro : pendant que le morceau joue, choisis la partie B dans le menu des parties. À recopier : « on passe sur B » ou « on reste sur A »."
+    },
+    {
+      "id": "tel-14",
+      "title": "Le curseur d'une courbe pendant la lecture",
+      "hint": "Mix › une courbe (ex. Filtre) › « Voir le réglage » pendant que le morceau joue. À recopier : « le curseur bouge avec la courbe » ou « il reste figé »."
+    },
+    {
+      "id": "tel-15",
+      "title": "Fin du Remix annoncée coupée ?",
+      "hint": "Place une chanson du Remix dans un projet plus long qu'elle, puis Partager › « Prêt ». À recopier : « fin coupée » annoncé ou non, et si c'est vrai à l'écoute."
+    },
+    {
+      "id": "tel-16",
+      "title": "La démo s'arrête quand on la quitte ?",
+      "hint": "Nouveau morceau : écoute une démo de style, puis quitte la liste sans rien choisir. À recopier : « le son s'arrête » ou « il continue »."
+    },
+    {
+      "id": "tel-17",
+      "title": "Défi 1 en rythme",
+      "hint": "Défis › Défi 1 (« Boum boum ») : tape 4 fois en rythme sur le bon pad. À recopier : le nombre d'étoiles (0 à 3)."
+    },
+    {
+      "id": "tel-18",
+      "title": "Prise micro à la fin du morceau",
+      "hint": "Enregistre ta voix sur une piste audio jusqu'après la fin du morceau. À recopier : « la prise s'arrête à la fin » ou « elle continue »."
+    },
+    {
+      "id": "tel-19",
+      "title": "Annuler une prise du Live",
+      "hint": "Pro › Live : enregistre une courte performance, puis « Annuler ». À recopier : la durée du morceau avant et après (en mesures ou minutes)."
     }
   ]
 }

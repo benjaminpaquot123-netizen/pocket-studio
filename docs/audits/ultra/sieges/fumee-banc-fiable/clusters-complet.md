@@ -1,4 +1,4 @@
-# Grappes du tour « fumee »
+# Grappes du tour « fumee-banc-fiable »
 4 siège(s), 19 grappe(s), 13 nouvelle(s), 0 vue(s) par ≥ 2 sièges (confirmées sans juge), 0 qui revien(nen)t (confirmé par un lecteur), 3 candidat(s) « revient ? » à confirmer dans revient.tsv, 9 déjà vue(s) à un tour d'avant (même clé ou même bouton).
 
 - [déjà vu (tour-5)] grave ×1 (A/b#10) padlive_pads_side · « padlive_undo » · perdu — un avertissement avant d'effacer la prise / la prise sur B1 est effacée d'un coup (« ページ B · 空 »), aucun message, pas de « refaire »

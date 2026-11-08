@@ -283,8 +283,24 @@ abstract class HumanTester(private val seat: String) {
             journal.appendText("#$n > $cmd\n")
             if (cmd == "fin") { end("fin"); return }
             afterWait = kind == "attends" || kind == "regarde"
+            // External audit: a gesture written wrong (« tape 10 20 4 ») threw inside the app's turn and read as a crash of
+            // the app; it is the bench's: said, not played, not counted.
+            val malformed = when (kind) {
+                "touche", "appui-long", "double-touche" -> num(1) == null || num(2) == null
+                "glisse", "tape" -> (1..4).any { num(it) == null }
+                "ecris" -> words.size < 2
+                "retour", "attends", "regarde" -> false
+                else -> true
+            }
+            if (malformed) {
+                journal.appendText("#$n BANC geste mal écrit : $cmd\n")
+                say("Banc : geste mal écrit (« $cmd ») : rien n'a été fait. Les gestes : touche X Y, appui-long X Y, double-touche X Y, glisse X1 Y1 X2 Y2, tape X Y N MS, ecris TEXTE, retour, attends S.")
+                if (kind != "attends" && kind != "regarde") gestures--
+                n++
+                continue
+            }
             val points = when (kind) {
-                "touche", "appui-long", "double-touche" -> listOfNotNull(num(1)?.let { x -> num(2)?.let { x to it } })
+                "touche", "appui-long", "double-touche", "tape" -> listOfNotNull(num(1)?.let { x -> num(2)?.let { x to it } })
                 "glisse" -> listOfNotNull(num(1)?.let { x -> num(2)?.let { x to it } }, num(3)?.let { x -> num(4)?.let { x to it } })
                 else -> emptyList()
             }
@@ -996,7 +1012,7 @@ abstract class HumanTester(private val seat: String) {
                         "(dossier Musique, 0:${BenchSong.SECONDS}, ${"%.1f".format(file.length() / 1e6).replace('.', ',')} Mo) : " +
                         "ta chanson préférée, avec une batterie, une basse, une voix qui chante et une nappe.",
                 )
-            } else if (types.any { it == "application/zip" || it == "audio/midi" }) {
+            } else if ((types.contains("application/zip") && projectImportShown()) || (types.contains("audio/midi") && !types.contains("application/zip"))) {
                 // Banc fiable 3.3 (P1; round 5 C d, the import of a .zip or a .mid out of reach): the bench gives a file
                 // made here from the project open now (never one of Benjamin's), as a friend would send it.
                 val zip = types.contains("application/zip")
@@ -1028,6 +1044,12 @@ abstract class HumanTester(private val seat: String) {
         }
         if (answered) settle(900)
     }
+
+    /**
+     * Review of 3.3: the sound packs' import asks the same types as a project's (.zip); a project given there made a false
+     * « Aucun son dans ce .zip ». The bench gives a project only where a project is imported (Mes projets, a new project).
+     */
+    private fun projectImportShown(): Boolean = shownOnScreen("starter_import") || shownOnScreen("project_new")
 
     /**
      * The services the app started: the separation (and its model's download, from the bench's
@@ -1283,7 +1305,7 @@ abstract class HumanTester(private val seat: String) {
         // The separation's own flag too: between two of its steps (or before its service ran) no thread is in the stand-in.
         while (slowBenchWorkBusy() || SeparationJob.state.value.busy) {
             if (System.currentTimeMillis() >= until) {
-                say("Banc : le travail en cours (téléchargement ou séparation simulés) n'est pas fini après ${SLOW_WORK_CAP_MS / 1000} s ; attends encore. Ce n'est pas un défaut de l'appli.")
+                say("Banc : le travail en cours (téléchargement ou séparation) n'est pas fini après ${SLOW_WORK_CAP_MS / 1000} s d'attente réelle ; attends encore. Si cela dure, note-le dans « incidents-banc » avec banc?: temps : ce peut être le banc ou l'appli.")
                 return
             }
             waited = true

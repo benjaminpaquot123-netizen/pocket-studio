@@ -27,7 +27,10 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import org.junit.Ignore
+import org.junit.Rule
+import org.junit.rules.TestRule
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -47,6 +50,10 @@ import java.time.Duration
  */
 @RunWith(RobolectricTestRunner::class)
 class Tour5AppProofTest {
+    /** See [KnownDefect]: each proof runs (it was @Ignore'd, never run: external audit), inverted while the defect is there. */
+    @get:Rule
+    val knownDefects: TestRule = KnownDefectRule()
+
     private val app: Application get() = ApplicationProvider.getApplicationContext()
 
     /**
@@ -165,7 +172,7 @@ class Tour5AppProofTest {
     }
 
     /** T5-ZIP (seats C c 41, C d 68): « Envoyer le projet » (.zip), then « Mes exports » lists that .zip. */
-    @Ignore("appli : verdicts.tsv T5-ZIP, à corriger (banc fiable 3.1)")
+    @KnownDefect("T5-ZIP", "« Mes exports » does not list the project just sent")
     @Test
     fun myExportsListsTheProjectZipJustSent() {
         Robolectric.setupContentProvider(FakeMediaStore::class.java, MediaStore.AUTHORITY)
@@ -189,7 +196,7 @@ class Tour5AppProofTest {
     private fun projectCatalogSave(id: String, p: Project) = ProjectStore(File(app.filesDir, "projects")).save(id, p)
 
     /** T5-ALERTE (seat C c 30): « Prêt à partager ? » › Partager, the share menu opened: no « a changé » warning, nothing changed. */
-    @Ignore("appli : verdicts.tsv T5-ALERTE, à corriger (banc fiable 3.1)")
+    @KnownDefect("T5-ALERTE", "once the share menu opened, nothing changed in the song")
     @Test
     fun noChangedWarningRightAfterSharing() {
         NativeEngine.sink = RenderEngine()
@@ -205,7 +212,7 @@ class Tour5AppProofTest {
     }
 
     /** T5-ALERTE (seat E c 61): Mix › Exporter (WAV), then MIDI: no « a changé » warning under the file just made. */
-    @Ignore("appli : verdicts.tsv T5-ALERTE, à corriger (banc fiable 3.1)")
+    @KnownDefect("T5-ALERTE", "right under the MIDI file just made")
     @Test
     fun noChangedWarningRightAfterAMixExport() {
         NativeEngine.sink = RenderEngine()
@@ -224,7 +231,7 @@ class Tour5AppProofTest {
     }
 
     /** T5-8MES (seat C c 27): 16 bars chosen in Mix, « Prêt à partager ? » › Partager renders 16 bars. */
-    @Ignore("appli : verdicts.tsv T5-8MES, à corriger (banc fiable 3.1)")
+    @KnownDefect("T5-8MES", "« Prêt à partager ? » rendered 8.0 bars, Mix chose 16")
     @Test
     fun shareFollowsTheLengthChosenInMix() {
         val engine = RenderEngine()
@@ -240,5 +247,31 @@ class Tour5AppProofTest {
         val bars = rendered.toDouble() / OfflineExport.framesFor(1, p.tempoBpm, p.beatsPerBar)
         assertEquals("« Prêt à partager ? » rendered ${"%.1f".format(bars)} bars, Mix chose 16",
             OfflineExport.framesFor(16, p.tempoBpm, p.beatsPerBar), rendered)
+    }
+}
+
+/**
+ * External audit of the bench: a proof that the app has a defect runs every time (self-test, CI), as a guard. The test
+ * states the right behaviour; while the app still fails it with exactly [message] in its assertion, the guard is green
+ * (« still there »); when it passes (fixed: move the verdict to « corrigé » and remove this annotation) or fails for any
+ * other reason (a precondition, a crash), the guard is red.
+ */
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class KnownDefect(val id: String, val message: String)
+
+class KnownDefectRule : TestRule {
+    override fun apply(base: Statement, description: Description): Statement {
+        val known = description.getAnnotation(KnownDefect::class.java) ?: return base
+        return object : Statement() {
+            override fun evaluate() {
+                val failure = runCatching { base.evaluate() }.exceptionOrNull()
+                if (failure == null) throw AssertionError("${known.id} no longer fails: fixed? Set its verdicts.tsv line to « corrigé » and remove @KnownDefect.")
+                if (failure !is AssertionError || known.message !in (failure.message ?: "")) {
+                    throw AssertionError("${known.id}: failed for another reason than the known defect (« ${known.message} »)", failure)
+                }
+                println("${known.id}: known defect still there (${failure.message?.take(160)})")
+            }
+        }
     }
 }

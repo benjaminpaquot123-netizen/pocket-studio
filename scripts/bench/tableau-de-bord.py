@@ -97,7 +97,12 @@ def measured(tour_dir, name):
             end = (json.loads(read(m)).get("mesures") or {}).get("fin")
         except ValueError:
             end = None
-        if not end or re.match(r"(banc|délai|delai|timeout|temps)", str(end), re.I):
+        # Cut by the bench: no end written, an end of the bench's own, or a freeze the bench saw (mesures « gels »).
+        try:
+            frozen = int(((json.loads(read(m)).get("mesures") or {}).get("gels")) or 0) > 0
+        except (ValueError, TypeError):
+            frozen = False
+        if not end or frozen or re.match(r"(banc|délai|delai|timeout|temps|rien ne change)", str(end), re.I):
             cut += 1
     if planned and played:
         out["lots_non_joues"] = len({lot for lot, seat in planned} - {lot for lot, seat in planned if os.path.isfile(os.path.join(tour_dir, f"lot{lot}", seat, "mesures.json"))})
@@ -122,8 +127,10 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises):
     appli = [c for c in serious if verdict_of.get(c["key"], {}).get("verdict", "?") != "banc"
              and not settled(c) and not (c.get("bench_doubt") and c["key"] not in verdict_of)]
     bench = [c for c in serious if verdict_of.get(c["key"], {}).get("verdict") == "banc"]
+    # A proof « without the bench » is not a Bench* test (external audit: T4-19 cited one).
     bench_proven = all(verdict_of[c["key"]].get("garde_banc", "-") not in ("", "-") and
-                       verdict_of[c["key"]].get("preuve_appli", "-") not in ("", "-") for c in bench)
+                       verdict_of[c["key"]].get("preuve_appli", "-") not in ("", "-") and
+                       not verdict_of[c["key"]].get("preuve_appli", "").startswith("Bench") for c in bench)
     doubt_unjudged = [c for c in clusters if c.get("bench_doubt") and c["gravity"] <= 2 and c["key"] not in verdict_of]
     back = [c for c in clusters if c["state"] in ("revient", "banc contredit")]
     # « revient ? » candidates (not yet read by a reader, revient.tsv): C cannot be « oui » while one ≥ medium waits.
@@ -154,7 +161,8 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises):
     new_medium = [c for c in clusters if c["new"] and c["gravity"] == 2]
     hb = kv(os.path.join(tour_dir, "hors-banc.tsv"))
     for k, v in measured(tour_dir, name).items():
-        if hb.get(k, "?") in ("", "?") and v is not None:
+        # External audit: what the program measured wins over a hand-written number.
+        if v is not None:
             hb[k] = str(v)
 
     def yes(cond):
@@ -207,6 +215,9 @@ def main(argv):
     total = int(opt("--promesses-total", "120"))
     flags = {"--out", "--base", "--verdicts", "--promesses-total"}
     tours = [a for i, a in enumerate(argv) if not a.startswith("--") and (i == 0 or argv[i - 1] not in flags)]
+    # External audit: each round once, in round order (« tour-5 tour-1 » made tour-1 the last one; a round given twice
+    # counted twice for the stop).
+    tours = sorted({os.path.normpath(t): None for t in tours}, key=lambda t: (fuse_mod.tour_no(os.path.basename(t)) is None, fuse_mod.tour_no(os.path.basename(t)) or 0))
     out = opt("--out", os.path.join(tours[-1], "tableau-de-bord.md"))
     lines = ["# Tableau de bord de l'audit ultra", "", "Calculé par `scripts/bench/tableau-de-bord.py` ; « ? » = chiffre manquant, la condition n'est pas remplie.", ""]
     met = []

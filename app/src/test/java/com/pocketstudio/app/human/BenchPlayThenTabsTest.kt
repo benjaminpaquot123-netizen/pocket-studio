@@ -114,13 +114,18 @@ class BenchPlayThenTabsTest : HumanTester("play-tabs") {
     fun theBarCounterGoesOnWhileTheSongPlays() {
         simpleSong("Techno", "techno")
         tap("top_play")
-        fun counter() = screenLines().firstOrNull { "mesure " in it } ?: error("no bar counter\n" + screenLines().joinToString("\n"))
+        // « mesure N/T » read on the screen: N goes forward and never past T (review of 3.2: « different » was not enough).
+        fun counter(): Pair<Int, Int> {
+            val line = screenLines().firstOrNull { "mesure " in it } ?: error("no bar counter\n" + screenLines().joinToString("\n"))
+            val m = Regex("""mesure (\d+)/(\d+)""").find(line) ?: error("no « mesure N/T » in « $line »")
+            return m.groupValues[1].toInt() to m.groupValues[2].toInt()
+        }
         act("attends 1")
-        val first = counter()
+        val (first, total) = counter()
         act("attends 4")
-        val later = counter()
+        val (later, total2) = counter()
         assertTrue("still playing", playing())
-        assertTrue("the counter went on: « $first » → « $later »", first != later)
+        assertTrue("the counter went on: $first → $later (of $total)", later > first && later <= total && total2 == total)
     }
 
     @Test

@@ -50,28 +50,30 @@ internal class BenchEngine : CommandSink {
                 // A stop ends a mark the take was waiting for (a phone's engine drops it with its song position).
                 if (value <= 0f && markAsked > 0) markAsked = -1
                 transportSince = if (value > 0f) SystemClock.uptimeMillis() else -1L
-                // ▶ in the song (NativeEngine.play's songStep, [b] ≥ 0): that song step at the first step after the count-in;
-                // a scene alone (OUTSIDE_SONG, -1) or ■: outside the song.
-                songAnchors = if (value > 0f && b >= 0) listOf(b to 0) else emptyList()
+                stepBase = 0.0
                 countInBars = if (value > 0f) a.coerceAtLeast(0) else 0
+                // ▶ as Engine.cpp's SetTransport: the scene starts on step 0, the song at song step [b] (OUTSIDE_SONG, -1:
+                // a scene alone); a swap armed before is dropped. ■: nothing waits any more.
+                song.start(inSong = value > 0f && b >= 0, songStep = b.coerceAtLeast(0))
             }
-            CMD_SET_TEMPO -> if (value > 0f) tempo = value.toDouble()
+            // A tempo change while playing: the steps already played are kept (the clock does not jump back or ahead).
+            CMD_SET_TEMPO -> if (value > 0f) {
+                val since = transportSince
+                if (since >= 0) {
+                    val now = SystemClock.uptimeMillis()
+                    stepBase += (now - since) * tempo / 15_000.0
+                    transportSince = now
+                }
+                tempo = value.toDouble()
+            }
             // Audit method v2 (engine always there): « Enregistrer la performance » marks the song on the next launch line and
             // waits for the engine to say it did (NativeEngine.songMarkStep); the bench's never said it, the take stayed « Prêt ».
             CMD_MARK_SONG -> {
                 markQuantum = a.coerceAtLeast(0)
                 markAsked = transportSteps.coerceAtLeast(-1).let { if (it < 0) 0 else it + 1 }
             }
-            // Banc fiable 3.2 (T4-17): where the song is. A swap that (re)starts the song anchors song step [value] on the
-            // transport step it takes effect at (now + [a] steps while playing, the start before ▶); leaving the song or ■
-            // forgets it. The engine's song position is then the anchor plus the transport's steps since.
-            CMD_ARM_SCENE_SWAP -> when (b) {
-                1 -> {
-                    val now = stepsNow()
-                    songAnchors = songAnchors + (value.toInt() to (if (now < 0) 0 else now + a.coerceAtLeast(0)))
-                }
-                3 -> songAnchors = emptyList()
-            }
+            // Banc fiable 3.2 (T4-17) and its review: the scene swaps as Engine.cpp arms and plays them (see [SongClock]).
+            CMD_ARM_SCENE_SWAP -> song.arm(a, b, value, stepsNow())
             CMD_BEATS_PER_BAR -> if (a > 0) beatsPerBar = a
             CMD_STEM_START -> stemStart = a.toLong()
             CMD_PLAY_PREVIEW -> previewSince = if (value > 0f) SystemClock.uptimeMillis() else -1L
@@ -435,30 +437,89 @@ internal class BenchEngine : CommandSink {
     override fun playPosition(): Double {
         val since = transportSince
         if (since < 0) return -1.0
-        val steps = (SystemClock.uptimeMillis() - since) * tempo / 15_000.0
+        val steps = stepBase + (SystemClock.uptimeMillis() - since) * tempo / 15_000.0
         return steps - countInBars * beatsPerBar * 4.0
     }
+
+    /** The steps played before the last tempo change (since ▶). */
+    @Volatile private var stepBase = 0.0
 
     override fun transportStep(): Int = transportSteps
 
     /**
-     * Song steps anchored on transport steps (▶ in the song, then each swap that restarts it, armed ahead: it takes over
-     * only when the transport reaches it); empty outside the song.
+     * Banc fiable 3.2, rewritten after its review: the scene swaps of Engine.cpp (onStep, swapScene), played lazily on the
+     * bench's clock. One swap waits at a time (a new arm replaces it, a negative [a] cancels it); it happens on the first bar
+     * line after it was armed where the scene's own step reaches [a] (0: the next bar line); b 1 restarts the song at song
+     * step [value], b 3 leaves the song, b 2 ends it (the transport stops on that bar line). Each one is counted
+     * ([sceneSwaps]): the app follows the song's parts by that count.
      */
-    @Volatile private var songAnchors: List<Pair<Int, Int>> = emptyList()
+    private inner class SongClock {
+        var inSong = false
+        var songStart = 0
+        var sceneStart = 0
+        var swaps = 0
+        private var swapAt = -1
+        private var kind = 0
+        private var restartAt = 0
+        private var armedAt = -1
+
+        @Synchronized fun start(inSong: Boolean, songStep: Int) {
+            this.inSong = inSong
+            songStart = -songStep
+            sceneStart = 0
+            swapAt = -1
+        }
+
+        @Synchronized fun arm(a: Int, b: Int, value: Float, now: Int) {
+            advance()
+            swapAt = if (a < 0) -1 else a
+            kind = b
+            restartAt = if (value.isFinite()) value.toInt() else 0
+            armedAt = now
+        }
+
+        /** The waiting swap, if its bar line has come: played at that step. */
+        @Synchronized fun advance() {
+            if (swapAt < 0) return
+            val now = stepsNow()
+            if (now < 0) return
+            val bar = (beatsPerBar * 4).coerceAtLeast(1)
+            val minLocal = maxOf(1, armedAt + 1 - sceneStart, swapAt)
+            val due = sceneStart + (minLocal + bar - 1) / bar * bar
+            if (now < due) return
+            swapAt = -1
+            swaps++
+            when (kind) {
+                1 -> { songStart = due - restartAt; inSong = true }
+                3 -> inSong = false
+                2 -> { transportSince = -1L; inSong = false; return }
+            }
+            sceneStart = due
+        }
+    }
+
+    private val song = SongClock()
 
     /** Whole sixteenths since ▶ from the bench's clock (count-in excluded), -1 stopped or counting in. */
     private fun stepsNow(): Int = playPosition().let { if (it < 0) -1 else it.toInt() }
 
     /** Banc fiable 3.2: the steps since ▶ (the position of a part that loops); -1 stopped. Was always -1: counter frozen. */
-    override fun absoluteStep(): Int = stepsNow()
+    override fun absoluteStep(): Int {
+        song.advance()
+        return stepsNow()
+    }
 
     /** Banc fiable 3.2: steps since the song (re)started, as the top bar's « mesure N/… » reads them; -1 outside the song. */
     override fun songStep(): Int {
+        song.advance()
         val now = stepsNow()
-        if (now < 0) return -1
-        val anchor = songAnchors.lastOrNull { it.second <= now } ?: return -1
-        return anchor.first + now - anchor.second
+        return if (now < 0 || !song.inSong) -1 else now - song.songStart
+    }
+
+    /** The scene swaps played (Engine.cpp's sceneSwaps_): the app moves to the next part on each. */
+    override fun sceneSwaps(): Int {
+        song.advance()
+        return song.swaps
     }
 
     /** Where the song was marked (a transport step), once the transport has reached that launch line; -1 before or with none. */

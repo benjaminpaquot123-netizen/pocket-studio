@@ -14,7 +14,11 @@ root="$(cd "$(dirname "$0")/../.." && pwd)"
 out="${PS_REJEUX_DIR:-$root/docs/audits/ultra/rejeux}/$id"
 [ -e "$out" ] && { echo "$out exists already." >&2; exit 2; }
 [ -f "$src/start.txt" ] || { echo "No start.txt in $src." >&2; exit 2; }
+# External audit: the oracle is checked before anything is written (a bad option left a half-made folder behind).
+for kv in "$@"; do case "$kv" in attendu=*|absent=*) ;; *) echo "unknown: $kv (attendu=… or absent=…)" >&2; exit 2 ;; esac; done
+[ $# -gt 0 ] || { echo "An oracle is needed: attendu=… or absent=…" >&2; exit 2; }
 mkdir -p "$out"
+trap '[ -f "$out/oracle.txt" ] || rm -rf "${out:?}"' EXIT
 grep -v -E '^(rejeu|rejeu\.[a-z]+|timeout\.minutes)=' "$src/start.txt" > "$out/start.txt" || true
 for i in $(seq 1 "$n"); do
   if [ -f "$src/cmd-$i.txt" ]; then

@@ -15,6 +15,10 @@ set -euo pipefail
 lot="$(cd "${1:?usage: scripts/bench/selftest.sh <lot folder>}" && pwd)"
 cd "$(dirname "$0")/../.."
 fail() { echo "SELFTEST ROUGE : $*" >&2; rm -f "$lot/selftest.ok"; exit 1; }
+# External audit: an old stamp never outlives a new run (whatever stops it); the code is fingerprinted BEFORE the tests
+# and again after: a change made while they ran is never stamped as tested.
+rm -f "$lot/selftest.ok"
+scripts/bench/tampon.sh empreinte > "$lot/selftest-empreinte.txt"
 
 free_gb=$(df -BG --output=avail / | tail -1 | tr -dc 0-9)
 [ "$free_gb" -ge 2 ] || fail "disque : ${free_gb} Go libres (< 2)"
@@ -44,7 +48,7 @@ rm -f "$lot/selftest-gradle-echecs.txt"
 profiles=()
 for st in "$lot"/*/start.txt; do
   [ -f "$st" ] || continue
-  line="$(grep -E '^(lang|device|font|mode|main|lit|theme)=' "$st" | tr '\n' ' ' | sed 's/ *$//')"
+  line="$({ grep -E '^(lang|device|font|mode|main|lit|theme)=' "$st" || true; } | tr '\n' ' ' | sed 's/ *$//')"
   [ -n "$line" ] && profiles+=("$line")
 done
 profile_arg=()
@@ -60,5 +64,6 @@ python3 -I scripts/bench/selftest-verdict.py "$junit" scripts/bench/selftest-qua
   || fail "tests du banc (voir $lot/selftest-resume.txt et $lot/selftest-gradle-*.log)"
 
 mapfile -t held < <(sed -n 's/^quarantaine rouge : \([^ ]*\) :.*/\1/p' "$lot/selftest-resume.txt")
-scripts/bench/tampon.sh ecris "$lot" "${held[@]}"
+[ "$(scripts/bench/tampon.sh empreinte)" = "$(cat "$lot/selftest-empreinte.txt")" ] || fail "le code a changé pendant le selftest : relancer"
+scripts/bench/tampon.sh ecris "$lot" "$lot/selftest-empreinte.txt" "${held[@]}"
 echo "Selftest vert : $lot/selftest.ok ($(head -1 "$lot/selftest-resume.txt"))"

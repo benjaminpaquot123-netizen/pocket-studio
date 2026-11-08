@@ -138,6 +138,36 @@ class ChallengeControllerTest {
     }
 
     /**
+     * The tolerance, bounded on both sides away from its edge (review of 4.1: widening [PadChallenge.TOLERANCE_BEATS] to half a
+     * beat turned only the T5-DEFI-TENDANCE guard red). At 120 BPM (500 ms a beat): the second touch 0.4 beat (200 ms) late
+     * is not that hit; 0.1 beat (50 ms) late, it is.
+     */
+    @Test
+    fun aTouchFarFromItsPlaceIsNotCountedANearOneIs() {
+        fun tryWith(lateMs: Long): PadChallenge.Result {
+            clock = 0L
+            val vm = vm(120.0)
+            val ctl = vm.padLive.challenge
+            ctl.open(1)
+            val c = (ctl.ui.value as ChallengeUi.Ready).c
+            ctl.yourTurn()
+            for ((i, at) in longArrayOf(0, 500 + lateMs, 1_000, 1_500).withIndex()) {
+                clock = 10_000 + at
+                vm.padLive.touch(c.hits[i].pad, true)
+                vm.padLive.touch(c.hits[i].pad, false)
+            }
+            return (ctl.ui.value as ChallengeUi.Done).result
+        }
+        val far = tryWith(200)
+        assertEquals("0.4 beat late: not the second hit", listOf(true, false, true, true), far.matched)
+        assertEquals(3, far.right)
+        assertTrue("not perfect: ${far.stars}", far.stars < 3)
+        val near = tryWith(50)
+        assertEquals("0.1 beat late: still the second hit", listOf(true, true, true, true), near.matched)
+        assertEquals(4, near.right)
+    }
+
+    /**
      * Found on the way (cause d's case): four touches 500 ms apart on a 90 BPM challenge (667 ms) are 33 % too FAST, and the
      * score says « Un peu trop lent. ». [PadChallenge.score]'s tendency compares the span from the first to the last MATCHED
      * hit (hits 1 to 3, 2 beats) with the touches matched to them (touches 1 and 4, 2.25 beats): the fourth touch, taken for

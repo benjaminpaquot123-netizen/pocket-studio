@@ -1,5 +1,6 @@
 package com.pocketstudio.app.human
 
+import com.pocketstudio.model.songBars
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -27,7 +28,10 @@ class BenchRecetteTest : HumanTester("recette") {
     fun notOnTheBench() = assumeTrue("not while the bench runs seats", System.getProperty("ps.human.dir").isNullOrBlank())
 
     private fun tap(tag: String): String {
-        val at = reachTag(tag) ?: centerOf(tag)
+        // On screen: touched where it is, as a finger would (reachTag swipes anything outside the middle, and each swipe
+        // moves the bench's clock: a 15 s demo was over before « Retour », at the top, was even touched).
+        val h = androidx.test.core.app.ApplicationProvider.getApplicationContext<android.app.Application>().resources.displayMetrics.heightPixels
+        val at = centerOf(tag)?.takeIf { it.second in 0f..h.toFloat() } ?: reachTag(tag) ?: centerOf(tag)
         assertNotNull("nothing to touch: $tag\n" + screenLines().joinToString("\n"), at)
         return act("touche ${at!!.first} ${at.second}")
     }
@@ -89,6 +93,46 @@ class BenchRecetteTest : HumanTester("recette") {
     }
 
     /**
+     * T5-Ab-14, its second half (R.1 review M2): the big ▶ of « Mon morceau » plays the song to its end; the counter never
+     * goes past « / T », and the song stops there (round 5: « 0:12 / 0:13 · comp. 7.4 / 7 », still playing). The
+     * assistant's song is cut to its first two parts (a 3-minute Techno would take the bench minutes), not looping.
+     */
+    @Test
+    fun simpleSongPlaysToItsEndAndStopsThere() {
+        begin()
+        tapText("Créer mon premier morceau")
+        tap("mode_card_simple")
+        tap("wizard_family_Techno")
+        tap("wizard_style_techno")
+        tap("wizard_style_choose_techno")
+        tap("wizard_create_now")
+        waitFor("the song's tabs") { screenRoute().endsWith("tab_simple_Morceau") }
+        val vm = rhythm()!!
+        vm.session.edit { it.copy(song = it.song.take(2), songLoops = false) }
+        act("attends 1")
+        val p = project()!!
+        assertEquals(2, p.song.size)
+        val perBar = p.beatsPerBar
+        val seconds = p.songBars * perBar * 60.0 / p.tempoBpm
+        reachTag("song_clock")
+        tap("thumb_play")
+        assertTrue("▶ plays", playing())
+        var last = -1
+        var t = 0.0
+        while (playing()) {
+            assertTrue("still playing ${t.toInt()} s into a ${seconds.toInt()} s song (counter at beat $last)", t < seconds + 6)
+            shownBeat()?.let { (beat, total) ->
+                assertEquals("the clock's T is the song's bars", p.songBars, total)
+                assertTrue("the counter past the end: beat $beat of $total bars", beat < total * perBar)
+                last = maxOf(last, beat)
+            }
+            act("attends 0.5")
+            t += 0.5
+        }
+        assertTrue("the counter reached the song's last bar: beat $last of ${p.songBars} bars", last >= (p.songBars - 1) * perBar)
+    }
+
+    /**
      * tel-13 (T5-Fb-73): Pro, the song playing, the top bar's part menu › B: B takes over at the next bar (the screens
      * follow it). Round 5: « reste sur A » (the bench's engine never swapped a scene).
      */
@@ -120,10 +164,20 @@ class BenchRecetteTest : HumanTester("recette") {
 
     private fun demoHeard(): Boolean = "un son de la bibliothèque joue" in act("attends 0.2")
 
-    /** « Nouveau projet » › « Autres façons de commencer » › a demo's ▶ until it plays. */
+    /**
+     * A project open (seat F c and Benjamin had one), then « Mes projets » › « Nouveau projet » › « Autres façons de
+     * commencer » › a demo's ▶ until it plays. (With no project at all, the list stays composed under « Que veux-tu
+     * faire ? » after « Retour », and the demo is not stopped there: another route, see the R.1 report.)
+     */
     private fun demoPlaying() {
         begin(SeatOptions(simple = false))
         tap("launch_new")
+        tap("start_empty")
+        waitFor("« Simple ou Pro ? »") { centerOf("mode_card_pro") != null }
+        tap("mode_card_pro")
+        waitFor("the project") { centerOf("top_projects") != null && centerOf("new_project") == null }
+        tap("top_projects")
+        tap("project_new")
         waitFor("« Nouveau projet »") { centerOf("new_project") != null }
         tap("start_others")
         tap("demo_play_0")
@@ -134,7 +188,11 @@ class BenchRecetteTest : HumanTester("recette") {
     @Test
     fun theDemoStopsWhenTheNewProjectListIsLeft() {
         demoPlaying()
+        // R.1 review (G1): « Retour » moves the bench's clock past the demo's end (26 s, a 15 s demo): not heard any more
+        // proves nothing. The app must have cut it (its player stopped before the sound's end).
+        val cuts = BenchAudioTrack.cutsThrough(STOP_DEMO)
         tap("new_project_back")
+        assertTrue("the app stopped the demo as the list was left (not its natural end)", BenchAudioTrack.cutsThrough(STOP_DEMO) > cuts)
         assertFalse("the demo stopped with the list left\n" + screenLines().joinToString("\n"), demoHeard())
     }
 
@@ -147,10 +205,21 @@ class BenchRecetteTest : HumanTester("recette") {
     @Test
     fun theDemoGoesOnUnderTheModeStepUntilAModeIsChosen() {
         demoPlaying()
+        val before = BenchAudioTrack.cutsBeforeTheEnd()
         tap("starter_starter")
         waitFor("« Simple ou Pro ? »") { centerOf("mode_card_simple") != null }
         assertTrue("the app's code keeps the demo under the mode step (T5-Fc-31 fixed in the app if this fails)", demoHeard())
+        assertEquals("nothing cut the demo on the way to the mode step", before, BenchAudioTrack.cutsBeforeTheEnd())
+        // R.1 review (G1): as above, the page's own stop counted, not the demo's natural end (nor the library's ViewModel
+        // cleared as the new project opens, which also cuts it).
+        val byPage = BenchAudioTrack.cutsThrough(STOP_DEMO)
         tap("mode_card_simple")
+        assertTrue("the app stopped the demo as the page was left (not its natural end)", BenchAudioTrack.cutsThrough(STOP_DEMO) > byPage)
         assertFalse("the demo stops once the page is left\n" + screenLines().joinToString("\n"), demoHeard())
+    }
+
+    private companion object {
+        /** The library's stop of a demo, called by « Nouveau projet » as it goes (NewProjectPage's DisposableEffect). */
+        const val STOP_DEMO = "stopDemoPreview"
     }
 }

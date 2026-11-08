@@ -124,3 +124,22 @@ Dernier passage : `ChallengeControllerTest` 7/7, `BenchAmeneesTest` 8/8 (+1 `dri
 
 « 0 ou 1 étoile en tapant en rythme » : **surtout le banc** (tape à ~590 ms au lieu de 500), plus deux défauts réels de
 l'appli (T5-DEFI-TENDANCE, T5-DEFI-ECOUTE) et, sur téléphone, le retour sonore du moteur décrit plus haut.
+
+## Suite de la relecture (c034963)
+
+- Fusion de `fx-int` : `63a2f8f` (sans conflit).
+- **Grave, suivi des défauts** : garde moteur `engine/host-tests/padlive_tests.inc` `padlive_known_defect_t5_padretrig`
+  (`b91b3a8`) : elle vérifie le comportement d'aujourd'hui (attente sur la grille du projet, annulation par le toucher
+  suivant, toucher d'après qui repart tout de suite, grille à 429 ms sur un projet à 140 BPM), verte ; une correction du
+  moteur (coup relancé tout de suite) la fait passer au rouge (vérifié par mutation, 3 échecs) : il faudra alors l'inverser.
+  `verdicts.tsv` : T5-DEFI-TENDANCE, T5-DEFI-ECOUTE, T5-PADRETRIG ajoutés, T5-Ca-32 tranché ; `PLAN-RESTE.md` §1 bis R.7
+  (`eb14aaa`).
+- **Banc moins gentil** (`bc02b31`) : `tape` = une main (±30 ms, tirage fixé par le siège et le numéro du geste) ; plus
+  d'attente de « À toi ! » à la place du testeur (pendant l'exemple, il tape tout de suite et rien ne compte) ; la ligne de
+  son dit « pulsation ~N BPM » (et « exemple en cours »), plus de millisecondes. Les paragraphes « Côté banc » ci-dessus
+  sur l'attente et les ms sont donc remplacés. `BenchAmeneesTest` : 120 BPM (3 étoiles avec la gigue), **90 BPM** avec
+  `tempo` (cause d, 3 étoiles), touchers pendant l'exemple non comptés puis 3 étoiles une fois « À toi ! ».
+- **Trou de mutation** (`f7f5002`) : `ChallengeControllerTest#aTouchFarFromItsPlaceIsNotCountedANearOneIs` (0,4 temps
+  de retard : pas compté ; 0,1 : compté) ; une tolérance élargie à 0,5 temps le fait rougir sans dépendre de la garde.
+- Derniers passages : host-test `padlive_known_defect_t5_padretrig` OK ; `ChallengeControllerTest` 8/8,
+  `BenchAmeneesTest` 9/9 (+`drive` ignoré), `HumanPadLivePersonasTest` 3/3 (+`drive`), `PadLiveChallengeTest` 3/3.

@@ -26,7 +26,7 @@ def optional_lines(path):
 
 def verdict(results, quarantined):
     green, red, held, skipped = [], [], [], []
-    for xml in sorted(pathlib.Path(results).glob("TEST-*.xml")):
+    for xml in sorted(pathlib.Path(results).rglob("TEST-*.xml")):
         for case in ET.parse(xml).getroot().iter("testcase"):
             name = f"{case.get('classname', '').rsplit('.', 1)[-1]}#{case.get('name')}"
             failure = case.find("failure")
@@ -50,8 +50,13 @@ def main(argv):
     expected = optional_lines(argv[4]) if len(argv) > 4 else []
     red += [(f"{c}#*", "aucun résultat : la classe n'a pas tourné") for c in expected if c not in ran]
     failed_runs = optional_lines(argv[5]) if len(argv) > 5 else []
-    if failed_runs and not red and not held:
-        red += [(f"gradle:{r}", "Gradle en échec sans test rouge (compilation, mémoire, blocage ?)") for r in failed_runs]
+    # PLAN-RESTE 4.3: judged pass by pass (results/<pass>/): a pass whose Gradle failed with no red test of its own is
+    # red, even if another pass has a quarantined red. (Results not split in passes: the whole folder is the pass.)
+    for r in failed_runs:
+        own = pathlib.Path(results) / r
+        _, own_red, own_held, _ = verdict(own, quarantine(qfile)) if own.is_dir() else ([], red, held, [])
+        if not own_red and not own_held:
+            red.append((f"gradle:{r}", "Gradle en échec sans test rouge (compilation, mémoire, blocage ?)"))
     lines = [f"{len(green)} verts, {len(red)} rouges, {len(held)} en quarantaine, {len(skipped)} sautés"]
     lines += [f"rouge : {n} : {w}" for n, w in red]
     lines += [f"quarantaine rouge : {n} : {w}" for n, w in held]

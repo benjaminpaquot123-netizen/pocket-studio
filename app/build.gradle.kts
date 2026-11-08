@@ -103,6 +103,9 @@ android {
                     providers.gradleProperty(key).orNull?.let { value -> it.systemProperty("ps.$key", value) }
                 }
                 if (providers.gradleProperty("human.dir").isPresent) it.maxParallelForks = 4
+                // PLAN-RESTE 4.3: a run's JUnit XML in a folder of its own (-Ptest.results.dir), so that two self-tests (or two
+                // passes of one) never read or wipe each other's results in the shared build/test-results.
+                providers.gradleProperty("test.results.dir").orNull?.let { d -> it.reports.junitXml.outputLocation.set(file(d)) }
                 // Every style's song in one run (or every preview, PreviewLevelBench): more room than the tests need.
                 // The suite itself (audit stage 1, flaky tests): a worker runs hundreds of Robolectric classes, more than one
                 // sandbox at a time; at Gradle's default 512 MB its old generation filled up (99.9 %, 500 full GCs): tests

@@ -324,6 +324,15 @@ def bench_guards(d):
     r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary, expected, failed], capture_output=True, text=True)
     text = open(summary, encoding="utf-8").read()
     check(r.returncode == 1 and "gradle:renommage" in text, "a failed Gradle run without a red test:\n" + text)
+    # PLAN-RESTE 4.3: judged pass by pass: the « renommage » pass failed in Gradle with no red of its own while the
+    # « banc » pass has a quarantined red: still red (the quarantine of one pass never covers another).
+    os.remove(os.path.join(res, "TEST-x.xml"))
+    write(os.path.join(res, "banc", "TEST-b.xml"), "<testsuite>" + green + red + "</testsuite>")
+    os.makedirs(os.path.join(res, "renommage"))
+    write(quarantine, "Tour3RenameIdleTest#renames | order-dependent | 2026-11-08 | banc\n")
+    r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary, expected, failed], capture_output=True, text=True)
+    text = open(summary, encoding="utf-8").read()
+    check(r.returncode == 1 and "gradle:renommage" in text, "a failed pass is red even with a quarantined red elsewhere:\n" + text)
 
 
 REPORT_V2 = """siege: a | profil: ado-ko | lang: ko | device: phone | font: 100 | mode: simple

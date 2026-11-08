@@ -25,7 +25,6 @@ free_gb=$(df -BG --output=avail / | tail -1 | tr -dc 0-9)
 
 python3 -I scripts/bench/test_ultra_bench.py >"$lot/selftest-scripts.log" 2>&1 || fail "scripts du banc (voir $lot/selftest-scripts.log)"
 
-results=app/build/test-results/testDebugUnitTest
 junit="$lot/junit"
 rm -rf "$junit"; mkdir -p "$junit"
 # Banc fiable 1.2: the rename tests run in a Gradle run (a JVM) of their own: alone they pass 8 times out of 8, among
@@ -36,11 +35,13 @@ grep -rhoE '^class (Bench[A-Za-z0-9]*Test|Tour[A-Za-z0-9]*AppProofTest|Tour[A-Za
   | awk '{print $2}' | sort -u > "$lot/selftest-attendus.txt"
 gradle_failed=0
 run_tests() {
+  # PLAN-RESTE 4.3: each pass writes its XML straight into $junit/<pass>/ (never the shared build/test-results that
+  # another self-test may wipe between its Gradle run and its copy).
   local name="$1"; shift
-  rm -rf "$results"
-  PS_GRADLE_LOG="$lot/selftest-gradle-$name.log" scripts/bench/gradle-file.sh :app:testDebugUnitTest "$@" --rerun --continue >/dev/null \
+  mkdir -p "$junit/$name"
+  PS_GRADLE_LOG="$lot/selftest-gradle-$name.log" scripts/bench/gradle-file.sh :app:testDebugUnitTest "$@" \
+      "-Ptest.results.dir=$junit/$name" --rerun --continue >/dev/null \
     || echo "$name" >> "$lot/selftest-gradle-echecs.txt"
-  cp "$results"/TEST-*.xml "$junit/" 2>/dev/null || true
 }
 rm -f "$lot/selftest-gradle-echecs.txt"
 # Banc fiable 3.2 (control 13): the amenées are checked on the profiles of THIS lot's seats (their start.txt, the

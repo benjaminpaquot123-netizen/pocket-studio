@@ -1,5 +1,5 @@
 # Grappes du tour « tour-5 »
-24 siège(s), 182 grappe(s), 172 nouvelle(s), 3 vue(s) par ≥ 2 sièges (confirmées sans juge), 0 qui revien(nen)t (confirmé par un lecteur), 1 candidat(s) « revient ? » à confirmer dans revient.tsv, 33 déjà vue(s) à un tour d'avant (même clé ou même bouton).
+24 siège(s), 182 grappe(s) : 125 nouvelle(s), 5 déjà vue(s) (tour-3 : 2, tour-4 : 3), 21 même bouton (tour-1 : 10, tour-2 : 3, tour-3 : 6, tour-4 : 2), 0 qui revien(nen)t (confirmé par un lecteur), 1 candidat(s) « revient ? » à confirmer dans revient.tsv, 30 [banc?] (limites connues du banc, à trancher) ; 0 fiche(s) rejetée(s) (jugement sonore) ; 3 vue(s) par ≥ 2 sièges (confirmées sans juge).
 
 - [nouveau] bloquant ×1 (A/a#27) dialogue:part_header_menu · « part_pick_2 » · rien — l'éditeur passe sur « पार्ट: C · मुखड़ा » / reste « पार्ट: A · इंट्रो » ; pareil avec B (#49), et avec la nouvelle partie M (#53)
 - [même bouton (tour-1)] bloquant ×1 (E/a#117) launch · « launch_padlive » · perdu — ma prise de 4 notes (Retour pendant « Enregistrer ma mélodie ») m'attend encore (Garder/Refaire) quand je rouvre Techno après un passage par Pad Live

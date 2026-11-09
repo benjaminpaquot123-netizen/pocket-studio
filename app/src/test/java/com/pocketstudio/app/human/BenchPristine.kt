@@ -26,9 +26,15 @@ import java.io.File
  * the tests of one Gradle fork share, so what a test forgets to put back is what the next one starts on.
  *
  * Not pristine: the test fails at once, naming what leaked and the test that ran before ([lastTest], the culprit, or
- * the last of several). The state is then put back, so one leak is one red test and not the rest of the run.
+ * the last of several; a test without this rule run in between, in a full CI run, is named as the other suspect). The
+ * state is then put back, so one leak is one red test and not the rest of the run.
+ *
+ * Review of banc45 (moyen 1): a real seat of the bench (`-Phuman.dir`, [HumanTester.drive]) is never made red by a leak
+ * of the seat before it in the same fork (its journal would stay empty, the seat lost for the lot): [seatJournal] gives
+ * its journal, the state is put back and the leak is written there as the bench's own incident, before « #0 SIEGE »
+ * (`fuse-reports.py` lists that line in the round's incidents-banc.tsv).
  */
-class BenchPristineRule : TestRule {
+class BenchPristineRule(private val seatJournal: (Description) -> File? = { null }) : TestRule {
     override fun apply(base: Statement, description: Description): Statement = object : Statement() {
         override fun evaluate() {
             val leaks = BenchPristine.leaks()
@@ -36,10 +42,20 @@ class BenchPristineRule : TestRule {
             lastTest = "${description.testClass?.simpleName ?: description.className}#${description.methodName}"
             if (leaks.isNotEmpty()) {
                 BenchPristine.restore()
-                throw AssertionError(
-                    "inherited state not pristine before $lastTest (left by the test before: ${before ?: "none in this JVM"}): " +
-                        leaks.joinToString("; "),
-                )
+                // Two suspects (review of banc45, moyen 2): [lastTest] only knows the tests that carry this rule.
+                val journal = seatJournal(description)
+                if (journal != null) {
+                    journal.parentFile?.mkdirs()
+                    journal.appendText(
+                        "#0 BANC : état hérité remis (laissé par le test d'avant, ${before ?: "aucun dans cette JVM"}, ou par un test sans la " +
+                            "règle passé entre les deux) : ${leaks.joinToString("; ")}\n",
+                    )
+                } else {
+                    throw AssertionError(
+                        "inherited state not pristine before $lastTest (left by the test before (${before ?: "none in this JVM"}), " +
+                            "or by a test without the rule run in between): " + leaks.joinToString("; "),
+                    )
+                }
             }
             base.evaluate()
         }

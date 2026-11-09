@@ -79,10 +79,21 @@ import java.time.Duration
 abstract class HumanTester(private val seat: String) {
     @get:Rule
     val compose = createEmptyComposeRule()
-    /** PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). */
+    /**
+     * PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). A real seat
+     * ([drive], `-Phuman.dir`) is not made red: the state is put back and the leak written in its journal (review of banc45).
+     */
     @get:Rule
-    val pristine = BenchPristineRule()
+    val pristine = BenchPristineRule { d -> seatJournalFor(d) }
     private val app: Application get() = ApplicationProvider.getApplicationContext()
+
+    /** The seat's journal when the bench runs this seat for a lot (the [drive] test with its folder); null for the bench's own tests. */
+    private fun seatJournalFor(d: org.junit.runner.Description): File? {
+        if (d.methodName != "drive") return null
+        val root = System.getProperty("ps.human.dir")?.takeIf { it.isNotBlank() }?.let(::File) ?: return null
+        val dir = File(root, seat)
+        return if (File(dir, "start.txt").isFile) File(dir, "journal.txt") else null
+    }
     private var scenario: ActivityScenario<MainActivity>? = null
 
     /** The examples as a person hears them: they last their length, then end. */
@@ -147,15 +158,10 @@ abstract class HumanTester(private val seat: String) {
         NativeEngine.sink = null
         ShadowMediaCodec.clearCodecs()
         BenchMic.unplug()
-        LaunchRule.askAtStartForTest = true
-        SettingsStore.forgetForTests()
-        com.pocketstudio.model.i18n.I18n.everyday = false
-        com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.FR
-        // PLAN-RESTE 4.5 (found by BenchPristineRule): the app's ViewModel factory kept this test's Application, the touch
-        // guard this test's last touch (its uptime), a take may still be written: the next test starts on none of it.
-        com.pocketstudio.app.rhythm.TakeVault.app.awaitIdleBlocking(15_000)
-        com.pocketstudio.app.ui.DoubleTouchGuard.reset()
-        ViewModelProvider.AndroidViewModelFactory::class.java.getDeclaredField("_instance").apply { isAccessible = true }.set(null, null)
+        // PLAN-RESTE 4.5 and the review of banc45: everything the detector checks is put back by its own list (the launch rule,
+        // the settings, i18n, the tuto hooks, the intro, the hints, the spot checks, the prepared project, the ViewModel
+        // factory that kept this test's Application, the touch guard's last touch, a take still being written, the files).
+        BenchPristine.restore()
     }
 
     /** The seat's folder while the bench runs a seat (null in the bench's own tests). */

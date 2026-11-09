@@ -179,6 +179,23 @@ def trial_gaps(root, verdicts):
     return gaps
 
 
+def annotation_gaps(root, verdicts):
+    """The reverse of [trial_gaps]: each « RECETTE tel-NN … » segment of a line's telephone or note cell is one of the
+    owner's trials, whole (number, mark, device, date). Without the owner's notes there is nothing to compare with."""
+    if not os.path.isfile(os.path.join(root, "docs", "audits", "ultra", "retours-benjamin.md")):
+        return []
+    trials = owner_trials(root)
+    gaps = []
+    for v in verdicts:
+        for cell in (v.get("telephone", ""), v.get("note", "")):
+            for part in cell.split(";"):
+                m = re.search(r"RECETTE\s+(tel-\d+)\b", part)
+                if m and not any(records_trial({"note": part}, *t) for t in trials if t[0] == m.group(1)):
+                    gaps.append(f"{v.get('item', '?')} : annotation « RECETTE » sans essai correspondant dans retours-benjamin.md "
+                                f"(« {part[m.start():].strip()} »)")
+    return gaps
+
+
 PAD_KEY = re.compile(r"padlive|(?<![a-z])pad_")
 
 
@@ -278,6 +295,7 @@ def check(root, resume_path=None, with_git=True):
                             f"({', '.join(v.get('item', '?') for v in citing)})")
 
     gaps += trial_gaps(root, verdicts)
+    gaps += annotation_gaps(root, verdicts)
 
     try:
         checklist = json.load(open(os.path.join(root, "app", "src", "main", "assets", "recette.json"), encoding="utf-8"))

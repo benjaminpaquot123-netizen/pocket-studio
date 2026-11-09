@@ -210,6 +210,44 @@ class Tour4AppProofTest {
     }
 
     /**
+     * Audit « banc crédible » A.11 (T4-26 decided by program, no emulator): the take of T4-26 on the path where the part
+     * shown is not the part heard (the timeline's « Ouvrir dans … » on the first part while the song plays the second).
+     * The keys go to the part heard; the take says its notes, and the part on screen when it ends must hold them (in
+     * the part shown, or the screen turned to the part that got them: d3eccff's own aim).
+     */
+    @Test
+    fun aMelodyTakeWhileAnotherPartIsShownShowsItsNotes() {
+        NativeEngine.sink = PhoneEngine()
+        val two = Project().let { it.copy(drums = it.drums.toggle(0, 0)) }.switchScene(1)
+            .let { it.copy(drums = it.drums.toggle(0, 4)) }.switchScene(0)
+            .copy(song = listOf(com.pocketstudio.model.SongPart(0), com.pocketstudio.model.SongPart(1)))
+        val vm = open(two)
+        vm.playSongPart(1)
+        val until = System.currentTimeMillis() + 10_000
+        while (!vm.transport.value.playing && System.currentTimeMillis() < until) { idle(); Thread.sleep(5) }
+        idle(500)
+        assertTrue("the song plays from its second part", vm.transport.value.playing)
+        // The timeline's « Ouvrir dans … » on the first part: shown to edit it, the song plays on in the second.
+        vm.showSceneToEdit(0)
+        idle(100)
+        println("TOUR4 shown while played: song part ${vm.sessionUi.value.songIndex}, shown ${vm.project.value.scene}, playing ${vm.transport.value.playing}")
+        assertEquals("the first part is shown while the song plays the second", 0, vm.project.value.scene)
+        assertEquals("the song still plays its second part", 1, vm.sessionUi.value.songIndex)
+        vm.recordMelodyTake()
+        idle(100)
+        val shownDuring = vm.project.value.scene
+        threeKeys(vm)
+        vm.recordMelodyTake()
+        idle()
+        val p = vm.project.value
+        val id = SimpleMelody.trackOf(p)!!
+        val perScene = p.allScenes.indices.map { s -> p.sceneView(s).track(id).notes.notes.size }
+        val facts = "song part ${vm.sessionUi.value.songIndex}, shown during the take $shownDuring, after ${p.scene}; notes per scene $perScene; ${vm.lastTakeReport}"
+        assertTrue("the take has its notes: $facts", perScene.sum() >= 3)
+        assertTrue("the take's notes are not in the part shown when it ends: $facts", perScene[p.scene] >= 3)
+    }
+
+    /**
      * What the bench did (round 4): no engine under the take (it let its engine go at the touch before), the keys go
      * nowhere: « Rien n'a été joué ». A phone always has its engine: this is the bench's « Rien n'a été joué ».
      */

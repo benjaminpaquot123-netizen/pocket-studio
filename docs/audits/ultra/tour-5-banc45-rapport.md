@@ -63,6 +63,25 @@ Pistes à trancher avec ce message (séance suivante, 1 h) : un `Recomposer` de 
 environnement de test précédent (statique `WindowRecomposerPolicy`), ou une tâche du test d'avant posée tard sur le
 looper principal partagé. Hors du champ du détecteur d'état : à ajouter au détecteur une fois nommée.
 
+## Après la relecture (commit 6b35430, deux « moyen »)
+
+- **Mode siège** : la règle portée par `HumanTester.drive()` ne met plus un vrai siège en rouge sur un état hérité du siège
+  d'avant (même fork) ; elle le remet et écrit « #0 BANC : état hérité remis (…) » dans son journal, avant « #0 SIEGE ».
+  Un autre test que `drive`, ou un siège sans fichier de départ, reste rouge.
+- **Compté comme incident du banc** : `fuse-reports.py` ne lisait aucune ligne « BANC » des journaux (ses incidents
+  venaient des rapports des testeurs et de `incidents-lot.tsv`). Il range maintenant la ligne « #N BANC : … » de chaque
+  journal dans `incidents-banc.tsv` du tour, au nom du siège. Les deux autres lignes « BANC » du journal (repos non venu,
+  geste mal écrit) restent au journal comme avant : à élargir si on veut les compter aussi.
+- **Une seule liste** : `HumanTester.end()` appelle `BenchPristine.restore()` (Intro, TutoHints, kitOffer/packs,
+  I18n.pseudo, SpotChecks, ProjectOpening.prepared, Retours compris).
+- **Deux suspects** dans le message du détecteur : « left by the test before (X), or by a test without the rule run in
+  between » (CI complète : `lastTest` ne voit que les tests porteurs de la règle) ; la même chose en français dans le
+  journal d'un siège.
+- Gardes : `BenchPristineRuleTest` (4 tests, par la règle d'une vraie classe de siège et son dossier sous
+  `ps.human.dir` : fuite avant un siège → ligne de journal, pas d'échec, état remis ; avant un test du banc → rouge à
+  deux suspects ; autre test que `drive` ou siège sans départ → rouge ; siège vierge → rien d'écrit) et
+  `test_ultra_bench.py` (`seat_exit` : la ligne du journal arrive dans `incidents-banc.tsv`, rouge sans la lecture).
+
 ## Les passages combinés (`Bench*` + `Tour*AppProofTest` + `Tour*RenameIdleTest`, un Gradle chacun)
 
 | Passage | Code | Résultat | Renommage Nuit / Studio |

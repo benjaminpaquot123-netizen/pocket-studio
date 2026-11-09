@@ -679,6 +679,9 @@ abstract class HumanTester(private val seat: String) {
      */
     internal fun reachTag(tag: String): Pair<Float, Float>? {
         val first = centerOf(tag) ?: return null
+        // PLAN-RESTE R.6 (re-reads of banc-r1): an element the screen shows whole is touched where it is, as a finger does; the
+        // swipes below (up to 8 « glisse » + « attends 1 », 22 to 26 s of the bench's clock) are for one cut or off the screen.
+        if (shownWhole(tag)) return first
         if (!inMiddle(first)) {
             runCatching { compose.onAllNodesWithTag(tag)[0].performScrollTo() }
             play("attends 0.5")
@@ -695,6 +698,10 @@ abstract class HumanTester(private val seat: String) {
     }
 
     private fun inMiddle(at: Pair<Float, Float>) = at.second in 0.2f * screenHeight..0.8f * screenHeight
+
+    /** The first node tagged [tag] is drawn whole on the screen (see [shownWhole]). */
+    private fun shownWhole(tag: String): Boolean =
+        runCatching { compose.onAllNodesWithTag(tag).fetchSemanticsNodes().firstOrNull()?.let(::shownWhole) }.getOrNull() == true
 
     /** [node] is drawn whole on the screen (not cut by a parent that scrolls, not off an edge): a finger can touch it where it is. */
     internal fun shownWhole(node: androidx.compose.ui.semantics.SemanticsNode): Boolean = runCatching {
@@ -1254,7 +1261,8 @@ abstract class HumanTester(private val seat: String) {
             "ecris" -> {
                 val text = cmd.substringAfter(' ')
                 val typed = runCatching { if (textDialog) typeInDialog(text) else compose.onNode(isFocused()).performTextInput(text) }
-                if (typed.isFailure) say("Rien ne s'écrit : aucun champ n'attend le texte (touche d'abord le champ).")
+                // T5-Dc-4 / Ac-61 / Db-16 (round 5): said as a phone would show it, so the tester never takes it for the app's.
+                if (typed.isFailure) say("Rien ne s'écrit : aucun champ n'a le curseur (un téléphone n'afficherait pas de clavier) : touche d'abord le champ, puis écris.")
                 settle(500)
             }
             "retour" -> { androidx.test.espresso.Espresso.pressBackUnconditionally(); settle(900) }
@@ -1695,6 +1703,8 @@ abstract class HumanTester(private val seat: String) {
             val example = if (challengeNow() is com.pocketstudio.app.padlive.ChallengeUi.Listening) " (exemple en cours)" else ""
             add("défi « ${c.name} »$example : pulsation ~${Math.round(c.bpm)} BPM")
         }
+        // PLAN-RESTE 4.7: « Mes exports » open (sizes and dates on screen) or an export under way: its size and time are the bench's.
+        if (v?.export?.value?.running == true || shownOnScreen("my_export")) add("export $EXPORTS_NOT_A_PHONES")
         // Live pads on a seat (padToggled): heard with the transport stopped too.
         v?.livePadsSoundingForTest?.takeIf { seatPads() && it.isNotEmpty() }?.let { on ->
             add(if (on.size == 1) "le pad live ${on.first() + 1} joue en boucle" else "les pads live ${on.sorted().joinToString(", ") { "${it + 1}" }} jouent en boucle")
@@ -1859,9 +1869,18 @@ abstract class HumanTester(private val seat: String) {
         /** A phone like the owner's (Honor), at 1.5 px a dp: images small enough to read quickly. */
         const val PHONE = "w392dp-h852dp-hdpi"
 
+        /**
+         * PLAN-RESTE 4.7 (T5-Cc-41b, round 5 seat C c: « 1 KB »; the phone: 42 Mo for 2 min 26): the bench's encoder is a shadow
+         * that copies what it is given and its engine a stand-in: an export's size and the time it took are not a phone's. Said
+         * wherever the bench shows one, so a tester never reports them as the app's.
+         */
+        const val EXPORTS_NOT_A_PHONES = "(banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros)"
+
         /** What the bench says once a file is sent from Android's share menu ([files]: name and bytes, -1 unknown; [app]: the app chosen). */
-        fun shareNote(files: List<Pair<String, Long>>, app: String): String =
-            "Ton morceau « ${files.joinToString(", ") { it.first }.ifEmpty { "?" }} » part avec $app (ici rien ne part vraiment : c'est la fin du partage)."
+        fun shareNote(files: List<Pair<String, Long>>, app: String): String {
+            val named = files.joinToString(", ") { (name, bytes) -> if (bytes >= 0) "$name, ${"%.1f".format(bytes / 1e3).replace('.', ',')} Ko" else name }
+            return "Ton morceau « ${named.ifEmpty { "?" }} » part avec $app (ici rien ne part vraiment : c'est la fin du partage) $EXPORTS_NOT_A_PHONES."
+        }
 
         /** « tape »: how far a touch may land from its place (ms), a hand keeping time (review of plan 4.1). */
         const val TAPE_JITTER_MS = 30L

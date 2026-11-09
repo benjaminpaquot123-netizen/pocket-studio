@@ -3,6 +3,7 @@ package com.pocketstudio.app.human
 import com.pocketstudio.app.ui.DoubleTouchGuard
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.onAllNodesWithTag
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
@@ -155,6 +156,59 @@ class BenchTour4Test : HumanTester("tour4") {
         tap("project_rename_ok")
         waitFor("the new name on the list") { centerOfText("Morceau de Max v2") != null }
         assertTrue(problems.joinToString("\n"), problems.isEmpty())
+    }
+
+    /**
+     * T5-Dc-4, T5-Ac-61, T5-Db-16 (round 5, seats A c #60, D b #16, D c #4; recette tel-01 on the phone: the letters go in after
+     * ✕). The seats' journals: each time, ✕ « Effacer » was touched right after the window opened, the field never touched, then
+     * « ecris »: no field holds the cursor (the window gives it to none, on a phone no keyboard would show), and the bench said
+     * so (« touche d'abord le champ »), which the seats reported as the app's. The field touched, then ✕, then « ecris »: the
+     * field keeps the cursor and takes the name (seat A c #50-#53 did just that and it worked), as the phone does.
+     */
+    @Test
+    fun theClearButtonKeepsTheFieldsFocus() {
+        simpleSong()
+        tap("top_projects")
+        waitFor("a project's ⋮") { screenLines().any { "project_menu_" in it } || centerOfMenu() != null }
+        val menu = centerOfMenu()!!
+        act("touche ${menu.first} ${menu.second}")
+        tapText("Renommer")
+        waitFor("the rename window") { centerOf("project_name_field") != null }
+        // The seats' way: ✕ first, the field never touched. Nothing holds the cursor: said, the name stays empty.
+        assertFalse("the window opened gives the cursor to no field (a phone shows no keyboard)\n" + focusReport(), BenchWindows.focusedTextField())
+        tap("name_clear")
+        val blind = act("ecris Morceau de Max v3")
+        assertTrue(blind, "touche d'abord le champ" in blind)
+        assertEquals("nothing typed blind", "", fieldText("project_name_field"))
+        // A finger's way: the field touched (the cursor comes), ✕, the name typed.
+        tap("project_name_field")
+        act("ecris Ancien nom")
+        assertTrue("the field touched holds the cursor\n" + focusReport(), BenchWindows.focusedTextField())
+        tap("name_clear")
+        assertEquals("the name emptied", "", fieldText("project_name_field"))
+        assertTrue("after ✕ « Effacer » the field still holds the cursor (as on the phone, recette tel-01)\n" + focusReport(), BenchWindows.focusedTextField())
+        val said = act("ecris Morceau de Max v3")
+        assertFalse(said, "Rien ne s'écrit" in said)
+        assertEquals("Morceau de Max v3", fieldText("project_name_field"))
+        tap("project_rename_ok")
+        waitFor("the new name on the list") { centerOfText("Morceau de Max v3") != null }
+        assertTrue(problems.joinToString("\n"), problems.isEmpty())
+    }
+
+    private fun fieldText(tag: String): String? = compose.onAllNodesWithTag(tag).fetchSemanticsNodes(atLeastOneRootRequired = false)
+        .firstOrNull()?.config?.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.EditableText)?.text
+
+    /** Where the focus is, for a failure's message: each window's touch mode and focused view, the focused Compose nodes. */
+    private fun focusReport(): String {
+        val windows = BenchWindows.windows().joinToString("\n") { w ->
+            "window type ${w.params.type}: touchMode=${w.view.isInTouchMode} windowFocus=${w.view.hasWindowFocus()} focusedView=${w.view.findFocus()?.javaClass?.simpleName}"
+        }
+        val nodes = compose.onAllNodes(androidx.compose.ui.test.isFocused()).fetchSemanticsNodes(atLeastOneRootRequired = false).map { n ->
+            n.config.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.TestTag)
+                ?: n.config.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.ContentDescription)?.joinToString()
+                ?: n.config.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.Role)?.toString() ?: "?"
+        }
+        return "$windows\nfocused nodes: $nodes"
     }
 
     /** The Live page's « ■ Tout » (its stopAll) and a column's ■ while the music plays: the blocks stop on the launch line. */

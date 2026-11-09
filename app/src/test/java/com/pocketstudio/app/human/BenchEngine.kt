@@ -141,9 +141,9 @@ internal class BenchEngine : CommandSink {
         return FloatArray(t.preroll + frames) { i -> if (i < t.preroll) 0f else BenchMic.voice((i - t.preroll).toLong()) }
     }
 
-    /** The transport stops: each take keeps what it recorded until then. */
-    private fun freezeTakes() {
-        if (transportSince >= 0) takes.values.forEach { if (it.frozen < 0) it.frozen = recorded(it) }
+    /** The transport stops: each take keeps what it recorded until then (at most [upTo] frames: the song's last bar line). */
+    private fun freezeTakes(upTo: Long = Long.MAX_VALUE) {
+        if (transportSince >= 0) takes.values.forEach { if (it.frozen < 0) it.frozen = minOf(recorded(it), upTo.coerceAtLeast(0L)) }
     }
 
     override fun scheduleFrom(target: Long, frame: Long) = Unit
@@ -492,7 +492,9 @@ internal class BenchEngine : CommandSink {
             when (kind) {
                 1 -> { songStart = due - restartAt; inSong = true }
                 3 -> inSong = false
-                2 -> { transportSince = -1L; inSong = false; return }
+                // The song's end (T5-Ab-27): the transport stops on that bar line, and a take ends there with what it recorded up
+                // to it, as the engine's does (the app then keeps it: RhythmViewModel.songEnded).
+                2 -> { freezeTakes(Math.round(due * 15.0 * RATE / tempo)); transportSince = -1L; inSong = false; return }
             }
             sceneStart = due
         }

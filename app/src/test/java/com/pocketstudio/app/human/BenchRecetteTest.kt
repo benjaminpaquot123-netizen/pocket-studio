@@ -28,10 +28,9 @@ class BenchRecetteTest : HumanTester("recette") {
     fun notOnTheBench() = assumeTrue("not while the bench runs seats", System.getProperty("ps.human.dir").isNullOrBlank())
 
     private fun tap(tag: String): String {
-        // On screen: touched where it is, as a finger would (reachTag swipes anything outside the middle, and each swipe
-        // moves the bench's clock: a 15 s demo was over before « Retour », at the top, was even touched).
-        val h = androidx.test.core.app.ApplicationProvider.getApplicationContext<android.app.Application>().resources.displayMetrics.heightPixels
-        val at = centerOf(tag)?.takeIf { it.second in 0f..h.toFloat() } ?: reachTag(tag) ?: centerOf(tag)
+        // Touched where it is when shown whole (PLAN-RESTE R.6, first fixed here: each swipe moves the bench's clock, and a 15 s
+        // demo was over before « Retour », at the top, was even touched); brought on screen otherwise.
+        val at = reachTag(tag) ?: centerOf(tag)
         assertNotNull("nothing to touch: $tag\n" + screenLines().joinToString("\n"), at)
         return act("touche ${at!!.first} ${at.second}")
     }

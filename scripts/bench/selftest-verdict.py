@@ -54,7 +54,9 @@ def main(argv):
     only_skipped = {n.split("#")[0] for n, _ in skipped} - ran
     expected = optional_lines(argv[4]) if len(argv) > 4 else []
     known_skips = quarantine(argv[6]) if len(argv) > 6 and pathlib.Path(argv[6]).is_file() else set()
-    red += [(n, "saut hors de la liste des sauts connus : " + w) for n, w in skipped if n not in known_skips]
+    # A known skip named without parameters (« Class#drive ») covers each parameterised case (« Class#drive[...] »).
+    red += [(n, "saut hors de la liste des sauts connus : " + w) for n, w in skipped
+            if n not in known_skips and n.split("[")[0] not in known_skips]
     red += [(f"{c}#*", "aucun test non sauté : la classe est sautée en entier") for c in expected if c in only_skipped]
     red += [(f"{c}#*", "aucun résultat : la classe n'a pas tourné") for c in expected if c not in ran and c not in only_skipped]
     failed_runs = optional_lines(argv[5]) if len(argv) > 5 else []

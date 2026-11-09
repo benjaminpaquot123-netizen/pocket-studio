@@ -127,7 +127,16 @@ abstract class Tour3RenameIdleBase(private val theme: String) {
             val windows = runCatching { BenchWindows.windows().joinToString(" | ") { w -> "type ${w.params.type} ${w.view.width}x${w.view.height} drawn=${w.drawn(m)} attached=${w.view.isAttachedToWindow} laidOut=${w.view.isLaidOut}" } }.getOrElse { "? $it" }
             val roots = compose.onAllNodes(androidx.compose.ui.test.isRoot()).fetchSemanticsNodes(atLeastOneRootRequired = false).joinToString(",") { "${it.size}" }
             val looper = "mainLooper paused=${shadowOf(Looper.getMainLooper()).isPaused} choreographerPaused=${runCatching { org.robolectric.shadows.ShadowChoreographer.isPaused() }.getOrNull()} screen=${m.widthPixels}x${m.heightPixels} density=${m.density} fontScale=${app.resources.configuration.fontScale} roots=[$roots] theme=${SettingsStore.state.value.theme} uiScale=${SettingsStore.state.value.uiScale} simple=${SettingsStore.state.value.simpleMode}"
-            error("no project's ⋮ in Mes projets; $inside; app threads: ${BenchPristine.appThreads()} (${BenchPristine.workerCount()} workers); $looper; windows: $windows; placed: $placed; tags: $tags")
+            // Run 4 of banc45: the list held one project (loading=false in the view model) but the screen still showed none and
+            // the welcome's button was never placed: the screens' flows seem not to reach them. Frames forced by hand, then the
+            // recomposers and clocks, to tell a stalled frame clock from a lost collection.
+            val recomposers = runCatching { androidx.compose.runtime.Recomposer.runningRecomposers.value.joinToString(",") { r -> "pending=${r.hasPendingWork}" } }.getOrElse { "? $it" }
+            val clocks = "mainClock autoAdvance=${compose.mainClock.autoAdvance} time=${compose.mainClock.currentTime} Dispatchers.Main=${kotlinx.coroutines.Dispatchers.Main} lifecycle=${scenario?.state}"
+            repeat(3) { runCatching { compose.mainClock.advanceTimeByFrame() }; shadowOf(Looper.getMainLooper()).idle() }
+            runCatching { compose.waitForIdle() }
+            val afterFrames = compose.onAllNodes(projectMenu).fetchSemanticsNodes(atLeastOneRootRequired = false).size
+            val emptyShown = compose.onAllNodesWithTag("projects_empty").fetchSemanticsNodes(atLeastOneRootRequired = false).isNotEmpty()
+            error("no project's ⋮ in Mes projets; $inside; after 3 frames by hand: menus=$afterFrames emptyState=$emptyShown; recomposers: $recomposers; $clocks; app threads: ${BenchPristine.appThreads()} (${BenchPristine.workerCount()} workers); $looper; windows: $windows; placed: $placed; tags: $tags")
         }
         compose.onAllNodes(projectMenu)[0].performClick()
         compose.onNodeWithText("Renommer").performClick()

@@ -64,10 +64,11 @@ def proofs(cell):
 
 
 def green_in_resume(resume_text, cls, method):
+    """Green only when the summary names it « vert : Class#method » (selftest-verdict.py): a guard that is red,
+    quarantined, skipped or that did not run at all is not green. No summary: not judged here (see « résumé absent »)."""
     if resume_text is None:
         return True
-    bad = re.search(r"(rouge|échec|failed)[^\n]*\b" + re.escape(cls) + r"\b[^\n]*" + re.escape(method), resume_text)
-    return bad is None
+    return re.search(r"^vert : " + re.escape(cls) + "#" + re.escape(method) + r"\s*$", resume_text, re.M) is not None
 
 
 def check(root, resume_path=None):

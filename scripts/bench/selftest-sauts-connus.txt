@@ -1,0 +1,3 @@
+# Bench self-tests that may be skipped (audit « banc crédible » A.4): a skipped test that is not here makes the self-test
+# red, and a class skipped as a whole is red even when its tests are here. One line: <Class#method> | <why> | <date> | <who>.
+# Empty = no skip allowed (the goal).

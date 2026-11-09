@@ -10,7 +10,8 @@
 #   scripts   scripts/bench/test_ultra_bench.py (fuser, metrics, dashboard).
 # Banc fiable 1.2: the verdict is read test by test from the JUnit results, not from Gradle's exit code. A red test
 # forbids the lot unless it is in scripts/bench/selftest-quarantaine.txt (named in the stamp); every skipped test is
-# listed with its reason in <lot>/selftest-resume.txt. Never green on 0 test run.
+# listed with its reason in <lot>/selftest-resume.txt. Never green on 0 test run. Audit « banc crédible » A.4: a class
+# skipped as a whole is red, and so is a skip that is not in scripts/bench/selftest-sauts-connus.txt.
 set -euo pipefail
 lot="$(cd "${1:?usage: scripts/bench/selftest.sh <lot folder>}" && pwd)"
 cd "$(dirname "$0")/../.."
@@ -73,7 +74,7 @@ run_tests renommage --tests 'com.pocketstudio.app.human.Tour*IdleTest'
 
 verdict_ok=0
 python3 -I scripts/bench/selftest-verdict.py "$junit" scripts/bench/selftest-quarantaine.txt "$lot/selftest-resume.txt" \
-    "$lot/selftest-attendus.txt" "$lot/selftest-gradle-echecs.txt" || verdict_ok=1
+    "$lot/selftest-attendus.txt" "$lot/selftest-gradle-echecs.txt" scripts/bench/selftest-sauts-connus.txt || verdict_ok=1
 echo "$machine" >> "$lot/selftest-resume.txt"
 [ "$verdict_ok" -eq 0 ] || fail "tests du banc (voir $lot/selftest-resume.txt et $lot/selftest-gradle-*.log)"
 

@@ -78,6 +78,12 @@ python3 -I scripts/bench/selftest-verdict.py "$junit" scripts/bench/selftest-qua
 echo "$machine" >> "$lot/selftest-resume.txt"
 [ "$verdict_ok" -eq 0 ] || fail "tests du banc (voir $lot/selftest-resume.txt et $lot/selftest-gradle-*.log)"
 
+# Audit « banc crédible » A.10: the judge of the work reads THIS run's summary (a guard is green only when named
+# there). Its gaps are the memory's (verdicts.tsv, the journal, the pairs), not the bench's: written in
+# <lot>/selftest-chantier.txt and counted here, they do not forbid the lot.
+python3 -I scripts/bench/verifie-chantier.py --resume "$lot/selftest-resume.txt" > "$lot/selftest-chantier.txt" 2>&1 || true
+echo "Juge du chantier : $(tail -1 "$lot/selftest-chantier.txt") ($lot/selftest-chantier.txt)"
+
 mapfile -t held < <(sed -n 's/^quarantaine rouge : \([^ ]*\) :.*/\1/p' "$lot/selftest-resume.txt")
 [ "$(scripts/bench/tampon.sh empreinte)" = "$(cat "$lot/selftest-empreinte.txt")" ] || fail "le code a changé pendant le selftest : relancer"
 scripts/bench/tampon.sh ecris "$lot" "$lot/selftest-empreinte.txt" "${held[@]}"

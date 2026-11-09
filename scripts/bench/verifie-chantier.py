@@ -1,12 +1,23 @@
 #!/usr/bin/env python3
-"""Checks the « banc fiable » work by program, not by eye (PLAN-RESTE 4.0).
+"""Checks the « banc fiable » work by program, not by eye (PLAN-RESTE 4.0, audit « banc crédible » A.10).
 
-  python3 -I scripts/bench/verifie-chantier.py [--root DIR] [--resume selftest-resume.txt]
+  python3 -I scripts/bench/verifie-chantier.py --resume <lot>/selftest-resume.txt [--root DIR] [--sans-git]
 
-(a) verdicts.tsv: every proof names a Class#method that exists in the tests; a proof of the app is
-    never a Bench* test; a « banc » line has a Bench* guard, green in the latest selftest summary when
-    one is given; every @KnownDefect(id) in the tests has a line « appli » citing its test, and every
-    such cited test exists; every « corrigé » line is in base.tsv with its round.
+(a) verdicts.tsv, four criteria:
+    1. an « appli » line has a proof: a test without the bench that exists (never a Bench* test), or a dated ❌
+       trial on a device (« tel-NN … ❌ … 2026-11-08 » in one « ; » segment of its telephone or note cell);
+    2. a « banc » line has a Bench* guard AND a proof without the bench (a test that exists outside Bench*):
+       the bench judging itself is not a proof;
+    3. the summary of the latest self-test is mandatory (« résumé absent » without it) and a guard is green
+       only when the summary names it « vert : Class#method »;
+    4. a « corrigé » line is in base.tsv with its round and its commit cell names a commit that exists.
+    Also: every proof names a Class#method that exists; every @KnownDefect(id) in the tests has a line « appli »
+    citing its test.
+(b) git log: a « vert: » commit closes the oldest open « rouge: » commit OF THE SAME TEST (same subject after
+    the prefix, or a test the red names or adds that the green's message names). A green of another test closes
+    nothing. A checked line of banc-fiable-journal.md (« - [x] 4.2 … », ids 4.x to 7.x, R.x, A.x) carries
+    « preuve: rouge <sha> / vert <sha> » naming such a pair, or « preuve: script <path> » (a figure computed
+    by a script that exists).
 (c) recette.json <-> verdicts: every « recette tel-NN » cited by an open undecided line exists in the
     checklist, and every checklist item is cited by some line.
 Prints one line per gap, then « chantier : N écarts ». Exit 1 when N > 0. Standard library only.
@@ -15,6 +26,7 @@ import argparse
 import json
 import os
 import re
+import subprocess
 import sys
 
 TEST_ROOT = os.path.join("app", "src", "test", "java")
@@ -71,36 +83,71 @@ def green_in_resume(resume_text, cls, method):
     return re.search(r"^vert : " + re.escape(cls) + "#" + re.escape(method) + r"\s*$", resume_text, re.M) is not None
 
 
-def check(root, resume_path=None):
+def dated_failed_trial(v):
+    """A dated ❌ trial on a device: one « ; » segment of the telephone or note cell with tel-NN, ❌ and a date."""
+    for cell in (v.get("telephone", ""), v.get("note", "")):
+        for part in cell.split(";"):
+            if re.search(r"\btel-\d+", part) and "❌" in part and re.search(r"\b20\d\d-\d\d-\d\d\b", part):
+                return True
+    return False
+
+
+def commit_exists(root, sha):
+    try:
+        return subprocess.run(["git", "-C", root, "cat-file", "-e", sha + "^{commit}"], capture_output=True, timeout=60).returncode == 0
+    except (subprocess.SubprocessError, OSError):
+        return False
+
+
+def check(root, resume_path=None, with_git=True):
     gaps = []
     ultra = os.path.join(root, "docs", "audits", "ultra")
     verdicts = read_tsv(os.path.join(ultra, "verdicts.tsv"))
     sources = test_sources(root)
-    resume = open(resume_path, encoding="utf-8").read() if resume_path else None
+    resume = None
+    if not resume_path:
+        gaps.append("résumé absent : --resume <selftest-resume.txt> est obligatoire (le dernier selftest.sh l'écrit dans son lot)")
+    elif not os.path.isfile(resume_path):
+        gaps.append(f"résumé absent : {resume_path} introuvable")
+    else:
+        resume = open(resume_path, encoding="utf-8").read()
     base = {r.get("cle"): r for r in read_tsv(os.path.join(ultra, "base.tsv"))}
 
     for v in verdicts:
         item = v.get("item", "?")
         verdict, etat = v.get("verdict", ""), v.get("etat", "")
+        without_bench = 0
         for cls, m in proofs(v.get("preuve_appli")):
             if cls.startswith("Bench"):
                 gaps.append(f"{item} : preuve d'appli {cls}#{m} est un test du banc")
             elif not method_exists(sources, cls, m):
                 gaps.append(f"{item} : preuve d'appli {cls}#{m} introuvable")
+            else:
+                without_bench += 1
         guards = proofs(v.get("garde_banc"))
         for cls, m in guards:
             if not method_exists(sources, cls, m):
                 gaps.append(f"{item} : garde {cls}#{m} introuvable")
             elif not green_in_resume(resume, cls, m):
                 gaps.append(f"{item} : garde {cls}#{m} pas verte dans le dernier selftest")
-        if verdict == "banc" and not any(c.startswith("Bench") for c, _ in guards):
-            gaps.append(f"{item} : verdict « banc » sans garde Bench*")
+        if verdict == "appli" and not without_bench and not dated_failed_trial(v):
+            gaps.append(f"{item} : verdict « appli » sans preuve (ni test sans banc existant, ni essai ❌ daté)")
+        if verdict == "banc":
+            if not any(c.startswith("Bench") for c, _ in guards):
+                gaps.append(f"{item} : verdict « banc » sans garde Bench*")
+            if not without_bench:
+                gaps.append(f"{item} : verdict « banc » sans preuve sans banc (aucun test hors Bench* existant dans preuve_appli)")
         if etat == "corrigé":
             row = base.get(v.get("cle"))
             if row is None:
                 gaps.append(f"{item} : « corrigé » absent de base.tsv ({v.get('cle')})")
             elif not (row.get("corrige_au") or "").strip() and row.get("etat") != "corrigé":
                 gaps.append(f"{item} : « corrigé » sans tour dans base.tsv")
+            shas = re.findall(r"\b[0-9a-f]{7,40}\b", v.get("commit", ""))
+            if not shas:
+                gaps.append(f"{item} : « corrigé » sans commit")
+            elif with_git:
+                gaps += [f"{item} : « corrigé », commit {c} introuvable" for c in shas if not commit_exists(root, c)]
 
     cited = " ".join(v.get("preuve_appli", "") for v in verdicts if v.get("verdict") == "appli")
     for cls, text in sorted(sources.items()):
@@ -128,28 +175,98 @@ def check(root, resume_path=None):
     return gaps
 
 
-def red_green_pairs(root, since="2026-11-07"):
-    """(b) Every bench repair is a « rouge: » commit (the guard, red) followed by a « vert: » commit (the fix) in the
-    same history. A red with no green after it is a gap; so is a green with no red before it (a repair without proof)."""
-    import subprocess
+TEST_TOKEN = re.compile(r"[A-Za-z0-9_./]+(?:#|::)([A-Za-z0-9_]+)")
+ADDED_TEST = re.compile(r"^\+\s*(?:fun|def|static void)\s+`?([A-Za-z0-9_]{12,})", re.M)
+CHECKED = re.compile(r"^- \[x\] ((?:[4-7]\.\d+|[RA]\.\d+))\b(.*)$", re.M)
+PAIR = re.compile(r"preuve\s*:\s*rouge\s+([0-9a-f]{7,40})\s*/\s*vert\s+([0-9a-f]{7,40})")
+SCRIPT = re.compile(r"preuve\s*:\s*script\s+`?([A-Za-z0-9_./-]+)")
+
+
+def _git(root, *args):
+    return subprocess.run(["git", "-C", root, *args], capture_output=True, text=True, timeout=120, check=True).stdout
+
+
+def _rest(subject):
+    return subject.partition(":")[2].strip().lower()
+
+
+def red_names(root, sha, message):
+    """The tests a « rouge: » commit is about: the « Class#method » and « file::case » it names, and the test
+    functions it adds (public ones, 12 letters or more: a helper called « tap » would match any sentence)."""
+    names = {m.group(0) for m in TEST_TOKEN.finditer(message)} | {m.group(1) for m in TEST_TOKEN.finditer(message) if len(m.group(1)) >= 12}
     try:
-        out = subprocess.run(["git", "-C", root, "log", f"--since={since}", "--reverse", "--format=%h %s"],
-                             capture_output=True, text=True, timeout=120, check=True).stdout
+        names |= set(ADDED_TEST.findall(_git(root, "show", sha, "--format=", "-U0")))
+    except (subprocess.SubprocessError, OSError):
+        pass
+    return names
+
+
+def same_test(red, green):
+    """red, green: (sha, subject, message, names). Same subject after the prefix, or the green names a test of the red."""
+    if _rest(red[1]) == _rest(green[1]):
+        return True
+    return any(re.search(r"(?<![A-Za-z0-9_])" + re.escape(n) + r"(?![A-Za-z0-9_])", green[2]) for n in red[3])
+
+
+def _commit(root, sha):
+    """(short sha, subject, message, names) of a commit, or None."""
+    try:
+        out = _git(root, "show", "-s", "--format=%h%x1f%s%x1f%B", sha + "^{commit}")
+    except (subprocess.SubprocessError, OSError):
+        return None
+    h, subject, message = out.split("\x1f", 2)
+    return (h, subject, message, red_names(root, h, message) if subject.lower().startswith("rouge:") else set())
+
+
+def red_green_pairs(root, since="2026-11-07"):
+    """(b) Every bench repair is a « rouge: » commit (the guard, red) followed by a « vert: » commit (the fix) of the
+    same test. A red whose test gets no green is a gap; so is a green that closes no red of its test."""
+    try:
+        out = _git(root, "log", f"--since={since}", "--reverse", "--format=%x1e%h%x1f%s%x1f%B")
     except (subprocess.SubprocessError, OSError) as e:
         return [f"git log impossible : {e}"]
-    gaps, open_reds, greens_without_red = [], [], 0
-    for line in out.splitlines():
-        sha, _, subject = line.partition(" ")
+    gaps, open_reds = [], []
+    for record in out.split("\x1e")[1:]:
+        sha, subject, message = record.split("\x1f", 2)
         low = subject.lower()
         if low.startswith("rouge:"):
-            open_reds.append((sha, subject))
+            open_reds.append((sha, subject, message, red_names(root, sha, message)))
         elif low.startswith("vert:"):
-            if open_reds:
-                open_reds.pop(0)
+            green = (sha, subject, message, set())
+            red = next((r for r in open_reds if same_test(r, green)), None)
+            if red is not None:
+                open_reds.remove(red)
             else:
-                greens_without_red += 1
-                gaps.append(f"{sha} « {subject[:60]} » : vert sans rouge avant lui")
-    gaps += [f"{sha} « {subject[:60]} » : rouge sans vert après lui" for sha, subject in open_reds]
+                gaps.append(f"{sha} « {subject[:70]} » : vert sans rouge du même test avant lui")
+    gaps += [f"{r[0]} « {r[1][:70]} » : rouge sans vert du même test après lui" for r in open_reds]
+    return gaps
+
+
+def checked_lines(root):
+    """(b) A checked line of the journal names its proof: a rouge/vert pair of the same test, or a script."""
+    path = os.path.join(root, "docs", "audits", "ultra", "banc-fiable-journal.md")
+    if not os.path.isfile(path):
+        return []
+    gaps = []
+    for m in CHECKED.finditer(open(path, encoding="utf-8").read()):
+        ident, text = m.group(1), m.group(2)
+        where = f"journal, ligne cochée {ident}"
+        pairs, scripts = PAIR.findall(text), SCRIPT.findall(text)
+        if not pairs and not scripts:
+            gaps.append(f"{where} : sans preuve (ni « preuve: rouge <sha> / vert <sha> », ni « preuve: script <chemin> »)")
+        for s in scripts:
+            if not os.path.isfile(os.path.join(root, s)):
+                gaps.append(f"{where} : script {s} introuvable")
+        for r, g in pairs:
+            red, green = _commit(root, r), _commit(root, g)
+            if red is None or green is None:
+                gaps.append(f"{where} : paire rouge {r} / vert {g} : commit introuvable")
+            elif not red[1].lower().startswith("rouge:") or not green[1].lower().startswith("vert:"):
+                gaps.append(f"{where} : paire rouge {r} / vert {g} : le premier n'est pas un commit « rouge: » ou le second pas un « vert: »")
+            elif subprocess.run(["git", "-C", root, "merge-base", "--is-ancestor", r, g], capture_output=True).returncode != 0:
+                gaps.append(f"{where} : paire rouge {r} / vert {g} : le rouge ne précède pas le vert")
+            elif not same_test(red, green):
+                gaps.append(f"{where} : paire rouge {r} / vert {g} : pas le même test")
     return gaps
 
 
@@ -157,11 +274,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=".")
     ap.add_argument("--resume", default=None, help="selftest-resume.txt of the latest selftest")
-    ap.add_argument("--sans-git", action="store_true", help="skip the rouge/vert pairs (no git history at hand)")
+    ap.add_argument("--sans-git", action="store_true", help="skip what reads git: the rouge/vert pairs, the journal's checked lines, the commits' existence")
     a = ap.parse_args()
-    gaps = check(a.root, a.resume)
+    gaps = check(a.root, a.resume, with_git=not a.sans_git)
     if not a.sans_git:
-        gaps += red_green_pairs(a.root)
+        gaps += red_green_pairs(a.root) + checked_lines(a.root)
     for g in gaps:
         print(g)
     print(f"chantier : {len(gaps)} écarts")

@@ -35,6 +35,8 @@ if [ -n "$sha" ] && runs="$(gh api "repos/$repo/actions/runs?head_sha=$sha&per_p
         *uild*) build="$(state_of "$jstatus" "$jconclusion")" ;;
       esac
     done <<<"$jobs"
+    # A run that exists but has not created a job yet: that job is on its way, not absent.
+    [ "$status" = "completed" ] || { [ "$build" = absent ] && build="en cours"; [ "$emu" = absent ] && emu="en cours"; }
   done <<<"$runs"
 else
   build="?"; emu="?"

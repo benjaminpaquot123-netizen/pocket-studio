@@ -14,6 +14,9 @@ cible: ») are both read. Each defect gets a key:
   same in every language; v1: for a gesture's symptom (rien, incompris, mauvais-ecran, bloque, plantage) the route and
   button of gesture « screen − 1 », otherwise the route at the screen n°; the target as the tester wrote it, normalised without
   losing non-Latin letters (NFKC + casefold: « 全部止める » stays itself, it was « ? » before).
+- when the journal gives no button (a dialogue, a navigation tag under the finger) and the card has an « element: »
+  field (the testTag under the finger, written by newer benches), that element is the target instead of the free
+  text (PLAN-RESTE 6.4: « dialogue:<tag>|<element>|<symptôme> »); a navigation tag as element is ignored.
 - symptom families: « promesse » and « bloque » count as « rien », « coupe »/« texte-coupe »/« cache »/« hors-pouce » as
   « affichage » (one defect, five spellings in round 3).
 
@@ -99,7 +102,7 @@ def blocks(text):
             if "cible" in f and section != "hesitations":
                 cur["defects"].append(f)
             continue
-        if cur["defects"] and section == "defauts" and re.match(r"^(attendu|symptome|gravite|banc\?|revu|promesse)\s*:", s):
+        if cur["defects"] and section == "defauts" and re.match(r"^(attendu|symptome|gravite|banc\?|revu|promesse|element)\s*:", s):
             cur["defects"][-1].update(fields(s))
     return out
 
@@ -131,6 +134,12 @@ NAV_TAGS = re.compile(r"^(tab_|wizard_next$|wizard_back$|guide_bar$|rien$|vue$|b
 # Buttons that do a different thing at each step (the tutorial's « Je le fais », the help labels, « Continuer »):
 # the same tag at two rounds says nothing about the same defect.
 GENERIC_BUTTONS = re.compile(r"^(tuto_(do|show|listen|need|next)|help_labels_button|launch_continue|remix_back|.*_back)$")
+
+
+def element_of(d):
+    """The card's « element: » (a testTag) as a key's target: an identifier, never a navigation tag; else None."""
+    e = d.get("element", "").strip()
+    return e if re.fullmatch(r"[A-Za-z][\w.\-#:]*", e) and not NAV_TAGS.match(e) else None
 
 
 def tag_of(journal, n):
@@ -268,6 +277,8 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
                 else:
                     # v1, a state of the screen itself: its own route and the target as the tester copied it.
                     tag, route = None, route_of(journal, screen)
+                # PLAN-RESTE 6.4: no button in the journal (a dialogue, a navigation tag): the card's element, if any.
+                tag = tag or element_of(d)
                 key = f"{route}|{tag or norm(d.get('cible'))}|{symptom}"
                 c = clusters.setdefault(key, {"key": key, "seats": set(), "where": [], "gravities": [], "blocks": False,
                                               "said": [], "bench": [], "tag": tag})

@@ -57,8 +57,17 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
                 walk(r, lines, smallTexts)
             }
         }
+        // Audit « banc crédible » A.14 (F3): the bench's engine starts a pad at once, a phone's on the grid. Said on Pad
+        // Live's screen until the bench plays its pads on the grid (A.16): a pad's timing is never judged on the bench.
+        if (padLiveShown()) lines += PADS_WITHOUT_GRID
         return Snapshot(lines, route(wins, roots), small, texts.mapTo(HashSet()) { it.text })
     }
+
+    /** Pad Live's page is on screen (not only composed beside it). */
+    private fun padLiveShown(): Boolean = runCatching {
+        compose.onAllNodes(androidx.compose.ui.test.hasTestTag("padlive"), useUnmergedTree = false)
+            .fetchSemanticsNodes(atLeastOneRootRequired = false).any { it.positionOnScreen.x in 0f..(screen.widthPixels - 1f) }
+    }.getOrDefault(false)
 
     /** The windows a person sees and can reach: the top one down to the first that takes every touch. */
     private fun shownWindows(): List<BenchWindows.Win> {
@@ -334,6 +343,9 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
     }
 
     companion object {
+        /** The bench's own line on Pad Live's screen (audit « banc crédible » A.14). */
+        const val PADS_WITHOUT_GRID = "(banc : les pads partent tout de suite, sans grille)"
+
         /** The screen's text as a short hash: clock times and percentages left out (a song's position, a progress). */
         fun fingerprintOf(lines: List<String>): String {
             val norm = lines.joinToString("\n") { l -> l.replace(Regex("\\d+:\\d\\d"), "#:##").replace(Regex("\\d+ ?%"), "#%") }

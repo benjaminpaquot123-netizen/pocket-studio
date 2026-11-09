@@ -183,17 +183,28 @@ def reports(round_dir):
     return sorted(files)
 
 
-def gravity_of(d):
+def declared_gravity(d):
+    """The gravity as the tester wrote it: a v1 word (bloquant, grave, moyen, mineur) or a v2 consequence
+    (mission-impossible = bloquant, contourne-en-N-gestes = grave if N > 3 else moyen, finition = mineur); 9 unknown."""
     said = d.get("gravite", "").strip().lower()
     g = GRAVITY.get(said.split(" ")[0] if said else "", None)
     if g is None and said.startswith("contourne"):
         n = re.search(r"\d+", said)
         g = 1 if n and int(n.group()) > 3 else 2
-    if g is None:
-        g = 9
+    return 9 if g is None else g
+
+
+def gravity_of(d):
+    """The gravity the fusion keeps: the declared one, « moyen » at most when the tester did not redo it (revu: non)."""
+    g = declared_gravity(d)
     if d.get("revu", "").strip().lower().startswith("non"):
         g = max(g, 2)
     return g
+
+
+def scale_of(d):
+    """The card's template: v2 (a gesture n° and « ecran.vu », the consequence scale) or v1 (the tester's word)."""
+    return "v2" if "ecran.vu" in d else "v1"
 
 
 def tour_no(t):
@@ -281,10 +292,12 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
                 tag = tag or element_of(d)
                 key = f"{route}|{tag or norm(d.get('cible'))}|{symptom}"
                 c = clusters.setdefault(key, {"key": key, "seats": set(), "where": [], "gravities": [], "blocks": False,
-                                              "said": [], "bench": [], "tag": tag})
+                                              "said": [], "bench": [], "tag": tag, "declared": [], "scales": []})
                 c["seats"].add(seat)
                 c["where"].append(f"{seat}#{cited}")
                 c["gravities"].append(gravity_of(d))
+                c["declared"].append(declared_gravity(d))  # the tester's own scale, for the dashboard's curve
+                c["scales"].append(scale_of(d))
                 c["blocks"] = c["blocks"] or d.get("bloque", "").strip().lower() == "oui"
                 c["bench"].append(d.get("banc?", "non").strip().lower() not in ("", "non"))
                 if said and not c["said"]:

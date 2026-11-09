@@ -115,9 +115,15 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises):
     clusters, rejected, seats, promises, incidents = fuse_mod.fuse(tour_dir, base, verdicts_path)
     name = os.path.basename(os.path.normpath(tour_dir))
     defects = sum(len(c["where"]) for c in clusters)
-    declared_grave = sum(1 for c in clusters for g in c["gravities"] if g <= 1)
     verdicts = [r for r in fuse_mod.load_tsv(verdicts_path) if r.get("tour") == name]
     verdict_of = {r.get("cle"): r for r in verdicts}
+    # PLAN-RESTE 6.4 (META-AUDIT-2 §2): the round's scale (v1 = the tester's word, v2 = the consequence) and two graves
+    # counts: declared by the testers (their own scale, no rule applied) / confirmed (kept grave by the fusion: redone
+    # by the tester, and neither a « banc? » cluster nor a « banc » verdict). Graves compare only within one scale.
+    scale = "+".join(sorted({sc for c in clusters for sc in c["scales"]})) or "?"
+    declared_grave = sum(1 for c in clusters for g in c["declared"] if g <= 1)
+    confirmed_grave = sum(1 for c in clusters if not c["bench_doubt"] and verdict_of.get(c["key"], {}).get("verdict") != "banc"
+                          for g in c["gravities"] if g <= 1)
     serious = [c for c in clusters if c["gravity"] <= 1]
     # Banc fiable 1.6: an item fixed (etat « corrigé », set by the coordinator after the merge) or wanted no longer counts
     # in A, nor a « banc? » cluster (it waits for its verdict, counted in B); B is « ? » while a « banc? » card ≥ medium
@@ -197,7 +203,8 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises):
                           and num(hb, "sieges_coupes_par_le_banc") <= 3)),
     ]
     curve = {"tour": name, "sieges": len(seats), "fiches": defects, "fiches_par_siege": round(defects / max(1, len(seats)), 1),
-             "graves_declares_par_siege": round(declared_grave / max(1, len(seats)), 2), "grappes": len(clusters),
+             "echelle": scale, "graves_declares_par_siege": round(declared_grave / max(1, len(seats)), 2),
+             "graves_confirmes_par_siege": round(confirmed_grave / max(1, len(seats)), 2), "grappes": len(clusters),
              "revient": len(back), "incidents_banc": len(incidents), "promesses_tenues": f"{len(kept)}/{len(checked)}"}
     return name, rows, curve
 
@@ -229,8 +236,16 @@ def main(argv):
         lines += [f"## {name}", "", "| | Condition | Mesure | Seuil | Remplie |", "|---|---|---|---|---|"]
         lines += [f"| {r[0]} | {r[1]} | {r[2]} | {r[3]} | {r[4]} |" for r in rows]
         lines += ["", f"Toutes remplies : {'oui' if met[-1] else 'non'}", ""]
-    lines += ["## Courbe de convergence", "", "| " + " | ".join(curves[0].keys()) + " |", "|" + "---|" * len(curves[0])]
+    lines += ["## Courbe de convergence", "",
+              "`echelle` : v1 = le mot du testeur (bloquant, grave…), v2 = la conséquence (mission-impossible, contourne-en-N-gestes) ; "
+              "`graves_declares` : ce que les testeurs ont écrit, à leur échelle ; `graves_confirmes` : ce que la fusion garde grave "
+              "(revu par le testeur, ni « banc? » ni verdict « banc »). Les graves ne se comparent qu'entre tours de même échelle.", "",
+              "| " + " | ".join(curves[0].keys()) + " |", "|" + "---|" * len(curves[0])]
     lines += ["| " + " | ".join(str(v) for v in c.values()) + " |" for c in curves]
+    for a, b in zip(curves, curves[1:]):
+        if a["echelle"] != b["echelle"]:
+            lines.append(f"\nChangement d'échelle entre {a['tour']} et {b['tour']} ({a['echelle']} → {b['echelle']}) : "
+                         "les graves de ces deux tours ne se comparent pas.")
     stop = len(met) >= 2 and met[-1] and met[-2]
     lines += ["", f"**Arrêt de l'audit possible : {'oui' if stop else 'non'}** (A à I remplies sur les deux derniers tours complets)."]
     text = "\n".join(lines) + "\n"

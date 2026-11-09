@@ -204,6 +204,7 @@ def main():
         chantier(d)
         judge_criteria(d)
         engine_proof(d)
+        expected_classes(d)
         skipped_class(d)
         seat_exit(d)
         native_missing(d)
@@ -811,6 +812,49 @@ def engine_proof(d):
     with open(os.path.join(repo, "engine", "host-tests", "engine_tests.cpp"), encoding="utf-8") as f:
         runner = f.read()
     check('"known_defect_"' in runner and "KNOWN DEFECT still there" in runner, "the C++ runner knows the known_defect_ prefix")
+
+
+def expected_classes(d):
+    """Audit « banc crédible » A.3 (G4): the self-test expects and runs every class that carries a @KnownDefect,
+    whatever its name's digits and wherever it lives (selftest-attendus.py: « pass fqcn » lines)."""
+    script = os.path.join(HERE, "selftest-attendus.py")
+    root = os.path.join(d, "attendus")
+    java = os.path.join(root, "app", "src", "test", "java", "com", "x", "app")
+    write(os.path.join(java, "human", "BenchFooTest.kt"), "package com.x.app.human\nclass BenchFooTest {\n}\n")
+    write(os.path.join(java, "human", "Tour5AppProofTest.kt"), "package com.x.app.human\nclass Tour5AppProofTest {\n}\n"
+          "/** The @KnownDefect(id) guard. */\nannotation class KnownDefect(val id: String, val message: String)\nclass KnownDefectRule\n")
+    write(os.path.join(java, "human", "Tour5AppProof2Test.kt"), "package com.x.app.human\nclass Tour5AppProof2Test {\n}\n")
+    write(os.path.join(java, "human", "Tour3NameFieldIdleTest.kt"), "package com.x.app.human\nclass Tour3NameFieldIdleTest {\n}\n")
+    write(os.path.join(java, "human", "HumanTesterA.kt"), "package com.x.app.human\nclass HumanTesterA {\n}\n")
+    write(os.path.join(java, "pads", "ChallengeTest.kt"), 'package com.x.app.pads\nclass Helper {\n}\nclass ChallengeTest {\n'
+          '    @KnownDefect("K1", "m")\n    @Test\n    fun provesIt() {}\n}\n')
+    write(os.path.join(java, "pads", "PlainTest.kt"), "package com.x.app.pads\n// @KnownDefect(\"K2\", \"m\") in a comment\nclass PlainTest {\n}\n")
+    out = run(script, "--root", root).splitlines()
+    check(out == ["banc com.x.app.human.BenchFooTest", "banc com.x.app.human.Tour5AppProof2Test", "banc com.x.app.human.Tour5AppProofTest",
+                  "defauts com.x.app.pads.ChallengeTest", "renommage com.x.app.human.Tour3NameFieldIdleTest"],
+          "the classes the self-test expects, by pass:\n" + "\n".join(out))
+    repo = os.path.dirname(os.path.dirname(HERE))
+    out = run(script, "--root", repo)
+    check("banc com.pocketstudio.app.human.Tour5AppProof2Test\n" in out and "defauts com.pocketstudio.app.padlive.ChallengeControllerTest\n" in out,
+          "the real list holds Tour5AppProof2Test and ChallengeControllerTest:\n" + out)
+    with open(os.path.join(HERE, "selftest.sh"), encoding="utf-8") as f:
+        portal = f.read()
+    check("selftest-attendus.py" in portal and "run_tests defauts" in portal, "selftest.sh takes its list there and runs the « defauts » pass")
+    # A @KnownDefect made green by hand: its rule fails the test, the verdict is red; a class of the list that did
+    # not run is red too.
+    results = os.path.join(d, "attendus-junit")
+    write(os.path.join(results, "defauts", "TEST-c.xml"), '<testsuite><testcase classname="com.x.app.pads.ChallengeTest" name="provesIt">'
+          '<failure message="K1 no longer fails: fixed?"/></testcase><testcase classname="com.x.app.pads.ChallengeTest" name="other"/></testsuite>')
+    empty = os.path.join(d, "attendus-q.txt")
+    write(empty, "")
+    expected = os.path.join(d, "attendus.txt")
+    write(expected, "ChallengeTest\nTour5AppProof2Test\n")
+    summary = os.path.join(d, "attendus-resume.txt")
+    r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "selftest-verdict.py"), results, empty, summary, expected], capture_output=True, text=True)
+    with open(summary, encoding="utf-8") as f:
+        text = f.read()
+    check(r.returncode == 1 and "rouge : ChallengeTest#provesIt : K1 no longer fails" in text and "rouge : Tour5AppProof2Test#* : aucun résultat" in text,
+          "a known defect that no longer fails and an expected class that did not run are red:\n" + text)
 
 
 def skipped_class(d):

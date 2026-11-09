@@ -48,14 +48,17 @@ def num(d, k):
     return int(v) if re.fullmatch(r"-?\d+", v) else None
 
 
-def measured(tour_dir, name):
+def measured(tour_dir, name, root=None, docs=None):
     """Banc fiable 2.5: what a program can know itself (hors-banc.tsv still wins when it gives a number):
     fichiers_non_commites (git status, submodule type changes aside), relecture_bloquants/graves (the round's
     *-relecture.md tables, rows not « corrigé »), corrections_sans_test (commits of the round's eq/<tour>-* branches
     touching app/src/main without app/src/test), lots_non_joues (sieges.tsv seats without mesures.json),
-    sieges_joues and sieges_coupes_par_le_banc (mesures.json: no end, or an end that is the bench's)."""
+    sieges_joues and sieges_coupes_par_le_banc (mesures.json: no end, or an end that is the bench's).
+    root (the repository) and docs (the folder of the *-relecture.md) default to this repository's (PLAN-RESTE 6.4:
+    given by the test)."""
     out = {}
-    root = os.path.abspath(os.path.join(HERE, "..", ".."))
+    root = root or os.path.abspath(os.path.join(HERE, "..", ".."))
+    docs = docs or DOCS
 
     def git(*a):
         r = subprocess.run(["git", "-C", root, *a], capture_output=True, text=True)
@@ -65,8 +68,9 @@ def measured(tour_dir, name):
         # The audit's own outputs (this round's folder, the base) are written by the fusion just before: not « work left ».
         out["fichiers_non_commites"] = sum(1 for l in status.splitlines() if l.strip() and not l.startswith(" T")
                                            and "docs/audits/ultra/sieges/" not in l and not l.endswith("docs/audits/ultra/base.tsv"))
-    reviews = [os.path.join(DOCS, f) for f in sorted(os.listdir(DOCS)) if f.startswith(name + "-") and f.endswith("-relecture.md")
-               and "-banc" not in f]  # the bench's own reviews are not the app's if os.path.isdir(DOCS) else []
+    # The bench's own reviews (*-banc*-relecture.md) are not the app's.
+    reviews = [os.path.join(docs, f) for f in sorted(os.listdir(docs)) if f.startswith(name + "-") and f.endswith("-relecture.md")
+               and "-banc" not in f] if os.path.isdir(docs) else []
     if reviews:
         rows = [l for f in reviews for l in read(f).splitlines() if l.startswith("|") and "corrigé" not in l.lower()]
         out["relecture_bloquants"] = sum(1 for l in rows if re.search(r"\|\s*bloquant\s*\|", l, re.I))

@@ -179,6 +179,18 @@ def trial_gaps(root, verdicts):
     return gaps
 
 
+PAD_KEY = re.compile(r"padlive|(?<![a-z])pad_")
+
+
+def dated_trial(v):
+    """A dated trial on a device, whatever its mark: one « ; » segment with tel-NN, ✅ or ❌, and a date."""
+    for cell in (v.get("telephone", ""), v.get("note", "")):
+        for part in cell.split(";"):
+            if re.search(r"\btel-\d+", part) and re.search("✅|❌", part) and re.search(r"\b20\d\d-\d\d-\d\d\b", part):
+                return True
+    return False
+
+
 def commit_exists(root, sha):
     try:
         return subprocess.run(["git", "-C", root, "cat-file", "-e", sha + "^{commit}"], capture_output=True, timeout=60).returncode == 0
@@ -235,6 +247,9 @@ def check(root, resume_path=None, with_git=True):
         if verdict == "appli" and etat == "ouvert" and without_bench and not carried and not dated_failed_trial(v):
             gaps.append(f"{item} : verdict « appli » dont la preuve n'est ni @KnownDefect ni un essai ❌ daté "
                         f"(un test vert ne prouve pas un défaut ouvert)")
+        if verdict in ("appli", "banc") and PAD_KEY.search(v.get("cle", "")) and not without_bench and not dated_trial(v):
+            gaps.append(f"{item} : verdict pad-timing sans preuve hors banc (les pads du banc partent tout de suite, sans grille : "
+                        f"il faut un test hors Bench*, un test moteur ou un essai daté sur un appareil)")
         if verdict == "banc":
             if not any(c.startswith("Bench") for c, _ in guards):
                 gaps.append(f"{item} : verdict « banc » sans garde Bench*")

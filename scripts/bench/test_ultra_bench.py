@@ -203,6 +203,7 @@ def main():
         bench_guards(d)
         chantier(d)
         judge_criteria(d)
+        engine_proof(d)
         skipped_class(d)
         seat_exit(d)
         native_missing(d)
@@ -756,6 +757,60 @@ def judge_criteria(d):
     check("H : « corrigé » sans commit" in out, "a « corrigé » whose commit is « - »:\n" + out)
     check("I : « corrigé », commit 0123abc introuvable" in out, "a « corrigé » whose commit does not exist:\n" + out)
     check("J : « corrigé »" not in out and "chantier : 3 écarts" in out, "a « corrigé » with its commit (the third gap is the green without its red):\n" + out)
+
+
+def engine_proof(d):
+    """Audit « banc crédible » A.12 (G5): an engine host test is a proof the judge reads (« path#function », the
+    function defined and registered in a PS_*_TESTS list); a @KnownDefect id is tied to its line by « garde_id »."""
+    script = os.path.join(HERE, "verifie-chantier.py")
+    cell = "engine/host-tests/pads_tests.inc#knownDefectWaits (known_defect_k2, to invert once fixed)"
+    inc = ("namespace pads {\nstatic void knownDefectWaits() {\n}\nstatic void other() {\n}\n}\n"
+           '#define PS_PADS_TESTS \\\n    {"known_defect_k2", pads::knownDefectWaits}, \\\n    {"pads_other", pads::other},\n')
+
+    def judge(root):
+        r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
+                           capture_output=True, text=True)
+        return r.stdout + r.stderr
+
+    def lines(*rows):
+        return JUDGE_GOOD + "".join("\t".join(r) + "\n" for r in rows)
+
+    root = judge_root(d, "juge-moteur", lines(("t", "C", "k3", "m", "appli", "ouvert", cell, "-", "-", "-", "n", "K2")))
+    path = os.path.join(root, "engine", "host-tests", "pads_tests.inc")
+    write(path, inc)
+    out = judge(root)
+    check("chantier : 0 écarts" in out, "an engine host test, defined and registered, is a proof:\n" + out)
+    write(path, inc.replace("knownDefectWaits", "padWaits"))
+    out = judge(root)
+    check("C : preuve d'appli engine/host-tests/pads_tests.inc#knownDefectWaits introuvable" in out
+          and "C : verdict « appli » sans preuve" in out, "the C++ function renamed is a gap:\n" + out)
+    write(path, inc.replace('{"known_defect_k2", pads::knownDefectWaits}, ', ""))
+    out = judge(root)
+    check("C : preuve d'appli engine/host-tests/pads_tests.inc#knownDefectWaits non enregistrée dans une liste PS_*_TESTS" in out,
+          "a function no list runs is a gap:\n" + out)
+    write(path, inc.replace("known_defect_k2", "pads_waits"))
+    out = judge(root)
+    check("C : garde_id K2 porté par aucune de ses preuves" in out and "chantier : 1 écarts" in out,
+          "an engine guard no longer named known_defect_<id> is a gap:\n" + out)
+    write(path, inc)
+
+    # An id no line carries; a line's id no proof carries.
+    kt = os.path.join(root, "app", "src", "test", "java", "x", "AppProofTest.kt")
+    with open(kt, encoding="utf-8") as f:
+        source = f.read()
+    write(kt, source.replace('@KnownDefect("K1"', '@KnownDefect("K9"'))
+    out = judge(root)
+    check("@KnownDefect K9 (AppProofTest#provesIt) : aucune ligne qui le cite ne porte garde_id K9" in out, "an unknown id in @KnownDefect is a gap:\n" + out)
+    check("A : garde_id K1 porté par aucune de ses preuves" in out and "chantier : 2 écarts" in out, "a line's id that no proof carries is a gap:\n" + out)
+
+    # The real cell of T5-PADRETRIG reads as one proof, and the C++ runner says a known defect is one.
+    repo = os.path.dirname(os.path.dirname(HERE))
+    out = run(script, "--root", repo, "--preuves", "T5-PADRETRIG")
+    check(out.strip() == "T5-PADRETRIG : 1 preuve(s) : engine/host-tests/padlive_tests.inc#knownDefectPadRetriggerWaitsForTheGrid (known_defect_t5_padretrig)",
+          "the engine proof of T5-PADRETRIG is read:\n" + out)
+    with open(os.path.join(repo, "engine", "host-tests", "engine_tests.cpp"), encoding="utf-8") as f:
+        runner = f.read()
+    check('"known_defect_"' in runner and "KNOWN DEFECT still there" in runner, "the C++ runner knows the known_defect_ prefix")
 
 
 def skipped_class(d):

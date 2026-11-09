@@ -205,6 +205,7 @@ def main():
         judge_criteria(d)
         open_app_proof(d)
         owner_trials(d)
+        pad_timing_verdicts(d)
         engine_proof(d)
         expected_classes(d)
         skipped_class(d)
@@ -809,6 +810,25 @@ def owner_trials(d):
     os.remove(notes)
     out = run(script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt"))
     check("chantier : 0 écarts" in out, "no notes of the owner: nothing to compare\n" + out)
+
+
+def pad_timing_verdicts(d):
+    """Audit « banc crédible » A.14 (F3, G2): the bench's pads start at once, without the grid, so a verdict on a
+    pad of Pad Live needs a proof off the bench: a test outside Bench*, an engine test or a dated trial on a device."""
+    script = os.path.join(HERE, "verifie-chantier.py")
+    root = judge_root(d, "juge-pads", JUDGE_GOOD
+                      + "t\tC\tpadlive_pads|padlive_pad_N|rien\tm\tappli\tvoulu\t-\t-\t-\t-\tread in the code\t-\n"
+                      + "t\tD\tpadlive|padlive_stop_all|rien\tm\tappli\tvoulu\t-\t-\t-\t-\tRECETTE tel-01 ✅ téléphone 2026-11-08 : it stops\t-\n"
+                      + "t\tE\tpadlive_pads|padlive_pad_N|lent\tm\tappli\tvoulu\tOther#elsewhere\t-\t-\t-\tn\t-\n"
+                      + "t\tF\tpadlive|padlive_fx|rien\tm\tnon-tranché\touvert\t-\t-\t-\t-\tn\t-\n"
+                      + "t\tG\tlaunch|launch_padlive|rien\tm\tappli\tvoulu\t-\t-\t-\t-\tRECETTE tel-01 ✅ téléphone : no date\t-\n")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
+                       capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    gap = "verdict pad-timing sans preuve hors banc"
+    check(f"C : {gap}" in out and f"G : {gap}" in out, "a pad verdict read in the code, or with an undated trial, is a gap:\n" + out)
+    check(f"D : {gap}" not in out and f"E : {gap}" not in out and f"F : {gap}" not in out and f"A : {gap}" not in out and f"B : {gap}" not in out,
+          "a dated trial, a test outside Bench*, an undecided line and a line that is not about pads are fine:\n" + out)
 
 
 def engine_proof(d):

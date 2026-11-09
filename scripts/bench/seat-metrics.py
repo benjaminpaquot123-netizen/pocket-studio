@@ -313,8 +313,35 @@ def synth(state, j, m):
     return "non", "aucune piste de synthé avec des notes"
 
 
+def _saved_changes(state):
+    """What a seat left on the phone that a fresh project has not (the seat starts with no project at all): a part, a
+    track, a take, a Pad Live star, a retouched synth sound, a remix set, a separated song. One line each."""
+    out = []
+    for p in _projects(state):
+        name = p.get("name", "?")
+        if p.get("audio_clips", 0):
+            out.append(f"« {name} » : {p['audio_clips']} prise(s)")
+        if p.get("parts", 0):
+            out.append(f"« {name} » : {p['parts']} partie(s)")
+        if p.get("tracks", 0):
+            out.append(f"« {name} » : {p['tracks']} piste(s)")
+        if p.get("stars"):
+            out.append(f"« {name} » : {len(p['stars'])} défi(s) avec étoiles")
+        if any(t.get("edited") for t in p.get("synth_tracks", [])):
+            out.append(f"« {name} » : un son de synthé retouché")
+        if p.get("remix_set"):
+            out.append(f"« {name} » : un remix")
+    if state.get("stem_sets", 0):
+        out.append(f"{state['stem_sets']} chanson(s) séparée(s)")
+    return out
+
+
 def free(state, j, m):
-    """Mission libre: explore at will; done when the tester ended it, without a crash, a stall or a lost project."""
+    """Mission libre: explore at will. PLAN-RESTE 6.4 (hardened; META-AUDIT-2 §E: round 5's A c was « réussie » with
+    24 screens and no sound at all, E a with its take lost): besides an end by the tester on ≥ 3 screens without a
+    crash, a stall or an abandon, « réussie » needs a sound heard (a sound-N.txt said something played) AND a trace
+    on the phone: a saved change (_saved_changes, read in etat/resume.json) or a shared file. One of the two missing:
+    « partielle », saying which; both missing: « non ». A seat whose state was not saved cannot prove a change: said so."""
     if m["plantage"]:
         return "non", "plantage"
     if m["abandon"]:
@@ -322,9 +349,22 @@ def free(state, j, m):
     places = len(set(j.routes.values()))
     if m["gels"]:
         return "partielle", f"{m['gels']} gel(s) ; {places} écrans différents"
-    if j.end == "fin" and places >= 3:
-        return "reussie", f"fini par le testeur, {places} écrans différents, premier son en {m['gestes_premier_son']} geste(s)"
-    return "partielle", f"fin : {j.end or 'aucune'} ; {places} écrans différents"
+    if j.end != "fin" or places < 3:
+        return "partielle", f"fin : {j.end or 'aucune'} ; {places} écrans différents"
+    changes = _saved_changes(state)
+    shared = list(state.get("shared") or []) or [f for _, f in j.shares]
+    missing = []
+    if m["gestes_premier_son"] is None:
+        missing.append("aucun son entendu")
+    if not changes and not shared:
+        missing.append("aucun changement gardé ni fichier partagé" + (" (état du siège absent)" if "projects" not in state else ""))
+    done = f"fini par le testeur, {places} écrans différents"
+    if len(missing) == 2:
+        return "non", f"{done}, mais {' ; '.join(missing)}"
+    if missing:
+        return "partielle", f"{done}, mais {missing[0]}"
+    trace = changes[0] if changes else f"partagé : {shared[0]}"
+    return "reussie", f"{done}, premier son en {m['gestes_premier_son']} geste(s) ; {trace}"
 
 
 def voice(state, j, m):

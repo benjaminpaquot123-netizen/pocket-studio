@@ -856,3 +856,4 @@ padlive_pads_side|padlive_challenge_go|rien	nouveau	tour-5
 padlive|padlive_fx_brake|incompris	nouveau	tour-5	
 session/tab_simple_Morceau|thumb_play|rien	nouveau	tour-5	
 topbar:mesure|play|compteur-fige	corrigé	tour-4,tour-5	banc : compteur figé au banc (T4-17), garde BenchPlayThenTabsTest	tour-5
+tab_simple_Clavier|record_start|rien	confirmé	tour-4	T4-26 ouvert : gardé par Tour4AppProofTest#aMelodyTakeWhileAnotherPartIsShownShowsItsNotes (@KnownDefect T4-26)	

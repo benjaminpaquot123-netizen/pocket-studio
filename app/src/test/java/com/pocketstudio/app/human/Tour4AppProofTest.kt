@@ -25,6 +25,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
@@ -45,6 +46,10 @@ class Tour4AppProofTest {
     /** PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). */
     @get:Rule
     val pristine = BenchPristineRule()
+
+    /** See [KnownDefect]: the proof of a defect still there runs inverted (T4-26, audit « banc crédible » A.11). */
+    @get:Rule
+    val knownDefects: TestRule = KnownDefectRule()
     private val app: Application get() = ApplicationProvider.getApplicationContext()
 
     /** A phone's engine as far as the view model reads it: the play position from ▶ (count-in first), the launch lines. */
@@ -213,8 +218,10 @@ class Tour4AppProofTest {
      * Audit « banc crédible » A.11 (T4-26 decided by program, no emulator): the take of T4-26 on the path where the part
      * shown is not the part heard (the timeline's « Ouvrir dans … » on the first part while the song plays the second).
      * The keys go to the part heard; the take says its notes, and the part on screen when it ends must hold them (in
-     * the part shown, or the screen turned to the part that got them: d3eccff's own aim).
+     * the part shown, or the screen turned to the part that got them: d3eccff's own aim). Today the screen stays on the
+     * part without them: « 3 notes » said, none seen. Which part should get the keys is Benjamin's to say (audit § 8, trial 5).
      */
+    @KnownDefect("T4-26", "the take's notes are not in the part shown when it ends")
     @Test
     fun aMelodyTakeWhileAnotherPartIsShownShowsItsNotes() {
         NativeEngine.sink = PhoneEngine()

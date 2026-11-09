@@ -213,7 +213,48 @@ def main():
         header_counts(d)
     with tempfile.TemporaryDirectory() as d:
         element_field(d)
+    with tempfile.TemporaryDirectory() as d:
+        curve_scales(d)
     print("ultra bench scripts: OK")
+
+
+REPORT_V2_GRAVES = """siege: a | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
+defauts:
+  - geste: 2 | ecran.vu: 3 | cible: Klaxon | geste.type: touche
+    attendu: un son | obtenu: rien
+    symptome: rien
+    gravite: mission-impossible | revu: non | banc?: non | promesse: -
+  - geste: 4 | ecran.vu: 5 | cible: ? | geste.type: touche
+    attendu: l'aide | obtenu: rien
+    symptome: rien
+    gravite: contourne-en-5-gestes | revu: oui: ecran 6 | banc?: non | promesse: -
+  - geste: 7 | ecran.vu: 8 | cible: REC | geste.type: touche
+    attendu: tout de suite | obtenu: 40 s
+    symptome: lent
+    gravite: contourne-en-5-gestes | revu: oui: ecran 8 | banc?: temps | promesse: -
+"""
+
+
+def curve_scales(d):
+    """PLAN-RESTE 6.4 (META-AUDIT-2 §2): the convergence curve says each round's scale (v1 = the tester's word,
+    v2 = the consequence) and gives two graves columns: declared by the testers / confirmed (kept grave by the fusion:
+    redone by the tester, not the bench's doubt nor a « banc » verdict); a change of scale between two rounds is
+    written, since their graves do not compare."""
+    write(os.path.join(d, "tour-4", "lotA", "a", "journal.txt"), JOURNAL_A)
+    write(os.path.join(d, "tour-4", "lotA", "a", "rapport.md"), REPORT_A)
+    write(os.path.join(d, "tour-5", "lotA", "a", "journal.txt"), JOURNAL_A)
+    write(os.path.join(d, "tour-5", "lotA", "a", "rapport.md"), REPORT_V2_GRAVES)
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\n")
+    verdicts = os.path.join(d, "verdicts.tsv")
+    write(verdicts, "tour\titem\tcle\tverdict\tpreuve_appli\tgarde_banc\ttelephone\tcommit\n")
+    board = run(os.path.join(HERE, "tableau-de-bord.py"), os.path.join(d, "tour-4"), os.path.join(d, "tour-5"), "--base", base, "--verdicts", verdicts)
+    check("| tour | sieges | fiches | fiches_par_siege | echelle | graves_declares_par_siege | graves_confirmes_par_siege | grappes |" in board,
+          "the curve's columns:\n" + board)
+    check("| tour-4 | 1 | 2 | 2.0 | v1 | 1.0 | 1.0 |" in board, "v1: one grave by the tester's word, kept:\n" + board)
+    check("| tour-5 | 1 | 3 | 3.0 | v2 | 3.0 | 1.0 |" in board,
+          "v2: three graves by the consequence, one kept (a mission-impossible not redone, a « banc? » card):\n" + board)
+    check("Changement d'échelle entre tour-4 et tour-5 (v1 → v2)" in board, "the change of scale is written:\n" + board)
 
 
 JOURNAL_DIALOG = """#0 SIEGE lang=fr device=phone font=100 mode=simple

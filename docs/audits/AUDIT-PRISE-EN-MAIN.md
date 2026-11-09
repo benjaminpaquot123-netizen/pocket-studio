@@ -206,6 +206,12 @@ Seulement ce que le design ne peut pas trancher sans toi. Réponse attendue du t
 
 Tout le reste (styles en une touche, gabarit des cartes, couleurs, composants, fiches « ? ») est tranché dans ce rapport, au titre de la délégation de design.
 
+**Réponses de Benjamin (2026-11-09 soir) : 1A, 2B, 3A ; 4 laissé à l'agent → 4A.**
+- 1A : « Partager » partout (onglet Simple, titre, bouton, liste « Mes fichiers ») ; DESIGN §10 à mettre à jour.
+- 2B : les deux ▶ restent, différenciés par un mot : haut « ▶ cette partie », bas « ▶ le morceau ».
+- 3A : « Simple ou Pro ? » n'est plus demandé au deuxième morceau ; le nouveau morceau reprend le dernier choix, lien « Changer » dans l'assistant (revient sur la décision du 29 octobre).
+- 4A (choix de l'agent) : « Tout couper » coupe tout, tempo et compteur compris ; raison : c'est ce que Benjamin a attendu sur son téléphone (tel-08 : « le temps et les mesures continuent de défiler » noté comme problème), même attente que « ■ Tout » de la vue Live (tel-12) ; le prochain pad relance l'horloge à zéro, donc rejouer en rythme reste possible. Retour arrière : option B (tempo gardé + phrase « Silence · le tempo continue »).
+
 ---
 
 ## 9. Constats écartés (pour ne pas les rouvrir)

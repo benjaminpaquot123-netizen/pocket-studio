@@ -893,6 +893,23 @@ def skipped_class(d):
     check(code == 0 and text.startswith("2 verts, 0 rouges, 0 en quarantaine, 1 sautés") and "sauté : BenchRecetteTest#two : not while" in text,
           "a known skip is listed and lets it pass:\n" + text)
 
+    # A known skip named without its parameters covers every parameterised case of that method (a seat's `drive`,
+    # skipped outside seat mode, has one case per profile), and no other method.
+    params = ('<testcase classname="a.BenchRecetteTest" name="one"/>'
+              f'<testcase classname="a.BenchRecetteTest" name="drive[lang=fr device=phone]">{seats}</testcase>'
+              f'<testcase classname="a.BenchRecetteTest" name="drive[lang=de device=tablet8]">{seats}</testcase>'
+              '<testcase classname="a.Tour5AppProofTest" name="proves"/>')
+    write(known, "BenchRecetteTest#drive | only in seat mode | 2026-11-09 | test\n")
+    code, text = judge(params, known)
+    check(code == 0 and text.startswith("2 verts, 0 rouges, 0 en quarantaine, 2 sautés"), "a known skip covers its parameterised cases:\n" + text)
+    write(known, "BenchRecetteTest#driveOther | only in seat mode | 2026-11-09 | test\n")
+    code, text = judge(params, known)
+    check(code == 1 and "rouge : BenchRecetteTest#drive[lang=fr device=phone] : saut hors" in text, "a known skip covers no other method:\n" + text)
+    # A red self-test still shows the judge of the work: selftest.sh runs it before it stops on a red verdict.
+    with open(os.path.join(HERE, "selftest.sh"), encoding="utf-8") as f:
+        sh = f.read()
+    check(0 < sh.find("verifie-chantier.py --resume") < sh.find('fail "tests du banc'), "selftest.sh runs the judge before it fails on red tests")
+
     # The judge: a guard listed « sauté » is not green; neither is one the summary does not name at all.
     root = judge_root(d, "chantier-skip")
     script = os.path.join(HERE, "verifie-chantier.py")

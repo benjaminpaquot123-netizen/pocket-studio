@@ -25,7 +25,6 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
@@ -47,9 +46,6 @@ class Tour4AppProofTest {
     @get:Rule
     val pristine = BenchPristineRule()
 
-    /** See [KnownDefect]: the proof of a defect still there runs inverted (T4-26, audit « banc crédible » A.11). */
-    @get:Rule
-    val knownDefects: TestRule = KnownDefectRule()
     private val app: Application get() = ApplicationProvider.getApplicationContext()
 
     /** A phone's engine as far as the view model reads it: the play position from ▶ (count-in first), the launch lines. */
@@ -214,17 +210,8 @@ class Tour4AppProofTest {
         assertTrue("the notes are in the part shown: $facts", perScene[p.scene] >= 3)
     }
 
-    /**
-     * Audit « banc crédible » A.11 (T4-26 decided by program, no emulator): the take of T4-26 on the path where the part
-     * shown is not the part heard (the timeline's « Ouvrir dans … » on the first part while the song plays the second).
-     * The keys go to the part heard; the take says its notes, and the part on screen when it ends must hold them (in
-     * the part shown, or the screen turned to the part that got them: d3eccff's own aim). Today the screen stays on the
-     * part without them: « 3 notes » said, none seen. Which part should get the keys is Benjamin's to say (audit § 8, trial 5).
-     */
-    @KnownDefect("T4-26", "the take's notes are not in the part shown when it ends")
-    @Test
-    fun aMelodyTakeWhileAnotherPartIsShownShowsItsNotes() {
-        NativeEngine.sink = PhoneEngine()
+    /** A song of two parts on two scenes, its second part playing, the first one shown by the timeline's « Ouvrir dans … ». */
+    private fun secondPartHeardFirstPartShown(): RhythmViewModel {
         val two = Project().let { it.copy(drums = it.drums.toggle(0, 0)) }.switchScene(1)
             .let { it.copy(drums = it.drums.toggle(0, 4)) }.switchScene(0)
             .copy(song = listOf(com.pocketstudio.model.SongPart(0), com.pocketstudio.model.SongPart(1)))
@@ -232,26 +219,94 @@ class Tour4AppProofTest {
         vm.playSongPart(1)
         val until = System.currentTimeMillis() + 10_000
         while (!vm.transport.value.playing && System.currentTimeMillis() < until) { idle(); Thread.sleep(5) }
-        idle(500)
+        idle(100)
         assertTrue("the song plays from its second part", vm.transport.value.playing)
-        // The timeline's « Ouvrir dans … » on the first part: shown to edit it, the song plays on in the second.
         vm.showSceneToEdit(0)
         idle(100)
-        println("TOUR4 shown while played: song part ${vm.sessionUi.value.songIndex}, shown ${vm.project.value.scene}, playing ${vm.transport.value.playing}")
         assertEquals("the first part is shown while the song plays the second", 0, vm.project.value.scene)
         assertEquals("the song still plays its second part", 1, vm.sessionUi.value.songIndex)
+        return vm
+    }
+
+    private fun notesPerScene(vm: RhythmViewModel): List<Int> {
+        val p = vm.project.value
+        val id = SimpleMelody.trackOf(p)!!
+        return p.allScenes.indices.map { s -> p.sceneView(s).track(id).notes.notes.size }
+    }
+
+    /** The clock goes on ([step] ms at a time, [limit] ms at most) until [reached]; the ms waited, -1 if it never came. */
+    private fun waitFor(limit: Long, step: Long = 50, reached: () -> Boolean): Long {
+        var waited = 0L
+        while (!reached()) {
+            if (waited >= limit) return -1
+            idle(step); waited += step
+        }
+        return waited
+    }
+
+    /**
+     * Audit « banc crédible » A.11 (T4-26 by program, no emulator), corrected after the lot's review: the part shown is not
+     * the part heard, and the take ends before the next bar line. The keys go to the part heard; as the take ends the app
+     * arms the screen's move to the part that got them (d3eccff), made by the engine on the next bar line. So the take's
+     * notes are on screen one bar later at most. Not a proof about the emulator smoke test's failure (unexplained).
+     */
+    @Test
+    fun aMelodyTakeWhileAnotherPartIsShownShowsItsNotes() {
+        NativeEngine.sink = PhoneEngine()
+        val vm = secondPartHeardFirstPartShown()
         vm.recordMelodyTake()
         idle(100)
-        val shownDuring = vm.project.value.scene
+        threeKeys(vm)
+        assertTrue("the take ends before the bar line (else this is another case): ${NativeEngine.playPosition()}", NativeEngine.sceneSwaps() == 0)
+        vm.recordMelodyTake()
+        idle()
+        assertEquals("the keys went to the part heard: ${vm.lastTakeReport}", listOf(0, 3), notesPerScene(vm))
+        // One bar at 120 (2 s), and the app's poll of the engine after it.
+        val waited = waitFor(2_500) { notesPerScene(vm)[vm.project.value.scene] >= 3 }
+        val facts = "shown ${vm.project.value.scene}, notes per scene ${notesPerScene(vm)}, ui ${vm.sessionUi.value}; ${vm.lastTakeReport}"
+        println("TOUR4 shown is not heard, a short take: the screen turned after $waited ms; $facts")
+        assertTrue("the take's notes are not in the part shown one bar after it ended: $facts", waited >= 0)
+        assertTrue("the music goes on", vm.transport.value.playing)
+    }
+
+    /**
+     * The same start, the take going on past the bar line: the app armed the sound's move to the part shown as the take
+     * began, the engine makes it on that bar line, and the keys played after it go to the part shown.
+     */
+    @Test
+    fun aMelodyTakeAfterTheBarLineGoesToThePartShown() {
+        NativeEngine.sink = PhoneEngine()
+        val vm = secondPartHeardFirstPartShown()
+        vm.recordMelodyTake()
+        idle(100)
+        assertTrue("the sound never came to the part shown: ui ${vm.sessionUi.value}", waitFor(2_500) { NativeEngine.sceneSwaps() >= 1 } >= 0)
+        idle(100)
         threeKeys(vm)
         vm.recordMelodyTake()
         idle()
-        val p = vm.project.value
-        val id = SimpleMelody.trackOf(p)!!
-        val perScene = p.allScenes.indices.map { s -> p.sceneView(s).track(id).notes.notes.size }
-        val facts = "song part ${vm.sessionUi.value.songIndex}, shown during the take $shownDuring, after ${p.scene}; notes per scene $perScene; ${vm.lastTakeReport}"
-        assertTrue("the take has its notes: $facts", perScene.sum() >= 3)
-        assertTrue("the take's notes are not in the part shown when it ends: $facts", perScene[p.scene] >= 3)
+        assertEquals("the keys are in the part shown: ${vm.lastTakeReport}", listOf(3, 0), notesPerScene(vm))
+        assertEquals(0, vm.project.value.scene)
+    }
+
+    /**
+     * And a take across that bar line: none of its keys is lost. Seen with this engine and left undecided (not asserted):
+     * the key played before the line is kept in the part heard then, the two after it in the part shown, so the take says
+     * « 3 notes » and the screen holds two of them. Whether that is wanted is the owner's to say (T4-26, audit § 8, trial 5).
+     */
+    @Test
+    fun aMelodyTakeAcrossTheBarLineKeepsItsThreeNotes() {
+        NativeEngine.sink = PhoneEngine()
+        val vm = secondPartHeardFirstPartShown()
+        vm.recordMelodyTake()
+        idle(100)
+        assertTrue(waitFor(2_500, 20) { NativeEngine.playPosition() >= 13.0 } >= 0)
+        threeKeys(vm)
+        assertTrue("the bar line went by during the keys", NativeEngine.sceneSwaps() >= 1)
+        vm.recordMelodyTake()
+        idle()
+        println("TOUR4 shown is not heard, a take across the bar line: shown ${vm.project.value.scene}, notes per scene ${notesPerScene(vm)}; ${vm.lastTakeReport}")
+        assertEquals("a key of the take was lost: ${vm.lastTakeReport}", 3, notesPerScene(vm).sum())
+        assertEquals(vm.lastTakeReport, 3, vm.noteTake.value?.notes)
     }
 
     /**

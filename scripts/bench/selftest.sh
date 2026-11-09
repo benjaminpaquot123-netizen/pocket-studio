@@ -5,8 +5,10 @@
 # (<lot folder>/selftest.ok, holding the commit and the tree it passed on).
 # Checks (analysis Q2 §5):
 #   machine   ≥ 2 GB of disk, ≥ PS_MEM_MIN_GB of memory, one Gradle (gradle-file.sh does it);
-#   bench     every Bench*Test, Tour*AppProof*Test and Tour*IdleTest of app/src/test/…/human (engine render length,
-#             play head, note takes, rename dialogs, Tout couper / ■, share, microphone, pads, amenées…);
+#   bench     every Bench*Test, Tour*AppProof<digits>Test and Tour*IdleTest of app/src/test/…/human (engine render
+#             length, play head, note takes, rename dialogs, Tout couper / ■, share, microphone, pads, amenées…), and
+#             every class that carries a @KnownDefect anywhere else in the unit tests (audit « banc crédible » A.3:
+#             ChallengeControllerTest today); the list is scripts/bench/selftest-attendus.py's;
 #   scripts   scripts/bench/test_ultra_bench.py (fuser, metrics, dashboard).
 # Banc fiable 1.2: the verdict is read test by test from the JUnit results, not from Gradle's exit code. A red test
 # forbids the lot unless it is in scripts/bench/selftest-quarantaine.txt (named in the stamp); every skipped test is
@@ -43,8 +45,10 @@ rm -rf "$junit"; mkdir -p "$junit"
 # (read from the sources), and a Gradle that failed with no red test in its results is red.
 # PLAN-RESTE 4.5: Tour3NameFieldIdleTest (the name fields alone) runs with the rename tests: every Tour*IdleTest; and
 # Tour5AppProof2Test (its name ends in AppProof2Test) was neither expected nor run until banc45.
-grep -rhoE '^class (Bench[A-Za-z0-9]*Test|Tour[A-Za-z0-9]*AppProof[0-9]*Test|Tour[A-Za-z0-9]*IdleTest)\b' app/src/test/java/com/pocketstudio/app/human \
-  | awk '{print $2}' | sort -u > "$lot/selftest-attendus.txt"
+# Audit « banc crédible » A.3: the list is read by selftest-attendus.py (« pass class »): a @KnownDefect guard outside
+# human/ (ChallengeControllerTest) is expected and run too, in a pass of its own (« defauts »).
+python3 -I scripts/bench/selftest-attendus.py > "$lot/selftest-passes.txt"
+awk '{n = split($2, p, "."); print p[n]}' "$lot/selftest-passes.txt" | sort -u > "$lot/selftest-attendus.txt"
 gradle_failed=0
 run_tests() {
   # PLAN-RESTE 4.3: each pass writes its XML straight into $junit/<pass>/ (never the shared build/test-results that
@@ -71,6 +75,13 @@ if [ ${#profiles[@]} -gt 0 ]; then
 fi
 run_tests banc "${profile_arg[@]}" --tests 'com.pocketstudio.app.human.Bench*' --tests 'com.pocketstudio.app.human.Tour*AppProof*Test'
 run_tests renommage --tests 'com.pocketstudio.app.human.Tour*IdleTest'
+defect_args=()
+while read -r pass cls; do
+  [ "$pass" = defauts ] && defect_args+=(--tests "$cls")
+done < "$lot/selftest-passes.txt"
+if [ ${#defect_args[@]} -gt 0 ]; then
+  run_tests defauts "${defect_args[@]}"
+fi
 
 verdict_ok=0
 python3 -I scripts/bench/selftest-verdict.py "$junit" scripts/bench/selftest-quarantaine.txt "$lot/selftest-resume.txt" \

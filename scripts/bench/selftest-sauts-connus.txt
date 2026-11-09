@@ -1,6 +1,8 @@
 # Bench self-tests that may be skipped (audit « banc crédible » A.4): a skipped test that is not here makes the self-test
 # red, and a class skipped as a whole is red even when its tests are here. One line: <Class#method> | <why> | <date> | <who>.
 # A name without parameters covers every parameterised case of that method. No line = no skip allowed.
+# Bounded (review of lot 1): only « <Class>#drive » of a class that inherits HumanTester is accepted here; any other
+# entry makes the self-test red (selftest-attendus.py --sauts-connus). A real test is repaired or quarantined, never skipped.
 #
 # The seat entry point `drive` of each bench class runs only in seat mode (-Phuman.dir): skipped by design in the
 # self-test, where the class's own guards run. Seen in the self-test of 2026-11-09 (41 skips, nothing else).

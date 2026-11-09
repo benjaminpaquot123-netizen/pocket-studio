@@ -202,6 +202,10 @@ def main():
     with tempfile.TemporaryDirectory() as d:
         bench_guards(d)
         chantier(d)
+        judge_criteria(d)
+        engine_proof(d)
+        expected_classes(d)
+        skipped_class(d)
         seat_exit(d)
         native_missing(d)
         corrections_by_target(d)
@@ -533,7 +537,6 @@ def bench_guards(d):
     red = '<testcase classname="a.Tour3RenameIdleTest" name="renames"><failure message="timeout"/></testcase>'
     skipped = '<testcase classname="a.BenchTwoTest" name="mic"><skipped message="no microphone on Robolectric"/></testcase>'
     code, text = results(green + skipped)
-    check(code == 0 and text.startswith("1 verts, 0 rouges, 0 en quarantaine, 1 sautés"), "green with a skip:\n" + text)
     check("sauté : BenchTwoTest#mic : no microphone on Robolectric" in text, "the skip's reason is listed:\n" + text)
     code, text = results(green + red)
     check(code == 1 and "rouge : Tour3RenameIdleTest#renames : timeout" in text, "one red forbids the lot:\n" + text)
@@ -649,7 +652,289 @@ def fusion_v2(d):
 def chantier(d):
     """verifie-chantier.py (PLAN-RESTE 4.0): a « banc » line without a Bench* guard, a Bench* test given as
     the app's proof, a missing method, a @KnownDefect nobody cites and a checklist item nobody cites are gaps."""
-    root = os.path.join(d, "chantier")
+    root = judge_root(d, "chantier")
+    ultra = os.path.join(root, "docs", "audits", "ultra")
+    resume = os.path.join(root, "selftest-resume.txt")
+    script = os.path.join(HERE, "verifie-chantier.py")
+    out = run(script, "--root", root, "--sans-git", "--resume", resume)
+    check("chantier : 0 écarts" in out, "a clean work: 0 gap\n" + out)
+    bad = (JUDGE_HEAD + "t\tA\tk1\tm\tappli\touvert\tBenchFooTest#guardsIt\t-\trecette tel-01\t-\tn\t-\n"
+           "t\tB\tk2\tm\tbanc\touvert\t-\t-\t-\t-\tn\t-\n"
+           "t\tC\tk3\tm\tappli\touvert\tOther#provesIt\t-\t-\t-\tn\t-\n")
+    write(os.path.join(ultra, "verdicts.tsv"), bad)
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
+    out = r.stdout
+    check(r.returncode == 1, "gaps fail the run")
+    check("A : preuve d'appli BenchFooTest#guardsIt est un test du banc" in out, out)
+    check("B : verdict « banc » sans garde Bench*" in out, out)
+    check("C : preuve d'appli Other#provesIt introuvable" in out, "a method of another class of the same file is not this class's\n" + out)
+    check("@KnownDefect K1 (AppProofTest#provesIt) sans ligne" in out, out)
+    check("tel-02 de recette.json cité par aucune ligne" in out, out)
+
+
+def judge_criteria(d):
+    """Audit « banc crédible » A.10 (M1), five cases: an « appli » line without a proof, a « banc » line without a
+    proof without the bench, no summary of the self-test, a crossed rouge/vert pair, a « corrigé » without a commit."""
+    script = os.path.join(HERE, "verifie-chantier.py")
+
+    def judge(root, *args):
+        r = subprocess.run([sys.executable, "-I", script, "--root", root, *args], capture_output=True, text=True)
+        return r.returncode, r.stdout + r.stderr
+
+    def lines(*rows):
+        return JUDGE_GOOD + "".join("\t".join(r) + "\n" for r in rows)
+
+    # 1. « appli » needs a test without the bench that exists, or a dated ❌ trial on a device.
+    root = judge_root(d, "juge-appli", lines(
+        ("t", "C", "k3", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "read in the code", "-"),
+        ("t", "D", "k4", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "RECETTE tel-01 ❌ téléphone 2026-11-08 : nothing plays", "-"),
+        ("t", "E", "k5", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "RECETTE tel-01 ✅ téléphone 2026-11-08 : it plays", "-"),
+        ("t", "F", "k6", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "RECETTE tel-01 ❌ téléphone : no date", "-")))
+    resume = os.path.join(root, "selftest-resume.txt")
+    code, out = judge(root, "--sans-git", "--resume", resume)
+    for item in ("C", "E", "F"):
+        check(f"{item} : verdict « appli » sans preuve (ni test sans banc existant, ni essai ❌ daté)" in out, f"appli line {item} has no proof:\n" + out)
+    check("D : verdict « appli »" not in out and "chantier : 3 écarts" in out and code == 1, "a dated ❌ trial is a proof:\n" + out)
+
+    # 2. « banc » needs a proof without the bench too (a Bench* guard alone is the bench judging itself).
+    root = judge_root(d, "juge-banc", lines(
+        ("t", "G", "k7", "m", "banc", "ouvert", "-", "BenchFooTest#guardsIt", "recette tel-02", "-", "n", "-")))
+    code, out = judge(root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt"))
+    check("G : verdict « banc » sans preuve sans banc" in out and "chantier : 1 écarts" in out, "a banc line without a proof without the bench:\n" + out)
+
+    # 3. The summary of the latest self-test is mandatory.
+    root = judge_root(d, "juge-resume")
+    code, out = judge(root, "--sans-git")
+    check(code == 1 and "résumé absent : --resume <selftest-resume.txt> est obligatoire" in out, "no --resume is a gap:\n" + out)
+    code, out = judge(root, "--sans-git", "--resume", os.path.join(root, "nowhere.txt"))
+    check(code == 1 and "résumé absent : " in out and "nowhere.txt introuvable" in out, "a summary that does not exist is a gap:\n" + out)
+
+    # 4. A crossed pair: the green of another test never closes a red; a checked line of the journal names its pair.
+    root = judge_root(d, "juge-paires")
+    resume = os.path.join(root, "selftest-resume.txt")
+
+    def git(*a):
+        return subprocess.run(["git", "-C", root, "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false", *a],
+                              capture_output=True, text=True, check=True).stdout.strip()
+
+    def commit(subject):
+        git("commit", "-q", "--allow-empty", "-m", subject)
+        return git("rev-parse", "--short", "HEAD")
+
+    git("init", "-q")
+    red_a = commit("rouge: BenchFooTest#guardsIt the counter stops")
+    red_b = commit("rouge: test_x.py::other_case a second repair")
+    green_b = commit("vert: test_x.py::other_case a second repair")
+    green_c = commit("vert: BenchBarTest#neverRed a repair without its red")
+    code, out = judge(root, "--resume", resume)
+    check(f"{red_a} « rouge: BenchFooTest#guardsIt the counter stops » : rouge sans vert du même test après lui" in out, "the red left open is the one whose test has no green:\n" + out)
+    check(f"{green_c} « vert: BenchBarTest#neverRed a repair without its red » : vert sans rouge du même test avant lui" in out, "a green of another test closes nothing:\n" + out)
+    check(red_b not in out and green_b not in out and "chantier : 2 écarts" in out, "the pair of the same test is fine:\n" + out)
+    green_a = commit("vert: the bench's counter reads the engine (BenchFooTest#guardsIt)")
+    journal = os.path.join(root, "docs", "audits", "ultra", "banc-fiable-journal.md")
+    write(journal, f"# Journal\n- [x] 1.2 an old line, before the rule\n- [ ] 4.4 not done\n"
+                   f"- [x] 4.2 done, preuve: rouge {red_a} / vert {green_a}\n- [x] 4.3 done, no pair\n"
+                   f"- [x] 6.1 done, preuve: rouge {red_a} / vert {green_b}\n- [x] 6.4 done, preuve: script scripts/nowhere.py\n"
+                   f"- [x] A.4 done, preuve: rouge {green_b} / vert {red_b}\n")
+    code, out = judge(root, "--resume", resume)
+    check(f"{red_a} «" not in out, "a green naming the red's test closes it:\n" + out)
+    check("journal, ligne cochée 4.3 : sans preuve" in out, "a checked line without its pair:\n" + out)
+    check("journal, ligne cochée 6.1 : paire" in out and "pas le même test" in out, "a checked line citing a crossed pair:\n" + out)
+    check("journal, ligne cochée 6.4 : script scripts/nowhere.py introuvable" in out, "a checked line citing a script that does not exist:\n" + out)
+    check("journal, ligne cochée A.4 : paire" in out, "a pair cited backwards:\n" + out)
+    check("ligne cochée 4.2" not in out and "ligne cochée 1.2" not in out and "4.4" not in out and "chantier : 5 écarts" in out,
+          "the line with its pair, the old line and the open line are no gaps:\n" + out)
+
+    # 5. « corrigé » needs a commit that exists.
+    head = git("rev-parse", "--short", "HEAD")
+    with open(os.path.join(root, "docs", "audits", "ultra", "base.tsv"), "a", encoding="utf-8") as f:
+        f.write("k8\tcorrigé\tt\tn\ttour-5\nk9\tcorrigé\tt\tn\ttour-5\nk10\tcorrigé\tt\tn\ttour-5\n")
+    os.remove(journal)
+    write(os.path.join(root, "docs", "audits", "ultra", "verdicts.tsv"), lines(
+        ("t", "H", "k8", "m", "banc", "corrigé", "Other#elsewhere", "BenchFooTest#guardsIt", "-", "-", "n", "-"),
+        ("t", "I", "k9", "m", "banc", "corrigé", "Other#elsewhere", "BenchFooTest#guardsIt", "-", "0123abc", "n", "-"),
+        ("t", "J", "k10", "m", "banc", "corrigé", "Other#elsewhere", "BenchFooTest#guardsIt", "-", head, "n", "-")))
+    code, out = judge(root, "--resume", resume)
+    check("H : « corrigé » sans commit" in out, "a « corrigé » whose commit is « - »:\n" + out)
+    check("I : « corrigé », commit 0123abc introuvable" in out, "a « corrigé » whose commit does not exist:\n" + out)
+    check("J : « corrigé »" not in out and "chantier : 3 écarts" in out, "a « corrigé » with its commit (the third gap is the green without its red):\n" + out)
+
+
+def engine_proof(d):
+    """Audit « banc crédible » A.12 (G5): an engine host test is a proof the judge reads (« path#function », the
+    function defined and registered in a PS_*_TESTS list); a @KnownDefect id is tied to its line by « garde_id »."""
+    script = os.path.join(HERE, "verifie-chantier.py")
+    cell = "engine/host-tests/pads_tests.inc#knownDefectWaits (known_defect_k2, to invert once fixed)"
+    inc = ("namespace pads {\nstatic void knownDefectWaits() {\n}\nstatic void other() {\n}\n}\n"
+           '#define PS_PADS_TESTS \\\n    {"known_defect_k2", pads::knownDefectWaits}, \\\n    {"pads_other", pads::other},\n')
+
+    def judge(root):
+        r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
+                           capture_output=True, text=True)
+        return r.stdout + r.stderr
+
+    def lines(*rows):
+        return JUDGE_GOOD + "".join("\t".join(r) + "\n" for r in rows)
+
+    root = judge_root(d, "juge-moteur", lines(("t", "C", "k3", "m", "appli", "ouvert", cell, "-", "-", "-", "n", "K2")))
+    path = os.path.join(root, "engine", "host-tests", "pads_tests.inc")
+    write(path, inc)
+    out = judge(root)
+    check("chantier : 0 écarts" in out, "an engine host test, defined and registered, is a proof:\n" + out)
+    write(path, inc.replace("knownDefectWaits", "padWaits"))
+    out = judge(root)
+    check("C : preuve d'appli engine/host-tests/pads_tests.inc#knownDefectWaits introuvable" in out
+          and "C : verdict « appli » sans preuve" in out, "the C++ function renamed is a gap:\n" + out)
+    write(path, inc.replace('{"known_defect_k2", pads::knownDefectWaits}, ', ""))
+    out = judge(root)
+    check("C : preuve d'appli engine/host-tests/pads_tests.inc#knownDefectWaits non enregistrée dans une liste PS_*_TESTS" in out,
+          "a function no list runs is a gap:\n" + out)
+    write(path, inc.replace("known_defect_k2", "pads_waits"))
+    out = judge(root)
+    check("C : garde_id K2 porté par aucune de ses preuves" in out and "chantier : 1 écarts" in out,
+          "an engine guard no longer named known_defect_<id> is a gap:\n" + out)
+    write(path, inc)
+
+    # An id no line carries; a line's id no proof carries.
+    kt = os.path.join(root, "app", "src", "test", "java", "x", "AppProofTest.kt")
+    with open(kt, encoding="utf-8") as f:
+        source = f.read()
+    write(kt, source.replace('@KnownDefect("K1"', '@KnownDefect("K9"'))
+    out = judge(root)
+    check("@KnownDefect K9 (AppProofTest#provesIt) : aucune ligne qui le cite ne porte garde_id K9" in out, "an unknown id in @KnownDefect is a gap:\n" + out)
+    check("A : garde_id K1 porté par aucune de ses preuves" in out and "chantier : 2 écarts" in out, "a line's id that no proof carries is a gap:\n" + out)
+
+    # The real cell of T5-PADRETRIG reads as one proof, and the C++ runner says a known defect is one.
+    repo = os.path.dirname(os.path.dirname(HERE))
+    out = run(script, "--root", repo, "--preuves", "T5-PADRETRIG")
+    check(out.strip() == "T5-PADRETRIG : 1 preuve(s) : engine/host-tests/padlive_tests.inc#knownDefectPadRetriggerWaitsForTheGrid (known_defect_t5_padretrig)",
+          "the engine proof of T5-PADRETRIG is read:\n" + out)
+    with open(os.path.join(repo, "engine", "host-tests", "engine_tests.cpp"), encoding="utf-8") as f:
+        runner = f.read()
+    check('"known_defect_"' in runner and "KNOWN DEFECT still there" in runner, "the C++ runner knows the known_defect_ prefix")
+
+
+def expected_classes(d):
+    """Audit « banc crédible » A.3 (G4): the self-test expects and runs every class that carries a @KnownDefect,
+    whatever its name's digits and wherever it lives (selftest-attendus.py: « pass fqcn » lines)."""
+    script = os.path.join(HERE, "selftest-attendus.py")
+    root = os.path.join(d, "attendus")
+    java = os.path.join(root, "app", "src", "test", "java", "com", "x", "app")
+    write(os.path.join(java, "human", "BenchFooTest.kt"), "package com.x.app.human\nclass BenchFooTest {\n}\n")
+    write(os.path.join(java, "human", "Tour5AppProofTest.kt"), "package com.x.app.human\nclass Tour5AppProofTest {\n}\n"
+          "/** The @KnownDefect(id) guard. */\nannotation class KnownDefect(val id: String, val message: String)\nclass KnownDefectRule\n")
+    write(os.path.join(java, "human", "Tour5AppProof2Test.kt"), "package com.x.app.human\nclass Tour5AppProof2Test {\n}\n")
+    write(os.path.join(java, "human", "Tour3NameFieldIdleTest.kt"), "package com.x.app.human\nclass Tour3NameFieldIdleTest {\n}\n")
+    write(os.path.join(java, "human", "HumanTesterA.kt"), "package com.x.app.human\nclass HumanTesterA {\n}\n")
+    write(os.path.join(java, "pads", "ChallengeTest.kt"), 'package com.x.app.pads\nclass Helper {\n}\nclass ChallengeTest {\n'
+          '    @KnownDefect("K1", "m")\n    @Test\n    fun provesIt() {}\n}\n')
+    write(os.path.join(java, "pads", "PlainTest.kt"), "package com.x.app.pads\n// @KnownDefect(\"K2\", \"m\") in a comment\nclass PlainTest {\n}\n")
+    out = run(script, "--root", root).splitlines()
+    check(out == ["banc com.x.app.human.BenchFooTest", "banc com.x.app.human.Tour5AppProof2Test", "banc com.x.app.human.Tour5AppProofTest",
+                  "defauts com.x.app.pads.ChallengeTest", "renommage com.x.app.human.Tour3NameFieldIdleTest"],
+          "the classes the self-test expects, by pass:\n" + "\n".join(out))
+    repo = os.path.dirname(os.path.dirname(HERE))
+    out = run(script, "--root", repo)
+    check("banc com.pocketstudio.app.human.Tour5AppProof2Test\n" in out and "defauts com.pocketstudio.app.padlive.ChallengeControllerTest\n" in out,
+          "the real list holds Tour5AppProof2Test and ChallengeControllerTest:\n" + out)
+    with open(os.path.join(HERE, "selftest.sh"), encoding="utf-8") as f:
+        portal = f.read()
+    check("selftest-attendus.py" in portal and "run_tests defauts" in portal, "selftest.sh takes its list there and runs the « defauts » pass")
+    # A @KnownDefect made green by hand: its rule fails the test, the verdict is red; a class of the list that did
+    # not run is red too.
+    results = os.path.join(d, "attendus-junit")
+    write(os.path.join(results, "defauts", "TEST-c.xml"), '<testsuite><testcase classname="com.x.app.pads.ChallengeTest" name="provesIt">'
+          '<failure message="K1 no longer fails: fixed?"/></testcase><testcase classname="com.x.app.pads.ChallengeTest" name="other"/></testsuite>')
+    empty = os.path.join(d, "attendus-q.txt")
+    write(empty, "")
+    expected = os.path.join(d, "attendus.txt")
+    write(expected, "ChallengeTest\nTour5AppProof2Test\n")
+    summary = os.path.join(d, "attendus-resume.txt")
+    r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "selftest-verdict.py"), results, empty, summary, expected], capture_output=True, text=True)
+    with open(summary, encoding="utf-8") as f:
+        text = f.read()
+    check(r.returncode == 1 and "rouge : ChallengeTest#provesIt : K1 no longer fails" in text and "rouge : Tour5AppProof2Test#* : aucun résultat" in text,
+          "a known defect that no longer fails and an expected class that did not run are red:\n" + text)
+
+
+def skipped_class(d):
+    """Audit « banc crédible » A.4 (G3): a class skipped as a whole is red, a skip outside the list of known skips is
+    red, the summary names every green test, and the judge never reads a skipped guard as green."""
+    verdict = os.path.join(HERE, "selftest-verdict.py")
+    res = os.path.join(d, "verdict-skip")
+    quarantine = os.path.join(d, "skip-q.txt")
+    write(quarantine, "# none\n")
+    summary = os.path.join(d, "skip-resume.txt")
+    expected = os.path.join(d, "skip-attendus.txt")
+    none_failed = os.path.join(d, "skip-echecs.txt")
+    known = os.path.join(d, "skip-connus.txt")
+
+    def judge(cases, *more):
+        write(os.path.join(res, "banc", "TEST-x.xml"), "<testsuite>" + cases + "</testsuite>")
+        r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary, expected, none_failed, *more], capture_output=True, text=True)
+        with open(summary, encoding="utf-8") as f:
+            return r.returncode, f.read()
+
+    seats = '<skipped message="not while the bench runs seats"/>'
+    whole = (f'<testcase classname="a.BenchRecetteTest" name="one">{seats}</testcase>'
+             f'<testcase classname="a.BenchRecetteTest" name="two">{seats}</testcase>'
+             '<testcase classname="a.Tour5AppProofTest" name="proves"/>')
+    write(expected, "BenchRecetteTest\nTour5AppProofTest\n")
+    write(known, "BenchRecetteTest#one | seats | 2026-11-09 | test\nBenchRecetteTest#two | seats | 2026-11-09 | test\n")
+    code, text = judge(whole, known)
+    check(code == 1 and "rouge : BenchRecetteTest#* : aucun test non sauté" in text, "a class skipped as a whole is red, even with known skips:\n" + text)
+    check("vert : Tour5AppProofTest#proves" in text, "every green test is named in the summary:\n" + text)
+    part = ('<testcase classname="a.BenchRecetteTest" name="one"/>'
+            f'<testcase classname="a.BenchRecetteTest" name="two">{seats}</testcase>'
+            '<testcase classname="a.Tour5AppProofTest" name="proves"/>')
+    code, text = judge(part)
+    check(code == 1 and "rouge : BenchRecetteTest#two : saut hors de la liste des sauts connus" in text, "a skip outside the known list is red:\n" + text)
+    code, text = judge(part, known)
+    check(code == 0 and text.startswith("2 verts, 0 rouges, 0 en quarantaine, 1 sautés") and "sauté : BenchRecetteTest#two : not while" in text,
+          "a known skip is listed and lets it pass:\n" + text)
+
+    # A known skip named without its parameters covers every parameterised case of that method (a seat's `drive`,
+    # skipped outside seat mode, has one case per profile), and no other method.
+    params = ('<testcase classname="a.BenchRecetteTest" name="one"/>'
+              f'<testcase classname="a.BenchRecetteTest" name="drive[lang=fr device=phone]">{seats}</testcase>'
+              f'<testcase classname="a.BenchRecetteTest" name="drive[lang=de device=tablet8]">{seats}</testcase>'
+              '<testcase classname="a.Tour5AppProofTest" name="proves"/>')
+    write(known, "BenchRecetteTest#drive | only in seat mode | 2026-11-09 | test\n")
+    code, text = judge(params, known)
+    check(code == 0 and text.startswith("2 verts, 0 rouges, 0 en quarantaine, 2 sautés"), "a known skip covers its parameterised cases:\n" + text)
+    write(known, "BenchRecetteTest#driveOther | only in seat mode | 2026-11-09 | test\n")
+    code, text = judge(params, known)
+    check(code == 1 and "rouge : BenchRecetteTest#drive[lang=fr device=phone] : saut hors" in text, "a known skip covers no other method:\n" + text)
+    # A red self-test still shows the judge of the work: selftest.sh runs it before it stops on a red verdict.
+    with open(os.path.join(HERE, "selftest.sh"), encoding="utf-8") as f:
+        sh = f.read()
+    check(0 < sh.find("verifie-chantier.py --resume") < sh.find('fail "tests du banc'), "selftest.sh runs the judge before it fails on red tests")
+
+    # The judge: a guard listed « sauté » is not green; neither is one the summary does not name at all.
+    root = judge_root(d, "chantier-skip")
+    script = os.path.join(HERE, "verifie-chantier.py")
+    resume = os.path.join(d, "chantier-skip-resume.txt")
+    write(resume, "1 verts, 0 rouges, 0 en quarantaine, 1 sautés\nsauté : BenchFooTest#guardsIt : not while the bench runs seats\nvert : AppProofTest#provesIt\n")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
+    check("B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in r.stdout, "a skipped guard is not green:\n" + r.stdout)
+    write(resume, "1 verts, 0 rouges, 0 en quarantaine, 0 sautés\nvert : AppProofTest#provesIt\n")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
+    check("B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in r.stdout, "a guard that did not run is not green:\n" + r.stdout)
+    write(resume, "2 verts, 0 rouges, 0 en quarantaine, 0 sautés\nvert : AppProofTest#provesIt\nvert : BenchFooTest#guardsIt\n")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
+    check("pas verte" not in r.stdout, "a guard named green is green:\n" + r.stdout)
+
+
+JUDGE_HEAD = "tour\titem\tcle\tgravite\tverdict\tetat\tpreuve_appli\tgarde_banc\ttelephone\tcommit\tnote\tgarde_id\n"
+JUDGE_GOOD = (JUDGE_HEAD + "t\tA\tk1\tm\tappli\touvert\tAppProofTest#provesIt\t-\trecette tel-01\t-\tn\tK1\n"
+              "t\tB\tk2\tm\tbanc\touvert\tOther#elsewhere\tBenchFooTest#guardsIt\trecette tel-02\t-\tn\t-\n")
+JUDGE_RESUME = "3 verts, 0 rouges, 0 en quarantaine, 0 sautés\nvert : AppProofTest#provesIt\nvert : BenchFooTest#guardsIt\n"
+
+
+def judge_root(d, name, verdicts=JUDGE_GOOD):
+    """A tiny work for verifie-chantier.py: one app proof (a @KnownDefect), one bench guard, a test without the bench,
+    a checklist of two items, an empty base and a summary of the self-test where both ran green."""
+    root = os.path.join(d, name)
     tests = os.path.join(root, "app", "src", "test", "java", "x")
     write(os.path.join(tests, "BenchFooTest.kt"), "class BenchFooTest {\n  fun guardsIt() {}\n}\n")
     write(os.path.join(tests, "AppProofTest.kt"),
@@ -658,25 +943,9 @@ def chantier(d):
           json.dumps({"id": "r", "milestone": "m", "items": [{"id": "tel-01", "title": "t"}, {"id": "tel-02", "title": "t"}]}))
     ultra = os.path.join(root, "docs", "audits", "ultra")
     write(os.path.join(ultra, "base.tsv"), "cle\tetat\tvu\tnote\tcorrige_au\n")
-    head = "tour\titem\tcle\tgravite\tverdict\tetat\tpreuve_appli\tgarde_banc\ttelephone\tcommit\tnote\n"
-    good = (head + "t\tA\tk1\tm\tappli\touvert\tAppProofTest#provesIt\t-\trecette tel-01\t-\tn\n"
-            "t\tB\tk2\tm\tbanc\touvert\t-\tBenchFooTest#guardsIt\trecette tel-02\t-\tn\n")
-    write(os.path.join(ultra, "verdicts.tsv"), good)
-    script = os.path.join(HERE, "verifie-chantier.py")
-    out = run(script, "--root", root, "--sans-git")
-    check("chantier : 0 écarts" in out, "a clean work: 0 gap\n" + out)
-    bad = (head + "t\tA\tk1\tm\tappli\touvert\tBenchFooTest#guardsIt\t-\trecette tel-01\t-\tn\n"
-           "t\tB\tk2\tm\tbanc\touvert\t-\t-\t-\t-\tn\n"
-           "t\tC\tk3\tm\tappli\touvert\tOther#provesIt\t-\t-\t-\tn\n")
-    write(os.path.join(ultra, "verdicts.tsv"), bad)
-    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git"], capture_output=True, text=True)
-    out = r.stdout
-    check(r.returncode == 1, "gaps fail the run")
-    check("A : preuve d'appli BenchFooTest#guardsIt est un test du banc" in out, out)
-    check("B : verdict « banc » sans garde Bench*" in out, out)
-    check("C : preuve d'appli Other#provesIt introuvable" in out, "a method of another class of the same file is not this class's\n" + out)
-    check("@KnownDefect K1 (AppProofTest#provesIt) sans ligne" in out, out)
-    check("tel-02 de recette.json cité par aucune ligne" in out, out)
+    write(os.path.join(ultra, "verdicts.tsv"), verdicts)
+    write(os.path.join(root, "selftest-resume.txt"), JUDGE_RESUME)
+    return root
 
 
 def native_missing(d):

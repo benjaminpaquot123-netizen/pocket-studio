@@ -1,0 +1,18 @@
+# Bench self-tests that may be skipped (audit « banc crédible » A.4): a skipped test that is not here makes the self-test
+# red, and a class skipped as a whole is red even when its tests are here. One line: <Class#method> | <why> | <date> | <who>.
+# A name without parameters covers every parameterised case of that method. No line = no skip allowed.
+#
+# The seat entry point `drive` of each bench class runs only in seat mode (-Phuman.dir): skipped by design in the
+# self-test, where the class's own guards run. Seen in the self-test of 2026-11-09 (41 skips, nothing else).
+BenchAmeneesProfilesTest#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
+BenchAmeneesTest#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
+BenchAssistantTest#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
+BenchPlaceAndPadLiveTest#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
+BenchPlayThenTabsTest#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
+BenchRecetteTest#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
+BenchSeatOptionsTest#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
+BenchSelfTest#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
+BenchSeparationWaitTest#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
+BenchTour1Test#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
+BenchTour3Test#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
+BenchTour4Test#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »

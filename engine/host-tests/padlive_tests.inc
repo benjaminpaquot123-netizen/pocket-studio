@@ -391,7 +391,8 @@ static void resampleStopTargetsItsTake() {
 // first touch; the challenge's pulse is the tempo kept in 80-120 BPM, the grid is not), and a touch during that wait cancels
 // it (Waiting -> Off). Once Off, the next touch restarts the clock and sounds at once. This test asserts TODAY's behaviour:
 // when the engine is fixed (a « coup » hit again plays at once, transport stopped), INVERT this test (and set T5-PADRETRIG
-// to « corrigé » in docs/audits/ultra/verdicts.tsv).
+// to « corrigé » in docs/audits/ultra/verdicts.tsv). Registered as « known_defect_t5_padretrig »: the runner prints
+// « KNOWN DEFECT still there » and verifie-chantier.py ties that name to the line's garde_id.
 static void knownDefectPadRetriggerWaitsForTheGrid() {
     struct Pad {
         ps::ClipLauncher clips;
@@ -461,7 +462,7 @@ static void knownDefectPadRetriggerWaitsForTheGrid() {
 
 #define PS_PADLIVE_TESTS \
     {"padlive_page_d_plays_with_page_a", padlive::pageDPlaysWithPageA}, \
-    {"padlive_known_defect_t5_padretrig", padlive::knownDefectPadRetriggerWaitsForTheGrid}, \
+    {"known_defect_t5_padretrig", padlive::knownDefectPadRetriggerWaitsForTheGrid}, \
     {"padlive_64_pads_without_allocating", padlive::sixtyFourPadsWithoutAllocating}, \
     {"padlive_row_starts_on_the_bar", padlive::rowStartsOnTheBar}, \
     {"padlive_pad_pitch_reverse_attack_release", padlive::padPitchReverseAttackRelease}, \

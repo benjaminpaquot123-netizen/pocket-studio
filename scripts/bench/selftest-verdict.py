@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 """Banc fiable 1.2: the self-test's verdict, test by test, from the JUnit XML results.
-   selftest-verdict.py <results dir> <quarantine file> <summary out> [<expected classes file> [<failed Gradle runs file>]]
-Exit 0 when every test ran green or is a quarantined red; 1 otherwise: no test at all, an expected class without
-results (a run that never ran: memory, stall, crash), or a Gradle run that failed with no red test to show for it.
+   selftest-verdict.py <results dir> <quarantine file> <summary out> [<expected classes file> [<failed Gradle runs file>
+                       [<known skips file>]]]
+Exit 0 when every test ran green, is a quarantined red or a known skip; 1 otherwise: no test at all, an expected class
+of which no test ran (no results: memory, stall, crash; or every test skipped: audit « banc crédible » A.4), a skip that
+is not in the list of known skips (same format as the quarantine; no list = no skip allowed), or a Gradle run that
+failed with no red test to show for it.
 The summary: first line « N verts, R rouges, Q en quarantaine, S sautés », then one line per red, quarantined and
-skipped test (with the skip's reason, so a skip is never silent)."""
+skipped test (with the skip's reason, so a skip is never silent), then one « vert : Class#method » line per green test:
+the judge (verifie-chantier.py) reads a guard as green only when it is named there."""
 import pathlib
 import sys
 import xml.etree.ElementTree as ET
@@ -46,9 +50,15 @@ def verdict(results, quarantined):
 def main(argv):
     results, qfile, out = argv[1:4]
     green, red, held, skipped = verdict(results, quarantine(qfile))
-    ran = {n.split("#")[0] for n, *_ in [(g,) for g in green] + red + held + skipped}
+    ran = {n.split("#")[0] for n, *_ in [(g,) for g in green] + red + held}
+    only_skipped = {n.split("#")[0] for n, _ in skipped} - ran
     expected = optional_lines(argv[4]) if len(argv) > 4 else []
-    red += [(f"{c}#*", "aucun résultat : la classe n'a pas tourné") for c in expected if c not in ran]
+    known_skips = quarantine(argv[6]) if len(argv) > 6 and pathlib.Path(argv[6]).is_file() else set()
+    # A known skip named without parameters (« Class#drive ») covers each parameterised case (« Class#drive[...] »).
+    red += [(n, "saut hors de la liste des sauts connus : " + w) for n, w in skipped
+            if n not in known_skips and n.split("[")[0] not in known_skips]
+    red += [(f"{c}#*", "aucun test non sauté : la classe est sautée en entier") for c in expected if c in only_skipped]
+    red += [(f"{c}#*", "aucun résultat : la classe n'a pas tourné") for c in expected if c not in ran and c not in only_skipped]
     failed_runs = optional_lines(argv[5]) if len(argv) > 5 else []
     # PLAN-RESTE 4.3: judged pass by pass (results/<pass>/): a pass whose Gradle failed with no red test of its own is
     # red, even if another pass has a quarantined red. (Results not split in passes: the whole folder is the pass.)
@@ -61,6 +71,7 @@ def main(argv):
     lines += [f"rouge : {n} : {w}" for n, w in red]
     lines += [f"quarantaine rouge : {n} : {w}" for n, w in held]
     lines += [f"sauté : {n} : {w}" for n, w in skipped]
+    lines += [f"vert : {n}" for n in green]
     pathlib.Path(out).write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(lines[0])
     return 0 if green and not red else 1

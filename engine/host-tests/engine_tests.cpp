@@ -8401,7 +8401,12 @@ int main(int argc, char** argv) {
         if (only && std::strcmp(only, t.name) != 0) continue;
         const int before = g_failures;
         t.fn();
-        std::printf("[%s] %s\n", g_failures == before ? " OK " : "FAIL", t.name);
+        // A test registered as « known_defect_<id> » asserts TODAY's defective behaviour (docs/audits/ultra/verdicts.tsv,
+        // column garde_id; scripts/bench/verifie-chantier.py reads the name). It says so, green or red.
+        const bool known = std::strncmp(t.name, "known_defect_", 13) == 0;
+        std::printf("[%s] %s%s\n", g_failures == before ? " OK " : "FAIL", t.name,
+                    !known ? "" : g_failures == before ? " (KNOWN DEFECT still there)"
+                                                       : " (KNOWN DEFECT gone or changed: engine fixed? invert this test and set its verdicts.tsv line to « corrigé »)");
     }
     std::printf("%s (%d failure%s)\n", g_failures == 0 ? "ALL PASSED" : "FAILURES", g_failures,
                 g_failures == 1 ? "" : "s");

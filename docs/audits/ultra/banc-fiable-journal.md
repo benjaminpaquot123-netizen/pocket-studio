@@ -65,3 +65,7 @@ Une ligne par étape : [x] fait / [ ] à faire, preuve, commit. « continue » r
 - [ ] R.3 (atelier `scan-r3`) : textes rognés des pastilles non vus par `LayoutScan`.
 - [ ] 4.1 (atelier `banc41`) : défi, causes réelles + remarque de Benjamin (appui ignoré tant que le clap sonne).
 - [ ] 4.4, 4.5, 4.6, 4.7, R.4.
+- [x] (nuit du 8 au 9) Fusionnés après relecture neuve : `recette2` (1f4f293), `scan-r3` (4e52768), `banc-r1` (3ae9b7e), `banc41` (28c912e). Chaque relecture a d'abord refusé (bloquant ou grave réel : verdict faux, gardes qui ne vérifiaient rien, défaut moteur sans suivi, banc trop gentil), corrigé, puis accepté. Juge du chantier : 12 → 5 écarts.
+- [x] 4.0 (b) paires rouge/vert vérifiées par `verifie-chantier.py` ; 7.1 lien symbolique refusé à la fusion ; 7.2 garde Gradle (`~/.gradle/init.d`, PS_GRADLE_FILE) ; 6.1 colonne `cible` d'`applique-corrections.py` (test) ; 5.9 moteur absent compté ; 5.12 machine écrite dans le résumé.
+- [ ] En cours : atelier `banc45` (4.5 détecteur de fuite, R.6 reachTag, 5 gardes manquantes) ; atelier `corr61` (les 43 citations ambiguës).
+- Modèle : passage à Fable 5.1 le 2026-11-09 (limite hebdomadaire d'Opus 5.5 atteinte).

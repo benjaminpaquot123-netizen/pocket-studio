@@ -191,6 +191,8 @@ jobs:
           TOOLS: ${{ github.workspace }}/build/live-bench/tools
         run: |
           python3 -I scripts/bench/test_cpu_report.py
+          # The bench's « regarde » (scripts/human-act.py) draws with Pillow; -I only sees the system packages.
+          python3 -I -c 'import PIL' 2> /dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends python3-pil > /dev/null; }
           python3 -I scripts/bench/test_ultra_bench.py
           ./scripts/real-projects.sh
       # Endurance on Linux, short: a 2-minute song looped for 10 minutes (parts staged by the app

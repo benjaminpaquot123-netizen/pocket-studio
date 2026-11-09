@@ -1,5 +1,5 @@
-ci_build	?
-ci_emulateur	?
+ci_build	rouge (2a934b4)
+ci_emulateur	rouge (2a934b4)
 recette_points_rouges	8 (16 essais sur 18 faits le 2026-11-08 ; tel-15 et tel-19 par preuve d'appli)
 cases_vides	?
 lots_non_joues	0

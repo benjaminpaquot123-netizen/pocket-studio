@@ -12,7 +12,7 @@
 - [ ] Étape 1, lot 1 « Le juge » (A.10 bloquant, A.3, A.4, A.12 ; détail dans `AUDIT-BANC-CREDIBLE.md`).
 - [ ] Étape 1, lot 2 « La mémoire » (A.2, A.5, A.6, A.14, A.11).
 - [ ] Étape 1, lot 3 « Le faux moteur » (A.7, A.8, A.9, A.15, A.13).
-- [ ] Fin de l'étape 1 : trois lignes à Benjamin, puis attendre son « go » avant l'étape 2 (elle touche l'appli).
+- [ ] Fin de l'étape 1 : trois lignes à Benjamin, puis ENCHAÎNER sur l'étape 2 sans attendre (pleins pouvoirs donnés le 2026-11-09 à 22 h 50 : « tu suis le plan, l'option recommandée ; si le container plante la nuit tu peux tout redémarrer »). Même chose pour les étapes 3, 4 et 5. Toujours : pas d'APK, pas de test sur appareil, un agent à la fois hors audits, des nouvelles à chaque étape.
 
 (Ancien) **ORDRE DE BENJAMIN (2026-11-09 soir) : une fois les tâches en cours terminées (ateliers banc45, fusion64, corr61, seance5a ; audits « banc crédible » et « prise en main et design » ; CI), fusionner ce qui est relu, pousser, mettre ce fichier à jour, puis S'ARRÊTER et attendre son ordre pour redémarrer. Un message à chaque étape franchie. Les 6 tâches planifiées du 10 nov (départ du banc fiable) ont été supprimées : le chantier a démarré le 8.**
 

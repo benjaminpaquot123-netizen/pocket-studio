@@ -54,7 +54,10 @@ def promises(field, cat, tour, lot, seat):
         if any(pid == q for q, _ in out):
             raise SystemExit(f"{lot}{seat}: promise {pid} twice")
         out.append((pid, text))
-    return out[:5]
+    # PLAN-RESTE 6.4: a brief holds 5 promises at most (the report template's limit); refused, never cut in silence.
+    if len(out) > 5:
+        raise SystemExit(f"{lot}{seat}: {len(out)} promises, 5 at most (cut the seat's promise field in sieges-proposes.tsv)")
+    return out
 
 
 def main(argv):

@@ -13,6 +13,8 @@ dir="/home/user/eq-$tour-$zone"
 branch="eq/$tour-$zone"
 case "$cmd" in
   cree)
+    # PLAN-RESTE 7.2: the Gradle guard rail (a direct ./gradlew is refused) installed once on this machine.
+    mkdir -p ~/.gradle/init.d && cp "$(dirname "$0")/pocket-studio-file.gradle" ~/.gradle/init.d/pocket-studio-file.gradle
     free_gb=$(df -BG --output=avail / | tail -1 | tr -dc 0-9)
     [ "$free_gb" -ge 4 ] || { echo "Only ${free_gb} GB free: no new workshop (4 GB needed)." >&2; exit 75; }
     git -C "$int" worktree add -b "$branch" "$dir" HEAD

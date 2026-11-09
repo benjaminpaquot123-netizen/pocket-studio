@@ -204,6 +204,7 @@ def main():
         chantier(d)
         seat_exit(d)
         native_missing(d)
+        corrections_by_target(d)
     with tempfile.TemporaryDirectory() as d:
         seats_from_ids(d)
     with tempfile.TemporaryDirectory() as d:
@@ -432,13 +433,13 @@ def chantier(d):
             "t\tB\tk2\tm\tbanc\touvert\t-\tBenchFooTest#guardsIt\trecette tel-02\t-\tn\n")
     write(os.path.join(ultra, "verdicts.tsv"), good)
     script = os.path.join(HERE, "verifie-chantier.py")
-    out = run(script, "--root", root)
+    out = run(script, "--root", root, "--sans-git")
     check("chantier : 0 écarts" in out, "a clean work: 0 gap\n" + out)
     bad = (head + "t\tA\tk1\tm\tappli\touvert\tBenchFooTest#guardsIt\t-\trecette tel-01\t-\tn\n"
            "t\tB\tk2\tm\tbanc\touvert\t-\t-\t-\t-\tn\n"
            "t\tC\tk3\tm\tappli\touvert\tOther#provesIt\t-\t-\t-\tn\n")
     write(os.path.join(ultra, "verdicts.tsv"), bad)
-    r = subprocess.run([sys.executable, "-I", script, "--root", root], capture_output=True, text=True)
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git"], capture_output=True, text=True)
     out = r.stdout
     check(r.returncode == 1, "gaps fail the run")
     check("A : preuve d'appli BenchFooTest#guardsIt est un test du banc" in out, out)
@@ -477,6 +478,27 @@ def seat_exit(d):
     with open(os.path.join(lot, "incidents-lot.tsv"), encoding="utf-8") as f:
         text = f.read()
     check("lot\t-\t-\tfichier écrit hors des sièges : c-out.txt" in text, text)
+
+
+def corrections_by_target(d):
+    """applique-corrections.py (PLAN-RESTE 6.1): two cards on one screen; a citation with a « cible » resolves to its
+    card, one without stays ambiguous."""
+    rnd = os.path.join(d, "corr", "tour-9")
+    make_round(rnd)
+    two = REPORT_A.replace("  - ecran: 1 | cible: REC | geste: touche", "  - ecran: 4 | cible: REC | geste: touche")
+    write(os.path.join(rnd, "a", "rapport-a.txt"), two)
+    base = os.path.join(d, "corr", "base.tsv")
+    run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--maj-base", "--tour", "tour-9")
+    corr = os.path.join(d, "corr", "corrections.tsv")
+    write(corr, "tour\titem\tsiege\tecran\tetat\tcommit\ttest\tnote\tcible\n"
+          "tour-9\tX-1\ta\t4\tcorrigé\tabc1234\tT\tn\trec\n"
+          "tour-9\tX-2\ta\t4\tbanc\tabc1234\tT\tn\t\n")
+    out = run(os.path.join(HERE, "applique-corrections.py"), "--corrections", corr, "--base", base, "--sieges", os.path.join(d, "corr"))
+    check("1 ambiguës" in out and "X-2" in out, "the citation without a target is the only ambiguous one:\n" + out)
+    with open(base, encoding="utf-8") as f:
+        text = f.read()
+    check("padlive|rec|incompris\tcorrigé\ttour-9\t" in text.replace("\n", "\n") or "|rec|incompris\tcorrigé" in text,
+          "the REC card is the one marked corrected:\n" + text)
 
 
 def missions_of_round_1(d):

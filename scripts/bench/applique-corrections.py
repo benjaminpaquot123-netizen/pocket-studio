@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Banc fiable 2.2: the fixes of rounds 1-4 written into the base of known keys, so that a fixed defect seen again is
 « [revient] » (and a « banc » one « [banc contredit] »).
-    applique-corrections.py [--corrections docs/audits/ultra/corrections.tsv] [--base docs/audits/ultra/base.tsv] [--dry]
+    applique-corrections.py [--corrections docs/audits/ultra/corrections.tsv] [--base docs/audits/ultra/base.tsv] [--sieges docs/audits/ultra/sieges] [--dry]
+PLAN-RESTE 6.1: an optional « cible » column names the card when a screen holds several (a piece of the key's target).
 corrections.tsv: tour, item, siege (« X/s »), ecran, etat (corrigé | banc | voulu), commit, test, note — one line per
 tester's citation. Each citation is resolved to its key by the fusion itself (same key as fuse-reports.py computes for
 that seat and screen); the key's state in base.tsv becomes the citation's, its « corrige_au » column the round of the
@@ -22,10 +23,11 @@ def main(argv):
         return argv[argv.index(n) + 1] if n in argv else d
     corrections = opt("--corrections", os.path.join(DOCS, "corrections.tsv"))
     base = opt("--base", os.path.join(DOCS, "base.tsv"))
+    sieges = opt("--sieges", os.path.join(DOCS, "sieges"))
     rows = fuse_mod.load_tsv(corrections)
     keys_of = {}
     for tour in sorted({r["tour"] for r in rows}):
-        clusters = fuse_mod.fuse(os.path.join(DOCS, "sieges", tour), base, None, tour)[0]
+        clusters = fuse_mod.fuse(os.path.join(sieges, tour), base, None, tour)[0]
         found = {}
         for c in clusters:
             for w in c["where"]:
@@ -39,8 +41,16 @@ def main(argv):
             missing.append(f"{r['tour']} {r['siege']}#{r['ecran']} ({r['item']})")
             continue
         if len(keys) > 1:
-            ambiguous.append(f"{r['tour']} {r['siege']}#{r['ecran']} ({r['item']}) : {' / '.join(sorted(keys))}")
-            continue
+            # PLAN-RESTE 6.1: the citation names its card (column « cible », a piece of the key's target, or the whole
+            # key); the key(s) whose target or whole text holds it, case folded, are kept.
+            cible = (r.get("cible") or "").strip().casefold()
+            if cible:
+                narrowed = {k for k in keys if cible in k.casefold() or cible in k.split("|")[1].casefold()}
+                if len(narrowed) == 1:
+                    keys = narrowed
+            if len(keys) > 1:
+                ambiguous.append(f"{r['tour']} {r['siege']}#{r['ecran']} ({r['item']}) : {' / '.join(sorted(keys))}")
+                continue
         key = next(iter(keys))
         old = states.get(key)
         if old is None or rank.get(r["etat"], 0) > rank.get(old[0], 0):

@@ -107,6 +107,29 @@ class BenchSongClockTest {
         assertTrue(e.absoluteStep() < 0)
     }
 
+    /**
+     * T5-Ab-27 (round 5, seat A b: « la prise micro continue après la fin du morceau »; recette tel-18 on the tablet: the take
+     * stops at the song's end, 137 s, bar 96/96): the engine stops the transport on the song's last bar line and a take ends
+     * there with what it recorded, as ■ ends it. The bench's engine stopped its transport but left the take open: back to
+     * « waiting », 0 frames, which the seat reported as the app's.
+     */
+    @Test
+    fun aMicTakeEndsWithTheSongsEnd() {
+        start()
+        e.countInMs = 0
+        play(songStep = 0)
+        val take = e.micStart(false, 60, 0)
+        steps(8)
+        assertEquals("recording after ▶", 1f, e.micStatus(take)[0], 0f)
+        arm(32, 2)
+        steps(30)
+        assertEquals("the song's end stopped the transport", -1, e.songStep())
+        val st = e.micStatus(take)
+        assertEquals("the take is over, as ■ would end it", 2f, st[0], 0f)
+        assertEquals("with what it recorded up to the last bar line (32 steps = 4 s)", 4 * 48_000f, st[1], 48_000f / 8)
+        assertEquals("micFinish gives those frames", st[1].toInt(), e.micFinish(take)!!.size)
+    }
+
     private companion object {
         const val TRANSPORT = 5
         const val TEMPO = 6

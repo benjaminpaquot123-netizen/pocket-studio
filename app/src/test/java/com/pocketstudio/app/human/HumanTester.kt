@@ -696,6 +696,15 @@ abstract class HumanTester(private val seat: String) {
 
     private fun inMiddle(at: Pair<Float, Float>) = at.second in 0.2f * screenHeight..0.8f * screenHeight
 
+    /** [node] is drawn whole on the screen (not cut by a parent that scrolls, not off an edge): a finger can touch it where it is. */
+    internal fun shownWhole(node: androidx.compose.ui.semantics.SemanticsNode): Boolean = runCatching {
+        val m = app.resources.displayMetrics
+        val b = BenchWindows.drawnBounds(node, m)
+        node.size.width > 0 && node.size.height > 0 &&
+            b.width >= node.size.width * 0.9f && b.height >= node.size.height * 0.9f &&
+            b.left >= 0f && b.top >= 0f && b.right <= m.widthPixels && b.bottom <= m.heightPixels
+    }.getOrDefault(false)
+
     /**
      * The bench's engine stands in for a touch on « Partager » or « Écouter » of « Prêt à partager ? »,
      * then while that export runs or that song plays, and only then: the screens that read the
@@ -1129,7 +1138,7 @@ abstract class HumanTester(private val seat: String) {
             android.app.AlertDialog.Builder(a)
                 .setTitle("$title · $file")
                 .setItems(apps) { d, which ->
-                    note = "Ton morceau « $file » part avec ${apps[which]} (ici rien ne part vraiment : c'est la fin du partage)."
+                    note = shareNote(names.map { n -> n to (sharedSize(n) ?: -1L) }, apps[which])
                     d.dismiss()
                 }
                 .setOnCancelListener { note = "Menu de partage fermé : rien n'a été envoyé." }
@@ -1603,10 +1612,14 @@ abstract class HumanTester(private val seat: String) {
         shared += name
         val dir = seatDir ?: return
         File(dir, "journal.txt").appendText("#$turnNow PARTAGE $name\n")
-        val found = listOf(app.cacheDir, app.filesDir, app.getExternalFilesDir(null)).filterNotNull()
-            .firstNotNullOfOrNull { root -> root.walkTopDown().firstOrNull { it.isFile && it.name == name } }
-        found?.copyTo(File(dir, "etat/partage/$name"), overwrite = true)
+        sharedFile(name)?.copyTo(File(dir, "etat/partage/$name"), overwrite = true)
     }
+
+    /** The file Android's share menu was given, by its name (the app's cache, files or external files). */
+    private fun sharedFile(name: String): File? = listOf(app.cacheDir, app.filesDir, app.getExternalFilesDir(null)).filterNotNull()
+        .firstNotNullOfOrNull { root -> root.walkTopDown().firstOrNull { it.isFile && it.name == name } }
+
+    private fun sharedSize(name: String): Long? = sharedFile(name)?.length()
 
     /**
      * `fresh=reel`: the system's question when the app asks for a permission, as a phone shows it (in
@@ -1845,6 +1858,10 @@ abstract class HumanTester(private val seat: String) {
     companion object {
         /** A phone like the owner's (Honor), at 1.5 px a dp: images small enough to read quickly. */
         const val PHONE = "w392dp-h852dp-hdpi"
+
+        /** What the bench says once a file is sent from Android's share menu ([files]: name and bytes, -1 unknown; [app]: the app chosen). */
+        fun shareNote(files: List<Pair<String, Long>>, app: String): String =
+            "Ton morceau « ${files.joinToString(", ") { it.first }.ifEmpty { "?" }} » part avec $app (ici rien ne part vraiment : c'est la fin du partage)."
 
         /** « tape »: how far a touch may land from its place (ms), a hand keeping time (review of plan 4.1). */
         const val TAPE_JITTER_MS = 30L

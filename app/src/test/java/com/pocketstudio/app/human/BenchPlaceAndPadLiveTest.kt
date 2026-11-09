@@ -1,5 +1,9 @@
 package com.pocketstudio.app.human
 
+import android.os.SystemClock
+import androidx.test.core.app.ApplicationProvider
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
@@ -58,11 +62,101 @@ class BenchPlaceAndPadLiveTest : HumanTester("place-padlive") {
         assertTrue("« Annuler » takes it back", rhythm()!!.session.canUndo.value)
     }
 
+    /** Touches [tag] (brought into view first) and gives the bench's clock just before the touch (ms). */
+    private fun touchAt(tag: String): Long {
+        waitFor("« $tag »") { centerOf(tag) != null }
+        val at = reachTag(tag) ?: centerOf(tag)!!
+        val since = SystemClock.uptimeMillis()
+        act("touche ${at.first} ${at.second}")
+        return since
+    }
+
+    /**
+     * PLAN-RESTE 5.7 (control 8): Pad Live's whole ready-to-play set (LiveStarter.PADS: its loops rendered by the engine, the
+     * kit's hits, the party sounds) is on the pads after the opening touched at [since] (the bench's clock, the app's own
+     * time), in under 10 s of that clock, at every way in; the time taken is measured and said. With the bench's engine
+     * there from the start (audit method v2), the app makes the set itself, as a phone does: the engine must render it.
+     */
+    private fun padsReady(what: String, since: Long) {
+        val set = com.pocketstudio.model.LiveStarter.PADS.indices
+        fun filled() = rhythm()?.project?.value?.live?.let { live -> set.count { live.at(it) != null } } ?: 0
+        waitFor("Pad Live's pads ($what)") { centerOf("padlive") != null && centerOf("padlive_busy") == null && rhythm()?.liveStarting?.value == false && filled() > 0 }
+        val took = SystemClock.uptimeMillis() - since
+        println("PADLIVE $what : ${filled()} pads sur ${set.count()} prêts $took ms après le toucher (horloge du banc)")
+        assertEquals("$what: every pad of the ready-to-play set is filled (${filled()} of ${set.count()})", set.count(), filled())
+        assertTrue("$what: the pads took $took ms of the bench's clock (10 s at most)", took < 10_000)
+        alive("Pad Live ($what)")
+    }
+
+    /** The middle of the first text view showing one of [texts] in a window over the app (the bench's system dialogs), or null. */
+    private fun viewText(vararg texts: String): Pair<Float, Float>? = runCatching {
+        val screen = ApplicationProvider.getApplicationContext<android.app.Application>().resources.displayMetrics
+        BenchWindows.windows()
+            .filter { it.params.type != android.view.WindowManager.LayoutParams.TYPE_BASE_APPLICATION && it.view.visibility == android.view.View.VISIBLE }
+            .firstNotNullOfOrNull { w ->
+                val origin = w.drawn(screen)
+                var found: Pair<Float, Float>? = null
+                fun visit(v: android.view.View) {
+                    if (found != null || v.visibility != android.view.View.VISIBLE) return
+                    if (v is android.widget.TextView && v.text?.toString() in texts) {
+                        val loc = IntArray(2).also { v.getLocationInWindow(it) }
+                        found = (origin.left + loc[0] + v.width / 2f) to (origin.top + loc[1] + v.height / 2f)
+                    }
+                    if (v is android.view.ViewGroup) for (i in 0 until v.childCount) visit(v.getChildAt(i))
+                }
+                visit(w.view)
+                found
+            }
+    }.getOrNull()
+
+    /** `fresh=reel`: the system's permission question, if the app asked one, allowed as a person would. */
+    private fun allowIfAsked() {
+        viewText("Lorsque vous utilisez l'appli", "Autoriser", "While using the app", "Allow")?.let { act("touche ${it.first} ${it.second}") }
+    }
+
     @Test
     fun padLiveTouchedFromTheWelcomeOpensOnItsPads() {
         begin(SeatOptions(device = "tablet11Land"))
-        tap("launch_padlive")
-        waitFor("Pad Live's pads (seat A c, #1)") { centerOf("padlive") != null && rhythm()?.project?.value?.live?.at(4) != null }
-        alive("Pad Live")
+        val since = touchAt("launch_padlive")
+        padsReady("from « Que veux-tu faire ? » (seat A c, #1)", since)
+    }
+
+    /**
+     * Control 8, after a song: a song made (the wizard) and played, left for the home screen (Retour), then Pad Live from
+     * « Que veux-tu faire ? »: its own « Live » project opens on its pads, not the song's.
+     */
+    @Test
+    fun padLiveOpenedAfterASongHasItsPads() {
+        begin(SeatOptions(simple = false))
+        tap("launch_new")
+        tap("starter_wizard")
+        if (centerOf("mode_card_pro") != null) tap("mode_card_pro")
+        tap("wizard_family_Techno")
+        tap("wizard_style_techno")
+        tap("wizard_style_choose_techno")
+        tap("wizard_create_now")
+        waitFor("the song's spaces") { screenRoute().endsWith("tab_Structure") }
+        centerOf("guide_later")?.let { act("touche ${it.first} ${it.second}") }
+        val song = rhythm()!!.projectId
+        tap("top_play")
+        act("attends 1")
+        tap("top_play")
+        // Retour: the project, then the home screen (a panel open closes first).
+        repeat(3) { if (centerOf("launch_padlive") == null) act("retour") }
+        waitFor("« Que veux-tu faire ? » again") { centerOf("launch_padlive") != null }
+        val since = touchAt("launch_padlive")
+        padsReady("after a song", since)
+        assertTrue("Pad Live's own « Live » project", rhythm()!!.project.value.padLive.home)
+        assertNotEquals("not the song's project", song, rhythm()!!.projectId)
+    }
+
+    /** Control 8, `fresh=reel` (nothing set ahead, the welcome played): Pad Live's card on the welcome opens on its pads. */
+    @Test
+    fun padLiveOpenedOnAFreshPhoneHasItsPads() {
+        begin(SeatOptions(fresh = true))
+        waitFor("the welcome") { centerOf("welcome") != null }
+        val since = touchAt("launch_padlive")
+        allowIfAsked()
+        padsReady("fresh=reel, from the welcome", since)
     }
 }

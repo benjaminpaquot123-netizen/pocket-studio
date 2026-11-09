@@ -100,6 +100,55 @@ class BenchTour1Test : HumanTester("tour-1") {
     }
 
     /**
+     * PLAN-RESTE 5.6 (control 7): a microphone take started by a touch on [startTag] (the audio card's « Enregistrer »,
+     * the top ● in its microphone mode, or « Le micro » of the ●'s choice) and ended by one on [stopTag] lands on an audio
+     * track as a new clip: the bench's microphone was heard (its level shows) and its take kept, as on a phone.
+     */
+    private fun micTake(what: String, startTag: String, stopTag: String) {
+        val vm = rhythm()!!
+        val takes = benchEngine.micTakes
+        val clipsBefore = project()!!.audioTracks.mapNotNull { it.clip?.file }.toSet()
+        val said = tap(startTag)
+        waitFor("$what: the take recording", state = { "${vm.audioRecording.value}; said: $said" }) { (vm.audioRecording.value?.seconds ?: 0f) > 1f }
+        assertTrue("$what: the input level shows", (vm.audioRecording.value?.level ?: 0f) > 0.1f)
+        tap(stopTag)
+        waitFor("$what: the take on its track", state = { "${vm.audioRecording.value}, saving ${vm.takeSaving.value}" }) {
+            vm.audioRecording.value == null && !vm.takeSaving.value && project()!!.audioTracks.any { t -> t.clip?.file?.let { it !in clipsBefore } == true }
+        }
+        assertEquals("$what: one take recorded by the bench's microphone", takes + 1, benchEngine.micTakes)
+    }
+
+    /** Control 7, Pro: the microphone from the audio card's « Enregistrer », then from the top ● (the microphone's on that page). */
+    @Test
+    fun theMicrophoneRecordsFromTheCardAndTheTopDotInPro() {
+        emptyProjectInPro()
+        act("attends 1")
+        tap("tab_Sons")
+        tap("sons_Audio")
+        waitFor("the audio tracks' page") { centerOf("audio_tracks") != null }
+        if (project()!!.audioTracks.isEmpty()) tap("audio_add")
+        val id = project()!!.audioTracks.first().id
+        micTake("the card's « Enregistrer » (Pro)", "audio_record_$id", "audio_stop")
+        micTake("the top ● (Pro)", "top_record", "top_record")
+    }
+
+    /**
+     * Control 7, Mode simple: the top ● asks what to record, « Le micro » opens the microphone's page and starts the take
+     * (the ● stops it); then the card's « Nouvelle prise » on that page.
+     */
+    @Test
+    fun theMicrophoneRecordsFromTheTopDotAndTheCardInSimple() {
+        begin(SeatOptions(simple = true, amenee = AMENEE_SONG))
+        amenee(AMENEE_SONG, journal())
+        act("attends 1")
+        tap("top_record")
+        waitFor("« Le micro » among the ●'s choices") { centerOf("record_choice_mic") != null }
+        micTake("the top ● › « Le micro » (Simple)", "record_choice_mic", "top_record")
+        val id = project()!!.audioTracks.first { it.clip != null }.id
+        micTake("the card's « Nouvelle prise » (Simple)", "audio_record_$id", "audio_stop")
+    }
+
+    /**
      * The « rien ne change » stop: never on screens only looked at, never while a long work shows its progress, still
      * after 5 identical screens otherwise (« ecris » with no field: the same screen each time).
      */

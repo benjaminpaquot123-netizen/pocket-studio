@@ -1,8 +1,13 @@
 package com.pocketstudio.app.human
 
 import com.pocketstudio.app.human.HumanTester.Companion.ENGINE_ALWAYS
+import com.pocketstudio.app.rhythm.SampleTask
 import com.pocketstudio.app.settings.SettingsStore
+import com.pocketstudio.model.Note
+import com.pocketstudio.model.NoteClip
+import com.pocketstudio.model.TrackKind
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
@@ -239,6 +244,81 @@ class BenchAmeneesTest : HumanTester("amenees") {
         act("attends 2")
         tap("padlive_played")
         waitFor("the played take done") { vm.padLive.played.ui.value is com.pocketstudio.app.padlive.PlayedTakeUi.Done }
+    }
+
+    /**
+     * PLAN-RESTE 5.8 (control 9), the Live view's pads (Live › Pads call the view model's toggleLive straight, round 3 zone 1
+     * n° 5): from Pad Live, « Briques » opens the Live view, its Pads tab the pads; a loop pad touched is lit (2) and the sound
+     * line says it plays; touched again it goes out and the sound line no longer says so, as for Pad Live's own pads
+     * ([padLiveLightsStopsAndRecordsAsOnAPhone]).
+     */
+    @Test
+    fun livePadsLightGoOutAndAreHeardAsPadLivesDo() {
+        padsAsOnASeat = true
+        bring(AMENEE_PADLIVE, SeatOptions())
+        val vm = rhythm()!!
+        fun waitFor(what: String, done: () -> Boolean) {
+            val until = System.currentTimeMillis() + 60_000
+            while (!done()) {
+                assertTrue("$what never came\n" + screenLines().joinToString("\n"), System.currentTimeMillis() < until)
+                act("attends 0.5")
+            }
+        }
+        fun tap(tag: String): String {
+            waitFor("« $tag »") { centerOf(tag) != null }
+            val at = reachTag(tag) ?: centerOf(tag)!!
+            return act("touche ${at.first} ${at.second}")
+        }
+        // « Plus » unfolds the row holding « Briques » (the Live view).
+        tap("padlive_more")
+        tap("padlive_live")
+        waitFor("the Live view") { centerOf("live_screen") != null }
+        tap("live_tab_Pads")
+        waitFor("Live › Pads") { centerOf("live_pads_full") != null || centerOf("live_pads") != null }
+        val loops = (0 until 16).filter { project()!!.live.at(it)?.oneShot == false }
+        val (pad, tag) = loops.firstNotNullOfOrNull { p -> listOf("live_full_pad_$p", "live_pad_$p").firstOrNull { centerOf(it) != null }?.let { p to it } }
+            ?: error("no loop pad on Live › Pads (loops $loops)\n" + screenLines().joinToString("\n"))
+        val heard = tap(tag)
+        assertTrue("the sound line says the pad plays: $heard", "le pad live ${pad + 1} joue en boucle" in heard)
+        assertEquals("the pad that plays is lit (Live › Pads)", 2, vm.liveStates.value[pad])
+        val stopped = tap(tag)
+        assertEquals("touched again, the pad goes out (Live › Pads)", 0, vm.liveStates.value[pad])
+        assertTrue("the sound line no longer says it plays: $stopped", "pad live" !in stopped && "pads live" !in stopped)
+    }
+
+    /**
+     * PLAN-RESTE 5.13 (P1; the mirror of [aZipImportedOutsideRemixAddsAProject]): « Importer un fichier MIDI » of the
+     * keyboard's page: the picker answers a .mid (made here from the project open now: a bass line of three notes) and the
+     * import puts its notes in (the first channel onto the synth).
+     */
+    @Test
+    fun aMidImportedPutsItsNotesIn() {
+        bring(AMENEE_SONG, SeatOptions(simple = false))
+        val vm = rhythm()!!
+        vm.addTrackOf(TrackKind.Bass)
+        listOf(48, 50, 53).forEachIndexed { i, pitch -> vm.addNote(Note(i * 4 * NoteClip.TICKS_PER_STEP, 2 * NoteClip.TICKS_PER_STEP, pitch)) }
+        act("attends 1")
+        fun notes() = project()!!.let { p -> p.synthNotes.notes.size + p.tracks.sumOf { it.notes.notes.size } }
+        val before = notes()
+        assertEquals("the bass line to export", 3, before)
+        assertTrue("the synth has no notes yet", project()!!.synthNotes.notes.isEmpty())
+        fun tap(tag: String): String {
+            val at = reachTag(tag) ?: error("nothing to touch: $tag\n" + screenLines().joinToString("\n"))
+            return act("touche ${at.first} ${at.second}")
+        }
+        tap("tab_Sons")
+        // The keyboard's page: a track's chip (the first track's, else the bass's).
+        tap(listOf("track_0", "track_1").firstOrNull { centerOf(it) != null } ?: error("no track chip\n" + screenLines().joinToString("\n")))
+        // The page's « Notes » view holds « Importer un fichier MIDI » (the keyboard view does not).
+        if (centerOf("mode_notes") != null) tap("mode_notes")
+        val said = tap("import_midi")
+        act("attends 3")
+        assertTrue("the picker gave a .mid: $said", "Le-morceau-de-Sam.mid" in said)
+        val until = System.currentTimeMillis() + 30_000
+        while (notes() == before && vm.transcription.value !is SampleTask.Failed && System.currentTimeMillis() < until) act("attends 0.5")
+        assertFalse("the import failed: ${vm.transcription.value}", vm.transcription.value is SampleTask.Failed)
+        assertTrue("the .mid's notes went in: $before → ${notes()}", notes() > before)
+        assertEquals("its channel landed on the synth", 3, project()!!.synthNotes.notes.size)
     }
 
     /** Audit ultra tour 0 (seat c): « Pack… › Techno » on page B left it « vide » (the phone's engine makes the pack). */

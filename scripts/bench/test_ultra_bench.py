@@ -206,6 +206,8 @@ def main():
         engine_proof(d)
         expected_classes(d)
         skipped_class(d)
+        portal(d)
+        mark_fixed(d)
         seat_exit(d)
         native_missing(d)
         corrections_by_target(d)
@@ -923,6 +925,166 @@ def skipped_class(d):
     write(resume, "2 verts, 0 rouges, 0 en quarantaine, 0 sautés\nvert : AppProofTest#provesIt\nvert : BenchFooTest#guardsIt\n")
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
     check("pas verte" not in r.stdout, "a guard named green is green:\n" + r.stdout)
+
+
+PORTAL_GRADLE = """#!/usr/bin/env bash
+# The portal's Gradle on the toy: writes the pass's fixture results where the portal asked for them.
+set -euo pipefail
+dir=""
+for a in "$@"; do case "$a" in -Ptest.results.dir=*) dir="${a#-Ptest.results.dir=}" ;; esac; done
+name="$(basename "$dir")"
+echo "$name $*" >> "$PS_TOY_CALLS"
+if [ -d "$PS_TOY_FIXTURES/$name" ]; then cp "$PS_TOY_FIXTURES/$name"/*.xml "$dir"/; fi
+[ "${PS_TOY_GRADLE_FAILS:-}" != "$name" ]
+"""
+
+
+def git_toy(root, *args):
+    r = subprocess.run(["git", "-C", root, "-c", "user.name=t", "-c", "user.email=t@example.org", "-c", "commit.gpgsign=false", *args],
+                       capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
+    return r.stdout
+
+
+def portal(d):
+    """Review of lot 1 « Le juge » (finding « moyen » 1): selftest.sh's wiring, by its behaviour. The real portal runs
+    on a toy repository (its own copies of the verdict, the list of expected classes, the stamp and the judge; a stand-in
+    for Gradle that gives each pass its fixture JUnit results): the classes it expects are the toy's (read from the
+    toy's sources, not a list written in the portal), a red verdict forbids the stamp, and a class of the list that
+    did not run is red."""
+    root = os.path.join(d, "portail")
+    bench = os.path.join(root, "scripts", "bench")
+    for name in ("selftest.sh", "tampon.sh", "selftest-attendus.py", "selftest-verdict.py", "verifie-chantier.py"):
+        with open(os.path.join(HERE, name), encoding="utf-8") as f:
+            write(os.path.join(bench, name), f.read())
+    write(os.path.join(bench, "test_ultra_bench.py"), "import os, sys\nsys.exit(1 if os.environ.get('PS_TOY_SCRIPTS_FAIL') else 0)\n")
+    write(os.path.join(bench, "gradle-file.sh"), PORTAL_GRADLE)
+    write(os.path.join(bench, "selftest-quarantaine.txt"), "# none\n")
+    write(os.path.join(bench, "selftest-sauts-connus.txt"), "BenchFooTest#drive | seat entry point | 2026-11-09 | test\n")
+    for name in ("selftest.sh", "tampon.sh", "gradle-file.sh"):
+        os.chmod(os.path.join(bench, name), 0o755)
+    java = os.path.join(root, "app", "src", "test", "java", "com", "x", "app")
+    write(os.path.join(java, "human", "HumanTester.kt"), "package com.x.app.human\nabstract class HumanTester(val name: String) {\n  fun drive() {}\n}\n")
+    write(os.path.join(java, "human", "BenchFooTest.kt"), 'package com.x.app.human\nclass BenchFooTest : HumanTester("foo") {\n  fun guardsIt() {}\n}\n')
+    write(os.path.join(java, "pads", "ChallengeTest.kt"), 'package com.x.app.pads\nclass ChallengeTest {\n'
+          '    @KnownDefect("K1", "m")\n    @Test\n    fun provesIt() {}\n}\n')
+    write(os.path.join(root, "app", "src", "main", "assets", "recette.json"), json.dumps({"id": "r", "milestone": "m", "items": []}))
+    ultra = os.path.join(root, "docs", "audits", "ultra")
+    write(os.path.join(ultra, "base.tsv"), "cle\tetat\tvu\tnote\tcorrige_au\n")
+    write(os.path.join(ultra, "verdicts.tsv"), JUDGE_HEAD + "t\tA\tk1\tm\tappli\touvert\tChallengeTest#provesIt\t-\t-\t-\tn\tK1\n")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "app", "docs", "scripts")
+    git_toy(root, "commit", "-q", "-m", "toy")
+    # The machine's checks answered by stand-ins (disk, Gradle daemons, orphan workers): the test is about the wiring.
+    tools = os.path.join(d, "portail-outils")
+    write(os.path.join(tools, "df"), "#!/usr/bin/env bash\necho Avail; echo 50G\n")
+    write(os.path.join(tools, "pgrep"), "#!/usr/bin/env bash\necho 0\n")
+    write(os.path.join(tools, "ps"), "#!/usr/bin/env bash\ntrue\n")
+    for name in ("df", "pgrep", "ps"):
+        os.chmod(os.path.join(tools, name), 0o755)
+    calls = os.path.join(d, "portail-appels.txt")
+    foo = '<testcase classname="com.x.app.human.BenchFooTest" name="guardsIt"/>'
+    defect = '<testcase classname="com.x.app.pads.ChallengeTest" name="provesIt"/>'
+    count = [0]
+
+    def selftest(banc, defauts, **env):
+        """(exit code, stderr + stdout, the summary, the lot) of the portal on a new lot with these results per pass."""
+        count[0] += 1
+        fixtures = os.path.join(d, f"portail-resultats-{count[0]}")
+        for name, cases in (("banc", banc), ("defauts", defauts)):
+            if cases is not None:
+                write(os.path.join(fixtures, name, "TEST-x.xml"), "<testsuite>" + cases + "</testsuite>")
+        os.makedirs(fixtures, exist_ok=True)
+        lot = os.path.join(d, f"portail-lot-{count[0]}")
+        os.makedirs(lot)
+        write(os.path.join(lot, "selftest.ok"), "an older stamp\n")
+        write(calls, "")
+        e = dict(os.environ, PATH=tools + os.pathsep + os.environ["PATH"], PS_TOY_FIXTURES=fixtures, PS_TOY_CALLS=calls, **env)
+        r = subprocess.run(["bash", os.path.join(bench, "selftest.sh"), lot], capture_output=True, text=True, env=e)
+        summary = os.path.join(lot, "selftest-resume.txt")
+        text = open(summary, encoding="utf-8").read() if os.path.isfile(summary) else ""
+        return r.returncode, r.stderr + r.stdout, text, lot
+
+    def stamped(lot):
+        return os.path.isfile(os.path.join(lot, "selftest.ok"))
+
+    # Everything green: stamped, and the stamp fits; Gradle was asked for the toy's own defect class.
+    code, out, text, lot = selftest(foo, defect)
+    check(code == 0 and text.startswith("2 verts, 0 rouges, 0 en quarantaine, 0 sautés") and "vert : ChallengeTest#provesIt" in text,
+          "the toy's two classes green: the portal is green\n" + out + text)
+    check(stamped(lot) and subprocess.run(["bash", os.path.join(bench, "tampon.sh"), "verifie", lot]).returncode == 0,
+          "a green portal writes a stamp that fits its lot")
+    with open(calls, encoding="utf-8") as f:
+        asked = f.read()
+    check("defauts " in asked and "--tests com.x.app.pads.ChallengeTest" in asked, "the « defauts » pass runs the classes read from the sources:\n" + asked)
+    with open(os.path.join(lot, "selftest-attendus.txt"), encoding="utf-8") as f:
+        check(f.read().split() == ["BenchFooTest", "ChallengeTest"], "the expected classes are the toy's, read from its sources")
+    with open(os.path.join(lot, "selftest-chantier.txt"), encoding="utf-8") as f:
+        check("résumé absent" not in f.read(), "the judge is given this run's summary")
+    # A red test (a @KnownDefect made green: its rule fails it): no stamp, the older one gone, exit 1.
+    fixed = '<testcase classname="com.x.app.pads.ChallengeTest" name="provesIt"><failure message="K1 no longer fails: fixed?"/></testcase>'
+    code, out, text, lot = selftest(foo, fixed)
+    check(code != 0 and not stamped(lot) and "SELFTEST ROUGE" in out and "rouge : ChallengeTest#provesIt : K1 no longer fails" in text,
+          "a red verdict forbids the lot:\n" + out + text)
+    # An expected class that did not run at all (its pass gave no result): red.
+    code, out, text, lot = selftest(foo, None)
+    check(code != 0 and not stamped(lot) and "rouge : ChallengeTest#* : aucun résultat" in text, "an expected class without a result is red:\n" + out + text)
+    # A skip outside the list of known skips is red; a known one is listed and passes.
+    skip = '<skipped message="only in seat mode"/>'
+    code, out, text, lot = selftest(foo + f'<testcase classname="com.x.app.human.BenchFooTest" name="other">{skip}</testcase>', defect)
+    check(code != 0 and not stamped(lot) and "rouge : BenchFooTest#other : saut hors de la liste" in text, "an unknown skip is red:\n" + out + text)
+    code, out, text, lot = selftest(foo + f'<testcase classname="com.x.app.human.BenchFooTest" name="drive">{skip}</testcase>', defect)
+    check(code == 0 and stamped(lot) and "sauté : BenchFooTest#drive : only in seat mode" in text, "a known skip passes, listed:\n" + out + text)
+    # A Gradle run that failed with no red test to show for it, and red bench scripts: red.
+    code, out, text, lot = selftest(foo, defect, PS_TOY_GRADLE_FAILS="banc")
+    check(code != 0 and not stamped(lot), "a failed Gradle run with no red test is red:\n" + out + text)
+    code, out, text, lot = selftest(foo, defect, PS_TOY_SCRIPTS_FAIL="1")
+    check(code != 0 and not stamped(lot) and "scripts du banc" in out, "red bench scripts forbid the lot:\n" + out)
+
+
+def mark_fixed(d):
+    """Review of lot 1 « Le juge » (finding « moyen » 2): marque-corrige.sh runs the judge WITH the summary it was
+    given (4th argument or PS_SELFTEST_RESUME), on a toy repository; without one the judge says « résumé absent »."""
+    root = judge_root(d, "marque")
+    bench = os.path.join(root, "scripts", "bench")
+    for name in ("marque-corrige.sh", "verifie-chantier.py"):
+        with open(os.path.join(HERE, name), encoding="utf-8") as f:
+            write(os.path.join(bench, name), f.read())
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "app", "docs", "scripts")
+    git_toy(root, "commit", "-q", "-m", "toy")
+    sha = git_toy(root, "rev-parse", "--short", "HEAD").strip()
+    script = os.path.join(bench, "marque-corrige.sh")
+    ultra = os.path.join(root, "docs", "audits", "ultra")
+    env = {k: v for k, v in os.environ.items() if k != "PS_SELFTEST_RESUME"}
+
+    def mark(*more, **extra):
+        write(os.path.join(ultra, "verdicts.tsv"), JUDGE_GOOD)
+        write(os.path.join(ultra, "base.tsv"), "cle\tetat\tvu\tnote\tcorrige_au\n")
+        r = subprocess.run(["bash", script, "B", sha, "tour-9", *more], capture_output=True, text=True, env=dict(env, **extra))
+        check(r.returncode == 0, "marque-corrige.sh ran:\n" + r.stdout + r.stderr)
+        return r.stdout
+
+    # The guard of line B is green only in a summary that names it: the judge's answer shows which summary it read.
+    green = os.path.join(d, "marque-vert.txt")
+    write(green, JUDGE_RESUME)
+    other = os.path.join(d, "marque-autre.txt")
+    write(other, "1 verts, 0 rouges, 0 en quarantaine, 0 sautés\nvert : AppProofTest#provesIt\n")
+    out = mark(green)
+    check(f"B: corrigé ({sha}, tour-9) ; clé k2" in out, "the line is marked:\n" + out)
+    check("résumé absent" not in out and "pas verte" not in out, "the judge read the summary given as 4th argument:\n" + out)
+    with open(os.path.join(ultra, "verdicts.tsv"), encoding="utf-8") as f:
+        check(f"\tbanc\tcorrigé\tOther#elsewhere\tBenchFooTest#guardsIt\trecette tel-02\t{sha}\t" in f.read(), "verdicts.tsv: corrigé, with its commit")
+    with open(os.path.join(ultra, "base.tsv"), encoding="utf-8") as f:
+        check(f"k2\tcorrigé\tt\tB ({sha})\ttour-9\n" in f.read(), "base.tsv: the key, corrigé, with its round")
+    out = mark(other)
+    check("B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in out and "résumé absent" not in out,
+          "the judge read THAT summary (the guard is not green in it):\n" + out)
+    out = mark(PS_SELFTEST_RESUME=other)
+    check("B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in out and "résumé absent" not in out,
+          "the summary named by PS_SELFTEST_RESUME is read too:\n" + out)
+    out = mark()
+    check("résumé absent" in out, "without a summary the judge says so:\n" + out)
 
 
 JUDGE_HEAD = "tour\titem\tcle\tgravite\tverdict\tetat\tpreuve_appli\tgarde_banc\ttelephone\tcommit\tnote\tgarde_id\n"

@@ -175,7 +175,7 @@ def main():
         check(any("[nouveau] bloquant bloque ×1 (b#2) tab_Sons · « klaxon » · rien" in l for l in lines), "b's blocking key first:\n" + text)
         check(any("[nouveau] grave ×1 (a#4) padlive · « klaxon » · rien" in l for l in lines), "a's key:\n" + text)
         check(any("[voulu]" in l and "« rec »" in l for l in lines), "a known key keeps its state:\n" + text)
-        check("3 siège(s), 3 grappe(s), 2 nouvelle(s)" in text, "the summary:\n" + text)
+        check("3 siège(s), 3 grappe(s) : 2 nouvelle(s)" in text and "1 autre(s) état(s) de la base (voulu : 1)" in text, "the summary:\n" + text)
         with open(base, encoding="utf-8") as f:
             added = f.read()
         check("tab_Sons|klaxon|rien\tnouveau" in added and added.count("\n") == 4, "the new keys added to the base:\n" + added)
@@ -209,7 +209,59 @@ def main():
         seats_from_ids(d)
     with tempfile.TemporaryDirectory() as d:
         comebacks(d)
+    with tempfile.TemporaryDirectory() as d:
+        header_counts(d)
     print("ultra bench scripts: OK")
+
+
+REPORT_STATES = """siege: a | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
+defauts:
+  - geste: 2 | ecran.vu: 3 | cible: Klaxon | geste.type: touche
+    attendu: un son | obtenu: rien
+    symptome: rien
+    gravite: contourne-en-5-gestes | revu: oui: ecran 6 | banc?: non | promesse: -
+  - geste: 4 | ecran.vu: 5 | cible: ? | geste.type: touche
+    attendu: l'aide du Pad Live | obtenu: rien
+    symptome: rien
+    gravite: finition | revu: non | banc?: non | promesse: -
+  - geste: 4 | ecran.vu: 5 | cible: ? | geste.type: touche
+    attendu: « Aide » | obtenu: « ? »
+    symptome: texte-faux
+    gravite: finition | revu: non | banc?: non | promesse: -
+  - geste: 7 | ecran.vu: 8 | cible: REC | geste.type: touche
+    attendu: enregistrer | obtenu: rien
+    symptome: incompris
+    gravite: finition | revu: non | banc?: non | promesse: -
+  - geste: 7 | ecran.vu: 8 | cible: REC | geste.type: touche
+    attendu: tout de suite | obtenu: 40 s
+    symptome: lent
+    gravite: finition | revu: non | banc?: temps | promesse: -
+  - geste: 2 | ecran.vu: 3 | cible: Klaxon | geste.type: touche
+    attendu: propre | obtenu: le son est mauvais
+    symptome: rien
+    gravite: finition | revu: non | banc?: non | promesse: -
+"""
+
+
+def header_counts(d):
+    """PLAN-RESTE 6.4: the fusion's header counts apart, as a partition of the clusters, the new ones, those seen
+    before (by round), the same button (by round), the comebacks, the bench's doubts and the base's other states, and
+    the cards set aside (sound judgments); « nouvelle » no longer includes a « même bouton » cluster."""
+    write(os.path.join(d, "lotA", "a", "journal.txt"), JOURNAL_A)
+    write(os.path.join(d, "lotA", "a", "rapport.md"), REPORT_STATES)
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\n"
+                "padlive|padlive_pad_4|rien\tnouveau\ttour-1\t\n"
+                "settings|help_padlive|perdu\tnouveau\ttour-2\t\n"
+                "padlive|help_padlive|texte-faux\tvoulu\ttour-3\t\n")  # the button's earliest round stays tour-2
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
+    head = text.splitlines()[1]
+    check("1 siège(s), 5 grappe(s) : 1 nouvelle(s), 1 déjà vue(s) (tour-1 : 1), 1 même bouton (tour-2 : 1)" in head,
+          "new, seen before and same button counted apart, by round:\n" + head)
+    check("0 qui revien(nen)t (confirmé par un lecteur), 0 candidat(s) « revient ? »" in head, "comebacks and candidates:\n" + head)
+    check("1 [banc?]" in head and "1 autre(s) état(s) de la base (voulu : 1)" in head, "the bench's doubts and the base's states:\n" + head)
+    check("1 fiche(s) rejetée(s) (jugement sonore)" in head and "Écartés : A/a#2 (jugement sonore)" in head, "the rejected cards:\n" + head)
+    check("[même bouton (tour-2)]" in text and "[déjà vu (tour-1)]" in text and "[banc?]" in text, "the states themselves:\n" + text)
 
 
 def comebacks(d):

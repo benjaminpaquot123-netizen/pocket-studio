@@ -85,7 +85,6 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - Ajouter d'autres langues pour toucher un large public (proposition : espagnol, portugais du Brésil, allemand, italien, polonais, turc, indonésien, hindi, japonais, coréen, chinois simplifié, arabe).
 - Prix : 2,99 € (achat unique). Nom : BenStudio.
 - Dépôt GitHub : passera en privé avant la sortie Play (réponse « A »), après l'installation de la première version Play sur son téléphone.
-- Statut (Belgique, indépendant complémentaire ou non) et déploiement réel sur le Play Store : « on avisera à ce moment-là ». Tout préparer quand même (AAB, fiche, textes), sans publier.
 - Animation d'ouverture validée par Benjamin (« Il est parfait !! ») : double battement, nom écrit en 1,2 s, tenu 1 s, environ 4 s en tout.
 - Avant le Play Store : intégration « hyper pratique » d'un mini clavier type Arturia MiniLab 3 (jouer, pads live, potards de la 303 qui bougent, etc.).
 - Son de l'audit final (extraits avant/après) validé : « Nickel le son ».

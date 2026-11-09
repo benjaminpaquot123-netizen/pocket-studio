@@ -7,7 +7,14 @@
 
 ## Prochaine étape exacte
 
-**ORDRE DE BENJAMIN (2026-11-09 soir) : une fois les tâches en cours terminées (ateliers banc45, fusion64, corr61, seance5a ; audits « banc crédible » et « prise en main et design » ; CI), fusionner ce qui est relu, pousser, mettre ce fichier à jour, puis S'ARRÊTER et attendre son ordre pour redémarrer. Un message à chaque étape franchie. Les 6 tâches planifiées du 10 nov (départ du banc fiable) ont été supprimées : le chantier a démarré le 8.**
+**ORDRE DE BENJAMIN (2026-11-09, 22 h 40) : « tu peux commencer ». Le plan d'action `docs/audits/ultra/PLAN-ACTION-AUDITS.md` est lancé, ordre A (étapes 0, 1, 2, 3, 4, 5), réponses 2A et 3A. Règles : un seul agent à la fois pour réparer le banc ou corriger l'appli (auteur, puis relecteur neuf), trois testeurs au plus pendant un audit, nombre annoncé avant chaque lancement ; pas d'APK, pas de test sur appareil, des nouvelles après chaque étape. Rappel planifié à 2 h 05 (10 nov, heure belge) pour reprendre ici si le quota a coupé. Suivi : cocher ci-dessous au fur et à mesure.**
+- [ ] Étape 0 : relecture du delta de `banc45` (atelier /home/user/eq-tour-5-banc45, tête b5c3156), fusion d'fx-int dans l'atelier (conflit `docs/DECISIONS.md` : garder les lignes des deux côtés), « Relu » mis sur ce commit, `scripts/bench/fusion-equipes.sh tour-5 banc45`, 5 gardes dans `verdicts.tsv`, `verifie-chantier.py` à 0 écart, CI relancée à la main (vérifier Pillow), atelier retiré.
+- [ ] Étape 1, lot 1 « Le juge » (A.10 bloquant, A.3, A.4, A.12 ; détail dans `AUDIT-BANC-CREDIBLE.md`).
+- [ ] Étape 1, lot 2 « La mémoire » (A.2, A.5, A.6, A.14, A.11).
+- [ ] Étape 1, lot 3 « Le faux moteur » (A.7, A.8, A.9, A.15, A.13).
+- [ ] Fin de l'étape 1 : trois lignes à Benjamin, puis attendre son « go » avant l'étape 2 (elle touche l'appli).
+
+(Ancien) **ORDRE DE BENJAMIN (2026-11-09 soir) : une fois les tâches en cours terminées (ateliers banc45, fusion64, corr61, seance5a ; audits « banc crédible » et « prise en main et design » ; CI), fusionner ce qui est relu, pousser, mettre ce fichier à jour, puis S'ARRÊTER et attendre son ordre pour redémarrer. Un message à chaque étape franchie. Les 6 tâches planifiées du 10 nov (départ du banc fiable) ont été supprimées : le chantier a démarré le 8.**
 
 **2026-11-08 soir : recette de Benjamin faite (16 essais sur 18, tablette + téléphone, APK 340-341) : 8 défauts de l'appli confirmés, 3 faux défauts du banc (tel-09, tel-13, tel-16), tel-15 et tel-19 tranchés par preuve d'appli (atelier `recette2`, en relecture). Verdicts saisis (`verdicts.tsv`, `hors-banc.tsv`), notes dans `retours-benjamin.md`. Plan complété : `PLAN-RESTE.md` §1 bis (R.1 à R.5). Séance 4.0 commencée sur fx-int : `verifie-chantier.py` (12 écarts au départ), `marque-corrige.sh`, garde « relu : sha » dans `fusion-equipes.sh`. En cours : atelier `banc-r1` (les 3 faux défauts). Prochaine étape exacte : fusionner `recette2` puis `banc-r1` (relectures neuves), puis R.3, R.4, puis 4.1 à 4.7. Benjamin a confié la suite en autonomie (« fais au mieux pour que le banc soit au top pour commencer les audits »).**
 

@@ -695,12 +695,13 @@ def judge_criteria(d):
         ("t", "C", "k3", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "read in the code", "-"),
         ("t", "D", "k4", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "RECETTE tel-01 ❌ téléphone 2026-11-08 : nothing plays", "-"),
         ("t", "E", "k5", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "RECETTE tel-01 ✅ téléphone 2026-11-08 : it plays", "-"),
-        ("t", "F", "k6", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "RECETTE tel-01 ❌ téléphone : no date", "-")))
+        ("t", "F", "k6", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "RECETTE tel-01 ❌ téléphone : no date", "-"),
+        ("t", "H", "k8", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "❌ téléphone 2026-11-08 : no trial number in this segment", "-")))
     resume = os.path.join(root, "selftest-resume.txt")
     code, out = judge(root, "--sans-git", "--resume", resume)
-    for item in ("C", "E", "F"):
+    for item in ("C", "E", "F", "H"):
         check(f"{item} : verdict « appli » sans preuve (ni test sans banc existant, ni essai ❌ daté)" in out, f"appli line {item} has no proof:\n" + out)
-    check("D : verdict « appli »" not in out and "chantier : 3 écarts" in out and code == 1, "a dated ❌ trial is a proof:\n" + out)
+    check("D : verdict « appli »" not in out and "chantier : 4 écarts" in out and code == 1, "a dated ❌ trial is a proof:\n" + out)
 
     # 2. « banc » needs a proof without the bench too (a Bench* guard alone is the bench judging itself).
     root = judge_root(d, "juge-banc", lines(
@@ -791,12 +792,21 @@ def owner_trials(d):
     root = judge_root(d, "juge-essais", JUDGE_GOOD
                       + "t\tC\tk3\tm\tnon-tranché\touvert\t-\t-\trecette tel-01\t-\tRECETTE tel-01 ✅ téléphone 2026-11-08 : it plays\t-\n"
                       + "t\tD\tk4\tm\tnon-tranché\touvert\t-\t-\trecette tel-02\t-\tRECETTE tel-02 ❌ tablette 2026-11-08 (video)\t-\n"
-                      + "t\tE\tk5\tm\tnon-tranché\touvert\t-\t-\trecette tel-02\t-\tRECETTE tel-02 ✅ tablette 2026-11-08 : the mark is wrong\t-\n")
+                      + "t\tE\tk5\tm\tnon-tranché\touvert\t-\t-\trecette tel-02\t-\tRECETTE tel-02 ✅ tablette 2026-11-08 : the mark is wrong\t-\n"
+                      + "t\tF\tk6\tm\tnon-tranché\touvert\t-\t-\trecette tel-01\t-\tRECETTE tel-01 ✅ tablette 2026-11-08 : the device is wrong\t-\n"
+                      + "t\tG\tk7\tm\tnon-tranché\touvert\t-\t-\trecette tel-01\t-\tRECETTE tel-01 ✅ téléphone : no date\t-\n"
+                      + "t\tH\tk8\tm\tnon-tranché\touvert\t-\t-\trecette tel-01\t-\tRECETTE tel-01 ✅ téléphone ; seen 2026-11-08, in another segment\t-\n")
     notes = os.path.join(root, "docs", "audits", "ultra", "retours-benjamin.md")
     write(notes, "# Retours\n\n- 2026-11-06, APK 1, tel-01 ✅ a remark that is no trial of the checklist.\n"
                  "- 2026-11-08, APK 2, **téléphone (Honor), recette 2/3** (captures) :\n"
                  "  - tel-01 ✅ it plays.\n  - tel-07 ❌ nothing.\n  - tel-09 not done.\n"
-                 "- 2026-11-08, APK 2, tablette, **recette tel-02 = ❌ « frozen »** (video) : details.\n")
+                 "- 2026-11-08, APK 2, tablette, **recette tel-02 = ❌ « frozen »** (video) : details.\n"
+                 "- 2026-11-08, APK 2, **recette 3/3** on no device said :\n  - tel-03 ❌ nothing.\n"
+                 "- 2026-11-08, APK 2, **recette tel-04 = ❌** on no device said.\n"
+                 "- 2026-11-08, APK 2, **tablette, recette 1/3** :\n  - tel-09 not done.\n"
+                 "A remark between two lists.\n  - tel-05 ❌ under no dated bullet.\n"
+                 "- 2026-11-08, APK 2, **tablette, recette 1/3** :\n"
+                 "- 2026-11-09, APK 3, tablette, a remark that is no round of the checklist :\n  - tel-06 ❌ no trial.\n")
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
                        capture_output=True, text=True)
     out = r.stdout + r.stderr
@@ -805,8 +815,12 @@ def owner_trials(d):
     check(f"B : {missing} (attendu « RECETTE tel-02 ❌ tablette 2026-11-08 »)" in out, "a line citing tel-02 without its trial:\n" + out)
     check(f"E : {missing} (attendu « RECETTE tel-02 ❌ tablette 2026-11-08 »)" in out, "a trial written with the wrong mark:\n" + out)
     check(f"tel-07 ❌ téléphone 2026-11-08 : {missing} (aucune ligne ne cite tel-07)" in out, "a trial no line cites:\n" + out)
+    check(f"F : {missing} (attendu « RECETTE tel-01 ✅ téléphone 2026-11-08 »)" in out, "a trial written with the wrong device:\n" + out)
+    check(f"G : {missing} (attendu « RECETTE tel-01 ✅ téléphone 2026-11-08 »)" in out, "a trial written without its date:\n" + out)
+    check(f"H : {missing} (attendu « RECETTE tel-01 ✅ téléphone 2026-11-08 »)" in out, "a trial whose date is in another segment:\n" + out)
     check(f"C : {missing}" not in out and f"D : {missing}" not in out and "tel-09" not in out and "2026-11-06" not in out
-          and "chantier : 4 écarts" in out and r.returncode == 1, "the lines carrying their trial, and what is no trial, are fine:\n" + out)
+          and not any(t in out for t in ("tel-03", "tel-04", "tel-05", "tel-06"))
+          and "chantier : 7 écarts" in out and r.returncode == 1, "the lines carrying their trial, and what is no trial, are fine:\n" + out)
     os.remove(notes)
     out = run(script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt"))
     check("chantier : 0 écarts" in out, "no notes of the owner: nothing to compare\n" + out)
@@ -821,11 +835,19 @@ def pad_timing_verdicts(d):
                       + "t\tD\tpadlive|padlive_stop_all|rien\tm\tappli\tvoulu\t-\t-\t-\t-\tRECETTE tel-01 ✅ téléphone 2026-11-08 : it stops\t-\n"
                       + "t\tE\tpadlive_pads|padlive_pad_N|lent\tm\tappli\tvoulu\tOther#elsewhere\t-\t-\t-\tn\t-\n"
                       + "t\tF\tpadlive|padlive_fx|rien\tm\tnon-tranché\touvert\t-\t-\t-\t-\tn\t-\n"
-                      + "t\tG\tlaunch|launch_padlive|rien\tm\tappli\tvoulu\t-\t-\t-\t-\tRECETTE tel-01 ✅ téléphone : no date\t-\n")
+                      + "t\tG\tlaunch|launch_padlive|rien\tm\tappli\tvoulu\t-\t-\t-\t-\tRECETTE tel-01 ✅ téléphone : no date\t-\n"
+                      + "t\tH\trhythm|pad_3|rien\tm\tappli\tvoulu\t-\t-\t-\t-\tread in the code\t-\n"
+                      + "t\tI\tnotes|notepad_x|rien\tm\tappli\tvoulu\t-\t-\t-\t-\tread in the code\t-\n"
+                      + "t\tJ\tpadlive|padlive_fx|rien\tm\tbanc\tvoulu\t-\t-\t-\t-\tread in the code\t-\n"
+                      + "t\tK\tpadlive|padlive_fx|lent\tm\tappli\tvoulu\t-\t-\t-\t-\ttel-01 téléphone 2026-11-08 : no mark\t-\n"
+                      + "t\tL\tpadlive|padlive_fx|perdu\tm\tappli\tvoulu\t-\t-\trecette tel-01\t-\t✅ téléphone 2026-11-08 : no trial number in this segment\t-\n")
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
                        capture_output=True, text=True)
     out = r.stdout + r.stderr
     gap = "verdict pad-timing sans preuve hors banc"
+    check(f"H : {gap}" in out and f"I : {gap}" not in out, "a « pad_ » key is a pad, « notepad_ » is not:\n" + out)
+    check(f"J : {gap}" in out, "a « banc » verdict on a pad needs its proof off the bench too:\n" + out)
+    check(f"K : {gap}" in out and f"L : {gap}" in out, "a trial without its mark, or without its number, is no dated trial:\n" + out)
     check(f"C : {gap}" in out and f"G : {gap}" in out, "a pad verdict read in the code, or with an undated trial, is a gap:\n" + out)
     check(f"D : {gap}" not in out and f"E : {gap}" not in out and f"F : {gap}" not in out and f"A : {gap}" not in out and f"B : {gap}" not in out,
           "a dated trial, a test outside Bench*, an undecided line and a line that is not about pads are fine:\n" + out)

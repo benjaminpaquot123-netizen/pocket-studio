@@ -141,9 +141,9 @@ internal class BenchEngine : CommandSink {
         return FloatArray(t.preroll + frames) { i -> if (i < t.preroll) 0f else BenchMic.voice((i - t.preroll).toLong()) }
     }
 
-    /** The transport stops: each take keeps what it recorded until then. */
-    private fun freezeTakes() {
-        if (transportSince >= 0) takes.values.forEach { if (it.frozen < 0) it.frozen = recorded(it) }
+    /** The transport stops: each take keeps what it recorded until then (at most [upTo] frames: the song's last bar line). */
+    private fun freezeTakes(upTo: Long = Long.MAX_VALUE) {
+        if (transportSince >= 0) takes.values.forEach { if (it.frozen < 0) it.frozen = minOf(recorded(it), upTo.coerceAtLeast(0L)) }
     }
 
     override fun scheduleFrom(target: Long, frame: Long) = Unit
@@ -274,10 +274,17 @@ internal class BenchEngine : CommandSink {
         sampleRate: Int, bits: Int,
     ): ExportResult {
         renders++
-        // A phone renders a 3-minute song in a few seconds: the bench takes [RENDER_MS], its progress moving.
+        // A phone renders a 3-minute song in a few seconds: the bench takes [RENDER_MS], its progress moving. Waited in slices
+        // of 50 ms: a cancel (the app's, or the bench's at the end of a test: [cancelAllRenders]) ends it at once, not after a
+        // step of a long render (PLAN-RESTE 4.5: a 60 s export of BenchTour1Test ran on into the tests after it).
         for (k in 1..STEPS) {
-            if (target in cancelled) return ExportResult.Cancelled
-            Thread.sleep(renderMs / STEPS)
+            val until = System.currentTimeMillis() + renderMs / STEPS
+            while (true) {
+                if (target in cancelled || cancelAll) return ExportResult.Cancelled
+                val left = until - System.currentTimeMillis()
+                if (left <= 0) break
+                Thread.sleep(minOf(50L, left))
+            }
             progress[target] = k / STEPS.toFloat()
         }
         // The length asked (round 3, lot A d: always « 3 s » before): the song, then its tail (with autoTail, the engine
@@ -295,6 +302,14 @@ internal class BenchEngine : CommandSink {
 
     /** How long a render takes here (real time), [RENDER_MS] unless a test wants it longer. */
     @Volatile var renderMs = RENDER_MS
+
+    @Volatile private var cancelAll = false
+
+    /** The end of a test: every render under way ends as cancelled (the app's export says « annulé »), none runs on. */
+    fun cancelAllRenders() {
+        cancelAll = true
+        renderMs = RENDER_MS
+    }
 
     override fun exportRenderFloat(target: Long, frames: Long, tailFrames: Long): FloatArray {
         val total = minOf(frames + tailFrames, MAX_SECONDS * RATE).coerceAtLeast(1L)
@@ -492,7 +507,9 @@ internal class BenchEngine : CommandSink {
             when (kind) {
                 1 -> { songStart = due - restartAt; inSong = true }
                 3 -> inSong = false
-                2 -> { transportSince = -1L; inSong = false; return }
+                // The song's end (T5-Ab-27): the transport stops on that bar line, and a take ends there with what it recorded up
+                // to it, as the engine's does (the app then keeps it: RhythmViewModel.songEnded).
+                2 -> { freezeTakes(Math.round(due * 15.0 * RATE / tempo)); transportSince = -1L; inSong = false; return }
             }
             sceneStart = due
         }

@@ -461,6 +461,14 @@ def main(argv):
                 cells = line.split("\t")
                 if len(cells) >= 4:
                     incidents.append([f"{lot} (lot)", cells[1], cells[2], cells[3]])
+    # Review of banc45: a state a seat inherited from the seat before it in its fork, put back by the bench before the
+    # seat started (BenchPristineRule: « #0 BANC : état hérité remis … » in the seat's journal), is the bench's incident.
+    for root, _, names in sorted(os.walk(round_dir)):
+        if "journal.txt" in names:
+            rel = os.path.relpath(root, round_dir).split(os.sep)
+            lot = next((p[3:] for p in rel if re.fullmatch(r"lot[A-Z]", p)), None)
+            for m in re.finditer(r"^#(\d+) BANC : ([^\n]+)", read(os.path.join(root, "journal.txt")), re.M):
+                incidents.append([f"{lot}/{rel[-1]}" if lot else rel[-1], m.group(1), "-", m.group(2)])
     write_tsv(os.path.join(folder, "incidents-banc.tsv"), ["siege", "geste", "attente", "vu"], incidents)
     if "--maj-base" in argv:
         update_base(base, clusters, tour)

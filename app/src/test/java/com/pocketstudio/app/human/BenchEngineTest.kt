@@ -21,6 +21,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -35,6 +36,9 @@ import java.time.Duration
  */
 @RunWith(RobolectricTestRunner::class)
 class BenchEngineTest {
+    /** PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). */
+    @get:Rule
+    val pristine = BenchPristineRule()
     private val app: Application get() = ApplicationProvider.getApplicationContext()
 
     @After
@@ -102,6 +106,20 @@ class BenchEngineTest {
         val song = p.song.sumOf { p.partSteps(it) } * 15.0 / p.tempoBpm
         val seconds = (f.length() - 44) / 8.0 / 48_000
         assertTrue("$seconds s for a song of $song s", song > 3.5 && seconds in song - 0.01..song + 0.51)
+    }
+
+    /**
+     * T5-Cc-41b (round 5, seat C c: « 1 KB » in « Mes exports »; recette tel-04 on the phone: 42 Mo for 2 min 26): the bench's
+     * encoder is a shadow that copies what it is given and its engine a stand-in, so an export's size and the time it took are
+     * not a phone's. The bench says so in its sound line (PLAN-RESTE 4.7), so that a tester never reports them as the app's.
+     */
+    @Test
+    fun anExportSizeIsSaidToBeTheBenchs() {
+        val (_, files) = share(ExportFormat.M4a)
+        val f = files.single()
+        val note = HumanTester.shareNote(listOf(f.name to f.length()), "WhatsApp")
+        assertTrue(note, f.name in note && "WhatsApp" in note)
+        assertTrue("the bench's note says the size is the bench's, not a phone's: $note", "banc" in note.lowercase() && "représentativ" in note)
     }
 
     /** A render of [frames] (and [tail]) by [engine], its project described by [describe] (round 3, lot A d). */

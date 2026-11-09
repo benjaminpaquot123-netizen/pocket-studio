@@ -40,6 +40,9 @@ import java.time.Duration
  */
 @RunWith(RobolectricTestRunner::class)
 class Tour5AppProof2Test {
+    /** PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). */
+    @get:Rule
+    val pristine = BenchPristineRule()
     /** See [KnownDefect]. */
     @get:Rule
     val knownDefects: TestRule = KnownDefectRule()

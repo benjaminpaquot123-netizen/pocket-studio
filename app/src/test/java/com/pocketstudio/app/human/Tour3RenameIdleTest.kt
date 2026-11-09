@@ -43,6 +43,9 @@ import java.io.File
  * and once the window is closed the screen comes back to rest. To check on a phone too (recette: rename a project).
  */
 abstract class Tour3RenameIdleBase(private val theme: String) {
+    /** PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). */
+    @get:Rule
+    val pristine = BenchPristineRule()
     @get:Rule
     val compose = createEmptyComposeRule()
 
@@ -55,6 +58,8 @@ abstract class Tour3RenameIdleBase(private val theme: String) {
         com.pocketstudio.app.rhythm.ClosingSaves.awaitIdleBlocking(15_000)
         com.pocketstudio.app.onboarding.LaunchRule.askAtStartForTest = true
         SettingsStore.forgetForTests()
+        // PLAN-RESTE 4.5: the ViewModel factory kept this test's Application (as HumanTester.end).
+        androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory::class.java.getDeclaredField("_instance").apply { isAccessible = true }.set(null, null)
     }
 
     private val projectMenu = androidx.compose.ui.test.SemanticsMatcher("a project's ⋮") { n ->
@@ -78,8 +83,10 @@ abstract class Tour3RenameIdleBase(private val theme: String) {
         com.pocketstudio.model.ProjectStore(File(app.filesDir, "projects")).save(id, com.pocketstudio.model.Project(name = "Mon premier rythme").sanitized())
         com.pocketstudio.app.projects.CurrentProject.set(app, id)
         androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory::class.java.getDeclaredField("_instance").apply { isAccessible = true }.set(null, null)
+        val t0 = System.currentTimeMillis()
         scenario = ActivityScenario.launch(MainActivity::class.java)
         compose.waitForIdle()
+        println("Tour3RenameIdleTest($theme): launched in ${System.currentTimeMillis() - t0} ms, ${BenchPristine.workerCount()} workers")
         // The seat's way: the welcome's « Plus tard », the project's name on top, its ⋮, « Renommer », the field.
         // Banc fiable 1.2 (red twice by luck, 2026-11-08: « no project's ⋮ », still on the pads): a window of the start
         // (the welcome, the launch's choice) can come just after the first look and take the touch. As a person does, look
@@ -92,12 +99,44 @@ abstract class Tour3RenameIdleBase(private val theme: String) {
             val opened = runCatching { compose.waitUntil(7_000) { compose.onAllNodes(projectMenu).fetchSemanticsNodes().isNotEmpty() } }.isSuccess
             if (opened) break
             // Review of session 1: a retry is said, never silent (a start window taking the touch could be a phone's issue too).
-            println("Tour3RenameIdleTest: « Mes projets » touched again (attempt ${attempt + 1}): the start's window took the touch")
+            val where = compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("placed") { n -> n.config.getOrNull(SemanticsProperties.TestTag) in setOf("welcome_later", "top_projects", "projects") })
+                .fetchSemanticsNodes(atLeastOneRootRequired = false).joinToString(" ") { n -> "${n.config[SemanticsProperties.TestTag]}@${n.boundsInRoot}" }
+            println("Tour3RenameIdleTest: « Mes projets » touched again (attempt ${attempt + 1}): the start's window took the touch; $where")
         }
         runCatching { compose.waitUntil(1_000) { compose.onAllNodes(projectMenu).fetchSemanticsNodes().isNotEmpty() } }.onFailure {
             val tags = compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("tagged") { n -> androidx.compose.ui.semantics.SemanticsProperties.TestTag in n.config })
                 .fetchSemanticsNodes(atLeastOneRootRequired = false).map { n -> n.config[androidx.compose.ui.semantics.SemanticsProperties.TestTag] }
-            error("no project's ⋮ in Mes projets; tags: $tags")
+            // PLAN-RESTE 4.5 (run A of banc45, red with every checked state pristine): what the app was doing, to name the cause.
+            var inside = ""
+            scenario?.onActivity { a ->
+                val projects = runCatching { androidx.lifecycle.ViewModelProvider(a)[com.pocketstudio.app.projects.ProjectsViewModel::class.java].state.value }.getOrNull()
+                val rhythm = runCatching { androidx.lifecycle.ViewModelProvider(a)[com.pocketstudio.app.rhythm.RhythmViewModel::class.java] }.getOrNull()
+                inside = "projects: loading=${projects?.loading} n=${projects?.projects?.size} busy=${projects?.busy} message=${projects?.message}; " +
+                    "rhythm: projectId=${rhythm?.projectId} app=${rhythm?.getApplication<Application>()?.hashCode()} (test's ${app.hashCode()}); " +
+                    "current=${com.pocketstudio.app.projects.CurrentProject.get(app)} saved=$id listed=${com.pocketstudio.model.ProjectStore(File(app.filesDir, "projects")).list()}; " +
+                    "guideSeen=${SettingsStore.state.value.guideSeen}"
+            }
+            // Where the nodes a finger would touch are drawn (run 1 of banc45: the list held one project, no row composed, the
+            // welcome's « Plus tard » clicked without effect): laid out or not, on screen or below it, the bubble over them.
+            val m = app.resources.displayMetrics
+            val placed = compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("placed") { n ->
+                n.config.getOrNull(SemanticsProperties.TestTag)?.let { t -> t in setOf("welcome", "welcome_later", "top_projects", "projects", "retours_bubble") || t.startsWith("project_menu_") } == true
+            }).fetchSemanticsNodes(atLeastOneRootRequired = false).joinToString(" | ") { n ->
+                "${n.config[SemanticsProperties.TestTag]} root=${n.boundsInRoot} window=${n.boundsInWindow} size=${n.size} placed=${n.layoutInfo.isPlaced}"
+            }
+            val windows = runCatching { BenchWindows.windows().joinToString(" | ") { w -> "type ${w.params.type} ${w.view.width}x${w.view.height} drawn=${w.drawn(m)} attached=${w.view.isAttachedToWindow} laidOut=${w.view.isLaidOut}" } }.getOrElse { "? $it" }
+            val roots = compose.onAllNodes(androidx.compose.ui.test.isRoot()).fetchSemanticsNodes(atLeastOneRootRequired = false).joinToString(",") { "${it.size}" }
+            val looper = "mainLooper paused=${shadowOf(Looper.getMainLooper()).isPaused} choreographerPaused=${runCatching { org.robolectric.shadows.ShadowChoreographer.isPaused() }.getOrNull()} screen=${m.widthPixels}x${m.heightPixels} density=${m.density} fontScale=${app.resources.configuration.fontScale} roots=[$roots] theme=${SettingsStore.state.value.theme} uiScale=${SettingsStore.state.value.uiScale} simple=${SettingsStore.state.value.simpleMode}"
+            // Run 4 of banc45: the list held one project (loading=false in the view model) but the screen still showed none and
+            // the welcome's button was never placed: the screens' flows seem not to reach them. Frames forced by hand, then the
+            // recomposers and clocks, to tell a stalled frame clock from a lost collection.
+            val recomposers = runCatching { androidx.compose.runtime.Recomposer.runningRecomposers.value.joinToString(",") { r -> "pending=${r.hasPendingWork}" } }.getOrElse { "? $it" }
+            val clocks = "mainClock autoAdvance=${compose.mainClock.autoAdvance} time=${compose.mainClock.currentTime} Dispatchers.Main=${kotlinx.coroutines.Dispatchers.Main} lifecycle=${scenario?.state}"
+            repeat(3) { runCatching { compose.mainClock.advanceTimeByFrame() }; shadowOf(Looper.getMainLooper()).idle() }
+            runCatching { compose.waitForIdle() }
+            val afterFrames = compose.onAllNodes(projectMenu).fetchSemanticsNodes(atLeastOneRootRequired = false).size
+            val emptyShown = compose.onAllNodesWithTag("projects_empty").fetchSemanticsNodes(atLeastOneRootRequired = false).isNotEmpty()
+            error("no project's ⋮ in Mes projets; $inside; after 3 frames by hand: menus=$afterFrames emptyState=$emptyShown; recomposers: $recomposers; $clocks; app threads: ${BenchPristine.appThreads()} (${BenchPristine.workerCount()} workers); $looper; windows: $windows; placed: $placed; tags: $tags")
         }
         compose.onAllNodes(projectMenu)[0].performClick()
         compose.onNodeWithText("Renommer").performClick()
@@ -118,6 +157,7 @@ abstract class Tour3RenameIdleBase(private val theme: String) {
         compose.waitUntil(20_000) { !shown("project_name_field") }
         compose.waitForIdle()
         compose.waitUntil(20_000) { compose.onAllNodes(hasText("Révisions lofi")).fetchSemanticsNodes().isNotEmpty() }
+        println("Tour3RenameIdleTest($theme): renamed in ${System.currentTimeMillis() - t0} ms")
     }
 
     private fun node(tag: String): SemanticsNode =
@@ -151,6 +191,9 @@ class Tour3StudioRenameIdleTest : Tour3RenameIdleBase("Studio")
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = HumanTester.PHONE)
 class Tour3NameFieldIdleTest {
+    /** PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). */
+    @get:Rule
+    val pristine = BenchPristineRule()
     @get:Rule
     val compose = androidx.compose.ui.test.junit4.createComposeRule()
 

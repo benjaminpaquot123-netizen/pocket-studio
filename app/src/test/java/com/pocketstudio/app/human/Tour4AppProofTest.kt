@@ -48,7 +48,11 @@ class Tour4AppProofTest {
 
     private val app: Application get() = ApplicationProvider.getApplicationContext()
 
-    /** A phone's engine as far as the view model reads it: the play position from ▶ (count-in first), the launch lines. */
+    /**
+     * A phone's engine as far as the view model reads it: the play position from ▶ (count-in first), the launch lines,
+     * and the scene swap the app arms (a song's next part, the part a take's notes went to), made on the next bar line
+     * of the scene playing and counted, as Engine.cpp's onStep does (the app follows the parts by that count).
+     */
     private class PhoneEngine : CommandSink {
         private var next = 1L
         val posts = ArrayList<List<Number>>()
@@ -56,21 +60,63 @@ class Tour4AppProofTest {
         private var countIn = 0
         private var tempo = 120.0
         private var beats = 4
+        private var songFrom = -1
+        private var sceneStart = 0
+        private var swapAt = -1  // armed: the scene's step it may swap from (0: the next bar line)
+        private var armedAt = 0
+        private var endsSong = false
+        private var swaps = 0
         /** Launches the « engine » made, (slot, scene, step) each, read once by the view model. */
         val launches = java.util.ArrayDeque<IntArray>()
 
+        /** Sixteenths since ▶ (negative during the count-in), NaN stopped. */
+        private fun transport(): Double =
+            if (since < 0) Double.NaN else (SystemClock.uptimeMillis() - since) * tempo / 15_000.0 - countIn * beats * 4.0
+
+        /** The swap due by now, as Engine::onStep makes it: on a bar line of the scene playing, after the step it was armed at. */
+        private fun follow() {
+            val t = transport()
+            if (t.isNaN() || t < 0 || swapAt < 0) return
+            val bar = (beats * 4).coerceAtLeast(1)
+            val local = armedAt - sceneStart
+            val at = maxOf(if (swapAt == 0) 1 else swapAt, local + 1).let { (it + bar - 1) / bar * bar }
+            if (sceneStart + at > t.toInt()) return
+            sceneStart += at
+            swapAt = -1
+            swaps++
+            if (endsSong) since = -1L
+        }
+
         @Synchronized override fun post(target: Long, type: Int, value: Float, a: Int, b: Int) {
             if (target != 0L) return
+            follow()
             posts += listOf(type, value, a, b)
             when (type) {
-                CMD_SET_TRANSPORT -> { since = if (value > 0f) SystemClock.uptimeMillis() else -1L; countIn = if (value > 0f) a else 0 }
+                CMD_SET_TRANSPORT -> {
+                    since = if (value > 0f) SystemClock.uptimeMillis() else -1L
+                    countIn = if (value > 0f) a else 0
+                    songFrom = if (value > 0f) b else -1
+                    sceneStart = 0
+                    swapAt = -1
+                }
                 CMD_SET_TEMPO -> if (value > 0f) tempo = value.toDouble()
                 CMD_BEATS_PER_BAR -> if (a > 0) beats = a
+                CMD_ARM_SCENE_SWAP -> {  // after a steps of the scene (-1: cancel); b 2: the song ends there
+                    swapAt = if (a < 0) -1 else a
+                    endsSong = b == 2
+                    armedAt = transport().let { if (it.isNaN() || it < 0) 0 else it.toInt() }
+                }
             }
         }
-        override fun playPosition(): Double = if (since < 0) -1.0 else (SystemClock.uptimeMillis() - since) * tempo / 15_000.0 - countIn * beats * 4.0
-        override fun transportStep(): Int = playPosition().let { if (it < 0) -1 else it.toInt() }
-        override fun transportPosition(): Double = playPosition().let { if (it < 0) -1.0 else it }
+        /** The place in the scene playing (Engine.cpp's playPosition_): it starts again from each swap. */
+        @Synchronized override fun playPosition(): Double {
+            follow()
+            val t = transport()
+            return if (t.isNaN()) -1.0 else if (t < 0) t else t - sceneStart
+        }
+        @Synchronized override fun transportPosition(): Double { follow(); return transport().let { if (it.isNaN() || it < 0) -1.0 else it } }
+        override fun transportStep(): Int = transportPosition().let { if (it < 0) -1 else it.toInt() }
+        @Synchronized override fun sceneSwaps(): Int { follow(); return swaps }
         @Synchronized override fun drainLaunchEvents(out: IntArray): Int {
             var n = 0
             while (launches.isNotEmpty() && (n + 1) * 3 <= out.size) {
@@ -385,6 +431,7 @@ class Tour4AppProofTest {
     private companion object {
         const val CMD_SET_TRANSPORT = 5
         const val CMD_SET_TEMPO = 6
+        const val CMD_ARM_SCENE_SWAP = 40
         const val CMD_BEATS_PER_BAR = 57
         const val CMD_ARM_LAUNCH = 71
     }

@@ -669,15 +669,38 @@ def missions_of_round_1(d):
     out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "synthe")
     check("mission=non" in out, "the default sound on two tracks is not a sound made:\n" + out)
 
-    # libre: ended by the tester on 3 screens or more; a crash fails it.
+    # libre (PLAN-RESTE 6.4, hardened): ended by the tester on 3 screens or more is not enough; « réussie » needs a
+    # sound heard AND a trace on the phone (a saved change or a shared file). Round 5: A c « réussie » without a sound.
     free = JOURNAL_B.replace("#2 FIN : fin", "#2 > touche 2 2\n#3 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3333 | project=p-2 no tuto\n#3 SON Son : rien ne joue.\n#3 > touche 3 3\n"
                              "#4 ROUTE padlive | MODE pro | EMPREINTE 4444 | project=p-2 no tuto\n#4 SON Son : rien ne joue.\n#4 FIN : fin")
     write(os.path.join(c, "journal.txt"), free)
+    untouched = json.dumps({"projects": [{"name": "P", "parts": 0, "tracks": 0, "audio_clips": 0, "stars": [], "synth_tracks": [
+        {"name": "Synthé", "sound": "x", "notes": 3, "edited": False}]}], "stem_sets": 0, "shared": []})
+    write(os.path.join(c, "etat", "resume.json"), untouched)
     out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
-    check("mission=reussie" in out and "3 écrans différents" in out, "free play ended by the tester:\n" + out)
+    check("mission=non" in out and "aucun son entendu" in out and "aucun changement gardé ni fichier partagé" in out,
+          "3 screens, no sound, nothing left on the phone: not a success:\n" + out)
+    write(os.path.join(c, "sound-3.txt"), "Son : la musique du projet joue en boucle.")
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
+    check("mission=partielle" in out and "aucun changement gardé ni fichier partagé" in out and "aucun son" not in out,
+          "a sound heard but nothing left on the phone: partial:\n" + out)
+    os.remove(os.path.join(c, "etat", "resume.json"))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
+    check("mission=partielle" in out and "état du siège absent" in out, "no state saved: a change cannot be proven, said so:\n" + out)
+    write(os.path.join(c, "etat", "resume.json"), untouched.replace('"audio_clips": 0', '"audio_clips": 1'))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
+    check("mission=reussie" in out and "3 écrans différents" in out and "premier son en 2 geste(s)" in out and "1 prise(s)" in out,
+          "a sound heard and a take kept: free play succeeded:\n" + out)
+    write(os.path.join(c, "etat", "resume.json"), untouched.replace('"shared": []', '"shared": ["perf.m4a"]'))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
+    check("mission=reussie" in out and "partagé : perf.m4a" in out, "a sound heard and a file shared: succeeded too:\n" + out)
+    os.remove(os.path.join(c, "sound-3.txt"))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
+    check("mission=partielle" in out and "aucun son entendu" in out, "a file shared but no sound heard: partial:\n" + out)
     write(os.path.join(c, "journal.txt"), free.replace("#4 FIN : fin", "#4 CRASH java.lang.IllegalStateException: x\n#4 FIN : plantage"))
     out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
     check("mission=non" in out, "a crash fails it:\n" + out)
+    write(os.path.join(c, "journal.txt"), free)
 
     # defi: a challenge opened, no star kept: partial (lot F seat e), never « aucun défi joué ».
     write(os.path.join(c, "journal.txt"), JOURNAL_B.replace("#1 > touche 1 1", "#1 > touche 1 1\n#1 DOIGT padlive_challenge_go « Jouer le défi »"))

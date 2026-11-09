@@ -5,7 +5,7 @@
 # (<lot folder>/selftest.ok, holding the commit and the tree it passed on).
 # Checks (analysis Q2 §5):
 #   machine   ≥ 2 GB of disk, ≥ PS_MEM_MIN_GB of memory, one Gradle (gradle-file.sh does it);
-#   bench     every Bench*Test and Tour*AppProofTest/Tour*RenameIdleTest of app/src/test/…/human (engine render length,
+#   bench     every Bench*Test, Tour*AppProof*Test and Tour*IdleTest of app/src/test/…/human (engine render length,
 #             play head, note takes, rename dialogs, Tout couper / ■, share, microphone, pads, amenées…);
 #   scripts   scripts/bench/test_ultra_bench.py (fuser, metrics, dashboard).
 # Banc fiable 1.2: the verdict is read test by test from the JUnit results, not from Gradle's exit code. A red test
@@ -40,7 +40,9 @@ rm -rf "$junit"; mkdir -p "$junit"
 # the Bench* tests they went red 3 times out of 5 (state left by an earlier test; culprit still to find, journal 1.2).
 # Review of session 1: a run that produced nothing must not read as green: every test class of the patterns is expected
 # (read from the sources), and a Gradle that failed with no red test in its results is red.
-grep -rhoE '^class (Bench[A-Za-z0-9]*Test|Tour[A-Za-z0-9]*AppProofTest|Tour[A-Za-z0-9]*RenameIdleTest)\b' app/src/test/java/com/pocketstudio/app/human \
+# PLAN-RESTE 4.5: Tour3NameFieldIdleTest (the name fields alone) runs with the rename tests: every Tour*IdleTest; and
+# Tour5AppProof2Test (its name ends in AppProof2Test) was neither expected nor run until banc45.
+grep -rhoE '^class (Bench[A-Za-z0-9]*Test|Tour[A-Za-z0-9]*AppProof[0-9]*Test|Tour[A-Za-z0-9]*IdleTest)\b' app/src/test/java/com/pocketstudio/app/human \
   | awk '{print $2}' | sort -u > "$lot/selftest-attendus.txt"
 gradle_failed=0
 run_tests() {
@@ -66,8 +68,8 @@ if [ ${#profiles[@]} -gt 0 ]; then
   printf '%s\n' "${profiles[@]}" | sort -u > "$lot/selftest-profils.txt"
   profile_arg=("-Pbench.profiles=$lot/selftest-profils.txt")
 fi
-run_tests banc "${profile_arg[@]}" --tests 'com.pocketstudio.app.human.Bench*' --tests 'com.pocketstudio.app.human.Tour*AppProofTest'
-run_tests renommage --tests 'com.pocketstudio.app.human.Tour*RenameIdleTest'
+run_tests banc "${profile_arg[@]}" --tests 'com.pocketstudio.app.human.Bench*' --tests 'com.pocketstudio.app.human.Tour*AppProof*Test'
+run_tests renommage --tests 'com.pocketstudio.app.human.Tour*IdleTest'
 
 verdict_ok=0
 python3 -I scripts/bench/selftest-verdict.py "$junit" scripts/bench/selftest-quarantaine.txt "$lot/selftest-resume.txt" \

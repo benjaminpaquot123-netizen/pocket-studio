@@ -134,6 +134,9 @@ abstract class HumanTester(private val seat: String) {
 
     @After
     fun end() {
+        // PLAN-RESTE 4.5 (found by BenchPristineRule, run 1): a long render of this test (60 s in BenchTour1Test) ran on into the
+        // tests after it, on a coroutine worker; cancelled first, before the screen closes.
+        engine.cancelAllRenders()
         stopPollers()
         runCatching { scenario?.close() }
         runCatching { service?.destroy() }

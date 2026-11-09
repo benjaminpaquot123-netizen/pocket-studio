@@ -274,10 +274,17 @@ internal class BenchEngine : CommandSink {
         sampleRate: Int, bits: Int,
     ): ExportResult {
         renders++
-        // A phone renders a 3-minute song in a few seconds: the bench takes [RENDER_MS], its progress moving.
+        // A phone renders a 3-minute song in a few seconds: the bench takes [RENDER_MS], its progress moving. Waited in slices
+        // of 50 ms: a cancel (the app's, or the bench's at the end of a test: [cancelAllRenders]) ends it at once, not after a
+        // step of a long render (PLAN-RESTE 4.5: a 60 s export of BenchTour1Test ran on into the tests after it).
         for (k in 1..STEPS) {
-            if (target in cancelled) return ExportResult.Cancelled
-            Thread.sleep(renderMs / STEPS)
+            val until = System.currentTimeMillis() + renderMs / STEPS
+            while (true) {
+                if (target in cancelled || cancelAll) return ExportResult.Cancelled
+                val left = until - System.currentTimeMillis()
+                if (left <= 0) break
+                Thread.sleep(minOf(50L, left))
+            }
             progress[target] = k / STEPS.toFloat()
         }
         // The length asked (round 3, lot A d: always « 3 s » before): the song, then its tail (with autoTail, the engine
@@ -295,6 +302,14 @@ internal class BenchEngine : CommandSink {
 
     /** How long a render takes here (real time), [RENDER_MS] unless a test wants it longer. */
     @Volatile var renderMs = RENDER_MS
+
+    @Volatile private var cancelAll = false
+
+    /** The end of a test: every render under way ends as cancelled (the app's export says « annulé »), none runs on. */
+    fun cancelAllRenders() {
+        cancelAll = true
+        renderMs = RENDER_MS
+    }
 
     override fun exportRenderFloat(target: Long, frames: Long, tailFrames: Long): FloatArray {
         val total = minOf(frames + tailFrames, MAX_SECONDS * RATE).coerceAtLeast(1L)

@@ -96,9 +96,10 @@ internal object BenchPristine {
         ) { "downAt=${staticField(guard, "downAt")} armedUntil=${staticField(guard, "armedUntil")} dropping=${staticField(guard, "dropping")}" }
         // A take of the test before still being written: the next opening waits for it (ProjectOpening.prepare, 10 s).
         check("TakeVault.app busy", takeVaultBusy() <= 0) { takeVaultBusy() }
-        // Work of the test before still running on the coroutine workers (given 2 s to park): the next test's clock and
-        // its waits are not its own any more.
-        check("coroutine workers", workersParked()) { busyWorkers().joinToString(" | ") }
+        // Work of the test before still on the coroutine workers (given 2 s to park), running or blocked in the app's code: the
+        // next test's clock and its waits are not its own any more, and enough of them starve Dispatchers.IO (run A of
+        // banc45: the projects list of Tour3RenameIdleTest never finished loading).
+        check("coroutine workers", workersParked()) { appThreads().joinToString(" | ") + " (${workerCount()} workers live)" }
         // The install's files (Robolectric gives each test a data folder of its own: a leak here is a bench's shortcut).
         val projects = File(app.filesDir, "projects")
         check("projects/", !projects.exists() || projects.listFiles().isNullOrEmpty()) { projects.listFiles()?.map { it.name } }
@@ -137,28 +138,35 @@ internal object BenchPristine {
     private fun staticFieldOf(obj: Any, name: String): Any? =
         runCatching { obj.javaClass.getDeclaredField(name).apply { isAccessible = true }.get(obj) }.getOrNull()
 
-    /** The coroutine workers (Dispatchers.Default and IO) parked, waited for 2 s at most. */
+    /** The coroutine workers (Dispatchers.Default and IO) free of the app's work, waited for 2 s at most. */
     private fun workersParked(): Boolean {
         val until = System.currentTimeMillis() + 2_000
         while (System.currentTimeMillis() < until) {
-            if (busyWorkers().isEmpty()) return true
+            if (appThreads().isEmpty()) return true
             Thread.sleep(50)
         }
-        return busyWorkers().isEmpty()
+        return appThreads().isEmpty()
     }
 
-    /** The running coroutine workers, each with the top of its stack (what the test before left running). */
-    private fun busyWorkers(): List<String> {
+    private fun liveThreads(): List<Thread> {
         var root = Thread.currentThread().threadGroup
         while (root.parent != null) root = root.parent
         val threads = arrayOfNulls<Thread>(root.activeCount() + 16)
         val n = root.enumerate(threads, true)
-        return (0 until n).mapNotNull { i ->
-            val t = threads[i] ?: return@mapNotNull null
-            if (!t.name.startsWith("DefaultDispatcher-worker") || t.state != Thread.State.RUNNABLE) return@mapNotNull null
-            val frames = t.stackTrace.filter { "pocketstudio" in it.className }.take(3).joinToString(" < ") { "${it.className.substringAfterLast('.')}.${it.methodName}" }
-            if (frames.isEmpty()) null else "${t.name}: $frames"
-        }
+        return (0 until n).mapNotNull { threads[it] }
+    }
+
+    /** How many coroutine workers live (Dispatchers.IO stalls once 64 of them are held). */
+    fun workerCount(): Int = liveThreads().count { it.name.startsWith("DefaultDispatcher-worker") }
+
+    /**
+     * The coroutine workers the app's code holds, running or blocked (a parked idle worker has none of its frames), each with
+     * its state and the top of its stack: what the test before left on them. Also what a failing test prints to name them.
+     */
+    fun appThreads(): List<String> = liveThreads().mapNotNull { t ->
+        if (!t.name.startsWith("DefaultDispatcher-worker") || t === Thread.currentThread()) return@mapNotNull null
+        val frames = t.stackTrace.filter { "pocketstudio" in it.className }.take(4).joinToString(" < ") { "${it.className.substringAfterLast('.')}.${it.methodName}:${it.lineNumber}" }
+        if (frames.isEmpty()) null else "${t.name} ${t.state}: $frames"
     }
 
     private fun staticField(cls: Class<*>, name: String): Any? =

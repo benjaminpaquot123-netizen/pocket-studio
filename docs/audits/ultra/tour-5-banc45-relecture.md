@@ -1,5 +1,5 @@
 # Relecture neuve : Tour 5, banc 4.5 (détecteur de fuite, `reachTag` sur place, cinq gardes « banc »)
-Relu : 3c9114f5d746e6a95b28d745ae63a8f2e6765086
+Relu : b5c315642d7b8808bc75bbed6f779fe5817e1a34
 
 Branche `eq/tour-5-banc45`, 7 commits sur `c877908` (rouge `d503254`, vert `87b6693`). Relecteur neuf, qui n'a rien écrit de
 cette branche. Lu : `BenchPristine.kt`, les diffs de `HumanTester.kt`, `BenchEngine.kt`, `BenchWindows.kt`, les cinq gardes,
@@ -51,5 +51,60 @@ remises par `git checkout` (arbre propre, aucun code commité par le relecteur).
 | mineur | **Pas de preuve rouge pour `theClearButtonKeepsTheFieldsFocus`** (« vert d'emblée : le banc avait raison »). Acceptable pour une garde de verdict (le plan n'exige que « verte dans le dernier selftest »), mais la garde dépend du libellé du banc (`"touche d'abord le champ" in blind`). | Rien à faire ; si le libellé change, la garde le dira. |
 | observation | Passage A : `BenchAmeneesTest#aTapDuringTheExampleIsNotCounted` rouge une fois (« YourTurn(c, 0) attendu »), jamais revu dans les passages 1 à 5 : un intermittent possible, hors de ce lot. | À surveiller dans les prochains `selftest-resume.txt`. |
 | RAS | Détecteur, couverture, gardes vertes, rouges sur l'ancien banc, journaux, moteur natif, `selftest.sh` : voir « Vérifications faites ». | — |
+
+## Relecture du delta (`6b35430..b5c3156` : `30f2fcf`, `a3d57ae`, `b5c3156`)
+
+Même relecteur neuf, qui n'a rien écrit de ce delta. Le tableau ci-dessus est celui de la première relecture (tête `3c9114f`) ;
+ses deux premiers « moyen » sont traités par ce delta, le troisième (`verifie-chantier.py`, 5 écarts) ne l'est pas (voir plus bas).
+Trois passages Gradle (`gradle-file.sh`), mutations remises par `git checkout`, test-sonde supprimé, arbre propre.
+
+**1. Le mode siège ne vaut que pour un vrai siège.** `HumanTester.seatJournalFor` reprend exactement les trois conditions de
+`drive()` (méthode `drive`, `ps.human.dir` non vide, `start.txt` du siège présent) ; les classes `Bench*` qui héritent de
+`HumanTester` ont des noms de siège (« selftest », « tour4 »…) qu'un lot n'a pas ; les classes sans `HumanTester` gardent la règle
+nue (`{ null }`). Preuve de bout en bout (passage 3, fuite injectée dans le constructeur de `HumanTester`, dossier de lot jetable
+avec `a/start.txt` et `cmd-1.txt` = « fin », `-Phuman.dir`) :
+- `HumanTesterA#drive` vert, son journal (qui avait déjà une ligne, gardée) reçoit « #0 BANC : état hérité remis (laissé par le
+  test d'avant, aucun dans cette JVM, ou par un test sans la règle passé entre les deux) : I18n.lang = EN; TutoTestHooks.kitOffer
+  = false », puis « #0 SIEGE lang=fr … », l'écran 1, « #1 FIN : fin » ; `fuse-reports.py` sur ce dossier range la ligne dans
+  `incidents-banc.tsv` au nom du siège `a` ;
+- `HumanTesterB#drive` (pas de `start.txt`) rouge, `BenchSelfTest#reachTagTouchesAVisibleElementInPlace` et `BenchSelfTest#drive`
+  rouges, tous trois avec le message à deux suspects, alors même que `-Phuman.dir` est posé.
+Il ne cache donc pas de fuite dans un test qui n'est pas un siège ; en selftest et en CI (`ps.human.dir` absent) il ne s'applique jamais.
+
+**2. `end()` appelle `restore()`.** Ce qui s'ajoute à l'ancienne fin : `I18n.pseudo`, `kitOffer`/`packs`, `Retours.active`,
+`Intro.playing`, `TutoHints.active`, `SpotChecks.log`, `ProjectOpening.prepared`, la suppression de `projects/` et
+`CurrentProject`. Rien n'est remis trop tôt : `end()` est le `@After` de la classe mère (après ceux des classes filles), personne
+ne l'appelle en cours de test, et `drive()` sauve l'état du siège (`SeatState.save`) dans son `finally`, avant. Passage 1 (tête
+propre) : `BenchPristineRuleTest` 4/4, `BenchSelfTest`, `Tour3AppProofTest` 3/3 verts. Passage 2 : `BenchTour4Test`, `BenchTour3Test`,
+`BenchRecetteTest`, `BenchSeatOptionsTest`, `BenchPlayThenTabsTest` verts (20 tests enchaînés dans un fork, chacun contrôlé par la
+règle après le `end()` du précédent). Le rapport ne montre pas de selftest complet après ce delta : à faire avant la fusion (le lot suivant le lance de toute façon).
+
+**3. Mutations** (passage 2 : les quatre tests de `BenchPristineRuleTest` rejoués sous chaque mutation de la règle) :
+
+| Mutation | Test rouge |
+|---|---|
+| ligne de journal retirée | `aLeakBeforeASeat…` (`FileNotFoundException` sur `a/journal.txt`) |
+| `restore()` retiré en mode siège | `aLeakBeforeASeat…` (« expected:<FR> but was:<EN> ») |
+| mode siège pour toute méthode (plus de test sur `drive`) | `onTheBenchOnlyASeatsDriveIsSpared` (« another test than drive is red: null ») |
+| mode siège sans `start.txt` | `onTheBenchOnlyASeatsDriveIsSpared` (« a seat without its start file is red: null ») |
+| mode siège pour toute règle (jamais rouge) | `aLeakBeforeABenchTest…` et `onTheBenchOnlyASeatsDriveIsSpared` |
+| `restore()` retiré en mode rouge | `aLeakBeforeABenchTest…` (« expected:<FR> but was:<EN> ») |
+| journal écrasé (`writeText`) au lieu de complété | **aucun : la mutation survit** |
+| sans mutation | 4 verts |
+
+`fuse-reports.py` : la lecture des journaux retirée → `test_ultra_bench.py` rouge (« the inherited state put back, listed for its
+seat ») ; motif élargi à toutes les lignes « BANC » → rouge (« nothing else ») ; nom du siège remplacé → rouge. Tête : « ultra bench
+scripts: OK ». La fusion du vrai tour 5 (sortie dans un dossier jetable) passe et ne change rien à ses incidents.
+
+**4. Restes (aucun bloquant, aucun grave).**
+
+| Gravité | Constat | Suite |
+|---|---|---|
+| moyen (reste de la 1re relecture) | `verifie-chantier.py` : toujours 5 écarts (les cinq verdicts « banc » sans `garde_banc` dans `verdicts.tsv`) ; ce delta n'y touche pas. | Reporter les cinq noms de garde dans `verdicts.tsv` avec la fusion, avant de clore la séance. |
+| mineur | L'ajout au journal (ne pas écraser) n'est gardé par aucun test : la mutation `writeText` survit. Le vrai siège du passage 3 montre que la tête complète bien un journal existant. | Partir d'un journal non vide dans `aLeakBeforeASeat…`. |
+| mineur | `BenchPristineRuleTest` laisse `lastTest` sur ses descriptions simulées (« HumanTesterB#drive », « BenchPristineRuleTest#drive ») : une fuite trouvée par le test suivant du fork nommerait un siège qui n'a pas tourné. | Remettre `lastTest` en fin de test, ou le dire dans le message. |
+| mineur | `fuse-reports.py` parcourt tous les `journal.txt` du tour, donc aussi ceux des dossiers `rejeu-*` (`tour-1/lotA/rejeu-a-23-…/a`) : leur ligne serait rangée au nom du siège d'origine (« A/a »). Le libellé « lot/siège » n'est pas couvert par le test (lot seul testé). | Sauter les dossiers `rejeu-*` ou les nommer ; un cas `lotA/a` dans `seat_exit`. |
+| mineur | `end()` remet `_instance` par `restore()` (dans un `runCatching`) : le dernier accès non silencieux a disparu, un champ renommé par une montée de version passerait sans bruit (réserve déjà notée). | Un test qui vérifie que les champs lus par réflexion existent. |
+| observation | Avec `end()` qui remet toute la liste, le détecteur ne voit plus ce qu'un test `HumanTester` salit dans ces statiques ; il garde les classes sans `HumanTester`, le travail tardif, les workers et les compteurs. C'est le but (l'état de départ du test suivant), pas un masquage. | — |
 
 Verdict : 0 bloquant, 0 grave — fusion possible

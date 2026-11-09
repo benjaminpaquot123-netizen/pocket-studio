@@ -203,6 +203,7 @@ def main():
         bench_guards(d)
         chantier(d)
         judge_criteria(d)
+        open_app_proof(d)
         engine_proof(d)
         expected_classes(d)
         skipped_class(d)
@@ -761,6 +762,24 @@ def judge_criteria(d):
     check("H : « corrigé » sans commit" in out, "a « corrigé » whose commit is « - »:\n" + out)
     check("I : « corrigé », commit 0123abc introuvable" in out, "a « corrigé » whose commit does not exist:\n" + out)
     check("J : « corrigé »" not in out and "chantier : 3 écarts" in out, "a « corrigé » with its commit (the third gap is the green without its red):\n" + out)
+
+
+def open_app_proof(d):
+    """Audit « banc crédible » A.2 (M3): an open « appli » line whose only proofs are green tests proves no defect.
+    Its proof is a @KnownDefect guard (or an engine known_defect test) or a dated ❌ trial on a device."""
+    script = os.path.join(HERE, "verifie-chantier.py")
+    root = judge_root(d, "juge-appli-vert", JUDGE_GOOD
+                      + "t\tC\tk3\tm\tappli\touvert\tOther#elsewhere\t-\trecette tel-01\t-\tRECETTE tel-01 ❌ téléphone : no date\t-\n"
+                      + "t\tD\tk4\tm\tappli\touvert\tOther#elsewhere\t-\trecette tel-01\t-\tRECETTE tel-01 ❌ téléphone 2026-11-08 : nothing plays\t-\n"
+                      + "t\tE\tk5\tm\tappli\tvoulu\tOther#elsewhere\t-\t-\t-\tn\t-\n")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
+                       capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    check("C : verdict « appli » dont la preuve n'est ni @KnownDefect ni un essai ❌ daté" in out,
+          "an open appli line proved by a green test only is a gap:\n" + out)
+    check("A : verdict « appli » dont" not in out and "D : verdict « appli » dont" not in out and "E : verdict « appli » dont" not in out
+          and "chantier : 1 écarts" in out and r.returncode == 1,
+          "a @KnownDefect guard, a dated ❌ trial and a line that is not open are fine:\n" + out)
 
 
 def engine_proof(d):

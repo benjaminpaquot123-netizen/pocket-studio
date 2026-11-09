@@ -122,6 +122,63 @@ def dated_failed_trial(v):
     return False
 
 
+TRIAL_BULLET = re.compile(r"^- (20\d\d-\d\d-\d\d)\b(.*)$")
+TRIAL_ALONE = re.compile(r"recette (tel-\d+) = (✅|❌)")
+TRIAL_IN_LIST = re.compile(r"^\s+- (tel-\d+) (✅|❌)")
+
+
+def _device(text):
+    m = re.search(r"téléphone|tablette", text)
+    return m.group(0) if m else None
+
+
+def owner_trials(root):
+    """The owner's trials of the checklist written in retours-benjamin.md, as (tel-NN, mark, device, date): a
+    « tel-NN ✅/❌ » sub-bullet of a dated bullet « <device>, recette n/m », or a dated bullet « recette tel-NN = ✅/❌ »."""
+    path = os.path.join(root, "docs", "audits", "ultra", "retours-benjamin.md")
+    if not os.path.isfile(path):
+        return []
+    trials, date, device = [], None, None
+    for line in open(path, encoding="utf-8").read().splitlines():
+        m = TRIAL_BULLET.match(line)
+        if m:
+            date, device = None, None
+            alone = TRIAL_ALONE.search(m.group(2))
+            if alone:
+                dev = _device(m.group(2)[:alone.start()])
+                if dev:
+                    trials.append((alone.group(1), alone.group(2), dev, m.group(1)))
+            else:
+                head = re.search(r"^(.*?)\brecette \d+/\d+", m.group(2))
+                if head and _device(head.group(1)):
+                    date, device = m.group(1), _device(head.group(1))
+            continue
+        m = TRIAL_IN_LIST.match(line)
+        if m and date:
+            trials.append((m.group(1), m.group(2), device, date))
+        elif not line.startswith(" "):
+            date, device = None, None
+    return trials
+
+
+def records_trial(v, tel, mark, device, date):
+    """« RECETTE tel-NN <mark> <device> … <date> » in one « ; » segment of the telephone or note cell."""
+    wanted = re.compile(r"RECETTE\s+" + tel + r"\s+" + mark + r"\s+" + device + r"\b[^;]*\b" + date + r"\b")
+    return any(wanted.search(part) for cell in (v.get("telephone", ""), v.get("note", "")) for part in cell.split(";"))
+
+
+def trial_gaps(root, verdicts):
+    gaps = []
+    for tel, mark, device, date in owner_trials(root):
+        missing = "essai de retours-benjamin.md absent de verdicts.tsv"
+        citing = [v for v in verdicts if re.search(r"\b" + tel + r"\b", v.get("telephone", ""))]
+        if not citing:
+            gaps.append(f"{tel} {mark} {device} {date} : {missing} (aucune ligne ne cite {tel})")
+        gaps += [f"{v.get('item', '?')} : {missing} (attendu « RECETTE {tel} {mark} {device} {date} »)"
+                 for v in citing if not records_trial(v, tel, mark, device, date)]
+    return gaps
+
+
 def commit_exists(root, sha):
     try:
         return subprocess.run(["git", "-C", root, "cat-file", "-e", sha + "^{commit}"], capture_output=True, timeout=60).returncode == 0
@@ -204,6 +261,8 @@ def check(root, resume_path=None, with_git=True):
             elif not any((v.get("garde_id") or "").strip() == kid for v in citing):
                 gaps.append(f"@KnownDefect {kid} ({cls}#{method}) : aucune ligne qui le cite ne porte garde_id {kid} "
                             f"({', '.join(v.get('item', '?') for v in citing)})")
+
+    gaps += trial_gaps(root, verdicts)
 
     try:
         checklist = json.load(open(os.path.join(root, "app", "src", "main", "assets", "recette.json"), encoding="utf-8"))

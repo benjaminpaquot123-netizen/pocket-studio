@@ -175,19 +175,19 @@ def main():
         check(any("[nouveau] bloquant bloque ×1 (b#2) tab_Sons · « klaxon » · rien" in l for l in lines), "b's blocking key first:\n" + text)
         check(any("[nouveau] grave ×1 (a#4) padlive · « klaxon » · rien" in l for l in lines), "a's key:\n" + text)
         check(any("[voulu]" in l and "« rec »" in l for l in lines), "a known key keeps its state:\n" + text)
-        check("3 siège(s), 3 grappe(s) : 2 nouvelle(s)" in text and "1 autre(s) état(s) de la base (voulu : 1)" in text, "the summary:\n" + text)
+        check(lines[1].startswith("3 siège(s), 3 grappe(s) : 2 nouvelle(s), ") and ", 1 autre(s) état(s) de la base (voulu : 1) ;" in lines[1], "the summary:\n" + text)
         with open(base, encoding="utf-8") as f:
             added = f.read()
         check("tab_Sons|klaxon|rien\tnouveau" in added and added.count("\n") == 4, "the new keys added to the base:\n" + added)
         # A second run: nothing new any more, and the two seats' same key (when on the same route) fuses.
         text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-2")
-        check("0 nouvelle(s)" in text, "the keys are known now, at the next round:\n" + text)
+        check(" : 0 nouvelle(s), " in text, "the keys are known now, at the next round:\n" + text)
         text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-1")
-        check("2 nouvelle(s)" in text, "fused again, the same round still calls them new:\n" + text)
+        check(" : 2 nouvelle(s), " in text, "fused again, the same round still calls them new:\n" + text)
         with open(os.path.join(d, "b", "journal.txt"), "w", encoding="utf-8") as f:
             f.write(JOURNAL_B.replace("#1 ROUTE tab_Sons", "#1 ROUTE padlive"))
         text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base)
-        check("×2 (a#4, b#2) padlive · « klaxon » · rien" in text and "1 vue(s) par ≥ 2 sièges" in text, "the same key fused:\n" + text)
+        check("×2 (a#4, b#2) padlive · « klaxon » · rien" in text and "; 1 vue(s) par ≥ 2 sièges" in text, "the same key fused:\n" + text)
         # Banc fiable 2.1: --maj-base adds the round to a known key; the next round sees it « déjà vu ».
         run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--maj-base", "--tour", "tour-7")
         with open(base, encoding="utf-8") as f:
@@ -255,7 +255,7 @@ def same_button(d):
     check("[même bouton (tour-2)] mineur ×1 (A/a#2) padlive · « padlive_pad_4 » · rien" in text, "the earliest earlier round:\n" + text)
     check("[nouveau] mineur ×1 (A/a#4) padlive · « help_padlive » · rien" in text, "known at this round only: new:\n" + text)
     check("[nouveau] mineur ×1 (A/a#7) padlive · « padlive_rec » · incompris" in text, "known at a later round only: new:\n" + text)
-    check("1 même bouton (tour-2 : 1)" in text, "counted in the header:\n" + text)
+    check(", 1 même bouton (tour-2 : 1), " in text, "counted in the header:\n" + text)
     # A generic button (the tutorial's « Je le fais » does a different thing at each step) and a navigation tag.
     write(os.path.join(d, "lotA", "a", "journal.txt"), JOURNAL_A.replace("#2 DOIGT padlive_pad_4 « Klaxon »", "#2 DOIGT tuto_do « Je le fais »")
           .replace("#4 DOIGT help_padlive « ? »", "#4 DOIGT tab_Sons « Sons »"))
@@ -263,7 +263,7 @@ def same_button(d):
     text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
     check("[nouveau] mineur ×1 (A/a#2) padlive · « tuto_do » · rien" in text, "a generic button is no « même bouton »:\n" + text)
     check("[nouveau] mineur ×1 (A/a#4) padlive · « ? » · rien" in text, "a navigation tag is never the target:\n" + text)
-    check("0 même bouton" in text, "none counted:\n" + text)
+    check(", 0 même bouton, " in text, "none counted:\n" + text)
 
 
 def measured_numbers(d):
@@ -382,7 +382,7 @@ def element_field(d):
           "the element is the target (two languages, one key) and a button for « même bouton »:\n" + text)
     check("[nouveau] grave ×2 (A/c#1, A/d#1) dialogue:part_header_menu · « partie c » · rien" in text,
           "no element, or a navigation tag as element: the free text stays the target:\n" + text)
-    check("4 siège(s), 2 grappe(s)" in text, "two clusters:\n" + text)
+    check(text.splitlines()[1].startswith("4 siège(s), 2 grappe(s) : "), "two clusters:\n" + text)
 
 
 REPORT_STATES = """siege: a | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
@@ -427,11 +427,11 @@ def header_counts(d):
                 "padlive|help_padlive|texte-faux\tvoulu\ttour-3\t\n")  # the button's earliest round stays tour-2
     text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
     head = text.splitlines()[1]
-    check("1 siège(s), 5 grappe(s) : 1 nouvelle(s), 1 déjà vue(s) (tour-1 : 1), 1 même bouton (tour-2 : 1)" in head,
+    check(head.startswith("1 siège(s), 5 grappe(s) : 1 nouvelle(s), 1 déjà vue(s) (tour-1 : 1), 1 même bouton (tour-2 : 1), "),
           "new, seen before and same button counted apart, by round:\n" + head)
-    check("0 qui revien(nen)t (confirmé par un lecteur), 0 candidat(s) « revient ? »" in head, "comebacks and candidates:\n" + head)
-    check("1 [banc?]" in head and "1 autre(s) état(s) de la base (voulu : 1)" in head, "the bench's doubts and the base's states:\n" + head)
-    check("1 fiche(s) rejetée(s) (jugement sonore)" in head and "Écartés : A/a#2 (jugement sonore)" in head, "the rejected cards:\n" + head)
+    check(", 0 qui revien(nen)t (confirmé par un lecteur), 0 candidat(s) « revient ? »" in head, "comebacks and candidates:\n" + head)
+    check(", 1 [banc?] (" in head and ", 1 autre(s) état(s) de la base (voulu : 1) ;" in head, "the bench's doubts and the base's states:\n" + head)
+    check("; 1 fiche(s) rejetée(s) (jugement sonore) ;" in head and "Écartés : A/a#2 (jugement sonore)." in head, "the rejected cards:\n" + head)
     check("[même bouton (tour-2)]" in text and "[déjà vu (tour-1)]" in text and "[banc?]" in text, "the states themselves:\n" + text)
 
 
@@ -452,7 +452,7 @@ def comebacks(d):
     check("[nouveau] grave ×1 (A/a#4) padlive · « klaxon »" in text, "fixed at round 3, seen at round 3: that round's own defect:\n" + text)
     write(os.path.join(d, "revient.tsv"), "tour\tcle\trevient\ntour-4\tpadlive|klaxon|rien\toui\n")
     text = run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--tour", "tour-4")
-    check("[revient] grave ×1 (A/a#4)" in text and "1 qui revien(nen)t" in text, "confirmed by a reader:\n" + text)
+    check("[revient] grave ×1 (A/a#4)" in text and ", 1 qui revien(nen)t (confirmé par un lecteur), " in text, "confirmed by a reader:\n" + text)
     write(os.path.join(d, "revient.tsv"), "tour\tcle\trevient\ntour-4\tpadlive|klaxon|rien\tnon\n")
     text = run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--tour", "tour-4")
     check("[nouveau] grave ×1 (A/a#4)" in text, "refused by a reader: another defect:\n" + text)
@@ -610,7 +610,7 @@ def fusion_v2(d):
     text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--verdicts", verdicts)
     check("[revient ?] grave ×2 (A/a#2, A/b#2) padlive · « padlive_pad_4 » · rien" in text, "a Korean and a French seat, one key, back (a candidate):\n" + text)
     check("« 全部止める »" in text and "[banc contredit ?]" in text, "non-Latin target kept, bench verdict contradicted (a candidate):\n" + text)
-    check("2 siège(s), 2 grappe(s)" in text, "the hesitation saying « cible » is no defect:\n" + text)
+    check(text.splitlines()[1].startswith("2 siège(s), 2 grappe(s) : "), "the hesitation saying « cible » is no defect:\n" + text)
     promises = open(os.path.join(d, "promesses.tsv"), encoding="utf-8").read()
     check("A/a\tpadlive_hint\t" in promises and "\tnon\t" in promises, "the promise listed:\n" + promises)
     incidents = open(os.path.join(d, "incidents-banc.tsv"), encoding="utf-8").read()
@@ -774,7 +774,7 @@ def missions_of_round_1(d):
                              "#4 ROUTE padlive | MODE pro | EMPREINTE 4444 | project=p-2 no tuto\n#4 SON Son : rien ne joue.\n#4 FIN : fin")
     write(os.path.join(c, "journal.txt"), free)
     untouched = json.dumps({"projects": [{"name": "P", "parts": 0, "tracks": 0, "audio_clips": 0, "stars": [], "synth_tracks": [
-        {"name": "Synthé", "sound": "x", "notes": 3, "edited": False}]}], "stem_sets": 0, "shared": []})
+        {"name": "Synthé", "sound": "x", "notes": 0, "edited": False}]}], "stem_sets": 0, "shared": []})
     write(os.path.join(c, "etat", "resume.json"), untouched)
     out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
     check("mission=non" in out and "aucun son entendu" in out and "aucun changement gardé ni fichier partagé" in out,
@@ -793,6 +793,14 @@ def missions_of_round_1(d):
     write(os.path.join(c, "etat", "resume.json"), untouched.replace('"shared": []', '"shared": ["perf.m4a"]'))
     out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
     check("mission=reussie" in out and "partagé : perf.m4a" in out, "a sound heard and a file shared: succeeded too:\n" + out)
+    # Review of fusion64: a piano-roll composer writes notes on the main Synthé (not in « tracks », its sound untouched):
+    # a trace; so are Live pads recorded.
+    write(os.path.join(c, "etat", "resume.json"), untouched.replace('"notes": 0, "edited": false', '"notes": 12, "edited": false'))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
+    check("mission=reussie" in out and "12 note(s) au synthé" in out, "notes written on the main Synthé: a change kept:\n" + out)
+    write(os.path.join(c, "etat", "resume.json"), untouched.replace('"synth_tracks":', '"live_pads": 2, "synth_tracks":'))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
+    check("mission=reussie" in out and "2 pad(s) Live enregistré(s)" in out, "Live pads recorded: a change kept:\n" + out)
     os.remove(os.path.join(c, "sound-3.txt"))
     out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
     check("mission=partielle" in out and "aucun son entendu" in out, "a file shared but no sound heard: partial:\n" + out)

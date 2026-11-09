@@ -18,7 +18,7 @@ Le détail technique de chaque ligne reste dans `docs/audits/ultra/PLAN-RESTE.md
 
 ## 2. Les règles du jeu (quota et confiance)
 
-- **Un seul agent à la fois** (consigne de Benjamin du 2026-11-09) : l'auteur travaille, puis s'arrête, puis un relecteur neuf qui n'a pas écrit le code prend la suite. Jamais deux agents en même temps, tour d'audit compris. C'est plus lent à l'horloge, mais ça ménage le quota.
+- **Un seul agent à la fois pour les réparations et les corrections** (consigne de Benjamin du 2026-11-09) : l'auteur travaille, puis s'arrête, puis un relecteur neuf qui n'a pas écrit le code prend la suite. **Plusieurs agents pour les audits** (il l'a précisé le même soir) : trois testeurs au plus en même temps pendant un tour. J'annonce le nombre avant chaque lancement.
 - **Chaque réparation se prouve** : un test rouge d'abord, la correction ensuite, la relecture, puis la fusion par le script. Pas de « ça devrait marcher ».
 - **Une étape finie** : trois lignes de nouvelles, un envoi sur la branche, et je m'arrête. Tu relances avec « go » et le numéro de l'étape, ou « continue ».
 - **Pas d'APK et pas d'essai sur ton téléphone** tant que tu ne le demandes pas.
@@ -34,7 +34,7 @@ Le détail technique de chaque ligne reste dans `docs/audits/ultra/PLAN-RESTE.md
 | 2 | Appli, première vague : partager et retrouver, les trois bloquants | 30 h | 1 |
 | 3 | Banc : pads Live, fin de l'audit, fin du plan | 55 h | 1 |
 | 4 | Appli, deuxième vague : le reste des dix chantiers | 70 h | 1 |
-| 5 | Tour 6 : le petit tour de contrôle | 6 testeurs | 1 |
+| 5 | Tour 6 : le petit tour de contrôle | 6 testeurs | 3 |
 
 Les étapes 1 et 3 valent pour le banc. Les étapes 2 et 4 touchent l'appli : elles ne partent que sur ton go.
 
@@ -79,7 +79,7 @@ Preuve attendue : les tests et les captures d'écran nommés dans l'audit, regar
 | Lot | En clair | Lignes du plan | Durée |
 |---|---|---|---|
 | 4. Les pads Live | Sur le banc, un pad Live attend la mesure comme sur ton téléphone, et le banc écoute les ordres reçus par le moteur, plus ce qu'il a écrit lui-même. | A.16 | 8 h |
-| 5. Finir l'audit du banc | Rejouer ce que l'audit n'a pas pu lancer. Auditer les quatre dimensions laissées de côté : le portail et les scripts, le réalisme du testeur, le dépôt, la méthode. Un agent à la fois, pas douze. | A.1, A.17 | 7 h 30 |
+| 5. Finir l'audit du banc | Rejouer ce que l'audit n'a pas pu lancer. Auditer les quatre dimensions laissées de côté : le portail et les scripts, le réalisme du testeur, le dépôt, la méthode. Deux agents, pas douze. | A.1, A.17 | 7 h 30 |
 | 6. La fin du plan | « attends » qui ne dure plus deux minutes, l'écran vide au démarrage, la taille d'un export (5 h 30). Les contrôles restants de la séance 5 (9 h 30). Les verdicts encore à trancher et le tableau de bord complet (13 h). Les équipes de correction aussi fiables que le banc, avec un essai à blanc (7 h 30). Dix contrôles complets de suite et un tour de fumée à 4 sièges (4 h 30). | 4.4, 4.6, 4.7 ; 5.1 à 5.4, 5.10, 5.11 ; 6.2, 6.3, 6.5 ; 7.3 à 7.7 ; critères 1 à 8 | 40 h |
 
 Sortie de l'étape 3 : les huit critères de sortie de `PLAN-RESTE.md` section 5 sont tenus, et le juge strict affiche zéro écart. Le banc est bon pour le service.
@@ -105,7 +105,7 @@ S'y ajoutent les 5 graves du tour 5 et les points rouges de ta recette qui ne so
 
 - **Condition** : l'étape 3 est finie, et au moins l'étape 2 est fusionnée. Auditer avant, ce serait retrouver les mêmes défauts en payant deux fois.
 - **Qui** : 6 testeurs simulés, un par zone de l'appli. Fiches de route fabriquées par programme, plus la liste « œil neuf » de l'audit de prise en main (section 7). Tablette à 130 % et téléphone à 100 %.
-- **Déroulé** : les 6 testeurs passent l'un après l'autre, puis un lecteur pour les défauts qui reviennent, puis une synthèse. Huit agents en tout, un seul à la fois.
+- **Déroulé** : deux lots de 3 testeurs, puis un lecteur pour les défauts qui reviennent, puis une synthèse. Huit agents en tout, trois au plus en même temps.
 - **Ce que tu reçois** : un tableau de bord, chaque défaut avec sa preuve, et les deux notes refaites. Objectif : aucun bloquant, aucun grave sur le siège « œil neuf ».
 
 ## 5. Ta part, quand tu auras le temps (rien d'urgent)

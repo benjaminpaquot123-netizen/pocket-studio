@@ -19,6 +19,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -36,6 +37,9 @@ import java.time.Duration
  */
 @RunWith(RobolectricTestRunner::class)
 class Tour3AppProofTest {
+    /** PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). */
+    @get:Rule
+    val pristine = BenchPristineRule()
     private val app: Application get() = ApplicationProvider.getApplicationContext()
 
     /** A plain engine: the live engine's commands recorded, nothing else. */

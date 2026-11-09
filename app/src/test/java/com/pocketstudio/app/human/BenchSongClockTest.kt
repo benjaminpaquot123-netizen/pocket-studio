@@ -2,6 +2,7 @@ package com.pocketstudio.app.human
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -17,6 +18,9 @@ import java.time.Duration
  */
 @RunWith(RobolectricTestRunner::class)
 class BenchSongClockTest {
+    /** PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). */
+    @get:Rule
+    val pristine = BenchPristineRule()
     private val e = BenchEngine()
 
     private fun play(countInBars: Int = 0, songStep: Int = 0) = e.post(0L, TRANSPORT, 1f, countInBars, songStep)

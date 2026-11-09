@@ -43,6 +43,9 @@ import java.io.File
  * and once the window is closed the screen comes back to rest. To check on a phone too (recette: rename a project).
  */
 abstract class Tour3RenameIdleBase(private val theme: String) {
+    /** PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). */
+    @get:Rule
+    val pristine = BenchPristineRule()
     @get:Rule
     val compose = createEmptyComposeRule()
 
@@ -55,6 +58,8 @@ abstract class Tour3RenameIdleBase(private val theme: String) {
         com.pocketstudio.app.rhythm.ClosingSaves.awaitIdleBlocking(15_000)
         com.pocketstudio.app.onboarding.LaunchRule.askAtStartForTest = true
         SettingsStore.forgetForTests()
+        // PLAN-RESTE 4.5: the ViewModel factory kept this test's Application (as HumanTester.end).
+        androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory::class.java.getDeclaredField("_instance").apply { isAccessible = true }.set(null, null)
     }
 
     private val projectMenu = androidx.compose.ui.test.SemanticsMatcher("a project's ⋮") { n ->
@@ -151,6 +156,9 @@ class Tour3StudioRenameIdleTest : Tour3RenameIdleBase("Studio")
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = HumanTester.PHONE)
 class Tour3NameFieldIdleTest {
+    /** PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). */
+    @get:Rule
+    val pristine = BenchPristineRule()
     @get:Rule
     val compose = androidx.compose.ui.test.junit4.createComposeRule()
 

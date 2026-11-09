@@ -44,6 +44,9 @@ import java.time.Duration
 @RunWith(RobolectricTestRunner::class)
 @Config(qualifiers = HumanTester.PHONE)
 class BenchShareTest {
+    /** PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). */
+    @get:Rule
+    val pristine = BenchPristineRule()
     @get:Rule
     val compose = createAndroidComposeRule<ComponentActivity>()
     private val h = AppHarness(compose)
@@ -71,6 +74,8 @@ class BenchShareTest {
         NativeEngine.sink = null
         ShadowMediaCodec.clearCodecs()
         h.finish()
+        // PLAN-RESTE 4.5: the ViewModel factory kept this test's Application (as HumanTester.end).
+        androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory::class.java.getDeclaredField("_instance").apply { isAccessible = true }.set(null, null)
     }
 
     private fun shown(tag: String) = compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()

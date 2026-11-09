@@ -79,6 +79,9 @@ import java.time.Duration
 abstract class HumanTester(private val seat: String) {
     @get:Rule
     val compose = createEmptyComposeRule()
+    /** PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). */
+    @get:Rule
+    val pristine = BenchPristineRule()
     private val app: Application get() = ApplicationProvider.getApplicationContext()
     private var scenario: ActivityScenario<MainActivity>? = null
 
@@ -145,6 +148,11 @@ abstract class HumanTester(private val seat: String) {
         SettingsStore.forgetForTests()
         com.pocketstudio.model.i18n.I18n.everyday = false
         com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.FR
+        // PLAN-RESTE 4.5 (found by BenchPristineRule): the app's ViewModel factory kept this test's Application, the touch
+        // guard this test's last touch (its uptime), a take may still be written: the next test starts on none of it.
+        com.pocketstudio.app.rhythm.TakeVault.app.awaitIdleBlocking(15_000)
+        com.pocketstudio.app.ui.DoubleTouchGuard.reset()
+        ViewModelProvider.AndroidViewModelFactory::class.java.getDeclaredField("_instance").apply { isAccessible = true }.set(null, null)
     }
 
     /** The seat's folder while the bench runs a seat (null in the bench's own tests). */

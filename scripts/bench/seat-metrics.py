@@ -315,7 +315,9 @@ def synth(state, j, m):
 
 def _saved_changes(state):
     """What a seat left on the phone that a fresh project has not (the seat starts with no project at all): a part, a
-    track, a take, a Pad Live star, a retouched synth sound, a remix set, a separated song. One line each."""
+    track, a take, a Pad Live star, notes on a synth (the main Synthé is not in « tracks »), a retouched synth sound,
+    a Live pad recorded (live.clips are filled by the tester's own actions, unlike the Pad Live set), a remix set, a
+    separated song. One line each."""
     out = []
     for p in _projects(state):
         name = p.get("name", "?")
@@ -329,6 +331,10 @@ def _saved_changes(state):
             out.append(f"« {name} » : {len(p['stars'])} défi(s) avec étoiles")
         if any(t.get("edited") for t in p.get("synth_tracks", [])):
             out.append(f"« {name} » : un son de synthé retouché")
+        if sum(t.get("notes", 0) for t in p.get("synth_tracks", [])):
+            out.append(f"« {name} » : {sum(t.get('notes', 0) for t in p['synth_tracks'])} note(s) au synthé")
+        if p.get("live_pads", 0):
+            out.append(f"« {name} » : {p['live_pads']} pad(s) Live enregistré(s)")
         if p.get("remix_set"):
             out.append(f"« {name} » : un remix")
     if state.get("stem_sets", 0):

@@ -34,6 +34,9 @@ for zone in "${zones[@]}"; do
   [ -z "$after" ] || { echo "$zone: changed after the review ($read_sha): $after: not merged." >&2; exit 3; }
   printf '%s\n' "$text" | grep -Eq 'Verdict *: *0 bloquant, *0 grave' \
     || { echo "$zone: the review's verdict is not « 0 bloquant, 0 grave »: not merged." >&2; exit 3; }
+  # PLAN-RESTE 7.1: a team branch never brings a symbolic link (a third-party checkout linked in, a secret linked out).
+  links="$(git ls-tree -r "eq/$tour-$zone" | awk '$1 == "120000" {print $4}')"
+  [ -z "$links" ] || { echo "$zone: symbolic link(s) in the branch: $links: not merged." >&2; exit 6; }
   before="$(git rev-parse HEAD)"
   if ! git merge --no-ff -m "Merge team $zone of $tour (audit ultra)" "eq/$tour-$zone"; then
     git merge --abort || true

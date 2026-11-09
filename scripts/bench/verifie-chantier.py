@@ -127,12 +127,40 @@ def check(root, resume_path=None):
     return gaps
 
 
+def red_green_pairs(root, since="2026-11-07"):
+    """(b) Every bench repair is a « rouge: » commit (the guard, red) followed by a « vert: » commit (the fix) in the
+    same history. A red with no green after it is a gap; so is a green with no red before it (a repair without proof)."""
+    import subprocess
+    try:
+        out = subprocess.run(["git", "-C", root, "log", f"--since={since}", "--reverse", "--format=%h %s"],
+                             capture_output=True, text=True, timeout=120, check=True).stdout
+    except (subprocess.SubprocessError, OSError) as e:
+        return [f"git log impossible : {e}"]
+    gaps, open_reds, greens_without_red = [], [], 0
+    for line in out.splitlines():
+        sha, _, subject = line.partition(" ")
+        low = subject.lower()
+        if low.startswith("rouge:"):
+            open_reds.append((sha, subject))
+        elif low.startswith("vert:"):
+            if open_reds:
+                open_reds.pop(0)
+            else:
+                greens_without_red += 1
+                gaps.append(f"{sha} « {subject[:60]} » : vert sans rouge avant lui")
+    gaps += [f"{sha} « {subject[:60]} » : rouge sans vert après lui" for sha, subject in open_reds]
+    return gaps
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=".")
     ap.add_argument("--resume", default=None, help="selftest-resume.txt of the latest selftest")
+    ap.add_argument("--sans-git", action="store_true", help="skip the rouge/vert pairs (no git history at hand)")
     a = ap.parse_args()
     gaps = check(a.root, a.resume)
+    if not a.sans_git:
+        gaps += red_green_pairs(a.root)
     for g in gaps:
         print(g)
     print(f"chantier : {len(gaps)} écarts")

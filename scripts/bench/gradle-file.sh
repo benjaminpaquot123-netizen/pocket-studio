@@ -22,7 +22,7 @@ if ! flock -n 9; then
 fi
 
 stop_daemons() {
-  ./gradlew --stop >/dev/null 2>&1 || true
+  PS_GRADLE_FILE=1 ./gradlew --stop >/dev/null 2>&1 || true
   # The Kotlin compile daemon and any orphan test worker (not stopped by --stop).
   pkill -f 'KotlinCompileDaemon' 2>/dev/null || true
   pkill -f 'GradleWorkerMain' 2>/dev/null || true
@@ -43,7 +43,7 @@ while [ "$(avail_gb)" -lt "$mem_min" ]; do
 done
 
 : >"$log"
-./gradlew "$@" >"$log" 2>&1 &
+PS_GRADLE_FILE=1 ./gradlew "$@" >"$log" 2>&1 &
 pid=$!
 status=0
 while kill -0 "$pid" 2>/dev/null; do

@@ -432,13 +432,13 @@ def chantier(d):
             "t\tB\tk2\tm\tbanc\touvert\t-\tBenchFooTest#guardsIt\trecette tel-02\t-\tn\n")
     write(os.path.join(ultra, "verdicts.tsv"), good)
     script = os.path.join(HERE, "verifie-chantier.py")
-    out = run(script, "--root", root)
+    out = run(script, "--root", root, "--sans-git")
     check("chantier : 0 écarts" in out, "a clean work: 0 gap\n" + out)
     bad = (head + "t\tA\tk1\tm\tappli\touvert\tBenchFooTest#guardsIt\t-\trecette tel-01\t-\tn\n"
            "t\tB\tk2\tm\tbanc\touvert\t-\t-\t-\t-\tn\n"
            "t\tC\tk3\tm\tappli\touvert\tOther#provesIt\t-\t-\t-\tn\n")
     write(os.path.join(ultra, "verdicts.tsv"), bad)
-    r = subprocess.run([sys.executable, "-I", script, "--root", root], capture_output=True, text=True)
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git"], capture_output=True, text=True)
     out = r.stdout
     check(r.returncode == 1, "gaps fail the run")
     check("A : preuve d'appli BenchFooTest#guardsIt est un test du banc" in out, out)

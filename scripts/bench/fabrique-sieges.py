@@ -16,7 +16,8 @@ CATALOGUE = os.path.join(HERE, "..", "..", "docs", "audits", "ultra", "promesses
 GOALS = {
     "premier-morceau": "son (un son joue), partie (une 2e partie existe), partage (un fichier est partagé)",
     "voix": "prise (une prise de voix existe), ecoute (elle s'entend dans le morceau), garde (elle est encore là après Retour)",
-    "libre": "but1 (ce que ton profil vient faire), but2 (le refaire autrement), but3 (le retrouver après Retour)",
+    # PLAN-RESTE 6.4: what seat-metrics.py's « libre » oracle reads (a sound heard, a change kept or a file shared).
+    "libre": "son (un son a joué), trace (un changement gardé sur le téléphone : partie, piste, prise, étoile, son retouché, remix) ou partage (un fichier partagé)",
     "padlive": "son (un pad sonne au 1er toucher), stop (tout s'arrête quand tu le demandes), prise (une performance est enregistrée)",
     "tuto-facile": "chap1 (1er chapitre fini), chap3 (3e chapitre fini), bravo (« Bravo » du tuto)",
     "tuto-pro": "chap1 (1er chapitre fini), chap3 (3e chapitre fini), bravo (« Bravo » du tuto)",
@@ -53,7 +54,10 @@ def promises(field, cat, tour, lot, seat):
         if any(pid == q for q, _ in out):
             raise SystemExit(f"{lot}{seat}: promise {pid} twice")
         out.append((pid, text))
-    return out[:5]
+    # PLAN-RESTE 6.4: a brief holds 5 promises at most (the report template's limit); refused, never cut in silence.
+    if len(out) > 5:
+        raise SystemExit(f"{lot}{seat}: {len(out)} promises, 5 at most (cut the seat's promise field in sieges-proposes.tsv)")
+    return out
 
 
 def main(argv):

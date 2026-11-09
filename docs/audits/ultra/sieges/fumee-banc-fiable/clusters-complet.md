@@ -1,5 +1,5 @@
 # Grappes du tour « fumee-banc-fiable »
-4 siège(s), 19 grappe(s), 13 nouvelle(s), 0 vue(s) par ≥ 2 sièges (confirmées sans juge), 0 qui revien(nen)t (confirmé par un lecteur), 3 candidat(s) « revient ? » à confirmer dans revient.tsv, 9 déjà vue(s) à un tour d'avant (même clé ou même bouton).
+4 siège(s), 19 grappe(s) : 7 nouvelle(s), 3 déjà vue(s) (tour-5 : 3), 4 même bouton (tour-1 : 1, tour-4 : 3), 0 qui revien(nen)t (confirmé par un lecteur), 3 candidat(s) « revient ? » à confirmer dans revient.tsv, 2 [banc?] (limites connues du banc, à trancher) ; 0 fiche(s) rejetée(s) (jugement sonore) ; 0 vue(s) par ≥ 2 sièges (confirmées sans juge).
 
 - [déjà vu (tour-5)] grave ×1 (A/b#10) padlive_pads_side · « padlive_undo » · perdu — un avertissement avant d'effacer la prise / la prise sur B1 est effacée d'un coup (« ページ B · 空 »), aucun message, pas de « refaire »
 - [revient ?] grave ×1 (A/a#11) tab_simple_Clavier · « record_start » · incompris — mes notes vont sur la piste « मेलोडी » où je viens de mettre Marimba (le guide me l'a fait choisir juste avant) / une piste « मेरी मेलोडी » au son FM पियानो reçoit la prise ; Marimba n'est pas sur ma mélodie

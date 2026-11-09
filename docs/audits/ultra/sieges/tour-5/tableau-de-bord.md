@@ -12,16 +12,18 @@ Calculé par `scripts/bench/tableau-de-bord.py` ; « ? » = chiffre manquant, la
 | D | Promesses tenues (vérifiées par ≥ 2 sièges) ; vues au moins une fois | 0/0 ; 0/120 ; 14 contredite(s) | ≥ 90 % ; ≥ 80 % | ? |
 | E | Missions réussies (oracle mesures.json) | 20/24 | ≥ 90 % | non |
 | F | Moyens nouveaux (dont vus par ≥ 2 sièges) | 62 (2) | ≤ 5 (0) | non |
-| G | Relecture neuve, corrections sans test, fichiers non commités | ?, ?, 1, 15 | 0, 0, 0, 0 | ? |
-| H | Hors banc : CI build + émulateur, points rouges de la recette téléphone | ?/?, ? | vert/vert, 0 | ? |
+| G | Relecture neuve, corrections sans test, fichiers non commités | 0, 0, 1, 0 | 0, 0, 0, 0 | non |
+| H | Hors banc : CI build + émulateur, points rouges de la recette téléphone | ?/?, 8 (16 essais sur 18 faits le 2026-11-08 ; tel-15 et tel-19 par preuve d'appli) | vert/vert, 0 | ? |
 | I | Couverture : cases vides, lots non joués, sièges joués / coupés par le banc | ?, 0, 24 / 1 | 0, 0, ≥ 16 / ≤ 3 | ? |
 
 Toutes remplies : non
 
 ## Courbe de convergence
 
-| tour | sieges | fiches | fiches_par_siege | graves_declares_par_siege | grappes | revient | incidents_banc | promesses_tenues |
-|---|---|---|---|---|---|---|---|---|
-| tour-5 | 24 | 190 | 7.9 | 0.33 | 182 | 0 | 14 | 0/0 |
+`echelle` : v1 = le mot du testeur (bloquant, grave…), v2 = la conséquence (mission-impossible, contourne-en-N-gestes) ; `graves_declares` : ce que les testeurs ont écrit, à leur échelle ; `graves_confirmes` : ce que la fusion garde grave (revu par le testeur, ni « banc? » ni verdict « banc »). Les graves ne se comparent qu'entre tours de même échelle.
+
+| tour | sieges | fiches | fiches_par_siege | echelle | graves_declares_par_siege | graves_confirmes_par_siege | grappes | revient | incidents_banc | promesses_tenues |
+|---|---|---|---|---|---|---|---|---|---|---|
+| tour-5 | 24 | 190 | 7.9 | v2 | 0.62 | 0.33 | 182 | 0 | 14 | 0/0 |
 
 **Arrêt de l'audit possible : non** (A à I remplies sur les deux derniers tours complets).

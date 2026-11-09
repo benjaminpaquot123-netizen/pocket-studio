@@ -175,19 +175,19 @@ def main():
         check(any("[nouveau] bloquant bloque ×1 (b#2) tab_Sons · « klaxon » · rien" in l for l in lines), "b's blocking key first:\n" + text)
         check(any("[nouveau] grave ×1 (a#4) padlive · « klaxon » · rien" in l for l in lines), "a's key:\n" + text)
         check(any("[voulu]" in l and "« rec »" in l for l in lines), "a known key keeps its state:\n" + text)
-        check("3 siège(s), 3 grappe(s), 2 nouvelle(s)" in text, "the summary:\n" + text)
+        check(lines[1].startswith("3 siège(s), 3 grappe(s) : 2 nouvelle(s), ") and ", 1 autre(s) état(s) de la base (voulu : 1) ;" in lines[1], "the summary:\n" + text)
         with open(base, encoding="utf-8") as f:
             added = f.read()
         check("tab_Sons|klaxon|rien\tnouveau" in added and added.count("\n") == 4, "the new keys added to the base:\n" + added)
         # A second run: nothing new any more, and the two seats' same key (when on the same route) fuses.
         text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-2")
-        check("0 nouvelle(s)" in text, "the keys are known now, at the next round:\n" + text)
+        check(" : 0 nouvelle(s), " in text, "the keys are known now, at the next round:\n" + text)
         text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-1")
-        check("2 nouvelle(s)" in text, "fused again, the same round still calls them new:\n" + text)
+        check(" : 2 nouvelle(s), " in text, "fused again, the same round still calls them new:\n" + text)
         with open(os.path.join(d, "b", "journal.txt"), "w", encoding="utf-8") as f:
             f.write(JOURNAL_B.replace("#1 ROUTE tab_Sons", "#1 ROUTE padlive"))
         text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base)
-        check("×2 (a#4, b#2) padlive · « klaxon » · rien" in text and "1 vue(s) par ≥ 2 sièges" in text, "the same key fused:\n" + text)
+        check("×2 (a#4, b#2) padlive · « klaxon » · rien" in text and "; 1 vue(s) par ≥ 2 sièges" in text, "the same key fused:\n" + text)
         # Banc fiable 2.1: --maj-base adds the round to a known key; the next round sees it « déjà vu ».
         run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--maj-base", "--tour", "tour-7")
         with open(base, encoding="utf-8") as f:
@@ -209,7 +209,230 @@ def main():
         seats_from_ids(d)
     with tempfile.TemporaryDirectory() as d:
         comebacks(d)
+    with tempfile.TemporaryDirectory() as d:
+        header_counts(d)
+    with tempfile.TemporaryDirectory() as d:
+        element_field(d)
+    with tempfile.TemporaryDirectory() as d:
+        curve_scales(d)
+    with tempfile.TemporaryDirectory() as d:
+        same_button(d)
+    with tempfile.TemporaryDirectory() as d:
+        measured_numbers(d)
     print("ultra bench scripts: OK")
+
+
+REPORT_BUTTONS = """siege: a | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
+defauts:
+  - geste: 2 | ecran.vu: 3 | cible: Klaxon | geste.type: touche
+    attendu: un son | obtenu: rien
+    symptome: rien
+    gravite: finition | revu: non | banc?: non | promesse: -
+  - geste: 4 | ecran.vu: 5 | cible: ? | geste.type: touche
+    attendu: l'aide | obtenu: rien
+    symptome: rien
+    gravite: finition | revu: non | banc?: non | promesse: -
+  - geste: 7 | ecran.vu: 8 | cible: REC | geste.type: touche
+    attendu: enregistrer | obtenu: rien
+    symptome: incompris
+    gravite: finition | revu: non | banc?: non | promesse: -
+"""
+
+
+def same_button(d):
+    """Banc fiable 2.4 / PLAN-RESTE 6.4: « même bouton (tour-N) » when the same real button was reported at an earlier
+    round under another route or symptom (N = the earliest such round), a candidate shown without fusion; a button
+    known only at this round or a later one stays « nouveau »; a navigation tag or a generic button (tuto_do, *_back)
+    never makes one."""
+    write(os.path.join(d, "lotA", "a", "journal.txt"), JOURNAL_A)
+    write(os.path.join(d, "lotA", "a", "rapport.md"), REPORT_BUTTONS)
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\n"
+                "mixer|padlive_pad_4|perdu\tnouveau\ttour-3,tour-2\t\n"   # the button, elsewhere, at rounds 2 and 3
+                "settings|help_padlive|rien\tnouveau\ttour-5\t\n"         # this round only
+                "live|padlive_rec|lent\tnouveau\ttour-6\t\n")             # a later round
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
+    check("[même bouton (tour-2)] mineur ×1 (A/a#2) padlive · « padlive_pad_4 » · rien" in text, "the earliest earlier round:\n" + text)
+    check("[nouveau] mineur ×1 (A/a#4) padlive · « help_padlive » · rien" in text, "known at this round only: new:\n" + text)
+    check("[nouveau] mineur ×1 (A/a#7) padlive · « padlive_rec » · incompris" in text, "known at a later round only: new:\n" + text)
+    check(", 1 même bouton (tour-2 : 1), " in text, "counted in the header:\n" + text)
+    # A generic button (the tutorial's « Je le fais » does a different thing at each step) and a navigation tag.
+    write(os.path.join(d, "lotA", "a", "journal.txt"), JOURNAL_A.replace("#2 DOIGT padlive_pad_4 « Klaxon »", "#2 DOIGT tuto_do « Je le fais »")
+          .replace("#4 DOIGT help_padlive « ? »", "#4 DOIGT tab_Sons « Sons »"))
+    write(base, "cle\tetat\tvu\tnote\nmixer|tuto_do|perdu\tnouveau\ttour-1\t\nmixer|tab_Sons|perdu\tnouveau\ttour-1\t\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
+    check("[nouveau] mineur ×1 (A/a#2) padlive · « tuto_do » · rien" in text, "a generic button is no « même bouton »:\n" + text)
+    check("[nouveau] mineur ×1 (A/a#4) padlive · « ? » · rien" in text, "a navigation tag is never the target:\n" + text)
+    check(", 0 même bouton, " in text, "none counted:\n" + text)
+
+
+def measured_numbers(d):
+    """PLAN-RESTE 6.4: tableau-de-bord.py's measured(), on a repository, a docs folder and a round made here: the
+    uncommitted files, the round's reviews (the bench's own aside, « corrigé » rows aside), the fix commits of the
+    round's eq/ branches without a test, the lots not played, the seats played and cut by the bench; a folder of
+    reviews that does not exist gives no number (never a 0)."""
+    sys.path.insert(0, HERE)
+    tb = __import__("tableau-de-bord")
+    repo = os.path.join(d, "repo")
+    os.makedirs(repo)
+
+    def git(*a):
+        subprocess.run(["git", "-C", repo, "-c", "user.name=t", "-c", "user.email=t@t", *a], check=True, capture_output=True)
+    git("init", "-q", "-b", "main")
+    write(os.path.join(repo, "README"), "x")
+    git("add", "README")
+    git("commit", "-q", "-m", "start")
+    git("checkout", "-q", "-b", "eq/tour-9-zone1")
+    write(os.path.join(repo, "app", "src", "main", "A.kt"), "a")
+    git("add", "app")
+    git("commit", "-q", "-m", "a fix without a test")
+    write(os.path.join(repo, "app", "src", "main", "B.kt"), "b")
+    write(os.path.join(repo, "app", "src", "test", "BTest.kt"), "t")
+    git("add", "app")
+    git("commit", "-q", "-m", "a fix with its test")
+    write(os.path.join(repo, "note.txt"), "left behind")
+    docs = os.path.join(d, "docs")
+    write(os.path.join(docs, "tour-9-zone1-relecture.md"),
+          "| # | Gravité | Quoi | État |\n|---|---|---|---|\n| 1 | grave | x | corrigé |\n| 2 | grave | y | ouvert |\n| 3 | bloquant | z | ouvert |\n")
+    write(os.path.join(docs, "tour-9-banc-relecture.md"), "| 4 | grave | w | ouvert |\n")
+    tour = os.path.join(d, "tour-9")
+    write(os.path.join(tour, "sieges.tsv"), "lot\tsiege\tlang\nA\ta\tfr\nA\tb\tfr\nA\tc\tfr\nB\ta\tfr\n")
+    write(os.path.join(tour, "lotA", "a", "mesures.json"), json.dumps({"mesures": {"fin": "fin", "gels": 0}}))
+    write(os.path.join(tour, "lotA", "b", "mesures.json"), json.dumps({"mesures": {"fin": "banc : rien ne change", "gels": 0}}))
+    write(os.path.join(tour, "lotA", "c", "mesures.json"), json.dumps({"mesures": {"fin": "fin", "gels": 2}}))
+    m = tb.measured(tour, "tour-9", root=repo, docs=docs)
+    check(m.get("fichiers_non_commites") == 1, f"one file left behind: {m}")
+    check(m.get("relecture_graves") == 1 and m.get("relecture_bloquants") == 1, f"the review's open rows, the bench's review aside: {m}")
+    check(m.get("corrections_sans_test") == 1, f"one fix commit without a test on eq/tour-9-*: {m}")
+    check(m.get("lots_non_joues") == 1 and m.get("sieges_joues") == 3 and m.get("sieges_coupes_par_le_banc") == 2,
+          f"lot B not played; 3 seats played, 2 cut (the bench's end, a freeze): {m}")
+    m = tb.measured(tour, "tour-9", root=repo, docs=os.path.join(d, "nowhere"))
+    check("relecture_graves" not in m and "relecture_bloquants" not in m, f"no reviews folder: unknown, not 0: {m}")
+
+
+REPORT_V2_GRAVES = """siege: a | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
+defauts:
+  - geste: 2 | ecran.vu: 3 | cible: Klaxon | geste.type: touche
+    attendu: un son | obtenu: rien
+    symptome: rien
+    gravite: mission-impossible | revu: non | banc?: non | promesse: -
+  - geste: 4 | ecran.vu: 5 | cible: ? | geste.type: touche
+    attendu: l'aide | obtenu: rien
+    symptome: rien
+    gravite: contourne-en-5-gestes | revu: oui: ecran 6 | banc?: non | promesse: -
+  - geste: 7 | ecran.vu: 8 | cible: REC | geste.type: touche
+    attendu: tout de suite | obtenu: 40 s
+    symptome: lent
+    gravite: contourne-en-5-gestes | revu: oui: ecran 8 | banc?: temps | promesse: -
+"""
+
+
+def curve_scales(d):
+    """PLAN-RESTE 6.4 (META-AUDIT-2 §2): the convergence curve says each round's scale (v1 = the tester's word,
+    v2 = the consequence) and gives two graves columns: declared by the testers / confirmed (kept grave by the fusion:
+    redone by the tester, not the bench's doubt nor a « banc » verdict); a change of scale between two rounds is
+    written, since their graves do not compare."""
+    write(os.path.join(d, "tour-4", "lotA", "a", "journal.txt"), JOURNAL_A)
+    write(os.path.join(d, "tour-4", "lotA", "a", "rapport.md"), REPORT_A)
+    write(os.path.join(d, "tour-5", "lotA", "a", "journal.txt"), JOURNAL_A)
+    write(os.path.join(d, "tour-5", "lotA", "a", "rapport.md"), REPORT_V2_GRAVES)
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\n")
+    verdicts = os.path.join(d, "verdicts.tsv")
+    write(verdicts, "tour\titem\tcle\tverdict\tpreuve_appli\tgarde_banc\ttelephone\tcommit\n")
+    board = run(os.path.join(HERE, "tableau-de-bord.py"), os.path.join(d, "tour-4"), os.path.join(d, "tour-5"), "--base", base, "--verdicts", verdicts)
+    check("| tour | sieges | fiches | fiches_par_siege | echelle | graves_declares_par_siege | graves_confirmes_par_siege | grappes |" in board,
+          "the curve's columns:\n" + board)
+    check("| tour-4 | 1 | 2 | 2.0 | v1 | 1.0 | 1.0 |" in board, "v1: one grave by the tester's word, kept:\n" + board)
+    check("| tour-5 | 1 | 3 | 3.0 | v2 | 3.0 | 1.0 |" in board,
+          "v2: three graves by the consequence, one kept (a mission-impossible not redone, a « banc? » card):\n" + board)
+    check("Changement d'échelle entre tour-4 et tour-5 (v1 → v2)" in board, "the change of scale is written:\n" + board)
+
+
+JOURNAL_DIALOG = """#0 SIEGE lang=fr device=phone font=100 mode=simple
+#1 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE aaaa | project=p-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 10 10
+#1 DOIGT bouton « Partie C »
+#2 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE bbbb | project=p-1 no tuto
+#2 SON Son : rien ne joue.
+#2 FIN : fin
+"""
+
+
+def element_field(d):
+    """PLAN-RESTE 6.4 (rest of banc fiable 2.4): a card's « element: » (the testTag under the finger, written by newer
+    benches) is the key's target when the journal gives no button (a dialogue, a navigation tag), instead of the free
+    text, so a French and a Hindi seat fuse; a navigation tag as element is ignored; the element is a button for
+    « même bouton »."""
+    card = ("siege: {s} | profil: p | lang: {l} | device: phone | font: 100 | mode: simple\n"
+            "defauts:\n"
+            "  - geste: 1 | ecran.vu: 2 | cible: {c}{e} | geste.type: touche\n"
+            "    attendu: la partie C | obtenu: reste sur A\n"
+            "    symptome: rien\n"
+            "    gravite: contourne-en-5-gestes | revu: oui: ecran 2 | banc?: non | promesse: -\n")
+    for seat, lang, cible, element in (("a", "fr", "Partie C", " | element: part_pick_2"), ("b", "hi", "पार्ट: C", " | element: part_pick_2"),
+                                       ("c", "fr", "Partie C", ""), ("d", "fr", "Partie C", " | element: tab_Sons")):
+        write(os.path.join(d, "lotA", seat, "journal.txt"), JOURNAL_DIALOG)
+        write(os.path.join(d, "lotA", seat, "rapport.md"), card.format(s=seat, l=lang, c=cible, e=element))
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\nparts|part_pick_2|perdu\tnouveau\ttour-2\t\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-6")
+    check("[même bouton (tour-2)] grave ×2 (A/a#1, A/b#1) dialogue:part_header_menu · « part_pick_2 » · rien" in text,
+          "the element is the target (two languages, one key) and a button for « même bouton »:\n" + text)
+    check("[nouveau] grave ×2 (A/c#1, A/d#1) dialogue:part_header_menu · « partie c » · rien" in text,
+          "no element, or a navigation tag as element: the free text stays the target:\n" + text)
+    check(text.splitlines()[1].startswith("4 siège(s), 2 grappe(s) : "), "two clusters:\n" + text)
+
+
+REPORT_STATES = """siege: a | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
+defauts:
+  - geste: 2 | ecran.vu: 3 | cible: Klaxon | geste.type: touche
+    attendu: un son | obtenu: rien
+    symptome: rien
+    gravite: contourne-en-5-gestes | revu: oui: ecran 6 | banc?: non | promesse: -
+  - geste: 4 | ecran.vu: 5 | cible: ? | geste.type: touche
+    attendu: l'aide du Pad Live | obtenu: rien
+    symptome: rien
+    gravite: finition | revu: non | banc?: non | promesse: -
+  - geste: 4 | ecran.vu: 5 | cible: ? | geste.type: touche
+    attendu: « Aide » | obtenu: « ? »
+    symptome: texte-faux
+    gravite: finition | revu: non | banc?: non | promesse: -
+  - geste: 7 | ecran.vu: 8 | cible: REC | geste.type: touche
+    attendu: enregistrer | obtenu: rien
+    symptome: incompris
+    gravite: finition | revu: non | banc?: non | promesse: -
+  - geste: 7 | ecran.vu: 8 | cible: REC | geste.type: touche
+    attendu: tout de suite | obtenu: 40 s
+    symptome: lent
+    gravite: finition | revu: non | banc?: temps | promesse: -
+  - geste: 2 | ecran.vu: 3 | cible: Klaxon | geste.type: touche
+    attendu: propre | obtenu: le son est mauvais
+    symptome: rien
+    gravite: finition | revu: non | banc?: non | promesse: -
+"""
+
+
+def header_counts(d):
+    """PLAN-RESTE 6.4: the fusion's header counts apart, as a partition of the clusters, the new ones, those seen
+    before (by round), the same button (by round), the comebacks, the bench's doubts and the base's other states, and
+    the cards set aside (sound judgments); « nouvelle » no longer includes a « même bouton » cluster."""
+    write(os.path.join(d, "lotA", "a", "journal.txt"), JOURNAL_A)
+    write(os.path.join(d, "lotA", "a", "rapport.md"), REPORT_STATES)
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\n"
+                "padlive|padlive_pad_4|rien\tnouveau\ttour-1\t\n"
+                "settings|help_padlive|perdu\tnouveau\ttour-2\t\n"
+                "padlive|help_padlive|texte-faux\tvoulu\ttour-3\t\n")  # the button's earliest round stays tour-2
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
+    head = text.splitlines()[1]
+    check(head.startswith("1 siège(s), 5 grappe(s) : 1 nouvelle(s), 1 déjà vue(s) (tour-1 : 1), 1 même bouton (tour-2 : 1), "),
+          "new, seen before and same button counted apart, by round:\n" + head)
+    check(", 0 qui revien(nen)t (confirmé par un lecteur), 0 candidat(s) « revient ? »" in head, "comebacks and candidates:\n" + head)
+    check(", 1 [banc?] (" in head and ", 1 autre(s) état(s) de la base (voulu : 1) ;" in head, "the bench's doubts and the base's states:\n" + head)
+    check("; 1 fiche(s) rejetée(s) (jugement sonore) ;" in head and "Écartés : A/a#2 (jugement sonore)." in head, "the rejected cards:\n" + head)
+    check("[même bouton (tour-2)]" in text and "[déjà vu (tour-1)]" in text and "[banc?]" in text, "the states themselves:\n" + text)
 
 
 def comebacks(d):
@@ -229,7 +452,7 @@ def comebacks(d):
     check("[nouveau] grave ×1 (A/a#4) padlive · « klaxon »" in text, "fixed at round 3, seen at round 3: that round's own defect:\n" + text)
     write(os.path.join(d, "revient.tsv"), "tour\tcle\trevient\ntour-4\tpadlive|klaxon|rien\toui\n")
     text = run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--tour", "tour-4")
-    check("[revient] grave ×1 (A/a#4)" in text and "1 qui revien(nen)t" in text, "confirmed by a reader:\n" + text)
+    check("[revient] grave ×1 (A/a#4)" in text and ", 1 qui revien(nen)t (confirmé par un lecteur), " in text, "confirmed by a reader:\n" + text)
     write(os.path.join(d, "revient.tsv"), "tour\tcle\trevient\ntour-4\tpadlive|klaxon|rien\tnon\n")
     text = run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--tour", "tour-4")
     check("[nouveau] grave ×1 (A/a#4)" in text, "refused by a reader: another defect:\n" + text)
@@ -249,6 +472,13 @@ def seats_from_ids(d):
     write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP006 ; P6\n")
     r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "fabrique-sieges.py"), tour], capture_output=True, text=True)
     check(r.returncode != 0 and "twice" in (r.stdout + r.stderr), "the same id twice is refused")
+    # PLAN-RESTE 6.4: more than 5 promises is refused, naming the seat (it used to truncate to 5 without a word).
+    write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP001 ; P002 ; P003 ; P004 ; P005 ; libre: le pad 2 sonne\n")
+    r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "fabrique-sieges.py"), tour], capture_output=True, text=True)
+    check(r.returncode != 0 and "Aa: 6 promises, 5 at most" in (r.stdout + r.stderr), "6 promises are refused, the seat named:\n" + r.stdout + r.stderr)
+    write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP001 ; P002 ; P003 ; P004 ; P005\n")
+    out = run(os.path.join(HERE, "fabrique-sieges.py"), tour)
+    check("1 sièges" in out and open(os.path.join(tour, "briefs", "Aa.txt"), encoding="utf-8").read().count("  - id=") == 5, "5 promises pass whole")
 
 
 def bench_guards(d):
@@ -380,7 +610,7 @@ def fusion_v2(d):
     text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--verdicts", verdicts)
     check("[revient ?] grave ×2 (A/a#2, A/b#2) padlive · « padlive_pad_4 » · rien" in text, "a Korean and a French seat, one key, back (a candidate):\n" + text)
     check("« 全部止める »" in text and "[banc contredit ?]" in text, "non-Latin target kept, bench verdict contradicted (a candidate):\n" + text)
-    check("2 siège(s), 2 grappe(s)" in text, "the hesitation saying « cible » is no defect:\n" + text)
+    check(text.splitlines()[1].startswith("2 siège(s), 2 grappe(s) : "), "the hesitation saying « cible » is no defect:\n" + text)
     promises = open(os.path.join(d, "promesses.tsv"), encoding="utf-8").read()
     check("A/a\tpadlive_hint\t" in promises and "\tnon\t" in promises, "the promise listed:\n" + promises)
     incidents = open(os.path.join(d, "incidents-banc.tsv"), encoding="utf-8").read()
@@ -538,15 +768,46 @@ def missions_of_round_1(d):
     out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "synthe")
     check("mission=non" in out, "the default sound on two tracks is not a sound made:\n" + out)
 
-    # libre: ended by the tester on 3 screens or more; a crash fails it.
+    # libre (PLAN-RESTE 6.4, hardened): ended by the tester on 3 screens or more is not enough; « réussie » needs a
+    # sound heard AND a trace on the phone (a saved change or a shared file). Round 5: A c « réussie » without a sound.
     free = JOURNAL_B.replace("#2 FIN : fin", "#2 > touche 2 2\n#3 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3333 | project=p-2 no tuto\n#3 SON Son : rien ne joue.\n#3 > touche 3 3\n"
                              "#4 ROUTE padlive | MODE pro | EMPREINTE 4444 | project=p-2 no tuto\n#4 SON Son : rien ne joue.\n#4 FIN : fin")
     write(os.path.join(c, "journal.txt"), free)
+    untouched = json.dumps({"projects": [{"name": "P", "parts": 0, "tracks": 0, "audio_clips": 0, "stars": [], "synth_tracks": [
+        {"name": "Synthé", "sound": "x", "notes": 0, "edited": False}]}], "stem_sets": 0, "shared": []})
+    write(os.path.join(c, "etat", "resume.json"), untouched)
     out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
-    check("mission=reussie" in out and "3 écrans différents" in out, "free play ended by the tester:\n" + out)
+    check("mission=non" in out and "aucun son entendu" in out and "aucun changement gardé ni fichier partagé" in out,
+          "3 screens, no sound, nothing left on the phone: not a success:\n" + out)
+    write(os.path.join(c, "sound-3.txt"), "Son : la musique du projet joue en boucle.")
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
+    check("mission=partielle" in out and "aucun changement gardé ni fichier partagé" in out and "aucun son" not in out,
+          "a sound heard but nothing left on the phone: partial:\n" + out)
+    os.remove(os.path.join(c, "etat", "resume.json"))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
+    check("mission=partielle" in out and "état du siège absent" in out, "no state saved: a change cannot be proven, said so:\n" + out)
+    write(os.path.join(c, "etat", "resume.json"), untouched.replace('"audio_clips": 0', '"audio_clips": 1'))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
+    check("mission=reussie" in out and "3 écrans différents" in out and "premier son en 2 geste(s)" in out and "1 prise(s)" in out,
+          "a sound heard and a take kept: free play succeeded:\n" + out)
+    write(os.path.join(c, "etat", "resume.json"), untouched.replace('"shared": []', '"shared": ["perf.m4a"]'))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
+    check("mission=reussie" in out and "partagé : perf.m4a" in out, "a sound heard and a file shared: succeeded too:\n" + out)
+    # Review of fusion64: a piano-roll composer writes notes on the main Synthé (not in « tracks », its sound untouched):
+    # a trace; so are Live pads recorded.
+    write(os.path.join(c, "etat", "resume.json"), untouched.replace('"notes": 0, "edited": false', '"notes": 12, "edited": false'))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
+    check("mission=reussie" in out and "12 note(s) au synthé" in out, "notes written on the main Synthé: a change kept:\n" + out)
+    write(os.path.join(c, "etat", "resume.json"), untouched.replace('"synth_tracks":', '"live_pads": 2, "synth_tracks":'))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
+    check("mission=reussie" in out and "2 pad(s) Live enregistré(s)" in out, "Live pads recorded: a change kept:\n" + out)
+    os.remove(os.path.join(c, "sound-3.txt"))
+    out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
+    check("mission=partielle" in out and "aucun son entendu" in out, "a file shared but no sound heard: partial:\n" + out)
     write(os.path.join(c, "journal.txt"), free.replace("#4 FIN : fin", "#4 CRASH java.lang.IllegalStateException: x\n#4 FIN : plantage"))
     out = run(os.path.join(HERE, "seat-metrics.py"), c, "--mission", "libre")
     check("mission=non" in out, "a crash fails it:\n" + out)
+    write(os.path.join(c, "journal.txt"), free)
 
     # defi: a challenge opened, no star kept: partial (lot F seat e), never « aucun défi joué ».
     write(os.path.join(c, "journal.txt"), JOURNAL_B.replace("#1 > touche 1 1", "#1 > touche 1 1\n#1 DOIGT padlive_challenge_go « Jouer le défi »"))

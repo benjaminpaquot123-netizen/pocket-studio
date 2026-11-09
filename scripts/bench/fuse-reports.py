@@ -14,6 +14,9 @@ cible: ») are both read. Each defect gets a key:
   same in every language; v1: for a gesture's symptom (rien, incompris, mauvais-ecran, bloque, plantage) the route and
   button of gesture « screen − 1 », otherwise the route at the screen n°; the target as the tester wrote it, normalised without
   losing non-Latin letters (NFKC + casefold: « 全部止める » stays itself, it was « ? » before).
+- when the journal gives no button (a dialogue, a navigation tag under the finger) and the card has an « element: »
+  field (the testTag under the finger, written by newer benches), that element is the target instead of the free
+  text (PLAN-RESTE 6.4: « dialogue:<tag>|<element>|<symptôme> »); a navigation tag as element is ignored.
 - symptom families: « promesse » and « bloque » count as « rien », « coupe »/« texte-coupe »/« cache »/« hors-pouce » as
   « affichage » (one defect, five spellings in round 3).
 
@@ -99,7 +102,7 @@ def blocks(text):
             if "cible" in f and section != "hesitations":
                 cur["defects"].append(f)
             continue
-        if cur["defects"] and section == "defauts" and re.match(r"^(attendu|symptome|gravite|banc\?|revu|promesse)\s*:", s):
+        if cur["defects"] and section == "defauts" and re.match(r"^(attendu|symptome|gravite|banc\?|revu|promesse|element)\s*:", s):
             cur["defects"][-1].update(fields(s))
     return out
 
@@ -131,6 +134,12 @@ NAV_TAGS = re.compile(r"^(tab_|wizard_next$|wizard_back$|guide_bar$|rien$|vue$|b
 # Buttons that do a different thing at each step (the tutorial's « Je le fais », the help labels, « Continuer »):
 # the same tag at two rounds says nothing about the same defect.
 GENERIC_BUTTONS = re.compile(r"^(tuto_(do|show|listen|need|next)|help_labels_button|launch_continue|remix_back|.*_back)$")
+
+
+def element_of(d):
+    """The card's « element: » (a testTag) as a key's target: an identifier, never a navigation tag; else None."""
+    e = d.get("element", "").strip()
+    return e if re.fullmatch(r"[A-Za-z][\w.\-#:]*", e) and not NAV_TAGS.match(e) else None
 
 
 def tag_of(journal, n):
@@ -174,17 +183,28 @@ def reports(round_dir):
     return sorted(files)
 
 
-def gravity_of(d):
+def declared_gravity(d):
+    """The gravity as the tester wrote it: a v1 word (bloquant, grave, moyen, mineur) or a v2 consequence
+    (mission-impossible = bloquant, contourne-en-N-gestes = grave if N > 3 else moyen, finition = mineur); 9 unknown."""
     said = d.get("gravite", "").strip().lower()
     g = GRAVITY.get(said.split(" ")[0] if said else "", None)
     if g is None and said.startswith("contourne"):
         n = re.search(r"\d+", said)
         g = 1 if n and int(n.group()) > 3 else 2
-    if g is None:
-        g = 9
+    return 9 if g is None else g
+
+
+def gravity_of(d):
+    """The gravity the fusion keeps: the declared one, « moyen » at most when the tester did not redo it (revu: non)."""
+    g = declared_gravity(d)
     if d.get("revu", "").strip().lower().startswith("non"):
         g = max(g, 2)
     return g
+
+
+def scale_of(d):
+    """The card's template: v2 (a gesture n° and « ecran.vu », the consequence scale) or v1 (the tester's word)."""
+    return "v2" if "ecran.vu" in d else "v1"
 
 
 def tour_no(t):
@@ -253,13 +273,13 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
             for d in b["defects"][:MAX_DEFECTS]:
                 said = f"{d.get('attendu', '').strip()} / {d.get('obtenu', '').strip()}".strip(" /")
                 screen = re.sub(r"\D", "", d.get("ecran.vu", d.get("ecran", ""))) or "?"
+                gesture = re.sub(r"\D", "", d.get("geste", "")) if "ecran.vu" in d else ""
+                cited = gesture or screen  # what the tester cited (v2: the gesture; v1: the screen)
                 if SOUND.search(said):
-                    rejected.append(f"{seat}#{screen} (jugement sonore)")
+                    rejected.append(f"{seat}#{cited} (jugement sonore)")
                     continue
                 raw = d.get("symptome", "?").strip().lower()
                 symptom = FAMILY.get(raw, raw) if raw in SYMPTOMS else "?" + raw
-                gesture = re.sub(r"\D", "", d.get("geste", "")) if "ecran.vu" in d else ""
-                cited = gesture or screen  # what the tester cited (v2: the gesture; v1: the screen)
                 if gesture:
                     tag, route = tag_of(journal, gesture), route_of(journal, gesture)
                 elif screen.isdigit() and int(screen) > 1 and raw in GESTURE_SYMPTOMS:
@@ -268,12 +288,16 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
                 else:
                     # v1, a state of the screen itself: its own route and the target as the tester copied it.
                     tag, route = None, route_of(journal, screen)
+                # PLAN-RESTE 6.4: no button in the journal (a dialogue, a navigation tag): the card's element, if any.
+                tag = tag or element_of(d)
                 key = f"{route}|{tag or norm(d.get('cible'))}|{symptom}"
                 c = clusters.setdefault(key, {"key": key, "seats": set(), "where": [], "gravities": [], "blocks": False,
-                                              "said": [], "bench": [], "tag": tag})
+                                              "said": [], "bench": [], "tag": tag, "declared": [], "scales": []})
                 c["seats"].add(seat)
                 c["where"].append(f"{seat}#{cited}")
                 c["gravities"].append(gravity_of(d))
+                c["declared"].append(declared_gravity(d))  # the tester's own scale, for the dashboard's curve
+                c["scales"].append(scale_of(d))
                 c["blocks"] = c["blocks"] or d.get("bloque", "").strip().lower() == "oui"
                 c["bench"].append(d.get("banc?", "non").strip().lower() not in ("", "non"))
                 if said and not c["said"]:
@@ -317,16 +341,55 @@ def line_of(c):
             f"({', '.join(c['where'][:4])}) {route} · « {target} » · {symptom}{said}")
 
 
+def bucket_of(c):
+    """PLAN-RESTE 6.4: the header's buckets, a partition of the clusters. A comeback (confirmed or a candidate) keeps
+    its bucket whatever the bench's doubt (a reader must read it anyway); then the bench's doubts; then the states."""
+    state = c["state"]
+    if state in ("revient", "banc contredit"):
+        return "revient"
+    if state.endswith(" ?"):
+        return "candidat"
+    if c["bench_doubt"]:
+        return "banc"
+    if state == "nouveau":
+        return "nouveau"
+    if state.startswith(("déjà vu", "même bouton")):
+        return state.split(" (")[0]
+    return "autre"
+
+
+def by_round(clusters, bucket):
+    """« déjà vu (tour-1) » ×6, « (tour-3) » ×12 -> « tour-1 : 6, tour-3 : 12 » (round order)."""
+    counts = {}
+    for c in clusters:
+        if bucket_of(c) == bucket:
+            t = c["state"].split(" (", 1)[1].rstrip(")")
+            counts[t] = counts.get(t, 0) + 1
+    return ", ".join(f"{t} : {n}" for t, n in sorted(counts.items(), key=lambda kv: (tour_no(kv[0]) is None, tour_no(kv[0]) or 0, kv[0])))
+
+
 def render(round_dir, clusters, rejected, seats, limit=MAX_LINES):
-    new = sum(1 for c in clusters if c["new"])
+    buckets = {}
+    for c in clusters:
+        buckets[bucket_of(c)] = buckets.get(bucket_of(c), 0) + 1
     confirmed = sum(1 for c in clusters if len(c["seats"]) >= 2)
-    back = sum(1 for c in clusters if c["state"] in ("revient", "banc contredit"))
-    maybe = sum(1 for c in clusters if c["state"].endswith(" ?"))
-    again = sum(1 for c in clusters if c["state"].startswith(("déjà vu", "même bouton")))
+    others = {}
+    for c in clusters:
+        if bucket_of(c) == "autre":
+            others[c["state"]] = others.get(c["state"], 0) + 1
+    # Banc fiable 2.1 / PLAN-RESTE 6.4: each count apart (they used to overlap: a « même bouton » cluster was both
+    # « nouvelle » and « déjà vue ») so that the header's numbers add up to the clusters.
+    counts = (f"{buckets.get('nouveau', 0)} nouvelle(s), "
+              f"{buckets.get('déjà vu', 0)} déjà vue(s)" + (f" ({by_round(clusters, 'déjà vu')})" if buckets.get("déjà vu") else "") + ", "
+              f"{buckets.get('même bouton', 0)} même bouton" + (f" ({by_round(clusters, 'même bouton')})" if buckets.get("même bouton") else "") + ", "
+              f"{buckets.get('revient', 0)} qui revien(nen)t (confirmé par un lecteur), "
+              f"{buckets.get('candidat', 0)} candidat(s) « revient ? » à confirmer dans revient.tsv, "
+              f"{buckets.get('banc', 0)} [banc?] (limites connues du banc, à trancher)"
+              + (f", {buckets['autre']} autre(s) état(s) de la base ({', '.join(f'{k} : {v}' for k, v in sorted(others.items()))})" if buckets.get("autre") else ""))
     head = [
         f"# Grappes du tour « {os.path.basename(os.path.normpath(round_dir))} »",
-        f"{len(seats)} siège(s), {len(clusters)} grappe(s), {new} nouvelle(s), {confirmed} vue(s) par ≥ 2 sièges (confirmées sans juge), "
-        f"{back} qui revien(nen)t (confirmé par un lecteur), {maybe} candidat(s) « revient ? » à confirmer dans revient.tsv, {again} déjà vue(s) à un tour d'avant (même clé ou même bouton)." + (f" Écartés : {', '.join(rejected)}." if rejected else ""),
+        f"{len(seats)} siège(s), {len(clusters)} grappe(s) : {counts} ; {len(rejected)} fiche(s) rejetée(s) (jugement sonore) ; "
+        f"{confirmed} vue(s) par ≥ 2 sièges (confirmées sans juge)." + (f" Écartés : {', '.join(rejected)}." if rejected else ""),
         "",
     ]
     if limit is None:

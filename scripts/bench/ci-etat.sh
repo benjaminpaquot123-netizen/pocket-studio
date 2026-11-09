@@ -27,12 +27,9 @@ if [ -n "$sha" ] && runs="$(gh api "repos/$repo/actions/runs?head_sha=$sha&per_p
     case "$name" in
       *mulat*) emu="$(state_of "$status" "$conclusion")" ;;
     esac
-    gh api "repos/$repo/actions/runs/$id/jobs" --jq '.jobs[] | "\(.name)\t\(.status)\t\(.conclusion)"' 2>/dev/null \
-      | while IFS=$'\t' read -r jname jstatus jconclusion; do
-          printf '  %s\t%s\n' "$jname" "${jconclusion:-$jstatus}"
-        done
     jobs="$(gh api "repos/$repo/actions/runs/$id/jobs" --jq '.jobs[] | "\(.name)\t\(.status)\t\(.conclusion)"' 2>/dev/null || true)"
     while IFS=$'\t' read -r jname jstatus jconclusion; do
+      [ -n "$jname" ] && printf '  %s\t%s\n' "$jname" "${jconclusion:-$jstatus}"
       case "$jname" in
         *mulat*) emu="$(state_of "$jstatus" "$jconclusion")" ;;
         *uild*) build="$(state_of "$jstatus" "$jconclusion")" ;;

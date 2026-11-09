@@ -215,7 +215,99 @@ def main():
         element_field(d)
     with tempfile.TemporaryDirectory() as d:
         curve_scales(d)
+    with tempfile.TemporaryDirectory() as d:
+        same_button(d)
+    with tempfile.TemporaryDirectory() as d:
+        measured_numbers(d)
     print("ultra bench scripts: OK")
+
+
+REPORT_BUTTONS = """siege: a | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
+defauts:
+  - geste: 2 | ecran.vu: 3 | cible: Klaxon | geste.type: touche
+    attendu: un son | obtenu: rien
+    symptome: rien
+    gravite: finition | revu: non | banc?: non | promesse: -
+  - geste: 4 | ecran.vu: 5 | cible: ? | geste.type: touche
+    attendu: l'aide | obtenu: rien
+    symptome: rien
+    gravite: finition | revu: non | banc?: non | promesse: -
+  - geste: 7 | ecran.vu: 8 | cible: REC | geste.type: touche
+    attendu: enregistrer | obtenu: rien
+    symptome: incompris
+    gravite: finition | revu: non | banc?: non | promesse: -
+"""
+
+
+def same_button(d):
+    """Banc fiable 2.4 / PLAN-RESTE 6.4: « même bouton (tour-N) » when the same real button was reported at an earlier
+    round under another route or symptom (N = the earliest such round), a candidate shown without fusion; a button
+    known only at this round or a later one stays « nouveau »; a navigation tag or a generic button (tuto_do, *_back)
+    never makes one."""
+    write(os.path.join(d, "lotA", "a", "journal.txt"), JOURNAL_A)
+    write(os.path.join(d, "lotA", "a", "rapport.md"), REPORT_BUTTONS)
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\n"
+                "mixer|padlive_pad_4|perdu\tnouveau\ttour-3,tour-2\t\n"   # the button, elsewhere, at rounds 2 and 3
+                "settings|help_padlive|rien\tnouveau\ttour-5\t\n"         # this round only
+                "live|padlive_rec|lent\tnouveau\ttour-6\t\n")             # a later round
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
+    check("[même bouton (tour-2)] mineur ×1 (A/a#2) padlive · « padlive_pad_4 » · rien" in text, "the earliest earlier round:\n" + text)
+    check("[nouveau] mineur ×1 (A/a#4) padlive · « help_padlive » · rien" in text, "known at this round only: new:\n" + text)
+    check("[nouveau] mineur ×1 (A/a#7) padlive · « padlive_rec » · incompris" in text, "known at a later round only: new:\n" + text)
+    check("1 même bouton (tour-2 : 1)" in text, "counted in the header:\n" + text)
+    # A generic button (the tutorial's « Je le fais » does a different thing at each step) and a navigation tag.
+    write(os.path.join(d, "lotA", "a", "journal.txt"), JOURNAL_A.replace("#2 DOIGT padlive_pad_4 « Klaxon »", "#2 DOIGT tuto_do « Je le fais »")
+          .replace("#4 DOIGT help_padlive « ? »", "#4 DOIGT tab_Sons « Sons »"))
+    write(base, "cle\tetat\tvu\tnote\nmixer|tuto_do|perdu\tnouveau\ttour-1\t\nmixer|tab_Sons|perdu\tnouveau\ttour-1\t\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
+    check("[nouveau] mineur ×1 (A/a#2) padlive · « tuto_do » · rien" in text, "a generic button is no « même bouton »:\n" + text)
+    check("[nouveau] mineur ×1 (A/a#4) padlive · « ? » · rien" in text, "a navigation tag is never the target:\n" + text)
+    check("0 même bouton" in text, "none counted:\n" + text)
+
+
+def measured_numbers(d):
+    """PLAN-RESTE 6.4: tableau-de-bord.py's measured(), on a repository, a docs folder and a round made here: the
+    uncommitted files, the round's reviews (the bench's own aside, « corrigé » rows aside), the fix commits of the
+    round's eq/ branches without a test, the lots not played, the seats played and cut by the bench; a folder of
+    reviews that does not exist gives no number (never a 0)."""
+    sys.path.insert(0, HERE)
+    tb = __import__("tableau-de-bord")
+    repo = os.path.join(d, "repo")
+    os.makedirs(repo)
+
+    def git(*a):
+        subprocess.run(["git", "-C", repo, "-c", "user.name=t", "-c", "user.email=t@t", *a], check=True, capture_output=True)
+    git("init", "-q", "-b", "main")
+    write(os.path.join(repo, "README"), "x")
+    git("add", "README")
+    git("commit", "-q", "-m", "start")
+    git("checkout", "-q", "-b", "eq/tour-9-zone1")
+    write(os.path.join(repo, "app", "src", "main", "A.kt"), "a")
+    git("add", "app")
+    git("commit", "-q", "-m", "a fix without a test")
+    write(os.path.join(repo, "app", "src", "main", "B.kt"), "b")
+    write(os.path.join(repo, "app", "src", "test", "BTest.kt"), "t")
+    git("add", "app")
+    git("commit", "-q", "-m", "a fix with its test")
+    write(os.path.join(repo, "note.txt"), "left behind")
+    docs = os.path.join(d, "docs")
+    write(os.path.join(docs, "tour-9-zone1-relecture.md"),
+          "| # | Gravité | Quoi | État |\n|---|---|---|---|\n| 1 | grave | x | corrigé |\n| 2 | grave | y | ouvert |\n| 3 | bloquant | z | ouvert |\n")
+    write(os.path.join(docs, "tour-9-banc-relecture.md"), "| 4 | grave | w | ouvert |\n")
+    tour = os.path.join(d, "tour-9")
+    write(os.path.join(tour, "sieges.tsv"), "lot\tsiege\tlang\nA\ta\tfr\nA\tb\tfr\nA\tc\tfr\nB\ta\tfr\n")
+    write(os.path.join(tour, "lotA", "a", "mesures.json"), json.dumps({"mesures": {"fin": "fin", "gels": 0}}))
+    write(os.path.join(tour, "lotA", "b", "mesures.json"), json.dumps({"mesures": {"fin": "banc : rien ne change", "gels": 0}}))
+    write(os.path.join(tour, "lotA", "c", "mesures.json"), json.dumps({"mesures": {"fin": "fin", "gels": 2}}))
+    m = tb.measured(tour, "tour-9", root=repo, docs=docs)
+    check(m.get("fichiers_non_commites") == 1, f"one file left behind: {m}")
+    check(m.get("relecture_graves") == 1 and m.get("relecture_bloquants") == 1, f"the review's open rows, the bench's review aside: {m}")
+    check(m.get("corrections_sans_test") == 1, f"one fix commit without a test on eq/tour-9-*: {m}")
+    check(m.get("lots_non_joues") == 1 and m.get("sieges_joues") == 3 and m.get("sieges_coupes_par_le_banc") == 2,
+          f"lot B not played; 3 seats played, 2 cut (the bench's end, a freeze): {m}")
+    m = tb.measured(tour, "tour-9", root=repo, docs=os.path.join(d, "nowhere"))
+    check("relecture_graves" not in m and "relecture_bloquants" not in m, f"no reviews folder: unknown, not 0: {m}")
 
 
 REPORT_V2_GRAVES = """siege: a | profil: ado | lang: fr | device: phone | font: 100 | mode: simple

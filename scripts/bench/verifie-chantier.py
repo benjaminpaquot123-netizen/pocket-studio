@@ -175,6 +175,9 @@ def check(root, resume_path=None, with_git=True):
                 gaps.append(f"{item} : garde {cls}#{m} pas verte dans le dernier selftest")
         if verdict == "appli" and not without_bench and not dated_failed_trial(v):
             gaps.append(f"{item} : verdict « appli » sans preuve (ni test sans banc existant, ni essai ❌ daté)")
+        if verdict == "appli" and etat == "ouvert" and without_bench and not carried and not dated_failed_trial(v):
+            gaps.append(f"{item} : verdict « appli » dont la preuve n'est ni @KnownDefect ni un essai ❌ daté "
+                        f"(un test vert ne prouve pas un défaut ouvert)")
         if verdict == "banc":
             if not any(c.startswith("Bench") for c, _ in guards):
                 gaps.append(f"{item} : verdict « banc » sans garde Bench*")

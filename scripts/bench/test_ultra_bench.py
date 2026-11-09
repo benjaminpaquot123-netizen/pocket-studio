@@ -813,8 +813,8 @@ def engine_proof(d):
           "a function no list runs is a gap:\n" + out)
     write(path, inc.replace("known_defect_k2", "pads_waits"))
     out = judge(root)
-    check("C : garde_id K2 porté par aucune de ses preuves" in out and "chantier : 1 écarts" in out,
-          "an engine guard no longer named known_defect_<id> is a gap:\n" + out)
+    check("C : garde_id K2 porté par aucune de ses preuves" in out and "C : verdict « appli » dont la preuve n'est ni @KnownDefect" in out
+          and "chantier : 2 écarts" in out, "an engine guard no longer named known_defect_<id> is a gap, and proves no open defect:\n" + out)
     write(path, inc)
 
     # An id no line carries; a line's id no proof carries.

@@ -207,6 +207,7 @@ def main():
         expected_classes(d)
         skipped_class(d)
         portal(d)
+        known_skips_bounded(d)
         mark_fixed(d)
         seat_exit(d)
         native_missing(d)
@@ -1040,6 +1041,11 @@ def portal(d):
     check(code != 0 and not stamped(lot), "a failed Gradle run with no red test is red:\n" + out + text)
     code, out, text, lot = selftest(foo, defect, PS_TOY_SCRIPTS_FAIL="1")
     check(code != 0 and not stamped(lot) and "scripts du banc" in out, "red bench scripts forbid the lot:\n" + out)
+    # A list of known skips that holds anything but a seat's entry point: red (see known_skips_bounded).
+    write(os.path.join(bench, "selftest-sauts-connus.txt"), "BenchFooTest#drive | seat | 2026-11-09 | test\nBenchFooTest#guardsIt | flaky | 2026-11-09 | test\n")
+    git_toy(root, "commit", "-q", "-m", "a real test in the known skips", "scripts/bench/selftest-sauts-connus.txt")
+    code, out, text, lot = selftest(foo, defect)
+    check(code != 0 and not stamped(lot) and "sauts connus" in out and "BenchFooTest#guardsIt" in out, "a real test in the list of known skips forbids the lot:\n" + out)
 
 
 def mark_fixed(d):
@@ -1085,6 +1091,45 @@ def mark_fixed(d):
           "the summary named by PS_SELFTEST_RESUME is read too:\n" + out)
     out = mark()
     check("résumé absent" in out, "without a summary the judge says so:\n" + out)
+
+
+def known_skips_bounded(d):
+    """Review of lot 1 « Le juge » (finding « moyen » 3): the list of known skips is bounded. Only « <Class>#drive » of a
+    class that inherits HumanTester (a seat's entry point, skipped outside seat mode) is accepted: a real test added
+    there would be skipped in silence. selftest-attendus.py --sauts-connus says which entries it refuses (exit 1), and
+    selftest.sh is red on them."""
+    script = os.path.join(HERE, "selftest-attendus.py")
+    root = os.path.join(d, "sauts")
+    java = os.path.join(root, "app", "src", "test", "java", "com", "x", "app")
+    write(os.path.join(java, "human", "HumanTester.kt"), "package com.x.app.human\nabstract class HumanTester(val name: String) {\n  fun drive() {}\n}\n")
+    write(os.path.join(java, "human", "BenchFooTest.kt"), 'package com.x.app.human\nclass BenchFooTest(private val a: String) : HumanTester("foo") {\n  fun guardsIt() {}\n}\n')
+    write(os.path.join(java, "human", "BenchAloneTest.kt"), "package com.x.app.human\nclass BenchAloneTest {\n  fun drive() {}\n}\n")
+    known = os.path.join(d, "sauts-connus.txt")
+
+    def refused(text, tree=root):
+        write(known, text)
+        r = subprocess.run([sys.executable, "-I", script, "--root", tree, "--sauts-connus", known], capture_output=True, text=True)
+        return r.returncode, r.stdout
+
+    code, out = refused("# a comment\nBenchFooTest#drive | seat entry point | 2026-11-09 | test\n")
+    check(code == 0 and out == "", f"a seat's entry point is accepted: {code}\n" + out)
+    code, out = refused("BenchFooTest#drive | seat | 2026-11-09 | test\nBenchFooTest#guardsIt | flaky today | 2026-11-09 | test\n")
+    check(code == 1 and out.splitlines() == ["saut connu refusé : BenchFooTest#guardsIt (seul « <Classe>#drive » d'une classe qui hérite de HumanTester est accepté)"],
+          f"a real test is refused: {code}\n" + out)
+    code, out = refused("BenchAloneTest#drive | not a seat | 2026-11-09 | test\n")
+    check(code == 1 and "saut connu refusé : BenchAloneTest#drive" in out, f"« drive » of a class that is not a HumanTester is refused: {code}\n" + out)
+    code, out = refused("BenchGoneTest#drive | no such class | 2026-11-09 | test\n")
+    check(code == 1 and "saut connu refusé : BenchGoneTest#drive" in out, f"a class that does not exist is refused: {code}\n" + out)
+    code, out = refused("BenchFooTest#drive[lang=fr] | one case | 2026-11-09 | test\n")
+    check(code == 1 and "saut connu refusé : BenchFooTest#drive[lang=fr]" in out, f"only the bare name is accepted: {code}\n" + out)
+    # The real list fits the real sources.
+    repo = os.path.dirname(os.path.dirname(HERE))
+    with open(os.path.join(HERE, "selftest-sauts-connus.txt"), encoding="utf-8") as f:
+        real = f.read()
+    code, out = refused(real, repo)
+    check(code == 0 and "#drive |" in real, f"the real list holds seats' entry points only: {code}\n" + out)
+    code, out = refused(real + "BenchSelfTest#reachTagTouchesAVisibleElementInPlace | skipped for now | 2026-11-09 | test\n", repo)
+    check(code == 1 and "saut connu refusé : BenchSelfTest#reachTagTouchesAVisibleElementInPlace" in out, f"a real test added to the real list is refused: {code}\n" + out)
 
 
 JUDGE_HEAD = "tour\titem\tcle\tgravite\tverdict\tetat\tpreuve_appli\tgarde_banc\ttelephone\tcommit\tnote\tgarde_id\n"

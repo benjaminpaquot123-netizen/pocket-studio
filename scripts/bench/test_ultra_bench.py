@@ -204,6 +204,7 @@ def main():
         chantier(d)
         judge_criteria(d)
         open_app_proof(d)
+        owner_trials(d)
         engine_proof(d)
         expected_classes(d)
         skipped_class(d)
@@ -780,6 +781,34 @@ def open_app_proof(d):
     check("A : verdict « appli » dont" not in out and "D : verdict « appli » dont" not in out and "E : verdict « appli » dont" not in out
           and "chantier : 1 écarts" in out and r.returncode == 1,
           "a @KnownDefect guard, a dated ❌ trial and a line that is not open are fine:\n" + out)
+
+
+def owner_trials(d):
+    """Audit « banc crédible » A.6 (M5): each trial of retours-benjamin.md (« tel-NN ✅/❌ » under a dated « recette »
+    bullet, or « recette tel-NN = ✅/❌ ») is written « RECETTE tel-NN <mark> <device> <date> » on every line citing it."""
+    script = os.path.join(HERE, "verifie-chantier.py")
+    root = judge_root(d, "juge-essais", JUDGE_GOOD
+                      + "t\tC\tk3\tm\tnon-tranché\touvert\t-\t-\trecette tel-01\t-\tRECETTE tel-01 ✅ téléphone 2026-11-08 : it plays\t-\n"
+                      + "t\tD\tk4\tm\tnon-tranché\touvert\t-\t-\trecette tel-02\t-\tRECETTE tel-02 ❌ tablette 2026-11-08 (video)\t-\n"
+                      + "t\tE\tk5\tm\tnon-tranché\touvert\t-\t-\trecette tel-02\t-\tRECETTE tel-02 ✅ tablette 2026-11-08 : the mark is wrong\t-\n")
+    notes = os.path.join(root, "docs", "audits", "ultra", "retours-benjamin.md")
+    write(notes, "# Retours\n\n- 2026-11-06, APK 1, tel-01 ✅ a remark that is no trial of the checklist.\n"
+                 "- 2026-11-08, APK 2, **téléphone (Honor), recette 2/3** (captures) :\n"
+                 "  - tel-01 ✅ it plays.\n  - tel-07 ❌ nothing.\n  - tel-09 not done.\n"
+                 "- 2026-11-08, APK 2, tablette, **recette tel-02 = ❌ « frozen »** (video) : details.\n")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
+                       capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    missing = "essai de retours-benjamin.md absent de verdicts.tsv"
+    check(f"A : {missing} (attendu « RECETTE tel-01 ✅ téléphone 2026-11-08 »)" in out, "a line citing tel-01 without its trial:\n" + out)
+    check(f"B : {missing} (attendu « RECETTE tel-02 ❌ tablette 2026-11-08 »)" in out, "a line citing tel-02 without its trial:\n" + out)
+    check(f"E : {missing} (attendu « RECETTE tel-02 ❌ tablette 2026-11-08 »)" in out, "a trial written with the wrong mark:\n" + out)
+    check(f"tel-07 ❌ téléphone 2026-11-08 : {missing} (aucune ligne ne cite tel-07)" in out, "a trial no line cites:\n" + out)
+    check(f"C : {missing}" not in out and f"D : {missing}" not in out and "tel-09" not in out and "2026-11-06" not in out
+          and "chantier : 4 écarts" in out and r.returncode == 1, "the lines carrying their trial, and what is no trial, are fine:\n" + out)
+    os.remove(notes)
+    out = run(script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt"))
+    check("chantier : 0 écarts" in out, "no notes of the owner: nothing to compare\n" + out)
 
 
 def engine_proof(d):

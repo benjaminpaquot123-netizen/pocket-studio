@@ -122,6 +122,20 @@ class BenchPlaceAndPadLiveTest : HumanTester("place-padlive") {
     }
 
     /**
+     * Audit « banc crédible » A.14 (F3): the bench's engine starts a pad at once, a phone's on the grid. Until the bench
+     * plays them on the grid (A.16), the text of Pad Live's screen says so to the tester, and no other screen does.
+     */
+    @Test
+    fun padLivesScreenTextSaysThePadsStartWithoutTheGrid() {
+        begin(SeatOptions(device = "tablet11Land"))
+        val limit = "(banc : les pads partent tout de suite, sans grille)"
+        assertTrue("not said before Pad Live:\n" + screenLines().joinToString("\n"), limit !in screenLines())
+        val since = touchAt("launch_padlive")
+        padsReady("from « Que veux-tu faire ? » (A.14)", since)
+        assertTrue("Pad Live's screen text does not say the bench's limit on the pads:\n" + screenLines().joinToString("\n"), limit in screenLines())
+    }
+
+    /**
      * Control 8, after a song: a song made (the wizard) and played, left for the home screen (Retour), then Pad Live from
      * « Que veux-tu faire ? »: its own « Live » project opens on its pads, not the song's.
      */

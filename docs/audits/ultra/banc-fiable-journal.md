@@ -61,7 +61,7 @@ Une ligne par étape : [x] fait / [ ] à faire, preuve, commit. « continue » r
 - [x] tel-15 / tel-19 (atelier `recette2`, relu, fusionné 1f4f293) : T5-Ec-28 appli (`@KnownDefect T5-REMIXFIN`) ; T5-Bb-58 : l'annulation est juste, les 572 mesures viennent sans doute d'une mélodie de 4 mesures qui a triplé le morceau avant la prise (non tranché, à prouver).
 - [x] 4.2 sortie de siège (`sortie-de-siege.py`, `human-tester.sh`, `fuse-reports.py`, test).
 - [x] 4.3 un dossier JUnit par passe (`-Ptest.results.dir`), verdict par passe (rouge avant / vert après dans `test_ultra_bench.py`).
-- [ ] R.1 (atelier `banc-r1`, en relecture) : compteur Simple = banc (réparé) ; changement de partie = banc déjà réparé ; démo = **appli** sur le chemin « style touché › Simple ou Pro ? » (Benjamin était sorti par Retour).
+- [ ] R.1 (atelier `banc-r1`, en relecture) : compteur Simple = banc (réparé) ; changement de partie = banc déjà réparé ; démo = **appli** sur le chemin « style touché › Simple ou Pro ? » (Benjamin a quitté la liste sans choisir de style (consigne tel-16 : Retour ou croix)).
 - [ ] R.3 (atelier `scan-r3`) : textes rognés des pastilles non vus par `LayoutScan`.
 - [ ] 4.1 (atelier `banc41`) : défi, causes réelles + remarque de Benjamin (appui ignoré tant que le clap sonne).
 - [ ] 4.4, 4.5, 4.6, 4.7, R.4.
@@ -77,7 +77,7 @@ Une ligne par étape : [x] fait / [ ] à faire, preuve, commit. « continue » r
 - [ ] En relecture : étape 1 lot 2 « La mémoire » (atelier `memoire`, rapport `tour-5-memoire-rapport.md`). Ses lignes :
 - [x] (relecture du lot 1, moyens 1 et 2) `selftest.sh` et `marque-corrige.sh` vérifiés par leur comportement dans `test_ultra_bench.py` (`portal`, `mark_fixed`) : commit ae5ff0d, tests verts sur le code existant, prouvés par mutation (liste en dur, verdict rouge ignoré, classes attendues non passées, appel du juge sans `--resume` : chacune rend la suite rouge).
 - [x] A.4 (relecture du lot 1, moyen 3) `selftest-sauts-connus.txt` borné : seul « Classe#drive » d'une classe qui hérite de HumanTester. preuve: rouge 609f50b / vert 01fcb3c
-- [x] A.11 T4-26 reste « ouvert », gardé par `Tour4AppProofTest#aMelodyTakeWhileAnotherPartIsShownShowsItsNotes` (@KnownDefect T4-26) ; clé dans `base.tsv` ; pas d'émulateur ici, JourneyTest non rejoué. preuve: rouge 67f2c82 / vert 4346479
+- [x] A.11 T4-26 : d'abord « ouvert » avec une garde @KnownDefect (rouge 67f2c82 / vert 4346479), corrigé après relecture : la garde mesurait le faux moteur du test. Avec un faux moteur qui fait le changement de partie armé, le défaut n'est pas reproduit : T4-26 « non-tranché », test gardé en vert ordinaire ; clé dans `base.tsv` (« nouveau ») ; pas d'émulateur ici, JourneyTest non rejoué, échec CI 243 inexpliqué (étape 2). preuve: rouge 7e34de9 / vert 1b8dd12
 - [x] A.14 limite des pads écrite (écran du banc, `hors-banc.tsv`, `verdicts.tsv`, AUDIT-ULTRA § 12.3) et lue par le juge. preuve: rouge 5f0c5f8 / vert 12d6cca (ligne d'écran : c8c2f82 puis 859700a)
 - [x] A.2 T5-Ca-32 « banc », « corrigé » (0f5efde) ; tel-17 sur T5-PADRETRIG seul ; nouvel écart du juge pour un « appli » ouvert prouvé par un test vert. preuve: rouge 4587080 / vert 7a6864d
 - [x] A.6 les essais de Benjamin du 2026-11-08 écrits sur chaque ligne citée ; le juge lit `retours-benjamin.md`. preuve: rouge 0a38188 / vert f9a7b86

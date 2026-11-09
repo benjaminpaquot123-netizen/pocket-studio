@@ -40,7 +40,7 @@ Une ligne par retour : date, APK, écran, ce qu’il a vu, ce qu’il faudrait.
   - tel-12 ✅ « ■ Tout » coupe le son, **mais les mesures et le temps continuent** (même défaut que tel-08 Pad Live : transport non arrêté). À compter comme défaut partiel.
   - tel-13 ✅ on passe sur la partie choisie.
   - tel-14 ❌ curseur figé.
-  - tel-16 ✅ la démo s'arrête quand on la quitte (T5-Fc-31 : non tranché dans `verdicts.tsv` ; Benjamin est sorti par Retour, alors que le siège touchait un style puis restait sur « Simple ou Pro ? », où la démo continue ; essai § 8 n° 3 de `AUDIT-BANC-CREDIBLE.md` à faire, avec la question « voulu ? »).
+  - tel-16 ✅ la démo s'arrête quand on la quitte (T5-Fc-31 : non tranché dans `verdicts.tsv` ; Benjamin a quitté la liste sans choisir de style (consigne tel-16 : Retour ou croix), alors que le siège touchait un style puis restait sur « Simple ou Pro ? », où la démo continue ; essai § 8 n° 3 de `AUDIT-BANC-CREDIBLE.md` à faire, avec la question « voulu ? »).
   - tel-17 ❌ « j'arrive pas à tenir le rythme, comme si tant que le clap n'était pas fini il n'acceptait pas mon appui suivant » : taps ignorés pendant le son (rejoint la cause trouvée par l'auditeur, PLAN-RESTE 4.1).
   - tel-18 ✅ la prise s'arrête à la fin du morceau.
   - tel-15 et tel-19 **non faits : Benjamin demande que je les tranche moi-même** (banc, preuves d'appli).

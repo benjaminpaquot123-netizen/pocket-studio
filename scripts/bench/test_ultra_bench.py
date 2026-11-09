@@ -202,6 +202,7 @@ def main():
     with tempfile.TemporaryDirectory() as d:
         bench_guards(d)
         chantier(d)
+        skipped_class(d)
         seat_exit(d)
         native_missing(d)
         corrections_by_target(d)
@@ -533,7 +534,6 @@ def bench_guards(d):
     red = '<testcase classname="a.Tour3RenameIdleTest" name="renames"><failure message="timeout"/></testcase>'
     skipped = '<testcase classname="a.BenchTwoTest" name="mic"><skipped message="no microphone on Robolectric"/></testcase>'
     code, text = results(green + skipped)
-    check(code == 0 and text.startswith("1 verts, 0 rouges, 0 en quarantaine, 1 sautés"), "green with a skip:\n" + text)
     check("sauté : BenchTwoTest#mic : no microphone on Robolectric" in text, "the skip's reason is listed:\n" + text)
     code, text = results(green + red)
     check(code == 1 and "rouge : Tour3RenameIdleTest#renames : timeout" in text, "one red forbids the lot:\n" + text)
@@ -677,6 +677,80 @@ def chantier(d):
     check("C : preuve d'appli Other#provesIt introuvable" in out, "a method of another class of the same file is not this class's\n" + out)
     check("@KnownDefect K1 (AppProofTest#provesIt) sans ligne" in out, out)
     check("tel-02 de recette.json cité par aucune ligne" in out, out)
+
+
+def skipped_class(d):
+    """Audit « banc crédible » A.4 (G3): a class skipped as a whole is red, a skip outside the list of known skips is
+    red, the summary names every green test, and the judge never reads a skipped guard as green."""
+    verdict = os.path.join(HERE, "selftest-verdict.py")
+    res = os.path.join(d, "verdict-skip")
+    quarantine = os.path.join(d, "skip-q.txt")
+    write(quarantine, "# none\n")
+    summary = os.path.join(d, "skip-resume.txt")
+    expected = os.path.join(d, "skip-attendus.txt")
+    none_failed = os.path.join(d, "skip-echecs.txt")
+    known = os.path.join(d, "skip-connus.txt")
+
+    def judge(cases, *more):
+        write(os.path.join(res, "banc", "TEST-x.xml"), "<testsuite>" + cases + "</testsuite>")
+        r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary, expected, none_failed, *more], capture_output=True, text=True)
+        with open(summary, encoding="utf-8") as f:
+            return r.returncode, f.read()
+
+    seats = '<skipped message="not while the bench runs seats"/>'
+    whole = (f'<testcase classname="a.BenchRecetteTest" name="one">{seats}</testcase>'
+             f'<testcase classname="a.BenchRecetteTest" name="two">{seats}</testcase>'
+             '<testcase classname="a.Tour5AppProofTest" name="proves"/>')
+    write(expected, "BenchRecetteTest\nTour5AppProofTest\n")
+    write(known, "BenchRecetteTest#one | seats | 2026-11-09 | test\nBenchRecetteTest#two | seats | 2026-11-09 | test\n")
+    code, text = judge(whole, known)
+    check(code == 1 and "rouge : BenchRecetteTest#* : aucun test non sauté" in text, "a class skipped as a whole is red, even with known skips:\n" + text)
+    check("vert : Tour5AppProofTest#proves" in text, "every green test is named in the summary:\n" + text)
+    part = ('<testcase classname="a.BenchRecetteTest" name="one"/>'
+            f'<testcase classname="a.BenchRecetteTest" name="two">{seats}</testcase>'
+            '<testcase classname="a.Tour5AppProofTest" name="proves"/>')
+    code, text = judge(part)
+    check(code == 1 and "rouge : BenchRecetteTest#two : saut hors de la liste des sauts connus" in text, "a skip outside the known list is red:\n" + text)
+    code, text = judge(part, known)
+    check(code == 0 and text.startswith("2 verts, 0 rouges, 0 en quarantaine, 1 sautés") and "sauté : BenchRecetteTest#two : not while" in text,
+          "a known skip is listed and lets it pass:\n" + text)
+
+    # The judge: a guard listed « sauté » is not green; neither is one the summary does not name at all.
+    root = judge_root(d, "chantier-skip")
+    script = os.path.join(HERE, "verifie-chantier.py")
+    resume = os.path.join(d, "chantier-skip-resume.txt")
+    write(resume, "1 verts, 0 rouges, 0 en quarantaine, 1 sautés\nsauté : BenchFooTest#guardsIt : not while the bench runs seats\nvert : AppProofTest#provesIt\n")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
+    check("B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in r.stdout, "a skipped guard is not green:\n" + r.stdout)
+    write(resume, "1 verts, 0 rouges, 0 en quarantaine, 0 sautés\nvert : AppProofTest#provesIt\n")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
+    check("B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in r.stdout, "a guard that did not run is not green:\n" + r.stdout)
+    write(resume, "2 verts, 0 rouges, 0 en quarantaine, 0 sautés\nvert : AppProofTest#provesIt\nvert : BenchFooTest#guardsIt\n")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
+    check("pas verte" not in r.stdout, "a guard named green is green:\n" + r.stdout)
+
+
+JUDGE_HEAD = "tour\titem\tcle\tgravite\tverdict\tetat\tpreuve_appli\tgarde_banc\ttelephone\tcommit\tnote\tgarde_id\n"
+JUDGE_GOOD = (JUDGE_HEAD + "t\tA\tk1\tm\tappli\touvert\tAppProofTest#provesIt\t-\trecette tel-01\t-\tn\tK1\n"
+              "t\tB\tk2\tm\tbanc\touvert\tOther#elsewhere\tBenchFooTest#guardsIt\trecette tel-02\t-\tn\t-\n")
+JUDGE_RESUME = "3 verts, 0 rouges, 0 en quarantaine, 0 sautés\nvert : AppProofTest#provesIt\nvert : BenchFooTest#guardsIt\n"
+
+
+def judge_root(d, name, verdicts=JUDGE_GOOD):
+    """A tiny work for verifie-chantier.py: one app proof (a @KnownDefect), one bench guard, a test without the bench,
+    a checklist of two items, an empty base and a summary of the self-test where both ran green."""
+    root = os.path.join(d, name)
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    write(os.path.join(tests, "BenchFooTest.kt"), "class BenchFooTest {\n  fun guardsIt() {}\n}\n")
+    write(os.path.join(tests, "AppProofTest.kt"),
+          'class AppProofTest {\n  @KnownDefect("K1", "m")\n  @Test\n  fun provesIt() {}\n}\nclass Other {\n  fun elsewhere() {}\n}\n')
+    write(os.path.join(root, "app", "src", "main", "assets", "recette.json"),
+          json.dumps({"id": "r", "milestone": "m", "items": [{"id": "tel-01", "title": "t"}, {"id": "tel-02", "title": "t"}]}))
+    ultra = os.path.join(root, "docs", "audits", "ultra")
+    write(os.path.join(ultra, "base.tsv"), "cle\tetat\tvu\tnote\tcorrige_au\n")
+    write(os.path.join(ultra, "verdicts.tsv"), verdicts)
+    write(os.path.join(root, "selftest-resume.txt"), JUDGE_RESUME)
+    return root
 
 
 def native_missing(d):

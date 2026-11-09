@@ -74,4 +74,12 @@ Une ligne par étape : [x] fait / [ ] à faire, preuve, commit. « continue » r
 - [x] A.12 preuve moteur lue par le juge (`chemin#fonction`), `known_defect_` reconnu par le lanceur C++, colonne `garde_id` vérifiée. preuve: rouge 03c768c / vert 8180d82
 - [x] A.4 (suite) un saut connu nommé sans paramètres couvre ses cas paramétrés (les douze `drive` des sièges, « only with -Phuman.dir ») ; un selftest rouge montre quand même le juge. preuve: rouge c39ca77 / vert 3dab50a
 - [x] A.3 le selftest attend et joue toute classe porteuse d'un `@KnownDefect` (`selftest-attendus.py`, passe « defauts »). preuve: rouge 0a4d552 / vert a460613
+- [ ] En relecture : étape 1 lot 2 « La mémoire » (atelier `memoire`, rapport `tour-5-memoire-rapport.md`). Ses lignes :
+- [x] (relecture du lot 1, moyens 1 et 2) `selftest.sh` et `marque-corrige.sh` vérifiés par leur comportement dans `test_ultra_bench.py` (`portal`, `mark_fixed`) : commit ae5ff0d, tests verts sur le code existant, prouvés par mutation (liste en dur, verdict rouge ignoré, classes attendues non passées, appel du juge sans `--resume` : chacune rend la suite rouge).
+- [x] A.4 (relecture du lot 1, moyen 3) `selftest-sauts-connus.txt` borné : seul « Classe#drive » d'une classe qui hérite de HumanTester. preuve: rouge 609f50b / vert 01fcb3c
+- [x] A.11 T4-26 reste « ouvert », gardé par `Tour4AppProofTest#aMelodyTakeWhileAnotherPartIsShownShowsItsNotes` (@KnownDefect T4-26) ; clé dans `base.tsv` ; pas d'émulateur ici, JourneyTest non rejoué. preuve: rouge 67f2c82 / vert 4346479
+- [x] A.14 limite des pads écrite (écran du banc, `hors-banc.tsv`, `verdicts.tsv`, AUDIT-ULTRA § 12.3) et lue par le juge. preuve: rouge 5f0c5f8 / vert 12d6cca (ligne d'écran : c8c2f82 puis 859700a)
+- [x] A.2 T5-Ca-32 « banc », « corrigé » (0f5efde) ; tel-17 sur T5-PADRETRIG seul ; nouvel écart du juge pour un « appli » ouvert prouvé par un test vert. preuve: rouge 4587080 / vert 7a6864d
+- [x] A.6 les essais de Benjamin du 2026-11-08 écrits sur chaque ligne citée ; le juge lit `retours-benjamin.md`. preuve: rouge 0a38188 / vert f9a7b86
+- [x] A.5 T5-Fc-31 « non-tranché » (essai § 8 n° 3, question « voulu ? ») ; PROGRESS, retours-benjamin et PLAN-RESTE R.1 alignés ; données seulement. preuve: script scripts/bench/verifie-chantier.py
 - Modèle : passage à Fable 5.1 le 2026-11-09 (limite hebdomadaire d'Opus 5.5 atteinte).

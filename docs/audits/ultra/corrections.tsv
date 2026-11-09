@@ -1,346 +1,348 @@
-tour	item	siege	ecran	etat	commit	test	note
-tour-1	déjà réglé (gel ▶)	A/a	22	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc après ▶ : onglet sans effet, écran identique
-tour-1	déjà réglé (gel ▶)	A/a	24	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc après ▶ : onglet piano sans effet
-tour-1	déjà réglé (gel ▶)	A/a	25	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : panneau du Guide sans effet
-tour-1	déjà réglé (gel ▶)	A/a	27	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : le son s'arrête, l'image garde le bouton
-tour-1	déjà réglé (gel ▶)	A/a	28	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : bouton du Guide sans effet
-tour-1	déjà réglé (gel ▶)	A/a	29	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : retour Android sans effet
-tour-1	déjà réglé (gel ▶)	A/a	32	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : glisse sur le Guide sans effet
-tour-1	déjà réglé (gel ▶)	A/a	33	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : menu ⋯ sans effet
-tour-1	déjà réglé (gel ▶)	A/a	36	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : Mes projets et REC sans effet (fin du siège)
-tour-1	déjà réglé (gel ▶)	A/d	18	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc après REC : boucle sur l'Intro, écran figé
-tour-1	déjà réglé (gel ▶)	A/d	20	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : « Plus » sans effet
-tour-1	déjà réglé (gel ▶)	A/d	21	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : Arrêter reste affiché, écran figé
-tour-1	déjà réglé (gel ▶)	A/d	24	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : retour système sans effet
-tour-1	déjà réglé (plantage ecris)	D/d	42	banc	c94967d	-	Faux plantage du banc : « ecris » sans champ au focus
-tour-1	T1-01	D/a	10	corrigé	ae3ea45	RemixCutFromCardTest	Remix : découpe introuvable avant « Jouer avec le projet »
-tour-1	T1-01	F/b	13	corrigé	ae3ea45	RemixCutFromCardTest	Remix : découpe introuvable avant de mettre la chanson au projet
-tour-1	T1-02	B/a	33	corrigé	ae3ea45	RemixVoiceTest#theKitsMainPadsAreNeverTakenEvenUnplayed	« Sur les pads » remplace le Kick sans prévenir
-tour-1	T1-02	D/a	52	corrigé	ae3ea45	RemixVoiceTest#theKitsMainPadsAreNeverTakenEvenUnplayed	« Sur les pads » remplace Kick/Caisse sans demander
-tour-1	T1-02	F/b	51	corrigé	ae3ea45	RemixVoiceTest#theKitsMainPadsAreNeverTakenEvenUnplayed	« Onto the pads » remplace Kick et Kick 2 sans prévenir
-tour-1	T1-03	B/a	18	corrigé	ae3ea45	LibrarySongsTest	Bibliothèque du pad sans les pistes de la chanson séparée
-tour-1	T1-03	D/a	37	corrigé	ae3ea45	LibrarySongsTest	Bibliothèque du pad live sans les pistes de la chanson
-tour-1	T1-03	F/b	21	corrigé	ae3ea45	LibrarySongsTest	Bibliothèque du pad 16 sans les pistes de la chanson
-tour-1	T1-04	B/a	31	banc	5b2b940	-	« Écouter le bout » muet (le banc ne le disait pas)
-tour-1	T1-04	F/b	66	corrigé	-	-	En boucle, toute la chanson séparée rejoue sur les pads (réglé avec T1-01)
-tour-1	T1-05	C/b	2	corrigé	ae3ea45	PadLivePacksFillTest	Pad Live : 16 pads vides « + », un pack ne remplit qu'une rangée
-tour-1	T1-05	E/a	3	corrigé	ae3ea45	PadLivePacksFillTest	Pad Live : 16 pads vides malgré « pads prêts »
-tour-1	T1-05	F/e	3	corrigé	ae3ea45	PadLivePacksFillTest	Pad Live : 16 cases grises vides, aucun son
-tour-1	T1-06	C/d	25	banc	60c7a2f	-	« Tout couper » laisse jouer des pads (suivi banc au tour 3)
-tour-1	T1-06	E/a	32	banc	60c7a2f	-	« Arrêter la ligne 1 » laisse jouer des pads (suivi banc au tour 3)
-tour-1	T1-07	C/d	1	corrigé	ae3ea45	PadLiveLyingTapTest	Paysage : toucher un pad ouvre sa fiche au lieu de le jouer
-tour-1	T1-07	C/d	15	corrigé	ae3ea45	PadLiveLyingTapTest	Paysage : seul « Gros pads » lance les pads
-tour-1	T1-07	C/d	21	banc	-	-	« Lancer la ligne 1 à la mesure » sans effet (pas de moteur au banc)
-tour-1	T1-07	C/d	16	banc	-	-	Lancement non calé sur la mesure visible (états simulés du banc)
-tour-1	T1-08	C/d	24	corrigé	ae3ea45	PadLiveRiserShownTest	Montée tenue sans retour visuel
-tour-1	T1-08	E/a	19	banc	-	-	Filtre/écho tenus sans retour visuel (captures doigt levé)
-tour-1	T1-09	C/b	37	corrigé	ae3ea45	PadLiveChallengeTest	Défis : record remplacé par le dernier essai
-tour-1	T1-09	C/b	64	corrigé	ae3ea45	PadLiveChallengeListTest	Défis : retour au défi 1, pas de liste
-tour-1	T1-09	C/b	24	corrigé	ae3ea45	PadLiveChallengeTest	Défis : aucun pad allumé pendant l'exemple
-tour-1	T1-09	C/b	14	corrigé	ae3ea45	PadLiveChallengeTest	Défis : points sans nom (« trop lent » = banc)
-tour-1	T1-10	E/a	46	banc	5b2b940	BenchTour1Test#aKeptPerformanceIsHeard	Performance enregistrée : « Écouter » ne joue rien
-tour-1	T1-10	E/a	45	corrigé	ae3ea45	-	Bandeau « Performan… » coupé
-tour-1	T1-11	E/a	6	corrigé	ae3ea45	-	Recherche « funk » ne trouve pas le pack Disco/funk
-tour-1	T1-12	C/e	19	corrigé	ae3ea45	-	Pack téléchargé « 808 modernes » introuvable ensuite
-tour-1	T1-13	A/c	58	corrigé	e0d2157	OneTargetExportTest	Exports club et streaming identiques (ne diffèrent que par le format)
-tour-1	T1-13	E/d	62	corrigé	e0d2157	OneTargetExportTest	Exports club et streaming indiscernables
-tour-1	T1-13	F/c	63	corrigé	e0d2157	OneTargetExportTest	Rapport club identique au streaming −14
-tour-1	T1-14	E/d	57	corrigé	e0d2157	OneLoudnessTargetTest	Deux sélecteurs de cible cochés ensemble (−14 et club −9)
-tour-1	T1-14	E/d	20	corrigé	e0d2157	OneLoudnessTargetTest	Club −7,5 / −9 selon l'écran, sans « LUFS »
-tour-1	T1-14	F/c	48	corrigé	e0d2157	OneLoudnessTargetTest	Deux cibles opposées actives ; Club −8 ici, −9 ailleurs
-tour-1	T1-15	A/c	58	corrigé	e0d2157	ExportResultInViewTest	Après export : aucune cible ni mesure affichée
-tour-1	T1-15	E/d	62	corrigé	e0d2157	ExportResultInViewTest	Après export : seulement le nom du fichier, aucun bilan
-tour-1	T1-15	F/c	63	corrigé	e0d2157	ExportResultInViewTest	−12,9 LUFS pour −14 sans explication, crête « — »
-tour-1	T1-16	A/c	49	corrigé	e0d2157	BenchTour1Test#theMixTabsExportRenders	« Exporter » du Mix ne réagit pas (appli + banc)
-tour-1	T1-16	E/d	40	corrigé	e0d2157	BenchTour1Test#theMixTabsExportRenders	« Exporter » du Mix : rien ne change (appli + banc)
-tour-1	T1-16	F/c	34	corrigé	e0d2157	BenchTour1Test#theMixTabsExportRenders	« Exporter » du Mix sans effet, seul Partager exporte
-tour-1	T1-17	C/a	35	banc	e0d2157	WavExporterTest	« ? » à la place de « ó » dans le nom de fichier (JVM ASCII)
-tour-1	T1-17	E/d	49	banc	e0d2157	WavExporterTest	Lettres japonaises remplacées par « ??? » (JVM ASCII)
-tour-1	T1-17	F/c	42	banc	e0d2157	WavExporterTest	« ? » à la place des lettres polonaises (JVM ASCII)
-tour-1	T1-17	A/c	58	corrigé	e0d2157	WavExporterTest	« & » du titre devient « -- » dans le nom de fichier
-tour-1	T1-17	B/b	47	corrigé	e0d2157	WavExporterTest	Mot « morceau » répété dans le nom de fichier
-tour-1	T1-18	A/c	58	banc	-	-	Feuille Partager en français (dessinée par le banc)
-tour-1	T1-18	C/a	35	banc	-	-	Feuille Partager en français (dessinée par le banc)
-tour-1	T1-18	D/b	25	banc	-	-	Feuille Partager en français sur tablette néerlandaise (banc)
-tour-1	T1-18	E/b	54	banc	-	-	Feuille Partager en français en italien (banc)
-tour-1	T1-19	F/c	7	banc	5b2b940	BenchTour1Test#theLiveMetersRead	Mesures en direct : que des tirets (pas de moteur au banc)
-tour-1	T1-19	F/c	12	corrigé	e0d2157	-	Release « ×2,0 » sans unité, aucun GR
-tour-1	T1-20	A/d	18	corrigé	14e0b60	RetoursClearOfControlsTest	Bulle REC/Noter recouvre le titre du Guide
-tour-1	T1-20	B/a	30	corrigé	14e0b60	RetoursClearOfControlsTest	Bulle REC/Noter recouvre tempo et position
-tour-1	T1-20	B/d	10	corrigé	14e0b60	RetoursClearOfControlsTest	Bulle REC/Noter chevauche « ? »
-tour-1	T1-20	C/c	52	corrigé	14e0b60	RetoursClearOfControlsTest	Bulle REC/Noter recouvre position, « ? », rond micro
-tour-1	T1-20	D/a	50	corrigé	14e0b60	RetoursClearOfControlsTest	Bulle REC/Noter recouvre l'onglet Voix
-tour-1	T1-20	E/a	45	corrigé	14e0b60	RetoursClearOfControlsTest	« Compartilhar » caché sous la bulle REC
-tour-1	T1-20	F/a	1	corrigé	14e0b60	RetoursClearOfControlsTest	« ? » à moitié caché sous la bulle REC/Noter
-tour-1	T1-20	F/b	63	corrigé	14e0b60	RetoursClearOfControlsTest	Toucher Jouer ouvre la bulle REC/Noter
-tour-1	T1-20	F/d	27	corrigé	14e0b60	RetoursClearOfControlsTest	Toucher Jouer ouvre la bulle Noter
-tour-1	T1-21	A/c	29	corrigé	b09096f	Zone3JourneysTest#redoAfterUndoInTheModeSimple	Une main : Partager hors de portée du pouce
-tour-1	T1-21	C/e	5	corrigé	ae3ea45	RemixThumbReachTest	Une main : boutons de la page Remix hors de portée
-tour-1	T1-21	C/e	25	corrigé	b09096f	Zone3JourneysTest#redoAfterUndoInTheModeSimple	Une main : Jouer et tempo seulement en haut
-tour-1	T1-21	D/d	31	corrigé	b09096f	Zone3JourneysTest#redoAfterUndoInTheModeSimple	Une main : Annuler hors de portée
-tour-1	T1-21	D/d	20	corrigé	b09096f	Zone3JourneysTest#redoAfterUndoInTheModeSimple	Une main : Jouer hors de portée
-tour-1	T1-22	A/c	3	corrigé	7f79b39	Zone3JourneysTest#myProjectsListsTheProjectOfContinue	Mes projets dit « aucun projet »
-tour-1	T1-22	C/e	22	corrigé	7f79b39	Zone3JourneysTest#myProjectsListsTheProjectOfContinue	Mes projets ne liste pas le projet ouvert
-tour-1	T1-22	F/d	5	corrigé	7f79b39	Zone3JourneysTest#myProjectsListsTheProjectOfContinue	Mes projets vide avant la 1re modification
-tour-1	T1-23	F/d	78	corrigé	b09096f	Zone3ModelTest#theSongsLengthIsCountedOnceForEveryScreen	Durée/parties différentes entre accueil, Mes projets, studio
-tour-1	T1-23	F/d	102	corrigé	b09096f	Zone3ModelTest#theSongsLengthIsCountedOnceForEveryScreen	Durée différente entre accueil et studio
-tour-1	T1-24	B/b	38	corrigé	b09096f	Zone3JourneysTest#theModeSimpleMakesASecondPart	Impossible de créer une 2e partie en Simple
-tour-1	T1-25	B/b	21	corrigé	b09096f	GuideJourneyTest	Panneau du Guide en tout petit texte
-tour-1	T1-25	B/b	43	corrigé	b09096f	GuideJourneyTest	Gros bouton du Guide sans effet visible
-tour-1	T1-25	B/b	44	corrigé	b09096f	GuideJourneyTest	Guide ouvert couvre la moitié basse
-tour-1	T1-25	C/c	26	corrigé	b09096f	GuideJourneyTest	Guide ouvert cache « Enregistrer »
-tour-1	T1-26a	B/b	4	corrigé	b09096f	-	« Sauvegardé » = minuscule coche
-tour-1	T1-26b	F/d	14	corrigé	b09096f	Zone3JourneysTest#redoAfterUndoInTheModeSimple	Aucun « Rétablir » après Annuler
-tour-1	T1-26c	F/d	28	corrigé	14e0b60	backOnTheNoteClosesTheNoteOnly	Retour sur « Écrire une note » ferme le studio
-tour-1	T1-26d	F/d	10	corrigé	b09096f	Zone3ModelTest#aCopysNameKeepsItsWordWithinTheLimit	Nom de projet tronqué sans prévenir
-tour-1	T1-26e	E/b	25	corrigé	b09096f	NameFieldTest	Renommer une piste ajoute au lieu de remplacer
-tour-1	T1-27	D/b	17	banc	5b2b940	BenchTour1Test#theSongGoesOnAfterAnotherGesture	Changer le son passe la lecture en boucle sur l'Intro (banc)
-tour-1	T1-27	C/a	23	banc	5b2b940	BenchTour1Test#theSongGoesOnAfterAnotherGesture	Onglet Enviar passe la lecture en boucle sur l'Intro (banc)
-tour-1	T1-29	C/c	33	banc	5b2b940	BenchTour1Test#theMicrophoneHearsAVoice	« Enregistrer » au micro ne fait rien (micro absent du banc)
-tour-1	T1-29	E/b	18	banc	5b2b940	BenchTour1Test#theMicrophoneHearsAVoice	« Registra » au micro ne fait rien (micro absent du banc)
-tour-1	T1-29	E/b	33	banc	5b2b940	BenchTour1Test#theMicrophoneHearsAVoice	« Flux fermé », mesure de latence désactivée (micro absent du banc)
-tour-1	T1-30	A/d	18	corrigé	e0d2157	RecordZone4Test	Le rond rouge n'enregistre que ce qu'on joue, pas le micro
-tour-1	T1-30	C/c	22	corrigé	e0d2157	RecordZone4Test	Le rond rouge ouvre le Clavier au lieu du micro
-tour-1	T1-30	C/c	25	corrigé	e0d2157	RecordZone4Test	Micro caché dans ⋮ « Enregistrer ma voix »
-tour-1	T1-31	E/b	18	corrigé	e0d2157	RecordZone4Test	Décompte caché dans les Réglages
-tour-1	T1-31	C/c	26	corrigé	e0d2157	RecordZone4Test	« Rien n'a été joué pendant la prise » reste affiché partout
-tour-1	T1-31	F/a	14	corrigé	e0d2157	RecordZone4Test	Prise clavier mêle un coup de caisse
-tour-1	T1-30b	A/c	14	corrigé	05801b8	ScreenScanTest	Interrupteur sans nom à côté de « Diese Linie nutzen »
-tour-1	T1-30b	A/d	9	corrigé	05801b8	ScreenScanTest	Interrupteur sans nom à côté de « Utiliser cette ligne »
-tour-1	T1-30b	C/a	10	corrigé	05801b8	ScreenScanTest	Interrupteur sans nom à côté de « Usar esta línea »
-tour-1	T1-30b	D/b	8	corrigé	05801b8	ScreenScanTest	Interrupteur sans nom à côté de « Deze lijn gebruiken »
-tour-1	T1-30b	D/d	11	corrigé	05801b8	ScreenScanTest	Interrupteur sans nom à côté de « Utiliser cette ligne »
-tour-1	T1-34	A/b	50	corrigé	f6bf551	TutoBigFontTest#theFoldedLine…	Consigne du tuto repliée « t… » à 200 % ; 1re rangée sous « Partie : A »
-tour-1	T1-34	A/b	12	corrigé	f6bf551	TutoBigFontTest#theKitsCard…	« Lire la suite » ouvre « Télécharger le kit »
-tour-1	T1-34	A/b	46	corrigé	f6bf551	TutoBigFontTest#aChaptersLastStep…	Pas de bravo en fin de chapitre
-tour-1	T1-34	B/d	33	corrigé	05801b8	TutoCourseTest	« Bravo » avec un coup en trop
-tour-1	T1-34	B/d	101	corrigé	05801b8	-	Clavier en dièses, tuto en bémols
-tour-1	T1-34	B/d	94	corrigé	05801b8	-	Note hors écran sans « plus haut ↑ »
-tour-1	T1-34	B/d	30	corrigé	05801b8	-	Cases en pointillé muettes pour TalkBack
-tour-1	T1-34	B/d	37	banc	5b2b940	padsPlayedThroughTheEngineAreHeard	« Montre-moi » silencieux (moteur absent au banc)
-tour-1	T1-35	D/c	38	corrigé	f6bf551	KeptSoundTest	Son gardé revient sans ses effets
-tour-1	T1-35	D/c	31	corrigé	f6bf551	KeptSoundTest	Son gardé sans nom demandé
-tour-1	T1-35	D/c	67	corrigé	f6bf551	KeptSoundTest	Doublon de son gardé créé sans avertir
-tour-1	T1-35	D/c	17	corrigé	f6bf551	-	Curseurs du synthé sans unité
-tour-1	T1-35	D/c	56	corrigé	05801b8	BassGhostTest	Basse « fantôme » sans notes
-tour-1	T1-35	D/c	80	corrigé	05801b8	TrackSoundFamilyTest	« Changer le son » ouvre toujours « Basses »
-tour-1	T1-35	F/a	21	corrigé	05801b8	TrackSoundFamilyTest	« Changer le son » ouvre toujours « Basses »
-tour-1	T1-36	F/a	27	corrigé	05801b8	TrackSoundNameTest	La case reste « Synthé » après choix d'un autre son
-tour-1	T1-37	A/b	23	corrigé	05801b8	-	Jargon en Simple (Phrygienne, Penta, BPM, Drop…)
-tour-1	T1-37	D/b	16	corrigé	05801b8	-	Jargon technique (FM-piano 6-op…)
-tour-1	T1-37	D/d	13	corrigé	05801b8	-	Mots techniques sans explication (charley, triolets, 808)
-tour-1	T1-38	A/b	31	corrigé	f6bf551	TutoBigFontTest	« Écouter l'exempl » coupé à 200 %
-tour-1	T1-38	A/b	22	corrigé	f6bf551	CaptureMatrixBigFontTest	Noms de pads coupés à 200 %
-tour-1	T1-38	F/a	1	corrigé	f6bf551	TutoBigFontTest	« Sim… » coupé à 200 %
-tour-1	T1-38	F/a	17	corrigé	f6bf551	-	« mes. 1/8 » coupé
-tour-1	T1-38	B/d	10	corrigé	f6bf551	-	2e ligne des onglets coupée à 130 %
-tour-1	T1-39	D/a	27	corrigé	05801b8	ScreenScanTest	Curseur Swing sans nom
-tour-1	T1-39	D/b	18	corrigé	05801b8	ScreenScanTest	Curseur et interrupteur de piste sans nom
-tour-1	T1-39	D/c	17	corrigé	05801b8	ScreenScanTest	Curseurs du synthé sans nom
-tour-1	T1-39	E/b	42	corrigé	05801b8	ScreenScanTest	Interrupteurs et curseur du métronome sans nom
-tour-1	T1-39	E/d	22	corrigé	05801b8	ScreenScanTest	Curseurs du master sans nom
-tour-1	T1-39	F/b	40	corrigé	05801b8	ScreenScanTest	Curseur Swing sans nom
-tour-1	T1-39	F/c	12	corrigé	05801b8	ScreenScanTest	Curseurs du master sans nom
-tour-1	T1-40	A/c	20	corrigé	05801b8	I18nCatalogTest	Allemand fautif (« Hebelruck », « in Drop »)
-tour-1	T1-40	C/b	48	corrigé	05801b8	I18nCatalogTest	Anglais : « Cancel » pour Annuler (défaire)
-tour-1	T1-40	C/b	2	corrigé	05801b8	I18nCatalogTest	Anglais : « Scene effects » au lieu de Stage effects
-tour-1	T1-40	C/a	4	corrigé	05801b8	I18nCatalogTest	Espagnol : référence française (Nekfeu)
-tour-1	T1-40	C/a	1	corrigé	05801b8	I18nCatalogTest	Espagnol bancal (« Aprendo »)
-tour-1	T1-40	B/a	18	corrigé	05801b8	I18nCatalogTest	Arabe : article doublé « لـالـ »
-tour-1	T1-40	B/a	19	corrigé	05801b8	I18nCatalogTest	Arabe : onglets Kicks/Snares non traduits
-tour-1	T1-40	D/b	16	corrigé	05801b8	I18nCatalogTest	Néerlandais : « track » au lieu de « spoor »
-tour-1	T1-40	E/b	41	corrigé	05801b8	I18nCatalogTest	Italien : « Do Ré Mi » avec accent français
-tour-1	T1-40	F/c	25	corrigé	05801b8	I18nCatalogTest	Polonais fautif (accords, calques)
-tour-1	T1-40	E/a	4	corrigé	05801b8	I18nCatalogTest	Portugais : « em o » non contracté
-tour-1	T1-40	C/a	38	corrigé	05801b8	I18nCatalogTest	Aperçu vidéo « POCKET STUDIO »
-tour-1	T1-40	C/a	26	banc	5b2b940	BenchTour1Test#theVideoIsMade	« Créer la vidéo » : moteur pas prêt (banc)
-tour-1	T1-41	D/b	1	corrigé	f6bf551	-	Tablette paysage : accueil en colonne étroite
-tour-1	T1-41	D/b	14	corrigé	f6bf551	-	Tablette paysage : nom de piste coupé « Tegenmel/odie »
-tour-2	n° 1	A/c	4	banc	f597f7d	PlaceFromLibraryTest	« Poser » depuis la bibliothèque : rien ne sonne, pad vide
-tour-2	n° 1	B/d	4	banc	f597f7d	PlaceFromLibraryTest	« Poser » : pad toujours « Kick », Annuler grisé
-tour-2	n° 2	A/c	1	banc	f597f7d	BenchPlaceAndPadLiveTest#padLiveTouchedFromTheWelcomeOpensOnItsPads	Pad Live s'ouvre sur 16 cases vides
-tour-2	n° 2	A/c	41	banc	f597f7d	BenchPlaceAndPadLiveTest#padLiveTouchedFromTheWelcomeOpensOnItsPads	Pad Live à nouveau vide après un morceau
-tour-2	n° 3	A/c	39	corrigé	f597f7d	-	Défis introuvables sans lire
-tour-2	n° 3	A/c	12	corrigé	f597f7d	-	Drapeau orange → « Simple ou Pro ? »
-tour-2	n° 3	A/c	42	corrigé	f597f7d	-	Cible rouge du Pad Live = encadré de texte
-tour-2	n° 4	A/b	32	corrigé	f597f7d	-	Pad Live crée et ouvre un projet « Live » en silence
-tour-2	n° 4	A/b	41	corrigé	f597f7d	-	Couper la chanson passe par le projet « Live »
-tour-2	n° 5	A/b	16	corrigé	f597f7d	StemBoardVmTest	« Voix 1 sur le pad 9 » sans dire le son remplacé
-tour-2	n° 6	B/d	2	corrigé	f597f7d	LibraryRound2Zone1Test	Appui long sur pad : bibliothèque puis fiche selon la fois
-tour-2	n° 6	B/d	29	corrigé	f597f7d	LibraryRound2Zone1Test	Son actuel non marqué ; volume 100 % vs curseur 80 %
-tour-2	n° 7a	A/b	27	corrigé	f597f7d	-	« Ma bibliothèque » introuvable sous ce nom
-tour-2	n° 7b	A/b	14	corrigé	f597f7d	-	« Couper ce que je veux » ajoute la chanson sans le dire
-tour-2	n° 7c	A/b	14	corrigé	f597f7d	-	TalkBack « Cortes: » / « Imán: » sans valeur
-tour-2	n° 8a	A/d	31	banc	3b286fe	mp_club_and_streaming_exports_differ	Club et streaming : mêmes chiffres −12,9 LUFS (banc)
-tour-2	n° 8a	A/d	47	banc	3b286fe	mp_club_and_streaming_exports_differ	Fichier streaming identique au club (banc)
-tour-2	n° 8b	A/d	31	banc	60c7a2f	-	« Length: 3 s » sur tous les exports (banc)
-tour-2	n° 8c	A/d	31	banc	-	-	Crête −12 dBTP pas crédible (sinusoïde du banc)
-tour-2	n° 9a	A/d	17	corrigé	3b286fe	ExportTargetRound2Test#theHelpSaysTheChipsOwnValues	Club −7,5 sur la puce, −8 dans l'aide
-tour-2	n° 9b	A/d	16	corrigé	3b286fe	autoAndClubAreToldApart	« Auto » et « Club » à −7,5 indiscernables
-tour-2	n° 9c	A/d	31	corrigé	3b286fe	aClubReportNeverSaysStreamingNorReadyAboveAGap	Rapport club écrit « comme le streaming (−14) »
-tour-2	n° 9d	A/d	31	corrigé	3b286fe	aClubReportNeverSaysStreamingNorReadyAboveAGap	« Prêt à partager » vert au-dessus d'un écart
-tour-2	n° 10a	A/d	45	corrigé	3b286fe	theExportSaysHowFarItIs	Export sans progression, seulement Annuler
-tour-2	n° 10b	A/d	50	corrigé	3b286fe	anM4aSaysItsBitRate	M4A annoncé « 16 bits »
-tour-2	n° 10c	A/d	55	corrigé	3b286fe	everyReportSaysWhereTheFileIs	Dossier d'enregistrement absent du rapport
-tour-2	n° 10d	A/d	41	corrigé	3b286fe	theShareSheetSaysTheTarget	Partager sans cible affichée
-tour-2	n° 10e	A/d	41	voulu	-	-	Partager présélectionne M4A, Mix WAV (pas un défaut)
-tour-2	n° 11a	B/a	19	corrigé	66f4488	Zone3Round2Test#theOpenGuideNeverHidesTheThumbsBar	Guide ouvert cache la barre du pouce (Jouer)
-tour-2	n° 11b	B/a	18	corrigé	66f4488	theGuidesPanelMakesRoomForTheBarAndIsSmallWhileReading	Panneau du Guide vide sur la moitié basse
-tour-2	n° 12	B/a	4	corrigé	66f4488	aBeatPlaysOneTouchAfterTheStyle	Premier morceau : 10 étapes avant le son
-tour-2	n° 12	A/c	17	corrigé	66f4488	aBeatPlaysOneTouchAfterTheStyle	Assistant : 8 écrans de texte avant le son
-tour-2	n° 13b	B/a	6	corrigé	66f4488	theStylesChoicesComeRightUnderItsDescription	« Choisir ce style » repoussé sous la liste
-tour-2	n° 13c	B/a	23	voulu	-	-	« Mes projets » seulement en haut (pas un défaut)
-tour-2	n° 13d	B/a	9	corrigé	66f4488	-	Deux boutons « Retour » sur l'écran d'étape
-tour-2	n° 13e	B/a	8	corrigé	66f4488	-	Bloc « Les vrais sons du style » répété
-tour-2	n° 13f	B/a	9	corrigé	66f4488	eachStepOpensAtItsTop	Étape sans titre d'instrument
-tour-2	n° 14	B/a	25	corrigé	66f4488	UnusedStarterTest	Projet fantôme « Mon premier rythme »
-tour-2	n° 15a	B/d	1	corrigé	66f4488	theTopBarSaysSavedInWords	Sauvegarde invisible : coche minuscule, nom coupé
-tour-2	n° 15b	B/d	19	corrigé	66f4488	backOnHomeLeavesTheAppAndSaysItIsSaved	Aucun mot « Sauvegardé » en quittant
-tour-2	n° 15c	B/d	19	banc	-	-	Retour sur l'accueil ne quitte pas l'appli (banc)
-tour-2	n° 16	A/c	9	corrigé	66f4488	theHomeKeepsJapprends	L'accueil change après un retour
-tour-2	n° 17a	B/d	8	corrigé	66f4488	aTracksNewSoundAndItsDeletionAreSaid	Changer le son d'une piste : aucun message
-tour-2	n° 17a	B/d	14	corrigé	66f4488	aTracksNewSoundAndItsDeletionAreSaid	Supprimer une piste : aucun message
-tour-2	n° 17b	B/d	12	corrigé	66f4488	-	« Supprimer » caché dans une fiche « Volume »
-tour-2	n° 17c	B/d	8	corrigé	66f4488	aTracksNewSoundAndItsDeletionAreSaid	Nom de piste ne suit pas le preset
-tour-2	n° 17c	B/c	46	corrigé	66f4488	aKeptSoundNamesATrackTheAppNamed	Nom de piste ne suit pas le preset
-tour-2	n° 18	B/b	10	corrigé	69a60ab	RecordRound2Zone4Test	Prises à la même heure, ordre qui change, « 빼기 »
-tour-2	n° 18	B/b	7	corrigé	69a60ab	RecordRound2Zone4Test	« s » vs « 초 » pour la durée des prises
-tour-2	n° 19a	B/b	14	corrigé	69a60ab	MuteSoloEverywhereTest	Interrupteur « Son » dit éteint alors que la piste sonne
-tour-2	n° 19b	B/b	18	corrigé	69a60ab	AloneListenVmTest#turningTheSoundAloneOffWhileTheMusicPlayedKeepsItPlaying	Enlever le solo arrête toute la lecture
-tour-2	n° 20a	B/b	5	corrigé	69a60ab	RecordRound2Zone4Test#theMicrophonesLevelHasANameAndSaysHowItIs	Vumètre d'entrée fin, sans nom
-tour-2	n° 20b	B/b	5	corrigé	69a60ab	RecordRound2Zone4Test	Piste micro « Audio 1 » non traduite
-tour-2	n° 21	B/b	1	corrigé	69a60ab	RecordVoiceWaysTest	Rien sur l'accueil pour enregistrer voix/guitare
-tour-2	n° 21	B/b	2	corrigé	69a60ab	RecordVoiceWaysTest	Rond rouge de Rythme n'enregistre que les pads
-tour-2	n° 22a	A/a	7	corrigé	c494208	TutoBigFontTest#theKitsCardThatComesUnderTheFinger…	« Lire la suite » ouvre « Le kit Techno »
-tour-2	n° 22b	A/a	19	voulu	-	-	« Lire la suite » fait défiler (pas un défaut)
-tour-2	n° 23a	A/a	43	corrigé	c494208	TutoBigFontTest#aChaptersLastStep…	200 % : deux « Éco… » identiques, « Précédent » en flèche
-tour-2	n° 23c	A/a	38	corrigé	c494208	TutoBigFontTest	« À toi : pad Rumble » sans montrer le pad
-tour-2	n° 24a	A/a	22	corrigé	c494208	TutoKeySheetDoneTest	Fiche Tonalité sans « Réussi »
-tour-2	n° 24b	A/a	44	corrigé	c494208	-	« mes. 1/1 » incompréhensible
-tour-2	n° 25a	B/c	6	corrigé	c494208	-	Réglages du son introuvables depuis « Options de Synthé »
-tour-2	n° 25b	B/c	23	corrigé	c494208	-	Valeurs du synthé sans unité
-tour-2	n° 25c	B/c	14	corrigé	c494208	GuideEffectWhyTest	Fiche « passe-haut 80 Hz » sur un passe-bas 364 Hz
-tour-2	n° 25d	B/c	20	corrigé	c494208	FloatingKeyboardRoomTest	Clavier flottant couvre presets et « Unisson »
-tour-2	n° 27a	B/c	66	corrigé	c494208	PianoRollFoldableTest	Piano roll sur pliable : grille ≈ 450 px
-tour-2	n° 27b	B/c	71	corrigé	c494208	PianoRollRound2Test	Appui long sur une note l'efface sans message
-tour-2	n° 28	A/a	17	corrigé	a70337d	EverydayPadWordsTest	Mots anglais sur les pads en Simple
-tour-2	n° 28	B/b	7	corrigé	a70337d	EverydayPadWordsTest	Jargon translittéré (노멀라이즈, 리버스)
-tour-2	n° 29	B/b	1	corrigé	5c133ee	KoreanRegisterTest	Coréen mot à mot (« 당신의 »)
-tour-2	n° 29	B/b	14	corrigé	5c133ee	KoreanRegisterTest	Coréen en 반말, espace « ▶ 를 »
-tour-2	n° 30a	B/d	9	corrigé	a70337d	ThumbOffReadableTest	« Annuler » grisé illisible en thème nuit
-tour-2	n° 31	A/b	2	corrigé	a70337d	RemixModelAskTest	Téléchargement du modèle 174 Mo sans confirmation
-tour-3	T3-01	D/a	57	corrigé	151c4c9	Tour3Zone1Test#leavingPadLiveSilencesItsLoops	Boucle de Pad Live joue encore sur l'accueil
-tour-3	T3-01	D/b	39	corrigé	151c4c9	Tour3Zone1Test#leavingPadLiveSilencesItsLoops	Pads continuent après « Geri » de Pad Live
-tour-3	T3-01	F/c	47	corrigé	151c4c9	Tour3Zone1Test#leavingPadLiveSilencesItsLoops	Retour de Pad Live : 2 boucles continuent
-tour-3	T3-02	C/b	30	banc	60c7a2f	Tour3AppProofTest#padLiveRowsAndStopAllGoToTheEngine	▶ de ligne de Pad Live sans effet (banc)
-tour-3	T3-02	C/b	15	banc	60c7a2f	Tour3AppProofTest#padLiveRowsAndStopAllGoToTheEngine	■ de ligne : boucles continuent (banc)
-tour-3	T3-02	C/b	57	banc	60c7a2f	Tour3AppProofTest#padLiveRowsAndStopAllGoToTheEngine	« Tout arrêter » : pads jouent encore (banc)
-tour-3	T3-02	D/d	62	banc	60c7a2f	Tour3AppProofTest#padLiveRowsAndStopAllGoToTheEngine	« ■ Wszystko » : la musique continue (banc)
-tour-3	T3-02	A/a	40	banc	60c7a2f	Tour3AppProofTest#padLiveRowsAndStopAllGoToTheEngine	▶ au bout de la rangée 1 : rien ne joue (banc)
-tour-3	T3-02	E/d	51	voulu	-	-	« Detener todo » coupe les pads, pas la musique du projet
-tour-3	T3-03a	E/d	49	banc	531564f	Tour3Zone1Test#aLivePadTouchedGoesToTheEngine	Pad live « Voix · prêt » ne joue jamais (banc)
-tour-3	T3-03b	E/d	36	corrigé	151c4c9	Tour3Zone1Test#aColumnCutInMix…	Voix importée muette dans le Live sans le dire
-tour-3	T3-04	E/d	16	corrigé	151c4c9	StemBoardVmTest#aStretchOnAPadNeverTheKick	« Sur les pads » remplace Tom médium/aigu
-tour-3	T3-04	E/d	22	corrigé	151c4c9	StemBoardRouterTest	Annuler laisse le message de remplacement
-tour-3	T3-04	E/d	33	corrigé	151c4c9	StemBoardRouterTest	« En el Live » écrase une case prête
-tour-3	T3-05	A/a	9	corrigé	151c4c9	PadLiveChallengeTest	Défi : saute au niveau 5 sans résultat
-tour-3	T3-05	A/a	13	corrigé	151c4c9	PadLiveChallengeTest	Défi : pas de modèle du rythme à refaire
-tour-3	T3-05	A/a	26	corrigé	151c4c9	PadLiveChallengeTest	Défi : tempo jamais montré (0 étoile = banc)
-tour-3	T3-05	A/a	3	banc	-	-	Boucle qui tourne sous l'exemple du défi (stopLive non suivi)
-tour-3	T3-05	F/a	41	corrigé	151c4c9	PadLiveChallengeTest	Défi fini seul au 4e coup, bouton qui saute
-tour-3	T3-07	D/a	52	corrigé	4d8f967	TalkBackNamesTest#padLivesCornersSayWhatTheyOpen	Petits boutons au coin des pads sans nom
-tour-3	T3-07	D/c	4	corrigé	4d8f967	TalkBackNamesTest#padLivesCornersSayWhatTheyOpen	Petits boutons au coin des pads sans nom
-tour-3	T3-07	F/a	4	corrigé	4d8f967	TalkBackNamesTest#padLivesCornersSayWhatTheyOpen	Petits boutons au coin des pads sans nom
-tour-3	T3-07	F/c	6	corrigé	4d8f967	TalkBackNamesTest#padLivesCornersSayWhatTheyOpen	Petits boutons au coin des pads sans nom
-tour-3	T3-09	B/c	24	corrigé	151c4c9	CutScreenTightTest	Découpe par phrases : toucher une tranche ne la choisit pas
-tour-3	T3-09	B/c	20	corrigé	151c4c9	CutScreenTightTest	Barre d'outils de découpe disparaît, aucun retour
-tour-3	T3-09	E/d	18	voulu	-	-	Poignée Fin qui bouge le Début (barre Début prise : pas un défaut)
-tour-3	T3-10	A/d	3	corrigé	0bb71bf	Round3Zone2Test#theShareSheetChoosesTheTarget	Cible absente de « Prêt à partager ? »
-tour-3	T3-10	A/d	12	corrigé	0bb71bf	Round3Zone2Test#theTargetsHelpNeverAssumesADrop	Aide « mesuré sur le Drop » sans Drop
-tour-3	T3-10	F/b	26	corrigé	0bb71bf	Round3Zone2Test#theExportCardChoosesTheTarget	Cible éteinte, réglage loin de l'export
-tour-3	T3-11	A/d	45	corrigé	0bb71bf	myExportsAreListed	Aucune liste d'exports ; carte disparaît après Annuler
-tour-3	T3-12	F/d	48	corrigé	0bb71bf	aStaleExportIsNotOffered	Ancien export proposé après modification
-tour-3	T3-12	F/d	56	banc	531564f	-	« Partager les 2 fichiers » n'en cite qu'un (banc)
-tour-3	T3-12	F/d	54	corrigé	0bb71bf	aTrackWithoutAFileIsSaid	Synthé absent de l'export piste par piste sans raison
-tour-3	T3-12	F/b	53	corrigé	0bb71bf	theRemixGivesOneFilePerStem	Remix exporté en un seul fichier
-tour-3	T3-12	F/b	58	corrigé	0bb71bf	aMutedRemixStemIsPointedOut	« Prêt : aucune piste muette » alors que la voix est coupée
-tour-3	T3-13	F/d	61	corrigé	0bb71bf	theProjectIsSentFromShareAndTheHelpSaysHow	Envoyer le projet (.zip) caché dans Mes projets
-tour-3	T3-13	F/b	41	corrigé	0bb71bf	aVersionsNameLeavesTheProjectsName	Le nom du partage renomme le projet
-tour-3	T3-13	F/d	71	corrigé	0bb71bf	aCopysNameIsShownInTheAppsLanguage	« (copie) » en français dans l'appli anglaise
-tour-3	T3-14	A/c	47	corrigé	0bb71bf	theSimpleReportHasNoJargon	Fin d'export pleine de LUFS/dBTP en Simple
-tour-3	T3-14	A/d	3	corrigé	0bb71bf	oneLoopLengthEverywhere	Durée annoncée différente entre Partager et Mix
-tour-3	T3-14	F/d	7	corrigé	0bb71bf	oneLoopLengthEverywhere	Durée annoncée différente entre Partager et Mix
-tour-3	T3-14	A/d	32	banc	60c7a2f	BenchEngineTest#aRenderLastsWhatIsAskedAndSoundsLikeItsProject	Export « 3 s » (banc)
-tour-3	T3-14	A/d	60	banc	60c7a2f	BenchEngineTest#aRenderLastsWhatIsAskedAndSoundsLikeItsProject	Chiffres LUFS identiques pour tous les exports (banc)
-tour-3	T3-14	C/a	59	banc	60c7a2f	BenchEngineTest#aRenderLastsWhatIsAskedAndSoundsLikeItsProject	Export de 3 s seulement (banc)
-tour-3	T3-14	C/c	52	banc	60c7a2f	BenchEngineTest#aRenderLastsWhatIsAskedAndSoundsLikeItsProject	Fichier annoncé de 3 s (banc)
-tour-3	T3-14	D/c	60	banc	60c7a2f	BenchEngineTest#aRenderLastsWhatIsAskedAndSoundsLikeItsProject	Export 3 s (banc) et jargon LUFS en Simple (corrigé 0bb71bf)
-tour-3	T3-15	A/b	17	banc	60c7a2f	Tour3AppProofTest#theSongPlaysFromAPartOrATakeWithAnEngine	« Jouer » ne joue qu'une boucle de 4 mesures (banc)
-tour-3	T3-15	A/b	31	banc	60c7a2f	Tour3AppProofTest#theSongPlaysFromAPartOrATakeWithAnEngine	Toucher une partie ne joue rien (banc)
-tour-3	T3-15	C/a	40	banc	60c7a2f	Tour3AppProofTest#theSongPlaysFromAPartOrATakeWithAnEngine	« A partir do meu take » ne joue rien (banc)
-tour-3	T3-15	C/a	45	banc	60c7a2f	Tour3AppProofTest#theSongPlaysFromAPartOrATakeWithAnEngine	Toucher une partie ne joue rien (banc)
-tour-3	T3-15	C/a	48	banc	60c7a2f	Tour3AppProofTest#theSongPlaysFromAPartOrATakeWithAnEngine	« La musique entière » s'arrête (banc)
-tour-3	T3-15	E/a	87	banc	60c7a2f	Tour3AppProofTest#theSongPlaysFromAPartOrATakeWithAnEngine	Toucher une partie ne joue rien (banc)
-tour-3	T3-15	E/a	44	banc	531564f	-	Compteur « Intro batt. 1 » figé (banc)
-tour-3	T3-15	D/c	57	banc	531564f	-	Compteur « Intro bar 1/28 » figé (banc)
-tour-3	T3-16	B/a	9	banc	531564f	Tour3RenameIdleTest	Gel en tapant le nom du projet (verdict contesté, retenu banc)
-tour-3	T3-16	E/c	6	banc	531564f	Tour3RenameIdleTest	Gel en tapant le nom d'une piste (verdict contesté, retenu banc)
-tour-3	T3-16	D/b	60	corrigé	b804a22	Zone3Round3FieldTest	Renommer colle le texte derrière l'ancien nom
-tour-3	T3-17	B/a	1	banc	-	-	Accueil sans « Reprendre » (le banc fait un premier lancement)
-tour-3	T3-17	B/a	5	banc	-	-	« Ouvert à l'instant » au lieu de la vraie date (banc)
-tour-3	T3-17	B/a	4	voulu	-	-	« Rétablir » absent sans Annuler préalable (pas un défaut)
-tour-3	T3-18	D/a	39	corrigé	b804a22	backAfterDeletingTheOpenProjectLeadsHome	Retour sans effet après suppression du projet ouvert
-tour-3	T3-18	D/a	16	banc	-	backDuringAKeyboardTakeKeepsItsNotes	Retour pendant la prise clavier : « rien n'a été joué » (banc)
-tour-3	T3-19	D/a	75	corrigé	b804a22	-	Carte « Enregistrer ma voix » ouvre le projet Live
-tour-3	T3-19	E/c	3	voulu	-	-	Carte voix ouvre « Mon premier beat » au premier lancement (normal)
-tour-3	T3-19	E/b	48	corrigé	b804a22	learningAgainTakesUpTheCourseUnderWay	« J'apprends » crée un projet et repart au chapitre 1
-tour-3	T3-21	D/b	45	corrigé	b804a22	lyingDownTheFiveSpacesFitInTheRail	Paysage : rail coupé, « Gönder » invisible
-tour-3	T3-23a	E/c	27	banc	ff77b35	-	● du haut : « moteur pas démarré » (banc)
-tour-3	T3-23a	F/a	75	banc	ff77b35	-	● du haut : « moteur pas démarré » (banc)
-tour-3	T3-23b	C/a	24	corrigé	ff77b35	Zone4Round3Test#theTakesStateSitsInTheTrackThatRecords	Piste « Voz » fantôme sans prise
-tour-3	T3-24a	E/c	29	corrigé	ff77b35	-	État de la prise tout en haut, loin de la piste
-tour-3	T3-24b	E/c	73	banc	531564f	-	Décompte « 2 mesures » affiché « 1… » (banc)
-tour-3	T3-25	C/a	13	corrigé	ff77b35	aTakeTouchedIsHeardAlone	Impossible d'écouter une prise seule
-tour-3	T3-25	E/c	16	corrigé	ff77b35	oneDurationPerTake	Deux durées pour la même prise
-tour-3	T3-26a	C/c	22	corrigé	ff77b35	theNotificationsWaitForTheTakesEnd	Demande de notifications au milieu de la 1re prise
-tour-3	T3-26b	C/c	22	corrigé	ff77b35	myMelodyTakesTheSoundChosenForTheMelody	Mélodie sur une nouvelle piste avec un autre son
-tour-3	T3-26c	C/c	23	banc	531564f	theKeysShortTapsAreRecorded	Touches du clavier non enregistrées (verdict banc, contredit au tour 4)
-tour-3	T3-27	E/c	37	corrigé	ff77b35	aMutedTracksSwitchReadsTrue	« Mute » + « off » lu « pas coupé »
-tour-3	T3-28	A/c	14	corrigé	b3ee0d6	TutoKitUnderFingerTest	« Lire la suite » : fenêtre du kit remplace le tuto
-tour-3	T3-28	E/b	5	corrigé	b3ee0d6	TutoKitUnderFingerTest	« Écouter l'exemple » : encart du kit remplace le tuto
-tour-3	T3-29	A/c	58	corrigé	b3ee0d6	TutoPadNamesTest	Le tuto nomme un pad qui ne s'appelle pas ainsi
-tour-3	T3-29	E/b	21	corrigé	b3ee0d6	TutoPadNamesTest	Le tuto nomme « Basdrum 1 », le pad « Studiobasdrum »
-tour-3	T3-30	A/c	19	corrigé	b3ee0d6	TutoChapterEndTest	« Bravo, chapitre fini » à 2/3 (étape non comptée = voulu)
-tour-3	T3-30	A/c	36	corrigé	b3ee0d6	TutoChapterEndTest	Fin du tuto sans « Écouter mon morceau »
-tour-3	T3-30	E/b	35	corrigé	b3ee0d6	TutoChapterEndTest	Chapitre à 2/3, pas « Klaar »
-tour-3	T3-32	B/d	79	corrigé	b3ee0d6	I18nCatalogTest#everyTextHasItsTranslations	Message du tuto Pro en français dans l'appli allemande
-tour-3	T3-33	F/a	21	corrigé	b3ee0d6	SoundSearchWordsTest	Recherche « verre », « conga » : aucun son
-tour-3	T3-33	F/a	27	corrigé	b3ee0d6	SoundSearchWordsTest	Recherche : aucun son alors qu'ils existent
-tour-3	T3-33	F/a	29	corrigé	b3ee0d6	ShelfBrowserTest	Onglet « Caisses claires » montre tout
-tour-3	T3-33	D/b	22	corrigé	b3ee0d6	SoundSearchWordsTest	Recherche « Ses bulunamadı » sur les exemples
-tour-3	T3-34	D/d	59	corrigé	b3ee0d6	-	Aide cite une colonne Remix absente
-tour-3	T3-34	D/d	14	corrigé	b3ee0d6	-	Aide du pan : geste qui ne fait rien
-tour-3	T3-34	D/d	104	corrigé	b3ee0d6	-	Aide « Pas » en Simple cite des outils Pro
-tour-3	T3-34	F/a	34	corrigé	b3ee0d6	-	Aide parle de « la cible » au lieu de l'étoile Défi
-tour-3	T3-34	D/c	48	corrigé	b3ee0d6	HelpLabelsTest	Étiquettes « ? » mal posées, qui se chevauchent
-tour-3	T3-34	D/d	17	corrigé	b3ee0d6	HelpLabelsTest	Étiquettes « ? » collées en haut, illisibles
-tour-3	T3-34	E/c	65	corrigé	b3ee0d6	HelpLabelsTest	Étiquettes « ? » collées et coupées en haut
-tour-3	T3-35	E/a	25	corrigé	b3ee0d6	SongArrangementTest#aPartIsNamedFromItsOwnSheet	Impossible de renommer une partie
-tour-3	T3-37	B/b	7	banc	-	-	Barre du haut et ▶/≡ lus « bouton » (lit=non tait les noms)
-tour-3	T3-37	B/b	13	banc	4d8f967	TalkBackNamesTest	Touches du clavier sans nom (banc ; touches noires corrigées)
-tour-3	T3-37	B/b	3	banc	-	-	Textes gris contraste ~1,4:1 (barres grises du banc)
-tour-3	T3-37	C/c	18	corrigé	4d8f967	TalkBackNamesTest	Poignée de feuille touchable sans nom
-tour-3	T3-37	E/d	29	corrigé	4d8f967	TalkBackNamesTest	Poignée de feuille touchable sans nom
-tour-3	T3-37	F/b	22	corrigé	4d8f967	TalkBackNamesTest	Poignée de feuille de partage sans nom
-tour-3	T3-38	A/d	23	corrigé	2ce48c3	CountWordsTest	Pluriel faux « 1 parts »
-tour-3	T3-38	E/a	70	corrigé	2ce48c3	CountWordsTest	Pluriel faux « 1 parti »
-tour-3	T3-38	F/d	45	corrigé	2ce48c3	CountWordsTest	Pluriel faux « 1 parts »
-tour-3	T3-38	C/a	7	corrigé	2ce48c3	Round3LanguagesTest	Portugais « em a parte » non contracté
-tour-3	T3-38	F/b	29	corrigé	2ce48c3	Round3LanguagesTest	Particules coréennes fautives
-tour-3	T3-38	F/b	45	corrigé	2ce48c3	Round3LanguagesTest	Mots anglais « streaming/remix » dans les noms (coréen)
-tour-4	T4-19	C/a	63	banc	d3eccff	BenchTour4Test#renameAfterTheClearButton	Renommer : toucher « Effacer » → 5 min sans réponse
-tour-4	T4-19	C/a	64	banc	d3eccff	BenchTour4Test#renameAfterTheClearButton	Après « Effacer », champ vide refuse le texte, OK désactivé
-tour-4	T4-19	E/a	7	banc	d3eccff	BenchTour4Test#renameAfterTheClearButton	Renommer : toucher « Effacer » → 5 min sans réponse
-tour-4	T4-17	A/d	36	banc	-	-	Compteur « Verso compasso 25/104 » figé pendant la lecture
-tour-4	T4-17	D/b	32	banc	-	-	Compteur « Intro batt. 1 » figé (idem écran 98)
-tour-4	T4-17	B/c	71	banc	-	-	Compteur « 小節 1/1 » qui n'avance pas
+tour	item	siege	ecran	etat	commit	test	note	cible
+tour-1	déjà réglé (gel ▶)	A/a	22	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc après ▶ : onglet sans effet, écran identique	
+tour-1	déjà réglé (gel ▶)	A/a	24	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc après ▶ : onglet piano sans effet	
+tour-1	déjà réglé (gel ▶)	A/a	25	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : panneau du Guide sans effet	
+tour-1	déjà réglé (gel ▶)	A/a	27	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : le son s'arrête, l'image garde le bouton	
+tour-1	déjà réglé (gel ▶)	A/a	28	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : bouton du Guide sans effet	
+tour-1	déjà réglé (gel ▶)	A/a	29	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : retour Android sans effet	
+tour-1	déjà réglé (gel ▶)	A/a	32	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : glisse sur le Guide sans effet	
+tour-1	déjà réglé (gel ▶)	A/a	33	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : menu ⋯ sans effet	
+tour-1	déjà réglé (gel ▶)	A/a	36	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : Mes projets et REC sans effet (fin du siège)	
+tour-1	déjà réglé (gel ▶)	A/d	18	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc après REC : boucle sur l'Intro, écran figé	top_record
+tour-1	déjà réglé (gel ▶)	A/d	20	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : « Plus » sans effet	
+tour-1	déjà réglé (gel ▶)	A/d	21	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : Arrêter reste affiché, écran figé	
+tour-1	déjà réglé (gel ▶)	A/d	24	banc	72bc474	BenchPlayThenTabsTest	Faux gel du banc : retour système sans effet	
+tour-1	déjà réglé (plantage ecris)	D/d	42	banc	c94967d	-	Faux plantage du banc : « ecris » sans champ au focus	
+tour-1	T1-01	D/a	10	corrigé	ae3ea45	RemixCutFromCardTest	Remix : découpe introuvable avant « Jouer avec le projet »	
+tour-1	T1-01	F/b	13	corrigé	ae3ea45	RemixCutFromCardTest	Remix : découpe introuvable avant de mettre la chanson au projet	
+tour-1	T1-02	B/a	33	corrigé	ae3ea45	RemixVoiceTest#theKitsMainPadsAreNeverTakenEvenUnplayed	« Sur les pads » remplace le Kick sans prévenir	
+tour-1	T1-02	D/a	52	corrigé	ae3ea45	RemixVoiceTest#theKitsMainPadsAreNeverTakenEvenUnplayed	« Sur les pads » remplace Kick/Caisse sans demander	
+tour-1	T1-02	F/b	51	corrigé	ae3ea45	RemixVoiceTest#theKitsMainPadsAreNeverTakenEvenUnplayed	« Onto the pads » remplace Kick et Kick 2 sans prévenir	
+tour-1	T1-03	B/a	18	corrigé	ae3ea45	LibrarySongsTest	Bibliothèque du pad sans les pistes de la chanson séparée	feuille pad 1
+tour-1	T1-03	D/a	37	corrigé	ae3ea45	LibrarySongsTest	Bibliothèque du pad live sans les pistes de la chanson	
+tour-1	T1-03	F/b	21	corrigé	ae3ea45	LibrarySongsTest	Bibliothèque du pad 16 sans les pistes de la chanson	
+tour-1	T1-04	B/a	31	banc	5b2b940	-	« Écouter le bout » muet (le banc ne le disait pas)	
+tour-1	T1-04	F/b	66	corrigé	-	-	En boucle, toute la chanson séparée rejoue sur les pads (réglé avec T1-01)	
+tour-1	T1-05	C/b	2	corrigé	ae3ea45	PadLivePacksFillTest	Pad Live : 16 pads vides « + », un pack ne remplit qu'une rangée	
+tour-1	T1-05	E/a	3	corrigé	ae3ea45	PadLivePacksFillTest	Pad Live : 16 pads vides malgré « pads prêts »	
+tour-1	T1-05	F/e	3	corrigé	ae3ea45	PadLivePacksFillTest	Pad Live : 16 cases grises vides, aucun son	
+tour-1	T1-06	C/d	25	banc	60c7a2f	-	« Tout couper » laisse jouer des pads (suivi banc au tour 3)	
+tour-1	T1-06	E/a	32	banc	60c7a2f	-	« Arrêter la ligne 1 » laisse jouer des pads (suivi banc au tour 3)	
+tour-1	T1-07	C/d	1	corrigé	ae3ea45	PadLiveLyingTapTest	Paysage : toucher un pad ouvre sa fiche au lieu de le jouer	
+tour-1	T1-07	C/d	15	corrigé	ae3ea45	PadLiveLyingTapTest	Paysage : seul « Gros pads » lance les pads	
+tour-1	T1-07	C/d	21	banc	-	-	« Lancer la ligne 1 à la mesure » sans effet (pas de moteur au banc)	
+tour-1	T1-07	C/d	16	banc	-	-	Lancement non calé sur la mesure visible (états simulés du banc)	
+tour-1	T1-08	C/d	24	corrigé	ae3ea45	PadLiveRiserShownTest	Montée tenue sans retour visuel	padlive_fx_riser
+tour-1	T1-08	E/a	19	banc	-	-	Filtre/écho tenus sans retour visuel (captures doigt levé)	
+tour-1	T1-09	C/b	37	corrigé	ae3ea45	PadLiveChallengeTest	Défis : record remplacé par le dernier essai	
+tour-1	T1-09	C/b	64	corrigé	ae3ea45	PadLiveChallengeListTest	Défis : retour au défi 1, pas de liste	
+tour-1	T1-09	C/b	24	corrigé	ae3ea45	PadLiveChallengeTest	Défis : aucun pad allumé pendant l'exemple	
+tour-1	T1-09	C/b	14	corrigé	ae3ea45	PadLiveChallengeTest	Défis : points sans nom (« trop lent » = banc)	
+tour-1	T1-10	E/a	46	banc	5b2b940	BenchTour1Test#aKeptPerformanceIsHeard	Performance enregistrée : « Écouter » ne joue rien	
+tour-1	T1-10	E/a	45	corrigé	ae3ea45	-	Bandeau « Performan… » coupé	
+tour-1	T1-11	E/a	6	corrigé	ae3ea45	-	Recherche « funk » ne trouve pas le pack Disco/funk	
+tour-1	T1-12	C/e	19	corrigé	ae3ea45	-	Pack téléchargé « 808 modernes » introuvable ensuite	
+tour-1	T1-13	A/c	58	corrigé	e0d2157	OneTargetExportTest	Exports club et streaming identiques (ne diffèrent que par le format)	fertig
+tour-1	T1-13	E/d	62	corrigé	e0d2157	OneTargetExportTest	Exports club et streaming indiscernables	
+tour-1	T1-13	F/c	63	corrigé	e0d2157	OneTargetExportTest	Rapport club identique au streaming −14	streamingu
+tour-1	T1-14	E/d	57	corrigé	e0d2157	OneLoudnessTargetTest	Deux sélecteurs de cible cochés ensemble (−14 et club −9)	
+tour-1	T1-14	E/d	20	corrigé	e0d2157	OneLoudnessTargetTest	Club −7,5 / −9 selon l'écran, sans « LUFS »	
+tour-1	T1-14	F/c	48	corrigé	e0d2157	OneLoudnessTargetTest	Deux cibles opposées actives ; Club −8 ici, −9 ailleurs	
+tour-1	T1-15	A/c	58	corrigé	e0d2157	ExportResultInViewTest	Après export : aucune cible ni mesure affichée	fertig
+tour-1	T1-15	E/d	62	corrigé	e0d2157	ExportResultInViewTest	Après export : seulement le nom du fichier, aucun bilan	
+tour-1	T1-15	F/c	63	corrigé	e0d2157	ExportResultInViewTest	−12,9 LUFS pour −14 sans explication, crête « — »	lufs
+tour-1	T1-16	A/c	49	corrigé	e0d2157	BenchTour1Test#theMixTabsExportRenders	« Exporter » du Mix ne réagit pas (appli + banc)	
+tour-1	T1-16	E/d	40	corrigé	e0d2157	BenchTour1Test#theMixTabsExportRenders	« Exporter » du Mix : rien ne change (appli + banc)	
+tour-1	T1-16	F/c	34	corrigé	e0d2157	BenchTour1Test#theMixTabsExportRenders	« Exporter » du Mix sans effet, seul Partager exporte	
+tour-1	T1-17	C/a	35	banc	e0d2157	WavExporterTest	« ? » à la place de « ó » dans le nom de fichier (JVM ASCII)	
+tour-1	T1-17	E/d	49	banc	e0d2157	WavExporterTest	Lettres japonaises remplacées par « ??? » (JVM ASCII)	
+tour-1	T1-17	F/c	42	banc	e0d2157	WavExporterTest	« ? » à la place des lettres polonaises (JVM ASCII)	
+tour-1	T1-17	A/c	58	corrigé	e0d2157	WavExporterTest	« & » du titre devient « -- » dans le nom de fichier	enregistrer dans fichiers
+tour-1	T1-17	B/b	47	corrigé	e0d2157	WavExporterTest	Mot « morceau » répété dans le nom de fichier	
+tour-1	T1-18	A/c	58	banc	-	-	Feuille Partager en français (dessinée par le banc)	enregistrer dans fichiers
+tour-1	T1-18	C/a	35	banc	-	-	Feuille Partager en français (dessinée par le banc)	
+tour-1	T1-18	D/b	25	banc	-	-	Feuille Partager en français sur tablette néerlandaise (banc)	
+tour-1	T1-18	E/b	54	banc	-	-	Feuille Partager en français en italien (banc)	
+tour-1	T1-19	F/c	7	banc	5b2b940	BenchTour1Test#theLiveMetersRead	Mesures en direct : que des tirets (pas de moteur au banc)	
+tour-1	T1-19	F/c	12	corrigé	e0d2157	-	Release « ×2,0 » sans unité, aucun GR	
+tour-1	T1-20	A/d	18	corrigé	14e0b60	RetoursClearOfControlsTest	Bulle REC/Noter recouvre le titre du Guide	le kick
+tour-1	T1-20	B/a	30	corrigé	14e0b60	RetoursClearOfControlsTest	Bulle REC/Noter recouvre tempo et position	
+tour-1	T1-20	B/d	10	corrigé	14e0b60	RetoursClearOfControlsTest	Bulle REC/Noter chevauche « ? »	
+tour-1	T1-20	C/c	52	corrigé	14e0b60	RetoursClearOfControlsTest	Bulle REC/Noter recouvre position, « ? », rond micro	
+tour-1	T1-20	D/a	50	corrigé	14e0b60	RetoursClearOfControlsTest	Bulle REC/Noter recouvre l'onglet Voix	
+tour-1	T1-20	E/a	45	corrigé	14e0b60	RetoursClearOfControlsTest	« Compartilhar » caché sous la bulle REC	
+tour-1	T1-20	F/a	1	corrigé	14e0b60	RetoursClearOfControlsTest	« ? » à moitié caché sous la bulle REC/Noter	etiqueter
+tour-1	T1-20	F/b	63	corrigé	14e0b60	RetoursClearOfControlsTest	Toucher Jouer ouvre la bulle REC/Noter	
+tour-1	T1-20	F/d	27	corrigé	14e0b60	RetoursClearOfControlsTest	Toucher Jouer ouvre la bulle Noter	
+tour-1	T1-21	A/c	29	corrigé	b09096f	Zone3JourneysTest#redoAfterUndoInTheModeSimple	Une main : Partager hors de portée du pouce	
+tour-1	T1-21	C/e	5	corrigé	ae3ea45	RemixThumbReachTest	Une main : boutons de la page Remix hors de portée	
+tour-1	T1-21	C/e	25	corrigé	b09096f	Zone3JourneysTest#redoAfterUndoInTheModeSimple	Une main : Jouer et tempo seulement en haut	
+tour-1	T1-21	D/d	31	corrigé	b09096f	Zone3JourneysTest#redoAfterUndoInTheModeSimple	Une main : Annuler hors de portée	
+tour-1	T1-21	D/d	20	corrigé	b09096f	Zone3JourneysTest#redoAfterUndoInTheModeSimple	Une main : Jouer hors de portée	
+tour-1	T1-22	A/c	3	corrigé	7f79b39	Zone3JourneysTest#myProjectsListsTheProjectOfContinue	Mes projets dit « aucun projet »	
+tour-1	T1-22	C/e	22	corrigé	7f79b39	Zone3JourneysTest#myProjectsListsTheProjectOfContinue	Mes projets ne liste pas le projet ouvert	
+tour-1	T1-22	F/d	5	corrigé	7f79b39	Zone3JourneysTest#myProjectsListsTheProjectOfContinue	Mes projets vide avant la 1re modification	
+tour-1	T1-23	F/d	78	corrigé	b09096f	Zone3ModelTest#theSongsLengthIsCountedOnceForEveryScreen	Durée/parties différentes entre accueil, Mes projets, studio	
+tour-1	T1-23	F/d	102	corrigé	b09096f	Zone3ModelTest#theSongsLengthIsCountedOnceForEveryScreen	Durée différente entre accueil et studio	
+tour-1	T1-24	B/b	38	corrigé	b09096f	Zone3JourneysTest#theModeSimpleMakesASecondPart	Impossible de créer une 2e partie en Simple	
+tour-1	T1-25	B/b	21	corrigé	b09096f	GuideJourneyTest	Panneau du Guide en tout petit texte	
+tour-1	T1-25	B/b	43	corrigé	b09096f	GuideJourneyTest	Gros bouton du Guide sans effet visible	
+tour-1	T1-25	B/b	44	corrigé	b09096f	GuideJourneyTest	Guide ouvert couvre la moitié basse	
+tour-1	T1-25	C/c	26	corrigé	b09096f	GuideJourneyTest	Guide ouvert cache « Enregistrer »	enregistre une melo
+tour-1	T1-26a	B/b	4	corrigé	b09096f	-	« Sauvegardé » = minuscule coche	
+tour-1	T1-26b	F/d	14	corrigé	b09096f	Zone3JourneysTest#redoAfterUndoInTheModeSimple	Aucun « Rétablir » après Annuler	
+tour-1	T1-26c	F/d	28	corrigé	14e0b60	backOnTheNoteClosesTheNoteOnly	Retour sur « Écrire une note » ferme le studio	
+tour-1	T1-26d	F/d	10	corrigé	b09096f	Zone3ModelTest#aCopysNameKeepsItsWordWithinTheLimit	Nom de projet tronqué sans prévenir	
+tour-1	T1-26e	E/b	25	corrigé	b09096f	NameFieldTest	Renommer une piste ajoute au lieu de remplacer	
+tour-1	T1-27	D/b	17	banc	5b2b940	BenchTour1Test#theSongGoesOnAfterAnotherGesture	Changer le son passe la lecture en boucle sur l'Intro (banc)	
+tour-1	T1-27	C/a	23	banc	5b2b940	BenchTour1Test#theSongGoesOnAfterAnotherGesture	Onglet Enviar passe la lecture en boucle sur l'Intro (banc)	
+tour-1	T1-29	C/c	33	banc	5b2b940	BenchTour1Test#theMicrophoneHearsAVoice	« Enregistrer » au micro ne fait rien (micro absent du banc)	
+tour-1	T1-29	E/b	18	banc	5b2b940	BenchTour1Test#theMicrophoneHearsAVoice	« Registra » au micro ne fait rien (micro absent du banc)	audio_add
+tour-1	T1-29	E/b	33	banc	5b2b940	BenchTour1Test#theMicrophoneHearsAVoice	« Flux fermé », mesure de latence désactivée (micro absent du banc)	
+tour-1	T1-30	A/d	18	corrigé	e0d2157	RecordZone4Test	Le rond rouge n'enregistre que ce qu'on joue, pas le micro	ce que je joue
+tour-1	T1-30	C/c	22	corrigé	e0d2157	RecordZone4Test	Le rond rouge ouvre le Clavier au lieu du micro	
+tour-1	T1-30	C/c	25	corrigé	e0d2157	RecordZone4Test	Micro caché dans ⋮ « Enregistrer ma voix »	
+tour-1	T1-31	E/b	18	corrigé	e0d2157	RecordZone4Test	Décompte caché dans les Réglages	chitarra
+tour-1	T1-31	C/c	26	corrigé	e0d2157	RecordZone4Test	« Rien n'a été joué pendant la prise » reste affiché partout	more_voice
+tour-1	T1-31	F/a	14	corrigé	e0d2157	RecordZone4Test	Prise clavier mêle un coup de caisse	
+tour-1	T1-30b	A/c	14	corrigé	05801b8	ScreenScanTest	Interrupteur sans nom à côté de « Diese Linie nutzen »	
+tour-1	T1-30b	A/d	9	corrigé	05801b8	ScreenScanTest	Interrupteur sans nom à côté de « Utiliser cette ligne »	
+tour-1	T1-30b	C/a	10	corrigé	05801b8	ScreenScanTest	Interrupteur sans nom à côté de « Usar esta línea »	
+tour-1	T1-30b	D/b	8	corrigé	05801b8	ScreenScanTest	Interrupteur sans nom à côté de « Deze lijn gebruiken »	
+tour-1	T1-30b	D/d	11	corrigé	05801b8	ScreenScanTest	Interrupteur sans nom à côté de « Utiliser cette ligne »	
+tour-1	T1-34	A/b	50	corrigé	f6bf551	TutoBigFontTest#theFoldedLine…	Consigne du tuto repliée « t… » à 200 %	clap
+tour-1	T1-34	A/b	50	corrigé	f6bf551	TutoBigFontTest#theFoldedLine…	1re rangée de la grille sous « Partie : A » à 200 %	pas 5
+tour-1	T1-34	A/b	12	corrigé	f6bf551	TutoBigFontTest#theKitsCard…	« Lire la suite » ouvre « Télécharger le kit »	
+tour-1	T1-34	A/b	46	corrigé	f6bf551	TutoBigFontTest#aChaptersLastStep…	Pas de bravo en fin de chapitre	
+tour-1	T1-34	B/d	33	corrigé	05801b8	TutoCourseTest	« Bravo » avec un coup en trop	
+tour-1	T1-34	B/d	101	corrigé	05801b8	-	Clavier en dièses, tuto en bémols	
+tour-1	T1-34	B/d	94	corrigé	05801b8	-	Note hors écran sans « plus haut ↑ »	
+tour-1	T1-34	B/d	30	corrigé	05801b8	-	Cases en pointillé muettes pour TalkBack	
+tour-1	T1-34	B/d	37	banc	5b2b940	padsPlayedThroughTheEngineAreHeard	« Montre-moi » silencieux (moteur absent au banc)	
+tour-1	T1-35	D/c	38	corrigé	f6bf551	KeptSoundTest	Son gardé revient sans ses effets	
+tour-1	T1-35	D/c	31	corrigé	f6bf551	KeptSoundTest	Son gardé sans nom demandé	
+tour-1	T1-35	D/c	67	corrigé	f6bf551	KeptSoundTest	Doublon de son gardé créé sans avertir	
+tour-1	T1-35	D/c	17	corrigé	f6bf551	-	Curseurs du synthé sans unité	
+tour-1	T1-35	D/c	56	corrigé	05801b8	BassGhostTest	Basse « fantôme » sans notes	
+tour-1	T1-35	D/c	80	corrigé	05801b8	TrackSoundFamilyTest	« Changer le son » ouvre toujours « Basses »	
+tour-1	T1-35	F/a	21	corrigé	05801b8	TrackSoundFamilyTest	« Changer le son » ouvre toujours « Basses »	
+tour-1	T1-36	F/a	27	corrigé	05801b8	TrackSoundNameTest	La case reste « Synthé » après choix d'un autre son	
+tour-1	T1-37	A/b	23	corrigé	05801b8	-	Jargon en Simple (Phrygienne, Penta, BPM, Drop…)	
+tour-1	T1-37	D/b	16	corrigé	05801b8	-	Jargon technique (FM-piano 6-op…)	
+tour-1	T1-37	D/d	13	corrigé	05801b8	-	Mots techniques sans explication (charley, triolets, 808)	
+tour-1	T1-38	A/b	31	corrigé	f6bf551	TutoBigFontTest	« Écouter l'exempl » coupé à 200 %	
+tour-1	T1-38	A/b	22	corrigé	f6bf551	CaptureMatrixBigFontTest	Noms de pads coupés à 200 %	
+tour-1	T1-38	F/a	1	corrigé	f6bf551	TutoBigFontTest	« Sim… » coupé à 200 %	mode simple
+tour-1	T1-38	F/a	17	corrigé	f6bf551	-	« mes. 1/8 » coupé	
+tour-1	T1-38	B/d	10	corrigé	f6bf551	-	2e ligne des onglets coupée à 130 %	
+tour-1	T1-39	D/a	27	corrigé	05801b8	ScreenScanTest	Curseur Swing sans nom	
+tour-1	T1-39	D/b	18	corrigé	05801b8	ScreenScanTest	Curseur et interrupteur de piste sans nom	
+tour-1	T1-39	D/c	17	corrigé	05801b8	ScreenScanTest	Curseurs du synthé sans nom	
+tour-1	T1-39	E/b	42	corrigé	05801b8	ScreenScanTest	Interrupteurs et curseur du métronome sans nom	
+tour-1	T1-39	E/d	22	corrigé	05801b8	ScreenScanTest	Curseurs du master sans nom	
+tour-1	T1-39	F/b	40	corrigé	05801b8	ScreenScanTest	Curseur Swing sans nom	
+tour-1	T1-39	F/c	12	corrigé	05801b8	ScreenScanTest	Curseurs du master sans nom	
+tour-1	T1-40	A/c	20	corrigé	05801b8	I18nCatalogTest	Allemand fautif (« Hebelruck », « in Drop »)	
+tour-1	T1-40	C/b	48	corrigé	05801b8	I18nCatalogTest	Anglais : « Cancel » pour Annuler (défaire)	
+tour-1	T1-40	C/b	2	corrigé	05801b8	I18nCatalogTest	Anglais : « Scene effects » au lieu de Stage effects	
+tour-1	T1-40	C/a	4	corrigé	05801b8	I18nCatalogTest	Espagnol : référence française (Nekfeu)	
+tour-1	T1-40	C/a	1	corrigé	05801b8	I18nCatalogTest	Espagnol bancal (« Aprendo »)	
+tour-1	T1-40	B/a	18	corrigé	05801b8	I18nCatalogTest	Arabe : article doublé « لـالـ »	live_chooser_mine
+tour-1	T1-40	B/a	19	corrigé	05801b8	I18nCatalogTest	Arabe : onglets Kicks/Snares non traduits	
+tour-1	T1-40	D/b	16	corrigé	05801b8	I18nCatalogTest	Néerlandais : « track » au lieu de « spoor »	
+tour-1	T1-40	E/b	41	corrigé	05801b8	I18nCatalogTest	Italien : « Do Ré Mi » avec accent français	
+tour-1	T1-40	F/c	25	corrigé	05801b8	I18nCatalogTest	Polonais fautif (accords, calques)	
+tour-1	T1-40	E/a	4	corrigé	05801b8	I18nCatalogTest	Portugais : « em o » non contracté	
+tour-1	T1-40	C/a	38	corrigé	05801b8	I18nCatalogTest	Aperçu vidéo « POCKET STUDIO »	
+tour-1	T1-40	C/a	26	banc	5b2b940	BenchTour1Test#theVideoIsMade	« Créer la vidéo » : moteur pas prêt (banc)	
+tour-1	T1-41	D/b	1	corrigé	f6bf551	-	Tablette paysage : accueil en colonne étroite	
+tour-1	T1-41	D/b	14	corrigé	f6bf551	-	Tablette paysage : nom de piste coupé « Tegenmel/odie »	
+tour-2	n° 1	A/c	4	banc	f597f7d	PlaceFromLibraryTest	« Poser » depuis la bibliothèque : rien ne sonne, pad vide	
+tour-2	n° 1	B/d	4	banc	f597f7d	PlaceFromLibraryTest	« Poser » : pad toujours « Kick », Annuler grisé	
+tour-2	n° 2	A/c	1	banc	f597f7d	BenchPlaceAndPadLiveTest#padLiveTouchedFromTheWelcomeOpensOnItsPads	Pad Live s'ouvre sur 16 cases vides	
+tour-2	n° 2	A/c	41	banc	f597f7d	BenchPlaceAndPadLiveTest#padLiveTouchedFromTheWelcomeOpensOnItsPads	Pad Live à nouveau vide après un morceau	
+tour-2	n° 3	A/c	39	corrigé	f597f7d	-	Défis introuvables sans lire	
+tour-2	n° 3	A/c	12	corrigé	f597f7d	-	Drapeau orange → « Simple ou Pro ? »	
+tour-2	n° 3	A/c	42	corrigé	f597f7d	-	Cible rouge du Pad Live = encadré de texte	
+tour-2	n° 4	A/b	32	corrigé	f597f7d	-	Pad Live crée et ouvre un projet « Live » en silence	
+tour-2	n° 4	A/b	41	corrigé	f597f7d	-	Couper la chanson passe par le projet « Live »	
+tour-2	n° 5	A/b	16	corrigé	f597f7d	StemBoardVmTest	« Voix 1 sur le pad 9 » sans dire le son remplacé	
+tour-2	n° 6	B/d	2	corrigé	f597f7d	LibraryRound2Zone1Test	Appui long sur pad : bibliothèque puis fiche selon la fois	
+tour-2	n° 6	B/d	29	corrigé	f597f7d	LibraryRound2Zone1Test	Son actuel non marqué ; volume 100 % vs curseur 80 %	
+tour-2	n° 7a	A/b	27	corrigé	f597f7d	-	« Ma bibliothèque » introuvable sous ce nom	
+tour-2	n° 7b	A/b	14	corrigé	f597f7d	-	« Couper ce que je veux » ajoute la chanson sans le dire	cut_song
+tour-2	n° 7c	A/b	14	corrigé	f597f7d	-	TalkBack « Cortes: » / « Imán: » sans valeur	cortes
+tour-2	n° 8a	A/d	31	banc	3b286fe	mp_club_and_streaming_exports_differ	Club et streaming : mêmes chiffres −12,9 LUFS (banc)	export
+tour-2	n° 8a	A/d	47	banc	3b286fe	mp_club_and_streaming_exports_differ	Fichier streaming identique au club (banc)	
+tour-2	n° 8b	A/d	31	banc	60c7a2f	-	« Length: 3 s » sur tous les exports (banc)	length
+tour-2	n° 8c	A/d	31	banc	-	-	Crête −12 dBTP pas crédible (sinusoïde du banc)	export
+tour-2	n° 9a	A/d	17	corrigé	3b286fe	ExportTargetRound2Test#theHelpSaysTheChipsOwnValues	Club −7,5 sur la puce, −8 dans l'aide	
+tour-2	n° 9b	A/d	16	corrigé	3b286fe	autoAndClubAreToldApart	« Auto » et « Club » à −7,5 indiscernables	
+tour-2	n° 9c	A/d	31	corrigé	3b286fe	aClubReportNeverSaysStreamingNorReadyAboveAGap	Rapport club écrit « comme le streaming (−14) »	export
+tour-2	n° 9d	A/d	31	corrigé	3b286fe	aClubReportNeverSaysStreamingNorReadyAboveAGap	« Prêt à partager » vert au-dessus d'un écart	export
+tour-2	n° 10a	A/d	45	corrigé	3b286fe	theExportSaysHowFarItIs	Export sans progression, seulement Annuler	
+tour-2	n° 10b	A/d	50	corrigé	3b286fe	anM4aSaysItsBitRate	M4A annoncé « 16 bits »	
+tour-2	n° 10c	A/d	55	corrigé	3b286fe	everyReportSaysWhereTheFileIs	Dossier d'enregistrement absent du rapport	
+tour-2	n° 10d	A/d	41	corrigé	3b286fe	theShareSheetSaysTheTarget	Partager sans cible affichée	
+tour-2	n° 10e	A/d	41	voulu	-	-	Partager présélectionne M4A, Mix WAV (pas un défaut)	
+tour-2	n° 11a	B/a	19	corrigé	66f4488	Zone3Round2Test#theOpenGuideNeverHidesTheThumbsBar	Guide ouvert cache la barre du pouce (Jouer)	
+tour-2	n° 11b	B/a	18	corrigé	66f4488	theGuidesPanelMakesRoomForTheBarAndIsSmallWhileReading	Panneau du Guide vide sur la moitié basse	
+tour-2	n° 12	B/a	4	corrigé	66f4488	aBeatPlaysOneTouchAfterTheStyle	Premier morceau : 10 étapes avant le son	
+tour-2	n° 12	A/c	17	corrigé	66f4488	aBeatPlaysOneTouchAfterTheStyle	Assistant : 8 écrans de texte avant le son	
+tour-2	n° 13b	B/a	6	corrigé	66f4488	theStylesChoicesComeRightUnderItsDescription	« Choisir ce style » repoussé sous la liste	
+tour-2	n° 13c	B/a	23	voulu	-	-	« Mes projets » seulement en haut (pas un défaut)	
+tour-2	n° 13d	B/a	9	corrigé	66f4488	-	Deux boutons « Retour » sur l'écran d'étape	deux boutons retour
+tour-2	n° 13e	B/a	8	corrigé	66f4488	-	Bloc « Les vrais sons du style » répété	
+tour-2	n° 13f	B/a	9	corrigé	66f4488	eachStepOpensAtItsTop	Étape sans titre d'instrument	etape 3 sur 10
+tour-2	n° 14	B/a	25	corrigé	66f4488	UnusedStarterTest	Projet fantôme « Mon premier rythme »	
+tour-2	n° 15a	B/d	1	corrigé	66f4488	theTopBarSaysSavedInWords	Sauvegarde invisible : coche minuscule, nom coupé	
+tour-2	n° 15b	B/d	19	corrigé	66f4488	backOnHomeLeavesTheAppAndSaysItIsSaved	Aucun mot « Sauvegardé » en quittant	
+tour-2	n° 15c	B/d	19	banc	-	-	Retour sur l'accueil ne quitte pas l'appli (banc)	
+tour-2	n° 16	A/c	9	corrigé	66f4488	theHomeKeepsJapprends	L'accueil change après un retour	
+tour-2	n° 17a	B/d	8	corrigé	66f4488	aTracksNewSoundAndItsDeletionAreSaid	Changer le son d'une piste : aucun message	
+tour-2	n° 17a	B/d	14	corrigé	66f4488	aTracksNewSoundAndItsDeletionAreSaid	Supprimer une piste : aucun message	
+tour-2	n° 17b	B/d	12	corrigé	66f4488	-	« Supprimer » caché dans une fiche « Volume »	
+tour-2	n° 17c	B/d	8	corrigé	66f4488	aTracksNewSoundAndItsDeletionAreSaid	Nom de piste ne suit pas le preset	
+tour-2	n° 17c	B/c	46	corrigé	66f4488	aKeptSoundNamesATrackTheAppNamed	Nom de piste ne suit pas le preset	
+tour-2	n° 18	B/b	10	corrigé	69a60ab	RecordRound2Zone4Test	Prises à la même heure, ordre qui change, « 빼기 »	
+tour-2	n° 18	B/b	7	corrigé	69a60ab	RecordRound2Zone4Test	« s » vs « 초 » pour la durée des prises	audio_stop
+tour-2	n° 19a	B/b	14	corrigé	69a60ab	MuteSoloEverywhereTest	Interrupteur « Son » dit éteint alors que la piste sonne	interrupteur
+tour-2	n° 19b	B/b	18	corrigé	69a60ab	AloneListenVmTest#turningTheSoundAloneOffWhileTheMusicPlayedKeepsItPlaying	Enlever le solo arrête toute la lecture	
+tour-2	n° 20a	B/b	5	corrigé	69a60ab	RecordRound2Zone4Test#theMicrophonesLevelHasANameAndSaysHowItIs	Vumètre d'entrée fin, sans nom	barre de niveau
+tour-2	n° 20b	B/b	5	corrigé	69a60ab	RecordRound2Zone4Test	Piste micro « Audio 1 » non traduite	record_choice_mic
+tour-2	n° 21	B/b	1	corrigé	69a60ab	RecordVoiceWaysTest	Rien sur l'accueil pour enregistrer voix/guitare	cartes de l accueil
+tour-2	n° 21	B/b	2	corrigé	69a60ab	RecordVoiceWaysTest	Rond rouge de Rythme n'enregistre que les pads	
+tour-2	n° 22a	A/a	7	corrigé	c494208	TutoBigFontTest#theKitsCardThatComesUnderTheFinger…	« Lire la suite » ouvre « Le kit Techno »	
+tour-2	n° 22b	A/a	19	voulu	-	-	« Lire la suite » fait défiler (pas un défaut)	
+tour-2	n° 23a	A/a	43	corrigé	c494208	TutoBigFontTest#aChaptersLastStep…	200 % : deux « Éco… » identiques, « Précédent » en flèche	
+tour-2	n° 23c	A/a	38	corrigé	c494208	TutoBigFontTest	« À toi : pad Rumble » sans montrer le pad	rumble
+tour-2	n° 24a	A/a	22	corrigé	c494208	TutoKeySheetDoneTest	Fiche Tonalité sans « Réussi »	
+tour-2	n° 24b	A/a	44	corrigé	c494208	-	« mes. 1/1 » incompréhensible	
+tour-2	n° 25a	B/c	6	corrigé	c494208	-	Réglages du son introuvables depuis « Options de Synthé »	
+tour-2	n° 25b	B/c	23	corrigé	c494208	-	Valeurs du synthé sans unité	
+tour-2	n° 25c	B/c	14	corrigé	c494208	GuideEffectWhyTest	Fiche « passe-haut 80 Hz » sur un passe-bas 364 Hz	
+tour-2	n° 25d	B/c	20	corrigé	c494208	FloatingKeyboardRoomTest	Clavier flottant couvre presets et « Unisson »	
+tour-2	n° 27a	B/c	66	corrigé	c494208	PianoRollFoldableTest	Piano roll sur pliable : grille ≈ 450 px	
+tour-2	n° 27b	B/c	71	corrigé	c494208	PianoRollRound2Test	Appui long sur une note l'efface sans message	
+tour-2	n° 28	A/a	17	corrigé	a70337d	EverydayPadWordsTest	Mots anglais sur les pads en Simple	
+tour-2	n° 28	B/b	7	corrigé	a70337d	EverydayPadWordsTest	Jargon translittéré (노멀라이즈, 리버스)	노멀라이즈
+tour-2	n° 29	B/b	1	corrigé	5c133ee	KoreanRegisterTest	Coréen mot à mot (« 당신의 »)	당신의
+tour-2	n° 29	B/b	14	corrigé	5c133ee	KoreanRegisterTest	Coréen en 반말, espace « ▶ 를 »	네 차례
+tour-2	n° 30a	B/d	9	corrigé	a70337d	ThumbOffReadableTest	« Annuler » grisé illisible en thème nuit	
+tour-2	n° 31	A/b	2	corrigé	a70337d	RemixModelAskTest	Téléchargement du modèle 174 Mo sans confirmation	
+tour-3	T3-01	D/a	57	corrigé	151c4c9	Tour3Zone1Test#leavingPadLiveSilencesItsLoops	Boucle de Pad Live joue encore sur l'accueil	
+tour-3	T3-01	D/b	39	corrigé	151c4c9	Tour3Zone1Test#leavingPadLiveSilencesItsLoops	Pads continuent après « Geri » de Pad Live	padlive_back
+tour-3	T3-01	F/c	47	corrigé	151c4c9	Tour3Zone1Test#leavingPadLiveSilencesItsLoops	Retour de Pad Live : 2 boucles continuent	
+tour-3	T3-02	C/b	30	banc	60c7a2f	Tour3AppProofTest#padLiveRowsAndStopAllGoToTheEngine	▶ de ligne de Pad Live sans effet (banc)	
+tour-3	T3-02	C/b	15	banc	60c7a2f	Tour3AppProofTest#padLiveRowsAndStopAllGoToTheEngine	■ de ligne : boucles continuent (banc)	
+tour-3	T3-02	C/b	57	banc	60c7a2f	Tour3AppProofTest#padLiveRowsAndStopAllGoToTheEngine	« Tout arrêter » : pads jouent encore (banc)	
+tour-3	T3-02	D/d	62	banc	60c7a2f	Tour3AppProofTest#padLiveRowsAndStopAllGoToTheEngine	« ■ Wszystko » : la musique continue (banc)	
+tour-3	T3-02	A/a	40	banc	60c7a2f	Tour3AppProofTest#padLiveRowsAndStopAllGoToTheEngine	▶ au bout de la rangée 1 : rien ne joue (banc)	
+tour-3	T3-02	E/d	51	voulu	-	-	« Detener todo » coupe les pads, pas la musique du projet	
+tour-3	T3-03a	E/d	49	banc	531564f	Tour3Zone1Test#aLivePadTouchedGoesToTheEngine	Pad live « Voix · prêt » ne joue jamais (banc)	
+tour-3	T3-03b	E/d	36	corrigé	151c4c9	Tour3Zone1Test#aColumnCutInMix…	Voix importée muette dans le Live sans le dire	casilla voz
+tour-3	T3-04	E/d	16	corrigé	151c4c9	StemBoardVmTest#aStretchOnAPadNeverTheKick	« Sur les pads » remplace Tom médium/aigu	
+tour-3	T3-04	E/d	22	corrigé	151c4c9	StemBoardRouterTest	Annuler laisse le message de remplacement	
+tour-3	T3-04	E/d	33	corrigé	151c4c9	StemBoardRouterTest	« En el Live » écrase une case prête	
+tour-3	T3-05	A/a	9	corrigé	151c4c9	PadLiveChallengeTest	Défi : saute au niveau 5 sans résultat	
+tour-3	T3-05	A/a	13	corrigé	151c4c9	PadLiveChallengeTest	Défi : pas de modèle du rythme à refaire	
+tour-3	T3-05	A/a	26	corrigé	151c4c9	PadLiveChallengeTest	Défi : tempo jamais montré (0 étoile = banc)	
+tour-3	T3-05	A/a	3	banc	-	-	Boucle qui tourne sous l'exemple du défi (stopLive non suivi)	
+tour-3	T3-05	F/a	41	corrigé	151c4c9	PadLiveChallengeTest	Défi fini seul au 4e coup, bouton qui saute	
+tour-3	T3-07	D/a	52	corrigé	4d8f967	TalkBackNamesTest#padLivesCornersSayWhatTheyOpen	Petits boutons au coin des pads sans nom	
+tour-3	T3-07	D/c	4	corrigé	4d8f967	TalkBackNamesTest#padLivesCornersSayWhatTheyOpen	Petits boutons au coin des pads sans nom	
+tour-3	T3-07	F/a	4	corrigé	4d8f967	TalkBackNamesTest#padLivesCornersSayWhatTheyOpen	Petits boutons au coin des pads sans nom	
+tour-3	T3-07	F/c	6	corrigé	4d8f967	TalkBackNamesTest#padLivesCornersSayWhatTheyOpen	Petits boutons au coin des pads sans nom	coin haut droit
+tour-3	T3-09	B/c	24	corrigé	151c4c9	CutScreenTightTest	Découpe par phrases : toucher une tranche ne la choisit pas	
+tour-3	T3-09	B/c	20	corrigé	151c4c9	CutScreenTightTest	Barre d'outils de découpe disparaît, aucun retour	
+tour-3	T3-09	E/d	18	voulu	-	-	Poignée Fin qui bouge le Début (barre Début prise : pas un défaut)	
+tour-3	T3-10	A/d	3	corrigé	0bb71bf	Round3Zone2Test#theShareSheetChoosesTheTarget	Cible absente de « Prêt à partager ? »	
+tour-3	T3-10	A/d	12	corrigé	0bb71bf	Round3Zone2Test#theTargetsHelpNeverAssumesADrop	Aide « mesuré sur le Drop » sans Drop	
+tour-3	T3-10	F/b	26	corrigé	0bb71bf	Round3Zone2Test#theExportCardChoosesTheTarget	Cible éteinte, réglage loin de l'export	
+tour-3	T3-11	A/d	45	corrigé	0bb71bf	myExportsAreListed	Aucune liste d'exports ; carte disparaît après Annuler	my projects
+tour-3	T3-12	F/d	48	corrigé	0bb71bf	aStaleExportIsNotOffered	Ancien export proposé après modification	
+tour-3	T3-12	F/d	56	banc	531564f	-	« Partager les 2 fichiers » n'en cite qu'un (banc)	
+tour-3	T3-12	F/d	54	corrigé	0bb71bf	aTrackWithoutAFileIsSaid	Synthé absent de l'export piste par piste sans raison	
+tour-3	T3-12	F/b	53	corrigé	0bb71bf	theRemixGivesOneFilePerStem	Remix exporté en un seul fichier	
+tour-3	T3-12	F/b	58	corrigé	0bb71bf	aMutedRemixStemIsPointedOut	« Prêt : aucune piste muette » alors que la voix est coupée	
+tour-3	T3-13	F/d	61	corrigé	0bb71bf	theProjectIsSentFromShareAndTheHelpSaysHow	Envoyer le projet (.zip) caché dans Mes projets	
+tour-3	T3-13	F/b	41	corrigé	0bb71bf	aVersionsNameLeavesTheProjectsName	Le nom du partage renomme le projet	
+tour-3	T3-13	F/d	71	corrigé	0bb71bf	aCopysNameIsShownInTheAppsLanguage	« (copie) » en français dans l'appli anglaise	
+tour-3	T3-14	A/c	47	corrigé	0bb71bf	theSimpleReportHasNoJargon	Fin d'export pleine de LUFS/dBTP en Simple	
+tour-3	T3-14	A/d	3	corrigé	0bb71bf	oneLoopLengthEverywhere	Durée annoncée différente entre Partager et Mix	
+tour-3	T3-14	F/d	7	corrigé	0bb71bf	oneLoopLengthEverywhere	Durée annoncée différente entre Partager et Mix	
+tour-3	T3-14	A/d	32	banc	60c7a2f	BenchEngineTest#aRenderLastsWhatIsAskedAndSoundsLikeItsProject	Export « 3 s » (banc)	
+tour-3	T3-14	A/d	60	banc	60c7a2f	BenchEngineTest#aRenderLastsWhatIsAskedAndSoundsLikeItsProject	Chiffres LUFS identiques pour tous les exports (banc)	
+tour-3	T3-14	C/a	59	banc	60c7a2f	BenchEngineTest#aRenderLastsWhatIsAskedAndSoundsLikeItsProject	Export de 3 s seulement (banc)	
+tour-3	T3-14	C/c	52	banc	60c7a2f	BenchEngineTest#aRenderLastsWhatIsAskedAndSoundsLikeItsProject	Fichier annoncé de 3 s (banc)	
+tour-3	T3-14	D/c	60	banc	60c7a2f	BenchEngineTest#aRenderLastsWhatIsAskedAndSoundsLikeItsProject	Export 3 s (banc) et jargon LUFS en Simple (corrigé 0bb71bf)	
+tour-3	T3-15	A/b	17	banc	60c7a2f	Tour3AppProofTest#theSongPlaysFromAPartOrATakeWithAnEngine	« Jouer » ne joue qu'une boucle de 4 mesures (banc)	
+tour-3	T3-15	A/b	31	banc	60c7a2f	Tour3AppProofTest#theSongPlaysFromAPartOrATakeWithAnEngine	Toucher une partie ne joue rien (banc)	
+tour-3	T3-15	C/a	40	banc	60c7a2f	Tour3AppProofTest#theSongPlaysFromAPartOrATakeWithAnEngine	« A partir do meu take » ne joue rien (banc)	
+tour-3	T3-15	C/a	45	banc	60c7a2f	Tour3AppProofTest#theSongPlaysFromAPartOrATakeWithAnEngine	Toucher une partie ne joue rien (banc)	
+tour-3	T3-15	C/a	48	banc	60c7a2f	Tour3AppProofTest#theSongPlaysFromAPartOrATakeWithAnEngine	« La musique entière » s'arrête (banc)	
+tour-3	T3-15	E/a	87	banc	60c7a2f	Tour3AppProofTest#theSongPlaysFromAPartOrATakeWithAnEngine	Toucher une partie ne joue rien (banc)	
+tour-3	T3-15	E/a	44	banc	531564f	-	Compteur « Intro batt. 1 » figé (banc)	
+tour-3	T3-15	D/c	57	banc	531564f	-	Compteur « Intro bar 1/28 » figé (banc)	
+tour-3	T3-16	B/a	9	banc	531564f	Tour3RenameIdleTest	Gel en tapant le nom du projet (verdict contesté, retenu banc)	
+tour-3	T3-16	E/c	6	banc	531564f	Tour3RenameIdleTest	Gel en tapant le nom d'une piste (verdict contesté, retenu banc)	
+tour-3	T3-16	D/b	60	corrigé	b804a22	Zone3Round3FieldTest	Renommer colle le texte derrière l'ancien nom	
+tour-3	T3-17	B/a	1	banc	-	-	Accueil sans « Reprendre » (le banc fait un premier lancement)	
+tour-3	T3-17	B/a	5	banc	-	-	« Ouvert à l'instant » au lieu de la vraie date (banc)	
+tour-3	T3-17	B/a	4	voulu	-	-	« Rétablir » absent sans Annuler préalable (pas un défaut)	barre du bas
+tour-3	T3-18	D/a	39	corrigé	b804a22	backAfterDeletingTheOpenProjectLeadsHome	Retour sans effet après suppression du projet ouvert	
+tour-3	T3-18	D/a	16	banc	-	backDuringAKeyboardTakeKeepsItsNotes	Retour pendant la prise clavier : « rien n'a été joué » (banc)	
+tour-3	T3-19	D/a	75	corrigé	b804a22	-	Carte « Enregistrer ma voix » ouvre le projet Live	
+tour-3	T3-19	E/c	3	voulu	-	-	Carte voix ouvre « Mon premier beat » au premier lancement (normal)	
+tour-3	T3-19	E/b	48	corrigé	b804a22	learningAgainTakesUpTheCourseUnderWay	« J'apprends » crée un projet et repart au chapitre 1	
+tour-3	T3-21	D/b	45	corrigé	b804a22	lyingDownTheFiveSpacesFitInTheRail	Paysage : rail coupé, « Gönder » invisible	
+tour-3	T3-23a	E/c	27	banc	ff77b35	-	● du haut : « moteur pas démarré » (banc)	
+tour-3	T3-23a	F/a	75	banc	ff77b35	-	● du haut : « moteur pas démarré » (banc)	
+tour-3	T3-23b	C/a	24	corrigé	ff77b35	Zone4Round3Test#theTakesStateSitsInTheTrackThatRecords	Piste « Voz » fantôme sans prise	
+tour-3	T3-24a	E/c	29	corrigé	ff77b35	-	État de la prise tout en haut, loin de la piste	
+tour-3	T3-24b	E/c	73	banc	531564f	-	Décompte « 2 mesures » affiché « 1… » (banc)	
+tour-3	T3-25	C/a	13	corrigé	ff77b35	aTakeTouchedIsHeardAlone	Impossible d'écouter une prise seule	
+tour-3	T3-25	E/c	16	corrigé	ff77b35	oneDurationPerTake	Deux durées pour la même prise	
+tour-3	T3-26a	C/c	22	corrigé	ff77b35	theNotificationsWaitForTheTakesEnd	Demande de notifications au milieu de la 1re prise	
+tour-3	T3-26b	C/c	22	corrigé	ff77b35	myMelodyTakesTheSoundChosenForTheMelody	Mélodie sur une nouvelle piste avec un autre son	
+tour-3	T3-26c	C/c	23	banc	531564f	theKeysShortTapsAreRecorded	Touches du clavier non enregistrées (verdict banc, contredit au tour 4)	
+tour-3	T3-27	E/c	37	corrigé	ff77b35	aMutedTracksSwitchReadsTrue	« Mute » + « off » lu « pas coupé »	
+tour-3	T3-28	A/c	14	corrigé	b3ee0d6	TutoKitUnderFingerTest	« Lire la suite » : fenêtre du kit remplace le tuto	
+tour-3	T3-28	E/b	5	corrigé	b3ee0d6	TutoKitUnderFingerTest	« Écouter l'exemple » : encart du kit remplace le tuto	
+tour-3	T3-29	A/c	58	corrigé	b3ee0d6	TutoPadNamesTest	Le tuto nomme un pad qui ne s'appelle pas ainsi	
+tour-3	T3-29	E/b	21	corrigé	b3ee0d6	TutoPadNamesTest	Le tuto nomme « Basdrum 1 », le pad « Studiobasdrum »	
+tour-3	T3-30	A/c	19	corrigé	b3ee0d6	TutoChapterEndTest	« Bravo, chapitre fini » à 2/3 (étape non comptée = voulu)	
+tour-3	T3-30	A/c	36	corrigé	b3ee0d6	TutoChapterEndTest	Fin du tuto sans « Écouter mon morceau »	
+tour-3	T3-30	E/b	35	corrigé	b3ee0d6	TutoChapterEndTest	Chapitre à 2/3, pas « Klaar »	
+tour-3	T3-32	B/d	79	corrigé	b3ee0d6	I18nCatalogTest#everyTextHasItsTranslations	Message du tuto Pro en français dans l'appli allemande	
+tour-3	T3-33	F/a	21	corrigé	b3ee0d6	SoundSearchWordsTest	Recherche « verre », « conga » : aucun son	
+tour-3	T3-33	F/a	27	corrigé	b3ee0d6	SoundSearchWordsTest	Recherche : aucun son alors qu'ils existent	
+tour-3	T3-33	F/a	29	corrigé	b3ee0d6	ShelfBrowserTest	Onglet « Caisses claires » montre tout	
+tour-3	T3-33	D/b	22	corrigé	b3ee0d6	SoundSearchWordsTest	Recherche « Ses bulunamadı » sur les exemples	
+tour-3	T3-34	D/d	59	corrigé	b3ee0d6	-	Aide cite une colonne Remix absente	
+tour-3	T3-34	D/d	14	corrigé	b3ee0d6	-	Aide du pan : geste qui ne fait rien	
+tour-3	T3-34	D/d	104	corrigé	b3ee0d6	-	Aide « Pas » en Simple cite des outils Pro	
+tour-3	T3-34	F/a	34	corrigé	b3ee0d6	-	Aide parle de « la cible » au lieu de l'étoile Défi	
+tour-3	T3-34	D/c	48	corrigé	b3ee0d6	HelpLabelsTest	Étiquettes « ? » mal posées, qui se chevauchent	
+tour-3	T3-34	D/d	17	corrigé	b3ee0d6	HelpLabelsTest	Étiquettes « ? » collées en haut, illisibles	
+tour-3	T3-34	E/c	65	corrigé	b3ee0d6	HelpLabelsTest	Étiquettes « ? » collées et coupées en haut	
+tour-3	T3-35	E/a	25	corrigé	b3ee0d6	SongArrangementTest#aPartIsNamedFromItsOwnSheet	Impossible de renommer une partie	
+tour-3	T3-37	B/b	7	banc	-	-	Barre du haut lue « bouton » (lit=non tait les noms)	barre du haut
+tour-3	T3-37	B/b	7	banc	-	-	▶ et ≡ de chaque piste lus « bouton » (lit=non tait les noms)	sur chaque piste
+tour-3	T3-37	B/b	13	banc	4d8f967	TalkBackNamesTest	Touches du clavier sans nom (banc ; touches noires corrigées)	
+tour-3	T3-37	B/b	3	banc	-	-	Textes gris contraste ~1,4:1 (barres grises du banc)	
+tour-3	T3-37	C/c	18	corrigé	4d8f967	TalkBackNamesTest	Poignée de feuille touchable sans nom	
+tour-3	T3-37	E/d	29	corrigé	4d8f967	TalkBackNamesTest	Poignée de feuille touchable sans nom	
+tour-3	T3-37	F/b	22	corrigé	4d8f967	TalkBackNamesTest	Poignée de feuille de partage sans nom	
+tour-3	T3-38	A/d	23	corrigé	2ce48c3	CountWordsTest	Pluriel faux « 1 parts »	
+tour-3	T3-38	E/a	70	corrigé	2ce48c3	CountWordsTest	Pluriel faux « 1 parti »	
+tour-3	T3-38	F/d	45	corrigé	2ce48c3	CountWordsTest	Pluriel faux « 1 parts »	
+tour-3	T3-38	C/a	7	corrigé	2ce48c3	Round3LanguagesTest	Portugais « em a parte » non contracté	
+tour-3	T3-38	F/b	29	corrigé	2ce48c3	Round3LanguagesTest	Particules coréennes fautives	
+tour-3	T3-38	F/b	45	corrigé	2ce48c3	Round3LanguagesTest	Mots anglais « streaming/remix » dans les noms (coréen)	
+tour-4	T4-19	C/a	63	banc	d3eccff	BenchTour4Test#renameAfterTheClearButton	Renommer : toucher « Effacer » → 5 min sans réponse	
+tour-4	T4-19	C/a	64	banc	d3eccff	BenchTour4Test#renameAfterTheClearButton	Après « Effacer », champ vide refuse le texte, OK désactivé	
+tour-4	T4-19	E/a	7	banc	d3eccff	BenchTour4Test#renameAfterTheClearButton	Renommer : toucher « Effacer » → 5 min sans réponse	
+tour-4	T4-17	A/d	36	banc	-	-	Compteur « Verso compasso 25/104 » figé pendant la lecture	
+tour-4	T4-17	D/b	32	banc	-	-	Compteur « Intro batt. 1 » figé (idem écran 98)	
+tour-4	T4-17	B/c	71	banc	-	-	Compteur « 小節 1/1 » qui n'avance pas	

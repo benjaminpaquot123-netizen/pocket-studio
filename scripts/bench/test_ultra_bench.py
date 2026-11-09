@@ -478,6 +478,17 @@ def seat_exit(d):
     with open(os.path.join(lot, "incidents-lot.tsv"), encoding="utf-8") as f:
         text = f.read()
     check("lot\t-\t-\tfichier écrit hors des sièges : c-out.txt" in text, text)
+    # Review of banc45: both reach the round's incidents-banc.tsv: the lot's foreign files, and a state a seat inherited
+    # and the bench put back (« #0 BANC : … » in its journal); the journal's other « BANC » lines stay the journal's.
+    write(os.path.join(lot, "a", "journal.txt"), "#0 BANC : état hérité remis (laissé par le test d'avant, HumanTesterB#drive, ou par "
+          "un test sans la règle passé entre les deux) : I18n.lang = EN\n#0 SIEGE lang=fr\n#3 BANC repos non venu en 20 s (1 fois)\n")
+    run(os.path.join(HERE, "fuse-reports.py"), lot, "--base", os.path.join(lot, "base.tsv"), "--verdicts", os.path.join(lot, "verdicts.tsv"))
+    with open(os.path.join(lot, "incidents-banc.tsv"), encoding="utf-8") as f:
+        incidents = f.read()
+    check("a\t0\t-\tétat hérité remis (laissé par le test d'avant, HumanTesterB#drive" in incidents and "I18n.lang = EN" in incidents,
+          "the inherited state put back, listed for its seat:\n" + incidents)
+    check(". (lot)\t-\t-\tfichier écrit hors des sièges : c-out.txt" in incidents, "the lot's foreign file listed:\n" + incidents)
+    check("repos non venu" not in incidents and incidents.count("\n") == 4, "nothing else:\n" + incidents)
 
 
 def corrections_by_target(d):

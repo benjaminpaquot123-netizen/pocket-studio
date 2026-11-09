@@ -211,7 +211,45 @@ def main():
         comebacks(d)
     with tempfile.TemporaryDirectory() as d:
         header_counts(d)
+    with tempfile.TemporaryDirectory() as d:
+        element_field(d)
     print("ultra bench scripts: OK")
+
+
+JOURNAL_DIALOG = """#0 SIEGE lang=fr device=phone font=100 mode=simple
+#1 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE aaaa | project=p-1 no tuto
+#1 SON Son : rien ne joue.
+#1 > touche 10 10
+#1 DOIGT bouton « Partie C »
+#2 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE bbbb | project=p-1 no tuto
+#2 SON Son : rien ne joue.
+#2 FIN : fin
+"""
+
+
+def element_field(d):
+    """PLAN-RESTE 6.4 (rest of banc fiable 2.4): a card's « element: » (the testTag under the finger, written by newer
+    benches) is the key's target when the journal gives no button (a dialogue, a navigation tag), instead of the free
+    text, so a French and a Hindi seat fuse; a navigation tag as element is ignored; the element is a button for
+    « même bouton »."""
+    card = ("siege: {s} | profil: p | lang: {l} | device: phone | font: 100 | mode: simple\n"
+            "defauts:\n"
+            "  - geste: 1 | ecran.vu: 2 | cible: {c}{e} | geste.type: touche\n"
+            "    attendu: la partie C | obtenu: reste sur A\n"
+            "    symptome: rien\n"
+            "    gravite: contourne-en-5-gestes | revu: oui: ecran 2 | banc?: non | promesse: -\n")
+    for seat, lang, cible, element in (("a", "fr", "Partie C", " | element: part_pick_2"), ("b", "hi", "पार्ट: C", " | element: part_pick_2"),
+                                       ("c", "fr", "Partie C", ""), ("d", "fr", "Partie C", " | element: tab_Sons")):
+        write(os.path.join(d, "lotA", seat, "journal.txt"), JOURNAL_DIALOG)
+        write(os.path.join(d, "lotA", seat, "rapport.md"), card.format(s=seat, l=lang, c=cible, e=element))
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\nparts|part_pick_2|perdu\tnouveau\ttour-2\t\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-6")
+    check("[même bouton (tour-2)] grave ×2 (A/a#1, A/b#1) dialogue:part_header_menu · « part_pick_2 » · rien" in text,
+          "the element is the target (two languages, one key) and a button for « même bouton »:\n" + text)
+    check("[nouveau] grave ×2 (A/c#1, A/d#1) dialogue:part_header_menu · « partie c » · rien" in text,
+          "no element, or a navigation tag as element: the free text stays the target:\n" + text)
+    check("4 siège(s), 2 grappe(s)" in text, "two clusters:\n" + text)
 
 
 REPORT_STATES = """siege: a | profil: ado | lang: fr | device: phone | font: 100 | mode: simple

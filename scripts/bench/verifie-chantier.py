@@ -11,8 +11,12 @@
     3. the summary of the latest self-test is mandatory (« résumé absent » without it) and a guard is green
        only when the summary names it « vert : Class#method »;
     4. a « corrigé » line is in base.tsv with its round and its commit cell names a commit that exists.
-    Also: every proof names a Class#method that exists; every @KnownDefect(id) in the tests has a line « appli »
-    citing its test.
+    Also: every proof names a test that exists: a Kotlin « Class#method », or an engine host test
+    « engine/host-tests/<file>#<function> » defined in that file and registered in a PS_*_TESTS list (A.12);
+    every @KnownDefect(id) in the tests has a line « appli » citing its test, one of them with the id in its
+    « garde_id » column; a line's garde_id is carried by one of its proofs (a @KnownDefect, or an engine test
+    registered as « known_defect_<id> », which the C++ runner prints as « KNOWN DEFECT still there »).
+    --preuves ITEM prints the proofs read on that line and stops.
 (b) git log: a « vert: » commit closes the oldest open « rouge: » commit OF THE SAME TEST (same subject after
     the prefix, or a test the red names or adds that the green's message names). A green of another test closes
     nothing. A checked line of banc-fiable-journal.md (« - [x] 4.2 … », ids 4.x to 7.x, R.x, A.x) carries
@@ -31,6 +35,8 @@ import sys
 
 TEST_ROOT = os.path.join("app", "src", "test", "java")
 PROOF = re.compile(r"([A-Z][A-Za-z0-9_]*)[#.]([a-z][A-Za-z0-9_]*)")
+ENGINE_PROOF = re.compile(r"(engine/host-tests/[A-Za-z0-9_./-]+)#([A-Za-z_][A-Za-z0-9_]*)")
+KNOWN_DEFECT = re.compile(r'@KnownDefect\(\s*"([^"]+)"[^)]*\)\s*(?:@[A-Za-z]+(?:\([^)]*\))?\s*)*fun\s+`?([A-Za-z0-9_]+)')
 
 
 def read_tsv(path):
@@ -72,7 +78,31 @@ def method_exists(sources, cls, method):
 
 def proofs(cell):
     """Class#method references in a cell (« - » or free text without one gives none)."""
-    return [(c, m) for c, m in PROOF.findall(cell or "") if c[0].isupper()]
+    return [(c, m) for c, m in PROOF.findall(ENGINE_PROOF.sub(" ", cell or "")) if c[0].isupper()]
+
+
+def engine_proofs(cell):
+    """« engine/host-tests/<file>#<function> » references in a cell."""
+    return ENGINE_PROOF.findall(cell or "")
+
+
+def engine_test(root, path, fn):
+    """(defined, registered name or None) of an engine host test: « static void fn( » in the file, and
+    « {"name", ns::fn} » in one of its PS_*_TESTS lists (what main() runs)."""
+    if ".." in path.split("/"):
+        return False, None
+    try:
+        text = open(os.path.join(root, path), encoding="utf-8").read()
+    except OSError:
+        return False, None
+    defined = re.search(r"\bvoid\s+" + re.escape(fn) + r"\s*\(", text) is not None
+    listed = "".join(m.group(0) for m in re.finditer(r"^#define\s+PS_[A-Z0-9_]+_TESTS\b(?:.*\\\n)*.*$", text, re.M))
+    m = re.search(r'\{\s*"([A-Za-z0-9_]+)"\s*,\s*(?:[A-Za-z0-9_]+::)*' + re.escape(fn) + r"\s*\}", listed)
+    return defined, (m.group(1) if m else None)
+
+
+def engine_guard_name(ident):
+    return "known_defect_" + re.sub(r"[^a-z0-9]+", "_", ident.lower())
 
 
 def green_in_resume(resume_text, cls, method):
@@ -116,7 +146,8 @@ def check(root, resume_path=None, with_git=True):
     for v in verdicts:
         item = v.get("item", "?")
         verdict, etat = v.get("verdict", ""), v.get("etat", "")
-        without_bench = 0
+        without_bench, carried = 0, set()
+        gid = (v.get("garde_id") or "").strip().strip("-")
         for cls, m in proofs(v.get("preuve_appli")):
             if cls.startswith("Bench"):
                 gaps.append(f"{item} : preuve d'appli {cls}#{m} est un test du banc")
@@ -124,6 +155,18 @@ def check(root, resume_path=None, with_git=True):
                 gaps.append(f"{item} : preuve d'appli {cls}#{m} introuvable")
             else:
                 without_bench += 1
+                carried |= {kid for kid, method in KNOWN_DEFECT.findall(sources.get(cls, "")) if method == m}
+        for path, fn in engine_proofs(v.get("preuve_appli")):
+            defined, name = engine_test(root, path, fn)
+            if not defined:
+                gaps.append(f"{item} : preuve d'appli {path}#{fn} introuvable")
+            elif name is None:
+                gaps.append(f"{item} : preuve d'appli {path}#{fn} non enregistrée dans une liste PS_*_TESTS")
+            else:
+                without_bench += 1
+                carried |= {g for g in (gid,) if engine_guard_name(g) == name}
+        if gid and gid not in carried:
+            gaps.append(f"{item} : garde_id {gid} porté par aucune de ses preuves (@KnownDefect(\"{gid}\") ou test moteur {engine_guard_name(gid)})")
         guards = proofs(v.get("garde_banc"))
         for cls, m in guards:
             if not method_exists(sources, cls, m):
@@ -149,11 +192,15 @@ def check(root, resume_path=None, with_git=True):
             elif with_git:
                 gaps += [f"{item} : « corrigé », commit {c} introuvable" for c in shas if not commit_exists(root, c)]
 
-    cited = " ".join(v.get("preuve_appli", "") for v in verdicts if v.get("verdict") == "appli")
+    appli = [v for v in verdicts if v.get("verdict") == "appli"]
     for cls, text in sorted(sources.items()):
-        for kid, method in re.findall(r'@KnownDefect\(\s*"([^"]+)"[^)]*\)\s*(?:@[A-Za-z]+(?:\([^)]*\))?\s*)*fun\s+`?([A-Za-z0-9_]+)', text):
-            if f"{cls}#{method}" not in cited:
+        for kid, method in KNOWN_DEFECT.findall(text):
+            citing = [v for v in appli if f"{cls}#{method}" in v.get("preuve_appli", "")]
+            if not citing:
                 gaps.append(f"@KnownDefect {kid} ({cls}#{method}) sans ligne « appli » qui le cite")
+            elif not any((v.get("garde_id") or "").strip() == kid for v in citing):
+                gaps.append(f"@KnownDefect {kid} ({cls}#{method}) : aucune ligne qui le cite ne porte garde_id {kid} "
+                            f"({', '.join(v.get('item', '?') for v in citing)})")
 
     try:
         checklist = json.load(open(os.path.join(root, "app", "src", "main", "assets", "recette.json"), encoding="utf-8"))
@@ -275,7 +322,19 @@ def main():
     ap.add_argument("--root", default=".")
     ap.add_argument("--resume", default=None, help="selftest-resume.txt of the latest selftest")
     ap.add_argument("--sans-git", action="store_true", help="skip what reads git: the rouge/vert pairs, the journal's checked lines, the commits' existence")
+    ap.add_argument("--preuves", metavar="ITEM", help="print the proofs read on that line of verdicts.tsv, and stop")
     a = ap.parse_args()
+    if a.preuves:
+        sources = test_sources(a.root)
+        for v in read_tsv(os.path.join(a.root, "docs", "audits", "ultra", "verdicts.tsv")):
+            if v.get("item") == a.preuves:
+                found = [f"{c}#{m}" for c, m in proofs(v.get("preuve_appli")) if method_exists(sources, c, m)]
+                for path, fn in engine_proofs(v.get("preuve_appli")):
+                    defined, name = engine_test(a.root, path, fn)
+                    if defined and name:
+                        found.append(f"{path}#{fn} ({name})")
+                print(f"{a.preuves} : {len(found)} preuve(s) : {', '.join(found)}")
+        return
     gaps = check(a.root, a.resume, with_git=not a.sans_git)
     if not a.sans_git:
         gaps += red_green_pairs(a.root) + checked_lines(a.root)

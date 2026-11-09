@@ -258,6 +258,10 @@ class Tour5AppProofTest {
  * states the right behaviour; while the app still fails it with exactly [message] in its assertion, the guard is green
  * (« still there »); when it passes (fixed: move the verdict to « corrigé » and remove this annotation) or fails for any
  * other reason (a precondition, a crash), the guard is red.
+ *
+ * [id] is the « garde_id » of the line(s) of docs/audits/ultra/verdicts.tsv that cite the test (the line's item has another
+ * name: T5-ZIP is carried by T5-Cd-68 and T5-Cc-41a); scripts/bench/verifie-chantier.py refuses an id no such line carries.
+ * The self-test runs every class that holds one, in `human/` or not (scripts/bench/selftest-attendus.py).
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
@@ -269,7 +273,7 @@ class KnownDefectRule : TestRule {
         return object : Statement() {
             override fun evaluate() {
                 val failure = runCatching { base.evaluate() }.exceptionOrNull()
-                if (failure == null) throw AssertionError("${known.id} no longer fails: fixed? Set its verdicts.tsv line to « corrigé » and remove @KnownDefect.")
+                if (failure == null) throw AssertionError("${known.id} no longer fails: fixed? Set the verdicts.tsv line(s) whose garde_id is ${known.id} to « corrigé » (scripts/bench/marque-corrige.sh) and remove @KnownDefect.")
                 if (failure !is AssertionError || known.message !in (failure.message ?: "")) {
                     throw AssertionError("${known.id}: failed for another reason than the known defect (« ${known.message} »)", failure)
                 }

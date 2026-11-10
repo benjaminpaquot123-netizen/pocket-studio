@@ -4,6 +4,8 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.onAllNodesWithTag
 import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.instrumentTracks
+import com.pocketstudio.model.sceneView
 import com.pocketstudio.model.i18n.Lang
 import com.pocketstudio.model.sceneTitle
 import org.junit.Assert.assertEquals
@@ -27,6 +29,8 @@ import org.robolectric.annotation.GraphicsMode
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = HumanTester.PHONE)
 class Tour5BloquantsTest : HumanTester("bloquants") {
+    private val app: android.app.Application get() = androidx.test.core.app.ApplicationProvider.getApplicationContext()
+
     @Before
     fun notOnTheBench() = assumeTrue("not while the bench runs seats", System.getProperty("ps.human.dir").isNullOrBlank())
 
@@ -134,5 +138,121 @@ class Tour5BloquantsTest : HumanTester("bloquants") {
         pick("part_pick_2", "C")
         pick("part_pick_1", "B")
         pick("part_new", "a new part")
+    }
+    private fun notesIn(p: com.pocketstudio.model.Project): Int =
+        p.allScenes.indices.sumOf { s -> p.sceneView(s).instrumentTracks.sumOf { it.notes.notes.size } }
+
+    /**
+     * E a #117: Mode simple, Clavier, « Enregistrer ma mélodie », four keys while it records, Retour (the take still
+     * running), « Pad Live » on the home screen, Retour, « Mes projets » › the song: the four notes must be there.
+     */
+    @Test
+    fun aMelodyTakeLeftForPadLiveIsKept() {
+        simpleSong()
+        takeLeftForPadLive(rhythm()!!.projectId)
+    }
+
+    /**
+     * E a #117 as the seat played it: a second song (« Créer et écouter »), deleted from « Mes projets » while open,
+     * restored from the trash and opened again; then the take, Retour, Pad Live, and the song opened again.
+     */
+    @Test
+    fun aMelodyTakeLeftForPadLiveIsKeptInASongBackFromTheTrash() {
+        simpleSong()
+        act("retour")
+        waitFor("the home screen") { centerOf("launch_new") != null }
+        tap("launch_new")
+        tap("starter_wizard")
+        if (centerOf("mode_card_simple") != null) tap("mode_card_simple")
+        tap("wizard_family_Techno")
+        tap("wizard_style_techno")
+        tap("wizard_style_play_techno")
+        waitFor("the second song") { screenRoute().contains("tab_simple_Morceau") }
+        val id = rhythm()!!.projectId
+        act("retour")
+        act("retour")
+        waitFor("the home screen") { centerOf("launch_continue") != null }
+        tap("launch_continue")
+        tap("top_more")
+        tap("more_projects")
+        tap("project_menu_$id")
+        tap("project_delete_$id")
+        waitFor("« dans la corbeille »") { centerOf("project_deleted") != null }
+        tapText("OK")
+        act("retour")
+        waitFor("the home screen") { centerOf("launch_projects") != null }
+        tap("launch_projects")
+        tap("project_trash")
+        val restore = compose.onAllNodes(
+            androidx.compose.ui.test.SemanticsMatcher("restore_$id…") { it.config.getOrNull(SemanticsProperties.TestTag)?.startsWith("restore_$id") == true },
+        ).fetchSemanticsNodes()
+        assertTrue("the song in the trash\n" + screenLines().joinToString("\n"), restore.isNotEmpty())
+        tap(restore.first().config[SemanticsProperties.TestTag])
+        tap("project_$id")
+        waitFor("the song back from the trash") { rhythm()?.projectId == id && screenRoute().contains("tab_simple") }
+        takeLeftForPadLive(id)
+    }
+
+    private fun takeLeftForPadLive(id: String) {
+        val before = notesIn(project()!!)
+        tap("tab_simple_Clavier")
+        tap("record_start")
+        waitFor("the take records") { rhythm()!!.noteTake.value?.phase == com.pocketstudio.app.record.TakePhase.RECORDING }
+        for (key in listOf("key_60", "key_61", "key_72", "key_60")) {
+            tap(key)
+            act("attends 0.3")
+        }
+        val taken = notesIn(project()!!) - before
+        assertTrue("the take wrote notes: ${rhythm()!!.noteTake.value}", taken >= 3)
+        act("retour")
+        waitFor("the home screen") { centerOf("launch_padlive") != null }
+        tap("launch_padlive")
+        waitFor("Pad Live") { screenRoute().startsWith("padlive") }
+        act("retour")
+        waitFor("the home screen") { centerOf("launch_projects") != null }
+        tap("launch_projects")
+        tap("project_$id")
+        waitFor("the song open again") { rhythm()?.projectId == id && screenRoute().contains("tab_simple") }
+        act("attends 1")
+        assertEquals("the take's notes are still in the song", before + taken, notesIn(project()!!))
+    }
+
+    /** The node showing exactly [text], drawn whole above the tutorial's panel (a finger can touch it there, no swipe). */
+    private fun inSightAboveTheTuto(text: String): Boolean {
+        val nodes = compose.onAllNodes(androidx.compose.ui.test.hasText(text), useUnmergedTree = true).fetchSemanticsNodes()
+        val panelTop = compose.onAllNodesWithTag("tuto_panel").fetchSemanticsNodes().firstOrNull()
+            ?.let { BenchWindows.drawnBounds(it, app.resources.displayMetrics).top } ?: Float.MAX_VALUE
+        return nodes.any { n -> shownWhole(n) && BenchWindows.drawnBounds(n, app.resources.displayMetrics).bottom <= panelTop }
+    }
+
+    /**
+     * B c #23: Pro tutorial (Techno) in German on an 8-inch tablet, chapter 1 as the seat played it (Weiter, tempo 132,
+     * F Phrygian), then the step « Gib ein ganz kleines bisschen Swing dazu (5 %) » › « Ich mach's »: the screen it opens
+     * must show the Swing setting (round 5: the drum grid at the top of Sounds, Swing far below, never found).
+     */
+    @Test
+    fun theTutorialsSwingStepShowsTheSwingSetting() {
+        begin(SeatOptions(lang = Lang.DE, device = "tablet8", simple = false))
+        tap("launch_learn")
+        if (centerOf("mode_card_pro") != null) tap("mode_card_pro")
+        tap("tuto_style_techno")
+        val tuto = { com.pocketstudio.app.tuto.PrefsTutoStore(app).load(rhythm()!!.projectId)?.current }
+        waitFor("the tutorial's first step") { centerOf("tuto_next") != null || centerOf("tuto_do") != null }
+        tap("tuto_next")
+        // Tempo: « Ich mach's », 1 3 2, OK, « Geschafft ».
+        tap("tuto_do")
+        for (k in listOf("tempo_key_1", "tempo_key_3", "tempo_key_2", "tempo_key_ok")) tap(k)
+        tap("tuto_next_folded")
+        // Key: « Ich mach's », Phrygisch, F, back to the tutorial, « Geschafft ».
+        tap("tuto_do")
+        tap("tuto_scale_Phrygian")
+        tap("tuto_root_5")
+        tap("tuto_key_continue")
+        tap("tuto_next_folded")
+        assertEquals("the swing step", "swing", tuto())
+        repeat(2) { if (centerOf("tuto_kit_later") != null) tap("tuto_kit_later") }
+        tap("tuto_do")
+        act("attends 2")
+        assertTrue("« Ich mach's » shows the Swing setting\n" + screenLines().joinToString("\n"), inSightAboveTheTuto("Swing"))
     }
 }

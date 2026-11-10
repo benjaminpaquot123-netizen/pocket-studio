@@ -203,9 +203,15 @@ def main():
         bench_guards(d)
         chantier(d)
         judge_criteria(d)
+        open_app_proof(d)
+        owner_trials(d)
+        pad_timing_verdicts(d)
         engine_proof(d)
         expected_classes(d)
         skipped_class(d)
+        portal(d)
+        known_skips_bounded(d)
+        mark_fixed(d)
         seat_exit(d)
         native_missing(d)
         corrections_by_target(d)
@@ -689,12 +695,13 @@ def judge_criteria(d):
         ("t", "C", "k3", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "read in the code", "-"),
         ("t", "D", "k4", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "RECETTE tel-01 ❌ téléphone 2026-11-08 : nothing plays", "-"),
         ("t", "E", "k5", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "RECETTE tel-01 ✅ téléphone 2026-11-08 : it plays", "-"),
-        ("t", "F", "k6", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "RECETTE tel-01 ❌ téléphone : no date", "-")))
+        ("t", "F", "k6", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "RECETTE tel-01 ❌ téléphone : no date", "-"),
+        ("t", "H", "k8", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "❌ téléphone 2026-11-08 : no trial number in this segment", "-")))
     resume = os.path.join(root, "selftest-resume.txt")
     code, out = judge(root, "--sans-git", "--resume", resume)
-    for item in ("C", "E", "F"):
+    for item in ("C", "E", "F", "H"):
         check(f"{item} : verdict « appli » sans preuve (ni test sans banc existant, ni essai ❌ daté)" in out, f"appli line {item} has no proof:\n" + out)
-    check("D : verdict « appli »" not in out and "chantier : 3 écarts" in out and code == 1, "a dated ❌ trial is a proof:\n" + out)
+    check("D : verdict « appli »" not in out and "chantier : 4 écarts" in out and code == 1, "a dated ❌ trial is a proof:\n" + out)
 
     # 2. « banc » needs a proof without the bench too (a Bench* guard alone is the bench judging itself).
     root = judge_root(d, "juge-banc", lines(
@@ -760,6 +767,118 @@ def judge_criteria(d):
     check("J : « corrigé »" not in out and "chantier : 3 écarts" in out, "a « corrigé » with its commit (the third gap is the green without its red):\n" + out)
 
 
+def open_app_proof(d):
+    """Audit « banc crédible » A.2 (M3): an open « appli » line whose only proofs are green tests proves no defect.
+    Its proof is a @KnownDefect guard (or an engine known_defect test) or a dated ❌ trial on a device."""
+    script = os.path.join(HERE, "verifie-chantier.py")
+    root = judge_root(d, "juge-appli-vert", JUDGE_GOOD
+                      + "t\tC\tk3\tm\tappli\touvert\tOther#elsewhere\t-\trecette tel-01\t-\tRECETTE tel-01 ❌ téléphone : no date\t-\n"
+                      + "t\tD\tk4\tm\tappli\touvert\tOther#elsewhere\t-\trecette tel-01\t-\tRECETTE tel-01 ❌ téléphone 2026-11-08 : nothing plays\t-\n"
+                      + "t\tE\tk5\tm\tappli\tvoulu\tOther#elsewhere\t-\t-\t-\tn\t-\n")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
+                       capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    check("C : verdict « appli » dont la preuve n'est ni @KnownDefect ni un essai ❌ daté" in out,
+          "an open appli line proved by a green test only is a gap:\n" + out)
+    check("A : verdict « appli » dont" not in out and "D : verdict « appli » dont" not in out and "E : verdict « appli » dont" not in out
+          and "chantier : 1 écarts" in out and r.returncode == 1,
+          "a @KnownDefect guard, a dated ❌ trial and a line that is not open are fine:\n" + out)
+
+
+def owner_trials(d):
+    """Audit « banc crédible » A.6 (M5): each trial of retours-benjamin.md (« tel-NN ✅/❌ » under a dated « recette »
+    bullet, or « recette tel-NN = ✅/❌ ») is written « RECETTE tel-NN <mark> <device> <date> » on every line citing it."""
+    script = os.path.join(HERE, "verifie-chantier.py")
+    root = judge_root(d, "juge-essais", JUDGE_GOOD
+                      + "t\tC\tk3\tm\tnon-tranché\touvert\t-\t-\trecette tel-01\t-\tRECETTE tel-01 ✅ téléphone 2026-11-08 : it plays\t-\n"
+                      + "t\tD\tk4\tm\tnon-tranché\touvert\t-\t-\trecette tel-02\t-\tRECETTE tel-02 ❌ tablette 2026-11-08 (video)\t-\n"
+                      + "t\tE\tk5\tm\tnon-tranché\touvert\t-\t-\trecette tel-02\t-\tRECETTE tel-02 ✅ tablette 2026-11-08 : the mark is wrong\t-\n"
+                      + "t\tF\tk6\tm\tnon-tranché\touvert\t-\t-\trecette tel-01\t-\tRECETTE tel-01 ✅ tablette 2026-11-08 : the device is wrong\t-\n"
+                      + "t\tG\tk7\tm\tnon-tranché\touvert\t-\t-\trecette tel-01\t-\tRECETTE tel-01 ✅ téléphone : no date\t-\n"
+                      + "t\tH\tk8\tm\tnon-tranché\touvert\t-\t-\trecette tel-01\t-\tRECETTE tel-01 ✅ téléphone ; seen 2026-11-08, in another segment\t-\n"
+                      + "t\tN\tk14\tm\tnon-tranché\touvert\t-\t-\trecette tel-08\t-\tRECETTE tel-08 ❌ tablette paysage 2026-11-08 (video) : it lit up\t-\n"
+                      + "t\tO\tk15\tm\tnon-tranché\touvert\t-\t-\trecette tel-08, tel-10, tel-12\t-\tn\t-\n"
+                      + "t\tI\tk9\tm\tnon-tranché\touvert\t-\t-\t-\t-\tRECETTE tel-99 ❌ lune 2031-01-01 : invented\t-\n"
+                      + "t\tJ\tk10\tm\tnon-tranché\touvert\t-\t-\t-\t-\tn ; RECETTE tel-01 ❌ téléphone 2026-11-08 : against the notes\t-\n"
+                      + "t\tK\tk11\tm\tnon-tranché\touvert\t-\t-\tRECETTE tel-02 ❌ téléphone 2026-11-08\t-\tn\t-\n"
+                      + "t\tL\tk12\tm\tnon-tranché\touvert\t-\t-\t-\t-\tRECETTE tel-07 ❌ téléphone 2026-11-07 : another day\t-\n"
+                      + "t\tM\tk13\tm\tnon-tranché\touvert\t-\t-\t-\t-\tRECETTE tel-07 ❌ téléphone 2026-11-08 : as the notes say\t-\n")
+    write(os.path.join(root, "app", "src", "main", "assets", "recette.json"),
+          json.dumps({"id": "r", "milestone": "m", "items": [{"id": f"tel-{n:02d}", "title": "t"} for n in (1, 2, 8, 10, 12)]}))
+    notes = os.path.join(root, "docs", "audits", "ultra", "retours-benjamin.md")
+    write(notes, "# Retours\n\n- 2026-11-06, APK 1, tel-01 ✅ a remark that is no trial of the checklist.\n"
+                 "- 2026-11-08, APK 2, **téléphone (Honor), recette 2/3** (captures) :\n"
+                 "  - tel-01 ✅ it plays.\n  - tel-07 ❌ nothing.\n  - tel-09 not done.\n"
+                 "- 2026-11-08, APK 2, tablette, **recette tel-02 = ❌ « frozen »** (video) : details.\n"
+                 "- 2026-11-08, APK 2, **recette 3/3** on no device said :\n  - tel-03 ❌ nothing.\n"
+                 "- 2026-11-08, APK 2, **recette tel-04 = ❌** on no device said.\n"
+                 "- 2026-11-08, APK 2, **tablette, recette 1/3** :\n  - tel-09 not done.\n"
+                 "A remark between two lists.\n  - tel-05 ❌ under no dated bullet.\n"
+                 "- 2026-11-08, APK 2, **tablette, recette 1/3** :\n"
+                 "- 2026-11-09, APK 3, tablette, a remark that is no round of the checklist :\n  - tel-06 ❌ no trial.\n"
+                 "- 2026-11-08, APK 2, tablette, **tel-08 (video, read frame by frame)** : details. Résultat retenu : ❌ « it lit up ». To confirm.\n"
+                 "- 2026-11-08, APK 2, **tel-10 (video)** on no device said. Résultat retenu : ❌ « nothing ».\n"
+                 "- 2026-11-08, APK 2, tablette, tel-12 : lost (❌ said of something else), no result kept.\n")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
+                       capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    missing = "essai de retours-benjamin.md absent de verdicts.tsv"
+    check(f"A : {missing} (attendu « RECETTE tel-01 ✅ téléphone 2026-11-08 »)" in out, "a line citing tel-01 without its trial:\n" + out)
+    check(f"B : {missing} (attendu « RECETTE tel-02 ❌ tablette 2026-11-08 »)" in out, "a line citing tel-02 without its trial:\n" + out)
+    check(f"E : {missing} (attendu « RECETTE tel-02 ❌ tablette 2026-11-08 »)" in out, "a trial written with the wrong mark:\n" + out)
+    check(f"tel-07 ❌ téléphone 2026-11-08 : {missing} (aucune ligne ne cite tel-07)" in out, "a trial no line cites:\n" + out)
+    check(f"F : {missing} (attendu « RECETTE tel-01 ✅ téléphone 2026-11-08 »)" in out, "a trial written with the wrong device:\n" + out)
+    check(f"G : {missing} (attendu « RECETTE tel-01 ✅ téléphone 2026-11-08 »)" in out, "a trial written without its date:\n" + out)
+    check(f"H : {missing} (attendu « RECETTE tel-01 ✅ téléphone 2026-11-08 »)" in out, "a trial whose date is in another segment:\n" + out)
+    check(f"K : {missing} (attendu « RECETTE tel-02 ❌ tablette 2026-11-08 »)" in out, "a trial written with the wrong device, in the telephone cell:\n" + out)
+    check(f"C : {missing}" not in out and f"D : {missing}" not in out and "tel-09" not in out and "2026-11-06" not in out
+          and not any(t in out for t in ("tel-03", "tel-04", "tel-05", "tel-06"))
+          and "chantier : 17 écarts" in out and r.returncode == 1, "the lines carrying their trial, and what is no trial, are fine:\n" + out)
+    # The reverse (review of lot 2): an annotation « RECETTE tel-NN … » of verdicts.tsv is one of the notes' trials, whole.
+    unknown = "annotation « RECETTE » sans essai correspondant dans retours-benjamin.md"
+    check(f"I : {unknown} (« RECETTE tel-99 ❌ lune 2031-01-01 : invented »)" in out, "an invented trial:\n" + out)
+    check(f"J : {unknown} (« RECETTE tel-01 ❌ téléphone 2026-11-08 : against the notes »)" in out, "a mark against the notes:\n" + out)
+    check(f"K : {unknown} (« RECETTE tel-02 ❌ téléphone 2026-11-08 »)" in out, "another device than the notes', in the telephone cell:\n" + out)
+    check(f"L : {unknown}" in out, "another date than the notes':\n" + out)
+    check(f"E : {unknown}" in out and f"F : {unknown}" in out and f"G : {unknown}" in out and f"H : {unknown}" in out,
+          "the annotations with a wrong mark, a wrong device, no date:\n" + out)
+    # A result kept in the notes outside a round (« tablette, tel-NN … Résultat retenu : ❌ ») is a trial too.
+    check(f"O : {missing} (attendu « RECETTE tel-08 ❌ tablette 2026-11-08 »)" in out and f"N : {missing}" not in out,
+          "a result kept in the notes is a trial of its device:\n" + out)
+    check("tel-10" not in out and "tel-12" not in out, "no device, or no result kept: no trial:\n" + out)
+    check(not any(f"{item} : {unknown}" in out for item in "ABCDMN"), "the annotations that are trials of the notes are fine:\n" + out)
+    os.remove(notes)
+    out = run(script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt"))
+    check("chantier : 0 écarts" in out, "no notes of the owner: nothing to compare\n" + out)
+
+
+def pad_timing_verdicts(d):
+    """Audit « banc crédible » A.14 (F3, G2): the bench's pads start at once, without the grid, so a verdict on a
+    pad of Pad Live needs a proof off the bench: a test outside Bench*, an engine test or a dated trial on a device."""
+    script = os.path.join(HERE, "verifie-chantier.py")
+    root = judge_root(d, "juge-pads", JUDGE_GOOD
+                      + "t\tC\tpadlive_pads|padlive_pad_N|rien\tm\tappli\tvoulu\t-\t-\t-\t-\tread in the code\t-\n"
+                      + "t\tD\tpadlive|padlive_stop_all|rien\tm\tappli\tvoulu\t-\t-\t-\t-\tRECETTE tel-01 ✅ téléphone 2026-11-08 : it stops\t-\n"
+                      + "t\tE\tpadlive_pads|padlive_pad_N|lent\tm\tappli\tvoulu\tOther#elsewhere\t-\t-\t-\tn\t-\n"
+                      + "t\tF\tpadlive|padlive_fx|rien\tm\tnon-tranché\touvert\t-\t-\t-\t-\tn\t-\n"
+                      + "t\tG\tlaunch|launch_padlive|rien\tm\tappli\tvoulu\t-\t-\t-\t-\tRECETTE tel-01 ✅ téléphone : no date\t-\n"
+                      + "t\tH\trhythm|pad_3|rien\tm\tappli\tvoulu\t-\t-\t-\t-\tread in the code\t-\n"
+                      + "t\tI\tnotes|notepad_x|rien\tm\tappli\tvoulu\t-\t-\t-\t-\tread in the code\t-\n"
+                      + "t\tJ\tpadlive|padlive_fx|rien\tm\tbanc\tvoulu\t-\t-\t-\t-\tread in the code\t-\n"
+                      + "t\tK\tpadlive|padlive_fx|lent\tm\tappli\tvoulu\t-\t-\t-\t-\ttel-01 téléphone 2026-11-08 : no mark\t-\n"
+                      + "t\tL\tpadlive|padlive_fx|perdu\tm\tappli\tvoulu\t-\t-\trecette tel-01\t-\t✅ téléphone 2026-11-08 : no trial number in this segment\t-\n")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
+                       capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    gap = "verdict pad-timing sans preuve hors banc"
+    check(f"H : {gap}" in out and f"I : {gap}" not in out, "a « pad_ » key is a pad, « notepad_ » is not:\n" + out)
+    check(f"J : {gap}" in out, "a « banc » verdict on a pad needs its proof off the bench too:\n" + out)
+    check(f"K : {gap}" in out and f"L : {gap}" in out, "a trial without its mark, or without its number, is no dated trial:\n" + out)
+    check(f"C : {gap}" in out and f"G : {gap}" in out, "a pad verdict read in the code, or with an undated trial, is a gap:\n" + out)
+    check(f"D : {gap}" not in out and f"E : {gap}" not in out and f"F : {gap}" not in out and f"A : {gap}" not in out and f"B : {gap}" not in out,
+          "a dated trial, a test outside Bench*, an undecided line and a line that is not about pads are fine:\n" + out)
+
+
 def engine_proof(d):
     """Audit « banc crédible » A.12 (G5): an engine host test is a proof the judge reads (« path#function », the
     function defined and registered in a PS_*_TESTS list); a @KnownDefect id is tied to its line by « garde_id »."""
@@ -791,8 +910,8 @@ def engine_proof(d):
           "a function no list runs is a gap:\n" + out)
     write(path, inc.replace("known_defect_k2", "pads_waits"))
     out = judge(root)
-    check("C : garde_id K2 porté par aucune de ses preuves" in out and "chantier : 1 écarts" in out,
-          "an engine guard no longer named known_defect_<id> is a gap:\n" + out)
+    check("C : garde_id K2 porté par aucune de ses preuves" in out and "C : verdict « appli » dont la preuve n'est ni @KnownDefect" in out
+          and "chantier : 2 écarts" in out, "an engine guard no longer named known_defect_<id> is a gap, and proves no open defect:\n" + out)
     write(path, inc)
 
     # An id no line carries; a line's id no proof carries.
@@ -923,6 +1042,210 @@ def skipped_class(d):
     write(resume, "2 verts, 0 rouges, 0 en quarantaine, 0 sautés\nvert : AppProofTest#provesIt\nvert : BenchFooTest#guardsIt\n")
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
     check("pas verte" not in r.stdout, "a guard named green is green:\n" + r.stdout)
+
+
+PORTAL_GRADLE = """#!/usr/bin/env bash
+# The portal's Gradle on the toy: writes the pass's fixture results where the portal asked for them.
+set -euo pipefail
+dir=""
+for a in "$@"; do case "$a" in -Ptest.results.dir=*) dir="${a#-Ptest.results.dir=}" ;; esac; done
+name="$(basename "$dir")"
+echo "$name $*" >> "$PS_TOY_CALLS"
+if [ -d "$PS_TOY_FIXTURES/$name" ]; then cp "$PS_TOY_FIXTURES/$name"/*.xml "$dir"/; fi
+[ "${PS_TOY_GRADLE_FAILS:-}" != "$name" ]
+"""
+
+
+def git_toy(root, *args):
+    r = subprocess.run(["git", "-C", root, "-c", "user.name=t", "-c", "user.email=t@example.org", "-c", "commit.gpgsign=false", *args],
+                       capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
+    return r.stdout
+
+
+def portal(d):
+    """Review of lot 1 « Le juge » (finding « moyen » 1): selftest.sh's wiring, by its behaviour. The real portal runs
+    on a toy repository (its own copies of the verdict, the list of expected classes, the stamp and the judge; a stand-in
+    for Gradle that gives each pass its fixture JUnit results): the classes it expects are the toy's (read from the
+    toy's sources, not a list written in the portal), a red verdict forbids the stamp, and a class of the list that
+    did not run is red."""
+    root = os.path.join(d, "portail")
+    bench = os.path.join(root, "scripts", "bench")
+    for name in ("selftest.sh", "tampon.sh", "selftest-attendus.py", "selftest-verdict.py", "verifie-chantier.py"):
+        with open(os.path.join(HERE, name), encoding="utf-8") as f:
+            write(os.path.join(bench, name), f.read())
+    write(os.path.join(bench, "test_ultra_bench.py"), "import os, sys\nsys.exit(1 if os.environ.get('PS_TOY_SCRIPTS_FAIL') else 0)\n")
+    write(os.path.join(bench, "gradle-file.sh"), PORTAL_GRADLE)
+    write(os.path.join(bench, "selftest-quarantaine.txt"), "# none\n")
+    write(os.path.join(bench, "selftest-sauts-connus.txt"), "BenchFooTest#drive | seat entry point | 2026-11-09 | test\n")
+    for name in ("selftest.sh", "tampon.sh", "gradle-file.sh"):
+        os.chmod(os.path.join(bench, name), 0o755)
+    java = os.path.join(root, "app", "src", "test", "java", "com", "x", "app")
+    write(os.path.join(java, "human", "HumanTester.kt"), "package com.x.app.human\nabstract class HumanTester(val name: String) {\n  fun drive() {}\n}\n")
+    write(os.path.join(java, "human", "BenchFooTest.kt"), 'package com.x.app.human\nclass BenchFooTest : HumanTester("foo") {\n  fun guardsIt() {}\n}\n')
+    write(os.path.join(java, "pads", "ChallengeTest.kt"), 'package com.x.app.pads\nclass ChallengeTest {\n'
+          '    @KnownDefect("K1", "m")\n    @Test\n    fun provesIt() {}\n}\n')
+    write(os.path.join(root, "app", "src", "main", "assets", "recette.json"), json.dumps({"id": "r", "milestone": "m", "items": []}))
+    ultra = os.path.join(root, "docs", "audits", "ultra")
+    write(os.path.join(ultra, "base.tsv"), "cle\tetat\tvu\tnote\tcorrige_au\n")
+    write(os.path.join(ultra, "verdicts.tsv"), JUDGE_HEAD + "t\tA\tk1\tm\tappli\touvert\tChallengeTest#provesIt\t-\t-\t-\tn\tK1\n")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "app", "docs", "scripts")
+    git_toy(root, "commit", "-q", "-m", "toy")
+    # The machine's checks answered by stand-ins (disk, Gradle daemons, orphan workers): the test is about the wiring.
+    tools = os.path.join(d, "portail-outils")
+    write(os.path.join(tools, "df"), "#!/usr/bin/env bash\necho Avail; echo 50G\n")
+    write(os.path.join(tools, "pgrep"), "#!/usr/bin/env bash\necho 0\n")
+    write(os.path.join(tools, "ps"), "#!/usr/bin/env bash\ntrue\n")
+    for name in ("df", "pgrep", "ps"):
+        os.chmod(os.path.join(tools, name), 0o755)
+    calls = os.path.join(d, "portail-appels.txt")
+    foo = '<testcase classname="com.x.app.human.BenchFooTest" name="guardsIt"/>'
+    defect = '<testcase classname="com.x.app.pads.ChallengeTest" name="provesIt"/>'
+    count = [0]
+
+    def selftest(banc, defauts, **env):
+        """(exit code, stderr + stdout, the summary, the lot) of the portal on a new lot with these results per pass."""
+        count[0] += 1
+        fixtures = os.path.join(d, f"portail-resultats-{count[0]}")
+        for name, cases in (("banc", banc), ("defauts", defauts)):
+            if cases is not None:
+                write(os.path.join(fixtures, name, "TEST-x.xml"), "<testsuite>" + cases + "</testsuite>")
+        os.makedirs(fixtures, exist_ok=True)
+        lot = os.path.join(d, f"portail-lot-{count[0]}")
+        os.makedirs(lot)
+        write(os.path.join(lot, "selftest.ok"), "an older stamp\n")
+        write(calls, "")
+        e = dict(os.environ, PATH=tools + os.pathsep + os.environ["PATH"], PS_TOY_FIXTURES=fixtures, PS_TOY_CALLS=calls, **env)
+        r = subprocess.run(["bash", os.path.join(bench, "selftest.sh"), lot], capture_output=True, text=True, env=e)
+        summary = os.path.join(lot, "selftest-resume.txt")
+        text = open(summary, encoding="utf-8").read() if os.path.isfile(summary) else ""
+        return r.returncode, r.stderr + r.stdout, text, lot
+
+    def stamped(lot):
+        return os.path.isfile(os.path.join(lot, "selftest.ok"))
+
+    # Everything green: stamped, and the stamp fits; Gradle was asked for the toy's own defect class.
+    code, out, text, lot = selftest(foo, defect)
+    check(code == 0 and text.startswith("2 verts, 0 rouges, 0 en quarantaine, 0 sautés") and "vert : ChallengeTest#provesIt" in text,
+          "the toy's two classes green: the portal is green\n" + out + text)
+    check(stamped(lot) and subprocess.run(["bash", os.path.join(bench, "tampon.sh"), "verifie", lot]).returncode == 0,
+          "a green portal writes a stamp that fits its lot")
+    with open(calls, encoding="utf-8") as f:
+        asked = f.read()
+    check("defauts " in asked and "--tests com.x.app.pads.ChallengeTest" in asked, "the « defauts » pass runs the classes read from the sources:\n" + asked)
+    with open(os.path.join(lot, "selftest-attendus.txt"), encoding="utf-8") as f:
+        check(f.read().split() == ["BenchFooTest", "ChallengeTest"], "the expected classes are the toy's, read from its sources")
+    with open(os.path.join(lot, "selftest-chantier.txt"), encoding="utf-8") as f:
+        check("résumé absent" not in f.read(), "the judge is given this run's summary")
+    # A red test (a @KnownDefect made green: its rule fails it): no stamp, the older one gone, exit 1.
+    fixed = '<testcase classname="com.x.app.pads.ChallengeTest" name="provesIt"><failure message="K1 no longer fails: fixed?"/></testcase>'
+    code, out, text, lot = selftest(foo, fixed)
+    check(code != 0 and not stamped(lot) and "SELFTEST ROUGE" in out and "rouge : ChallengeTest#provesIt : K1 no longer fails" in text,
+          "a red verdict forbids the lot:\n" + out + text)
+    # An expected class that did not run at all (its pass gave no result): red.
+    code, out, text, lot = selftest(foo, None)
+    check(code != 0 and not stamped(lot) and "rouge : ChallengeTest#* : aucun résultat" in text, "an expected class without a result is red:\n" + out + text)
+    # A skip outside the list of known skips is red; a known one is listed and passes.
+    skip = '<skipped message="only in seat mode"/>'
+    code, out, text, lot = selftest(foo + f'<testcase classname="com.x.app.human.BenchFooTest" name="other">{skip}</testcase>', defect)
+    check(code != 0 and not stamped(lot) and "rouge : BenchFooTest#other : saut hors de la liste" in text, "an unknown skip is red:\n" + out + text)
+    code, out, text, lot = selftest(foo + f'<testcase classname="com.x.app.human.BenchFooTest" name="drive">{skip}</testcase>', defect)
+    check(code == 0 and stamped(lot) and "sauté : BenchFooTest#drive : only in seat mode" in text, "a known skip passes, listed:\n" + out + text)
+    # A Gradle run that failed with no red test to show for it, and red bench scripts: red.
+    code, out, text, lot = selftest(foo, defect, PS_TOY_GRADLE_FAILS="banc")
+    check(code != 0 and not stamped(lot), "a failed Gradle run with no red test is red:\n" + out + text)
+    code, out, text, lot = selftest(foo, defect, PS_TOY_SCRIPTS_FAIL="1")
+    check(code != 0 and not stamped(lot) and "scripts du banc" in out, "red bench scripts forbid the lot:\n" + out)
+    # A list of known skips that holds anything but a seat's entry point: red (see known_skips_bounded).
+    write(os.path.join(bench, "selftest-sauts-connus.txt"), "BenchFooTest#drive | seat | 2026-11-09 | test\nBenchFooTest#guardsIt | flaky | 2026-11-09 | test\n")
+    git_toy(root, "commit", "-q", "-m", "a real test in the known skips", "scripts/bench/selftest-sauts-connus.txt")
+    code, out, text, lot = selftest(foo, defect)
+    check(code != 0 and not stamped(lot) and "sauts connus" in out and "BenchFooTest#guardsIt" in out, "a real test in the list of known skips forbids the lot:\n" + out)
+
+
+def mark_fixed(d):
+    """Review of lot 1 « Le juge » (finding « moyen » 2): marque-corrige.sh runs the judge WITH the summary it was
+    given (4th argument or PS_SELFTEST_RESUME), on a toy repository; without one the judge says « résumé absent »."""
+    root = judge_root(d, "marque")
+    bench = os.path.join(root, "scripts", "bench")
+    for name in ("marque-corrige.sh", "verifie-chantier.py"):
+        with open(os.path.join(HERE, name), encoding="utf-8") as f:
+            write(os.path.join(bench, name), f.read())
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "app", "docs", "scripts")
+    git_toy(root, "commit", "-q", "-m", "toy")
+    sha = git_toy(root, "rev-parse", "--short", "HEAD").strip()
+    script = os.path.join(bench, "marque-corrige.sh")
+    ultra = os.path.join(root, "docs", "audits", "ultra")
+    env = {k: v for k, v in os.environ.items() if k != "PS_SELFTEST_RESUME"}
+
+    def mark(*more, **extra):
+        write(os.path.join(ultra, "verdicts.tsv"), JUDGE_GOOD)
+        write(os.path.join(ultra, "base.tsv"), "cle\tetat\tvu\tnote\tcorrige_au\n")
+        r = subprocess.run(["bash", script, "B", sha, "tour-9", *more], capture_output=True, text=True, env=dict(env, **extra))
+        check(r.returncode == 0, "marque-corrige.sh ran:\n" + r.stdout + r.stderr)
+        return r.stdout
+
+    # The guard of line B is green only in a summary that names it: the judge's answer shows which summary it read.
+    green = os.path.join(d, "marque-vert.txt")
+    write(green, JUDGE_RESUME)
+    other = os.path.join(d, "marque-autre.txt")
+    write(other, "1 verts, 0 rouges, 0 en quarantaine, 0 sautés\nvert : AppProofTest#provesIt\n")
+    out = mark(green)
+    check(f"B: corrigé ({sha}, tour-9) ; clé k2" in out, "the line is marked:\n" + out)
+    check("résumé absent" not in out and "pas verte" not in out, "the judge read the summary given as 4th argument:\n" + out)
+    with open(os.path.join(ultra, "verdicts.tsv"), encoding="utf-8") as f:
+        check(f"\tbanc\tcorrigé\tOther#elsewhere\tBenchFooTest#guardsIt\trecette tel-02\t{sha}\t" in f.read(), "verdicts.tsv: corrigé, with its commit")
+    with open(os.path.join(ultra, "base.tsv"), encoding="utf-8") as f:
+        check(f"k2\tcorrigé\tt\tB ({sha})\ttour-9\n" in f.read(), "base.tsv: the key, corrigé, with its round")
+    out = mark(other)
+    check("B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in out and "résumé absent" not in out,
+          "the judge read THAT summary (the guard is not green in it):\n" + out)
+    out = mark(PS_SELFTEST_RESUME=other)
+    check("B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in out and "résumé absent" not in out,
+          "the summary named by PS_SELFTEST_RESUME is read too:\n" + out)
+    out = mark()
+    check("résumé absent" in out, "without a summary the judge says so:\n" + out)
+
+
+def known_skips_bounded(d):
+    """Review of lot 1 « Le juge » (finding « moyen » 3): the list of known skips is bounded. Only « <Class>#drive » of a
+    class that inherits HumanTester (a seat's entry point, skipped outside seat mode) is accepted: a real test added
+    there would be skipped in silence. selftest-attendus.py --sauts-connus says which entries it refuses (exit 1), and
+    selftest.sh is red on them."""
+    script = os.path.join(HERE, "selftest-attendus.py")
+    root = os.path.join(d, "sauts")
+    java = os.path.join(root, "app", "src", "test", "java", "com", "x", "app")
+    write(os.path.join(java, "human", "HumanTester.kt"), "package com.x.app.human\nabstract class HumanTester(val name: String) {\n  fun drive() {}\n}\n")
+    write(os.path.join(java, "human", "BenchFooTest.kt"), 'package com.x.app.human\nclass BenchFooTest(private val a: String) : HumanTester("foo") {\n  fun guardsIt() {}\n}\n')
+    write(os.path.join(java, "human", "BenchAloneTest.kt"), "package com.x.app.human\nclass BenchAloneTest {\n  fun drive() {}\n}\n")
+    known = os.path.join(d, "sauts-connus.txt")
+
+    def refused(text, tree=root):
+        write(known, text)
+        r = subprocess.run([sys.executable, "-I", script, "--root", tree, "--sauts-connus", known], capture_output=True, text=True)
+        return r.returncode, r.stdout
+
+    code, out = refused("# a comment\nBenchFooTest#drive | seat entry point | 2026-11-09 | test\n")
+    check(code == 0 and out == "", f"a seat's entry point is accepted: {code}\n" + out)
+    code, out = refused("BenchFooTest#drive | seat | 2026-11-09 | test\nBenchFooTest#guardsIt | flaky today | 2026-11-09 | test\n")
+    check(code == 1 and out.splitlines() == ["saut connu refusé : BenchFooTest#guardsIt (seul « <Classe>#drive » d'une classe qui hérite de HumanTester est accepté)"],
+          f"a real test is refused: {code}\n" + out)
+    code, out = refused("BenchAloneTest#drive | not a seat | 2026-11-09 | test\n")
+    check(code == 1 and "saut connu refusé : BenchAloneTest#drive" in out, f"« drive » of a class that is not a HumanTester is refused: {code}\n" + out)
+    code, out = refused("BenchGoneTest#drive | no such class | 2026-11-09 | test\n")
+    check(code == 1 and "saut connu refusé : BenchGoneTest#drive" in out, f"a class that does not exist is refused: {code}\n" + out)
+    code, out = refused("BenchFooTest#drive[lang=fr] | one case | 2026-11-09 | test\n")
+    check(code == 1 and "saut connu refusé : BenchFooTest#drive[lang=fr]" in out, f"only the bare name is accepted: {code}\n" + out)
+    # The real list fits the real sources.
+    repo = os.path.dirname(os.path.dirname(HERE))
+    with open(os.path.join(HERE, "selftest-sauts-connus.txt"), encoding="utf-8") as f:
+        real = f.read()
+    code, out = refused(real, repo)
+    check(code == 0 and "#drive |" in real, f"the real list holds seats' entry points only: {code}\n" + out)
+    code, out = refused(real + "BenchSelfTest#reachTagTouchesAVisibleElementInPlace | skipped for now | 2026-11-09 | test\n", repo)
+    check(code == 1 and "saut connu refusé : BenchSelfTest#reachTagTouchesAVisibleElementInPlace" in out, f"a real test added to the real list is refused: {code}\n" + out)
 
 
 JUDGE_HEAD = "tour\titem\tcle\tgravite\tverdict\tetat\tpreuve_appli\tgarde_banc\ttelephone\tcommit\tnote\tgarde_id\n"

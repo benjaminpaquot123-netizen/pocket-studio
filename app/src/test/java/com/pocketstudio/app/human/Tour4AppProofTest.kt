@@ -45,9 +45,14 @@ class Tour4AppProofTest {
     /** PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). */
     @get:Rule
     val pristine = BenchPristineRule()
+
     private val app: Application get() = ApplicationProvider.getApplicationContext()
 
-    /** A phone's engine as far as the view model reads it: the play position from ▶ (count-in first), the launch lines. */
+    /**
+     * A phone's engine as far as the view model reads it: the play position from ▶ (count-in first), the launch lines,
+     * and the scene swap the app arms (a song's next part, the part a take's notes went to), made on the next bar line
+     * of the scene playing and counted, as Engine.cpp's onStep does (the app follows the parts by that count).
+     */
     private class PhoneEngine : CommandSink {
         private var next = 1L
         val posts = ArrayList<List<Number>>()
@@ -55,21 +60,63 @@ class Tour4AppProofTest {
         private var countIn = 0
         private var tempo = 120.0
         private var beats = 4
+        private var songFrom = -1
+        private var sceneStart = 0
+        private var swapAt = -1  // armed: the scene's step it may swap from (0: the next bar line)
+        private var armedAt = 0
+        private var endsSong = false
+        private var swaps = 0
         /** Launches the « engine » made, (slot, scene, step) each, read once by the view model. */
         val launches = java.util.ArrayDeque<IntArray>()
 
+        /** Sixteenths since ▶ (negative during the count-in), NaN stopped. */
+        private fun transport(): Double =
+            if (since < 0) Double.NaN else (SystemClock.uptimeMillis() - since) * tempo / 15_000.0 - countIn * beats * 4.0
+
+        /** The swap due by now, as Engine::onStep makes it: on a bar line of the scene playing, after the step it was armed at. */
+        private fun follow() {
+            val t = transport()
+            if (t.isNaN() || t < 0 || swapAt < 0) return
+            val bar = (beats * 4).coerceAtLeast(1)
+            val local = armedAt - sceneStart
+            val at = maxOf(if (swapAt == 0) 1 else swapAt, local + 1).let { (it + bar - 1) / bar * bar }
+            if (sceneStart + at > t.toInt()) return
+            sceneStart += at
+            swapAt = -1
+            swaps++
+            if (endsSong) since = -1L
+        }
+
         @Synchronized override fun post(target: Long, type: Int, value: Float, a: Int, b: Int) {
             if (target != 0L) return
+            follow()
             posts += listOf(type, value, a, b)
             when (type) {
-                CMD_SET_TRANSPORT -> { since = if (value > 0f) SystemClock.uptimeMillis() else -1L; countIn = if (value > 0f) a else 0 }
+                CMD_SET_TRANSPORT -> {
+                    since = if (value > 0f) SystemClock.uptimeMillis() else -1L
+                    countIn = if (value > 0f) a else 0
+                    songFrom = if (value > 0f) b else -1
+                    sceneStart = 0
+                    swapAt = -1
+                }
                 CMD_SET_TEMPO -> if (value > 0f) tempo = value.toDouble()
                 CMD_BEATS_PER_BAR -> if (a > 0) beats = a
+                CMD_ARM_SCENE_SWAP -> {  // after a steps of the scene (-1: cancel); b 2: the song ends there
+                    swapAt = if (a < 0) -1 else a
+                    endsSong = b == 2
+                    armedAt = transport().let { if (it.isNaN() || it < 0) 0 else it.toInt() }
+                }
             }
         }
-        override fun playPosition(): Double = if (since < 0) -1.0 else (SystemClock.uptimeMillis() - since) * tempo / 15_000.0 - countIn * beats * 4.0
-        override fun transportStep(): Int = playPosition().let { if (it < 0) -1 else it.toInt() }
-        override fun transportPosition(): Double = playPosition().let { if (it < 0) -1.0 else it }
+        /** The place in the scene playing (Engine.cpp's playPosition_): it starts again from each swap. */
+        @Synchronized override fun playPosition(): Double {
+            follow()
+            val t = transport()
+            return if (t.isNaN()) -1.0 else if (t < 0) t else t - sceneStart
+        }
+        @Synchronized override fun transportPosition(): Double { follow(); return transport().let { if (it.isNaN() || it < 0) -1.0 else it } }
+        override fun transportStep(): Int = transportPosition().let { if (it < 0) -1 else it.toInt() }
+        @Synchronized override fun sceneSwaps(): Int { follow(); return swaps }
         @Synchronized override fun drainLaunchEvents(out: IntArray): Int {
             var n = 0
             while (launches.isNotEmpty() && (n + 1) * 3 <= out.size) {
@@ -209,6 +256,105 @@ class Tour4AppProofTest {
         assertTrue("the notes are in the part shown: $facts", perScene[p.scene] >= 3)
     }
 
+    /** A song of two parts on two scenes, its second part playing, the first one shown by the timeline's « Ouvrir dans … ». */
+    private fun secondPartHeardFirstPartShown(): RhythmViewModel {
+        val two = Project().let { it.copy(drums = it.drums.toggle(0, 0)) }.switchScene(1)
+            .let { it.copy(drums = it.drums.toggle(0, 4)) }.switchScene(0)
+            .copy(song = listOf(com.pocketstudio.model.SongPart(0), com.pocketstudio.model.SongPart(1)))
+        val vm = open(two)
+        vm.playSongPart(1)
+        val until = System.currentTimeMillis() + 10_000
+        while (!vm.transport.value.playing && System.currentTimeMillis() < until) { idle(); Thread.sleep(5) }
+        idle(100)
+        assertTrue("the song plays from its second part", vm.transport.value.playing)
+        vm.showSceneToEdit(0)
+        idle(100)
+        assertEquals("the first part is shown while the song plays the second", 0, vm.project.value.scene)
+        assertEquals("the song still plays its second part", 1, vm.sessionUi.value.songIndex)
+        return vm
+    }
+
+    private fun notesPerScene(vm: RhythmViewModel): List<Int> {
+        val p = vm.project.value
+        val id = SimpleMelody.trackOf(p)!!
+        return p.allScenes.indices.map { s -> p.sceneView(s).track(id).notes.notes.size }
+    }
+
+    /** The clock goes on ([step] ms at a time, [limit] ms at most) until [reached]; the ms waited, -1 if it never came. */
+    private fun waitFor(limit: Long, step: Long = 50, reached: () -> Boolean): Long {
+        var waited = 0L
+        while (!reached()) {
+            if (waited >= limit) return -1
+            idle(step); waited += step
+        }
+        return waited
+    }
+
+    /**
+     * Audit « banc crédible » A.11 (T4-26 by program, no emulator), corrected after the lot's review: the part shown is not
+     * the part heard, and the take ends before the next bar line. The keys go to the part heard; as the take ends the app
+     * arms the screen's move to the part that got them (d3eccff), made by the engine on the next bar line. So the take's
+     * notes are on screen one bar later at most. Not a proof about the emulator smoke test's failure (unexplained).
+     */
+    @Test
+    fun aMelodyTakeWhileAnotherPartIsShownShowsItsNotes() {
+        NativeEngine.sink = PhoneEngine()
+        val vm = secondPartHeardFirstPartShown()
+        vm.recordMelodyTake()
+        idle(100)
+        threeKeys(vm)
+        assertTrue("the take ends before the bar line (else this is another case): ${NativeEngine.playPosition()}", NativeEngine.sceneSwaps() == 0)
+        vm.recordMelodyTake()
+        idle()
+        assertEquals("the keys went to the part heard: ${vm.lastTakeReport}", listOf(0, 3), notesPerScene(vm))
+        // One bar at 120 (2 s), and the app's poll of the engine after it.
+        val waited = waitFor(2_500) { notesPerScene(vm)[vm.project.value.scene] >= 3 }
+        val facts = "shown ${vm.project.value.scene}, notes per scene ${notesPerScene(vm)}, ui ${vm.sessionUi.value}; ${vm.lastTakeReport}"
+        println("TOUR4 shown is not heard, a short take: the screen turned after $waited ms; $facts")
+        assertTrue("the take's notes are not in the part shown one bar after it ended: $facts", waited >= 0)
+        assertTrue("the music goes on", vm.transport.value.playing)
+    }
+
+    /**
+     * The same start, the take going on past the bar line: the app armed the sound's move to the part shown as the take
+     * began, the engine makes it on that bar line, and the keys played after it go to the part shown.
+     */
+    @Test
+    fun aMelodyTakeAfterTheBarLineGoesToThePartShown() {
+        NativeEngine.sink = PhoneEngine()
+        val vm = secondPartHeardFirstPartShown()
+        vm.recordMelodyTake()
+        idle(100)
+        assertTrue("the sound never came to the part shown: ui ${vm.sessionUi.value}", waitFor(2_500) { NativeEngine.sceneSwaps() >= 1 } >= 0)
+        idle(100)
+        threeKeys(vm)
+        vm.recordMelodyTake()
+        idle()
+        assertEquals("the keys are in the part shown: ${vm.lastTakeReport}", listOf(3, 0), notesPerScene(vm))
+        assertEquals(0, vm.project.value.scene)
+    }
+
+    /**
+     * And a take across that bar line: none of its keys is lost. Seen with this engine and left undecided (not asserted):
+     * the key played before the line is kept in the part heard then, the two after it in the part shown, so the take says
+     * « 3 notes » and the screen holds two of them. Whether that is wanted is the owner's to say (T4-26, audit § 8, trial 5).
+     */
+    @Test
+    fun aMelodyTakeAcrossTheBarLineKeepsItsThreeNotes() {
+        NativeEngine.sink = PhoneEngine()
+        val vm = secondPartHeardFirstPartShown()
+        vm.recordMelodyTake()
+        idle(100)
+        assertTrue(waitFor(2_500, 20) { NativeEngine.playPosition() >= 13.0 } >= 0)
+        threeKeys(vm)
+        assertTrue("the bar line went by during the keys", NativeEngine.sceneSwaps() >= 1)
+        vm.recordMelodyTake()
+        idle()
+        println("TOUR4 shown is not heard, a take across the bar line: shown ${vm.project.value.scene}, notes per scene ${notesPerScene(vm)}; ${vm.lastTakeReport}")
+        assertEquals("a key of the take was lost: ${vm.lastTakeReport}", 3, notesPerScene(vm).sum())
+        assertEquals(vm.lastTakeReport, 3, vm.noteTake.value?.notes)
+    }
+
     /**
      * What the bench did (round 4): no engine under the take (it let its engine go at the touch before), the keys go
      * nowhere: « Rien n'a été joué ». A phone always has its engine: this is the bench's « Rien n'a été joué ».
@@ -285,6 +431,7 @@ class Tour4AppProofTest {
     private companion object {
         const val CMD_SET_TRANSPORT = 5
         const val CMD_SET_TEMPO = 6
+        const val CMD_ARM_SCENE_SWAP = 40
         const val CMD_BEATS_PER_BAR = 57
         const val CMD_ARM_LAUNCH = 71
     }

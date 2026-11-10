@@ -13,7 +13,8 @@
 # Banc fiable 1.2: the verdict is read test by test from the JUnit results, not from Gradle's exit code. A red test
 # forbids the lot unless it is in scripts/bench/selftest-quarantaine.txt (named in the stamp); every skipped test is
 # listed with its reason in <lot>/selftest-resume.txt. Never green on 0 test run. Audit « banc crédible » A.4: a class
-# skipped as a whole is red, and so is a skip that is not in scripts/bench/selftest-sauts-connus.txt.
+# skipped as a whole is red, and so is a skip that is not in scripts/bench/selftest-sauts-connus.txt. That list is
+# bounded: only the seat entry point `drive` of a class inheriting HumanTester may be there (selftest-attendus.py).
 set -euo pipefail
 lot="$(cd "${1:?usage: scripts/bench/selftest.sh <lot folder>}" && pwd)"
 cd "$(dirname "$0")/../.."
@@ -49,6 +50,9 @@ rm -rf "$junit"; mkdir -p "$junit"
 # human/ (ChallengeControllerTest) is expected and run too, in a pass of its own (« defauts »).
 python3 -I scripts/bench/selftest-attendus.py > "$lot/selftest-passes.txt"
 awk '{n = split($2, p, "."); print p[n]}' "$lot/selftest-passes.txt" | sort -u > "$lot/selftest-attendus.txt"
+# Review of lot 1: the list of known skips is bounded (a seat's `drive` only): any other entry forbids the lot.
+python3 -I scripts/bench/selftest-attendus.py --sauts-connus scripts/bench/selftest-sauts-connus.txt > "$lot/selftest-sauts-refuses.txt" \
+  || fail "liste des sauts connus hors borne : $(tr '\n' ' ' < "$lot/selftest-sauts-refuses.txt")"
 gradle_failed=0
 run_tests() {
   # PLAN-RESTE 4.3: each pass writes its XML straight into $junit/<pass>/ (never the shared build/test-results that

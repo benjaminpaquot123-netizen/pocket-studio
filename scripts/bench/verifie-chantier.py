@@ -122,6 +122,97 @@ def dated_failed_trial(v):
     return False
 
 
+TRIAL_BULLET = re.compile(r"^- (20\d\d-\d\d-\d\d)\b(.*)$")
+TRIAL_ALONE = re.compile(r"recette (tel-\d+) = (✅|❌)")
+TRIAL_IN_LIST = re.compile(r"^\s+- (tel-\d+) (✅|❌)")
+TRIAL_KEPT = re.compile(r"^(.*?)\b(tel-\d+)\b.*\bRésultat retenu : (✅|❌)")
+
+
+def _device(text):
+    m = re.search(r"téléphone|tablette", text)
+    return m.group(0) if m else None
+
+
+def owner_trials(root):
+    """The owner's trials of the checklist written in retours-benjamin.md, as (tel-NN, mark, device, date): a
+    « tel-NN ✅/❌ » sub-bullet of a dated bullet « <device>, recette n/m », a dated bullet « recette tel-NN = ✅/❌ »,
+    or a dated bullet « <device>, tel-NN … Résultat retenu : ✅/❌ »."""
+    path = os.path.join(root, "docs", "audits", "ultra", "retours-benjamin.md")
+    if not os.path.isfile(path):
+        return []
+    trials, date, device = [], None, None
+    for line in open(path, encoding="utf-8").read().splitlines():
+        m = TRIAL_BULLET.match(line)
+        if m:
+            date, device = None, None
+            alone = TRIAL_ALONE.search(m.group(2))
+            if alone:
+                dev = _device(m.group(2)[:alone.start()])
+                if dev:
+                    trials.append((alone.group(1), alone.group(2), dev, m.group(1)))
+            else:
+                head = re.search(r"^(.*?)\brecette \d+/\d+", m.group(2))
+                kept = TRIAL_KEPT.search(m.group(2))
+                if head and _device(head.group(1)):
+                    date, device = m.group(1), _device(head.group(1))
+                elif kept and _device(kept.group(1)):
+                    trials.append((kept.group(2), kept.group(3), _device(kept.group(1)), m.group(1)))
+            continue
+        m = TRIAL_IN_LIST.match(line)
+        if m and date:
+            trials.append((m.group(1), m.group(2), device, date))
+        elif not line.startswith(" "):
+            date, device = None, None
+    return trials
+
+
+def records_trial(v, tel, mark, device, date):
+    """« RECETTE tel-NN <mark> <device> … <date> » in one « ; » segment of the telephone or note cell."""
+    wanted = re.compile(r"RECETTE\s+" + tel + r"\s+" + mark + r"\s+" + device + r"\b[^;]*\b" + date + r"\b")
+    return any(wanted.search(part) for cell in (v.get("telephone", ""), v.get("note", "")) for part in cell.split(";"))
+
+
+def trial_gaps(root, verdicts):
+    gaps = []
+    for tel, mark, device, date in owner_trials(root):
+        missing = "essai de retours-benjamin.md absent de verdicts.tsv"
+        citing = [v for v in verdicts if re.search(r"\b" + tel + r"\b", v.get("telephone", ""))]
+        if not citing:
+            gaps.append(f"{tel} {mark} {device} {date} : {missing} (aucune ligne ne cite {tel})")
+        gaps += [f"{v.get('item', '?')} : {missing} (attendu « RECETTE {tel} {mark} {device} {date} »)"
+                 for v in citing if not records_trial(v, tel, mark, device, date)]
+    return gaps
+
+
+def annotation_gaps(root, verdicts):
+    """The reverse of [trial_gaps]: each « RECETTE tel-NN … » segment of a line's telephone or note cell is one of the
+    owner's trials, whole (number, mark, device, date). Without the owner's notes there is nothing to compare with."""
+    if not os.path.isfile(os.path.join(root, "docs", "audits", "ultra", "retours-benjamin.md")):
+        return []
+    trials = owner_trials(root)
+    gaps = []
+    for v in verdicts:
+        for cell in (v.get("telephone", ""), v.get("note", "")):
+            for part in cell.split(";"):
+                m = re.search(r"RECETTE\s+(tel-\d+)\b", part)
+                if m and not any(records_trial({"note": part}, *t) for t in trials if t[0] == m.group(1)):
+                    gaps.append(f"{v.get('item', '?')} : annotation « RECETTE » sans essai correspondant dans retours-benjamin.md "
+                                f"(« {part[m.start():].strip()} »)")
+    return gaps
+
+
+PAD_KEY = re.compile(r"padlive|(?<![a-z])pad_")
+
+
+def dated_trial(v):
+    """A dated trial on a device, whatever its mark: one « ; » segment with tel-NN, ✅ or ❌, and a date."""
+    for cell in (v.get("telephone", ""), v.get("note", "")):
+        for part in cell.split(";"):
+            if re.search(r"\btel-\d+", part) and re.search("✅|❌", part) and re.search(r"\b20\d\d-\d\d-\d\d\b", part):
+                return True
+    return False
+
+
 def commit_exists(root, sha):
     try:
         return subprocess.run(["git", "-C", root, "cat-file", "-e", sha + "^{commit}"], capture_output=True, timeout=60).returncode == 0
@@ -175,6 +266,12 @@ def check(root, resume_path=None, with_git=True):
                 gaps.append(f"{item} : garde {cls}#{m} pas verte dans le dernier selftest")
         if verdict == "appli" and not without_bench and not dated_failed_trial(v):
             gaps.append(f"{item} : verdict « appli » sans preuve (ni test sans banc existant, ni essai ❌ daté)")
+        if verdict == "appli" and etat == "ouvert" and without_bench and not carried and not dated_failed_trial(v):
+            gaps.append(f"{item} : verdict « appli » dont la preuve n'est ni @KnownDefect ni un essai ❌ daté "
+                        f"(un test vert ne prouve pas un défaut ouvert)")
+        if verdict in ("appli", "banc") and PAD_KEY.search(v.get("cle", "")) and not without_bench and not dated_trial(v):
+            gaps.append(f"{item} : verdict pad-timing sans preuve hors banc (les pads du banc partent tout de suite, sans grille : "
+                        f"il faut un test hors Bench*, un test moteur ou un essai daté sur un appareil)")
         if verdict == "banc":
             if not any(c.startswith("Bench") for c, _ in guards):
                 gaps.append(f"{item} : verdict « banc » sans garde Bench*")
@@ -201,6 +298,9 @@ def check(root, resume_path=None, with_git=True):
             elif not any((v.get("garde_id") or "").strip() == kid for v in citing):
                 gaps.append(f"@KnownDefect {kid} ({cls}#{method}) : aucune ligne qui le cite ne porte garde_id {kid} "
                             f"({', '.join(v.get('item', '?') for v in citing)})")
+
+    gaps += trial_gaps(root, verdicts)
+    gaps += annotation_gaps(root, verdicts)
 
     try:
         checklist = json.load(open(os.path.join(root, "app", "src", "main", "assets", "recette.json"), encoding="utf-8"))

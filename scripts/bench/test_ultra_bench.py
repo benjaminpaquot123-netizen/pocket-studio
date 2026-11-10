@@ -201,6 +201,9 @@ def main():
         fusion_v2(d)
     with tempfile.TemporaryDirectory() as d:
         bench_guards(d)
+    with tempfile.TemporaryDirectory() as d:
+        stamp_needs_green_summary(d)
+    with tempfile.TemporaryDirectory() as d:
         chantier(d)
         judge_criteria(d)
         open_app_proof(d)
@@ -514,6 +517,7 @@ def bench_guards(d):
     tampon = os.path.join(HERE, "tampon.sh")
     fp = os.path.join(d, "fp.txt")
     write(fp, subprocess.run([tampon, "empreinte"], capture_output=True, text=True, check=True).stdout)
+    green_lot(d)
     subprocess.run([tampon, "ecris", d, fp], check=True)
     check(subprocess.run([tampon, "verifie", d]).returncode == 0, "a fresh stamp fits this code:\n" + open(os.path.join(d, "selftest.ok")).read())
     other = os.path.join(d, "autre-lot")
@@ -578,6 +582,59 @@ def bench_guards(d):
     r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary, expected, failed], capture_output=True, text=True)
     text = open(summary, encoding="utf-8").read()
     check(r.returncode == 1 and "gradle:renommage" in text, "a failed pass is red even with a quarantined red elsewhere:\n" + text)
+
+
+GREEN_CASE = '<testcase classname="a.BenchOneTest" name="plays"/>'
+
+
+def green_lot(lot, cases=GREEN_CASE):
+    """A lot whose self-test ran: its JUnit results (one pass) and the summary selftest-verdict.py makes of them, with
+    the machine's line selftest.sh adds."""
+    write(os.path.join(lot, "junit", "banc", "TEST-x.xml"), "<testsuite>" + cases + "</testsuite>")
+    resume = os.path.join(lot, "selftest-resume.txt")
+    subprocess.run([sys.executable, "-I", os.path.join(HERE, "selftest-verdict.py"), os.path.join(lot, "junit"),
+                    os.path.join(HERE, "selftest-quarantaine.txt"), resume], capture_output=True, text=True)
+    with open(resume, "a", encoding="utf-8") as f:
+        f.write("machine : 50 Go disque, 8 Go mémoire, 0 démon(s), 0 orphelin\n")
+    return resume
+
+
+def stamp_needs_green_summary(d):
+    """Audit « banc crédible » 2, P2: `tampon.sh ecris` refuses a lot without a green self-test summary (no summary, a
+    red one, one that its JUnit results do not give), and the stamp seals that summary and those results: `verifie`
+    recomputes both (and the verdict of the results) and refuses a lot where either changed."""
+    tampon = os.path.join(HERE, "tampon.sh")
+    lot = os.path.join(d, "tampon-p2", "lotT")
+    write(os.path.join(lot, "a", "start.txt"), "lang=fr\n")
+    fp = os.path.join(d, "tampon-p2", "fp.txt")
+    write(fp, subprocess.run([tampon, "empreinte"], capture_output=True, text=True, check=True).stdout)
+    stamp = os.path.join(lot, "selftest.ok")
+
+    def ecris():
+        if os.path.exists(stamp):
+            os.remove(stamp)
+        r = subprocess.run([tampon, "ecris", lot, fp], capture_output=True, text=True)
+        return r.returncode == 0 and os.path.isfile(stamp)
+
+    def verifie():
+        return subprocess.run([tampon, "verifie", lot], capture_output=True, text=True).returncode == 0
+
+    check(not ecris(), "no self-test summary: no stamp (the audit's forge: ecris without any test)")
+    resume = green_lot(lot, GREEN_CASE + '<testcase classname="a.BenchTwoTest" name="mic"><failure message="no"/></testcase>')
+    check(not ecris(), "a red summary: no stamp:\n" + open(resume, encoding="utf-8").read())
+    resume = green_lot(lot)
+    with open(resume, "a", encoding="utf-8") as f:
+        f.write("vert : BenchAddedByHandTest#guards\n")
+    check(not ecris(), "a summary its JUnit results do not give (a line added by hand): no stamp")
+    resume = green_lot(lot)
+    check(ecris() and verifie(), "a green summary of its results: stamped, and the stamp fits:\n" + open(stamp, encoding="utf-8").read())
+    with open(resume, "a", encoding="utf-8") as f:
+        f.write("vert : BenchAddedByHandTest#guards\n")
+    check(not verifie(), "a summary changed after the stamp is refused")
+    resume = green_lot(lot)
+    check(ecris() and verifie(), "stamped again")
+    write(os.path.join(lot, "junit", "banc", "TEST-y.xml"), "<testsuite>" + GREEN_CASE.replace("plays", "other") + "</testsuite>")
+    check(not verifie(), "results changed after the stamp are refused")
 
 
 REPORT_V2 = """siege: a | profil: ado-ko | lang: ko | device: phone | font: 100 | mode: simple

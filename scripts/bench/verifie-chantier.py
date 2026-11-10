@@ -14,8 +14,9 @@
        only when the summary names it « vert : Class#method »; the summary is read only when it is sealed for
        the code judged (audit « banc crédible » 2, P3): it names « code testé : <arbre> », the stamp beside it
        (selftest.ok) seals it (« resume: <sha256> », « code: <arbre> »), that tree is the code here
-       (tampon.sh code) and, when the lot's junit/ is there, its results give it (tampon.sh resultats). Else
-       « résumé refusé » and no guard is green;
+       (tampon.sh code) and its lot's junit/ gives it (tampon.sh resultats), or it is a portal trace committed by
+       « Portal traces of the merge … » (review of the « portail » lot, G1). Else « résumé refusé » and no guard is
+       green;
     4. a « corrigé » line is in base.tsv with its round and its commit cell names a commit that exists.
     Also: every proof names a test that exists: a Kotlin « Class#method », or an engine host test
     « engine/host-tests/<file>#<function> » defined in that file and registered in a PS_*_TESTS list (A.12);
@@ -202,11 +203,39 @@ def unsealed(root, resume_path):
         return "le code d'ici n'a pas pu être calculé (tampon.sh code)"
     if here != named[-1]:
         return f"résumé d'un autre code (testé : {named[-1][:12]}, ici : {here[:12]})"
+    # Review of the « portail » lot (G1): « resume: » and « code: » anyone can compute; the stamp is worth something only
+    # with the JUnit results it seals (replayed by tampon.sh, the classes expected read from root's sources), or as a
+    # portal trace committed by fusion-equipes.sh.
     if os.path.isdir(os.path.join(lot, "junit")):
-        r = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "resultats", lot], capture_output=True, text=True)
+        r = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "resultats", lot, os.path.abspath(root),
+                            os.path.abspath(resume_path)],
+                           capture_output=True, text=True)
         if r.returncode != 0:
             return "ses résultats JUnit ne donnent pas ce résumé vert, ou le tampon ne les scelle pas"
+    elif not committed_trace(root, resume_path):
+        return ("ni résultats JUnit à côté (junit/), ni trace du portail commitée par « Portal traces of the merge … » : "
+                "un tampon sans eux s'écrit à la main")
     return None
+
+
+def committed_trace(root, resume_path):
+    """The summary and its stamp are a portal trace: under docs/audits/ultra/portail/, as committed, the last commit
+    that touched each of them being a « Portal traces of the merge … » (fusion-equipes.sh; a team branch never touches that folder)."""
+    rel = os.path.relpath(os.path.realpath(resume_path), os.path.realpath(root)).replace(os.sep, "/")
+    if not rel.startswith(PORTAL_TRACES.replace(os.sep, "/") + "/"):
+        return False
+    for f in (rel, os.path.dirname(rel) + "/selftest.ok"):
+        if subprocess.run(["git", "-C", root, "ls-files", "--error-unmatch", f], capture_output=True).returncode != 0:
+            return False
+        if subprocess.run(["git", "-C", root, "diff", "--quiet", "HEAD", "--", f], capture_output=True).returncode != 0:
+            return False
+        try:
+            last = _git(root, "log", "-1", "--format=%s", "--", f).strip()
+        except (subprocess.SubprocessError, OSError):
+            return False
+        if not last.startswith("Portal traces of the merge "):
+            return False
+    return True
 
 
 def dated_failed_trial(v, trials=None):

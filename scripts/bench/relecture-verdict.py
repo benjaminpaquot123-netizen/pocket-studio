@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Audit « banc crédible » 2, P1: the fresh review's verdict, as fusion-equipes.sh reads it.
 
-  relecture-verdict.py [<replay id taken out of rejeux/> …] [changé:<replay id changed> …] < review.md
+  relecture-verdict.py [<replay id taken out of rejeux/> …] [changé:<replay id changed> …] [constat:<green sha> …] < review.md
 
 Accepted only when:
   - its LAST non-empty line is « Verdict : 0 bloquant, 0 grave » (« — fusion possible » may follow, nothing else): a
@@ -42,7 +42,7 @@ def table_refusals(line):
     return [f"a {SEVERE.match(severe[0]).group(1).lower()} row of the review is not « corrigé » (last cell): {line.strip()[:100]}"]
 
 
-def refusals(text, removed, changed=()):
+def refusals(text, removed, changed=(), evidence=()):
     out = []
     lines = [l.rstrip() for l in text.splitlines() if l.strip()]
     if not lines or not LAST.match(lines[-1].strip()):
@@ -78,13 +78,17 @@ def refusals(text, removed, changed=()):
     for rid in changed:
         if not re.search(r"^rejeu changé\s*:\s*" + re.escape(rid) + r"\s*:\s*\S", text, re.M):
             out.append(f"replay {rid} changed in rejeux/ without « rejeu changé : {rid} : <raison> » in the review")
+    for sha in evidence:
+        if not re.search(r"^rouge constaté\s*:\s*" + re.escape(sha) + r"\s*:\s*\S", text, re.M):
+            out.append(f"red evidence rouges-constates/{sha} brought without « rouge constaté : {sha} : <ce qui a été rejoué> » in the review")
     return out
 
 
 def main(argv):
     ids = argv[1:]
-    found = refusals(sys.stdin.read(), [i for i in ids if not i.startswith("changé:")],
-                     [i.split(":", 1)[1] for i in ids if i.startswith("changé:")])
+    found = refusals(sys.stdin.read(), [i for i in ids if ":" not in i],
+                     [i.split(":", 1)[1] for i in ids if i.startswith("changé:")],
+                     [i.split(":", 1)[1] for i in ids if i.startswith("constat:")])
     for r in found:
         print(r)
     return 1 if found else 0

@@ -758,6 +758,15 @@ def known_defects_lifted(root, sha):
 RED_SEEN = os.path.join("docs", "audits", "ultra", "rouges-constates")
 
 
+def test_in(root, rev, cls, method):
+    """« Class#method » is a function of a test file of rev (the class that owns it, [class_methods])."""
+    try:
+        listed = _git(root, "grep", "-l", "-F", method, rev, "--", *TEST_DIRS).splitlines()
+    except (subprocess.SubprocessError, OSError):
+        return False
+    return any(f"{cls}#{method}" in class_methods(_show(root, rev, l.split(":", 1)[1]) or "", False) for l in listed)
+
+
 def red_seen(root, sha, message):
     """Review of the « portail » lot: a test that existed went red in a run, and this green fixes the app. Evidence in
     docs/audits/ultra/rouges-constates/<the green's full sha>/: rouge.txt (« parent: <the green's parent> »,
@@ -782,6 +791,10 @@ def red_seen(root, sha, message):
     if any(f.startswith(TEST_DIRS) for f in files):
         return False
     cls, _, method = test.group(1).partition("#")
+    # Second review of the « portail » lot (G2): the test exists, in the green's parent and in the green.
+    for rev in (parents[0], full):
+        if not test_in(root, rev, cls, method.split("[")[0]):
+            return False
     for name in os.listdir(folder):
         if not name.endswith(".xml"):
             continue

@@ -1103,28 +1103,34 @@ def red_seen_in_a_run(d):
 
     for key in ("honest", "passing", "otherparent", "touchestest", "othertest"):
         green(key, touch_test=(key == "touchestest"))
+    # Second review of the lot (G2): the evidence of a test that never existed.
+    write(app, "fun spot() = \"nosuch\"\n")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "vert: NoSuchTest#neverExisted fixed")
+    shas["nosuch"] = (git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip())
 
-    def evidence(key, parent=None, failing=True, test="theWholeCourse[techno Pro]"):
+    def evidence(key, parent=None, failing=True, test="theWholeCourse[techno Pro]", cls="JourneyProofTest", named=None):
         full, par = shas[key]
         folder = os.path.join(root, "docs", "audits", "ultra", "rouges-constates", full)
-        write(os.path.join(folder, "rouge.txt"), f"parent: {parent or par}\ntest: JourneyProofTest#theWholeCourse[techno Pro]\n")
+        write(os.path.join(folder, "rouge.txt"), f"parent: {parent or par}\ntest: {named or cls + '#theWholeCourse[techno Pro]'}\n")
         body = '<failure message="targets not seen: coupé en haut"/>' if failing else ""
-        write(os.path.join(folder, "TEST-x.JourneyProofTest.xml"),
-              f'<testsuite><testcase classname="x.JourneyProofTest" name="{test}">{body}</testcase></testsuite>')
+        write(os.path.join(folder, f"TEST-x.{cls}.xml"),
+              f'<testsuite><testcase classname="x.{cls}" name="{test}">{body}</testcase></testsuite>')
 
     evidence("honest")
     evidence("passing", failing=False)
     evidence("otherparent", parent=shas["honest"][0])
     evidence("touchestest")
     evidence("othertest", test="theWholeCourse[lofi Simple]")
+    evidence("nosuch", test="neverExisted", cls="NoSuchTest", named="NoSuchTest#neverExisted")
     seal_resume(root, resume)
     out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
                          capture_output=True, text=True).stdout
     short = {k: git_toy(root, "rev-parse", "--short", v[0]).strip() for k, v in shas.items()}
     check(short["honest"] not in out, "a green whose red was seen in a run, its XML kept, is a pair:\n" + out)
-    for key in ("passing", "otherparent", "touchestest", "othertest"):
+    for key in ("passing", "otherparent", "touchestest", "othertest", "nosuch"):
         check(f"{short[key]} « vert:" in out, f"evidence that does not hold ({key}) makes no pair:\n" + out)
-    check("chantier : 4 écarts" in out, "four greens without red, nothing else:\n" + out)
+    check("chantier : 5 écarts" in out, "five greens without red, nothing else:\n" + out)
 
 
 def old_commit_env():
@@ -1809,6 +1815,16 @@ def fusion_forged(d):
     branch("oracle2", new_oracle, good.replace("\nVerdict", "rejeu changé : t1-clavier : the screen's words changed with the fix\n\nVerdict"))
     code, out, asked, moved = merge("oracle2")
     check(code == 0 and moved, "a replay changed with its reason is merged:\n" + out)
+    git_toy(root, "reset", "-q", "--hard", "HEAD~2")
+    # Second review of the lot (G2): a branch that brings red evidence (rouges-constates/<sha>/) names it in its review.
+    def red_evidence(r):
+        write(os.path.join(r, "docs", "audits", "ultra", "rouges-constates", "a" * 40, "rouge.txt"), "parent: x\n")
+    branch("constat", red_evidence, good)
+    code, out, asked, moved = merge("constat")
+    check(code != 0 and not moved and "rouge constaté" in out, "red evidence brought without its line in the review is refused:\n" + out)
+    branch("constat2", red_evidence, good.replace("\nVerdict", f"rouge constaté : {'a' * 40} : replayed on its parent, XML read\n\nVerdict"))
+    code, out, asked, moved = merge("constat2")
+    check(code == 0 and moved, "red evidence named in the review is merged:\n" + out)
     git_toy(root, "reset", "-q", "--hard", "HEAD~2")
     # Review of the lot (M2): a step that fails after the green checks (here: no stamp to copy into the traces) undoes
     # the merge and leaves no half-written traces.

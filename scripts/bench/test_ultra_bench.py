@@ -225,6 +225,7 @@ def main():
         known_skips_bounded(d)
         mark_fixed(d)
         seat_exit(d)
+        seat_exit_anchored(d)
         native_missing(d)
         corrections_by_target(d)
     with tempfile.TemporaryDirectory() as d:
@@ -1993,6 +1994,37 @@ def seat_exit(d):
           "the inherited state put back, listed for its seat:\n" + incidents)
     check(". (lot)\t-\t-\tfichier écrit hors des sièges : c-out.txt" in incidents, "the lot's foreign file listed:\n" + incidents)
     check("repos non venu" not in incidents and incidents.count("\n") == 4, "nothing else:\n" + incidents)
+
+
+def seat_exit_anchored(d):
+    """Audit « banc crédible » 2, P7: the white list of sortie-de-siege.py holds at the lot's root only (« *.md » let
+    g/rapport.md and notes/brouillon.tsv through), and a file written in the repository outside the lot (new or
+    changed) is seen too (--depot: the repository whose state is taken before and after; the script's own by default).
+    A seat writing in another seat's folder stays invisible while they share one user (said, not caught)."""
+    depot = os.path.join(d, "sortie-p7", "depot")
+    write(os.path.join(depot, "app", "x.kt"), "a\n")
+    git_toy(depot, "init", "-q")
+    git_toy(depot, "add", "app")
+    git_toy(depot, "commit", "-q", "-m", "toy")
+    lot = os.path.join(depot, "docs", "sieges", "lotX")
+    for seat in ("a", "b"):
+        write(os.path.join(lot, seat, "start.txt"), "x")
+    script = os.path.join(HERE, "sortie-de-siege.py")
+    run(script, "avant", lot, "--depot", depot)
+    write(os.path.join(lot, "a", "journal.txt"), "x")
+    write(os.path.join(lot, "b", "ecrit-par-a.txt"), "x")
+    write(os.path.join(lot, "README.md"), "x")
+    write(os.path.join(lot, "selftest-resume.txt"), "x")
+    write(os.path.join(lot, "g", "rapport.md"), "x")
+    write(os.path.join(lot, "notes", "brouillon.tsv"), "x")
+    write(os.path.join(lot, "espion.txt"), "x")
+    write(os.path.join(depot, "hors-du-lot.txt"), "x")
+    write(os.path.join(depot, "app", "x.kt"), "changed\n")
+    out = run(script, "apres", lot, "--depot", depot)
+    with open(os.path.join(lot, "lot.json"), encoding="utf-8") as f:
+        found = json.load(f)["fichiers_hors_lot"]
+    check(found == ["dépôt : app/x.kt", "dépôt : hors-du-lot.txt", "espion.txt", "g/rapport.md", "notes/brouillon.tsv"],
+          "the white list holds at the lot's root, and the repository is watched:\n" + out + json.dumps(found, ensure_ascii=False))
 
 
 def corrections_by_target(d):

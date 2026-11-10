@@ -462,7 +462,7 @@ internal fun advancedSummary(export: ExportUi): List<com.pocketstudio.ui.Hidden>
         if (stems) com.pocketstudio.ui.Hidden(tr("avec la sortie générale"), true).takeIf { export.stemsWithMaster }
         else com.pocketstudio.ui.Hidden(tr("sans limiteur"), true).takeIf { export.noLimiter },
         com.pocketstudio.ui.Hidden(tr("MIDI")),
-        com.pocketstudio.ui.Hidden(com.pocketstudio.app.export.finalFileSummary(export), export.pro != com.pocketstudio.app.export.ExportOptions()),
+        com.pocketstudio.ui.Hidden(com.pocketstudio.app.export.finalFileSummary(export), com.pocketstudio.app.export.finalFileChanged(export)),
     )
 }
 

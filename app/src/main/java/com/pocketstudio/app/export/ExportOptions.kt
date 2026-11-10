@@ -131,7 +131,7 @@ internal fun ExportOptionsPanel(export: com.pocketstudio.app.rhythm.ExportUi, ha
     ) {
         // Chantier 2 (G4): a fold of its own (it opens in place), its rate and bits said on it, a changed one in orange.
         com.pocketstudio.ui.Disclosure(
-            tr("Fichier final"), listOf(com.pocketstudio.ui.Hidden(finalFileSummary(export), o != ExportOptions())), open,
+            tr("Fichier final"), listOf(com.pocketstudio.ui.Hidden(finalFileSummary(export), finalFileChanged(export))), open,
             { openState.value = !open }, Modifier.weight(1f).testTag("export_final"),
         )
     }
@@ -234,6 +234,10 @@ private fun rateLabel(r: Int): String = if (r == OfflineExport.CD_RATE) tr("44,1
 private fun seconds(ms: Int): String = if (ms % 1000 == 0) "${ms / 1000}" else String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", ms / 1000.0)
 
 /** « 48 kHz · 24 bits », the card's line before it is opened. */
+/** The rate or the bits set in « Fichier final » differ from what the format gives by default (the summary in orange). */
+internal fun finalFileChanged(export: com.pocketstudio.app.rhythm.ExportUi): Boolean =
+    finalFileSummary(export) != finalFileSummary(export.copy(pro = ExportOptions()))
+
 internal fun finalFileSummary(export: com.pocketstudio.app.rhythm.ExportUi): String {
     val rate = export.pro.rateFor(export.format, export.cdRate)
     val bits = export.pro.bitsFor(export.format, export.limited, export.bits16)

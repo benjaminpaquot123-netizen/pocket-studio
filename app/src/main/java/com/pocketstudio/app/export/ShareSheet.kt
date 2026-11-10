@@ -596,7 +596,8 @@ fun ShareSheetRoute(
     // project's own name (another project opened, a rename elsewhere), never a stale one.
     var edited by rememberSaveable(rhythmVm.projectId) { mutableStateOf<String?>(null) }
     val name = edited ?: initialShareName(project.name)
-    val loopBars = ShareSong.loopBars(export.sceneBars, export.audioBars)
+    // T5-8MES: the length Mix shows and sends (the default loop until one is picked), not a second count of its own.
+    val loopBars = export.bars
     val levels = shareLevels(project, loudness, hard)
     val checks = remember(project, levels, loopBars) { shareChecks(project, com.pocketstudio.app.ui.mixerStrips(project), levels, loopBars) }
     val ui = (

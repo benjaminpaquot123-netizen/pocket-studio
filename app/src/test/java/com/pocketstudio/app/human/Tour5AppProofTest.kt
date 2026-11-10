@@ -298,7 +298,6 @@ class Tour5AppProofTest {
     }
 
     /** T5-8MES (seat C c 27): 16 bars chosen in Mix, « Prêt à partager ? » › Partager renders 16 bars. */
-    @KnownDefect("T5-8MES", "« Prêt à partager ? » rendered 8.0 bars, Mix chose 16")
     @Test
     fun shareFollowsTheLengthChosenInMix() {
         val engine = RenderEngine()

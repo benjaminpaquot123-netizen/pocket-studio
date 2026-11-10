@@ -21,13 +21,14 @@ object ShareSong {
     /**
      * The whole song when there is one, else the scene looped (long enough for the audio clips
      * heard, which end on bar [audioBars]), with a short fade; M4A (small, plays everywhere)
-     * unless « Prêt à partager ? » asked for a WAV ([format]).
+     * unless « Prêt à partager ? » asked for a WAV ([format]). [chosenBars]: the loop's length the user picked (in
+     * « Prêt à partager ? » or in Mix, the same setting), which wins over the default (T5-8MES: 16 asked, 8 sent).
      */
-    fun settings(hasSong: Boolean, sceneBars: Int, audioBars: Int = 0, format: ExportFormat = ExportFormat.M4a): ExportUi = ExportUi(
+    fun settings(hasSong: Boolean, sceneBars: Int, audioBars: Int = 0, format: ExportFormat = ExportFormat.M4a, chosenBars: Int? = null): ExportUi = ExportUi(
         what = if (hasSong) ExportWhat.Song else ExportWhat.Loop, whatChosen = true,
         format = format,
         fade = ExportFade.Short, fadeChosen = true,
-        bars = loopBars(sceneBars, audioBars), barsChosen = true,
+        bars = chosenBars ?: loopBars(sceneBars, audioBars), barsChosen = true,
     ).forScene(sceneBars, audioBars)
 
     /**

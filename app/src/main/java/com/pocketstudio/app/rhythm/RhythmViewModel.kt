@@ -10744,7 +10744,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
         val now = project.value
-        startExport(com.pocketstudio.app.export.ShareSong.settings(now.song.isNotEmpty(), sceneBars(now), exportEnd(now), format).copy(fileTitle = title), share = true)
+        // T5-8MES (recette tel-06): the loop's length picked in Mix or in « Prêt à partager ? » is the one sent.
+        val chosen = _export.value.takeIf { it.barsChosen }?.bars
+        startExport(com.pocketstudio.app.export.ShareSong.settings(now.song.isNotEmpty(), sceneBars(now), exportEnd(now), format, chosen).copy(fileTitle = title), share = true)
     }
 
     /** Closes the « Partager mon morceau » window after an error. */

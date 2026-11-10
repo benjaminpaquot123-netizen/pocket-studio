@@ -113,8 +113,12 @@ def green_in_resume(resume_text, cls, method):
     return re.search(r"^vert : " + re.escape(cls) + "#" + re.escape(method) + r"\s*$", resume_text, re.M) is not None
 
 
-def dated_failed_trial(v):
-    """A dated ❌ trial on a device: one « ; » segment of the telephone or note cell with tel-NN, ❌ and a date."""
+def dated_failed_trial(v, trials=None):
+    """A dated ❌ trial on a device. With the owner's notes ([trials], see [owner_trials]): a ❌ annotation of the line
+    that is one of their trials, whole ([tied_marks]). Without them: one « ; » segment of the telephone or note cell with
+    tel-NN, ❌ and a date (nothing to tie it to: the judge says the notes are absent)."""
+    if trials is not None:
+        return "❌" in tied_marks(v, trials)
     for cell in (v.get("telephone", ""), v.get("note", "")):
         for part in cell.split(";"):
             if re.search(r"\btel-\d+", part) and "❌" in part and re.search(r"\b20\d\d-\d\d-\d\d\b", part):
@@ -137,7 +141,7 @@ def owner_trials(root):
     """The owner's trials of the checklist written in retours-benjamin.md, as (tel-NN, mark, device, date): a
     « tel-NN ✅/❌ » sub-bullet of a dated bullet « <device>, recette n/m », a dated bullet « recette tel-NN = ✅/❌ »,
     or a dated bullet « <device>, tel-NN … Résultat retenu : ✅/❌ »."""
-    path = os.path.join(root, "docs", "audits", "ultra", "retours-benjamin.md")
+    path = notes_path(root)
     if not os.path.isfile(path):
         return []
     trials, date, device = [], None, None
@@ -184,28 +188,59 @@ def trial_gaps(root, verdicts):
     return gaps
 
 
+CLAIM = re.compile(r"(?:\brecette\s+)?\b(tel-\d+)\b[\s:=]*(✅|❌)", re.I)
+
+
+def trial_claims(v):
+    """Every « tel-NN ✅/❌ » written in a line's telephone or note cell, whatever is around it (the word RECETTE or not,
+    upper or lower case, first of its « ; » segment or behind another): (number, mark, its text up to the next one or
+    the end of the segment, the same text from the word « recette » when it carries one)."""
+    out = []
+    for cell in (v.get("telephone", ""), v.get("note", "")):
+        for part in cell.split(";"):
+            found = list(CLAIM.finditer(part))
+            for i, m in enumerate(found):
+                end = found[i + 1].start() if i + 1 < len(found) else len(part)
+                out.append((m.group(1).lower(), m.group(2), part[m.start(1):end], part[m.start():end].strip()))
+    return out
+
+
+def is_owner_trial(claim, trials):
+    """The claim is one of the owner's trials, whole: « RECETTE tel-NN <mark> <device> … <date> » ([records_trial])."""
+    tel, mark, _, text = claim
+    return any(records_trial({"note": text}, *t) for t in trials if t[0] == tel and t[1] == mark)
+
+
+def tied_marks(v, trials):
+    """The marks (✅, ❌) of the line's annotations that are trials of the owner's notes."""
+    return {c[1] for c in trial_claims(v) if is_owner_trial(c, trials)}
+
+
+def notes_path(root):
+    return os.path.join(root, "docs", "audits", "ultra", "retours-benjamin.md")
+
+
 def annotation_gaps(root, verdicts):
-    """The reverse of [trial_gaps]: each « RECETTE tel-NN … » segment of a line's telephone or note cell is one of the
-    owner's trials, whole (number, mark, device, date). Without the owner's notes there is nothing to compare with."""
-    if not os.path.isfile(os.path.join(root, "docs", "audits", "ultra", "retours-benjamin.md")):
-        return []
+    """The reverse of [trial_gaps]: each « tel-NN ✅/❌ » of a line's telephone or note cell ([trial_claims]) is one of the
+    owner's trials, whole (the word RECETTE, number, mark, device, date). Without the owner's notes nothing can be
+    compared: that is one gap, as long as the verdicts carry such annotations."""
+    claims = [(v, c) for v in verdicts for c in trial_claims(v)]
+    if not os.path.isfile(notes_path(root)):
+        return [f"retours-benjamin.md absent : les annotations d'essai de verdicts.tsv ne peuvent pas être vérifiées "
+                f"({len(claims)} annotation(s) d'essai, aucune rattachée à un essai du propriétaire)"] if claims else []
     trials = owner_trials(root)
-    gaps = []
-    for v in verdicts:
-        for cell in (v.get("telephone", ""), v.get("note", "")):
-            for part in cell.split(";"):
-                m = re.search(r"RECETTE\s+(tel-\d+)\b", part)
-                if m and not any(records_trial({"note": part}, *t) for t in trials if t[0] == m.group(1)):
-                    gaps.append(f"{v.get('item', '?')} : annotation « RECETTE » sans essai correspondant dans retours-benjamin.md "
-                                f"(« {part[m.start():].strip()} »)")
-    return gaps
+    return [f"{v.get('item', '?')} : annotation « RECETTE » sans essai correspondant dans retours-benjamin.md (« {c[3]} »)"
+            for v, c in claims if not is_owner_trial(c, trials)]
 
 
 PAD_KEY = re.compile(r"padlive|(?<![a-z])pad_")
 
 
-def dated_trial(v):
-    """A dated trial on a device, whatever its mark: one « ; » segment with tel-NN, ✅ or ❌, and a date."""
+def dated_trial(v, trials=None):
+    """A dated trial on a device, whatever its mark: with the owner's notes, an annotation of the line that is one of
+    their trials ([tied_marks]); without them, one « ; » segment with tel-NN, ✅ or ❌, and a date."""
+    if trials is not None:
+        return bool(tied_marks(v, trials))
     for cell in (v.get("telephone", ""), v.get("note", "")):
         for part in cell.split(";"):
             if re.search(r"\btel-\d+", part) and re.search("✅|❌", part) and re.search(r"\b20\d\d-\d\d-\d\d\b", part):
@@ -233,6 +268,8 @@ def check(root, resume_path=None, with_git=True):
     else:
         resume = open(resume_path, encoding="utf-8").read()
     base = {r.get("cle"): r for r in read_tsv(os.path.join(ultra, "base.tsv"))}
+    # The owner's trials, when his notes are there: only an annotation tied to one of them is a proof.
+    trials = owner_trials(root) if os.path.isfile(notes_path(root)) else None
 
     for v in verdicts:
         item = v.get("item", "?")
@@ -264,12 +301,12 @@ def check(root, resume_path=None, with_git=True):
                 gaps.append(f"{item} : garde {cls}#{m} introuvable")
             elif not green_in_resume(resume, cls, m):
                 gaps.append(f"{item} : garde {cls}#{m} pas verte dans le dernier selftest")
-        if verdict == "appli" and not without_bench and not dated_failed_trial(v):
+        if verdict == "appli" and not without_bench and not dated_failed_trial(v, trials):
             gaps.append(f"{item} : verdict « appli » sans preuve (ni test sans banc existant, ni essai ❌ daté)")
-        if verdict == "appli" and etat == "ouvert" and without_bench and not carried and not dated_failed_trial(v):
+        if verdict == "appli" and etat == "ouvert" and without_bench and not carried and not dated_failed_trial(v, trials):
             gaps.append(f"{item} : verdict « appli » dont la preuve n'est ni @KnownDefect ni un essai ❌ daté "
                         f"(un test vert ne prouve pas un défaut ouvert)")
-        if verdict in ("appli", "banc") and PAD_KEY.search(v.get("cle", "")) and not without_bench and not dated_trial(v):
+        if verdict in ("appli", "banc") and PAD_KEY.search(v.get("cle", "")) and not without_bench and not dated_trial(v, trials):
             gaps.append(f"{item} : verdict pad-timing sans preuve hors banc (les pads du banc partent tout de suite, sans grille : "
                         f"il faut un test hors Bench*, un test moteur ou un essai daté sur un appareil)")
         if verdict == "banc":

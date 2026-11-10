@@ -92,7 +92,7 @@
           "textPro": "À toi : swing à 27 % sur le curseur de l'appli, soit 60 % sur une MPC (58 % pour le classique, 62 % pour un son plus jazz). Il retarde une double croche sur deux.",
           "why": "Le swing retarde une petite note sur deux : c'est le « balancement » des boîtes à rythmes des années 90.",
           "check": "swing",
-          "spot": "rhythm.pattern",
+          "spot": "rhythm.swing",
           "listen": "drums:kick,snare,hat",
           "skip": "Sans swing, ton boom bap sonnera comme un robot."
         },

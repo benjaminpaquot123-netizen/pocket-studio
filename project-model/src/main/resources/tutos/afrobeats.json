@@ -121,7 +121,7 @@
           "levels": "p",
           "text": "À toi : du swing, environ 15 % : les doubles croches paires arrivent un peu en retard. Tout sur la grille, c'est l'erreur n° 1 qui rend un afrobeats raide.",
           "check": "swing",
-          "spot": "rhythm.pattern",
+          "spot": "rhythm.swing",
           "listen": "drums:hat,kick,snare,perc"
         },
         {

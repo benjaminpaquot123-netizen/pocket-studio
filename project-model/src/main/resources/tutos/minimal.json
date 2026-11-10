@@ -56,7 +56,7 @@
           "why": "La minimal vit de son balancement : sans swing, les clics sonnent comme un métronome.",
           "levels": "p",
           "check": "swing",
-          "spot": "rhythm.pattern",
+          "spot": "rhythm.swing",
           "listen": "drums:kick,hat,perc"
         }
       ]

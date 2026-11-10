@@ -204,6 +204,11 @@ internal class SpotNode(var id: String, var label: String?, var revealFrom: List
                     val fade = with(currentValueOf(androidx.compose.ui.platform.LocalDensity)) { REVEAL_TOP.toPx() }
                     bringIntoView { Rect(0f, -above - fade, width, height + below) }
                     bringIntoView { Rect(0f, -fade, width, height) }
+                    // Round 5 (lot « bloquants »): coming back up from a control far below (the tutorials' Swing, under the
+                    // drum grid), the grid stayed with its top under « Partie : A »: its top line brought in last.
+                    androidx.compose.runtime.withFrameNanos { }
+                    val shown = registry?.find(id)
+                    if (shown != null && shown.top > windowTop + 2f) bringIntoView { Rect(0f, -fade, width, minOf(height, 1f)) }
                 } else bringIntoView()
             }
         }

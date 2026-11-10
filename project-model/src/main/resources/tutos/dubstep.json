@@ -137,7 +137,7 @@
           "textPro": "À toi : un swing d'environ 20 % (le « shuffle » des charleys).",
           "why": "Le dubstep vient du dub jamaïcain : un peu de balancement le rend vivant.",
           "check": "swing",
-          "spot": "rhythm.pattern",
+          "spot": "rhythm.swing",
           "listen": "drums:kick,snare,clap,hat,perc"
         },
         {

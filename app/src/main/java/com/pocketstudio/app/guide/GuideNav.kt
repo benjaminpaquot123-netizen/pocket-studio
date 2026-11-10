@@ -78,7 +78,7 @@ sealed class GuideGo {
 object GuideNav {
     /** Every screen the parcours' options can open ([com.pocketstudio.model.guide.GuideAction.spot]). */
     val SPOTS = setOf(
-        "tempo", "key", "song.parts", "sounds.track", "sounds.favorite", "sounds.layers", "rhythm.kit", "rhythm.pattern", "song.automation",
+        "tempo", "key", "song.parts", "sounds.track", "sounds.favorite", "sounds.layers", "rhythm.kit", "rhythm.pattern", "rhythm.swing", "song.automation",
         "record.voice", "mixer.master", "mixer.whatplays", "notes.track", "mixer.strip", "share.check", "share.export", "share.video", "acid", "acid.generate",
         // G5: the common cards (« Pour commencer », the Remix) and « Écouter ».
         "new.style", "song.guide", "sounds.main", "record.melody", "remix", GuideViewModel.PLAY,
@@ -105,6 +105,8 @@ object GuideNav {
             // Audit final: a drum role's card changes that pad's sound, not the whole kit.
             "rhythm.kit" -> track?.key?.takeIf { it.startsWith("pad:") }?.removePrefix("pad:")?.toIntOrNull()?.let { GuideGo.Pad(it) } ?: GuideGo.Kit
             "rhythm.pattern" -> GuideGo.Tab(AppTab.Rythme, listOf("step_cells"))
+            // Round 5, B c #23: the swing step showed the grid, its setting far below and never found.
+            "rhythm.swing" -> GuideGo.Tab(AppTab.Rythme, listOf(com.pocketstudio.app.rhythm.SWING_SPOT))
             "song.automation" -> if (simple) structure else GuideGo.Tab(AppTab.Mixeur, listOf("mixer_automation"), mixer = Where.Lane(-1))
             "record.voice" -> GuideGo.Tab(AppTab.Audio, listOf("record_start"), audioPage = 0)
             "mixer.master" -> if (simple) GuideGo.Tab(AppTab.Envoyer, listOf("share_go")) else GuideGo.Tab(AppTab.Mixeur, listOf("mixer_master"), mixer = Where.Master)

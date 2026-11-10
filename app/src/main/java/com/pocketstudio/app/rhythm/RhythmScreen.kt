@@ -939,6 +939,9 @@ private fun PadLoopRow(padLoop: Int, patternSteps: Int, ownLoop: Boolean, set: (
     }
 }
 
+/** The Swing setting of the drums' groove card: where the tutorials' swing step leads (spot « rhythm.swing »). */
+const val SWING_SPOT = "rhythm_swing"
+
 @Composable
 private fun GrooveCard(project: Project, transport: TransportUi, actions: RhythmActions, simple: Boolean = false) {
     NeonCard {
@@ -953,17 +956,20 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 14.dp),
             ) { Text(tr("Effets"), maxLines = 1, softWrap = false) }
         }
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(tr("Swing"))
-            HelpDot(Glossary.SWING)
-            Box(Modifier.weight(1f))
-            Text(percent((project.swing / Project.MAX_SWING * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
+        // Round 5, B c #23: the tutorials' swing step leads here (« Je le fais » brings it into view, ringed).
+        Column(Modifier.fillMaxWidth().spot(SWING_SPOT, tr("Swing")).testTag(SWING_SPOT), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text(tr("Swing"))
+                HelpDot(Glossary.SWING)
+                Box(Modifier.weight(1f))
+                Text(percent((project.swing / Project.MAX_SWING * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
+            }
+            ProSlider(
+                value = (project.swing / Project.MAX_SWING).toFloat(),
+                onValueChange = { actions.setSwing(it * Project.MAX_SWING) },
+                label = tr("Swing"), valueText = percent((project.swing / Project.MAX_SWING * 100).roundToInt()),
+            )
         }
-        ProSlider(
-            value = (project.swing / Project.MAX_SWING).toFloat(),
-            onValueChange = { actions.setSwing(it * Project.MAX_SWING) },
-            label = tr("Swing"), valueText = percent((project.swing / Project.MAX_SWING * 100).roundToInt()),
-        )
     }
 }
 

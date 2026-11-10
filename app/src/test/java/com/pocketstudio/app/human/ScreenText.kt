@@ -6,6 +6,9 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.TextView
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.LayoutInfo
+import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsNode
@@ -18,12 +21,16 @@ import androidx.compose.ui.text.TextLayoutResult
 import java.security.MessageDigest
 
 /**
- * The screen as text (Audit ultra §3.1, « l'écran en texte »): what TalkBack would read, window by
- * window (the top one first, down to the first that takes every touch), in reading order. Each line:
- * the role, the text in « », TalkBack's name when it says something else, the state, and the middle
- * in the screen's pixels (where a « touche » lands). Something to touch with no name says « sans nom ».
- * With [reads] false (`lit=non`), the texts under 18 sp are « ▭▭▭ » and TalkBack's names are not said
- * (they are not seen): the tester has the icons of the image, the big words and the layout.
+ * The screen as text (Audit ultra §3.1, « l'écran en texte »): what a person sees, window by window (the
+ * top one first, down to the first that takes every touch), in reading order. Each line: what it looks
+ * like, its icons and words as drawn, the state, and the middle in the screen's pixels (where a « touche »
+ * lands). Audit « banc crédible » 2, R1: never what only TalkBack says (an icon's name, a state's words):
+ * an icon is its glyph or its shape ([IconShapes]: « ⋮ », « (micro) »), and « bouton » is only what is drawn
+ * with a fill or an outline; else an icon one can touch is « icône » (its label after it), and a sentence one can
+ * touch, with neither frame nor icon, is « texte », as a person sees it.
+ * TalkBack's names stay in the journal (« DOIGT », [under]), for a TalkBack seat (P4, not here).
+ * With [reads] false (`lit=non`), the texts under 18 sp are « ▭▭▭ »: the tester has the icons, the big
+ * words and the layout.
  *
  * Also, for the journal: the route (the dialog on top, or the page and the tab), the node under a
  * finger, and the texts to grey out on the image.
@@ -117,13 +124,14 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         walked.clear()
         stopped.clear()
         covered.clear()
+        lineIds.clear()
         cover = null
         val area = screen.widthPixels.toFloat() * screen.heightPixels
         val whole = Rect(0f, 0f, screen.widthPixels.toFloat(), screen.heightPixels.toFloat())
         for (w in wins) {
             val mine = roots.filter { BenchWindows.windowOf(it)?.view === w.view }
             val order = mutableListOf<SemanticsNode>()
-            fun pre(n: SemanticsNode) { if (hidden(n)) return; order += n; n.children.forEach(::pre) }
+            fun pre(n: SemanticsNode) { lineIds += n.id; if (hidden(n)) return; order += n; n.children.forEach(::pre) }
             mine.forEach(::pre)
             val last = order.indexOfLast { n ->
                 val r = drawn(n).intersect(whole)
@@ -145,14 +153,11 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         walked += n.id
         val r = drawn(n)
         if (out == null) { n.children.forEach { walk(it, null, smallTexts) }; return }
-        line(n, r, smallTexts)?.let { if (onScreen(r)) out += it }
+        val said = line(n, r, smallTexts)
+        if (said != null) { if (onScreen(r)) out += said } else drawnAlone(n, r, out)
+        // PLAN-RESTE R.8: no « ↓ la suite plus bas » any more, an arrow the app does not draw (hidden defect B09). What a
+        // person sees of a list going on is a line cut by an edge: [line] says « coupé ».
         sorted(n.children).forEach { walk(it, out, smallTexts) }
-        n.config.getOrNull(SemanticsProperties.VerticalScrollAxisRange)?.let { s ->
-            if (onScreen(r) && s.value() < s.maxValue() - 1f) out += "  ↓ la suite plus bas (glisse vers le haut pour la voir)"
-        }
-        n.config.getOrNull(SemanticsProperties.HorizontalScrollAxisRange)?.let { s ->
-            if (onScreen(r) && s.value() < s.maxValue() - 1f) out += "  → la suite sur le côté (glisse pour la voir)"
-        }
     }
 
     private fun actionable(n: SemanticsNode) = n.config.contains(SemanticsActions.OnClick) || n.config.contains(SemanticsActions.OnLongClick) ||
@@ -166,35 +171,47 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         val act = actionable(n)
         if (texts.isEmpty() && desc == null && edit == null && !act) return null
         val role = c.getOrNull(SemanticsProperties.Role)
+        val look = lookOf(n)
+        val icons = look.before + look.after
+        // R1: the word says how it is drawn, never a role only TalkBack hears (« bouton » for a plain sentence).
+        // Fresh review M1: « case », « interrupteur », « choix » only for Material's own drawing of them ([Look.widget]);
+        // a chip or a round « ? » with that role is written as it is drawn.
         val word = when {
             edit != null || c.contains(SemanticsActions.SetText) -> "champ"
-            role == Role.Button -> "bouton"
-            role == Role.Checkbox -> "case"
-            role == Role.Switch -> "interrupteur"
-            role == Role.RadioButton -> "choix"
+            look.widget != null && role in listOf(Role.Checkbox, Role.Switch, Role.RadioButton) -> look.widget
             role == Role.Tab -> "onglet"
             role == Role.DropdownList -> "liste"
             role == Role.ValuePicker -> "sélecteur"
             c.contains(SemanticsActions.SetProgress) -> "curseur"
-            role == Role.Image -> if (act) "bouton" else "image"
-            act -> "touchable"
+            act && look.framed -> "bouton"
+            act && icons.isNotEmpty() -> "icône"
+            texts.isEmpty() && icons.isNotEmpty() -> "image"
+            texts.isEmpty() -> "dessin"
             c.contains(SemanticsProperties.Heading) -> "titre"
             else -> "texte"
         }
         fun shown(t: String) = if (!reads && t in smallTexts) "▭▭▭" else t
         val shownTexts = texts.map(::shown)
-        val name = buildString {
-            if (shownTexts.isNotEmpty()) append("« ").append(shownTexts.joinToString(" ")).append(" »")
-            if (edit != null) append(if (isEmpty()) "" else " ").append("contenu « ").append(if (reads) edit else "▭▭▭").append(" »")
-            if (desc != null && reads && desc != texts.joinToString(" ")) append(if (isEmpty()) "" else " ").append(if (isEmpty()) "« $desc »" else "(nom « $desc »)")
-            if (isEmpty()) append(if (desc != null) "(icône)" else if (act) "sans nom" else "")
-        }
+        val name = listOfNotNull(
+            look.before.joinToString(" ").ifEmpty { null },
+            shownTexts.takeIf { it.isNotEmpty() }?.joinToString(" ", "« ", " »"),
+            edit?.let { "contenu « ${if (reads) it else "▭▭▭"} »" },
+            look.after.joinToString(" ").ifEmpty { null },
+        ).joinToString(" ")
         val states = buildList {
             if (c.contains(SemanticsProperties.Disabled)) add("désactivé")
+            // R.8: drawn in part only (a scrolling parent or the screen's edge cuts it), as a person sees a cut card.
+            if (n.size.height > 0 && n.size.width > 0 && (r.height < 0.9f * n.size.height || r.width < 0.9f * n.size.width)) add("coupé")
             when (c.getOrNull(SemanticsProperties.ToggleableState)) {
-                ToggleableState.On -> add("coché"); ToggleableState.Off -> add("non coché"); ToggleableState.Indeterminate -> add("en partie"); null -> Unit
+                // A box or a switch shows its tick; any other toggle shows « on » by its light (« off »: nothing to see).
+                ToggleableState.On -> add(if (look.widget != null) "coché" else "allumé")
+                ToggleableState.Off -> if (look.widget != null) add("non coché")
+                ToggleableState.Indeterminate -> add("en partie"); null -> Unit
             }
+            // Fresh review G1: a pad's light as drawn (Pad Live, the Live page, Rythme's pads): lit, or its faint waiting ring.
+            look.light?.let { add(it) }
             if (c.getOrNull(SemanticsProperties.Selected) == true) add("sélectionné")
+            // A state's words are TalkBack's, but what they say is drawn (a step lit or empty, « en cours »): kept.
             c.getOrNull(SemanticsProperties.StateDescription)?.takeIf { it.isNotBlank() && reads }?.let { add("état « $it »") }
             c.getOrNull(SemanticsProperties.ProgressBarRangeInfo)?.let { p ->
                 val span = p.range.endInclusive - p.range.start
@@ -203,6 +220,144 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         }
         val at = "@ ${r.center.x.toInt()},${r.center.y.toInt()}"
         return listOf(word, name, states.takeIf { it.isNotEmpty() }?.joinToString(", ", "[", "]").orEmpty(), at).filter { it.isNotEmpty() }.joinToString(" ")
+    }
+
+    /** The ids of the merged tree's nodes (each its own line): a node's drawing stops where another line's starts. */
+    private val lineIds = HashSet<Int>()
+
+    /** What a node draws besides its words: its icons before and after them, and whether it has a face (a fill or an outline). */
+    private class Look(
+        val before: List<String>, val after: List<String>, val framed: Boolean,
+        /** Fresh review G1: « allumé » or « anneau pâle » when a pad light ([com.pocketstudio.ui.padLight]) is drawn on it. */
+        val light: String? = null,
+        /** Fresh review M1: « case », « choix » or « interrupteur » when Material draws a check box, a radio button or a switch. */
+        val widget: String? = null,
+        /** Every mark with where it is drawn (root coordinates), for a node that is no line of its own ([drawnAlone]). */
+        val marks: List<Pair<String, Rect?>> = emptyList(),
+        val box: Rect = Rect.Zero,
+    )
+
+    /**
+     * R1: what [n] looks like, read in its layout (not in what it says to TalkBack): the icons painted in it (an
+     * ImageVector's name → [IconShapes]; another picture: « (image) »; a drawn mark with a tag of [DRAWN_TAGS]), on the
+     * start or end side of its middle, down to the nodes that are lines of their own; framed when the node itself, or a
+     * part of it covering a quarter of its area or more (a chip drawn inside its 48 dp touch target), has a visible background or an outline.
+     */
+    private fun lookOf(n: SemanticsNode): Look {
+        val root = runCatching { n.layoutInfo }.getOrNull() ?: return Look(emptyList(), emptyList(), false)
+        val box = runCatching { root.coordinates.boundsInRoot() }.getOrNull() ?: return Look(emptyList(), emptyList(), false)
+        val before = mutableListOf<String>()
+        val after = mutableListOf<String>()
+        val marks = mutableListOf<Pair<String, Rect?>>()
+        var framed = false
+        var light: String? = null
+        var widget: String? = null
+        fun place(shape: String, at: Rect?) {
+            marks += shape to at
+            // Before the words: on their start side, or above them (an icon over its label).
+            val dx = at?.let { (it.center.x - box.center.x) * (if (rtl) -1 else 1) } ?: 0f
+            val start = at == null || dx < -1f || (dx <= 1f && at.center.y < box.center.y)
+            if (start) before += shape else after += shape
+        }
+        fun visit(info: LayoutInfo, top: Boolean) {
+            if (!top && info.semanticsId in lineIds) return
+            if (!info.isPlaced) return
+            val at = runCatching { info.coordinates.boundsInRoot() }.getOrNull()
+            val face = top || (at != null && box.width * box.height > 0f && at.width * at.height >= 0.25f * box.width * box.height)
+            val mods = runCatching { info.getModifierInfo() }.getOrDefault(emptyList()).map { it.modifier }
+            val turn = mods.firstOrNull { it.javaClass.name == "androidx.compose.ui.graphics.GraphicsLayerElement" }?.let { field(it, "rotationZ") as? Float } ?: 0f
+            val dp = (at?.width ?: 0f) / density
+            for (e in mods) {
+                when (e.javaClass.name) {
+                    "androidx.compose.ui.draw.PainterElement" -> painted(e)?.let { place(it, at) }
+                    "androidx.compose.foundation.BackgroundElement" -> if (face && visibleBackground(e)) framed = true
+                    "androidx.compose.foundation.BorderModifierNodeElement" -> if (face && visibleBorder(e)) framed = true
+                    "androidx.compose.ui.draw.DrawBehindElement" -> when (val host = hostOf(field(e, "onDraw"))) {
+                        "CheckboxKt" -> widget = "case"
+                        "RadioButtonKt" -> widget = "choix"
+                        else -> canvasMark(host, dp, turn)?.let { place(it, at) }
+                    }
+                    "androidx.compose.ui.draw.DrawWithCacheElement" -> if (face) padLightOf(field(e, "onBuildDrawCache"))?.let { light = it }
+                }
+            }
+            // Material's switch: its 52 x 32 dp track.
+            if (!top && at != null && kotlin.math.abs(at.width / density - 52f) < 2.5f && kotlin.math.abs(at.height / density - 32f) < 2.5f &&
+                mods.any { it.javaClass.name == "androidx.compose.foundation.BackgroundElement" }) widget = "interrupteur"
+            if (!top) (call(info, "getSemanticsConfiguration") as? androidx.compose.ui.semantics.SemanticsConfiguration)
+                ?.getOrNull(SemanticsProperties.TestTag)?.let { DRAWN_TAGS[it] }?.let { place(it, at) }
+            (call(info, "getChildrenInfo") as? List<*>)?.forEach { (it as? LayoutInfo)?.let { c -> visit(c, false) } }
+        }
+        visit(root, true)
+        return Look(before, after, framed, light, widget, marks, box)
+    }
+
+    /**
+     * Fresh review M2: a node that is no line of its own (a row holding a text that is one) may draw marks of its own: the
+     * ⚠ before a warning, a picture beside a title. Each is written where it is drawn, « image ⚠ @ x,y ».
+     */
+    private fun drawnAlone(n: SemanticsNode, r: Rect, out: MutableList<String>) {
+        if (n.parent == null) return
+        val look = lookOf(n)
+        for ((shape, at) in look.marks) {
+            val x = r.left + ((at ?: look.box).center.x - look.box.left)
+            val y = r.top + ((at ?: look.box).center.y - look.box.top)
+            if (x in 0f..screen.widthPixels.toFloat() && y in 0f..screen.heightPixels.toFloat()) out += "image $shape @ ${x.toInt()},${y.toInt()}"
+        }
+    }
+
+    /** The file (its Kotlin class) a drawing lambda was written in: « DisclosureKt », « CheckboxKt ». */
+    private fun hostOf(lambda: Any?): String? = lambda?.javaClass?.name?.substringBefore("$$")?.substringBefore('$')?.substringAfterLast('.')
+
+    /** Fresh review M2: marks the app draws on a Canvas (no icon, no tag), by the file that draws them and their size. */
+    private fun canvasMark(host: String?, dp: Float, turn: Float): String? = when (host) {
+        "DisclosureKt" -> if (kotlin.math.abs(turn % 360f) > 90f && kotlin.math.abs(turn % 360f) < 270f) "⌃" else "⌄"
+        "LaunchChoiceKt" -> if (kotlin.math.abs(dp - 22f) < 1f) "(grille de pads)" else "(quatre vagues)"
+        else -> null
+    }
+
+    /**
+     * Fresh review G1: the state a pad light draws, read in what its drawing holds (ui-components PadLight.kt: the light's
+     * animation, then whether it waits): « allumé » (its inner light and ring), « anneau pâle » (waiting for its beat), or null.
+     */
+    private fun padLightOf(lambda: Any?): String? {
+        if (lambda == null) return null
+        val held = lambda.javaClass.declaredFields.sortedBy { it.name.filter(Char::isDigit).toIntOrNull() ?: 0 }
+            .map { f -> runCatching { f.isAccessible = true; f.get(lambda) }.getOrNull() }
+        if (held.none { it?.javaClass?.name == "com.pocketstudio.ui.PadLight" }) return null
+        val lit = held.firstNotNullOfOrNull { v -> v?.takeIf { it.javaClass.simpleName == "AnimationState" }?.let { call(it, "getValue") as? Float } } ?: 0f
+        val waiting = held.firstNotNullOfOrNull { it as? Boolean } ?: false
+        return when {
+            lit > 0.5f -> "allumé"
+            waiting -> "anneau pâle"
+            else -> null
+        }
+    }
+
+    /** A layout node's own method (its children, its semantics: Compose's `SemanticsInfo` is internal to it). */
+    private fun call(of: Any, name: String): Any? = runCatching { of.javaClass.getMethod(name).invoke(of) }.getOrNull()
+
+    private fun field(of: Any, name: String): Any? = runCatching { of.javaClass.getDeclaredField(name).apply { isAccessible = true }.get(of) }.getOrNull()
+
+    /** A painter's look: an icon's glyph or shape; a picture (a bitmap, a colour) otherwise. */
+    private fun painted(element: Any): String? {
+        val painter = field(element, "painter") ?: return null
+        if (painter is androidx.compose.ui.graphics.painter.ColorPainter) return null
+        val vector = painter.javaClass.methods.firstOrNull { it.name.startsWith("getName") && it.parameterCount == 0 }
+        val name = vector?.let { runCatching { it.invoke(painter) as? String }.getOrNull() } ?: return "(image)"
+        return IconShapes.of(name)
+    }
+
+    private fun visibleBackground(element: Any): Boolean {
+        if (field(element, "brush") != null) return true
+        val bits = (field(element, "color") as? Long) ?: return false
+        val alpha = (field(element, "alpha") as? Float) ?: 1f
+        return Color(bits.toULong()).alpha * alpha > 0.05f
+    }
+
+    private fun visibleBorder(element: Any): Boolean {
+        val width = (field(element, "width") as? Float) ?: return false
+        val brush = field(element, "brush") as? androidx.compose.ui.graphics.SolidColor
+        return width > 0f && (brush == null || brush.value.alpha > 0.05f)
     }
 
     private class Txt(val text: String, val sp: Float, val rect: Rect, val window: View?, val node: SemanticsNode)
@@ -334,6 +489,9 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
     }
 
     companion object {
+        /** Marks the app draws itself (a Canvas, no icon), by their test tag: what they look like. */
+        val DRAWN_TAGS = mapOf("link_chevron" to "›")
+
         /** The screen's text as a short hash: clock times and percentages left out (a song's position, a progress). */
         fun fingerprintOf(lines: List<String>): String {
             val norm = lines.joinToString("\n") { l -> l.replace(Regex("\\d+:\\d\\d"), "#:##").replace(Regex("\\d+ ?%"), "#%") }

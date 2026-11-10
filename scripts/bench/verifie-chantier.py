@@ -93,6 +93,44 @@ def method_exists(sources, cls, method):
     return text is not None and re.search(r"\bfun\s+`?" + re.escape(method) + r"\b", text) is not None
 
 
+def without_comments(text):
+    """The Kotlin text with its comments blanked (strings kept): « // fun x » is no function."""
+    out, i, n = [], 0, len(text)
+    while i < n:
+        if text.startswith("//", i):
+            j = text.find("\n", i)
+            i = n if j < 0 else j
+            continue
+        if text.startswith("/*", i):
+            j = text.find("*/", i + 2)
+            i = n if j < 0 else j + 2
+            out.append(" ")
+            continue
+        if text.startswith('"""', i):
+            j = text.find('"""', i + 3)
+            j = n if j < 0 else j + 3
+            out.append(text[i:j])
+            i = j
+            continue
+        if text[i] in "\"'":
+            j = i + 1
+            while j < n and text[j] != text[i] and text[j] != "\n":
+                j += 2 if text[j] == "\\" else 1
+            out.append(text[i:j + 1])
+            i = j + 1
+            continue
+        out.append(text[i])
+        i += 1
+    return "".join(out)
+
+
+def test_runs(sources, cls, method):
+    """Audit « banc crédible » 2, P5: the proof is a test that runs: a function of the class (comments aside) with
+    @Test and without @Ignore/@Disabled ([still_runs])."""
+    text = sources.get(cls)
+    return text is not None and still_runs(without_comments(text), method)
+
+
 def proofs(cell):
     """Class#method references in a cell (« - » or free text without one gives none)."""
     return [(c, m) for c, m in PROOF.findall(ENGINE_PROOF.sub(" ", cell or "")) if c[0].isupper()]
@@ -392,6 +430,8 @@ def check(root, resume_path=None, with_git=True):
                 gaps.append(f"{item} : preuve d'appli {cls}#{m} est un test du banc")
             elif not method_exists(sources, cls, m):
                 gaps.append(f"{item} : preuve d'appli {cls}#{m} introuvable")
+            elif not test_runs(sources, cls, m):
+                gaps.append(f"{item} : preuve d'appli {cls}#{m} n'est pas un test qui tourne (@Test absent, @Ignore, ou en commentaire)")
             else:
                 without_bench += 1
                 carried |= {kid for kid, method in KNOWN_DEFECT.findall(sources.get(cls, "")) if method == m}

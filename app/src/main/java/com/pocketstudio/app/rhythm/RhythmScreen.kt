@@ -957,7 +957,7 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
             ) { Text(tr("Effets"), maxLines = 1, softWrap = false) }
         }
         // Round 5, B c #23: the tutorials' swing step leads here (« Je le fais » brings it into view, ringed).
-        Column(Modifier.fillMaxWidth().spot(SWING_SPOT, tr("Swing")).testTag(SWING_SPOT)) {
+        Column(Modifier.fillMaxWidth().spot(SWING_SPOT, tr("Swing")).testTag(SWING_SPOT), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text(tr("Swing"))
                 HelpDot(Glossary.SWING)

@@ -308,8 +308,8 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                 )
                 if (open) {
                     TextButton(onClick = actions.shareSong, modifier = Modifier.testTag("project_share_song")) {
-                        Icon(Icons.Filled.Share, contentDescription = null, tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp))
-                        Text(tr("Partager mon morceau"), color = Neon.Acid)
+                        Icon(Icons.Filled.Share, contentDescription = null, modifier = Modifier.padding(end = 6.dp))
+                        Text(tr("Partager mon morceau"))
                     }
                 }
             }

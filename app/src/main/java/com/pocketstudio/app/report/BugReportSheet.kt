@@ -44,7 +44,7 @@ import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.IosShare
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
@@ -233,7 +233,7 @@ fun BugReportContent(ui: BugReportUi, actions: BugReportActions, modifier: Modif
         ui.message?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.Amber, modifier = Modifier.testTag("bug_message")) }
         Button(onClick = actions.share, enabled = !ui.busy, modifier = Modifier.pressScale(enabled = !ui.busy).fillMaxWidth().heightIn(min = 56.dp).testTag("bug_share")) {
             if (ui.busy) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp, color = Neon.OnAccent)
-            else Icon(Icons.Filled.IosShare, contentDescription = null, modifier = Modifier.size(20.dp))
+            else Icon(Icons.Filled.Share, contentDescription = null, modifier = Modifier.size(20.dp))
             Text("  " + tr("Partager"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         }
         TextButton(onClick = actions.copy, enabled = !ui.busy, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("bug_copy")) {

@@ -23,7 +23,9 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Movie
-import androidx.compose.material.icons.filled.IosShare
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Archive
+import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Warning
@@ -517,7 +519,7 @@ fun ShareSheetContent(
             onClick = actions.share, enabled = ui.name.isNotBlank() && !ui.running,
             modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth().heightIn(min = 56.dp).spot("share_go", tr("Partager")).testTag("share_go"),
         ) {
-            Icon(Icons.Filled.IosShare, contentDescription = null, modifier = Modifier.size(20.dp))
+            Icon(Icons.Filled.Share, contentDescription = null, modifier = Modifier.size(20.dp))
             Text("  " + tr("Partager"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         }
         // G2 (recette tel-03: « bloqué » once the file was sent): the files made, right under « Partager », in sight

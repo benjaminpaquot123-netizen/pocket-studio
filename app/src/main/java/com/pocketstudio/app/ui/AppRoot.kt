@@ -85,7 +85,7 @@ import androidx.compose.material.icons.filled.QueueMusic
 import androidx.compose.material.icons.filled.Piano
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.Apps
-import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Share
 import android.content.res.Configuration
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.layout.Row
@@ -233,7 +233,7 @@ enum class AppTab(val icon: ImageVector) {
     /** Phase 36: the Live page, a space of its own (out of the creation path). */
     Live(Icons.Filled.Apps),
     /** Phase 36, Mode simple: « Envoyer », the « Fini ? » page (checks, Partager, WAV). */
-    Envoyer(Icons.AutoMirrored.Filled.Send);
+    Envoyer(Icons.Filled.Share);
 
     /** The screen's name in the interface's language (the spaces and the Mode simple's tabs have their own: [Space], [SimpleTab]). */
     val label: String get() = when (this) {

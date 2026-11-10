@@ -20,7 +20,7 @@ import androidx.compose.material.icons.automirrored.filled.Redo
 import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.FiberManualRecord
 import androidx.compose.material.icons.filled.FolderOpen
-import androidx.compose.material.icons.filled.IosShare
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Icon
@@ -398,7 +398,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
         } else {
             // ⤴ Partager, the last thing done to a song, always one touch away (« Prêt à partager ? »).
             IconButton(onClick = actions.share, modifier = Modifier.spot("top_share", tr("Partager")).testTag("top_share")) {
-                Icon(Icons.Filled.IosShare, contentDescription = tr("Partager mon morceau"), tint = Neon.TextPrimary)
+                Icon(Icons.Filled.Share, contentDescription = tr("Partager mon morceau"), tint = Neon.TextPrimary)
             }
         }
     }

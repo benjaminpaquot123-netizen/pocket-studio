@@ -22,7 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.IosShare
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -186,7 +186,7 @@ fun VideoSheetContent(ui: VideoSheetUi, actions: VideoSheetActions, modifier: Mo
             run.file != null -> {
                 Text(tr("Ta vidéo est prête."), style = MaterialTheme.typography.bodyMedium, color = Neon.Acid, modifier = Modifier.testTag("video_done"))
                 Button(onClick = actions.share, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("video_share")) {
-                    Icon(Icons.Filled.IosShare, contentDescription = null, modifier = Modifier.size(20.dp))
+                    Icon(Icons.Filled.Share, contentDescription = null, modifier = Modifier.size(20.dp))
                     Text("  " + tr("Partager la vidéo"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
                 OutlinedButton(onClick = actions.again, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("video_again")) { Text(tr("En refaire une")) }

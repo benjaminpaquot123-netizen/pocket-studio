@@ -35,7 +35,7 @@ import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Celebration
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.IosShare
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.PlayArrow
@@ -739,7 +739,7 @@ private fun MoreRow(ui: PadLiveUi, actions: PadLiveActions, party: () -> Unit) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             MoreButton(Icons.Filled.Tune, tr("Effets"), "padlive_effects", Modifier.weight(1f), actions.effects)
             MoreButton(Icons.Filled.Celebration, tr("Gros pads"), "padlive_party_open", Modifier.weight(1f), party)
-            MoreButton(Icons.Filled.IosShare, tr("Partager"), "padlive_share", Modifier.weight(1f), actions.share)
+            MoreButton(Icons.Filled.Share, tr("Partager"), "padlive_share", Modifier.weight(1f), actions.share)
             com.pocketstudio.ui.HelpDot(
                 com.pocketstudio.app.help.ScreenHelp.PADLIVE_MORE, Modifier.align(Alignment.CenterVertically),
                 about = listOf("padlive_stop_all", "padlive_live", "padlive_effects", "padlive_party_open", "padlive_share"),

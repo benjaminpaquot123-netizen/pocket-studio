@@ -17,7 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Redo
 import androidx.compose.material.icons.automirrored.filled.Undo
-import androidx.compose.material.icons.filled.IosShare
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
@@ -126,7 +126,7 @@ fun ThumbBar(ui: ThumbBarUi, actions: ThumbBarActions) {
                 }
             }
         } else {
-            ThumbButton(Icons.Filled.IosShare, tr("Partager"), tr("Partager mon morceau"), true, "thumb_share", actions.share)
+            ThumbButton(Icons.Filled.Share, tr("Partager"), tr("Partager mon morceau"), true, "thumb_share", actions.share)
         }
     }
 }

@@ -158,8 +158,10 @@ class Tour5BloquantsTest : HumanTester("bloquants") {
      */
     @Test
     fun aMelodyTakeLeftForPadLiveIsKeptInASongBackFromTheTrash() {
-        simpleSong()
-        act("retour")
+        // A first song of another style (the seat's « Mon projet 1 »), to tell the two apart.
+        simpleSong(family = "calm", style = "lofi")
+        // Retour until the home screen (a first one may close a panel).
+        repeat(4) { if (centerOf("launch_new") == null) act("retour") }
         waitFor("the home screen") { centerOf("launch_new") != null }
         tap("launch_new")
         tap("starter_wizard")
@@ -169,9 +171,9 @@ class Tour5BloquantsTest : HumanTester("bloquants") {
         tap("wizard_style_play_techno")
         waitFor("the second song") { screenRoute().contains("tab_simple_Morceau") }
         val id = rhythm()!!.projectId
-        act("retour")
-        act("retour")
-        waitFor("the home screen") { centerOf("launch_continue") != null }
+        // Retour until the home screen (the seat needed two: the first one closed what « Créer et écouter » opened).
+        repeat(4) { if (centerOf("launch_continue") == null) act("retour") }
+        waitFor("the home screen after « Créer et écouter »") { centerOf("launch_continue") != null }
         tap("launch_continue")
         tap("top_more")
         tap("more_projects")
@@ -180,7 +182,7 @@ class Tour5BloquantsTest : HumanTester("bloquants") {
         waitFor("« dans la corbeille »") { centerOf("project_deleted") != null }
         tapText("OK")
         act("retour")
-        waitFor("the home screen") { centerOf("launch_projects") != null }
+        waitFor("the home screen after the trash") { centerOf("launch_projects") != null }
         tap("launch_projects")
         tap("project_trash")
         val restore = compose.onAllNodes(
@@ -205,16 +207,24 @@ class Tour5BloquantsTest : HumanTester("bloquants") {
         val taken = notesIn(project()!!) - before
         assertTrue("the take wrote notes: ${rhythm()!!.noteTake.value}", taken >= 3)
         act("retour")
-        waitFor("the home screen") { centerOf("launch_padlive") != null }
+        waitFor("the home screen after the take") { centerOf("launch_padlive") != null }
         tap("launch_padlive")
         waitFor("Pad Live") { screenRoute().startsWith("padlive") }
         act("retour")
-        waitFor("the home screen") { centerOf("launch_projects") != null }
+        waitFor("the home screen after Pad Live") { centerOf("launch_projects") != null }
         tap("launch_projects")
         tap("project_$id")
         waitFor("the song open again") { rhythm()?.projectId == id && screenRoute().contains("tab_simple") }
         act("attends 1")
         assertEquals("the take's notes are still in the song", before + taken, notesIn(project()!!))
+        // What the seat looked at (its screens 125 and 149): Clavier, the melody's track, its notes in the part shown.
+        tap("tab_simple_Clavier")
+        val melody = com.pocketstudio.model.SimpleMelody.trackOf(project()!!)
+        if (melody != null && centerOf("track_$melody") != null) tap("track_$melody")
+        tap("mode_notes")
+        act("attends 1")
+        val grid = screenLines().firstOrNull { it.contains("Grille des notes") } ?: "(no grid)"
+        assertTrue("the melody's notes in sight on its grid: $grid", !grid.contains(": 0 notes") && grid != "(no grid)")
     }
 
     /** The node showing exactly [text], drawn whole above the tutorial's panel (a finger can touch it there, no swipe). */

@@ -1053,8 +1053,11 @@ object NativeEngine {
     fun toggleClip(pad: Int, velocity: Float = 1f) = post(CMD_TOGGLE_CLIP, velocity, pad)
     /** Per pad: 0 off, 1 waiting for the grid, 2 playing ([LIVE_PADS] values). */
     external fun clipStates(out: IntArray)
-    /** [clipStates], or all off under a test's stand-in [sink] (no clip launcher there). */
-    fun clipStatesNow(out: IntArray) = if (sink != null) out.fill(0) else clipStates(out)
+    /** [clipStates], or a test's stand-in [sink]'s (all off unless it plays the pads: the bench's engine does). */
+    fun clipStatesNow(out: IntArray) {
+        sink?.let { it.clipStates(out); return }
+        clipStates(out)
+    }
 
     /**
      * B3 (the lights that follow the sound): how loud each live pad sounds now, its peak falling

@@ -57,12 +57,15 @@ internal class BenchEngine : CommandSink {
                 // The count-in asked with ▶ (Engine.cpp: sequencer_.start(clamp(a, 0, 4))).
                 countInBars = if (value > 0f) a.coerceIn(0, 4) else 0
                 zeroAt = if (value > 0f) now + Math.round(countInBars * beatsPerBar * 4 * 15_000.0 / tempo) else -1L
+                // A.16: the pads' clock snaps to the transport's beat on its step 0 (ClipLauncher::align).
+                clips.transportZeroAt(zeroAt)
                 // ▶ as Engine.cpp's SetTransport: the scene starts on step 0, the song at song step [b] (OUTSIDE_SONG, -1:
                 // a scene alone); a swap armed before is dropped. ■: nothing waits any more.
                 song.start(inSong = value > 0f && b >= 0, songStep = b.coerceAtLeast(0), playing = value > 0f)
             }
             // A tempo change while playing: the steps already played are kept (the clock does not jump back or ahead).
             CMD_SET_TEMPO -> if (value > 0f) {
+                clips.advance()  // the pads' clock up to now at the old tempo
                 val since = transportSince
                 if (since >= 0) {
                     val now = SystemClock.uptimeMillis()
@@ -70,7 +73,10 @@ internal class BenchEngine : CommandSink {
                     transportSince = now
                     // Still counting in: the « 1 » comes after the steps left, at the new tempo.
                     val left = countInBars * beatsPerBar * 4.0 - stepBase
-                    if (left > 0) zeroAt = now + Math.round(left * 15_000.0 / value)
+                    if (left > 0) {
+                        zeroAt = now + Math.round(left * 15_000.0 / value)
+                        clips.transportZeroAt(zeroAt)
+                    }
                 }
                 tempo = value.toDouble()
             }
@@ -84,14 +90,43 @@ internal class BenchEngine : CommandSink {
             CMD_MARK_SONG -> song.mark(a, value)
             // Banc fiable 3.2 (T4-17) and its review: the scene swaps as Engine.cpp arms and plays them (see [SongClock]).
             CMD_ARM_SCENE_SWAP -> song.arm(a, b, value, stepsNow())
-            CMD_BEATS_PER_BAR -> if (a > 0) beatsPerBar = a
+            CMD_BEATS_PER_BAR -> if (a > 0) {
+                clips.advance()
+                beatsPerBar = a
+            }
             CMD_STEM_START -> stemStart = a.toLong()
             CMD_PLAY_PREVIEW -> previewSince = if (value > 0f) SystemClock.uptimeMillis() else -1L
             // Round 1 (lot banc, « Montre-moi » silent): the pads and notes the app plays through the engine, heard by the bench.
             CMD_TRIGGER_PAD -> hits.add(a)
             CMD_SYNTH_NOTE_ON -> notesOn.incrementAndGet()
+            // A.16: the Live pads, as Engine.cpp hands them to ClipLauncher (idleClock: the sequencer not running).
+            CMD_CLIP_PARAM -> clips.setParam(a, b, value)
+            CMD_TOGGLE_CLIP -> {
+                heard("toggleClip $a")
+                if (a < 0) clips.stopAll() else clips.toggle(a, idleClock = transportSince < 0)
+            }
+            CMD_LAUNCH_CLIP_ROW -> {
+                heard("launchClipRow $a $b")
+                clips.launchRow(a, b, idleClock = transportSince < 0)
+            }
         }
     }
+
+    /** A.16: the Live pads of this engine (see [BenchClips]). */
+    internal val clips = BenchClips({ SystemClock.uptimeMillis() }, { tempo }, { beatsPerBar })
+
+    override fun clipStates(out: IntArray) = clips.states(out)
+
+    /** A.16 (G2): the pads' and launch lines' commands this engine received, in order (at most the last [HEARD]). */
+    private val padCommands = ArrayDeque<String>()
+
+    private fun heard(what: String) = synchronized(padCommands) {
+        padCommands.addLast(what)
+        while (padCommands.size > HEARD) padCommands.removeFirst()
+    }
+
+    /** The pads' and launch lines' commands received since the last call (what the app sent the engine). */
+    fun padCommandsHeard(): List<String> = synchronized(padCommands) { padCommands.toList().also { padCommands.clear() } }
 
     /** The pads triggered since the last [heardHits] (lanes, in order). */
     private val hits = java.util.concurrent.ConcurrentLinkedQueue<Int>()
@@ -172,12 +207,17 @@ internal class BenchEngine : CommandSink {
             return
         }
         when (kind) {
+            CommandSink.Install.LiveClip -> clips.install(index and REFIT.inv(), sample, frames[sample] ?: 0L)
             CommandSink.Install.Stems -> playedStems = sample
             CommandSink.Install.PreviewStems -> previewStems = sample
             else -> Unit
         }
     }
-    @Synchronized override fun sampleCreate(data: FloatArray, channels: Int, sampleRate: Int): Long = next++
+    @Synchronized override fun sampleCreate(data: FloatArray, channels: Int, sampleRate: Int): Long =
+        (next++).also { frames[it] = Math.round(data.size / channels.coerceAtLeast(1) * RATE.toDouble() / sampleRate.coerceAtLeast(1)) }
+
+    /** Each sample's length in frames at 48 kHz (Sample::create resamples to the engine's rate): a Live hit sounds that long. */
+    private val frames = ConcurrentHashMap<Long, Long>()
     override fun sampleFrames(handle: Long): Long = OfflineExport.SAMPLE_RATE.toLong()
     override fun sampleRelease(handle: Long) = Unit
     @Synchronized override fun exportCreate(): Long = next++
@@ -791,6 +831,12 @@ internal class BenchEngine : CommandSink {
         private const val CMD_SET_ACID_STEP = 12
         private const val CMD_CHANNEL_VOLUME = 20
         private const val CMD_SYNTH_NOTE = 26
+        private const val CMD_CLIP_PARAM = 45
+        private const val CMD_TOGGLE_CLIP = 46
+        private const val CMD_LAUNCH_CLIP_ROW = 150
+        /** NativeEngine.REFIT: a LiveClip installed again at a new tempo (the same pad). */
+        private const val REFIT = 0x100
+        private const val HEARD = 256
 
         private const val CMD_MASTER = 67
         private const val MASTER_TARGET = 4

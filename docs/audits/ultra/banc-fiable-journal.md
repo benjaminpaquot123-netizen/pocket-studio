@@ -109,6 +109,8 @@ Une ligne par étape : [x] fait / [ ] à faire, preuve, commit. « continue » r
 - [x] A.19 (P3) le résumé nomme le code testé (arbre git hors docs), le juge refuse un résumé non scellé ou d'un autre code. preuve: rouge 6a81e3c / vert 81e0c68
 - [x] A.19 (D1) traces du portail commitées par `fusion-equipes.sh` sous `docs/audits/ultra/portail/`, « fusion sans trace » et « lot sans trace » (tour ≥ 6) au juge. preuve: rouge b3be3c1 / vert 894033d
 - [x] (relecture « banc-fin », M1) règle (c) : les 7 contournements de judge_adv2.py (et F2) refusés, origine suivie, ancêtre de 8f36fa3, vert qui garde @Test et touche du code ; 22 écarts réels inchangés. preuve: rouge f8718ff / vert 5c95ef1
+- [x] A.19 (D1, suite, trouvé par la fusion à blanc) le juge gardé dans les traces d'une fusion tourne une fois les traces écrites. preuve: rouge de0df4e / vert ba7e1d3
+- [x] A.19 (P2, suite, trouvé par le selftest final) l'empreinte du code ne dépend plus de la longueur des noms courts de git (`git diff --full-index`) : un selftest rougissait « le code a changé » sans changement. preuve: rouge 8bd0c866 / vert 7e993b81
 - [x] A.22 (P5) une preuve sans banc est un test qui tourne. preuve: rouge 21c8018 / vert 6b9c72b
 - [x] A.22 (P6) la quarantaine n'excuse que son message attendu. preuve: rouge 9bfb587 / vert 7539576
 - [x] A.22 (P7) sortie de siège : liste blanche à la racine du lot, dépôt surveillé. preuve: rouge 7ee664e / vert f1da11f

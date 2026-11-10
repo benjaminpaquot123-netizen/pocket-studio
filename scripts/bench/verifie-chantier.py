@@ -34,7 +34,9 @@
     is a pair on its own, when that guard was put there by a « rouge: » commit naming the guarded test, or in an
     ancestor of the discipline's first red (8f36fa3): that guard, failing with the defect's message in the parent,
     was the red. The guard's origin is followed through renamed classes, reformatted annotations and moved files.
-    Commits are read from 8f36fa3 on by ancestry, never by date. A checked line of banc-fiable-journal.md (« - [x] 4.2 … », ids 4.x to 7.x, R.x, A.x) carries
+    Commits are read from 8f36fa3 on by ancestry, never by date. A green whose red was an existing test seen failing in
+    a run is a pair by its evidence kept under docs/audits/ultra/rouges-constates/<green sha>/ (rouge.txt and the
+    JUnit XML: [red_seen]). A checked line of banc-fiable-journal.md (« - [x] 4.2 … », ids 4.x to 7.x, R.x, A.x) carries
     « preuve: rouge <sha> / vert <sha> » naming such a pair, or « preuve: script <path> » (a figure computed
     by a script that exists).
 (c) recette.json <-> verdicts: every « recette tel-NN » cited by an open undecided line exists in the
@@ -742,6 +744,47 @@ def known_defects_lifted(root, sha):
     return lifted
 
 
+RED_SEEN = os.path.join("docs", "audits", "ultra", "rouges-constates")
+
+
+def red_seen(root, sha, message):
+    """Review of the « portail » lot: a test that existed went red in a run, and this green fixes the app. Evidence in
+    docs/audits/ultra/rouges-constates/<the green's full sha>/: rouge.txt (« parent: <the green's parent> »,
+    « test: Classe#méthode ») and a JUnit XML of that run where that test fails; the green names the test and does not
+    touch the test's file (nor any file of the tests). True only when all of it holds."""
+    import xml.etree.ElementTree as ET
+    try:
+        full = _git(root, "rev-parse", sha + "^{commit}").strip()
+        parents = _git(root, "rev-list", "--parents", "-n", "1", full).split()[1:]
+        files = _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", full + "^", full).split()
+    except (subprocess.SubprocessError, OSError):
+        return False
+    folder = os.path.join(root, RED_SEEN, full)
+    try:
+        facts = open(os.path.join(folder, "rouge.txt"), encoding="utf-8").read()
+    except OSError:
+        return False
+    parent = re.search(r"^parent:\s*([0-9a-f]{40})\s*$", facts, re.M)
+    test = re.search(r"^test:\s*(\S.*?)\s*$", facts, re.M)
+    if len(parents) != 1 or not parent or parent.group(1) != parents[0] or not test or not names(message, test.group(1)):
+        return False
+    if any(f.startswith(TEST_DIRS) for f in files):
+        return False
+    cls, _, method = test.group(1).partition("#")
+    for name in os.listdir(folder):
+        if not name.endswith(".xml"):
+            continue
+        try:
+            cases = ET.parse(os.path.join(folder, name)).getroot().iter("testcase")
+        except (ET.ParseError, OSError):
+            continue
+        for case in cases:
+            if case.get("classname", "").rsplit(".", 1)[-1] == cls and case.get("name") == method \
+                    and (case.find("failure") is not None or case.find("error") is not None):
+                return True
+    return False
+
+
 def names(message, test):
     """The message names « Class#method » (or « Class.method »), the class too: a method name alone matches any
     class that has one (review of the « pads-live » lot, moyen)."""
@@ -774,7 +817,7 @@ def red_green_pairs(root):
             red = next((r for r in open_reds if same_test(r, green)), None)
             if red is not None:
                 open_reds.remove(red)
-            elif not any(names(message, t) for t in known_defects_lifted(root, sha)):
+            elif not any(names(message, t) for t in known_defects_lifted(root, sha)) and not red_seen(root, sha, message):
                 gaps.append(f"{sha} « {subject[:70]} » : vert sans rouge du même test avant lui")
     gaps += [f"{r[0]} « {r[1][:70]} » : rouge sans vert du même test après lui" for r in open_reds]
     return gaps

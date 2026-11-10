@@ -191,6 +191,7 @@ class BenchEngineTest {
             assertTrue("the project never opened", System.currentTimeMillis() < until)
             idle(); Thread.sleep(5)
         }
+        vm.engineStarted()  // as the app's screen says once the audio stream started (AppRoot): the project is sent to the engine
         return vm to engine
     }
 
@@ -250,6 +251,50 @@ class BenchEngineTest {
         assertEquals("the app stopped with the song", false, vm.transport.value.playing)
         assertNull(vm.audioRecording.value)
         assertEquals(1, engine.micTakes)
+    }
+
+    /**
+     * Audit « banc crédible » A.8 (F2): a setting moved while the music plays with ● Automation on is recorded at the step
+     * the engine plays (RhythmViewModel.recordAutomation reads NativeEngine.currentStep()). The bench's engine had no
+     * currentStep (-1 for good): nothing was ever recorded on the bench, a false « ● does nothing » for a seat and a real
+     * defect of the recording hidden.
+     */
+    @Test
+    fun aKnobMovedWithAutomationRecordWritesAPoint() {
+        val (vm, engine) = openWithEngine(Project().copy(tempoBpm = 100.0))  // no song: a volume's curve is the loop's
+        vm.togglePlay()
+        idle()
+        vm.toggleAutomationRecord()
+        pass(800)  // 150 ms a step at 100 BPM: step 5 (820 ms with the 20 ms above)
+        assertEquals("the engine says the step it plays", 5, engine.currentStep())
+        vm.setChannelVolume(0, 0.3f)
+        val lanes = vm.project.value.automation
+        assertEquals("one curve, made by the gesture", 1, lanes.size)
+        assertEquals(com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.VOLUME, 0), lanes[0].target)
+        assertEquals("a loop's curve", com.pocketstudio.model.AutomationLane.LOOP, lanes[0].mode)
+        assertEquals("one point, on the step playing", listOf(5), lanes[0].values.indices.filter { lanes[0].values[it] != null })
+        assertEquals(0.3f, lanes[0].values[5]!!, 0.001f)
+        pass(1_650)  // 11 steps more: step 16 = step 0 of the next pass of the 16-step drum loop
+        vm.setChannelVolume(0, 0.6f)
+        assertEquals("the next pass writes on the pattern's own steps", listOf(0, 5), vm.project.value.automation[0].values.indices.filter { vm.project.value.automation[0].values[it] != null })
+    }
+
+    /** A.8 (F2), the song's lane: while the whole song plays, a volume moved is written on the song's bar playing. */
+    @Test
+    fun aKnobMovedWhileTheSongPlaysWritesOnTheSongsBar() {
+        val (vm, engine) = openWithEngine(Project(song = listOf(SongPart(0), SongPart(0), SongPart(0))).copy(tempoBpm = 100.0))
+        vm.toggleSong()
+        idle()
+        vm.toggleAutomationRecord()
+        pass(3_000)  // step 20: bar 2 of the song, step 4 of the pattern
+        assertEquals(20, engine.songStep())
+        assertEquals(4, engine.currentStep())
+        vm.setChannelVolume(0, 0.3f)
+        val lanes = vm.project.value.automation
+        assertEquals("one curve, made by the gesture (notice: ${vm.notice.value})", 1, lanes.size)
+        assertEquals("a volume moves along the song", com.pocketstudio.model.AutomationLane.SONG, lanes[0].mode)
+        assertEquals("one point, on the song's second bar", listOf(1), lanes[0].songValues.indices.filter { lanes[0].songValues[it] != null })
+        assertEquals(0.3f, lanes[0].songValues[1]!!, 0.001f)
     }
 
     @Test

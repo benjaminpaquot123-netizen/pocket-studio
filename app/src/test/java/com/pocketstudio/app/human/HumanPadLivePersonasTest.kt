@@ -110,7 +110,12 @@ class HumanPadLivePersonasTest : HumanTester("padlive-personas") {
         // Round 1 (n° 9): the stars are said with the rhythm's dots, one node for TalkBack (« … Étoiles : 1 sur 3 »).
         assertNotNull("the stars shown\n" + screenLines().joinToString("\n"), centerOf("padlive_challenge_dots"))
         // Audit « banc crédible » 2, R1: the screen in text shows the stars as drawn (★ ☆), TalkBack's words stay on the node.
-        assertTrue("the stars drawn\n" + screenLines().joinToString("\n"), screenLines().any { "★" in it || "☆" in it })
+        // The stars' own line (the node tagged padlive_challenge_stars), not any star of the screen (Pad Live's ★ button).
+        val stars = centerOf("padlive_challenge_stars") ?: error("no stars\n" + screenLines().joinToString("\n"))
+        val starsLine = screenLines().firstOrNull { l -> Regex("@ (\\d+),(\\d+)$").find(l)?.groupValues?.let { g ->
+            kotlin.math.abs(g[1].toInt() - stars.first) <= 2f && kotlin.math.abs(g[2].toInt() - stars.second) <= 2f } == true }
+        assertTrue("the stars drawn on their line: $starsLine\n" + screenLines().joinToString("\n"),
+            starsLine != null && Regex("[★☆]( [★☆]){2}").containsMatchIn(starsLine))
         assertTrue("the stars said to TalkBack", compose.onAllNodes(androidx.compose.ui.test.hasContentDescription("Étoiles :", substring = true))
             .fetchSemanticsNodes(atLeastOneRootRequired = false).isNotEmpty())
         tap(centerOf("padlive_challenge_close"), "close the challenge")

@@ -48,9 +48,9 @@ class LexiconWordsTest {
     // --- Tour 5, chantier 3 (« C'est pas faux » : un mot par chose), audit de prise en main § 5 ---
 
     private val oldWords = listOf(
-        Regex("""l'assistant""", RegexOption.IGNORE_CASE), Regex("""\bguidé\b"""), Regex("""Nouveau morceau, pas à pas"""),
-        Regex("""pas à pas avec"""), Regex("""premiers pas"""), Regex("""Un petit guide"""), Regex("""[Cc]e guide se retrouve"""),
-        Regex("""Envoyer les bouts"""), Regex("""Envoyer le projet"""), Regex("""Envoyer le fichier brut"""), Regex("""Effets de scène"""), Regex("""Mes exports"""),
+        Regex("""l'assistant""", RegexOption.IGNORE_CASE), Regex("""\bguidé\b""", RegexOption.IGNORE_CASE), Regex("""Nouveau morceau, pas à pas"""), Regex("""^Pas à pas$""", RegexOption.IGNORE_CASE),
+        Regex("""pas à pas avec""", RegexOption.IGNORE_CASE), Regex("""premiers pas"""), Regex("""Un petit guide"""), Regex("""[Cc]e guide se retrouve"""),
+        Regex("""Envoyer les bouts"""), Regex("""Envoyer le projet"""), Regex("""Envoyer le fichier brut"""), Regex("""effets de scène""", RegexOption.IGNORE_CASE), Regex("""Mes exports""", RegexOption.IGNORE_CASE),
         Regex("""^Exporter( |$)"""), Regex("""Remettre à 0 dB"""),
     )
 

@@ -204,6 +204,7 @@ def main():
         bench_guards(d)
     with tempfile.TemporaryDirectory() as d:
         stamp_needs_green_summary(d)
+        quarantine_needs_its_message(d)
     with tempfile.TemporaryDirectory() as d:
         chantier(d)
         judge_criteria(d)
@@ -558,7 +559,7 @@ def bench_guards(d):
     check("sauté : BenchTwoTest#mic : no microphone on Robolectric" in text, "the skip's reason is listed:\n" + text)
     code, text = results(green + red)
     check(code == 1 and "rouge : Tour3RenameIdleTest#renames : timeout" in text, "one red forbids the lot:\n" + text)
-    write(quarantine, "Tour3RenameIdleTest#renames | order-dependent | 2026-11-08 | banc\n")
+    write(quarantine, "Tour3RenameIdleTest#renames | order-dependent | 2026-11-08 | banc | attendu : timeout\n")
     code, text = results(green + red)
     check(code == 0 and "quarantaine rouge : Tour3RenameIdleTest#renames" in text, "a quarantined red lets it pass, named:\n" + text)
     code, text = results("")
@@ -583,7 +584,7 @@ def bench_guards(d):
     os.remove(os.path.join(res, "TEST-x.xml"))
     write(os.path.join(res, "banc", "TEST-b.xml"), "<testsuite>" + green + red + "</testsuite>")
     os.makedirs(os.path.join(res, "renommage"))
-    write(quarantine, "Tour3RenameIdleTest#renames | order-dependent | 2026-11-08 | banc\n")
+    write(quarantine, "Tour3RenameIdleTest#renames | order-dependent | 2026-11-08 | banc | attendu : timeout\n")
     r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary, expected, failed], capture_output=True, text=True)
     text = open(summary, encoding="utf-8").read()
     check(r.returncode == 1 and "gradle:renommage" in text, "a failed pass is red even with a quarantined red elsewhere:\n" + text)
@@ -642,6 +643,36 @@ def stamp_needs_green_summary(d):
     check(ecris() and verifie(), "stamped again")
     write(os.path.join(lot, "junit", "banc", "TEST-y.xml"), "<testsuite>" + GREEN_CASE.replace("plays", "other") + "</testsuite>")
     check(not verifie(), "results changed after the stamp are refused")
+
+
+def quarantine_needs_its_message(d):
+    """Audit « banc crédible » 2, P6: a test in quarantine is excused only for its known cause: the line names the
+    message expected (« attendu : <texte> »); a failure whose message does not hold it is red, and so is a quarantined
+    failure whose line names no message. The real quarantine names one on every line."""
+    verdict = os.path.join(HERE, "selftest-verdict.py")
+    res = os.path.join(d, "quarantaine", "results")
+    quarantine = os.path.join(d, "quarantaine", "q.txt")
+    summary = os.path.join(d, "quarantaine", "resume.txt")
+    green = '<testcase classname="a.BenchOneTest" name="plays"/>'
+
+    def judge(message, line):
+        write(quarantine, line)
+        write(os.path.join(res, "TEST-x.xml"), "<testsuite>" + green + '<testcase classname="a.Tour3RenameIdleTest" name="renames">'
+              f'<failure message="{message}"/></testcase></testsuite>')
+        r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary], capture_output=True, text=True)
+        with open(summary, encoding="utf-8") as f:
+            return r.returncode, f.read()
+
+    line = "Tour3RenameIdleTest#renames | order-dependent | 2026-11-08 | banc | attendu : no project's ⋮\n"
+    code, text = judge("IllegalStateException: no project's ⋮ in Mes projets", line)
+    check(code == 0 and "quarantaine rouge : Tour3RenameIdleTest#renames" in text, "the known cause is excused:\n" + text)
+    code, text = judge("java.lang.NullPointerException: tout autre chose", line)
+    check(code == 1 and "rouge : Tour3RenameIdleTest#renames" in text and "message inattendu" in text, "another cause is red:\n" + text)
+    code, text = judge("IllegalStateException: no project's ⋮ in Mes projets", "Tour3RenameIdleTest#renames | order-dependent | 2026-11-08 | banc\n")
+    check(code == 1 and "sans message attendu" in text, "a quarantine line without its message excuses nothing:\n" + text)
+    with open(os.path.join(HERE, "selftest-quarantaine.txt"), encoding="utf-8") as f:
+        real = [l for l in f.read().splitlines() if l.strip() and not l.startswith("#")]
+    check(all(re.search(r"\|\s*attendu\s*:\s*\S", l) for l in real), "every real quarantine line names its message:\n" + "\n".join(real))
 
 
 REPORT_V2 = """siege: a | profil: ado-ko | lang: ko | device: phone | font: 100 | mode: simple

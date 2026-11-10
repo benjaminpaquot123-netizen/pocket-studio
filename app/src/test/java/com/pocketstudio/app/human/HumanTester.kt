@@ -125,7 +125,6 @@ abstract class HumanTester(private val seat: String) {
     }
     // Lot « tuto 4 » (É0): the play head moves as on a phone, and « Partager » exports.
     private val playhead = BenchPlayhead()
-    private val launchLines = BenchLaunchLines()
     private var lastVm: RhythmViewModel? = null
     /** Said once in the next sound-N.txt (what Android's share menu did). */
     private var note: String? = null
@@ -1309,7 +1308,6 @@ abstract class HumanTester(private val seat: String) {
             ears.tick()
             lastVm?.let {
                 playhead.tick(it, SystemClock.uptimeMillis())
-                launchLines.tick(it)
                 engine.tempo = it.project.value.tempoBpm
                 engine.beatsPerBar = it.project.value.beatsPerBar
             }

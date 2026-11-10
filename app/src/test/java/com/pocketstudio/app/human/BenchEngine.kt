@@ -85,7 +85,16 @@ internal class BenchEngine : CommandSink {
             // A.8: the drum pattern's length and place, as Engine.cpp keeps them (see [SongClock.currentStep]).
             CMD_SET_PATTERN_STEPS -> song.patternSteps(a)
             CMD_STAGING -> song.staging = value > 0.5f
-            CMD_SLOT_OFFSET -> if (a == SLOT_DRUMS) song.drumOffset(b)
+            CMD_SLOT_OFFSET -> song.slotOffset(a, b)
+            // A.16 (G2): the Live grid's launch lines, as Engine.cpp arms and plays them (see [SongClock.armLaunch]).
+            CMD_ARM_LAUNCH -> {
+                heard("armLaunch $a ${b and 0x1FFFF} ${value.toInt()}")
+                song.armLaunch(a, b, value)
+            }
+            CMD_CANCEL_LAUNCH -> {
+                heard("cancelLaunch $a")
+                song.cancelLaunch(a)
+            }
             // A.7: played as Engine.cpp's MarkSong and onStep (see [SongClock.mark]).
             CMD_MARK_SONG -> song.mark(a, value)
             // Banc fiable 3.2 (T4-17) and its review: the scene swaps as Engine.cpp arms and plays them (see [SongClock]).
@@ -560,9 +569,22 @@ internal class BenchEngine : CommandSink {
         @Volatile var staging = false
         private var steps = 16
         private var stagedSteps = 16
-        private var drumsStart = 0
-        private var offsetAtPlay = 0
-        private var stagedOffset = 0
+
+        // The Live grid's slots (Engine.cpp's slots_, A.16): the tag each plays (a scene, -1 stopped, ROW_TAG the row's) and
+        // the step it started on, its launch waiting (tag, quantum, the line just passed when armed within its grace, the
+        // last transport step played when armed: it fires from the next one), and the offsets a part started later in asks
+        // for (SetSlotOffset: at the next ▶, or at the slot's next launch or swap while the app stages). The drums' slot (0)
+        // is where the grid's head counts from (currentStep).
+        private val tag = IntArray(SLOTS) { ROW_TAG }
+        private val start = IntArray(SLOTS)
+        private val pending = IntArray(SLOTS) { NO_LAUNCH }
+        private val quantum = IntArray(SLOTS) { 1 }
+        private val late = IntArray(SLOTS) { -1 }
+        private val armedAfter = IntArray(SLOTS) { -1 }
+        private val stagedOffset = IntArray(SLOTS)
+        private val transportOffset = IntArray(SLOTS)
+        /** The launches made, (slot, tag, step) each, until the app drains them (Engine.cpp's launchEvents_, 256 at most). */
+        private val events = ArrayDeque<Int>()
 
         /** CMD_SET_PATTERN_STEPS: the pattern playing, or the waiting scene's while the app stages it. */
         @Synchronized fun patternSteps(n: Int) {
@@ -570,20 +592,125 @@ internal class BenchEngine : CommandSink {
             if (staging) stagedSteps = n.coerceIn(8, 256) else steps = n.coerceIn(8, 256)
         }
 
-        /** CMD_SLOT_OFFSET of the drums' slot: where in its pattern it starts at ▶, or at the swap being staged. */
-        @Synchronized fun drumOffset(n: Int) {
-            if (staging) stagedOffset = n.coerceIn(0, 1 shl 20) else offsetAtPlay = n.coerceIn(0, 1 shl 20)
+        /** CMD_SLOT_OFFSET: where in its part slot [slot] starts at ▶, or at the launch or swap being staged. */
+        @Synchronized fun slotOffset(slot: Int, n: Int) {
+            if (slot !in 0 until SLOTS) return
+            if (staging) stagedOffset[slot] = n.coerceIn(0, 1 shl 20) else transportOffset[slot] = n.coerceIn(0, 1 shl 20)
         }
 
         /**
          * The step of the drum pattern playing, -1 stopped or counting in: Engine.cpp's currentStep_, the drums' own step
          * (their slot's start, the pattern's length), which is what the grid's head shows and where a gesture is recorded.
-         * Not played here: a launch of the Live grid, which moves the drums' slot alone (the bench's Live has no engine).
          */
         @Synchronized fun currentStep(): Int {
             advance()
             val now = stepsNow()
-            return if (now < 0) -1 else Math.floorMod(now - drumsStart, steps)
+            return if (now < 0) -1 else Math.floorMod(now - start[0], steps)
+        }
+
+        /**
+         * CMD_ARM_LAUNCH (Engine.cpp): the slots of [mask] take scene [value] (or stop: < 0) on the first transport step from
+         * the next one that their quantum ([b] low bits) divides; armed less than the grace ([b] >> 17, 64ths of a step)
+         * after a line, from the next step, counted from that line. A whole row cancels the scene swap armed before.
+         */
+        @Synchronized fun armLaunch(mask: Int, b: Int, value: Float) {
+            advance()
+            val m = mask and ALL_SLOTS
+            if (m == 0) return
+            val t = if (value.isFinite() && value >= 0f) minOf(32767, Math.round(value)) else -1
+            val q = (b and 0x1FFFF).coerceIn(1, 1 shl 16)
+            val grace = ((b shr 17) and 0x3FFF) / 64.0
+            val last = stepsNow()
+            var lateLine = -1
+            if (grace > 0.0 && last >= 0) {
+                val line = last - last % q
+                val since = transportNow() - line
+                if (since >= 0.0 && since < grace) lateLine = line
+            }
+            for (k in 0 until SLOTS) {
+                if (m and (1 shl k) == 0) continue
+                pending[k] = t
+                quantum[k] = q
+                late[k] = lateLine
+                armedAfter[k] = last
+            }
+            staging = false
+            if (m == ALL_SLOTS) swapAt = -1
+        }
+
+        /** CMD_CANCEL_LAUNCH: what [mask]'s slots waited for is dropped. */
+        @Synchronized fun cancelLaunch(mask: Int) {
+            advance()
+            cancelLaunches(mask and ALL_SLOTS)
+        }
+
+        private fun cancelLaunches(mask: Int) {
+            for (k in 0 until SLOTS) if (mask and (1 shl k) != 0) pending[k] = NO_LAUNCH
+        }
+
+        /** The step slot [k]'s launch fires on (Int.MAX_VALUE: none waits): the first from the next one that is a line. */
+        private fun launchDue(k: Int): Int {
+            if (pending[k] == NO_LAUNCH) return Int.MAX_VALUE
+            val from = armedAfter[k] + 1
+            return if (late[k] >= 0) from else (from + quantum[k] - 1) / quantum[k] * quantum[k]
+        }
+
+        /** Engine.cpp's launchSlots on step [step]: the slots due there launch (a whole row on one scene: a scene swap). */
+        private fun launchSlots(step: Int) {
+            val fired = (0 until SLOTS).filter { launchDue(it) == step }
+            if (fired.isEmpty()) return
+            val rowTag = pending[0]
+            val row = fired.size == SLOTS && rowTag >= 0 && pending.all { it == rowTag }
+            var rowAt = step
+            for (k in fired) {
+                val t = pending[k]
+                val at = if (step % quantum[k] == 0 || late[k] < 0) step else late[k]
+                if (k == 0) rowAt = at
+                // swapSlot: the drums' pattern waiting takes over (an empty one keeps its length); the slot counts from here.
+                if (k == 0 && t >= 0) steps = stagedSteps
+                start[k] = at - stagedOffset[k]
+                stagedOffset[k] = 0
+                tag[k] = if (t < 0) -1 else t
+                pending[k] = NO_LAUNCH
+                late[k] = -1
+                if (events.size < 3 * MAX_EVENTS) events.addAll(listOf(k, tag[k], at))
+            }
+            if (row) {
+                sceneStart = rowAt
+                swaps++
+            }
+        }
+
+        /** Engine.cpp's slotStates: per slot, the tag playing, the tag waiting, the start step. */
+        @Synchronized fun slotStates(out: IntArray) {
+            advance()
+            for (k in 0 until minOf(SLOTS, out.size / 3)) {
+                out[k * 3] = tag[k]
+                out[k * 3 + 1] = pending[k]
+                out[k * 3 + 2] = start[k]
+            }
+        }
+
+        /** The launches made since the last call into [out] (slot, tag, step each); how many. */
+        @Synchronized fun drainLaunches(out: IntArray): Int {
+            advance()
+            var n = 0
+            while (n < out.size / 3 && events.isNotEmpty()) {
+                repeat(3) { out[n * 3 + it] = events.removeFirst() }
+                n++
+            }
+            return n
+        }
+
+        /** ■ (stopTransport): nothing waits, every slot back on the row from step 0, the offsets forgotten. */
+        private fun slotsStopped() {
+            for (k in 0 until SLOTS) {
+                pending[k] = NO_LAUNCH
+                tag[k] = ROW_TAG
+                start[k] = 0
+                stagedOffset[k] = 0
+                transportOffset[k] = 0
+            }
         }
 
         /** ▶ ([playing]) or ■, as Engine.cpp's SetTransport and stopTransport. */
@@ -592,12 +719,18 @@ internal class BenchEngine : CommandSink {
             songStart = -songStep
             sceneStart = 0
             swapAt = -1
-            // Every slot counts from the first step (a part carrying on: from where it was); ■ forgets both offsets, and
-            // ends a staging burst whose « off » was lost.
-            drumsStart = if (playing) -offsetAtPlay else 0
-            offsetAtPlay = 0
-            if (!playing) {
-                stagedOffset = 0
+            if (playing) {
+                // Every slot counts from the first step (a part carrying on: from where it was); a launch armed while stopped
+                // fires on it (and takes its staged offset then).
+                for (k in 0 until SLOTS) {
+                    tag[k] = ROW_TAG
+                    start[k] = if (pending[k] != NO_LAUNCH) 0 else -transportOffset[k]
+                    transportOffset[k] = 0
+                    armedAfter[k] = -1
+                }
+            } else {
+                // ■ forgets the offsets and what the grid armed, and ends a staging burst whose « off » was lost.
+                slotsStopped()
                 staging = false
             }
             if (playing) {
@@ -623,18 +756,23 @@ internal class BenchEngine : CommandSink {
 
         @Synchronized fun arm(a: Int, b: Int, value: Float, now: Int) {
             advance()
+            val swapWaits = swapAt >= 0
             swapAt = if (a < 0) -1 else a
             kind = b
             restartAt = if (value.isFinite()) value.toInt() else 0
             armedAt = now
             staging = false  // arming ends a staging burst even if its « off » was dropped (Engine.cpp)
+            // The whole scene armed (or cancelled) drops what the grid armed, except « leave the song » with no swap waiting
+            // while the grid waits (Engine.cpp's keepLaunches: the grid's launches stay armed).
+            val keep = a < 0 && b == 3 && !swapWaits && pending.any { it != NO_LAUNCH }
+            if (!keep) cancelLaunches(ALL_SLOTS)
             // « Leave the song » (the swap cancelled, kind 3): out of the song at once, the scene goes on (leaveSongNow).
             if (a < 0 && b == 3) inSong = false
         }
 
         /**
-         * What waits (the song mark, the scene swap) and whose step has come, played at that step and in Engine.cpp's
-         * order on a same step: the song's end first, then the mark, then the swap.
+         * What waits (the song mark, the scene swap, the grid's launches) and whose step has come, played at that step and
+         * in Engine.cpp's order on a same step: the song's end first, then the mark, then the swap, then the launches.
          */
         @Synchronized fun advance() {
             val now = stepsNow()
@@ -644,7 +782,12 @@ internal class BenchEngine : CommandSink {
                 val line = if (q > 0) (markFrom + q - 1) / q * q else Int.MAX_VALUE
                 val bar = (beatsPerBar * 4).coerceAtLeast(1)
                 val due = if (swapAt < 0) Int.MAX_VALUE else sceneStart + (maxOf(1, armedAt + 1 - sceneStart, swapAt) + bar - 1) / bar * bar
-                if (minOf(line, due) > now) return
+                val launch = (0 until SLOTS).minOf { launchDue(it) }
+                if (minOf(line, due, launch) > now) return
+                if (launch < minOf(line, due)) {
+                    launchSlots(launch)
+                    continue
+                }
                 if (due <= line && kind == 2) {
                     // The song's end (T5-Ab-27, A.7): the transport stops on that bar line as ■ stops it (stopTransport). A
                     // take ends there with what it recorded up to it (the app then keeps it: RhythmViewModel.songEnded), and
@@ -656,8 +799,7 @@ internal class BenchEngine : CommandSink {
                     zeroAt = -1L
                     inSong = false
                     markQuantum = 0
-                    stagedOffset = 0
-                    offsetAtPlay = 0
+                    slotsStopped()
                     staging = false
                     return
                 }
@@ -675,10 +817,13 @@ internal class BenchEngine : CommandSink {
                     3 -> inSong = false
                 }
                 sceneStart = due
-                // swapScene: the waiting scene's pattern takes over, its slots count from this bar line.
+                // swapScene: the waiting scene's pattern takes over, every slot counts from this bar line (its staged offset).
                 steps = stagedSteps
-                drumsStart = due - stagedOffset
-                stagedOffset = 0
+                for (k in 0 until SLOTS) {
+                    start[k] = due - stagedOffset[k]
+                    stagedOffset[k] = 0
+                    tag[k] = ROW_TAG
+                }
             }
         }
     }
@@ -704,6 +849,12 @@ internal class BenchEngine : CommandSink {
         val now = stepsNow()
         return if (now < 0 || !song.inSong) -1 else now - song.songStart
     }
+
+    /** A.16: the Live grid's slots as Engine.cpp publishes them (tag playing, tag waiting, start step each). */
+    override fun slotStates(out: IntArray) = song.slotStates(out)
+
+    /** A.16: the launches the grid made since the app last looked (Engine.cpp's launch events). */
+    override fun drainLaunchEvents(out: IntArray): Int = song.drainLaunches(out)
 
     /** The scene swaps played (Engine.cpp's sceneSwaps_): the app moves to the next part on each. */
     override fun sceneSwaps(): Int {
@@ -817,8 +968,14 @@ internal class BenchEngine : CommandSink {
         private const val CMD_SET_PATTERN_STEPS = 9
         private const val CMD_STAGING = 39
         private const val CMD_SLOT_OFFSET = 73
-        /** The drums' slot of the Live grid (LiveSlots.DRUMS, Engine.h's kSlotDrums). */
-        private const val SLOT_DRUMS = 0
+        private const val CMD_ARM_LAUNCH = 71
+        private const val CMD_CANCEL_LAUNCH = 72
+        /** The Live grid's slots (NativeEngine.SLOTS, Engine.h's kSlots; the drums' is 0) and its tags. */
+        private const val SLOTS = com.pocketstudio.engine.NativeEngine.SLOTS
+        private const val ALL_SLOTS = com.pocketstudio.engine.NativeEngine.ALL_SLOTS
+        private const val ROW_TAG = com.pocketstudio.engine.NativeEngine.ROW_TAG
+        private const val NO_LAUNCH = com.pocketstudio.engine.NativeEngine.NO_LAUNCH
+        private const val MAX_EVENTS = 256
         private const val CMD_BEATS_PER_BAR = 57
         private const val CMD_STEM_START = 32
         private const val CMD_PLAY_PREVIEW = 47

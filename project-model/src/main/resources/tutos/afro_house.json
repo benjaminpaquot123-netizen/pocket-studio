@@ -124,7 +124,7 @@
           "levels": "p",
           "text": "À toi : mets le swing à 25 : congas et shaker traînent, comme joués à la main.",
           "check": "swing",
-          "spot": "rhythm.pattern",
+          "spot": "rhythm.swing",
           "listen": "drums:kick,perc,hat,perc2,tom"
         },
         {

@@ -140,7 +140,7 @@
           "text": "À toi : un peu de swing, 16 % sur le curseur « Swing » sous la grille : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.",
           "why": "Les producteurs drill swinguent les charleys de 8 à 15 % : le sautillement sans perdre la raideur.",
           "check": "swing",
-          "spot": "rhythm.pattern",
+          "spot": "rhythm.swing",
           "listen": "drums:kick,snare,hat,perc"
         },
         {

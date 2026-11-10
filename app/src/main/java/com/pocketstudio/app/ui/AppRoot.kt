@@ -4413,7 +4413,7 @@ private fun WithPartHeader(vm: RhythmViewModel, simple: Boolean, content: @Compo
     val sessionUi by vm.sessionUi.collectAsStateWithLifecycle()
     val loopPart by vm.loopPart.collectAsStateWithLifecycle()
     val armed by vm.loopArmedBySelf.collectAsStateWithLifecycle()
-    val header = partHeader(project, transport.playing, transport.playing && sessionUi.songIndex >= 0, loopPart, armed)
+    val header = partHeader(project, transport.playing, transport.playing && sessionUi.songIndex >= 0, loopPart, armed, waiting = sessionUi.pending)
     // Lying down, the part's name alone is already in the top bar (its scene chip): the line is
     // shown only when it has something more to say, and the editor keeps its height.
     val lying = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE

@@ -14,7 +14,7 @@ import com.pocketstudio.model.StarterWizard.Part
 object TutoValidation {
     /** The screens « Je le fais » can open (the app's GuideNav.SPOTS, and the key's own sheet). */
     val SPOTS = setOf(
-        "tempo", "key", "song.parts", "sounds.track", "sounds.favorite", "sounds.layers", "rhythm.kit", "rhythm.pattern", "song.automation",
+        "tempo", "key", "song.parts", "sounds.track", "sounds.favorite", "sounds.layers", "rhythm.kit", "rhythm.pattern", "rhythm.swing", "song.automation",
         "record.voice", "mixer.master", "mixer.whatplays", "notes.track", "mixer.strip", "share.check", "share.export", "share.video", "acid", "acid.generate",
         "song.add", "tuto.key",
     )

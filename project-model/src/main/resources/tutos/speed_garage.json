@@ -109,7 +109,7 @@
           "levels": "p",
           "text": "À toi : mets le swing à 25 : les charleys traînent un peu, le balancement garage.",
           "check": "swing",
-          "spot": "rhythm.pattern",
+          "spot": "rhythm.swing",
           "listen": "drums:kick,snare,open_hat,hat,perc"
         },
         {

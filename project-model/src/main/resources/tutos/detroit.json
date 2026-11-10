@@ -58,7 +58,7 @@
           "why": "Detroit, c'est la soul jouée par des machines : le swing donne le côté humain.",
           "levels": "p",
           "check": "swing",
-          "spot": "rhythm.pattern",
+          "spot": "rhythm.swing",
           "listen": "drums:kick,hat,perc"
         }
       ]

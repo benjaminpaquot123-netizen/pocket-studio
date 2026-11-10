@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.Project
+import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.sceneTitle
 import com.pocketstudio.ui.Neon
@@ -39,12 +40,18 @@ data class PartHeaderUi(val title: String, val note: String? = null, val loop: B
  * The header of the editors for [p]: the part shown; while the song plays and the screens follow
  * it, a word that a touch on the grid keeps this part; once « ⟳ Partie » went on by itself
  * ([armedBySelf]), that this part loops and how to get the song back. [songPlaying]: the song
- * plays (not a part on its own); [loopPart]: « ⟳ Partie » is on.
+ * plays (not a part on its own); [loopPart]: « ⟳ Partie » is on. [waiting]: the part waiting for the next bar line
+ * ([SessionUi.pending]); said only outside the song mode, where it is a part someone picked (round 5, A a #27: until
+ * then nothing said the choice was taken). In the song mode it is the song's next part: not said.
  */
-fun partHeader(p: Project, playing: Boolean, songPlaying: Boolean, loopPart: Boolean, armedBySelf: Boolean): PartHeaderUi {
+fun partHeader(p: Project, playing: Boolean, songPlaying: Boolean, loopPart: Boolean, armedBySelf: Boolean, waiting: Int? = null): PartHeaderUi {
     val title = tr("Partie : %s", p.sceneTitle(p.scene))
     val hasSong = p.song.isNotEmpty()
     return when {
+        // Only a part someone picked: while the song plays (song mode), what waits is the song's own next part, staged
+        // ahead for the whole part (review G1, lot « bloquants »); a part picked then leaves the song mode first.
+        playing && !songPlaying && waiting != null && waiting != p.scene && waiting in p.allScenes.indices ->
+            PartHeaderUi(title, tr("%s arrive à la prochaine mesure…", p.sceneTitle(waiting)), loop = loopPart)
         armedBySelf && playing -> PartHeaderUi(title, tr("Elle tourne en boucle pendant que tu la modifies. ⟳ Boucler, en haut, pour reprendre le morceau."), loop = true)
         loopPart && hasSong -> PartHeaderUi(title, tr("En boucle (⟳ Boucler). ▶ joue cette partie seule."), loop = true)
         songPlaying -> PartHeaderUi(title, tr("Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle."))

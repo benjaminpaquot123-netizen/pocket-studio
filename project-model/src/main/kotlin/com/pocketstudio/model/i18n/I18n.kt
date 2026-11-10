@@ -150,6 +150,8 @@ object I18n {
         "partage",
         // Hands-on audit, chantier 2 (2026-11-10): what « Avancé » and « Avancé : master pro » hold, said on them closed.
         "composants",
+        // Round 5's blockers (2026-11-10): the part picked while the music plays, said until its bar comes.
+        "bloquants",
     )
 
     @Volatile

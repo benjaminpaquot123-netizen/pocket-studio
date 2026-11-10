@@ -118,7 +118,7 @@
   "Kit « %s » sur les pads : va dans Rythme (Annuler possible).": "Kit “%s” on the pads: go to Rhythm (can be undone).",
   "L'accordeur écoute le micro : autorise-le pour t'accorder.": "The tuner listens to the mic: allow it to tune up.",
   "L'export MIDI a échoué : %s": "The MIDI export failed: %s",
-  "L'export a échoué : %s": "The export failed: %s",
+  "Le fichier n'a pas pu être créé : %s": "The file could not be created: %s",
   "L'écriture du fichier a échoué (stockage plein ?).": "Writing the file failed (storage full?).",
   "La bibliothèque était abîmée : télécharge-la à nouveau.": "The library was damaged: download it again.",
   "La piste a été supprimée entre-temps : rien n'a changé.": "The track was deleted in the meantime: nothing changed.",

@@ -118,7 +118,7 @@
   "Kit « %s » sur les pads : va dans Rythme (Annuler possible).": "الطقم «%s» على الـPads: اذهب إلى الإيقاع (يمكن التراجع).",
   "L'accordeur écoute le micro : autorise-le pour t'accorder.": "الموالِف يستمع إلى الميكروفون: اسمح به لضبط آلتك.",
   "L'export MIDI a échoué : %s": "فشل تصدير MIDI: %s",
-  "L'export a échoué : %s": "فشل التصدير: %s",
+  "Le fichier n'a pas pu être créé : %s": "تعذّر إنشاء الملف: %s",
   "L'écriture du fichier a échoué (stockage plein ?).": "فشلت كتابة الملف (التخزين ممتلئ؟).",
   "La bibliothèque était abîmée : télécharge-la à nouveau.": "المكتبة تالفة: نزّلها من جديد.",
   "La piste a été supprimée entre-temps : rien n'a changé.": "حُذف المسار في هذه الأثناء: لم يتغير شيء.",

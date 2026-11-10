@@ -49,7 +49,7 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
     GuidePage(
         tr("La barre du haut"),
         listOf(
-            tr("📁 Le nom du projet : touche-le pour ouvrir, créer ou envoyer tes projets."),
+            tr("📁 Le nom du projet : touche-le pour ouvrir, créer ou partager tes projets."),
             tr("↶ ↷ Annuler et rétablir : on peut toujours revenir en arrière."),
             tr("● Enregistrer : ce que tu joues (clavier, pads, clavier MIDI) s'écrit en rythme."),
             tr("▶ Jouer et arrêter, sur tous les écrans."),
@@ -62,7 +62,7 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
             tr("En bas de l'écran, ou à gauche quand l'écran est couché :"),
             tr("Structure : les parties du morceau sur la ligne du temps ; deux touches sur un bloc l'ouvrent."),
             tr("Sons : la batterie, l'Acid 303, la voix et chaque piste d'instrument, en puces en haut."),
-            tr("Mix : les volumes côte à côte, les effets, les courbes et l'export."),
+            tr("Mix : les volumes côte à côte, les effets, les courbes et le partage."),
             tr("Live : jouer les parties en direct, avec les pads et les effets."),
             tr("Plus : tes projets, l'aide, les réglages, le clavier MIDI."),
             tr("Le Mode simple (Réglages) n'en garde que quatre : Mon morceau, Rythme, Clavier, Partager."),

@@ -26,7 +26,7 @@ object ScreenHelp {
     )
     val PADLIVE_MORE: Help get() = Help(
         tr("Plus"),
-        tr("Tout couper arrête tous les pads. Briques ouvre le Live complet (pistes, notes, Acid 303). Effets règle les effets des pads. Gros pads met les pads sur tout l'écran pour jouer à plusieurs. Partager envoie ta perf."),
+        tr("Tout couper arrête tous les pads. Briques ouvre le Live complet (pistes, notes, Acid 303). Effets règle les effets des pads. Gros pads met les pads sur tout l'écran pour jouer à plusieurs. Partager fait un fichier de ta perf."),
     )
     val PADLIVE_CHALLENGE: Help get() = Help(
         tr("Défi"),

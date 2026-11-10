@@ -118,7 +118,7 @@
   "Kit « %s » sur les pads : va dans Rythme (Annuler possible).": "किट “%s” पैड्स पर: रिदम में जाओ (अनडू हो सकता है)।",
   "L'accordeur écoute le micro : autorise-le pour t'accorder.": "ट्यूनर माइक सुनता है: ट्यून करने के लिए इसकी इजाज़त दो।",
   "L'export MIDI a échoué : %s": "MIDI एक्सपोर्ट फ़ेल हुआ: %s",
-  "L'export a échoué : %s": "एक्सपोर्ट फ़ेल हुआ: %s",
+  "Le fichier n'a pas pu être créé : %s": "फ़ाइल नहीं बन सकी: %s",
   "L'écriture du fichier a échoué (stockage plein ?).": "फ़ाइल लिखना फ़ेल हुआ (स्टोरेज फ़ुल?)।",
   "La bibliothèque était abîmée : télécharge-la à nouveau.": "लाइब्रेरी खराब थी: फिर से डाउनलोड करो।",
   "La piste a été supprimée entre-temps : rien n'a changé.": "इस बीच ट्रैक डिलीट हो गया: कुछ नहीं बदला।",

@@ -11176,7 +11176,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         _export.value = shown.copy(running = true, progress = 0f, files = emptyList(), error = null, stage = null, loudness = null,
             truePeakDb = null, seconds = null, lossDb = null, decodedPeakDb = null)
         // A foreground service keeps a long export going while the screen is elsewhere (notification, « Annuler »).
-        com.pocketstudio.app.export.ExportRun.begin(app, tr("Export de « %s »", com.pocketstudio.model.DefaultNames.shown(p.name)), ::cancelExport)
+        com.pocketstudio.app.export.ExportRun.begin(app, tr("Fichier de « %s »", com.pocketstudio.model.DefaultNames.shown(p.name)), ::cancelExport)
         exportJob = viewModelScope.launch {
             // How it ended, for the notification when the app is not on screen (null: cancelled).
             var ending: String? = null
@@ -11416,7 +11416,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     targetLufs = com.pocketstudio.model.LoudnessTargets.of(p)?.toDouble(),
                     targetChoice = com.pocketstudio.model.LoudnessTargets.choiceOf(p.mixer),
                     targetWholeSong = com.pocketstudio.model.LoudnessTargets.wholeSong(p.mixer) || p.mixVersion < Project.MIX_V2)
-                ending = tr("Export terminé : %s", done.joinToString(", ") { it.name })
+                ending = tr("Fichier prêt : %s", done.joinToString(", ") { it.name })
                 AppLog.add("Export ${settings.what} ${settings.format} : ${done.size} fichier(s), ${frames / OfflineExport.SAMPLE_RATE} s" +
                     if (share) " (partage)" else "")
                 // « Annuler » touched at the very end: no share menu opens after the window closed.
@@ -11435,7 +11435,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                         is UserMessage -> e.message
                         // Lot 1: the phone's codec stopped answering; the WAV needs none.
                         is com.pocketstudio.app.export.CodecStalledException -> tr("La compression ne répond pas sur ce téléphone : réessaie, ou partage en WAV.")
-                        else -> tr("L'export a échoué : %s", e.message ?: e.javaClass.simpleName)
+                        else -> tr("Le fichier n'a pas pu être créé : %s", e.message ?: e.javaClass.simpleName)
                     })
                 ending = _export.value.error
             } finally {

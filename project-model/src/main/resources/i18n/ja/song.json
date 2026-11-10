@@ -118,7 +118,7 @@
   "Kit « %s » sur les pads : va dans Rythme (Annuler possible).": "キット「%s」をパッドに：リズムへ移動（取り消し可）。",
   "L'accordeur écoute le micro : autorise-le pour t'accorder.": "チューナーはマイクで音を聞きます。チューニングするには許可してね。",
   "L'export MIDI a échoué : %s": "MIDI 書き出しに失敗：%s",
-  "L'export a échoué : %s": "書き出しに失敗：%s",
+  "Le fichier n'a pas pu être créé : %s": "ファイルを作れませんでした：%s",
   "L'écriture du fichier a échoué (stockage plein ?).": "ファイルの書き込みに失敗しました（ストレージ不足？）。",
   "La bibliothèque était abîmée : télécharge-la à nouveau.": "ライブラリが壊れていました。もう一度ダウンロードしてね。",
   "La piste a été supprimée entre-temps : rien n'a changé.": "その間にトラックが削除されました。何も変わっていません。",

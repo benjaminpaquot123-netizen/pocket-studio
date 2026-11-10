@@ -118,7 +118,7 @@
   "Kit « %s » sur les pads : va dans Rythme (Annuler possible).": "Kit “%s” di pad: buka Ritme (bisa diurungkan).",
   "L'accordeur écoute le micro : autorise-le pour t'accorder.": "Tuner mendengarkan mikrofon: izinkan untuk menyetem.",
   "L'export MIDI a échoué : %s": "Ekspor MIDI gagal: %s",
-  "L'export a échoué : %s": "Ekspor gagal: %s",
+  "Le fichier n'a pas pu être créé : %s": "Berkas tidak bisa dibuat: %s",
   "L'écriture du fichier a échoué (stockage plein ?).": "Gagal menulis file (penyimpanan penuh?).",
   "La bibliothèque était abîmée : télécharge-la à nouveau.": "Pustakanya rusak: unduh lagi.",
   "La piste a été supprimée entre-temps : rien n'a changé.": "Trek sudah dihapus sementara itu: tidak ada yang berubah.",

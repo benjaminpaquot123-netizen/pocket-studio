@@ -334,29 +334,22 @@ fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions, li
         // The longest word of the names, and the button's words: both on the row, or the button keeps its icon alone.
         val word = with(density) { tracks.flatMap { it.name.split(' ') }.maxOfOrNull { measurer.measure(it, nameStyle).size.width }?.toDp() } ?: 0.dp
         val label = with(density) { measurer.measure(tr("Écouter seule"), labelStyle).size.width.toDp() }
-        val narrow = maxWidth < ALONE_ROW_ROOM + word + label
+        // Chantier 2: the link row's « Changer le son » on one line too (it went on two beside the whole button).
+        val change = with(density) { measurer.measure(tr("Changer le son"), MaterialTheme.typography.bodySmall).size.width.toDp() }
+        val narrow = maxWidth < ALONE_ROW_ROOM + maxOf(word, change) + label
         // The card's own spacing between the rows (NeonCard: 8 dp).
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         tracks.forEachIndexed { i, t ->
             if (i > 0) HorizontalDivider(color = Neon.Outline.copy(alpha = 0.5f))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) {
-                Box(Modifier.size(12.dp).background(t.color, CircleShape))
-                Column(
-                    Modifier.weight(1f).heightIn(min = 48.dp).clip(RoundedCornerShape(8.dp))
-                        .clickable(role = Role.Button, onClickLabel = tr("Changer le son de %s", t.name)) { actions.changeSound(t.key) }
-                        .padding(horizontal = 6.dp)
-                        .spot("simple_track_${t.key}", if (i == 0) tr("Changer le son") else null)
-                        .testTag("simple_track_${t.key}"),
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    // Remix testers (Sarah): « Souffle mont… » cut short; a long name on two lines, never split mid-word.
-                    com.pocketstudio.ui.WholeWordsText(t.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 2)
-                    // Testers (lot « tuto 3 »): « Changer le … » cut short; whole, on a second line if it must.
-                    Text(
-                        if (t.mute) tr("coupée") else tr("Changer le son"), style = MaterialTheme.typography.labelMedium,
-                        color = if (t.mute) Neon.Amber else Neon.Cyan, maxLines = 2, overflow = TextOverflow.Ellipsis,
-                    )
-                }
+                // Chantier 2 (G3): the track opens its sounds: the shared link row (its colour, its name, « Changer le son », ›).
+                com.pocketstudio.ui.LinkRow(
+                    t.name, onClick = { actions.changeSound(t.key) },
+                    modifier = Modifier.weight(1f).spot("simple_track_${t.key}", if (i == 0) tr("Changer le son") else null).testTag("simple_track_${t.key}"),
+                    subtitle = if (t.mute) tr("coupée") else tr("Changer le son"), subtitleColor = if (t.mute) Neon.Amber else Neon.TextSecondary,
+                    clickLabel = tr("Changer le son de %s", t.name),
+                    leading = { Box(Modifier.size(12.dp).background(t.color, CircleShape)) },
+                )
                 com.pocketstudio.app.rhythm.AloneButton(trackAlone(t), tr("Écouter seule"), t.name, "simple_alone_${t.key}", compact = true, iconOnly = narrow) { actions.listenAlone(t.key) }
                 // A fader, not a loudspeaker (owner, APK 224: the 🔊 looked like « play » and stayed silent).
                 IconButton(onClick = { sheetFor = t.key }, modifier = Modifier.spot("simple_volume_${t.key}").testTag("simple_volume_${t.key}")) {
@@ -423,5 +416,8 @@ private fun SimpleTrackSheet(t: SimpleTrack, alone: Boolean, actions: SimpleTrac
     }
 }
 
-/** « Mes pistes »: a row's room besides a name's word and « Écouter seule »'s words (dot, gaps, paddings, ▶, the fader). */
-private val ALONE_ROW_ROOM = 12.dp + 12.dp + 12.dp + 46.dp + 48.dp + 8.dp
+/**
+ * « Mes pistes »: a row's room besides a name's word and « Écouter seule »'s words (dot, gaps, paddings, ▶, the fader),
+ * and the link row's own (its paddings, its two gaps and the chevron: 12 + 4 + 10 + 10 + 20 dp, chantier 2).
+ */
+private val ALONE_ROW_ROOM = 12.dp + 12.dp + 12.dp + 46.dp + 48.dp + 8.dp + 56.dp

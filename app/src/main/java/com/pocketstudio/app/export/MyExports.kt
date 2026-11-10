@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -106,21 +105,16 @@ object MyExports {
 
 /**
  * « Mes fichiers » as a line that opens the list ([tag]). Chantier 1 of the hands-on audit (G2, recette tel-03: « ressemble
- * à une simple phrase »): drawn as the lines beside it that open something (a title, what it is for under it, the arrow),
- * with a folder before it; the shared `LinkRow` of the next lot takes its place.
+ * à une simple phrase »), chantier 2 (G3): the shared [com.pocketstudio.ui.LinkRow], a folder before it, the chevron after.
  */
 @Composable
 fun MyExportsButton(tag: String, modifier: Modifier = Modifier, /** Its name alone (little room); what it is for stays in its « ? ». */ compact: Boolean = false) {
     var open by rememberSaveable { mutableStateOf(false) }
     Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        TextButton(onClick = { open = true }, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag(tag)) {
-            Icon(Icons.Filled.Folder, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.padding(end = 12.dp).size(22.dp))
-            Column(Modifier.weight(1f)) {
-                Text(tr("Mes fichiers"), color = Neon.Cyan)
-                if (!compact) Text(tr("Retrouver et renvoyer : M4A, WAV, vidéo, .zip"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-            }
-            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan)
-        }
+        com.pocketstudio.ui.LinkRow(
+            tr("Mes fichiers"), onClick = { open = true }, modifier = Modifier.weight(1f).testTag(tag), icon = Icons.Filled.Folder,
+            subtitle = if (compact) null else tr("Retrouver et renvoyer : M4A, WAV, vidéo, .zip"),
+        )
         // Round 3 integration: where these files are, in its « ? ».
         com.pocketstudio.ui.HelpDot(
             com.pocketstudio.ui.Help(tr("Mes fichiers"), tr("Retrouver et renvoyer : M4A, WAV, vidéo, .zip") + "\n" + MyExports.where()), about = listOf(tag),

@@ -29,7 +29,6 @@ import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -40,7 +39,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -470,28 +468,22 @@ fun ShareSheetContent(
         // The formats' « ? » sits here, at the end of the line about the other formats: beside the M4A / WAV
         // chips it did not fit a 360 dp phone and fell alone on a line of its own.
         Row(verticalAlignment = Alignment.CenterVertically) {
-        TextButton(onClick = actions.otherExports, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("share_other")) {
-            Column(Modifier.weight(1f)) {
-                Text(tr("Autres fichiers"), color = Neon.Cyan)
-                // Lot 2: the Mode simple has no Mix (the button takes it to the full mode).
-                Text(if (simple) tr("Piste par piste, MIDI, FLAC… (passe en mode Pro)") else tr("Piste par piste, MIDI, FLAC… dans Mix"),
-                    style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("share_other_where"))
-            }
-            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan)
-        }
+        // Chantier 2 (G3): the shared link row. Lot 2: the Mode simple has no Mix (the line takes it to the full mode).
+        com.pocketstudio.ui.LinkRow(
+            tr("Autres fichiers"), onClick = actions.otherExports, modifier = Modifier.weight(1f).testTag("share_other"), icon = Icons.Filled.LibraryMusic,
+            subtitle = if (simple) tr("Piste par piste, MIDI, FLAC… (passe en mode Pro)") else tr("Piste par piste, MIDI, FLAC… dans Mix"),
+            subtitleModifier = Modifier.testTag("share_other_where"),
+        )
             com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.Glossary.FORMATS, about = listOf("share_format_*"))
         }
         // Audit ultra round 3 (n° 13, seat F d 22, 61): the project itself, to go on with it elsewhere, where one sends
         // (it was only in Mes projets › ⋯).
         actions.sendProject?.let { send ->
             Row(verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = send, enabled = !ui.running, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("share_project")) {
-                    Column(Modifier.weight(1f)) {
-                        Text(tr("Sauvegarder le morceau en .zip"), color = Neon.Cyan)
-                        Text(tr("Pour un autre appareil ou une copie de sécurité"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-                    }
-                    Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan)
-                }
+                com.pocketstudio.ui.LinkRow(
+                    tr("Sauvegarder le morceau en .zip"), onClick = send, modifier = Modifier.weight(1f).testTag("share_project"), icon = Icons.Filled.Archive,
+                    subtitle = tr("Pour un autre appareil ou une copie de sécurité"), enabled = !ui.running,
+                )
                 // Round 3 integration: its « ? », as the other exports' line has one (what a project file is, where it opens).
                 com.pocketstudio.ui.HelpDot(
                     com.pocketstudio.ui.Help(tr("Sauvegarder le morceau en .zip"), tr("Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.")),
@@ -524,7 +516,7 @@ fun ShareSheetContent(
         }
         // G2 (recette tel-03: « bloqué » once the file was sent): the files made, right under « Partager », in sight
         // without scrolling in both modes (it was the last line of what scrolls, drawn as a plain sentence).
-        MyExportsButton("share_my_exports", Modifier.padding(start = 8.dp, end = 12.dp), compact = short)
+        MyExportsButton("share_my_exports", Modifier.padding(horizontal = 20.dp), compact = short)
     }
     }
 }

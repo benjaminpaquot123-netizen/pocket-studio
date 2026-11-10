@@ -601,9 +601,11 @@ internal fun ExportCard(
             // Lot E: the file's final form (rate, bits, dither, range, start and end, stems, tags, report).
             com.pocketstudio.app.export.ExportOptionsPanel(export, hasSong, actions.pro)
             if (!export.running) {
-                TextButton(onClick = actions.exportMidi, modifier = Modifier.fillMaxWidth().testTag("export_midi")) {
-                    Text(if (hasSong) tr("Exporter les notes en fichier MIDI (tout le morceau)") else tr("Exporter les notes en fichier MIDI"))
-                }
+                // Chantier 2 (G3): a line that makes the file and opens Android's share menu: the shared link row.
+                com.pocketstudio.ui.LinkRow(
+                    if (hasSong) tr("Exporter les notes en fichier MIDI (tout le morceau)") else tr("Exporter les notes en fichier MIDI"),
+                    onClick = actions.exportMidi, modifier = Modifier.testTag("export_midi"), icon = Icons.Filled.Piano,
+                )
             }
         }
         when {

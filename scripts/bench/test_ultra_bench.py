@@ -4,6 +4,7 @@ seats' journals, sounds and saved state, two reports (`python3 -I scripts/bench/
 Standard library only."""
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -217,6 +218,7 @@ def main():
         judge_refuses_unsealed_summary(d)
         portal(d)
         fusion_forged(d)
+        portal_traces(d)
         known_skips_bounded(d)
         mark_fixed(d)
         seat_exit(d)
@@ -1519,6 +1521,87 @@ def fusion_forged(d):
     code, out, asked, moved = merge("honnete", PS_REJEUX_DIR=empty)
     check(code == 0 and moved and "honnete: merged" in out, "an honest branch is merged:\n" + out)
     check("selftest " in asked and "rejeux docs/audits/ultra/rejeux t1-clavier" in asked, "the self-test and the repository's replays ran:\n" + asked)
+
+
+def portal_traces(d):
+    """Audit « banc crédible » 2, D1: the portal's traces are kept in the repository. fusion-equipes.sh commits, right
+    after each merge it makes, the self-test's summary, stamp and judge (selftest-resume.txt, selftest.ok,
+    selftest-chantier.txt) and fusion.txt (the merge, the branch, the review) under docs/audits/ultra/portail/
+    <date>-<tour>-<zone>/. The judge counts « fusion sans trace du portail » for every « Merge team … » made under
+    that rule (its first parent's fusion-equipes.sh writes there) without them, and « lot sans trace du portail » for
+    a lot of seats from round 6 on without its three files."""
+    root = fusion_toy(d, "fusion-traces")
+    script = os.path.join(root, "scripts", "bench", "fusion-equipes.sh")
+    calls = os.path.join(d, "traces-appels.txt")
+    git_toy(root, "checkout", "-q", "-b", "eq/tour-9-traces", "fx-int")
+    write(os.path.join(root, "scripts", "bench", "x.txt"), "x\n")
+    git_toy(root, "add", "scripts/bench/x.txt")
+    git_toy(root, "commit", "-q", "-m", "team")
+    sha = git_toy(root, "rev-parse", "HEAD").strip()
+    write(os.path.join(root, "docs", "audits", "ultra", "tour-9-traces-relecture.md"), f"Relu : {sha}\n\nVerdict : 0 bloquant, 0 grave — fusion possible\n")
+    git_toy(root, "add", "docs")
+    git_toy(root, "commit", "-q", "-m", "review")
+    git_toy(root, "checkout", "-q", "fx-int")
+    write(calls, "")
+    r = subprocess.run(["bash", script, "tour-9", "traces"], capture_output=True, text=True, env=dict(os.environ, PS_TOY_CALLS=calls))
+    check(r.returncode == 0, "the honest branch is merged:\n" + r.stdout + r.stderr)
+    merge = git_toy(root, "rev-parse", "HEAD^").strip()
+    check(git_toy(root, "log", "-1", "--format=%P", "HEAD^").count(" ") == 1, "HEAD^ is the merge, HEAD its traces")
+    kept = [f for f in git_toy(root, "ls-tree", "-r", "--name-only", "HEAD", "docs/audits/ultra/portail").split() if f]
+    names = sorted(os.path.basename(f) for f in kept)
+    check(names == ["fusion.txt", "selftest-chantier.txt", "selftest-resume.txt", "selftest.ok"], "the four traces are committed:\n" + "\n".join(kept))
+    folder = os.path.dirname(kept[0])
+    check(re.search(r"/\d{4}-\d\d-\d\d-tour-9-traces$", folder) is not None, "under portail/<date>-<tour>-<zone>/: " + folder)
+    fusion = git_toy(root, "show", f"HEAD:{folder}/fusion.txt")
+    check(f"fusion: {merge}" in fusion and "branche: eq/tour-9-traces" in fusion and f"relu: {sha}" in fusion, "fusion.txt names the merge, the branch, the review:\n" + fusion)
+    check(git_toy(root, "status", "--porcelain", "--untracked-files=no").strip() == "", "nothing left to commit")
+
+    # The judge: merges under the rule need their traces; lots from round 6 on need theirs.
+    jroot = judge_root(d, "juge-traces")
+    resume = os.path.join(jroot, "selftest-resume.txt")
+    bench = os.path.join(jroot, "scripts", "bench")
+    git_toy(jroot, "init", "-q", "-b", "main")
+    write(os.path.join(bench, "fusion-equipes.sh"), "# an older portal\n")
+    git_toy(jroot, "add", "-A")
+    git_toy(jroot, "commit", "-q", "-m", "start")
+
+    def team_merge(zone, traced):
+        git_toy(jroot, "checkout", "-q", "-b", f"eq/tour-9-{zone}", "main")
+        write(os.path.join(jroot, "docs", f"{zone}.md"), "x\n")
+        git_toy(jroot, "add", "docs")
+        git_toy(jroot, "commit", "-q", "-m", f"team {zone}")
+        git_toy(jroot, "checkout", "-q", "main")
+        git_toy(jroot, "merge", "-q", "--no-ff", "-m", f"Merge team {zone} of tour-9 (audit ultra)", f"eq/tour-9-{zone}")
+        full = git_toy(jroot, "rev-parse", "HEAD").strip()
+        if traced:
+            t = os.path.join(jroot, "docs", "audits", "ultra", "portail", f"2026-11-10-tour-9-{zone}")
+            write(os.path.join(t, "fusion.txt"), f"fusion: {full}\n")
+            write(os.path.join(t, "selftest-resume.txt"), "1 verts, 0 rouges, 0 en quarantaine, 0 sautés\n")
+            write(os.path.join(t, "selftest.ok"), "a stamp\n")
+            write(os.path.join(t, "selftest-chantier.txt"), "chantier : 0 écarts\n")
+            git_toy(jroot, "add", "docs")
+            git_toy(jroot, "commit", "-q", "-m", "traces")
+        return git_toy(jroot, "rev-parse", "--short", full).strip()
+
+    old = team_merge("avant", False)
+    write(os.path.join(bench, "fusion-equipes.sh"), "# writes docs/audits/ultra/portail/<date>-<tour>-<zone>/\n")
+    git_toy(jroot, "add", "scripts")
+    git_toy(jroot, "commit", "-q", "-m", "the rule")
+    bare = team_merge("nue", False)
+    traced = team_merge("tracee", True)
+    write(os.path.join(jroot, "docs", "audits", "ultra", "sieges", "tour-5", "lotA", "a", "start.txt"), "lang=fr\n")
+    write(os.path.join(jroot, "docs", "audits", "ultra", "sieges", "tour-6", "lotA", "a", "start.txt"), "lang=fr\n")
+    lot_b = os.path.join(jroot, "docs", "audits", "ultra", "sieges", "tour-6", "lotB")
+    write(os.path.join(lot_b, "a", "start.txt"), "lang=fr\n")
+    for n in ("selftest-resume.txt", "selftest.ok", "selftest-chantier.txt"):
+        write(os.path.join(lot_b, n), "x\n")
+    seal_resume(jroot, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", jroot, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    check(f"{bare} « Merge team nue of tour-9 (audit ultra) » : fusion sans trace du portail" in out, "a merge under the rule without its traces:\n" + out)
+    check(old not in out and traced not in out, "a merge before the rule, and one with its traces, are fine:\n" + out)
+    check("sieges/tour-6/lotA : lot sans trace du portail" in out and "tour-5/lotA" not in out and "lotB" not in out,
+          "a lot of round 6 without its traces (round 5 is older than the rule):\n" + out)
 
 
 def mark_fixed(d):

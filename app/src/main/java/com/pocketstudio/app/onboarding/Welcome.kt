@@ -181,8 +181,8 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
             Text(tr("Bienvenue ! Fais ta musique sur ton appareil. Par quoi on commence ?"), style = MaterialTheme.typography.bodyLarge)
             val choices = listOf<@Composable () -> Unit>(
             { Choice(
-                Icons.Filled.AutoAwesome, tr("Créer mon premier morceau (guidé)"),
-                tr("Choisis un style, je t'aide pas à pas, du début à la fin du morceau."),
+                Icons.Filled.AutoAwesome, tr("Fais-moi un morceau"),
+                tr("L'appli compose, tu écoutes et tu changes."),
                 Neon.Cyan, primary = true, onClick = actions.guided, tag = "welcome_guided",
             ) },
             { Choice(
@@ -224,7 +224,7 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
                     Text(tr("Plus tard : voir le rythme de départ"), color = Neon.TextSecondary)
                 }
             }
-            Text(if (simple) tr("Le guide des premiers pas reste dans ⋮ › Aide et premiers pas.") else tr("Le guide des premiers pas reste dans Plus › Aide."), style = MaterialTheme.typography.bodySmall,
+            Text(if (simple) tr("La visite rapide reste dans ⋮ › Aide.") else tr("La visite rapide reste dans Plus › Aide."), style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary, modifier = Modifier.align(Alignment.CenterHorizontally))
         }
     }

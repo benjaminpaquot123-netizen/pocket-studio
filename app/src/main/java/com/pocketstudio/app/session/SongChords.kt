@@ -179,7 +179,7 @@ fun SongChordsContent(ui: SongChordsUi, actions: SongChordsActions) {
         Text(tr("Partie par partie (une case = une mesure)"), style = MaterialTheme.typography.titleSmall)
         ui.parts.forEach { part -> PartChords(part, ui.choices, actions) }
         Text(tr("Pistes qui suivent les accords"), style = MaterialTheme.typography.titleSmall)
-        Text(tr("Les pistes de l'assistant suivent ; les notes que tu as écrites restent, sauf si tu le demandes ici."),
+        Text(tr("Les pistes de « Fais-moi un morceau » suivent ; les notes que tu as écrites restent, sauf si tu le demandes ici."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             ui.tracks.forEach { t ->

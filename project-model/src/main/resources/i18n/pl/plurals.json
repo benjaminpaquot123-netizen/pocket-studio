@@ -67,8 +67,6 @@
   "Encore %d notes en pointillé, plus haut ↑|many": "Jeszcze %d kropkowanych nut, wyżej ↑",
   "Encore %d notes en pointillé, plus loin →|few": "Jeszcze %d kropkowane nuty, dalej →",
   "Encore %d notes en pointillé, plus loin →|many": "Jeszcze %d kropkowanych nut, dalej →",
-  "Exporter %d mesures|few": "Eksportuj %d takty",
-  "Exporter %d mesures|many": "Eksportuj %d taktów",
   "Fait : break de %1$d mesures après %2$s|few": "Gotowe: przerwa na %1$d takty po %2$s",
   "Fait : break de %1$d mesures après %2$s|many": "Gotowe: przerwa na %1$d taktów po %2$s",
   "Fait : montée de %1$d mesures avant %2$s|few": "Gotowe: build-up na %1$d takty przed %2$s",
@@ -108,5 +106,7 @@
   "← Encore %d notes en pointillé, plus tôt|few": "← Jeszcze %d kropkowane nuty, wcześniej",
   "← Encore %d notes en pointillé, plus tôt|many": "← Jeszcze %d kropkowanych nut, wcześniej",
   "−%d demi-tons|few": "−%d półtony",
-  "−%d demi-tons|many": "−%d półtonów"
+  "−%d demi-tons|many": "−%d półtonów",
+  "Créer le fichier de %d mesures|few": "Utwórz plik: %d takty",
+  "Créer le fichier de %d mesures|many": "Utwórz plik: %d taktów"
 }

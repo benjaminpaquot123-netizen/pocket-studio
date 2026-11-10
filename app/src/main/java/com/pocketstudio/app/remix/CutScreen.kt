@@ -595,8 +595,8 @@ private fun SendBar(model: CutModel, actions: StemBoardActions, work: State<Stem
             }
         }
         Text(
-            if (model.single) tr("Place Début et Fin, puis envoie ce bout.")
-            else if (sels.isEmpty()) tr("Coche des bouts pour les envoyer.")
+            if (model.single) tr("Place Début et Fin, puis mets ce bout sur un pad ou une piste.")
+            else if (sels.isEmpty()) tr("Coche des bouts pour les mettre sur un pad ou une piste.")
             else trCount(sels.size, "1 bout choisi · %2\$s au total", "%1\$d bouts choisis · %2\$s au total", sels.size, boardClock(model.chosenFrames).substringBefore('.')),
             style = MaterialTheme.typography.titleSmall, color = if (sels.isEmpty() || model.single) Neon.TextSecondary else Neon.Cyan,
             modifier = Modifier.testTag("cut_chosen"),

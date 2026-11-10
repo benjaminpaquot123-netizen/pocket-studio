@@ -62,7 +62,7 @@ class BenchPlayThenTabsTest : HumanTester("play-tabs") {
     /** The assistant's song in Mode simple, as seat a made it (Techno), on its « Morceau » tab. */
     private fun simpleSong(family: String, style: String) {
         begin()
-        tapText("Créer mon premier morceau")
+        tapText("Fais-moi un morceau")
         tap("mode_card_simple")
         tap("wizard_family_$family")
         tap("wizard_style_$style")

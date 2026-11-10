@@ -223,7 +223,7 @@ object GuideStages {
     /** Each stage's title in the plan (French, shown through [guideText]). */
     val TITLES = listOf(
         "Le cadre", "Les sons et les motifs", "Les couches", "Les effets de chaque piste",
-        "L'arrangement", "Le mouvement", "Les niveaux et le master", "Exporter et partager",
+        "L'arrangement", "Le mouvement", "Les niveaux et le master", "Partager le morceau",
     )
 
     /** Each stage in a few words, inside a sentence (« Fait : les sons, les effets »). */

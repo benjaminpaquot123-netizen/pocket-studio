@@ -65,6 +65,13 @@ class LexiconWordsTest {
         assertTrue("old words:\n" + found.joinToString("\n"), found.isEmpty())
     }
 
+    /** The tour's own noun in each language (« Quick tour », « Kurztour », « Visita rápida »…), in lower case. */
+    private val TOUR_STEM = mapOf(
+        Lang.EN to "tour", Lang.DE to "tour", Lang.ES to "visita", Lang.IT to "tour", Lang.NL to "rondleiding", Lang.PT_BR to "tour",
+        Lang.PL to "wprowadzeni", Lang.TR to "tur", Lang.ID to "tur", Lang.JA to "ツアー", Lang.KO to "둘러보기", Lang.ZH_CN to "导览",
+        Lang.HI to "टूर", Lang.AR to "جولة",
+    )
+
     /** The assistant's name and the tour's name are the same text in every text of a language. */
     @Test
     fun theAssistantAndTheTourHaveOneNameInEveryLanguage() {
@@ -73,10 +80,10 @@ class LexiconWordsTest {
         val wrong = (Lang.entries - Lang.FR).flatMap { lang ->
             val t = I18n.table(lang)
             val nameWord = t[name]!!
-            val tourWord = t[tour]!!.split(Regex("[,،、，]"), limit = 2).first().trim()
+            val tourWord = TOUR_STEM.getValue(lang)
             val named = french.filter { name in it && it != name }.mapNotNull { k -> t[k]?.takeUnless { nameWord in it }?.let { "${lang.code} name: $it" } }
             val toured = french.filter { Regex("""visite rapide|Cette visite""").containsMatchIn(it) && it != tour }
-                .mapNotNull { k -> t[k]?.takeUnless { tourWord in it }?.let { "${lang.code} tour « $tourWord »: $it" } }
+                .mapNotNull { k -> t[k]?.takeUnless { tourWord in it.lowercase() }?.let { "${lang.code} tour « $tourWord »: $it" } }
             named + toured
         }
         assertTrue("not the same word:\n" + wrong.take(20).joinToString("\n"), wrong.isEmpty())

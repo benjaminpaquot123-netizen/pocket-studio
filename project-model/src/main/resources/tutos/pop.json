@@ -70,7 +70,7 @@
         {
           "id": "ready",
           "text": "Avant de commencer : le kit de la pop est déjà chargé, avec ses réglages. Tu n'as rien à régler, seulement à jouer.",
-          "textPro": "Déjà prêt : le kit et les réglages de l'assistant pour la pop (volumes, place gauche-droite, effets des pads). Chaque piste que tu créeras arrivera avec son son conseillé.",
+          "textPro": "Déjà prêt : le kit et les réglages de « Fais-moi un morceau » pour la pop (volumes, place gauche-droite, effets des pads). Chaque piste que tu créeras arrivera avec son son conseillé.",
           "check": "manual"
         },
         {
@@ -482,7 +482,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
           "textPro": "À toi : baisse un peu les faders « Accords » et « Mélodie » ; si tu as chanté, la Voix passe devant tout le reste.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",
@@ -499,7 +499,7 @@
       "steps": [
         {
           "id": "loudness",
-          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Streaming » (−14 LUFS) : Spotify ou YouTube baissent de toute façon les morceaux plus forts, autant garder les coups de caisse vivants. Il paraîtra un peu moins fort que la démo de l'assistant : c'est normal, c'est le niveau des plateformes.",
+          "text": "À toi : dans « Sortie générale », règle « Volume visé » sur « Streaming » (−14 LUFS) : Spotify ou YouTube baissent de toute façon les morceaux plus forts, autant garder les coups de caisse vivants. Il paraîtra un peu moins fort que la démo de « Fais-moi un morceau » : c'est normal, c'est le niveau des plateformes.",
           "check": "loudness:STREAMING",
           "spot": "mixer.master",
           "listen": "song"

@@ -155,7 +155,7 @@ class CutSpanJourneyTest {
         compose.onNodeWithTag("cut_auto").assertTextEquals("Un bout", includeEditableText = false)
         compose.onAllNodesWithTag("cut_piece_0").assertCountEquals(0)
         compose.onAllNodesWithTag("cut_here").assertCountEquals(0)
-        compose.onNodeWithTag("cut_chosen").assertTextEquals("Place Début et Fin, puis envoie ce bout.")
+        compose.onNodeWithTag("cut_chosen").assertTextEquals("Place Début et Fin, puis mets ce bout sur un pad ou une piste.")
         compose.onNodeWithTag("cut_to_pads").assertIsEnabled()
         compose.onNodeWithContentDescription("Début du bout").assertExists()
         compose.onNodeWithContentDescription("Fin du bout").assertExists()

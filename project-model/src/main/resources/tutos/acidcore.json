@@ -50,7 +50,7 @@
         {
           "id": "ready",
           "text": "Avant de commencer : ton kit est déjà celui de l'acidcore (un kick dur accordé sur Fa♯), et la piste « Acid 303 » a déjà son son « Hurleur ». Tu n'as rien à régler.",
-          "textPro": "Déjà prêt : le kick gabber de l'assistant (saturé, accordé sur Fa♯), charleys 909, et la 303 au son « Hurleur » avec sa saturation et son écho."
+          "textPro": "Déjà prêt : le kick gabber de « Fais-moi un morceau » (saturé, accordé sur Fa♯), charleys 909, et la 303 au son « Hurleur » avec sa saturation et son écho."
         },
         {
           "id": "kick_do",
@@ -350,7 +350,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la 303, puis celui du pad « Clap ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la 303, puis celui du pad « Clap ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la 303, puis celui du pad « Clap ».",
           "check": "changed:volumes:acid,clap",
           "spot": "mixer.strip",

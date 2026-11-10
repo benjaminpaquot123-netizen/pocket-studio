@@ -903,7 +903,7 @@ fun AppRoot() {
                         // T5-ZIP: the same sender as « Prêt à partager ? » (the .zip kept in Documents, said, listed in « Mes fichiers »).
                         exportZip = { p -> zipSender.send(p.id, p.name) },
                         exportRaw = { p ->
-                            projectsVm.exportRaw(p) { file -> WavExporter.share(context, listOf(file), tr("Envoyer le projet")) }
+                            projectsVm.exportRaw(p) { file -> WavExporter.share(context, listOf(file), tr("Sauvegarder le morceau en .zip")) }
                         },
                         restoreOpening = projectsVm::restoreOpening,
                         importZip = { pickProjectZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) },
@@ -2238,7 +2238,7 @@ fun AppRoot() {
         TopMenuItem(tr("Accueil"), "more_home", goHome),
         TopMenuItem(tr("Mes projets"), "more_projects") { showProjects = true },
         TopMenuItem(tr("Réglages"), "more_settings") { toolPage = ToolPage.Reglages; go(AppTab.Outils) },
-        TopMenuItem(tr("Aide et premiers pas"), "more_help") { toolPage = ToolPage.Aide; go(AppTab.Outils) },
+        TopMenuItem(tr("Aide"), "more_help") { toolPage = ToolPage.Aide; go(AppTab.Outils) },
         TopMenuItem(tr("Passer en mode Pro"), "more_full") { SettingsStore.update(context) { it.copy(simpleMode = false) } },
         TopMenuItem(tr("Signaler un bug"), "more_bug") { reportBug("menu ⋯") },
     )

@@ -98,9 +98,6 @@
   "Encore %d notes en pointillé, plus loin →|two": "بقيت نوتتان منقّطتان، أبعد →",
   "Encore %d notes en pointillé, plus loin →|few": "بقيت %d نوتات منقّطة، أبعد →",
   "Encore %d notes en pointillé, plus loin →|many": "بقيت %d نوتة منقّطة، أبعد →",
-  "Exporter %d mesures|two": "تصدير مازورتين",
-  "Exporter %d mesures|few": "تصدير %d مازورات",
-  "Exporter %d mesures|many": "تصدير %d مازورة",
   "Fait : break de %1$d mesures après %2$s|two": "تم: استراحة من مازورتين بعد %2$s",
   "Fait : break de %1$d mesures après %2$s|few": "تم: استراحة من %1$d مازورات بعد %2$s",
   "Fait : break de %1$d mesures après %2$s|many": "تم: استراحة من %1$d مازورة بعد %2$s",
@@ -163,5 +160,8 @@
   "← Encore %d notes en pointillé, plus tôt|many": "← بقيت %d نوتة منقّطة، أبكر",
   "−%d demi-tons|two": "−نصفا درجة",
   "−%d demi-tons|few": "−%d أنصاف درجات",
-  "−%d demi-tons|many": "−%d نصف درجة"
+  "−%d demi-tons|many": "−%d نصف درجة",
+  "Créer le fichier de %d mesures|two": "إنشاء ملف من مازورتين",
+  "Créer le fichier de %d mesures|few": "إنشاء ملف من %d مازورات",
+  "Créer le fichier de %d mesures|many": "إنشاء ملف من %d مازورة"
 }

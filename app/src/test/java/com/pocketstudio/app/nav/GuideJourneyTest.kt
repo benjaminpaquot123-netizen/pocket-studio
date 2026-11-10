@@ -51,7 +51,7 @@ import java.time.Duration
 /**
  * G6 (docs/PLAN-GUIDE.md §5, « Vérification »; docs/guide/G6-verification.md): the Guide followed as
  * a beginner follows it, in the real app (MainActivity, rebuilt when the song opens, as on a phone),
- * from a phone where it was just installed: the welcome › « Créer mon premier morceau (guidé) » › the
+ * from a phone where it was just installed: the welcome › « Fais-moi un morceau » › the
  * assistant › « Ton morceau est prêt » and the other « Pour commencer » cards › cards of the stages
  * (applied, skipped, refused, heard « Sans / Avec », « Voir le réglage », a track's sheet, a layer
  * added then brought back) › the export; then the app closed and opened again three days later
@@ -183,7 +183,7 @@ class GuideJourneyTest {
 
     private fun Project.strip(name: String) = mixer.channels[InstrumentTrack.mixerChannel(trackNamed(name))]
 
-    /** The welcome › « Créer mon premier morceau (guidé) » › [style] › « Créer maintenant »: the song opens on « Ton morceau est prêt ». */
+    /** The welcome › « Fais-moi un morceau » › [style] › « Créer maintenant »: the song opens on « Ton morceau est prêt ». */
     private fun firstSong(simple: Boolean, style: String, family: String) {
         launch()
         j.firstLaunch(simple = simple, guided = true)

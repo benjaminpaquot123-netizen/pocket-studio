@@ -1725,7 +1725,7 @@
     },
     {
      "id": "export",
-     "label": "Exporter le M4A",
+     "label": "Partager le M4A",
      "why": "Le morceau entier, au volume du style.",
      "simpleLabel": "Faire le fichier audio",
      "action": {

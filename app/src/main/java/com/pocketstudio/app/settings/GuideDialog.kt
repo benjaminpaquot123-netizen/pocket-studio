@@ -81,7 +81,7 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
         listOf(
             tr("Pour commencer : touche ▶, puis les pads dans Sons › Batterie."),
             tr("Pour partager : ⤴ tout en haut à droite, sur chaque écran."),
-            tr("Ce guide se retrouve dans Plus › Aide."),
+            tr("Cette visite se retrouve dans Plus › Aide."),
         ),
     ),
 )
@@ -110,7 +110,7 @@ val GUIDE_PAGES_SIMPLE: List<GuidePage> get() = GUIDE_PAGES.let { full ->
             listOf(
                 tr("Pour commencer : touche ▶, puis les cases dans Rythme."),
                 tr("Pour partager : l'onglet Partager."),
-                tr("Ce guide se retrouve dans ⋮ › Aide et premiers pas."),
+                tr("Cette visite se retrouve dans ⋮ › Aide."),
             ),
         ),
     )

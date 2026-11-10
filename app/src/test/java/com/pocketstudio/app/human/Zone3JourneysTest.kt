@@ -54,7 +54,7 @@ class Zone3JourneysTest : HumanTester("zone3") {
 
     private fun simpleSong() {
         begin(SeatOptions(simple = true))
-        tapText("Créer mon premier morceau")
+        tapText("Fais-moi un morceau")
         if (centerOf("mode_card_simple") != null) tap("mode_card_simple")
         tap("wizard_family_Techno")
         tap("wizard_style_techno")

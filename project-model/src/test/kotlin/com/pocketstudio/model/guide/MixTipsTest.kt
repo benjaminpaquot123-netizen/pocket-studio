@@ -44,7 +44,7 @@ class MixTipsTest {
         val tip = MixTips.of(loud).first()
         assertEquals(bass.channel, tip.ch)
         assertEquals("La basse et le kick se gênent.", tip.text)
-        assertEquals("Baisser la basse de 2 dB", tip.fix)
+        assertEquals("Baisser la basse un peu", tip.fix)
         val fixed = MixTips.apply(loud, tip)
         assertEquals(GuideLevels.faderDb(loud.mixer.channels[bass.channel].volume) - 2f, GuideLevels.faderDb(fixed.mixer.channels[bass.channel].volume), 0.01f)
     }
@@ -65,6 +65,6 @@ class MixTipsTest {
         val hot = p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.mapIndexed { i, c -> if (i == 0) c.copy(volume = 1f) else c }))
         val tip = MixTips.of(hot).first { it.ch == 0 }
         assertNotEquals(1f, MixTips.apply(hot, tip).mixer.channels[0].volume)
-        assertEquals("Le baisser de 3 dB", tip.fix)
+        assertEquals("Le baisser un peu", tip.fix)
     }
 }

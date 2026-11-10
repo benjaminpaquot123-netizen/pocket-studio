@@ -53,7 +53,7 @@ class BenchTour4Test : HumanTester("tour4") {
     /** The assistant's song in Mode simple (several parts, as the seats' projects), on its « Morceau » tab. */
     private fun simpleSong() {
         begin()
-        tapText("Créer mon premier morceau")
+        tapText("Fais-moi un morceau")
         tap("mode_card_simple")
         tap("wizard_family_Techno")
         tap("wizard_style_techno")

@@ -10,14 +10,9 @@
   "Voir ses sons": "इसकी आवाज़ें दिखाओ",
   "Volume de sortie": "आउटपुट वॉल्यूम",
   "Aucun conseil pour l'instant : règle à l'oreille.": "अभी कोई सुझाव नहीं: अपने कानों पर भरोसा करो।",
-  "Remettre à 0 dB": "वापस 0 dB पर",
   "Ça sature : le son grésille.": "आवाज़ फट रही है: खरखराहट है।",
-  "Baisser la sortie de %s dB": "आउटपुट %s dB घटाओ",
   "Un solo est resté allumé : on n'entend plus que %s.": "एक सोलो चालू रह गया: सिर्फ़ %s सुनाई दे रहा है।",
   "La basse et le kick se gênent.": "बेस और किक आपस में टकरा रहे हैं।",
-  "Baisser la basse de %s dB": "बेस %s dB घटाओ",
   "« %s » couvre les autres.": "“%s” बाकी सबको ढक रहा है।",
-  "Le baisser de %s dB": "%s dB घटाओ",
-  "« %s » se perd dans le mix.": "“%s” मिक्स में खो रहा है।",
-  "Le monter de %s dB": "%s dB बढ़ाओ"
+  "« %s » se perd dans le mix.": "“%s” मिक्स में खो रहा है।"
 }

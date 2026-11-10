@@ -186,7 +186,7 @@ internal fun plusEntries(
     // Owner (2026-10-29): the home screen, its Remix card, one touch away from a project.
     home?.let { PlusEntry("home", Icons.Filled.Home, tr("Accueil"), tr("Continuer, nouveau morceau, Remix…"), open = it) },
     PlusEntry("projects", Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir, créer, dupliquer, envoyer un projet"), open = projects),
-    PlusEntry("Aide", Icons.AutoMirrored.Filled.HelpOutline, tr("Aide"), tr("Les premiers pas, le Guide, le lexique"), page = ToolPage.Aide),
+    PlusEntry("Aide", Icons.AutoMirrored.Filled.HelpOutline, tr("Aide"), tr("La visite rapide, le Guide, le lexique"), page = ToolPage.Aide),
     PlusEntry("missions", Icons.Filled.Flag, tr("Mon premier morceau, avec le Guide"), tr("Ses premières cartes, du style au partage"), open = missions),
     PlusEntry("glossary", Icons.AutoMirrored.Filled.MenuBook, tr("Les mots de la musique, à écouter"), tr("Chaque mot avec un exemple sonore"), open = glossary),
     PlusEntry("Reglages", Icons.Filled.Settings, tr("Réglages"), tr("Langue, thème, taille, son, mode simple"), page = ToolPage.Reglages),
@@ -383,9 +383,9 @@ private fun SimpleTrackSheet(t: SimpleTrack, alone: Boolean, actions: SimpleTrac
             }
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text(tr("Volume"), Modifier.weight(1f))
-                Text(com.pocketstudio.app.mixer.faderDb(t.volume), style = MonoStyle, color = Neon.Cyan)
+                Text(com.pocketstudio.app.mixer.faderWords(t.volume), style = MonoStyle, color = Neon.Cyan)
             }
-            ProSlider(value = t.volume, onValueChange = { actions.setVolume(t.ch, it) }, label = tr("Volume de %s", t.name), valueText = com.pocketstudio.app.mixer.faderDb(t.volume), modifier = Modifier.testTag("simple_track_volume"))
+            ProSlider(value = t.volume, onValueChange = { actions.setVolume(t.ch, it) }, label = tr("Volume de %s", t.name), valueText = com.pocketstudio.app.mixer.faderWords(t.volume), modifier = Modifier.testTag("simple_track_volume"))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 // « Écouter seule » plays at once (the loop of the part, the track alone): no ▶ to find first.
                 com.pocketstudio.app.rhythm.AloneButton(alone, tr("Écouter seule"), t.name, "simple_track_solo") { actions.listenAlone(t.key) }

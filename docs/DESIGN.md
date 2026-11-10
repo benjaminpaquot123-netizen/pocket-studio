@@ -29,6 +29,24 @@ Règles 12 à 22 : audit de prise en main (2026-11-09, `docs/audits/AUDIT-PRISE-
 21. **Un geste de jeu n'ouvre jamais une fenêtre** : les réglages d'un pad sont un badge visible ; un glissé ne déclenche pas un effet (touch slop) ; un effet qui part vibre.
 22. **En paysage et à 130 %, chaque feuille défile ou se réorganise** ; une capture de la matrice par feuille (phoneLand 1,0 et 1,3).
 
+## Lexique (un mot, un sens)
+
+Tour 5, chantier 3 (2026-11-10), d'après `docs/audits/AUDIT-PRISE-EN-MAIN.md` § 5. Le français est la source ; chaque langue garde le même terme partout (sous test : `LexiconWordsTest`, `SimpleNoDecibelTest`).
+
+| Mot | Sens unique | Ce qui disparaît à l'écran |
+|---|---|---|
+| Morceau | ce que tu fabriques | « projet » (reste dans le code et « Mes projets ») |
+| Fais-moi un morceau | le nom de l'assistant qui compose (carte, écran, aide) | « assistant », « guidé », « pas à pas » pour lui ; dans les phrases courantes on dit « l'appli » |
+| J'apprends | le tuto de A à Z, toi aux commandes (« étape par étape » est réservé à lui) | — |
+| Guide | la barre à cartes du bas et ses cartes, seule | « guide des premiers pas » |
+| Visite rapide | la fenêtre de 5 pages (GuideDialog), rouverte par ⋮ › Aide | « Aide et premiers pas » (l'entrée s'appelle « Aide ») |
+| Partager | sortir un fichier vers une appli ou un dossier ; « Créer le fichier… » fabrique le fichier dans Mix | « Exporter », « Envoyer » dans ce sens |
+| Sauvegarder le morceau en .zip | garder le morceau entier pour un autre appareil | « Envoyer le projet » |
+| Mettre sur… | poser un bout sur un pad, une piste, le Live | « Envoyer les bouts », « envoie-le » |
+| Effets live | les effets de Pad Live et de Live | « Effets de scène » |
+| Volume | fort ou faible : en Mode simple « Normal », « +3 », « −6 », « Plus de son », « un peu » | « dB » (le Mode simple n'en montre aucun ; le Pro garde ses chiffres) |
+| Mes fichiers | la liste de ce que tu as partagé | « Mes exports » |
+
 ## Composants
 - `NeonCard` (panneau en relief, repliable par son premier `SectionLabel`), `SectionLabel` (barre de couleur + petites capitales), `ProSlider` (piste fine en dégradé, pouce lumineux), `pillColors` (puce choisie remplie d'accent), `LevelMeter` (LED vert → ambre → rouge).
 - `LinkRow` (ligne qui ouvre : fond, icône, titre, sous-ligne, chevron ›), `Disclosure` (repli pleine largeur : nom, résumé de ce qu'il cache, valeur changée en orange, chevron qui tourne), `TrackChip` (pastille de piste : point de couleur, nom, son ; hauteur qui suit la police). Partager = `Icons.Filled.Share`, partout.

@@ -36,7 +36,7 @@ class BenchAssistantTest : HumanTester("assistant") {
     @Test
     fun theAssistantsListensPlayAndTheGuidePlaysTheSongFromItsPart() {
         begin()
-        act("touche ${centerOfText("Créer mon premier morceau", substring = true)!!.first} ${centerOfText("Créer mon premier morceau", substring = true)!!.second}")
+        act("touche ${centerOfText("Fais-moi un morceau", substring = true)!!.first} ${centerOfText("Fais-moi un morceau", substring = true)!!.second}")
         tap("mode_card_simple")
         tap("wizard_family_House")
         val style = tap("wizard_style_listen_house")

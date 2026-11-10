@@ -56,7 +56,7 @@
         {
           "id": "ready",
           "text": "Avant de commencer : ton kit est déjà celui du gabber : un kick dur, très saturé, accordé sur la note du morceau. Tu n'as rien à régler.",
-          "textPro": "Déjà prêt : le kick dur de l'assistant (909 saturé à l'extrême, accordé sur Fa♯, préset « distortion »), charleys et caisse 909."
+          "textPro": "Déjà prêt : le kick dur de « Fais-moi un morceau » (909 saturé à l'extrême, accordé sur Fa♯, préset « distortion »), charleys et caisse 909."
         },
         {
           "id": "kick_hear",
@@ -397,7 +397,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

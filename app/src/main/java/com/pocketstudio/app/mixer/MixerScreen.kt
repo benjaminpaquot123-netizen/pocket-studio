@@ -149,6 +149,20 @@ fun faderDb(v: Float): String {
     return com.pocketstudio.model.i18n.ltrNumber((if (db >= 0) "+" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", db))
 }
 
+/**
+ * A level in the Mode simple's words (audit « un mot par chose », § 5 « Volume »): « Normal » where the fader rests,
+ * « Plus de son » at the bottom, else the move as a whole signed number (« +3 », « −6 »); never « dB ».
+ */
+fun levelWords(db: Float): String {
+    if (db.isNaN() || db <= -60f) return tr("Plus de son")
+    val whole = Math.round(db)
+    if (kotlin.math.abs(db) < 0.5f || whole == 0) return tr("Normal")
+    return com.pocketstudio.model.i18n.ltrNumber((if (whole > 0) "+" else "−") + kotlin.math.abs(whole))
+}
+
+/** [faderDb]'s fader position (0.8 = unity) in [levelWords]. */
+fun faderWords(v: Float): String = if (v <= 0.001f) tr("Plus de son") else levelWords(20 * log10((v / 0.8f) * (v / 0.8f)))
+
 @Composable
 fun MixerScreen(
     channels: List<Channel>,
@@ -478,7 +492,7 @@ internal fun ExportCard(
 ) {
     val chipColors = pillColors(Neon.Acid)
     NeonCard(modifier, accent = Neon.Acid) {
-        SectionLabel(tr("Exporter"), color = Neon.Acid)
+        SectionLabel(tr("Autres fichiers"), color = Neon.Acid)
         // The plain choices first: what, in which format, how it ends. The rest under « Avancé ».
         Text(tr("Quoi"), style = MaterialTheme.typography.bodyMedium)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -603,7 +617,7 @@ internal fun ExportCard(
             if (!export.running) {
                 // Chantier 2 (G3): a line that makes the file and opens Android's share menu: the shared link row.
                 com.pocketstudio.ui.LinkRow(
-                    if (hasSong) tr("Exporter les notes en fichier MIDI (tout le morceau)") else tr("Exporter les notes en fichier MIDI"),
+                    if (hasSong) tr("Créer le fichier MIDI des notes (tout le morceau)") else tr("Créer le fichier MIDI des notes"),
                     onClick = actions.exportMidi, modifier = Modifier.testTag("export_midi"), icon = Icons.Filled.Piano,
                 )
             }
@@ -632,9 +646,9 @@ internal fun ExportCard(
                 ) {
                     Text(
                         when (export.what) {
-                            ExportWhat.Loop -> com.pocketstudio.model.i18n.trCount(export.bars, "Exporter %d mesure", "Exporter %d mesures")
-                            ExportWhat.Song -> tr("Exporter le morceau")
-                            ExportWhat.Stems -> tr("Exporter les pistes")
+                            ExportWhat.Loop -> com.pocketstudio.model.i18n.trCount(export.bars, "Créer le fichier de %d mesure", "Créer le fichier de %d mesures")
+                            ExportWhat.Song -> tr("Créer le fichier du morceau")
+                            ExportWhat.Stems -> tr("Créer un fichier par piste")
                         },
                     )
                 }

@@ -26,7 +26,7 @@
   "Progression pour tout le morceau": "曲全体のコード進行",
   "Partie par partie (une case = une mesure)": "パートごと（1マス＝1小節）",
   "Pistes qui suivent les accords": "コードに追従するトラック",
-  "Les pistes de l'assistant suivent ; les notes que tu as écrites restent, sauf si tu le demandes ici.": "アシスタントのトラックは追従します。自分で書いたノートは、ここで指定しない限りそのままです。",
+  "Les pistes de « Fais-moi un morceau » suivent ; les notes que tu as écrites restent, sauf si tu le demandes ici.": "「曲を作って」のトラックは追従します。自分で書いたノートは、ここで指定しない限りそのままです。",
   "%s (gelée)": "%s（フリーズ中）",
   "… et %d autres parties": "…ほか %d パート",
   "Touche pour changer les accords de tout le morceau.": "タップで曲全体のコードを変更。",

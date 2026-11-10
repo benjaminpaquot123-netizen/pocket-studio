@@ -377,7 +377,7 @@ private fun ContinueCard(ui: LaunchUi, onClick: () -> Unit, modifier: Modifier) 
 @Composable
 private fun OtherChoices(actions: LaunchActions) {
     Choice(
-        Icons.Filled.AutoAwesome, tr("Nouveau morceau"), tr("Un style en une touche, ou pas à pas avec l'assistant."),
+        Icons.Filled.AutoAwesome, tr("Nouveau morceau"), tr("Un style en une touche, ou « Fais-moi un morceau »."),
         Neon.Cyan, actions.newSong, "launch_new",
     )
     Choice(

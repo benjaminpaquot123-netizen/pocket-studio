@@ -124,7 +124,7 @@ internal fun NewProjectPage(
         ) {
             BigChoice(Icons.Filled.School, tr("J'apprends"), tr("Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie."),
                 Neon.Acid, !busy, "start_learn") { pending = START_LEARN }
-            BigChoice(Icons.Filled.Bolt, tr("Fais-moi un morceau"), tr("Choisis un style : l'assistant fait le morceau, le Guide t'aide à le finir."),
+            BigChoice(Icons.Filled.Bolt, tr("Fais-moi un morceau"), tr("Choisis un style : l'appli fait le morceau, le Guide t'aide à le finir."),
                 Neon.Cyan, !busy, "starter_wizard") { pending = START_WIZARD }
             BigChoice(Icons.Filled.Edit, tr("Je pars de zéro"), tr("Aucune note : une batterie, une Acid\u00A0303 et un synthé attendent les tiennes."),
                 Neon.Amber, !busy, "start_empty") {

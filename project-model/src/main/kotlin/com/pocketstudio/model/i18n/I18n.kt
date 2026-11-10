@@ -152,6 +152,8 @@ object I18n {
         "composants",
         // Round 5's blockers (2026-11-10): the part picked while the music plays, said until its bar comes.
         "bloquants",
+        // Round 5, chantier 3 (2026-11-10): one word per thing (« Fais-moi un morceau », « Visite rapide »), no dB in the Mode simple.
+        "textes",
     )
 
     @Volatile

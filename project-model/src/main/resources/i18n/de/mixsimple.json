@@ -10,14 +10,9 @@
   "Voir ses sons": "Ihre Klänge zeigen",
   "Volume de sortie": "Ausgangslautstärke",
   "Aucun conseil pour l'instant : règle à l'oreille.": "Gerade kein Tipp: vertrau deinen Ohren.",
-  "Remettre à 0 dB": "Zurück auf 0 dB",
   "Ça sature : le son grésille.": "Es übersteuert: der Klang knistert.",
-  "Baisser la sortie de %s dB": "Ausgang um %s dB leiser",
   "Un solo est resté allumé : on n'entend plus que %s.": "Ein Solo ist noch an: man hört nur %s.",
   "La basse et le kick se gênent.": "Bass und Kick stören sich.",
-  "Baisser la basse de %s dB": "Bass um %s dB leiser",
   "« %s » couvre les autres.": "„%s“ überdeckt die anderen.",
-  "Le baisser de %s dB": "Um %s dB leiser",
-  "« %s » se perd dans le mix.": "„%s“ geht im Mix unter.",
-  "Le monter de %s dB": "Um %s dB lauter"
+  "« %s » se perd dans le mix.": "„%s“ geht im Mix unter."
 }

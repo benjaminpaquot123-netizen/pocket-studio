@@ -1672,7 +1672,11 @@ def review_rows(d):
                "| 1 | bloquant, ouvert | x |", "| 1 | grave | x | pas encore corrigé |", "| 1 | grave | x | non-corrigé |",
                "| 1 | grave | x | corrigé ? non |", "| 1 | grave | x | à corriger (les points corrigés sont plus bas) |",
                "- **Bloquant** : le tampon ne vérifie rien (non corrigé).", "### Bloquant\n\nG1. le tampon ne vérifie rien.",
-               "| grave | 1 |", "## Grave\n\n**G1.** ouvert.\n\n**G2.** **corrigé** en abc1234."]
+               "| grave | 1 |", "## Grave\n\n**G1.** ouvert.\n\n**G2.** **corrigé** en abc1234.",
+               # Second review of the lot (M8): the simple forms still let through.
+               "### Grave\n\n**G1.** le tampon. Non **corrigé**.", "### Grave\n\nAucun.\n\n**G1.** le tampon, ouvert.",
+               "1. grave : le tampon, ouvert.", "### G1 (grave)\n\nle tampon, ouvert.", "| 1 | très grave | x |",
+               "- **G1 (grave)** : le tampon, ouvert."]
     accepted = ["| bloquant | 0 |\n| grave | 0 |", "| 1 | grave | x | **corrigé** (abc1234) |", "| G1 | grave | x | **Corrigé** en abc1234 |",
                 "### Bloquant\n\nAucun.", "## Bloquant, grave\n\nAucun.", "- **Grave** : x — **corrigé** en abc1234.",
                 "| 3 | moyen | le plus grave des moyens | à reprendre |", "| id | Titre | Gravité | Preuve |\n|---|---|---|---|",

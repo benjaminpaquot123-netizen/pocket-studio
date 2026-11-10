@@ -152,7 +152,7 @@
           "text": "À toi : monte le swing (le balancement) jusqu'à la valeur entourée, environ 13 % : la batterie retrouve un peu du balancement du disque d'origine.",
           "textPro": "À toi : un swing d'environ 13 % : l'Amen n'est jamais tout à fait sur la grille.",
           "check": "swing",
-          "spot": "rhythm.pattern",
+          "spot": "rhythm.swing",
           "listen": "drums:kick,snare,hat,ride"
         },
         {

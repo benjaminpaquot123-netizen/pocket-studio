@@ -206,7 +206,7 @@ Tempo, tonalité et swing sont réglés par des étapes.
 
 ## 7. Les écrans (`spot`)
 
-`tempo`, `tuto.key` (la feuille de tonalité du tuto), `rhythm.pattern` (la grille, aussi pour le swing et les coups), `rhythm.kit`, `notes.track`, `sounds.track`, `sounds.layers`, `song.parts`, `song.add`, `song.automation`, `mixer.strip`, `mixer.master`, `mixer.whatplays`, `acid`, `acid.generate`, `record.voice`, `record.melody`, `share.check`, `share.export`, `share.video`.
+`tempo`, `tuto.key` (la feuille de tonalité du tuto), `rhythm.pattern` (la grille et les coups), `rhythm.swing` (le réglage Swing, sous la grille), `rhythm.kit`, `notes.track`, `sounds.track`, `sounds.layers`, `song.parts`, `song.add`, `song.automation`, `mixer.strip`, `mixer.master`, `mixer.whatplays`, `acid`, `acid.generate`, `record.voice`, `record.melody`, `share.check`, `share.export`, `share.video`.
 
 ---
 

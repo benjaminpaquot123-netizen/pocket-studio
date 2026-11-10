@@ -119,7 +119,7 @@
           "levels": "p",
           "text": "À toi : mets le swing à 30 (environ 58 à 62 % sur une MPC) : les doubles croches paires arrivent en retard. Écoute avant et après : c'est tout le garage.",
           "check": "swing",
-          "spot": "rhythm.pattern",
+          "spot": "rhythm.swing",
           "listen": "drums:kick,snare,clap,hat,open_hat,perc"
         },
         {

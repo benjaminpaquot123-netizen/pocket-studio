@@ -57,7 +57,7 @@
           "why": "En techno, le swing est léger : juste assez pour que la machine ne sonne pas raide.",
           "levels": "p",
           "check": "swing",
-          "spot": "rhythm.pattern",
+          "spot": "rhythm.swing",
           "listen": "drums:kick,hat,perc"
         }
       ]

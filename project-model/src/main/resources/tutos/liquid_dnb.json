@@ -154,7 +154,7 @@
           "textPro": "À toi : un peu de swing, environ 13 % : les doubles croches paires arrivent un poil en retard.",
           "why": "Le liquid vient de la soul et du jazz : un rythme trop droit y sonne raide.",
           "check": "swing",
-          "spot": "rhythm.pattern",
+          "spot": "rhythm.swing",
           "listen": "drums:kick,snare,hat"
         },
         {

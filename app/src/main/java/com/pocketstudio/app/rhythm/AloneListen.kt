@@ -120,6 +120,8 @@ fun AloneButton(
     on: Boolean, label: String, name: String, tag: String, modifier: Modifier = Modifier, compact: Boolean = false,
     /** Its icon alone (its words for TalkBack): a narrow row keeps its room for the track's name (round 1, n° 41). */
     iconOnly: Boolean = false,
+    /** Its words on two lines (« Écouter » over « seule »): a row a little narrow keeps them (review of lot « composants »). */
+    twoLines: Boolean = false,
     toggle: () -> Unit,
 ) {
     val shape = RoundedCornerShape(24.dp)
@@ -139,6 +141,9 @@ fun AloneButton(
     ) {
         val ink = if (on) Color.Black else Neon.Acid
         Icon(if (on) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = ink, modifier = Modifier.size(20.dp))
-        if (!iconOnly) Text(if (on) tr("Arrêter") else label, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = ink, maxLines = 1)
+        if (!iconOnly) Text(
+            (if (on) tr("Arrêter") else label).let { if (twoLines) it.replaceFirst(' ', '\n') else it },
+            style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = ink, maxLines = if (twoLines) 2 else 1,
+        )
     }
 }

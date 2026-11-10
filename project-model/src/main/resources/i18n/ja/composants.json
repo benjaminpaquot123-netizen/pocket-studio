@@ -1,0 +1,11 @@
+{
+  "avec la sortie générale": "メイン出力つき",
+  "sans limiteur": "リミッターなし",
+  "Plafond %s dB": "上限 %s dB",
+  "attaque et relâchement": "アタックとリリース",
+  "grave en mono sous %d Hz": "%d Hz 以下の低音をモノラルに",
+  "grave en mono": "低音をモノラルに",
+  "écoute A/B": "A/B 試聴",
+  "référence « %s »": "リファレンス「%s」",
+  "référence": "リファレンス"
+}

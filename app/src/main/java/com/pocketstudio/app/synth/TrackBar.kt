@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -134,6 +135,8 @@ fun TrackBar(
         if (t.first < scroll.value) scroll.animateScrollTo(t.first)
         else if (t.last > scroll.value + seen) scroll.animateScrollTo(t.last - seen)
     }
+    // Rule 16: the row's buttons grow with the font as the chips do (44 dp × the font scale at most, never less than 44).
+    val chipMax = 44.dp * androidx.compose.ui.platform.LocalDensity.current.fontScale.coerceAtLeast(1f)
     androidx.compose.runtime.CompositionLocalProvider(LocalRowReveal provides reveal) {
     Row(
         modifier.fadingEdges(scroll).horizontalScroll(scroll).testTag("track_bar"),
@@ -145,35 +148,24 @@ fun TrackBar(
             val selected = t.id == ui.selected
             val color = trackColor(t.color)
             Box(Modifier.shownWhen(selected)) {
-                Row(
-                    Modifier
-                        .height(44.dp)
-                        .widthIn(max = 160.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(if (selected) color.copy(alpha = 0.22f) else Neon.Surface)
-                        .border(BorderStroke(if (selected) 2.dp else 1.dp, if (selected) color else Neon.Outline), RoundedCornerShape(10.dp))
-                        .combinedClickable(onClick = { if (selected) menuFor = t else ui.select(t.id) }, onLongClick = { ui.select(t.id); menuFor = t })
-                        .padding(start = 10.dp, end = 4.dp)
-                        .testTag("track_${t.id}"),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    Box(Modifier.size(10.dp).background(color, CircleShape))
-                    Column(Modifier.weight(1f, fill = false)) {
-                        Text(com.pocketstudio.model.DefaultNames.shown(t.name), style = MaterialTheme.typography.labelLarge, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                            maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        Text(
-                            when {
-                                ui.freezing == t.id -> tr("Gel en cours…")
-                                t.id in ui.frozen -> "❄ " + tr("Gelée")
-                                else -> com.pocketstudio.model.guide.GuideSheets.soundName(t)
-                            },
-                            style = MaterialTheme.typography.labelSmall, color = if (t.id in ui.frozen) Neon.Cyan else Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                            modifier = if (t.id in ui.frozen) Modifier.testTag("track_frozen_${t.id}") else Modifier,
-                        )
-                    }
-                    if (selected) Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", com.pocketstudio.model.DefaultNames.shown(t.name)), Modifier.size(18.dp), tint = Neon.TextSecondary)
-                }
+                // Hands-on audit G7: the shared chip, as tall as its two lines need at any font (it was 44 dp fixed).
+                com.pocketstudio.ui.TrackChip(
+                    com.pocketstudio.model.DefaultNames.shown(t.name),
+                    when {
+                        ui.freezing == t.id -> tr("Gel en cours…")
+                        t.id in ui.frozen -> "❄ " + tr("Gelée")
+                        else -> com.pocketstudio.model.guide.GuideSheets.soundName(t)
+                    },
+                    color, selected,
+                    touch = Modifier.combinedClickable(onClick = { if (selected) menuFor = t else ui.select(t.id) }, onLongClick = { ui.select(t.id); menuFor = t }),
+                    modifier = Modifier.testTag("track_${t.id}"),
+                    subColor = if (t.id in ui.frozen) Neon.Cyan else Neon.TextSecondary,
+                    subModifier = if (t.id in ui.frozen) Modifier.testTag("track_frozen_${t.id}") else Modifier,
+                    endPadding = 4.dp,
+                    trailing = if (selected) {
+                        { Icon(Icons.Filled.MoreVert, contentDescription = tr("Options de %s", com.pocketstudio.model.DefaultNames.shown(t.name)), Modifier.size(18.dp), tint = Neon.TextSecondary) }
+                    } else null,
+                )
                 ScaledDropdownMenu(expanded = menuFor?.id == t.id, onDismissRequest = { menuFor = null }) {
                     ui.sheet?.let { open ->
                         DropdownMenuItem(text = { Text(tr("Fiche de la piste (couches, historique)")) }, onClick = { menuFor = null; open(t.id) }, modifier = Modifier.testTag("track_menu_sheet"))
@@ -226,10 +218,10 @@ fun TrackBar(
         }
         trailing()
         if (ui.tracks.any { it.id == ui.selected }) ui.effects?.let { open ->
-            OutlinedButton(onClick = { open(ui.selected) }, modifier = Modifier.height(44.dp).testTag("track_effects")) { Text(tr("Effets")) }
+            OutlinedButton(onClick = { open(ui.selected) }, modifier = Modifier.heightIn(min = 44.dp, max = chipMax).testTag("track_effects")) { Text(tr("Effets")) }
         }
         if (ui.tracks.size < InstrumentTrack.MAX) {
-            OutlinedButton(onClick = { if (ui.addKind != null) choosing = true else ui.add() }, modifier = Modifier.height(44.dp).testTag("track_add")) {
+            OutlinedButton(onClick = { if (ui.addKind != null) choosing = true else ui.add() }, modifier = Modifier.heightIn(min = 44.dp, max = chipMax).testTag("track_add")) {
                 Icon(Icons.Filled.Add, contentDescription = null, Modifier.size(18.dp))
                 Text(tr(" Piste"))
             }

@@ -49,30 +49,10 @@ object AcidLook {
  */
 @Composable
 fun AcidChip(selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    val shape = RoundedCornerShape(10.dp)
-    val color = AcidLook.Yellow
-    Row(
-        modifier.height(44.dp).widthIn(max = 160.dp).clip(shape)
-            .background(if (selected) color.copy(alpha = 0.22f) else Neon.Surface)
-            .border(BorderStroke(if (selected) 2.dp else 1.dp, if (selected) color else Neon.Outline), shape)
-            .selectable(selected = selected, role = Role.Tab, onClick = onClick)
-            .padding(horizontal = 10.dp)
-            .testTag("sons_Acide"),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        Box(Modifier.size(10.dp).background(color, CircleShape))
-        Column {
-            Text(
-                tr("Acid 303"), style = MaterialTheme.typography.labelLarge, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                maxLines = 1, overflow = TextOverflow.Ellipsis,
-            )
-            Text(
-                tr("Ligne de basse"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary,
-                maxLines = 1, overflow = TextOverflow.Ellipsis,
-            )
-        }
-    }
+    com.pocketstudio.ui.TrackChip(
+        tr("Acid 303"), tr("Ligne de basse"), AcidLook.Yellow, selected,
+        touch = Modifier.selectable(selected = selected, role = Role.Tab, onClick = onClick), modifier = modifier.testTag("sons_Acide"),
+    )
 }
 
 /** The top of the Acid 303's editor: its name, and in the Mode simple what it is for. */

@@ -3,6 +3,7 @@ package com.pocketstudio.app.audit
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.findRootCoordinates
 import androidx.compose.ui.test.captureToImage
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toPixelMap
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsNode
@@ -53,7 +54,14 @@ object LayoutScan {
             val roots = rule.onAllNodes(androidx.compose.ui.test.isRoot(), useUnmergedTree = true)
             val rootNodes = roots.fetchSemanticsNodes(atLeastOneRootRequired = false)
             val pixels = HashMap<Int, androidx.compose.ui.graphics.PixelMap>()
-            rootNodes.forEachIndexed { i, r -> if (r.size.width > 0 && r.size.height > 0) pixels[r.id] = roots[i].captureToImage().toPixelMap() }
+            val first = rootNodes.firstOrNull { it.size.width > 0 && it.size.height > 0 }
+            rootNodes.forEachIndexed { i, r ->
+                if (r.size.width <= 0 || r.size.height <= 0) return@forEachIndexed
+                val shot = roots[i].captureToImage().toPixelMap()
+                // Lot « composants » (2026-11-10): under Robolectric, a full-screen dialog's capture can come back as the screen
+                // under it (the welcome read against « Mes pistes »): such a window is drawn from its own view instead.
+                pixels[r.id] = if (first != null && r.id != first.id && samePixels(shot, pixels[first.id])) ownPixels(r) ?: shot else shot
+            }
             texts.forEach { t -> pixels[top(t.node).id]?.let { px -> contrast(t, px, density)?.let(out::add) } }
         }
         if (Kind.TARGET in checks || Kind.LABEL in checks) {
@@ -315,6 +323,21 @@ object LayoutScan {
             }
         }
         return out
+    }
+
+    private fun samePixels(a: androidx.compose.ui.graphics.PixelMap, b: androidx.compose.ui.graphics.PixelMap?): Boolean {
+        if (b == null || a.width != b.width || a.height != b.height) return false
+        for (y in 0 until a.height step 7) for (x in 0 until a.width step 7) if (a[x, y] != b[x, y]) return false
+        return true
+    }
+
+    /** The window of root [r] drawn from its own view (its decor), or null when it has none. */
+    private fun ownPixels(r: SemanticsNode): androidx.compose.ui.graphics.PixelMap? {
+        val view = (r.root as? androidx.compose.ui.platform.ViewRootForTest)?.view?.rootView ?: return null
+        if (view.width <= 0 || view.height <= 0) return null
+        val bitmap = android.graphics.Bitmap.createBitmap(view.width, view.height, android.graphics.Bitmap.Config.ARGB_8888)
+        view.draw(android.graphics.Canvas(bitmap))
+        return bitmap.asImageBitmap().toPixelMap()
     }
 
     /** A text in something switched off (WCAG asks no contrast of inactive controls). */

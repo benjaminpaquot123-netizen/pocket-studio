@@ -54,7 +54,6 @@
   "Droite %d": "오른쪽 %d",
   "Dubstep": "덥스텝",
   "Effets": "이펙트",
-  "Effets : %s": "이펙트: %s",
   "Effets en place : %1$d sur %2$d": "적용된 이펙트: %2$d개 중 %1$d개",
   "Effets · %d": "이펙트 · %d",
   "En M4A et en FLAC, le limiteur reste en place : sans lui, les pointes seraient écrêtées. Choisis WAV pour t'en passer.": "M4A와 FLAC에서는 리미터가 그대로예요. 없으면 피크가 잘려요. 리미터 없이 하려면 WAV를 고르세요.",

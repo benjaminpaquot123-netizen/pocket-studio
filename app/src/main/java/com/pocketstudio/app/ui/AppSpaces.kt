@@ -133,25 +133,12 @@ internal fun SonsHeader(
 /** The Remix's colour (its chip in Sons, its card on « Que veux-tu faire ? »). */
 internal val REMIX_COLOR = com.pocketstudio.app.remix.SONG_COLOR
 
-/** A chip of the Sons space for an editor that is not an instrument track (the drums, the audio tracks; the acid has its own, [com.pocketstudio.app.acid.AcidChip]). */
+/** A chip of the Sons space for an editor that is not an instrument track (the drums, the audio tracks; the acid has its own, [com.pocketstudio.app.acid.AcidChip]): the shared [com.pocketstudio.ui.TrackChip]. */
 @Composable
 private fun RowScope.EditorChip(label: String, sub: String, color: Color, selected: Boolean, tag: String, onClick: () -> Unit) {
-    Row(
-        Modifier.height(44.dp).widthIn(max = 160.dp).clip(RoundedCornerShape(10.dp))
-            .background(if (selected) color.copy(alpha = 0.22f) else Neon.Surface)
-            .border(BorderStroke(if (selected) 2.dp else 1.dp, if (selected) color else Neon.Outline), RoundedCornerShape(10.dp))
-            .selectable(selected = selected, role = Role.Tab, onClick = onClick)
-            .padding(horizontal = 10.dp)
-            .testTag(tag),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        Box(Modifier.size(10.dp).background(color, CircleShape))
-        Column(Modifier.weight(1f, fill = false)) {
-            Text(label, style = MaterialTheme.typography.labelLarge, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(sub, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        }
-    }
+    com.pocketstudio.ui.TrackChip(
+        label, sub, color, selected, touch = Modifier.selectable(selected = selected, role = Role.Tab, onClick = onClick), modifier = Modifier.testTag(tag),
+    )
 }
 
 // --- Structure: the timeline, the parts' list a switch away ------------------------------------------
@@ -347,30 +334,27 @@ fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions, li
         // The longest word of the names, and the button's words: both on the row, or the button keeps its icon alone.
         val word = with(density) { tracks.flatMap { it.name.split(' ') }.maxOfOrNull { measurer.measure(it, nameStyle).size.width }?.toDp() } ?: 0.dp
         val label = with(density) { measurer.measure(tr("Écouter seule"), labelStyle).size.width.toDp() }
-        val narrow = maxWidth < ALONE_ROW_ROOM + word + label
+        // Chantier 2: the link row's « Changer le son » on one line too (it went on two beside the whole button).
+        val change = with(density) { measurer.measure(tr("Changer le son"), MaterialTheme.typography.bodySmall).size.width.toDp() }
+        // Review of the lot (moyen n° 3): « Écouter seule » keeps its words, on two lines when one does not fit; its ▶ alone
+        // only where even its longest word does not.
+        val labelWord = with(density) { tr("Écouter seule").split(' ').maxOf { measurer.measure(it, labelStyle).size.width }.toDp() }
+        val oneLine = maxWidth >= ALONE_ROW_ROOM + maxOf(word, change) + label
+        val narrow = maxWidth < ALONE_ROW_ROOM + maxOf(word, change) + labelWord
         // The card's own spacing between the rows (NeonCard: 8 dp).
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         tracks.forEachIndexed { i, t ->
             if (i > 0) HorizontalDivider(color = Neon.Outline.copy(alpha = 0.5f))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) {
-                Box(Modifier.size(12.dp).background(t.color, CircleShape))
-                Column(
-                    Modifier.weight(1f).heightIn(min = 48.dp).clip(RoundedCornerShape(8.dp))
-                        .clickable(role = Role.Button, onClickLabel = tr("Changer le son de %s", t.name)) { actions.changeSound(t.key) }
-                        .padding(horizontal = 6.dp)
-                        .spot("simple_track_${t.key}", if (i == 0) tr("Changer le son") else null)
-                        .testTag("simple_track_${t.key}"),
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    // Remix testers (Sarah): « Souffle mont… » cut short; a long name on two lines, never split mid-word.
-                    com.pocketstudio.ui.WholeWordsText(t.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 2)
-                    // Testers (lot « tuto 3 »): « Changer le … » cut short; whole, on a second line if it must.
-                    Text(
-                        if (t.mute) tr("coupée") else tr("Changer le son"), style = MaterialTheme.typography.labelMedium,
-                        color = if (t.mute) Neon.Amber else Neon.Cyan, maxLines = 2, overflow = TextOverflow.Ellipsis,
-                    )
-                }
-                com.pocketstudio.app.rhythm.AloneButton(trackAlone(t), tr("Écouter seule"), t.name, "simple_alone_${t.key}", compact = true, iconOnly = narrow) { actions.listenAlone(t.key) }
+                // Chantier 2 (G3): the track opens its sounds: the shared link row (its colour, its name, « Changer le son », ›).
+                com.pocketstudio.ui.LinkRow(
+                    t.name, onClick = { actions.changeSound(t.key) },
+                    modifier = Modifier.weight(1f).spot("simple_track_${t.key}", if (i == 0) tr("Changer le son") else null).testTag("simple_track_${t.key}"),
+                    subtitle = if (t.mute) tr("coupée") else tr("Changer le son"), subtitleColor = if (t.mute) Neon.Amber else Neon.TextSecondary,
+                    clickLabel = tr("Changer le son de %s", t.name),
+                    leading = { Box(Modifier.size(12.dp).background(t.color, CircleShape)) },
+                )
+                com.pocketstudio.app.rhythm.AloneButton(trackAlone(t), tr("Écouter seule"), t.name, "simple_alone_${t.key}", compact = true, iconOnly = narrow, twoLines = !oneLine) { actions.listenAlone(t.key) }
                 // A fader, not a loudspeaker (owner, APK 224: the 🔊 looked like « play » and stayed silent).
                 IconButton(onClick = { sheetFor = t.key }, modifier = Modifier.spot("simple_volume_${t.key}").testTag("simple_volume_${t.key}")) {
                     // Audit ultra round 2 (n° 17, seat B d): « Supprimer » was behind a button named « Volume »: named for all it holds.
@@ -436,5 +420,8 @@ private fun SimpleTrackSheet(t: SimpleTrack, alone: Boolean, actions: SimpleTrac
     }
 }
 
-/** « Mes pistes »: a row's room besides a name's word and « Écouter seule »'s words (dot, gaps, paddings, ▶, the fader). */
-private val ALONE_ROW_ROOM = 12.dp + 12.dp + 12.dp + 46.dp + 48.dp + 8.dp
+/**
+ * « Mes pistes »: a row's room besides a name's word and « Écouter seule »'s words (dot, gaps, paddings, ▶, the fader),
+ * and the link row's own (its paddings, its two gaps and the chevron: 12 + 4 + 10 + 10 + 20 dp, chantier 2).
+ */
+private val ALONE_ROW_ROOM = 12.dp + 12.dp + 12.dp + 46.dp + 48.dp + 8.dp + 56.dp

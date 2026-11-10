@@ -129,9 +129,11 @@ internal fun ExportOptionsPanel(export: com.pocketstudio.app.rhythm.ExportUi, ha
         about = listOf("export_final", "export_rate_*", "export_bits_*", "export_shaping", "export_range_*", "export_fade_in_*", "export_trim", "export_end_silence_*",
             "export_artist", "export_cover", "export_report"),
     ) {
-        androidx.compose.material3.TextButton(onClick = { openState.value = !open }, modifier = Modifier.weight(1f, fill = false).testTag("export_final")) {
-            androidx.compose.material3.Text(tr("Fichier final : %s", finalFileSummary(export)), color = com.pocketstudio.ui.Neon.Cyan)
-        }
+        // Chantier 2 (G4): a fold of its own (it opens in place), its rate and bits said on it, a changed one in orange.
+        com.pocketstudio.ui.Disclosure(
+            tr("Fichier final"), listOf(com.pocketstudio.ui.Hidden(finalFileSummary(export), finalFileChanged(export))), open,
+            { openState.value = !open }, Modifier.weight(1f).testTag("export_final"),
+        )
     }
     if (!open) return
     val rate = o.rateFor(export.format, export.cdRate)
@@ -232,6 +234,10 @@ private fun rateLabel(r: Int): String = if (r == OfflineExport.CD_RATE) tr("44,1
 private fun seconds(ms: Int): String = if (ms % 1000 == 0) "${ms / 1000}" else String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", ms / 1000.0)
 
 /** « 48 kHz · 24 bits », the card's line before it is opened. */
+/** The rate or the bits set in « Fichier final » differ from what the format gives by default (the summary in orange). */
+internal fun finalFileChanged(export: com.pocketstudio.app.rhythm.ExportUi): Boolean =
+    finalFileSummary(export) != finalFileSummary(export.copy(pro = ExportOptions()))
+
 internal fun finalFileSummary(export: com.pocketstudio.app.rhythm.ExportUi): String {
     val rate = export.pro.rateFor(export.format, export.cdRate)
     val bits = export.pro.bitsFor(export.format, export.limited, export.bits16)

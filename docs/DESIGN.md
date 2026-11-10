@@ -15,8 +15,23 @@ Décision de Benjamin (2026-10-18) : **moderne, mais pas trop, et facile à pren
 10. **Un mot par idée** (audit final) : « Partie » = un moment du morceau (Intro, Couplet, Drop…), « Brique » = une case A, B, C… qui en donne le contenu, « Place » (pas « Panoramique »), « Courbes » (le verbe reste « Automatiser »), « Partager » = sortir un fichier (réponse 1A de Benjamin, 2026-11-09 : plus d'« Envoyer » ni d'« Exporter » sur le chemin du partage ; la liste s'appelle « Mes fichiers », le .zip du projet « Sauvegarder le morceau en .zip »). Anglais : part, block, pan, curves ; la case de la ligne du temps = cell (néerlandais : deel, blok, pan, curven, vakje). Le Mode simple ne cite que ses onglets (Mon morceau, Rythme, Clavier, Mix, Partager, ⋮) et aucun chiffre technique (Hz, dB, LUFS).
 11. **Pareil que les voisins** (Benjamin, 2026-11-06, accueil : icônes rondes et carrées mélangées) : tout ce qu'on ajoute à un écran (carte, bouton, icône, puce) se compare d'abord à ses voisins sur la capture de l'écran **entier** : même forme et même taille d'icône, titres alignés au même endroit, mêmes marges, mêmes coins, même famille de couleurs, même place pour la flèche. Une exception (une carte « mise en avant ») se voit par sa couleur, jamais par une forme ou une taille dépareillée.
 
+Règles 12 à 22 : audit de prise en main (2026-11-09, `docs/audits/AUDIT-PRISE-EN-MAIN.md` § 6), ajoutées par le lot « composants » (2026-11-10).
+
+12. **Un lien a l'air d'un lien** : tout ce qui ouvre un autre écran est une `LinkRow` (fond, icône, titre, chevron) ; jamais une phrase colorée seule.
+13. **Un repli montre ce qu'il cache** : `Disclosure` avec titre + résumé des valeurs ; un réglage dont dépend le résultat (longueur, format) n'est jamais sous « Avancé ».
+14. **Une action = un bouton par écran** : un seul ▶, un seul Partager, un seul ⋮ visibles à la fois ; en portrait c'est la barre du pouce qui les porte.
+15. **Une icône par action, celle d'Android** (Partager = `Icons.Filled.Share`) ; une couleur par sens : vert = joue ou réussi, orange = choisi ou action ; aucune troisième couleur d'accent sans ligne dans DECISIONS.md.
+16. **Jamais de hauteur fixe autour d'un texte** : `heightIn(min)` et padding ; chaque composant à texte se vérifie à 1,3 et 1,5.
+17. **Tout défilement se voit** : fondu en bas + puce « ↓ n autres » dès que du contenu dépasse l'écran.
+18. **Après chaque action, une preuve et une suite** : un message qui nomme le résultat (fichier, courbe, prise) et un bouton vers lui ; un message vide ne contredit jamais ce qu'on vient de faire.
+19. **Un lien dit où il mène**, jamais ce qu'il espère (« Ouvrir Effets · Batterie », pas « Voir le réglage » si l'écran n'y va pas).
+20. **Même chose, même endroit, même mot dans les deux modes** ; une liste des noms autorisés par fonction, sous test (Lot2TextsTest, LexiconWordsTest).
+21. **Un geste de jeu n'ouvre jamais une fenêtre** : les réglages d'un pad sont un badge visible ; un glissé ne déclenche pas un effet (touch slop) ; un effet qui part vibre.
+22. **En paysage et à 130 %, chaque feuille défile ou se réorganise** ; une capture de la matrice par feuille (phoneLand 1,0 et 1,3).
+
 ## Composants
 - `NeonCard` (panneau en relief, repliable par son premier `SectionLabel`), `SectionLabel` (barre de couleur + petites capitales), `ProSlider` (piste fine en dégradé, pouce lumineux), `pillColors` (puce choisie remplie d'accent), `LevelMeter` (LED vert → ambre → rouge).
+- `LinkRow` (ligne qui ouvre : fond, icône, titre, sous-ligne, chevron ›), `Disclosure` (repli pleine largeur : nom, résumé de ce qu'il cache, valeur changée en orange, chevron qui tourne), `TrackChip` (pastille de piste : point de couleur, nom, son ; hauteur qui suit la police). Partager = `Icons.Filled.Share`, partout.
 - `SoundTile`, `FamilyChip`, `TileGrid` : vignettes de sons (icône et couleur de famille via `SoundLooks`).
 - Écrans : `DrumPad` (pads en relief qui s'allument), touches de clavier en relief, `FloatingKeyboard` (clavier qui suit).
 

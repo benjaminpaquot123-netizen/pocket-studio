@@ -25,7 +25,6 @@
   "En 16 bits, un léger bruit (dither) évite le grain des fondus ; mis en forme, il part dans les aigus où l'oreille l'entend moins.": "W 16 bitach lekki szum (dither) usuwa ziarno w wyciszeniach; kształtowany przechodzi w górę, gdzie ucho słyszy go najmniej.",
   "En mono : %s LU de moins": "W mono: %s LU mniej",
   "Fichier : %s": "Plik: %s",
-  "Fichier final : %s": "Plik końcowy: %s",
   "Fin : mesure %d": "Koniec: takt %d",
   "Fondu de début %s s": "Narastanie %s s",
   "Format : %1$s · %2$s Hz · %3$s": "Format: %1$s · %2$s Hz · %3$s",

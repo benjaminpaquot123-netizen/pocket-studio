@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Unarchive
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -170,9 +171,8 @@ fun ProjectsScreen(
                 Icon(Icons.Filled.Add, contentDescription = null)
                 Text("  " + tr("Nouveau projet : style, démo ou vide"), style = MaterialTheme.typography.titleSmall)
             }
-            TextButton(onClick = actions.importZip, modifier = Modifier.fillMaxWidth().testTag("project_import")) {
-                Text(tr("Importer un projet (.zip)"))
-            }
+            // Chantier 2 (G3): it opens Android's file picker: the shared link row.
+            com.pocketstudio.ui.LinkRow(tr("Importer un projet (.zip)"), onClick = actions.importZip, modifier = Modifier.testTag("project_import"), icon = Icons.Filled.Unarchive)
             ui.deleted?.let { (_, name) ->
                 Card(colors = CardDefaults.cardColors(containerColor = Neon.SurfaceHigh), modifier = Modifier.testTag("project_deleted")) {
                     Row(Modifier.padding(start = 12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -308,8 +308,8 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                 )
                 if (open) {
                     TextButton(onClick = actions.shareSong, modifier = Modifier.testTag("project_share_song")) {
-                        Icon(Icons.Filled.Share, contentDescription = null, tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp))
-                        Text(tr("Partager mon morceau"), color = Neon.Acid)
+                        Icon(Icons.Filled.Share, contentDescription = null, modifier = Modifier.padding(end = 6.dp))
+                        Text(tr("Partager mon morceau"))
                     }
                 }
             }

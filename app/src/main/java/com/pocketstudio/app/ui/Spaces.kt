@@ -11,7 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.QueueMusic
-import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.MoreHoriz
@@ -109,7 +109,7 @@ enum class SimpleTab(val icon: ImageVector, val tab: AppTab) {
     Rythme(Icons.Filled.GridView, AppTab.Rythme),
     Clavier(Icons.Filled.Piano, AppTab.Synthe),
     Mix(Icons.Filled.Tune, AppTab.Mixeur),
-    Envoyer(Icons.AutoMirrored.Filled.Send, AppTab.Envoyer);
+    Envoyer(Icons.Filled.Share, AppTab.Envoyer);
 
     val label: String get() = when (this) {
         Morceau -> tr("Mon morceau")

@@ -54,7 +54,6 @@
   "Droite %d": "右 %d",
   "Dubstep": "Dubstep",
   "Effets": "效果",
-  "Effets : %s": "效果：%s",
   "Effets en place : %1$d sur %2$d": "已放置的效果：%1$d / %2$d",
   "Effets · %d": "效果 · %d",
   "En M4A et en FLAC, le limiteur reste en place : sans lui, les pointes seraient écrêtées. Choisis WAV pour t'en passer.": "M4A 和 FLAC 会保留限制器：没有它，峰值会被削波。选 WAV 可以不用它。",

@@ -17,7 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.IosShare
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -270,7 +270,7 @@ fun PerfShareContent(ui: PerfShareUi, actions: PerfShareActions) {
                 }
                 Button(onClick = actions.shareSound, enabled = !ui.soundRunning && ui.stems !is PerfStemsUi.Running,
                     modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("perf_share_sound")) {
-                    Icon(Icons.Filled.IosShare, contentDescription = null, modifier = Modifier.size(20.dp))
+                    Icon(Icons.Filled.Share, contentDescription = null, modifier = Modifier.size(20.dp))
                     Text("  " + tr("Partager le son"), fontWeight = FontWeight.Bold)
                 }
             }

@@ -25,7 +25,6 @@
   "En 16 bits, un léger bruit (dither) évite le grain des fondus ; mis en forme, il part dans les aigus où l'oreille l'entend moins.": "16 ビットでは小さなノイズ（ディザー）がフェードのざらつきを防ぎます。シェーピングすると耳が最も聞き取りにくい高域へ移ります。",
   "En mono : %s LU de moins": "モノラルでは %s LU 小さく",
   "Fichier : %s": "ファイル: %s",
-  "Fichier final : %s": "最終ファイル: %s",
   "Fin : mesure %d": "終了: %d 小節",
   "Fondu de début %s s": "フェードイン %s 秒",
   "Format : %1$s · %2$s Hz · %3$s": "形式: %1$s · %2$s Hz · %3$s",

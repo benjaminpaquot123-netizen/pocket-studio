@@ -109,7 +109,10 @@ class HumanPadLivePersonasTest : HumanTester("padlive-personas") {
         look("resultat")
         // Round 1 (n° 9): the stars are said with the rhythm's dots, one node for TalkBack (« … Étoiles : 1 sur 3 »).
         assertNotNull("the stars shown\n" + screenLines().joinToString("\n"), centerOf("padlive_challenge_dots"))
-        assertTrue("the stars said\n" + screenLines().joinToString("\n"), screenLines().any { "Étoiles :" in it })
+        // Audit « banc crédible » 2, R1: the screen in text shows the stars as drawn (★ ☆), TalkBack's words stay on the node.
+        assertTrue("the stars drawn\n" + screenLines().joinToString("\n"), screenLines().any { "★" in it || "☆" in it })
+        assertTrue("the stars said to TalkBack", compose.onAllNodes(androidx.compose.ui.test.hasContentDescription("Étoiles :", substring = true))
+            .fetchSemanticsNodes(atLeastOneRootRequired = false).isNotEmpty())
         tap(centerOf("padlive_challenge_close"), "close the challenge")
         // « Plus » › « Fête »: the pads big on the whole screen, then out.
         tap(centerOf("padlive_more"), "Plus")

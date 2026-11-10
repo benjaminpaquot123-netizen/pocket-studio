@@ -223,10 +223,21 @@ class Tour5BloquantsTest : HumanTester("bloquants") {
         if (melody != null && centerOf("track_$melody") != null) tap("track_$melody")
         tap("mode_notes")
         act("attends 1")
-        val grid = screenLines().firstOrNull { it.contains("Grille des notes") } ?: "(no grid)"
+        // Lot « réalisme » (R1): the screen in text writes the grid as drawn (no TalkBack words). In sight: the screen in
+        // text has the grid's line where the grid is drawn; its notes: the grid node's own count (the notes it draws).
+        // Where the screen in text puts the grid: the middle of what is drawn of it (it scrolls sideways, cut by its frame).
+        val at = runCatching { compose.onAllNodesWithTag("piano_roll").fetchSemanticsNodes().firstOrNull()
+            ?.let { BenchWindows.drawnBounds(it, androidx.test.core.app.ApplicationProvider.getApplicationContext<android.app.Application>().resources.displayMetrics).center }
+            ?.let { it.x to it.y } }.getOrNull()
+        val lines = screenLines()
+        val grid = at?.let { (x, y) -> lines.firstOrNull { l -> Regex("@ (\\d+),(\\d+)$").find(l)?.groupValues?.let { g ->
+            kotlin.math.abs(g[1].toInt() - x) <= 2f && kotlin.math.abs(g[2].toInt() - y) <= 2f } == true } } ?: "(no grid)"
+        assertTrue("the melody's grid in sight on the screen in text: $grid\n" + lines.joinToString("\n"), grid != "(no grid)")
+        val said = runCatching { compose.onAllNodesWithTag("piano_roll").fetchSemanticsNodes().firstOrNull()
+            ?.config?.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.ContentDescription)?.joinToString(" ") }.getOrNull()
         // Review m3: as many notes as the take wrote, not merely « not 0 ».
-        val shown = Regex("""Grille des notes : (\d+) notes?""").find(grid)?.groupValues?.get(1)?.toInt()
-        assertEquals("the take's notes in sight on the melody's grid: $grid", taken, shown)
+        val shown = said?.let { Regex("""Grille des notes : (\d+) notes?""").find(it)?.groupValues?.get(1)?.toInt() }
+        assertEquals("the take's notes drawn on the melody's grid: $said ($grid)", taken, shown)
     }
 
     /** The node showing exactly [text], drawn whole above the tutorial's panel (a finger can touch it there, no swipe). */

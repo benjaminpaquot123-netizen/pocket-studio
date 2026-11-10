@@ -104,8 +104,10 @@ Une ligne par étape : [x] fait / [ ] à faire, preuve, commit. « continue » r
 - [x] A.1 les six sondes de l'audit réécrites (`AuditFideliteTmpTest`) et vues : vertes sur le code, rouges sous les lignes de bebe0c9 ; L1 (câblage d'aujourd'hui) et L2 rejouées ; sorties sous `docs/audits/ultra/audit-banc/a1-2026-11-10/`. preuve: script docs/audits/ultra/audit-banc/rejoue-a1.sh
 - [x] (CI 42789204633, quarantaine des renommages) cause trouvée : la règle Compose v1 reprend le collecteur d'un flux sur le fil IO qui émet, l'état de « Mes projets » écrit hors du fil principal se perdait ; règle v2 pour les tests de renommage (reproduit 3 rouges sur 18 après `Bench*`, puis 0 sur 36). preuve: rouge 6eeceba / vert d65c607
 - [ ] En relecture : étape 3 lot « réalisme » (atelier `realisme`, rapport `tour-5-realisme-rapport.md`). Ses lignes :
-- [x] A.20 (R1) l'écran en texte écrit ce qui est dessiné : une icône par son signe ou sa forme (`IconShapes`), « bouton » seulement avec un fond ou un contour, plus de nom TalkBack (gardés au journal). preuve: rouge 95de177 / vert 778c01e
-- [x] A.20 (R2, vu) le temps de l'appli ne passe que pendant les gestes : garde `BenchSelfTest#theAppsClockStandsStillWhileTheTesterReads` (55ad386) ; consignes des testeurs (R2, R3, R4) b0ae973 ; garde verte dès l'écriture (une limite constatée, pas une réparation), jouée par le selftest. preuve: script scripts/bench/selftest.sh
-- [x] A.21 (MT1) défauts cachés comptés : `defauts-caches.tsv`, `defauts-caches.py`, critère 9 de PLAN-RESTE § 5. preuve: rouge bb09927 / vert c094a6c
-- [x] A.21 (MT1) ligne J du tableau de bord. preuve: rouge 92d65e4 / vert c8bca8a
+- [x] A.23 (R1) l'écran en texte écrit ce qui est dessiné : une icône par son signe ou sa forme (`IconShapes`), « bouton » seulement avec un fond ou un contour, plus de nom TalkBack (gardés au journal). preuve: rouge 95de177 / vert 778c01e
+- [x] A.23 (R2, vu) le temps de l'appli ne passe que pendant les gestes : garde `BenchSelfTest#theAppsClockStandsStillWhileTheTesterReads` (55ad386) ; consignes des testeurs (R2, R3, R4) b0ae973 ; garde verte dès l'écriture (une limite constatée, pas une réparation), jouée par le selftest. preuve: script scripts/bench/selftest.sh
+- [x] A.24 (MT1) défauts cachés comptés : `defauts-caches.tsv`, `defauts-caches.py`, critère 9 de PLAN-RESTE § 5. preuve: rouge bb09927 / vert c094a6c
+- [x] A.24 (MT1) ligne J du tableau de bord. preuve: rouge 92d65e4 / vert c8bca8a
 - [x] R.8 plus de flèche « la suite plus bas » que l'appli ne dessine pas ; une ligne coupée dit « coupé ». preuve: rouge 19d33b8 / vert f2a0a9a
+- [x] A.23 (relecture G1) l'état dessiné des pads (allumé, anneau pâle) revient à l'écran en texte, lu dans leur lumière. preuve: rouge af6da683 / vert a74b389a
+- [x] A.23 (relecture M1, M2) « case », « interrupteur » seulement pour ceux de Material ; marques dessinées au Canvas et icônes hors ligne écrites. preuve: rouge f4d447ea / vert b89017a7

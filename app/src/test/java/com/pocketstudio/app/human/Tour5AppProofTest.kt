@@ -344,6 +344,40 @@ class Tour5AppProofTest {
         assertFalse("« Le morceau a changé depuis cet export » right under the MIDI file just made", vm.export.value.staleFor(vm.project.value))
     }
 
+    /**
+     * Review of the « CI : fuite d'état » repair, moyen 2: Compose's UI dispatcher (AndroidUiDispatcher.Main, a static of
+     * the sandbox; the global snapshot manager runs on it) keeps « dispatch scheduled » raised with work queued when a
+     * screen is destroyed without the main looper drained: Robolectric drops the looper's messages between tests and that
+     * dispatcher never posts again, so the effects of a later composition on it never start. A screen composed and
+     * closed here leaves it free. (Freed first if a test before this class left it so: this test is about [clear].)
+     */
+    @Test
+    fun aScreenComposedAndClosedLeavesComposesDispatcherFree() {
+        uiDispatcher(free = true)
+        compose { androidx.compose.runtime.LaunchedEffect(Unit) { effectRan = true } }
+        clear()
+        val left = uiDispatcher()
+        assertEquals("Compose's UI dispatcher after the screen closed: $left", "queued=0 trampoline=false frame=false", left)
+    }
+
+    private var effectRan = false
+
+    /**
+     * AndroidUiDispatcher.Main's work queued and its two « scheduled » flags; [free]: its queued work run and the flags
+     * lowered first (the state a previous test of another class may leave).
+     */
+    private fun uiDispatcher(free: Boolean = false): String {
+        val d = androidx.compose.ui.platform.AndroidUiDispatcher.Main[kotlin.coroutines.ContinuationInterceptor]!!
+        fun field(name: String) = d.javaClass.getDeclaredField(name).apply { isAccessible = true }
+        val queue = field("toRunTrampolined").get(d) as kotlin.collections.ArrayDeque<*>
+        if (free) {
+            while (queue.isNotEmpty()) (queue.removeFirst() as Runnable).run()
+            field("scheduledTrampolineDispatch").setBoolean(d, false)
+            field("scheduledFrameDispatch").setBoolean(d, false)
+        }
+        return "queued=${queue.size} trampoline=${field("scheduledTrampolineDispatch").getBoolean(d)} frame=${field("scheduledFrameDispatch").getBoolean(d)}"
+    }
+
     /** T5-8MES (seat C c 27): 16 bars chosen in Mix, « Prêt à partager ? » › Partager renders 16 bars. */
     @Test
     fun shareFollowsTheLengthChosenInMix() {

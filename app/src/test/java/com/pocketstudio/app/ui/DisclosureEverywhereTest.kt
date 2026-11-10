@@ -13,6 +13,7 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.test.core.app.ApplicationProvider
 import com.pocketstudio.app.export.ExportOptions
 import com.pocketstudio.app.mixer.ExportCard
@@ -47,8 +48,10 @@ import java.io.File
  * is the shared `Disclosure`. Closed, it says what it hides (its summary is read with its name), it says it is closed
  * (TalkBack: « Développer »), and its summary is never cut, on a small phone at 130 %.
  */
+// Real fonts (NATIVE): under the stand-in ones a text measures a few pixels wide and nothing ever ends in « … ».
 @RunWith(RobolectricTestRunner::class)
-@Config(qualifiers = "w360dp-h2400dp")
+@org.robolectric.annotation.GraphicsMode(org.robolectric.annotation.GraphicsMode.Mode.NATIVE)
+@Config(qualifiers = "w360dp-h2400dp-xxhdpi")
 class DisclosureEverywhereTest {
     @get:Rule
     val compose = createAndroidComposeRule<ComponentActivity>()
@@ -101,10 +104,19 @@ class DisclosureEverywhereTest {
         val actions = node.config.map { it.key }.toSet()
         assertTrue("$tag closed: TalkBack is not told it opens (no « expand » action)", SemanticsActions.Expand in actions && SemanticsActions.Collapse !in actions)
         val nodes = compose.onAllNodes(SemanticsMatcher("any") { true }, useUnmergedTree = true).fetchSemanticsNodes()
-        // Read as the capture matrix reads a screen (a text's own last layout can be an intrinsic measure's, not the one drawn).
-        val words = nodes.filter { under(it, node) && it.config.contains(SemanticsProperties.Text) }.map { n -> n.config[SemanticsProperties.Text].joinToString(" ") { t -> t.text } }.toSet()
-        val density = compose.activity.resources.displayMetrics.density
-        val cut = com.pocketstudio.app.audit.LayoutScan.scan(compose, density, setOf(com.pocketstudio.app.audit.LayoutScan.Kind.CUT)).filter { it.what in words }.map { it.toString() }
+        // Each text measured again at the width it really has on the screen: its own last layout can be an intrinsic
+        // measure's (« Avancé » 6 px wide), which neither shows a « … » nor hides one (review of the lot, grave n° 1).
+        val cut = nodes.filter { under(it, node) && it.config.contains(SemanticsProperties.Text) }.mapNotNull { n ->
+            val words = n.config[SemanticsProperties.Text].joinToString(" ") { t -> t.text }
+            val input = layoutOf(n)?.layoutInput ?: return@mapNotNull "$words (no layout)"
+            val again = androidx.compose.ui.text.TextMeasurer(input.fontFamilyResolver, input.density, input.layoutDirection).measure(
+                input.text, input.style, input.overflow, input.softWrap, input.maxLines, input.placeholders,
+                androidx.compose.ui.unit.Constraints(maxWidth = n.size.width),
+            )
+            val ellipsized = (0 until again.lineCount).any { again.isLineEllipsized(it) }
+            val dropped = again.didOverflowHeight || again.size.height > n.size.height + 1
+            if (ellipsized || dropped) "$words (at ${n.size.width} px: ${again.lineCount} lines, « … » $ellipsized, lines dropped or cut $dropped)" else null
+        }
         assertEquals("$tag at 130 % on a 360 dp phone: words cut", emptyList<String>(), cut)
     }
 
@@ -114,4 +126,10 @@ class DisclosureEverywhereTest {
         return false
     }
 
+
+    private fun layoutOf(n: SemanticsNode): TextLayoutResult? {
+        val get = n.config.getOrNull(SemanticsActions.GetTextLayoutResult)?.action ?: return null
+        val list = mutableListOf<TextLayoutResult>()
+        return if (get(list)) list.firstOrNull() else null
+    }
 }

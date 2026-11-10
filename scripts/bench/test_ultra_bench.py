@@ -818,7 +818,7 @@ def owner_trials(d):
                  "- 2026-11-09, APK 3, tablette, a remark that is no round of the checklist :\n  - tel-06 ❌ no trial.\n"
                  "- 2026-11-08, APK 2, tablette, **tel-08 (video, read frame by frame)** : details. Résultat retenu : ❌ « it lit up ». To confirm.\n"
                  "- 2026-11-08, APK 2, **tel-10 (video)** on no device said. Résultat retenu : ❌ « nothing ».\n"
-                 "- 2026-11-08, APK 2, tablette, tel-12 : lost, no result kept.\n")
+                 "- 2026-11-08, APK 2, tablette, tel-12 : lost (❌ said of something else), no result kept.\n")
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
                        capture_output=True, text=True)
     out = r.stdout + r.stderr

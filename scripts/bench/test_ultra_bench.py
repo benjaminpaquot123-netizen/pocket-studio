@@ -1792,6 +1792,16 @@ def fusion_forged(d):
     branch("rouge", touch("d.txt"), good)
     code, out, asked, moved = merge("rouge", PS_TOY_SELFTEST_RED="1")
     check(code != 0 and not moved and "selftest " in asked, "a red self-test after the merge undoes it:\n" + out + asked)
+    # Review of the lot (M5): a replay whose files change (its oracle emptied) needs a reason, as one taken out.
+    def new_oracle(r):
+        write(os.path.join(r, "docs", "audits", "ultra", "rejeux", "t1-clavier", "oracle.txt"), "rejeu.absent=zzz never shown\n")
+    branch("oracle", new_oracle, good)
+    code, out, asked, moved = merge("oracle")
+    check(code != 0 and not moved and "t1-clavier" in out, "a replay changed without « rejeu changé » is refused:\n" + out)
+    branch("oracle2", new_oracle, good.replace("\nVerdict", "rejeu changé : t1-clavier : the screen's words changed with the fix\n\nVerdict"))
+    code, out, asked, moved = merge("oracle2")
+    check(code == 0 and moved, "a replay changed with its reason is merged:\n" + out)
+    git_toy(root, "reset", "-q", "--hard", "HEAD~2")
     # Review of the lot (M2): a step that fails after the green checks (here: no stamp to copy into the traces) undoes
     # the merge and leaves no half-written traces.
     def no_stamp(r):

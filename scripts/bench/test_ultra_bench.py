@@ -208,6 +208,7 @@ def main():
         chantier(d)
         judge_criteria(d)
         open_app_proof(d)
+        rule_c_adversarial(d)
         known_defect_lifted(d)
         known_defect_lifted_needs_a_red(d)
         owner_trials(d)
@@ -870,6 +871,8 @@ def known_defect_lifted(d):
     # The guards were there before the rouge/vert discipline (as Tour5AppProofTest's, 4168889).
     commit("start", share(guard("keepsTheLength", True), guard("listsTheZip", True), guard("warnsNothingAfter", True)),
            env=old_commit_env())
+    start = git("rev-parse", "HEAD")
+    write(os.path.join(root, "app", "src", "main", "Share.kt"), "fun share() = 1\n")
     lifted = commit("vert: share follows the length chosen (ShareProofTest#keepsTheLength)",
                     share(guard("keepsTheLength", False), guard("listsTheZip", True), guard("warnsNothingAfter", True)))
     other = commit("vert: another repair (ShareProofTest#somethingElseEntirely)",
@@ -878,14 +881,125 @@ def known_defect_lifted(d):
     deleted = commit("vert: no warning any more (ShareProofTest#warnsNothingAfter)",
                      share(guard("keepsTheLength", False), guard("listsTheZip", False)))
     seal_resume(root, resume)
-    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
-                         capture_output=True, text=True).stdout
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume,
+                          "--debut-discipline", start], capture_output=True, text=True).stdout
     check(lifted not in out, "a green that takes @KnownDefect off the test it names is a pair:\n" + out)
     for sha, what in ((other, "the annotation taken off another test than the one named"), (kept, "the annotation kept"),
                       (deleted, "the test deleted with its annotation")):
         check(f"{sha} « vert:" in out and "vert sans rouge du même test avant lui" in out, f"{what} is no red evidence:\n" + out)
     check("chantier : 3 écarts" in out, "three greens without red, nothing else:\n" + out)
 
+
+def rule_c_adversarial(d):
+    """Review of the « banc-fin » lot (moyen M1), its script judge_adv2.py: rule (c) (a « vert: » that takes
+    @KnownDefect off a test is a pair on its own) is no longer fooled. The guard's origin is the commit that put it
+    there, followed through a class renamed, an annotation reformatted or a file moved (a parent where a test file
+    already guards a function of that name is no origin); that origin is a « rouge: » that names the guarded test
+    (Classe#méthode), or an ancestor of the discipline's first red (8f36fa3; --debut-discipline in a toy), never a
+    date. The green keeps the test running (@Test, no @Ignore) and touches code outside the tests, or says why not on
+    a line « sans code : <raison> ». Each way of the review is a gap; the honest controls are pairs."""
+    root = judge_root(d, "juge-regle-c")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    fix_file = os.path.join(root, "app", "src", "main", "Fix.kt")
+
+    def P(n):
+        return os.path.join(tests, n + ".kt")
+
+    def git(*a, env=None):
+        return subprocess.run(["git", "-C", root, "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false", *a],
+                              capture_output=True, text=True, check=True, env=env).stdout.strip()
+
+    fixes = [0]
+
+    def commit(subject, path=None, text=None, env=None, fix=False):
+        if path is not None and text is not None:
+            write(path, text)
+        if fix:
+            fixes[0] += 1
+            write(fix_file, f"fun fix() = {fixes[0]}\n")
+        git("add", "-A")
+        git("commit", "-q", "--allow-empty", "-m", subject, env=env)
+        return git("rev-parse", "--short", "HEAD")
+
+    def g(name, carried, ann="@Test"):
+        return (f'  @KnownDefect("{name.upper()}", "x")\n' if carried else "") + f"  {ann}\n  fun {name}() {{}}\n"
+
+    def cls(n, *ts):
+        return f"class {n} {{\n" + "".join(ts) + "}\n"
+
+    git("init", "-q")
+    commit("start", P("PreProofTest"), cls("PreProofTest", g("preTest", True)))
+    start = git("rev-parse", "HEAD")
+    for n in ("Aaa", "Bbb", "Ccc", "Fff", "Hhh", "Iii", "Kkk"):
+        write(P(n + "ProofTest"), cls(n + "ProofTest", g(n.lower() + "Test", False)))
+    commit("start2")
+    count = [0]
+
+    def closed_red(path, text):
+        count[0] += 1
+        c = f"Zz{count[0]}ProofTest#zzCase{count[0]}"
+        commit(f"rouge: unrelated {count[0]} ({c})", path, text)
+        commit(f"vert: unrelated {count[0]} fixed ({c})")
+
+    def own_red(test, path, text):
+        commit(f"rouge: {test} fails ({test})", path, text)
+        commit(f"vert: the guard of {test} holds the defect ({test})")
+
+    refused, accepted = [], []
+    # A: a guard slipped into the red of another test.
+    closed_red(P("AaaProofTest"), cls("AaaProofTest", g("aaaTest", True)))
+    refused.append(("A", commit("vert: aaa fixed (AaaProofTest#aaaTest)", P("AaaProofTest"), cls("AaaProofTest", g("aaaTest", False)), fix=True)))
+    # B: a guard from the test's own red, lifted touching nothing but the test file, and no word on why.
+    own_red("BbbProofTest#bbbTest", P("BbbProofTest"), cls("BbbProofTest", g("bbbTest", True)))
+    refused.append(("B", commit("vert: bbb fixed (BbbProofTest#bbbTest)", P("BbbProofTest"), cls("BbbProofTest", g("bbbTest", False)))))
+    # C: a guard added by a chore whose date is forged to before the discipline.
+    old = dict(os.environ, GIT_AUTHOR_DATE="2026-11-01T10:00:00+00:00", GIT_COMMITTER_DATE="2026-11-01T10:00:00+00:00")
+    commit("chore: tidy", P("CccProofTest"), cls("CccProofTest", g("cccTest", True)), env=old)
+    refused.append(("C", commit("vert: ccc fixed (CccProofTest#cccTest)", P("CccProofTest"), cls("CccProofTest", g("cccTest", False)), fix=True)))
+    # D: a chore's guard laundered by a red that renames the class (and names the new one).
+    commit("chore: guard", P("DddProofTest"), cls("DddOld", g("dddTest", True)))
+    own_red("DddProofTest#dddTest", P("DddProofTest"), cls("DddProofTest", g("dddTest", True)))
+    refused.append(("D", commit("vert: ddd fixed (DddProofTest#dddTest)", P("DddProofTest"), cls("DddProofTest", g("dddTest", False)), fix=True)))
+    # E: a chore's guard in the named form, reformatted by a red.
+    commit("chore: guard eee", P("EeeProofTest"), cls("EeeProofTest", '  @KnownDefect(id = "EEE", why = "x")\n  @Test\n  fun eeeTest() {}\n'))
+    own_red("EeeProofTest#eeeTest", P("EeeProofTest"), cls("EeeProofTest", g("eeeTest", True)))
+    refused.append(("E", commit("vert: eee fixed (EeeProofTest#eeeTest)", P("EeeProofTest"), cls("EeeProofTest", g("eeeTest", False)), fix=True)))
+    # E2: a chore's guard, its file moved inside a red.
+    commit("chore: guard e2", P("Ee2ProofTest"), cls("Ee2ProofTest", g("ee2Test", True)))
+    git("mv", P("Ee2ProofTest"), P("Ee2MovedTest"))
+    own_red("Ee2ProofTest#ee2Test", None, None)
+    refused.append(("E2", commit("vert: ee2 fixed (Ee2ProofTest#ee2Test)", P("Ee2MovedTest"), cls("Ee2ProofTest", g("ee2Test", False)), fix=True)))
+    # F: the green lifts the guard and turns the test off.
+    own_red("FffProofTest#fffTest", P("FffProofTest"), cls("FffProofTest", g("fffTest", True)))
+    refused.append(("F", commit("vert: fff fixed (FffProofTest#fffTest)", P("FffProofTest"), cls("FffProofTest", g("fffTest", False, "@Ignore")), fix=True)))
+    # F2: a guard in an inner class, the red and the green naming the outer class.
+    own_red("GggProofTest#gggTest", P("GggProofTest"), "class GggProofTest {\n  inner class Hidden {\n" + g("gggTest", True) + "  }\n}\n")
+    refused.append(("F2", commit("vert: ggg fixed (GggProofTest#gggTest)", P("GggProofTest"),
+                                 "class GggProofTest {\n  inner class Hidden {\n" + g("gggTest", False) + "  }\n}\n", fix=True)))
+    # Controls. G: honest (its own red, the green touches the app).
+    own_red("HhhProofTest#hhhTest", P("HhhProofTest"), cls("HhhProofTest", g("hhhTest", True)))
+    accepted.append(("G", commit("vert: hhh fixed (HhhProofTest#hhhTest)", P("HhhProofTest"), cls("HhhProofTest", g("hhhTest", False)), fix=True)))
+    # H: honest, the file moved by a chore before the lift (the review's false negative, m1).
+    own_red("IiiProofTest#iiiTest", P("IiiProofTest"), cls("IiiProofTest", g("iiiTest", True)))
+    git("mv", P("IiiProofTest"), P("IiiMovedTest"))
+    commit("chore: rename file")
+    accepted.append(("H", commit("vert: iii fixed (IiiProofTest#iiiTest)", P("IiiMovedTest"), cls("IiiProofTest", g("iiiTest", False)), fix=True)))
+    # I: a guard from before the discipline (an ancestor of its start), lifted with the app touched.
+    accepted.append(("I", commit("vert: pre fixed (PreProofTest#preTest)", P("PreProofTest"), cls("PreProofTest", g("preTest", False)), fix=True)))
+    # J: honest, no code to change, and the green says why.
+    own_red("KkkProofTest#kkkTest", P("KkkProofTest"), cls("KkkProofTest", g("kkkTest", True)))
+    accepted.append(("J", commit("vert: kkk fixed (KkkProofTest#kkkTest)\n\nsans code : the defect was the test's own wait, fixed in the test",
+                                 P("KkkProofTest"), cls("KkkProofTest", g("kkkTest", False)))))
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume,
+                          "--debut-discipline", start], capture_output=True, text=True)
+    text = out.stdout + out.stderr
+    for case, sha in refused:
+        check(f"{sha} « vert:" in text, f"case {case} of judge_adv2 is refused:\n" + text)
+    for case, sha in accepted:
+        check(sha not in text, f"control {case} is a pair:\n" + text)
+    check(f"chantier : {len(refused)} écarts" in text, f"the {len(refused)} adversarial greens, nothing else:\n" + text)
 
 def old_commit_env():
     """A commit dated before the rouge/vert discipline began (first « rouge: », 2026-11-08 18:29 UTC)."""
@@ -930,13 +1044,15 @@ def known_defect_lifted_needs_a_red(d):
 
     git("init", "-q")
     commit("start", [(share_f, shares(False, False)), (other_f, others(True, True, True))], env=old_commit_env())
+    start = git("rev-parse", "HEAD")
+    app = os.path.join(root, "app", "src", "main", "Fix.kt")
     # 1. A guard added by a commit that is no « rouge: », then lifted by a green that names it: no red evidence.
     commit("chore: tidy", [(share_f, shares(True, False))])
     chore = commit("vert: plain test now passes (ShareProofTest#plainTest)", [(share_f, shares(False, False))])
     # 2. Lifted from OtherProofTest#sameName, the message names UnrelatedTest#sameName: another test.
     other_cls = commit("vert: fix (UnrelatedTest#sameName)", [(other_f, others(False, True, True))])
     # Control: an old guard lifted by a green naming its own class and method is a pair.
-    own = commit("vert: fix (OtherProofTest#ownName)", [(other_f, others(False, False, True))])
+    own = commit("vert: fix (OtherProofTest#ownName)", [(other_f, others(False, False, True)), (app, "fun fix() = 1\n")])
     # 3. The lift brought by a merge commit called « vert: ».
     main_branch = git("rev-parse", "--abbrev-ref", "HEAD")
     git("checkout", "-q", "-b", "side")
@@ -948,10 +1064,10 @@ def known_defect_lifted_needs_a_red(d):
     # Control: a guard added by a « rouge: » (closed by its own green), lifted later by a green naming it: a pair.
     commit("rouge: the zip in Mes fichiers (ShareProofTest#listsTheZipInMyFiles)", [(share_f, shares(False, True))])
     commit("vert: the zip's guard holds the defect (ShareProofTest#listsTheZipInMyFiles)")
-    from_red = commit("vert: the zip is listed (ShareProofTest#listsTheZipInMyFiles)", [(share_f, shares(False, False))])
+    from_red = commit("vert: the zip is listed (ShareProofTest#listsTheZipInMyFiles)", [(share_f, shares(False, False)), (app, "fun fix() = 2\n")])
     seal_resume(root, resume)
-    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
-                         capture_output=True, text=True).stdout
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume,
+                          "--debut-discipline", start], capture_output=True, text=True).stdout
     for sha, what in ((chore, "a guard added outside a « rouge: »"), (other_cls, "a guard of another class with the same method name"),
                       (merge, "a lift brought by a merge")):
         check(f"{sha} « vert:" in out, f"{what} is no red evidence:\n" + out)

@@ -64,6 +64,22 @@ class Tour5AppProofTest {
     /** PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). */
     @get:Rule
     val pristine = BenchPristineRule()
+    /**
+     * What each proof leaves, read here once its @After has run (the outermost rule), not only by the bench test that
+     * comes next: after the last proof of this class comes a test of the app, which the detector does not watch. Seen in a
+     * full run of the suite (2026-11-10): the proof of T5-ZIP left the ViewModel factory with its Application. The data
+     * folder is this test's own (the next test has another): the project the proof saved there is not a leak.
+     */
+    @get:Rule(order = -2)
+    val leavesNothing = TestRule { base, description ->
+        object : Statement() {
+            override fun evaluate() {
+                base.evaluate()
+                val left = BenchPristine.leaks().filterNot { it.startsWith("projects/") }
+                if (left.isNotEmpty()) throw AssertionError("${description.methodName} leaves to the test after it: " + left.joinToString("; "))
+            }
+        }
+    }
     /** See [KnownDefect]: each proof runs (it was @Ignore'd, never run: external audit), inverted while the defect is there. */
     @get:Rule
     val knownDefects: TestRule = KnownDefectRule()
@@ -163,6 +179,9 @@ class Tour5AppProofTest {
         screen = null
         NativeEngine.sink = null
         CurrentProject.set(app, RhythmViewModel.PROJECT_ID)
+        // The app's wiring composed on a screen (A.13) makes its ViewModels by the factory, which keeps this test's
+        // Application (as HumanTester.end, BenchShareTest.end).
+        androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory::class.java.getDeclaredField("_instance").apply { isAccessible = true }.set(null, null)
     }
 
     /** The screen a piece of the app's own interface is composed on (A.13), closed after the test. */

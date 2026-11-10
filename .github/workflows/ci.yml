@@ -137,6 +137,16 @@ jobs:
       - name: Screenshots that changed
         if: always()
         run: python3 -I scripts/screenshot-diff.py app/build/test-results/roborazzi/debug/results-summary.json
+      # A red unit test names itself in the log but not its message (« AssertionError at BenchPristine.kt:54 »): the
+      # HTML report and the JUnit XML (messages, stacks, each class's output and time) are kept when this job fails.
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: failure()
+        with:
+          name: unit-test-reports
+          path: |
+            app/build/reports/tests/testDebugUnitTest/
+            app/build/test-results/testDebugUnitTest/
+          if-no-files-found: ignore
       # The song bench (docs/son/BANC.md) on a few styles: the app's real export recorded, replayed by
       # the engine on Linux, measured (LUFS and true peak checked against ffmpeg). Full run: all styles.
       - name: Song bench (5 styles)

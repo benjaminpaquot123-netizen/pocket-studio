@@ -65,6 +65,10 @@ class BenchPristineRule(private val seatJournal: (Description) -> File? = { null
         /** The last test this rule saw start (the class and method a leak is attributed to). */
         @Volatile var lastTest: String? = null
             private set
+
+        /** Whether the tests of [testClass] carry this rule (a field of the class or of one above it, as HumanTester's). */
+        fun carriedBy(testClass: Class<*>): Boolean =
+            generateSequence(testClass) { it.superclass }.any { c -> c.declaredFields.any { f -> BenchPristineRule::class.java.isAssignableFrom(f.type) } }
     }
 }
 
@@ -121,6 +125,17 @@ internal object BenchPristine {
         check("projects/", !projects.exists() || projects.listFiles().isNullOrEmpty()) { projects.listFiles()?.map { it.name } }
         check("CurrentProject", CurrentProject.get(app) == RhythmViewModel.PROJECT_ID) { CurrentProject.get(app) }
         return out
+    }
+
+    /**
+     * After a test that does not carry [BenchPristineRule] (`StrictTestApplication.afterTest`, every Robolectric test of the
+     * app): its closing saves are waited for (as [HumanTester.end] does) and the state is put back. The first full run of
+     * the suite with the detector (CI, 2026-11-10) had three bench tests red, each the first of the bench after ordinary
+     * tests: 59 classes of the app's tests leave something (the ViewModel factory, a closing save, settings).
+     */
+    fun afterAnOrdinaryTest() {
+        com.pocketstudio.app.rhythm.ClosingSaves.awaitIdleBlocking(15_000)
+        restore()
     }
 
     /** Back to a just-started process (what [HumanTester.end] does, for the state a test can leak). */

@@ -153,7 +153,8 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         walked += n.id
         val r = drawn(n)
         if (out == null) { n.children.forEach { walk(it, null, smallTexts) }; return }
-        line(n, r, smallTexts)?.let { if (onScreen(r)) out += it }
+        val said = line(n, r, smallTexts)
+        if (said != null) { if (onScreen(r)) out += said } else drawnAlone(n, r, out)
         // PLAN-RESTE R.8: no « ↓ la suite plus bas » any more, an arrow the app does not draw (hidden defect B09). What a
         // person sees of a list going on is a line cut by an edge: [line] says « coupé ».
         sorted(n.children).forEach { walk(it, out, smallTexts) }
@@ -173,11 +174,11 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         val look = lookOf(n)
         val icons = look.before + look.after
         // R1: the word says how it is drawn, never a role only TalkBack hears (« bouton » for a plain sentence).
+        // Fresh review M1: « case », « interrupteur », « choix » only for Material's own drawing of them ([Look.widget]);
+        // a chip or a round « ? » with that role is written as it is drawn.
         val word = when {
             edit != null || c.contains(SemanticsActions.SetText) -> "champ"
-            role == Role.Checkbox -> "case"
-            role == Role.Switch -> "interrupteur"
-            role == Role.RadioButton -> "choix"
+            look.widget != null && role in listOf(Role.Checkbox, Role.Switch, Role.RadioButton) -> look.widget
             role == Role.Tab -> "onglet"
             role == Role.DropdownList -> "liste"
             role == Role.ValuePicker -> "sélecteur"
@@ -202,7 +203,10 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
             // R.8: drawn in part only (a scrolling parent or the screen's edge cuts it), as a person sees a cut card.
             if (n.size.height > 0 && n.size.width > 0 && (r.height < 0.9f * n.size.height || r.width < 0.9f * n.size.width)) add("coupé")
             when (c.getOrNull(SemanticsProperties.ToggleableState)) {
-                ToggleableState.On -> add("coché"); ToggleableState.Off -> add("non coché"); ToggleableState.Indeterminate -> add("en partie"); null -> Unit
+                // A box or a switch shows its tick; any other toggle shows « on » by its light (« off »: nothing to see).
+                ToggleableState.On -> add(if (look.widget != null) "coché" else "allumé")
+                ToggleableState.Off -> if (look.widget != null) add("non coché")
+                ToggleableState.Indeterminate -> add("en partie"); null -> Unit
             }
             // Fresh review G1: a pad's light as drawn (Pad Live, the Live page, Rythme's pads): lit, or its faint waiting ring.
             look.light?.let { add(it) }
@@ -268,16 +272,47 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
                     "androidx.compose.ui.draw.PainterElement" -> painted(e)?.let { place(it, at) }
                     "androidx.compose.foundation.BackgroundElement" -> if (face && visibleBackground(e)) framed = true
                     "androidx.compose.foundation.BorderModifierNodeElement" -> if (face && visibleBorder(e)) framed = true
+                    "androidx.compose.ui.draw.DrawBehindElement" -> when (val host = hostOf(field(e, "onDraw"))) {
+                        "CheckboxKt" -> widget = "case"
+                        "RadioButtonKt" -> widget = "choix"
+                        else -> canvasMark(host, dp, turn)?.let { place(it, at) }
+                    }
                     "androidx.compose.ui.draw.DrawWithCacheElement" -> if (face) padLightOf(field(e, "onBuildDrawCache"))?.let { light = it }
                 }
             }
-
+            // Material's switch: its 52 x 32 dp track.
+            if (!top && at != null && kotlin.math.abs(at.width / density - 52f) < 2.5f && kotlin.math.abs(at.height / density - 32f) < 2.5f &&
+                mods.any { it.javaClass.name == "androidx.compose.foundation.BackgroundElement" }) widget = "interrupteur"
             if (!top) (call(info, "getSemanticsConfiguration") as? androidx.compose.ui.semantics.SemanticsConfiguration)
                 ?.getOrNull(SemanticsProperties.TestTag)?.let { DRAWN_TAGS[it] }?.let { place(it, at) }
             (call(info, "getChildrenInfo") as? List<*>)?.forEach { (it as? LayoutInfo)?.let { c -> visit(c, false) } }
         }
         visit(root, true)
         return Look(before, after, framed, light, widget, marks, box)
+    }
+
+    /**
+     * Fresh review M2: a node that is no line of its own (a row holding a text that is one) may draw marks of its own: the
+     * ⚠ before a warning, a picture beside a title. Each is written where it is drawn, « image ⚠ @ x,y ».
+     */
+    private fun drawnAlone(n: SemanticsNode, r: Rect, out: MutableList<String>) {
+        if (n.parent == null) return
+        val look = lookOf(n)
+        for ((shape, at) in look.marks) {
+            val x = r.left + ((at ?: look.box).center.x - look.box.left)
+            val y = r.top + ((at ?: look.box).center.y - look.box.top)
+            if (x in 0f..screen.widthPixels.toFloat() && y in 0f..screen.heightPixels.toFloat()) out += "image $shape @ ${x.toInt()},${y.toInt()}"
+        }
+    }
+
+    /** The file (its Kotlin class) a drawing lambda was written in: « DisclosureKt », « CheckboxKt ». */
+    private fun hostOf(lambda: Any?): String? = lambda?.javaClass?.name?.substringBefore("$$")?.substringBefore('$')?.substringAfterLast('.')
+
+    /** Fresh review M2: marks the app draws on a Canvas (no icon, no tag), by the file that draws them and their size. */
+    private fun canvasMark(host: String?, dp: Float, turn: Float): String? = when (host) {
+        "DisclosureKt" -> if (kotlin.math.abs(turn % 360f) > 90f && kotlin.math.abs(turn % 360f) < 270f) "⌃" else "⌄"
+        "LaunchChoiceKt" -> if (kotlin.math.abs(dp - 22f) < 1f) "(grille de pads)" else "(quatre vagues)"
+        else -> null
     }
 
     /**

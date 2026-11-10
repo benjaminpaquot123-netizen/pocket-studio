@@ -21,7 +21,8 @@
     --preuves ITEM prints the proofs read on that line and stops.
 (b) git log: a « vert: » commit closes the oldest open « rouge: » commit OF THE SAME TEST (same subject after
     the prefix, or a test the red names or adds that the green's message names). A green of another test closes
-    nothing. A checked line of banc-fiable-journal.md (« - [x] 4.2 … », ids 4.x to 7.x, R.x, A.x) carries
+    nothing. A green that takes @KnownDefect off a test (kept) that its message names is a pair on its own: that
+    guard, failing with the defect's message in the parent, was the red. A checked line of banc-fiable-journal.md (« - [x] 4.2 … », ids 4.x to 7.x, R.x, A.x) carries
     « preuve: rouge <sha> / vert <sha> » naming such a pair, or « preuve: script <path> » (a figure computed
     by a script that exists).
 (c) recette.json <-> verdicts: every « recette tel-NN » cited by an open undecided line exists in the
@@ -404,9 +405,36 @@ def _commit(root, sha):
     return (h, subject, message, red_names(root, h, message) if subject.lower().startswith("rouge:") else set())
 
 
+def known_defects_lifted(root, sha):
+    """The tests a commit takes @KnownDefect off, the test kept (review of the « partage » lot, (c)): their guard was the
+    red (KnownDefectRule: the test failed with the defect's message until this commit). A test deleted is not one."""
+    try:
+        files = _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", sha + "^", sha).split()
+    except (subprocess.SubprocessError, OSError):
+        return set()
+    lifted = set()
+    for f in files:
+        if not (f.startswith(TEST_ROOT.replace(os.sep, "/") + "/") and f.endswith(".kt")):
+            continue
+        try:
+            before, after = _git(root, "show", f"{sha}^:{f}"), _git(root, "show", f"{sha}:{f}")
+        except (subprocess.SubprocessError, OSError):
+            continue
+        carried = {fn for _id, fn in KNOWN_DEFECT.findall(before)}
+        still = {fn for _id, fn in KNOWN_DEFECT.findall(after)}
+        kept = set(re.findall(r"\bfun\s+`?([A-Za-z0-9_]+)", after))
+        lifted |= (carried - still) & kept
+    return lifted
+
+
+def names(message, test):
+    return re.search(r"(?<![A-Za-z0-9_])" + re.escape(test) + r"(?![A-Za-z0-9_])", message) is not None
+
+
 def red_green_pairs(root, since="2026-11-07"):
     """(b) Every bench repair is a « rouge: » commit (the guard, red) followed by a « vert: » commit (the fix) of the
-    same test. A red whose test gets no green is a gap; so is a green that closes no red of its test."""
+    same test. A red whose test gets no green is a gap; so is a green that closes no red of its test, unless it takes
+    @KnownDefect off a test it names (that guard was the red: [known_defects_lifted])."""
     try:
         out = _git(root, "log", f"--since={since}", "--reverse", "--format=%x1e%h%x1f%s%x1f%B")
     except (subprocess.SubprocessError, OSError) as e:
@@ -422,7 +450,7 @@ def red_green_pairs(root, since="2026-11-07"):
             red = next((r for r in open_reds if same_test(r, green)), None)
             if red is not None:
                 open_reds.remove(red)
-            else:
+            elif not any(names(message, t) for t in known_defects_lifted(root, sha)):
                 gaps.append(f"{sha} « {subject[:70]} » : vert sans rouge du même test avant lui")
     gaps += [f"{r[0]} « {r[1][:70]} » : rouge sans vert du même test après lui" for r in open_reds]
     return gaps

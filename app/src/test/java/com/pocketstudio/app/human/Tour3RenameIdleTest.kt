@@ -9,7 +9,6 @@ import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.text.AnnotatedString
 import org.robolectric.Shadows.shadowOf
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -54,8 +53,14 @@ abstract class Tour3RenameIdleBase(private val theme: String) {
     private var scenario: ActivityScenario<MainActivity>? = null
 
     companion object {
-        /** The compose rule of the rename tests and of [Tour3RenameEffectsIdleTest], which checks how its effects run. */
-        fun composeRule() = createEmptyComposeRule()
+        /**
+         * The compose rule of the rename tests and of [Tour3RenameEffectsIdleTest], which checks how its effects run. Lot
+         * « banc-fin »: the v2 rule (a standard test dispatcher for the effects): a value an app's flow emits on another
+         * thread resumes its collector on the main thread, when the test's clock runs, as Compose's UI dispatcher does on a
+         * phone. The v1 rule (an unconfined dispatcher) resumed it on the emitting thread, and the screen's state written
+         * there, against the main thread composing, was sometimes never recomposed (« Mes projets » stuck on « loading »).
+         */
+        fun composeRule() = androidx.compose.ui.test.junit4.v2.createEmptyComposeRule()
     }
 
     @After

@@ -14,6 +14,7 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.activity.compose.setContent
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.click
@@ -47,10 +48,15 @@ abstract class Tour3RenameIdleBase(private val theme: String) {
     @get:Rule
     val pristine = BenchPristineRule()
     @get:Rule
-    val compose = createEmptyComposeRule()
+    val compose = composeRule()
 
     private val app: Application get() = ApplicationProvider.getApplicationContext()
     private var scenario: ActivityScenario<MainActivity>? = null
+
+    companion object {
+        /** The compose rule of the rename tests and of [Tour3RenameEffectsIdleTest], which checks how its effects run. */
+        fun composeRule() = createEmptyComposeRule()
+    }
 
     @After
     fun close() {
@@ -261,6 +267,47 @@ class Tour3NameFieldIdleTest {
             compose.runOnUiThread { field().config[SemanticsActions.SetText].action!!(AnnotatedString("Révisions lofi")) }
             frames()
             assertTrue(compose.onAllNodes(hasText("[Révisions lofi]")).fetchSemanticsNodes(atLeastOneRootRequired = false).isNotEmpty())
+        }
+    }
+}
+
+/**
+ * Lot « banc-fin » (CI 42789204633, banc45 run 4, the quarantine of the two renames): « Mes projets » stayed on its first
+ * frame (« loading », no row, no empty state) while its ViewModel held the project; the next value the list emitted
+ * showed it at once. An app's flow collected by a screen (collectAsStateWithLifecycle: produceState) must write the
+ * screen's state on the main thread, as on a phone, where the effects run on Compose's UI dispatcher. With the compose
+ * rule of the rename tests, a value emitted on an IO thread (the list loaded by ProjectsViewModel) is checked here.
+ */
+@RunWith(RobolectricTestRunner::class)
+@Config(qualifiers = HumanTester.PHONE)
+class Tour3RenameEffectsIdleTest {
+    /** PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). */
+    @get:Rule
+    val pristine = BenchPristineRule()
+    @get:Rule
+    val compose = Tour3RenameIdleBase.composeRule()
+
+    @Test
+    fun aFlowEmittedOnAnIoThreadIsWrittenOnTheMainThread() {
+        val flow = kotlinx.coroutines.flow.MutableStateFlow(0)
+        val writers = java.util.concurrent.CopyOnWriteArrayList<Thread>()
+        val scenario = ActivityScenario.launch(androidx.activity.ComponentActivity::class.java)
+        try {
+            scenario.onActivity { a ->
+                a.setContent {
+                    val shown = androidx.compose.runtime.produceState(0, flow) { flow.collect { writers += Thread.currentThread(); value = it } }
+                    androidx.compose.material3.Text("[${shown.value}]")
+                }
+            }
+            compose.waitForIdle()
+            writers.clear()
+            val io = Thread({ flow.value = 1 }, "io-emitter").apply { start(); join() }
+            compose.waitUntil(5_000) { compose.onAllNodes(hasText("[1]")).fetchSemanticsNodes(atLeastOneRootRequired = false).isNotEmpty() }
+            assertTrue("the value emitted on ${io.name} reached the screen", writers.isNotEmpty())
+            val main = Looper.getMainLooper().thread
+            assertTrue("written on the main thread (${main.name}), as a phone does: ${writers.map { it.name }.distinct()}", writers.all { it === main })
+        } finally {
+            scenario.close()
         }
     }
 }

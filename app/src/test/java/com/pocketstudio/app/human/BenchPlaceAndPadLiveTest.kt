@@ -122,17 +122,19 @@ class BenchPlaceAndPadLiveTest : HumanTester("place-padlive") {
     }
 
     /**
-     * Audit « banc crédible » A.14 (F3): the bench's engine starts a pad at once, a phone's on the grid. Until the bench
-     * plays them on the grid (A.16), the text of Pad Live's screen says so to the tester, and no other screen does.
+     * Audit « banc crédible » A.14 then A.16 (F3): while the bench's engine started a pad at once, Pad Live's screen text
+     * said so to the tester (« sans grille »). The bench's pads now wait for their grid as a phone's (BenchPadLiveTest):
+     * that line is gone, on Pad Live as everywhere.
      */
     @Test
-    fun padLivesScreenTextSaysThePadsStartWithoutTheGrid() {
+    fun padLivesScreenTextNoLongerSaysThePadsStartWithoutTheGrid() {
         begin(SeatOptions(device = "tablet11Land"))
-        val limit = "(banc : les pads partent tout de suite, sans grille)"
-        assertTrue("not said before Pad Live:\n" + screenLines().joinToString("\n"), limit !in screenLines())
+        val limit = "sans grille"
+        assertTrue("not said before Pad Live:\n" + screenLines().joinToString("\n"), screenLines().none { limit in it })
         val since = touchAt("launch_padlive")
-        padsReady("from « Que veux-tu faire ? » (A.14)", since)
-        assertTrue("Pad Live's screen text does not say the bench's limit on the pads:\n" + screenLines().joinToString("\n"), limit in screenLines())
+        padsReady("from « Que veux-tu faire ? » (A.16)", since)
+        assertTrue("Pad Live's screen text still says the pads start without the grid:\n" + screenLines().joinToString("\n"),
+            screenLines().none { limit in it })
     }
 
     /**

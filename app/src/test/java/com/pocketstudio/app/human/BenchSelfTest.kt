@@ -4,6 +4,7 @@ import android.os.SystemClock
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
 import org.junit.Before
@@ -44,5 +45,47 @@ class BenchSelfTest : HumanTester("selftest") {
         val spent = SystemClock.uptimeMillis() - clock
         assertEquals("« $tag » touched where it is", at, reached)
         assertTrue("the bench's clock moved $spent ms to reach « $tag », already shown (a finger: none)", spent < 300)
+    }
+
+    /**
+     * Audit « banc crédible » 2, R1 (grave): the screen in text told the tester what a person does not see. An icon alone was
+     * written by its TalkBack name (« bouton « Plus de choix » » for ⋮), and a sentence one can touch, with no frame, was a
+     * « bouton » (Benjamin, recette tel-03: « Mes exports » « ressemble à une simple phrase »). A line says what is drawn:
+     * the icon's glyph or shape, « bouton » only for something drawn with a fill or an outline, never TalkBack's name.
+     */
+    @Test
+    fun theScreenInTextWritesWhatIsDrawnNotTalkBacksNames() {
+        begin()
+        val wrong = mutableListOf<String>()
+        fun check(ok: Boolean, line: String, what: String) { if (!ok) wrong += "$what: $line" }
+        // The language: an outlined button, its flag, its name and a ⌄ (TalkBack: « Choisis ta langue »).
+        val lang = lineAt("lang_button")
+        check(lang.startsWith("bouton ") && "Français" in lang && "⌄" in lang && "Choisis ta langue" !in lang, lang, "outlined, its ⌄, no TalkBack name")
+        // « Plus tard … »: grey words, no fill, no outline: what a person sees is a sentence.
+        assertNotNull(reachTag("welcome_later"))
+        val later = lineAt("welcome_later")
+        check("Plus tard" in later && !later.startsWith("bouton"), later, "a sentence with no frame is no « bouton »")
+        amenee(AMENEE_SONG, java.io.File.createTempFile("screentext", ".txt").apply { deleteOnExit() })
+        // ⋮ alone at the top: its glyph, not « Plus de choix » (nowhere on the screen: no word of it is drawn).
+        val more = lineAt("top_more")
+        check(Regex("^icône ⋮ @ \\d+,\\d+$").matches(more), more, "⋮ written as drawn")
+        val lines = screenLines()
+        lines.filter { "Plus de choix" in it }.forEach { check(false, it, "TalkBack's name of ⋮ on the screen") }
+        // A link row (« Mes fichiers », recette tel-03): drawn filled, a folder before its words, the chevron › after.
+        val tab = centerOf("tab_simple_Envoyer") ?: centerOf("tab_Envoyer") ?: error("no « Envoyer » tab\n" + lines.joinToString("\n"))
+        act("touche ${tab.first} ${tab.second}")
+        assertNotNull(reachTag("share_my_exports"))
+        val files = lineAt("share_my_exports")
+        check(files.startsWith("bouton (dossier) « Mes fichiers") && Regex("» › @ \\d+,\\d+$").containsMatchIn(files), files, "a link row: filled, its folder, its ›")
+        assertTrue("written otherwise than drawn:\n" + wrong.joinToString("\n"), wrong.isEmpty())
+    }
+
+    /** The screen's line drawn at the middle of the node tagged [tag] (± 2 px). */
+    private fun lineAt(tag: String): String {
+        val (x, y) = centerOf(tag) ?: error("no « $tag »\n" + screenLines().joinToString("\n"))
+        val lines = screenLines()
+        return lines.firstOrNull { l ->
+            Regex("@ (\\d+),(\\d+)$").find(l)?.groupValues?.let { g -> kotlin.math.abs(g[1].toInt() - x) <= 2f && kotlin.math.abs(g[2].toInt() - y) <= 2f } == true
+        } ?: error("no line at « $tag » ($x, $y)\n" + lines.joinToString("\n"))
     }
 }

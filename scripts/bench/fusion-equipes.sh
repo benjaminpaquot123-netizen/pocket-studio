@@ -84,6 +84,16 @@ for zone in "${zones[@]}"; do
   # fusion.txt) are committed right after it, so every figure quoted later can be checked; verifie-chantier.py counts
   # « fusion sans trace du portail » for a merge without them.
   merged="$(git rev-parse HEAD)"
+  # Review of the « portail » lot (M2): any step that fails from here to the traces' commit undoes the merge too, and
+  # leaves no half-written traces.
+  trace=""
+  undo_merge() {
+    [ -z "$trace" ] || rm -rf "${trace:?}"
+    git reset -q --keep "$before"
+    echo "$zone: a step after the checks failed (traces of the portal): undone (kept in $lot)." >&2
+    exit 5
+  }
+  trap undo_merge ERR
   trace="$traces_root/$(date -u +%F)-$tour-$zone"
   n=2
   while [ -e "$trace" ]; do trace="$traces_root/$(date -u +%F)-$tour-$zone-$n"; n=$((n + 1)); done
@@ -93,10 +103,11 @@ for zone in "${zones[@]}"; do
     echo "relecture: $review"; echo "relu: $read_sha"; [ ${#filters[@]} -eq 0 ] || echo "filtres: ${filters[*]}"
     echo "rejeux :"; sed 's/^/  /' "$lot/rejeux.txt"; } > "$trace/fusion.txt"
   # The judge again, with the traces there (the self-test's ran before them and counted this merge « sans trace »);
-  # it reads the summary sealed beside it.
-  python3 -I scripts/bench/verifie-chantier.py --resume "$trace/selftest-resume.txt" > "$trace/selftest-chantier.txt" 2>&1 || true
+  # it reads the lot's summary, sealed with its JUnit results (the trace keeps no XML).
+  python3 -I scripts/bench/verifie-chantier.py --resume "$lot/selftest-resume.txt" > "$trace/selftest-chantier.txt" 2>&1 || true
   git add -- "$trace"
   git commit -q -m "Portal traces of the merge of $zone ($tour)" -- "$trace"
+  trap - ERR
   rm -rf "${lot:?}"
   echo "$zone: merged ($(git rev-parse --short "$merged")), traces in $trace"
 done

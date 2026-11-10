@@ -595,10 +595,18 @@ def bench_guards(d):
 GREEN_CASE = '<testcase classname="a.BenchOneTest" name="plays"/>'
 
 
-def green_lot(lot, cases=GREEN_CASE):
-    """A lot whose self-test ran: its JUnit results (one pass) and the summary selftest-verdict.py makes of them, with
-    the lines selftest.sh adds (the machine, the code tested: P3)."""
-    write(os.path.join(lot, "junit", "banc", "TEST-x.xml"), "<testsuite>" + cases + "</testsuite>")
+def expected_cases(root=None):
+    """One green testcase for each class the self-test expects (selftest-attendus.py, of root or of this repository)."""
+    args = [sys.executable, "-I", os.path.join(HERE, "selftest-attendus.py")] + (["--root", root] if root else [])
+    names = [l.split()[1] for l in subprocess.run(args, capture_output=True, text=True).stdout.splitlines() if len(l.split()) == 2]
+    return "".join(f'<testcase classname="{n}" name="sealedRun"/>' for n in names)
+
+
+def green_lot(lot, cases=GREEN_CASE, every_class=True):
+    """A lot whose self-test ran: its JUnit results (one pass; every class the self-test expects ran, unless
+    every_class is False) and the summary selftest-verdict.py makes of them, with the lines selftest.sh adds (the
+    machine, the code tested: P3)."""
+    write(os.path.join(lot, "junit", "banc", "TEST-x.xml"), "<testsuite>" + cases + (expected_cases() if every_class else "") + "</testsuite>")
     resume = os.path.join(lot, "selftest-resume.txt")
     subprocess.run([sys.executable, "-I", os.path.join(HERE, "selftest-verdict.py"), os.path.join(lot, "junit"),
                     os.path.join(HERE, "selftest-quarantaine.txt"), resume], capture_output=True, text=True)
@@ -636,6 +644,10 @@ def stamp_needs_green_summary(d):
     with open(resume, "a", encoding="utf-8") as f:
         f.write("vert : BenchAddedByHandTest#guards\n")
     check(not ecris(), "a summary its JUnit results do not give (a line added by hand): no stamp")
+    # Review of the lot (M4): one green line of XML, its summary made by the verdict (the lot names no expected class):
+    # the classes the self-test expects are read again from the sources, not from the lot.
+    resume = green_lot(lot, every_class=False)
+    check(not ecris(), "results of one test where the self-test expects its classes: no stamp")
     resume = green_lot(lot)
     check(ecris() and verifie(), "a green summary of its results: stamped, and the stamp fits:\n" + open(stamp, encoding="utf-8").read())
     with open(resume, "a", encoding="utf-8") as f:

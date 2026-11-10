@@ -23,7 +23,7 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 here() {
   git rev-parse HEAD
-  { git diff HEAD -- . ':!docs'; git ls-files -o --exclude-standard -- . ':!docs' | sort | while read -r f; do echo "$f"; cat "$f"; done; } \
+  { git diff --full-index HEAD -- . ':!docs'; git ls-files -o --exclude-standard -- . ':!docs' | sort | while read -r f; do echo "$f"; cat "$f"; done; } \
     | sha256sum | cut -d' ' -f1
 }
 seats() { cat "$1"/*/start.txt 2>/dev/null | sha256sum | cut -d' ' -f1; }

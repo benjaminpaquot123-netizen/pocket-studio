@@ -125,3 +125,11 @@ Une ligne par étape : [x] fait / [ ] à faire, preuve, commit. « continue » r
 - [x] A.18 (2e relecture « portail », M8) formes simples d'un constat ouvert lues (« Non **corrigé** », « Aucun. » puis constat, liste numérotée, « (grave) », « très grave »). preuve: rouge 6be9442e / vert 6614d1ba
 - [ ] A.22 (2e relecture « portail », M6, M7) fausse trace commitée par une branche, XML fabriqués : non corrigés (le portail les arrête : branche qui écrit dans portail/ refusée, selftest relancé sur le code fusionné) ; à reprendre (ex. : le juge relit la trace seulement si son commit suit une fusion « Merge team » et n'est pas dans une branche d'équipe).
 - [ ] A.20 (R1) faite par A.23 (lot « réalisme ») ; A.21 réduite à MT3 (MT1 fait par A.24) : lot suivant.
+- [ ] En relecture : étape 3 lot « réalisme » (atelier `realisme`, rapport `tour-5-realisme-rapport.md`). Ses lignes :
+- [x] A.23 (R1) l'écran en texte écrit ce qui est dessiné : une icône par son signe ou sa forme (`IconShapes`), « bouton » seulement avec un fond ou un contour, plus de nom TalkBack (gardés au journal). preuve: rouge 95de177 / vert 778c01e
+- [x] A.23 (R2, vu) le temps de l'appli ne passe que pendant les gestes : garde `BenchSelfTest#theAppsClockStandsStillWhileTheTesterReads` (55ad386) ; consignes des testeurs (R2, R3, R4) b0ae973 ; garde verte dès l'écriture (une limite constatée, pas une réparation), jouée par le selftest. preuve: script scripts/bench/selftest.sh
+- [x] A.24 (MT1) défauts cachés comptés : `defauts-caches.tsv`, `defauts-caches.py`, critère 9 de PLAN-RESTE § 5. preuve: rouge bb09927 / vert c094a6c
+- [x] A.24 (MT1) ligne J du tableau de bord. preuve: rouge 92d65e4 / vert c8bca8a
+- [x] R.8 plus de flèche « la suite plus bas » que l'appli ne dessine pas ; une ligne coupée dit « coupé ». preuve: rouge 19d33b8 / vert f2a0a9a
+- [x] A.23 (relecture G1) l'état dessiné des pads (allumé, anneau pâle) revient à l'écran en texte, lu dans leur lumière. preuve: rouge af6da683 / vert a74b389a
+- [x] A.23 (relecture M1, M2) « case », « interrupteur » seulement pour ceux de Material ; marques dessinées au Canvas et icônes hors ligne écrites. preuve: rouge f4d447ea / vert b89017a7

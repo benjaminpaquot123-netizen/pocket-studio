@@ -3,6 +3,7 @@
 
     tableau-de-bord.py <round folder> [<round folder> …] [--out <last round>/tableau-de-bord.md]
                        [--base docs/audits/ultra/base.tsv] [--verdicts docs/audits/ultra/verdicts.tsv] [--promesses-total 120]
+                       [--caches docs/audits/ultra/defauts-caches.tsv]
 
 A round folder is docs/audits/ultra/sieges/tour-N (lotX/s/rapport.md, journal.txt, mesures.json when seat-metrics ran)
 plus, written by the coordinator at the end of the round, hors-banc.tsv (key<TAB>value: relecture_bloquants,
@@ -10,7 +11,7 @@ relecture_graves, corrections_sans_test, tests_rejeu_graves, fichiers_non_commit
 recette_points_rouges, cases_vides, lots_non_joues, sieges_coupes_par_le_banc). A value missing is « ? »: the line is
 then NOT met (the criterion is never reached by lack of a number).
 
-Writes one table per round (the stop criterion's 9 conditions A-I, each « oui », « non » or « ? ») and the convergence
+Writes one table per round (the stop criterion's conditions A-I, and J: the defects the bench hides, MT1, each « oui », « non » or « ? ») and the convergence
 curve across the rounds given. The stop criterion (docs/audits/AUDIT-ULTRA.md §9): A-I « oui » on each of the last two
 complete rounds. Standard library only.
 """
@@ -24,6 +25,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, "..", "..", "docs", "audits", "ultra")
 sys.path.insert(0, HERE)
 fuse_mod = __import__("fuse-reports")
+caches_mod = __import__("defauts-caches")
 
 
 def read(path):
@@ -115,7 +117,20 @@ def measured(tour_dir, name, root=None, docs=None):
     return out
 
 
-def round_numbers(tour_dir, base, verdicts_path, total_promises):
+def hidden_row(caches):
+    """Audit « banc crédible » 2, MT1 (PLAN-RESTE § 5, criterion 9): the defects Benjamin saw on the device that the bench
+    shows (defauts-caches.py); the trials are the current milestone's, the same line for each round of the table."""
+    root = os.path.abspath(os.path.join(HERE, "..", ".."))
+    gaps, n = caches_mod.summary(caches, os.path.join(DOCS, "retours-benjamin.md"), os.path.join(DOCS, "PLAN-RESTE.md"), root)
+    if n is None or n["rate"] is None:
+        return ("J", "Défauts vus sur l'appareil que le banc montre (défauts cachés)", "?", f"≥ {round(100 * caches_mod.RATE_MIN)} %, 0 écart", "?")
+    measure = (f"{n['shown_today']:g}/{n['visible']} ({round(100 * n['rate'])} % ; à l'essai {round(100 * n['rate_trial'])} %) ; "
+               f"{n['hidden']} cachés sur {n['total']} ; {len(gaps)} écart(s)")
+    return ("J", "Défauts vus sur l'appareil que le banc montre (défauts cachés)", measure, f"≥ {round(100 * caches_mod.RATE_MIN)} %, 0 écart",
+            "oui" if n["rate"] >= caches_mod.RATE_MIN and not gaps else "non")
+
+
+def round_numbers(tour_dir, base, verdicts_path, total_promises, caches=None):
     clusters, rejected, seats, promises, incidents = fuse_mod.fuse(tour_dir, base, verdicts_path)
     name = os.path.basename(os.path.normpath(tour_dir))
     defects = sum(len(c["where"]) for c in clusters)
@@ -205,6 +220,7 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises):
          "0, 0, ≥ 16 / ≤ 3", yes(None if any(num(hb, k) is None for k in ("cases_vides", "lots_non_joues", "sieges_joues", "sieges_coupes_par_le_banc"))
                           else num(hb, "cases_vides") == 0 and num(hb, "lots_non_joues") == 0 and num(hb, "sieges_joues") >= 16
                           and num(hb, "sieges_coupes_par_le_banc") <= 3)),
+        hidden_row(caches or os.path.join(DOCS, "defauts-caches.tsv")),
     ]
     curve = {"tour": name, "sieges": len(seats), "fiches": defects, "fiches_par_siege": round(defects / max(1, len(seats)), 1),
              "echelle": scale, "graves_declares_par_siege": round(declared_grave / max(1, len(seats)), 2),
@@ -224,7 +240,8 @@ def main(argv):
     base = opt("--base", os.path.join(docs, "base.tsv"))
     verdicts = opt("--verdicts", os.path.join(docs, "verdicts.tsv"))
     total = int(opt("--promesses-total", "120"))
-    flags = {"--out", "--base", "--verdicts", "--promesses-total"}
+    caches = opt("--caches", os.path.join(docs, "defauts-caches.tsv"))
+    flags = {"--out", "--base", "--verdicts", "--promesses-total", "--caches"}
     tours = [a for i, a in enumerate(argv) if not a.startswith("--") and (i == 0 or argv[i - 1] not in flags)]
     # External audit: each round once, in round order (« tour-5 tour-1 » made tour-1 the last one; a round given twice
     # counted twice for the stop).
@@ -234,7 +251,7 @@ def main(argv):
     met = []
     curves = []
     for t in tours:
-        name, rows, curve = round_numbers(t, base, verdicts, total)
+        name, rows, curve = round_numbers(t, base, verdicts, total, caches)
         curves.append(curve)
         met.append(all(r[4] == "oui" for r in rows))
         lines += [f"## {name}", "", "| | Condition | Mesure | Seuil | Remplie |", "|---|---|---|---|---|"]
@@ -251,7 +268,7 @@ def main(argv):
             lines.append(f"\nChangement d'échelle entre {a['tour']} et {b['tour']} ({a['echelle']} → {b['echelle']}) : "
                          "les graves de ces deux tours ne se comparent pas.")
     stop = len(met) >= 2 and met[-1] and met[-2]
-    lines += ["", f"**Arrêt de l'audit possible : {'oui' if stop else 'non'}** (A à I remplies sur les deux derniers tours complets)."]
+    lines += ["", f"**Arrêt de l'audit possible : {'oui' if stop else 'non'}** (A à J remplies sur les deux derniers tours complets)."]
     text = "\n".join(lines) + "\n"
     with open(out, "w", encoding="utf-8") as f:
         f.write(text)

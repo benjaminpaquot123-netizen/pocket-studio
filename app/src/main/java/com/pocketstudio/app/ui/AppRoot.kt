@@ -470,7 +470,9 @@ fun AppRoot() {
     var switching by remember { mutableStateOf(false) }
     LaunchedEffect(switching) { if (switching) { kotlinx.coroutines.delay(SWITCH_COVER_MS); switching = false } }
     val switchProject: (String, String?) -> Unit = { id, deleteAfter ->
-        openScope.launch {
+        // On the main thread whatever the scope's dispatcher: Activity.recreate() and the Toast need it
+        // (emulator CI 42814112044: a test's effect context resumed this after flushNow on a worker).
+        openScope.launch(kotlinx.coroutines.Dispatchers.Main.immediate) {
             rhythmVm.keepTake()  // a microphone take in progress lands on its track first
             rhythmVm.flushNow()
             // Not saved (a full phone): stay here rather than reopen this project without its latest edits.

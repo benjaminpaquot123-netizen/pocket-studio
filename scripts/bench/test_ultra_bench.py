@@ -1797,7 +1797,8 @@ def mark_fixed(d):
     given (4th argument or PS_SELFTEST_RESUME), on a toy repository; without one the judge says « résumé absent »."""
     root = judge_root(d, "marque")
     bench = os.path.join(root, "scripts", "bench")
-    for name in ("marque-corrige.sh", "verifie-chantier.py", "tampon.sh"):
+    for name in ("marque-corrige.sh", "verifie-chantier.py", "tampon.sh", "selftest-verdict.py", "selftest-attendus.py",
+                 "selftest-quarantaine.txt", "selftest-sauts-connus.txt"):
         with open(os.path.join(HERE, name), encoding="utf-8") as f:
             write(os.path.join(bench, name), f.read())
     git_toy(root, "init", "-q")
@@ -1903,28 +1904,65 @@ def judge_root(d, name, verdicts=JUDGE_GOOD):
     return root
 
 
+def junit_sum(lot):
+    """tampon.sh's « junit: » line: sha256 of the lot's JUnit XML, names and contents, in C order."""
+    import hashlib
+    base = os.path.join(lot, "junit")
+    names = sorted("./" + os.path.relpath(os.path.join(dp, f), base).replace(os.sep, "/")
+                   for dp, _, fs in os.walk(base) for f in fs if f.endswith(".xml"))
+    h = hashlib.sha256()
+    for n in names:
+        h.update((n + "\n").encode("utf-8"))
+        with open(os.path.join(base, n[2:]), "rb") as f:
+            h.update(f.read())
+    return h.hexdigest()
+
+
 def seal_resume(root, resume):
-    """What a green self-test leaves beside its summary (audit « banc crédible » 2, P3): the summary names the code it
-    tested (« code testé : <arbre> », tampon.sh code) and the stamp beside it (selftest.ok, as tampon.sh ecris writes
-    it) seals that summary and that code. A toy that is no git repository is made one (no commit); its own summary and
-    stamp are kept out of its code."""
+    """What a green self-test leaves beside its summary (audit « banc crédible » 2, P2 and P3, and the review's G1):
+    JUnit results (junit/: the summary's tests as written, plus one green test for each class root's self-test
+    expects), the summary selftest-verdict.py makes of them, naming the code it tested (« code testé : <arbre> »), and
+    the stamp beside it (selftest.ok) sealing that summary, those results and that code. A toy that is no git
+    repository is made one (no commit); its own summary, stamp and results are kept out of its code."""
+    import hashlib
+    import shutil
+    from xml.sax.saxutils import quoteattr
     if not os.path.isfile(resume):
         return
     if not os.path.isdir(os.path.join(root, ".git")):
         subprocess.run(["git", "-C", root, "init", "-q"], check=True)
     os.makedirs(os.path.join(root, ".git", "info"), exist_ok=True)
     with open(os.path.join(root, ".git", "info", "exclude"), "a", encoding="utf-8") as f:
-        f.write("/selftest-resume.txt\n/selftest.ok\n")
-    code = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "code", root], capture_output=True, text=True).stdout.strip()
+        f.write("/selftest-resume.txt\n/selftest.ok\n/junit/\n")
+    lot = os.path.dirname(os.path.abspath(resume))
+    cases, seen = [], set()
     with open(resume, encoding="utf-8") as f:
-        text = "".join(l for l in f.read().splitlines(True) if not l.startswith("code testé : "))
-    if text and not text.endswith("\n"):
-        text += "\n"
-    text += f"code testé : {code}\n"
-    write(resume, text)
-    import hashlib
-    write(os.path.join(os.path.dirname(resume), "selftest.ok"),
-          f"resume: {hashlib.sha256(text.encode('utf-8')).hexdigest()}\ncode: {code}\n")
+        for line in f.read().splitlines():
+            m = re.match(r"^(vert|sauté|rouge|quarantaine rouge) : ([A-Za-z0-9_]+)#([^ ]+)(?: : (.*))?$", line)
+            if not m or m.group(3) == "*":
+                continue
+            kind, cls, meth, why = m.group(1), m.group(2), m.group(3), m.group(4) or ""
+            seen.add(cls)
+            body = (f"<skipped message={quoteattr(why)}/>" if kind == "sauté" else
+                    f"<failure message={quoteattr(why)}/>" if kind != "vert" else "")
+            cases.append(f'<testcase classname="x.{cls}" name={quoteattr(meth)}>{body}</testcase>')
+    expected = [l.split()[1] for l in subprocess.run([sys.executable, "-I", os.path.join(HERE, "selftest-attendus.py"), "--root", root],
+                                                     capture_output=True, text=True).stdout.splitlines() if len(l.split()) == 2]
+    cases += [f'<testcase classname="{n}" name="sealedRun"/>' for n in expected if n.rsplit(".", 1)[-1] not in seen]
+    shutil.rmtree(os.path.join(lot, "junit"), ignore_errors=True)
+    write(os.path.join(lot, "junit", "banc", "TEST-seal.xml"), "<testsuite>" + "".join(cases) + "</testsuite>")
+    listed = os.path.join(lot, "junit-attendus.tmp")
+    write(listed, "".join(n.rsplit(".", 1)[-1] + "\n" for n in expected))
+    subprocess.run([sys.executable, "-I", os.path.join(HERE, "selftest-verdict.py"), os.path.join(lot, "junit"),
+                    os.path.join(HERE, "selftest-quarantaine.txt"), resume, listed, os.path.join(lot, "selftest-gradle-echecs.txt"),
+                    os.path.join(HERE, "selftest-sauts-connus.txt")], capture_output=True, text=True)
+    os.remove(listed)
+    code = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "code", root], capture_output=True, text=True).stdout.strip()
+    with open(resume, "a", encoding="utf-8") as f:
+        f.write(f"code testé : {code}\n")
+    with open(resume, "rb") as f:
+        digest = hashlib.sha256(f.read()).hexdigest()
+    write(os.path.join(lot, "selftest.ok"), f"resume: {digest}\njunit: {junit_sum(lot)}\ncode: {code}\n")
 
 
 def judge_refuses_unsealed_summary(d):
@@ -1966,6 +2004,41 @@ def judge_refuses_unsealed_summary(d):
     write(os.path.join(root, "docs", "notes.md"), "a note\n")
     out = judge()
     check("résumé refusé" not in out and "pas verte" not in out, "a change under docs/ keeps the summary:\n" + out)
+    # Review of the lot (G1): a stamp of two lines written by hand (« resume: » and « code: », both anyone can compute),
+    # no JUnit results beside it: refused.
+    import hashlib
+    write(resume, JUDGE_RESUME)
+    code_here = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "code", root], capture_output=True, text=True).stdout.strip()
+    with open(resume, "a", encoding="utf-8") as f:
+        f.write(f"code testé : {code_here}\n")
+    with open(resume, "rb") as f:
+        digest = hashlib.sha256(f.read()).hexdigest()
+    shutil_rm = __import__("shutil").rmtree
+    shutil_rm(os.path.join(root, "junit"), ignore_errors=True)
+    write(os.path.join(root, "selftest.ok"), f"resume: {digest}\ncode: {code_here}\n")
+    out = judge()
+    check("résumé refusé" in out and "pas verte" in out, "a stamp written by hand without JUnit results is refused (G1):\n" + out)
+    # A portal trace committed by fusion-equipes.sh (« Portal traces of the merge … ») is read without its XML; the same
+    # files committed by any other commit are not.
+    seal_resume(root, resume)
+    trace = os.path.join(root, "docs", "audits", "ultra", "portail", "2026-11-10-tour-9-x")
+    for name in ("selftest-resume.txt", "selftest.ok"):
+        with open(os.path.join(root, name), encoding="utf-8") as f:
+            write(os.path.join(trace, name), f.read())
+    tresume = os.path.join(trace, "selftest-resume.txt")
+    git_toy(root, "add", "docs")
+    git_toy(root, "commit", "-q", "-m", "traces written by hand")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", tresume], capture_output=True, text=True)
+    check("résumé refusé" in r.stdout, "traces committed by another commit than the portal's are refused:\n" + r.stdout)
+    git_toy(root, "rm", "-q", "-r", "docs/audits/ultra/portail")
+    git_toy(root, "commit", "-q", "-m", "out")
+    for name in ("selftest-resume.txt", "selftest.ok"):
+        with open(os.path.join(root, name), encoding="utf-8") as f:
+            write(os.path.join(trace, name), f.read())
+    git_toy(root, "add", "docs")
+    git_toy(root, "commit", "-q", "-m", "Portal traces of the merge of x (tour-9)")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", tresume], capture_output=True, text=True)
+    check("résumé refusé" not in r.stdout and "pas verte" not in r.stdout, "a portal trace committed by the portal is read:\n" + r.stdout)
 
 
 def proof_must_run(d):

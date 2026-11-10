@@ -212,6 +212,7 @@ def main():
         expected_classes(d)
         skipped_class(d)
         portal(d)
+        fusion_forged(d)
         known_skips_bounded(d)
         mark_fixed(d)
         seat_exit(d)
@@ -1309,6 +1310,136 @@ def portal(d):
     git_toy(root, "commit", "-q", "-m", "a real test in the known skips", "scripts/bench/selftest-sauts-connus.txt")
     code, out, text, lot = selftest(foo, defect)
     check(code != 0 and not stamped(lot) and "sauts connus" in out and "BenchFooTest#guardsIt" in out, "a real test in the list of known skips forbids the lot:\n" + out)
+
+
+FUSION_SELFTEST = """#!/usr/bin/env bash
+# The fusion's self-test on the toy: says it ran (and on which lot), red on demand.
+echo "selftest $1" >> "$PS_TOY_CALLS"
+[ -z "${PS_TOY_SELFTEST_RED:-}" ] || exit 1
+printf '1 verts, 0 rouges, 0 en quarantaine, 0 sautés\\nvert : BenchFooTest#guardsIt\\n' > "$1/selftest-resume.txt"
+echo "a stamp" > "$1/selftest.ok"
+echo "chantier : 0 écarts" > "$1/selftest-chantier.txt"
+"""
+
+FUSION_REJEUX = """#!/usr/bin/env bash
+# The fusion's replays on the toy: says which folder it would play.
+echo "rejeux ${PS_REJEUX_DIR:-docs/audits/ultra/rejeux} $(ls docs/audits/ultra/rejeux 2>/dev/null | tr '\\n' ' ')" >> "$PS_TOY_CALLS"
+"""
+
+
+def fusion_toy(d, name):
+    """A toy integration workshop for fusion-equipes.sh: the real script, stand-ins for the self-test, the replays and
+    Gradle (each one writes its call), one replay test in docs/audits/ultra/rejeux/."""
+    root = os.path.join(d, name)
+    bench = os.path.join(root, "scripts", "bench")
+    with open(os.path.join(HERE, "fusion-equipes.sh"), encoding="utf-8") as f:
+        write(os.path.join(bench, "fusion-equipes.sh"), f.read())
+    for extra in ("relecture-verdict.py",):
+        if os.path.isfile(os.path.join(HERE, extra)):
+            with open(os.path.join(HERE, extra), encoding="utf-8") as f:
+                write(os.path.join(bench, extra), f.read())
+    write(os.path.join(bench, "selftest.sh"), FUSION_SELFTEST)
+    write(os.path.join(bench, "rejeu-defauts.sh"), FUSION_REJEUX)
+    write(os.path.join(bench, "gradle-file.sh"), '#!/usr/bin/env bash\necho "gradle $*" >> "$PS_TOY_CALLS"\n')
+    write(os.path.join(bench, "tampon.sh"), "#!/usr/bin/env bash\ncase \"$1\" in verifie) exit 1 ;; esac\n")
+    for n in ("fusion-equipes.sh", "selftest.sh", "rejeu-defauts.sh", "gradle-file.sh", "tampon.sh"):
+        os.chmod(os.path.join(bench, n), 0o755)
+    write(os.path.join(root, "docs", "audits", "ultra", "rejeux", "t1-clavier", "start.txt"), "lang=fr\n")
+    write(os.path.join(root, "docs", "audits", "ultra", "rejeux", "t2-partie", "start.txt"), "lang=fr\n")
+    git_toy(root, "init", "-q", "-b", "fx-int")
+    git_toy(root, "add", "scripts", "docs")
+    git_toy(root, "commit", "-q", "-m", "toy")
+    return root
+
+
+def fusion_forged(d):
+    """Audit « banc crédible » 2, P1 (bloquant) and P4: fusion-equipes.sh reads the review's verdict on its LAST line
+    only (« Verdict : 0 bloquant, 0 grave », nothing else on it), refuses a table row « bloquant »/« grave » that does
+    not say « corrigé », reads the review in the branch only (a file left in the workshop is not a review), always runs
+    the self-test after the merge (not only through the replays) and the replays of the repository's own rejeux/
+    (PS_REJEUX_DIR ignored), and refuses an empty rejeux/ or a replay taken out without « rejeu retiré : <id> :
+    <raison> » in the review. The forges of the audit (forge2, forge3) are refused; an honest branch is merged."""
+    root = fusion_toy(d, "fusion-forge")
+    script = os.path.join(root, "scripts", "bench", "fusion-equipes.sh")
+    calls = os.path.join(d, "fusion-appels.txt")
+    empty = os.path.join(d, "fusion-rejeux-vides")
+    os.makedirs(empty)
+
+    def branch(zone, change, review, untracked=False):
+        """eq/tour-9-<zone> from fx-int: change(root) committed, then its review (naming that commit)."""
+        git_toy(root, "checkout", "-q", "-b", f"eq/tour-9-{zone}", "fx-int")
+        change(root)
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "--allow-empty", "-m", f"team {zone}")
+        sha = git_toy(root, "rev-parse", "HEAD").strip()
+        path = os.path.join(root, "docs", "audits", "ultra", f"tour-9-{zone}-relecture.md")
+        if not untracked:
+            write(path, f"# Relecture\nRelu : {sha}\n\n" + review)
+            git_toy(root, "add", path)
+            git_toy(root, "commit", "-q", "-m", "review")
+        git_toy(root, "checkout", "-q", "fx-int")
+        if untracked:
+            write(path, f"Relu : {sha}\n\n" + review)
+        return path
+
+    def merge(zone, **env):
+        write(calls, "")
+        before = git_toy(root, "rev-parse", "HEAD").strip()
+        e = dict(os.environ, PS_TOY_CALLS=calls, **env)
+        r = subprocess.run(["bash", script, "tour-9", zone], capture_output=True, text=True, env=e)
+        with open(calls, encoding="utf-8") as f:
+            asked = f.read()
+        after = git_toy(root, "rev-parse", "HEAD").strip()
+        return r.returncode, r.stdout + r.stderr, asked, before != after
+
+    def touch(name):
+        return lambda r: write(os.path.join(r, "scripts", "bench", name), "x\n")
+
+    def move_replay(rid, to="rejeux-attente"):
+        def go(r):
+            git_toy(r, "mv", f"docs/audits/ultra/rejeux/{rid}", f"docs/audits/ultra/{to}")
+        return go
+
+    good = "| 1 | moyen | a thing | à reprendre |\n| 2 | grave | another | **corrigé** (abc1234) |\n\nVerdict : 0 bloquant, 0 grave — fusion possible\n"
+    # forge2: a review that says « 1 bloquant » in its table and the verdict phrase anyway; the only replay moved out.
+    def forge2(r):
+        write(os.path.join(r, "scripts", "bench", "tampon.sh"), "#!/usr/bin/env bash\nexit 0\n")
+        move_replay("t1-clavier")(r)
+        move_replay("t2-partie")(r)
+    branch("forge2", forge2, "| 1 | bloquant | le tampon ne vérifie plus rien |\n\nVerdict : 0 bloquant, 0 grave (avant correction du constat 1)\n")
+    code, out, asked, moved = merge("forge2", PS_REJEUX_DIR=empty)
+    check(code != 0 and not moved and "not merged" in out, "forge2 (a review with « 1 bloquant », no replay left) is refused:\n" + out)
+    # A table row « grave » not said « corrigé », even under a clean last line.
+    branch("grave", touch("a.txt"), "| 1 | grave | still open | à faire |\n| 2 | grave | non corrigé |\n\nVerdict : 0 bloquant, 0 grave\n")
+    code, out, asked, moved = merge("grave")
+    check(code != 0 and not moved and "grave" in out, "a review whose table holds an open grave is refused:\n" + out)
+    # The verdict phrase somewhere, not on the last line.
+    branch("milieu", touch("b.txt"), "Verdict : 0 bloquant, 0 grave\n\nAjout : un point ouvert.\n")
+    code, out, asked, moved = merge("milieu")
+    check(code != 0 and not moved, "a verdict that is not the review's last line is refused:\n" + out)
+    # forge3 (P4): the review left in the workshop, never committed in the branch.
+    left = branch("forge3", touch("c.txt"), "Verdict : 0 bloquant, 0 grave\n", untracked=True)
+    code, out, asked, moved = merge("forge3")
+    check(code != 0 and not moved and "no fresh review" in out, "a review that is not in the branch is refused (P4):\n" + out)
+    os.remove(left)
+    # A replay taken out of rejeux/ without a reason in the review.
+    branch("retire", move_replay("t2-partie"), good)
+    code, out, asked, moved = merge("retire")
+    check(code != 0 and not moved and "t2-partie" in out, "a replay taken out without « rejeu retiré » is refused:\n" + out)
+    # Every replay taken out, each with its reason: rejeux/ empty is still refused (a merge without any replay).
+    branch("vide", forge2, good.replace("\nVerdict", "rejeu retiré : t1-clavier : non tranché\nrejeu retiré : t2-partie : non tranché\n\nVerdict"))
+    code, out, asked, moved = merge("vide")
+    check(code != 0 and not moved and "rejeu" in out, "an empty rejeux/ is refused:\n" + out)
+    # A red self-test after the merge: undone.
+    branch("rouge", touch("d.txt"), good)
+    code, out, asked, moved = merge("rouge", PS_TOY_SELFTEST_RED="1")
+    check(code != 0 and not moved and "selftest " in asked, "a red self-test after the merge undoes it:\n" + out + asked)
+    # Honest: one replay taken out with its reason, an open « moyen » and a fixed grave: merged, the self-test run
+    # and the repository's own replays played (PS_REJEUX_DIR ignored).
+    branch("honnete", move_replay("t2-partie"), good.replace("\nVerdict", "rejeu retiré : t2-partie : non tranché, retour en attente\n\nVerdict"))
+    code, out, asked, moved = merge("honnete", PS_REJEUX_DIR=empty)
+    check(code == 0 and moved and "honnete: merged" in out, "an honest branch is merged:\n" + out)
+    check("selftest " in asked and "rejeux docs/audits/ultra/rejeux t1-clavier" in asked, "the self-test and the repository's replays ran:\n" + asked)
 
 
 def mark_fixed(d):

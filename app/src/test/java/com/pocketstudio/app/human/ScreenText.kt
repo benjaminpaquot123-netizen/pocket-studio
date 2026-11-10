@@ -154,13 +154,9 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         val r = drawn(n)
         if (out == null) { n.children.forEach { walk(it, null, smallTexts) }; return }
         line(n, r, smallTexts)?.let { if (onScreen(r)) out += it }
+        // PLAN-RESTE R.8: no « ↓ la suite plus bas » any more, an arrow the app does not draw (hidden defect B09). What a
+        // person sees of a list going on is a line cut by an edge: [line] says « coupé ».
         sorted(n.children).forEach { walk(it, out, smallTexts) }
-        n.config.getOrNull(SemanticsProperties.VerticalScrollAxisRange)?.let { s ->
-            if (onScreen(r) && s.value() < s.maxValue() - 1f) out += "  ↓ la suite plus bas (glisse vers le haut pour la voir)"
-        }
-        n.config.getOrNull(SemanticsProperties.HorizontalScrollAxisRange)?.let { s ->
-            if (onScreen(r) && s.value() < s.maxValue() - 1f) out += "  → la suite sur le côté (glisse pour la voir)"
-        }
     }
 
     private fun actionable(n: SemanticsNode) = n.config.contains(SemanticsActions.OnClick) || n.config.contains(SemanticsActions.OnLongClick) ||
@@ -203,6 +199,8 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         ).joinToString(" ")
         val states = buildList {
             if (c.contains(SemanticsProperties.Disabled)) add("désactivé")
+            // R.8: drawn in part only (a scrolling parent or the screen's edge cuts it), as a person sees a cut card.
+            if (n.size.height > 0 && n.size.width > 0 && (r.height < 0.9f * n.size.height || r.width < 0.9f * n.size.width)) add("coupé")
             when (c.getOrNull(SemanticsProperties.ToggleableState)) {
                 ToggleableState.On -> add("coché"); ToggleableState.Off -> add("non coché"); ToggleableState.Indeterminate -> add("en partie"); null -> Unit
             }

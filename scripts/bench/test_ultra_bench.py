@@ -211,6 +211,7 @@ def main():
         judge_criteria(d)
         open_app_proof(d)
         rule_c_adversarial(d)
+        red_seen_in_a_run(d)
         known_defect_lifted(d)
         known_defect_lifted_needs_a_red(d)
         owner_trials(d)
@@ -1067,6 +1068,56 @@ def rule_c_adversarial(d):
     for case, sha in accepted:
         check(sha not in text, f"control {case} is a pair:\n" + text)
     check(f"chantier : {len(refused)} écarts" in text, f"the {len(refused)} adversarial greens, nothing else:\n" + text)
+
+def red_seen_in_a_run(d):
+    """Review of the « portail » lot (the 23rd gap, dd31ec4b): a test that already exists goes red in a full run and a
+    « vert: » fixes the app, with no « rouge: » commit to point at (the red is the existing test, not a new one). The
+    pair is made by evidence, never by a word: docs/audits/ultra/rouges-constates/<the green's full sha>/ holds
+    rouge.txt (« parent: <the green's parent> », « test: Classe#méthode ») and the JUnit XML of that run where that
+    test fails; the green names the test and leaves its test file alone. Anything less stays « vert sans rouge »."""
+    root = judge_root(d, "juge-rouge-constate")
+    resume = os.path.join(root, "selftest-resume.txt")
+    test_file = os.path.join(root, "app", "src", "test", "java", "x", "JourneyProofTest.kt")
+    app = os.path.join(root, "app", "src", "main", "Spot.kt")
+    write(test_file, "class JourneyProofTest {\n  @Test\n  fun theWholeCourse() {}\n}\n")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+
+    def green(key, touch_test=False):
+        write(app, f"fun spot() = \"{key}\"\n")
+        if touch_test:
+            write(test_file, f"class JourneyProofTest {{\n  @Test\n  fun theWholeCourse() {{ /* {key} */ }}\n}}\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: JourneyProofTest#theWholeCourse[techno Pro] {key}")
+        shas[key] = (git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip())
+
+    for key in ("honest", "passing", "otherparent", "touchestest", "othertest"):
+        green(key, touch_test=(key == "touchestest"))
+
+    def evidence(key, parent=None, failing=True, test="theWholeCourse[techno Pro]"):
+        full, par = shas[key]
+        folder = os.path.join(root, "docs", "audits", "ultra", "rouges-constates", full)
+        write(os.path.join(folder, "rouge.txt"), f"parent: {parent or par}\ntest: JourneyProofTest#theWholeCourse[techno Pro]\n")
+        body = '<failure message="targets not seen: coupé en haut"/>' if failing else ""
+        write(os.path.join(folder, "TEST-x.JourneyProofTest.xml"),
+              f'<testsuite><testcase classname="x.JourneyProofTest" name="{test}">{body}</testcase></testsuite>')
+
+    evidence("honest")
+    evidence("passing", failing=False)
+    evidence("otherparent", parent=shas["honest"][0])
+    evidence("touchestest")
+    evidence("othertest", test="theWholeCourse[lofi Simple]")
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    short = {k: git_toy(root, "rev-parse", "--short", v[0]).strip() for k, v in shas.items()}
+    check(short["honest"] not in out, "a green whose red was seen in a run, its XML kept, is a pair:\n" + out)
+    for key in ("passing", "otherparent", "touchestest", "othertest"):
+        check(f"{short[key]} « vert:" in out, f"evidence that does not hold ({key}) makes no pair:\n" + out)
+    check("chantier : 4 écarts" in out, "four greens without red, nothing else:\n" + out)
+
 
 def old_commit_env():
     """A commit dated before the rouge/vert discipline began (first « rouge: », 2026-11-08 18:29 UTC)."""

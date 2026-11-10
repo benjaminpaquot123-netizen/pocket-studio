@@ -731,7 +731,6 @@ abstract class HumanTester(private val seat: String) {
         // Audit method v2 (META-AUDIT change 2): the engine is there all the time, as a phone's. Lending it touch by touch, from
         // lists of tags kept by hand, made most of the bench's false alarms in rounds 0 to 4 (each tag forgotten = « nothing plays »).
         if (ENGINE_ALWAYS) {
-            if (kind == "touche" && audioTakeTouched(x, y)) countInLikeTheProject()
             NativeEngine.sink = engine
             return
         }
@@ -747,9 +746,8 @@ abstract class HumanTester(private val seat: String) {
             return
         }
         // Round 1 (lot banc): « Enregistrer » of an audio track (or ● in its microphone mode) opens the engine's microphone:
-        // the bench's engine has one ([BenchEngine.micStart]), its count-in as long as the project's.
+        // the bench's engine has one ([BenchEngine.micStart]); it counts in with the transport, as long as the app asks with ▶ (A.9).
         if (kind == "touche" && audioTakeTouched(x, y)) {
-            countInLikeTheProject()
             NativeEngine.sink = NativeEngine.sink ?: engine
             return
         }
@@ -769,14 +767,6 @@ abstract class HumanTester(private val seat: String) {
         // screens' own reads of the engine go through it, the meters are the native engine's only).
         if (v != null && songPlaying(v)) return
         letTheEngineGo(v)
-    }
-
-    /** The bench's microphone counts in as long as the project's count-in (an audio take). */
-    private fun countInLikeTheProject() {
-        lastVm?.project?.value?.let { p ->
-            val bars = SettingsStore.state.value.recordCountIn.coerceAtLeast(1)
-            engine.countInMs = (bars * p.beatsPerBar * 60_000.0 / p.tempoBpm.coerceAtLeast(30.0)).toLong()
-        }
     }
 
     /**
@@ -1320,7 +1310,6 @@ abstract class HumanTester(private val seat: String) {
             lastVm?.let {
                 playhead.tick(it, SystemClock.uptimeMillis())
                 launchLines.tick(it)
-                engine.transportSteps = it.takeClockForTest
                 engine.tempo = it.project.value.tempoBpm
                 engine.beatsPerBar = it.project.value.beatsPerBar
             }

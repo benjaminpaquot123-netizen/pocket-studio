@@ -701,7 +701,8 @@ def judge_criteria(d):
     code, out = judge(root, "--sans-git", "--resume", resume)
     for item in ("C", "E", "F", "H"):
         check(f"{item} : verdict « appli » sans preuve (ni test sans banc existant, ni essai ❌ daté)" in out, f"appli line {item} has no proof:\n" + out)
-    check("D : verdict « appli »" not in out and "chantier : 4 écarts" in out and code == 1, "a dated ❌ trial is a proof:\n" + out)
+    check("D : verdict « appli »" not in out and "chantier : 5 écarts" in out and code == 1, "a dated ❌ trial is a proof:\n" + out)
+    check(NO_NOTES + " (3 annotation(s) d'essai" in out, "trial annotations without the owner's notes to check them against: said\n" + out)
 
     # 2. « banc » needs a proof without the bench too (a Bench* guard alone is the bench judging itself).
     root = judge_root(d, "juge-banc", lines(
@@ -781,8 +782,8 @@ def open_app_proof(d):
     check("C : verdict « appli » dont la preuve n'est ni @KnownDefect ni un essai ❌ daté" in out,
           "an open appli line proved by a green test only is a gap:\n" + out)
     check("A : verdict « appli » dont" not in out and "D : verdict « appli » dont" not in out and "E : verdict « appli » dont" not in out
-          and "chantier : 1 écarts" in out and r.returncode == 1,
-          "a @KnownDefect guard, a dated ❌ trial and a line that is not open are fine:\n" + out)
+          and "chantier : 2 écarts" in out and r.returncode == 1 and NO_NOTES + " (2 annotation(s) d'essai" in out,
+          "a @KnownDefect guard, a dated ❌ trial and a line that is not open are fine (the second gap: no notes of the owner):\n" + out)
 
 
 def owner_trials(d):
@@ -802,7 +803,14 @@ def owner_trials(d):
                       + "t\tJ\tk10\tm\tnon-tranché\touvert\t-\t-\t-\t-\tn ; RECETTE tel-01 ❌ téléphone 2026-11-08 : against the notes\t-\n"
                       + "t\tK\tk11\tm\tnon-tranché\touvert\t-\t-\tRECETTE tel-02 ❌ téléphone 2026-11-08\t-\tn\t-\n"
                       + "t\tL\tk12\tm\tnon-tranché\touvert\t-\t-\t-\t-\tRECETTE tel-07 ❌ téléphone 2026-11-07 : another day\t-\n"
-                      + "t\tM\tk13\tm\tnon-tranché\touvert\t-\t-\t-\t-\tRECETTE tel-07 ❌ téléphone 2026-11-08 : as the notes say\t-\n")
+                      + "t\tM\tk13\tm\tnon-tranché\touvert\t-\t-\t-\t-\tRECETTE tel-07 ❌ téléphone 2026-11-08 : as the notes say\t-\n"
+                      # Review of the fix of lot 2 (its « moyen »): three invented proofs the reverse rule did not see, and that closed
+                      # « appli sans preuve »: without the word RECETTE, in lower case, behind a true annotation of the same segment.
+                      + "t\tP\tk16\tm\tappli\touvert\t-\t-\t-\t-\tn ; essai tel-99 ❌ lune 2031-01-01 : invented, without the word\t-\n"
+                      + "t\tQ\tk17\tm\tappli\touvert\t-\t-\t-\t-\trecette tel-99 ❌ lune 2031-01-01 : invented, in lower case\t-\n"
+                      + "t\tR\tk18\tm\tappli\touvert\t-\t-\t-\t-\tRECETTE tel-07 ❌ téléphone 2026-11-08 : as the notes say\t-\n"
+                      + "t\tS\tk19\tm\tappli\touvert\t-\t-\t-\t-\tRECETTE tel-01 ✅ téléphone 2026-11-08 : it plays, RECETTE tel-99 ❌ lune 2031-01-01 : invented, behind a true one\t-\n"
+                      + "t\tT\tk20\tm\tappli\touvert\t-\t-\t-\t-\ttel-99 seen ❌ on the moon 2031-01-01 : shaped like a trial, no annotation\t-\n")
     write(os.path.join(root, "app", "src", "main", "assets", "recette.json"),
           json.dumps({"id": "r", "milestone": "m", "items": [{"id": f"tel-{n:02d}", "title": "t"} for n in (1, 2, 8, 10, 12)]}))
     notes = os.path.join(root, "docs", "audits", "ultra", "retours-benjamin.md")
@@ -833,7 +841,7 @@ def owner_trials(d):
     check(f"K : {missing} (attendu « RECETTE tel-02 ❌ tablette 2026-11-08 »)" in out, "a trial written with the wrong device, in the telephone cell:\n" + out)
     check(f"C : {missing}" not in out and f"D : {missing}" not in out and "tel-09" not in out and "2026-11-06" not in out
           and not any(t in out for t in ("tel-03", "tel-04", "tel-05", "tel-06"))
-          and "chantier : 17 écarts" in out and r.returncode == 1, "the lines carrying their trial, and what is no trial, are fine:\n" + out)
+          and "chantier : 24 écarts" in out and r.returncode == 1, "the lines carrying their trial, and what is no trial, are fine:\n" + out)
     # The reverse (review of lot 2): an annotation « RECETTE tel-NN … » of verdicts.tsv is one of the notes' trials, whole.
     unknown = "annotation « RECETTE » sans essai correspondant dans retours-benjamin.md"
     check(f"I : {unknown} (« RECETTE tel-99 ❌ lune 2031-01-01 : invented »)" in out, "an invented trial:\n" + out)
@@ -846,10 +854,29 @@ def owner_trials(d):
     check(f"O : {missing} (attendu « RECETTE tel-08 ❌ tablette 2026-11-08 »)" in out and f"N : {missing}" not in out,
           "a result kept in the notes is a trial of its device:\n" + out)
     check("tel-10" not in out and "tel-12" not in out, "no device, or no result kept: no trial:\n" + out)
-    check(not any(f"{item} : {unknown}" in out for item in "ABCDMN"), "the annotations that are trials of the notes are fine:\n" + out)
+    check(not any(f"{item} : {unknown}" in out for item in "ABCDMNRT"), "the annotations that are trials of the notes are fine:\n" + out)
+    # An invented proof is seen whatever its spelling, and proves nothing: the line stays « appli sans preuve ».
+    no_proof = "verdict « appli » sans preuve (ni test sans banc existant, ni essai ❌ daté)"
+    check(f"P : {unknown} (« tel-99 ❌ lune 2031-01-01 : invented, without the word »)" in out, "an invented trial without the word RECETTE:\n" + out)
+    check(f"Q : {unknown} (« recette tel-99 ❌ lune 2031-01-01 : invented, in lower case »)" in out, "an invented trial in lower case:\n" + out)
+    check(f"S : {unknown} (« RECETTE tel-99 ❌ lune 2031-01-01 : invented, behind a true one »)" in out
+          and f"S : {unknown} (« RECETTE tel-01" not in out, "an invented trial behind a true annotation, in the same segment:\n" + out)
+    check(all(f"{item} : {no_proof}" in out for item in "PQST"), "an invented trial, or a ✅ one, is no proof of a defect:\n" + out)
+    check(f"R : {no_proof}" not in out, "a ❌ trial of the notes is a proof:\n" + out)
+    # Notes that hold no trial at all: every annotation is unknown (the rule is not mute).
+    write(notes, "# Retours\n\nNothing tried yet.\n")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
+                       capture_output=True, text=True)
+    check(all(f"{item} : {unknown}" in r.stdout for item in "CDMNR") and f"R : {no_proof}" in r.stdout,
+          "notes without a trial: no annotation is one of theirs, none is a proof:\n" + r.stdout)
+    # No notes at all: the judge says so (it was silent), as long as the verdicts carry trial annotations.
     os.remove(notes)
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
+                       capture_output=True, text=True)
+    check(r.returncode == 1 and NO_NOTES + " (17 annotation(s) d'essai" in r.stdout, "no notes of the owner: said\n" + r.stdout)
+    root = judge_root(d, "juge-sans-notes")
     out = run(script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt"))
-    check("chantier : 0 écarts" in out, "no notes of the owner: nothing to compare\n" + out)
+    check("chantier : 0 écarts" in out, "no notes of the owner and no trial annotation: nothing to compare\n" + out)
 
 
 def pad_timing_verdicts(d):
@@ -1248,6 +1275,7 @@ def known_skips_bounded(d):
     check(code == 1 and "saut connu refusé : BenchSelfTest#reachTagTouchesAVisibleElementInPlace" in out, f"a real test added to the real list is refused: {code}\n" + out)
 
 
+NO_NOTES = "retours-benjamin.md absent : les annotations d'essai de verdicts.tsv ne peuvent pas être vérifiées"
 JUDGE_HEAD = "tour\titem\tcle\tgravite\tverdict\tetat\tpreuve_appli\tgarde_banc\ttelephone\tcommit\tnote\tgarde_id\n"
 JUDGE_GOOD = (JUDGE_HEAD + "t\tA\tk1\tm\tappli\touvert\tAppProofTest#provesIt\t-\trecette tel-01\t-\tn\tK1\n"
               "t\tB\tk2\tm\tbanc\touvert\tOther#elsewhere\tBenchFooTest#guardsIt\trecette tel-02\t-\tn\t-\n")

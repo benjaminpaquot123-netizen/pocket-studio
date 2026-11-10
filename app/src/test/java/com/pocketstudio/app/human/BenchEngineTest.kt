@@ -178,6 +178,159 @@ class BenchEngineTest {
         assertEquals(2 * (bar + 4_800), e.exportRenderFloat(t, bar, 4_800L).size.toLong())
     }
 
+    /** [ms] of the bench's clock go by (the main looper's, which the bench's engine reads). */
+    private fun pass(ms: Long) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
+
+    /** [p] opened with the bench's engine there before the app, as on a seat (and as a phone's). */
+    private fun openWithEngine(p: Project): Pair<RhythmViewModel, BenchEngine> {
+        val engine = BenchEngine()
+        NativeEngine.sink = engine
+        val vm = open(p)
+        val until = System.currentTimeMillis() + 10_000
+        while (vm.project.value.tempoBpm != p.tempoBpm) {
+            assertTrue("the project never opened", System.currentTimeMillis() < until)
+            idle(); Thread.sleep(5)
+        }
+        vm.engineStarted()  // as the app's screen says once the audio stream started (AppRoot): the project is sent to the engine
+        return vm to engine
+    }
+
+    /**
+     * Audit « banc crédible » A.9 (F4): one clock. With the bench's engine there, the play head shows what the engine says (as
+     * the app's pollLive does on a phone) and the take's clock is the engine's transport step. The head had a clock of its own:
+     * after a tempo change it counted the whole time since ▶ at the new tempo (16 steps at 120 BPM became 8 at 60 BPM) while
+     * the engine kept its 16.
+     */
+    @Test
+    fun thePlayHeadReadsTheEnginesClock() {
+        val (vm, engine) = openWithEngine(Project().copy(tempoBpm = 121.0))
+        vm.setTempo(120.0)
+        val head = BenchPlayhead()
+        vm.togglePlay()
+        idle()
+        assertTrue(vm.transport.value.playing)
+        head.tick(vm, android.os.SystemClock.uptimeMillis())  // the bench ticks it every 50 ms from ▶ on
+        pass(2_000)
+        head.tick(vm, android.os.SystemClock.uptimeMillis())
+        assertEquals("16 steps after 2 s at 120 BPM", 16, vm.takeClockForTest)
+        vm.setTempo(60.0)
+        head.tick(vm, android.os.SystemClock.uptimeMillis())
+        assertEquals("the play head keeps the steps played at 60 BPM", 16, vm.takeClockForTest)
+        assertEquals(16, vm.live.value.absoluteStep)
+        assertEquals("the take's clock is the engine's transport step", 16, engine.transportStep())
+        pass(1_000)  // 4 steps at 60 BPM
+        head.tick(vm, android.os.SystemClock.uptimeMillis())
+        assertEquals(20, vm.takeClockForTest)
+        assertEquals(20, vm.live.value.absoluteStep)
+    }
+
+    /**
+     * T5-Ab-27 (audit « banc crédible » A.7, F1): on the bench as on a phone, a take of the microphone on the whole song,
+     * left running, is kept when the song ends by itself: the bench's engine stops on the last bar line and ends the take
+     * there, the app writes it onto its track (TakeVault.Outcome.Saved), a clip as long as the song. The app's side
+     * without the bench: TakeAtTheSongsEndTest.
+     */
+    @Test
+    fun aMicTakeLeftRunningIsKeptWhenTheSongEnds() {
+        val (vm, engine) = openWithEngine(Project(song = listOf(SongPart(0), SongPart(0))))
+        val song = vm.project.value.let { p -> p.song.sumOf { p.partSteps(it) } * 15.0 / p.tempoBpm }
+        vm.setRecordTarget(com.pocketstudio.app.rhythm.RecordTarget(song = true, fromPart = 0))
+        val track = vm.micTakeTrack()!!
+        vm.recordAudio(track)
+        var recording = false
+        val until = System.currentTimeMillis() + 90_000
+        while (vm.project.value.audioTracks.firstOrNull { it.id == track }?.clip == null || vm.takeSaving.value) {
+            assertTrue("the take never ended on its track (recording ${vm.audioRecording.value}, notice ${vm.notice.value})", System.currentTimeMillis() < until)
+            recording = recording || vm.audioRecording.value?.waiting == false
+            pass(50); Thread.sleep(3)
+        }
+        assertTrue("it recorded", recording)
+        val clip = vm.project.value.audioTracks.first { it.id == track }.clip!!
+        assertTrue("a clip of the song", clip.song)
+        assertTrue("as long as the song ($song s): ${clip.seconds} s", clip.seconds in song - 0.6..song + 0.3)
+        assertEquals("the app stopped with the song", false, vm.transport.value.playing)
+        assertNull(vm.audioRecording.value)
+        assertEquals(1, engine.micTakes)
+    }
+
+    /**
+     * Audit « banc crédible » A.8 (F2): a setting moved while the music plays with ● Automation on is recorded at the step
+     * the engine plays (RhythmViewModel.recordAutomation reads NativeEngine.currentStep()). The bench's engine had no
+     * currentStep (-1 for good): nothing was ever recorded on the bench, a false « ● does nothing » for a seat and a real
+     * defect of the recording hidden.
+     */
+    @Test
+    fun aKnobMovedWithAutomationRecordWritesAPoint() {
+        val (vm, engine) = openWithEngine(Project().copy(tempoBpm = 100.0))  // no song: a volume's curve is the loop's
+        vm.togglePlay()
+        idle()
+        vm.toggleAutomationRecord()
+        pass(800)  // 150 ms a step at 100 BPM: step 5 (820 ms with the 20 ms above)
+        assertEquals("the engine says the step it plays", 5, engine.currentStep())
+        vm.setChannelVolume(0, 0.3f)
+        val lanes = vm.project.value.automation
+        assertEquals("one curve, made by the gesture", 1, lanes.size)
+        assertEquals(com.pocketstudio.model.AutoTarget(com.pocketstudio.model.AutoTarget.VOLUME, 0), lanes[0].target)
+        assertEquals("a loop's curve", com.pocketstudio.model.AutomationLane.LOOP, lanes[0].mode)
+        assertEquals("one point, on the step playing", listOf(5), lanes[0].values.indices.filter { lanes[0].values[it] != null })
+        assertEquals(0.3f, lanes[0].values[5]!!, 0.001f)
+        pass(1_650)  // 11 steps more: step 16 = step 0 of the next pass of the 16-step drum loop
+        vm.setChannelVolume(0, 0.6f)
+        assertEquals("the next pass writes on the pattern's own steps", listOf(0, 5), vm.project.value.automation[0].values.indices.filter { vm.project.value.automation[0].values[it] != null })
+    }
+
+    /** A.8 (F2), the song's lane: while the whole song plays, a volume moved is written on the song's bar playing. */
+    @Test
+    fun aKnobMovedWhileTheSongPlaysWritesOnTheSongsBar() {
+        val (vm, engine) = openWithEngine(Project(song = listOf(SongPart(0), SongPart(0), SongPart(0))).copy(tempoBpm = 100.0))
+        vm.toggleSong()
+        idle()
+        vm.toggleAutomationRecord()
+        pass(3_000)  // step 20: bar 2 of the song, step 4 of the pattern
+        assertEquals(20, engine.songStep())
+        assertEquals(4, engine.currentStep())
+        vm.setChannelVolume(0, 0.3f)
+        val lanes = vm.project.value.automation
+        assertEquals("one curve, made by the gesture (notice: ${vm.notice.value})", 1, lanes.size)
+        assertEquals("a volume moves along the song", com.pocketstudio.model.AutomationLane.SONG, lanes[0].mode)
+        assertEquals("one point, on the song's second bar", listOf(1), lanes[0].songValues.indices.filter { lanes[0].songValues[it] != null })
+        assertEquals(0.3f, lanes[0].songValues[1]!!, 0.001f)
+    }
+
+    /**
+     * Audit « banc crédible » A.15 (F5): under a melody of 64 steps the drums' 16-step loop goes on turning, and the grid's
+     * head (LiveUi.currentStep, Engine.cpp's currentStep_) is the drum pattern's step, while the part's position
+     * (absoluteStep) runs over the whole part. The bench's play head gave the part's position as both: at step 40 the drum
+     * grid's head was « on step 40 » of 16. With the engine there the head now shows the engine's own numbers.
+     */
+    @Test
+    fun theGridsHeadTurnsWithTheDrumsUnderALongMelody() {
+        val long = Project(synthNotes = com.pocketstudio.model.NoteClip(steps = 64), song = listOf(SongPart(0), SongPart(0)))
+        val (vm, engine) = openWithEngine(long)
+        assertEquals("a part of 64 steps over drums of 16", 64 to 16, vm.project.value.let { it.sceneSteps(it.scene) to it.drums.steps })
+        val head = BenchPlayhead()
+        vm.togglePlay()  // the part on its own
+        idle()
+        pass(5_000)  // 40 steps at 120 BPM
+        head.tick(vm, android.os.SystemClock.uptimeMillis())
+        assertEquals("the part is at its step 40", 40, vm.live.value.absoluteStep)
+        assertEquals("the drum grid's head is on its step 8", 8, vm.live.value.currentStep)
+        assertEquals("third bar of the part", 2, vm.playBar.value)
+        vm.togglePlay()
+        idle()
+        head.tick(vm, android.os.SystemClock.uptimeMillis())
+        // The whole song: the second part takes over at step 64; 8 steps later the song is at 72, the part at 8.
+        vm.toggleSong()
+        idle()
+        pass(9_000)
+        head.tick(vm, android.os.SystemClock.uptimeMillis())
+        assertEquals(72, engine.songStep())
+        assertEquals("the song's position", 72, vm.live.value.songStep)
+        assertEquals("the second part is at its step 8", 8, vm.live.value.absoluteStep)
+        assertEquals(8, vm.live.value.currentStep)
+        assertEquals("fifth bar of the song", 4, vm.playBar.value)
+    }
+
     @Test
     fun thePlayHeadMovesWithTheTempo() {
         val vm = open(Project(song = listOf(SongPart(0))).copy(tempoBpm = 120.0))

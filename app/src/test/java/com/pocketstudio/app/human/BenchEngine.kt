@@ -46,15 +46,20 @@ internal class BenchEngine : CommandSink {
         }
         when (type) {
             CMD_SET_TRANSPORT -> {
-                if (value <= 0f) freezeTakes()
-                // A stop ends a mark the take was waiting for (a phone's engine drops it with its song position).
-                if (value <= 0f && markAsked > 0) markAsked = -1
-                transportSince = if (value > 0f) SystemClock.uptimeMillis() else -1L
+                // What was due before this command is played first (a mark reached, the song's end).
+                song.advance()
+                // ■ ends the takes that record; one still waiting for its « 1 » stays armed (Engine.cpp's stopTransport:
+                // « if (record_ && !recordOnStart_) finishRecording() »).
+                if (value <= 0f) freezeTakes(started = true)
+                val now = SystemClock.uptimeMillis()
+                transportSince = if (value > 0f) now else -1L
                 stepBase = 0.0
-                countInBars = if (value > 0f) a.coerceAtLeast(0) else 0
+                // The count-in asked with ▶ (Engine.cpp: sequencer_.start(clamp(a, 0, 4))).
+                countInBars = if (value > 0f) a.coerceIn(0, 4) else 0
+                zeroAt = if (value > 0f) now + Math.round(countInBars * beatsPerBar * 4 * 15_000.0 / tempo) else -1L
                 // ▶ as Engine.cpp's SetTransport: the scene starts on step 0, the song at song step [b] (OUTSIDE_SONG, -1:
                 // a scene alone); a swap armed before is dropped. ■: nothing waits any more.
-                song.start(inSong = value > 0f && b >= 0, songStep = b.coerceAtLeast(0))
+                song.start(inSong = value > 0f && b >= 0, songStep = b.coerceAtLeast(0), playing = value > 0f)
             }
             // A tempo change while playing: the steps already played are kept (the clock does not jump back or ahead).
             CMD_SET_TEMPO -> if (value > 0f) {
@@ -63,15 +68,20 @@ internal class BenchEngine : CommandSink {
                     val now = SystemClock.uptimeMillis()
                     stepBase += (now - since) * tempo / 15_000.0
                     transportSince = now
+                    // Still counting in: the « 1 » comes after the steps left, at the new tempo.
+                    val left = countInBars * beatsPerBar * 4.0 - stepBase
+                    if (left > 0) zeroAt = now + Math.round(left * 15_000.0 / value)
                 }
                 tempo = value.toDouble()
             }
             // Audit method v2 (engine always there): « Enregistrer la performance » marks the song on the next launch line and
             // waits for the engine to say it did (NativeEngine.songMarkStep); the bench's never said it, the take stayed « Prêt ».
-            CMD_MARK_SONG -> {
-                markQuantum = a.coerceAtLeast(0)
-                markAsked = transportSteps.coerceAtLeast(-1).let { if (it < 0) 0 else it + 1 }
-            }
+            // A.8: the drum pattern's length and place, as Engine.cpp keeps them (see [SongClock.currentStep]).
+            CMD_SET_PATTERN_STEPS -> song.patternSteps(a)
+            CMD_STAGING -> song.staging = value > 0.5f
+            CMD_SLOT_OFFSET -> if (a == SLOT_DRUMS) song.drumOffset(b)
+            // A.7: played as Engine.cpp's MarkSong and onStep (see [SongClock.mark]).
+            CMD_MARK_SONG -> song.mark(a, value)
             // Banc fiable 3.2 (T4-17) and its review: the scene swaps as Engine.cpp arms and plays them (see [SongClock]).
             CMD_ARM_SCENE_SWAP -> song.arm(a, b, value, stepsNow())
             CMD_BEATS_PER_BAR -> if (a > 0) beatsPerBar = a
@@ -95,15 +105,19 @@ internal class BenchEngine : CommandSink {
 
     // --- The microphone of the audio tracks (round 1, lot banc; NativeEngine.micStart & co. through the sink) ----
 
-    /** A take armed: how long it may last, the count-in frames kept in front, what it recorded once the transport stopped. */
+    /**
+     * A take armed « on start » (the only kind the app arms): how long it may last, the count-in frames kept in front, what
+     * it recorded once the transport stopped. It records from the transport's step 0, as Engine.cpp's onStep starts it
+     * (recordOnStart_): after the count-in asked with ▶, on the engine's one clock (A.9).
+     */
     private class Take(val seconds: Int, val preroll: Int) {
         @Volatile var frozen = -1L
     }
 
     private val takes = ConcurrentHashMap<Long, Take>()
 
-    /** How long the count-in lasts before the take records (ms; set by the bench from the project's tempo). */
-    @Volatile var countInMs = 2_000L
+    /** When the transport's step 0 comes or came (the « 1 » after the count-in; the bench's clock, ms), -1 stopped. */
+    @Volatile private var zeroAt = -1L
 
     /** Takes recorded (tests). */
     @Volatile var micTakes = 0
@@ -112,12 +126,12 @@ internal class BenchEngine : CommandSink {
     @Synchronized override fun micStart(onStart: Boolean, seconds: Int, prerollFrames: Int): Long =
         (next++).also { takes[it] = Take(seconds, prerollFrames) }
 
-    /** Frames the take has recorded: from the end of the count-in after ▶, as long as the transport runs. */
+    /** Frames the take has recorded: from the transport's step 0 after ▶, as long as the transport runs. */
     private fun recorded(t: Take): Long {
         if (t.frozen >= 0) return t.frozen
-        val since = transportSince
-        if (since < 0) return 0L
-        val ms = SystemClock.uptimeMillis() - since - countInMs
+        val zero = zeroAt
+        if (transportSince < 0 || zero < 0) return 0L
+        val ms = SystemClock.uptimeMillis() - zero
         return (ms * RATE / 1000).coerceIn(0L, t.seconds.toLong() * RATE)
     }
 
@@ -128,7 +142,7 @@ internal class BenchEngine : CommandSink {
             // The transport stopped after it started (or the take is full): over, as the engine's.
             t.frozen >= 0 || frames >= t.seconds.toLong() * RATE -> 2f
             // Before ▶, then the count-in: waiting for the « 1 ».
-            transportSince < 0 || SystemClock.uptimeMillis() - transportSince < countInMs -> 0f
+            transportSince < 0 || SystemClock.uptimeMillis() < zeroAt -> 0f
             else -> 1f
         }
         return floatArrayOf(state, frames.toFloat(), if (state == 1f) BenchMic.PEAK else 0.01f)
@@ -141,9 +155,13 @@ internal class BenchEngine : CommandSink {
         return FloatArray(t.preroll + frames) { i -> if (i < t.preroll) 0f else BenchMic.voice((i - t.preroll).toLong()) }
     }
 
-    /** The transport stops: each take keeps what it recorded until then (at most [upTo] frames: the song's last bar line). */
-    private fun freezeTakes(upTo: Long = Long.MAX_VALUE) {
-        if (transportSince >= 0) takes.values.forEach { if (it.frozen < 0) it.frozen = minOf(recorded(it), upTo.coerceAtLeast(0L)) }
+    /**
+     * The transport stops: each take keeps what it recorded until then (at most [upTo] frames: the song's last bar line).
+     * [started]: only the takes whose step 0 has come (■ during the count-in leaves a take armed for the next ▶).
+     */
+    private fun freezeTakes(upTo: Long = Long.MAX_VALUE, started: Boolean = false) {
+        if (transportSince < 0 || started && SystemClock.uptimeMillis() < zeroAt) return
+        takes.values.forEach { if (it.frozen < 0) it.frozen = minOf(recorded(it), upTo.coerceAtLeast(0L)) }
     }
 
     override fun scheduleFrom(target: Long, frame: Long) = Unit
@@ -432,24 +450,26 @@ internal class BenchEngine : CommandSink {
         return if (pos in 0 until s.frames) pos else -1L  // before the song comes in (R2): not heard yet
     }
 
-    /**
-     * The transport's sixteenths since ▶ as the bench's play head counts them (-1 stopped), set by the bench.
-     * Audit ultra tour 0 (seat c): a Pad Live take kept with this engine reads where the transport is from it
-     * (the app's no-engine path reads [com.pocketstudio.app.rhythm.RhythmViewModel.takeClockForTest]).
-     */
-    @Volatile var transportSteps = -1
-
     /** The project's tempo and bar (the bench keeps them as the project's: the app sets them before the engine came). */
     @Volatile var tempo = 120.0
     @Volatile var beatsPerBar = 4
     @Volatile private var countInBars = 0
 
     /**
-     * Audit ultra round 3 (zone 4, n° 23): where the engine plays, in sixteenths since ▶ with the fraction, negative during
-     * the count-in (as NativeEngine.playPosition). Stuck at -1 before, the count-in showed « 1… » for good and a keyboard's
+     * Audit ultra round 3 (zone 4, n° 23): where the engine plays, in sixteenths with the fraction, negative during the
+     * count-in (as NativeEngine.playPosition). Stuck at -1 before, the count-in showed « 1… » for good and a keyboard's
      * notes were never recorded (the app records at this position).
+     * Audit « banc crédible » A.15 (F5): counted from the start of the scene playing, as Engine.cpp's playPosition_
+     * (lastLocal_ = step - sceneStart_); it was counted from ▶, 32 steps too far once a part had taken over at step 32.
      */
     override fun playPosition(): Double {
+        song.advance()
+        val at = transportNow()
+        return if (transportSince < 0) -1.0 else if (at < 0) at else at - song.sceneStart
+    }
+
+    /** The transport's sixteenths since ▶ with the fraction, negative during the count-in; -1 stopped. The one clock. */
+    private fun transportNow(): Double {
         val since = transportSince
         if (since < 0) return -1.0
         val steps = stepBase + (SystemClock.uptimeMillis() - since) * tempo / 15_000.0
@@ -459,7 +479,19 @@ internal class BenchEngine : CommandSink {
     /** The steps played before the last tempo change (since ▶). */
     @Volatile private var stepBase = 0.0
 
-    override fun transportStep(): Int = transportSteps
+    /**
+     * The transport's sixteenths since ▶, -1 stopped or counting in (Engine.cpp's transportStep_: stored on each step from 0,
+     * -1 at ■): where a Pad Live take and the launch lines count from. Audit « banc crédible » A.9 (F4): the engine's own
+     * clock; it was a number the bench's play head wrote here, counted another way (no count-in, the whole time since ▶ at
+     * the tempo of the moment).
+     */
+    /** Audit « banc crédible » A.8 (F2): the drum pattern's step playing (see [SongClock.currentStep]). Was never said: -1. */
+    override fun currentStep(): Int = song.currentStep()
+
+    override fun transportStep(): Int {
+        song.advance()
+        return stepsNow()
+    }
 
     /**
      * Banc fiable 3.2, rewritten after its review: the scene swaps of Engine.cpp (onStep, swapScene), played lazily on the
@@ -477,12 +509,76 @@ internal class BenchEngine : CommandSink {
         private var kind = 0
         private var restartAt = 0
         private var armedAt = -1
+        // The song mark (Engine.cpp's markQuantum_, markSongStep_, songMarkStep_): waiting while its quantum is > 0.
+        private var markQuantum = 0
+        private var markFrom = 0
+        private var markSongStep = 0
+        var markStep = -1
+            private set
+        // The drum pattern (A.8): its length now and the waiting scene's (Engine.cpp's patternSteps_ and staged_.drumSteps),
+        // the transport step its slot counts from, and the offsets a part started later in asks for (SetSlotOffset).
+        @Volatile var staging = false
+        private var steps = 16
+        private var stagedSteps = 16
+        private var drumsStart = 0
+        private var offsetAtPlay = 0
+        private var stagedOffset = 0
 
-        @Synchronized fun start(inSong: Boolean, songStep: Int) {
+        /** CMD_SET_PATTERN_STEPS: the pattern playing, or the waiting scene's while the app stages it. */
+        @Synchronized fun patternSteps(n: Int) {
+            advance()
+            if (staging) stagedSteps = n.coerceIn(8, 256) else steps = n.coerceIn(8, 256)
+        }
+
+        /** CMD_SLOT_OFFSET of the drums' slot: where in its pattern it starts at ▶, or at the swap being staged. */
+        @Synchronized fun drumOffset(n: Int) {
+            if (staging) stagedOffset = n.coerceIn(0, 1 shl 20) else offsetAtPlay = n.coerceIn(0, 1 shl 20)
+        }
+
+        /**
+         * The step of the drum pattern playing, -1 stopped or counting in: Engine.cpp's currentStep_, the drums' own step
+         * (their slot's start, the pattern's length), which is what the grid's head shows and where a gesture is recorded.
+         * Not played here: a launch of the Live grid, which moves the drums' slot alone (the bench's Live has no engine).
+         */
+        @Synchronized fun currentStep(): Int {
+            advance()
+            val now = stepsNow()
+            return if (now < 0) -1 else Math.floorMod(now - drumsStart, steps)
+        }
+
+        /** ▶ ([playing]) or ■, as Engine.cpp's SetTransport and stopTransport. */
+        @Synchronized fun start(inSong: Boolean, songStep: Int, playing: Boolean) {
             this.inSong = inSong
             songStart = -songStep
             sceneStart = 0
             swapAt = -1
+            // Every slot counts from the first step (a part carrying on: from where it was); ■ forgets both offsets, and
+            // ends a staging burst whose « off » was lost.
+            drumsStart = if (playing) -offsetAtPlay else 0
+            offsetAtPlay = 0
+            if (!playing) {
+                stagedOffset = 0
+                staging = false
+            }
+            if (playing) {
+                // ▶ forgets the last mark; one asked before it is kept and comes true from step 0.
+                markStep = -1
+                markFrom = 0
+            } else {
+                // ■ drops a mark still waiting; the last one made stays readable until the next ▶.
+                markQuantum = 0
+            }
+        }
+
+        /**
+         * CMD_MARK_SONG: the song is put at song step [songStep] on the first step, from the next one, that [quantum]
+         * divides (0: nothing waits any more).
+         */
+        @Synchronized fun mark(quantum: Int, songStep: Float) {
+            advance()
+            markQuantum = quantum.coerceIn(0, 1 shl 16)
+            markSongStep = if (songStep.isFinite()) Math.round(songStep.coerceAtLeast(0f)) else 0
+            markFrom = stepsNow().let { if (it < 0) 0 else it + 1 }
         }
 
         @Synchronized fun arm(a: Int, b: Int, value: Float, now: Int) {
@@ -491,39 +587,75 @@ internal class BenchEngine : CommandSink {
             kind = b
             restartAt = if (value.isFinite()) value.toInt() else 0
             armedAt = now
+            staging = false  // arming ends a staging burst even if its « off » was dropped (Engine.cpp)
+            // « Leave the song » (the swap cancelled, kind 3): out of the song at once, the scene goes on (leaveSongNow).
+            if (a < 0 && b == 3) inSong = false
         }
 
-        /** The waiting swap, if its bar line has come: played at that step. */
+        /**
+         * What waits (the song mark, the scene swap) and whose step has come, played at that step and in Engine.cpp's
+         * order on a same step: the song's end first, then the mark, then the swap.
+         */
         @Synchronized fun advance() {
-            if (swapAt < 0) return
             val now = stepsNow()
             if (now < 0) return
-            val bar = (beatsPerBar * 4).coerceAtLeast(1)
-            val minLocal = maxOf(1, armedAt + 1 - sceneStart, swapAt)
-            val due = sceneStart + (minLocal + bar - 1) / bar * bar
-            if (now < due) return
-            swapAt = -1
-            swaps++
-            when (kind) {
-                1 -> { songStart = due - restartAt; inSong = true }
-                3 -> inSong = false
-                // The song's end (T5-Ab-27): the transport stops on that bar line, and a take ends there with what it recorded up
-                // to it, as the engine's does (the app then keeps it: RhythmViewModel.songEnded).
-                2 -> { freezeTakes(Math.round(due * 15.0 * RATE / tempo)); transportSince = -1L; inSong = false; return }
+            while (true) {
+                val q = markQuantum
+                val line = if (q > 0) (markFrom + q - 1) / q * q else Int.MAX_VALUE
+                val bar = (beatsPerBar * 4).coerceAtLeast(1)
+                val due = if (swapAt < 0) Int.MAX_VALUE else sceneStart + (maxOf(1, armedAt + 1 - sceneStart, swapAt) + bar - 1) / bar * bar
+                if (minOf(line, due) > now) return
+                if (due <= line && kind == 2) {
+                    // The song's end (T5-Ab-27, A.7): the transport stops on that bar line as ■ stops it (stopTransport). A
+                    // take ends there with what it recorded up to it (the app then keeps it: RhythmViewModel.songEnded), and
+                    // a mark still waiting is dropped.
+                    swapAt = -1
+                    swaps++
+                    freezeTakes(Math.round(due * 15.0 * RATE / tempo))
+                    transportSince = -1L
+                    zeroAt = -1L
+                    inSong = false
+                    markQuantum = 0
+                    stagedOffset = 0
+                    offsetAtPlay = 0
+                    staging = false
+                    return
+                }
+                if (line <= due) {
+                    markQuantum = 0
+                    markStep = line
+                    songStart = line - markSongStep
+                    inSong = true
+                    continue
+                }
+                swapAt = -1
+                swaps++
+                when (kind) {
+                    1 -> { songStart = due - restartAt; inSong = true }
+                    3 -> inSong = false
+                }
+                sceneStart = due
+                // swapScene: the waiting scene's pattern takes over, its slots count from this bar line.
+                steps = stagedSteps
+                drumsStart = due - stagedOffset
+                stagedOffset = 0
             }
-            sceneStart = due
         }
     }
 
     private val song = SongClock()
 
     /** Whole sixteenths since ▶ from the bench's clock (count-in excluded), -1 stopped or counting in. */
-    private fun stepsNow(): Int = playPosition().let { if (it < 0) -1 else it.toInt() }
+    private fun stepsNow(): Int = transportNow().let { if (it < 0) -1 else it.toInt() }
 
-    /** Banc fiable 3.2: the steps since ▶ (the position of a part that loops); -1 stopped. Was always -1: counter frozen. */
+    /**
+     * Banc fiable 3.2: the position of the part that loops; -1 stopped or counting in. Was always -1: counter frozen.
+     * A.15 (F5): the steps since the scene playing started (Engine.cpp's absoluteStep_ = step - sceneStart_), not since ▶.
+     */
     override fun absoluteStep(): Int {
         song.advance()
-        return stepsNow()
+        val now = stepsNow()
+        return if (now < 0) -1 else now - song.sceneStart
     }
 
     /** Banc fiable 3.2: steps since the song (re)started, as the top bar's « mesure N/… » reads them; -1 outside the song. */
@@ -539,19 +671,20 @@ internal class BenchEngine : CommandSink {
         return song.swaps
     }
 
-    /** Where the song was marked (a transport step), once the transport has reached that launch line; -1 before or with none. */
+    /**
+     * Where the song was marked (a transport step), once the transport has reached that launch line; -1 before, with none,
+     * or since the ▶ after it (Engine.cpp's songMarkStep_).
+     */
     override fun songMarkStep(): Int {
-        val asked = markAsked
-        if (asked < 0) return -1
-        val q = markQuantum
-        val line = if (q <= 0 || asked == 0) asked else ((asked + q - 1) / q) * q
-        return if (transportSteps >= line) line else -1
+        song.advance()
+        return song.markStep
     }
 
-    /** The transport step from which the next launch line counts (0: marked before ▶), -1 when nothing is asked. */
-    @Volatile private var markAsked = -1
-    @Volatile private var markQuantum = 0
-    override fun transportPosition(): Double = if (transportSteps >= 0) transportSteps.toDouble() else -1.0
+    /** The transport's position with its fraction (Engine.cpp's transportPosition_), -1 stopped or counting in. */
+    override fun transportPosition(): Double {
+        song.advance()
+        return transportNow().let { if (it < 0) -1.0 else it }
+    }
 
     /** « Écouter » on the Remix page: from the top, until its end. */
     override fun previewPosition(): Long {
@@ -641,6 +774,11 @@ internal class BenchEngine : CommandSink {
         private const val RATE = OfflineExport.SAMPLE_RATE
         // NativeEngine's own command numbers (its private CMD_… constants).
         private const val CMD_SET_TRANSPORT = 5
+        private const val CMD_SET_PATTERN_STEPS = 9
+        private const val CMD_STAGING = 39
+        private const val CMD_SLOT_OFFSET = 73
+        /** The drums' slot of the Live grid (LiveSlots.DRUMS, Engine.h's kSlotDrums). */
+        private const val SLOT_DRUMS = 0
         private const val CMD_BEATS_PER_BAR = 57
         private const val CMD_STEM_START = 32
         private const val CMD_PLAY_PREVIEW = 47

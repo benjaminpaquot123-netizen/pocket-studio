@@ -235,4 +235,112 @@ class BenchPadLiveTest {
         ms(2)
         assertEquals(2, state(1))
     }
+
+    // --- The Live grid's launch lines (ArmLaunch 71, CancelLaunch 72): Engine.cpp's launchSlots, read back by slotStates
+    // and drainLaunchEvents as the app reads them. Real engine, 120 BPM (a step: 125 ms), ▶ at 0 ms.
+
+    /** Slot [slot]'s (tag playing, tag waiting, start step): ROW -2 the row's scene, NO_LAUNCH -3, -1 stopped. */
+    private fun slot(slot: Int): List<Int> = IntArray(NativeEngine.SLOTS * 3).also(NativeEngine::slotStates).let { listOf(it[slot * 3], it[slot * 3 + 1], it[slot * 3 + 2]) }
+
+    /** The launches reported since the last call, (slot, tag, step) each. */
+    private fun launches(): List<List<Int>> {
+        val out = IntArray(NativeEngine.SLOTS * 3 * 4)
+        val n = NativeEngine.drainLaunchEvents(out)
+        return (0 until n).map { listOf(out[it * 3], out[it * 3 + 1], out[it * 3 + 2]) }
+    }
+
+    /**
+     * A block's ■ armed at step 5 waits for the next line of its quantum (step 16) and is reported there; armed 0.3 step
+     * after a line with a grace of 0.5, it launches on that line from the next step (17, counted from 16); a launch
+     * cancelled never comes; a whole row (every slot, a scene) is a scene swap: the scene's steps count from its line.
+     */
+    @Test
+    fun aLaunchArmedWaitsForItsLineAndIsReported() {
+        engine()
+        NativeEngine.play()
+        ms(626)
+        NativeEngine.armLaunch(1, 16, -1)
+        assertEquals("the drums wait to stop", listOf(ROW, -1, 0), slot(0))
+        ms(1373)
+        assertEquals(listOf(ROW, -1, 0), slot(0))
+        assertEquals(emptyList<List<Int>>(), launches())
+        ms(2)
+        assertEquals("stopped on step 16", listOf(-1, NO_LAUNCH, 16), slot(0))
+        assertEquals(listOf(listOf(0, -1, 16)), launches())
+        ms(36)
+        NativeEngine.armLaunch(2, 16, 1, graceSteps = 0.5)
+        assertEquals(listOf(ROW, 1, 0), slot(1))
+        ms(87)
+        assertEquals("not before the next step", listOf(ROW, 1, 0), slot(1))
+        ms(2)
+        assertEquals("launched from step 17, counted from the line just passed", listOf(1, NO_LAUNCH, 16), slot(1))
+        assertEquals(listOf(listOf(1, 1, 16)), launches())
+        ms(174)
+        NativeEngine.armLaunch(4, 16, 1)
+        assertEquals(listOf(ROW, 1, 0), slot(2))
+        ms(100)
+        NativeEngine.cancelLaunch(4)
+        assertEquals("cancelled", listOf(ROW, NO_LAUNCH, 0), slot(2))
+        ms(1900)
+        NativeEngine.armLaunch(NativeEngine.ALL_SLOTS, 16, 0)
+        ms(1699)
+        assertEquals(0, NativeEngine.sceneSwaps())
+        ms(2)
+        assertEquals("the whole row on step 48", (0 until NativeEngine.SLOTS).map { listOf(0, NO_LAUNCH, 48) }, (0 until NativeEngine.SLOTS).map(::slot))
+        assertEquals((0 until NativeEngine.SLOTS).map { listOf(it, 0, 48) }, launches())
+        assertEquals("a row launched is a scene swap", 1, NativeEngine.sceneSwaps())
+        assertEquals("the scene's steps count from its line", 0, NativeEngine.absoluteStep())
+        // A scene swap armed drops what the grid armed; ■ puts every slot back on the row.
+        ms(99)
+        NativeEngine.armLaunch(1, 16, 2)
+        assertEquals(listOf(0, 2, 48), slot(0))
+        ms(100)
+        NativeEngine.armSceneSwap(64)
+        assertEquals(listOf(0, NO_LAUNCH, 48), slot(0))
+        NativeEngine.armLaunch(1, 16, 2)
+        ms(100)
+        NativeEngine.stopTransport()
+        assertEquals((0 until NativeEngine.SLOTS).map { listOf(ROW, NO_LAUNCH, 0) }, (0 until NativeEngine.SLOTS).map(::slot))
+        assertEquals(emptyList<List<Int>>(), launches())
+    }
+
+    /** Armed with the transport stopped, a launch comes on the transport's step 0, after the count-in (real engine: 2100 ms). */
+    @Test
+    fun aLaunchArmedWhileStoppedComesOnTheOne() {
+        engine()
+        NativeEngine.armLaunch(1, 16, 3)
+        assertEquals(listOf(ROW, 3, 0), slot(0))
+        ms(100)
+        NativeEngine.play(countInBars = 1)
+        ms(1999)
+        assertEquals("not during the count-in", listOf(ROW, 3, 0), slot(0))
+        ms(2)
+        assertEquals(listOf(3, NO_LAUNCH, 0), slot(0))
+        assertEquals(listOf(listOf(0, 3, 0)), launches())
+    }
+
+    /**
+     * « Quitter le morceau » with a launch of the grid waiting keeps it (Engine.cpp: keepLaunches); the drums launched on
+     * step 16 start there (their slot's start: 16, the grid's head at 0). Real engine: the same numbers at 2100 ms.
+     */
+    @Test
+    fun leavingTheSongKeepsALaunchWaitingAndTheDrumsCountFromTheirLaunch() {
+        engine()
+        NativeEngine.play(songStep = 0)
+        ms(626)
+        NativeEngine.armLaunch(1, 16, 1)
+        ms(74)
+        NativeEngine.leaveSong()
+        assertEquals("kept", listOf(ROW, 1, 0), slot(0))
+        ms(1400)
+        assertEquals(listOf(1, NO_LAUNCH, 16), slot(0))
+        assertEquals(-1, NativeEngine.songStep())
+        assertEquals(16, NativeEngine.absoluteStep())
+        assertEquals(0, NativeEngine.currentStep())
+    }
+
+    private companion object {
+        const val ROW = NativeEngine.ROW_TAG
+        const val NO_LAUNCH = NativeEngine.NO_LAUNCH
+    }
 }

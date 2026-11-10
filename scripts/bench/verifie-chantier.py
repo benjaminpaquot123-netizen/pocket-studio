@@ -21,7 +21,8 @@
     --preuves ITEM prints the proofs read on that line and stops.
 (b) git log: a « vert: » commit closes the oldest open « rouge: » commit OF THE SAME TEST (same subject after
     the prefix, or a test the red names or adds that the green's message names). A green of another test closes
-    nothing. A green that takes @KnownDefect off a test (kept) that its message names is a pair on its own: that
+    nothing. A green (not a merge) that takes @KnownDefect off a test (kept) whose « Class#method » its message names
+    is a pair on its own, when that guard was added by a « rouge: » commit or before the discipline began: that
     guard, failing with the defect's message in the parent, was the red. A checked line of banc-fiable-journal.md (« - [x] 4.2 … », ids 4.x to 7.x, R.x, A.x) carries
     « preuve: rouge <sha> / vert <sha> » naming such a pair, or « preuve: script <path> » (a figure computed
     by a script that exists).
@@ -35,6 +36,7 @@ import os
 import re
 import subprocess
 import sys
+from datetime import datetime
 
 TEST_ROOT = os.path.join("app", "src", "test", "java")
 PROOF = re.compile(r"([A-Z][A-Za-z0-9_]*)[#.]([a-z][A-Za-z0-9_]*)")
@@ -405,10 +407,94 @@ def _commit(root, sha):
     return (h, subject, message, red_names(root, h, message) if subject.lower().startswith("rouge:") else set())
 
 
-def known_defects_lifted(root, sha):
-    """The tests a commit takes @KnownDefect off, the test kept (review of the « partage » lot, (c)): their guard was the
-    red (KnownDefectRule: the test failed with the defect's message until this commit). A test deleted is not one."""
+# The rouge/vert discipline began with the first « rouge: » commit (8f36fa3, 2026-11-08 18:29 UTC): a guard added
+# before it could not come from a red, it counts as there before (Tour5AppProofTest's, 4168889).
+DISCIPLINE_SINCE = "2026-11-08T18:29:57+00:00"
+CLASS = re.compile(r"^\s*(?:(?:private|internal|public|abstract|open|data)\s+)*class\s+([A-Za-z0-9_]+)", re.M)
+FUN = re.compile(r"\bfun\s+`?([A-Za-z0-9_]+)")
+
+
+def _open_braces(text):
+    """For each position, the position of the innermost « { » still open there (or -1): strings, characters and
+    comments skipped. Returned as a sorted list of (position, innermost open brace) changes."""
+    stack, changes, i, n = [], [(0, -1)], 0, len(text)
+    while i < n:
+        c = text[i]
+        if text.startswith("//", i):
+            i = text.find("\n", i)
+            i = n if i < 0 else i
+            continue
+        if text.startswith("/*", i):
+            i = text.find("*/", i + 2)
+            i = n if i < 0 else i + 2
+            continue
+        if text.startswith('"""', i):
+            i = text.find('"""', i + 3)
+            i = n if i < 0 else i + 3
+            continue
+        if c in "\"'":
+            j = i + 1
+            while j < n and text[j] != c and text[j] != "\n":
+                j += 2 if text[j] == "\\" else 1
+            i = j + 1
+            continue
+        if c == "{":
+            stack.append(i)
+            changes.append((i + 1, i))
+        elif c == "}" and stack:
+            stack.pop()
+            changes.append((i, stack[-1] if stack else -1))
+        i += 1
+    return changes
+
+
+def class_methods(text, marked):
+    """« Class#method » of the functions of a Kotlin file (marked: only those carrying @KnownDefect): the class is
+    the one whose body is the innermost « { » open at the function (a nested helper class does not take its place)."""
+    starts = [(m.start(), m.group(1)) for m in CLASS.finditer(text)]
+    changes = _open_braces(text)
+
+    def owner(pos):
+        brace = next((b for at, b in reversed(changes) if at <= pos), -1)
+        return next((name for start, name in reversed(starts) if start < brace), "") if brace >= 0 else ""
+    if marked:
+        return {f"{owner(m.start(2))}#{m.group(2)}" for m in KNOWN_DEFECT.finditer(text)}
+    return {f"{owner(m.start(1))}#{m.group(1)}" for m in FUN.finditer(text)}
+
+
+def _show(root, rev, path):
     try:
+        return _git(root, "show", f"{rev}:{path}")
+    except (subprocess.SubprocessError, OSError):
+        return None
+
+
+def guard_from_red(root, sha, path, test):
+    """True when the @KnownDefect on test (« Class#method ») that commit sha lifts came from a « rouge: » commit, or
+    was added before the rouge/vert discipline began: the newest commit before sha that put it there (its parent
+    without it) is a red, or older than DISCIPLINE_SINCE. Any other origin (a « chore: », a guard never seen
+    added) is no red evidence (review of the « pads-live » lot, moyen)."""
+    try:
+        log = _git(root, "log", "--no-merges", "--format=%H%x1f%s%x1f%cI", f"{sha}^", "--", path).splitlines()
+    except (subprocess.SubprocessError, OSError):
+        return False
+    for line in log:
+        h, subject, date = line.split("\x1f", 2)
+        now, before = _show(root, h, path), _show(root, h + "^", path)
+        if now is not None and test in class_methods(now, True) and (before is None or test not in class_methods(before, True)):
+            return subject.lower().startswith("rouge:") or datetime.fromisoformat(date) < datetime.fromisoformat(DISCIPLINE_SINCE)
+    return False
+
+
+def known_defects_lifted(root, sha):
+    """The tests (« Class#method ») a commit takes @KnownDefect off, the test kept (review of the « partage » lot, (c)):
+    their guard was the red (KnownDefectRule: the test failed with the defect's message until this commit), provided
+    the guard came from a red ([guard_from_red]). A test deleted is not one; a merge lifts nothing (review of the
+    « pads-live » lot, moyen: the lift must be a commit of its own)."""
+    try:
+        parents = _git(root, "rev-list", "--parents", "-n", "1", sha).split()[1:]
+        if len(parents) != 1:
+            return set()
         files = _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", sha + "^", sha).split()
     except (subprocess.SubprocessError, OSError):
         return set()
@@ -416,25 +502,26 @@ def known_defects_lifted(root, sha):
     for f in files:
         if not (f.startswith(TEST_ROOT.replace(os.sep, "/") + "/") and f.endswith(".kt")):
             continue
-        try:
-            before, after = _git(root, "show", f"{sha}^:{f}"), _git(root, "show", f"{sha}:{f}")
-        except (subprocess.SubprocessError, OSError):
+        before, after = _show(root, sha + "^", f), _show(root, sha, f)
+        if before is None or after is None:
             continue
-        carried = {fn for _id, fn in KNOWN_DEFECT.findall(before)}
-        still = {fn for _id, fn in KNOWN_DEFECT.findall(after)}
-        kept = set(re.findall(r"\bfun\s+`?([A-Za-z0-9_]+)", after))
-        lifted |= (carried - still) & kept
+        gone = (class_methods(before, True) - class_methods(after, True)) & class_methods(after, False)
+        lifted |= {t for t in gone if guard_from_red(root, sha, f, t)}
     return lifted
 
 
 def names(message, test):
-    return re.search(r"(?<![A-Za-z0-9_])" + re.escape(test) + r"(?![A-Za-z0-9_])", message) is not None
+    """The message names « Class#method » (or « Class.method »), the class too: a method name alone matches any
+    class that has one (review of the « pads-live » lot, moyen)."""
+    cls, _, method = test.partition("#")
+    return re.search(r"(?<![A-Za-z0-9_])" + re.escape(cls) + r"[#.]" + re.escape(method) + r"(?![A-Za-z0-9_])", message) is not None
 
 
 def red_green_pairs(root, since="2026-11-07"):
     """(b) Every bench repair is a « rouge: » commit (the guard, red) followed by a « vert: » commit (the fix) of the
     same test. A red whose test gets no green is a gap; so is a green that closes no red of its test, unless it takes
-    @KnownDefect off a test it names (that guard was the red: [known_defects_lifted])."""
+    @KnownDefect off a test whose class and method it names, a guard that came from a red (that guard was the red:
+    [known_defects_lifted])."""
     try:
         out = _git(root, "log", f"--since={since}", "--reverse", "--format=%x1e%h%x1f%s%x1f%B")
     except (subprocess.SubprocessError, OSError) as e:

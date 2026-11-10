@@ -310,8 +310,8 @@ def check(root, resume_path=None, with_git=True):
             gaps.append(f"{item} : verdict « appli » dont la preuve n'est ni @KnownDefect ni un essai ❌ daté "
                         f"(un test vert ne prouve pas un défaut ouvert)")
         if verdict in ("appli", "banc") and PAD_KEY.search(v.get("cle", "")) and not without_bench and not dated_trial(v, trials):
-            gaps.append(f"{item} : verdict pad-timing sans preuve hors banc (les pads du banc partent tout de suite, sans grille : "
-                        f"il faut un test hors Bench*, un test moteur ou un essai daté sur un appareil)")
+            gaps.append(f"{item} : verdict pad-timing sans preuve hors banc (les pads du banc sont une copie de ClipLauncher (A.16), "
+                        f"pas le moteur : il faut un test hors Bench*, un test moteur ou un essai daté sur un appareil)")
         if verdict == "banc":
             if not any(c.startswith("Bench") for c, _ in guards):
                 gaps.append(f"{item} : verdict « banc » sans garde Bench*")

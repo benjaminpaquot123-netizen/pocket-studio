@@ -16,8 +16,8 @@
 # in its summary (« code testé : <arbre> ») and `ecris` seals it (« code: »); verifie-chantier.py reads a summary only
 # when it is sealed for the code it judges, and asks `tampon.sh resultats <lot>` when the lot's JUnit results are there.
 #   scripts/bench/tampon.sh code [<root>]        -> the code's tree id (1 line)
-#   scripts/bench/tampon.sh resultats <lot>      -> exit 0 when the stamp seals the lot's JUnit results, and they give its
-#                                                   green summary
+#   scripts/bench/tampon.sh resultats <lot> [<root>] -> exit 0 when the stamp seals the lot's JUnit results, and they
+#                                                   give its green summary (classes expected: those of root's sources)
 set -euo pipefail
 [ -n "${2:-}" ] && lot_abs="$(cd "$2" && pwd)"
 cd "$(dirname "$0")/../.."
@@ -43,15 +43,18 @@ junit_sum() {
     | sha256sum | cut -d' ' -f1
 }
 # Exit 0 when the lot's summary is green and is the verdict of its JUnit results (selftest.sh's own lines aside).
+# Review of the « portail » lot (M4): the classes expected are read again from the sources of $2 (this repository by
+# default) by selftest-attendus.py, never from the lot (one line of XML and no list made a stamp).
 green_summary() {
-  local lot="$1" again rc=0
+  local lot="$1" root="${2:-.}" again expected rc=0
   [ -f "$lot/selftest-resume.txt" ] && head -1 "$lot/selftest-resume.txt" | grep -Eq '^[1-9][0-9]* verts, 0 rouges,' \
     || { echo "tampon : pas de résumé vert du selftest dans $lot" >&2; return 1; }
-  again="$(mktemp)"
+  again="$(mktemp)"; expected="$(mktemp)"
+  python3 -I scripts/bench/selftest-attendus.py --root "$root" | awk '{n = split($2, p, "."); print p[n]}' | sort -u > "$expected"
   python3 -I scripts/bench/selftest-verdict.py "$lot/junit" scripts/bench/selftest-quarantaine.txt "$again" \
-    "$lot/selftest-attendus.txt" "$lot/selftest-gradle-echecs.txt" scripts/bench/selftest-sauts-connus.txt >/dev/null 2>&1 || rc=1
+    "$expected" "$lot/selftest-gradle-echecs.txt" scripts/bench/selftest-sauts-connus.txt >/dev/null 2>&1 || rc=1
   if [ "$rc" -eq 0 ] && ! diff -q "$again" <(grep -Ev '^(machine|code testé) : ' "$lot/selftest-resume.txt") >/dev/null; then rc=1; fi
-  rm -f "$again"
+  rm -f "$again" "$expected"
   [ "$rc" -eq 0 ] || echo "tampon : le résumé de $lot n'est pas le verdict vert de ses résultats JUnit" >&2
   return "$rc"
 }
@@ -66,7 +69,8 @@ case "${1:?empreinte|code|ecris|verifie|resultats}" in
     { cat "$fp"; echo "lot: $lot"; echo "sieges: $(seats "$lot")"; echo "resume: $(sum "$lot/selftest-resume.txt")"
       echo "junit: $(junit_sum "$lot")"; echo "code: $tested"; date -u +%FT%TZ; for q in "$@"; do echo "quarantaine: $q"; done; } \
       > "$lot/selftest.ok" ;;
-  resultats) [ -f "$lot_abs/selftest.ok" ] && grep -qxF "junit: $(junit_sum "$lot_abs")" "$lot_abs/selftest.ok" && green_summary "$lot_abs" ;;
+  resultats) [ -f "$lot_abs/selftest.ok" ] && grep -qxF "junit: $(junit_sum "$lot_abs")" "$lot_abs/selftest.ok" \
+      && green_summary "$lot_abs" "${3:-.}" ;;
   verifie) stamp="$lot_abs/selftest.ok"
     [ -f "$stamp" ] && [ "$(head -2 "$stamp")" = "$(here)" ] && [ "$(sed -n 3p "$stamp")" = "lot: $lot_abs" ] \
       && [ "$(sed -n 4p "$stamp")" = "sieges: $(seats "$lot_abs")" ] \

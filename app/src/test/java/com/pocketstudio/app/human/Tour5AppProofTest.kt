@@ -260,7 +260,6 @@ class Tour5AppProofTest {
     }
 
     /** T5-ALERTE (seat C c 30): « Prêt à partager ? » › Partager, the share menu opened: no « a changé » warning, nothing changed. */
-    @KnownDefect("T5-ALERTE", "once the share menu opened, nothing changed in the song")
     @Test
     fun noChangedWarningRightAfterSharing() {
         NativeEngine.sink = RenderEngine()
@@ -279,7 +278,6 @@ class Tour5AppProofTest {
     }
 
     /** T5-ALERTE (seat E c 61): Mix › Exporter (WAV), then MIDI: no « a changé » warning under the file just made. */
-    @KnownDefect("T5-ALERTE", "right under the MIDI file just made")
     @Test
     fun noChangedWarningRightAfterAMixExport() {
         NativeEngine.sink = RenderEngine()

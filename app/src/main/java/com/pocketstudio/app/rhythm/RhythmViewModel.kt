@@ -437,9 +437,13 @@ data class ExportUi(
          * What [madeFrom] keeps of a project: all that is heard (its name only names the file). Round 3 review: never what
          * no export plays (a challenge's stars, the Pad Live page shown, the MIDI map, the song's versions kept aside):
          * a star won in Pad Live called the song « changé depuis cet export » and took its « Partager » away.
+         * T5-ALERTE: nor the Guide's cards (sharing ticks « Prêt à partager ? »: the song just shared was called changed).
          */
         fun madeHash(p: Project): Int =
-            p.copy(name = "", midiMap = emptyList(), songVersions = emptyList(), padLive = p.padLive.copy(stars = emptyList(), page = 0)).hashCode()
+            p.copy(
+                name = "", midiMap = emptyList(), songVersions = emptyList(), padLive = p.padLive.copy(stars = emptyList(), page = 0),
+                guide = com.pocketstudio.model.guide.GuideState.EMPTY,
+            ).hashCode()
     }
 }
 
@@ -11485,7 +11489,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
                     mid
                 }
                 val music = withContext(Dispatchers.IO) { WavExporter.copyToMusic(app, file, "audio/midi") }
-                _export.value = _export.value.copy(files = listOf(file), savedInMusic = music, error = null, loudness = null, truePeakDb = null, seconds = null)
+                // T5-ALERTE: the MIDI file is the song as it was when asked for (the WAV made before it kept its own mark: « a changé »).
+                _export.value = _export.value.copy(files = listOf(file), savedInMusic = music, error = null, loudness = null, truePeakDb = null, seconds = null,
+                    madeFrom = ExportUi.madeHash(p))
                 AppLog.add("Export MIDI : ${file.length()} octets")
             } catch (e: Exception) {
                 _export.value = _export.value.copy(error = tr("L'export MIDI a échoué : %s", e.message))

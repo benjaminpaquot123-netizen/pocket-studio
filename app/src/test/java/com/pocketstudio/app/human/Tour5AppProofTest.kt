@@ -58,9 +58,10 @@ import java.time.Duration
  * guards of T5-ZIP and of T5-ALERTE (« Partager ») wrote the app's wiring again (a ProjectsViewModel made here, the
  * Guide's card marked by the test): a fix in AppRoot or in ShareSongProgress would have left them « still there ». They
  * now compose and call the app's own: the sender AppRoot gives « Prêt à partager ? » and Mes projets › ⋯
- * ([rememberProjectZipSender]) and [ShareSongProgress]. `scripts/bench/mutation-l1.sh` replayed the check while the
- * defects were there (the app « fixed » in its wiring: both guards said « no longer fails »); the app is fixed since
- * (lot « partage », 2026-11-10) and the guards are ordinary ones.
+ * ([rememberProjectZipSender]) and [ShareSongProgress]. A script (mutation L1, retired since: `git show
+ * 711e1b0:scripts/bench/mutation-l1.sh`) replayed the check while the defects were there (the app « fixed » in its
+ * wiring: both guards said « no longer fails »); the app is fixed since (lot « partage », 2026-11-10) and the guards
+ * are ordinary ones.
  */
 @RunWith(RobolectricTestRunner::class)
 class Tour5AppProofTest {

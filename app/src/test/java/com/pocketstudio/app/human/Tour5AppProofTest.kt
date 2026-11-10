@@ -179,6 +179,9 @@ class Tour5AppProofTest {
         screen = null
         NativeEngine.sink = null
         CurrentProject.set(app, RhythmViewModel.PROJECT_ID)
+        // The app's wiring composed on a screen (A.13) makes its ViewModels by the factory, which keeps this test's
+        // Application (as HumanTester.end, BenchShareTest.end).
+        androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory::class.java.getDeclaredField("_instance").apply { isAccessible = true }.set(null, null)
     }
 
     /** The screen a piece of the app's own interface is composed on (A.13), closed after the test. */

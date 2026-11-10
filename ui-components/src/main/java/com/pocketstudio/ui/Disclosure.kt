@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.collapse
 import androidx.compose.ui.semantics.expand
 import androidx.compose.ui.semantics.semantics
@@ -38,20 +39,21 @@ class Hidden(val text: String, val changed: Boolean = false)
 /**
  * A fold that says what it hides (rule 13 of docs/DESIGN.md, « Un repli montre ce qu'il cache »; hands-on audit G4):
  * full width, at least 48 dp, a filled row with a thin border, its [label], under it the values it hides ([summary],
- * a value that is not the default one in the accent), and a 20 dp chevron that turns when it opens, on the right as on
- * the cards. Closed, TalkBack reads the label and the summary and hears that it opens; open, that it closes. The summary
+ * a value that is not the default one in the accent), and a 20 dp chevron on the right, ⌄ closed and ⌃ open (the ›
+ * belongs to [LinkRow], which opens somewhere else). Closed, TalkBack reads the label and the summary and hears that it opens; open, that it closes. The summary
  * wraps, it is never cut. [modifier] lands on the touchable row (its test tag). The cards' own fold (principle 9: a small
  * pale arrow by the title) stays for the cards.
  */
 @Composable
 fun Disclosure(label: String, summary: List<Hidden>, open: Boolean, onToggle: () -> Unit, modifier: Modifier = Modifier) {
-    val turn by animateFloatAsState(if (open) 0f else -90f, StudioMotion.spatial(), label = "disclosure-chevron")
+    // ⌄ closed, ⌃ open (Android's way): the › stays for the link rows, which open somewhere else (review, moyen n° 4).
+    val turn by animateFloatAsState(if (open) 180f else 0f, StudioMotion.spatial(), label = "disclosure-chevron")
     val accent = Neon.Cyan
     val shape = RoundedCornerShape(12.dp)
     Row(
         modifier.fillMaxWidth().heightIn(min = 48.dp)
             .background(Neon.SurfaceHigh, shape).border(BorderStroke(1.dp, Neon.Outline), shape)
-            .clickable(onClick = onToggle)
+            .clickable(role = Role.Button, onClick = onToggle)
             // TalkBack: « Développer » while closed, « Réduire » while open (the touch does the same).
             .semantics { if (open) collapse { onToggle(); true } else expand { onToggle(); true } }
             .padding(start = 12.dp, end = 8.dp, top = 6.dp, bottom = 6.dp),

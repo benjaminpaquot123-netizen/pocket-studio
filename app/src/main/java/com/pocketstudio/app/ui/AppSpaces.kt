@@ -336,7 +336,11 @@ fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions, li
         val label = with(density) { measurer.measure(tr("Écouter seule"), labelStyle).size.width.toDp() }
         // Chantier 2: the link row's « Changer le son » on one line too (it went on two beside the whole button).
         val change = with(density) { measurer.measure(tr("Changer le son"), MaterialTheme.typography.bodySmall).size.width.toDp() }
-        val narrow = maxWidth < ALONE_ROW_ROOM + maxOf(word, change) + label
+        // Review of the lot (moyen n° 3): « Écouter seule » keeps its words, on two lines when one does not fit; its ▶ alone
+        // only where even its longest word does not.
+        val labelWord = with(density) { tr("Écouter seule").split(' ').maxOf { measurer.measure(it, labelStyle).size.width }.toDp() }
+        val oneLine = maxWidth >= ALONE_ROW_ROOM + maxOf(word, change) + label
+        val narrow = maxWidth < ALONE_ROW_ROOM + maxOf(word, change) + labelWord
         // The card's own spacing between the rows (NeonCard: 8 dp).
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         tracks.forEachIndexed { i, t ->
@@ -350,7 +354,7 @@ fun SimpleTracksCard(tracks: List<SimpleTrack>, actions: SimpleTracksActions, li
                     clickLabel = tr("Changer le son de %s", t.name),
                     leading = { Box(Modifier.size(12.dp).background(t.color, CircleShape)) },
                 )
-                com.pocketstudio.app.rhythm.AloneButton(trackAlone(t), tr("Écouter seule"), t.name, "simple_alone_${t.key}", compact = true, iconOnly = narrow) { actions.listenAlone(t.key) }
+                com.pocketstudio.app.rhythm.AloneButton(trackAlone(t), tr("Écouter seule"), t.name, "simple_alone_${t.key}", compact = true, iconOnly = narrow, twoLines = !oneLine) { actions.listenAlone(t.key) }
                 // A fader, not a loudspeaker (owner, APK 224: the 🔊 looked like « play » and stayed silent).
                 IconButton(onClick = { sheetFor = t.key }, modifier = Modifier.spot("simple_volume_${t.key}").testTag("simple_volume_${t.key}")) {
                     // Audit ultra round 2 (n° 17, seat B d): « Supprimer » was behind a button named « Volume »: named for all it holds.

@@ -125,3 +125,11 @@ fx-int repris (04f5eaa9, DECISIONS : union des deux côtés). Chaque point a sa 
 Mineurs : m1 (fusion à la main ou squash invisibles) et m2 (`--skip-worktree` ne bouge pas `empreinte`) notés, non corrigés ; m3 voulu (la raison est libre, le filet est `rejeux/` non vide) ; m4 et m5 réglés par la reprise de fx-int.
 
 Vérifié après correction : `test_ultra_bench.py` OK ; selftest sur 80c637eb : 165 verts, 0 rouge, 41 sautés, `tampon.sh verifie` 0 ; juge sur ce résumé : 22 écarts, mêmes lignes (sha ôtés) que le juge de la relecture « banc-fin ».
+
+## Après relecture 2 (1 grave, M6 à M8)
+
+- **G2** (a989d0b5 / 9a94aed0) : la preuve « rouge constaté » exige que le test (Classe#méthode) existe dans le parent du vert et dans le vert ; la forge `NoSuchTest#neverExisted` est refusée. Le portail liste les dossiers `rouges-constates/<sha>/` qu'une branche apporte ou change et exige « rouge constaté : <sha> : … » dans sa relecture. dd31ec4b reste une paire (le test existe).
+- **M8** (6be9442e / 6614d1ba) : « Non **corrigé** », « Aucun. » suivi d'un constat, « 1. grave … », « ### G1 (grave) », « très grave », « - **G1 (grave)** » sont lus comme ouverts ; les 14 relectures réelles acceptées avant le restent. Restent possibles « Gravissime », « critique », « Constats graves » en titre, un paragraphe simple « Grave : … » : le contrôle reste une aide, la porte est la dernière ligne.
+- **M6** (fausse trace commitée par une branche) et **M7** (XML fabriqués) : non corrigés, comme demandé ; ligne A.22 de PLAN-RESTE. Le portail les arrête déjà (une branche qui écrit dans `portail/` est refusée ; le selftest est relancé sur le code fusionné).
+- PLAN-RESTE : A.20 (R1) marquée « faite par A.23 (lot réalisme) », A.21 réduite à MT3 (MT1 fait par A.24). fx-int sera repris dans la branche après la fusion de « réalisme » (DECISIONS, PLAN-RESTE, journal : les deux côtés gardés).
+- Vérifié sur 6614d1ba : `test_ultra_bench.py` OK ; selftest vert (165 verts, 0 rouge, 41 sautés), `tampon.sh verifie` 0 ; juge sur ce résumé : 22 écarts, mêmes lignes que celui de la relecture « banc-fin ».

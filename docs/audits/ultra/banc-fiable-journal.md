@@ -121,4 +121,7 @@ Une ligne par étape : [x] fait / [ ] à faire, preuve, commit. « continue » r
 - [x] A.18 (relecture « portail », M5) un rejeu changé par une branche demande « rejeu changé : id : raison ». preuve: rouge 1bb1622f / vert 5e32afae
 - [x] A.19 (relecture « portail », M3) règle (c) : la garde suivie par Classe#méthode. preuve: rouge 1d767cbb / vert 80c637eb
 - [x] A.19 (23e écart, dd31ec4b) un vert dont le rouge est un test existant vu rouge dans une suite est une paire par son XML gardé (`rouges-constates/`) ; rouge de dd31ec4b rejoué sur b5bf7b1f (74 tests, 1 rouge) et gardé. preuve: rouge 689872ac / vert f023003d
-- [ ] A.20 (R1) et A.21 (MT1, MT3) : lot suivant.
+- [x] A.19 (2e relecture « portail », G2) une preuve « rouge constaté » exige un test qui existe dans le parent et le vert, et la ligne « rouge constaté : <sha> : … » dans la relecture du lot qui l'apporte. preuve: rouge a989d0b5 / vert 9a94aed0
+- [x] A.18 (2e relecture « portail », M8) formes simples d'un constat ouvert lues (« Non **corrigé** », « Aucun. » puis constat, liste numérotée, « (grave) », « très grave »). preuve: rouge 6be9442e / vert 6614d1ba
+- [ ] A.22 (2e relecture « portail », M6, M7) fausse trace commitée par une branche, XML fabriqués : non corrigés (le portail les arrête : branche qui écrit dans portail/ refusée, selftest relancé sur le code fusionné) ; à reprendre (ex. : le juge relit la trace seulement si son commit suit une fusion « Merge team » et n'est pas dans une branche d'équipe).
+- [ ] A.20 (R1) faite par A.23 (lot « réalisme ») ; A.21 réduite à MT3 (MT1 fait par A.24) : lot suivant.

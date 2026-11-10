@@ -796,11 +796,15 @@ def owner_trials(d):
                       + "t\tF\tk6\tm\tnon-tranché\touvert\t-\t-\trecette tel-01\t-\tRECETTE tel-01 ✅ tablette 2026-11-08 : the device is wrong\t-\n"
                       + "t\tG\tk7\tm\tnon-tranché\touvert\t-\t-\trecette tel-01\t-\tRECETTE tel-01 ✅ téléphone : no date\t-\n"
                       + "t\tH\tk8\tm\tnon-tranché\touvert\t-\t-\trecette tel-01\t-\tRECETTE tel-01 ✅ téléphone ; seen 2026-11-08, in another segment\t-\n"
+                      + "t\tN\tk14\tm\tnon-tranché\touvert\t-\t-\trecette tel-08\t-\tRECETTE tel-08 ❌ tablette paysage 2026-11-08 (video) : it lit up\t-\n"
+                      + "t\tO\tk15\tm\tnon-tranché\touvert\t-\t-\trecette tel-08, tel-10, tel-12\t-\tn\t-\n"
                       + "t\tI\tk9\tm\tnon-tranché\touvert\t-\t-\t-\t-\tRECETTE tel-99 ❌ lune 2031-01-01 : invented\t-\n"
                       + "t\tJ\tk10\tm\tnon-tranché\touvert\t-\t-\t-\t-\tn ; RECETTE tel-01 ❌ téléphone 2026-11-08 : against the notes\t-\n"
                       + "t\tK\tk11\tm\tnon-tranché\touvert\t-\t-\tRECETTE tel-02 ❌ téléphone 2026-11-08\t-\tn\t-\n"
                       + "t\tL\tk12\tm\tnon-tranché\touvert\t-\t-\t-\t-\tRECETTE tel-07 ❌ téléphone 2026-11-07 : another day\t-\n"
                       + "t\tM\tk13\tm\tnon-tranché\touvert\t-\t-\t-\t-\tRECETTE tel-07 ❌ téléphone 2026-11-08 : as the notes say\t-\n")
+    write(os.path.join(root, "app", "src", "main", "assets", "recette.json"),
+          json.dumps({"id": "r", "milestone": "m", "items": [{"id": f"tel-{n:02d}", "title": "t"} for n in (1, 2, 8, 10, 12)]}))
     notes = os.path.join(root, "docs", "audits", "ultra", "retours-benjamin.md")
     write(notes, "# Retours\n\n- 2026-11-06, APK 1, tel-01 ✅ a remark that is no trial of the checklist.\n"
                  "- 2026-11-08, APK 2, **téléphone (Honor), recette 2/3** (captures) :\n"
@@ -811,7 +815,10 @@ def owner_trials(d):
                  "- 2026-11-08, APK 2, **tablette, recette 1/3** :\n  - tel-09 not done.\n"
                  "A remark between two lists.\n  - tel-05 ❌ under no dated bullet.\n"
                  "- 2026-11-08, APK 2, **tablette, recette 1/3** :\n"
-                 "- 2026-11-09, APK 3, tablette, a remark that is no round of the checklist :\n  - tel-06 ❌ no trial.\n")
+                 "- 2026-11-09, APK 3, tablette, a remark that is no round of the checklist :\n  - tel-06 ❌ no trial.\n"
+                 "- 2026-11-08, APK 2, tablette, **tel-08 (video, read frame by frame)** : details. Résultat retenu : ❌ « it lit up ». To confirm.\n"
+                 "- 2026-11-08, APK 2, **tel-10 (video)** on no device said. Résultat retenu : ❌ « nothing ».\n"
+                 "- 2026-11-08, APK 2, tablette, tel-12 : lost, no result kept.\n")
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
                        capture_output=True, text=True)
     out = r.stdout + r.stderr
@@ -826,7 +833,7 @@ def owner_trials(d):
     check(f"K : {missing} (attendu « RECETTE tel-02 ❌ tablette 2026-11-08 »)" in out, "a trial written with the wrong device, in the telephone cell:\n" + out)
     check(f"C : {missing}" not in out and f"D : {missing}" not in out and "tel-09" not in out and "2026-11-06" not in out
           and not any(t in out for t in ("tel-03", "tel-04", "tel-05", "tel-06"))
-          and "chantier : 16 écarts" in out and r.returncode == 1, "the lines carrying their trial, and what is no trial, are fine:\n" + out)
+          and "chantier : 17 écarts" in out and r.returncode == 1, "the lines carrying their trial, and what is no trial, are fine:\n" + out)
     # The reverse (review of lot 2): an annotation « RECETTE tel-NN … » of verdicts.tsv is one of the notes' trials, whole.
     unknown = "annotation « RECETTE » sans essai correspondant dans retours-benjamin.md"
     check(f"I : {unknown} (« RECETTE tel-99 ❌ lune 2031-01-01 : invented »)" in out, "an invented trial:\n" + out)
@@ -835,7 +842,11 @@ def owner_trials(d):
     check(f"L : {unknown}" in out, "another date than the notes':\n" + out)
     check(f"E : {unknown}" in out and f"F : {unknown}" in out and f"G : {unknown}" in out and f"H : {unknown}" in out,
           "the annotations with a wrong mark, a wrong device, no date:\n" + out)
-    check(not any(f"{item} : {unknown}" in out for item in "ABCDM"), "the annotations that are trials of the notes are fine:\n" + out)
+    # A result kept in the notes outside a round (« tablette, tel-NN … Résultat retenu : ❌ ») is a trial too.
+    check(f"O : {missing} (attendu « RECETTE tel-08 ❌ tablette 2026-11-08 »)" in out and f"N : {missing}" not in out,
+          "a result kept in the notes is a trial of its device:\n" + out)
+    check("tel-10" not in out and "tel-12" not in out, "no device, or no result kept: no trial:\n" + out)
+    check(not any(f"{item} : {unknown}" in out for item in "ABCDMN"), "the annotations that are trials of the notes are fine:\n" + out)
     os.remove(notes)
     out = run(script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt"))
     check("chantier : 0 écarts" in out, "no notes of the owner: nothing to compare\n" + out)

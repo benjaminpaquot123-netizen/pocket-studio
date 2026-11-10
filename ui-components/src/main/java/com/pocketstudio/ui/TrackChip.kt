@@ -51,13 +51,14 @@ fun TrackChip(
     val font = LocalDensity.current.fontScale
     val grow = font.coerceIn(1f, MAX_GROW)
     Row(
-        // Its two one-line words need (20 + 16) sp + 8 dp: never more than 44 dp × the font scale, which always holds them
-        // (36 s + 8 ≤ 44 s from s = 1), and keeps a row of chips as tall as before where a test's stand-in font is taller.
+        // Its two one-line words, centred, no padding above or below: (20 + 16) sp in Latin letters, about 41 sp in Japanese,
+        // Chinese, Korean or Arabic (their fonts' taller lines). Never more than 44 dp × the font scale, which always holds
+        // them (41 s ≤ 44 s), and keeps a row of chips as tall as before where a test's stand-in font is taller.
         modifier.heightIn(min = 44.dp, max = 44.dp * font.coerceAtLeast(1f)).widthIn(max = 160.dp * grow).clip(shape)
             .background(if (selected) color.copy(alpha = 0.22f) else Neon.Surface)
             .border(BorderStroke(if (selected) 2.dp else 1.dp, if (selected) color else Neon.Outline), shape)
             .then(touch)
-            .padding(start = 10.dp, end = endPadding, top = 4.dp, bottom = 4.dp),
+            .padding(start = 10.dp, end = endPadding),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {

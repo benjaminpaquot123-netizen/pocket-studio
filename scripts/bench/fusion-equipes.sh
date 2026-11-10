@@ -92,6 +92,9 @@ for zone in "${zones[@]}"; do
   { echo "fusion: $merged"; echo "branche: eq/$tour-$zone"; echo "tete: $(git rev-parse "eq/$tour-$zone")"
     echo "relecture: $review"; echo "relu: $read_sha"; [ ${#filters[@]} -eq 0 ] || echo "filtres: ${filters[*]}"
     echo "rejeux :"; sed 's/^/  /' "$lot/rejeux.txt"; } > "$trace/fusion.txt"
+  # The judge again, with the traces there (the self-test's ran before them and counted this merge « sans trace »);
+  # it reads the summary sealed beside it.
+  python3 -I scripts/bench/verifie-chantier.py --resume "$trace/selftest-resume.txt" > "$trace/selftest-chantier.txt" 2>&1 || true
   git add -- "$trace"
   git commit -q -m "Portal traces of the merge of $zone ($tour)" -- "$trace"
   rm -rf "${lot:?}"

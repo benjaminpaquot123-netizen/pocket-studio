@@ -26,9 +26,10 @@ import java.io.File
 
 /**
  * Round 5 (scan r3): the owner's Galaxy Tab A11, upright, Mode Pro, Sons: the track chips' second line cut at
- * its bottom. The real Sons screen on a tablet, at font 1.0 and 1.3, read by [LayoutScan] (CUT): what it finds
- * there is written to `app/build/sons-chips-scan/` for the round's report. It holds the known defect in place:
- * nothing cut up to font 1.15, at least one chip cut from 1.25 (until the correction team fixes the chips).
+ * its bottom. Hands-on audit, chantier 2 (G7, rule 16 of docs/DESIGN.md « Jamais de hauteur fixe autour d'un texte »):
+ * the chips are one shared `TrackChip`, as tall as their two lines need. The real Sons screen on a tablet and on a phone,
+ * from font 1.0 to 1.5, read by [LayoutScan] (CUT): no chip's word cut, shortened or dropped at any size (what it finds
+ * is written to `app/build/sons-chips-scan/`).
  */
 abstract class SonsChipsTabletScanTest(private val device: String, private val font: Float) {
     companion object {
@@ -85,13 +86,7 @@ abstract class SonsChipsTabletScanTest(private val device: String, private val f
         File(dir, "${device}_$font.txt").writeText(out.toString())
         println(out)
         val cuts = found.filter { it.what in barTexts }
-        if (font < 1.2f) assertTrue("$device font $font: the chips fit at this size, nothing may be cut:\n$out", cuts.isEmpty())
-        // The known defect (tour-5-scan-r3-rapport.md, docs/REVIEW.md): fixed 44 dp two-line chips cut from font ~1.22.
-        if (font >= 1.25f) assertTrue(
-            "$device font $font: no chip cut any more. If the chips were fixed: remove the « tracks » rule of Allowed " +
-                "(CaptureMatrixTest.kt) and invert this check (nothing cut at any size).\n$out",
-            cuts.isNotEmpty(),
-        )
+        assertTrue("$device font $font: track chips' words cut:\n$out", cuts.isEmpty())
     }
 
     private fun under(n: SemanticsNode, a: SemanticsNode): Boolean {
@@ -118,3 +113,15 @@ class SonsChipsTablet8ScanTest(font: Float) : SonsChipsTabletScanTest("tablet8",
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = "w800dp-h1280dp-hdpi")
 class SonsChipsTablet800ScanTest(font: Float) : SonsChipsTabletScanTest("tablet800", font)
+
+/** The owner's Honor phone class: 411 x 914 dp upright. */
+@RunWith(ParameterizedRobolectricTestRunner::class)
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
+@Config(qualifiers = "w411dp-h914dp-xxhdpi")
+class SonsChipsPhone411ScanTest(font: Float) : SonsChipsTabletScanTest("phone411", font)
+
+/** A small phone: 360 x 780 dp upright. */
+@RunWith(ParameterizedRobolectricTestRunner::class)
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
+@Config(qualifiers = "w360dp-h780dp-xxhdpi")
+class SonsChipsPhone360ScanTest(font: Float) : SonsChipsTabletScanTest("phone360", font)

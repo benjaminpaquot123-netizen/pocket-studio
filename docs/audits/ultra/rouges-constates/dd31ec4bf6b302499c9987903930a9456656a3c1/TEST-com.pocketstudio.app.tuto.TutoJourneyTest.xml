@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.tuto.TutoJourneyTest" tests="74" skipped="0" failures="1" errors="0" timestamp="2026-11-10T20:33:36.047Z" hostname="vm" time="299.569">
+  <properties/>
+  <testcase name="theWholeCourse[techno Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="19.273"/>
+  <testcase name="theWholeCourse[techno Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="10.953">
+    <failure message="java.lang.AssertionError: techno Pro: targets not seen: [([step_cells], coupé en haut, sous l'en-tête (Rect.fromLTRB(28.0, 240.0, 332.0, 274.0), haut à 182.0)), ([step_cells], coupé en haut, sous l'en-tête (Rect.fromLTRB(28.0, 240.0, 332.0, 274.0), haut à 182.0)), ([step_cells], coupé en haut, sous l'en-tête (Rect.fromLTRB(28.0, 240.0, 332.0, 274.0), haut à 182.0)), ([step_cells], coupé en haut, sous l'en-tête (Rect.fromLTRB(28.0, 240.0, 332.0, 274.0), haut à 182.0)), ([step_cells], coupé en haut, sous l'en-tête (Rect.fromLTRB(28.0, 240.0, 332.0, 274.0), haut à 182.0)), ([step_cells], coupé en haut, sous l'en-tête (Rect.fromLTRB(28.0, 240.0, 332.0, 250.0), haut à 158.0))]" type="java.lang.AssertionError">java.lang.AssertionError: techno Pro: targets not seen: [([step_cells], coupé en haut, sous l'en-tête (Rect.fromLTRB(28.0, 240.0, 332.0, 274.0), haut à 182.0)), ([step_cells], coupé en haut, sous l'en-tête (Rect.fromLTRB(28.0, 240.0, 332.0, 274.0), haut à 182.0)), ([step_cells], coupé en haut, sous l'en-tête (Rect.fromLTRB(28.0, 240.0, 332.0, 274.0), haut à 182.0)), ([step_cells], coupé en haut, sous l'en-tête (Rect.fromLTRB(28.0, 240.0, 332.0, 274.0), haut à 182.0)), ([step_cells], coupé en haut, sous l'en-tête (Rect.fromLTRB(28.0, 240.0, 332.0, 274.0), haut à 182.0)), ([step_cells], coupé en haut, sous l'en-tête (Rect.fromLTRB(28.0, 240.0, 332.0, 250.0), haut à 158.0))]
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.pocketstudio.app.tuto.TutoJourneyTest.journey(TutoJourneyTest.kt:227)
+	at com.pocketstudio.app.tuto.TutoJourneyTest.theWholeCourse(TutoJourneyTest.kt:130)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$testWithDisposal$1.evaluate(AndroidComposeTestRule.android.kt:426)
+	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invokeSuspend(AndroidComposeTestRule.android.kt:448)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invokeSuspend(ComposeUiTest.android.kt:689)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt)
+	at androidx.compose.ui.test.IdlingStrategy.withStrategy$suspendImpl(IdlingStrategy.android.kt:55)
+	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invokeSuspend(ComposeUiTest.android.kt:686)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt)
+	at kotlinx.coroutines.test.TestBuildersKt__TestBuildersKt$runTest$2$1$1.invokeSuspend(TestBuilders.kt:317)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.test.TestDispatcher.processEvent$kotlinx_coroutines_test(TestDispatcher.kt:24)
+	at kotlinx.coroutines.test.TestCoroutineScheduler.tryRunNextTaskUnless$kotlinx_coroutines_test(TestCoroutineScheduler.kt:98)
+	at kotlinx.coroutines.test.TestBuildersKt__TestBuildersKt$runTest$2$1$workRunner$1.invokeSuspend(TestBuilders.kt:326)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:256)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:54)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlockingImpl(Builders.kt:30)
+	at kotlinx.coroutines.BuildersKt.runBlockingImpl(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__Builders_concurrentKt.runBlockingK(Builders.concurrent.kt:172)
+	at kotlinx.coroutines.BuildersKt.runBlockingK(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__Builders_concurrentKt.runBlockingK$default(Builders.concurrent.kt:157)
+	at kotlinx.coroutines.BuildersKt.runBlockingK$default(Unknown Source)
+	at kotlinx.coroutines.test.TestBuildersJvmKt.createTestResult(TestBuildersJvm.kt:10)
+	at kotlinx.coroutines.test.TestBuildersKt__TestBuildersKt.runTest-8Mi8wO0(TestBuilders.kt:309)
+	at kotlinx.coroutines.test.TestBuildersKt.runTest-8Mi8wO0(TestBuilders.kt:1)
+	at kotlinx.coroutines.test.TestBuildersKt__TestBuildersKt.runTest-8Mi8wO0(TestBuilders.kt:167)
+	at kotlinx.coroutines.test.TestBuildersKt.runTest-8Mi8wO0(TestBuilders.kt:1)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:665)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:447)
+	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:542)
+	at org.robolectric.internal.SandboxTestRunner.lambda$executeInSandbox$4(SandboxTestRunner.java:429)
+	at org.robolectric.internal.SandboxTestRunner.runInSandbox(SandboxTestRunner.java:455)
+	at org.robolectric.internal.SandboxTestRunner.executeInSandbox(SandboxTestRunner.java:420)
+	at org.robolectric.internal.SandboxTestRunner$5.evaluate(SandboxTestRunner.java:405)
+	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+	at org.robolectric.internal.SandboxTestRunner.access$000(SandboxTestRunner.java:64)
+	at org.robolectric.internal.SandboxTestRunner$4.evaluate(SandboxTestRunner.java:294)
+	at org.robolectric.internal.SandboxTestRunner$2.evaluate(SandboxTestRunner.java:260)
+	at org.robolectric.internal.SandboxTestRunner$3.lambda$evaluate$0(SandboxTestRunner.java:280)
+	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThreadWithClassLoader$1(Sandbox.java:112)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+</failure>
+  </testcase>
+  <testcase name="theWholeCourse[detroit Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="4.448"/>
+  <testcase name="theWholeCourse[detroit Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="5.684"/>
+  <testcase name="theWholeCourse[acid_techno Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.653"/>
+  <testcase name="theWholeCourse[acid_techno Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.824"/>
+  <testcase name="theWholeCourse[hard_techno Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.526"/>
+  <testcase name="theWholeCourse[hard_techno Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="6.586"/>
+  <testcase name="theWholeCourse[industrial_techno Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.322"/>
+  <testcase name="theWholeCourse[industrial_techno Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="4.484"/>
+  <testcase name="theWholeCourse[retro_techno Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.108"/>
+  <testcase name="theWholeCourse[retro_techno Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="4.625"/>
+  <testcase name="theWholeCourse[acidcore Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.246"/>
+  <testcase name="theWholeCourse[acidcore Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.958"/>
+  <testcase name="theWholeCourse[trance Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.463"/>
+  <testcase name="theWholeCourse[trance Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="5.342"/>
+  <testcase name="theWholeCourse[house Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.608"/>
+  <testcase name="theWholeCourse[house Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="5.558"/>
+  <testcase name="theWholeCourse[deep_house Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.936"/>
+  <testcase name="theWholeCourse[deep_house Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="4.569"/>
+  <testcase name="theWholeCourse[tech_house Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.767"/>
+  <testcase name="theWholeCourse[tech_house Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="5.929"/>
+  <testcase name="theWholeCourse[acid_house Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="1.843"/>
+  <testcase name="theWholeCourse[acid_house Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.183"/>
+  <testcase name="theWholeCourse[uk_garage Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.013"/>
+  <testcase name="theWholeCourse[uk_garage Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="4.496"/>
+  <testcase name="theWholeCourse[dnb Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.32"/>
+  <testcase name="theWholeCourse[dnb Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="5.725"/>
+  <testcase name="theWholeCourse[jump_up Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.118"/>
+  <testcase name="theWholeCourse[jump_up Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="6.974"/>
+  <testcase name="theWholeCourse[dubstep Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.605"/>
+  <testcase name="theWholeCourse[dubstep Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="5.559"/>
+  <testcase name="theWholeCourse[minimal Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.621"/>
+  <testcase name="theWholeCourse[minimal Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.877"/>
+  <testcase name="theWholeCourse[gabber Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.305"/>
+  <testcase name="theWholeCourse[gabber Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.504"/>
+  <testcase name="theWholeCourse[afro_house Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.211"/>
+  <testcase name="theWholeCourse[afro_house Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="4.334"/>
+  <testcase name="theWholeCourse[speed_garage Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.959"/>
+  <testcase name="theWholeCourse[speed_garage Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="6.08"/>
+  <testcase name="theWholeCourse[amapiano Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.692"/>
+  <testcase name="theWholeCourse[amapiano Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.654"/>
+  <testcase name="theWholeCourse[disco Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.683"/>
+  <testcase name="theWholeCourse[disco Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.729"/>
+  <testcase name="theWholeCourse[liquid_dnb Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.069"/>
+  <testcase name="theWholeCourse[liquid_dnb Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="5.287"/>
+  <testcase name="theWholeCourse[neurofunk Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.141"/>
+  <testcase name="theWholeCourse[neurofunk Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="5.278"/>
+  <testcase name="theWholeCourse[jungle Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.026"/>
+  <testcase name="theWholeCourse[jungle Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="4.967"/>
+  <testcase name="theWholeCourse[riddim Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.789"/>
+  <testcase name="theWholeCourse[riddim Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="4.836"/>
+  <testcase name="theWholeCourse[trap Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.504"/>
+  <testcase name="theWholeCourse[trap Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.622"/>
+  <testcase name="theWholeCourse[drill Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.368"/>
+  <testcase name="theWholeCourse[drill Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.823"/>
+  <testcase name="theWholeCourse[phonk Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.429"/>
+  <testcase name="theWholeCourse[phonk Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.386"/>
+  <testcase name="theWholeCourse[boom_bap Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.194"/>
+  <testcase name="theWholeCourse[boom_bap Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.243"/>
+  <testcase name="theWholeCourse[grime Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.162"/>
+  <testcase name="theWholeCourse[grime Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="4.476"/>
+  <testcase name="theWholeCourse[jersey_club Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.215"/>
+  <testcase name="theWholeCourse[jersey_club Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.105"/>
+  <testcase name="theWholeCourse[lofi Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.399"/>
+  <testcase name="theWholeCourse[lofi Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.527"/>
+  <testcase name="theWholeCourse[reggaeton Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="3.165"/>
+  <testcase name="theWholeCourse[reggaeton Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="4.617"/>
+  <testcase name="theWholeCourse[afrobeats Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.79"/>
+  <testcase name="theWholeCourse[afrobeats Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="4.29"/>
+  <testcase name="theWholeCourse[synthwave Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.699"/>
+  <testcase name="theWholeCourse[synthwave Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="5.357"/>
+  <testcase name="theWholeCourse[pop Facile]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="2.608"/>
+  <testcase name="theWholeCourse[pop Pro]" classname="com.pocketstudio.app.tuto.TutoJourneyTest" time="4.082"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

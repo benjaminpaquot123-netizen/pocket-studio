@@ -125,6 +125,7 @@ def dated_failed_trial(v):
 TRIAL_BULLET = re.compile(r"^- (20\d\d-\d\d-\d\d)\b(.*)$")
 TRIAL_ALONE = re.compile(r"recette (tel-\d+) = (✅|❌)")
 TRIAL_IN_LIST = re.compile(r"^\s+- (tel-\d+) (✅|❌)")
+TRIAL_KEPT = re.compile(r"^(.*?)\b(tel-\d+)\b.*\bRésultat retenu : (✅|❌)")
 
 
 def _device(text):
@@ -134,7 +135,8 @@ def _device(text):
 
 def owner_trials(root):
     """The owner's trials of the checklist written in retours-benjamin.md, as (tel-NN, mark, device, date): a
-    « tel-NN ✅/❌ » sub-bullet of a dated bullet « <device>, recette n/m », or a dated bullet « recette tel-NN = ✅/❌ »."""
+    « tel-NN ✅/❌ » sub-bullet of a dated bullet « <device>, recette n/m », a dated bullet « recette tel-NN = ✅/❌ »,
+    or a dated bullet « <device>, tel-NN … Résultat retenu : ✅/❌ »."""
     path = os.path.join(root, "docs", "audits", "ultra", "retours-benjamin.md")
     if not os.path.isfile(path):
         return []
@@ -150,8 +152,11 @@ def owner_trials(root):
                     trials.append((alone.group(1), alone.group(2), dev, m.group(1)))
             else:
                 head = re.search(r"^(.*?)\brecette \d+/\d+", m.group(2))
+                kept = TRIAL_KEPT.search(m.group(2))
                 if head and _device(head.group(1)):
                     date, device = m.group(1), _device(head.group(1))
+                elif kept and _device(kept.group(1)):
+                    trials.append((kept.group(2), kept.group(3), _device(kept.group(1)), m.group(1)))
             continue
         m = TRIAL_IN_LIST.match(line)
         if m and date:

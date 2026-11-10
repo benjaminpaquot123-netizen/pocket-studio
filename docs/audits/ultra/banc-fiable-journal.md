@@ -99,3 +99,6 @@ Une ligne par étape : [x] fait / [ ] à faire, preuve, commit. « continue » r
 - [x] (relecture « CI : fuite d'état », moyen 2) `clear()` de `Tour5AppProofTest` vide la boucle principale : le répartiteur de Compose reste libre. preuve: rouge 451b3f3 / vert a3feb26
 - [x] (relecture « partage », (c)) un « vert: » qui retire `@KnownDefect` du test qu'il nomme compte comme une paire. preuve: rouge f95bb55 / vert 4f99710
 - [x] (relecture « partage », (d)) `mutation-l1.sh` et son diff supprimés (518bdab). preuve: script scripts/bench/verifie-chantier.py
+- [ ] En relecture : étape 3 lot 5 « banc-fin » (atelier `banc-fin`, rapport `tour-5-banc-fin-rapport.md`). Ses lignes :
+- [x] (relecture « pads-live », moyen) règle (c) du juge resserrée : la garde retirée vient d'un « rouge: » (ou d'avant la discipline rouge/vert), le message nomme `Classe#méthode`, une fusion ne retire rien. preuve: rouge 3f83167 / vert e73b423
+- [x] A.1 les six sondes de l'audit réécrites (`AuditFideliteTmpTest`) et vues : vertes sur le code, rouges sous les lignes de bebe0c9 ; L1 (câblage d'aujourd'hui) et L2 rejouées ; sorties sous `docs/audits/ultra/audit-banc/a1-2026-11-10/`. preuve: script docs/audits/ultra/audit-banc/rejoue-a1.sh

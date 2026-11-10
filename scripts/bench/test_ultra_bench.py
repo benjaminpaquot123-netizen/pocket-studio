@@ -217,6 +217,7 @@ def main():
         expected_classes(d)
         skipped_class(d)
         judge_refuses_unsealed_summary(d)
+        proof_must_run(d)
         portal(d)
         fusion_forged(d)
         portal_traces(d)
@@ -1821,7 +1822,7 @@ def judge_root(d, name, verdicts=JUDGE_GOOD):
     tests = os.path.join(root, "app", "src", "test", "java", "x")
     write(os.path.join(tests, "BenchFooTest.kt"), "class BenchFooTest {\n  fun guardsIt() {}\n}\n")
     write(os.path.join(tests, "AppProofTest.kt"),
-          'class AppProofTest {\n  @KnownDefect("K1", "m")\n  @Test\n  fun provesIt() {}\n}\nclass Other {\n  fun elsewhere() {}\n}\n')
+          'class AppProofTest {\n  @KnownDefect("K1", "m")\n  @Test\n  fun provesIt() {}\n}\nclass Other {\n  @Test\n  fun elsewhere() {}\n}\n')
     write(os.path.join(root, "app", "src", "main", "assets", "recette.json"),
           json.dumps({"id": "r", "milestone": "m", "items": [{"id": "tel-01", "title": "t"}, {"id": "tel-02", "title": "t"}]}))
     ultra = os.path.join(root, "docs", "audits", "ultra")
@@ -1894,6 +1895,31 @@ def judge_refuses_unsealed_summary(d):
     write(os.path.join(root, "docs", "notes.md"), "a note\n")
     out = judge()
     check("résumé refusé" not in out and "pas verte" not in out, "a change under docs/ keeps the summary:\n" + out)
+
+
+def proof_must_run(d):
+    """Audit « banc crédible » 2, P5: a proof without the bench is a test that runs. `fun name` found in the class was
+    enough: the proof of K1 behind @Ignore, or renamed with « // fun provesIt » left in a comment, kept 0 gaps."""
+    root = judge_root(d, "juge-preuve-tourne")
+    resume = os.path.join(root, "selftest-resume.txt")
+    proof = os.path.join(root, "app", "src", "test", "java", "x", "AppProofTest.kt")
+    script = os.path.join(HERE, "verifie-chantier.py")
+
+    def judge(text):
+        write(proof, text)
+        seal_resume(root, resume)
+        r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
+        return r.stdout + r.stderr
+
+    other = "class Other {\n  @Test\n  fun elsewhere() {}\n}\n"
+    out = judge('class AppProofTest {\n  @KnownDefect("K1", "m")\n  @Test\n  fun provesIt() {}\n}\n' + other)
+    check("chantier : 0 écarts" in out, "the proof runs: 0 gap\n" + out)
+    out = judge('class AppProofTest {\n  @KnownDefect("K1", "m")\n  @org.junit.Ignore("flaky") @Test\n  fun provesIt() {}\n}\n' + other)
+    check("A : preuve d'appli AppProofTest#provesIt n'est pas un test qui tourne" in out, "a proof behind @Ignore does not run:\n" + out)
+    out = judge('class AppProofTest {\n  // fun provesIt() was the proof\n  @Test\n  fun provesItGone() {}\n}\n' + other)
+    check("A : preuve d'appli AppProofTest#provesIt" in out and "chantier : 0 écarts" not in out, "a proof left in a comment does not run:\n" + out)
+    out = judge("class AppProofTest {\n  fun provesIt() {}\n}\n" + other)
+    check("A : preuve d'appli AppProofTest#provesIt n'est pas un test qui tourne" in out, "a helper without @Test is no proof:\n" + out)
 
 
 def native_missing(d):

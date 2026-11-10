@@ -198,6 +198,10 @@ class BenchAmeneesTest : HumanTester("amenees") {
         assertTrue(lines.joinToString("\n"), lines.any { "Klaxon" in it } && lines.none { "Tom médium" in it })
     }
 
+    /** The sound line says Live pad [pad] (0-based) plays in a loop, alone or with others. */
+    private fun loopHeard(line: String, pad: Int): Boolean =
+        "le pad live ${pad + 1} joue en boucle" in line || Regex("les pads live [0-9, ]*\\b${pad + 1}\\b[0-9, ]* jouent en boucle").containsMatchIn(line)
+
     /**
      * Audit ultra tour 0 (seat c): on a phone the engine lights a pad that plays, ■ silences the pads, the
      * performance take starts on its line and « Enregistrer ce que je joue » records; the bench had none of it
@@ -217,12 +221,19 @@ class BenchAmeneesTest : HumanTester("amenees") {
             }
         }
         val loop = (0 until 16).first { project()!!.live.at(it)?.oneShot == false }
-        val heard = tap("padlive_pad_$loop")
-        assertTrue(heard, "joue en boucle" in heard)
+        // A.16 (G2): the touch reaches the engine, which plays the loop on its grid (at once if nothing else plays, else on
+        // its next line: the pad Pad Live may start as it opens).
+        benchEngine.padCommandsHeard()
+        var heard = tap("padlive_pad_$loop")
+        assertTrue("the touch went to the engine", "toggleClip $loop" in benchEngine.padCommandsHeard())
+        waitFor("the loop playing") { vm.liveStates.value[loop] == 2 || false.also { heard = act("attends 0.5") } }
+        if ("joue en boucle" !in heard) heard = act("attends 0.1")
+        assertTrue(heard, loopHeard(heard, loop))
         assertEquals("the pad that plays is lit", 2, vm.liveStates.value[loop])
         tap("padlive_play")
         assertTrue(vm.transport.value.playing)
         val stopped = tap("padlive_play")
+        assertTrue("■ reached the engine as « every pad off »", "toggleClip -1" in benchEngine.padCommandsHeard())
         assertTrue("■ silences the pads: $stopped", "pad live" !in stopped && "pads live" !in stopped)
         assertEquals(0, vm.liveStates.value[loop])
 
@@ -278,12 +289,15 @@ class BenchAmeneesTest : HumanTester("amenees") {
         val loops = (0 until 16).filter { project()!!.live.at(it)?.oneShot == false }
         val (pad, tag) = loops.firstNotNullOfOrNull { p -> listOf("live_full_pad_$p", "live_pad_$p").firstOrNull { centerOf(it) != null }?.let { p to it } }
             ?: error("no loop pad on Live › Pads (loops $loops)\n" + screenLines().joinToString("\n"))
-        val heard = tap(tag)
-        assertTrue("the sound line says the pad plays: $heard", "le pad live ${pad + 1} joue en boucle" in heard)
+        // A.16: the engine plays it on its grid (at once, or on its line if another pad plays).
+        var heard = tap(tag)
+        waitFor("the pad playing") { vm.liveStates.value[pad] == 2 || false.also { heard = act("attends 0.5") } }
+        if ("joue en boucle" !in heard) heard = act("attends 0.1")
+        assertTrue("the sound line says the pad plays: $heard", loopHeard(heard, pad))
         assertEquals("the pad that plays is lit (Live › Pads)", 2, vm.liveStates.value[pad])
         val stopped = tap(tag)
         assertEquals("touched again, the pad goes out (Live › Pads)", 0, vm.liveStates.value[pad])
-        assertTrue("the sound line no longer says it plays: $stopped", "pad live" !in stopped && "pads live" !in stopped)
+        assertFalse("the sound line no longer says it plays: $stopped", loopHeard(stopped, pad))
     }
 
     /**

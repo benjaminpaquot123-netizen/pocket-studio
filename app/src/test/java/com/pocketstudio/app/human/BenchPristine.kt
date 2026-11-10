@@ -37,6 +37,7 @@ import java.io.File
 class BenchPristineRule(private val seatJournal: (Description) -> File? = { null }) : TestRule {
     override fun apply(base: Statement, description: Description): Statement = object : Statement() {
         override fun evaluate() {
+            ran = true
             val leaks = BenchPristine.leaks()
             val before = lastTest
             lastTest = "${description.testClass?.simpleName ?: description.className}#${description.methodName}"
@@ -66,9 +67,14 @@ class BenchPristineRule(private val seatJournal: (Description) -> File? = { null
         @Volatile var lastTest: String? = null
             private set
 
-        /** Whether the tests of [testClass] carry this rule (a field of the class or of one above it, as HumanTester's). */
-        fun carriedBy(testClass: Class<*>): Boolean =
-            generateSequence(testClass) { it.superclass }.any { c -> c.declaredFields.any { f -> BenchPristineRule::class.java.isAssignableFrom(f.type) } }
+        /** Set when the rule runs around a test, lowered by [ranSinceLastAsked]. */
+        @Volatile private var ran = false
+
+        /**
+         * Whether a test run since the last call carried this rule (`StrictTestApplication.afterTest` asks once a test is
+         * over): the rule says it ran, whatever type the field holding it is declared with.
+         */
+        fun ranSinceLastAsked(): Boolean = ran.also { ran = false }
     }
 }
 
@@ -134,9 +140,40 @@ internal object BenchPristine {
      * tests: 59 classes of the app's tests leave something (the ViewModel factory, a closing save, settings).
      */
     fun afterAnOrdinaryTest() {
-        com.pocketstudio.app.rhythm.ClosingSaves.awaitIdleBlocking(15_000)
+        closingSaves()
         restore()
     }
+
+    /**
+     * After a test that carries [BenchPristineRule] (`StrictTestApplication.afterTest`, its @After done): what it leaves is
+     * its own red, the state put back (one leak, one red), instead of the next bench test's, which an ordinary test run in
+     * between hid. Its install's files are its own (Robolectric gives the next test another data folder): not leaks. A real
+     * seat (`-Phuman.dir`) is never made red: the next seat's rule puts it back and writes it in its journal.
+     */
+    fun afterATestWithTheRule(test: String) {
+        if (!System.getProperty("ps.human.dir").isNullOrBlank()) return
+        val left = leaks().filterNot { it.startsWith("projects/") || it.startsWith("CurrentProject") }
+        if (left.isEmpty()) return
+        restore()
+        throw AssertionError("$test leaves to the test after it (put back): " + left.joinToString("; "))
+    }
+
+    /**
+     * The closing saves of the test that ends, waited for while the main looper runs (they finish on it): review of the
+     * « CI : fuite d'état » repair, mineur 3 (the wait blocked the main thread, each save gave up after 10 s). Said on the
+     * test's output when they do not end within [capMs].
+     */
+    private fun closingSaves(capMs: Long = 15_000) {
+        val until = System.currentTimeMillis() + capMs
+        while (closingBusy() > 0 && System.currentTimeMillis() < until) {
+            runCatching { org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(10)) }
+            Thread.sleep(5)
+        }
+        if (closingBusy() > 0) println("BenchPristine: ${closingBusy()} closing save(s) still running after $capMs ms (put back all the same)")
+    }
+
+    private fun closingBusy(): Int =
+        (staticField(com.pocketstudio.app.rhythm.ClosingSaves::class.java, "busy") as? java.util.concurrent.atomic.AtomicInteger)?.get() ?: 0
 
     /** Back to a just-started process (what [HumanTester.end] does, for the state a test can leak). */
     fun restore() {

@@ -57,19 +57,27 @@ class BenchTour3Test : HumanTester("tour3") {
         // A row of page A with loops (the ready-to-play set has some).
         val row = (0 until PadLive.ROWS).first { r -> (0 until PadLive.ROW_SIZE).any { vm.project.value.live.at(r * PadLive.ROW_SIZE + it)?.oneShot == false } }
         val loops = (0 until PadLive.ROW_SIZE).map { row * PadLive.ROW_SIZE + it }.filter { vm.project.value.live.at(it)?.oneShot == false }
+        // A.16 (G2): what the engine received, and what it plays (the bench's engine, as ClipLauncher): on the next bar line
+        // if a pad already plays (the one Pad Live may start as it opens), at once otherwise.
+        fun states() = IntArray(com.pocketstudio.engine.NativeEngine.LIVE_PADS).also(com.pocketstudio.engine.NativeEngine::clipStatesNow)
+        val first = row * PadLive.ROW_SIZE
+        benchEngine.padCommandsHeard()
         tap("padlive_row_$row")
-        assertTrue("the row's loops play: ${vm.livePadsSoundingForTest}", vm.livePadsSoundingForTest!!.containsAll(loops))
+        assertTrue("the row went to the engine", "launchClipRow $first ${PadLive.ROW_SIZE}" in benchEngine.padCommandsHeard())
+        waitFor("the row's loops playing") { loops.all { states()[it] == 2 } }
         assertTrue("and are lit", loops.all { vm.liveStates.value[it] == 2 })
         // Its ■: they stop.
         tap("padlive_row_$row")
-        assertTrue("the row's loops stopped: ${vm.livePadsSoundingForTest}", loops.none { it in vm.livePadsSoundingForTest!! })
+        assertTrue("the row's ■ went to the engine", "launchClipRow $first ${PadLive.ROW_SIZE}" in benchEngine.padCommandsHeard())
+        assertTrue("the row's loops stopped: ${states().toList()}", loops.none { states()[it] != 0 })
         assertTrue(loops.all { vm.liveStates.value[it] == 0 })
         // Again, then « Plus » › « Tout couper »: nothing plays.
         tap("padlive_row_$row")
-        assertTrue(vm.livePadsSoundingForTest!!.isNotEmpty())
+        waitFor("the row's loops playing again") { loops.all { states()[it] == 2 } }
         tap("padlive_more")
         tap("padlive_stop_all")
-        assertEquals(emptySet<Int>(), vm.livePadsSoundingForTest)
+        assertTrue("« Tout couper » went to the engine", "toggleClip -1" in benchEngine.padCommandsHeard())
+        assertTrue("nothing plays: ${states().toList()}", states().all { it == 0 })
         assertTrue(vm.liveStates.value.all { it == 0 })
         assertTrue(problems.joinToString("\n"), problems.isEmpty())
     }

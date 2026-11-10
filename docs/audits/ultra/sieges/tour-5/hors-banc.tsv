@@ -8,4 +8,4 @@ relecture_bloquants	?
 relecture_graves	?
 corrections_sans_test	?
 fichiers_non_commites	?
-pads_du_banc	sans grille : au banc les pads Live partent tout de suite (le faux moteur ne joue pas ClipLauncher) ; tout verdict pad-timing exige une preuve hors banc (test hors Bench*, test moteur ou essai daté sur un appareil), en attendant A.16
+pads_du_banc	grille (A.16) : les pads Live du banc suivent ClipLauncher depuis les commandes reçues par le moteur (copie Kotlin, chiffres comparés au vrai moteur) ; ce n'est pas le moteur : tout verdict pad-timing garde sa preuve hors banc (test hors Bench*, test moteur ou essai daté sur un appareil)

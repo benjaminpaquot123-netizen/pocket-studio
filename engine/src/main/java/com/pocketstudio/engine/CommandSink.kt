@@ -72,6 +72,8 @@ interface CommandSink {
         }
     }
     fun drainLaunchEvents(out: IntArray): Int = 0
+    /** [NativeEngine.clipStates]: per live pad, 0 off, 1 waiting for its line, 2 playing (a sink without pads: all off). */
+    fun clipStates(out: IntArray) = out.fill(0)
 
     // A separated song's stems ([NativeStems]), for the « testeur humain » bench. A null answer
     // means « not mine »: the native library is asked, as before these existed.

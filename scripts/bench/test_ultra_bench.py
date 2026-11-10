@@ -204,6 +204,7 @@ def main():
         chantier(d)
         judge_criteria(d)
         open_app_proof(d)
+        known_defect_lifted(d)
         owner_trials(d)
         pad_timing_verdicts(d)
         engine_proof(d)
@@ -766,6 +767,50 @@ def judge_criteria(d):
     check("H : « corrigé » sans commit" in out, "a « corrigé » whose commit is « - »:\n" + out)
     check("I : « corrigé », commit 0123abc introuvable" in out, "a « corrigé » whose commit does not exist:\n" + out)
     check("J : « corrigé »" not in out and "chantier : 3 écarts" in out, "a « corrigé » with its commit (the third gap is the green without its red):\n" + out)
+
+
+def known_defect_lifted(d):
+    """Review of the « partage » lot, (c): a « vert: » commit that takes @KnownDefect off a test that carried it in its
+    parent, and names that test, is a rouge/vert pair: the red was the guard (KnownDefectRule: the test failed with the
+    defect's message). Nothing else is: the annotation taken off another test, kept, or the test deleted with it."""
+    root = judge_root(d, "juge-knowndefect")
+    resume = os.path.join(root, "selftest-resume.txt")
+    proofs = os.path.join(root, "app", "src", "test", "java", "x", "ShareProofTest.kt")
+
+    def git(*a):
+        return subprocess.run(["git", "-C", root, "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false", *a],
+                              capture_output=True, text=True, check=True).stdout.strip()
+
+    def commit(subject, text=None):
+        if text is not None:
+            write(proofs, text)
+        git("add", "-A")
+        git("commit", "-q", "--allow-empty", "-m", subject)
+        return git("rev-parse", "--short", "HEAD")
+
+    def guard(name, carried):
+        mark = f'  @KnownDefect("{name.upper()}", "still there")\n' if carried else ""
+        return f"{mark}  @Test\n  fun {name}() {{}}\n"
+
+    def share(*tests):
+        return "class ShareProofTest {\n" + "".join(tests) + "}\n"
+
+    git("init", "-q")
+    commit("start", share(guard("keepsTheLength", True), guard("listsTheZip", True), guard("warnsNothingAfter", True)))
+    lifted = commit("vert: share follows the length chosen (ShareProofTest#keepsTheLength)",
+                    share(guard("keepsTheLength", False), guard("listsTheZip", True), guard("warnsNothingAfter", True)))
+    other = commit("vert: another repair (ShareProofTest#somethingElseEntirely)",
+                   share(guard("keepsTheLength", False), guard("listsTheZip", False), guard("warnsNothingAfter", True)))
+    kept = commit("vert: the proof of K1 (AppProofTest#provesIt)")
+    deleted = commit("vert: no warning any more (ShareProofTest#warnsNothingAfter)",
+                     share(guard("keepsTheLength", False), guard("listsTheZip", False)))
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    check(lifted not in out, "a green that takes @KnownDefect off the test it names is a pair:\n" + out)
+    for sha, what in ((other, "the annotation taken off another test than the one named"), (kept, "the annotation kept"),
+                      (deleted, "the test deleted with its annotation")):
+        check(f"{sha} « vert:" in out and "vert sans rouge du même test avant lui" in out, f"{what} is no red evidence:\n" + out)
+    check("chantier : 3 écarts" in out, "three greens without red, nothing else:\n" + out)
 
 
 def open_app_proof(d):

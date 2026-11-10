@@ -58,31 +58,20 @@ import java.time.Duration
  * guards of T5-ZIP and of T5-ALERTE (« Partager ») wrote the app's wiring again (a ProjectsViewModel made here, the
  * Guide's card marked by the test): a fix in AppRoot or in ShareSongProgress would have left them « still there ». They
  * now compose and call the app's own: the sender AppRoot gives « Prêt à partager ? » and Mes projets › ⋯
- * ([rememberProjectZipSender]) and [ShareSongProgress]. `scripts/bench/mutation-l1.sh` replayed the check while the
- * defects were there (the app « fixed » in its wiring: both guards said « no longer fails »); the app is fixed since
- * (lot « partage », 2026-11-10) and the guards are ordinary ones.
+ * ([rememberProjectZipSender]) and [ShareSongProgress]. A script (mutation L1, retired since: `git show
+ * 711e1b0:scripts/bench/mutation-l1.sh`) replayed the check while the defects were there (the app « fixed » in its
+ * wiring: both guards said « no longer fails »); the app is fixed since (lot « partage », 2026-11-10) and the guards
+ * are ordinary ones.
  */
 @RunWith(RobolectricTestRunner::class)
 class Tour5AppProofTest {
-    /** PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test). */
+    /**
+     * PLAN-RESTE 4.5: the state inherited from the test before must be pristine (else: red, naming that test); what a
+     * proof leaves once its @After has run is its own red (StrictTestApplication.afterTest), also when an ordinary test
+     * comes next (the rule « leavesNothing » this class carried for that is now everyone's).
+     */
     @get:Rule
     val pristine = BenchPristineRule()
-    /**
-     * What each proof leaves, read here once its @After has run (the outermost rule), not only by the bench test that
-     * comes next: after the last proof of this class comes a test of the app, which the detector does not watch. Seen in a
-     * full run of the suite (2026-11-10): the proof of T5-ZIP left the ViewModel factory with its Application. The data
-     * folder is this test's own (the next test has another): the project the proof saved there is not a leak.
-     */
-    @get:Rule(order = -2)
-    val leavesNothing = TestRule { base, description ->
-        object : Statement() {
-            override fun evaluate() {
-                base.evaluate()
-                val left = BenchPristine.leaks().filterNot { it.startsWith("projects/") }
-                if (left.isNotEmpty()) throw AssertionError("${description.methodName} leaves to the test after it: " + left.joinToString("; "))
-            }
-        }
-    }
     /** See [KnownDefect]: each proof runs (it was @Ignore'd, never run: external audit), inverted while the defect is there. */
     @get:Rule
     val knownDefects: TestRule = KnownDefectRule()
@@ -181,6 +170,9 @@ class Tour5AppProofTest {
         recomposer?.cancel()
         recomposer = null
         screen?.pause()?.stop()?.destroy()
+        // The main looper drained before the test ends (review of « CI : fuite d'état », moyen 2): what the screen's close
+        // queued on Compose's UI dispatcher runs now, instead of being dropped with its « scheduled » flags left raised.
+        if (screen != null) idle(100)
         screen = null
         NativeEngine.sink = null
         CurrentProject.set(app, RhythmViewModel.PROJECT_ID)
@@ -353,6 +345,40 @@ class Tour5AppProofTest {
         until("the MIDI never came") { vm.export.value.files.singleOrNull()?.extension == "mid" }
         idle(200)
         assertFalse("« Le morceau a changé depuis cet export » right under the MIDI file just made", vm.export.value.staleFor(vm.project.value))
+    }
+
+    /**
+     * Review of the « CI : fuite d'état » repair, moyen 2: Compose's UI dispatcher (AndroidUiDispatcher.Main, a static of
+     * the sandbox; the global snapshot manager runs on it) keeps « dispatch scheduled » raised with work queued when a
+     * screen is destroyed without the main looper drained: Robolectric drops the looper's messages between tests and that
+     * dispatcher never posts again, so the effects of a later composition on it never start. A screen composed and
+     * closed here leaves it free. (Freed first if a test before this class left it so: this test is about [clear].)
+     */
+    @Test
+    fun aScreenComposedAndClosedLeavesComposesDispatcherFree() {
+        uiDispatcher(free = true)
+        compose { androidx.compose.runtime.LaunchedEffect(Unit) { effectRan = true } }
+        clear()
+        val left = uiDispatcher()
+        assertEquals("Compose's UI dispatcher after the screen closed: $left", "queued=0 trampoline=false frame=false", left)
+    }
+
+    private var effectRan = false
+
+    /**
+     * AndroidUiDispatcher.Main's work queued and its two « scheduled » flags; [free]: its queued work run and the flags
+     * lowered first (the state a previous test of another class may leave).
+     */
+    private fun uiDispatcher(free: Boolean = false): String {
+        val d = androidx.compose.ui.platform.AndroidUiDispatcher.Main[kotlin.coroutines.ContinuationInterceptor]!!
+        fun field(name: String) = d.javaClass.getDeclaredField(name).apply { isAccessible = true }
+        val queue = field("toRunTrampolined").get(d) as kotlin.collections.ArrayDeque<*>
+        if (free) {
+            while (queue.isNotEmpty()) (queue.removeFirst() as Runnable).run()
+            field("scheduledTrampolineDispatch").setBoolean(d, false)
+            field("scheduledFrameDispatch").setBoolean(d, false)
+        }
+        return "queued=${queue.size} trampoline=${field("scheduledTrampolineDispatch").getBoolean(d)} frame=${field("scheduledFrameDispatch").getBoolean(d)}"
     }
 
     /** T5-8MES (seat C c 27): 16 bars chosen in Mix, « Prêt à partager ? » › Partager renders 16 bars. */

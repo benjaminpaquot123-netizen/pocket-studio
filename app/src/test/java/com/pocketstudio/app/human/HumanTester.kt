@@ -125,7 +125,6 @@ abstract class HumanTester(private val seat: String) {
     }
     // Lot « tuto 4 » (É0): the play head moves as on a phone, and « Partager » exports.
     private val playhead = BenchPlayhead()
-    private val launchLines = BenchLaunchLines()
     private var lastVm: RhythmViewModel? = null
     /** Said once in the next sound-N.txt (what Android's share menu did). */
     private var note: String? = null
@@ -487,12 +486,9 @@ abstract class HumanTester(private val seat: String) {
             }
         }
         lastVm = v
+        // A.16 (G2): no hook on the pads' touches any more: the app sends its pads to the bench's engine, which plays them.
         if (seatPads() && v != null && v !== padsHooked) {
             padsHooked = v
-            v.padLive.toggleForTest = { pad -> padToggled(v, pad) }
-            v.liveToggledForTest = { pad -> padFollowed(v, pad) }
-            v.liveStoppedForTest = { allPadsCut() }
-            v.padLive.rowForTest = { first, starting, stopping -> rowLaunched(v, first, starting, stopping) }
             v.padLive.played.sourceForTest = BenchResample(v)
             v.padLive.makerForTest = BenchPackMaker(engine)
         }
@@ -504,76 +500,49 @@ abstract class HumanTester(private val seat: String) {
     /** Audit ultra tour 0 (seat a): the downloaded packs' FLAC sounds are read as on a phone ([BenchFlac]). */
     private val flac by lazy { BenchFlac(app, com.pocketstudio.app.library.PackStore.dir(app)) }
 
-    /** The bench's own tests: Pad Live's pads sound as on a seat. */
+    /** The bench's own tests: Pad Live's « Enregistrer ce que je joue » and its packs as on a seat (the pads play anyway). */
     internal var padsAsOnASeat = false
     private fun seatPads() = seatDir != null || padsAsOnASeat
 
     /**
-     * Audit ultra tour 0 (seat c): a phone's ■ silences the live pads too (« Stop means silence », the engine's
-     * toggleClip(-1)); the bench's pads went on. Their lights follow what the bench's pads do, as the
-     * engine's clip states would light them (a loop on: 2).
+     * The Live pads' lights, as a phone's pollLiveStates sets them from its engine about 30 times a second (Robolectric:
+     * that poll stops at once without the native engine). Audit « banc crédible » A.16 (F3, G2): read from the bench's
+     * engine, which played what the app sent it (ToggleClip, LaunchClipRow, « Tout couper » and ■ as toggleClip(-1)):
+     * 1 waiting for its line, 2 playing. The bench used to write them itself from hooks on the app's touches.
      */
-    private fun padsAfterStop(playingBefore: Boolean) {
-        val v = lastVm ?: return
-        if (!seatPads() || v.livePadsSoundingForTest == null) return
-        if (playingBefore && !v.transport.value.playing) v.livePadsSoundingForTest = emptySet()
-        lightPads(v)
-    }
-
     @Suppress("UNCHECKED_CAST")
     internal fun lightPads(v: RhythmViewModel) {
-        val on = v.livePadsSoundingForTest ?: return
+        if (NativeEngine.sink !== engine) return
+        val states = IntArray(NativeEngine.LIVE_PADS).also(NativeEngine::clipStatesNow)
         val f = RhythmViewModel::class.java.getDeclaredField("_liveStates").apply { isAccessible = true }
         val flow = f.get(v) as kotlinx.coroutines.flow.MutableStateFlow<List<Int>>
-        val now = flow.value.indices.map { if (it in on) 2 else 0 }
+        val now = flow.value.indices.map { states.getOrElse(it) { 0 } }
         if (now != flow.value) flow.value = now
     }
 
     /**
-     * A live pad touched on a seat: the app's own toggle, and the pad sounds as the phone's engine would
-     * have it (a loop on until touched again, a hit once), heard on the sound line. Robolectric has no
-     * engine: without this the pads never sounded (lot P0-A).
+     * What the Live pads play, heard on the sound line (A.16): the hits that sounded since the last line, the loops that
+     * play, the pads that wait for their line (the next beat for a hit, at most the next bar for a loop or a row), all as
+     * the bench's engine plays them (see [BenchClips]).
      */
-    private fun padToggled(v: RhythmViewModel, pad: Int) {
-        // The bench's pads follow through RhythmViewModel.liveToggledForTest ([padFollowed]).
-        v.toggleLive(pad)
-    }
-
-    /**
-     * Audit ultra round 3 (zone 1, n° 5): any live pad toggled (Pad Live, and Live › Pads, which call the view model's
-     * toggleLive directly), and every pad cut (stopLive: « Écouter » of a challenge, headphones out): the bench's pads do
-     * what the phone's engine would.
-     */
-    private fun padFollowed(v: RhythmViewModel, pad: Int) {
-        val clip = v.project.value.live.at(pad) ?: return
-        val on = v.livePadsSoundingForTest ?: emptySet()
-        if (clip.oneShot) say("Le pad ${pad + 1} (« ${clip.name} ») joue une fois.")
-        else v.livePadsSoundingForTest = if (pad in on) on - pad else on + pad
-        lightPads(v)
-    }
-
-    /**
-     * Audit ultra round 3 (seat C b, « la ligne ne part pas », « les boucles continuent »): a row's ▶ / ■ of Pad Live goes to
-     * the engine as one command (NativeEngine.launchClipRow), which the bench's pads never heard: nothing lit, nothing
-     * stopped. The app's own row (its take writes it), and the bench's pads do what the engine does: the row's loops
-     * start (on the next bar line on a phone; the bench's pads have no bar line, as for one pad), or stop; a hit plays once.
-     */
-    private fun rowLaunched(v: RhythmViewModel, first: Int, starting: List<Int>, stopping: List<Int>) {
-        v.launchLiveRow(first, com.pocketstudio.model.PadLive.ROW_SIZE, starting, stopping)
+    private fun livePadsHeard(v: RhythmViewModel): String? {
+        if (NativeEngine.sink !== engine) return null
         val pads = v.project.value.live
-        val loops = starting.filter { pads.at(it)?.oneShot == false }
-        val hits = starting - loops.toSet()
-        v.livePadsSoundingForTest = ((v.livePadsSoundingForTest ?: emptySet()) - stopping.toSet()) + loops
-        if (hits.isNotEmpty()) say("Les pads ${hits.joinToString(", ") { "${it + 1}" }} jouent une fois.")
-        lightPads(v)
-    }
-
-    /** Audit ultra round 3 (seat C b): « Tout couper » (the engine's toggleClip(-1)) silences the bench's pads too. */
-    private fun allPadsCut() {
-        val v = lastVm ?: return
-        if (!seatPads() || v.livePadsSoundingForTest.isNullOrEmpty()) return
-        v.livePadsSoundingForTest = emptySet()
-        lightPads(v)
+        val states = IntArray(NativeEngine.LIVE_PADS).also(NativeEngine::clipStatesNow)
+        val hits = engine.clips.hitsPlayed().distinct()
+        val loops = states.indices.filter { states[it] == 2 && pads.at(it)?.oneShot == false }
+        val waiting = states.indices.filter { states[it] == 1 }
+        fun names(list: List<Int>) = list.sorted().joinToString(", ") { "${it + 1}" }
+        return listOfNotNull(
+            hits.takeIf { it.isNotEmpty() }?.let { h ->
+                if (h.size == 1) "le pad live ${h[0] + 1} (« ${pads.at(h[0])?.name ?: "?"} ») a joué une fois" else "les pads live ${names(h)} ont joué une fois"
+            },
+            loops.takeIf { it.isNotEmpty() }?.let { if (it.size == 1) "le pad live ${it[0] + 1} joue en boucle" else "les pads live ${names(it)} jouent en boucle" },
+            waiting.takeIf { it.isNotEmpty() }?.let {
+                if (it.size == 1) "le pad live ${it[0] + 1} attend sa ligne (le prochain temps, ou la prochaine mesure)"
+                else "les pads live ${names(it)} attendent leur ligne (le prochain temps, ou la prochaine mesure)"
+            },
+        ).joinToString(" ; ").ifEmpty { null }
     }
 
     /**
@@ -1154,25 +1123,20 @@ abstract class HumanTester(private val seat: String) {
     }
 
     /** One gesture: « touche X Y », « appui-long X Y », « glisse X1 Y1 X2 Y2 », « ecris … », « retour », « attends S ». */
-    /** The transport played before the gesture under way ([padsAfterStop]). */
-    private var playingBefore = false
 
     private fun play(cmd: String) {
         followTextDialogs()
         val words = cmd.split(Regex("\\s+"))
         val kind = words[0].lowercase()
-        playingBefore = lastVm?.transport?.value?.playing == true
         flac.register()
         engineBefore(kind, words.getOrNull(1)?.replace(',', '.')?.toFloatOrNull() ?: -1f, words.getOrNull(2)?.replace(',', '.')?.toFloatOrNull() ?: -1f)
         val padsBefore = stemPads()
         val x = words.getOrNull(1)?.replace(',', '.')?.toFloatOrNull() ?: -1f
         val y = words.getOrNull(2)?.replace(',', '.')?.toFloatOrNull() ?: -1f
         val micTake = kind == "touche" && audioTakeTouched(x, y)
-        val cutsAll = kind == "touche" && STOP_ALL_TAGS.any { touches(it, x, y) }
         try {
             gesture(kind, words, cmd)
         } finally {
-            if (cutsAll) allPadsCut()
             padNotes(padsBefore)
             // Nothing started though the bench's engine was there (a refusal of the app's own): said, never silent.
             if (micTake && lastVm?.audioRecording?.value == null && !NativeEngine.isAvailable) {
@@ -1309,7 +1273,7 @@ abstract class HumanTester(private val seat: String) {
             ears.tick()
             lastVm?.let {
                 playhead.tick(it, SystemClock.uptimeMillis())
-                launchLines.tick(it)
+                lightPads(it)
                 engine.tempo = it.project.value.tempoBpm
                 engine.beatsPerBar = it.project.value.beatsPerBar
             }
@@ -1506,8 +1470,7 @@ abstract class HumanTester(private val seat: String) {
         services()
         flac.register()
         engineDone()
-        padsAfterStop(playingBefore)
-        playingBefore = lastVm?.transport?.value?.playing == true
+        lastVm?.let(::lightPads)
         shareMenu()
         permissions()
         toasts()
@@ -1703,10 +1666,8 @@ abstract class HumanTester(private val seat: String) {
         }
         // PLAN-RESTE 4.7: « Mes exports » open (sizes and dates on screen) or an export under way: its size and time are the bench's.
         if (v?.export?.value?.running == true || shownOnScreen("my_export")) add("export $EXPORTS_NOT_A_PHONES")
-        // Live pads on a seat (padToggled): heard with the transport stopped too.
-        v?.livePadsSoundingForTest?.takeIf { seatPads() && it.isNotEmpty() }?.let { on ->
-            add(if (on.size == 1) "le pad live ${on.first() + 1} joue en boucle" else "les pads live ${on.sorted().joinToString(", ") { "${it + 1}" }} jouent en boucle")
-        }
+        // The Live pads, as the bench's engine plays them (A.16): heard with the transport stopped too.
+        v?.let { livePadsHeard(it) }?.let(::add)
     }.let { if (it.isEmpty()) "Son : rien ne joue." else "Son : " + it.joinToString(" ; ") + "." }
         .let { s -> note?.let { n -> note = null; "$s\n$n" } ?: s }
 
@@ -1903,7 +1864,6 @@ abstract class HumanTester(private val seat: String) {
         private val SONG_STARTS = listOf("part_play_", "play_from_", "audio_play_from_")
 
         /** « Tout couper » of Pad Live, the Live page's pads and their full screen (RhythmViewModel.stopLive). */
-        private val STOP_ALL_TAGS = listOf("padlive_stop_all", "live_stop_all", "live_pads_full_stop")
 
         /** See [needsTheEngine]. */
         private val ENGINE_TAGS = listOf("export", "video_create", "padlive_perf_listen", "live_take_listen", "tuto_show")

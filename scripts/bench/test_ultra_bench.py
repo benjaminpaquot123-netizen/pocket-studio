@@ -205,6 +205,7 @@ def main():
         judge_criteria(d)
         open_app_proof(d)
         known_defect_lifted(d)
+        known_defect_lifted_needs_a_red(d)
         owner_trials(d)
         pad_timing_verdicts(d)
         engine_proof(d)
@@ -777,15 +778,15 @@ def known_defect_lifted(d):
     resume = os.path.join(root, "selftest-resume.txt")
     proofs = os.path.join(root, "app", "src", "test", "java", "x", "ShareProofTest.kt")
 
-    def git(*a):
+    def git(*a, env=None):
         return subprocess.run(["git", "-C", root, "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false", *a],
-                              capture_output=True, text=True, check=True).stdout.strip()
+                              capture_output=True, text=True, check=True, env=env).stdout.strip()
 
-    def commit(subject, text=None):
+    def commit(subject, text=None, env=None):
         if text is not None:
             write(proofs, text)
         git("add", "-A")
-        git("commit", "-q", "--allow-empty", "-m", subject)
+        git("commit", "-q", "--allow-empty", "-m", subject, env=env)
         return git("rev-parse", "--short", "HEAD")
 
     def guard(name, carried):
@@ -796,7 +797,9 @@ def known_defect_lifted(d):
         return "class ShareProofTest {\n" + "".join(tests) + "}\n"
 
     git("init", "-q")
-    commit("start", share(guard("keepsTheLength", True), guard("listsTheZip", True), guard("warnsNothingAfter", True)))
+    # The guards were there before the rouge/vert discipline (as Tour5AppProofTest's, 4168889).
+    commit("start", share(guard("keepsTheLength", True), guard("listsTheZip", True), guard("warnsNothingAfter", True)),
+           env=old_commit_env())
     lifted = commit("vert: share follows the length chosen (ShareProofTest#keepsTheLength)",
                     share(guard("keepsTheLength", False), guard("listsTheZip", True), guard("warnsNothingAfter", True)))
     other = commit("vert: another repair (ShareProofTest#somethingElseEntirely)",
@@ -811,6 +814,78 @@ def known_defect_lifted(d):
                       (deleted, "the test deleted with its annotation")):
         check(f"{sha} « vert:" in out and "vert sans rouge du même test avant lui" in out, f"{what} is no red evidence:\n" + out)
     check("chantier : 3 écarts" in out, "three greens without red, nothing else:\n" + out)
+
+
+def old_commit_env():
+    """A commit dated before the rouge/vert discipline began (first « rouge: », 2026-11-08 18:29 UTC)."""
+    env = dict(os.environ)
+    env["GIT_AUTHOR_DATE"] = env["GIT_COMMITTER_DATE"] = "2026-11-08T12:00:00+00:00"
+    return env
+
+
+def known_defect_lifted_needs_a_red(d):
+    """Review of the « pads-live » lot (moyen): a « vert: » that takes @KnownDefect off a test is a pair only when that
+    guard came from a « rouge: » commit (or was there before the discipline began), when its message names the test's
+    own class and method, and when it is not a merge. The three ways the reviewer broke it are gaps."""
+    root = judge_root(d, "juge-knowndefect-rouge")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    share_f, other_f = os.path.join(tests, "ShareProofTest.kt"), os.path.join(tests, "OtherProofTest.kt")
+
+    def git(*a, env=None):
+        return subprocess.run(["git", "-C", root, "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false", *a],
+                              capture_output=True, text=True, check=True, env=env).stdout.strip()
+
+    def commit(subject, files=(), env=None):
+        for path, text in files:
+            write(path, text)
+        git("add", "-A")
+        git("commit", "-q", "--allow-empty", "-m", subject, env=env)
+        return git("rev-parse", "--short", "HEAD")
+
+    def guard(name, carried):
+        mark = f'  @KnownDefect("{name.upper()}", "still there")\n' if carried else ""
+        return f"{mark}  @Test\n  fun {name}() {{}}\n"
+
+    def cls(name, *tests):
+        return f"class {name} {{\n" + "".join(tests) + "}\n"
+
+    def others(same, own, merged):
+        return (cls("OtherProofTest", guard("sameName", same), guard("ownName", own), guard("mergedOne", merged))
+                + cls("UnrelatedTest", guard("sameName", False)))
+
+    def shares(plain, zip_):
+        return cls("ShareProofTest", guard("plainTest", plain), guard("listsTheZipInMyFiles", zip_))
+
+    git("init", "-q")
+    commit("start", [(share_f, shares(False, False)), (other_f, others(True, True, True))], env=old_commit_env())
+    # 1. A guard added by a commit that is no « rouge: », then lifted by a green that names it: no red evidence.
+    commit("chore: tidy", [(share_f, shares(True, False))])
+    chore = commit("vert: plain test now passes (ShareProofTest#plainTest)", [(share_f, shares(False, False))])
+    # 2. Lifted from OtherProofTest#sameName, the message names UnrelatedTest#sameName: another test.
+    other_cls = commit("vert: fix (UnrelatedTest#sameName)", [(other_f, others(False, True, True))])
+    # Control: an old guard lifted by a green naming its own class and method is a pair.
+    own = commit("vert: fix (OtherProofTest#ownName)", [(other_f, others(False, False, True))])
+    # 3. The lift brought by a merge commit called « vert: ».
+    main_branch = git("rev-parse", "--abbrev-ref", "HEAD")
+    git("checkout", "-q", "-b", "side")
+    commit("wip lift", [(other_f, others(False, False, False))])
+    git("checkout", "-q", main_branch)
+    commit("elsewhere", [(os.path.join(tests, "Elsewhere.kt"), "class Elsewhere\n")])
+    git("merge", "-q", "--no-ff", "side", "-m", "vert: merged fix (OtherProofTest#mergedOne)")
+    merge = git("rev-parse", "--short", "HEAD")
+    # Control: a guard added by a « rouge: » (closed by its own green), lifted later by a green naming it: a pair.
+    commit("rouge: the zip in Mes fichiers (ShareProofTest#listsTheZipInMyFiles)", [(share_f, shares(False, True))])
+    commit("vert: the zip's guard holds the defect (ShareProofTest#listsTheZipInMyFiles)")
+    from_red = commit("vert: the zip is listed (ShareProofTest#listsTheZipInMyFiles)", [(share_f, shares(False, False))])
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    for sha, what in ((chore, "a guard added outside a « rouge: »"), (other_cls, "a guard of another class with the same method name"),
+                      (merge, "a lift brought by a merge")):
+        check(f"{sha} « vert:" in out, f"{what} is no red evidence:\n" + out)
+    for sha, what in ((own, "an old guard lifted by a green naming its class and method"), (from_red, "a guard from a « rouge: »")):
+        check(sha not in out, f"{what} is a pair:\n" + out)
+    check("chantier : 3 écarts" in out, "the three adversarial greens, nothing else:\n" + out)
 
 
 def open_app_proof(d):

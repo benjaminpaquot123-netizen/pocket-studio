@@ -6,7 +6,8 @@
 # BEFORE the merge: a review after the push came too late in rounds 1-3), committed in the branch, ending on the line
 # « Verdict : 0 bloquant, 0 grave » with no open blocking or grave row (scripts/bench/relecture-verdict.py), then
 # `git merge --no-ff eq/<tour-N>-<zone>`, then the bench's self-test on the merged code, the replay tests of fixed
-# defects (scripts/bench/rejeu-defauts.sh, never none) and the team's targeted tests through the one Gradle queue. A red step stops everything: the merge is undone (git merge --abort / reset to the commit before)
+# defects (scripts/bench/rejeu-defauts.sh, never none) and the team's targeted tests through the one Gradle queue; then
+# the portal's traces of the merge, committed (docs/audits/ultra/portail/<date>-<tour>-<zone>/). A red step stops everything: the merge is undone (git merge --abort / reset to the commit before)
 # and the zone is named. Never pushes.
 set -euo pipefail
 int="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -68,10 +69,31 @@ for zone in "${zones[@]}"; do
   # always runs on the merged code, on a lot of its own; then the repository's replays (never PS_REJEUX_DIR's), then
   # the team's filters.
   lot="$(mktemp -d)"
-  if ! scripts/bench/selftest.sh "$lot" > "$lot/selftest.log" 2>&1 || ! env -u PS_REJEUX_DIR scripts/bench/rejeu-defauts.sh \
-      || { [ ${#filters[@]} -gt 0 ] && ! scripts/bench/gradle-file.sh "${args[@]}"; }; then
-    git reset --keep "$before"
-    echo "$zone: red after the merge (self-test, replays or tests; self-test kept in $lot): undone." >&2; exit 5
+  green=1
+  scripts/bench/selftest.sh "$lot" > "$lot/selftest.log" 2>&1 || green=0
+  if [ "$green" -eq 1 ]; then
+    env -u PS_REJEUX_DIR scripts/bench/rejeu-defauts.sh > "$lot/rejeux.txt" 2>&1 || green=0
+    cat "$lot/rejeux.txt"
   fi
-  echo "$zone: merged ($(git rev-parse --short HEAD))"
+  if [ "$green" -eq 1 ] && [ ${#filters[@]} -gt 0 ]; then scripts/bench/gradle-file.sh "${args[@]}" || green=0; fi
+  if [ "$green" -eq 0 ]; then
+    git reset --keep "$before"
+    echo "$zone: red after the merge (self-test, replays or tests; kept in $lot): undone." >&2; exit 5
+  fi
+  # Audit « banc crédible » 2, D1: the portal's traces of this merge (the self-test's summary, stamp and judge, and
+  # fusion.txt) are committed right after it, so every figure quoted later can be checked; verifie-chantier.py counts
+  # « fusion sans trace du portail » for a merge without them.
+  merged="$(git rev-parse HEAD)"
+  trace="$traces_root/$(date -u +%F)-$tour-$zone"
+  n=2
+  while [ -e "$trace" ]; do trace="$traces_root/$(date -u +%F)-$tour-$zone-$n"; n=$((n + 1)); done
+  mkdir -p "$trace"
+  cp "$lot/selftest-resume.txt" "$lot/selftest.ok" "$lot/selftest-chantier.txt" "$trace/"
+  { echo "fusion: $merged"; echo "branche: eq/$tour-$zone"; echo "tete: $(git rev-parse "eq/$tour-$zone")"
+    echo "relecture: $review"; echo "relu: $read_sha"; [ ${#filters[@]} -eq 0 ] || echo "filtres: ${filters[*]}"
+    echo "rejeux :"; sed 's/^/  /' "$lot/rejeux.txt"; } > "$trace/fusion.txt"
+  git add -- "$trace"
+  git commit -q -m "Portal traces of the merge of $zone ($tour)" -- "$trace"
+  rm -rf "${lot:?}"
+  echo "$zone: merged ($(git rev-parse --short "$merged")), traces in $trace"
 done

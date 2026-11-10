@@ -23,6 +23,9 @@
     « garde_id » column; a line's garde_id is carried by one of its proofs (a @KnownDefect, or an engine test
     registered as « known_defect_<id> », which the C++ runner prints as « KNOWN DEFECT still there »).
     --preuves ITEM prints the proofs read on that line and stops.
+    Audit « banc crédible » 2, D1: a lot of seats from round 6 on keeps its self-test's summary, stamp and judge
+    (« lot sans trace du portail »); with git, a « Merge team … » made under the traces rule has its traces under
+    docs/audits/ultra/portail/ (« fusion sans trace du portail »).
 (b) git log: a « vert: » commit closes the oldest open « rouge: » commit OF THE SAME TEST (same subject after
     the prefix, or a test the red names or adds that the green's message names). A green of another test closes
     nothing. A green (not a merge) that takes @KnownDefect off a test (kept) whose « Class#method » its message names
@@ -306,6 +309,54 @@ def commit_exists(root, sha):
         return False
 
 
+TRACES = ("selftest-resume.txt", "selftest.ok", "selftest-chantier.txt")
+PORTAL_TRACES = os.path.join("docs", "audits", "ultra", "portail")
+# The first round whose lots keep their portal traces (audit « banc crédible » 2, D1: rounds 1 to 5 were run before).
+TRACED_ROUND = 6
+
+
+def lot_trace_gaps(root):
+    """D1: a lot of seats (docs/audits/ultra/sieges/tour-N/lot*/, N ≥ TRACED_ROUND) keeps its self-test's summary, stamp
+    and judge beside its seats."""
+    gaps, seats = [], os.path.join(root, "docs", "audits", "ultra", "sieges")
+    for tour in sorted(os.listdir(seats)) if os.path.isdir(seats) else []:
+        m = re.fullmatch(r"tour-(\d+)", tour)
+        if not m or int(m.group(1)) < TRACED_ROUND:
+            continue
+        for lot in sorted(os.listdir(os.path.join(seats, tour))):
+            where = os.path.join(seats, tour, lot)
+            if lot.startswith("lot") and os.path.isdir(where):
+                missing = [t for t in TRACES if not os.path.isfile(os.path.join(where, t))]
+                if missing:
+                    gaps.append(f"docs/audits/ultra/sieges/{tour}/{lot} : lot sans trace du portail ({', '.join(missing)})")
+    return gaps
+
+
+def merge_trace_gaps(root):
+    """D1: every « Merge team … » made by a fusion-equipes.sh that writes the portal's traces (its first parent's script
+    names docs/audits/ultra/portail) has them: a fusion.txt naming it under docs/audits/ultra/portail/, with the
+    self-test's summary, stamp and judge beside it."""
+    traced = set()
+    base = os.path.join(root, PORTAL_TRACES)
+    for d in sorted(os.listdir(base)) if os.path.isdir(base) else []:
+        fusion = os.path.join(base, d, "fusion.txt")
+        if os.path.isfile(fusion) and all(os.path.isfile(os.path.join(base, d, t)) for t in TRACES):
+            traced |= set(re.findall(r"^fusion: ([0-9a-f]{40})\s*$", open(fusion, encoding="utf-8").read(), re.M))
+    try:
+        merges = _git(root, "log", "--merges", "--format=%H%x1f%h%x1f%s").splitlines()
+    except (subprocess.SubprocessError, OSError) as e:
+        return [f"git log impossible : {e}"]
+    gaps = []
+    for line in merges:
+        full, short, subject = line.split("\x1f", 2)
+        if not subject.startswith("Merge team ") or full in traced:
+            continue
+        script = _show(root, full + "^1", "scripts/bench/fusion-equipes.sh") or ""
+        if PORTAL_TRACES.replace(os.sep, "/") in script:
+            gaps.append(f"{short} « {subject[:70]} » : fusion sans trace du portail")
+    return gaps
+
+
 def check(root, resume_path=None, with_git=True):
     gaps = []
     ultra = os.path.join(root, "docs", "audits", "ultra")
@@ -392,6 +443,7 @@ def check(root, resume_path=None, with_git=True):
                 gaps.append(f"@KnownDefect {kid} ({cls}#{method}) : aucune ligne qui le cite ne porte garde_id {kid} "
                             f"({', '.join(v.get('item', '?') for v in citing)})")
 
+    gaps += lot_trace_gaps(root)
     gaps += trial_gaps(root, verdicts)
     gaps += annotation_gaps(root, verdicts)
 
@@ -642,7 +694,7 @@ def main():
         return
     gaps = check(a.root, a.resume, with_git=not a.sans_git)
     if not a.sans_git:
-        gaps += red_green_pairs(a.root) + checked_lines(a.root)
+        gaps += red_green_pairs(a.root) + checked_lines(a.root) + merge_trace_gaps(a.root)
     for g in gaps:
         print(g)
     print(f"chantier : {len(gaps)} écarts")

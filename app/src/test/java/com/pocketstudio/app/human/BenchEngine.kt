@@ -76,6 +76,10 @@ internal class BenchEngine : CommandSink {
             }
             // Audit method v2 (engine always there): « Enregistrer la performance » marks the song on the next launch line and
             // waits for the engine to say it did (NativeEngine.songMarkStep); the bench's never said it, the take stayed « Prêt ».
+            // A.8: the drum pattern's length and place, as Engine.cpp keeps them (see [SongClock.currentStep]).
+            CMD_SET_PATTERN_STEPS -> song.patternSteps(a)
+            CMD_STAGING -> song.staging = value > 0.5f
+            CMD_SLOT_OFFSET -> if (a == SLOT_DRUMS) song.drumOffset(b)
             // A.7: played as Engine.cpp's MarkSong and onStep (see [SongClock.mark]).
             CMD_MARK_SONG -> song.mark(a, value)
             // Banc fiable 3.2 (T4-17) and its review: the scene swaps as Engine.cpp arms and plays them (see [SongClock]).
@@ -472,6 +476,9 @@ internal class BenchEngine : CommandSink {
      * clock; it was a number the bench's play head wrote here, counted another way (no count-in, the whole time since ▶ at
      * the tempo of the moment).
      */
+    /** Audit « banc crédible » A.8 (F2): the drum pattern's step playing (see [SongClock.currentStep]). Was never said: -1. */
+    override fun currentStep(): Int = song.currentStep()
+
     override fun transportStep(): Int {
         song.advance()
         return stepsNow()
@@ -499,6 +506,36 @@ internal class BenchEngine : CommandSink {
         private var markSongStep = 0
         var markStep = -1
             private set
+        // The drum pattern (A.8): its length now and the waiting scene's (Engine.cpp's patternSteps_ and staged_.drumSteps),
+        // the transport step its slot counts from, and the offsets a part started later in asks for (SetSlotOffset).
+        @Volatile var staging = false
+        private var steps = 16
+        private var stagedSteps = 16
+        private var drumsStart = 0
+        private var offsetAtPlay = 0
+        private var stagedOffset = 0
+
+        /** CMD_SET_PATTERN_STEPS: the pattern playing, or the waiting scene's while the app stages it. */
+        @Synchronized fun patternSteps(n: Int) {
+            advance()
+            if (staging) stagedSteps = n.coerceIn(8, 256) else steps = n.coerceIn(8, 256)
+        }
+
+        /** CMD_SLOT_OFFSET of the drums' slot: where in its pattern it starts at ▶, or at the swap being staged. */
+        @Synchronized fun drumOffset(n: Int) {
+            if (staging) stagedOffset = n.coerceIn(0, 1 shl 20) else offsetAtPlay = n.coerceIn(0, 1 shl 20)
+        }
+
+        /**
+         * The step of the drum pattern playing, -1 stopped or counting in: Engine.cpp's currentStep_, the drums' own step
+         * (their slot's start, the pattern's length), which is what the grid's head shows and where a gesture is recorded.
+         * Not played here: a launch of the Live grid, which moves the drums' slot alone (the bench's Live has no engine).
+         */
+        @Synchronized fun currentStep(): Int {
+            advance()
+            val now = stepsNow()
+            return if (now < 0) -1 else Math.floorMod(now - drumsStart, steps)
+        }
 
         /** ▶ ([playing]) or ■, as Engine.cpp's SetTransport and stopTransport. */
         @Synchronized fun start(inSong: Boolean, songStep: Int, playing: Boolean) {
@@ -506,6 +543,14 @@ internal class BenchEngine : CommandSink {
             songStart = -songStep
             sceneStart = 0
             swapAt = -1
+            // Every slot counts from the first step (a part carrying on: from where it was); ■ forgets both offsets, and
+            // ends a staging burst whose « off » was lost.
+            drumsStart = if (playing) -offsetAtPlay else 0
+            offsetAtPlay = 0
+            if (!playing) {
+                stagedOffset = 0
+                staging = false
+            }
             if (playing) {
                 // ▶ forgets the last mark; one asked before it is kept and comes true from step 0.
                 markStep = -1
@@ -533,6 +578,7 @@ internal class BenchEngine : CommandSink {
             kind = b
             restartAt = if (value.isFinite()) value.toInt() else 0
             armedAt = now
+            staging = false  // arming ends a staging burst even if its « off » was dropped (Engine.cpp)
         }
 
         /**
@@ -559,6 +605,9 @@ internal class BenchEngine : CommandSink {
                     zeroAt = -1L
                     inSong = false
                     markQuantum = 0
+                    stagedOffset = 0
+                    offsetAtPlay = 0
+                    staging = false
                     return
                 }
                 if (line <= due) {
@@ -575,6 +624,10 @@ internal class BenchEngine : CommandSink {
                     3 -> inSong = false
                 }
                 sceneStart = due
+                // swapScene: the waiting scene's pattern takes over, its slots count from this bar line.
+                steps = stagedSteps
+                drumsStart = due - stagedOffset
+                stagedOffset = 0
             }
         }
     }
@@ -706,6 +759,11 @@ internal class BenchEngine : CommandSink {
         private const val RATE = OfflineExport.SAMPLE_RATE
         // NativeEngine's own command numbers (its private CMD_… constants).
         private const val CMD_SET_TRANSPORT = 5
+        private const val CMD_SET_PATTERN_STEPS = 9
+        private const val CMD_STAGING = 39
+        private const val CMD_SLOT_OFFSET = 73
+        /** The drums' slot of the Live grid (LiveSlots.DRUMS, Engine.h's kSlotDrums). */
+        private const val SLOT_DRUMS = 0
         private const val CMD_BEATS_PER_BAR = 57
         private const val CMD_STEM_START = 32
         private const val CMD_PLAY_PREVIEW = 47

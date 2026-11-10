@@ -268,6 +268,28 @@ class BenchSongClockTest {
         assertEquals("a cancelled mark never comes", -1, e.songMarkStep())
     }
 
+    /**
+     * Audit « banc crédible » A.15 (F5): the positions the screens read are local to the scene playing. Engine.cpp's
+     * absoluteStep_ and playPosition_ count from the scene's start (onStep: local = step - sceneStart_; swapScene:
+     * sceneStart_ = step), where the transport's own step goes on from ▶. The bench's engine counted both from ▶: after a part
+     * took over at step 32, step 40 read 40 instead of 8, and a note played there was written 32 steps too far in its part.
+     */
+    @Test
+    fun absoluteStepRestartsAtTheSwap() {
+        start()
+        play(songStep = 0)
+        steps(20)
+        assertEquals("before the swap: the scene started with ▶", 20, e.absoluteStep())
+        arm(32, 1, songStep = 32)  // the next part takes over after 32 steps of this one
+        steps(20)
+        assertEquals(1, e.sceneSwaps())
+        assertEquals("8 steps into the part that took over at 32", 8, e.absoluteStep())
+        assertEquals("the play position is local too", 8.0, e.playPosition(), 0.01)
+        assertEquals("the song goes on", 40, e.songStep())
+        assertEquals("and so does the transport's own step", 40, e.transportStep())
+        assertEquals(40.0, e.transportPosition(), 0.01)
+    }
+
     private companion object {
         const val TRANSPORT = 5
         const val MARK = 75

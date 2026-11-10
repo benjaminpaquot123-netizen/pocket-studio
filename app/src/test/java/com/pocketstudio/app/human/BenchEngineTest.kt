@@ -297,6 +297,40 @@ class BenchEngineTest {
         assertEquals(0.3f, lanes[0].songValues[1]!!, 0.001f)
     }
 
+    /**
+     * Audit « banc crédible » A.15 (F5): under a melody of 64 steps the drums' 16-step loop goes on turning, and the grid's
+     * head (LiveUi.currentStep, Engine.cpp's currentStep_) is the drum pattern's step, while the part's position
+     * (absoluteStep) runs over the whole part. The bench's play head gave the part's position as both: at step 40 the drum
+     * grid's head was « on step 40 » of 16. With the engine there the head now shows the engine's own numbers.
+     */
+    @Test
+    fun theGridsHeadTurnsWithTheDrumsUnderALongMelody() {
+        val long = Project(synthNotes = com.pocketstudio.model.NoteClip(steps = 64), song = listOf(SongPart(0), SongPart(0)))
+        val (vm, engine) = openWithEngine(long)
+        assertEquals("a part of 64 steps over drums of 16", 64 to 16, vm.project.value.let { it.sceneSteps(it.scene) to it.drums.steps })
+        val head = BenchPlayhead()
+        vm.togglePlay()  // the part on its own
+        idle()
+        pass(5_000)  // 40 steps at 120 BPM
+        head.tick(vm, android.os.SystemClock.uptimeMillis())
+        assertEquals("the part is at its step 40", 40, vm.live.value.absoluteStep)
+        assertEquals("the drum grid's head is on its step 8", 8, vm.live.value.currentStep)
+        assertEquals("third bar of the part", 2, vm.playBar.value)
+        vm.togglePlay()
+        idle()
+        head.tick(vm, android.os.SystemClock.uptimeMillis())
+        // The whole song: the second part takes over at step 64; 8 steps later the song is at 72, the part at 8.
+        vm.toggleSong()
+        idle()
+        pass(9_000)
+        head.tick(vm, android.os.SystemClock.uptimeMillis())
+        assertEquals(72, engine.songStep())
+        assertEquals("the song's position", 72, vm.live.value.songStep)
+        assertEquals("the second part is at its step 8", 8, vm.live.value.absoluteStep)
+        assertEquals(8, vm.live.value.currentStep)
+        assertEquals("fifth bar of the song", 4, vm.playBar.value)
+    }
+
     @Test
     fun thePlayHeadMovesWithTheTempo() {
         val vm = open(Project(song = listOf(SongPart(0))).copy(tempoBpm = 120.0))

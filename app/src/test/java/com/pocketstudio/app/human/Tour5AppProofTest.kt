@@ -298,6 +298,28 @@ class Tour5AppProofTest {
         assertTrue("« Mes exports » does not list the project just sent (${zip?.lastPathSegment}): $listed", listed.any { it.endsWith(".zip") })
     }
 
+    /**
+     * T5-ZIP, second path (review of the bench's lot 3, « moyen » n° 1: it was written by hand in AppRoot and no test
+     * called it): Mes projets › ⋯ › « Sauvegarder le morceau en .zip », for a project that is not the open one.
+     */
+    @Test
+    fun myFilesListsAProjectZipSavedFromMyProjects() {
+        Robolectric.setupContentProvider(FakeMediaStore::class.java, MediaStore.AUTHORITY)
+        val vm = open("Ouvert")
+        val other = "tour5-autre-${System.nanoTime()}"
+        ProjectStore(File(app.filesDir, "projects")).save(other, Project(name = "Rangé"))
+        // By the app's own wiring: the action AppRoot gives Mes projets › ⋯, with the project's id and name as the list holds them.
+        val sender = sender(vm)
+        sender.send(other, "Rangé")
+        val zip = zipShared()
+        assertTrue("the .zip is the project asked for, not the open one: $zip", zip?.lastPathSegment?.startsWith("Rangé") == true)
+        val listed = MyExports.list(app)
+        assertTrue("« Mes fichiers » does not list the project just saved from Mes projets (${zip?.lastPathSegment}): ${listed.map { it.name }}",
+            listed.any { it.name == zip?.lastPathSegment && it.kind == com.pocketstudio.app.export.MyExport.Kind.Project })
+        // And the app says so, with the way to it (chantier 1, G2: « bloqué » after the .zip).
+        assertEquals("« C'est prêt » names the .zip and says where its copy is", zip?.lastPathSegment to true, sender.saved)
+    }
+
     /** T5-ALERTE (seat C c 30): « Prêt à partager ? » › Partager, the share menu opened: no « a changé » warning, nothing changed. */
     @Test
     fun noChangedWarningRightAfterSharing() {

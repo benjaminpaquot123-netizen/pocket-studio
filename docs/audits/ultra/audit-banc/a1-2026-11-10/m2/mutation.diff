@@ -1,0 +1,26 @@
+diff --git a/engine/src/main/java/com/pocketstudio/engine/NativeEngine.kt b/engine/src/main/java/com/pocketstudio/engine/NativeEngine.kt
+index ea9f972..5d65946 100644
+--- a/engine/src/main/java/com/pocketstudio/engine/NativeEngine.kt
++++ b/engine/src/main/java/com/pocketstudio/engine/NativeEngine.kt
+@@ -1047,10 +1047,10 @@ object NativeEngine {
+      * Lot B2: the row of pads [first] until [first] + [count]: its loops all on, they stop; else each
+      * pad of it that does not play starts on the next bar line, all together.
+      */
+-    fun launchClipRow(first: Int, count: Int) = post(CMD_LAUNCH_CLIP_ROW, 0f, first, count)
++    fun launchClipRow(first: Int, count: Int) = true  // MUTATION A.1 L2: the engine never hears a row
+     /** On at the next grid line, or off; [pad] < 0: every pad off. */
+     /** [velocity] (0..1]: how loud the loop or hit it starts plays (a controller's pad); stopping ignores it. */
+-    fun toggleClip(pad: Int, velocity: Float = 1f) = post(CMD_TOGGLE_CLIP, velocity, pad)
++    fun toggleClip(pad: Int, velocity: Float = 1f) = true  // MUTATION A.1 L2: the engine never hears a pad
+     /** Per pad: 0 off, 1 waiting for the grid, 2 playing ([LIVE_PADS] values). */
+     external fun clipStates(out: IntArray)
+     /** [clipStates], or a test's stand-in [sink]'s (all off unless it plays the pads: the bench's engine does). */
+@@ -1079,7 +1079,7 @@ object NativeEngine {
+     fun armLaunch(mask: Int, quantumSteps: Int, scene: Int, graceSteps: Double = 0.0): Boolean {
+         val q = quantumSteps.coerceIn(1, 1 shl 16)
+         val grace = (graceSteps * 64).toInt().coerceIn(0, 0x3FFF)
+-        return post(CMD_ARM_LAUNCH, scene.toFloat(), mask and ALL_SLOTS, q or (grace shl 17))
++        return true  // MUTATION A.1 L2: the engine never hears a launch or a stop
+     }
+     fun cancelLaunch(mask: Int) = post(CMD_CANCEL_LAUNCH, 0f, mask and ALL_SLOTS)
+     /** Slot [slot]'s next launch (or scene swap) starts [steps] into its part. */

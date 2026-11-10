@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.BenchTour3Test" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-10T13:10:51.485Z" hostname="vm" time="3.904">
+  <properties/>
+  <testcase name="padLiveRowsStartAndStopAndStopAllCutsThem" classname="com.pocketstudio.app.human.BenchTour3Test" time="3.9"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

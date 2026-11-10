@@ -678,16 +678,27 @@ def _ancestor(root, a, b):
     return subprocess.run(["git", "-C", root, "merge-base", "--is-ancestor", a, b], capture_output=True).returncode == 0
 
 
-def guard_origin(root, sha, method):
-    """(commit, its « Class#method » guarded) that put the guard on a function named method lifted by sha: the newest
-    commit before sha where a test file guards it and no test file of its parent does. A class renamed, an annotation
-    reformatted, a file moved: the parent already guards it, so that commit is no origin and the search goes on."""
+def guard_origin(root, sha, test):
+    """(commit, « Class#method ») that put the guard on test (« Class#method ») lifted by sha: the newest commit before
+    sha where a test file guards it and no test file of its parent does. Followed by class AND method (review of the
+    « portail » lot, M3: the same method name in another class is another test): an annotation reformatted or a file
+    moved keeps the same « Class#method » in the parent, so that commit is no origin; a class renamed is followed to
+    its old name (the parent guards that method under a class this commit no longer guards it under)."""
+    target, method = test, test.partition("#")[2]
     for h in _guard_commits(root):
         if h.startswith(sha) or not _ancestor(root, h, sha + "^"):
             continue
         now = guarded(root, h, method)
-        if now and not guarded(root, h + "^", method):
-            return h, now
+        if target not in now:
+            continue
+        before = guarded(root, h + "^", method)
+        if target in before:
+            continue
+        renamed = sorted(before - now)
+        if renamed:
+            target = renamed[0]
+            continue
+        return h, target
     return None
 
 
@@ -696,14 +707,14 @@ def guard_from_red(root, sha, test):
     names the guarded test, or from an ancestor of the discipline's start ([guard_origin]). Any other origin (a
     « chore: », the red of another test, a guard never seen added) is no red evidence (reviews of « pads-live » and
     « banc-fin »)."""
-    found = guard_origin(root, sha, test.partition("#")[2])
+    found = guard_origin(root, sha, test)
     if found is None:
         return False
     origin, there = found
     if _ancestor(root, origin, DISCIPLINE_START):
         return True
     red = _commit(root, origin)
-    return red is not None and red[1].lower().startswith("rouge:") and any(names(red[2], t) for t in there)
+    return red is not None and red[1].lower().startswith("rouge:") and names(red[2], there)
 
 
 def still_runs(text, method):

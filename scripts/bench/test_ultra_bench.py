@@ -214,6 +214,7 @@ def main():
         engine_proof(d)
         expected_classes(d)
         skipped_class(d)
+        judge_refuses_unsealed_summary(d)
         portal(d)
         fusion_forged(d)
         known_skips_bounded(d)
@@ -589,13 +590,15 @@ GREEN_CASE = '<testcase classname="a.BenchOneTest" name="plays"/>'
 
 def green_lot(lot, cases=GREEN_CASE):
     """A lot whose self-test ran: its JUnit results (one pass) and the summary selftest-verdict.py makes of them, with
-    the machine's line selftest.sh adds."""
+    the lines selftest.sh adds (the machine, the code tested: P3)."""
     write(os.path.join(lot, "junit", "banc", "TEST-x.xml"), "<testsuite>" + cases + "</testsuite>")
     resume = os.path.join(lot, "selftest-resume.txt")
     subprocess.run([sys.executable, "-I", os.path.join(HERE, "selftest-verdict.py"), os.path.join(lot, "junit"),
                     os.path.join(HERE, "selftest-quarantaine.txt"), resume], capture_output=True, text=True)
+    code = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "code"], capture_output=True, text=True).stdout.strip()
     with open(resume, "a", encoding="utf-8") as f:
         f.write("machine : 50 Go disque, 8 Go mémoire, 0 démon(s), 0 orphelin\n")
+        f.write(f"code testé : {code}\n")
     return resume
 
 
@@ -722,12 +725,14 @@ def chantier(d):
     ultra = os.path.join(root, "docs", "audits", "ultra")
     resume = os.path.join(root, "selftest-resume.txt")
     script = os.path.join(HERE, "verifie-chantier.py")
+    seal_resume(root, resume)
     out = run(script, "--root", root, "--sans-git", "--resume", resume)
     check("chantier : 0 écarts" in out, "a clean work: 0 gap\n" + out)
     bad = (JUDGE_HEAD + "t\tA\tk1\tm\tappli\touvert\tBenchFooTest#guardsIt\t-\trecette tel-01\t-\tn\t-\n"
            "t\tB\tk2\tm\tbanc\touvert\t-\t-\t-\t-\tn\t-\n"
            "t\tC\tk3\tm\tappli\touvert\tOther#provesIt\t-\t-\t-\tn\t-\n")
     write(os.path.join(ultra, "verdicts.tsv"), bad)
+    seal_resume(root, resume)
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
     out = r.stdout
     check(r.returncode == 1, "gaps fail the run")
@@ -758,6 +763,7 @@ def judge_criteria(d):
         ("t", "F", "k6", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "RECETTE tel-01 ❌ téléphone : no date", "-"),
         ("t", "H", "k8", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "❌ téléphone 2026-11-08 : no trial number in this segment", "-")))
     resume = os.path.join(root, "selftest-resume.txt")
+    seal_resume(root, resume)
     code, out = judge(root, "--sans-git", "--resume", resume)
     for item in ("C", "E", "F", "H"):
         check(f"{item} : verdict « appli » sans preuve (ni test sans banc existant, ni essai ❌ daté)" in out, f"appli line {item} has no proof:\n" + out)
@@ -767,6 +773,7 @@ def judge_criteria(d):
     # 2. « banc » needs a proof without the bench too (a Bench* guard alone is the bench judging itself).
     root = judge_root(d, "juge-banc", lines(
         ("t", "G", "k7", "m", "banc", "ouvert", "-", "BenchFooTest#guardsIt", "recette tel-02", "-", "n", "-")))
+    seal_resume(root, os.path.join(root, "selftest-resume.txt"))
     code, out = judge(root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt"))
     check("G : verdict « banc » sans preuve sans banc" in out and "chantier : 1 écarts" in out, "a banc line without a proof without the bench:\n" + out)
 
@@ -794,6 +801,7 @@ def judge_criteria(d):
     red_b = commit("rouge: test_x.py::other_case a second repair")
     green_b = commit("vert: test_x.py::other_case a second repair")
     green_c = commit("vert: BenchBarTest#neverRed a repair without its red")
+    seal_resume(root, resume)
     code, out = judge(root, "--resume", resume)
     check(f"{red_a} « rouge: BenchFooTest#guardsIt the counter stops » : rouge sans vert du même test après lui" in out, "the red left open is the one whose test has no green:\n" + out)
     check(f"{green_c} « vert: BenchBarTest#neverRed a repair without its red » : vert sans rouge du même test avant lui" in out, "a green of another test closes nothing:\n" + out)
@@ -804,6 +812,7 @@ def judge_criteria(d):
                    f"- [x] 4.2 done, preuve: rouge {red_a} / vert {green_a}\n- [x] 4.3 done, no pair\n"
                    f"- [x] 6.1 done, preuve: rouge {red_a} / vert {green_b}\n- [x] 6.4 done, preuve: script scripts/nowhere.py\n"
                    f"- [x] A.4 done, preuve: rouge {green_b} / vert {red_b}\n")
+    seal_resume(root, resume)
     code, out = judge(root, "--resume", resume)
     check(f"{red_a} «" not in out, "a green naming the red's test closes it:\n" + out)
     check("journal, ligne cochée 4.3 : sans preuve" in out, "a checked line without its pair:\n" + out)
@@ -822,6 +831,7 @@ def judge_criteria(d):
         ("t", "H", "k8", "m", "banc", "corrigé", "Other#elsewhere", "BenchFooTest#guardsIt", "-", "-", "n", "-"),
         ("t", "I", "k9", "m", "banc", "corrigé", "Other#elsewhere", "BenchFooTest#guardsIt", "-", "0123abc", "n", "-"),
         ("t", "J", "k10", "m", "banc", "corrigé", "Other#elsewhere", "BenchFooTest#guardsIt", "-", head, "n", "-")))
+    seal_resume(root, resume)
     code, out = judge(root, "--resume", resume)
     check("H : « corrigé » sans commit" in out, "a « corrigé » whose commit is « - »:\n" + out)
     check("I : « corrigé », commit 0123abc introuvable" in out, "a « corrigé » whose commit does not exist:\n" + out)
@@ -865,6 +875,7 @@ def known_defect_lifted(d):
     kept = commit("vert: the proof of K1 (AppProofTest#provesIt)")
     deleted = commit("vert: no warning any more (ShareProofTest#warnsNothingAfter)",
                      share(guard("keepsTheLength", False), guard("listsTheZip", False)))
+    seal_resume(root, resume)
     out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
                          capture_output=True, text=True).stdout
     check(lifted not in out, "a green that takes @KnownDefect off the test it names is a pair:\n" + out)
@@ -936,6 +947,7 @@ def known_defect_lifted_needs_a_red(d):
     commit("rouge: the zip in Mes fichiers (ShareProofTest#listsTheZipInMyFiles)", [(share_f, shares(False, True))])
     commit("vert: the zip's guard holds the defect (ShareProofTest#listsTheZipInMyFiles)")
     from_red = commit("vert: the zip is listed (ShareProofTest#listsTheZipInMyFiles)", [(share_f, shares(False, False))])
+    seal_resume(root, resume)
     out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
                          capture_output=True, text=True).stdout
     for sha, what in ((chore, "a guard added outside a « rouge: »"), (other_cls, "a guard of another class with the same method name"),
@@ -954,6 +966,7 @@ def open_app_proof(d):
                       + "t\tC\tk3\tm\tappli\touvert\tOther#elsewhere\t-\trecette tel-01\t-\tRECETTE tel-01 ❌ téléphone : no date\t-\n"
                       + "t\tD\tk4\tm\tappli\touvert\tOther#elsewhere\t-\trecette tel-01\t-\tRECETTE tel-01 ❌ téléphone 2026-11-08 : nothing plays\t-\n"
                       + "t\tE\tk5\tm\tappli\tvoulu\tOther#elsewhere\t-\t-\t-\tn\t-\n")
+    seal_resume(root, os.path.join(root, "selftest-resume.txt"))
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
                        capture_output=True, text=True)
     out = r.stdout + r.stderr
@@ -1005,6 +1018,7 @@ def owner_trials(d):
                  "- 2026-11-08, APK 2, tablette, **tel-08 (video, read frame by frame)** : details. Résultat retenu : ❌ « it lit up ». To confirm.\n"
                  "- 2026-11-08, APK 2, **tel-10 (video)** on no device said. Résultat retenu : ❌ « nothing ».\n"
                  "- 2026-11-08, APK 2, tablette, tel-12 : lost (❌ said of something else), no result kept.\n")
+    seal_resume(root, os.path.join(root, "selftest-resume.txt"))
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
                        capture_output=True, text=True)
     out = r.stdout + r.stderr
@@ -1043,16 +1057,19 @@ def owner_trials(d):
     check(f"R : {no_proof}" not in out, "a ❌ trial of the notes is a proof:\n" + out)
     # Notes that hold no trial at all: every annotation is unknown (the rule is not mute).
     write(notes, "# Retours\n\nNothing tried yet.\n")
+    seal_resume(root, os.path.join(root, "selftest-resume.txt"))
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
                        capture_output=True, text=True)
     check(all(f"{item} : {unknown}" in r.stdout for item in "CDMNR") and f"R : {no_proof}" in r.stdout,
           "notes without a trial: no annotation is one of theirs, none is a proof:\n" + r.stdout)
     # No notes at all: the judge says so (it was silent), as long as the verdicts carry trial annotations.
     os.remove(notes)
+    seal_resume(root, os.path.join(root, "selftest-resume.txt"))
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
                        capture_output=True, text=True)
     check(r.returncode == 1 and NO_NOTES + " (17 annotation(s) d'essai" in r.stdout, "no notes of the owner: said\n" + r.stdout)
     root = judge_root(d, "juge-sans-notes")
+    seal_resume(root, os.path.join(root, "selftest-resume.txt"))
     out = run(script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt"))
     check("chantier : 0 écarts" in out, "no notes of the owner and no trial annotation: nothing to compare\n" + out)
 
@@ -1072,6 +1089,7 @@ def pad_timing_verdicts(d):
                       + "t\tJ\tpadlive|padlive_fx|rien\tm\tbanc\tvoulu\t-\t-\t-\t-\tread in the code\t-\n"
                       + "t\tK\tpadlive|padlive_fx|lent\tm\tappli\tvoulu\t-\t-\t-\t-\ttel-01 téléphone 2026-11-08 : no mark\t-\n"
                       + "t\tL\tpadlive|padlive_fx|perdu\tm\tappli\tvoulu\t-\t-\trecette tel-01\t-\t✅ téléphone 2026-11-08 : no trial number in this segment\t-\n")
+    seal_resume(root, os.path.join(root, "selftest-resume.txt"))
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
                        capture_output=True, text=True)
     out = r.stdout + r.stderr
@@ -1093,6 +1111,7 @@ def engine_proof(d):
            '#define PS_PADS_TESTS \\\n    {"known_defect_k2", pads::knownDefectWaits}, \\\n    {"pads_other", pads::other},\n')
 
     def judge(root):
+        seal_resume(root, os.path.join(root, "selftest-resume.txt"))
         r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
                            capture_output=True, text=True)
         return r.stdout + r.stderr
@@ -1239,12 +1258,15 @@ def skipped_class(d):
     script = os.path.join(HERE, "verifie-chantier.py")
     resume = os.path.join(d, "chantier-skip-resume.txt")
     write(resume, "1 verts, 0 rouges, 0 en quarantaine, 1 sautés\nsauté : BenchFooTest#guardsIt : not while the bench runs seats\nvert : AppProofTest#provesIt\n")
+    seal_resume(root, resume)
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
     check("B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in r.stdout, "a skipped guard is not green:\n" + r.stdout)
     write(resume, "1 verts, 0 rouges, 0 en quarantaine, 0 sautés\nvert : AppProofTest#provesIt\n")
+    seal_resume(root, resume)
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
     check("B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in r.stdout, "a guard that did not run is not green:\n" + r.stdout)
     write(resume, "2 verts, 0 rouges, 0 en quarantaine, 0 sautés\nvert : AppProofTest#provesIt\nvert : BenchFooTest#guardsIt\n")
+    seal_resume(root, resume)
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
     check("pas verte" not in r.stdout, "a guard named green is green:\n" + r.stdout)
 
@@ -1504,7 +1526,7 @@ def mark_fixed(d):
     given (4th argument or PS_SELFTEST_RESUME), on a toy repository; without one the judge says « résumé absent »."""
     root = judge_root(d, "marque")
     bench = os.path.join(root, "scripts", "bench")
-    for name in ("marque-corrige.sh", "verifie-chantier.py"):
+    for name in ("marque-corrige.sh", "verifie-chantier.py", "tampon.sh"):
         with open(os.path.join(HERE, name), encoding="utf-8") as f:
             write(os.path.join(bench, name), f.read())
     git_toy(root, "init", "-q")
@@ -1527,6 +1549,7 @@ def mark_fixed(d):
     write(green, JUDGE_RESUME)
     other = os.path.join(d, "marque-autre.txt")
     write(other, "1 verts, 0 rouges, 0 en quarantaine, 0 sautés\nvert : AppProofTest#provesIt\n")
+    seal_resume(root, green)
     out = mark(green)
     check(f"B: corrigé ({sha}, tour-9) ; clé k2" in out, "the line is marked:\n" + out)
     check("résumé absent" not in out and "pas verte" not in out, "the judge read the summary given as 4th argument:\n" + out)
@@ -1534,9 +1557,11 @@ def mark_fixed(d):
         check(f"\tbanc\tcorrigé\tOther#elsewhere\tBenchFooTest#guardsIt\trecette tel-02\t{sha}\t" in f.read(), "verdicts.tsv: corrigé, with its commit")
     with open(os.path.join(ultra, "base.tsv"), encoding="utf-8") as f:
         check(f"k2\tcorrigé\tt\tB ({sha})\ttour-9\n" in f.read(), "base.tsv: the key, corrigé, with its round")
+    seal_resume(root, other)
     out = mark(other)
     check("B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in out and "résumé absent" not in out,
           "the judge read THAT summary (the guard is not green in it):\n" + out)
+    seal_resume(root, other)
     out = mark(PS_SELFTEST_RESUME=other)
     check("B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in out and "résumé absent" not in out,
           "the summary named by PS_SELFTEST_RESUME is read too:\n" + out)
@@ -1605,6 +1630,71 @@ def judge_root(d, name, verdicts=JUDGE_GOOD):
     write(os.path.join(ultra, "verdicts.tsv"), verdicts)
     write(os.path.join(root, "selftest-resume.txt"), JUDGE_RESUME)
     return root
+
+
+def seal_resume(root, resume):
+    """What a green self-test leaves beside its summary (audit « banc crédible » 2, P3): the summary names the code it
+    tested (« code testé : <arbre> », tampon.sh code) and the stamp beside it (selftest.ok, as tampon.sh ecris writes
+    it) seals that summary and that code. A toy that is no git repository is made one (no commit); its own summary and
+    stamp are kept out of its code."""
+    if not os.path.isfile(resume):
+        return
+    if not os.path.isdir(os.path.join(root, ".git")):
+        subprocess.run(["git", "-C", root, "init", "-q"], check=True)
+    os.makedirs(os.path.join(root, ".git", "info"), exist_ok=True)
+    with open(os.path.join(root, ".git", "info", "exclude"), "a", encoding="utf-8") as f:
+        f.write("/selftest-resume.txt\n/selftest.ok\n")
+    code = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "code", root], capture_output=True, text=True).stdout.strip()
+    with open(resume, encoding="utf-8") as f:
+        text = "".join(l for l in f.read().splitlines(True) if not l.startswith("code testé : "))
+    if text and not text.endswith("\n"):
+        text += "\n"
+    text += f"code testé : {code}\n"
+    write(resume, text)
+    import hashlib
+    write(os.path.join(os.path.dirname(resume), "selftest.ok"),
+          f"resume: {hashlib.sha256(text.encode('utf-8')).hexdigest()}\ncode: {code}\n")
+
+
+def judge_refuses_unsealed_summary(d):
+    """Audit « banc crédible » 2, P3: the judge reads a summary only when it is sealed for THIS code: the summary names
+    the code it tested (« code testé : <arbre> ») and the stamp beside it (selftest.ok) seals that summary and that
+    code. A summary written by hand (the audit's 12 « vert : » lines took the judge from 38 to 22 gaps), one of another
+    code, or one changed after its stamp, is refused: « résumé refusé », and no guard is green in it."""
+    root = judge_root(d, "juge-sceau")
+    resume = os.path.join(root, "selftest-resume.txt")
+    script = os.path.join(HERE, "verifie-chantier.py")
+
+    def judge():
+        r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
+        return r.stdout + r.stderr
+
+    seal_resume(root, resume)
+    out = judge()
+    check("résumé refusé" not in out and "pas verte" not in out, "a sealed summary of this code is read:\n" + out)
+    # Written by hand (no stamp beside it, no code named).
+    write(resume, JUDGE_RESUME)
+    os.remove(os.path.join(root, "selftest.ok"))
+    out = judge()
+    check("résumé refusé" in out and "B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in out,
+          "a summary written by hand is refused, its « vert : » lines worth nothing:\n" + out)
+    # A stamp written by hand that does not seal this summary.
+    seal_resume(root, resume)
+    with open(resume, "a", encoding="utf-8") as f:
+        f.write("vert : BenchAddedByHandTest#guards\n")
+    out = judge()
+    check("résumé refusé" in out and "pas verte" in out, "a summary changed after its stamp is refused:\n" + out)
+    # Sealed, then the code changes (a test file): the summary is another code's.
+    write(resume, JUDGE_RESUME)
+    seal_resume(root, resume)
+    write(os.path.join(root, "app", "src", "test", "java", "x", "LaterTest.kt"), "class LaterTest\n")
+    out = judge()
+    check("résumé refusé" in out and "autre code" in out and "pas verte" in out, "a summary of another code is refused:\n" + out)
+    # A docs change is no code change: the summary still fits.
+    os.remove(os.path.join(root, "app", "src", "test", "java", "x", "LaterTest.kt"))
+    write(os.path.join(root, "docs", "notes.md"), "a note\n")
+    out = judge()
+    check("résumé refusé" not in out and "pas verte" not in out, "a change under docs/ keeps the summary:\n" + out)
 
 
 def native_missing(d):

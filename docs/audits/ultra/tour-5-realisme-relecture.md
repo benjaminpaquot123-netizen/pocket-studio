@@ -1,5 +1,5 @@
 # Relecture neuve du correctif du lot banc « réalisme » (G1, M1 à M4)
-Relu : e3d06d558735bf5b2a19f456f38ea60f8e7c0cd4
+Relu : 0637ae402a3cef901f962b725a6b7d5a8cf75ab4
 
 Second relecteur neuf (n'a écrit ni le code ni la première relecture). Delta relu : `git log c18af300..e3d06d55`, 6 commits (`af6da683` rouge G1, `f4d447ea` rouge M1/M2, `a74b389a` vert G1, `b89017a7` vert M1/M2, `7a70408d` m1, `e3d06d55` documents). Lus : la première relecture (en annexe), la section « Après relecture » de `tour-5-realisme-rapport.md`, le diff complet, `ui-components/.../PadLight.kt`, `defauts-caches.py` et `.tsv`, le `PLAN-RESTE.md` de l'atelier portail (lecture seule).
 
@@ -113,5 +113,12 @@ C'est la même famille que R1 (le texte nomme ce que seul TalkBack entend). Moin
 Après G1 : rejouer une amenée `padlive` avec une boucle lancée et vérifier que l'écran en texte la distingue d'un pad au repos ; au passage, M1 et M2 (rôles et chevrons) peuvent suivre la même règle « lu dans la mise en page ».
 
 Ancien verdict : 0 bloquant, 1 grave — fusion impossible
+
+## Relecture du correctif Tour5BloquantsTest (0637ae40)
+
+- `git diff 2fba0de0 0637ae40` ne touche que `app/src/test/java/com/pocketstudio/app/human/Tour5BloquantsTest.kt` (14 ajouts, 3 retraits).
+- La garde exige désormais la ligne de la grille dans l'écran en texte (au centre de sa partie dessinée, à 2 px près), puis compare le nombre de notes lu sur le nœud `piano_roll` au nombre écrit par la prise (`assertEquals(taken, shown)`), pas seulement « non nul ».
+- Mutation (compte attendu `taken - 1`) : les deux gardes E rougissent (`aMelodyTakeLeftForPadLiveIsKept`, `aMelodyTakeLeftForPadLiveIsKeptInASongBackFromTheTrash`) ; fichier restauré, aucun écart.
+- `bash scripts/bench/gradle-file.sh :app:testDebugUnitTest --tests '*Tour5BloquantsTest'` : vert sur 0637ae40.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

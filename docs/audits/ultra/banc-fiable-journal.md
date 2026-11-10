@@ -114,4 +114,11 @@ Une ligne par étape : [x] fait / [ ] à faire, preuve, commit. « continue » r
 - [x] A.22 (P5) une preuve sans banc est un test qui tourne. preuve: rouge 21c8018 / vert 6b9c72b
 - [x] A.22 (P6) la quarantaine n'excuse que son message attendu. preuve: rouge 9bfb587 / vert 7539576
 - [x] A.22 (P7) sortie de siège : liste blanche à la racine du lot, dépôt surveillé. preuve: rouge 7ee664e / vert f1da11f
+- [x] A.19 (relecture « portail », G1) le juge refuse un tampon écrit à la main sans résultats JUnit ; seule une trace commitée par « Portal traces of the merge … » se lit sans XML. preuve: rouge 90da09f8 / vert 68d0adc7
+- [x] A.19 (relecture « portail », M4) le tampon relit les classes attendues dans les sources, plus dans le lot. preuve: rouge 34a5af69 / vert 07a79168
+- [x] A.18 (relecture « portail », M1) les constats « bloquant »/« grave » de la relecture lus sous toutes leurs formes, « corrigé » seulement positif, tableau de décompte permis. preuve: rouge a678a94c / vert e507f9bc
+- [x] A.18 (relecture « portail », M2) une étape qui échoue après les contrôles défait la fusion, sans trace à moitié écrite. preuve: rouge e26fde7e / vert c125176c
+- [x] A.18 (relecture « portail », M5) un rejeu changé par une branche demande « rejeu changé : id : raison ». preuve: rouge 1bb1622f / vert 5e32afae
+- [x] A.19 (relecture « portail », M3) règle (c) : la garde suivie par Classe#méthode. preuve: rouge 1d767cbb / vert 80c637eb
+- [x] A.19 (23e écart, dd31ec4b) un vert dont le rouge est un test existant vu rouge dans une suite est une paire par son XML gardé (`rouges-constates/`) ; rouge de dd31ec4b rejoué sur b5bf7b1f (74 tests, 1 rouge) et gardé. preuve: rouge 689872ac / vert f023003d
 - [ ] A.20 (R1) et A.21 (MT1, MT3) : lot suivant.

@@ -107,3 +107,21 @@ Vérifications de fin (atelier, tête du lot) :
 - Attention : la fusion de CE lot se fait encore avec l'ancien `fusion-equipes.sh` (celui de fx-int) ; la suivante utilisera le nouveau, qui commitera ses traces. Après la fusion, `git log --merges` : la fusion de ce lot ne compte pas comme « sans trace » (le script de son premier parent n'écrit pas les traces).
 - Les commits de ce lot ont des sha à 8 caractères dans le journal (le dépôt a grossi) ; le juge les lit tels quels.
 - Scripts touchés : `fusion-equipes.sh`, `relecture-verdict.py` (nouveau), `tampon.sh`, `selftest.sh`, `selftest-verdict.py`, `selftest-quarantaine.txt`, `verifie-chantier.py`, `sortie-de-siege.py`, `test_ultra_bench.py`.
+
+## Après relecture (`tour-5-portail-relecture.md`, 1 grave, 5 moyens)
+
+fx-int repris (04f5eaa9, DECISIONS : union des deux côtés). Chaque point a sa paire `rouge:`/`vert:` dans `test_ultra_bench.py`.
+
+| Point | Rouge / vert | Correction |
+|---|---|---|
+| **G1** tampon de deux lignes écrit à la main | 90da09f8 / 68d0adc7 | le juge exige les XML scellés à côté du résumé (`tampon.sh resultats <lot> <racine> <résumé>`) ou une trace dont le dernier commit est « Portal traces of the merge … » ; `seal_resume` fabrique désormais `junit/` (toutes les classes attendues), le résumé du verdict et le tampon complet. Forge de la relecture rejouée : « résumé refusé : ni résultats JUnit… », 40 écarts (au lieu de 22) |
+| M4 tampon sur un XML d'une ligne | 34a5af69 / 07a79168 | classes attendues relues dans les sources (`selftest-attendus.py --root`), plus dans le lot |
+| M1 lignes de la relecture | a678a94c / e507f9bc | constat = cellule, puce ou titre qui commence par « bloquant »/« grave » ; corrigé seulement si c'est écrit positivement ; « \| grave \| 0 \| » permis. Relectures réelles : banc-fin, pads-live, banc-r1, banc41, recette2 acceptées ; memoire, composants, bloquants refusées telles quelles (un grave jamais dit corrigé dans le texte) : le relecteur écrira « **corrigé** » |
+| M2 échec après les contrôles | e26fde7e / c125176c | `trap` : la fusion est défaite et la trace partielle effacée ; le juge des traces lit le résumé du lot (scellé avec ses XML) |
+| M3 règle (c) par nom seul | 1d767cbb / 80c637eb | origine suivie par Classe#méthode (classe renommée suivie vers son ancien nom) ; `judge_adv2.py` : 11 refus, inchangé |
+| M5 oracle d'un rejeu vidé | 1bb1622f / 5e32afae | « rejeu changé : id : raison » exigé pour un rejeu modifié |
+| 23e écart (dd31ec4b) | 689872ac / f023003d, preuve a5bf3379 | preuve « rouge constaté » : `rouges-constates/<sha du vert>/` (parent, test, XML où il échoue ; le vert ne touche aucun test). Rouge rejoué sur b5bf7b1f dans un clone jetable : 74 tests, 1 rouge, « coupé en haut, sous l'en-tête ». Le juge revient à 22 sans être affaibli |
+
+Mineurs : m1 (fusion à la main ou squash invisibles) et m2 (`--skip-worktree` ne bouge pas `empreinte`) notés, non corrigés ; m3 voulu (la raison est libre, le filet est `rejeux/` non vide) ; m4 et m5 réglés par la reprise de fx-int.
+
+Vérifié après correction : `test_ultra_bench.py` OK ; selftest sur 80c637eb : 165 verts, 0 rouge, 41 sautés, `tampon.sh verifie` 0 ; juge sur ce résumé : 22 écarts, mêmes lignes (sha ôtés) que le juge de la relecture « banc-fin ».

@@ -14,15 +14,10 @@
   "Sans fichier : %s.": "Dosya yok: %s.",
   "Le morceau a changé depuis cet export : exporte à nouveau pour envoyer la nouvelle version.": "Şarkı bu dışa aktarmadan sonra değişti: yeni sürümü göndermek için yeniden dışa aktar.",
   "Remix · %s": "Remix · %s",
-  "Reprendre ton morceau sur un autre appareil : « Partager » › « Envoyer le projet » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "Şarkına başka bir cihazda devam etmek için: “Paylaş” › “Projeyi gönder” (tüm sesleriyle bir .zip), sonra diğer cihazda Projelerim › “Proje içe aktar (.zip)”.",
   "Trop fort par endroits : ça risque de grésiller.": "Bazı yerlerde fazla yüksek: cızırdayabilir.",
   "Pas de saturation.": "Doyma yok.",
   "Fichier M4A : léger, lu par tous les appareils.": "M4A dosyası: hafif, her cihazda çalar.",
   "Fichier %s : qualité studio.": "%s dosyası: stüdyo kalitesi.",
   "%s Mo": "%s MB",
-  "%d Ko": "%d KB",
-  "Mes exports : retrouver et renvoyer un fichier": "Dışa aktarımlarım: bir dosyayı bul ve yeniden gönder",
-  "Mes exports": "Dışa aktarımlarım",
-  "Dans Musique › BenStudio sur ce téléphone. Les plus récents d'abord.": "Bu telefonda Müzik › BenStudio içinde. En yeniler önce.",
-  "Aucun export pour l'instant : « Partager » ou « Exporter » en crée un.": "Henüz dışa aktarım yok: “Paylaş” ya da “Dışa aktar” bir tane oluşturur."
+  "%d Ko": "%d KB"
 }

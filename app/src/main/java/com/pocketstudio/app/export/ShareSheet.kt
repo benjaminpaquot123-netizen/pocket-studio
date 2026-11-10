@@ -78,6 +78,8 @@ import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.partSteps
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import com.pocketstudio.model.LoudnessTargets
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
@@ -251,6 +253,24 @@ fun shareRenamesProject(projectName: String, typed: String): Boolean {
 /** "2:38" from seconds. */
 fun shareClock(seconds: Int): String = "%d:%02d".format(seconds / 60, seconds % 60)
 
+/**
+ * Chantier 1 of the hands-on audit (G1, recette tel-06: « perdu pour régler la longueur »): the loop's length, shown and
+ * set in « Prêt à partager ? » when the project has no song yet. [bars]: the length sent (the same setting as Mix's
+ * « Longueur de la boucle »); [options]: the lengths offered.
+ */
+data class LoopPick(val bars: Int, val options: List<Int>) {
+    companion object {
+        /** The lengths a beginner is offered (Mix offers 1 and 2 bars too). */
+        val BARS = listOf(4, 8, 16, 32)
+
+        /** [bars] chosen among [BARS], the length in use and, when a voice or the remix's song ends later, that end ([audioBars]). */
+        fun of(bars: Int, sceneBars: Int, audioBars: Int): LoopPick {
+            val toTheEnd = audioBars.coerceAtMost(RhythmViewModel.MAX_LONG_EXPORT_BARS).takeIf { it > sceneBars }
+            return LoopPick(bars, (BARS + bars + listOfNotNull(toTheEnd)).distinct().sorted())
+        }
+    }
+}
+
 /** What « Prêt à partager ? » shows. [running]: an export is already being made. */
 data class ShareSheetUi(
     val name: String,
@@ -276,6 +296,8 @@ data class ShareSheetUi(
      * the same as in Mix); null: not offered (Mode simple: no jargon).
      */
     val target: com.pocketstudio.app.mixer.TargetPick? = null,
+    /** The loop's length to pick (no song yet: a part goes out looped); null: the whole song goes out. */
+    val loop: LoopPick? = null,
 )
 
 class ShareSheetActions(
@@ -308,6 +330,8 @@ class ShareSheetActions(
     val chooseTarget: (com.pocketstudio.model.TargetChoice) -> Unit = {},
     /** Audit ultra round 3 (n° 13, seat F d 22, 61): the project itself (.zip), to go on with it on another device; null: not offered. */
     val sendProject: (() -> Unit)? = null,
+    /** « Longueur de la boucle » picked here ([LoopPick]): the same setting as Mix's. */
+    val setLoopBars: (Int) -> Unit = {},
 )
 
 /** « Prêt à partager ? » as a bottom sheet above the tab it was opened from. */
@@ -342,7 +366,7 @@ fun ShareSheetContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(if (page) tr("Fini ? Envoie ton morceau") else tr("Prêt à partager ?"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+            Text(if (page) tr("Fini ? Partage ton morceau") else tr("Prêt à partager ?"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
             // Phase 36: the Mode simple's « Envoyer » tab is this page: nothing to close.
             if (!page) IconButton(onClick = actions.close, modifier = Modifier.testTag("share_close")) {
                 Icon(Icons.Filled.Close, contentDescription = tr("Fermer"), tint = Neon.TextSecondary)
@@ -404,6 +428,24 @@ fun ShareSheetContent(
                 Text(" " + if (ui.playing) tr("Arrêter") else tr("Écouter"), maxLines = 1)
             }
         }
+        // G1: how long the loop sent lasts, set where the song leaves (it was five levels away, under Mix › « Avancé », and
+        // out of reach in the Mode simple); the duration above follows at once.
+        ui.loop?.let { loop ->
+            Column(Modifier.testTag("share_loop")) {
+                Text(tr("Longueur de la boucle"), style = MaterialTheme.typography.bodyMedium)
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    loop.options.forEach { bars ->
+                        val label = trCount(bars, "%d mesure", "%d mesures")
+                        FilterChip(
+                            selected = loop.bars == bars, onClick = { actions.setLoopBars(bars) }, enabled = !ui.running,
+                            // The number alone on the chip (four fit a phone's line); TalkBack hears « 16 mesures ».
+                            label = { Text("$bars", modifier = Modifier.semantics { contentDescription = label }) },
+                            colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("share_bars_$bars"),
+                        )
+                    }
+                }
+            }
+        }
         // Audit ultra round 3 (n° 10, seats A d 3, F b 26): the target chosen here, where the song leaves (it was only
         // said, « se règle dans Mix », and only once set there). The same setting as Mix's.
         ui.target?.let { com.pocketstudio.app.mixer.TargetPicker(it, actions.chooseTarget, "share_target", enabled = !ui.running, note = tr("Le même réglage que dans Mix.")) }
@@ -422,7 +464,7 @@ fun ShareSheetContent(
         Row(verticalAlignment = Alignment.CenterVertically) {
         TextButton(onClick = actions.otherExports, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("share_other")) {
             Column(Modifier.weight(1f)) {
-                Text(tr("Autres exports"), color = Neon.Cyan)
+                Text(tr("Autres fichiers"), color = Neon.Cyan)
                 // Lot 2: the Mode simple has no Mix (the button takes it to the full mode).
                 Text(if (simple) tr("Piste par piste, MIDI, FLAC… (passe en mode Pro)") else tr("Piste par piste, MIDI, FLAC… dans Mix"),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("share_other_where"))
@@ -437,21 +479,18 @@ fun ShareSheetContent(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = send, enabled = !ui.running, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("share_project")) {
                     Column(Modifier.weight(1f)) {
-                        Text(tr("Envoyer le projet"), color = Neon.Cyan)
-                        Text(tr("Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer."),
-                            style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                        Text(tr("Sauvegarder le morceau en .zip"), color = Neon.Cyan)
+                        Text(tr("Pour un autre appareil ou une copie de sécurité"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                     }
                     Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan)
                 }
                 // Round 3 integration: its « ? », as the other exports' line has one (what a project file is, where it opens).
                 com.pocketstudio.ui.HelpDot(
-                    com.pocketstudio.ui.Help(tr("Envoyer le projet"), tr("Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.")),
+                    com.pocketstudio.ui.Help(tr("Sauvegarder le morceau en .zip"), tr("Pour le reprendre sur un autre appareil : un fichier .zip avec tous ses sons, à ouvrir là-bas dans Mes projets › Importer.")),
                     about = listOf("share_project"),
                 )
             }
         }
-        // Audit ultra round 3 (n° 11): the files made before, to find and send again.
-        MyExportsButton("share_my_exports")
     }
         // Testers (lot « tuto 4 »): M4A or WAV stays in sight with « Partager » (a short page, the tutorial's
         // panel under it, cut the chips in half at the scroll's edge).
@@ -475,6 +514,9 @@ fun ShareSheetContent(
             Icon(Icons.Filled.IosShare, contentDescription = null, modifier = Modifier.size(20.dp))
             Text("  " + tr("Partager"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         }
+        // G2 (recette tel-03: « bloqué » once the file was sent): the files made, right under « Partager », in sight
+        // without scrolling in both modes (it was the last line of what scrolls, drawn as a plain sentence).
+        MyExportsButton("share_my_exports", Modifier.padding(start = 8.dp, end = 12.dp))
     }
 }
 
@@ -606,6 +648,7 @@ fun ShareSheetRoute(
             format = prefs.format, playing = transport.playing, running = export.running, canLower = levels.canLower, lufs = levels.lufs,
             truePeakDb = levels.truePeakDb, lossDb = levels.lossDb,
             target = if (simple) null else com.pocketstudio.app.mixer.TargetPick.of(project),
+            loop = if (project.song.isEmpty()) LoopPick.of(export.bars, export.sceneBars, export.audioBars) else null,
         )
     )
     val actions = (
@@ -646,6 +689,7 @@ fun ShareSheetRoute(
             close = close,
             chooseTarget = { rhythmVm.chooseLoudnessTarget(it) },
             sendProject = sendProject,
+            setLoopBars = rhythmVm::setExportBars,
         )
     )
     if (page) ShareSheetContent(ui, actions, page = true, simple = simple) else ShareSheet(ui, actions, simple)

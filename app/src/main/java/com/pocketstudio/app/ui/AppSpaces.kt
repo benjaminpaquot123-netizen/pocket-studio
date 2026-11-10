@@ -205,7 +205,7 @@ internal fun plusEntries(
     PlusEntry("Reglages", Icons.Filled.Settings, tr("Réglages"), tr("Langue, thème, taille, son, mode simple"), page = ToolPage.Reglages),
     PlusEntry(
         "mode", Icons.Filled.ToggleOn, if (simple) tr("Passer en mode Pro") else tr("Passer en mode Simple"),
-        if (simple) tr("Les cinq espaces : Structure, Sons, Mix, Live, Plus") else tr("Cinq onglets : Mon morceau, Rythme, Clavier, Mix, Envoyer"),
+        if (simple) tr("Les cinq espaces : Structure, Sons, Mix, Live, Plus") else tr("Cinq onglets : Mon morceau, Rythme, Clavier, Mix, Partager"),
         open = { setSimple(!simple) },
     ),
     PlusEntry("Midi", Icons.Filled.Piano, tr("Clavier MIDI"), tr("Brancher un clavier, apprendre des potards"), page = ToolPage.Midi),

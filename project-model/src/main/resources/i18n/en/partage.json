@@ -1,0 +1,23 @@
+{
+  "Fini ? Partage ton morceau": "Done? Share your song",
+  "Sauvegarder le morceau en .zip": "Save the song as a .zip",
+  "Pour un autre appareil ou une copie de sécurité": "For another device or a backup copy",
+  "Autres fichiers": "More files",
+  "Mes fichiers": "My files",
+  "Retrouver et renvoyer : M4A, WAV, vidéo, .zip": "Find and send again: M4A, WAV, video, .zip",
+  "Les sons sont dans Musique › BenStudio, les vidéos dans Films › BenStudio, les .zip dans Documents › BenStudio, sur cet appareil. Les plus récents d'abord.": "Sounds are in Music › BenStudio, videos in Movies › BenStudio, .zip files in Documents › BenStudio, on this device. Newest first.",
+  "Rien ici pour l'instant. Tout ce que tu partages s'ajoute ici, dans Musique › BenStudio sur cet appareil.": "Nothing here yet. Everything you share is added here, in Music › BenStudio on this device.",
+  "Renvoyer": "Send again",
+  "Voir mes fichiers": "See my files",
+  "Projet sauvegardé : %s": "Project saved: %s",
+  "Une copie est dans Documents › BenStudio : tu la retrouves dans « Mes fichiers ».": "A copy is in Documents › BenStudio: you'll find it in “My files”.",
+  "Fichier ou vidéo": "File or video",
+  "projet": "project",
+  "vidéo": "video",
+  "Cinq onglets : Mon morceau, Rythme, Clavier, Mix, Partager": "Five tabs: My song, Rhythm, Keyboard, Mix, Share",
+  "Le Mode simple (Réglages) n'en garde que quatre : Mon morceau, Rythme, Clavier, Partager.": "The simple mode (Settings) keeps only four: My song, Rhythm, Keyboard, Share.",
+  "Partager : vérifier le morceau, puis le partager en fichier ou en vidéo.": "Share: check the song, then share it as a file or a video.",
+  "Pour partager : l'onglet Partager.": "To share: the Share tab.",
+  "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "To pick up your song on another device: “Share” › “Save the song as a .zip” (a .zip with all its sounds), then, on the other device, My projects › “Import a project (.zip)”.",
+  "La partie en cours, jouée sur %s.": "The current part, played over %s."
+}

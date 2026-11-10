@@ -236,12 +236,13 @@ class Round3Zone2Test {
         assertEquals(8, ExportUi().forProject(sceneBars = 1, hasSong = false).bars)
     }
 
-    /** n° 11 (A d 45): « Mes exports » in the app, from « Prêt à partager ? » and the export card. */
+    /** n° 11 (A d 45): « Mes fichiers » (« Mes exports » then) in the app, from « Prêt à partager ? » and the export card. */
     @Test
     fun myExportsAreListed() {
         val ui = ShareSheetUi(name = "Nuit", seconds = 60, parts = 3, checks = emptyList())
         compose.setContent { PocketStudioTheme { ShareSheetContent(ui, ShareSheetActions()) } }
-        compose.onNodeWithTag("share_my_exports").performScrollTo().performClick()
+        // Chantier 1: under « Partager », out of what scrolls.
+        compose.onNodeWithTag("share_my_exports").assertIsDisplayed().performClick()
         compose.waitForIdle()
         compose.onNodeWithTag("my_exports").assertIsDisplayed()
         // Robolectric's media store holds none of ours: an empty list, never a crash.

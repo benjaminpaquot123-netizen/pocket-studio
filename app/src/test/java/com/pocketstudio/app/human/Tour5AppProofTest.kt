@@ -3,7 +3,7 @@ package com.pocketstudio.app.human
 import android.app.Application
 import android.content.Intent
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import kotlinx.coroutines.launch
 import android.content.ContentProvider
 import android.content.ContentUris
 import android.content.ContentValues
@@ -20,7 +20,8 @@ import com.pocketstudio.app.export.WavExporter
 import com.pocketstudio.app.projects.CurrentProject
 import com.pocketstudio.app.rhythm.ExportFormat
 import com.pocketstudio.app.rhythm.RhythmViewModel
-import com.pocketstudio.app.ui.rememberSendProject
+import com.pocketstudio.app.export.ProjectZipSender
+import com.pocketstudio.app.export.rememberProjectZipSender
 import com.pocketstudio.engine.CommandSink
 import com.pocketstudio.engine.ExportResult
 import com.pocketstudio.engine.NativeEngine
@@ -49,15 +50,17 @@ import java.time.Duration
 
 /**
  * Round 5 (bench lot 3): app or bench? Without the bench (no HumanTester, no BenchEngine), the app's own classes:
- * - T5-ZIP: « Mes exports » after « Envoyer le projet » (.zip);
+ * - T5-ZIP: « Mes fichiers » (« Mes exports » then) after « Sauvegarder le morceau en .zip » (« Envoyer le projet » then);
  * - T5-ALERTE: « Le morceau a changé depuis cet export » right after an export, nothing changed;
  * - T5-8MES: « Prêt à partager ? » exports the length chosen in Mix.
  *
  * Audit « banc crédible » A.13 (G1), a rule of method: a @KnownDefect guard goes through the code the team will fix. The
  * guards of T5-ZIP and of T5-ALERTE (« Partager ») wrote the app's wiring again (a ProjectsViewModel made here, the
  * Guide's card marked by the test): a fix in AppRoot or in ShareSongProgress would have left them « still there ». They
- * now compose and call the app's own: [rememberSendProject]'s action and [ShareSongProgress]. `scripts/bench/mutation-l1.sh`
- * replays the check (the app « fixed » in its wiring: both guards must say « no longer fails »).
+ * now compose and call the app's own: the sender AppRoot gives « Prêt à partager ? » and Mes projets › ⋯
+ * ([rememberProjectZipSender]) and [ShareSongProgress]. `scripts/bench/mutation-l1.sh` replayed the check while the
+ * defects were there (the app « fixed » in its wiring: both guards said « no longer fails »); the app is fixed since
+ * (lot « partage », 2026-11-10) and the guards are ordinary ones.
  */
 @RunWith(RobolectricTestRunner::class)
 class Tour5AppProofTest {
@@ -175,6 +178,8 @@ class Tour5AppProofTest {
 
     @After
     fun clear() {
+        recomposer?.cancel()
+        recomposer = null
         screen?.pause()?.stop()?.destroy()
         screen = null
         NativeEngine.sink = null
@@ -198,9 +203,24 @@ class Tour5AppProofTest {
         }
         val made = Robolectric.buildActivity(ComponentActivity::class.java).setup()
         screen = made
-        made.get().setContent { content() }
+        // Compose's own UI dispatcher is a static made with the Choreographer of the first test that composed, and
+        // Robolectric gives each test a new one: in a second composition of this class the effects never ran (seen
+        // 2026-11-10: the share window never took the song that waited, once another proof had composed before it;
+        // the order of the proofs had hidden it). Each composition gets a recomposer of its own test: this test's main
+        // looper, and a frame clock [idle] ticks.
+        val context = kotlinx.coroutines.Dispatchers.Main + frames
+        val r = androidx.compose.runtime.Recomposer(context)
+        recomposer = r
+        kotlinx.coroutines.CoroutineScope(context).launch { r.runRecomposeAndApplyChanges() }
+        val view = androidx.compose.ui.platform.ComposeView(made.get())
+        view.setParentCompositionContext(r)
+        view.setContent { content() }
+        made.get().setContentView(view)
         idle(100)
     }
+
+    private var recomposer: androidx.compose.runtime.Recomposer? = null
+    private val frames = androidx.compose.runtime.BroadcastFrameClock()
 
     /** Android's share menus asked for so far (what each was to send), read from what the app started. */
     private val menus = ArrayList<Intent>()
@@ -213,7 +233,12 @@ class Tour5AppProofTest {
             .firstOrNull { it.type == type }
     }
 
-    private fun idle(ms: Long = 20) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
+    private fun idle(ms: Long = 20) {
+        // What changed outside a composition is told to it, and its frame comes (see [compose]).
+        androidx.compose.runtime.snapshots.Snapshot.sendApplyNotifications()
+        frames.sendFrame(System.nanoTime())
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
+    }
 
     private fun until(what: String, ok: () -> Boolean) {
         val end = System.currentTimeMillis() + 30_000
@@ -235,7 +260,27 @@ class Tour5AppProofTest {
         return vm
     }
 
-    /** T5-ZIP (seats C c 41, C d 68): « Envoyer le projet » (.zip), then « Mes exports » lists that .zip. */
+    /** The app's one sender of a project's .zip, composed as AppRoot composes it (A.13: the app's own wiring). */
+    private fun sender(vm: RhythmViewModel): ProjectZipSender {
+        var sender: ProjectZipSender? = null
+        compose { sender = rememberProjectZipSender(vm) }
+        return sender!!
+    }
+
+    /** The .zip Android's share menu was given, once it opened. */
+    private fun zipShared(): Uri? {
+        until("Android's share menu never opened for the project's .zip") { shareMenu("application/zip") != null }
+        idle(200)
+        @Suppress("DEPRECATION")
+        val zip = shareMenu("application/zip")!!.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
+        assertTrue("what is sent is the project's .zip: $zip", zip?.lastPathSegment?.endsWith(".pocketstudio.zip") == true)
+        return zip
+    }
+
+    /**
+     * T5-ZIP (seats C c 41, C d 68; recette tel-03), first path: « Prêt à partager ? » › « Sauvegarder le morceau en .zip »
+     * (« Envoyer le projet » then), then « Mes fichiers » lists that .zip.
+     */
     @KnownDefect("T5-ZIP", "« Mes exports » does not list the project just sent")
     @Test
     fun myExportsListsTheProjectZipJustSent() {
@@ -245,16 +290,10 @@ class Tour5AppProofTest {
         val wav = File(app.cacheDir, "controle.wav").apply { writeBytes(ByteArray(64)) }
         assertTrue("the fake media store takes the app's copy", WavExporter.copyToMusic(app, wav))
         assertEquals(listOf("controle.wav"), MyExports.list(app).map { it.name })
-        // « Envoyer le projet » by the app's own wiring (A.13): the action AppRoot gives « Prêt à partager ? », composed as
-        // there and called as its button calls it: the open project saved, its .zip made, Android's share menu opened.
-        var send: (() -> Unit)? = null
-        compose { send = rememberSendProject(vm) }
-        send!!()
-        until("Android's share menu never opened for the project's .zip") { shareMenu("application/zip") != null }
-        idle(200)
-        @Suppress("DEPRECATION")
-        val zip = shareMenu("application/zip")!!.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
-        assertTrue("what is sent is the project's .zip: $zip", zip?.lastPathSegment?.endsWith(".pocketstudio.zip") == true)
+        // By the app's own wiring (A.13): the action AppRoot gives « Prêt à partager ? », called as its line calls it: the
+        // open project saved, its .zip made, Android's share menu opened.
+        sender(vm).sendOpen()
+        val zip = zipShared()
         val listed = MyExports.list(app).map { it.name }
         assertTrue("« Mes exports » does not list the project just sent (${zip?.lastPathSegment}): $listed", listed.any { it.endsWith(".zip") })
     }

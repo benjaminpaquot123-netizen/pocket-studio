@@ -1,0 +1,23 @@
+{
+  "Fini ? Partage ton morceau": "Fertig? Teile deinen Song",
+  "Sauvegarder le morceau en .zip": "Song als .zip sichern",
+  "Pour un autre appareil ou une copie de sécurité": "Für ein anderes Gerät oder als Sicherungskopie",
+  "Autres fichiers": "Weitere Dateien",
+  "Mes fichiers": "Meine Dateien",
+  "Retrouver et renvoyer : M4A, WAV, vidéo, .zip": "Finden und erneut senden: M4A, WAV, Video, .zip",
+  "Les sons sont dans Musique › BenStudio, les vidéos dans Films › BenStudio, les .zip dans Documents › BenStudio, sur cet appareil. Les plus récents d'abord.": "Sounds liegen in Musik › BenStudio, Videos in Filme › BenStudio, .zip-Dateien in Dokumente › BenStudio, auf diesem Gerät. Die neuesten zuerst.",
+  "Rien ici pour l'instant. Tout ce que tu partages s'ajoute ici, dans Musique › BenStudio sur cet appareil.": "Hier ist noch nichts. Alles, was du teilst, landet hier, in Musik › BenStudio auf diesem Gerät.",
+  "Renvoyer": "Erneut senden",
+  "Voir mes fichiers": "Meine Dateien ansehen",
+  "Projet sauvegardé : %s": "Projekt gesichert: %s",
+  "Une copie est dans Documents › BenStudio : tu la retrouves dans « Mes fichiers ».": "Eine Kopie liegt in Dokumente › BenStudio: Du findest sie unter „Meine Dateien“.",
+  "Fichier ou vidéo": "Datei oder Video",
+  "projet": "Projekt",
+  "vidéo": "Video",
+  "Cinq onglets : Mon morceau, Rythme, Clavier, Mix, Partager": "Fünf Tabs: Mein Song, Rhythmus, Tastatur, Mix, Teilen",
+  "Le Mode simple (Réglages) n'en garde que quatre : Mon morceau, Rythme, Clavier, Partager.": "Der einfache Modus (Einstellungen) behält nur vier: Mein Song, Rhythmus, Tastatur, Teilen.",
+  "Partager : vérifier le morceau, puis le partager en fichier ou en vidéo.": "Teilen: den Song prüfen und dann als Datei oder Video teilen.",
+  "Pour partager : l'onglet Partager.": "Zum Teilen: der Tab Teilen.",
+  "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "Deinen Song auf einem anderen Gerät weitermachen: „Teilen“ › „Song als .zip sichern“ (eine .zip mit allen Sounds), dann auf dem anderen Gerät Meine Projekte › „Projekt importieren (.zip)“.",
+  "La partie en cours, jouée sur %s.": "Der aktuelle Teil, gespielt über %s."
+}

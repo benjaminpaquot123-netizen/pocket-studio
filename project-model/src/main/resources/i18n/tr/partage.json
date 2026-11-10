@@ -1,0 +1,23 @@
+{
+  "Fini ? Partage ton morceau": "Bitti mi? Şarkını paylaş",
+  "Sauvegarder le morceau en .zip": "Şarkıyı .zip olarak kaydet",
+  "Pour un autre appareil ou une copie de sécurité": "Başka bir cihaz ya da yedek kopya için",
+  "Autres fichiers": "Diğer dosyalar",
+  "Mes fichiers": "Dosyalarım",
+  "Retrouver et renvoyer : M4A, WAV, vidéo, .zip": "Bul ve yeniden gönder: M4A, WAV, video, .zip",
+  "Les sons sont dans Musique › BenStudio, les vidéos dans Films › BenStudio, les .zip dans Documents › BenStudio, sur cet appareil. Les plus récents d'abord.": "Sesler Müzik › BenStudio, videolar Filmler › BenStudio, .zip dosyaları Belgeler › BenStudio içinde, bu cihazda. En yeniler önce.",
+  "Rien ici pour l'instant. Tout ce que tu partages s'ajoute ici, dans Musique › BenStudio sur cet appareil.": "Burada henüz bir şey yok. Paylaştığın her şey buraya, bu cihazdaki Müzik › BenStudio içine eklenir.",
+  "Renvoyer": "Yeniden gönder",
+  "Voir mes fichiers": "Dosyalarımı gör",
+  "Projet sauvegardé : %s": "Proje kaydedildi: %s",
+  "Une copie est dans Documents › BenStudio : tu la retrouves dans « Mes fichiers ».": "Bir kopyası Belgeler › BenStudio içinde: onu “Dosyalarım” altında bulursun.",
+  "Fichier ou vidéo": "Dosya ya da video",
+  "projet": "proje",
+  "vidéo": "video",
+  "Cinq onglets : Mon morceau, Rythme, Clavier, Mix, Partager": "Beş sekme: Şarkım, Ritim, Klavye, Miks, Paylaş",
+  "Le Mode simple (Réglages) n'en garde que quatre : Mon morceau, Rythme, Clavier, Partager.": "Basit mod (Ayarlar) yalnızca dördünü tutar: Şarkım, Ritim, Klavye, Paylaş.",
+  "Partager : vérifier le morceau, puis le partager en fichier ou en vidéo.": "Paylaş: şarkıyı kontrol et, sonra dosya ya da video olarak paylaş.",
+  "Pour partager : l'onglet Partager.": "Paylaşmak için: Paylaş sekmesi.",
+  "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "Şarkına başka bir cihazda devam etmek için: “Paylaş” › “Şarkıyı .zip olarak kaydet” (tüm sesleriyle bir .zip), sonra diğer cihazda Projelerim › “Proje içe aktar (.zip)”.",
+  "La partie en cours, jouée sur %s.": "Geçerli bölüm, %s boyunca çalınır."
+}

@@ -146,6 +146,8 @@ object I18n {
         "ultra3z5",
         // Audit ultra round 3, zone 6: counts said with their plural in every language, units and words put in.
         "ultra3z6",
+        // Hands-on audit, chantier 1 (2026-11-10): « Partager » everywhere, « Mes fichiers », the project saved as a .zip.
+        "partage",
     )
 
     @Volatile

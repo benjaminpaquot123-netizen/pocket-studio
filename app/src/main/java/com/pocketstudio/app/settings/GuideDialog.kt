@@ -65,7 +65,7 @@ val GUIDE_PAGES: List<GuidePage> get() = listOf(
             tr("Mix : les volumes côte à côte, les effets, les courbes et l'export."),
             tr("Live : jouer les parties en direct, avec les pads et les effets."),
             tr("Plus : tes projets, l'aide, les réglages, le clavier MIDI."),
-            tr("Le Mode simple (Réglages) n'en garde que quatre : Mon morceau, Rythme, Clavier, Envoyer."),
+            tr("Le Mode simple (Réglages) n'en garde que quatre : Mon morceau, Rythme, Clavier, Partager."),
         ),
     ),
     GuidePage(
@@ -100,7 +100,7 @@ val GUIDE_PAGES_SIMPLE: List<GuidePage> get() = GUIDE_PAGES.let { full ->
                 tr("Mon morceau : les parties du morceau, dans l'ordre ; touche-en une pour l'ouvrir."),
                 tr("Rythme : la batterie, case par case."),
                 tr("Clavier : joue et enregistre ta mélodie, toujours dans la gamme."),
-                tr("Envoyer : vérifier le morceau, puis le partager en fichier ou en vidéo."),
+                tr("Partager : vérifier le morceau, puis le partager en fichier ou en vidéo."),
                 tr("⋮ en haut : tes projets, le Live, le Remix, les réglages et l'aide."),
             ),
         ),
@@ -109,7 +109,7 @@ val GUIDE_PAGES_SIMPLE: List<GuidePage> get() = GUIDE_PAGES.let { full ->
             tr("Et ensuite ?"),
             listOf(
                 tr("Pour commencer : touche ▶, puis les cases dans Rythme."),
-                tr("Pour partager : l'onglet Envoyer."),
+                tr("Pour partager : l'onglet Partager."),
                 tr("Ce guide se retrouve dans ⋮ › Aide et premiers pas."),
             ),
         ),

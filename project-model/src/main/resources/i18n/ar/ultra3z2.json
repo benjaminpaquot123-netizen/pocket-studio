@@ -14,15 +14,10 @@
   "Sans fichier : %s.": "بلا ملف: %s.",
   "Le morceau a changé depuis cet export : exporte à nouveau pour envoyer la nouvelle version.": "تغيّرت الأغنية منذ هذا التصدير: صدّرها من جديد لإرسال النسخة الجديدة.",
   "Remix · %s": "ريمكس · %s",
-  "Reprendre ton morceau sur un autre appareil : « Partager » › « Envoyer le projet » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "لمتابعة أغنيتك على جهاز آخر: « مشاركة » › « إرسال المشروع » (ملف ‎.zip فيه كل أصواته)، ثم على الجهاز الآخر: مشاريعي › « استيراد مشروع (‎.zip) ».",
   "Trop fort par endroits : ça risque de grésiller.": "عالٍ جدًا في بعض المواضع: قد يحدث تشويش.",
   "Pas de saturation.": "لا تشويش.",
   "Fichier M4A : léger, lu par tous les appareils.": "ملف M4A: خفيف، يعمل على كل الأجهزة.",
   "Fichier %s : qualité studio.": "ملف %s: جودة استوديو.",
   "%s Mo": "%s ميغابايت",
-  "%d Ko": "%d كيلوبايت",
-  "Mes exports : retrouver et renvoyer un fichier": "صادراتي: اعثر على ملف وأرسله من جديد",
-  "Mes exports": "صادراتي",
-  "Dans Musique › BenStudio sur ce téléphone. Les plus récents d'abord.": "في الموسيقى › BenStudio على هذا الهاتف. الأحدث أولًا.",
-  "Aucun export pour l'instant : « Partager » ou « Exporter » en crée un.": "لا صادرات بعد: « مشاركة » أو « تصدير » يصنع واحدًا."
+  "%d Ko": "%d كيلوبايت"
 }

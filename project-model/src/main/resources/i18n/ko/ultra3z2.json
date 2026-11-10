@@ -14,15 +14,10 @@
   "Sans fichier : %s.": "파일 없음: %s.",
   "Le morceau a changé depuis cet export : exporte à nouveau pour envoyer la nouvelle version.": "이 내보내기 뒤에 곡이 바뀌었어요: 새 버전을 보내려면 다시 내보내세요.",
   "Remix · %s": "리믹스 · %s",
-  "Reprendre ton morceau sur un autre appareil : « Partager » › « Envoyer le projet » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "다른 기기에서 곡을 이어서 하려면: “공유” › “프로젝트 보내기”(모든 소리가 담긴 .zip), 그다음 다른 기기에서 내 프로젝트 › “프로젝트 가져오기 (.zip)”.",
   "Trop fort par endroits : ça risque de grésiller.": "군데군데 너무 커요: 지글거릴 수 있어요.",
   "Pas de saturation.": "찌그러짐 없음.",
   "Fichier M4A : léger, lu par tous les appareils.": "M4A 파일: 가볍고 모든 기기에서 재생돼요.",
   "Fichier %s : qualité studio.": "%s 파일: 스튜디오 품질.",
   "%s Mo": "%s MB",
-  "%d Ko": "%d KB",
-  "Mes exports : retrouver et renvoyer un fichier": "내 내보내기: 파일을 찾아 다시 보내기",
-  "Mes exports": "내 내보내기",
-  "Dans Musique › BenStudio sur ce téléphone. Les plus récents d'abord.": "이 휴대폰의 음악 › BenStudio에 있어요. 최근 것부터.",
-  "Aucun export pour l'instant : « Partager » ou « Exporter » en crée un.": "아직 내보낸 파일이 없어요: “공유”나 “내보내기”로 만들 수 있어요."
+  "%d Ko": "%d KB"
 }

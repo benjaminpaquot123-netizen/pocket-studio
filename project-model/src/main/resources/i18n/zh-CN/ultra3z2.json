@@ -14,15 +14,10 @@
   "Sans fichier : %s.": "没有文件：%s。",
   "Le morceau a changé depuis cet export : exporte à nouveau pour envoyer la nouvelle version.": "这次导出之后歌曲有了改动：请重新导出，发送新版本。",
   "Remix · %s": "混音 · %s",
-  "Reprendre ton morceau sur un autre appareil : « Partager » › « Envoyer le projet » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "在另一台设备上继续你的歌曲：“分享” › “发送项目”（包含所有声音的 .zip），然后在另一台设备上：我的项目 › “导入项目（.zip）”。",
   "Trop fort par endroits : ça risque de grésiller.": "有些地方太响：可能会有破音。",
   "Pas de saturation.": "没有削波。",
   "Fichier M4A : léger, lu par tous les appareils.": "M4A 文件：体积小，所有设备都能播放。",
   "Fichier %s : qualité studio.": "%s 文件：录音室品质。",
   "%s Mo": "%s MB",
-  "%d Ko": "%d KB",
-  "Mes exports : retrouver et renvoyer un fichier": "我的导出：找到文件并再次发送",
-  "Mes exports": "我的导出",
-  "Dans Musique › BenStudio sur ce téléphone. Les plus récents d'abord.": "在这部手机的 音乐 › BenStudio 中。最新的在前。",
-  "Aucun export pour l'instant : « Partager » ou « Exporter » en crée un.": "还没有导出：用“分享”或“导出”就能生成一个。"
+  "%d Ko": "%d KB"
 }

@@ -14,15 +14,10 @@
   "Sans fichier : %s.": "Geen bestand: %s.",
   "Le morceau a changé depuis cet export : exporte à nouveau pour envoyer la nouvelle version.": "Het nummer is veranderd sinds deze export: exporteer opnieuw om de nieuwe versie te versturen.",
   "Remix · %s": "Remix · %s",
-  "Reprendre ton morceau sur un autre appareil : « Partager » › « Envoyer le projet » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "Je nummer op een ander apparaat verder maken: ‘Delen’ › ‘Project versturen’ (een .zip met al zijn geluiden), daarna op het andere apparaat Mijn projecten › ‘Een project importeren (.zip)’.",
   "Trop fort par endroits : ça risque de grésiller.": "Op sommige plekken te luid: het kan kraken.",
   "Pas de saturation.": "Geen oversturing.",
   "Fichier M4A : léger, lu par tous les appareils.": "M4A-bestand: licht, speelt op elk apparaat.",
   "Fichier %s : qualité studio.": "%s-bestand: studiokwaliteit.",
   "%s Mo": "%s MB",
-  "%d Ko": "%d KB",
-  "Mes exports : retrouver et renvoyer un fichier": "Mijn exports: een bestand terugvinden en opnieuw versturen",
-  "Mes exports": "Mijn exports",
-  "Dans Musique › BenStudio sur ce téléphone. Les plus récents d'abord.": "In Muziek › BenStudio op deze telefoon. Nieuwste eerst.",
-  "Aucun export pour l'instant : « Partager » ou « Exporter » en crée un.": "Nog geen exports: ‘Delen’ of ‘Exporteren’ maakt er een."
+  "%d Ko": "%d KB"
 }

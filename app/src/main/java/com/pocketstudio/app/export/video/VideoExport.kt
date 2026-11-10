@@ -250,6 +250,8 @@ class VideoExportViewModel(app: Application) : AndroidViewModel(app) {
         /** The part of the progress bar the sound's render takes. */
         const val SOUND_SHARE = 0.4f
         const val MOVIES_FOLDER = "Movies/BenStudio"
+        /** Android's collection for [MOVIES_FOLDER] (read back by « Mes fichiers »). */
+        val MOVIES_COLLECTION: android.net.Uri get() = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
 
         /** A copy in Movies › BenStudio, as the songs go to Music (no permission needed). Blocking. */
         fun copyToMovies(context: Context, file: File): Boolean = runCatching {
@@ -260,7 +262,7 @@ class VideoExportViewModel(app: Application) : AndroidViewModel(app) {
                 put(MediaStore.Video.Media.RELATIVE_PATH, MOVIES_FOLDER)
                 put(MediaStore.Video.Media.IS_PENDING, 1)
             }
-            val uri = resolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values) ?: return false
+            val uri = resolver.insert(MOVIES_COLLECTION, values) ?: return false
             try {
                 resolver.openOutputStream(uri)!!.use { o -> file.inputStream().use { it.copyTo(o) } }
                 values.clear()

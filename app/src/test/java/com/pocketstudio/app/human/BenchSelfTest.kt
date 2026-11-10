@@ -152,6 +152,32 @@ class BenchSelfTest : HumanTester("selftest") {
         assertTrue(states, "anneau pâle" in waits)
     }
 
+    /**
+     * Fresh review of the « réalisme » lot, M1 and M2: roles only TalkBack hears (« case » for a chip, « interrupteur »
+     * and « coché » for the round « ? ») and marks the app draws with no icon (the Pad Live card's grid, the ⚠ of a
+     * warning line outside any button) were still written otherwise than drawn.
+     */
+    @Test
+    fun chipsTogglesAndDrawnMarksAreWrittenAsDrawn() {
+        begin()
+        val wrong = mutableListOf<String>()
+        fun check(ok: Boolean, line: String, what: String) { if (!ok) wrong += "$what: $line" }
+        assertNotNull(reachTag("launch_padlive"))
+        val card = lineAt("launch_padlive")
+        check("(grille de pads)" in card, card, "the Pad Live card's grid drawn")
+        amenee(AMENEE_SONG, java.io.File.createTempFile("marks", ".txt").apply { deleteOnExit() })
+        val help = lineAt("help_labels_button")
+        check(help.startsWith("bouton « ? »") && "interrupteur" !in help && "coché" !in help, help, "the round « ? »: a framed button, no switch")
+        val tab = centerOf("tab_simple_Envoyer") ?: centerOf("tab_Envoyer") ?: error("no « Envoyer » tab")
+        act("touche ${tab.first} ${tab.second}")
+        val chip = lineAt("share_bars_8")
+        check(chip.startsWith("bouton « 8 »") && "sélectionné" in chip, chip, "a chip: a framed button, selected")
+        val lines = screenLines()
+        val warn = lines.indexOfFirst { "Rien à entendre" in it }
+        check(warn > 0 && Regex("^image (⚠|\\(i dans un rond\\)) @ ").containsMatchIn(lines[warn - 1]), lines.getOrElse(warn - 1) { "-" }, "the check's icon before « Rien à entendre »")
+        assertTrue("written otherwise than drawn:\n" + wrong.joinToString("\n") + "\n\n" + lines.joinToString("\n"), wrong.isEmpty())
+    }
+
     /** The screen's line drawn at the middle of the node tagged [tag] (± 2 px). */
     private fun lineAt(tag: String): String {
         val (x, y) = centerOf(tag) ?: error("no « $tag »\n" + screenLines().joinToString("\n"))

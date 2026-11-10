@@ -35,23 +35,19 @@ internal class BenchPlayhead {
         // on its launch line; without them it stayed « Prêt » for good.
         vm.takeClockForTest = steps
         val songIndex = vm.sessionUi.value.songIndex
-        if (songIndex >= 0 && songIndex < p.song.size && engine != null) {
-            // PLAN-RESTE R.1 (tel-09; T4-16, T5-Ab-14): the song's position is the engine's own (as the app's pollLive reads
-            // it on a phone). Counted here from ▶ plus the start of the part playing, the first part was counted twice once
-            // the song moved on (73 beats shown for 41 played), and the clamp held it on the song's last beat.
+        if (engine != null) {
+            // PLAN-RESTE R.1 (tel-09; T4-16, T5-Ab-14) then A.15 (F5): nothing is counted again here. What the app's pollLive
+            // writes on a phone, from the same reads: the drum pattern's step, the position in the part playing, the song's
+            // position; and the bar as its pollPosition says it (the song's, else the part's loop).
             val songStep = engine.songStep()
-            set(vm, "_playBar", if (songStep < 0) -1 else songStep / spb)
-            set(vm, "_live", LiveUi(currentStep = if (songStep < 0) -1 else (songStep - p.songStepOf(songIndex)).coerceAtLeast(0), absoluteStep = engine.absoluteStep(), songStep = songStep))
+            val at = engine.absoluteStep()
+            val bar = if (songIndex >= 0) (if (songStep < 0) -1 else songStep / spb) else if (at < 0) -1 else at % p.sceneSteps(p.scene).coerceAtLeast(1) / spb
+            set(vm, "_playBar", bar)
+            set(vm, "_live", LiveUi(currentStep = engine.currentStep(), absoluteStep = at, songStep = songStep))
         } else if (songIndex >= 0 && songIndex < p.song.size) {
             val songStep = (p.songStepOf(songIndex) + steps).coerceAtMost(p.songBars.coerceAtLeast(1) * spb - 1)
             set(vm, "_playBar", songStep / spb)
             set(vm, "_live", LiveUi(currentStep = songStep - p.songStepOf(songIndex), absoluteStep = songStep, songStep = songStep))
-        } else if (engine != null) {
-            // A scene alone on the engine: its loop from the engine's steps (-1: counting in, nothing shown yet).
-            val loop = p.sceneSteps(p.scene).coerceAtLeast(1)
-            val at = engine.absoluteStep()
-            set(vm, "_playBar", if (at < 0) -1 else at % loop / spb)
-            set(vm, "_live", LiveUi(currentStep = if (at < 0) -1 else at % loop, absoluteStep = at))
         } else {
             val loop = p.sceneSteps(p.scene).coerceAtLeast(1)
             set(vm, "_playBar", steps % loop / spb)

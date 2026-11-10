@@ -456,11 +456,20 @@ internal class BenchEngine : CommandSink {
     @Volatile private var countInBars = 0
 
     /**
-     * Audit ultra round 3 (zone 4, n° 23): where the engine plays, in sixteenths since ▶ with the fraction, negative during
-     * the count-in (as NativeEngine.playPosition). Stuck at -1 before, the count-in showed « 1… » for good and a keyboard's
+     * Audit ultra round 3 (zone 4, n° 23): where the engine plays, in sixteenths with the fraction, negative during the
+     * count-in (as NativeEngine.playPosition). Stuck at -1 before, the count-in showed « 1… » for good and a keyboard's
      * notes were never recorded (the app records at this position).
+     * Audit « banc crédible » A.15 (F5): counted from the start of the scene playing, as Engine.cpp's playPosition_
+     * (lastLocal_ = step - sceneStart_); it was counted from ▶, 32 steps too far once a part had taken over at step 32.
      */
     override fun playPosition(): Double {
+        song.advance()
+        val at = transportNow()
+        return if (transportSince < 0) -1.0 else if (at < 0) at else at - song.sceneStart
+    }
+
+    /** The transport's sixteenths since ▶ with the fraction, negative during the count-in; -1 stopped. The one clock. */
+    private fun transportNow(): Double {
         val since = transportSince
         if (since < 0) return -1.0
         val steps = stepBase + (SystemClock.uptimeMillis() - since) * tempo / 15_000.0
@@ -635,12 +644,16 @@ internal class BenchEngine : CommandSink {
     private val song = SongClock()
 
     /** Whole sixteenths since ▶ from the bench's clock (count-in excluded), -1 stopped or counting in. */
-    private fun stepsNow(): Int = playPosition().let { if (it < 0) -1 else it.toInt() }
+    private fun stepsNow(): Int = transportNow().let { if (it < 0) -1 else it.toInt() }
 
-    /** Banc fiable 3.2: the steps since ▶ (the position of a part that loops); -1 stopped. Was always -1: counter frozen. */
+    /**
+     * Banc fiable 3.2: the position of the part that loops; -1 stopped or counting in. Was always -1: counter frozen.
+     * A.15 (F5): the steps since the scene playing started (Engine.cpp's absoluteStep_ = step - sceneStart_), not since ▶.
+     */
     override fun absoluteStep(): Int {
         song.advance()
-        return stepsNow()
+        val now = stepsNow()
+        return if (now < 0) -1 else now - song.sceneStart
     }
 
     /** Banc fiable 3.2: steps since the song (re)started, as the top bar's « mesure N/… » reads them; -1 outside the song. */
@@ -668,7 +681,7 @@ internal class BenchEngine : CommandSink {
     /** The transport's position with its fraction (Engine.cpp's transportPosition_), -1 stopped or counting in. */
     override fun transportPosition(): Double {
         song.advance()
-        return playPosition().let { if (it < 0) -1.0 else it }
+        return transportNow().let { if (it < 0) -1.0 else it }
     }
 
     /** « Écouter » on the Remix page: from the top, until its end. */

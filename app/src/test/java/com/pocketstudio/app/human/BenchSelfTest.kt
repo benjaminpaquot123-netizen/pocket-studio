@@ -80,6 +80,28 @@ class BenchSelfTest : HumanTester("selftest") {
         assertTrue("written otherwise than drawn:\n" + wrong.joinToString("\n"), wrong.isEmpty())
     }
 
+    /**
+     * R1: [IconShapes] knows every icon the app draws (Material's by their name in the sources, the app's own vectors), so
+     * an icon is never written « (forme non décrite) » on a seat's screen for want of a line in the table.
+     */
+    @Test
+    fun everyIconOfTheAppHasItsShape() {
+        val roots = listOf(java.io.File("src/main"), java.io.File("../ui-components/src/main"))
+        assertTrue("sources not found from ${java.io.File(".").absolutePath}", roots.all { it.isDirectory })
+        val used = sortedSetOf<String>()
+        roots.forEach { r ->
+            r.walkTopDown().filter { it.isFile && it.extension == "kt" }.forEach { f ->
+                val text = f.readText()
+                Regex("""Icons\.(?:AutoMirrored\.)?(?:Filled|Outlined|Rounded|Sharp|TwoTone|Default)\.([A-Za-z0-9]+)""").findAll(text).forEach { used += it.groupValues[1] }
+                Regex("""ImageVector\.Builder\(\s*(?:name\s*=\s*)?"([^"$]+)"""").findAll(text).forEach { used += it.groupValues[1].substringAfterLast('.') }
+            }
+        }
+        com.pocketstudio.ui.WaveShape.entries.forEach { used += "wave_${it.name}" }
+        assertTrue("too few icons read: $used", used.size > 100)
+        val missing = used.filter { it !in IconShapes.SHAPES }
+        assertTrue("icons with no shape in IconShapes: $missing", missing.isEmpty())
+    }
+
     /** The screen's line drawn at the middle of the node tagged [tag] (± 2 px). */
     private fun lineAt(tag: String): String {
         val (x, y) = centerOf(tag) ?: error("no « $tag »\n" + screenLines().joinToString("\n"))

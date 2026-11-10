@@ -1,11 +1,83 @@
 # Tour 5, lot 2 « La mémoire » : relecture critique
-Relu : 6588098febc74566f6eda3a57dd198758d4e5270
+Relu : e141679e7d04695742313cab54d245fb86d5d9c5
+
+Deuxième passage : relecture du correctif `f13a4d5..e141679` (10 commits) par un relecteur neuf, qui n'a écrit ni le lot ni le correctif. La première relecture est gardée telle quelle plus bas.
+
+## Relecture du correctif
+
+En bref : les deux graves et les deux moyens de la première relecture sont corrigés, et les corrections tiennent sous mutation. Il reste un moyen (la règle inverse du juge se contourne en n'écrivant pas le mot « RECETTE ») et quelques mineurs. Rien ne bloque la fusion.
+
+### Ce qui a été lancé
+
+| Commande | Résultat observé |
+|---|---|
+| `python3 -I scripts/bench/test_ultra_bench.py` | `ultra bench scripts: OK`, code 0 |
+| `bash scripts/bench/gradle-file.sh :app:cleanTestDebugUnitTest :app:testDebugUnitTest --tests 'com.pocketstudio.app.human.Tour4AppProofTest' -i` | BUILD SUCCESSFUL ; 9 tests, 0 échec, 0 erreur, 0 ignoré |
+| `python3 -I scripts/bench/verifie-chantier.py` avec le résumé fourni | `chantier : 23 écarts`, code 1 : le même nombre que l'auteur (11 « banc sans preuve hors banc », 2 « appli sans preuve », 6 paires rouge/vert, 4 lignes du journal) |
+| `git diff --stat 7013d46..e141679 -- app/src/main` | vide |
+| `git ls-tree -r HEAD \| grep -c '^120000'` | 0 |
+| `grep -rn "sorti par Retour" docs app/src/main/assets` | deux lignes seulement, qui citent la phrase fautive : cette relecture et le rapport (l. 49) |
+
+Le résumé périmé (il cite `aMelodyTakeWhileAnotherPartIsShownShowsItsNotes` du temps où c'était un défaut connu inversé, et ignore les deux nouveaux tests) ne cache et ne crée aucun écart : le juge ne lit le résumé que pour les gardes `garde_banc`, et T4-26 n'a plus de garde (`-`). Vérifié : résumé sans aucune ligne Tour4 → 23 écarts ; résumé avec les deux nouveaux noms ajoutés → 23 écarts.
+
+### Constats
+
+| # | Gravité | Quoi | Preuve (commande, résultat) | Correction proposée |
+|---|---|---|---|---|
+| 1 | moyen | La règle inverse du juge (`annotation_gaps`) ne regarde que la première mention « RECETTE tel-N » en majuscules de chaque segment. Une preuve inventée passe donc encore, sans aucune plainte, et ferme même un écart. | Sondes sur le vrai `verdicts.tsv`, note de T4-01, fichier restauré après chaque essai. `; essai tel-99 ❌ lune 2031-01-01 : inventé` (sans le mot RECETTE) → **22 écarts**, aucune ligne sur tel-99. `; recette tel-99 ❌ lune 2031-01-01` (minuscules) → 22, rien. `; RECETTE tel-12 ✅ téléphone 2026-11-08 : vu, RECETTE tel-99 ❌ lune 2031-01-01` (derrière une vraie annotation, même segment) → 22, rien. Cause : `dated_failed_trial` et `dated_trial` acceptent tout segment « tel-NN + marque + date », alors que la règle inverse ne lit que `re.search(r"RECETTE\s+(tel-\d+)\b", part)`. | Quand les notes existent, n'accepter comme preuve qu'un segment que `records_trial` rattache à un essai du propriétaire ; contrôler tout segment « tel-NN + marque + date » avec `finditer`, sans dépendre du mot « RECETTE ». Trois cas de test (les trois sondes). Ce trou existait avant le lot : il est à moitié fermé, pas rouvert. |
+| 2 | mineur | Les deux inventions de la première relecture sont maintenant signalées, mais le total ne bouge pas : l'invention ferme encore « T4-01 : verdict appli sans preuve » pendant qu'elle ouvre le nouvel écart. Qui ne lit que le nombre ne voit rien. | `; RECETTE tel-99 ❌ lune 2031-01-01 : inventé` → nouvel écart « T4-01 : annotation « RECETTE » sans essai correspondant dans retours-benjamin.md », total 23. `; RECETTE tel-12 ❌ téléphone 2026-11-08` (essai réel, résultat inversé) → pareil, 23. Mauvais appareil → 24. Mauvaise date → nouvel écart, 23. | Même correction que le constat 1 : une annotation sans essai ne doit pas compter comme preuve. |
+| 3 | mineur | Si `retours-benjamin.md` disparaît, le juge se tait : le résultat est le même qu'en temps normal. | Fichier retiré (puis restauré) → `chantier : 23 écarts`, aucune ligne qui parle des notes. Fichier vidé → 49 écarts (bruyant, lui). Le test du juge affirme même « 0 écart » sans notes. | Un écart « notes absentes alors que verdicts.tsv porte des annotations RECETTE ». Le fichier est suivi par git, sa disparition se verrait dans le diff : d'où mineur. |
+| 4 | mineur | Deux mutants de la règle inverse survivent à `test_ultra_bench.py`. | « Règle muette quand les notes ne contiennent aucun essai » → suite verte. « N'importe quel numéro d'essai suffit » → suite verte ; l'auteur l'avait déclaré, mais il n'est pas strictement équivalent (seule la première mention d'un segment est lue). | Un cas de test par mutant, avec ceux du constat 1. |
+| 5 | mineur | Rapport, section « Après relecture », l. 48 : « Au départ : rien d'armé côté moteur (pending=0), le son est armé pour rejoindre la partie affichée à la barre suivante ». La phrase se contredit. | `pending=0` veut dire que la partie 0 attend (`selectScene` pose `SessionUi(pending = index)`), et le test `aMelodyTakeAfterTheBarLineGoesToThePartShown` montre bien un changement de partie sans rien armer d'autre. La suite de la phrase est juste. Seul le rapport est touché, pas les données. | Écrire : « Au départ, le moteur est armé pour rejoindre la partie affichée à la barre suivante (pending=0). » |
+| 6 | mineur | Rapport, tableau, ligne A.6 : « 16 essais téléphone et 3 essais tablette ». Le lecteur des notes en trouve maintenant 4 en tablette. | `owner_trials` sur les notes : 16 téléphone, 4 tablette (tel-11, tel-13, tel-14, tel-18) ; tel-11 est entré par la forme « Résultat retenu ». | Corriger le chiffre, ou dater la phrase « avant correctif ». |
+| 7 | mineur | Le mineur 6 de la première relecture (empreinte du portail, mutant N7) n'est pas traité. | L'auteur le dit dans son rapport ; aucun commit de la plage n'y touche. | À noter dans le plan du lot suivant. |
+| 8 | observation | Le doute sur `[2, 1]` est levé : la phrase des données est juste. | La liste est rangée par scène. Scène 0 = première partie = la partie affichée (2 notes) ; scène 1 = seconde partie = la partie entendue avant la barre (1 note). Sortie du test : `a take across the bar line: shown 0, notes per scene [2, 1]; Prise keys : 3 touches, 3 notes, 0 coups`. L'horloge Robolectric rend le découpage déterministe : touche 1 avant la barre (pas 16), touches 2 et 3 à +400 ms et +800 ms, après. Donc « 1 dans la partie entendue avant la barre et 2 dans la partie affichée » est exact. | Dire l'ordre de la liste dans le `println`, pour le prochain lecteur. |
+| 9 | observation | Le test à cheval sur la barre ne vérifie que la somme (3 notes) et le libellé de la prise ; le découpage 1 + 2 est seulement imprimé. | Lecture de `aMelodyTakeAcrossTheBarLineKeepsItsThreeNotes`. C'est cohérent avec « vu, non tranché » dans `verdicts.tsv`. | Rien tant que Benjamin n'a pas dit où doivent aller les notes. |
+| 10 | observation | « a quitté la liste sans choisir de style (consigne tel-16 : Retour ou croix) » reprend la consigne de la recette, pas des mots de Benjamin. | Notes avant le lot (`git show 7013d46:docs/audits/ultra/retours-benjamin.md`) : « tel-16 ✅ la démo s'arrête quand on la quitte ». Consigne dans `recette.json` : « Quitte la liste SANS choisir de style (flèche Retour ou croix) ». La parenthèse le dit honnêtement. | Rien. |
+| 11 | observation | La forme « Résultat retenu : ❌ » s'appuie sur une lecture de vidéo par un agent, marquée « à confirmer par Benjamin ». | Notes à 7013d46, l. 28 : « 2026-11-08, APK 341, tablette, tel-11 (vidéo 16 s, analysée image par image) … Résultat retenu : ❌ … À confirmer par Benjamin ». L'annotation `RECETTE tel-11 ❌ tablette paysage 2026-11-08 (vidéo)` sur T5-Ed-40 existait déjà avant le lot : la forme n'invente pas d'essai. | Rien ; garder le « à confirmer » visible. |
+| 12 | observation | L'échec sur émulateur (CI 243) date d'avant d3eccff et n'a pas été rejoué. « Reste inexpliqué » est prudent et ne dit pas plus que ce qui est su. | `verdicts.tsv` l. 9 (`non-tranché / ouvert`, garde `-`) et `base.tsv` l. 859 (`nouveau`). | Rejouer sur émulateur quand il y en a un. |
+
+### Statut des constats de la première relecture
+
+| Constat | Statut | Preuve |
+|---|---|---|
+| Grave 1 (T4-26 : faux moteur qui ne change jamais de partie, phrases plus fortes que la preuve) | corrigé | Le faux moteur `PhoneEngine` suit la même règle que `Engine.cpp` (`onStep` / `swapScene` : changement à la première barre strictement après l'armement, et pas avant `swapAt`), que `BenchEngine.SongClock.advance()` et que le faux moteur de `TakeOnTheEngineClockTest`. Le test est une vraie garde : voir les mutations A et B. Phrases relues une à une et trouvées exactes : `verdicts.tsv` l. 9 (550 ms, « couvert par d3eccff », `[3, 0]` après la barre, prise à cheval), `base.tsv` clé `tab_simple_Clavier\|record_start\|rien` (`nouveau`, « pas reproduit sans émulateur … échec sur émulateur inexpliqué »), `DECISIONS.md` l. 1339, KDoc des trois tests, `PLAN-RESTE.md` l. 36. `PROGRESS.md` ne dit rien de T4-26. Seule la phrase du rapport du constat 5 est à reprendre. |
+| Grave 2 (« sorti par Retour » prêté à Benjamin) | corrigé | Le `grep` ne trouve plus que les deux citations. Remplacé partout (`PROGRESS.md` l. 19, `PLAN-RESTE.md` l. 36, `banc-fiable-journal.md` l. 64 et 80, `retours-benjamin.md` l. 43) par une phrase qui ne dit pas plus que les notes d'avant le lot. La ligne du journal (88e84e2, du 2026-11-08) était l'origine de la phrase : la corriger est juste. Aucune autre variante trouvée. |
+| Moyen 3 (pas de règle inverse) | corrigé pour la forme écrite, trou restant | La règle existe et ses mutants directs tombent (voir plus bas). Reste le constat 1 (moyen) et les constats 2 à 4. |
+| Moyen 4 (mutants J survivants) | corrigé | J13, J14, J10b, J10c et leurs voisins sont tous attrapés. J17, J19, J20 et J22 sont nommés mais pas définis dans la première relecture : impossible de les rejouer mot pour mot, j'ai rejoué des équivalents sur les mêmes fonctions, tous attrapés. |
+| Mineur 5 (tests de la règle des pads) | corrigé | Mutants J8, J8b, J9, J9c, J9d attrapés. |
+| Mineur 6 (empreinte du portail, N7) | non traité | Constat 7. |
+| Mineur 7 (reste de tel-17 sans date) | corrigé | Notes de T5-Fc-31 et T5-Ca-32 relues. |
+| Aucune règle du juge affaiblie | vérifié | Dans `verifie-chantier.py`, la plage n'ajoute que des lignes (une ligne de docstring changée). Dans `test_ultra_bench.py`, chaque ligne retirée est remplacée par une plus forte. Les autres scripts ne bougent pas. |
+
+### Mutations essayées
+
+Chaque fichier a été restauré un par un (`git checkout -- <chemin>`) ; les sondes sont supprimées.
+
+| Mutation | Résultat |
+|---|---|
+| A. Faux moteur : `follow()` ne fait plus rien (la partie armée ne change jamais) | rouge : 3 tests sur 9. `aMelodyTakeWhileAnotherPartIsShownShowsItsNotes` : « the take's notes are not in the part shown one bar after it ended: shown 0, notes per scene [0, 3], ui SessionUi(pending=1…) » ; les deux autres nouveaux tests tombent aussi. |
+| B. Appli (sonde temporaire, restaurée) : appel à `showTheTakesPart()` retiré de `RhythmViewModel.kt` | rouge : 1 test sur 9, la même garde (`shown 0, [0, 3], pending=null`). Le test garde donc bien d3eccff. |
+| Règle inverse : pas appelée ; cellule téléphone pas lue ; cellule note pas lue ; le numéro seul suffit | attrapées (4) |
+| Forme « Résultat retenu » : sans appareil ; n'importe quelle marque ; forme retirée | attrapées (3) |
+| Règle inverse : n'importe quel numéro d'essai (M3d) ; muette quand les notes n'ont aucun essai (N1) | **survivent** (constat 4) |
+| J13 (appareil ignoré), J14 (date ignorée), J14b (marque ignorée) | attrapées |
+| J10b, J10c, J10d (`dated_trial` sans marque, sans tel-NN, sans date) ; J10e, J10f, J10g (`dated_failed_trial`, idem) | attrapées |
+| J8, J8b (règle des pads, un seul côté) ; J9, J9c, J9d (`PAD_KEY`) | attrapées |
+| O1 à O5 (`owner_trials` : appareil, tour, remise à zéro) ; T1 à T3 (`trial_gaps`) | attrapées |
+| Découpe en segments de `records_trial` (« ; » remplacé par « , ») | attrapée (l'auteur la donnait survivante) |
+| Sondes sur `verdicts.tsv` : tel-99 inventé, tel-12 inversé, mauvais appareil, mauvaise date | signalées (constat 2) |
+| Sondes sur `verdicts.tsv` : sans le mot RECETTE, en minuscules, derrière une vraie annotation | **non signalées** (constat 1) |
+
+## Première relecture (6588098)
+
+Texte de la première relecture, inchangé à part les titres descendus d'un cran et la ligne finale. Elle portait sur 6588098febc74566f6eda3a57dd198758d4e5270.
 
 Relecteur neuf, qui n'a pas écrit le code. Plage relue : `git diff 7013d46..6588098` (17 commits, 18 fichiers : tests Kotlin du banc, documents, `scripts/bench`). `app/src/main` n'est pas touché (`git diff --stat 7013d46..6588098 -- app/` : trois fichiers, tous sous `app/src/test`).
 
 Ce qui tient : `python3 -I scripts/bench/test_ultra_bench.py` donne `ultra bench scripts: OK` (sortie 0). Le juge sur le résumé du lot donne `chantier : 23 écarts` (sortie 1), les mêmes que ceux du rapport : 11 « banc sans preuve hors banc » (T4-19, T4-16, T4-17, Dc-4, Fb-73, Ac-61, Db-16, Fc-8, Cc-41b, Ab-14, Ab-27), 2 « appli sans preuve de défaut » (T4-01, T5-TEL10), 6 paires rouge/vert d'avant le lot, 4 lignes de journal. Ces 23 écarts sont vrais. Deux choses que le juge ne voit pas sont dans les constats 1 et 3 ci-dessous. Les quatre « moyen » de la relecture du juge sont fermés par des tests de comportement (S04, S06, S07, C01, D01 rejoués : tous attrapés).
 
-## Constats
+### Constats
 
 | n° | gravité | quoi | preuve (commande et résultat) | correction proposée |
 |---|---|---|---|---|
@@ -20,7 +92,7 @@ Ce qui tient : `python3 -I scripts/bench/test_ultra_bench.py` donne `ultra bench
 | 9 | observation | Le changement du test `engine_proof` (1 → 2 écarts) est légitime : une garde moteur renommée n'est plus un défaut connu, donc la ligne « appli / ouvert » n'a plus qu'un test vert pour preuve, ce que la règle A.2 refuse désormais. | Lecture du diff de `test_ultra_bench.py`, fonction `engine_proof`. | Rien. |
 | 10 | observation | Le reste des données est étayé : les 22 annotations « RECETTE » ajoutées reprennent les notes d'avant le lot (tel-01, 03, 04, 06, 07, 09, 10, 11, 12, 13, 14, 16, 17, 18, tablette comprise) ; T4-16 « téléphone » seul est juste (tel-09 n'a été fait que sur le téléphone) ; tel-17 retiré de T5-Ca-32 et de T5-DEFI-ECOUTE est cohérent avec A.2. D'avant le lot, non corrigé : la colonne téléphone de T5-TEL10 cite « elles sont toujours toutes présentes dans notes », absent des notes ; la clé `synth\|padlive\|notes-perdues` de T5-TEL10 tombe sous la règle des pads sans dommage ; la note de la clé Ca-32 de base.tsv est vide. | Comparaison champ par champ de verdicts.tsv, base.tsv et retours-benjamin.md avec `git show 7013d46:…`. | À reprendre au prochain passage sur ces lignes. |
 
-## Mutations essayées
+### Mutations essayées
 
 Chaque mutation a été restaurée fichier par fichier ; les sondes sont retirées.
 
@@ -29,4 +101,6 @@ Chaque mutation a été restaurée fichier par fichier ; les sondes sont retiré
 - Garde T4-26 : faire faire au faux moteur le changement de partie armé par l'appli : la règle `@KnownDefect` rougit (« no longer fails »), donc elle est branchée dans le bon sens ; c'est ce qu'elle mesure qui est faux (constat 1).
 - Données : annotation « RECETTE » inventée sur T4-01 : non attrapée (constat 3).
 
-Verdict : 0 bloquant(s), 2 grave(s) — à corriger avant fusion
+La première relecture concluait à 0 bloquant et 2 graves, à corriger avant fusion.
+
+Verdict : 0 bloquant, 0 grave — fusion possible

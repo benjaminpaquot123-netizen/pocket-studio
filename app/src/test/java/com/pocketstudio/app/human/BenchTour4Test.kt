@@ -219,11 +219,17 @@ class BenchTour4Test : HumanTester("tour4") {
         act("attends 1")
         val vm = rhythm()!!
         assertTrue(vm.transport.value.playing)
+        benchEngine.padCommandsHeard()
         vm.stopLiveTrack(com.pocketstudio.model.SongPart.DRUMS)
         assertEquals(-1, vm.liveGrid.value!!.slot(com.pocketstudio.model.LiveSlots.DRUMS).pending)
+        // A.16 (G2): the stop went to the engine, which makes it on its line and reports it (no bench hook any more).
+        val drums = 1 shl com.pocketstudio.model.LiveSlots.DRUMS
+        assertTrue("the drums' ■ went to the engine", benchEngine.padCommandsHeard().any { it.startsWith("armLaunch $drums ") && it.endsWith(" -1") })
         act("attends 4")
         assertEquals("the drums' ■ reached its line", -1, vm.liveGrid.value!!.slot(com.pocketstudio.model.LiveSlots.DRUMS).playing)
         vm.stopLiveAll()
+        val all = com.pocketstudio.model.LiveSlots.ALL and com.pocketstudio.engine.NativeEngine.ALL_SLOTS
+        assertTrue("« ■ Tout » went to the engine", benchEngine.padCommandsHeard().any { it.startsWith("armLaunch $all ") && it.endsWith(" -1") })
         act("attends 4")
         val g = vm.liveGrid.value!!
         assertFalse("nothing waits any more: $g", g.hasPending)

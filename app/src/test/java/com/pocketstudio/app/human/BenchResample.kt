@@ -30,7 +30,8 @@ internal class BenchResample(private val vm: RhythmViewModel) : ResampleSource {
 
     private fun framesPerBar(): Double = 60.0 / vm.project.value.tempoBpm.coerceAtLeast(1.0) * vm.project.value.beatsPerBar * ResampleSource.RATE
 
-    private fun heard(): Boolean = vm.transport.value.playing || !vm.livePadsSoundingForTest.isNullOrEmpty()
+    /** Something sounds: the transport, or a Live pad as the engine says (A.16: the bench's engine plays them). */
+    private fun heard(): Boolean = vm.transport.value.playing || vm.padsSoundingNow().isNotEmpty()
 
     private fun frames(now: Long = SystemClock.uptimeMillis()): Long =
         if (startedAt < 0) 0L else minOf(max, (now - startedAt) * ResampleSource.RATE / 1000)

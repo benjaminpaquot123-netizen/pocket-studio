@@ -86,11 +86,12 @@ internal class BenchClips(
                 syncAt = -1.0
                 align()
             }
-            for (s in slots) {
+            for ((k, s) in slots.withIndex()) {
                 if (s.sample == 0L) continue
                 if (s.state == WAITING && beat + EPS_BEAT >= s.startBeat) {
                     s.state = PLAYING
                     s.voiceEnd = if (s.oneShot) at + ceil(s.frames / s.speed) * 1000.0 / RATE else -1.0
+                    if (s.oneShot && hits.size < SLOTS) hits.addLast(k)
                 } else if (s.state == PLAYING && s.oneShot && s.voiceEnd >= 0 && s.voiceEnd <= at + EPS_MS) {
                     s.state = OFF
                     s.voiceEnd = -1.0
@@ -201,6 +202,14 @@ internal class BenchClips(
     @Synchronized fun states(out: IntArray) {
         advance()
         for (k in out.indices) out[k] = slots.getOrNull(k)?.state ?: OFF
+    }
+
+    /** The hits that started sounding since the last call (pads, in order): a bench's ear hears a hit after it is over. */
+    private val hits = ArrayDeque<Int>()
+
+    @Synchronized fun hitsPlayed(): List<Int> {
+        advance()
+        return hits.toList().also { hits.clear() }
     }
 
     /** The clock's beat now (tests). */

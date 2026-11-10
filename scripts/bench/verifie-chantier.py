@@ -28,9 +28,12 @@
     docs/audits/ultra/portail/ (« fusion sans trace du portail »).
 (b) git log: a « vert: » commit closes the oldest open « rouge: » commit OF THE SAME TEST (same subject after
     the prefix, or a test the red names or adds that the green's message names). A green of another test closes
-    nothing. A green (not a merge) that takes @KnownDefect off a test (kept) whose « Class#method » its message names
-    is a pair on its own, when that guard was added by a « rouge: » commit or before the discipline began: that
-    guard, failing with the defect's message in the parent, was the red. A checked line of banc-fiable-journal.md (« - [x] 4.2 … », ids 4.x to 7.x, R.x, A.x) carries
+    nothing. A green (not a merge) that takes @KnownDefect off a test (kept, still @Test, never @Ignore) whose
+    « Class#method » its message names, and that touches code outside the tests (or says « sans code : <raison> »),
+    is a pair on its own, when that guard was put there by a « rouge: » commit naming the guarded test, or in an
+    ancestor of the discipline's first red (8f36fa3): that guard, failing with the defect's message in the parent,
+    was the red. The guard's origin is followed through renamed classes, reformatted annotations and moved files.
+    Commits are read from 8f36fa3 on by ancestry, never by date. A checked line of banc-fiable-journal.md (« - [x] 4.2 … », ids 4.x to 7.x, R.x, A.x) carries
     « preuve: rouge <sha> / vert <sha> » naming such a pair, or « preuve: script <path> » (a figure computed
     by a script that exists).
 (c) recette.json <-> verdicts: every « recette tel-NN » cited by an open undecided line exists in the
@@ -44,12 +47,13 @@ import os
 import re
 import subprocess
 import sys
-from datetime import datetime
+from functools import lru_cache
 
 TEST_ROOT = os.path.join("app", "src", "test", "java")
 PROOF = re.compile(r"([A-Z][A-Za-z0-9_]*)[#.]([a-z][A-Za-z0-9_]*)")
 ENGINE_PROOF = re.compile(r"(engine/host-tests/[A-Za-z0-9_./-]+)#([A-Za-z_][A-Za-z0-9_]*)")
-KNOWN_DEFECT = re.compile(r'@KnownDefect\(\s*"([^"]+)"[^)]*\)\s*(?:@[A-Za-z]+(?:\([^)]*\))?\s*)*fun\s+`?([A-Za-z0-9_]+)')
+# Positional or named id (« @KnownDefect("X", …) », « @KnownDefect(id = "X", …) »: review of « banc-fin », case E).
+KNOWN_DEFECT = re.compile(r'@KnownDefect\(\s*(?:id\s*=\s*)?"([^"]+)"[^)]*\)\s*(?:@[A-Za-z]+(?:\([^)]*\))?\s*)*fun\s+`?([A-Za-z0-9_]+)')
 
 
 def read_tsv(path):
@@ -510,10 +514,15 @@ def _commit(root, sha):
     return (h, subject, message, red_names(root, h, message) if subject.lower().startswith("rouge:") else set())
 
 
-# The rouge/vert discipline began with the first « rouge: » commit (8f36fa3, 2026-11-08 18:29 UTC): a guard added
-# before it could not come from a red, it counts as there before (Tour5AppProofTest's, 4168889).
-DISCIPLINE_SINCE = "2026-11-08T18:29:57+00:00"
-CLASS = re.compile(r"^\s*(?:(?:private|internal|public|abstract|open|data)\s+)*class\s+([A-Za-z0-9_]+)", re.M)
+# The rouge/vert discipline began with the first « rouge: » commit (8f36fa3, 2026-11-08 18:29 UTC): a guard added in
+# one of its ancestors could not come from a red, it counts as there before (Tour5AppProofTest's, 4168889). An ancestry,
+# not a date: GIT_COMMITTER_DATE sets a date at will (review of « banc-fin », case C). --debut-discipline in a toy.
+DISCIPLINE_START = "8f36fa3"
+# inner, sealed, enum classes and named objects too: a guard in « inner class Hidden » is Hidden's (review of
+# « banc-fin », m2 / case F2).
+CLASS = re.compile(r"^\s*(?:(?:private|internal|public|abstract|open|data|inner|sealed|enum|final|annotation|value)\s+)*"
+                   r"(?:class|object)\s+([A-Za-z0-9_]+)", re.M)
+TEST_DIRS = ("app/src/test/java", "app/src/androidTest/java")
 FUN = re.compile(r"\bfun\s+`?([A-Za-z0-9_]+)")
 
 
@@ -572,34 +581,85 @@ def _show(root, rev, path):
         return None
 
 
-def guard_from_red(root, sha, path, test):
-    """True when the @KnownDefect on test (« Class#method ») that commit sha lifts came from a « rouge: » commit, or
-    was added before the rouge/vert discipline began: the newest commit before sha that put it there (its parent
-    without it) is a red, or older than DISCIPLINE_SINCE. Any other origin (a « chore: », a guard never seen
-    added) is no red evidence (review of the « pads-live » lot, moyen)."""
+def guarded(root, rev, method):
+    """The « Class#method » of rev's test files (any file) that carry @KnownDefect on a function named method."""
     try:
-        log = _git(root, "log", "--no-merges", "--format=%H%x1f%s%x1f%cI", f"{sha}^", "--", path).splitlines()
+        listed = _git(root, "grep", "-l", "-F", "KnownDefect", rev, "--", *TEST_DIRS).splitlines()
     except (subprocess.SubprocessError, OSError):
+        return set()
+    found = set()
+    for line in listed:
+        text = _show(root, rev, line.split(":", 1)[1]) or ""
+        found |= {t for t in class_methods(text, True) if t.endswith("#" + method)}
+    return found
+
+
+@lru_cache(maxsize=None)
+def _guard_commits(root):
+    """The commits (not merges, newest first) whose diff adds or takes off a « KnownDefect » line in the tests."""
+    try:
+        return tuple(_git(root, "log", "--no-merges", "--format=%H", "-G", "KnownDefect", "--", *TEST_DIRS).split())
+    except (subprocess.SubprocessError, OSError):
+        return ()
+
+
+def _ancestor(root, a, b):
+    return subprocess.run(["git", "-C", root, "merge-base", "--is-ancestor", a, b], capture_output=True).returncode == 0
+
+
+def guard_origin(root, sha, method):
+    """(commit, its « Class#method » guarded) that put the guard on a function named method lifted by sha: the newest
+    commit before sha where a test file guards it and no test file of its parent does. A class renamed, an annotation
+    reformatted, a file moved: the parent already guards it, so that commit is no origin and the search goes on."""
+    for h in _guard_commits(root):
+        if h.startswith(sha) or not _ancestor(root, h, sha + "^"):
+            continue
+        now = guarded(root, h, method)
+        if now and not guarded(root, h + "^", method):
+            return h, now
+    return None
+
+
+def guard_from_red(root, sha, test):
+    """True when the @KnownDefect on test (« Class#method ») that commit sha lifts came from a « rouge: » commit that
+    names the guarded test, or from an ancestor of the discipline's start ([guard_origin]). Any other origin (a
+    « chore: », the red of another test, a guard never seen added) is no red evidence (reviews of « pads-live » and
+    « banc-fin »)."""
+    found = guard_origin(root, sha, test.partition("#")[2])
+    if found is None:
         return False
-    for line in log:
-        h, subject, date = line.split("\x1f", 2)
-        now, before = _show(root, h, path), _show(root, h + "^", path)
-        if now is not None and test in class_methods(now, True) and (before is None or test not in class_methods(before, True)):
-            return subject.lower().startswith("rouge:") or datetime.fromisoformat(date) < datetime.fromisoformat(DISCIPLINE_SINCE)
-    return False
+    origin, there = found
+    if _ancestor(root, origin, DISCIPLINE_START):
+        return True
+    red = _commit(root, origin)
+    return red is not None and red[1].lower().startswith("rouge:") and any(names(red[2], t) for t in there)
+
+
+def still_runs(text, method):
+    """The function keeps @Test and no @Ignore/@Disabled (review of « banc-fin », case F)."""
+    m = re.search(r"((?:@[A-Za-z.]+(?:\([^)]*\))?\s*)*)(?:(?:public|internal|suspend|open|override)\s+)*fun\s+`?"
+                  + re.escape(method) + r"\b", text)
+    return m is not None and re.search(r"@(?:org\.junit\.)?Test\b", m.group(1)) is not None \
+        and re.search(r"@(?:org\.junit\.)?(?:Ignore|Disabled)\b", m.group(1)) is None
 
 
 def known_defects_lifted(root, sha):
     """The tests (« Class#method ») a commit takes @KnownDefect off, the test kept (review of the « partage » lot, (c)):
     their guard was the red (KnownDefectRule: the test failed with the defect's message until this commit), provided
     the guard came from a red ([guard_from_red]). A test deleted is not one; a merge lifts nothing (review of the
-    « pads-live » lot, moyen: the lift must be a commit of its own)."""
+    « pads-live » lot, moyen: the lift must be a commit of its own). Review of « banc-fin » (B, F): the test still runs
+    (@Test, no @Ignore), and the commit touches code outside the tests and docs/, or says why not on a line
+    « sans code : <raison> »."""
     try:
         parents = _git(root, "rev-list", "--parents", "-n", "1", sha).split()[1:]
         if len(parents) != 1:
             return set()
         files = _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", sha + "^", sha).split()
+        message = _git(root, "show", "-s", "--format=%B", sha)
     except (subprocess.SubprocessError, OSError):
+        return set()
+    code = [f for f in files if not f.startswith(TEST_DIRS) and not f.startswith("docs/")]
+    if not code and not re.search(r"^sans code\s*:\s*\S", message, re.M | re.I):
         return set()
     lifted = set()
     for f in files:
@@ -609,7 +669,7 @@ def known_defects_lifted(root, sha):
         if before is None or after is None:
             continue
         gone = (class_methods(before, True) - class_methods(after, True)) & class_methods(after, False)
-        lifted |= {t for t in gone if guard_from_red(root, sha, f, t)}
+        lifted |= {t for t in gone if still_runs(after, t.partition("#")[2]) and guard_from_red(root, sha, t)}
     return lifted
 
 
@@ -620,13 +680,18 @@ def names(message, test):
     return re.search(r"(?<![A-Za-z0-9_])" + re.escape(cls) + r"[#.]" + re.escape(method) + r"(?![A-Za-z0-9_])", message) is not None
 
 
-def red_green_pairs(root, since="2026-11-07"):
+def red_green_pairs(root):
     """(b) Every bench repair is a « rouge: » commit (the guard, red) followed by a « vert: » commit (the fix) of the
     same test. A red whose test gets no green is a gap; so is a green that closes no red of its test, unless it takes
     @KnownDefect off a test whose class and method it names, a guard that came from a red (that guard was the red:
     [known_defects_lifted])."""
+    # The commits from the discipline's start on, by ancestry and parents first: a date (--since) let one antidated
+    # commit stop the walk and hide every green older than it (review of « banc-fin », case C, found by this lot's toy).
+    span = ["HEAD"]
+    if commit_exists(root, DISCIPLINE_START + "^"):
+        span = [f"{DISCIPLINE_START}^..HEAD"]
     try:
-        out = _git(root, "log", f"--since={since}", "--reverse", "--format=%x1e%h%x1f%s%x1f%B")
+        out = _git(root, "log", "--topo-order", "--reverse", "--format=%x1e%h%x1f%s%x1f%B", *span)
     except (subprocess.SubprocessError, OSError) as e:
         return [f"git log impossible : {e}"]
     gaps, open_reds = [], []
@@ -680,7 +745,10 @@ def main():
     ap.add_argument("--resume", default=None, help="selftest-resume.txt of the latest selftest")
     ap.add_argument("--sans-git", action="store_true", help="skip what reads git: the rouge/vert pairs, the journal's checked lines, the commits' existence")
     ap.add_argument("--preuves", metavar="ITEM", help="print the proofs read on that line of verdicts.tsv, and stop")
+    ap.add_argument("--debut-discipline", metavar="SHA", default=DISCIPLINE_START,
+                    help="the first « rouge: » commit (a guard added in one of its ancestors was there before); a toy's own")
     a = ap.parse_args()
+    globals()["DISCIPLINE_START"] = a.debut_discipline
     if a.preuves:
         sources = test_sources(a.root)
         for v in read_tsv(os.path.join(a.root, "docs", "audits", "ultra", "verdicts.tsv")):

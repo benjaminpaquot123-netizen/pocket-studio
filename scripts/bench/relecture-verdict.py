@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Audit « banc crédible » 2, P1: the fresh review's verdict, as fusion-equipes.sh reads it.
 
-  relecture-verdict.py [<replay id taken out of rejeux/> …] < review.md
+  relecture-verdict.py [<replay id taken out of rejeux/> …] [changé:<replay id changed> …] < review.md
 
 Accepted only when:
   - its LAST non-empty line is « Verdict : 0 bloquant, 0 grave » (« — fusion possible » may follow, nothing else): a
@@ -9,7 +9,8 @@ Accepted only when:
     « | 1 | bloquant | … » through (forge2);
   - no table row has a cell « bloquant » or « grave » unless the row says « corrigé » (not « non corrigé » / « pas
     corrigé »);
-  - each replay taken out of docs/audits/ultra/rejeux/ by the branch is named on a line « rejeu retiré : <id> : <raison> ».
+  - each replay taken out of docs/audits/ultra/rejeux/ by the branch is named on a line « rejeu retiré : <id> : <raison> »,
+    each one whose files it changes on a line « rejeu changé : <id> : <raison> » (review of the « portail » lot, M5).
 Prints one line per refusal; exit 1 when there is one. Standard library only."""
 import re
 import sys
@@ -81,7 +82,9 @@ def refusals(text, removed, changed=()):
 
 
 def main(argv):
-    found = refusals(sys.stdin.read(), argv[1:])
+    ids = argv[1:]
+    found = refusals(sys.stdin.read(), [i for i in ids if not i.startswith("changé:")],
+                     [i.split(":", 1)[1] for i in ids if i.startswith("changé:")])
     for r in found:
         print(r)
     return 1 if found else 0

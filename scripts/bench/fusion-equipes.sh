@@ -43,8 +43,12 @@ for zone in "${zones[@]}"; do
   # without « corrigé », and each replay the branch takes out of rejeux/ is named with its reason (relecture-verdict.py).
   base="$(git merge-base HEAD "eq/$tour-$zone")"
   removed="$(comm -23 <(replays "$base") <(replays "eq/$tour-$zone"))"
+  # Review of the « portail » lot (M5): a replay kept but whose files the branch changes (its oracle, its gestures)
+  # needs « rejeu changé : <id> : <raison> » too.
+  changed="$(comm -12 <(replays "$base") <(replays "eq/$tour-$zone") | while read -r id; do
+    git diff --quiet "$base" "eq/$tour-$zone" -- "docs/audits/ultra/rejeux/$id" || echo "changé:$id"; done)"
   # shellcheck disable=SC2086
-  why="$(printf '%s\n' "$text" | python3 -I scripts/bench/relecture-verdict.py $removed)" \
+  why="$(printf '%s\n' "$text" | python3 -I scripts/bench/relecture-verdict.py $removed $changed)" \
     || { echo "$zone: review refused: $why: not merged." >&2; exit 3; }
   # Only this script writes the portal's traces (D1): a branch never brings or changes one.
   touched="$(git diff --name-only "$base" "eq/$tour-$zone" -- "$traces_root")"

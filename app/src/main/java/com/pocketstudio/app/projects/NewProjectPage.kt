@@ -340,7 +340,7 @@ private fun QuickStyleCard(s: StarterWizard.Style, quick: QuickUi, ask: (String)
                     TextButton(onClick = { ask(START_CUSTOM + s.id) }, enabled = !busy, modifier = Modifier.testTag("quick_custom_${s.id}")) {
                         val quiet = if (busy) Neon.TextSecondary.copy(alpha = 0.5f) else Neon.TextPrimary.copy(alpha = 0.8f)
                         Icon(Icons.Filled.Tune, contentDescription = null, modifier = Modifier.size(16.dp), tint = quiet)
-                        Text(" " + tr("Pas à pas"), color = quiet, maxLines = 1)
+                        Text(" " + tr("Choisir ce style"), color = quiet, maxLines = 1)
                     }
                 }
             }

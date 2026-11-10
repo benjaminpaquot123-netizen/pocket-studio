@@ -497,7 +497,7 @@ internal fun PadLiveCard(onClick: () -> Unit) {
                 )
             }
             Text(
-                tr("Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite."),
+                tr("Des pads prêts à jouer, tes sons, des effets live. Ça sonne tout de suite."),
                 style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, maxLines = 3, overflow = TextOverflow.Ellipsis,
             )
         }

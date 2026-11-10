@@ -1045,6 +1045,14 @@ def rule_c_adversarial(d):
     own_red("GggProofTest#gggTest", P("GggProofTest"), "class GggProofTest {\n  inner class Hidden {\n" + g("gggTest", True) + "  }\n}\n")
     refused.append(("F2", commit("vert: ggg fixed (GggProofTest#gggTest)", P("GggProofTest"),
                                  "class GggProofTest {\n  inner class Hidden {\n" + g("gggTest", False) + "  }\n}\n", fix=True)))
+    # M3 (review of this lot): a chore's guard on SameBProofTest#sameName, laundered by the honest red of another
+    # class's test of the same name (SameAProofTest#sameName, guarded by its own red, still guarded).
+    own_red("SameAProofTest#sameName", P("SameAProofTest"), cls("SameAProofTest", g("sameName", True)))
+    commit("chore: guard b", P("SameBProofTest"), cls("SameBProofTest", g("sameName", True)))
+    refused.append(("M3", commit("vert: same fixed (SameBProofTest#sameName)", P("SameBProofTest"),
+                                 cls("SameBProofTest", g("sameName", False)), fix=True)))
+    accepted.append(("M3a", commit("vert: same fixed (SameAProofTest#sameName)", P("SameAProofTest"),
+                                   cls("SameAProofTest", g("sameName", False)), fix=True)))
     # Controls. G: honest (its own red, the green touches the app).
     own_red("HhhProofTest#hhhTest", P("HhhProofTest"), cls("HhhProofTest", g("hhhTest", True)))
     accepted.append(("G", commit("vert: hhh fixed (HhhProofTest#hhhTest)", P("HhhProofTest"), cls("HhhProofTest", g("hhhTest", False)), fix=True)))

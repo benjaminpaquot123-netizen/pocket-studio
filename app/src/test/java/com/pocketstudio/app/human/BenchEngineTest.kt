@@ -178,6 +178,51 @@ class BenchEngineTest {
         assertEquals(2 * (bar + 4_800), e.exportRenderFloat(t, bar, 4_800L).size.toLong())
     }
 
+    /** [ms] of the bench's clock go by (the main looper's, which the bench's engine reads). */
+    private fun pass(ms: Long) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
+
+    /** [p] opened with the bench's engine there before the app, as on a seat (and as a phone's). */
+    private fun openWithEngine(p: Project): Pair<RhythmViewModel, BenchEngine> {
+        val engine = BenchEngine()
+        NativeEngine.sink = engine
+        val vm = open(p)
+        val until = System.currentTimeMillis() + 10_000
+        while (vm.project.value.tempoBpm != p.tempoBpm) {
+            assertTrue("the project never opened", System.currentTimeMillis() < until)
+            idle(); Thread.sleep(5)
+        }
+        return vm to engine
+    }
+
+    /**
+     * Audit « banc crédible » A.9 (F4): one clock. With the bench's engine there, the play head shows what the engine says (as
+     * the app's pollLive does on a phone) and the take's clock is the engine's transport step. The head had a clock of its own:
+     * after a tempo change it counted the whole time since ▶ at the new tempo (16 steps at 120 BPM became 8 at 60 BPM) while
+     * the engine kept its 16.
+     */
+    @Test
+    fun thePlayHeadReadsTheEnginesClock() {
+        val (vm, engine) = openWithEngine(Project().copy(tempoBpm = 121.0))
+        vm.setTempo(120.0)
+        val head = BenchPlayhead()
+        vm.togglePlay()
+        idle()
+        assertTrue(vm.transport.value.playing)
+        head.tick(vm, android.os.SystemClock.uptimeMillis())  // the bench ticks it every 50 ms from ▶ on
+        pass(2_000)
+        head.tick(vm, android.os.SystemClock.uptimeMillis())
+        assertEquals("16 steps after 2 s at 120 BPM", 16, vm.takeClockForTest)
+        vm.setTempo(60.0)
+        head.tick(vm, android.os.SystemClock.uptimeMillis())
+        assertEquals("the play head keeps the steps played at 60 BPM", 16, vm.takeClockForTest)
+        assertEquals(16, vm.live.value.absoluteStep)
+        assertEquals("the take's clock is the engine's transport step", 16, engine.transportStep())
+        pass(1_000)  // 4 steps at 60 BPM
+        head.tick(vm, android.os.SystemClock.uptimeMillis())
+        assertEquals(20, vm.takeClockForTest)
+        assertEquals(20, vm.live.value.absoluteStep)
+    }
+
     @Test
     fun thePlayHeadMovesWithTheTempo() {
         val vm = open(Project(song = listOf(SongPart(0))).copy(tempoBpm = 120.0))

@@ -130,6 +130,61 @@ class BenchSongClockTest {
         assertEquals("micFinish gives those frames", st[1].toInt(), e.micFinish(take)!!.size)
     }
 
+    /**
+     * Audit « banc crédible » A.9 (F4): one clock. The transport's own step (NativeEngine.transportStep: where a Pad Live take
+     * and the launch lines count from) is the engine's, as Engine.cpp stores it on each step: a tempo change keeps the steps
+     * played (Sequencer.h only changes the step's length). It came from the bench's play head, which counted the whole time
+     * since ▶ at the new tempo (16 steps at 120 BPM read 8 at 60 BPM) and never from the engine itself.
+     */
+    @Test
+    fun transportStepKeepsItsStepsAcrossATempoChange() {
+        start()
+        play()
+        steps(16)
+        assertEquals("16 steps played at 120 BPM", 16, e.transportStep())
+        e.post(0L, TEMPO, 60f, 0, 0)
+        assertEquals("no jump back at 60 BPM", 16, e.transportStep())
+        ShadowSystemClock.advanceBy(Duration.ofMillis(1_000))  // 4 steps at 60 BPM
+        assertEquals(20, e.transportStep())
+        assertEquals(20.0, e.transportPosition(), 0.01)
+        stop()
+        assertEquals("stopped", -1, e.transportStep())
+        assertEquals(-1.0, e.transportPosition(), 0.0)
+    }
+
+    /** A.9 (F4): during the count-in the transport has no step yet (Engine.cpp's onStep returns before storing one). */
+    @Test
+    fun transportStepIsMinusOneDuringTheCountIn() {
+        start()
+        play(countInBars = 1)
+        steps(8)
+        assertEquals("counting in: no transport step", -1, e.transportStep())
+        assertEquals(-1.0, e.transportPosition(), 0.0)
+        assertEquals("half a bar before the « 1 »", -8.0, e.playPosition(), 0.01)
+        steps(8 + 8)
+        assertEquals("one second after the « 1 »", 8, e.transportStep())
+        assertEquals(8.0, e.transportPosition(), 0.01)
+    }
+
+    /**
+     * A.9 (F4), the count-in too: a take armed « on start » records from the transport's step 0 (Engine.cpp's onStep:
+     * recordOnStart_ ends there), so after the count-in the app asked for with ▶. The bench's microphone had a count-in of its
+     * own (2 s unless the bench set it): with two bars asked, it recorded a bar early.
+     */
+    @Test
+    fun aTakeWaitsForTheTransportsOwnCountIn() {
+        start()
+        val take = e.micStart(true, 60, 0)
+        assertEquals("armed before ▶: waiting", 0f, e.micStatus(take)[0], 0f)
+        play(countInBars = 2)
+        steps(24)  // 3 s: one bar and a half of the two counted in
+        assertEquals("still counting in: waiting, nothing recorded", 0f, e.micStatus(take)[0], 0f)
+        assertEquals(0f, e.micStatus(take)[1], 0f)
+        steps(8 + 8)  // the « 1 », then one second
+        assertEquals("recording since the « 1 »", 1f, e.micStatus(take)[0], 0f)
+        assertEquals("one second of it", 48_000f, e.micStatus(take)[1], 48_000f / 100)
+    }
+
     private companion object {
         const val TRANSPORT = 5
         const val TEMPO = 6

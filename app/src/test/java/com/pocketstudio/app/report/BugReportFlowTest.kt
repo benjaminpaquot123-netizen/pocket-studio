@@ -182,6 +182,12 @@ class BugReportFlowTest {
 
     @Test
     fun shareWritesTheZipAndOpensAndroidsShareMenu() {
+        // FileProvider keeps the folders of the first application it saw (a static cache; Robolectric gives each test its
+        // own): without this the share menu opened only when no test before this one in its JVM had shared a file (seen
+        // 2026-11-10 in a full run: « timed out waiting for the share menu »). As BugReportViewModelTest.
+        androidx.core.content.FileProvider::class.java.declaredFields
+            .filter { java.lang.reflect.Modifier.isStatic(it.modifiers) && Map::class.java.isAssignableFrom(it.type) }
+            .forEach { f -> f.isAccessible = true; (f.get(null) as MutableMap<*, *>).clear() }
         start()
         openFromPlus()
         compose.onNodeWithTag("bug_text").performTextInput("Le son coupe au refrain")

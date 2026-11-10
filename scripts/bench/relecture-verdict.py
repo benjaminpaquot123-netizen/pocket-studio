@@ -20,12 +20,14 @@ LAST = re.compile(r"^Verdict\s*:\s*0 bloquant,\s*0 grave(?:\s*[—-]+\s*fusion p
 # with the word (« bloquant (P1) », « Grave ⚠ », « Gravité : grave »); it is fixed only on a positive « corrigé »:
 # the row's last cell starting with it (« **Corrigé** en abc1234 »; not « corrigé ? non »), or « **corrigé** » in
 # bold in a bullet or in each paragraph under a heading. A count table (« | bloquant | 0 | ») is no finding.
-SEVERE = re.compile(r"^\W*(?:gravit[ée]\s*:\s*)?(bloquant|grave)s?(?![\w-])", re.I)
+SEVERE = re.compile(r"^\W*(?:très\s+)?(?:gravit[ée]\s*:\s*)?(bloquant|grave)s?(?![\w-])", re.I)
+# « G1 (grave) » in a heading or a bullet (second review of the lot, M8).
+SEVERE_PAREN = re.compile(r"\((?:très\s+)?(bloquant|grave)s?\)", re.I)
 FIXED_CELL = re.compile(r"^\W*corrigée?s?(?![\w-])(?!\s*\?)", re.I)
 # The word followed at once by « corrigé » (« bloquant (corrigé en 7c84433) », « Grave — **corrigé (3d5f335)** »,
 # « **Grave, corrigé.** »): the forms of the real reviews.
 SEVERE_FIXED = re.compile(r"^\W*(?:gravit[ée]\s*:\s*)?(?:bloquant|grave)s?[\s\W]*corrigée?s?(?![\w-])(?!\s*\?)", re.I)
-FIXED_BOLD = re.compile(r"\*\*\s*corrigée?s?\s*\*\*(?!\s*\?)", re.I)
+FIXED_BOLD = re.compile(r"(?<![Nn]on )(?<![Pp]as )(?<![Nn]on-)\*\*\s*corrigée?s?\s*\*\*(?!\s*\?)", re.I)
 NONE_AFTER = re.compile(r"^\W*(?:bloquants?|graves?)(?:\W+(?:et\s+)?(?:bloquants?|graves?))*\W*:?\s*aucun", re.I)
 
 
@@ -54,13 +56,13 @@ def refusals(text, removed, changed=(), evidence=()):
         if s.startswith("|"):
             out += table_refusals(s)
             continue
-        bullet = re.match(r"^[-*+]\s+(.*)$", s)
-        if bullet and SEVERE.match(bullet.group(1)) and not FIXED_BOLD.search(s) and not NONE_AFTER.match(bullet.group(1)) \
+        bullet = re.match(r"^(?:[-*+•]|\d+[.)])\s+(.*)$", s)
+        if bullet and (SEVERE.match(bullet.group(1)) or SEVERE_PAREN.search(bullet.group(1))) and not FIXED_BOLD.search(s) and not NONE_AFTER.match(bullet.group(1)) \
                 and not SEVERE_FIXED.match(bullet.group(1)):
             out.append(f"a blocking or grave bullet of the review is not « **corrigé** »: {s[:100]}")
             continue
         heading = re.match(r"^#{1,6}\s+(.*)$", s)
-        if heading and SEVERE.match(heading.group(1)):
+        if heading and (SEVERE.match(heading.group(1)) or SEVERE_PAREN.search(heading.group(1))):
             section = []
             for nxt in raw[i + 1:]:
                 if re.match(r"^\s*#{1,6}\s", nxt):
@@ -68,7 +70,7 @@ def refusals(text, removed, changed=(), evidence=()):
                 section.append(nxt)
             paragraphs = [p.strip() for p in "\n".join(section).split("\n\n") if p.strip()]
             if paragraphs and re.match(r"^\W*aucun", paragraphs[0], re.I):
-                continue
+                paragraphs = paragraphs[1:]
             open_ = [p for p in paragraphs if not FIXED_BOLD.search(p) and not p.startswith("Verdict")]
             if open_:
                 out.append(f"a finding under « {s[:40]} » is not « **corrigé** »: {open_[0][:80]}")

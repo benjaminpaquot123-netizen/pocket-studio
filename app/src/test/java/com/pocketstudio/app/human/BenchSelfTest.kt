@@ -102,6 +102,20 @@ class BenchSelfTest : HumanTester("selftest") {
         assertTrue("icons with no shape in IconShapes: $missing", missing.isEmpty())
     }
 
+    /**
+     * Audit « banc crédible » 2, R2 (a limit, written in the testers' instructions): the app's clock moves only with the
+     * gestures. While the tester reads and thinks (real time going by), a message that leaves after 6 s does not leave.
+     */
+    @Test
+    fun theAppsClockStandsStillWhileTheTesterReads() {
+        begin()
+        val before = SystemClock.uptimeMillis()
+        Thread.sleep(1500)
+        assertEquals("the app's clock while the tester reads", before, SystemClock.uptimeMillis())
+        act("attends 2")
+        assertTrue("« attends 2 » lets 2 s of the app go by", SystemClock.uptimeMillis() - before >= 2000)
+    }
+
     /** The screen's line drawn at the middle of the node tagged [tag] (± 2 px). */
     private fun lineAt(tag: String): String {
         val (x, y) = centerOf(tag) ?: error("no « $tag »\n" + screenLines().joinToString("\n"))

@@ -5,7 +5,9 @@
 
 (a) verdicts.tsv, four criteria:
     1. an « appli » line has a proof: a test without the bench that exists (never a Bench* test), or a dated ❌
-       trial on a device (« tel-NN … ❌ … 2026-11-08 » in one « ; » segment of its telephone or note cell);
+       trial on a device: an annotation « RECETTE tel-NN ❌ <device> … <date> » of its telephone or note cell that is
+       one of the owner's trials of retours-benjamin.md (without that file: any « tel-NN … ❌ … date » segment, and
+       the judge says the notes are absent). Every « tel-NN ✅/❌ » written on a line must be one of those trials;
     2. a « banc » line has a Bench* guard AND a proof without the bench (a test that exists outside Bench*):
        the bench judging itself is not a proof;
     3. the summary of the latest self-test is mandatory (« résumé absent » without it) and a guard is green

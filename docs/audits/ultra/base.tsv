@@ -30,7 +30,7 @@ dialogue:pad_sheet|drag handle / close sheet|sans-nom	corrigé	tour-0	banc en-rU
 dialogue:« Partager « Remix-morceau-20261 »|808 modernes / remix-morceau- m4a / brick a|incompris	corrigé	tour-0	appli (aa5fc52)
 tab_simple_Morceau|jouer|incompris	corrigé	tour-0	banc : idem (1b38738)
 audio_tracks/tab_Sons|audio_add|rien	banc	tour-1	tour-1 T1-29 5b2b940	tour-1
-audio_tracks|audio_record_0|rien	banc	tour-1,tour-5	tour-1 T1-29 5b2b940	tour-1
+audio_tracks|audio_record_0|rien	corrigé	tour-1,tour-5	tour-1 T1-29 5b2b940 ; tour-5 T5-Ab-27 banc (87b6693, 2e650ca)	tour-5
 dialogue:mode_step|jouer et 124 bpm|rien	corrigé	tour-1	tour-1 T1-21 b09096f	tour-1
 dialogue:project_name_field|champ nom du projet fenetre renommer|plantage	banc	tour-1	tour-1 déjà réglé (plantage ecris) c94967d	tour-1
 dialogue:remix_home|telecharger le modele 174 mo et choisir une chanson|rien	corrigé	tour-1	tour-1 T1-21 ae3ea45	tour-1

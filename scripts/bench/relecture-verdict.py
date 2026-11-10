@@ -15,26 +15,68 @@ import re
 import sys
 
 LAST = re.compile(r"^Verdict\s*:\s*0 bloquant,\s*0 grave(?:\s*[—-]+\s*fusion possible)?\s*\.?\s*$")
-FIXED = re.compile(r"(?<!non )(?<!pas )\bcorrigée?s?\b", re.I)
+# Review of the « portail » lot (M1): a finding is blocking or grave when a table cell, a bullet or a heading STARTS
+# with the word (« bloquant (P1) », « Grave ⚠ », « Gravité : grave »); it is fixed only on a positive « corrigé »:
+# the row's last cell starting with it (« **Corrigé** en abc1234 »; not « corrigé ? non »), or « **corrigé** » in
+# bold in a bullet or in each paragraph under a heading. A count table (« | bloquant | 0 | ») is no finding.
+SEVERE = re.compile(r"^\W*(?:gravit[ée]\s*:\s*)?(bloquant|grave)s?(?![\w-])", re.I)
+FIXED_CELL = re.compile(r"^\W*corrigée?s?(?![\w-])(?!\s*\?)", re.I)
+# The word followed at once by « corrigé » (« bloquant (corrigé en 7c84433) », « Grave — **corrigé (3d5f335)** »,
+# « **Grave, corrigé.** »): the forms of the real reviews.
+SEVERE_FIXED = re.compile(r"^\W*(?:gravit[ée]\s*:\s*)?(?:bloquant|grave)s?[\s\W]*corrigée?s?(?![\w-])(?!\s*\?)", re.I)
+FIXED_BOLD = re.compile(r"\*\*\s*corrigée?s?\s*\*\*(?!\s*\?)", re.I)
+NONE_AFTER = re.compile(r"^\W*(?:bloquants?|graves?)(?:\W+(?:et\s+)?(?:bloquants?|graves?))*\W*:?\s*aucun", re.I)
 
 
-def refusals(text, removed):
+def table_refusals(line):
+    cells = [c.strip() for c in line.strip().strip("|").split("|")]
+    severe = [c for c in cells if SEVERE.match(c)]
+    if not severe:
+        return []
+    numbers = [c.strip("* ") for c in cells if re.fullmatch(r"\**\s*\d+\s*\**", c)]
+    if numbers and len(cells) - len(severe) == len(numbers):
+        return [] if all(n == "0" for n in numbers) else [f"a count row of the review is not 0: {line.strip()[:100]}"]
+    if FIXED_CELL.match(cells[-1]) or all(SEVERE_FIXED.match(c) for c in severe):
+        return []
+    return [f"a {SEVERE.match(severe[0]).group(1).lower()} row of the review is not « corrigé » (last cell): {line.strip()[:100]}"]
+
+
+def refusals(text, removed, changed=()):
     out = []
     lines = [l.rstrip() for l in text.splitlines() if l.strip()]
     if not lines or not LAST.match(lines[-1].strip()):
         out.append("the review's last line is not « Verdict : 0 bloquant, 0 grave »"
                    + (f" (it is « {lines[-1].strip()[:80]} »)" if lines else " (empty review)"))
-    for line in lines:
+    raw = text.splitlines()
+    for i, line in enumerate(raw):
         s = line.strip()
-        if not s.startswith("|"):
+        if s.startswith("|"):
+            out += table_refusals(s)
             continue
-        cells = [c.strip().strip("*").strip().lower() for c in s.strip("|").split("|")]
-        severe = [c for c in cells if c in ("bloquant", "grave")]
-        if severe and not FIXED.search(s):
-            out.append(f"a {severe[0]} row of the review is not « corrigé »: {s[:100]}")
+        bullet = re.match(r"^[-*+]\s+(.*)$", s)
+        if bullet and SEVERE.match(bullet.group(1)) and not FIXED_BOLD.search(s) and not NONE_AFTER.match(bullet.group(1)) \
+                and not SEVERE_FIXED.match(bullet.group(1)):
+            out.append(f"a blocking or grave bullet of the review is not « **corrigé** »: {s[:100]}")
+            continue
+        heading = re.match(r"^#{1,6}\s+(.*)$", s)
+        if heading and SEVERE.match(heading.group(1)):
+            section = []
+            for nxt in raw[i + 1:]:
+                if re.match(r"^\s*#{1,6}\s", nxt):
+                    break
+                section.append(nxt)
+            paragraphs = [p.strip() for p in "\n".join(section).split("\n\n") if p.strip()]
+            if paragraphs and re.match(r"^\W*aucun", paragraphs[0], re.I):
+                continue
+            open_ = [p for p in paragraphs if not FIXED_BOLD.search(p) and not p.startswith("Verdict")]
+            if open_:
+                out.append(f"a finding under « {s[:40]} » is not « **corrigé** »: {open_[0][:80]}")
     for rid in removed:
         if not re.search(r"^rejeu retiré\s*:\s*" + re.escape(rid) + r"\s*:\s*\S", text, re.M):
             out.append(f"replay {rid} taken out of rejeux/ without « rejeu retiré : {rid} : <raison> » in the review")
+    for rid in changed:
+        if not re.search(r"^rejeu changé\s*:\s*" + re.escape(rid) + r"\s*:\s*\S", text, re.M):
+            out.append(f"replay {rid} changed in rejeux/ without « rejeu changé : {rid} : <raison> » in the review")
     return out
 
 

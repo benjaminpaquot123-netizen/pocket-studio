@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.pocketstudio.app.human.BenchTour4Test" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-10T13:10:55.396Z" hostname="vm" time="4.471">
+  <properties/>
+  <testcase name="liveStopsReachTheirLaunchLineOnTheBench" classname="com.pocketstudio.app.human.BenchTour4Test" time="4.465"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

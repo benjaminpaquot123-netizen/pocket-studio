@@ -1,0 +1,71 @@
+diff --git a/app/src/main/java/com/pocketstudio/app/export/SaveProjectZip.kt b/app/src/main/java/com/pocketstudio/app/export/SaveProjectZip.kt
+index 9f631f6..938efbd 100644
+--- a/app/src/main/java/com/pocketstudio/app/export/SaveProjectZip.kt
++++ b/app/src/main/java/com/pocketstudio/app/export/SaveProjectZip.kt
+@@ -37,7 +37,7 @@ class ProjectZipSender internal constructor(
+             id, name, saveFirst = { id != rhythmVm.projectId || rhythmVm.flushNow() },
+             failed = { if (toast) Toast.makeText(context, it, Toast.LENGTH_LONG).show() },
+         ) { zip ->
+-            if (WavExporter.share(context, listOf(zip.file), tr("Sauvegarder le morceau en .zip"))) saved = zip.file.name to zip.kept
++            if (WavExporter.share(context, listOf(zip.file), tr("Sauvegarder le morceau en .zip"))) saved = zip.file.name to false  /* MUTATION A.1 L1: the wiring forgets the copy */
+         }
+     }
+ }
+diff --git a/app/src/main/java/com/pocketstudio/app/export/ShareSongUi.kt b/app/src/main/java/com/pocketstudio/app/export/ShareSongUi.kt
+index c571180..ec871f5 100644
+--- a/app/src/main/java/com/pocketstudio/app/export/ShareSongUi.kt
++++ b/app/src/main/java/com/pocketstudio/app/export/ShareSongUi.kt
+@@ -45,6 +45,7 @@ fun ShareSongProgress(rhythmVm: RhythmViewModel, wav: Boolean = false, simple: B
+             if (WavExporter.share(context, files, tr("Partager mon morceau"))) {
+                 // G5: the Guide's « Prêt à partager ? » is decided (« C'est partagé »).
+                 rhythmVm.guide.markDone("share.ready", "keep")
++                rhythmVm.setTempo(rhythmVm.project.value.tempoBpm + 1.0)  // MUTATION A.1 L1: the wiring touches the song once shared
+                 // Remix testers (Mehdi): the share ended with no word from the app; the file is said ready, and where its copy is,
+                 // and (audit ultra round 1) its loudness, peak, format, length and target, seen when the share menu closes.
+                 val now = rhythmVm.export.value
+diff --git a/app/src/test/java/com/pocketstudio/app/human/BenchEngine.kt b/app/src/test/java/com/pocketstudio/app/human/BenchEngine.kt
+index e4cbf67..6052cdc 100644
+--- a/app/src/test/java/com/pocketstudio/app/human/BenchEngine.kt
++++ b/app/src/test/java/com/pocketstudio/app/human/BenchEngine.kt
+@@ -514,7 +514,7 @@ internal class BenchEngine : CommandSink {
+     override fun playPosition(): Double {
+         song.advance()
+         val at = transportNow()
+-        return if (transportSince < 0) -1.0 else if (at < 0) at else at - song.sceneStart
++        return if (transportSince < 0) -1.0 else at  // MUTATION A.1 F5: from ▶ (bebe0c9)
+     }
+ 
+     /** The transport's sixteenths since ▶ with the fraction, negative during the count-in; -1 stopped. The one clock. */
+@@ -535,11 +535,11 @@ internal class BenchEngine : CommandSink {
+      * the tempo of the moment).
+      */
+     /** Audit « banc crédible » A.8 (F2): the drum pattern's step playing (see [SongClock.currentStep]). Was never said: -1. */
+-    override fun currentStep(): Int = song.currentStep()
++    override fun currentStep(): Int = -1  // MUTATION A.1 F2: no currentStep (CommandSink's default, bebe0c9)
+ 
+-    override fun transportStep(): Int {
++    override fun transportStep(): Int {  // MUTATION A.1 F4: no count-in, the time counted at the tempo of the moment
+         song.advance()
+-        return stepsNow()
++        return if (transportSince < 0) -1 else ((SystemClock.uptimeMillis() - transportSince) * tempo / 15_000.0).toInt()
+     }
+ 
+     /**
+@@ -794,7 +794,7 @@ internal class BenchEngine : CommandSink {
+                     // a mark still waiting is dropped.
+                     swapAt = -1
+                     swaps++
+-                    freezeTakes(Math.round(due * 15.0 * RATE / tempo))
++                    // MUTATION A.1 F1: the song's end freezes no take (bebe0c9)
+                     transportSince = -1L
+                     zeroAt = -1L
+                     inSong = false
+@@ -840,7 +840,7 @@ internal class BenchEngine : CommandSink {
+     override fun absoluteStep(): Int {
+         song.advance()
+         val now = stepsNow()
+-        return if (now < 0) -1 else now - song.sceneStart
++        return if (now < 0) -1 else now  // MUTATION A.1 F5: from ▶, not from the scene's start (bebe0c9)
+     }
+ 
+     /** Banc fiable 3.2: steps since the song (re)started, as the top bar's « mesure N/… » reads them; -1 outside the song. */

@@ -1,6 +1,9 @@
 package com.pocketstudio.app.human
 
 import android.app.Application
+import android.content.Intent
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import android.content.ContentProvider
 import android.content.ContentUris
 import android.content.ContentValues
@@ -12,11 +15,12 @@ import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import androidx.test.core.app.ApplicationProvider
 import com.pocketstudio.app.export.MyExports
+import com.pocketstudio.app.export.ShareSongProgress
 import com.pocketstudio.app.export.WavExporter
 import com.pocketstudio.app.projects.CurrentProject
-import com.pocketstudio.app.projects.ProjectsViewModel
 import com.pocketstudio.app.rhythm.ExportFormat
 import com.pocketstudio.app.rhythm.RhythmViewModel
+import com.pocketstudio.app.ui.rememberSendProject
 import com.pocketstudio.engine.CommandSink
 import com.pocketstudio.engine.ExportResult
 import com.pocketstudio.engine.NativeEngine
@@ -34,6 +38,7 @@ import org.junit.runners.model.Statement
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
+import org.robolectric.android.controller.ActivityController
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import java.io.File
@@ -47,6 +52,12 @@ import java.time.Duration
  * - T5-ZIP: « Mes exports » after « Envoyer le projet » (.zip);
  * - T5-ALERTE: « Le morceau a changé depuis cet export » right after an export, nothing changed;
  * - T5-8MES: « Prêt à partager ? » exports the length chosen in Mix.
+ *
+ * Audit « banc crédible » A.13 (G1), a rule of method: a @KnownDefect guard goes through the code the team will fix. The
+ * guards of T5-ZIP and of T5-ALERTE (« Partager ») wrote the app's wiring again (a ProjectsViewModel made here, the
+ * Guide's card marked by the test): a fix in AppRoot or in ShareSongProgress would have left them « still there ». They
+ * now compose and call the app's own: [rememberSendProject]'s action and [ShareSongProgress]. `scripts/bench/mutation-l1.sh`
+ * replays the check (the app « fixed » in its wiring: both guards must say « no longer fails »).
  */
 @RunWith(RobolectricTestRunner::class)
 class Tour5AppProofTest {
@@ -148,8 +159,39 @@ class Tour5AppProofTest {
 
     @After
     fun clear() {
+        screen?.pause()?.stop()?.destroy()
+        screen = null
         NativeEngine.sink = null
         CurrentProject.set(app, RhythmViewModel.PROJECT_ID)
+    }
+
+    /** The screen a piece of the app's own interface is composed on (A.13), closed after the test. */
+    private var screen: ActivityController<ComponentActivity>? = null
+
+    /** [content] composed on a screen that is shown (resumed), as the app's is when its wiring runs. */
+    private fun compose(content: @androidx.compose.runtime.Composable () -> Unit) {
+        // FileProvider keeps the folders of the first application it saw (a static cache; Robolectric gives each test its
+        // own): without this the share menu opens for the first test of the run only (as BenchShareTest, BugReportViewModelTest).
+        runCatching {
+            androidx.core.content.FileProvider::class.java.declaredFields
+                .filter { java.lang.reflect.Modifier.isStatic(it.modifiers) && Map::class.java.isAssignableFrom(it.type) }
+                .forEach { f -> f.isAccessible = true; synchronized(f.get(null)) { (f.get(null) as MutableMap<*, *>).clear() } }
+        }
+        val made = Robolectric.buildActivity(ComponentActivity::class.java).setup()
+        screen = made
+        made.get().setContent { content() }
+        idle(100)
+    }
+
+    /** Android's share menus asked for so far (what each was to send), read from what the app started. */
+    private val menus = ArrayList<Intent>()
+
+    /** The share menu the app opened for a file of [type], or null: none yet. */
+    private fun shareMenu(type: String): Intent? {
+        while (true) menus += shadowOf(app).nextStartedActivity ?: break
+        return menus.filter { it.action == Intent.ACTION_CHOOSER }
+            .mapNotNull { @Suppress("DEPRECATION") it.getParcelableExtra<Intent>(Intent.EXTRA_INTENT) }
+            .firstOrNull { it.type == type }
     }
 
     private fun idle(ms: Long = 20) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
@@ -179,24 +221,24 @@ class Tour5AppProofTest {
     @Test
     fun myExportsListsTheProjectZipJustSent() {
         Robolectric.setupContentProvider(FakeMediaStore::class.java, MediaStore.AUTHORITY)
-        val id = "tour5-zip-${System.nanoTime()}"
-        projectCatalogSave(id, Project(name = "Envoi"))
+        val vm = open("Envoi")
         // Control: an audio export's copy (the app's own call) is listed by the fake media store.
         val wav = File(app.cacheDir, "controle.wav").apply { writeBytes(ByteArray(64)) }
         assertTrue("the fake media store takes the app's copy", WavExporter.copyToMusic(app, wav))
         assertEquals(listOf("controle.wav"), MyExports.list(app).map { it.name })
-        // « Envoyer le projet » as AppRoot does it: the .zip, then Android's share menu.
-        val projects = ProjectsViewModel(app)
-        var sent: File? = null
-        projects.exportZip(id, "Envoi") { file -> sent = file; WavExporter.share(app, listOf(file), "Envoyer le projet") }
-        until("the .zip was never made") { sent != null }
-        val zip = sent!!
-        assertTrue("the .zip exists: $zip", zip.isFile && zip.name.endsWith(".pocketstudio.zip"))
+        // « Envoyer le projet » by the app's own wiring (A.13): the action AppRoot gives « Prêt à partager ? », composed as
+        // there and called as its button calls it: the open project saved, its .zip made, Android's share menu opened.
+        var send: (() -> Unit)? = null
+        compose { send = rememberSendProject(vm) }
+        send!!()
+        until("Android's share menu never opened for the project's .zip") { shareMenu("application/zip") != null }
+        idle(200)
+        @Suppress("DEPRECATION")
+        val zip = shareMenu("application/zip")!!.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
+        assertTrue("what is sent is the project's .zip: $zip", zip?.lastPathSegment?.endsWith(".pocketstudio.zip") == true)
         val listed = MyExports.list(app).map { it.name }
-        assertTrue("« Mes exports » does not list the project just sent (${zip.name}): $listed", listed.any { it.endsWith(".zip") })
+        assertTrue("« Mes exports » does not list the project just sent (${zip?.lastPathSegment}): $listed", listed.any { it.endsWith(".zip") })
     }
-
-    private fun projectCatalogSave(id: String, p: Project) = ProjectStore(File(app.filesDir, "projects")).save(id, p)
 
     /** T5-ALERTE (seat C c 30): « Prêt à partager ? » › Partager, the share menu opened: no « a changé » warning, nothing changed. */
     @KnownDefect("T5-ALERTE", "once the share menu opened, nothing changed in the song")
@@ -207,8 +249,11 @@ class Tour5AppProofTest {
         vm.shareSong(ExportFormat.Wav, title = "Alerte")
         until("the share never ended") { !vm.export.value.running && vm.export.value.files.isNotEmpty() }
         assertFalse("stale right after the export", vm.export.value.staleFor(vm.project.value))
-        // What ShareSongProgress does once Android's share menu opened (G5: the Guide's card « Prêt à partager ? » done).
-        vm.guide.markDone("share.ready", "keep")
+        // The app's own share window (A.13), composed as AppRoot composes it wherever « Partager » is touched: it takes the
+        // song that waits (a share made while the app was not shown waits for it), opens Android's share menu, and does
+        // what the app does once that menu is open.
+        compose { ShareSongProgress(vm, wav = true) }
+        until("Android's share menu never opened for the song") { shareMenu("audio/wav") != null }
         idle(200)
         assertFalse("« Le morceau a changé depuis cet export » once the share menu opened, nothing changed in the song " +
             "(guide share.ready = ${vm.project.value.guide.statusOf("share.ready")})", vm.export.value.staleFor(vm.project.value))

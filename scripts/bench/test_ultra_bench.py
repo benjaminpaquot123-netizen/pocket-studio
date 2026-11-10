@@ -1572,6 +1572,10 @@ def fusion_toy(d, name):
     write(os.path.join(bench, "rejeu-defauts.sh"), FUSION_REJEUX)
     write(os.path.join(bench, "gradle-file.sh"), '#!/usr/bin/env bash\necho "gradle $*" >> "$PS_TOY_CALLS"\n')
     write(os.path.join(bench, "tampon.sh"), "#!/usr/bin/env bash\ncase \"$1\" in verifie) exit 1 ;; esac\n")
+    # The judge on the toy: says whether it saw a merge's traces (fusion.txt) in the working tree.
+    write(os.path.join(bench, "verifie-chantier.py"), "import glob, sys\n"
+          "print('traces vues' if glob.glob('docs/audits/ultra/portail/*/fusion.txt') else 'fusion sans trace du portail')\n"
+          "print('chantier : 0 écarts')\n")
     for n in ("fusion-equipes.sh", "selftest.sh", "rejeu-defauts.sh", "gradle-file.sh", "tampon.sh"):
         os.chmod(os.path.join(bench, n), 0o755)
     write(os.path.join(root, "docs", "audits", "ultra", "rejeux", "t1-clavier", "start.txt"), "lang=fr\n")
@@ -1704,6 +1708,8 @@ def portal_traces(d):
     fusion = git_toy(root, "show", f"HEAD:{folder}/fusion.txt")
     check(f"fusion: {merge}" in fusion and "branche: eq/tour-9-traces" in fusion and f"relu: {sha}" in fusion, "fusion.txt names the merge, the branch, the review:\n" + fusion)
     check(git_toy(root, "status", "--porcelain", "--untracked-files=no").strip() == "", "nothing left to commit")
+    judged = git_toy(root, "show", f"HEAD:{folder}/selftest-chantier.txt")
+    check("traces vues" in judged, "the judge kept in the traces ran with the traces there (no « fusion sans trace » of this very merge):\n" + judged)
 
     # The judge: merges under the rule need their traces; lots from round 6 on need theirs.
     jroot = judge_root(d, "juge-traces")

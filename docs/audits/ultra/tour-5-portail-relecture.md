@@ -1,9 +1,9 @@
-# Lot banc « portail » : relecture neuve
-Relu : 79a092a6133d8059158c3696887a5a504bc0b55b
+# Lot banc « portail » : deuxième relecture neuve (correctif de G1, M1-M5, 23e écart)
+Relu : e11c6d0da3c9b817d92c5ef18f08deed53cb9c67
 
-Relecteur neuf (n'a pas écrit ce code), 2026-11-10. Lus : `tour-5-portail-rapport.md`, `audit-banc2/portail-et-scripts.md`, `audit-banc2/depot.md`, `git log f1ff40b..79a092a6` et le diff de `scripts/bench/` (fusion-equipes.sh, relecture-verdict.py, tampon.sh, selftest.sh, selftest-verdict.py, selftest-quarantaine.txt, verifie-chantier.py, sortie-de-siege.py, test_ultra_bench.py). Expériences dans deux clones jetables sous le scratchpad (`relecture-portail/clone`, `clone2`), supprimés à la fin ; aucune branche créée dans le dépôt partagé ; aucun Gradle lancé (le selftest est remplacé par un bouchon dans le clone, commit « STUB », pour tester la porte du portail seule). Atelier `eq-tour-5-realisme` lu seulement.
+Relecteur neuf (n'a écrit ni le code ni la première relecture), 2026-11-10. Lus : la première relecture (en annexe), la section « Après relecture » de `tour-5-portail-rapport.md`, `git log 93f6719f..e11c6d0d` et son diff dans `scripts/bench/` (le contenu venu de fx-int par 04f5eaa9 ignoré). Expériences dans un clone jetable (`scratchpad/relecture-portail2/clone`, supprimé à la fin, aucune branche dans le dépôt partagé) ; aucun Gradle ; atelier `eq-tour-5-realisme` lu seulement.
 
-En bref : les quatre forges de l'audit sont bien refusées, le cas honnête passe, les paires rouge/vert sont honnêtes. Mais un résumé inventé passe encore le juge avec un tampon écrit à la main (deux lignes, sans aucun XML) : le constat P3 de l'audit n'est pas fermé, contrairement à ce que dit le rapport.
+En bref : G1 tel qu'écrit est fermé (le tampon de deux lignes est refusé), M1 à M5 tiennent et chaque correction a un test qui rougit si on la retire. Mais la nouvelle preuve « rouges-constates/<sha>/ » blanchit un vert sans rouge avec deux fichiers écrits à la main, pour un test qui n'existe même pas, et rien ne la voit au portail : c'est le même défaut que G1, déplacé. Grave.
 
 ## Constats
 
@@ -13,7 +13,70 @@ Aucun.
 
 ### Grave
 
-**G1. Résumé inventé + tampon écrit à la main : le juge l'accepte (P3 de l'audit rejoué, il passe).** `unsealed()` (verifie-chantier.py) ne vérifie dans `selftest.ok` que deux lignes, `resume: <sha256 du résumé>` et `code: <arbre>`, toutes deux calculables par n'importe qui ; quand `junit/` est absent à côté du résumé, rien d'autre n'est demandé (ni `tampon.sh verifie`, ni XML). L'aide de test `seal_resume` de `test_ultra_bench.py` écrit d'ailleurs exactement ce tampon de deux lignes : les tests codifient que le juge accepte un tampon que `tampon.sh verifie` refuse. Le rapport dit « un résumé de tests inventés ne passe plus » et place la barre de la forge à « fabriquer des XML » (P2) : pour le juge, il n'en faut aucun.
+**G2. La preuve « rouge constaté » se fabrique à la main et blanchit un vert sans rouge, même d'un test inexistant.** `red_seen()` (verifie-chantier.py) accepte un vert dès que `docs/audits/ultra/rouges-constates/<sha complet du vert>/` contient un `rouge.txt` (« parent: » = le parent du vert, « test: Classe#méthode » nommé par le vert) et un XML où un `<testcase>` de ce nom a un `<failure>`, et que le vert ne touche aucun fichier de test. Rien ne vérifie que le test existe (ni dans le parent ni dans le vert), qu'il tourne, que le XML vient d'un vrai Gradle, ni que la relecture neuve a vu ou rejoué ce rouge ; le portail ne regarde pas ce dossier. Le rapport dit « le juge revient à 22 sans être affaibli » : il l'est, au prix de deux fichiers texte. Preuve (clone, tête e11c6d0d) : un commit « vert: the made-up fix (NoSuchTest#neverExisted) » qui ajoute une ligne de commentaire à un `.kt` de `app/src/main`, puis un commit qui ajoute `rouges-constates/<sha>/rouge.txt` (deux lignes) et `f.xml` (une ligne : `<testsuite><testcase classname="x.NoSuchTest" name="neverExisted"><failure message="made up"/></testcase></testsuite>`) :
+
+```
+avant la preuve : 1 ligne « neverExisted » dans le juge (vert sans rouge)
+après la preuve : 0 ligne « neverExisted » ; chantier : 23 écarts (22 + « résumé absent », comme sur la tête nue)
+```
+
+C'est la barre de G1 (forge sans Gradle, quelques lignes), mais commitée, donc durable sur main, et sans le filet du portail (qui refuse une trace écrite par une branche, pas une preuve de rouge). Correction proposée (≈ 1 h) : (a) le test nommé doit exister avec `@Test` et sans `@Ignore` dans le parent et dans le vert (`class_methods`, paramètre entre crochets ôté) ; (b) un dossier `rouges-constates/` ajouté par une branche exige dans la relecture neuve une ligne « rouge constaté : <sha> : <comment il a été rejoué> », lue par `relecture-verdict.py` comme « rejeu retiré » (le relecteur rejoue ou dit pourquoi) ; (c) un test « forge » dans `red_seen_in_a_run` : XML d'un test absent des sources = refusé. Non corrigé.
+
+### Moyen
+
+**M6. Une fausse trace du portail, commitée par une branche, redonne un résumé vert sans aucun XML (variante 2 de G1).** `committed_trace()` ne vérifie que le chemin (`docs/audits/ultra/portail/…`) et le sujet du dernier commit (« Portal traces of the merge … »), que tout le monde peut écrire. Preuve (clone) : le résumé et le tampon de deux lignes de la forge G1 copiés dans `docs/audits/ultra/portail/2026-11-10-tour-9-faux/`, commit « Portal traces of the merge of faux (tour-9) », `verifie-chantier.py --resume <ce résumé>` → `chantier : 22 écarts`, aucune « pas verte », aucun « résumé refusé ». Le portail refuse une branche qui touche ce dossier (vérifié par la première relecture) : la forge ne trompe qu'un juge lancé hors du portail (atelier, rapport d'équipe) ou une fusion faite à la main (m1 d'alors). Correction : la trace n'est lue que si le commit qui la pose a pour parent une fusion « Merge team … » dont `fusion.txt` nomme le sha, ou ne plus lire de trace comme résumé (garder les XML dans la trace).
+
+**M7. Des XML fabriqués redonnent toujours un résumé vert, scellé, que `tampon.sh verifie` accepte (variante 1 de G1).** C'est la barre que la première relecture proposait et que le rapport annonce (« la forge reste possible localement ») ; le prix, mesuré : un script de 20 lignes qui écrit un `TEST-<classe>.xml` par classe attendue (`selftest-attendus.py --root .`, 28 classes) avec un `<testcase>` vert inventé, plus un `<testcase>` vert par garde ; `selftest-verdict.py` en fait le résumé (« 40 verts, 0 rouges »), `tampon.sh ecris` → 0, `tampon.sh verifie` → 0, juge → `chantier : 22 écarts`. Aucun Gradle. Le portail relance son propre selftest, donc rien n'arrive sur main par là. Durcissement possible : comparer les `<testcase>` aux fonctions `@Test` des sources (nombre et noms par classe), pas seulement les classes.
+
+**M8. M1 corrigé pour les formes demandées, pas pour toutes.** Script `m1.py` (dernière ligne « Verdict : 0 bloquant, 0 grave — fusion possible ») : REFUSÉES à bon droit, en cellule `grave`, `Grave`, `GRAVE`, `grave (G1)`, `**grave**`, `graves`, `bloquant (P1)`, `Gravité : grave`, dernière cellule `corrigé ? non` ou `non corrigé`, « corrigé » dans une autre cellule que la dernière ; en puce `- grave …`, `- **Grave** …`, `- GRAVE (G1) …`, `**non corrigé**` ; en titre `Grave`, `GRAVE`, `Grave (G1)`, `Graves`. ACCEPTÉS à bon droit : dernière cellule `**Corrigé** en abc1234`, cellule `grave (corrigé en abc1234)`, puce ou paragraphe avec `**corrigé**`, `Aucun.` sous le titre, décomptes « bloquant 0 / grave 0 » (même en gras) ; « grave 1 » en décompte est refusé. ACCEPTÉS encore à tort : puce `pas **corrigé**`, paragraphe `Non **corrigé**.` ou `Pas **corrigé**.` (le gras suffit, la négation devant n'est pas lue) ; titre « Grave » dont le premier paragraphe est `Aucun.` suivi d'un vrai constat ; liste numérotée `1. grave …` ou `• grave …` ; titre `G1 (grave)` ou `Constats graves` ; puce `- **G1 (grave)** …` ; paragraphe simple `Grave : …` ; cellules `très grave`, `Gravissime`, `critique`. La dernière ligne reste la vraie barrière (elle tient) ; ce contrôle est une aide contre l'incohérence, à décrire comme telle. Les blocs de code ne sont pas reconnus (une ligne `| 1 | grave |` dans un bloc ```` ``` ```` fait refuser : prudent).
+
+### Mineur
+
+- **m6. Règle (c) : une classe renommée n'est pas suivie en pratique.** `_guard_commits` liste les commits par `git log -G KnownDefect` : un commit qui renomme seulement la classe ne change pas la ligne `@KnownDefect`, il n'est donc jamais examiné, et la branche « renamed » de `guard_origin` ne sert que si le renommage touche aussi l'annotation. Contrôle ajouté à la main dans `rule_c_adversarial` (rouge honnête de `RenProofTest#renTest`, « chore: » qui renomme la classe en `RenNewTest`, vert qui lève la garde et touche l'appli) : `FAIL: control R is a pair` (refusé). Sens prudent (faux refus, jamais une forge acceptée) ; deux mutations de cette branche (« renommé = pas d'origine », « renommé = origine ») laissent la suite verte : elle n'est pas testée. Le docstring et le rapport (« classe renommée suivie vers son ancien nom ») disent plus que le code.
+- **m7.** Le `trap ERR` de M2 ne couvre que les commandes simples (pas d'échec dans une substitution `$(…)` de l'écriture de `fusion.txt`, pas de `set -E`) ; suffisant pour le cas de la première relecture (`cp` sans `selftest.ok`), rejoué par le test.
+- **m8.** `relecture-verdict.py` exige « **corrigé** » en gras sous un titre « Grave » : `corrigé en abc1234` sans gras est refusé (essai sur la relecture « réalisme » ci-dessous). Prudent, mais à écrire dans la consigne du relecteur.
+
+## Réponses aux cinq questions
+
+1. **G1 fermé tel qu'écrit.** Forge de la première relecture rejouée sur e11c6d0d (12 « vert : » recopiés des « pas verte », `code testé :`, tampon `resume:` + `code:`) → `résumé refusé : ni résultats JUnit à côté (junit/), ni trace du portail commitée par « Portal traces of the merge … » : un tampon sans eux s'écrit à la main`, `chantier : 39 écarts` (22 + 16 « pas verte » + le refus). Passent encore : XML fabriqués (M7, 20 lignes de Python) et fausse trace commitée (M6, un commit), tous deux arrêtés par le portail ; et le même défaut dans la nouvelle preuve de rouge (G2), qui, lui, passe le portail.
+2. **M1** : toutes les formes demandées sont refusées (cellule, puce, titre, « Grave », « GRAVE », « grave (G1) ») ; un grave dit **corrigé** est accepté ; « | grave | 0 | » est accepté. Restes : M8. **Relecture « réalisme »** (`eq-tour-5-realisme`, c18af300), dernière ligne seule passée à « 0 grave » : REFUSÉE (`a finding under « ### Grave » is not « **corrigé** »: **G1. L'état des pads …`), à bon droit puisque rien n'y dit G1 corrigé. Avec `(**corrigé** en abc1234)` dans le paragraphe de G1 : acceptée (exit 0). Avec `(corrigé en abc1234)` sans gras : refusée (m8).
+3. **Mutations** (chacune appliquée seule dans le clone, suite complète relancée, fichier restauré) :
+   - M2, `trap undo_merge ERR` retiré → `FAIL: a failure while writing the traces undoes the merge, nothing left`.
+   - M3, origine suivie par nom de méthode seul (ancien code) → `FAIL: case M3 of judge_adv2 is refused`.
+   - M4, classes attendues relues dans le lot (`$lot/selftest-attendus.txt`) → `FAIL: results of one test where the self-test expects its classes: no stamp`.
+   - M5, `changed` jamais rempli → `FAIL: a replay changed without « rejeu changé » is refused`.
+   - G1, branche `committed_trace` neutralisée → `FAIL: a stamp written by hand without JUnit results is refused (G1)`.
+   - M1, puces et titres non lus → `FAIL: an open blocking or grave finding is refused: - **Bloquant** : …`.
+   - 23e écart, `red_seen` qui rend toujours False → `FAIL: a green whose red was seen in a run, its XML kept, is a pair`.
+   - Seules exceptions : les deux mutations de la branche « classe renommée » (m6).
+4. **« rouges-constates/<sha>/ » : oui, elle blanchit un vert sans rouge** (G2), pour le prix de deux fichiers texte et d'un commit, sans Gradle, sans même que le test existe ; le seul frein est qu'elle se voit dans le diff, si le relecteur neuf la regarde. La preuve réelle (dd31ec4b, TutoJourneyTest#theWholeCourse[techno Pro], rejouée sur b5bf7b1f) est cohérente : parent juste, le vert ne touche pas les tests.
+5. **Juge sur l'historique réel** (clone à e11c6d0d) : sans résumé, `chantier : 23 écarts` = 22 + « résumé absent » ; avec un résumé accepté (lot M7), `chantier : 22 écarts`. Comparé (sha ôtés, lignes « pas verte » et refus de résumé à part) au juge de 93f6719f : seule différence, la ligne `dd31ec4b « vert: TutoJourneyTest#theWholeCourse[techno Pro] … » : vert sans rouge` disparue. `python3 -I scripts/bench/test_ultra_bench.py` → `ultra bench scripts: OK` (28 s).
+
+## Ce qui tient
+
+- G1 tel qu'écrit, M2, M3 (cas « même nom, autre classe » refusé, M3a honnête accepté), M4, M5 : corrigés, chacun avec sa paire `rouge:`/`vert:` et un test qui rougit à la mutation.
+- Le portail refuse toujours une branche qui écrit dans `docs/audits/ultra/portail/` ; il relance le selftest sur le code fusionné (les forges M6 et M7 n'y passent pas).
+- `seal_resume` fabrique désormais `junit/` et le tampon complet : les tests ne codifient plus le tampon de deux lignes.
+
+## Première relecture (79a092a6)
+
+Relu : 79a092a6133d8059158c3696887a5a504bc0b55b
+
+Relecteur neuf (n'a pas écrit ce code), 2026-11-10. Lus : `tour-5-portail-rapport.md`, `audit-banc2/portail-et-scripts.md`, `audit-banc2/depot.md`, `git log f1ff40b..79a092a6` et le diff de `scripts/bench/` (fusion-equipes.sh, relecture-verdict.py, tampon.sh, selftest.sh, selftest-verdict.py, selftest-quarantaine.txt, verifie-chantier.py, sortie-de-siege.py, test_ultra_bench.py). Expériences dans deux clones jetables sous le scratchpad (`relecture-portail/clone`, `clone2`), supprimés à la fin ; aucune branche créée dans le dépôt partagé ; aucun Gradle lancé (le selftest est remplacé par un bouchon dans le clone, commit « STUB », pour tester la porte du portail seule). Atelier `eq-tour-5-realisme` lu seulement.
+
+En bref : les quatre forges de l'audit sont bien refusées, le cas honnête passe, les paires rouge/vert sont honnêtes. Mais un résumé inventé passe encore le juge avec un tampon écrit à la main (deux lignes, sans aucun XML) : le constat P3 de l'audit n'est pas fermé, contrairement à ce que dit le rapport.
+
+### Constats
+
+#### Bloquant
+
+Aucun.
+
+#### Grave
+
+**G1. Résumé inventé + tampon écrit à la main : le juge l'accepte (P3 de l'audit rejoué, il passe).** **corrigé** (68d0adc7 : le tampon de deux lignes est refusé, voir la question 1 ci-dessus ; G2, M6 et M7 pour ce qui passe encore). `unsealed()` (verifie-chantier.py) ne vérifie dans `selftest.ok` que deux lignes, `resume: <sha256 du résumé>` et `code: <arbre>`, toutes deux calculables par n'importe qui ; quand `junit/` est absent à côté du résumé, rien d'autre n'est demandé (ni `tampon.sh verifie`, ni XML). L'aide de test `seal_resume` de `test_ultra_bench.py` écrit d'ailleurs exactement ce tampon de deux lignes : les tests codifient que le juge accepte un tampon que `tampon.sh verifie` refuse. Le rapport dit « un résumé de tests inventés ne passe plus » et place la barre de la forge à « fabriquer des XML » (P2) : pour le juge, il n'en faut aucun.
+
+##### Preuve d'alors (G1)
 
 Preuve (clone, tête 79a092a6) : les 16 « vert : » recopiés des « pas verte » du juge, puis :
 
@@ -31,7 +94,7 @@ verifie=1
 
 (Sans le tampon : `chantier : 39 écarts`, dont 16 « pas verte » et « résumé refusé ».) Correction proposée (≈ 0,5 h) : le juge ne lit un résumé que s'il a son `junit/` et que `tampon.sh resultats` passe (même barre que P2), ou s'il est une trace du portail commitée (`docs/audits/ultra/portail/…`, ajoutée par un commit « Portal traces of the merge … ») ; `seal_resume` doit fabriquer un `junit/` au lieu du tampon de deux lignes, et un cas « tampon écrit à la main, sans junit » refusé dans `judge_refuses_unsealed_summary`.
 
-### Moyen
+#### Moyen
 
 **M1. La lecture des lignes de tableau de la relecture se contourne par une autre écriture, et refuse un tableau de décompte honnête.** `relecture-verdict.py` ne voit une cellule que si elle vaut exactement « bloquant » ou « grave », et tient pour « corrigé » toute ligne où le mot apparaît (sauf juste après « non » / « pas » suivi d'une espace). Avec la dernière ligne « Verdict : 0 bloquant, 0 grave — fusion possible », sont ACCEPTÉES (essai direct du script) : cellule `bloquant (P1)` ; `Gravité : grave` ; `Grave ⚠` ; `bloquant, ouvert` ; ligne avec `pas encore corrigé` ; avec `non-corrigé` ; avec `corrigé ? non` ; avec `à corriger (les points corrigés sont plus bas)` ; une puce `- **Bloquant** : … (non corrigé).` ; un titre `### Bloquant` suivi d'un constat. Une branche réelle (bouchon de selftest) avec `bloquant (P1)` dans le tableau et un `tampon.sh` qui sort 0 : `n1: merged (3b682bc0), traces in docs/audits/ultra/portail/2026-11-10-tour-9-n1`, `exit=0`. À l'inverse, un tableau de décompte honnête (lignes `bloquant` / `0` et `grave` / `0`) est refusé (« a bloquant row of the review is not « corrigé » »), refus sans danger mais à tort. La règle sûre reste la dernière ligne (elle tient) ; le contrôle des tableaux est une aide, à décrire comme telle, ou à durcir (mot « bloquant »/« grave » au début d'une cellule ; « corrigé » cherché dans la dernière cellule seulement ; ligne de décompte « | bloquant | 0 | » permise).
 
@@ -61,7 +124,7 @@ Le rapport ne voit que le sens prudent (faux refus). Correction : suivre `Classe
 
 **M5. Un rejeu vidé passe le portail sans un mot.** Le portail exige une raison pour un rejeu retiré de `rejeux/`, mais pas pour un oracle changé dans le dossier : branche qui remplace `rejeu.absent=Rien n'a été joué pendant la prise` par `rejeu.absent=zzz texte jamais affiche` dans `rejeux/t4-26-prise-clavier/oracle.txt`, relecture minimale : `n5: merged (fb90681c)`, `exit=0` (bouchon de selftest et de rejeux). Le rejeu « tient » alors toujours. Correction : traiter une modification de `oracle.txt`/`start.txt`/`cmd-*` d'un rejeu comme un retrait (ligne « rejeu changé : <id> : <raison> » exigée).
 
-### Mineur
+#### Mineur
 
 - **m1.** « fusion sans trace du portail » ne voit que les commits dont le sujet commence par « Merge team ». Fusion à la main `Merge eq/tour-9-n5 by hand` : `0` ligne « sans trace » ; la même avec le sujet « Merge team n5 … » : `f02815c4 … : fusion sans trace du portail`. Un squash ou une avance rapide ne se voient pas non plus.
 - **m2.** `tampon.sh empreinte` (seul contrôle de `verifie`, donc de `human-tester.sh`) ne voit pas un fichier marqué `--skip-worktree` puis modifié : `skip-worktree: empreinte NON-VU code vu`. Geste délibéré ; `tampon.sh code` le voit.
@@ -69,7 +132,7 @@ Le rapport ne voit que le sens prudent (faux refus). Correction : suivre `Classe
 - **m4.** Pour le fusionneur : cette branche entre en conflit avec fx-int (`03b6fd52`, « bloquants » déjà fusionné) sur `docs/DECISIONS.md` (ajouts des deux côtés, union sans perte vérifiée dans le clone). Une fois fx-int pris, le juge compte 23 écarts anciens et non 22 : le 23e, `dd31ec4b « vert: TutoJourneyTest#theWholeCourse[techno Pro] … » : vert sans rouge`, vient du lot « bloquants » et l'ancien juge de fx-int le donne aussi (mêmes lignes, ordre à part, `diff` des ensembles vide).
 - **m5.** Une équipe qui reprend fx-int après sa relecture (conflit d'ajout dans DECISIONS, PLAN-RESTE, journal) est refusée par la règle « changé après la relecture » (`realisme: changed after the review (52b502be…): docs/DECISIONS.md docs/audits/ultra/PLAN-RESTE.md docs/audits/ultra/banc-fiable-journal.md: not merged.`). Règle d'avant ce lot, non aggravée ; une relecture qui nomme le commit de reprise passe (voir plus bas). « bloquants » l'avait contournée en portant ses lignes dans fx-int d'abord.
 
-## Ce qui tient (rejoué)
+### Ce qui tient (rejoué)
 
 - **Forges de l'audit**, clone (fx-int `03b6fd52` + ce lot + bouchon de selftest) : P1 forge2 (`tampon.sh` qui sort 0, t4-26 sorti, relecture « 1 bloquant » + verdict suffixé) → `exit=3`, les trois refus listés ; même branche avec « rejeu retiré : t4-26-prise-clavier : non tranché » → `no replay test left in docs/audits/ultra/rejeux/ after the merge: undone.`, `exit=5` ; P4 relecture laissée dans l'atelier → `no fresh review (…tour-9-p4-relecture.md) committed in eq/tour-9-p4: not merged.`, `exit=3` ; P2 `ecris` sans selftest → `tampon : pas de résumé vert du selftest`, `ecris=1`, `verifie=1`.
 - **Nouvelles forges refusées** : tampon scellé puis XML changé → `N2 XML changé verifie=1` ; trace du portail écrite par la branche → `the branch touches the portal's traces: docs/audits/ultra/portail/2026-11-10-tour-9-x/fusion.txt: not merged.` ; résumé scellé d'un autre arbre de code → refusé (test du lot) ; un arbre qui ne diffère que par `docs/` garde le résumé, voulu (les tests ne lisent `docs/` qu'en commentaire).
@@ -78,5 +141,7 @@ Le rapport ne voit que le sens prudent (faux refus). Correction : suivre `Classe
 - **Empreinte** (`git diff --full-index`) : stable (retour à l'identique après essais), voit un octet ajouté à un `.ogg` (`binaire vu: empreinte oui code oui`) et un changement de mode (`mode vu: oui`).
 - **Paires rouge/vert** : les rouges 043332d7, d3868c65, 6a81e3c0, 8bd0c866, f8718ff6, 9bfb5874 échouent chacun sur leur cas ; 1467e1b8 et 7e993b81 passent. Sept mutations sur la tête, chacune rougit son test : contrôle des tableaux retiré (`a review whose table holds an open grave is refused`), `green_summary` retiré de `ecris` (`a red summary: no stamp`), `unsealed` neutralisé (`a summary written by hand is refused`), `--full-index` retiré (`the fingerprint is the same whatever git's short names`), message de quarantaine ignoré (`another cause is red`), « le rouge nomme le test » retiré (`case A of judge_adv2 is refused`), juge non relancé après les traces (`the judge kept in the traces ran with the traces there`).
 - `python3 -I scripts/bench/test_ultra_bench.py` → `ultra bench scripts: OK` (18 s).
+
+Ancien verdict : 0 bloquant, 1 grave — fusion impossible
 
 Verdict : 0 bloquant, 1 grave — fusion impossible

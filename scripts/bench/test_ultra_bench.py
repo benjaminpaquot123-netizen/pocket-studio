@@ -1792,6 +1792,14 @@ def fusion_forged(d):
     branch("rouge", touch("d.txt"), good)
     code, out, asked, moved = merge("rouge", PS_TOY_SELFTEST_RED="1")
     check(code != 0 and not moved and "selftest " in asked, "a red self-test after the merge undoes it:\n" + out + asked)
+    # Review of the lot (M2): a step that fails after the green checks (here: no stamp to copy into the traces) undoes
+    # the merge and leaves no half-written traces.
+    def no_stamp(r):
+        write(os.path.join(r, "scripts", "bench", "selftest.sh"), FUSION_SELFTEST.replace('echo "a stamp" > "$1/selftest.ok"\n', ""))
+    branch("sanstampon", no_stamp, good)
+    code, out, asked, moved = merge("sanstampon")
+    left = git_toy(root, "status", "--porcelain", "--untracked-files=all", "docs/audits/ultra/portail").strip()
+    check(code != 0 and not moved and left == "", "a failure while writing the traces undoes the merge, nothing left:\n" + out + left)
     # Honest: one replay taken out with its reason, an open « moyen » and a fixed grave: merged, the self-test run
     # and the repository's own replays played (PS_REJEUX_DIR ignored).
     branch("honnete", move_replay("t2-partie"), good.replace("\nVerdict", "rejeu retiré : t2-partie : non tranché, retour en attente\n\nVerdict"))

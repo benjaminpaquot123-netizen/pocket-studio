@@ -205,6 +205,7 @@ def main():
     with tempfile.TemporaryDirectory() as d:
         stamp_needs_green_summary(d)
         quarantine_needs_its_message(d)
+        fingerprint_stable(d)
     with tempfile.TemporaryDirectory() as d:
         chantier(d)
         judge_criteria(d)
@@ -674,6 +675,26 @@ def quarantine_needs_its_message(d):
     with open(os.path.join(HERE, "selftest-quarantaine.txt"), encoding="utf-8") as f:
         real = [l for l in f.read().splitlines() if l.strip() and not l.startswith("#")]
     check(all(re.search(r"\|\s*attendu\s*:\s*\S", l) for l in real), "every real quarantine line names its message:\n" + "\n".join(real))
+
+
+def fingerprint_stable(d):
+    """The code's fingerprint (tampon.sh empreinte) does not move when git abbreviates object names differently: git
+    lengthens its short names as the object store grows (the bench's own `tampon.sh code` adds objects), and a
+    self-test of this lot went red « le code a changé pendant le selftest » with no change at all."""
+    root = os.path.join(d, "empreinte")
+    with open(os.path.join(HERE, "tampon.sh"), encoding="utf-8") as f:
+        write(os.path.join(root, "scripts", "bench", "tampon.sh"), f.read())
+    write(os.path.join(root, "app", "x.kt"), "a\n")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "app", "scripts")
+    git_toy(root, "commit", "-q", "-m", "toy")
+    write(os.path.join(root, "app", "x.kt"), "b\n")
+
+    def fp(abbrev):
+        e = dict(os.environ, GIT_CONFIG_COUNT="1", GIT_CONFIG_KEY_0="core.abbrev", GIT_CONFIG_VALUE_0=str(abbrev))
+        return subprocess.run(["bash", os.path.join(root, "scripts", "bench", "tampon.sh"), "empreinte"], capture_output=True, text=True, env=e).stdout
+
+    check(fp(7) == fp(12), "the fingerprint is the same whatever git's short names:\n" + fp(7) + fp(12))
 
 
 REPORT_V2 = """siege: a | profil: ado-ko | lang: ko | device: phone | font: 100 | mode: simple

@@ -170,6 +170,9 @@ class Tour5AppProofTest {
         recomposer?.cancel()
         recomposer = null
         screen?.pause()?.stop()?.destroy()
+        // The main looper drained before the test ends (review of « CI : fuite d'état », moyen 2): what the screen's close
+        // queued on Compose's UI dispatcher runs now, instead of being dropped with its « scheduled » flags left raised.
+        if (screen != null) idle(100)
         screen = null
         NativeEngine.sink = null
         CurrentProject.set(app, RhythmViewModel.PROJECT_ID)

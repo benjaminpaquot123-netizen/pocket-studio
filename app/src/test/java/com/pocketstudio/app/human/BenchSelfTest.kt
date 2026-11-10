@@ -130,6 +130,28 @@ class BenchSelfTest : HumanTester("selftest") {
         assertTrue("« attends 2 » lets 2 s of the app go by", SystemClock.uptimeMillis() - before >= 2000)
     }
 
+    /**
+     * Fresh review of the « réalisme » lot, G1 (grave): a Pad Live pad's state (it plays, it waits for the grid, it rests)
+     * lived only in its TalkBack name, and R1 took it out: every pad read « bouton @ x,y » whatever its light. A person
+     * sees the light (the pad lit, its ring) and the faint ring of a pad that waits: the line says what is drawn.
+     */
+    @Test
+    fun aPadLiveLineSaysThePadsLightAsDrawn() {
+        begin()
+        amenee(AMENEE_PADLIVE, java.io.File.createTempFile("padlight", ".txt").apply { deleteOnExit() })
+        val rest = lineAt("padlive_pad_0")
+        val loop = centerOf("padlive_pad_0")!!
+        act("touche ${loop.first} ${loop.second}")
+        val other = centerOf("padlive_pad_2")!!
+        act("touche ${other.first} ${other.second}")
+        val lit = lineAt("padlive_pad_0")
+        val waits = lineAt("padlive_pad_2")
+        val states = "at rest: $rest\nplaying: $lit\nwaiting: $waits"
+        assertTrue(states, "allumé" !in rest && "anneau" !in rest)
+        assertTrue(states, "[allumé" in lit || ", allumé" in lit)
+        assertTrue(states, "anneau pâle" in waits)
+    }
+
     /** The screen's line drawn at the middle of the node tagged [tag] (± 2 px). */
     private fun lineAt(tag: String): String {
         val (x, y) = centerOf(tag) ?: error("no « $tag »\n" + screenLines().joinToString("\n"))

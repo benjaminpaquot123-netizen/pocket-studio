@@ -223,6 +223,35 @@ class BenchEngineTest {
         assertEquals(20, vm.live.value.absoluteStep)
     }
 
+    /**
+     * T5-Ab-27 (audit « banc crédible » A.7, F1): on the bench as on a phone, a take of the microphone on the whole song,
+     * left running, is kept when the song ends by itself: the bench's engine stops on the last bar line and ends the take
+     * there, the app writes it onto its track (TakeVault.Outcome.Saved), a clip as long as the song. The app's side
+     * without the bench: TakeAtTheSongsEndTest.
+     */
+    @Test
+    fun aMicTakeLeftRunningIsKeptWhenTheSongEnds() {
+        val (vm, engine) = openWithEngine(Project(song = listOf(SongPart(0), SongPart(0))))
+        val song = vm.project.value.let { p -> p.song.sumOf { p.partSteps(it) } * 15.0 / p.tempoBpm }
+        vm.setRecordTarget(com.pocketstudio.app.rhythm.RecordTarget(song = true, fromPart = 0))
+        val track = vm.micTakeTrack()!!
+        vm.recordAudio(track)
+        var recording = false
+        val until = System.currentTimeMillis() + 90_000
+        while (vm.project.value.audioTracks.firstOrNull { it.id == track }?.clip == null || vm.takeSaving.value) {
+            assertTrue("the take never ended on its track (recording ${vm.audioRecording.value}, notice ${vm.notice.value})", System.currentTimeMillis() < until)
+            recording = recording || vm.audioRecording.value?.waiting == false
+            pass(50); Thread.sleep(3)
+        }
+        assertTrue("it recorded", recording)
+        val clip = vm.project.value.audioTracks.first { it.id == track }.clip!!
+        assertTrue("a clip of the song", clip.song)
+        assertTrue("as long as the song ($song s): ${clip.seconds} s", clip.seconds in song - 0.6..song + 0.3)
+        assertEquals("the app stopped with the song", false, vm.transport.value.playing)
+        assertNull(vm.audioRecording.value)
+        assertEquals(1, engine.micTakes)
+    }
+
     @Test
     fun thePlayHeadMovesWithTheTempo() {
         val vm = open(Project(song = listOf(SongPart(0))).copy(tempoBpm = 120.0))

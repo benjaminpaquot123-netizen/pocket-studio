@@ -44,7 +44,7 @@ Tour 5, chantier 3 (2026-11-10), d'après `docs/audits/AUDIT-PRISE-EN-MAIN.md` �
 | Sauvegarder le morceau en .zip | garder le morceau entier pour un autre appareil | « Envoyer le projet » |
 | Mettre sur… | poser un bout sur un pad, une piste, le Live | « Envoyer les bouts », « envoie-le » |
 | Effets live | les effets de Pad Live et de Live | « Effets de scène » |
-| Volume | fort ou faible : en Mode simple « Normal », « +3 », « −6 », « Plus de son », « un peu » | « dB » (le Mode simple n'en montre aucun ; le Pro garde ses chiffres) |
+| Volume | fort ou faible : en Mode simple « Normal », « +3 », « −6 », « Muet », « un peu » | « dB » (le Mode simple n'en montre aucun ; le Pro garde ses chiffres) |
 | Mes fichiers | la liste de ce que tu as partagé | « Mes exports » |
 
 ## Composants

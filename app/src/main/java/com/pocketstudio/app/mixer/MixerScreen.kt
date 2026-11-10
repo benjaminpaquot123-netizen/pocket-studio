@@ -151,17 +151,17 @@ fun faderDb(v: Float): String {
 
 /**
  * A level in the Mode simple's words (audit « un mot par chose », § 5 « Volume »): « Normal » where the fader rests,
- * « Plus de son » at the bottom, else the move as a whole signed number (« +3 », « −6 »); never « dB ».
+ * « Muet » at the bottom (« Silence » is the musical rest's key), else the move as a whole signed number (« +3 », « −6 »); never « dB ».
  */
 fun levelWords(db: Float): String {
-    if (db.isNaN() || db <= -60f) return tr("Plus de son")
+    if (db.isNaN() || db <= -60f) return tr("Muet")
     val whole = Math.round(db)
     if (kotlin.math.abs(db) < 0.5f || whole == 0) return tr("Normal")
     return com.pocketstudio.model.i18n.ltrNumber((if (whole > 0) "+" else "−") + kotlin.math.abs(whole))
 }
 
 /** [faderDb]'s fader position (0.8 = unity) in [levelWords]. */
-fun faderWords(v: Float): String = if (v <= 0.001f) tr("Plus de son") else levelWords(20 * log10((v / 0.8f) * (v / 0.8f)))
+fun faderWords(v: Float): String = if (v <= 0.001f) tr("Muet") else levelWords(20 * log10((v / 0.8f) * (v / 0.8f)))
 
 @Composable
 fun MixerScreen(

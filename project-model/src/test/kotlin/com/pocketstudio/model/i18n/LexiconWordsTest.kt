@@ -44,4 +44,67 @@ class LexiconWordsTest {
         }
         assertTrue("not « Mix »:\n" + wrong.take(20).joinToString("\n"), wrong.isEmpty())
     }
+
+    // --- Tour 5, chantier 3 (« C'est pas faux » : un mot par chose), audit de prise en main § 5 ---
+
+    private val oldWords = listOf(
+        Regex("""l'assistant""", RegexOption.IGNORE_CASE), Regex("""\bguidé\b"""), Regex("""Nouveau morceau, pas à pas"""),
+        Regex("""pas à pas avec"""), Regex("""premiers pas"""), Regex("""Un petit guide"""), Regex("""[Cc]e guide se retrouve"""),
+        Regex("""Envoyer les bouts"""), Regex("""Envoyer le projet"""), Regex("""Envoyer le fichier brut"""), Regex("""Effets de scène"""), Regex("""Mes exports"""),
+        Regex("""^Exporter( |$)"""), Regex("""Remettre à 0 dB"""),
+    )
+
+    /**
+     * One name for the assistant (« Fais-moi un morceau », its name in the app: no « assistant », « guidé » or « pas à pas »
+     * for it), « Visite rapide » for the five-page window (the Guide is the bar of cards alone), « Partager » for a file out
+     * (a button of the Mix says « Créer le fichier… », never « Exporter »). Red on the texts as they were.
+     */
+    @Test
+    fun oneWordPerThingInFrench() {
+        val found = french.filter { k -> oldWords.any { it.containsMatchIn(k) } }
+        assertTrue("old words:\n" + found.joinToString("\n"), found.isEmpty())
+    }
+
+    /** The assistant's name and the tour's name are the same text in every text of a language. */
+    @Test
+    fun theAssistantAndTheTourHaveOneNameInEveryLanguage() {
+        val name = "Fais-moi un morceau"
+        val tour = "La visite rapide, le Guide, le lexique"
+        val wrong = (Lang.entries - Lang.FR).flatMap { lang ->
+            val t = I18n.table(lang)
+            val nameWord = t[name]!!
+            val tourWord = t[tour]!!.split(Regex("[,،、，]"), limit = 2).first().trim()
+            val named = french.filter { name in it && it != name }.mapNotNull { k -> t[k]?.takeUnless { nameWord in it }?.let { "${lang.code} name: $it" } }
+            val toured = french.filter { Regex("""visite rapide|Cette visite""").containsMatchIn(it) && it != tour }
+                .mapNotNull { k -> t[k]?.takeUnless { tourWord in it }?.let { "${lang.code} tour « $tourWord »: $it" } }
+            named + toured
+        }
+        assertTrue("not the same word:\n" + wrong.take(20).joinToString("\n"), wrong.isEmpty())
+        assertTrue(french.count { "Fais-moi un morceau" in it } >= 10)
+    }
+
+    /** The Guide (the bar of cards) has one word per language wherever a text says « le Guide ». */
+    @Test
+    fun theGuideHasOneWordInEveryLanguage() {
+        val keys = french.filter { Regex("""\bGuide\b""").containsMatchIn(it) && it != "Guide" }
+        assertTrue(keys.size >= 15)
+        val wrong = (Lang.entries - Lang.FR).flatMap { lang ->
+            val t = I18n.table(lang)
+            // Arabic builds « مرشد أغنيتي » (annexed form) from « المرشد ».
+            val word = t["Guide"]!!.removePrefix("ال").lowercase()
+            keys.mapNotNull { k -> t[k]?.takeUnless { word in it.lowercase() }?.let { "${lang.code} « $word »: $it" } }
+        }
+        assertTrue("another word for the Guide:\n" + wrong.take(20).joinToString("\n"), wrong.isEmpty())
+    }
+
+    /** The Mode simple's tutorial (« Facile ») says a level in words: no « dB » in its chapters and steps. */
+    @Test
+    fun theFacileTutosSayNoDecibel() {
+        val bad = com.pocketstudio.model.tuto.TutoCourse.STYLES.mapNotNull { com.pocketstudio.model.tuto.TutoCourse.of(it) }.flatMap { course ->
+            course.chaptersFor(com.pocketstudio.model.tuto.TutoLevel.Facile).flatMap { c ->
+                listOf(c.title, c.why) + c.steps.flatMap { listOf(it.textFor(com.pocketstudio.model.tuto.TutoLevel.Facile), it.why.orEmpty()) }
+            }
+        }.filter { Regex("""\bdB""").containsMatchIn(it) }.distinct()
+        assertTrue("« dB » in a Facile tutorial:\n" + bad.joinToString("\n") { it.take(160) }, bad.isEmpty())
+    }
 }

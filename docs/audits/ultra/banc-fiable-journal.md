@@ -103,3 +103,13 @@ Une ligne par étape : [x] fait / [ ] à faire, preuve, commit. « continue » r
 - [x] (relecture « pads-live », moyen) règle (c) du juge resserrée : la garde retirée vient d'un « rouge: » (ou d'avant la discipline rouge/vert), le message nomme `Classe#méthode`, une fusion ne retire rien. preuve: rouge 3f83167 / vert e73b423
 - [x] A.1 les six sondes de l'audit réécrites (`AuditFideliteTmpTest`) et vues : vertes sur le code, rouges sous les lignes de bebe0c9 ; L1 (câblage d'aujourd'hui) et L2 rejouées ; sorties sous `docs/audits/ultra/audit-banc/a1-2026-11-10/`. preuve: script docs/audits/ultra/audit-banc/rejoue-a1.sh
 - [x] (CI 42789204633, quarantaine des renommages) cause trouvée : la règle Compose v1 reprend le collecteur d'un flux sur le fil IO qui émet, l'état de « Mes projets » écrit hors du fil principal se perdait ; règle v2 pour les tests de renommage (reproduit 3 rouges sur 18 après `Bench*`, puis 0 sur 36). preuve: rouge 6eeceba / vert d65c607
+- [ ] En relecture : étape 3 lot 6 « portail » (atelier `portail`, rapport `tour-5-portail-rapport.md`). Ses lignes :
+- [x] A.18 (audit-banc2 P1 bloquant, P4) fusion durcie : verdict sur la dernière ligne, pas de bloquant/grave ouvert au tableau, relecture commitée seulement, selftest toujours, rejeux du dépôt, `rejeux/` vide ou rejeu retiré sans raison refusés ; fusion à blanc : forge2 et ses variantes, forge3 refusées. preuve: rouge 043332d / vert 1467e1b
+- [x] A.19 (P2) tampon : `ecris` exige un résumé vert qui est le verdict de `junit/`, scelle résumé et XML, `verifie` les recalcule. preuve: rouge d3868c6 / vert de9d84d
+- [x] A.19 (P3) le résumé nomme le code testé (arbre git hors docs), le juge refuse un résumé non scellé ou d'un autre code. preuve: rouge 6a81e3c / vert 81e0c68
+- [x] A.19 (D1) traces du portail commitées par `fusion-equipes.sh` sous `docs/audits/ultra/portail/`, « fusion sans trace » et « lot sans trace » (tour ≥ 6) au juge. preuve: rouge b3be3c1 / vert 894033d
+- [x] (relecture « banc-fin », M1) règle (c) : les 7 contournements de judge_adv2.py (et F2) refusés, origine suivie, ancêtre de 8f36fa3, vert qui garde @Test et touche du code ; 22 écarts réels inchangés. preuve: rouge f8718ff / vert 5c95ef1
+- [x] A.22 (P5) une preuve sans banc est un test qui tourne. preuve: rouge 21c8018 / vert 6b9c72b
+- [x] A.22 (P6) la quarantaine n'excuse que son message attendu. preuve: rouge 9bfb587 / vert 7539576
+- [x] A.22 (P7) sortie de siège : liste blanche à la racine du lot, dépôt surveillé. preuve: rouge 7ee664e / vert f1da11f
+- [ ] A.20 (R1) et A.21 (MT1, MT3) : lot suivant.

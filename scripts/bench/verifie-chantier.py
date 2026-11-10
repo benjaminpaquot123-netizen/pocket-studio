@@ -11,7 +11,11 @@
     2. a « banc » line has a Bench* guard AND a proof without the bench (a test that exists outside Bench*):
        the bench judging itself is not a proof;
     3. the summary of the latest self-test is mandatory (« résumé absent » without it) and a guard is green
-       only when the summary names it « vert : Class#method »;
+       only when the summary names it « vert : Class#method »; the summary is read only when it is sealed for
+       the code judged (audit « banc crédible » 2, P3): it names « code testé : <arbre> », the stamp beside it
+       (selftest.ok) seals it (« resume: <sha256> », « code: <arbre> »), that tree is the code here
+       (tampon.sh code) and, when the lot's junit/ is there, its results give it (tampon.sh resultats). Else
+       « résumé refusé » and no guard is green;
     4. a « corrigé » line is in base.tsv with its round and its commit cell names a commit that exists.
     Also: every proof names a test that exists: a Kotlin « Class#method », or an engine host test
     « engine/host-tests/<file>#<function> » defined in that file and registered in a PS_*_TESTS list (A.12);
@@ -31,6 +35,7 @@
 Prints one line per gap, then « chantier : N écarts ». Exit 1 when N > 0. Standard library only.
 """
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -116,6 +121,47 @@ def green_in_resume(resume_text, cls, method):
     if resume_text is None:
         return True
     return re.search(r"^vert : " + re.escape(cls) + "#" + re.escape(method) + r"\s*$", resume_text, re.M) is not None
+
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+def code_here(root):
+    """The tree id of root's working files but docs/ (tampon.sh code), or None."""
+    try:
+        r = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "code", root], capture_output=True, text=True, timeout=300)
+    except (subprocess.SubprocessError, OSError):
+        return None
+    out = r.stdout.strip()
+    return out if r.returncode == 0 and re.fullmatch(r"[0-9a-f]{40,64}", out) else None
+
+
+def unsealed(root, resume_path):
+    """Why the summary may not be read for the code of root (audit « banc crédible » 2, P3), or None when it may."""
+    with open(resume_path, "rb") as f:
+        raw = f.read()
+    named = re.findall(r"^code testé : (\S+)\s*$", raw.decode("utf-8", "replace"), re.M)
+    if not named:
+        return "il ne nomme pas le code testé (« code testé : <arbre> », écrit par selftest.sh)"
+    lot = os.path.dirname(os.path.abspath(resume_path))
+    stamp_path = os.path.join(lot, "selftest.ok")
+    if not os.path.isfile(stamp_path):
+        return "pas de tampon à côté (selftest.ok)"
+    stamp = open(stamp_path, encoding="utf-8", errors="replace").read()
+    if not re.search(r"^resume: " + hashlib.sha256(raw).hexdigest() + r"$", stamp, re.M):
+        return "le tampon ne scelle pas ce résumé (changé après le selftest ?)"
+    if not re.search(r"^code: " + re.escape(named[-1]) + r"$", stamp, re.M):
+        return "le tampon ne scelle pas le code qu'il nomme"
+    here = code_here(root)
+    if here is None:
+        return "le code d'ici n'a pas pu être calculé (tampon.sh code)"
+    if here != named[-1]:
+        return f"résumé d'un autre code (testé : {named[-1][:12]}, ici : {here[:12]})"
+    if os.path.isdir(os.path.join(lot, "junit")):
+        r = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "resultats", lot], capture_output=True, text=True)
+        if r.returncode != 0:
+            return "ses résultats JUnit ne donnent pas ce résumé vert, ou le tampon ne les scelle pas"
+    return None
 
 
 def dated_failed_trial(v, trials=None):
@@ -271,7 +317,12 @@ def check(root, resume_path=None, with_git=True):
     elif not os.path.isfile(resume_path):
         gaps.append(f"résumé absent : {resume_path} introuvable")
     else:
-        resume = open(resume_path, encoding="utf-8").read()
+        why = unsealed(root, resume_path)
+        if why:
+            gaps.append(f"résumé refusé : {why} ({resume_path}) : aucune garde n'y est verte")
+            resume = ""
+        else:
+            resume = open(resume_path, encoding="utf-8").read()
     base = {r.get("cle"): r for r in read_tsv(os.path.join(ultra, "base.tsv"))}
     # The owner's trials, when his notes are there: only an annotation tied to one of them is a proof.
     trials = owner_trials(root) if os.path.isfile(notes_path(root)) else None

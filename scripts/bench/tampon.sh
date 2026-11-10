@@ -11,6 +11,13 @@
 # says « N verts, 0 rouges » and is what selftest-verdict.py makes of <lot>/junit/ (run again here). The stamp seals
 # both (« resume: », « junit: » sha256); `verifie` recomputes them and runs the verdict again. A stamp still CAN be
 # forged (all of it is local), but only by making JUnit results, and the traces are kept (D1).
+# Audit « banc crédible » 2, P3: the code a self-test ran on is named by `tampon.sh code [<root>]` (a git tree id of the
+# working files but docs/, ignored files aside: a docs commit keeps it, any code change moves it). selftest.sh writes it
+# in its summary (« code testé : <arbre> ») and `ecris` seals it (« code: »); verifie-chantier.py reads a summary only
+# when it is sealed for the code it judges, and asks `tampon.sh resultats <lot>` when the lot's JUnit results are there.
+#   scripts/bench/tampon.sh code [<root>]        -> the code's tree id (1 line)
+#   scripts/bench/tampon.sh resultats <lot>      -> exit 0 when the stamp seals the lot's JUnit results, and they give its
+#                                                   green summary
 set -euo pipefail
 [ -n "${2:-}" ] && lot_abs="$(cd "$2" && pwd)"
 cd "$(dirname "$0")/../.."
@@ -21,6 +28,14 @@ here() {
 }
 seats() { cat "$1"/*/start.txt 2>/dev/null | sha256sum | cut -d' ' -f1; }
 sum() { sha256sum < "$1" | cut -d' ' -f1; }
+# The tree of the working files but docs/ (a temporary index: the repository's own index is not touched).
+code_of() {
+  local idx rc=0
+  idx="$(mktemp -u)"
+  { GIT_INDEX_FILE="$idx" git add -A -- . ':!docs' >/dev/null 2>&1 && GIT_INDEX_FILE="$idx" git write-tree; } || rc=1
+  rm -f "$idx"
+  return "$rc"
+}
 # The lot's JUnit results, names and contents, in a fixed order.
 junit_sum() {
   [ -d "$1/junit" ] || { echo "aucun"; return; }
@@ -40,16 +55,22 @@ green_summary() {
   [ "$rc" -eq 0 ] || echo "tampon : le résumé de $lot n'est pas le verdict vert de ses résultats JUnit" >&2
   return "$rc"
 }
-case "${1:?empreinte|ecris|verifie}" in
+case "${1:?empreinte|code|ecris|verifie|resultats}" in
   empreinte) here ;;
+  code) cd "${lot_abs:-.}" && code_of ;;
   ecris) lot="$lot_abs"; fp="${3:?fingerprint file}"; shift 3
     green_summary "$lot"
+    tested="$(sed -n 's/^code testé : //p' "$lot/selftest-resume.txt" | tail -1)"
+    [ -n "$tested" ] && [ "$tested" = "$(code_of)" ] \
+      || { echo "tampon : le résumé de $lot ne nomme pas le code d'ici (« code testé : $tested »)" >&2; exit 1; }
     { cat "$fp"; echo "lot: $lot"; echo "sieges: $(seats "$lot")"; echo "resume: $(sum "$lot/selftest-resume.txt")"
-      echo "junit: $(junit_sum "$lot")"; date -u +%FT%TZ; for q in "$@"; do echo "quarantaine: $q"; done; } > "$lot/selftest.ok" ;;
+      echo "junit: $(junit_sum "$lot")"; echo "code: $tested"; date -u +%FT%TZ; for q in "$@"; do echo "quarantaine: $q"; done; } \
+      > "$lot/selftest.ok" ;;
+  resultats) [ -f "$lot_abs/selftest.ok" ] && grep -qxF "junit: $(junit_sum "$lot_abs")" "$lot_abs/selftest.ok" && green_summary "$lot_abs" ;;
   verifie) stamp="$lot_abs/selftest.ok"
     [ -f "$stamp" ] && [ "$(head -2 "$stamp")" = "$(here)" ] && [ "$(sed -n 3p "$stamp")" = "lot: $lot_abs" ] \
       && [ "$(sed -n 4p "$stamp")" = "sieges: $(seats "$lot_abs")" ] \
       && [ -f "$lot_abs/selftest-resume.txt" ] && grep -qxF "resume: $(sum "$lot_abs/selftest-resume.txt")" "$stamp" \
       && grep -qxF "junit: $(junit_sum "$lot_abs")" "$stamp" && green_summary "$lot_abs" ;;
-  *) echo "empreinte|ecris|verifie" >&2; exit 2 ;;
+  *) echo "empreinte|code|ecris|verifie|resultats" >&2; exit 2 ;;
 esac

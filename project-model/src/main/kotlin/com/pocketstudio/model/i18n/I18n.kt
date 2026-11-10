@@ -148,6 +148,8 @@ object I18n {
         "ultra3z6",
         // Hands-on audit, chantier 1 (2026-11-10): « Partager » everywhere, « Mes fichiers », the project saved as a .zip.
         "partage",
+        // Hands-on audit, chantier 2 (2026-11-10): what « Avancé » and « Avancé : master pro » hold, said on them closed.
+        "composants",
     )
 
     @Volatile

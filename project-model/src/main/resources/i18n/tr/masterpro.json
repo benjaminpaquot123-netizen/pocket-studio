@@ -25,7 +25,6 @@
   "En 16 bits, un léger bruit (dither) évite le grain des fondus ; mis en forme, il part dans les aigus où l'oreille l'entend moins.": "16 bitte hafif bir gürültü (dither) geçişlerdeki pürüzü önler; şekillendirilince kulağın en az duyduğu tizlere kayar.",
   "En mono : %s LU de moins": "Mono'da: %s LU daha az",
   "Fichier : %s": "Dosya: %s",
-  "Fichier final : %s": "Son dosya: %s",
   "Fin : mesure %d": "Bitiş: ölçü %d",
   "Fondu de début %s s": "Girişte yükselme %s s",
   "Format : %1$s · %2$s Hz · %3$s": "Biçim: %1$s · %2$s Hz · %3$s",

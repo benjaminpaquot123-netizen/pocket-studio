@@ -25,7 +25,6 @@
   "En 16 bits, un léger bruit (dither) évite le grain des fondus ; mis en forme, il part dans les aigus où l'oreille l'entend moins.": "16 बिट में हल्का शोर (डिदर) फ़ेड में दानेदारपन रोकता है; आकार देने पर वह ऊँची आवाज़ों में जाता है, जहाँ कान उसे सबसे कम सुनते हैं।",
   "En mono : %s LU de moins": "मोनो में: %s LU कम",
   "Fichier : %s": "फ़ाइल: %s",
-  "Fichier final : %s": "अंतिम फ़ाइल: %s",
   "Fin : mesure %d": "अंत: बार %d",
   "Fondu de début %s s": "शुरू में फ़ेड %s से",
   "Format : %1$s · %2$s Hz · %3$s": "फ़ॉर्मेट: %1$s · %2$s Hz · %3$s",

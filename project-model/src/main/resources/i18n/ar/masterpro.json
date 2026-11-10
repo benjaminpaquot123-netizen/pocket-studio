@@ -25,7 +25,6 @@
   "En 16 bits, un léger bruit (dither) évite le grain des fondus ; mis en forme, il part dans les aigus où l'oreille l'entend moins.": "في 16 بت، تشويش خفيف (dither) يمنع الخشونة في التلاشي؛ وعند تشكيله يصعد إلى الحدّة حيث تسمعه الأذن أقل.",
   "En mono : %s LU de moins": "في الأحادي: أقل بـ %s LU",
   "Fichier : %s": "الملف: %s",
-  "Fichier final : %s": "الملف النهائي: %s",
   "Fin : mesure %d": "النهاية: المازورة %d",
   "Fondu de début %s s": "ظهور تدريجي %s ث",
   "Format : %1$s · %2$s Hz · %3$s": "الصيغة: %1$s · %2$s Hz · %3$s",

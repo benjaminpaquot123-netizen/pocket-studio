@@ -13,7 +13,6 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.text.TextLayoutResult
 import androidx.test.core.app.ApplicationProvider
 import com.pocketstudio.app.export.ExportOptions
 import com.pocketstudio.app.mixer.ExportCard
@@ -102,9 +101,10 @@ class DisclosureEverywhereTest {
         val actions = node.config.map { it.key }.toSet()
         assertTrue("$tag closed: TalkBack is not told it opens (no « expand » action)", SemanticsActions.Expand in actions && SemanticsActions.Collapse !in actions)
         val nodes = compose.onAllNodes(SemanticsMatcher("any") { true }, useUnmergedTree = true).fetchSemanticsNodes()
-        val cut = nodes.filter { under(it, node) && it.config.contains(SemanticsProperties.Text) }.mapNotNull { n ->
-            layoutOf(n)?.takeIf { it.hasVisualOverflow || (0 until it.lineCount).any { l -> it.isLineEllipsized(l) } }?.let { n.config[SemanticsProperties.Text].joinToString { t -> t.text } }
-        }
+        // Read as the capture matrix reads a screen (a text's own last layout can be an intrinsic measure's, not the one drawn).
+        val words = nodes.filter { under(it, node) && it.config.contains(SemanticsProperties.Text) }.map { n -> n.config[SemanticsProperties.Text].joinToString(" ") { t -> t.text } }.toSet()
+        val density = compose.activity.resources.displayMetrics.density
+        val cut = com.pocketstudio.app.audit.LayoutScan.scan(compose, density, setOf(com.pocketstudio.app.audit.LayoutScan.Kind.CUT)).filter { it.what in words }.map { it.toString() }
         assertEquals("$tag at 130 % on a 360 dp phone: words cut", emptyList<String>(), cut)
     }
 
@@ -114,9 +114,4 @@ class DisclosureEverywhereTest {
         return false
     }
 
-    private fun layoutOf(n: SemanticsNode): TextLayoutResult? {
-        val get = n.config.getOrNull(SemanticsActions.GetTextLayoutResult)?.action ?: return null
-        val list = mutableListOf<TextLayoutResult>()
-        return if (get(list)) list.firstOrNull() else null
-    }
 }

@@ -25,7 +25,6 @@
   "En 16 bits, un léger bruit (dither) évite le grain des fondus ; mis en forme, il part dans les aigus où l'oreille l'entend moins.": "16 位时，一点轻微噪声（抖动）可避免淡出时的颗粒感；整形后它会移到耳朵最难听到的高频。",
   "En mono : %s LU de moins": "单声道下：少 %s LU",
   "Fichier : %s": "文件：%s",
-  "Fichier final : %s": "最终文件：%s",
   "Fin : mesure %d": "结束：第 %d 小节",
   "Fondu de début %s s": "淡入 %s 秒",
   "Format : %1$s · %2$s Hz · %3$s": "格式：%1$s · %2$s Hz · %3$s",

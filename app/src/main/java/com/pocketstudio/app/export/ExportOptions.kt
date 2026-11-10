@@ -129,9 +129,11 @@ internal fun ExportOptionsPanel(export: com.pocketstudio.app.rhythm.ExportUi, ha
         about = listOf("export_final", "export_rate_*", "export_bits_*", "export_shaping", "export_range_*", "export_fade_in_*", "export_trim", "export_end_silence_*",
             "export_artist", "export_cover", "export_report"),
     ) {
-        androidx.compose.material3.TextButton(onClick = { openState.value = !open }, modifier = Modifier.weight(1f, fill = false).testTag("export_final")) {
-            androidx.compose.material3.Text(tr("Fichier final : %s", finalFileSummary(export)), color = com.pocketstudio.ui.Neon.Cyan)
-        }
+        // Chantier 2 (G4): a fold of its own (it opens in place), its rate and bits said on it, a changed one in orange.
+        com.pocketstudio.ui.Disclosure(
+            tr("Fichier final"), listOf(com.pocketstudio.ui.Hidden(finalFileSummary(export), o != ExportOptions())), open,
+            { openState.value = !open }, Modifier.weight(1f).testTag("export_final"),
+        )
     }
     if (!open) return
     val rate = o.rateFor(export.format, export.cdRate)

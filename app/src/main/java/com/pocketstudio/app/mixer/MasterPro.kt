@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -329,10 +326,8 @@ internal fun gainReductionText(gain: Float): String {
 internal fun MasterProPanel(pro: MasterPro?, master: List<Insert>, monoBassHz: Float, actions: MasterProActions, limiterGain: () -> Float = { 1f }) {
     val c = actions.controller ?: return
     var open by rememberSaveable { mutableStateOf(false) }
-    TextButton(onClick = { open = !open }, modifier = Modifier.fillMaxWidth().testTag("master_pro")) {
-        Text(tr("Avancé : master pro"), Modifier.weight(1f), color = Neon.Cyan)
-        Icon(if (open) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.Cyan)
-    }
+    // Chantier 2 (G4): the shared fold, what it holds said on it closed (a value changed from the default in orange).
+    com.pocketstudio.ui.Disclosure(tr("Avancé : master pro"), masterProSummary(pro, monoBassHz), open, { open = !open }, Modifier.testTag("master_pro"))
     if (!open) return
     DisposableEffect(c) { onDispose { c.leave() } }
     LaunchedEffect(c, pro?.reference) { c.attach() }
@@ -418,4 +413,16 @@ internal fun MasterProPanel(pro: MasterPro?, master: List<Insert>, monoBassHz: F
         }
         live.error?.let { Text(it, style = small, color = Neon.RedText) }
     }
+}
+
+/** What « Avancé : master pro » holds, said on it closed (chantier 2, G4): the ceiling, the chain, the low end in mono, the A/B listening, the reference. */
+internal fun masterProSummary(pro: MasterPro?, monoBassHz: Float): List<com.pocketstudio.ui.Hidden> {
+    val p = pro ?: MasterPro()
+    return listOf(
+        com.pocketstudio.ui.Hidden(tr("Plafond %s dB", LoudnessTargets.format(p.ceilingDb.toDouble())), p.ceilingDb != MasterPro.DEFAULT_CEILING),
+        com.pocketstudio.ui.Hidden(tr("attaque et relâchement"), p.attack != 1f || p.release != 1f),
+        if (monoBassHz > 0f) com.pocketstudio.ui.Hidden(tr("grave en mono sous %d Hz", monoBassHz.roundToInt()), true) else com.pocketstudio.ui.Hidden(tr("grave en mono")),
+        com.pocketstudio.ui.Hidden(tr("écoute A/B")),
+        if (p.reference != null) com.pocketstudio.ui.Hidden(tr("référence « %s »", p.referenceName ?: ""), true) else com.pocketstudio.ui.Hidden(tr("référence")),
+    )
 }

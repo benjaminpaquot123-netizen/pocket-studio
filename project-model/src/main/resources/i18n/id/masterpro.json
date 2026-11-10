@@ -25,7 +25,6 @@
   "En 16 bits, un léger bruit (dither) évite le grain des fondus ; mis en forme, il part dans les aigus où l'oreille l'entend moins.": "Di 16 bit, desis halus (dither) mencegah kasar saat fade; jika dibentuk, ia naik ke nada tinggi yang paling sedikit didengar telinga.",
   "En mono : %s LU de moins": "Dalam mono: %s LU lebih kecil",
   "Fichier : %s": "File: %s",
-  "Fichier final : %s": "File akhir: %s",
   "Fin : mesure %d": "Akhir: birama %d",
   "Fondu de début %s s": "Fade-in %s dtk",
   "Format : %1$s · %2$s Hz · %3$s": "Format: %1$s · %2$s Hz · %3$s",

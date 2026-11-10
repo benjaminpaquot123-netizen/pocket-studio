@@ -25,7 +25,6 @@
   "En 16 bits, un léger bruit (dither) évite le grain des fondus ; mis en forme, il part dans les aigus où l'oreille l'entend moins.": "In 16 bits, a faint noise (dither) avoids grain in fades; shaped, it moves up into the highs where the ear hears it least.",
   "En mono : %s LU de moins": "In mono: %s LU less",
   "Fichier : %s": "File: %s",
-  "Fichier final : %s": "Final file: %s",
   "Fin : mesure %d": "End: bar %d",
   "Fondu de début %s s": "Fade-in %s s",
   "Format : %1$s · %2$s Hz · %3$s": "Format: %1$s · %2$s Hz · %3$s",

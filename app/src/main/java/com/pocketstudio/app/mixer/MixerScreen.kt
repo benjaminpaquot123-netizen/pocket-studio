@@ -42,8 +42,7 @@ import com.pocketstudio.model.Insert
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material3.IconButton
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Piano
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -447,10 +446,24 @@ fun masterDbLabel(db: Float): String =
 
 @Composable
 private fun EffectsToggle(summary: String, open: Boolean, modifier: Modifier = Modifier, toggle: () -> Unit) {
-    TextButton(onClick = toggle, modifier = modifier.fillMaxWidth()) {
-        Text(tr("Effets : %s", summary), Modifier.weight(1f), color = Neon.Cyan)
-        Icon(if (open) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.Cyan)
-    }
+    // Chantier 2 (G4): the shared fold, the effects in place said on it.
+    com.pocketstudio.ui.Disclosure(tr("Effets"), listOf(com.pocketstudio.ui.Hidden(summary)), open, toggle, modifier)
+}
+
+/**
+ * What « Avancé » of the export card holds, said on it closed (chantier 2, G4): « Piste par piste · FLAC · sans limiteur ·
+ * MIDI · 48 kHz · 24 bits », a choice made (not the default one) marked to be drawn in orange.
+ */
+internal fun advancedSummary(export: ExportUi): List<com.pocketstudio.ui.Hidden> {
+    val stems = export.what == ExportWhat.Stems
+    return listOfNotNull(
+        com.pocketstudio.ui.Hidden(tr("Piste par piste"), stems),
+        com.pocketstudio.ui.Hidden("FLAC", export.format == ExportFormat.Flac),
+        if (stems) com.pocketstudio.ui.Hidden(tr("avec la sortie générale"), true).takeIf { export.stemsWithMaster }
+        else com.pocketstudio.ui.Hidden(tr("sans limiteur"), true).takeIf { export.noLimiter },
+        com.pocketstudio.ui.Hidden(tr("MIDI")),
+        com.pocketstudio.ui.Hidden(com.pocketstudio.app.export.finalFileSummary(export), export.pro != com.pocketstudio.app.export.ExportOptions()),
+    )
 }
 
 @Composable
@@ -543,10 +556,8 @@ internal fun ExportCard(
         }
         // Advanced: separate tracks, FLAC, the notes as MIDI. Open by itself when one is in use.
         var advanced by rememberSaveable { mutableStateOf(export.what == ExportWhat.Stems || export.format == ExportFormat.Flac) }
-        TextButton(onClick = { advanced = !advanced }, modifier = Modifier.fillMaxWidth().testTag("export_advanced")) {
-            Text(tr("Avancé"), Modifier.weight(1f), color = Neon.Cyan)
-            Icon(if (advanced) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.Cyan)
-        }
+        // Chantier 2 (G4, recette tel-06): the shared fold, closed it says what it holds (a changed value in orange).
+        com.pocketstudio.ui.Disclosure(tr("Avancé"), advancedSummary(export), advanced, { advanced = !advanced }, Modifier.testTag("export_advanced"))
         if (advanced) {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 FilterChip(

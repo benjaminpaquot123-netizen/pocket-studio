@@ -54,7 +54,6 @@
   "Droite %d": "右 %d",
   "Dubstep": "ダブステップ",
   "Effets": "エフェクト",
-  "Effets : %s": "エフェクト：%s",
   "Effets en place : %1$d sur %2$d": "使用中のエフェクト：%1$d / %2$d",
   "Effets · %d": "エフェクト · %d",
   "En M4A et en FLAC, le limiteur reste en place : sans lui, les pointes seraient écrêtées. Choisis WAV pour t'en passer.": "M4A と FLAC ではリミッターはオンのまま（ないとピークがクリップします）。外すなら WAV を選んでね。",

@@ -114,4 +114,15 @@ class LexiconWordsTest {
         }.filter { Regex("""\bdB""").containsMatchIn(it) }.distinct()
         assertTrue("« dB » in a Facile tutorial:\n" + bad.joinToString("\n") { it.take(160) }, bad.isEmpty())
     }
+
+    /** « Partager » is the one verb for a file out: no « envoyer un projet », « prêt à envoyer », « Export terminé », « Partager envoie ». */
+    @Test
+    fun noSendOrExportForAFileLeftInFrench() {
+        val sense = listOf(
+            Regex("""envoyer (un|tes) projets?""", RegexOption.IGNORE_CASE), Regex("""prêt à envoyer""", RegexOption.IGNORE_CASE), Regex("""Partager envoie"""),
+            Regex("""et l'export\b"""), Regex("""^Export( |$)"""), Regex("""^L'export a échoué"""), Regex("""^Export terminé"""),
+        )
+        val found = french.filter { k -> sense.any { it.containsMatchIn(k) } }
+        assertTrue("send/export for a file:\n" + found.joinToString("\n") { it.take(100) }, found.isEmpty())
+    }
 }

@@ -1,0 +1,103 @@
+# Lot « partage » : relecture critique (relecteur neuf, seul, sans sous-agent)
+Relu : 23a3cdb9d91af9da82e0e9187cba2cabe903514c
+
+Date : 2026-11-10. Plage relue : `git diff 11a34be..23a3cdb` (10 commits, 194 fichiers). Rien n'est poussé, aucun code n'est corrigé ici.
+
+## En trois lignes
+
+1. Les trois correctifs (T5-ZIP, T5-ALERTE, T5-8MES) sont réels : chaque garde nommée devient rouge quand on retire le correctif, fichier par fichier (8 sur 8).
+2. Deux points moyens : le câblage d'AppRoot vers `ProjectZipSender` n'est gardé par aucun test (prouvé par mutation), et « Projet sauvegardé » s'affiche même quand la copie dans Documents a échoué.
+3. Les trois images rouges (`recette`, `cut_screen`, `cut_screen_magnifier`) existent déjà sur la base, seules et sur la CI 248 : ce lot n'y est pour rien, et la CI ne fait qu'un avertissement (`compareRoborazziDebug`).
+
+## Constats
+
+| Gravité | Quoi | Preuve (commande, résultat observé) | Correction proposée |
+|---|---|---|---|
+| moyen | **Le « chemin unique » n'est pas gardé du côté d'AppRoot.** `Tour5AppProofTest` compose `rememberProjectZipSender` lui-même et appelle `send` / `sendOpen` : aucun test ne vérifie qu'AppRoot passe bien par ce sender (Mes projets › ⋯ et les deux `sendProject`). C'était déjà le « moyen n° 1 » de la relecture du lot 3 (« écrit à la main dans AppRoot, aucun test ne l'appelle ») ; les notes de `verdicts.tsv` (T5-Cd-68, T5-Cd-83, T5-Cc-41a) disent « par l'émetteur unique d'AppRoot », ce que la garde ne prouve pas. | Mutation : dans `AppRoot.kt`, `exportZip = { p -> zipSender.send(...) }` et les deux `sendProject = zipSender::sendOpen` remis en bloc écrit à la main (`projectsVm.exportZip(...) { z -> WavExporter.share(...) }`, sans fenêtre « C'est prêt »). `bash scripts/bench/gradle-file.sh :app:testDebugUnitTest --tests …Tour5AppProofTest --tests …SharePathTest --tests '*ProjectsSafetyTest' --tests '*BenchShareTest' --tests '*NavigationMapTest' --tests '*Round3Zone2Test' --tests '*ShareSheetTest'` : **BUILD SUCCESSFUL, tout vert**. La régression (plus de « Projet sauvegardé », plus de « Voir mes fichiers » après le .zip, par les deux boutons) passerait. | Un test qui passe par AppRoot (banc `HumanTester` : Mes projets › ⋯ › « Sauvegarder le morceau en .zip », puis la fenêtre `share_bilan_files`), ou exposer depuis AppRoot l'action donnée à `ProjectsScreen` et la garder. Corriger les notes de `verdicts.tsv` en attendant. |
+| moyen | **« Projet sauvegardé » même quand rien n'est sauvegardé.** `zipSavedLines` met toujours « Projet sauvegardé : %s » en tête ; seule la deuxième ligne dépend de `kept`. Si `copyToDocuments` rend `false` (téléphone plein, MediaStore qui refuse : l'exception est avalée par `runCatching` dans `copyInto`), le .zip n'existe que dans le cache (effacé au bout d'une heure) et dans le menu d'Android que l'utilisateur a peut-être fermé. Or le bouton promet « une copie de sécurité » : Benjamin croirait avoir une sauvegarde. Le projet lui-même n'est pas perdu (il reste dans l'appli), d'où « moyen » et pas « grave ». | Lecture : `SaveProjectZip.kt`, `zipSavedLines(name, kept)` ; `ProjectsViewModel.exportZip` (`val kept = …copyToDocuments(…)`, seul `AppLog` en cas d'échec). Avec `kept = false`, la fenêtre afficherait « Projet sauvegardé : … » sans la ligne Documents. La mutation `val kept = false` fait bien rougir `myFilesListsAProjectZipSavedFromMyProjects`, mais sur la liste vide, avant d'arriver à `sender.saved` : aucun test ne dit ce que l'écran doit dire quand la copie échoue. | Quand `kept` est faux : « Le .zip est prêt, mais la copie dans Documents a échoué : garde-le depuis le menu de partage » (ou un mot proche), et un test sur `zipSavedLines(name, false)`. |
+| mineur | Le message vide de « Mes fichiers » dit « dans Musique › BenStudio » alors que les .zip vont dans Documents et les vidéos dans Films (le texte vient de la spec, écrite avant le choix de Documents). | Capture `partage/my_files_empty.png` ; `MyExports.where()` dit bien les trois dossiers. | « … s'ajoute ici (Musique, Films ou Documents › BenStudio sur cet appareil). » |
+| mineur | `ProjectZipSender` est gardé par `remember` (pas sauvegardé) et `saved` est un `mutableStateOf` simple : un .zip long à faire puis une rotation de l'écran, et la fenêtre « C'est prêt » est posée sur l'ancien sender (perdue) ; l'Activity d'avant est retenue jusqu'à la fin de la coroutine. | Lecture : `rememberProjectZipSender` (`remember(rhythmVm, projectsVm) { ProjectZipSender(context, …) }`), le rappel `then` capture `this`. Pas reproduit. | Mettre l'état « .zip prêt » dans `ProjectsViewModel` (un `StateFlow`), le sender ne fait que le lire. |
+| mineur | La longueur choisie est gardée par le ViewModel, pas par projet : 4 mesures choisies dans un projet, puis un autre projet avec une voix de 24 mesures, et « Partager » coupe la voix à 4 mesures (avant, la boucle par défaut allait jusqu'à la fin de la voix). La feuille l'affiche (durée et puce), donc ce n'est pas caché ; DECISIONS le dit pour un même projet. | Lecture : `_export` n'est jamais remis à zéro (`grep "_export.value = ExportUi"` : rien), `shareAfterTake` prend `_export.value.takeIf { it.barsChosen }?.bars`. Pas reproduit. | Remettre `barsChosen` à faux à l'ouverture d'un autre projet, ou ranger la longueur dans le projet. |
+| mineur | `nav/rhythm_scrolled_under_part.png` (réenregistrée par ce lot) dépend de l'ordre des tests : seule, la classe `PadHoldAndTrackDeleteTest` dessine « Guide · Ajoute une mélodie 45 % » au lieu de « Guide ». Même défaut d'ordre déjà présent sur la base, sur une autre image de la même classe (`pad_settings_card`, « 34 % »). La CI ne fait qu'avertir. | `bash scripts/bench/gradle-file.sh :app:verifyRoborazziDebug --tests com.pocketstudio.app.nav.PadHoldAndTrackDeleteTest` : tête, 2 fois sur 2, `scrolledThePadsFadeUnderThePartLine FAILED` ; base (worktree temporaire), `thePadsSheetIsItsCardsReglagesDuPad FAILED`. | Hors lot : fixer l'état du Guide dans cette classe (lot banc). |
+| mineur | L'onglet « Partager » garde l'icône avion (Send) alors que le bouton Partager a l'icône de partage ; c'est le point G5 (une seule icône), prévu au chantier 3. | Captures `nav/simple_send`, `scale130/fr_nav_simple_send`. | Chantier 3, comme prévu. |
+| mineur | NL : « Een kopie staat in Documenten › BenStudio: je vindt ze terug » : « kopie » est un mot en « de », on attend « je vindt hem terug ». Le sens est juste. EN : rien à redire (« Save the song as a .zip », « Send again », « My files »). | `project-model/src/main/resources/i18n/nl/partage.json`. | « je vindt hem terug ». |
+| observation | « Mes fichiers » ne lit que les fichiers que l'appli possède (pas de permission de lecture) : après une réinstallation ou un effacement des données, les anciens fichiers sont toujours sur le téléphone mais n'apparaissent plus dans la liste. Déjà vrai pour Musique avant ce lot. | Lecture : `MyExports.query` sur `MediaStore.Files` / `Audio` / `Video`, sans `READ_MEDIA_*`. | Le dire dans le « ? » de « Mes fichiers » (« les fichiers d'avant une réinstallation sont dans Fichiers › … »). |
+| observation | `verdicts.tsv` : l'état est « corrigé » (le schéma n'admet que ouvert / corrigé / voulu) et la note de chaque ligne T5-ZIP et T5-8MES dit « CORRIGÉ … à confirmer sur appareil » avec l'essai tel-03 / tel-06 ❌ daté. C'est honnête. Les lignes T5-ALERTE (tel-07 ✅ déjà sur le téléphone) disent « corrigé » sans réserve : juste. | `grep -P "^tour-5\tT5-(Cd-68|Cc-27)" docs/audits/ultra/verdicts.tsv` | — |
+
+Rien de « grave » ni de « bloquant » trouvé dans la sauvegarde du .zip (point 2 de la consigne) :
+
+- **API** : `minSdk = 31` (`app/build.gradle.kts`). `RELATIVE_PATH` (API 29+) et `IS_PENDING` sont là ; depuis Android 11 une appli peut écrire n'importe quel type de fichier dans `Documents/` par `MediaStore.Files` sans permission. Pas de branche pour les vieux Android : il n'y en a pas à gérer.
+- **Écrasement** : le nom porte la date à la seconde (`WavExporter.fileName`) et MediaStore ajoute « (1) » si le nom existe déjà : aucun fichier existant n'est écrasé.
+- **Fichier à moitié écrit** : l'entrée est créée `IS_PENDING = 1`, rendue visible seulement après la copie ; en cas d'exception elle est supprimée. Un arrêt brutal pendant la copie laisse une entrée en attente, invisible pour la liste et nettoyée par Android.
+- **Exceptions avalées** : `copyInto` rend `false` sans rien dire (seulement `AppLog`) : voir le deuxième « moyen ».
+- **Le projet lui-même** n'est jamais touché : `catalog.exportZip` lit et écrit un .zip dans le cache ; la sauvegarde d'abord (`flushNow`) est conservée sur les deux chemins.
+- **Thread audio** : aucun fichier du moteur ni de `engine/` dans la plage ; aucun appel nouveau vers le moteur.
+
+## Réponses aux questions de l'auteur
+
+**(a) Plafond CONTRAST de `NavScreenshotTest.sheetShare` monté de 7 à 12 : accepté.** Les 12 textes listés par le recensement (`app/build/recensement/NavScreenshotTest.sheetShare.txt`) sont mesurés pendant que la feuille monte, à travers le voile : « M4A · pour partager » 1,97:1, « Écouter » 1,28:1, « 0:06 » 1,45:1, « Sauvegarder le morceau en .zip » 2,09:1… Sur la capture finale `nav/sheet_share.png` (regardée), tous ces textes sont nets et lisibles. Les cinq nouveaux sont exactement les lignes que le lot a fait remonter dans la partie visible (« Autres fichiers », le .zip, les puces de format). Il y a un précédent identique sur la même ligne (4 → 7 au tour 1, même raison écrite). La règle « un plafond ne monte jamais » protège contre une dérive cachée ; ici la cause est écrite, vérifiable et ne vient pas d'un défaut de contraste réel. À faire plus tard (lot banc) : que le recensement attende la fin de l'animation de la feuille, sinon ce plafond ne mesure rien d'utile sur cet écran.
+
+**(b) Les trois rouges `ScreenshotTest#recette`, `CutScreenshotTest#cutScreen` et `#cutScreenMagnifier` ne viennent pas de ce lot.** Chaque classe lancée seule (`bash scripts/bench/gradle-file.sh :app:verifyRoborazziDebug --tests <classe>`) :
+
+| Classe | Tête 23a3cdb | Base 11a34be (worktree temporaire, supprimé) |
+|---|---|---|
+| `ScreenshotTest` | `recette` rouge (133 tests, 1 rouge) | `recette` rouge (133 tests, 1 rouge) |
+| `CutScreenshotTest` | `cutScreen`, `cutScreenMagnifier` rouges | les deux mêmes rouges |
+| `PadHoldAndTrackDeleteTest` | `scrolledThePadsFadeUnderThePartLine` rouge | `thePadsSheetIsItsCardsReglagesDuPad` rouge (même défaut d'ordre, voir les mineurs) |
+
+`recette.png` montre « 18 essais » alors que `recette.json` de la base dit « les 10 essais restants » : l'image est en retard depuis avant ce lot (ni `recette.json` ni `changelog.txt` ne sont touchés par la plage). Surtout, la CI ne lance pas `verifyRoborazziDebug` mais `compareRoborazziDebug`, qui ne fait jamais échouer le job (`scripts/screenshot-diff.py` rend 0) : le journal du job « Build, unit tests, screenshots » de la CI 248 (base, vert) dit déjà « 4 différentes : cut_screen.png, cut_screen_magnifier.png, recette.png, remix_stem_edit_menu.png » en simple avertissement. La fusion n'apporte donc aucun rouge à la CI : **pas bloquant**. À traiter par qui tient ces écrans.
+
+**(c) Les deux écarts « vert sans rouge » (0d049be, 2e6e828) : le motif est légitime, c'est le juge qui doit l'apprendre.** Le rouge existait déjà dans le dépôt : la garde `@KnownDefect(id, message)` du commit parent. `KnownDefectRule` exige que le test échoue avec exactement ce message (sinon il est rouge) et devient rouge « no longer fails » dès que l'appli est corrigée. Retirer la marque dans le même commit que le correctif est la procédure écrite dans l'annotation elle-même. J'ai vérifié que ce rouge est réel : en retirant chaque correctif, `shareFollowsTheLengthChosenInMix` et `noChangedWarningRightAfterSharing` / `…AMixExport` redeviennent rouges avec le message d'origine (« rendered 8.0 bars, Mix chose 16 », « right under the MIDI file just made »). Règle à apprendre au juge (sans le changer ici) : un commit « vert » qui retire `@KnownDefect` d'un test qui la portait dans son parent compte comme une paire rouge / vert pour ce test.
+
+**(d) `scripts/bench/mutation-l1.sh` qui sort en code 3 : acceptable.** Le script n'est lancé ni par le selftest ni par la CI (DECISIONS du lot 3) ; il refuse maintenant proprement, avec un message en français, au lieu d'appliquer un diff qui ne s'applique plus. `python3 -I scripts/bench/test_ultra_bench.py` reste « OK ». Le supprimer avec son diff serait plus propre, mais le garder « pour mémoire » est un choix écrit dans DECISIONS avec son retour arrière.
+
+## Le recomposeur par composition dans `Tour5AppProofTest` : isolation de test légitime
+
+Je l'ai retiré (retour à `made.get().setContent { content() }`) : la classe entière donne `noChangedWarningRightAfterSharing` rouge (« Android's share menu never opened for the song »), et ce même test lancé **seul** sans le recomposeur est vert. C'est donc un effet d'ordre propre à Robolectric (le répartiteur d'interface de Compose garde le Choreographer du premier test, Robolectric en donne un neuf à chaque test), pas un comportement de l'appli : sur un téléphone il n'y a qu'un Choreographer pour toute la vie du processus. Le changement ne cache rien.
+
+## Test de fumée sur émulateur (`JourneyTest`)
+
+La correction est juste. Le comportement « la première prise au clavier du Mode simple crée et sélectionne « Ma mélodie » » est voulu et écrit depuis le 27 octobre (`docs/DECISIONS.md`, « Enregistrer ma mélodie écrit sur sa propre piste « Ma mélodie »… jamais sur le riff de l'assistant ni dans la basse »), et `Tour4AppProofTest#aFirstMelodyTakeGoesToMaMelodieNotToTheTrackSelectedBefore` (vert) le prouve sans émulateur : 3 notes dans « Ma mélodie », 0 dans la piste d'avant, et « Ma mélodie » sélectionnée après la prise. Les journaux de la CI (`gh api …/actions/jobs/129610792783/logs`, CI 247, et la même chose à la CI 248 sur la base) disent « take: 4 notes; Prise keys : 4 touches, 4 notes » puis « the take's notes: [] » à `JourneyTest.kt:305` : l'appli a gardé les notes, le test lisait la piste d'avant. Le test n'accepte pas un défaut : il lit la piste où l'appli a choisi d'écrire, il n'ajoute ni attente ni nouvel essai, et il garde l'exigence (au moins 3 notes sur les doubles croches). Limite inchangée : pas rejoué sur un émulateur ; la prochaine CI le dira.
+
+## Captures regardées
+
+| Capture | Ce que j'ai vu |
+|---|---|
+| `partage/130_loop_pro` (pas regardée par l'auteur) | Feuille Pro à 130 % : 0:32, puce 16 allumée, « Volume visé ». La zone qui défile est courte : la deuxième ligne de puces de volume est coupée net au bord, au-dessus des puces M4A / WAV ; il y a une suite à faire défiler, rien n'est hors d'atteinte. « Mes fichiers » garde sa sous-ligne sur deux lignes. Acceptable. |
+| `partage/tabA11_130_loop_pro` (pas regardée) | Tout tient ; la ligne « Pas encore de morceau : ta partie part en boucle (16 » est coupée au bord de la zone qui défile (suite en dessous). |
+| `partage/my_files` (pas regardée) | Quatre fichiers, noms longs sur deux lignes, « projet » et « vidéo » devant la date, « Renvoyer » entier, « Fermer ». Bien. |
+| `partage/my_files_empty`, `130_my_files_empty` (pas regardées) | « Rien ici pour l'instant… dans Musique › BenStudio » : voir le mineur sur Musique seulement. |
+| `partage/ready_song`, `tabA11_130_ready_song` (pas regardées) | « C'est prêt » puis « C'est prêt : Nuit-sur-la-ville-….m4a » (le mot répété vient d'avant ce lot), durée, niveau, « Voir mes fichiers » et « OK » entiers sur une ligne. |
+| `partage/ready_zip` (pas regardée) | « Projet sauvegardé : Nuit-sur-la-ville-….pocketstudio.zip », la ligne Documents, les deux boutons. |
+| `nav/sheet_share` | Feuille Pro : « Autres fichiers », « Sauvegarder le morceau en .zip » (sous-ligne coupée au bord de ce qui défile), puces M4A / WAV, Partager, « Mes fichiers » avec sa sous-ligne. Lisible, rien hors écran. |
+| `share_sheet` | Les alertes (solo, piste coupée, saturation) avec leurs boutons, puis le pied fixe. Bien. |
+| `scale130/fr_nav_simple_send` | Téléphone à 130 % en Simple : « Fini ? Partage ton morceau » sur une ligne, nom, 0:06 et « 3 parties », Écouter, M4A / WAV, Partager, « Mes fichiers » sans sous-ligne, barre du Guide, onglet « Partager » entier. Aucun texte coupé, le bouton est à l'écran. |
+| `tabA11/130_nav_sheet_share` | Tablette à 130 % : tout entier, « Mes fichiers » et sa sous-ligne sur une ligne. |
+| Comparaisons `rhythm_scrolled_under_part_compare`, `recette_compare`, base `pad_settings_card_compare` | Voir la réponse (b) et le mineur sur l'ordre des tests. |
+
+« Partager » est employé partout sur le chemin du partage (onglet, titre, bouton, « Sauvegarder le morceau en .zip », « Autres fichiers », « Mes fichiers », « Renvoyer », visite rapide, page d'aide) ; il ne reste « Envoyer le projet » que pour le .zip brut d'un projet illisible (`AppRoot.kt:904`), laissé au chantier 3 comme le dit DECISIONS. Les textes français sont corrects et naturels.
+
+## Mutations essayées (chacune retirée fichier par fichier avec `git checkout -- <fichier>`)
+
+| Mutation | Garde attendue | Résultat |
+|---|---|---|
+| `ProjectsViewModel.exportZip` : `val kept = false` (plus de copie dans Documents) | `#myExportsListsTheProjectZipJustSent`, `#myFilesListsAProjectZipSavedFromMyProjects` | **rouges** toutes deux (« does not list the project just sent… [controle.wav] », « … []») |
+| `MyExports.list` sans la requête Documents | les deux mêmes | **rouges** |
+| `ExportUi.madeHash` : le Guide remis dans l'empreinte | `#noChangedWarningRightAfterSharing` | **rouge** (« … once the share menu opened, nothing changed in the song (guide share.ready = DONE) ») |
+| Export MIDI sans `madeFrom` | `#noChangedWarningRightAfterAMixExport` | **rouge** (« right under the MIDI file just made ») |
+| `shareAfterTake` : `chosen = null` | `#shareFollowsTheLengthChosenInMix` | **rouge** (« rendered 8.0 bars, Mix chose 16 ») |
+| `ShareSheetRoute` : `loop = null` (plus de puces dans la feuille) | `SharePathTest#theSheetsChipsSetTheLoopLengthAndTheDuration` | **rouge** (« nothing tagged share_bars_16 ») |
+| `MyExportsButton` remis en dernière ligne de ce qui défile | `SharePathTest#myFilesIsInSightUnderTheShareButton` | **rouge** (« « Mes fichiers » is not in sight on the page ») |
+| Les puces de longueur remises sous « Avancé » dans Mix | `SharePiecesTest#theMixCardShowsTheLoopLengthWithoutAvance` | **rouge** (« export_bars_16 is not displayed ») |
+| AppRoot : Mes projets › ⋯ et les deux `sendProject` remis en bloc écrit à la main | aucune garde nommée ne le couvre | **non attrapée** : tout vert (premier « moyen ») |
+| `Tour5AppProofTest` sans recomposeur propre | — | classe : `noChangedWarningRightAfterSharing` rouge ; ce test seul : vert (effet d'ordre de Robolectric) |
+
+## Contrôles lancés
+
+- `python3 -I scripts/bench/test_ultra_bench.py` : `ultra bench scripts: OK`.
+- Une invocation ciblée : `bash scripts/bench/gradle-file.sh :app:testDebugUnitTest` avec `Tour5AppProofTest`, `Tour4AppProofTest`, `SharePathTest`, `SharePiecesTest`, `ShareScreenshotTest` et ses deux variantes, `NavigationMapTest`, `Round3Zone2Test`, `ShareSheetTest`, `ShareSongTest`, `BenchShareTest`, `BugReportFlowTest`, `ProjectsSafetyTest`, `LanguageTest`, `TextsAuditTest` : **135 tests, 0 rouge**.
+- `bash scripts/bench/gradle-file.sh :app:verifyRoborazziDebug --tests 'com.pocketstudio.app.nav.*' --tests 'com.pocketstudio.app.export.Share*ScreenshotTest' --tests com.pocketstudio.app.ScreenshotTest --tests '*TutoAppScreenshotTest' --tests '*UiScaleScreenshotTest' --tests '*TabletScreenshotTest' --tests '*CutScreenshotTest'` : 1 775 tests, 4 rouges, tous expliqués plus haut (3 déjà sur la base, 1 effet d'ordre de la classe `PadHoldAndTrackDeleteTest`, déjà présent sur la base sous une autre image). Les 18 nouvelles captures `partage/` et toutes les captures `nav/`, `scale130/`, `tabA11/`, `tablet/` changées par le lot sont conformes.
+- Hygiène : `git ls-tree -r HEAD | grep -c '^120000'` = 0 ; aucun identifiant de modèle dans les lignes ajoutées ; aucun fichier sous `engine/` ni `app/src/main/assets/` dans la plage (`changelog.txt` et `recette.json` intacts) ; aucun projet ni morceau de Benjamin commité (les noms « Nuit sur la ville », « Jump-up-DnB-bootleg-Mehdi » sont des exemples des tests, déjà dans le dépôt avant ce lot) ; les neuf lignes ajoutées à DECISIONS disent ce que fait le code, sauf la précision manquante du premier « moyen ».
+- Le worktree temporaire de la base et les fichiers de sonde sont supprimés ; l'arbre de travail est propre.
+
+Verdict : 0 bloquant, 0 grave — fusion possible

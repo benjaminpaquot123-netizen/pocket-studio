@@ -184,8 +184,93 @@ class BenchSongClockTest {
         assertEquals("one second of it", 48_000f, e.micStatus(take)[1], 48_000f / 100)
     }
 
+    /**
+     * Audit « banc crédible » A.7 (F1): the song that ends by itself is a stop like ■ (Engine.cpp: onStep calls stopTransport
+     * on the last bar line). A take armed is kept with what it recorded up to that line (state 2, 32 steps = 32 × 6000
+     * frames at 120 BPM), and a song mark still waiting is dropped (stopTransport: markQuantum_ = 0), as ■ drops it. The
+     * bench's engine kept that mark: it came true at the next ▶, on a line nobody asked for.
+     */
+    @Test
+    fun aTakeArmedIsKeptWhenTheSongEnds() {
+        start()
+        val take = e.micStart(true, 60, 0)
+        play(songStep = 0)
+        steps(8)
+        e.post(0L, MARK, 0f, 64, 0)  // a performance take waiting for the launch line of step 64
+        arm(32, 2)                   // the song ends at step 32
+        steps(30)
+        assertEquals("the song's end stopped the transport", -1, e.transportStep())
+        val st = e.micStatus(take)
+        assertEquals("the take is over", 2f, st[0], 0f)
+        assertEquals("kept, with what it recorded up to the last bar line", 32 * 6_000f, st[1], 6_000f)
+        assertEquals("nothing marked", -1, e.songMarkStep())
+        play(songStep = -1)
+        steps(70)
+        assertEquals("the mark the song's end dropped does not come true at the next ▶", -1, e.songMarkStep())
+        assertEquals("and the song position stays out of the song", -1, e.songStep())
+    }
+
+    /**
+     * A.7 (F1), the other side of « a stop ends a take »: Engine.cpp's stopTransport ends a recording that runs
+     * (« if (record_ && !recordOnStart_) finishRecording() »), not one still waiting for its step 0. ■ during the count-in
+     * leaves the take armed: it starts on the « 1 » of the next ▶. The bench's engine ended it there with 0 frames.
+     */
+    @Test
+    fun aTakeStillCountingInIsNotEndedByStop() {
+        start()
+        val take = e.micStart(true, 60, 0)
+        play(countInBars = 1)
+        steps(8)
+        stop()
+        assertEquals("stopped during the count-in: still waiting", 0f, e.micStatus(take)[0], 0f)
+        assertEquals(0f, e.micStatus(take)[1], 0f)
+        play(countInBars = 1)
+        steps(16 + 8)
+        assertEquals("it records from the « 1 » of the next ▶", 1f, e.micStatus(take)[0], 0f)
+        assertEquals(48_000f, e.micStatus(take)[1], 48_000f / 100)
+        stop()
+        assertEquals("■ while it records ends it", 2f, e.micStatus(take)[0], 0f)
+    }
+
+    /**
+     * A.7, the song mark as Engine.cpp plays it (MarkSong, onStep, SetTransport, stopTransport): it comes true on the first
+     * step from the next one that its quantum divides, puts the song there (song step [value] on that line), stays readable
+     * after ■ until the next ▶, survives ▶ when asked before it (the line is then step 0), and a quantum of 0 cancels it.
+     */
+    @Test
+    fun aSongMarkComesTrueOnItsLineAndPutsTheSongThere() {
+        start()
+        play(songStep = -1)  // a scene on its own, outside the song
+        steps(5)
+        e.post(0L, MARK, 32f, 16, 0)
+        steps(5)
+        assertEquals("before its line", -1, e.songMarkStep())
+        assertEquals(-1, e.songStep())
+        steps(8)
+        assertEquals("marked on step 16", 16, e.songMarkStep())
+        assertEquals("the song is at step 32 on that line: 34 two steps later", 34, e.songStep())
+        stop()
+        assertEquals("still readable after ■", 16, e.songMarkStep())
+        play(songStep = -1)
+        steps(20)
+        assertEquals("▶ forgets the last mark, and marks nothing by itself", -1, e.songMarkStep())
+        stop()
+        e.post(0L, MARK, 0f, 16, 0)  // asked before ▶
+        play(songStep = -1)
+        steps(2)
+        assertEquals("the mark asked before ▶ comes true on step 0", 0, e.songMarkStep())
+        assertEquals(2, e.songStep())
+        stop()
+        e.post(0L, MARK, 0f, 16, 0)
+        e.post(0L, MARK, 0f, 0, 0)  // cancelled (the app's cancelPerformance)
+        play(songStep = -1)
+        steps(20)
+        assertEquals("a cancelled mark never comes", -1, e.songMarkStep())
+    }
+
     private companion object {
         const val TRANSPORT = 5
+        const val MARK = 75
         const val TEMPO = 6
         const val ARM = 40
         const val BEATS_PER_BAR = 57

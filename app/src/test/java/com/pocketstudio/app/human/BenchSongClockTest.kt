@@ -290,7 +290,42 @@ class BenchSongClockTest {
         assertEquals(40.0, e.transportPosition(), 0.01)
     }
 
+    /**
+     * A.8 and A.15, the drum pattern's own step across a swap, from the app's commands as Engine.cpp plays them: the
+     * pattern's length staged for the waiting scene (SetStaging, SetPatternSteps) is taken at the swap, not before; the
+     * drums' slot counts from the swap, or from further in when the part starts later in (SetSlotOffset); no step while
+     * stopped or counting in.
+     */
+    @Test
+    fun theDrumPatternsStepFollowsTheSceneTakingOver() {
+        start()
+        e.post(0L, PATTERN_STEPS, 0f, 16, 0)
+        play(songStep = 0)
+        steps(40)
+        assertEquals("step 40 of the transport: step 8 of a 16-step pattern", 8, e.currentStep())
+        e.post(0L, STAGING, 1f, 0, 0)
+        e.post(0L, PATTERN_STEPS, 0f, 32, 0)   // the next part's drums: 32 steps
+        e.post(0L, SLOT_OFFSET, 0f, 0, 16)     // started one bar in
+        e.post(0L, STAGING, 0f, 0, 0)
+        arm(64, 1, songStep = 64)
+        steps(20)
+        assertEquals("the staged pattern waits for the swap: step 60 is still step 12 of 16", 12, e.currentStep())
+        steps(8)
+        assertEquals("4 steps into the part that took over at 64", 4, e.absoluteStep())
+        assertEquals("its drums started 16 steps in: step 20 of 32", 20, e.currentStep())
+        stop()
+        assertEquals("stopped", -1, e.currentStep())
+        play(countInBars = 1)
+        steps(4)
+        assertEquals("counting in", -1, e.currentStep())
+        steps(12 + 35)
+        assertEquals("▶ starts the pattern from its first step: step 35 is step 3 of 32", 3, e.currentStep())
+    }
+
     private companion object {
+        const val PATTERN_STEPS = 9
+        const val STAGING = 39
+        const val SLOT_OFFSET = 73
         const val TRANSPORT = 5
         const val MARK = 75
         const val TEMPO = 6

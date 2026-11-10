@@ -16,7 +16,7 @@ Tous les tests sont dans `app/src/test/java/com/pocketstudio/app/human/Tour5Bloq
 - **Reproduction.** Trois tests refont le chemin du siège : morceau Lo-fi en Mode simple, « Écouter » du Guide (le morceau joue depuis A · Intro), onglet Clavier, en-tête « Partie : A · Intro » › C, puis › B, puis « + Nouvelle partie ». En français (`simplePartsPickedAfterTheGuidesListenAreEdited`), sur le téléphone du siège (hindi, 360 dp, police 130 %, `simplePartsPickedOnTheSeatsPhone`), et un plus court en Techno (`simplePartPickedWhileTheSongPlaysIsTheOneEdited`). **Sur l'appli et le banc d'aujourd'hui, la partie choisie prend bien la main** à la barre de mesure suivante, l'éditeur et l'en-tête la montrent.
 - **Cause probable du bloquant.** Le choix pendant la lecture n'est appliqué que quand le moteur change de partie (`selectScene` → `stageScene`, l'écran suit le moteur). Au tour 5 (2026-11-05), le faux moteur du banc ne jouait pas ces changements : ils y ont été ajoutés le 2026-11-08 (`4168889`). C'est la même cause que T5-Fb-73 (Pro, même geste), classée « banc » et vérifiée sur téléphone par Benjamin (recette tel-13). Je ne l'ai pas prouvé en rejouant l'ancien banc (le rejeu `human-replay.sh` exige l'auto-test complet du banc, zone de l'autre agent).
 - **Défaut réel trouvé et corrigé.** Juste après le toucher, l'en-tête nomme encore l'ancienne partie jusqu'à la barre suivante (près de 3 s à 84 BPM) : rien ne dit que le choix est pris. Test rouge `b9d4aed` (« + Nouvelle partie » : l'en-tête dit encore B ; C et B passaient selon le moment). Correction `1d3d4aa` : tant qu'une partie attend sa mesure (`sessionUi.pending`), la ligne sous l'en-tête dit « M arrive à la prochaine mesure… » (`partHeader(…, waiting)`), en Simple comme en Pro. Mots dans les 14 langues (nouvelle zone `bloquants`).
-- **Captures regardées** (prises par le test, non commitées) : Clavier en français après « + Nouvelle partie » (« Partie : B · Couplet », dessous « M arrive à la prochaine mesure… », rien de coupé) ; la même en hindi à 130 % sur 360 dp (« M अगले बार से शुरू होगा… », tient sur une ligne). Aucune capture de référence ne change (la ligne n'apparaît que pendant l'attente).
+- **Captures regardées** (prises par le test, non commitées) : Clavier en français après « + Nouvelle partie » (« Partie : B · Couplet », dessous « M arrive à la prochaine mesure… », rien de coupé) ; la même en hindi à 130 % sur 360 dp (« M अगले बार से शुरू होगा… », tient sur une ligne). Aucune capture de référence ne change. **Erreur de cette version, corrigée après relecture (voir « Après relecture ») : la ligne s'affichait aussi pendant toute écoute du morceau, en nommant sa partie suivante.**
 - **Garde dans `verdicts.tsv`** : aucune ligne pour A a #27. Rien écrit (§ 12.3).
 
 ## 2. E a #117 : prise de mélodie perdue après Pad Live
@@ -80,3 +80,23 @@ Honnêteté : le commit `ffa273e` a été amendé une fois avant tout autre comm
 ## 7. Classes à rejouer à la fusion
 
 `Tour5BloquantsTest` (les 6 tests), `PlayStripLogicTest`, `ScreenshotTest` (en-têtes d'éditeurs), `NavScreenshotTest` et ses variantes (Rythme, tuto), `TutoKickSoundTest`, `JourneyPathsTest`, les tests de tuto (`Tuto*`), `GuideNav*`, `BenchRecetteTest#proPartPickedWhilePlayingTakesOver`, et côté catalogues et tutos `:project-model:test` (`I18nCatalogTest`, `LexiconWordsTest`, la validation des tutos).
+
+## Après relecture (2026-11-10)
+
+Relecture : `tour-5-bloquants-relecture.md` (1 grave, 2 moyens, 5 mineurs). Ce fichier n'est pas touché.
+
+| Constat | Ce qui a changé | Preuve |
+|---|---|---|
+| **Grave G1** : « … arrive à la prochaine mesure… » pendant toute écoute du morceau, en nommant sa partie suivante | Cause : en mode morceau, `sessionUi.pending` est la partie suivante du morceau, préparée pendant toute la partie en cours (`stageSongPart`). Un choix de partie pendant le morceau quitte d'abord le mode morceau (`selectScene` pose `SessionUi(pending = …)`, `songIndex` à −1) ; un choix de partie du morceau (« jouer depuis ») ne fait que la mettre en file pour la fin de la partie, pas à la mesure suivante. Le bon critère est donc bien « hors mode morceau » : `partHeader` ne dit la phrase que si `playing && !songPlaying`. En mode morceau, « Le morceau joue : touche la grille… » revient. | Rouge `a6c25b7` : `noWaitingLineWhileTheSongJustPlaysInSimple` (« Partie : A · Intro / C · Refrain arrive… », `SessionUi(pending=2, songIndex=0)`) et `…InPro` (« Partie : E · Intro 2 / F · Intro 3 arrive… ») ; vert `ad9ab6c` (même noms) ; `simplePartsPickedAfterTheGuidesListenAreEdited` et `…OnTheSeatsPhone` restent verts (la phrase après « + Nouvelle partie » est toujours là). |
+| G1, textes | La ligne DECISIONS de A a #27 et la § 1 de ce rapport corrigées (la phrase ne vient que pour une partie choisie hors du mode morceau). | — |
+| Moyen M1 (la phrase reste si le moteur ne bascule jamais) | Non changé, déjà dans les doutes (§ 6) ; à voir à l'essai téléphone n° 1. | — |
+| Moyen M2 (paire rouge/vert de A a #27 étroite) | Les deux nouveaux tests couvrent maintenant l'écoute sans choix, en Simple et en Pro. | ci-dessus |
+| Mineur m3 (gardes E a #117 : « pas 0 note ») | Les deux gardes vérifient maintenant que la grille montre autant de notes que la prise en a écrit. | dans `a6c25b7`, verts au passage ciblé |
+| Mineurs m1, m2, m4, m5 | Non changés (constats sans défaut, ou déjà dits). | — |
+
+**Captures regardées** (prises par les tests, non commitées) : Simple pendant « Écouter » sans choix (Clavier, « Partie : C · Refrain », dessous « Le morceau joue : touche la grille et cette partie reste sous tes doigts, en boucle. ») ; Simple juste après « + Nouvelle partie » (« Partie : B · Couplet », dessous « M arrive à la prochaine mesure… ») ; Simple après C (« Elle tourne en boucle pendant que tu la modifies… »). Aucune capture de référence ne change.
+
+**Passages ciblés** (tête `ad9ab6c`) :
+- `testDebugUnitTest` : `Tour5BloquantsTest` 9 tests (8 verts, `drive` sauté), `TutoJourneyTest` 74 verts, `PlayStripLogicTest` 6 verts, `ScreenshotTest` 133 verts.
+- `verifyRoborazziDebug` : `Tour5BloquantsTest`, `ScreenshotTest`, `NavScreenshotTest` : 1 rouge, `ScreenshotTest#recette` (image instable connue, hors lot) ; `NavScreenshotTest` 30 verts.
+- Pas de nouvelle suite complète après ce correctif (une ligne de `PartHeader.kt` et des tests).

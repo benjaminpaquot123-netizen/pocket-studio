@@ -588,6 +588,8 @@ internal class BenchEngine : CommandSink {
             restartAt = if (value.isFinite()) value.toInt() else 0
             armedAt = now
             staging = false  // arming ends a staging burst even if its « off » was dropped (Engine.cpp)
+            // « Leave the song » (the swap cancelled, kind 3): out of the song at once, the scene goes on (leaveSongNow).
+            if (a < 0 && b == 3) inSong = false
         }
 
         /**

@@ -21,6 +21,7 @@ import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.model.NoteClip
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.SongPart
+import com.pocketstudio.model.instrumentTracks
 import com.pocketstudio.model.partSteps
 import com.pocketstudio.model.sceneLabel
 import com.pocketstudio.model.viewOfTrack

@@ -26,12 +26,15 @@ internal class BenchPlayhead {
         if (since < 0) since = nowMs
         val p = vm.project.value
         val spb = p.stepsPerBar.coerceAtLeast(1)
-        val steps = ((nowMs - since) * p.tempoBpm / 15_000.0).toInt()  // a sixteenth = 15/bpm s
+        val engine = NativeEngine.sink
+        // Audit « banc crédible » A.9 (F4): one clock. With the bench's engine there (always, unless « ps.human.moteur=liste »
+        // lets it go), every number comes from it, as the app's own polls read them on a phone: the count-in (no step yet), a
+        // tempo change (the steps played are kept). The head's own count below is only for the app with no engine at all.
+        val steps = engine?.transportStep() ?: ((nowMs - since) * p.tempoBpm / 15_000.0).toInt()  // a sixteenth = 15/bpm s
         // Audit ultra tour 0 (seat c): « Enregistrer la performance » reads the transport's steps since ▶ to start
         // on its launch line; without them it stayed « Prêt » for good.
         vm.takeClockForTest = steps
         val songIndex = vm.sessionUi.value.songIndex
-        val engine = NativeEngine.sink
         if (songIndex >= 0 && songIndex < p.song.size && engine != null) {
             // PLAN-RESTE R.1 (tel-09; T4-16, T5-Ab-14): the song's position is the engine's own (as the app's pollLive reads
             // it on a phone). Counted here from ▶ plus the start of the part playing, the first part was counted twice once
@@ -43,6 +46,12 @@ internal class BenchPlayhead {
             val songStep = (p.songStepOf(songIndex) + steps).coerceAtMost(p.songBars.coerceAtLeast(1) * spb - 1)
             set(vm, "_playBar", songStep / spb)
             set(vm, "_live", LiveUi(currentStep = songStep - p.songStepOf(songIndex), absoluteStep = songStep, songStep = songStep))
+        } else if (engine != null) {
+            // A scene alone on the engine: its loop from the engine's steps (-1: counting in, nothing shown yet).
+            val loop = p.sceneSteps(p.scene).coerceAtLeast(1)
+            val at = engine.absoluteStep()
+            set(vm, "_playBar", if (at < 0) -1 else at % loop / spb)
+            set(vm, "_live", LiveUi(currentStep = if (at < 0) -1 else at % loop, absoluteStep = at))
         } else {
             val loop = p.sceneSteps(p.scene).coerceAtLeast(1)
             set(vm, "_playBar", steps % loop / spb)

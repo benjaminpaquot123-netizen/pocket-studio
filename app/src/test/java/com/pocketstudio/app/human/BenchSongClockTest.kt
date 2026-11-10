@@ -116,9 +116,8 @@ class BenchSongClockTest {
     @Test
     fun aMicTakeEndsWithTheSongsEnd() {
         start()
-        e.countInMs = 0
         play(songStep = 0)
-        val take = e.micStart(false, 60, 0)
+        val take = e.micStart(true, 60, 0)
         steps(8)
         assertEquals("recording after ▶", 1f, e.micStatus(take)[0], 0f)
         arm(32, 2)

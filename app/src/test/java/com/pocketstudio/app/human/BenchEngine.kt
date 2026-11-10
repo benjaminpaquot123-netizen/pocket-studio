@@ -46,9 +46,11 @@ internal class BenchEngine : CommandSink {
         }
         when (type) {
             CMD_SET_TRANSPORT -> {
-                if (value <= 0f) freezeTakes()
-                // A stop ends a mark the take was waiting for (a phone's engine drops it with its song position).
-                if (value <= 0f && markAsked > 0) markAsked = -1
+                // What was due before this command is played first (a mark reached, the song's end).
+                song.advance()
+                // ■ ends the takes that record; one still waiting for its « 1 » stays armed (Engine.cpp's stopTransport:
+                // « if (record_ && !recordOnStart_) finishRecording() »).
+                if (value <= 0f) freezeTakes(started = true)
                 val now = SystemClock.uptimeMillis()
                 transportSince = if (value > 0f) now else -1L
                 stepBase = 0.0
@@ -57,7 +59,7 @@ internal class BenchEngine : CommandSink {
                 zeroAt = if (value > 0f) now + Math.round(countInBars * beatsPerBar * 4 * 15_000.0 / tempo) else -1L
                 // ▶ as Engine.cpp's SetTransport: the scene starts on step 0, the song at song step [b] (OUTSIDE_SONG, -1:
                 // a scene alone); a swap armed before is dropped. ■: nothing waits any more.
-                song.start(inSong = value > 0f && b >= 0, songStep = b.coerceAtLeast(0))
+                song.start(inSong = value > 0f && b >= 0, songStep = b.coerceAtLeast(0), playing = value > 0f)
             }
             // A tempo change while playing: the steps already played are kept (the clock does not jump back or ahead).
             CMD_SET_TEMPO -> if (value > 0f) {
@@ -74,10 +76,8 @@ internal class BenchEngine : CommandSink {
             }
             // Audit method v2 (engine always there): « Enregistrer la performance » marks the song on the next launch line and
             // waits for the engine to say it did (NativeEngine.songMarkStep); the bench's never said it, the take stayed « Prêt ».
-            CMD_MARK_SONG -> {
-                markQuantum = a.coerceAtLeast(0)
-                markAsked = stepsNow().let { if (it < 0) 0 else it + 1 }
-            }
+            // A.7: played as Engine.cpp's MarkSong and onStep (see [SongClock.mark]).
+            CMD_MARK_SONG -> song.mark(a, value)
             // Banc fiable 3.2 (T4-17) and its review: the scene swaps as Engine.cpp arms and plays them (see [SongClock]).
             CMD_ARM_SCENE_SWAP -> song.arm(a, b, value, stepsNow())
             CMD_BEATS_PER_BAR -> if (a > 0) beatsPerBar = a
@@ -151,9 +151,13 @@ internal class BenchEngine : CommandSink {
         return FloatArray(t.preroll + frames) { i -> if (i < t.preroll) 0f else BenchMic.voice((i - t.preroll).toLong()) }
     }
 
-    /** The transport stops: each take keeps what it recorded until then (at most [upTo] frames: the song's last bar line). */
-    private fun freezeTakes(upTo: Long = Long.MAX_VALUE) {
-        if (transportSince >= 0) takes.values.forEach { if (it.frozen < 0) it.frozen = minOf(recorded(it), upTo.coerceAtLeast(0L)) }
+    /**
+     * The transport stops: each take keeps what it recorded until then (at most [upTo] frames: the song's last bar line).
+     * [started]: only the takes whose step 0 has come (■ during the count-in leaves a take armed for the next ▶).
+     */
+    private fun freezeTakes(upTo: Long = Long.MAX_VALUE, started: Boolean = false) {
+        if (transportSince < 0 || started && SystemClock.uptimeMillis() < zeroAt) return
+        takes.values.forEach { if (it.frozen < 0) it.frozen = minOf(recorded(it), upTo.coerceAtLeast(0L)) }
     }
 
     override fun scheduleFrom(target: Long, frame: Long) = Unit
@@ -489,12 +493,38 @@ internal class BenchEngine : CommandSink {
         private var kind = 0
         private var restartAt = 0
         private var armedAt = -1
+        // The song mark (Engine.cpp's markQuantum_, markSongStep_, songMarkStep_): waiting while its quantum is > 0.
+        private var markQuantum = 0
+        private var markFrom = 0
+        private var markSongStep = 0
+        var markStep = -1
+            private set
 
-        @Synchronized fun start(inSong: Boolean, songStep: Int) {
+        /** ▶ ([playing]) or ■, as Engine.cpp's SetTransport and stopTransport. */
+        @Synchronized fun start(inSong: Boolean, songStep: Int, playing: Boolean) {
             this.inSong = inSong
             songStart = -songStep
             sceneStart = 0
             swapAt = -1
+            if (playing) {
+                // ▶ forgets the last mark; one asked before it is kept and comes true from step 0.
+                markStep = -1
+                markFrom = 0
+            } else {
+                // ■ drops a mark still waiting; the last one made stays readable until the next ▶.
+                markQuantum = 0
+            }
+        }
+
+        /**
+         * CMD_MARK_SONG: the song is put at song step [songStep] on the first step, from the next one, that [quantum]
+         * divides (0: nothing waits any more).
+         */
+        @Synchronized fun mark(quantum: Int, songStep: Float) {
+            advance()
+            markQuantum = quantum.coerceIn(0, 1 shl 16)
+            markSongStep = if (songStep.isFinite()) Math.round(songStep.coerceAtLeast(0f)) else 0
+            markFrom = stepsNow().let { if (it < 0) 0 else it + 1 }
         }
 
         @Synchronized fun arm(a: Int, b: Int, value: Float, now: Int) {
@@ -505,25 +535,47 @@ internal class BenchEngine : CommandSink {
             armedAt = now
         }
 
-        /** The waiting swap, if its bar line has come: played at that step. */
+        /**
+         * What waits (the song mark, the scene swap) and whose step has come, played at that step and in Engine.cpp's
+         * order on a same step: the song's end first, then the mark, then the swap.
+         */
         @Synchronized fun advance() {
-            if (swapAt < 0) return
             val now = stepsNow()
             if (now < 0) return
-            val bar = (beatsPerBar * 4).coerceAtLeast(1)
-            val minLocal = maxOf(1, armedAt + 1 - sceneStart, swapAt)
-            val due = sceneStart + (minLocal + bar - 1) / bar * bar
-            if (now < due) return
-            swapAt = -1
-            swaps++
-            when (kind) {
-                1 -> { songStart = due - restartAt; inSong = true }
-                3 -> inSong = false
-                // The song's end (T5-Ab-27): the transport stops on that bar line, and a take ends there with what it recorded up
-                // to it, as the engine's does (the app then keeps it: RhythmViewModel.songEnded).
-                2 -> { freezeTakes(Math.round(due * 15.0 * RATE / tempo)); transportSince = -1L; inSong = false; return }
+            while (true) {
+                val q = markQuantum
+                val line = if (q > 0) (markFrom + q - 1) / q * q else Int.MAX_VALUE
+                val bar = (beatsPerBar * 4).coerceAtLeast(1)
+                val due = if (swapAt < 0) Int.MAX_VALUE else sceneStart + (maxOf(1, armedAt + 1 - sceneStart, swapAt) + bar - 1) / bar * bar
+                if (minOf(line, due) > now) return
+                if (due <= line && kind == 2) {
+                    // The song's end (T5-Ab-27, A.7): the transport stops on that bar line as ■ stops it (stopTransport). A
+                    // take ends there with what it recorded up to it (the app then keeps it: RhythmViewModel.songEnded), and
+                    // a mark still waiting is dropped.
+                    swapAt = -1
+                    swaps++
+                    freezeTakes(Math.round(due * 15.0 * RATE / tempo))
+                    transportSince = -1L
+                    zeroAt = -1L
+                    inSong = false
+                    markQuantum = 0
+                    return
+                }
+                if (line <= due) {
+                    markQuantum = 0
+                    markStep = line
+                    songStart = line - markSongStep
+                    inSong = true
+                    continue
+                }
+                swapAt = -1
+                swaps++
+                when (kind) {
+                    1 -> { songStart = due - restartAt; inSong = true }
+                    3 -> inSong = false
+                }
+                sceneStart = due
             }
-            sceneStart = due
         }
     }
 
@@ -551,18 +603,14 @@ internal class BenchEngine : CommandSink {
         return song.swaps
     }
 
-    /** Where the song was marked (a transport step), once the transport has reached that launch line; -1 before or with none. */
+    /**
+     * Where the song was marked (a transport step), once the transport has reached that launch line; -1 before, with none,
+     * or since the ▶ after it (Engine.cpp's songMarkStep_).
+     */
     override fun songMarkStep(): Int {
-        val asked = markAsked
-        if (asked < 0) return -1
-        val q = markQuantum
-        val line = if (q <= 0 || asked == 0) asked else ((asked + q - 1) / q) * q
-        return if (transportStep() >= line) line else -1
+        song.advance()
+        return song.markStep
     }
-
-    /** The transport step from which the next launch line counts (0: marked before ▶), -1 when nothing is asked. */
-    @Volatile private var markAsked = -1
-    @Volatile private var markQuantum = 0
 
     /** The transport's position with its fraction (Engine.cpp's transportPosition_), -1 stopped or counting in. */
     override fun transportPosition(): Double {

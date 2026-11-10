@@ -357,8 +357,12 @@ fun ShareSheetContent(
 ) {
     // Audit final (09): « Partager » stays in a footer under what scrolls, never below the fold (the
     // A11 lying down at 130 % cut it in half at the screen's bottom).
+    // Little room (a phone at 130 %: about 430 dp between the bars): « Mes fichiers » under « Partager » keeps its name
+    // alone, so that what scrolls above (the name, the duration) keeps a line more.
+    androidx.compose.foundation.layout.BoxWithConstraints(modifier.fillMaxWidth()) {
+    val short = constraints.hasBoundedHeight && maxHeight < 500.dp
     Column(
-        modifier.fillMaxWidth().padding(bottom = 12.dp).then(if (page) Modifier else Modifier.navigationBarsPadding()).testTag("share_sheet"),
+        Modifier.fillMaxWidth().padding(bottom = 12.dp).then(if (page) Modifier else Modifier.navigationBarsPadding()).testTag("share_sheet"),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
     Column(
@@ -366,7 +370,8 @@ fun ShareSheetContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(if (page) tr("Fini ? Partage ton morceau") else tr("Prêt à partager ?"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+            Text(if (page) tr("Fini ? Partage ton morceau") else tr("Prêt à partager ?"), // Little room: the title on one line, so that the duration under the name stays in sight.
+                style = if (short) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
             // Phase 36: the Mode simple's « Envoyer » tab is this page: nothing to close.
             if (!page) IconButton(onClick = actions.close, modifier = Modifier.testTag("share_close")) {
                 Icon(Icons.Filled.Close, contentDescription = tr("Fermer"), tint = Neon.TextSecondary)
@@ -393,9 +398,10 @@ fun ShareSheetContent(
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(shareClock(ui.seconds), style = MonoStyle.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold), color = Neon.Cyan,
                         modifier = Modifier.testTag("share_duration"))
+                    // Its own column beside the clock: wrapped (130 %), its second line no longer runs into the clock.
                     Text(
-                        "  " + if (ui.parts == 0) tr("une partie en boucle") else trCount(ui.parts, "1 partie", "%d parties"),
-                        style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
+                        if (ui.parts == 0) tr("une partie en boucle") else trCount(ui.parts, "1 partie", "%d parties"),
+                        style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.padding(start = 10.dp).weight(1f, fill = false),
                     )
                 }
                 ui.lufs?.let { lufs ->
@@ -516,7 +522,8 @@ fun ShareSheetContent(
         }
         // G2 (recette tel-03: « bloqué » once the file was sent): the files made, right under « Partager », in sight
         // without scrolling in both modes (it was the last line of what scrolls, drawn as a plain sentence).
-        MyExportsButton("share_my_exports", Modifier.padding(start = 8.dp, end = 12.dp))
+        MyExportsButton("share_my_exports", Modifier.padding(start = 8.dp, end = 12.dp), compact = short)
+    }
     }
 }
 

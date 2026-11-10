@@ -110,29 +110,31 @@ object MyExports {
  * with a folder before it; the shared `LinkRow` of the next lot takes its place.
  */
 @Composable
-fun MyExportsButton(tag: String, modifier: Modifier = Modifier) {
+fun MyExportsButton(tag: String, modifier: Modifier = Modifier, /** Its name alone (little room); what it is for stays in its « ? ». */ compact: Boolean = false) {
     var open by rememberSaveable { mutableStateOf(false) }
     Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         TextButton(onClick = { open = true }, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag(tag)) {
             Icon(Icons.Filled.Folder, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.padding(end = 12.dp).size(22.dp))
             Column(Modifier.weight(1f)) {
                 Text(tr("Mes fichiers"), color = Neon.Cyan)
-                Text(tr("Retrouver et renvoyer : M4A, WAV, vidéo, .zip"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                if (!compact) Text(tr("Retrouver et renvoyer : M4A, WAV, vidéo, .zip"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan)
         }
         // Round 3 integration: where these files are, in its « ? ».
-        com.pocketstudio.ui.HelpDot(com.pocketstudio.ui.Help(tr("Mes fichiers"), MyExports.where()), about = listOf(tag))
+        com.pocketstudio.ui.HelpDot(
+            com.pocketstudio.ui.Help(tr("Mes fichiers"), tr("Retrouver et renvoyer : M4A, WAV, vidéo, .zip") + "\n" + MyExports.where()), about = listOf(tag),
+        )
     }
     if (open) MyExportsDialog { open = false }
 }
 
-/** The list of [MyExports], each with « Renvoyer ». */
+/** The list of [MyExports], each with « Renvoyer ». [shown]: the files to show (previews and captures); null: read from the device. */
 @Composable
-fun MyExportsDialog(close: () -> Unit) {
+fun MyExportsDialog(shown: List<MyExport>? = null, close: () -> Unit) {
     val context = LocalContext.current
-    var items by androidx.compose.runtime.remember { mutableStateOf<List<MyExport>?>(null) }
-    LaunchedEffect(Unit) { items = withContext(Dispatchers.IO) { MyExports.list(context) } }
+    var items by androidx.compose.runtime.remember { mutableStateOf(shown) }
+    LaunchedEffect(Unit) { if (shown == null) items = withContext(Dispatchers.IO) { MyExports.list(context) } }
     ScaledAlertDialog(
         onDismissRequest = close,
         title = { Text(tr("Mes fichiers")) },
@@ -160,7 +162,7 @@ fun MyExportsDialog(close: () -> Unit) {
 internal fun MyExportsList(list: List<MyExport>, send: (MyExport) -> Unit) {
     LazyColumn(Modifier.heightIn(max = 360.dp)) {
         items(list, key = { it.uri.toString() }) { e ->
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().testTag("my_export")) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).testTag("my_export")) {
                 Column(Modifier.weight(1f)) {
                     Text(e.name, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                     val kind = when (e.kind) { MyExport.Kind.Sound -> null; MyExport.Kind.Video -> tr("vidéo"); MyExport.Kind.Project -> tr("projet") }

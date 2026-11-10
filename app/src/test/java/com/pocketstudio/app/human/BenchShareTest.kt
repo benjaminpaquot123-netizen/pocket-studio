@@ -116,7 +116,8 @@ class BenchShareTest {
         })
         pass(1500)
         if (simple) {
-            if (shown("tab_Envoyer")) tap("tab_Envoyer") else { compose.onAllNodesWithText("Envoyer")[0].performClick(); pass(900) }
+            // The Mode simple's tab by its tag (its word is « Partager » since the owner's answer 1A: the same as the button's).
+            if (shown("tab_Envoyer")) tap("tab_Envoyer") else tap("tab_simple_Envoyer")
         } else {
             tap("top_share")
         }

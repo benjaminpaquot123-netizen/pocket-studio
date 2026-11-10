@@ -172,6 +172,13 @@ class Round3Zone2Test {
     fun twoFilesLeaveTogether() {
         val a = WavExporter.newFile(app, "Beat-01-drums").apply { writeText("a") }
         val b = File(a.parentFile, "Beat-02-acid.wav").apply { writeText("b") }
+        // FileProvider keeps the folders of the first application it saw (a static cache; Robolectric gives each test its
+        // own): without this the test passed only when no test before it in its JVM had shared a file (as BenchShareTest).
+        runCatching {
+            androidx.core.content.FileProvider::class.java.declaredFields
+                .filter { java.lang.reflect.Modifier.isStatic(it.modifiers) && Map::class.java.isAssignableFrom(it.type) }
+                .forEach { f -> f.isAccessible = true; synchronized(f.get(null)) { (f.get(null) as MutableMap<*, *>).clear() } }
+        }
         assertTrue(WavExporter.share(app, listOf(a, b)))
         val chooser = shadowOf(app).nextStartedActivity
         @Suppress("DEPRECATION")

@@ -218,7 +218,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         val missing = file.outputStream().use { catalog.exportZip(id, it) }
         AppLog.add("Projet exporté : ${file.length() / 1024} Ko, sons absents : $missing")
         if (missing > 0) _state.value = _state.value.copy(message = tr("%d son(s) du projet ne sont plus sur l'appareil : le .zip part sans eux.", missing), messageOk = false)
-        val kept = false  // the copy to Documents › BenStudio comes with T5-ZIP's fix (the next « vert »)
+        val kept = com.pocketstudio.app.export.WavExporter.copyToDocuments(app, file, "application/zip")
         AppLog.add("Projet exporté : copie dans Documents › BenStudio : $kept")
         withContext(Dispatchers.Main) { then(SavedZip(file, kept)) }
     }

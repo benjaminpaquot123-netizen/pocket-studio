@@ -281,7 +281,6 @@ class Tour5AppProofTest {
      * T5-ZIP (seats C c 41, C d 68; recette tel-03), first path: « Prêt à partager ? » › « Sauvegarder le morceau en .zip »
      * (« Envoyer le projet » then), then « Mes fichiers » lists that .zip.
      */
-    @KnownDefect("T5-ZIP", "« Mes exports » does not list the project just sent")
     @Test
     fun myExportsListsTheProjectZipJustSent() {
         Robolectric.setupContentProvider(FakeMediaStore::class.java, MediaStore.AUTHORITY)

@@ -103,6 +103,20 @@ class BenchSelfTest : HumanTester("selftest") {
     }
 
     /**
+     * PLAN-RESTE R.8 (hidden defect B09 of defauts-caches.tsv): Benjamin saw nothing telling him the welcome's list goes on
+     * below the screen; the bench wrote « ↓ la suite plus bas » under every list that scrolls, an arrow the app does not
+     * draw. A person sees a card cut by the screen's edge: the line of what is cut says « coupé », and no arrow is invented.
+     */
+    @Test
+    fun theScreenInTextSaysWhatIsCutNotAnArrowTheAppDoesNotDraw() {
+        begin()
+        val lines = screenLines()
+        assertTrue("an arrow the app does not draw:\n" + lines.joinToString("\n"), lines.none { "la suite plus bas" in it || "la suite sur le côté" in it })
+        assertTrue("the card cut by the screen's bottom edge:\n" + lines.joinToString("\n"), lines.any { "Extraire la voix" in it && "coupé" in it })
+        assertTrue("whole cards are not cut:\n" + lines.joinToString("\n"), lines.none { "J'apprends" in it && "coupé" in it })
+    }
+
+    /**
      * Audit « banc crédible » 2, R2 (a limit, written in the testers' instructions): the app's clock moves only with the
      * gestures. While the tester reads and thinks (real time going by), a message that leaves after 6 s does not leave.
      */

@@ -198,10 +198,18 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** The project and its sounds as a .zip in the export folder; [then] gets the file (to share it). [saveFirst]: see [duplicate]. */
-    fun exportZip(info: ProjectInfo, saveFirst: suspend () -> Boolean = { true }, then: (File) -> Unit) = exportZip(info.id, info.name, saveFirst, then = then)
+    fun exportZip(info: ProjectInfo, saveFirst: suspend () -> Boolean = { true }, then: (SavedZip) -> Unit) = exportZip(info.id, info.name, saveFirst, then = then)
 
-    /** [exportZip] by the project's [id] and [name] (audit ultra round 3, n° 13: from « Prêt à partager ? », the open project). */
-    fun exportZip(id: String, name: String, saveFirst: suspend () -> Boolean = { true }, failed: (String) -> Unit = {}, then: (File) -> Unit) = io(tr("Export du projet"), failed) {
+    /** A project's .zip as [exportZip] made it: the [file] to give to Android's share menu, and whether its copy is in Documents › BenStudio ([kept]). */
+    data class SavedZip(val file: File, val kept: Boolean)
+
+    /**
+     * [exportZip] by the project's [id] and [name] (audit ultra round 3, n° 13: from « Prêt à partager ? », the open project).
+     * T5-ZIP (recette tel-03): the .zip is also copied to Documents › BenStudio, where « Mes fichiers » lists it (it only
+     * lived an hour in the app's own cache: nothing to find again). Here, on the one path every « Sauvegarder le morceau
+     * en .zip » takes, so that no call site forgets it.
+     */
+    fun exportZip(id: String, name: String, saveFirst: suspend () -> Boolean = { true }, failed: (String) -> Unit = {}, then: (SavedZip) -> Unit) = io(tr("Export du projet"), failed) {
         if (!saved(saveFirst)) return@io
         val app = getApplication<Application>()
         // Dated like the audio exports (old ones cleaned): a share still reading an earlier export is never overwritten.
@@ -210,7 +218,9 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         val missing = file.outputStream().use { catalog.exportZip(id, it) }
         AppLog.add("Projet exporté : ${file.length() / 1024} Ko, sons absents : $missing")
         if (missing > 0) _state.value = _state.value.copy(message = tr("%d son(s) du projet ne sont plus sur l'appareil : le .zip part sans eux.", missing), messageOk = false)
-        withContext(Dispatchers.Main) { then(file) }
+        val kept = com.pocketstudio.app.export.WavExporter.copyToDocuments(app, file, "application/zip")
+        AppLog.add("Projet exporté : copie dans Documents › BenStudio : $kept")
+        withContext(Dispatchers.Main) { then(SavedZip(file, kept)) }
     }
 
     /**

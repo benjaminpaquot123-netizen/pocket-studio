@@ -14,15 +14,10 @@
   "Sans fichier : %s.": "Senza file: %s.",
   "Le morceau a changé depuis cet export : exporte à nouveau pour envoyer la nouvelle version.": "Il brano è cambiato da questa esportazione: esporta di nuovo per inviare la nuova versione.",
   "Remix · %s": "Remix · %s",
-  "Reprendre ton morceau sur un autre appareil : « Partager » › « Envoyer le projet » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "Riprendere il tuo brano su un altro dispositivo: “Condividi” › “Invia il progetto” (uno .zip con tutti i suoi suoni), poi, sull'altro dispositivo, I miei progetti › “Importa un progetto (.zip)”.",
   "Trop fort par endroits : ça risque de grésiller.": "Troppo forte in alcuni punti: potrebbe gracchiare.",
   "Pas de saturation.": "Nessuna saturazione.",
   "Fichier M4A : léger, lu par tous les appareils.": "File M4A: leggero, si ascolta su tutti i dispositivi.",
   "Fichier %s : qualité studio.": "File %s: qualità da studio.",
   "%s Mo": "%s MB",
-  "%d Ko": "%d KB",
-  "Mes exports : retrouver et renvoyer un fichier": "Le mie esportazioni: ritrova un file e rinvialo",
-  "Mes exports": "Le mie esportazioni",
-  "Dans Musique › BenStudio sur ce téléphone. Les plus récents d'abord.": "In Musica › BenStudio su questo telefono. I più recenti per primi.",
-  "Aucun export pour l'instant : « Partager » ou « Exporter » en crée un.": "Ancora nessuna esportazione: “Condividi” o “Esporta” ne crea una."
+  "%d Ko": "%d KB"
 }

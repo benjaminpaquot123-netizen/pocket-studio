@@ -250,8 +250,16 @@ class JourneyTest {
     /** ● (a bar of count-in), four keys of the on-screen keyboard, ■, « Remettre en rythme », Garder. */
     private fun recordATakeInTime(rhythm: RhythmViewModel) {
         j.await("record_start")
-        val track = rhythm.selectedTrack.value
-        val before = rhythm.project.value.viewOfTrack(track).synthNotes.notes.toSet()
+        // The notes of every instrument track before the take. The track the take writes on is read AFTER it (below): in the
+        // Mode simple the ● of the keys records on « Ma mélodie », a track the app makes and selects as the first take
+        // starts (RhythmViewModel.simpleMelodyTrack). This test kept the track selected before the ● and read that one:
+        // « the take's notes: [] » on the emulator (CI 243 to 247), while the app said « take: 4 notes ».
+        fun notesByTrack(): Map<Int, Set<com.pocketstudio.model.Note>> {
+            val p = rhythm.project.value
+            return p.instrumentTracks.associate { it.id to p.viewOfTrack(it.id).synthNotes.notes.toSet() }
+        }
+        val selectedBefore = rhythm.selectedTrack.value
+        val notesBefore = notesByTrack()
         // Keys in the song's scale: with the scale locked (jump up: F phrygian), the others are silent.
         val harmony = rhythm.project.value.harmony
         val keys = j.tagsMatching(Journey.KEY).distinct().filter { harmony.inScale(it.removePrefix("key_").toInt()) }.take(4)
@@ -300,9 +308,18 @@ class JourneyTest {
         // The take's notes: new ones on the pitches of the keys touched (a one-bar loop grown to four
         // bars when the take starts brings copies of the notes already there: not the take's).
         val pitches = keys.map { it.removePrefix("key_").toInt() }.toSet()
+        // The track the take wrote on: the one selected now (the same as before the ● in the full mode; « Ma mélodie » in
+        // the Mode simple). A track made by the take had no note before it.
+        val track = rhythm.selectedTrack.value
+        val before = notesBefore[track].orEmpty()
         val played = rhythm.project.value.viewOfTrack(track).synthNotes.notes.filter { it !in before && it.pitch in pitches }
-        log("in time: ${played.map { it.start }}")
-        assertTrue("the take's notes: $played", played.size >= keys.size - 1)
+        log("in time: ${played.map { it.start }} on track $track (selected before the take: $selectedBefore), part shown ${rhythm.project.value.scene}")
+        if (played.size < keys.size - 1) {
+            // The next probe, should this fail again: where the new notes are, track by track, in the part shown.
+            val now = notesByTrack()
+            log("new notes per track in the part shown: ${now.mapValues { (id, notes) -> (notes - notesBefore[id].orEmpty()).map { it.pitch to it.start } }}; ${rhythm.lastTakeReport}; ui ${rhythm.sessionUi.value}")
+        }
+        assertTrue("the take's notes on track $track (selected before the take: $selectedBefore): $played", played.size >= keys.size - 1)
         assertTrue("« Remettre en rythme » puts them on the sixteenths: ${played.map { it.start }}", played.all { it.start % NoteClip.TICKS_PER_STEP == 0 })
         j.tap("take_keep")
         j.await("record_start")

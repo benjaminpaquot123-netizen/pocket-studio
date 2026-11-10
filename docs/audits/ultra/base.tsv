@@ -829,16 +829,16 @@ tuto_panel/tab_simple_Rythme|tuto_do|incompris	nouveau	tour-5
 tuto_panel/tab_simple_Rythme|tuto_listen|affichage	nouveau	tour-5	
 dialogue:project_name_field|name_clear|incompris	nouveau	tour-5	
 dialogue:scene_menu|scene_pick_1|rien	nouveau	tour-5	
-dialogue:share_sheet|share_go|perdu	nouveau	tour-5	
-dialogue:share_sheet|share_my_exports|lent	nouveau	tour-5	
-dialogue:share_sheet|share_my_exports|perdu	nouveau	tour-5	
+dialogue:share_sheet|share_go|perdu	corrigé	tour-5		tour-5
+dialogue:share_sheet|share_my_exports|lent	corrigé	tour-5		tour-5
+dialogue:share_sheet|share_my_exports|perdu	corrigé	tour-5		tour-5
 dialogue:track_name_field|champ nom 0/24 contenu|rien	nouveau	tour-5	
-mixer/tab_Mix|export_my_exports|perdu	nouveau	tour-5	
+mixer/tab_Mix|export_my_exports|perdu	corrigé	tour-5		tour-5
 padlive_pads_side|padlive_challenge_next|sans-aide	nouveau	tour-5	
 padlive|#1755|perdu	nouveau	tour-5	
 tab_Sons|top_share|perdu	nouveau	tour-5	
 dialogue:new_project|starter_starter|rien	nouveau	tour-5	
-dialogue:share_bilan|share_bilan_ok|texte-faux	nouveau	tour-5	
+dialogue:share_bilan|share_bilan_ok|texte-faux	corrigé	tour-5		tour-5
 dialogue:synth_sounds_name_dialog|name_clear|perdu	nouveau	tour-5	
 dialogue:welcome|launch_challenges|lent	nouveau	tour-5	
 dialogue:wizard|wizard_style_play_house|incompris	nouveau	tour-5	
@@ -848,7 +848,7 @@ guide_panel/tab_simple_Morceau|イントロ 小節 1/64|texte-faux	corrigé	tour
 live_grid/tab_Live|live_mute_remix|texte-faux	nouveau	tour-5	
 live_grid|live_take_undo|incompris	nouveau	tour-5	
 mixer/tab_Mix|auto_show_0|rien	nouveau	tour-5	
-mixer/tab_Mix|export_midi|texte-faux	nouveau	tour-5	
+mixer/tab_Mix|export_midi|texte-faux	corrigé	tour-5		tour-5
 mixer/tab_Mix|export_my_exports|sans-aide	nouveau	tour-5	
 mixer/tab_Mix|export_my_exports|texte-faux	nouveau	tour-5	
 mixer/tab_Mix|export_target_STREAMING|texte-faux	nouveau	tour-5	

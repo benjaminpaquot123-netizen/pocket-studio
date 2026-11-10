@@ -44,7 +44,9 @@ class NavigationMapTest(private val name: String, private val path: List<String>
             Triple("Notes au clavier", listOf("launch_continue", "tab_simple_Clavier"), listOf("synth")),
             Triple("Acid 303", listOf("launch_continue", "tab_simple_Clavier", "sons_Acide"), listOf("acid")),
             Triple("Mix et effets", listOf("launch_continue", "tab_simple_Mix"), listOf("simple_mix")),
-            Triple("Export (Envoyer)", listOf("launch_continue", "tab_simple_Envoyer"), listOf("share_name", "share_go")),
+            Triple("Export (Partager)", listOf("launch_continue", "tab_simple_Envoyer"), listOf("share_name", "share_go")),
+            // Hands-on audit, chantier 1 (G2, recette tel-03): the files already shared, in sight under « Partager » (no scroll).
+            Triple("Mes fichiers", listOf("launch_continue", "tab_simple_Envoyer", "share_my_exports"), listOf("my_exports")),
             Triple("Tempo", listOf("launch_continue", "top_tempo"), listOf("tempo_sheet")),
             // Audit ultra round 1 (n° 30): the ● asks what to record (keys, pads, the microphone).
             Triple("Enregistrer", listOf("launch_continue", "top_record", "record_choice_keys"), listOf("tab_simple_Clavier")),

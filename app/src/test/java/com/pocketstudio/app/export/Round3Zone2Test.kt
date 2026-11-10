@@ -172,6 +172,13 @@ class Round3Zone2Test {
     fun twoFilesLeaveTogether() {
         val a = WavExporter.newFile(app, "Beat-01-drums").apply { writeText("a") }
         val b = File(a.parentFile, "Beat-02-acid.wav").apply { writeText("b") }
+        // FileProvider keeps the folders of the first application it saw (a static cache; Robolectric gives each test its
+        // own): without this the test passed only when no test before it in its JVM had shared a file (as BenchShareTest).
+        runCatching {
+            androidx.core.content.FileProvider::class.java.declaredFields
+                .filter { java.lang.reflect.Modifier.isStatic(it.modifiers) && Map::class.java.isAssignableFrom(it.type) }
+                .forEach { f -> f.isAccessible = true; synchronized(f.get(null)) { (f.get(null) as MutableMap<*, *>).clear() } }
+        }
         assertTrue(WavExporter.share(app, listOf(a, b)))
         val chooser = shadowOf(app).nextStartedActivity
         @Suppress("DEPRECATION")
@@ -236,12 +243,13 @@ class Round3Zone2Test {
         assertEquals(8, ExportUi().forProject(sceneBars = 1, hasSong = false).bars)
     }
 
-    /** n° 11 (A d 45): « Mes exports » in the app, from « Prêt à partager ? » and the export card. */
+    /** n° 11 (A d 45): « Mes fichiers » (« Mes exports » then) in the app, from « Prêt à partager ? » and the export card. */
     @Test
     fun myExportsAreListed() {
         val ui = ShareSheetUi(name = "Nuit", seconds = 60, parts = 3, checks = emptyList())
         compose.setContent { PocketStudioTheme { ShareSheetContent(ui, ShareSheetActions()) } }
-        compose.onNodeWithTag("share_my_exports").performScrollTo().performClick()
+        // Chantier 1: under « Partager », out of what scrolls.
+        compose.onNodeWithTag("share_my_exports").assertIsDisplayed().performClick()
         compose.waitForIdle()
         compose.onNodeWithTag("my_exports").assertIsDisplayed()
         // Robolectric's media store holds none of ours: an empty list, never a crash.

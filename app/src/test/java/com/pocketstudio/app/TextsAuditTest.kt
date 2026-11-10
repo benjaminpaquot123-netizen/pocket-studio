@@ -60,7 +60,7 @@ class TextsAuditTest {
         val simple = GUIDE_PAGES_SIMPLE.flatMap { listOf(it.title) + it.lines }
         val full = listOf("Structure", "Sons ›", "Plus ›", "Mix :", "⤴")
         full.forEach { word -> assertTrue("$word in the Mode simple's guide", simple.none { word in it }) }
-        assertTrue(simple.any { "Mon morceau" in it } && simple.any { "Envoyer" in it })
+        assertTrue(simple.any { "Mon morceau" in it } && simple.any { "Partager" in it })
         assertEquals(GUIDE_PAGES.size, GUIDE_PAGES_SIMPLE.size)
     }
 }

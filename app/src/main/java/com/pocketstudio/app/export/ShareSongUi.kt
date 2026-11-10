@@ -52,13 +52,20 @@ fun ShareSongProgress(rhythmVm: RhythmViewModel, wav: Boolean = false, simple: B
             }
         }
     }
+    // Chantier 1 (G2, recette tel-03: « bloqué » after the share): « C'est prêt » leads to the file's place.
+    var files by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf(false) }
     if (export.sharing) ShareProgressDialog(export, cancel = rhythmVm::cancelExport, dismiss = rhythmVm::dismissShare, wav = wav)
-    else done?.let { lines -> ShareBilanDialog(lines) { done = null } }
+    else done?.let { lines -> ShareBilanDialog(lines, dismiss = { done = null }, seeFiles = { done = null; files = true }) }
+    if (files) MyExportsDialog { files = false }
 }
 
-/** « C'est prêt » after « Partager »: the file, then its report in numbers (audit ultra round 1, n° 15). */
+/**
+ * « C'est prêt » after « Partager »: the file, then its report in numbers (audit ultra round 1, n° 15). It opens once
+ * Android's share menu is up and waits under it: it is what one finds when coming back. [seeFiles]: « Voir mes fichiers »
+ * beside OK (null: not offered), the way to the file just made.
+ */
 @Composable
-internal fun ShareBilanDialog(lines: List<String>, dismiss: () -> Unit) {
+internal fun ShareBilanDialog(lines: List<String>, dismiss: () -> Unit, seeFiles: (() -> Unit)? = null) {
     ScaledAlertDialog(
         onDismissRequest = dismiss,
         title = { Text(tr("C'est prêt")) },
@@ -71,6 +78,7 @@ internal fun ShareBilanDialog(lines: List<String>, dismiss: () -> Unit) {
             }
         },
         confirmButton = { TextButton(onClick = dismiss, modifier = Modifier.testTag("share_bilan_ok")) { Text("OK") } },
+        dismissButton = seeFiles?.let { see -> { TextButton(onClick = see, modifier = Modifier.testTag("share_bilan_files")) { Text(tr("Voir mes fichiers")) } } },
     )
 }
 

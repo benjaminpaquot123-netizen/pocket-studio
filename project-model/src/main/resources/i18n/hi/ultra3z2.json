@@ -14,15 +14,10 @@
   "Sans fichier : %s.": "फ़ाइल नहीं: %s।",
   "Le morceau a changé depuis cet export : exporte à nouveau pour envoyer la nouvelle version.": "इस एक्सपोर्ट के बाद गाना बदल गया है: नया वर्ज़न भेजने के लिए फिर से एक्सपोर्ट करो।",
   "Remix · %s": "रीमिक्स · %s",
-  "Reprendre ton morceau sur un autre appareil : « Partager » › « Envoyer le projet » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "अपना गाना दूसरे डिवाइस पर आगे बढ़ाओ: “शेयर करो” › “प्रोजेक्ट भेजो” (सारी आवाज़ों वाली .zip), फिर दूसरे डिवाइस पर मेरे प्रोजेक्ट › “प्रोजेक्ट इंपोर्ट करो (.zip)”।",
   "Trop fort par endroits : ça risque de grésiller.": "कुछ जगह बहुत तेज़: खरखराहट आ सकती है।",
   "Pas de saturation.": "कोई खरखराहट नहीं।",
   "Fichier M4A : léger, lu par tous les appareils.": "M4A फ़ाइल: हल्की, हर डिवाइस पर चलती है।",
   "Fichier %s : qualité studio.": "%s फ़ाइल: स्टूडियो क्वालिटी।",
   "%s Mo": "%s MB",
-  "%d Ko": "%d KB",
-  "Mes exports : retrouver et renvoyer un fichier": "मेरे एक्सपोर्ट: फ़ाइल ढूँढो और फिर से भेजो",
-  "Mes exports": "मेरे एक्सपोर्ट",
-  "Dans Musique › BenStudio sur ce téléphone. Les plus récents d'abord.": "इस फ़ोन पर Music › BenStudio में। सबसे नए पहले।",
-  "Aucun export pour l'instant : « Partager » ou « Exporter » en crée un.": "अभी कोई एक्सपोर्ट नहीं: “शेयर करो” या “एक्सपोर्ट करो” से एक बनता है।"
+  "%d Ko": "%d KB"
 }

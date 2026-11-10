@@ -14,15 +14,10 @@
   "Sans fichier : %s.": "No file: %s.",
   "Le morceau a changé depuis cet export : exporte à nouveau pour envoyer la nouvelle version.": "The song has changed since this export: export again to send the new version.",
   "Remix · %s": "Remix · %s",
-  "Reprendre ton morceau sur un autre appareil : « Partager » › « Envoyer le projet » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "To pick up your song on another device: “Share” › “Send the project” (a .zip with all its sounds), then, on the other device, My projects › “Import a project (.zip)”.",
   "Trop fort par endroits : ça risque de grésiller.": "Too loud in places: it may crackle.",
   "Pas de saturation.": "No clipping.",
   "Fichier M4A : léger, lu par tous les appareils.": "M4A file: light, plays on every device.",
   "Fichier %s : qualité studio.": "%s file: studio quality.",
   "%s Mo": "%s MB",
-  "%d Ko": "%d KB",
-  "Mes exports : retrouver et renvoyer un fichier": "My exports: find a file and send it again",
-  "Mes exports": "My exports",
-  "Dans Musique › BenStudio sur ce téléphone. Les plus récents d'abord.": "In Music › BenStudio on this phone. Newest first.",
-  "Aucun export pour l'instant : « Partager » ou « Exporter » en crée un.": "No exports yet: “Share” or “Export” makes one."
+  "%d Ko": "%d KB"
 }

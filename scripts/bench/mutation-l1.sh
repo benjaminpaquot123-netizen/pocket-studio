@@ -7,12 +7,19 @@
 # card once the share menu opened (T5-ALERTE). With it, the two guards below must go RED « no longer fails »: they saw
 # the fix. A guard that rewrites the wiring instead of calling it stays « known defect still there » for ever.
 # Exit 0: both guards saw the mutation. Exit 1: at least one did not. Exit 2: refused (the files are not clean).
+# Exit 3 (2026-11-10, lot « partage »): T5-ZIP and T5-ALERTE are fixed in the app, their guards are ordinary ones (no
+# @KnownDefect left to turn red) and the diff no longer applies to AppRoot: the mutation has nothing left to show. The
+# script and its diff are kept for the record of how the guards were proven.
 # The mutation is always taken away, file by file (never « git checkout -- . »). One Gradle, through gradle-file.sh.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 diff=docs/audits/ultra/audit-banc/mutation-l1.diff
 files=(app/src/main/java/com/pocketstudio/app/export/ShareSongUi.kt app/src/main/java/com/pocketstudio/app/ui/AppRoot.kt)
 guards=(myExportsListsTheProjectZipJustSent noChangedWarningRightAfterSharing)
+if ! grep -q '@KnownDefect("T5-ZIP"\|@KnownDefect("T5-ALERTE"' app/src/test/java/com/pocketstudio/app/human/Tour5AppProofTest.kt; then
+  echo "mutation-l1 : T5-ZIP et T5-ALERTE sont corrigés dans l'appli (lot « partage ») : la mutation L1 n'a plus rien à montrer" >&2
+  exit 3
+fi
 for f in "${files[@]}"; do
   git diff --quiet HEAD -- "$f" || { echo "mutation-l1 : $f est déjà modifié, refusé" >&2; exit 2; }
 done

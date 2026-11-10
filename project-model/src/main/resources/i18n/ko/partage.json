@@ -1,0 +1,23 @@
+{
+  "Fini ? Partage ton morceau": "다 됐나요? 곡을 공유해요",
+  "Sauvegarder le morceau en .zip": "곡을 .zip으로 저장",
+  "Pour un autre appareil ou une copie de sécurité": "다른 기기용 또는 백업용",
+  "Autres fichiers": "다른 파일",
+  "Mes fichiers": "내 파일",
+  "Retrouver et renvoyer : M4A, WAV, vidéo, .zip": "찾아서 다시 보내기: M4A, WAV, 영상, .zip",
+  "Les sons sont dans Musique › BenStudio, les vidéos dans Films › BenStudio, les .zip dans Documents › BenStudio, sur cet appareil. Les plus récents d'abord.": "소리는 음악 › BenStudio, 영상은 동영상 › BenStudio, .zip은 문서 › BenStudio에 있어요(이 기기). 최근 것부터.",
+  "Rien ici pour l'instant. Tout ce que tu partages s'ajoute ici, dans Musique › BenStudio sur cet appareil.": "아직 아무것도 없어요. 공유한 것은 모두 여기, 이 기기의 음악 › BenStudio에 추가돼요.",
+  "Renvoyer": "다시 보내기",
+  "Voir mes fichiers": "내 파일 보기",
+  "Projet sauvegardé : %s": "프로젝트 저장됨: %s",
+  "Une copie est dans Documents › BenStudio : tu la retrouves dans « Mes fichiers ».": "사본은 문서 › BenStudio에 있어요: “내 파일”에서 찾을 수 있어요.",
+  "Fichier ou vidéo": "파일 또는 영상",
+  "projet": "프로젝트",
+  "vidéo": "영상",
+  "Cinq onglets : Mon morceau, Rythme, Clavier, Mix, Partager": "탭 다섯 개: 내 곡, 리듬, 건반, 믹스, 공유",
+  "Le Mode simple (Réglages) n'en garde que quatre : Mon morceau, Rythme, Clavier, Partager.": "간단 모드 (설정)에서는 네 개만 남아요: 내 곡, 리듬, 건반, 공유.",
+  "Partager : vérifier le morceau, puis le partager en fichier ou en vidéo.": "공유: 곡을 확인하고 파일이나 영상으로 공유해요.",
+  "Pour partager : l'onglet Partager.": "공유하려면: 공유 탭.",
+  "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "다른 기기에서 곡을 이어서 하려면: “공유” › “곡을 .zip으로 저장”(모든 소리가 담긴 .zip), 그다음 다른 기기에서 내 프로젝트 › “프로젝트 가져오기 (.zip)”.",
+  "La partie en cours, jouée sur %s.": "현재 파트, %s 동안 재생."
+}

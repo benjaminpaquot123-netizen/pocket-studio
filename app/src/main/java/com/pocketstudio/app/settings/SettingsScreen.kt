@@ -221,7 +221,7 @@ fun HelpPage(actions: HelpActions) {
                 Text(tr("Partout dans l'appli, le petit « ? » à côté d'un mot l'explique aussi."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 // Audit ultra round 3 (n° 13, seat F d 58): going on with a song on another device was said nowhere.
-                Text(tr("Reprendre ton morceau sur un autre appareil : « Partager » › « Envoyer le projet » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) »."),
+                Text(tr("Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) »."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("help_other_device"))
             }
             com.pocketstudio.app.retours.RetoursHelpCard()

@@ -65,9 +65,12 @@ object WavExporter {
     fun copyToMusic(context: Context, file: File, mime: String = "audio/wav"): Boolean =
         mimesFor(file, mime).any { copyInto(context, file, it, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MUSIC_FOLDER) }
 
-    /** A text file (an export's report) into Documents › BenStudio. Blocking. */
+    /** Android's collection for [DOCUMENTS_FOLDER] (read back by « Mes fichiers »). */
+    val DOCUMENTS_COLLECTION: android.net.Uri get() = MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+
+    /** A text file (an export's report) or a project's .zip into Documents › BenStudio. Blocking. */
     fun copyToDocuments(context: Context, file: File, mime: String = "text/plain"): Boolean =
-        mimesFor(file, mime).any { copyInto(context, file, it, MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), DOCUMENTS_FOLDER) }
+        mimesFor(file, mime).any { copyInto(context, file, it, DOCUMENTS_COLLECTION, DOCUMENTS_FOLDER) }
 
     private fun mimesFor(file: File, mime: String): List<String> =
         listOfNotNull(android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension.lowercase()), mime).distinct()

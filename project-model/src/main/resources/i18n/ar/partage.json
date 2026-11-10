@@ -1,0 +1,23 @@
+{
+  "Fini ? Partage ton morceau": "انتهيت؟ شارك أغنيتك",
+  "Sauvegarder le morceau en .zip": "حفظ الأغنية في ملف ‎.zip",
+  "Pour un autre appareil ou une copie de sécurité": "لجهاز آخر أو كنسخة احتياطية",
+  "Autres fichiers": "ملفات أخرى",
+  "Mes fichiers": "ملفاتي",
+  "Retrouver et renvoyer : M4A, WAV, vidéo, .zip": "اعثر عليها وأرسلها من جديد: M4A، WAV، فيديو، ‎.zip",
+  "Les sons sont dans Musique › BenStudio, les vidéos dans Films › BenStudio, les .zip dans Documents › BenStudio, sur cet appareil. Les plus récents d'abord.": "الأصوات في الموسيقى › BenStudio، والفيديوهات في Movies › BenStudio، وملفات ‎.zip في المستندات › BenStudio، على هذا الجهاز. الأحدث أولًا.",
+  "Rien ici pour l'instant. Tout ce que tu partages s'ajoute ici, dans Musique › BenStudio sur cet appareil.": "لا شيء هنا بعد. كل ما تشاركه يُضاف هنا، في الموسيقى › BenStudio على هذا الجهاز.",
+  "Renvoyer": "إعادة الإرسال",
+  "Voir mes fichiers": "عرض ملفاتي",
+  "Projet sauvegardé : %s": "تم حفظ المشروع: %s",
+  "Une copie est dans Documents › BenStudio : tu la retrouves dans « Mes fichiers ».": "توجد نسخة في المستندات › BenStudio: تجدها في « ملفاتي ».",
+  "Fichier ou vidéo": "ملف أو فيديو",
+  "projet": "مشروع",
+  "vidéo": "فيديو",
+  "Cinq onglets : Mon morceau, Rythme, Clavier, Mix, Partager": "خمسة تبويبات: أغنيتي، الإيقاع، لوحة المفاتيح، المزج، مشاركة",
+  "Le Mode simple (Réglages) n'en garde que quatre : Mon morceau, Rythme, Clavier, Partager.": "الوضع البسيط (الإعدادات) يُبقي أربعة فقط: أغنيتي، الإيقاع، لوحة المفاتيح، مشاركة.",
+  "Partager : vérifier le morceau, puis le partager en fichier ou en vidéo.": "مشاركة: تحقّق من الأغنية، ثم شاركها كملف أو فيديو.",
+  "Pour partager : l'onglet Partager.": "للمشاركة: تبويب مشاركة.",
+  "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "لمتابعة أغنيتك على جهاز آخر: « مشاركة » › « حفظ الأغنية في ملف ‎.zip » (ملف ‎.zip فيه كل أصواته)، ثم على الجهاز الآخر: مشاريعي › « استيراد مشروع (‎.zip) ».",
+  "La partie en cours, jouée sur %s.": "الجزء الحالي، معزوفًا على %s."
+}

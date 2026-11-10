@@ -14,15 +14,10 @@
   "Sans fichier : %s.": "Tanpa file: %s.",
   "Le morceau a changé depuis cet export : exporte à nouveau pour envoyer la nouvelle version.": "Lagu sudah berubah sejak ekspor ini: ekspor lagi untuk mengirim versi barunya.",
   "Remix · %s": "Remix · %s",
-  "Reprendre ton morceau sur un autre appareil : « Partager » › « Envoyer le projet » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "Melanjutkan lagumu di perangkat lain: “Bagikan” › “Kirim proyek” (.zip berisi semua suaranya), lalu di perangkat lain, Proyekku › “Impor proyek (.zip)”.",
   "Trop fort par endroits : ça risque de grésiller.": "Terlalu keras di beberapa bagian: bisa kresek-kresek.",
   "Pas de saturation.": "Tidak ada distorsi.",
   "Fichier M4A : léger, lu par tous les appareils.": "File M4A: ringan, bisa diputar di semua perangkat.",
   "Fichier %s : qualité studio.": "File %s: kualitas studio.",
   "%s Mo": "%s MB",
-  "%d Ko": "%d KB",
-  "Mes exports : retrouver et renvoyer un fichier": "Eksporku: temukan file dan kirim lagi",
-  "Mes exports": "Eksporku",
-  "Dans Musique › BenStudio sur ce téléphone. Les plus récents d'abord.": "Di Musik › BenStudio di ponsel ini. Yang terbaru lebih dulu.",
-  "Aucun export pour l'instant : « Partager » ou « Exporter » en crée un.": "Belum ada ekspor: “Bagikan” atau “Ekspor” membuatnya."
+  "%d Ko": "%d KB"
 }

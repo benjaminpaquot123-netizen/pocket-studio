@@ -19,6 +19,7 @@ import com.pocketstudio.model.LiveSlots
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectStore
 import com.pocketstudio.model.SimpleMelody
+import com.pocketstudio.model.viewOfTrack
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -196,6 +197,36 @@ class Tour4AppProofTest {
         assertEquals(vm.lastTakeReport, TakePhase.DONE, vm.noteTake.value?.phase)
         assertEquals(vm.lastTakeReport, 3, vm.noteTake.value?.notes)
         assertEquals("« Ma mélodie » holds the three notes", 3, melodyNotes(vm))
+    }
+
+    /**
+     * What the emulator smoke test read (JourneyTest.aFirstSongInTheModeSimple, « the take's notes: [] » from CI 243 to
+     * 247, while the device's log said « take: 4 notes »). Its journey starts the take from a stopped song: no other part
+     * is heard (not T4-26's case). But the Mode simple's first take of the keys makes « Ma mélodie » and selects it as it
+     * starts: the notes go there, and the track selected before the ● (the one that test kept and read) gets none.
+     */
+    @Test
+    fun aFirstMelodyTakeGoesToMaMelodieNotToTheTrackSelectedBefore() {
+        NativeEngine.sink = PhoneEngine()
+        val vm = open()
+        val selectedBefore = vm.selectedTrack.value
+        assertEquals("no « Ma mélodie » before the first take", null, SimpleMelody.trackOf(vm.project.value))
+        // As the smoke test read it: the notes of the track selected before the ●.
+        val notesBefore = vm.project.value.viewOfTrack(selectedBefore).synthNotes.notes.toSet()
+        vm.recordMelodyTake()
+        val until = SystemClock.uptimeMillis() + 10_000
+        while (NativeEngine.playPosition() < 0.5) { assertTrue(SystemClock.uptimeMillis() < until); idle(50) }
+        idle(100)
+        threeKeys(vm)
+        vm.recordMelodyTake()
+        idle()
+        assertEquals(vm.lastTakeReport, 3, vm.noteTake.value?.notes)
+        val melody = SimpleMelody.trackOf(vm.project.value)
+        assertTrue("« Ma mélodie » is a new track ($melody), not the one selected before the take ($selectedBefore)", melody != null && melody != selectedBefore)
+        assertEquals("the take selected « Ma mélodie »: the track to read after it", melody, vm.selectedTrack.value)
+        assertEquals("« Ma mélodie » holds the three notes, in the part shown", 3, melodyNotes(vm))
+        assertEquals("the track selected before the take got none of them (what the smoke test read: « [] »)",
+            notesBefore, vm.project.value.viewOfTrack(selectedBefore).synthNotes.notes.toSet())
     }
 
     /** The music already playing (the seats' case: « la musique du projet joue en boucle »): no count-in, the keys are kept. */

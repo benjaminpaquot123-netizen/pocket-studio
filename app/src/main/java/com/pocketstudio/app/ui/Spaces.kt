@@ -116,7 +116,8 @@ enum class SimpleTab(val icon: ImageVector, val tab: AppTab) {
         Rythme -> tr("Rythme")
         Clavier -> tr("Clavier")
         Mix -> tr("Mix")
-        Envoyer -> tr("Envoyer")
+        // The owner's answer 1A (2026-11-09): « Partager » everywhere (the tab was « Envoyer »; its tag keeps the old name).
+        Envoyer -> tr("Partager")
     }
 
     val hint: String get() = when (this) {
@@ -124,7 +125,7 @@ enum class SimpleTab(val icon: ImageVector, val tab: AppTab) {
         Rythme -> tr("Batterie")
         Clavier -> tr("Jouer, enregistrer")
         Mix -> tr("Volumes")
-        Envoyer -> tr("Partager")
+        Envoyer -> tr("Fichier ou vidéo")
     }
 
     companion object {

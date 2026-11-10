@@ -245,7 +245,7 @@ enum class AppTab(val icon: ImageVector) {
         Morceau -> tr("Morceau")
         Outils -> tr("Outils")
         Live -> tr("Live")
-        Envoyer -> tr("Envoyer")
+        Envoyer -> tr("Partager")
     }
 }
 
@@ -436,6 +436,8 @@ fun AppRoot() {
     var layersTrack by rememberSaveable { mutableStateOf<Int?>(null) }
     var songChordsOpen by rememberSaveable { mutableStateOf(false) }
     val shareSong: () -> Unit = { showShare = true }
+    // « Sauvegarder le morceau en .zip », from « Prêt à partager ? » and from Mes projets › ⋯: one sender (T5-ZIP).
+    val zipSender = com.pocketstudio.app.export.rememberProjectZipSender(rhythmVm)
     com.pocketstudio.app.export.ShareSongProgress(rhythmVm, wav = sharePrefs.format == com.pocketstudio.app.rhythm.ExportFormat.Wav, simple = simple)
     val projectsVm: ProjectsViewModel = viewModel()
     val pickProjectZip = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -896,11 +898,8 @@ fun AppRoot() {
                         },
                         // The open project is saved first; not saved (a full phone): refused, not copied as it was on disk.
                         duplicate = { p -> projectsVm.duplicate(p, saveFirst = { p.id != rhythmVm.projectId || rhythmVm.flushNow() }) },
-                        exportZip = { p ->
-                            projectsVm.exportZip(p, saveFirst = { p.id != rhythmVm.projectId || rhythmVm.flushNow() }) { file ->
-                                WavExporter.share(context, listOf(file), tr("Envoyer le projet"))
-                            }
-                        },
+                        // T5-ZIP: the same sender as « Prêt à partager ? » (the .zip kept in Documents, said, listed in « Mes fichiers »).
+                        exportZip = { p -> zipSender.send(p.id, p.name) },
                         exportRaw = { p ->
                             projectsVm.exportRaw(p) { file -> WavExporter.share(context, listOf(file), tr("Envoyer le projet")) }
                         },
@@ -1725,7 +1724,7 @@ fun AppRoot() {
             },
             video = { showVideo = true },
             simple = simple,
-            sendProject = rememberSendProject(rhythmVm),
+            sendProject = zipSender::sendOpen,
         )
     }
     // « Vidéo pour les réseaux » (from « Prêt à partager ? »): 30 s of the song in 9:16.
@@ -3750,7 +3749,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 otherExports = { SettingsStore.update(context) { it.copy(simpleMode = false) }; go(AppTab.Mixeur); mixerFocus = com.pocketstudio.app.mixer.Where.Export },
                                 video = { showVideo = true },
                                 page = true,
-                                sendProject = rememberSendProject(rhythmVm),
+                                sendProject = zipSender::sendOpen,
                             )
                         }
                     }
@@ -3912,25 +3911,6 @@ fun mixerStrips(p: com.pocketstudio.model.Project): List<com.pocketstudio.app.mi
             p.remix.takeIf { it.setId != null }?.let { com.pocketstudio.app.mixer.StripInfo(3, it.name.ifBlank { "Remix" }, com.pocketstudio.app.remix.SONG_COLOR) }
                 ?: com.pocketstudio.app.mixer.StripInfo(3, "Remix")
         )
-
-/**
- * Audit ultra round 3 (n° 13, seat F d 22, 61): « Envoyer le projet » from « Prêt à partager ? »: the open project
- * saved, then packed with its sounds (.zip) and given to Android's share menu, as Mes projets › ⋯ does.
- */
-@Composable
-fun rememberSendProject(rhythmVm: RhythmViewModel): () -> Unit {
-    val context = androidx.compose.ui.platform.LocalContext.current
-    val projectsVm: com.pocketstudio.app.projects.ProjectsViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-    return remember(rhythmVm, projectsVm) {
-        {
-            val p = rhythmVm.project.value
-            projectsVm.exportZip(rhythmVm.projectId, p.name, saveFirst = { rhythmVm.flushNow() },
-                failed = { android.widget.Toast.makeText(context, it, android.widget.Toast.LENGTH_LONG).show() }) { file ->
-                WavExporter.share(context, listOf(file), tr("Envoyer le projet"))
-            }
-        }
-    }
-}
 
 /** What the effects box does, wherever it shows (one box for every sound). */
 fun effectsActions(vm: RhythmViewModel): MixerActions = MixerActions(

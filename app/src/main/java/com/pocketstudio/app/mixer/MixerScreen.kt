@@ -479,7 +479,7 @@ internal fun ExportCard(
         val bars = com.pocketstudio.model.i18n.trCount(export.bars, "%d mesure", "%d mesures")
         Text(
             when (export.what) {
-                ExportWhat.Loop -> tr("La partie en cours, jouée sur %s (la longueur se règle dans « Avancé »).", bars)
+                ExportWhat.Loop -> tr("La partie en cours, jouée sur %s.", bars)
                 ExportWhat.Song -> if (hasSong) tr("Toutes les parties de Structure, dans l'ordre.") else tr("Le morceau est vide : ajoute des parties dans Structure.")
                 ExportWhat.Stems ->
                     if (hasSong) tr("Un fichier par piste (batterie, acide, synthé, remix) pour les reprendre ailleurs. Les pistes vides ou coupées sont sautées. Sur tout le morceau.")
@@ -490,6 +490,25 @@ internal fun ExportCard(
         if (export.what == ExportWhat.Stems && stemSkips.isNotEmpty()) {
             Text(tr("Sans fichier : %s.", stemSkips.joinToString(", ")), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                 modifier = Modifier.testTag("export_stem_skips"))
+        }
+        // Chantier 1 (G1, recette tel-06: « le repli Avancé cache un réglage dont dépend l'export »): the loop's length right
+        // under the choice that needs it, never under « Avancé ». The same setting as « Prêt à partager ? »'s.
+        if (export.what == ExportWhat.Loop || (export.what == ExportWhat.Stems && !hasSong)) {
+            Text(tr("Longueur de la boucle"), style = MaterialTheme.typography.bodyMedium)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                // Up to where the voice or the remix's song ends, when that is longer than the scene.
+                val toTheEnd = export.audioBars.coerceAtMost(com.pocketstudio.app.rhythm.RhythmViewModel.MAX_LONG_EXPORT_BARS).takeIf { it > export.sceneBars }
+                (EXPORT_BARS + export.sceneBars + export.bars + listOfNotNull(toTheEnd)).distinct().sorted().forEach { bars ->
+                    FilterChip(
+                        selected = export.bars == bars,
+                        onClick = { actions.setExportBars(bars) },
+                        enabled = !export.running,
+                        label = { Text(if (bars == 1) tr("1 mesure") else "$bars") },
+                        colors = chipColors,
+                        modifier = Modifier.testTag("export_bars_$bars"),
+                    )
+                }
+            }
         }
         WithHelp(Glossary.FORMATS) { Text(tr("Format"), style = MaterialTheme.typography.bodyMedium) }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -522,7 +541,7 @@ internal fun ExportCard(
                 }
             }
         }
-        // Advanced: separate tracks, FLAC, the loop's length, the notes as MIDI. Open by itself when one is in use.
+        // Advanced: separate tracks, FLAC, the notes as MIDI. Open by itself when one is in use.
         var advanced by rememberSaveable { mutableStateOf(export.what == ExportWhat.Stems || export.format == ExportFormat.Flac) }
         TextButton(onClick = { advanced = !advanced }, modifier = Modifier.fillMaxWidth().testTag("export_advanced")) {
             Text(tr("Avancé"), Modifier.weight(1f), color = Neon.Cyan)
@@ -568,22 +587,6 @@ internal fun ExportCard(
                 else -> null
             }
             pro?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary) }
-            if (export.what == ExportWhat.Loop || (export.what == ExportWhat.Stems && !hasSong)) {
-                Text(tr("Longueur de la boucle"), style = MaterialTheme.typography.bodyMedium)
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    // Up to where the voice or the remix's song ends, when that is longer than the scene.
-                    val toTheEnd = export.audioBars.coerceAtMost(com.pocketstudio.app.rhythm.RhythmViewModel.MAX_LONG_EXPORT_BARS).takeIf { it > export.sceneBars }
-                    (EXPORT_BARS + export.sceneBars + export.bars + listOfNotNull(toTheEnd)).distinct().sorted().forEach { bars ->
-                        FilterChip(
-                            selected = export.bars == bars,
-                            onClick = { actions.setExportBars(bars) },
-                            enabled = !export.running,
-                            label = { Text(if (bars == 1) tr("1 mesure") else "$bars") },
-                            colors = chipColors,
-                        )
-                    }
-                }
-            }
             // Lot E: the file's final form (rate, bits, dither, range, start and end, stems, tags, report).
             com.pocketstudio.app.export.ExportOptionsPanel(export, hasSong, actions.pro)
             if (!export.running) {

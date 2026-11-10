@@ -14,15 +14,10 @@
   "Sans fichier : %s.": "ファイルなし：%s。",
   "Le morceau a changé depuis cet export : exporte à nouveau pour envoyer la nouvelle version.": "この書き出しのあとで曲が変わりました：新しいバージョンを送るには、もう一度書き出してください。",
   "Remix · %s": "Remix · %s",
-  "Reprendre ton morceau sur un autre appareil : « Partager » › « Envoyer le projet » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "別の端末で曲を続けるには：「シェア」›「プロジェクトを送る」（すべての音が入った .zip）、そのあと別の端末でマイプロジェクト ›「プロジェクトを読み込む（.zip）」。",
   "Trop fort par endroits : ça risque de grésiller.": "ところどころ大きすぎます：音が割れるかもしれません。",
   "Pas de saturation.": "音割れはありません。",
   "Fichier M4A : léger, lu par tous les appareils.": "M4A ファイル：軽くて、どの端末でも再生できます。",
   "Fichier %s : qualité studio.": "%s ファイル：スタジオ品質。",
   "%s Mo": "%s MB",
-  "%d Ko": "%d KB",
-  "Mes exports : retrouver et renvoyer un fichier": "書き出したファイル：探してもう一度送る",
-  "Mes exports": "書き出したファイル",
-  "Dans Musique › BenStudio sur ce téléphone. Les plus récents d'abord.": "この端末の ミュージック › BenStudio にあります。新しい順です。",
-  "Aucun export pour l'instant : « Partager » ou « Exporter » en crée un.": "まだ書き出していません：「シェア」か「書き出す」で作れます。"
+  "%d Ko": "%d KB"
 }

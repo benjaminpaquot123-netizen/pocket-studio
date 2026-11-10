@@ -88,3 +88,5 @@ Non fait, à décider : les deux lignes de `selftest-quarantaine.txt` restent (c
 - La cause exacte côté Compose (pourquoi une écriture d'état hors du fil principal se perd) n'est pas lue dans le code de Compose ; elle est établie par l'expérience (valeur suivante montrée aussitôt, rouge reproduit puis disparu avec le répartiteur standard) et par la garde.
 - `DISCIPLINE_SINCE` est une date écrite en dur : une garde ajoutée avant elle par n'importe quel commit reste acceptée.
 - Mineurs de `tour-5-pads-live-relecture.md` (horloge des pads après la fin du morceau, KDoc des gardes de siège, `closingSaves` dans `afterATestWithTheRule`, journal) : non repris dans ce lot.
+
+Suite complète (`PS_STALL_MIN=70 scripts/bench/gradle-file.sh :app:testDebugUnitTest`, sur 470e494) : BUILD SUCCESSFUL en 24 min 20 s, 485 classes, 8138 tests, 0 échec, 0 erreur, 4479 sautés ; les deux renommages verts (0,28 s et 0,22 s).

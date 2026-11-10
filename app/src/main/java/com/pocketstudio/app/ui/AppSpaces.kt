@@ -133,25 +133,12 @@ internal fun SonsHeader(
 /** The Remix's colour (its chip in Sons, its card on « Que veux-tu faire ? »). */
 internal val REMIX_COLOR = com.pocketstudio.app.remix.SONG_COLOR
 
-/** A chip of the Sons space for an editor that is not an instrument track (the drums, the audio tracks; the acid has its own, [com.pocketstudio.app.acid.AcidChip]). */
+/** A chip of the Sons space for an editor that is not an instrument track (the drums, the audio tracks; the acid has its own, [com.pocketstudio.app.acid.AcidChip]): the shared [com.pocketstudio.ui.TrackChip]. */
 @Composable
 private fun RowScope.EditorChip(label: String, sub: String, color: Color, selected: Boolean, tag: String, onClick: () -> Unit) {
-    Row(
-        Modifier.height(44.dp).widthIn(max = 160.dp).clip(RoundedCornerShape(10.dp))
-            .background(if (selected) color.copy(alpha = 0.22f) else Neon.Surface)
-            .border(BorderStroke(if (selected) 2.dp else 1.dp, if (selected) color else Neon.Outline), RoundedCornerShape(10.dp))
-            .selectable(selected = selected, role = Role.Tab, onClick = onClick)
-            .padding(horizontal = 10.dp)
-            .testTag(tag),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        Box(Modifier.size(10.dp).background(color, CircleShape))
-        Column(Modifier.weight(1f, fill = false)) {
-            Text(label, style = MaterialTheme.typography.labelLarge, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(sub, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        }
-    }
+    com.pocketstudio.ui.TrackChip(
+        label, sub, color, selected, touch = Modifier.selectable(selected = selected, role = Role.Tab, onClick = onClick), modifier = Modifier.testTag(tag),
+    )
 }
 
 // --- Structure: the timeline, the parts' list a switch away ------------------------------------------

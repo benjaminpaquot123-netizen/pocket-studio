@@ -24,8 +24,10 @@ import java.time.Duration
 
 /**
  * Tour 5, « un mot par chose » (audit de prise en main § 5, « Volume »): « fort ou faible » is the only
- * word for a level in the Mode simple. No « dB » on any of its screens: not in a text, not in what
- * TalkBack says (a fader's state, an action's name). Pro keeps its numbers.
+ * word for a level in the Mode simple. No « dB » on the screens walked here: the first screen of the four tabs,
+ * the ⋮ menu, the Mix (tip, drums open, Guide open) and the Batterie's track sheet; in texts and in what
+ * TalkBack says (a fader's state, an action's name). Pro keeps its numbers. NOT walked, and still in dB
+ * (docs/REVIEW.md): the effects box opened from Pad Live, the Guide's track sheet, the Guide's reference listening.
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)

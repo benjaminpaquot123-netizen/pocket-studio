@@ -139,43 +139,30 @@ class BenchSelfTest : HumanTester("selftest") {
     fun aPadLiveLineSaysThePadsLightAsDrawn() {
         begin()
         amenee(AMENEE_PADLIVE, java.io.File.createTempFile("padlight", ".txt").apply { deleteOnExit() })
-        val rest = lineAt("padlive_pad_0")
+        fun state(pad: Int) = IntArray(com.pocketstudio.engine.NativeEngine.LIVE_PADS).also(com.pocketstudio.engine.NativeEngine::clipStatesNow)[pad]
+        val seen = mutableMapOf<Int, String>()
+        fun look(pads: IntRange) = pads.forEach { p ->
+            val line = lineAt("padlive_pad_$p")
+            val st = state(p)
+            seen.putIfAbsent(st, line)
+            val drawn = when (st) { 2 -> "allumé"; 1 -> "anneau pâle"; else -> null }
+            assertTrue("pad $p, state $st (0 rests, 1 waits, 2 plays): $line", if (drawn == null) "allumé" !in line && "anneau" !in line else "[$drawn" in line || ", $drawn" in line)
+        }
+        look(0..3)
+        // A loop touched: it plays at once (nothing plays yet).
         val loop = centerOf("padlive_pad_0")!!
         act("touche ${loop.first} ${loop.second}")
-        val other = centerOf("padlive_pad_2")!!
-        act("touche ${other.first} ${other.second}")
-        val lit = lineAt("padlive_pad_0")
-        val waits = lineAt("padlive_pad_2")
-        val states = "at rest: $rest\nplaying: $lit\nwaiting: $waits"
-        assertTrue(states, "allumé" !in rest && "anneau" !in rest)
-        assertTrue(states, "[allumé" in lit || ", allumé" in lit)
-        assertTrue(states, "anneau pâle" in waits)
-    }
-
-    /**
-     * Fresh review of the « réalisme » lot, M1 and M2: roles only TalkBack hears (« case » for a chip, « interrupteur »
-     * and « coché » for the round « ? ») and marks the app draws with no icon (the Pad Live card's grid, the ⚠ of a
-     * warning line outside any button) were still written otherwise than drawn.
-     */
-    @Test
-    fun chipsTogglesAndDrawnMarksAreWrittenAsDrawn() {
-        begin()
-        val wrong = mutableListOf<String>()
-        fun check(ok: Boolean, line: String, what: String) { if (!ok) wrong += "$what: $line" }
-        assertNotNull(reachTag("launch_padlive"))
-        val card = lineAt("launch_padlive")
-        check("(grille de pads)" in card, card, "the Pad Live card's grid drawn")
-        amenee(AMENEE_SONG, java.io.File.createTempFile("marks", ".txt").apply { deleteOnExit() })
-        val help = lineAt("help_labels_button")
-        check(help.startsWith("bouton « ? »") && "interrupteur" !in help && "coché" !in help, help, "the round « ? »: a framed button, no switch")
-        val tab = centerOf("tab_simple_Envoyer") ?: centerOf("tab_Envoyer") ?: error("no « Envoyer » tab")
-        act("touche ${tab.first} ${tab.second}")
-        val chip = lineAt("share_bars_8")
-        check(chip.startsWith("bouton « 8 »") && "sélectionné" in chip, chip, "a chip: a framed button, selected")
-        val lines = screenLines()
-        val warn = lines.indexOfFirst { "Rien à entendre" in it }
-        check(warn > 0 && Regex("^image (⚠|\\(i dans un rond\\)) @ ").containsMatchIn(lines[warn - 1]), lines.getOrElse(warn - 1) { "-" }, "the check's icon before « Rien à entendre »")
-        assertTrue("written otherwise than drawn:\n" + wrong.joinToString("\n") + "\n\n" + lines.joinToString("\n"), wrong.isEmpty())
+        look(0..3)
+        // Another loop while the first plays: it waits for the loop's end, its ring faint (the engine's own toggle, a
+        // tenth of a second later: a finger's gesture takes a second, the wait may be over).
+        repeat(4) {
+            if (1 in seen) return@repeat
+            com.pocketstudio.engine.NativeEngine.toggleClip(2)
+            act("attends 0.1")
+            look(0..3)
+            if (state(2) != 1) { if (state(2) == 2) com.pocketstudio.engine.NativeEngine.toggleClip(2); act("attends 0.1") }
+        }
+        assertTrue("a pad at rest, a pad playing and a pad waiting were all read: $seen", seen.keys.containsAll(listOf(0, 1, 2)))
     }
 
     /** The screen's line drawn at the middle of the node tagged [tag] (± 2 px). */

@@ -204,6 +204,8 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
             when (c.getOrNull(SemanticsProperties.ToggleableState)) {
                 ToggleableState.On -> add("coché"); ToggleableState.Off -> add("non coché"); ToggleableState.Indeterminate -> add("en partie"); null -> Unit
             }
+            // Fresh review G1: a pad's light as drawn (Pad Live, the Live page, Rythme's pads): lit, or its faint waiting ring.
+            look.light?.let { add(it) }
             if (c.getOrNull(SemanticsProperties.Selected) == true) add("sélectionné")
             // A state's words are TalkBack's, but what they say is drawn (a step lit or empty, « en cours »): kept.
             c.getOrNull(SemanticsProperties.StateDescription)?.takeIf { it.isNotBlank() && reads }?.let { add("état « $it »") }
@@ -220,7 +222,16 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
     private val lineIds = HashSet<Int>()
 
     /** What a node draws besides its words: its icons before and after them, and whether it has a face (a fill or an outline). */
-    private class Look(val before: List<String>, val after: List<String>, val framed: Boolean)
+    private class Look(
+        val before: List<String>, val after: List<String>, val framed: Boolean,
+        /** Fresh review G1: « allumé » or « anneau pâle » when a pad light ([com.pocketstudio.ui.padLight]) is drawn on it. */
+        val light: String? = null,
+        /** Fresh review M1: « case », « choix » or « interrupteur » when Material draws a check box, a radio button or a switch. */
+        val widget: String? = null,
+        /** Every mark with where it is drawn (root coordinates), for a node that is no line of its own ([drawnAlone]). */
+        val marks: List<Pair<String, Rect?>> = emptyList(),
+        val box: Rect = Rect.Zero,
+    )
 
     /**
      * R1: what [n] looks like, read in its layout (not in what it says to TalkBack): the icons painted in it (an
@@ -233,8 +244,12 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         val box = runCatching { root.coordinates.boundsInRoot() }.getOrNull() ?: return Look(emptyList(), emptyList(), false)
         val before = mutableListOf<String>()
         val after = mutableListOf<String>()
+        val marks = mutableListOf<Pair<String, Rect?>>()
         var framed = false
+        var light: String? = null
+        var widget: String? = null
         fun place(shape: String, at: Rect?) {
+            marks += shape to at
             // Before the words: on their start side, or above them (an icon over its label).
             val dx = at?.let { (it.center.x - box.center.x) * (if (rtl) -1 else 1) } ?: 0f
             val start = at == null || dx < -1f || (dx <= 1f && at.center.y < box.center.y)
@@ -245,20 +260,42 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
             if (!info.isPlaced) return
             val at = runCatching { info.coordinates.boundsInRoot() }.getOrNull()
             val face = top || (at != null && box.width * box.height > 0f && at.width * at.height >= 0.25f * box.width * box.height)
-            for (m in runCatching { info.getModifierInfo() }.getOrDefault(emptyList())) {
-                val e = m.modifier
+            val mods = runCatching { info.getModifierInfo() }.getOrDefault(emptyList()).map { it.modifier }
+            val turn = mods.firstOrNull { it.javaClass.name == "androidx.compose.ui.graphics.GraphicsLayerElement" }?.let { field(it, "rotationZ") as? Float } ?: 0f
+            val dp = (at?.width ?: 0f) / density
+            for (e in mods) {
                 when (e.javaClass.name) {
                     "androidx.compose.ui.draw.PainterElement" -> painted(e)?.let { place(it, at) }
                     "androidx.compose.foundation.BackgroundElement" -> if (face && visibleBackground(e)) framed = true
                     "androidx.compose.foundation.BorderModifierNodeElement" -> if (face && visibleBorder(e)) framed = true
+                    "androidx.compose.ui.draw.DrawWithCacheElement" -> if (face) padLightOf(field(e, "onBuildDrawCache"))?.let { light = it }
                 }
             }
+
             if (!top) (call(info, "getSemanticsConfiguration") as? androidx.compose.ui.semantics.SemanticsConfiguration)
                 ?.getOrNull(SemanticsProperties.TestTag)?.let { DRAWN_TAGS[it] }?.let { place(it, at) }
             (call(info, "getChildrenInfo") as? List<*>)?.forEach { (it as? LayoutInfo)?.let { c -> visit(c, false) } }
         }
         visit(root, true)
-        return Look(before, after, framed)
+        return Look(before, after, framed, light, widget, marks, box)
+    }
+
+    /**
+     * Fresh review G1: the state a pad light draws, read in what its drawing holds (ui-components PadLight.kt: the light's
+     * animation, then whether it waits): « allumé » (its inner light and ring), « anneau pâle » (waiting for its beat), or null.
+     */
+    private fun padLightOf(lambda: Any?): String? {
+        if (lambda == null) return null
+        val held = lambda.javaClass.declaredFields.sortedBy { it.name.filter(Char::isDigit).toIntOrNull() ?: 0 }
+            .map { f -> runCatching { f.isAccessible = true; f.get(lambda) }.getOrNull() }
+        if (held.none { it?.javaClass?.name == "com.pocketstudio.ui.PadLight" }) return null
+        val lit = held.firstNotNullOfOrNull { v -> v?.takeIf { it.javaClass.simpleName == "AnimationState" }?.let { call(it, "getValue") as? Float } } ?: 0f
+        val waiting = held.firstNotNullOfOrNull { it as? Boolean } ?: false
+        return when {
+            lit > 0.5f -> "allumé"
+            waiting -> "anneau pâle"
+            else -> null
+        }
     }
 
     /** A layout node's own method (its children, its semantics: Compose's `SemanticsInfo` is internal to it). */

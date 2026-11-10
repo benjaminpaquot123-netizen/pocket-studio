@@ -221,6 +221,7 @@ def main():
         judge_refuses_unsealed_summary(d)
         proof_must_run(d)
         portal(d)
+        review_rows(d)
         fusion_forged(d)
         portal_traces(d)
         known_skips_bounded(d)
@@ -1588,6 +1589,45 @@ FUSION_REJEUX = """#!/usr/bin/env bash
 # The fusion's replays on the toy: says which folder it would play.
 echo "rejeux ${PS_REJEUX_DIR:-docs/audits/ultra/rejeux} $(ls docs/audits/ultra/rejeux 2>/dev/null | tr '\\n' ' ')" >> "$PS_TOY_CALLS"
 """
+
+
+def review_rows(d):
+    """Review of the « portail » lot (M1): relecture-verdict.py reads a blocking or grave finding however it is written
+    (« bloquant (P1) », « Gravité : grave », « Grave ⚠ », a bullet, a heading) and takes it as fixed only on a positive
+    « corrigé » (the row's last cell starting with it, or « **corrigé** » in a bullet or a heading's paragraph; never
+    « pas encore corrigé », « non-corrigé », « corrigé ? non »); a count table (« | bloquant | 0 | ») is no finding.
+    The real reviews keep their answers."""
+    script = os.path.join(HERE, "relecture-verdict.py")
+    last = "\n\nVerdict : 0 bloquant, 0 grave — fusion possible\n"
+
+    def ok(body):
+        return subprocess.run([sys.executable, "-I", script], input=body + last, capture_output=True, text=True).returncode == 0
+
+    refused = ["| 1 | bloquant (P1) | x | à faire |", "| 1 | Gravité : grave | x |", "| 1 | Grave ⚠ | x |",
+               "| 1 | bloquant, ouvert | x |", "| 1 | grave | x | pas encore corrigé |", "| 1 | grave | x | non-corrigé |",
+               "| 1 | grave | x | corrigé ? non |", "| 1 | grave | x | à corriger (les points corrigés sont plus bas) |",
+               "- **Bloquant** : le tampon ne vérifie rien (non corrigé).", "### Bloquant\n\nG1. le tampon ne vérifie rien.",
+               "| grave | 1 |", "## Grave\n\n**G1.** ouvert.\n\n**G2.** **corrigé** en abc1234."]
+    accepted = ["| bloquant | 0 |\n| grave | 0 |", "| 1 | grave | x | **corrigé** (abc1234) |", "| G1 | grave | x | **Corrigé** en abc1234 |",
+                "### Bloquant\n\nAucun.", "## Bloquant, grave\n\nAucun.", "- **Grave** : x — **corrigé** en abc1234.",
+                "| 3 | moyen | le plus grave des moyens | à reprendre |", "| id | Titre | Gravité | Preuve |\n|---|---|---|---|",
+                "### Grave\n\n**G1.** le tampon : **corrigé** en abc1234."]
+    for body in refused:
+        check(not ok(body), "an open blocking or grave finding is refused: " + body)
+    for body in accepted:
+        check(ok(body), "no open finding: accepted: " + body)
+    ultra = os.path.join(os.path.dirname(os.path.dirname(HERE)), "docs", "audits", "ultra")
+    # (composants, bloquants: a « ### Grave » section whose finding the text never says fixed: refused as written;
+    # memoire: two open « | grave | » rows.)
+    for name, want in (("tour-5-banc-fin-relecture.md", True), ("tour-5-pads-live-relecture.md", True),
+                       ("tour-5-banc-r1-relecture.md", True), ("tour-5-banc41-relecture.md", True),
+                       ("tour-5-recette2-relecture.md", True), ("tour-5-memoire-relecture.md", False),
+                       ("tour-5-composants-relecture.md", False), ("tour-5-bloquants-relecture.md", False)):
+        path = os.path.join(ultra, name)
+        if os.path.isfile(path):
+            with open(path, encoding="utf-8") as f:
+                r = subprocess.run([sys.executable, "-I", script], input=f.read(), capture_output=True, text=True)
+            check((r.returncode == 0) == want, f"the real review {name} keeps its answer ({want}):\n" + r.stdout)
 
 
 def fusion_toy(d, name):

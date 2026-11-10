@@ -224,7 +224,9 @@ class Tour5BloquantsTest : HumanTester("bloquants") {
         tap("mode_notes")
         act("attends 1")
         val grid = screenLines().firstOrNull { it.contains("Grille des notes") } ?: "(no grid)"
-        assertTrue("the melody's notes in sight on its grid: $grid", !grid.contains(": 0 notes") && grid != "(no grid)")
+        // Review m3: as many notes as the take wrote, not merely « not 0 ».
+        val shown = Regex("""Grille des notes : (\d+) notes?""").find(grid)?.groupValues?.get(1)?.toInt()
+        assertEquals("the take's notes in sight on the melody's grid: $grid", taken, shown)
     }
 
     /** The node showing exactly [text], drawn whole above the tutorial's panel (a finger can touch it there, no swipe). */
@@ -264,5 +266,53 @@ class Tour5BloquantsTest : HumanTester("bloquants") {
         tap("tuto_do")
         act("attends 2")
         assertTrue("« Ich mach's » shows the Swing setting\n" + screenLines().joinToString("\n"), inSightAboveTheTuto("Swing"))
+    }
+    /** The waiting line's words (« … arrive à la prochaine mesure… ») in the header's note, in French. */
+    private fun waitingLineShown(): String? = headerNote().takeIf { "arrive à la prochaine mesure" in it }
+
+    /** Watches the header for [seconds] while the song plays on, nothing picked: never the waiting line. */
+    private fun neverTheWaitingLine(seconds: Int, what: String): Set<String> {
+        val notes = HashSet<String>()
+        repeat(seconds * 2) {
+            act("attends 0.5")
+            assertTrue("$what: still playing", playing())
+            waitingLineShown()?.let { error("$what: « ${headerTitle()} / $it » with nothing picked (sessionUi ${rhythm()!!.sessionUi.value})") }
+            notes += headerNote()
+        }
+        return notes
+    }
+
+    /**
+     * Review G1 (lot « bloquants »): the song playing, nothing picked, the waiting line named the song's next part (its
+     * part change staged ahead) for the whole part. Mode simple, the Guide's « Écouter », Clavier.
+     */
+    @Test
+    fun noWaitingLineWhileTheSongJustPlaysInSimple() {
+        simpleSong(family = "calm", style = "lofi")
+        waitFor("the Guide's « Écouter »") { reachTag("guide_option_drop") != null }
+        tap("guide_option_drop")
+        assertTrue("the song plays", playing())
+        tap("tab_simple_Clavier")
+        val notes = neverTheWaitingLine(8, "Simple")
+        assertTrue("« Le morceau joue… » said meanwhile: $notes", notes.any { it.startsWith("Le morceau joue") })
+    }
+
+    /** Review G1, Pro: ▶ of the top bar plays the song, Sons › Drums. */
+    @Test
+    fun noWaitingLineWhileTheSongJustPlaysInPro() {
+        begin(SeatOptions(simple = false))
+        tap("launch_new")
+        tap("starter_wizard")
+        if (centerOf("mode_card_pro") != null) tap("mode_card_pro")
+        tap("wizard_family_Techno")
+        tap("wizard_style_techno")
+        tap("wizard_style_choose_techno")
+        tap("wizard_create_now")
+        waitFor("the song's spaces") { screenRoute().endsWith("tab_Structure") }
+        centerOf("guide_later")?.let { act("touche ${it.first} ${it.second}") }
+        tap("tab_Sons")
+        tap("top_play")
+        assertTrue("▶ plays", playing())
+        neverTheWaitingLine(10, "Pro")
     }
 }

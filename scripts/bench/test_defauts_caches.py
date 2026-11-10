@@ -85,9 +85,34 @@ def repository():
     check("seuil 80 %" in out, "the threshold is written:\n" + out)
 
 
+def dashboard(d):
+    """The dashboard's line J: the same rate as defauts-caches.py, met only at the threshold."""
+    import re
+    round_dir = os.path.join(d, "tour-9")
+    os.makedirs(round_dir)
+    base, verdicts = os.path.join(d, "base.tsv"), os.path.join(d, "verdicts.tsv")
+    write(base, "cle\tetat\tvu\tnote\n")
+    write(verdicts, "tour\titem\tcle\tverdict\tpreuve_appli\tgarde_banc\ttelephone\tcommit\n")
+    r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "tableau-de-bord.py"), round_dir, "--base", base, "--verdicts", verdicts,
+                        "--out", os.path.join(d, "board.md")], capture_output=True, text=True)
+    board = r.stdout + r.stderr
+    _, out = run()
+    m = re.search(r"montrés aujourd'hui : ([\d.]+/\d+) \((\d+) %", out)
+    check(m is not None, "the rate of defauts-caches.py:\n" + out)
+    if m:
+        row = re.search(r"^\| J \| Défauts vus sur l'appareil que le banc montre \(défauts cachés\) \| " + re.escape(m.group(1)) + r" \(" + m.group(2)
+                        + r" % ; .*\| ≥ 80 %, 0 écart \| (oui|non) \|$", board, re.M)
+        check(row is not None, "line J with the same rate:\n" + board)
+        if row:
+            check(row.group(1) == ("oui" if int(m.group(2)) >= 80 else "non"), "J met only at 80 %:\n" + board)
+    check("A à J remplies" in board, "the stop needs J too:\n" + board)
+
+
 def main():
     with tempfile.TemporaryDirectory() as d:
         hidden(d)
+    with tempfile.TemporaryDirectory() as d:
+        dashboard(d)
     repository()
     if FAILED:
         print(f"{len(FAILED)} échec(s)")

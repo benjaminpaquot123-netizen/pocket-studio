@@ -49,7 +49,7 @@
           "why": "Juste assez de swing pour que l'usine respire.",
           "levels": "p",
           "check": "swing",
-          "spot": "rhythm.pattern",
+          "spot": "rhythm.swing",
           "listen": "drums:kick,tom,hat"
         }
       ]

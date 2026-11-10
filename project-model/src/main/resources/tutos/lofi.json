@@ -121,7 +121,7 @@
           "textPro": "À toi : swing à 33 % sur le curseur (62,5 % sur une MPC) : les doubles croches d'entre les temps traînent vers le triolet.",
           "why": "Le swing et le retard donnent le côté nonchalant, comme un batteur fatigué.",
           "check": "swing",
-          "spot": "rhythm.pattern",
+          "spot": "rhythm.swing",
           "listen": "drums:kick,snare,hat,perc",
           "skip": "Sans swing, ta batterie sonnera comme une machine."
         },

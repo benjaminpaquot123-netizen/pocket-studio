@@ -322,6 +322,27 @@ class BenchSongClockTest {
         assertEquals("▶ starts the pattern from its first step: step 35 is step 3 of 32", 3, e.currentStep())
     }
 
+    /**
+     * Found while reading Engine.cpp for A.7 to A.15: « leave the song » (NativeEngine.leaveSong: the swap cancelled, kind 3)
+     * takes the song position away at once (ArmSceneSwap: « if (command.a < 0 && command.b == 3) leaveSongNow() »): the
+     * scene goes on by itself. The bench's engine only cancelled the swap: the song's counter ran on.
+     */
+    @Test
+    fun leavingTheSongTakesTheSongPositionAwayAtOnce() {
+        start()
+        play(songStep = 0)
+        steps(8)
+        arm(32, 1, songStep = 32)
+        assertEquals(8, e.songStep())
+        arm(-1, 3)  // NativeEngine.leaveSong()
+        assertEquals("out of the song at once", -1, e.songStep())
+        assertEquals("the scene goes on", 8, e.absoluteStep())
+        steps(40)
+        assertEquals("the swap armed before was cancelled", 0, e.sceneSwaps())
+        assertEquals(48, e.absoluteStep())
+        assertEquals(-1, e.songStep())
+    }
+
     private companion object {
         const val PATTERN_STEPS = 9
         const val STAGING = 39

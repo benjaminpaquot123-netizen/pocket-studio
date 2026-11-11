@@ -1,5 +1,5 @@
 # Relecture neuve du lot « banc6d » (tour 5, étape 3, lot 6, fin)
-Relu : 55e6a1a6b9e70e9ec49f1b23b2d81d50aa94e970
+Relu : db99df23b78791514d607316bb6b9af42eb0713f
 
 Relecteur neuf (ni auteur du code). Lu : `git diff $(git merge-base HEAD fx-int)...HEAD` (fuse-reports.py `button_fixed`, tableau-de-bord.py `cases_vides` / `ecrans_non_analyses`, verifie-chantier.py `seat_class`, `test_ultra_bench.py`, `ShareSongUi.kt`, `Tour5AppProof4Test`, verdicts.tsv, revient.tsv, carte-ecrans.tsv, DECISIONS, REVIEW), le rapport de l'auteur.
 
@@ -42,5 +42,9 @@ Relecteur neuf (ni auteur du code). Lu : `git diff $(git merge-base HEAD fx-int)
 - M3 : `seat_class` ne lit que le premier parent après « : » (`class X : UneInterface, HumanTester()` échapperait), comme avant le lot.
 
 Tests rejoués : `python3 -I scripts/bench/test_ultra_bench.py` OK ; pendant la mutation 1, `Tour5AppProof4Test` + `Round3Zone2Test` : 24 tests, seul le test muté rouge (les 23 autres verts). Rejeu propre sur la tête (avec `Tour5AppProof3Test`) arrêté dans la file Gradle partagée après 30 min d'attente : à rejouer par le portail.
+
+## Delta après fusion de fx-int
+Depuis 55e6a1a6 : 31208a8f (DECISIONS synchronisé avec fx-int) et db99df23 (merge de fx-int, sans conflit : `git show --cc` vide). `git diff fx-int HEAD --stat` ne contient plus rien sous `docs/audits/ultra/portail/`.
+Retiré ce qui vient de fx-int, le diff 55e6a1a6..HEAD ne change aucun code du lot (seul fichier différent de fx-int : cette relecture). `python3 -I scripts/bench/test_ultra_bench.py` OK.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

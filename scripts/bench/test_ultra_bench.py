@@ -231,6 +231,7 @@ def main():
         portal(d)
         review_rows(d)
         fusion_forged(d)
+        toy_batch_is_its_own(d)
         portal_traces(d)
         zone_report(d)
         portal_recomputes(d)
@@ -1953,6 +1954,16 @@ def fusion_toy(d, name):
     git_toy(root, "add", "scripts", "docs")
     git_toy(root, "commit", "-q", "-m", "toy")
     return root
+
+
+def toy_batch_is_its_own(d):
+    """Dry run 7.6 (casse 1): the toy integration workshop holds its own batch file (« paquet: 1 »), never a copy of
+    the repository's: when the main discussion opened batch 2 (scripts/bench/portail-paquet.txt), the toys' batch-1
+    expectations failed and the self-test went red (« scripts du banc »), so no lot could be played."""
+    root = fusion_toy(d, "fusion-paquet")
+    with open(os.path.join(root, "scripts", "bench", "portail-paquet.txt"), encoding="utf-8") as f:
+        batch = f.read()
+    check(batch == "paquet: 1\n", "the toy's batch file is its own « paquet: 1 », not the repository's:\n" + batch)
 
 
 def fusion_forged(d):

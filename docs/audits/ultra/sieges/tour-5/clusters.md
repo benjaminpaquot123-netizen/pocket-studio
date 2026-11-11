@@ -1,5 +1,5 @@
 # Grappes du tour « tour-5 »
-24 siège(s), 182 grappe(s) : 125 nouvelle(s), 5 déjà vue(s) (tour-3 : 2, tour-4 : 3), 21 même bouton (tour-1 : 10, tour-2 : 3, tour-3 : 6, tour-4 : 2), 0 qui revien(nen)t (confirmé par un lecteur), 1 candidat(s) « revient ? » à confirmer dans revient.tsv, 30 [banc?] (limites connues du banc, à trancher) ; 0 fiche(s) rejetée(s) (jugement sonore) ; 3 vue(s) par ≥ 2 sièges (confirmées sans juge).
+24 siège(s), 182 grappe(s) : 126 nouvelle(s), 5 déjà vue(s) (tour-3 : 2, tour-4 : 3), 19 même bouton (tour-1 : 8, tour-2 : 3, tour-3 : 6, tour-4 : 2), 2 qui revien(nen)t (confirmé par un lecteur), 0 candidat(s) « revient ? » à confirmer dans revient.tsv, 30 [banc?] (limites connues du banc, à trancher) ; 0 fiche(s) rejetée(s) (jugement sonore) ; 3 vue(s) par ≥ 2 sièges (confirmées sans juge).
 
 - [nouveau] bloquant ×1 (A/a#27) dialogue:part_header_menu · « part_pick_2 » · rien — l'éditeur passe sur « पार्ट: C · मुखड़ा » / reste « पार्ट: A · इंट्रो » ; pareil avec B (#49), et avec la nouvelle partie M (#53)
 - [même bouton (tour-1)] bloquant ×1 (E/a#117) launch · « launch_padlive » · perdu — ma prise de 4 notes (Retour pendant « Enregistrer ma mélodie ») m'attend encore (Garder/Refaire) quand je rouvre Techno après un passag
@@ -55,6 +55,6 @@
 - [nouveau] moyen ×1 (B/a#83) tab_simple_Clavier · « chord_mode » · affichage — à 200 % la grille des notes reste lisible au-dessus du panneau du tuto replié / 4 rangées seulement, les notes en pointillé collées au bord 
 - [même bouton (tour-3)] moyen ×1 (A/a#30) tab_simple_Clavier · « record_start » · perdu — ma mélodie enregistrée joue le Marimba choisi pour la mélodie à l'étape 9 / nouvelle piste « मेरी मेलोडी » en FM पियानो
 - [nouveau] moyen ×1 (B/a#89) tab_simple_Clavier · « top_undo » · affichage — annuler ne bouge pas l'écran / une 2e ligne d'en-tête apparaît (« Mon projet 1 », « Rétablir »), la grille descend sous le panneau du tuto (1 
-- [même bouton (tour-1)] moyen ×1 (B/a#72) tab_simple_Clavier · « tuto_notes_left » · affichage — la flèche amène la note en pointillé à la vue / la grille défile mais la note reste invisible (sous l'en-tête ou le pannea
+- [revient] moyen ×1 (B/a#72) tab_simple_Clavier · « tuto_notes_left » · affichage — la flèche amène la note en pointillé à la vue / la grille défile mais la note reste invisible (sous l'en-tête ou le panneau du tuto) ; 
 - [même bouton (tour-1)] moyen ×1 (B/b#13) tab_simple_Morceau · « guide_open_melody » · mauvais-ecran — ouvrir le son de la piste mélodie (Acid 303) et cocher l'étape « Zmień dźwięk » / feuille « Dźwięk: Synth » (aucune 
 - … et 126 grappe(s) de plus : voir clusters-complet.md.

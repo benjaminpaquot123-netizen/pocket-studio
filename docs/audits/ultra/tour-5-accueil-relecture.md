@@ -1,5 +1,5 @@
 # Relecture neuve du lot « accueil » (tour 5, chantier 6)
-Relu : 2f6fc8a0aa0e5cd5722bc172348eb1778a8a18a5
+Relu : f181875bc5f203713b40010a901f02adbc69b7ed
 
 Relecteur neuf (n'a écrit ni le code ni le rapport). Lu : `git diff 1cf5b6fc...2f6fc8a0` (4 commits : 415fe129 rouge,
 1d110baf correctif des textes, d809ee9e vert, 2f6fc8a0 captures et rapport), le rapport de l'auteur, `ScrollHint.kt`,
@@ -54,5 +54,11 @@ Relecteur neuf (n'a écrit ni le code ni le rapport). Lu : `git diff 1cf5b6fc...
 - M-c. `nav/land_launch.png` (téléphone couché) montre la carte « Continuer » vide ; c'était déjà le cas à la base
   1cf5b6fc, ce n'est pas ce lot, à regarder à part.
 - M-d. Le rapport range `*I18nCatalogTest` sous l'app ; c'est `:project-model:test`.
+
+rejeu changé : t4-26-prise-clavier : le nouvel accueil de l'assistant décalait les gestes 3, 4 et 7 ; recalculés en pixels sur la nouvelle mise en page ; oracle inchangé ; rejoué vert.
+
+## Delta après fusion de fx-int
+
+Relu `git diff 2f6fc8a0 HEAD` : hors apports de fx-int, seuls changent les `cmd-*.txt` du rejeu t4-26-prise-clavier (gestes 3, 4, 7, et 29 à 32 en aval, coordonnées seules) et le rapport (une ligne). L'oracle n'est pas touché. Les deux merges de fx-int (69a91848, f181875b) n'ont aucune résolution manuelle (`git show --cc` vide). Preuve du rejeu relue : key_62 « Ré 4 », key_65 « Fa 4 », record_stop, puis « oracle tenu ».
 
 Verdict : 0 bloquant, 0 grave — fusion possible

@@ -159,9 +159,9 @@ class Tour5AppProof2Test {
     /**
      * T5-Ec-28 (recette tel-15, T5-REMIXFIN): a song of 8 bars (16 s at 120 BPM) and a remix's song of 60 s placed on
      * bar 2: the shared file stops with the song's parts (RhythmViewModel.songFrames sums the parts only, the remix's
-     * end is not counted), so « Prêt à partager ? » should say the remix's end is cut. It says « Tout est prêt ».
+     * end is not counted), so « Prêt à partager ? » should say the remix's end is cut (chantier 10 of the hands-on
+     * audit, G16: it said « Tout est prêt »).
      */
-    @KnownDefect("T5-REMIXFIN", "« Prêt à partager ? » says nothing about the remix's end cut")
     @Test
     fun shareSaysWhenTheRemixRunsPastTheSongEnd() {
         val p = Project(

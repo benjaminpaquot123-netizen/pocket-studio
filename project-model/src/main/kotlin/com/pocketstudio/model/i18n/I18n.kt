@@ -160,6 +160,8 @@ object I18n {
         "plus",
         // Round 5, chantier 6 (2026-11-11): the home screens say they scroll (« ↓ 4 autres »), « Un style en une touche ».
         "accueil",
+        // Hands-on audit, chantier 10 (2026-11-11): the Remix's one recommended way, « Faire un morceau avec cette chanson », the song's end cut.
+        "remix10",
         // Round 5, chantier 9 (2026-11-11): three « ? » where a beginner gets stuck (recording on the keys, the Mix simple, its loop).
         "access",
     )

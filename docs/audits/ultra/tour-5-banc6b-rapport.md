@@ -15,7 +15,7 @@ Atelier `/home/user/eq-tour-5-banc6b`, branche `eq/tour-5-banc6b`, partie de `16
 - Gardes vertes dès l'écriture (e77df8c8, 2e commit `test:` pour le seuil), rouges prouvés par banc cassé (jetable, rien commité) : 4.4 fil occupé (40,2 s ; sans `coroutineWorkersBusy` 25,2 s, d'où le seuil 35 s) ; 5.1 rendu de 1, 4, 90 mesures aux cibles −8 / −14 (MAX_SECONDS 120 → « 120.0 ») ; 5.4 ligne « tous les blocs Live sont arrêtés » et aucun pad live après « Tout couper » (ligne retirée → rouge) ; 5.2 PhoneEngine qui ne compte plus ses bascules → `aMelodyTakeWhileAnotherPartIsShownShowsItsNotes` rouge sur « part shown ».
 
 ## Juge
-- Avant : 27 écarts (trace du portail de « restes »). Après : SELFTEST_A_REMPLIR.
+- Avant : 27 écarts (trace du portail de « restes »). Après : **22** (selftest sur 8a523615 : 178 verts, 0 rouge, 41 sautés ; mêmes 22 que la base, les 5 de « textes » en moins).
 
 ## Ce qui reste
 - 5.11 : le spectre n'est pas rendu (le banc ne le remplit pas) ; un « — (banc) » écrit à l'écran n'existe pas, seulement des tirets sans moteur du banc.

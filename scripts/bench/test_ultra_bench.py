@@ -2479,6 +2479,19 @@ def mark_fixed(d):
           "the summary named by PS_SELFTEST_RESUME is read too:\n" + out)
     out = mark()
     check("résumé absent" in out, "without a summary the judge says so:\n" + out)
+    # Dry run 7.6 (casse 2): the dashboard is recomputed by marque-corrige.sh itself, on every round as the portal does
+    # (the teams' sheet said « tableau-de-bord.py sieges/tour-5 » alone: it wrote a dashboard without the earlier
+    # rounds, 94 lines fewer than the portal's, left uncommitted).
+    calls = os.path.join(d, "marque-appels.txt")
+    write(calls, "")
+    write(os.path.join(bench, "tableau-de-bord.py"), TOY_DASHBOARD)
+    for t in ("tour-10", "tour-9"):
+        write(os.path.join(ultra, "sieges", t, "lotA", "a", "rapport.md"), "x\n")
+    mark(green, PS_TOY_CALLS=calls)
+    with open(calls, encoding="utf-8") as f:
+        asked = f.read()
+    check("tableau docs/audits/ultra/sieges/tour-9 docs/audits/ultra/sieges/tour-10\n" in asked,
+          "marque-corrige.sh recomputes the dashboard on every round, in order, as the portal does:\n" + asked)
 
 
 def known_skips_bounded(d):

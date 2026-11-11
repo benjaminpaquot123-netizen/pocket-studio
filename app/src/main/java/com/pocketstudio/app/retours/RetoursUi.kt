@@ -1,5 +1,6 @@
 package com.pocketstudio.app.retours
 
+import androidx.compose.ui.draw.shadow
 import com.pocketstudio.ui.pressScale
 import android.app.Activity
 import android.media.projection.MediaProjectionConfig
@@ -159,14 +160,19 @@ fun RetoursHost(show: Boolean, content: @Composable () -> Unit) {
         val message by Retours.message.collectAsState()
         message?.let { m ->
             LaunchedEffect(m) { delay(4000); if (Retours.message.value == m) Retours.message.value = null }
-            Surface(
-                color = Neon.SurfaceHigh, shape = RoundedCornerShape(12.dp), shadowElevation = 6.dp,
-                modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = 72.dp, start = 16.dp, end = 16.dp)
-                    .testTag("retours_message").clickable { Retours.message.value = null },
+            // Tour 5, chantier 4: above the thumb's bar and the tabs (it lay over « ▶ le morceau »), and it takes no touch (a
+            // Surface swallows them: the next touch on ▶ only closed it). It goes by itself after 4 s.
+            Box(
+                Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = MESSAGE_ABOVE_BARS, start = 16.dp, end = 16.dp)
+                    .shadow(6.dp, RoundedCornerShape(12.dp)).background(Neon.SurfaceHigh, RoundedCornerShape(12.dp))
+                    .testTag("retours_message"),
             ) { Text(m, modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp), style = MaterialTheme.typography.bodyMedium) }
         }
     }
 }
+
+/** The message's foot: over the thumb's bar (48 dp), the tabs (80 dp) and a margin. */
+private val MESSAGE_ABOVE_BARS = 48.dp + 80.dp + 12.dp
 
 private class NoteDraft(val shot: android.graphics.Bitmap?)
 

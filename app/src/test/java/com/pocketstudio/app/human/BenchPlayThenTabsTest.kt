@@ -161,9 +161,6 @@ class BenchPlayThenTabsTest : HumanTester("play-tabs") {
             tap("retours_more")
             tap("retours_menu_hide")
         }
-        // The « Mode retours » hidden says so for 4 s in a message at the foot of the screen, right over « ▶ le morceau »:
-        // a touch there closes the message (the top ▶ was clear of it). The message gone first.
-        act("attends 5")
         val heard = tap("thumb_play")
         assertTrue(heard, "le morceau joue (partie" in heard)
         tap("top_record")

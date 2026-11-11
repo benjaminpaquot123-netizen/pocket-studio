@@ -101,6 +101,21 @@ object LayoutScan {
         return out.distinctBy { it.toString() }
     }
 
+    /**
+     * Rule 17 of docs/DESIGN.md, « Tout défilement se voit » (round 5, chantier 6; hands-on audit G9): the lists that go on
+     * below their frame without the hint « ↓ n autres » (tag `scroll_hint`, drawn by `ScrollHintBox`) over their frame.
+     * Read on the home screens for now ([com.pocketstudio.app.onboarding.HomeScreensSayTheyScrollTest]).
+     */
+    fun unhintedScrolls(rule: ComposeTestRule): List<String> {
+        rule.waitForIdle()
+        val all = rule.onAllNodes(ANY, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
+        val hints = all.filter { it.config.getOrNull(SemanticsProperties.TestTag) == "scroll_hint" && !hidden(it) }
+        return all.filter { n ->
+            val range = n.config.getOrNull(SemanticsProperties.VerticalScrollAxisRange) ?: return@filter false
+            !hidden(n) && range.value() < range.maxValue() - 0.5f && hints.none { n.boundsInRoot.contains(it.boundsInRoot.center) }
+        }.map { "${tagOf(it)} (${"%.0f".format(it.config[SemanticsProperties.VerticalScrollAxisRange].maxValue() - it.config[SemanticsProperties.VerticalScrollAxisRange].value())} px below)" }
+    }
+
     /** Something TalkBack can act on: a touch, a long press, a slider, a switch or a box to tick. */
     val CONTROL = SemanticsMatcher("a control") { n ->
         n.config.contains(SemanticsActions.OnClick) || n.config.contains(SemanticsActions.OnLongClick) ||

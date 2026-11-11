@@ -57,17 +57,23 @@ class QuickStyleCardTest {
         }
     }
 
+    private fun tap(tag: String) {
+        val node = compose.onNodeWithTag(tag)
+        runCatching { node.performScrollTo() }  // a page that does not scroll has everything in view
+        node.performClick()
+        compose.waitForIdle()
+    }
+
     /** « Nouveau morceau » › « Autres façons de commencer » › the style's family opened. */
     private fun openFamily() {
-        compose.onNodeWithTag("project_new").performClick()
-        compose.onNodeWithTag("start_others").performClick()
-        compose.onNodeWithTag("quick_family_${style.family}").performScrollTo().performClick()
-        compose.waitForIdle()
+        tap("project_new")
+        tap("start_others")
+        tap("quick_family_${style.family}")
         compose.onNodeWithTag("quick_style_${style.id}").performScrollTo()
     }
 
-    private fun wordsOf(tag: String): String =
-        compose.onNodeWithTag(tag).fetchSemanticsNode().config.getOrNull(SemanticsProperties.Text).orEmpty().joinToString(" ") { it.text }
+    private fun wordsOf(tag: String, unmerged: Boolean = false): String =
+        compose.onNodeWithTag(tag, useUnmergedTree = unmerged).fetchSemanticsNode().config.getOrNull(SemanticsProperties.Text).orEmpty().joinToString(" ") { it.text }
 
     /** The words of a text node as laid out (cut: its layout overflows or ends in « … »). */
     private fun cut(tag: String): Boolean {
@@ -85,5 +91,21 @@ class QuickStyleCardTest {
         openFamily()
         assertEquals("Régler avant de créer", wordsOf("quick_custom_${style.id}"))
         assertTrue(wordsOf("quick_custom_${style.id}"), "Choisir ce style" !in wordsOf("quick_custom_${style.id}"))
+    }
+
+    @Test
+    fun noWordOfAStyleCardIsCutAt130PercentOn360dpInAnyLanguage() {
+        var lang by mutableStateOf(Lang.FR)
+        show(1.3f) { lang }
+        val problems = ArrayList<String>()
+        for (l in Lang.entries) {
+            lang = l
+            compose.waitForIdle()
+            openFamily()
+            for (part in listOf("quick_custom_text_", "quick_create_text_")) {
+                if (cut(part + style.id)) problems += "${l.code}: $part « ${wordsOf(part + style.id, unmerged = true)} »"
+            }
+        }
+        assertTrue("Cut on a style card:\n" + problems.joinToString("\n"), problems.isEmpty())
     }
 }

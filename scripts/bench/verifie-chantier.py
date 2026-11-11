@@ -572,7 +572,9 @@ def red_names(root, sha, message):
 
 # Lot « banc6b »: a commit's topic, « rouge: SimpleNoDecibelTest (…) », « vert: SimpleNoDecibelTest and oneWordPerThing
 # (…) »: the camelCase words (12 letters or more) of its subject before the first parenthesis.
-TOPIC = re.compile(r"(?<![A-Za-z0-9_])([A-Za-z_][A-Za-z0-9_]*[a-z][A-Z][A-Za-z0-9_]*)(?![A-Za-z0-9_])")
+# Review of « banc6b » (grave): a word of a « Class#method », « Class.method » or « file::case » is one test, never a
+# topic (the names pair it): « vert: FooTest#other » closed « rouge: FooTest#one » by its class.
+TOPIC = re.compile(r"(?<![A-Za-z0-9_#.:])([A-Za-z_][A-Za-z0-9_]*[a-z][A-Z][A-Za-z0-9_]*)(?![A-Za-z0-9_#:]|\.\w)")
 TEST_FILE = re.compile(r"(?:^|/)src/(?:test|androidTest)/|(?:^|/)test_[^/]*\.py$|(?:^|/)host-tests/")
 
 

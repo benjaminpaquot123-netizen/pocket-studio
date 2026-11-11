@@ -9542,7 +9542,9 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun togglePart() {
         if (_transport.value.playing) {
-            if (_loopPart.value || project.value.song.isEmpty()) togglePlay() else setLoopPart(true)
+            // Tour 5, moyens M2: during a take (notes or microphone) it stops, as « ▶ le morceau » does (both show ■).
+            val takeOn = _recording.value || _audioRecording.value != null
+            if (takeOn || _loopPart.value || project.value.song.isEmpty()) togglePlay() else setLoopPart(true)
             return
         }
         setLoopPart(true)

@@ -378,7 +378,9 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             }
         }
         // « ▶ cette partie » (tour 5, chantier 4): the part open, looped. Round 3, n° 34: the label says what a touch does now.
-        NamedPlay(tr("cette partie"), partStyle, tr("Jouer cette partie"), ui.partPlaying, "top_play", partRoom, actions.togglePlay)
+        // Tour 5, moyens M2: during a take on the song it stops too (RhythmViewModel.togglePart), so it shows ■ « Arrêter ».
+        val stopsTake = ui.recording && ui.songPlaying
+        NamedPlay(tr("cette partie"), partStyle, tr("Jouer cette partie"), ui.partPlaying || stopsTake, "top_play", partRoom, actions.togglePlay)
         // Apart, the two words never read as one (« cette partie le morceau »).
         if (ui.songButton && !songOnTop) Spacer(Modifier.width(PLAY_GAP))
         if (ui.songButton && !songOnTop) NamedPlay(tr("le morceau"), songStyle, tr("Jouer le morceau"), ui.songPlaying, "top_song", songRoom, actions.playSong)

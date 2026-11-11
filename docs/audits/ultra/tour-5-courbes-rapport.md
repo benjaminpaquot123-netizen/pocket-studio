@@ -12,7 +12,7 @@ Source : `PLAN-ACTION-AUDITS.md` étape 4 ligne 8 ; retours de Benjamin du 2026-
    le fond ambre de la courbe encadrée faisait passer « Vider » sous le seuil de contraste (4,37:1) : cadre seul.
 ## Preuves
 - `CurvesFindTest`, 7 tests. Rouges ccca1dc3, 47709bb1, a434e1c1 ; verts a53e385e, c1d05caf, cc301649.
-- Selftest du banc sur 44d381da (dernier commit de code, fusion de fx-int comprise) : 192 verts, 0 rouge.
+- Selftest du banc sur 44d381da (dernier commit de code, avant la fusion du lot « socle ») : 192 verts, 0 rouge.
 - Vu rouge sans la ligne corrigée : sans l'attente de `SpotFrame`, l'envoi et la macro ; les deux derniers tests avant
   cc301649 ; le recensement de `automation_new_curve` avant 44d381da. La courbe n'a pas d'attente (verte sans).
 - Captures neuves regardées : `automation_new_curve`, `automation_picker_has_curve`, `effects_spot_send`,
@@ -23,9 +23,9 @@ Source : `PLAN-ACTION-AUDITS.md` étape 4 ligne 8 ; retours de Benjamin du 2026-
 - Rien n'est essayé sur un appareil. Essais : (1) Mix › « Automatiser un réglage » › Batterie › « Filtre (balayage) » :
   courbe à l'écran, encadrée ? (2) rouvrir : « Filtre Coupure (déjà une courbe) » la ramène ? (3) courbe « Envoi
   réverbe · Batterie » › « Voir le réglage » : l'envoi à l'écran, encadré ? Pareil pour une macro.
-- Rouges hors lot au passage ciblé sur la fusion de fx-int : `recette`, `cut_screen`, `cut_screen_magnifier`,
-  `remix_stem_edit_menu` (instables connues), `simple_mix_muet` ×2 (écart déjà noté), `remix_home` (écran du lot remix).
+- Passage ciblé sur la dernière fusion de fx-int (c4743738, lot « socle ») : 3 rouges hors lot, `simple_mix_muet` ×2
+  (écart déjà noté par le lot accueil) et `remix_home` (écran du lot remix, une ligne de bouton diffère) ; le reste vert.
 - Pré-vol : un seul « RECALÉ », les 8 liens des sous-modules de l'atelier (lignes « T »), que le contrôle de l'atelier
-  d'équipe ne filtre pas ; ces lignes masquées le temps du contrôle, « PRÊT ». Script non touché par ce lot.
+  d'équipe ne filtre pas ; ces lignes masquées le temps du contrôle, « PRÊT ». Script non touché. Décisions : `docs/decisions/tour-5-courbes.md`.
 ## Tests à rejouer
 `*CurvesFindTest`, `*ScreenScanTest`, `*WhatPlaysTest`, `*TutoLot4Test`, `*I18nCatalogTest`, `*LexiconWordsTest`, `*ScreenshotTest`.

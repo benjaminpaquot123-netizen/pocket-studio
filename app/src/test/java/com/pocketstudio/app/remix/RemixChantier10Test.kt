@@ -7,6 +7,10 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onRoot
+import com.github.takahirom.roborazzi.captureRoboImage
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import com.pocketstudio.app.export.ShareLevels
@@ -34,6 +38,7 @@ import java.io.File
  * touches. One recommended way, one clear button on the song, and « the end will be cut » with its two fixes.
  */
 @RunWith(RobolectricTestRunner::class)
+@org.robolectric.annotation.GraphicsMode(org.robolectric.annotation.GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = "w400dp-h1600dp")
 class RemixChantier10Test {
     @get:Rule
@@ -85,5 +90,31 @@ class RemixChantier10Test {
         compose.onNodeWithTag("share_check_remix_overrun").assertExists()
         compose.onNodeWithTag("share_fix_remix_longer").assertExists()
         compose.onNodeWithTag("share_fix_remix_cut").assertExists()
+    }
+
+    /** The two fixes are one touch each; the sheet looked at in the Mode simple and the Mode pro (build/, not compared). */
+    @Test
+    fun eachFixOfTheCutEndIsOneTouch() {
+        val p = overrun()
+        val checks = shareChecks(p, mixerStrips(p), ShareLevels(), loopBars = 8)
+        var longer = 0
+        var cut = 0
+        var simple by androidx.compose.runtime.mutableStateOf(false)
+        compose.setContent {
+            PocketStudioTheme {
+                ShareSheetContent(
+                    ShareSheetUi("Remix coupé", seconds = 16, parts = 2, checks = checks),
+                    ShareSheetActions(lengthenForRemix = { longer++ }, cutRemix = { cut++ }), simple = simple,
+                )
+            }
+        }
+        compose.onNodeWithTag("share_fix_remix_longer").performScrollTo().performClick()
+        compose.onNodeWithTag("share_fix_remix_cut").performScrollTo().performClick()
+        assertEquals(listOf(1, 1), listOf(longer, cut))
+        compose.onRoot().captureRoboImage("build/chantier10/share_overrun_pro.png")
+        simple = true
+        compose.waitForIdle()
+        compose.onNodeWithTag("share_fix_remix_longer").assertExists()
+        compose.onRoot().captureRoboImage("build/chantier10/share_overrun_simple.png")
     }
 }

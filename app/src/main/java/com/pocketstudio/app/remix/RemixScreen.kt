@@ -838,7 +838,7 @@ private fun StemCard(
             // Chantier 10 (G16, recette tel-15): one big button does the recommended thing; the other ways behind it.
             Button(onClick = { actions.buildSong(set) }, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("build_${set.id}")) {
                 Icon(Icons.Filled.AutoAwesome, contentDescription = null)
-                Text(" " + tr("Faire un morceau avec cette chanson"))
+                Text(tr("Faire un morceau avec cette chanson"), modifier = Modifier.padding(start = 8.dp))
             }
             TextButton(onClick = { actions.useSong(set) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("use_${set.id}")) {
                 Text(tr("Autres choix…"))

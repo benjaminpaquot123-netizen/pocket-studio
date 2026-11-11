@@ -5,6 +5,7 @@
 - Consignes de Benjamin (2026-10-27) : un seul APK quand tout est fini ; des nouvelles à chaque fin d'étape ; le Play Store seulement quand il le demande.
 
 ## Prochaine étape exacte
+0. **Plan test APK** (`docs/PLAN-TEST-APK.md`, 2026-11-11) : une appli de test à part, presque tout automatique, avant l'audit. Plan écrit, rien de construit : attendre que Benjamin dise « lance le plan test apk », puis commencer par T0. Outils Android à réinstaller dans la session (`/opt/android-sdk` : platforms;android-37.0, build-tools;37.0.0, ndk;30.0.16248370, cmake;4.1.2).
 1. Le grand audit final (`docs/PLAN-AUDIT-FINAL.md`) : une vingtaine d'auditeurs en même temps (utilisateurs, pros du son, experts techniques, forme), synthèse par gravité, correction de tout le grave et le moyen, seconde passe de vérification.
 2. Puis l'APK unique compilé ici, avec les extraits audio, et le résumé pour Benjamin.
 3. Plus tard, sur demande de Benjamin : le chantier Play Store.

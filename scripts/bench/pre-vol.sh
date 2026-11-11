@@ -194,7 +194,7 @@ portal="scripts/bench/fusion-equipes.sh"
 [ -f "$portal" ] && [ -f scripts/bench/relecture-verdict.py ] || { echo "pre-vol : le portail ($portal, relecture-verdict.py) n'est pas dans ce dépôt : à lancer depuis l'atelier d'intégration." >&2; exit 2; }
 # The portal's refusals as this script knew them (their count and a fingerprint of their lines): a rule added or
 # reworded since is said, never silently missed.
-KNOWN_RULES="13 551b6bf796"
+KNOWN_RULES="14 e54e60f075"
 rules="$(grep -E 'not merged|undone' "$portal" | grep -c .) $(grep -E 'not merged|undone' "$portal" | sed 's/^ *//' | sha256sum | cut -c1-10)"
 [ "$rules" = "$KNOWN_RULES" ] || warn "le portail a changé depuis l'écriture du pré-vol (règles : $rules, connues : $KNOWN_RULES)" \
   "relire les lignes « not merged » / « undone » de $portal, mettre à jour pre-vol.sh et sa ligne KNOWN_RULES"
@@ -225,7 +225,8 @@ for zone in "$@"; do
   base="$(git merge-base "$head" "$branch")" || base="$branch"
   # Work left uncommitted in the team's workshop never reaches the portal.
   shop="$(git worktree list --porcelain | awk -v b="refs/heads/$branch" '$1 == "worktree" {w = $2} $1 == "branch" && $2 == b {print w}')"
-  if [ -n "$shop" ] && [ -d "$shop" ] && [ -n "$(git -C "$shop" status --porcelain --untracked-files=no 2>/dev/null)" ]; then
+  # (« T »: a file the workshop links, a linked submodule of engine/third_party/…, as in the integration's own check.)
+  if [ -n "$shop" ] && [ -d "$shop" ] && [ -n "$(git -C "$shop" status --porcelain --untracked-files=no 2>/dev/null | grep -v '^ T')" ]; then
     bad "l'atelier de l'équipe ($shop) a des changements non commités : ils ne seraient pas fusionnés" "committer dans la branche (avant la relecture), ou les jeter"
   fi
 
@@ -276,6 +277,20 @@ for zone in "$@"; do
     "déplacer ces lignes dans docs/decisions/$tour-$zone.md (une ligne par choix) ; le portail le liste lui-même dans docs/DECISIONS.md après la fusion"
   git diff --quiet "$base" "$branch" -- scripts/bench/portail-paquet.txt || rule_from 2 "la branche change le paquet en cours (scripts/bench/portail-paquet.txt)" \
     "retirer ce changement : seule la discussion principale change le paquet, quand elle en ouvre un"
+  # PLAN-RESTE 7.1: the zone report, as the portal reads it (scripts/bench/rapport-zone.py).
+  report="docs/audits/ultra/$tour-$zone-rapport.md"
+  if [ -f scripts/bench/rapport-zone.py ]; then
+    added="$(comm -13 <(replays "$base") <(replays "$branch") | sed 's/^/ajout:/')"
+    # shellcheck disable=SC2086
+    if why="$(python3 -I scripts/bench/rapport-zone.py "$branch" "$report" $added)"; then
+      ok "rapport de zone accepté ($report)"
+    else
+      while IFS= read -r line; do
+        [ -z "$line" ] || rule_from 2 "rapport de zone refusé : $line" \
+          "dans $report, commité dans la branche : une ligne « tests: <filtres Gradle> » (ou « tests: aucun : <raison> ») et la liste des chemins, une ligne « chemin: <écran> | test: Classe#méthode » par endroit, chaque test un @Test de app/src/test ; pour chaque rejeu ajouté à rejeux/, sa dernière ligne « <id> : oracle tenu » (rejeu-defauts.sh, joué avec la correction)"
+      done <<< "$why"
+    fi
+  fi
   links="$(git ls-tree -r "$branch" | awk '$1 == "120000" {print $4}' | tr '\n' ' ')"
   [ -z "$links" ] || bad "lien(s) symbolique(s) commité(s) : $links" "git rm --cached ces liens (les sous-modules liés de l'atelier ne se committent jamais)"
 
@@ -295,6 +310,10 @@ for zone in "$@"; do
       by="$(git log -1 --format=%s "$base..$head" -- "$f" | cut -c1-90)"
       [ -z "$by" ] || printf '          %s : touché côté intégration par « %s »\n' "$f" "$by"
     done
+  elif git merge-base --is-ancestor "$branch" "$head"; then
+    # A branch the integration already holds (the same commit, or one of its ancestors) brings nothing: no commit in
+    # memory (git said « duplicate parent » for it), no word on its base.
+    warn "la branche est déjà dans l'intégration : rien à fusionner" "vérifier le nom de la branche, ou la retirer de la liste"
   else
     tree="$(printf '%s\n' "$merged" | head -1)"
     ok "se fusionne sans conflit ($behind commit(s) d'intégration que la branche n'a pas)"

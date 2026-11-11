@@ -23,7 +23,7 @@ Il lit, ne change rien, répond en quelques secondes, et dit **toutes** les rais
 | Avant une fusion vers `main` | `scripts/bench/pre-vol.sh --main` |
 
 Ce qu'il contrôle :
-- **avant le portail** : les refus du portail, avec les mêmes règles (relecture commitée, « Relu : », rien de changé après, verdict lu par `relecture-verdict.py`, rejeux, traces, liens symboliques), plus : la fusion essayée en mémoire (conflits, et qui a touché le fichier), les lots qui se marchent dessus quand on en donne plusieurs, l'atelier de l'équipe non commité, le disque, la base qui a bougé ;
+- **avant le portail** : les refus du portail, avec les mêmes règles (relecture commitée, « Relu : », rien de changé après, verdict lu par `relecture-verdict.py`, rejeux, traces, liens symboliques, rapport de zone lu par `rapport-zone.py`), plus : la fusion essayée en mémoire (conflits, et qui a touché le fichier), les lots qui se marchent dessus quand on en donne plusieurs, l'atelier de l'équipe non commité, le disque, la base qui a bougé ;
 - **avant la CI** : rien de non commité ni de non poussé, la CI de ce commit pas déjà rouge, les tests Python du banc joués comme sur une machine neuve (dossier personnel vide, pas d'identité git), les tests du moteur s'il a changé depuis leur dernier vert ici ;
 - **avant `main`** : les conflits, et le cas de la fusion « squash » (voir plus bas).
 
@@ -42,6 +42,10 @@ Avant de dire « j'ai fini » :
 8. Le suivi est à jour dans le lot : `verdicts.tsv`, PLAN-RESTE, journal.
 9. Tes décisions vont dans `docs/decisions/<tour-N>-<zone>.md` (une ligne par choix), **jamais** dans `docs/DECISIONS.md` : le portail y ajoute lui-même le lien vers ton fichier. Refusé à partir du paquet 2.
 10. Un rejeu touche un bouton par son étiquette de test (`touche <étiquette>`, aussi `appui-long`, `double-touche`), jamais par ses pixels : un changement de mise en page ne le casse plus.
+11. Ton rapport de zone `docs/audits/ultra/<tour-N>-<zone>-rapport.md`, commité **dans la branche**, contient (refusé sinon à partir du paquet 2 ; `scripts/bench/rapport-zone.py`) :
+    - une ligne `tests: <filtres Gradle>` (tes tests ciblés, que le portail rejoue après la fusion), ou `tests: aucun : <raison>` ;
+    - la liste des chemins : une ligne `chemin: <écran> | test: Classe#méthode` par endroit qui lit ou montre la même donnée ; chaque `Classe#méthode` est un `@Test` sans `@Ignore` de `app/src/test` dans ta branche (la méthode dans cette classe-là) ;
+    - pour chaque rejeu que tu ajoutes à `docs/audits/ultra/rejeux/` (souvent venu de `rejeux-attente/` avec ta correction), la ligne que `rejeu-defauts.sh` a écrite en le jouant avec ta correction : `<id> : oracle tenu`. La dernière ligne de cet id fait foi ; « non tenu », ou pas de ligne du tout, est refusé : un défaut pas corrigé reste dans `rejeux-attente/`.
 
 ## La fiche du relecteur
 
@@ -86,6 +90,10 @@ Avant de dire « j'ai fini » :
 - **Rejeux par étiquette** : voir la fiche, point 10. `t4-26-prise-clavier` est passé aux étiquettes.
 - **CI** : le travail « quick » passe en premier, tous les autres l'attendent.
 - **Base verte** : voir `docs/audits/ultra/tour-5-socle-rapport.md` pour les cinq captures et le test du renommage.
+
+## Après chaque fusion (point 7.1 du plan)
+
+Le portail relance `fuse-reports.py docs/audits/ultra/sieges/<tour-N> --tour <tour-N> --maj-base` (les nouvelles clés vont dans `base.tsv`) puis `tableau-de-bord.py` sur tous les tours, et met ce qu'ils écrivent (`base.tsv`, `clusters*.md`, `promesses.tsv`, `incidents-banc.tsv`, `tableau-de-bord.md`) dans le commit des traces. Si l'un d'eux échoue, la fusion est annulée comme pour toute trace.
 
 ## Ce que le pré-vol ne voit pas
 

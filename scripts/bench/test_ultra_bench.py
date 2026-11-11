@@ -1991,8 +1991,14 @@ def toy_batch_is_its_own(d):
 
 
 REPLAY_SELFTEST = """#!/usr/bin/env bash
-# The replays' self-test on the toy: a green summary, its stamp, its judge and one JUnit result in the lot.
+# The replays' self-test on the toy: a green summary, its stamp, its judge and one JUnit result in the lot (red on
+# demand, as the real one on the bench's scripts: its log in the lot).
 echo "selftest $1" >> "$PS_TOY_CALLS"
+if [ -n "${PS_TOY_SCRIPTS_RED:-}" ]; then
+  echo "FAIL: the toy's bench script" > "$1/selftest-scripts.log"
+  echo "SELFTEST ROUGE : scripts du banc (voir $1/selftest-scripts.log)" >&2
+  exit 1
+fi
 mkdir -p "$1/junit/banc"
 echo '<testsuite name="BenchFooTest"/>' > "$1/junit/banc/TEST-BenchFooTest.xml"
 printf '1 verts, 0 rouges, 0 en quarantaine, 0 sautés\\n' > "$1/selftest-resume.txt"
@@ -2030,6 +2036,11 @@ def replays_keep_their_selftest(d):
     check(all(f in kept for f in ("selftest-resume.txt", "selftest.ok", "selftest-chantier.txt", "junit"))
           and os.path.isfile(os.path.join(keep, "junit", "banc", "TEST-BenchFooTest.xml")),
           "the replays' self-test is kept for the portal (summary, stamp, judge, JUnit results): " + " ".join(kept))
+    # Dry run 7.6 (casse 4): a red self-test of the bench's scripts says why there, its log being removed with the lot.
+    r = subprocess.run(["bash", os.path.join(root, "scripts", "bench", "rejeu-defauts.sh")], capture_output=True, text=True,
+                       env=dict(os.environ, PS_TOY_CALLS=calls, PS_TOY_SCRIPTS_RED="1"))
+    check(r.returncode != 0 and "FAIL: the toy's bench script" in r.stdout,
+          "the scripts' failure is shown, not only a log removed with the lot:\n" + r.stdout + r.stderr)
 
 
 def fusion_forged(d):

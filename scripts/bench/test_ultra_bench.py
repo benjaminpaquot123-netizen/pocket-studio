@@ -1929,7 +1929,9 @@ def fusion_toy(d, name):
     bench = os.path.join(root, "scripts", "bench")
     with open(os.path.join(HERE, "fusion-equipes.sh"), encoding="utf-8") as f:
         write(os.path.join(bench, "fusion-equipes.sh"), f.read())
-    for extra in ("relecture-verdict.py", "decisions-index.sh", "portail-paquet.txt", "rapport-zone.py"):
+    # Dry run 7.6 (casse 1): the toy's batch is its own (batch 1; a test of batch 2 writes it), never the repository's.
+    write(os.path.join(bench, "portail-paquet.txt"), "paquet: 1\n")
+    for extra in ("relecture-verdict.py", "decisions-index.sh", "rapport-zone.py"):
         if os.path.isfile(os.path.join(HERE, extra)):
             with open(os.path.join(HERE, extra), encoding="utf-8") as f:
                 write(os.path.join(bench, extra), f.read())

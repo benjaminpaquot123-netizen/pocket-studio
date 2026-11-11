@@ -43,10 +43,12 @@ class ProjectZipSender internal constructor(
 }
 
 /** What « C'est prêt » says once a project's .zip is made: its file, and where its copy is. */
-internal fun zipSavedLines(name: String, kept: Boolean): List<String> = listOfNotNull(
-    tr("Projet sauvegardé : %s", name),
-    if (kept) tr("Une copie est dans Documents › BenStudio : tu la retrouves dans « Mes fichiers ».") else null,
-)
+internal fun zipSavedLines(name: String, kept: Boolean): List<String> =
+    // Nothing is said saved when the copy failed: the .zip is then only in the cache and in the share menu.
+    if (kept) listOf(
+        tr("Projet sauvegardé : %s", name),
+        tr("Une copie est dans Documents › BenStudio : tu la retrouves dans « Mes fichiers »."),
+    ) else listOf(tr("Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.", name))
 
 /** The app's one [ProjectZipSender], with its « C'est prêt » window (the same as a shared song's) and « Mes fichiers » from it. */
 @Composable

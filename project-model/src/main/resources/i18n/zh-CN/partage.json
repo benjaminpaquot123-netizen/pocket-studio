@@ -19,5 +19,6 @@
   "Partager : vérifier le morceau, puis le partager en fichier ou en vidéo.": "分享：检查歌曲，然后以文件或视频分享。",
   "Pour partager : l'onglet Partager.": "分享：分享 标签页。",
   "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "在另一台设备上继续你的歌曲：“分享” › “把歌曲保存为 .zip”（包含所有声音的 .zip），然后在另一台设备上：我的项目 › “导入项目（.zip）”。",
-  "La partie en cours, jouée sur %s.": "当前段落，播放 %s。"
+  "La partie en cours, jouée sur %s.": "当前段落，播放 %s。",
+  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": ".zip 已准备好：%s。但复制到“文档”失败了：请从分享菜单中保存。"
 }

@@ -19,5 +19,6 @@
   "Partager : vérifier le morceau, puis le partager en fichier ou en vidéo.": "Delen: controleer het nummer en deel het dan als bestand of als video.",
   "Pour partager : l'onglet Partager.": "Om te delen: het tabblad Delen.",
   "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "Je nummer op een ander apparaat verder maken: ‘Delen’ › ‘Nummer opslaan als .zip’ (een .zip met al zijn geluiden), daarna op het andere apparaat Mijn projecten › ‘Een project importeren (.zip)’.",
-  "La partie en cours, jouée sur %s.": "Het huidige deel, gespeeld over %s."
+  "La partie en cours, jouée sur %s.": "Het huidige deel, gespeeld over %s.",
+  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": "De .zip is klaar: %s. Maar de kopie in Documenten is mislukt: bewaar hem via het deelmenu."
 }

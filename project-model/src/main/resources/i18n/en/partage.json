@@ -19,5 +19,6 @@
   "Partager : vérifier le morceau, puis le partager en fichier ou en vidéo.": "Share: check the song, then share it as a file or a video.",
   "Pour partager : l'onglet Partager.": "To share: the Share tab.",
   "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "To pick up your song on another device: “Share” › “Save the song as a .zip” (a .zip with all its sounds), then, on the other device, My projects › “Import a project (.zip)”.",
-  "La partie en cours, jouée sur %s.": "The current part, played over %s."
+  "La partie en cours, jouée sur %s.": "The current part, played over %s.",
+  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": "The .zip is ready: %s. But the copy in Documents could not be made: keep it from the share menu."
 }

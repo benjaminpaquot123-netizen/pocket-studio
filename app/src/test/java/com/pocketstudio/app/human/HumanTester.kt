@@ -233,6 +233,7 @@ abstract class HumanTester(private val seat: String) {
         var afterWait = false
         val source = o.replayOf
         val timeoutMs = o.timeoutMinutes * 60_000
+        var benchExceptions = 0
         fun end(why: String) {
             journal.appendText("#$n FIN : $why\n")
             File(dir, "fin.txt").writeText(why)
@@ -349,6 +350,17 @@ abstract class HumanTester(private val seat: String) {
                 problems.forEach { journal.appendText("#$n SCREEN ERROR $it\n") }
                 problems.clear()
             } catch (e: Throwable) {
+                // PLAN-RESTE 5.10 (control 11): sorted by its frames, never by its class. Thrown by the test's own code
+                // (Compose's test API, Robolectric, the bench): « BANC », the seat goes on; 4 of them end it « banc ».
+                if (!thrownByTheApp(e)) {
+                    benchExceptions++
+                    journal.appendText("#$n BANC exception du banc (pas de l'appli) : ${e.javaClass.name}: ${e.message?.take(300)}\n${e.stackTrace.take(8).joinToString("\n") { "    at $it" }}\n")
+                    say("Banc : le banc a eu un souci pendant ce geste (${e.javaClass.simpleName}) ; ce n'est pas l'appli. Note-le dans « incidents-banc » avec banc?: banc.")
+                    problems.clear()
+                    n++
+                    if (benchExceptions >= BENCH_EXCEPTIONS_MAX) { end("banc : $benchExceptions exceptions du banc"); return }
+                    continue
+                }
                 journal.appendText("#$n CRASH ${e.javaClass.name}: ${e.message?.take(400)}\n${e.stackTrace.take(12).joinToString("\n") { "    at $it" }}\n")
                 File(dir, "sound-${n + 1}.txt").writeText("⚠ L'appli s'est arrêtée (plantage).")
                 runCatching { capture(dir, n + 1); publish(dir, n + 1, emptyList()) }
@@ -1176,6 +1188,21 @@ abstract class HumanTester(private val seat: String) {
 
     /** One gesture: « touche X Y », « appui-long X Y », « glisse X1 Y1 X2 Y2 », « ecris … », « retour », « attends S ». */
 
+    /**
+     * PLAN-RESTE 5.10: an exception is the app's when the first frame of com.pocketstudio in it (or in its causes) is outside
+     * the bench (`com.pocketstudio.app.human`): the app's code threw, even under a test call. Else the test's code threw it.
+     */
+    internal fun thrownByTheApp(e: Throwable): Boolean {
+        val seen = HashSet<Throwable>()
+        var t: Throwable? = e
+        while (t != null && seen.add(t)) {
+            val first = t.stackTrace.firstOrNull { it.className.startsWith("com.pocketstudio.") }
+            if (first != null) return !first.className.startsWith("com.pocketstudio.app.human.")
+            t = t.cause
+        }
+        return false
+    }
+
     /** PLAN-RESTE 5.3 (control 4): the real seconds each gesture made in a window with a text field took (« DIALOGUE N s »). */
     internal val dialogSeconds = mutableListOf<Double>()
 
@@ -1897,6 +1924,9 @@ abstract class HumanTester(private val seat: String) {
     }.getOrElse { "inside? ${it.message}" }
 
     companion object {
+        /** PLAN-RESTE 5.10: the bench's own exceptions a seat lives through before it ends « banc ». */
+        const val BENCH_EXCEPTIONS_MAX = 4
+
         /** A phone like the owner's (Honor), at 1.5 px a dp: images small enough to read quickly. */
         const val PHONE = "w392dp-h852dp-hdpi"
 

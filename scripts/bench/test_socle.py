@@ -178,5 +178,31 @@ class PortalRulesFrozenPerBatch(unittest.TestCase):
                             f"rule added during batch {current} without « from_paquet {current + 1} »: {line[:140]}")
 
 
+REJEUX = os.path.join(ROOT, "docs", "audits", "ultra", "rejeux")
+TOUCHES = ("touche", "appui-long", "double-touche")
+
+
+class ReplaysAimByTag(unittest.TestCase):
+    """Point 3: a replay touches a button by its test tag (« touche <étiquette> »), never by its pixels: a change of
+    layout no longer breaks it (t4-26 was re-aimed twice on 2026-11-11 for that)."""
+
+    def test_every_touch_of_a_replay_names_a_tag(self):
+        ids = sorted(d for d in os.listdir(REJEUX) if not d.startswith("_") and os.path.isdir(os.path.join(REJEUX, d)))
+        self.assertTrue(ids, "no replay in docs/audits/ultra/rejeux/")
+        for rid in ids:
+            for name in sorted(os.listdir(os.path.join(REJEUX, rid))):
+                if not re.fullmatch(r"cmd-\d+\.txt", name):
+                    continue
+                with open(os.path.join(REJEUX, rid, name), encoding="utf-8") as f:
+                    words = f.read().split()
+                if words and words[0].lower() in TOUCHES:
+                    self.assertTrue(len(words) == 2 and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", words[1]),
+                                    f"{rid}/{name}: « {' '.join(words)} » aims by pixels, not by a tag")
+
+    def test_the_tester_resolves_a_tag(self):
+        tester = read("app", "src", "test", "java", "com", "pocketstudio", "app", "human", "HumanTester.kt")
+        self.assertIn("étiquette introuvable", tester, "HumanTester does not resolve « touche <étiquette> »")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

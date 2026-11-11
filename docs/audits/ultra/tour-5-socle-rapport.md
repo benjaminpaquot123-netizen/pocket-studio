@@ -25,8 +25,8 @@ Renommage (`Tour3RenameIdleTest`, `Tour3StudioRenameIdleTest`) : voir la section
 ## 2. Décisions par lot, journaux partagés
 
 - `docs/decisions/<tour>-<zone>.md` par lot ; le portail ajoute le lien à la fin de `docs/DECISIONS.md` (`decisions-index.sh`, dans le commit de ses traces). Écrire `DECISIONS.md` ou le fichier d'un autre lot : refusé à partir du paquet 2, dit par le pré-vol dès maintenant.
-- `docs/DECISIONS.md` et `banc-fiable-journal.md` se fusionnent par union (`.gitattributes`).
-- Pas pour `verdicts.tsv` ni PLAN-RESTE : lignes modifiées sur place, sept scripts lecteurs ; l'union garderait l'ancienne ligne et la nouvelle.
+- `docs/DECISIONS.md` se fusionne par union (`.gitattributes`) ; le journal du banc non, ses lignes changent sur place.
+- Pas pour `verdicts.tsv`, PLAN-RESTE ni le journal : lignes modifiées sur place ; l'union garderait l'ancienne ligne et la nouvelle.
 - Preuves : `test_socle.py` (deux lots qui ajoutent chacun une ligne : fusion sans conflit ; index écrit une fois, avec son compte) ; `test_pre_vol.sh` (4 cas neufs, dont 2 où le vrai portail refuse aussi).
 
 ## 3. Rejeux par étiquette
@@ -42,7 +42,7 @@ Travail « quick » (`pre-vol.sh --ci --rapide` : tests Python du banc, `test_so
 
 ## 5. Règles du portail gelées par paquet
 
-`scripts/bench/portail-paquet.txt` (paquet 1). Une règle ajoutée pendant le paquet N porte `from_paquet N+1` sur sa ligne de refus ; `test_socle.py` le vérifie contre l'historique du fichier du paquet (rougit si on retire la garde : essayé). Le pré-vol dit la règle à venir en « À VOIR ». `KNOWN_RULES` : `12 61ed156166`.
+`scripts/bench/portail-paquet.txt` (paquet 1). Une règle ajoutée pendant le paquet N porte `from_paquet N+1` sur sa ligne de refus ; `test_socle.py` le vérifie contre l'historique du fichier du paquet (rougit si on retire la garde : essayé). Le pré-vol dit la règle à venir en « À VOIR ». Un lot qui change lui-même le paquet est refusé à partir du paquet 2. Limites : la garde ne voit que les lignes de refus (« not merged », « undone ») et ne dit rien sur un clone superficiel (la CI). `KNOWN_RULES` : `13 551b6bf796`.
 
 ## Rejeu joué
 
@@ -53,3 +53,9 @@ Travail « quick » (`pre-vol.sh --ci --rapide` : tests Python du banc, `test_so
 ## Renommage
 
 `Tour3RenameIdleTest` et `Tour3StudioRenameIdleTest` étaient en quarantaine depuis le 8 novembre (rouges 4 passages combinés sur 5 au lot banc45). Le lot « banc-fin » (10 novembre) a changé leur règle Compose (v2 : un flux émis sur un autre fil reprend sur le fil principal), cause trouvée alors. Depuis : verts dans la suite complète de la CI 253 et 254 (l'étape « Unit tests and screenshots » ; le rouge de la 254 était « Real projects »), et dans l'autotest complet d'ici dont j'ai lu le détail (les deux classes « vert », 0 en quarantaine). Avec l'ancien taux (1 vert sur 5), trois verts d'affilée arrivent moins d'une fois sur 100 : réglé. Les deux lignes sortent de `selftest-quarantaine.txt` : un rouge du renommage redevient un vrai rouge (le renommage est un geste de Benjamin). Retour arrière : remettre les deux lignes (dans l'historique de ce fichier).
+
+## Après la relecture neuve (0 bloquant, 1 grave)
+
+- Grave 1 (la règle des décisions prouvée par un refus quelconque) : `test_pre_vol.sh` exige maintenant du vrai portail la raison « decisions written outside » au paquet 2, et son absence au paquet 1 et pour le fichier du lot lui-même ; `test_ultra_bench.py` fait écrire l'index par le portail complet de la maquette. Les mutations du relecteur (`-z`, `-lt`, `if false`) rougissent toutes ; **corrigé**.
+- Moyens corrigés : annulation qui restaurait `DECISIONS.md` depuis l'index (`checkout HEAD`, garde dans la maquette avec un commit des traces refusé) ; journal retiré de l'union ; un lot qui change le paquet est refusé à partir du paquet 2.
+- Fiche point 8 : ce lot ne touche aucun item de PLAN-RESTE ni ligne de `verdicts.tsv` ; rien à y suivre.

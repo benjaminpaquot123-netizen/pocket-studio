@@ -2430,6 +2430,9 @@ def proof_must_run(d):
     check("A : preuve d'appli AppProofTest#provesIt est un test du banc (hérite de HumanTester)" in out, "nor through a base class:\n" + out)
     out = judge('class AppProofTest : Object() {\n  ' + seated + other)
     check("chantier : 0 écarts" in out, "another base class is no bench:\n" + out)
+    # Review of « verdicts » (medium): a constructor whose defaults call functions (nested parentheses) hid the seat.
+    out = judge('class AppProofTest(n: Int = f(g(1)), s: String = h()) : HumanTester(name(n)) {\n  ' + seated + other)
+    check("A : preuve d'appli AppProofTest#provesIt est un test du banc (hérite de HumanTester)" in out, "nested parentheses in the constructor (seat_nested):\n" + out)
 
 
 def native_missing(d):

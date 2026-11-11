@@ -236,8 +236,9 @@ class ModeChoiceTest {
                 assertFalse("$w dp: chip on the name's line", l.projectName)
             }
         }
-        // A usual phone (360 dp and more, the Mode simple's bar): in the row.
-        assertTrue(topBarLayout(360.dp, false, modeChip = com.pocketstudio.app.ui.modeChipRoom(true)).modeInRow)
+        // A usual phone (360 dp and more, the Mode simple's bar): in the row. That bar has no ↶ (at the thumb): 48 dp more,
+        // less what « ▶ cette partie » takes past 48 dp (10 dp), the width TopBar lays out (tour 5, moyens M1).
+        assertTrue(topBarLayout(398.dp, false, modeChip = com.pocketstudio.app.ui.modeChipRoom(true)).modeInRow)
         // Pro on a part's screen (the chip « Pro », the part's letter): one row from 412 dp (most phones).
         assertTrue(topBarLayout(412.dp, true, modeChip = com.pocketstudio.app.ui.modeChipRoom(false)).modeInRow)
         // Without the chip, nothing changes.

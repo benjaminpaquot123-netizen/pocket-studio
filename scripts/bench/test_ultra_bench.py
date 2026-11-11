@@ -1727,11 +1727,17 @@ def review_rows(d):
                # Second review of the lot (M8): the simple forms still let through.
                "### Grave\n\n**G1.** le tampon. Non **corrigé**.", "### Grave\n\nAucun.\n\n**G1.** le tampon, ouvert.",
                "1. grave : le tampon, ouvert.", "### G1 (grave)\n\nle tampon, ouvert.", "| 1 | très grave | x |",
-               "- **G1 (grave)** : le tampon, ouvert."]
+               "- **G1 (grave)** : le tampon, ouvert.",
+               # Third review of the lot (M10): a negation the old check did not read.
+               "### Grave\n\n**G1.** le tampon. Pas encore **corrigé**.", "### Grave\n\n**G1.** le tampon, jamais **corrigé**.",
+               "### Grave\n\n**G1.** le tampon. Non  **corrigé**.", "### Grave\n\n**G1.** le tampon. non : **corrigé**.",
+               "### Grave\n\n**G1.** le tampon. *non* **corrigé**.", "- **Grave** : le tampon, toujours pas **corrigé**.",
+               "- **Grave** : le tampon, pas\n  **corrigé**."]
     accepted = ["| bloquant | 0 |\n| grave | 0 |", "| 1 | grave | x | **corrigé** (abc1234) |", "| G1 | grave | x | **Corrigé** en abc1234 |",
                 "### Bloquant\n\nAucun.", "## Bloquant, grave\n\nAucun.", "- **Grave** : x — **corrigé** en abc1234.",
                 "| 3 | moyen | le plus grave des moyens | à reprendre |", "| id | Titre | Gravité | Preuve |\n|---|---|---|---|",
-                "### Grave\n\n**G1.** le tampon : **corrigé** en abc1234."]
+                "### Grave\n\n**G1.** le tampon : **corrigé** en abc1234.", "### Grave\n\n**G1.** le tampon n'avançait plus : **corrigé** en abc1234.",
+                "- **Grave** : x — **corrigé** (abc1234), plus rien ne bloque."]
     for body in refused:
         check(not ok(body), "an open blocking or grave finding is refused: " + body)
     for body in accepted:

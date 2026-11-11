@@ -6310,7 +6310,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Chantier 10 (« Prêt à partager ? »): « Allonger le morceau » until the remix's song ends in it; one undo step. */
     fun lengthenSongForRemix() {
+        val following = songPlaying()
+        val before = project.value.song
         session.edit { it.withSongLengthenedForRemix() }
+        // Fresh review (grave): the engine may already hold the song's end for the part playing; the parts added
+        // after it are staged as « + » does ([insertSongPart]); the part on now keeps playing.
+        if (following && project.value.song != before) followSongEdit { i, _ -> i }
     }
 
     /** Chantier 10: « Couper la chanson à la fin »: the remix's stems end with the song (a short fade); one undo step. */

@@ -156,7 +156,8 @@ for zone in "${zones[@]}"; do
     python3 -I scripts/bench/fuse-reports.py "$round" --tour "$tour" --maj-base > /dev/null
     mapfile -t rounds < <(find docs/audits/ultra/sieges -mindepth 1 -maxdepth 1 -type d -name 'tour-[0-9]*' | sort -V)
     computed+=("${rounds[-1]}/tableau-de-bord.md")
-    python3 -I scripts/bench/tableau-de-bord.py "${rounds[@]}" > /dev/null
+    # (Its trace folder and DECISIONS.md, committed with the dashboard just below, are not « fichiers non commités ».)
+    PS_PORTAIL_ECRIT="$trace ${index[*]}" python3 -I scripts/bench/tableau-de-bord.py "${rounds[@]}" > /dev/null
     for f in "${computed[@]}"; do if [ -f "$f" ]; then index+=("$f"); fi; done
   fi
   git add -- "$trace" "${index[@]}"

@@ -69,8 +69,11 @@ def measured(tour_dir, name, root=None, docs=None):
     status = git("status", "--porcelain")
     if status is not None:
         # The audit's own outputs (this round's folder, the base) are written by the fusion just before: not « work left ».
+        # Dry run 7.6: nor what the portal is about to commit with them (PS_PORTAIL_ECRIT: its trace folder, docs/DECISIONS.md).
+        portal = tuple(p.rstrip("/") for p in os.environ.get("PS_PORTAIL_ECRIT", "").split() if p)
         out["fichiers_non_commites"] = sum(1 for l in status.splitlines() if l.strip() and not l.startswith(" T")
-                                           and "docs/audits/ultra/sieges/" not in l and not l.endswith("docs/audits/ultra/base.tsv"))
+                                           and "docs/audits/ultra/sieges/" not in l and not l.endswith("docs/audits/ultra/base.tsv")
+                                           and not any(l[3:].rstrip("/") == p or l[3:].startswith(p + "/") for p in portal))
     # The bench's own reviews (*-banc*-relecture.md) are not the app's.
     reviews = [os.path.join(docs, f) for f in sorted(os.listdir(docs)) if f.startswith(name + "-") and f.endswith("-relecture.md")
                and "-banc" not in f] if os.path.isdir(docs) else []

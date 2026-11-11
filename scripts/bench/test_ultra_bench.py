@@ -230,6 +230,7 @@ def main():
         proof_must_run(d)
         portal(d)
         review_rows(d)
+        replays_keep_their_selftest(d)
         fusion_forged(d)
         toy_batch_is_its_own(d)
         portal_traces(d)
@@ -1867,6 +1868,11 @@ echo "chantier : 0 écarts" > "$1/selftest-chantier.txt"
 FUSION_REJEUX = """#!/usr/bin/env bash
 # The fusion's replays on the toy: says which folder it would play.
 echo "rejeux ${PS_REJEUX_DIR:-docs/audits/ultra/rejeux} $(ls docs/audits/ultra/rejeux 2>/dev/null | tr '\\n' ' ')" >> "$PS_TOY_CALLS"
+# Like the real one (PLAN-RESTE 7.7): its batch is a lot gated by its own self-test, whose summary, stamp and judge it
+# leaves in $PS_REJEUX_SELFTEST when asked.
+lot="$(mktemp -d)"
+scripts/bench/selftest.sh "$lot" || { echo "selftest rouge : rejeux non joués"; exit 1; }
+[ -z "${PS_REJEUX_SELFTEST:-}" ] || cp "$lot"/selftest* "$PS_REJEUX_SELFTEST"/
 """
 
 
@@ -1966,6 +1972,48 @@ def toy_batch_is_its_own(d):
     with open(os.path.join(root, "scripts", "bench", "portail-paquet.txt"), encoding="utf-8") as f:
         batch = f.read()
     check(batch == "paquet: 1\n", "the toy's batch file is its own « paquet: 1 », not the repository's:\n" + batch)
+
+
+REPLAY_SELFTEST = """#!/usr/bin/env bash
+# The replays' self-test on the toy: a green summary, its stamp, its judge and one JUnit result in the lot.
+echo "selftest $1" >> "$PS_TOY_CALLS"
+mkdir -p "$1/junit/banc"
+echo '<testsuite name="BenchFooTest"/>' > "$1/junit/banc/TEST-BenchFooTest.xml"
+printf '1 verts, 0 rouges, 0 en quarantaine, 0 sautés\\n' > "$1/selftest-resume.txt"
+echo "a stamp" > "$1/selftest.ok"
+echo "chantier : 0 écarts" > "$1/selftest-chantier.txt"
+"""
+
+REPLAY_SEATS = """#!/usr/bin/env bash
+# The bench on the toy: every seat of the lot holds its oracle.
+for s in "$1"/*/; do [ -f "$s/id.txt" ] && echo "oracle tenu" > "$s/rejeu.txt"; done
+exit 0
+"""
+
+
+def replays_keep_their_selftest(d):
+    """PLAN-RESTE 7.7: rejeu-defauts.sh leaves its first batch's self-test (summary, stamp, judge and JUnit results, all
+    a sealed summary needs) in $PS_REJEUX_SELFTEST, so the portal reads it instead of running the Bench* tests again."""
+    root = os.path.join(d, "rejeux-selftest")
+    with open(os.path.join(HERE, "rejeu-defauts.sh"), encoding="utf-8") as f:
+        write(os.path.join(root, "scripts", "bench", "rejeu-defauts.sh"), f.read())
+    write(os.path.join(root, "scripts", "bench", "selftest.sh"), REPLAY_SELFTEST)
+    write(os.path.join(root, "scripts", "human-tester.sh"), REPLAY_SEATS)
+    for n in ("scripts/bench/rejeu-defauts.sh", "scripts/bench/selftest.sh", "scripts/human-tester.sh"):
+        os.chmod(os.path.join(root, n), 0o755)
+    write(os.path.join(root, "docs", "audits", "ultra", "rejeux", "t1-clavier", "start.txt"), "lang=fr\n")
+    write(os.path.join(root, "docs", "audits", "ultra", "rejeux", "t1-clavier", "oracle.txt"), "rejeu.n=0\nrejeu.attendu=x\n")
+    keep = os.path.join(d, "rejeux-selftest-lot")
+    os.makedirs(keep)
+    calls = os.path.join(d, "rejeux-selftest-appels.txt")
+    write(calls, "")
+    r = subprocess.run(["bash", os.path.join(root, "scripts", "bench", "rejeu-defauts.sh")], capture_output=True, text=True,
+                       env=dict(os.environ, PS_TOY_CALLS=calls, PS_REJEUX_SELFTEST=keep))
+    check(r.returncode == 0 and "t1-clavier : oracle tenu" in r.stdout, "the replay is held:\n" + r.stdout + r.stderr)
+    kept = sorted(os.listdir(keep))
+    check(all(f in kept for f in ("selftest-resume.txt", "selftest.ok", "selftest-chantier.txt", "junit"))
+          and os.path.isfile(os.path.join(keep, "junit", "banc", "TEST-BenchFooTest.xml")),
+          "the replays' self-test is kept for the portal (summary, stamp, judge, JUnit results): " + " ".join(kept))
 
 
 def fusion_forged(d):
@@ -2084,6 +2132,9 @@ def fusion_forged(d):
     code, out, asked, moved = merge("honnete", PS_REJEUX_DIR=empty)
     check(code == 0 and moved and "honnete: merged" in out, "an honest branch is merged:\n" + out)
     check("selftest " in asked and "rejeux docs/audits/ultra/rejeux t1-clavier" in asked, "the self-test and the repository's replays ran:\n" + asked)
+    # PLAN-RESTE 7.7: the Bench* self-test runs once per zone: the replays' own (their batch is a lot gated by it), kept
+    # for the portal's traces, not a second one of the portal before them.
+    check(asked.count("selftest ") == 1, "one self-test per merged zone, the replays':\n" + asked)
     # Socle du banc (review, grave 1 and moyen 2): the lot's decisions file is listed at the end of docs/DECISIONS.md in
     # the traces' commit; a traces' commit that fails leaves DECISIONS.md as it was (not the index's version).
     decisions = os.path.join(root, "docs", "DECISIONS.md")

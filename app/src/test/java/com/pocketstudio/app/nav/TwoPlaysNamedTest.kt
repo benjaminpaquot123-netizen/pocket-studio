@@ -7,6 +7,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import com.pocketstudio.app.audit.LayoutScan
 import com.pocketstudio.model.i18n.Lang
@@ -67,6 +68,31 @@ open class TwoPlaysNamedTest {
 
     @Test
     fun theTwoPlaysAreNamedInPro() = theyAreNamed(simple = false)
+
+    /** Each ▶ plays what it says: the part open looped, or the song; a second touch stops; the other one takes over. */
+    @Test
+    fun eachPlayPlaysWhatItSays() {
+        h.start(simple = false, scale = uiScale, lang = lang)
+        val vm = h.vm
+        assertTrue("a song of three parts", vm.project.value.song.size >= 2)
+        fun tap(tag: String) {
+            compose.onNodeWithTag(tag).performClick()
+            compose.waitForIdle()
+        }
+        fun state() = "playing ${vm.transport.value.playing}, part looped ${vm.loopPart.value}"
+        tap("top_play")
+        assertEquals("▶ cette partie: the part loops", "playing true, part looped true", state())
+        assertEquals("then it says ■", tr("Arrêter"), read("top_play").second)
+        tap(songTag)
+        assertEquals("▶ le morceau while the part loops: the song takes over", "playing true, part looped false", state())
+        assertEquals("then it says ■", tr("Arrêter"), read(songTag).second)
+        assertEquals("and the top one plays its part again", tr("Jouer cette partie"), read("top_play").second)
+        tap(songTag)
+        assertEquals("■ le morceau: silence", "playing false, part looped false", state())
+        tap("top_play")
+        tap("top_play")
+        assertEquals("■ cette partie: silence", false, vm.transport.value.playing)
+    }
 
     /** Never cut (« cette pa… », « der So… »): the words of both bars whole, and inside the screen. */
     @Test

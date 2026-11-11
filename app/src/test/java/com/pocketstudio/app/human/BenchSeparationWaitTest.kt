@@ -94,7 +94,9 @@ class BenchSeparationWaitTest : HumanTester("attente") {
             act("attends 2")
             val took = System.currentTimeMillis() - t
             println("banc6b mesure : « attends 2 », un fil occupé 25 s : $took ms réelles")
-            assertTrue("a worker busy for 25 s held « attends 2 » $took ms: more than 25 s, less than the 120 s cap", took in 25_000..100_000)
+            // The work's 25 s, then 15 s of stillness (40 s measured); the busy worker left out of the wait: 25,2 s (the
+            // settle's own wait for the work), so the bound is 35 s.
+            assertTrue("a worker busy for 25 s held « attends 2 » $took ms: its work, then 15 s of stillness (more than 35 s, less than the 120 s cap)", took in 35_000..100_000)
         } finally {
             stop.set(true)
             SeparationJob.set(SeparationState.Idle)

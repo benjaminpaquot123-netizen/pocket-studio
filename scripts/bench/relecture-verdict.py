@@ -31,19 +31,26 @@ BOLD_FIXED = re.compile(r"\*\*\s*corrigée?s?\s*\*\*(?!\s*\?)", re.I)
 # Third review of the « portail » lot (M10): the words just before the bold are read, whatever the spaces, colons or
 # emphasis between them: « pas encore », « jamais », « non : », « *non* », « toujours pas » make it open.
 NEGATION = {"non", "pas", "jamais", "nullement", "aucunement"}
+# Review of « banc6b » (M2): the adverbs that may stand between the negation and the word (« pas du tout **corrigé** »,
+# « pas vraiment », « jamais encore »): skipped, the word before them read.
+ADVERBS = {"encore", "vraiment", "du", "tout", "totalement", "complètement", "entièrement", "réellement", "bien"}
+
+
+def negated(before):
+    """The last word of [before] that is no adverb is a negation."""
+    words = re.findall(r"[^\W\d_]+", before.lower())
+    while words and words[-1] in ADVERBS:
+        words.pop()
+    return bool(words) and words[-1] in NEGATION
 
 
 class _Fixed:
-    """FIXED_BOLD.search(text): a « **corrigé** » whose last word before it (or the one before « encore ») is no
-    negation."""
+    """FIXED_BOLD.search(text): a « **corrigé** » not [negated] (the adverbs between are skipped)."""
 
     @staticmethod
     def search(text):
         for m in BOLD_FIXED.finditer(text):
-            words = re.findall(r"[^\W\d_]+", text[:m.start()].lower())[-2:]
-            if words and words[-1] == "encore":
-                words = words[:-1]
-            if not words or words[-1] not in NEGATION:
+            if not negated(text[:m.start()]):
                 return m
         return None
 
@@ -107,8 +114,9 @@ def refusals(text, removed, changed=(), evidence=()):
         sha, _, parent = item.partition(":")
         replayed = False
         for m in re.finditer(r"^rouge constaté\s*:\s*" + re.escape(sha) + r"\s*:\s*(.*)$", text, re.M):
-            for r in re.finditer(r"(?<![\w-])(pas\s+)?rejoué\s+sur\s+([0-9a-f]{7,40})\b", m.group(1), re.I):
-                if not r.group(1) and (not parent or parent.startswith(r.group(2).lower())):
+            # Review of « banc6b » (M2): any negation before « rejoué » (« non », « jamais », « pas encore »).
+            for r in re.finditer(r"(?<![\w-])rejoué\s+sur\s+([0-9a-f]{7,40})\b", m.group(1), re.I):
+                if not negated(m.group(1)[:r.start()]) and (not parent or parent.startswith(r.group(1).lower())):
                     replayed = True
         if not replayed:
             out.append(f"red evidence rouges-constates/{sha} brought without « rouge constaté : {sha} : rejoué sur "

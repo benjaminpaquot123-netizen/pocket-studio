@@ -93,6 +93,22 @@ def test_sources(root):
     return out
 
 
+SUPER = re.compile(r"\bclass\s+([A-Za-z0-9_]+)(?:\s*<[^>{]*>)?(?:\s*(?:\([^)]*\)|constructor\s*\([^)]*\)))?\s*:\s*([A-Za-z0-9_.]+)\s*\(")
+
+
+def seat_class(sources, cls, depth=0):
+    """Lot « verdicts »: the class inherits HumanTester (itself or through a base class): a seat of the bench, whatever
+    its name. Read from the class's declaration, « class Name(…) : Parent(… »."""
+    if depth > 6:
+        return False
+    text = sources.get(cls, "")
+    m = next((m for m in SUPER.finditer(text) if m.group(1) == cls), None)
+    if m is None:
+        return False
+    parent = m.group(2).rsplit(".", 1)[-1]
+    return parent == "HumanTester" or seat_class(sources, parent, depth + 1)
+
+
 def method_exists(sources, cls, method):
     text = sources.get(cls)
     return text is not None and re.search(r"\bfun\s+`?" + re.escape(method) + r"\b", text) is not None
@@ -461,6 +477,8 @@ def check(root, resume_path=None, with_git=True):
         for cls, m in proofs(v.get("preuve_appli")):
             if cls.startswith("Bench"):
                 gaps.append(f"{item} : preuve d'appli {cls}#{m} est un test du banc")
+            elif seat_class(sources, cls):
+                gaps.append(f"{item} : preuve d'appli {cls}#{m} est un test du banc (hérite de HumanTester)")
             elif not method_exists(sources, cls, m):
                 gaps.append(f"{item} : preuve d'appli {cls}#{m} introuvable")
             elif not test_runs(sources, cls, m):
@@ -846,6 +864,70 @@ def red_seen(root, sha, message):
     return False
 
 
+REPLAYED = os.path.join("docs", "audits", "ultra", "paires-rejouees")
+# Review of the « verdicts » lot (grave): the replays' XML is the team's own word (the portal's fresh review never
+# replays it, unlike rouges-constates/), so the rule closes only greens of the history written before it: ancestors of
+# this commit (the lot's base). A green made later pairs by its words, or by red evidence the review replays.
+REPLAYS_UNTIL = "92258b19b97a808e7f5823848fcd383593abaa07"
+
+
+def _case_result(path, cls, method):
+    """« fails », « passes » or None: the testcase Class#method of a JUnit XML ([cls] its simple name)."""
+    import xml.etree.ElementTree as ET
+    try:
+        cases = ET.parse(path).getroot().iter("testcase")
+    except (ET.ParseError, OSError):
+        return None
+    for case in cases:
+        if case.get("classname", "").rsplit(".", 1)[-1] == cls and case.get("name") == method:
+            if case.find("failure") is not None or case.find("error") is not None:
+                return "fails"
+            return None if case.find("skipped") is not None else "passes"
+    return None
+
+
+def replayed_red(root, sha, open_reds):
+    """Lot « verdicts »: the open red a green closes by a replay, or None. Evidence in docs/audits/ultra/paires-rejouees/
+    <the green's full sha>/: rejeu.txt (« rouge: <the red's full sha> », « test: Classe#méthode »), rouge.xml (the test
+    run on the red: it fails) and vert.xml (run on the green: it passes). The red is still open, an ancestor of the
+    green, and adds or names the test ([red_names]); the test runs in both ([test_in]). History is never rewritten: a
+    red and its green written in other words (2026-11-08/09) pair by what they did, replayed."""
+    try:
+        full = _git(root, "rev-parse", sha + "^{commit}").strip()
+    except (subprocess.SubprocessError, OSError):
+        return None
+    if not commit_exists(root, REPLAYS_UNTIL) or not _ancestor(root, full, REPLAYS_UNTIL):
+        return None
+    folder = os.path.join(root, REPLAYED, full)
+    try:
+        facts = open(os.path.join(folder, "rejeu.txt"), encoding="utf-8").read()
+    except OSError:
+        return None
+    red = re.search(r"^rouge:\s*([0-9a-f]{40})\s*$", facts, re.M)
+    test = re.search(r"^test:\s*([A-Za-z0-9_]+)#([A-Za-z0-9_]+)\s*$", facts, re.M)
+    if not red or not test:
+        return None
+    cls, method = test.group(1), test.group(2)
+    match = None
+    for r in open_reds:
+        try:
+            if _git(root, "rev-parse", r[0] + "^{commit}").strip() == red.group(1):
+                match = r
+        except (subprocess.SubprocessError, OSError):
+            continue
+    if match is None or not _ancestor(root, red.group(1), full):
+        return None
+    if f"{cls}#{method}" not in match[3] and method not in match[3]:
+        return None
+    if not (test_in(root, red.group(1), cls, method) and test_in(root, full, cls, method)):
+        return None
+    if _case_result(os.path.join(folder, "rouge.xml"), cls, method) != "fails":
+        return None
+    if _case_result(os.path.join(folder, "vert.xml"), cls, method) != "passes":
+        return None
+    return match
+
+
 def names(message, test):
     """The message names « Class#method » (or « Class.method »), the class too: a method name alone matches any
     class that has one (review of the « pads-live » lot, moyen)."""
@@ -882,6 +964,10 @@ def red_green_pairs(root):
                 more = next((r for r in open_reds if t in r[4] and r not in closed), None)
                 if more is not None:
                     closed.append(more)
+            if not closed:
+                replayed = replayed_red(root, sha, open_reds)
+                if replayed is not None:
+                    closed.append(replayed)
             for r in closed:
                 open_reds.remove(r)
             if not closed and not any(names(message, t) for t in known_defects_lifted(root, sha)) and not red_seen(root, sha, message):
@@ -926,8 +1012,11 @@ def main():
     ap.add_argument("--preuves", metavar="ITEM", help="print the proofs read on that line of verdicts.tsv, and stop")
     ap.add_argument("--debut-discipline", metavar="SHA", default=DISCIPLINE_START,
                     help="the first « rouge: » commit (a guard added in one of its ancestors was there before); a toy's own")
+    ap.add_argument("--fin-rejeux", metavar="SHA", default=REPLAYS_UNTIL,
+                    help="the last commit whose greens a replay (paires-rejouees/) may close; a toy's own")
     a = ap.parse_args()
     globals()["DISCIPLINE_START"] = a.debut_discipline
+    globals()["REPLAYS_UNTIL"] = a.fin_rejeux
     if a.preuves:
         sources = test_sources(a.root)
         for v in read_tsv(os.path.join(a.root, "docs", "audits", "ultra", "verdicts.tsv")):

@@ -217,6 +217,7 @@ def main():
         rule_c_adversarial(d)
         red_seen_in_a_run(d)
         judge_topic_pairs(d)
+        replayed_pairs(d)
         red_seen_review_line(d)
         known_defect_lifted(d)
         known_defect_lifted_needs_a_red(d)
@@ -1150,6 +1151,63 @@ def red_seen_in_a_run(d):
     check("chantier : 7 écarts" in out, "seven greens without red, nothing else:\n" + out)
 
 
+def replayed_pairs(d):
+    """Lot « verdicts » (the six historical gaps: a red and its green written in other words, 8f36fa35 / 0b1cbbc3,
+    df794a90 / dcc33677, d503254d / 87b66934): a pair made by replaying, never by a word. docs/audits/ultra/
+    paires-rejouees/<the green's full sha>/ holds rejeu.txt (« rouge: <the red's full sha> », « test: Classe#méthode »),
+    rouge.xml (the JUnit XML of the test run on the red: it fails) and vert.xml (run on the green: it passes). The red
+    adds or names that test, the green comes after it, the test runs in both. Anything less pairs nothing."""
+    root = judge_root(d, "juge-rejoue")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Counter.kt")
+    git_toy(root, "init", "-q")
+    write(app, "fun counter() = 0\n")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+    # Review of the « verdicts » lot (grave): a replay closes only a green of the history written before the rule
+    # (--fin-rejeux, the lot's base): its XML is the team's own word, never replayed by the portal's fresh review, so a
+    # green made after it (« late ») is never closed by a folder of paires-rejouees/, however honest it looks.
+    for key in ("honest", "stillred", "neverred", "othertest", "wrongred", "nofile", "late"):
+        name = f"the{key.capitalize()}CounterFollowsTheSong"
+        write(os.path.join(tests, f"{key.capitalize()}ProofTest.kt"), f"class {key.capitalize()}ProofTest {{\n  @Test\n  fun {name}() {{}}\n}}\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"rouge: guard of the {key} counter")
+        red = git_toy(root, "rev-parse", "HEAD").strip()
+        write(app, f"fun counter() = \"{key}\"\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: the {key} counter reads the song")
+        shas[key] = (red, git_toy(root, "rev-parse", "HEAD").strip(), f"{key.capitalize()}ProofTest", name)
+    history_end = shas["nofile"][1]
+
+    def evidence(key, red=None, test=None, red_fails=True, green_passes=True, files=("rouge.xml", "vert.xml")):
+        r, g, cls, name = shas[key]
+        cls, name = (test or (cls, name))
+        folder = os.path.join(root, "docs", "audits", "ultra", "paires-rejouees", g)
+        write(os.path.join(folder, "rejeu.txt"), f"rouge: {red or r}\ntest: {cls}#{name}\nrejoué : clone jetable\n")
+        for f, fails in (("rouge.xml", red_fails), ("vert.xml", not green_passes)):
+            if f in files:
+                body = '<failure message="still 1/176"/>' if fails else ""
+                write(os.path.join(folder, f), f'<testsuite><testcase classname="x.{cls}" name="{name}">{body}</testcase></testsuite>')
+
+    evidence("honest")
+    evidence("stillred", green_passes=False)
+    evidence("neverred", red_fails=False)
+    evidence("othertest", test=(shas["honest"][2], shas["honest"][3]))
+    evidence("wrongred", red=shas["honest"][0])
+    evidence("nofile", files=("rouge.xml",))
+    evidence("late")
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume,
+                          "--fin-rejeux", history_end], capture_output=True, text=True).stdout
+    short = {k: (git_toy(root, "rev-parse", "--short", v[0]).strip(), git_toy(root, "rev-parse", "--short", v[1]).strip()) for k, v in shas.items()}
+    check(short["honest"][0] not in out and short["honest"][1] not in out, "a pair replayed (red on the red, green on the green) is a pair:\n" + out)
+    for key in ("stillred", "neverred", "othertest", "wrongred", "nofile", "late"):
+        check(f"{short[key][0]} « rouge:" in out and f"{short[key][1]} « vert:" in out, f"a replay that does not hold ({key}) pairs nothing:\n" + out)
+    check("chantier : 12 écarts" in out, "twelve gaps, nothing else:\n" + out)
+
+
 def judge_topic_pairs(d):
     """Lot « banc6b » (the « textes » lot's five gaps): a red named by its topic, « rouge: SimpleNoDecibelTest (…) »,
     is closed by a green whose subject names that topic before its parenthesis, when the topic is in a test file the
@@ -1213,7 +1271,10 @@ def red_seen_review_line(d):
         return subprocess.run([sys.executable, "-I", script, arg], input=line + last, capture_output=True, text=True).returncode == 0
 
     for line in (f"rouge constaté : {green} : relu, XML lu", f"rouge constaté : {green} : pas rejoué",
-                 f"rouge constaté : {green} : rejoué sur 1234567, rouge", f"rouge constaté : {green} : pas rejoué sur bbbbbbb"):
+                 f"rouge constaté : {green} : rejoué sur 1234567, rouge", f"rouge constaté : {green} : pas rejoué sur bbbbbbb",
+                 # Review of « banc6b » (M2): « non », « jamais », « pas encore » before « rejoué » too.
+                 f"rouge constaté : {green} : non rejoué sur bbbbbbb", f"rouge constaté : {green} : jamais rejoué sur bbbbbbb",
+                 f"rouge constaté : {green} : pas encore rejoué sur bbbbbbb", f"rouge constaté : {green} : Non : rejoué sur bbbbbbb"):
         check(not ok(line), "a « rouge constaté » line without the replay on the green's parent is refused: " + line)
     for line in (f"rouge constaté : {green} : rejoué sur bbbbbbb, theWholeCourse rouge (1 sur 74)",
                  f"rouge constaté : {green} : rejoué sur {parent} : rouge"):
@@ -1770,7 +1831,10 @@ def review_rows(d):
                "### Grave\n\n**G1.** le tampon. Pas encore **corrigé**.", "### Grave\n\n**G1.** le tampon, jamais **corrigé**.",
                "### Grave\n\n**G1.** le tampon. Non  **corrigé**.", "### Grave\n\n**G1.** le tampon. non : **corrigé**.",
                "### Grave\n\n**G1.** le tampon. *non* **corrigé**.", "- **Grave** : le tampon, toujours pas **corrigé**.",
-               "- **Grave** : le tampon, pas\n  **corrigé**."]
+               "- **Grave** : le tampon, pas\n  **corrigé**.",
+               # Review of « banc6b » (M2): an adverb between the negation and the bold.
+               "### Grave\n\n**G1.** le tampon, pas du tout **corrigé**.", "- **Grave** : le tampon, pas vraiment **corrigé**.",
+               "- **Grave** : le tampon, jamais vraiment **corrigé**."]
     accepted = ["| bloquant | 0 |\n| grave | 0 |", "| 1 | grave | x | **corrigé** (abc1234) |", "| G1 | grave | x | **Corrigé** en abc1234 |",
                 "### Bloquant\n\nAucun.", "## Bloquant, grave\n\nAucun.", "- **Grave** : x — **corrigé** en abc1234.",
                 "| 3 | moyen | le plus grave des moyens | à reprendre |", "| id | Titre | Gravité | Preuve |\n|---|---|---|---|",
@@ -2296,6 +2360,15 @@ def proof_must_run(d):
     check("A : preuve d'appli AppProofTest#provesIt" in out and "chantier : 0 écarts" not in out, "a proof left in a comment does not run:\n" + out)
     out = judge("class AppProofTest {\n  fun provesIt() {}\n}\n" + other)
     check("A : preuve d'appli AppProofTest#provesIt n'est pas un test qui tourne" in out, "a helper without @Test is no proof:\n" + out)
+    # Lot « verdicts »: a proof without the bench is never a seat of the bench (a class that inherits HumanTester, by
+    # itself or through a base class): its name is no Bench*, but the bench plays it (Tour5BloquantsTest).
+    seated = '@KnownDefect("K1", "m")\n  @Test\n  fun provesIt() {}\n}\n'
+    out = judge('class AppProofTest : HumanTester("x") {\n  ' + seated + other)
+    check("A : preuve d'appli AppProofTest#provesIt est un test du banc (hérite de HumanTester)" in out, "a seat of the bench is no proof without it:\n" + out)
+    out = judge('abstract class SeatBase(n: String) : HumanTester(n)\nclass AppProofTest : SeatBase("x") {\n  ' + seated + other)
+    check("A : preuve d'appli AppProofTest#provesIt est un test du banc (hérite de HumanTester)" in out, "nor through a base class:\n" + out)
+    out = judge('class AppProofTest : Object() {\n  ' + seated + other)
+    check("chantier : 0 écarts" in out, "another base class is no bench:\n" + out)
 
 
 def native_missing(d):
@@ -2373,6 +2446,18 @@ defauts:
     gravite: moyen | revu: non | banc?: non | promesse: -
 """
 
+REPORT_EXPORTS_C = """siege: c | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
+defauts:
+  - geste: 1 | ecran.vu: 2 | cible: Mes exports | geste.type: touche
+    attendu: mon morceau | obtenu: le fichier fait 3 Ko
+    symptome: texte-faux
+    gravite: moyen | revu: non | banc?: non | promesse: -
+  - geste: 3 | ecran.vu: 4 | cible: WAV | geste.type: touche
+    attendu: un fichier | obtenu: l'export a mis 2 min et il est vide
+    symptome: texte-faux
+    gravite: moyen | revu: non | banc?: non | promesse: -
+"""
+
 
 def export_figures_are_the_benchs(d):
     """PLAN-RESTE 4.7 (T5-Cc-41b, « 1 KB », 4 min for 4 tracks): an export's size and the time it took are the bench's
@@ -2403,6 +2488,17 @@ def export_figures_are_the_benchs(d):
         check(found and mark not in found[0], f"{what} is no export figure of the bench:\n" + text)
     empty = [l for l in text.splitlines() if "export_my_exports" in l]
     check("[banc" not in empty[0], "an empty export of 1 KB is the app's, not a doubt of the bench:\n" + text)
+    # Review of « banc6b » (M1): each guard on its own. A card of 3 Ko without « vide » (the 64 KB bound alone), and a
+    # card « vide » with no size but the time it took (the word alone): both stay the app's.
+    rnd2 = os.path.join(d, "exports-seuil")
+    write(os.path.join(rnd2, "lotA", "c", "journal.txt"), JOURNAL_EXPORTS)
+    write(os.path.join(rnd2, "lotA", "c", "rapport.md"), REPORT_EXPORTS_C)
+    base2 = os.path.join(rnd2, "base.tsv")
+    write(base2, "cle\tetat\tvu\tnote\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), rnd2, "--base", base2, "--tour", "tour-6")
+    for tag, what in (("export_my_exports", "an export of 3 Ko (not « vide »)"), ("export_wav", "an export « vide » (no size)")):
+        found = [l for l in text.splitlines() if tag in l]
+        check(found and mark not in found[0] and "[banc" not in found[0], f"{what} is the app's, no export figure of the bench:\n" + text)
 
 
 def seat_exit(d):

@@ -155,6 +155,10 @@ class BenchTour4Test : HumanTester("tour4") {
         act("ecris Morceau de Max v2")
         tap("project_rename_ok")
         waitFor("the new name on the list") { centerOfText("Morceau de Max v2") != null }
+        // PLAN-RESTE 5.3 (control 4): each gesture in the window with its field is timed (« DIALOGUE N s »), 30 s at most.
+        println("PLAN-RESTE 5.3 mesure : gestes dans la fenêtre à champ : ${dialogSeconds.joinToString { "%.1f s".format(it) }}")
+        assertTrue("the gestures in the rename window timed (✕, the field, the name, OK): $dialogSeconds", dialogSeconds.size >= 3)
+        assertTrue("each one under 30 s: $dialogSeconds", dialogSeconds.all { it < 30.0 })
         assertTrue(problems.joinToString("\n"), problems.isEmpty())
     }
 
@@ -230,10 +234,12 @@ class BenchTour4Test : HumanTester("tour4") {
         vm.stopLiveAll()
         val all = com.pocketstudio.model.LiveSlots.ALL and com.pocketstudio.engine.NativeEngine.ALL_SLOTS
         assertTrue("« ■ Tout » went to the engine", benchEngine.padCommandsHeard().any { it.startsWith("armLaunch $all ") && it.endsWith(" -1") })
-        act("attends 4")
+        val said = act("attends 4")
         val g = vm.liveGrid.value!!
         assertFalse("nothing waits any more: $g", g.hasPending)
         assertTrue("every block stopped: $g", (0 until com.pocketstudio.model.LiveSlots.COUNT).all { g.slot(it).playing == -1 })
+        // PLAN-RESTE 5.4 (control 5): the sound line the tester reads says it (the guard T4-01 waits for).
+        assertTrue("the sound line says every block stopped: $said", "tous les blocs Live sont arrêtés" in said)
         assertTrue(problems.joinToString("\n"), problems.isEmpty())
     }
 

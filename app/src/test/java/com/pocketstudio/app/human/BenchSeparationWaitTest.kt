@@ -74,4 +74,32 @@ class BenchSeparationWaitTest : HumanTester("attente") {
         val stuck = timed("remplaçant bloqué")
         assertTrue("« attends 2 » gave the hand back after $flagOnly ms (flag alone) and $stuck ms (stand-in stuck): 20 s at most", flagOnly < 20_000 && stuck < 20_000)
     }
+
+    /**
+     * Review of « banc6a » (mineur): the other side of [aStuckStandInGivesTheHandBackWithinTwentySeconds]. Work that runs
+     * (a worker computing for 25 s while the app says it separates) holds « attends » until it is over, then 15 s of
+     * stillness: no guard proved it (the busy worker taken out of the wait, both tests stayed green).
+     */
+    @Test
+    fun aBusyWorkerHoldsTheWaitUntilItsWorkIsOver() {
+        begin()
+        val stop = java.util.concurrent.atomic.AtomicBoolean(false)
+        SeparationJob.set(SeparationState.Separating("calcul", 0.5f))
+        com.pocketstudio.app.rhythm.ClosingSaves.launch(60_000) {
+            val end = System.nanoTime() + 25_000_000_000L
+            while (System.nanoTime() < end && !stop.get()) Thread.onSpinWait()
+        }
+        try {
+            val t = System.currentTimeMillis()
+            act("attends 2")
+            val took = System.currentTimeMillis() - t
+            println("banc6b mesure : « attends 2 », un fil occupé 25 s : $took ms réelles")
+            // The work's 25 s, then 15 s of stillness (40 s measured); the busy worker left out of the wait: 25,2 s (the
+            // settle's own wait for the work), so the bound is 35 s.
+            assertTrue("a worker busy for 25 s held « attends 2 » $took ms: its work, then 15 s of stillness (more than 35 s, less than the 120 s cap)", took in 35_000..100_000)
+        } finally {
+            stop.set(true)
+            SeparationJob.set(SeparationState.Idle)
+        }
+    }
 }

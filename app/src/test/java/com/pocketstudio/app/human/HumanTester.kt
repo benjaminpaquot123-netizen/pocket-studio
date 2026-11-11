@@ -233,6 +233,7 @@ abstract class HumanTester(private val seat: String) {
         var afterWait = false
         val source = o.replayOf
         val timeoutMs = o.timeoutMinutes * 60_000
+        var benchExceptions = 0
         fun end(why: String) {
             journal.appendText("#$n FIN : $why\n")
             File(dir, "fin.txt").writeText(why)
@@ -345,10 +346,29 @@ abstract class HumanTester(private val seat: String) {
             }
             if (kind == "retour") journal.appendText("#$n RETOUR\n")
             try {
+                val dialogsBefore = dialogSeconds.size
                 play(cmd)
+                dialogSeconds.drop(dialogsBefore).forEach { sec ->
+                    journal.appendText("#$n DIALOGUE ${"%.1f".format(java.util.Locale.ROOT, sec)} s\n")
+                    if (sec > DIALOG_SLOW_S) {
+                        journal.appendText("#$n BANC dialogue lent (${"%.0f".format(java.util.Locale.ROOT, sec)} s > $DIALOG_SLOW_S s)\n")
+                        say("Banc : ce geste dans la fenêtre à champ de texte a pris ${"%.0f".format(java.util.Locale.ROOT, sec)} s réelles au banc ; un téléphone répond tout de suite. Note-le dans « incidents-banc » avec banc?: temps.")
+                    }
+                }
                 problems.forEach { journal.appendText("#$n SCREEN ERROR $it\n") }
                 problems.clear()
             } catch (e: Throwable) {
+                // PLAN-RESTE 5.10 (control 11): sorted by its frames, never by its class. Thrown by the test's own code
+                // (Compose's test API, Robolectric, the bench): « BANC », the seat goes on; 4 of them end it « banc ».
+                if (!thrownByTheApp(e)) {
+                    benchExceptions++
+                    journal.appendText("#$n BANC exception du banc (pas de l'appli) : ${e.javaClass.name}: ${e.message?.take(300)}\n${e.stackTrace.take(8).joinToString("\n") { "    at $it" }}\n")
+                    say("Banc : le banc a eu un souci pendant ce geste (${e.javaClass.simpleName}) ; ce n'est pas l'appli. Note-le dans « incidents-banc » avec banc?: banc.")
+                    problems.clear()
+                    n++
+                    if (benchExceptions >= BENCH_EXCEPTIONS_MAX) { end("banc : $benchExceptions exceptions du banc"); return }
+                    continue
+                }
                 journal.appendText("#$n CRASH ${e.javaClass.name}: ${e.message?.take(400)}\n${e.stackTrace.take(12).joinToString("\n") { "    at $it" }}\n")
                 File(dir, "sound-${n + 1}.txt").writeText("⚠ L'appli s'est arrêtée (plantage).")
                 runCatching { capture(dir, n + 1); publish(dir, n + 1, emptyList()) }
@@ -1176,7 +1196,43 @@ abstract class HumanTester(private val seat: String) {
 
     /** One gesture: « touche X Y », « appui-long X Y », « glisse X1 Y1 X2 Y2 », « ecris … », « retour », « attends S ». */
 
+    /**
+     * PLAN-RESTE 5.10: an exception is the app's when the first frame of com.pocketstudio in it (or in its causes) is outside
+     * the bench (`com.pocketstudio.app.human`): the app's code threw, even under a test call. Else the test's code threw it.
+     * Review of « banc6b » (grave): every link of the chain is read, a bench frame that rethrows the app's exception as
+     * its cause never hides the app's crash.
+     */
+    internal fun thrownByTheApp(e: Throwable): Boolean {
+        val seen = HashSet<Throwable>()
+        var t: Throwable? = e
+        while (t != null && seen.add(t)) {
+            val first = t.stackTrace.firstOrNull { it.className.startsWith("com.pocketstudio.") }
+            if (first != null && !first.className.startsWith("com.pocketstudio.app.human.")) return true
+            t = t.cause
+        }
+        return false
+    }
+
+    /** PLAN-RESTE 5.3 (control 4): the real seconds each gesture made in a window with a text field took (« DIALOGUE N s »). */
+    internal val dialogSeconds = mutableListOf<Double>()
+
+    /** For the bench's own tests (PLAN-RESTE 5.10): runs at the start of each gesture, to provoke an exception there. */
+    internal var beforeGesture: ((String) -> Unit)? = null
+
     private fun play(cmd: String) {
+        beforeGesture?.invoke(cmd)
+        followTextDialogs()
+        // PLAN-RESTE 5.3 (control 4): a gesture made in (or closing) a window with a text field is timed in real seconds.
+        val inDialog = textDialog
+        val at = System.nanoTime()
+        try {
+            playGesture(cmd)
+        } finally {
+            if (inDialog || textDialog) dialogSeconds += (System.nanoTime() - at) / 1e9
+        }
+    }
+
+    private fun playGesture(cmd: String) {
         followTextDialogs()
         val words = cmd.split(Regex("\\s+"))
         val kind = words[0].lowercase()
@@ -1545,8 +1601,9 @@ abstract class HumanTester(private val seat: String) {
      * Audit ultra round 1 (lot banc, « mesures en direct : que des tirets », E d and F c): the mixer's meters and the
      * master's loudness are the native engine's only ([RhythmViewModel.pollMeters] returns without it). While the music
      * plays the bench shows what a phone's engine would read on a mix at the streaming level: the channels that have
-     * something to play move, the master at −14 LUFS short-term, its true peak at −1,2 dBTP. Fixed values (a replay
-     * reads the same screens); stopped, the momentary and short-term readings go, the integrated one and the peak stay.
+     * something to play move with their level, the master reads the bench's render of what the live engine was told
+     * (PLAN-RESTE 5.11: no constants; the same project, the same reading); stopped, the momentary and short-term readings
+     * go, the integrated one and the peak stay.
      */
     private var metersPlaying = false
 
@@ -1567,12 +1624,18 @@ abstract class HumanTester(private val seat: String) {
                 p.tracks.filter { it.notes.notes.isNotEmpty() }.forEach { add(com.pocketstudio.model.InstrumentTrack.mixerChannel(it.id)) }
                 p.audioTracks.filter { it.clip != null }.forEach { add(com.pocketstudio.model.AudioTrack.mixerChannel(it.id)) }
             }
-            on.filter { it in 0 until NativeEngine.MIXER_CHANNELS }.forEach { m[it] = 0.42f }
-            if (on.isNotEmpty()) { m[NativeEngine.MASTER] = 0.71f; m[NativeEngine.METER_MASTER_IN] = 0.71f }
-            l[NativeEngine.LOUDNESS_MOMENTARY] = if (on.isEmpty()) NativeEngine.LOUDNESS_NONE else -13.6f
-            l[NativeEngine.LOUDNESS_SHORT_TERM] = if (on.isEmpty()) NativeEngine.LOUDNESS_NONE else -14.0f
-            l[NativeEngine.LOUDNESS_INTEGRATED] = if (on.isEmpty()) NativeEngine.LOUDNESS_NONE else -14.2f
-            l[NativeEngine.LOUDNESS_TRUE_PEAK] = if (on.isEmpty()) NativeEngine.LOUDNESS_NONE else -1.2f
+            // PLAN-RESTE 5.11 (control 12): the bench's render of what the live engine was told, measured with the app's
+            // meter (it moves with the channels' levels); no reading without the bench's engine: « — » (banc).
+            val r = if (NativeEngine.sink === engine && on.isNotEmpty()) engine.liveReading() else null
+            val channels = p.mixer.channels
+            on.filter { it in 0 until NativeEngine.MIXER_CHANNELS }.forEach { ch ->
+                m[ch] = if (r == null) 0f else (0.42f * (channels.getOrNull(ch)?.volume ?: 0.8f) / 0.8f).coerceIn(0f, 1f)
+            }
+            if (r != null) { m[NativeEngine.MASTER] = r[4]; m[NativeEngine.METER_MASTER_IN] = r[4] }
+            l[NativeEngine.LOUDNESS_MOMENTARY] = r?.get(0) ?: NativeEngine.LOUDNESS_NONE
+            l[NativeEngine.LOUDNESS_SHORT_TERM] = r?.get(1) ?: NativeEngine.LOUDNESS_NONE
+            l[NativeEngine.LOUDNESS_INTEGRATED] = r?.get(2) ?: NativeEngine.LOUDNESS_NONE
+            l[NativeEngine.LOUDNESS_TRUE_PEAK] = r?.get(3) ?: NativeEngine.LOUDNESS_NONE
             l[NativeEngine.LOUDNESS_RECENT_PEAK] = l[NativeEngine.LOUDNESS_TRUE_PEAK]
             l[NativeEngine.LOUDNESS_DRIVE] = 0f
             l[NativeEngine.LOUDNESS_LOSS] = 0f
@@ -1890,6 +1953,11 @@ abstract class HumanTester(private val seat: String) {
     }.getOrElse { "inside? ${it.message}" }
 
     companion object {
+        /** PLAN-RESTE 5.10: the bench's own exceptions a seat lives through before it ends « banc ». */
+        const val BENCH_EXCEPTIONS_MAX = 4
+        /** PLAN-RESTE 5.3: a gesture in a window with a text field longer than this (real seconds) is said the bench's. */
+        const val DIALOG_SLOW_S = 30
+
         /** A phone like the owner's (Honor), at 1.5 px a dp: images small enough to read quickly. */
         const val PHONE = "w392dp-h852dp-hdpi"
 

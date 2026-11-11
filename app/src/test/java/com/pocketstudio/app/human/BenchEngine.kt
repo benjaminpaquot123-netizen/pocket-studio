@@ -44,6 +44,8 @@ internal class BenchEngine : CommandSink {
             described.getOrPut(target) { Described() }.add(type, value, a, b)
             return
         }
+        // PLAN-RESTE 5.11 (control 12): what the live engine is told is heard too, for the live meters ([liveReading]).
+        live.add(type, value, a, b)
         when (type) {
             CMD_SET_TRANSPORT -> {
                 // What was due before this command is played first (a mark reached, the song's end).
@@ -238,6 +240,38 @@ internal class BenchEngine : CommandSink {
     /** Each private engine's loudness target (LUFS), as described to it. */
     private val targets = ConcurrentHashMap<Long, Float>()
 
+    /** What the app told the live engine (its project, its channels' levels): the live meters' sound. */
+    private val live = Described()
+    private var reading: Pair<Any, FloatArray>? = null
+
+    /**
+     * PLAN-RESTE 5.11: the live meters' readings, measured on 3 s of the live project's sound with the app's own meter (no
+     * constants): momentary, short-term and integrated loudness (LUFS), true peak (dBTP), and the level of its peak (0..1).
+     * The same description, the same reading (cached): a replay reads the same screens.
+     */
+    @Synchronized fun liveReading(): FloatArray {
+        val v = live.voice(RATE)
+        val key = live.key()
+        reading?.takeIf { it.first == key }?.let { return it.second }
+        val frames = 3 * RATE
+        val meter = com.pocketstudio.app.export.Loudness.Meter(RATE, 2)
+        val piece = FloatArray(2 * CHUNK)
+        var peak = 0f
+        var at = 0L
+        while (at < frames) {
+            val n = minOf(CHUNK.toLong(), frames - at).toInt()
+            fill(v, piece, at, n, frames.toLong(), frames.toLong(), 0L, 1f)
+            for (k in 0 until 2 * n) peak = maxOf(peak, abs(piece[k]))
+            meter.add(piece, n)
+            at += n
+        }
+        val short = (meter.shortTermMax() ?: -70.0).toFloat()
+        val integrated = (meter.integrated() ?: -70.0).toFloat()
+        val out = floatArrayOf(short + 0.4f, short, integrated, (20 * kotlin.math.log10(peak.coerceAtLeast(1e-6f).toDouble())).toFloat(), peak)
+        reading = key to out
+        return out
+    }
+
     /** What the app described to each private engine (its project), see [Described]. */
     private val described = ConcurrentHashMap<Long, Described>()
 
@@ -247,8 +281,8 @@ internal class BenchEngine : CommandSink {
      */
     private class Described {
         private var notes = 0
-        private var levels = 0.0
-        private var channels = 0
+        /** Each channel's last level (a level sent again replaces the one before: the live channels move). */
+        private val levels = HashMap<Int, Double>()
         private var print = 1469598103934665603L
         var bpm = 120.0
             private set
@@ -257,14 +291,17 @@ internal class BenchEngine : CommandSink {
             for (x in intArrayOf(type, a, b, value.toBits())) print = (print xor x.toLong()) * 1099511628211L
             when (type) {
                 CMD_SET_DRUM_HIT, CMD_SYNTH_NOTE, CMD_SET_ACID_STEP -> if (value > 0f || type == CMD_SET_ACID_STEP && b != 0) notes++
-                CMD_CHANNEL_VOLUME -> { levels += value.coerceIn(0f, 2f); channels++ }
+                CMD_CHANNEL_VOLUME -> levels[a] = value.coerceIn(0f, 2f).toDouble()
                 CMD_SET_TEMPO -> if (value in 20f..400f) bpm = value.toDouble()
             }
         }
 
+        /** What makes its sound (for a cached reading). */
+        @Synchronized fun key(): Any = Triple(minOf(notes, 400), levels.toMap(), print)
+
         /** The sound it gives: louder the more it plays (−24 to −9 dBFS), its pitch and colour from its print. */
         @Synchronized fun voice(rate: Int): Voice {
-            val level = if (channels == 0) 0.8 else levels / channels
+            val level = if (levels.isEmpty()) 0.8 else levels.values.sum() / levels.size
             val busy = 1.0 - kotlin.math.exp(-notes / 40.0)
             val amp = (0.063 + 0.29 * busy) * (level / 0.8).coerceIn(0.25, 1.25)
             val h = (print ushr 17).toInt() and 0x7FFFFFFF

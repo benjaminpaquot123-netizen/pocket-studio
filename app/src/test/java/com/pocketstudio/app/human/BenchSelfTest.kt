@@ -226,6 +226,56 @@ class BenchSelfTest : HumanTester("selftest") {
         assertTrue("the bench at rest does not wait the opening away:\n" + lines.joinToString("\n"), lines.any { "Ouverture du projet" in it })
     }
 
+    /**
+     * PLAN-RESTE 5.10 (control 11): an exception thrown by the test's own code (Compose's test API, Robolectric, the bench)
+     * is never the app's crash. Sorted by its frames, never by its class: the first frame of com.pocketstudio outside the
+     * bench (`.human`) is the app's; none, it is the bench's: « BANC : … » to the tester, the seat goes on, and ends
+     * « FIN : banc » after 4 of them. An exception thrown by the app's code is still a crash (« plantage »).
+     */
+    @Test
+    fun aTestExceptionIsNeverTheAppsCrash() {
+        begin()
+        fun seat(vararg cmds: String): java.io.File {
+            val dir = kotlin.io.path.createTempDirectory("siege").toFile()
+            cmds.forEachIndexed { i, c -> java.io.File(dir, "cmd-${i + 1}.txt").writeText(c) }
+            seatLoop(dir, SeatOptions(), java.io.File(dir, "journal.txt"))
+            return dir
+        }
+        var thrown = 0
+        beforeGesture = { cmd ->
+            if (cmd.startsWith("attends")) {
+                thrown++
+                when (thrown) {
+                    1 -> compose.onNode(androidx.compose.ui.test.hasTestTag("no_such_node_on_any_screen")).assertExists()
+                    2 -> error("the bench's own helper failed")
+                    3 -> listOf<String>()[2].length
+                    else -> java.io.File("/no/such/folder/of/the/bench.txt").readText()
+                }
+            }
+        }
+        val bench = seat("attends 0.1", "attends 0.1", "attends 0.1", "attends 0.1", "regarde", "fin")
+        val journal = java.io.File(bench, "journal.txt").readText()
+        val end = java.io.File(bench, "fin.txt").readText()
+        assertEquals("4 exceptions of the test's code, each a « BANC » line:\n$journal", 4, Regex("(?m)^#\\d+ BANC exception").findAll(journal).count())
+        assertTrue("never a crash of the app:\n$journal", "CRASH" !in journal && "plantage" !in end)
+        assertTrue("the seat ends « banc » after 4 of them: $end", end.startsWith("banc"))
+        // The app's own code throwing (an enum read from a wrong name, inside the app's class): still the app's crash.
+        beforeGesture = { cmd -> if (cmd.startsWith("attends")) com.pocketstudio.app.rhythm.ExportFormat.valueOf("NoSuchFormat") }
+        val app = seat("attends 0.1", "fin")
+        assertEquals(java.io.File(app, "journal.txt").readText(), "plantage", java.io.File(app, "fin.txt").readText())
+        // Review of « banc6b » (grave): the app's exception wrapped by a frame of the bench (a looper or a helper that
+        // rethrows it with a cause) is still the app's crash: any link of the chain thrown by the app's code makes it so.
+        beforeGesture = { cmd ->
+            if (cmd.startsWith("attends")) {
+                val cause = runCatching { com.pocketstudio.app.rhythm.ExportFormat.valueOf("NoSuchFormat") }.exceptionOrNull()
+                throw IllegalStateException("rethrown by the bench", cause)
+            }
+        }
+        val wrapped = seat("attends 0.1", "fin")
+        assertEquals(java.io.File(wrapped, "journal.txt").readText(), "plantage", java.io.File(wrapped, "fin.txt").readText())
+        beforeGesture = null
+    }
+
     /** The screen's line drawn at the middle of the node tagged [tag] (± 2 px). */
     private fun lineAt(tag: String): String {
         val (x, y) = centerOf(tag) ?: error("no « $tag »\n" + screenLines().joinToString("\n"))

@@ -216,6 +216,8 @@ def main():
         open_app_proof(d)
         rule_c_adversarial(d)
         red_seen_in_a_run(d)
+        judge_topic_pairs(d)
+        red_seen_review_line(d)
         known_defect_lifted(d)
         known_defect_lifted_needs_a_red(d)
         owner_trials(d)
@@ -1093,7 +1095,9 @@ def red_seen_in_a_run(d):
     resume = os.path.join(root, "selftest-resume.txt")
     test_file = os.path.join(root, "app", "src", "test", "java", "x", "JourneyProofTest.kt")
     app = os.path.join(root, "app", "src", "main", "Spot.kt")
-    write(test_file, "class JourneyProofTest {\n  @Test\n  fun theWholeCourse() {}\n}\n")
+    # Third review of the lot (M9): a helper (no @Test) and an ignored test can never fail in a run.
+    rest = "  private fun idle(ms: Long = 50) {}\n  @Ignore\n  @Test\n  fun skipped() {}\n}\n"
+    write(test_file, "class JourneyProofTest {\n  @Test\n  fun theWholeCourse() {}\n" + rest)
     git_toy(root, "init", "-q")
     git_toy(root, "add", "-A")
     git_toy(root, "commit", "-q", "-m", "start")
@@ -1102,7 +1106,7 @@ def red_seen_in_a_run(d):
     def green(key, touch_test=False):
         write(app, f"fun spot() = \"{key}\"\n")
         if touch_test:
-            write(test_file, f"class JourneyProofTest {{\n  @Test\n  fun theWholeCourse() {{ /* {key} */ }}\n}}\n")
+            write(test_file, f"class JourneyProofTest {{\n  @Test\n  fun theWholeCourse() {{ /* {key} */ }}\n" + rest)
         git_toy(root, "add", "-A")
         git_toy(root, "commit", "-q", "-m", f"vert: JourneyProofTest#theWholeCourse[techno Pro] {key}")
         shas[key] = (git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip())
@@ -1114,6 +1118,11 @@ def red_seen_in_a_run(d):
     git_toy(root, "add", "-A")
     git_toy(root, "commit", "-q", "-m", "vert: NoSuchTest#neverExisted fixed")
     shas["nosuch"] = (git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip())
+    for helper in ("idle", "skipped"):
+        write(app, f"fun spot() = \"{helper}\"\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: JourneyProofTest#{helper} fixed")
+        shas[helper] = (git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip())
 
     def evidence(key, parent=None, failing=True, test="theWholeCourse[techno Pro]", cls="JourneyProofTest", named=None):
         full, par = shas[key]
@@ -1129,14 +1138,88 @@ def red_seen_in_a_run(d):
     evidence("touchestest")
     evidence("othertest", test="theWholeCourse[lofi Simple]")
     evidence("nosuch", test="neverExisted", cls="NoSuchTest", named="NoSuchTest#neverExisted")
+    evidence("idle", test="idle", named="JourneyProofTest#idle")
+    evidence("skipped", test="skipped", named="JourneyProofTest#skipped")
     seal_resume(root, resume)
     out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
                          capture_output=True, text=True).stdout
     short = {k: git_toy(root, "rev-parse", "--short", v[0]).strip() for k, v in shas.items()}
     check(short["honest"] not in out, "a green whose red was seen in a run, its XML kept, is a pair:\n" + out)
-    for key in ("passing", "otherparent", "touchestest", "othertest", "nosuch"):
+    for key in ("passing", "otherparent", "touchestest", "othertest", "nosuch", "idle", "skipped"):
         check(f"{short[key]} « vert:" in out, f"evidence that does not hold ({key}) makes no pair:\n" + out)
-    check("chantier : 5 écarts" in out, "five greens without red, nothing else:\n" + out)
+    check("chantier : 7 écarts" in out, "seven greens without red, nothing else:\n" + out)
+
+
+def judge_topic_pairs(d):
+    """Lot « banc6b » (the « textes » lot's five gaps): a red named by its topic, « rouge: SimpleNoDecibelTest (…) »,
+    is closed by a green whose subject names that topic before its parenthesis, when the topic is in a test file the
+    red adds or changes (a class, or the start of a test function). One green may close one red per topic it names
+    (« vert: SimpleNoDecibelTest and oneWordPerThing (…) »), never two reds of the same topic; a topic in no test
+    file pairs nothing."""
+    root = judge_root(d, "juge-sujets")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Words.kt")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+
+    def commit(subject, path, text):
+        write(path, text)
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", subject)
+        return git_toy(root, "rev-parse", "--short", "HEAD").strip()
+
+    nodb_file = os.path.join(tests, "SimpleNoDecibelTest.kt")
+    words_file = os.path.join(tests, "LexiconWordsTest.kt")
+    nodb = commit("rouge: SimpleNoDecibelTest (no dB on any Mode simple screen)", nodb_file,
+                  "class SimpleNoDecibelTest {\n  @Test\n  fun noDecibelOnTheMix() {}\n}\n")
+    words = commit("rouge: oneWordPerThing (LexiconWordsTest: one name for the assistant)", words_file,
+                   "class LexiconWordsTest {\n  @Test\n  fun oneWordPerThingInFrench() {}\n}\n")
+    wider = commit("rouge: oneWordPerThing (wider, case-insensitive)", words_file,
+                   "class LexiconWordsTest {\n  @Test\n  fun oneWordPerThingInFrench() { /* wider */ }\n}\n")
+    lone = commit("rouge: wordsWithoutTheirTest (nothing in a test)", app, "val w = 1\n")
+    twice = commit("rouge: SimpleNoDecibelTest (a second red of the same topic)", nodb_file,
+                   "class SimpleNoDecibelTest {\n  @Test\n  fun noDecibelOnTheMix() { /* twice */ }\n}\n")
+    # Review of « banc6b » (grave): a « Class#method » is one test, not a topic: a green of another test of the
+    # same class closes nothing (the names already pair a red with its own test).
+    cls_red = commit("rouge: ClassLevelTest#firstCaseOfIt (one case)", os.path.join(tests, "ClassLevelTest.kt"),
+                     "class ClassLevelTest {\n  @Test\n  fun firstCaseOfIt() {}\n}\n")
+    g1 = commit("vert: SimpleNoDecibelTest and oneWordPerThing (one name per thing, no dB)", app, "val w = 2\n")
+    g2 = commit("vert: oneWordPerThing (no « Pas à pas » button)", app, "val w = 3\n")
+    g3 = commit("vert: wordsWithoutTheirTest (fixed)", app, "val w = 4\n")
+    cls_green = commit("vert: ClassLevelTest#secondCaseOfIt (another case)", app, "val w = 5\n")
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    for sha in (nodb, words, wider, g1, g2):
+        check(f"{sha} «" not in out, f"a red closed by a green naming its topic ({sha}):\n" + out)
+    check(f"{lone} « rouge:" in out and f"{g3} « vert:" in out, "a topic in no test file pairs nothing:\n" + out)
+    check(f"{twice} « rouge:" in out, "one green closes one red per topic, never two:\n" + out)
+    check(f"{cls_red} « rouge:" in out and f"{cls_green} « vert:" in out,
+          "a green of another test of the same class closes nothing:\n" + out)
+    check("chantier : 5 écarts" in out, "five gaps, nothing else:\n" + out)
+
+
+def red_seen_review_line(d):
+    """Third review of the « portail » lot (M9): a « rouge constaté » line of the review says the red was replayed on
+    the green's parent, by its sha (« rejoué sur <parent> »); a free text (« relu », « pas rejoué ») vouches for
+    nothing. The portal passes « constat:<green>:<parent> »."""
+    script = os.path.join(HERE, "relecture-verdict.py")
+    green, parent = "a" * 40, "b" * 40
+    last = "\n\nVerdict : 0 bloquant, 0 grave — fusion possible\n"
+
+    def ok(line, arg=f"constat:{green}:{parent}"):
+        return subprocess.run([sys.executable, "-I", script, arg], input=line + last, capture_output=True, text=True).returncode == 0
+
+    for line in (f"rouge constaté : {green} : relu, XML lu", f"rouge constaté : {green} : pas rejoué",
+                 f"rouge constaté : {green} : rejoué sur 1234567, rouge", f"rouge constaté : {green} : pas rejoué sur bbbbbbb"):
+        check(not ok(line), "a « rouge constaté » line without the replay on the green's parent is refused: " + line)
+    for line in (f"rouge constaté : {green} : rejoué sur bbbbbbb, theWholeCourse rouge (1 sur 74)",
+                 f"rouge constaté : {green} : rejoué sur {parent} : rouge"):
+        check(ok(line), "the replay on the green's parent is accepted: " + line)
+    check(ok(f"rouge constaté : {green} : rejoué sur 1234567, rouge", f"constat:{green}"),
+          "a green the portal cannot resolve: « rejoué sur <sha> » is enough")
 
 
 def old_commit_env():
@@ -1682,11 +1765,17 @@ def review_rows(d):
                # Second review of the lot (M8): the simple forms still let through.
                "### Grave\n\n**G1.** le tampon. Non **corrigé**.", "### Grave\n\nAucun.\n\n**G1.** le tampon, ouvert.",
                "1. grave : le tampon, ouvert.", "### G1 (grave)\n\nle tampon, ouvert.", "| 1 | très grave | x |",
-               "- **G1 (grave)** : le tampon, ouvert."]
+               "- **G1 (grave)** : le tampon, ouvert.",
+               # Third review of the lot (M10): a negation the old check did not read.
+               "### Grave\n\n**G1.** le tampon. Pas encore **corrigé**.", "### Grave\n\n**G1.** le tampon, jamais **corrigé**.",
+               "### Grave\n\n**G1.** le tampon. Non  **corrigé**.", "### Grave\n\n**G1.** le tampon. non : **corrigé**.",
+               "### Grave\n\n**G1.** le tampon. *non* **corrigé**.", "- **Grave** : le tampon, toujours pas **corrigé**.",
+               "- **Grave** : le tampon, pas\n  **corrigé**."]
     accepted = ["| bloquant | 0 |\n| grave | 0 |", "| 1 | grave | x | **corrigé** (abc1234) |", "| G1 | grave | x | **Corrigé** en abc1234 |",
                 "### Bloquant\n\nAucun.", "## Bloquant, grave\n\nAucun.", "- **Grave** : x — **corrigé** en abc1234.",
                 "| 3 | moyen | le plus grave des moyens | à reprendre |", "| id | Titre | Gravité | Preuve |\n|---|---|---|---|",
-                "### Grave\n\n**G1.** le tampon : **corrigé** en abc1234."]
+                "### Grave\n\n**G1.** le tampon : **corrigé** en abc1234.", "### Grave\n\n**G1.** le tampon n'avançait plus : **corrigé** en abc1234.",
+                "- **Grave** : x — **corrigé** (abc1234), plus rien ne bloque."]
     for body in refused:
         check(not ok(body), "an open blocking or grave finding is refused: " + body)
     for body in accepted:
@@ -1832,7 +1921,7 @@ def fusion_forged(d):
     branch("constat", red_evidence, good)
     code, out, asked, moved = merge("constat")
     check(code != 0 and not moved and "rouge constaté" in out, "red evidence brought without its line in the review is refused:\n" + out)
-    branch("constat2", red_evidence, good.replace("\nVerdict", f"rouge constaté : {'a' * 40} : replayed on its parent, XML read\n\nVerdict"))
+    branch("constat2", red_evidence, good.replace("\nVerdict", f"rouge constaté : {'a' * 40} : rejoué sur 1234567, rouge, XML lu\n\nVerdict"))
     code, out, asked, moved = merge("constat2")
     check(code == 0 and moved, "red evidence named in the review is merged:\n" + out)
     git_toy(root, "reset", "-q", "--hard", "HEAD~2")
@@ -2242,7 +2331,7 @@ def first_screen(d):
 REPORT_EXPORTS = """siege: a | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
 defauts:
   - ecran: 4 | cible: Mes exports | geste: touche
-    attendu: un vrai fichier | obtenu: le fichier fait 1 KB
+    attendu: un fichier léger | obtenu: le fichier pèse 3 Mo pour 4 s
     symptome: texte-faux
     gravite: moyen | bloque: non
   - ecran: 5 | cible: Exporter | geste: touche
@@ -2253,6 +2342,35 @@ defauts:
     attendu: 16 mesures | obtenu: le morceau exporté dure 8 mesures au lieu de 16
     symptome: perdu
     gravite: moyen | bloque: non
+"""
+
+
+JOURNAL_EXPORTS = """#0 SIEGE lang=fr device=phone font=100 mode=simple
+#1 ROUTE mix | MODE simple | EMPREINTE aaaa | project=p-1 no tuto
+#1 > touche 10 10
+#1 DOIGT export_my_exports « Mes exports »
+#2 ROUTE dialogue:rename | MODE simple | EMPREINTE bbbb | project=p-1 no tuto
+#2 > touche 20 20
+#2 DOIGT rename_field « Nom »
+#3 ROUTE mix | MODE simple | EMPREINTE cccc | project=p-1 no tuto
+#3 > touche 30 30
+#3 DOIGT export_wav « WAV »
+"""
+
+REPORT_EXPORTS_B = """siege: b | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
+defauts:
+  - geste: 1 | ecran.vu: 2 | cible: Mes exports | geste.type: touche
+    attendu: mon morceau | obtenu: le fichier fait 1 KB, il est vide
+    symptome: texte-faux
+    gravite: moyen | revu: non | banc?: non | promesse: -
+  - geste: 2 | ecran.vu: 3 | cible: Nom | geste.type: touche
+    attendu: un texte lisible | obtenu: la taille du texte est trop petite dans la fenêtre de partage
+    symptome: texte-faux
+    gravite: moyen | revu: non | banc?: non | promesse: -
+  - geste: 3 | ecran.vu: 4 | cible: WAV | geste.type: touche
+    attendu: un fichier | obtenu: le fichier a été écrit en 3 s mais il ne s'ouvre pas
+    symptome: texte-faux
+    gravite: moyen | revu: non | banc?: non | promesse: -
 """
 
 
@@ -2273,6 +2391,18 @@ def export_figures_are_the_benchs(d):
     check(size and mark in size[0], "the size of an export is the bench's:\n" + text)
     check(slow and mark in slow[0], "the time an export took is the bench's:\n" + text)
     check(bars and mark not in bars[0] and "[banc" not in bars[0], "what the file holds stays the app's:\n" + text)
+    # Review of « banc6a » (important): a real empty export of 1 KB is no limit of the bench (its shadow codec writes
+    # 768 000 bytes for 4 s), not even a doubt from its tag; « taille » of a text, « fichier » alone or « en 3 s » alone
+    # make no export figure.
+    write(os.path.join(rnd, "lotA", "b", "journal.txt"), JOURNAL_EXPORTS)
+    write(os.path.join(rnd, "lotA", "b", "rapport.md"), REPORT_EXPORTS_B)
+    text = run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--tour", "tour-6")
+    for tag, what in (("export_my_exports", "an empty export of 1 KB"), ("rename_field", "the size of a text"),
+                      ("export_wav", "« écrit en 3 s » on a file that does not open")):
+        found = [l for l in text.splitlines() if tag in l]
+        check(found and mark not in found[0], f"{what} is no export figure of the bench:\n" + text)
+    empty = [l for l in text.splitlines() if "export_my_exports" in l]
+    check("[banc" not in empty[0], "an empty export of 1 KB is the app's, not a doubt of the bench:\n" + text)
 
 
 def seat_exit(d):

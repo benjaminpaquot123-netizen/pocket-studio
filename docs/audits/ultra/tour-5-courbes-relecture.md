@@ -1,5 +1,5 @@
 # Relecture neuve du lot « courbes » (tour 5, étape 4, chantier 8)
-Relu : 965c9b6d12cc0a1659e982bcded2cf195c60f1c2
+Relu : 883fdb2a2603de5fa8c247ba405ba15c1dcf9e58
 
 Relecteur neuf (ni auteur du code). Lu : `git diff c4743738...HEAD` (AutomationCard, ControlSpot, EffectsBox, EffectsPanel, QuickFx, AppRoot, CurvesFindTest, ScreenshotTest, recensement, 14 `courbes.json`), le rapport et `docs/decisions/tour-5-courbes.md`.
 
@@ -20,5 +20,9 @@ Relecteur neuf (ni auteur du code). Lu : `git diff c4743738...HEAD` (AutomationC
 
 ## Tests à rejouer
 `*CurvesFindTest`, `*ScreenScanTest`, `*ScreenshotTest` (automation, automationNewCurve, automationPickerHasCurve, effectsSpotSend, effectsSpotMacro), `*I18nCatalogTest`, `*TutoLot4Test`.
+
+## Delta après fusion de fx-int
+Le merge 4617e1d9 (lots access, banc7, socle, remix) n'a qu'un conflit, résolu à la main dans `I18n.kt` : la liste des fichiers de textes garde les deux lignes « courbes » et « access ».
+Rien d'autre du lot n'a bougé depuis 965c9b6d hors apports de fx-int ; tests ciblés verts après le merge.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

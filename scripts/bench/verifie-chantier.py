@@ -93,6 +93,22 @@ def test_sources(root):
     return out
 
 
+SUPER = re.compile(r"\bclass\s+([A-Za-z0-9_]+)(?:\s*<[^>{]*>)?(?:\s*(?:\([^)]*\)|constructor\s*\([^)]*\)))?\s*:\s*([A-Za-z0-9_.]+)\s*\(")
+
+
+def seat_class(sources, cls, depth=0):
+    """Lot « verdicts »: the class inherits HumanTester (itself or through a base class): a seat of the bench, whatever
+    its name. Read from the class's declaration, « class Name(…) : Parent(… »."""
+    if depth > 6:
+        return False
+    text = sources.get(cls, "")
+    m = next((m for m in SUPER.finditer(text) if m.group(1) == cls), None)
+    if m is None:
+        return False
+    parent = m.group(2).rsplit(".", 1)[-1]
+    return parent == "HumanTester" or seat_class(sources, parent, depth + 1)
+
+
 def method_exists(sources, cls, method):
     text = sources.get(cls)
     return text is not None and re.search(r"\bfun\s+`?" + re.escape(method) + r"\b", text) is not None
@@ -461,6 +477,8 @@ def check(root, resume_path=None, with_git=True):
         for cls, m in proofs(v.get("preuve_appli")):
             if cls.startswith("Bench"):
                 gaps.append(f"{item} : preuve d'appli {cls}#{m} est un test du banc")
+            elif seat_class(sources, cls):
+                gaps.append(f"{item} : preuve d'appli {cls}#{m} est un test du banc (hérite de HumanTester)")
             elif not method_exists(sources, cls, m):
                 gaps.append(f"{item} : preuve d'appli {cls}#{m} introuvable")
             elif not test_runs(sources, cls, m):

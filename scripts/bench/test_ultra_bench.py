@@ -232,6 +232,7 @@ def main():
         review_rows(d)
         fusion_forged(d)
         portal_traces(d)
+        zone_report(d)
         known_skips_bounded(d)
         mark_fixed(d)
         seat_exit(d)
@@ -1926,7 +1927,7 @@ def fusion_toy(d, name):
     bench = os.path.join(root, "scripts", "bench")
     with open(os.path.join(HERE, "fusion-equipes.sh"), encoding="utf-8") as f:
         write(os.path.join(bench, "fusion-equipes.sh"), f.read())
-    for extra in ("relecture-verdict.py", "decisions-index.sh", "portail-paquet.txt"):
+    for extra in ("relecture-verdict.py", "decisions-index.sh", "portail-paquet.txt", "rapport-zone.py"):
         if os.path.isfile(os.path.join(HERE, extra)):
             with open(os.path.join(HERE, extra), encoding="utf-8") as f:
                 write(os.path.join(bench, extra), f.read())
@@ -1937,9 +1938,12 @@ def fusion_toy(d, name):
     write(os.path.join(bench, "gradle-file.sh"), '#!/usr/bin/env bash\necho "gradle $*" >> "$PS_TOY_CALLS"\n')
     write(os.path.join(bench, "tampon.sh"), "#!/usr/bin/env bash\ncase \"$1\" in verifie) exit 1 ;; esac\n")
     # The judge on the toy: says whether it saw a merge's traces (fusion.txt) in the working tree.
-    write(os.path.join(bench, "verifie-chantier.py"), "import glob, sys\n"
-          "print('traces vues' if glob.glob('docs/audits/ultra/portail/*/fusion.txt') else 'fusion sans trace du portail')\n"
-          "print('chantier : 0 écarts')\n")
+    # (Its functions are the real judge's: rapport-zone.py reads « Classe#méthode » with them.)
+    with open(os.path.join(HERE, "verifie-chantier.py"), encoding="utf-8") as f:
+        judge = f.read().split('\nif __name__ == "__main__":', 1)[0]
+    write(os.path.join(bench, "verifie-chantier.py"), judge + "\n\nif __name__ == \"__main__\":\n    import glob\n"
+          "    print('traces vues' if glob.glob('docs/audits/ultra/portail/*/fusion.txt') else 'fusion sans trace du portail')\n"
+          "    print('chantier : 0 écarts')\n")
     for n in ("fusion-equipes.sh", "selftest.sh", "rejeu-defauts.sh", "gradle-file.sh", "tampon.sh"):
         os.chmod(os.path.join(bench, n), 0o755)
     write(os.path.join(root, "docs", "audits", "ultra", "rejeux", "t1-clavier", "start.txt"), "lang=fr\n")
@@ -2178,6 +2182,67 @@ def portal_traces(d):
     check(old not in out and traced not in out, "a merge before the rule, and one with its traces, are fine:\n" + out)
     check("sieges/tour-6/lotA : lot sans trace du portail" in out and "tour-5/lotA" not in out and "lotB" not in out,
           "a lot of round 6 without its traces (round 5 is older than the rule):\n" + out)
+
+
+ZONE_TEST = """package t
+
+import org.junit.Test
+
+class FooTest {
+    @Test
+    fun works() {}
+
+    fun helper() {}
+}
+"""
+
+
+def zone_report(d):
+    """PLAN-RESTE 7.1 (from batch 2): fusion-equipes.sh reads the zone's report in the branch
+    (docs/audits/ultra/<tour-N>-<zone>-rapport.md): its « tests: » line gives the team's targeted tests (added to the
+    Gradle filters); without it, refused (exit 7)."""
+    root = fusion_toy(d, "fusion-rapport")
+    script = os.path.join(root, "scripts", "bench", "fusion-equipes.sh")
+    calls = os.path.join(d, "rapport-appels.txt")
+    write(os.path.join(root, "scripts", "bench", "portail-paquet.txt"), "paquet: 2\n")
+    write(os.path.join(root, "app", "src", "test", "java", "t", "FooTest.kt"), ZONE_TEST)
+    git_toy(root, "add", "scripts", "app")
+    git_toy(root, "commit", "-q", "-m", "batch 2, a test")
+
+    def branch(zone, report=None, change=None):
+        git_toy(root, "checkout", "-q", "-b", f"eq/tour-9-{zone}", "fx-int")
+        write(os.path.join(root, "scripts", "bench", f"{zone}.txt"), "x\n")
+        if change:
+            change(root)
+        if report is not None:
+            write(os.path.join(root, "docs", "audits", "ultra", f"tour-9-{zone}-rapport.md"), report)
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"team {zone}")
+        sha = git_toy(root, "rev-parse", "HEAD").strip()
+        write(os.path.join(root, "docs", "audits", "ultra", f"tour-9-{zone}-relecture.md"),
+              f"Relu : {sha}\n\nVerdict : 0 bloquant, 0 grave\n")
+        git_toy(root, "add", "docs")
+        git_toy(root, "commit", "-q", "-m", "review")
+        git_toy(root, "checkout", "-q", "fx-int")
+
+    def merge(zone):
+        write(calls, "")
+        before = git_toy(root, "rev-parse", "HEAD").strip()
+        r = subprocess.run(["bash", script, "tour-9", zone], capture_output=True, text=True, env=dict(os.environ, PS_TOY_CALLS=calls))
+        with open(calls, encoding="utf-8") as f:
+            asked = f.read()
+        return r.returncode, r.stdout + r.stderr, asked, before != git_toy(root, "rev-parse", "HEAD").strip()
+
+    good = "# Rapport\n\ntests: FooTest\n\n- chemin: Accueil | test: FooTest#works\n"
+    branch("sansrapport")
+    code, out, asked, moved = merge("sansrapport")
+    check(code == 7 and not moved and "no zone report" in out, "a branch without its zone report is refused (7):\n" + out)
+    branch("sanstests", good.replace("tests: FooTest\n", ""))
+    code, out, asked, moved = merge("sanstests")
+    check(code == 7 and not moved and "no line « tests: »" in out, "a zone report without « tests: » is refused (7):\n" + out)
+    branch("rapportok", good)
+    code, out, asked, moved = merge("rapportok")
+    check(code == 0 and moved and "--tests FooTest" in asked, "the report's « tests: » are the team's targeted tests:\n" + out + asked)
 
 
 def mark_fixed(d):

@@ -16,7 +16,7 @@ git config user.name essai
 git config user.email essai@localhost
 mkdir -p scripts/bench docs/audits/ultra/rejeux/r1
 cp "$src"/scripts/bench/pre-vol.sh "$src"/scripts/bench/relecture-verdict.py "$src"/scripts/bench/fusion-equipes.sh scripts/bench/
-for f in portail-paquet.txt decisions-index.sh; do [ ! -f "$src/scripts/bench/$f" ] || cp "$src/scripts/bench/$f" scripts/bench/; done
+for f in portail-paquet.txt decisions-index.sh rapport-zone.py verifie-chantier.py; do [ ! -f "$src/scripts/bench/$f" ] || cp "$src/scripts/bench/$f" scripts/bench/; done
 # The batch of merges in this little repository: 1 (a rule « from_paquet 2 » waits).
 printf '# Paquet de fusions en cours\npaquet: 1\n' > scripts/bench/portail-paquet.txt
 echo oracle > docs/audits/ultra/rejeux/r1/oracle.txt
@@ -180,9 +180,22 @@ git checkout -q fx-int
 git checkout -q -b eq/tour-9-decold fx-int && echo "- 2026-11-11 · du lot decold" >> docs/DECISIONS.md && git commit -q -am "decold writes DECISIONS.md" && review decold
 expect "DECISIONS.md written during batch 1: only said" 0 "paquet 2" non tour-9 decold
 git checkout -q fx-int && sed -i 's/^paquet: .*/paquet: 2/' scripts/bench/portail-paquet.txt && git commit -q -am "batch 2 opens"
+# PLAN-RESTE 7.1 (from batch 2): the zone report of each lot, in its branch, with its « tests: » line and its list of
+# paths (« chemin: <écran> | test: Classe#méthode », a @Test of app/src/test in the branch).
+mkdir -p app/src/test/java/t && printf 'package t\n\nimport org.junit.Test\n\nclass FooTest {\n    @Test\n    fun works() {}\n}\n' > app/src/test/java/t/FooTest.kt
+git add app && git commit -q -m "a test of the app"
+rapport() { # <zone> [<text>]: the zone report, committed in the current branch
+  mkdir -p docs/audits/ultra
+  printf '%s\n' "${2:-$(printf '# Rapport\n\ntests: FooTest\n\n- chemin: Accueil | test: FooTest#works')}" > "docs/audits/ultra/tour-9-$1-rapport.md"
+  git add "docs/audits/ultra/tour-9-$1-rapport.md" && git commit -q -m "report of $1"
+}
+team rapnone && review rapnone
+expect "no zone report: refused" 1 "no zone report" oui tour-9 rapnone
+team rapnotests && rapport rapnotests "$(printf '# Rapport\n\n- chemin: Accueil | test: FooTest#works')" && review rapnotests
+expect "a zone report without « tests: »: refused" 1 "no line « tests: »" oui tour-9 rapnotests
 git checkout -q -b eq/tour-9-decnew fx-int && echo "- 2026-11-11 · du lot decnew" >> docs/DECISIONS.md && git commit -q -am "decnew writes DECISIONS.md" && review decnew
 expect "DECISIONS.md written from batch 2: refused" 1 "docs/decisions/tour-9-decnew.md" oui tour-9 decnew
-git checkout -q -b eq/tour-9-decown fx-int && mkdir -p docs/decisions && echo "- 2026-11-11 · un choix" > docs/decisions/tour-9-decown.md && git add docs/decisions && git commit -q -m "decown's own file" && review decown
+git checkout -q -b eq/tour-9-decown fx-int && mkdir -p docs/decisions && echo "- 2026-11-11 · un choix" > docs/decisions/tour-9-decown.md && git add docs/decisions && git commit -q -m "decown's own file" && rapport decown && review decown
 expect "a lot's own decisions file is ready" 0 "PRÉ-VOL : PRÊT" non tour-9 decown
 git checkout -q -b eq/tour-9-decother fx-int && mkdir -p docs/decisions && echo "- 2026-11-11 · un choix" > docs/decisions/tour-9-autre.md && git add docs/decisions && git commit -q -m "decother writes another lot's file" && review decother
 expect "another lot's decisions file: refused" 1 "autre lot" oui tour-9 decother

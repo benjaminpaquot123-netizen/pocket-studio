@@ -1,5 +1,5 @@
 # Relecture du chantier 7 « Pad Live » (tour 5, étape 4)
-Relu : 0f44752756ab8036782fdb8319713ad8c49c9e15
+Relu : 274844ce006f2297ef22f993ea7baa071ede8129
 
 Relecteur neuf (ni auteur du code). Diff lu : `git diff bb4f1a26...HEAD` (moteur `ClipLauncher`, `RhythmViewModel`, `PadLiveScreen`, `AppRoot`, aides 14 langues, tests, captures), le rapport de l'auteur et les 6 lignes de DECISIONS.
 
@@ -52,5 +52,10 @@ tel-08, tel-11, tel-12, tel-17 (comme le rapport), plus : « Enregistrer ce que 
 
 - Fusion 7daa06ef (`git show --cc`) : aucun conflit, aucune résolution manuelle. 400e3507 ne change que l'attendu de T5-PADRETRIG dans `test_ultra_bench.py` : la preuve moteur est maintenant `padlive_hit_retouched_sounds_at_once` (le défaut est corrigé) ; `verifie-chantier.py --preuves T5-PADRETRIG` sort exactement cette ligne, `test_ultra_bench.py` OK.
 - Le rapport reçoit sa ligne « tests: » (commit `0f447527`), relu ici.
+
+## Delta (3) : saut connu du banc, fusion de fx-int
+
+- `d409a1dd` n'ajoute que la ligne `BenchPadLiveStopTest#drive` à `selftest-sauts-connus.txt`, au bon rang alphabétique, au format des autres ; la classe hérite de `HumanTester` ; le selftest ne signale rien (rc=0) ; `test_ultra_bench.py` OK.
+- `274844ce` : fusion de fx-int (lot « access ») sans conflit ni résolution manuelle.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

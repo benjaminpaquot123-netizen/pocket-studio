@@ -1,1 +1,1 @@
-touche 294 897
+touche welcome_guided

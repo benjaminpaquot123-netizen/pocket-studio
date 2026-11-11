@@ -295,7 +295,26 @@ abstract class HumanTester(private val seat: String) {
                 if (System.currentTimeMillis() > waitEnd) { journal.appendText("#$n no gesture for too long: end\n"); end("abandon : plus de geste"); return }
                 Thread.sleep(100)
             }
-            val cmd = cmdFile.readText().trim()
+            var cmd = cmdFile.readText().trim()
+            // Socle du banc, point 3: « touche <étiquette> » (and appui-long, double-touche) aims at the node of that test
+            // tag, brought into view and touched in its middle: a change of layout no longer breaks a replay. The gesture
+            // then goes on as the pixels it resolved to (thumb's reach, finger's journal, the engine's lending).
+            val aimed = cmd.split(Regex("\\s+"))
+            if (aimed.size == 2 && aimed[0].lowercase() in TAG_GESTURES && aimed[1].replace(',', '.').toFloatOrNull() == null) {
+                val tag = aimed[1]
+                val at = runCatching { reachTag(tag) }.getOrNull()
+                if (at == null) {
+                    journal.appendText("#$n > $cmd\n#$n BANC étiquette introuvable : $tag\n")
+                    if (source != null) {
+                        File(dir, "rejeu.txt").writeText("divergé au pas $n (étiquette « $tag » introuvable)"); end("rejeu : étiquette $tag introuvable"); return
+                    }
+                    say("Banc : rien ne porte l'étiquette « $tag » sur cet écran : rien n'a été fait.")
+                    n++
+                    continue
+                }
+                journal.appendText("#$n ETIQUETTE $tag : ${at.first.toInt()} ${at.second.toInt()}\n")
+                cmd = "${aimed[0]} ${at.first.toInt()} ${at.second.toInt()}"
+            }
             val words = cmd.split(Regex("\\s+"))
             val kind = words[0].lowercase()
             fun num(i: Int) = words.getOrNull(i)?.replace(',', '.')?.toFloatOrNull()
@@ -322,7 +341,7 @@ abstract class HumanTester(private val seat: String) {
             }
             if (malformed) {
                 journal.appendText("#$n BANC geste mal écrit : $cmd\n")
-                say("Banc : geste mal écrit (« $cmd ») : rien n'a été fait. Les gestes : touche X Y, appui-long X Y, double-touche X Y, glisse X1 Y1 X2 Y2, tape X Y N MS (ou tape X Y N tempo : la pulsation du défi), ecris TEXTE, retour, attends S.")
+                say("Banc : geste mal écrit (« $cmd ») : rien n'a été fait. Les gestes : touche X Y (ou touche ÉTIQUETTE), appui-long X Y, double-touche X Y, glisse X1 Y1 X2 Y2, tape X Y N MS (ou tape X Y N tempo : la pulsation du défi), ecris TEXTE, retour, attends S.")
                 if (kind != "attends" && kind != "regarde") gestures--
                 n++
                 continue
@@ -1978,6 +1997,9 @@ abstract class HumanTester(private val seat: String) {
     }.getOrElse { "inside? ${it.message}" }
 
     companion object {
+        /** Socle du banc, point 3: the gestures that may name a test tag instead of pixels (« touche <étiquette> »). */
+        val TAG_GESTURES = setOf("touche", "appui-long", "double-touche")
+
         /** PLAN-RESTE 5.10: the bench's own exceptions a seat lives through before it ends « banc ». */
         const val BENCH_EXCEPTIONS_MAX = 4
         /** PLAN-RESTE 5.3: a gesture in a window with a text field longer than this (real seconds) is said the bench's. */

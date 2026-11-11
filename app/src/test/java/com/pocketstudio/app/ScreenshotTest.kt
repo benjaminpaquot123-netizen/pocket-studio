@@ -167,12 +167,14 @@ open class ScreenshotTest {
 
     @Test
     fun recette() {
-        val checklist = ChecklistParser.parse(File("src/main/assets/recette.json").readText())
+        // Socle du banc, point 1: a frozen copy (src/test/resources/capture/), not the milestone's list, rewritten at every
+        // milestone: the image showed « 18 essais » long after recette.json said 10, red in every full run.
+        val checklist = ChecklistParser.parse(File("src/test/resources/capture/recette.json").readText())
         val results = mapOf(
             checklist.items[0].id to CheckResult(CheckStatus.Pass),
             checklist.items[1].id to CheckResult(CheckStatus.Fail, "Petit clic au démarrage"),
         )
-        val changelog = File("src/main/assets/changelog.txt").readText().trim()
+        val changelog = File("src/test/resources/capture/changelog.txt").readText().trim()
         shoot("recette") {
             RecetteScreen(RecetteUiState(checklist, results, changelog), stream, 17.3, { _, _ -> }, {}, {})
         }

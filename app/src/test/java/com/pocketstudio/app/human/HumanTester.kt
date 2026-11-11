@@ -364,7 +364,10 @@ abstract class HumanTester(private val seat: String) {
                     benchExceptions++
                     journal.appendText("#$n BANC exception du banc (pas de l'appli) : ${e.javaClass.name}: ${e.message?.take(300)}\n${e.stackTrace.take(8).joinToString("\n") { "    at $it" }}\n")
                     say("Banc : le banc a eu un souci pendant ce geste (${e.javaClass.simpleName}) ; ce n'est pas l'appli. Note-le dans « incidents-banc » avec banc?: banc.")
+                    // Review of « banc6b » (M3): what the gesture saw before the bench's exception is written, as for any gesture.
+                    problems.forEach { journal.appendText("#$n SCREEN ERROR $it\n") }
                     problems.clear()
+                    stalls(journal, n)
                     n++
                     if (benchExceptions >= BENCH_EXCEPTIONS_MAX) { end("banc : $benchExceptions exceptions du banc"); return }
                     continue

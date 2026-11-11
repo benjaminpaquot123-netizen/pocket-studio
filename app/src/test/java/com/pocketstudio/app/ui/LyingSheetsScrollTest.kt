@@ -1,7 +1,6 @@
 package com.pocketstudio.app.ui
 
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -47,10 +46,13 @@ class LyingSheetsScrollTest {
 
     private fun node(tag: String): SemanticsNode = compose.onNodeWithTag(tag, useUnmergedTree = true).fetchSemanticsNode()
 
-    /** [tag] whole on the screen: nothing of it clipped by its sheet or its scroll, nor past the screen's edges. */
+    /**
+     * [tag] whole on the screen: nothing of it clipped by its sheet or its scroll, nor past the screen's edges. The
+     * node's own box, as its size is (its layout's inner box leaves out a padding set before the tag: « tempo_tap »).
+     */
     private fun assertWhole(tag: String, where: String) {
         val n = node(tag)
-        val seen = n.layoutInfo.coordinates.boundsInWindow().intersect(screen)
+        val seen = n.boundsInWindow.intersect(screen)
         val whole = seen.width >= n.size.width - 1 && seen.height >= n.size.height - 1
         assertTrue("$where: « $tag » not whole on screen (seen ${seen.width} × ${seen.height} of ${n.size.width} × ${n.size.height} px)", whole)
     }

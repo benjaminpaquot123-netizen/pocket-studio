@@ -1,0 +1,5 @@
+# Shared journals where every lot only ADDS lines at the end (docs/AIDE-FUSIONS-TESTS.md, « Documents partagés »):
+# two lots merged one after the other keep both their lines instead of a conflict (git's built-in union driver).
+# Never for a file whose lines are edited in place (verdicts.tsv, PLAN-RESTE.md): union would keep the old row and the new.
+docs/DECISIONS.md merge=union
+docs/audits/ultra/banc-fiable-journal.md merge=union

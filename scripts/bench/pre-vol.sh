@@ -194,11 +194,18 @@ portal="scripts/bench/fusion-equipes.sh"
 [ -f "$portal" ] && [ -f scripts/bench/relecture-verdict.py ] || { echo "pre-vol : le portail ($portal, relecture-verdict.py) n'est pas dans ce dépôt : à lancer depuis l'atelier d'intégration." >&2; exit 2; }
 # The portal's refusals as this script knew them (their count and a fingerprint of their lines): a rule added or
 # reworded since is said, never silently missed.
-KNOWN_RULES="11 d6fc511231"
+KNOWN_RULES="12 61ed156166"
 rules="$(grep -E 'not merged|undone' "$portal" | grep -c .) $(grep -E 'not merged|undone' "$portal" | sed 's/^ *//' | sha256sum | cut -c1-10)"
 [ "$rules" = "$KNOWN_RULES" ] || warn "le portail a changé depuis l'écriture du pré-vol (règles : $rules, connues : $KNOWN_RULES)" \
   "relire les lignes « not merged » / « undone » de $portal, mettre à jour pre-vol.sh et sa ligne KNOWN_RULES"
 replays() { git ls-tree --name-only "$1:docs/audits/ultra/rejeux" 2>/dev/null | grep -v '^_' | sort || true; }
+# The batch of merges in progress (the portal's rules are frozen per batch: « from_paquet N » in the portal).
+paquet="$(sed -n 's/^paquet: *\([0-9][0-9]*\).*/\1/p' scripts/bench/portail-paquet.txt 2>/dev/null | head -1)"
+paquet="${paquet:-1}"
+# A rule of the portal that starts with batch <N>: refused from then on, said before (« à partir du paquet N »).
+rule_from() { # <N> <message> <fix>
+  if [ "$paquet" -ge "$1" ]; then bad "$2" "$3"; else warn "$2 — refusé à partir du paquet $1 (paquet en cours : $paquet)" "$3"; fi
+}
 
 echo "== Atelier d'intégration ($(git rev-parse --abbrev-ref HEAD), $(git rev-parse --short HEAD))"
 if [ -z "$(git status --porcelain --untracked-files=no | grep -v '^ T')" ]; then
@@ -264,6 +271,9 @@ for zone in "$@"; do
   # 3. What a team branch never brings.
   touched="$(git diff --name-only "$base" "$branch" -- "$traces_root" | tr '\n' ' ')"
   [ -z "$touched" ] || bad "la branche touche aux traces du portail : $touched" "retirer ces fichiers de la branche : seul le portail les écrit"
+  decisions="$(git diff --name-only "$base" "$branch" -- docs/DECISIONS.md docs/decisions | grep -vxF "docs/decisions/$tour-$zone.md" | tr '\n' ' ')"
+  [ -z "$decisions" ] || rule_from 2 "décisions écrites ailleurs que dans docs/decisions/$tour-$zone.md (docs/DECISIONS.md ou le fichier d'un autre lot) : $decisions" \
+    "déplacer ces lignes dans docs/decisions/$tour-$zone.md (une ligne par choix) ; le portail le liste lui-même dans docs/DECISIONS.md après la fusion"
   links="$(git ls-tree -r "$branch" | awk '$1 == "120000" {print $4}' | tr '\n' ' ')"
   [ -z "$links" ] || bad "lien(s) symbolique(s) commité(s) : $links" "git rm --cached ces liens (les sous-modules liés de l'atelier ne se committent jamais)"
 

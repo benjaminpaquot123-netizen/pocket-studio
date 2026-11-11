@@ -93,4 +93,22 @@ class HiddenDefectsGuardTest {
         val named = exists("pick_filter_0") || shown(hasText(sweep, substring = true)) || shown(hasText("déjà", substring = true))
         assertTrue("the filter's sweep just added is gone from « Automatiser un réglage » (looked for « $sweep »)", named)
     }
+
+    /**
+     * B20 (retours-benjamin.md, tel-14 ❌ « figé », video read frame by frame): a curve of « Envoi réverbe · Batterie »,
+     * « Voir le réglage »: « Effets · Batterie » opens at its top (its effects, its pad XY), the send far below, out of
+     * view; Benjamin had to scroll down to « Réverbe et écho communs » to find it.
+     */
+    @Test
+    @KnownDefect("CACHE-B20", "« Voir le réglage » leaves the reverb send out of view")
+    fun showTheSettingBringsTheReverbSendIntoView() {
+        h.start { songWithTracks(); addAutomation(AutoTarget(AutoTarget.SEND, 0, 0)) }
+        val i = h.vm.project.value.automation.indexOfFirst { it.target == AutoTarget(AutoTarget.SEND, 0, 0) }
+        assertTrue("the curve « Envoi réverbe · Batterie » is there", i >= 0)
+        tap("tab_Mix")
+        tap("auto_show_$i")
+        h.awaitTag("send_0_0")
+        assertTrue("the drums' effects opened", exists("effects_box_0"))
+        assertTrue("« Voir le réglage » leaves the reverb send out of view", compose.onNodeWithTag("send_0_0").isDisplayed())
+    }
 }

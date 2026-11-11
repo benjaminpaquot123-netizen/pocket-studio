@@ -346,7 +346,15 @@ abstract class HumanTester(private val seat: String) {
             }
             if (kind == "retour") journal.appendText("#$n RETOUR\n")
             try {
+                val dialogsBefore = dialogSeconds.size
                 play(cmd)
+                dialogSeconds.drop(dialogsBefore).forEach { sec ->
+                    journal.appendText("#$n DIALOGUE ${"%.1f".format(java.util.Locale.ROOT, sec)} s\n")
+                    if (sec > DIALOG_SLOW_S) {
+                        journal.appendText("#$n BANC dialogue lent (${"%.0f".format(java.util.Locale.ROOT, sec)} s > $DIALOG_SLOW_S s)\n")
+                        say("Banc : ce geste dans la fenêtre à champ de texte a pris ${"%.0f".format(java.util.Locale.ROOT, sec)} s réelles au banc ; un téléphone répond tout de suite. Note-le dans « incidents-banc » avec banc?: temps.")
+                    }
+                }
                 problems.forEach { journal.appendText("#$n SCREEN ERROR $it\n") }
                 problems.clear()
             } catch (e: Throwable) {
@@ -1212,6 +1220,18 @@ abstract class HumanTester(private val seat: String) {
     private fun play(cmd: String) {
         beforeGesture?.invoke(cmd)
         followTextDialogs()
+        // PLAN-RESTE 5.3 (control 4): a gesture made in (or closing) a window with a text field is timed in real seconds.
+        val inDialog = textDialog
+        val at = System.nanoTime()
+        try {
+            playGesture(cmd)
+        } finally {
+            if (inDialog || textDialog) dialogSeconds += (System.nanoTime() - at) / 1e9
+        }
+    }
+
+    private fun playGesture(cmd: String) {
+        followTextDialogs()
         val words = cmd.split(Regex("\\s+"))
         val kind = words[0].lowercase()
         flac.register()
@@ -1926,6 +1946,8 @@ abstract class HumanTester(private val seat: String) {
     companion object {
         /** PLAN-RESTE 5.10: the bench's own exceptions a seat lives through before it ends « banc ». */
         const val BENCH_EXCEPTIONS_MAX = 4
+        /** PLAN-RESTE 5.3: a gesture in a window with a text field longer than this (real seconds) is said the bench's. */
+        const val DIALOG_SLOW_S = 30
 
         /** A phone like the owner's (Honor), at 1.5 px a dp: images small enough to read quickly. */
         const val PHONE = "w392dp-h852dp-hdpi"

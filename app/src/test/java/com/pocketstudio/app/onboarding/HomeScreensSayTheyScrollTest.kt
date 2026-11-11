@@ -34,8 +34,8 @@ import org.robolectric.annotation.GraphicsMode
 /**
  * Round 5, chantier 6 (hands-on audit G9; Benjamin, 2026-11-06: « la carte suivante est coupée en bas mais rien ne le
  * signale »): « Bienvenue », « Que veux-tu faire ? » and « Nouveau projet » say that they scroll. While a card is below
- * the fold, the list carries « ↓ n autres » (n: the cards not wholly in view), a touch on it brings them up, and at the
- * end of the list it is gone. A list that fits carries nothing. Rule 17 of docs/DESIGN.md, read by [LayoutScan.unhintedScrolls].
+ * the fold, the list opens with « ↓ n autres » (n: the cards not wholly in view), a touch on it brings them up; scrolled,
+ * a fade at the bottom edge goes on saying it, and at the end of the list nothing is said. A list that fits carries nothing. Rule 17 of docs/DESIGN.md, read by [LayoutScan.unhintedScrolls].
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -92,6 +92,8 @@ class HomeScreensSayTheyScrollTest {
         compose.onNodeWithTag("scroll_hint").performClick()
         compose.waitForIdle()
         assertTrue("$list: the touch scrolled", scrolled(list) > before + 1f)
+        // Scrolled: the chip has said it, the fade at the bottom edge goes on saying it.
+        if (more(list)) assertEquals("$list: scrolled, still a sign", emptyList<String>(), LayoutScan.unhintedScrolls(compose))
         // At the end of the list, nothing more is said.
         repeat(6) { if (more(list)) { compose.onNodeWithTag(list).performTouchInput { swipeUp() }; compose.waitForIdle() } }
         assertTrue("$list: at the end", !more(list))
@@ -129,7 +131,7 @@ class HomeScreensSayTheyScrollTest {
         compose.waitForIdle()
         assertTrue("« Autres façons de commencer » open: the list goes on", more("new_project_list"))
         assertEquals(emptyList<String>(), LayoutScan.unhintedScrolls(compose))
-        assertTrue("the hint is there: ${hintWords()}", hintWords()?.startsWith("↓ ") == true)
+        assertTrue("the fade says it", node("scroll_hint_fade") != null)
     }
 
     /** A tablet lying down: the two columns hold every card, nothing is said. */

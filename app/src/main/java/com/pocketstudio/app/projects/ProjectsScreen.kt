@@ -141,7 +141,10 @@ fun ProjectsScreen(
     // « Nouveau projet » is open for the project that was open when it was asked: once another one is
     // created or opened (the screens are rebuilt on it) the page is closed, back on the list.
     var startedFor by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<String?>(if (newOnly) currentId else null) }
-    val choosingStart = startedFor == currentId
+    // Opened on the page alone ([newOnly]): always the page. Round 5, chantier 6: a song made from it rebuilds the screens on
+    // the new project, and the page's saved state came back the next time it opened, for the old project: « Nouveau
+    // morceau » showed « Mes projets » (a second style in one touch: 4 touches instead of 2).
+    val choosingStart = newOnly || startedFor == currentId
     val setChoosingStart = { open: Boolean -> startedFor = if (open) currentId else null }
     var showTrash by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
     // A deletion for good is asked first: the trash entry (or EMPTY_ALL for the whole trash).

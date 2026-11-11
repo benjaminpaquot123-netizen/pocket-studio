@@ -842,8 +842,8 @@ dialogue:share_bilan|share_bilan_ok|texte-faux	corrigé	tour-5		tour-5
 dialogue:synth_sounds_name_dialog|name_clear|perdu	nouveau	tour-5	
 dialogue:welcome|launch_challenges|lent	nouveau	tour-5	
 dialogue:wizard|wizard_style_play_house|incompris	nouveau	tour-5	
-dialogue:« Partager mon morceau · House-m »|niveau tres fort les plateformes le baisseront|incompris	nouveau	tour-5	
-dialogue:« मेरा गाना शेयर करो · Lo-fi-hip »|लेवल तेज कलब मयूजिक जैसा|texte-faux	nouveau	tour-5	
+dialogue:« Partager mon morceau · House-m »|niveau tres fort les plateformes le baisseront|incompris	corrigé	tour-5		tour-5
+dialogue:« मेरा गाना शेयर करो · Lo-fi-hip »|लेवल तेज कलब मयूजिक जैसा|texte-faux	corrigé	tour-5		tour-5
 guide_panel/tab_simple_Morceau|イントロ 小節 1/64|texte-faux	corrigé	tour-5	banc fiable 3.2 (verdicts.tsv)	tour-5
 live_grid/tab_Live|live_mute_remix|texte-faux	nouveau	tour-5	
 live_grid|live_take_undo|incompris	nouveau	tour-5	

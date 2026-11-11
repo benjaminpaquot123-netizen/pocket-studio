@@ -253,7 +253,11 @@ def main():
     with tempfile.TemporaryDirectory() as d:
         same_button(d)
     with tempfile.TemporaryDirectory() as d:
+        fixed_button_comeback(d)
+    with tempfile.TemporaryDirectory() as d:
         measured_numbers(d)
+    with tempfile.TemporaryDirectory() as d:
+        empty_cases(d)
     print("ultra bench scripts: OK")
 
 
@@ -301,6 +305,29 @@ def same_button(d):
     check(", 0 même bouton, " in text, "none counted:\n" + text)
 
 
+def fixed_button_comeback(d):
+    """PLAN-RESTE 6.2: A d #21 of round 5 (T1-22, Mes projets) was lost by rule v1: its key changed (another route,
+    another symptom), so it was only a « même bouton ». A « même bouton » whose button was « corrigé » at an earlier
+    round is a « revient ? » candidate; a reader confirms it (« revient ») or refuses it (back to « même bouton »);
+    a button fixed at this round or later, or never fixed, stays « même bouton »."""
+    write(os.path.join(d, "lotA", "a", "journal.txt"), JOURNAL_A)
+    write(os.path.join(d, "lotA", "a", "rapport.md"), REPORT_BUTTONS)
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\tcorrige_au\n"
+                "mixer|padlive_pad_4|perdu\tcorrigé\ttour-2\tT2-01\ttour-2\n"      # fixed at round 2: a candidate at round 5
+                "settings|help_padlive|perdu\tcorrigé\ttour-3\tT5-01\ttour-5\n")   # fixed at round 5 itself: not one
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
+    check("[revient ?] mineur ×1 (A/a#2) padlive · « padlive_pad_4 » · rien" in text, "the same button, fixed before: a candidate:\n" + text)
+    check("[même bouton (tour-3)] mineur ×1 (A/a#4) padlive · « help_padlive » · rien" in text, "fixed at this round: no candidate:\n" + text)
+    check(", 1 candidat(s) « revient ? » " in text, "counted as a candidate:\n" + text)
+    write(os.path.join(d, "revient.tsv"), "tour\tcle\trevient\ntour-5\tpadlive|padlive_pad_4|rien\toui\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
+    check("[revient] mineur ×1 (A/a#2)" in text, "confirmed by a reader:\n" + text)
+    write(os.path.join(d, "revient.tsv"), "tour\tcle\trevient\ntour-5\tpadlive|padlive_pad_4|rien\tnon\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
+    check("[même bouton (tour-2)] mineur ×1 (A/a#2)" in text, "refused by a reader: the same button, another defect:\n" + text)
+
+
 def measured_numbers(d):
     """PLAN-RESTE 6.4: tableau-de-bord.py's measured(), on a repository, a docs folder and a round made here: the
     uncommitted files, the round's reviews (the bench's own aside, « corrigé » rows aside), the fix commits of the
@@ -343,6 +370,40 @@ def measured_numbers(d):
           f"lot B not played; 3 seats played, 2 cut (the bench's end, a freeze): {m}")
     m = tb.measured(tour, "tour-9", root=repo, docs=os.path.join(d, "nowhere"))
     check("relecture_graves" not in m and "relecture_bloquants" not in m, f"no reviews folder: unknown, not 0: {m}")
+
+
+def empty_cases(d):
+    """PLAN-RESTE 6.5: condition I's « cases vides » by program: the screens of docs/CARTE-CODE.md (their page tags in
+    carte-ecrans.tsv) that no journal of the round reaches (a route's page, tab or dialogue), and the screens the « œil
+    neuf » pass (§12.11, the round's ecrans-oeil-neuf.txt) did not analyse; no map: no number (never a 0). Every screen
+    of the real map is a tag of the app (a renamed screen fails here, not silently in the dashboard)."""
+    sys.path.insert(0, HERE)
+    tb = __import__("tableau-de-bord")
+    docs = os.path.join(d, "docs")
+    write(os.path.join(docs, "carte-ecrans.tsv"), "# carte\necran\tfichier\nlaunch\tA/onboarding/LaunchChoice.kt\n"
+          "mixer\tA/mixer/MixerScreen.kt\nprojects\tA/projects/ProjectsScreen.kt\nwizard\tA/library/WizardScreen.kt\n"
+          "recette\tA/recette/RecetteScreen.kt\n")
+    tour = os.path.join(d, "tour-9")
+    write(os.path.join(tour, "lotA", "a", "journal.txt"), "#1 ROUTE launch | MODE simple | EMPREINTE a\n#2 ROUTE mixer/tab_Mix | MODE pro\n")
+    write(os.path.join(tour, "lotA", "b", "journal.txt"), "#1 ROUTE dialogue:wizard | MODE simple\n#2 ROUTE dialogue:« Mes projets » | MODE simple\n")
+    m = tb.measured(tour, "tour-9", root=d, docs=docs)
+    check(m.get("cases_vides") == 2, f"projects and recette reached by no journal (« Mes projets » in words is no tag): {m}")
+    check(m.get("ecrans_non_analyses") == 5, f"no « œil neuf » list: 5 screens not analysed: {m}")
+    write(os.path.join(tour, "ecrans-oeil-neuf.txt"), "# analysés\nlaunch\nmixer\nwizard\n")
+    m = tb.measured(tour, "tour-9", root=d, docs=docs)
+    check(m.get("ecrans_non_analyses") == 2 and m.get("ecrans_vides_noms") == "projects, recette",
+          f"two screens left by the pass, named: {m}")
+    m = tb.measured(tour, "tour-9", root=d, docs=os.path.join(d, "nowhere"))
+    check("cases_vides" not in m and "ecrans_non_analyses" not in m, f"no map: unknown, not 0: {m}")
+    real = os.path.join(HERE, "..", "..", "docs", "audits", "ultra", "carte-ecrans.tsv")
+    screens = [l.split("\t")[0] for l in open(real, encoding="utf-8").read().splitlines() if l.strip() and not l.startswith(("#", "ecran\t"))]
+    app = ""
+    for root_dir, _, files in os.walk(os.path.join(HERE, "..", "..", "app", "src", "main", "java")):
+        for f in files:
+            if f.endswith(".kt"):
+                app += open(os.path.join(root_dir, f), encoding="utf-8").read()
+    missing = [s for s in screens if f'"{s}"' not in app]
+    check(len(screens) >= 30 and not missing, f"every screen of the map is a tag of the app ({len(screens)}): missing {missing}")
 
 
 REPORT_V2_GRAVES = """siege: a | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
@@ -2369,6 +2430,9 @@ def proof_must_run(d):
     check("A : preuve d'appli AppProofTest#provesIt est un test du banc (hérite de HumanTester)" in out, "nor through a base class:\n" + out)
     out = judge('class AppProofTest : Object() {\n  ' + seated + other)
     check("chantier : 0 écarts" in out, "another base class is no bench:\n" + out)
+    # Review of « verdicts » (medium): a constructor whose defaults call functions (nested parentheses) hid the seat.
+    out = judge('class AppProofTest(n: Int = f(g(1)), s: String = h()) : HumanTester(name(n)) {\n  ' + seated + other)
+    check("A : preuve d'appli AppProofTest#provesIt est un test du banc (hérite de HumanTester)" in out, "nested parentheses in the constructor (seat_nested):\n" + out)
 
 
 def native_missing(d):

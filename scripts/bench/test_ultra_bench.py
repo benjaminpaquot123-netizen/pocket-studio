@@ -368,6 +368,22 @@ def measured_numbers(d):
     write(os.path.join(tour, "lotA", "c", "mesures.json"), json.dumps({"mesures": {"fin": "fin", "gels": 2}}))
     m = tb.measured(tour, "tour-9", root=repo, docs=docs)
     check(m.get("fichiers_non_commites") == 1, f"one file left behind: {m}")
+    # Dry run 7.6 (casse 3): what the portal writes just before its traces' commit (its trace folder, the index line of
+    # docs/DECISIONS.md, named in PS_PORTAIL_ECRIT) is not « work left »: its dashboard said 2 files uncommitted.
+    write(os.path.join(repo, "docs", "audits", "ultra", "portail", "2026-11-10-tour-9-zone0", "fusion.txt"), "fusion: y\n")
+    write(os.path.join(repo, "docs", "DECISIONS.md"), "# Décisions\n")
+    git("add", "docs")
+    git("commit", "-q", "-m", "an earlier merge's traces")
+    write(os.path.join(repo, "docs", "audits", "ultra", "portail", "2026-11-11-tour-9-zone1", "fusion.txt"), "fusion: x\n")
+    write(os.path.join(repo, "docs", "DECISIONS.md"), "# Décisions\n- lot zone1\n")
+    os.environ["PS_PORTAIL_ECRIT"] = "docs/audits/ultra/portail/2026-11-11-tour-9-zone1 docs/DECISIONS.md"
+    try:
+        m = tb.measured(tour, "tour-9", root=repo, docs=docs)
+    finally:
+        del os.environ["PS_PORTAIL_ECRIT"]
+    check(m.get("fichiers_non_commites") == 1, f"the portal's own files being committed are not left behind: {m}")
+    m = tb.measured(tour, "tour-9", root=repo, docs=docs)
+    check(m.get("fichiers_non_commites") == 3, f"outside the portal they are: {m}")
     check(m.get("relecture_graves") == 1 and m.get("relecture_bloquants") == 1, f"the review's open rows, the bench's review aside: {m}")
     check(m.get("corrections_sans_test") == 1, f"one fix commit without a test on eq/tour-9-*: {m}")
     check(m.get("lots_non_joues") == 1 and m.get("sieges_joues") == 3 and m.get("sieges_coupes_par_le_banc") == 2,

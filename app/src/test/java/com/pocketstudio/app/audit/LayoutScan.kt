@@ -57,6 +57,8 @@ object LayoutScan {
             val laid = texts.filterNot { inChip(it) }
             out += overlaps(laid, density)
             out += overButtons(laid, all.filterNot { n -> chips.any { it.id == n.id } }, density)
+            // The chip itself (and anything else that floats) is a control like any other here: over a control.
+            out += floatingOverControls(rule, density)
         }
         if (Kind.CONTRAST in checks) {
             // Each window (the screen, a dialog, a menu) on its own pixels.
@@ -355,6 +357,55 @@ object LayoutScan {
             }
         }
         return out
+    }
+
+    /**
+     * Tour 5, lot « moyens » C (review of the home lot, M-b): something touchable drawn over a control wholly on screen
+     * (the scroll hint « ↓ n autres » over a card, any floating button over a list) takes the touches meant for that control. The one
+     * on top is the later in the drawing order; the one under it is judged only when wholly on screen (a card cut by a
+     * list's edge is read by the home screens' own test, HomeScreensSayTheyScrollTest).
+     */
+    private fun floatingOverControls(rule: ComposeTestRule, density: Float): List<Finding> {
+        val controls = rule.onAllNodes(CONTROL, useUnmergedTree = false).fetchSemanticsNodes(atLeastOneRootRequired = false)
+            .filter { it.config.contains(SemanticsActions.OnClick) && !hidden(it) }
+        val min = 3f * density
+        val out = mutableListOf<Finding>()
+        for (i in controls.indices) for (j in i + 1 until controls.size) {
+            val a = controls[i]
+            val b = controls[j]
+            if (a.root != b.root || ancestorOf(a, b) || ancestorOf(b, a)) continue
+            val x = a.boundsInRoot.intersect(b.boundsInRoot)
+            if (x.width < min || x.height < min) continue
+            val (under, over) = if (drawnAfter(b, a)) a to b else b to a
+            if (!wholly(under)) continue
+            // Floating: over a list's control without being part of that list (a piano's black key over its white
+            // neighbours is the instrument itself, in the same layout).
+            val list = generateSequence(under.parent) { it.parent }.firstOrNull {
+                it.config.contains(SemanticsProperties.VerticalScrollAxisRange) || it.config.contains(SemanticsProperties.HorizontalScrollAxisRange)
+            } ?: continue
+            if (ancestorOf(list, over)) continue
+            out += Finding(Kind.OVERLAP, nameOf(over).ifBlank { tagOf(over) },
+                "floats over the touchable « ${nameOf(under).ifBlank { tagOf(under) }.take(40)} » (%.0f x %.0f dp)".format(x.width / density, x.height / density))
+        }
+        return out
+    }
+
+    /** Whether [n] is drawn after [m] (over it): the later child where their ancestries part. */
+    private fun drawnAfter(n: SemanticsNode, m: SemanticsNode): Boolean {
+        fun path(x: SemanticsNode): List<SemanticsNode> = generateSequence(x) { it.parent }.toList().asReversed()
+        val pn = path(n)
+        val pm = path(m)
+        var k = 0
+        while (k < pn.size && k < pm.size && pn[k].id == pm[k].id) k++
+        if (k == 0 || k >= pn.size || k >= pm.size) return pn.size > pm.size
+        val siblings = pn[k - 1].children.map { it.id }
+        return siblings.indexOf(pn[k].id) > siblings.indexOf(pm[k].id)
+    }
+
+    /** [n] wholly drawn: nothing of it cut by a parent, a list's edge or the screen's. */
+    private fun wholly(n: SemanticsNode): Boolean {
+        val shown = n.boundsInRoot
+        return shown.width >= n.size.width - 1f && shown.height >= n.size.height - 1f
     }
 
     private fun samePixels(a: androidx.compose.ui.graphics.PixelMap, b: androidx.compose.ui.graphics.PixelMap?): Boolean {

@@ -111,6 +111,22 @@ class QuickStyleCardTest {
         assertTrue("Cut on a style card:\n" + problems.joinToString("\n"), problems.isEmpty())
     }
 
+    /**
+     * Tour 5, lot « moyens » C (« restes », out of lot): the opened « Hip-hop » header was pink on pink, its name light on
+     * a pale wash. Its panel was see-through (the family's colour at 16 %), so it read only on the page's dark: an opened
+     * header is read on its own panel, whatever lies under it (here, nothing: the page's own background is not drawn).
+     */
+    @Test
+    fun anOpenedFamilyHeaderReadsWhateverLiesUnderIt() {
+        show(1f) { Lang.FR }
+        openFamily()
+        compose.onNodeWithTag("quick_family_${style.family}").performScrollTo()
+        val density = androidx.test.core.app.ApplicationProvider.getApplicationContext<android.content.Context>().resources.displayMetrics.density
+        val found = com.pocketstudio.app.audit.LayoutScan.scan(compose, density, setOf(com.pocketstudio.app.audit.LayoutScan.Kind.CONTRAST))
+            .filter { it.what == "Hip-hop" || it.what == "7 styles" }
+        assertEquals("the opened header's words under AA contrast", emptyList<Any>(), found)
+    }
+
     /** The images: the opened family, the style's card with its two buttons (the phone, then the 130 % size). */
     @Test
     fun cardImage() {

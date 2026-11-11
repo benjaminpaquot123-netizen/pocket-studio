@@ -58,7 +58,9 @@ fun rememberProjectZipSender(rhythmVm: RhythmViewModel): ProjectZipSender {
     val sender = remember(rhythmVm, projectsVm) { ProjectZipSender(context, projectsVm, rhythmVm) }
     var files by rememberSaveable { mutableStateOf(false) }
     sender.saved?.let { (name, kept) ->
-        ShareBilanDialog(zipSavedLines(name, kept), dismiss = { sender.saved = null }, seeFiles = { sender.saved = null; files = true })
+        // Not kept: « Mes fichiers » would open Documents, where the .zip is not (tour 5, lot « moyens » C).
+        ShareBilanDialog(zipSavedLines(name, kept), dismiss = { sender.saved = null },
+            seeFiles = if (kept) ({ sender.saved = null; files = true }) else null)
     }
     if (files) MyExportsDialog { files = false }
     return sender

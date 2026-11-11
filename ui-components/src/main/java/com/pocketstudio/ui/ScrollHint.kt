@@ -1,6 +1,10 @@
 package com.pocketstudio.ui
 
 import androidx.compose.foundation.ScrollState
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.SideEffect
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,7 +49,7 @@ import kotlinx.coroutines.launch
 /**
  * Rule 17 of docs/DESIGN.md, « Tout défilement se voit » (hands-on audit G9; Benjamin, 2026-11-06: « la carte suivante est
  * coupée en bas mais rien ne le signale »): a list taller than the screen fades out at its bottom edge and carries a small
- * floating chip « ↓ 4 autres » while it is at its top and something is below. A touch on the chip brings the first of
+ * chip « ↓ 4 autres » under it while it is at its top and something is below. A touch on the chip brings the first of
  * them up; once the list is scrolled the chip is gone and the fade stays until the end of the list. The things counted are the ones marked [scrollHintItem] (the cards of a home screen);
  * none marked below but more to see: « ↓ La suite ».
  */
@@ -101,21 +105,38 @@ fun Modifier.scrollHintItem(state: ScrollHintState): Modifier {
 }
 
 /**
- * The list's frame: [content] is the column that scrolls with [state]'s [ScrollHintState.scroll] (as big as this box); the
- * fade and the chip lie over its bottom edge. [bottom]: how far above the frame's bottom the chip floats.
+ * The list's frame: [content] is the column that scrolls with [state]'s [ScrollHintState.scroll] (as big as its box); the
+ * fade lies over its bottom edge, the chip in a strip of its own under it. [bottom]: the room under the chip.
+ *
+ * Tour 5, lot « moyens » C (review of the home lot, M-a): the chip floated over the list's bottom-end corner, so it lay
+ * over the card cut there (« Techno » under « Autres façons de commencer »): a touch on that card scrolled instead of
+ * making its song. While it is shown (the list at its top), the chip has its own strip and lies over no card. Scrolled,
+ * the strip goes and the list takes its room, growing downwards: nothing in view moves.
  */
 @Composable
 fun ScrollHintBox(state: ScrollHintState, modifier: Modifier = Modifier, bottom: Dp = 12.dp, content: @Composable BoxScope.() -> Unit) {
     val more = state.scroll.canScrollForward
-    Box(modifier.onGloballyPositioned { state.viewport = it; state.recount() }) {
-        Box(Modifier.fadingVerticalEdges(state.scroll, SCROLL_FADE), content = content)
-        if (more) {
+    // The strip's height, as last laid out (before: 48 dp for the chip, 4 above it, [bottom] under it).
+    val guess = with(LocalDensity.current) { (52.dp + bottom).roundToPx() }
+    var strip by remember(guess) { mutableIntStateOf(guess) }
+    var shown by remember { mutableStateOf(false) }
+    // Only for a list taller than the whole frame (the strip given back to it): a list that would fit without the strip
+    // never shows it, and never flickers between the two.
+    val overflow = state.scroll.maxValue.toLong() - (if (shown) strip else 0)
+    val chip = state.scroll.value == 0 && overflow > 0
+    SideEffect { shown = chip }
+    Column(modifier) {
+        Box(Modifier.weight(1f).fillMaxWidth().onGloballyPositioned { state.viewport = it; state.recount() }) {
+            Box(Modifier.fadingVerticalEdges(state.scroll, SCROLL_FADE), content = content)
             // The fade's band, for the screen scans: what lies under it is meant to be faded (LayoutScan).
-            Box(Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(SCROLL_FADE).testTag("scroll_hint_fade"))
-            // The chip only while the list is at its top: once scrolled, the list has said it scrolls, and a card brought
-            // up to the bottom edge is never under the chip (a touch meant for it would scroll instead). The fade stays.
-            // In the bottom-end corner, as a chat's « ↓ »: a touch at the middle of a card is never taken by the chip.
-            if (state.scroll.value == 0) ScrollHintChip(state, Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = bottom))
+            if (more) Box(Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(SCROLL_FADE).testTag("scroll_hint_fade"))
+        }
+        // The chip only while the list is at its top: once scrolled, the list has said it scrolls; the fade stays.
+        // At the end, as a chat's « ↓ ».
+        if (chip) {
+            Box(Modifier.fillMaxWidth().onSizeChanged { strip = it.height }.padding(top = 4.dp, end = 16.dp, bottom = bottom), contentAlignment = Alignment.CenterEnd) {
+                ScrollHintChip(state, Modifier)
+            }
         }
     }
 }

@@ -110,6 +110,19 @@ echo "du code" > code.txt && git add code.txt && git commit -q -m "the integrati
 expect "an older base is said after the review" 0 "ancienne base" non tour-9 ok
 expect "an older base is refused before the review" 1 "ancienne base" non --avant-relecture tour-9 norev
 
+# The team's workshop: a tracked file that is a symbolic link there (a linked submodule, « T » in git status) is no
+# uncommitted work; a file really changed there is.
+shop="$(mktemp -d)"
+trap 'rm -rf "$t" "$shop"' EXIT
+team shop && echo lien-cible > lie.txt && git add lie.txt && git commit -q -m "a file the workshop links" && review shop
+git checkout -q fx-int
+git worktree add -q "$shop/eq" eq/tour-9-shop
+rm "$shop/eq/lie.txt" && ln -s /etc/hostname "$shop/eq/lie.txt"
+expect "a linked file in the team's workshop is no uncommitted work" 0 "PRÉ-VOL : PRÊT" non tour-9 shop
+echo more >> "$shop/eq/travail-shop.txt"
+expect "a file changed in the team's workshop is refused" 1 "l'atelier de l'équipe" non tour-9 shop
+git -C "$shop/eq" checkout -q -- travail-shop.txt
+
 # --main: main is a squash of an older state of this branch (same tree as one of its commits), then a real conflict.
 git checkout -q fx-int
 echo "# titre du lot fusionné" > README.md && git commit -q -am "work that main got as a squash"

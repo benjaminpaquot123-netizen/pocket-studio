@@ -1,0 +1,8 @@
+fusion: cccec529ad6ddce750743f293927840bf5e96e8f
+branche: eq/tour-5-textes
+tete: 5b2337161aec1470c429781973a44ab94f6941e3
+relecture: docs/audits/ultra/tour-5-textes-relecture.md
+relu: f887f4cbef87264835fa1b2c8d4f9c0fe9b7064d
+filtres: *LexiconWordsTest *LevelWordsTest *SimpleNoDecibelTest *I18nCatalogTest *ScreenScanTest *NavScreenshotTest* *SimpleMixTest *HelpCoverageTest *GuideParcoursTest *TutoLot4Test *CutSpanJourneyTest *LanguageTest com.pocketstudio.app.human.*
+rejeux :
+  t4-26-prise-clavier : oracle tenu

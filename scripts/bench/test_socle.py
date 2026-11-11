@@ -166,6 +166,16 @@ class PortalRulesFrozenPerBatch(unittest.TestCase):
         self.assertIn(PAQUET, portal)
         self.assertRegex(portal, r"from_paquet\(\)")
 
+    def test_the_portal_starts_without_a_batch_file(self):
+        # Under « set -euo pipefail » a failing read of the batch ended the portal silently (code 2, no word).
+        with tempfile.TemporaryDirectory() as repo:
+            os.makedirs(os.path.join(repo, "scripts", "bench"))
+            shutil.copy(os.path.join(ROOT, *PORTAL.split("/")), os.path.join(repo, *PORTAL.split("/")))
+            git(repo, "init", "-q", "-b", "fx-int")
+            git(repo, "add", "-A"); git(repo, "commit", "-q", "-m", "base")
+            r = subprocess.run(["bash", PORTAL, "tour-9"], cwd=repo, capture_output=True, text=True)
+            self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+
     def test_a_rule_added_during_the_batch_waits_for_the_next(self):
         current = self.paquet(read(*PAQUET.split("/")))
         opened = git(ROOT, "log", "-1", "--format=%H", "--", PAQUET).stdout.strip()

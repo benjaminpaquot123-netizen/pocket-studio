@@ -1926,10 +1926,12 @@ def fusion_toy(d, name):
     bench = os.path.join(root, "scripts", "bench")
     with open(os.path.join(HERE, "fusion-equipes.sh"), encoding="utf-8") as f:
         write(os.path.join(bench, "fusion-equipes.sh"), f.read())
-    for extra in ("relecture-verdict.py",):
+    for extra in ("relecture-verdict.py", "decisions-index.sh", "portail-paquet.txt"):
         if os.path.isfile(os.path.join(HERE, extra)):
             with open(os.path.join(HERE, extra), encoding="utf-8") as f:
                 write(os.path.join(bench, extra), f.read())
+            if extra.endswith(".sh"):
+                os.chmod(os.path.join(bench, extra), 0o755)
     write(os.path.join(bench, "selftest.sh"), FUSION_SELFTEST)
     write(os.path.join(bench, "rejeu-defauts.sh"), FUSION_REJEUX)
     write(os.path.join(bench, "gradle-file.sh"), '#!/usr/bin/env bash\necho "gradle $*" >> "$PS_TOY_CALLS"\n')

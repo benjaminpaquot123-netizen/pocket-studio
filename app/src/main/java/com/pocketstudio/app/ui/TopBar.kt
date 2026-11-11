@@ -257,12 +257,12 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
     // Narrow (a small phone, a big text size): redo, then the scene's name give their room to the
     // project name; the projects button, the scene's letter and play never go.
     // Each ▶ has its word under it (tour 5, chantier 4): as wide as the word, never cut, at any text size and language.
-    val partRoom = playRoom(tr("cette partie"))
-    val songRoom = if (ui.songButton) playRoom(tr("le morceau")) else 0.dp
+    val (partStyle, partRoom) = playWord(tr("cette partie"))
+    val (songStyle, songRoom) = playWord(tr("le morceau"))
     val rowWidth = (if (ui.undo) maxWidth else maxWidth + BUTTON) - (partRoom - BUTTON)
     // A narrow bar (the keys on a small phone at 130 %): « ▶ le morceau » goes up to the name's line, at its end.
-    val songOnTop = ui.songButton && rowWidth - songRoom - (if (ui.redoFirst) BUTTON else 0.dp) < ALWAYS_SHOWN + PROJECT_ICON
-    val fitted = topBarLayout(if (songOnTop) rowWidth else rowWidth - songRoom, ui.scene != null, modeChip = ui.mode?.let(::modeChipRoom), redoFirst = ui.redoFirst)
+    val songOnTop = ui.songButton && rowWidth - songRoom - PLAY_GAP - (if (ui.redoFirst) BUTTON else 0.dp) < ALWAYS_SHOWN + PROJECT_ICON
+    val fitted = topBarLayout(if (songOnTop || !ui.songButton) rowWidth else rowWidth - songRoom - PLAY_GAP, ui.scene != null, modeChip = ui.mode?.let(::modeChipRoom), redoFirst = ui.redoFirst)
     val layout = if (songOnTop) fitted.copy(projectName = false, modeInRow = false) else fitted
     val showRedo = layout.showRedo && ui.redo
     androidx.compose.foundation.layout.Column {
@@ -271,7 +271,8 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
     if (!layout.projectName) {
         Row(
             // With the mode chip (no room for it in the row) the line is as high as its touch target.
-            Modifier.fillMaxWidth().height(if (songOnTop) 52.dp else if (ui.mode != null && !layout.modeInRow) 48.dp else 24.dp)
+            // At least that high: a big text (the phone's font at 200 %) makes the name taller than 24 dp, never cut.
+            Modifier.fillMaxWidth().heightIn(min = if (songOnTop) 52.dp else if (ui.mode != null && !layout.modeInRow) 48.dp else 24.dp)
                 .padding(start = 12.dp, end = if (songOnTop || (ui.mode != null && !layout.modeInRow)) 6.dp else 12.dp)
                 .combinedClickable(onClick = actions.projects, onLongClick = actions.rename, onLongClickLabel = tr("Renommer le projet"))
                 .testTag("top_project_line"),
@@ -287,7 +288,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                 Icon(Icons.Filled.Check, contentDescription = tr("Sauvegardé"), tint = Neon.Acid, modifier = Modifier.size(16.dp).testTag("top_saved"))
             }
             if (ui.mode != null && !layout.modeInRow) ModeChip(ui.mode, actions.mode)
-            if (songOnTop) NamedPlay(tr("le morceau"), tr("Jouer le morceau"), ui.songPlaying, "top_song", songRoom, actions.playSong)
+            if (songOnTop) NamedPlay(tr("le morceau"), songStyle, tr("Jouer le morceau"), ui.songPlaying, "top_song", songRoom, actions.playSong)
         }
     }
 
@@ -377,8 +378,10 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             }
         }
         // « ▶ cette partie » (tour 5, chantier 4): the part open, looped. Round 3, n° 34: the label says what a touch does now.
-        NamedPlay(tr("cette partie"), tr("Jouer cette partie"), ui.partPlaying, "top_play", partRoom, actions.togglePlay)
-        if (ui.songButton && !songOnTop) NamedPlay(tr("le morceau"), tr("Jouer le morceau"), ui.songPlaying, "top_song", songRoom, actions.playSong)
+        NamedPlay(tr("cette partie"), partStyle, tr("Jouer cette partie"), ui.partPlaying, "top_play", partRoom, actions.togglePlay)
+        // Apart, the two words never read as one (« cette partie le morceau »).
+        if (ui.songButton && !songOnTop) Spacer(Modifier.width(PLAY_GAP))
+        if (ui.songButton && !songOnTop) NamedPlay(tr("le morceau"), songStyle, tr("Jouer le morceau"), ui.songPlaying, "top_song", songRoom, actions.playSong)
         val more = actions.more
         if (more != null) {
             // Mode simple: « Envoyer » is a tab; the rest of the app is here.
@@ -411,15 +414,32 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
 @Composable
 private fun playWordStyle() = MaterialTheme.typography.labelSmall.copy(fontSize = 10.5.sp, lineHeight = 12.sp, letterSpacing = 0.sp, fontWeight = FontWeight.SemiBold)
 
-/** A named ▶'s width: its word whole (measured as drawn, at the text's size), 48 dp at least. */
+/**
+ * A named ▶'s word as drawn and its button's width: the word whole, 48 dp at least. A big text (the phone's font at 200 %)
+ * would make « cette partie » 115 dp wide and taller than the bar: past [PLAY_WORD_MAX] the word is set smaller, never
+ * smaller than at the usual size (CaptureMatrixBigFontTest: « cette partie » cut at its foot, 21 dp shown of 25).
+ */
 @Composable
-private fun playRoom(word: String): Dp {
+private fun playWord(word: String): Pair<androidx.compose.ui.text.TextStyle, Dp> {
     val measurer = androidx.compose.ui.text.rememberTextMeasurer()
-    val style = playWordStyle()
+    val base = playWordStyle()
     val density = androidx.compose.ui.platform.LocalDensity.current
-    val w = remember(word, style, density) { with(density) { measurer.measure(word, style, softWrap = false, maxLines = 1).size.width.toDp() } }
-    return maxOf(BUTTON, w + PLAY_WORD_MARGIN)
+    return remember(word, base, density) {
+        fun width(style: androidx.compose.ui.text.TextStyle) = with(density) { measurer.measure(word, style, softWrap = false, maxLines = 1).size.width.toDp() }
+        val w = width(base)
+        val style = if (w > PLAY_WORD_MAX) {
+            val k = PLAY_WORD_MAX / w
+            base.copy(fontSize = base.fontSize * k, lineHeight = base.lineHeight * k)
+        } else base
+        style to maxOf(BUTTON, (if (style === base) w else width(style)) + PLAY_WORD_MARGIN)
+    }
 }
+
+/** Between « ▶ cette partie » and « ▶ le morceau » side by side. */
+private val PLAY_GAP = 8.dp
+
+/** The widest a ▶'s word gets (« cette partie » is 57 dp at the usual size, set a hair smaller): its button 58 dp. */
+private val PLAY_WORD_MAX = 56.dp
 
 private val PLAY_WORD_MARGIN = 2.dp
 
@@ -429,11 +449,12 @@ private val PLAY_WORD_MARGIN = 2.dp
  * glows while it plays, in a touch target [room] wide and 48 dp high at least.
  */
 @Composable
-private fun NamedPlay(word: String, talk: String, playing: Boolean, tag: String, room: Dp, onClick: () -> Unit) {
+private fun NamedPlay(word: String, style: androidx.compose.ui.text.TextStyle, talk: String, playing: Boolean, tag: String, room: Dp, onClick: () -> Unit) {
     val playColor = if (playing) Neon.Acid else Neon.Cyan
     val said = if (playing) tr("Arrêter") else talk
     androidx.compose.foundation.layout.Column(
-        Modifier.width(room).heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
+        // No rounded clip: the word sits at the button's foot, its corners cut « cette partie » to « ette parti ».
+        Modifier.width(room).heightIn(min = 48.dp)
             .clickable(role = Role.Button, onClickLabel = said, onClick = onClick)
             .semantics { contentDescription = said }
             .spot(tag, said)
@@ -452,7 +473,7 @@ private fun NamedPlay(word: String, talk: String, playing: Boolean, tag: String,
             Icon(if (playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.OnAccent, modifier = Modifier.size(22.dp))
         }
         Text(
-            word, style = playWordStyle(), color = if (playing) Neon.Acid else Neon.TextPrimary,
+            word, style = style, color = if (playing) Neon.Acid else Neon.TextPrimary,
             maxLines = 1, softWrap = false, textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             modifier = Modifier.padding(top = 1.dp),
         )

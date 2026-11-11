@@ -76,6 +76,7 @@ import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.partSteps
+import com.pocketstudio.model.remixOverrunSeconds
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -187,6 +188,14 @@ sealed class ShareCheck {
     /** A song of a single short part ([seconds] long). Fix: « Modifier le morceau ». */
     data class Short(val seconds: Int) : ShareCheck()
 
+    /**
+     * Chantier 10 (G16, T5-Ec-28): the remix's song goes on [seconds] past the song's end, where the file stops:
+     * its end will be cut.
+     */
+    data class RemixOverrun(val seconds: Int) : ShareCheck() {
+        override val warning get() = true
+    }
+
     /** The limiter works hard (or the true peak goes over −1 dBTP). Fix: the master 6 dB lower, or the Mixeur. */
     data object Saturation : ShareCheck() {
         override val warning get() = true
@@ -206,7 +215,7 @@ fun shareSeconds(p: Project, loopBars: Int): Int {
 /**
  * Everything « Prêt à partager ? » points out before the song leaves the phone, in the order it
  * shows them: a solo left on, tracks muted although they play, nothing to hear, no song yet or a
- * single short part, saturation. [strips]: the mixer's strips (their names); [loopBars]: the
+ * single short part, the remix's song cut at the end, saturation. [strips]: the mixer's strips (their names); [loopBars]: the
  * length of the scene shared when there is no song.
  */
 fun shareChecks(p: Project, strips: List<StripInfo>, levels: ShareLevels, loopBars: Int): List<ShareCheck> = buildList {
@@ -230,6 +239,7 @@ fun shareChecks(p: Project, strips: List<StripInfo>, levels: ShareLevels, loopBa
         p.song.isEmpty() -> add(ShareCheck.NoSong(loopBars))
         p.song.size == 1 && shareSeconds(p, loopBars) < SHORT_SONG_SECONDS -> add(ShareCheck.Short(shareSeconds(p, loopBars)))
     }
+    if (remixHeard) p.remixOverrunSeconds().takeIf { it > 0 }?.let { add(ShareCheck.RemixOverrun(it)) }
     if (levels.saturates) add(ShareCheck.Saturation)
 }
 
@@ -552,6 +562,8 @@ private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetAct
             CheckLine(icon, color, tr("Une seule partie de %s : ajoute un couplet, un refrain, une fin…", shareClock(check.seconds)), "share_check_short")
             Fixes { FixButton(tr("Modifier le morceau"), "share_fix_structure", actions.toStructure) }
         }
+        is ShareCheck.RemixOverrun ->
+            CheckLine(icon, color, tr("La chanson dépasse la fin du morceau de %s : sa fin sera coupée.", shareClock(check.seconds)), "share_check_remix_overrun")
         ShareCheck.Saturation -> {
             CheckLine(icon, color, tr("Le son risque de saturer : il est trop fort pour le fichier."), "share_check_saturation")
             Fixes {

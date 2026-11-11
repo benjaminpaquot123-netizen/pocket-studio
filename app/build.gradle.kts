@@ -19,6 +19,14 @@ val unsignedRelease = providers.gradleProperty("unsignedRelease").isPresent
 val allowDebugSigning = providers.gradleProperty("allowDebugSigning").isPresent
 // The phone is arm64-v8a; x86_64 is only added for CI emulator smoke tests (-PemulatorAbi).
 val abis = listOf("arm64-v8a") + if (providers.gradleProperty("emulatorAbi").isPresent) listOf("x86_64") else emptyList()
+// « BenStudio Test » (docs/PLAN-TEST-APK.md, T0): -PbenTest builds the app with its robot inside, beside the real one
+// (another applicationId, name and icon colour). No flavours: without the property, every task and the APK are unchanged,
+// and the robot's sources (src/journey, src/benTest) only reach the unit tests. Signed with the local debug key, never
+// with signing/release.p12, and R8-optimised like the real release (its measures must hold for the real app).
+val benTest = providers.gradleProperty("benTest").isPresent
+val benTestCommit: String = if (!benTest) "" else runCatching {
+    providers.exec { commandLine("git", "rev-parse", "--short", "HEAD") }.standardOutput.asText.get().trim()
+}.getOrDefault("?")
 
 android {
     namespace = "com.pocketstudio.app"
@@ -26,7 +34,7 @@ android {
     ndkVersion = "30.0.16248370"
 
     defaultConfig {
-        applicationId = "com.pocketstudio"
+        applicationId = if (benTest) "com.pocketstudio.test" else "com.pocketstudio"
         minSdk = 31
         targetSdk = 37
         versionCode = ciVersionCode
@@ -37,6 +45,7 @@ android {
         ndk {
             abiFilters += abis
         }
+        if (benTest) resValue("string", "bentest_commit", benTestCommit)
     }
 
     signingConfigs {
@@ -56,7 +65,9 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            if (benTest) proguardFiles("src/benTest/proguard-bentest.pro")
             signingConfig = when {
+                benTest -> signingConfigs.getByName("debug")
                 unsignedRelease -> null
                 else -> signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
             }
@@ -66,6 +77,8 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        // BenStudio Test's commit (bentest_commit); off for the real app, as before.
+        resValues = benTest
     }
 
     compileOptions {
@@ -74,9 +87,20 @@ android {
     }
 
     // The users' paths (docs/TESTS-REELS.md): one copy for the emulator's tests and Robolectric's.
+    // BenStudio Test: the paths' robot (src/journey: Journey and its driver interface) and the in-app robot (src/benTest)
+    // are in the app with -PbenTest only; otherwise the unit tests compile them, so that they are proven at every run.
     sourceSets {
         getByName("test").kotlin.srcDir("src/sharedTest/java")
         getByName("androidTest").kotlin.srcDir("src/sharedTest/java")
+        if (benTest) {
+            getByName("main").kotlin.srcDir("src/journey/java")
+            getByName("main").kotlin.srcDir("src/benTest/java")
+            getByName("main").res.srcDir("src/benTest/res")
+        } else {
+            getByName("test").kotlin.srcDir("src/journey/java")
+            getByName("test").kotlin.srcDir("src/benTest/java")
+            getByName("androidTest").kotlin.srcDir("src/journey/java")
+        }
     }
 
     testOptions {
@@ -120,11 +144,19 @@ android {
     }
 }
 
+// BenStudio Test's own launcher, name and icon (its manifest merged over the app's).
+if (benTest) {
+    androidComponents {
+        onVariants { variant -> variant.sources.manifests.addStaticManifestFile("src/benTest/AndroidManifest.xml") }
+    }
+}
+
 val checkReleaseSigning = tasks.register("checkReleaseSigning") {
     val signed = signingPassword != null && signingStore.exists()
     val hasVersionCode = envVersionCode != null
     val unsigned = unsignedRelease
-    val debugAllowed = allowDebugSigning
+    // BenStudio Test installs beside the app, never over it: the local debug key, no published versionCode to beat.
+    val debugAllowed = allowDebugSigning || benTest
     doLast {
         val problems = buildList {
             if (!signed && !unsigned && !debugAllowed) add("no SIGNING_PASSWORD: the APK would be signed with the debug key and refuse to install over the published app")

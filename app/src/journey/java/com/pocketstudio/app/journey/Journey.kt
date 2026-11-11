@@ -1,25 +1,17 @@
 package com.pocketstudio.app.journey
 
-import androidx.compose.ui.semantics.SemanticsProperties
-import androidx.compose.ui.semantics.getOrNull
-import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.isDisplayed
-import androidx.compose.ui.test.junit4.ComposeTestRule
-import androidx.compose.ui.test.onAllNodesWithTag
-import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
-
 /**
  * A user's path through the app, touch by touch, by the screens' test tags (docs/TESTS-REELS.md,
- * « Parcours »). One copy for both places it runs: on the emulator with the real app and engine
- * (androidTest: JourneyTest, EnduranceTest) and in Robolectric (test: JourneyPathsTest, the same
+ * « Parcours »). One copy for every place it runs: on the emulator with the real app and engine
+ * (androidTest: JourneyTest, EnduranceTest), in Robolectric (test: JourneyPathsTest, the same
  * touches on the app without its engine, so that a renamed tag fails in seconds rather than on
- * the emulator). Waits by looking again and again (the main looper runs in between), never by
+ * the emulator), and inside « BenStudio Test » on the phone (docs/PLAN-TEST-APK.md). What it does
+ * on the screen goes through a [JourneyDriver]: the compose test rule's (sharedTest) or the
+ * in-app one (src/benTest). Waits by looking again and again (the app runs in between), never by
  * a fixed pause.
  */
-class Journey(private val compose: ComposeTestRule, private val log: (String) -> Unit = {}) {
-    fun exists(tag: String): Boolean = compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
+class Journey(private val driver: JourneyDriver, private val log: (String) -> Unit = {}) {
+    fun exists(tag: String): Boolean = driver.count(tag, merged = false) > 0
 
     /** Waits for something tagged [tag] (work off the main thread, a screen rebuilt). */
     fun await(tag: String, timeoutMs: Long = 15_000) {
@@ -47,16 +39,7 @@ class Journey(private val compose: ComposeTestRule, private val log: (String) ->
     }
 
     /** A short wait that lets the app work (Robolectric's main looper too). */
-    fun idle(ms: Long) {
-        val end = System.currentTimeMillis() + ms
-        do {
-            Thread.sleep(minOf(50L, ms))
-            // Under createEmptyComposeRule the activity's frames come from the test clock: moved by one frame
-            // (as JourneyTest.frame does), so frame-driven waits (the opening's still hold) go on (CI 242).
-            runCatching { if (compose.mainClock.autoAdvance) compose.mainClock.advanceTimeByFrame() }
-            runCatching { compose.waitForIdle() }
-        } while (System.currentTimeMillis() < end)
-    }
+    fun idle(ms: Long) = driver.idle(ms)
 
     /**
      * A touch on [tag], scrolled to first when it is out of sight. While a screen changes (a
@@ -67,18 +50,16 @@ class Journey(private val compose: ComposeTestRule, private val log: (String) ->
         awaitGone("intro", timeoutMs)
         await(tag, timeoutMs)
         val end = System.currentTimeMillis() + timeoutMs
-        while (runCatching { compose.onAllNodesWithTag(tag).fetchSemanticsNodes().size }.getOrDefault(0) != 1) {
+        while (runCatching { driver.count(tag, merged = true) }.getOrDefault(0) != 1) {
             check(System.currentTimeMillis() < end) { "$tag is not there once after $timeoutMs ms" }
             idle(50)
         }
         settled(tag, end)
         log("tap $tag")
-        val node = compose.onNodeWithTag(tag)
         // Always into view: a node half past a scrolling row's edge counts as displayed, and a
         // touch at its centre lands off the screen (Sons' chips on a narrow phone).
-        runCatching { node.performScrollTo() }
-        node.performClick()
-        runCatching { compose.waitForIdle() }
+        runCatching { driver.scrollTo(tag) }
+        driver.click(tag)
     }
 
     /**
@@ -90,7 +71,7 @@ class Journey(private val compose: ComposeTestRule, private val log: (String) ->
         var last: androidx.compose.ui.geometry.Rect? = null
         val seen = ArrayList<String>()
         while (System.currentTimeMillis() < end) {
-            val read = runCatching { compose.onNodeWithTag(tag).fetchSemanticsNode().boundsInWindow }
+            val read = runCatching { driver.bounds(tag) }
             val now = read.getOrNull()
             if (now != null && now == last && now.width > 0f && now.height > 0f) return
             // Some devices report no bounds at all for these nodes (the CI emulator: all zero): nothing to wait for.
@@ -104,9 +85,7 @@ class Journey(private val compose: ComposeTestRule, private val log: (String) ->
     }
 
     /** The tags on screen that match [pattern] (the keys of a keyboard, the cells of a grid). */
-    fun tagsMatching(pattern: Regex): List<String> =
-        compose.onAllNodes(SemanticsMatcher("tag matches $pattern") { n -> n.config.getOrNull(SemanticsProperties.TestTag)?.matches(pattern) == true }, useUnmergedTree = true)
-            .fetchSemanticsNodes().mapNotNull { it.config.getOrNull(SemanticsProperties.TestTag) }
+    fun tagsMatching(pattern: Regex): List<String> = driver.tags(pattern)
 
     // --- The paths -------------------------------------------------------------------------------
 

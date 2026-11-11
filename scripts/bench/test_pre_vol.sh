@@ -123,6 +123,15 @@ echo more >> "$shop/eq/travail-shop.txt"
 expect "a file changed in the team's workshop is refused" 1 "l'atelier de l'équipe" non tour-9 shop
 git -C "$shop/eq" checkout -q -- travail-shop.txt
 
+# A branch that is the integration itself (nothing to merge): said, never « duplicate parent » from git.
+git branch -q -f eq/tour-9-meme fx-int
+out="$(scripts/bench/pre-vol.sh --avant-relecture tour-9 meme 2>&1)"
+if printf '%s\n' "$out" | grep -q "déjà dans l'intégration" && ! printf '%s\n' "$out" | grep -qi "duplicate parent\|^error"; then
+  echo "vert  a branch already in the integration is said, git stays quiet"
+else
+  reds=$((reds + 1)); echo "ROUGE a branch already in the integration"; printf '%s\n' "$out" | sed 's/^/      /'
+fi
+
 # --main: main is a squash of an older state of this branch (same tree as one of its commits), then a real conflict.
 git checkout -q fx-int
 echo "# titre du lot fusionné" > README.md && git commit -q -am "work that main got as a squash"

@@ -6,12 +6,12 @@ Faites à partir de `docs/audits/ultra/GABARIT-CONSIGNES-EQUIPES-V2.md`, avec le
 
 | Ordre | Zone | Ce qu'elle fait | Branche | Fichiers |
 |---|---|---|---|---|
-| 1 | `socle` (équipe « banc ») | Le socle du banc : base verte, décisions par lot, rejeux par étiquette, CI rapide en premier, règles gelées par paquet ; puis les lignes 7.1 à 7.7 de `PLAN-RESTE.md` | `eq/tour-5-socle` (copie de `claude/socle-du-banc-alqcr3`) | `scripts/bench/`, `.github/workflows/ci.yml`, tests du banc (`app/src/test/.../human`), `docs/audits/ultra/` ; jamais les écrans de l'appli |
+| 1 | `socle` (équipe « banc ») | Le socle du banc : base verte, décisions par lot, rejeux par étiquette, CI rapide en premier, règles gelées par paquet ; puis les lignes 7.1 à 7.7 de `PLAN-RESTE.md` | `eq/tour-5-socle` puis `eq/tour-5-banc7` (copies de `claude/socle-du-banc-alqcr3`, deux lots relus chacun) | `scripts/bench/`, `.github/workflows/ci.yml`, tests du banc (`app/src/test/.../human`), `docs/audits/ultra/` ; jamais les écrans de l'appli |
 | 2 | `remix` | Chantier 10 de l'étape 4 : une seule carte conseillée, un bouton clair, l'alerte « la fin sera coupée » | `eq/tour-5-remix` | écrans et logique du Remix (`app/.../remix/`), leurs textes, ses tests |
 | 3 | `courbes-accessibilite` (discussion principale) | Chantiers 8 (Courbes) et 9 (Accessibilité) de l'étape 4 : la courbe se montre, « Voir le réglage » y mène ; feuilles qui défilent en paysage, trois fiches « ? » | `eq/tour-5-courbes-accessibilite` | écrans du mixeur, feuilles, aide « ? » |
 
 - Le banc fusionne **en premier** : les deux autres équipes jugent leurs corrections avec le banc à jour.
-- L'ordre ci-dessus est celui de `scripts/bench/fusion-equipes.sh tour-5 socle remix courbes-accessibilite`.
+- L'ordre ci-dessus est celui de `scripts/bench/fusion-equipes.sh tour-5 socle banc7 remix courbes-accessibilite` (l'équipe banc livre deux lots : `socle`, puis `banc7`).
 - Trois équipes au plus. Aucune n'écrit dans les fichiers d'une autre.
 
 ## L'atelier et les fichiers
@@ -26,16 +26,16 @@ Faites à partir de `docs/audits/ultra/GABARIT-CONSIGNES-EQUIPES-V2.md`, avec le
 
 ## Les textes (`I18n.AREAS`) : ordre imposé et proposition
 
-Les catalogues JSON sont déjà un fichier par zone (`project-model/src/main/resources/i18n/<langue>/<zone>.json`, 15 langues, 66 fichiers chacune). Le seul endroit où deux équipes se marchent dessus est la liste codée `I18n.AREAS` : chaque équipe y ajoute une ligne, au même endroit.
+Les catalogues JSON sont déjà un fichier par zone (`project-model/src/main/resources/i18n/<langue>/<zone>.json`, 14 langues en JSON, 66 fichiers chacune ; le français est dans le code (`tr("…")`), sans JSON). Le seul endroit où deux équipes se marchent dessus est la liste codée `I18n.AREAS` : chaque équipe y ajoute une ligne, au même endroit.
 
 **Ordre imposé pour ce tour :**
 1. Une seule équipe à la fois modifie `AREAS` : `remix`, puis `courbes-accessibilite` (l'ordre de fusion).
 2. Ta ligne s'ajoute **en fin de liste**, juste avant la parenthèse fermante, avec un commentaire d'une ligne (date, zone, ce que ces textes couvrent). Jamais au milieu, jamais une ligne d'un autre déplacée.
 3. `courbes-accessibilite` ajoute sa ligne seulement **après** la fusion de `remix` : elle fusionne d'abord l'intégration dans sa branche, puis ajoute sa ligne derrière celle du Remix.
-4. Tes textes vont dans ton propre fichier `<zone>.json` (le nom de ta ligne), dans les 15 langues. Jamais dans le fichier d'un autre lot.
+4. Tes textes vont dans ton propre fichier `<zone>.json` (le nom de ta ligne), dans les 14 langues en JSON. Jamais dans le fichier d'un autre lot.
 
 **Proposition aux équipes du tour 5 (à trancher par elles, pas imposée) :** remplacer `AREAS` par un index généré, comme première correction de la zone i18n.
-- Idée : la liste se fabrique depuis les noms des fichiers de `i18n/fr/` ou `i18n/en/` (une tâche Gradle du module `project-model` qui écrit l'index au moment de la construction). Une équipe ajoute seulement son `<zone>.json` ; plus aucune ligne partagée, plus de conflit.
+- Idée : la liste se fabrique depuis les noms des fichiers de `i18n/en/` (une tâche Gradle du module `project-model` qui écrit l'index au moment de la construction). Une équipe ajoute seulement son `<zone>.json` ; plus aucune ligne partagée, plus de conflit.
 - Pourquoi c'est sûr : aujourd'hui les 66 noms de `AREAS` et les 66 fichiers de chaque langue correspondent un à un ; et `I18nCatalogTest#aFrenchTextHasOneTranslationAcrossAreas` refuse une même clé traduite de deux façons, donc l'ordre de la liste ne change aucun texte affiché (à revérifier par l'équipe qui le fait).
 - Preuve attendue : commit « rouge: » avec un test qui échoue tant qu'un fichier JSON n'est pas lu par l'index, puis « vert: » ; `I18nCatalogTest` et `LangTest` verts.
 - Si une équipe la prend, elle le dit dans son rapport et la fait **avant** toute autre ligne ajoutée à `AREAS` ; sa décision va dans `docs/decisions/tour-5-<zone>.md`. Sinon, l'ordre imposé reste.
@@ -58,7 +58,7 @@ Les catalogues JSON sont déjà un fichier par zone (`project-model/src/main/res
 - Sur ta branche, par chemin (jamais `git add -A`, `git add .` ni `git commit -a` ; `git ls-tree -r HEAD | grep -c '^120000'` = 0). Rien de non commité à la fin.
 - Messages en anglais, terminés par les deux lignes `Co-Authored-By` et `Claude-Session` que ta discussion te donne.
 - Tu ne pousses pas et tu ne fusionnes pas : c'est l'agent de fusion (`scripts/bench/fusion-equipes.sh`), après la relecture neuve de ta branche.
-- Interface en français via `tr()`, toute nouvelle chaîne dans les 15 catalogues ; design selon `docs/DESIGN.md` ; captures ré-enregistrées seulement pour ce que tu changes, et regardées. Jamais ré-enregistrées : `recette`, `cut_screen`, `cut_screen_magnifier`, `remix_stem_edit_menu`, `rhythm_scrolled_under_part`.
+- Interface en français via `tr()`, toute nouvelle chaîne dans les 14 catalogues JSON ; design selon `docs/DESIGN.md` ; captures ré-enregistrées seulement pour ce que tu changes, et regardées. Jamais ré-enregistrées : `recette`, `cut_screen`, `cut_screen_magnifier`, `remix_stem_edit_menu`, `rhythm_scrolled_under_part`.
 
 ## Le rapport
 
@@ -90,7 +90,7 @@ Puis : `scripts/bench/pre-vol.sh --avant-relecture tour-5 <zone>` ; chaque ligne
 - Dernière ligne, seule : « Verdict : 0 bloquant, 0 grave » (« — fusion possible » est permis).
 - Après toi, plus rien ne bouge dans la branche, sauf ton fichier et une fusion de l'intégration.
 
-Puis, côté fusion : `scripts/bench/pre-vol.sh tour-5 socle remix courbes-accessibilite` (dans l'ordre de fusion).
+Puis, côté fusion : `scripts/bench/pre-vol.sh tour-5 socle banc7 remix courbes-accessibilite` (dans l'ordre de fusion).
 
 ## Après chaque fusion : `marque-corrige.sh`, obligatoire
 

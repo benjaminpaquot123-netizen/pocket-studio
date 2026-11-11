@@ -91,7 +91,9 @@ def check(branch, path, added=()):
         if re.match(r"^aucun\b", value, re.I) and not NONE.match(value):
             return [f"« tests: aucun » without its reason in {path} (« tests: aucun : <raison> »)"], []
         if not NONE.match(value):
-            filters += [f for f in re.split(r"[\s,`]+", value) if f]
+            # Review of banc7 (grave 1): Gradle's --tests knows « Classe.méthode », not « Classe#méthode » (the form of a
+            # path line and of the teams' sheet): translated, else no test is found and the merge is undone.
+            filters += [f.replace("#", ".") for f in re.split(r"[\s,`]+", value) if f]
     return [], filters
 
 

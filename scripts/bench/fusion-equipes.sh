@@ -151,7 +151,8 @@ for zone in "${zones[@]}"; do
   # PLAN-RESTE 7.1: the round's reports fused again (the new keys into base.tsv) and the dashboard recomputed on every
   # round, on the merged code; what they write goes into the traces' commit.
   round="docs/audits/ultra/sieges/$tour"
-  if [ -d "$round" ] && [ -f scripts/bench/fuse-reports.py ] && [ -f scripts/bench/tableau-de-bord.py ]; then
+  # (Its failure undoes the merge: a rule of the portal, frozen until batch 2 like the others.)
+  if from_paquet 2 && [ -d "$round" ] && [ -f scripts/bench/fuse-reports.py ] && [ -f scripts/bench/tableau-de-bord.py ]; then
     computed=(docs/audits/ultra/base.tsv "$round/clusters.md" "$round/clusters-complet.md" "$round/promesses.tsv" "$round/incidents-banc.tsv")
     python3 -I scripts/bench/fuse-reports.py "$round" --tour "$tour" --maj-base > /dev/null
     mapfile -t rounds < <(find docs/audits/ultra/sieges -mindepth 1 -maxdepth 1 -type d -name 'tour-[0-9]*' | sort -V)

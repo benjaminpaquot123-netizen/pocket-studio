@@ -2319,7 +2319,11 @@ def portal_recomputes(d):
     git_toy(root, "commit", "-q", "-m", "the round's seats")
     git_toy(root, "checkout", "-q", "-b", "eq/tour-9-recalcul", "fx-int")
     write(os.path.join(root, "scripts", "bench", "y.txt"), "y\n")
-    git_toy(root, "add", "scripts")
+    # Its zone report (required from batch 2, where the recomputation runs too).
+    write(os.path.join(root, "app", "src", "test", "java", "t", "FooTest.kt"), "class FooTest {\n    @Test\n    fun works() {}\n}\n")
+    write(os.path.join(root, "docs", "audits", "ultra", "tour-9-recalcul-rapport.md"),
+          "# Rapport\n\ntests: aucun : maquette du portail\n\n- chemin: Accueil | test: FooTest#works\n")
+    git_toy(root, "add", "scripts", "app", "docs")
     git_toy(root, "commit", "-q", "-m", "team")
     sha = git_toy(root, "rev-parse", "HEAD").strip()
     write(os.path.join(root, "docs", "audits", "ultra", "tour-9-recalcul-relecture.md"), f"Relu : {sha}\n\nVerdict : 0 bloquant, 0 grave\n")

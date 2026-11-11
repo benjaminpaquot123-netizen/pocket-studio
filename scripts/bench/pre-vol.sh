@@ -151,6 +151,16 @@ if [ "${1:-}" = "--ci" ]; then
   done
   # The quick mode stops here: the engine has its own job in the CI, the real projects their own step.
   [ "$quick" -eq 0 ] || verdict
+  # The Gradle guard rail (PLAN-RESTE 7.2): its own test, about 15 s, needs a Gradle distribution already here.
+  # Run with this home (it reads the Gradle distribution cached there; it never touches ~/.gradle); a skip is said.
+  if [ -f scripts/bench/test_garde_gradle.sh ]; then
+    if bash scripts/bench/test_garde_gradle.sh > "$bare/garde-gradle.log" 2>&1; then
+      if grep -q '^SKIP' "$bare/garde-gradle.log"; then warn "scripts/bench/test_garde_gradle.sh : sauté ($(grep -m1 '^SKIP' "$bare/garde-gradle.log" | cut -c7-))"
+      else ok "scripts/bench/test_garde_gradle.sh"; fi
+    else
+      bad "scripts/bench/test_garde_gradle.sh : rouge (journal : $bare/garde-gradle.log)" "$(grep -m3 -E '^(ROUGE|FAIL)' "$bare/garde-gradle.log" | cut -c1-160 | tr '\n' ' ')"
+    fi
+  fi
   free_gb="$(df -BG --output=avail . | tail -1 | tr -dc 0-9)"
   [ "${free_gb:-0}" -ge 4 ] || warn "disque : ${free_gb} Go libres ici (les tests longs en demandent 4)"
   # The engine's tests on Linux: every other job of the CI waits for them (« needs: engine »), so a red there costs

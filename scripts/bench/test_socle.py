@@ -82,20 +82,27 @@ JOURNAL = "docs/audits/ultra/banc-fiable-journal.md"
 
 
 class SharedFilesMergeByUnion(unittest.TestCase):
-    """Point 2: two lots that each add lines at the end of the journal (or of DECISIONS.md) merge without a conflict."""
+    """Point 2: two lots that each add lines at the end of DECISIONS.md merge without a conflict."""
 
-    def test_two_lots_append_to_the_journal_and_to_decisions(self):
+    def test_a_file_edited_in_place_is_never_merged_by_union(self):
+        # Review of the lot (moyen 1): the journal's checked lines get their « preuve: » later, in place; union would keep
+        # the old line and the new one, and the judge would read the old one « sans preuve », with no conflict said.
+        attributes = read(".gitattributes")
+        for f in (JOURNAL, "docs/audits/ultra/verdicts.tsv", "docs/audits/ultra/PLAN-RESTE.md"):
+            self.assertNotRegex(attributes, re.escape(f) + r"\s+merge=union", f"{f} is edited in place")
+
+    def test_two_lots_append_to_decisions(self):
         with tempfile.TemporaryDirectory() as repo:
             git(repo, "init", "-q", "-b", "fx-int")
             shutil.copy(os.path.join(ROOT, ".gitattributes"), os.path.join(repo, ".gitattributes"))
-            for f in (JOURNAL, "docs/DECISIONS.md"):
+            for f in ("docs/DECISIONS.md",):
                 os.makedirs(os.path.join(repo, os.path.dirname(f)), exist_ok=True)
                 with open(os.path.join(repo, f), "w", encoding="utf-8") as out:
                     out.write("# titre\n- [x] 1.1 une ligne\n")
             git(repo, "add", "-A"); git(repo, "commit", "-q", "-m", "base")
             for zone in ("z1", "z2"):
                 git(repo, "checkout", "-q", "-b", zone, "fx-int")
-                for f in (JOURNAL, "docs/DECISIONS.md"):
+                for f in ("docs/DECISIONS.md",):
                     with open(os.path.join(repo, f), "a", encoding="utf-8") as out:
                         out.write(f"- [x] 9.9 la ligne de {zone}\n")
                 git(repo, "commit", "-q", "-am", zone)
@@ -103,7 +110,7 @@ class SharedFilesMergeByUnion(unittest.TestCase):
             git(repo, "merge", "-q", "--no-ff", "-m", "z1", "z1")
             merged = git(repo, "merge", "-q", "--no-ff", "-m", "z2", "z2", check=False)
             self.assertEqual(merged.returncode, 0, "conflict: " + merged.stdout + merged.stderr)
-            for f in (JOURNAL, "docs/DECISIONS.md"):
+            for f in ("docs/DECISIONS.md",):
                 with open(os.path.join(repo, f), encoding="utf-8") as got:
                     text = got.read()
                 self.assertIn("la ligne de z1", text)

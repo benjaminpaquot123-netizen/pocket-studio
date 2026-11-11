@@ -2066,6 +2066,35 @@ def fusion_forged(d):
     code, out, asked, moved = merge("honnete", PS_REJEUX_DIR=empty)
     check(code == 0 and moved and "honnete: merged" in out, "an honest branch is merged:\n" + out)
     check("selftest " in asked and "rejeux docs/audits/ultra/rejeux t1-clavier" in asked, "the self-test and the repository's replays ran:\n" + asked)
+    # Socle du banc (review, grave 1 and moyen 2): the lot's decisions file is listed at the end of docs/DECISIONS.md in
+    # the traces' commit; a traces' commit that fails leaves DECISIONS.md as it was (not the index's version).
+    decisions = os.path.join(root, "docs", "DECISIONS.md")
+    write(decisions, "# Décisions\n- 2026-11-11 · une décision\n")
+    git_toy(root, "add", decisions)
+    git_toy(root, "commit", "-q", "-m", "DECISIONS.md")
+    with open(decisions, encoding="utf-8") as f:
+        before_index = f.read()
+
+    def own_decisions(zone):
+        return lambda r: write(os.path.join(r, "docs", "decisions", f"tour-9-{zone}.md"), "- 2026-11-11 · un choix\n- 2026-11-11 · un autre\n")
+    hook = os.path.join(root, ".git", "hooks", "commit-msg")
+    write(hook, '#!/usr/bin/env bash\ngrep -q "^Portal traces" "$1" && exit 1\nexit 0\n')
+    os.chmod(hook, 0o755)
+    branch("decko", own_decisions("decko"), good)
+    code, out, asked, moved = merge("decko")
+    os.remove(hook)
+    dirty = git_toy(root, "status", "--porcelain", "--untracked-files=no").strip()
+    with open(decisions, encoding="utf-8") as f:
+        after = f.read()
+    check(code != 0 and not moved and dirty == "" and after == before_index,
+          "a failed traces' commit leaves DECISIONS.md as it was:\n" + out + "\nstatus: " + dirty + "\n" + after)
+    branch("decok", own_decisions("decok"), good)
+    code, out, asked, moved = merge("decok")
+    last = git_toy(root, "show", "--stat", "--format=%s", "HEAD")
+    head_decisions = git_toy(root, "show", "HEAD:docs/DECISIONS.md")
+    check(code == 0 and moved and "docs/decisions/tour-9-decok.md" in head_decisions and "2 décision(s)" in head_decisions
+          and last.startswith("Portal traces") and "docs/DECISIONS.md" in last,
+          "the lot's decisions file is listed in the traces' commit:\n" + out + "\n" + last + "\n" + head_decisions)
 
 
 def portal_traces(d):

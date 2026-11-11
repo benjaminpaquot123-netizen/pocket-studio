@@ -1094,7 +1094,9 @@ def red_seen_in_a_run(d):
     resume = os.path.join(root, "selftest-resume.txt")
     test_file = os.path.join(root, "app", "src", "test", "java", "x", "JourneyProofTest.kt")
     app = os.path.join(root, "app", "src", "main", "Spot.kt")
-    write(test_file, "class JourneyProofTest {\n  @Test\n  fun theWholeCourse() {}\n}\n")
+    # Third review of the lot (M9): a helper (no @Test) and an ignored test can never fail in a run.
+    rest = "  private fun idle(ms: Long = 50) {}\n  @Ignore\n  @Test\n  fun skipped() {}\n}\n"
+    write(test_file, "class JourneyProofTest {\n  @Test\n  fun theWholeCourse() {}\n" + rest)
     git_toy(root, "init", "-q")
     git_toy(root, "add", "-A")
     git_toy(root, "commit", "-q", "-m", "start")
@@ -1103,7 +1105,7 @@ def red_seen_in_a_run(d):
     def green(key, touch_test=False):
         write(app, f"fun spot() = \"{key}\"\n")
         if touch_test:
-            write(test_file, f"class JourneyProofTest {{\n  @Test\n  fun theWholeCourse() {{ /* {key} */ }}\n}}\n")
+            write(test_file, f"class JourneyProofTest {{\n  @Test\n  fun theWholeCourse() {{ /* {key} */ }}\n" + rest)
         git_toy(root, "add", "-A")
         git_toy(root, "commit", "-q", "-m", f"vert: JourneyProofTest#theWholeCourse[techno Pro] {key}")
         shas[key] = (git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip())
@@ -1115,6 +1117,11 @@ def red_seen_in_a_run(d):
     git_toy(root, "add", "-A")
     git_toy(root, "commit", "-q", "-m", "vert: NoSuchTest#neverExisted fixed")
     shas["nosuch"] = (git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip())
+    for helper in ("idle", "skipped"):
+        write(app, f"fun spot() = \"{helper}\"\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: JourneyProofTest#{helper} fixed")
+        shas[helper] = (git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip())
 
     def evidence(key, parent=None, failing=True, test="theWholeCourse[techno Pro]", cls="JourneyProofTest", named=None):
         full, par = shas[key]
@@ -1130,14 +1137,16 @@ def red_seen_in_a_run(d):
     evidence("touchestest")
     evidence("othertest", test="theWholeCourse[lofi Simple]")
     evidence("nosuch", test="neverExisted", cls="NoSuchTest", named="NoSuchTest#neverExisted")
+    evidence("idle", test="idle", named="JourneyProofTest#idle")
+    evidence("skipped", test="skipped", named="JourneyProofTest#skipped")
     seal_resume(root, resume)
     out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
                          capture_output=True, text=True).stdout
     short = {k: git_toy(root, "rev-parse", "--short", v[0]).strip() for k, v in shas.items()}
     check(short["honest"] not in out, "a green whose red was seen in a run, its XML kept, is a pair:\n" + out)
-    for key in ("passing", "otherparent", "touchestest", "othertest", "nosuch"):
+    for key in ("passing", "otherparent", "touchestest", "othertest", "nosuch", "idle", "skipped"):
         check(f"{short[key]} « vert:" in out, f"evidence that does not hold ({key}) makes no pair:\n" + out)
-    check("chantier : 5 écarts" in out, "five greens without red, nothing else:\n" + out)
+    check("chantier : 7 écarts" in out, "seven greens without red, nothing else:\n" + out)
 
 
 def judge_topic_pairs(d):

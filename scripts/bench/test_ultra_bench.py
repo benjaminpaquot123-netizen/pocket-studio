@@ -139,6 +139,10 @@ def check(cond, what):
 
 
 def main():
+    # A CI runner has no git identity; the toy repositories (and fusion-equipes.sh run on them) commit.
+    for k, v in (("GIT_AUTHOR_NAME", "bench"), ("GIT_AUTHOR_EMAIL", "bench@example.invalid"),
+                 ("GIT_COMMITTER_NAME", "bench"), ("GIT_COMMITTER_EMAIL", "bench@example.invalid")):
+        os.environ.setdefault(k, v)
     with tempfile.TemporaryDirectory() as d:
         make_round(d)
         # The seat's measures and its mission, read in its state.

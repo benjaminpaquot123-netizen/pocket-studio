@@ -14,3 +14,5 @@ Trouvaille : mon premier correctif (FlowRow) passait le test mais cachait le sec
 
 Non touchés : AppRoot.kt, barres et boutons ▶, tests `human`, `scripts/bench`. Rien poussé.
 Suite complète (`:project-model:test :app:testDebugUnitTest :app:verifyRoborazziDebug`) : voir la fin du rapport final.
+
+Suite complète : 8189 tests, 13 échecs. 1 à moi (ScreenScanTest census mixMuet, corrigé : lignes acceptées dans recensement-acceptes.tsv, ScreenScanTest vert). 12 sont des écarts de capture hors de mon périmètre (recette, cut_screen, cut_screen_magnifier, rhythm_scrolled_under_part déjà connus ; welcome en/hi/tablette, nav_plus_settings, nav_welcome_mode : images non touchées par ce lot).

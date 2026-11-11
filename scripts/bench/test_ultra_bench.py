@@ -230,6 +230,8 @@ def main():
         seat_exit(d)
         seat_exit_anchored(d)
         native_missing(d)
+        first_screen(d)
+        export_figures_are_the_benchs(d)
         corrections_by_target(d)
     with tempfile.TemporaryDirectory() as d:
         seats_from_ids(d)
@@ -2212,6 +2214,61 @@ def native_missing(d):
     with open(os.path.join(seat, "mesures.json"), encoding="utf-8") as f:
         m = json.load(f)["mesures"]
     check(m["moteur_absent"] == 2, f"two lines: {m['moteur_absent']}")
+
+
+def first_screen(d):
+    """PLAN-RESTE 4.6: the first screen's time (real, the app's clock, since the JVM started), whether the bench's
+    workers were busy and whether it came blank, from the journal's « #0 PREMIER ECRAN » line into mesures.json; a blank
+    first screen while the bench was at rest is the app's to judge (« à trancher »), never waited for."""
+    seat = os.path.join(d, "first", "a")
+    def measured(line):
+        write(os.path.join(seat, "journal.txt"), JOURNAL_B.replace("#1 ROUTE", line + "\n#1 ROUTE", 1))
+        run(os.path.join(HERE, "seat-metrics.py"), seat)
+        with open(os.path.join(seat, "mesures.json"), encoding="utf-8") as f:
+            return json.load(f)["mesures"]["premier_ecran_s"]
+    m = measured("#0 PREMIER ECRAN reel_s=6.4 simule_s=1.5 jvm_s=48.2 travail=oui vide=non attente_s=4.9")
+    check(m == {"reel": 6.4, "simule": 1.5, "jvm": 48.2, "travail_de_fond": True, "vide": False, "attente_banc": 4.9, "verdict": "-"},
+          f"busy bench, screen waited for: {m}")
+    m = measured("#0 PREMIER ECRAN reel_s=1.6 simule_s=1.5 jvm_s=30.0 travail=non vide=oui attente_s=0")
+    check(m["vide"] and not m["travail_de_fond"] and m["verdict"] == "à trancher", f"blank, bench at rest: the app's to judge: {m}")
+    m = measured("#0 SIEGE rien")
+    check(m is None, f"no line (an older bench): None, not invented: {m}")
+
+
+REPORT_EXPORTS = """siege: a | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
+defauts:
+  - ecran: 4 | cible: Mes exports | geste: touche
+    attendu: un vrai fichier | obtenu: le fichier fait 1 KB
+    symptome: texte-faux
+    gravite: moyen | bloque: non
+  - ecran: 5 | cible: Exporter | geste: touche
+    attendu: un export rapide | obtenu: l'export a pris 4 min pour 4 pistes
+    symptome: lent
+    gravite: moyen | bloque: non
+  - ecran: 6 | cible: Partager | geste: touche
+    attendu: 16 mesures | obtenu: le morceau exporté dure 8 mesures au lieu de 16
+    symptome: perdu
+    gravite: moyen | bloque: non
+"""
+
+
+def export_figures_are_the_benchs(d):
+    """PLAN-RESTE 4.7 (T5-Cc-41b, « 1 KB », 4 min for 4 tracks): an export's size and the time it took are the bench's
+    (a shadow encoder that copies, a stand-in engine): a card about them is « banc », said so on its line; a card about
+    what the file holds (its length in bars) stays the app's."""
+    rnd = os.path.join(d, "exports")
+    write(os.path.join(rnd, "lotA", "a", "journal.txt"), JOURNAL_A)
+    write(os.path.join(rnd, "lotA", "a", "rapport.md"), REPORT_EXPORTS)
+    base = os.path.join(rnd, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--tour", "tour-6")
+    mark = "[banc : taille ou durée d'un export, non représentatives]"
+    size = [l for l in text.splitlines() if "mes exports" in l]
+    slow = [l for l in text.splitlines() if "exporter" in l]
+    bars = [l for l in text.splitlines() if "partager" in l]
+    check(size and mark in size[0], "the size of an export is the bench's:\n" + text)
+    check(slow and mark in slow[0], "the time an export took is the bench's:\n" + text)
+    check(bars and mark not in bars[0] and "[banc" not in bars[0], "what the file holds stays the app's:\n" + text)
 
 
 def seat_exit(d):

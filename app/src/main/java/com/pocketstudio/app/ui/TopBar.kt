@@ -160,7 +160,11 @@ enum class SceneChipMode { Hidden, Letter, Full }
  * with a scene, where the folder alone leaves room for the scene's letter: the name then gets a
  * line of its own above the buttons). (The tempo lives in the play strip under the bar, see PlayStrip.)
  */
-data class TopBarLayout(val showRedo: Boolean, val scene: SceneChipMode, val sceneMaxWidth: Dp = 0.dp, val projectName: Boolean = true, val modeInRow: Boolean = false)
+data class TopBarLayout(
+    val showRedo: Boolean, val scene: SceneChipMode, val sceneMaxWidth: Dp = 0.dp, val projectName: Boolean = true, val modeInRow: Boolean = false,
+    /** False: the folder alone in the row, no name anywhere in the bar (too little room for a few words, no line given up). */
+    val nameShown: Boolean = true,
+)
 
 /**
  * Fits the top bar into [width]. Never removed: the projects button (with room for a bit of the
@@ -179,7 +183,11 @@ fun topBarLayout(width: Dp, hasScene: Boolean, modeChip: Dp? = null, redoFirst: 
     if (modeChip != null) {
         val inRow = topBarLayout(width - modeChip, hasScene)
         val fits = width - modeChip - ALWAYS_SHOWN >= PROJECT_FOLDER_ROOM + PROJECT_NAME_TEXT * fontScale && inRow.projectName && (!hasScene || inRow.scene != SceneChipMode.Hidden)
-        return if (fits) inRow.copy(modeInRow = true) else topBarLayout(width, hasScene).copy(projectName = false)
+        if (fits) return inRow.copy(modeInRow = true)
+        // Fresh review of the moyens lot: where the row used to hold « M… », it stays one row with the folder alone
+        // (the name's own line took 48 dp from the keys at Taille 130 %); the name's line only where it always was.
+        val folderOnly = width - modeChip - ALWAYS_SHOWN >= PROJECT_ROOM && inRow.projectName && (!hasScene || inRow.scene != SceneChipMode.Hidden)
+        return if (folderOnly) inRow.copy(modeInRow = true, nameShown = false) else topBarLayout(width, hasScene).copy(projectName = false)
     }
     // No scene shown (Morceau, Outils…): redo gives way below this width (48 dp more since ⤴ joined the bar).
     if (!hasScene) return TopBarLayout(showRedo = width >= 388.dp, scene = SceneChipMode.Hidden)
@@ -223,6 +231,8 @@ private val SCENE_NAME_MIN = 60.dp
 private val SCENE_FULL_MAX = 140.dp
 /** The mode chip's room in the row: its text capped at [modeChipMax], with a little margin. */
 fun modeChipRoom(simple: Boolean): Dp = modeChipMax(simple) + 4.dp
+/** Next to the mode chip, the projects button kept its folder and a few letters of the name before moyens M1: the row stays one. */
+private val PROJECT_ROOM = 72.dp
 /** The projects button's folder (34 dp), the gap to its name (10 dp) and its padding (8 dp). */
 private val PROJECT_FOLDER_ROOM = 52.dp
 /** Next to the mode chip, the name keeps this much text at the usual size (« Mon prem… »), more as the text grows. */
@@ -268,7 +278,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
     androidx.compose.foundation.layout.Column {
     // Squeezed (a small phone with a big text size): the project's name gets a line of its own
     // above the buttons (never gone), the folder alone stays in the row.
-    if (!layout.projectName) {
+    if (!layout.projectName && layout.nameShown) {
         Row(
             // With the mode chip (no room for it in the row) the line is as high as its touch target.
             // At least that high: a big text (the phone's font at 200 %) makes the name taller than 24 dp, never cut.
@@ -313,7 +323,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             ) {
                 Icon(Icons.Filled.FolderOpen, contentDescription = tr("Mes projets"), tint = Neon.OnAccent, modifier = Modifier.size(18.dp))
             }
-            if (layout.projectName) androidx.compose.foundation.layout.Column {
+            if (layout.projectName && layout.nameShown) androidx.compose.foundation.layout.Column {
                 // Testers (lot « tuto 4 »): « Mon pro… »: a name that does not fit is set a size smaller first.
                 var smaller by remember(ui.projectName) { mutableStateOf(false) }
                 Text(

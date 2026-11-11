@@ -98,7 +98,7 @@ class HumanLucasBugsTest : HumanTester("lucas-bugs") {
         act("attends 2")
         // ⋮ › « Aide et premiers pas » › « Revoir le guide des premiers pas ».
         act("touche 543 43")
-        tap(centerOf("more_help"), "Aide et premiers pas")
+        tap(centerOf("tool_Aide"), "Aide et premiers pas")
         tap(reach("help_guide"), "Revoir le guide des premiers pas")
         assertNotNull("no welcome guide", centerOfText("Bienvenue dans BenStudio"))
         tap(centerOf("guide_next"), "Suivant")

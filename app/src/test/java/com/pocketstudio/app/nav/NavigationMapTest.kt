@@ -40,7 +40,7 @@ class NavigationMapTest(private val name: String, private val path: List<String>
             Triple("Guide (Mon premier morceau)", listOf("launch_missions"), listOf("mode_step", "wizard", "guide_panel")),
             Triple("Continuer (le morceau, ses parties)", listOf("launch_continue"), listOf("tab_simple_Morceau")),
             Triple("Pads de batterie", listOf("launch_continue", "tab_simple_Rythme"), listOf("pad_0")),
-            Triple("Bibliothèque de sons", listOf("launch_continue", "top_more", "more_library"), listOf("library")),
+            Triple("Bibliothèque de sons", listOf("launch_continue", "top_more", "plus_library"), listOf("library")),
             Triple("Notes au clavier", listOf("launch_continue", "tab_simple_Clavier"), listOf("synth")),
             Triple("Acid 303", listOf("launch_continue", "tab_simple_Clavier", "sons_Acide"), listOf("acid")),
             Triple("Mix et effets", listOf("launch_continue", "tab_simple_Mix"), listOf("simple_mix")),
@@ -53,12 +53,14 @@ class NavigationMapTest(private val name: String, private val path: List<String>
             Triple("Enregistrer au micro", listOf("launch_continue", "top_record", "record_choice_mic"), listOf("audio_tracks")),
             // Audit ultra round 2 (n° 15): with the thumb's bar, the Mode simple's ↶ is there only.
             Triple("Annuler", listOf("launch_continue"), listOf("top_undo", "thumb_undo")),
-            Triple("Live (cases, briques)", listOf("launch_continue", "top_more", "more_live"), listOf("live_screen")),
-            Triple("Ma voix", listOf("launch_continue", "top_more", "more_voice"), listOf("audio_tracks")),
-            Triple("Réglages (MIDI, MiniLab)", listOf("launch_continue", "top_more", "more_settings"), listOf("settings")),
-            Triple("Aide", listOf("launch_continue", "top_more", "more_help"), listOf("help_page")),
-            Triple("Signaler un bug", listOf("launch_continue", "top_more", "more_bug"), listOf("bug_sheet")),
-            Triple("Remix depuis un projet", listOf("launch_continue", "top_more", "more_remix"), listOf("remix_start", "remix_dest", "stem_board")),
+            Triple("Live (cases, briques)", listOf("launch_continue", "top_more", "plus_live"), listOf("live_screen")),
+            Triple("Ma voix", listOf("launch_continue", "top_more", "plus_voice"), listOf("audio_tracks")),
+            Triple("Réglages (MIDI, MiniLab)", listOf("launch_continue", "top_more", "tool_Reglages"), listOf("settings")),
+            Triple("Aide", listOf("launch_continue", "top_more", "tool_Aide"), listOf("help_page")),
+            Triple("Signaler un bug", listOf("launch_continue", "top_more", "plus_bug"), listOf("bug_sheet")),
+            Triple("Remix depuis un projet", listOf("launch_continue", "top_more", "plus_remix"), listOf("remix_start", "remix_dest", "stem_board")),
+            // Tour 5, chantier 5 (G15): the Recette in the Mode simple too, on the same Plus page as in Pro.
+            Triple("Recette", listOf("launch_continue", "top_more", "tool_Recette"), listOf("recette")),
         )
 
         @JvmStatic

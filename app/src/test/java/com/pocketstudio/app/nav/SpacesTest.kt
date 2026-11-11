@@ -184,7 +184,7 @@ class SpacesTest {
         assertEquals(before, h.vm.project.value)
         // Back with « ⋯ › Mode complet »: the same project, nothing to undo.
         tap("top_more")
-        tap("more_full")
+        tap("plus_mode")
         assertFalse(SettingsStore.state.value.simpleMode)
         compose.onNodeWithTag("tab_Structure").assertIsDisplayed()
         assertEquals(before, h.vm.project.value)

@@ -176,7 +176,7 @@ class Tour5BloquantsTest : HumanTester("bloquants") {
         waitFor("the home screen after « Créer et écouter »") { centerOf("launch_continue") != null }
         tap("launch_continue")
         tap("top_more")
-        tap("more_projects")
+        tap("plus_projects")
         tap("project_menu_$id")
         tap("project_delete_$id")
         waitFor("« dans la corbeille »") { centerOf("project_deleted") != null }

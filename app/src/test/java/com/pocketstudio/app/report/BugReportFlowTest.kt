@@ -159,7 +159,7 @@ class BugReportFlowTest {
     fun theSimpleModesMenuHasIt() {
         start(simple = true)
         tap("top_more")
-        tap("more_bug")
+        tap("plus_bug")
         waitFor("the sheet") { exists("bug_sheet") }
     }
 

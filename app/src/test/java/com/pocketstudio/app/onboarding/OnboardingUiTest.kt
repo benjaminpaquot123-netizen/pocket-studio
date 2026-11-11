@@ -111,13 +111,15 @@ class OnboardingUiTest {
         compose.onNodeWithTag("mode_step").assertExists()
         assertTrue(quick.isEmpty())
         compose.onNodeWithTag("mode_card_pro").performClick()
+        // Benjamin's answer 3A (tour 5, chantier 5): the next song takes that choice without asking.
         compose.onNodeWithTag("quick_style_house").performScrollTo().performClick()
-        compose.onNodeWithTag("mode_card_simple").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithTag("mode_step").assertDoesNotExist()
         assertEquals(listOf("techno", "house"), quick)
         // A folded family opens with one touch; « Personnaliser pas à pas » opens the assistant on that style.
         compose.onNodeWithTag("quick_family_Hip-hop").performScrollTo().performClick()
         compose.onNodeWithTag("quick_custom_trap").performScrollTo().performClick()
-        compose.onNodeWithTag("mode_card_pro").performClick()
+        compose.waitForIdle()
         assertEquals(listOf("trap"), custom)
         // An open family closes the same way.
         compose.onNodeWithTag("quick_family_Techno").performScrollTo().performClick()
@@ -133,10 +135,9 @@ class OnboardingUiTest {
         compose.onNodeWithTag("demo_play_0").performScrollTo().performClick()
         assertEquals(listOf(0), previewed)
         assertTrue(created.isEmpty())
-        // « Je pars de zéro » makes the empty project, once its mode is chosen.
+        // « Je pars de zéro » makes the empty project, in the mode chosen before (3A).
         compose.onNodeWithTag("start_empty").performScrollTo().performClick()
-        assertTrue(created.isEmpty())
-        compose.onNodeWithTag("mode_card_simple").performClick()
+        compose.waitForIdle()
         assertEquals(listOf(2), created)
     }
 

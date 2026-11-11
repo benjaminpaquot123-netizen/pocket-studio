@@ -59,6 +59,8 @@ class NavigationMapTest(private val name: String, private val path: List<String>
             Triple("Aide", listOf("launch_continue", "top_more", "more_help"), listOf("help_page")),
             Triple("Signaler un bug", listOf("launch_continue", "top_more", "more_bug"), listOf("bug_sheet")),
             Triple("Remix depuis un projet", listOf("launch_continue", "top_more", "more_remix"), listOf("remix_start", "remix_dest", "stem_board")),
+            // Tour 5, chantier 5 (G15): the Recette in the Mode simple too, on the same Plus page as in Pro.
+            Triple("Recette", listOf("launch_continue", "top_more", "tool_Recette"), listOf("recette")),
         )
 
         @JvmStatic

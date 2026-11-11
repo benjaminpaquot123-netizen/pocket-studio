@@ -204,6 +204,11 @@ class BenchRecetteTest : HumanTester("recette") {
     @Test
     fun theDemoGoesOnUnderTheModeStepUntilAModeIsChosen() {
         demoPlaying()
+        // Tour 5, chantier 5 (Benjamin's answer 3A): a mode chosen once, a new song no longer asks it. The step is still
+        // there on a phone where none was chosen yet (a project from before 2026-10-29): that phone's route, T5-Fc-31
+        // left as it was (non-tranché).
+        androidx.test.core.app.ApplicationProvider.getApplicationContext<android.app.Application>()
+            .getSharedPreferences("project_modes", 0).edit().remove("last").commit()
         val before = BenchAudioTrack.cutsBeforeTheEnd()
         tap("starter_starter")
         waitFor("« Simple ou Pro ? »") { centerOf("mode_card_simple") != null }

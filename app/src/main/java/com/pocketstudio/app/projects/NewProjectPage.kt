@@ -78,6 +78,8 @@ import kotlin.math.roundToInt
  * Owner (2026-10-29): no new project without « Simple ou Pro ? ». Each way to start goes through
  * [com.pocketstudio.app.ui.ModeStep] first (Retour comes back here); for « J'apprends » the mode
  * is also the tutorial's level (Simple: Facile), asked once. The demos only play: no step.
+ * Benjamin's answer 3A (tour 5, chantier 5): only until a mode was chosen once; then a new song
+ * takes the last choice (« J'apprends » still asks, for its level).
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -138,20 +140,24 @@ internal fun NewProjectPage(
         }
     }
     if (asking != null) {
-        androidx.activity.compose.BackHandler { pending = null }
-        androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
-            com.pocketstudio.app.ui.ModeStep(
-                choose = { simple ->
-                    com.pocketstudio.app.settings.ProjectModes.choose(context, simple)
-                    if (asking == START_LEARN) learning = true
-                    else {
-                        pending = null
-                        startOf(asking, starters, actions, leave)
-                    }
-                },
-                back = { pending = null },
-                tuto = asking == START_LEARN,
-            )
+        val choose: (Boolean) -> Unit = { simple ->
+            com.pocketstudio.app.settings.ProjectModes.choose(context, simple)
+            if (asking == START_LEARN) learning = true
+            else {
+                pending = null
+                startOf(asking, starters, actions, leave)
+            }
+        }
+        // Benjamin's answer 3A (tour 5, chantier 5): a mode already chosen on this phone, the song takes it without
+        // asking (the assistant says it, with « Changer »). « J'apprends » still asks: the mode is the tutorial's level.
+        val known = androidx.compose.runtime.remember(asking) { if (asking == START_LEARN) null else com.pocketstudio.app.settings.ProjectModes.last(context) }
+        if (known != null) {
+            androidx.compose.runtime.LaunchedEffect(asking) { choose(known) }
+        } else {
+            androidx.activity.compose.BackHandler { pending = null }
+            androidx.compose.material3.Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
+                com.pocketstudio.app.ui.ModeStep(choose = choose, back = { pending = null }, tuto = asking == START_LEARN)
+            }
         }
     }
     }

@@ -127,9 +127,11 @@ open class NavScreenshotTest {
         h.vm.session.edit { com.pocketstudio.model.guide.GuideStart.begin(houseSong(), com.pocketstudio.model.guide.GuideStart.SONG) }
         awaitGuide("guide_card_start.ready")
     }
-    /** Owner (2026-10-29): « Nouveau projet › Je pars de zéro » asks « Simple ou Pro ? » (the last choice marked). */
+    /**
+     * Owner (2026-10-29): « Nouveau projet › Je pars de zéro » asks « Simple ou Pro ? ». Since 3A (tour 5, chantier 5)
+     * only before a first choice: no mark then.
+     */
     @Test fun modeStep() = shot("mode_step") {
-        com.pocketstudio.app.settings.ProjectModes.choose(h.app, false)
         tap("top_projects"); tap("project_new"); tap("start_empty")
     }
     /** « J'apprends »: the same step, each card saying the tutorial's level it gives. */

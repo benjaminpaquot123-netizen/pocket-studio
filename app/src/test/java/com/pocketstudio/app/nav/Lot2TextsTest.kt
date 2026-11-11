@@ -2,6 +2,7 @@ package com.pocketstudio.app.nav
 
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -93,14 +94,15 @@ class Lot2TextsTest {
     fun theModeSimplesHelpGoesBackToTheSong() {
         h.start(simple = true)
         tap("top_more")
-        tap("more_help")
-        compose.onNodeWithTag("plus_back").assertTextContains("Retour", substring = true)
-        // No « Plus » for the way back (the thumb's bar's « ⋯ Plus », round 1 n° 21, is the app's menu, not this page's).
-        compose.onAllNodes(androidx.compose.ui.test.hasText("Plus") and !androidx.compose.ui.test.hasAnyAncestor(androidx.compose.ui.test.hasTestTag("thumb_bar")))
-            .assertCountEquals(0)
+        tap("tool_Aide")
+        // Tour 5, chantier 5 (G15): the Mode simple has the same Plus page as Pro: « ← Plus » back on its list, then
+        // « ← Retour » back on the song.
+        compose.onNodeWithTag("plus_back").assertTextContains("Plus", substring = true)
         tap("plus_back")
+        compose.onNodeWithTag("plus_leave").assertTextContains("Retour", substring = true)
+        tap("plus_leave")
         compose.onNodeWithTag("tab_simple_Morceau").assertExists()
-        assertTrue(compose.onNodeWithTag("plus_back").let { runCatching { it.assertExists() }.isFailure })
+        compose.onAllNodesWithTag("plus").assertCountEquals(0)
     }
 
     @Test

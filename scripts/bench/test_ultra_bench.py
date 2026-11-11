@@ -2302,6 +2302,15 @@ def proof_must_run(d):
     check("A : preuve d'appli AppProofTest#provesIt" in out and "chantier : 0 écarts" not in out, "a proof left in a comment does not run:\n" + out)
     out = judge("class AppProofTest {\n  fun provesIt() {}\n}\n" + other)
     check("A : preuve d'appli AppProofTest#provesIt n'est pas un test qui tourne" in out, "a helper without @Test is no proof:\n" + out)
+    # Lot « verdicts »: a proof without the bench is never a seat of the bench (a class that inherits HumanTester, by
+    # itself or through a base class): its name is no Bench*, but the bench plays it (Tour5BloquantsTest).
+    seated = '@KnownDefect("K1", "m")\n  @Test\n  fun provesIt() {}\n}\n'
+    out = judge('class AppProofTest : HumanTester("x") {\n  ' + seated + other)
+    check("A : preuve d'appli AppProofTest#provesIt est un test du banc (hérite de HumanTester)" in out, "a seat of the bench is no proof without it:\n" + out)
+    out = judge('abstract class SeatBase(n: String) : HumanTester(n)\nclass AppProofTest : SeatBase("x") {\n  ' + seated + other)
+    check("A : preuve d'appli AppProofTest#provesIt est un test du banc (hérite de HumanTester)" in out, "nor through a base class:\n" + out)
+    out = judge('class AppProofTest : Object() {\n  ' + seated + other)
+    check("chantier : 0 écarts" in out, "another base class is no bench:\n" + out)
 
 
 def native_missing(d):

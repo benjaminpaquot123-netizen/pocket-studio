@@ -14,6 +14,9 @@
 #                                                        here first, as on a brand new runner; the engine's tests when
 #                                                        the engine changed since they last passed here; --long adds
 #                                                        scripts/real-projects.sh
+#   scripts/bench/pre-vol.sh --ci --rapide               the CI's own first job (« quick »): only the checks of a few
+#                                                        seconds (bench tests, the pre-flight's test, the workflows);
+#                                                        nothing about pushes, the CI's state or the engine
 #
 # Exit 0: nothing found (« PRÊT »). Exit 1: at least one « RECALÉ » line. « À VOIR » lines never change the exit code.
 # The portal stays the judge: this script repeats its checks (docs/AIDE-FUSIONS-TESTS.md) and warns when the portal's
@@ -82,17 +85,29 @@ fi
 
 # --- Before launching the CI by hand ---------------------------------------------------------------------------------
 if [ "${1:-}" = "--ci" ]; then
-  long=0
-  [ "${2:-}" = "--long" ] && long=1
-  echo "== Avant de lancer la CI à la main ($(git rev-parse --short HEAD))"
-  [ -z "$(git status --porcelain --untracked-files=no)" ] || bad "des changements ne sont pas commités : la CI ne les verra pas" "committer, ou les mettre de côté"
-  if git rev-parse -q --verify '@{upstream}' >/dev/null 2>&1; then
+  long=0; quick=0
+  for a in "${@:2}"; do
+    case "$a" in
+      --long) long=1 ;;
+      --rapide) quick=1 ;;
+      *) echo "pre-vol --ci : option inconnue « $a » (--long, --rapide)" >&2; exit 2 ;;
+    esac
+  done
+  if [ "$quick" -eq 1 ]; then
+    echo "== Contrôles rapides ($(git rev-parse --short HEAD))"
+  else
+    echo "== Avant de lancer la CI à la main ($(git rev-parse --short HEAD))"
+    [ -z "$(git status --porcelain --untracked-files=no)" ] || bad "des changements ne sont pas commités : la CI ne les verra pas" "committer, ou les mettre de côté"
+  fi
+  if [ "$quick" -eq 1 ]; then
+    :
+  elif git rev-parse -q --verify '@{upstream}' >/dev/null 2>&1; then
     [ "$(git rev-list --count '@{upstream}..HEAD')" -eq 0 ] || bad "des commits ne sont pas poussés : la CI tournerait sur l'ancien code" "git push, puis lancer la CI"
   else
     warn "cette branche ne suit aucune branche distante : vérifier que tout est poussé"
   fi
   # The same commit already red on GitHub: launching it again cannot turn it green.
-  if [ -x scripts/bench/ci-etat.sh ]; then
+  if [ "$quick" -eq 0 ] && [ -x scripts/bench/ci-etat.sh ]; then
     state="$(scripts/bench/ci-etat.sh HEAD 2>/dev/null | sed -n 's/^ci_build //p')"
     case "$state" in
       rouge) bad "la CI de ce commit est déjà rouge : la relancer telle quelle donnera le même rouge" "lire l'étape en échec, la reproduire ici, corriger, committer, puis seulement relancer" ;;
@@ -114,11 +129,13 @@ if [ "${1:-}" = "--ci" ]; then
     fi
   }
   found=0
-  for t in scripts/bench/test_cpu_report.py scripts/bench/test_ultra_bench.py scripts/bench/test_report.py scripts/bench/test_defauts_caches.py; do
+  for t in scripts/bench/test_socle.py scripts/bench/test_cpu_report.py scripts/bench/test_ultra_bench.py scripts/bench/test_report.py scripts/bench/test_defauts_caches.py; do
     [ -f "$t" ] || continue
     found=1
     run_bare "$t" python3 -I "$t"
   done
+  # The pre-flight's own test (and, through it, the portal's refusals).
+  [ ! -f scripts/bench/test_pre_vol.sh ] || run_bare "scripts/bench/test_pre_vol.sh" bash scripts/bench/test_pre_vol.sh
   [ "$found" -eq 1 ] || warn "aucun test Python du banc ici (scripts/bench/test_*.py)"
   # (scripts/check-jni.sh needs a built engine: only where there is one.)
   if [ -x scripts/check-jni.sh ] && [ -n "$(find engine/build -path '*release*' -name NativeEngine.class 2>/dev/null | head -1)" ]; then
@@ -132,6 +149,8 @@ if [ "${1:-}" = "--ci" ]; then
       python3 -I -c 'import yaml' 2>/dev/null && bad "$y ne se lit plus (YAML invalide)" "corriger le fichier avant tout lancement"
     }
   done
+  # The quick mode stops here: the engine has its own job in the CI, the real projects their own step.
+  [ "$quick" -eq 0 ] || verdict
   free_gb="$(df -BG --output=avail . | tail -1 | tr -dc 0-9)"
   [ "${free_gb:-0}" -ge 4 ] || warn "disque : ${free_gb} Go libres ici (les tests longs en demandent 4)"
   # The engine's tests on Linux: every other job of the CI waits for them (« needs: engine »), so a red there costs

@@ -144,6 +144,6 @@ class HelpLabelsTest {
         val words = { id: String -> compose.onAllNodesWithTag("help_label_$id", useUnmergedTree = true).fetchSemanticsNodes().first()
             .config.getOrNull(SemanticsProperties.Text)?.joinToString { it.text } }
         assertTrue("the undo arrow: ${words("top_undo")}", words("top_undo") == com.pocketstudio.model.i18n.tr("Annuler (défaire)"))
-        assertTrue("the play button: ${words("top_play")}", words("top_play") == com.pocketstudio.model.i18n.tr("Jouer"))
+        assertTrue("the play button: ${words("top_play")}", words("top_play") == com.pocketstudio.model.i18n.tr("Jouer cette partie"))
     }
 }

@@ -244,7 +244,8 @@ class JourneyTest {
         // The song's position (sixteenths) moves on every second (no song loops back within a minute).
         val stuck = (1 until steps.size).filter { steps[it] <= steps[it - 1] }.map { it + 1 }
         assertTrue("the song's position did not move on at $stuck s: $text", stuck.isEmpty() && steps.first() >= 0)
-        j.tap("top_play")
+        // ■ on « ▶ le morceau » (tour 5, chantier 4: the top ▶ is « cette partie », it would loop the part).
+        j.tap(if (j.exists("thumb_play")) "thumb_play" else "top_song")
         waitFor("the stop", 5) { NativeEngine.currentStep() == -1 }
     }
 

@@ -63,6 +63,17 @@ class RemixChantier10Test {
         compose.onAllNodes(hasTestTag("remix_dest_build") and hasAnyDescendant(hasText("Conseillé")), useUnmergedTree = true).assertCountEquals(1)
     }
 
+    /** The song separated from the home screen: one big « Faire un morceau avec cette chanson », the other ways behind « Autres choix… ». */
+    @Test
+    fun theSongCardHasOneClearButton() {
+        compose.setContent {
+            PocketStudioTheme { RemixScreen(RemixUi(true, SeparationState.Idle, listOf(set), home = true), RemixActions()) }
+        }
+        compose.onAllNodes(hasTestTag("build_${set.id}") and hasAnyDescendant(hasText("Faire un morceau avec cette chanson")), useUnmergedTree = true)
+            .assertCountEquals(1)
+        compose.onAllNodes(hasTestTag("use_${set.id}") and hasAnyDescendant(hasText("Autres choix…")), useUnmergedTree = true).assertCountEquals(1)
+    }
+
     /** « La fin sera coupée » comes with its two fixes: « Allonger le morceau » and « Couper la chanson à la fin ». */
     @Test
     fun theCutEndHasItsTwoFixes() {

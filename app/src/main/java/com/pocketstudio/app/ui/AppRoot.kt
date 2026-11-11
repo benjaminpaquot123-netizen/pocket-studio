@@ -2274,6 +2274,9 @@ fun AppRoot() {
             val topUnsaved by rhythmVm.session.unsaved.collectAsStateWithLifecycle()
             // On the Audio tracks screen (or during a take) the ● is the microphone's.
             val micMode = (tab == AppTab.Audio && audioPage == 0) || topTake != null
+            // Tour 5, chantier 4 (2B): which of the two ▶ shows ■, « ▶ cette partie » (the part looped) or « ▶ le morceau ».
+            val topLoopPart by rhythmVm.loopPart.collectAsStateWithLifecycle()
+            val plays = namedPlays(topTransport.playing, topLoopPart, topProject.song.isNotEmpty())
             TopBar(
                 TopBarUi(
                     com.pocketstudio.model.DefaultNames.shown(topProject.name), topTransport.playing, topUndo && undoable, topRedo && undoable, topRecording || topTake != null,
@@ -2294,12 +2297,16 @@ fun AppRoot() {
                     undo = !(simple && thumbBarUp),
                     saved = saveError == null && !topUnsaved,
                     recordInto = topRecordInto?.let { topProject.sceneTitle(it) },
+                    partPlaying = plays.part, songPlaying = plays.song,
+                    // No thumb's bar: « ▶ le morceau » up here too.
+                    songButton = !thumbBarUp,
                 ),
                 TopBarActions(
                     projects = { showProjects = true }, rename = { renamingProject = true },
                     undo = { com.pocketstudio.app.report.Journal.action("↶ Annuler"); rhythmVm.undo() },
                     redo = { com.pocketstudio.app.report.Journal.action("↷ Rétablir"); rhythmVm.redo() },
                     togglePlay = rhythmVm::togglePlay,
+                    playSong = rhythmVm::togglePlay,
                     toggleRecord = {
                         when {
                             // From the synth the take is a played phrase (a one-bar loop grows to four first);
@@ -2524,10 +2531,12 @@ fun AppRoot() {
                     val thumbPerformance by rhythmVm.take.collectAsStateWithLifecycle()
                     // As the top bar's: no undo during a take (or while it is written).
                     val thumbUndoable = !thumbRecording && thumbTake == null && !thumbSaving && !thumbPerformance.running
+                    val thumbLoopPart by rhythmVm.loopPart.collectAsStateWithLifecycle()
                     ThumbBar(
                         ThumbBarUi(
                             playing = thumbTransport.playing, canUndo = thumbUndo && thumbUndoable, canRedo = thumbRedo && thumbUndoable,
                             tempoBpm = thumbProject.tempoBpm.roundToInt(), redoAlways = !simple,
+                            songPlaying = namedPlays(thumbTransport.playing, thumbLoopPart, thumbProject.song.isNotEmpty()).song,
                         ),
                         ThumbBarActions(
                             undo = { com.pocketstudio.app.report.Journal.action("↶ Annuler"); rhythmVm.undo() },
@@ -4705,6 +4714,13 @@ private const val THUMB_BAR_BESIDE_GUIDE_DP = 820
  * view with the bar: 115 dp on a 411 x 914 phone (703 dp), 97 on a 400 x 890 (684), 0 on a 360 x 780 (600; 16 without it).
  */
 internal const val KEYS_PAGE_THUMB_BAR_DP = 700
+
+/** Which named ▶ shows ■ (tour 5, chantier 4): [part] « ▶ cette partie », [song] « ▶ le morceau ». */
+internal data class NamedPlays(val part: Boolean, val song: Boolean)
+
+/** Playing, the part looped ([loopPart]) or the song; without a song, the part is all there is to play: both show ■. */
+internal fun namedPlays(playing: Boolean, loopPart: Boolean, hasSong: Boolean) =
+    NamedPlays(part = playing && (loopPart || !hasSong), song = playing && (!loopPart || !hasSong))
 
 /** The thumb's bar is shown: the screen (dp as the interface draws them, whatever the text's size) tall enough for a page above it. */
 internal fun thumbBarFits(screenHeightDp: Int): Boolean = screenHeightDp >= THUMB_BAR_MIN_HEIGHT_DP

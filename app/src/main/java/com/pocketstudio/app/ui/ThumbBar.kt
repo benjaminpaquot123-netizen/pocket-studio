@@ -58,6 +58,8 @@ class ThumbBarUi(
     val tempoBpm: Int,
     /** ↷ offered all the time (the Pro); false: only once there is something to bring back (the Mode simple). */
     val redoAlways: Boolean,
+    /** Tour 5, chantier 4: the song plays (not one part looped), so « ▶ le morceau » shows ■. Defaults to [playing]. */
+    val songPlaying: Boolean = playing,
 )
 
 class ThumbBarActions(
@@ -82,25 +84,34 @@ fun ThumbBar(ui: ThumbBarUi, actions: ThumbBarActions) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        ThumbButton(Icons.AutoMirrored.Filled.Undo, tr("Annuler (défaire)"), tr("Annuler la dernière action"), ui.canUndo, "thumb_undo", actions.undo)
+        // ▶ and the tempo are measured first, whole; the other buttons share what is left (their words end in « … » before
+        // the bar runs off the screen: a small phone at 130 % in German).
+        val share = Modifier.weight(1f, fill = false)
+        ThumbButton(Icons.AutoMirrored.Filled.Undo, tr("Annuler (défaire)"), tr("Annuler la dernière action"), ui.canUndo, "thumb_undo", share, actions.undo)
         if (ui.redoAlways || ui.canRedo) {
-            ThumbButton(Icons.AutoMirrored.Filled.Redo, tr("Rétablir"), tr("Rétablir"), ui.canRedo, "thumb_redo", actions.redo)
+            ThumbButton(Icons.AutoMirrored.Filled.Redo, tr("Rétablir"), tr("Rétablir"), ui.canRedo, "thumb_redo", share, actions.redo)
         }
-        // ▶ / ■ in the middle, as large as the top bar's.
-        val playColor = if (ui.playing) Neon.Acid else Neon.Cyan
-        Box(
-            Modifier.requiredSize(52.dp).clip(CircleShape)
-                .clickable(role = Role.Button, onClickLabel = if (ui.playing) tr("Arrêter") else tr("Jouer"), onClick = actions.togglePlay)
+        // « ▶ le morceau » in the middle (tour 5, chantier 4, Benjamin's 2B): the whole song; the top bar's is « ▶ cette partie ».
+        val playing = ui.songPlaying
+        val playColor = if (playing) Neon.Acid else Neon.Cyan
+        val said = if (playing) tr("Arrêter") else tr("Jouer le morceau")
+        Column(
+            Modifier.widthIn(min = 56.dp).heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
+                .clickable(role = Role.Button, onClickLabel = said, onClick = actions.togglePlay)
+                .semantics { contentDescription = said }
+                .padding(horizontal = 4.dp)
                 .testTag("thumb_play"),
-            contentAlignment = Alignment.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
         ) {
-            Box(Modifier.requiredSize(44.dp).clip(CircleShape).background(playColor), contentAlignment = Alignment.Center) {
-                Icon(
-                    if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow,
-                    contentDescription = if (ui.playing) tr("Arrêter") else tr("Jouer"),
-                    tint = Neon.OnAccent,
-                )
+            Box(Modifier.requiredSize(32.dp).clip(CircleShape).background(playColor), contentAlignment = Alignment.Center) {
+                Icon(if (playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.OnAccent, modifier = Modifier.size(22.dp))
             }
+            // Whole at any size and in any language (« der Song », « la canción »): never « le mor… ».
+            Text(
+                tr("le morceau"), fontSize = 11.sp, lineHeight = 12.sp, fontWeight = FontWeight.Bold, color = if (playing) Neon.Acid else Neon.TextPrimary,
+                maxLines = 1, softWrap = false, textAlign = TextAlign.Center,
+            )
         }
         Column(
             Modifier.widthIn(min = 64.dp).heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
@@ -116,7 +127,7 @@ fun ThumbBar(ui: ThumbBarUi, actions: ThumbBarActions) {
         }
         val more = actions.more
         if (more != null) {
-            Box {
+            Box(share) {
                 var open by remember { mutableStateOf(false) }
                 ThumbButton(Icons.Filled.MoreVert, tr("Plus"), tr("Plus de choix"), true, "thumb_more") { open = true }
                 ScaledDropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.testTag("thumb_more_menu")) {
@@ -126,7 +137,7 @@ fun ThumbBar(ui: ThumbBarUi, actions: ThumbBarActions) {
                 }
             }
         } else {
-            ThumbButton(Icons.Filled.Share, tr("Partager"), tr("Partager mon morceau"), true, "thumb_share", actions.share)
+            ThumbButton(Icons.Filled.Share, tr("Partager"), tr("Partager mon morceau"), true, "thumb_share", share, actions.share)
         }
     }
 }
@@ -139,9 +150,9 @@ internal const val THUMB_OFF_ALPHA = 0.6f
 
 /** An icon over its word, 48 dp at least each way. */
 @Composable
-private fun ThumbButton(icon: ImageVector, label: String, description: String, enabled: Boolean, tag: String, onClick: () -> Unit) {
+private fun ThumbButton(icon: ImageVector, label: String, description: String, enabled: Boolean, tag: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Column(
-        Modifier.widthIn(min = 56.dp).heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
+        modifier.widthIn(min = 56.dp).heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
             .semantics { contentDescription = description }
             .alpha(if (enabled) 1f else THUMB_OFF_ALPHA)

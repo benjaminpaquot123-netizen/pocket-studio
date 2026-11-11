@@ -1181,9 +1181,14 @@ def judge_topic_pairs(d):
     lone = commit("rouge: wordsWithoutTheirTest (nothing in a test)", app, "val w = 1\n")
     twice = commit("rouge: SimpleNoDecibelTest (a second red of the same topic)", nodb_file,
                    "class SimpleNoDecibelTest {\n  @Test\n  fun noDecibelOnTheMix() { /* twice */ }\n}\n")
+    # Review of « banc6b » (grave): a « Class#method » is one test, not a topic: a green of another test of the
+    # same class closes nothing (the names already pair a red with its own test).
+    cls_red = commit("rouge: ClassLevelTest#firstCaseOfIt (one case)", os.path.join(tests, "ClassLevelTest.kt"),
+                     "class ClassLevelTest {\n  @Test\n  fun firstCaseOfIt() {}\n}\n")
     g1 = commit("vert: SimpleNoDecibelTest and oneWordPerThing (one name per thing, no dB)", app, "val w = 2\n")
     g2 = commit("vert: oneWordPerThing (no « Pas à pas » button)", app, "val w = 3\n")
     g3 = commit("vert: wordsWithoutTheirTest (fixed)", app, "val w = 4\n")
+    cls_green = commit("vert: ClassLevelTest#secondCaseOfIt (another case)", app, "val w = 5\n")
     seal_resume(root, resume)
     out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
                          capture_output=True, text=True).stdout
@@ -1191,7 +1196,9 @@ def judge_topic_pairs(d):
         check(f"{sha} «" not in out, f"a red closed by a green naming its topic ({sha}):\n" + out)
     check(f"{lone} « rouge:" in out and f"{g3} « vert:" in out, "a topic in no test file pairs nothing:\n" + out)
     check(f"{twice} « rouge:" in out, "one green closes one red per topic, never two:\n" + out)
-    check("chantier : 3 écarts" in out, "three gaps, nothing else:\n" + out)
+    check(f"{cls_red} « rouge:" in out and f"{cls_green} « vert:" in out,
+          "a green of another test of the same class closes nothing:\n" + out)
+    check("chantier : 5 écarts" in out, "five gaps, nothing else:\n" + out)
 
 
 def red_seen_review_line(d):

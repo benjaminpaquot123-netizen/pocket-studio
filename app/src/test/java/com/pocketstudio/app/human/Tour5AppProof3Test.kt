@@ -136,7 +136,30 @@ class Tour5AppProof3Test {
                     armedAt = transport().let { if (it.isNaN() || it < 0) 0 else it.toInt() }
                     if (a < 0 && b == 3) songAt = -1
                 }
+                // A stop armed for slots (Engine::launchSlots, « ■ Tout »): on the next multiple of its quantum, each slot
+                // reported stopped (-1) to drainLaunchEvents. Only stops: what « ■ Tout » arms.
+                CMD_ARM_LAUNCH -> if (value < 0f) {
+                    val q = (b and 0x1FFFF).coerceAtLeast(1)
+                    val now = transport().let { if (it.isNaN() || it < 0) 0 else it.toInt() }
+                    stopMask = stopMask or a
+                    stopAt = (now / q + 1) * q
+                }
+                CMD_CANCEL_LAUNCH -> stopMask = stopMask and a.inv()
             }
+        }
+        private var stopMask = 0
+        private var stopAt = 0
+        @Synchronized override fun drainLaunchEvents(out: IntArray): Int {
+            follow()
+            val t = transport()
+            if (stopMask == 0 || t.isNaN() || t < stopAt) return 0
+            var n = 0
+            for (k in 0 until 31) if (stopMask and (1 shl k) != 0 && (n + 1) * 3 <= out.size) {
+                out[n * 3] = k; out[n * 3 + 1] = -1; out[n * 3 + 2] = stopAt
+                n++
+            }
+            stopMask = 0
+            return n
         }
         @Synchronized override fun playPosition(): Double {
             follow()
@@ -417,5 +440,7 @@ class Tour5AppProof3Test {
         const val CMD_SET_TEMPO = 6
         const val CMD_ARM_SCENE_SWAP = 40
         const val CMD_BEATS_PER_BAR = 57
+        const val CMD_ARM_LAUNCH = 71
+        const val CMD_CANCEL_LAUNCH = 72
     }
 }

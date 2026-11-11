@@ -4192,6 +4192,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         // Already launched (the line passed meanwhile): it stays, as heard.
         val waiting = (0 until LiveSlots.COUNT).filter { mask and (1 shl it) != 0 && liveNow().slot(it).pending != null }
         if (waiting.isEmpty()) return
+        stopAllArmed = false  // « ■ Tout » taken back: the transport goes on
         val m = waiting.fold(0) { acc, k -> acc or (1 shl k) }
         if (NativeEngine.isAvailable) NativeEngine.cancelLaunch(m)
         waiting.forEach { stagedFrom[it] = null }
@@ -4210,12 +4211,19 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         armSlots(LiveSlots.mask(slot), -1)
     }
 
-    /** « ■ Tout »: every track stops on the next launch line (the transport goes on). */
+    /**
+     * « ■ Tout »: every track stops on the next launch line, and the transport with them there (4A, T4-01, recette tel-12:
+     * « ■ Tout coupe le son mais mesures et temps continuent »): [onLaunched] stops it once no block plays nor waits.
+     */
     fun stopLiveAll() {
         if (!_transport.value.playing) return
         leaveSongForLive()
         armSlots(LiveSlots.ALL, -1)
+        stopAllArmed = true
     }
+
+    /** « ■ Tout » armed: the transport stops when the engine has stopped every block (a block launched since: not any more). */
+    private var stopAllArmed = false
 
     /**
      * Audit ultra round 3, zone 1, n° 3 (seat E d): the Live columns cut outside the Live page: their strip muted in Mix,
@@ -4810,6 +4818,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
 
     /** [mask]'s slots take [scene]'s part (staged now) or stop (-1) on the next launch line. */
     private fun armSlots(mask: Int, scene: Int) {
+        stopAllArmed = false
         val p = project.value
         if (NativeEngine.isAvailable) {
             if (scene >= 0) {
@@ -4914,6 +4923,12 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
             heardScene = g.row
             if (g.row != project.value.scene && g.row in project.value.allScenes.indices) session.editQuietly { it.switchScene(g.row) }
             if (NativeEngine.isAvailable) swapsSeen = NativeEngine.sceneSwaps()
+        }
+        // « ■ Tout » (4A): its last block stopped on the line, the transport stops there too.
+        if (stopAllArmed && !g.hasPending) {
+            stopAllArmed = false
+            AppLog.add("■ Tout : tout est arrêté, la lecture aussi")
+            toggleTransport(songStep = aloneSongStep())
         }
     }
 
@@ -9588,6 +9603,7 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
     private fun toggleTransport(countInBars: Int? = null, songStep: Int = NativeEngine.OUTSIDE_SONG) {
         val t = _transport.value
         val playing = !t.playing
+        stopAllArmed = false
         if (!playing) {
             _loopArmedBySelf.value = false
             // ■ ends « Écouter seul » too: the sync below gives the engine the project's mixer back.

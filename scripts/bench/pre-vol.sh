@@ -312,7 +312,12 @@ for zone in "$@"; do
           "fusionner l'intégration dans la branche et rejouer les tests ciblés AVANT la relecture ; sinon c'est le portail qui trouvera le rouge, après la fusion"
       fi
     fi
-    # The next zone is tried on top of this one, as the portal does.
+    # The next zone is tried on top of this one, as the portal does. A branch the integration already holds (the same
+    # commit, or one of its ancestors) brings nothing: no commit in memory (git said « duplicate parent » for it).
+    if git merge-base --is-ancestor "$branch" "$head"; then
+      warn "la branche est déjà dans l'intégration : rien à fusionner" "vérifier le nom de la branche, ou la retirer de la liste"
+      continue
+    fi
     head="$(GIT_AUTHOR_NAME=pre-vol GIT_AUTHOR_EMAIL=pre-vol@localhost GIT_COMMITTER_NAME=pre-vol GIT_COMMITTER_EMAIL=pre-vol@localhost \
       git commit-tree "$tree" -p "$head" -p "$branch" -m "pre-vol: $zone (in memory)")"
   fi

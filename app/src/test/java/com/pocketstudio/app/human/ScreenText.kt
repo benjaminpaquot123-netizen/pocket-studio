@@ -494,8 +494,21 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
 
         /** The screen's text as a short hash: clock times and percentages left out (a song's position, a progress). */
         fun fingerprintOf(lines: List<String>): String {
-            val norm = lines.joinToString("\n") { l -> l.replace(Regex("\\d+:\\d\\d"), "#:##").replace(Regex("\\d+ ?%"), "#%") }
+            val norm = lines.joinToString("\n", transform = ::normalized)
             return MessageDigest.getInstance("SHA-1").digest(norm.toByteArray()).joinToString("") { "%02x".format(it) }.take(10)
+        }
+
+        /** A line as the fingerprint reads it: clock times and percentages left out. */
+        fun normalized(line: String): String = line.replace(Regex("\\d+:\\d\\d"), "#:##").replace(Regex("\\d+ ?%"), "#%")
+
+        /**
+         * PLAN-RESTE 7.5: the first line where two screens (as their fingerprints read them) differ, in words:
+         * « origine « … », rejeu « … » » (« (rien) » past the end of one). Null when they do not differ.
+         */
+        fun firstDifference(was: List<String>, now: List<String>): String? {
+            val i = (0 until maxOf(was.size, now.size)).firstOrNull { k -> was.getOrNull(k)?.let(::normalized) != now.getOrNull(k)?.let(::normalized) } ?: return null
+            fun said(l: String?) = l?.let { "« ${it.take(120)} »" } ?: "(rien)"
+            return "origine ${said(was.getOrNull(i))}, rejeu ${said(now.getOrNull(i))}"
         }
     }
 }

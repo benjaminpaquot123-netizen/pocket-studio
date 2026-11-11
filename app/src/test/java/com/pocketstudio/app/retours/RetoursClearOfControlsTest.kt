@@ -144,4 +144,34 @@ class RetoursClearOfControlsTest : HumanTester("retours-clear") {
     @Test fun smallPhoneAt200() = simpleTour(SeatOptions(device = "phone360", font = 200))
     @Test fun phoneLyingDown() = simpleTour(SeatOptions(device = "phoneLand"))
     @Test fun tabletLyingDownPro() = proTour(SeatOptions(device = "tablet11Land", font = 130))
+
+    /**
+     * Tour 5, chantier 4 (BenchPlayThenTabsTest): « Mode retours » hidden, its message (4 s at the screen's foot) lay over
+     * « ▶ le morceau » and took the next touch (it closed the message, nothing played). Right after it: the message clear of
+     * the thumb's bar, and ▶ plays at the first touch.
+     */
+    @Test
+    fun theMessageLeavesTheSongsPlayFree() {
+        begin(SeatOptions(simple = true))
+        tapText("Fais-moi un morceau")
+        if (centerOf("mode_card_simple") != null) tap("mode_card_simple")
+        tap("wizard_family_Techno")
+        tap("wizard_style_techno")
+        tap("wizard_style_choose_techno")
+        tap("wizard_create_now")
+        waitFor("the song's tabs") { centerOf("tab_simple_Morceau") != null }
+        tap("retours_more")
+        tap("retours_menu_hide")
+        compose.waitForIdle()
+        val nodes = compose.onAllNodes(any, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
+        fun bounds(tag: String) = nodes.firstOrNull { it.config.getOrNull(SemanticsProperties.TestTag) == tag }?.boundsInWindow
+        val message = bounds("retours_message")
+        val bar = bounds("thumb_bar")
+        assertNotNull("no message after « Masquer »\n" + screenLines().joinToString("\n"), message)
+        assertNotNull("no thumb's bar", bar)
+        val over = message!!.intersect(bar!!).let { it.width > 1f && it.height > 1f }
+        tap("thumb_play")
+        val playing = rhythm()!!.transport.value.playing
+        assertTrue("the message $message over the thumb's bar $bar: $over; ▶ le morceau at the first touch: $playing", !over && playing)
+    }
 }

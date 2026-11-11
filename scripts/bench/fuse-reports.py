@@ -21,7 +21,8 @@ cible: ») are both read. Each defect gets a key:
   « affichage » (one defect, five spellings in round 3).
 
 States, from the base of known keys (base.tsv) and the verdicts (verdicts.tsv):
-  [nouveau] never seen; [revient ?] the key was « corrigé » at an earlier round (a candidate: a reader confirms it in
+  [nouveau] never seen; [revient ?] the key, or the button of a « même bouton » (PLAN-RESTE 6.2), was « corrigé » at
+  an earlier round (a candidate: a reader confirms it in
   revient.tsv, then [revient]); [banc contredit ?] the key had a « banc » verdict and is seen
   again; otherwise the base's own state. [banc?] marks a cluster every tester of which said « banc?: <not non> », or
   whose tag is one of the bench's known limits.
@@ -285,7 +286,7 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
                  if r.get("cle")}
     # Banc fiable 2.4: the same real button reported at an earlier round under another route or symptom (round 5:
     # « padlive_stop_all » rien in padlive at round 1, incompris in padlive_pads_side at round 5): a candidate, not fused.
-    button_seen = {}
+    button_seen, button_fixed = {}, set()
     for r in rows:
         parts = r["cle"].split("|")
         if len(parts) == 3 and re.fullmatch(r"[a-z][a-z0-9_]*_[a-z0-9_]+", parts[1]) and not NAV_TAGS.match(parts[1]) \
@@ -293,6 +294,10 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
             for t in seen_in.get(r["cle"], []):
                 if earlier(t, tour):
                     button_seen.setdefault(parts[1], set()).add(t)
+            # PLAN-RESTE 6.2: a button fixed at an earlier round (A d #21 of round 5, T1-22: the key changed, the
+            # button did not): its « même bouton » is a « revient ? » candidate, for a reader to confirm or refuse.
+            if r.get("etat") == "corrigé" and fixed_at.get(r["cle"]) and earlier(fixed_at[r["cle"]], tour):
+                button_fixed.add(parts[1])
     clusters, rejected, seats, promises, incidents = {}, [], [], [], []
     for f in reports(round_dir):
         for b in blocks(read(f)):
@@ -368,10 +373,14 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
             state = f"déjà vu ({before[0]})"
         elif state == "nouveau" and c["tag"] and button_seen.get(c["tag"]):
             state = f"même bouton ({sorted(button_seen[c['tag']], key=tour_no)[0]})"
-        # A candidate confirmed by a reader (revient.tsv) is a comeback; refused, it is this round's own defect.
+        same_button = state if state.startswith("même bouton") else None
+        if same_button and c["tag"] in button_fixed:
+            state = "revient ?"
+        # A candidate confirmed by a reader (revient.tsv) is a comeback; refused, it is this round's own defect (or,
+        # from a « même bouton », that same button again).
         if state.endswith(" ?"):
             said = confirmed.get((tour, c["key"]))
-            state = state[:-2] if said == "oui" else ("nouveau" if said == "non" else state)
+            state = state[:-2] if said == "oui" else ((same_button or "nouveau") if said == "non" else state)
         c["state"] = state
         # PLAN-RESTE 4.7: every card of it about an export's size or time taken: the bench's, not a doubt.
         c["bench_export"] = bool(c["export_figure"]) and all(c["export_figure"])

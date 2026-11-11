@@ -1,5 +1,5 @@
 # Relecture du chantier 7 « Pad Live » (tour 5, étape 4)
-Relu : c3542fe1448deddd672cf2a46cef1e99c985364c
+Relu : 0f44752756ab8036782fdb8319713ad8c49c9e15
 
 Relecteur neuf (ni auteur du code). Diff lu : `git diff bb4f1a26...HEAD` (moteur `ClipLauncher`, `RhythmViewModel`, `PadLiveScreen`, `AppRoot`, aides 14 langues, tests, captures), le rapport de l'auteur et les 6 lignes de DECISIONS.
 
@@ -46,5 +46,11 @@ tel-08, tel-11, tel-12, tel-17 (comme le rapport), plus : « Enregistrer ce que 
 - Fusion c3542fe1 (`git show --cc`) : trois conflits, les deux côtés gardés. `I18n.kt` liste « padlivestop » puis « accueil » ; DECISIONS garde les 7 lignes du chantier 7 puis celles de fx-int ; `verdicts.tsv` garde T5-PADRETRIG, T5-Ed-40 et T5-Ed-11 « corrigé » (ce lot) et T5-DEMO-VIDE, T5-Cc-23, T5-Cc-41c de fx-int. Aucune ligne perdue.
 - Moteur : `git diff bb4f1a26 HEAD -- engine/` ne touche que `ClipLauncher::toggle` (et son test), jamais le rendu ni le synthé.
 - Temps de calcul, `engine_tests` rejoué 3 fois en alternance (ligne « wide synth », limite 15 %) : base fx-int 12,5 / 11,9 / 13,6 %, atelier 12,6 / 12,2 / 13,1 % (charge 1,3 à 6,4, d'autres Gradle tournaient). Les chiffres se recouvrent ; la base seule a aussi raté une fois `master_tests.inc:326`, et l'atelier une fois `studio_tests.inc:345` à l'échauffement : bruit de machine, pas le lot. Aucune limite touchée.
+
+
+## Delta après fusion de fx-int (2)
+
+- Fusion 7daa06ef (`git show --cc`) : aucun conflit, aucune résolution manuelle. 400e3507 ne change que l'attendu de T5-PADRETRIG dans `test_ultra_bench.py` : la preuve moteur est maintenant `padlive_hit_retouched_sounds_at_once` (le défaut est corrigé) ; `verifie-chantier.py --preuves T5-PADRETRIG` sort exactement cette ligne, `test_ultra_bench.py` OK.
+- Le rapport reçoit sa ligne « tests: » (commit `0f447527`), relu ici.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

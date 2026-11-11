@@ -41,6 +41,9 @@ class CurvesFindTest {
     @get:Rule
     val compose = createComposeRule()
 
+    /** The frame or lane brought into view once laid out (a short wait in the app, started a frame or two later). */
+    private fun settle() = repeat(3) { compose.mainClock.advanceTimeBy(500); compose.waitForIdle() }
+
     private fun exists(tag: String) = compose.onAllNodes(hasTestTag(tag), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
 
     private val drums = 0
@@ -76,7 +79,7 @@ class CurvesFindTest {
         compose.onNodeWithTag("automation_add").performClick()
         compose.onNodeWithTag("pick_track_$drums").performClick()
         compose.onNodeWithTag("pick_filter_$drums").performClick()
-        compose.waitForIdle()
+        settle()
         assertEquals(5, lanes.size)
         // Benjamin: « la fenêtre se ferme sans rien dire » and the curve was further down, out of sight.
         compose.onNodeWithTag("auto_fresh_4", useUnmergedTree = true).assertIsDisplayed()
@@ -86,18 +89,18 @@ class CurvesFindTest {
     @Test
     fun aSettingWithACurveStaysInThePickerAndLeadsToIt() {
         val filtered = List(16) { Channel() }.mapIndexed { i, c -> if (i == drums) c.copy(inserts = listOf(Insert.of(EffectType.FILTER)) + c.inserts.drop(1)) else c }
-        var lanes by mutableStateOf(listOf(AutomationLane(cutoff)) + others)
+        var lanes by mutableStateOf(others + AutomationLane(cutoff))
         var added = 0
         card({ filtered }, { lanes }, AutomationActions(add = { t -> added++; lanes = lanes + AutomationLane(t) }))
-        // The first curve scrolled away: the picker is where Benjamin looked for it again.
+        // The filter's curve is the last one, out of sight: the picker is where Benjamin looked for it again.
         compose.onNodeWithTag("automation_add").performClick()
         compose.onNodeWithTag("pick_track_$drums").performClick()
         val tag = "pick_${cutoff.pack()}"
         assertTrue("the filter is still offered, marked", exists(tag) && exists("${tag}_has_curve"))
         compose.onNodeWithTag(tag).performClick()
-        compose.waitForIdle()
+        settle()
         assertEquals("no second curve on the same setting", 0, added)
-        compose.onNodeWithTag("auto_fresh_0", useUnmergedTree = true).assertIsDisplayed()
+        compose.onNodeWithTag("auto_fresh_4", useUnmergedTree = true).assertIsDisplayed()
     }
 
     private fun box(spot: AutoTarget, channel: Channel) {
@@ -110,7 +113,7 @@ class CurvesFindTest {
                 }
             }
         }
-        compose.waitForIdle()
+        settle()
     }
 
     @Test

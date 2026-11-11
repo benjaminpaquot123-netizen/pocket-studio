@@ -77,7 +77,7 @@ class Tour5AppProof3Test {
      * counted (Engine.cpp's onStep), the song's position set by ▶ and by a swap that restarts the song there, and the
      * song's end (the transport stops on that bar line, counted as a swap).
      */
-    private class SongEngine : CommandSink {
+    internal class SongEngine : CommandSink {
         private var next = 1L
         val posts = ArrayList<List<Number>>()
         private var since = -1L
@@ -412,7 +412,7 @@ class Tour5AppProof3Test {
         assertFalse("« ■ Tout » of the Live view leaves the transport running (the bars and the time go on)", vm.transport.value.playing)
     }
 
-    private companion object {
+    internal companion object {
         const val CMD_SET_TRANSPORT = 5
         const val CMD_SET_TEMPO = 6
         const val CMD_ARM_SCENE_SWAP = 40

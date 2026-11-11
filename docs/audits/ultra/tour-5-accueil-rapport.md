@@ -28,3 +28,5 @@ Source : `PLAN-ACTION-AUDITS.md` étape 4 ligne 6 ; `docs/audits/AUDIT-PRISE-EN-
 - Captures (45 réenregistrées, regardées) : `*ScreenshotTest`, `*Nav*ScreenshotTest`, `*I18n*ScreenshotTest`,
   `*Tablet*ScreenshotTest`, `*UiScale*ScreenshotTest`, `*Guide*ScreenshotTest`, `*BrandTest`, `*QuickStyleCardTest`.
   Non réenregistrées (pas de ce lot) : `simple_mix_muet` (léger écart déjà là) et les cinq captures interdites.
+
+rejeu changé : t4-26-prise-clavier : le nouvel accueil de l'assistant (« Fais-moi un morceau », familles plus bas, bouton « Créer et écouter » au-dessus de « Choisir ce style et continuer ») décalait les gestes 3, 4 et 7 (le 7 créait le morceau d'un coup, puis les « Suivant » tombaient sur « Enregistrer la note » du mode retours) ; gestes 3 (Calme), 4 (▶ Lo-fi) et 7 (« Choisir ce style et continuer ») recalculés sur la mise en page actuelle, oracle inchangé, rejoué vert avec rejeu-defauts.sh (journal : key_62 « Ré 4 », key_65 « Fa 4 » puis record_stop « Arrêter »)

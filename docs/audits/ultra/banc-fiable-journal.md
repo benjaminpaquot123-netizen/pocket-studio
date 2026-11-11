@@ -159,3 +159,8 @@ Une ligne par étape : [x] fait / [ ] à faire, preuve, commit. « continue » r
 - [x] (relecture banc6b, M2) négation lue derrière un adverbe et devant « rejoué sur ». preuve: rouge db852f22 / vert 0c3b2d76
 - [x] (relecture banc6b, M3) exception du banc : « SCREEN ERROR » et « GEL » du geste écrits. preuve: rouge 2fe5defa / vert 70dadbb6
 - [x] 4.4 (suite) « attends » nomme le fil qui le retient (`waitHeldBy`). preuve: rouge 9f4ac07b / vert 05487030
+- [ ] En relecture : étape 3 lot 6 fin « banc6d » (atelier `banc6d`, rapport `tour-5-banc6d-rapport.md`). Ses lignes :
+- [x] 6.2 un « même bouton » corrigé à un tour antérieur est un candidat « revient ? » ; A d #21 (T1-22) confirmé, 18 candidats lus (`revient.tsv`). preuve: rouge f37a1827 / vert b116d4e0
+- [x] 6.5 `cases_vides` (écrans de CARTE-CODE sans route, `carte-ecrans.tsv`) et écrans non analysés par l'œil neuf comptés par `tableau-de-bord.py`. preuve: rouge 4423d09f / vert 10db41c8
+- [x] 6.3 T5-Fa-11 / T5-Aa-43 : « Partager » en Mode simple dit le niveau une fois (`Tour5AppProof4Test`). preuve: rouge ae1eda78 / vert 88e36490
+- [x] 6.3 `seat_class` lit une déclaration aux parenthèses imbriquées (relecture « verdicts », moyen). preuve: rouge 338748e3 / vert a563a6dd

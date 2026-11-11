@@ -86,9 +86,14 @@ internal fun ShareBilanDialog(lines: List<String>, dismiss: () -> Unit, seeFiles
  * What « C'est prêt » says under the file: the report in numbers (audit ultra round 1, n° 15), or in everyday
  * words in the Mode simple (audit ultra round 3, n° 14: LUFS, dBTP, kHz and kb/s were shown there).
  */
-internal fun shareReportLines(export: ExportUi, simple: Boolean): List<String> =
-    if (simple) export.summary?.plainLines().orEmpty() + listOfNotNull(export.bilan?.levelWords())
-    else export.bilan?.lines().orEmpty()
+internal fun shareReportLines(export: ExportUi, simple: Boolean): List<String> {
+    if (!simple) return export.bilan?.lines().orEmpty()
+    // Audit ultra round 5 (F a #11, A a #43): the level once, against the target when there is one (as Mix's card),
+    // never also « très fort » for a file at its loud target.
+    val target = export.bilan?.levelWords() ?: return export.summary?.plainLines().orEmpty()
+    val plain = export.summary?.levelLine()
+    return export.summary?.plainLines().orEmpty().map { if (it == plain) target else it }.let { if (target in it) it else it + target }
+}
 
 /** « C'est prêt » once the song is made and its share menu open: its file, and its copy in Musique when there is one. */
 internal fun shareReadyText(files: List<java.io.File>, savedInMusic: Boolean): String {

@@ -39,7 +39,8 @@ internal fun isSpot(kind: Int, ch: Int, slot: Int = 0, param: Int = 0): Boolean 
 @Composable
 internal fun SpotFrame(tag: String, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     val bring = remember { BringIntoViewRequester() }
-    LaunchedEffect(Unit) { bring.bringIntoView() }
+    // Once laid out (in a sheet that has just opened), like the tutorial's dotted send.
+    LaunchedEffect(Unit) { kotlinx.coroutines.delay(300); runCatching { bring.bringIntoView() } }
     Column(
         modifier.fillMaxWidth().bringIntoViewRequester(bring)
             .border(2.dp, Neon.Amber, RoundedCornerShape(10.dp)).padding(6.dp).testTag(tag),

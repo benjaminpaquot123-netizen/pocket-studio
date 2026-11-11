@@ -1,6 +1,5 @@
 # Tour 5 — lot « courbes » (chantier 8) : rapport
 Source : `PLAN-ACTION-AUDITS.md` étape 4 ligne 8 ; retours de Benjamin du 2026-11-08 (tel-14) ; `defauts-caches.tsv` B19, B20.
-
 ## Fait
 1. **La nouvelle courbe se montre.** Après « Automatiser un réglage », la carte Courbes défile jusqu'à la courbe créée,
    l'encadre en ambre et dit « Nouvelle courbe : dessine-la ci-dessous. ». L'encadré part au premier trait.

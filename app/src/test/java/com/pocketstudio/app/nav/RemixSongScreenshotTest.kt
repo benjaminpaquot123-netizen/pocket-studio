@@ -42,6 +42,16 @@ class RemixSongScreenshotTest {
         StemStore.dirFor(h.app, SET).parentFile?.deleteRecursively()
     }
 
+    /**
+     * Socle du banc, point 1: the selected tab's and pills' halos come out a few shades apart from run to run under a loaded
+     * suite (measured 2026-11-11: a colour distance of 0.104 at most, never a shape or a letter). A pixel within 0.15 of its
+     * colour is the same pixel; only 0.1 % of the image may differ more. The 1.5 % allowed before let a changed word through
+     * (a 360 x 60 px patch is 0.7 %: checked by hand, green before, red now).
+     */
+    private val HALO_TOLERANT = com.github.takahirom.roborazzi.RoborazziOptions.CompareOptions(
+        changeThreshold = 0.001f, imageComparator = com.dropbox.differ.SimpleImageComparator(maxDistance = 0.15f),
+    )
+
     private fun open(tag: String) {
         val node = compose.onNodeWithTag(tag)
         if (!node.isDisplayed()) node.performScrollTo()
@@ -104,12 +114,13 @@ class RemixSongScreenshotTest {
         open("tab_Structure")
         if (compose.onAllNodesWithTag("structure_timeline").fetchSemanticsNodes().isNotEmpty()) open("structure_timeline")
         h.awaitTag("timeline_header_${Remix.stemKey(3)}")
+        h.awaitGuide()
         // The « Ligne du temps » pill's glow anti-aliases a few pixels differently under a loaded
         // full suite (2026-11-05: 23 pixels): the same 1.5 % as the menu below.
         compose.onRoot().captureRoboImage(
             "screenshots/remix_stem_edits.png",
             roborazziOptions = com.github.takahirom.roborazzi.RoborazziOptions(
-                compareOptions = com.github.takahirom.roborazzi.RoborazziOptions.CompareOptions(changeThreshold = 0.015f),
+                compareOptions = HALO_TOLERANT,
             ),
         )
         val row = compose.onNodeWithTag("timeline_header_${Remix.stemKey(3)}").fetchSemanticsNode().boundsInRoot
@@ -126,7 +137,7 @@ class RemixSongScreenshotTest {
         compose.onRoot().captureRoboImage(
             "screenshots/remix_stem_edit_menu.png",
             roborazziOptions = com.github.takahirom.roborazzi.RoborazziOptions(
-                compareOptions = com.github.takahirom.roborazzi.RoborazziOptions.CompareOptions(changeThreshold = 0.015f),
+                compareOptions = HALO_TOLERANT,
             ),
         )
         compose.mainClock.autoAdvance = true

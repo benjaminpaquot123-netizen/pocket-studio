@@ -93,6 +93,7 @@ class PadHoldAndTrackDeleteTest {
         compose.waitForIdle()
         compose.onNodeWithTag("pad_settings").performScrollTo()
         idle(300)
+        h.awaitGuide()
         captureScreenRoboImage("screenshots/nav/pad_settings_card.png")
         tap("pad_settings")
         h.awaitTag("pad_sheet")
@@ -107,6 +108,7 @@ class PadHoldAndTrackDeleteTest {
         tap("simple_volume_$synth")
         compose.onNodeWithTag("simple_track_delete").performScrollTo()
         idle(300)
+        h.awaitGuide()
         captureScreenRoboImage("screenshots/nav/simple_track_delete.png")
         tap("simple_track_delete")
         idle()
@@ -134,6 +136,7 @@ class PadHoldAndTrackDeleteTest {
         compose.waitForIdle()
         val node = compose.onNodeWithTag("pad_sound_name").performScrollTo()
         idle(300)
+        h.awaitGuide()
         captureScreenRoboImage("screenshots/nav/pad_sound_name_whole.png")
         val layouts = mutableListOf<TextLayoutResult>()
         node.fetchSemanticsNode().config[SemanticsActions.GetTextLayoutResult].action!!.invoke(layouts)
@@ -157,6 +160,7 @@ class PadHoldAndTrackDeleteTest {
         val by = (pad.top - header.bottom) + pad.height / 5
         compose.onNode(hasScrollAction() and hasAnyAncestor(hasTestTag("rhythm"))).performSemanticsAction(SemanticsActions.ScrollBy) { it(0f, by) }
         idle(300)
+        h.awaitGuide()
         captureScreenRoboImage("screenshots/nav/rhythm_scrolled_under_part.png")
         val cut = compose.onNodeWithTag("pad_0").fetchSemanticsNode().boundsInRoot
         assertTrue("the first row partly under the header: $header $pad by $by -> $cut", cut.top <= header.bottom + 16f && cut.height < pad.height * 0.9f)

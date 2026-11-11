@@ -16,7 +16,11 @@ git config user.name essai
 git config user.email essai@localhost
 mkdir -p scripts/bench docs/audits/ultra/rejeux/r1
 cp "$src"/scripts/bench/pre-vol.sh "$src"/scripts/bench/relecture-verdict.py "$src"/scripts/bench/fusion-equipes.sh scripts/bench/
+for f in portail-paquet.txt decisions-index.sh; do [ ! -f "$src/scripts/bench/$f" ] || cp "$src/scripts/bench/$f" scripts/bench/; done
+# The batch of merges in this little repository: 1 (a rule « from_paquet 2 » waits).
+printf '# Paquet de fusions en cours\npaquet: 1\n' > scripts/bench/portail-paquet.txt
 echo oracle > docs/audits/ultra/rejeux/r1/oracle.txt
+printf '# Décisions\n- 2026-11-11 · une décision\n' > docs/DECISIONS.md
 echo "# titre" > README.md
 git add -A
 git commit -q -m base
@@ -147,6 +151,45 @@ if [ "$rc" -eq 0 ]; then echo "vert  --ci: ready once the test brings its identi
 echo more >> README.md
 out="$(scripts/bench/pre-vol.sh --ci 2>&1)"; rc=$?
 if [ "$rc" -eq 1 ] && printf '%s\n' "$out" | grep -q "la CI ne les verra pas"; then echo "vert  --ci: uncommitted changes are said"; else reds=$((reds + 1)); echo "ROUGE --ci dirty: exit $rc"; fi
+
+# Point 2 and 5 of the bench's base: a lot writes its decisions in docs/decisions/<tour>-<zone>.md, never in
+# docs/DECISIONS.md; a rule added during batch 1 (« from_paquet 2 ») is only said, then refused from batch 2.
+git checkout -q fx-int
+git checkout -q -b eq/tour-9-decold fx-int && echo "- 2026-11-11 · du lot decold" >> docs/DECISIONS.md && git commit -q -am "decold writes DECISIONS.md" && review decold
+expect "DECISIONS.md written during batch 1: only said" 0 "paquet 2" non tour-9 decold
+git checkout -q fx-int && sed -i 's/^paquet: .*/paquet: 2/' scripts/bench/portail-paquet.txt && git commit -q -am "batch 2 opens"
+git checkout -q -b eq/tour-9-decnew fx-int && echo "- 2026-11-11 · du lot decnew" >> docs/DECISIONS.md && git commit -q -am "decnew writes DECISIONS.md" && review decnew
+expect "DECISIONS.md written from batch 2: refused" 1 "docs/decisions/tour-9-decnew.md" oui tour-9 decnew
+git checkout -q -b eq/tour-9-decown fx-int && mkdir -p docs/decisions && echo "- 2026-11-11 · un choix" > docs/decisions/tour-9-decown.md && git add docs/decisions && git commit -q -m "decown's own file" && review decown
+expect "a lot's own decisions file is ready" 0 "PRÉ-VOL : PRÊT" non tour-9 decown
+git checkout -q -b eq/tour-9-decother fx-int && mkdir -p docs/decisions && echo "- 2026-11-11 · un choix" > docs/decisions/tour-9-autre.md && git add docs/decisions && git commit -q -m "decother writes another lot's file" && review decother
+expect "another lot's decisions file: refused" 1 "autre lot" oui tour-9 decother
+# Review of the lot (grave 1): the portal refuses for THIS reason from batch 2, and not at batch 1 (the toy has no
+# self-test, so any branch is refused later on: the reason is what is checked).
+portal_says() { # <label> <zone> <yes|no>
+  local out
+  git checkout -q fx-int
+  out="$(scripts/bench/fusion-equipes.sh tour-9 "$2" 2>&1)"
+  git merge --abort 2> /dev/null || true
+  git reset -q --hard fx-int
+  if { [ "$3" = yes ] && printf '%s\n' "$out" | grep -q "decisions written outside"; } || { [ "$3" = no ] && ! printf '%s\n' "$out" | grep -q "decisions written outside"; }; then
+    echo "vert  $1"
+  else
+    reds=$((reds + 1)); echo "ROUGE $1"; printf '%s\n' "$out" | sed 's/^/      /'
+  fi
+}
+portal_says "the portal names the decisions rule from batch 2" decnew yes
+portal_says "the portal names the decisions rule for another lot's file" decother yes
+portal_says "the portal leaves a lot's own decisions file alone" decown no
+git checkout -q fx-int && sed -i 's/^paquet: .*/paquet: 1/' scripts/bench/portail-paquet.txt && git commit -q -am "back to batch 1 (test)"
+portal_says "the decisions rule waits at batch 1" decold no
+sed -i 's/^paquet: .*/paquet: 2/' scripts/bench/portail-paquet.txt && git commit -q -am "batch 2 again (test)"
+# A lot never moves the batch itself (review, moyen 3): refused from batch 2.
+git checkout -q -b eq/tour-9-paquet fx-int && sed -i 's/^paquet: .*/paquet: 9/' scripts/bench/portail-paquet.txt && git commit -q -am "a lot moves the batch" && review paquet
+expect "a lot that moves the batch: refused" 1 "portail-paquet.txt" oui tour-9 paquet
+git checkout -q fx-int
+out="$(scripts/bench/fusion-equipes.sh tour-9 paquet 2>&1)"; git merge --abort 2> /dev/null || true; git reset -q --hard fx-int
+if printf '%s\n' "$out" | grep -q "moves the batch"; then echo "vert  the portal names the batch rule"; else reds=$((reds + 1)); echo "ROUGE the portal names the batch rule"; printf '%s\n' "$out" | sed 's/^/      /'; fi
 
 echo
 if [ "$reds" -eq 0 ]; then echo "test_pre_vol : tout est vert"; else echo "test_pre_vol : $reds ROUGE(S)"; exit 1; fi

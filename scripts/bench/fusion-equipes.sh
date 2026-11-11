@@ -19,6 +19,12 @@ while [ $# -gt 0 ]; do
 done
 cd "$int"
 traces_root="docs/audits/ultra/portail"
+# Socle du banc, point 5: the rules are frozen per batch of merges. The batch in progress is in portail-paquet.txt; a
+# rule added while batch N is open is written « from_paquet N+1 … » ON ITS refusal line, and only applies from the next
+# batch (scripts/bench/test_socle.py checks it). Only the main discussion moves the number, when it opens a batch.
+# (No batch file: batch 1. « || true »: a failing substitution would end this script silently under set -e.)
+paquet="$(sed -n 's/^paquet: *\([0-9][0-9]*\).*/\1/p' scripts/bench/portail-paquet.txt 2>/dev/null | head -1 || true)"
+from_paquet() { [ "${paquet:-1}" -ge "$1" ]; }
 # The replay tests of a commit: the folders of docs/audits/ultra/rejeux/ (« _… » are kept failures, not tests).
 replays() { git ls-tree --name-only "$1:docs/audits/ultra/rejeux" 2>/dev/null | grep -v '^_' | sort || true; }
 [ -z "$(git status --porcelain --untracked-files=no | grep -v '^ T')" ] || { echo "The integration workshop has uncommitted changes: commit or set them aside first." >&2; exit 2; }
@@ -58,6 +64,13 @@ for zone in "${zones[@]}"; do
   # Only this script writes the portal's traces (D1): a branch never brings or changes one.
   touched="$(git diff --name-only "$base" "eq/$tour-$zone" -- "$traces_root")"
   [ -z "$touched" ] || { echo "$zone: the branch touches the portal's traces: $touched: not merged." >&2; exit 3; }
+  # Socle du banc, point 2: a lot writes its decisions in docs/decisions/<tour-N>-<zone>.md only (never in
+  # docs/DECISIONS.md, which the portal alone extends, nor in another lot's file).
+  decisions="$(git diff --name-only "$base" "eq/$tour-$zone" -- docs/DECISIONS.md docs/decisions | grep -vxF "docs/decisions/$tour-$zone.md" | tr '\n' ' ' || true)"
+  if from_paquet 2 && [ -n "$decisions" ]; then echo "$zone: decisions written outside docs/decisions/$tour-$zone.md (docs/DECISIONS.md or another lot's file): $decisions: not merged." >&2; exit 3; fi
+  # Socle du banc (review, moyen 3): only the main discussion moves the batch, when it opens one.
+  moved_batch="$(git diff --name-only "$base" "eq/$tour-$zone" -- scripts/bench/portail-paquet.txt)"
+  if from_paquet 2 && [ -n "$moved_batch" ]; then echo "$zone: the branch moves the batch (scripts/bench/portail-paquet.txt): not merged." >&2; exit 3; fi
   # PLAN-RESTE 7.1: a team branch never brings a symbolic link (a third-party checkout linked in, a secret linked out).
   links="$(git ls-tree -r "eq/$tour-$zone" | awk '$1 == "120000" {print $4}')"
   [ -z "$links" ] || { echo "$zone: symbolic link(s) in the branch: $links: not merged." >&2; exit 6; }
@@ -98,6 +111,8 @@ for zone in "${zones[@]}"; do
   trace=""
   undo_merge() {
     [ -z "$trace" ] || rm -rf "${trace:?}"
+    # From HEAD, not the index: a failed traces' commit after « git add » has the index's line staged already.
+    git checkout -q HEAD -- docs/DECISIONS.md 2>/dev/null || true
     git reset -q --keep "$before"
     echo "$zone: a step after the checks failed (traces of the portal): undone (kept in $lot)." >&2
     exit 5
@@ -114,8 +129,11 @@ for zone in "${zones[@]}"; do
   # The judge again, with the traces there (the self-test's ran before them and counted this merge « sans trace »);
   # it reads the lot's summary, sealed with its JUnit results (the trace keeps no XML).
   python3 -I scripts/bench/verifie-chantier.py --resume "$lot/selftest-resume.txt" > "$trace/selftest-chantier.txt" 2>&1 || true
-  git add -- "$trace"
-  git commit -q -m "Portal traces of the merge of $zone ($tour)" -- "$trace"
+  # Socle du banc, point 2: the lot's decisions file, listed once at the end of docs/DECISIONS.md.
+  scripts/bench/decisions-index.sh "$tour" "$zone"
+  index=(); [ ! -f docs/DECISIONS.md ] || index=(docs/DECISIONS.md)
+  git add -- "$trace" "${index[@]}"
+  git commit -q -m "Portal traces of the merge of $zone ($tour)" -- "$trace" "${index[@]}"
   trap - ERR
   rm -rf "${lot:?}"
   echo "$zone: merged ($(git rev-parse --short "$merged")), traces in $trace"

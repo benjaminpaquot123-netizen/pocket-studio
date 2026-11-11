@@ -203,8 +203,16 @@ fun SimpleMixScreen(ui: SimpleMixUi, meters: () -> FloatArray, loudness: () -> F
             Row(Modifier.align(Alignment.CenterVertically).padding(end = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text(tr("Mix"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                 Text(" · " + ui.projectName, style = MaterialTheme.typography.titleSmall, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                // Hands-on audit M5: the faders, the output's words and « Tout à zéro » explained.
+                com.pocketstudio.ui.HelpDot(
+                    com.pocketstudio.app.help.ScreenHelp.SIMPLE_MIX,
+                    about = listOf("mix_fader_#", "mix_pad_fader_#", "mix_out_fader", "mix_out_words", "mix_reset"),
+                )
             }
-            Pill(if (ui.looping) "■ " + tr("Arrêter") else "▶ " + tr("Partie en boucle"), filled = true, tag = "mix_loop", selected = ui.looping, onClick = actions.loop)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Pill(if (ui.looping) "■ " + tr("Arrêter") else "▶ " + tr("Partie en boucle"), filled = true, tag = "mix_loop", selected = ui.looping, onClick = actions.loop)
+                com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.ScreenHelp.MIX_LOOP, about = listOf("mix_loop"))
+            }
             Pill("↺ " + tr("Tout à zéro"), filled = false, tag = "mix_reset", onClick = actions.resetAll)
         }
         Text(

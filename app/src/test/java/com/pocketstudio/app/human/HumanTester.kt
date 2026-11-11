@@ -1416,6 +1416,9 @@ abstract class HumanTester(private val seat: String) {
      * (the app says it works, nothing runs), held a tester's « attends 2 » for 120 s. Once neither the stand-in's heartbeat
      * ([BenchSeparation.beats]) nor a busy worker (off the network) has moved for [STILL_MS], the hand goes back.
      */
+    /** The threads that held the last « attends » (name, how long, where), for a failure's message; empty: none. */
+    internal var waitHeldBy: String = ""
+
     private fun slowWorkDone() {
         val until = System.currentTimeMillis() + SLOW_WORK_CAP_MS
         var waited = false

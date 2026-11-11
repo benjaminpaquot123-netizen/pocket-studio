@@ -230,6 +230,7 @@ def main():
         seat_exit(d)
         seat_exit_anchored(d)
         native_missing(d)
+        first_screen(d)
         corrections_by_target(d)
     with tempfile.TemporaryDirectory() as d:
         seats_from_ids(d)
@@ -2212,6 +2213,25 @@ def native_missing(d):
     with open(os.path.join(seat, "mesures.json"), encoding="utf-8") as f:
         m = json.load(f)["mesures"]
     check(m["moteur_absent"] == 2, f"two lines: {m['moteur_absent']}")
+
+
+def first_screen(d):
+    """PLAN-RESTE 4.6: the first screen's time (real, the app's clock, since the JVM started), whether the bench's
+    workers were busy and whether it came blank, from the journal's « #0 PREMIER ECRAN » line into mesures.json; a blank
+    first screen while the bench was at rest is the app's to judge (« à trancher »), never waited for."""
+    seat = os.path.join(d, "first", "a")
+    def measured(line):
+        write(os.path.join(seat, "journal.txt"), JOURNAL_B.replace("#1 ROUTE", line + "\n#1 ROUTE", 1))
+        run(os.path.join(HERE, "seat-metrics.py"), seat)
+        with open(os.path.join(seat, "mesures.json"), encoding="utf-8") as f:
+            return json.load(f)["mesures"]["premier_ecran_s"]
+    m = measured("#0 PREMIER ECRAN reel_s=6.4 simule_s=1.5 jvm_s=48.2 travail=oui vide=non attente_s=4.9")
+    check(m == {"reel": 6.4, "simule": 1.5, "jvm": 48.2, "travail_de_fond": True, "vide": False, "attente_banc": 4.9, "verdict": "-"},
+          f"busy bench, screen waited for: {m}")
+    m = measured("#0 PREMIER ECRAN reel_s=1.6 simule_s=1.5 jvm_s=30.0 travail=non vide=oui attente_s=0")
+    check(m["vide"] and not m["travail_de_fond"] and m["verdict"] == "à trancher", f"blank, bench at rest: the app's to judge: {m}")
+    m = measured("#0 SIEGE rien")
+    check(m is None, f"no line (an older bench): None, not invented: {m}")
 
 
 def seat_exit(d):

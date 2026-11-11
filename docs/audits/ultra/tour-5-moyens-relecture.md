@@ -1,5 +1,6 @@
 # Relecture neuve du lot moyens (tour 5)
-Relu : 020026a2
+Relu : 1c04107e156e228329476976a8840471b72759eb
+delta : après la 2e passe (020026a2), seul le rapport de zone docs/audits/ultra/tour-5-moyens-rapport.md a été ajouté (aucun code) ; relu, conforme.
 
 ## Constats
 

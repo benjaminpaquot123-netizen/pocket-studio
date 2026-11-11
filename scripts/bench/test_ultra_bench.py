@@ -256,6 +256,8 @@ def main():
         fixed_button_comeback(d)
     with tempfile.TemporaryDirectory() as d:
         measured_numbers(d)
+    with tempfile.TemporaryDirectory() as d:
+        empty_cases(d)
     print("ultra bench scripts: OK")
 
 
@@ -368,6 +370,40 @@ def measured_numbers(d):
           f"lot B not played; 3 seats played, 2 cut (the bench's end, a freeze): {m}")
     m = tb.measured(tour, "tour-9", root=repo, docs=os.path.join(d, "nowhere"))
     check("relecture_graves" not in m and "relecture_bloquants" not in m, f"no reviews folder: unknown, not 0: {m}")
+
+
+def empty_cases(d):
+    """PLAN-RESTE 6.5: condition I's « cases vides » by program: the screens of docs/CARTE-CODE.md (their page tags in
+    carte-ecrans.tsv) that no journal of the round reaches (a route's page, tab or dialogue), and the screens the « œil
+    neuf » pass (§12.11, the round's ecrans-oeil-neuf.txt) did not analyse; no map: no number (never a 0). Every screen
+    of the real map is a tag of the app (a renamed screen fails here, not silently in the dashboard)."""
+    sys.path.insert(0, HERE)
+    tb = __import__("tableau-de-bord")
+    docs = os.path.join(d, "docs")
+    write(os.path.join(docs, "carte-ecrans.tsv"), "# carte\necran\tfichier\nlaunch\tA/onboarding/LaunchChoice.kt\n"
+          "mixer\tA/mixer/MixerScreen.kt\nprojects\tA/projects/ProjectsScreen.kt\nwizard\tA/library/WizardScreen.kt\n"
+          "recette\tA/recette/RecetteScreen.kt\n")
+    tour = os.path.join(d, "tour-9")
+    write(os.path.join(tour, "lotA", "a", "journal.txt"), "#1 ROUTE launch | MODE simple | EMPREINTE a\n#2 ROUTE mixer/tab_Mix | MODE pro\n")
+    write(os.path.join(tour, "lotA", "b", "journal.txt"), "#1 ROUTE dialogue:wizard | MODE simple\n#2 ROUTE dialogue:« Mes projets » | MODE simple\n")
+    m = tb.measured(tour, "tour-9", root=d, docs=docs)
+    check(m.get("cases_vides") == 2, f"projects and recette reached by no journal (« Mes projets » in words is no tag): {m}")
+    check(m.get("ecrans_non_analyses") == 5, f"no « œil neuf » list: 5 screens not analysed: {m}")
+    write(os.path.join(tour, "ecrans-oeil-neuf.txt"), "# analysés\nlaunch\nmixer\nwizard\n")
+    m = tb.measured(tour, "tour-9", root=d, docs=docs)
+    check(m.get("ecrans_non_analyses") == 2 and m.get("ecrans_vides_noms") == "projects, recette",
+          f"two screens left by the pass, named: {m}")
+    m = tb.measured(tour, "tour-9", root=d, docs=os.path.join(d, "nowhere"))
+    check("cases_vides" not in m and "ecrans_non_analyses" not in m, f"no map: unknown, not 0: {m}")
+    real = os.path.join(HERE, "..", "..", "docs", "audits", "ultra", "carte-ecrans.tsv")
+    screens = [l.split("\t")[0] for l in open(real, encoding="utf-8").read().splitlines() if l.strip() and not l.startswith(("#", "ecran\t"))]
+    app = ""
+    for root_dir, _, files in os.walk(os.path.join(HERE, "..", "..", "app", "src", "main", "java")):
+        for f in files:
+            if f.endswith(".kt"):
+                app += open(os.path.join(root_dir, f), encoding="utf-8").read()
+    missing = [s for s in screens if f'"{s}"' not in app]
+    check(len(screens) >= 30 and not missing, f"every screen of the map is a tag of the app ({len(screens)}): missing {missing}")
 
 
 REPORT_V2_GRAVES = """siege: a | profil: ado | lang: fr | device: phone | font: 100 | mode: simple

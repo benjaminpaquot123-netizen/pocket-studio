@@ -1,3 +1,5 @@
 {
+  "Allonger le morceau": "Track verlengen",
+  "Couper la chanson à la fin": "Nummer aan het einde afkappen",
   "La chanson dépasse la fin du morceau de %s : sa fin sera coupée.": "Het nummer loopt %s door na het einde van de track: het einde wordt afgekapt."
 }

@@ -342,6 +342,10 @@ class ShareSheetActions(
     val sendProject: (() -> Unit)? = null,
     /** « Longueur de la boucle » picked here ([LoopPick]): the same setting as Mix's. */
     val setLoopBars: (Int) -> Unit = {},
+    /** Chantier 10: « Allonger le morceau »: parts added until the remix's song ends in the song. */
+    val lengthenForRemix: () -> Unit = {},
+    /** Chantier 10: « Couper la chanson à la fin »: the remix's song stops with the song, faded. */
+    val cutRemix: () -> Unit = {},
 )
 
 /** « Prêt à partager ? » as a bottom sheet above the tab it was opened from. */
@@ -562,8 +566,13 @@ private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetAct
             CheckLine(icon, color, tr("Une seule partie de %s : ajoute un couplet, un refrain, une fin…", shareClock(check.seconds)), "share_check_short")
             Fixes { FixButton(tr("Modifier le morceau"), "share_fix_structure", actions.toStructure) }
         }
-        is ShareCheck.RemixOverrun ->
+        is ShareCheck.RemixOverrun -> {
             CheckLine(icon, color, tr("La chanson dépasse la fin du morceau de %s : sa fin sera coupée.", shareClock(check.seconds)), "share_check_remix_overrun")
+            Fixes {
+                FixButton(tr("Allonger le morceau"), "share_fix_remix_longer", actions.lengthenForRemix)
+                FixButton(tr("Couper la chanson à la fin"), "share_fix_remix_cut", actions.cutRemix, outlined = true)
+            }
+        }
         ShareCheck.Saturation -> {
             CheckLine(icon, color, tr("Le son risque de saturer : il est trop fort pour le fichier."), "share_check_saturation")
             Fixes {
@@ -703,6 +712,8 @@ fun ShareSheetRoute(
             chooseTarget = { rhythmVm.chooseLoudnessTarget(it) },
             sendProject = sendProject,
             setLoopBars = rhythmVm::setExportBars,
+            lengthenForRemix = rhythmVm::lengthenSongForRemix,
+            cutRemix = rhythmVm::cutRemixAtSongEnd,
         )
     )
     if (page) ShareSheetContent(ui, actions, page = true, simple = simple) else ShareSheet(ui, actions, simple)

@@ -1,3 +1,5 @@
 {
+  "Allonger le morceau": "إطالة المقطوعة",
+  "Couper la chanson à la fin": "قصّ الأغنية عند النهاية",
   "La chanson dépasse la fin du morceau de %s : sa fin sera coupée.": "الأغنية تتجاوز نهاية المقطوعة بـ %s: سيُقطع آخرها."
 }

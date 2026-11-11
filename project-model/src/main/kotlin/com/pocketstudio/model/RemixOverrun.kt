@@ -25,3 +25,49 @@ fun Project.remixOverrunSeconds(seconds: Double = remix.seconds): Int {
     // A sixteenth lasts 15/bpm seconds.
     return kotlin.math.ceil(over * 15.0 / tempoBpm - 1e-6).toInt().coerceAtLeast(1)
 }
+
+/** The fade at the cut of « Couper la chanson à la fin » (seconds): no click where the song stops. */
+const val REMIX_CUT_FADE_SECONDS = 1.0
+
+/**
+ * « Allonger le morceau »: parts added after the last one, replaying it (same brick, same tracks), as many bars as
+ * the remix's song still lasts ([SongPart.MAX_BARS] each, up to [SongPart.MAX_PARTS] parts); unchanged when the song
+ * already ends in time.
+ */
+fun Project.withSongLengthenedForRemix(seconds: Double = remix.seconds): Project {
+    val missing = remixOverrunSteps(seconds)
+    if (missing <= 0) return this
+    val last = song.last()
+    val parts = song.toMutableList()
+    var bars = ((missing + stepsPerBar - 1) / stepsPerBar.coerceAtLeast(1)).toInt()
+    while (bars > 0 && parts.size < SongPart.MAX_PARTS) {
+        val n = bars.coerceAtMost(SongPart.MAX_BARS)
+        parts += last.copy(bars = n, repeats = 1)
+        bars -= n
+    }
+    return copy(song = parts)
+}
+
+/**
+ * « Couper la chanson à la fin »: every stem's pieces end where the song ends (a fade of [REMIX_CUT_FADE_SECONDS] at
+ * the cut), those after it taken away; the stems' files are never changed. Unchanged when the song ends in time.
+ */
+fun Project.withRemixCutAtSongEnd(seconds: Double = remix.seconds): Project {
+    if (remixOverrunSteps(seconds) <= 0) return this
+    val end = remixTimeAtStep(song.sumOf { partSteps(it) })
+    if (!(end > 0)) return this
+    val stems = remix.stems.mapIndexed { i, s ->
+        val pieces = remix.piecesOf(i, seconds)
+        if (pieces.all { it.end <= end }) s
+        else s.copy(
+            clips = pieces.mapNotNull { c ->
+                when {
+                    c.end <= end -> c
+                    c.at >= end -> null
+                    else -> (end - c.at).let { len -> c.copy(length = len, fadeIn = c.fadeIn.coerceAtMost(len), fadeOut = REMIX_CUT_FADE_SECONDS.coerceAtMost(len)) }
+                }
+            }.mapNotNull(StemClip::sanitized).take(StemClip.MAX),
+        )
+    }
+    return copy(remix = remix.copy(stems = stems))
+}

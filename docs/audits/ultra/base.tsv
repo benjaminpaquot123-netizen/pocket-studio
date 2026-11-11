@@ -836,7 +836,7 @@ dialogue:track_name_field|champ nom 0/24 contenu|rien	nouveau	tour-5
 mixer/tab_Mix|export_my_exports|perdu	corrigé	tour-5		tour-5
 padlive_pads_side|padlive_challenge_next|sans-aide	nouveau	tour-5	
 padlive|#1755|perdu	nouveau	tour-5	
-tab_Sons|top_share|perdu	nouveau	tour-5	
+tab_Sons|top_share|perdu	corrigé	tour-5		tour-5
 dialogue:new_project|starter_starter|rien	nouveau	tour-5	
 dialogue:share_bilan|share_bilan_ok|texte-faux	corrigé	tour-5		tour-5
 dialogue:synth_sounds_name_dialog|name_clear|perdu	nouveau	tour-5	

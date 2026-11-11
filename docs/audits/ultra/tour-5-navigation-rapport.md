@@ -13,21 +13,18 @@ Source : `docs/audits/AUDIT-PRISE-EN-MAIN.md` (G6, G13 selon la réponse 2B), `P
 - Barre du pouce : ▶ et tempo mesurés d'abord, les autres boutons se partagent le reste ; barre de 48 dp.
 - 14 langues, mots du Lexique (Partie / Morceau), zone `lectures`.
 
-## 2. Barre du pouce à 130 % (G6) — vérifiée : incomplète
+## 2. Barre du pouce à 130 % (G6) — fait
 - Cause et correction de 821bdab1 justes (`thumbBarFits` lisait la hauteur à la taille du texte ; 480 dp maintenant).
-- Mais la suite complète montre deux reculs dus à la barre désormais présente (rejoués avec l'ancien ▶ de 48 dp : rouges aussi) :
-  - `TabletUprightTest#theSecondRowOfStepsShowsAt130` : Tab A11 debout 130 %, Sons › Rythme, 2e rangée de cases
-    43 dp sous le pli (pads déjà au minimum de 48 dp sur la vitre).
-  - `TutoBigFontTest#theNextStepsLineComesIntoSightWithItsCells` : 360x780, police 200 %, la ligne du tuto passe sous « Partie : A ».
-- Pistes : cases de 37 dp (48 sur la vitre) sur tablette debout (−26 dp) + ligne du Guide en pastille de 32 dp (−16), comme
-  le propose l'audit ; pour le tuto, laisser la tête (ligne du tuto) gagner sur la fin des cases. Non faits dans ce lot.
-
+- Les deux reculs trouvés à la vérification sont corrigés sans toucher aux tests :
+  - Tab A11 debout 130 % : sur un écran large mais court (< 760 dp, ≥ 400 dp), le Guide replié devient une pastille
+    « Guide 34 % » au bout de la barre du pouce (piste de l'audit) ; 48 dp rendus à la page, 2e rangée de cases visible.
+  - Police 200 % : quand la ligne du tuto et les cases ne tiennent pas ensemble, la ligne revient avec la 1re rangée.
 ## Tests
 - `TwoPlaysNamedTest` (+ GermanSmallPhone 360 dp 130 % DE, Tablet A11, TabletLying) : nommés en Simple et Pro, chacun joue ce qu'il dit, mots entiers.
 - Ajustés (« le morceau » est au pouce) : GestureBudget, KeyActionsGesture, PlayThenTabs, GuideJourney, HelpLabels, TopBar,
   bancs BenchPlayThenTabs, BenchTour1, HumanRemixJourney, HumanLucasBugs, HumanTester ; androidTest Journey et Endurance.
 
 ## Restes
-- Le message de « Mode retours » (4 s, en bas, 72 dp) recouvre « ▶ le morceau » : à remonter au-dessus de la barre du pouce.
+- Message de « Mode retours » : posé au-dessus de la barre du pouce et des onglets, il ne prend plus aucun toucher (corrigé).
 - La phrase « En boucle (⟳ Boucler). ▶ joue cette partie seule. » cite une pastille absente du Mode simple.
 - Bancs encore sur `top_play` au sens « jouer » (BenchTour4, Tour5Bloquants, BenchPlaceAndPadLive, BenchRecette) : verts, à relire.

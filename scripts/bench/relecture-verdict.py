@@ -27,7 +27,28 @@ FIXED_CELL = re.compile(r"^\W*corrigée?s?(?![\w-])(?!\s*\?)", re.I)
 # The word followed at once by « corrigé » (« bloquant (corrigé en 7c84433) », « Grave — **corrigé (3d5f335)** »,
 # « **Grave, corrigé.** »): the forms of the real reviews.
 SEVERE_FIXED = re.compile(r"^\W*(?:gravit[ée]\s*:\s*)?(?:bloquant|grave)s?[\s\W]*corrigée?s?(?![\w-])(?!\s*\?)", re.I)
-FIXED_BOLD = re.compile(r"(?<![Nn]on )(?<![Pp]as )(?<![Nn]on-)\*\*\s*corrigée?s?\s*\*\*(?!\s*\?)", re.I)
+BOLD_FIXED = re.compile(r"\*\*\s*corrigée?s?\s*\*\*(?!\s*\?)", re.I)
+# Third review of the « portail » lot (M10): the words just before the bold are read, whatever the spaces, colons or
+# emphasis between them: « pas encore », « jamais », « non : », « *non* », « toujours pas » make it open.
+NEGATION = {"non", "pas", "jamais", "nullement", "aucunement"}
+
+
+class _Fixed:
+    """FIXED_BOLD.search(text): a « **corrigé** » whose last word before it (or the one before « encore ») is no
+    negation."""
+
+    @staticmethod
+    def search(text):
+        for m in BOLD_FIXED.finditer(text):
+            words = re.findall(r"[^\W\d_]+", text[:m.start()].lower())[-2:]
+            if words and words[-1] == "encore":
+                words = words[:-1]
+            if not words or words[-1] not in NEGATION:
+                return m
+        return None
+
+
+FIXED_BOLD = _Fixed()
 NONE_AFTER = re.compile(r"^\W*(?:bloquants?|graves?)(?:\W+(?:et\s+)?(?:bloquants?|graves?))*\W*:?\s*aucun", re.I)
 
 

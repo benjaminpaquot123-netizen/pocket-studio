@@ -73,8 +73,9 @@ class GestureBudgetTest {
         val transport by vm.transport.collectAsState()
         Column {
             TopBar(
-                TopBarUi(DefaultNames.shown(project.name), transport.playing, canUndo = true, canRedo = false, scene = sceneChip(project)),
-                TopBarActions(rename = { renaming = true }, togglePlay = vm::togglePlay, selectScene = vm::selectScene),
+                // No thumb's bar here: « ▶ le morceau » is in the top bar, beside « ▶ cette partie » (tour 5, chantier 4).
+                TopBarUi(DefaultNames.shown(project.name), transport.playing, canUndo = true, canRedo = false, scene = sceneChip(project), songButton = true),
+                TopBarActions(rename = { renaming = true }, togglePlay = vm::togglePart, playSong = vm::toggleWholeSong, selectScene = vm::selectScene),
             )
             UnderTopBar(vm, tempoOpen = tempo, setTempoOpen = { tempo = it }, renaming = renaming, closeRename = { renaming = false })
         }
@@ -89,7 +90,7 @@ class GestureBudgetTest {
         vm.playStartsForTest = mutableListOf()
         show(vm)
         compose.onNodeWithTag("top_position").assertTextContains("mes. 2/3", substring = true)
-        compose.withinGestures("Écouter tout le morceau", 1) { tap("top_play") }
+        compose.withinGestures("Écouter tout le morceau", 1) { tap("top_song") }
         assertEquals(listOf("song 1"), vm.playStartsForTest)
         assertTrue(vm.transport.value.playing)
     }

@@ -2305,8 +2305,8 @@ fun AppRoot() {
                     projects = { showProjects = true }, rename = { renamingProject = true },
                     undo = { com.pocketstudio.app.report.Journal.action("↶ Annuler"); rhythmVm.undo() },
                     redo = { com.pocketstudio.app.report.Journal.action("↷ Rétablir"); rhythmVm.redo() },
-                    togglePlay = rhythmVm::togglePlay,
-                    playSong = rhythmVm::togglePlay,
+                    togglePlay = rhythmVm::togglePart,
+                    playSong = rhythmVm::toggleWholeSong,
                     toggleRecord = {
                         when {
                             // From the synth the take is a played phrase (a one-bar loop grows to four first);
@@ -2541,7 +2541,7 @@ fun AppRoot() {
                         ThumbBarActions(
                             undo = { com.pocketstudio.app.report.Journal.action("↶ Annuler"); rhythmVm.undo() },
                             redo = { com.pocketstudio.app.report.Journal.action("↷ Rétablir"); rhythmVm.redo() },
-                            togglePlay = rhythmVm::togglePlay,
+                            togglePlay = rhythmVm::toggleWholeSong,
                             tempo = { tempoSheetOpen = true },
                             more = simpleMore,
                             share = shareSong,

@@ -110,7 +110,8 @@ class PlayThenTabsTest {
         h.start(simple = simple)
         idle()
         assertFalse(h.vm.transport.value.playing)
-        tap("top_play")
+        // « ▶ le morceau » (tour 5, chantier 4): the song.
+        tap("thumb_play")
         assertTrue("▶ plays", h.vm.transport.value.playing)
         assertTrue("the song plays, from its part", h.vm.sessionUi.value.songIndex >= 0)
         idle(1_000)
@@ -118,7 +119,7 @@ class PlayThenTabsTest {
         for (t in tabs.drop(1)) goesTo(t, "playing")
         idle(1_000)
         assertTrue("still playing", h.vm.transport.value.playing)
-        tap("top_play")
+        tap("thumb_play")
         assertFalse("■ stops", h.vm.transport.value.playing)
         for (t in tabs.reversed().drop(1)) goesTo(t, "after ■")
     }

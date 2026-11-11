@@ -1,0 +1,8 @@
+fusion: 204d52446db4f7f0e188498c3dca7a68798aadd9
+branche: eq/tour-5-banc7
+tete: 2e1e48acc43e1e5d96bd0378d6a993d3e27cd8f5
+relecture: docs/audits/ultra/tour-5-banc7-relecture.md
+relu: 3079ab14c0eec4f3d4f383ad541406bc82e60af3
+filtres: *BenchSelfTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

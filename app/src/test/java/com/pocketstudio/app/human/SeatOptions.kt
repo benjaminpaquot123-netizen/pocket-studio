@@ -26,6 +26,8 @@ import kotlin.math.hypot
  * - `rejeu.attendu=` / `rejeu.absent=` (audit method v2, scripts/bench/rejeu-defauts.sh): a replay test of a fixed defect:
  *   the gestures are played without comparing screens (the fix changes them), then the screen and sound after the last one
  *   must hold the « attendu » text and not the « absent » one;
+ * - `rejeu.origine=<seat folder>` (PLAN-RESTE 7.5, written by rejeu-defauts.sh from oracle.txt's `source=`): the seat the
+ *   replay was made from (its journal and screens), to say in the verdict what differs from it (by default `rejeu=`);
  * - `mission=`, `profil=`, `niveau=`: for the oracle and the dashboard (scripts/bench/seat-metrics.py), not read here.
  */
 internal data class SeatOptions(
@@ -45,6 +47,7 @@ internal data class SeatOptions(
     val replayN: Int = 0,
     val replayExpect: String? = null,
     val replayAbsent: String? = null,
+    val replayOrigin: File? = null,
 ) {
     enum class Hand(val word: String) { BOTH("à deux mains"), RIGHT("d'une main, la droite"), LEFT("d'une main, la gauche") }
 
@@ -122,6 +125,7 @@ internal data class SeatOptions(
                     "rejeu.n" -> v.toIntOrNull()?.let { o = o.copy(replayN = it) }
                     "rejeu.attendu" -> o = o.copy(replayExpect = raw)
                     "rejeu.absent" -> o = o.copy(replayAbsent = raw)
+                    "rejeu.origine" -> o = o.copy(replayOrigin = File(raw))
                     else -> warn.add("option inconnue : $k")
                 }
             }

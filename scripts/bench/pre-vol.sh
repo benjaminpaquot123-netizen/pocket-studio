@@ -14,6 +14,9 @@
 #                                                        here first, as on a brand new runner; the engine's tests when
 #                                                        the engine changed since they last passed here; --long adds
 #                                                        scripts/real-projects.sh
+#   scripts/bench/pre-vol.sh --ci --rapide               the CI's own first job (« quick »): only the checks of a few
+#                                                        seconds (bench tests, the pre-flight's test, the workflows);
+#                                                        nothing about pushes, the CI's state or the engine
 #
 # Exit 0: nothing found (« PRÊT »). Exit 1: at least one « RECALÉ » line. « À VOIR » lines never change the exit code.
 # The portal stays the judge: this script repeats its checks (docs/AIDE-FUSIONS-TESTS.md) and warns when the portal's
@@ -82,17 +85,29 @@ fi
 
 # --- Before launching the CI by hand ---------------------------------------------------------------------------------
 if [ "${1:-}" = "--ci" ]; then
-  long=0
-  [ "${2:-}" = "--long" ] && long=1
-  echo "== Avant de lancer la CI à la main ($(git rev-parse --short HEAD))"
-  [ -z "$(git status --porcelain --untracked-files=no)" ] || bad "des changements ne sont pas commités : la CI ne les verra pas" "committer, ou les mettre de côté"
-  if git rev-parse -q --verify '@{upstream}' >/dev/null 2>&1; then
+  long=0; quick=0
+  for a in "${@:2}"; do
+    case "$a" in
+      --long) long=1 ;;
+      --rapide) quick=1 ;;
+      *) echo "pre-vol --ci : option inconnue « $a » (--long, --rapide)" >&2; exit 2 ;;
+    esac
+  done
+  if [ "$quick" -eq 1 ]; then
+    echo "== Contrôles rapides ($(git rev-parse --short HEAD))"
+  else
+    echo "== Avant de lancer la CI à la main ($(git rev-parse --short HEAD))"
+    [ -z "$(git status --porcelain --untracked-files=no)" ] || bad "des changements ne sont pas commités : la CI ne les verra pas" "committer, ou les mettre de côté"
+  fi
+  if [ "$quick" -eq 1 ]; then
+    :
+  elif git rev-parse -q --verify '@{upstream}' >/dev/null 2>&1; then
     [ "$(git rev-list --count '@{upstream}..HEAD')" -eq 0 ] || bad "des commits ne sont pas poussés : la CI tournerait sur l'ancien code" "git push, puis lancer la CI"
   else
     warn "cette branche ne suit aucune branche distante : vérifier que tout est poussé"
   fi
   # The same commit already red on GitHub: launching it again cannot turn it green.
-  if [ -x scripts/bench/ci-etat.sh ]; then
+  if [ "$quick" -eq 0 ] && [ -x scripts/bench/ci-etat.sh ]; then
     state="$(scripts/bench/ci-etat.sh HEAD 2>/dev/null | sed -n 's/^ci_build //p')"
     case "$state" in
       rouge) bad "la CI de ce commit est déjà rouge : la relancer telle quelle donnera le même rouge" "lire l'étape en échec, la reproduire ici, corriger, committer, puis seulement relancer" ;;
@@ -114,11 +129,13 @@ if [ "${1:-}" = "--ci" ]; then
     fi
   }
   found=0
-  for t in scripts/bench/test_cpu_report.py scripts/bench/test_ultra_bench.py scripts/bench/test_report.py scripts/bench/test_defauts_caches.py; do
+  for t in scripts/bench/test_socle.py scripts/bench/test_cpu_report.py scripts/bench/test_ultra_bench.py scripts/bench/test_report.py scripts/bench/test_defauts_caches.py; do
     [ -f "$t" ] || continue
     found=1
     run_bare "$t" python3 -I "$t"
   done
+  # The pre-flight's own test (and, through it, the portal's refusals).
+  [ ! -f scripts/bench/test_pre_vol.sh ] || run_bare "scripts/bench/test_pre_vol.sh" bash scripts/bench/test_pre_vol.sh
   [ "$found" -eq 1 ] || warn "aucun test Python du banc ici (scripts/bench/test_*.py)"
   # (scripts/check-jni.sh needs a built engine: only where there is one.)
   if [ -x scripts/check-jni.sh ] && [ -n "$(find engine/build -path '*release*' -name NativeEngine.class 2>/dev/null | head -1)" ]; then
@@ -132,6 +149,18 @@ if [ "${1:-}" = "--ci" ]; then
       python3 -I -c 'import yaml' 2>/dev/null && bad "$y ne se lit plus (YAML invalide)" "corriger le fichier avant tout lancement"
     }
   done
+  # The quick mode stops here: the engine has its own job in the CI, the real projects their own step.
+  [ "$quick" -eq 0 ] || verdict
+  # The Gradle guard rail (PLAN-RESTE 7.2): its own test, about 15 s, needs a Gradle distribution already here.
+  # Run with this home (it reads the Gradle distribution cached there; it never touches ~/.gradle); a skip is said.
+  if [ -f scripts/bench/test_garde_gradle.sh ]; then
+    if bash scripts/bench/test_garde_gradle.sh > "$bare/garde-gradle.log" 2>&1; then
+      if grep -q '^SKIP' "$bare/garde-gradle.log"; then warn "scripts/bench/test_garde_gradle.sh : sauté ($(grep -m1 '^SKIP' "$bare/garde-gradle.log" | cut -c7-))"
+      else ok "scripts/bench/test_garde_gradle.sh"; fi
+    else
+      bad "scripts/bench/test_garde_gradle.sh : rouge (journal : $bare/garde-gradle.log)" "$(grep -m3 -E '^(ROUGE|FAIL)' "$bare/garde-gradle.log" | cut -c1-160 | tr '\n' ' ')"
+    fi
+  fi
   free_gb="$(df -BG --output=avail . | tail -1 | tr -dc 0-9)"
   [ "${free_gb:-0}" -ge 4 ] || warn "disque : ${free_gb} Go libres ici (les tests longs en demandent 4)"
   # The engine's tests on Linux: every other job of the CI waits for them (« needs: engine »), so a red there costs
@@ -175,11 +204,18 @@ portal="scripts/bench/fusion-equipes.sh"
 [ -f "$portal" ] && [ -f scripts/bench/relecture-verdict.py ] || { echo "pre-vol : le portail ($portal, relecture-verdict.py) n'est pas dans ce dépôt : à lancer depuis l'atelier d'intégration." >&2; exit 2; }
 # The portal's refusals as this script knew them (their count and a fingerprint of their lines): a rule added or
 # reworded since is said, never silently missed.
-KNOWN_RULES="11 d6fc511231"
+KNOWN_RULES="14 e54e60f075"
 rules="$(grep -E 'not merged|undone' "$portal" | grep -c .) $(grep -E 'not merged|undone' "$portal" | sed 's/^ *//' | sha256sum | cut -c1-10)"
 [ "$rules" = "$KNOWN_RULES" ] || warn "le portail a changé depuis l'écriture du pré-vol (règles : $rules, connues : $KNOWN_RULES)" \
   "relire les lignes « not merged » / « undone » de $portal, mettre à jour pre-vol.sh et sa ligne KNOWN_RULES"
 replays() { git ls-tree --name-only "$1:docs/audits/ultra/rejeux" 2>/dev/null | grep -v '^_' | sort || true; }
+# The batch of merges in progress (the portal's rules are frozen per batch: « from_paquet N » in the portal).
+paquet="$(sed -n 's/^paquet: *\([0-9][0-9]*\).*/\1/p' scripts/bench/portail-paquet.txt 2>/dev/null | head -1)"
+paquet="${paquet:-1}"
+# A rule of the portal that starts with batch <N>: refused from then on, said before (« à partir du paquet N »).
+rule_from() { # <N> <message> <fix>
+  if [ "$paquet" -ge "$1" ]; then bad "$2" "$3"; else warn "$2 — refusé à partir du paquet $1 (paquet en cours : $paquet)" "$3"; fi
+}
 
 echo "== Atelier d'intégration ($(git rev-parse --abbrev-ref HEAD), $(git rev-parse --short HEAD))"
 if [ -z "$(git status --porcelain --untracked-files=no | grep -v '^ T')" ]; then
@@ -199,7 +235,8 @@ for zone in "$@"; do
   base="$(git merge-base "$head" "$branch")" || base="$branch"
   # Work left uncommitted in the team's workshop never reaches the portal.
   shop="$(git worktree list --porcelain | awk -v b="refs/heads/$branch" '$1 == "worktree" {w = $2} $1 == "branch" && $2 == b {print w}')"
-  if [ -n "$shop" ] && [ -d "$shop" ] && [ -n "$(git -C "$shop" status --porcelain --untracked-files=no 2>/dev/null)" ]; then
+  # (« T »: a file the workshop links, a linked submodule of engine/third_party/…, as in the integration's own check.)
+  if [ -n "$shop" ] && [ -d "$shop" ] && [ -n "$(git -C "$shop" status --porcelain --untracked-files=no 2>/dev/null | grep -v '^ T')" ]; then
     bad "l'atelier de l'équipe ($shop) a des changements non commités : ils ne seraient pas fusionnés" "committer dans la branche (avant la relecture), ou les jeter"
   fi
 
@@ -245,6 +282,25 @@ for zone in "$@"; do
   # 3. What a team branch never brings.
   touched="$(git diff --name-only "$base" "$branch" -- "$traces_root" | tr '\n' ' ')"
   [ -z "$touched" ] || bad "la branche touche aux traces du portail : $touched" "retirer ces fichiers de la branche : seul le portail les écrit"
+  decisions="$(git diff --name-only "$base" "$branch" -- docs/DECISIONS.md docs/decisions | grep -vxF "docs/decisions/$tour-$zone.md" | tr '\n' ' ')"
+  [ -z "$decisions" ] || rule_from 2 "décisions écrites ailleurs que dans docs/decisions/$tour-$zone.md (docs/DECISIONS.md ou le fichier d'un autre lot) : $decisions" \
+    "déplacer ces lignes dans docs/decisions/$tour-$zone.md (une ligne par choix) ; le portail le liste lui-même dans docs/DECISIONS.md après la fusion"
+  git diff --quiet "$base" "$branch" -- scripts/bench/portail-paquet.txt || rule_from 2 "la branche change le paquet en cours (scripts/bench/portail-paquet.txt)" \
+    "retirer ce changement : seule la discussion principale change le paquet, quand elle en ouvre un"
+  # PLAN-RESTE 7.1: the zone report, as the portal reads it (scripts/bench/rapport-zone.py).
+  report="docs/audits/ultra/$tour-$zone-rapport.md"
+  if [ -f scripts/bench/rapport-zone.py ]; then
+    added="$(comm -13 <(replays "$base") <(replays "$branch") | sed 's/^/ajout:/')"
+    # shellcheck disable=SC2086
+    if why="$(python3 -I scripts/bench/rapport-zone.py "$branch" "$report" $added)"; then
+      ok "rapport de zone accepté ($report)"
+    else
+      while IFS= read -r line; do
+        [ -z "$line" ] || rule_from 2 "rapport de zone refusé : $line" \
+          "dans $report, commité dans la branche : une ligne « tests: <filtres Gradle> » (ou « tests: aucun : <raison> ») et la liste des chemins, une ligne « chemin: <écran> | test: Classe#méthode » par endroit, chaque test un @Test de app/src/test ; pour chaque rejeu ajouté à rejeux/, sa dernière ligne « <id> : oracle tenu » (rejeu-defauts.sh, joué avec la correction)"
+      done <<< "$why"
+    fi
+  fi
   links="$(git ls-tree -r "$branch" | awk '$1 == "120000" {print $4}' | tr '\n' ' ')"
   [ -z "$links" ] || bad "lien(s) symbolique(s) commité(s) : $links" "git rm --cached ces liens (les sous-modules liés de l'atelier ne se committent jamais)"
 
@@ -264,6 +320,10 @@ for zone in "$@"; do
       by="$(git log -1 --format=%s "$base..$head" -- "$f" | cut -c1-90)"
       [ -z "$by" ] || printf '          %s : touché côté intégration par « %s »\n' "$f" "$by"
     done
+  elif git merge-base --is-ancestor "$branch" "$head"; then
+    # A branch the integration already holds (the same commit, or one of its ancestors) brings nothing: no commit in
+    # memory (git said « duplicate parent » for it), no word on its base.
+    warn "la branche est déjà dans l'intégration : rien à fusionner" "vérifier le nom de la branche, ou la retirer de la liste"
   else
     tree="$(printf '%s\n' "$merged" | head -1)"
     ok "se fusionne sans conflit ($behind commit(s) d'intégration que la branche n'a pas)"

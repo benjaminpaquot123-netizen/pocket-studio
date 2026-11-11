@@ -232,11 +232,30 @@ abstract class HumanTester(private val seat: String) {
         var lastPrint: String? = null
         var afterWait = false
         val source = o.replayOf
+        // PLAN-RESTE 7.5 (rejeu lisible): the seat the replay was made from (its screens, its finger's journal), and what
+        // the replay saw differ from it: said under a verdict that is not « oracle tenu ».
+        val origin = o.replayOrigin ?: source
+        val originFinger: Map<Int, String> by lazy {
+            origin?.let { File(it, "journal.txt") }?.takeIf { it.isFile }?.readLines().orEmpty()
+                .mapNotNull { l -> Regex("^#(\\d+) DOIGT (.*)$").find(l)?.groupValues?.let { it[1].toInt() to it[2] } }
+                .groupBy({ it.first }, { it.second }).mapValues { it.value.first() }
+        }
+        var lastDiff: String? = null
+        val moved = mutableListOf<String>()
         val timeoutMs = o.timeoutMinutes * 60_000
         var benchExceptions = 0
         fun end(why: String) {
             journal.appendText("#$n FIN : $why\n")
             File(dir, "fin.txt").writeText(why)
+        }
+        fun replayVerdict(head: String) {
+            val shown = origin?.listFiles()?.any { it.name.matches(Regex("screen-\\d+\\.txt")) } == true
+            val lines = listOf(
+                lastDiff?.let { "dernier écran différent de l'origine : $it" }
+                    ?: if (shown) "aucun écran différent de l'origine" else "pas d'écran-texte à l'origine (${origin?.path ?: "-"}) : écrans non comparés",
+            ) + moved
+            File(dir, "rejeu.txt").writeText(head + lines.joinToString("") { "\n  $it" })
+            end("rejeu : $head")
         }
         while (true) {
             turnNow = n
@@ -266,10 +285,16 @@ abstract class HumanTester(private val seat: String) {
                 // Audit method v2: a replay test of a fixed defect plays the gestures without comparing screens (the fix
                 // changes them), then reads the last screen and sound against its oracle.
                 val oracle = o.replayExpect != null || o.replayAbsent != null
-                val was = File(source, "screen-$n.txt").takeIf { it.isFile }?.let { fingerprint(it, File(source, "sound-$n.txt")) }
+                val wasText = File(origin, "screen-$n.txt").takeIf { it.isFile }
+                val was = wasText?.let { fingerprint(it, File(origin, "sound-$n.txt")) }
+                if (wasText != null && was != print) {
+                    fun seen(d: File) = File(d, "screen-$n.txt").readLines().drop(1) +
+                        File(d, "sound-$n.txt").takeIf { it.isFile }?.readLines().orEmpty().filterNot { it.startsWith("Rien ne change") }
+                    lastDiff = "écran $n, empreinte $print (origine $was), première ligne différente : " +
+                        (ScreenText.firstDifference(seen(origin!!), seen(dir)) ?: "aucune (le son ?)")
+                }
                 if (!oracle && was != print) {
-                    val verdict = "divergé au pas ${n - 1}" + if (was == null) " (pas d'écran-texte $n à l'origine)" else ""
-                    File(dir, "rejeu.txt").writeText(verdict); end("rejeu : $verdict"); return
+                    replayVerdict("divergé au pas ${n - 1}" + if (was == null) " (pas d'écran-texte $n à l'origine)" else ""); return
                 }
                 if (n > o.replayN) {
                     val seen = File(dir, "screen-$n.txt").takeIf { it.isFile }?.readText().orEmpty() + "\n" + sound
@@ -279,7 +304,8 @@ abstract class HumanTester(private val seat: String) {
                         o.replayAbsent != null && seen.contains(o.replayAbsent) -> "oracle non tenu : « ${o.replayAbsent} » encore là"
                         else -> "oracle tenu"
                     }
-                    File(dir, "rejeu.txt").writeText(verdict); end("rejeu : $verdict"); return
+                    if (verdict == "oracle tenu" || verdict == "reproduit") { File(dir, "rejeu.txt").writeText(verdict); end("rejeu : $verdict") } else replayVerdict(verdict)
+                    return
                 }
             }
             if (same >= 5) { journal.appendText("#$n RIEN NE CHANGE (5 écrans identiques)\n"); end("rien ne change (5 écrans identiques)"); return }
@@ -287,7 +313,7 @@ abstract class HumanTester(private val seat: String) {
             val cmdFile = File(dir, "cmd-$n.txt")
             if (source != null) {
                 val from = File(source, "cmd-$n.txt")
-                if (!from.isFile) { File(dir, "rejeu.txt").writeText("divergé au pas $n (pas de geste $n à l'origine)"); end("rejeu : pas de geste $n"); return }
+                if (!from.isFile) { replayVerdict("divergé au pas $n (pas de geste $n à l'origine)"); return }
                 cmdFile.writeText(from.readText())
             }
             val waitEnd = System.currentTimeMillis() + timeoutMs
@@ -295,7 +321,27 @@ abstract class HumanTester(private val seat: String) {
                 if (System.currentTimeMillis() > waitEnd) { journal.appendText("#$n no gesture for too long: end\n"); end("abandon : plus de geste"); return }
                 Thread.sleep(100)
             }
-            val cmd = cmdFile.readText().trim()
+            var cmd = cmdFile.readText().trim()
+            // Socle du banc, point 3: « touche <étiquette> » (and appui-long, double-touche) aims at the node of that test
+            // tag, brought into view and touched in its middle: a change of layout no longer breaks a replay. The gesture
+            // then goes on as the pixels it resolved to (thumb's reach, finger's journal, the engine's lending).
+            val aimed = cmd.split(Regex("\\s+"))
+            if (aimed.size == 2 && aimed[0].lowercase() in TAG_GESTURES && aimed[1].replace(',', '.').toFloatOrNull() == null) {
+                val tag = aimed[1]
+                val at = runCatching { reachTag(tag) }.getOrNull()
+                if (at == null) {
+                    journal.appendText("#$n > $cmd\n#$n BANC étiquette introuvable : $tag\n")
+                    if (source != null) {
+                        originFinger[n]?.let { moved += "pas $n : à l'origine sous le doigt : $it" }
+                        replayVerdict("divergé au pas $n (étiquette « $tag » introuvable)"); return
+                    }
+                    say("Banc : rien ne porte l'étiquette « $tag » sur cet écran : rien n'a été fait.")
+                    n++
+                    continue
+                }
+                journal.appendText("#$n ETIQUETTE $tag : ${at.first.toInt()} ${at.second.toInt()}\n")
+                cmd = "${aimed[0]} ${at.first.toInt()} ${at.second.toInt()}"
+            }
             val words = cmd.split(Regex("\\s+"))
             val kind = words[0].lowercase()
             fun num(i: Int) = words.getOrNull(i)?.replace(',', '.')?.toFloatOrNull()
@@ -322,7 +368,7 @@ abstract class HumanTester(private val seat: String) {
             }
             if (malformed) {
                 journal.appendText("#$n BANC geste mal écrit : $cmd\n")
-                say("Banc : geste mal écrit (« $cmd ») : rien n'a été fait. Les gestes : touche X Y, appui-long X Y, double-touche X Y, glisse X1 Y1 X2 Y2, tape X Y N MS (ou tape X Y N tempo : la pulsation du défi), ecris TEXTE, retour, attends S.")
+                say("Banc : geste mal écrit (« $cmd ») : rien n'a été fait. Les gestes : touche X Y (ou touche ÉTIQUETTE), appui-long X Y, double-touche X Y, glisse X1 Y1 X2 Y2, tape X Y N MS (ou tape X Y N tempo : la pulsation du défi), ecris TEXTE, retour, attends S.")
                 if (kind != "attends" && kind != "regarde") gestures--
                 n++
                 continue
@@ -342,6 +388,7 @@ abstract class HumanTester(private val seat: String) {
             points.firstOrNull()?.let { (x, y) ->
                 val under = screenText().under(x, y)
                 journal.appendText("#$n DOIGT $under\n")
+                if (source != null) originFinger[n]?.let { was -> fingerGone(was, under)?.let { moved += "pas $n : $it"; journal.appendText("#$n REJEU $it\n") } }
                 Regex("(?:^|dans:|désactivé )(help_[A-Za-z0-9_]*)").find(under)?.let { journal.appendText("#$n AIDE ${it.groupValues[1]}\n") }
             }
             if (kind == "retour") journal.appendText("#$n RETOUR\n")
@@ -382,6 +429,26 @@ abstract class HumanTester(private val seat: String) {
             stalls(journal, n)
             n++
         }
+    }
+
+    /**
+     * PLAN-RESTE 7.5: the button the origin's finger was on ([was], its `#n DOIGT` line) when it is no longer under the finger
+     * ([now], `under(x, y)` at the replay), in words: « bouton « Suivant » (wizard_next) absent, sous le doigt : … », or
+     * « déplacé (maintenant en x,y) » when it is still on the screen elsewhere. Null when it is still there, or when nothing was
+     * aimed at (« rien »). A button without a test tag (« #12 », a view) is known by its words.
+     */
+    private fun fingerGone(was: String, now: String): String? {
+        fun key(u: String) = u.removePrefix("désactivé ").substringBefore(" «").trim()
+        val k = key(was)
+        if (k.isEmpty() || k.startsWith("rien")) return null
+        val words = Regex("« (.*) »").find(was)?.groupValues?.get(1)
+        val tagged = !k.startsWith("#") && k != "vue"
+        if (tagged && key(now) == k) return null
+        if (!tagged && (words == null || now.contains("« $words »"))) return null
+        val tag = k.removePrefix("dans:")
+        val named = if (!tagged) "bouton « $words »" else if (words != null) "bouton « $words » ($tag)" else "bouton ($tag)"
+        val at = if (tagged) centerOf(tag) else centerOfText(words!!)
+        return named + (at?.let { " déplacé (maintenant en ${it.first.toInt()},${it.second.toInt()})" } ?: " absent") + ", sous le doigt : $now"
     }
 
     /**
@@ -1978,6 +2045,9 @@ abstract class HumanTester(private val seat: String) {
     }.getOrElse { "inside? ${it.message}" }
 
     companion object {
+        /** Socle du banc, point 3: the gestures that may name a test tag instead of pixels (« touche <étiquette> »). */
+        val TAG_GESTURES = setOf("touche", "appui-long", "double-touche")
+
         /** PLAN-RESTE 5.10: the bench's own exceptions a seat lives through before it ends « banc ». */
         const val BENCH_EXCEPTIONS_MAX = 4
         /** PLAN-RESTE 5.3: a gesture in a window with a text field longer than this (real seconds) is said the bench's. */

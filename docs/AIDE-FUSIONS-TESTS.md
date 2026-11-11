@@ -19,10 +19,11 @@ Il lit, ne change rien, répond en quelques secondes, et dit **toutes** les rais
 | L'équipe dit « j'ai fini », **avant** de demander la relecture | `scripts/bench/pre-vol.sh --avant-relecture <tour-N> <zone>` |
 | Après la relecture, avant le portail | `scripts/bench/pre-vol.sh <tour-N> <zone> [<zone> …]` (dans l'ordre prévu pour la fusion) |
 | Avant de lancer la CI à la main | `scripts/bench/pre-vol.sh --ci` (`--long` ajoute les projets réels) |
+| Première étape de la CI de GitHub (travail « quick ») | `scripts/bench/pre-vol.sh --ci --rapide` (environ une minute) |
 | Avant une fusion vers `main` | `scripts/bench/pre-vol.sh --main` |
 
 Ce qu'il contrôle :
-- **avant le portail** : les refus du portail, avec les mêmes règles (relecture commitée, « Relu : », rien de changé après, verdict lu par `relecture-verdict.py`, rejeux, traces, liens symboliques), plus : la fusion essayée en mémoire (conflits, et qui a touché le fichier), les lots qui se marchent dessus quand on en donne plusieurs, l'atelier de l'équipe non commité, le disque, la base qui a bougé ;
+- **avant le portail** : les refus du portail, avec les mêmes règles (relecture commitée, « Relu : », rien de changé après, verdict lu par `relecture-verdict.py`, rejeux, traces, liens symboliques, rapport de zone lu par `rapport-zone.py`), plus : la fusion essayée en mémoire (conflits, et qui a touché le fichier), les lots qui se marchent dessus quand on en donne plusieurs, l'atelier de l'équipe non commité, le disque, la base qui a bougé ;
 - **avant la CI** : rien de non commité ni de non poussé, la CI de ce commit pas déjà rouge, les tests Python du banc joués comme sur une machine neuve (dossier personnel vide, pas d'identité git), les tests du moteur s'il a changé depuis leur dernier vert ici ;
 - **avant `main`** : les conflits, et le cas de la fusion « squash » (voir plus bas).
 
@@ -39,6 +40,12 @@ Avant de dire « j'ai fini » :
 6. N'écris rien de plus fort que ta preuve (verdicts, rapport, DECISIONS).
 7. Regarde en entier les captures des écrans touchés, en Simple et en Pro.
 8. Le suivi est à jour dans le lot : `verdicts.tsv`, PLAN-RESTE, journal.
+9. Tes décisions vont dans `docs/decisions/<tour-N>-<zone>.md` (une ligne par choix), **jamais** dans `docs/DECISIONS.md` : le portail y ajoute lui-même le lien vers ton fichier. Refusé à partir du paquet 2.
+10. Un rejeu touche un bouton par son étiquette de test (`touche <étiquette>`, aussi `appui-long`, `double-touche`), jamais par ses pixels : un changement de mise en page ne le casse plus.
+11. Ton rapport de zone `docs/audits/ultra/<tour-N>-<zone>-rapport.md`, commité **dans la branche**, contient (refusé sinon à partir du paquet 2 ; `scripts/bench/rapport-zone.py`) :
+    - une ligne `tests: <filtres Gradle>` (tes tests ciblés, que le portail rejoue après la fusion), ou `tests: aucun : <raison>` ;
+    - la liste des chemins : une ligne `chemin: <écran> | test: Classe#méthode` par endroit qui lit ou montre la même donnée ; chaque `Classe#méthode` est un `@Test` sans `@Ignore` de `app/src/test` dans ta branche (la méthode dans cette classe-là) ;
+    - pour chaque rejeu que tu ajoutes à `docs/audits/ultra/rejeux/` (souvent venu de `rejeux-attente/` avec ta correction), la ligne que `rejeu-defauts.sh` a écrite en le jouant avec ta correction : `<id> : oracle tenu`. La dernière ligne de cet id fait foi ; « non tenu », ou pas de ligne du tout, est refusé : un défaut pas corrigé reste dans `rejeux-attente/`.
 
 ## La fiche du relecteur
 
@@ -75,6 +82,18 @@ Avant de dire « j'ai fini » :
 5. **CI** : mettre les contrôles de quelques secondes en première étape (les tests Python du banc sont à la 64e minute). Ne jamais relancer un commit déjà rouge.
 6. **Fumée sur émulateur** (20 échecs) : elle ne se rejoue pas ici (pas d'émulateur). Lire le nom du test en échec avant toute relance.
 7. **Avant la fusion vers `main`** : aujourd'hui 270 fichiers en conflit, parce que `main` est une fusion « squash » d'un ancien état de la branche et n'apporte rien de neuf. `pre-vol.sh --main` donne la commande qui règle ça sans changer un seul fichier (essayée sur une copie).
+
+## Fait par le lot « socle » (2026-11-11)
+
+- **Décisions par lot** : `docs/decisions/<tour-N>-<zone>.md` ; le portail le liste à la fin de `docs/DECISIONS.md` (`scripts/bench/decisions-index.sh`). `docs/DECISIONS.md` et le journal du banc se fusionnent par union (`.gitattributes`) : deux lots qui y ajoutent chacun une ligne ne se marchent plus dessus. `verdicts.tsv` et PLAN-RESTE restent partagés : leurs lignes changent sur place, l'union y garderait l'ancienne et la nouvelle (voir `docs/decisions/tour-5-socle.md`).
+- **Règles gelées par paquet** : `scripts/bench/portail-paquet.txt` dit le paquet en cours. Une règle ajoutée au portail pendant le paquet N s'écrit `from_paquet N+1` sur sa ligne de refus : elle ne vaut qu'au paquet suivant ; d'ici là le pré-vol la dit en « À VOIR » (« refusé à partir du paquet N+1 »). `scripts/bench/test_socle.py` refuse une règle neuve sans cette garde. Seule la discussion principale change le numéro, quand elle ouvre un paquet (après la CI du précédent) ; une règle reformulée compte comme neuve.
+- **Rejeux par étiquette** : voir la fiche, point 10. `t4-26-prise-clavier` est passé aux étiquettes.
+- **CI** : le travail « quick » passe en premier, tous les autres l'attendent.
+- **Base verte** : voir `docs/audits/ultra/tour-5-socle-rapport.md` pour les cinq captures et le test du renommage.
+
+## Après chaque fusion (point 7.1 du plan)
+
+Le portail relance `fuse-reports.py docs/audits/ultra/sieges/<tour-N> --tour <tour-N> --maj-base` (les nouvelles clés vont dans `base.tsv`) puis `tableau-de-bord.py` sur tous les tours, et met ce qu'ils écrivent (`base.tsv`, `clusters*.md`, `promesses.tsv`, `incidents-banc.tsv`, `tableau-de-bord.md`) dans le commit des traces. Si l'un d'eux échoue, la fusion est annulée comme pour toute trace.
 
 ## Ce que le pré-vol ne voit pas
 

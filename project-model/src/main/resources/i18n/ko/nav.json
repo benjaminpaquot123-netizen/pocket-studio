@@ -276,6 +276,8 @@
   "Envoi : %s": "센드: %s",
   "La référence était %s dB plus forte : les deux jouent maintenant au même volume.": "레퍼런스가 %s dB 더 컸어요. 이제 둘이 같은 음량으로 재생돼요.",
   "La référence était %s dB plus douce : les deux jouent maintenant au même volume.": "레퍼런스가 %s dB 더 작았어요. 이제 둘이 같은 음량으로 재생돼요.",
+  "La référence était plus forte : les deux jouent maintenant au même volume.": "레퍼런스가 더 컸어요. 지금은 둘을 같은 음량으로 재생해요.",
+  "La référence était plus douce : les deux jouent maintenant au même volume.": "레퍼런스가 더 작았어요. 지금은 둘을 같은 음량으로 재생해요.",
   "Les deux étaient déjà presque au même volume.": "둘은 이미 거의 같은 음량이었어요.",
   "Stéréo": "스테레오",
   "Tel quel": "그대로",

@@ -276,6 +276,8 @@
   "Envoi : %s": "Wysyłka: %s",
   "La référence était %s dB plus forte : les deux jouent maintenant au même volume.": "Referencja była głośniejsza o %s dB: teraz obie grają z tą samą głośnością.",
   "La référence était %s dB plus douce : les deux jouent maintenant au même volume.": "Referencja była cichsza o %s dB: teraz obie grają z tą samą głośnością.",
+  "La référence était plus forte : les deux jouent maintenant au même volume.": "Referencja była głośniejsza: teraz obie grają z tą samą głośnością.",
+  "La référence était plus douce : les deux jouent maintenant au même volume.": "Referencja była cichsza: teraz obie grają z tą samą głośnością.",
   "Les deux étaient déjà presque au même volume.": "Obie miały już prawie tę samą głośność.",
   "Stéréo": "Stereo",
   "Tel quel": "Bez zmian",

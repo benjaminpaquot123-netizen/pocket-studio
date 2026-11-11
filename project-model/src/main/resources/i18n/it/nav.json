@@ -276,6 +276,8 @@
   "Envoi : %s": "Mandata: %s",
   "La référence était %s dB plus forte : les deux jouent maintenant au même volume.": "La reference era %s dB più forte: ora suonano entrambe allo stesso volume.",
   "La référence était %s dB plus douce : les deux jouent maintenant au même volume.": "La reference era %s dB più piano: ora suonano entrambe allo stesso volume.",
+  "La référence était plus forte : les deux jouent maintenant au même volume.": "Il riferimento era più forte: ora i due suonano allo stesso volume.",
+  "La référence était plus douce : les deux jouent maintenant au même volume.": "Il riferimento era più debole: ora i due suonano allo stesso volume.",
   "Les deux étaient déjà presque au même volume.": "Erano già quasi allo stesso volume.",
   "Stéréo": "Stereo",
   "Tel quel": "Così com'è",

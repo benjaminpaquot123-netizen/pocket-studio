@@ -276,6 +276,8 @@
   "Envoi : %s": "センド：%s",
   "La référence était %s dB plus forte : les deux jouent maintenant au même volume.": "リファレンスは %s dB 大きかったので、今は2つとも同じ音量で鳴っています。",
   "La référence était %s dB plus douce : les deux jouent maintenant au même volume.": "リファレンスは %s dB 小さかったので、今は2つとも同じ音量で鳴っています。",
+  "La référence était plus forte : les deux jouent maintenant au même volume.": "リファレンスのほうが大きい音でした。いまは二つを同じ音量で再生しています。",
+  "La référence était plus douce : les deux jouent maintenant au même volume.": "リファレンスのほうが小さい音でした。いまは二つを同じ音量で再生しています。",
   "Les deux étaient déjà presque au même volume.": "2つはもともとほぼ同じ音量でした。",
   "Stéréo": "ステレオ",
   "Tel quel": "そのまま",

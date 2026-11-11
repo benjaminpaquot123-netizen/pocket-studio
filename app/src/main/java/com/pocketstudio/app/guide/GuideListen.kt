@@ -303,7 +303,12 @@ class GuideListen(
         }
 
         /** What the reference's loudness was, before both were matched: « plus fort paraît toujours mieux ». */
-        fun louderNote(db: Float): String = when {
+        fun louderNote(db: Float): String = if (com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode) when {
+            // The Mode simple says it in words: no « dB » (Lexique, Volume).
+            db >= 1f -> tr("La référence était plus forte : les deux jouent maintenant au même volume.")
+            db <= -1f -> tr("La référence était plus douce : les deux jouent maintenant au même volume.")
+            else -> tr("Les deux étaient déjà presque au même volume.")
+        } else when {
             db >= 1f -> tr("La référence était %s dB plus forte : les deux jouent maintenant au même volume.", com.pocketstudio.model.LoudnessTargets.format(db.toDouble()))
             db <= -1f -> tr("La référence était %s dB plus douce : les deux jouent maintenant au même volume.", com.pocketstudio.model.LoudnessTargets.format(-db.toDouble()))
             else -> tr("Les deux étaient déjà presque au même volume.")

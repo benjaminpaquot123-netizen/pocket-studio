@@ -334,8 +334,9 @@ private fun InsertEditor(ch: Int, slot: Int, ins: Insert, actions: MixerActions)
         }
         if (ins.effect == EffectType.EQ || ins.effect == EffectType.PARAM_EQ) EqCurve(ins)
         if (ins.effect == EffectType.COMPRESSOR && !ins.bypass) ReductionMeter(ch, slot, actions)
+        val simple = com.pocketstudio.app.settings.observedSettings().simpleMode
         ins.effect.params.forEachIndexed { k, param ->
-            LabeledSlider(tr(param.label), tr(param.format(ins.params[k])), ins.params[k], "fxp_${ch}_${slot}_$k") {
+            LabeledSlider(tr(param.label), tr(param.format(ins.params[k])).let { if (simple) com.pocketstudio.model.withoutDecibels(it) else it }, ins.params[k], "fxp_${ch}_${slot}_$k") {
                 actions.setInsertParam(ch, slot, k, it)
             }
         }
@@ -412,7 +413,9 @@ private fun ReductionMeter(ch: Int, slot: Int, actions: MixerActions) {
 @Composable
 private fun ReductionValue(db: () -> Float) {
     val v = db()
-    Text(if (v > -0.05f) "0 dB" else com.pocketstudio.model.i18n.ltrNumber(String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "−%.1f dB", -v)),
+    val simple = com.pocketstudio.app.settings.observedSettings().simpleMode
+    val text = if (v > -0.05f) "0 dB" else com.pocketstudio.model.i18n.ltrNumber(String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "−%.1f dB", -v))
+    Text(if (simple) com.pocketstudio.model.withoutDecibels(text) else text,
         style = com.pocketstudio.ui.MonoStyle, color = Neon.Cyan)
 }
 

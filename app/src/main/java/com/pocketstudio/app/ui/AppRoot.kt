@@ -4700,8 +4700,8 @@ private const val SWITCH_COVER_MS = 5000L
  * The one exception is the page it was made for, [KEYS_PAGE_THUMB_BAR_DP].
  */
 private const val THUMB_BAR_MIN_HEIGHT_DP = 480
-/** The thumb's bar's height ([ThumbBar]: its ▶ of 52 dp). */
-internal const val THUMB_BAR_HEIGHT_DP = 52
+/** The thumb's bar's height ([ThumbBar]: its buttons of 48 dp; tour 5, chantier 4: « ▶ le morceau » is one of them, no longer 52 dp). */
+internal const val THUMB_BAR_HEIGHT_DP = 48
 /** The Guide's panel while it reads the song: its bar and the line « Le Guide lit ton morceau… », nothing more. */
 internal const val GUIDE_PANEL_READING_DP = 96
 private const val GUIDE_PANEL_MIN_DP = 200

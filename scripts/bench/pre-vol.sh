@@ -194,7 +194,7 @@ portal="scripts/bench/fusion-equipes.sh"
 [ -f "$portal" ] && [ -f scripts/bench/relecture-verdict.py ] || { echo "pre-vol : le portail ($portal, relecture-verdict.py) n'est pas dans ce dépôt : à lancer depuis l'atelier d'intégration." >&2; exit 2; }
 # The portal's refusals as this script knew them (their count and a fingerprint of their lines): a rule added or
 # reworded since is said, never silently missed.
-KNOWN_RULES="14 6964243b17"
+KNOWN_RULES="14 e54e60f075"
 rules="$(grep -E 'not merged|undone' "$portal" | grep -c .) $(grep -E 'not merged|undone' "$portal" | sed 's/^ *//' | sha256sum | cut -c1-10)"
 [ "$rules" = "$KNOWN_RULES" ] || warn "le portail a changé depuis l'écriture du pré-vol (règles : $rules, connues : $KNOWN_RULES)" \
   "relire les lignes « not merged » / « undone » de $portal, mettre à jour pre-vol.sh et sa ligne KNOWN_RULES"
@@ -280,12 +280,14 @@ for zone in "$@"; do
   # PLAN-RESTE 7.1: the zone report, as the portal reads it (scripts/bench/rapport-zone.py).
   report="docs/audits/ultra/$tour-$zone-rapport.md"
   if [ -f scripts/bench/rapport-zone.py ]; then
-    if why="$(python3 -I scripts/bench/rapport-zone.py "$branch" "$report")"; then
+    added="$(comm -13 <(replays "$base") <(replays "$branch") | sed 's/^/ajout:/')"
+    # shellcheck disable=SC2086
+    if why="$(python3 -I scripts/bench/rapport-zone.py "$branch" "$report" $added)"; then
       ok "rapport de zone accepté ($report)"
     else
       while IFS= read -r line; do
         [ -z "$line" ] || rule_from 2 "rapport de zone refusé : $line" \
-          "dans $report, commité dans la branche : une ligne « tests: <filtres Gradle> » (ou « tests: aucun : <raison> ») et la liste des chemins, une ligne « chemin: <écran> | test: Classe#méthode » par endroit, chaque test un @Test de app/src/test"
+          "dans $report, commité dans la branche : une ligne « tests: <filtres Gradle> » (ou « tests: aucun : <raison> ») et la liste des chemins, une ligne « chemin: <écran> | test: Classe#méthode » par endroit, chaque test un @Test de app/src/test ; pour chaque rejeu ajouté à rejeux/, sa dernière ligne « <id> : oracle tenu » (rejeu-defauts.sh, joué avec la correction)"
       done <<< "$why"
     fi
   fi

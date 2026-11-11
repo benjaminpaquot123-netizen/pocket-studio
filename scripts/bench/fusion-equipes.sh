@@ -72,10 +72,14 @@ for zone in "${zones[@]}"; do
   moved_batch="$(git diff --name-only "$base" "eq/$tour-$zone" -- scripts/bench/portail-paquet.txt)"
   if from_paquet 2 && [ -n "$moved_batch" ]; then echo "$zone: the branch moves the batch (scripts/bench/portail-paquet.txt): not merged." >&2; exit 3; fi
   # PLAN-RESTE 7.1 (from batch 2): the zone's report, read in the branch (docs/audits/ultra/<tour-N>-<zone>-rapport.md):
-  # its « tests: » line gives the team's targeted tests, added to the filters given here (scripts/bench/rapport-zone.py).
+  # its « tests: » line gives the team's targeted tests, added to the filters given here; its list of paths names a
+  # test of app/src/test for each place; each replay the branch adds to rejeux/ has its last verdict there, « oracle
+  # tenu » (scripts/bench/rapport-zone.py).
   report="docs/audits/ultra/$tour-$zone-rapport.md"
+  added="$(comm -13 <(replays "$base") <(replays "eq/$tour-$zone") | sed 's/^/ajout:/')"
   report_out=""
-  if from_paquet 2 && ! report_out="$(python3 -I scripts/bench/rapport-zone.py "eq/$tour-$zone" "$report")"; then echo "$zone: zone report refused: $(printf '%s' "$report_out" | tr '\n' ';'): not merged." >&2; exit 7; fi
+  # shellcheck disable=SC2086
+  if from_paquet 2 && ! report_out="$(python3 -I scripts/bench/rapport-zone.py "eq/$tour-$zone" "$report" $added)"; then echo "$zone: zone report refused: $(printf '%s' "$report_out" | tr '\n' ';'): not merged." >&2; exit 7; fi
   zone_filters=("${filters[@]}")
   while IFS= read -r f; do [ -z "$f" ] || zone_filters+=("$f"); done < <(printf '%s\n' "$report_out" | sed -n 's/^filtre: //p')
   # PLAN-RESTE 7.1: a team branch never brings a symbolic link (a third-party checkout linked in, a secret linked out).

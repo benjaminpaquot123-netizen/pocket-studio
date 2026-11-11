@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """PLAN-RESTE 7.1: the zone report of a team's branch, as fusion-equipes.sh and pre-vol.sh read it (from batch 2).
 
-  rapport-zone.py <branch> <report path>
+  rapport-zone.py <branch> <report path> [ajout:<replay id the branch adds to rejeux/> …]
 
 Run from the repository's root. The report (docs/audits/ultra/<tour-N>-<zone>-rapport.md) is read in the branch only.
 Accepted only when it has a line « tests: <filter> [<filter> …] », the team's targeted tests (Gradle --tests filters),
@@ -10,6 +10,10 @@ And its « liste des chemins » (docs/audits/AUDIT-ULTRA.md §12.6): at least on
 « chemin: <écran> | test: Classe#méthode », every « chemin: » line in that format, and each Classe#méthode a test of
 app/src/test in the branch that runs (@Test, no @Ignore): the class owns the function, read as the judge reads it
 (verifie-chantier.py: class_methods, still_runs).
+And each replay the branch adds to docs/audits/ultra/rejeux/ has its last verdict in the report, the line
+rejeu-defauts.sh prints (« <id> : oracle tenu »): the last such line is « oracle tenu ». No verdict is committed
+anywhere else (rejeu-defauts.sh keeps no trace of a waiting replay), so a replay without one is refused too: a
+replay in rejeux/ that is not held undoes every merge after it.
 Prints « filtre: <filter> » per filter when accepted; otherwise one line per refusal, exit 1. Standard library only.
 """
 import importlib.util
@@ -47,7 +51,20 @@ def show(branch, path):
     return r.stdout if r.returncode == 0 else None
 
 
-def check(branch, path):
+def replay_refusals(text, path, added):
+    out = []
+    for rid in added:
+        said = re.findall(r"^\s*(?:[-*]\s*)?(?:rejeu\s*:\s*)?`?" + re.escape(rid) + r"\s*:\s*(oracle\b[^`\n]*)", text, re.M)
+        if not said:
+            out.append(f"replay {rid} added to rejeux/ without its verdict in {path} (the line « {rid} : oracle tenu » "
+                       "of rejeu-defauts.sh, played with the fix)")
+        elif said[-1].strip() != "oracle tenu":
+            out.append(f"replay {rid} added to rejeux/: its last verdict in {path} is « {said[-1].strip()[:80]} », "
+                       "not « oracle tenu » (a defect not fixed waits in rejeux-attente/)")
+    return out
+
+
+def check(branch, path, added=()):
     """(refusals, filters)."""
     text = show(branch, path)
     if text is None:
@@ -56,7 +73,7 @@ def check(branch, path):
     found = [f for f in found if f]
     if not found:
         return [f"no line « tests: » in {path} (the team's targeted tests, or « tests: aucun : <raison> »)"], []
-    refusals = []
+    refusals = replay_refusals(text, path, added)
     lines = [m.group(0).strip() for m in PATH_LINE.finditer(text)]
     if not lines:
         refusals.append(f"no list of paths in {path} (one line « chemin: <écran> | test: Classe#méthode » per place "
@@ -82,7 +99,7 @@ def main(argv):
     if len(argv) < 3:
         print(__doc__)
         return 2
-    refusals, filters = check(argv[1], argv[2])
+    refusals, filters = check(argv[1], argv[2], [a.split(":", 1)[1] for a in argv[3:] if a.startswith("ajout:")])
     for r in refusals:
         print(r)
     if refusals:

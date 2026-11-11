@@ -31,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -129,26 +128,27 @@ fun RemixDestinationDialog(
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (!picking) {
                     val what = listOfNotNull(set.info.bpm.takeIf { it > 0 }?.let { "%.0f BPM".format(it) }, set.info.keyLabel).joinToString(", ")
+                    // Chantier 10 (G16): one card in the accent, the recommended one, first; the others neutral (DESIGN §11).
                     Way(
-                        Icons.Filled.AutoAwesome, Neon.Acid, tr("Faire un morceau à partir de cette chanson"),
+                        Icons.Filled.AutoAwesome, tr("Faire un morceau à partir de cette chanson"),
                         if (what.isEmpty()) tr("Un nouveau projet avec la chanson et ses pistes prêtes.")
                         else tr("Un nouveau projet à son tempo et dans sa tonalité (%s), avec ses pistes prêtes.", what),
-                        "remix_dest_build",
+                        "remix_dest_build", recommended = true,
                     ) { onWay(RemixWay.Build) }
                     Way(
-                        Icons.Filled.AddCircle, Neon.Cyan, tr("Dans un nouveau projet"),
+                        Icons.Filled.AddCircle, tr("Dans un nouveau projet"),
                         tr("Un projet vide ; la chanson t'attend dans le Remix pour en prendre des morceaux."),
                         "remix_dest_new",
                     ) { onWay(RemixWay.Source) }
                     Way(
-                        Icons.Filled.FolderOpen, Neon.Magenta, tr("Dans un projet existant"),
+                        Icons.Filled.FolderOpen, tr("Dans un projet existant"),
                         if (readable.isEmpty()) tr("Aucun projet pour l'instant.") else tr("Choisis lequel : la chanson arrive dans son Remix."),
                         "remix_dest_existing", enabled = readable.isNotEmpty(),
                     ) { picking = true }
                 } else {
                     readable.forEach { p ->
                         Way(
-                            Icons.Filled.FolderOpen, Neon.Magenta, com.pocketstudio.model.DefaultNames.shown(p.name),
+                            Icons.Filled.FolderOpen, com.pocketstudio.model.DefaultNames.shown(p.name),
                             listOfNotNull(
                                 tr("projet ouvert").takeIf { p.id == openId },
                                 "%.0f BPM".format(p.tempoBpm),
@@ -170,16 +170,21 @@ fun RemixDestinationDialog(
     )
 }
 
-/** One way to go: a big touch target, its icon in its colour, a title and a line. */
+/**
+ * One way to go: a big touch target, its icon, a title and a line. The [recommended] one alone wears the accent
+ * (its border, its icon, « Conseillé » above its title); the others are neutral.
+ */
 @Composable
-private fun Way(icon: ImageVector, accent: Color, title: String, line: String, tag: String, enabled: Boolean = true, onClick: () -> Unit) {
+private fun Way(icon: ImageVector, title: String, line: String, tag: String, enabled: Boolean = true, recommended: Boolean = false, onClick: () -> Unit) {
+    val accent = if (recommended) Neon.Cyan else Neon.Outline
     NeonCard(
         accent = accent,
         modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).clickable(enabled = enabled, onClick = onClick).testTag(tag),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.heightIn(min = 48.dp)) {
-            Icon(icon, contentDescription = null, tint = if (enabled) accent else Neon.TextSecondary)
+            Icon(icon, contentDescription = null, tint = if (!enabled) Neon.TextSecondary else if (recommended) Neon.Cyan else Neon.TextPrimary)
             Column(Modifier.weight(1f)) {
+                if (recommended) Text(tr("Conseillé"), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan)
                 Text(title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = if (enabled) Neon.TextPrimary else Neon.TextSecondary)
                 if (line.isNotEmpty()) Text(line, style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.padding(top = 2.dp))
             }

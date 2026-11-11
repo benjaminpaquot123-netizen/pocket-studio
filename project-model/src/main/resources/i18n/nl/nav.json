@@ -276,6 +276,8 @@
   "Envoi : %s": "Send: %s",
   "La référence était %s dB plus forte : les deux jouent maintenant au même volume.": "De referentie was %s dB luider: beide spelen nu even luid.",
   "La référence était %s dB plus douce : les deux jouent maintenant au même volume.": "De referentie was %s dB zachter: beide spelen nu even luid.",
+  "La référence était plus forte : les deux jouent maintenant au même volume.": "De referentie was luider: nu spelen ze allebei even hard.",
+  "La référence était plus douce : les deux jouent maintenant au même volume.": "De referentie was zachter: nu spelen ze allebei even hard.",
   "Les deux étaient déjà presque au même volume.": "Beide waren al bijna even luid.",
   "Stéréo": "Stereo",
   "Tel quel": "Zoals het is",

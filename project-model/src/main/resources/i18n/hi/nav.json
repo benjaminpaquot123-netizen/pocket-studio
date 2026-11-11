@@ -276,6 +276,8 @@
   "Envoi : %s": "सेंड: %s",
   "La référence était %s dB plus forte : les deux jouent maintenant au même volume.": "रेफ़रेंस %s dB ज़्यादा तेज़ था: अब दोनों एक ही लाउडनेस पर बजते हैं।",
   "La référence était %s dB plus douce : les deux jouent maintenant au même volume.": "रेफ़रेंस %s dB ज़्यादा धीमा था: अब दोनों एक ही लाउडनेस पर बजते हैं।",
+  "La référence était plus forte : les deux jouent maintenant au même volume.": "रेफ़रेंस ज़्यादा तेज़ था: अब दोनों एक ही आवाज़ में बजते हैं।",
+  "La référence était plus douce : les deux jouent maintenant au même volume.": "रेफ़रेंस ज़्यादा धीमा था: अब दोनों एक ही आवाज़ में बजते हैं।",
   "Les deux étaient déjà presque au même volume.": "दोनों पहले से लगभग एक ही लाउडनेस पर थे।",
   "Stéréo": "स्टीरियो",
   "Tel quel": "जैसा है",

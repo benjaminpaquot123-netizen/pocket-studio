@@ -276,6 +276,8 @@
   "Envoi : %s": "发送：%s",
   "La référence était %s dB plus forte : les deux jouent maintenant au même volume.": "参考曲响了 %s dB：现在两者以同样的响度播放。",
   "La référence était %s dB plus douce : les deux jouent maintenant au même volume.": "参考曲轻了 %s dB：现在两者以同样的响度播放。",
+  "La référence était plus forte : les deux jouent maintenant au même volume.": "参考曲更响：现在两者以相同音量播放。",
+  "La référence était plus douce : les deux jouent maintenant au même volume.": "参考曲更轻：现在两者以相同音量播放。",
   "Les deux étaient déjà presque au même volume.": "两者的响度本来就差不多。",
   "Stéréo": "立体声",
   "Tel quel": "原样",

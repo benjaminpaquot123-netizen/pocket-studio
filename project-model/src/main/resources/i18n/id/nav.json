@@ -276,6 +276,8 @@
   "Envoi : %s": "Send: %s",
   "La référence était %s dB plus forte : les deux jouent maintenant au même volume.": "Referensinya %s dB lebih keras: sekarang keduanya main di volume yang sama.",
   "La référence était %s dB plus douce : les deux jouent maintenant au même volume.": "Referensinya %s dB lebih pelan: sekarang keduanya main di volume yang sama.",
+  "La référence était plus forte : les deux jouent maintenant au même volume.": "Referensi lebih keras: sekarang keduanya diputar dengan volume yang sama.",
+  "La référence était plus douce : les deux jouent maintenant au même volume.": "Referensi lebih pelan: sekarang keduanya diputar dengan volume yang sama.",
   "Les deux étaient déjà presque au même volume.": "Keduanya sudah hampir sama kerasnya.",
   "Stéréo": "Stereo",
   "Tel quel": "Apa adanya",

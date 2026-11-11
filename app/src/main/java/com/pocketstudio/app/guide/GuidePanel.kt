@@ -1,5 +1,6 @@
 package com.pocketstudio.app.guide
 
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.i18n.upperShown
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -178,26 +179,25 @@ fun GuideBar(ui: GuideUi, open: Boolean, toggle: () -> Unit, modifier: Modifier 
 @Composable
 fun GuidePill(ui: GuideUi, toggle: () -> Unit, modifier: Modifier = Modifier) {
     val line = guideStepLine(ui)
-    Row(
-        modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(24.dp))
+    // As the thumb's bar's other buttons: its icon over its words, whole (« Guide 34 % »).
+    androidx.compose.foundation.layout.Column(
+        modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
             .clickable(role = Role.Button, onClickLabel = tr("Ouvrir le Guide"), onClick = toggle)
             .semantics {
                 stateDescription = tr("replié")
                 contentDescription = tr("Guide") + (if (line.isEmpty()) "" else " · $line")
             }
-            .padding(horizontal = 8.dp)
+            .padding(horizontal = 4.dp)
             .spot("guide_bar", tr("Le Guide : où en est ton morceau"))
             .testTag("guide_bar"),
-        verticalAlignment = Alignment.CenterVertically,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
     ) {
-        Icon(Icons.Filled.Explore, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(20.dp))
+        Icon(Icons.Filled.Explore, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(22.dp))
         Text(
-            tr("Guide"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Cyan, maxLines = 1,
-            modifier = Modifier.padding(start = 4.dp),
+            tr("Guide") + (if (!ui.loading && ui.total > 0) " ${ui.percent} %" else ""),
+            fontSize = 11.sp, lineHeight = 12.sp, fontWeight = FontWeight.Bold, color = Neon.Cyan, maxLines = 1, softWrap = false,
         )
-        if (!ui.loading && ui.total > 0) {
-            Text("${ui.percent} %", style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, maxLines = 1, modifier = Modifier.padding(start = 4.dp))
-        }
     }
 }
 

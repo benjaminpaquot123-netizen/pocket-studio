@@ -143,7 +143,8 @@ fun ThumbBar(
         } else {
             ThumbButton(Icons.Filled.Share, tr("Partager"), tr("Partager mon morceau"), true, "thumb_share", share, actions.share)
         }
-        guide?.invoke(share)
+        // Measured first, whole, as ▶ and the tempo.
+        guide?.invoke(Modifier)
     }
 }
 

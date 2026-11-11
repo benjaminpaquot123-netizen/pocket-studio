@@ -9518,6 +9518,32 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         toggleTransport(countInBars, songStep = aloneSongStep())
     }
 
+    /**
+     * « ▶ cette partie » (tour 5, chantier 4, Benjamin's 2B): the part open, looped (« ⟳ Partie » on). Looping it (or no
+     * song: the part is all that plays), a touch stops; the song playing, the part open takes over and loops.
+     */
+    fun togglePart() {
+        if (_transport.value.playing) {
+            if (_loopPart.value || project.value.song.isEmpty()) togglePlay() else setLoopPart(true)
+            return
+        }
+        setLoopPart(true)
+        togglePlay()
+    }
+
+    /**
+     * « ▶ le morceau »: the song, from where ▶ starts it (« Jouer depuis… »; « ⟳ Partie » off). Playing it, a touch
+     * stops; a part looping, the song takes over at the next bar. No song yet: the part open, as ▶ always did.
+     */
+    fun toggleWholeSong() {
+        if (_transport.value.playing) {
+            if (!_loopPart.value || project.value.song.isEmpty()) togglePlay() else setLoopPart(false)
+            return
+        }
+        if (project.value.song.isNotEmpty()) loopPartOff()
+        togglePlay()
+    }
+
     /** Tests: the count-in (bars) the last start played, engine or not. */
     internal var countInForTest: Int = -1
 

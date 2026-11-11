@@ -926,7 +926,8 @@ abstract class HumanTester(private val seat: String) {
         // engine (Tour3AppProofTest); the bench's had gone, nothing played and ▶ then played the part's loop alone.
         if (SONG_STARTS.any { touchesStart(it, x, y) }) return true
         if (lastVm?.project?.value?.song.isNullOrEmpty()) return false
-        return touches("top_play", x, y) || touchesStart("guide_option_", x, y)
+        // Tour 5, chantier 4: « ▶ le morceau » (at the thumb, or at the top with no thumb's bar); the top « ▶ cette partie » loops a part.
+        return touches("thumb_play", x, y) || touches("top_song", x, y) || touchesStart("guide_option_", x, y)
     }
 
     /**

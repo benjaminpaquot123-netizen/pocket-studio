@@ -97,7 +97,7 @@ open class KeyActionsGestureTest {
     fun listeningToTheWholeSong() {
         start()
         h.vm.playStartsForTest = mutableListOf()
-        compose.withinGestures("Écouter tout le morceau", budget("Écouter tout le morceau")) { tap("top_play") }
+        compose.withinGestures("Écouter tout le morceau", budget("Écouter tout le morceau")) { tap("thumb_play") }
         assertEquals(listOf("song 0"), h.vm.playStartsForTest)
         assertTrue(h.vm.transport.value.playing)
     }

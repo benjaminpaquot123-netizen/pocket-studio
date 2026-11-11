@@ -139,9 +139,9 @@ class HumanRemixJourneyTest : HumanTester("remix-journey") {
         val heardVoice = tap(reach("stem_${set.id}_vocals"), "the Voix switch")
         assertTrue(heardVoice, heardVoice.contains("le Remix fait écouter « Ma chanson préférée » : la voix seule") && heardVoice.contains(" — la voix "))
         // Remix lot 1 (Sarah, e/80): the project's ▶ stops « Écouter », never two voices at once.
-        val both = tap(centerOf("top_play"), "▶ of the project")
+        val both = tap(centerOf("thumb_play"), "▶ of the project")
         assertTrue(both + "\n" + screenLines().joinToString("\n"), both.contains("la musique du projet") && !both.contains("le Remix fait écouter"))
-        tap(centerOf("top_play"), "■ of the project")
+        tap(centerOf("thumb_play"), "■ of the project")
 
         // « Jouer avec le projet »: the song plays along the project.
         tap(reach("use_${set.id}"), "Jouer avec le projet")

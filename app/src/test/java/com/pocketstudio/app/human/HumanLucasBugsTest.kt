@@ -98,7 +98,7 @@ class HumanLucasBugsTest : HumanTester("lucas-bugs") {
         act("attends 2")
         // ⋮ › « Aide et premiers pas » › « Revoir le guide des premiers pas ».
         act("touche 543 43")
-        tap(centerOf("more_help"), "Aide et premiers pas")
+        tap(centerOf("tool_Aide"), "Aide et premiers pas")
         tap(reach("help_guide"), "Revoir le guide des premiers pas")
         assertNotNull("no welcome guide", centerOfText("Bienvenue dans BenStudio"))
         tap(centerOf("guide_next"), "Suivant")
@@ -125,7 +125,7 @@ class HumanLucasBugsTest : HumanTester("lucas-bugs") {
         act("attends 1")
         val before = project()!!.song.map { it.scene }
         assertEquals(3, before.size)
-        if (centerOf("part_menu_1") == null) tap(centerOfText("morceau", substring = true), "the Mon morceau tab")
+        if (centerOf("part_menu_1") == null) tap(centerOf("tab_simple_Morceau"), "the Mon morceau tab")
         tap(reach("part_menu_1"), "⋮ of part 2")
         tap(centerOf("part_insert_1"), "Insérer après")
         tap(centerOf("pick_scene_2") ?: centerOf("tl_pick_2"), "C")

@@ -715,6 +715,9 @@ fun AppRoot() {
             }
         }
     }
+    // Tour 5, chantier 5 (3A): the assistant's « Changer » of the song's mode.
+    var wizardModeAsk by rememberSaveable(key = "wizard_mode_ask") { mutableStateOf(false) }
+    LaunchedEffect(wizardUi.open) { if (!wizardUi.open) wizardModeAsk = false }
     if (wizardUi.open) {
         val packsUi by libraryVm.packs.collectAsStateWithLifecycle()
         val previewing by libraryVm.playing.collectAsStateWithLifecycle()
@@ -761,9 +764,18 @@ fun AppRoot() {
                         create = { wizardCreate(false) },
                         // Audit ultra round 2 (n° 12): the style's song with the advised choices, playing as it opens.
                         playNow = { id -> libraryVm.chooseStyle(id); wizardCreate(true) },
+                        // Tour 5, chantier 5 (3A): the song's mode said, « Changer » asks « Simple ou Pro ? » for it.
+                        mode = simple,
+                        changeMode = { wizardModeAsk = true },
                     ),
                     preparing = preparing,
                 )
+                if (wizardModeAsk) {
+                    com.pocketstudio.app.ui.ModeStepDialog(
+                        choose = { v -> wizardModeAsk = false; com.pocketstudio.app.settings.ProjectModes.choose(context, v) },
+                        back = { wizardModeAsk = false },
+                    )
+                }
               }
             }
         }
@@ -1272,6 +1284,8 @@ fun AppRoot() {
         tab = t
     }
     var toolPage by rememberSaveable { mutableStateOf<ToolPage?>(null) }
+    // Tour 5, chantier 5: the screen the Mode simple's Plus page was opened from, its « ← Retour » goes back there.
+    var plusFrom by rememberSaveable { mutableStateOf(AppTab.Morceau) }
     // Lot 2: the Remix (Sons › Voix, its second page), « mis en avant »: one touch from « Que veux-tu
     // faire ? », a chip in Sons, a line of the Mode simple's « ⋯ ».
     // Owner (2026-10-29): the space the Remix was opened from (a menu, the Guide, a card), for its « ← » in Pro.
@@ -1623,8 +1637,7 @@ fun AppRoot() {
         }
     }
     modeAsk?.let { way ->
-        com.pocketstudio.app.ui.ModeStepDialog(
-            choose = { v ->
+        val startIn: (Boolean) -> Unit = { v ->
                 modeAsk = null
                 com.pocketstudio.app.settings.ProjectModes.choose(context, v)
                 when (way) {
@@ -1662,10 +1675,16 @@ fun AppRoot() {
                     }
                     START_TUTO -> { toolPage = null; tutoChooserOpen = true }
                 }
-            },
-            back = { modeAsk = null },
-            tuto = way == START_TUTO,
-        )
+        }
+        // Benjamin's answer 3A (tour 5, chantier 5): once a mode was chosen, a new song takes it without asking (the top
+        // bar's chip and the assistant's « Changer » change it). « J'apprends » still asks: there the mode is the
+        // tutorial's level.
+        val known = remember(way) { if (way == START_TUTO) null else com.pocketstudio.app.settings.ProjectModes.last(context) }
+        if (known != null) {
+            LaunchedEffect(way) { startIn(known) }
+        } else {
+            com.pocketstudio.app.ui.ModeStepDialog(choose = startIn, back = { modeAsk = null }, tuto = way == START_TUTO)
+        }
     }
     // Owner (2026-10-29): each project keeps its mode. On its own screens (no start under way) the
     // open project's mode is shown, and a change of mode made there is kept with it; a mode chosen
@@ -2037,7 +2056,9 @@ fun AppRoot() {
     // Audit ultra round 2, n° 27 (seat B c, a foldable): on a big screen the top bar has them all; on the notes, the grid takes that room.
     val thumbBarUp = !landscape && !liveImmersive && !showTimeline && !showLivePads && !showLive &&
         !(tab == AppTab.Synthe && com.pocketstudio.app.synth.NotesView.shown && LocalConfiguration.current.smallestScreenWidthDp >= 600) &&
-        thumbBarFits(LocalConfiguration.current.screenHeightDp, LocalConfiguration.current.fontScale)
+        thumbBarFits(LocalConfiguration.current.screenHeightDp) &&
+        // Tour 5, chantier 4 (G6): the one exception, the keys' page on a short screen (measured, see [KEYS_PAGE_THUMB_BAR_DP]).
+        !(tab == AppTab.Synthe && LocalConfiguration.current.screenHeightDp < KEYS_PAGE_THUMB_BAR_DP)
     LaunchedEffect(guideQuietRec, guideQuietTaking, showLive, guideQuietPlaying) {
         if (guideQuietRec || guideQuietTaking || showLive || guideQuietPlaying) {
             guideListen.stop()
@@ -2217,31 +2238,13 @@ fun AppRoot() {
         step = { if (com.pocketstudio.engine.NativeEngine.isAvailable) com.pocketstudio.engine.NativeEngine.absoluteStep() else -1 },
         bpm = { breathProject.value.tempoBpm.toFloat() },
     )
-    // Mode simple: « Envoyer » is a tab; the rest of the app in « ⋯ » (the top bar's, and the thumb's bar's, n° 21).
-    val simpleMore: List<TopMenuItem>? = if (!simple) null else listOf(
-        TopMenuItem(tr("Live : jouer en direct"), "more_live", openLive),
-        // Audit final (03 G4): the voice has its own way in the Mode simple.
-        TopMenuItem(tr("Enregistrer ma voix"), "more_voice", openVoice),
-        // Audit stage 2 (NavigationMapTest): the sound library in 3 touches from home on a small phone
-        // (Rythme's button is below the fold there: a scroll made it 4).
-        TopMenuItem(tr("Bibliothèque de sons"), "more_library") {
-            libraryLive = -1; libraryMine = false; libraryCell = null; libraryTrack = false; libraryFromMenu = true; showLibrary = true
-        },
-        // Audit ultra round 2, zone 1, n° 7 (seat A b looked for « Ma bibliothèque » by its name): the sounds kept, one touch away.
-        TopMenuItem(tr("Ma bibliothèque"), "more_mine") {
-            libraryLive = -1; libraryMine = true; libraryCell = null; libraryTrack = false; libraryFromMenu = true; showLibrary = true
-        },
-        // Owner (2026-10-29): « Remix », its name everywhere else.
-        TopMenuItem(tr("Remix"), "more_remix", openRemix),
-        // Audit final (05): the long press on the name was the only way to rename the song.
-        TopMenuItem(tr("Renommer le morceau"), "more_rename") { renamingProject = true },
-        TopMenuItem(tr("Accueil"), "more_home", goHome),
-        TopMenuItem(tr("Mes projets"), "more_projects") { showProjects = true },
-        TopMenuItem(tr("Réglages"), "more_settings") { toolPage = ToolPage.Reglages; go(AppTab.Outils) },
-        TopMenuItem(tr("Aide"), "more_help") { toolPage = ToolPage.Aide; go(AppTab.Outils) },
-        TopMenuItem(tr("Passer en mode Pro"), "more_full") { SettingsStore.update(context) { it.copy(simpleMode = false) } },
-        TopMenuItem(tr("Signaler un bug"), "more_bug") { reportBug("menu ⋯") },
-    )
+    // Mode simple: « Partager » is a tab; the rest of the app on the Plus page, the same as Pro's (tour 5, chantier 5, G15:
+    // a menu of twelve bare lines without the Recette before), from the top bar's ⋮ and the thumb's « Plus » (n° 21).
+    val simpleMore: (() -> Unit)? = if (!simple) null else ({
+        if (tab != AppTab.Outils) plusFrom = tab
+        toolPage = null
+        go(AppTab.Outils)
+    })
     androidx.compose.runtime.CompositionLocalProvider(com.pocketstudio.app.learn.LocalSpots provides spots, com.pocketstudio.ui.LocalBreath provides breath) {
     // A new mode draws every screen again (their names and words change; the project does not).
     androidx.compose.runtime.key(simple) {
@@ -2272,6 +2275,9 @@ fun AppRoot() {
             val topUnsaved by rhythmVm.session.unsaved.collectAsStateWithLifecycle()
             // On the Audio tracks screen (or during a take) the ● is the microphone's.
             val micMode = (tab == AppTab.Audio && audioPage == 0) || topTake != null
+            // Tour 5, chantier 4 (2B): which of the two ▶ shows ■, « ▶ cette partie » (the part looped) or « ▶ le morceau ».
+            val topLoopPart by rhythmVm.loopPart.collectAsStateWithLifecycle()
+            val plays = namedPlays(topTransport.playing, topLoopPart, topProject.song.isNotEmpty())
             TopBar(
                 TopBarUi(
                     com.pocketstudio.model.DefaultNames.shown(topProject.name), topTransport.playing, topUndo && undoable, topRedo && undoable, topRecording || topTake != null,
@@ -2292,12 +2298,16 @@ fun AppRoot() {
                     undo = !(simple && thumbBarUp),
                     saved = saveError == null && !topUnsaved,
                     recordInto = topRecordInto?.let { topProject.sceneTitle(it) },
+                    partPlaying = plays.part, songPlaying = plays.song,
+                    // No thumb's bar: « ▶ le morceau » up here too.
+                    songButton = !thumbBarUp,
                 ),
                 TopBarActions(
                     projects = { showProjects = true }, rename = { renamingProject = true },
                     undo = { com.pocketstudio.app.report.Journal.action("↶ Annuler"); rhythmVm.undo() },
                     redo = { com.pocketstudio.app.report.Journal.action("↷ Rétablir"); rhythmVm.redo() },
-                    togglePlay = rhythmVm::togglePlay,
+                    togglePlay = rhythmVm::togglePart,
+                    playSong = rhythmVm::toggleWholeSong,
                     toggleRecord = {
                         when {
                             // From the synth the take is a played phrase (a one-bar loop grows to four first);
@@ -2489,7 +2499,12 @@ fun AppRoot() {
                         }
                     }
                 }
-                if (guideShown && !guideSide && tutoNow == null) {
+                // Tour 5, chantier 4 (G6): a wide but short screen (the Tab A11 upright at 130 %) folds the Guide's line into a
+                // pill at the thumb's bar's end: its 48 dp go to the page (the second row of steps above the fold).
+                val guideConfig = LocalConfiguration.current
+                val guideInThumb = thumbBarUp && guideConfig.screenHeightDp < GUIDE_PILL_BELOW_DP && guideConfig.screenWidthDp >= GUIDE_PILL_FROM_WIDTH_DP
+                val guidePill = guideShown && !guideSide && tutoNow == null && !guideOpen && guideInThumb
+                if (guideShown && !guideSide && tutoNow == null && !guidePill) {
                     val guideUi by guideVm.ui.collectAsStateWithLifecycle()
                     if (guideOpen) {
                         val listening by guideListen.state.collectAsStateWithLifecycle()
@@ -2522,19 +2537,25 @@ fun AppRoot() {
                     val thumbPerformance by rhythmVm.take.collectAsStateWithLifecycle()
                     // As the top bar's: no undo during a take (or while it is written).
                     val thumbUndoable = !thumbRecording && thumbTake == null && !thumbSaving && !thumbPerformance.running
+                    val thumbLoopPart by rhythmVm.loopPart.collectAsStateWithLifecycle()
                     ThumbBar(
                         ThumbBarUi(
                             playing = thumbTransport.playing, canUndo = thumbUndo && thumbUndoable, canRedo = thumbRedo && thumbUndoable,
                             tempoBpm = thumbProject.tempoBpm.roundToInt(), redoAlways = !simple,
+                            songPlaying = namedPlays(thumbTransport.playing, thumbLoopPart, thumbProject.song.isNotEmpty()).song,
                         ),
                         ThumbBarActions(
                             undo = { com.pocketstudio.app.report.Journal.action("↶ Annuler"); rhythmVm.undo() },
                             redo = { com.pocketstudio.app.report.Journal.action("↷ Rétablir"); rhythmVm.redo() },
-                            togglePlay = rhythmVm::togglePlay,
+                            togglePlay = rhythmVm::toggleWholeSong,
                             tempo = { tempoSheetOpen = true },
                             more = simpleMore,
                             share = shareSong,
                         ),
+                        guide = if (!guidePill) null else { m ->
+                            val guideUi by guideVm.ui.collectAsStateWithLifecycle()
+                            com.pocketstudio.app.guide.GuidePill(guideUi, guideActions.toggle, m)
+                        },
                     )
                 }
                 // Phase 36: the five spaces (or the Mode simple's four tabs); lying down, the rail on the side.
@@ -3615,12 +3636,24 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                 bugReport = { reportBug("Plus") },
                                 simple = simple,
                                 setSimple = { v -> SettingsStore.update(context) { it.copy(simpleMode = v) } },
+                                // Tour 5, chantier 5 (G15): what the Mode simple's old ⋮ menu held, as cards.
+                                simpleWays = SimplePlusWays(
+                                    live = openLive,
+                                    remix = openRemix,
+                                    voice = openVoice,
+                                    // Audit stage 2 (NavigationMapTest): the sound library in 3 touches from home on a small phone.
+                                    library = { libraryLive = -1; libraryMine = false; libraryCell = null; libraryTrack = false; libraryFromMenu = true; showLibrary = true },
+                                    // Audit ultra round 2, zone 1, n° 7 (seat A b looked for « Ma bibliothèque » by its name).
+                                    mine = { libraryLive = -1; libraryMine = true; libraryCell = null; libraryTrack = false; libraryFromMenu = true; showLibrary = true },
+                                ),
                             ),
                             page = toolPage,
                             open = { page -> toolPage = page; ToolPage.save(context, page) },
-                            // Lot 2: the Mode simple has no Plus: « ← Retour » goes back to the song.
-                            back = { toolPage = null; if (simple) go(AppTab.Morceau) },
-                            backLabel = if (simple) tr("Retour") else null,
+                            // « ← Plus » of a page: back on the list, in both modes (tour 5, chantier 5).
+                            back = { toolPage = null },
+                            // The Mode simple has no Plus space: the list's « ← Retour » goes back where its ⋮ was touched.
+                            leave = if (simple) ({ toolPage = null; go(plusFrom.takeIf { it != AppTab.Outils } ?: AppTab.Morceau) }) else null,
+                            tiles = simple,
                             widePage = ToolPage.load(context),
                         ) { shownPage ->
                             when (shownPage) {
@@ -4681,22 +4714,43 @@ private const val GUIDE_SPOT_MS = 8000L
 private const val SWITCH_COVER_MS = 5000L
 
 /**
- * Below this screen height (dp as the interface draws them, divided by the text's size) the thumb's bar gives its room
- * to the screen (the top bar has the same actions). Round 1 integration: at 130 % it left a 780 dp phone's Clavier no
- * room for its keys (0 dp under the Guide's bar) and pushed an upright tablet's second row of steps below the fold.
+ * Below this screen height (dp as the interface draws them) the thumb's bar gives its room to the screen (the top bar
+ * then has ▶ le morceau too). Tour 5, chantier 4 (G6): it was 720 dp read at the text's size (the height divided by
+ * the font size, on top of Taille's own shrink), so a bigger text took the bar away on a common phone (914 / 1.3 = 703),
+ * on a small one and on the Tab A11 upright (934 / 1.3 = 718), the very people who need it most. The text's size no
+ * longer counts: only a screen too short for any page keeps the bar off (a 640 dp phone at 130 % is 492 dp).
+ * The one exception is the page it was made for, [KEYS_PAGE_THUMB_BAR_DP].
  */
-private const val THUMB_BAR_MIN_HEIGHT_DP = 720
-/** The thumb's bar's height ([ThumbBar]: its ▶ of 52 dp). */
-internal const val THUMB_BAR_HEIGHT_DP = 52
+private const val THUMB_BAR_MIN_HEIGHT_DP = 480
+/** The thumb's bar's height ([ThumbBar]: its buttons of 48 dp; tour 5, chantier 4: « ▶ le morceau » is one of them, no longer 52 dp). */
+internal const val THUMB_BAR_HEIGHT_DP = 48
 /** The Guide's panel while it reads the song: its bar and the line « Le Guide lit ton morceau… », nothing more. */
 internal const val GUIDE_PANEL_READING_DP = 96
 private const val GUIDE_PANEL_MIN_DP = 200
 /** From this screen height the Guide's panel and the thumb's bar always fitted together, at the panel's full height. */
 private const val THUMB_BAR_BESIDE_GUIDE_DP = 820
 
-/** The thumb's bar is shown: the screen, read at the text's size, tall enough for it and the page above it. */
-internal fun thumbBarFits(screenHeightDp: Int, fontScale: Float): Boolean =
-    screenHeightDp / fontScale.coerceAtLeast(1f) >= THUMB_BAR_MIN_HEIGHT_DP
+/**
+ * Below this height (dp as the interface draws them) the keys' page (Clavier, Synthé) alone gives the thumb's bar's
+ * room to its keys, and the top bar then has ▶ le morceau too. Measured at Taille 130 % (ThumbBarBigTextTest), keys in
+ * view with the bar: 115 dp on a 411 x 914 phone (703 dp), 97 on a 400 x 890 (684), 0 on a 360 x 780 (600; 16 without it).
+ */
+internal const val KEYS_PAGE_THUMB_BAR_DP = 700
+
+/** Below this height (dp as drawn) and from [GUIDE_PILL_FROM_WIDTH_DP] wide, the folded Guide is a pill in the thumb's bar. */
+internal const val GUIDE_PILL_BELOW_DP = 760
+/** Narrower, the thumb's bar has no room for the Guide's pill (a 411 dp phone at 130 % is 316 dp wide). */
+internal const val GUIDE_PILL_FROM_WIDTH_DP = 400
+
+/** Which named ▶ shows ■ (tour 5, chantier 4): [part] « ▶ cette partie », [song] « ▶ le morceau ». */
+internal data class NamedPlays(val part: Boolean, val song: Boolean)
+
+/** Playing, the part looped ([loopPart]) or the song; without a song, the part is all there is to play: both show ■. */
+internal fun namedPlays(playing: Boolean, loopPart: Boolean, hasSong: Boolean) =
+    NamedPlays(part = playing && (loopPart || !hasSong), song = playing && (!loopPart || !hasSong))
+
+/** The thumb's bar is shown: the screen (dp as the interface draws them, whatever the text's size) tall enough for a page above it. */
+internal fun thumbBarFits(screenHeightDp: Int): Boolean = screenHeightDp >= THUMB_BAR_MIN_HEIGHT_DP
 
 /**
  * The Guide's open panel, upright: 40 % of a phone's height (half a tablet's). Audit ultra round 2 (n° 11, seat B a): the

@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -116,6 +117,15 @@ class TopBarUi(
      * simple: its 48 dp go to the project's name and « ✓ Sauvegardé », cut to « Mon pr… » and a lone tick before).
      */
     val undo: Boolean = true,
+    /**
+     * Tour 5, chantier 4 (Benjamin's 2B): the top ▶ is « ▶ cette partie » (the part open, looped); it shows ■ while that
+     * part loops. Defaults to [playing] (one ▶ for whatever plays, as before).
+     */
+    val partPlaying: Boolean = playing,
+    /** « ▶ le morceau » here too: no thumb's bar to hold it (lying down, a tablet, the keys on a short screen). */
+    val songButton: Boolean = false,
+    /** The song plays (not one part looped): « ▶ le morceau » shows ■. */
+    val songPlaying: Boolean = playing,
 )
 
 class TopBarActions(
@@ -125,22 +135,21 @@ class TopBarActions(
     val undo: () -> Unit = {},
     val redo: () -> Unit = {},
     val togglePlay: () -> Unit = {},
+    /** « ▶ le morceau » ([TopBarUi.songButton]). */
+    val playSong: () -> Unit = {},
     val toggleRecord: () -> Unit = {},
     val selectScene: (Int) -> Unit = {},
     val newScene: () -> Unit = {},
     /** ⤴ « Prêt à partager ? »: the song checked, then shared (on every tab). */
     val share: () -> Unit = {},
     /**
-     * Phase 36, Mode simple: « ⋯ » in place of ⤴ (the « Envoyer » tab shares there), with what is
-     * not in its four tabs (Live, Mes projets, Réglages, Aide, Mode complet). Null: ⤴ as usual.
+     * Phase 36, Mode simple: « ⋮ » in place of ⤴ (the « Partager » tab shares there). Tour 5, chantier 5 (G15): it opens
+     * the Plus page, the same as Pro's (with the Recette), no menu of bare lines any more. Null: ⤴ as usual.
      */
-    val more: List<TopMenuItem>? = null,
+    val more: (() -> Unit)? = null,
     /** A touch on the mode chip: the change of mode. */
     val mode: () -> Unit = {},
 )
-
-/** One line of the top bar's « ⋯ » menu (Mode simple). */
-class TopMenuItem(val label: String, val tag: String, val onClick: () -> Unit)
 
 /** How the scene chip shows: not at all, its letter alone, or its letter and section name. */
 enum class SceneChipMode { Hidden, Letter, Full }
@@ -244,7 +253,14 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
 ) {
     // Narrow (a small phone, a big text size): redo, then the scene's name give their room to the
     // project name; the projects button, the scene's letter and play never go.
-    val layout = topBarLayout(if (ui.undo) maxWidth else maxWidth + BUTTON, ui.scene != null, modeChip = ui.mode?.let(::modeChipRoom), redoFirst = ui.redoFirst)
+    // Each ▶ has its word under it (tour 5, chantier 4): as wide as the word, never cut, at any text size and language.
+    val (partStyle, partRoom) = playWord(tr("cette partie"))
+    val (songStyle, songRoom) = playWord(tr("le morceau"))
+    val rowWidth = (if (ui.undo) maxWidth else maxWidth + BUTTON) - (partRoom - BUTTON)
+    // A narrow bar (the keys on a small phone at 130 %): « ▶ le morceau » goes up to the name's line, at its end.
+    val songOnTop = ui.songButton && rowWidth - songRoom - PLAY_GAP - (if (ui.redoFirst) BUTTON else 0.dp) < ALWAYS_SHOWN + PROJECT_ICON
+    val fitted = topBarLayout(if (songOnTop || !ui.songButton) rowWidth else rowWidth - songRoom - PLAY_GAP, ui.scene != null, modeChip = ui.mode?.let(::modeChipRoom), redoFirst = ui.redoFirst)
+    val layout = if (songOnTop) fitted.copy(projectName = false, modeInRow = false) else fitted
     val showRedo = layout.showRedo && ui.redo
     androidx.compose.foundation.layout.Column {
     // Squeezed (a small phone with a big text size): the project's name gets a line of its own
@@ -252,7 +268,9 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
     if (!layout.projectName) {
         Row(
             // With the mode chip (no room for it in the row) the line is as high as its touch target.
-            Modifier.fillMaxWidth().height(if (ui.mode != null && !layout.modeInRow) 48.dp else 24.dp).padding(start = 12.dp, end = if (ui.mode != null && !layout.modeInRow) 6.dp else 12.dp)
+            // At least that high: a big text (the phone's font at 200 %) makes the name taller than 24 dp, never cut.
+            Modifier.fillMaxWidth().heightIn(min = if (songOnTop) 52.dp else if (ui.mode != null && !layout.modeInRow) 48.dp else 24.dp)
+                .padding(start = 12.dp, end = if (songOnTop || (ui.mode != null && !layout.modeInRow)) 6.dp else 12.dp)
                 .combinedClickable(onClick = actions.projects, onLongClick = actions.rename, onLongClickLabel = tr("Renommer le projet"))
                 .testTag("top_project_line"),
             verticalAlignment = Alignment.CenterVertically,
@@ -267,6 +285,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                 Icon(Icons.Filled.Check, contentDescription = tr("Sauvegardé"), tint = Neon.Acid, modifier = Modifier.size(16.dp).testTag("top_saved"))
             }
             if (ui.mode != null && !layout.modeInRow) ModeChip(ui.mode, actions.mode)
+            if (songOnTop) NamedPlay(tr("le morceau"), songStyle, tr("Jouer le morceau"), ui.songPlaying, "top_song", songRoom, actions.playSong)
         }
     }
 
@@ -355,45 +374,16 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                 )
             }
         }
-        val playColor = if (ui.playing) Neon.Acid else Neon.Cyan
-        // A 42 dp disc inside a 48 dp touch target.
-        Box(
-            // While it plays, a soft green glow around the disc, breathing on the beat.
-            Modifier.requiredSize(48.dp).liveGlow(ui.playing, Neon.Acid, inset = 3.dp).clip(CircleShape)
-                .clickable(role = Role.Button, onClickLabel = if (ui.playing) tr("Arrêter") else tr("Jouer"), onClick = actions.togglePlay)
-                // Round 3, n° 34 (seats D c, E c): « Écouter » labelled the Stop square; the label says what a touch does now.
-                .spot("top_play", if (ui.playing) tr("Arrêter") else tr("Jouer"))
-                .testTag("top_play"),
-            contentAlignment = Alignment.Center,
-        ) {
-            Box(
-                Modifier.requiredSize(42.dp)
-                    .shadow(if (ui.playing) 2.dp else 6.dp, CircleShape, ambientColor = playColor, spotColor = playColor)
-                    .clip(CircleShape)
-                    .background(Brush.verticalGradient(listOf(lerp(playColor, Color.White, 0.2f), playColor)))
-                    .background(GLOSS),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    if (ui.playing) Icons.Filled.Stop else Icons.Filled.PlayArrow,
-                    contentDescription = if (ui.playing) tr("Arrêter") else tr("Jouer"),
-                    tint = Neon.OnAccent,
-                )
-            }
-        }
+        // « ▶ cette partie » (tour 5, chantier 4): the part open, looped. Round 3, n° 34: the label says what a touch does now.
+        NamedPlay(tr("cette partie"), partStyle, tr("Jouer cette partie"), ui.partPlaying, "top_play", partRoom, actions.togglePlay)
+        // Apart, the two words never read as one (« cette partie le morceau »).
+        if (ui.songButton && !songOnTop) Spacer(Modifier.width(PLAY_GAP))
+        if (ui.songButton && !songOnTop) NamedPlay(tr("le morceau"), songStyle, tr("Jouer le morceau"), ui.songPlaying, "top_song", songRoom, actions.playSong)
         val more = actions.more
         if (more != null) {
-            // Mode simple: « Envoyer » is a tab; the rest of the app is here.
-            Box {
-                var open by remember { mutableStateOf(false) }
-                IconButton(onClick = { open = true }, modifier = Modifier.spot("top_more", tr("Plus de choix")).testTag("top_more")) {
-                    Icon(Icons.Filled.MoreVert, contentDescription = tr("Plus de choix"), tint = Neon.TextPrimary)
-                }
-                ScaledDropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.testTag("top_more_menu")) {
-                    more.forEach { item ->
-                        DropdownMenuItem(text = { Text(item.label) }, onClick = { open = false; item.onClick() }, modifier = Modifier.testTag(item.tag))
-                    }
-                }
+            // Mode simple: « Partager » is a tab; the rest of the app is on the Plus page.
+            IconButton(onClick = more, modifier = Modifier.spot("top_more", tr("Plus de choix")).testTag("top_more")) {
+                Icon(Icons.Filled.MoreVert, contentDescription = tr("Plus de choix"), tint = Neon.TextPrimary)
             }
         } else {
             // ⤴ Partager, the last thing done to a song, always one touch away (« Prêt à partager ? »).
@@ -402,6 +392,80 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
             }
         }
     }
+    }
+}
+
+/**
+ * The word under a top ▶ (« cette partie », « le morceau »): small, semi-bold, one line. 10.5 sp: at 11 sp bold « cette
+ * partie » took 20 dp more than the old ▶ and pushed the project's name to a line of its own at Taille 130 % on a
+ * 411 dp phone (48 dp less for the keys); now about 10.
+ */
+@Composable
+private fun playWordStyle() = MaterialTheme.typography.labelSmall.copy(fontSize = 10.5.sp, lineHeight = 12.sp, letterSpacing = 0.sp, fontWeight = FontWeight.SemiBold)
+
+/**
+ * A named ▶'s word as drawn and its button's width: the word whole, 48 dp at least. A big text (the phone's font at 200 %)
+ * would make « cette partie » 115 dp wide and taller than the bar: past [PLAY_WORD_MAX] the word is set smaller, never
+ * smaller than at the usual size (CaptureMatrixBigFontTest: « cette partie » cut at its foot, 21 dp shown of 25).
+ */
+@Composable
+private fun playWord(word: String): Pair<androidx.compose.ui.text.TextStyle, Dp> {
+    val measurer = androidx.compose.ui.text.rememberTextMeasurer()
+    val base = playWordStyle()
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    return remember(word, base, density) {
+        fun width(style: androidx.compose.ui.text.TextStyle) = with(density) { measurer.measure(word, style, softWrap = false, maxLines = 1).size.width.toDp() }
+        val w = width(base)
+        val style = if (w > PLAY_WORD_MAX) {
+            val k = PLAY_WORD_MAX / w
+            base.copy(fontSize = base.fontSize * k, lineHeight = base.lineHeight * k)
+        } else base
+        style to maxOf(BUTTON, (if (style === base) w else width(style)) + PLAY_WORD_MARGIN)
+    }
+}
+
+/** Between « ▶ cette partie » and « ▶ le morceau » side by side. */
+private val PLAY_GAP = 8.dp
+
+/** The widest a ▶'s word gets (« cette partie » is 57 dp at the usual size, set a hair smaller): its button 58 dp. */
+private val PLAY_WORD_MAX = 56.dp
+
+private val PLAY_WORD_MARGIN = 2.dp
+
+/**
+ * A ▶ with its word under it (tour 5, chantier 4, Benjamin's 2B: two ▶, « on ne sait pas ce que chacun fait »): [word]
+ * says what it plays, [talk] is what TalkBack says ([playing]: « Arrêter », what a touch does then). A 34 dp disc that
+ * glows while it plays, in a touch target [room] wide and 48 dp high at least.
+ */
+@Composable
+private fun NamedPlay(word: String, style: androidx.compose.ui.text.TextStyle, talk: String, playing: Boolean, tag: String, room: Dp, onClick: () -> Unit) {
+    val playColor = if (playing) Neon.Acid else Neon.Cyan
+    val said = if (playing) tr("Arrêter") else talk
+    androidx.compose.foundation.layout.Column(
+        // No rounded clip: the word sits at the button's foot, its corners cut « cette partie » to « ette parti ».
+        Modifier.width(room).heightIn(min = 48.dp)
+            .clickable(role = Role.Button, onClickLabel = said, onClick = onClick)
+            .semantics { contentDescription = said }
+            .spot(tag, said)
+            .testTag(tag),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Box(
+            Modifier.requiredSize(34.dp).liveGlow(playing, Neon.Acid, inset = 2.dp)
+                .shadow(if (playing) 2.dp else 5.dp, CircleShape, ambientColor = playColor, spotColor = playColor)
+                .clip(CircleShape)
+                .background(Brush.verticalGradient(listOf(lerp(playColor, Color.White, 0.2f), playColor)))
+                .background(GLOSS),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(if (playing) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, tint = Neon.OnAccent, modifier = Modifier.size(22.dp))
+        }
+        Text(
+            word, style = style, color = if (playing) Neon.Acid else Neon.TextPrimary,
+            maxLines = 1, softWrap = false, textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            modifier = Modifier.padding(top = 1.dp),
+        )
     }
 }
 

@@ -83,11 +83,11 @@ class BenchPlayThenTabsTest : HumanTester("play-tabs") {
             assertFalse("the home screen plays nothing", playing())
             tap("launch_continue")
             alive("« Continuer »")
-            waitFor("the song again") { centerOf("top_play") != null }
+            waitFor("the song again") { centerOf("thumb_play") != null }
         }
-        if (!playing()) tap("top_play")
+        if (!playing()) tap("thumb_play")
         assertTrue(playing())
-        tap("top_play")
+        tap("thumb_play")
         alive("■")
         assertFalse("■ stops", playing())
         goesTo(next, "after ■")
@@ -96,7 +96,7 @@ class BenchPlayThenTabsTest : HumanTester("play-tabs") {
     @Test
     fun theSongOfPlayThenTabsBackAndStop() {
         simpleSong("Techno", "techno")
-        val heard = tap("top_play")
+        val heard = tap("thumb_play")
         assertTrue(heard, "le morceau joue (partie" in heard)
         act("attends 1")
         goesTo("tab_simple_Rythme", "▶ then a tab (seat a, #21)")
@@ -113,7 +113,7 @@ class BenchPlayThenTabsTest : HumanTester("play-tabs") {
     @Test
     fun theBarCounterGoesOnWhileTheSongPlays() {
         simpleSong("Techno", "techno")
-        tap("top_play")
+        tap("thumb_play")
         // « mesure N/T » read on the screen: N goes forward and never past T (review of 3.2: « different » was not enough).
         fun counter(): Pair<Int, Int> {
             val line = screenLines().firstOrNull { "mesure " in it } ?: error("no bar counter\n" + screenLines().joinToString("\n"))
@@ -161,7 +161,7 @@ class BenchPlayThenTabsTest : HumanTester("play-tabs") {
             tap("retours_more")
             tap("retours_menu_hide")
         }
-        val heard = tap("top_play")
+        val heard = tap("thumb_play")
         assertTrue(heard, "le morceau joue (partie" in heard)
         tap("top_record")
         // Audit ultra round 1 (n° 30): the ● asks what to record; the pads, as seat d's take.
@@ -170,7 +170,7 @@ class BenchPlayThenTabsTest : HumanTester("play-tabs") {
         goesTo("tab_Plus", "then « Plus » (seat d, #18)")
         goesTo("tab_Sons", "then « Sons »")
         assertTrue("still playing", playing())
-        val stop = tap("top_play")
+        val stop = tap("thumb_play")
         alive("■")
         assertFalse("■ stops: $stop\n" + screenLines().joinToString("\n"), playing())
         goesTo("tab_Structure", "after ■")

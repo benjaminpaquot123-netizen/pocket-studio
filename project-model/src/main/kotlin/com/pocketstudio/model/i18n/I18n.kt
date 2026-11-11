@@ -154,6 +154,10 @@ object I18n {
         "bloquants",
         // Round 5, chantier 3 (2026-11-10): one word per thing (« Fais-moi un morceau », « Visite rapide »), no dB in the Mode simple.
         "textes",
+        // Round 5, chantier 4 (2026-11-11): the two ▶ named, « ▶ cette partie » at the top, « ▶ le morceau » at the thumb.
+        "lectures",
+        // Round 5, chantier 5 (2026-11-11): the same Plus page in both modes, the assistant's mode with « Changer » (3A).
+        "plus",
     )
 
     @Volatile

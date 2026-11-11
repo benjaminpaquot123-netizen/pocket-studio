@@ -149,8 +149,16 @@ abstract class HumanTester(private val seat: String) {
         engine.cancelAllRenders()
         stopPollers()
         runCatching { scenario?.close() }
-        runCatching { service?.destroy() }
+        // PLAN-RESTE 4.4: a download still running when the test ends (the stuck stand-in's) fails once the stand-in's
+        // server closes (« connexion coupée »), on the service's own thread: let it end before the state is put back.
         separation?.close()
+        val until = System.currentTimeMillis() + 5_000
+        while (SeparationJob.state.value.busy && System.currentTimeMillis() < until) {
+            Thread.sleep(20)
+            shadowOf(Looper.getMainLooper()).idle()
+        }
+        backgroundQuiet(2_000)
+        runCatching { service?.destroy() }
         SeparationJob.set(SeparationState.Idle)
         com.pocketstudio.app.rhythm.ClosingSaves.awaitIdleBlocking(15_000)
         TutoTestHooks.player = null
@@ -1304,13 +1312,26 @@ abstract class HumanTester(private val seat: String) {
      * the bench's stand-ins for slow work (the model's download, the separation, BenchSeparation) sleep in REAL time, but
      * « attends N » only moved the simulated clock. Now « attends » pumps the main thread in real time while that work runs,
      * [SLOW_WORK_CAP_MS] at most; past it, a « BANC » line says the work is still going (not the app's fault).
+     * PLAN-RESTE 4.4: and only while something moves. A thread asleep in a stuck stand-in, or the separation's flag alone
+     * (the app says it works, nothing runs), held a tester's « attends 2 » for 120 s. Once neither the stand-in's heartbeat
+     * ([BenchSeparation.beats]) nor a busy worker (off the network) has moved for [STILL_MS], the hand goes back.
      */
     private fun slowWorkDone() {
         val until = System.currentTimeMillis() + SLOW_WORK_CAP_MS
         var waited = false
+        var beats = separation?.beats ?: 0L
+        var movedAt = System.currentTimeMillis()
         // The separation's own flag too: between two of its steps (or before its service ran) no thread is in the stand-in.
         while (slowBenchWorkBusy() || SeparationJob.state.value.busy) {
-            if (System.currentTimeMillis() >= until) {
+            val now = System.currentTimeMillis()
+            val b = separation?.beats ?: 0L
+            if (b != beats || coroutineWorkersBusy()) { beats = b; movedAt = now }
+            if (now - movedAt >= STILL_MS) {
+                // A stand-in that stopped moving is the bench's; the flag alone is what the app shows (a phone shows it too).
+                if (slowBenchWorkBusy()) say("Banc : le remplaçant du banc (téléchargement ou séparation) n'avance plus depuis ${STILL_MS / 1000} s : l'attente s'arrête là. Note-le dans « incidents-banc » avec banc?: temps.")
+                break
+            }
+            if (now >= until) {
                 say("Banc : le travail en cours (téléchargement ou séparation) n'est pas fini après ${SLOW_WORK_CAP_MS / 1000} s d'attente réelle ; attends encore. Si cela dure, note-le dans « incidents-banc » avec banc?: temps : ce peut être le banc ou l'appli.")
                 return
             }
@@ -1856,6 +1877,8 @@ abstract class HumanTester(private val seat: String) {
         const val IDLE_CAP_S = 8L
         /** The real time one « attends » may give the bench's slow stand-ins (banc fiable 1.4). */
         const val SLOW_WORK_CAP_MS = 120_000L
+        /** PLAN-RESTE 4.4: « attends » gives the hand back once nothing of the bench's slow work moved for this long. */
+        const val STILL_MS = 15_000L
         private val NOT_IDLE = setOf("AppNotIdleException", "ComposeNotIdleException", "IdlingResourceTimeoutException")
 
         internal val ENGINE_ALWAYS: Boolean get() = System.getProperty("ps.human.moteur", "toujours") != "liste"

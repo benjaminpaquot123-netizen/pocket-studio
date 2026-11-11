@@ -41,8 +41,18 @@ internal class BenchSeparation(
     /** Released by [close]: a stand-in asleep in its slow work wakes and stops (a giant [timeScale] would outlive its test). */
     private val closed = java.util.concurrent.CountDownLatch(1)
 
+    /**
+     * PLAN-RESTE 4.4: the stand-in's heartbeat, one more at each step of its slow work (a megabyte sent, a nap begun or
+     * ended): « attends » waits while it moves, and gives the hand back once it has not moved for 15 s (a stuck stand-in).
+     */
+    private val beatCount = java.util.concurrent.atomic.AtomicLong()
+    val beats: Long get() = beatCount.get()
+
     /** Sleeps [ms] of real time as the slow work would; false when the stand-in was closed meanwhile (stop the work). */
-    private fun nap(ms: Long): Boolean = !closed.await(ms, java.util.concurrent.TimeUnit.MILLISECONDS)
+    private fun nap(ms: Long): Boolean {
+        beatCount.incrementAndGet()
+        return !closed.await(ms, java.util.concurrent.TimeUnit.MILLISECONDS).also { beatCount.incrementAndGet() }
+    }
 
     /** Songs separated (tests). */
     @Volatile var separated = 0

@@ -233,6 +233,7 @@ def main():
         fusion_forged(d)
         portal_traces(d)
         zone_report(d)
+        portal_recomputes(d)
         known_skips_bounded(d)
         mark_fixed(d)
         seat_exit(d)
@@ -2274,6 +2275,64 @@ def zone_report(d):
     branch("rapportok", good)
     code, out, asked, moved = merge("rapportok")
     check(code == 0 and moved and "--tests FooTest" in asked, "the report's « tests: » are the team's targeted tests:\n" + out + asked)
+
+
+TOY_FUSE = """import os, sys
+with open(os.environ["PS_TOY_CALLS"], "a", encoding="utf-8") as f:
+    f.write("fuse-reports " + " ".join(sys.argv[1:]) + "\\n")
+for n in ("clusters.md", "clusters-complet.md", "promesses.tsv", "incidents-banc.tsv"):
+    with open(os.path.join(sys.argv[1], n), "w", encoding="utf-8") as f:
+        f.write("fused\\n")
+if "--maj-base" in sys.argv:
+    with open("docs/audits/ultra/base.tsv", "a", encoding="utf-8") as f:
+        f.write("cle\\tnouveau\\ttour-9\\n")
+"""
+
+TOY_DASHBOARD = """import os, sys
+with open(os.environ["PS_TOY_CALLS"], "a", encoding="utf-8") as f:
+    f.write("tableau " + " ".join(sys.argv[1:]) + "\\n")
+with open(os.path.join(sys.argv[-1], "tableau-de-bord.md"), "w", encoding="utf-8") as f:
+    f.write("# Tableau\\n")
+"""
+
+
+def portal_recomputes(d):
+    """PLAN-RESTE 7.1: after each merge, fusion-equipes.sh fuses the round's reports again with the new keys into the
+    base (fuse-reports.py <round> --tour <tour> --maj-base) and recomputes the dashboard (tableau-de-bord.py <rounds>),
+    and commits what they write with the merge's traces (nothing left uncommitted)."""
+    root = fusion_toy(d, "fusion-recalcul")
+    script = os.path.join(root, "scripts", "bench", "fusion-equipes.sh")
+    calls = os.path.join(d, "recalcul-appels.txt")
+    write(os.path.join(root, "scripts", "bench", "fuse-reports.py"), TOY_FUSE)
+    write(os.path.join(root, "scripts", "bench", "tableau-de-bord.py"), TOY_DASHBOARD)
+    write(os.path.join(root, "docs", "audits", "ultra", "base.tsv"), "cle\tetat\ttour\n")
+    for t in ("tour-8", "tour-9"):
+        write(os.path.join(root, "docs", "audits", "ultra", "sieges", t, "lotA", "a", "rapport.md"), "x\n")
+    git_toy(root, "add", "scripts", "docs")
+    git_toy(root, "commit", "-q", "-m", "the round's seats")
+    git_toy(root, "checkout", "-q", "-b", "eq/tour-9-recalcul", "fx-int")
+    write(os.path.join(root, "scripts", "bench", "y.txt"), "y\n")
+    git_toy(root, "add", "scripts")
+    git_toy(root, "commit", "-q", "-m", "team")
+    sha = git_toy(root, "rev-parse", "HEAD").strip()
+    write(os.path.join(root, "docs", "audits", "ultra", "tour-9-recalcul-relecture.md"), f"Relu : {sha}\n\nVerdict : 0 bloquant, 0 grave\n")
+    git_toy(root, "add", "docs")
+    git_toy(root, "commit", "-q", "-m", "review")
+    git_toy(root, "checkout", "-q", "fx-int")
+    write(calls, "")
+    r = subprocess.run(["bash", script, "tour-9", "recalcul"], capture_output=True, text=True, env=dict(os.environ, PS_TOY_CALLS=calls))
+    with open(calls, encoding="utf-8") as f:
+        asked = f.read()
+    check(r.returncode == 0, "the branch is merged:\n" + r.stdout + r.stderr)
+    check("fuse-reports docs/audits/ultra/sieges/tour-9 --tour tour-9 --maj-base" in asked, "the round's reports fused again, base updated:\n" + asked)
+    check("tableau docs/audits/ultra/sieges/tour-8 docs/audits/ultra/sieges/tour-9" in asked, "the dashboard recomputed on the rounds:\n" + asked)
+    last = git_toy(root, "show", "--stat=200", "--format=%s", "HEAD")
+    for f in ("docs/audits/ultra/base.tsv", "sieges/tour-9/clusters.md", "sieges/tour-9/clusters-complet.md",
+              "sieges/tour-9/promesses.tsv", "sieges/tour-9/incidents-banc.tsv", "sieges/tour-9/tableau-de-bord.md"):
+        check(f in last, f"{f} is in the traces' commit:\n" + last)
+    check(last.startswith("Portal traces"), "the traces' commit:\n" + last)
+    check(git_toy(root, "status", "--porcelain", "--untracked-files=all").strip() == "", "nothing left uncommitted:\n"
+          + git_toy(root, "status", "--porcelain", "--untracked-files=all"))
 
 
 def mark_fixed(d):

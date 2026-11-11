@@ -47,6 +47,24 @@ MAX_DEFECTS = 12
 MAX_LINES = 60
 # The bench's known limits (brief v2): a cluster on these tags is « banc? » until a test without the bench says otherwise.
 BENCH_LIMIT_TAGS = re.compile(r"^(export|share_|video_|name_clear|tuner|analyser|midi_|import_)")
+# PLAN-RESTE 4.7 (T5-Cc-41b, « 1 KB », 4 min for 4 tracks): an export's size and the time it took are the bench's (the
+# phone's AAC encoder is a shadow that copies, the engine a stand-in; recette tel-04: 42 Mo for 2 min 26 on the phone).
+# A card on an export that is about them is « banc », never the app's; what the file holds (its length in bars) is not.
+EXPORT_WORDS = re.compile(r"export|fichier|partag|\bm4a\b|\bwav\b|\bmp3\b|\bflac\b|\.zip", re.I)
+EXPORT_SIZE = re.compile(r"\b\d+(?:[,.]\d+)?\s*(?:ko|kb|mo|mb|go|gb|octets?|bytes?)\b|\btaille\b|\bpoids\b|\bpèse\b", re.I)
+EXPORT_TIME = re.compile(r"\b(?:a pris|prend|met|a mis|mis|en)\b[^.;]*\b\d+(?:[,.]\d+)?\s*(?:min|minutes?|s|sec|secondes?)\b|"
+                         r"\btrop long\b|\blent(?:e|ement)?\b|\btemps de l'export\b", re.I)
+EXPORT_FIGURE_MARK = "[banc : taille ou durée d'un export, non représentatives]"
+
+
+def export_figure(d, tag):
+    """PLAN-RESTE 4.7: the card is about an export's size or the time it took (the bench's), not what the file holds."""
+    text = " ".join(d.get(k, "") for k in ("cible", "attendu", "obtenu"))
+    on_export = bool(tag and re.match(r"^(export|share_|my_export)", tag)) or bool(EXPORT_WORDS.search(text))
+    slow = d.get("symptome", "").strip().lower() == "lent"
+    return on_export and bool(EXPORT_SIZE.search(text) or EXPORT_TIME.search(text) or slow)
+
+
 # Sound judged by ear, in « attendu »/« obtenu » only (« ça sonne » = a sound starts, which the brief asks to say).
 SOUND = re.compile(r"\b(sonne(nt|rait)? (mal|faux|creux|sourd|mou)|son (est|était) (mauvais|faible|beau|moche|sale|sourd|mou)|"
                    r"mixage (mauvais|raté)|qualité du son|trop fort|pas assez fort|grésille|sature|le kick (est|manque))", re.I)
@@ -292,7 +310,7 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
                 tag = tag or element_of(d)
                 key = f"{route}|{tag or norm(d.get('cible'))}|{symptom}"
                 c = clusters.setdefault(key, {"key": key, "seats": set(), "where": [], "gravities": [], "blocks": False,
-                                              "said": [], "bench": [], "tag": tag, "declared": [], "scales": []})
+                                              "said": [], "bench": [], "tag": tag, "declared": [], "scales": [], "export_figure": []})
                 c["seats"].add(seat)
                 c["where"].append(f"{seat}#{cited}")
                 c["gravities"].append(gravity_of(d))
@@ -300,6 +318,7 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
                 c["scales"].append(scale_of(d))
                 c["blocks"] = c["blocks"] or d.get("bloque", "").strip().lower() == "oui"
                 c["bench"].append(d.get("banc?", "non").strip().lower() not in ("", "non"))
+                c["export_figure"].append(export_figure(d, tag))
                 if said and not c["said"]:
                     c["said"].append(said)
     for c in clusters.values():
@@ -327,7 +346,9 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
             said = confirmed.get((tour, c["key"]))
             state = state[:-2] if said == "oui" else ("nouveau" if said == "non" else state)
         c["state"] = state
-        c["bench_doubt"] = all(c["bench"]) or bool(c["tag"] and BENCH_LIMIT_TAGS.match(c["tag"]))
+        # PLAN-RESTE 4.7: every card of it about an export's size or time taken: the bench's, not a doubt.
+        c["bench_export"] = bool(c["export_figure"]) and all(c["export_figure"])
+        c["bench_doubt"] = c["bench_export"] or all(c["bench"]) or bool(c["tag"] and BENCH_LIMIT_TAGS.match(c["tag"]))
     ordered = sorted(clusters.values(), key=lambda c: (c["bench_doubt"], c["gravity"], -len(c["seats"]), not c["new"], c["key"]))
     return ordered, rejected, sorted(set(seats)), promises, incidents
 
@@ -335,7 +356,7 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
 def line_of(c):
     route, target, symptom = c["key"].split("|", 2)
     worst = f" (pire : {NAMES.get(c['worst'], '?')})" if c["worst"] < c["gravity"] else ""
-    doubt = " [banc?]" if c["bench_doubt"] else ""
+    doubt = f" {EXPORT_FIGURE_MARK}" if c.get("bench_export") else " [banc?]" if c["bench_doubt"] else ""
     said = f" — {c['said'][0]}" if c["said"] else ""
     return (f"- [{c['state']}]{doubt} {NAMES.get(c['gravity'], '?')}{worst}{' bloque' if c['blocks'] else ''} ×{len(c['seats'])} "
             f"({', '.join(c['where'][:4])}) {route} · « {target} » · {symptom}{said}")

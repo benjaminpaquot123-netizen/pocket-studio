@@ -18,4 +18,6 @@ Diff lu : `git diff e1f23e1c..HEAD`, puis `git diff d01f8548..HEAD` après les c
 
 Rien d'autre à signaler : la nouvelle règle du portail (rapport de zone, `report_out`, sortie 7) porte bien `from_paquet 2` sur sa ligne de refus, `KNOWN_RULES` est passé de 13 à 14 avec l'empreinte recalculée, et le pré-vol la dit en « À VOIR » avant le paquet 2 (`rule_from 2`) ; aucun rejeu de `docs/audits/ultra/rejeux/` n'est ajouté ni changé par ce lot.
 
+rejeu changé : t4-26-prise-clavier : changé par le lot socle (déjà relu et accepté dans tour-5-socle-relecture.md), pas par banc7 ; gestes en pixels passés aux étiquettes, même oracle, mêmes 32 pas ; il n'apparaît dans ce diff que parce que l'intégration n'a pas encore le lot socle.
+
 Verdict : 0 bloquant, 0 grave

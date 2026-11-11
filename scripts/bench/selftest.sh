@@ -23,6 +23,8 @@ fail() { echo "SELFTEST ROUGE : $*" >&2; rm -f "$lot/selftest.ok"; exit 1; }
 # and again after: a change made while they ran is never stamped as tested.
 rm -f "$lot/selftest.ok"
 scripts/bench/tampon.sh empreinte > "$lot/selftest-empreinte.txt"
+# Audit « banc crédible » 2, P3: the code tested, named in the summary (the judge reads a summary of THIS code only).
+scripts/bench/tampon.sh code > "$lot/selftest-code.txt"
 
 free_gb=$(df -BG --output=avail / | tail -1 | tr -dc 0-9)
 [ "$free_gb" -ge 2 ] || fail "disque : ${free_gb} Go libres (< 2)"
@@ -91,16 +93,21 @@ verdict_ok=0
 python3 -I scripts/bench/selftest-verdict.py "$junit" scripts/bench/selftest-quarantaine.txt "$lot/selftest-resume.txt" \
     "$lot/selftest-attendus.txt" "$lot/selftest-gradle-echecs.txt" scripts/bench/selftest-sauts-connus.txt || verdict_ok=1
 echo "$machine" >> "$lot/selftest-resume.txt"
+echo "code testé : $(cat "$lot/selftest-code.txt")" >> "$lot/selftest-resume.txt"
 # Audit « banc crédible » A.10: the judge of the work reads THIS run's summary (a guard is green only when named
 # there). Its gaps are the memory's (verdicts.tsv, the journal, the pairs), not the bench's: written in
 # <lot>/selftest-chantier.txt and counted here, they do not forbid the lot, and a red
-# self-test shows them too.
-python3 -I scripts/bench/verifie-chantier.py --resume "$lot/selftest-resume.txt" > "$lot/selftest-chantier.txt" 2>&1 || true
-echo "Juge du chantier : $(tail -1 "$lot/selftest-chantier.txt") ($lot/selftest-chantier.txt)"
-
-[ "$verdict_ok" -eq 0 ] || fail "tests du banc (voir $lot/selftest-resume.txt et $lot/selftest-gradle-*.log)"
+# self-test shows them too (P3: unstamped, its summary is refused and no guard is green in it).
+judge() {
+  python3 -I scripts/bench/verifie-chantier.py --resume "$lot/selftest-resume.txt" > "$lot/selftest-chantier.txt" 2>&1 || true
+  echo "Juge du chantier : $(tail -1 "$lot/selftest-chantier.txt") ($lot/selftest-chantier.txt)"
+}
+[ "$verdict_ok" -eq 0 ] || { python3 -I scripts/bench/verifie-chantier.py --resume "$lot/selftest-resume.txt" > "$lot/selftest-chantier.txt" 2>&1 || true
+  fail "tests du banc (voir $lot/selftest-resume.txt et $lot/selftest-gradle-*.log)"; }
 
 mapfile -t held < <(sed -n 's/^quarantaine rouge : \([^ ]*\) :.*/\1/p' "$lot/selftest-resume.txt")
 [ "$(scripts/bench/tampon.sh empreinte)" = "$(cat "$lot/selftest-empreinte.txt")" ] || fail "le code a changé pendant le selftest : relancer"
-scripts/bench/tampon.sh ecris "$lot" "$lot/selftest-empreinte.txt" "${held[@]}"
+scripts/bench/tampon.sh ecris "$lot" "$lot/selftest-empreinte.txt" "${held[@]}" || fail "tampon refusé"
+# The judge after the stamp: the summary it reads is sealed for this code.
+judge
 echo "Selftest vert : $lot/selftest.ok ($(head -1 "$lot/selftest-resume.txt"))"

@@ -2,7 +2,8 @@
 """Banc fiable 1.2: the self-test's verdict, test by test, from the JUnit XML results.
    selftest-verdict.py <results dir> <quarantine file> <summary out> [<expected classes file> [<failed Gradle runs file>
                        [<known skips file>]]]
-Exit 0 when every test ran green, is a quarantined red or a known skip; 1 otherwise: no test at all, an expected class
+Exit 0 when every test ran green, is a quarantined red (failing with the message its quarantine line names, « attendu :
+<texte> »: audit « banc crédible » 2, P6) or a known skip; 1 otherwise: no test at all, an expected class
 of which no test ran (no results: memory, stall, crash; or every test skipped: audit « banc crédible » A.4), a skip that
 is not in the list of known skips (same format as the quarantine; no list = no skip allowed), or a Gradle run that
 failed with no red test to show for it.
@@ -23,6 +24,19 @@ def quarantine(path):
     return names
 
 
+def expected_messages(path):
+    """Audit « banc crédible » 2, P6: {Class#method: the message its failure must hold} (cell « attendu : <texte> »;
+    None when the line names none: such a line excuses nothing)."""
+    out = {}
+    for line in pathlib.Path(path).read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line and not line.startswith("#"):
+            cells = [c.strip() for c in line.split("|")]
+            wanted = [c.split(":", 1)[1].strip() for c in cells[1:] if c.lower().startswith("attendu") and ":" in c]
+            out[cells[0]] = wanted[0] if wanted and wanted[0] else None
+    return out
+
+
 def optional_lines(path):
     p = pathlib.Path(path)
     return [l.strip() for l in p.read_text(encoding="utf-8").splitlines() if l.strip()] if p.is_file() else []
@@ -38,8 +52,17 @@ def verdict(results, quarantined):
                 failure = case.find("error")
             skip = case.find("skipped")
             if failure is not None:
+                full = (failure.get("message") or "") + "\n" + (failure.text or "")
                 why = (failure.get("message") or failure.text or "").strip().splitlines()[:1]
-                (held if name in quarantined else red).append((name, why[0][:200] if why else ""))
+                why = why[0][:200] if why else ""
+                if name not in quarantined:
+                    red.append((name, why))
+                elif quarantined[name] is None:
+                    red.append((name, "quarantaine sans message attendu (colonne « attendu : … ») : " + why))
+                elif quarantined[name] not in full:
+                    red.append((name, f"quarantaine : message inattendu (attendu « {quarantined[name]} ») : " + why))
+                else:
+                    held.append((name, why))
             elif skip is not None:
                 skipped.append((name, (skip.get("message") or skip.text or "sans raison donnée").strip()[:200]))
             else:
@@ -49,7 +72,7 @@ def verdict(results, quarantined):
 
 def main(argv):
     results, qfile, out = argv[1:4]
-    green, red, held, skipped = verdict(results, quarantine(qfile))
+    green, red, held, skipped = verdict(results, expected_messages(qfile))
     ran = {n.split("#")[0] for n, *_ in [(g,) for g in green] + red + held}
     only_skipped = {n.split("#")[0] for n, _ in skipped} - ran
     expected = optional_lines(argv[4]) if len(argv) > 4 else []
@@ -64,7 +87,7 @@ def main(argv):
     # red, even if another pass has a quarantined red. (Results not split in passes: the whole folder is the pass.)
     for r in failed_runs:
         own = pathlib.Path(results) / r
-        _, own_red, own_held, _ = verdict(own, quarantine(qfile)) if own.is_dir() else ([], red, held, [])
+        _, own_red, own_held, _ = verdict(own, expected_messages(qfile)) if own.is_dir() else ([], red, held, [])
         if not own_red and not own_held:
             red.append((f"gradle:{r}", "Gradle en échec sans test rouge (compilation, mémoire, blocage ?)"))
     lines = [f"{len(green)} verts, {len(red)} rouges, {len(held)} en quarantaine, {len(skipped)} sautés"]

@@ -4,6 +4,7 @@ seats' journals, sounds and saved state, two reports (`python3 -I scripts/bench/
 Standard library only."""
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -201,9 +202,16 @@ def main():
         fusion_v2(d)
     with tempfile.TemporaryDirectory() as d:
         bench_guards(d)
+    with tempfile.TemporaryDirectory() as d:
+        stamp_needs_green_summary(d)
+        quarantine_needs_its_message(d)
+        fingerprint_stable(d)
+    with tempfile.TemporaryDirectory() as d:
         chantier(d)
         judge_criteria(d)
         open_app_proof(d)
+        rule_c_adversarial(d)
+        red_seen_in_a_run(d)
         known_defect_lifted(d)
         known_defect_lifted_needs_a_red(d)
         owner_trials(d)
@@ -211,10 +219,16 @@ def main():
         engine_proof(d)
         expected_classes(d)
         skipped_class(d)
+        judge_refuses_unsealed_summary(d)
+        proof_must_run(d)
         portal(d)
+        review_rows(d)
+        fusion_forged(d)
+        portal_traces(d)
         known_skips_bounded(d)
         mark_fixed(d)
         seat_exit(d)
+        seat_exit_anchored(d)
         native_missing(d)
         corrections_by_target(d)
     with tempfile.TemporaryDirectory() as d:
@@ -513,6 +527,7 @@ def bench_guards(d):
     tampon = os.path.join(HERE, "tampon.sh")
     fp = os.path.join(d, "fp.txt")
     write(fp, subprocess.run([tampon, "empreinte"], capture_output=True, text=True, check=True).stdout)
+    green_lot(d)
     subprocess.run([tampon, "ecris", d, fp], check=True)
     check(subprocess.run([tampon, "verifie", d]).returncode == 0, "a fresh stamp fits this code:\n" + open(os.path.join(d, "selftest.ok")).read())
     other = os.path.join(d, "autre-lot")
@@ -548,7 +563,7 @@ def bench_guards(d):
     check("sauté : BenchTwoTest#mic : no microphone on Robolectric" in text, "the skip's reason is listed:\n" + text)
     code, text = results(green + red)
     check(code == 1 and "rouge : Tour3RenameIdleTest#renames : timeout" in text, "one red forbids the lot:\n" + text)
-    write(quarantine, "Tour3RenameIdleTest#renames | order-dependent | 2026-11-08 | banc\n")
+    write(quarantine, "Tour3RenameIdleTest#renames | order-dependent | 2026-11-08 | banc | attendu : timeout\n")
     code, text = results(green + red)
     check(code == 0 and "quarantaine rouge : Tour3RenameIdleTest#renames" in text, "a quarantined red lets it pass, named:\n" + text)
     code, text = results("")
@@ -573,10 +588,127 @@ def bench_guards(d):
     os.remove(os.path.join(res, "TEST-x.xml"))
     write(os.path.join(res, "banc", "TEST-b.xml"), "<testsuite>" + green + red + "</testsuite>")
     os.makedirs(os.path.join(res, "renommage"))
-    write(quarantine, "Tour3RenameIdleTest#renames | order-dependent | 2026-11-08 | banc\n")
+    write(quarantine, "Tour3RenameIdleTest#renames | order-dependent | 2026-11-08 | banc | attendu : timeout\n")
     r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary, expected, failed], capture_output=True, text=True)
     text = open(summary, encoding="utf-8").read()
     check(r.returncode == 1 and "gradle:renommage" in text, "a failed pass is red even with a quarantined red elsewhere:\n" + text)
+
+
+GREEN_CASE = '<testcase classname="a.BenchOneTest" name="plays"/>'
+
+
+def expected_cases(root=None):
+    """One green testcase for each class the self-test expects (selftest-attendus.py, of root or of this repository)."""
+    args = [sys.executable, "-I", os.path.join(HERE, "selftest-attendus.py")] + (["--root", root] if root else [])
+    names = [l.split()[1] for l in subprocess.run(args, capture_output=True, text=True).stdout.splitlines() if len(l.split()) == 2]
+    return "".join(f'<testcase classname="{n}" name="sealedRun"/>' for n in names)
+
+
+def green_lot(lot, cases=GREEN_CASE, every_class=True):
+    """A lot whose self-test ran: its JUnit results (one pass; every class the self-test expects ran, unless
+    every_class is False) and the summary selftest-verdict.py makes of them, with the lines selftest.sh adds (the
+    machine, the code tested: P3)."""
+    write(os.path.join(lot, "junit", "banc", "TEST-x.xml"), "<testsuite>" + cases + (expected_cases() if every_class else "") + "</testsuite>")
+    resume = os.path.join(lot, "selftest-resume.txt")
+    subprocess.run([sys.executable, "-I", os.path.join(HERE, "selftest-verdict.py"), os.path.join(lot, "junit"),
+                    os.path.join(HERE, "selftest-quarantaine.txt"), resume], capture_output=True, text=True)
+    code = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "code"], capture_output=True, text=True).stdout.strip()
+    with open(resume, "a", encoding="utf-8") as f:
+        f.write("machine : 50 Go disque, 8 Go mémoire, 0 démon(s), 0 orphelin\n")
+        f.write(f"code testé : {code}\n")
+    return resume
+
+
+def stamp_needs_green_summary(d):
+    """Audit « banc crédible » 2, P2: `tampon.sh ecris` refuses a lot without a green self-test summary (no summary, a
+    red one, one that its JUnit results do not give), and the stamp seals that summary and those results: `verifie`
+    recomputes both (and the verdict of the results) and refuses a lot where either changed."""
+    tampon = os.path.join(HERE, "tampon.sh")
+    lot = os.path.join(d, "tampon-p2", "lotT")
+    write(os.path.join(lot, "a", "start.txt"), "lang=fr\n")
+    fp = os.path.join(d, "tampon-p2", "fp.txt")
+    write(fp, subprocess.run([tampon, "empreinte"], capture_output=True, text=True, check=True).stdout)
+    stamp = os.path.join(lot, "selftest.ok")
+
+    def ecris():
+        if os.path.exists(stamp):
+            os.remove(stamp)
+        r = subprocess.run([tampon, "ecris", lot, fp], capture_output=True, text=True)
+        return r.returncode == 0 and os.path.isfile(stamp)
+
+    def verifie():
+        return subprocess.run([tampon, "verifie", lot], capture_output=True, text=True).returncode == 0
+
+    check(not ecris(), "no self-test summary: no stamp (the audit's forge: ecris without any test)")
+    resume = green_lot(lot, GREEN_CASE + '<testcase classname="a.BenchTwoTest" name="mic"><failure message="no"/></testcase>')
+    check(not ecris(), "a red summary: no stamp:\n" + open(resume, encoding="utf-8").read())
+    resume = green_lot(lot)
+    with open(resume, "a", encoding="utf-8") as f:
+        f.write("vert : BenchAddedByHandTest#guards\n")
+    check(not ecris(), "a summary its JUnit results do not give (a line added by hand): no stamp")
+    # Review of the lot (M4): one green line of XML, its summary made by the verdict (the lot names no expected class):
+    # the classes the self-test expects are read again from the sources, not from the lot.
+    resume = green_lot(lot, every_class=False)
+    check(not ecris(), "results of one test where the self-test expects its classes: no stamp")
+    resume = green_lot(lot)
+    check(ecris() and verifie(), "a green summary of its results: stamped, and the stamp fits:\n" + open(stamp, encoding="utf-8").read())
+    with open(resume, "a", encoding="utf-8") as f:
+        f.write("vert : BenchAddedByHandTest#guards\n")
+    check(not verifie(), "a summary changed after the stamp is refused")
+    resume = green_lot(lot)
+    check(ecris() and verifie(), "stamped again")
+    write(os.path.join(lot, "junit", "banc", "TEST-y.xml"), "<testsuite>" + GREEN_CASE.replace("plays", "other") + "</testsuite>")
+    check(not verifie(), "results changed after the stamp are refused")
+
+
+def quarantine_needs_its_message(d):
+    """Audit « banc crédible » 2, P6: a test in quarantine is excused only for its known cause: the line names the
+    message expected (« attendu : <texte> »); a failure whose message does not hold it is red, and so is a quarantined
+    failure whose line names no message. The real quarantine names one on every line."""
+    verdict = os.path.join(HERE, "selftest-verdict.py")
+    res = os.path.join(d, "quarantaine", "results")
+    quarantine = os.path.join(d, "quarantaine", "q.txt")
+    summary = os.path.join(d, "quarantaine", "resume.txt")
+    green = '<testcase classname="a.BenchOneTest" name="plays"/>'
+
+    def judge(message, line):
+        write(quarantine, line)
+        write(os.path.join(res, "TEST-x.xml"), "<testsuite>" + green + '<testcase classname="a.Tour3RenameIdleTest" name="renames">'
+              f'<failure message="{message}"/></testcase></testsuite>')
+        r = subprocess.run([sys.executable, "-I", verdict, res, quarantine, summary], capture_output=True, text=True)
+        with open(summary, encoding="utf-8") as f:
+            return r.returncode, f.read()
+
+    line = "Tour3RenameIdleTest#renames | order-dependent | 2026-11-08 | banc | attendu : no project's ⋮\n"
+    code, text = judge("IllegalStateException: no project's ⋮ in Mes projets", line)
+    check(code == 0 and "quarantaine rouge : Tour3RenameIdleTest#renames" in text, "the known cause is excused:\n" + text)
+    code, text = judge("java.lang.NullPointerException: tout autre chose", line)
+    check(code == 1 and "rouge : Tour3RenameIdleTest#renames" in text and "message inattendu" in text, "another cause is red:\n" + text)
+    code, text = judge("IllegalStateException: no project's ⋮ in Mes projets", "Tour3RenameIdleTest#renames | order-dependent | 2026-11-08 | banc\n")
+    check(code == 1 and "sans message attendu" in text, "a quarantine line without its message excuses nothing:\n" + text)
+    with open(os.path.join(HERE, "selftest-quarantaine.txt"), encoding="utf-8") as f:
+        real = [l for l in f.read().splitlines() if l.strip() and not l.startswith("#")]
+    check(all(re.search(r"\|\s*attendu\s*:\s*\S", l) for l in real), "every real quarantine line names its message:\n" + "\n".join(real))
+
+
+def fingerprint_stable(d):
+    """The code's fingerprint (tampon.sh empreinte) does not move when git abbreviates object names differently: git
+    lengthens its short names as the object store grows (the bench's own `tampon.sh code` adds objects), and a
+    self-test of this lot went red « le code a changé pendant le selftest » with no change at all."""
+    root = os.path.join(d, "empreinte")
+    with open(os.path.join(HERE, "tampon.sh"), encoding="utf-8") as f:
+        write(os.path.join(root, "scripts", "bench", "tampon.sh"), f.read())
+    write(os.path.join(root, "app", "x.kt"), "a\n")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "app", "scripts")
+    git_toy(root, "commit", "-q", "-m", "toy")
+    write(os.path.join(root, "app", "x.kt"), "b\n")
+
+    def fp(abbrev):
+        e = dict(os.environ, GIT_CONFIG_COUNT="1", GIT_CONFIG_KEY_0="core.abbrev", GIT_CONFIG_VALUE_0=str(abbrev))
+        return subprocess.run(["bash", os.path.join(root, "scripts", "bench", "tampon.sh"), "empreinte"], capture_output=True, text=True, env=e).stdout
+
+    check(fp(7) == fp(12), "the fingerprint is the same whatever git's short names:\n" + fp(7) + fp(12))
 
 
 REPORT_V2 = """siege: a | profil: ado-ko | lang: ko | device: phone | font: 100 | mode: simple
@@ -664,12 +796,14 @@ def chantier(d):
     ultra = os.path.join(root, "docs", "audits", "ultra")
     resume = os.path.join(root, "selftest-resume.txt")
     script = os.path.join(HERE, "verifie-chantier.py")
+    seal_resume(root, resume)
     out = run(script, "--root", root, "--sans-git", "--resume", resume)
     check("chantier : 0 écarts" in out, "a clean work: 0 gap\n" + out)
     bad = (JUDGE_HEAD + "t\tA\tk1\tm\tappli\touvert\tBenchFooTest#guardsIt\t-\trecette tel-01\t-\tn\t-\n"
            "t\tB\tk2\tm\tbanc\touvert\t-\t-\t-\t-\tn\t-\n"
            "t\tC\tk3\tm\tappli\touvert\tOther#provesIt\t-\t-\t-\tn\t-\n")
     write(os.path.join(ultra, "verdicts.tsv"), bad)
+    seal_resume(root, resume)
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
     out = r.stdout
     check(r.returncode == 1, "gaps fail the run")
@@ -700,6 +834,7 @@ def judge_criteria(d):
         ("t", "F", "k6", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "RECETTE tel-01 ❌ téléphone : no date", "-"),
         ("t", "H", "k8", "m", "appli", "ouvert", "-", "-", "recette tel-01", "-", "❌ téléphone 2026-11-08 : no trial number in this segment", "-")))
     resume = os.path.join(root, "selftest-resume.txt")
+    seal_resume(root, resume)
     code, out = judge(root, "--sans-git", "--resume", resume)
     for item in ("C", "E", "F", "H"):
         check(f"{item} : verdict « appli » sans preuve (ni test sans banc existant, ni essai ❌ daté)" in out, f"appli line {item} has no proof:\n" + out)
@@ -709,6 +844,7 @@ def judge_criteria(d):
     # 2. « banc » needs a proof without the bench too (a Bench* guard alone is the bench judging itself).
     root = judge_root(d, "juge-banc", lines(
         ("t", "G", "k7", "m", "banc", "ouvert", "-", "BenchFooTest#guardsIt", "recette tel-02", "-", "n", "-")))
+    seal_resume(root, os.path.join(root, "selftest-resume.txt"))
     code, out = judge(root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt"))
     check("G : verdict « banc » sans preuve sans banc" in out and "chantier : 1 écarts" in out, "a banc line without a proof without the bench:\n" + out)
 
@@ -736,6 +872,7 @@ def judge_criteria(d):
     red_b = commit("rouge: test_x.py::other_case a second repair")
     green_b = commit("vert: test_x.py::other_case a second repair")
     green_c = commit("vert: BenchBarTest#neverRed a repair without its red")
+    seal_resume(root, resume)
     code, out = judge(root, "--resume", resume)
     check(f"{red_a} « rouge: BenchFooTest#guardsIt the counter stops » : rouge sans vert du même test après lui" in out, "the red left open is the one whose test has no green:\n" + out)
     check(f"{green_c} « vert: BenchBarTest#neverRed a repair without its red » : vert sans rouge du même test avant lui" in out, "a green of another test closes nothing:\n" + out)
@@ -746,6 +883,7 @@ def judge_criteria(d):
                    f"- [x] 4.2 done, preuve: rouge {red_a} / vert {green_a}\n- [x] 4.3 done, no pair\n"
                    f"- [x] 6.1 done, preuve: rouge {red_a} / vert {green_b}\n- [x] 6.4 done, preuve: script scripts/nowhere.py\n"
                    f"- [x] A.4 done, preuve: rouge {green_b} / vert {red_b}\n")
+    seal_resume(root, resume)
     code, out = judge(root, "--resume", resume)
     check(f"{red_a} «" not in out, "a green naming the red's test closes it:\n" + out)
     check("journal, ligne cochée 4.3 : sans preuve" in out, "a checked line without its pair:\n" + out)
@@ -764,6 +902,7 @@ def judge_criteria(d):
         ("t", "H", "k8", "m", "banc", "corrigé", "Other#elsewhere", "BenchFooTest#guardsIt", "-", "-", "n", "-"),
         ("t", "I", "k9", "m", "banc", "corrigé", "Other#elsewhere", "BenchFooTest#guardsIt", "-", "0123abc", "n", "-"),
         ("t", "J", "k10", "m", "banc", "corrigé", "Other#elsewhere", "BenchFooTest#guardsIt", "-", head, "n", "-")))
+    seal_resume(root, resume)
     code, out = judge(root, "--resume", resume)
     check("H : « corrigé » sans commit" in out, "a « corrigé » whose commit is « - »:\n" + out)
     check("I : « corrigé », commit 0123abc introuvable" in out, "a « corrigé » whose commit does not exist:\n" + out)
@@ -800,6 +939,8 @@ def known_defect_lifted(d):
     # The guards were there before the rouge/vert discipline (as Tour5AppProofTest's, 4168889).
     commit("start", share(guard("keepsTheLength", True), guard("listsTheZip", True), guard("warnsNothingAfter", True)),
            env=old_commit_env())
+    start = git("rev-parse", "HEAD")
+    write(os.path.join(root, "app", "src", "main", "Share.kt"), "fun share() = 1\n")
     lifted = commit("vert: share follows the length chosen (ShareProofTest#keepsTheLength)",
                     share(guard("keepsTheLength", False), guard("listsTheZip", True), guard("warnsNothingAfter", True)))
     other = commit("vert: another repair (ShareProofTest#somethingElseEntirely)",
@@ -807,13 +948,189 @@ def known_defect_lifted(d):
     kept = commit("vert: the proof of K1 (AppProofTest#provesIt)")
     deleted = commit("vert: no warning any more (ShareProofTest#warnsNothingAfter)",
                      share(guard("keepsTheLength", False), guard("listsTheZip", False)))
-    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
-                         capture_output=True, text=True).stdout
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume,
+                          "--debut-discipline", start], capture_output=True, text=True).stdout
     check(lifted not in out, "a green that takes @KnownDefect off the test it names is a pair:\n" + out)
     for sha, what in ((other, "the annotation taken off another test than the one named"), (kept, "the annotation kept"),
                       (deleted, "the test deleted with its annotation")):
         check(f"{sha} « vert:" in out and "vert sans rouge du même test avant lui" in out, f"{what} is no red evidence:\n" + out)
     check("chantier : 3 écarts" in out, "three greens without red, nothing else:\n" + out)
+
+
+def rule_c_adversarial(d):
+    """Review of the « banc-fin » lot (moyen M1), its script judge_adv2.py: rule (c) (a « vert: » that takes
+    @KnownDefect off a test is a pair on its own) is no longer fooled. The guard's origin is the commit that put it
+    there, followed through a class renamed, an annotation reformatted or a file moved (a parent where a test file
+    already guards a function of that name is no origin); that origin is a « rouge: » that names the guarded test
+    (Classe#méthode), or an ancestor of the discipline's first red (8f36fa3; --debut-discipline in a toy), never a
+    date. The green keeps the test running (@Test, no @Ignore) and touches code outside the tests, or says why not on
+    a line « sans code : <raison> ». Each way of the review is a gap; the honest controls are pairs."""
+    root = judge_root(d, "juge-regle-c")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    fix_file = os.path.join(root, "app", "src", "main", "Fix.kt")
+
+    def P(n):
+        return os.path.join(tests, n + ".kt")
+
+    def git(*a, env=None):
+        return subprocess.run(["git", "-C", root, "-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false", *a],
+                              capture_output=True, text=True, check=True, env=env).stdout.strip()
+
+    fixes = [0]
+
+    def commit(subject, path=None, text=None, env=None, fix=False):
+        if path is not None and text is not None:
+            write(path, text)
+        if fix:
+            fixes[0] += 1
+            write(fix_file, f"fun fix() = {fixes[0]}\n")
+        git("add", "-A")
+        git("commit", "-q", "--allow-empty", "-m", subject, env=env)
+        return git("rev-parse", "--short", "HEAD")
+
+    def g(name, carried, ann="@Test"):
+        return (f'  @KnownDefect("{name.upper()}", "x")\n' if carried else "") + f"  {ann}\n  fun {name}() {{}}\n"
+
+    def cls(n, *ts):
+        return f"class {n} {{\n" + "".join(ts) + "}\n"
+
+    git("init", "-q")
+    commit("start", P("PreProofTest"), cls("PreProofTest", g("preTest", True)))
+    start = git("rev-parse", "HEAD")
+    for n in ("Aaa", "Bbb", "Ccc", "Fff", "Hhh", "Iii", "Kkk"):
+        write(P(n + "ProofTest"), cls(n + "ProofTest", g(n.lower() + "Test", False)))
+    commit("start2")
+    count = [0]
+
+    def closed_red(path, text):
+        count[0] += 1
+        c = f"Zz{count[0]}ProofTest#zzCase{count[0]}"
+        commit(f"rouge: unrelated {count[0]} ({c})", path, text)
+        commit(f"vert: unrelated {count[0]} fixed ({c})")
+
+    def own_red(test, path, text):
+        commit(f"rouge: {test} fails ({test})", path, text)
+        commit(f"vert: the guard of {test} holds the defect ({test})")
+
+    refused, accepted = [], []
+    # A: a guard slipped into the red of another test.
+    closed_red(P("AaaProofTest"), cls("AaaProofTest", g("aaaTest", True)))
+    refused.append(("A", commit("vert: aaa fixed (AaaProofTest#aaaTest)", P("AaaProofTest"), cls("AaaProofTest", g("aaaTest", False)), fix=True)))
+    # B: a guard from the test's own red, lifted touching nothing but the test file, and no word on why.
+    own_red("BbbProofTest#bbbTest", P("BbbProofTest"), cls("BbbProofTest", g("bbbTest", True)))
+    refused.append(("B", commit("vert: bbb fixed (BbbProofTest#bbbTest)", P("BbbProofTest"), cls("BbbProofTest", g("bbbTest", False)))))
+    # C: a guard added by a chore whose date is forged to before the discipline.
+    old = dict(os.environ, GIT_AUTHOR_DATE="2026-11-01T10:00:00+00:00", GIT_COMMITTER_DATE="2026-11-01T10:00:00+00:00")
+    commit("chore: tidy", P("CccProofTest"), cls("CccProofTest", g("cccTest", True)), env=old)
+    refused.append(("C", commit("vert: ccc fixed (CccProofTest#cccTest)", P("CccProofTest"), cls("CccProofTest", g("cccTest", False)), fix=True)))
+    # D: a chore's guard laundered by a red that renames the class (and names the new one).
+    commit("chore: guard", P("DddProofTest"), cls("DddOld", g("dddTest", True)))
+    own_red("DddProofTest#dddTest", P("DddProofTest"), cls("DddProofTest", g("dddTest", True)))
+    refused.append(("D", commit("vert: ddd fixed (DddProofTest#dddTest)", P("DddProofTest"), cls("DddProofTest", g("dddTest", False)), fix=True)))
+    # E: a chore's guard in the named form, reformatted by a red.
+    commit("chore: guard eee", P("EeeProofTest"), cls("EeeProofTest", '  @KnownDefect(id = "EEE", why = "x")\n  @Test\n  fun eeeTest() {}\n'))
+    own_red("EeeProofTest#eeeTest", P("EeeProofTest"), cls("EeeProofTest", g("eeeTest", True)))
+    refused.append(("E", commit("vert: eee fixed (EeeProofTest#eeeTest)", P("EeeProofTest"), cls("EeeProofTest", g("eeeTest", False)), fix=True)))
+    # E2: a chore's guard, its file moved inside a red.
+    commit("chore: guard e2", P("Ee2ProofTest"), cls("Ee2ProofTest", g("ee2Test", True)))
+    git("mv", P("Ee2ProofTest"), P("Ee2MovedTest"))
+    own_red("Ee2ProofTest#ee2Test", None, None)
+    refused.append(("E2", commit("vert: ee2 fixed (Ee2ProofTest#ee2Test)", P("Ee2MovedTest"), cls("Ee2ProofTest", g("ee2Test", False)), fix=True)))
+    # F: the green lifts the guard and turns the test off.
+    own_red("FffProofTest#fffTest", P("FffProofTest"), cls("FffProofTest", g("fffTest", True)))
+    refused.append(("F", commit("vert: fff fixed (FffProofTest#fffTest)", P("FffProofTest"), cls("FffProofTest", g("fffTest", False, "@Ignore")), fix=True)))
+    # F2: a guard in an inner class, the red and the green naming the outer class.
+    own_red("GggProofTest#gggTest", P("GggProofTest"), "class GggProofTest {\n  inner class Hidden {\n" + g("gggTest", True) + "  }\n}\n")
+    refused.append(("F2", commit("vert: ggg fixed (GggProofTest#gggTest)", P("GggProofTest"),
+                                 "class GggProofTest {\n  inner class Hidden {\n" + g("gggTest", False) + "  }\n}\n", fix=True)))
+    # M3 (review of this lot): a chore's guard on SameBProofTest#sameName, laundered by the honest red of another
+    # class's test of the same name (SameAProofTest#sameName, guarded by its own red, still guarded).
+    own_red("SameAProofTest#sameName", P("SameAProofTest"), cls("SameAProofTest", g("sameName", True)))
+    commit("chore: guard b", P("SameBProofTest"), cls("SameBProofTest", g("sameName", True)))
+    refused.append(("M3", commit("vert: same fixed (SameBProofTest#sameName)", P("SameBProofTest"),
+                                 cls("SameBProofTest", g("sameName", False)), fix=True)))
+    accepted.append(("M3a", commit("vert: same fixed (SameAProofTest#sameName)", P("SameAProofTest"),
+                                   cls("SameAProofTest", g("sameName", False)), fix=True)))
+    # Controls. G: honest (its own red, the green touches the app).
+    own_red("HhhProofTest#hhhTest", P("HhhProofTest"), cls("HhhProofTest", g("hhhTest", True)))
+    accepted.append(("G", commit("vert: hhh fixed (HhhProofTest#hhhTest)", P("HhhProofTest"), cls("HhhProofTest", g("hhhTest", False)), fix=True)))
+    # H: honest, the file moved by a chore before the lift (the review's false negative, m1).
+    own_red("IiiProofTest#iiiTest", P("IiiProofTest"), cls("IiiProofTest", g("iiiTest", True)))
+    git("mv", P("IiiProofTest"), P("IiiMovedTest"))
+    commit("chore: rename file")
+    accepted.append(("H", commit("vert: iii fixed (IiiProofTest#iiiTest)", P("IiiMovedTest"), cls("IiiProofTest", g("iiiTest", False)), fix=True)))
+    # I: a guard from before the discipline (an ancestor of its start), lifted with the app touched.
+    accepted.append(("I", commit("vert: pre fixed (PreProofTest#preTest)", P("PreProofTest"), cls("PreProofTest", g("preTest", False)), fix=True)))
+    # J: honest, no code to change, and the green says why.
+    own_red("KkkProofTest#kkkTest", P("KkkProofTest"), cls("KkkProofTest", g("kkkTest", True)))
+    accepted.append(("J", commit("vert: kkk fixed (KkkProofTest#kkkTest)\n\nsans code : the defect was the test's own wait, fixed in the test",
+                                 P("KkkProofTest"), cls("KkkProofTest", g("kkkTest", False)))))
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume,
+                          "--debut-discipline", start], capture_output=True, text=True)
+    text = out.stdout + out.stderr
+    for case, sha in refused:
+        check(f"{sha} « vert:" in text, f"case {case} of judge_adv2 is refused:\n" + text)
+    for case, sha in accepted:
+        check(sha not in text, f"control {case} is a pair:\n" + text)
+    check(f"chantier : {len(refused)} écarts" in text, f"the {len(refused)} adversarial greens, nothing else:\n" + text)
+
+def red_seen_in_a_run(d):
+    """Review of the « portail » lot (the 23rd gap, dd31ec4b): a test that already exists goes red in a full run and a
+    « vert: » fixes the app, with no « rouge: » commit to point at (the red is the existing test, not a new one). The
+    pair is made by evidence, never by a word: docs/audits/ultra/rouges-constates/<the green's full sha>/ holds
+    rouge.txt (« parent: <the green's parent> », « test: Classe#méthode ») and the JUnit XML of that run where that
+    test fails; the green names the test and leaves its test file alone. Anything less stays « vert sans rouge »."""
+    root = judge_root(d, "juge-rouge-constate")
+    resume = os.path.join(root, "selftest-resume.txt")
+    test_file = os.path.join(root, "app", "src", "test", "java", "x", "JourneyProofTest.kt")
+    app = os.path.join(root, "app", "src", "main", "Spot.kt")
+    write(test_file, "class JourneyProofTest {\n  @Test\n  fun theWholeCourse() {}\n}\n")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+
+    def green(key, touch_test=False):
+        write(app, f"fun spot() = \"{key}\"\n")
+        if touch_test:
+            write(test_file, f"class JourneyProofTest {{\n  @Test\n  fun theWholeCourse() {{ /* {key} */ }}\n}}\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: JourneyProofTest#theWholeCourse[techno Pro] {key}")
+        shas[key] = (git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip())
+
+    for key in ("honest", "passing", "otherparent", "touchestest", "othertest"):
+        green(key, touch_test=(key == "touchestest"))
+    # Second review of the lot (G2): the evidence of a test that never existed.
+    write(app, "fun spot() = \"nosuch\"\n")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "vert: NoSuchTest#neverExisted fixed")
+    shas["nosuch"] = (git_toy(root, "rev-parse", "HEAD").strip(), git_toy(root, "rev-parse", "HEAD^").strip())
+
+    def evidence(key, parent=None, failing=True, test="theWholeCourse[techno Pro]", cls="JourneyProofTest", named=None):
+        full, par = shas[key]
+        folder = os.path.join(root, "docs", "audits", "ultra", "rouges-constates", full)
+        write(os.path.join(folder, "rouge.txt"), f"parent: {parent or par}\ntest: {named or cls + '#theWholeCourse[techno Pro]'}\n")
+        body = '<failure message="targets not seen: coupé en haut"/>' if failing else ""
+        write(os.path.join(folder, f"TEST-x.{cls}.xml"),
+              f'<testsuite><testcase classname="x.{cls}" name="{test}">{body}</testcase></testsuite>')
+
+    evidence("honest")
+    evidence("passing", failing=False)
+    evidence("otherparent", parent=shas["honest"][0])
+    evidence("touchestest")
+    evidence("othertest", test="theWholeCourse[lofi Simple]")
+    evidence("nosuch", test="neverExisted", cls="NoSuchTest", named="NoSuchTest#neverExisted")
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    short = {k: git_toy(root, "rev-parse", "--short", v[0]).strip() for k, v in shas.items()}
+    check(short["honest"] not in out, "a green whose red was seen in a run, its XML kept, is a pair:\n" + out)
+    for key in ("passing", "otherparent", "touchestest", "othertest", "nosuch"):
+        check(f"{short[key]} « vert:" in out, f"evidence that does not hold ({key}) makes no pair:\n" + out)
+    check("chantier : 5 écarts" in out, "five greens without red, nothing else:\n" + out)
 
 
 def old_commit_env():
@@ -859,13 +1176,15 @@ def known_defect_lifted_needs_a_red(d):
 
     git("init", "-q")
     commit("start", [(share_f, shares(False, False)), (other_f, others(True, True, True))], env=old_commit_env())
+    start = git("rev-parse", "HEAD")
+    app = os.path.join(root, "app", "src", "main", "Fix.kt")
     # 1. A guard added by a commit that is no « rouge: », then lifted by a green that names it: no red evidence.
     commit("chore: tidy", [(share_f, shares(True, False))])
     chore = commit("vert: plain test now passes (ShareProofTest#plainTest)", [(share_f, shares(False, False))])
     # 2. Lifted from OtherProofTest#sameName, the message names UnrelatedTest#sameName: another test.
     other_cls = commit("vert: fix (UnrelatedTest#sameName)", [(other_f, others(False, True, True))])
     # Control: an old guard lifted by a green naming its own class and method is a pair.
-    own = commit("vert: fix (OtherProofTest#ownName)", [(other_f, others(False, False, True))])
+    own = commit("vert: fix (OtherProofTest#ownName)", [(other_f, others(False, False, True)), (app, "fun fix() = 1\n")])
     # 3. The lift brought by a merge commit called « vert: ».
     main_branch = git("rev-parse", "--abbrev-ref", "HEAD")
     git("checkout", "-q", "-b", "side")
@@ -877,9 +1196,10 @@ def known_defect_lifted_needs_a_red(d):
     # Control: a guard added by a « rouge: » (closed by its own green), lifted later by a green naming it: a pair.
     commit("rouge: the zip in Mes fichiers (ShareProofTest#listsTheZipInMyFiles)", [(share_f, shares(False, True))])
     commit("vert: the zip's guard holds the defect (ShareProofTest#listsTheZipInMyFiles)")
-    from_red = commit("vert: the zip is listed (ShareProofTest#listsTheZipInMyFiles)", [(share_f, shares(False, False))])
-    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
-                         capture_output=True, text=True).stdout
+    from_red = commit("vert: the zip is listed (ShareProofTest#listsTheZipInMyFiles)", [(share_f, shares(False, False)), (app, "fun fix() = 2\n")])
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume,
+                          "--debut-discipline", start], capture_output=True, text=True).stdout
     for sha, what in ((chore, "a guard added outside a « rouge: »"), (other_cls, "a guard of another class with the same method name"),
                       (merge, "a lift brought by a merge")):
         check(f"{sha} « vert:" in out, f"{what} is no red evidence:\n" + out)
@@ -896,6 +1216,7 @@ def open_app_proof(d):
                       + "t\tC\tk3\tm\tappli\touvert\tOther#elsewhere\t-\trecette tel-01\t-\tRECETTE tel-01 ❌ téléphone : no date\t-\n"
                       + "t\tD\tk4\tm\tappli\touvert\tOther#elsewhere\t-\trecette tel-01\t-\tRECETTE tel-01 ❌ téléphone 2026-11-08 : nothing plays\t-\n"
                       + "t\tE\tk5\tm\tappli\tvoulu\tOther#elsewhere\t-\t-\t-\tn\t-\n")
+    seal_resume(root, os.path.join(root, "selftest-resume.txt"))
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
                        capture_output=True, text=True)
     out = r.stdout + r.stderr
@@ -947,6 +1268,7 @@ def owner_trials(d):
                  "- 2026-11-08, APK 2, tablette, **tel-08 (video, read frame by frame)** : details. Résultat retenu : ❌ « it lit up ». To confirm.\n"
                  "- 2026-11-08, APK 2, **tel-10 (video)** on no device said. Résultat retenu : ❌ « nothing ».\n"
                  "- 2026-11-08, APK 2, tablette, tel-12 : lost (❌ said of something else), no result kept.\n")
+    seal_resume(root, os.path.join(root, "selftest-resume.txt"))
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
                        capture_output=True, text=True)
     out = r.stdout + r.stderr
@@ -985,16 +1307,19 @@ def owner_trials(d):
     check(f"R : {no_proof}" not in out, "a ❌ trial of the notes is a proof:\n" + out)
     # Notes that hold no trial at all: every annotation is unknown (the rule is not mute).
     write(notes, "# Retours\n\nNothing tried yet.\n")
+    seal_resume(root, os.path.join(root, "selftest-resume.txt"))
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
                        capture_output=True, text=True)
     check(all(f"{item} : {unknown}" in r.stdout for item in "CDMNR") and f"R : {no_proof}" in r.stdout,
           "notes without a trial: no annotation is one of theirs, none is a proof:\n" + r.stdout)
     # No notes at all: the judge says so (it was silent), as long as the verdicts carry trial annotations.
     os.remove(notes)
+    seal_resume(root, os.path.join(root, "selftest-resume.txt"))
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
                        capture_output=True, text=True)
     check(r.returncode == 1 and NO_NOTES + " (17 annotation(s) d'essai" in r.stdout, "no notes of the owner: said\n" + r.stdout)
     root = judge_root(d, "juge-sans-notes")
+    seal_resume(root, os.path.join(root, "selftest-resume.txt"))
     out = run(script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt"))
     check("chantier : 0 écarts" in out, "no notes of the owner and no trial annotation: nothing to compare\n" + out)
 
@@ -1014,6 +1339,7 @@ def pad_timing_verdicts(d):
                       + "t\tJ\tpadlive|padlive_fx|rien\tm\tbanc\tvoulu\t-\t-\t-\t-\tread in the code\t-\n"
                       + "t\tK\tpadlive|padlive_fx|lent\tm\tappli\tvoulu\t-\t-\t-\t-\ttel-01 téléphone 2026-11-08 : no mark\t-\n"
                       + "t\tL\tpadlive|padlive_fx|perdu\tm\tappli\tvoulu\t-\t-\trecette tel-01\t-\t✅ téléphone 2026-11-08 : no trial number in this segment\t-\n")
+    seal_resume(root, os.path.join(root, "selftest-resume.txt"))
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
                        capture_output=True, text=True)
     out = r.stdout + r.stderr
@@ -1035,6 +1361,7 @@ def engine_proof(d):
            '#define PS_PADS_TESTS \\\n    {"known_defect_k2", pads::knownDefectWaits}, \\\n    {"pads_other", pads::other},\n')
 
     def judge(root):
+        seal_resume(root, os.path.join(root, "selftest-resume.txt"))
         r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", os.path.join(root, "selftest-resume.txt")],
                            capture_output=True, text=True)
         return r.stdout + r.stderr
@@ -1181,12 +1508,15 @@ def skipped_class(d):
     script = os.path.join(HERE, "verifie-chantier.py")
     resume = os.path.join(d, "chantier-skip-resume.txt")
     write(resume, "1 verts, 0 rouges, 0 en quarantaine, 1 sautés\nsauté : BenchFooTest#guardsIt : not while the bench runs seats\nvert : AppProofTest#provesIt\n")
+    seal_resume(root, resume)
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
     check("B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in r.stdout, "a skipped guard is not green:\n" + r.stdout)
     write(resume, "1 verts, 0 rouges, 0 en quarantaine, 0 sautés\nvert : AppProofTest#provesIt\n")
+    seal_resume(root, resume)
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
     check("B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in r.stdout, "a guard that did not run is not green:\n" + r.stdout)
     write(resume, "2 verts, 0 rouges, 0 en quarantaine, 0 sautés\nvert : AppProofTest#provesIt\nvert : BenchFooTest#guardsIt\n")
+    seal_resume(root, resume)
     r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
     check("pas verte" not in r.stdout, "a guard named green is green:\n" + r.stdout)
 
@@ -1311,12 +1641,301 @@ def portal(d):
     check(code != 0 and not stamped(lot) and "sauts connus" in out and "BenchFooTest#guardsIt" in out, "a real test in the list of known skips forbids the lot:\n" + out)
 
 
+FUSION_SELFTEST = """#!/usr/bin/env bash
+# The fusion's self-test on the toy: says it ran (and on which lot), red on demand.
+echo "selftest $1" >> "$PS_TOY_CALLS"
+[ -z "${PS_TOY_SELFTEST_RED:-}" ] || exit 1
+printf '1 verts, 0 rouges, 0 en quarantaine, 0 sautés\\nvert : BenchFooTest#guardsIt\\n' > "$1/selftest-resume.txt"
+echo "a stamp" > "$1/selftest.ok"
+echo "chantier : 0 écarts" > "$1/selftest-chantier.txt"
+"""
+
+FUSION_REJEUX = """#!/usr/bin/env bash
+# The fusion's replays on the toy: says which folder it would play.
+echo "rejeux ${PS_REJEUX_DIR:-docs/audits/ultra/rejeux} $(ls docs/audits/ultra/rejeux 2>/dev/null | tr '\\n' ' ')" >> "$PS_TOY_CALLS"
+"""
+
+
+def review_rows(d):
+    """Review of the « portail » lot (M1): relecture-verdict.py reads a blocking or grave finding however it is written
+    (« bloquant (P1) », « Gravité : grave », « Grave ⚠ », a bullet, a heading) and takes it as fixed only on a positive
+    « corrigé » (the row's last cell starting with it, or « **corrigé** » in a bullet or a heading's paragraph; never
+    « pas encore corrigé », « non-corrigé », « corrigé ? non »); a count table (« | bloquant | 0 | ») is no finding.
+    The real reviews keep their answers."""
+    script = os.path.join(HERE, "relecture-verdict.py")
+    last = "\n\nVerdict : 0 bloquant, 0 grave — fusion possible\n"
+
+    def ok(body):
+        return subprocess.run([sys.executable, "-I", script], input=body + last, capture_output=True, text=True).returncode == 0
+
+    refused = ["| 1 | bloquant (P1) | x | à faire |", "| 1 | Gravité : grave | x |", "| 1 | Grave ⚠ | x |",
+               "| 1 | bloquant, ouvert | x |", "| 1 | grave | x | pas encore corrigé |", "| 1 | grave | x | non-corrigé |",
+               "| 1 | grave | x | corrigé ? non |", "| 1 | grave | x | à corriger (les points corrigés sont plus bas) |",
+               "- **Bloquant** : le tampon ne vérifie rien (non corrigé).", "### Bloquant\n\nG1. le tampon ne vérifie rien.",
+               "| grave | 1 |", "## Grave\n\n**G1.** ouvert.\n\n**G2.** **corrigé** en abc1234.",
+               # Second review of the lot (M8): the simple forms still let through.
+               "### Grave\n\n**G1.** le tampon. Non **corrigé**.", "### Grave\n\nAucun.\n\n**G1.** le tampon, ouvert.",
+               "1. grave : le tampon, ouvert.", "### G1 (grave)\n\nle tampon, ouvert.", "| 1 | très grave | x |",
+               "- **G1 (grave)** : le tampon, ouvert."]
+    accepted = ["| bloquant | 0 |\n| grave | 0 |", "| 1 | grave | x | **corrigé** (abc1234) |", "| G1 | grave | x | **Corrigé** en abc1234 |",
+                "### Bloquant\n\nAucun.", "## Bloquant, grave\n\nAucun.", "- **Grave** : x — **corrigé** en abc1234.",
+                "| 3 | moyen | le plus grave des moyens | à reprendre |", "| id | Titre | Gravité | Preuve |\n|---|---|---|---|",
+                "### Grave\n\n**G1.** le tampon : **corrigé** en abc1234."]
+    for body in refused:
+        check(not ok(body), "an open blocking or grave finding is refused: " + body)
+    for body in accepted:
+        check(ok(body), "no open finding: accepted: " + body)
+    ultra = os.path.join(os.path.dirname(os.path.dirname(HERE)), "docs", "audits", "ultra")
+    # (composants, bloquants: a « ### Grave » section whose finding the text never says fixed: refused as written;
+    # memoire: two open « | grave | » rows.)
+    for name, want in (("tour-5-banc-fin-relecture.md", True), ("tour-5-pads-live-relecture.md", True),
+                       ("tour-5-banc-r1-relecture.md", True), ("tour-5-banc41-relecture.md", True),
+                       ("tour-5-recette2-relecture.md", True), ("tour-5-memoire-relecture.md", False),
+                       ("tour-5-composants-relecture.md", False), ("tour-5-bloquants-relecture.md", False)):
+        path = os.path.join(ultra, name)
+        if os.path.isfile(path):
+            with open(path, encoding="utf-8") as f:
+                r = subprocess.run([sys.executable, "-I", script], input=f.read(), capture_output=True, text=True)
+            check((r.returncode == 0) == want, f"the real review {name} keeps its answer ({want}):\n" + r.stdout)
+
+
+def fusion_toy(d, name):
+    """A toy integration workshop for fusion-equipes.sh: the real script, stand-ins for the self-test, the replays and
+    Gradle (each one writes its call), one replay test in docs/audits/ultra/rejeux/."""
+    root = os.path.join(d, name)
+    bench = os.path.join(root, "scripts", "bench")
+    with open(os.path.join(HERE, "fusion-equipes.sh"), encoding="utf-8") as f:
+        write(os.path.join(bench, "fusion-equipes.sh"), f.read())
+    for extra in ("relecture-verdict.py",):
+        if os.path.isfile(os.path.join(HERE, extra)):
+            with open(os.path.join(HERE, extra), encoding="utf-8") as f:
+                write(os.path.join(bench, extra), f.read())
+    write(os.path.join(bench, "selftest.sh"), FUSION_SELFTEST)
+    write(os.path.join(bench, "rejeu-defauts.sh"), FUSION_REJEUX)
+    write(os.path.join(bench, "gradle-file.sh"), '#!/usr/bin/env bash\necho "gradle $*" >> "$PS_TOY_CALLS"\n')
+    write(os.path.join(bench, "tampon.sh"), "#!/usr/bin/env bash\ncase \"$1\" in verifie) exit 1 ;; esac\n")
+    # The judge on the toy: says whether it saw a merge's traces (fusion.txt) in the working tree.
+    write(os.path.join(bench, "verifie-chantier.py"), "import glob, sys\n"
+          "print('traces vues' if glob.glob('docs/audits/ultra/portail/*/fusion.txt') else 'fusion sans trace du portail')\n"
+          "print('chantier : 0 écarts')\n")
+    for n in ("fusion-equipes.sh", "selftest.sh", "rejeu-defauts.sh", "gradle-file.sh", "tampon.sh"):
+        os.chmod(os.path.join(bench, n), 0o755)
+    write(os.path.join(root, "docs", "audits", "ultra", "rejeux", "t1-clavier", "start.txt"), "lang=fr\n")
+    write(os.path.join(root, "docs", "audits", "ultra", "rejeux", "t2-partie", "start.txt"), "lang=fr\n")
+    git_toy(root, "init", "-q", "-b", "fx-int")
+    git_toy(root, "add", "scripts", "docs")
+    git_toy(root, "commit", "-q", "-m", "toy")
+    return root
+
+
+def fusion_forged(d):
+    """Audit « banc crédible » 2, P1 (bloquant) and P4: fusion-equipes.sh reads the review's verdict on its LAST line
+    only (« Verdict : 0 bloquant, 0 grave », nothing else on it), refuses a table row « bloquant »/« grave » that does
+    not say « corrigé », reads the review in the branch only (a file left in the workshop is not a review), always runs
+    the self-test after the merge (not only through the replays) and the replays of the repository's own rejeux/
+    (PS_REJEUX_DIR ignored), and refuses an empty rejeux/ or a replay taken out without « rejeu retiré : <id> :
+    <raison> » in the review. The forges of the audit (forge2, forge3) are refused; an honest branch is merged."""
+    root = fusion_toy(d, "fusion-forge")
+    script = os.path.join(root, "scripts", "bench", "fusion-equipes.sh")
+    calls = os.path.join(d, "fusion-appels.txt")
+    empty = os.path.join(d, "fusion-rejeux-vides")
+    os.makedirs(empty)
+
+    def branch(zone, change, review, untracked=False):
+        """eq/tour-9-<zone> from fx-int: change(root) committed, then its review (naming that commit)."""
+        git_toy(root, "checkout", "-q", "-b", f"eq/tour-9-{zone}", "fx-int")
+        change(root)
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "--allow-empty", "-m", f"team {zone}")
+        sha = git_toy(root, "rev-parse", "HEAD").strip()
+        path = os.path.join(root, "docs", "audits", "ultra", f"tour-9-{zone}-relecture.md")
+        if not untracked:
+            write(path, f"# Relecture\nRelu : {sha}\n\n" + review)
+            git_toy(root, "add", path)
+            git_toy(root, "commit", "-q", "-m", "review")
+        git_toy(root, "checkout", "-q", "fx-int")
+        if untracked:
+            write(path, f"Relu : {sha}\n\n" + review)
+        return path
+
+    def merge(zone, **env):
+        write(calls, "")
+        before = git_toy(root, "rev-parse", "HEAD").strip()
+        e = dict(os.environ, PS_TOY_CALLS=calls, **env)
+        r = subprocess.run(["bash", script, "tour-9", zone], capture_output=True, text=True, env=e)
+        with open(calls, encoding="utf-8") as f:
+            asked = f.read()
+        after = git_toy(root, "rev-parse", "HEAD").strip()
+        return r.returncode, r.stdout + r.stderr, asked, before != after
+
+    def touch(name):
+        return lambda r: write(os.path.join(r, "scripts", "bench", name), "x\n")
+
+    def move_replay(rid, to="rejeux-attente"):
+        def go(r):
+            git_toy(r, "mv", f"docs/audits/ultra/rejeux/{rid}", f"docs/audits/ultra/{to}")
+        return go
+
+    good = "| 1 | moyen | a thing | à reprendre |\n| 2 | grave | another | **corrigé** (abc1234) |\n\nVerdict : 0 bloquant, 0 grave — fusion possible\n"
+    # forge2: a review that says « 1 bloquant » in its table and the verdict phrase anyway; the only replay moved out.
+    def forge2(r):
+        write(os.path.join(r, "scripts", "bench", "tampon.sh"), "#!/usr/bin/env bash\nexit 0\n")
+        move_replay("t1-clavier")(r)
+        move_replay("t2-partie")(r)
+    branch("forge2", forge2, "| 1 | bloquant | le tampon ne vérifie plus rien |\n\nVerdict : 0 bloquant, 0 grave (avant correction du constat 1)\n")
+    code, out, asked, moved = merge("forge2", PS_REJEUX_DIR=empty)
+    check(code != 0 and not moved and "not merged" in out, "forge2 (a review with « 1 bloquant », no replay left) is refused:\n" + out)
+    # A table row « grave » not said « corrigé », even under a clean last line.
+    branch("grave", touch("a.txt"), "| 1 | grave | still open | à faire |\n| 2 | grave | non corrigé |\n\nVerdict : 0 bloquant, 0 grave\n")
+    code, out, asked, moved = merge("grave")
+    check(code != 0 and not moved and "grave" in out, "a review whose table holds an open grave is refused:\n" + out)
+    # The verdict phrase somewhere, not on the last line.
+    branch("milieu", touch("b.txt"), "Verdict : 0 bloquant, 0 grave\n\nAjout : un point ouvert.\n")
+    code, out, asked, moved = merge("milieu")
+    check(code != 0 and not moved, "a verdict that is not the review's last line is refused:\n" + out)
+    # forge3 (P4): the review left in the workshop, never committed in the branch.
+    left = branch("forge3", touch("c.txt"), "Verdict : 0 bloquant, 0 grave\n", untracked=True)
+    code, out, asked, moved = merge("forge3")
+    check(code != 0 and not moved and "no fresh review" in out, "a review that is not in the branch is refused (P4):\n" + out)
+    os.remove(left)
+    # A replay taken out of rejeux/ without a reason in the review.
+    branch("retire", move_replay("t2-partie"), good)
+    code, out, asked, moved = merge("retire")
+    check(code != 0 and not moved and "t2-partie" in out, "a replay taken out without « rejeu retiré » is refused:\n" + out)
+    # Every replay taken out, each with its reason: rejeux/ empty is still refused (a merge without any replay).
+    branch("vide", forge2, good.replace("\nVerdict", "rejeu retiré : t1-clavier : non tranché\nrejeu retiré : t2-partie : non tranché\n\nVerdict"))
+    code, out, asked, moved = merge("vide")
+    check(code != 0 and not moved and "rejeu" in out, "an empty rejeux/ is refused:\n" + out)
+    # A red self-test after the merge: undone.
+    branch("rouge", touch("d.txt"), good)
+    code, out, asked, moved = merge("rouge", PS_TOY_SELFTEST_RED="1")
+    check(code != 0 and not moved and "selftest " in asked, "a red self-test after the merge undoes it:\n" + out + asked)
+    # Review of the lot (M5): a replay whose files change (its oracle emptied) needs a reason, as one taken out.
+    def new_oracle(r):
+        write(os.path.join(r, "docs", "audits", "ultra", "rejeux", "t1-clavier", "oracle.txt"), "rejeu.absent=zzz never shown\n")
+    branch("oracle", new_oracle, good)
+    code, out, asked, moved = merge("oracle")
+    check(code != 0 and not moved and "t1-clavier" in out, "a replay changed without « rejeu changé » is refused:\n" + out)
+    branch("oracle2", new_oracle, good.replace("\nVerdict", "rejeu changé : t1-clavier : the screen's words changed with the fix\n\nVerdict"))
+    code, out, asked, moved = merge("oracle2")
+    check(code == 0 and moved, "a replay changed with its reason is merged:\n" + out)
+    git_toy(root, "reset", "-q", "--hard", "HEAD~2")
+    # Second review of the lot (G2): a branch that brings red evidence (rouges-constates/<sha>/) names it in its review.
+    def red_evidence(r):
+        write(os.path.join(r, "docs", "audits", "ultra", "rouges-constates", "a" * 40, "rouge.txt"), "parent: x\n")
+    branch("constat", red_evidence, good)
+    code, out, asked, moved = merge("constat")
+    check(code != 0 and not moved and "rouge constaté" in out, "red evidence brought without its line in the review is refused:\n" + out)
+    branch("constat2", red_evidence, good.replace("\nVerdict", f"rouge constaté : {'a' * 40} : replayed on its parent, XML read\n\nVerdict"))
+    code, out, asked, moved = merge("constat2")
+    check(code == 0 and moved, "red evidence named in the review is merged:\n" + out)
+    git_toy(root, "reset", "-q", "--hard", "HEAD~2")
+    # Review of the lot (M2): a step that fails after the green checks (here: no stamp to copy into the traces) undoes
+    # the merge and leaves no half-written traces.
+    def no_stamp(r):
+        write(os.path.join(r, "scripts", "bench", "selftest.sh"), FUSION_SELFTEST.replace('echo "a stamp" > "$1/selftest.ok"\n', ""))
+    branch("sanstampon", no_stamp, good)
+    code, out, asked, moved = merge("sanstampon")
+    left = git_toy(root, "status", "--porcelain", "--untracked-files=all", "docs/audits/ultra/portail").strip()
+    check(code != 0 and not moved and left == "", "a failure while writing the traces undoes the merge, nothing left:\n" + out + left)
+    # Honest: one replay taken out with its reason, an open « moyen » and a fixed grave: merged, the self-test run
+    # and the repository's own replays played (PS_REJEUX_DIR ignored).
+    branch("honnete", move_replay("t2-partie"), good.replace("\nVerdict", "rejeu retiré : t2-partie : non tranché, retour en attente\n\nVerdict"))
+    code, out, asked, moved = merge("honnete", PS_REJEUX_DIR=empty)
+    check(code == 0 and moved and "honnete: merged" in out, "an honest branch is merged:\n" + out)
+    check("selftest " in asked and "rejeux docs/audits/ultra/rejeux t1-clavier" in asked, "the self-test and the repository's replays ran:\n" + asked)
+
+
+def portal_traces(d):
+    """Audit « banc crédible » 2, D1: the portal's traces are kept in the repository. fusion-equipes.sh commits, right
+    after each merge it makes, the self-test's summary, stamp and judge (selftest-resume.txt, selftest.ok,
+    selftest-chantier.txt) and fusion.txt (the merge, the branch, the review) under docs/audits/ultra/portail/
+    <date>-<tour>-<zone>/. The judge counts « fusion sans trace du portail » for every « Merge team … » made under
+    that rule (its first parent's fusion-equipes.sh writes there) without them, and « lot sans trace du portail » for
+    a lot of seats from round 6 on without its three files."""
+    root = fusion_toy(d, "fusion-traces")
+    script = os.path.join(root, "scripts", "bench", "fusion-equipes.sh")
+    calls = os.path.join(d, "traces-appels.txt")
+    git_toy(root, "checkout", "-q", "-b", "eq/tour-9-traces", "fx-int")
+    write(os.path.join(root, "scripts", "bench", "x.txt"), "x\n")
+    git_toy(root, "add", "scripts/bench/x.txt")
+    git_toy(root, "commit", "-q", "-m", "team")
+    sha = git_toy(root, "rev-parse", "HEAD").strip()
+    write(os.path.join(root, "docs", "audits", "ultra", "tour-9-traces-relecture.md"), f"Relu : {sha}\n\nVerdict : 0 bloquant, 0 grave — fusion possible\n")
+    git_toy(root, "add", "docs")
+    git_toy(root, "commit", "-q", "-m", "review")
+    git_toy(root, "checkout", "-q", "fx-int")
+    write(calls, "")
+    r = subprocess.run(["bash", script, "tour-9", "traces"], capture_output=True, text=True, env=dict(os.environ, PS_TOY_CALLS=calls))
+    check(r.returncode == 0, "the honest branch is merged:\n" + r.stdout + r.stderr)
+    merge = git_toy(root, "rev-parse", "HEAD^").strip()
+    check(git_toy(root, "log", "-1", "--format=%P", "HEAD^").count(" ") == 1, "HEAD^ is the merge, HEAD its traces")
+    kept = [f for f in git_toy(root, "ls-tree", "-r", "--name-only", "HEAD", "docs/audits/ultra/portail").split() if f]
+    names = sorted(os.path.basename(f) for f in kept)
+    check(names == ["fusion.txt", "selftest-chantier.txt", "selftest-resume.txt", "selftest.ok"], "the four traces are committed:\n" + "\n".join(kept))
+    folder = os.path.dirname(kept[0])
+    check(re.search(r"/\d{4}-\d\d-\d\d-tour-9-traces$", folder) is not None, "under portail/<date>-<tour>-<zone>/: " + folder)
+    fusion = git_toy(root, "show", f"HEAD:{folder}/fusion.txt")
+    check(f"fusion: {merge}" in fusion and "branche: eq/tour-9-traces" in fusion and f"relu: {sha}" in fusion, "fusion.txt names the merge, the branch, the review:\n" + fusion)
+    check(git_toy(root, "status", "--porcelain", "--untracked-files=no").strip() == "", "nothing left to commit")
+    judged = git_toy(root, "show", f"HEAD:{folder}/selftest-chantier.txt")
+    check("traces vues" in judged, "the judge kept in the traces ran with the traces there (no « fusion sans trace » of this very merge):\n" + judged)
+
+    # The judge: merges under the rule need their traces; lots from round 6 on need theirs.
+    jroot = judge_root(d, "juge-traces")
+    resume = os.path.join(jroot, "selftest-resume.txt")
+    bench = os.path.join(jroot, "scripts", "bench")
+    git_toy(jroot, "init", "-q", "-b", "main")
+    write(os.path.join(bench, "fusion-equipes.sh"), "# an older portal\n")
+    git_toy(jroot, "add", "-A")
+    git_toy(jroot, "commit", "-q", "-m", "start")
+
+    def team_merge(zone, traced):
+        git_toy(jroot, "checkout", "-q", "-b", f"eq/tour-9-{zone}", "main")
+        write(os.path.join(jroot, "docs", f"{zone}.md"), "x\n")
+        git_toy(jroot, "add", "docs")
+        git_toy(jroot, "commit", "-q", "-m", f"team {zone}")
+        git_toy(jroot, "checkout", "-q", "main")
+        git_toy(jroot, "merge", "-q", "--no-ff", "-m", f"Merge team {zone} of tour-9 (audit ultra)", f"eq/tour-9-{zone}")
+        full = git_toy(jroot, "rev-parse", "HEAD").strip()
+        if traced:
+            t = os.path.join(jroot, "docs", "audits", "ultra", "portail", f"2026-11-10-tour-9-{zone}")
+            write(os.path.join(t, "fusion.txt"), f"fusion: {full}\n")
+            write(os.path.join(t, "selftest-resume.txt"), "1 verts, 0 rouges, 0 en quarantaine, 0 sautés\n")
+            write(os.path.join(t, "selftest.ok"), "a stamp\n")
+            write(os.path.join(t, "selftest-chantier.txt"), "chantier : 0 écarts\n")
+            git_toy(jroot, "add", "docs")
+            git_toy(jroot, "commit", "-q", "-m", "traces")
+        return git_toy(jroot, "rev-parse", "--short", full).strip()
+
+    old = team_merge("avant", False)
+    write(os.path.join(bench, "fusion-equipes.sh"), "# writes docs/audits/ultra/portail/<date>-<tour>-<zone>/\n")
+    git_toy(jroot, "add", "scripts")
+    git_toy(jroot, "commit", "-q", "-m", "the rule")
+    bare = team_merge("nue", False)
+    traced = team_merge("tracee", True)
+    write(os.path.join(jroot, "docs", "audits", "ultra", "sieges", "tour-5", "lotA", "a", "start.txt"), "lang=fr\n")
+    write(os.path.join(jroot, "docs", "audits", "ultra", "sieges", "tour-6", "lotA", "a", "start.txt"), "lang=fr\n")
+    lot_b = os.path.join(jroot, "docs", "audits", "ultra", "sieges", "tour-6", "lotB")
+    write(os.path.join(lot_b, "a", "start.txt"), "lang=fr\n")
+    for n in ("selftest-resume.txt", "selftest.ok", "selftest-chantier.txt"):
+        write(os.path.join(lot_b, n), "x\n")
+    seal_resume(jroot, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", jroot, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    check(f"{bare} « Merge team nue of tour-9 (audit ultra) » : fusion sans trace du portail" in out, "a merge under the rule without its traces:\n" + out)
+    check(old not in out and traced not in out, "a merge before the rule, and one with its traces, are fine:\n" + out)
+    check("sieges/tour-6/lotA : lot sans trace du portail" in out and "tour-5/lotA" not in out and "lotB" not in out,
+          "a lot of round 6 without its traces (round 5 is older than the rule):\n" + out)
+
+
 def mark_fixed(d):
     """Review of lot 1 « Le juge » (finding « moyen » 2): marque-corrige.sh runs the judge WITH the summary it was
     given (4th argument or PS_SELFTEST_RESUME), on a toy repository; without one the judge says « résumé absent »."""
     root = judge_root(d, "marque")
     bench = os.path.join(root, "scripts", "bench")
-    for name in ("marque-corrige.sh", "verifie-chantier.py"):
+    for name in ("marque-corrige.sh", "verifie-chantier.py", "tampon.sh", "selftest-verdict.py", "selftest-attendus.py",
+                 "selftest-quarantaine.txt", "selftest-sauts-connus.txt"):
         with open(os.path.join(HERE, name), encoding="utf-8") as f:
             write(os.path.join(bench, name), f.read())
     git_toy(root, "init", "-q")
@@ -1339,6 +1958,7 @@ def mark_fixed(d):
     write(green, JUDGE_RESUME)
     other = os.path.join(d, "marque-autre.txt")
     write(other, "1 verts, 0 rouges, 0 en quarantaine, 0 sautés\nvert : AppProofTest#provesIt\n")
+    seal_resume(root, green)
     out = mark(green)
     check(f"B: corrigé ({sha}, tour-9) ; clé k2" in out, "the line is marked:\n" + out)
     check("résumé absent" not in out and "pas verte" not in out, "the judge read the summary given as 4th argument:\n" + out)
@@ -1346,9 +1966,11 @@ def mark_fixed(d):
         check(f"\tbanc\tcorrigé\tOther#elsewhere\tBenchFooTest#guardsIt\trecette tel-02\t{sha}\t" in f.read(), "verdicts.tsv: corrigé, with its commit")
     with open(os.path.join(ultra, "base.tsv"), encoding="utf-8") as f:
         check(f"k2\tcorrigé\tt\tB ({sha})\ttour-9\n" in f.read(), "base.tsv: the key, corrigé, with its round")
+    seal_resume(root, other)
     out = mark(other)
     check("B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in out and "résumé absent" not in out,
           "the judge read THAT summary (the guard is not green in it):\n" + out)
+    seal_resume(root, other)
     out = mark(PS_SELFTEST_RESUME=other)
     check("B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in out and "résumé absent" not in out,
           "the summary named by PS_SELFTEST_RESUME is read too:\n" + out)
@@ -1409,7 +2031,7 @@ def judge_root(d, name, verdicts=JUDGE_GOOD):
     tests = os.path.join(root, "app", "src", "test", "java", "x")
     write(os.path.join(tests, "BenchFooTest.kt"), "class BenchFooTest {\n  fun guardsIt() {}\n}\n")
     write(os.path.join(tests, "AppProofTest.kt"),
-          'class AppProofTest {\n  @KnownDefect("K1", "m")\n  @Test\n  fun provesIt() {}\n}\nclass Other {\n  fun elsewhere() {}\n}\n')
+          'class AppProofTest {\n  @KnownDefect("K1", "m")\n  @Test\n  fun provesIt() {}\n}\nclass Other {\n  @Test\n  fun elsewhere() {}\n}\n')
     write(os.path.join(root, "app", "src", "main", "assets", "recette.json"),
           json.dumps({"id": "r", "milestone": "m", "items": [{"id": "tel-01", "title": "t"}, {"id": "tel-02", "title": "t"}]}))
     ultra = os.path.join(root, "docs", "audits", "ultra")
@@ -1417,6 +2039,168 @@ def judge_root(d, name, verdicts=JUDGE_GOOD):
     write(os.path.join(ultra, "verdicts.tsv"), verdicts)
     write(os.path.join(root, "selftest-resume.txt"), JUDGE_RESUME)
     return root
+
+
+def junit_sum(lot):
+    """tampon.sh's « junit: » line: sha256 of the lot's JUnit XML, names and contents, in C order."""
+    import hashlib
+    base = os.path.join(lot, "junit")
+    names = sorted("./" + os.path.relpath(os.path.join(dp, f), base).replace(os.sep, "/")
+                   for dp, _, fs in os.walk(base) for f in fs if f.endswith(".xml"))
+    h = hashlib.sha256()
+    for n in names:
+        h.update((n + "\n").encode("utf-8"))
+        with open(os.path.join(base, n[2:]), "rb") as f:
+            h.update(f.read())
+    return h.hexdigest()
+
+
+def seal_resume(root, resume):
+    """What a green self-test leaves beside its summary (audit « banc crédible » 2, P2 and P3, and the review's G1):
+    JUnit results (junit/: the summary's tests as written, plus one green test for each class root's self-test
+    expects), the summary selftest-verdict.py makes of them, naming the code it tested (« code testé : <arbre> »), and
+    the stamp beside it (selftest.ok) sealing that summary, those results and that code. A toy that is no git
+    repository is made one (no commit); its own summary, stamp and results are kept out of its code."""
+    import hashlib
+    import shutil
+    from xml.sax.saxutils import quoteattr
+    if not os.path.isfile(resume):
+        return
+    if not os.path.isdir(os.path.join(root, ".git")):
+        subprocess.run(["git", "-C", root, "init", "-q"], check=True)
+    os.makedirs(os.path.join(root, ".git", "info"), exist_ok=True)
+    with open(os.path.join(root, ".git", "info", "exclude"), "a", encoding="utf-8") as f:
+        f.write("/selftest-resume.txt\n/selftest.ok\n/junit/\n")
+    lot = os.path.dirname(os.path.abspath(resume))
+    cases, seen = [], set()
+    with open(resume, encoding="utf-8") as f:
+        for line in f.read().splitlines():
+            m = re.match(r"^(vert|sauté|rouge|quarantaine rouge) : ([A-Za-z0-9_]+)#([^ ]+)(?: : (.*))?$", line)
+            if not m or m.group(3) == "*":
+                continue
+            kind, cls, meth, why = m.group(1), m.group(2), m.group(3), m.group(4) or ""
+            seen.add(cls)
+            body = (f"<skipped message={quoteattr(why)}/>" if kind == "sauté" else
+                    f"<failure message={quoteattr(why)}/>" if kind != "vert" else "")
+            cases.append(f'<testcase classname="x.{cls}" name={quoteattr(meth)}>{body}</testcase>')
+    expected = [l.split()[1] for l in subprocess.run([sys.executable, "-I", os.path.join(HERE, "selftest-attendus.py"), "--root", root],
+                                                     capture_output=True, text=True).stdout.splitlines() if len(l.split()) == 2]
+    cases += [f'<testcase classname="{n}" name="sealedRun"/>' for n in expected if n.rsplit(".", 1)[-1] not in seen]
+    shutil.rmtree(os.path.join(lot, "junit"), ignore_errors=True)
+    write(os.path.join(lot, "junit", "banc", "TEST-seal.xml"), "<testsuite>" + "".join(cases) + "</testsuite>")
+    listed = os.path.join(lot, "junit-attendus.tmp")
+    write(listed, "".join(n.rsplit(".", 1)[-1] + "\n" for n in expected))
+    subprocess.run([sys.executable, "-I", os.path.join(HERE, "selftest-verdict.py"), os.path.join(lot, "junit"),
+                    os.path.join(HERE, "selftest-quarantaine.txt"), resume, listed, os.path.join(lot, "selftest-gradle-echecs.txt"),
+                    os.path.join(HERE, "selftest-sauts-connus.txt")], capture_output=True, text=True)
+    os.remove(listed)
+    code = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "code", root], capture_output=True, text=True).stdout.strip()
+    with open(resume, "a", encoding="utf-8") as f:
+        f.write(f"code testé : {code}\n")
+    with open(resume, "rb") as f:
+        digest = hashlib.sha256(f.read()).hexdigest()
+    write(os.path.join(lot, "selftest.ok"), f"resume: {digest}\njunit: {junit_sum(lot)}\ncode: {code}\n")
+
+
+def judge_refuses_unsealed_summary(d):
+    """Audit « banc crédible » 2, P3: the judge reads a summary only when it is sealed for THIS code: the summary names
+    the code it tested (« code testé : <arbre> ») and the stamp beside it (selftest.ok) seals that summary and that
+    code. A summary written by hand (the audit's 12 « vert : » lines took the judge from 38 to 22 gaps), one of another
+    code, or one changed after its stamp, is refused: « résumé refusé », and no guard is green in it."""
+    root = judge_root(d, "juge-sceau")
+    resume = os.path.join(root, "selftest-resume.txt")
+    script = os.path.join(HERE, "verifie-chantier.py")
+
+    def judge():
+        r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
+        return r.stdout + r.stderr
+
+    seal_resume(root, resume)
+    out = judge()
+    check("résumé refusé" not in out and "pas verte" not in out, "a sealed summary of this code is read:\n" + out)
+    # Written by hand (no stamp beside it, no code named).
+    write(resume, JUDGE_RESUME)
+    os.remove(os.path.join(root, "selftest.ok"))
+    out = judge()
+    check("résumé refusé" in out and "B : garde BenchFooTest#guardsIt pas verte dans le dernier selftest" in out,
+          "a summary written by hand is refused, its « vert : » lines worth nothing:\n" + out)
+    # A stamp written by hand that does not seal this summary.
+    seal_resume(root, resume)
+    with open(resume, "a", encoding="utf-8") as f:
+        f.write("vert : BenchAddedByHandTest#guards\n")
+    out = judge()
+    check("résumé refusé" in out and "pas verte" in out, "a summary changed after its stamp is refused:\n" + out)
+    # Sealed, then the code changes (a test file): the summary is another code's.
+    write(resume, JUDGE_RESUME)
+    seal_resume(root, resume)
+    write(os.path.join(root, "app", "src", "test", "java", "x", "LaterTest.kt"), "class LaterTest\n")
+    out = judge()
+    check("résumé refusé" in out and "autre code" in out and "pas verte" in out, "a summary of another code is refused:\n" + out)
+    # A docs change is no code change: the summary still fits.
+    os.remove(os.path.join(root, "app", "src", "test", "java", "x", "LaterTest.kt"))
+    write(os.path.join(root, "docs", "notes.md"), "a note\n")
+    out = judge()
+    check("résumé refusé" not in out and "pas verte" not in out, "a change under docs/ keeps the summary:\n" + out)
+    # Review of the lot (G1): a stamp of two lines written by hand (« resume: » and « code: », both anyone can compute),
+    # no JUnit results beside it: refused.
+    import hashlib
+    write(resume, JUDGE_RESUME)
+    code_here = subprocess.run(["bash", os.path.join(HERE, "tampon.sh"), "code", root], capture_output=True, text=True).stdout.strip()
+    with open(resume, "a", encoding="utf-8") as f:
+        f.write(f"code testé : {code_here}\n")
+    with open(resume, "rb") as f:
+        digest = hashlib.sha256(f.read()).hexdigest()
+    shutil_rm = __import__("shutil").rmtree
+    shutil_rm(os.path.join(root, "junit"), ignore_errors=True)
+    write(os.path.join(root, "selftest.ok"), f"resume: {digest}\ncode: {code_here}\n")
+    out = judge()
+    check("résumé refusé" in out and "pas verte" in out, "a stamp written by hand without JUnit results is refused (G1):\n" + out)
+    # A portal trace committed by fusion-equipes.sh (« Portal traces of the merge … ») is read without its XML; the same
+    # files committed by any other commit are not.
+    seal_resume(root, resume)
+    trace = os.path.join(root, "docs", "audits", "ultra", "portail", "2026-11-10-tour-9-x")
+    for name in ("selftest-resume.txt", "selftest.ok"):
+        with open(os.path.join(root, name), encoding="utf-8") as f:
+            write(os.path.join(trace, name), f.read())
+    tresume = os.path.join(trace, "selftest-resume.txt")
+    git_toy(root, "add", "docs")
+    git_toy(root, "commit", "-q", "-m", "traces written by hand")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", tresume], capture_output=True, text=True)
+    check("résumé refusé" in r.stdout, "traces committed by another commit than the portal's are refused:\n" + r.stdout)
+    git_toy(root, "rm", "-q", "-r", "docs/audits/ultra/portail")
+    git_toy(root, "commit", "-q", "-m", "out")
+    for name in ("selftest-resume.txt", "selftest.ok"):
+        with open(os.path.join(root, name), encoding="utf-8") as f:
+            write(os.path.join(trace, name), f.read())
+    git_toy(root, "add", "docs")
+    git_toy(root, "commit", "-q", "-m", "Portal traces of the merge of x (tour-9)")
+    r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", tresume], capture_output=True, text=True)
+    check("résumé refusé" not in r.stdout and "pas verte" not in r.stdout, "a portal trace committed by the portal is read:\n" + r.stdout)
+
+
+def proof_must_run(d):
+    """Audit « banc crédible » 2, P5: a proof without the bench is a test that runs. `fun name` found in the class was
+    enough: the proof of K1 behind @Ignore, or renamed with « // fun provesIt » left in a comment, kept 0 gaps."""
+    root = judge_root(d, "juge-preuve-tourne")
+    resume = os.path.join(root, "selftest-resume.txt")
+    proof = os.path.join(root, "app", "src", "test", "java", "x", "AppProofTest.kt")
+    script = os.path.join(HERE, "verifie-chantier.py")
+
+    def judge(text):
+        write(proof, text)
+        seal_resume(root, resume)
+        r = subprocess.run([sys.executable, "-I", script, "--root", root, "--sans-git", "--resume", resume], capture_output=True, text=True)
+        return r.stdout + r.stderr
+
+    other = "class Other {\n  @Test\n  fun elsewhere() {}\n}\n"
+    out = judge('class AppProofTest {\n  @KnownDefect("K1", "m")\n  @Test\n  fun provesIt() {}\n}\n' + other)
+    check("chantier : 0 écarts" in out, "the proof runs: 0 gap\n" + out)
+    out = judge('class AppProofTest {\n  @KnownDefect("K1", "m")\n  @org.junit.Ignore("flaky") @Test\n  fun provesIt() {}\n}\n' + other)
+    check("A : preuve d'appli AppProofTest#provesIt n'est pas un test qui tourne" in out, "a proof behind @Ignore does not run:\n" + out)
+    out = judge('class AppProofTest {\n  // fun provesIt() was the proof\n  @Test\n  fun provesItGone() {}\n}\n' + other)
+    check("A : preuve d'appli AppProofTest#provesIt" in out and "chantier : 0 écarts" not in out, "a proof left in a comment does not run:\n" + out)
+    out = judge("class AppProofTest {\n  fun provesIt() {}\n}\n" + other)
+    check("A : preuve d'appli AppProofTest#provesIt n'est pas un test qui tourne" in out, "a helper without @Test is no proof:\n" + out)
 
 
 def native_missing(d):
@@ -1459,6 +2243,37 @@ def seat_exit(d):
           "the inherited state put back, listed for its seat:\n" + incidents)
     check(". (lot)\t-\t-\tfichier écrit hors des sièges : c-out.txt" in incidents, "the lot's foreign file listed:\n" + incidents)
     check("repos non venu" not in incidents and incidents.count("\n") == 4, "nothing else:\n" + incidents)
+
+
+def seat_exit_anchored(d):
+    """Audit « banc crédible » 2, P7: the white list of sortie-de-siege.py holds at the lot's root only (« *.md » let
+    g/rapport.md and notes/brouillon.tsv through), and a file written in the repository outside the lot (new or
+    changed) is seen too (--depot: the repository whose state is taken before and after; the script's own by default).
+    A seat writing in another seat's folder stays invisible while they share one user (said, not caught)."""
+    depot = os.path.join(d, "sortie-p7", "depot")
+    write(os.path.join(depot, "app", "x.kt"), "a\n")
+    git_toy(depot, "init", "-q")
+    git_toy(depot, "add", "app")
+    git_toy(depot, "commit", "-q", "-m", "toy")
+    lot = os.path.join(depot, "docs", "sieges", "lotX")
+    for seat in ("a", "b"):
+        write(os.path.join(lot, seat, "start.txt"), "x")
+    script = os.path.join(HERE, "sortie-de-siege.py")
+    run(script, "avant", lot, "--depot", depot)
+    write(os.path.join(lot, "a", "journal.txt"), "x")
+    write(os.path.join(lot, "b", "ecrit-par-a.txt"), "x")
+    write(os.path.join(lot, "README.md"), "x")
+    write(os.path.join(lot, "selftest-resume.txt"), "x")
+    write(os.path.join(lot, "g", "rapport.md"), "x")
+    write(os.path.join(lot, "notes", "brouillon.tsv"), "x")
+    write(os.path.join(lot, "espion.txt"), "x")
+    write(os.path.join(depot, "hors-du-lot.txt"), "x")
+    write(os.path.join(depot, "app", "x.kt"), "changed\n")
+    out = run(script, "apres", lot, "--depot", depot)
+    with open(os.path.join(lot, "lot.json"), encoding="utf-8") as f:
+        found = json.load(f)["fichiers_hors_lot"]
+    check(found == ["dépôt : app/x.kt", "dépôt : hors-du-lot.txt", "espion.txt", "g/rapport.md", "notes/brouillon.tsv"],
+          "the white list holds at the lot's root, and the repository is watched:\n" + out + json.dumps(found, ensure_ascii=False))
 
 
 def corrections_by_target(d):

@@ -1,0 +1,3 @@
+parent: b5bf7b1f315b33a1c29daad73aa4bfa42ca562ef
+test: TutoJourneyTest#theWholeCourse[techno Pro]
+rejoué : 2026-11-10, clone jetable détaché à b5bf7b1f, gradle-file.sh :app:testDebugUnitTest --tests com.pocketstudio.app.tuto.TutoJourneyTest (PS_STALL_MIN=70) : 74 tests, 1 rouge, « techno Pro: targets not seen: [([step_cells], coupé en haut, sous l en-tête …] »

@@ -1,6 +1,7 @@
 package com.pocketstudio.app.audit
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -78,6 +79,19 @@ class LayoutScanFloatTest {
     fun aChipOverNothingSaysNothing() {
         // « Créer B » from 150 to 270 dp: nothing under the chip.
         compose.setContent { Screen(secondTop = 150) }
+        assertEquals(emptyList<LayoutScan.Finding>(), floats())
+    }
+
+    @Test
+    fun aPianosBlackKeyOverItsWhiteNeighboursIsTheInstrumentItself() {
+        // Laid out together in one list (the synth's keyboard): not a floating thing.
+        compose.setContent {
+            Box(Modifier.size(360.dp, 200.dp).horizontalScroll(rememberScrollState())) {
+                Box(Modifier.size(48.dp, 160.dp).clickable {}.testTag("white_c")) { Text("C") }
+                Box(Modifier.padding(start = 48.dp).size(48.dp, 160.dp).clickable {}.testTag("white_d")) { Text("D") }
+                Box(Modifier.padding(start = 32.dp).size(32.dp, 100.dp).clickable {}.testTag("black_cs")) { Text("C#") }
+            }
+        }
         assertEquals(emptyList<LayoutScan.Finding>(), floats())
     }
 

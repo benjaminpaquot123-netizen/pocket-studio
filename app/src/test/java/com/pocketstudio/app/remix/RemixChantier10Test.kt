@@ -48,6 +48,21 @@ class RemixChantier10Test {
         remix = Remix(setId = "s", name = "Boys", songBpm = 120.0, seconds = 60.0, atStep = 16, placed = true),
     )
 
+    /** « Que faire de « Ma chanson » ? »: one card says « Conseillé », the first one, « Faire un morceau… ». */
+    @Test
+    fun theDestinationRecommendsOneWayOnly() {
+        compose.setContent {
+            PocketStudioTheme {
+                RemixDestinationDialog(
+                    set, listOf(ProjectInfo("p1", "Mon morceau", 0L, 120.0, 4, 2, hasRemix = false)), "p1",
+                    onWay = {}, onProject = {}, onDismiss = {},
+                )
+            }
+        }
+        compose.onAllNodesWithText("Conseillé").assertCountEquals(1)
+        compose.onAllNodes(hasTestTag("remix_dest_build") and hasAnyDescendant(hasText("Conseillé")), useUnmergedTree = true).assertCountEquals(1)
+    }
+
     /** « La fin sera coupée » comes with its two fixes: « Allonger le morceau » and « Couper la chanson à la fin ». */
     @Test
     fun theCutEndHasItsTwoFixes() {

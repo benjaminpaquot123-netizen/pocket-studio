@@ -1213,7 +1213,10 @@ def red_seen_review_line(d):
         return subprocess.run([sys.executable, "-I", script, arg], input=line + last, capture_output=True, text=True).returncode == 0
 
     for line in (f"rouge constaté : {green} : relu, XML lu", f"rouge constaté : {green} : pas rejoué",
-                 f"rouge constaté : {green} : rejoué sur 1234567, rouge", f"rouge constaté : {green} : pas rejoué sur bbbbbbb"):
+                 f"rouge constaté : {green} : rejoué sur 1234567, rouge", f"rouge constaté : {green} : pas rejoué sur bbbbbbb",
+                 # Review of « banc6b » (M2): « non », « jamais », « pas encore » before « rejoué » too.
+                 f"rouge constaté : {green} : non rejoué sur bbbbbbb", f"rouge constaté : {green} : jamais rejoué sur bbbbbbb",
+                 f"rouge constaté : {green} : pas encore rejoué sur bbbbbbb", f"rouge constaté : {green} : Non : rejoué sur bbbbbbb"):
         check(not ok(line), "a « rouge constaté » line without the replay on the green's parent is refused: " + line)
     for line in (f"rouge constaté : {green} : rejoué sur bbbbbbb, theWholeCourse rouge (1 sur 74)",
                  f"rouge constaté : {green} : rejoué sur {parent} : rouge"):
@@ -1770,7 +1773,10 @@ def review_rows(d):
                "### Grave\n\n**G1.** le tampon. Pas encore **corrigé**.", "### Grave\n\n**G1.** le tampon, jamais **corrigé**.",
                "### Grave\n\n**G1.** le tampon. Non  **corrigé**.", "### Grave\n\n**G1.** le tampon. non : **corrigé**.",
                "### Grave\n\n**G1.** le tampon. *non* **corrigé**.", "- **Grave** : le tampon, toujours pas **corrigé**.",
-               "- **Grave** : le tampon, pas\n  **corrigé**."]
+               "- **Grave** : le tampon, pas\n  **corrigé**.",
+               # Review of « banc6b » (M2): an adverb between the negation and the bold.
+               "### Grave\n\n**G1.** le tampon, pas du tout **corrigé**.", "- **Grave** : le tampon, pas vraiment **corrigé**.",
+               "- **Grave** : le tampon, jamais vraiment **corrigé**."]
     accepted = ["| bloquant | 0 |\n| grave | 0 |", "| 1 | grave | x | **corrigé** (abc1234) |", "| G1 | grave | x | **Corrigé** en abc1234 |",
                 "### Bloquant\n\nAucun.", "## Bloquant, grave\n\nAucun.", "- **Grave** : x — **corrigé** en abc1234.",
                 "| 3 | moyen | le plus grave des moyens | à reprendre |", "| id | Titre | Gravité | Preuve |\n|---|---|---|---|",

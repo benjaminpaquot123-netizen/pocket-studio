@@ -231,6 +231,7 @@ def main():
         seat_exit_anchored(d)
         native_missing(d)
         first_screen(d)
+        export_figures_are_the_benchs(d)
         corrections_by_target(d)
     with tempfile.TemporaryDirectory() as d:
         seats_from_ids(d)
@@ -2232,6 +2233,42 @@ def first_screen(d):
     check(m["vide"] and not m["travail_de_fond"] and m["verdict"] == "à trancher", f"blank, bench at rest: the app's to judge: {m}")
     m = measured("#0 SIEGE rien")
     check(m is None, f"no line (an older bench): None, not invented: {m}")
+
+
+REPORT_EXPORTS = """siege: a | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
+defauts:
+  - ecran: 4 | cible: Mes exports | geste: touche
+    attendu: un vrai fichier | obtenu: le fichier fait 1 KB
+    symptome: texte-faux
+    gravite: moyen | bloque: non
+  - ecran: 5 | cible: Exporter | geste: touche
+    attendu: un export rapide | obtenu: l'export a pris 4 min pour 4 pistes
+    symptome: lent
+    gravite: moyen | bloque: non
+  - ecran: 6 | cible: Partager | geste: touche
+    attendu: 16 mesures | obtenu: le morceau exporté dure 8 mesures au lieu de 16
+    symptome: perdu
+    gravite: moyen | bloque: non
+"""
+
+
+def export_figures_are_the_benchs(d):
+    """PLAN-RESTE 4.7 (T5-Cc-41b, « 1 KB », 4 min for 4 tracks): an export's size and the time it took are the bench's
+    (a shadow encoder that copies, a stand-in engine): a card about them is « banc », said so on its line; a card about
+    what the file holds (its length in bars) stays the app's."""
+    rnd = os.path.join(d, "exports")
+    write(os.path.join(rnd, "lotA", "a", "journal.txt"), JOURNAL_A)
+    write(os.path.join(rnd, "lotA", "a", "rapport.md"), REPORT_EXPORTS)
+    base = os.path.join(rnd, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--tour", "tour-6")
+    mark = "[banc : taille ou durée d'un export, non représentatives]"
+    size = [l for l in text.splitlines() if "mes exports" in l]
+    slow = [l for l in text.splitlines() if "exporter" in l]
+    bars = [l for l in text.splitlines() if "partager" in l]
+    check(size and mark in size[0], "the size of an export is the bench's:\n" + text)
+    check(slow and mark in slow[0], "the time an export took is the bench's:\n" + text)
+    check(bars and mark not in bars[0] and "[banc" not in bars[0], "what the file holds stays the app's:\n" + text)
 
 
 def seat_exit(d):

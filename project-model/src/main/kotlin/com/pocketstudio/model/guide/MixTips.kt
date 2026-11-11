@@ -1,12 +1,10 @@
 package com.pocketstudio.model.guide
 
 import com.pocketstudio.model.DefaultNames
-import com.pocketstudio.model.LoudnessTargets
 import com.pocketstudio.model.Mixer
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.i18n.tr
 import kotlin.math.abs
-import kotlin.math.roundToInt
 
 /**
  * One tip of the Mode simple's « Mix » tab: what is wrong ([text]) and the button that fixes it
@@ -32,7 +30,7 @@ object MixTips {
     fun of(p: Project, clipping: Boolean = false): List<MixTip> {
         val tips = ArrayList<MixTip>()
         if (clipping && p.mixer.masterDb > Mixer.MASTER_MIN_DB) {
-            tips += MixTip("clip", tr("Ça sature : le son grésille."), tr("Baisser la sortie de %s dB", num(CLIP_STEP_DB)), Mixer.MASTER, -CLIP_STEP_DB)
+            tips += MixTip("clip", tr("Ça sature : le son grésille."), tr("Baisser la sortie un peu"), Mixer.MASTER, -CLIP_STEP_DB)
         }
         val facts = GuideFacts.of(p)
         val solos = facts.tracks.filter { it.channel != Mixer.MASTER && p.mixer.channels.getOrNull(it.channel)?.solo == true }
@@ -78,20 +76,16 @@ object MixTips {
 
     private fun tip(id: String, t: GuideTrack, db: Float, bass: Boolean): MixTip {
         val name = DefaultNames.shown(t.name)
-        val amount = num(abs(db))
         return when {
-            bass && db < 0f -> MixTip(id, tr("La basse et le kick se gênent."), tr("Baisser la basse de %s dB", amount), t.channel, db)
-            db < 0f -> MixTip(id, tr("« %s » couvre les autres.", name), tr("Le baisser de %s dB", amount), t.channel, db)
-            else -> MixTip(id, tr("« %s » se perd dans le mix.", name), tr("Le monter de %s dB", amount), t.channel, db)
+            bass && db < 0f -> MixTip(id, tr("La basse et le kick se gênent."), tr("Baisser la basse un peu"), t.channel, db)
+            db < 0f -> MixTip(id, tr("« %s » couvre les autres.", name), tr("Le baisser un peu"), t.channel, db)
+            else -> MixTip(id, tr("« %s » se perd dans le mix.", name), tr("Le monter un peu"), t.channel, db)
         }
     }
 
     private fun overStart(p: Project, ch: Int): Float = db(p.mixer.channels[ch].volume) - db(p.mixer.startVolume(ch))
 
     private fun db(v: Float): Float = GuideLevels.faderDb(v)
-
-    /** A move in dB as said: to the half dB, « 2 » or « 2,5 ». */
-    private fun num(db: Float): String = LoudnessTargets.formatTarget((db * 2f).roundToInt() / 2f)
 
     private fun names(ts: List<GuideTrack>): String = ts.joinToString(", ") { DefaultNames.shown(it.name) }
 }

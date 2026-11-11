@@ -187,7 +187,7 @@ class BenchTour1Test : HumanTester("tour-1") {
     @Test
     fun theSongGoesOnAfterAnotherGesture() {
         begin()
-        val at = centerOfText("Créer mon premier morceau", substring = true)!!
+        val at = centerOfText("Fais-moi un morceau", substring = true)!!
         act("touche ${at.first} ${at.second}")
         tap("mode_card_simple")
         tap("wizard_family_Techno")

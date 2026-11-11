@@ -209,7 +209,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
      * lived an hour in the app's own cache: nothing to find again). Here, on the one path every « Sauvegarder le morceau
      * en .zip » takes, so that no call site forgets it.
      */
-    fun exportZip(id: String, name: String, saveFirst: suspend () -> Boolean = { true }, failed: (String) -> Unit = {}, then: (SavedZip) -> Unit) = io(tr("Export du projet"), failed) {
+    fun exportZip(id: String, name: String, saveFirst: suspend () -> Boolean = { true }, failed: (String) -> Unit = {}, then: (SavedZip) -> Unit) = io(tr("Sauvegarder le morceau en .zip"), failed) {
         if (!saved(saveFirst)) return@io
         val app = getApplication<Application>()
         // Dated like the audio exports (old ones cleaned): a share still reading an earlier export is never overwritten.
@@ -227,7 +227,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
      * A project the app cannot read, its folder as it is (files and sounds, nothing decoded) as a
      * .zip in the export folder; [then] gets the file (to send it, to have it repaired).
      */
-    fun exportRaw(info: ProjectInfo, then: (File) -> Unit) = io(tr("Export du projet")) {
+    fun exportRaw(info: ProjectInfo, then: (File) -> Unit) = io(tr("Sauvegarder le morceau en .zip")) {
         val app = getApplication<Application>()
         val file = com.pocketstudio.app.export.WavExporter.newFile(app, "projet-illisible")
             .let { File(it.parentFile, it.name.removeSuffix(".wav") + ".zip") }

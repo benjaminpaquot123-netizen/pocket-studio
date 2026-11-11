@@ -61,7 +61,7 @@
         {
           "id": "ready",
           "text": "Avant de commencer : ton kit est déjà celui de la hard techno : un kick dur et saturé, accordé sur la note du morceau, et son rumble. Tu n'as rien à régler.",
-          "textPro": "Déjà prêt : le kick dur de l'assistant (saturé, enveloppe de hauteur courte, accordé sur Fa♯), le rumble (préset « rumble » : réverbe, distorsion, passe-bas), le punch et l'OTT léger sur le master."
+          "textPro": "Déjà prêt : le kick dur de « Fais-moi un morceau » (saturé, enveloppe de hauteur courte, accordé sur Fa♯), le rumble (préset « rumble » : réverbe, distorsion, passe-bas), le punch et l'OTT léger sur le master."
         },
         {
           "id": "kick_hear",
@@ -458,7 +458,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Accords » (le hoover), puis celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

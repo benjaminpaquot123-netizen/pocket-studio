@@ -165,7 +165,7 @@ fun ProjectsScreen(
             // The guided song first: the main action for a beginner.
             Button(onClick = actions.wizard, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("project_wizard")) {
                 Icon(Icons.Filled.AutoAwesome, contentDescription = null)
-                Text("  " + tr("Nouveau morceau guidé"), style = MaterialTheme.typography.titleMedium)
+                Text("  " + tr("Fais-moi un morceau"), style = MaterialTheme.typography.titleMedium)
             }
             OutlinedButton(onClick = { setChoosingStart(true) }, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("project_new")) {
                 Icon(Icons.Filled.Add, contentDescription = null)
@@ -320,7 +320,7 @@ private fun ProjectCard(p: ProjectInfo, open: Boolean, now: Long, actions: Proje
                 ScaledDropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     if (p.unreadable) {
                         DropdownMenuItem(
-                            text = { Text(tr("Envoyer le fichier brut (.zip)")) },
+                            text = { Text(tr("Sauvegarder le morceau en .zip")) },
                             onClick = { menu = false; actions.exportRaw(p) },
                             modifier = Modifier.testTag("project_raw_${p.id}"),
                         )

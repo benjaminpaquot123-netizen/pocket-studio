@@ -26,7 +26,7 @@
   "Progression pour tout le morceau": "곡 전체 코드 진행",
   "Partie par partie (une case = une mesure)": "파트별로 (한 칸 = 한 마디)",
   "Pistes qui suivent les accords": "코드를 따라가는 트랙",
-  "Les pistes de l'assistant suivent ; les notes que tu as écrites restent, sauf si tu le demandes ici.": "어시스턴트가 만든 트랙은 따라가요. 직접 쓴 노트는 여기서 요청하지 않으면 그대로예요.",
+  "Les pistes de « Fais-moi un morceau » suivent ; les notes que tu as écrites restent, sauf si tu le demandes ici.": "“곡을 만들어 주세요”가 만든 트랙은 따라가요. 직접 쓴 노트는 여기서 요청하지 않으면 그대로예요.",
   "%s (gelée)": "%s (프리즈됨)",
   "… et %d autres parties": "… 그리고 파트 %d개 더",
   "Touche pour changer les accords de tout le morceau.": "탭해서 곡 전체 코드를 바꿔요.",

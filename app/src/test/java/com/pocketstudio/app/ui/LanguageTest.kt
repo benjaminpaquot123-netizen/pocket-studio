@@ -71,15 +71,15 @@ class LanguageTest {
     fun welcomeInEnglish() {
         I18n.lang = Lang.EN
         compose.setContent { PocketStudioTheme { WelcomeScreen(WelcomeActions()) } }
-        compose.onNodeWithText("Make my first song (guided)").assertExists()
-        compose.onAllNodesWithText("Créer mon premier morceau (guidé)").assertCountEquals(0)
+        compose.onNodeWithText("Make me a song").assertExists()
+        compose.onAllNodesWithText("Fais-moi un morceau").assertCountEquals(0)
     }
 
     @Test
     fun welcomeInDutch() {
         I18n.lang = Lang.NL
         compose.setContent { PocketStudioTheme { WelcomeScreen(WelcomeActions()) } }
-        compose.onNodeWithText("Mijn eerste nummer maken (begeleid)").assertExists()
+        compose.onNodeWithText("Maak een nummer voor me").assertExists()
         compose.onAllNodesWithText("Écouter une démo").assertCountEquals(0)
     }
 

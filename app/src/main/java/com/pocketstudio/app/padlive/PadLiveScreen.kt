@@ -563,7 +563,7 @@ private fun SceneEffects(ui: PadLiveUi, actions: PadLiveActions, more: Boolean, 
     }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(tr("EFFETS DE SCÈNE"), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
+            Text(tr("EFFETS LIVE"), style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
             com.pocketstudio.ui.HelpDot(
                 com.pocketstudio.app.help.ScreenHelp.PADLIVE_EFFECTS,
                 about = listOf("padlive_fx_filter", "padlive_fx_echo", "padlive_fx_roll", "padlive_fx_riser", "padlive_fx_brake", "padlive_fx_stutter"),

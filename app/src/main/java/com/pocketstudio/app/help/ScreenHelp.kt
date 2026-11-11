@@ -17,7 +17,7 @@ object ScreenHelp {
         tr("Pad Live a 4 pages de 16 pads, A à D : touche une lettre pour changer de page. « Pack » remplit la page affichée avec les sons d'un style ; « Annuler » la remet comme avant. L'étoile « Défi » lance un défi."),
     )
     val PADLIVE_EFFECTS: Help get() = Help(
-        tr("Effets de scène"),
+        tr("Jouer les effets live"),
         tr("Garde le doigt sur un effet : il joue tant que tu appuies, puis tout revient. Filtre et Roulement : monte le doigt pour régler le son ou la vitesse des coups. Avec « Plus » : Montée (un souffle qui monte), Chute (la musique freine), Bégaie (le son se hache)."),
     )
     val PADLIVE_PLAYED: Help get() = Help(
@@ -26,7 +26,7 @@ object ScreenHelp {
     )
     val PADLIVE_MORE: Help get() = Help(
         tr("Plus"),
-        tr("Tout couper arrête tous les pads. Briques ouvre le Live complet (pistes, notes, Acid 303). Effets règle les effets des pads. Gros pads met les pads sur tout l'écran pour jouer à plusieurs. Partager envoie ta perf."),
+        tr("Tout couper arrête tous les pads. Briques ouvre le Live complet (pistes, notes, Acid 303). Effets règle les effets des pads. Gros pads met les pads sur tout l'écran pour jouer à plusieurs. Partager fait un fichier de ta perf."),
     )
     val PADLIVE_CHALLENGE: Help get() = Help(
         tr("Défi"),
@@ -77,15 +77,15 @@ object ScreenHelp {
         tr("Outils de coupe"),
         tr("Place la tête orange ou écoute, puis : Couper ici coupe à cet endroit, Début et Fin raccourcissent le bout, Enlever le retire, Boucle le fait tourner. Pince la vue pour zoomer.") +
             // Audit ultra round 3, zone 1, n° 9: how a piece is chosen, said where the tools are.
-            " " + tr("Touche le numéro d'un bout, en haut de la courbe, pour le choisir, puis envoie-le."),
+            " " + tr("Touche le numéro d'un bout, en haut de la courbe, pour le choisir, puis mets-le sur un pad ou une piste."),
     )
     val CUT_BOUT: Help get() = Help(
         tr("Un bout"),
         tr("Glisse les barres Début et Fin, ou touche la courbe puis « Début ici » ou « Fin ici » : l'aimant les pose sur les temps de la règle. Le gros ▶ joue la piste depuis la ligne orange, « Écouter le bout » juste le bout. Puis envoie-le. Coupes › Phrases, Attaques ou Mesures : plein de bouts."),
     )
     val CUT_SEND: Help get() = Help(
-        tr("Envoyer les bouts"),
-        tr("Coche les bouts que tu veux, puis envoie-les : sur les pads (un par pad), dans le Live, dans « Garder » (ta bibliothèque) ou sur une piste du morceau."),
+        tr("Mettre les bouts sur…"),
+        tr("Coche les bouts que tu veux, puis mets-les : sur les pads (un par pad), dans le Live, dans « Garder » (ta bibliothèque) ou sur une piste du morceau."),
     )
 
     // --- Master pro and the file ---

@@ -182,7 +182,7 @@ class PerfShare(private val vm: RhythmViewModel) {
             } catch (e: Exception) {
                 made.forEach { it.delete() }
                 AppLog.add("Perf : pistes impossibles (${e.message ?: e.javaClass.simpleName})")
-                _stems.value = PerfStemsUi.Failed(e.message ?: tr("L'export a échoué."))
+                _stems.value = PerfStemsUi.Failed(e.message ?: tr("Le fichier n'a pas pu être créé."))
                 ending = (_stems.value as PerfStemsUi.Failed).message
             } catch (e: OutOfMemoryError) {
                 made.forEach { it.delete() }
@@ -261,7 +261,7 @@ fun PerfShareContent(ui: PerfShareUi, actions: PerfShareActions) {
             )
             Card {
                 Text(tr("Le son"), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Text(tr("Un seul fichier avec tes effets, prêt à envoyer."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                Text(tr("Un seul fichier avec tes effets, prêt à partager."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
                 androidx.compose.foundation.layout.FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf(ExportFormat.M4a to tr("M4A · pour partager"), ExportFormat.Wav to tr("WAV · qualité max")).forEach { (f, label) ->
                         FilterChip(selected = ui.format == f, onClick = { actions.setFormat(f) }, label = { Text(label, maxLines = 1) },

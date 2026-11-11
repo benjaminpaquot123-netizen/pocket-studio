@@ -26,7 +26,7 @@
   "Progression pour tout le morceau": "Tüm şarkı için progresyon",
   "Partie par partie (une case = une mesure)": "Bölüm bölüm (bir kutu = bir ölçü)",
   "Pistes qui suivent les accords": "Akorları takip eden kanallar",
-  "Les pistes de l'assistant suivent ; les notes que tu as écrites restent, sauf si tu le demandes ici.": "Asistanın kanalları takip eder; senin yazdığın notalar burada istemedikçe olduğu gibi kalır.",
+  "Les pistes de « Fais-moi un morceau » suivent ; les notes que tu as écrites restent, sauf si tu le demandes ici.": "“Bana bir parça yap”ın kanalları takip eder; senin yazdığın notalar burada istemedikçe olduğu gibi kalır.",
   "%s (gelée)": "%s (donmuş)",
   "… et %d autres parties": "… ve %d bölüm daha",
   "Touche pour changer les accords de tout le morceau.": "Tüm şarkının akorlarını değiştirmek için dokun.",

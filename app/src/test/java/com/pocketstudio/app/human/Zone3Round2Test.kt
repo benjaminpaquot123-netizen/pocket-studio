@@ -68,10 +68,10 @@ class Zone3Round2Test : HumanTester("zone3r2") {
 
     private fun shows(text: String) = screenLines().any { text in it }
 
-    /** The welcome › « Créer mon premier morceau » › Simple › Techno, the card « Techno » open. */
+    /** The welcome › « Fais-moi un morceau » › Simple › Techno, the card « Techno » open. */
     private fun techno(o: SeatOptions = SeatOptions(simple = true)) {
         begin(o)
-        tapText("Créer mon premier morceau")
+        tapText("Fais-moi un morceau")
         if (centerOf("mode_card_simple") != null) tap("mode_card_simple")
         tap("wizard_family_Techno")
         tap("wizard_style_techno")

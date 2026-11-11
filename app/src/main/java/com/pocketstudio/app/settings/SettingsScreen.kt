@@ -130,7 +130,7 @@ fun SettingsScreen(s: AppSettings, version: String, actions: SettingsActions) {
         }
         NeonCard {
             SectionLabel(tr("Aide"))
-            OutlinedButton(onClick = actions.openGuide, modifier = Modifier.fillMaxWidth().testTag("open_guide")) { Text(tr("Revoir le guide des premiers pas")) }
+            OutlinedButton(onClick = actions.openGuide, modifier = Modifier.fillMaxWidth().testTag("open_guide")) { Text(tr("Revoir la visite rapide")) }
             GlossaryButton("settings_glossary")
             var lexicon by rememberSaveable { mutableStateOf(false) }
             OutlinedButton(onClick = { lexicon = !lexicon }, modifier = Modifier.fillMaxWidth().testTag("open_lexicon")) {
@@ -213,7 +213,7 @@ fun HelpPage(actions: HelpActions) {
                         Text(tr("Mon premier morceau, avec le Guide"))
                     }
                 }
-                OutlinedButton(onClick = actions.openGuide, modifier = Modifier.fillMaxWidth().testTag("help_guide")) { Text(tr("Revoir le guide des premiers pas")) }
+                OutlinedButton(onClick = actions.openGuide, modifier = Modifier.fillMaxWidth().testTag("help_guide")) { Text(tr("Revoir la visite rapide")) }
                 OutlinedButton(onClick = actions.showSteps, modifier = Modifier.fillMaxWidth().testTag("help_steps")) { Text(tr("Ouvrir le Guide de mon morceau")) }
                 GlossaryButton("help_glossary")
                 Text(tr("Le « ? » au bout du bandeau sous la barre du haut étiquette l'écran : un toucher pour voir, un autre pour cacher."),

@@ -60,7 +60,11 @@ object LayoutScan {
                 val shot = roots[i].captureToImage().toPixelMap()
                 // Lot « composants » (2026-11-10): under Robolectric, a full-screen dialog's capture can come back as the screen
                 // under it (the welcome read against « Mes pistes »): such a window is drawn from its own view instead.
-                pixels[r.id] = if (first != null && r.id != first.id && samePixels(shot, pixels[first.id])) ownPixels(r) ?: shot else shot
+                // Tour 5, lot « textes »: a pop-up menu (the Mode simple's ⋮) is smaller than the screen, so its capture was
+                // never « the same pixels » as the screen yet read the page under it (« Aide » 1,2:1 on a legible menu):
+                // a pop-up window is drawn from its own view when it has one.
+                val popup = (r.root as? androidx.compose.ui.platform.ViewRootForTest)?.view?.rootView?.javaClass?.simpleName?.contains("Popup") == true
+                pixels[r.id] = if (first != null && r.id != first.id && (popup || samePixels(shot, pixels[first.id]))) ownPixels(r) ?: shot else shot
             }
             texts.forEach { t -> pixels[top(t.node).id]?.let { px -> contrast(t, px, density)?.let(out::add) } }
         }

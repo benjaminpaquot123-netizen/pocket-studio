@@ -170,7 +170,7 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
             val total = wizardStepCount(ui)
             Row(Modifier.fillMaxWidth().padding(start = 16.dp, end = 4.dp, top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
-                    Text(tr("Nouveau morceau, pas à pas"), style = MaterialTheme.typography.titleLarge)
+                    Text(tr("Fais-moi un morceau"), style = MaterialTheme.typography.titleLarge)
                     // Lot 2: no « sur 13 » before a style is chosen (the count is the style's: 10 in Lo-fi).
                     Text(
                         if (style == null) tr("Étape 1 : choisis un style") else tr("Étape %d sur %d", ui.step + 1, total) + " · ${tr(style.name)}",
@@ -187,7 +187,7 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
                 ScaledAlertDialog(
                     onDismissRequest = { confirmClose = false },
                     title = { Text(tr("Quitter sans créer le morceau ?")) },
-                    text = { Text(tr("Tes choix seront perdus. Tu pourras le relancer depuis Mes projets › « Nouveau morceau guidé ».")) },
+                    text = { Text(tr("Tes choix seront perdus. Tu pourras le relancer depuis Mes projets › « Fais-moi un morceau ».")) },
                     confirmButton = {
                         TextButton(onClick = { confirmClose = false; actions.close() }, modifier = Modifier.testTag("wizard_close_confirm")) { Text(tr("Quitter")) }
                     },
@@ -343,7 +343,7 @@ private fun StyleCard(s: StarterWizard.Style, chosen: Boolean, expanded: Boolean
                         Text(" " + tr("Créer et écouter"), textAlign = TextAlign.Center)
                     }
                 }
-                val choose: @Composable () -> Unit = { Text(if (actions.playNow != null) tr("Choisir ce style, pas à pas") else tr("Choisir ce style"), textAlign = TextAlign.Center) }
+                val choose: @Composable () -> Unit = { Text(if (actions.playNow != null) tr("Choisir ce style et continuer") else tr("Choisir ce style"), textAlign = TextAlign.Center) }
                 val chooseModifier = Modifier.pressScale().fillMaxWidth().padding(top = 6.dp).testTag("wizard_style_choose_${s.id}")
                 if (actions.playNow != null) OutlinedButton(onClick = { actions.chooseStyle(s.id) }, modifier = chooseModifier) { choose() }
                 else Button(onClick = { actions.chooseStyle(s.id) }, modifier = chooseModifier) { choose() }
@@ -459,7 +459,7 @@ private fun StylePacks(style: StarterWizard.Style, packs: PacksUi, actions: Wiza
     NeonCard(accent = Neon.Cyan, modifier = Modifier.testTag("wizard_style_packs")) {
         SectionLabel(tr("Les vrais sons du style"))
         Text(
-            tr("Pour que ça sonne vraiment %s : %s (%s). L'assistant prendra ses sons dedans.", tr(style.name), missing.joinToString(", ") { it.name }, mb(missing.sumOf { it.sizeBytes })),
+            tr("Pour que ça sonne vraiment %s : %s (%s). « Fais-moi un morceau » prendra ses sons dedans.", tr(style.name), missing.joinToString(", ") { it.name }, mb(missing.sumOf { it.sizeBytes })),
             style = MaterialTheme.typography.bodyMedium,
         )
         if (downloading.isNotEmpty()) {
@@ -740,7 +740,7 @@ private fun SummaryStep(ui: WizardUi, style: StarterWizard.Style) {
     }
     Text(
         tr("« Créer le morceau » ouvre un nouveau projet : chaque son est sur son pad et le rythme est dans la grille.") + " " +
-            tr("Un petit guide te montre ensuite comment jouer tout le morceau et écouter chaque partie."),
+            tr("Une petite visite te montre ensuite comment jouer tout le morceau et écouter chaque partie."),
         style = MaterialTheme.typography.bodyMedium,
     )
 }

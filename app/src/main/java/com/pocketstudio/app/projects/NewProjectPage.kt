@@ -124,7 +124,7 @@ internal fun NewProjectPage(
         ) {
             BigChoice(Icons.Filled.School, tr("J'apprends"), tr("Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie."),
                 Neon.Acid, !busy, "start_learn") { pending = START_LEARN }
-            BigChoice(Icons.Filled.Bolt, tr("Fais-moi un morceau"), tr("Choisis un style : l'assistant fait le morceau, le Guide t'aide à le finir."),
+            BigChoice(Icons.Filled.Bolt, tr("Fais-moi un morceau"), tr("Choisis un style : l'appli fait le morceau, le Guide t'aide à le finir."),
                 Neon.Cyan, !busy, "starter_wizard") { pending = START_WIZARD }
             BigChoice(Icons.Filled.Edit, tr("Je pars de zéro"), tr("Aucune note : une batterie, une Acid\u00A0303 et un synthé attendent les tiennes."),
                 Neon.Amber, !busy, "start_empty") {
@@ -340,7 +340,7 @@ private fun QuickStyleCard(s: StarterWizard.Style, quick: QuickUi, ask: (String)
                     TextButton(onClick = { ask(START_CUSTOM + s.id) }, enabled = !busy, modifier = Modifier.testTag("quick_custom_${s.id}")) {
                         val quiet = if (busy) Neon.TextSecondary.copy(alpha = 0.5f) else Neon.TextPrimary.copy(alpha = 0.8f)
                         Icon(Icons.Filled.Tune, contentDescription = null, modifier = Modifier.size(16.dp), tint = quiet)
-                        Text(" " + tr("Pas à pas"), color = quiet, maxLines = 1)
+                        Text(" " + tr("Choisir ce style"), color = quiet, maxLines = 1)
                     }
                 }
             }

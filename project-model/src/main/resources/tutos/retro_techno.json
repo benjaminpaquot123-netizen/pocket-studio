@@ -63,7 +63,7 @@
         {
           "id": "ready",
           "text": "Avant de commencer : ton kit est déjà une 909 complète, avec ses effets. Tu n'as rien à régler.",
-          "textPro": "Déjà prêt : kick, clap, charleys et caisse de la 909 (kit de l'assistant), le « zap » sur un pad de percussion."
+          "textPro": "Déjà prêt : kick, clap, charleys et caisse de la 909 (kit de « Fais-moi un morceau »), le « zap » sur un pad de percussion."
         },
         {
           "id": "kick_do",
@@ -404,7 +404,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie » (le hoover), puis celui de la piste « Basse ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la piste « Mélodie » (le hoover), puis celui de la piste « Basse ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la piste « Mélodie » (le hoover), puis celui de la piste « Basse ».",
           "check": "changed:volumes:lead,bass",
           "spot": "mixer.strip",

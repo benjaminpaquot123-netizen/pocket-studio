@@ -59,7 +59,7 @@ class Tour5BloquantsTest : HumanTester("bloquants") {
     private fun simpleSong(family: String = "Techno", style: String = "techno", seat: SeatOptions? = null) {
         if (seat == null) {
             begin()
-            tapText("Créer mon premier morceau")
+            tapText("Fais-moi un morceau")
         } else {
             begin(seat)
             tap("welcome_guided")

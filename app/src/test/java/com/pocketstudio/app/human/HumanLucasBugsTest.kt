@@ -59,9 +59,9 @@ class HumanLucasBugsTest : HumanTester("lucas-bugs") {
         return centerOf(tag)!!
     }
 
-    /** Home › « Créer mon premier morceau (guidé) » › Bass music › Jump up DnB › « Choisir ce style » (c/1-5). */
+    /** Home › « Fais-moi un morceau » › Bass music › Jump up DnB › « Choisir ce style » (c/1-5). */
     private fun wizardOnJumpUp() {
-        tap(centerOfText("Créer mon premier morceau", substring = true), "the big orange button")
+        tap(centerOfText("Fais-moi un morceau", substring = true), "the big orange button")
         // « Simple ou Pro ? » (owner, 2026-10-29): Simple, as a first launch suggests.
         tap(centerOf("mode_card_simple"), "Simple")
         tap(centerOfText("Bass music", substring = true), "Bass music")
@@ -230,7 +230,7 @@ class HumanLucasBugsTest : HumanTester("lucas-bugs") {
     fun aPackIsNamedOnceWhenItsSoundsCannotBeRead() {
         installDrumAndBassPack(damaged = true, id = "boom_bap", name = "Boom bap", family = "Hip-hop")
         begin()
-        tap(centerOfText("Créer mon premier morceau", substring = true), "the big orange button")
+        tap(centerOfText("Fais-moi un morceau", substring = true), "the big orange button")
         tap(centerOf("mode_card_simple"), "Simple")
         tap(reach("wizard_family_Hip-hop"), "Hip-hop")
         tap(reach("wizard_style_boom_bap"), "the Boom bap card")

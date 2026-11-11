@@ -377,7 +377,7 @@ private fun ContinueCard(ui: LaunchUi, onClick: () -> Unit, modifier: Modifier) 
 @Composable
 private fun OtherChoices(actions: LaunchActions) {
     Choice(
-        Icons.Filled.AutoAwesome, tr("Nouveau morceau"), tr("Un style en une touche, ou pas à pas avec l'assistant."),
+        Icons.Filled.AutoAwesome, tr("Nouveau morceau"), tr("Un style en une touche, ou « Fais-moi un morceau »."),
         Neon.Cyan, actions.newSong, "launch_new",
     )
     Choice(
@@ -497,7 +497,7 @@ internal fun PadLiveCard(onClick: () -> Unit) {
                 )
             }
             Text(
-                tr("Des pads prêts à jouer, tes sons, des effets de scène. Ça sonne tout de suite."),
+                tr("Des pads prêts à jouer, tes sons, des effets live. Ça sonne tout de suite."),
                 style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, maxLines = 3, overflow = TextOverflow.Ellipsis,
             )
         }

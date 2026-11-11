@@ -54,7 +54,7 @@ class OnboardingUiTest {
         }
         // The mode is no longer chosen beforehand on the welcome: each way to start asks it (FirstLaunch).
         compose.onNodeWithTag("welcome_mode").assertDoesNotExist()
-        compose.onNodeWithText("Créer mon premier morceau (guidé)").assertExists()
+        compose.onNodeWithText("Fais-moi un morceau").assertExists()
         compose.onNodeWithTag("welcome_guided").performClick()
         compose.onNodeWithTag("welcome_demo").performClick()
         compose.onNodeWithTag("welcome_empty").performClick()

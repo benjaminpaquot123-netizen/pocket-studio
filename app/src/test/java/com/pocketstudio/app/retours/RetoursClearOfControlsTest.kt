@@ -97,7 +97,7 @@ class RetoursClearOfControlsTest : HumanTester("retours-clear") {
             tap("welcome_empty")
             if (centerOf("mode_card_simple") != null) tap("mode_card_simple")
         } else {
-            tapText("Créer mon premier morceau")
+            tapText("Fais-moi un morceau")
             if (centerOf("mode_card_simple") != null) tap("mode_card_simple")
             tap("wizard_family_Techno")
             tap("wizard_style_techno")

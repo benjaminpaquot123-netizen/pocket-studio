@@ -70,10 +70,10 @@ class FirstLaunchTest(private val phone: String, private val expected: String) {
         h.start(firstLaunch = true, lang = lang)
         compose.onNodeWithTag("welcome").assertExists()
         assertEquals(lang, I18n.lang)
-        val first = I18n.t("Créer mon premier morceau (guidé)")
+        val first = I18n.t("Fais-moi un morceau")
         assertTrue("$phone: « $first » on the first screen", compose.onAllNodesWithText(first).fetchSemanticsNodes().isNotEmpty())
         if (lang != Lang.FR) {
-            for (fr in listOf("Créer mon premier morceau (guidé)", "J'apprends", "Partir de zéro", "Écouter une démo")) {
+            for (fr in listOf("Fais-moi un morceau", "J'apprends", "Partir de zéro", "Écouter une démo")) {
                 assertTrue("$phone: « $fr » left in French", compose.onAllNodesWithText(fr).fetchSemanticsNodes().isEmpty())
             }
         }

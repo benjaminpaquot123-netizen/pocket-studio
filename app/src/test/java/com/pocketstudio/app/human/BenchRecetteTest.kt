@@ -66,7 +66,7 @@ class BenchRecetteTest : HumanTester("recette") {
     @Test
     fun simpleSongCounterFollowsTheEnginePastTheFirstPart() {
         begin()
-        tapText("Créer mon premier morceau")
+        tapText("Fais-moi un morceau")
         tap("mode_card_simple")
         tap("wizard_family_Techno")
         tap("wizard_style_techno")
@@ -99,7 +99,7 @@ class BenchRecetteTest : HumanTester("recette") {
     @Test
     fun simpleSongPlaysToItsEndAndStopsThere() {
         begin()
-        tapText("Créer mon premier morceau")
+        tapText("Fais-moi un morceau")
         tap("mode_card_simple")
         tap("wizard_family_Techno")
         tap("wizard_style_techno")

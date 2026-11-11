@@ -26,7 +26,7 @@
   "Progression pour tout le morceau": "整首歌的和弦进行",
   "Partie par partie (une case = une mesure)": "逐段落（一格 = 一小节）",
   "Pistes qui suivent les accords": "跟随和弦的音轨",
-  "Les pistes de l'assistant suivent ; les notes que tu as écrites restent, sauf si tu le demandes ici.": "助手生成的音轨会跟随；你自己写的音符保持不变，除非在这里要求。",
+  "Les pistes de « Fais-moi un morceau » suivent ; les notes que tu as écrites restent, sauf si tu le demandes ici.": "“帮我做一首”生成的音轨会跟随；你自己写的音符保持不变，除非在这里要求。",
   "%s (gelée)": "%s（已冻结）",
   "… et %d autres parties": "…还有 %d 个段落",
   "Touche pour changer les accords de tout le morceau.": "点击更换整首歌的和弦。",

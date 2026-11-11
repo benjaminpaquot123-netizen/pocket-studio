@@ -60,7 +60,7 @@
         {
           "id": "ready",
           "text": "Avant de commencer : sur un pad, « FX » veut dire qu'un effet y est déjà posé (il rend le son plus percutant), « G 30 » ou « D 45 » que le son est placé un peu à gauche ou à droite. Tout est prêt : tu n'as rien à régler.",
-          "textPro": "Déjà prêt pour toi, pour que ça sonne dubstep tout de suite : les sons de batterie du style, réglés comme l'assistant les règle (volumes, effets, place à gauche ou à droite : « G 30 », « D 45 ») ; compresseur, saturation et clipper sur la tranche « Batterie ». Chaque piste que tu créeras arrivera avec son son conseillé. « Acid 303 », « Voix » et « Remix » sont dans tout projet : le tuto ne s'en sert pas.",
+          "textPro": "Déjà prêt pour toi, pour que ça sonne dubstep tout de suite : les sons de batterie du style, réglés comme « Fais-moi un morceau » les règle (volumes, effets, place à gauche ou à droite : « G 30 », « D 45 ») ; compresseur, saturation et clipper sur la tranche « Batterie ». Chaque piste que tu créeras arrivera avec son son conseillé. « Acid 303 », « Voix » et « Remix » sont dans tout projet : le tuto ne s'en sert pas.",
           "check": "manual"
         },
         {
@@ -499,7 +499,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le fader de la piste « Accords » et celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

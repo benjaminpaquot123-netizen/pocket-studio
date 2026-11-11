@@ -51,7 +51,7 @@
         {
           "id": "ready",
           "text": "Avant de commencer : ton kit est déjà celui de l'acid techno (une 909), et la piste « Acid 303 » a déjà le son du style. Tu n'as rien à régler.",
-          "textPro": "Déjà prêt : la 909 de l'assistant (kick « crunch », charleys 909), et la 303 avec son son du style (sans notes) : saturation, écho et pompe sur sa tranche."
+          "textPro": "Déjà prêt : la 909 de « Fais-moi un morceau » (kick « crunch », charleys 909), et la 303 avec son son du style (sans notes) : saturation, écho et pompe sur sa tranche."
         },
         {
           "id": "kick_do",
@@ -360,7 +360,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la 303, puis celui du pad « Clap ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la 303, puis celui du pad « Clap ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la 303, puis celui du pad « Clap ».",
           "check": "changed:volumes:acid,clap",
           "spot": "mixer.strip",

@@ -121,7 +121,7 @@ class SimpleMixTest {
         compose.onNodeWithTag("mix_fader_1").performTouchInput { doubleClick() }
         idle()
         assertEquals(Mixer.DEFAULT_VOLUME, volume(1), 0f)
-        compose.onNodeWithTag("mix_db_1").assertTextEquals("+0,0 dB")
+        compose.onNodeWithTag("mix_db_1").assertTextEquals("Normal")
         h.vm.undo()
         assertEquals(0.5f, volume(1), 0f)
     }

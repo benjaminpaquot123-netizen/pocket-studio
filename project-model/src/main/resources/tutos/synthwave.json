@@ -62,7 +62,7 @@
         {
           "id": "ready",
           "text": "Avant de commencer : le kit de la synthwave est déjà chargé, avec une caisse claire et des charleys de LinnDrum, la boîte à rythmes star des années 80. Tu n'as rien à régler.",
-          "textPro": "Déjà prêt : caisse claire et charleys LinnDrum, et les réglages de l'assistant pour ce style (volumes, place gauche-droite, effets des pads). Chaque piste que tu créeras arrivera avec son son conseillé.",
+          "textPro": "Déjà prêt : caisse claire et charleys LinnDrum, et les réglages de « Fais-moi un morceau » pour ce style (volumes, place gauche-droite, effets des pads). Chaque piste que tu créeras arrivera avec son son conseillé.",
           "check": "manual"
         },
         {
@@ -497,7 +497,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre en « dB » dit le volume : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
           "textPro": "À toi : baisse un peu les faders « Accords » et « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

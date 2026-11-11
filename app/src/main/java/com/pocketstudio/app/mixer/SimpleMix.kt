@@ -288,9 +288,9 @@ private fun MixStrip(t: SimpleTrack, alone: Boolean, meters: () -> FloatArray, a
 private fun StripBody(t: SimpleTrack, alone: Boolean, meters: () -> FloatArray, actions: SimpleMixActions) {
     MixFader(
         t.volume, { actions.setVolume(t.ch, it) }, { actions.resetVolume(t.ch) }, { meters().getOrElse(t.ch) { 0f } },
-        tr("Volume de %s", t.name), faderDb(t.volume), "mix_fader_${t.ch}", top = "+4", bottom = "−∞", height = FADER_H,
+        tr("Volume de %s", t.name), faderWords(t.volume), "mix_fader_${t.ch}", top = "+4", bottom = "−∞", height = FADER_H,
     )
-    Text(faderDb(t.volume), style = MonoStyle.copy(fontSize = 12.sp), color = Neon.TextPrimary, maxLines = 1, modifier = Modifier.testTag("mix_db_${t.ch}"))
+    Text(faderWords(t.volume), style = MonoStyle.copy(fontSize = 12.sp), color = Neon.TextPrimary, maxLines = 1, modifier = Modifier.testTag("mix_db_${t.ch}"))
     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         com.pocketstudio.app.ui.MuteToggle(t.mute, t.name, "mix_mute_${t.ch}", size = androidx.compose.ui.unit.DpSize(30.dp, 40.dp)) { actions.toggleMute(t.ch) }
         PlayAlone(alone, t.name, "mix_alone_${t.key}") { actions.listenAlone(t.key) }
@@ -332,9 +332,9 @@ private fun DrumsGroup(
                     Text(pad.name, style = MaterialTheme.typography.labelSmall, maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center, lineHeight = 12.sp, modifier = Modifier.heightIn(min = 26.dp))
                     MixFader(
                         v, { actions.setVolume(ch, it) }, { actions.resetVolume(ch) }, { meters().getOrElse(ch) { 0f } },
-                        tr("Volume de %s", pad.name), faderDb(v), "mix_pad_fader_${pad.lane}", top = null, bottom = null, height = MINI_FADER_H, mini = true,
+                        tr("Volume de %s", pad.name), faderWords(v), "mix_pad_fader_${pad.lane}", top = null, bottom = null, height = MINI_FADER_H, mini = true,
                     )
-                    Text(faderDb(v).replace(" dB", ""), style = MonoStyle.copy(fontSize = 11.sp), color = Neon.TextSecondary, maxLines = 1)
+                    Text(faderWords(v), style = MonoStyle.copy(fontSize = 11.sp), color = Neon.TextSecondary, maxLines = 1)
                     PlayAlone(on, pad.name, "mix_pad_alone_${pad.lane}") { actions.listenPadAlone(pad.lane) }
                 }
             }
@@ -351,7 +351,7 @@ private fun OutputStrip(masterDb: Float, meters: () -> FloatArray, loudness: () 
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         StripHead(tr("Sortie"), Neon.TextSecondary)
-        val db = com.pocketstudio.model.LoudnessTargets.format(masterDb.toDouble()) + " dB"
+        val db = levelWords(masterDb)
         MixFader(
             masterPosition(masterDb), { setDb((masterDbAt(it) * 2f).let(Math::round) / 2f) }, { setDb(0f) }, { meters().getOrElse(Mixer.MASTER) { 0f } },
             tr("Volume de sortie"), db, "mix_out_fader", top = "+6", bottom = "−24", height = FADER_H,
@@ -471,7 +471,7 @@ private fun MixFader(
                 stateDescription = said
                 progressBarRangeInfo = ProgressBarRangeInfo(value, 0f..1f)
                 setProgress { v -> change(v.coerceIn(0f, 1f)); true }
-                onClick(label = tr("Remettre à 0 dB")) { reset(); true }
+                onClick(label = tr("Remettre au volume normal")) { reset(); true }
             }
             .testTag(tag),
     ) {

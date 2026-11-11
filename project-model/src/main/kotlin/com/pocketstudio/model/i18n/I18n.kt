@@ -164,6 +164,8 @@ object I18n {
         "remix10",
         // Round 5, chantier 8 (2026-11-11): a new curve shown and lit, « déjà une courbe » in the picker, « Voir le réglage » on it.
         "courbes",
+        // Round 5, chantier 9 (2026-11-11): three « ? » where a beginner gets stuck (recording on the keys, the Mix simple, its loop).
+        "access",
     )
 
     @Volatile

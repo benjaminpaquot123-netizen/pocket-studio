@@ -71,6 +71,17 @@ for zone in "${zones[@]}"; do
   # Socle du banc (review, moyen 3): only the main discussion moves the batch, when it opens one.
   moved_batch="$(git diff --name-only "$base" "eq/$tour-$zone" -- scripts/bench/portail-paquet.txt)"
   if from_paquet 2 && [ -n "$moved_batch" ]; then echo "$zone: the branch moves the batch (scripts/bench/portail-paquet.txt): not merged." >&2; exit 3; fi
+  # PLAN-RESTE 7.1 (from batch 2): the zone's report, read in the branch (docs/audits/ultra/<tour-N>-<zone>-rapport.md):
+  # its « tests: » line gives the team's targeted tests, added to the filters given here; its list of paths names a
+  # test of app/src/test for each place; each replay the branch adds to rejeux/ has its last verdict there, « oracle
+  # tenu » (scripts/bench/rapport-zone.py).
+  report="docs/audits/ultra/$tour-$zone-rapport.md"
+  added="$(comm -13 <(replays "$base") <(replays "eq/$tour-$zone") | sed 's/^/ajout:/')"
+  report_out=""
+  # shellcheck disable=SC2086
+  if from_paquet 2 && ! report_out="$(python3 -I scripts/bench/rapport-zone.py "eq/$tour-$zone" "$report" $added)"; then echo "$zone: zone report refused: $(printf '%s' "$report_out" | tr '\n' ';'): not merged." >&2; exit 7; fi
+  zone_filters=("${filters[@]}")
+  while IFS= read -r f; do [ -z "$f" ] || zone_filters+=("$f"); done < <(printf '%s\n' "$report_out" | sed -n 's/^filtre: //p')
   # PLAN-RESTE 7.1: a team branch never brings a symbolic link (a third-party checkout linked in, a secret linked out).
   links="$(git ls-tree -r "eq/$tour-$zone" | awk '$1 == "120000" {print $4}')"
   [ -z "$links" ] || { echo "$zone: symbolic link(s) in the branch: $links: not merged." >&2; exit 6; }
@@ -86,7 +97,7 @@ for zone in "${zones[@]}"; do
     echo "$zone: no replay test left in docs/audits/ultra/rejeux/ after the merge: undone." >&2; exit 5
   fi
   args=(:app:testDebugUnitTest)
-  for f in "${filters[@]}"; do args+=(--tests "$f"); done
+  for f in "${zone_filters[@]}"; do args+=(--tests "$f"); done
   # The self-test (every Bench*, Tour*AppProof*, Tour*IdleTest and @KnownDefect class, the bench's scripts, the judge)
   # always runs on the merged code, on a lot of its own; then the repository's replays (never PS_REJEUX_DIR's), then
   # the team's filters.
@@ -97,7 +108,7 @@ for zone in "${zones[@]}"; do
     env -u PS_REJEUX_DIR scripts/bench/rejeu-defauts.sh > "$lot/rejeux.txt" 2>&1 || green=0
     cat "$lot/rejeux.txt"
   fi
-  if [ "$green" -eq 1 ] && [ ${#filters[@]} -gt 0 ]; then scripts/bench/gradle-file.sh "${args[@]}" || green=0; fi
+  if [ "$green" -eq 1 ] && [ ${#zone_filters[@]} -gt 0 ]; then scripts/bench/gradle-file.sh "${args[@]}" || green=0; fi
   if [ "$green" -eq 0 ]; then
     git reset --keep "$before"
     echo "$zone: red after the merge (self-test, replays or tests; kept in $lot): undone." >&2; exit 5
@@ -109,8 +120,13 @@ for zone in "${zones[@]}"; do
   # Review of the « portail » lot (M2): any step that fails from here to the traces' commit undoes the merge too, and
   # leaves no half-written traces.
   trace=""
+  computed=()
   undo_merge() {
     [ -z "$trace" ] || rm -rf "${trace:?}"
+    # The files fuse-reports.py and tableau-de-bord.py wrote: back to the merge's version, or gone when it had none.
+    for f in "${computed[@]}"; do
+      if git cat-file -e "HEAD:$f" 2>/dev/null; then git checkout -q HEAD -- "$f" 2>/dev/null || true; else rm -f -- "$f"; fi
+    done
     # From HEAD, not the index: a failed traces' commit after « git add » has the index's line staged already.
     git checkout -q HEAD -- docs/DECISIONS.md 2>/dev/null || true
     git reset -q --keep "$before"
@@ -124,7 +140,7 @@ for zone in "${zones[@]}"; do
   mkdir -p "$trace"
   cp "$lot/selftest-resume.txt" "$lot/selftest.ok" "$lot/selftest-chantier.txt" "$trace/"
   { echo "fusion: $merged"; echo "branche: eq/$tour-$zone"; echo "tete: $(git rev-parse "eq/$tour-$zone")"
-    echo "relecture: $review"; echo "relu: $read_sha"; [ ${#filters[@]} -eq 0 ] || echo "filtres: ${filters[*]}"
+    echo "relecture: $review"; echo "relu: $read_sha"; [ ${#zone_filters[@]} -eq 0 ] || echo "filtres: ${zone_filters[*]}"
     echo "rejeux :"; sed 's/^/  /' "$lot/rejeux.txt"; } > "$trace/fusion.txt"
   # The judge again, with the traces there (the self-test's ran before them and counted this merge « sans trace »);
   # it reads the lot's summary, sealed with its JUnit results (the trace keeps no XML).
@@ -132,6 +148,18 @@ for zone in "${zones[@]}"; do
   # Socle du banc, point 2: the lot's decisions file, listed once at the end of docs/DECISIONS.md.
   scripts/bench/decisions-index.sh "$tour" "$zone"
   index=(); [ ! -f docs/DECISIONS.md ] || index=(docs/DECISIONS.md)
+  # PLAN-RESTE 7.1: the round's reports fused again (the new keys into base.tsv) and the dashboard recomputed on every
+  # round, on the merged code; what they write goes into the traces' commit.
+  round="docs/audits/ultra/sieges/$tour"
+  # (Its failure undoes the merge: a rule of the portal, frozen until batch 2 like the others.)
+  if from_paquet 2 && [ -d "$round" ] && [ -f scripts/bench/fuse-reports.py ] && [ -f scripts/bench/tableau-de-bord.py ]; then
+    computed=(docs/audits/ultra/base.tsv "$round/clusters.md" "$round/clusters-complet.md" "$round/promesses.tsv" "$round/incidents-banc.tsv")
+    python3 -I scripts/bench/fuse-reports.py "$round" --tour "$tour" --maj-base > /dev/null
+    mapfile -t rounds < <(find docs/audits/ultra/sieges -mindepth 1 -maxdepth 1 -type d -name 'tour-[0-9]*' | sort -V)
+    computed+=("${rounds[-1]}/tableau-de-bord.md")
+    python3 -I scripts/bench/tableau-de-bord.py "${rounds[@]}" > /dev/null
+    for f in "${computed[@]}"; do if [ -f "$f" ]; then index+=("$f"); fi; done
+  fi
   git add -- "$trace" "${index[@]}"
   git commit -q -m "Portal traces of the merge of $zone ($tour)" -- "$trace" "${index[@]}"
   trap - ERR

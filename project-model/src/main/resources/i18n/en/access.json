@@ -1,0 +1,7 @@
+{
+  "Enregistrer au clavier": "Recording on the keys",
+  "Touche le bouton rouge, puis joue : l'appli écrit tes notes dans la partie, tu les retrouves dans « Notes ». Le chiffre à côté est le décompte : les mesures entendues avant de jouer. « Garder ce que je viens de jouer » reprend ce que tu viens de jouer, sans le refaire.": "Touch the red button, then play: the app writes your notes into the part, and you find them in “Notes”. The figure beside it is the count-in: the bars you hear before playing. “Keep what I just played” takes back what you just played, without playing it again.",
+  "Le Mix simple": "The simple Mix",
+  "Monte le curseur de ce qui doit s'entendre, baisse ce qui gêne. Sous « Sortie », un mot juge le volume final : « Bien » ou « Fort et propre », c'est prêt à partager ; « Ça sature », baisse la sortie. « Tout à zéro » remet les volumes du départ.": "Raise the slider of what must be heard, lower what gets in the way. Under “Output”, a word judges the final volume: “Good” or “Loud and clean” means ready to share; “Clipping” means lower the output. “Reset all” brings back the starting volumes.",
+  "La partie en cours tourne en boucle pendant que tu règles : tu entends tout de suite ce que tu changes. « ■ Arrêter » coupe la boucle.": "The current part loops while you adjust: you hear what you change right away. “■ Stop” ends the loop."
+}

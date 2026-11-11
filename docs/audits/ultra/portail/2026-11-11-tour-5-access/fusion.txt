@@ -1,0 +1,8 @@
+fusion: 7e9c5bd67ea08c2f4a7c5cb2d0464dbf84300c29
+branche: eq/tour-5-access
+tete: 511215ba1964d18a6faf469a74e35608307888d0
+relecture: docs/audits/ultra/tour-5-access-relecture.md
+relu: 4977be6ed1e3e4288c553ad672b462993bafdabc
+filtres: *LyingSheetsScrollTest *LyingSheetsScreenshotTest *HelpCoverageTest *ScreenScanTest *I18nCatalogTest *GestureBudgetTest *SimpleMix*ScreenshotTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

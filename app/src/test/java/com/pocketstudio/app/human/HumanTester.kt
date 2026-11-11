@@ -364,7 +364,10 @@ abstract class HumanTester(private val seat: String) {
                     benchExceptions++
                     journal.appendText("#$n BANC exception du banc (pas de l'appli) : ${e.javaClass.name}: ${e.message?.take(300)}\n${e.stackTrace.take(8).joinToString("\n") { "    at $it" }}\n")
                     say("Banc : le banc a eu un souci pendant ce geste (${e.javaClass.simpleName}) ; ce n'est pas l'appli. Note-le dans « incidents-banc » avec banc?: banc.")
+                    // Review of « banc6b » (M3): what the gesture saw before the bench's exception is written, as for any gesture.
+                    problems.forEach { journal.appendText("#$n SCREEN ERROR $it\n") }
                     problems.clear()
+                    stalls(journal, n)
                     n++
                     if (benchExceptions >= BENCH_EXCEPTIONS_MAX) { end("banc : $benchExceptions exceptions du banc"); return }
                     continue
@@ -1417,16 +1420,25 @@ abstract class HumanTester(private val seat: String) {
      * (the app says it works, nothing runs), held a tester's « attends 2 » for 120 s. Once neither the stand-in's heartbeat
      * ([BenchSeparation.beats]) nor a busy worker (off the network) has moved for [STILL_MS], the hand goes back.
      */
+    /** The threads that held the last « attends » (name, how long, where), for a failure's message; empty: none. */
+    internal var waitHeldBy: String = ""
+
     private fun slowWorkDone() {
         val until = System.currentTimeMillis() + SLOW_WORK_CAP_MS
         var waited = false
         var beats = separation?.beats ?: 0L
         var movedAt = System.currentTimeMillis()
+        // Lot « verdicts »: who held the wait (a busy worker), how often it was seen, and where it was the last time.
+        val heldBy = LinkedHashMap<String, Pair<Int, List<StackTraceElement>>>()
+        val started = System.currentTimeMillis()
         // The separation's own flag too: between two of its steps (or before its service ran) no thread is in the stand-in.
         while (slowBenchWorkBusy() || SeparationJob.state.value.busy) {
             val now = System.currentTimeMillis()
             val b = separation?.beats ?: 0L
-            if (b != beats || coroutineWorkersBusy()) { beats = b; movedAt = now }
+            val busy = busyWorker()
+            busy?.let { t -> heldBy[t.name] = ((heldBy[t.name]?.first ?: 0) + 1) to t.stackTrace.take(12) }
+            if (b != beats) heldBy["battement du remplaçant (BenchSeparation)"] = ((heldBy["battement du remplaçant (BenchSeparation)"]?.first ?: 0) + 1) to emptyList()
+            if (b != beats || busy != null) { beats = b; movedAt = now }
             if (now - movedAt >= STILL_MS) {
                 // A stand-in that stopped moving is the bench's; the flag alone is what the app shows (a phone shows it too).
                 if (slowBenchWorkBusy()) say("Banc : le remplaçant du banc (téléchargement ou séparation) n'avance plus depuis ${STILL_MS / 1000} s : l'attente s'arrête là. Note-le dans « incidents-banc » avec banc?: temps.")
@@ -1434,6 +1446,7 @@ abstract class HumanTester(private val seat: String) {
             }
             if (now >= until) {
                 say("Banc : le travail en cours (téléchargement ou séparation) n'est pas fini après ${SLOW_WORK_CAP_MS / 1000} s d'attente réelle ; attends encore. Si cela dure, note-le dans « incidents-banc » avec banc?: temps : ce peut être le banc ou l'appli.")
+                heldWait(heldBy, started)
                 return
             }
             waited = true
@@ -1444,7 +1457,16 @@ abstract class HumanTester(private val seat: String) {
             picker()
             services()
         }
+        heldWait(heldBy, started)
         if (waited) settle(200)
+    }
+
+    /** [waitHeldBy] for this « attends », printed too (the test's output): each thread that held it, seen N times (50 ms apart), its last stack. */
+    private fun heldWait(heldBy: Map<String, Pair<Int, List<StackTraceElement>>>, started: Long) {
+        waitHeldBy = heldBy.entries.joinToString("\n") { (name, seen) ->
+            "fil $name occupé (vu ${seen.first} fois sur ${System.currentTimeMillis() - started} ms) :\n" + seen.second.joinToString("\n") { "    at $it" }
+        }
+        if (waitHeldBy.isNotEmpty()) println("BANC attente retenue par :\n$waitHeldBy")
     }
 
     /** A thread runs (or sleeps in) the bench's slow stand-ins: BenchSeparation's server, decoding, separating, analysing. */
@@ -1460,14 +1482,16 @@ abstract class HumanTester(private val seat: String) {
     }
 
     /** A coroutine worker thread (Dispatchers.Default and IO share them) is running, not parked waiting for work. */
-    private fun coroutineWorkersBusy(): Boolean {
+    private fun coroutineWorkersBusy(): Boolean = busyWorker() != null
+
+    /** The first coroutine worker found running ([coroutineWorkersBusy]), or null. */
+    private fun busyWorker(): Thread? {
         var root = Thread.currentThread().threadGroup
         while (root.parent != null) root = root.parent
         val threads = arrayOfNulls<Thread>(root.activeCount() + 16)
         val n = root.enumerate(threads, true)
-        return (0 until n).any { i ->
-            val t = threads[i] ?: return@any false
-            t.name.startsWith("DefaultDispatcher-worker") && t.state == Thread.State.RUNNABLE && !waitsOnTheNetwork(t)
+        return (0 until n).firstNotNullOfOrNull { i ->
+            threads[i]?.takeIf { t -> t.name.startsWith("DefaultDispatcher-worker") && t.state == Thread.State.RUNNABLE && !waitsOnTheNetwork(t) }
         }
     }
 

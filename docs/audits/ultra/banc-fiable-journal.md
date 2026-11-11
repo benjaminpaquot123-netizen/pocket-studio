@@ -57,16 +57,16 @@ Une ligne par étape : [x] fait / [ ] à faire, preuve, commit. « continue » r
 ## Séance 4 (2026-11-08 soir, après la recette de Benjamin)
 
 - [x] Recette saisie : 16 essais sur 18 (tablette + téléphone) → `verdicts.tsv` (8 appli, 8 banc), `hors-banc.tsv` ; plan complété (PLAN-RESTE §1 bis).
-- [x] 4.0 (a, c) `verifie-chantier.py` + tests (12 écarts au départ, réels : gardes « banc » à écrire, T4-17 hors base, T4-19 preuve Bench*, tel-10 sans ligne) ; `marque-corrige.sh` ; `fusion-equipes.sh` exige « Relu : <sha> » et « Verdict : 0 bloquant, 0 grave », tolère une remise à jour sur fx-int après relecture. (b) paires rouge/vert : pas encore vérifiées par le programme.
+- [x] 4.0 (a, c) `verifie-chantier.py` + tests (12 écarts au départ, réels : gardes « banc » à écrire, T4-17 hors base, T4-19 preuve Bench*, tel-10 sans ligne) ; `marque-corrige.sh` ; `fusion-equipes.sh` exige « Relu : <sha> » et « Verdict : 0 bloquant, 0 grave », tolère une remise à jour sur fx-int après relecture. (b) paires rouge/vert : pas encore vérifiées par le programme. preuve: script scripts/bench/test_ultra_bench.py (cas `chantier`, `judge_criteria` ; d'avant la discipline rouge/vert, preuve rattachée au lot « verdicts » le 2026-11-11)
 - [x] tel-15 / tel-19 (atelier `recette2`, relu, fusionné 1f4f293) : T5-Ec-28 appli (`@KnownDefect T5-REMIXFIN`) ; T5-Bb-58 : l'annulation est juste, les 572 mesures viennent sans doute d'une mélodie de 4 mesures qui a triplé le morceau avant la prise (non tranché, à prouver).
-- [x] 4.2 sortie de siège (`sortie-de-siege.py`, `human-tester.sh`, `fuse-reports.py`, test).
-- [x] 4.3 un dossier JUnit par passe (`-Ptest.results.dir`), verdict par passe (rouge avant / vert après dans `test_ultra_bench.py`).
+- [x] 4.2 sortie de siège (`sortie-de-siege.py`, `human-tester.sh`, `fuse-reports.py`, test). preuve: script scripts/bench/test_ultra_bench.py (cas `seat_exit`, `seat_exit_anchored`)
+- [x] 4.3 un dossier JUnit par passe (`-Ptest.results.dir`), verdict par passe (rouge avant / vert après dans `test_ultra_bench.py`). preuve: script scripts/bench/test_ultra_bench.py (cas `portal` : un Gradle de remplacement donne à chaque passe ses résultats JUnit)
 - [ ] R.1 (atelier `banc-r1`, en relecture) : compteur Simple = banc (réparé) ; changement de partie = banc déjà réparé ; démo = **appli** sur le chemin « style touché › Simple ou Pro ? » (Benjamin a quitté la liste sans choisir de style (consigne tel-16 : Retour ou croix)).
 - [ ] R.3 (atelier `scan-r3`) : textes rognés des pastilles non vus par `LayoutScan`.
 - [ ] 4.1 (atelier `banc41`) : défi, causes réelles + remarque de Benjamin (appui ignoré tant que le clap sonne).
 - [ ] 4.4, 4.5, 4.6, 4.7, R.4.
 - [x] (nuit du 8 au 9) Fusionnés après relecture neuve : `recette2` (1f4f293), `scan-r3` (4e52768), `banc-r1` (3ae9b7e), `banc41` (28c912e). Chaque relecture a d'abord refusé (bloquant ou grave réel : verdict faux, gardes qui ne vérifiaient rien, défaut moteur sans suivi, banc trop gentil), corrigé, puis accepté. Juge du chantier : 12 → 5 écarts.
-- [x] 4.0 (b) paires rouge/vert vérifiées par `verifie-chantier.py` ; 7.1 lien symbolique refusé à la fusion ; 7.2 garde Gradle (`~/.gradle/init.d`, PS_GRADLE_FILE) ; 6.1 colonne `cible` d'`applique-corrections.py` (test) ; 5.9 moteur absent compté ; 5.12 machine écrite dans le résumé.
+- [x] 4.0 (b) paires rouge/vert vérifiées par `verifie-chantier.py` ; 7.1 lien symbolique refusé à la fusion ; 7.2 garde Gradle (`~/.gradle/init.d`, PS_GRADLE_FILE) ; 6.1 colonne `cible` d'`applique-corrections.py` (test) ; 5.9 moteur absent compté ; 5.12 machine écrite dans le résumé. preuve: script scripts/bench/test_ultra_bench.py (cas `judge_criteria`, `corrections_by_target`, `native_missing` ; d'avant la discipline, rattachée au lot « verdicts »)
 - [x] (9 nov, nuit) `banc45` fusionné après relecture neuve et relecture du delta (9a32df5) : détecteur de fuite 4.5 avec mode siège, R.6 reachTag, 5 gardes ; `corr61`, `fusion64`, `seance5a` fusionnés avant. Juge du chantier : 0 écart.
 - [ ] En relecture : plan d'action `PLAN-ACTION-AUDITS.md`, étape 1 lot 1 « Le juge » (atelier `juge`, rapport `tour-5-juge-rapport.md`). Ses quatre lignes :
 - [x] A.4 classe sautée en entier = rouge, saut hors de `selftest-sauts-connus.txt` = rouge, « sauté » n'est pas vert pour le juge. preuve: rouge 004e366 / vert 7f5a0ce
@@ -151,3 +151,11 @@ Une ligne par étape : [x] fait / [ ] à faire, preuve, commit. « continue » r
 - [x] 5.1 rendu de 1, 4 et 90 mesures (3 min) à la longueur et aux cibles −8 / −14 (`aThreeMinuteRenderLastsThreeMinutes` ; banc cassé MAX_SECONDS 120 : rouge « 120.0 »). preuve: script scripts/bench/selftest.sh
 - [x] 5.2 « partie affichée » : banc cassé (PhoneEngine ne compte plus ses bascules) → `aMelodyTakeWhileAnotherPartIsShownShowsItsNotes` rouge sur son assertion « part shown » ; vert tel quel. preuve: script scripts/bench/selftest.sh
 - [x] 5.4 ligne de son « tous les blocs Live sont arrêtés » (vue Live) et aucun pad live qui joue ou attend après « Tout couper » (Pad Live) ; banc cassé (ligne retirée) : rouge. preuve: script scripts/bench/selftest.sh
+- [ ] En relecture : étape 3 lot 6 suite « verdicts » (atelier `verdicts`, rapport `tour-5-verdicts-rapport.md`). Ses lignes :
+- [x] 6.3 preuves sans banc des dix lignes « banc » et de T5-TEL10 (`Tour5AppProof3Test`, l'appli et un moteur scripté) ; T4-01 tenu par `@KnownDefect T4-LIVESTOP`. preuve: script scripts/bench/verifie-chantier.py
+- [x] 6.3 une classe qui hérite de `HumanTester` n'est jamais une preuve sans banc. preuve: rouge bf9dbfd3 / vert 28435ec9
+- [x] 6.3 une paire rouge/vert écrite avec d'autres mots se prouve par un rejeu (`paires-rejouees/`). preuve: rouge 2cac6138 / vert e7f47614
+- [x] (relecture banc6b, M1) chaque garde d'un export vide prouvée seule (mutations rejouées, rien commité). preuve: script scripts/bench/test_ultra_bench.py
+- [x] (relecture banc6b, M2) négation lue derrière un adverbe et devant « rejoué sur ». preuve: rouge db852f22 / vert 0c3b2d76
+- [x] (relecture banc6b, M3) exception du banc : « SCREEN ERROR » et « GEL » du geste écrits. preuve: rouge 2fe5defa / vert 70dadbb6
+- [x] 4.4 (suite) « attends » nomme le fil qui le retient (`waitHeldBy`). preuve: rouge 9f4ac07b / vert 05487030

@@ -28,3 +28,5 @@ Source : `docs/audits/AUDIT-PRISE-EN-MAIN.md` (G6, G13 selon la réponse 2B), `P
 - Message de « Mode retours » : posé au-dessus de la barre du pouce et des onglets, il ne prend plus aucun toucher (corrigé).
 - La phrase « En boucle (⟳ Boucler). ▶ joue cette partie seule. » cite une pastille absente du Mode simple.
 - Bancs encore sur `top_play` au sens « jouer » (BenchTour4, Tour5Bloquants, BenchPlaceAndPadLive, BenchRecette) : verts, à relire.
+
+rejeu changé : t4-26-prise-clavier : la barre du pouce apparaît maintenant à 200 % et couvrait les touches visées (gestes 30-31 tombaient sur « ▶ le morceau ») ; gestes 29-32 recalculés sur la mise en page actuelle (Ré 4, glisse pour remonter le clavier caché par « Ta prise : 1 note », Fa 4, « Arrêter »), oracle inchangé, rejoué vert avec rejeu-defauts.sh

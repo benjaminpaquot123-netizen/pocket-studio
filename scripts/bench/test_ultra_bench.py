@@ -2379,6 +2379,18 @@ defauts:
     gravite: moyen | revu: non | banc?: non | promesse: -
 """
 
+REPORT_EXPORTS_C = """siege: c | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
+defauts:
+  - geste: 1 | ecran.vu: 2 | cible: Mes exports | geste.type: touche
+    attendu: mon morceau | obtenu: le fichier fait 3 Ko
+    symptome: texte-faux
+    gravite: moyen | revu: non | banc?: non | promesse: -
+  - geste: 3 | ecran.vu: 4 | cible: WAV | geste.type: touche
+    attendu: un fichier | obtenu: l'export a mis 2 min et il est vide
+    symptome: texte-faux
+    gravite: moyen | revu: non | banc?: non | promesse: -
+"""
+
 
 def export_figures_are_the_benchs(d):
     """PLAN-RESTE 4.7 (T5-Cc-41b, « 1 KB », 4 min for 4 tracks): an export's size and the time it took are the bench's
@@ -2409,6 +2421,17 @@ def export_figures_are_the_benchs(d):
         check(found and mark not in found[0], f"{what} is no export figure of the bench:\n" + text)
     empty = [l for l in text.splitlines() if "export_my_exports" in l]
     check("[banc" not in empty[0], "an empty export of 1 KB is the app's, not a doubt of the bench:\n" + text)
+    # Review of « banc6b » (M1): each guard on its own. A card of 3 Ko without « vide » (the 64 KB bound alone), and a
+    # card « vide » with no size but the time it took (the word alone): both stay the app's.
+    rnd2 = os.path.join(d, "exports-seuil")
+    write(os.path.join(rnd2, "lotA", "c", "journal.txt"), JOURNAL_EXPORTS)
+    write(os.path.join(rnd2, "lotA", "c", "rapport.md"), REPORT_EXPORTS_C)
+    base2 = os.path.join(rnd2, "base.tsv")
+    write(base2, "cle\tetat\tvu\tnote\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), rnd2, "--base", base2, "--tour", "tour-6")
+    for tag, what in (("export_my_exports", "an export of 3 Ko (not « vide »)"), ("export_wav", "an export « vide » (no size)")):
+        found = [l for l in text.splitlines() if tag in l]
+        check(found and mark not in found[0] and "[banc" not in found[0], f"{what} is the app's, no export figure of the bench:\n" + text)
 
 
 def seat_exit(d):

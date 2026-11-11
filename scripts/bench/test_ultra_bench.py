@@ -2254,6 +2254,23 @@ def zone_report(d):
         branch(zone, good + f"- chemin: Guide | test: {test}\n", change)
         code, out, asked, moved = merge(zone)
         check(code == 7 and not moved and f"{test} is not a @Test of app/src/test" in out, f"a path whose test {test} is not a test of app/src/test is refused:\n" + out)
+    # A replay the branch adds to rejeux/ comes with its last verdict, the line of rejeu-defauts.sh, in the report:
+    # « non tenu » (the defect not fixed), or none at all, is refused.
+    def new_replay(r):
+        write(os.path.join(r, "docs", "audits", "ultra", "rejeux", "t9-nouveau", "start.txt"), "lang=fr\n")
+        write(os.path.join(r, "docs", "audits", "ultra", "rejeux", "t9-nouveau", "oracle.txt"), "rejeu.attendu=x\n")
+    branch("nontenu", good + "\nt9-nouveau : oracle tenu\nt9-nouveau : oracle non tenu (écran 4)\n", new_replay)
+    code, out, asked, moved = merge("nontenu")
+    check(code == 7 and not moved and "t9-nouveau" in out and "« oracle non tenu (écran 4) »" in out,
+          "a replay added with its last verdict « non tenu » is refused:\n" + out)
+    branch("sansverdict", good, new_replay)
+    code, out, asked, moved = merge("sansverdict")
+    check(code == 7 and not moved and "t9-nouveau added to rejeux/ without its verdict" in out,
+          "a replay added without its verdict is refused:\n" + out)
+    branch("tenu", good + "\n- t9-nouveau : oracle non tenu (avant la correction)\n- t9-nouveau : oracle tenu\n", new_replay)
+    code, out, asked, moved = merge("tenu")
+    check(code == 0 and moved, "a replay added with its last verdict « oracle tenu » is merged:\n" + out)
+    git_toy(root, "reset", "-q", "--hard", "HEAD~2")
     branch("rapportok", good)
     code, out, asked, moved = merge("rapportok")
     check(code == 0 and moved and "--tests FooTest" in asked, "the report's « tests: » are the team's targeted tests:\n" + out + asked)

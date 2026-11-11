@@ -162,6 +162,8 @@ object I18n {
         "accueil",
         // Hands-on audit, chantier 10 (2026-11-11): the Remix's one recommended way, « Faire un morceau avec cette chanson », the song's end cut.
         "remix10",
+        // Round 5's « moyens » lot (2026-11-11), one file per team: top bar and play (a), Plus page (b), home and sharing (c).
+        "moyensa", "moyensb", "moyensc",
     )
 
     @Volatile

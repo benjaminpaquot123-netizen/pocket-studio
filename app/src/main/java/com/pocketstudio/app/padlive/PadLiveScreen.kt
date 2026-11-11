@@ -42,7 +42,6 @@ import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Stop
-import androidx.compose.material.icons.filled.StopCircle
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -350,6 +349,8 @@ private fun PadLiveControls(ui: PadLiveUi, actions: PadLiveActions, more: Boolea
     else SceneEffects(ui, actions, more, held)
     AnimatedVisibility(more) { MoreRow(ui, actions, party = party) }
     Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        // Plan of the audits, step 4, n° 7 (G8, 4A): « Tout couper » always in sight, by the thumb (it was behind « Plus »).
+        StopAllButton(actions.stopAll)
         PlayedButton(ui.played, actions.played, Modifier.weight(1f))
         // « Plus » open, « Moins » takes the room (« Aufnehmen, was ich spiele » must not be cut): the « ? » waits.
         if (!more) com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.ScreenHelp.PADLIVE_PLAYED, Modifier.align(Alignment.CenterVertically), about = listOf("padlive_played"))
@@ -764,12 +765,11 @@ private fun MoreRow(ui: PadLiveUi, actions: PadLiveActions, party: () -> Unit) {
     // Two rows of three (lot B3: six buttons on one row cut « Briques » in two on a 360 dp phone).
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            MoreButton(Icons.Filled.StopCircle, tr("Tout couper"), "padlive_stop_all", Modifier.weight(1f), actions.stopAll)
             MoreButton(Icons.AutoMirrored.Filled.Undo, tr("Annuler (défaire)"), "padlive_undo", Modifier.weight(1f), actions.undo, enabled = ui.canUndo)
             MoreButton(Icons.Filled.GridView, tr("Briques"), "padlive_live", Modifier.weight(1f), actions.openLive)
+            MoreButton(Icons.Filled.Tune, tr("Effets"), "padlive_effects", Modifier.weight(1f), actions.effects)
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            MoreButton(Icons.Filled.Tune, tr("Effets"), "padlive_effects", Modifier.weight(1f), actions.effects)
             MoreButton(Icons.Filled.Celebration, tr("Gros pads"), "padlive_party_open", Modifier.weight(1f), party)
             MoreButton(Icons.Filled.Share, tr("Partager"), "padlive_share", Modifier.weight(1f), actions.share)
             com.pocketstudio.ui.HelpDot(
@@ -779,6 +779,32 @@ private fun MoreRow(ui: PadLiveUi, actions: PadLiveActions, party: () -> Unit) {
         }
     }
 }
+
+/**
+ * « Tout couper » (G8, Benjamin's 4A): a black ■ on red with its word under it (black as on the green ▶: white on this red
+ * reads at 2.8:1 only), beside « Enregistrer ce que je joue »:
+ * the pads, the music and its bars stop (RhythmViewModel.cutEverything).
+ */
+@Composable
+private fun StopAllButton(stop: () -> Unit) {
+    val shape = RoundedCornerShape(16.dp)
+    Column(
+        Modifier.width(STOP_ALL_WIDTH).heightIn(min = 52.dp).clip(shape).background(Neon.Red)
+            .clickable(role = Role.Button, onClick = stop).padding(horizontal = 4.dp, vertical = 4.dp)
+            .testTag("padlive_stop_all"),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon(Icons.Filled.Stop, contentDescription = null, tint = Color.Black, modifier = Modifier.size(22.dp))
+        com.pocketstudio.ui.FitText(
+            tr("Tout couper"), Modifier.fillMaxWidth().testTag("padlive_stop_all_words"), MaterialTheme.typography.labelSmall,
+            color = Color.Black, maxLines = 2, min = 8.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+        )
+    }
+}
+
+/** « Tout couper »'s width: its word whole on two lines at most, « Enregistrer ce que je joue » keeps the rest. */
+private val STOP_ALL_WIDTH = 64.dp
 
 /** Lot B3: a Live take just kept (● REC, then Fin): « Perf gardée · 0:42 », « Écouter », « Partager », ✕. */
 @Composable

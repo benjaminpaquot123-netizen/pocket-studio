@@ -158,6 +158,8 @@ object I18n {
         "lectures",
         // Round 5, chantier 5 (2026-11-11): the same Plus page in both modes, the assistant's mode with « Changer » (3A).
         "plus",
+        // Round 5, chantier 7 (2026-11-11): Pad Live's « Tout couper » in sight, it stops everything (4A).
+        "padlivestop",
     )
 
     @Volatile

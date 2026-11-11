@@ -971,6 +971,16 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         liveStoppedForTest?.invoke()
     }
 
+    /**
+     * « Tout couper » of Pad Live and of the live pads (plan of the audits, step 4, n° 7; Benjamin's 4A, recette tel-08):
+     * everything stops, the pads AND the music with its bars and time (the transport's ■ also cuts the pads). The next pad
+     * starts its clock again from zero, so a rhythm can be played again at once.
+     */
+    fun cutEverything() {
+        if (_transport.value.playing) togglePlay()
+        stopLive()
+    }
+
     fun setLiveSize(size: Int) = session.edit { p -> p.copy(live = p.live.copy(size = size)) }
 
     internal fun editLive(pad: Int, key: String? = null, transform: (LiveClip) -> LiveClip) {

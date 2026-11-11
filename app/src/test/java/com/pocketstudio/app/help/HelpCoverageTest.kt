@@ -157,6 +157,8 @@ class HelpCoverageTest {
     private val padLiveObvious = listOf(
         "padlive_back", "padlive_play", "padlive_tempo", "padlive_tempo_less", "padlive_tempo_more", "padlive_rec", "padlive_pad_#", "padlive_mode_#",
         "padlive_row_#", "padlive_undo", "live_record",
+        // « Tout couper » (step 4, n° 7): a red ■ with its word; « Plus »'s « ? » says it stops the music too.
+        "padlive_stop_all",
         // « Plus » opens its row, which has its own « ? ».
         "padlive_more",
     )

@@ -1,5 +1,6 @@
 package com.pocketstudio.app.padlive
 
+import kotlin.math.abs
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -41,7 +42,6 @@ import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Stop
-import androidx.compose.material.icons.filled.StopCircle
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -349,6 +349,8 @@ private fun PadLiveControls(ui: PadLiveUi, actions: PadLiveActions, more: Boolea
     else SceneEffects(ui, actions, more, held)
     AnimatedVisibility(more) { MoreRow(ui, actions, party = party) }
     Row(Modifier.fillMaxWidth().padding(bottom = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        // Plan of the audits, step 4, n° 7 (G8, 4A): « Tout couper » always in sight, by the thumb (it was behind « Plus »).
+        StopAllButton(actions.stopAll)
         PlayedButton(ui.played, actions.played, Modifier.weight(1f))
         // « Plus » open, « Moins » takes the room (« Aufnehmen, was ich spiele » must not be cut): the « ? » waits.
         if (!more) com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.ScreenHelp.PADLIVE_PLAYED, Modifier.align(Alignment.CenterVertically), about = listOf("padlive_played"))
@@ -597,7 +599,7 @@ private fun SceneEffects(ui: PadLiveUi, actions: PadLiveActions, more: Boolean, 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 HeldEffect(
                     tr("Montée"), riserWords(ui.riserBars), "riser", Modifier.weight(1f),
-                    lit = riserLeft > 0f, progress = riserLeft.takeIf { it > 0f },
+                    lit = riserLeft > 0f, progress = riserLeft.takeIf { it > 0f }, onRelease = true,
                     hold = { if (it) { actions.riser(); riserFrom = System.nanoTime() } },
                 )
                 HeldEffect(tr("Chute"), tr("freinage"), "brake", Modifier.weight(1f), hold = actions.brake)
@@ -606,6 +608,9 @@ private fun SceneEffects(ui: PadLiveUi, actions: PadLiveActions, more: Boolean, 
         }
     }
 }
+
+/** G14: a held effect's first moments, where a glide up or down is the column's scroll, not the effect. */
+private const val GLIDE_MS = 120L
 
 /** The riser's length in words that fit its button on a phone (« 4 mesures »; the B1 « souffle qui monte » was cut). */
 internal fun riserWords(bars: Int): String = com.pocketstudio.model.i18n.trCount(bars, "1 mesure", "%d mesures")
@@ -624,6 +629,8 @@ private fun HeldEffect(
     /** Audit ultra round 1, n° 8: lit as if held (the Montée going on after the finger left), with what is [progress] left (1..0). */
     lit: Boolean = false,
     progress: Float? = null,
+    /** Montée (G14): starts when a touch ends without gliding, never on a glide. */
+    onRelease: Boolean = false,
     hold: (Boolean) -> Unit,
 ) {
     var held by remember { mutableStateOf(false) }
@@ -643,12 +650,38 @@ private fun HeldEffect(
                     val w = size.width.toFloat().coerceAtLeast(1f)
                     fun at(p: androidx.compose.ui.geometry.Offset) = coords?.takeIf { it.isAttached }?.localToWindow(p) ?: p
                     trackNow?.invoke(at(down.position), (down.position.x / w).coerceIn(0f, 1f))
-                    holdNow(true)
+                    // Plan of the audits, step 4, n° 7 (G14, T5-Ed-40, tel-11: a glide lit « Montée »): an effect that is
+                    // not slid (all but Filtre and Roulement) lets a glide scroll the column. [onRelease] (Montée): it
+                    // starts when the finger leaves without gliding; a held one starts at once and lets go if the finger
+                    // glides up or down in its first moments ([GLIDE_MS]), the move left to the column.
+                    val glides = trackNow == null
+                    if (!onRelease) holdNow(true)
+                    var on = !onRelease
+                    var glided = false
                     try {
                         while (true) {
                             val event = awaitPointerEvent()
                             val change = event.changes.firstOrNull { it.id == down.id } ?: break
-                            if (!change.pressed) break
+                            if (!change.pressed) {
+                                if (onRelease && !glided) {
+                                    holdNow(true)
+                                    on = true
+                                }
+                                break
+                            }
+                            if (glides && !glided) {
+                                val d = change.position - down.position
+                                val early = onRelease || change.uptimeMillis - down.uptimeMillis <= GLIDE_MS
+                                if (early && (change.isConsumed || (abs(d.y) > viewConfiguration.touchSlop && abs(d.y) > abs(d.x)))) {
+                                    glided = true
+                                    held = false
+                                    if (on) holdNow(false)
+                                    on = false
+                                }
+                                if (!early) change.consume()
+                                continue
+                            }
+                            if (glided) continue
                             trackNow?.invoke(at(change.position), (change.position.x / w).coerceIn(0f, 1f))
                             change.consume()
                         }
@@ -657,7 +690,7 @@ private fun HeldEffect(
                         // the effect never stays on (fix 2, n° 2).
                         held = false
                         trackNow?.invoke(null, 0.5f)
-                        holdNow(false)
+                        if (on) holdNow(false)
                     }
                 }
             }
@@ -732,12 +765,11 @@ private fun MoreRow(ui: PadLiveUi, actions: PadLiveActions, party: () -> Unit) {
     // Two rows of three (lot B3: six buttons on one row cut « Briques » in two on a 360 dp phone).
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            MoreButton(Icons.Filled.StopCircle, tr("Tout couper"), "padlive_stop_all", Modifier.weight(1f), actions.stopAll)
             MoreButton(Icons.AutoMirrored.Filled.Undo, tr("Annuler (défaire)"), "padlive_undo", Modifier.weight(1f), actions.undo, enabled = ui.canUndo)
             MoreButton(Icons.Filled.GridView, tr("Briques"), "padlive_live", Modifier.weight(1f), actions.openLive)
+            MoreButton(Icons.Filled.Tune, tr("Effets"), "padlive_effects", Modifier.weight(1f), actions.effects)
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            MoreButton(Icons.Filled.Tune, tr("Effets"), "padlive_effects", Modifier.weight(1f), actions.effects)
             MoreButton(Icons.Filled.Celebration, tr("Gros pads"), "padlive_party_open", Modifier.weight(1f), party)
             MoreButton(Icons.Filled.Share, tr("Partager"), "padlive_share", Modifier.weight(1f), actions.share)
             com.pocketstudio.ui.HelpDot(
@@ -747,6 +779,32 @@ private fun MoreRow(ui: PadLiveUi, actions: PadLiveActions, party: () -> Unit) {
         }
     }
 }
+
+/**
+ * « Tout couper » (G8, Benjamin's 4A): a black ■ on red with its word under it (black as on the green ▶: white on this red
+ * reads at 2.8:1 only), beside « Enregistrer ce que je joue »:
+ * the pads, the music and its bars stop (RhythmViewModel.cutEverything).
+ */
+@Composable
+private fun StopAllButton(stop: () -> Unit) {
+    val shape = RoundedCornerShape(16.dp)
+    Column(
+        Modifier.width(STOP_ALL_WIDTH).heightIn(min = 52.dp).clip(shape).background(Neon.Red)
+            .clickable(role = Role.Button, onClick = stop).padding(horizontal = 4.dp, vertical = 4.dp)
+            .testTag("padlive_stop_all"),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon(Icons.Filled.Stop, contentDescription = null, tint = Color.Black, modifier = Modifier.size(22.dp))
+        com.pocketstudio.ui.FitText(
+            tr("Tout couper"), Modifier.fillMaxWidth().testTag("padlive_stop_all_words"), MaterialTheme.typography.labelSmall,
+            color = Color.Black, maxLines = 2, min = 8.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+        )
+    }
+}
+
+/** « Tout couper »'s width: its word whole on two lines at most, « Enregistrer ce que je joue » keeps the rest. */
+private val STOP_ALL_WIDTH = 64.dp
 
 /** Lot B3: a Live take just kept (● REC, then Fin): « Perf gardée · 0:42 », « Écouter », « Partager », ✕. */
 @Composable

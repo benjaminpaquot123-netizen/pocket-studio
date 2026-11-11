@@ -185,7 +185,8 @@ class PadLiveTouchCountTest {
         reach("Montée", 3, "riser") { tap("padlive_more"); press("padlive_fx_riser") }
         reach("Chute", 3, "brake true") { tap("padlive_more"); press("padlive_fx_brake") }
         reach("Bégaie", 3, "stutter true") { tap("padlive_more"); press("padlive_fx_stutter") }
-        reach("Tout couper", 3, "stop all") { tap("padlive_more"); tap("padlive_stop_all") }
+        // G8 (plan of the audits, step 4, n° 7): in sight, one touch.
+        reach("Tout couper", 2, "stop all") { tap("padlive_stop_all") }
         reach("Annuler", 3, "undo") { tap("padlive_more"); tap("padlive_undo") }
         reach("Briques", 3, "live") { tap("padlive_more"); tap("padlive_live") }
         reach("Effets", 3, "effects") { tap("padlive_more"); tap("padlive_effects") }

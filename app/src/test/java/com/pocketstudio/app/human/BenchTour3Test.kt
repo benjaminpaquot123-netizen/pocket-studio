@@ -71,10 +71,9 @@ class BenchTour3Test : HumanTester("tour3") {
         assertTrue("the row's ■ went to the engine", "launchClipRow $first ${PadLive.ROW_SIZE}" in benchEngine.padCommandsHeard())
         assertTrue("the row's loops stopped: ${states().toList()}", loops.none { states()[it] != 0 })
         assertTrue(loops.all { vm.liveStates.value[it] == 0 })
-        // Again, then « Plus » › « Tout couper »: nothing plays.
+        // Again, then « Tout couper » (in sight since step 4, n° 7): nothing plays.
         tap("padlive_row_$row")
         waitFor("the row's loops playing again") { loops.all { states()[it] == 2 } }
-        tap("padlive_more")
         val said = tap("padlive_stop_all")
         assertTrue("« Tout couper » went to the engine", "toggleClip -1" in benchEngine.padCommandsHeard())
         // PLAN-RESTE 5.4 (control 5): the sound line says it too, no live pad left playing or waiting.

@@ -264,7 +264,8 @@ class ChallengeController(private val vm: RhythmViewModel) {
             val src = sounds[h.pad] ?: continue
             val gain = clips.at(h.pad)?.gain ?: 1f
             val at = PadChallenge.frameOf(c, i, rate)
-            // Each hit until the next one on its own pad (a hit tapped again starts over, as on the engine).
+            // Each hit until the next one on its own pad: a hit tapped again starts over at once, as on the engine since R.7
+            // (ClipLauncher::toggle, the transport stopped and no other pad on; it used to wait for the project's beat line).
             val nextSame = c.hits.withIndex().firstOrNull { it.index > i && it.value.pad == h.pad }?.let { PadChallenge.frameOf(c, it.index, rate) } ?: frames
             val n = minOf(src.frames, nextSame - at, frames - at)
             for (k in 0 until n) {

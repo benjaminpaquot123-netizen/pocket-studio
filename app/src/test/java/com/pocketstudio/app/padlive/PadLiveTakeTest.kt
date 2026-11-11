@@ -161,6 +161,33 @@ class PadLiveTakeTest {
         assertEquals(clip, again.project.value.live.at(1))
     }
 
+    /** Relecture tour 5, M1: « Tout couper » ends the take being recorded exactly as its own button does (nothing lost). */
+    @Test
+    fun cutEverythingEndsTheTakeLikeItsButton() {
+        val recorder = Recorder(twoBars + 300)
+        val vm = liveVm(recorder)
+        vm.asLive()
+        vm.padLive.played.press()
+        recorder.state = 1
+        waitFor("recording") { vm.padLive.played.ui.value is PlayedTakeUi.Recording }
+        vm.cutEverything()
+        assertEquals("the recorder was told to end on its bar line", listOf(7L), recorder.stopped)
+        waitFor("the take") { vm.padLive.played.ui.value is PlayedTakeUi.Done }
+        assertEquals(PlayedTakeUi.Done(2), vm.padLive.played.ui.value)
+        assertEquals(twoBars, vm.padLive.played.takeForTest!!.frames)
+        // Armed, nothing heard: it lets go, like the button.
+        val armed = liveVm(Recorder(twoBars))
+        armed.asLive()
+        armed.padLive.played.press()
+        armed.cutEverything()
+        assertEquals(PlayedTakeUi.Ready, armed.padLive.played.ui.value)
+        // Nothing taking: « Tout couper » does not start a take.
+        val idle = liveVm(Recorder(twoBars))
+        idle.asLive()
+        idle.cutEverything()
+        assertEquals(PlayedTakeUi.Ready, idle.padLive.played.ui.value)
+    }
+
     @Test
     fun aTakeInABrickIsInTheSongsExport() {
         val recorder = Recorder(twoBars)

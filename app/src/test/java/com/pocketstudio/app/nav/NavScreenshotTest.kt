@@ -3,6 +3,7 @@ package com.pocketstudio.app.nav
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
@@ -133,6 +134,9 @@ open class NavScreenshotTest {
      */
     @Test fun modeStep() = shot("mode_step") {
         tap("top_projects"); tap("project_new"); tap("start_empty")
+        // Review of tour 5, chantier 5: the 130 % and tablet baselines had been recorded while the step was skipped
+        // (a blank screen, « Mes projets »); the capture is of the step or the test fails.
+        compose.onNodeWithTag("mode_step").assertIsDisplayed()
     }
     /** « J'apprends »: the same step, each card saying the tutorial's level it gives. */
     @Test fun modeStepLearn() = shot("mode_step_learn", simple = true) {

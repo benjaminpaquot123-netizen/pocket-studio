@@ -22,7 +22,8 @@ traces_root="docs/audits/ultra/portail"
 # Socle du banc, point 5: the rules are frozen per batch of merges. The batch in progress is in portail-paquet.txt; a
 # rule added while batch N is open is written « from_paquet N+1 … » ON ITS refusal line, and only applies from the next
 # batch (scripts/bench/test_socle.py checks it). Only the main discussion moves the number, when it opens a batch.
-paquet="$(sed -n 's/^paquet: *\([0-9][0-9]*\).*/\1/p' scripts/bench/portail-paquet.txt 2>/dev/null | head -1)"
+# (No batch file: batch 1. « || true »: a failing substitution would end this script silently under set -e.)
+paquet="$(sed -n 's/^paquet: *\([0-9][0-9]*\).*/\1/p' scripts/bench/portail-paquet.txt 2>/dev/null | head -1 || true)"
 from_paquet() { [ "${paquet:-1}" -ge "$1" ]; }
 # The replay tests of a commit: the folders of docs/audits/ultra/rejeux/ (« _… » are kept failures, not tests).
 replays() { git ls-tree --name-only "$1:docs/audits/ultra/rejeux" 2>/dev/null | grep -v '^_' | sort || true; }
@@ -126,8 +127,9 @@ for zone in "${zones[@]}"; do
   python3 -I scripts/bench/verifie-chantier.py --resume "$lot/selftest-resume.txt" > "$trace/selftest-chantier.txt" 2>&1 || true
   # Socle du banc, point 2: the lot's decisions file, listed once at the end of docs/DECISIONS.md.
   scripts/bench/decisions-index.sh "$tour" "$zone"
-  git add -- "$trace" docs/DECISIONS.md
-  git commit -q -m "Portal traces of the merge of $zone ($tour)" -- "$trace" docs/DECISIONS.md
+  index=(); [ ! -f docs/DECISIONS.md ] || index=(docs/DECISIONS.md)
+  git add -- "$trace" "${index[@]}"
+  git commit -q -m "Portal traces of the merge of $zone ($tour)" -- "$trace" "${index[@]}"
   trap - ERR
   rm -rf "${lot:?}"
   echo "$zone: merged ($(git rev-parse --short "$merged")), traces in $trace"

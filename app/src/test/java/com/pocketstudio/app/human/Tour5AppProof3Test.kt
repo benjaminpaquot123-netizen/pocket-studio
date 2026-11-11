@@ -365,13 +365,26 @@ class Tour5AppProof3Test {
         assertTrue("still recording when the screen goes", vm.recording.value)
         val taken = notes(vm.project.value)
         assertTrue("the take wrote its notes as they were played: $taken", taken >= 3)
-        // Retour, then Pad Live: the project's screen goes, its view model with it (its store cleared, as an activity's).
+        // Retour: the activity stops (AppRoot's ON_STOP: rhythmVm.flush()), the take still running; the main thread goes on
+        // (the save is written off it, the looper pumped meanwhile). Then Pad Live and back: the project read again from
+        // the disk, here by a new view model (its first one cleared, as when the activity goes).
+        vm.flush()
+        val store = ProjectStore(File(app.filesDir, "projects"))
+        var onDisk = 0
+        var waitedSave = 0L
+        while (waitedSave < 20_000) {
+            idle(50); Thread.sleep(10); waitedSave += 60
+            onDisk = store.load(id)?.let(::notes) ?: 0
+            if (onDisk >= taken) break
+        }
+        assertEquals("the take's notes written on the disk when the screen went (${waitedSave} ms)", taken, onDisk)
         stores.removeAt(stores.size - 1).clear()
+        repeat(50) { idle(20); Thread.sleep(5) }  // the save of onCleared (ClosingSaves, off the main thread) let start
         com.pocketstudio.app.rhythm.ClosingSaves.awaitIdleBlocking(15_000)
         NativeEngine.sink = SongEngine()
         // Opened again: read from the disk (« Ma mélodie » there), the notes waited for 10 s at most.
-        val again = open(Project(), id, save = false, ready = { notes(it) >= taken })
-        assertEquals("the take's notes are still in the project", taken, notes(again.project.value))
+        val again = open(Project(), id, save = false, ready = { it.instrumentTracks.size > 1 && notes(it) >= taken })
+        assertEquals("the take's notes are still in the project opened again", taken, notes(again.project.value))
     }
 
     /** The notes of « Ma mélodie » in every part. */

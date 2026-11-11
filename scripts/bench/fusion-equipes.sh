@@ -120,8 +120,13 @@ for zone in "${zones[@]}"; do
   # Review of the « portail » lot (M2): any step that fails from here to the traces' commit undoes the merge too, and
   # leaves no half-written traces.
   trace=""
+  computed=()
   undo_merge() {
     [ -z "$trace" ] || rm -rf "${trace:?}"
+    # The files fuse-reports.py and tableau-de-bord.py wrote: back to the merge's version, or gone when it had none.
+    for f in "${computed[@]}"; do
+      if git cat-file -e "HEAD:$f" 2>/dev/null; then git checkout -q HEAD -- "$f" 2>/dev/null || true; else rm -f -- "$f"; fi
+    done
     # From HEAD, not the index: a failed traces' commit after « git add » has the index's line staged already.
     git checkout -q HEAD -- docs/DECISIONS.md 2>/dev/null || true
     git reset -q --keep "$before"
@@ -143,6 +148,17 @@ for zone in "${zones[@]}"; do
   # Socle du banc, point 2: the lot's decisions file, listed once at the end of docs/DECISIONS.md.
   scripts/bench/decisions-index.sh "$tour" "$zone"
   index=(); [ ! -f docs/DECISIONS.md ] || index=(docs/DECISIONS.md)
+  # PLAN-RESTE 7.1: the round's reports fused again (the new keys into base.tsv) and the dashboard recomputed on every
+  # round, on the merged code; what they write goes into the traces' commit.
+  round="docs/audits/ultra/sieges/$tour"
+  if [ -d "$round" ] && [ -f scripts/bench/fuse-reports.py ] && [ -f scripts/bench/tableau-de-bord.py ]; then
+    computed=(docs/audits/ultra/base.tsv "$round/clusters.md" "$round/clusters-complet.md" "$round/promesses.tsv" "$round/incidents-banc.tsv")
+    python3 -I scripts/bench/fuse-reports.py "$round" --tour "$tour" --maj-base > /dev/null
+    mapfile -t rounds < <(find docs/audits/ultra/sieges -mindepth 1 -maxdepth 1 -type d -name 'tour-[0-9]*' | sort -V)
+    computed+=("${rounds[-1]}/tableau-de-bord.md")
+    python3 -I scripts/bench/tableau-de-bord.py "${rounds[@]}" > /dev/null
+    for f in "${computed[@]}"; do if [ -f "$f" ]; then index+=("$f"); fi; done
+  fi
   git add -- "$trace" "${index[@]}"
   git commit -q -m "Portal traces of the merge of $zone ($tour)" -- "$trace" "${index[@]}"
   trap - ERR

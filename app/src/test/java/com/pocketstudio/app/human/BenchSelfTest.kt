@@ -276,6 +276,39 @@ class BenchSelfTest : HumanTester("selftest") {
         beforeGesture = null
     }
 
+    /**
+     * Review of « banc6b » (M3): a gesture that ends in an exception of the bench's own code still writes what the gesture
+     * saw: the screen's errors of that gesture (« SCREEN ERROR ») and the main thread's stalls (« GEL »), as a gesture that
+     * goes well does. They were thrown away (problems cleared, the stalls never read) before the « BANC » line.
+     */
+    @Test
+    fun aBenchExceptionKeepsTheScreenErrorsAndTheStalls() {
+        begin()
+        val field = HumanTester::class.java.getDeclaredField("watchdog").apply { isAccessible = true }
+        val dog = BenchWatchdog(Thread.currentThread())
+        field.set(this, dog)
+        try {
+            beforeGesture = { cmd ->
+                if (cmd.startsWith("attends")) {
+                    problems += "erreur d'écran du geste (M3)"
+                    dog.stalls += "gel 900 ms\n    at com.pocketstudio.app.Somewhere.slow(Somewhere.kt:1)"
+                    error("the bench's own helper failed")
+                }
+            }
+            val dir = kotlin.io.path.createTempDirectory("siege").toFile()
+            listOf("attends 0.1", "fin").forEachIndexed { i, c -> java.io.File(dir, "cmd-${i + 1}.txt").writeText(c) }
+            seatLoop(dir, SeatOptions(), java.io.File(dir, "journal.txt"))
+            val journal = java.io.File(dir, "journal.txt").readText()
+            assertTrue("one « BANC » line:\n$journal", Regex("(?m)^#1 BANC exception").containsMatchIn(journal))
+            assertTrue("the gesture's screen error written:\n$journal", Regex("(?m)^#1 SCREEN ERROR erreur d'écran du geste \\(M3\\)").containsMatchIn(journal))
+            assertTrue("the gesture's stall written:\n$journal", Regex("(?m)^#1 GEL 900 ms").containsMatchIn(journal))
+            assertTrue("the next gesture starts clean:\n$journal", Regex("(?m)^#2 SCREEN ERROR").find(journal) == null)
+        } finally {
+            beforeGesture = null
+            field.set(this, null)
+        }
+    }
+
     /** The screen's line drawn at the middle of the node tagged [tag] (± 2 px). */
     private fun lineAt(tag: String): String {
         val (x, y) = centerOf(tag) ?: error("no « $tag »\n" + screenLines().joinToString("\n"))

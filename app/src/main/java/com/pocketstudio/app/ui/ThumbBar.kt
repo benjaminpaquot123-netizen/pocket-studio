@@ -78,7 +78,11 @@ class ThumbBarActions(
  * right above the tabs (the top bar keeps them too); ↷ Rétablir there too, in the Mode simple once ↶ was used (n° 26).
  */
 @Composable
-fun ThumbBar(ui: ThumbBarUi, actions: ThumbBarActions) {
+fun ThumbBar(
+    ui: ThumbBarUi, actions: ThumbBarActions,
+    /** The folded Guide's pill, at the bar's end (a wide, short screen: [com.pocketstudio.app.guide.GuidePill]); null: none. */
+    guide: (@Composable (Modifier) -> Unit)? = null,
+) {
     Row(
         Modifier.fillMaxWidth().background(lerp(Neon.Background, Color.Black, 0.06f)).padding(horizontal = 4.dp).testTag("thumb_bar"),
         verticalAlignment = Alignment.CenterVertically,
@@ -139,6 +143,7 @@ fun ThumbBar(ui: ThumbBarUi, actions: ThumbBarActions) {
         } else {
             ThumbButton(Icons.Filled.Share, tr("Partager"), tr("Partager mon morceau"), true, "thumb_share", share, actions.share)
         }
+        guide?.invoke(share)
     }
 }
 

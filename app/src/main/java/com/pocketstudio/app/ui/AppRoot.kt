@@ -2498,7 +2498,12 @@ fun AppRoot() {
                         }
                     }
                 }
-                if (guideShown && !guideSide && tutoNow == null) {
+                // Tour 5, chantier 4 (G6): a wide but short screen (the Tab A11 upright at 130 %) folds the Guide's line into a
+                // pill at the thumb's bar's end: its 48 dp go to the page (the second row of steps above the fold).
+                val guideConfig = LocalConfiguration.current
+                val guideInThumb = thumbBarUp && guideConfig.screenHeightDp < GUIDE_PILL_BELOW_DP && guideConfig.screenWidthDp >= GUIDE_PILL_FROM_WIDTH_DP
+                val guidePill = guideShown && !guideSide && tutoNow == null && !guideOpen && guideInThumb
+                if (guideShown && !guideSide && tutoNow == null && !guidePill) {
                     val guideUi by guideVm.ui.collectAsStateWithLifecycle()
                     if (guideOpen) {
                         val listening by guideListen.state.collectAsStateWithLifecycle()
@@ -2546,6 +2551,10 @@ fun AppRoot() {
                             more = simpleMore,
                             share = shareSong,
                         ),
+                        guide = if (!guidePill) null else { m ->
+                            val guideUi by guideVm.ui.collectAsStateWithLifecycle()
+                            com.pocketstudio.app.guide.GuidePill(guideUi, guideActions.toggle, m)
+                        },
                     )
                 }
                 // Phase 36: the five spaces (or the Mode simple's four tabs); lying down, the rail on the side.
@@ -4714,6 +4723,11 @@ private const val THUMB_BAR_BESIDE_GUIDE_DP = 820
  * view with the bar: 115 dp on a 411 x 914 phone (703 dp), 97 on a 400 x 890 (684), 0 on a 360 x 780 (600; 16 without it).
  */
 internal const val KEYS_PAGE_THUMB_BAR_DP = 700
+
+/** Below this height (dp as drawn) and from [GUIDE_PILL_FROM_WIDTH_DP] wide, the folded Guide is a pill in the thumb's bar. */
+internal const val GUIDE_PILL_BELOW_DP = 760
+/** Narrower, the thumb's bar has no room for the Guide's pill (a 411 dp phone at 130 % is 316 dp wide). */
+internal const val GUIDE_PILL_FROM_WIDTH_DP = 400
 
 /** Which named ▶ shows ■ (tour 5, chantier 4): [part] « ▶ cette partie », [song] « ▶ le morceau ». */
 internal data class NamedPlays(val part: Boolean, val song: Boolean)

@@ -171,6 +171,37 @@ fun GuideBar(ui: GuideUi, open: Boolean, toggle: () -> Unit, modifier: Modifier 
 }
 
 /**
+ * Tour 5, chantier 4 (audit G6: « la ligne du Guide repliée en pastille quand barre + Guide ne tiennent pas »): the folded
+ * Guide as a pill in the thumb's bar, on a wide but short screen (the Tab A11 upright at 130 %), its line's 48 dp to the
+ * page. A touch opens the panel, as the bar's does; what it says is the bar's, for TalkBack too.
+ */
+@Composable
+fun GuidePill(ui: GuideUi, toggle: () -> Unit, modifier: Modifier = Modifier) {
+    val line = guideStepLine(ui)
+    Row(
+        modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(24.dp))
+            .clickable(role = Role.Button, onClickLabel = tr("Ouvrir le Guide"), onClick = toggle)
+            .semantics {
+                stateDescription = tr("replié")
+                contentDescription = tr("Guide") + (if (line.isEmpty()) "" else " · $line")
+            }
+            .padding(horizontal = 8.dp)
+            .spot("guide_bar", tr("Le Guide : où en est ton morceau"))
+            .testTag("guide_bar"),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(Icons.Filled.Explore, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(20.dp))
+        Text(
+            tr("Guide"), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Cyan, maxLines = 1,
+            modifier = Modifier.padding(start = 4.dp),
+        )
+        if (!ui.loading && ui.total > 0) {
+            Text("${ui.percent} %", style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, maxLines = 1, modifier = Modifier.padding(start = 4.dp))
+        }
+    }
+}
+
+/**
  * The Guide's panel (§3.1): its bar on top, then « Où on en est » (the song, its progress, and the
  * three lines that welcome a return), the card (the next decision, or the one picked in the plan)
  * and the plan, folded by stage; in the Mode simple, the other stages under « Aller plus loin ».

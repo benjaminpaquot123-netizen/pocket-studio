@@ -1199,13 +1199,15 @@ abstract class HumanTester(private val seat: String) {
     /**
      * PLAN-RESTE 5.10: an exception is the app's when the first frame of com.pocketstudio in it (or in its causes) is outside
      * the bench (`com.pocketstudio.app.human`): the app's code threw, even under a test call. Else the test's code threw it.
+     * Review of « banc6b » (grave): every link of the chain is read, a bench frame that rethrows the app's exception as
+     * its cause never hides the app's crash.
      */
     internal fun thrownByTheApp(e: Throwable): Boolean {
         val seen = HashSet<Throwable>()
         var t: Throwable? = e
         while (t != null && seen.add(t)) {
             val first = t.stackTrace.firstOrNull { it.className.startsWith("com.pocketstudio.") }
-            if (first != null) return !first.className.startsWith("com.pocketstudio.app.human.")
+            if (first != null && !first.className.startsWith("com.pocketstudio.app.human.")) return true
             t = t.cause
         }
         return false

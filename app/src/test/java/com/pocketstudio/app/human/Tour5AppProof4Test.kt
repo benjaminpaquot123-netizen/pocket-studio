@@ -113,6 +113,25 @@ class Tour5AppProof4Test {
     }
 
     /**
+     * T5-Fa-11, T5-Aa-43: the Mode simple's « C'est prêt » under « Partager », for a song exported at its Auto target (a
+     * techno style aims at −8 LUFS, the file reached it, as on a phone): the level is said ONCE, against the target. The
+     * plain words of the loudness (« très fort (les plateformes le baisseront) ») came under it too: two lines « Niveau »
+     * that contradict each other, whatever the figure (the bench's or a phone's).
+     */
+    @Test
+    fun theSimpleShareReportSaysTheLevelOnce() {
+        val done = ExportUi(files = listOf(File("a.m4a")), loudness = -8.0, truePeakDb = -1.2, seconds = 58.0, writtenFormat = ExportFormat.M4a,
+            targetChoice = TargetChoice.AUTO, targetLufs = -8.0)
+        val lines = shareReportLines(done, simple = true)
+        val levels = lines.filter { it.startsWith("Niveau") }
+        assertEquals("one level line, against the target: $lines", listOf("Niveau : à la cible (Auto (style))"), levels)
+        assertTrue("the rest of the report is still there: $lines", lines.any { it.startsWith("Durée") } && lines.any { "M4A" in it })
+        // Without a target, the plain words of the loudness stay (nothing else says the level).
+        val free = shareReportLines(done.copy(targetChoice = TargetChoice.OFF, targetLufs = null), simple = true)
+        assertEquals("no target: the plain words: $free", listOf("Niveau : très fort (les plateformes le baisseront)"), free.filter { it.startsWith("Niveau") })
+    }
+
+    /**
      * T5-Cc-23 (« −14 LUFS over the whole song » while « The looping part » was exported): the Streaming target is measured
      * on the whole exported file, a loop as much as a song (LoudnessTargets.wholeSong, the export's report): « sur tout
      * le morceau » sets it against Auto and Club, measured on the loudest passage. A loop at −14 LUFS whose loudest

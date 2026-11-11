@@ -117,4 +117,17 @@ class RemixChantier10Test {
         compose.onNodeWithTag("share_fix_remix_longer").assertExists()
         compose.onRoot().captureRoboImage("build/chantier10/share_overrun_simple.png")
     }
+
+    /** Fresh review: the song comes in after the song's end: nothing to cut before it, so no « Couper » that does nothing. */
+    @Test
+    fun aSongComingInAfterTheEndOffersNoCut() {
+        val p = overrun().let { it.copy(remix = it.remix.copy(atStep = 200)) }
+        val checks = shareChecks(p, mixerStrips(p), ShareLevels(), loopBars = 8)
+        compose.setContent {
+            PocketStudioTheme { ShareSheetContent(ShareSheetUi("Remix coupé", seconds = 16, parts = 2, checks = checks), ShareSheetActions()) }
+        }
+        compose.onNodeWithTag("share_check_remix_overrun").assertExists()
+        compose.onNodeWithTag("share_fix_remix_longer").assertExists()
+        compose.onNodeWithTag("share_fix_remix_cut").assertDoesNotExist()
+    }
 }

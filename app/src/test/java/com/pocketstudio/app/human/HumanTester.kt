@@ -194,6 +194,7 @@ abstract class HumanTester(private val seat: String) {
         watchdog = dog
         try {
             begin(o)
+            firstScreenLine?.let { journal.appendText("#0 PREMIER ECRAN $it\n") }
             o.amenee?.let { amenee(it, journal) }
             stalls(journal, 0)
             seatLoop(dir, o, journal)
@@ -439,9 +440,52 @@ abstract class HumanTester(private val seat: String) {
         BenchPartySounds(app).register()
         // Audit method v2: the engine is there before the app opens, as a phone's (see ENGINE_ALWAYS).
         if (ENGINE_ALWAYS) NativeEngine.sink = engine
+        val launched = System.currentTimeMillis()
+        val clock = SystemClock.uptimeMillis()
         scenario = ActivityScenario.launch(MainActivity::class.java)
         settle(1500)
+        firstScreen(launched, clock)
     }
+
+    /**
+     * PLAN-RESTE 4.6, the first screen as measured: real seconds since the launch, the app's clock, seconds since the JVM
+     * started (the bench's own start-up, what a tester waits before screen 1: F a 120 s, F c 300 s at round 5), the bench's
+     * workers busy, the screen blank (nothing to touch), the bench's wait for it. Written as « #0 PREMIER ECRAN » by [drive].
+     */
+    internal var firstScreenLine: String? = null
+        private set
+
+    /**
+     * PLAN-RESTE 4.6 (seats D b, F a, F c: a first screen almost empty): a blank first screen (« Ouverture du projet… »)
+     * is waited for, [FIRST_SCREEN_CAP_MS] at most, only while the bench's own workers run (a loaded machine: the bench's
+     * cause, proven by the threads). With them at rest it is shown as it is: what the app shows, « à trancher » (tel-20).
+     */
+    private fun firstScreen(launched: Long, clock: Long) {
+        val busy = coroutineWorkersBusy()
+        val from = System.currentTimeMillis()
+        if (blankScreen() && busy) {
+            while (blankScreen() && coroutineWorkersBusy() && System.currentTimeMillis() - from < FIRST_SCREEN_CAP_MS) {
+                Thread.sleep(50)
+                shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(50))
+                runCatching { compose.mainClock.advanceTimeBy(50) }
+            }
+            settle(200)
+        }
+        val waited = System.currentTimeMillis() - from
+        fun s(ms: Long) = "%.1f".format(java.util.Locale.ROOT, ms / 1000.0)
+        firstScreenLine = "reel_s=${s(System.currentTimeMillis() - launched)} simule_s=${s(SystemClock.uptimeMillis() - clock)} " +
+            "jvm_s=${s(java.lang.management.ManagementFactory.getRuntimeMXBean().uptime)} travail=${if (busy) "oui" else "non"} " +
+            "vide=${if (blankScreen()) "oui" else "non"} attente_s=${s(if (busy) waited else 0)}"
+    }
+
+    /**
+     * The app's own screen is not there yet: its opening (« Ouverture du projet… ») is shown, or nothing can be touched.
+     * The « Mode retours » bubble floats over everything, the opening too: it does not make a screen.
+     */
+    private fun blankScreen(): Boolean = shownOnScreen("project_opening") || runCatching {
+        compose.onAllNodes(SemanticsMatcher.keyIsDefined(androidx.compose.ui.semantics.SemanticsActions.OnClick))
+            .fetchSemanticsNodes(atLeastOneRootRequired = false).none { it.size.width > 0 && it.size.height > 0 }
+    }.getOrDefault(true)
 
     /** How long the model's download and the separation take (1: as the testers see them). */
     protected open val remixTimeScale: Double = 1.0
@@ -1879,6 +1923,8 @@ abstract class HumanTester(private val seat: String) {
         const val SLOW_WORK_CAP_MS = 120_000L
         /** PLAN-RESTE 4.4: « attends » gives the hand back once nothing of the bench's slow work moved for this long. */
         const val STILL_MS = 15_000L
+        /** PLAN-RESTE 4.6: a blank first screen waited for this long at most, and only while the bench's workers are busy. */
+        const val FIRST_SCREEN_CAP_MS = 30_000L
         private val NOT_IDLE = setOf("AppNotIdleException", "ComposeNotIdleException", "IdlingResourceTimeoutException")
 
         internal val ENGINE_ALWAYS: Boolean get() = System.getProperty("ps.human.moteur", "toujours") != "liste"

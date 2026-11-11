@@ -263,6 +263,16 @@ class BenchSelfTest : HumanTester("selftest") {
         beforeGesture = { cmd -> if (cmd.startsWith("attends")) com.pocketstudio.app.rhythm.ExportFormat.valueOf("NoSuchFormat") }
         val app = seat("attends 0.1", "fin")
         assertEquals(java.io.File(app, "journal.txt").readText(), "plantage", java.io.File(app, "fin.txt").readText())
+        // Review of « banc6b » (grave): the app's exception wrapped by a frame of the bench (a looper or a helper that
+        // rethrows it with a cause) is still the app's crash: any link of the chain thrown by the app's code makes it so.
+        beforeGesture = { cmd ->
+            if (cmd.startsWith("attends")) {
+                val cause = runCatching { com.pocketstudio.app.rhythm.ExportFormat.valueOf("NoSuchFormat") }.exceptionOrNull()
+                throw IllegalStateException("rethrown by the bench", cause)
+            }
+        }
+        val wrapped = seat("attends 0.1", "fin")
+        assertEquals(java.io.File(wrapped, "journal.txt").readText(), "plantage", java.io.File(wrapped, "fin.txt").readText())
         beforeGesture = null
     }
 

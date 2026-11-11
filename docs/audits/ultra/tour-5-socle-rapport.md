@@ -46,8 +46,10 @@ Travail « quick » (`pre-vol.sh --ci --rapide` : tests Python du banc, `test_so
 
 ## Rejeu joué
 
-(à compléter)
+- `scripts/bench/rejeu-defauts.sh` sur 28e64fe3 (testeur avec étiquettes) : autotest du banc vert (165 verts, 0 rouge, 0 en quarantaine, 14 sautés connus), puis « t4-26-prise-clavier : oracle tenu ».
+- Le même rejeu avec le testeur d'avant (`HumanTester.kt` de 1bf20cb1) : « t4-26-prise-clavier : pas de verdict », chaque `touche <étiquette>` lu « geste mal écrit », le siège finit « rien ne change (5 écrans identiques) » au pas 20.
+- Trouvé en route par l'autotest : le portail sortait en silence sans `portail-paquet.txt` (`set -e` sur la lecture du paquet) et sa copie-jouet n'avait pas les scripts neufs ; corrigé (b12923d1 rouge, abc05262 vert), garde dans `test_socle.py`.
 
 ## Renommage
 
-(à compléter)
+`Tour3RenameIdleTest` et `Tour3StudioRenameIdleTest` étaient en quarantaine depuis le 8 novembre (rouges 4 passages combinés sur 5 au lot banc45). Le lot « banc-fin » (10 novembre) a changé leur règle Compose (v2 : un flux émis sur un autre fil reprend sur le fil principal), cause trouvée alors. Depuis : verts dans la suite complète de la CI 253 et 254 (l'étape « Unit tests and screenshots » ; le rouge de la 254 était « Real projects »), et dans l'autotest complet d'ici dont j'ai lu le détail (les deux classes « vert », 0 en quarantaine). Avec l'ancien taux (1 vert sur 5), trois verts d'affilée arrivent moins d'une fois sur 100 : réglé. Les deux lignes sortent de `selftest-quarantaine.txt` : un rouge du renommage redevient un vrai rouge (le renommage est un geste de Benjamin). Retour arrière : remettre les deux lignes (dans l'historique de ce fichier).

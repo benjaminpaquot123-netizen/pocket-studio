@@ -253,6 +253,8 @@ def main():
     with tempfile.TemporaryDirectory() as d:
         same_button(d)
     with tempfile.TemporaryDirectory() as d:
+        fixed_button_comeback(d)
+    with tempfile.TemporaryDirectory() as d:
         measured_numbers(d)
     print("ultra bench scripts: OK")
 
@@ -299,6 +301,29 @@ def same_button(d):
     check("[nouveau] mineur ×1 (A/a#2) padlive · « tuto_do » · rien" in text, "a generic button is no « même bouton »:\n" + text)
     check("[nouveau] mineur ×1 (A/a#4) padlive · « ? » · rien" in text, "a navigation tag is never the target:\n" + text)
     check(", 0 même bouton, " in text, "none counted:\n" + text)
+
+
+def fixed_button_comeback(d):
+    """PLAN-RESTE 6.2: A d #21 of round 5 (T1-22, Mes projets) was lost by rule v1: its key changed (another route,
+    another symptom), so it was only a « même bouton ». A « même bouton » whose button was « corrigé » at an earlier
+    round is a « revient ? » candidate; a reader confirms it (« revient ») or refuses it (back to « même bouton »);
+    a button fixed at this round or later, or never fixed, stays « même bouton »."""
+    write(os.path.join(d, "lotA", "a", "journal.txt"), JOURNAL_A)
+    write(os.path.join(d, "lotA", "a", "rapport.md"), REPORT_BUTTONS)
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\tcorrige_au\n"
+                "mixer|padlive_pad_4|perdu\tcorrigé\ttour-2\tT2-01\ttour-2\n"      # fixed at round 2: a candidate at round 5
+                "settings|help_padlive|perdu\tcorrigé\ttour-3\tT5-01\ttour-5\n")   # fixed at round 5 itself: not one
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
+    check("[revient ?] mineur ×1 (A/a#2) padlive · « padlive_pad_4 » · rien" in text, "the same button, fixed before: a candidate:\n" + text)
+    check("[même bouton (tour-3)] mineur ×1 (A/a#4) padlive · « help_padlive » · rien" in text, "fixed at this round: no candidate:\n" + text)
+    check(", 1 candidat(s) « revient ? » " in text, "counted as a candidate:\n" + text)
+    write(os.path.join(d, "revient.tsv"), "tour\tcle\trevient\ntour-5\tpadlive|padlive_pad_4|rien\toui\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
+    check("[revient] mineur ×1 (A/a#2)" in text, "confirmed by a reader:\n" + text)
+    write(os.path.join(d, "revient.tsv"), "tour\tcle\trevient\ntour-5\tpadlive|padlive_pad_4|rien\tnon\n")
+    text = run(os.path.join(HERE, "fuse-reports.py"), d, "--base", base, "--tour", "tour-5")
+    check("[même bouton (tour-2)] mineur ×1 (A/a#2)" in text, "refused by a reader: the same button, another defect:\n" + text)
 
 
 def measured_numbers(d):

@@ -90,6 +90,41 @@ class InAppDriver(
     override fun tags(pattern: Regex): List<String> =
         main.run { nodes(merged = false).mapNotNull { it.node.config.getOrNull(SemanticsProperties.TestTag) }.filter { pattern.matches(it) } }
 
+    /**
+     * What is on screen for a failed step's note: the tags of the nodes that show (a size once
+     * clipped), the top window's first (the last one: a dialog, a sheet), then the ones under it.
+     */
+    fun ecran(): List<String> = main.run {
+        val out = LinkedHashSet<String>()
+        for (r in roots().asReversed()) {
+            for (n in r.semanticsOwner.getAllSemanticsNodes(mergingEnabled = false)) {
+                val tag = n.config.getOrNull(SemanticsProperties.TestTag) ?: continue
+                val b = n.boundsInWindow
+                if (b.width > 0f && b.height > 0f) out += tag
+            }
+        }
+        out.toList()
+    }
+
+    /** Hears what a finger could not have done (a touch on a node another window covers), once per tag. */
+    @Volatile
+    var note: (String) -> Unit = {}
+    private val noted = HashSet<String>()
+
+    /** True when a window above [view]'s covers the point ([x], [y] in [view]'s window): a finger would meet that one. */
+    private fun covered(view: View, x: Float, y: Float): Boolean {
+        val all = windows().filter { it.isAttachedToWindow && it.isShown && it.width > 0 && it.height > 0 }
+        val at = all.indexOf(view)
+        if (at < 0) return false
+        val origin = IntArray(2).also { view.getLocationOnScreen(it) }
+        val sx = origin[0] + x
+        val sy = origin[1] + y
+        return all.drop(at + 1).any { w ->
+            val o = IntArray(2).also { w.getLocationOnScreen(it) }
+            sx >= o[0] && sx < o[0] + w.width && sy >= o[1] && sy < o[1] + w.height
+        }
+    }
+
     override fun idle(ms: Long) {
         if (System.currentTimeMillis() > deadlineMs) throw EtapeTropLongue("l'étape a dépassé son temps")
         main.pause(ms)
@@ -139,7 +174,9 @@ class InAppDriver(
         val (view, x, y) = main.run {
             val f = one(tag)
             val c = f.node.boundsInWindow.center
-            Triple(f.root.view.rootView, c.x, c.y)
+            val root = f.root.view.rootView
+            if (covered(root, c.x, c.y) && noted.add(tag)) runCatching { note("touché sous une autre fenêtre (un doigt ne l'atteindrait pas) : $tag") }
+            Triple(root, c.x, c.y)
         }
         val down = SystemClock.uptimeMillis()
         main.run { touch(view, down, down, MotionEvent.ACTION_DOWN, x, y) }

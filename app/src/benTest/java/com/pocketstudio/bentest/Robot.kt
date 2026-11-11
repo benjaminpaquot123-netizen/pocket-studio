@@ -88,7 +88,8 @@ object Robot {
             val main = LooperMainThread()
             val driver = InAppDriver(main)
             val c = carnet(app)
-            val essai = EssaiEclair(Journey(driver), NativeSonde, AppliReelle(app, main, tracker), c, captures(app).apply { mkdirs() })
+            driver.note = { c.add(Carnet.NOTE, "robot", it) }
+            val essai = EssaiEclair(Journey(driver), NativeSonde, AppliReelle(app, main, tracker), c, captures(app).apply { mkdirs() }, ecran = driver::ecran)
             val passage = Passage(c, essai.etapes(), crashText = { CrashReporter.pendingCrash() })
             runCatching {
                 passage.run { e ->
@@ -167,9 +168,12 @@ object Robot {
 /** The engine's numbers (read only, from any thread: the app's own screens read them the same way). */
 object NativeSonde : Sonde {
     override fun lire(): Sonde.Lecture {
-        if (!NativeEngine.isAvailable) return Sonde.Lecture(0, 0f, 0f, false, false)
+        if (!NativeEngine.isAvailable) return Sonde.Lecture(0, 0f, 0f, false, false, false)
         val s = NativeEngine.streamInfo()
-        return Sonde.Lecture(s.xruns, NativeEngine.cpuLoadNow(), s.peak, s.nonFinite, s.running)
+        // The transport as the engine has it (its step is -1 when stopped), not as the screen shows it.
+        // The peak is the loudest since the last read, and the app's own screens read it too (Metrics keeps theirs).
+        val peak = maxOf(s.peak, com.pocketstudio.app.Metrics.streamInfo.value.peak)
+        return Sonde.Lecture(s.xruns, NativeEngine.cpuLoadNow(), peak, s.nonFinite, s.running, playing = NativeEngine.currentStep() >= 0)
     }
 }
 

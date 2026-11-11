@@ -122,13 +122,13 @@ class Journey(private val driver: JourneyDriver, private val log: (String) -> Un
         awaitGone("launch")
     }
 
-    /** « Que veux-tu faire ? » › « Nouveau morceau » › « Pas à pas avec l'assistant ». */
-    fun newSongInAssistant() {
+    /** « Que veux-tu faire ? » › « Nouveau morceau » › « Pas à pas avec l'assistant » › « Simple ou Pro ? » ([simple]: the mode the app is in unless told). */
+    fun newSongInAssistant(simple: Boolean = com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode) {
         await("launch", 30_000)
         tap("launch_new")
         tap("starter_wizard")
-        // « Simple ou Pro ? » (owner, 2026-10-29): the mode the app is in.
-        tap(modeCard(com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode))
+        // « Simple ou Pro ? » (owner, 2026-10-29).
+        tap(modeCard(simple))
         await("wizard")
     }
 

@@ -7,7 +7,8 @@ import java.util.Locale
 
 /** The sound engine's numbers, as the robot reads them (NativeEngine on the phone, made up in the tests). */
 interface Sonde {
-    data class Lecture(val xruns: Int, val cpu: Float, val peak: Float, val nonFinite: Boolean, val running: Boolean)
+    /** [playing]: the transport runs (the engine's own word, not the screen's). */
+    data class Lecture(val xruns: Int, val cpu: Float, val peak: Float, val nonFinite: Boolean, val running: Boolean, val playing: Boolean = false)
 
     fun lire(): Lecture
 }
@@ -34,6 +35,12 @@ interface Appli {
  * Benjamin's phone before the rest is built. Three styles made by the assistant and played, one
  * export, five screens visited (a picture of each), one question. Each step is short, has its
  * longest time, and says what it saw in a few words.
+ *
+ * Each step starts from whatever is on screen (Benjamin's first run, 2026-11-11: a first launch, the
+ * welcome over the studio, the Mode simple): the welcome is answered, a song is made from « Que
+ * veux-tu faire ? » as a Pro project (the same path in both modes), the Pro tabs are asked for
+ * before they are touched, and the question is only asked once a song was heard by the engine.
+ * A step that fails writes what was on screen ([ecran]) in the logbook.
  */
 class EssaiEclair(
     private val j: Journey,
@@ -42,54 +49,124 @@ class EssaiEclair(
     private val carnet: Carnet,
     private val captures: File,
     private val ecouteMs: Long = 30_000,
+    /** The tags on screen, the top window's first (the robot's driver knows the windows; any driver's tags otherwise). */
+    private val ecran: () -> List<String> = { j.tagsMatching(Regex(".+")) },
+    /** How long ▶ may take to start the transport, and the sound to come out once it runs. */
+    private val demarrageMs: Long = 10_000,
 ) {
     fun etapes(): List<Etape> = listOf(
-        Etape("ouverture", "Ouverture du studio", 120_000) { ouverture() },
-    ) + STYLES.map { s -> Etape("style_$s", "Style ${StarterWizard.style(s)?.name ?: s}", 360_000) { style(s) } } + listOf(
-        Etape("export", "Export M4A", 300_000) { export() },
-        Etape("ecrans", "Cinq écrans", 120_000) { ecrans() },
-        Etape("question", "Une question", 600_000) { question() },
+        etape("ouverture", "Ouverture du studio", 120_000) { ouverture() },
+    ) + STYLES.map { s -> etape("style_$s", "Style ${StarterWizard.style(s)?.name ?: s}", 360_000) { style(s) } } + listOf(
+        etape("export", "Export M4A", 300_000) { export() },
+        etape("ecrans", "Cinq écrans", 120_000) { ecrans() },
+        etape("question", "Une question", 600_000) { question() },
     )
 
-    /** The studio in front, past the opening and its first questions (a first launch: « Plus tard », every tool). */
-    fun ouverture(): String {
-        appli.ouvrirStudio()
-        j.awaitGone("intro", 60_000)
-        return when (j.awaitAny("welcome", "launch", *STUDIO, timeoutMs = 60_000)) {
-            "welcome" -> {
-                j.firstLaunch(simple = false, guided = false)
-                j.awaitAny(*STUDIO, timeoutMs = 30_000)
-                "premier lancement, studio ouvert"
-            }
-            "launch" -> {
-                j.continueLastProject()
-                j.awaitAny(*STUDIO, timeoutMs = 30_000)
-                "studio ouvert (Continuer)"
-            }
-            else -> "studio ouvert"
+    /** A step whose failure leaves what the robot saw in the logbook. */
+    private fun etape(name: String, label: String, maxMs: Long, work: () -> String) = Etape(name, label, maxMs) {
+        try {
+            work()
+        } catch (t: Throwable) {
+            noterEcran(name)
+            throw t
         }
     }
 
-    /** « Que veux-tu faire ? » › the assistant › [style] › Créer maintenant, then the song played [ecouteMs] and measured 4 times a second. */
+    /** « à l'écran : … »: at most [TAGS_MAX] tags, the known screens' first, numbered ones folded (pad_3 → pad_*). */
+    fun noterEcran(step: String) {
+        runCatching {
+            val all = ecran().map { it.replace(Regex("\\d+"), "*") }.distinct()
+            val known = all.filter { it in REPERES }
+            val shown = (known + (all - known.toSet())).take(TAGS_MAX)
+            carnet.add(Carnet.NOTE, step, "à l'écran : " + (if (shown.isEmpty()) "rien" else shown.joinToString(", ")) + (if (all.size > shown.size) " (+${all.size - shown.size})" else ""))
+        }.onFailure { carnet.add(Carnet.NOTE, step, "à l'écran : illisible (${it.message?.take(80)})") }
+    }
+
+    /**
+     * The studio in front, past the opening and what it holds back: at a first launch the welcome
+     * only shows once the opening is over (the studio is already there underneath), « Plus tard ».
+     */
+    fun ouverture(): String {
+        appli.ouvrirStudio()
+        // The studio's own screen first: the robot starts from BenStudio Test's, where nothing of it is.
+        j.awaitAny("intro", "welcome", "launch", *STUDIO, timeoutMs = 60_000)
+        j.awaitGone("intro", 60_000)
+        // The welcome and « Que veux-tu faire ? » come a moment after the opening leaves.
+        val first = runCatching { j.awaitAny("welcome", "launch", timeoutMs = APRES_OUVERTURE_MS) }.getOrNull()
+        return when (first) {
+            "welcome" -> {
+                plusTard()
+                j.awaitAny(*STUDIO, timeoutMs = 30_000)
+                "premier lancement (« Plus tard »), studio ouvert en ${mode()}"
+            }
+            "launch" -> "accueil « Que veux-tu faire ? »"
+            else -> {
+                j.awaitAny(*STUDIO, timeoutMs = 30_000)
+                "studio ouvert en ${mode()}"
+            }
+        }
+    }
+
+    /**
+     * « Que veux-tu faire ? » › Nouveau morceau › the assistant › Pro › [style] › Créer maintenant, then
+     * the song played (the engine says it plays and sound comes out) [ecouteMs], measured 4 times a second.
+     */
     fun style(style: String): String {
-        allerAuChoix()
-        j.newSongInAssistant()
-        j.chooseStyle(style, StarterWizard.style(style)?.family ?: error("unknown style $style"))
+        versCreer(style)
         j.createNow()
         j.await("guide_card_start.ready", 300_000)
-        j.tap("guide_option_drop")
+        val by = lancerLecture()
         val m = mesurer("style_$style", ecouteMs)
         arreter()
         if (j.exists("guide_panel")) runCatching { j.tap("guide_bar") }
         check(m.reads > 0) { "aucune mesure" }
         check(!m.nonFinite) { "valeur invalide (NaN) dans le son" }
         check(m.loudSeconds > 0) { "silence : ${m.text()}" }
-        return m.text()
+        check(m.playing * 2 >= m.reads) { "la lecture s'est arrêtée toute seule : ${m.text()}" }
+        return "lecture par $by : ${m.text()}"
+    }
+
+    /** From whatever is on screen to the assistant's « Créer maintenant » for [style], as a Pro project. */
+    fun versCreer(style: String) {
+        allerAuChoix()
+        j.newSongInAssistant(simple = false)
+        j.chooseStyle(style, StarterWizard.style(style)?.family ?: error("unknown style $style"))
+    }
+
+    /**
+     * ▶, then the proof that it plays: the engine's transport runs and its output level is not zero.
+     * « Écouter le drop » of the Guide's card first, else the song's ▶. Returns the tag that started it.
+     */
+    fun lancerLecture(): String {
+        val touched = ArrayList<String>()
+        if (!sonde.lire().playing) {
+            for (tag in PLAY) {
+                if (!j.exists(tag)) continue
+                j.tap(tag)
+                touched += tag
+                if (attendre(demarrageMs) { sonde.lire().playing }) break
+            }
+        }
+        val r = sonde.lire()
+        check(r.playing) { "la lecture ne démarre pas (touché : ${touched.ifEmpty { listOf("rien") }.joinToString(", ")} ; moteur ${if (r.running) "en marche" else "arrêté"})" }
+        var peak = 0f
+        check(attendre(demarrageMs) { peak = maxOf(peak, sonde.lire().peak); peak > NIVEAU_MIN }) { "lecture lancée (${touched.lastOrNull() ?: "déjà"}) mais aucun son ne sort : crête ${fmt(peak.toDouble())}" }
+        return touched.lastOrNull() ?: "déjà en lecture"
+    }
+
+    private fun attendre(ms: Long, ok: () -> Boolean): Boolean {
+        val end = System.currentTimeMillis() + ms
+        while (!ok()) {
+            if (System.currentTimeMillis() >= end) return false
+            j.idle(100)
+        }
+        return true
     }
 
     /** Mix › Exporter › « La scène » en M4A: the file there, read back by its size. */
     fun export(): String {
         val started = System.currentTimeMillis()
+        auStudioPro()
         j.tap("tab_Mix")
         j.await("mixer")
         j.tap("export_what_Loop")
@@ -110,6 +187,7 @@ class EssaiEclair(
 
     /** Structure, Sons, Mix, Live, Mes projets: each one opened, recognised, pictured. */
     fun ecrans(): String {
+        auStudioPro()
         val seen = ArrayList<String>()
         for ((name, open, mark) in SCREENS) {
             // Mes projets opens from the top bar, which some spaces (Live) leave out: from Structure then.
@@ -136,6 +214,9 @@ class EssaiEclair(
     }
 
     fun question(): String {
+        // Only once the engine played a song: with none, « non » would say nothing of the phone's sound.
+        val heard = carnet.lines().count { it.kind == Carnet.REUSSI && it.step.startsWith("style_") }
+        check(heard > 0) { "pas posée : aucun morceau n'a joué" }
         val answer = appli.demander(QUESTION, 600_000)
         carnet.add(Carnet.NOTE, "question", "$QUESTION ${answer?.let { if (it) "oui" else "non" } ?: "pas de réponse"}")
         check(answer != null) { "pas de réponse" }
@@ -143,22 +224,57 @@ class EssaiEclair(
         return "oui, la musique sortait du téléphone"
     }
 
-    /** From anywhere in the studio to « Que veux-tu faire ? » (Mes projets › ←). */
+    /** The first launch's welcome: « Plus tard » (the starter beat, the mode it suggests). */
+    private fun plusTard() {
+        j.tap("welcome_later")
+        j.awaitGone("welcome")
+    }
+
+    private fun mode() = if (j.exists("tab_simple_Morceau")) "Mode simple" else "Pro"
+
+    /** From anywhere (the welcome, the studio in either mode, Mes projets) to « Que veux-tu faire ? » (Mes projets › ←). */
     private fun allerAuChoix() {
+        if (j.exists("welcome")) plusTard()
         if (j.exists("launch")) return
-        j.tap("top_projects")
-        j.await("projects")
+        if (!j.exists("projects")) {
+            if (j.exists("guide_panel")) runCatching { j.tap("guide_bar") }
+            // Mes projets opens from the top bar, which some spaces (Live) leave out: from the song's then.
+            if (!j.exists("top_projects")) j.tap(if (j.exists("tab_simple_Morceau")) "tab_simple_Morceau" else "tab_Structure")
+            j.tap("top_projects")
+            j.await("projects")
+        }
         j.tap("projects_back")
         j.await("launch")
     }
 
-    /** ■ on what plays (the thumb bar's or the top bar's « le morceau »). */
-    private fun arreter() {
-        runCatching { j.tap(if (j.exists("thumb_play")) "thumb_play" else "top_song") }
+    /** From anywhere to the open song with the Pro tabs (the top bar's mode chip › Pro when the app is in the Mode simple). */
+    private fun auStudioPro() {
+        if (j.exists("welcome")) plusTard()
+        if (j.exists("projects") && !j.exists("launch")) {
+            j.tap("projects_back")
+            j.await("launch")
+        }
+        if (j.exists("launch")) j.continueLastProject()
+        j.awaitAny(*STUDIO, timeoutMs = 30_000)
+        if (j.exists("guide_panel")) runCatching { j.tap("guide_bar") }
+        if (!j.exists("tab_Mix")) {
+            j.tap("top_mode")
+            j.tap("mode_card_pro")
+            j.awaitGone("mode_switch")
+            j.await("tab_Mix")
+        }
     }
 
-    data class Mesure(val reads: Int, val xruns: Int, val cpuMax: Float, val cpuMean: Float, val peakMax: Float, val loudSeconds: Int, val nonFinite: Boolean) {
-        fun text() = "${reads / 4} s, $xruns décrochage(s), charge moyenne ${pct(cpuMean)} (pire ${pct(cpuMax)}), crête ${fmt(peakMax.toDouble())}"
+    /** ■ on what plays (the thumb bar's or the top bar's « le morceau »). */
+    private fun arreter() {
+        if (!sonde.lire().playing) return
+        runCatching { j.tap(if (j.exists("thumb_play")) "thumb_play" else "top_song") }
+        attendre(5_000) { !sonde.lire().playing }
+    }
+
+    /** [playing]: the readings the transport ran in. */
+    data class Mesure(val reads: Int, val xruns: Int, val cpuMax: Float, val cpuMean: Float, val peakMax: Float, val loudSeconds: Int, val nonFinite: Boolean, val playing: Int = 0) {
+        fun text() = "${reads / 4} s (en lecture ${playing / 4} s), $xruns décrochage(s), charge moyenne ${pct(cpuMean)} (pire ${pct(cpuMax)}), crête ${fmt(peakMax.toDouble())}"
     }
 
     /** [ms] of sound read 4 times a second, each read in the logbook. */
@@ -170,6 +286,7 @@ class EssaiEclair(
         var peakMax = 0f
         var nonFinite = false
         var loud = 0
+        var playing = 0
         var secondPeak = 0f
         var last = first
         val end = System.currentTimeMillis() + ms
@@ -182,14 +299,15 @@ class EssaiEclair(
             peakMax = maxOf(peakMax, r.peak)
             secondPeak = maxOf(secondPeak, r.peak)
             nonFinite = nonFinite || r.nonFinite
+            if (r.playing) playing++
             if (reads % 4 == 0) {
                 if (secondPeak > 0.01f) loud++
                 secondPeak = 0f
             }
-            carnet.add(Carnet.MESURE, step, "xruns=${r.xruns};cpu=${fmt(r.cpu.toDouble())};peak=${fmt(r.peak.toDouble())};running=${r.running}")
+            carnet.add(Carnet.MESURE, step, "xruns=${r.xruns};cpu=${fmt(r.cpu.toDouble())};peak=${fmt(r.peak.toDouble())};running=${r.running};playing=${r.playing}")
             last = r
         }
-        return Mesure(reads, last.xruns - first.xruns, cpuMax, if (reads == 0) 0f else cpuSum / reads, peakMax, loud, nonFinite)
+        return Mesure(reads, last.xruns - first.xruns, cpuMax, if (reads == 0) 0f else cpuSum / reads, peakMax, loud, nonFinite, playing)
     }
 
     companion object {
@@ -206,6 +324,25 @@ class EssaiEclair(
             Triple("mix", "tab_Mix", "mixer"),
             Triple("live", "tab_Live", "live_screen"),
             Triple("projets", "top_projects", "projects"),
+        )
+
+        /** What starts the song, in the order tried: the Guide's « Écouter le drop », the thumb bar's ▶, the top bar's « le morceau ». */
+        val PLAY = listOf("guide_option_drop", "thumb_play", "top_song")
+
+        /** An output peak above this is sound (-60 dBFS). */
+        const val NIVEAU_MIN = 0.001f
+
+        /** How long the welcome or « Que veux-tu faire ? » may take to show once the opening is gone. */
+        const val APRES_OUVERTURE_MS = 3_000L
+
+        /** A failed step's note: at most this many tags. */
+        const val TAGS_MAX = 20
+
+        /** The tags that name a screen, said first in a failed step's note. */
+        val REPERES = setOf(
+            "intro", "welcome", "launch", "projects", "wizard", "mode_switch", "guide_panel", "space_bar", "space_rail",
+            "tab_Structure", "tab_Mix", "tab_simple_Morceau", "tab_simple_Mix", "top_projects", "top_mode", "thumb_play", "top_song",
+            "mixer", "simple_mix", "share_sheet",
         )
 
         const val QUESTION = "Pendant l'essai, as-tu entendu la musique sortir du téléphone ?"

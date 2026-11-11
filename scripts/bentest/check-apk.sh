@@ -30,7 +30,7 @@ done
 TAGS="intro welcome welcome_later top_mode mode_card_pro mode_switch launch launch_continue launch_new starter_wizard
 mode_card_simple wizard _family_ wizard_style_ wizard_style_choose_ wizard_create_now guide_card_ guide_option_
 guide_panel guide_bar thumb_play top_song top_projects projects projects_back tab_ structure_parts mixer export_what_
-export_format_ export live_screen space_bar space_rail"
+export_format_ export live_screen space_bar space_rail simple_"
 app_strings="$(awk '
     /Class descriptor/ { robot = ($0 ~ /Lcom\/pocketstudio\/(bentest|app\/journey)\//) }
     /const-string/ && !robot { if (match($0, /"[^"]*"/)) print substr($0, RSTART + 1, RLENGTH - 2) }

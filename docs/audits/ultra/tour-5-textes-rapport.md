@@ -27,3 +27,13 @@ Enregistrées, sauf les 5 instables (remises à l'état d'avant). Regardées : w
 
 ## À rejouer à la fusion
 `I18nCatalogTest`, `LexiconWordsTest`, `GuideParcoursTest`, `HelpCoverageTest`, `ScreenScanTest`, `SimpleMixTest`, `SimpleNoDecibelTest`, `TutoLot4Test`, `CutSpanJourneyTest`, `LanguageTest`, `FirstLaunchTest`, `OnboardingUiTest`, tous les `human/` qui tapent la carte d'accueil, et les captures. Conflits probables : `docs/DECISIONS.md`, `recensement-acceptes.tsv`, `i18n/*/textes.json`.
+
+## Après relecture
+- Grave 1 : le bas du curseur dit « Muet » (pas « Silence » : cette clé est déjà le silence musical, « Rest » en anglais ; « Muet » a ses 13 traductions). Rouge `LevelWordsTest` (échoue sur « Plus de son »), vert 98414e3c.
+- Grave 2 : bouton « Pas à pas » devenu « Choisir ce style » ; carte Pad Live « des effets live » ; étiquette « EFFETS LIVE ». `LexiconWordsTest.oneWordPerThingInFrench` rendu insensible à la casse et plus large : rouge sur ces deux cas, vert c93c8aeb.
+- Restes « envoyer »/« export » d'un fichier : Plus › Mes projets, Visite rapide (2 textes), partage Pad Live, aide de Pad Live, messages « Fichier prêt / Le fichier n'a pas pu être créé / Fichier de… », titre de notification : « Partager » ou « Créer le fichier ». Test `noSendOrExportForAFileLeftInFrench`, rouge puis vert.
+- `SimpleNoDecibelTest` : commentaire réduit à ce qu'il parcourt ; la boîte d'effets de Pad Live, la fiche de piste du Guide et l'écoute de référence restent en dB (docs/REVIEW.md), non corrigés.
+- Menu ⋮ : plafond remis à 2 ; la mesure est corrigée (`LayoutScan` lit une fenêtre pop-up sur ses propres pixels) ; dette notée dans REVIEW.
+- DECISIONS : ligne « Exporter et partager » corrigée ; ligne « Muet » ajoutée.
+- Passage ciblé vert : LexiconWordsTest, I18nCatalogTest, SimpleNoDecibelTest, LevelWordsTest, ScreenScanTest, NavScreenshotTest, SimpleMixTest, HelpCoverageTest ; `recordRoborazziDebug` passé ; captures nouvelles regardées : nav/launch, padlive, scale130/fr_nav_plus (130 %), tablet/nav_launch ; rien de coupé. Les 5 instables et les captures d'accueil bruitées sont restées telles.
+- Non refait : suite complète finale (une seule exécution complète avant la relecture, voir plus haut).

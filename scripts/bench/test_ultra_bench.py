@@ -217,6 +217,7 @@ def main():
         rule_c_adversarial(d)
         red_seen_in_a_run(d)
         judge_topic_pairs(d)
+        red_seen_review_line(d)
         known_defect_lifted(d)
         known_defect_lifted_needs_a_red(d)
         owner_trials(d)
@@ -1193,6 +1194,27 @@ def judge_topic_pairs(d):
     check("chantier : 3 écarts" in out, "three gaps, nothing else:\n" + out)
 
 
+def red_seen_review_line(d):
+    """Third review of the « portail » lot (M9): a « rouge constaté » line of the review says the red was replayed on
+    the green's parent, by its sha (« rejoué sur <parent> »); a free text (« relu », « pas rejoué ») vouches for
+    nothing. The portal passes « constat:<green>:<parent> »."""
+    script = os.path.join(HERE, "relecture-verdict.py")
+    green, parent = "a" * 40, "b" * 40
+    last = "\n\nVerdict : 0 bloquant, 0 grave — fusion possible\n"
+
+    def ok(line, arg=f"constat:{green}:{parent}"):
+        return subprocess.run([sys.executable, "-I", script, arg], input=line + last, capture_output=True, text=True).returncode == 0
+
+    for line in (f"rouge constaté : {green} : relu, XML lu", f"rouge constaté : {green} : pas rejoué",
+                 f"rouge constaté : {green} : rejoué sur 1234567, rouge", f"rouge constaté : {green} : pas rejoué sur bbbbbbb"):
+        check(not ok(line), "a « rouge constaté » line without the replay on the green's parent is refused: " + line)
+    for line in (f"rouge constaté : {green} : rejoué sur bbbbbbb, theWholeCourse rouge (1 sur 74)",
+                 f"rouge constaté : {green} : rejoué sur {parent} : rouge"):
+        check(ok(line), "the replay on the green's parent is accepted: " + line)
+    check(ok(f"rouge constaté : {green} : rejoué sur 1234567, rouge", f"constat:{green}"),
+          "a green the portal cannot resolve: « rejoué sur <sha> » is enough")
+
+
 def old_commit_env():
     """A commit dated before the rouge/vert discipline began (first « rouge: », 2026-11-08 18:29 UTC)."""
     env = dict(os.environ)
@@ -1892,7 +1914,7 @@ def fusion_forged(d):
     branch("constat", red_evidence, good)
     code, out, asked, moved = merge("constat")
     check(code != 0 and not moved and "rouge constaté" in out, "red evidence brought without its line in the review is refused:\n" + out)
-    branch("constat2", red_evidence, good.replace("\nVerdict", f"rouge constaté : {'a' * 40} : replayed on its parent, XML read\n\nVerdict"))
+    branch("constat2", red_evidence, good.replace("\nVerdict", f"rouge constaté : {'a' * 40} : rejoué sur 1234567, rouge, XML lu\n\nVerdict"))
     code, out, asked, moved = merge("constat2")
     check(code == 0 and moved, "red evidence named in the review is merged:\n" + out)
     git_toy(root, "reset", "-q", "--hard", "HEAD~2")

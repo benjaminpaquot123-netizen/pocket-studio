@@ -28,3 +28,4 @@ Source : `PLAN-ACTION-AUDITS.md` étape 4 ligne 8 ; retours de Benjamin du 2026-
   d'équipe ne filtre pas ; ces lignes masquées le temps du contrôle, « PRÊT ». Script non touché. Décisions : `docs/decisions/tour-5-courbes.md`.
 ## Tests à rejouer
 `*CurvesFindTest`, `*ScreenScanTest`, `*WhatPlaysTest`, `*TutoLot4Test`, `*I18nCatalogTest`, `*LexiconWordsTest`, `*ScreenshotTest`.
+tests: *CurvesFindTest *ScreenScanTest *ScreenshotTest *I18nCatalogTest *TutoLot4Test

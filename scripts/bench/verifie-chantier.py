@@ -789,12 +789,17 @@ RED_SEEN = os.path.join("docs", "audits", "ultra", "rouges-constates")
 
 
 def test_in(root, rev, cls, method):
-    """« Class#method » is a function of a test file of rev (the class that owns it, [class_methods])."""
+    """« Class#method » is a test of a test file of rev (the class that owns it, [class_methods]) that runs: @Test, no
+    @Ignore/@Disabled ([still_runs]; third review of the « portail » lot, M9: a helper never fails in a run)."""
     try:
         listed = _git(root, "grep", "-l", "-F", method, rev, "--", *TEST_DIRS).splitlines()
     except (subprocess.SubprocessError, OSError):
         return False
-    return any(f"{cls}#{method}" in class_methods(_show(root, rev, l.split(":", 1)[1]) or "", False) for l in listed)
+    for l in listed:
+        text = without_comments(_show(root, rev, l.split(":", 1)[1]) or "")
+        if f"{cls}#{method}" in class_methods(text, False) and still_runs(text, method):
+            return True
+    return False
 
 
 def red_seen(root, sha, message):

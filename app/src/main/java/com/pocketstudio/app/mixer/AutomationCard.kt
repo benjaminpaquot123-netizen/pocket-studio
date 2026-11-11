@@ -518,7 +518,8 @@ internal fun LaneBlock(
     val tint = ownerColor ?: if (lane.target.kind == AutoTarget.BUS_PARAM) Neon.Magenta else Neon.Cyan
     Column(
         Modifier.fillMaxWidth().bringIntoViewRequester(focus)
-            .then(if (lit) Modifier.border(2.dp, Neon.Amber, shape).background(Neon.Amber.copy(alpha = 0.06f), shape).padding(8.dp) else Modifier.padding(top = 4.dp))
+            // The frame alone, no tint: on an amber wash « Vider » fell under WCAG AA (4.37:1, the census of the lit new curve).
+            .then(if (lit) Modifier.border(2.dp, Neon.Amber, shape).padding(8.dp) else Modifier.padding(top = 4.dp))
             .testTag("auto_lane_$i"),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {

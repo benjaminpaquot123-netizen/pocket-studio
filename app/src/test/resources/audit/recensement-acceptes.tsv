@@ -499,3 +499,6 @@ WriteScreenshotTest.trackFrozen	TARGET	19	premier passage 2026-11-04 : cible sou
 TutoAppScreenshotTest.snareOnTheGrid	CONTRAST	3	tour 1 (2026-11-04, intégration) : n° 34, le fondu voulu sous « Partie : A » couvre le haut de la carte défilée (« PAS : CAISSE », « ? », « Tous les pads »)
 SimpleMixScreenshotTest.mixMuet	HELP	30	tour 5 restes (2026-11-11) : le même écran que SimpleMixScreenshotTest.mix (un curseur au plus bas pour « Muet ») : mêmes contrôles sans « ? », barres du haut et du pouce, onglets
 SimpleMixScreenshotTest.mixMuet	CONTRAST	1	tour 5 restes (2026-11-11) : « Sortie » 4,33:1, le même texte que sur le Mix (reste de AUDIT-1)
+ScreenshotTest.automationNewCurve	HELP	16	lot « courbes » 2026-11-11 : capture neuve des mêmes contrôles que ScreenshotTest.automation (aucun contrôle nouveau), pas encore triés « évident / à expliquer »
+ScreenshotTest.automationPickerHasCurve	HELP	10	lot « courbes » 2026-11-11 : capture neuve des mêmes contrôles que ScreenshotTest.automationPicker (aucun contrôle nouveau), pas encore triés « évident / à expliquer »
+ScreenshotTest.effectsSpotSend	HELP	2	lot « courbes » 2026-11-11 : capture neuve des mêmes contrôles que ScreenshotTest.effectsFull (les deux envois) (aucun contrôle nouveau), pas encore triés « évident / à expliquer »

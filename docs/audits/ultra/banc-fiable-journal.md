@@ -151,3 +151,11 @@ Une ligne par étape : [x] fait / [ ] à faire, preuve, commit. « continue » r
 - [x] 5.1 rendu de 1, 4 et 90 mesures (3 min) à la longueur et aux cibles −8 / −14 (`aThreeMinuteRenderLastsThreeMinutes` ; banc cassé MAX_SECONDS 120 : rouge « 120.0 »). preuve: script scripts/bench/selftest.sh
 - [x] 5.2 « partie affichée » : banc cassé (PhoneEngine ne compte plus ses bascules) → `aMelodyTakeWhileAnotherPartIsShownShowsItsNotes` rouge sur son assertion « part shown » ; vert tel quel. preuve: script scripts/bench/selftest.sh
 - [x] 5.4 ligne de son « tous les blocs Live sont arrêtés » (vue Live) et aucun pad live qui joue ou attend après « Tout couper » (Pad Live) ; banc cassé (ligne retirée) : rouge. preuve: script scripts/bench/selftest.sh
+- [ ] En relecture : étape 3 lot 6 suite « verdicts » (atelier `verdicts`, rapport `tour-5-verdicts-rapport.md`). Ses lignes :
+- [x] 6.3 preuves sans banc des dix lignes « banc » et de T5-TEL10 (`Tour5AppProof3Test`, l'appli et un moteur scripté) ; T4-01 tenu par `@KnownDefect T4-LIVESTOP`. preuve: script scripts/bench/verifie-chantier.py
+- [x] 6.3 une classe qui hérite de `HumanTester` n'est jamais une preuve sans banc. preuve: rouge bf9dbfd3 / vert 28435ec9
+- [x] 6.3 une paire rouge/vert écrite avec d'autres mots se prouve par un rejeu (`paires-rejouees/`). preuve: rouge 2cac6138 / vert e7f47614
+- [x] (relecture banc6b, M1) chaque garde d'un export vide prouvée seule (mutations rejouées, rien commité). preuve: script scripts/bench/test_ultra_bench.py
+- [x] (relecture banc6b, M2) négation lue derrière un adverbe et devant « rejoué sur ». preuve: rouge db852f22 / vert 0c3b2d76
+- [x] (relecture banc6b, M3) exception du banc : « SCREEN ERROR » et « GEL » du geste écrits. preuve: rouge 2fe5defa / vert 70dadbb6
+- [x] 4.4 (suite) « attends » nomme le fil qui le retient (`waitHeldBy`). preuve: rouge 9f4ac07b / vert 05487030

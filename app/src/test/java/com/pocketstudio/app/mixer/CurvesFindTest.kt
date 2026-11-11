@@ -10,10 +10,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.AutoTarget
 import com.pocketstudio.model.AutomationLane
@@ -101,6 +103,53 @@ class CurvesFindTest {
         settle()
         assertEquals("no second curve on the same setting", 0, added)
         compose.onNodeWithTag("auto_fresh_4", useUnmergedTree = true).assertIsDisplayed()
+    }
+
+    @Test
+    fun pickedAgainTheCurveComesBackIntoView() {
+        val filtered = List(16) { Channel() }.mapIndexed { i, c -> if (i == drums) c.copy(inserts = listOf(Insert.of(EffectType.FILTER)) + c.inserts.drop(1)) else c }
+        card({ filtered }, { others + AutomationLane(cutoff) }, AutomationActions())
+        val pickIt = {
+            compose.onNodeWithTag("automation_add").performClick()
+            compose.onNodeWithTag("pick_track_$drums").performClick()
+            compose.onNodeWithTag("pick_${cutoff.pack()}").performClick()
+            settle()
+        }
+        pickIt()
+        compose.onNodeWithTag("auto_lane_4").assertIsDisplayed()
+        // Back up to the card's top (the curve still lit, out of sight again), and the same setting asked again.
+        compose.onNodeWithTag("automation_add").performScrollTo()
+        settle()
+        compose.onNodeWithTag("auto_fresh_4", useUnmergedTree = true).assertIsNotDisplayed()
+        pickIt()
+        compose.onNodeWithTag("auto_fresh_4", useUnmergedTree = true).assertIsDisplayed()
+    }
+
+    @Test
+    fun anotherWayInTakesTheLightFromTheLitCurve() {
+        // « Ce qui joue » or the timeline names a curve of its own (focusLane) while the one just found is still lit.
+        val filtered = List(16) { Channel() }.mapIndexed { i, c -> if (i == drums) c.copy(inserts = listOf(Insert.of(EffectType.FILTER)) + c.inserts.drop(1)) else c }
+        var asked by mutableStateOf(-1)
+        compose.setContent {
+            PocketStudioTheme {
+                Column(Modifier.height(700.dp).verticalScroll(rememberScrollState())) {
+                    AutomationCard(AutomationUi(others + AutomationLane(cutoff), 16, focusLane = asked), filtered, emptyList(), AutomationActions())
+                }
+            }
+        }
+        compose.onNodeWithTag("automation_add").performClick()
+        compose.onNodeWithTag("pick_track_$drums").performClick()
+        compose.onNodeWithTag("pick_${cutoff.pack()}").performClick()
+        settle()
+        compose.onNodeWithTag("auto_fresh_4", useUnmergedTree = true).assertIsDisplayed()
+        compose.onNodeWithTag("auto_dial_0", useUnmergedTree = true).assertIsNotDisplayed()
+        asked = 0
+        settle()
+        // The mixer forgets what it asked for as soon as it is shown: the first curve stays in sight, nothing lit pulls back.
+        asked = -1
+        settle()
+        compose.onNodeWithTag("auto_dial_0", useUnmergedTree = true).assertIsDisplayed()
+        assertTrue("the curve found before is no longer lit", !exists("auto_fresh_4"))
     }
 
     private fun box(spot: AutoTarget, channel: Channel) {

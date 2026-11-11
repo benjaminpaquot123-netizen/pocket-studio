@@ -77,6 +77,7 @@ import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.app.learn.spot
 import com.pocketstudio.model.partSteps
 import com.pocketstudio.model.remixOverrunSeconds
+import com.pocketstudio.model.withRemixCutAtSongEnd
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -190,9 +191,10 @@ sealed class ShareCheck {
 
     /**
      * Chantier 10 (G16, T5-Ec-28): the remix's song goes on [seconds] past the song's end, where the file stops:
-     * its end will be cut.
+     * its end will be cut. [canCut]: « Couper la chanson à la fin » would change something (not when the song comes in
+     * after the end: nothing of it is before the cut).
      */
-    data class RemixOverrun(val seconds: Int) : ShareCheck() {
+    data class RemixOverrun(val seconds: Int, val canCut: Boolean = true) : ShareCheck() {
         override val warning get() = true
     }
 
@@ -239,7 +241,7 @@ fun shareChecks(p: Project, strips: List<StripInfo>, levels: ShareLevels, loopBa
         p.song.isEmpty() -> add(ShareCheck.NoSong(loopBars))
         p.song.size == 1 && shareSeconds(p, loopBars) < SHORT_SONG_SECONDS -> add(ShareCheck.Short(shareSeconds(p, loopBars)))
     }
-    if (remixHeard) p.remixOverrunSeconds().takeIf { it > 0 }?.let { add(ShareCheck.RemixOverrun(it)) }
+    if (remixHeard) p.remixOverrunSeconds().takeIf { it > 0 }?.let { add(ShareCheck.RemixOverrun(it, canCut = p.withRemixCutAtSongEnd() != p)) }
     if (levels.saturates) add(ShareCheck.Saturation)
 }
 
@@ -570,7 +572,7 @@ private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetAct
             CheckLine(icon, color, tr("La chanson dépasse la fin du morceau de %s : sa fin sera coupée.", shareClock(check.seconds)), "share_check_remix_overrun")
             Fixes {
                 FixButton(tr("Allonger le morceau"), "share_fix_remix_longer", actions.lengthenForRemix)
-                FixButton(tr("Couper la chanson à la fin"), "share_fix_remix_cut", actions.cutRemix, outlined = true)
+                if (check.canCut) FixButton(tr("Couper la chanson à la fin"), "share_fix_remix_cut", actions.cutRemix, outlined = true)
             }
         }
         ShareCheck.Saturation -> {

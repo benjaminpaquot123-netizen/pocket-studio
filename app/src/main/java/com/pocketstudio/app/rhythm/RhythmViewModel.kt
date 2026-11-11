@@ -977,6 +977,8 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
      * starts its clock again from zero, so a rhythm can be played again at once.
      */
     fun cutEverything() {
+        // A « Enregistrer ce que je joue » take in progress ends like its own button (kept on its bar line, or let go if armed).
+        padLive.played.endForCut()
         if (_transport.value.playing) togglePlay()
         stopLive()
     }

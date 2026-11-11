@@ -28,8 +28,10 @@
     (« lot sans trace du portail »); with git, a « Merge team … » made under the traces rule has its traces under
     docs/audits/ultra/portail/ (« fusion sans trace du portail »).
 (b) git log: a « vert: » commit closes the oldest open « rouge: » commit OF THE SAME TEST (same subject after
-    the prefix, or a test the red names or adds that the green's message names). A green of another test closes
-    nothing. A green (not a merge) that takes @KnownDefect off a test (kept, still @Test, never @Ignore) whose
+    the prefix, or a test the red names or adds that the green's message names, or the red's topic: a camelCase word
+    of its subject before « ( » that is a class or the start of a function of a test file the red adds or changes,
+    named in the green's subject before « ( »; a green closes at most one red per topic). A green of another test
+    closes nothing. A green (not a merge) that takes @KnownDefect off a test (kept, still @Test, never @Ignore) whose
     « Class#method » its message names, and that touches code outside the tests (or says « sans code : <raison> »),
     is a pair on its own, when that guard was put there by a « rouge: » commit naming the guarded test, or in an
     ancestor of the discipline's first red (8f36fa3): that guard, failing with the defect's message in the parent,
@@ -568,6 +570,34 @@ def red_names(root, sha, message):
     return names
 
 
+# Lot « banc6b »: a commit's topic, « rouge: SimpleNoDecibelTest (…) », « vert: SimpleNoDecibelTest and oneWordPerThing
+# (…) »: the camelCase words (12 letters or more) of its subject before the first parenthesis.
+TOPIC = re.compile(r"(?<![A-Za-z0-9_])([A-Za-z_][A-Za-z0-9_]*[a-z][A-Z][A-Za-z0-9_]*)(?![A-Za-z0-9_])")
+TEST_FILE = re.compile(r"(?:^|/)src/(?:test|androidTest)/|(?:^|/)test_[^/]*\.py$|(?:^|/)host-tests/")
+
+
+def topics(subject):
+    head = subject.partition(":")[2].split("(", 1)[0]
+    return {t for t in TOPIC.findall(head) if len(t) >= 12}
+
+
+def red_topics(root, sha, subject):
+    """The topics of a red that are in a test file it adds or changes (a class, or the start of a function): a topic
+    found in no test file is only a word."""
+    wanted = topics(subject)
+    if not wanted:
+        return set()
+    try:
+        files = [f for f in _git(root, "diff-tree", "--no-commit-id", "--name-only", "-r", "--root", sha).split() if TEST_FILE.search(f)]
+    except (subprocess.SubprocessError, OSError):
+        return set()
+    found = set()
+    for f in files:
+        text = _show(root, sha, f) or ""
+        found |= {t for t in wanted if re.search(r"\b(?:class|object|fun|def)\s+`?" + re.escape(t), text)}
+    return found
+
+
 def same_test(red, green):
     """red, green: (sha, subject, message, names). Same subject after the prefix, or the green names a test of the red."""
     if _rest(red[1]) == _rest(green[1]):
@@ -835,13 +865,19 @@ def red_green_pairs(root):
         sha, subject, message = record.split("\x1f", 2)
         low = subject.lower()
         if low.startswith("rouge:"):
-            open_reds.append((sha, subject, message, red_names(root, sha, message)))
+            open_reds.append((sha, subject, message, red_names(root, sha, message), red_topics(root, sha, subject)))
         elif low.startswith("vert:"):
             green = (sha, subject, message, set())
             red = next((r for r in open_reds if same_test(r, green)), None)
-            if red is not None:
-                open_reds.remove(red)
-            elif not any(names(message, t) for t in known_defects_lifted(root, sha)) and not red_seen(root, sha, message):
+            closed = [red] if red is not None else []
+            # Lot « banc6b »: one red per topic the green names (« vert: A and B (…) » closes A's and B's oldest).
+            for t in sorted(topics(subject) - {t for r in closed for t in r[4]}):
+                more = next((r for r in open_reds if t in r[4] and r not in closed), None)
+                if more is not None:
+                    closed.append(more)
+            for r in closed:
+                open_reds.remove(r)
+            if not closed and not any(names(message, t) for t in known_defects_lifted(root, sha)) and not red_seen(root, sha, message):
                 gaps.append(f"{sha} « {subject[:70]} » : vert sans rouge du même test avant lui")
     gaps += [f"{r[0]} « {r[1][:70]} » : rouge sans vert du même test après lui" for r in open_reds]
     return gaps

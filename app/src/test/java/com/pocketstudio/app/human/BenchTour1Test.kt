@@ -195,7 +195,7 @@ class BenchTour1Test : HumanTester("tour-1") {
         tap("wizard_style_choose_techno")
         tap("wizard_create_now")
         waitFor("the song's tabs") { screenRoute().endsWith("tab_simple_Morceau") }
-        val heard = tap("top_play")
+        val heard = tap("thumb_play")
         assertTrue(heard, "le morceau joue (partie" in heard)
         val after = tap("tab_simple_Rythme")
         assertTrue("the song still plays, not a loop: $after", "le morceau joue (partie" in after && "en boucle" !in after)
@@ -210,12 +210,12 @@ class BenchTour1Test : HumanTester("tour-1") {
     fun theLiveMetersRead() {
         begin(SeatOptions(simple = false))
         tap("launch_continue")
-        tap("top_play")
+        tap("thumb_play")
         val vm = rhythm()!!
         assertTrue(vm.transport.value.playing)
         assertEquals(-14.0f, vm.loudness.value[NativeEngine.LOUDNESS_SHORT_TERM], 0.01f)
         assertTrue("the drums move", vm.meters.value[0] > 0f)
-        tap("top_play")
+        tap("thumb_play")
         assertEquals("stopped: no short-term reading", NativeEngine.LOUDNESS_NONE, vm.loudness.value[NativeEngine.LOUDNESS_SHORT_TERM], 0.01f)
         assertEquals("the integrated reading stays", -14.2f, vm.loudness.value[NativeEngine.LOUDNESS_INTEGRATED], 0.01f)
     }

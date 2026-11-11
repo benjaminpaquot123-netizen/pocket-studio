@@ -216,6 +216,7 @@ def main():
         open_app_proof(d)
         rule_c_adversarial(d)
         red_seen_in_a_run(d)
+        judge_topic_pairs(d)
         known_defect_lifted(d)
         known_defect_lifted_needs_a_red(d)
         owner_trials(d)
@@ -1137,6 +1138,50 @@ def red_seen_in_a_run(d):
     for key in ("passing", "otherparent", "touchestest", "othertest", "nosuch"):
         check(f"{short[key]} « vert:" in out, f"evidence that does not hold ({key}) makes no pair:\n" + out)
     check("chantier : 5 écarts" in out, "five greens without red, nothing else:\n" + out)
+
+
+def judge_topic_pairs(d):
+    """Lot « banc6b » (the « textes » lot's five gaps): a red named by its topic, « rouge: SimpleNoDecibelTest (…) »,
+    is closed by a green whose subject names that topic before its parenthesis, when the topic is in a test file the
+    red adds or changes (a class, or the start of a test function). One green may close one red per topic it names
+    (« vert: SimpleNoDecibelTest and oneWordPerThing (…) »), never two reds of the same topic; a topic in no test
+    file pairs nothing."""
+    root = judge_root(d, "juge-sujets")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Words.kt")
+    git_toy(root, "init", "-q")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+
+    def commit(subject, path, text):
+        write(path, text)
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", subject)
+        return git_toy(root, "rev-parse", "--short", "HEAD").strip()
+
+    nodb_file = os.path.join(tests, "SimpleNoDecibelTest.kt")
+    words_file = os.path.join(tests, "LexiconWordsTest.kt")
+    nodb = commit("rouge: SimpleNoDecibelTest (no dB on any Mode simple screen)", nodb_file,
+                  "class SimpleNoDecibelTest {\n  @Test\n  fun noDecibelOnTheMix() {}\n}\n")
+    words = commit("rouge: oneWordPerThing (LexiconWordsTest: one name for the assistant)", words_file,
+                   "class LexiconWordsTest {\n  @Test\n  fun oneWordPerThingInFrench() {}\n}\n")
+    wider = commit("rouge: oneWordPerThing (wider, case-insensitive)", words_file,
+                   "class LexiconWordsTest {\n  @Test\n  fun oneWordPerThingInFrench() { /* wider */ }\n}\n")
+    lone = commit("rouge: wordsWithoutTheirTest (nothing in a test)", app, "val w = 1\n")
+    twice = commit("rouge: SimpleNoDecibelTest (a second red of the same topic)", nodb_file,
+                   "class SimpleNoDecibelTest {\n  @Test\n  fun noDecibelOnTheMix() { /* twice */ }\n}\n")
+    g1 = commit("vert: SimpleNoDecibelTest and oneWordPerThing (one name per thing, no dB)", app, "val w = 2\n")
+    g2 = commit("vert: oneWordPerThing (no « Pas à pas » button)", app, "val w = 3\n")
+    g3 = commit("vert: wordsWithoutTheirTest (fixed)", app, "val w = 4\n")
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    for sha in (nodb, words, wider, g1, g2):
+        check(f"{sha} «" not in out, f"a red closed by a green naming its topic ({sha}):\n" + out)
+    check(f"{lone} « rouge:" in out and f"{g3} « vert:" in out, "a topic in no test file pairs nothing:\n" + out)
+    check(f"{twice} « rouge:" in out, "one green closes one red per topic, never two:\n" + out)
+    check("chantier : 3 écarts" in out, "three gaps, nothing else:\n" + out)
 
 
 def old_commit_env():

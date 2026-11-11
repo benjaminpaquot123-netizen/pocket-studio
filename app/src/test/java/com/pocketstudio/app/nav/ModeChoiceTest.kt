@@ -106,7 +106,11 @@ class ModeChoiceTest {
         assertNull(ProjectModes.of(h.app, "a"))
     }
 
-    /** Every way to start of « Nouveau projet » waits for the mode; Retour comes back with nothing made. */
+    /**
+     * Every way to start of « Nouveau projet » waits for the mode until one was chosen on this phone; Retour comes back
+     * with nothing made. Then (Benjamin's answer 3A, tour 5 chantier 5) a new song takes the last choice without asking;
+     * « J'apprends » still asks (its level), the last choice marked.
+     */
     @Test
     fun noWayToStartSkipsTheModeAndItsBackMakesNothing() {
         clearModes()
@@ -143,6 +147,8 @@ class ModeChoiceTest {
         // « Autres façons de commencer » open, and still open on the way back from the step.
         tap("start_others")
         ways.forEachIndexed { i, (what, open) ->
+            // No choice made yet on this phone: the step comes first.
+            clearModes()
             open()
             compose.onNodeWithTag("mode_step").assertIsDisplayed()
             assertEquals("$what made before the mode", i, done.size)
@@ -156,10 +162,19 @@ class ModeChoiceTest {
             assertEquals(what, done.last())
             assertEquals(i % 2 == 0, SettingsStore.state.value.simpleMode)
         }
-        // The last choice (Simple) is marked next time, and nothing is chosen for the user.
-        tap("start_empty")
+        // 3A: a choice made (Simple, the last one), each way starts at once in it.
+        SettingsStore.update(h.app) { it.copy(simpleMode = false) }
+        ways.forEachIndexed { i, (what, open) ->
+            open()
+            assertFalse("$what: « Simple ou Pro ? » not asked again", exists("mode_step"))
+            assertEquals(what, done.last())
+            assertEquals(5 + i + 1, done.size)
+            assertTrue(SettingsStore.state.value.simpleMode)
+        }
+        // « J'apprends » still asks (the mode is its level), the last choice marked, nothing chosen for the user.
+        tap("start_learn")
         compose.onNodeWithText("Ton dernier choix").assertExists()
-        assertEquals(5, done.size)
+        assertEquals(10, done.size)
     }
 
     /** « J'apprends »: Simple is the Facile tutorial, Pro the Pro one; the level is not asked again. */

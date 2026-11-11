@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -72,6 +71,7 @@ import com.pocketstudio.model.ProjectInfo
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.scrollHintItem
 import com.pocketstudio.app.ui.IconMedallion
 import com.pocketstudio.app.ui.showcasePanel
 
@@ -293,9 +293,12 @@ fun LaunchScreen(ui: LaunchUi, actions: LaunchActions) {
     BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         val wide = maxWidth >= 680.dp && maxWidth > maxHeight
         val screenHeight = maxHeight
+        // Rule 17 (hands-on audit G9; Benjamin, 2026-11-06: « la carte suivante est coupée en bas mais rien ne le signale »).
+        val hint = com.pocketstudio.ui.rememberScrollHint()
         com.pocketstudio.ui.ReadingWidth(maxWidth = if (wide) 960.dp else 600.dp) {
+          com.pocketstudio.ui.ScrollHintBox(hint, Modifier.fillMaxSize()) {
             Column(
-                Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+                Modifier.fillMaxSize().verticalScroll(hint.scroll)
                     // Lying down, in the middle of the screen when it has room (a tablet); on top otherwise.
                     .heightIn(min = if (wide) screenHeight else 0.dp)
                     .padding(horizontal = 20.dp, vertical = if (wide) 16.dp else 28.dp).testTag("launch"),
@@ -312,23 +315,24 @@ fun LaunchScreen(ui: LaunchUi, actions: LaunchActions) {
                     // No project left (lot 1): nothing to continue, a new song first.
                     Text(tr("Aucun projet pour l'instant : commence un nouveau morceau."), style = MaterialTheme.typography.bodyLarge,
                         color = Neon.TextSecondary, modifier = Modifier.testTag("launch_no_project"))
-                    OtherChoices(actions)
+                    OtherChoices(actions, hint)
                 } else if (wide) {
                     Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                        ContinueCard(ui, actions.resume, Modifier.weight(1.15f).fillMaxHeight())
-                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp)) { OtherChoices(actions) }
+                        ContinueCard(ui, actions.resume, Modifier.weight(1.15f).fillMaxHeight().scrollHintItem(hint))
+                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp)) { OtherChoices(actions, hint) }
                     }
                 } else {
-                    ContinueCard(ui, actions.resume, Modifier.fillMaxWidth())
-                    OtherChoices(actions)
+                    ContinueCard(ui, actions.resume, Modifier.fillMaxWidth().scrollHintItem(hint))
+                    OtherChoices(actions, hint)
                 }
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Box(Modifier.fillMaxWidth().scrollHintItem(hint), contentAlignment = Alignment.Center) {
                     TextButton(onClick = actions.missions, modifier = Modifier.heightIn(min = 48.dp).testTag("launch_missions")) {
                         Icon(Icons.Filled.Flag, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.padding(end = 6.dp).size(20.dp))
                         Text(if (ui.missionsActive) tr("Reprendre Mon premier morceau") else tr("Mon premier morceau, avec le Guide"), color = Neon.TextPrimary)
                     }
                 }
             }
+          }
         }
     }
 }
@@ -374,37 +378,47 @@ private fun ContinueCard(ui: LaunchUi, onClick: () -> Unit, modifier: Modifier) 
     }
 }
 
+/** The choices under « Continuer », each one counted by the list's « ↓ n autres » ([hint]). */
 @Composable
-private fun OtherChoices(actions: LaunchActions) {
-    Choice(
-        Icons.Filled.AutoAwesome, tr("Nouveau morceau"), tr("Un style en une touche, ou « Fais-moi un morceau »."),
-        Neon.Cyan, actions.newSong, "launch_new",
-    )
-    Choice(
-        Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir un autre morceau, le copier ou le renommer."),
-        Color(0xFF5BB8F5), actions.projects, "launch_projects",  // sky blue: green means "playing"
-    )
+private fun OtherChoices(actions: LaunchActions, hint: com.pocketstudio.ui.ScrollHintState) {
+    @Composable fun Counted(card: @Composable () -> Unit) = Box(Modifier.scrollHintItem(hint)) { card() }
+    Counted {
+        Choice(
+            Icons.Filled.AutoAwesome, tr("Nouveau morceau"), tr("Un style en une touche, ou « Fais-moi un morceau »."),
+            Neon.Cyan, actions.newSong, "launch_new",
+        )
+    }
+    Counted {
+        Choice(
+            Icons.Filled.FolderOpen, tr("Mes projets"), tr("Ouvrir un autre morceau, le copier ou le renommer."),
+            Color(0xFF5BB8F5), actions.projects, "launch_projects",  // sky blue: green means "playing"
+        )
+    }
     // Benjamin (2026-10-24, then 2026-10-29): the Remix « mis en avant », one touch from here, a
     // showcase card of its own for those who come for it.
-    RemixCard(actions.remix)
+    Counted { RemixCard(actions.remix) }
     // Benjamin (n° 25, 2026-11-01): « Pad Live » right under the Remix, like an app of its own.
-    PadLiveCard(actions.padLive)
+    Counted { PadLiveCard(actions.padLive) }
     // Audit ultra round 2, zone 1, n° 3 (a child of 6 who cannot read looked for « une étoile ou un jeu »).
-    ChallengeCard(actions.challenges)
+    Counted { ChallengeCard(actions.challenges) }
     // Round 2 integration: after the Remix and Pad Live (Benjamin's « mis en avant », one touch on a 360 × 780 phone,
     // RemixFindableTest), the voice and « J'apprends » below them.
     // Audit ultra round 2, n° 21 (seat B b: « rien sur l'accueil pour enregistrer ma voix ou ma guitare »).
     actions.voice?.let { voice ->
-        Choice(
-            Icons.Filled.Mic, tr("Enregistrer ma voix ou ma guitare"), tr("Le micro enregistre par-dessus ta musique, pile en rythme."),
-            Neon.Red, voice, "launch_voice",
-        )
+        Counted {
+            Choice(
+                Icons.Filled.Mic, tr("Enregistrer ma voix ou ma guitare"), tr("Le micro enregistre par-dessus ta musique, pile en rythme."),
+                Neon.Red, voice, "launch_voice",
+            )
+        }
     }
     actions.learn?.let { learn ->
-        Choice(
-            Icons.Filled.School, tr("J'apprends"), tr("Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie."),
-            Neon.Acid, learn, "launch_learn",
-        )
+        Counted {
+            Choice(
+                Icons.Filled.School, tr("J'apprends"), tr("Tu fais tout le morceau toi-même, étape par étape : je t'explique et je vérifie."),
+                Neon.Acid, learn, "launch_learn",
+            )
+        }
     }
 }
 

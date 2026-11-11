@@ -43,11 +43,20 @@ object LayoutScan {
         rule.waitForIdle()
         val all = rule.onAllNodes(ANY, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
         val out = mutableListOf<Finding>()
-        val texts = all.mapNotNull { n -> textOf(n)?.let { Txt(n, it, layout(n)) } }
-        if (Kind.CUT in checks) texts.forEach { cut(it, density)?.let(out::add) }
+        val allTexts = all.mapNotNull { n -> textOf(n)?.let { Txt(n, it, layout(n)) } }
+        // Rule 17 (round 5, chantier 6): the scroll hint « ↓ n autres » floats over the bottom of a list that goes on, in a
+        // fade; what lies under the chip or the fade is meant to be covered and faded, and the chip's words lie over the
+        // cards by design. Neither is read as an overlap nor as a contrast; the chip's own words keep their contrast check.
+        val covers = all.filter { it.config.getOrNull(SemanticsProperties.TestTag) in HINT_TAGS && !hidden(it) }
+        val chips = covers.filter { it.config.getOrNull(SemanticsProperties.TestTag) == "scroll_hint" }
+        fun inChip(t: Txt) = chips.any { ancestorOf(it, t.node) }
+        fun underHint(t: Txt) = !inChip(t) && covers.any { c -> !ancestorOf(c, t.node) && ink(t).overlaps(c.boundsInRoot) }
+        val texts = allTexts.filterNot { underHint(it) }
+        if (Kind.CUT in checks) allTexts.forEach { cut(it, density)?.let(out::add) }
         if (Kind.OVERLAP in checks) {
-            out += overlaps(texts, density)
-            out += overButtons(texts, all, density)
+            val laid = texts.filterNot { inChip(it) }
+            out += overlaps(laid, density)
+            out += overButtons(laid, all.filterNot { n -> chips.any { it.id == n.id } }, density)
         }
         if (Kind.CONTRAST in checks) {
             // Each window (the screen, a dialog, a menu) on its own pixels.
@@ -100,6 +109,25 @@ object LayoutScan {
         }
         return out.distinctBy { it.toString() }
     }
+
+    /**
+     * Rule 17 of docs/DESIGN.md, « Tout défilement se voit » (round 5, chantier 6; hands-on audit G9): the lists that go on
+     * below their frame without the hint over their frame (tags `scroll_hint`, the chip « ↓ n autres » at the top of the list,
+     * and `scroll_hint_fade`, the fade at its bottom edge, drawn by `ScrollHintBox`).
+     * Read on the home screens for now ([com.pocketstudio.app.onboarding.HomeScreensSayTheyScrollTest]).
+     */
+    fun unhintedScrolls(rule: ComposeTestRule): List<String> {
+        rule.waitForIdle()
+        val all = rule.onAllNodes(ANY, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
+        // The chip at the top of the list, the fade's band once it is scrolled.
+        val hints = all.filter { it.config.getOrNull(SemanticsProperties.TestTag) in HINT_TAGS && !hidden(it) }
+        return all.filter { n ->
+            val range = n.config.getOrNull(SemanticsProperties.VerticalScrollAxisRange) ?: return@filter false
+            !hidden(n) && range.value() < range.maxValue() - 0.5f && hints.none { n.boundsInRoot.contains(it.boundsInRoot.center) }
+        }.map { "${tagOf(it)} (${"%.0f".format(it.config[SemanticsProperties.VerticalScrollAxisRange].maxValue() - it.config[SemanticsProperties.VerticalScrollAxisRange].value())} px below)" }
+    }
+
+    private val HINT_TAGS = setOf("scroll_hint", "scroll_hint_fade")
 
     /** Something TalkBack can act on: a touch, a long press, a slider, a switch or a box to tick. */
     val CONTROL = SemanticsMatcher("a control") { n ->

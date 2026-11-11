@@ -30,7 +30,7 @@ fun Project.remixOverrunSeconds(seconds: Double = remix.seconds): Int {
 const val REMIX_CUT_FADE_SECONDS = 1.0
 
 /**
- * « Allonger le morceau »: parts added after the last one, replaying it (same brick, same tracks), as many bars as
+ * « Allonger le morceau »: parts added after the last one, replaying it (same brick, same tracks, the song switched on), as many bars as
  * the remix's song still lasts ([SongPart.MAX_BARS] each, up to [SongPart.MAX_PARTS] parts); unchanged when the song
  * already ends in time.
  */
@@ -42,7 +42,8 @@ fun Project.withSongLengthenedForRemix(seconds: Double = remix.seconds): Project
     var bars = ((missing + stepsPerBar - 1) / stepsPerBar.coerceAtLeast(1)).toInt()
     while (bars > 0 && parts.size < SongPart.MAX_PARTS) {
         val n = bars.coerceAtMost(SongPart.MAX_BARS)
-        parts += last.copy(bars = n, repeats = 1)
+        // The song itself heard there (fresh review: it may have been switched off in the last part); the rest as it was.
+        parts += last.copy(bars = n, repeats = 1, muted = last.muted.filterNot(::isRemixKey).toSet())
         bars -= n
     }
     return copy(song = parts)
@@ -71,3 +72,6 @@ fun Project.withRemixCutAtSongEnd(seconds: Double = remix.seconds): Project {
     }
     return copy(remix = remix.copy(stems = stems))
 }
+
+/** The song's track or one of its stems' (a [SongPart.muted] key). */
+private fun isRemixKey(key: String) = key == SongPart.REMIX || Remix.stemOfKey(key) != null

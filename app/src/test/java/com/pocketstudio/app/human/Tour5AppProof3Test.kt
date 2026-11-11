@@ -56,7 +56,7 @@ import java.time.Duration
  * - T4-19, T5-Dc-4, T5-Ac-61, T5-Db-16: ✕ « Effacer » froze the rename window, or lost the field's cursor;
  * - T5-Cc-41b: « 1 KB » for an export (the size « Mes exports » says is the file's own);
  * - T5-TEL10: the keys of a take survive leaving the project while it records (recette tel-10, Benjamin ✅).
- * And T4-01 (« ■ Tout » of the Live view: the sound stops, the bars go on), the app's, held by its @KnownDefect.
+ * And T4-01 (« ■ Tout » of the Live view: the sound stopped, the bars went on): it stops the transport too (4A).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(qualifiers = HumanTester.PHONE)
@@ -397,10 +397,10 @@ class Tour5AppProof3Test {
      * T4-01 (recette tel-12, Benjamin ✅ « défaut partiel »: « ■ Tout coupe le son mais mesures et temps continuent ») and
      * T5-Ed-11 for Pad Live (tel-08 ❌, the same: « Tout couper coupe l'audio, le transport continue »): the owner's trials
      * say « ■ Tout » should stop the song as well. The app keeps the transport on (stopLiveAll: every block armed off, the
-     * clock running; Tour4AppProofTest#liveStopAllAndATracksStopGoToTheEngineAndTheGridFollows). Held here until fixed.
+     * clock running; Tour4AppProofTest#liveStopAllAndATracksStopGoToTheEngineAndTheGridFollows). Plan of the audits, step 4,
+     * n° 7 (Benjamin's 4A): the blocks stop on their launch line, and the transport with them.
      */
     @Test
-    @KnownDefect("T4-LIVESTOP", "« ■ Tout » of the Live view leaves the transport running")
     fun liveStopAllStopsTheSong() {
         val engine = SongEngine()
         NativeEngine.sink = engine

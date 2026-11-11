@@ -93,19 +93,34 @@ def test_sources(root):
     return out
 
 
-SUPER = re.compile(r"\bclass\s+([A-Za-z0-9_]+)(?:\s*<[^>{]*>)?(?:\s*(?:\([^)]*\)|constructor\s*\([^)]*\)))?\s*:\s*([A-Za-z0-9_.]+)\s*\(")
+DECL = re.compile(r"\bclass\s+([A-Za-z0-9_]+)(?:\s*<[^>{]*>)?\s*(?:constructor\s*)?")
+PARENT = re.compile(r"\s*:\s*([A-Za-z0-9_.]+)\s*\(")
+
+
+def _after_parens(text, i):
+    """The index after the balanced « ( … ) » that starts at text[i] (nested calls in default values), or i."""
+    if i >= len(text) or text[i] != "(":
+        return i
+    depth = 0
+    for j in range(i, len(text)):
+        depth += {"(": 1, ")": -1}.get(text[j], 0)
+        if depth == 0:
+            return j + 1
+    return i
 
 
 def seat_class(sources, cls, depth=0):
     """Lot « verdicts »: the class inherits HumanTester (itself or through a base class): a seat of the bench, whatever
-    its name. Read from the class's declaration, « class Name(…) : Parent(… »."""
+    its name. Read from the class's declaration, « class Name(…) : Parent(… », its constructor's parentheses balanced
+    (review of « verdicts »: default values calling functions hid the parent)."""
     if depth > 6:
         return False
     text = sources.get(cls, "")
-    m = next((m for m in SUPER.finditer(text) if m.group(1) == cls), None)
-    if m is None:
+    d = next((d for d in DECL.finditer(text) if d.group(1) == cls), None)
+    m = d and PARENT.match(text, _after_parens(text, d.end()))
+    if not m:
         return False
-    parent = m.group(2).rsplit(".", 1)[-1]
+    parent = m.group(1).rsplit(".", 1)[-1]
     return parent == "HumanTester" or seat_class(sources, parent, depth + 1)
 
 

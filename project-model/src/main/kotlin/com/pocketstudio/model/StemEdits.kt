@@ -82,7 +82,8 @@ fun Remix.resetStem(stem: Int): Remix = withStem(stem) { it.copy(clips = null) }
 
 /** The timeline second the song's last heard piece ends on: its length when no stem is edited. */
 fun Remix.heardEnd(seconds: Double = this.seconds): Double =
-    stems.maxOfOrNull { s -> s.clips?.maxOfOrNull { it.end } ?: seconds }?.coerceAtMost(Remix.MAX_SECONDS * 2) ?: seconds
+    // A stem whose every piece was taken away is silent (the engine plays none): it ends at 0, not at the song's end.
+    stems.maxOfOrNull { s -> s.clips?.let { c -> c.maxOfOrNull { it.end } ?: 0.0 } ?: seconds }?.coerceAtMost(Remix.MAX_SECONDS * 2) ?: seconds
 
 /**
  * Stem [stem]'s edits for the engine: 5 numbers a piece (timeline frame, source frame, length,

@@ -132,6 +132,11 @@ else
   reds=$((reds + 1)); echo "ROUGE a branch already in the integration"; printf '%s\n' "$out" | sed 's/^/      /'
 fi
 
+# Review of banc7 (moyen 2): a branch the integration already holds, far behind while the integration's code moved, is
+# said « déjà dans l'intégration », never refused for its old base.
+git branch -q -f eq/tour-9-ancien "$(git rev-list --max-parents=0 fx-int)"
+expect "a branch already in the integration is not refused for its base" 0 "déjà dans l'intégration" non --avant-relecture tour-9 ancien
+
 # --main: main is a squash of an older state of this branch (same tree as one of its commits), then a real conflict.
 git checkout -q fx-int
 echo "# titre du lot fusionné" > README.md && git commit -q -am "work that main got as a squash"

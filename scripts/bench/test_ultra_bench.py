@@ -2272,6 +2272,13 @@ def zone_report(d):
     code, out, asked, moved = merge("tenu")
     check(code == 0 and moved, "a replay added with its last verdict « oracle tenu » is merged:\n" + out)
     git_toy(root, "reset", "-q", "--hard", "HEAD~2")
+    # Review of banc7 (grave 1): « tests: Classe#méthode », as the teams' sheet writes a test, reaches Gradle as
+    # « Classe.méthode » (Gradle's --tests knows no « # »: no test found, the merge undone after the self-test).
+    branch("diese", "# Rapport\n\ntests: FooTest#works\n\n- chemin: Accueil | test: FooTest#works\n")
+    code, out, asked, moved = merge("diese")
+    check(code == 0 and moved and "--tests FooTest.works" in asked and "FooTest#works" not in asked,
+          "« Classe#méthode » in « tests: » reaches Gradle as « Classe.méthode »:\n" + out + asked)
+    git_toy(root, "reset", "-q", "--hard", "HEAD~2")
     branch("rapportok", good)
     code, out, asked, moved = merge("rapportok")
     check(code == 0 and moved and "--tests FooTest" in asked, "the report's « tests: » are the team's targeted tests:\n" + out + asked)
@@ -2319,6 +2326,28 @@ def portal_recomputes(d):
     git_toy(root, "add", "docs")
     git_toy(root, "commit", "-q", "-m", "review")
     git_toy(root, "checkout", "-q", "fx-int")
+    # Review of banc7 (moyen 1): a step whose failure undoes a merge is a rule of the portal: frozen until batch 2.
+    write(calls, "")
+    r = subprocess.run(["bash", script, "tour-9", "recalcul"], capture_output=True, text=True, env=dict(os.environ, PS_TOY_CALLS=calls))
+    with open(calls, encoding="utf-8") as f:
+        asked = f.read()
+    check(r.returncode == 0 and "fuse-reports" not in asked and "tableau" not in asked,
+          "batch 1: merged, nothing recomputed yet:\n" + r.stdout + r.stderr + asked)
+    git_toy(root, "reset", "-q", "--hard", "HEAD~2")
+    write(os.path.join(root, "scripts", "bench", "portail-paquet.txt"), "paquet: 2\n")
+    git_toy(root, "add", "scripts")
+    git_toy(root, "commit", "-q", "-m", "batch 2")
+    # A recomputation that fails undoes the merge and leaves nothing behind.
+    good_fuse = TOY_FUSE
+    write(os.path.join(root, "scripts", "bench", "fuse-reports.py"), "import sys\nsys.exit(3)\n")
+    git_toy(root, "commit", "-q", "-am", "a fuse-reports that fails")
+    before = git_toy(root, "rev-parse", "HEAD").strip()
+    r = subprocess.run(["bash", script, "tour-9", "recalcul"], capture_output=True, text=True, env=dict(os.environ, PS_TOY_CALLS=calls))
+    left = git_toy(root, "status", "--porcelain", "--untracked-files=all").strip()
+    check(r.returncode != 0 and git_toy(root, "rev-parse", "HEAD").strip() == before and left == "",
+          "a failed recomputation undoes the merge, nothing left:\n" + r.stdout + r.stderr + left)
+    write(os.path.join(root, "scripts", "bench", "fuse-reports.py"), good_fuse)
+    git_toy(root, "commit", "-q", "-am", "fuse-reports back")
     write(calls, "")
     r = subprocess.run(["bash", script, "tour-9", "recalcul"], capture_output=True, text=True, env=dict(os.environ, PS_TOY_CALLS=calls))
     with open(calls, encoding="utf-8") as f:

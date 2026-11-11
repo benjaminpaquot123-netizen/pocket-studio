@@ -276,6 +276,8 @@
   "Envoi : %s": "الإرسال: %s",
   "La référence était %s dB plus forte : les deux jouent maintenant au même volume.": "كان المرجع أعلى بـ%s dB: الاثنان الآن بنفس علوّ الصوت.",
   "La référence était %s dB plus douce : les deux jouent maintenant au même volume.": "كان المرجع أخفض بـ%s dB: الاثنان الآن بنفس علوّ الصوت.",
+  "La référence était plus forte : les deux jouent maintenant au même volume.": "كان المرجع أعلى صوتًا: الآن يُشغَّل الاثنان بالمستوى نفسه.",
+  "La référence était plus douce : les deux jouent maintenant au même volume.": "كان المرجع أخفض صوتًا: الآن يُشغَّل الاثنان بالمستوى نفسه.",
   "Les deux étaient déjà presque au même volume.": "كان الاثنان تقريبًا بنفس علوّ الصوت مسبقًا.",
   "Stéréo": "ستيريو",
   "Tel quel": "كما هو",

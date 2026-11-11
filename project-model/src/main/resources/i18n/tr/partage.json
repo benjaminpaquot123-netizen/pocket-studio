@@ -19,5 +19,6 @@
   "Partager : vérifier le morceau, puis le partager en fichier ou en vidéo.": "Paylaş: şarkıyı kontrol et, sonra dosya ya da video olarak paylaş.",
   "Pour partager : l'onglet Partager.": "Paylaşmak için: Paylaş sekmesi.",
   "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "Şarkına başka bir cihazda devam etmek için: “Paylaş” › “Şarkıyı .zip olarak kaydet” (tüm sesleriyle bir .zip), sonra diğer cihazda Projelerim › “Proje içe aktar (.zip)”.",
-  "La partie en cours, jouée sur %s.": "Geçerli bölüm, %s boyunca çalınır."
+  "La partie en cours, jouée sur %s.": "Geçerli bölüm, %s boyunca çalınır.",
+  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": "Zip hazır: %s. Ancak Belgeler'e kopya yapılamadı: paylaşım menüsünden sakla."
 }

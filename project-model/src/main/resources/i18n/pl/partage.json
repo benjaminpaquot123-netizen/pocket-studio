@@ -19,5 +19,6 @@
   "Partager : vérifier le morceau, puis le partager en fichier ou en vidéo.": "Udostępnij: sprawdź utwór, potem udostępnij go jako plik albo wideo.",
   "Pour partager : l'onglet Partager.": "Żeby udostępnić: zakładka Udostępnij.",
   "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "Kontynuowanie utworu na innym urządzeniu: „Udostępnij” › „Zapisz utwór jako .zip” (.zip ze wszystkimi dźwiękami), potem na drugim urządzeniu Moje projekty › „Importuj projekt (.zip)”.",
-  "La partie en cours, jouée sur %s.": "Bieżąca część, grana przez %s."
+  "La partie en cours, jouée sur %s.": "Bieżąca część, grana przez %s.",
+  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": "Plik .zip jest gotowy: %s. Ale nie udało się zrobić kopii w Dokumentach: zapisz go z menu udostępniania."
 }

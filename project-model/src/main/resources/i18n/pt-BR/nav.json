@@ -276,6 +276,8 @@
   "Envoi : %s": "Envio: %s",
   "La référence était %s dB plus forte : les deux jouent maintenant au même volume.": "A referência estava %s dB mais alta: as duas agora tocam no mesmo volume.",
   "La référence était %s dB plus douce : les deux jouent maintenant au même volume.": "A referência estava %s dB mais baixa: as duas agora tocam no mesmo volume.",
+  "La référence était plus forte : les deux jouent maintenant au même volume.": "A referência estava mais alta: as duas agora tocam no mesmo volume.",
+  "La référence était plus douce : les deux jouent maintenant au même volume.": "A referência estava mais baixa: as duas agora tocam no mesmo volume.",
   "Les deux étaient déjà presque au même volume.": "As duas já estavam quase no mesmo volume.",
   "Stéréo": "Estéreo",
   "Tel quel": "Como está",

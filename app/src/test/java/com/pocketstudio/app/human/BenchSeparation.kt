@@ -38,6 +38,22 @@ internal class BenchSeparation(
     private val realSpec = SeparationModel.SPEC
     private val realWork = SeparationService.work
 
+    /** Released by [close]: a stand-in asleep in its slow work wakes and stops (a giant [timeScale] would outlive its test). */
+    private val closed = java.util.concurrent.CountDownLatch(1)
+
+    /**
+     * PLAN-RESTE 4.4: the stand-in's heartbeat, one more at each step of its slow work (a megabyte sent, a nap begun or
+     * ended): « attends » waits while it moves, and gives the hand back once it has not moved for 15 s (a stuck stand-in).
+     */
+    private val beatCount = java.util.concurrent.atomic.AtomicLong()
+    val beats: Long get() = beatCount.get()
+
+    /** Sleeps [ms] of real time as the slow work would; false when the stand-in was closed meanwhile (stop the work). */
+    private fun nap(ms: Long): Boolean {
+        beatCount.incrementAndGet()
+        return !closed.await(ms, java.util.concurrent.TimeUnit.MILLISECONDS).also { beatCount.incrementAndGet() }
+    }
+
     /** Songs separated (tests). */
     @Volatile var separated = 0
         private set
@@ -55,7 +71,7 @@ internal class BenchSeparation(
                         val n = minOf(left, CHUNK.toLong()).toInt()
                         out.write(chunk, 0, n)
                         left -= n
-                        Thread.sleep((DOWNLOAD_MS * timeScale * CHUNK / size).toLong())
+                        if (!nap((DOWNLOAD_MS * timeScale * CHUNK / size).toLong())) break
                     }
                 }
             }
@@ -67,6 +83,7 @@ internal class BenchSeparation(
     }
 
     override fun close() {
+        closed.countDown()
         SeparationService.work = realWork
         SeparationModel.SPEC = realSpec
         server.stop(0)
@@ -83,14 +100,13 @@ internal class BenchSeparation(
         val bytes = ByteBuffer.allocate(pcm.size * 4).order(ByteOrder.LITTLE_ENDIAN)
         for (v in pcm) bytes.putFloat(v)
         target.writeBytes(bytes.array())
-        Thread.sleep((800 * timeScale).toLong())
-        if (isCancelled()) throw AudioDecoder.CancelledException()
+        if (!nap((800 * timeScale).toLong()) || isCancelled()) throw AudioDecoder.CancelledException()
         return AudioDecoder.RawAudio(target, channels, rate, (pcm.size / channels).toLong())
     }
 
     override fun separate(model: File, raw: AudioDecoder.RawAudio, outDir: File, progress: Demucs.Progress): Pair<SeparationResult, String> {
         for (step in 1..STEPS) {
-            Thread.sleep((SEPARATE_MS * timeScale / STEPS).toLong())
+            if (!nap((SEPARATE_MS * timeScale / STEPS).toLong())) return SeparationResult.Cancelled to ""
             if (!progress.onProgress(step.toFloat() / STEPS)) return SeparationResult.Cancelled to ""
         }
         outDir.mkdirs()
@@ -109,7 +125,7 @@ internal class BenchSeparation(
     }
 
     override fun analyse(dir: File): SongInfo {
-        Thread.sleep((600 * timeScale).toLong())
+        nap((600 * timeScale).toLong())
         val ours = runCatching { FloatWav.read(File(dir, "vocals.wav")).data.any { it != 0f } }.getOrDefault(false)
         return if (ours) SongInfo(bpm = BenchSong.BPM, firstBeat = 0.0, root = BenchSong.ROOT, minor = true) else SongInfo()
     }

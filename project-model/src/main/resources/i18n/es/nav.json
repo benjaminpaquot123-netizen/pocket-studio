@@ -276,6 +276,8 @@
   "Envoi : %s": "Envío: %s",
   "La référence était %s dB plus forte : les deux jouent maintenant au même volume.": "La referencia estaba %s dB más fuerte: ahora las dos suenan al mismo volumen.",
   "La référence était %s dB plus douce : les deux jouent maintenant au même volume.": "La referencia estaba %s dB más suave: ahora las dos suenan al mismo volumen.",
+  "La référence était plus forte : les deux jouent maintenant au même volume.": "La referencia sonaba más fuerte: ahora las dos suenan al mismo volumen.",
+  "La référence était plus douce : les deux jouent maintenant au même volume.": "La referencia sonaba más suave: ahora las dos suenan al mismo volumen.",
   "Les deux étaient déjà presque au même volume.": "Las dos ya estaban casi al mismo volumen.",
   "Stéréo": "Estéreo",
   "Tel quel": "Tal cual",

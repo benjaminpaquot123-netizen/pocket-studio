@@ -276,6 +276,8 @@
   "Envoi : %s": "Gönderim: %s",
   "La référence était %s dB plus forte : les deux jouent maintenant au même volume.": "Referans %s dB daha yüksekti: ikisi artık aynı seviyede çalıyor.",
   "La référence était %s dB plus douce : les deux jouent maintenant au même volume.": "Referans %s dB daha kısıktı: ikisi artık aynı seviyede çalıyor.",
+  "La référence était plus forte : les deux jouent maintenant au même volume.": "Referans daha yüksekti: şimdi ikisi de aynı ses düzeyinde çalıyor.",
+  "La référence était plus douce : les deux jouent maintenant au même volume.": "Referans daha kısıktı: şimdi ikisi de aynı ses düzeyinde çalıyor.",
   "Les deux étaient déjà presque au même volume.": "İkisi zaten neredeyse aynı seviyedeydi.",
   "Stéréo": "Stereo",
   "Tel quel": "Olduğu gibi",

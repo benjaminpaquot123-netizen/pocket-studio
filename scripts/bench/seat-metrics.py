@@ -58,6 +58,7 @@ class Journal:
         self.layout = 0
         self.crash = False
         self.end = None
+        self.first_screen = None
         # PLAN-RESTE 5.9 (control 10, a round's measure): the engine missing on the bench (a call into the native library
         # Robolectric has not, or the bench's own « moteur absent »), anywhere in the journal, stacks included.
         self.native = sum(1 for raw in text.splitlines() if "UnsatisfiedLinkError" in raw or "moteur absent" in raw)
@@ -92,6 +93,24 @@ class Journal:
                 self.crash = True
             elif rest.startswith("FIN : "):
                 self.end = rest[len("FIN : "):]
+            elif rest.startswith("PREMIER ECRAN "):
+                self.first_screen = first_screen(rest[len("PREMIER ECRAN "):])
+
+
+def first_screen(text):
+    """PLAN-RESTE 4.6: « reel_s=6.4 simule_s=1.5 jvm_s=48.2 travail=oui vide=non attente_s=4.9 » (HumanTester.begin): the
+    first screen's real seconds since the app's launch, the app's own clock, the seconds since the JVM started (the bench's
+    start-up, what a tester waited before screen 1), the bench's workers busy, the screen blank, the bench's wait for it.
+    A blank first screen while the bench was at rest is not the bench's: « à trancher » (recette tel-20)."""
+    f = dict(p.split("=", 1) for p in text.split() if "=" in p)
+    def num(k):
+        try:
+            return float(f[k].replace(",", "."))
+        except (KeyError, ValueError):
+            return None
+    busy, blank = f.get("travail") == "oui", f.get("vide") == "oui"
+    return {"reel": num("reel_s"), "simule": num("simule_s"), "jvm": num("jvm_s"), "travail_de_fond": busy, "vide": blank,
+            "attente_banc": num("attente_s"), "verdict": "à trancher" if blank and not busy else "-"}
 
 
 def counted(cmd):
@@ -156,6 +175,7 @@ def measures(seat):
         "constats_layout": j.layout,
         "plantage": j.crash,
         "fin": j.end,
+        "premier_ecran_s": j.first_screen,
     }
 
 

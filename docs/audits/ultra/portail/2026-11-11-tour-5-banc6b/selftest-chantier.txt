@@ -1,0 +1,23 @@
+T4-19 : verdict « banc » sans preuve sans banc (aucun test hors Bench* existant dans preuve_appli)
+T4-16 : verdict « banc » sans preuve sans banc (aucun test hors Bench* existant dans preuve_appli)
+T4-01 : verdict « appli » sans preuve (ni test sans banc existant, ni essai ❌ daté)
+T4-17 : verdict « banc » sans preuve sans banc (aucun test hors Bench* existant dans preuve_appli)
+T5-Dc-4 : verdict « banc » sans preuve sans banc (aucun test hors Bench* existant dans preuve_appli)
+T5-Fb-73 : verdict « banc » sans preuve sans banc (aucun test hors Bench* existant dans preuve_appli)
+T5-Ac-61 : verdict « banc » sans preuve sans banc (aucun test hors Bench* existant dans preuve_appli)
+T5-Db-16 : verdict « banc » sans preuve sans banc (aucun test hors Bench* existant dans preuve_appli)
+T5-Fc-8 : verdict « banc » sans preuve sans banc (aucun test hors Bench* existant dans preuve_appli)
+T5-Cc-41b : verdict « banc » sans preuve sans banc (aucun test hors Bench* existant dans preuve_appli)
+T5-Ab-14 : verdict « banc » sans preuve sans banc (aucun test hors Bench* existant dans preuve_appli)
+T5-TEL10 : verdict « appli » sans preuve (ni test sans banc existant, ni essai ❌ daté)
+dcc33677 « vert: LayoutScan judges a cut down inside a row that scrolls sideways  » : vert sans rouge du même test avant lui
+0b1cbbc3 « vert: the bench's song counter reads the engine's song position » : vert sans rouge du même test avant lui
+87b66934 « vert: reachTag touches an element shown whole where it is (R.6); the b » : vert sans rouge du même test avant lui
+df794a90 « rouge: LayoutScan misses a chip's cut second line in a sideways row in » : rouge sans vert du même test après lui
+8f36fa35 « rouge: bench guards for Benjamin's device checklist (tel-09, tel-13, t » : rouge sans vert du même test après lui
+d503254d « rouge: bench guards for reachTag's clock (R.6), the export size said t » : rouge sans vert du même test après lui
+journal, ligne cochée 4.0 : sans preuve (ni « preuve: rouge <sha> / vert <sha> », ni « preuve: script <chemin> »)
+journal, ligne cochée 4.2 : sans preuve (ni « preuve: rouge <sha> / vert <sha> », ni « preuve: script <chemin> »)
+journal, ligne cochée 4.3 : sans preuve (ni « preuve: rouge <sha> / vert <sha> », ni « preuve: script <chemin> »)
+journal, ligne cochée 4.0 : sans preuve (ni « preuve: rouge <sha> / vert <sha> », ni « preuve: script <chemin> »)
+chantier : 22 écarts

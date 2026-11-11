@@ -51,6 +51,11 @@
       "id": "tel-19",
       "title": "Annuler une prise du Live",
       "hint": "Mode : Pro.\n1. Note la durée du morceau (dans Structure, en mesures ou minutes).\n2. Onglet « Live » : touche le rond rouge pour enregistrer la performance, lance quelques cases pendant 10-20 s, puis arrête.\n3. Touche « Annuler » (en bas, à gauche du ▶).\n4. Regarde de nouveau la durée du morceau.\nRéponse : la durée avant et après (elle doit redevenir comme avant)."
+    },
+    {
+      "id": "tel-20",
+      "title": "Premier écran après Pro",
+      "hint": "Mode : Pro.\n1. Ferme complètement BenStudio (balaye-le hors des applis récentes).\n2. Rouvre-le et regarde l'écran juste après le logo.\n3. Compte à voix basse jusqu'à ce que des boutons apparaissent (« Que veux-tu faire ? » ou ton projet).\nRéponse : combien de secondes tu as vu un écran presque vide (« Ouverture du projet… » ou rien), et ce qui est venu ensuite."
     }
   ]
 }

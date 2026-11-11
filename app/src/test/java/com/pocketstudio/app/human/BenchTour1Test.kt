@@ -213,11 +213,22 @@ class BenchTour1Test : HumanTester("tour-1") {
         tap("thumb_play")
         val vm = rhythm()!!
         assertTrue(vm.transport.value.playing)
-        assertEquals(-14.0f, vm.loudness.value[NativeEngine.LOUDNESS_SHORT_TERM], 0.01f)
-        assertTrue("the drums move", vm.meters.value[0] > 0f)
+        val loud = vm.loudness.value[NativeEngine.LOUDNESS_SHORT_TERM]
+        val drums = vm.meters.value[0]
+        assertTrue("the master reads while the music plays: $loud LUFS", loud > -40f && loud < -3f)
+        assertTrue("the drums move", drums > 0f)
+        // PLAN-RESTE 5.11 (control 12): the readings are the bench's render of what plays, not constants: the channels
+        // turned down, the master and the drums read lower.
+        for (ch in 0 until NativeEngine.MIXER_CHANNELS) vm.setChannelVolume(ch, 0.2f)
+        act("attends 1")
+        val quiet = vm.loudness.value[NativeEngine.LOUDNESS_SHORT_TERM]
+        println("PLAN-RESTE 5.11 mesure : court terme $loud LUFS, puis $quiet LUFS les pistes à 0,2 ; batterie ${vm.meters.value[0]} au lieu de $drums")
+        assertTrue("the channels down, the master reads lower: $loud then $quiet LUFS", quiet < loud - 3f)
+        assertTrue("and the drums' meter: $drums then ${vm.meters.value[0]}", vm.meters.value[0] < drums)
+        val integrated = vm.loudness.value[NativeEngine.LOUDNESS_INTEGRATED]
         tap("thumb_play")
         assertEquals("stopped: no short-term reading", NativeEngine.LOUDNESS_NONE, vm.loudness.value[NativeEngine.LOUDNESS_SHORT_TERM], 0.01f)
-        assertEquals("the integrated reading stays", -14.2f, vm.loudness.value[NativeEngine.LOUDNESS_INTEGRATED], 0.01f)
+        assertEquals("the integrated reading stays", integrated, vm.loudness.value[NativeEngine.LOUDNESS_INTEGRATED], 0.01f)
     }
 
     /** Lot B d: « Montre-moi » played its pads through the engine; the bench hears what the app sends it. */

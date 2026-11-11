@@ -62,14 +62,14 @@ class BenchEngineTest {
         return vm
     }
 
-    private fun share(format: ExportFormat): Pair<RhythmViewModel, List<File>> {
+    private fun share(format: ExportFormat, project: Project = Project(song = listOf(SongPart(0), SongPart(0)))): Pair<RhythmViewModel, List<File>> {
         val passThrough = ShadowMediaCodec.CodecConfig.Codec { input, output ->
             val n = minOf(input.remaining(), output.remaining())
             output.put(input.duplicate().also { it.limit(it.position() + n) })
             input.position(input.position() + n)
         }
         ShadowMediaCodec.addEncoder(MediaFormat.MIMETYPE_AUDIO_AAC, ShadowMediaCodec.CodecConfig(16 * 1024, 16 * 1024, passThrough))
-        val vm = open(Project(song = listOf(SongPart(0), SongPart(0))))
+        val vm = open(project)
         val engine = BenchEngine()
         NativeEngine.sink = engine
         val shared = ArrayList<List<File>>()
@@ -120,6 +120,26 @@ class BenchEngineTest {
         val note = HumanTester.shareNote(listOf(f.name to f.length()), "WhatsApp")
         assertTrue(note, f.name in note && "WhatsApp" in note)
         assertTrue("the bench's note says the size is the bench's, not a phone's: $note", "banc" in note.lowercase() && "représentativ" in note)
+    }
+
+    /**
+     * PLAN-RESTE 4.7, the profile (a measure, not a guard): where an export's time goes on the bench, WAV (the stand-in
+     * engine's render only) against M4A (the same render, then AacEncoder through the shadow codec that copies), for a short
+     * and a four times longer song. Printed in the test's output; copied into banc-fiable-journal.md.
+     */
+    @Test
+    fun exportProfile() {
+        val lines = mutableListOf<String>()
+        for (parts in listOf(2, 8)) for (format in listOf(ExportFormat.Wav, ExportFormat.M4a)) {
+            val t = System.nanoTime()
+            val (vm, files) = share(format, Project(song = List(parts) { SongPart(0) }))
+            val ms = (System.nanoTime() - t) / 1_000_000
+            val p = vm.project.value
+            val song = p.song.sumOf { p.partSteps(it) } * 15.0 / p.tempoBpm
+            lines += "PROFIL 4.7 : ${format.name} ${"%.1f".format(song)} s de morceau : $ms ms réelles, ${files.single().length()} octets"
+        }
+        println(lines.joinToString("\n"))
+        assertEquals(4, lines.size)
     }
 
     /** A render of [frames] (and [tail]) by [engine], its project described by [describe] (round 3, lot A d). */
@@ -176,6 +196,25 @@ class BenchEngineTest {
         val t = e.exportCreate()
         loop(e, t)
         assertEquals(2 * (bar + 4_800), e.exportRenderFloat(t, bar, 4_800L).size.toLong())
+    }
+
+    /**
+     * PLAN-RESTE 5.1 (control 1): the length asked, from a bar to a song of 3 minutes (90 bars at 120 BPM, ≈ 70 MB of
+     * float WAV, deleted after), and the song's sound brought to each target (−8, −14 ± 0,5 LU) at that length too.
+     */
+    @Test
+    fun aThreeMinuteRenderLastsThreeMinutes() {
+        val e = BenchEngine().apply { renderMs = 0L }
+        val bar = 96_000L
+        for ((bars, target) in listOf(1 to -14f, 4 to -8f, 90 to -14f, 90 to -8f)) {
+            val f = render(e, bars * bar) { t -> song(e, t); e.post(t, 67, target, 4, 0) }
+            try {
+                assertEquals("$bars bars", bars * 2.0, seconds(f), 0.01)
+                assertEquals("$bars bars, target $target", target.toDouble(), com.pocketstudio.app.export.Loudness.integrated(f)!!, 0.5)
+            } finally {
+                f.delete()
+            }
+        }
     }
 
     /** [ms] of the bench's clock go by (the main looper's, which the bench's engine reads). */

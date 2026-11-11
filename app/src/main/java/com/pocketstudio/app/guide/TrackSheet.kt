@@ -265,6 +265,7 @@ private fun WhenColumn(sheet: GuideSheet, partNames: List<String>, actions: Trac
 /** « Quel effet et combien »: the chain in the order the sound goes through it, each effect's start value and why; the sends. */
 @Composable
 private fun ChainColumn(sheet: GuideSheet, actions: TrackSheetActions) {
+    val simple = com.pocketstudio.app.settings.observedSettings().simpleMode
     NeonCard(Modifier.testTag("track_sheet_chain")) {
         SectionLabel(tr("Quel effet et combien"), foldKey = "sheet.chain")
         if (sheet.chain.isEmpty()) Text(tr("Aucun effet : le son passe tel quel."), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary)
@@ -273,10 +274,10 @@ private fun ChainColumn(sheet: GuideSheet, actions: TrackSheetActions) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("${n + 1}.", style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary, modifier = Modifier.width(24.dp))
                     Text(tr(e.type.label), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold, color = if (e.bypassed) Neon.TextSecondary else Neon.TextPrimary, modifier = Modifier.weight(1f))
-                    if (e.valueLabel.isNotBlank()) Text(tr(e.valueLabel) + " " + e.value, style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
+                    if (e.valueLabel.isNotBlank()) Text(tr(e.valueLabel) + " " + e.value.let { if (simple) com.pocketstudio.model.withoutDecibels(it) else it }, style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
                 }
                 val notes = listOfNotNull(
-                    e.why.takeIf { it.isNotBlank() }?.let(::guideText),
+                    e.why.takeIf { it.isNotBlank() }?.let(::guideText)?.let { if (simple) com.pocketstudio.model.withoutDecibels(it) else it },
                     tr("coupé pour l'instant").takeIf { e.bypassed },
                     tr("seulement dans certaines parties").takeIf { !e.everywhere },
                 )
@@ -597,8 +598,9 @@ private fun LayerCard(i: Int, l: TrackLayer, alone: Boolean, actions: LayersEdit
             OutlinedButton(onClick = pickSound, modifier = Modifier.heightIn(min = 48.dp).testTag("layer_sound_$i")) { Text(tr("Changer le son")) }
             OutlinedButton(onClick = { actions.remove(i) }, modifier = Modifier.heightIn(min = 48.dp).testTag("layer_remove_$i")) { Text(tr("Retirer")) }
         }
-        LabeledSlider(tr("Volume"), formatDb(l.gainDb), "layer_gain_$i") {
-            ProSlider(l.gainDb.coerceIn(GAIN_MIN, GAIN_MAX), { actions.setGain(i, (it * 2).roundToInt() / 2f) }, valueRange = GAIN_MIN..GAIN_MAX, modifier = Modifier.fillMaxWidth().testTag("layer_gain_slider_$i"), label = tr("Volume"), valueText = formatDb(l.gainDb))
+        val simple = com.pocketstudio.app.settings.observedSettings().simpleMode
+        LabeledSlider(tr("Volume"), formatDb(l.gainDb, simple), "layer_gain_$i") {
+            ProSlider(l.gainDb.coerceIn(GAIN_MIN, GAIN_MAX), { actions.setGain(i, (it * 2).roundToInt() / 2f) }, valueRange = GAIN_MIN..GAIN_MAX, modifier = Modifier.fillMaxWidth().testTag("layer_gain_slider_$i"), label = tr("Volume"), valueText = formatDb(l.gainDb, simple))
         }
         LabeledSlider(tr("Place"), formatPan(l.pan), "layer_pan_$i") {
             ProSlider(l.pan, { actions.setPan(i, if (kotlin.math.abs(it) < 0.04f) 0f else (it * 100).roundToInt() / 100f) }, valueRange = -1f..1f, modifier = Modifier.fillMaxWidth().testTag("layer_pan_slider_$i"), label = tr("Place"), valueText = formatPan(l.pan))
@@ -703,7 +705,8 @@ private const val GAIN_MIN = -30f
 private const val GAIN_MAX = 6f
 
 /** « −6,0 dB » in French whatever the phone's language: the interface's own decimal separator (as the mixer). */
-internal fun formatDb(db: Float): String = if (db <= Layers.MIN_GAIN_DB) tr("muet") else
+internal fun formatDb(db: Float, simple: Boolean = false): String = if (db <= Layers.MIN_GAIN_DB) tr("muet")
+    else if (simple) com.pocketstudio.app.mixer.levelWords(db) else
     com.pocketstudio.model.i18n.ltrNumber((if (db > 0f) "+" else if (db < 0f) "−" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", kotlin.math.abs(db)))
 
 private fun formatPan(pan: Float): String = when {

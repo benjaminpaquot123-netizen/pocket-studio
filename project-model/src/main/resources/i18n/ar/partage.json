@@ -19,5 +19,6 @@
   "Partager : vérifier le morceau, puis le partager en fichier ou en vidéo.": "مشاركة: تحقّق من الأغنية، ثم شاركها كملف أو فيديو.",
   "Pour partager : l'onglet Partager.": "للمشاركة: تبويب مشاركة.",
   "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "لمتابعة أغنيتك على جهاز آخر: « مشاركة » › « حفظ الأغنية في ملف ‎.zip » (ملف ‎.zip فيه كل أصواته)، ثم على الجهاز الآخر: مشاريعي › « استيراد مشروع (‎.zip) ».",
-  "La partie en cours, jouée sur %s.": "الجزء الحالي، معزوفًا على %s."
+  "La partie en cours, jouée sur %s.": "الجزء الحالي، معزوفًا على %s.",
+  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": "ملف .zip جاهز: %s. لكن تعذّر نسخه إلى المستندات: احفظه من قائمة المشاركة."
 }

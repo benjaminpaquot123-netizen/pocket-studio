@@ -276,6 +276,8 @@
   "Envoi : %s": "Send: %s",
   "La référence était %s dB plus forte : les deux jouent maintenant au même volume.": "Die Referenz war %s dB lauter: Beide spielen jetzt gleich laut.",
   "La référence était %s dB plus douce : les deux jouent maintenant au même volume.": "Die Referenz war %s dB leiser: Beide spielen jetzt gleich laut.",
+  "La référence était plus forte : les deux jouent maintenant au même volume.": "Die Referenz war lauter: Beide spielen jetzt gleich laut.",
+  "La référence était plus douce : les deux jouent maintenant au même volume.": "Die Referenz war leiser: Beide spielen jetzt gleich laut.",
   "Les deux étaient déjà presque au même volume.": "Beide waren schon fast gleich laut.",
   "Stéréo": "Stereo",
   "Tel quel": "Unverändert",

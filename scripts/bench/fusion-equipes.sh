@@ -48,9 +48,10 @@ for zone in "${zones[@]}"; do
   changed="$(comm -12 <(replays "$base") <(replays "eq/$tour-$zone") | while read -r id; do
     git diff --quiet "$base" "eq/$tour-$zone" -- "docs/audits/ultra/rejeux/$id" || echo "changé:$id"; done)"
   # Second review of the « portail » lot (G2): red evidence (rouges-constates/<sha>/) the branch brings or changes is
-  # named in its review (« rouge constaté : <sha> : … »).
+  # named in its review (« rouge constaté : <sha> : rejoué sur <parent> : … »; third review, M9: the parent passed).
   evidence="$(git diff --name-only "$base" "eq/$tour-$zone" -- docs/audits/ultra/rouges-constates \
-    | sed -n 's#^docs/audits/ultra/rouges-constates/\([^/]*\)/.*#constat:\1#p' | sort -u)"
+    | sed -n 's#^docs/audits/ultra/rouges-constates/\([^/]*\)/.*#\1#p' | sort -u | while read -r sha; do
+      echo "constat:$sha:$(git rev-parse -q --verify "$sha^1" 2>/dev/null || true)"; done)"
   # shellcheck disable=SC2086
   why="$(printf '%s\n' "$text" | python3 -I scripts/bench/relecture-verdict.py $removed $changed $evidence)" \
     || { echo "$zone: review refused: $why: not merged." >&2; exit 3; }

@@ -19,5 +19,6 @@
   "Partager : vérifier le morceau, puis le partager en fichier ou en vidéo.": "공유: 곡을 확인하고 파일이나 영상으로 공유해요.",
   "Pour partager : l'onglet Partager.": "공유하려면: 공유 탭.",
   "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "다른 기기에서 곡을 이어서 하려면: “공유” › “곡을 .zip으로 저장”(모든 소리가 담긴 .zip), 그다음 다른 기기에서 내 프로젝트 › “프로젝트 가져오기 (.zip)”.",
-  "La partie en cours, jouée sur %s.": "현재 파트, %s 동안 재생."
+  "La partie en cours, jouée sur %s.": "현재 파트, %s 동안 재생.",
+  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": ".zip이 준비됐어요: %s. 하지만 문서 폴더에 복사하지 못했어요. 공유 메뉴에서 저장해 주세요."
 }

@@ -276,6 +276,8 @@
   "Envoi : %s": "Send: %s",
   "La référence était %s dB plus forte : les deux jouent maintenant au même volume.": "The reference was %s dB louder: both now play at the same loudness.",
   "La référence était %s dB plus douce : les deux jouent maintenant au même volume.": "The reference was %s dB softer: both now play at the same loudness.",
+  "La référence était plus forte : les deux jouent maintenant au même volume.": "The reference was louder: both now play at the same volume.",
+  "La référence était plus douce : les deux jouent maintenant au même volume.": "The reference was softer: both now play at the same volume.",
   "Les deux étaient déjà presque au même volume.": "Both were already almost at the same loudness.",
   "Stéréo": "Stereo",
   "Tel quel": "As it is",

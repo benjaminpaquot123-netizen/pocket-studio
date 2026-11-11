@@ -256,6 +256,19 @@ open class SimpleMixScreenshotTest {
         // The tab alone (the bar's indicator is in the first image).
         compose.onNodeWithTag("simple_mix").captureRoboImage("screenshots/${prefix}simple_mix_drums.png")
     }
+
+    /** A fader at its very bottom says « Muet » under the slider (the phone and the 130 % size only). */
+    @Test
+    fun mixMuet() {
+        org.junit.Assume.assumeTrue(prefix == "nav/" || prefix.startsWith("scale130/"))
+        h.start(simple = true, scale = uiScale, lang = lang) { session.edit { acidTechnoSong() } }
+        compose.onNodeWithTag("tab_simple_Mix").performClick()
+        h.vm.setChannelVolume(1, 0f)
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(800))
+        compose.mainClock.advanceTimeBy(3000)
+        compose.waitForIdle()
+        compose.onNodeWithTag("simple_mix").captureRoboImage("screenshots/${prefix}simple_mix_muet.png")
+    }
 }
 
 @Config(qualifiers = "w411dp-h914dp-xxhdpi")

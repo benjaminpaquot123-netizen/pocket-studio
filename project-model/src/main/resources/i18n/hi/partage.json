@@ -19,5 +19,6 @@
   "Partager : vérifier le morceau, puis le partager en fichier ou en vidéo.": "शेयर करो: गाना चेक करो, फिर फ़ाइल या वीडियो के रूप में शेयर करो।",
   "Pour partager : l'onglet Partager.": "शेयर करने के लिए: शेयर करो टैब।",
   "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "अपना गाना दूसरे डिवाइस पर आगे बढ़ाओ: “शेयर करो” › “गाने को .zip में सेव करो” (सारी आवाज़ों वाली .zip), फिर दूसरे डिवाइस पर मेरे प्रोजेक्ट › “प्रोजेक्ट इंपोर्ट करो (.zip)”।",
-  "La partie en cours, jouée sur %s.": "अभी का पार्ट, %s पर बजता हुआ।"
+  "La partie en cours, jouée sur %s.": "अभी का पार्ट, %s पर बजता हुआ।",
+  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": "ज़िप तैयार है: %s। लेकिन दस्तावेज़ में कॉपी नहीं बन सकी: इसे शेयर मेनू से सहेज लो।"
 }

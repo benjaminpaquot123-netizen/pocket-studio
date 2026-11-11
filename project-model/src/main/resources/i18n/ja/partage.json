@@ -19,5 +19,6 @@
   "Partager : vérifier le morceau, puis le partager en fichier ou en vidéo.": "シェア：曲をチェックして、ファイルか動画でシェア。",
   "Pour partager : l'onglet Partager.": "シェアするには：「シェア」タブ。",
   "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "別の端末で曲を続けるには：「シェア」›「曲を .zip で保存」（すべての音が入った .zip）、そのあと別の端末でマイプロジェクト ›「プロジェクトを読み込む（.zip）」。",
-  "La partie en cours, jouée sur %s.": "今のパートを %s ぶん再生。"
+  "La partie en cours, jouée sur %s.": "今のパートを %s ぶん再生。",
+  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": ".zip はできました：%s。ただし「ドキュメント」へのコピーはできませんでした。共有メニューから保存してください。"
 }

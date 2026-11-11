@@ -149,8 +149,16 @@ abstract class HumanTester(private val seat: String) {
         engine.cancelAllRenders()
         stopPollers()
         runCatching { scenario?.close() }
-        runCatching { service?.destroy() }
+        // PLAN-RESTE 4.4: a download still running when the test ends (the stuck stand-in's) fails once the stand-in's
+        // server closes (« connexion coupée »), on the service's own thread: let it end before the state is put back.
         separation?.close()
+        val until = System.currentTimeMillis() + 5_000
+        while (SeparationJob.state.value.busy && System.currentTimeMillis() < until) {
+            Thread.sleep(20)
+            shadowOf(Looper.getMainLooper()).idle()
+        }
+        backgroundQuiet(2_000)
+        runCatching { service?.destroy() }
         SeparationJob.set(SeparationState.Idle)
         com.pocketstudio.app.rhythm.ClosingSaves.awaitIdleBlocking(15_000)
         TutoTestHooks.player = null
@@ -186,6 +194,7 @@ abstract class HumanTester(private val seat: String) {
         watchdog = dog
         try {
             begin(o)
+            firstScreenLine?.let { journal.appendText("#0 PREMIER ECRAN $it\n") }
             o.amenee?.let { amenee(it, journal) }
             stalls(journal, 0)
             seatLoop(dir, o, journal)
@@ -224,6 +233,7 @@ abstract class HumanTester(private val seat: String) {
         var afterWait = false
         val source = o.replayOf
         val timeoutMs = o.timeoutMinutes * 60_000
+        var benchExceptions = 0
         fun end(why: String) {
             journal.appendText("#$n FIN : $why\n")
             File(dir, "fin.txt").writeText(why)
@@ -336,10 +346,29 @@ abstract class HumanTester(private val seat: String) {
             }
             if (kind == "retour") journal.appendText("#$n RETOUR\n")
             try {
+                val dialogsBefore = dialogSeconds.size
                 play(cmd)
+                dialogSeconds.drop(dialogsBefore).forEach { sec ->
+                    journal.appendText("#$n DIALOGUE ${"%.1f".format(java.util.Locale.ROOT, sec)} s\n")
+                    if (sec > DIALOG_SLOW_S) {
+                        journal.appendText("#$n BANC dialogue lent (${"%.0f".format(java.util.Locale.ROOT, sec)} s > $DIALOG_SLOW_S s)\n")
+                        say("Banc : ce geste dans la fenêtre à champ de texte a pris ${"%.0f".format(java.util.Locale.ROOT, sec)} s réelles au banc ; un téléphone répond tout de suite. Note-le dans « incidents-banc » avec banc?: temps.")
+                    }
+                }
                 problems.forEach { journal.appendText("#$n SCREEN ERROR $it\n") }
                 problems.clear()
             } catch (e: Throwable) {
+                // PLAN-RESTE 5.10 (control 11): sorted by its frames, never by its class. Thrown by the test's own code
+                // (Compose's test API, Robolectric, the bench): « BANC », the seat goes on; 4 of them end it « banc ».
+                if (!thrownByTheApp(e)) {
+                    benchExceptions++
+                    journal.appendText("#$n BANC exception du banc (pas de l'appli) : ${e.javaClass.name}: ${e.message?.take(300)}\n${e.stackTrace.take(8).joinToString("\n") { "    at $it" }}\n")
+                    say("Banc : le banc a eu un souci pendant ce geste (${e.javaClass.simpleName}) ; ce n'est pas l'appli. Note-le dans « incidents-banc » avec banc?: banc.")
+                    problems.clear()
+                    n++
+                    if (benchExceptions >= BENCH_EXCEPTIONS_MAX) { end("banc : $benchExceptions exceptions du banc"); return }
+                    continue
+                }
                 journal.appendText("#$n CRASH ${e.javaClass.name}: ${e.message?.take(400)}\n${e.stackTrace.take(12).joinToString("\n") { "    at $it" }}\n")
                 File(dir, "sound-${n + 1}.txt").writeText("⚠ L'appli s'est arrêtée (plantage).")
                 runCatching { capture(dir, n + 1); publish(dir, n + 1, emptyList()) }
@@ -431,9 +460,52 @@ abstract class HumanTester(private val seat: String) {
         BenchPartySounds(app).register()
         // Audit method v2: the engine is there before the app opens, as a phone's (see ENGINE_ALWAYS).
         if (ENGINE_ALWAYS) NativeEngine.sink = engine
+        val launched = System.currentTimeMillis()
+        val clock = SystemClock.uptimeMillis()
         scenario = ActivityScenario.launch(MainActivity::class.java)
         settle(1500)
+        firstScreen(launched, clock)
     }
+
+    /**
+     * PLAN-RESTE 4.6, the first screen as measured: real seconds since the launch, the app's clock, seconds since the JVM
+     * started (the bench's own start-up, what a tester waits before screen 1: F a 120 s, F c 300 s at round 5), the bench's
+     * workers busy, the screen blank (nothing to touch), the bench's wait for it. Written as « #0 PREMIER ECRAN » by [drive].
+     */
+    internal var firstScreenLine: String? = null
+        private set
+
+    /**
+     * PLAN-RESTE 4.6 (seats D b, F a, F c: a first screen almost empty): a blank first screen (« Ouverture du projet… »)
+     * is waited for, [FIRST_SCREEN_CAP_MS] at most, only while the bench's own workers run (a loaded machine: the bench's
+     * cause, proven by the threads). With them at rest it is shown as it is: what the app shows, « à trancher » (tel-20).
+     */
+    private fun firstScreen(launched: Long, clock: Long) {
+        val busy = coroutineWorkersBusy()
+        val from = System.currentTimeMillis()
+        if (blankScreen() && busy) {
+            while (blankScreen() && coroutineWorkersBusy() && System.currentTimeMillis() - from < FIRST_SCREEN_CAP_MS) {
+                Thread.sleep(50)
+                shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(50))
+                runCatching { compose.mainClock.advanceTimeBy(50) }
+            }
+            settle(200)
+        }
+        val waited = System.currentTimeMillis() - from
+        fun s(ms: Long) = "%.1f".format(java.util.Locale.ROOT, ms / 1000.0)
+        firstScreenLine = "reel_s=${s(System.currentTimeMillis() - launched)} simule_s=${s(SystemClock.uptimeMillis() - clock)} " +
+            "jvm_s=${s(java.lang.management.ManagementFactory.getRuntimeMXBean().uptime)} travail=${if (busy) "oui" else "non"} " +
+            "vide=${if (blankScreen()) "oui" else "non"} attente_s=${s(if (busy) waited else 0)}"
+    }
+
+    /**
+     * The app's own screen is not there yet: its opening (« Ouverture du projet… ») is shown, or nothing can be touched.
+     * The « Mode retours » bubble floats over everything, the opening too: it does not make a screen.
+     */
+    private fun blankScreen(): Boolean = shownOnScreen("project_opening") || runCatching {
+        compose.onAllNodes(SemanticsMatcher.keyIsDefined(androidx.compose.ui.semantics.SemanticsActions.OnClick))
+            .fetchSemanticsNodes(atLeastOneRootRequired = false).none { it.size.width > 0 && it.size.height > 0 }
+    }.getOrDefault(true)
 
     /** How long the model's download and the separation take (1: as the testers see them). */
     protected open val remixTimeScale: Double = 1.0
@@ -1125,7 +1197,43 @@ abstract class HumanTester(private val seat: String) {
 
     /** One gesture: « touche X Y », « appui-long X Y », « glisse X1 Y1 X2 Y2 », « ecris … », « retour », « attends S ». */
 
+    /**
+     * PLAN-RESTE 5.10: an exception is the app's when the first frame of com.pocketstudio in it (or in its causes) is outside
+     * the bench (`com.pocketstudio.app.human`): the app's code threw, even under a test call. Else the test's code threw it.
+     * Review of « banc6b » (grave): every link of the chain is read, a bench frame that rethrows the app's exception as
+     * its cause never hides the app's crash.
+     */
+    internal fun thrownByTheApp(e: Throwable): Boolean {
+        val seen = HashSet<Throwable>()
+        var t: Throwable? = e
+        while (t != null && seen.add(t)) {
+            val first = t.stackTrace.firstOrNull { it.className.startsWith("com.pocketstudio.") }
+            if (first != null && !first.className.startsWith("com.pocketstudio.app.human.")) return true
+            t = t.cause
+        }
+        return false
+    }
+
+    /** PLAN-RESTE 5.3 (control 4): the real seconds each gesture made in a window with a text field took (« DIALOGUE N s »). */
+    internal val dialogSeconds = mutableListOf<Double>()
+
+    /** For the bench's own tests (PLAN-RESTE 5.10): runs at the start of each gesture, to provoke an exception there. */
+    internal var beforeGesture: ((String) -> Unit)? = null
+
     private fun play(cmd: String) {
+        beforeGesture?.invoke(cmd)
+        followTextDialogs()
+        // PLAN-RESTE 5.3 (control 4): a gesture made in (or closing) a window with a text field is timed in real seconds.
+        val inDialog = textDialog
+        val at = System.nanoTime()
+        try {
+            playGesture(cmd)
+        } finally {
+            if (inDialog || textDialog) dialogSeconds += (System.nanoTime() - at) / 1e9
+        }
+    }
+
+    private fun playGesture(cmd: String) {
         followTextDialogs()
         val words = cmd.split(Regex("\\s+"))
         val kind = words[0].lowercase()
@@ -1305,13 +1413,26 @@ abstract class HumanTester(private val seat: String) {
      * the bench's stand-ins for slow work (the model's download, the separation, BenchSeparation) sleep in REAL time, but
      * « attends N » only moved the simulated clock. Now « attends » pumps the main thread in real time while that work runs,
      * [SLOW_WORK_CAP_MS] at most; past it, a « BANC » line says the work is still going (not the app's fault).
+     * PLAN-RESTE 4.4: and only while something moves. A thread asleep in a stuck stand-in, or the separation's flag alone
+     * (the app says it works, nothing runs), held a tester's « attends 2 » for 120 s. Once neither the stand-in's heartbeat
+     * ([BenchSeparation.beats]) nor a busy worker (off the network) has moved for [STILL_MS], the hand goes back.
      */
     private fun slowWorkDone() {
         val until = System.currentTimeMillis() + SLOW_WORK_CAP_MS
         var waited = false
+        var beats = separation?.beats ?: 0L
+        var movedAt = System.currentTimeMillis()
         // The separation's own flag too: between two of its steps (or before its service ran) no thread is in the stand-in.
         while (slowBenchWorkBusy() || SeparationJob.state.value.busy) {
-            if (System.currentTimeMillis() >= until) {
+            val now = System.currentTimeMillis()
+            val b = separation?.beats ?: 0L
+            if (b != beats || coroutineWorkersBusy()) { beats = b; movedAt = now }
+            if (now - movedAt >= STILL_MS) {
+                // A stand-in that stopped moving is the bench's; the flag alone is what the app shows (a phone shows it too).
+                if (slowBenchWorkBusy()) say("Banc : le remplaçant du banc (téléchargement ou séparation) n'avance plus depuis ${STILL_MS / 1000} s : l'attente s'arrête là. Note-le dans « incidents-banc » avec banc?: temps.")
+                break
+            }
+            if (now >= until) {
                 say("Banc : le travail en cours (téléchargement ou séparation) n'est pas fini après ${SLOW_WORK_CAP_MS / 1000} s d'attente réelle ; attends encore. Si cela dure, note-le dans « incidents-banc » avec banc?: temps : ce peut être le banc ou l'appli.")
                 return
             }
@@ -1481,8 +1602,9 @@ abstract class HumanTester(private val seat: String) {
      * Audit ultra round 1 (lot banc, « mesures en direct : que des tirets », E d and F c): the mixer's meters and the
      * master's loudness are the native engine's only ([RhythmViewModel.pollMeters] returns without it). While the music
      * plays the bench shows what a phone's engine would read on a mix at the streaming level: the channels that have
-     * something to play move, the master at −14 LUFS short-term, its true peak at −1,2 dBTP. Fixed values (a replay
-     * reads the same screens); stopped, the momentary and short-term readings go, the integrated one and the peak stay.
+     * something to play move with their level, the master reads the bench's render of what the live engine was told
+     * (PLAN-RESTE 5.11: no constants; the same project, the same reading); stopped, the momentary and short-term readings
+     * go, the integrated one and the peak stay.
      */
     private var metersPlaying = false
 
@@ -1503,12 +1625,18 @@ abstract class HumanTester(private val seat: String) {
                 p.tracks.filter { it.notes.notes.isNotEmpty() }.forEach { add(com.pocketstudio.model.InstrumentTrack.mixerChannel(it.id)) }
                 p.audioTracks.filter { it.clip != null }.forEach { add(com.pocketstudio.model.AudioTrack.mixerChannel(it.id)) }
             }
-            on.filter { it in 0 until NativeEngine.MIXER_CHANNELS }.forEach { m[it] = 0.42f }
-            if (on.isNotEmpty()) { m[NativeEngine.MASTER] = 0.71f; m[NativeEngine.METER_MASTER_IN] = 0.71f }
-            l[NativeEngine.LOUDNESS_MOMENTARY] = if (on.isEmpty()) NativeEngine.LOUDNESS_NONE else -13.6f
-            l[NativeEngine.LOUDNESS_SHORT_TERM] = if (on.isEmpty()) NativeEngine.LOUDNESS_NONE else -14.0f
-            l[NativeEngine.LOUDNESS_INTEGRATED] = if (on.isEmpty()) NativeEngine.LOUDNESS_NONE else -14.2f
-            l[NativeEngine.LOUDNESS_TRUE_PEAK] = if (on.isEmpty()) NativeEngine.LOUDNESS_NONE else -1.2f
+            // PLAN-RESTE 5.11 (control 12): the bench's render of what the live engine was told, measured with the app's
+            // meter (it moves with the channels' levels); no reading without the bench's engine: « — » (banc).
+            val r = if (NativeEngine.sink === engine && on.isNotEmpty()) engine.liveReading() else null
+            val channels = p.mixer.channels
+            on.filter { it in 0 until NativeEngine.MIXER_CHANNELS }.forEach { ch ->
+                m[ch] = if (r == null) 0f else (0.42f * (channels.getOrNull(ch)?.volume ?: 0.8f) / 0.8f).coerceIn(0f, 1f)
+            }
+            if (r != null) { m[NativeEngine.MASTER] = r[4]; m[NativeEngine.METER_MASTER_IN] = r[4] }
+            l[NativeEngine.LOUDNESS_MOMENTARY] = r?.get(0) ?: NativeEngine.LOUDNESS_NONE
+            l[NativeEngine.LOUDNESS_SHORT_TERM] = r?.get(1) ?: NativeEngine.LOUDNESS_NONE
+            l[NativeEngine.LOUDNESS_INTEGRATED] = r?.get(2) ?: NativeEngine.LOUDNESS_NONE
+            l[NativeEngine.LOUDNESS_TRUE_PEAK] = r?.get(3) ?: NativeEngine.LOUDNESS_NONE
             l[NativeEngine.LOUDNESS_RECENT_PEAK] = l[NativeEngine.LOUDNESS_TRUE_PEAK]
             l[NativeEngine.LOUDNESS_DRIVE] = 0f
             l[NativeEngine.LOUDNESS_LOSS] = 0f
@@ -1826,6 +1954,11 @@ abstract class HumanTester(private val seat: String) {
     }.getOrElse { "inside? ${it.message}" }
 
     companion object {
+        /** PLAN-RESTE 5.10: the bench's own exceptions a seat lives through before it ends « banc ». */
+        const val BENCH_EXCEPTIONS_MAX = 4
+        /** PLAN-RESTE 5.3: a gesture in a window with a text field longer than this (real seconds) is said the bench's. */
+        const val DIALOG_SLOW_S = 30
+
         /** A phone like the owner's (Honor), at 1.5 px a dp: images small enough to read quickly. */
         const val PHONE = "w392dp-h852dp-hdpi"
 
@@ -1857,6 +1990,10 @@ abstract class HumanTester(private val seat: String) {
         const val IDLE_CAP_S = 8L
         /** The real time one « attends » may give the bench's slow stand-ins (banc fiable 1.4). */
         const val SLOW_WORK_CAP_MS = 120_000L
+        /** PLAN-RESTE 4.4: « attends » gives the hand back once nothing of the bench's slow work moved for this long. */
+        const val STILL_MS = 15_000L
+        /** PLAN-RESTE 4.6: a blank first screen waited for this long at most, and only while the bench's workers are busy. */
+        const val FIRST_SCREEN_CAP_MS = 30_000L
         private val NOT_IDLE = setOf("AppNotIdleException", "ComposeNotIdleException", "IdlingResourceTimeoutException")
 
         internal val ENGINE_ALWAYS: Boolean get() = System.getProperty("ps.human.moteur", "toujours") != "liste"

@@ -19,5 +19,6 @@
   "Partager : vérifier le morceau, puis le partager en fichier ou en vidéo.": "Teilen: den Song prüfen und dann als Datei oder Video teilen.",
   "Pour partager : l'onglet Partager.": "Zum Teilen: der Tab Teilen.",
   "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "Deinen Song auf einem anderen Gerät weitermachen: „Teilen“ › „Song als .zip sichern“ (eine .zip mit allen Sounds), dann auf dem anderen Gerät Meine Projekte › „Projekt importieren (.zip)“.",
-  "La partie en cours, jouée sur %s.": "Der aktuelle Teil, gespielt über %s."
+  "La partie en cours, jouée sur %s.": "Der aktuelle Teil, gespielt über %s.",
+  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": "Die .zip ist fertig: %s. Aber die Kopie in Dokumente konnte nicht angelegt werden: Sichere sie über das Teilen-Menü."
 }

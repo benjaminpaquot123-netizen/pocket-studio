@@ -1176,7 +1176,14 @@ abstract class HumanTester(private val seat: String) {
 
     /** One gesture: « touche X Y », « appui-long X Y », « glisse X1 Y1 X2 Y2 », « ecris … », « retour », « attends S ». */
 
+    /** PLAN-RESTE 5.3 (control 4): the real seconds each gesture made in a window with a text field took (« DIALOGUE N s »). */
+    internal val dialogSeconds = mutableListOf<Double>()
+
+    /** For the bench's own tests (PLAN-RESTE 5.10): runs at the start of each gesture, to provoke an exception there. */
+    internal var beforeGesture: ((String) -> Unit)? = null
+
     private fun play(cmd: String) {
+        beforeGesture?.invoke(cmd)
         followTextDialogs()
         val words = cmd.split(Regex("\\s+"))
         val kind = words[0].lowercase()

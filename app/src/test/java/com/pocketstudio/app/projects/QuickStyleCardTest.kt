@@ -8,9 +8,11 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.text.TextLayoutResult
+import com.github.takahirom.roborazzi.captureRoboImage
 import com.pocketstudio.app.ui.UiScaled
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.i18n.I18n
@@ -107,5 +109,24 @@ class QuickStyleCardTest {
             }
         }
         assertTrue("Cut on a style card:\n" + problems.joinToString("\n"), problems.isEmpty())
+    }
+
+    /** The images: the opened family, the style's card with its two buttons (the phone, then the 130 % size). */
+    @Test
+    fun cardImage() {
+        show(1f) { Lang.FR }
+        openFamily()
+        compose.onNodeWithTag("quick_custom_${style.id}").performScrollTo()
+        compose.waitForIdle()
+        compose.onRoot().captureRoboImage("screenshots/projects_new_style_card.png")
+    }
+
+    @Test
+    fun cardImageAt130Percent() {
+        show(1.3f) { Lang.FR }
+        openFamily()
+        compose.onNodeWithTag("quick_custom_${style.id}").performScrollTo()
+        compose.waitForIdle()
+        compose.onRoot().captureRoboImage("screenshots/scale130/fr_projects_new_style_card.png")
     }
 }

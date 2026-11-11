@@ -11,6 +11,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import com.pocketstudio.model.guide.GuideLevels
+import com.pocketstudio.model.instrumentTracks
 import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -26,8 +27,8 @@ import java.time.Duration
  * Tour 5, « un mot par chose » (audit de prise en main § 5, « Volume »): « fort ou faible » is the only
  * word for a level in the Mode simple. No « dB » on the screens walked here: the first screen of the four tabs,
  * the ⋮ menu, the Mix (tip, drums open, Guide open) and the Batterie's track sheet; in texts and in what
- * TalkBack says (a fader's state, an action's name). Pro keeps its numbers. NOT walked, and still in dB
- * (docs/REVIEW.md): the effects box opened from Pad Live, the Guide's track sheet, the Guide's reference listening.
+ * TalkBack says (a fader's state, an action's name). Pro keeps its numbers. Also walked (tour 5, « restes »): the
+ * effects box opened from Pad Live, the Guide's track sheet (layers, effects), the Guide's reference listening.
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -115,6 +116,68 @@ class SimpleNoDecibelTest {
             val seen = said("Fiche de piste")
             assertTrue("the sheet opened", compose.onAllNodes(androidx.compose.ui.test.hasTestTag("simple_track_volume"), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty())
             noDb(seen)
+        }
+    }
+
+    /** Pad Live › Plus › Effets: a compressor (threshold, make-up gain, reduction meter) and an equaliser, opened. */
+    @Test
+    fun noDecibelInTheEffectsBoxFromPadLive() {
+        // The open project is the « Live » one, so « Continuer » goes on in Pad Live (the activity is not rebuilt here).
+        h.start(simple = true, launchChoice = true) { session.edit { com.pocketstudio.model.PadLive.newProject() } }
+        h.awaitTag("launch_continue")
+        tap("launch_continue")
+        h.awaitTag("padlive_more")
+        tap("padlive_more")
+        h.vm.setInsertType(3, 0, com.pocketstudio.model.EffectType.COMPRESSOR)
+        h.vm.setInsertType(3, 1, com.pocketstudio.model.EffectType.EQ)
+        tap("padlive_effects")
+        idle()
+        val seen = mutableListOf<String>()
+        tap("fx_chip_3_0"); idle(); seen += said("Effets, compresseur")
+        assertTrue("the compressor's knobs showed", compose.onAllNodes(androidx.compose.ui.test.hasTestTag("fxp_3_0_0"), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty())
+        tap("fx_chip_3_1"); idle(); seen += said("Effets, égaliseur")
+        assertTrue("the equaliser's knobs showed", compose.onAllNodes(androidx.compose.ui.test.hasTestTag("fxp_3_1_0"), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty())
+        noDb(seen)
+    }
+
+    /** The Guide's card for the bass › its track sheet › the layers editor with one layer (its volume), and the sheet's chain. */
+    @Test
+    fun noDecibelOnTheGuidesTrackSheet() {
+        val style = com.pocketstudio.model.StarterWizard.style("jump_up")!!
+        val jumpUp = com.pocketstudio.model.StarterWizard.build(style, style.lines.associate { it.role to null as com.pocketstudio.model.PadSample? }, style.melody.mood,
+            com.pocketstudio.model.StarterWizard.defaultParts(style).associateWith { com.pocketstudio.model.StarterWizard.soundsFor(it, style).first() })
+        h.start(simple = true) { session.edit { jumpUp } }
+        val end = System.currentTimeMillis() + 60_000
+        while (h.vm.guide.ui.value.loading || h.vm.guide.ui.value.next == null) {
+            shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(100)); compose.waitForIdle()
+            check(System.currentTimeMillis() < end) { "first analysis: not in time" }
+            Thread.sleep(5)
+        }
+        val bass = h.vm.project.value.instrumentTracks.first { it.name == "Basse" }.id
+        h.vm.addLayer(bass, com.pocketstudio.model.LayerSound.synth(com.pocketstudio.model.SoundLibrary.SYNTH[0].sound as com.pocketstudio.model.SynthPatch), com.pocketstudio.model.LayerRole.AIR, com.pocketstudio.model.SoundLibrary.SYNTH[0].name)
+        h.vm.setInsertType(com.pocketstudio.model.InstrumentTrack.mixerChannel(bass), 0, com.pocketstudio.model.EffectType.COMPRESSOR)
+        idle(800)
+        tap("guide_bar"); idle()
+        tapIfThere("guide_further_toggle"); idle()
+        tap("guide_stage_2"); idle()
+        tap("guide_item_layers.bass"); idle()
+        tap("guide_sheet"); idle()
+        assertTrue("the sheet opened", compose.onAllNodes(androidx.compose.ui.test.hasTestTag("track_sheet"), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty())
+        val seen = mutableListOf<String>()
+        seen += said("Fiche de piste du Guide")
+        tap("track_sheet_layers"); idle()
+        seen += said("Couches")
+        assertTrue("a layer showed", compose.onAllNodes(androidx.compose.ui.test.hasTestTag("layer_gain_0"), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty())
+        noDb(seen)
+    }
+
+    /** The Guide's reference listening: what it says about how much louder the reference was. */
+    @Test
+    fun noDecibelInTheReferenceListening() {
+        h.start(simple = true) { session.edit { acidTechnoSong() } }
+        for (db in listOf(4.2f, -3.1f, 0.2f)) {
+            val note = com.pocketstudio.app.guide.GuideListen.louderNote(db)
+            noDb(listOf("Écoute de référence ($db): $note"))
         }
     }
 }

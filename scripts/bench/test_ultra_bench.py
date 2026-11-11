@@ -2324,7 +2324,7 @@ def first_screen(d):
 REPORT_EXPORTS = """siege: a | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
 defauts:
   - ecran: 4 | cible: Mes exports | geste: touche
-    attendu: un vrai fichier | obtenu: le fichier fait 1 KB
+    attendu: un fichier léger | obtenu: le fichier pèse 3 Mo pour 4 s
     symptome: texte-faux
     gravite: moyen | bloque: non
   - ecran: 5 | cible: Exporter | geste: touche
@@ -2335,6 +2335,35 @@ defauts:
     attendu: 16 mesures | obtenu: le morceau exporté dure 8 mesures au lieu de 16
     symptome: perdu
     gravite: moyen | bloque: non
+"""
+
+
+JOURNAL_EXPORTS = """#0 SIEGE lang=fr device=phone font=100 mode=simple
+#1 ROUTE mix | MODE simple | EMPREINTE aaaa | project=p-1 no tuto
+#1 > touche 10 10
+#1 DOIGT export_my_exports « Mes exports »
+#2 ROUTE dialogue:rename | MODE simple | EMPREINTE bbbb | project=p-1 no tuto
+#2 > touche 20 20
+#2 DOIGT rename_field « Nom »
+#3 ROUTE mix | MODE simple | EMPREINTE cccc | project=p-1 no tuto
+#3 > touche 30 30
+#3 DOIGT export_wav « WAV »
+"""
+
+REPORT_EXPORTS_B = """siege: b | profil: ado | lang: fr | device: phone | font: 100 | mode: simple
+defauts:
+  - geste: 1 | ecran.vu: 2 | cible: Mes exports | geste.type: touche
+    attendu: mon morceau | obtenu: le fichier fait 1 KB, il est vide
+    symptome: texte-faux
+    gravite: moyen | revu: non | banc?: non | promesse: -
+  - geste: 2 | ecran.vu: 3 | cible: Nom | geste.type: touche
+    attendu: un texte lisible | obtenu: la taille du texte est trop petite dans la fenêtre de partage
+    symptome: texte-faux
+    gravite: moyen | revu: non | banc?: non | promesse: -
+  - geste: 3 | ecran.vu: 4 | cible: WAV | geste.type: touche
+    attendu: un fichier | obtenu: le fichier a été écrit en 3 s mais il ne s'ouvre pas
+    symptome: texte-faux
+    gravite: moyen | revu: non | banc?: non | promesse: -
 """
 
 
@@ -2355,6 +2384,18 @@ def export_figures_are_the_benchs(d):
     check(size and mark in size[0], "the size of an export is the bench's:\n" + text)
     check(slow and mark in slow[0], "the time an export took is the bench's:\n" + text)
     check(bars and mark not in bars[0] and "[banc" not in bars[0], "what the file holds stays the app's:\n" + text)
+    # Review of « banc6a » (important): a real empty export of 1 KB is no limit of the bench (its shadow codec writes
+    # 768 000 bytes for 4 s), not even a doubt from its tag; « taille » of a text, « fichier » alone or « en 3 s » alone
+    # make no export figure.
+    write(os.path.join(rnd, "lotA", "b", "journal.txt"), JOURNAL_EXPORTS)
+    write(os.path.join(rnd, "lotA", "b", "rapport.md"), REPORT_EXPORTS_B)
+    text = run(os.path.join(HERE, "fuse-reports.py"), rnd, "--base", base, "--tour", "tour-6")
+    for tag, what in (("export_my_exports", "an empty export of 1 KB"), ("rename_field", "the size of a text"),
+                      ("export_wav", "« écrit en 3 s » on a file that does not open")):
+        found = [l for l in text.splitlines() if tag in l]
+        check(found and mark not in found[0], f"{what} is no export figure of the bench:\n" + text)
+    empty = [l for l in text.splitlines() if "export_my_exports" in l]
+    check("[banc" not in empty[0], "an empty export of 1 KB is the app's, not a doubt of the bench:\n" + text)
 
 
 def seat_exit(d):

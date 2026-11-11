@@ -12,10 +12,12 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.getBoundsInRoot
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.ui.PocketStudioTheme
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -57,13 +59,42 @@ class TopBarNameRoomTest {
         for ((width, fontScale) in listOf(316 to 1f, 277 to 1f, 360 to 1f, 411 to 1f, 360 to 1.3f, 411 to 1.3f, 360 to 2f, 411 to 2f)) {
             case = width to fontScale
             compose.waitForIdle()
-            val name = compose.onNodeWithText("Mon premier rythme", useUnmergedTree = true).getBoundsInRoot()
-            val shown = name.right - name.left
-            // « Mon prem… » at least: 56 dp of text at the usual size, as much more as the text is larger.
-            assertTrue("$width dp at ${fontScale}x: the name gets $shown", shown >= 56.dp * fontScale)
+            // « Mon prem… » at least: 56 dp of text at the usual size, as much more as the text is larger; or no name at
+            // all in the bar (its folder alone, the name in « Mes projets »), never « M… ».
+            val names = compose.onAllNodesWithText("Mon premier rythme", useUnmergedTree = true).fetchSemanticsNodes()
+            names.forEach { n ->
+                val shown = with(compose.density) { (n.boundsInRoot.right - n.boundsInRoot.left).toDp() }
+                assertTrue("$width dp at ${fontScale}x: the name gets $shown", shown >= 56.dp * fontScale)
+            }
             for (tag in listOf("top_projects", "top_record", "top_play", "top_more")) compose.onNodeWithTag(tag).assertIsDisplayed()
             val more = compose.onNodeWithTag("top_more").getBoundsInRoot()
             assertTrue("$width dp at ${fontScale}x: « ⋮ » ends at ${more.right}", more.right <= width.dp + 0.5.dp)
         }
+    }
+
+    /**
+     * Fresh review of the moyens lot: the name's own line took 48 dp from the keys at Taille 130 % on a 411 dp phone
+     * (ThumbBarBigTextTest: 71 dp of keys, SpacesTest, TutoBigFontTest). Where the row used to hold the name (« M… »),
+     * it stays one row: the folder alone, no line added.
+     */
+    @Test
+    fun aRowThatHeldTheNameStaysOneRow() {
+        var width by mutableStateOf(480)
+        compose.setContent {
+            PocketStudioTheme {
+                Box(Modifier.width(width.dp).testTag("bar")) {
+                    TopBar(
+                        TopBarUi("Mon premier rythme", playing = false, canUndo = true, canRedo = false, saved = true, mode = true, undo = false, redo = false),
+                        TopBarActions(more = {}),
+                    )
+                }
+            }
+        }
+        compose.waitForIdle()
+        val oneRow = compose.onNodeWithTag("bar").getBoundsInRoot().let { it.bottom - it.top }
+        width = 316  // a 411 dp phone at Taille 130 %
+        compose.waitForIdle()
+        val narrow = compose.onNodeWithTag("bar").getBoundsInRoot().let { it.bottom - it.top }
+        assertEquals("the bar at 316 dp is as high as one row ($oneRow), it is $narrow", oneRow, narrow)
     }
 }

@@ -18,7 +18,12 @@ for ((start = 0; start < ${#ids[@]}; start += 6)); do
   for ((k = 0; k < 6 && start + k < ${#ids[@]}; k++)); do
     id="${ids[start + k]}"; s="${seats[k]}"
     mkdir -p "$run/$s"
-    { cat "$dir/$id/start.txt"; echo "rejeu=$dir/$id"; grep -v '^source=' "$dir/$id/oracle.txt"; } > "$run/$s/start.txt"
+    # PLAN-RESTE 7.5: the seat the replay was made from (oracle.txt's « source=<folder> (…) »), for a verdict that says
+    # what differs from it (the last different screen, a button no longer under the finger).
+    src="$(sed -n 's/^source=//p' "$dir/$id/oracle.txt" | head -1 | sed 's/ (.*//')"
+    case "$src" in /*) ;; ?*) src="$root/$src" ;; esac
+    { cat "$dir/$id/start.txt"; echo "rejeu=$dir/$id"; if [ -n "$src" ] && [ -d "$src" ]; then echo "rejeu.origine=$src"; fi
+      grep -v '^source=' "$dir/$id/oracle.txt"; } > "$run/$s/start.txt"
     echo "$id" > "$run/$s/id.txt"
   done
   # Banc fiable 1.2 and the external audit: each batch of replays is a lot, gated like any lot on ITS seats (a stamp

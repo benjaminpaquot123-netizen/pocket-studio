@@ -361,7 +361,7 @@ object LayoutScan {
 
     /**
      * Tour 5, lot « moyens » C (review of the home lot, M-b): something touchable drawn over a control wholly on screen
-     * (the scroll hint « ↓ n autres » over a card, any floating button) takes the touches meant for that control. The one
+     * (the scroll hint « ↓ n autres » over a card, any floating button over a list) takes the touches meant for that control. The one
      * on top is the later in the drawing order; the one under it is judged only when wholly on screen (a card cut by a
      * list's edge is read by the home screens' own test, HomeScreensSayTheyScrollTest).
      */
@@ -378,6 +378,12 @@ object LayoutScan {
             if (x.width < min || x.height < min) continue
             val (under, over) = if (drawnAfter(b, a)) a to b else b to a
             if (!wholly(under)) continue
+            // Floating: over a list's control without being part of that list (a piano's black key over its white
+            // neighbours is the instrument itself, in the same layout).
+            val list = generateSequence(under.parent) { it.parent }.firstOrNull {
+                it.config.contains(SemanticsProperties.VerticalScrollAxisRange) || it.config.contains(SemanticsProperties.HorizontalScrollAxisRange)
+            } ?: continue
+            if (ancestorOf(list, over)) continue
             out += Finding(Kind.OVERLAP, nameOf(over).ifBlank { tagOf(over) },
                 "floats over the touchable « ${nameOf(under).ifBlank { tagOf(under) }.take(40)} » (%.0f x %.0f dp)".format(x.width / density, x.height / density))
         }

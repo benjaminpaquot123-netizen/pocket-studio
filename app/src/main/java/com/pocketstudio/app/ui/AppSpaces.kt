@@ -264,7 +264,10 @@ internal fun PlusSpace(
 ) {
     BoxWithConstraints(Modifier.fillMaxSize().testTag("plus")) {
         if (maxWidth >= TWO_PANES_FROM) {
-            val shown = page ?: widePage
+            // Tour 5, lot « moyens »: a page of the list shown (the Mode simple's holds no MIDI, no Latence…), the one
+            // chosen or last seen if the list holds it, else its first.
+            val listed = entries.mapNotNull { it.page }
+            val shown = listOf(page, widePage).firstOrNull { it != null && it in listed } ?: listed.firstOrNull() ?: page ?: widePage
             if (leave != null) androidx.activity.compose.BackHandler(onBack = leave)
             Row(Modifier.fillMaxSize()) {
                 Column(Modifier.width(340.dp).fillMaxHeight().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {

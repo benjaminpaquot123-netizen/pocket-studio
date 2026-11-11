@@ -1,0 +1,8 @@
+fusion: 3db0e417e451c138abc8445e197bf7f26ede125f
+branche: eq/tour-5-navigation
+tete: 7eea3c8689d5c93fe69ba0509e692333cd1e7e12
+relecture: docs/audits/ultra/tour-5-navigation-relecture.md
+relu: 380b3ce8f3c052265e15e09164d9c8746ae14686
+filtres: *TwoPlaysNamed* *ThumbBarBig* *TutoBigFontTest *TabletUprightTest *RetoursClearOfControlsTest *.ui.TopBarTest *GestureBudgetTest *.nav.PlayThenTabsTest *KeyActionsGestureTest *HelpLabelsTest *GuideJourneyTest *CaptureMatrixBigFontTest *BenchPlayThenTabsTest *BenchTour1Test *I18nCatalogTest *LexiconWordsTest *Tour5AppProof3Test
+rejeux :
+  t4-26-prise-clavier : oracle tenu

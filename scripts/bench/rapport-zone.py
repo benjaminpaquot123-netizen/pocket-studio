@@ -6,14 +6,40 @@
 Run from the repository's root. The report (docs/audits/ultra/<tour-N>-<zone>-rapport.md) is read in the branch only.
 Accepted only when it has a line « tests: <filter> [<filter> …] », the team's targeted tests (Gradle --tests filters),
 or « tests: aucun : <raison> ».
+And its « liste des chemins » (docs/audits/AUDIT-ULTRA.md §12.6): at least one line
+« chemin: <écran> | test: Classe#méthode », every « chemin: » line in that format, and each Classe#méthode a test of
+app/src/test in the branch that runs (@Test, no @Ignore): the class owns the function, read as the judge reads it
+(verifie-chantier.py: class_methods, still_runs).
 Prints « filtre: <filter> » per filter when accepted; otherwise one line per refusal, exit 1. Standard library only.
 """
+import importlib.util
+import os
 import re
 import subprocess
 import sys
 
+# (No __pycache__ left in scripts/bench/: the portal merges in that tree.)
+sys.dont_write_bytecode = True
+HERE = os.path.dirname(os.path.abspath(__file__))
+_spec = importlib.util.spec_from_file_location("verifie_chantier", os.path.join(HERE, "verifie-chantier.py"))
+judge = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(judge)
+
 TESTS = re.compile(r"^\s*(?:[-*]\s*)?tests\s*:(.*)$", re.M)
 NONE = re.compile(r"^aucun\s*[:—-]\s*\S", re.I)
+PATH_LINE = re.compile(r"^\s*(?:[-*]\s*)?(?:\[[ xX]\]\s*)?`?chemin\s*:(.*)$", re.M)
+PATH = re.compile(r"^\s*(\S[^|]*?)\s*\|\s*test\s*:\s*([A-Za-z_][A-Za-z0-9_]*)#([A-Za-z_][A-Za-z0-9_]*)\s*`?\s*$")
+APP_TESTS = "app/src/test"
+
+
+def is_app_test(branch, cls, method):
+    """Classe#méthode is a function of class Classe in a file of app/src/test of the branch, with @Test, no @Ignore."""
+    r = subprocess.run(["git", "grep", "-l", "-F", method, branch, "--", APP_TESTS], capture_output=True, text=True)
+    for line in r.stdout.splitlines():
+        text = judge.without_comments(show(branch, line.split(":", 1)[1]) or "")
+        if f"{cls}#{method}" in judge.class_methods(text, False) and judge.still_runs(text, method):
+            return True
+    return False
 
 
 def show(branch, path):
@@ -30,6 +56,19 @@ def check(branch, path):
     found = [f for f in found if f]
     if not found:
         return [f"no line « tests: » in {path} (the team's targeted tests, or « tests: aucun : <raison> »)"], []
+    refusals = []
+    lines = [m.group(0).strip() for m in PATH_LINE.finditer(text)]
+    if not lines:
+        refusals.append(f"no list of paths in {path} (one line « chemin: <écran> | test: Classe#méthode » per place "
+                        "that reads or shows the same data)")
+    for line in lines:
+        m = PATH.match(PATH_LINE.match(line).group(1))
+        if not m:
+            refusals.append(f"« {line[:80]} » is not « chemin: <écran> | test: Classe#méthode »")
+        elif not is_app_test(branch, m.group(2), m.group(3)):
+            refusals.append(f"chemin « {m.group(1)[:40]} »: {m.group(2)}#{m.group(3)} is not a @Test of {APP_TESTS} in {branch}")
+    if refusals:
+        return refusals, []
     filters = []
     for value in found:
         if re.match(r"^aucun\b", value, re.I) and not NONE.match(value):

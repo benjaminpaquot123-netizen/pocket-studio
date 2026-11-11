@@ -285,7 +285,7 @@ for zone in "$@"; do
     else
       while IFS= read -r line; do
         [ -z "$line" ] || rule_from 2 "rapport de zone refusé : $line" \
-          "dans $report, commité dans la branche : une ligne « tests: <filtres Gradle> » (ou « tests: aucun : <raison> »)"
+          "dans $report, commité dans la branche : une ligne « tests: <filtres Gradle> » (ou « tests: aucun : <raison> ») et la liste des chemins, une ligne « chemin: <écran> | test: Classe#méthode » par endroit, chaque test un @Test de app/src/test"
       done <<< "$why"
     fi
   fi

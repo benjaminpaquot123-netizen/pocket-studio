@@ -204,5 +204,20 @@ class ReplaysAimByTag(unittest.TestCase):
         self.assertIn("étiquette introuvable", tester, "HumanTester does not resolve « touche <étiquette> »")
 
 
+class StableScreenshots(unittest.TestCase):
+    """Point 1: the five « unstable » images are made stable for good (docs/audits/ultra/tour-5-socle-rapport.md)."""
+
+    def test_the_recette_image_reads_a_frozen_list(self):
+        shot = read("app", "src", "test", "java", "com", "pocketstudio", "app", "ScreenshotTest.kt")
+        self.assertNotIn('File("src/main/assets/recette.json")', shot, "the image follows the milestone's list again")
+        self.assertNotIn('File("src/main/assets/changelog.txt")', shot)
+
+    def test_the_guide_is_waited_for_before_the_captures_that_show_it(self):
+        for name in ("PadHoldAndTrackDeleteTest.kt", "RemixSongScreenshotTest.kt"):
+            text = read("app", "src", "test", "java", "com", "pocketstudio", "app", "nav", name)
+            for m in re.finditer(r"capture(?:Screen)?RoboImage\(\s*\"screenshots/(nav/rhythm_scrolled_under_part|remix_stem_edit_menu)", text):
+                self.assertIn("h.awaitGuide()", text[:m.start()].rsplit("@Test", 1)[-1], f"{m.group(1)}: the Guide not waited for")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

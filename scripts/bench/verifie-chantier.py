@@ -864,6 +864,64 @@ def red_seen(root, sha, message):
     return False
 
 
+REPLAYED = os.path.join("docs", "audits", "ultra", "paires-rejouees")
+
+
+def _case_result(path, cls, method):
+    """« fails », « passes » or None: the testcase Class#method of a JUnit XML ([cls] its simple name)."""
+    import xml.etree.ElementTree as ET
+    try:
+        cases = ET.parse(path).getroot().iter("testcase")
+    except (ET.ParseError, OSError):
+        return None
+    for case in cases:
+        if case.get("classname", "").rsplit(".", 1)[-1] == cls and case.get("name") == method:
+            if case.find("failure") is not None or case.find("error") is not None:
+                return "fails"
+            return None if case.find("skipped") is not None else "passes"
+    return None
+
+
+def replayed_red(root, sha, open_reds):
+    """Lot « verdicts »: the open red a green closes by a replay, or None. Evidence in docs/audits/ultra/paires-rejouees/
+    <the green's full sha>/: rejeu.txt (« rouge: <the red's full sha> », « test: Classe#méthode »), rouge.xml (the test
+    run on the red: it fails) and vert.xml (run on the green: it passes). The red is still open, an ancestor of the
+    green, and adds or names the test ([red_names]); the test runs in both ([test_in]). History is never rewritten: a
+    red and its green written in other words (2026-11-08/09) pair by what they did, replayed."""
+    try:
+        full = _git(root, "rev-parse", sha + "^{commit}").strip()
+    except (subprocess.SubprocessError, OSError):
+        return None
+    folder = os.path.join(root, REPLAYED, full)
+    try:
+        facts = open(os.path.join(folder, "rejeu.txt"), encoding="utf-8").read()
+    except OSError:
+        return None
+    red = re.search(r"^rouge:\s*([0-9a-f]{40})\s*$", facts, re.M)
+    test = re.search(r"^test:\s*([A-Za-z0-9_]+)#([A-Za-z0-9_]+)\s*$", facts, re.M)
+    if not red or not test:
+        return None
+    cls, method = test.group(1), test.group(2)
+    match = None
+    for r in open_reds:
+        try:
+            if _git(root, "rev-parse", r[0] + "^{commit}").strip() == red.group(1):
+                match = r
+        except (subprocess.SubprocessError, OSError):
+            continue
+    if match is None or not _ancestor(root, red.group(1), full):
+        return None
+    if f"{cls}#{method}" not in match[3] and method not in match[3]:
+        return None
+    if not (test_in(root, red.group(1), cls, method) and test_in(root, full, cls, method)):
+        return None
+    if _case_result(os.path.join(folder, "rouge.xml"), cls, method) != "fails":
+        return None
+    if _case_result(os.path.join(folder, "vert.xml"), cls, method) != "passes":
+        return None
+    return match
+
+
 def names(message, test):
     """The message names « Class#method » (or « Class.method »), the class too: a method name alone matches any
     class that has one (review of the « pads-live » lot, moyen)."""
@@ -900,6 +958,10 @@ def red_green_pairs(root):
                 more = next((r for r in open_reds if t in r[4] and r not in closed), None)
                 if more is not None:
                     closed.append(more)
+            if not closed:
+                replayed = replayed_red(root, sha, open_reds)
+                if replayed is not None:
+                    closed.append(replayed)
             for r in closed:
                 open_reds.remove(r)
             if not closed and not any(names(message, t) for t in known_defects_lifted(root, sha)) and not red_seen(root, sha, message):

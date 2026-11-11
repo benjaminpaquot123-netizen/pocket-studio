@@ -92,6 +92,20 @@ open class TwoPlaysNamedTest {
         tap("top_play")
         tap("top_play")
         assertEquals("■ cette partie: silence", false, vm.transport.value.playing)
+        // Review of the lot: « ⟳ Partie » is still on from « ▶ cette partie » (kept with the project); « ▶ le morceau »
+        // plays the song all the same, not that part's loop.
+        assertEquals("« ⟳ Partie » left on", true, vm.loopPart.value)
+        vm.playStartsForTest = mutableListOf()
+        tap(songTag)
+        assertEquals("▶ le morceau with « ⟳ Partie » on: the song", "playing true, part looped false", state())
+        assertTrue("the song started: ${vm.playStartsForTest}", vm.playStartsForTest.orEmpty().singleOrNull()?.startsWith("song") == true)
+        // « ▶ cette partie » while the song plays: the part takes over (looped), the music goes on.
+        tap("top_play")
+        assertEquals("▶ cette partie while the song plays: the part loops", "playing true, part looped true", state())
+        assertEquals("then the top one says ■", tr("Arrêter"), read("top_play").second)
+        assertEquals("and the song's plays the song again", tr("Jouer le morceau"), read(songTag).second)
+        tap("top_play")
+        assertEquals("■ cette partie: silence", false, vm.transport.value.playing)
     }
 
     /** Never cut (« cette pa… », « der So… »): the words of both bars whole, and inside the screen. */

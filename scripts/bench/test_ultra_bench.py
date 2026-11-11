@@ -217,6 +217,7 @@ def main():
         rule_c_adversarial(d)
         red_seen_in_a_run(d)
         judge_topic_pairs(d)
+        replayed_pairs(d)
         red_seen_review_line(d)
         known_defect_lifted(d)
         known_defect_lifted_needs_a_red(d)
@@ -1148,6 +1149,58 @@ def red_seen_in_a_run(d):
     for key in ("passing", "otherparent", "touchestest", "othertest", "nosuch", "idle", "skipped"):
         check(f"{short[key]} « vert:" in out, f"evidence that does not hold ({key}) makes no pair:\n" + out)
     check("chantier : 7 écarts" in out, "seven greens without red, nothing else:\n" + out)
+
+
+def replayed_pairs(d):
+    """Lot « verdicts » (the six historical gaps: a red and its green written in other words, 8f36fa35 / 0b1cbbc3,
+    df794a90 / dcc33677, d503254d / 87b66934): a pair made by replaying, never by a word. docs/audits/ultra/
+    paires-rejouees/<the green's full sha>/ holds rejeu.txt (« rouge: <the red's full sha> », « test: Classe#méthode »),
+    rouge.xml (the JUnit XML of the test run on the red: it fails) and vert.xml (run on the green: it passes). The red
+    adds or names that test, the green comes after it, the test runs in both. Anything less pairs nothing."""
+    root = judge_root(d, "juge-rejoue")
+    resume = os.path.join(root, "selftest-resume.txt")
+    tests = os.path.join(root, "app", "src", "test", "java", "x")
+    app = os.path.join(root, "app", "src", "main", "Counter.kt")
+    git_toy(root, "init", "-q")
+    write(app, "fun counter() = 0\n")
+    git_toy(root, "add", "-A")
+    git_toy(root, "commit", "-q", "-m", "start")
+    shas = {}
+    for key in ("honest", "stillred", "neverred", "othertest", "wrongred", "nofile"):
+        name = f"the{key.capitalize()}CounterFollowsTheSong"
+        write(os.path.join(tests, f"{key.capitalize()}ProofTest.kt"), f"class {key.capitalize()}ProofTest {{\n  @Test\n  fun {name}() {{}}\n}}\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"rouge: guard of the {key} counter")
+        red = git_toy(root, "rev-parse", "HEAD").strip()
+        write(app, f"fun counter() = \"{key}\"\n")
+        git_toy(root, "add", "-A")
+        git_toy(root, "commit", "-q", "-m", f"vert: the {key} counter reads the song")
+        shas[key] = (red, git_toy(root, "rev-parse", "HEAD").strip(), f"{key.capitalize()}ProofTest", name)
+
+    def evidence(key, red=None, test=None, red_fails=True, green_passes=True, files=("rouge.xml", "vert.xml")):
+        r, g, cls, name = shas[key]
+        cls, name = (test or (cls, name))
+        folder = os.path.join(root, "docs", "audits", "ultra", "paires-rejouees", g)
+        write(os.path.join(folder, "rejeu.txt"), f"rouge: {red or r}\ntest: {cls}#{name}\nrejoué : clone jetable\n")
+        for f, fails in (("rouge.xml", red_fails), ("vert.xml", not green_passes)):
+            if f in files:
+                body = '<failure message="still 1/176"/>' if fails else ""
+                write(os.path.join(folder, f), f'<testsuite><testcase classname="x.{cls}" name="{name}">{body}</testcase></testsuite>')
+
+    evidence("honest")
+    evidence("stillred", green_passes=False)
+    evidence("neverred", red_fails=False)
+    evidence("othertest", test=(shas["honest"][2], shas["honest"][3]))
+    evidence("wrongred", red=shas["honest"][0])
+    evidence("nofile", files=("rouge.xml",))
+    seal_resume(root, resume)
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
+                         capture_output=True, text=True).stdout
+    short = {k: (git_toy(root, "rev-parse", "--short", v[0]).strip(), git_toy(root, "rev-parse", "--short", v[1]).strip()) for k, v in shas.items()}
+    check(short["honest"][0] not in out and short["honest"][1] not in out, "a pair replayed (red on the red, green on the green) is a pair:\n" + out)
+    for key in ("stillred", "neverred", "othertest", "wrongred", "nofile"):
+        check(f"{short[key][0]} « rouge:" in out and f"{short[key][1]} « vert:" in out, f"a replay that does not hold ({key}) pairs nothing:\n" + out)
+    check("chantier : 10 écarts" in out, "ten gaps, nothing else:\n" + out)
 
 
 def judge_topic_pairs(d):

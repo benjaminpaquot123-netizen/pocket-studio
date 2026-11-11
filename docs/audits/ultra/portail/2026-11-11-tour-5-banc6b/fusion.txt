@@ -1,0 +1,8 @@
+fusion: 5eb7149dd0f0dd60cf1432b151d594d7b764773b
+branche: eq/tour-5-banc6b
+tete: 1969b5481a287c78b4b2468a22b1516a09ea4aa3
+relecture: docs/audits/ultra/tour-5-banc6b-relecture.md
+relu: 6a646f88b8700544411b64178848171d00cebbdb
+filtres: *BenchEngineTest *BenchSelfTest *BenchSeparationWaitTest *BenchTour1Test *BenchTour3Test *BenchTour4Test
+rejeux :
+  t4-26-prise-clavier : oracle tenu

@@ -334,6 +334,19 @@ internal fun XyLabelled(top: String, left: String, bottom: String, right: String
 
 @Composable
 internal fun MacroKnobs(ch: Int, macros: List<Float>, actions: QuickFxActions, size: androidx.compose.ui.unit.Dp = 52.dp) {
+    // Chantier 8: « Voir le réglage » on a macro: the row of knobs framed, that knob's name said.
+    val spot = LocalControlSpot.current?.takeIf { it.kind == com.pocketstudio.model.AutoTarget.MACRO && it.ch == ch && it.param < Macros.COUNT }?.param
+    if (spot != null) {
+        val m = spot
+        SpotFrame("spot_macro_${ch}_$m") {
+            Text(tr("Bouton « %s »", tr(Macros.NAMES[m])), style = MaterialTheme.typography.labelMedium, color = Neon.Amber)
+            MacroKnobRow(ch, macros, actions, size)
+        }
+    } else MacroKnobRow(ch, macros, actions, size)
+}
+
+@Composable
+private fun MacroKnobRow(ch: Int, macros: List<Float>, actions: QuickFxActions, size: androidx.compose.ui.unit.Dp) {
     val colors = KnobColors(
         cap = Neon.SurfaceHigh, capEdge = Neon.Outline, pointer = Neon.TextPrimary,
         track = Neon.Outline, value = Neon.Magenta, label = Neon.TextSecondary,

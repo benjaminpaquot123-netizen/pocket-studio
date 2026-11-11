@@ -89,8 +89,10 @@ fun SendSliders(ch: Int, sends: List<Float>, actions: MixerActions) {
                 actions.setSend(ch, bus, it)
             }
         }
+        // Chantier 8: the send a curve moves, reached by « Voir le réglage ».
+        if (isSpot(com.pocketstudio.model.AutoTarget.SEND, ch, bus)) SpotFrame("spot_send_${ch}_$bus") { slider() }
         // Only the asked one in a frame of its own: the others laid out as everywhere else.
-        if (wanted) androidx.compose.foundation.layout.Column(
+        else if (wanted) androidx.compose.foundation.layout.Column(
             Modifier.fillMaxWidth().bringIntoViewRequester(bring).then(com.pocketstudio.app.tuto.tutoDashed()).padding(6.dp).testTag("tuto_send_$bus"),
         ) {
             // Testers (lot « tuto 4 »): which of the step's strips is done, which is this one.

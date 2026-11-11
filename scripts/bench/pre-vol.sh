@@ -194,7 +194,7 @@ portal="scripts/bench/fusion-equipes.sh"
 [ -f "$portal" ] && [ -f scripts/bench/relecture-verdict.py ] || { echo "pre-vol : le portail ($portal, relecture-verdict.py) n'est pas dans ce dépôt : à lancer depuis l'atelier d'intégration." >&2; exit 2; }
 # The portal's refusals as this script knew them (their count and a fingerprint of their lines): a rule added or
 # reworded since is said, never silently missed.
-KNOWN_RULES="12 61ed156166"
+KNOWN_RULES="13 551b6bf796"
 rules="$(grep -E 'not merged|undone' "$portal" | grep -c .) $(grep -E 'not merged|undone' "$portal" | sed 's/^ *//' | sha256sum | cut -c1-10)"
 [ "$rules" = "$KNOWN_RULES" ] || warn "le portail a changé depuis l'écriture du pré-vol (règles : $rules, connues : $KNOWN_RULES)" \
   "relire les lignes « not merged » / « undone » de $portal, mettre à jour pre-vol.sh et sa ligne KNOWN_RULES"
@@ -274,6 +274,8 @@ for zone in "$@"; do
   decisions="$(git diff --name-only "$base" "$branch" -- docs/DECISIONS.md docs/decisions | grep -vxF "docs/decisions/$tour-$zone.md" | tr '\n' ' ')"
   [ -z "$decisions" ] || rule_from 2 "décisions écrites ailleurs que dans docs/decisions/$tour-$zone.md (docs/DECISIONS.md ou le fichier d'un autre lot) : $decisions" \
     "déplacer ces lignes dans docs/decisions/$tour-$zone.md (une ligne par choix) ; le portail le liste lui-même dans docs/DECISIONS.md après la fusion"
+  git diff --quiet "$base" "$branch" -- scripts/bench/portail-paquet.txt || rule_from 2 "la branche change le paquet en cours (scripts/bench/portail-paquet.txt)" \
+    "retirer ce changement : seule la discussion principale change le paquet, quand elle en ouvre un"
   links="$(git ls-tree -r "$branch" | awk '$1 == "120000" {print $4}' | tr '\n' ' ')"
   [ -z "$links" ] || bad "lien(s) symbolique(s) commité(s) : $links" "git rm --cached ces liens (les sous-modules liés de l'atelier ne se committent jamais)"
 

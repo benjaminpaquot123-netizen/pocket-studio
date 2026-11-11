@@ -68,6 +68,9 @@ for zone in "${zones[@]}"; do
   # docs/DECISIONS.md, which the portal alone extends, nor in another lot's file).
   decisions="$(git diff --name-only "$base" "eq/$tour-$zone" -- docs/DECISIONS.md docs/decisions | grep -vxF "docs/decisions/$tour-$zone.md" | tr '\n' ' ' || true)"
   if from_paquet 2 && [ -n "$decisions" ]; then echo "$zone: decisions written outside docs/decisions/$tour-$zone.md (docs/DECISIONS.md or another lot's file): $decisions: not merged." >&2; exit 3; fi
+  # Socle du banc (review, moyen 3): only the main discussion moves the batch, when it opens one.
+  moved_batch="$(git diff --name-only "$base" "eq/$tour-$zone" -- scripts/bench/portail-paquet.txt)"
+  if from_paquet 2 && [ -n "$moved_batch" ]; then echo "$zone: the branch moves the batch (scripts/bench/portail-paquet.txt): not merged." >&2; exit 3; fi
   # PLAN-RESTE 7.1: a team branch never brings a symbolic link (a third-party checkout linked in, a secret linked out).
   links="$(git ls-tree -r "eq/$tour-$zone" | awk '$1 == "120000" {print $4}')"
   [ -z "$links" ] || { echo "$zone: symbolic link(s) in the branch: $links: not merged." >&2; exit 6; }
@@ -108,7 +111,8 @@ for zone in "${zones[@]}"; do
   trace=""
   undo_merge() {
     [ -z "$trace" ] || rm -rf "${trace:?}"
-    git checkout -q -- docs/DECISIONS.md 2>/dev/null || true
+    # From HEAD, not the index: a failed traces' commit after « git add » has the index's line staged already.
+    git checkout -q HEAD -- docs/DECISIONS.md 2>/dev/null || true
     git reset -q --keep "$before"
     echo "$zone: a step after the checks failed (traces of the portal): undone (kept in $lot)." >&2
     exit 5

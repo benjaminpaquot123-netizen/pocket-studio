@@ -20,3 +20,11 @@ Plan : `docs/PLAN-TEST-APK.md` (v2). Fait : T0 seulement, rien de T1 à T5.
 - Les captures : en Robolectric le dessin est vide ; vraies images seulement sur le téléphone.
 - Livraison : l'APK n'est pas dans le dépôt ; il faut un moyen de le lui donner (repli du plan : compilation GitHub manuelle, sur son oui).
 - Constantes d'action des services : toutes visent leur propre classe (intents explicites), pas de croisement avec la vraie appli.
+
+## Essai éclair n° 1 de Benjamin (2026-11-11, HONOR BKQ-N49, Android 17) : `2026-11-11-eclair-1/`
+- Résultat : 1 réussie, 6 ratées, 0 plantage ; aucun son (lecture jamais lancée), charge ≤ 9 %, 0 décrochage, aucune erreur. Prouvé sur le téléphone : le robot lit l'écran et ses touchers passent (R8 compris), carnet, rapport et partage du zip marchent.
+- Cause réelle (reproduite en Robolectric, `PremiereInstallationTest`, mêmes messages) : appli tout juste installée, donc premier lancement. Le robot a vu le studio sous l'animation d'ouverture et a cru l'ouverture finie ; l'écran de bienvenue est arrivé après et il ne l'a jamais fermé. Sans réponse à la bienvenue, « ← » de Mes projets ne mène pas à « Que veux-tu faire ? » (`launch` absent), et l'appli reste en Mode simple (pas de `tab_Mix` ni `tab_Structure`).
+- Défaut du robot, pas de l'appli : ses touchers atteignaient le studio à travers la fenêtre de bienvenue, ce qu'un doigt ne peut pas faire. La vraie appli n'a pas été modifiée.
+- Corrigé : chaque étape part de ce qui est à l'écran (bienvenue, Simple ou Pro, Mes projets, accueil) ; chaque morceau est créé en Pro par l'accueil ; la lecture est prouvée par le moteur (transport en marche et niveau non nul) avant l'écoute ; la question n'est posée que si un morceau a joué.
+- En cas d'échec, le carnet note ce qui était à l'écran (20 étiquettes au plus, la fenêtre du dessus d'abord) et tout toucher passé sous une autre fenêtre.
+- Reste à prouver au 2e essai : la création des 3 morceaux et le son avec le vrai moteur, l'export M4A réel, les captures.

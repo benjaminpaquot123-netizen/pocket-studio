@@ -21,3 +21,4 @@ Atelier `eq-tour-5-padlive`, branche `eq/tour-5-padlive` (fx-int + lots « navig
 
 ## Essais téléphone à rejouer
 tel-08 (Tout couper : tout s'arrête, temps compris), tel-12 (■ Tout du Live : la lecture s'arrête à la ligne), tel-11 (tablette couchée : un glissé depuis Montée fait défiler, rien ne s'allume), tel-17 (clap retouché en rythme, lecture arrêtée : chaque toucher sonne).
+- M1 corrigé : 6aa204c5

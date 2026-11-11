@@ -865,6 +865,10 @@ def red_seen(root, sha, message):
 
 
 REPLAYED = os.path.join("docs", "audits", "ultra", "paires-rejouees")
+# Review of the « verdicts » lot (grave): the replays' XML is the team's own word (the portal's fresh review never
+# replays it, unlike rouges-constates/), so the rule closes only greens of the history written before it: ancestors of
+# this commit (the lot's base). A green made later pairs by its words, or by red evidence the review replays.
+REPLAYS_UNTIL = "92258b19b97a808e7f5823848fcd383593abaa07"
 
 
 def _case_result(path, cls, method):
@@ -891,6 +895,8 @@ def replayed_red(root, sha, open_reds):
     try:
         full = _git(root, "rev-parse", sha + "^{commit}").strip()
     except (subprocess.SubprocessError, OSError):
+        return None
+    if not commit_exists(root, REPLAYS_UNTIL) or not _ancestor(root, full, REPLAYS_UNTIL):
         return None
     folder = os.path.join(root, REPLAYED, full)
     try:
@@ -1006,8 +1012,11 @@ def main():
     ap.add_argument("--preuves", metavar="ITEM", help="print the proofs read on that line of verdicts.tsv, and stop")
     ap.add_argument("--debut-discipline", metavar="SHA", default=DISCIPLINE_START,
                     help="the first « rouge: » commit (a guard added in one of its ancestors was there before); a toy's own")
+    ap.add_argument("--fin-rejeux", metavar="SHA", default=REPLAYS_UNTIL,
+                    help="the last commit whose greens a replay (paires-rejouees/) may close; a toy's own")
     a = ap.parse_args()
     globals()["DISCIPLINE_START"] = a.debut_discipline
+    globals()["REPLAYS_UNTIL"] = a.fin_rejeux
     if a.preuves:
         sources = test_sources(a.root)
         for v in read_tsv(os.path.join(a.root, "docs", "audits", "ultra", "verdicts.tsv")):

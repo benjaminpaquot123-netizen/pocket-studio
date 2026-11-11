@@ -225,7 +225,8 @@ for zone in "$@"; do
   base="$(git merge-base "$head" "$branch")" || base="$branch"
   # Work left uncommitted in the team's workshop never reaches the portal.
   shop="$(git worktree list --porcelain | awk -v b="refs/heads/$branch" '$1 == "worktree" {w = $2} $1 == "branch" && $2 == b {print w}')"
-  if [ -n "$shop" ] && [ -d "$shop" ] && [ -n "$(git -C "$shop" status --porcelain --untracked-files=no 2>/dev/null)" ]; then
+  # (« T »: a file the workshop links, a linked submodule of engine/third_party/…, as in the integration's own check.)
+  if [ -n "$shop" ] && [ -d "$shop" ] && [ -n "$(git -C "$shop" status --porcelain --untracked-files=no 2>/dev/null | grep -v '^ T')" ]; then
     bad "l'atelier de l'équipe ($shop) a des changements non commités : ils ne seraient pas fusionnés" "committer dans la branche (avant la relecture), ou les jeter"
   fi
 

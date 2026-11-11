@@ -198,6 +198,25 @@ class BenchEngineTest {
         assertEquals(2 * (bar + 4_800), e.exportRenderFloat(t, bar, 4_800L).size.toLong())
     }
 
+    /**
+     * PLAN-RESTE 5.1 (control 1): the length asked, from a bar to a song of 3 minutes (90 bars at 120 BPM, ≈ 70 MB of
+     * float WAV, deleted after), and the song's sound brought to each target (−8, −14 ± 0,5 LU) at that length too.
+     */
+    @Test
+    fun aThreeMinuteRenderLastsThreeMinutes() {
+        val e = BenchEngine().apply { renderMs = 0L }
+        val bar = 96_000L
+        for ((bars, target) in listOf(1 to -14f, 4 to -8f, 90 to -14f, 90 to -8f)) {
+            val f = render(e, bars * bar) { t -> song(e, t); e.post(t, 67, target, 4, 0) }
+            try {
+                assertEquals("$bars bars", bars * 2.0, seconds(f), 0.01)
+                assertEquals("$bars bars, target $target", target.toDouble(), com.pocketstudio.app.export.Loudness.integrated(f)!!, 0.5)
+            } finally {
+                f.delete()
+            }
+        }
+    }
+
     /** [ms] of the bench's clock go by (the main looper's, which the bench's engine reads). */
     private fun pass(ms: Long) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
 

@@ -75,8 +75,10 @@ class BenchTour3Test : HumanTester("tour3") {
         tap("padlive_row_$row")
         waitFor("the row's loops playing again") { loops.all { states()[it] == 2 } }
         tap("padlive_more")
-        tap("padlive_stop_all")
+        val said = tap("padlive_stop_all")
         assertTrue("« Tout couper » went to the engine", "toggleClip -1" in benchEngine.padCommandsHeard())
+        // PLAN-RESTE 5.4 (control 5): the sound line says it too, no live pad left playing or waiting.
+        assertTrue("« Tout couper » heard: no live pad plays or waits: $said", "jouent en boucle" !in said && "joue en boucle" !in said && "attend" !in said)
         assertTrue("nothing plays: ${states().toList()}", states().all { it == 0 })
         assertTrue(vm.liveStates.value.all { it == 0 })
         assertTrue(problems.joinToString("\n"), problems.isEmpty())

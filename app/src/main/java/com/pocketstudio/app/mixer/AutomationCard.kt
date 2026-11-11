@@ -407,7 +407,9 @@ fun AutomationCard(
         val before = awaiting ?: return@LaunchedEffect
         ui.lanes.firstOrNull { it.target !in before }?.let { spot = Spot(it, fresh = true); awaiting = null }
     }
-    val spotIndex = spot?.let { s -> ui.lanes.indexOf(s.lane) } ?: -1
+    // A curve asked for from elsewhere (« Ce qui joue », the timeline) takes the light: this one is forgotten.
+    LaunchedEffect(ui.focusLane) { if (ui.focusLane >= 0) { spot = null; awaiting = null } }
+    val spotIndex = if (ui.focusLane >= 0) -1 else spot?.let { s -> ui.lanes.indexOf(s.lane) } ?: -1
     val shown = if (spotIndex >= 0) ui.copy(focusLane = spotIndex) else ui
     NeonCard(accent = Neon.Amber, modifier = modifier.testTag("automation")) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -449,7 +451,7 @@ fun AutomationCard(
                 spot?.fresh == true -> tr("Nouvelle courbe : dessine-la ci-dessous.")
                 else -> tr("Cette courbe existe déjà : la voici.")
             }
-            LaneBlock(i, lane, shown, channels, master, strips, actions, note)
+            LaneBlock(i, lane, shown, channels, master, strips, actions, note, asked = spot.takeIf { i == spotIndex })
         }
     }
     if (picking) {
@@ -482,9 +484,11 @@ internal fun LaneBlock(
     strips: List<StripInfo>, actions: AutomationActions,
     /** Said over a lit lane (« Nouvelle courbe… »), null: nothing. */
     note: String? = null,
+    /** What asked for this lit lane: a new asking (the same curve picked again) brings it into view again. */
+    asked: Any? = null,
 ) = com.pocketstudio.ui.LeftToRight {
     val focus = remember { BringIntoViewRequester() }
-    LaunchedEffect(ui.focusLane) { if (ui.focusLane == i) focus.bringIntoView() }
+    LaunchedEffect(ui.focusLane, asked) { if (ui.focusLane == i) focus.bringIntoView() }
     val lit = ui.focusLane == i
     val shape = RoundedCornerShape(12.dp)
     val song = lane.mode == AutomationLane.SONG

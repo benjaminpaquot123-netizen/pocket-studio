@@ -299,7 +299,7 @@ private fun DemoRow(s: ProjectStarter, index: Int, quick: QuickUi, actions: Proj
 }
 
 /**
- * One style: a touch makes its whole song with the advised choices; « Pas à pas » opens the
+ * One style: a touch makes its whole song with the advised choices; « Régler avant de créer » opens the
  * assistant on it. The family's colour runs down its left edge. While its song is prepared, a
  * wheel says so in place of its description.
  */
@@ -336,11 +336,12 @@ private fun QuickStyleCard(s: StarterWizard.Style, quick: QuickUi, ask: (String)
                     val ink = if (busy) Neon.TextSecondary.copy(alpha = 0.5f) else Neon.Cyan
                     Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = ink, modifier = Modifier.size(16.dp))
                     Text(" " + tr("Créer le morceau"), style = MaterialTheme.typography.labelLarge, color = ink, maxLines = 1,
-                        overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+                        overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f).testTag("quick_create_text_${s.id}"))
                     TextButton(onClick = { ask(START_CUSTOM + s.id) }, enabled = !busy, modifier = Modifier.testTag("quick_custom_${s.id}")) {
                         val quiet = if (busy) Neon.TextSecondary.copy(alpha = 0.5f) else Neon.TextPrimary.copy(alpha = 0.8f)
                         Icon(Icons.Filled.Tune, contentDescription = null, modifier = Modifier.size(16.dp), tint = quiet)
-                        Text(" " + tr("Choisir ce style"), color = quiet, maxLines = 1)
+                        // What it does that a touch on the card does not: the sounds and parts are set first (« Fais-moi un morceau » opens on this style).
+                        Text(tr("Régler avant de créer"), color = quiet, maxLines = 1, modifier = Modifier.padding(start = 4.dp).testTag("quick_custom_text_${s.id}"))
                     }
                 }
             }

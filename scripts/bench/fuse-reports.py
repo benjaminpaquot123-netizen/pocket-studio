@@ -50,19 +50,45 @@ BENCH_LIMIT_TAGS = re.compile(r"^(export|share_|video_|name_clear|tuner|analyser
 # PLAN-RESTE 4.7 (T5-Cc-41b, « 1 KB », 4 min for 4 tracks): an export's size and the time it took are the bench's (the
 # phone's AAC encoder is a shadow that copies, the engine a stand-in; recette tel-04: 42 Mo for 2 min 26 on the phone).
 # A card on an export that is about them is « banc », never the app's; what the file holds (its length in bars) is not.
-EXPORT_WORDS = re.compile(r"export|fichier|partag|\bm4a\b|\bwav\b|\bmp3\b|\bflac\b|\.zip", re.I)
-EXPORT_SIZE = re.compile(r"\b\d+(?:[,.]\d+)?\s*(?:ko|kb|mo|mb|go|gb|octets?|bytes?)\b|\btaille\b|\bpoids\b|\bpèse\b", re.I)
-EXPORT_TIME = re.compile(r"\b(?:a pris|prend|met|a mis|mis|en)\b[^.;]*\b\d+(?:[,.]\d+)?\s*(?:min|minutes?|s|sec|secondes?)\b|"
+# Review of « banc6a » (important): an export is said by the button's tag or the card's target, never by « fichier »
+# alone; a size is a number with its unit or the size of the file/export; a time is « a pris / met … N s », never
+# « en N s » alone. An export of a few KB or « vide » is no figure of the bench (its shadow codec writes 768 000
+# bytes for 4 s): a real empty file, the app's, not even a doubt of its tag.
+EXPORT_WORDS = re.compile(r"export|partag|\bm4a\b|\bwav\b|\bmp3\b|\bflac\b|\.zip", re.I)
+EXPORT_SIZE = re.compile(r"\b\d+(?:[,.]\d+)?\s*(?:ko|kb|mo|mb|go|gb|octets?|bytes?)\b|"
+                         r"\b(?:taille|poids)\s+(?:du|de\s+l'|de\s+l’|de\s+ce)\s*(?:fichier|export|son|morceau)|\bpèse\b", re.I)
+EXPORT_TIME = re.compile(r"\b(?:a pris|prend|met|a mis|mis)\b[^.;]*\b\d+(?:[,.]\d+)?\s*(?:min|minutes?|s|sec|secondes?)\b|"
                          r"\btrop long\b|\blent(?:e|ement)?\b|\btemps de l'export\b", re.I)
+EXPORT_AMOUNT = re.compile(r"(\d+(?:[ \u00a0\u202f]\d{3})*(?:[,.]\d+)?)\s*(ko|kb|mo|mb|go|gb|octets?|bytes?)\b", re.I)
+EMPTY = re.compile(r"\bvides?\b|\b0\s*(?:octets?|bytes?|ko|kb)\b", re.I)
+TINY_BYTES = 64 * 1024
 EXPORT_FIGURE_MARK = "[banc : taille ou durée d'un export, non représentatives]"
+
+
+def on_export(d, tag):
+    return bool(tag and re.match(r"^(export|share_|my_export)", tag)) or bool(EXPORT_WORDS.search(d.get("cible", "")))
 
 
 def export_figure(d, tag):
     """PLAN-RESTE 4.7: the card is about an export's size or the time it took (the bench's), not what the file holds."""
-    text = " ".join(d.get(k, "") for k in ("cible", "attendu", "obtenu"))
-    on_export = bool(tag and re.match(r"^(export|share_|my_export)", tag)) or bool(EXPORT_WORDS.search(text))
+    text = " ".join(d.get(k, "") for k in ("attendu", "obtenu"))
     slow = d.get("symptome", "").strip().lower() == "lent"
-    return on_export and bool(EXPORT_SIZE.search(text) or EXPORT_TIME.search(text) or slow)
+    return on_export(d, tag) and not empty_export(d, tag) and bool(EXPORT_SIZE.search(text) or EXPORT_TIME.search(text) or slow)
+
+
+def empty_export(d, tag):
+    """An export of a few KB or « vide »: the app's (review of « banc6a »)."""
+    said = d.get("obtenu", "")
+    if not on_export(d, tag):
+        return False
+    if EMPTY.search(said):
+        return True
+    for number, unit in EXPORT_AMOUNT.findall(said):
+        value = float(re.sub(r"[ \u00a0\u202f]", "", number).replace(",", "."))
+        scale = {"k": 1024, "m": 1024 ** 2, "g": 1024 ** 3}.get(unit[0].lower(), 1)
+        if value * scale < TINY_BYTES:
+            return True
+    return False
 
 
 # Sound judged by ear, in « attendu »/« obtenu » only (« ça sonne » = a sound starts, which the brief asks to say).
@@ -310,7 +336,7 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
                 tag = tag or element_of(d)
                 key = f"{route}|{tag or norm(d.get('cible'))}|{symptom}"
                 c = clusters.setdefault(key, {"key": key, "seats": set(), "where": [], "gravities": [], "blocks": False,
-                                              "said": [], "bench": [], "tag": tag, "declared": [], "scales": [], "export_figure": []})
+                                              "said": [], "bench": [], "tag": tag, "declared": [], "scales": [], "export_figure": [], "export_empty": []})
                 c["seats"].add(seat)
                 c["where"].append(f"{seat}#{cited}")
                 c["gravities"].append(gravity_of(d))
@@ -319,6 +345,7 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
                 c["blocks"] = c["blocks"] or d.get("bloque", "").strip().lower() == "oui"
                 c["bench"].append(d.get("banc?", "non").strip().lower() not in ("", "non"))
                 c["export_figure"].append(export_figure(d, tag))
+                c["export_empty"].append(empty_export(d, tag))
                 if said and not c["said"]:
                     c["said"].append(said)
     for c in clusters.values():
@@ -348,7 +375,9 @@ def fuse(round_dir, base_path, verdicts_path=None, tour=None):
         c["state"] = state
         # PLAN-RESTE 4.7: every card of it about an export's size or time taken: the bench's, not a doubt.
         c["bench_export"] = bool(c["export_figure"]) and all(c["export_figure"])
-        c["bench_doubt"] = c["bench_export"] or all(c["bench"]) or bool(c["tag"] and BENCH_LIMIT_TAGS.match(c["tag"]))
+        # Review of « banc6a »: an empty export is the app's, the tag's doubt aside (the testers' own « banc? » kept).
+        tag_doubt = bool(c["tag"] and BENCH_LIMIT_TAGS.match(c["tag"])) and not any(c["export_empty"])
+        c["bench_doubt"] = c["bench_export"] or all(c["bench"]) or tag_doubt
     ordered = sorted(clusters.values(), key=lambda c: (c["bench_doubt"], c["gravity"], -len(c["seats"]), not c["new"], c["key"]))
     return ordered, rejected, sorted(set(seats)), promises, incidents
 

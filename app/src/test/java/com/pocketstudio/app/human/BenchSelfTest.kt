@@ -191,6 +191,41 @@ class BenchSelfTest : HumanTester("selftest") {
         assertTrue("written otherwise than drawn:\n" + wrong.joinToString("\n") + "\n\n" + lines.joinToString("\n"), wrong.isEmpty())
     }
 
+    /**
+     * PLAN-RESTE 4.6 (seats D b, F a, F c of round 5: a first screen almost empty, « l'éditeur arrive après une attente »):
+     * the app reads its project off the main thread (« Ouverture du projet… ») after the saves still being written. On a
+     * loaded machine that work runs late: the bench showed the tester the opening's ring, and a phone would not have. The
+     * slowness is injected here: a save that keeps a worker running (CPU) for 12 s. The bench waits for the first screen
+     * (30 s at most) only while its own workers are busy: the screen it shows is the app's opened screen.
+     */
+    @Test
+    fun aBlankFirstScreenIsWaitedForOnlyWhenTheBenchIsBusy() {
+        val stop = java.util.concurrent.atomic.AtomicBoolean(false)
+        com.pocketstudio.app.rhythm.ClosingSaves.launch(20_000) {
+            val end = System.nanoTime() + 12_000_000_000L
+            while (System.nanoTime() < end && !stop.get()) Thread.onSpinWait()
+        }
+        try {
+            begin()
+            val lines = screenLines()
+            assertTrue("the first screen, the bench's workers busy, is the app's opened one:\n" + lines.joinToString("\n"), lines.none { "Ouverture du projet" in it })
+        } finally {
+            stop.set(true)
+        }
+    }
+
+    /**
+     * PLAN-RESTE 4.6, the other side: the same blank screen while nothing of the bench works (the save sleeps, as a phone's
+     * flash memory may): not the bench's to hide. The screen is shown as it is (recette tel-20 « premier écran après Pro »).
+     */
+    @Test
+    fun aBlankFirstScreenWithTheBenchAtRestIsShownAsItIs() {
+        com.pocketstudio.app.rhythm.ClosingSaves.launch(20_000) { Thread.sleep(9_000) }
+        begin()
+        val lines = screenLines()
+        assertTrue("the bench at rest does not wait the opening away:\n" + lines.joinToString("\n"), lines.any { "Ouverture du projet" in it })
+    }
+
     /** The screen's line drawn at the middle of the node tagged [tag] (± 2 px). */
     private fun lineAt(tag: String): String {
         val (x, y) = centerOf(tag) ?: error("no « $tag »\n" + screenLines().joinToString("\n"))

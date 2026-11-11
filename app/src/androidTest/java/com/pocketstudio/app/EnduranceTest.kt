@@ -124,8 +124,8 @@ class EnduranceTest {
                 }
                 val opened = rhythmOf(scenario)
                 runBlocking { opened.awaitSoundsLoadedForTest() }
-                // ▶: the song (or the loop of a project without one).
-                j.tap("top_play")
+                // « ▶ le morceau »: the song (or the loop of a project without one).
+                j.tap(if (j.exists("thumb_play")) "thumb_play" else "top_song")
                 // On a timeout, what was on the screen too (an overlay over ▶?).
                 runCatching { waitFor("the transport", 10) { NativeEngine.currentStep() >= 0 } }.onFailure {
                     throw IllegalStateException("${it.message}\nscreen:\n${RealUse.screenTree(compose)}")

@@ -204,6 +204,12 @@ internal class SpotNode(var id: String, var label: String?, var revealFrom: List
                     val fade = with(currentValueOf(androidx.compose.ui.platform.LocalDensity)) { REVEAL_TOP.toPx() }
                     bringIntoView { Rect(0f, -above - fade, width, height + below) }
                     bringIntoView { Rect(0f, -fade, width, height) }
+                    // Tour 5, chantier 4 (TutoBigFontTest): with the phone's font very big there is no room for both; what is
+                    // named above it (the tuto's line, « Rumble · Encore 4 cases ») comes back in sight with the control's
+                    // first row: the line says what to do there. A no-op whenever both fit.
+                    if (above > 0f && currentValueOf(androidx.compose.ui.platform.LocalDensity).fontScale >= BIG_FONT) {
+                        bringIntoView { Rect(0f, -above, width, minOf(height, 1f)) }
+                    }
                     // Round 5 (lot « bloquants »): coming back up from a control far below (the tutorials' Swing, under the
                     // drum grid), the grid stayed with its top under « Partie : A »: its top line brought in last.
                     androidx.compose.runtime.withFrameNanos { }
@@ -425,6 +431,9 @@ private const val REVEAL_MARGIN_PX = 48f
 
 /** Kept free over a control revealed: the fading top of the page that scrolls ([com.pocketstudio.ui.fadingTopEdge]) and a little air. */
 private val REVEAL_TOP = 32.dp
+
+/** From this font size of the phone, a revealed control's head (the tuto's line) comes before its foot. */
+private const val BIG_FONT = 1.5f
 
 /** Tests (n° 19–20): each target a tuto step, the Guide or « Montre-moi » showed, and why it could not be seen (null: it could). */
 object SpotChecks {

@@ -50,7 +50,8 @@ class TopBarTest {
         compose.onNodeWithTag("top_undo").assertIsDisplayed()
         compose.onNodeWithTag("top_record").assertIsDisplayed()
         val play = compose.onNodeWithTag("top_play").getBoundsInRoot()
-        assertEquals((play.right - play.left).value, (play.bottom - play.top).value, 0.5f)
+        // Tour 5, chantier 4: « ▶ cette partie », its disc over its word: as wide as the word, 48 dp at least each way.
+        assertTrue("play ${play.right - play.left} x ${play.bottom - play.top}", play.right - play.left >= 48.dp - 0.5.dp && play.bottom - play.top >= 48.dp - 0.5.dp)
         assertTrue("play ends at ${play.right}", play.right <= width.dp + 0.5.dp)
         compose.onNodeWithTag("top_share").assertIsDisplayed()
         val share = compose.onNodeWithTag("top_share").getBoundsInRoot()
@@ -199,7 +200,8 @@ class TopBarTest {
         val projects = compose.onNodeWithTag("top_projects").getBoundsInRoot()
         assertTrue("projects ${projects.right - projects.left}", projects.right - projects.left >= 48.dp)
         val play = compose.onNodeWithTag("top_play").getBoundsInRoot()
-        assertEquals((play.right - play.left).value, (play.bottom - play.top).value, 0.5f)
+        // Tour 5, chantier 4: « ▶ cette partie », its disc over its word: as wide as the word, 48 dp at least each way.
+        assertTrue("play ${play.right - play.left} x ${play.bottom - play.top}", play.right - play.left >= 48.dp - 0.5.dp && play.bottom - play.top >= 48.dp - 0.5.dp)
         assertTrue(play.right <= 300.dp)
         compose.onNodeWithTag("top_redo").assertDoesNotExist()
     }

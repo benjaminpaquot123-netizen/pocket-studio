@@ -172,7 +172,8 @@ class GuideJourneyTest {
 
     /** The song stopped (« Écouter » starts it; the Guide's « Sans / Avec » never plays over it). */
     private fun stopTheSong() {
-        if (vm().transport.value.playing) tap("top_play")
+        // ■ on « ▶ le morceau » (the top ▶, « cette partie », would loop the part).
+        if (vm().transport.value.playing) tap("thumb_play")
         await("stopped") { !vm().transport.value.playing }
     }
 

@@ -1,5 +1,6 @@
 package com.pocketstudio.app.guide
 
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.i18n.upperShown
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -167,6 +168,36 @@ fun GuideBar(ui: GuideUi, open: Boolean, toggle: () -> Unit, modifier: Modifier 
             )
         }
         Icon(if (open) Icons.Filled.ExpandMore else Icons.Filled.ExpandLess, contentDescription = null, tint = Neon.TextSecondary, modifier = Modifier.size(22.dp))
+    }
+}
+
+/**
+ * Tour 5, chantier 4 (audit G6: « la ligne du Guide repliée en pastille quand barre + Guide ne tiennent pas »): the folded
+ * Guide as a pill in the thumb's bar, on a wide but short screen (the Tab A11 upright at 130 %), its line's 48 dp to the
+ * page. A touch opens the panel, as the bar's does; what it says is the bar's, for TalkBack too.
+ */
+@Composable
+fun GuidePill(ui: GuideUi, toggle: () -> Unit, modifier: Modifier = Modifier) {
+    val line = guideStepLine(ui)
+    // As the thumb's bar's other buttons: its icon over its words, whole (« Guide 34 % »).
+    androidx.compose.foundation.layout.Column(
+        modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
+            .clickable(role = Role.Button, onClickLabel = tr("Ouvrir le Guide"), onClick = toggle)
+            .semantics {
+                stateDescription = tr("replié")
+                contentDescription = tr("Guide") + (if (line.isEmpty()) "" else " · $line")
+            }
+            .padding(horizontal = 4.dp)
+            .spot("guide_bar", tr("Le Guide : où en est ton morceau"))
+            .testTag("guide_bar"),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+    ) {
+        Icon(Icons.Filled.Explore, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(22.dp))
+        Text(
+            tr("Guide") + (if (!ui.loading && ui.total > 0) " ${ui.percent} %" else ""),
+            fontSize = 11.sp, lineHeight = 12.sp, fontWeight = FontWeight.Bold, color = Neon.Cyan, maxLines = 1, softWrap = false,
+        )
     }
 }
 

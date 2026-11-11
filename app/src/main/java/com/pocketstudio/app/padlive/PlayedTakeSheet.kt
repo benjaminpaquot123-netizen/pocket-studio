@@ -74,7 +74,7 @@ internal fun PlayedButton(state: PlayedTakeUi, press: () -> Unit, modifier: Modi
 @Composable
 internal fun PlayedTakeSheet(bars: Int, emptyPad: String?, actions: PadLiveActions) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ScaledBottomSheet(onDismissRequest = actions.dropTake, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("padlive_take_sheet")) {
+    ScaledBottomSheet(onDismissRequest = actions.dropTake, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("padlive_take_sheet"), scrolls = true) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(
                 com.pocketstudio.model.i18n.trCount(bars, "Ta prise : 1 mesure", "Ta prise : %d mesures"),

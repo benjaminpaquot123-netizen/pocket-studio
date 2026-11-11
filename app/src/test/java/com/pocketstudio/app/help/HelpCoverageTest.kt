@@ -208,6 +208,42 @@ class HelpCoverageTest {
         )
     }
 
+    // --- Where a beginner gets stuck (hands-on audit, M5): recording on the keys, the Mix simple, « Partie en boucle » ---
+
+    /** The Clavier's record bar, as AppRoot wires it (« Enregistrer ma mélodie »): its « ? » says where the notes go. */
+    @Test
+    fun recordOnTheKeys() {
+        java.io.File(ApplicationProvider.getApplicationContext<android.app.Application>().filesDir, "projects").deleteRecursively()
+        val vm = com.pocketstudio.app.rhythm.RhythmViewModel(ApplicationProvider.getApplicationContext())
+        compose.setContent {
+            PocketStudioTheme {
+                com.pocketstudio.app.record.RecordBar(
+                    com.pocketstudio.app.record.recordBarUi(vm, "Enregistrer ma mélodie", com.pocketstudio.app.record.TakeSource.KEYS),
+                    com.pocketstudio.app.record.recordBarActions(vm, com.pocketstudio.app.record.TakeSource.KEYS),
+                )
+            }
+        }
+        check("Clavier › Enregistrer", listOf("record_", "keep_played"), listOf("record_count_in"), must = listOf("record_start"))
+    }
+
+    /** The Mode simple's « Mix »: one « ? » for the faders, the output's words and « Tout à zéro », one for « Partie en boucle ». */
+    @Test
+    fun simpleMix() {
+        val bass = com.pocketstudio.app.ui.SimpleTrack("bass", 2, "Basse", androidx.compose.ui.graphics.Color.Cyan, 0.7f, mute = false, solo = false)
+        val ui = com.pocketstudio.app.mixer.SimpleMixUi("Mon tube", listOf(bass), emptyMap(), 0f, looping = false, listening = null, tip = null)
+        compose.setContent {
+            PocketStudioTheme { com.pocketstudio.app.mixer.SimpleMixScreen(ui, { FloatArray(com.pocketstudio.engine.NativeEngine.METERS) }, { FloatArray(com.pocketstudio.engine.NativeEngine.LOUDNESS) }, com.pocketstudio.app.mixer.SimpleMixActions()) }
+        }
+        check(
+            "Mix simple", listOf("mix_"), listOf("mix_mute_#", "mix_alone_*", "mix_pad_alone_#", "mix_tip_fix"),
+            must = listOf("mix_loop", "mix_reset", "mix_fader_2", "mix_out_fader"),
+        )
+        // Two « ? »: « Partie en boucle » has its own, beside it.
+        val terms = compose.onAllNodes(SemanticsMatcher("any") { true }, useUnmergedTree = true).fetchSemanticsNodes()
+            .mapNotNull { it.config.getOrNull(SemanticsProperties.TestTag) }.filter { it.startsWith("help_") }
+        assertTrue("Mix simple: « Partie en boucle » has no « ? » of its own: $terms", terms.size >= 2 && scan().explained.count { it.matches("mix_loop") } == 1)
+    }
+
     // --- The Live's grid and its Remix cell -------------------------------------------------------
 
     private fun live() {

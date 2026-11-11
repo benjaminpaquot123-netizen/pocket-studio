@@ -68,6 +68,8 @@ class RecordBarUi(
     val enabled: Boolean = true,
     /** The last take ended with nothing played: said under the button. */
     val empty: Boolean = false,
+    /** The bar's « ? » (on the keys: where the notes go, what the count-in's figure is); null: none. */
+    val help: com.pocketstudio.ui.Help? = null,
 )
 
 class RecordBarActions(
@@ -127,6 +129,7 @@ private fun IdleBar(ui: RecordBarUi, actions: RecordBarActions, modifier: Modifi
                 WholeWordsText(" " + tr("Garder ce que je viens de jouer"), textAlign = TextAlign.Center)
             }
         }
+        ui.help?.let { com.pocketstudio.ui.HelpDot(it, about = listOf("record_start", "record_count_in", "keep_played")) }
     }
     }
 }
@@ -259,6 +262,8 @@ fun recordBarUi(vm: com.pocketstudio.app.rhythm.RhythmViewModel, label: String, 
         canKeepPlayed = canKeep && source != TakeSource.ACID,
         enabled = mic == null && !live.running,
         empty = empty,
+        // Hands-on audit M5: recording on the keys, where a beginner looked for the notes.
+        help = if (source == TakeSource.KEYS) com.pocketstudio.app.help.ScreenHelp.RECORD_KEYS else null,
     )
 }
 

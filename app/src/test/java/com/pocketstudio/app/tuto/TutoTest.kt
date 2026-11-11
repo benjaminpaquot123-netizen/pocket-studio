@@ -317,12 +317,14 @@ class TutoTest {
                     ProjectsActions(learn = { s, l -> learned += s to l }, wizard = { wizard++ }, create = { created += it }), newOnly = true)
             }
         }
-        // Owner (2026-10-29): « Simple ou Pro ? » before each start; for « J'apprends » it is the level.
+        // Owner (2026-10-29): « Simple ou Pro ? » before the first start; for « J'apprends » it is the level (asked each time).
         compose.onNodeWithTag("starter_wizard").performClick()
         compose.onNodeWithTag("mode_card_simple").performClick()
         assertEquals(1, wizard)
+        // Benjamin's answer 3A (tour 5, chantier 5): the next song takes that choice without asking.
         compose.onNodeWithTag("start_empty").performClick()
-        compose.onNodeWithTag("mode_card_simple").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithTag("mode_step").assertDoesNotExist()
         assertEquals(listOf(1), created)
         compose.onNodeWithTag("start_learn").performClick()
         compose.onNodeWithTag("mode_card_pro").performClick()

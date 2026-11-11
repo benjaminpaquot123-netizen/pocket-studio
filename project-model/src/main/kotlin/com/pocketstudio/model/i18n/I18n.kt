@@ -156,6 +156,10 @@ object I18n {
         "textes",
         // Round 5, chantier 4 (2026-11-11): the two ▶ named, « ▶ cette partie » at the top, « ▶ le morceau » at the thumb.
         "lectures",
+        // Round 5, chantier 5 (2026-11-11): the same Plus page in both modes, the assistant's mode with « Changer » (3A).
+        "plus",
+        // Round 5, chantier 6 (2026-11-11): the home screens say they scroll (« ↓ 4 autres »), « Un style en une touche ».
+        "accueil",
     )
 
     @Volatile

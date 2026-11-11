@@ -120,6 +120,12 @@ class WizardActions(
     val cancelDownload: (String) -> Unit = {},
     val deletePack: (String) -> Unit = {},
     val create: () -> Unit = {},
+    /**
+     * Tour 5, chantier 5 (Benjamin's answer 3A): « Simple ou Pro ? » is not asked again for a new song, it takes the last
+     * choice; the assistant says it ([mode]: true Simple) with « Changer » ([changeMode]). Null: not shown.
+     */
+    val mode: Boolean? = null,
+    val changeMode: (() -> Unit)? = null,
 )
 
 /**
@@ -181,6 +187,20 @@ private fun WizardBody(ui: WizardUi, packs: PacksUi, playing: SoundRef?, actions
                     onClick = { if (ui.step >= CONFIRM_CLOSE_FROM) confirmClose = true else actions.close() },
                     modifier = Modifier.testTag("wizard_close"),
                 ) { Icon(Icons.Filled.Close, contentDescription = tr("Fermer")) }
+            }
+            // Under the title's row (the ✕ stays where it was): the song's mode, « Changer » (3A).
+            val mode = actions.mode
+            val changeMode = actions.changeMode
+            if (mode != null && changeMode != null) {
+                Row(Modifier.padding(start = 16.dp, end = 4.dp).testTag("wizard_mode"), verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        tr("Ce morceau sera en mode %s.", com.pocketstudio.app.ui.modeName(mode)),
+                        style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.weight(1f, fill = false),
+                    )
+                    androidx.compose.material3.TextButton(onClick = changeMode, modifier = Modifier.heightIn(min = 48.dp).testTag("wizard_mode_change")) {
+                        Text(tr("Changer"))
+                    }
+                }
             }
             if (style != null) StepProgress(ui.step + 1, total)
             if (confirmClose) {

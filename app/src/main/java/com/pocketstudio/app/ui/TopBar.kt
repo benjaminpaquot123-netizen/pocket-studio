@@ -143,16 +143,13 @@ class TopBarActions(
     /** ⤴ « Prêt à partager ? »: the song checked, then shared (on every tab). */
     val share: () -> Unit = {},
     /**
-     * Phase 36, Mode simple: « ⋯ » in place of ⤴ (the « Envoyer » tab shares there), with what is
-     * not in its four tabs (Live, Mes projets, Réglages, Aide, Mode complet). Null: ⤴ as usual.
+     * Phase 36, Mode simple: « ⋮ » in place of ⤴ (the « Partager » tab shares there). Tour 5, chantier 5 (G15): it opens
+     * the Plus page, the same as Pro's (with the Recette), no menu of bare lines any more. Null: ⤴ as usual.
      */
-    val more: List<TopMenuItem>? = null,
+    val more: (() -> Unit)? = null,
     /** A touch on the mode chip: the change of mode. */
     val mode: () -> Unit = {},
 )
-
-/** One line of the top bar's « ⋯ » menu (Mode simple). */
-class TopMenuItem(val label: String, val tag: String, val onClick: () -> Unit)
 
 /** How the scene chip shows: not at all, its letter alone, or its letter and section name. */
 enum class SceneChipMode { Hidden, Letter, Full }
@@ -384,17 +381,9 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
         if (ui.songButton && !songOnTop) NamedPlay(tr("le morceau"), songStyle, tr("Jouer le morceau"), ui.songPlaying, "top_song", songRoom, actions.playSong)
         val more = actions.more
         if (more != null) {
-            // Mode simple: « Envoyer » is a tab; the rest of the app is here.
-            Box {
-                var open by remember { mutableStateOf(false) }
-                IconButton(onClick = { open = true }, modifier = Modifier.spot("top_more", tr("Plus de choix")).testTag("top_more")) {
-                    Icon(Icons.Filled.MoreVert, contentDescription = tr("Plus de choix"), tint = Neon.TextPrimary)
-                }
-                ScaledDropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.testTag("top_more_menu")) {
-                    more.forEach { item ->
-                        DropdownMenuItem(text = { Text(item.label) }, onClick = { open = false; item.onClick() }, modifier = Modifier.testTag(item.tag))
-                    }
-                }
+            // Mode simple: « Partager » is a tab; the rest of the app is on the Plus page.
+            IconButton(onClick = more, modifier = Modifier.spot("top_more", tr("Plus de choix")).testTag("top_more")) {
+                Icon(Icons.Filled.MoreVert, contentDescription = tr("Plus de choix"), tint = Neon.TextPrimary)
             }
         } else {
             // ⤴ Partager, the last thing done to a song, always one touch away (« Prêt à partager ? »).

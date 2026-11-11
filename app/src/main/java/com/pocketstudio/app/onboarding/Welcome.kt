@@ -18,7 +18,6 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -53,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.scrollHintItem
 import com.pocketstudio.app.ui.IconMedallion
 import com.pocketstudio.app.ui.showcasePanel
 
@@ -163,8 +163,11 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
     androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxSize()) {
     val wide = maxWidth >= com.pocketstudio.ui.EXPANDED_FROM && maxWidth > maxHeight
     com.pocketstudio.ui.ReadingWidth(maxWidth = if (wide) 1040.dp else 600.dp) {
+        // Rule 17 (hands-on audit G9; Benjamin, 2026-11-06): the cards below the fold are said (a fade, « ↓ 4 autres »).
+        val hint = com.pocketstudio.ui.rememberScrollHint()
+        com.pocketstudio.ui.ScrollHintBox(hint, Modifier.fillMaxSize()) {
         Column(
-            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 28.dp).testTag("welcome"),
+            Modifier.fillMaxSize().verticalScroll(hint.scroll).padding(horizontal = 20.dp, vertical = 28.dp).testTag("welcome"),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             // The language on top (the phone's is already chosen), one touch away.
@@ -217,8 +220,9 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
             // Audit ultra round 2, zone 1, n° 3: the challenges as a picture (a child who cannot read looks for a star).
             { ChallengeCard(actions.challenges) },
             )
-            if (wide) com.pocketstudio.ui.AdaptiveColumns(choices, minCellWidth = 380.dp, maxColumns = 2, spacing = 16.dp)
-            else choices.forEach { it() }
+            val counted = choices.map { card -> @Composable { Box(Modifier.scrollHintItem(hint)) { card() } } }
+            if (wide) com.pocketstudio.ui.AdaptiveColumns(counted, minCellWidth = 380.dp, maxColumns = 2, spacing = 16.dp)
+            else counted.forEach { it() }
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 TextButton(onClick = actions.later, modifier = Modifier.heightIn(min = 48.dp).testTag("welcome_later")) {
                     Text(tr("Plus tard : voir le rythme de départ"), color = Neon.TextSecondary)
@@ -226,6 +230,7 @@ fun WelcomeScreen(actions: WelcomeActions, simple: Boolean = true) {
             }
             Text(if (simple) tr("La visite rapide reste dans ⋮ › Aide.") else tr("La visite rapide reste dans Plus › Aide."), style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary, modifier = Modifier.align(Alignment.CenterHorizontally))
+        }
         }
     }
     }

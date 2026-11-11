@@ -163,5 +163,6 @@
   "−%d demi-tons|many": "−%d نصف درجة",
   "Créer le fichier de %d mesures|two": "إنشاء ملف من مازورتين",
   "Créer le fichier de %d mesures|few": "إنشاء ملف من %d مازورات",
-  "Créer le fichier de %d mesures|many": "إنشاء ملف من %d مازورة"
+  "Créer le fichier de %d mesures|many": "إنشاء ملف من %d مازورة",
+  "%d autres|two": "اثنان آخران"
 }

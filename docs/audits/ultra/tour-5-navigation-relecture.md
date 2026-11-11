@@ -1,5 +1,5 @@
 # Relecture du lot « navigation » (tour 5, étape 4, chantier 4) par un relecteur neuf
-Relu : 9a8dccf50d9601655f8e1984514e39a26a1e5d97
+Relu : 4f9625816539b16780c8c606a4d66dc959ba0203
 
 Atelier `/home/user/eq-tour-5-navigation`, branche `eq/tour-5-navigation`, base fx-int dba28dab, tête de l'auteur a8bc7c92 (20 commits), plus un commit de relecture 9a8dccf5 (test renforcé, aucun code de l'appli touché). Relecteur qui n'a pas écrit ce code. Rien n'est poussé. Gradle uniquement par `scripts/bench/gradle-file.sh`, 8 passages ciblés ; chaque fichier muté remis par chemin (`git checkout -- <fichier>`), `git status` ensuite : seules les lignes « T engine/third_party », « T separation/third_party ».
 
@@ -39,5 +39,10 @@ tabA11/130_nav_simple_song (pastille « Guide 45 % » au bout de la barre du pou
 ## Tests à rejouer à la fusion
 
 `*TwoPlaysNamed*` `*ThumbBarBig*` `*TutoBigFontTest` `*TabletUprightTest` `*RetoursClearOfControlsTest` `*.ui.TopBarTest` `*GestureBudgetTest` `*.nav.PlayThenTabsTest` `*KeyActionsGestureTest` `*HelpLabelsTest` `*GuideJourneyTest` `*CaptureMatrixBigFontTest`
+
+
+## Delta après fusion de fx-int
+
+Relu : commit de synchro DECISIONS 10a18e2c et fusion 4f962581 (fx-int). Seul conflit, `BenchTour1Test#theLiveMetersRead` : version fx-int gardée (contrôle 5.11, compteurs qui baissent quand les pistes baissent) avec `thumb_play` à la place de `top_play`. Aucune assertion perdue : les deux constantes -14,0 et -14,2 de ce côté sont remplacées par les mesures relatives de fx-int ; le test lance le morceau (`playing` vérifié), puis l'arrête (lecture court terme absente, intégrée conservée). Aucun autre fichier de l'appli touché par la résolution.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

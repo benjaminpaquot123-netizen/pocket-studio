@@ -886,12 +886,14 @@ fun AppRoot() {
                             launch.settled()
                             com.pocketstudio.app.remix.SeparationJob.requestOpen()
                         }),
-                        // A style's whole song in one touch: the assistant's own song, its guide after.
+                        // A style's whole song in one touch: the assistant's own song, its guide after. Hands-on audit G11
+                        // (« un morceau complet, prêt à écouter »): it plays as it opens, as « Créer et écouter » does.
                         quickStyle = { id ->
                             rhythmVm.stop()
                             libraryVm.quickCreate(id) { project, sounds, guide ->
                                 projectsVm.create(songMade(project, guide), sounds, failed = libraryVm::quickFailed) { newId ->
                                     com.pocketstudio.app.rhythm.PendingNotice.put(newId, libraryVm.takeCreatedNotice())
+                                    com.pocketstudio.app.rhythm.PendingNotice.playOnOpen(newId)
                                     guideOpen = true
                                     libraryVm.quickDone()
                                     tab = AppTab.Morceau  // the song is ready to hear: land on it (kept across the rebuild)

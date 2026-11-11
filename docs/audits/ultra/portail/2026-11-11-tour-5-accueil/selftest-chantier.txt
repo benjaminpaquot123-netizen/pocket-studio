@@ -1,0 +1,3 @@
+2b34c216 « vert: mode_step re-recorded at 130 % and on the tablet, the step on ea » : vert sans rouge du même test avant lui
+96a7a702 « rouge: NavScreenshotTest.modeStep asserts the step before its capture » : rouge sans vert du même test après lui
+chantier : 2 écarts

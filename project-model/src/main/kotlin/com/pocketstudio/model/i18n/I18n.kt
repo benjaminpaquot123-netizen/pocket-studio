@@ -160,6 +160,8 @@ object I18n {
         "plus",
         // Round 5, chantier 7 (2026-11-11): Pad Live's « Tout couper » in sight, it stops everything (4A).
         "padlivestop",
+        // Round 5, chantier 6 (2026-11-11): the home screens say they scroll (« ↓ 4 autres »), « Un style en une touche ».
+        "accueil",
     )
 
     @Volatile

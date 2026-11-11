@@ -347,7 +347,7 @@ ScreenshotTest.playPanel	CONTRAST	1	premier passage 2026-11-04 : texte sous WCAG
 ScreenshotTest.playStrip	HELP	13	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 ScreenshotTest.projects	HELP	21	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 ScreenshotTest.projects	CONTRAST	2	premier passage 2026-11-04 : texte sous WCAG AA, à revoir (plusieurs déjà listés Moyen dans AUDIT-1)
-ScreenshotTest.projectsNew	HELP	4	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
+ScreenshotTest.projectsNew	HELP	9	premier passage 2026-11-04 : pas encore trié ; tour 5 chantier 6 : + les cinq styles en une touche (one_touch_*), leur nom dit ce qu'ils font
 ScreenshotTest.projectsNewPreparing	HELP	10	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 ScreenshotTest.projectsTrash	HELP	12	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 ScreenshotTest.quickFx	HELP	24	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
@@ -474,7 +474,7 @@ TutoScreenshotTest.kitOffer	HELP	10	premier passage 2026-11-04 : pas encore tri�
 TutoScreenshotTest.kitOffer	TARGET	1	premier passage 2026-11-04 : cible sous 48 dp au toucher ou 24 dp vue, à revoir écran par écran
 TutoScreenshotTest.listenedNext	HELP	8	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 TutoScreenshotTest.listenedNext	TARGET	1	premier passage 2026-11-04 : cible sous 48 dp au toucher ou 24 dp vue, à revoir écran par écran
-TutoScreenshotTest.newProject	HELP	4	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
+TutoScreenshotTest.newProject	HELP	9	premier passage 2026-11-04 : pas encore trié ; tour 5 chantier 6 : + les cinq styles en une touche (one_touch_*), leur nom dit ce qu'ils font
 TutoScreenshotTest.stepFacile	HELP	9	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 TutoScreenshotTest.stepFacile	TARGET	1	premier passage 2026-11-04 : cible sous 48 dp au toucher ou 24 dp vue, à revoir écran par écran
 TutoScreenshotTest.stepNeedsBars	HELP	9	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)

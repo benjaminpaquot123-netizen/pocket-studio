@@ -1,5 +1,7 @@
 {
   "Allonger le morceau": "Wydłuż utwór",
+  "Autres choix…": "Inne opcje…",
   "Couper la chanson à la fin": "Utnij piosenkę na końcu",
+  "Faire un morceau avec cette chanson": "Zrób utwór z tą piosenką",
   "La chanson dépasse la fin du morceau de %s : sa fin sera coupée.": "Piosenka wychodzi %s poza koniec utworu: jej koniec zostanie ucięty."
 }

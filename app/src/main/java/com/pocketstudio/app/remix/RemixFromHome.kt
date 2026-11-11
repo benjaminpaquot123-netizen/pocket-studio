@@ -194,7 +194,7 @@ private fun Way(icon: ImageVector, title: String, line: String, tag: String, ena
 
 /**
  * The Remix page of « Que veux-tu faire ? »: « ← Accueil », separate a song (or pick one already
- * separated), listen to its parts, then « Utiliser cette chanson » asks where it goes. A song just
+ * separated), listen to its parts, then « Faire un morceau avec cette chanson » (or « Autres choix… »: where it goes). A song just
  * separated here asks at once.
  */
 @Composable
@@ -256,6 +256,7 @@ fun RemixHomePage(
                 pause = vm::pause,
                 delete = vm::delete,
                 useSong = { set -> vm.pause(); asking = set.id },
+                buildSong = { set -> vm.stop(); onWay(set, RemixWay.Build) },
             ),
         )
     }

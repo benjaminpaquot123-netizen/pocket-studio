@@ -1,5 +1,7 @@
 {
   "Allonger le morceau": "Lengthen the track",
+  "Autres choix…": "Other choices…",
   "Couper la chanson à la fin": "Cut the song at the end",
+  "Faire un morceau avec cette chanson": "Make a track with this song",
   "La chanson dépasse la fin du morceau de %s : sa fin sera coupée.": "The song runs %s past the end of the track: its end will be cut."
 }

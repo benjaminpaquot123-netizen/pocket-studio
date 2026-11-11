@@ -1,5 +1,7 @@
 {
   "Allonger le morceau": "加长曲目",
+  "Autres choix…": "其他选择…",
   "Couper la chanson à la fin": "在结尾截断歌曲",
+  "Faire un morceau avec cette chanson": "用这首歌做一首曲目",
   "La chanson dépasse la fin du morceau de %s : sa fin sera coupée.": "歌曲超出曲目结尾 %s：结尾会被截掉。"
 }

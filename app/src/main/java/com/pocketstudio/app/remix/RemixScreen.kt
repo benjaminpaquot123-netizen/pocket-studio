@@ -15,10 +15,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.foundation.horizontalScroll
@@ -159,8 +161,10 @@ class RemixActions(
     val toggleStem: (StemSet, Int) -> Unit = { _, _ -> },
     val pause: () -> Unit = {},
     val delete: (StemSet) -> Unit = {},
-    /** The project plays the song along, at its tempo and in its key. */
+    /** The project plays the song along, at its tempo and in its key (from home: « Autres choix… », where it goes). */
     val useSong: (StemSet) -> Unit = {},
+    /** Chantier 10 (G16), the home's Remix: « Faire un morceau avec cette chanson », the recommended way at once. */
+    val buildSong: (StemSet) -> Unit = {},
     /**
      * Audit ultra round 1, n° 1: « Découper ce que je veux » on a song's card: the song goes into the
      * project behind the scenes (silent, a store of sounds, when it is not there yet), then its cut screen opens.
@@ -830,8 +834,17 @@ private fun StemCard(
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("cut_song_hint_${set.id}"),
             )
         }
-        if (!inProject) {
-            val use: @Composable () -> Unit = { Text(if (home) tr("Utiliser cette chanson") else tr("Jouer avec le projet")) }
+        if (!inProject && home) {
+            // Chantier 10 (G16, recette tel-15): one big button does the recommended thing; the other ways behind it.
+            Button(onClick = { actions.buildSong(set) }, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("build_${set.id}")) {
+                Icon(Icons.Filled.AutoAwesome, contentDescription = null)
+                Text(" " + tr("Faire un morceau avec cette chanson"))
+            }
+            TextButton(onClick = { actions.useSong(set) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("use_${set.id}")) {
+                Text(tr("Autres choix…"))
+            }
+        } else if (!inProject) {
+            val use: @Composable () -> Unit = { Text(tr("Jouer avec le projet")) }
             if (cut != null) OutlinedButton(onClick = { actions.useSong(set) }, modifier = Modifier.fillMaxWidth().testTag("use_${set.id}")) { use() }
             else Button(onClick = { actions.useSong(set) }, modifier = Modifier.fillMaxWidth().testTag("use_${set.id}")) { use() }
         }

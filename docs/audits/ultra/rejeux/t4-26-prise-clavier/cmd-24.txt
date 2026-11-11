@@ -1,1 +1,1 @@
-touche 294 1002
+touche guide_open_melody

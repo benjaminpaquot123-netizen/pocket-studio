@@ -303,7 +303,6 @@ private fun DemoRow(s: ProjectStarter, index: Int, quick: QuickUi, actions: Proj
  * assistant on it. The family's colour runs down its left edge. While its song is prepared, a
  * wheel says so in place of its description.
  */
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun QuickStyleCard(s: StarterWizard.Style, quick: QuickUi, ask: (String) -> Unit) {
     val preparing = quick.creating == s.id
@@ -333,9 +332,9 @@ private fun QuickStyleCard(s: StarterWizard.Style, quick: QuickUi, ask: (String)
                         maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(end = 8.dp))
                 }
                 // The touch on the card makes the song; the assistant is the second, quieter way.
-                // A flow, not a row: at a large text size the second button drops under the first rather than cutting either.
-                androidx.compose.foundation.layout.FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalArrangement = Arrangement.Center) {
-                  Row(Modifier.align(Alignment.CenterVertically), verticalAlignment = Alignment.CenterVertically) {
+                // Two lines, not one row: neither is ever cut, whatever the language or the text size.
+                Column(Modifier.fillMaxWidth()) {
+                  Row(Modifier.padding(top = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                     val ink = if (busy) Neon.TextSecondary.copy(alpha = 0.5f) else Neon.Cyan
                     Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = ink, modifier = Modifier.size(16.dp))
                     Text(" " + tr("Créer le morceau"), style = MaterialTheme.typography.labelLarge, color = ink, maxLines = 1,

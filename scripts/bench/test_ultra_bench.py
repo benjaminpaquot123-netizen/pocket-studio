@@ -2240,6 +2240,20 @@ def zone_report(d):
     branch("sanstests", good.replace("tests: FooTest\n", ""))
     code, out, asked, moved = merge("sanstests")
     check(code == 7 and not moved and "no line « tests: »" in out, "a zone report without « tests: » is refused (7):\n" + out)
+    # The list of paths: « chemin: <écran> | test: Classe#méthode », each one a @Test of app/src/test in the branch.
+    branch("sanschemin", "# Rapport\n\ntests: FooTest\n")
+    code, out, asked, moved = merge("sanschemin")
+    check(code == 7 and not moved and "no list of paths" in out, "a zone report without its list of paths is refused:\n" + out)
+    branch("malforme", good + "- chemin: Guide — FooTest#works\n")
+    code, out, asked, moved = merge("malforme")
+    check(code == 7 and not moved and "not « chemin: <écran> | test: Classe#méthode »" in out, "a path line in another format is refused:\n" + out)
+    for zone, test, change in (
+            ("sansclasse", "BarTest#works", None), ("sansmethode", "FooTest#gone", None), ("aide", "FooTest#helper", None),
+            ("appareil", "DeviceTest#runs", lambda r: write(os.path.join(r, "app", "src", "androidTest", "java", "t", "DeviceTest.kt"),
+                                                             "class DeviceTest {\n    @Test\n    fun runs() {}\n}\n"))):
+        branch(zone, good + f"- chemin: Guide | test: {test}\n", change)
+        code, out, asked, moved = merge(zone)
+        check(code == 7 and not moved and f"{test} is not a @Test of app/src/test" in out, f"a path whose test {test} is not a test of app/src/test is refused:\n" + out)
     branch("rapportok", good)
     code, out, asked, moved = merge("rapportok")
     check(code == 0 and moved and "--tests FooTest" in asked, "the report's « tests: » are the team's targeted tests:\n" + out + asked)

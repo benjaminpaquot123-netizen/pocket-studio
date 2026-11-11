@@ -193,6 +193,10 @@ team rapnone && review rapnone
 expect "no zone report: refused" 1 "no zone report" oui tour-9 rapnone
 team rapnotests && rapport rapnotests "$(printf '# Rapport\n\n- chemin: Accueil | test: FooTest#works')" && review rapnotests
 expect "a zone report without « tests: »: refused" 1 "no line « tests: »" oui tour-9 rapnotests
+team rapnopath && rapport rapnopath "$(printf '# Rapport\n\ntests: FooTest')" && review rapnopath
+expect "a zone report without its list of paths: refused" 1 "no list of paths" oui tour-9 rapnopath
+team rapbadtest && rapport rapbadtest "$(printf '# Rapport\n\ntests: FooTest\n- chemin: Accueil | test: BarTest#works')" && review rapbadtest
+expect "a path whose test does not exist: refused" 1 "BarTest#works is not a @Test of app/src/test" oui tour-9 rapbadtest
 git checkout -q -b eq/tour-9-decnew fx-int && echo "- 2026-11-11 · du lot decnew" >> docs/DECISIONS.md && git commit -q -am "decnew writes DECISIONS.md" && review decnew
 expect "DECISIONS.md written from batch 2: refused" 1 "docs/decisions/tour-9-decnew.md" oui tour-9 decnew
 git checkout -q -b eq/tour-9-decown fx-int && mkdir -p docs/decisions && echo "- 2026-11-11 · un choix" > docs/decisions/tour-9-decown.md && git add docs/decisions && git commit -q -m "decown's own file" && rapport decown && review decown

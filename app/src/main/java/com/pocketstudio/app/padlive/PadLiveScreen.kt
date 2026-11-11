@@ -1,5 +1,6 @@
 package com.pocketstudio.app.padlive
 
+import kotlin.math.abs
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -597,7 +598,7 @@ private fun SceneEffects(ui: PadLiveUi, actions: PadLiveActions, more: Boolean, 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 HeldEffect(
                     tr("Montée"), riserWords(ui.riserBars), "riser", Modifier.weight(1f),
-                    lit = riserLeft > 0f, progress = riserLeft.takeIf { it > 0f },
+                    lit = riserLeft > 0f, progress = riserLeft.takeIf { it > 0f }, onRelease = true,
                     hold = { if (it) { actions.riser(); riserFrom = System.nanoTime() } },
                 )
                 HeldEffect(tr("Chute"), tr("freinage"), "brake", Modifier.weight(1f), hold = actions.brake)
@@ -606,6 +607,9 @@ private fun SceneEffects(ui: PadLiveUi, actions: PadLiveActions, more: Boolean, 
         }
     }
 }
+
+/** G14: a held effect's first moments, where a glide up or down is the column's scroll, not the effect. */
+private const val GLIDE_MS = 120L
 
 /** The riser's length in words that fit its button on a phone (« 4 mesures »; the B1 « souffle qui monte » was cut). */
 internal fun riserWords(bars: Int): String = com.pocketstudio.model.i18n.trCount(bars, "1 mesure", "%d mesures")
@@ -624,6 +628,8 @@ private fun HeldEffect(
     /** Audit ultra round 1, n° 8: lit as if held (the Montée going on after the finger left), with what is [progress] left (1..0). */
     lit: Boolean = false,
     progress: Float? = null,
+    /** Montée (G14): starts when a touch ends without gliding, never on a glide. */
+    onRelease: Boolean = false,
     hold: (Boolean) -> Unit,
 ) {
     var held by remember { mutableStateOf(false) }
@@ -643,12 +649,38 @@ private fun HeldEffect(
                     val w = size.width.toFloat().coerceAtLeast(1f)
                     fun at(p: androidx.compose.ui.geometry.Offset) = coords?.takeIf { it.isAttached }?.localToWindow(p) ?: p
                     trackNow?.invoke(at(down.position), (down.position.x / w).coerceIn(0f, 1f))
-                    holdNow(true)
+                    // Plan of the audits, step 4, n° 7 (G14, T5-Ed-40, tel-11: a glide lit « Montée »): an effect that is
+                    // not slid (all but Filtre and Roulement) lets a glide scroll the column. [onRelease] (Montée): it
+                    // starts when the finger leaves without gliding; a held one starts at once and lets go if the finger
+                    // glides up or down in its first moments ([GLIDE_MS]), the move left to the column.
+                    val glides = trackNow == null
+                    if (!onRelease) holdNow(true)
+                    var on = !onRelease
+                    var glided = false
                     try {
                         while (true) {
                             val event = awaitPointerEvent()
                             val change = event.changes.firstOrNull { it.id == down.id } ?: break
-                            if (!change.pressed) break
+                            if (!change.pressed) {
+                                if (onRelease && !glided) {
+                                    holdNow(true)
+                                    on = true
+                                }
+                                break
+                            }
+                            if (glides && !glided) {
+                                val d = change.position - down.position
+                                val early = onRelease || change.uptimeMillis - down.uptimeMillis <= GLIDE_MS
+                                if (early && (change.isConsumed || (abs(d.y) > viewConfiguration.touchSlop && abs(d.y) > abs(d.x)))) {
+                                    glided = true
+                                    held = false
+                                    if (on) holdNow(false)
+                                    on = false
+                                }
+                                if (!early) change.consume()
+                                continue
+                            }
+                            if (glided) continue
                             trackNow?.invoke(at(change.position), (change.position.x / w).coerceIn(0f, 1f))
                             change.consume()
                         }
@@ -657,7 +689,7 @@ private fun HeldEffect(
                         // the effect never stays on (fix 2, n° 2).
                         held = false
                         trackNow?.invoke(null, 0.5f)
-                        holdNow(false)
+                        if (on) holdNow(false)
                     }
                 }
             }

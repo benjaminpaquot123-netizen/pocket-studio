@@ -4,6 +4,8 @@
 - `main` = Guide G4, G5 et G6 + son 8 (leads lots B à D, largeur des 37 styles, restes S6/S7), chacun relu à neuf et corrigé ; fusion sans CI de GitHub (« [skip ci] », en pause sur demande de Benjamin), tests faits ici.
 - Consignes de Benjamin (2026-10-27) : un seul APK quand tout est fini ; des nouvelles à chaque fin d'étape ; le Play Store seulement quand il le demande.
 
+- Aide contre les fusions et les tests recalés (2026-11-11, branche `ccr-50fbb648-4hacb8`) : `docs/AIDE-FUSIONS-TESTS.md`, `scripts/bench/pre-vol.sh` et son test `scripts/bench/test_pre_vol.sh`. Écrite pour le chantier de la branche `ccr-80af1a1b-mn0wec` (équipes et portail), à y installer par la commande de la fin de la fiche. Rien d'autre n'a été touché.
+
 ## Prochaine étape exacte
 0. **Plan test APK : « BenStudio Test »** (`docs/PLAN-TEST-APK.md`, version 2 après audit du plan, 2026-11-11) : une appli de test à part, robot intégré, 8 questions pour Benjamin, avant le grand audit. Plan écrit, rien de construit : attendre que Benjamin dise « lance le plan test apk », puis commencer par T0 (essai éclair). Outils Android à réinstaller dans la session (`/opt/android-sdk` : platforms;android-37.0, build-tools;37.0.0, ndk;30.0.16248370, cmake;4.1.2) ; pas d'émulateur possible ici (pas de KVM).
 1. Le grand audit final (`docs/PLAN-AUDIT-FINAL.md`) : une vingtaine d'auditeurs en même temps (utilisateurs, pros du son, experts techniques, forme), synthèse par gravité, correction de tout le grave et le moyen, seconde passe de vérification.

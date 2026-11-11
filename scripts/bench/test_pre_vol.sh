@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+# The pre-flight's own test (scripts/bench/pre-vol.sh): a small repository made here, an integration branch, one team
+# branch per refusal, and what the pre-flight must say of each. Where the portal is there, the same branch is given to
+# the real scripts/bench/fusion-equipes.sh too: both must refuse it. Seconds, no Gradle.
+#   scripts/bench/test_pre_vol.sh
+set -uo pipefail
+src="$(cd "$(dirname "$0")/../.." && pwd)"
+for f in fusion-equipes.sh relecture-verdict.py; do
+  [ -f "$src/scripts/bench/$f" ] || { echo "SKIP: scripts/bench/$f is not in this repository (the portal lives on the audit branch)"; exit 0; }
+done
+t="$(mktemp -d)"
+trap 'rm -rf "$t"' EXIT
+cd "$t" || exit 2
+git init -q -b fx-int .
+git config user.name essai
+git config user.email essai@localhost
+mkdir -p scripts/bench docs/audits/ultra/rejeux/r1
+cp "$src"/scripts/bench/pre-vol.sh "$src"/scripts/bench/relecture-verdict.py "$src"/scripts/bench/fusion-equipes.sh scripts/bench/
+echo oracle > docs/audits/ultra/rejeux/r1/oracle.txt
+echo "# titre" > README.md
+git add -A
+git commit -q -m base
+
+reds=0
+# A team branch with one commit of work and a clean review of it.
+review() { # <zone> [<verdict line>]
+  mkdir -p docs/audits/ultra
+  printf '# Relecture\nRelu : %s\n\n%s\n' "$(git rev-parse HEAD)" "${2:-Verdict : 0 bloquant, 0 grave}" > "docs/audits/ultra/tour-9-$1-relecture.md"
+  git add "docs/audits/ultra/tour-9-$1-relecture.md"
+  git commit -q -m "review of $1"
+}
+team() { # <zone>
+  git checkout -q -b "eq/tour-9-$1" fx-int
+  echo "$1" > "travail-$1.txt"
+  git add "travail-$1.txt"
+  git commit -q -m "work of $1"
+}
+# The pre-flight's exit code and one line it must print; then the real portal must refuse too (when asked).
+expect() { # <label> <exit> <pattern> <portal: oui|non> <args…>
+  local label="$1" want="$2" pattern="$3" portal="$4" out rc=0
+  shift 4
+  git checkout -q fx-int
+  out="$(scripts/bench/pre-vol.sh "$@" 2>&1)" || rc=$?
+  if [ "$rc" -ne "$want" ] || ! printf '%s\n' "$out" | grep -q -- "$pattern"; then
+    reds=$((reds + 1))
+    echo "ROUGE $label: exit $rc (wanted $want), « $pattern » $(printf '%s\n' "$out" | grep -q -- "$pattern" && echo found || echo missing)"
+    printf '%s\n' "$out" | sed 's/^/      /'
+    return
+  fi
+  if [ "$portal" = oui ]; then
+    rc=0
+    scripts/bench/fusion-equipes.sh "$@" > /dev/null 2>&1 || rc=$?
+    if [ "$rc" -eq 0 ]; then reds=$((reds + 1)); echo "ROUGE $label: the pre-flight refuses what the portal accepts"; return; fi
+    git merge --abort 2> /dev/null || true
+  fi
+  echo "vert  $label"
+}
+
+team ok && review ok
+expect "a clean lot is ready" 0 "PRÉ-VOL : PRÊT" non tour-9 ok
+
+team norev
+expect "no review" 1 "pas de relecture neuve" oui tour-9 norev
+expect "before the review, no review is no refusal" 0 "PRÉ-VOL : PRÊT" non --avant-relecture tour-9 norev
+
+team after && review after && echo more >> travail-after.txt && git commit -q -am "after the review"
+expect "code changed after the review" 1 "changé après la relecture" oui tour-9 after
+
+team unrelu && review unrelu && sed -i 's/^Relu : .*/Lu hier/' docs/audits/ultra/tour-9-unrelu-relecture.md && git commit -q -am "no relu line"
+expect "the review names no commit" 1 "ne nomme pas le commit" oui tour-9 unrelu
+
+team verdict && review verdict "Verdict : 0 bloquant, 1 grave"
+expect "a grave left" 1 "relecture refusée" oui tour-9 verdict
+
+team last && review last && echo "Une note après le verdict." >> docs/audits/ultra/tour-9-last-relecture.md && git commit -q -am "a line after the verdict"
+expect "the verdict is not the last line" 1 "relecture refusée" oui tour-9 last
+
+team open && git commit -q --allow-empty -m "nothing" && printf '# Relecture\nRelu : %s\n\n| 1 | grave | un défaut | à faire |\n\nVerdict : 0 bloquant, 0 grave\n' "$(git rev-parse HEAD)" > docs/audits/ultra/tour-9-open-relecture.md \
+  && git add docs/audits/ultra/tour-9-open-relecture.md && git commit -q -m "review with an open grave row"
+expect "a grave row not « corrigé »" 1 "relecture refusée" oui tour-9 open
+
+team link && ln -s /etc/hostname lien && git add lien && git commit -q -m "a symlink" && review link
+expect "a symbolic link" 1 "lien(s) symbolique(s)" oui tour-9 link
+
+team trace && mkdir -p docs/audits/ultra/portail/faux && echo x > docs/audits/ultra/portail/faux/fusion.txt && git add docs/audits/ultra/portail && git commit -q -m "a forged trace" && review trace
+expect "the portal's traces touched" 1 "traces du portail" oui tour-9 trace
+
+team rejeu && git rm -q -r docs/audits/ultra/rejeux/r1 && git commit -q -m "the replay taken out" && review rejeu
+expect "a replay taken out, unnamed" 1 "relecture refusée" oui tour-9 rejeu
+expect "no replay left after the merge" 1 "plus aucun rejeu" non tour-9 rejeu
+
+team z1 && sed -i '1s/.*/# titre de z1/' README.md && git commit -q -am "z1's title" && review z1
+team z2 && sed -i '1s/.*/# titre de z2/' README.md && git commit -q -am "z2's title" && review z2
+expect "each of two lots alone is ready" 0 "PRÉ-VOL : PRÊT" non tour-9 z2
+expect "two lots that collide, given together" 1 "conflit de fusion" non tour-9 z1 z2
+
+expect "a branch that is not there" 1 "n'existe pas" non tour-9 fantome
+
+# Uncommitted work in the integration workshop: the portal refuses to start.
+git checkout -q fx-int && echo sale >> README.md
+expect "the integration workshop is not clean" 1 "changements non commités" oui tour-9 ok
+git checkout -q -- README.md
+
+# The integration's code moves after the teams left: said after the review, refused before it.
+echo "du code" > code.txt && git add code.txt && git commit -q -m "the integration's code moves"
+expect "an older base is said after the review" 0 "ancienne base" non tour-9 ok
+expect "an older base is refused before the review" 1 "ancienne base" non --avant-relecture tour-9 norev
+
+# --main: main is a squash of an older state of this branch (same tree as one of its commits), then a real conflict.
+git checkout -q fx-int
+echo "# titre du lot fusionné" > README.md && git commit -q -am "work that main got as a squash"
+old="$(git rev-parse HEAD)"
+git branch -q -f main "$(git commit-tree "$old^{tree}" -p "$(git rev-list --max-parents=0 HEAD)" -m "squash of the branch so far")"
+echo "# titre d'après" > README.md && git commit -q -am "the branch goes on"
+out="$(scripts/bench/pre-vol.sh --main main 2>&1)"; rc=$?
+if [ "$rc" -eq 1 ] && printf '%s\n' "$out" | grep -q "git merge -s ours main"; then echo "vert  --main: a squashed main brings nothing new"; else reds=$((reds + 1)); echo "ROUGE --main squash: exit $rc"; printf '%s\n' "$out" | sed 's/^/      /'; fi
+before="$(git rev-parse 'HEAD^{tree}')"
+git merge -q -s ours main -m "Record main as merged"
+out="$(scripts/bench/pre-vol.sh --main main 2>&1)"; rc=$?
+if [ "$rc" -eq 0 ] && [ "$before" = "$(git rev-parse 'HEAD^{tree}')" ]; then echo "vert  --main: ready after « merge -s ours », no file changed"; else reds=$((reds + 1)); echo "ROUGE --main after ours: exit $rc"; fi
+git checkout -q main && echo "# titre de main" > README.md && git commit -q -am "main moves on its own" && git checkout -q fx-int
+echo "# encore un titre" > README.md && git commit -q -am "and the branch too"
+out="$(scripts/bench/pre-vol.sh --main main 2>&1)"; rc=$?
+if [ "$rc" -eq 1 ] && printf '%s\n' "$out" | grep -q "fusionner main ici" && ! printf '%s\n' "$out" | grep -q "merge -s ours"; then echo "vert  --main: a real conflict is not papered over"; else reds=$((reds + 1)); echo "ROUGE --main real conflict: exit $rc"; printf '%s\n' "$out" | sed 's/^/      /'; fi
+
+git branch -q -f ailleurs "$(git commit-tree "$(git rev-parse 'HEAD^{tree}')" -m "a history of its own")"
+out="$(scripts/bench/pre-vol.sh --main ailleurs 2>&1)"; rc=$?
+if [ "$rc" -eq 1 ] && printf '%s\n' "$out" | grep -q "aucun ancêtre commun"; then echo "vert  --main: no common ancestor is refused"; else reds=$((reds + 1)); echo "ROUGE --main unrelated: exit $rc"; printf '%s\n' "$out" | sed 's/^/      /'; fi
+
+# --ci: a bench test that needs a git identity is red here as on a new runner, in seconds.
+cat > scripts/bench/test_report.py <<'EOF'
+import os, subprocess, sys, tempfile
+d = tempfile.mkdtemp()
+subprocess.run(["git", "init", "-q", d], check=True)
+r = subprocess.run(["git", "-C", d, "commit", "-q", "--allow-empty", "-m", "x"], capture_output=True, text=True)
+if r.returncode != 0:
+    print("FAIL: a commit made by the test:", r.stderr.strip().splitlines()[-1])
+    sys.exit(1)
+EOF
+git add scripts/bench/test_report.py && git commit -q -m "a bench test that commits"
+out="$(scripts/bench/pre-vol.sh --ci 2>&1)"; rc=$?
+if [ "$rc" -eq 1 ] && printf '%s\n' "$out" | grep -q "runner neuf"; then echo "vert  --ci: a test that needs a git identity is caught"; else reds=$((reds + 1)); echo "ROUGE --ci identity: exit $rc"; printf '%s\n' "$out" | sed 's/^/      /'; fi
+sed -i 's/\["git", "-C", d, "commit"/["git", "-C", d, "-c", "user.name=t", "-c", "user.email=t@localhost", "commit"/' scripts/bench/test_report.py
+git commit -q -am "the test brings its own identity"
+out="$(scripts/bench/pre-vol.sh --ci 2>&1)"; rc=$?
+if [ "$rc" -eq 0 ]; then echo "vert  --ci: ready once the test brings its identity"; else reds=$((reds + 1)); echo "ROUGE --ci fixed: exit $rc"; printf '%s\n' "$out" | sed 's/^/      /'; fi
+echo more >> README.md
+out="$(scripts/bench/pre-vol.sh --ci 2>&1)"; rc=$?
+if [ "$rc" -eq 1 ] && printf '%s\n' "$out" | grep -q "la CI ne les verra pas"; then echo "vert  --ci: uncommitted changes are said"; else reds=$((reds + 1)); echo "ROUGE --ci dirty: exit $rc"; fi
+
+echo
+if [ "$reds" -eq 0 ]; then echo "test_pre_vol : tout est vert"; else echo "test_pre_vol : $reds ROUGE(S)"; exit 1; fi

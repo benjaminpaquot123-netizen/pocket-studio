@@ -1166,7 +1166,10 @@ def replayed_pairs(d):
     git_toy(root, "add", "-A")
     git_toy(root, "commit", "-q", "-m", "start")
     shas = {}
-    for key in ("honest", "stillred", "neverred", "othertest", "wrongred", "nofile"):
+    # Review of the « verdicts » lot (grave): a replay closes only a green of the history written before the rule
+    # (--fin-rejeux, the lot's base): its XML is the team's own word, never replayed by the portal's fresh review, so a
+    # green made after it (« late ») is never closed by a folder of paires-rejouees/, however honest it looks.
+    for key in ("honest", "stillred", "neverred", "othertest", "wrongred", "nofile", "late"):
         name = f"the{key.capitalize()}CounterFollowsTheSong"
         write(os.path.join(tests, f"{key.capitalize()}ProofTest.kt"), f"class {key.capitalize()}ProofTest {{\n  @Test\n  fun {name}() {{}}\n}}\n")
         git_toy(root, "add", "-A")
@@ -1176,6 +1179,7 @@ def replayed_pairs(d):
         git_toy(root, "add", "-A")
         git_toy(root, "commit", "-q", "-m", f"vert: the {key} counter reads the song")
         shas[key] = (red, git_toy(root, "rev-parse", "HEAD").strip(), f"{key.capitalize()}ProofTest", name)
+    history_end = shas["nofile"][1]
 
     def evidence(key, red=None, test=None, red_fails=True, green_passes=True, files=("rouge.xml", "vert.xml")):
         r, g, cls, name = shas[key]
@@ -1193,14 +1197,15 @@ def replayed_pairs(d):
     evidence("othertest", test=(shas["honest"][2], shas["honest"][3]))
     evidence("wrongred", red=shas["honest"][0])
     evidence("nofile", files=("rouge.xml",))
+    evidence("late")
     seal_resume(root, resume)
-    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume],
-                         capture_output=True, text=True).stdout
+    out = subprocess.run([sys.executable, "-I", os.path.join(HERE, "verifie-chantier.py"), "--root", root, "--resume", resume,
+                          "--fin-rejeux", history_end], capture_output=True, text=True).stdout
     short = {k: (git_toy(root, "rev-parse", "--short", v[0]).strip(), git_toy(root, "rev-parse", "--short", v[1]).strip()) for k, v in shas.items()}
     check(short["honest"][0] not in out and short["honest"][1] not in out, "a pair replayed (red on the red, green on the green) is a pair:\n" + out)
-    for key in ("stillred", "neverred", "othertest", "wrongred", "nofile"):
+    for key in ("stillred", "neverred", "othertest", "wrongred", "nofile", "late"):
         check(f"{short[key][0]} « rouge:" in out and f"{short[key][1]} « vert:" in out, f"a replay that does not hold ({key}) pairs nothing:\n" + out)
-    check("chantier : 10 écarts" in out, "ten gaps, nothing else:\n" + out)
+    check("chantier : 12 écarts" in out, "twelve gaps, nothing else:\n" + out)
 
 
 def judge_topic_pairs(d):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Audit « banc crédible » 2, P1: the fresh review's verdict, as fusion-equipes.sh reads it.
 
-  relecture-verdict.py [<replay id taken out of rejeux/> …] [changé:<replay id changed> …] [constat:<green sha> …] < review.md
+  relecture-verdict.py [<replay id taken out of rejeux/> …] [changé:<replay id changed> …] [constat:<green sha>[:<its parent>] …] < review.md
 
 Accepted only when:
   - its LAST non-empty line is « Verdict : 0 bloquant, 0 grave » (« — fusion possible » may follow, nothing else): a
@@ -101,9 +101,18 @@ def refusals(text, removed, changed=(), evidence=()):
     for rid in changed:
         if not re.search(r"^rejeu changé\s*:\s*" + re.escape(rid) + r"\s*:\s*\S", text, re.M):
             out.append(f"replay {rid} changed in rejeux/ without « rejeu changé : {rid} : <raison> » in the review")
-    for sha in evidence:
-        if not re.search(r"^rouge constaté\s*:\s*" + re.escape(sha) + r"\s*:\s*\S", text, re.M):
-            out.append(f"red evidence rouges-constates/{sha} brought without « rouge constaté : {sha} : <ce qui a été rejoué> » in the review")
+    # Third review of the « portail » lot (M9): the line says the red was replayed on the green's parent, by its sha
+    # (« rejoué sur <parent> », not « pas rejoué ») when the portal knows it (« constat:<green>:<parent> »).
+    for item in evidence:
+        sha, _, parent = item.partition(":")
+        replayed = False
+        for m in re.finditer(r"^rouge constaté\s*:\s*" + re.escape(sha) + r"\s*:\s*(.*)$", text, re.M):
+            for r in re.finditer(r"(?<![\w-])(pas\s+)?rejoué\s+sur\s+([0-9a-f]{7,40})\b", m.group(1), re.I):
+                if not r.group(1) and (not parent or parent.startswith(r.group(2).lower())):
+                    replayed = True
+        if not replayed:
+            out.append(f"red evidence rouges-constates/{sha} brought without « rouge constaté : {sha} : rejoué sur "
+                       f"{parent[:8] or '<parent du vert>'} : <ce qui a été vu> » in the review")
     return out
 
 

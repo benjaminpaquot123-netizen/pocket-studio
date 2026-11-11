@@ -64,4 +64,14 @@ class RemixOverrunTest {
         assertEquals(0.0, none.remix.heardEnd(), 0.0)
         assertEquals(0, none.remixSteps())
     }
+
+    /** Fresh review: the last part had the song switched off (or its stems): the parts added let it be heard. */
+    @Test
+    fun theAddedPartsLetTheSongBeHeard() {
+        val last = SongPart(1, bars = 4, muted = setOf(SongPart.REMIX, Remix.stemKey(3), "drums"))
+        val p = overrun(listOf(SongPart(0, bars = 4), last)).withSongLengthenedForRemix()
+        val added = p.song.last()
+        assertTrue("the song heard in the part added: ${added.muted}", added.plays(SongPart.REMIX) && added.plays(Remix.stemKey(3)))
+        assertTrue("the other tracks as in the last part", !added.plays("drums"))
+    }
 }

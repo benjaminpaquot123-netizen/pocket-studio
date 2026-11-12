@@ -1,0 +1,8 @@
+fusion: c54debc0cc3213dbf12ec8bb231c17f928ce8b96
+branche: eq/tour-5-gaucher
+tete: 3d99a6733dc092c8813965959fb8f057ac4ce958
+relecture: docs/audits/ultra/tour-5-gaucher-relecture.md
+relu: ba2cf6c96640405616d8cdb0d30b6b001c4b9342
+filtres: com.pocketstudio.app.ui.ModeStepThumbTest com.pocketstudio.app.nav.RemixBothWaysTest com.pocketstudio.app.nav.ModeChoiceTest com.pocketstudio.app.human.Tour5BloquantsTest com.pocketstudio.app.ui.ModeStepThumbTest com.pocketstudio.app.nav.RemixBothWaysTest com.pocketstudio.app.nav.ModeChoiceTest com.pocketstudio.app.human.Tour5BloquantsTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

@@ -202,7 +202,7 @@
   "Couches": "الطبقات",
   "Coupée": "مكتوم",
   "Effet ajouté : %s": "أُضيف مؤثر: %s",
-  "Effet changé : %1$s → %2$s": "تغيّر المؤثر: %1$s → %2$s",
+  "Effet changé : %1$s → %2$s": "تغيّر المؤثر: %1$s ← %2$s",
   "Effet retiré : %s": "حُذف مؤثر: %s",
   "Effet réglé : %s": "ضُبط مؤثر: %s",
   "Envois : réverbe %1$d %%, écho %2$d %%": "الإرسالات: Reverb %1$d %%، Echo %2$d %%",

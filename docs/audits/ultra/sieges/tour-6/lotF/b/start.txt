@@ -1,0 +1,7 @@
+lang=pl
+device=phone360
+font=100
+mode=pro
+gestes.max=110
+mission=libre
+timeout.minutes=30

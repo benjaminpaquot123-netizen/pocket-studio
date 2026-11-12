@@ -677,7 +677,8 @@ private fun ModeSwitch(
                     .semantics { contentDescription = tr("Vider cette piste dans la partie %s", tracks.scene) },
             ) {
                 Icon(Icons.Filled.DeleteSweep, contentDescription = null, modifier = Modifier.size(18.dp))
-                Text(" " + tr("Vider"))
+                // Tour 5, lot « langues » (German at 200 %: « Le / er / en » down the keyboard's side): one line, smaller, whole.
+                com.pocketstudio.ui.WholeWordsText(" " + tr("Vider"), maxLines = 1, minScale = 0.5f)
             }
         }
     }

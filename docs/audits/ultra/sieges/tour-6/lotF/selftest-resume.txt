@@ -1,0 +1,198 @@
+176 verts, 0 rouges, 0 en quarantaine, 19 sautés
+sauté : BenchAmeneesProfilesTest#drive[premier-morceau lang=it device=tablet8 font=130 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[premier-morceau lang=pl device=phone360 font=100 mode=pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[remix lang=it device=tablet8 font=130 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[remix lang=pl device=phone360 font=100 mode=pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[padlive lang=it device=tablet8 font=130 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[padlive lang=pl device=phone360 font=100 mode=pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAssistantTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchPadLiveStopTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchPlaceAndPadLiveTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchPlayThenTabsTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchRecetteTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchReplayReadableTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchSeatOptionsTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchSelfTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchSeparationWaitTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTour1Test#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTour3Test#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTour4Test#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[premier-morceau lang=it device=tablet8 font=130 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[premier-morceau lang=pl device=phone360 font=100 mode=pro]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[remix lang=it device=tablet8 font=130 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[remix lang=pl device=phone360 font=100 mode=pro]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[padlive lang=it device=tablet8 font=130 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[padlive lang=pl device=phone360 font=100 mode=pro]
+vert : BenchAmeneesTest#remixStartsOnTheRemixPage
+vert : BenchAmeneesTest#aMidImportedPutsItsNotesIn
+vert : BenchAmeneesTest#padLiveLightsStopsAndRecordsAsOnAPhone
+vert : BenchAmeneesTest#firstSongStartsInAnEmptyProjectInSimpleMode
+vert : BenchAmeneesTest#livePadsLightGoOutAndAreHeardAsPadLivesDo
+vert : BenchAmeneesTest#aTappedRhythmIsScored
+vert : BenchAmeneesTest#aTapDuringTheExampleIsNotCounted
+vert : BenchAmeneesTest#aTappedRhythmAtNinetyBpmIsScored
+vert : BenchAmeneesTest#padLiveStartsWithItsPadsReady
+vert : BenchAmeneesTest#aPackFillsThePageShown
+vert : BenchAmeneesTest#aZipImportedOutsideRemixAddsAProject
+vert : BenchAssistantTest#theAssistantsListensPlayAndTheGuidePlaysTheSongFromItsPart
+vert : BenchEngineTest#thePlayHeadMovesWithTheTempo
+vert : BenchEngineTest#theGridsHeadTurnsWithTheDrumsUnderALongMelody
+vert : BenchEngineTest#aKnobMovedWithAutomationRecordWritesAPoint
+vert : BenchEngineTest#aMicTakeLeftRunningIsKeptWhenTheSongEnds
+vert : BenchEngineTest#aThreeMinuteRenderLastsThreeMinutes
+vert : BenchEngineTest#anM4aIsMadeAndShared
+vert : BenchEngineTest#anExportSizeIsSaidToBeTheBenchs
+vert : BenchEngineTest#aWavIsMadeAndShared
+vert : BenchEngineTest#aRenderLastsWhatIsAskedAndSoundsLikeItsProject
+vert : BenchEngineTest#thePlayHeadReadsTheEnginesClock
+vert : BenchEngineTest#exportProfile
+vert : BenchEngineTest#aKnobMovedWhileTheSongPlaysWritesOnTheSongsBar
+vert : BenchPadLiveStopTest#padLivesStopAllIsInSightAndStopsTheTempoToo
+vert : BenchPadLiveTest#aLaunchArmedWaitsForItsLineAndIsReported
+vert : BenchPadLiveTest#aLaunchArmedWhileStoppedComesOnTheOne
+vert : BenchPadLiveTest#aLoopWaitsForItsGridAndATouchWhileItWaitsCancelsIt
+vert : BenchPadLiveTest#aPadTouchedDuringTheCountInStartsOnTheClocksBar
+vert : BenchPadLiveTest#aRowAloneStartsAtOnce
+vert : BenchPadLiveTest#leavingTheSongKeepsALaunchWaitingAndTheDrumsCountFromTheirLaunch
+vert : BenchPadLiveTest#aHitRetouchedSoundsAtOnce
+vert : BenchPadLiveTest#aRowWaitsForTheBarLineAndAgainStopsItsLoops
+vert : BenchPadLiveTest#theTransportsStartPutsThePadsOnItsBeat
+vert : BenchPlaceAndPadLiveTest#padLiveTouchedFromTheWelcomeOpensOnItsPads
+vert : BenchPlaceAndPadLiveTest#padLivesScreenTextNoLongerSaysThePadsStartWithoutTheGrid
+vert : BenchPlaceAndPadLiveTest#aPadHeldThenPosedFromTheLibraryHasTheSound
+vert : BenchPlaceAndPadLiveTest#padLiveOpenedOnAFreshPhoneHasItsPads
+vert : BenchPlaceAndPadLiveTest#padLiveOpenedAfterASongHasItsPads
+vert : BenchPlayThenTabsTest#recordWhileTheSongPlaysThenTabs
+vert : BenchPlayThenTabsTest#theSongOfPlayThenTabsBackAndStop
+vert : BenchPlayThenTabsTest#theBarCounterGoesOnWhileTheSongPlays
+vert : BenchPlayThenTabsTest#theGuidesListenThenATab
+vert : BenchPristineAfterLooseTypeTest#aRuleDeclaredAsATestRuleStillAnswersForItsLeaks
+vert : BenchPristineAfterTest#aBenchTestThatLeavesSomethingIsRedItselfAndPutsItBack
+vert : BenchPristineAfterTest#aBenchTestThatLeavesNothingIsGreen
+vert : BenchPristineRuleTest#aPristineSeatWritesNothing
+vert : BenchPristineRuleTest#aLeakBeforeASeatIsPutBackAndWrittenInItsJournalTheSeatRuns
+vert : BenchPristineRuleTest#aLeakBeforeABenchTestIsRedNamingTheTestBeforeOrOneWithoutTheRule
+vert : BenchPristineRuleTest#onTheBenchOnlyASeatsDriveIsSpared
+vert : BenchRecetteTest#proPartPickedWhilePlayingTakesOver
+vert : BenchRecetteTest#simpleSongCounterFollowsTheEnginePastTheFirstPart
+vert : BenchRecetteTest#simpleSongPlaysToItsEndAndStopsThere
+vert : BenchRecetteTest#theDemoGoesOnUnderTheModeStepUntilAModeIsChosen
+vert : BenchRecetteTest#theDemoStopsWhenTheNewProjectListIsLeft
+vert : BenchReplayReadableTest#aMovedButtonIsSaidInTheVerdict
+vert : BenchSeatOptionsTest#anEnglishSeatReadsTheLibrariesPlainWords
+vert : BenchSeatOptionsTest#aSeatThatDoesNotReadSeesBarsAndNoNames
+vert : BenchSeatOptionsTest#aTagOutOfTheThumbsReachIsTouchedInsideTheReach
+vert : BenchSeatOptionsTest#aProSeatIsInPro
+vert : BenchSeatOptionsTest#aTagCoveredByAnotherElementIsTouchedWhereItShows
+vert : BenchSeatOptionsTest#aTagClippedByItsScrollingParentIsTouchedOnItsShownPart
+vert : BenchSeatOptionsTest#anArabicSeatOnATabletAt130
+vert : BenchSeatOptionsTest#aTagPartlyOffTheScreenIsTouchedOnTheScreen
+vert : BenchSelfTest#aPadLiveLineSaysThePadsLightAsDrawn
+vert : BenchSelfTest#aBenchExceptionKeepsTheScreenErrorsAndTheStalls
+vert : BenchSelfTest#aTestExceptionIsNeverTheAppsCrash
+vert : BenchSelfTest#everyIconOfTheAppHasItsShape
+vert : BenchSelfTest#aBlankFirstScreenWithTheBenchAtRestIsShownAsItIs
+vert : BenchSelfTest#aBlankFirstScreenIsWaitedForOnlyWhenTheBenchIsBusy
+vert : BenchSelfTest#chipsTogglesAndDrawnMarksAreWrittenAsDrawn
+vert : BenchSelfTest#reachTagTouchesAVisibleElementInPlace
+vert : BenchSelfTest#theScreenInTextSaysWhatIsCutNotAnArrowTheAppDoesNotDraw
+vert : BenchSelfTest#theAppsClockStandsStillWhileTheTesterReads
+vert : BenchSelfTest#theScreenInTextWritesWhatIsDrawnNotTalkBacksNames
+vert : BenchSeparationWaitTest#twoWaitsOfThirtySecondsGiveTheSeparatedSong
+vert : BenchSeparationWaitTest#aStuckStandInGivesTheHandBackWithinTwentySeconds
+vert : BenchSeparationWaitTest#aBusyWorkerHoldsTheWaitUntilItsWorkIsOver
+vert : BenchShareTest#twoStemsLeaveAsTwoFiles
+vert : BenchShareTest#theBackGestureStopsItToo
+vert : BenchShareTest#theTutoSongGoesOutAsAWavFromTheSheet
+vert : BenchShareTest#fourStemsLeaveAsFourFiles
+vert : BenchShareTest#aDoubleTouchInFacileMakesOneSongAndOneMenu
+vert : BenchShareTest#theShareMenuSpeaksTheSeatsLanguage
+vert : BenchShareTest#annulerStopsAndClosesAtOnce
+vert : BenchSongClockTest#absoluteStepRestartsAtTheSwap
+vert : BenchSongClockTest#transportStepIsMinusOneDuringTheCountIn
+vert : BenchSongClockTest#aTakeStillCountingInIsNotEndedByStop
+vert : BenchSongClockTest#aSongPlaysOnAndARestartArmedAheadWaitsForItsBar
+vert : BenchSongClockTest#aPartArmedDuringTheCountInWaitsForItsBarAfterIt
+vert : BenchSongClockTest#aTakeWaitsForTheTransportsOwnCountIn
+vert : BenchSongClockTest#theDrumPatternsStepFollowsTheSceneTakingOver
+vert : BenchSongClockTest#aMicTakeEndsWithTheSongsEnd
+vert : BenchSongClockTest#transportStepKeepsItsStepsAcrossATempoChange
+vert : BenchSongClockTest#aTakeArmedIsKeptWhenTheSongEnds
+vert : BenchSongClockTest#aTempoChangeKeepsTheStepsPlayed
+vert : BenchSongClockTest#aSongMarkComesTrueOnItsLineAndPutsTheSongThere
+vert : BenchSongClockTest#aNewArmReplacesTheOneWaitingAndANegativeOneCancelsIt
+vert : BenchSongClockTest#leavingTheSongTakesTheSongPositionAwayAtOnce
+vert : BenchSongClockTest#theSongsEndStopsTheTransportOnItsBarLine
+vert : BenchTour1Test#theLiveMetersRead
+vert : BenchTour1Test#aKeptPerformanceIsHeard
+vert : BenchTour1Test#theMicrophoneHearsAVoice
+vert : BenchTour1Test#theSongGoesOnAfterAnotherGesture
+vert : BenchTour1Test#theVideoIsMade
+vert : BenchTour1Test#theMixTabsExportRenders
+vert : BenchTour1Test#theMicrophoneRecordsFromTheCardAndTheTopDotInPro
+vert : BenchTour1Test#anAudioTrackTakeRecords
+vert : BenchTour1Test#padsPlayedThroughTheEngineAreHeard
+vert : BenchTour1Test#theMicrophoneRecordsFromTheTopDotAndTheCardInSimple
+vert : BenchTour1Test#nothingChangesIgnoresLooksAndLongWork
+vert : BenchTour3Test#padLiveRowsStartAndStopAndStopAllCutsThem
+vert : BenchTour3Test#theSongPlaysFromAPartAndFromItsStart
+vert : BenchTour4Test#howMuchOfTheKeyboardIsShown
+vert : BenchTour4Test#liveStopsReachTheirLaunchLineOnTheBench
+vert : BenchTour4Test#renameAfterTheClearButton
+vert : BenchTour4Test#theClearButtonKeepsTheFieldsFocus
+vert : BenchTour4Test#aMelodyTakeOnTheBenchKeepsItsKeys
+vert : Tour3AppProofTest#theSongPlaysFromAPartOrATakeWithAnEngine
+vert : Tour3AppProofTest#padLiveRowsAndStopAllGoToTheEngine
+vert : Tour3AppProofTest#withoutAnEngineNothingPlays
+vert : Tour4AppProofTest#aMelodyTakeAfterTheBarLineGoesToThePartShown
+vert : Tour4AppProofTest#aStopEndsTheTakeAtOnce
+vert : Tour4AppProofTest#aMelodyTakeWhileAnotherPartIsShownShowsItsNotes
+vert : Tour4AppProofTest#aMelodyTakeWhileTheMusicPlaysKeepsItsKeys
+vert : Tour4AppProofTest#liveStopAllAndATracksStopGoToTheEngineAndTheGridFollows
+vert : Tour4AppProofTest#aMelodyTakeDuringTheSongGoesToThePartHeard
+vert : Tour4AppProofTest#aFirstMelodyTakeGoesToMaMelodieNotToTheTrackSelectedBefore
+vert : Tour4AppProofTest#aMelodyTakeFromStoppedKeepsItsKeys
+vert : Tour4AppProofTest#aMelodyTakeAcrossTheBarLineKeepsItsThreeNotes
+vert : Tour4AppProofTest#withoutAnEngineTheKeysOfATakeAreNotKept
+vert : Tour5AppProof2Test#undoingALiveTakeGivesBackTheSongItReplaced
+vert : Tour5AppProof2Test#undoingALiveTakeArmedWhileStoppedGivesBackTheSong
+vert : Tour5AppProof2Test#shareSaysWhenTheRemixRunsPastTheSongEnd
+vert : Tour5AppProof2Test#undoingALiveTakeGivesBackTheSongItWentAfter
+vert : Tour5AppProof3Test#myExportsSaysTheFilesOwnSize
+vert : Tour5AppProof3Test#theClearButtonEmptiesTheFieldAndKeepsItsCursor
+vert : Tour5AppProof3Test#aPartPickedWhileTheSongPlaysTakesOverOnTheNextBar
+vert : Tour5AppProof3Test#theSongPlaysToItsEndAndItsCounterFollowsTheEngine
+vert : Tour5AppProof3Test#liveStopAllStopsTheSong
+vert : Tour5AppProof3Test#theKeysOfATakeLeftRunningAreThereWhenTheProjectOpensAgain
+vert : Tour5AppProof4Test#theSongStartedInItsMiddleCountsOn
+vert : Tour5AppProof4Test#theChallengesDotsNameTheirPad
+vert : Tour5AppProof4Test#theStreamingTargetIsMeasuredOnTheWholeExportedFile
+vert : Tour5AppProof4Test#theSimpleShareReportSaysTheLevelOnce
+vert : Tour5AppProof4Test#theSongsColumnMutedInTheLiveMutesItsChannel
+vert : Tour5AppProof4Test#aFourBarMelodyInAOneBarSceneLengthensEachPartOnIt
+vert : Tour5AppProof4Test#myExportsGivesEachFileItsTime
+vert : Tour5AppProofTest#myFilesListsAProjectZipSavedFromMyProjects
+vert : Tour5AppProofTest#shareFollowsTheLengthChosenInMix
+vert : Tour5AppProofTest#aScreenComposedAndClosedLeavesComposesDispatcherFree
+vert : Tour5AppProofTest#noChangedWarningRightAfterAMixExport
+vert : Tour5AppProofTest#noChangedWarningRightAfterSharing
+vert : Tour5AppProofTest#myExportsListsTheProjectZipJustSent
+vert : HiddenDefectsGuardTest#theFilterSweepJustAddedIsStillNamedInThePicker
+vert : HiddenDefectsGuardTest#showTheSettingBringsTheReverbSendIntoView
+vert : ChallengeControllerTest#tapsAtTheChallengesBeatAfterAMoiGiveThreeStars
+vert : ChallengeControllerTest#touchesCloserThanTheClapAreAllCountedAndSent
+vert : ChallengeControllerTest#aTouchOnTheBeatAfterTheExampleCounts
+vert : ChallengeControllerTest#fiveHundredMsTapsAreScoredOnTheProjectsTempo
+vert : ChallengeControllerTest#touchesWhileTheExampleIsHeardAreNotCounted
+vert : ChallengeControllerTest#touchesTooCloseAreSaidTooFast
+vert : ChallengeControllerTest#aHumanHandOnASoundingPadStillGetsThreeStars
+vert : ChallengeControllerTest#aTouchFarFromItsPlaceIsNotCountedANearOneIs
+vert : Tour3NameFieldIdleTest#aNameFieldInTheRenameWindowTakesTheNameTyped
+vert : Tour3NameFieldIdleTest#aSelectAllFieldTouchedThenTypedInRests
+vert : Tour3NameFieldIdleTest#aNameFieldTouchedThenTypedInRests
+vert : Tour3RenameEffectsIdleTest#aFlowEmittedOnAnIoThreadIsWrittenOnTheMainThread
+vert : Tour3RenameIdleTest#aProjectRenamedInSimpleModeKeepsItsNewName
+vert : Tour3StudioRenameIdleTest#aProjectRenamedInSimpleModeKeepsItsNewName
+machine : 6 Go disque, 14 Go mémoire, 0 démon(s), 0 orphelin
+code testé : ee51e0f060c69793e191717ba4a72236abf1105d

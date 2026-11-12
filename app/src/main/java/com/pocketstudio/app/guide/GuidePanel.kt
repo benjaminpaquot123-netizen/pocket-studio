@@ -399,7 +399,7 @@ fun GuideCard(
             ) {
                 if (step != null) {
                     Row(Modifier.weight(1f).testTag("guide_next_step"), verticalAlignment = Alignment.Top) {
-                        Text("→", color = Neon.Acid, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.width(26.dp))
+                        Text(com.pocketstudio.model.i18n.sequenceArrow(), color = Neon.Acid, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.width(26.dp))
                         Text(step, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = Neon.TextPrimary)
                     }
                 } else {

@@ -7,6 +7,8 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeLeft
 import com.pocketstudio.app.nav.AppHarness
 import com.pocketstudio.model.Note
 import com.pocketstudio.model.NoteClip
@@ -169,5 +171,27 @@ class TutoGrilleTest {
 
     @Test
     fun simpleChordsLeftCountTheTouches() = chordsCountTouches(TutoLevel.Facile, simple = true)
+
+    /** T11: a step that begins opens the roll on the bar of its first dotted note, not where the roll was left. */
+    private fun theStepOpensOnItsBar(level: TutoLevel, simple: Boolean) {
+        openNotesStep("bass_do", level, simple)
+        // The roll left on a later bar (as the step before leaves it: the bass's bar 4/8, then the chords).
+        repeat(3) { compose.onNodeWithTag("roll_view").performTouchInput { swipeLeft() } }
+        settle()
+        assertTrue("moved away: « ${text("tuto_roll_where")} »", !text("tuto_roll_where").contains("mesure 1/"))
+        val first = leftNotes().first()
+        // The tutorial's next step begins (its notes the same here: the step is what changes).
+        compose.runOnIdle { TutoHints.step = (TutoHints.step ?: "") + "_next" }
+        settle()
+        val bar = first.start / NoteClip.TICKS_PER_STEP / 16 + 1
+        val s = seen()
+        assertTrue("the first note (bar $bar) in sight; the line says « ${text("tuto_roll_where")} »", first in s.inTime && text("tuto_roll_where").contains("mesure $bar/"))
+    }
+
+    @Test
+    fun proANotesStepOpensOnTheBarOfItsFirstNote() = theStepOpensOnItsBar(TutoLevel.Pro, simple = false)
+
+    @Test
+    fun simpleANotesStepOpensOnTheBarOfItsFirstNote() = theStepOpensOnItsBar(TutoLevel.Facile, simple = true)
 
 }

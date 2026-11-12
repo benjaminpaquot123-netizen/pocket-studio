@@ -1,0 +1,63 @@
+package com.pocketstudio.app.rhythm
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import com.pocketstudio.model.Project
+import com.pocketstudio.ui.PocketStudioTheme
+import org.junit.Assert.assertTrue
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+
+/**
+ * Tour 6, lot 1 « tuto-grille »: the step grid and the pads on the seats' small phone (360 dp, text at 130 %).
+ */
+@RunWith(RobolectricTestRunner::class)
+@Config(qualifiers = "w360dp-h780dp-port-hdpi", fontScale = 1.3f)
+class RhythmGrilleTest {
+    @get:Rule
+    val compose = createComposeRule()
+
+    private fun has(tag: String) = compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
+
+    /** Two bars of drums (32 steps), a starter's sounds. */
+    private fun twoBars(): Project = RhythmViewModel.starterProject().let { p -> p.copy(drums = p.drums.copy(steps = 32)) }.sanitized()
+
+    /**
+     * T11 (seat B b screen 35, « Takt 2/2 » at the clap): a tutorial step that begins shows the bar of its first dotted
+     * cell, even when the step before left the page on a bar that has some of the new step's cells.
+     */
+    @Test
+    fun aStepThatBeginsShowsTheBarOfItsFirstCell() {
+        val tuto = com.pocketstudio.app.tuto.TutoHints
+        try {
+            tuto.active = true
+            tuto.step = "kick_do"
+            tuto.cells = 0 to setOf(21, 29)
+            compose.setContent {
+                PocketStudioTheme { RhythmScreen(twoBars(), TransportUi(), { LiveUi() }, canUndo = false, canRedo = false, actions = RhythmActions()) }
+            }
+            compose.waitForIdle()
+            assertTrue("the kick's cells: bar 2", has("step_21"))
+            compose.runOnIdle {
+                tuto.step = "clap_do"
+                tuto.cells = 0 to setOf(5, 21)
+            }
+            compose.waitForIdle()
+            assertTrue("the next step's first cell (bar 1) in sight", has("step_5"))
+        } finally {
+            tuto.active = false
+            tuto.step = null
+            tuto.cells = null
+        }
+    }
+}

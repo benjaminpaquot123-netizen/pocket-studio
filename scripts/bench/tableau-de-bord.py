@@ -184,15 +184,29 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises, caches=None):
     back_minor = [c for c in back if c["gravity"] > 2]
     # Banc fiable 2.3: one verdict per seat and promise (a seat citing it twice counts once; « contredite » counts « non »);
     # « checked » = seen by ≥ 2 distinct seats; the 120 of the catalogue are counted by their ids (P001-P120) only.
+    # Round 6: a seat's later report (its « -suite ») that decides a promise it had « pas vue » replaces the « pas vue ».
     by_promise = {}
     for row in promises:
         seat, pid, text, screen, kept_said = row[:5]
-        verdict = "non" if (row[6:7] or [""])[0] == "contredite" else kept_said
-        by_promise.setdefault(pid or text, {}).setdefault(seat, verdict)
+        said = re.sub(r"\W+$", "", kept_said.strip().lower())
+        verdict = "non" if (row[6:7] or [""])[0] == "contredite" else ("pas vue" if said.startswith("pas") else said)
+        by_seat = by_promise.setdefault(pid or text, {})
+        if by_seat.get(seat, "pas vue") == "pas vue":
+            by_seat[seat] = verdict
     contradicted = sum(1 for row in promises if (row[6:7] or [""])[0] == "contredite")
     checked = {p: list(k.values()) for p, k in by_promise.items() if len(k) >= 2}
     kept = [p for p, k in checked.items() if all(x == "oui" for x in k)]
     seen_once = len([p for p in by_promise if re.fullmatch(r"P\d{3}", p)])
+    # Round 6 (« promesses tenues 0/0 »): each seat had its own ids, none checked by two seats. Every promise line counts
+    # too (template v2, « tenue: oui|non|pas vue »; an older line without id by its text): kept when every seat that saw
+    # it says « oui », not kept when one says « non », « pas vue » when no seat saw it.
+    every = {"oui": 0, "non": 0, "pas vue": 0}
+    for k in by_promise.values():
+        decided = [v for v in k.values() if v in ("oui", "non")]
+        if decided:
+            every["oui" if all(v == "oui" for v in decided) else "non"] += 1
+        elif "pas vue" in k.values():
+            every["pas vue"] += 1
     missions, succeeded = 0, 0
     for root, _, files in os.walk(tour_dir):
         if "mesures.json" in files:
@@ -224,8 +238,9 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises, caches=None):
          yes(None if doubt_unjudged else len(bench) <= 2 and bench_proven)),
         ("C", "Revient / banc contredit (≥ moyen ; mineurs) ; candidats à lire", f"{len(back_medium)} ; {len(back_minor)} ; {len(maybe)}", "0 ; ≤ 2 ; 0",
          yes(None if maybe else not back_medium and len(back_minor) <= 2)),
-        ("D", "Promesses tenues (vérifiées par ≥ 2 sièges) ; vues au moins une fois",
-         f"{len(kept)}/{len(checked)} ; {seen_once}/{total_promises}" + (f" ; {contradicted} contredite(s)" if contradicted else ""), "≥ 90 % ; ≥ 80 %",
+        ("D", "Promesses tenues (vérifiées par ≥ 2 sièges) ; vues au moins une fois ; toutes les lignes « promesse: »",
+         f"{len(kept)}/{len(checked)} ; {seen_once}/{total_promises} ; {every['oui']} oui, {every['non']} non, {every['pas vue']} pas vue"
+         + (f" ; {contradicted} contredite(s)" if contradicted else ""), "≥ 90 % ; ≥ 80 %",
          # No promise with a catalogue id (round 5 used its own ids): not measurable, « ? », never a « non » that looks measured.
          yes(None if not seen_once else bool(checked) and len(kept) >= 0.9 * len(checked) and seen_once >= 0.8 * total_promises)),
         ("E", "Missions réussies (oracle mesures.json)", f"{succeeded}/{missions}", "≥ 90 %", yes(None if not missions else succeeded >= 0.9 * missions)),
@@ -246,7 +261,8 @@ def round_numbers(tour_dir, base, verdicts_path, total_promises, caches=None):
     curve = {"tour": name, "sieges": len(seats), "fiches": defects, "fiches_par_siege": round(defects / max(1, len(seats)), 1),
              "echelle": scale, "graves_declares_par_siege": round(declared_grave / max(1, len(seats)), 2),
              "graves_confirmes_par_siege": round(confirmed_grave / max(1, len(seats)), 2), "grappes": len(clusters),
-             "revient": len(back), "incidents_banc": len(incidents), "promesses_tenues": f"{len(kept)}/{len(checked)}"}
+             "revient": len(back), "incidents_banc": len(incidents), "promesses_tenues": f"{every['oui']}/{every['oui'] + every['non']}",
+             "promesses_pas_vues": every["pas vue"]}
     return name, rows, curve
 
 

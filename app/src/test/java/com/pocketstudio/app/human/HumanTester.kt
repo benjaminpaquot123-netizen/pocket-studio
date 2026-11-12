@@ -236,6 +236,7 @@ abstract class HumanTester(private val seat: String) {
         var gestures = 0
         var same = 0
         var lastPrint: String? = null
+        var lastSong: Int? = null
         var afterWait = false
         val source = o.replayOf
         // PLAN-RESTE 7.5 (rejeu lisible): the seat the replay was made from (its screens, its finger's journal), and what
@@ -271,16 +272,20 @@ abstract class HumanTester(private val seat: String) {
             val heardNow = heard()
             File(dir, "sound-$n.txt").let { if (!it.isFile) it.writeText(heardNow) }
             val print = fingerprint(File(dir, "screen-$n.txt"), File(dir, "sound-$n.txt"))
+            val song = songDigest()
             // « Rien ne change » (the screens after « attends » or « regarde » neither count nor reset it). Round 1 (lot banc):
             // nor while a long work shows its progress (a separation, an export, a pack being made): the screen waits
             // for it, the tester is not going round in circles; the count starts again once it is over.
             if (longWorkShown()) {
                 same = 0
             } else if (!afterWait) {
-                same = if (print == lastPrint) same + 1 else 1
+                // Tour 6, E1 (seat D b #70): notes touched into the piano roll are drawn, not written in the screen's text
+                // (lot « réalisme » R1): the song that changed at the gesture is a change too, whatever the screen's text.
+                same = if (print == lastPrint && song == lastSong) same + 1 else 1
                 if (same == 3) notes += "Rien ne change à l'écran depuis 3 gestes."
             }
             lastPrint = print
+            lastSong = song
             val sound = publish(dir, n, notes)
             journal.appendText("#$n ROUTE ${snap.route} | MODE ${if (SettingsStore.state.value.simpleMode) "simple" else "pro"} | EMPREINTE $print | ${inside()}\n")
             journal.appendText("#$n SON ${sound.lineSequence().first()}\n")
@@ -480,6 +485,9 @@ abstract class HumanTester(private val seat: String) {
      */
     private fun fingerprint(text: File, sound: File): String =
         ScreenText.fingerprintOf(text.readLines().drop(1) + sound.takeIf { it.isFile }?.readLines().orEmpty().filterNot { it.startsWith("Rien ne change") })
+
+    /** The open project as it would be saved, digested (null: none open): what a gesture changed of the song. */
+    private fun songDigest(): Int? = runCatching { vm()?.project?.value?.let { com.pocketstudio.model.ProjectJson.encode(it).hashCode() } }.getOrNull()
 
     /** The stalls the watchdog saw since the last turn, into the journal. */
     private fun stalls(journal: File, n: Int) {
@@ -694,13 +702,18 @@ abstract class HumanTester(private val seat: String) {
         if (NativeEngine.sink !== engine) return null
         val pads = v.project.value.live
         val states = IntArray(NativeEngine.LIVE_PADS).also(NativeEngine::clipStatesNow)
-        val hits = engine.clips.hitsPlayed().distinct()
+        // Tour 6, E12 (seat C b #58): each pad with its number of hits (« tape … 4 » on one pad was heard « une fois »).
+        val played = engine.clips.hitsPlayed().groupingBy { it }.eachCount()
+        val hits = played.keys.toList()
+        fun times(pad: Int) = played[pad]?.let { if (it == 1) "une fois" else "$it fois" }.orEmpty()
         val loops = states.indices.filter { states[it] == 2 && pads.at(it)?.oneShot == false }
         val waiting = states.indices.filter { states[it] == 1 }
         fun names(list: List<Int>) = list.sorted().joinToString(", ") { "${it + 1}" }
         return listOfNotNull(
             hits.takeIf { it.isNotEmpty() }?.let { h ->
-                if (h.size == 1) "le pad live ${h[0] + 1} (« ${pads.at(h[0])?.name ?: "?"} ») a joué une fois" else "les pads live ${names(h)} ont joué une fois"
+                if (h.size == 1) "le pad live ${h[0] + 1} (« ${pads.at(h[0])?.name ?: "?"} ») a joué ${times(h[0])}"
+                else if (h.all { played[it] == 1 }) "les pads live ${names(h)} ont joué une fois"
+                else "les pads live ont joué : " + h.sorted().joinToString(", ") { "le ${it + 1} ${times(it)}" }
             },
             loops.takeIf { it.isNotEmpty() }?.let { if (it.size == 1) "le pad live ${it[0] + 1} joue en boucle" else "les pads live ${names(it)} jouent en boucle" },
             waiting.takeIf { it.isNotEmpty() }?.let {

@@ -28,6 +28,9 @@ GOALS = {
     "synthe": "son (un son de synthé choisi), regle (un réglage changé et entendu), garde (le son gardé sous un nom)",
 }
 
+# Round 6, lot banc7 (point 6): the gestures a mission needs at least. A whole tutorial (15 chapters, « Bravo ») took the
+# seats of round 6 about 16 gestures a chapter: 120 ran out at chapter 7/15 (D a, H a). Refused below, never cut in silence.
+MIN_GESTES = {"tuto-facile": 250, "tuto-pro": 250}
 
 def catalogue(path=CATALOGUE):
     out = {}
@@ -80,6 +83,9 @@ def main(argv):
             start.append(f"mode={mode}")
         if options and options != "-":
             start += [o for o in options.split(";") if o]
+        need = MIN_GESTES.get(mission, 0)
+        if not gestes.isdigit() or int(gestes) < need:
+            raise SystemExit(f"{lot}{seat}: mission {mission} with {gestes} gestures, {need} at least (a whole tutorial: sieges-proposes.tsv)")
         start += [f"gestes.max={gestes}", f"mission={mission}", "timeout.minutes=30"]
         with open(os.path.join(d, "start.txt"), "w", encoding="utf-8") as f:
             f.write("\n".join(start) + "\n")

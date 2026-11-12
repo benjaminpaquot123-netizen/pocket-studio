@@ -1478,3 +1478,7 @@
 - 2026-11-12 · lot « plan6 » (tour-5) : 19 décision(s) dans `docs/decisions/tour-5-plan6.md`
 - 2026-11-12 · lot « juge7 » (tour-5) : 6 décision(s) dans `docs/decisions/tour-5-juge7.md`
 - 2026-11-12 · lot « ci2 » (tour-5) : 4 décision(s) dans `docs/decisions/tour-5-ci2.md`
+- 2026-11-12 · lot « gaucher » (tour-5) : 4 décision(s) dans `docs/decisions/tour-5-gaucher.md`
+- 2026-11-12 · lot « langues » (tour-5) : 8 décision(s) dans `docs/decisions/tour-5-langues.md`
+- 2026-11-12 · lot « kick » (tour-5) : 5 décision(s) dans `docs/decisions/tour-5-kick.md`
+- 2026-11-12 · lot « banc7 » (tour-6) : 8 décision(s) dans `docs/decisions/tour-6-banc7.md`

@@ -1,0 +1,8 @@
+fusion: a85ea0cf80bdfdda83fd72e5d356e20c9cb3a746
+branche: eq/tour-5-ci2
+tete: d80bfa3a8bbcddbe9f9dd060e37b4abcd671c586
+relecture: docs/audits/ultra/tour-5-ci2-relecture.md
+relu: dfd23e2c37ac17c5c8ce36f66de04b39b51a396a
+filtres: com.pocketstudio.app.human.BenchNetworkEndTest com.pocketstudio.app.human.Zone3JourneysTest com.pocketstudio.app.human.BenchPristineAfterTest com.pocketstudio.app.human.BenchPristineRuleTest com.pocketstudio.app.human.BenchNetworkEndTest com.pocketstudio.app.human.Zone3JourneysTest com.pocketstudio.app.human.BenchPristineAfterTest com.pocketstudio.app.human.BenchPristineRuleTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu

@@ -178,6 +178,15 @@ if [ "$rc" -eq 0 ]; then echo "vert  --ci: ready once the test brings its identi
 echo more >> README.md
 out="$(scripts/bench/pre-vol.sh --ci 2>&1)"; rc=$?
 if [ "$rc" -eq 1 ] && printf '%s\n' "$out" | grep -q "la CI ne les verra pas"; then echo "vert  --ci: uncommitted changes are said"; else reds=$((reds + 1)); echo "ROUGE --ci dirty: exit $rc"; fi
+git checkout -q -- README.md
+# Banc7b (signalé par la discussion principale): a linked third-party folder (« T » in git status) and the portal's kept
+# failures (docs/audits/ultra/rejeux/_echecs/) are no uncommitted work for --ci either, as for « tour-N <zone> ».
+mkdir -p third/lib docs/audits/ultra/rejeux/_echecs/x && echo code > third/lib/a.c && echo vu > docs/audits/ultra/rejeux/_echecs/x/rejeu.txt
+git add third docs/audits/ultra/rejeux/_echecs && git commit -q -m "a vendored file and a kept failure"
+rm third/lib/a.c && ln -s /etc/hostname third/lib/a.c && echo encore >> docs/audits/ultra/rejeux/_echecs/x/rejeu.txt
+out="$(scripts/bench/pre-vol.sh --ci 2>&1)"; rc=$?
+if ! printf '%s\n' "$out" | grep -q "la CI ne les verra pas"; then echo "vert  --ci: a linked folder and the kept failures are no uncommitted work"; else reds=$((reds + 1)); echo "ROUGE --ci links and _echecs: exit $rc"; printf '%s\n' "$out" | sed 's/^/      /'; fi
+rm third/lib/a.c && git checkout -q -- third docs/audits/ultra/rejeux/_echecs
 
 # Point 2 and 5 of the bench's base: a lot writes its decisions in docs/decisions/<tour>-<zone>.md, never in
 # docs/DECISIONS.md; a rule added during batch 1 (« from_paquet 2 ») is only said, then refused from batch 2.

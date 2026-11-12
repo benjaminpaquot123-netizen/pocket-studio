@@ -1,1 +1,1 @@
-touche 322 708
+touche wizard_style_choose_techno

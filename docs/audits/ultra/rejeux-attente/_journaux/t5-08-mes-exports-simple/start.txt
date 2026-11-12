@@ -1,0 +1,9 @@
+lang=fr
+device=phone
+font=100
+gestes.max=120
+mission=exports
+rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-08-mes-exports-simple
+rejeu.origine=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/sieges/tour-5/lotC/d
+rejeu.n=51
+rejeu.attendu=Mes exports

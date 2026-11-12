@@ -1,15 +1,15 @@
 {
- "Chercher un son (caisse, conga, sirène…)": "ابحث عن صوت (snare، conga، صفارة…)",
- "Pad Live a 4 pages de 16 pads, A à D : touche une lettre pour changer de page. « Pack » remplit la page affichée avec les sons d'un style ; « Annuler » la remet comme avant. L'étoile « Défi » lance un défi.": "في Pad المباشر أربع صفحات من A إلى D، في كل منها 16 Pad: المس حرفًا لتغيير الصفحة. «الحزمة» تملأ الصفحة المعروضة بأصوات أسلوب واحد، و«إلغاء» يعيدها كما كانت. نجمة «تحدٍّ» تبدأ تحديًا.",
+ "Chercher un son (caisse, conga, sirène…)": "ابحث عن صوت (سنير، كونغا، صفارة…)",
+ "Pad Live a 4 pages de 16 pads, A à D : touche une lettre pour changer de page. « Pack » remplit la page affichée avec les sons d'un style ; « Annuler » la remet comme avant. L'étoile « Défi » lance un défi.": "في Pad المباشر أربع صفحات من A إلى D، في كل منها 16 باد: المس حرفًا لتغيير الصفحة. «الحزمة» تملأ الصفحة المعروضة بأصوات أسلوب واحد، و«إلغاء» يعيدها كما كانت. نجمة «تحدٍّ» تبدأ تحديًا.",
  "Chaque ligne est une brique (A, B, C…), chaque colonne une piste. Touche une case pour la lancer, la lettre pour lancer toute la ligne, ■ pour arrêter.": "كل صف كتلة (A، B، C…) وكل عمود مسار. المس خانة لإطلاقها، والحرف لإطلاق الصف كله، و■ للإيقاف.",
  "La colonne Remix joue un passage de la chanson : appui long sur une de ses cases pour le choisir.": "عمود ريمكس يعزف مقطعًا من الأغنية: اضغط مطولًا على إحدى خاناته لاختياره.",
  "Un réglage tout prêt (Sous l'eau, Lo-Fi Tape, Grande cathédrale…) : il règle d'un coup les boutons Couleur, Saleté, Mouvement et Espace, et certaines ajoutent aussi des effets à la liste.": "إعداد جاهز (تحت الماء، Lo-Fi Tape، كاتدرائية ضخمة…): يضبط مقابض اللون والخشونة والحركة والفضاء دفعة واحدة، وبعضها يضيف أيضًا مؤثرات إلى القائمة.",
- "Place : touche un coup, puis règle le curseur « Place du coup » juste en dessous pour l'envoyer à gauche ou à droite (en plus de la place du pad).": "Pan: اضغط على ضربة، ثم اضبط منزلق «Pan الضربة» أسفلها مباشرة لإرسالها يسارًا أو يمينًا (فوق Pan الـPad).",
+ "Place : touche un coup, puis règle le curseur « Place du coup » juste en dessous pour l'envoyer à gauche ou à droite (en plus de la place du pad).": "موضع: اضغط على ضربة، ثم اضبط منزلق «موضع الضربة» أسفلها مباشرة لإرسالها يسارًا أو يمينًا (فوق موضع الباد).",
  "Hauteur : touche un coup, puis règle le curseur « Hauteur du coup » juste en dessous pour le monter ou le descendre (en demi-tons).": "الطبقة: اضغط على ضربة، ثم اضبط منزلق «طبقة الضربة» أسفلها مباشرة لرفعها أو خفضها (بأنصاف الدرجات).",
- "Une case de la grille : un seizième de mesure. Allumer un pas fait sonner le son à ce moment-là. Coups : allumer ou éteindre. Roulements : plusieurs coups rapides dans la case. Place : à gauche ou à droite. Hauteur (sons importés) : plus aigu ou plus grave. Force : plus fort ou plus doux.": "مربع من الشبكة: جزء من ستة عشر من المازورة. تفعيل خطوة يعزف الصوت في تلك اللحظة. الضربات: تشغيل أو إيقاف. Rolls: عدة ضربات سريعة في المربع. Pan: يسار أو يمين. الطبقة (الأصوات المستوردة): أعلى أو أخفض. القوة: أقوى أو أهدأ.",
- "Une case de la grille : un seizième de mesure. Touche une case pour y mettre un coup, touche-la encore pour l'enlever ; glisse le doigt pour en mettre plusieurs. Appui long sur un coup : sa force et ses roulements.": "مربع من الشبكة: جزء من ستة عشر من المازورة. المس مربعًا لتضع فيه ضربة، والمسه مرة أخرى لإزالتها؛ مرّر إصبعك لتضع عدة ضربات. اضغط مطولًا على ضربة: قوتها وRolls.",
+ "Une case de la grille : un seizième de mesure. Allumer un pas fait sonner le son à ce moment-là. Coups : allumer ou éteindre. Roulements : plusieurs coups rapides dans la case. Place : à gauche ou à droite. Hauteur (sons importés) : plus aigu ou plus grave. Force : plus fort ou plus doux.": "مربع من الشبكة: جزء من ستة عشر من المازورة. تفعيل خطوة يعزف الصوت في تلك اللحظة. الضربات: تشغيل أو إيقاف. رولات: عدة ضربات سريعة في المربع. موضع: يسار أو يمين. الطبقة (الأصوات المستوردة): أعلى أو أخفض. القوة: أقوى أو أهدأ.",
+ "Une case de la grille : un seizième de mesure. Touche une case pour y mettre un coup, touche-la encore pour l'enlever ; glisse le doigt pour en mettre plusieurs. Appui long sur un coup : sa force et ses roulements.": "مربع من الشبكة: جزء من ستة عشر من المازورة. المس مربعًا لتضع فيه ضربة، والمسه مرة أخرى لإزالتها؛ مرّر إصبعك لتضع عدة ضربات. اضغط مطولًا على ضربة: قوتها ورولات.",
  "Ce chapitre n'est pas fini : il reste l'étape %d. Touche « Chapitres » pour y revenir.": "هذا الفصل لم ينتهِ: بقيت الخطوة %d. المس «الفصول» للعودة إليها.",
- "pad %s": "Pad %s",
+ "pad %s": "باد %s",
  "%s : à régler ici": "%s: اضبطه هنا",
  "%s : ensuite": "%s: بعد ذلك",
  "Encore : %s.": "ما زال ناقصًا: %s.",
@@ -20,6 +20,6 @@
  "Partie « %s » créée : tout le Groove y joue.": "تم إنشاء الجزء «%s»: يعزف فيه الغروف كله.",
  "Partie « %1$s » créée (copie du Groove) : sans %2$s.": "تم إنشاء الجزء «%1$s» (نسخة من الغروف): بدون %2$s.",
  "Sa basse est à toi d'écrire : les notes en pointillé.": "الباص عليك أن تكتبه: النوتات المنقطة.",
- "Sa caisse claire accélère mesure après mesure, et son dernier temps se tait.": "الـSnare فيه يتسارع مازورة بعد مازورة، وتصمت ضربته الأخيرة.",
- "Son pad « %s » accélère mesure après mesure, et son dernier temps se tait.": "الـPad «%s» فيه يتسارع مازورة بعد مازورة، وتصمت ضربته الأخيرة."
+ "Sa caisse claire accélère mesure après mesure, et son dernier temps se tait.": "السنير فيه يتسارع مازورة بعد مازورة، وتصمت ضربته الأخيرة.",
+ "Son pad « %s » accélère mesure après mesure, et son dernier temps se tait.": "الباد «%s» فيه يتسارع مازورة بعد مازورة، وتصمت ضربته الأخيرة."
 }

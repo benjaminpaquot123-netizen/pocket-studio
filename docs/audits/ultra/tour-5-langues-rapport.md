@@ -11,7 +11,7 @@ Tests du module `project-model` (le portail ne rejoue que l'appli : à lancer à
 
 | Promesse | Constat du tour 5 | Fait | Preuve (rouge → vert) |
 |---|---|---|---|
-| t5-Aa-4 (hindi) | « SNARE », « Kick », « Octave », « Crash », « Solo » en lettres latines en Simple | glossaire par langue appliqué en Mode simple (`mots_simples.json`) | `SimpleWordsNonLatinTest` (3 989 textes rouges → 0) ; `LanguagesScanTest` (contrôle LATIN sur les écrans du Simple) |
+| t5-Aa-4 (hindi) | « SNARE », « Kick », « Octave », « Crash », « Solo » en lettres latines en Simple | glossaire par langue appliqué en Mode simple (`mots_simples.json`) : les ~50 mots du métier listés (pads, parties, sons, effets courants) | `SimpleWordsNonLatinTest` : ces mots, dans tous les textes des catalogues (3 989 textes rouges → 0) ; `LanguagesScanTest` : aucun mot latin sur les 5 écrans du Simple vus en arabe, hindi, chinois, hors « Lead » (seul nom tapé du projet de test) et noms de fonctions (Acid 303, Remix, Live, Pad Live). **Limite** : d'autres mots latins restent dans les catalogues (≈ 2 000 textes arabes, 2 260 hindi, 1 400 chinois, surtout Pro, tutos et mots rares : relu par le relecteur) ; seuls les mots listés sont garantis. |
 | t5-Bd-1 (arabe) | « Sub bass », « Loop », « Pads », « Kick », « Snare », « Mix », « Bridge », « Groove », « باص music » | même glossaire (arabe, avec l'article « الـ » fondu) ; « باص تناظري تناظري » ne se répète plus | idem ; `SoundTileNameOnceTest` |
 | t5-Fc-ecran-1 (japonais) | « ミックス », « フィル »… | glossaire japonais et coréen pour les restes en lettres latines (Drop, Ride, swing…) ; les mots en katakana restent (mots courants en japonais) | `SimpleWordsNonLatinTest` |
 | t5-Bd-2 (arabe) | flèches → dans la phrase, liste avec « , », grille de l'assistant à l'envers | « ← » et « ، » dans les phrases arabes ; la grille de l'assistant de gauche à droite comme l'onglet Rythme | `RtlPunctuationTest`, `WizardGridDirectionTest` |
@@ -28,11 +28,16 @@ Autres défauts de langue ouverts, traités :
 ## Le contrôle global : `LanguagesScanTest`
 11 écrans (premier lancement, accueil Simple et Pro, les onglets du Simple, ⋮, Structure, Sons, Live, Plus) × 5 langues × police 100 % et 200 % = 110 cas. Le Simple sur un petit téléphone (360 dp), le Pro à 200 % sur tablette debout (comme le siège F b). Chaque cas lit ce que l'écran dessine : mots coupés, lignes perdues, « … », textes l'un sur l'autre (`LayoutScan`), et en Simple, en arabe, hindi et chinois, tout mot anglais (hors noms de fonctions de l'appli et noms tapés par l'utilisateur du projet de test).
 Premier passage : 75 cas rouges sur 110 (241 coupes, 89 mots latins). Dernier : 110 verts, avec une liste `OPEN` d'acceptations écran par écran (chacune regardée, écrite dans le test et dans `docs/REVIEW.md`) :
-- Simple à 200 % sur petit téléphone : la ligne unique de la barre du Guide (« · Ajoute une mélodie » se termine par « … », le texte entier est à une touche), le compteur « mesure 1/3 » trop large, « Vider » et « Octave 3 » du clavier, l'en-tête « PAS : GROSSE CAISSE 1 · INTRO », « Händeklatschen » (allemand), « Simple » coupé sur l'accueil Simple (français) ;
+- Simple à 200 % sur petit téléphone : la ligne unique de la barre du Guide (« · Ajoute une mélodie » se termine par « … », le texte entier est à une touche), le compteur « mesure 1/3 » trop large, « Octave 3 » du clavier (et « مسح » en « … » en arabe), l'en-tête « PAS : GROSSE CAISSE 1 · INTRO », « Händeklatschen » (allemand), « Simple » coupé sur l'accueil Simple (français) ;
 - Pro à 200 % sur tablette : la puce « ⟳ Boucler », les en-têtes de la Structure, l'onglet Effets de Sons, et toute la grille du Live (un chantier à part).
 
-## Captures
-Voir la section « Captures regardées » ci-dessous (complétée après `verifyRoborazziDebug`).
+## Captures regardées
+`verifyRoborazziDebug` sur tous les tests de captures : 68 captures changées, regardées (images de comparaison), toutes dues au lot :
+- barre du pouce du Mode simple : la place de ↷ gardée, ↶ un peu décalé (voulu, t5-Bd-3) ; ses mots entiers et plus petits au lieu de « Annul… », « Ongeda… » (130 % néerlandais, Pro) ;
+- bande de lecture plus haute en arabe et en hindi (+40 %) ; flèche du Guide « ← » en arabe ;
+- Live : « Lancer à » passe de « … » à « L… » dans une case très étroite (pas mieux réglé ici) ;
+- Fais-moi un morceau : « Machine à cordes », « Essaim », « Nappe d'accords » sans leur ligne répétée.
+Les 5 captures instables ne sont pas réenregistrées (`remix_stem_edit_menu` remise telle quelle). Images du balayage (5 langues, 100 et 200 %) : `app/build/langues-captures/` (jamais commitées), regardées pour l'arabe, le hindi, l'allemand et le chinois ; « Leeren » cassé sur trois lignes à 200 % y a été vu puis réglé (`05a0d767`).
 
 ## Chemins
 chemin: Mode simple en arabe, hindi, chinois (mots du métier) et tous les écrans à 100 et 200 % | test: LanguagesScanTest#screenReadsWhole

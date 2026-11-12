@@ -242,7 +242,7 @@
       "steps": [
         {
           "id": "lead_hear",
-          "text": "Écoute le riff avec la basse.",
+          "text": "Écoute le riff de l'exemple, avec sa basse : c'est ce que tu vas écrire.",
           "check": "listen",
           "listen": "parts:bass,lead"
         },

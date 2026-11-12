@@ -181,7 +181,7 @@
       "steps": [
         {
           "id": "bass_hear",
-          "text": "Écoute la basse avec le kick : elle se glisse entre les coups.",
+          "text": "Écoute la basse de l'exemple avec le kick : elle se glisse entre les coups.",
           "check": "listen",
           "listen": "parts:kick,bass"
         },
@@ -254,7 +254,7 @@
       "steps": [
         {
           "id": "lead_hear",
-          "text": "Écoute le riff avec la basse.",
+          "text": "Écoute le riff de l'exemple, avec sa basse : c'est ce que tu vas écrire.",
           "check": "listen",
           "listen": "parts:bass,lead"
         },

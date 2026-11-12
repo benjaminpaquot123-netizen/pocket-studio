@@ -146,7 +146,7 @@
       "steps": [
         {
           "id": "bass_hear",
-          "text": "Écoute la basse avec la batterie.",
+          "text": "Écoute la basse de l'exemple avec la batterie.",
           "check": "listen",
           "listen": "parts:kick,clap,open_hat,bass"
         },
@@ -195,7 +195,7 @@
       "steps": [
         {
           "id": "pad_hear",
-          "text": "Écoute le piano seul : il ne joue jamais sur le 1er temps, il tombe entre les coups de kick et sautille.",
+          "text": "Écoute le piano de l'exemple, seul : il ne joue jamais sur le 1er temps, il tombe entre les coups de kick et sautille.",
           "check": "listen",
           "listen": "parts:pad"
         },

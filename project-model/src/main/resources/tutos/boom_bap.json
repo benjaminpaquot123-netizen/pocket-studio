@@ -139,7 +139,7 @@
       "steps": [
         {
           "id": "bass_hear",
-          "text": "Écoute la basse avec la batterie.",
+          "text": "Écoute la basse de l'exemple avec la batterie.",
           "check": "listen",
           "listen": "parts:kick,snare,hat,bass"
         },

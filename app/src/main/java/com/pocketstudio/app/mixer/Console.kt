@@ -39,6 +39,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -228,7 +229,9 @@ internal fun VerticalFader(
                 progressBarRangeInfo = ProgressBarRangeInfo(value, 0f..1f)
                 setProgress { v -> change(v.coerceIn(0f, 1f)); true }
             }
-            .testTag(tag),
+            .testTag(tag)
+            // Its meter redraws it at each frame: in a layer of its own, the console around it is not recorded again.
+            .graphicsLayer(),
     ) {
         travel[0] = size.height.coerceAtLeast(1f)
         val trackX = size.width * 0.42f

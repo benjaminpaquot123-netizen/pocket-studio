@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -254,7 +255,9 @@ fun LevelMeter(
     val warn = Neon.Red.copy(alpha = 0.18f)
     val bar = rememberLevelBar(zones, dissolve = 20.dp)
     val peak = rememberPeakHold(level)
-    Canvas(modifier = modifier.fillMaxWidth().height(thickness)) {
+    // A layer of its own (tour 5 « mixwake »): its level and falling peak redraw it alone, at each frame, without the
+    // screen around it recorded again.
+    Canvas(modifier = modifier.fillMaxWidth().height(thickness).graphicsLayer()) {
         val radius = CornerRadius(minOf(size.height / 2f, 2.dp.toPx()))
         drawRoundRect(track, cornerRadius = radius)
         if (warnZone) {

@@ -3470,7 +3470,7 @@ def verdict_without_state(d):
         check(f"mission={kept}" in out and "état du siège absent" in out and "lu dans l'état du siège" in out,
               f"{mission}: no etat/, the committed verdict « {kept} » is kept and said so:\n" + out)
         out = run(os.path.join(HERE, "seat-metrics.py"), seat)
-        check(f"mission={kept}" in out and out.count("état du siège absent") == 2, f"{mission}: a second re-run keeps it too, the note not doubled:\n" + out)
+        check(f"mission={kept}" in out and out.count("état du siège absent") == 1, f"{mission}: a second re-run keeps it too, the note not doubled:\n" + out)
     # Another mission asked by hand: the committed verdict is not that mission's, nothing to keep.
     out = run(os.path.join(HERE, "seat-metrics.py"), os.path.join(d, "simple"), "--mission", "voix")
     check("mission=inconnu" in out and "état du siège absent" in out, "no state and no verdict of that mission: unknown:\n" + out)
@@ -3480,7 +3480,16 @@ def verdict_without_state(d):
     write(os.path.join(seat, "journal.txt"), JOURNAL_B)
     out = run(os.path.join(HERE, "seat-metrics.py"), seat)
     check("mission=inconnu" in out and "état du siège absent" in out, "no state, nothing committed: unknown:\n" + out)
+    # libre proven by the journal alone (a sound heard, a file shared, 3 screens, ended by the tester): it stands.
+    write(os.path.join(seat, "start.txt"), "mission=libre\n")
+    write(os.path.join(seat, "journal.txt"), JOURNAL_B.replace("#2 FIN : fin", "#2 > touche 2 2\n#2 PARTAGE boucle.m4a\n"
+                                                               "#3 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 3333 | project=p-2 no tuto\n#3 > touche 3 3\n"
+                                                               "#4 ROUTE padlive | MODE pro | EMPREINTE 4444 | project=p-2 no tuto\n#4 FIN : fin"))
+    write(os.path.join(seat, "sound-2.txt"), "Son : la musique du projet joue en boucle.")
+    out = run(os.path.join(HERE, "seat-metrics.py"), seat)
+    check("mission=reussie" in out and "partagé : boucle.m4a" in out and "prouvé sans l'état" in out, "a success the journal proves stands:\n" + out)
     # padlive reads the journal only: computed as before, state or not.
+    os.remove(os.path.join(seat, "sound-2.txt"))
     write(os.path.join(seat, "start.txt"), "mission=padlive\n")
     out = run(os.path.join(HERE, "seat-metrics.py"), seat)
     check("mission=non" in out and "aucun son" in out, "padlive needs no state:\n" + out)

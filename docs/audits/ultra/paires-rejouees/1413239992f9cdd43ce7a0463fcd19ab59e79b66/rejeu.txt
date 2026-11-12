@@ -1,0 +1,4 @@
+rouge: d7abd35b5bcba81f0060937d628d357508b47a7f
+test: ClipHoldTest#aSingleShortClipShowsInTheLimiterLine
+rejoué : 2026-11-12, lot « juge6 », worktree jetable détaché au rouge puis au vert, scripts/bench/gradle-file.sh de ce commit, :app:testDebugUnitTest --tests *ClipHoldTest (rc=1 639s ; rc=0 436s)
+aussi : ClipHoldTest#aSingleShortClipShowsInTheWordsAndTheTipAgrees rouge sur le rouge, vert sur le vert. Le vert 14132399 change aussi ClipHoldTest (43 lignes).

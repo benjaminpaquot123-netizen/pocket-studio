@@ -1,0 +1,4 @@
+rouge: 5c6322e8ef006b9dd499ad5302e80f1891a3fd9f
+test: ChoixDeStyleTest#rouge - a swallowed Choisir ce style is touched again
+test au vert: ChoixDeStyleTest#vert - a swallowed Choisir ce style is touched again
+rejoué : 2026-11-12, lot « juge6 », worktree jetable détaché au rouge puis au vert, scripts/bench/gradle-file.sh de ce commit, :app:testDebugUnitTest --tests *ChoixDeStyleTest (rc=1 256s ; rc=0 231s)

@@ -10533,7 +10533,14 @@ class RhythmViewModel(app: Application) : AndroidViewModel(app) {
         session.commitQuietEdits(before, chordDepth)
         val p = project.value
         val english = com.pocketstudio.app.settings.SettingsStore.state.value.englishNotes
-        val names = tried?.progression?.let { pr -> com.pocketstudio.model.ChordTrack.degreesOf(p, pr).joinToString(" ") { com.pocketstudio.model.ChordTrack.name(p, it, english) } }
+        // Lot 6, U14 (seat F a, screen 30): the chords the song got, not the whole progression: parts shorter than it
+        // only take its first chords (two 1-bar parts on Do Sol La m Fa: Do).
+        val placed = com.pocketstudio.model.ChordTrack.songScenes(p).flatMap { com.pocketstudio.model.ChordTrack.chordsOf(p, it) }.toSet()
+        val names = tried?.progression?.let { pr ->
+            val degrees = com.pocketstudio.model.ChordTrack.degreesOf(p, pr)
+            (if (degrees.all { it in placed }) degrees else degrees.filter { it in placed }.distinct()).takeIf { it.isNotEmpty() }
+                ?.joinToString(" ") { com.pocketstudio.model.ChordTrack.name(p, it, english) }
+        }
         _done.value = if (names != null) tr("Fait : accords du morceau %s", names) else tr("Fait : accords du morceau changés")
         AppLog.add("Accords du morceau : ${tried?.progression ?: tried?.chords}")
     }

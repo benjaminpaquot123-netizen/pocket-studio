@@ -274,6 +274,8 @@ def main():
         empty_cases(d)
     with tempfile.TemporaryDirectory() as d:
         verdict_without_state(d)
+    with tempfile.TemporaryDirectory() as d:
+        promises_of_one_seat(d)
     print("ultra bench scripts: OK")
 
 
@@ -3498,6 +3500,37 @@ def verdict_without_state(d):
     write(os.path.join(seat, "etat", "resume.json"), json.dumps({"projects": [], "shared": [], "prefs": {"simpleMode": False}}))
     out = run(os.path.join(HERE, "seat-metrics.py"), seat)
     check("mission=non" in out and "état du siège absent" not in out, "the state there is read:\n" + out)
+
+
+def promises_of_one_seat(d):
+    """Round 6 (lecture-recurrents § 7): each seat had its own promise ids (t6-Aa-1…), each checked by one seat, and the
+    dashboard said « promesses tenues 0/0 ». The template v2 lines (« promesse: id=… | tenue: oui|non|pas vue ») are
+    counted: kept / decided, and the ones not seen; an older line without id still counts; a seat's later report (its
+    « -suite ») that decides a promise first « pas vue » replaces the « pas vue »."""
+    tour = os.path.join(d, "tour-9")
+    write(os.path.join(tour, "lotA", "a", "rapport.md"),
+          "siege: a | profil: p | lang: fr | device: phone | font: 100 | mode: simple\n"
+          "mission: libre | buts: -\n"
+          "promesse: id=t9-Aa-1 | texte: Le pad joue | ecran: 3 | tenue: oui | pourquoi: il joue\n"
+          "promesse: id=t9-Aa-2 | texte: La partie s'affiche | ecran: 4 | tenue: non | pourquoi: écran vide\n"
+          "promesse: id=t9-Aa-3 | texte: Le tuto va au Bravo | ecran: 9 | tenue: pas vue | pourquoi: budget épuisé\n")
+    write(os.path.join(tour, "lotA", "a-suite", "rapport.md"),
+          "siege: a | profil: p | lang: fr | device: phone | font: 100 | mode: simple\n"
+          "promesse: id=t9-Aa-3 | texte: Le tuto va au Bravo | ecran: 200 | tenue: oui | pourquoi: Bravo atteint\n")
+    write(os.path.join(tour, "lotA", "b", "rapport.md"),
+          "siege: b | profil: p | lang: de | device: phone | font: 100 | mode: pro\n"
+          "promesse: id=t9-Ab-1 | texte: Export | ecran: 5 | tenue: oui | pourquoi: fichier là\n"
+          "promesse: id=t9-Ab-2 | texte: Swing | ecran: 6 | tenue: pas vue | pourquoi: pas atteint\n"
+          "promesse: Le son part au premier toucher | ecran: 2 | tenue: oui\n")
+    base = os.path.join(d, "base.tsv")
+    write(base, "cle\tetat\tvu\tnote\n")
+    verdicts = os.path.join(d, "verdicts.tsv")
+    write(verdicts, "tour\titem\tcle\tverdict\tpreuve_appli\tgarde_banc\ttelephone\tcommit\n")
+    board = run(os.path.join(HERE, "tableau-de-bord.py"), tour, "--base", base, "--verdicts", verdicts)
+    row = next((l for l in board.splitlines() if l.startswith("| D |")), "")
+    check("4 oui, 1 non, 1 pas vue" in row, "D counts every promise line, one seat each (oui / non / pas vue):\n" + board)
+    curve = next((l for l in board.splitlines() if l.startswith("| tour-9 |")), "")
+    check("| 4/5 |" in curve and "0/0" not in curve, "the curve's promises kept: 4 of the 5 decided, never « 0/0 »:\n" + board)
 
 
 if __name__ == "__main__":

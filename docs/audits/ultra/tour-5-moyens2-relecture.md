@@ -1,5 +1,5 @@
 # Relecture du lot « moyens2 » (tour 5), par un relecteur neuf
-Relu : 57e6a67da810cbdcc6a8780de398901a46478c49
+Relu : a6f718b545834de3eefc105299f92d76f1dab9d0
 
 Cible : `git diff fx-int..fc56b596` après fusion de l'intégration (3b4235db) dans la branche : `TopBar.kt` (pastille `FolderStatus`), `RhythmViewModel.kt` (une ligne dans `startExport`), `ui-components` (`WholeWords.kt`, `FitText.kt`, `largestFitting`), trois classes de test, six captures `scale130/`, le rapport et les décisions. La fusion de l'intégration n'a touché aucun fichier du lot (banc et docs seulement), aucun conflit.
 
@@ -49,6 +49,21 @@ Le temps du gel après correctif (seul le nombre de mises en page est prouvé : 
 ## Delta (relu 57e6a67d : l'intégration a bougé pendant la relecture)
 - L'intégration a reçu le lot « gaucher » (c54debc0 : `AppRoot.kt`, `ModeChoice.kt`, six captures `mode_step`, deux classes de test). Fusionnée dans la branche (57e6a67d), sans conflit ; aucun fichier du lot moyens2 n'a changé (`git diff fc56b596 57e6a67d` sur les fichiers du lot : vide, hors cette relecture).
 - `ModeChoice.kt` se sert de `WholeWordsAutoSize` (donc de `largestFitting`) : rejoué pour cela, sur 57e6a67d, `:app:verifyRoborazziDebug` avec les filtres de la ligne « tests: » plus `*ModeStepThumbTest` : vert, 59 tests, 0 échec, 7 sautés ; les captures `scale130/` (dont `fr_nav_mode_step` et `nl_nav_mode_step` de gaucher) sont celles que le code fusionné dessine.
+- Les constats ne changent pas.
+
+## Delta 2 (relu a6f718b5 : fusion de l'intégration c40b834e, lots « langues » et « kick »)
+- Résolution : six captures `scale130/` en conflit, les deux côtés les ayant réenregistrées (`fr_nav_simple_song`, `fr_nav_simple_rhythm`, `fr_nav_simple_keys`, `fr_nav_simple_send`, `fr_nav_simple_more`, `fr_nav_help_labels_simple`). Aucune des deux versions n'a été gardée : les six ont été réenregistrées depuis le code fusionné (`scripts/bench/gradle-file.sh :app:recordRoborazziDebug --tests '*NavScale130ScreenshotTest'`). Les dix-sept autres captures `fr_nav_*` de la classe sont sorties identiques à celles de l'intégration ; `git status` vide après l'enregistrement, rien d'autre n'a bougé.
+- `TopBar.kt` fusionné par git seul, relu : la pastille `FolderStatus` (moyens2, rangée du dossier) et le plafond de taille du mot sous ▶ (`playWord`, lot « langues ») sont dans deux fonctions distinctes, les deux comportements sont là. Aucun autre fichier du lot touché par l'intégration (`git diff fx-int a6f718b5` : les six captures et les fichiers du lot, rien de plus).
+- Comparaison pixel à pixel (Pillow, hors dépôt) de chaque capture réenregistrée avec les deux côtés : contre l'intégration, seule change une case de 62 × 62 px au coin bas droit du dossier (la pastille) ; contre l'ancienne capture du lot, seule change la bande de la barre du pouce (« Annuler », ▶ « le morceau », « 120 Tempo », « Plus »). Donc les deux lots, et rien d'autre.
+- Captures regardées en entier, une par une :
+  - `fr_nav_simple_rhythm` : coche verte au coin du dossier, entière, sans toucher « Simple » ; barre du pouce de l'intégration (« Annuler » à gauche, la place de « Rétablir » gardée vide, ▶ « le morceau », « 120 Tempo », « Plus »), mots entiers ; les seize pads et « Kit : Classique » comme avant.
+  - `fr_nav_simple_send` : même barre du haut avec la coche ; « Fini ? Partage ton morceau », le nom, « M4A · pour partager », « WAV · qualité max », « Partager », « Mes fichiers » entiers ; même barre du pouce, onglet « Partager » allumé.
+  - `fr_nav_simple_song` : coche sur le dossier ; « MES PISTES » et ses cinq pistes (« Changer le son » sur deux lignes, comme des deux côtés avant la fusion) ; même barre du pouce, onglet « Mon morceau » allumé.
+  - `fr_nav_simple_keys` : coche sur le dossier ; les trois pastilles de piste, « Enregistrer ma mélodie », le clavier ; même barre du pouce, onglet « Clavier » allumé.
+  - `fr_nav_simple_more` : coche sur le dossier ; « Retour · Plus » et ses tuiles entières ; même barre du pouce.
+  - `fr_nav_help_labels_simple` : l'étiquette « Mes projets » de l'aide couvre le dossier, la coche dépasse dessous comme avant la fusion ; les étiquettes « Parties et pistes » et « Volumes » sont posées sur la barre du pouce de l'intégration, comme dans sa propre capture. Les étiquettes se posent sur l'écran, c'est leur dessin ; rien de neuf coupé.
+- Rejoué sur a6f718b5 : les filtres de la ligne « tests: » sous `:app:testDebugUnitTest` : vert, 56 tests, 0 échec, 7 sautés (les mêmes comptes par classe qu'avant) ; `:app:verifyRoborazziDebug --tests '*NavScale130ScreenshotTest'` : vert, 30 tests, 0 échec, 7 sautés.
+- Non rejoué : la mutation des trois correctifs (leur code n'a pas changé depuis 57e6a67d) et les tests du moteur (lot « kick », hors de ce lot).
 - Les constats ne changent pas.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

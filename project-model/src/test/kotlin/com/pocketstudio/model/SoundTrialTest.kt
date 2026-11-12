@@ -87,7 +87,9 @@ class SoundTrialTest {
         assertEquals("Accords future bass", jump.pad)
         assertEquals("Supersaw", jump.lead)
         assertEquals("Basse growl", jump.bass)
-        assertEquals("Pluck future", StarterWizard.style("techno")!!.melody.pad)
+        // Techno keeps its square pluck: the future pluck measured darker on its pad (−40 dB over 10 kHz against −39 for the
+        // pluck, docs/audits/ultra/tour-5-sons-essai-rapport.md); the OTT is what changes there.
+        assertEquals(recipe("techno").melody.pad, StarterWizard.style("techno")!!.melody.pad)
         // Each sound named is one of the library (the assistant would fall back to another one otherwise).
         for (id in TRIAL_STYLES) {
             val m = StarterWizard.style(id)!!.melody

@@ -1,43 +1,70 @@
-# Relecture neuve du siège son, tour 6
-Relu : 86095814adc0c20c4a553eaa4f878407a7891148
+# Relecture neuve du siège son, tour 6 (deuxième passage)
+Relu : 6e77ecac6e0280d1d6fd5e054c70b1e749163d89
 
-Relecteur neuf (je n'ai rien écrit). Relu : `rapport-son.md`, `par-style.tsv`, `kick-par-partie.tsv`, `cibles-genres.md`, `docs/decisions/tour-6-son.md`, `scripts/son/son6.py`, `son6_kick.py`, `tableau_son6.py`, et les données brutes `build/son6/` (report.md, json/, json-kick/, son6.tsv, kick.tsv). Version jugée `1585bb46` : c'est bien celle du `report.md` du banc.
+J'ai relu le delta `86095814..6e77ecac` : `rapport-son.md`, `par-style.tsv`, `kick-par-partie.tsv`, `docs/decisions/tour-6-son.md`, `scripts/son/son6.py` et `tableau_son6.py`. Je l'ai comparé aux données régénérées : `build/son6/son6.tsv` et `kick.tsv` (23 h 28), `build/son6/json-kick/`, `build/son6/report.md`, `build/son6-live/report.md` et `build/son6/cmds/`. Le premier passage, à `86095814`, est dans l'historique git de ce fichier.
 
 ## Ce que j'ai recalculé
 
-- **Tableaux reproduits** : `tableau_son6.py build/son6` redonne `par-style.tsv` à l'octet près ; `build/son6/kick.tsv` = `kick-par-partie.tsv`.
-- **Coup de kick = `ps_measure --punch`** : `son6_kick.py` reprend la même enveloppe (RMS 5 ms chaque ms, somme mono), la même détection (×4 sur le plus bas des 30 ms d'avant, ≥ 5 % du plus fort, 80 ms d'écart) et le même « rise » (somme des moyennes 40 ms contre 100 ms finissant 20 ms avant). Comparé aux 37 `json-kick/*.json` du banc : **122 parties sur 122 identiques au centième, nombre de coups compris** (le rapport dit « vérifié sur drum and bass et house » : c'est en fait vrai partout).
-- **Sonie (pondération K)** : coefficients BS.1770 à 48 kHz exacts (étage plateau et RLB), blocs 400 ms pas 100 ms, portes −70 et −10 LU, somme des deux canaux. `lufs_i_mesure` contre le `lufs_i` du banc (libebur128) : écart max 0,01 LU sur 37.
-- **Filtres téléphone** : |H|² d'un Butterworth passe-haut ordre 4 = (f/fc)⁸/(1+(f/fc)⁸) et passe-bas ordre 2 = 1/(1+(f/fc)⁴) : justes. Filtrage en phase nulle (FFT) : sans effet sur la sonie, effet négligeable sur le coup (fenêtre « avant » finie 20 ms avant le coup).
-- **Chiffres du rapport vérifiés (tous justes sauf mention en § constats)** : médianes coup de kick 3,87 / 2,35 / 1,30 dB ; 7 styles sous 3 dB pleine bande, 25 sous 3 dB et 14 sous 2 dB au téléphone, 25 sous 2 dB pire cas, 0 sous 2 dB pleine bande ; kick qui perd 9,98 dB (−12,19 à −5,14), 14,01 pire cas ; morceau 3,31 / 4,39 dB ; kick contre morceau −1,39 / −8,20 / −10,66 LU ; crête −1,20 à −1,16 dBTP ; corrélation < 120 Hz 0,996 à 1,000 ; perte mono −0,60 (pire −1,47) ; bas-médium au téléphone −3,03 dB et bande la plus forte pour 31 styles sur 37 ; basses : brillance −43,1 (−86,7 à −18,6), centroïde 138 Hz, platitude −61,1 ; leads : platitude −35,2, largeur −2,1, écart du centroïde 0,49 octave ; pente −4,75 ; part sous 250 Hz house 81 %, techno 74 %, hard techno 50 % ; repères 77,9 / 87,7 / 88,2 % de la source [2] ; table M1 (hard techno 2,4, dubstep 2,1, house 1,2, dnb 0,7, trance 0,2) ; 7 cibles estimées (riddim 5,2 … amapiano 1,5) ; M2 : les 13 styles du banc ; M3, M4 et B6 (7 sur 37, 0,66 à 71,18) conformes au `report.md` ; Montées « légères » de deep house, Detroit, disco et minimal confirmées dans le code (`StyleRecipes.kt`, `lightBuild = true`) ; table des pires et les 5 styles à écouter : chaque valeur citée est juste.
-- **Rien de binaire commité** : `git show --stat HEAD~3..HEAD` ne contient que .md, .tsv et .py ; `git ls-files` ne montre aucun .wav/.m4a/.flac/.mp3 (seuls des .ogg anciens de l'appli, `app/src/main/assets/party/`, hors siège).
+- **Tableaux reproduits** : `tableau_son6.py build/son6` redonne `par-style.tsv` à l'octet près. `build/son6/kick.tsv` est identique à `kick-par-partie.tsv`.
+- **Coup de kick contre le banc** : en pleine bande, les 122 parties restent identiques à `ps_measure --punch` (`json-kick/*.json`), nombre de coups compris.
+- **Filtres téléphone dans le code** : passe-haut d'ordre 4 à 300 Hz et passe-bas d'ordre 2 à 10 kHz ; pire cas à 500 Hz et 8 kHz. C'est la proposition de `cibles-genres.md` § 7. L'ancien `kick_lift` n'existe plus : `son6.tsv` n'a plus aucune colonne `coup_*`.
+- **Écoute en direct** : `build/son6-live/report.md` donne bien 8 styles sur 8 sans alerte. D'après `cmds/*.pscmd`, les 150 s jouées atteignent le premier Drop ou Refrain de chacun des 8 (le Drop de trance arrive à 111 s, celui de techno à 116 s).
+- **26 chiffres du rapport refaits sur les nouvelles données, tous justes :**
+  - Coup de kick, médianes : 3,87 / 1,83 / 0,96 dB.
+  - Styles sous 3 dB : 7 en pleine bande, 28 au téléphone, 26 sur le pire cas. Sous 2 dB : aucun en pleine bande, 23 au téléphone, 24 sur le pire cas.
+  - Le kick seul perd 12,24 dB au téléphone (de 6,25 à 14,66) et 14,83 sur le pire cas. Le morceau entier perd 3,92 et 4,58.
+  - Kick contre morceau : −1,39 / −9,83 / −11,62 LU.
+  - Bas-médium au téléphone : −2,88 dB, la bande la plus forte en médiane. La basse seule perd 9,68 dB au téléphone.
+  - Table des 10 plus faibles : 10 premiers au téléphone, dans l'ordre, chaque valeur juste.
+  - Les 9 styles qui tiennent au-dessus de 3 dB, avec leurs valeurs ; la riddim est la meilleure (6,58).
+  - 19 styles dans la plage du genre ; 6 cibles estimées dépassées de moins de 1 LU.
+  - Perte en mono : dubstep 1,47, neurofunk 1,30, grime 1,20 et gabber 1,09.
+  - Phonk −0,8, dubstep 0,3, trance 0,5, techno 0,5, drum and bass 0,6 / −0,4, house 3,6.
+  - Crête −1,20 à −1,16 dBTP ; M2 à M4 conformes au banc.
 
-## BLOQUANT
+## Constats du premier passage
+
+| N° | Constat | État |
+|---|---|---|
+| G1 | Écoute en direct non passée | **corrigé** : 8 styles en direct, 0 alerte ; décision écrite ; le rapport dit que les 29 autres ne sont jugés que sur l'export |
+| M1 | Décision du kick fausse, ancien `kick_lift` encore là | **corrigé** |
+| M2 | « Dubstep le plus doux face à son genre » | **corrigé** (phrase retirée) |
+| M3 | « Acidcore le meilleur », liste « qui tiennent » incomplète, cause non mesurée | **corrigé** pour les deux premiers points ; la cause reste (« Leur kick est plus saturé, ou son attaque est plus claire »), voir N2 |
+| M4 | « Image stéréo saine » malgré 4 styles au-dessus de 1 LU | **corrigé** (nouveau M5 du rapport) |
+| M5 | Afro house présentée comme mesurée | **corrigé** dans `tableau_son6.py` ; le compte « 22 » n'a pas suivi, voir N1 |
+| M6 | Téléphones plus doux que les sources ; banc et rapport mélangés | **corrigé** (300 et 500 Hz ; M2 et M4 disent « banc à 300 Hz ») |
+| mineur | « 25 styles » sans « au téléphone » | **corrigé** |
+| mineur | « 1 à 2,5 LU » alors que la drum and bass est à 0,7 | **corrigé** (« 0,2 à 2,4 ») |
+| mineur | Table des pires sans ordre | **corrigé** (les 10 plus faibles au téléphone) |
+| mineur | Liste des leads sombres : phonk à −14,8 dedans, riddim à −51,1 absente ; « phonk, lead très sombre » | non corrigé, voir N3 |
+| mineur | Pente « norme des musiques actuelles », « filtrés donc vieux » | non corrigé, voir N3 |
+| mineur | Le plafond du master touche 8 styles, pas 3 | non corrigé, voir N3 |
+| mineur | Lisibilité orale des tableaux | inchangé, acceptable |
+
+## Nouveaux constats
+
+### BLOQUANT
 
 Aucun.
 
-## GRAVE
+### GRAVE
 
-**G1. L'écoute en direct n'a pas été passée, sans dérogation écrite.** `rapport-son.md`, « Ce qui n'a pas pu être fait ici » : « L'écoute en direct (`live-bench`) n'a pas été rejouée ici ». La règle de `CLAUDE.md` (Benjamin, 2026-10-24) dit que chaque audit et chaque écoute de vérification passent aussi par `scripts/live-bench.sh`, « jamais seulement par l'export ». `scripts/live-bench.sh` existe ; aucune ligne de `docs/decisions/tour-6-son.md` ni du plan du tour 6 n'en dispense ce siège.
-Correction : lancer `./scripts/live-bench.sh` au moins sur phonk, drum and bass, dubstep, trance, techno, house, riddim et acidcore ; écrire dans « Comment c'est mesuré » une ligne « écoute en direct : 0 fondu, 0 silence, 0 saut, niveau à ±x dB de l'export » ; s'il ne peut pas tourner ici, ajouter une ligne de dérogation datée dans `docs/decisions/tour-6-son.md` (raison, retour arrière : relance au prochain siège).
+Aucun.
 
-## MOYEN
+### MOYEN
 
-- **M1. Méthode du coup de kick mal décrite dans les décisions, et une ancienne mesure toujours dans l'outil.** `docs/decisions/tour-6-son.md` ligne 5 : « sur tous les coups du morceau exporté (médiane) … retour arrière : `son6.kick_lift` ». Le rapport utilise en fait `son6_kick.py` (par partie, coups additionnés, comme le banc). `son6.kick_lift` (seuil 30 %, 100 ms juste avant) écrit encore des colonnes du même nom dans `son6.tsv`, avec d'autres valeurs (dnb : 0,17 / −0,18 / −0,33 contre 3,58 / 1,19 / 0,14 dans `par-style.tsv`). Correction : réécrire la ligne de décision (« par partie, comme `ps_measure --punch`, `son6_kick.py` ») et retirer `kick_lift` de `son6.py` ou renommer ses colonnes.
-- **M2. « Le style le plus doux face à son genre : 2,1 LU » (dubstep) est faux.** La hard techno, cible mesurée elle aussi, est à 2,4 LU sous sa plage (`par-style.tsv`, `lu_sous_cible`). Correction : « le deuxième plus doux, après la hard techno (2,4) ».
-- **M3. « L'acidcore, le meilleur (6,5 dB) » est faux** : la riddim fait 6,93 dB au téléphone (acidcore 6,46). Et « Ceux qui tiennent » n'en cite que 5 sur 12 : au-dessus de 3 dB au téléphone il y a aussi acid techno 4,7, lo-fi 4,2, neurofunk 3,7, hard techno 3,4, industrielle 3,1, jump up 3,1, gabber 3,0. « Leur kick est plus saturé, ou son attaque est plus claire » n'est mesuré nulle part. Correction : citer les 12, « la riddim, la meilleure (6,9 dB) », retirer la phrase de cause ou la marquer comme hypothèse.
-- **M4. « Image stéréo saine » contredit la règle citée.** Le rapport cite « une règle usuelle de moins de 1 LU » de perte en mono, mais dubstep (1,47), neurofunk (1,30), grime (1,20) et gabber (1,09) la dépassent (`mono_loss_lu`). Le banc, lui, tolère 1,5. Correction : « 4 styles dépassent 1 LU (dubstep 1,5, neurofunk 1,3, grime 1,2, gabber 1,1), sous le seuil du banc de 1,5 ».
-- **M5. Une cible estimée présentée comme mesurée.** `tableau_son6.py` marque afro house « M » (−10,9 à −9,4) alors que `cibles-genres.md` ligne 40 dit « afro house non mesuré, −9 à −10 [E] » ; le chiffre est celui de l'organic house. Idem disco = « indie dance », à dire. Sans effet sur un défaut (afro house dans la plage), mais le compte « 22 sous-styles estimés » devient 23. Correction : `"afro_house": (-10, -9, "E", "I")` et le compte.
-- **M6. Haut-parleurs estimés plus doux que la cible proposée par les sources.** `cibles-genres.md` § 7 propose « passe-haut 300 Hz (téléphone récent) et 500 Hz (pire cas), passe-bas 8-10 kHz » ; `son6.py` prend 220 Hz / 12 kHz et 400 Hz / 8 kHz, et le banc lui-même juge le téléphone à 300 Hz (M2 du rapport, B2). Les pertes du kick sont donc plutôt sous-estimées (rien de trop fort), mais le rapport mélange deux « téléphones » sans le dire : M2 et la Montée de trance/techno (+0,9 / −0,9) viennent du banc à 300 Hz. Correction : une ligne de décision qui justifie 220/400, et dans M2 « au téléphone du banc (300 Hz) ».
+Aucun.
 
-## MINEUR
+### MINEUR
 
-- `rapport-son.md`, résumé ligne 2 : « Sur 25 styles sur 37, un coup de kick soulève le morceau de moins de 3 dB » : ajouter « au téléphone » (en pleine bande, c'est 7). « Le banc vise 3 dB » : le banc vise 3 dB en pleine bande (listé seulement, `KICK_RISE_GOAL`), jamais au téléphone ; et son minimum de 2 dB admet « la moitié de la batterie seule » (breakbeats, gabber), non repris ici.
-- Résumé ligne 3 : « 1 à 2,5 LU de moins en dubstep, hard techno, drum and bass et house » : la drum and bass est à 0,7. Écrire « 0,7 à 2,4 ».
-- Table « Les pires » : pas d'ordre dit, et la deep house (Drop, 3,1 / 1,1 / 1,1) manque alors que disco (0,7 / 1,0) y est ; en pire cas, UK garage 0,27 et grime 0,28 sont plus bas que speed garage, techno et disco.
-- Leads « avec moins de −15 dB au-dessus de 2 kHz » : la phonk est à −14,8 (pas dedans), la riddim à −51,1 manque. Et « phonk … le lead, qui est très sombre » est alors trop fort.
-- « Ce sont des sons filtrés, qui peuvent sonner vieux » et « la norme des musiques électroniques actuelles : −4,5 à −5 » : la source [5] dit que les tubes 2020 sont plus sombres que ceux de 1990, et la pente [8] vient d'un corpus 1950-2010 à l'unité incertaine (`cibles-genres.md` lignes 17 et 87). Écrire « repère ancien, indicatif ».
-- Cause M1 du rapport : le master est au plafond (perte 3,0 LU) pour 8 styles (dnb, dubstep, gabber, hard techno, house, jump up, neurofunk, riddim : `report.md`, colonne Perte), pas seulement les 3 cités.
-- Lecture à voix haute : bonne dans l'ensemble (résumé de 5 lignes en tête, 5 styles avec quoi écouter) ; les tableaux et « platitude », « dBTP », « LU » passent mal à l'oral.
+- **N1. Compte des cibles estimées.** L'afro house est désormais une estimation : `par-style.tsv` donne 14 cibles mesurées, donc 23 estimées. Le rapport (« Ce qui n'a pas pu être fait ici ») et `docs/decisions/tour-6-son.md` (ligne « Cibles par genre ») disent encore 22. À corriger : 22 → 23.
+- **N2. Une cause présentée comme établie.** « Leur kick est plus saturé, ou son attaque est plus claire » (G1, « Ceux qui tiennent ») : aucune mesure ne le montre. À écrire : « peut-être un kick plus saturé ou une attaque plus claire, non mesuré ».
+- **N3. Les trois mineurs restants du premier passage**, inchangés dans `rapport-son.md` :
+  - Leads sombres : retirer la phonk (−14,8) de la liste, ajouter la riddim (−51,1), et dire seulement « lead sombre » dans la fiche phonk.
+  - Pente : écrire « repère ancien (corpus 1950-2010), indicatif ».
+  - Plafond du master : la perte est de 3,0 LU sur 8 styles, pas seulement sur les 3 cités.
+- **N4. Résumé, ligne 1.** « Sur les 37 morceaux … ni à l'export ni en écoute en direct » : l'écoute en direct ne porte que sur 8 styles, et sur leurs 150 premières secondes. À écrire : « … à l'export (37), ni en écoute en direct (8 styles) ».
+- **N5. Résumé, ligne 3.** « De 0,2 à 2,4 LU » ne vaut que pour les cibles mesurées : les cibles estimées vont jusqu'à 5,2 LU (riddim). Ajouter « face aux cibles mesurées ».
+- **N6. Phrase confuse.** « 8 styles, ceux à écouter plus phonk, house, riddim et acidcore » : la phonk fait déjà partie des 5 à écouter. Écrire : « les 5 à écouter, plus house, riddim et acidcore ».
 
-Verdict : 0 bloquant, 1 grave
+Verdict : 0 bloquant, 0 grave

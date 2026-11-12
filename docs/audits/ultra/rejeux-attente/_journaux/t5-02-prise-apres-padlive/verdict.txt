@@ -1,15 +1,9 @@
-divergé au pas 122 (étiquette « track_2 » introuvable)
-  dernier écran différent de l'origine : écran 122, empreinte 6351071c72 (origine 899a90b253), première ligne différente : origine « touchable « Techno Sauvegardé » (nom « Mes projets ») @ 134,42 », rejeu « icône (dossier ouvert) ✓ « Live Sauvegardé » @ 127,42 »
-  pas 24 : bouton (project_menu_p-dc41c6c2) absent, sous le doigt : project_menu_p-53d2a3a0
-  pas 25 : bouton « Supprimer » (project_delete_p-dc41c6c2) absent, sous le doigt : project_delete_p-53d2a3a0 « Supprimer »
-  pas 29 : bouton « Mon projet 1 » (project_p-dc41c6c2) absent, sous le doigt : project_p-53d2a3a0 « Mon projet 1 »
-  pas 52 : bouton (project_menu_p-296abaa7) absent, sous le doigt : project_menu_p-c02e73f8
-  pas 53 : bouton « Supprimer » (project_delete_p-296abaa7) absent, sous le doigt : project_delete_p-c02e73f8 « Supprimer »
-  pas 64 : bouton « Mon projet 1 » (project_p-dc41c6c2) absent, sous le doigt : project_p-53d2a3a0 « Mon projet 1 »
-  pas 98 : bouton « Mes projets » (more_projects) absent, sous le doigt : plus_projects « Mes projets »
-  pas 99 : bouton (project_menu_p-896025b4) absent, sous le doigt : project_menu_p-9ee94413
-  pas 100 : bouton « Supprimer » (project_delete_p-896025b4) absent, sous le doigt : project_delete_p-9ee94413 « Supprimer »
-  pas 108 : bouton « Restaurer » (restore_p-896025b4@1793914716451) absent, sous le doigt : restore_p-9ee94413@1794502281444 « Restaurer »
-  pas 109 : bouton « Techno » (project_p-896025b4) absent, sous le doigt : project_p-9ee94413 « Techno »
-  pas 120 : bouton « Techno » (project_p-896025b4) absent, sous le doigt : project_p-afd8d757 « Live »
-  pas 122 : à l'origine sous le doigt : track_2 « Mélodie »
+divergé au pas 97 (étiquette « top_more » introuvable)
+  dernier écran différent de l'origine : écran 97, empreinte ab199ea2b3 (origine 00c130ee8e), première ligne différente : origine « touchable « Techno Sauvegardé » (nom « Mes projets ») @ 134,42 », rejeu « texte « BenStudio » @ 156,72 »
+  pas 24 : bouton (project_menu_p-dc41c6c2) absent, sous le doigt : project_menu_p-38531a10
+  pas 25 : bouton « Supprimer » (project_delete_p-dc41c6c2) absent, sous le doigt : project_delete_p-38531a10 « Supprimer »
+  pas 29 : bouton « Mon projet 1 » (project_p-dc41c6c2) absent, sous le doigt : project_p-38531a10 « Mon projet 1 »
+  pas 52 : bouton (project_menu_p-296abaa7) absent, sous le doigt : project_menu_p-e094ab7d
+  pas 53 : bouton « Supprimer » (project_delete_p-296abaa7) absent, sous le doigt : project_delete_p-e094ab7d « Supprimer »
+  pas 64 : bouton « Mon projet 1 » (project_p-dc41c6c2) absent, sous le doigt : project_p-38531a10 « Mon projet 1 »
+  pas 97 : à l'origine sous le doigt : top_more

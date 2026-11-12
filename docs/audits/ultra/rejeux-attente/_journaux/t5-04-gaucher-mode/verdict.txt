@@ -1,2 +1,2 @@
 oracle non tenu : « texte « Remix » » absent
-  dernier écran différent de l'origine : écran 3, empreinte 44308173da (origine 0b75aa792a), première ligne différente : origine « bouton « Retour » @ 54,48 », rejeu « icône ← @ 54,48 »
+  dernier écran différent de l'origine : écran 3, empreinte a6565dcd3e (origine 0b75aa792a), première ligne différente : origine « bouton « Retour » @ 54,48 », rejeu « icône ← @ 54,48 »

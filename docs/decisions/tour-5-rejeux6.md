@@ -4,3 +4,5 @@
 - The bench's script tests ignore `PS_REJEUX_DIR` (a replay of `rejeux-attente/` could not run their own fixtures otherwise).
 - `reachableNear`: a tag touch aims at the point of the element nearest its middle that the thumb reaches (pure geometry `SeatOptions.nearestReachable`, tested in `BenchSeatOptionsTest`), not at the middle only: t5-06 no longer diverges at step 47. A control with no reachable point is still refused (that is the finding).
 - Defects found stay in `rejeux-attente/` (not fixed, not moved to `rejeux/`).
+- Review fix (grave 1): a « tenu » needs EVERY tag gesture up to `rejeu.n` proven (`ETIQUETTE`, no `REFUS`, `DOIGT` naming that tag, `dans:<tag>`, a `prefix*` member or `vue « X »`); otherwise « oracle non tenu (geste n raté : …) ». Undo: revert `tag_proof` in `rejeu-defauts.sh`.
+- Review fix (grave 2): a tag touch keeps only a point of the element's shown part (boundsInWindow, on the screen) where `ScreenText.under` names that tag (same rule as the script); a tagged child over it counts as another element. No such point: `REFUS`. Undo: revert `reachableNear`/`nearestReachable` to the 9 x 9 grid of the full box.

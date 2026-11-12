@@ -6,6 +6,6 @@ gestes.max=120
 mission=synthe
 rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-07-etoile-sons
 rejeu.origine=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/sieges/tour-5/lotD/b
-rejeu.n=41
+rejeu.n=39
 rejeu.attendu=☆
 rejeu.absent=Lead 6 个声音

@@ -1,5 +1,5 @@
 #0 SIEGE lang=de device=tablet8 font=100 mode=pro theme=- fresh=non gestes.max=90 lit=oui main=both amenee=- rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-03-swing-tuto-pro rejeu.n=40
-#0 PREMIER ECRAN reel_s=10.2 simule_s=2.4 jvm_s=25.1 travail=non vide=non attente_s=0.0
+#0 PREMIER ECRAN reel_s=10.2 simule_s=2.4 jvm_s=23.1 travail=non vide=non attente_s=0.0
 #1 ROUTE launch | MODE pro | EMPREINTE f909e9114e | project=projet-1 no tuto
 #1 SON Son : rien ne joue.
 #1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
@@ -16,26 +16,26 @@
 #3 ETIQUETTE tuto_style_techno : 450 289
 #3 > touche 450 289
 #3 DOIGT tuto_style_techno « Techno »
-#4 ROUTE ? | MODE pro | EMPREINTE 6a8cb41c98 | project=p-1160a835 tuto=techno/Pro active=true step=ref done=0 playing=false
+#4 ROUTE tab_Sons | MODE pro | EMPREINTE 0423d7aa48 | project=p-c713163b tuto=techno/Pro active=true step=ref done=0 playing=false
 #4 SON Son : rien ne joue.
+#4 LAYOUT OVERLAP « Hör dir einen Ausschnitt eines fertigen Techno-Tracks an: das Intro (die Drums für den DJ), der Einsatz des Basses, dann der Drop. Eine Kick auf jedem Schlag, die nie aufhört: Genau das baust du. » over the touchable « Weiterlesen » (551 x 6 dp)
+#4 LAYOUT OVERLAP « ▸ Warum? » over the touchable « Weiterlesen » (64 x 20 dp)
 #4 LAYOUT TARGET « ▸ Warum? » 572 x 20 dp (touch 572 x 48)
 #4 ETIQUETTE tuto_listen : 450 1125
 #4 > touche 450 1125
 #4 DOIGT tuto_listen «  Beispiel anhören »
-#5 ROUTE tab_Sons | MODE pro | EMPREINTE cd7da2f512 | project=p-1160a835 tuto=techno/Pro active=true step=ref done=0 playing=false
+#5 ROUTE tab_Sons | MODE pro | EMPREINTE cd7da2f512 | project=p-c713163b tuto=techno/Pro active=true step=ref done=0 playing=false
 #5 SON Son : l'exemple du tuto joue (encore 7 s).
-#5 LAYOUT OVERLAP « Hör dir einen Ausschnitt eines fertigen Techno-Tracks an: das Intro (die Drums für den DJ), der Einsatz des Basses, dann der Drop. Eine Kick auf jedem Schlag, die nie aufhört: Genau das baust du. » over the touchable « Weiterlesen » (551 x 6 dp)
-#5 LAYOUT OVERLAP « ▸ Warum? » over the touchable « Weiterlesen » (64 x 20 dp)
 #5 ETIQUETTE tuto_next : 811 1209
 #5 > touche 811 1209
 #5 DOIGT tuto_next « Weiter  »
-#6 ROUTE tab_Sons | MODE pro | EMPREINTE 0bcae7b82e | project=p-1160a835 tuto=techno/Pro active=true step=tempo done=0 playing=false
+#6 ROUTE tab_Sons | MODE pro | EMPREINTE 0bcae7b82e | project=p-c713163b tuto=techno/Pro active=true step=tempo done=0 playing=false
 #6 SON Son : rien ne joue.
 #6 LAYOUT OVERLAP « Später » over the touchable « Weiterlesen » (45 x 10 dp)
 #6 ETIQUETTE tuto_show : 667 1128
 #6 > touche 667 1128
 #6 DOIGT tuto_show «  Zeig's mir »
-#7 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 5ace4fe975 | project=p-1160a835 tuto=techno/Pro active=true step=tempo done=0 playing=false
+#7 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 5ace4fe975 | project=p-c713163b tuto=techno/Pro active=true step=tempo done=0 playing=false
 #7 SON Son : rien ne joue.
 #7 LAYOUT OVERLAP « Tempo » over the touchable « Tabelle schließen » (73 x 28 dp)
 #7 LAYOUT OVERLAP « ? » over the touchable « Tabelle schließen » (7 x 15 dp)
@@ -63,57 +63,57 @@
 #7 LAYOUT OVERLAP « Im Takt tippen » over the touchable « Tabelle schließen » (109 x 24 dp)
 #7 LAYOUT OVERLAP « Tippe hier auf jeden Schlag: Das Tempo folgt. » over the touchable « Tabelle schließen » (277 x 18 dp)
 #7 > attends 3
-#8 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 5ace4fe975 | project=p-1160a835 tuto=techno/Pro active=true step=tempo done=0 playing=false
+#8 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 5ace4fe975 | project=p-c713163b tuto=techno/Pro active=true step=tempo done=0 playing=false
 #8 SON Son : rien ne joue.
 #8 LAYOUT OVERLAP « 120 » over the touchable « Tabelle schließen » (86 x 53 dp)
 #8 ETIQUETTE tempo_close : 805 802
 #8 > touche 805 802
 #8 DOIGT tempo_close « Schließen »
-#9 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE bfd8cdd746 | project=p-1160a835 tuto=techno/Pro active=true step=tempo done=0 playing=false
+#9 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE bfd8cdd746 | project=p-c713163b tuto=techno/Pro active=true step=tempo done=0 playing=false
 #9 SON Son : rien ne joue.
 #9 ETIQUETTE tuto_fold : 843 1110
 #9 > touche 843 1110
 #9 DOIGT tuto_fold
-#10 ROUTE tab_Sons | MODE pro | EMPREINTE 0bcae7b82e | project=p-1160a835 tuto=techno/Pro active=true step=tempo done=0 playing=false
+#10 ROUTE tab_Sons | MODE pro | EMPREINTE 0bcae7b82e | project=p-c713163b tuto=techno/Pro active=true step=tempo done=0 playing=false
 #10 SON Son : rien ne joue.
 #10 ETIQUETTE tuto_do : 450 1044
 #10 > touche 450 1044
 #10 DOIGT tuto_do «   Ich mach's »
-#11 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 3058fcfdef | project=p-1160a835 tuto=techno/Pro active=true step=tempo done=0 playing=false
+#11 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 3058fcfdef | project=p-c713163b tuto=techno/Pro active=true step=tempo done=0 playing=false
 #11 SON Son : rien ne joue.
 #11 ETIQUETTE tempo_key_1 : 163 1083
 #11 > touche 163 1083
 #11 DOIGT tempo_key_1 « 1 »
-#12 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE cbd25a9e9c | project=p-1160a835 tuto=techno/Pro active=true step=tempo done=0 playing=false
+#12 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE cbd25a9e9c | project=p-c713163b tuto=techno/Pro active=true step=tempo done=0 playing=false
 #12 SON Son : rien ne joue.
 #12 LAYOUT OVERLAP « 1 » over the touchable « Tabelle schließen » (29 x 53 dp)
 #12 LAYOUT OVERLAP « Zwischen 40 und 300 » over the touchable « Tabelle schließen » (144 x 20 dp)
 #12 ETIQUETTE tempo_key_3 : 737 1083
 #12 > touche 737 1083
 #12 DOIGT tempo_key_3 « 3 »
-#13 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE c50a8aa33a | project=p-1160a835 tuto=techno/Pro active=true step=tempo done=0 playing=false
+#13 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE c50a8aa33a | project=p-c713163b tuto=techno/Pro active=true step=tempo done=0 playing=false
 #13 SON Son : rien ne joue.
 #13 LAYOUT OVERLAP « 13 » over the touchable « Tabelle schließen » (57 x 53 dp)
 #13 ETIQUETTE tempo_key_2 : 450 1083
 #13 > touche 450 1083
 #13 DOIGT tempo_key_2 « 2 »
-#14 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE eca0451138 | project=p-1160a835 tuto=techno/Pro active=true step=tempo done=0 playing=false
+#14 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE eca0451138 | project=p-c713163b tuto=techno/Pro active=true step=tempo done=0 playing=false
 #14 SON Son : rien ne joue.
 #14 ETIQUETTE tempo_key_ok : 737 1344
 #14 > touche 737 1344
 #14 DOIGT tempo_key_ok « OK »
-#15 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE e8d17126e8 | project=p-1160a835 tuto=techno/Pro active=true step=tempo done=1 playing=false
+#15 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE e8d17126e8 | project=p-c713163b tuto=techno/Pro active=true step=tempo done=1 playing=false
 #15 SON Son : rien ne joue.
 #15 ETIQUETTE tuto_next_folded : 450 1209
 #15 > touche 450 1209
 #15 DOIGT tuto_next_folded « Geschafft »
-#16 ROUTE tab_Sons | MODE pro | EMPREINTE f8b03fe6e5 | project=p-1160a835 tuto=techno/Pro active=true step=key done=1 playing=false
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE f8b03fe6e5 | project=p-c713163b tuto=techno/Pro active=true step=key done=1 playing=false
 #16 SON Son : rien ne joue.
 #16 LAYOUT OVERLAP « Kit Techno laden (4 MB) » over the touchable « Weiterlesen » (165 x 12 dp)
 #16 ETIQUETTE tuto_do : 450 1044
 #16 > touche 450 1044
 #16 DOIGT tuto_do «   Ich mach's »
-#17 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE f59c68fe55 | project=p-1160a835 tuto=techno/Pro active=true step=key done=1 playing=false
+#17 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE f59c68fe55 | project=p-c713163b tuto=techno/Pro active=true step=key done=1 playing=false
 #17 SON Son : rien ne joue.
 #17 LAYOUT OVERLAP « Tonart des Tracks » over the touchable « Tabelle schließen » (189 x 28 dp)
 #17 LAYOUT OVERLAP « Tonart des Tracks: keine » over the touchable « Tabelle schließen » (163 x 20 dp)
@@ -142,13 +142,13 @@
 #17 ETIQUETTE tuto_scale_Phrygian : 101 1224
 #17 > touche 101 1224
 #17 DOIGT tuto_scale_Phrygian « Phrygisch »
-#18 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 78ce5c56a7 | project=p-1160a835 tuto=techno/Pro active=true step=key done=1 playing=false
+#18 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 78ce5c56a7 | project=p-c713163b tuto=techno/Pro active=true step=key done=1 playing=false
 #18 SON Son : rien ne joue.
 #18 LAYOUT OVERLAP « Tonart des Tracks: C · Phrygisch » over the touchable « Tabelle schließen » (216 x 20 dp)
 #18 ETIQUETTE tuto_root_5 : 498 1356
 #18 > touche 498 1356
 #18 DOIGT tuto_root_5 « F »
-#19 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 1984986022 | project=p-1160a835 tuto=techno/Pro active=true step=key done=2 playing=false
+#19 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 1984986022 | project=p-c713163b tuto=techno/Pro active=true step=key done=2 playing=false
 #19 SON Son : rien ne joue.
 #19 LAYOUT OVERLAP « Tonart des Tracks: F · Phrygisch » over the touchable « Tabelle schließen » (214 x 20 dp)
 #19 LAYOUT OVERLAP « Geschafft! Die Farbe des Songs ist gewählt. » over the touchable « Tabelle schließen » (341 x 24 dp)
@@ -156,100 +156,98 @@
 #19 ETIQUETTE tuto_key_continue : 450 1434
 #19 > touche 450 1434
 #19 DOIGT tuto_key_continue « Zurück zum Tutorial »
-#20 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 7c834d9d6a | project=p-1160a835 tuto=techno/Pro active=true step=key done=2 playing=false
+#20 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 7c834d9d6a | project=p-c713163b tuto=techno/Pro active=true step=key done=2 playing=false
 #20 SON Son : rien ne joue.
 #20 ETIQUETTE tuto_next_folded : 450 1209
 #20 > touche 450 1209
 #20 DOIGT tuto_next_folded « Geschafft »
-#21 ROUTE tab_Sons | MODE pro | EMPREINTE 2ca0edb57a | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#21 ROUTE tab_Sons | MODE pro | EMPREINTE 2ca0edb57a | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #21 SON Son : rien ne joue.
-#21 ETIQUETTE tuto_kit_later : 450 996
-#21 > touche 450 996
-#21 DOIGT rien
-#21 REJEU bouton « Später » (tuto_kit_later) déplacé (maintenant en 450,996), sous le doigt : rien
-#22 ROUTE tab_Sons | MODE pro | EMPREINTE 2ca0edb57a | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#21 ETIQUETTE tuto_kit_later : 450 992
+#21 > touche 450 992
+#21 DOIGT tuto_kit_later « Später »
+#22 ROUTE tab_Sons | MODE pro | EMPREINTE 1de6309bad | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #22 SON Son : rien ne joue.
-#22 ETIQUETTE tuto_kit_later : 450 996
-#22 > touche 450 996
-#22 DOIGT rien
-#22 REJEU bouton « Später » (tuto_kit_later) déplacé (maintenant en 450,996), sous le doigt : rien
-#23 ROUTE tab_Sons | MODE pro | EMPREINTE 2ca0edb57a | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#22 ETIQUETTE tuto_kit_later : 450 945
+#22 > touche 450 945
+#22 DOIGT tuto_kit_later « Später »
+#23 ROUTE tab_Sons | MODE pro | EMPREINTE cd6bd3cc9e | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #23 SON Son : rien ne joue.
-#23 RIEN NE CHANGE (3 écrans identiques)
 #23 ETIQUETTE tuto_do : 450 1044
 #23 > touche 450 1044
 #23 DOIGT tuto_do «   Ich mach's »
-#24 ROUTE tuto_spot_ring | MODE pro | EMPREINTE ddc1f468e4 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#24 ROUTE tuto_spot_ring | MODE pro | EMPREINTE ddc1f468e4 | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #24 SON Son : rien ne joue.
 #24 > attends 2
-#25 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 7a2f526408 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#25 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 7a2f526408 | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #25 SON Son : rien ne joue.
 #25 ETIQUETTE tuto_fold : 843 1110
 #25 > touche 843 1110
 #25 DOIGT tuto_fold
-#26 ROUTE tab_Sons | MODE pro | EMPREINTE e354413254 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#26 ROUTE tab_Sons | MODE pro | EMPREINTE 6417ae291c | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #26 SON Son : rien ne joue.
 #26 ETIQUETTE tuto_show : 667 1128
 #26 > touche 667 1128
 #26 DOIGT tuto_show «  Zeig's mir »
-#27 ROUTE tuto_finger | MODE pro | EMPREINTE 486e1bfb02 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#27 ROUTE tuto_finger | MODE pro | EMPREINTE 486e1bfb02 | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #27 SON Son : rien ne joue.
 #27 > attends 6
-#28 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 7a2f526408 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#28 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 7a2f526408 | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #28 SON Son : rien ne joue.
 #28 > attends 1
-#29 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 7a2f526408 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#29 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 7a2f526408 | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #29 SON Son : rien ne joue.
 #29 ETIQUETTE tab_Structure : 85 1389
 #29 > touche 85 1389
 #29 DOIGT tab_Structure « Struktur »
-#30 ROUTE session/tab_Structure | MODE pro | EMPREINTE 354da4d456 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#30 ROUTE session/tab_Structure | MODE pro | EMPREINTE 354da4d456 | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #30 SON Son : rien ne joue.
 #30 > attends 1
-#31 ROUTE session/tab_Structure | MODE pro | EMPREINTE 354da4d456 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#31 ROUTE session/tab_Structure | MODE pro | EMPREINTE 354da4d456 | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #31 SON Son : rien ne joue.
 #31 ETIQUETTE tuto_fold : 843 1110
 #31 > touche 843 1110
 #31 DOIGT tuto_fold
-#32 ROUTE tab_Structure | MODE pro | EMPREINTE 35b4a7e668 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#32 ROUTE tab_Structure | MODE pro | EMPREINTE 3f47318b9b | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #32 SON Son : rien ne joue.
 #32 ETIQUETTE tuto_do : 450 1044
 #32 > touche 450 1044
 #32 DOIGT tuto_do «   Ich mach's »
-#33 ROUTE tuto_spot_ring | MODE pro | EMPREINTE ddc1f468e4 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#33 ROUTE tuto_spot_ring | MODE pro | EMPREINTE ddc1f468e4 | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #33 SON Son : rien ne joue.
 #33 > attends 1
-#34 ROUTE tuto_spot_ring | MODE pro | EMPREINTE ddc1f468e4 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#34 ROUTE tuto_spot_ring | MODE pro | EMPREINTE ddc1f468e4 | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #34 SON Son : rien ne joue.
 #34 > attends 1
-#35 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 7a2f526408 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#35 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 7a2f526408 | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #35 SON Son : rien ne joue.
 #35 ETIQUETTE tab_Plus : 815 1389
 #35 > touche 815 1389
 #35 DOIGT tab_Plus « Mehr »
-#36 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 2fd689e5b5 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#36 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 2fd689e5b5 | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #36 SON Son : rien ne joue.
 #36 ETIQUETTE tuto_fold : 843 1110
 #36 > touche 843 1110
 #36 DOIGT tuto_fold
-#37 ROUTE tab_Plus | MODE pro | EMPREINTE ac07946187 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#37 ROUTE tab_Plus | MODE pro | EMPREINTE c6eedb3bb7 | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #37 SON Son : rien ne joue.
 #37 ETIQUETTE tuto_next : 811 1209
 #37 > touche 811 1209
 #37 DOIGT tuto_next « Weiter  »
-#38 ROUTE tab_Plus | MODE pro | EMPREINTE 4d5c3a6f85 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#38 ROUTE tab_Plus | MODE pro | EMPREINTE dc4b6dc0d8 | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #38 SON Son : rien ne joue.
-#38 LAYOUT OVERLAP « Kit Techno laden (4 MB) » over the touchable « Weiterlesen » (165 x 18 dp)
-#38 LAYOUT CONTRAST « Kit Techno laden (4 MB) » 1.29:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT OVERLAP « Du bist dran: Gib ein ganz kleines bisschen Swing dazu (5 %): Die kleinen Hi-Hats schleppen kaum merklich, der Groove atmet, ohne zu hinken. » over « Weiterlesen » (76 x 18 dp)
+#38 LAYOUT OVERLAP « Du bist dran: Gib ein ganz kleines bisschen Swing dazu (5 %): Die kleinen Hi-Hats schleppen kaum merklich, der Groove atmet, ohne zu hinken. » over the touchable « Weiterlesen » (559 x 28 dp)
+#38 LAYOUT CONTRAST « Du bist dran: Gib ein ganz kleines bisschen Swing dazu (5 %): Die kleinen Hi-Hats schleppen kaum merklich, der Groove atmet, ohne zu hinken. » 2.89:1 (needs 4.5:1, 16 sp)
 #38 ETIQUETTE tuto_do : 450 1044
 #38 > touche 450 1044
 #38 DOIGT tuto_do «   Ich mach's »
-#39 ROUTE tuto_spot_ring | MODE pro | EMPREINTE ddc1f468e4 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#39 ROUTE tuto_spot_ring | MODE pro | EMPREINTE ddc1f468e4 | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #39 SON Son : rien ne joue.
 #39 > attends 2
-#40 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 7a2f526408 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#40 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 7a2f526408 | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #40 SON Son : rien ne joue.
 #40 > attends 1
-#41 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 7a2f526408 | project=p-1160a835 tuto=techno/Pro active=true step=swing done=2 playing=false
+#41 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 7a2f526408 | project=p-c713163b tuto=techno/Pro active=true step=swing done=2 playing=false
 #41 SON Son : rien ne joue.
 #41 FIN : rejeu : oracle non tenu : « curseur « Swing » » absent

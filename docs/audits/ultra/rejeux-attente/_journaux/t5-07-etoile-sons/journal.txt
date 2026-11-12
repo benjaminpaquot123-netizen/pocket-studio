@@ -1,5 +1,5 @@
-#0 SIEGE lang=zh-CN device=foldable font=100 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=- rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-07-etoile-sons rejeu.n=41
-#0 PREMIER ECRAN reel_s=7.4 simule_s=2.4 jvm_s=17.9 travail=non vide=non attente_s=0.0
+#0 SIEGE lang=zh-CN device=foldable font=100 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=- rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-07-etoile-sons rejeu.n=39
+#0 PREMIER ECRAN reel_s=6.2 simule_s=2.4 jvm_s=14.1 travail=non vide=non attente_s=0.0
 #1 ROUTE launch | MODE pro | EMPREINTE 8bb93baa8f | project=projet-1 no tuto
 #1 SON Son : rien ne joue.
 #1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
@@ -56,84 +56,19 @@
 #4 LAYOUT CONTRAST « Wobble 贝斯 » 1.91:1 (needs 4.5:1, 14 sp)
 #4 LAYOUT CONTRAST « 会说话的贝斯 » 1.91:1 (needs 4.5:1, 14 sp)
 #4 LAYOUT CONTRAST « 真实乐器 » 3.26:1 (needs 4.5:1, 12 sp)
-#4 > attends 1
-#5 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE fa950b986a | project=projet-1 no tuto
+#4 > touche synth_sounds_2
+#4 REFUS « synth_sounds_2 » : aucun point visible, à portée du pouce (à deux mains) et sous le doigt
+#5 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE d72a9b9d05 | project=projet-1 no tuto
 #5 SON Son : rien ne joue.
-#5 ETIQUETTE synth_sounds_2 : 276 575
-#5 > touche 276 575
-#5 DOIGT synth_sounds_6 « Growl 贝斯 »
-#5 REJEU bouton « C 4 » (key_60) déplacé (maintenant en 76,-353), sous le doigt : synth_sounds_6 « Growl 贝斯 »
-#6 ROUTE synth/tab_Sons | MODE pro | EMPREINTE f5c531e4ce | project=projet-1 no tuto
+#5 > touche key_60
+#5 REFUS « key_60 » : aucun point visible, à portée du pouce (à deux mains) et sous le doigt
+#6 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE d72a9b9d05 | project=projet-1 no tuto
 #6 SON Son : rien ne joue.
-#6 LAYOUT OVERLAP « 新音色：Growl 贝斯 » over the touchable « C 4 播放 » (6 x 21 dp)
-#6 LAYOUT OVERLAP « 新音色：Growl 贝斯 » over the touchable « D 4 播放 » (45 x 21 dp)
-#6 LAYOUT OVERLAP « 新音色：Growl 贝斯 » over the touchable « E 4 播放 » (45 x 21 dp)
-#6 LAYOUT OVERLAP « 新音色：Growl 贝斯 » over the touchable « F 4 播放 » (24 x 21 dp)
-#6 LAYOUT OVERLAP « 取消 » over the touchable « B 5 播放 » (26 x 21 dp)
-#6 LAYOUT CONTRAST « 取消 » 3.63:1 (needs 4.5:1, 14 sp)
-#6 ETIQUETTE key_60 : 76 413
-#6 > touche 76 413
-#6 DOIGT key_60 « C 4 »
-#6 REJEU bouton « Reese 贝斯 » (track_0) déplacé (maintenant en 677,186), sous le doigt : key_60 « C 4 »
-#7 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 149b0dd054 | project=projet-1 no tuto
-#7 SON Son : 1 note du synthé.
-#7 LAYOUT OVERLAP « 音轨的音色（所有音符都一样） » over « 新音色：Growl 贝斯 » (127 x 5 dp)
-#7 LAYOUT CONTRAST « 乐器 » 3.70:1 (needs 4.5:1, 12 sp)
-#7 ETIQUETTE track_0 : 677 186
-#7 > touche 677 186
-#7 DOIGT track_0 « Growl 贝斯 »
-#7 REJEU bouton « 调整声音（滤波器、包络…） » (track_menu_settings) absent, sous le doigt : track_0 « Growl 贝斯 »
-#8 ROUTE dialogue:track_menu_sheet | MODE pro | EMPREINTE 2b4f836006 | project=projet-1 no tuto
-#8 SON Son : rien ne joue.
-#8 ETIQUETTE track_menu_settings : 772 411
-#8 > touche 772 411
-#8 DOIGT track_menu_settings « 调整声音（滤波器、包络…） »
-#9 ROUTE tuto_spot_ring | MODE pro | EMPREINTE f98321fe4f | project=projet-1 no tuto
-#9 SON Son : rien ne joue.
-#9 LAYOUT LABEL « knob_8 » long press without text nor description
-#9 LAYOUT LABEL « knob_9 » long press without text nor description
-#9 > attends 3
-#10 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 3ed6da808a | project=projet-1 no tuto
-#10 SON Son : rien ne joue.
-#10 > attends 1
-#11 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 3ed6da808a | project=projet-1 no tuto
-#11 SON Son : rien ne joue.
-#11 ETIQUETTE float_key_67 : 343 805
-#11 > appui-long 343 805
-#11 DOIGT float_key_67 « G 4 »
-#11 REJEU bouton « 截止 » (synth) déplacé (maintenant en 517,595), sous le doigt : float_key_67 « G 4 »
-#12 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 2755bafd38 | project=projet-1 no tuto
-#12 SON Son : 1 note du synthé.
-#12 > attends 1
-#13 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 3ed6da808a | project=projet-1 no tuto
-#13 SON Son : rien ne joue.
-#13 > attends 1
-#14 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 3ed6da808a | project=projet-1 no tuto
-#14 SON Son : rien ne joue.
-#14 > attends 1
-#15 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 3ed6da808a | project=projet-1 no tuto
-#15 SON Son : rien ne joue.
-#15 ETIQUETTE track_sound_0 : 818 186
-#15 > touche 818 186
-#15 DOIGT track_sound_0
-#15 REJEU bouton « 保留这个声音 » (synth_sounds_save) déplacé (maintenant en 758,204), sous le doigt : track_sound_0
-#16 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 2502be6e0b | project=projet-1 no tuto
-#16 SON Son : rien ne joue.
-#16 LAYOUT CONTRAST « 锯齿波 · 持续 » 2.45:1 (needs 4.5:1, 12 sp)
-#16 LAYOUT CONTRAST « 三角波 · 持续 » 2.45:1 (needs 4.5:1, 12 sp)
-#16 LAYOUT CONTRAST « 锯齿波 · 持续 » 1.38:1 (needs 4.5:1, 12 sp)
-#16 > attends 1
-#17 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE 2502be6e0b | project=projet-1 no tuto
-#17 SON Son : rien ne joue.
-#17 ETIQUETTE synth_sounds_save : 758 307
-#17 > touche 758 307
-#17 DOIGT synth_sounds_1 « Sub 贝斯 »
-#18 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 74b4e96ce9 | project=projet-1 no tuto
-#18 SON Son : rien ne joue.
-#18 LAYOUT OVERLAP « 新音色：Sub 贝斯 » over the touchable « C 4 播放 » (6 x 21 dp)
-#18 LAYOUT OVERLAP « 新音色：Sub 贝斯 » over the touchable « D 4 播放 » (45 x 21 dp)
-#18 LAYOUT OVERLAP « 新音色：Sub 贝斯 » over the touchable « E 4 播放 » (45 x 21 dp)
-#18 LAYOUT OVERLAP « 新音色：Sub 贝斯 » over the touchable « F 4 播放 » (10 x 21 dp)
-#18 > touche name_clear
-#18 BANC étiquette introuvable : name_clear
-#18 FIN : rejeu : divergé au pas 18 (étiquette « name_clear » introuvable)
+#6 > touche track_0
+#6 REFUS « track_0 » : aucun point visible, à portée du pouce (à deux mains) et sous le doigt
+#7 ROUTE dialogue:sound_chooser | MODE pro | EMPREINTE d72a9b9d05 | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 RIEN NE CHANGE (3 écrans identiques)
+#7 > touche track_menu_settings
+#7 BANC étiquette introuvable : track_menu_settings
+#7 FIN : rejeu : divergé au pas 7 (étiquette « track_menu_settings » introuvable)

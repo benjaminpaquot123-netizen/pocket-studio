@@ -1,5 +1,5 @@
 #0 SIEGE lang=fr device=phone411 font=100 mode=simple theme=- fresh=non gestes.max=90 lit=oui main=left amenee=- rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-06-gaucher-fin-du-bout rejeu.n=51
-#0 PREMIER ECRAN reel_s=0.4 simule_s=2.4 jvm_s=92.7 travail=non vide=non attente_s=0.0
+#0 PREMIER ECRAN reel_s=0.4 simule_s=2.4 jvm_s=89.0 travail=non vide=non attente_s=0.0
 #1 ROUTE dialogue:welcome | MODE simple | EMPREINTE d8c0ef85bb | project=projet-1 no tuto
 #1 SON Son : rien ne joue.
 #1 ETIQUETTE welcome_remix : 308 1182
@@ -7,20 +7,17 @@
 #1 DOIGT welcome_remix « Extraire la voix d'une chanson »
 #2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 3014091b9d | project=projet-1 no tuto
 #2 SON Son : rien ne joue.
-#2 ETIQUETTE mode_card_simple : 308 297
-#2 > touche 308 297
-#2 REFUS hors de portée du pouce (d'une main, la gauche)
-#3 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 44308173da | project=projet-1 no tuto
+#2 > touche mode_card_simple
+#2 REFUS « mode_card_simple » : aucun point visible, à portée du pouce (d'une main, la gauche) et sous le doigt
+#3 ROUTE dialogue:mode_step | MODE simple | EMPREINTE a6565dcd3e | project=projet-1 no tuto
 #3 SON Son : rien ne joue.
-#3 ETIQUETTE mode_card_simple : 308 297
-#3 > touche 308 297
-#3 REFUS hors de portée du pouce (d'une main, la gauche)
-#4 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 44308173da | project=projet-1 no tuto
+#3 > touche mode_card_simple
+#3 REFUS « mode_card_simple » : aucun point visible, à portée du pouce (d'une main, la gauche) et sous le doigt
+#4 ROUTE dialogue:mode_step | MODE simple | EMPREINTE a6565dcd3e | project=projet-1 no tuto
 #4 SON Son : rien ne joue.
-#4 ETIQUETTE mode_card_pro : 308 510
-#4 > touche 308 510
-#4 REFUS hors de portée du pouce (d'une main, la gauche)
-#5 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 44308173da | project=projet-1 no tuto
+#4 > touche mode_card_pro
+#4 REFUS « mode_card_pro » : aucun point visible, à portée du pouce (d'une main, la gauche) et sous le doigt
+#5 ROUTE dialogue:mode_step | MODE simple | EMPREINTE a6565dcd3e | project=projet-1 no tuto
 #5 SON Son : rien ne joue.
 #5 RIEN NE CHANGE (3 écrans identiques)
 #5 > attends 1
@@ -42,10 +39,9 @@
 #9 DOIGT welcome_remix « Extraire la voix d'une chanson »
 #10 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 3014091b9d | project=projet-1 no tuto
 #10 SON Son : rien ne joue.
-#10 ETIQUETTE mode_card_pro : 308 510
-#10 > touche 308 510
-#10 REFUS hors de portée du pouce (d'une main, la gauche)
-#11 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 44308173da | project=projet-1 no tuto
+#10 > touche mode_card_pro
+#10 REFUS « mode_card_pro » : aucun point visible, à portée du pouce (d'une main, la gauche) et sous le doigt
+#11 ROUTE dialogue:mode_step | MODE simple | EMPREINTE a6565dcd3e | project=projet-1 no tuto
 #11 SON Son : rien ne joue.
 #11 > retour
 #11 RETOUR
@@ -60,7 +56,7 @@
 #14 ETIQUETTE launch_padlive : 308 713
 #14 > touche 308 713
 #14 DOIGT launch_padlive « Pad Live »
-#15 ROUTE padlive | MODE simple | EMPREINTE be4ee751c8 | project=p-c61e34ea no tuto
+#15 ROUTE padlive | MODE simple | EMPREINTE be4ee751c8 | project=p-4689c261 no tuto
 #15 SON Son : rien ne joue.
 #15 LAYOUT CUT « Pack… » ellipsized (« … »)
 #15 LAYOUT OVERLAP « ? » over « + » (7 x 11 dp)
@@ -91,15 +87,15 @@
 #15 ETIQUETTE padlive_pad_12 : 80 767
 #15 > touche 80 767
 #15 DOIGT padlive_pad_12 « vide, pad A13 »
-#15 DIALOGUE 0.6 s
-#16 ROUTE dialogue:library | MODE simple | EMPREINTE 7155eca286 | project=p-c61e34ea no tuto
+#15 DIALOGUE 0.5 s
+#16 ROUTE dialogue:library | MODE simple | EMPREINTE 7155eca286 | project=p-4689c261 no tuto
 #16 SON Son : rien ne joue.
 #16 LAYOUT OVERLAP « ? » over the touchable « Chute, coup, prêt, pad A15 » (7 x 15 dp)
 #16 LAYOUT CONTRAST « ? » 4.26:1 (needs 4.5:1, 12 sp)
 #16 > retour
 #16 RETOUR
 #16 DIALOGUE 0.2 s
-#17 ROUTE padlive | MODE simple | EMPREINTE b2d4f2ae7e | project=p-c61e34ea no tuto
+#17 ROUTE padlive | MODE simple | EMPREINTE b2d4f2ae7e | project=p-4689c261 no tuto
 #17 SON Son : rien ne joue.
 #17 LAYOUT CUT « Pack : Fête » ellipsized (« … »)
 #17 LAYOUT OVERLAP « Grosse caisse 1 » over « Boucle de kick » (41 x 22 dp)
@@ -143,7 +139,7 @@
 #17 ETIQUETTE padlive_more : 525 1245
 #17 > touche 525 1245
 #17 DOIGT padlive_more « Plus »
-#18 ROUTE padlive | MODE simple | EMPREINTE c7194fed90 | project=p-c61e34ea no tuto
+#18 ROUTE padlive | MODE simple | EMPREINTE c7194fed90 | project=p-4689c261 no tuto
 #18 SON Son : rien ne joue.
 #18 LAYOUT OVERLAP « Grosse caisse 1 » over « Boucle de kick » (41 x 27 dp)
 #18 LAYOUT OVERLAP « Caisse » over « Boucle Acid 303 » (30 x 17 dp)
@@ -190,124 +186,123 @@
 #18 LAYOUT CONTRAST « Charley » 4.43:1 (needs 4.5:1, 14 sp)
 #18 LAYOUT CONTRAST « Laser » 4.00:1 (needs 4.5:1, 14 sp)
 #18 LAYOUT CONTRAST « Tempo » 1.77:1 (needs 4.5:1, 11 sp)
-#18 LAYOUT CONTRAST « Partager » 3.27:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « Partager » 2.65:1 (needs 4.5:1, 13 sp)
 #18 > retour
 #18 RETOUR
-#19 ROUTE launch | MODE simple | EMPREINTE 4ea781227f | project=p-c61e34ea no tuto
+#19 ROUTE launch | MODE simple | EMPREINTE 4ea781227f | project=p-4689c261 no tuto
 #19 SON Son : rien ne joue.
 #19 ETIQUETTE launch_remix : 308 829
 #19 > touche 308 829
 #19 DOIGT launch_remix « Remix »
-#20 ROUTE dialogue:remix_home | MODE simple | EMPREINTE 40d63fe98c | project=p-c61e34ea no tuto
+#20 ROUTE dialogue:remix_home | MODE simple | EMPREINTE 40d63fe98c | project=p-4689c261 no tuto
 #20 SON Son : rien ne joue.
 #20 ETIQUETTE remix_download_thumb : 308 1320
 #20 > touche 308 1320
 #20 DOIGT remix_download_thumb « Télécharger le modèle (174 Mo) »
-#21 ROUTE dialogue:remix_model_ask | MODE simple | EMPREINTE c6d79fbbc8 | project=p-c61e34ea no tuto
+#21 ROUTE dialogue:remix_model_ask | MODE simple | EMPREINTE c6d79fbbc8 | project=p-4689c261 no tuto
 #21 SON Son : rien ne joue.
 #21 ETIQUETTE remix_model_ask_ok : 482 829
 #21 > touche 482 829
 #21 DOIGT remix_model_ask_ok « Télécharger »
-#22 ROUTE dialogue:remix_home | MODE simple | EMPREINTE d72289e033 | project=p-c61e34ea no tuto
+#22 ROUTE dialogue:remix_home | MODE simple | EMPREINTE d72289e033 | project=p-4689c261 no tuto
 #22 SON Son : rien ne joue.
 #22 > attends 30
-#23 ROUTE dialogue:remix_home | MODE simple | EMPREINTE afb01fc198 | project=p-c61e34ea no tuto
+#23 ROUTE dialogue:remix_home | MODE simple | EMPREINTE afb01fc198 | project=p-4689c261 no tuto
 #23 SON Son : rien ne joue.
 #23 > attends 40
-#24 ROUTE dialogue:remix_home | MODE simple | EMPREINTE afb01fc198 | project=p-c61e34ea no tuto
+#24 ROUTE dialogue:remix_home | MODE simple | EMPREINTE afb01fc198 | project=p-4689c261 no tuto
 #24 SON Son : rien ne joue.
 #24 ETIQUETTE remix_pick_thumb : 308 1320
 #24 > touche 308 1320
 #24 DOIGT remix_pick_thumb «  Choisir une chanson »
-#25 ROUTE dialogue:remix_home | MODE simple | EMPREINTE 771e4769fa | project=p-c61e34ea no tuto
+#25 ROUTE dialogue:remix_home | MODE simple | EMPREINTE 771e4769fa | project=p-4689c261 no tuto
 #25 SON Son : rien ne joue.
 #25 > attends 40
-#26 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-c61e34ea no tuto
+#26 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-4689c261 no tuto
 #26 SON Son : rien ne joue.
 #26 LAYOUT CONTRAST « Dans un nouveau projet » 2.51:1 (needs 3.0:1, 14 sp)
 #26 > attends 120
-#27 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-c61e34ea no tuto
+#27 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-4689c261 no tuto
 #27 SON Son : rien ne joue.
 #27 > attends 300
-#28 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-c61e34ea no tuto
+#28 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-4689c261 no tuto
 #28 SON Son : rien ne joue.
 #28 > attends 500
-#29 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-c61e34ea no tuto
+#29 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-4689c261 no tuto
 #29 SON Son : rien ne joue.
 #29 > attends 60
-#30 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-c61e34ea no tuto
+#30 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-4689c261 no tuto
 #30 SON Son : rien ne joue.
 #30 > attends 60
-#31 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-c61e34ea no tuto
+#31 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-4689c261 no tuto
 #31 SON Son : rien ne joue.
 #31 > attends 60
-#32 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-c61e34ea no tuto
+#32 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-4689c261 no tuto
 #32 SON Son : rien ne joue.
 #32 > attends 30
-#33 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-c61e34ea no tuto
+#33 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-4689c261 no tuto
 #33 SON Son : rien ne joue.
-#33 ETIQUETTE remix_dest_build : 308 544
-#33 > touche 308 544
-#33 REFUS hors de portée du pouce (d'une main, la gauche)
-#34 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE 7527e742e8 | project=p-c61e34ea no tuto
+#33 > touche remix_dest_build
+#33 REFUS « remix_dest_build » : aucun point visible, à portée du pouce (d'une main, la gauche) et sous le doigt
+#34 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE af278459ad | project=p-4689c261 no tuto
 #34 SON Son : rien ne joue.
 #34 ETIQUETTE remix_dest_new : 308 716
 #34 > touche 308 716
 #34 DOIGT remix_dest_new « Dans un nouveau projet »
-#35 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 3014091b9d | project=p-c61e34ea no tuto
+#35 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 3014091b9d | project=p-4689c261 no tuto
 #35 SON Son : rien ne joue.
 #35 > retour
 #35 RETOUR
-#36 ROUTE dialogue:remix_home | MODE simple | EMPREINTE ea9d5f9924 | project=p-c61e34ea no tuto
+#36 ROUTE dialogue:remix_home | MODE simple | EMPREINTE ea9d5f9924 | project=p-4689c261 no tuto
 #36 SON Son : rien ne joue.
 #36 > attends 1
-#37 ROUTE dialogue:remix_home | MODE simple | EMPREINTE ea9d5f9924 | project=p-c61e34ea no tuto
+#37 ROUTE dialogue:remix_home | MODE simple | EMPREINTE ea9d5f9924 | project=p-4689c261 no tuto
 #37 SON Son : rien ne joue.
 #37 > attends 1
-#38 ROUTE dialogue:remix_home | MODE simple | EMPREINTE ea9d5f9924 | project=p-c61e34ea no tuto
+#38 ROUTE dialogue:remix_home | MODE simple | EMPREINTE ea9d5f9924 | project=p-4689c261 no tuto
 #38 SON Son : rien ne joue.
 #38 ETIQUETTE stem_* : 105 859
 #38 > appui-long 105 859
 #38 DOIGT stem_3a02635f77d71cd9a979f25b_drums « Batterie »
-#39 ROUTE dialogue:remix_home | MODE simple | EMPREINTE c4fff010ab | project=p-c61e34ea no tuto
+#39 ROUTE dialogue:remix_home | MODE simple | EMPREINTE c4fff010ab | project=p-4689c261 no tuto
 #39 SON Son : le Remix fait écouter « Ma chanson préférée » : la batterie seule (0:01 / 0:40).
 #39 > retour
 #39 RETOUR
-#40 ROUTE launch | MODE simple | EMPREINTE 4ea781227f | project=p-c61e34ea no tuto
+#40 ROUTE launch | MODE simple | EMPREINTE 4ea781227f | project=p-4689c261 no tuto
 #40 SON Son : rien ne joue.
 #40 ETIQUETTE launch_projects : 308 692
 #40 > touche 308 692
 #40 DOIGT launch_projects « Mes projets »
-#41 ROUTE dialogue:projects | MODE simple | EMPREINTE 4bfecfe02c | project=p-c61e34ea no tuto
+#41 ROUTE dialogue:projects | MODE simple | EMPREINTE 4bfecfe02c | project=p-4689c261 no tuto
 #41 SON Son : rien ne joue.
 #41 > retour
 #41 RETOUR
-#42 ROUTE launch | MODE simple | EMPREINTE 4ea781227f | project=p-c61e34ea no tuto
+#42 ROUTE launch | MODE simple | EMPREINTE 4ea781227f | project=p-4689c261 no tuto
 #42 SON Son : rien ne joue.
 #42 ETIQUETTE launch_remix : 308 829
 #42 > touche 308 829
 #42 DOIGT launch_remix « Remix »
-#43 ROUTE dialogue:remix_home | MODE simple | EMPREINTE ea9d5f9924 | project=p-c61e34ea no tuto
+#43 ROUTE dialogue:remix_home | MODE simple | EMPREINTE ea9d5f9924 | project=p-4689c261 no tuto
 #43 SON Son : rien ne joue.
 #43 ETIQUETTE remix_pick_thumb : 308 1320
 #43 > touche 308 1320
 #43 DOIGT remix_pick_thumb «  Choisir une chanson »
-#44 ROUTE dialogue:remix_home | MODE simple | EMPREINTE 7b76cbee7c | project=p-c61e34ea no tuto
+#44 ROUTE dialogue:remix_home | MODE simple | EMPREINTE 7b76cbee7c | project=p-4689c261 no tuto
 #44 SON Son : rien ne joue.
 #44 > attends 30
-#45 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-c61e34ea no tuto
+#45 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE fa6a881735 | project=p-4689c261 no tuto
 #45 SON Son : rien ne joue.
 #45 ETIQUETTE remix_dest_existing : 308 863
 #45 > touche 308 863
 #45 DOIGT remix_dest_existing « Dans un projet existant »
-#46 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE feb962da69 | project=p-c61e34ea no tuto
+#46 ROUTE dialogue:remix_dest | MODE simple | EMPREINTE feb962da69 | project=p-4689c261 no tuto
 #46 SON Son : rien ne joue.
 #46 LAYOUT CONTRAST «  Retour » 3.03:1 (needs 4.5:1, 14 sp)
 #46 ETIQUETTE remix_dest_project_p-* : 308 691
 #46 > touche 308 691
-#46 DOIGT remix_dest_project_p-c61e34ea « Live »
-#46 REJEU bouton « Live » (remix_dest_project_p-0c6b2d2e) absent, sous le doigt : remix_dest_project_p-c61e34ea « Live »
-#47 ROUTE dialogue:song_import | MODE simple | EMPREINTE f555dee6cf | project=p-c61e34ea no tuto
+#46 DOIGT remix_dest_project_p-4689c261 « Live »
+#46 REJEU bouton « Live » (remix_dest_project_p-0c6b2d2e) absent, sous le doigt : remix_dest_project_p-4689c261 « Live »
+#47 ROUTE dialogue:song_import | MODE simple | EMPREINTE f555dee6cf | project=p-4689c261 no tuto
 #47 SON Son : rien ne joue.
 #47 LAYOUT CONTRAST « Mon projet prend le tempo de Ma chanson préférée (120 BPM) » 1.66:1 (needs 4.5:1, 14 sp)
 #47 LAYOUT CONTRAST « Toute la chanson, à partir de la brique A » 1.91:1 (needs 4.5:1, 14 sp)
@@ -315,29 +310,28 @@
 #47 ETIQUETTE import_voice : 308 913
 #47 > touche 308 913
 #47 DOIGT import_voice « Juste la voix sur mon beat »
-#48 ROUTE dialogue:song_import | MODE simple | EMPREINTE 594bf31a67 | project=p-c61e34ea no tuto
+#48 ROUTE dialogue:song_import | MODE simple | EMPREINTE 594bf31a67 | project=p-4689c261 no tuto
 #48 SON Son : rien ne joue.
 #48 ETIQUETTE import_go : 425 1147
 #48 > touche 425 1147
 #48 DOIGT import_go « Mettre dans mon projet »
-#49 ROUTE ? | MODE simple | EMPREINTE cd94e515f6 | project=p-c61e34ea no tuto
+#49 ROUTE ? | MODE simple | EMPREINTE cd94e515f6 | project=p-4689c261 no tuto
 #49 SON Son : rien ne joue.
 #49 LAYOUT CONTRAST « CHANSON : MA CHANSON PRÉFÉRÉE » 3.36:1 (needs 4.5:1, 12 sp)
 #49 LAYOUT CONTRAST « Effets » 4.44:1 (needs 4.5:1, 14 sp)
 #49 ETIQUETTE remix_cut_thumb : 308 996
 #49 > touche 308 996
 #49 DOIGT remix_cut_thumb «  Découper la chanson »
-#50 ROUTE cut_screen | MODE simple | EMPREINTE 4157fd4290 | project=p-c61e34ea no tuto
+#50 ROUTE cut_screen | MODE simple | EMPREINTE 4157fd4290 | project=p-4689c261 no tuto
 #50 SON Son : rien ne joue.
 #50 ETIQUETTE cut_span_play : 457 780
 #50 > touche 457 780
 #50 DOIGT cut_span_play « Écouter le bout »
-#51 ROUTE cut_screen | MODE simple | EMPREINTE 1185eba245 | project=p-c61e34ea no tuto
+#51 ROUTE cut_screen | MODE simple | EMPREINTE 1185eba245 | project=p-4689c261 no tuto
 #51 SON Son : un bout de la chanson joue : la voix seule, 3,0 s.
-#51 ETIQUETTE cut_span_end : 471 613
-#51 > glisse 471 613 561 613
-#51 REFUS hors de portée du pouce (d'une main, la gauche)
-#52 ROUTE cut_screen | MODE simple | EMPREINTE 7dfe38e387 | project=p-c61e34ea no tuto
+#51 > glisse cut_span_end 90 0
+#51 REFUS « cut_span_end » : aucun point visible, à portée du pouce (d'une main, la gauche) et sous le doigt
+#52 ROUTE cut_screen | MODE simple | EMPREINTE d88364fb8a | project=p-4689c261 no tuto
 #52 SON Son : un bout de la chanson joue : la voix seule, 3,0 s.
 #52 LAYOUT CONTRAST « 6 temps · 0:03.0 » 4.14:1 (needs 4.5:1, 13 sp)
 #52 FIN : rejeu : oracle non tenu : « « Fin du bout » [état » absent

@@ -1,5 +1,5 @@
 #0 SIEGE lang=fr device=phone font=100 mode=- theme=- fresh=non gestes.max=120 lit=oui main=both amenee=- rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-08-mes-exports-simple rejeu.n=51
-#0 PREMIER ECRAN reel_s=6.2 simule_s=2.4 jvm_s=14.1 travail=non vide=non attente_s=0.0
+#0 PREMIER ECRAN reel_s=6.2 simule_s=2.4 jvm_s=14.2 travail=non vide=non attente_s=0.0
 #1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 91bfdc8316 | project=projet-1 no tuto
 #1 SON Son : rien ne joue.
 #1 ETIQUETTE welcome_demo : 294 816
@@ -10,11 +10,11 @@
 #2 ETIQUETTE mode_card_pro : 294 510
 #2 > touche 294 510
 #2 DOIGT mode_card_pro « Pro »
-#3 ROUTE dialogue:demo_ready | MODE pro | EMPREINTE 380ad1b3fd | project=p-740134ca no tuto
+#3 ROUTE dialogue:demo_ready | MODE pro | EMPREINTE 380ad1b3fd | project=p-e91cc727 no tuto
 #3 SON Son : rien ne joue.
 #3 > retour
 #3 RETOUR
-#4 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE f88a7c4c43 | project=p-740134ca no tuto
+#4 ROUTE timeline_screen/tab_Structure | MODE pro | EMPREINTE f88a7c4c43 | project=p-e91cc727 no tuto
 #4 SON Son : rien ne joue.
 #4 LAYOUT CUT « Démo · Acid house » ellipsized (« … »)
 #4 LAYOUT CUT « Sauvegardé » wider than its box (by 13.5 dp)
@@ -23,8 +23,8 @@
 #4 ETIQUETTE top_share : 543 42
 #4 > touche 543 42
 #4 DOIGT top_share
-#4 DIALOGUE 0.8 s
-#5 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 902fba7fd8 | project=p-740134ca no tuto
+#4 DIALOGUE 0.7 s
+#5 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 902fba7fd8 | project=p-e91cc727 no tuto
 #5 SON Son : rien ne joue.
 #5 LAYOUT OVERLAP « Prêt à partager ? » over the touchable « Fermer la feuille » (174 x 28 dp)
 #5 LAYOUT OVERLAP « Nom du morceau (et du projet) » over the touchable « Fermer la feuille » (186 x 18 dp)
@@ -65,26 +65,26 @@
 #5 > touche 164 453
 #5 DOIGT share_target_STREAMING « Streaming · −14 LUFS »
 #5 DIALOGUE 0.3 s
-#6 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE d07a6cc2e8 | project=p-740134ca no tuto
+#6 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE d07a6cc2e8 | project=p-e91cc727 no tuto
 #6 SON Son : rien ne joue.
 #6 LAYOUT OVERLAP « −14 LUFS sur tout le morceau : le volume où Spotify et YouTube ramènent tous les morceaux. Le même réglage que dans Mix. » over the touchable « Fermer la feuille » (339 x 54 dp)
 #6 ETIQUETTE share_go : 294 1116
 #6 > touche 294 1116
 #6 DOIGT share_go «   Partager »
 #6 DIALOGUE 0.4 s
-#7 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 1f1e14652a | project=p-740134ca no tuto
+#7 ROUTE dialogue:share_progress | MODE pro | EMPREINTE e10aefa96d | project=p-e91cc727 no tuto
 #7 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
-#7 LAYOUT CONTRAST «   20 % » 4.21:1 (needs 4.5:1, 14 sp)
+#7 LAYOUT CONTRAST «   25 % » 4.21:1 (needs 4.5:1, 14 sp)
 #7 > attends 10
 #7 DIALOGUE 0.3 s
-#8 ROUTE dialogue:share_progress | MODE pro | EMPREINTE e10aefa96d | project=p-740134ca no tuto
+#8 ROUTE dialogue:share_progress | MODE pro | EMPREINTE e10aefa96d | project=p-e91cc727 no tuto
 #8 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
-#8 LAYOUT CONTRAST «   58 % » 4.21:1 (needs 4.5:1, 14 sp)
+#8 LAYOUT CONTRAST «   66 % » 4.21:1 (needs 4.5:1, 14 sp)
 #8 > attends 10
-#8 DIALOGUE 0.2 s
-#9 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 795a3cb6ec | project=p-740134ca no tuto
+#8 DIALOGUE 0.3 s
+#9 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 0a4f0d60e7 | project=p-e91cc727 no tuto
 #9 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
-#9 LAYOUT CONTRAST «   91 % » 4.21:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST «   100 % » 4.21:1 (needs 4.5:1, 14 sp)
 #9 > touche vue_Drive
 #9 BANC étiquette introuvable : vue_Drive
 #9 FIN : rejeu : divergé au pas 9 (étiquette « vue_Drive » introuvable)

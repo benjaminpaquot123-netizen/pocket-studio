@@ -1,5 +1,5 @@
 #0 SIEGE lang=fr device=phone411 font=100 mode=simple theme=- fresh=non gestes.max=90 lit=oui main=left amenee=- rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-04-gaucher-mode rejeu.n=2
-#0 PREMIER ECRAN reel_s=9.9 simule_s=2.4 jvm_s=24.2 travail=non vide=non attente_s=0.0
+#0 PREMIER ECRAN reel_s=9.1 simule_s=2.4 jvm_s=22.4 travail=non vide=non attente_s=0.0
 #1 ROUTE dialogue:welcome | MODE simple | EMPREINTE d8c0ef85bb | project=projet-1 no tuto
 #1 SON Son : rien ne joue.
 #1 ETIQUETTE welcome_remix : 308 1182
@@ -7,9 +7,8 @@
 #1 DOIGT welcome_remix « Extraire la voix d'une chanson »
 #2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 3014091b9d | project=projet-1 no tuto
 #2 SON Son : rien ne joue.
-#2 ETIQUETTE mode_card_simple : 308 297
-#2 > touche 308 297
-#2 REFUS hors de portée du pouce (d'une main, la gauche)
-#3 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 44308173da | project=projet-1 no tuto
+#2 > touche mode_card_simple
+#2 REFUS « mode_card_simple » : aucun point visible, à portée du pouce (d'une main, la gauche) et sous le doigt
+#3 ROUTE dialogue:mode_step | MODE simple | EMPREINTE a6565dcd3e | project=projet-1 no tuto
 #3 SON Son : rien ne joue.
 #3 FIN : rejeu : oracle non tenu : « texte « Remix » » absent

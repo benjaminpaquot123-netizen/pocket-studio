@@ -1,3 +1,3 @@
 oracle non tenu : « « Fin du bout » [état » absent
-  dernier écran différent de l'origine : écran 52, empreinte 7dfe38e387 (origine 9aaa4ebcb5), première ligne différente : origine « touchable « Live Sauvegardé » (nom « Mes projets ») @ 148,42 », rejeu « icône (dossier ouvert) ✓ « Live Sauvegardé » @ 141,42 »
-  pas 46 : bouton « Live » (remix_dest_project_p-0c6b2d2e) absent, sous le doigt : remix_dest_project_p-c61e34ea « Live »
+  dernier écran différent de l'origine : écran 52, empreinte d88364fb8a (origine 9aaa4ebcb5), première ligne différente : origine « touchable « Live Sauvegardé » (nom « Mes projets ») @ 148,42 », rejeu « icône (dossier ouvert) ✓ « Live Sauvegardé » @ 141,42 »
+  pas 46 : bouton « Live » (remix_dest_project_p-0c6b2d2e) absent, sous le doigt : remix_dest_project_p-4689c261 « Live »

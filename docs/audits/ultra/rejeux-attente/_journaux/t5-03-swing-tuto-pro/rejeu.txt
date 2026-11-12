@@ -1,4 +1,2 @@
 oracle non tenu : « curseur « Swing » » absent
   dernier écran différent de l'origine : écran 41, empreinte 7a2f526408 (origine c243a8a489), première ligne différente : origine « touchable « Mein Projekt 1 Gespeichert » (nom « Meine Projekte ») @ 195,42 », rejeu « icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 192,42 »
-  pas 21 : bouton « Später » (tuto_kit_later) déplacé (maintenant en 450,996), sous le doigt : rien
-  pas 22 : bouton « Später » (tuto_kit_later) déplacé (maintenant en 450,996), sous le doigt : rien

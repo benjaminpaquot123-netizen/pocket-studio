@@ -7,23 +7,28 @@ Branche : `eq/tour-5-rejeux6`. Décisions : `docs/decisions/tour-5-rejeux6.md`. 
 - `rejeu-defauts.sh` garde le journal de chaque rejeu ; un « tenu » exige que l'étiquette voulue soit touchée dans ce journal.
 - `reachableNear` : un toucher par étiquette tombe dans la portée du pouce quand le milieu du bouton en est hors.
 
-## Résultats des rejeux (rejeu-defauts.sh)
-- t5-01 tenu.
-- Défauts réels confirmés (restent dans `rejeux-attente/`, non corrigés) : t5-04 (carte « Simple » hors de portée du pouce gauche), t5-05 (après « Dans un nouveau projet » l'appli retombe sur « Simple ou Pro ? »), t5-06 (poignée « Fin du bout » hors de portée du pouce gauche : glissement refusé).
-- Non tenu, cause à instruire (défaut de l'appli non établi) : t5-03 (curseur « Swing » absent alors que le tuto est à l'étape swing).
-- Divergés (banc, pas de verdict d'oracle) : t5-02 au pas 122, t5-07 au pas 18 (fenêtre de dialogue du pliable : le doigt tombe sur une autre ligne), t5-08 au pas 9 (export lent du banc).
+## Résultats des rejeux (rejeu-defauts.sh, repassés après la relecture)
+- Après la relecture (graves 1 et 2) : un « tenu » exige que CHAQUE geste par étiquette ait touché son élément (ligne « DOIGT » qui le nomme, sans « REFUS ») ; un toucher par étiquette ne tombe que sur une partie visible de l'élément, à l'écran, à portée du pouce et sous le doigt, sinon il est refusé (« REFUS »).
+- Aucun rejeu tenu. t5-01 n'est plus tenu : mêmes gestes et mêmes doigts que le passage tenu, mais « पार्ट: C » absent de l'écran 28 (cause à instruire, banc ou appli).
+- Constaté au banc (modèle de portée du pouce du banc, 500 dp, pas une mesure sur téléphone ; restent dans `rejeux-attente/`) : t5-04, t5-05, t5-06 (les cartes « Simple » et « Pro » sont maintenant refusées dès le pas 2 au pouce gauche).
+- Non tenu, cause à instruire : t5-03 (curseur « Swing » absent).
+- Divergés (banc) : t5-02 au pas 97, t5-07 au pas 7 (les pas 4 à 6 sont maintenant refusés : le doigt tombait sur une autre ligne du pliable), t5-08 au pas 9.
+
+## Rouges constatés
+- reachableNear (relecture, point 3) : `2e2c5f3d` n'avait qu'un rouge de compilation (rejoué sur `62233649` : `nearestReachable` n'existe pas). Le rouge de comportement est la paire « rouge: a tag touch lands on a shown, uncovered point of its element » / « vert: » de cette reprise : 3 tests de `BenchSeatOptionsTest` rouges sur assertion avant la correction.
 
 ## Chemins (endroits qui lisent ou montrent les mêmes données)
 - chemin: Banc › toucher par étiquette dans la portée du pouce | test: BenchSeatOptionsTest#aTagOutOfTheThumbsReachIsTouchedInsideTheReach
+- chemin: Banc › toucher par étiquette d'un élément recouvert ou coupé | test: BenchSeatOptionsTest#aTagCoveredByAnotherElementIsTouchedWhereItShows
 - chemin: Banc › verdict d'un rejeu (bouton déplacé) | test: BenchReplayReadableTest#aMovedButtonIsSaidInTheVerdict
 
 tests: *BenchSeatOptionsTest* *BenchReplayReadableTest*
 
-t5-01-partie-simple : oracle tenu
-t5-02-prise-apres-padlive : oracle non tenu (divergé au pas 122, étiquette « track_2 » introuvable)
-t5-03-swing-tuto-pro : oracle non tenu (curseur « Swing » absent)
-t5-04-gaucher-mode : oracle non tenu (carte « Simple » hors de portée du pouce gauche : défaut confirmé)
-t5-05-gaucher-remix-projet : oracle non tenu (retour sur « Simple ou Pro ? » après « Dans un nouveau projet » : défaut confirmé)
-t5-06-gaucher-fin-du-bout : oracle non tenu (poignée « Fin du bout » hors de portée du pouce gauche : défaut confirmé)
-t5-07-etoile-sons : oracle non tenu (divergé au pas 18, étiquette « name_clear » introuvable)
-t5-08-mes-exports-simple : oracle non tenu (divergé au pas 9, étiquette « vue_Drive » introuvable)
+t5-01-partie-simple : oracle non tenu : « पार्ट: C » absent
+t5-02-prise-apres-padlive : divergé au pas 97 (étiquette « top_more » introuvable)
+t5-03-swing-tuto-pro : oracle non tenu : « curseur « Swing » » absent
+t5-04-gaucher-mode : oracle non tenu : « texte « Remix » » absent
+t5-05-gaucher-remix-projet : oracle non tenu : « touchable « Remix » absent
+t5-06-gaucher-fin-du-bout : oracle non tenu : « « Fin du bout » [état » absent
+t5-07-etoile-sons : divergé au pas 7 (étiquette « track_menu_settings » introuvable)
+t5-08-mes-exports-simple : divergé au pas 9 (étiquette « vue_Drive » introuvable)

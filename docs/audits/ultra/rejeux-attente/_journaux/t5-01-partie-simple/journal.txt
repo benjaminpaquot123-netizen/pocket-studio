@@ -1,5 +1,5 @@
 #0 SIEGE lang=hi device=phone360 font=130 mode=- theme=- fresh=reel gestes.max=60 lit=oui main=both amenee=- rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-01-partie-simple rejeu.n=27
-#0 PREMIER ECRAN reel_s=11.1 simule_s=2.4 jvm_s=26.4 travail=non vide=non attente_s=0.0
+#0 PREMIER ECRAN reel_s=11.3 simule_s=2.4 jvm_s=24.3 travail=non vide=non attente_s=0.0
 #1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 3a945054bb | project=projet-1 no tuto
 #1 SON Son : rien ne joue.
 #1 ETIQUETTE welcome_guided : 270 540
@@ -105,14 +105,14 @@
 #21 ETIQUETTE wizard_create : 400 1116
 #21 > touche 400 1116
 #21 DOIGT wizard_create « गाना बनाओ »
-#22 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 059be60ebf | project=p-dc96b0db no tuto
+#22 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 059be60ebf | project=p-51c36eb3 no tuto
 #22 SON Son : rien ne joue.
 #22 LAYOUT CUT « बार 1/64 » drawn past its parent's edge (down, 22 dp shown of 25)
 #22 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
 #22 ETIQUETTE simple_track_inst:2 : 195 708
 #22 > touche 195 708
 #22 DOIGT simple_track_inst:2 « मेलोडी »
-#23 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE e7fbc0c584 | project=p-dc96b0db no tuto
+#23 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE e7fbc0c584 | project=p-51c36eb3 no tuto
 #23 SON Son : rien ne joue.
 #23 LAYOUT OVERLAP « इसका साउंड: मेलोडी » over the touchable « शीट बंद करें » (201 x 35 dp)
 #23 LAYOUT OVERLAP « एक साउंड पर टैप करो: ये पूरे गाने में इस ट्रैक का साउंड बदल देगा। » over the touchable « शीट बंद करें » (240 x 48 dp)
@@ -135,32 +135,33 @@
 #23 ETIQUETTE sound_chooser_close : 455 134
 #23 > touche 455 134
 #23 DOIGT sound_chooser_close « बंद करो »
-#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f26905125c | project=p-dc96b0db no tuto
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f26905125c | project=p-51c36eb3 no tuto
 #24 SON Son : rien ne joue.
 #24 LAYOUT CUT « सेव हो गया » wider than its box (by 1.3 dp)
 #24 LAYOUT CONTRAST « शुरुआत के लिए » 4.37:1 (needs 4.5:1, 12 sp)
 #24 ETIQUETTE guide_option_drop : 270 873
 #24 > touche 270 873
 #24 DOIGT guide_option_drop « सुनो »
-#25 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0ff4cb3f93 | project=p-dc96b0db no tuto
+#25 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0ff4cb3f93 | project=p-51c36eb3 no tuto
 #25 SON Son : le morceau joue (partie « A »).
 #25 ETIQUETTE tab_simple_Clavier : 271 1050
 #25 > touche 271 1050
 #25 DOIGT tab_simple_Clavier « कीबोर्ड »
-#26 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f1d55d1b92 | project=p-dc96b0db no tuto
+#26 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2348bd48f6 | project=p-51c36eb3 no tuto
 #26 SON Son : le morceau joue (partie « A »).
+#26 LAYOUT CUT « बार 2/64 » drawn past its parent's edge (down, 22 dp shown of 25)
 #26 LAYOUT CONTRAST «  मेरी मेलोडी रिकॉर्ड करो » 2.78:1 (needs 4.5:1, 14 sp)
 #26 LAYOUT TARGET « A# 4 बजाओ » 14 x 91 dp (touch 48 x 91)
 #26 LAYOUT TARGET « A# 5 बजाओ » 14 x 91 dp (touch 48 x 91)
 #26 ETIQUETTE part_header_pick : 102 283
 #26 > touche 102 283
 #26 DOIGT part_header_pick « पार्ट: A · इंट्रो »
-#27 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE 55883a5630 | project=p-dc96b0db no tuto
+#27 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE 55883a5630 | project=p-51c36eb3 no tuto
 #27 SON Son : le morceau joue (partie « A »).
 #27 ETIQUETTE part_pick_2 : 200 314
 #27 > touche 200 314
 #27 DOIGT part_pick_2 « C · मुखड़ा »
-#28 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 313e82a7e7 | project=p-dc96b0db no tuto
+#28 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 75a5ad66d0 | project=p-51c36eb3 no tuto
 #28 SON Son : la musique du projet joue en boucle.
-#28 LAYOUT CUT « बार 1/8 » drawn past its parent's edge (down, 22 dp shown of 25)
-#28 FIN : rejeu : oracle tenu
+#28 LAYOUT CUT « बार 3/4 » drawn past its parent's edge (down, 22 dp shown of 25)
+#28 FIN : rejeu : oracle non tenu : « पार्ट: C » absent

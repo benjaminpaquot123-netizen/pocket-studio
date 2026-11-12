@@ -667,7 +667,9 @@ private fun roleWhy(role: String): String = when (role) {
 }
 
 /** The second synth's chip in a layer's sound picker. */
-internal fun plaitsLabel(simple: Boolean): String = "Plaits"
+internal fun plaitsLabel(simple: Boolean): String =
+    // Tour 6, lot 2, T16 (seat D a, Japanese: « Plaits », a module's name, meaningless to a beginner): said plainly in the Mode simple.
+    if (simple) com.pocketstudio.model.i18n.tr("Autres synthés") else "Plaits"
 
 /** The sounds a layer can take (the synth's, Plaits', the favourites; the 808 for a sub). */
 @Composable

@@ -97,7 +97,9 @@ if [ "${1:-}" = "--ci" ]; then
     echo "== Contrôles rapides ($(git rev-parse --short HEAD))"
   else
     echo "== Avant de lancer la CI à la main ($(git rev-parse --short HEAD))"
-    [ -z "$(git status --porcelain --untracked-files=no)" ] || bad "des changements ne sont pas commités : la CI ne les verra pas" "committer, ou les mettre de côté"
+    # (Not a linked third-party folder, « T » in git status, nor the portal's kept failures: as for « tour-N <zone> ».)
+    [ -z "$(git status --porcelain --untracked-files=no | grep -v '^ T' | grep -v ' docs/audits/ultra/rejeux/_echecs/')" ] \
+      || bad "des changements ne sont pas commités : la CI ne les verra pas" "committer, ou les mettre de côté"
   fi
   if [ "$quick" -eq 1 ]; then
     :

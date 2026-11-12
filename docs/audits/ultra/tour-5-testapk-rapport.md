@@ -18,4 +18,14 @@ Auto-audit de la boucle : `docs/audits/ultra/auto-audit-test-apk-2026-11-12.md`.
 - Non prouvé sur téléphone : la reprise après une sortie de l'appli, le nouveau toucher de Liquid DnB, l'écran de « Retester les corrections ».
 - T2 (contrôle de mise en page) réduit, T3 (questions à l'oreille) en un passage, T1b (micro, empreinte) reporté.
 
+## Chemins (endroits qui lisent ou montrent les mêmes données)
+- chemin: Robot › toucher d'une liste défilée | test: JourneyDriverTest#aTapWaitsForOneCopyThenScrollsAndTouches
+- chemin: Robot › toucher dans toutes les fenêtres | test: InAppDriverTest#realTouchesInEveryWindowAndListsScrolledToTheirTarget
+- chemin: Robot › bouton qui ouvre une autre appli | test: InAppDriverTest#aControlThatOpensAnotherAppIsNotTouched
+- chemin: Guide › carte « morceau de référence » | test: SortieDeLAppliTest#theGuideSkipsTheCardThatOpensTheFilePickerAndSaysSo
+- chemin: Premier lancement › premier morceau | test: PremiereInstallationTest#aFirstInstallReachesTheFirstSongsCreation
+- chemin: Mes projets › nouveau morceau ouvert | test: NewSongOpenTest#theNewSongOpeningIsNotLoggedAsAFailure
+- chemin: Tout tester › écoute seconde par seconde | test: ToutTesterTest#aSteadySongIsHeardSecondBySecondWithoutAlert
+- chemin: Rapport › zip | test: RapportZipTest#theZipStaysUnderItsSizeWithTheTextsAlwaysIn
+
 tests: com.pocketstudio.bentest.* *ProjectsViewModel*

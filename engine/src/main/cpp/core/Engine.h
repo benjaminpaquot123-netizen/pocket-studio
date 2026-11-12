@@ -678,6 +678,10 @@ private:
     // « Enregistrer ce que je joue » (ResampleArm): the bar lines of the live pads' clock as heard
     // (output frames, the master's delay included), kept until the output reaches them.
     ResampleBuffer* resample_ = nullptr;
+    // Tour 5 (kick): the app says the output is the phone's speaker (SetSpeakerOutput). The mixer plays
+    // the speaker's kick only while no take of the output is armed (a take is kept, played anywhere).
+    bool speakerOutput_ = false;
+    void applySpeakerOutput() { mixer_.setSpeakerOutput(speakerOutput_ && !resample_, resample_ != nullptr); }
     bool resampleWait_ = false;
     int64_t resampleArmed_ = 0;  // output frame it was armed at: earlier bar lines do not start it
     int64_t resampleStop_ = -1;  // output frame its end was asked at (-1: not asked)

@@ -32,10 +32,11 @@ void SpeakerKick::reset() {
     level_ = on_ ? 1.0f : 0.0f;
 }
 
-void SpeakerKick::setOn(bool on) {
+void SpeakerKick::setOn(bool on, bool instant) {
     // Switched on from rest: the filters start from silence, not from an old state.
     if (on && !on_ && level_ == 0.0f) clear();
     on_ = on;
+    if (!on && instant) level_ = 0.0f;
 }
 
 void SpeakerKick::process(float* l, float* r, int n) {

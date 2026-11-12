@@ -351,6 +351,7 @@ void Engine::applyCommand(const Command& command) {
                 resample_->written.store(0, std::memory_order_relaxed);
                 resample_->state.store(0, std::memory_order_release);
             }
+            applySpeakerOutput();
             break;
         case CommandType::ResampleStop:
             // Its take named (the app's): a late stop for the take before leaves the new one alone.
@@ -532,7 +533,8 @@ void Engine::applyCommand(const Command& command) {
             else if (command.a == 10) mixer_.masterChain().setKnownLevel(command.value);  // LUFS, the known drive's loud part (S7)
             break;
         case CommandType::SetSpeakerOutput:
-            mixer_.setSpeakerOutput(std::isfinite(command.value) && command.value > 0.5f);
+            speakerOutput_ = std::isfinite(command.value) && command.value > 0.5f;
+            applySpeakerOutput();
             break;
         case CommandType::SetMasterPro:
             if (!std::isfinite(command.value)) break;
@@ -1867,6 +1869,7 @@ void Engine::finishResample() {
     resample_ = nullptr;
     resampleStop_ = -1;
     barCount_ = 0;
+    applySpeakerOutput();
 }
 
 void Engine::captureResample(const float* output, int numFrames, int outputChannels, int64_t outBase) {

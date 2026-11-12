@@ -36,7 +36,8 @@ public:
 
     void prepare(float rate);
     void reset();
-    void setOn(bool on);
+    // `instant`: off at once, no glide (a take of the output starts: nothing of it may be in there).
+    void setOn(bool on, bool instant = false);
     bool on() const { return on_; }
     // The kick's strip, in place (before its fader).
     void process(float* l, float* r, int n);

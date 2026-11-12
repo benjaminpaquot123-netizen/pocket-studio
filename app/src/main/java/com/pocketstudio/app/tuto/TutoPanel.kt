@@ -474,9 +474,16 @@ fun TutoPanel(
             ) {
                 when {
                     ui.demo != null -> DemoCaption(ui.demo)
-                    ui.bravo -> BravoBanner(mine, ui.made, nextChapter = ui.chapterDoneNext(), missing = ui.chapterLeft())
+                    ui.bravo -> BravoBanner(mine, ui.made, nextChapter = ui.chapterDoneNext(), missing = ui.chapterLeft(), already = alreadyWords(ui))
                     else -> {
                         ui.made?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.Acid, modifier = Modifier.testTag("tuto_made")) }
+                        // Tour 6 (N20): reached done, never touched: said, not left to look like a mistake.
+                        alreadyWords(ui)?.let { words ->
+                            Column(Modifier.testTag("tuto_already")) {
+                                Text(tr("Déjà fait !"), color = Neon.Acid, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                                Text(words, style = MaterialTheme.typography.bodySmall, color = Neon.TextPrimary)
+                            }
+                        }
                         Row(verticalAlignment = Alignment.Top) {
                             if (done) Icon(Icons.Filled.CheckCircle, contentDescription = tr("Fait"), tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp).size(20.dp).testTag("tuto_step_done"))
                             Text(tutoWords(step.textFor(ui.progress.level), names), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.testTag("tuto_text"))
@@ -519,7 +526,7 @@ private fun MoreWords(modifier: Modifier, more: suspend () -> Unit) {
 
 /** « Bravo, c'est réussi ! » in the step's text's place ([made]: what the step's button made, said instead of the hint). */
 @Composable
-private fun BravoBanner(mine: Boolean, made: String? = null, nextChapter: String? = null, missing: Int? = null) {
+private fun BravoBanner(mine: Boolean, made: String? = null, nextChapter: String? = null, missing: Int? = null, already: String? = null) {
     Row(
         Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Neon.Acid.copy(alpha = 0.14f)).border(1.dp, Neon.Acid, RoundedCornerShape(12.dp))
             .padding(horizontal = 12.dp, vertical = 8.dp).testTag("tuto_bravo"),
@@ -532,6 +539,7 @@ private fun BravoBanner(mine: Boolean, made: String? = null, nextChapter: String
             if (nextChapter != null) {
                 Text(tr("Bravo, chapitre fini !"), color = Neon.Acid, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold,
                     modifier = Modifier.testTag("tuto_chapter_done"))
+                already?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextPrimary, modifier = Modifier.testTag("tuto_already")) }
                 Text(
                     made ?: if (mine) tr("Écoute ton morceau tel qu'il est maintenant, puis passe au chapitre suivant : « %s ».", nextChapter)
                     else tr("Chapitre suivant : « %s ».", nextChapter),
@@ -539,7 +547,9 @@ private fun BravoBanner(mine: Boolean, made: String? = null, nextChapter: String
                 )
                 return@Column
             }
-            Text(tr("Bravo, c'est réussi !"), color = Neon.Acid, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            // N20: ticked with no gesture (the project held it): « Déjà fait ! » and why, not « Bravo » for a touch never made.
+            Text(if (already != null) tr("Déjà fait !") else tr("Bravo, c'est réussi !"), color = Neon.Acid, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            already?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = Neon.TextPrimary, modifier = Modifier.testTag("tuto_already")) }
             Text(
                 made ?: if (mine) tr("Écoute ton résultat, puis touche « Étape suivante » quand tu veux.") else tr("Touche « Étape suivante » quand tu veux."),
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextPrimary, modifier = if (made != null) Modifier.testTag("tuto_made") else Modifier,
@@ -551,6 +561,13 @@ private fun BravoBanner(mine: Boolean, made: String? = null, nextChapter: String
             )
         }
     }
+}
+
+/** N20: why the step shown is done already ([TutoUi.already]), null when it is not said. */
+private fun alreadyWords(ui: TutoUi): String? {
+    if (!ui.already || ui.current.id !in ui.progress.done) return null
+    return if (ui.current.manual || ui.current.listening) tr("Tu as déjà fait cette étape.")
+    else tr("Ton morceau avait déjà ce que demande cette étape : rien à toucher.")
 }
 
 /** The next chapter's title when the step shown is its chapter's last one and it is done (null: not a chapter's end). */

@@ -210,6 +210,9 @@ class TutoController(
     /** The step whose « Suivant » already said what leaving it undone costs (the next touch lets it go). */
     private var skipSaid: String? = null
 
+    /** N20: the project as it was when the step shown was reached (a tick with nothing changed since: « Déjà fait »). */
+    private var arrived: Project? = null
+
     init {
         store.load(projectId)?.let(::show)
         scope.launch { project.debounce(debounceMs).collect { check(it) } }
@@ -720,6 +723,7 @@ class TutoController(
         val moved = before?.current?.id != step.id
         if (moved) {
             skipSaid = null
+            arrived = project.value
             stopListening()
             stopDemo()
             baseline = step.check.takeIf { it.startsWith("changed:") }?.let { step.id to TutoChecks.signature(it.removePrefix("changed:"), project.value) }
@@ -732,6 +736,8 @@ class TutoController(
             need = target?.let { TutoChecks.need(step, project.value, it, base()) },
             demo = if (same) kept!!.demo else null, demoCells = if (same) kept!!.demoCells else null, fade = if (same) kept!!.fade else 0f,
             atEnd = atEnd || (same && kept!!.atEnd), made = if (same) kept!!.made else null,
+            // N20: a step reached done (ticked earlier, by the project or by the user) is said « Déjà fait ».
+            already = if (same) kept!!.already else step.id in saved.done,
         )
         // A step already done when it is reached (the key already right) is ticked at once.
         if (moved && before != null) scope.launch { check(project.value) }
@@ -770,6 +776,8 @@ class TutoController(
         // Never on by itself: the step stays with « Bravo », « Écouter ton résultat » and « Étape suivante ».
         if (found.isNotEmpty()) {
             tick(found, advance = false, bravo = true)
+            // N20: the step shown ticked with nothing changed since it was reached: the project held it already.
+            if (u.current.id in found && arrived.let { it != null && (it === p || it == p) }) _ui.value = _ui.value?.copy(already = true)
             // The Drop 2's bass written: what its button said (« à toi d'écrire ») is said no more under « Bravo ».
             if (u.current.id in found && (u.current.transpose != 0 || skipSaid == u.current.id || u.current.check.startsWith("song:"))) _ui.value = _ui.value?.copy(made = null)
         }

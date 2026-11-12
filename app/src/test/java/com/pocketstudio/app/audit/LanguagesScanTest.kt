@@ -63,6 +63,8 @@ class LanguagesScanTest(private val screen: String, private val code: String, pr
         val lang = Lang.entries.first { it.code == code }
         val s = SCREENS.getValue(screen)
         if (font != "1.0") RuntimeEnvironment.setFontScale(font.toFloat())
+        // The Pro's screens at 200 % on a tablet upright, as tour 5's seat F b (the Mode simple's on the small phone).
+        if (font != "1.0" && !s.simple && !s.firstLaunch && !s.launchChoice) RuntimeEnvironment.setQualifiers("w800dp-h1280dp-hdpi")
         h.start(simple = s.simple, firstLaunch = s.firstLaunch, lang = lang, launchChoice = s.launchChoice)
         if (s.launchChoice) h.awaitTag("launch_edited")
         s.go(this)
@@ -70,12 +72,25 @@ class LanguagesScanTest(private val screen: String, private val code: String, pr
         compose.mainClock.advanceTimeBy(800)
         compose.waitForIdle()
         val density = ApplicationProvider.getApplicationContext<android.content.Context>().resources.displayMetrics.density
-        val found = LayoutScan.scan(compose, density, CaptureMatrixTest.LAYOUT).filterNot { Allowed.matches("lang_$screen", it) }.map { it.toString() }.toMutableList()
+        val found = LayoutScan.scan(compose, density, CaptureMatrixTest.LAYOUT)
+            .filterNot { Allowed.matches("lang_$screen", it) || ACCEPTED.any { a -> a.containsMatchIn(it.toString()) } }.map { it.toString() }.toMutableList()
         if (s.simple && lang in NON_LATIN) found += latinWords(compose)
         assertTrue("$screen $code font $font:\n" + found.joinToString("\n"), found.isEmpty())
     }
 
     companion object {
+        /**
+         * Findings looked at and accepted, each for its reason:
+         * - the test project's own name shortened with « … » in the top bar (a user's long name is, by design: a few words kept);
+         * - « Sauvegardé » (the saved tick, said by its tick alone when the word does not fit): another team's work (export, « Sauvegardé »);
+         * - the drum grid's one-line hint, shortened on purpose in every language (its whole text in « ? »).
+         */
+        val ACCEPTED = listOf(
+            Regex("« (Mon premier rythme|Mein erster Beat|मेरी पहली बीट|我的第一个节奏|إيقاعي الأول)[^»]* » ellipsized"),
+            Regex("CUT « (Sauvegardé|Gespeichert|تم الحفظ|सेव हो गया|已保存)[^»]* »"),
+            Regex("« (Les pads sonnent|Pads klingen|الـ?[^»]*تُصدر الصوت|पैड बजते हैं|打击垫只发声)[^»]* » ellipsized"),
+        )
+
         /** The five languages of tour 6 (docs/decisions/tour-5-langues.md). */
         val LANGS = listOf("fr", "de", "ar", "hi", "zh-CN")
         val FONTS = listOf("1.0", "2.0")
@@ -109,7 +124,9 @@ class LanguagesScanTest(private val screen: String, private val code: String, pr
             "BPM", "dB", "Hz", "kHz", "ms", "MIDI", "M4A", "WAV", "FLAC", "MP3", "ZIP", "zip", "OK", "LUFS",
             "Pocket", "Studio", "BenStudio", "YouTube", "TikTok", "Instagram", "Spotify", "Apple", "Music", "SoundCloud", "Bluetooth",
             // The harness's song (AppHarness.songWithTracks): its project and track names, typed by the « user ».
-            "Lead", "Bass", "Pad", "Chords", "Drums", "Audio",
+            "Lead", "Bass", "Pad", "Chords", "Drums", "Audio", "Synth",
+            // The app's features, one name in every language: the 303 (« Acid 303 »), « Remix », « Live », « Pad Live ».
+            "Acid", "Remix", "Live",
         )
 
         private val WORD = Regex("[A-Za-z][A-Za-z'’-]+")

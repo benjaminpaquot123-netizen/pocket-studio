@@ -155,9 +155,10 @@ class InAppDriverTest {
     fun theBenchScreenAsksAndPicksUp() {
         var answered: Boolean? = null
         var started = 0
+        var tout = 0
         var etat by mutableStateOf(Robot.Etat(question = EssaiEclair.QUESTION))
         compose.setContent {
-            BenTestScreen(etat, listOf(Triple("android.permission.RECORD_AUDIO", "Autoriser le micro", false)), BenTestActions(answer = { answered = it }, start = { started++ }))
+            BenTestScreen(etat, listOf(Triple("android.permission.RECORD_AUDIO", "Autoriser le micro", false)), BenTestActions(answer = { answered = it }, start = { started++ }, startTout = { tout++ }, resume = { started++ }))
         }
         val j = Journey(driver)
         j.tap("bentest_oui")
@@ -167,6 +168,14 @@ class InAppDriverTest {
         assertTrue(j.exists("bentest_allow_android.permission.RECORD_AUDIO"))
         j.tap("bentest_reprendre")
         assertEquals(1, started)
+        // Nothing run yet: « Tout tester » first; once over, its verdict in lights.
+        etat = Robot.Etat()
+        j.await("bentest_tout")
+        j.tap("bentest_tout")
+        assertEquals(1, tout)
+        etat = Robot.Etat(verdict = "34 verts, 2 oranges, 1 rouge", passage = Robot.TOUT)
+        j.await("bentest_verdict")
+        assertTrue(j.exists("bentest_envoyer"))
     }
 
     /** On the phone the robot has a thread of its own: each look is posted to the main thread and its answer (or its failure) comes back. */

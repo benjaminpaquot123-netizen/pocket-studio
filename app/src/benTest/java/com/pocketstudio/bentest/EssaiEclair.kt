@@ -8,7 +8,11 @@ import java.util.Locale
 /** The sound engine's numbers, as the robot reads them (NativeEngine on the phone, made up in the tests). */
 interface Sonde {
     /** [playing]: the transport runs (the engine's own word, not the screen's). */
-    data class Lecture(val xruns: Int, val cpu: Float, val peak: Float, val nonFinite: Boolean, val running: Boolean, val playing: Boolean = false)
+    data class Lecture(
+        val xruns: Int, val cpu: Float, val peak: Float, val nonFinite: Boolean, val running: Boolean, val playing: Boolean = false,
+        /** T1: the master's short-term loudness (LUFS), the live loudness gain (dB), the song's curve on the master (0..1, null: none). */
+        val lufs: Float = Float.NaN, val drive: Float = Float.NaN, val lane: Float? = null,
+    )
 
     fun lire(): Lecture
 }
@@ -27,7 +31,61 @@ interface Appli {
     /** BenStudio Test's screen in front with [question]; waits (at most [maxMs]) for the answer, null without one. */
     fun demander(question: String, maxMs: Long): Boolean?
 
-    data class ExportVu(val running: Boolean, val files: List<File>, val error: String?)
+    /** [seconds]: the length the app measured on its file (null: none). */
+    data class ExportVu(val running: Boolean, val files: List<File>, val error: String?, val seconds: Double? = null)
+
+    // T1 (« Tout tester »): what the robot reads of the phone and the app besides the screens. The defaults: nothing known.
+
+    /** The video export (« Vidéo pour les réseaux »): running, its file, its error. */
+    fun video(): VideoVu = VideoVu(false, null, null)
+
+    /** [file] read back as a player reads it; null: unreadable. */
+    fun relire(file: File): Relecture.Relu? = null
+
+    /** The phone's heat: battery temperature, thermal status, headroom. */
+    fun chaleur(): Chaleur? = null
+
+    /** One round-trip latency measure (ms), null: failed (its reason in [latenceEchec]). */
+    fun latence(): Double? = null
+
+    /** What the last failed [latence] said. */
+    fun latenceEchec(): String = ""
+
+    /** The app's memory (PSS, MB). */
+    fun memoireMo(): Int? = null
+
+    /** Starts counting the studio's frames; [imagesFin]: drawn, slow (over 16.7 ms). */
+    fun imagesDebut() = Unit
+    fun imagesFin(): Pair<Int, Int>? = null
+
+    /** The studio turned (true: lying, false: standing, null: as the phone wants). */
+    fun orienter(couche: Boolean?) = Unit
+
+    /** The screen is on. */
+    fun ecranAllume(): Boolean = true
+
+    /** The studio's screen kept on (the robot's touches are not a finger's) or left to go off by itself. */
+    fun garderEcran(on: Boolean) = Unit
+
+    /** Stops what plays, without a touch (the screen may be off). */
+    fun arreterLecture() = Unit
+
+    data class VideoVu(val running: Boolean, val file: File?, val error: String?, val seconds: Int? = null)
+
+    /** [batterieC]: °C; [statut]: PowerManager's thermal status (0 none … 6 shutdown); [marge]: thermal headroom (1 = throttling). */
+    data class Chaleur(val batterieC: Float?, val statut: Int?, val marge: Float?) {
+        fun text(): String = listOfNotNull(
+            batterieC?.let { String.format(Locale.ROOT, "batterie %.1f °C", it) },
+            statut?.let { "bridage " + (STATUTS.getOrNull(it) ?: "$it") },
+            marge?.takeIf { it.isFinite() }?.let { String.format(Locale.ROOT, "marge %.2f", it) },
+        ).joinToString(", ").ifEmpty { "chaleur inconnue" }
+
+        fun mesure(): String = "batterie=${batterieC ?: ""};statut=${statut ?: ""};marge=${marge?.takeIf { it.isFinite() } ?: ""}"
+
+        companion object {
+            val STATUTS = listOf("aucun", "léger", "modéré", "fort", "critique", "urgence", "arrêt")
+        }
+    }
 }
 
 /**
@@ -245,7 +303,7 @@ class EssaiEclair(
     }
 
     /** The assistant left open (a style that failed) covers the studio: closed first (« ✕ », « Quitter » when asked). */
-    private fun fermerAssistant() {
+    internal fun fermerAssistant() {
         if (j.exists("wizard")) {
             j.tap("wizard_close")
             if (runCatching { j.await("wizard_close_confirm", 2_000) }.isSuccess) j.tap("wizard_close_confirm")
@@ -258,10 +316,10 @@ class EssaiEclair(
         }
     }
 
-    private fun mode() = if (j.exists("tab_simple_Morceau")) "Mode simple" else "Pro"
+    internal fun mode() = if (j.exists("tab_simple_Morceau")) "Mode simple" else "Pro"
 
     /** From anywhere (the welcome, the studio in either mode, Mes projets) to « Que veux-tu faire ? » (Mes projets › ←). */
-    private fun allerAuChoix() {
+    internal fun allerAuChoix() {
         if (j.exists("welcome")) plusTard()
         fermerAssistant()
         if (j.exists("launch")) return
@@ -277,7 +335,7 @@ class EssaiEclair(
     }
 
     /** From anywhere to the open song with the Pro tabs (the top bar's mode chip › Pro when the app is in the Mode simple). */
-    private fun auStudioPro() {
+    internal fun auStudioPro() {
         if (j.exists("welcome")) plusTard()
         fermerAssistant()
         if (j.exists("projects") && !j.exists("launch")) {
@@ -296,7 +354,7 @@ class EssaiEclair(
     }
 
     /** ■ on what plays (the thumb bar's or the top bar's « le morceau »). */
-    private fun arreter() {
+    internal fun arreter() {
         if (!sonde.lire().playing) return
         runCatching { j.tap(if (j.exists("thumb_play")) "thumb_play" else "top_song") }
         attendre(5_000) { !sonde.lire().playing }

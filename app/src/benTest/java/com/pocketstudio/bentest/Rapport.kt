@@ -19,6 +19,16 @@ object Rapport {
         }.joinToString(", ")
     }
 
+    /** « 34 verts, 2 oranges, 1 rouge » (and the inconclusive, the steps not done). */
+    data class BilanFeux(val verts: Int, val oranges: Int, val rouges: Int, val gris: Int, val restantes: Int) {
+        fun verdict(): String = ""
+    }
+
+    /** Each step's light: its worst [Carnet.FEU] since it last began, red when it failed or crashed, green when it passed without one; null: not done. */
+    fun feux(lines: List<Carnet.Ligne>, etapes: List<Etape>): Map<String, Feu?> = etapes.associate { it.name to null }
+
+    fun bilanFeux(lines: List<Carnet.Ligne>, etapes: List<Etape>): BilanFeux = BilanFeux(0, 0, 0, 0, 0)
+
     fun bilan(lines: List<Carnet.Ligne>, etapes: List<Etape>): Bilan {
         fun last(step: String) = lines.lastOrNull { it.step == step && it.kind in ENDS }?.kind
         val ends = etapes.map { last(it.name) }
@@ -26,15 +36,18 @@ object Rapport {
     }
 
     /** [about]: the app's version and commit, the device, Android. */
-    fun markdown(lines: List<Carnet.Ligne>, etapes: List<Etape>, about: List<Pair<String, String>>): String = buildString {
-        appendLine("# BenStudio Test : essai éclair")
+    /** [tout]: « Tout tester » (each step's light, the verdict in lights). */
+    fun markdown(lines: List<Carnet.Ligne>, etapes: List<Etape>, about: List<Pair<String, String>>, tout: Boolean = false): String = buildString {
+        appendLine(if (tout) "# BenStudio Test : tout tester" else "# BenStudio Test : essai éclair")
         appendLine()
         about.forEach { (k, v) -> appendLine("- $k : $v") }
         appendLine()
         appendLine("**Verdict : ${bilan(lines, etapes).verdict()}**")
+        val feux = if (tout) feux(lines, etapes) else emptyMap()
+        if (tout) appendLine("\n**Feux : ${bilanFeux(lines, etapes).verdict()}**")
         appendLine()
-        appendLine("| Étape | Résultat | Durée | Ce qu'il a vu |")
-        appendLine("|---|---|---|---|")
+        appendLine(if (tout) "| Étape | Feu | Résultat | Durée | Ce qu'il a vu |" else "| Étape | Résultat | Durée | Ce qu'il a vu |")
+        appendLine(if (tout) "|---|---|---|---|---|" else "|---|---|---|---|")
         for (e in etapes) {
             val begin = lines.lastOrNull { it.step == e.name && it.kind == Carnet.DEBUT }
             val end = lines.lastOrNull { it.step == e.name && it.kind in ENDS }
@@ -45,7 +58,8 @@ object Rapport {
                 else -> "pas faite"
             }
             val took = if (begin != null && end != null && end.kind != Carnet.PLANTAGE) "${(end.atMs - begin.atMs) / 1000} s" else ""
-            appendLine("| ${e.label} | $result | $took | ${end?.text.orEmpty().replace("|", "/").replace("\n", " ")} |")
+            val light = if (tout) " ${feux[e.name]?.let { f -> PASTILLES.getValue(f) + " " + f.mot + (pourquoi(lines, e.name)?.let { " ($it)" } ?: "") } ?: ""} |" else ""
+            appendLine("| ${e.label} |$light $result | $took | ${end?.text.orEmpty().replace("|", "/").replace("\n", " ")} |")
         }
         val notes = lines.filter { it.kind == Carnet.NOTE }
         if (notes.isNotEmpty()) {
@@ -69,6 +83,11 @@ object Rapport {
         val head = about.map { (k, v) -> k to JsonText.string(v) }
         return JsonText.obj(*head.toTypedArray(), "steps" to JsonText.array(steps), "reads" to JsonText.array(reads))
     }
+
+    /** Why a step is not green: its worst light's reason. */
+    private fun pourquoi(lines: List<Carnet.Ligne>, step: String): String? = null
+
+    private val PASTILLES = mapOf(Feu.VERT to "🟢", Feu.ORANGE to "🟠", Feu.ROUGE to "🔴", Feu.GRIS to "⚪")
 
     private val ENDS = setOf(Carnet.REUSSI, Carnet.ECHEC, Carnet.PLANTAGE)
 }

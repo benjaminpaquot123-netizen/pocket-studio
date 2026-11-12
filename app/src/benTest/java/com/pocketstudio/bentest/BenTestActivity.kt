@@ -64,7 +64,9 @@ class BenTestActivity : ComponentActivity() {
                     granted = PERMISSIONS.map { (p, label) -> Triple(p, label, granted[p] == true) },
                     actions = BenTestActions(
                         allow = { p -> ask.launch(p) },
-                        start = { Robot.start(application) },
+                        start = { Robot.start(application, Robot.ECLAIR) },
+                        startTout = { Robot.start(application, Robot.TOUT) },
+                        resume = { Robot.start(application) },
                         answer = Robot::answer,
                         reset = { Robot.reset(this) },
                         send = ::send,
@@ -90,6 +92,10 @@ class BenTestActivity : ComponentActivity() {
 class BenTestActions(
     val allow: (String) -> Unit = {},
     val start: () -> Unit = {},
+    /** « Tout tester » (T1). */
+    val startTout: () -> Unit = {},
+    /** « Reprendre »: the run the logbook holds. */
+    val resume: () -> Unit = {},
     val answer: (Boolean) -> Unit = {},
     val reset: () -> Unit = {},
     val send: () -> Unit = {},
@@ -125,15 +131,21 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                 }
                 etat.interrompu?.let {
                     Text("Le passage s'est arrêté pendant « $it ». Le plantage sera noté et le robot passera à la suite.", color = Neon.Amber, modifier = Modifier.testTag("bentest_interrompu"))
-                    Button(onClick = actions.start, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_reprendre")) { Text("Reprendre") }
+                    Button(onClick = actions.resume, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_reprendre")) { Text("Reprendre") }
                 }
                 etat.verdict?.let {
-                    Text("Essai éclair terminé : $it", style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("bentest_verdict"))
+                    Text((if (etat.passage == Robot.TOUT) "Tout tester terminé : " else "Essai éclair terminé : ") + it, style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("bentest_verdict"))
                     Button(onClick = actions.send, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_envoyer")) { Text("Envoyer le rapport") }
                 }
                 if (etat.interrompu == null && etat.verdict == null) {
+                    Text(
+                        "Tout tester : environ 1 heure, sans rien toucher. Avant : chargeur branché, pièce calme, « Ne pas déranger » activé, volume à moitié. " +
+                            "Le robot joue les 37 styles, fait 4 exports, mesure la latence, suit le Guide, tourne l'écran, puis laisse l'écran s'éteindre.",
+                        color = Neon.TextSecondary,
+                    )
+                    Button(onClick = actions.startTout, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_tout")) { Text("Tout tester") }
                     Text("Essai éclair : environ 5 minutes. Le robot fait 3 morceaux, 1 export, visite 5 écrans, puis te pose 1 question.", color = Neon.TextSecondary)
-                    Button(onClick = actions.start, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_lancer")) { Text("Lancer l'essai éclair") }
+                    OutlinedButton(onClick = actions.start, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_lancer")) { Text("Lancer l'essai éclair") }
                 }
                 if (etat.interrompu != null || etat.verdict != null) {
                     OutlinedButton(onClick = actions.reset, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("bentest_recommencer")) { Text("Tout recommencer") }

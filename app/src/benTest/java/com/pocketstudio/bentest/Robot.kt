@@ -47,10 +47,16 @@ object Robot {
         val question: String? = null,
         /** The run stopped in this step (the app died): it is noted when the run goes on. */
         val interrompu: String? = null,
-        /** « 6 réussies, 1 ratée… » once the run is over. */
+        /** « 6 réussies, 1 ratée… » once the run is over (« 34 verts, 2 oranges, 1 rouge » for « Tout tester »). */
         val verdict: String? = null,
+        /** The run of the logbook: [ECLAIR] or [TOUT]. */
+        val passage: String = ECLAIR,
         val message: String? = null,
     )
+
+    /** The essai éclair (T0) and « Tout tester » (T1, niveau 1). */
+    const val ECLAIR = "eclair"
+    const val TOUT = "tout"
 
     private val _etat = MutableStateFlow(Etat())
     val etat: StateFlow<Etat> = _etat
@@ -60,28 +66,43 @@ object Robot {
     fun carnet(context: Context) = Carnet(File(dir(context), "carnet.tsv"))
     private fun captures(context: Context) = File(dir(context), "captures")
 
+    /** Which run the logbook holds (kept beside it: a run picked up after a crash is the same one). */
+    private fun passageFile(context: Context) = File(dir(context), "passage.txt")
+    fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR } ?: ECLAIR
+
     /** The steps' names and labels (the work is only done by a run). */
-    private fun etapes(context: Context): List<Etape> = EssaiEclair(Journey(InAppDriver(LooperMainThread())), NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
+    private fun etapes(context: Context, passage: String = passage(context)): List<Etape> {
+        val j = Journey(InAppDriver(LooperMainThread()))
+        return if (passage == TOUT) ToutTester(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
+        else EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
+    }
+
+    private fun verdict(lines: List<Carnet.Ligne>, steps: List<Etape>, passage: String): String =
+        if (passage == TOUT) Rapport.bilanFeux(lines, steps).verdict() else Rapport.bilan(lines, steps).verdict()
 
     /** What the screen shows when it opens: a run over, or one the app died in. */
     fun look(context: Context) {
         if (_etat.value.running) return
         val c = carnet(context)
         val lines = c.lines()
-        val steps = etapes(context)
+        val passage = passage(context)
+        val steps = etapes(context, passage)
         val finished = lines.any { it.kind == Carnet.FINI }
         val ended = lines.filter { it.kind == Carnet.REUSSI || it.kind == Carnet.ECHEC || it.kind == Carnet.PLANTAGE }.map { it.step }.toSet()
         val dead = lines.lastOrNull { it.kind == Carnet.DEBUT && it.step !in ended }?.step
         _etat.value = Etat(
             interrompu = if (!finished) dead?.let { d -> steps.firstOrNull { it.name == d }?.label ?: d } else null,
-            verdict = if (finished) Rapport.bilan(lines, steps).verdict() else null,
+            verdict = if (finished) verdict(lines, steps, passage) else null,
+            passage = passage,
         )
     }
 
-    /** Starts (or picks up) the essai éclair. */
-    fun start(app: Application) {
+    /** Starts (or picks up, [passage] null) the essai éclair or « Tout tester ». */
+    fun start(app: Application, passage: String? = null) {
         if (_etat.value.running) return
-        _etat.value = Etat(running = true)
+        if (passage != null) runCatching { dir(app).mkdirs(); passageFile(app).writeText(passage) }
+        val which = passage(app)
+        _etat.value = Etat(running = true, passage = which)
         val tracker = Tracker.install(app)
         tracker.keepScreenOn = true
         thread(name = "BenStudio Test robot") {
@@ -89,8 +110,10 @@ object Robot {
             val driver = InAppDriver(main)
             val c = carnet(app)
             driver.note = { c.add(Carnet.NOTE, "robot", it) }
-            val essai = EssaiEclair(Journey(driver), NativeSonde, AppliReelle(app, main, tracker), c, captures(app).apply { mkdirs() }, ecran = driver::ecran)
-            val passage = Passage(c, essai.etapes(), crashText = { CrashReporter.pendingCrash() })
+            val appli = AppliReelle(app, main, tracker)
+            val steps = if (which == TOUT) ToutTester(Journey(driver), NativeSonde, appli, c, captures(app).apply { mkdirs() }, ecran = driver::ecran).etapes()
+            else EssaiEclair(Journey(driver), NativeSonde, appli, c, captures(app).apply { mkdirs() }, ecran = driver::ecran).etapes()
+            val passage = Passage(c, steps, crashText = { CrashReporter.pendingCrash() })
             runCatching {
                 passage.run { e ->
                     driver.deadlineMs = System.currentTimeMillis() + e.maxMs
@@ -98,7 +121,8 @@ object Robot {
                 }
             }.onFailure { c.add(Carnet.NOTE, "robot", "arrêt : $it") }
             tracker.keepScreenOn = false
-            _etat.value = Etat(verdict = Rapport.bilan(c.lines(), passage.etapes).verdict())
+            appli.orienter(null)
+            _etat.value = Etat(verdict = verdict(c.lines(), passage.etapes, which), passage = which)
             bringBack(app)
         }
     }
@@ -113,6 +137,7 @@ object Robot {
     fun reset(context: Context) {
         if (_etat.value.running) return
         carnet(context).clear()
+        passageFile(context).delete()
         captures(context).deleteRecursively()
         _etat.value = Etat()
     }
@@ -149,10 +174,11 @@ object Robot {
     fun writeReport(context: Context): RapportZip.Ecrit {
         val c = carnet(context)
         val lines = c.lines()
-        val steps = etapes(context)
+        val passage = passage(context)
+        val steps = etapes(context, passage)
         val about = about(context)
         val texts = buildList {
-            add("rapport.md" to Rapport.markdown(lines, steps, about))
+            add("rapport.md" to Rapport.markdown(lines, steps, about, tout = passage == TOUT))
             add("mesures.json" to Rapport.json(lines, about))
             add("carnet.tsv" to (if (c.file.isFile) c.file.readText() else ""))
             add("journal.json" to runCatching { JournalJson.current(about) }.getOrDefault("{}"))
@@ -173,7 +199,14 @@ object NativeSonde : Sonde {
         // The transport as the engine has it (its step is -1 when stopped), not as the screen shows it.
         // The peak is the loudest since the last read, and the app's own screens read it too (Metrics keeps theirs).
         val peak = maxOf(s.peak, com.pocketstudio.app.Metrics.streamInfo.value.peak)
-        return Sonde.Lecture(s.xruns, NativeEngine.cpuLoadNow(), peak, s.nonFinite, s.running, playing = NativeEngine.currentStep() >= 0)
+        // The short-term level and the live gain (T1's fade alert): the loudness meters' own fields (reading
+        // them also takes their « peak since the last reading », which only the Mix's meter shows).
+        val loud = FloatArray(NativeEngine.LOUDNESS)
+        val ok = runCatching { NativeEngine.loudnessMeters(loud) }.isSuccess
+        val lufs = if (ok) loud[NativeEngine.LOUDNESS_SHORT_TERM].takeIf { it > NativeEngine.LOUDNESS_NONE + 1f } ?: Float.NaN else Float.NaN
+        val drive = if (ok) loud[NativeEngine.LOUDNESS_DRIVE] else Float.NaN
+        val lane = runCatching { com.pocketstudio.app.report.HealthMonitor.probe?.invoke()?.masterLane }.getOrNull()
+        return Sonde.Lecture(s.xruns, NativeEngine.cpuLoadNow(), peak, s.nonFinite, s.running, playing = NativeEngine.currentStep() >= 0, lufs = lufs, drive = drive, lane = lane)
     }
 }
 
@@ -240,12 +273,109 @@ private class AppliReelle(private val app: Application, private val main: MainTh
     override fun export(): Appli.ExportVu = main.run {
         val a = tracker.studio as? ComponentActivity ?: return@run Appli.ExportVu(true, emptyList(), null)
         val e = ViewModelProvider(a)[RhythmViewModel::class.java].export.value
-        Appli.ExportVu(e.running, e.files, e.error)
+        Appli.ExportVu(e.running, e.files, e.error, e.seconds)
     }
 
     override fun capture(file: File): Boolean = main.run { Captures.windows(WindowInspector.getGlobalWindowViews(), file) }
 
     override fun demander(question: String, maxMs: Long): Boolean? = Robot.ask(app, question, maxMs)
+
+    override fun video(): Appli.VideoVu = main.run {
+        val a = tracker.studio as? ComponentActivity ?: return@run Appli.VideoVu(true, null, null)
+        val vm = ViewModelProvider(a)[com.pocketstudio.app.export.video.VideoExportViewModel::class.java]
+        val v = vm.state.value
+        Appli.VideoVu(v.running, v.file, v.error, vm.choice.value.seconds)
+    }
+
+    override fun relire(file: File): Relecture.Relu? = Relecture.lire(app, file, File(app.cacheDir, "bentest-relu"))
+
+    override fun chaleur(): Appli.Chaleur? = runCatching {
+        val battery = app.registerReceiver(null, android.content.IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        val tenths = battery?.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, Int.MIN_VALUE) ?: Int.MIN_VALUE
+        val power = app.getSystemService(android.os.PowerManager::class.java)
+        Appli.Chaleur(
+            batterieC = if (tenths == Int.MIN_VALUE) null else tenths / 10f,
+            statut = power?.currentThermalStatus,
+            marge = if (Build.VERSION.SDK_INT >= 30) power?.getThermalHeadroom(10) else null,
+        )
+    }.getOrNull()
+
+    @Volatile
+    private var latencyFailure = ""
+
+    override fun latence(): Double? {
+        val start = NativeEngine.startLatencyTest()
+        if (start != com.pocketstudio.engine.LatencyStart.Ok) {
+            latencyFailure = "départ $start"
+            return null
+        }
+        var waited = 0
+        while (NativeEngine.latencyState() != com.pocketstudio.engine.LatencyState.Done && waited < 4_000) {
+            Thread.sleep(50)
+            waited += 50
+        }
+        val r = NativeEngine.latencyResult()
+        if (!r.valid) latencyFailure = "${r.failure}, niveau ${r.inputPeak}"
+        return r.latencyMs.takeIf { r.valid }
+    }
+
+    override fun latenceEchec(): String = latencyFailure
+
+    override fun memoireMo(): Int? = runCatching {
+        val info = android.os.Debug.MemoryInfo()
+        android.os.Debug.getMemoryInfo(info)
+        info.totalPss / 1024
+    }.getOrNull()
+
+    private val frames = java.util.concurrent.atomic.AtomicInteger()
+    private val slowFrames = java.util.concurrent.atomic.AtomicInteger()
+    private var frameListener: android.view.Window.OnFrameMetricsAvailableListener? = null
+    private val frameThread by lazy { android.os.HandlerThread("BenStudio Test images").apply { start() } }
+
+    override fun imagesDebut() = main.run {
+        val a = tracker.studio ?: return@run
+        frames.set(0)
+        slowFrames.set(0)
+        val l = android.view.Window.OnFrameMetricsAvailableListener { _, metrics, _ ->
+            // Android vitals' slow frame: over 16 ms to draw.
+            if (metrics.getMetric(android.view.FrameMetrics.FIRST_DRAW_FRAME) == 1L) return@OnFrameMetricsAvailableListener
+            frames.incrementAndGet()
+            if (metrics.getMetric(android.view.FrameMetrics.TOTAL_DURATION) > SLOW_FRAME_NS) slowFrames.incrementAndGet()
+        }
+        frameListener = l
+        a.window.addOnFrameMetricsAvailableListener(l, android.os.Handler(frameThread.looper))
+    }
+
+    override fun imagesFin(): Pair<Int, Int>? = main.run {
+        val l = frameListener ?: return@run null
+        frameListener = null
+        runCatching { tracker.studio?.window?.removeOnFrameMetricsAvailableListener(l) }
+        frames.get() to slowFrames.get()
+    }
+
+    override fun orienter(couche: Boolean?) = main.run {
+        tracker.studio?.requestedOrientation = when (couche) {
+            true -> android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+            false -> android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            null -> android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+        Unit
+    }
+
+    override fun ecranAllume(): Boolean = app.getSystemService(android.os.PowerManager::class.java)?.isInteractive ?: true
+
+    override fun garderEcran(on: Boolean) {
+        tracker.keepScreenOn = on
+    }
+
+    override fun arreterLecture() = main.run {
+        val a = tracker.studio as? ComponentActivity ?: return@run
+        ViewModelProvider(a)[RhythmViewModel::class.java].stop()
+    }
+
+    private companion object {
+        const val SLOW_FRAME_NS = 16_700_000L
+    }
 }
 
 /** A picture of the app's windows as they are on screen, half size, in JPEG. */

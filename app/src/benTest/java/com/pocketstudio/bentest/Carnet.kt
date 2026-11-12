@@ -44,6 +44,8 @@ class Carnet(val file: File, private val clock: () -> Long = System::currentTime
         const val MESURE = "mesure"
         const val NOTE = "note"
         const val FINI = "fini"
+        /** A step's light: « vert;why », « orange;why »… (Feu.mot first). */
+        const val FEU = "feu"
 
         private fun escape(s: String) = s.replace("\\", "\\\\").replace("\t", "\\t").replace("\n", "\\n").replace("\r", "")
 

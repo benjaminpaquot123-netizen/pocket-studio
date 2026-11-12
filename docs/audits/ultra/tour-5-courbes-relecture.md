@@ -1,5 +1,5 @@
 # Relecture neuve du lot « courbes » (tour 5, étape 4, chantier 8)
-Relu : 883fdb2a2603de5fa8c247ba405ba15c1dcf9e58
+Relu : d7d4bec48168c4d3fc0651fb6f9b7eb04a35f1f7
 
 Relecteur neuf (ni auteur du code). Lu : `git diff c4743738...HEAD` (AutomationCard, ControlSpot, EffectsBox, EffectsPanel, QuickFx, AppRoot, CurvesFindTest, ScreenshotTest, recensement, 14 `courbes.json`), le rapport et `docs/decisions/tour-5-courbes.md`.
 
@@ -24,5 +24,10 @@ Relecteur neuf (ni auteur du code). Lu : `git diff c4743738...HEAD` (AutomationC
 ## Delta après fusion de fx-int
 Le merge 4617e1d9 (lots access, banc7, socle, remix) n'a qu'un conflit, résolu à la main dans `I18n.kt` : la liste des fichiers de textes garde les deux lignes « courbes » et « access ».
 Rien d'autre du lot n'a bougé depuis 965c9b6d hors apports de fx-int ; tests ciblés verts après le merge.
+
+Verdict : 0 bloquant, 0 grave — fusion possible
+
+## Delta (2) : défaut caché CACHE-B19 corrigé, fusion de fx-int (padlive)
+82750c16 ne retire que l'annotation @KnownDefect de la garde et passe T5-AUTO-OPTION à « corrigé » ; le correctif a53e385e garde le réglage du filtre nommé (« déjà une courbe ») dans « Automatiser un réglage ». La fusion d7d4bec4 ne touche que base.tsv : les trois lignes ajoutées des deux côtés sont là. Tests du banc OK.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

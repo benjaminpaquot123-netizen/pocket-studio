@@ -29,16 +29,35 @@ public:
         const float k = std::min(1.0f, lasted / 0.5f);
         smoothed_ += k * (std::min(ratio, 4.0f) - smoothed_);
         published_.store(smoothed_, std::memory_order_relaxed);
-        (void)started;
+        raise(worstBlock_, ratio);
+        if (lastLasted_ > 0.0f) {
+            const double gap = started - lastStarted_;
+            if (gap >= 0.0 && gap < kRestartGapSeconds) raise(worstGap_, static_cast<float>(gap / lastLasted_));
+        }
+        lastStarted_ = started;
+        lastLasted_ = lasted;
     }
 
     float smoothed() const { return published_.load(std::memory_order_relaxed); }
-    float takeWorstBlock() { return smoothed(); }
-    float takeWorstGap() { return smoothed(); }
+    // One reader (the UI thread's health poll): each take starts a new window (0: no callback since).
+    float takeWorstBlock() { return worstBlock_.exchange(0.0f, std::memory_order_relaxed); }
+    float takeWorstGap() { return worstGap_.exchange(0.0f, std::memory_order_relaxed); }
 
 private:
+    // The largest of the window: the audio thread raises it, a take zeroes it (no lost maximum).
+    static void raise(std::atomic<float>& worst, float v) {
+        if (!(v >= 0.0f)) return;  // NaN: nothing to keep
+        float seen = worst.load(std::memory_order_relaxed);
+        while (v > seen && !worst.compare_exchange_weak(seen, v, std::memory_order_relaxed)) {
+        }
+    }
+
     float smoothed_ = 0.0f;  // audio thread
+    double lastStarted_ = 0.0;
+    float lastLasted_ = 0.0f;  // 0: no callback yet
     std::atomic<float> published_{0.0f};
+    std::atomic<float> worstBlock_{0.0f};
+    std::atomic<float> worstGap_{0.0f};
 };
 
 }  // namespace ps

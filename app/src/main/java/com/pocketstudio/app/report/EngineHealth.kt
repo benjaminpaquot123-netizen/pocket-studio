@@ -20,6 +20,13 @@ data class HealthSample(
     val limiterGain: Float = 1f,
     /** The audio thread's load (render time over the sound's duration; near 1 it crackles). */
     val cpu: Float = 0f,
+    /**
+     * Since the reading before: the slowest callback's render time over its sound's duration, not
+     * smoothed (over 1: that callback alone missed its turn), and the longest wait between two
+     * callbacks over the sound one gives (about 1; far more: a callback started late). 0: unknown.
+     */
+    val cpuWorst: Float = 0f,
+    val gapWorst: Float = 0f,
     /** Underruns since the engine started (cumulative), and output streams reopened. */
     val xruns: Int = 0,
     val restarts: Int = 0,
@@ -78,6 +85,7 @@ object HealthMonitor {
         val p = runCatching { probe?.invoke() }.getOrNull()
         val sample = HealthSample(
             atMs = wallMs, peak = windowPeak, momentaryLufs = meters[0], shortTermLufs = meters[1], limiterGain = meters[2], cpu = meters[3],
+            cpuWorst = meters[4], gapWorst = meters[5],
             xruns = info.xruns, restarts = info.restarts, running = info.running, nonFinite = info.nonFinite,
             playing = p?.playing ?: false, masterLane = p?.masterLane,
         )
@@ -89,7 +97,7 @@ object HealthMonitor {
 
     /** Keeps [sample] and writes what changed for the worse in the journal. */
     fun add(sample: HealthSample) = synchronized(this) {
-        if (lastXruns >= 0 && sample.xruns > lastXruns) Journal.app("Décrochage audio : +${sample.xruns - lastXruns} (total ${sample.xruns})")
+        if (lastXruns >= 0 && sample.xruns > lastXruns) Journal.app("Décrochage audio : +${sample.xruns - lastXruns} (total ${sample.xruns})" + stallText(sample))
         if (lastRestarts >= 0 && sample.restarts > lastRestarts) Journal.app("Son rouvert par Android (n° ${sample.restarts})")
         if (sample.nonFinite && !lastNonFinite) Journal.error("moteur", "Valeur invalide (NaN) en sortie : son coupé par sécurité")
         lastXruns = sample.xruns
@@ -98,6 +106,14 @@ object HealthMonitor {
         samples.add(sample)
         if (sample.playing || sample.peak > SOUND_FLOOR) counter.incrementAndGet()
     }
+
+    /**
+     * Where the underrun came from (tour 5, Hard techno): a callback too slow (its worst block over
+     * 100 %) or one started late (the longest wait between two callbacks, in callbacks); empty unknown.
+     */
+    internal fun stallText(s: HealthSample): String =
+        if (s.cpuWorst <= 0f && s.gapWorst <= 0f) "" else
+            " ; pire bloc ${"%.0f".format(java.util.Locale.ROOT, s.cpuWorst * 100f)} %, plus long écart ${"%.1f".format(java.util.Locale.ROOT, s.gapWorst).replace('.', ',')} blocs"
 
     internal fun reset() = synchronized(this) {
         samples.clear()

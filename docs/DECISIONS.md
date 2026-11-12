@@ -1477,3 +1477,4 @@
 - 2026-11-12 · lot « rejeux6 » (tour-5) : 8 décision(s) dans `docs/decisions/tour-5-rejeux6.md`
 - 2026-11-12 · lot « plan6 » (tour-5) : 19 décision(s) dans `docs/decisions/tour-5-plan6.md`
 - 2026-11-12 · lot « juge7 » (tour-5) : 6 décision(s) dans `docs/decisions/tour-5-juge7.md`
+- 2026-11-12 · lot « ci2 » (tour-5) : 4 décision(s) dans `docs/decisions/tour-5-ci2.md`

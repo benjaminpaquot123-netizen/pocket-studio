@@ -162,3 +162,25 @@ Laissé de côté : U7, U8, U19, U24, U25, U26 (voulus, voir `verdicts.tsv`) ; N
   - `tableau-de-bord.py` compte les promesses « 0/0 » : il ne lit pas les lignes `promesse:` avec `id=`.
   - `verifie-chantier.py` compte 28 écarts avec le résumé du lot F, contre 12 dans les selftests.
 - **Hôtes** : mettre de côté les `start.txt` des autres sièges AVANT `selftest.sh`, sinon le tampon refuse le banc (vu au siège E c).
+
+---
+
+## Complément 2 (rassemblement cd3c7a70 : D a-suite, B b-suite)
+
+10 défauts neufs, N19 à N28, tous réels (verdicts dans `verdicts.tsv`) ; 1 grave (N19). Rangés par fichier dans les lots existants :
+
+| défaut | lot | fichier | test rouge |
+|---|---|---|---|
+| N19 (grave) | 2 « tuto-consignes » | `TutoController.kt` (`move`) | « Suivant » sur une étape d'écoute pas encore validée dit ce qui reste à écouter (comme une étape à faire), ou la valide ; la fin ne dit jamais « Presque fini ! » pour des écoutes passées sans un mot |
+| N20 | 2 | `TutoChecks.kt` | une étape déjà remplie à l'arrivée dit pourquoi elle est cochée (« déjà fait à l'étape … ») |
+| N21 | 2 | `i18n/ja|de/tuto*.json` | un même terme du tuto a une seule traduction par langue (« 点線のノート », « gestrichelte Note ») |
+| N22 | 2 | `TutoPanel.kt` | le panneau d'une étape montre l'accès aux chapitres |
+| N23 | 2 | `TutoPanel.kt` | après le « Bravo » final, l'en-tête dit le tuto fini, pas « chapitre 7/15 · étape 1/2 » |
+| N24 | 2 | `tutos/*.json` | une consigne qui cite un réglage du Mix Simple le nomme comme l'écran (mot, pas nombre) |
+| N26 | 2 | `TutoController.kt` | « Partie « %s » créée » ne dit « tout le groove y joue » que si rien n'en est retiré |
+| N27 | 2 | `TutoChecks.kt` | le swing est validé à la valeur affichée ±1 % (5 % → 4 à 6 % à l'écran) |
+| N28 | 2 | `tutos/*.json` | toute mesure citée par une consigne existe dans le pad ou la partie visés |
+| N25 | 6 « morceau-export-padlive » | `RhythmViewModel.kt` | « Aller dans la partie « Build-up » » pendant la lecture du morceau montre la partie (ou dit qu'elle viendra à la mesure suivante), sans devoir arrêter |
+
+Confirmations du complément 2 (C2.A) : rien à changer aux lots ; T14, T19, N4, N6, N13 passent à 2 sièges (même lot qu'avant).
+Comptes après le complément 2 : **77 réels**, 11 voulus, 3 artefacts du banc, 5 doublons, 1 déjà corrigé ; gravité retenue : 1 bloquant, 5 graves (T4, R6, N4, N5, N19).

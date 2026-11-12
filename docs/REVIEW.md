@@ -1185,3 +1185,9 @@ Rapport : `docs/audits/ultra/tour-5-banc6d-rapport.md`. Dette gardée :
 - **Idée** : prévenir quand une prise gardée allonge le morceau (T5-Bb-58 : une mélodie de 4 mesures dans une scène d'une mesure fait passer 176 mesures à 572, voulu mais muet).
 - **Défi niveau 2** (T5-Ca-14, `@KnownDefect T5-DEFI-COULEURS`) : les ronds ont la couleur de la famille du son, partagée par d'autres pads ; écran Pad Live d'un autre auteur, non corrigé.
 - **Banc** : `HumanTester.remixHeard` ignore la coupure de la colonne de la chanson dans le Live (T5-Cb-67) : garde Bench* à écrire. Non tranchés : T5-Ad-13, T5-Ca-1, T5-DEMO-VIDE ; taille vraie d'un export (T5-Cc-41b) non mesurée.
+
+## Tour 5, lot « langues » (2026-11-12)
+- Fait : mots du métier en lettres latines remplacés en Mode simple (arabe, hindi, chinois, japonais, coréen) ; notes allemandes H/B ; « ← » et « ، » dans les phrases arabes ; ↶ ne bouge plus quand ↷ arrive ; grille de l'assistant de gauche à droite ; tuile de son sans nom répété ; champ de partie traduit ; coupes à 200 % de la barre du pouce, du mot sous ▶, du tempo et du compteur (arabe, même à 100 %). Contrôle global : `LanguagesScanTest` (11 écrans × 5 langues × 100/200 %).
+- Restes ouverts (acceptés écran par écran dans `LanguagesScanTest.OPEN`) : à 200 % sur petit téléphone en Simple, la barre du Guide d'une ligne (« … »), le compteur « mesure 1/3 » trop large, « Vider » et « Octave » du clavier, l'en-tête « PAS : … · INTRO », « Händeklatschen », « Simple » coupé sur l'accueil Simple ; en Pro à 200 % sur tablette, la puce « ⟳ Boucler », les en-têtes de la Structure, l'onglet Effets de Sons et toute la grille du Live (chantier à part).
+- Non traités ici (zones d'autres équipes) : t5-Fa-3 (coche « Sauvegardé » à 130 %), t5-Fb-4 (Mix à 200 % : axes des courbes, noms de pistes, « Lautstärke −14 » sans unité).
+- Glossaires écrits par l'auteur, non relus par un natif ; en arabe « Pad » = « باد ».

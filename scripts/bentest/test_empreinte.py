@@ -98,6 +98,22 @@ class Empreinte(unittest.TestCase):
         self.assertAlmostEqual(16000, E.CENTRES[-1], delta=0.01)
         self.assertEqual("1000", E.NAMES[E.CENTRES.index(1000.0)])
 
+    def test_the_same_numbers_as_the_phone(self):
+        # The fixed signal of MemeAnalyseTest.kt (app/src/test): the same values on both sides.
+        i = np.arange(5 * RATE)
+        x = (0.3 * np.sin(2 * np.pi * 440 * i / RATE) + 0.1 * np.sin(2 * np.pi * 3000 * i / RATE)
+             + 0.05 * np.sin(2 * np.pi * 97 * i / RATE) + 0.02 * np.sin(2 * np.pi * 7000 * i / RATE)).astype(np.float32)
+        energies, frames = E.third_octave_energies(x.astype(np.float64), RATE)
+        self.assertEqual(28, frames)
+        gold = {3: 1.761584e6, 9: 6.341374e7, 10: 4.135967e3, 18: 7.046431e6, 21: 2.818572e5}
+        for band, want in gold.items():
+            self.assertAlmostEqual(1.0, energies[band] / want, delta=1e-4, msg=E.NAMES[band])
+        for o, got, want in zip(E.OCTAVES, E.octaves(energies, frames), [-61.8423, -13.0104, None, 2.5527, None, None, -6.9897, -20.9691]):
+            if want is None:
+                self.assertIsNone(got, o)
+            else:
+                self.assertAlmostEqual(want, got, delta=1e-3, msg=o)
+
     def test_filtered_pink_noise_reads_its_filter(self):
         song = chain(biquad_power("hp", 200), biquad_power("pk", 2000, q=0.7, db=-6))
         energies, frames = E.third_octave_energies(pink(20, song), RATE)

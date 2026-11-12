@@ -1,0 +1,57 @@
+Écran 180 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+bouton « ? » @ 543,114
+texte « Ajouter : » @ 83,165
+bouton « + A · Groove » @ 141,228
+bouton « + Nouvelle partie (copie de A · Groove) » [coupé] @ 276,286
+image (chapeau de diplômé) @ 37,348
+texte « Comprendre les parties Chapitre 9/15 · Étape 3/5 · Facile » @ 244,348
+icône (liste) @ 459,348
+icône ⌄ @ 531,348
+texte « Écoute le Drop : tout joue en même temps. » @ 262,429
+texte « • Drop : le moment fort du morceau, quand tout revient d'un coup. » @ 294,483
+texte « ▸ Pourquoi ? » @ 294,534
+texte « Énergie » @ 58,570
+texte « Intro » @ 65,663
+texte « 16 » @ 65,687
+texte « 8 » @ 134,675
+texte « Drop » @ 203,663
+texte « 16 » @ 203,687
+texte « Break » @ 294,663
+texte « 16 » @ 294,687
+texte « 8 » @ 363,675
+texte « Drop 2 » @ 432,663
+texte « 16 » @ 432,687
+texte « Fin » @ 523,663
+texte « 16 » @ 523,687
+texte «  Intro » @ 60,724
+texte «  Montée » @ 151,724
+texte «  Drop » @ 245,724
+texte «  Break » @ 331,724
+texte «  Drop 2 » @ 425,724
+texte «  Fin » @ 507,724
+texte « Chaque nombre : la durée de la partie en mesures. » @ 251,754
+texte « Le kit House » @ 100,813
+texte « Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés. » [coupé] @ 294,841
+bouton « Lire la suite » ⌄ @ 294,822
+bouton ▶ «  Écouter l'exemple » @ 294,894
+icône ← «  Précédent » @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » @ 90,1062
+bouton ▶ « le morceau » @ 225,1062
+texte « 122 Tempo » @ 365,1062
+icône ⋮ « Plus » @ 498,1062
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

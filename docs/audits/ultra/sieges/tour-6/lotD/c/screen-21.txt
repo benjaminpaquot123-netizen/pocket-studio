@@ -1,0 +1,6 @@
+Écran 21 (900x1509)
+image (doigt qui touche) @ 459,982
+texte « ●  REC » @ 672,1479
+texte « ✎  记一笔 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 318,1479

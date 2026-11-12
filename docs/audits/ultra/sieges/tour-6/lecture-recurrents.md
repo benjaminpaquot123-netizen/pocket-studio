@@ -208,3 +208,66 @@ Lancés sur cette branche après le rassemblement, sorties gardées hors du dép
 - Section 4 : U1 à U29 = **29 défauts d'un seul siège** (U29 est une hésitation).
 - **Total : 68 défauts uniques**, dont **31 récurrents** (14 tuto/Guide + 17 de la section 3, R7 exclu), **21 sur le tuto et la Guide**. Les hésitations hors tuto (8) sont listées à part, non comptées.
 - Gravité : 1 bloquant (E c #17) ; 4 graves : B a #2, A c #27, D b #59, G a #14.
+
+---
+
+## Complément 1 (2026-11-12) : sièges D c et H a-suite
+
+Ajoutés dans un commit à part : `lotD/c` ← ccr-6a8c6318-dvnp3y (74055f1d), `lotH/a-suite` ← ccr-a548b78b-pkk8xs (26eb72c2). Rien n'est renuméroté plus haut.
+
+| siège | langue | appareil | police | mode | mission |
+|---|---|---|---|---|---|
+| D c | zh-CN | tablet8 | 100 | pro | tuto-pro (arrêt au chapitre 5/16, budget de 120 gestes) |
+| H a-suite | fr | phone | 100 | simple | tuto-facile, **« Bravo, ton morceau est fini ! » atteint en 246 gestes** (écran 247) |
+
+### C1.A Défauts déjà connus, confirmés par les nouveaux sièges
+
+| ligne | confirmé par (cité) |
+|---|---|
+| T1 | D c : « budget de 120 gestes presque épuisé au chapitre 5/16… « bravo » hors de portée en 120 gestes » (abandon écran 110). H a-suite : Bravo atteint, mais en 246 gestes |
+| T2 | H a-suite #66 : « aucun pad « tambourin » (la grille dit « Bord de caisse ») et il faut 8 cases sur 2 mesures » |
+| T3 | D c #45 : fantôme « 柔和 » « validé avec 力度 100% » (pareil « 轻一点 » au #67) |
+| T4 | D c #18 : curseur Swing « caché sous le panneau du tuto » (contourne-en-2) ; H a-suite #92 : note « à moitié sous le panneau du tuto (même chose écrans 97, 105, 163) » ; H a-suite chapitre 5 |
+| T6 | D c promesse t6-Dc-4 : 混响、失真、滤到 200 Hz、抽吸、弗里几亚、幽灵音、十六分音符、钢琴卷帘、小二度、截止 ; D c #33 ; H a-suite #12 « Tonalité, gamme mineure, Dorienne, La, Tonique » ; chapitres 1, 2 (« kick », « 909 », « 707 », « pad »), 6 (« accord »), 10 (« relances de fin de phrase ») |
+| T7 | H a-suite #6 : « Télécharger le kit House (4 Mo) » « caché sous le fondu… la carte revient à chaque étape » |
+| T8 | D c #87 : « 5 actions et 6 mots techniques dans une seule étape » ; H a-suite chapitre 5 : « consigne longue (La grave, La aigu, Ré, Mi, Sol) » |
+| T9 | D c #46 : « 本章完成 » mais « 1 速度和调性 3/4 » (banc?: temps, promesse t6-Dc-2) |
+| T10 | D c #4 : « Techno 132 BPM » choisi, « 120 BPM » affiché |
+| T11 | H a-suite #33 : « Je le fais » ouvre la mesure 2, titre caché (aussi chapitre 4, écrans 46 et 59 ; contourne-en-2) |
+| T12 | H a-suite (h) écran 17 : « il faut deviner de toucher « Bravo, chapitre fini ! » ⌃ » (T12 devient vue par 2 sièges) |
+| T16 | D c mots-faux : « four-on-the-floor » (écran 28), « Pattern 放好了！ » (97), « Ride » (76), « Drop » (5) ; « 效果 » coupé (#88) |
+| T17 | D c #18 : la démo pousse le Swing « à 7 % au lieu de 5 % » (comme B b #63 : 33 % au lieu de 25 %) ; T17 devient vue par 2 sièges |
+| T18 | H a-suite (h) écran 3 : « le mot BPM n'est expliqué qu'au chapitre 1 » |
+| R1 | D c #88 « 效果 » coupé au bord droit ; H a-suite #241 « Tout est prêt : aucun solo oublié, aucune piste » coupé |
+| E3 | Écrans en texte vide : D c écrans 21, 35, 36, 43, 62, 63, 70, 77 ; H a-suite écrans 33, 42, 53, 68, 200, 237, 242 |
+| E11 | Outils déclarés : D c (head/sed/grep, fichier temporaire last.txt supprimé, trois touches dans un même appel #29 à #31) ; H a-suite (Read seulement) |
+
+### C1.B Défauts neufs
+
+| # | défaut (cité) | sièges (gestes) | gravité max | langue / appareil / police |
+|---|---|---|---|---|
+| N1 | « 打开我这首歌的向导 » ouvre « onglet 结构 seul, aucun texte de guide, le panneau du tuto reste » (promesse t6-Dc-3) ; deux entrées « 我的第一首歌，跟着向导做 » et « 打开我这首歌的向导 », « je ne sais laquelle est le guide » ((h) écran 55) | D c #55 | moyen (contourne-en-3) | zh-CN tablet8 100 |
+| N2 | « 轮到你：错位的鼓边，循环里的小节奏钩子。 » : « pas d'action dite, j'ai dû toucher « 我来做 » » | D c #68 | moyen (contourne-en-1) | zh-CN tablet8 100 |
+| N3 | Aucun bouton de tonalité visible au studio pour « F 弗里几亚 », il a fallu « 我来做 » ((h) écran 14) | D c | (h) tuto | zh-CN tablet8 100 |
+| N4 | « Encore 12 notes en pointillé à toucher » : « rien de visible, pas de flèche ; il faut deviner de faire glisser la grille » (chapitre 7 « bloqué ») | H a-suite #140 | **grave** (contourne-en-4) | fr phone 100 |
+| N5 | Consigne « 8 notes… de la mesure 1, puis les 8 de la mesure 2 » mais « la dernière note à poser est en mesure 3 ; « Je le fais » ne la montre pas » | H a-suite #162 | **grave** (contourne-en-5) | fr phone 100 |
+| N6 | « Aller dans la partie « Drop 2 » » « ouvre le pad Cymbale » au lieu de Conga ; « mon coup dessus ne fait rien, sans message » | H a-suite #220 | moyen (contourne-en-3) | fr phone 100 |
+| N7 | La rangée « M4A · pour partager / WAV · qualité max » passe sur la ligne voisine : champ « Nom du morceau » coupé (H a-suite #246) ; même rangée déjà vue sur « Autres fichiers » (A c #7, U4) et « Salva il brano in .zip » (F a #19, U15) | H a-suite, A c, F a | mineur | fr phone 100 ; it tablet8 130 |
+| N8 | Chapitre 6 : « « Encore 36 notes » fait peur alors qu'il suffit de 9 touches » ((h) écran 109) | H a-suite | (h) tuto | fr phone 100 |
+| N9 | Chapitre 9 : « « le Break et la sienne 16 + 8 » incompréhensible » ((h) écrans 174 et 186) | H a-suite | (h) tuto | fr phone 100 |
+| N10 | Chapitre 9 : « pas d'écran « Bravo » à la fin du chapitre » ((h) écran 174) | H a-suite | (h) tuto | fr phone 100 |
+| N11 | Chapitre 10 : « chaque bouton fait tout seul, je n'apprends pas comment » ((h) écran 187) | H a-suite | (h) tuto | fr phone 100 |
+| N12 | Chapitre 11 : « dans « Le morceau » » alors que l'onglet s'appelle « Mon morceau » ((h) écran 199) | H a-suite | (h) tuto | fr phone 100 |
+| N13 | « Fermer le tuto » est un texte nu qu'on ne devine pas touchable (œil neuf q1, écran 247) | H a-suite | (q1) tuto | fr phone 100 |
+
+### C1.C Promesses
+
+- Non tenues : t6-Dc-2 (écran 47), t6-Dc-3 (56), t6-Dc-4 (34), t6-Dc-5 (28) ; t6-Ha-4 (13) et t6-Ha-5 (242) dans la suite de H a.
+- **t6-Ha-2 « Le tuto Facile se suit du premier chapitre au « Bravo » sans impasse » : « tenue : oui » dans H a-suite (écran 247)**, « mais avec des détours (chap. 7 surtout) » ; elle était « pas vue » au siège H a.
+- Tenues : t6-Dc-1 (écran 84), t6-Ha-1 (4), t6-Ha-3 (239).
+
+### C1.D Comptes du complément 1
+
+- 13 défauts neufs (N1 à N13), dont 11 sur le tuto ou le guide (N1 à N6, N8 à N13) ; 2 graves (H a-suite #140, #162) ; N7 est vue par 3 sièges.
+- 17 confirmations (lignes C1.A : T1, T2, T3, T4, T6, T7, T8, T9, T10, T11, T12, T16, T17, T18, R1, E3, E11) ; T12 et T17 passent à 2 sièges ou plus.
+- Totaux mis à jour : **81 défauts uniques** (68 + 13), dont **34 récurrents** (31 + T12 + T17 + N7), **32 sur le tuto et la Guide** (21 + 11) ; gravité : 1 bloquant, **6 graves** (+ H a-suite #140 et #162).

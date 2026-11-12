@@ -197,6 +197,7 @@ class PortalRulesFrozenPerBatch(unittest.TestCase):
 
 REJEUX = os.path.join(ROOT, "docs", "audits", "ultra", "rejeux")
 TOUCHES = ("touche", "appui-long", "double-touche")
+TAG = r"[A-Za-z_][A-Za-z0-9_:\-]*\*?"
 
 
 class ReplaysAimByTag(unittest.TestCase):
@@ -213,12 +214,59 @@ class ReplaysAimByTag(unittest.TestCase):
                 with open(os.path.join(REJEUX, rid, name), encoding="utf-8") as f:
                     words = f.read().split()
                 if words and words[0].lower() in TOUCHES:
-                    self.assertTrue(len(words) == 2 and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", words[1]),
+                    self.assertTrue(len(words) == 2 and re.fullmatch(TAG, words[1]),
                                     f"{rid}/{name}: « {' '.join(words)} » aims by pixels, not by a tag")
+                if words and words[0].lower() == "glisse" and len(words) == 4 and not re.fullmatch(r"-?\d+", words[1]):
+                    self.assertTrue(re.fullmatch(TAG, words[1]) and all(re.fullmatch(r"-?\d+", w) for w in words[2:]),
+                                    f"{rid}/{name}: « {' '.join(words)} » is a swipe by tag written wrong")
 
     def test_the_tester_resolves_a_tag(self):
         tester = read("app", "src", "test", "java", "com", "pocketstudio", "app", "human", "HumanTester.kt")
         self.assertIn("étiquette introuvable", tester, "HumanTester does not resolve « touche <étiquette> »")
+
+
+class ReplayRunKeepsItsProof(unittest.TestCase):
+    """Tour 5 (rejeux6): rejeu-defauts.sh keeps the journal of every run, and a « tenu » needs the last tagged touch to be in it."""
+
+    def run_replay(self, journal, last_cmd="touche record_stop"):
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmp, True)
+        os.makedirs(os.path.join(tmp, "scripts", "bench"))
+        shutil.copy(os.path.join(ROOT, "scripts", "bench", "rejeu-defauts.sh"), os.path.join(tmp, "scripts", "bench"))
+        with open(os.path.join(tmp, "scripts", "bench", "selftest.sh"), "w") as f:
+            f.write("#!/usr/bin/env bash\nexit 0\n")
+        with open(os.path.join(tmp, "scripts", "human-tester.sh"), "w") as f:
+            f.write("#!/usr/bin/env bash\nfor s in \"$1\"/[a-f]; do cp \"$FAKE_JOURNAL\" \"$s/journal.txt\"; echo 'oracle tenu' > \"$s/rejeu.txt\"; done\n")
+        for n in ("scripts/bench/selftest.sh", "scripts/human-tester.sh"):
+            os.chmod(os.path.join(tmp, n), 0o755)
+        rej = os.path.join(tmp, "rejeux", "t9-x")
+        os.makedirs(rej)
+        for name, text in (("start.txt", "lang=fr\n"), ("oracle.txt", "rejeu.n=2\nrejeu.attendu=x\n"), ("cmd-1.txt", "touche a_b"), ("cmd-2.txt", last_cmd)):
+            with open(os.path.join(rej, name), "w") as f:
+                f.write(text)
+        jf = os.path.join(tmp, "journal.fake")
+        with open(jf, "w") as f:
+            f.write(journal)
+        r = subprocess.run([os.path.join(tmp, "scripts", "bench", "rejeu-defauts.sh"), "t9-x"], capture_output=True, text=True,
+                           env=dict(os.environ, PS_REJEUX_DIR=os.path.join(tmp, "rejeux"), FAKE_JOURNAL=jf))
+        return r, os.path.join(tmp, "rejeux", "_journaux", "t9-x")
+
+    def test_tenu_with_the_tag_touched_is_kept_with_its_journal(self):
+        r, kept = self.run_replay("#1 ETIQUETTE a_b : 1 2\n#2 ETIQUETTE record_stop : 3 4\n")
+        self.assertIn("t9-x : oracle tenu", r.stdout)
+        self.assertEqual(r.returncode, 0)
+        self.assertTrue(os.path.isfile(os.path.join(kept, "journal.txt")), "the journal of a held replay is not kept")
+
+    def test_tenu_without_the_tag_touched_is_not_tenu(self):
+        r, kept = self.run_replay("#1 ETIQUETTE a_b : 1 2\n#2 > touche 3 4\n")
+        self.assertIn("oracle non tenu", r.stdout)
+        self.assertEqual(r.returncode, 1)
+        self.assertTrue(os.path.isfile(os.path.join(kept, "journal.txt")))
+
+    def test_tenu_with_the_touch_refused_is_not_tenu(self):
+        r, _ = self.run_replay("#2 ETIQUETTE record_stop : 3 4\n#2 REFUS hors de portée du pouce (d'une main, la gauche)\n")
+        self.assertIn("refusée", r.stdout)
+        self.assertEqual(r.returncode, 1)
 
 
 class StableScreenshots(unittest.TestCase):

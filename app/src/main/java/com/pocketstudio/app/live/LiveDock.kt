@@ -95,7 +95,8 @@ internal fun QuantumButton(p: Project, setQuantum: (Int) -> Unit, modifier: Modi
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Text(tr("Lancer à"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
+        // Tour 5, lot « langues » (Arabic on a small phone: « الإطلاق ع… »): the words set smaller, whole, before any « … ».
+        com.pocketstudio.ui.WholeWordsText(tr("Lancer à"), Modifier.weight(1f, fill = false), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary, maxLines = 1)
         Text(liveQuantumLabel(code), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary, maxLines = 1)
     }
 }

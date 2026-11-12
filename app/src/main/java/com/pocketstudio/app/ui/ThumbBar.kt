@@ -128,7 +128,10 @@ fun ThumbBar(
             verticalArrangement = Arrangement.Center,
         ) {
             Text("${ui.tempoBpm}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Neon.TextPrimary, maxLines = 1)
-            Text(tr("Tempo"), fontSize = 11.sp, lineHeight = 12.sp, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            com.pocketstudio.ui.WholeWordsText(
+                tr("Tempo"), style = androidx.compose.ui.text.TextStyle(fontSize = 11.sp, lineHeight = 12.sp), color = Neon.TextSecondary,
+                maxLines = 1, minScale = 0.5f,
+            )
         }
         val more = actions.more
         if (more != null) {
@@ -161,6 +164,10 @@ private fun ThumbButton(icon: ImageVector, label: String, description: String, e
         verticalArrangement = Arrangement.Center,
     ) {
         Icon(icon, contentDescription = null, tint = Neon.TextPrimary, modifier = Modifier.size(22.dp))
-        Text(label, fontSize = 11.sp, lineHeight = 12.sp, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
+        // Tour 5, lot « langues » (200 %: « Annul… », « Rückg… »): the word set smaller, whole, before any « … ».
+        com.pocketstudio.ui.WholeWordsText(
+            label, style = androidx.compose.ui.text.TextStyle(fontSize = 11.sp, lineHeight = 12.sp), color = Neon.TextSecondary,
+            maxLines = 1, minScale = 0.5f, textAlign = TextAlign.Center,
+        )
     }
 }

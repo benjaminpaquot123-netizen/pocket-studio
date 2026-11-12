@@ -180,7 +180,9 @@ fun PlayStrip(ui: PlayStripUi, actions: PlayStripActions) = BoxWithConstraints(
         else maxWidth < (if (chips >= 2) COMPACT_BELOW else 300.dp)
         )
     Row(
-        Modifier.fillMaxWidth().height(height).padding(horizontal = 6.dp).testTag("play_strip"),
+        // Tour 5, lot « langues »: a tall script (Arabic, Hindi) makes the position's two lines taller than the font says: the
+        // strip grows to hold them (« المازورة 1/3 » was cut at its foot, even at 100 %).
+        Modifier.fillMaxWidth().heightIn(min = height).padding(horizontal = 6.dp).testTag("play_strip"),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
@@ -236,7 +238,8 @@ private fun TempoButton(bpm: Double, open: () -> Unit) {
     val said = tr("Tempo : %d BPM", Math.round(bpm).toInt())
     // Touched over the strip's whole height; the window drawn smaller inside.
     Box(
-        Modifier.control().clip(shape)
+        // Tour 5, lot « langues » (200 % in Arabic: « السرعة » past the strip's foot): it grows with the font, as the position.
+        Modifier.widthIn(min = TOUCH_HEIGHT).requiredHeightIn(min = TOUCH_HEIGHT).clip(shape)
             .clickable(role = Role.Button, onClickLabel = tr("Changer le tempo"), onClick = open)
             .semantics(mergeDescendants = true) { contentDescription = said }
             .spot("top_tempo", tr("Tempo"))

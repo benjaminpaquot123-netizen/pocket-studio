@@ -543,7 +543,7 @@ private fun RemixCard(onClick: () -> Unit) {
             Text(tr("Remix"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary)
             Text(
                 tr("Séparation des pistes : batterie, basse, voix et le reste."),
-                style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, maxLines = 2, overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, maxLines = 3, overflow = TextOverflow.Ellipsis,
             )
         }
         Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = color, modifier = Modifier.testTag("launch_remix_arrow"))

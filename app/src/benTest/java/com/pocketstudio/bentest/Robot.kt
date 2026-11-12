@@ -74,9 +74,13 @@ object Robot {
     fun carnet(context: Context) = Carnet(File(dir(context), "carnet.tsv"))
     private fun captures(context: Context) = File(dir(context), "captures")
 
+    /** « Écoute au micro »: the 2 s extracts around an anomaly (nothing else of the microphone is kept). */
+    private fun sons(context: Context) = File(dir(context), "sons")
+    private fun nExtraits(context: Context) = sons(context).listFiles()?.size ?: 0
+
     /** Which run the logbook holds (kept beside it: a run picked up after a crash is the same one). */
     private fun passageFile(context: Context) = File(dir(context), "passage.txt")
-    fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR || it == OREILLE } ?: ECLAIR
+    fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR || it == OREILLE || it == MICRO } ?: ECLAIR
 
     /** « Retester les corrections »: the ids chosen (the file exists only for such a run), and the last « Tout tester » kept (ids and lights). */
     private fun retestFile(context: Context) = File(dir(context), "retest.txt")
@@ -99,6 +103,7 @@ object Robot {
         val all = when (passage) {
             TOUT -> ToutTester(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
             OREILLE -> QuestionsOreille(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
+            MICRO -> EcouteMicro(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), MicroReel(context), HautParleurReel(context), carnet(context), sons(context)).etapes()
             else -> EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
         }
         return subset(all, passage, if (retest) retest(context) else null)
@@ -110,7 +115,7 @@ object Robot {
 
     private fun verdict(lines: List<Carnet.Ligne>, steps: List<Etape>, passage: String): String =
         when (passage) {
-            TOUT -> Rapport.bilanFeux(lines, steps).verdict()
+            TOUT, MICRO -> Rapport.bilanFeux(lines, steps).verdict()
             OREILLE -> QuestionsOreille.verdict(lines)
             else -> Rapport.bilan(lines, steps).verdict()
         }
@@ -129,6 +134,7 @@ object Robot {
             interrompu = if (!finished) dead?.let { d -> steps.firstOrNull { it.name == d }?.label ?: d } else null,
             verdict = if (finished) verdict(lines, steps, passage) else null,
             passage = passage,
+            extraits = nExtraits(context),
         )
     }
 
@@ -159,6 +165,10 @@ object Robot {
                     val essai = EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran)
                     QuestionsOreille(Pose(essai, Journey(driver)), NativeSonde, appli, c, shots).etapes()
                 }
+                MICRO -> {
+                    val essai = EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran)
+                    EcouteMicro(Pose(essai, Journey(driver)), MicroReel(app), HautParleurReel(app), c, sons(app)).etapes()
+                }
                 else -> EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
             }
             val steps = subset(all, which, retest(app))
@@ -179,7 +189,7 @@ object Robot {
                 val f = derniereFile(app)
                 Retest.ecrire(f, Retest.fusion(Retest.lire(f), Rapport.feux(c.lines(), passage.etapes)))
             }
-            _etat.value = Etat(verdict = verdict(c.lines(), passage.etapes, which), passage = which)
+            _etat.value = Etat(verdict = verdict(c.lines(), passage.etapes, which), passage = which, extraits = nExtraits(app))
             bringBack(app)
         }
     }
@@ -197,6 +207,7 @@ object Robot {
         passageFile(context).delete()
         retestFile(context).delete()
         captures(context).deleteRecursively()
+        sons(context).deleteRecursively()
         _etat.value = Etat()
     }
 
@@ -254,13 +265,14 @@ object Robot {
         val steps = etapes(context, passage)
         val about = about(context)
         val texts = buildList {
-            add("rapport.md" to Rapport.markdown(lines, steps, about, tout = passage == TOUT, retest = if (passage == TOUT) retest(context)?.let { steps.size } else null, oreille = passage == OREILLE))
+            add("rapport.md" to Rapport.markdown(lines, steps, about, tout = passage == TOUT || passage == MICRO, retest = if (passage == TOUT) retest(context)?.let { steps.size } else null, oreille = passage == OREILLE, micro = passage == MICRO))
             add("mesures.json" to Rapport.json(lines, about))
             add("carnet.tsv" to (if (c.file.isFile) c.file.readText() else ""))
             add("journal.json" to runCatching { JournalJson.current(about) }.getOrDefault("{}"))
             CrashReporter.pendingCrash()?.let { add("plantage.txt" to it) }
         }
-        val pictures = captures(context).listFiles()?.sortedBy { it.name }?.map { "captures/${it.name}" to it }.orEmpty()
+        val pictures = captures(context).listFiles()?.sortedBy { it.name }?.map { "captures/${it.name}" to it }.orEmpty() +
+            sons(context).listFiles()?.sortedBy { it.name }?.map { "sons/${it.name}" to it }.orEmpty()
         val out = File(File(context.cacheDir, "exports"), "rapport-benstudio-test-" + SimpleDateFormat("yyyyMMdd-HHmmss", Locale.ROOT).format(Date()) + ".zip")
         out.parentFile?.listFiles { f -> f.name.startsWith("rapport-benstudio-test-") }?.forEach { it.delete() }
         return RapportZip.write(out, texts, pictures)

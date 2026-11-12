@@ -53,6 +53,9 @@ class Carnet(val file: File, private val clock: () -> Long = System::currentTime
         /** An answer to a question of the banner: « verdict;capture;comment » (Oreille.kt). */
         const val REPONSE = "reponse"
 
+        /** « Écoute au micro »'s numbers: « bruit;csv », « courbe;csv », « empreinte;style;… », « anomalie;… » (EcouteMicro.kt). */
+        const val MICRO = "micro"
+
         private fun escape(s: String) = s.replace("\\", "\\\\").replace("\t", "\\t").replace("\n", "\\n").replace("\r", "")
 
         private fun unescape(s: String): String = buildString(s.length) {

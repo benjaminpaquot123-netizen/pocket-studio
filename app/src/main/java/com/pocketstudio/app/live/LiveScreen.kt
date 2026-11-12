@@ -851,26 +851,75 @@ private fun TakeChoice(label: String, selected: Boolean, tag: String, choose: ()
     }
 }
 
+/**
+ * Where the song is, bar.beat (« 30.2 », « – » stopped), over its unit (« mesure », as « BPM » under the tempo), in a
+ * frame that fills up, clockwise from the top, to the next launch line (cyan while a launch waits).
+ * Tour 6, lot 5 (R20: « un cercle « 30.2 » sans unité », « un rond gris « – » qui ne fait rien »): it says what it
+ * counts, on screen and to TalkBack (« Mesure 30 · temps 2 », stopped « Mesure · Arrêté »).
+ */
 @Composable
 private fun Counter(ui: LiveScreenUi) {
     val p = ui.project
     // The only part of the bar that follows the clock (it alone recomposes, 30 times a second).
     val step = ui.clockOf()
     val waiting = ui.grid?.hasPending == true
-    // Waiting: the ring counts down to the first launch line armed (each keeps the quantum it was armed with).
+    // Waiting: the frame counts down to the first launch line armed (each keeps the quantum it was armed with).
     val q = ui.grid?.let { g -> nextLaunchQuantum(g, step, p.liveQuantumSteps) } ?: p.liveQuantumSteps
     val ring = if (step < 0) 0f else (step % q) / q.toFloat()
-    val text = if (step < 0) "–" else "${step / p.stepsPerBar + 1}.${step % p.stepsPerBar / 4 + 1}"
+    val bar = step / p.stepsPerBar + 1
+    val beat = step % p.stepsPerBar / 4 + 1
+    val text = if (step < 0) "–" else "$bar.$beat"
+    val unit = tr("mesure")
+    val said = if (step < 0) unit.replaceFirstChar { it.titlecase() } + " · " + tr("Arrêté") else tr("Mesure %d", bar) + " · " + tr("temps") + " " + beat
     val accent = if (waiting) Neon.Cyan else Neon.Outline
     val track = Neon.SurfaceHigh
-    Box(Modifier.size(48.dp).testTag("live_counter"), contentAlignment = Alignment.Center) {
-        Canvas(Modifier.size(44.dp)) {
-            val stroke = 4.dp.toPx()
-            drawArc(track, 0f, 360f, false, style = Stroke(stroke), topLeft = Offset(stroke / 2, stroke / 2), size = Size(size.width - stroke, size.height - stroke))
-            drawArc(accent, -90f, 360f * ring, false, style = Stroke(stroke), topLeft = Offset(stroke / 2, stroke / 2), size = Size(size.width - stroke, size.height - stroke))
-        }
-        Text(text, style = MonoStyle, color = Neon.TextPrimary)
+    Column(
+        Modifier.size(COUNTER_W, 48.dp)
+            .drawBehind {
+                val stroke = 3.dp.toPx()
+                val frame = counterFrame(stroke / 2, stroke / 2, size.width - stroke, size.height - stroke, 12.dp.toPx())
+                drawPath(frame, track, style = Stroke(stroke))
+                if (ring > 0f) {
+                    val measure = androidx.compose.ui.graphics.PathMeasure().apply { setPath(frame, false) }
+                    val done = androidx.compose.ui.graphics.Path()
+                    measure.getSegment(0f, measure.length * ring, done, true)
+                    drawPath(done, accent, style = Stroke(stroke, cap = StrokeCap.Round))
+                }
+            }
+            .semantics(mergeDescendants = true) { contentDescription = said }
+            .testTag("live_counter")
+            .padding(horizontal = 4.dp, vertical = 3.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        com.pocketstudio.ui.FitText(
+            text, style = MonoStyle.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold, lineHeight = 18.sp), color = Neon.TextPrimary, maxLines = 1,
+        )
+        // Without the small labels' wide spacing: « compasso », « Schlag » fit at a big font size.
+        com.pocketstudio.ui.FitText(
+            unit, style = MaterialTheme.typography.labelSmall.copy(lineHeight = 12.sp, letterSpacing = 0.sp), color = Neon.TextSecondary, maxLines = 1, min = 7.sp,
+        )
     }
+}
+
+/** The counter's width: as ● REC beside it. */
+private val COUNTER_W = 56.dp
+
+/** A frame [w] x [h] from ([x], [y]), its corners [r] round, drawn from the middle of its top edge clockwise (as a clock's hand). */
+private fun counterFrame(x: Float, y: Float, w: Float, h: Float, r: Float) = androidx.compose.ui.graphics.Path().apply {
+    val c = r.coerceAtMost(minOf(w, h) / 2f)
+    val right = x + w
+    val bottom = y + h
+    moveTo(x + w / 2f, y)
+    lineTo(right - c, y)
+    arcTo(androidx.compose.ui.geometry.Rect(right - 2 * c, y, right, y + 2 * c), -90f, 90f, false)
+    lineTo(right, bottom - c)
+    arcTo(androidx.compose.ui.geometry.Rect(right - 2 * c, bottom - 2 * c, right, bottom), 0f, 90f, false)
+    lineTo(x + c, bottom)
+    arcTo(androidx.compose.ui.geometry.Rect(x, bottom - 2 * c, x + 2 * c, bottom), 90f, 90f, false)
+    lineTo(x, y + c)
+    arcTo(androidx.compose.ui.geometry.Rect(x, y, x + 2 * c, y + 2 * c), 180f, 90f, false)
+    close()
 }
 
 /**

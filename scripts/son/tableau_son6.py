@@ -19,7 +19,7 @@ T = {
     # House
     "house": (-9.0, -7.1, "M", "I"), "deep_house": (-10.9, -9.3, "M", "drop"), "tech_house": (-10.0, -7.9, "M", "drop"),
     "uk_garage": (-9.5, -8, "E", "I"), "speed_garage": (-9.5, -8, "E", "I"), "acid_house": (-10, -9, "E", "I"),
-    "afro_house": (-10.9, -9.4, "M", "drop"), "disco": (-10.8, -8.5, "M", "drop"), "amapiano": (-10.5, -9, "E", "I"),
+    "afro_house": (-10, -9, "E", "I"), "disco": (-10.8, -8.5, "M", "drop"), "amapiano": (-10.5, -9, "E", "I"),
     # Techno
     "techno": (-9.9, -7.6, "M", "drop"), "retro_techno": (-10.5, -9, "E", "I"), "detroit": (-10.5, -9, "E", "I"),
     "industrial_techno": (-8.5, -7, "E", "I"), "hard_techno": (-8.0, -6.4, "M", "I"), "acid_techno": (-8, -7, "E", "I"),

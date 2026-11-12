@@ -72,6 +72,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -508,8 +509,15 @@ fun TutoPanel(
                 // Tour 6 (T7): not on the step that says the kit is ready (« Tu n'as rien à régler » over « Télécharger le kit »).
                 if (step.id != READY_STEP) kit?.invoke()
             }
-            if (words.canScrollForward) MoreWords(Modifier.align(Alignment.BottomCenter)) { words.animateScrollTo(minOf(words.maxValue, words.value + words.viewportSize * 3 / 4)) }
+            // Tour 6 (N31): the fade only shows (a touch goes through it); « Lire la suite » is under the words, never over
+            // « ▸ Pourquoi ? » or the kit's buttons (it read on when the user meant to open the reason).
+            if (words.canScrollForward) Box(
+                Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(16.dp)
+                    .background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(Color.Transparent, panelColor()))),
+            )
             }
+            // Its room kept while the words scroll at all (shown or not, nothing moves when the end is reached).
+            if (words.maxValue > 0) MoreWords(words.canScrollForward) { words.animateScrollTo(minOf(words.maxValue, words.value + words.viewportSize * 3 / 4)) }
             ActionBar(ui, canShow, actions, mine, minePlaying, mineFirst)
         }
     }
@@ -518,14 +526,19 @@ fun TutoPanel(
 /** The courses' first step, « ton kit est déjà celui du style… Tu n'as rien à régler »: no kit offer under it. */
 private const val READY_STEP = "ready"
 
-/** The bottom of the step's words when more of them is below: a fade and « Lire la suite », a touch scrolls down. */
+/**
+ * Under the step's words when they scroll: « Lire la suite », a touch scrolls down ([shown]; at their end the same room
+ * stays, empty, so that nothing moves).
+ */
 @Composable
-private fun MoreWords(modifier: Modifier, more: suspend () -> Unit) {
+private fun MoreWords(shown: Boolean, more: suspend () -> Unit) {
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     Row(
-        modifier.fillMaxWidth().background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(Color.Transparent, panelColor(), panelColor())))
-            .clickable(onClickLabel = tr("Lire la suite"), role = androidx.compose.ui.semantics.Role.Button) { scope.launch { more() } }.heightIn(min = 32.dp).testTag("tuto_text_more"),
-        horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.Bottom,
+        Modifier.fillMaxWidth()
+            .then(if (shown) Modifier.clickable(onClickLabel = tr("Lire la suite"), role = androidx.compose.ui.semantics.Role.Button) { scope.launch { more() } }.testTag("tuto_text_more")
+            else Modifier.alpha(0f))
+            .heightIn(min = 32.dp),
+        horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(tr("Lire la suite"), style = MaterialTheme.typography.labelMedium, color = Neon.Cyan, fontWeight = FontWeight.Bold)
         Icon(Icons.Filled.ExpandMore, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))

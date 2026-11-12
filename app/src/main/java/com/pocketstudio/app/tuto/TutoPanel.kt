@@ -113,7 +113,28 @@ fun tutoPadNames(text: String, project: com.pocketstudio.model.Project): String 
  * Tour 6 (T2): [shown], the translation of the course's French [fr], with each pad [fr] names between quotes said
  * by the kit's own name in this language, so that [tutoPadNames] finds it.
  */
-internal fun tutoKitQuotes(fr: String, shown: String): String = shown
+internal fun tutoKitQuotes(fr: String, shown: String): String {
+    if (fr == shown) return shown
+    val quoted = Regex("[$TUTO_OPEN][\\s  ]?([^$TUTO_OPEN$TUTO_CLOSE]+?)[\\s  ]?[$TUTO_CLOSE]")
+    val theirs = quoted.findAll(fr).map { it.groupValues[1] }.toList()
+    val ours = quoted.findAll(shown).toList()
+    // Only when both sentences quote as many things: the order of the quotes is the one sure link between them.
+    if (theirs.isEmpty() || theirs.size != ours.size) return shown
+    val kit = com.pocketstudio.app.rhythm.DrumKitInfo.names.toSet()
+    val out = StringBuilder(shown)
+    // From the end, so that the places still to change stay where they are.
+    for (k in ours.indices.reversed()) {
+        // A pad of the kit the French names (« Kick »), as this language names it (its pad's name: [tutoPadNames]).
+        val name = tr(theirs[k]).takeIf { it in kit } ?: continue
+        val g = ours[k].groups[1] ?: continue
+        if (g.value != name) out.replace(g.range.first, g.range.last + 1, name)
+    }
+    return out.toString()
+}
+
+/** The quotes a course's words use, in every language (as [com.pocketstudio.model.i18n.QuotedNames]). */
+private const val TUTO_OPEN = "«“„「『\"‘"
+private const val TUTO_CLOSE = "»”“」』\"’"
 
 /** A step's words ([fr], the course's French) as the panel shows them: translated, each pad by its name on the screen ([names]). */
 private fun tutoWords(fr: String, names: (String) -> String): String = names(tutoKitQuotes(fr, tutoText(fr)))

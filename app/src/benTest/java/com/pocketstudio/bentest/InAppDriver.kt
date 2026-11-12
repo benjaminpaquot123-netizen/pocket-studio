@@ -68,7 +68,9 @@ class InAppDriver(
             if (v is ViewRootForTest) found += v
             if (v is ViewGroup) for (i in 0 until v.childCount) visit(v.getChildAt(i))
         }
-        windows().filter { it.isAttachedToWindow }.forEach(::visit)
+        // Only what is on the screen: a stopped activity keeps its window attached, hidden, with its last tree (v6 run,
+        // 2026-11-12: the studio under BenStudio Test's screen was read and touched, five steps failed in 15 s).
+        windows().filter { it.isAttachedToWindow && it.isShown }.forEach(::visit)
         return found
     }
 

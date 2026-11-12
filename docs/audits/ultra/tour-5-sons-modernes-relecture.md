@@ -1,5 +1,5 @@
 # Tour 5, lot « sons-modernes » : relecture neuve de l'étude des sons (2026-11-12)
-Relu : a0713bae5220d7f76c363fcafa9a7e822ce3baf6
+Relu : e19e3cf2de915c4a2359619076cafc04e57acda3
 
 ## Ce qui a été relu
 - **Premier passage** sur cacaea09, l'étude seule : `docs/sons/PLAN-SONS-MODERNES.md` et `docs/decisions/tour-5-sons-modernes.md`. Ce relevé avait été commité en 034561af.
@@ -166,7 +166,9 @@ Aucun.
 
 ### Moyen
 
-- **R1. Le chemin 3 ne décrit pas ce que fait son test.**
+- **R1. Le chemin 3 ne décrivait pas ce que fait son test** — **corrigé** (e19e3cf2).
+  - Le chemin 3 nomme maintenant `ShelfBrowserTest#theAssistantKeepsTheStylesMachineAndItsKitVoiceFirst`, avec « la machine nommée par la recette passe avant le kit, une voix imposée reste devant ».
+  - C'est bien ce que vérifie ce test : le pack de la machine sort en premier dans « Pour ce style », devant le kit, et la ligne à voix imposée de l'afro house garde sa voix du kit en tête.
   - Passage : « chemin: Assistant › la machine nommée par la ligne passe en premier | test: WizardLineFxTest#theStylesPacksAreOfferedAtTheLineTheMachineOfThatLineFirst ». Le rapport le range sous « le choix d'un son par rôle, que l'interrupteur d'essai changera ».
   - Ce test ne vérifie que l'ordre des packs **à télécharger** proposés sur une ligne (`missingStylePacks`, `WizardScreen.kt:502-507`). Il ne vérifie pas que, packs installés, le son de la machine passe avant le pack du style et le kit. C'est pourtant l'ordre de `soundCategories` sur lequel l'essai compte (G3).
   - Le test qui couvre cet ordre existe : `ShelfBrowserTest#theAssistantKeepsTheStylesMachineAndItsKitVoiceFirst` (`@Test` sans `@Ignore`). Il installe le pack de la machine et vérifie qu'il sort en premier dans « Pour ce style », devant le kit.
@@ -174,11 +176,17 @@ Aucun.
 
 ### Mineur
 
-- **r1. Chemin 4 : « Bibliothèque › les packs du style proposés d'abord » (`LibraryChoicesTest#theStylesPacksAreOfferedFirstAndDownloadedInOneTouch`).**
+- **r1. Chemin 4 : « Bibliothèque › les packs du style proposés d'abord » (`LibraryChoicesTest#theStylesPacksAreOfferedFirstAndDownloadedInOneTouch`)** — **corrigé** : « les packs du style proposés et téléchargés d'un geste ».
   - Le test vérifie que l'offre existe et qu'une seule touche télécharge tous les packs du style. Il ne vérifie pas qu'elle vient « d'abord » : il ne contrôle aucune position.
   - Correction : « les packs du style proposés et téléchargés d'une touche ».
-- **r2. Rapport, « Preuves » : « Toutes les remarques ont été corrigées ».**
+- **r2. Rapport, « Preuves » : « Toutes les remarques ont été corrigées »** — **corrigé** : « Tous les constats ont été corrigés ».
   - Tous les constats l'ont été. Mais la remarque du troisième passage, non comptée comme constat (la présence comptée jusqu'à 5 kHz passe encore le test), est toujours vraie.
   - Correction : « Tous les constats ont été corrigés ».
+
+
+**Cinquième passage, sur e19e3cf2.** Seul le rapport bouge (`git diff 0d45014b..e19e3cf2`).
+- `rapport-zone.py` l'accepte toujours : code 0.
+- La phrase des preuves, « de 15 à près de 40 dB plus sombres (nos voix les plus sombres : −39 à −57 dB) », colle aux mesures : de −39,1 dB pour la nappe techno à −57,0 dB pour le lead de la tech house, face aux −18 à −24 dB d'une scie brute.
+- Remarque, non comptée comme constat : le rapport dit encore « en trois passes », alors que cette relecture en compte cinq.
 
 Verdict : 0 bloquant, 0 grave — fusion possible

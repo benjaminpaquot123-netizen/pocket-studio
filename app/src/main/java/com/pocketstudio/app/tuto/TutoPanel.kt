@@ -479,7 +479,10 @@ fun TutoPanel(
             val most = if (chapter.map && map.isNotEmpty()) 290.dp else 240.dp
             val words = rememberScrollState()
             // Audit ultra (« le panneau tient »): words longer than the room scroll, and say so at the bottom.
-            Box((if (holding) Modifier.weight(1f) else Modifier.heightIn(min = 52.dp, max = most))) {
+            // N31: « Lire la suite » under the words takes its room from them (the panel no taller than before, over the screen).
+            var moreHeight by remember { mutableIntStateOf(0) }
+            val moreRoom = if (words.maxValue > 0) with(density) { moreHeight.toDp() }.coerceAtLeast(32.dp) else 0.dp
+            Box((if (holding) Modifier.weight(1f) else Modifier.heightIn(min = 52.dp, max = (most - moreRoom).coerceAtLeast(52.dp)))) {
             Column(
                 Modifier.verticalScroll(words),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
@@ -520,7 +523,9 @@ fun TutoPanel(
             )
             }
             // Its room kept while the words scroll at all (shown or not, nothing moves when the end is reached).
-            if (words.maxValue > 0) MoreWords(words.canScrollForward) { words.animateScrollTo(minOf(words.maxValue, words.value + words.viewportSize * 3 / 4)) }
+            if (words.maxValue > 0) MoreWords(words.canScrollForward, Modifier.onSizeChanged { moreHeight = it.height }) {
+                words.animateScrollTo(minOf(words.maxValue, words.value + words.viewportSize * 3 / 4))
+            }
             ActionBar(ui, canShow, actions, mine, minePlaying, mineFirst)
         }
     }
@@ -534,10 +539,10 @@ private const val READY_STEP = "ready"
  * stays, empty, so that nothing moves).
  */
 @Composable
-private fun MoreWords(shown: Boolean, more: suspend () -> Unit) {
+private fun MoreWords(shown: Boolean, modifier: Modifier = Modifier, more: suspend () -> Unit) {
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     Row(
-        Modifier.fillMaxWidth()
+        modifier.fillMaxWidth()
             .then(if (shown) Modifier.clickable(onClickLabel = tr("Lire la suite"), role = androidx.compose.ui.semantics.Role.Button) { scope.launch { more() } }.testTag("tuto_text_more")
             else Modifier.alpha(0f))
             .heightIn(min = 32.dp),

@@ -149,9 +149,14 @@ class TutoGrilleTest {
     @Test
     fun simpleTheLastLeadNoteIsShownWithItsBar() = theLastNoteAndItsBar(TutoLevel.Facile, simple = true)
 
-    /** N8: in chord mode one touch writes a whole chord: « Encore N » counts the touches (the chords' starts), not their notes. */
+    /** N8: with « Accords » on one touch writes a whole chord: « Encore N » counts the touches (the chords' starts), not their notes. */
     private fun chordsCountTouches(level: TutoLevel, simple: Boolean) {
         openNotesStep("pad_do", level, simple)
+        // « Accords » on (the chord's lowest note touched writes the whole chord).
+        if (has("chord_mode")) {
+            compose.onNodeWithTag("chord_mode").performClick()
+            settle()
+        }
         val left = leftNotes()
         val touches = left.map { it.start }.distinct().size
         assertTrue("chords on the step: ${left.size} notes for $touches starts", touches < left.size)

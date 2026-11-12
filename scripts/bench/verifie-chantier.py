@@ -853,6 +853,8 @@ def test_in(root, rev, cls, method):
     return any(PY_TEST_FILE.match(f) and py_test_in(_show(root, rev, f) or "", cls, method) for f in scripts)
 
 
+# Lot « juge7 »: the folder of the bench's code that lives under the tests (HumanTester and its helpers).
+BENCH_HELPERS = "app/src/test/java/com/pocketstudio/app/human/"
 # Lot « juge7 »: the bench's own tests, unittest classes of scripts/bench/test_*.py (run with python3 -I).
 PY_TEST_FILE = re.compile(r"^scripts/bench/test_[^/]*\.py$")
 
@@ -1110,10 +1112,12 @@ def mutated_red(root, sha):
     if not test_in(root, full, cls, method) or test_in(root, parents[0], cls, method):
         return False
     code = {f for f in files if f and not TEST_FILE.search(f) and not f.startswith("docs/")}
-    # Lot « juge7 »: the bench's code that lives under the tests (HumanTester.kt, SeatOptions.kt): a Kotlin file of the
-    # tests with no @Test in the green is a helper, never run as a test; a line taken off it is a line of code.
-    code |= {f for f in files if f.startswith(TEST_DIRS) and f.endswith(".kt")
-             and "@Test" not in without_comments(_show(root, full, f) or "@Test")}
+    # Lot « juge7 »: the bench's code that lives under the tests (SeatOptions.kt, BenchWindows.kt): a Kotlin file of the
+    # bench's folder with no test in the green (no @Test, nor @org.junit.Test: review of « juge7 », G1) is a helper,
+    # never run as a test; a line taken off it is a line of code. Only the bench's folder (review M1): an app test's
+    # helper stays a test file.
+    code |= {f for f in files if f.startswith(BENCH_HELPERS) and f.endswith(".kt")
+             and not re.search(r"@(?:org\.junit\.)?Test\b", without_comments(_show(root, full, f) or "@Test"))}
     # Review of « juge6 », M1: the mutation only takes lines off (nothing put in their place: no require(false),
     # no « !! » on null, no throw), each a line of code (not blank, not a comment) the green added at that very
     # place: matched by its number in the green's file, never by its text alone.

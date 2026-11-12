@@ -17,3 +17,13 @@
   - Retour arrière : `SoundTrial.DRUMS`.
 - 2026-11-12 · Extraits : 30 s depuis le premier Drop, lecture lancée comme « Écouter » (`-Pbench.listen=drop`), le plus fort baissé au niveau de l'autre (0,0 LU d'écart). Envoyés en WAV 16 bits, car l'AAC de ffmpeg dépassait 0 dBTP sur ces extraits denses. Retour arrière : sans objet.
 - 2026-11-12 · Tables d'ondes (essai 3, partie B) non faites : on attend l'écoute de Benjamin avant de toucher au moteur. Retour arrière : sans objet.
+- 2026-11-12 · Essai n° 2 : Benjamin « Tu rajoutes juste des cymbales on dirait » ; mesuré, seuls les aigus de la batterie bougeaient. Le chef d'orchestre ne fusionne pas l'essai n° 1 tel quel. Raison de l'essai n° 2 : faire entendre la différence là où elle compte (kick, caisse/clap, basse, synthés). Retour arrière : revenir aux versions de l'essai n° 1 (`trial_drums.py` au commit c87c1432, `SoundTrial` au commit 81325551).
+- 2026-11-12 · Kick : on reprend dans le son ce que le lot « kick » met au haut-parleur (harmoniques 180 Hz-1,5 kHz, clic 1,2-4,5 kHz), sans toucher à `SpeakerKick`. Les deux s'additionneront sur le haut-parleur. Retour arrière : kick de l'essai n° 1.
+- 2026-11-12 · Basse :
+  - saturation en parallèle (force 0,95, mélange 85 %, volume constant), +12 dB à 800 Hz, égaliseur graves +5 / aigus −9 dB ;
+  - on ne double pas la pompe : le bus « Musique » de l'assistant baisse déjà sous le son du kick ;
+  - contrepartie notée : le sub de la basse recule de 1,7 à 5,2 dB à niveau égal.
+  - Retour arrière : `SoundTrial.SECOND`.
+- 2026-11-12 · Synthés : élargisseur, plaque et ping-pong sur leads et nappes, +9 dB à 2,5 kHz sur la voix de la tech house. Pas de nouveau balayage de filtre : ses sections ne sont pas sûres, et les leads ont déjà leurs cycles de 8 mesures. Retour arrière : `SoundTrial.SECOND` et `SECOND_OWN`.
+- 2026-11-12 · Mesure de l'essai n° 2 sur le bus batterie (voie 0), pas sur le solo d'un pad : ce solo n'est pas fiable quand le pad joue un échantillon. Retour arrière : sans objet.
+- 2026-11-12 · Arrêt des réglages au critère atteint (au moins 3 dB sur deux bandes hors aigus par style, sur la batterie et la basse). Les réglages suivants se décideront à l'écoute de Benjamin. Retour arrière : sans objet.

@@ -92,11 +92,105 @@ Ce qu'on en tire :
 - Pas de M4A : l'encodeur AAC de ffmpeg dépassait 0 dBTP sur ces extraits denses, un défaut connu (`docs/son/BANC.md`). Le WAV donne l'audio exact.
 - Les extraits ne sont pas dans le dépôt.
 
+## Essai n° 2 (après « Tu rajoutes juste des cymbales on dirait »)
+
+Benjamin, à l'écoute de l'essai n° 1 : « Tu rajoutes juste des cymbales on dirait ». Le chef d'orchestre a décidé de ne pas fusionner l'essai n° 1 tel quel, et a fixé ce critère : pour chaque style, au moins 3 dB d'écart mesuré sur au moins deux bandes hors aigus, ou un changement de timbre net, à niveau égalisé.
+
+### Ce que disait l'essai n° 1, bande par bande
+
+Mesure : `docs/sons/outils/voix.py`, qui sait maintenant lire quatre bandes (sub 20-60 Hz, bas 60-250 Hz, médium 250 Hz-4 kHz, aigu 4-20 kHz), test compris. Premier Drop en écoute en direct, après − avant, l'« après » ramené au niveau du mix d'avant.
+
+| Style | Mix : sub / bas / médium / aigu (dB) | Bus batterie : sub / bas / médium / aigu (dB) | Basse : médium (dB) |
+|---|---|---|---|
+| jump up | −0,2 / +1,3 / −0,6 / +1,1 | −0,4 / +1,9 / −0,8 / +0,8 | −0,2 |
+| tech house | +0,5 / −0,5 / −0,4 / **+2,8** | +1,0 / +0,2 / +1,8 / **+3,1** | −0,5 |
+| techno | +1,9 / −2,3 / −2,0 / **+4,2** | +2,5 / −1,3 / +0,5 / **+4,0** | −1,7 |
+
+Confirmé : seuls les aigus de la batterie bougeaient. La basse ne changeait pas.
+
+Le solo d'un pad de batterie n'est pas fiable quand ce pad joue un échantillon, d'où les chiffres incohérents d'un premier passage. On mesure donc le bus batterie entier (voie 0).
+
+### Ce qui change dans l'essai n° 2
+
+- **Kick** (`trial_drums.py`), en partant de ce qu'a trouvé le lot « kick » (`SpeakerKick`, branche ccr-aad91c20-ow1wdm, que je n'ai pas modifiée) : un kick s'entend sur un petit haut-parleur par les harmoniques de son grave (180 Hz-1,5 kHz) et par son clic (1,2-4,5 kHz). Ici, on les met dans le son lui-même :
+  - sub accordé ;
+  - « punch » de 60 à 100 ms ;
+  - harmoniques par tanh suréchantillonné ×4 ;
+  - clic à part.
+  - Le passe-haut anti-grondement est déplacé avant l'écrêteur : placé après, il faisait perdre environ 2 dB à crête égale.
+  - À crête égale, face au kick de l'essai n° 1 : 60-250 Hz +4,6 à +6,5 dB, 250 Hz-1,5 kHz +10,8 à +19,1 dB, clic +6,8 à +20,9 dB. Le facteur de crête tombe à 4,7-7,3 dB : le kick est nettement plus saturé.
+- **Caisse claire et claps** : un corps à 185-250 Hz, du bruit à 1-3 kHz, une plaque de 0,3 à 0,5 s, décorrélée gauche/droite pour les claps. +4 à +12 dB entre 250 Hz et 2 kHz à crête égale.
+- **Charleys, rides** : crête à −8 dBFS au lieu de −1, avec 3 dB de moins au-dessus de 10 kHz. **Percussions** : crête à −4 dBFS.
+- **Basse** (sous l'interrupteur), dans cet ordre :
+  - saturation en parallèle (force 0,95, mélange 85 %, volume constant) ;
+  - +12 dB vers 800 Hz ;
+  - égaliseur : graves +5 dB, aigus −9 dB au-dessus de 8 kHz.
+  - Le pompage sur le kick existe déjà : le mixage de l'assistant fait baisser la musique sous le son du kick, par un bus. Il n'est pas doublé.
+- **Leads et nappes** : élargisseur avec étalement, plaque et délai en ping-pong (lead : réverbe 0,25, délai 0,3 ; nappe : réverbe 0,4).
+- **Voix de la tech house** : +9 dB vers 2,5 kHz.
+- Pas de nouveau mouvement de filtre : les leads gardent les cycles de filtre de 8 mesures qu'ils avaient déjà.
+
+### Mesures de l'essai n° 2
+
+Après − avant, à niveau égalisé, premier Drop, écoute en direct.
+
+| Style | Mix : sub / bas / médium / aigu | Bus batterie : sub / bas / médium / aigu | Basse : sub / bas / médium / aigu |
+|---|---|---|---|
+| jump up | −4,9 / +1,0 / +1,6 / −4,4 | −3,9 / **+3,1** / **+3,6** / −4,7 | −5,2 / −4,5 / **+3,5** / +2,1 |
+| tech house | −1,8 / −0,5 / +1,9 / −1,1 | −3,0 / +0,8 / **+4,4** / −2,6 | −2,4 / −2,8 / **+3,8** / +24,1 |
+| techno | +0,3 / −0,6 / +0,3 / −1,8 | +1,0 / **+3,0** / **+5,4** / −2,3 | −1,7 / −3,0 / −0,1 / +2,8 |
+
+**Critère** (au moins 3 dB sur au moins deux bandes hors aigus, sur les pistes qu'on remarque) :
+- **jump up** : batterie bas et médium, basse médium ;
+- **tech house** : batterie médium, basse médium ;
+- **techno** : batterie bas et médium. Sa basse ne bouge pas dans le médium (−0,1).
+
+**Les aigus redescendent** : mix −1,1 à −4,4 dB, batterie −2,3 à −4,7 dB. Il n'y a plus « que des cymbales ».
+
+**Basse au haut-parleur de téléphone** (écoute en direct, 300 / 200 Hz) :
+- tech house −11,4 / −7,0 → **−4,8 / −3,6 dB** ;
+- techno −6,3 / −4,4 → **−3,4 / −2,7 dB** ;
+- jump up −1,5 / −0,9 → −0,3 / −0,1 dB.
+
+**Contreparties mesurées** :
+- **jump up** : le sub du mix baisse de 4,9 dB. Le médium monte, donc, à volume égal, le grave profond recule.
+- **la basse** perd 1,7 à 5,2 dB de sub dans les trois styles.
+- **tech house** : sa basse, un sinus presque pur, prend du grain au-dessus de 4 kHz (+24 dB, partis d'un niveau presque nul). Un écrêteur doux de l'appli placé après l'égaliseur en recrée une partie.
+
+**Écoute en direct** : 0 alerte sur les 4 styles. Aucune saturation ni NaN dans les extraits.
+
+**Processeur** (3 passages, 96 trames) :
+
+| Style | Avant (moy. / p99) | Après l'essai n° 2 (moy. / p99) |
+|---|---|---|
+| jump up | 12,8 % / 19,4 % | 12,5 % / 18,0 % |
+| tech house | 7,9 % / 11,7 % | 7,2 % / 10,5 % |
+| techno | 6,9 % / 10,0 % | 6,4 % / 9,2 % |
+| hard techno (témoin) | 6,6 % / 10,7 % | 6,6 % / 10,8 % |
+
+Aucune hausse.
+
+**Extraits envoyés à Benjamin** : 6 WAV 16 bits de 25 s, depuis le premier Drop, même passage avant / après. Écart de niveau perçu de 0,1 LU au plus, crête vraie ≤ −1,2 dBTP.
+
+### Rouge puis vert (essai n° 2)
+
+| Changement | Rouge | Vert |
+|---|---|---|
+| Quatre bandes dans l'outil | 56bf3f55 | fb505a5b |
+| Basse, largeur, espace, voix de la tech house | 2ef1ceae | e3835d45 |
+| Basse plus saturée et relevée à 700 Hz | 7f7201f4 | 922d5778 |
+| Basse plus saturée et relevée à 800 Hz | bc6e8941 | 450d528f |
+| Sub rendu, grésillement coupé | 77d58dde | 2f4cefdb |
+| Batterie n° 2 | 3888b0e6 | b1d2245d |
+| Kick avec son corps | db7b3ea8 | 7764266a |
+
+Le rouge de chaque paire est un test seul, qui échoue sur ses vérifications (Kotlin : sur ses assertions ; Python : 805 puis 12 vérifications de la batterie échouent sur la version d'avant).
+
 ## Tests ciblés et chemins
 
 tests: *SoundTrialPacksTest *BenchWavPackTest *HumanLucasBugsTest *SoundCategoriesTest
 
-Les tests du modèle se jouent à part : `:project-model:test --tests '*SoundTrialTest'`.
+Les tests du modèle se jouent à part : `:project-model:test --tests '*SoundTrialTest'` (9 tests verts, dont les 3 de l'essai n° 2 sur la basse, la largeur et l'espace, la voix de la tech house). Les scripts Python : `python3 -I scripts/packs/test_trial_drums.py` (2 041 vérifications), `python3 -I docs/sons/outils/test_voix.py`.
 
 - chemin: Assistant › essai sons modernes, chaque ligne d'essai prend son pack d'essai | test: SoundTrialPacksTest#withTheSwitchEachTrialLineTakesItsTrialPack
 - chemin: Assistant › interrupteur coupé, les packs nommés par la recette restent devant | test: SoundTrialPacksTest#withoutTheSwitchTheRecipesPacksStayFirst

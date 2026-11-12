@@ -230,7 +230,8 @@ object I18n {
         val text = if (everyday) EVERYDAY[fr] ?: fr else fr
         pseudo?.let { return it(FRENCH_SHOWN[text] ?: text) }
         val shown = shown(lang, text)
-        return if (everyday) everydayQuoted(shown) else shown
+        // Tour 5, lot « langues »: the trade's English words said in the person's script (EverydayWords).
+        return if (everyday) EverydayWords.apply(lang, everydayQuoted(shown)) else shown
     }
 
     private fun shown(lang: Lang, text: String): String =

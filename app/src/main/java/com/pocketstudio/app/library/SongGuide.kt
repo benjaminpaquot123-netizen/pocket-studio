@@ -18,7 +18,7 @@ fun songSummary(style: StarterWizard.Style, plan: StarterWizard.ScenePlan): Stri
     val seconds = StarterWizard.songSeconds(style, plan)
     val titles = StarterWizard.songSectionTitles(style, plan).toMutableList()
     if (titles.size > 1 && titles.last() == titles.first()) titles[titles.lastIndex] = com.pocketstudio.model.Scene.sectionName("Fin")
-    return tr("%1\$s : environ %2\$s.", titles.joinToString(" → "), duration(seconds))
+    return tr("%1\$s : environ %2\$s.", titles.joinToString(" ${com.pocketstudio.model.i18n.sequenceArrow()} "), duration(seconds))
 }
 
 /** "2 min 40", "1 min", "45 s": rounded to ten seconds. */
@@ -49,7 +49,7 @@ fun songGuide(
     sweeps: Boolean = false,
 ): List<GuidePage> {
     fun scene(index: Int): String {
-        val what = plan.contents(index).joinToString(", ") { it.substringBefore(" (").substringBefore(" / ") }
+        val what = plan.contents(index).joinToString(com.pocketstudio.model.i18n.listComma()) { it.substringBefore(" (").substringBefore(" / ") }
         return tr("%s · %s, %s : %s.", StarterWizard.ScenePlan.NAMES[index], plan.title(index), plan.role(index), what.ifEmpty { tr("rien pour l'instant") })
     }
     val scenes = (0 until plan.count).map(::scene)

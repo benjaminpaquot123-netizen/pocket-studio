@@ -105,7 +105,7 @@
         {
           "id": "swing",
           "levels": "p",
-          "text": "À toi : mets le swing à 25 (environ 60 % sur une MPC) : les doubles croches entre les autres arrivent en retard, ça roule.",
+          "text": "À toi : mets le swing à 33 % (environ 60 % sur une MPC) : les doubles croches entre les autres arrivent en retard, ça roule.",
           "check": "swing",
           "spot": "rhythm.swing",
           "listen": "drums:kick,clap,hat,perc,perc2"

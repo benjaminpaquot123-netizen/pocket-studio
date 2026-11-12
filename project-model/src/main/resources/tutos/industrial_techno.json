@@ -45,7 +45,7 @@
         },
         {
           "id": "swing",
-          "text": "À toi : mets un tout petit peu de swing (5 %) : la machine balance à peine.",
+          "text": "À toi : mets un tout petit peu de swing (7 %) : la machine balance à peine.",
           "why": "Juste assez de swing pour que l'usine respire.",
           "levels": "p",
           "check": "swing",

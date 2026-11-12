@@ -54,7 +54,7 @@
         },
         {
           "id": "swing",
-          "text": "À toi : mets le swing à environ 15 % : les petits charleys traînent un peu, comme joués par un humain.",
+          "text": "À toi : mets le swing à environ 20 % : les petits charleys traînent un peu, comme joués par un humain.",
           "why": "Detroit, c'est la soul jouée par des machines : le swing donne le côté humain.",
           "levels": "p",
           "check": "swing",

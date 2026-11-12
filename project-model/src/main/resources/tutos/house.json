@@ -125,7 +125,7 @@
         {
           "id": "swing",
           "levels": "p",
-          "text": "À toi : mets le swing à 25 : les doubles croches paires arrivent un peu en retard, entre la house de Chicago (55-60 %) et celle de New York (70-80 %).",
+          "text": "À toi : mets le swing à 33 % : les doubles croches paires arrivent un peu en retard, entre la house de Chicago (55-60 %) et celle de New York (70-80 %).",
           "check": "swing",
           "spot": "rhythm.swing",
           "listen": "drums:kick,clap,open_hat,hat,perc"

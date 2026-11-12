@@ -840,8 +840,9 @@ object TutoChecks {
             step.manual || step.listening -> false
             c == "tempo" -> kotlin.math.abs(p.tempoBpm - target.style.bpm) <= TutoTarget.TEMPO_SLACK
             c == "key" -> p.harmony.root == target.harmony.root && p.harmony.scale == target.harmony.scale
-            // The style's swing (house, garage, boom bap, lo-fi), within 5 points of it.
-            c == "swing" -> target.style.swing > 0.0 && kotlin.math.abs(p.swing - target.style.swing) <= minOf(SWING_TOLERANCE, target.style.swing / 2)
+            // The style's swing (house, garage, boom bap, lo-fi) as the slider shows it (swing / MAX_SWING, in %), give or
+            // take [SWING_POINTS] (tour 6, T5: the raw value was compared, « 25 » on the slider was 0.1875, never 0.25).
+            c == "swing" -> target.style.swing > 0.0 && p.swing > 0.0 && kotlin.math.abs(swingShown(p.swing) - swingShown(target.style.swing)) <= SWING_POINTS
             // With a [TutoStep.part]: the course's drums of that part, in that part.
             c.startsWith("lane:") -> target.line(arg, partOf(step))?.let { line ->
                 scenesOf(p, partOf(step)).any { laneMatches(it.drums, lanesOf(arg, target), line, p.stepsPerBar, rolls = c.endsWith(":rolls")) }
@@ -940,8 +941,11 @@ object TutoChecks {
         return hits.count { if (early) it.offset <= -OFFSET_MS else it.offset >= OFFSET_MS } * 2 >= hits.size
     }
 
-    /** The swing that counts as the style's (its value, give or take this much). */
-    const val SWING_TOLERANCE = 0.05
+    /** The swing that counts as the style's: the slider's number (%), give or take this many points (a finger is not exact). */
+    const val SWING_POINTS = 3
+
+    /** A swing as the Rythme slider shows it: its share of [com.pocketstudio.model.Project.MAX_SWING], in whole %. */
+    fun swingShown(swing: Double): Int = Math.round(swing / com.pocketstudio.model.Project.MAX_SWING * 100).toInt()
 
     /** A curve's shapes: "rise" (the Montée's), "fall", "wave" (up then down again in the part: the techno filter's cycle). */
     const val RISE_SHAPE = "rise"

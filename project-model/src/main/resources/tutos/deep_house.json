@@ -120,7 +120,7 @@
         {
           "id": "swing",
           "levels": "p",
-          "text": "À toi : mets le swing à 30 (environ 61 à 66 % sur une MPC) : les doubles croches paires traînent, paresseuses.",
+          "text": "À toi : mets le swing à 40 % (environ 61 à 66 % sur une MPC) : les doubles croches paires traînent, paresseuses.",
           "check": "swing",
           "spot": "rhythm.swing",
           "listen": "drums:kick,clap,hat,perc,tom"

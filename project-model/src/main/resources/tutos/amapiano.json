@@ -103,7 +103,7 @@
         {
           "id": "swing",
           "levels": "p",
-          "text": "À toi : mets le swing à 20 : un balancement léger. Le log drum le prendra aussi.",
+          "text": "À toi : mets le swing à 27 % : un balancement léger. Le log drum le prendra aussi.",
           "check": "swing",
           "spot": "rhythm.swing",
           "listen": "drums:kick,hat,clap,perc,perc2"

@@ -150,7 +150,7 @@
         {
           "id": "swing",
           "levels": "p",
-          "text": "À toi : un tout petit peu de swing (8 %) : les doubles croches paires arrivent un poil en retard, le groove chaloupe.",
+          "text": "À toi : un tout petit peu de swing (11 %) : les doubles croches paires arrivent un poil en retard, le groove chaloupe.",
           "check": "swing",
           "spot": "rhythm.swing",
           "listen": "drums:kick,snare,hat,perc2"

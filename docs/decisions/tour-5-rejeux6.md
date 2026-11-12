@@ -1,0 +1,6 @@
+- Tags instead of pixels: the 8 waiting replays t5-01..t5-08 aim with `touche <tag>` (prefix tags `project_p-*`, swipe by tag `glisse <tag> dx dy`, Android view text), so a layout change no longer breaks them. Back out: restore the old cmd files from git.
+- An untagged button is replaced by `retour` or `attends 1` (the app skips Simple/Pro after « Fais-moi un morceau », so t5-02 steps 73, 82, 90 wait instead of touching a card that no longer appears).
+- `rejeu-defauts.sh` keeps every replay's journal in `_journaux/<id>/`, and a « tenu » needs the intended tag to appear as `ETIQUETTE` in that journal: an « absent » oracle alone proves nothing, each is paired with a positive proof (`rejeu.attendu`).
+- The bench's script tests ignore `PS_REJEUX_DIR` (a replay of `rejeux-attente/` could not run their own fixtures otherwise).
+- `reachableNear`: a tag touch aims at the point of the element nearest its middle that the thumb reaches (pure geometry `SeatOptions.nearestReachable`, tested in `BenchSeatOptionsTest`), not at the middle only: t5-06 no longer diverges at step 47. A control with no reachable point is still refused (that is the finding).
+- Defects found stay in `rejeux-attente/` (not fixed, not moved to `rejeux/`).

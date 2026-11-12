@@ -1,0 +1,8 @@
+divergé au pas 18 (étiquette « name_clear » introuvable)
+  dernier écran différent de l'origine : écran 18, empreinte 74b4e96ce9 (origine 44b5b4de1e), première ligne différente : origine « texte « 保留这个声音 » @ 240,506 », rejeu « icône (dossier ouvert) ✓ « 我的第一个节奏 已保存 » @ 261,42 »
+  pas 5 : bouton « C 4 » (key_60) déplacé (maintenant en 76,-353), sous le doigt : synth_sounds_6 « Growl 贝斯 »
+  pas 6 : bouton « Reese 贝斯 » (track_0) déplacé (maintenant en 677,186), sous le doigt : key_60 « C 4 »
+  pas 7 : bouton « 调整声音（滤波器、包络…） » (track_menu_settings) absent, sous le doigt : track_0 « Growl 贝斯 »
+  pas 11 : bouton « 截止 » (synth) déplacé (maintenant en 517,595), sous le doigt : float_key_67 « G 4 »
+  pas 15 : bouton « 保留这个声音 » (synth_sounds_save) déplacé (maintenant en 758,204), sous le doigt : track_sound_0
+  pas 18 : à l'origine sous le doigt : synth_sounds_name_field « 音色名称 »

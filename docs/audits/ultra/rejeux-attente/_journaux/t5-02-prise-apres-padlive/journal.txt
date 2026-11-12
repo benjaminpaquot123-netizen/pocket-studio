@@ -1,0 +1,707 @@
+#0 SIEGE lang=fr device=phone font=100 mode=- theme=- fresh=non gestes.max=150 lit=oui main=both amenee=- rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-02-prise-apres-padlive rejeu.n=148
+#0 PREMIER ECRAN reel_s=4.6 simule_s=2.4 jvm_s=10.6 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 91bfdc8316 | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 ETIQUETTE welcome_empty : 294 1011
+#1 > touche 294 1011
+#1 DOIGT welcome_empty « Partir de zéro »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE e57b618a9b | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 > retour
+#2 RETOUR
+#3 ROUTE dialogue:welcome | MODE simple | EMPREINTE 91bfdc8316 | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 ETIQUETTE welcome_empty : 294 1011
+#3 > touche 294 1011
+#3 DOIGT welcome_empty « Partir de zéro »
+#4 ROUTE dialogue:mode_step | MODE simple | EMPREINTE e57b618a9b | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 ETIQUETTE mode_card_simple : 294 297
+#4 > touche 294 297
+#4 DOIGT mode_card_simple « Simple »
+#5 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE f125d919b9 | project=p-53d2a3a0 no tuto
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#5 ETIQUETTE step_0 : 70 830
+#5 > touche 70 830
+#5 DOIGT step_0 « Pas 1 »
+#6 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 5ea3278d08 | project=p-53d2a3a0 no tuto
+#6 SON Son : rien ne joue.
+#6 ETIQUETTE step_4 : 325 831
+#6 > touche 325 831
+#6 DOIGT step_4 « Pas 5 »
+#7 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE afb2359d6a | project=p-53d2a3a0 no tuto
+#7 SON Son : rien ne joue.
+#7 ETIQUETTE step_8 : 70 909
+#7 > touche 70 909
+#7 DOIGT step_8 « Pas 9 »
+#8 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 8e13b5b217 | project=p-53d2a3a0 no tuto
+#8 SON Son : rien ne joue.
+#8 ETIQUETTE step_12 : 325 910
+#8 > touche 325 910
+#8 DOIGT step_12 « Pas 13 »
+#9 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE c7bdd10e70 | project=p-53d2a3a0 no tuto
+#9 SON Son : rien ne joue.
+#9 ETIQUETTE thumb_play : 225 1062
+#9 > touche 225 1062
+#9 DOIGT thumb_play « Jouer le morceau »
+#10 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 45623eebbc | project=p-53d2a3a0 no tuto
+#10 SON Son : la musique du projet joue en boucle.
+#10 > retour
+#10 RETOUR
+#11 ROUTE launch | MODE simple | EMPREINTE 4c2e87d51e | project=p-53d2a3a0 no tuto
+#11 SON Son : rien ne joue.
+#11 ETIQUETTE launch_continue : 294 294
+#11 > touche 294 294
+#11 DOIGT launch_continue « Continuer »
+#12 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE c7bdd10e70 | project=p-53d2a3a0 no tuto
+#12 SON Son : rien ne joue.
+#12 ETIQUETTE tab_simple_Clavier : 294 1158
+#12 > touche 294 1158
+#12 DOIGT tab_simple_Clavier « Clavier »
+#13 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 70f0403aac | project=p-53d2a3a0 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST «  Enregistrer ma mélodie » 2.78:1 (needs 4.5:1, 14 sp)
+#13 LAYOUT TARGET « Do 4 Do Jouer » 21 x 150 dp (touch 48 x 150)
+#13 LAYOUT TARGET « Ré 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#13 LAYOUT TARGET « Mi 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#13 LAYOUT TARGET « Fa 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#13 LAYOUT TARGET « Sol 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#13 LAYOUT TARGET « La 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#13 LAYOUT TARGET « Si 4 Jouer » 21 x 150 dp (touch 48 x 150)
+#13 LAYOUT TARGET « Do 5 Do Jouer » 21 x 150 dp (touch 48 x 150)
+#13 LAYOUT TARGET « Ré 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#13 LAYOUT TARGET « Mi 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#13 LAYOUT TARGET « Fa 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#13 LAYOUT TARGET « Sol 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#13 LAYOUT TARGET « La 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#13 LAYOUT TARGET « Si 5 Jouer » 21 x 150 dp (touch 48 x 150)
+#13 LAYOUT TARGET « Do# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#13 LAYOUT TARGET « Ré# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#13 LAYOUT TARGET « Fa# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#13 LAYOUT TARGET « Sol# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#13 LAYOUT TARGET « La# 4 Jouer » 15 x 91 dp (touch 48 x 91)
+#13 LAYOUT TARGET « Do# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#13 LAYOUT TARGET « Ré# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#13 LAYOUT TARGET « Fa# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#13 LAYOUT TARGET « Sol# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#13 LAYOUT TARGET « La# 5 Jouer » 15 x 91 dp (touch 48 x 91)
+#13 ETIQUETTE record_start : 217 447
+#13 > touche 217 447
+#13 DOIGT record_start «  Enregistrer ma mélodie »
+#14 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE fd246757e5 | project=p-53d2a3a0 no tuto
+#14 SON Son : la musique du projet joue en boucle.
+#14 LAYOUT CONTRAST «  Arrêter » 2.78:1 (needs 4.5:1, 14 sp)
+#14 ETIQUETTE key_60 : 60 814
+#14 > touche 60 814
+#14 DOIGT key_60 « Do 4 »
+#15 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 3f07b99cb5 | project=p-53d2a3a0 no tuto
+#15 SON Son : la musique du projet joue en boucle ; 1 note du synthé.
+#15 ETIQUETTE key_64 : 132 796
+#15 > touche 132 796
+#15 DOIGT key_64 « Mi 4 »
+#16 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 864bd0b9fc | project=p-53d2a3a0 no tuto
+#16 SON Son : la musique du projet joue en boucle ; 1 note du synthé.
+#16 ETIQUETTE key_67 : 204 812
+#16 > touche 204 812
+#16 DOIGT key_67 « Sol 4 »
+#17 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 100fe917c9 | project=p-53d2a3a0 no tuto
+#17 SON Son : la musique du projet joue en boucle ; 1 note du synthé.
+#17 ETIQUETTE key_72 : 312 812
+#17 > touche 312 812
+#17 DOIGT key_72 « Do 5 »
+#18 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 7d56810c56 | project=p-53d2a3a0 no tuto
+#18 SON Son : la musique du projet joue en boucle ; 1 note du synthé.
+#18 > retour
+#18 RETOUR
+#19 ROUTE launch | MODE simple | EMPREINTE 6984dfc4b5 | project=p-53d2a3a0 no tuto
+#19 SON Son : rien ne joue.
+#19 ETIQUETTE launch_continue : 294 294
+#19 > touche 294 294
+#19 DOIGT launch_continue « Continuer »
+#20 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 8afa7b300d | project=p-53d2a3a0 no tuto
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « Remettre en rythme » 3.63:1 (needs 4.5:1, 14 sp)
+#20 ETIQUETTE tab_simple_Clavier : 294 1158
+#20 > touche 294 1158
+#20 DOIGT tab_simple_Clavier « Clavier »
+#21 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7dff7e1f78 | project=p-53d2a3a0 no tuto
+#21 SON Son : rien ne joue.
+#21 ETIQUETTE take_keep : 108 576
+#21 > touche 108 576
+#21 DOIGT take_keep « Garder »
+#22 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ed92c335f7 | project=p-53d2a3a0 no tuto
+#22 SON Son : rien ne joue.
+#22 ETIQUETTE mode_notes : 203 426
+#22 > touche 203 426
+#22 DOIGT mode_notes « Notes »
+#23 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 96eaa47cb1 | project=p-53d2a3a0 no tuto
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « Basse en fantôme » 3.49:1 (needs 4.5:1, 14 sp)
+#23 ETIQUETTE top_projects : 127 42
+#23 > touche 127 42
+#23 DOIGT top_projects « Mon projet 1 »
+#24 ROUTE dialogue:projects | MODE simple | EMPREINTE 0fcc255f2b | project=p-53d2a3a0 no tuto
+#24 SON Son : rien ne joue.
+#24 ETIQUETTE project_menu_p-* : 534 479
+#24 > touche 534 479
+#24 DOIGT project_menu_p-53d2a3a0
+#24 REJEU bouton (project_menu_p-dc41c6c2) absent, sous le doigt : project_menu_p-53d2a3a0
+#25 ROUTE dialogue:project_opening_p-53d2a3a0 | MODE simple | EMPREINTE ee538973ba | project=p-53d2a3a0 no tuto
+#25 SON Son : rien ne joue.
+#25 ETIQUETTE project_delete_p-* : 390 851
+#25 > touche 390 851
+#25 DOIGT project_delete_p-53d2a3a0 « Supprimer »
+#25 REJEU bouton « Supprimer » (project_delete_p-dc41c6c2) absent, sous le doigt : project_delete_p-53d2a3a0 « Supprimer »
+#26 ROUTE dialogue:projects | MODE simple | EMPREINTE 7e70973acb | project=no-project no tuto
+#26 SON Son : rien ne joue.
+#26 LAYOUT CONTRAST « Annuler » 3.63:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « OK » 3.63:1 (needs 4.5:1, 14 sp)
+#26 > retour
+#26 RETOUR
+#27 ROUTE launch | MODE simple | EMPREINTE 56af776f84 | project=no-project no tuto
+#27 SON Son : rien ne joue.
+#27 ETIQUETTE launch_projects : 294 514
+#27 > touche 294 514
+#27 DOIGT launch_projects « Mes projets »
+#28 ROUTE dialogue:projects | MODE simple | EMPREINTE 7e70973acb | project=no-project no tuto
+#28 SON Son : rien ne joue.
+#28 ETIQUETTE project_undo_delete : 424 432
+#28 > touche 424 432
+#28 DOIGT project_undo_delete « Annuler »
+#29 ROUTE dialogue:projects | MODE simple | EMPREINTE 1a54ddfed7 | project=no-project no tuto
+#29 SON Son : rien ne joue.
+#29 ETIQUETTE project_p-* : 294 447
+#29 > touche 294 447
+#29 DOIGT project_p-53d2a3a0 « Mon projet 1 »
+#29 REJEU bouton « Mon projet 1 » (project_p-dc41c6c2) absent, sous le doigt : project_p-53d2a3a0 « Mon projet 1 »
+#30 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 4dd5303eb1 | project=p-53d2a3a0 no tuto
+#30 SON Son : rien ne joue.
+#30 ETIQUETTE tab_simple_Clavier : 294 1158
+#30 > touche 294 1158
+#30 DOIGT tab_simple_Clavier « Clavier »
+#31 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE acdfb38a81 | project=p-53d2a3a0 no tuto
+#31 SON Son : rien ne joue.
+#31 ETIQUETTE track_1 : 494 186
+#31 > touche 494 186
+#31 DOIGT track_1 « Ma mélodie »
+#32 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE a72b8cf741 | project=p-53d2a3a0 no tuto
+#32 SON Son : rien ne joue.
+#32 ETIQUETTE top_record : 384 42
+#32 > touche 384 42
+#32 DOIGT top_record
+#33 ROUTE dialogue:record_choice | MODE simple | EMPREINTE ab37c179cd | project=p-53d2a3a0 no tuto
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « Annuler » 1.39:1 (needs 4.5:1, 14 sp)
+#33 > retour
+#33 RETOUR
+#34 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE a72b8cf741 | project=p-53d2a3a0 no tuto
+#34 SON Son : rien ne joue.
+#34 ETIQUETTE top_record : 384 42
+#34 > touche 384 42
+#34 DOIGT top_record
+#35 ROUTE dialogue:record_choice | MODE simple | EMPREINTE ab37c179cd | project=p-53d2a3a0 no tuto
+#35 SON Son : rien ne joue.
+#35 ETIQUETTE record_choice_pads : 294 672
+#35 > touche 294 672
+#35 DOIGT record_choice_pads «   Les pads (la batterie) »
+#36 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 72c88ff173 | project=p-53d2a3a0 no tuto
+#36 SON Son : la musique du projet joue en boucle.
+#36 ETIQUETTE pad_4 : 84 366
+#36 > touche 84 366
+#36 DOIGT pad_4 « Claquement de mains »
+#37 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 7673e29459 | project=p-53d2a3a0 no tuto
+#37 SON Son : la musique du projet joue en boucle ; le pad « Claquement de mains » sonne.
+#37 LAYOUT CONTRAST « Claquement de mains » 4.03:1 (needs 4.5:1, 14 sp)
+#37 ETIQUETTE pad_4 : 84 366
+#37 > touche 84 366
+#37 DOIGT pad_4 « Claquement de mains »
+#38 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 13315fb7f7 | project=p-53d2a3a0 no tuto
+#38 SON Son : la musique du projet joue en boucle ; le pad « Claquement de mains » sonne.
+#38 ETIQUETTE pad_4 : 84 366
+#38 > touche 84 366
+#38 DOIGT pad_4 « Claquement de mains »
+#39 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE af00ed4d7e | project=p-53d2a3a0 no tuto
+#39 SON Son : la musique du projet joue en boucle ; le pad « Claquement de mains » sonne.
+#39 > retour
+#39 RETOUR
+#40 ROUTE launch | MODE simple | EMPREINTE 6984dfc4b5 | project=p-53d2a3a0 no tuto
+#40 SON Son : rien ne joue.
+#40 ETIQUETTE launch_continue : 294 294
+#40 > touche 294 294
+#40 DOIGT launch_continue « Continuer »
+#41 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 1b6c157f89 | project=p-53d2a3a0 no tuto
+#41 SON Son : rien ne joue.
+#41 ETIQUETTE take_redo : 427 780
+#41 > touche 427 780
+#41 DOIGT take_redo « Refaire »
+#42 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 1568ecbb6a | project=p-53d2a3a0 no tuto
+#42 SON Son : la musique du projet joue en boucle.
+#42 > retour
+#42 RETOUR
+#43 ROUTE launch | MODE simple | EMPREINTE 6984dfc4b5 | project=p-53d2a3a0 no tuto
+#43 SON Son : rien ne joue.
+#43 ETIQUETTE launch_continue : 294 294
+#43 > touche 294 294
+#43 DOIGT launch_continue « Continuer »
+#44 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 3acf37fce3 | project=p-53d2a3a0 no tuto
+#44 SON Son : rien ne joue.
+#44 LAYOUT CONTRAST «  Enregistrer mes pads » 2.78:1 (needs 4.5:1, 14 sp)
+#44 > retour
+#44 RETOUR
+#45 ROUTE launch | MODE simple | EMPREINTE 6984dfc4b5 | project=p-53d2a3a0 no tuto
+#45 SON Son : rien ne joue.
+#45 ETIQUETTE launch_padlive : 294 1009
+#45 > touche 294 1009
+#45 DOIGT launch_padlive « Pad Live »
+#46 ROUTE padlive | MODE simple | EMPREINTE d32ea99bcd | project=p-c02e73f8 no tuto
+#46 SON Son : rien ne joue.
+#46 LAYOUT OVERLAP « ? » over « + » (7 x 15 dp)
+#46 LAYOUT OVERLAP « 124 » over « A » (12 x 8 dp)
+#46 LAYOUT OVERLAP « ? » over the touchable « vide, pad A15 » (7 x 15 dp)
+#46 LAYOUT OVERLAP « 124 » over the touchable « Page A · vide » (32 x 18 dp)
+#46 LAYOUT OVERLAP « ? » over the touchable « Défi : refais ce rythme » (9 x 24 dp)
+#46 LAYOUT OVERLAP « 124 » over the touchable « Écho · en sortie » (25 x 24 dp)
+#46 LAYOUT OVERLAP « Tempo » over the touchable « Écho · en sortie » (29 x 13 dp)
+#46 LAYOUT OVERLAP « Plus » over the touchable « Roulement · 1/16 » (21 x 13 dp)
+#46 LAYOUT OVERLAP « A » over the touchable « Tempo : 124 battements par minute Change » (12 x 22 dp)
+#46 LAYOUT OVERLAP « B » over the touchable « Tempo : 124 battements par minute Change » (11 x 22 dp)
+#46 LAYOUT OVERLAP « Préparation des pads prêts à jouer… » over the touchable « Changer de partie » (85 x 14 dp)
+#46 LAYOUT OVERLAP « + » over the touchable « Replier Déplié » (17 x 27 dp)
+#46 LAYOUT OVERLAP « + » over the touchable « Qu'est-ce que « Pas » ? » (17 x 25 dp)
+#46 LAYOUT OVERLAP « EFFETS LIVE » over the touchable « Ouvrir le Guide replié » (81 x 18 dp)
+#46 LAYOUT OVERLAP « ? » over the touchable « Ouvrir le Guide replié » (7 x 15 dp)
+#46 LAYOUT OVERLAP « Appuie et maintiens » over the touchable « Ouvrir le Guide replié » (126 x 18 dp)
+#46 LAYOUT OVERLAP « Filtre » over the touchable « Annuler la dernière action » (26 x 20 dp)
+#46 LAYOUT OVERLAP « grave ↔ aigu » over the touchable « Annuler la dernière action » (56 x 16 dp)
+#46 LAYOUT OVERLAP « Écho » over the touchable « Jouer le morceau Jouer le morceau » (34 x 20 dp)
+#46 LAYOUT OVERLAP « en sortie » over the touchable « Jouer le morceau Jouer le morceau » (36 x 16 dp)
+#46 LAYOUT OVERLAP « Roulement » over the touchable « Plus de choix » (43 x 20 dp)
+#46 LAYOUT CONTRAST « ? » 4.31:1 (needs 4.5:1, 12 sp)
+#46 LAYOUT CONTRAST « 124 » 2.13:1 (needs 3.0:1, 16 sp)
+#46 LAYOUT CONTRAST « 124 » 2.03:1 (needs 3.0:1, 16 sp)
+#46 LAYOUT CONTRAST « Tempo » 2.04:1 (needs 4.5:1, 11 sp)
+#46 > retour
+#46 RETOUR
+#47 ROUTE launch | MODE simple | EMPREINTE ea2406ed2f | project=p-c02e73f8 no tuto
+#47 SON Son : rien ne joue.
+#47 ETIQUETTE launch_continue : 294 294
+#47 > touche 294 294
+#47 DOIGT launch_continue « Continuer »
+#48 ROUTE padlive | MODE simple | EMPREINTE 4e30fc6301 | project=p-c02e73f8 no tuto
+#48 SON Son : rien ne joue.
+#48 LAYOUT OVERLAP « Grosse caisse 1 » over « Boucle de kick » (43 x 27 dp)
+#48 LAYOUT OVERLAP « Caisse » over « Boucle Acid 303 » (30 x 17 dp)
+#48 LAYOUT OVERLAP « Claquement de mains » over « coup » (32 x 16 dp)
+#48 LAYOUT OVERLAP « Charley » over « coup » (32 x 9 dp)
+#48 LAYOUT OVERLAP « Charley ouvert » over « coup » (32 x 16 dp)
+#48 LAYOUT OVERLAP « Laser » over « Charley ouvert » (16 x 5 dp)
+#48 LAYOUT OVERLAP « ? » over « Chute » (7 x 12 dp)
+#48 LAYOUT OVERLAP « Grosse caisse 1 » over the touchable « Boucle de kick, boucle, prêt, pad A1 » (55 x 33 dp)
+#48 LAYOUT OVERLAP « Caisse » over the touchable « Boucle Acid 303, boucle, prêt, pad A3 » (41 x 17 dp)
+#48 LAYOUT OVERLAP « Claquement de mains » over the touchable « Klaxon, coup, prêt, pad A5 » (70 x 32 dp)
+#48 LAYOUT OVERLAP « Claquement de mains » over the touchable « Réglages du pad, pad A5 Réglages du pad » (47 x 26 dp)
+#48 LAYOUT OVERLAP « Charley » over the touchable « Laser, coup, prêt, pad A6 » (52 x 17 dp)
+#48 LAYOUT OVERLAP « Charley » over the touchable « Réglages du pad, pad A6 Réglages du pad » (47 x 17 dp)
+#48 LAYOUT OVERLAP « Charley ouvert » over the touchable « Sirène, coup, prêt, pad A7 » (44 x 33 dp)
+#48 LAYOUT OVERLAP « Charley ouvert » over the touchable « Réglages du pad, pad A7 Réglages du pad » (44 x 26 dp)
+#48 LAYOUT OVERLAP « Laser » over the touchable « Charley ouvert, coup, prêt, pad A12 » (29 x 17 dp)
+#48 LAYOUT OVERLAP « ? » over the touchable « Chute, coup, prêt, pad A15 » (7 x 15 dp)
+#48 LAYOUT OVERLAP « 124 » over the touchable « Page A » (32 x 18 dp)
+#48 LAYOUT OVERLAP « boucle » over the touchable « Changer de partie » (44 x 10 dp)
+#48 LAYOUT OVERLAP « boucle » over the touchable « Réglages du pad, pad A1 Réglages du pad » (37 x 16 dp)
+#48 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A2 Réglages du pad » (32 x 16 dp)
+#48 LAYOUT OVERLAP « boucle » over the touchable « Réglages du pad, pad A3 Réglages du pad » (37 x 16 dp)
+#48 LAYOUT OVERLAP « boucle » over the touchable « Réglages du pad, pad A4 Réglages du pad » (37 x 16 dp)
+#48 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A5 Réglages du pad » (32 x 16 dp)
+#48 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A6 Réglages du pad » (32 x 16 dp)
+#48 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A7 Réglages du pad » (32 x 16 dp)
+#48 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A8 Réglages du pad » (32 x 16 dp)
+#48 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A9 Réglages du pad » (32 x 16 dp)
+#48 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A10 Réglages du pad » (32 x 16 dp)
+#48 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A11 Réglages du pad » (32 x 16 dp)
+#48 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A12 Réglages du pad » (32 x 16 dp)
+#48 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A13 Réglages du pad » (32 x 16 dp)
+#48 LAYOUT OVERLAP « Montée » over the touchable « Replier Déplié » (48 x 20 dp)
+#48 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A14 Réglages du pad » (32 x 16 dp)
+#48 LAYOUT OVERLAP « Impact » over the touchable « Replier Déplié » (47 x 20 dp)
+#48 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A15 Réglages du pad » (32 x 16 dp)
+#48 LAYOUT OVERLAP « Chute » over the touchable « Replier Déplié » (42 x 20 dp)
+#48 LAYOUT OVERLAP « Chute » over the touchable « Qu'est-ce que « Pas » ? » (28 x 19 dp)
+#48 LAYOUT OVERLAP « coup » over the touchable « Réglages du pad, pad A16 Réglages du pad » (32 x 16 dp)
+#48 LAYOUT CONTRAST « Charley » 4.43:1 (needs 4.5:1, 14 sp)
+#48 ETIQUETTE padlive_pad_0 : 77 256
+#48 > touche 77 256
+#48 DOIGT padlive_pad_0 « Boucle de kick, boucle, prêt, pad A1 »
+#49 ROUTE padlive | MODE simple | EMPREINTE a20e9d9259 | project=p-c02e73f8 no tuto
+#49 SON Son : le pad live 1 joue en boucle.
+#49 LAYOUT OVERLAP « Grosse caisse 1 » over the touchable « Boucle de kick, boucle, joue, pad A1 » (55 x 33 dp)
+#49 LAYOUT CONTRAST « Grosse caisse 1 » 4.36:1 (needs 4.5:1, 14 sp)
+#49 ETIQUETTE padlive_pad_1 : 205 256
+#49 > touche 205 256
+#49 DOIGT padlive_pad_1 « Claquement de mains, coup, prêt, pad A2 »
+#50 ROUTE padlive | MODE simple | EMPREINTE f06b80aff2 | project=p-c02e73f8 no tuto
+#50 SON Son : le pad live 2 (« Clap ») a joué une fois ; le pad live 1 joue en boucle.
+#50 > retour
+#50 RETOUR
+#51 ROUTE launch | MODE simple | EMPREINTE ea2406ed2f | project=p-c02e73f8 no tuto
+#51 SON Son : rien ne joue.
+#51 ETIQUETTE launch_projects : 294 664
+#51 > touche 294 664
+#51 DOIGT launch_projects « Mes projets »
+#52 ROUTE dialogue:projects | MODE simple | EMPREINTE 9e774f5d9e | project=p-c02e73f8 no tuto
+#52 SON Son : rien ne joue.
+#52 ETIQUETTE project_menu_p-* : 534 479
+#52 > touche 534 479
+#52 DOIGT project_menu_p-c02e73f8
+#52 REJEU bouton (project_menu_p-296abaa7) absent, sous le doigt : project_menu_p-c02e73f8
+#53 ROUTE dialogue:project_opening_p-c02e73f8 | MODE simple | EMPREINTE ee538973ba | project=p-c02e73f8 no tuto
+#53 SON Son : rien ne joue.
+#53 ETIQUETTE project_delete_p-* : 390 851
+#53 > touche 390 851
+#53 DOIGT project_delete_p-c02e73f8 « Supprimer »
+#53 REJEU bouton « Supprimer » (project_delete_p-296abaa7) absent, sous le doigt : project_delete_p-c02e73f8 « Supprimer »
+#54 ROUTE dialogue:projects | MODE simple | EMPREINTE 94e0c57d56 | project=p-53d2a3a0 no tuto
+#54 SON Son : rien ne joue.
+#54 > retour
+#54 RETOUR
+#55 ROUTE launch | MODE simple | EMPREINTE 6984dfc4b5 | project=p-53d2a3a0 no tuto
+#55 SON Son : rien ne joue.
+#55 ETIQUETTE launch_continue : 294 294
+#55 > touche 294 294
+#55 DOIGT launch_continue « Continuer »
+#56 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 4dd5303eb1 | project=p-53d2a3a0 no tuto
+#56 SON Son : rien ne joue.
+#56 ETIQUETTE tab_simple_Clavier : 294 1158
+#56 > touche 294 1158
+#56 DOIGT tab_simple_Clavier « Clavier »
+#57 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE acdfb38a81 | project=p-53d2a3a0 no tuto
+#57 SON Son : rien ne joue.
+#57 ETIQUETTE record_start : 217 447
+#57 > touche 217 447
+#57 DOIGT record_start «  Enregistrer ma mélodie »
+#58 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 4e76f7da67 | project=p-53d2a3a0 no tuto
+#58 SON Son : la musique du projet joue en boucle.
+#58 ETIQUETTE key_69 : 240 742
+#58 > touche 240 742
+#58 DOIGT key_69 « La 4 »
+#59 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 4ef51ae616 | project=p-53d2a3a0 no tuto
+#59 SON Son : la musique du projet joue en boucle ; 1 note du synthé.
+#59 ETIQUETTE key_71 : 276 724
+#59 > touche 276 724
+#59 DOIGT key_71 « Si 4 »
+#60 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE d1d2d4e27f | project=p-53d2a3a0 no tuto
+#60 SON Son : la musique du projet joue en boucle ; 1 note du synthé.
+#60 ETIQUETTE key_69 : 240 740
+#60 > touche 240 740
+#60 DOIGT key_69 « La 4 »
+#61 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 11b6580f06 | project=p-53d2a3a0 no tuto
+#61 SON Son : la musique du projet joue en boucle ; 1 note du synthé.
+#61 ETIQUETTE tab_simple_Rythme : 174 1158
+#61 > touche 174 1158
+#61 DOIGT tab_simple_Rythme « Rythme »
+#62 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 133ceae103 | project=p-53d2a3a0 no tuto
+#62 SON Son : la musique du projet joue en boucle.
+#62 > retour
+#62 RETOUR
+#63 ROUTE launch | MODE simple | EMPREINTE 6984dfc4b5 | project=p-53d2a3a0 no tuto
+#63 SON Son : rien ne joue.
+#63 ETIQUETTE launch_projects : 294 664
+#63 > touche 294 664
+#63 DOIGT launch_projects « Mes projets »
+#64 ROUTE dialogue:projects | MODE simple | EMPREINTE 94e0c57d56 | project=p-53d2a3a0 no tuto
+#64 SON Son : rien ne joue.
+#64 ETIQUETTE project_p-* : 294 565
+#64 > touche 294 565
+#64 DOIGT project_p-53d2a3a0 « Mon projet 1 »
+#64 REJEU bouton « Mon projet 1 » (project_p-dc41c6c2) absent, sous le doigt : project_p-53d2a3a0 « Mon projet 1 »
+#65 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 6469ba86de | project=p-53d2a3a0 no tuto
+#65 SON Son : rien ne joue.
+#65 ETIQUETTE take_in_time : 294 786
+#65 > touche 294 786
+#65 DOIGT take_in_time « Remettre en rythme »
+#66 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 34cb71246e | project=p-53d2a3a0 no tuto
+#66 SON Son : rien ne joue.
+#66 ETIQUETTE take_keep : 108 786
+#66 > touche 108 786
+#66 DOIGT take_keep « Garder »
+#67 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE c7bdd10e70 | project=p-53d2a3a0 no tuto
+#67 SON Son : rien ne joue.
+#67 ETIQUETTE tab_simple_Clavier : 294 1158
+#67 > touche 294 1158
+#67 DOIGT tab_simple_Clavier « Clavier »
+#68 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 7e2456a719 | project=p-53d2a3a0 no tuto
+#68 SON Son : rien ne joue.
+#68 LAYOUT CONTRAST « Comme joué » 3.64:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT TARGET « Mi4 Jouer » 36 x 20 dp (touch 48 x 48)
+#68 ETIQUETTE mode_notes : 203 354
+#68 > touche 203 354
+#68 DOIGT mode_notes « Notes »
+#69 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 7e2456a719 | project=p-53d2a3a0 no tuto
+#69 SON Son : rien ne joue.
+#69 > attends 1
+#70 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 7e2456a719 | project=p-53d2a3a0 no tuto
+#70 SON Son : rien ne joue.
+#70 > retour
+#70 RETOUR
+#71 ROUTE launch | MODE simple | EMPREINTE 6984dfc4b5 | project=p-53d2a3a0 no tuto
+#71 SON Son : rien ne joue.
+#71 ETIQUETTE launch_new : 294 499
+#71 > touche 294 499
+#71 DOIGT launch_new « Nouveau morceau »
+#72 ROUTE dialogue:new_project | MODE simple | EMPREINTE b32e41575d | project=p-53d2a3a0 no tuto
+#72 SON Son : rien ne joue.
+#72 ETIQUETTE starter_wizard : 294 366
+#72 > touche 294 366
+#72 DOIGT starter_wizard « Fais-moi un morceau »
+#73 ROUTE dialogue:wizard | MODE simple | EMPREINTE 52d566c44b | project=p-53d2a3a0 no tuto
+#73 SON Son : rien ne joue.
+#73 > attends 1
+#74 ROUTE dialogue:wizard | MODE simple | EMPREINTE 52d566c44b | project=p-53d2a3a0 no tuto
+#74 SON Son : rien ne joue.
+#74 ETIQUETTE wizard_family_Hip-hop : 294 744
+#74 > touche 294 744
+#74 DOIGT wizard_family_Hip-hop « Hip-hop »
+#75 ROUTE dialogue:wizard | MODE simple | EMPREINTE bf859192be | project=p-53d2a3a0 no tuto
+#75 SON Son : rien ne joue.
+#75 LAYOUT CUT « Le rap d'aujourd'hui, né à Atlanta : une 808 qui fait trembler, des hi-hats qui roulent très vite, un clap lourd et une mélodie qui tourne. » ellipsized (« … »)
+#75 LAYOUT CUT « La trap version sombre, de Londres à Paris : une 808 qui glisse, une caisse claire décalée et des hi-hats qui sautillent. » ellipsized (« … »)
+#75 LAYOUT CUT « Le son des vidéos de drift : une mélodie de cowbell qui tourne en boucle, une 808 saturée qui gronde et une batterie qui cogne fort. » ellipsized (« … »)
+#75 ETIQUETTE wizard_style_listen_trap : 57 843
+#75 > touche 57 843
+#75 DOIGT wizard_style_listen_trap
+#76 ROUTE dialogue:wizard | MODE simple | EMPREINTE 90e095e3d3 | project=p-53d2a3a0 no tuto
+#76 SON Son : l'assistant fait écouter un extrait du style « Trap ».
+#76 > retour
+#76 RETOUR
+#77 ROUTE dialogue:new_project | MODE simple | EMPREINTE b32e41575d | project=p-53d2a3a0 no tuto
+#77 SON Son : rien ne joue.
+#77 > retour
+#77 RETOUR
+#78 ROUTE launch | MODE simple | EMPREINTE 6984dfc4b5 | project=p-53d2a3a0 no tuto
+#78 SON Son : rien ne joue.
+#78 ETIQUETTE launch_continue : 294 294
+#78 > touche 294 294
+#78 DOIGT launch_continue « Continuer »
+#79 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE c7bdd10e70 | project=p-53d2a3a0 no tuto
+#79 SON Son : rien ne joue.
+#79 > retour
+#79 RETOUR
+#80 ROUTE launch | MODE simple | EMPREINTE 6984dfc4b5 | project=p-53d2a3a0 no tuto
+#80 SON Son : rien ne joue.
+#80 ETIQUETTE launch_new : 294 499
+#80 > touche 294 499
+#80 DOIGT launch_new « Nouveau morceau »
+#81 ROUTE dialogue:new_project | MODE simple | EMPREINTE b32e41575d | project=p-53d2a3a0 no tuto
+#81 SON Son : rien ne joue.
+#81 ETIQUETTE starter_wizard : 294 366
+#81 > touche 294 366
+#81 DOIGT starter_wizard « Fais-moi un morceau »
+#82 ROUTE dialogue:wizard | MODE simple | EMPREINTE 52d566c44b | project=p-53d2a3a0 no tuto
+#82 SON Son : rien ne joue.
+#82 > attends 1
+#83 ROUTE dialogue:wizard | MODE simple | EMPREINTE 52d566c44b | project=p-53d2a3a0 no tuto
+#83 SON Son : rien ne joue.
+#83 > attends 1
+#84 ROUTE dialogue:wizard | MODE simple | EMPREINTE 52d566c44b | project=p-53d2a3a0 no tuto
+#84 SON Son : rien ne joue.
+#84 ETIQUETTE wizard_family_Techno : 294 456
+#84 > touche 294 456
+#84 DOIGT wizard_family_Techno « Techno »
+#85 ROUTE dialogue:wizard | MODE simple | EMPREINTE e93d469a58 | project=p-53d2a3a0 no tuto
+#85 SON Son : rien ne joue.
+#85 LAYOUT CUT « La techno des clubs de Berlin : un gros kick sur chaque temps, une basse qui roule entre les coups, des boucles hypnotiques. » ellipsized (« … »)
+#85 LAYOUT CUT « La toute première techno, née à Detroit : des cordes mélancoliques et funky sur une boîte à rythmes qui roule. » ellipsized (« … »)
+#85 LAYOUT CUT « Pour l'idée : Rhythim Is Rhythim – Strings of Life (1987) » ellipsized (« … »)
+#85 LAYOUT CUT « La techno acide : une ligne qui couine et se tord (la fameuse TB-303 de Roland) tourne en boucle sur un kick 909 qui cogne. » ellipsized (« … »)
+#85 LAYOUT CUT « Pour l'idée : Josh Wink – Higher State of Consciousness (1995) » ellipsized (« … »)
+#85 LAYOUT CUT « La techno des soirées d'aujourd'hui, plus rapide et plus dure : un kick saturé suivi d'un grondement, et des sirènes de rave. » ellipsized (« … »)
+#85 LAYOUT CUT « La techno la plus noire : des bruits de métal et de machines, comme une usine, sur un kick saturé qui gronde. » ellipsized (« … »)
+#85 LAYOUT CONTRAST « Pour l'idée : I Hate Models – Daydream (2016) » 4.39:1 (needs 4.5:1, 12 sp)
+#85 ETIQUETTE wizard_style_techno : 294 585
+#85 > touche 294 585
+#85 DOIGT wizard_style_techno « Techno »
+#86 ROUTE dialogue:wizard | MODE simple | EMPREINTE c23c7a7073 | project=p-53d2a3a0 no tuto
+#86 SON Son : rien ne joue.
+#86 LAYOUT CONTRAST « Pour l'idée : Josh Wink – Higher State of Consciousness (1995) » 3.69:1 (needs 4.5:1, 12 sp)
+#86 ETIQUETTE wizard_style_choose_techno : 322 780
+#86 > touche 322 780
+#86 DOIGT wizard_style_choose_techno « Choisir ce style et continuer »
+#87 ROUTE dialogue:wizard | MODE simple | EMPREINTE 66ffeb3efd | project=p-53d2a3a0 no tuto
+#87 SON Son : rien ne joue.
+#87 LAYOUT CONTRAST « Complet » 4.44:1 (needs 4.5:1, 16 sp)
+#87 LAYOUT CONTRAST « Sombre / épique » 4.24:1 (needs 4.5:1, 16 sp)
+#87 ETIQUETTE wizard_style_packs_download : 294 933
+#87 > touche 294 933
+#87 DOIGT wizard_style_packs_download « Télécharger les sons du style »
+#88 ROUTE dialogue:wizard | MODE simple | EMPREINTE 496a58597c | project=p-53d2a3a0 no tuto
+#88 SON Son : rien ne joue.
+#88 ETIQUETTE wizard_close : 546 48
+#88 > touche 546 48
+#88 DOIGT wizard_close
+#89 ROUTE dialogue:new_project | MODE simple | EMPREINTE b32e41575d | project=p-53d2a3a0 no tuto
+#89 SON Son : rien ne joue.
+#89 ETIQUETTE starter_wizard : 294 366
+#89 > touche 294 366
+#89 DOIGT starter_wizard « Fais-moi un morceau »
+#90 ROUTE dialogue:wizard | MODE simple | EMPREINTE 43f5609304 | project=p-53d2a3a0 no tuto
+#90 SON Son : rien ne joue.
+#90 > attends 1
+#91 ROUTE dialogue:wizard | MODE simple | EMPREINTE 43f5609304 | project=p-53d2a3a0 no tuto
+#91 SON Son : rien ne joue.
+#91 ETIQUETTE wizard_family_Techno : 294 456
+#91 > touche 294 456
+#91 DOIGT wizard_family_Techno « Techno »
+#92 ROUTE dialogue:wizard | MODE simple | EMPREINTE df6a84e60a | project=p-53d2a3a0 no tuto
+#92 SON Son : rien ne joue.
+#92 ETIQUETTE wizard_style_techno : 294 585
+#92 > touche 294 585
+#92 DOIGT wizard_style_techno « Techno »
+#93 ROUTE dialogue:wizard | MODE simple | EMPREINTE 7fdef2f4c0 | project=p-53d2a3a0 no tuto
+#93 SON Son : rien ne joue.
+#93 ETIQUETTE wizard_style_play_techno : 322 696
+#93 > touche 322 696
+#93 DOIGT wizard_style_play_techno «  Créer et écouter »
+#94 ROUTE dialogue:wizard | MODE simple | EMPREINTE dae116b405 | project=p-53d2a3a0 no tuto
+#94 SON Son : rien ne joue.
+#94 LAYOUT ? IllegalArgumentException: Failed to capture a node to bitmap.
+#94 > retour
+#94 RETOUR
+#95 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 6ff699734a | project=p-9ee94413 no tuto
+#95 SON Son : le morceau joue (partie « I »).
+#95 > retour
+#95 RETOUR
+#96 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 9e3c49fa69 | project=p-9ee94413 no tuto
+#96 SON Son : le morceau joue (partie « I »).
+#96 > attends 1
+#97 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE b877237641 | project=p-9ee94413 no tuto
+#97 SON Son : le morceau joue (partie « I »).
+#97 ETIQUETTE top_more : 543 42
+#97 > touche 543 42
+#97 DOIGT top_more
+#98 ROUTE plus | MODE simple | EMPREINTE 2c70c2b163 | project=p-9ee94413 no tuto
+#98 SON Son : le morceau joue (partie « I »).
+#98 ETIQUETTE plus_projects : 294 316
+#98 > touche 294 316
+#98 DOIGT plus_projects « Mes projets »
+#98 REJEU bouton « Mes projets » (more_projects) absent, sous le doigt : plus_projects « Mes projets »
+#99 ROUTE dialogue:projects | MODE simple | EMPREINTE 66a4a842a7 | project=p-9ee94413 no tuto
+#99 SON Son : le morceau joue (partie « J »).
+#99 ETIQUETTE project_menu_p-* : 534 479
+#99 > touche 534 479
+#99 DOIGT project_menu_p-9ee94413
+#99 REJEU bouton (project_menu_p-896025b4) absent, sous le doigt : project_menu_p-9ee94413
+#100 ROUTE dialogue:project_opening_p-9ee94413 | MODE simple | EMPREINTE 8ce089f751 | project=p-9ee94413 no tuto
+#100 SON Son : le morceau joue (partie « J »).
+#100 ETIQUETTE project_delete_p-* : 390 851
+#100 > touche 390 851
+#100 DOIGT project_delete_p-9ee94413 « Supprimer »
+#100 REJEU bouton « Supprimer » (project_delete_p-896025b4) absent, sous le doigt : project_delete_p-9ee94413 « Supprimer »
+#101 ROUTE dialogue:projects | MODE simple | EMPREINTE 7b6d09c9fc | project=p-53d2a3a0 no tuto
+#101 SON Son : rien ne joue.
+#101 > attends 1
+#102 ROUTE dialogue:projects | MODE simple | EMPREINTE 7b6d09c9fc | project=p-53d2a3a0 no tuto
+#102 SON Son : rien ne joue.
+#102 > retour
+#102 RETOUR
+#103 ROUTE launch | MODE simple | EMPREINTE 6984dfc4b5 | project=p-53d2a3a0 no tuto
+#103 SON Son : rien ne joue.
+#103 ETIQUETTE launch_continue : 294 294
+#103 > touche 294 294
+#103 DOIGT launch_continue « Continuer »
+#104 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 4dd5303eb1 | project=p-53d2a3a0 no tuto
+#104 SON Son : rien ne joue.
+#104 ETIQUETTE top_projects : 127 42
+#104 > touche 127 42
+#104 DOIGT top_projects « Mon projet 1 »
+#105 ROUTE dialogue:projects | MODE simple | EMPREINTE 7b6d09c9fc | project=p-53d2a3a0 no tuto
+#105 SON Son : rien ne joue.
+#105 > retour
+#105 RETOUR
+#106 ROUTE launch | MODE simple | EMPREINTE 6984dfc4b5 | project=p-53d2a3a0 no tuto
+#106 SON Son : rien ne joue.
+#106 ETIQUETTE launch_projects : 294 664
+#106 > touche 294 664
+#106 DOIGT launch_projects « Mes projets »
+#107 ROUTE dialogue:projects | MODE simple | EMPREINTE 7b6d09c9fc | project=p-53d2a3a0 no tuto
+#107 SON Son : rien ne joue.
+#107 ETIQUETTE project_trash : 166 700
+#107 > touche 166 700
+#107 DOIGT project_trash « ▸ Corbeille (2) »
+#108 ROUTE dialogue:projects | MODE simple | EMPREINTE 9741d36604 | project=p-53d2a3a0 no tuto
+#108 SON Son : rien ne joue.
+#108 ETIQUETTE restore_p-* : 430 795
+#108 > touche 430 795
+#108 DOIGT restore_p-9ee94413@1794502281444 « Restaurer »
+#108 REJEU bouton « Restaurer » (restore_p-896025b4@1793914716451) absent, sous le doigt : restore_p-9ee94413@1794502281444 « Restaurer »
+#109 ROUTE dialogue:projects | MODE simple | EMPREINTE cda69de964 | project=p-53d2a3a0 no tuto
+#109 SON Son : rien ne joue.
+#109 ETIQUETTE project_p-* : 294 447
+#109 > touche 294 447
+#109 DOIGT project_p-9ee94413 « Techno »
+#109 REJEU bouton « Techno » (project_p-896025b4) absent, sous le doigt : project_p-9ee94413 « Techno »
+#110 ROUTE simple_tracks/tab_simple_Morceau | MODE simple | EMPREINTE 73f5cdb4ed | project=p-9ee94413 no tuto
+#110 SON Son : rien ne joue.
+#110 ETIQUETTE tab_simple_Clavier : 294 1158
+#110 > touche 294 1158
+#110 DOIGT tab_simple_Clavier « Clavier »
+#111 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 7547617a51 | project=p-9ee94413 no tuto
+#111 SON Son : rien ne joue.
+#111 LAYOUT CONTRAST « Basse » 1.60:1 (needs 4.5:1, 14 sp)
+#111 ETIQUETTE record_start : 217 447
+#111 > touche 217 447
+#111 DOIGT record_start «  Enregistrer ma mélodie »
+#112 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE e02e1719f8 | project=p-9ee94413 no tuto
+#112 SON Son : la musique du projet joue en boucle.
+#112 ETIQUETTE key_60 : 60 742
+#112 > touche 60 742
+#112 DOIGT key_60 « Do 4 »
+#113 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE d6de62d5b2 | project=p-9ee94413 no tuto
+#113 SON Son : la musique du projet joue en boucle ; 1 note du synthé.
+#113 ETIQUETTE key_61 : 77 680
+#113 > touche 77 680
+#113 DOIGT key_61 « Do# 4 »
+#114 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 6014ec4b19 | project=p-9ee94413 no tuto
+#114 SON Son : la musique du projet joue en boucle ; 1 note du synthé.
+#114 ETIQUETTE key_72 : 312 740
+#114 > touche 312 740
+#114 DOIGT key_72 « Do 5 »
+#115 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 0c4bbb6b33 | project=p-9ee94413 no tuto
+#115 SON Son : la musique du projet joue en boucle ; 1 note du synthé.
+#115 ETIQUETTE key_60 : 60 740
+#115 > touche 60 740
+#115 DOIGT key_60 « Do 4 »
+#116 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 64a05627a7 | project=p-9ee94413 no tuto
+#116 SON Son : la musique du projet joue en boucle ; 1 note du synthé.
+#116 > retour
+#116 RETOUR
+#117 ROUTE launch | MODE simple | EMPREINTE ab199ea2b3 | project=p-9ee94413 no tuto
+#117 SON Son : rien ne joue.
+#117 ETIQUETTE launch_padlive : 294 1045
+#117 > touche 294 1045
+#117 DOIGT launch_padlive « Pad Live »
+#118 ROUTE padlive | MODE simple | EMPREINTE 1c0652a5df | project=p-afd8d757 no tuto
+#118 SON Son : le pad live 5 (« ? ») a joué une fois.
+#118 > retour
+#118 RETOUR
+#119 ROUTE launch | MODE simple | EMPREINTE ea2406ed2f | project=p-afd8d757 no tuto
+#119 SON Son : rien ne joue.
+#119 ETIQUETTE launch_projects : 294 664
+#119 > touche 294 664
+#119 DOIGT launch_projects « Mes projets »
+#120 ROUTE dialogue:projects | MODE simple | EMPREINTE e0524d86cd | project=p-afd8d757 no tuto
+#120 SON Son : rien ne joue.
+#120 ETIQUETTE project_p-* : 294 478
+#120 > touche 294 478
+#120 DOIGT project_p-afd8d757 « Live »
+#120 REJEU bouton « Techno » (project_p-896025b4) absent, sous le doigt : project_p-afd8d757 « Live »
+#121 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 254daceb7b | project=p-afd8d757 no tuto
+#121 SON Son : rien ne joue.
+#121 ETIQUETTE tab_simple_Clavier : 294 1158
+#121 > touche 294 1158
+#121 DOIGT tab_simple_Clavier « Clavier »
+#122 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 6351071c72 | project=p-afd8d757 no tuto
+#122 SON Son : rien ne joue.
+#122 > touche track_2
+#122 BANC étiquette introuvable : track_2
+#122 FIN : rejeu : divergé au pas 122 (étiquette « track_2 » introuvable)

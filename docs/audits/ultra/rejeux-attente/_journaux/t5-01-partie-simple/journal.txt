@@ -1,0 +1,166 @@
+#0 SIEGE lang=hi device=phone360 font=130 mode=- theme=- fresh=reel gestes.max=60 lit=oui main=both amenee=- rejeu=/home/user/eq-tour-5-rejeux6/docs/audits/ultra/rejeux-attente/t5-01-partie-simple rejeu.n=27
+#0 PREMIER ECRAN reel_s=11.1 simule_s=2.4 jvm_s=26.4 travail=non vide=non attente_s=0.0
+#1 ROUTE dialogue:welcome | MODE simple | EMPREINTE 3a945054bb | project=projet-1 no tuto
+#1 SON Son : rien ne joue.
+#1 ETIQUETTE welcome_guided : 270 540
+#1 > touche 270 540
+#1 DOIGT welcome_guided « मेरे लिए एक ट्रैक बनाओ »
+#2 ROUTE dialogue:mode_step | MODE simple | EMPREINTE 9668d89ddf | project=projet-1 no tuto
+#2 SON Son : rien ne joue.
+#2 ETIQUETTE mode_card_simple : 270 312
+#2 > touche 270 312
+#2 DOIGT mode_card_simple « सिंपल »
+#3 ROUTE dialogue:wizard | MODE simple | EMPREINTE a06250bf0e | project=projet-1 no tuto
+#3 SON Son : rien ne joue.
+#3 ETIQUETTE wizard_family_calm : 270 418
+#3 > touche 270 418
+#3 DOIGT wizard_family_calm « शांत (Chill, Lo-fi) »
+#4 ROUTE dialogue:wizard | MODE simple | EMPREINTE 43865ececb | project=projet-1 no tuto
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « Lo-fi hip-hop » ellipsized (« … »)
+#4 LAYOUT CUT « “Lofi Girl” वीडियोज़ वाला हल्का hip-hop, पढ़ाई के लिए परफ़ेक्ट: इलेक्ट्रिक पियानो पर jazz कॉर्ड्स, नरम ड्रम्स और पुराने विनाइल की चटचटाहट। » ellipsized (« … »)
+#4 LAYOUT CUT « आइडिया के लिए: Nujabes – Aruarian Dance (2004) » ellipsized (« … »)
+#4 LAYOUT CUT « आइडिया के लिए: Mr. Fingers – Can You Feel It (1986) » ellipsized (« … »)
+#4 LAYOUT CUT « धीमा साउथ अफ़्रीकन house: एक बेस जो लकड़ी के ड्रम (“log drum”) की तरह उछलता है और एक jazzy पियानो। » ellipsized (« … »)
+#4 LAYOUT CUT « 80s का साउंड फिर से फ़ैशन में (Stranger Things, Blinding Lights): गूँजता बहुत बड़ा Snare, बिना रुके धड़कता बेस और लूप में घूमते सिंथ नोट्स। » ellipsized (« … »)
+#4 ETIQUETTE wizard_style_lofi : 270 565
+#4 > touche 270 565
+#4 DOIGT wizard_style_lofi « Lo-fi hip-hop »
+#5 ROUTE dialogue:wizard | MODE simple | EMPREINTE 70ca0d12cb | project=projet-1 no tuto
+#5 SON Son : rien ne joue.
+#5 ETIQUETTE wizard_style_choose_lofi : 298 815
+#5 > touche 298 815
+#5 DOIGT wizard_style_choose_lofi « यह स्टाइल चुनो और आगे बढ़ो »
+#6 ROUTE dialogue:wizard | MODE simple | EMPREINTE 7b4bfecd3d | project=projet-1 no tuto
+#6 SON Son : rien ne joue.
+#6 > attends 1
+#7 ROUTE dialogue:wizard | MODE simple | EMPREINTE 7b4bfecd3d | project=projet-1 no tuto
+#7 SON Son : rien ne joue.
+#7 ETIQUETTE wizard_mood_happy : 270 609
+#7 > touche 270 609
+#7 DOIGT wizard_mood_happy « ख़ुश / एनर्जेटिक »
+#8 ROUTE dialogue:wizard | MODE simple | EMPREINTE 890afaf738 | project=projet-1 no tuto
+#8 SON Son : l'assistant fait écouter les accords de l'ambiance « Joyeux / énergique » sur le rythme du style.
+#8 LAYOUT CONTRAST « स्टाइल के साउंड डाउनलोड करो » 3.45:1 (needs 4.5:1, 14 sp)
+#8 ETIQUETTE wizard_next : 400 1116
+#8 > touche 400 1116
+#8 DOIGT wizard_next « अगला »
+#9 ROUTE dialogue:wizard | MODE simple | EMPREINTE 04e4fc58e7 | project=projet-1 no tuto
+#9 SON Son : rien ne joue.
+#9 ETIQUETTE wizard_next : 400 1116
+#9 > touche 400 1116
+#9 DOIGT wizard_next « अगला »
+#10 ROUTE dialogue:wizard | MODE simple | EMPREINTE da4f1ca16e | project=projet-1 no tuto
+#10 SON Son : rien ne joue.
+#10 ETIQUETTE wizard_next : 400 1116
+#10 > touche 400 1116
+#10 DOIGT wizard_next « अगला »
+#11 ROUTE dialogue:wizard | MODE simple | EMPREINTE 6dc06d890e | project=projet-1 no tuto
+#11 SON Son : rien ne joue.
+#11 ETIQUETTE wizard_next : 400 1116
+#11 > touche 400 1116
+#11 DOIGT wizard_next « अगला »
+#12 ROUTE dialogue:wizard | MODE simple | EMPREINTE 8592c96286 | project=projet-1 no tuto
+#12 SON Son : rien ne joue.
+#12 ETIQUETTE wizard_next : 400 1116
+#12 > touche 400 1116
+#12 DOIGT wizard_next « अगला »
+#13 ROUTE dialogue:wizard | MODE simple | EMPREINTE 7bd212faea | project=projet-1 no tuto
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « सुझाया गया » 4.32:1 (needs 4.5:1, 12 sp)
+#13 ETIQUETTE wizard_next : 400 1116
+#13 > touche 400 1116
+#13 DOIGT wizard_next « अगला »
+#14 ROUTE dialogue:wizard | MODE simple | EMPREINTE 7d79c84820 | project=projet-1 no tuto
+#14 SON Son : rien ne joue.
+#14 ETIQUETTE wizard_next : 400 1116
+#14 > touche 400 1116
+#14 DOIGT wizard_next « अगला »
+#15 ROUTE dialogue:wizard | MODE simple | EMPREINTE d2cd244bfb | project=projet-1 no tuto
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « सुझाया गया » 3.72:1 (needs 4.5:1, 12 sp)
+#15 > attends 1
+#16 ROUTE dialogue:wizard | MODE simple | EMPREINTE d2cd244bfb | project=projet-1 no tuto
+#16 SON Son : rien ne joue.
+#16 > attends 1
+#17 ROUTE dialogue:wizard | MODE simple | EMPREINTE d2cd244bfb | project=projet-1 no tuto
+#17 SON Son : rien ne joue.
+#17 > attends 1
+#18 ROUTE dialogue:wizard | MODE simple | EMPREINTE d2cd244bfb | project=projet-1 no tuto
+#18 SON Son : rien ne joue.
+#18 > attends 1
+#19 ROUTE dialogue:wizard | MODE simple | EMPREINTE d2cd244bfb | project=projet-1 no tuto
+#19 SON Son : rien ne joue.
+#19 ETIQUETTE wizard_part_sound_20 : 270 768
+#19 > touche 270 768
+#19 DOIGT wizard_part_sound_20 « Marimba »
+#20 ROUTE dialogue:wizard | MODE simple | EMPREINTE e777911382 | project=projet-1 no tuto
+#20 SON Son : un son de la bibliothèque joue (écoute).
+#20 LAYOUT CONTRAST « बज रहा है… » 3.72:1 (needs 4.5:1, 12 sp)
+#20 ETIQUETTE wizard_next : 400 1116
+#20 > touche 400 1116
+#20 DOIGT wizard_next « अगला »
+#21 ROUTE dialogue:wizard | MODE simple | EMPREINTE bdb46edccf | project=projet-1 no tuto
+#21 SON Son : rien ne joue.
+#21 ETIQUETTE wizard_create : 400 1116
+#21 > touche 400 1116
+#21 DOIGT wizard_create « गाना बनाओ »
+#22 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 059be60ebf | project=p-dc96b0db no tuto
+#22 SON Son : rien ne joue.
+#22 LAYOUT CUT « बार 1/64 » drawn past its parent's edge (down, 22 dp shown of 25)
+#22 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#22 ETIQUETTE simple_track_inst:2 : 195 708
+#22 > touche 195 708
+#22 DOIGT simple_track_inst:2 « मेलोडी »
+#23 ROUTE dialogue:sound_chooser | MODE simple | EMPREINTE e7fbc0c584 | project=p-dc96b0db no tuto
+#23 SON Son : rien ne joue.
+#23 LAYOUT OVERLAP « इसका साउंड: मेलोडी » over the touchable « शीट बंद करें » (201 x 35 dp)
+#23 LAYOUT OVERLAP « एक साउंड पर टैप करो: ये पूरे गाने में इस ट्रैक का साउंड बदल देगा। » over the touchable « शीट बंद करें » (240 x 48 dp)
+#23 LAYOUT OVERLAP « बंद करो » over the touchable « शीट बंद करें » (55 x 27 dp)
+#23 LAYOUT OVERLAP « छोटा साउंड » over the touchable « शीट बंद करें » (89 x 31 dp)
+#23 LAYOUT OVERLAP « FM पियानो » over the touchable « शीट बंद करें » (83 x 26 dp)
+#23 LAYOUT OVERLAP « 6-op FM · बैंक 2 » over the touchable « शीट बंद करें » (113 x 21 dp)
+#23 LAYOUT OVERLAP « FM Rhodes » over the touchable « शीट बंद करें » (100 x 23 dp)
+#23 LAYOUT OVERLAP « FM vibraphone » over the touchable « शीट बंद करें » (134 x 23 dp)
+#23 LAYOUT OVERLAP « FM बेल » over the touchable « शीट बंद करें » (58 x 26 dp)
+#23 LAYOUT OVERLAP « Marimba » over the touchable « शीट बंद करें » (79 x 23 dp)
+#23 LAYOUT OVERLAP « Modal (पर्कशन) » over the touchable « शीट बंद करें » (106 x 21 dp)
+#23 LAYOUT OVERLAP « बेल » over the touchable « शीट बंद करें » (25 x 26 dp)
+#23 LAYOUT OVERLAP « रैंडम » over the touchable « शीट बंद करें » (33 x 27 dp)
+#23 LAYOUT OVERLAP « ये साउंड रखो » over the touchable « शीट बंद करें » (95 x 27 dp)
+#23 LAYOUT OVERLAP « “ये साउंड रखो” इसे तुम्हारे फ़ेवरेट में रख देता है, तुम्हारे सारे प्रोजेक्ट्स के लिए। » over the touchable « शीट बंद करें » (321 x 48 dp)
+#23 LAYOUT OVERLAP « असली इंस्ट्रूमेंट्स » over the touchable « शीट बंद करें » (97 x 21 dp)
+#23 LAYOUT OVERLAP « नोट-दर-नोट रिकॉर्ड किए गए। एक बार डाउनलोड करो (Wi-Fi बेहतर है); तब तक ट्रैक सिंथ साउंड बजाता है। » over the touchable « शीट बंद करें » (324 x 20 dp)
+#23 LAYOUT CONTRAST « Modal (पर्कशन) » 4.31:1 (needs 4.5:1, 12 sp)
+#23 ETIQUETTE sound_chooser_close : 455 134
+#23 > touche 455 134
+#23 DOIGT sound_chooser_close « बंद करो »
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f26905125c | project=p-dc96b0db no tuto
+#24 SON Son : rien ne joue.
+#24 LAYOUT CUT « सेव हो गया » wider than its box (by 1.3 dp)
+#24 LAYOUT CONTRAST « शुरुआत के लिए » 4.37:1 (needs 4.5:1, 12 sp)
+#24 ETIQUETTE guide_option_drop : 270 873
+#24 > touche 270 873
+#24 DOIGT guide_option_drop « सुनो »
+#25 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0ff4cb3f93 | project=p-dc96b0db no tuto
+#25 SON Son : le morceau joue (partie « A »).
+#25 ETIQUETTE tab_simple_Clavier : 271 1050
+#25 > touche 271 1050
+#25 DOIGT tab_simple_Clavier « कीबोर्ड »
+#26 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f1d55d1b92 | project=p-dc96b0db no tuto
+#26 SON Son : le morceau joue (partie « A »).
+#26 LAYOUT CONTRAST «  मेरी मेलोडी रिकॉर्ड करो » 2.78:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT TARGET « A# 4 बजाओ » 14 x 91 dp (touch 48 x 91)
+#26 LAYOUT TARGET « A# 5 बजाओ » 14 x 91 dp (touch 48 x 91)
+#26 ETIQUETTE part_header_pick : 102 283
+#26 > touche 102 283
+#26 DOIGT part_header_pick « पार्ट: A · इंट्रो »
+#27 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE 55883a5630 | project=p-dc96b0db no tuto
+#27 SON Son : le morceau joue (partie « A »).
+#27 ETIQUETTE part_pick_2 : 200 314
+#27 > touche 200 314
+#27 DOIGT part_pick_2 « C · मुखड़ा »
+#28 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 313e82a7e7 | project=p-dc96b0db no tuto
+#28 SON Son : la musique du projet joue en boucle.
+#28 LAYOUT CUT « बार 1/8 » drawn past its parent's edge (down, 22 dp shown of 25)
+#28 FIN : rejeu : oracle tenu

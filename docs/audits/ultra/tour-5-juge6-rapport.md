@@ -35,9 +35,10 @@ Commande du juge, comme le portail (`fusion-equipes.sh`, `selftest.sh`) :
 ## Ce qui a changé dans le juge (`scripts/bench/verifie-chantier.py`)
 - Un test Kotlin entre accents graves est un seul test, son nom entier.
 - Un rejeu peut nommer le test que le vert a seulement renommé (« test au vert: Classe#nom » ; le fichier, ancien nom remis, doit être celui du parent).
-- `rouges-mutes/<vert>/` : le rouge d'un vert arrivé avec son test, par une mutation qui retire une partie de sa propre correction (lignes ôtées = lignes que le vert a ajoutées, pas plus de lignes ajoutées qu'ôtées, aucun « throw », code seulement, le patch s'applique au vert ; le test, ajouté par le vert, rougit muté et verdit sans).
+- `rouges-mutes/<vert>/` : le rouge d'un vert arrivé avec son test, par une mutation qui retire une partie de sa propre correction (après relecture, M1 : le patch ne fait qu'ôter des lignes, rien à leur place ; chaque ligne ôtée est une ligne de code, ni vide ni commentaire, que le vert a ajoutée à cette place même, son numéro dans le fichier du vert ; code seulement, le patch s'applique au vert ; le test, ajouté par le vert, rougit muté et verdit sans). La forme du patch ne prouve pas que la mutation porte : le rejeu du relecteur, oui.
 - La fenêtre des rejeux et des mutations finit à db66a3ce, fx-int après mixwake (avant : 92258b19).
-- Tests : `replay_backticks`, `mutated_red`, `replay_window` dans `scripts/bench/test_ultra_bench.py` (rouge 93a4f229, vert 83cfab09) ; chaque garde retirée du juge fait rougir un témoin (mutations du juge vérifiées à la main).
+- Après relecture, G1 : `still_runs`, `method_exists` (et `renamed_only`) lisent le nom entier d'une fonction et le comparent à l'égalité : « vert - x » n'est plus le début de « vert - x y », un test @Ignore n'est plus caché par un frère à nom plus long.
+- Tests : `replay_backticks`, `replay_exact_name`, `mutated_red`, `replay_window` dans `scripts/bench/test_ultra_bench.py` (rouge 93a4f229, vert 83cfab09 ; après relecture : rouge 926e1531 et son vert) ; chaque garde retirée du juge fait rougir un témoin (mutations du juge vérifiées à la main).
 
 ## Pour la relecture
 - Les XML des rejeux et des mutations sont la parole de ce lot (worktree jetable, `gradle-file.sh` du commit) : rejouer au moins une paire et une mutation (`git apply mutation.patch` sur le vert, puis le filtre de `rejeu.txt`).

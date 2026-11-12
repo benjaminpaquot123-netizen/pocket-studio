@@ -128,12 +128,14 @@ def seat_class(sources, cls, depth=0):
 
 
 def method_exists(sources, cls, method):
+    """A function of that name, its whole name (review of « juge6 », G1: « vert - x » is not « vert - x y »)."""
     text = sources.get(cls)
-    return text is not None and re.search(r"\bfun\s+`?" + re.escape(method) + r"(?![A-Za-z0-9_])", text) is not None
+    return text is not None and any(m.group(1) == method for m in FUN.finditer(text))
 
 
-def without_comments(text):
-    """The Kotlin text with its comments blanked (strings kept): « // fun x » is no function."""
+def without_comments(text, keep_lines=False):
+    """The Kotlin text with its comments blanked (strings kept): « // fun x » is no function. keep_lines: a block
+    comment leaves its line breaks, each line of the text stays at its number."""
     out, i, n = [], 0, len(text)
     while i < n:
         if text.startswith("//", i):
@@ -142,8 +144,9 @@ def without_comments(text):
             continue
         if text.startswith("/*", i):
             j = text.find("*/", i + 2)
-            i = n if j < 0 else j + 2
-            out.append(" ")
+            k = n if j < 0 else j + 2
+            out.append("\n" * text.count("\n", i, k) if keep_lines else " ")
+            i = k
             continue
         if text.startswith('"""', i):
             j = text.find('"""', i + 3)
@@ -785,10 +788,15 @@ def guard_from_red(root, sha, test):
     return red is not None and red[1].lower().startswith("rouge:") and names(red[2], there)
 
 
+# A function with its annotations and modifiers, its name whole ([NAME]).
+ANNOTATED_FUN = re.compile(r"((?:@[A-Za-z.]+(?:\([^)]*\))?\s*)*)(?:(?:public|internal|suspend|open|override)\s+)*"
+                           r"(?<![A-Za-z0-9_])fun\s+" + NAME)
+
+
 def still_runs(text, method):
-    """The function keeps @Test and no @Ignore/@Disabled (review of « banc-fin », case F)."""
-    m = re.search(r"((?:@[A-Za-z.]+(?:\([^)]*\))?\s*)*)(?:(?:public|internal|suspend|open|override)\s+)*fun\s+`?"
-                  + re.escape(method) + r"(?![A-Za-z0-9_])", text)
+    """The function keeps @Test and no @Ignore/@Disabled (review of « banc-fin », case F), the function of exactly
+    that name (review of « juge6 », G1: not a longer-named sibling, « <name> twice », whatever comes first)."""
+    m = next((m for m in ANNOTATED_FUN.finditer(text) if m.group(2) == method), None)
     return m is not None and re.search(r"@(?:org\.junit\.)?Test\b", m.group(1)) is not None \
         and re.search(r"@(?:org\.junit\.)?(?:Ignore|Disabled)\b", m.group(1)) is None
 
@@ -976,24 +984,52 @@ def renamed_only(root, sha, cls, old, new):
         before, after = _show(root, sha + "^", f), _show(root, sha, f)
         if before is None or after is None or f"{cls}#{new}" not in class_methods(after, False):
             continue
-        back = re.sub(r"(\bfun\s+`?)" + re.escape(new) + r"(?![A-Za-z0-9_])", lambda m: m.group(1) + old, after)
+        back = FUN.sub(lambda m: m.group(0)[:m.start(1) - m.start()] + old if m.group(1) == new else m.group(0), after)
         if back == before:
             return True
     return False
 
 
 MUTATED = os.path.join("docs", "audits", "ultra", "rouges-mutes")
-# A mutation takes the fix back, it never makes the code crash: a throw or an error() fails any test.
-CRASH = re.compile(r"\bthrow\b|\berror\s*\(|\bTODO\s*\(|\bexitProcess\b|\bSystem\.exit\b")
+HUNK = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@")
 
 
-def _added_lines(root, sha, path):
-    """The lines (stripped) commit sha adds to path."""
+def _hunk_lines(diff):
+    """The lines of a unified diff's hunks, as (file, sign, line number in the old file, in the new file, text): a
+    line is read by its hunk's counts, never by its first characters alone (« --- » may be a line taken off)."""
+    current, old, new, left_old, left_new = None, 0, 0, 0, 0
+    for line in diff.splitlines():
+        if left_old > 0 or left_new > 0:
+            sign, text = line[:1], line[1:]
+            if sign == "\\":
+                continue
+            yield current, sign, old, new, text
+            if sign in (" ", ""):
+                old, new, left_old, left_new = old + 1, new + 1, left_old - 1, left_new - 1
+            elif sign == "-":
+                old, left_old = old + 1, left_old - 1
+            elif sign == "+":
+                new, left_new = new + 1, left_new - 1
+            else:
+                left_old = left_new = 0
+            continue
+        h = HUNK.match(line)
+        if h:
+            old, new = int(h.group(1)), int(h.group(3))
+            left_old = 1 if h.group(2) is None else int(h.group(2))
+            left_new = 1 if h.group(4) is None else int(h.group(4))
+        elif line.startswith("+++ "):
+            current = line[4:].strip()
+            current = current[2:] if current.startswith("b/") else current
+
+
+def _added_at(root, sha, path):
+    """The line numbers, in commit sha's path, of the lines sha added to it."""
     try:
         diff = _git(root, "show", "--format=", "-U0", sha, "--", path)
     except (subprocess.SubprocessError, OSError):
         return set()
-    return {l[1:].strip() for l in diff.splitlines() if l.startswith("+") and not l.startswith("+++")}
+    return {new for _, sign, _, new, _ in _hunk_lines(diff) if sign == "+"}
 
 
 def _patch_applies(root, sha, patch):
@@ -1012,8 +1048,8 @@ def mutated_red(root, sha):
     it lacks when its own fix, partly taken back, makes that test fail (the fiche's « retire la ligne corrigée, le test
     doit rougir »). Evidence in docs/audits/ultra/rouges-mutes/<the green's full sha>/: rejeu.txt (« test:
     Classe#méthode », a test the green adds: in it, not in its parent), mutation.patch (applies to the green; touches
-    only code files the green changed, never a test; each line it takes off is a line the green added; it adds no more
-    lines than it takes off, none that throws), rouge.xml (the test run on the green with the patch: it fails) and
+    only code files the green changed, never a test; it only takes lines off, each a line of code, neither blank nor a
+    comment, that the green added at that very place: review of « juge6 », M1), rouge.xml (the test run on the green with the patch: it fails) and
     vert.xml (on the green: it passes). Only greens of the history before [REPLAYS_UNTIL], as the replays: the XML is
     the team's word, the patch is there for the review to replay."""
     try:
@@ -1037,23 +1073,26 @@ def mutated_red(root, sha):
     if not test_in(root, full, cls, method) or test_in(root, parents[0], cls, method):
         return False
     code = {f for f in files if f and not TEST_FILE.search(f) and not f.startswith("docs/")}
-    touched, removed, added, current = set(), 0, 0, None
-    for line in patch_text.splitlines():
-        if line.startswith("+++ "):
-            current = line[4:].strip()
-            current = current[2:] if current.startswith("b/") else current
-            touched.add(current)
-        elif line.startswith("--- ") or line.startswith("diff ") or line.startswith("index "):
+    # Review of « juge6 », M1: the mutation only takes lines off (nothing put in their place: no require(false),
+    # no « !! » on null, no throw), each a line of code (not blank, not a comment) the green added at that very
+    # place: matched by its number in the green's file, never by its text alone.
+    removed, texts, added_at = 0, {}, {}
+    for path, sign, old, _, text in _hunk_lines(patch_text):
+        if sign == "+" or path not in code:
+            return False
+        if sign != "-":
             continue
-        elif line.startswith("-"):
-            removed += 1
-            if current not in code or line[1:].strip() not in _added_lines(root, full, current):
+        if path not in texts:
+            whole = _show(root, full, path)
+            if whole is None:
                 return False
-        elif line.startswith("+"):
-            added += 1
-            if CRASH.search(line):
-                return False
-    if not removed or added > removed or not touched or not touched <= code:
+            texts[path] = (whole.split("\n"), without_comments(whole, keep_lines=True).split("\n"))
+            added_at[path] = _added_at(root, full, path)
+        lines, bare = texts[path]
+        if old not in added_at[path] or old > len(lines) or lines[old - 1] != text or not bare[old - 1].strip():
+            return False
+        removed += 1
+    if not removed:
         return False
     if not _patch_applies(root, full, os.path.join(folder, "mutation.patch")):
         return False

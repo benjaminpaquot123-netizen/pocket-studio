@@ -177,7 +177,13 @@ internal fun meterPosition(peak: Float): Float {
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun SimpleMixScreen(ui: SimpleMixUi, meters: () -> FloatArray, loudness: () -> FloatArray, actions: SimpleMixActions) {
+fun SimpleMixScreen(
+    ui: SimpleMixUi, meters: () -> FloatArray, loudness: () -> FloatArray, actions: SimpleMixActions,
+    /** The output's words, held (see [rememberOutputWords]); the tip follows the same value. Null: held here. */
+    words: (() -> OutputWords)? = null,
+) {
+    val ownWords = if (words == null) rememberOutputWords(meters, loudness) else null
+    val shownWords = words ?: { ownWords!!.value }
     // Closed at first: every track's strip fits on a phone; open, the drums show each sound.
     var drumsOpen by rememberSaveable { mutableStateOf(false) }
     val alone = ui.listening?.target
@@ -232,7 +238,7 @@ fun SimpleMixScreen(ui: SimpleMixUi, meters: () -> FloatArray, loudness: () -> F
                     MixStrip(t, trackAlone, meters, actions)
                 }
             }
-            OutputStrip(ui.masterDb, meters, loudness, actions.setMasterDb)
+            OutputStrip(ui.masterDb, meters, shownWords, actions.setMasterDb)
         }
         }
         TipCard(ui.tip, actions.applyTip)
@@ -353,7 +359,7 @@ private fun DrumsGroup(
 
 /** « Sortie »: the master's level on the same marks, its meter, and in words how loud it is. */
 @Composable
-private fun OutputStrip(masterDb: Float, meters: () -> FloatArray, loudness: () -> FloatArray, setDb: (Float) -> Unit) {
+private fun OutputStrip(masterDb: Float, meters: () -> FloatArray, words: () -> OutputWords, setDb: (Float) -> Unit) {
     Column(
         Modifier.width(STRIP_W + 8.dp).consoleStrip(RoundedCornerShape(12.dp), 0.7f, outline = true).padding(6.dp).testTag("mix_out"),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp),
@@ -364,17 +370,28 @@ private fun OutputStrip(masterDb: Float, meters: () -> FloatArray, loudness: () 
             masterPosition(masterDb), { setDb((masterDbAt(it) * 2f).let(Math::round) / 2f) }, { setDb(0f) }, { meters().getOrElse(Mixer.MASTER) { 0f } },
             tr("Volume de sortie"), db, "mix_out_fader", top = "+6", bottom = "−24", height = FADER_H,
         )
-        OutputWordsText(meters, loudness)
+        OutputWordsText(words)
     }
 }
+
+/**
+ * [outputWords] as shown: at most 4 changes a second, and « Ça sature » is held until the next sample when it was read
+ * at all during the period (a clip of one reading is not lost between two samples). The Mode simple's tip reads this
+ * same state, so the tip and the words always agree (tour 5 « mixwake », review finding 1).
+ */
+@Composable
+fun rememberOutputWords(meters: () -> FloatArray, loudness: () -> FloatArray): androidx.compose.runtime.State<OutputWords> =
+    com.pocketstudio.ui.rememberWorstEvery(
+        NUMBER_EVERY_MS, worse = { held: OutputWords, now: OutputWords -> if (held == OutputWords.CLIP) held else now },
+    ) { outputWords(loudness(), meters()) }
 
 /**
  * How loud it is, in words, under « Sortie »: in a scope of its own, the strip is not composed again when they
  * change, and they change 4 times a second at most (tour 5 « mixwake »: « Ça sature » came and went with each reading).
  */
 @Composable
-private fun OutputWordsText(meters: () -> FloatArray, loudness: () -> FloatArray) {
-    val words by com.pocketstudio.ui.rememberChangesEvery(NUMBER_EVERY_MS) { outputWords(loudness(), meters()) }
+private fun OutputWordsText(wordsNow: () -> OutputWords) {
+    val words = wordsNow()
     val color = when (words) {
         OutputWords.CLIP -> Neon.RedText
         OutputWords.LOW -> Neon.Amber

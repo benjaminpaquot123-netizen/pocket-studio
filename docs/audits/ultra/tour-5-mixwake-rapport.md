@@ -73,3 +73,4 @@ une trace système (Perfetto) au rallumage dira fréquence, cœur ou faute de pa
 - chemin: Mix en lecture (vumètres, faders de la console, loudness, limiteur) | test: PlayingRecomposeTest#mixComposesLittleWhilePlaying
 - chemin: Mode simple › Mix en lecture (faders, Sortie et ses mots, conseil) | test: PlayingRecomposeTest#simpleMixComposesLittleWhilePlaying
 - chemin: Mix, ligne du limiteur à l'ouverture | test: Lot2TextsTest#theLimiterNeverSaysAnAbsurdNumber
+- chemin: Mix et Mode simple › Mix, un seul clip court entre deux échantillons (mots « Ça sature », ligne du limiteur, conseil) | test: ClipHoldTest#aSingleShortClipShowsInTheLimiterLine, ClipHoldTest#aSingleShortClipShowsInTheWordsAndTheTipAgrees

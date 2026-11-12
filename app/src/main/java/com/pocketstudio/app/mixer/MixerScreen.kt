@@ -318,8 +318,9 @@ internal fun limiterShown(raw: Float): Pair<Int, Boolean> {
 @Composable
 private fun LimiterLine(gain: () -> Float) {
     // Tour 5 « mixwake »: a new text 4 times a second at most, drawn in a layer of its own.
-    val shown by com.pocketstudio.ui.rememberChangesEvery(NUMBER_EVERY_MS, gain) { limiterShown(gain()) }
-    val (tenths, hard) = shown
+    // The deepest hold of the period is shown (the smallest gain): a clip of one reading is not lost between samples.
+    val worst by com.pocketstudio.ui.rememberWorstEvery(NUMBER_EVERY_MS, worse = { a: Float, b: Float -> minOf(a, b) }) { limiterGainRead(gain()) }
+    val (tenths, hard) = limiterShown(worst)
     Text(
         if (tenths > 0) tr("La sortie est protégée : le son est retenu de %.1f dB.", tenths / 10f)
         else tr("Pas de saturation : tout va bien."),

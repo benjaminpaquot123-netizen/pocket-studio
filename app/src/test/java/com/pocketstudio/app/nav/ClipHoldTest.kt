@@ -1,7 +1,6 @@
 package com.pocketstudio.app.nav
 
 import androidx.activity.ComponentActivity
-import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -10,7 +9,7 @@ import com.pocketstudio.app.rhythm.RhythmViewModel
 import com.pocketstudio.engine.NativeEngine
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.After
-import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,29 +43,38 @@ class ClipHoldTest {
 
     /**
      * Quiet readings (the first one starts a sample's pause), ONE clipping reading 33 ms later, quiet ones again: the
-     * clip falls between two samples. Then [after] gets what the screen shows once the next sample is out.
+     * clip falls between two samples. [seen] is asked after every reading of the next 600 ms (the shown value changes
+     * at most 4 times a second): it must say yes at least once.
      */
-    private fun oneShortClip(after: () -> Unit) {
+    private fun oneShortClip(seen: () -> Boolean): Boolean {
         val meters = flow<FloatArray>("_meters")
         meters.value = reading(1f, 0.30f)
         compose.mainClock.advanceTimeBy(600)
         compose.waitForIdle()
+        // The clock moves by the readings only (a wait for idle would jump it to the next sample).
+        compose.mainClock.autoAdvance = false
         meters.value = reading(1f, 0.31f)
         compose.mainClock.advanceTimeBy(33)
         meters.value = reading(0.4f, 2.5f)
         compose.mainClock.advanceTimeBy(33)
-        meters.value = reading(1f, 0.32f)
-        compose.mainClock.advanceTimeBy(700)
-        compose.waitForIdle()
-        after()
+        var yes = false
+        for (i in 0 until 18) {
+            meters.value = reading(1f, 0.32f + i * 0.001f)
+            compose.mainClock.advanceTimeBy(33)
+            if (seen()) yes = true
+        }
+        return yes
     }
+
+    private fun text(tag: String) = compose.onAllNodesWithTag(tag).fetchSemanticsNodes().single().config
+        .let { it[androidx.compose.ui.semantics.SemanticsProperties.Text] }.joinToString { it.text }
 
     @Test
     fun aSingleShortClipShowsInTheLimiterLine() {
         h.start()
         compose.onNodeWithTag("tab_Mix").performClick()
         compose.waitForIdle()
-        oneShortClip { compose.onNodeWithTag("limiter_line").assertTextContains("retenu", substring = true) }
+        assertTrue(oneShortClip { text("limiter_line").contains("retenu") })
     }
 
     @Test
@@ -74,12 +82,17 @@ class ClipHoldTest {
         h.start(simple = true)
         compose.onNodeWithTag("tab_simple_Mix").performClick()
         compose.waitForIdle()
-        oneShortClip {
-            compose.onNodeWithTag("mix_out_words").assertTextContains("Ça sature")
-            // The tip (« Ça sature » is what it is made for) is there exactly when the words say it.
-            compose.mainClock.advanceTimeBy(600)
-            compose.waitForIdle()
-            assertEquals(1, compose.onAllNodesWithTag("mix_tip_text").fetchSemanticsNodes().size)
+        var tipSeen = false
+        val words = oneShortClip {
+            // The tip (« Ça sature » is what it is made for) follows the same held value as the words, a moment after.
+            tipSeen = tipSeen || compose.onAllNodesWithTag("mix_tip_text").fetchSemanticsNodes().isNotEmpty()
+            text("mix_out_words") == "Ça sature"
         }
+        assertTrue("the words never said « Ça sature »", words)
+        for (i in 0 until 8) {
+            compose.mainClock.advanceTimeBy(33)
+            tipSeen = tipSeen || compose.onAllNodesWithTag("mix_tip_text").fetchSemanticsNodes().isNotEmpty()
+        }
+        assertTrue("the tip never came with the words", tipSeen)
     }
 }

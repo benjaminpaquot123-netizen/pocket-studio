@@ -4682,9 +4682,11 @@ private fun SimpleMixTab(vm: RhythmViewModel) {
     val meters = vm.meters.collectAsStateWithLifecycle()
     val loudness = vm.loudness.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) { lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { vm.pollMeters() } }
+    // The words as « Sortie » shows them (held, 4 a second at most): the tip follows this very value, never the raw reading.
+    val outWords = com.pocketstudio.app.mixer.rememberOutputWords({ meters.value }, { loudness.value })
     // « Ça sature » followed here, not in this tab's composition (tour 5 « mixwake »): it comes and goes with the music.
     val tip by androidx.compose.runtime.produceState<com.pocketstudio.model.guide.MixTip?>(null, project.mixer, project.guide.measures) {
-        androidx.compose.runtime.snapshotFlow { com.pocketstudio.app.mixer.outputWords(loudness.value, meters.value) == com.pocketstudio.app.mixer.OutputWords.CLIP }
+        androidx.compose.runtime.snapshotFlow { outWords.value == com.pocketstudio.app.mixer.OutputWords.CLIP }
             .collectLatest { clipping ->
                 kotlinx.coroutines.delay(150)
                 value = com.pocketstudio.model.guide.MixTips.of(vm.project.value, clipping).firstOrNull()
@@ -4723,7 +4725,7 @@ private fun SimpleMixTab(vm: RhythmViewModel) {
             resetAll = vm::resetMixLevels, applyTip = vm::applyMixTip, meterPads = vm::meterPads,
         )
     }
-    com.pocketstudio.app.mixer.SimpleMixScreen(ui, { meters.value }, { loudness.value }, actions)
+    com.pocketstudio.app.mixer.SimpleMixScreen(ui, { meters.value }, { loudness.value }, actions, words = { outWords.value })
 }
 
 /** How long « Voir le réglage » keeps a control lit (it also goes at a touch on « Compris »). */

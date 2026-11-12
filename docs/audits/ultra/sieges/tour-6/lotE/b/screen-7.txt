@@ -1,0 +1,8 @@
+Écran 7 (540x1170)
+texte « Het is klaar » @ 133,409
+texte « Klaar: Mijn-eerste-beat-loop-streaming-20261112-213547.m4a, er staat ook een kopie in Muziek › BenStudio. » @ 270,517
+texte « −14,0 LUFS geïntegreerd · piek −9,8 dBTP » @ 226,596
+texte « M4A, 48 kHz, 256 kb/s · 16 s » @ 166,629
+texte « Doel: Streaming · −14 LUFS » @ 160,662
+texte « Mijn bestanden bekijken » @ 261,748
+texte « OK » @ 460,748

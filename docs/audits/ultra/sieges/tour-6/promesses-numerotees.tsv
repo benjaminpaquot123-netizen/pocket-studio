@@ -26,3 +26,52 @@ B c	1	t6-Bc-1	Le premier lancement mène jusqu'au Mode Pro sans impasse	réponse
 B c	2	t6-Bc-2	Dans le Mix, je règle le niveau d'une piste et un effet, et le changement reste affiché	réponse 4B	?	?	?
 B c	3	t6-Bc-3	Dans le piano roll, je pose une note puis je la déplace	réponse 4B	?	?	?
 B c	4	t6-Bc-4	Dans les Réglages, je change la langue puis je reviens à la mienne	réponse 4B	?	?	?
+D a	1	t6-Da-1	Le tuto Facile se suit du premier chapitre au « Bravo » sans impasse	deuxième vague (croisement des langues)	?	?	?
+D a	2	t6-Da-2	À chaque étape du tuto, le texte d'aide est lisible et l'élément montré est bien à l'écran	deuxième vague (croisement des langues)	?	?	?
+D a	3	t6-Da-3	Je peux quitter le tuto puis le reprendre là où je l'avais laissé	deuxième vague (croisement des langues)	?	?	?
+D a	4	t6-Da-4	chaque étape du tuto dit clairement quoi faire, sans mot de musicien non expliqué	deuxième vague (croisement des langues)	?	?	?
+D a	5	t6-Da-5	tous les textes vus sont dans ma langue, aucun en français ni coupé	deuxième vague (croisement des langues)	?	?	?
+D b	1	t6-Db-1	Le tuto Facile se suit du premier chapitre au « Bravo » sans impasse	deuxième vague (croisement des langues)	?	?	?
+D b	2	t6-Db-2	Chaque étape du tuto se valide quand je fais le geste demandé	deuxième vague (croisement des langues)	?	?	?
+D b	3	t6-Db-3	Le bouton du tuto ne cache aucun contrôle dont j'ai besoin	deuxième vague (croisement des langues)	?	?	?
+D b	4	t6-Db-4	chaque étape du tuto dit clairement quoi faire, sans mot de musicien non expliqué	deuxième vague (croisement des langues)	?	?	?
+D b	5	t6-Db-5	tous les textes vus sont dans ma langue, aucun en français ni coupé	deuxième vague (croisement des langues)	?	?	?
+D c	1	t6-Dc-1	Le tuto Pro se suit sur au moins 3 chapitres sans impasse	deuxième vague (croisement des langues)	?	?	?
+D c	2	t6-Dc-2	Chaque étape se valide quand je fais le geste demandé	deuxième vague (croisement des langues)	?	?	?
+D c	3	t6-Dc-3	Le Guide s'ouvre depuis le studio et son texte est complet	deuxième vague (croisement des langues)	?	?	?
+D c	4	t6-Dc-4	chaque étape du tuto dit clairement quoi faire, sans mot de musicien non expliqué	deuxième vague (croisement des langues)	?	?	?
+D c	5	t6-Dc-5	tous les textes vus sont dans ma langue, aucun en français ni coupé	deuxième vague (croisement des langues)	?	?	?
+E a	1	t6-Ea-1	Un pad sonne dès le premier toucher	deuxième vague (croisement des langues)	?	?	?
+E a	2	t6-Ea-2	« Tout couper » arrête tout	deuxième vague (croisement des langues)	?	?	?
+E a	3	t6-Ea-3	Une performance enregistrée se réécoute	deuxième vague (croisement des langues)	?	?	?
+E a	4	t6-Ea-4	Les effets de Pad Live se règlent sans bouton coupé par l'écran	deuxième vague (croisement des langues)	?	?	?
+E a	5	t6-Ea-5	tous les textes vus sont dans ma langue, aucun en français ni coupé	deuxième vague (croisement des langues)	?	?	?
+E b	1	t6-Eb-1	Un fichier « streaming » s'exporte et se retrouve dans Mes exports	deuxième vague (croisement des langues)	?	?	?
+E b	2	t6-Eb-2	Un fichier « club » s'exporte et se retrouve dans Mes exports	deuxième vague (croisement des langues)	?	?	?
+E b	3	t6-Eb-3	La longueur annoncée avant l'export est celle du fichier exporté	deuxième vague (croisement des langues)	?	?	?
+E b	4	t6-Eb-4	tous les textes vus sont dans ma langue, aucun en français ni coupé	deuxième vague (croisement des langues)	?	?	?
+E c	1	t6-Ec-1	Tout le Remix se fait sans bouton hors de l'écran ni texte coupé avec la police 200 %	deuxième vague (croisement des langues)	?	?	?
+E c	2	t6-Ec-2	La séparation de la chanson se lance et se termine	deuxième vague (croisement des langues)	?	?	?
+E c	3	t6-Ec-3	Un bout de voix se pose sur un pad ou une piste	deuxième vague (croisement des langues)	?	?	?
+E c	4	t6-Ec-4	tous les textes vus sont dans ma langue, aucun en français ni coupé	deuxième vague (croisement des langues)	?	?	?
+F a	1	t6-Fa-1	Un son joue dès le premier morceau	deuxième vague (croisement des langues)	?	?	?
+F a	2	t6-Fa-2	Une deuxième partie se crée et se joue	deuxième vague (croisement des langues)	?	?	?
+F a	3	t6-Fa-3	Je ne passe jamais en Pro sans l'avoir voulu	deuxième vague (croisement des langues)	?	?	?
+F a	4	t6-Fa-4	tous les textes vus sont dans ma langue, aucun en français ni coupé	deuxième vague (croisement des langues)	?	?	?
+F b	1	t6-Fb-1	Dans le Mix, je règle une piste et le changement reste affiché	deuxième vague (croisement des langues)	?	?	?
+F b	2	t6-Fb-2	Dans le piano roll, je pose une note puis je la déplace	deuxième vague (croisement des langues)	?	?	?
+F b	3	t6-Fb-3	Dans les Réglages, je change la langue puis je reviens à la mienne	deuxième vague (croisement des langues)	?	?	?
+F b	4	t6-Fb-4	tous les textes vus sont dans ma langue, aucun en français ni coupé	deuxième vague (croisement des langues)	?	?	?
+G a	1	t6-Ga-1	La chanson se sépare et le résultat s'écoute	deuxième vague (croisement des langues)	?	?	?
+G a	2	t6-Ga-2	La voix se découpe	deuxième vague (croisement des langues)	?	?	?
+G a	3	t6-Ga-3	L'appli prévient « la fin sera coupée » quand la chanson dépasse le morceau	deuxième vague (croisement des langues)	?	?	?
+G a	4	t6-Ga-4	tous les textes vus sont dans ma langue, aucun en français ni coupé	deuxième vague (croisement des langues)	?	?	?
+G b	1	t6-Gb-1	Un pad sonne dès le premier toucher	deuxième vague (croisement des langues)	?	?	?
+G b	2	t6-Gb-2	Un pad touché attend la mesure suivante avant de partir	deuxième vague (croisement des langues)	?	?	?
+G b	3	t6-Gb-3	« Tout couper » arrête tout, tempo et compteur compris	deuxième vague (croisement des langues)	?	?	?
+G b	4	t6-Gb-4	tous les textes vus sont dans ma langue, aucun en français ni coupé	deuxième vague (croisement des langues)	?	?	?
+H a	1	t6-Ha-1	Le premier lancement mène jusqu'au tuto Facile sans impasse	deuxième vague (croisement des langues)	?	?	?
+H a	2	t6-Ha-2	Le tuto Facile se suit du premier chapitre au « Bravo » sans impasse	deuxième vague (croisement des langues)	?	?	?
+H a	3	t6-Ha-3	Chaque étape du tuto se valide quand je fais le geste demandé	deuxième vague (croisement des langues)	?	?	?
+H a	4	t6-Ha-4	chaque étape du tuto dit clairement quoi faire, sans mot de musicien non expliqué	deuxième vague (croisement des langues)	?	?	?
+H a	5	t6-Ha-5	tous les textes vus sont dans ma langue, aucun en français ni coupé	deuxième vague (croisement des langues)	?	?	?

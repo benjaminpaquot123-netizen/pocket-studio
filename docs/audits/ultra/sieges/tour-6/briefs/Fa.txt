@@ -1,0 +1,10 @@
+First read and follow /home/user/fx-int/docs/audits/ultra/sieges/tour-6/consignes-testeur.md (method v2) and write your report with EXACTLY its template.
+SEAT=/home/user/fx-int/docs/audits/ultra/sieges/tour-6/lotF/a (seat a, lot F; lang it, device tablet8, font 130, mode simple, options -, mission simple, budget 110 gestures).
+Profile (id t6-Fa): Musicien italien sur tablette 8 pouces, police 130 %, Mode simple, fait un premier morceau. Promesses : pour chacune, oui ou non avec le numéro d'écran. Act as this person (habits, patience, vocabulary).
+Mission simple; its 3 goals (ids, the bench checks them): son (un son joue), partie (une 2e partie), jamais-pro (jamais passé en Pro).
+Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):
+  - id=t6-Fa-1 | 1. Un son joue dès le premier morceau
+  - id=t6-Fa-2 | 2. Une deuxième partie se crée et se joue
+  - id=t6-Fa-3 | 3. Je ne passe jamais en Pro sans l'avoir voulu
+  - id=t6-Fa-4 | 4. tous les textes vus sont dans ma langue, aucun en français ni coupé
+Report in French (fields may quote the screen in its language). Never a defect card because the bench gave no screen back: an « incidents-banc: » line.

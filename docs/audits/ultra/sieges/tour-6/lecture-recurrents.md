@@ -440,3 +440,24 @@ Aucun n'est un artefact : les six sont lus dans le code ou dans les fichiers de 
 - 3 défauts neufs (N29 à N31), tous dans le tuto, tous moyens ; 3 confirmations (T16, R15, T7).
 - Totaux mis à jour : **99 défauts uniques** (96 + 3), dont **43 récurrents** (inchangé : le balayage n'est pas un siège), **45 sur le tuto et la Guide** (42 + 3) ; gravité : 1 bloquant, 7 graves (inchangé).
 - Lots : n° 1, 2, 3, 4, 5 → lot 2 « tuto-consignes » ; n° 6 → lot 5 « langues ».
+
+---
+
+## Complément 4 (2026-11-12) : le son
+
+Ajouté dans un commit à part : `son/` ← ccr-7bb3a043-2ay7kp (876a92ba) : `rapport-son.md`, `par-style.tsv`, `kick-par-partie.tsv`, `cibles-genres.md`, `relecture.md`.
+**Version jugée : `1585bb46`, avant le lot « kick » fusionné depuis ; une nouvelle mesure est en cours.** Les 37 morceaux de l'assistant, mesurés à l'export et, pour 8 styles, en écoute en direct (`live-bench.sh`, 150 s) ; « Rien de cassé : … ni écrêtage, ni silence, ni saut… la crête reste sous −1 dBTP partout ».
+
+| # | défaut (cité) | gravité (rapport son) | portée |
+|---|---|---|---|
+| S1 | « Le kick ne ressort plus au téléphone, sur la plupart des styles » : « au téléphone, le kick seul perd 12,2 dB de son niveau (médiane)… Le morceau entier ne perd que 3,9 dB » ; « Sur 28 styles sur 37, un coup de kick ne soulève plus le morceau des 3 dB visés » ; les plus faibles : phonk (−0,8 dB), jungle, dubstep, speed garage, trance, techno | **grave** | 28 styles sur 37 au téléphone (300 Hz) ; 26 sur le pire cas (500 Hz) |
+| S2 | « Plus doux que le genre » : hard techno −2,4 LU, dubstep −2,1, house −1,2, drum and bass −0,7, trance −0,2 (cibles mesurées) ; « le master s'arrête exprès quand il retirerait plus de 3 LU… c'est un choix, pas une panne » | moyen | 5 styles (cibles mesurées) + estimations pour 13 autres |
+| S3 | « Au téléphone, le Drop ne passe plus au-dessus de la fin de sa Montée » : 13 styles (house −1,5 / −0,6, techno, trance, hard techno…) ; « Même cause que G1 » | moyen | 13 styles |
+| S4 | « Contrastes un peu courts » : Drop contre Groove (phonk +1,8, jungle +2,0, seuil +2) ; Drop contre Break (trance +2,9, gabber +3,2, hard techno +3,3, acid house +3,8, seuil +4) ; acid techno Montée +1,8 | moyen | 7 styles |
+| S5 | « Basse au téléphone » : techno industrielle sous la cible (B2 −15,4 dB pour −14, B1 −11,5 pour −10, B4 −15,7 pour −14) ; hard techno juste sous B1 (−10,3) ; B6 « une mesure du banc à revoir » | moyen | 2 styles |
+| S6 | « Perte en mono au-dessus de la règle usuelle de 1 LU » : dubstep 1,5, neurofunk 1,3, grime 1,2, gabber 1,1 ; « Le banc tolère jusqu'à 1,5 LU » | moyen | 4 styles |
+
+Constats sans défaut (rapport son, « Le caractère des timbres ») : basses « très propres » (−43 dB au-dessus de 2 kHz en médiane), leads « propres et assez larges » ; « Ce que la mesure ne peut pas dire : si un son « fait années 90 » ».
+Non fait (rapport son) : la vraie courbe du téléphone (« Écoute au micro » pas encore lancée) ; écoute en direct sur 8 styles sur 37 seulement.
+
+Comptes du complément 4 : 6 défauts neufs (S1 à S6), dont 1 grave (S1). Totaux : **105 défauts uniques** (99 + 6), dont **43 récurrents**, **45 sur le tuto et la Guide** ; gravité : 1 bloquant, **8 graves** (+ S1).

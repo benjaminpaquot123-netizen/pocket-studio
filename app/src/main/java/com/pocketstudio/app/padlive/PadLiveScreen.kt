@@ -260,8 +260,10 @@ fun PadLiveScreen(
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 PadLiveBar(ui, actions, record)
                 PageRow(ui, actions)
-                notes()
+                // Audit lot 6, U21: the notes (« Perf gardée », a message) under the pads, in the room the grid leaves
+                // below them: above, they pushed the pads down and made them smaller under the playing finger.
                 PadsGrid(ui, actions, clock, held, readLevels, levels, settings = { settingsOf = it }, Modifier.fillMaxWidth().weight(1f))
+                notes()
                 PadLiveControls(ui, actions, more, toggleMore = { more = !more }, held, party = { party = true })
             }
         } else {
@@ -269,8 +271,9 @@ fun PadLiveScreen(
                 PadLiveBar(ui, actions, record)
                 Row(Modifier.fillMaxWidth().weight(1f), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        PadsGrid(ui, actions, clock, held, readLevels, levels, settings = { settingsOf = it }, Modifier.fillMaxWidth().weight(1f).testTag("padlive_pads_side"))
                         notes()
-                        PadsGrid(ui, actions, clock, held, readLevels, levels, settings = { settingsOf = it }, Modifier.fillMaxWidth().weight(1f).padding(bottom = 8.dp).testTag("padlive_pads_side"))
+                        Spacer(Modifier.height(0.dp))
                     }
                     Column(
                         Modifier.width(side).fillMaxHeight().verticalScroll(rememberScrollState()).testTag("padlive_side"),

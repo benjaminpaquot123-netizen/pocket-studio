@@ -214,6 +214,8 @@ def main():
     with tempfile.TemporaryDirectory() as d:
         banc7_stamp_reason(d)
     with tempfile.TemporaryDirectory() as d:
+        banc7_budget_and_launcher_stall(d)
+    with tempfile.TemporaryDirectory() as d:
         stamp_needs_green_summary(d)
         quarantine_needs_its_message(d)
         fingerprint_stable(d)
@@ -609,6 +611,39 @@ def seats_from_ids(d):
     write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP001 ; P002 ; P003 ; P004 ; P005\n")
     out = run(os.path.join(HERE, "fabrique-sieges.py"), tour)
     check("1 sièges" in out and open(os.path.join(tour, "briefs", "Aa.txt"), encoding="utf-8").read().count("  - id=") == 5, "5 promises pass whole")
+
+
+def banc7_budget_and_launcher_stall(d):
+    """Round 6, lot banc7 (point 6): « 120 gestes ne suffisent pas pour atteindre le « Bravo » » (D a, H a: budget gone at
+    chapter 7/15); a whole tutorial needs about 250. And the launcher's Gradle queue killed a lot after 20 min without
+    output (PS_STALL_MIN) although a seat may wait 30 min for its tester's next gesture (timeout.minutes=30)."""
+    tour = os.path.join(d, "tour-9")
+    os.makedirs(tour)
+    write(os.path.join(tour, "sieges-proposes.tsv"), "D\ta\tfr\tphone\t100\tsimple\t-\ttuto-facile\t120\tDébutant\tlibre: le tuto se finit\n")
+    r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "fabrique-sieges.py"), tour], capture_output=True, text=True)
+    check(r.returncode != 0 and "Da" in (r.stdout + r.stderr) and "250" in (r.stdout + r.stderr),
+          "a whole tutorial with 120 gestures is refused, naming the seat and the 250 it needs:\n" + r.stdout + r.stderr)
+    write(os.path.join(tour, "sieges-proposes.tsv"), "D\ta\tfr\tphone\t100\tsimple\t-\ttuto-facile\t250\tDébutant\tlibre: le tuto se finit\n")
+    run(os.path.join(HERE, "fabrique-sieges.py"), tour)
+    check("gestes.max=250" in open(os.path.join(tour, "lotD", "a", "start.txt"), encoding="utf-8").read(), "250 gestures pass")
+    # The launcher: its Gradle queue waits longer than the longest seat's timeout (its own watchdog ends a silent seat first).
+    root = os.path.join(d, "fake-root")
+    os.makedirs(os.path.join(root, "scripts", "bench"))
+    import shutil
+    shutil.copy(os.path.join(HERE, "..", "human-tester.sh"), os.path.join(root, "scripts", "human-tester.sh"))
+    seen = os.path.join(d, "stall.txt")
+    fakes = {"tampon.sh": "#!/usr/bin/env bash\nexit 0\n", "gradle-file.sh": f"#!/usr/bin/env bash\necho \"${{PS_STALL_MIN:-unset}}\" > {seen}\n",
+             "sortie-de-siege.py": "import sys\n"}
+    for name, text in fakes.items():
+        write(os.path.join(root, "scripts", "bench", name), text)
+        os.chmod(os.path.join(root, "scripts", "bench", name), 0o755)
+    lot = os.path.join(d, "lotS")
+    write(os.path.join(lot, "a", "start.txt"), "lang=fr\ntimeout.minutes=30\n")
+    write(os.path.join(lot, "b", "start.txt"), "lang=fr\ntimeout.minutes=45\n")
+    env = {k: v for k, v in os.environ.items() if k != "PS_STALL_MIN"}
+    r = subprocess.run(["bash", os.path.join(root, "scripts", "human-tester.sh"), lot], capture_output=True, text=True, env=env, timeout=60)
+    stall = open(seen).read().strip() if os.path.exists(seen) else "(gradle-file not reached) " + r.stderr
+    check(stall.isdigit() and int(stall) > 45, "the launcher's queue waits longer than the longest seat timeout (45 min): " + stall)
 
 
 def banc7_launcher_messages(d):

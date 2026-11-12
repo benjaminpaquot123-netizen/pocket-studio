@@ -1,5 +1,5 @@
 # Relecture du lot « juge7 » (tour 5), par un relecteur neuf
-Relu : 9640d69ba0cc719ab0cb38fa83857d525e6b9641
+Relu : c05acd7d00aef27e6308923d5e162d4ad5b17af5
 
 Cible : `git diff 1585bb46..9640d69b` (le juge `scripts/bench/verifie-chantier.py`, ses tests dans `scripts/bench/test_ultra_bench.py`, les preuves `paires-rejouees/37e2c8ed…`, `rouges-mutes/a95d9667…`, `rouges-mutes/2e2c5f3d…`, le rapport et les décisions). Aucun code de l'appli touché.
 
@@ -18,6 +18,8 @@ Cible : `git diff 1585bb46..9640d69b` (le juge `scripts/bench/verifie-chantier.p
 ## Constats
 
 ### G1 (grave) : la règle « fichier Kotlin sans @Test = code du banc » laisse muter un fichier de test, dans un vrai fichier du dépôt
+
+**corrigé** par f016e61a (rouge b6da3cff, voir Delta).
 Dans `mutated_red`, un fichier de `TEST_DIRS` compte comme du code quand `"@Test" not in without_comments(texte)`. C'est une sous-chaîne, pas la règle que le juge applique ailleurs : `still_runs` accepte `@org.junit.Test` (`@(?:org\.junit\.)?Test\b`), qui ne contient pas « @Test ». Un fichier dont les tests portent `@org.junit.Test` (ou `@kotlin.test.Test`, ou un import renommé) passe donc pour du code du banc, et une mutation peut ôter une ligne du test lui-même : le test rougit, le vert est fermé sans rouge de sa correction.
 Ce n'est pas théorique : `app/src/test/java/com/pocketstudio/app/UiScaleScreenshotTest.kt` porte ses tests en `@org.junit.Test` et zéro « @Test » ; il est dans la liste des fichiers « sans @Test ».
 Reproduit (jouet construit avec les aides de `test_ultra_bench.py`, script hors dépôt `/tmp/claude-0/-home-user-pocket-studio/7aee178f-f3d8-5614-9304-422cd425f774/scratchpad/toy7/probe.py`) : un vert ajoute `FqReachTest` avec `@org.junit.Test fun aCaseHolds() { var y = 1; check(y == 1) }`, `mutation.patch` ôte `var y = 1` du fichier de test, `rouge.xml` en échec, `vert.xml` vert : aucun écart (fermé comme un rouge). Le même jouet avec `@Test` : écart (refusé). Le décret du lot (« un fichier qui contient un `@Test` … reste un test, jamais muté ») et le docstring de `mutated_bench_helper` disent plus que le code.
@@ -25,6 +27,8 @@ Borné à l'histoire avant `REPLAYS_UNTIL`, comme le G1 de juge6, mais c'est la 
 À corriger : décider « contient un test » avec la règle de `still_runs` (au moins `@(?:org\.junit\.|kotlin\.test\.)?Test\b`, mieux : une fonction du fichier pour laquelle `still_runs` vaut vrai, ou toute annotation finissant par `Test`), et un cas `@org.junit.Test` dans `mutated_bench_helper` qui doit rester un écart.
 
 ### M1 (moyen) : la règle « code du banc » vaut pour tout fichier d'aide des tests, pas seulement pour le banc
+
+**corrigé** par f016e61a (voir Delta ; reste m4).
 L'intention écrite est « le code du banc qui vit sous les tests (HumanTester.kt, SeatOptions.kt) ». Le code accepte n'importe quel `.kt` des tests sans `@Test` (31 fichiers aujourd'hui : `nav/AppHarness.kt`, `audit/LayoutScan.kt`, `StrictTestApplication.kt`…). Un vert qui corrige le code de l'appli et ajoute une aide de test à côté de son test peut se faire fermer par une mutation qui ôte une ligne de l'aide : le test rougit parce que son outillage est cassé, pas parce que la correction est retirée. Le juge ne sait pas faire la différence ; seul le relecteur qui lit le patch la fait. Même nature que le M1 de juge6 (borné à l'histoire, le patch est là pour être relu). Piste : n'accepter un fichier d'aide que si le vert ne touche aucun code hors des tests (le vert répare le banc lui-même, cas de 2e2c5f3d), ou une liste nommée des fichiers du banc.
 
 ### m1 (mineur) : `py_test_in` lit les lignes, pas Python
@@ -41,4 +45,16 @@ Le troisième échec recopie tout `HumanTester.kt` dans le message (`assertIn` s
 - `red_seen` refuse bien un vert qui touche `scripts/bench/test_*.py` (témoin rouge puis vert).
 - Le déplacement de `REPLAYS_UNTIL` suit la même règle que juge6 (base du lot, histoire déjà écrite).
 
-Verdict : 0 bloquant, 1 grave
+## Delta (relu c05acd7d, après b6da3cff rouge, f016e61a vert, c05acd7d docs)
+- Correction : `mutated_red` n'accepte plus comme code du banc qu'un `.kt` de `BENCH_HELPERS` (`app/src/test/java/com/pocketstudio/app/human/`) sans `@(?:org\.junit\.)?Test\b` (la règle de `still_runs`).
+- `python3 -I scripts/bench/test_ultra_bench.py` sur c05acd7d : vert (« ultra bench scripts: OK »).
+- Rouge b6da3cff rejoué (worktree jetable, retiré) : `mutated_bench_helper` échoue, « a mutation that does not hold (fqtest) is no red » (le témoin s'arrête au premier échec : otherhelper n'y est pas vu seul, mais la règle du dossier est lisible dans le diff et couverte au vert).
+- Ma sonde `/tmp/claude-0/-home-user-pocket-studio/7aee178f-f3d8-5614-9304-422cd425f774/scratchpad/toy7/probe.py` : le cas `@org.junit.Test` est maintenant refusé (écart). Comme elle vit dans `app/src/test/java/x` (hors du dossier du banc), je l'ai rejouée aussi dans `…/human/` (`probe_human.py`, même dossier) : refusé aussi. Le refus tient donc par l'annotation, pas seulement par le dossier.
+- Juge comme le portail (`--resume …/tour-6/lotA/selftest-resume.txt`) : toujours 8 écarts de paires (2b34c216, a2a6ec58, 11c48708, 411b2d51, bc0e6f27, 9b8fc4fd, 96a7a702, ade1a174) ; 2e2c5f3d reste fermé (SeatOptions.kt est dans `human/`, sans test).
+- G1 : **corrigé**. M1 : **corrigé** (une aide des tests de l'appli n'est plus du code).
+
+### m4 (mineur, après correction) : ce qui reste de G1 / M1
+- Un vert qui corrige l'appli et ajoute une aide dans `human/` pourrait encore se faire fermer en cassant cette aide ; le relecteur lit le patch (même nature que le M1 de juge6, borné à l'histoire).
+- `@kotlin.test.Test` ou un import renommé de `org.junit.Test` ne sont pas reconnus ; aucun fichier du dépôt n'en utilise aujourd'hui.
+
+Verdict : 0 bloquant, 0 grave — fusion possible

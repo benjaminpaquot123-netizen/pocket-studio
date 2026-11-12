@@ -360,7 +360,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la 303, puis celui du pad « Clap ». Le nombre sous le curseur dit le volume : plus bas, moins fort.",
+          "text": "À toi : le mix, c'est régler le volume de chaque piste. Dans l'onglet « Mix », baisse un peu le curseur de la 303, puis celui du pad « Clap ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le curseur de la 303, puis celui du pad « Clap ».",
           "check": "changed:volumes:acid,clap",
           "spot": "mixer.strip",

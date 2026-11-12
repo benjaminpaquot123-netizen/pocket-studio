@@ -136,6 +136,43 @@ class RemixBothWaysTest {
         assertEquals(120.0, p.tempoBpm, 0.01)
     }
 
+    /**
+     * Tour 5, F d #34 (t5-05, a left-handed seat in Simple): « Dans un nouveau projet » fell back on « Simple ou Pro ? »
+     * (its cards out of the thumb) instead of opening the project. The Remix's ways open it at once in the mode shown
+     * (Simple here, then Pro), no mode recorded as chosen for the user; the top bar's chip still changes it.
+     */
+    /** « Simple ou Pro ? » on screen; false while the app rebuilds on the project it is opening (no screen to ask on). */
+    private fun askedTheMode(): Boolean = runCatching { exists("mode_step") }.getOrDefault(false)
+
+    @Test
+    fun fromHomeANewProjectOpensInTheModeShownWithoutAskingAgain() {
+        song()
+        h.start(simple = true, launchChoice = true)
+        val before = CurrentProject.get(h.app)
+        chooseTheSongFromHome()
+        tap("remix_dest_new")
+        assertFalse("« Simple ou Pro ? » asked again after « Dans un nouveau projet »", askedTheMode())
+        val (_, p) = switchedFrom(before)
+        assertEquals(SET, p.remix.setId)
+        assertTrue(p.remix.stems.all { it.mute })
+        assertTrue(com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode)
+        assertNull("nothing chosen for the user", com.pocketstudio.app.settings.ProjectModes.last(h.app))
+    }
+
+    @Test
+    fun fromHomeASongBuiltInProOpensInProWithoutAsking() {
+        song()
+        h.start(simple = false, launchChoice = true)
+        val before = CurrentProject.get(h.app)
+        chooseTheSongFromHome()
+        tap("remix_dest_build")
+        assertFalse("« Simple ou Pro ? » asked again after « Faire un morceau… »", askedTheMode())
+        val (_, p) = switchedFrom(before)
+        assertEquals(98.0, p.tempoBpm, 0.01)
+        assertFalse(com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode)
+        assertNull(com.pocketstudio.app.settings.ProjectModes.last(h.app))
+    }
+
     @Test
     fun fromHomeIntoAnExistingProjectChosenInTheList() {
         val set = song()

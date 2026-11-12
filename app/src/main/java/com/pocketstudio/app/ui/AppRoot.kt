@@ -1621,7 +1621,7 @@ fun AppRoot() {
                     close = closeRemixHome,
                     pickSong = { pickSong.launch(arrayOf("audio/*")) },
                     downloadModel = { remixVm.downloadModel(); askNotifications() },
-                    // A new project: « Simple ou Pro ? » first, as every new project.
+                    // A new project: in the last mode chosen, else the one shown (t5-05); never a second question.
                     onWay = { set, way -> remixWay = "${way.name}:${set.id}"; modeAsk = START_REMIX_WAY },
                     onProject = { set, p ->
                         remixHome = false
@@ -1643,9 +1643,10 @@ fun AppRoot() {
         }
     }
     modeAsk?.let { way ->
-        val startIn: (Boolean) -> Unit = { v ->
+        // [chosen]: the user's own choice (remembered, suggested next time); else the mode shown, taken as it is.
+        val startWith: (Boolean, Boolean) -> Unit = { v, chosen ->
                 modeAsk = null
-                com.pocketstudio.app.settings.ProjectModes.choose(context, v)
+                if (chosen) com.pocketstudio.app.settings.ProjectModes.choose(context, v)
                 when (way) {
                     START_MISSIONS -> startMissionsNow()
                     // No project (lot 1): « Mon premier morceau » starts on a new one (the blank stand-in is never saved).
@@ -1685,9 +1686,15 @@ fun AppRoot() {
         // Benjamin's answer 3A (tour 5, chantier 5): once a mode was chosen, a new song takes it without asking (the top
         // bar's chip and the assistant's « Changer » change it). « J'apprends » still asks: there the mode is the
         // tutorial's level.
+        val startIn: (Boolean) -> Unit = { v -> startWith(v, true) }
         val known = remember(way) { if (way == START_TUTO) null else com.pocketstudio.app.settings.ProjectModes.last(context) }
+        // Tour 5, F d #34 (t5-05): a song from the Remix (« Faire un morceau… », « Dans un nouveau projet ») opens its
+        // project at once, in the mode on screen when none was chosen yet: no second question once the song is picked.
+        val shown = remember(way) { simple.takeIf { way == START_REMIX_WAY } }
         if (known != null) {
             LaunchedEffect(way) { startIn(known) }
+        } else if (shown != null) {
+            LaunchedEffect(way) { startWith(shown, false) }
         } else {
             com.pocketstudio.app.ui.ModeStepDialog(choose = startIn, back = { modeAsk = null }, tuto = way == START_TUTO)
         }

@@ -64,7 +64,7 @@
         {
           "id": "kick_do",
           "text": "À toi : la boucle de batterie fait 2 mesures (une mesure = un tour de 4 temps). Touche « Passer à 2 mesures », puis sur le pad « Kick », touche les cases en pointillé : un coup sur chaque temps, et un petit coup en plus juste avant la fin de la mesure 2.",
-          "textPro": "À toi : 4 coups par mesure sur 2 mesures, plus le coup doux du pas 15 de la mesure 2 : le « jack » de Chicago.",
+          "textPro": "À toi : pose 4 coups par mesure sur 2 mesures, plus le coup doux du pas 15 de la mesure 2 : le « jack » de Chicago.",
           "why": "Le petit coup en plus relance la boucle de 2 mesures : c'est le « jack » des disques de Chicago.",
           "check": "lane:kick",
           "spot": "rhythm.pattern",
@@ -81,7 +81,7 @@
         {
           "id": "clap_do",
           "text": "À toi : sur le pad « Clap », touche les cases en pointillé des 2 mesures, sur les temps 2 et 4.",
-          "textPro": "À toi : le clap sur 2 et 4. L'appli le joue quelques millisecondes en avance, comme sur les disques de New York.",
+          "textPro": "À toi : pose le clap sur 2 et 4. L'appli le joue quelques millisecondes en avance, comme sur les disques de New York.",
           "check": "lane:clap",
           "spot": "rhythm.pattern",
           "target": "clap",
@@ -98,7 +98,7 @@
         {
           "id": "ohat_do",
           "text": "À toi : sur le pad « Charley ouvert » (le « tchi »), touche les cases en pointillé : une entre chaque coup de kick.",
-          "textPro": "À toi : le charley ouvert sur chaque contretemps.",
+          "textPro": "À toi : pose le charley ouvert sur chaque contretemps.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
           "target": "open_hat",
@@ -107,7 +107,7 @@
         {
           "id": "hat_do",
           "text": "À toi : sur le pad « Charley », touche les cases en pointillé : un petit tapis rapide, avec un trou là où sonne le « tchi ».",
-          "textPro": "À toi : les charleys fermés, plus forts sur les temps, plus doux autour, avec un trou sous le charley ouvert.",
+          "textPro": "À toi : pose les charleys fermés, plus forts sur les temps, plus doux autour, avec un trou sous le charley ouvert.",
           "check": "lane:hat",
           "spot": "rhythm.pattern",
           "target": "hat",
@@ -116,7 +116,7 @@
         {
           "id": "perc_do",
           "text": "À toi : sur le pad du tambourin, touche les 4 cases en pointillé, entre les temps.",
-          "textPro": "À toi : le tambourin de la 707 sur chaque contretemps.",
+          "textPro": "À toi : pose le tambourin de la 707 sur chaque contretemps.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
           "target": "perc",
@@ -430,7 +430,7 @@
         {
           "id": "crash",
           "text": "À toi : dans le Drop, touche la toute première case du pad de la cymbale : un « tchhh » qui annonce que tout est revenu.",
-          "textPro": "À toi : une cymbale sur le 1er temps du Drop et du Drop 2.",
+          "textPro": "À toi : pose une cymbale sur le 1er temps du Drop et du Drop 2.",
           "check": "crash",
           "spot": "rhythm.pattern",
           "part": "Drop,Drop 2",

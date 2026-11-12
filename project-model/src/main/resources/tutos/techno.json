@@ -92,7 +92,7 @@
         {
           "id": "rumble_do",
           "text": "À toi : sur le pad « Rumble » (le grondement), touche les cases en pointillé : les mêmes que le kick, une sur chaque temps. Son long grondement sale et grave remplit le vide entre les coups.",
-          "textPro": "À toi : le rumble sur chaque temps : un second kick long, noyé de réverbe et saturé, filtré sous 200 Hz, que la pompe baisse à chaque kick.",
+          "textPro": "À toi : pose le rumble sur chaque temps : un second kick long, noyé de réverbe et saturé, filtré sous 200 Hz, que la pompe baisse à chaque kick.",
           "why": "Le rumble remplit le grave entre les kicks : c'est le son des clubs de Berlin.",
           "check": "lane:rumble",
           "spot": "rhythm.pattern",
@@ -127,7 +127,7 @@
         {
           "id": "open_hat_do",
           "text": "À toi : sur le pad « Charley ouvert » (un « tsss » plus long), touche les cases en pointillé : juste entre les kicks, sur les contretemps.",
-          "textPro": "À toi : le charley ouvert sur les contretemps.",
+          "textPro": "À toi : pose le charley ouvert sur les contretemps.",
           "why": "Kick, charley, kick, charley : ce va-et-vient pousse à danser.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",
@@ -137,7 +137,7 @@
         {
           "id": "hat_do",
           "text": "À toi : sur le pad « Charley » (le petit « tic »), touche les cases en pointillé : il remplit les trous entre les autres coups.",
-          "textPro": "À toi : les charleys fermés en doubles croches, plus doux sous le kick.",
+          "textPro": "À toi : pose les charleys fermés en doubles croches, plus doux sous le kick.",
           "why": "Les petits coups font rouler le rythme sans le charger.",
           "levels": "p",
           "check": "lane:hat",
@@ -148,7 +148,7 @@
         {
           "id": "perc_do",
           "text": "À toi : sur le pad « Perc » (un petit « toc »), touche les cases en pointillé : il tombe à côté des temps, décalé.",
-          "textPro": "À toi : le rim décalé, la petite accroche rythmique qui tourne en boucle.",
+          "textPro": "À toi : pose le rim décalé, la petite accroche rythmique qui tourne en boucle.",
           "why": "Un son décalé qui revient pareil à chaque mesure : c'est ce qui hypnotise.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
@@ -158,7 +158,7 @@
         {
           "id": "ride_do",
           "text": "À toi : sur le pad « Ride » (une cymbale qui tinte), touche les cases en pointillé. Elle n'arrivera qu'au Drop pour le faire briller.",
-          "textPro": "À toi : la ride en croches, pour le Drop.",
+          "textPro": "À toi : pose la ride en croches, pour le Drop.",
           "levels": "p",
           "check": "lane:ride",
           "spot": "rhythm.pattern",
@@ -445,7 +445,7 @@
         {
           "id": "song_phrases",
           "text": "À toi : donne à chaque partie sa durée : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16. Touche une partie, puis sous « Longueur », tape le nombre de mesures et « OK ». Le bouton « Donner les durées conseillées » le fait d'un coup.",
-          "textPro": "À toi : les durées : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
+          "textPro": "À toi : donne les durées : Intro 16 mesures, Intro 2 16, Drop 32, Break 12, Montée 4, Drop 2 32 et Fin 16 (« Donner les durées conseillées » le fait d'un coup).",
           "why": "Intro et Intro 2 font 32 mesures, le Break et sa Montée 16 : chaque Drop tombe au début d'une phrase. Près de 4 minutes à 132 BPM.",
           "check": "song:phrases",
           "spot": "song.parts",

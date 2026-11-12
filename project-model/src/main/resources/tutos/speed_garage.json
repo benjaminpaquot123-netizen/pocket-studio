@@ -383,7 +383,7 @@
         {
           "id": "crash",
           "text": "À toi : une cymbale sur la toute première case du Drop.",
-          "textPro": "À toi : une cymbale sur le 1er temps du Drop et du Drop 2.",
+          "textPro": "À toi : pose une cymbale sur le 1er temps du Drop et du Drop 2.",
           "check": "crash",
           "spot": "rhythm.pattern",
           "part": "Drop,Drop 2",

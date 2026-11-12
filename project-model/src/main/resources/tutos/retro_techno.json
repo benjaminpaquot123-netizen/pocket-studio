@@ -87,7 +87,7 @@
         {
           "id": "open_hat_do",
           "text": "À toi : sur le pad « Charley ouvert », touche les cases en pointillé, entre les kicks.",
-          "textPro": "À toi : le charley ouvert sur les contretemps.",
+          "textPro": "À toi : pose le charley ouvert sur les contretemps.",
           "why": "Le « tchi » entre les kicks fait sauter la salle.",
           "check": "lane:open_hat",
           "spot": "rhythm.pattern",

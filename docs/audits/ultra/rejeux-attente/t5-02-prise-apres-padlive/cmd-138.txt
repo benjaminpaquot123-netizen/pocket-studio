@@ -1,1 +1,1 @@
-touche 60 742
+touche key_60

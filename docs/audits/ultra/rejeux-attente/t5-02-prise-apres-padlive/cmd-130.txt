@@ -1,1 +1,1 @@
-touche 228 666
+touche part_pick_8

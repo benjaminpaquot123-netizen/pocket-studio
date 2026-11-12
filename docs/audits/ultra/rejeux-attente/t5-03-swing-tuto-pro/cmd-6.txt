@@ -1,1 +1,1 @@
-touche 667 1122
+touche tuto_show

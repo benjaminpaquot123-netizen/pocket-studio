@@ -1,3 +1,4 @@
 source=docs/audits/ultra/sieges/tour-5/lotF/d
 rejeu.n=2
-rejeu.absent=Simple Pour débuter : 5 onglets, de gros boutons et des mots de tous les jours. » @ 308,297
+rejeu.attendu=texte « Remix »
+rejeu.absent=Simple Pour débuter : 5 onglets, de gros boutons et des mots de tous les jours.

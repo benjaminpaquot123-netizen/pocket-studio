@@ -1,1 +1,1 @@
-touche 70 830
+touche step_0

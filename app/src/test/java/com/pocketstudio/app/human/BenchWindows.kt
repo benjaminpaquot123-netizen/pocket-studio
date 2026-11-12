@@ -53,7 +53,14 @@ internal object BenchWindows {
      * Robolectric, Compose never comes back to rest while one is open (no line of the app needed): the bench waits there by
      * frames, a bounded wait. Read from the windows' own semantics, never through the test rule (which would wait for rest).
      */
-    fun textFieldInADialog(): Boolean = runCatching {
+    fun textFieldInADialog(): Boolean = runCatching { textFieldDialog() != null }
+        .getOrDefault(lastFieldWindow?.get()?.isAttachedToWindow == true)
+
+    /**
+     * The window over the activity that holds a text field (the top one), null when none. Tour 5 « fuzz »: that is the
+     * window Retour must go to; a popup over it (the field's handles, a menu) is a window of its own, above it.
+     */
+    fun textFieldDialog(): Win? {
         val dialogs = windows().filter { it.params.type != WindowManager.LayoutParams.TYPE_BASE_APPLICATION }
         val found = dialogs.firstOrNull { w ->
             // Audit ultra round 4 (seats C a, E a: « Renommer » › ✕ « Effacer », 5 min without answer): read in the middle of
@@ -63,8 +70,8 @@ internal object BenchWindows {
                 .getOrElse { w.view === lastFieldWindow?.get() }
         }
         lastFieldWindow = found?.view?.let { java.lang.ref.WeakReference(it) }
-        found != null
-    }.getOrDefault(lastFieldWindow?.get()?.isAttachedToWindow == true)
+        return found
+    }
 
     /**
      * Audit method v2 (round 4, « Renommer » › ✕ « Effacer », 240 s; a test thread's stack proved it): a text field holding

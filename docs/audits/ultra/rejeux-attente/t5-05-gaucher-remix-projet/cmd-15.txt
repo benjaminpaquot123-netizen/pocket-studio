@@ -1,1 +1,1 @@
-touche 80 767
+touche padlive_pad_12

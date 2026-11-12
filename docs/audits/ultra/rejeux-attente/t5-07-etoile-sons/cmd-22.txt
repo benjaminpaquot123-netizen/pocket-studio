@@ -1,1 +1,1 @@
-touche 930 223
+touche sound_chooser_close

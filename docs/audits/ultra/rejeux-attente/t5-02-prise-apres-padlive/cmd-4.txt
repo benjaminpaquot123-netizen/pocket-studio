@@ -1,1 +1,1 @@
-touche 294 297
+touche mode_card_simple

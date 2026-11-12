@@ -20,6 +20,13 @@ for kv in "$@"; do case "$kv" in attendu=*|absent=*) ;; *) echo "unknown: $kv (a
 mkdir -p "$out"
 trap '[ -f "$out/oracle.txt" ] || rm -rf "${out:?}"' EXIT
 grep -v -E '^(rejeu|rejeu\.[a-z]+|timeout\.minutes)=' "$src/start.txt" > "$out/start.txt" || true
+# Tour 5 (rejeux6): a seat with a journal is rewritten by test tag (« touche <étiquette> »), never copied as pixels: a touch whose
+# finger saw no tag stops here and is given with PS_REJEU_OPTIONS="--cible N=TAG --saute N --glisse N=TAG:DX:DY".
+if [ -f "$src/journal.txt" ] && grep -q '^#[0-9]* DOIGT ' "$src/journal.txt"; then
+  # shellcheck disable=SC2086
+  python3 -I "$root/scripts/bench/rejeu-etiquettes.py" "$src" "$n" "$out" ${PS_REJEU_OPTIONS:-} \
+    || { echo "Gestures with no tag under the finger: see above." >&2; rm -rf "${out:?}"; exit 2; }
+else
 for i in $(seq 1 "$n"); do
   if [ -f "$src/cmd-$i.txt" ]; then
     cp "$src/cmd-$i.txt" "$out/"
@@ -30,6 +37,7 @@ for i in $(seq 1 "$n"); do
     printf '%s' "$cmd" > "$out/cmd-$i.txt"
   fi
 done
+fi
 {
   echo "source=${src#"$root"/}"
   echo "rejeu.n=$n"

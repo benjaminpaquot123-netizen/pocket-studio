@@ -1,1 +1,1 @@
-touche 140 708
+touche simple_track_inst:2

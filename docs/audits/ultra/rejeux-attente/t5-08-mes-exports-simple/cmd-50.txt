@@ -1,1 +1,1 @@
-glisse 294 800 294 300
+glisse share_go 0 -500

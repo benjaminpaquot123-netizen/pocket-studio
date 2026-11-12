@@ -326,10 +326,16 @@ abstract class HumanTester(private val seat: String) {
             // tag, brought into view and touched in its middle: a change of layout no longer breaks a replay. The gesture
             // then goes on as the pixels it resolved to (thumb's reach, finger's journal, the engine's lending).
             val aimed = cmd.split(Regex("\\s+"))
-            if (aimed.size == 2 && aimed[0].lowercase() in TAG_GESTURES && aimed[1].replace(',', '.').toFloatOrNull() == null) {
+            fun number(w: String) = w.replace(',', '.').toFloatOrNull()
+            // Tour 5 (rejeux6): « glisse <étiquette> DX DY » swipes from the middle of the tagged node by (DX, DY) pixels: a scroll or a
+            // handle's drag that still needs the control where it is, not where it was.
+            val swipeByTag = aimed.size == 4 && aimed[0].lowercase() == "glisse" && number(aimed[1]) == null && number(aimed[2]) != null && number(aimed[3]) != null
+            if (swipeByTag || (aimed.size == 2 && aimed[0].lowercase() in TAG_GESTURES && number(aimed[1]) == null)) {
                 val tag = aimed[1]
-                val at = runCatching { reachTag(tag) }.getOrNull()
-                if (at == null) {
+                val reached = runCatching { reachTag(tag) }.getOrNull()
+                // A thumb touches a wide control where it can reach it, not necessarily in its middle: when the middle is out of
+                // reach, the nearest reachable point of the node (a tag touch must not be refused where a finger would not be).
+                if (reached == null) {
                     journal.appendText("#$n > $cmd\n#$n BANC étiquette introuvable : $tag\n")
                     if (source != null) {
                         originFinger[n]?.let { moved += "pas $n : à l'origine sous le doigt : $it" }
@@ -339,8 +345,19 @@ abstract class HumanTester(private val seat: String) {
                     n++
                     continue
                 }
+                // Review of rejeux6 (grave 2): the touch lands on a point of the element a finger can see (on the screen, not cut by
+                // the list that scrolls it), within the thumb's reach, where that element is the one under the finger (not a
+                // popup over it): when there is none, the touch is refused, as a finger could not touch that element there.
+                val at = reachableNear(tag, reached, o.hand)
+                if (at == null) {
+                    journal.appendText("#$n > $cmd\n#$n REFUS « $tag » : aucun point visible, à portée du pouce (${o.hand.word}) et sous le doigt\n")
+                    say("Ce bouton est caché, hors de l'écran ou trop loin de ton pouce (tu tiens l'appareil ${o.hand.word}) : rien ne s'est passé.")
+                    n++
+                    continue
+                }
                 journal.appendText("#$n ETIQUETTE $tag : ${at.first.toInt()} ${at.second.toInt()}\n")
-                cmd = "${aimed[0]} ${at.first.toInt()} ${at.second.toInt()}"
+                cmd = if (swipeByTag) "glisse ${at.first.toInt()} ${at.second.toInt()} ${(at.first + number(aimed[2])!!).toInt()} ${(at.second + number(aimed[3])!!).toInt()}"
+                else "${aimed[0]} ${at.first.toInt()} ${at.second.toInt()}"
             }
             val words = cmd.split(Regex("\\s+"))
             val kind = words[0].lowercase()
@@ -799,11 +816,12 @@ abstract class HumanTester(private val seat: String) {
      */
     internal fun reachTag(tag: String): Pair<Float, Float>? {
         val first = centerOf(tag) ?: return null
+        if (tag.startsWith("vue_")) return first
         // PLAN-RESTE R.6 (re-reads of banc-r1): an element the screen shows whole is touched where it is, as a finger does; the
         // swipes below (up to 8 « glisse » + « attends 1 », 22 to 26 s of the bench's clock) are for one cut or off the screen.
         if (shownWhole(tag)) return first
         if (!inMiddle(first)) {
-            runCatching { compose.onAllNodesWithTag(tag)[0].performScrollTo() }
+            runCatching { taggedNodes(tag)[0].performScrollTo() }
             play("attends 0.5")
         }
         repeat(8) {
@@ -821,7 +839,7 @@ abstract class HumanTester(private val seat: String) {
 
     /** The first node tagged [tag] is drawn whole on the screen (see [shownWhole]). */
     private fun shownWhole(tag: String): Boolean =
-        runCatching { compose.onAllNodesWithTag(tag).fetchSemanticsNodes().firstOrNull()?.let(::shownWhole) }.getOrNull() == true
+        runCatching { taggedNodes(tag).fetchSemanticsNodes().firstOrNull()?.let(::shownWhole) }.getOrNull() == true
 
     /** [node] is drawn whole on the screen (not cut by a parent that scrolls, not off an edge): a finger can touch it where it is. */
     internal fun shownWhole(node: androidx.compose.ui.semantics.SemanticsNode): Boolean = runCatching {
@@ -2004,9 +2022,49 @@ abstract class HumanTester(private val seat: String) {
         return heard()
     }
 
-    /** The middle of the node tagged [tag] on the screen as drawn (the first one), or null when there is none. */
-    protected fun centerOf(tag: String): Pair<Float, Float>? = runCatching {
-        compose.onAllNodesWithTag(tag).fetchSemanticsNodes().firstOrNull()?.let { n ->
+    /**
+     * Where a touch aimed at [tag] lands ([middle]: the middle of its first node): the nearest point of that node's part shown on the
+     * screen (cut by its parents, as boundsInWindow is) that [hand]'s thumb reaches and where the element under the finger is that
+     * node (the journal's « DOIGT » line names it). Null: no such point, the touch is refused (review of rejeux6, grave 2).
+     */
+    private fun reachableNear(tag: String, middle: Pair<Float, Float>, hand: SeatOptions.Hand): Pair<Float, Float>? {
+        val m = app.resources.displayMetrics
+        val screen = screenText()
+        val hits = { x: Float, y: Float -> fingerOn(tag, screen.under(x, y)) }
+        if (tag.startsWith("vue_")) {
+            return middle.takeIf { (x, y) -> SeatOptions.reachable(hand, x, y, m.widthPixels, m.heightPixels, m.density) && hits(x, y) }
+        }
+        val n = runCatching { taggedNodes(tag).fetchSemanticsNodes().firstOrNull() }.getOrNull() ?: return null
+        val p = BenchWindows.drawnPosition(n, m)
+        val shown = BenchWindows.drawnBounds(n, m)
+        return SeatOptions.nearestReachable(
+            hand, SeatOptions.Box(p.x, p.y, p.x + n.size.width, p.y + n.size.height), SeatOptions.Box(shown.left, shown.top, shown.right, shown.bottom),
+            middle, m.widthPixels, m.heightPixels, m.density, hits,
+        )
+    }
+
+    /**
+     * The finger ([under], a « DOIGT » line: « <tag> « words » », « dans:<tag> » for a part of it, « désactivé … ») is on [tag]
+     * (« prefix* »: on one of that family; « vue_X »: the Android view showing X). As scripts/bench/rejeu-defauts.sh reads it.
+     */
+    private fun fingerOn(tag: String, under: String): Boolean {
+        if (tag.startsWith("vue_")) return under.startsWith("vue « ${tag.removePrefix("vue_")} »")
+        val name = under.removePrefix("désactivé ").removePrefix("dans:").substringBefore(' ')
+        return if (tag.endsWith("*")) name.startsWith(tag.dropLast(1)) else name == tag
+    }
+
+    /**
+     * The nodes of a replay's [tag]: the tag itself, or « prefix* » for the first of a family whose ids change at every run
+     * (« project_p-* »: the projects' ids are random).
+     */
+    private fun taggedNodes(tag: String) =
+        if (tag.endsWith("*")) {
+            val prefix = tag.dropLast(1)
+            compose.onAllNodes(SemanticsMatcher("test tag starts with $prefix") { it.config.getOrNull(SemanticsProperties.TestTag)?.startsWith(prefix) == true })
+        } else compose.onAllNodesWithTag(tag)
+
+    protected fun centerOf(tag: String): Pair<Float, Float>? = (if (tag.startsWith("vue_")) screenText().viewCenter(tag.removePrefix("vue_")) else null) ?: runCatching {
+        taggedNodes(tag).fetchSemanticsNodes().firstOrNull()?.let { n ->
             val at = BenchWindows.drawnPosition(n, app.resources.displayMetrics)
             at.x + n.size.width / 2f to at.y + n.size.height / 2f
         }

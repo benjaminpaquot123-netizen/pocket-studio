@@ -407,10 +407,12 @@ fun ShareSheetContent(
             }
         }
         // « Partager » renames the project too (a default « Mon projet 3 » becomes the name typed): the label says so.
+        // Lot 6, U16 (seat F a #66): otherwise the label is « Nom » alone (it read « Nom du morceau envoyé », « already
+        // sent? », after a share closed without sending); the line under it says the project keeps its name.
         // Round 2, n° 26: the name selected at the touch, what is typed replaces it.
         val renames = ui.projectName?.let { shareRenamesProject(it, ui.name) || ShareSong.isDefaultName(it) } ?: true
         com.pocketstudio.app.ui.SelectAllTextField(
-            value = ui.name, onValueChange = actions.setName, label = { Text(if (renames) tr("Nom du morceau (et du projet)") else tr("Nom du morceau envoyé")) },
+            value = ui.name, onValueChange = actions.setName, label = { Text(if (renames) tr("Nom du morceau (et du projet)") else tr("Nom")) },
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
             modifier = Modifier.fillMaxWidth().testTag("share_name"),
         )

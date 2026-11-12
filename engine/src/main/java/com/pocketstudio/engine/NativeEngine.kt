@@ -120,6 +120,8 @@ object NativeEngine {
     // Lot E, « Master pro » (Engine.h, 190 to 209).
     private const val CMD_MASTER_PRO = 190
     private const val CMD_INSTALL_REFERENCE = 191
+    // Tour 5, lot « kick » (Engine.h, 210 on).
+    private const val CMD_SET_SPEAKER_OUTPUT = 210
     /** Pieces a stem's edits hold at most (the engine's StemPlayer::kMaxClips). */
     const val MAX_STEM_CLIPS = 32
 
@@ -549,6 +551,14 @@ object NativeEngine {
     fun liveTriggerPad(lane: Int, velocity: Float) = livePost(CMD_TRIGGER_PAD, velocity, lane, 0)
     /** Pitch bend (semitones), mod wheel (0..1), sustain (0/1) or arpeggiator setting of a track. */
     fun liveExpression(kind: Int, value: Float, track: Int = liveTrack) = livePost(CMD_EXPRESSION, value, onTrack(track, kind), 0)
+
+    /**
+     * The music goes to the phone's own speaker (Android's AudioManager, [on]) or not: the live engine
+     * adds the kick's harmonics and click a small speaker needs (SpeakerKick.h). Never sent to an
+     * export: a file is heard on anything.
+     */
+    @Suppress("UNUSED_PARAMETER")
+    fun setSpeakerOutput(on: Boolean): Boolean = CMD_SET_SPEAKER_OUTPUT < 0
 
     private fun livePost(type: Int, value: Float, a: Int, b: Int): Boolean {
         sink?.let { it.post(0L, type, value, a, b); return true }

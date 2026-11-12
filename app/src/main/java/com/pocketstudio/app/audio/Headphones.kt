@@ -39,13 +39,27 @@ object Headphones {
         else -> Listening.Speaker
     }
 
+    /**
+     * Tour 5 (kick): whether the engine plays the kick for a small speaker (its harmonics and click):
+     * only on the phone's own speaker. Headphones and Bluetooth hear the sound as mixed.
+     */
+    fun speakerKick(listening: Listening): Boolean = listening != listening
+
+    /** The outputs of [types] now: the state, and the engine told whether it plays on the speaker. */
+    fun route(types: Collection<Int>): Listening {
+        val listening = classify(types)
+        _state.value = listening
+        com.pocketstudio.engine.NativeEngine.setSpeakerOutput(speakerKick(listening))
+        return listening
+    }
+
     /** Starts following the outputs (once, for the whole app). */
     fun watch(context: Context) {
         if (watching) return
         val audio = context.getSystemService(AudioManager::class.java) ?: return
         watching = true
         fun update() {
-            _state.value = classify(audio.getDevices(AudioManager.GET_DEVICES_OUTPUTS).map { it.type })
+            route(audio.getDevices(AudioManager.GET_DEVICES_OUTPUTS).map { it.type })
         }
         read = ::update
         // A device change also wakes the engine's revival when the sound was cut and could not

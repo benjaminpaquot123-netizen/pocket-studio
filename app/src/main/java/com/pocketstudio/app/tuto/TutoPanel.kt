@@ -834,8 +834,10 @@ private fun EndCard(ui: TutoUi, actions: TutoActions, names: (String) -> String 
                 Icon(Icons.Filled.Replay, contentDescription = null, modifier = Modifier.size(18.dp))
                 Text(" " + restartTutoLabel(), maxLines = 1)
             }
-            TextButton(onClick = actions.quit, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_end_close")) {
-                Text(tr("Fermer le tuto"), color = Neon.TextSecondary)
+            // Tour 6 (N13): grey words with no frame under two framed buttons said nothing touchable: framed like them.
+            OutlinedButton(onClick = actions.quit, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_end_close")) {
+                Icon(Icons.Filled.Close, contentDescription = null, modifier = Modifier.size(18.dp))
+                Text(" " + tr("Fermer le tuto"), maxLines = 1)
             }
             return@Column
         }
@@ -859,7 +861,8 @@ private fun EndCard(ui: TutoUi, actions: TutoActions, names: (String) -> String 
             }
         }
         if (left.size > END_LIST) Text(trCount(left.size - END_LIST, "… et %d autre (liste ≡)", "… et %d autres (liste ≡)"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
-        if (ui.atEnd) TextButton(onClick = actions.leaveEnd, modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_end_back")) {
+        // N13: framed too (the end's card, one look for its buttons).
+        if (ui.atEnd) OutlinedButton(onClick = actions.leaveEnd, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_end_back")) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, modifier = Modifier.size(18.dp))
             Text(" " + tr("Revenir à l'étape"), maxLines = 1)
         }

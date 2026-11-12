@@ -61,6 +61,9 @@ object SoundTrial {
         // 0.4 to 2.9 dB), then its harmonics lifted by 12 dB around 800 Hz (PARAM_EQ: 20 x 1000^0.535 Hz, Q 0.8).
         StyleFx("bass", insert = "SATURATION", params = listOf(0.95f, 1f, 0.85f, 0.7f, 1f)),
         StyleFx("bass", insert = "PARAM_EQ", params = listOf(0.535f, 0.5f + 12f / 36f, 0.28f, 0f)),
+        // Its sub given back (the saturation took 4 to 5.5 dB of it) and its fizz taken off (+25 dB over 8 kHz on tech
+        // house's sine bass): the 3-band EQ, lows +5 dB (100 Hz shelf), highs -9 dB (8 kHz shelf).
+        StyleFx("bass", insert = "EQ", params = listOf(0.5f + 5f / 24f, 0.5f, 0.5f - 9f / 24f)),
         StyleFx("lead", insert = "WIDENER", params = listOf(0.9f, 0.5f, 0.6f), reverb = 0.25f, delay = 0.3f),
         StyleFx("pad", insert = "WIDENER", params = listOf(0.9f, 0.5f, 0.8f), reverb = 0.4f),
     )

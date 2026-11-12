@@ -27,7 +27,9 @@ if [ "${PS_SKIP_SELFTEST:-}" != "" ]; then
   echo "PS_SKIP_SELFTEST is refused: run scripts/bench/selftest.sh $dir (a known red goes in scripts/bench/selftest-quarantaine.txt)." >&2
   exit 3
 elif ! scripts/bench/tampon.sh verifie "$dir"; then
-  echo "No green self-test for this code: run scripts/bench/selftest.sh $dir first." >&2
+  # The stamp's own reason is printed above (tampon.sh verifie). Round 6, lot banc7 (point 7): it covers the start.txt present
+  # when the self-test ran: put the other seats' start.txt aside BEFORE selftest.sh.
+  echo "No green self-test for this code and these seats (start.txt): see the reason above, then run scripts/bench/selftest.sh $dir." >&2
   exit 3
 fi
 # Round 6, lot banc7 (point 8, E9): the bench says it runs for this lot (its PID), so a seat's first « regarde » without it

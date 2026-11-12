@@ -1,5 +1,6 @@
 package com.pocketstudio.ui
 
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.text.modifiers.TextAutoSizeLayoutScope
 import androidx.compose.material3.LocalTextStyle
@@ -7,6 +8,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorProducer
+import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
@@ -46,6 +49,34 @@ fun WholeWordsText(
     Text(
         text, modifier, color = color, fontWeight = fontWeight, textAlign = textAlign, style = resolved,
         maxLines = maxLines, overflow = TextOverflow.Ellipsis,
+        autoSize = if (resolved.fontSize.isSpecified) WholeWords(resolved.fontSize, minScale) else null,
+    )
+}
+
+/**
+ * The same, its colour read only when drawn: a label whose colour moves (a pad lighting up and fading out) is
+ * drawn again, never composed again (tour 5 « jank »). The same pixels as [Text] in that colour.
+ */
+@Composable
+fun WholeWordsText(
+    text: String,
+    color: ColorProducer,
+    modifier: Modifier = Modifier,
+    style: TextStyle = LocalTextStyle.current,
+    textAlign: TextAlign? = null,
+    maxLines: Int = 2,
+    minScale: Float = 0.72f,
+) {
+    val merged = LocalTextStyle.current.merge(style)
+    val big = androidx.compose.ui.platform.LocalDensity.current.fontScale > BIG_FONT_FROM
+    val resolved = if (big && merged.lineHeight.isSp && merged.fontSize.isSp && merged.fontSize.value > 0f) {
+        merged.copy(lineHeight = (merged.lineHeight.value / merged.fontSize.value).em)
+    } else merged
+    // As Material's Text: the style's colour, else the content's (the producer's colour drawn over it).
+    val base = resolved.color.takeOrElse { androidx.compose.material3.LocalContentColor.current }
+    BasicText(
+        text, modifier, resolved.merge(color = base, textAlign = textAlign ?: TextAlign.Unspecified),
+        overflow = TextOverflow.Ellipsis, maxLines = maxLines, color = color,
         autoSize = if (resolved.fontSize.isSpecified) WholeWords(resolved.fontSize, minScale) else null,
     )
 }

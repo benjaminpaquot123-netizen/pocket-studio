@@ -131,7 +131,7 @@ open class WriteScreenshotTest : ScreenshotTest() {
         com.pocketstudio.app.rhythm.RhythmScreen(
             Project(drums = drums, tempoBpm = 124.0).sanitized(),
             com.pocketstudio.app.rhythm.TransportUi(selectedPad = 5),
-            com.pocketstudio.app.rhythm.LiveUi(), canUndo = true, canRedo = false,
+            { com.pocketstudio.app.rhythm.LiveUi() }, canUndo = true, canRedo = false,
             actions = com.pocketstudio.app.rhythm.RhythmActions(),
         )
     }

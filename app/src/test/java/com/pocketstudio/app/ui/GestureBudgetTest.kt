@@ -387,7 +387,7 @@ class GestureBudgetTest {
         val p by vm.project.collectAsState()
         val t by vm.transport.collectAsState()
         com.pocketstudio.app.rhythm.RhythmScreen(
-            p, t, com.pocketstudio.app.rhythm.LiveUi(), canUndo = true, canRedo = false,
+            p, t, { com.pocketstudio.app.rhythm.LiveUi() }, canUndo = true, canRedo = false,
             actions = com.pocketstudio.app.rhythm.RhythmActions(
                 toggleStep = vm::toggleStep, cycleVelocity = vm::cycleVelocity, setHitVelocity = vm::setHitVelocity,
                 selectPad = vm::selectPad, hitPad = vm::hitPad, removeSampleOf = vm::removeSampleOf, setPadVolume = vm::setPadVolume, togglePadMute = vm::togglePadMute,
@@ -484,7 +484,7 @@ class GestureBudgetTest {
                 val p by vm.project.collectAsState()
                 val t by vm.transport.collectAsState()
                 com.pocketstudio.app.rhythm.RhythmScreen(
-                    p, t.copy(playing = true), com.pocketstudio.app.rhythm.LiveUi(currentStep = step), canUndo = true, canRedo = false,
+                    p, t.copy(playing = true), { com.pocketstudio.app.rhythm.LiveUi(currentStep = step) }, canUndo = true, canRedo = false,
                     actions = com.pocketstudio.app.rhythm.RhythmActions(toggleStep = vm::toggleStep, paintStep = vm::paintStep, paintEnd = vm::paintEnd),
                 )
             }
@@ -919,7 +919,7 @@ class GestureBudgetTest {
                 val p by vm.project.collectAsState()
                 val t by vm.transport.collectAsState()
                 com.pocketstudio.app.rhythm.RhythmScreen(
-                    p, t, com.pocketstudio.app.rhythm.LiveUi(), canUndo = true, canRedo = false,
+                    p, t, { com.pocketstudio.app.rhythm.LiveUi() }, canUndo = true, canRedo = false,
                     actions = com.pocketstudio.app.rhythm.RhythmActions(
                         toggleStep = vm::toggleStep, selectPad = vm::selectPad, setHitVelocity = vm::setHitVelocity, setRoll = vm::setRoll,
                         setPadLength = vm::setPadLength, setHitChance = vm::setHitChance, rerollChances = vm::rerollChances,

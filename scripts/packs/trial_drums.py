@@ -13,10 +13,11 @@ The techniques are today's rather than a drum machine's. Trial n° 2 (Benjamin o
 rajoutes juste des cymbales on dirait »): the difference goes where it is heard, the kick and the
 snare or clap, and the metal steps back.
 - kicks in four layers: a tuned sub (a sine falling from 170-250 Hz onto its fundamental, reached
-  exactly: the tech house and techno kicks sit on the key), a short punch on a harmonic between 90
-  and 200 Hz, the body's harmonics between 180 Hz and 1.5 kHz (tanh and tanh² at 4x the rate, so
-  nothing folds back: what a phone's speaker plays, the ear rebuilding the fundamental from them)
-  and a click of its own in 1.2-4.5 kHz over 2-6 ms;
+  exactly: the tech house and techno kicks sit on the key), a punch on a harmonic between 90 and
+  200 Hz (60-100 ms), the body's harmonics between 180 Hz and 1.5 kHz (tanh and tanh² at 4x the
+  rate, so nothing folds back: what a phone's speaker plays, the ear rebuilding the fundamental
+  from them) and a click of its own in 1.2-4.5 kHz over 2-6 ms; then the body (2-3 times the
+  fundamental) raised and a clipper on the whole (trial n° 3: the drums lacked 60-250 Hz);
 - snares and claps in layers: a tonal body at 180-250 Hz, a noise band at 1-3 kHz (the wires, the
   hands), a little top, saturated, then a plate (t60 0.3-0.5 s) whose left and right tails are
   partly independent (claps: wide, yet summing to mono cleanly) and a soft clipper (denser at the
@@ -197,24 +198,30 @@ def finish(x, fade=0.006):
 
 # --- Kicks ---------------------------------------------------------------------------------------
 
-def kick(name, f0, top, glide, length, hold, curve, drive, bias=0.1, h=3, punch=0.5, punch_ms=22.0, harm=1.5,
-         hdrive=10.0, even=0.4, click=1.5, click_ms=5.0, knock=1.0, knock_hz=2200.0, clip=2.5, lp=7000.0, grit=0.0):
+def kick(name, f0, top, glide, length, hold, curve, drive, bias=0.1, h=3, punch=0.6, punch_ms=28.0, bend=3.0,
+         harm=2.5, hdrive=10.0, even=0.4, body_db=9.0, body_rel=2.5, click=2.5, click_ms=5.0, knock=1.0,
+         knock_hz=2200.0, clip=6.0, lp=7000.0, grit=0.0):
     """Layered kick, made to be heard on a phone's speaker as well as on a big one:
-    - sub: a sine falling from `top` onto f0, reached exactly at `glide` seconds and held (tuned);
+    - sub: a sine falling from `top` onto f0 (the fall's curve `bend`: lower, it stays longer in the
+      body's 60-250 Hz), reached exactly at `glide` seconds and held (tuned);
     - punch: a sine on the h-th harmonic of f0 (90-200 Hz, so in tune too), dropping onto it from
-      half an octave above in a few ms, gone in about 3 x punch_ms (30-80 ms);
+      half an octave above in a few ms, gone in about 3 x punch_ms (60-100 ms);
     - glue: sub and punch through a soft tanh at 4x (`drive`, `bias` for a little warmth);
     - harmonics: `harm` of sub and punch through tanh and tanh² (`hdrive`, `even`), kept at
       180 Hz-1.5 kHz (harmonics());
+    - body: the sub-sonic rumble taken out first, then `body_db` more at body_rel x f0 (the body,
+      2-3 times the fundamental: 90-180 Hz);
     - click: a layer of its own: noise and an impulse band-passed to 1.2-4.5 kHz and a knock, a
       sine diving onto knock_hz, held for 40 % of click_ms then gone at click_ms (2-6 ms).
     The body (all but the click) is kept hot by a gentler envelope before the saturation than after
-    it; `grit` boosts the low mids before the saturation (dirtier). Click and body then go through a
-    soft clipper (`clip`, tanh at 4x): the click's spike no longer sets the peak alone, so the body
-    keeps its weight at the same peak. The sub-sonic rumble and the DC go last."""
+    it; `grit` boosts the low mids before the saturation (dirtier). Last, everything goes through a
+    clipper (`clip`, tanh at 4x): dense, the body and the sub near the peak for the kick's first
+    tenths of a second (trial n° 3: 60-250 Hz at least 4 dB over trial n° 1 at the same peak). The
+    rumble goes before the clipper, not after: a high-pass after it would shift the phases and
+    overshoot the peak (2 dB of everything lost at the same peak)."""
     rng = rng_for(name)
     t = t_of(length)
-    sweep = np.clip(1.0 - t / glide, 0.0, 1.0) ** 3
+    sweep = np.clip(1.0 - t / glide, 0.0, 1.0) ** bend
     pre = hold_decay(t, hold, length, 0.5 * curve)
     pun = osc(t, h * f0 * (1 + 0.41 * np.exp(-t / 0.004))) * exp_env(t, punch_ms / 1000, attack=0.0005)
     low = osc(t, f0 + (top - f0) * sweep) * pre + punch * pun
@@ -222,12 +229,13 @@ def kick(name, f0, top, glide, length, hold, curve, drive, bias=0.1, h=3, punch=
         low = peak_eq(low, 400.0, grit, 0.7)
     low = norm(low)
     body = filt(saturate(low, drive, bias) + harm * harmonics(low, hdrive, even), 'lowpass', lp, 2) * pre
+    body = peak_eq(filt(body, 'highpass', 0.45 * f0, 2), body_rel * f0, body_db, 0.8)
     click_env = hold_decay(t, 0.4 * click_ms / 1000, click_ms / 1000, 2.0) * np.clip(t / 0.0001, 0.0, 1.0)
     burst = rng.standard_normal(len(t)) * click_env
     burst[0] += 4.0
     knk = osc(t, knock_hz * (1 + np.exp(-t / 0.0015))) * click_env
     tick = norm(filt(norm(filt(burst, 'bandpass', (1200, 4500), 2)) + knock * knk, 'lowpass', 6000.0, 2))
-    return finish(filt(saturate(norm(body + click * tick), clip), 'highpass', 0.45 * f0, 2))
+    return finish(saturate(norm(body + click * tick), clip))
 
 
 # --- Snares and claps ----------------------------------------------------------------------------
@@ -467,14 +475,14 @@ def clank(name, f, length, pan=-0.25, index=3.0, room_mix=0.2):
 
 PACKS = [
     {'id': 'essai_jump_up', 'name': 'Essai jump up', 'family': 'Bass music', 'bpm': 174.0, 'sounds': [
-        ('kick', 'percutant', lambda n: kick(n, 57.0, 250, 0.035, 0.25, 0.015, 2.2, 2.8, 0.12, h=2, punch=0.6,
-                                             punch_ms=18.0, knock_hz=2400.0)),
-        ('kick', 'rond', lambda n: kick(n, 55.0, 220, 0.045, 0.28, 0.03, 1.8, 2.0, h=2, punch_ms=25.0, harm=1.3,
-                                        click=1.3, click_ms=6.0, knock_hz=1600.0, clip=2.0)),
-        ('kick', 'sec', lambda n: kick(n, 60.0, 250, 0.03, 0.21, 0.01, 2.8, 3.2, h=2, punch=0.6, punch_ms=12.0,
-                                       click=2.6, click_ms=5.5, knock_hz=3000.0)),
-        ('kick', 'distordu', lambda n: kick(n, 58.0, 240, 0.04, 0.26, 0.02, 2.0, 4.5, 0.2, h=2, harm=1.6, hdrive=12.0,
-                                            even=0.6, click=1.9, click_ms=6.0, grit=4.0)),
+        ('kick', 'percutant', lambda n: kick(n, 57.0, 250, 0.035, 0.25, 0.015, 2.2, 2.8, 0.12, h=2, punch_ms=22.0,
+                                             bend=1.8, body_db=12.0, body_rel=2.0, knock_hz=2400.0)),
+        ('kick', 'rond', lambda n: kick(n, 55.0, 220, 0.045, 0.28, 0.03, 1.8, 2.0, h=2, punch_ms=30.0, bend=1.8,
+                                        body_db=12.0, body_rel=2.0, click_ms=6.0, knock_hz=1600.0)),
+        ('kick', 'sec', lambda n: kick(n, 60.0, 250, 0.03, 0.21, 0.01, 2.8, 3.2, h=2, punch_ms=20.0, bend=1.8,
+                                       body_db=12.0, body_rel=2.0, click_ms=5.5, knock_hz=3000.0)),
+        ('kick', 'distordu', lambda n: kick(n, 58.0, 240, 0.04, 0.26, 0.02, 2.0, 4.5, 0.2, h=2, bend=1.8, body_db=12.0,
+                                            body_rel=2.0, hdrive=12.0, even=0.6, click_ms=6.0, grit=2.5)),
         ('snare', 'énorme', lambda n: snare(n, 200.0, 0.45, clap=0.8, t60=0.42)),
         ('snare', 'claquante', lambda n: snare(n, 215.0, 0.38, body=0.75, body_tau=0.06, noise=1.4, noise_tau=0.04,
                                                clap=0.9, crack=0.8, drive=2.6, plate=0.4, t60=0.32)),
@@ -499,14 +507,11 @@ PACKS = [
         ('perc', 'laser', lambda n: blip(n, 3500.0, F5, 0.1)),
     ]},
     {'id': 'essai_tech_house', 'name': 'Essai tech house', 'family': 'House', 'bpm': 126.0, 'sounds': [
-        ('kick', 'claquant', lambda n: kick(n, G1, 210, 0.045, 0.34, 0.025, 2.4, 2.0, punch=0.6, punch_ms=20.0,
-                                            knock_hz=2600.0)),
-        ('kick', 'court', lambda n: kick(n, G1, 220, 0.04, 0.30, 0.015, 2.8, 2.4, punch=0.6, punch_ms=15.0, click=1.9,
-                                         knock_hz=3000.0)),
-        ('kick', 'rond', lambda n: kick(n, G1, 180, 0.05, 0.38, 0.04, 2.0, 1.6, punch=0.45, punch_ms=26.0, harm=1.3,
-                                        click=1.3, click_ms=6.0, knock_hz=1600.0, clip=2.0)),
-        ('kick', 'gras', lambda n: kick(n, G1, 200, 0.045, 0.36, 0.03, 2.2, 3.2, 0.18, harm=1.6, hdrive=12.0, even=0.6,
-                                        grit=3.0)),
+        ('kick', 'claquant', lambda n: kick(n, G1, 210, 0.045, 0.34, 0.025, 2.4, 2.0, knock_hz=2600.0)),
+        ('kick', 'court', lambda n: kick(n, G1, 220, 0.04, 0.30, 0.015, 2.8, 2.4, punch_ms=22.0, knock_hz=3000.0)),
+        ('kick', 'rond', lambda n: kick(n, G1, 180, 0.05, 0.38, 0.04, 2.0, 1.6, punch=0.5, punch_ms=32.0, click_ms=6.0,
+                                        knock_hz=1600.0, clip=4.5)),
+        ('kick', 'gras', lambda n: kick(n, G1, 200, 0.045, 0.36, 0.03, 2.2, 3.2, 0.18, hdrive=12.0, even=0.6, grit=3.0)),
         ('clap', 'claquant', lambda n: clap(n, 0.4, (0.0, 0.010, 0.020, 0.030), tail=0.06, high=0.3, body_hz=220.0,
                                             plate=0.5, t60=0.35)),
         ('clap', 'classique', lambda n: clap(n, 0.45, (0.0, 0.011, 0.022, 0.032), band=(950, 2300), tail=0.1,
@@ -531,13 +536,13 @@ PACKS = [
         ('ride', 'douce', lambda n: ride(n, 1.4, ping=3200.0, bell=0.25, wash_tau=0.38, damp=12.0)),
     ]},
     {'id': 'essai_techno', 'name': 'Essai techno', 'family': 'Techno', 'bpm': 132.0, 'sounds': [
-        ('kick', 'profond', lambda n: kick(n, F1, 190, 0.055, 0.56, 0.07, 3.0, 3.0, 0.12, punch_ms=25.0, click=1.6,
+        ('kick', 'profond', lambda n: kick(n, F1, 190, 0.055, 0.56, 0.07, 3.0, 3.0, 0.12, punch_ms=30.0, harm=3.0,
                                            click_ms=6.0, knock_hz=1800.0, lp=6000.0)),
-        ('kick', 'saturé', lambda n: kick(n, F1, 220, 0.045, 0.52, 0.06, 2.8, 5.0, 0.2, harm=1.6, hdrive=12.0,
-                                          even=0.6, click=1.6, click_ms=6.0, knock_hz=2000.0, lp=6000.0, grit=4.0)),
-        ('kick', 'long', lambda n: kick(n, F1, 170, 0.06, 0.6, 0.09, 2.6, 1.8, punch=0.45, punch_ms=26.0, click=1.6,
-                                        click_ms=6.0, knock_hz=1500.0, lp=6000.0)),
-        ('kick', 'dur', lambda n: kick(n, F1, 240, 0.04, 0.46, 0.04, 3.2, 3.8, 0.15, punch=0.6, punch_ms=18.0,
+        ('kick', 'saturé', lambda n: kick(n, F1, 220, 0.045, 0.52, 0.06, 2.8, 5.0, 0.2, harm=3.0, hdrive=12.0, even=0.6,
+                                          click_ms=6.0, knock_hz=2000.0, lp=6000.0, grit=4.0)),
+        ('kick', 'long', lambda n: kick(n, F1, 170, 0.06, 0.6, 0.09, 2.6, 1.8, punch=0.5, punch_ms=32.0, click_ms=6.0,
+                                        knock_hz=1500.0, lp=6000.0)),
+        ('kick', 'dur', lambda n: kick(n, F1, 240, 0.04, 0.46, 0.04, 3.2, 3.8, 0.15, punch_ms=22.0, harm=3.0,
                                        knock_hz=2600.0)),
         ('clap', 'sombre', lambda n: clap(n, 0.45, (0.0, 0.010, 0.021, 0.031), band=(850, 2100), tail=0.11, high=0.15,
                                           body_hz=190.0, t60=0.42, damp=4000.0, clip=4.0)),
@@ -617,8 +622,9 @@ def tail_time(x, rate, below_db=40.0):
 def measure(x, rate, kind=''):
     """Duration, peak, RMS, crest factor, energy above 10 kHz (10-20 kHz against 20 Hz-20 kHz, as
     docs/sons/outils/voix.py), power-weighted centroid, side ((L-R)/2) against centre ((L+R)/2),
-    the largest DC of a channel, the energy in each of BANDS against 20 Hz-20 kHz, the energy above
-    10 kHz against 4-10 kHz, the tail (tail_time()), and a kick's fundamental."""
+    the largest DC of a channel, the energy in each of BANDS against 20 Hz-20 kHz and the energy
+    above 10 kHz against 4-10 kHz (these two from the unpadded spectrum: no smearing across a band's
+    edge, where a kick's harmonics can sit), the tail (tail_time()), and a kick's fundamental."""
     mono = x.mean(axis=1)
     power = np.abs(np.fft.rfft(mono, 1 << int(np.ceil(np.log2(max(len(mono), 2)))))) ** 2
     freqs = np.linspace(0, rate / 2, len(power))
@@ -643,8 +649,14 @@ def measure(x, rate, kind=''):
                               / (float(np.sum(((x[:, 0] + x[:, 1]) / 2) ** 2)) + 1e-30)) if x.shape[1] == 2 else None),
         'dc': round(float(np.max(np.abs(x.mean(axis=0)))), 6),
     }
-    out.update({key: db(band(lo, hi) / band(20, 20000)) for key, (lo, hi) in BANDS.items()})
-    out['top_10k_vs_4_10k_db'] = db(band(10000, 20000) / band(4000, 10000))
+    exact = np.abs(np.fft.rfft(mono)) ** 2
+    exact_freqs = np.fft.rfftfreq(len(mono), 1.0 / rate)
+
+    def exact_band(lo, hi):
+        return float(exact[(exact_freqs >= lo) & (exact_freqs < hi)].sum()) + 1e-30
+
+    out.update({key: db(exact_band(lo, hi) / exact_band(20, 20000)) for key, (lo, hi) in BANDS.items()})
+    out['top_10k_vs_4_10k_db'] = db(exact_band(10000, 20000) / exact_band(4000, 10000))
     out['tail_s'] = round(tail_time(x, rate), 3)
     if kind == 'kick':
         f0 = fundamental(mono, rate)

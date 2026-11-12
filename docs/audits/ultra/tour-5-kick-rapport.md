@@ -21,8 +21,11 @@ bon ; c'est le petit haut-parleur qui ne rend presque rien sous 200 Hz, là où 
 - **Moteur** (`engine/src/main/cpp/core/SpeakerKick.h/.cpp`) : seulement quand l'appli sait que le son sort du
   haut-parleur du téléphone, la tranche du kick (pad 1 ; la tranche Batterie si ce pad n'a pas la sienne) reçoit,
   avant son volume : ses harmoniques (bande sous 150 Hz, tanh, gardées entre 180 et 1 500 Hz, au rythme de son
-  enveloppe) et son clic (sa bande 1,2-4,5 kHz doublée). La basse n'est pas touchée ; muet, solo et volume du kick
-  restent maîtres ; la chaîne du master garde le niveau et le plafond. Aucune allocation, aucun verrou, aucun log.
+  enveloppe) et son clic (sa bande 1,2-4,5 kHz doublée). Les tranches des basses ne sont pas touchées (si le kick
+  n'a pas de tranche à lui, toute la tranche Batterie est traitée, sa 808 comprise) ; muet, solo et volume du kick
+  restent maîtres ; la chaîne du master garde le plafond. Aucune allocation, aucun verrou, aucun log.
+- **Jamais dans une prise** « Enregistrer ce que je joue » (constat grave de la relecture) : tant qu'une prise de la
+  sortie est armée, le traitement est coupé d'un coup ; il revient quand la prise est lâchée.
 - **Commande 210** `SetSpeakerOutput` (1 : haut-parleur). **Appli** : `Headphones.route` (AudioManager, déjà suivi
   pour les conseils d'enregistrement) l'envoie au moteur en direct à chaque changement de sortie ; jamais à un export.
 - **Essayé et écarté** (mesuré sur le banc en direct) : couper tout le mix sous 100 Hz au haut-parleur (−1 à −2 dB
@@ -48,12 +51,16 @@ réel ; « avant » = branche de départ, « après » = commande 210 à 1. Tél
 - Écoute en direct avec la commande : 0 alerte (NAN, GAIN, SILENCE, FADE, CLICK), 0 allocation en 30 000 rappels
   par style.
 - Trap reste le plus faible au mix (+2,8 dB) : sa 808 occupe les mêmes fenêtres ; le kick lui-même gagne +7 dB.
+- Niveau du mix au haut-parleur : inchangé à 0,2 LU près, sauf la techno, plus forte de 1,6 LU (son kick nu laissait
+  de la marge au limiteur).
 
 ## À dire au relecteur
 - Mesures faites avec des outils de travail hors dépôt (lecture WAV + modèle téléphone en Python, rendu « avant »
   dans un arbre de travail de la branche de départ) ; rien du banc (`scripts/bench/`) n'est changé.
 - Le test moteur `sk_speaker_lifts_the_kick_on_a_phone` donne +6,1 dB (300 Hz) sur un motif synthétique.
 - Non mesuré ici : le vrai haut-parleur du HONOR (essai téléphone ci-dessous).
+- Laissé (moyen de la relecture) : la route est lue dès le démarrage de l'appli (`Headphones.watch`), la commande crée
+  donc l'hôte audio un peu plus tôt qu'avant (il l'était de toute façon au premier écran) ; coût non mesuré.
 
 ## Essai téléphone à prévoir
 Haut-parleur du téléphone, volume habituel : un morceau house, trap et techno de l'assistant, ▶ ; le kick doit taper

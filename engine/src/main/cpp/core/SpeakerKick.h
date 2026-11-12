@@ -11,8 +11,9 @@ namespace ps {
 // « virtual bass » of small loudspeakers, Waves' MaxxBass), and hears a kick on a small speaker by
 // its click (1-4 kHz). So, ONLY while the app says the music goes to the phone's speaker
 // (Mixer::setSpeakerOutput, from Android's AudioManager), on the kick's own strip (pad 1's; the
-// drums' strip when that pad has none), after its effects and before its fader (so its volume, mute
-// and solo still rule; the bass is not touched):
+// drums' strip when that pad has none: then the whole kit's low band and click band, the kit's 808
+// included), after its effects and before its fader (so its volume, mute and solo still rule; the
+// basses' own strips are not touched). Never while a take of the output is armed (Engine):
 // - harmonics of its low band (mono, a 4th-order Butterworth low-pass at kLowHz) divided by their
 //   own envelope into a wave of steady size, shaped by tanh (odd) and tanh² (even), band-passed
 //   (kHarmLowHz..kHarmTopHz), multiplied by the envelope again (they hit and fade with the kick)
